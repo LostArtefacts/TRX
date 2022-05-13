@@ -1,8 +1,8 @@
-#include "game/objects/ai/torso.h"
+#include "game/objects/creatures/torso.h"
 
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/effects/exploding_death.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -47,9 +47,9 @@ void Torso_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Torso_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = TORSO_HITPOINTS;
     obj->radius = TORSO_RADIUS;
@@ -85,13 +85,13 @@ void Torso_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
         angle =
             Math_Atan(
@@ -229,7 +229,7 @@ void Torso_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     if (item->current_anim_state == TORSO_FALL) {
         AnimateItem(item);
@@ -241,7 +241,7 @@ void Torso_Control(int16_t item_num)
             g_Camera.bounce = 500;
         }
     } else {
-        CreatureAnimation(item_num, 0, 0);
+        Creature_Animate(item_num, 0, 0);
     }
 
     if (item->status == IS_DEACTIVATED) {

@@ -1,7 +1,7 @@
-#include "game/objects/ai/ape.h"
+#include "game/objects/creatures/ape.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -49,9 +49,9 @@ void Ape_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Ape_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = APE_HITPOINTS;
     obj->pivot_length = 250;
@@ -82,7 +82,7 @@ void Ape_Vault(int16_t item_num, int16_t angle)
     int32_t yy = item->pos.x >> WALL_SHIFT;
     int32_t y = item->pos.y;
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 
     if (item->pos.y > y - STEP_L * 3 / 2) {
         return;
@@ -142,15 +142,15 @@ void Ape_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, ape->maximum_turn);
+        angle = Creature_Turn(item, ape->maximum_turn);
 
         if (item->hit_status || info.distance < APE_PANIC_RANGE) {
             ape->flags |= APE_ATTACK_FLAG;
@@ -233,7 +233,7 @@ void Ape_Control(int16_t item_num)
 
         case APE_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & APE_TOUCH)) {
-                CreatureEffect(item, &m_ApeBite, Effect_Blood);
+                Creature_Effect(item, &m_ApeBite, Effect_Blood);
                 g_LaraItem->hit_points -= APE_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = APE_STOP;
@@ -242,10 +242,10 @@ void Ape_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     if (item->current_anim_state == APE_VAULT) {
-        CreatureAnimation(item_num, angle, 0);
+        Creature_Animate(item_num, angle, 0);
     } else {
         Ape_Vault(item_num, angle);
     }

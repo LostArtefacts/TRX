@@ -1,7 +1,7 @@
-#include "game/objects/ai/bear.h"
+#include "game/objects/creatures/bear.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -46,9 +46,9 @@ void Bear_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Bear_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
     obj->pivot_length = 500;
@@ -78,7 +78,7 @@ void Bear_Control(int16_t item_num)
     PHD_ANGLE angle = 0;
 
     if (item->hit_points <= 0) {
-        angle = CreatureTurn(item, PHD_DEGREE);
+        angle = Creature_Turn(item, PHD_DEGREE);
 
         switch (item->current_anim_state) {
         case BEAR_WALK:
@@ -110,15 +110,15 @@ void Bear_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, bear->maximum_turn);
+        angle = Creature_Turn(item, bear->maximum_turn);
 
         int dead_enemy = g_LaraItem->hit_points <= 0;
         if (item->hit_status) {
@@ -215,7 +215,7 @@ void Bear_Control(int16_t item_num)
 
         case BEAR_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
-                CreatureEffect(item, &m_BearHeadBite, Effect_Blood);
+                Creature_Effect(item, &m_BearHeadBite, Effect_Blood);
                 g_LaraItem->hit_points -= BEAR_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = BEAR_STOP;
@@ -232,6 +232,6 @@ void Bear_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Head(item, head);
+    Creature_Animate(item_num, angle, 0);
 }

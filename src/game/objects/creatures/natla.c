@@ -1,12 +1,11 @@
-#include "game/objects/ai/natla.h"
+#include "game/objects/creatures/natla.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gun.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -47,8 +46,8 @@ void Natla_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->collision = CreatureCollision;
-    obj->initialise = InitialiseCreature;
+    obj->collision = Creature_Collision;
+    obj->initialise = Creature_Initialise;
     obj->control = Natla_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = NATLA_HITPOINTS;
@@ -89,18 +88,19 @@ void Natla_Control(int16_t item_num)
         natla->LOT.fly = 0;
 
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, NATLA_RUN_TURN);
+        angle = Creature_Turn(item, NATLA_RUN_TURN);
 
         int8_t shoot = info.angle > -NATLA_FIRE_ARC
-            && info.angle < NATLA_FIRE_ARC && Targetable(item, &info);
+            && info.angle < NATLA_FIRE_ARC
+            && Creature_CanTargetEnemy(item, &info);
 
         if (facing) {
             item->pos.y_rot += facing;
@@ -126,7 +126,7 @@ void Natla_Control(int16_t item_num)
             }
             if (timer >= 20) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_ShardGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -140,7 +140,7 @@ void Natla_Control(int16_t item_num)
             tilt = angle;
             if (timer >= 20) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_ShardGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -184,22 +184,23 @@ void Natla_Control(int16_t item_num)
         natla->LOT.fly = 0;
 
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         int8_t shoot = info.angle > -NATLA_FIRE_ARC
-            && info.angle < NATLA_FIRE_ARC && Targetable(item, &info);
+            && info.angle < NATLA_FIRE_ARC
+            && Creature_CanTargetEnemy(item, &info);
         if (item->current_anim_state == NATLA_FLY
             && (natla->flags & NATLA_FLY_MODE)) {
             if (shoot && Random_GetControl() < NATLA_LAND_CHANCE) {
                 natla->flags &= ~NATLA_FLY_MODE;
             }
             if (!(natla->flags & NATLA_FLY_MODE)) {
-                CreatureMood(item, &info, 1);
+                Creature_Mood(item, &info, true);
             }
             natla->LOT.step = WALL_L * 20;
             natla->LOT.drop = -WALL_L * 20;
             natla->LOT.fly = STEP_L / 8;
-            CreatureAIInfo(item, &info);
+            Creature_AIInfo(item, &info);
         } else if (!shoot) {
             natla->flags |= NATLA_FLY_MODE;
         }
@@ -210,11 +211,11 @@ void Natla_Control(int16_t item_num)
 
         if (item->current_anim_state != NATLA_FLY
             || (natla->flags & NATLA_FLY_MODE)) {
-            CreatureMood(item, &info, 0);
+            Creature_Mood(item, &info, false);
         }
 
         item->pos.y_rot -= facing;
-        angle = CreatureTurn(item, NATLA_FLY_TURN);
+        angle = Creature_Turn(item, NATLA_FLY_TURN);
 
         if (item->current_anim_state == NATLA_FLY) {
             if (info.angle > NATLA_FLY_TURN) {
@@ -247,7 +248,7 @@ void Natla_Control(int16_t item_num)
             }
             if (timer >= 30) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
@@ -270,17 +271,17 @@ void Natla_Control(int16_t item_num)
         case NATLA_SHOOT:
             if (!item->required_anim_state) {
                 int16_t fx_num =
-                    CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                    Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     gun = fx->pos.x_rot;
                 }
-                fx_num = CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
                 }
-                fx_num = CreatureEffect(item, &m_NatlaGun, Effect_RocketGun);
+                fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
                     fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
@@ -291,7 +292,7 @@ void Natla_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
+    Creature_Tilt(item, tilt);
 
     natla->neck_rotation = -head;
     if (gun) {
@@ -303,7 +304,7 @@ void Natla_Control(int16_t item_num)
     natla->flags |= timer & NATLA_TIMER;
 
     item->pos.y_rot -= facing;
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
     item->pos.y_rot += facing;
 }
 

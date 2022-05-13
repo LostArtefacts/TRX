@@ -1,7 +1,7 @@
-#include "game/objects/ai/bacon_lara.h"
+#include "game/objects/creatures/bacon_lara.h"
 
-#include "game/collide.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -13,7 +13,7 @@ void BaconLara_Setup(OBJECT_INFO *obj)
     obj->initialise = BaconLara_Initialise;
     obj->control = BaconLara_Control;
     obj->draw_routine = BaconLara_Draw;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->hit_points = LARA_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = 1;

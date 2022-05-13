@@ -1,13 +1,12 @@
-#include "game/objects/ai/centaur.h"
+#include "game/objects/creatures/centaur.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/effects/exploding_death.h"
 #include "game/effects/gun.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -41,9 +40,9 @@ void Centaur_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Centaur_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CENTAUR_HITPOINTS;
     obj->pivot_length = 400;
@@ -54,7 +53,7 @@ void Centaur_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 40] |= 0xCu;
+    g_AnimBones[obj->bone_index + 40] |= BEB_ROT_Z | BEB_POP;
 }
 
 void Centaur_Control(int16_t item_num)
@@ -81,15 +80,15 @@ void Centaur_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, CENTAUR_TURN);
+        angle = Creature_Turn(item, CENTAUR_TURN);
 
         switch (item->current_anim_state) {
         case CENTAUR_STOP:
@@ -98,7 +97,7 @@ void Centaur_Control(int16_t item_num)
                 item->goal_anim_state = item->required_anim_state;
             } else if (info.bite && info.distance < CENTAUR_REAR_RANGE) {
                 item->goal_anim_state = CENTAUR_RUN;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = CENTAUR_AIM;
             } else {
                 item->goal_anim_state = CENTAUR_RUN;
@@ -109,7 +108,7 @@ void Centaur_Control(int16_t item_num)
             if (info.bite && info.distance < CENTAUR_REAR_RANGE) {
                 item->required_anim_state = CENTAUR_WARNING;
                 item->goal_anim_state = CENTAUR_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = CENTAUR_AIM;
                 item->goal_anim_state = CENTAUR_STOP;
             } else if (Random_GetControl() < CENTAUR_REAR_CHANCE) {
@@ -121,7 +120,7 @@ void Centaur_Control(int16_t item_num)
         case CENTAUR_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = CENTAUR_SHOOT;
             } else {
                 item->goal_anim_state = CENTAUR_STOP;
@@ -132,7 +131,7 @@ void Centaur_Control(int16_t item_num)
             if (item->required_anim_state == CENTAUR_EMPTY) {
                 item->required_anim_state = CENTAUR_AIM;
                 int16_t fx_num =
-                    CreatureEffect(item, &m_CentaurRocket, Effect_RocketGun);
+                    Creature_Effect(item, &m_CentaurRocket, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     centaur->neck_rotation = g_Effects[fx_num].pos.x_rot;
                 }
@@ -142,7 +141,7 @@ void Centaur_Control(int16_t item_num)
         case CENTAUR_WARNING:
             if (item->required_anim_state == CENTAUR_EMPTY
                 && (item->touch_bits & CENTAUR_TOUCH)) {
-                CreatureEffect(item, &m_CentaurRear, Effect_Blood);
+                Creature_Effect(item, &m_CentaurRear, Effect_Blood);
                 g_LaraItem->hit_points -= CENTAUR_REAR_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CENTAUR_STOP;
@@ -151,8 +150,8 @@ void Centaur_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Head(item, head);
+    Creature_Animate(item_num, angle, 0);
 
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);

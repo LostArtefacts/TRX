@@ -1,9 +1,9 @@
-#include "game/objects/ai/crocodile.h"
+#include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -56,9 +56,9 @@ void Croc_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Croc_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CROCODILE_HITPOINTS;
     obj->pivot_length = 600;
@@ -96,18 +96,18 @@ void Croc_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
         if (item->current_anim_state == CROCODILE_FASTTURN) {
             item->pos.y_rot += CROCODILE_FASTTURN_TURN;
         } else {
-            angle = CreatureTurn(item, CROCODILE_TURN);
+            angle = Creature_Turn(item, CROCODILE_TURN);
         }
 
         switch (item->current_anim_state) {
@@ -164,7 +164,7 @@ void Croc_Control(int16_t item_num)
 
         case CROCODILE_ATTACK1:
             if (item->required_anim_state == CROCODILE_EMPTY) {
-                CreatureEffect(item, &m_CrocodileBite, Effect_Blood);
+                Creature_Effect(item, &m_CrocodileBite, Effect_Blood);
                 g_LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = CROCODILE_STOP;
@@ -174,7 +174,7 @@ void Croc_Control(int16_t item_num)
     }
 
     if (croc) {
-        CreatureHead(item, head);
+        Creature_Head(item, head);
     }
 
     if (g_RoomInfo[item->room_number].flags & RF_UNDERWATER) {
@@ -192,7 +192,7 @@ void Croc_Control(int16_t item_num)
     }
 
     if (croc) {
-        CreatureAnimation(item_num, angle, 0);
+        Creature_Animate(item_num, angle, 0);
     } else {
         AnimateItem(item);
     }
@@ -203,9 +203,9 @@ void Alligator_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Alligator_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = ALLIGATOR_HITPOINTS;
     obj->pivot_length = 600;
@@ -283,14 +283,14 @@ void Alligator_Control(int16_t item_num)
     }
 
     AI_INFO info;
-    CreatureAIInfo(item, &info);
+    Creature_AIInfo(item, &info);
 
     if (info.ahead) {
         head = info.angle;
     }
 
-    CreatureMood(item, &info, 1);
-    CreatureTurn(item, ALLIGATOR_TURN);
+    Creature_Mood(item, &info, true);
+    Creature_Turn(item, ALLIGATOR_TURN);
 
     switch (item->current_anim_state) {
     case ALLIGATOR_SWIM:
@@ -312,7 +312,7 @@ void Alligator_Control(int16_t item_num)
 
         if (info.bite && item->touch_bits) {
             if (item->required_anim_state == ALLIGATOR_EMPTY) {
-                CreatureEffect(item, &m_CrocodileBite, Effect_Blood);
+                Creature_Effect(item, &m_CrocodileBite, Effect_Blood);
                 g_LaraItem->hit_points -= ALLIGATOR_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = ALLIGATOR_SWIM;
@@ -326,7 +326,7 @@ void Alligator_Control(int16_t item_num)
         break;
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -346,5 +346,5 @@ void Alligator_Control(int16_t item_num)
         item->pos.y = wh + STEP_L;
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }

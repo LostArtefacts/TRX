@@ -1,11 +1,10 @@
-#include "game/objects/ai/pierre.h"
+#include "game/objects/creatures/pierre.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"
@@ -43,9 +42,9 @@ void Pierre_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Pierre_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PIERRE_HITPOINTS;
     obj->radius = PIERRE_RADIUS;
@@ -102,7 +101,7 @@ void Pierre_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
@@ -112,9 +111,9 @@ void Pierre_Control(int16_t item_num)
             info.enemy_zone = -1;
             item->hit_status = 1;
         }
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, pierre->maximum_turn);
+        angle = Creature_Turn(item, pierre->maximum_turn);
 
         switch (item->current_anim_state) {
         case PIERRE_STOP:
@@ -149,7 +148,7 @@ void Pierre_Control(int16_t item_num)
             } else if (pierre->mood == MOOD_ESCAPE) {
                 item->required_anim_state = PIERRE_RUN;
                 item->goal_anim_state = PIERRE_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = PIERRE_AIM;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (!info.ahead || info.distance > PIERRE_WALK_RANGE) {
@@ -165,7 +164,7 @@ void Pierre_Control(int16_t item_num)
                 && Random_GetControl() < PIERRE_POSE_CHANCE) {
                 item->required_anim_state = PIERRE_POSE;
                 item->goal_anim_state = PIERRE_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = PIERRE_AIM;
                 item->goal_anim_state = PIERRE_STOP;
             } else if (info.ahead && info.distance < PIERRE_WALK_RANGE) {
@@ -177,7 +176,7 @@ void Pierre_Control(int16_t item_num)
         case PIERRE_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = PIERRE_SHOOT;
             } else {
                 item->goal_anim_state = PIERRE_STOP;
@@ -186,14 +185,12 @@ void Pierre_Control(int16_t item_num)
 
         case PIERRE_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &m_PierreGun1, head)) {
-                    g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
-                    g_LaraItem->hit_status = 1;
-                }
-                if (ShotLara(item, info.distance, &m_PierreGun2, head)) {
-                    g_LaraItem->hit_points -= PIERRE_SHOT_DAMAGE / 2;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance, &m_PierreGun1, head,
+                    PIERRE_SHOT_DAMAGE / 2);
+                Creature_ShootAtLara(
+                    item, info.distance, &m_PierreGun2, head,
+                    PIERRE_SHOT_DAMAGE / 2);
                 item->required_anim_state = PIERRE_AIM;
             }
             if (pierre->mood == MOOD_ESCAPE
@@ -204,9 +201,9 @@ void Pierre_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
-    CreatureHead(item, head);
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Tilt(item, tilt);
+    Creature_Head(item, head);
+    Creature_Animate(item_num, angle, 0);
 
     if (pierre->flags) {
         GAME_VECTOR target;

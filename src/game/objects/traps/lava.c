@@ -150,7 +150,7 @@ void LavaEmitter_Control(int16_t item_num)
 void LavaWedge_Setup(OBJECT_INFO *obj)
 {
     obj->control = LavaWedge_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = ObjectCollision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

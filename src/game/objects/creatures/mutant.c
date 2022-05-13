@@ -1,13 +1,12 @@
-#include "game/objects/ai/mutant.h"
+#include "game/objects/creatures/mutant.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/effects/exploding_death.h"
 #include "game/effects/gun.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -62,9 +61,9 @@ void Mutant_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Mutant_FlyerControl;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = FLYER_HITPOINTS;
     obj->pivot_length = 150;
@@ -127,11 +126,12 @@ void Mutant_FlyerControl(int16_t item_num)
         flyer->LOT.fly = 0;
 
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         int32_t shoot1 = 0;
         int32_t shoot2 = 0;
-        if (item->object_number != O_WARRIOR3 && Targetable(item, &info)
+        if (item->object_number != O_WARRIOR3
+            && Creature_CanTargetEnemy(item, &info)
             && (info.zone_number != info.enemy_zone
                 || info.distance > FLYER_ATTACK_RANGE)) {
             if (info.angle > 0 && info.angle < PHD_45) {
@@ -149,13 +149,13 @@ void Mutant_FlyerControl(int16_t item_num)
                 }
 
                 if (!(flyer->flags & FLYER_FLYMODE)) {
-                    CreatureMood(item, &info, 1);
+                    Creature_Mood(item, &info, true);
                 }
 
                 flyer->LOT.step = WALL_L * 30;
                 flyer->LOT.drop = -WALL_L * 30;
                 flyer->LOT.fly = STEP_L / 8;
-                CreatureAIInfo(item, &info);
+                Creature_AIInfo(item, &info);
             } else if (
                 (info.zone_number != info.enemy_zone && !shoot1 && !shoot2
                  && (!info.ahead || flyer->mood == MOOD_BORED))
@@ -169,12 +169,12 @@ void Mutant_FlyerControl(int16_t item_num)
         }
 
         if (item->current_anim_state != FLYER_FLY) {
-            CreatureMood(item, &info, 0);
+            Creature_Mood(item, &info, false);
         } else if (flyer->flags & FLYER_FLYMODE) {
-            CreatureMood(item, &info, 1);
+            Creature_Mood(item, &info, true);
         }
 
-        angle = CreatureTurn(item, flyer->maximum_turn);
+        angle = Creature_Turn(item, flyer->maximum_turn);
 
         switch (item->current_anim_state) {
         case FLYER_MUMMY:
@@ -271,7 +271,7 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_ATTACK1:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &m_WarriorBite, Effect_Blood);
+                Creature_Effect(item, &m_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_LUNGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
@@ -281,7 +281,7 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_ATTACK2:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &m_WarriorBite, Effect_Blood);
+                Creature_Effect(item, &m_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_RUN;
@@ -291,7 +291,7 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_ATTACK3:
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                CreatureEffect(item, &m_WarriorBite, Effect_Blood);
+                Creature_Effect(item, &m_WarriorBite, Effect_Blood);
                 g_LaraItem->hit_points -= FLYER_PUNCH_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = FLYER_STOP;
@@ -320,10 +320,10 @@ void Mutant_FlyerControl(int16_t item_num)
         case FLYER_SHOOT:
             if (flyer->flags & FLYER_BULLET1) {
                 flyer->flags &= ~FLYER_BULLET1;
-                CreatureEffect(item, &m_WarriorShard, Effect_ShardGun);
+                Creature_Effect(item, &m_WarriorShard, Effect_ShardGun);
             } else if (flyer->flags & FLYER_BULLET2) {
                 flyer->flags &= ~FLYER_BULLET2;
-                CreatureEffect(item, &m_WarriorRocket, Effect_RocketGun);
+                Creature_Effect(item, &m_WarriorRocket, Effect_RocketGun);
             }
             break;
 
@@ -339,7 +339,7 @@ void Mutant_FlyerControl(int16_t item_num)
         flyer->head_rotation = flyer->neck_rotation;
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     if (!(flyer->flags & FLYER_TWIST)) {
         flyer->neck_rotation = flyer->head_rotation;
@@ -348,11 +348,11 @@ void Mutant_FlyerControl(int16_t item_num)
         flyer->neck_rotation = 0;
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }
 
 void Mutant_Initialise2(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
     g_Items[item_num].mesh_bits = 0xFFE07FFF;
 }

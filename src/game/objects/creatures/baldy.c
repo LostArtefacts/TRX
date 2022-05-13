@@ -1,11 +1,10 @@
-#include "game/objects/ai/baldy.h"
+#include "game/objects/creatures/baldy.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "global/vars.h"
 
 #define BALDY_SHOT_DAMAGE 150
@@ -36,7 +35,7 @@ void Baldy_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Baldy_Initialise;
     obj->control = Baldy_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BALDY_HITPOINTS;
     obj->radius = BALDY_RADIUS;
@@ -51,7 +50,7 @@ void Baldy_Setup(OBJECT_INFO *obj)
 
 void Baldy_Initialise(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
     g_Items[item_num].current_anim_state = BALDY_RUN;
 }
 
@@ -80,21 +79,21 @@ void Baldy_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, baldy->maximum_turn);
+        angle = Creature_Turn(item, baldy->maximum_turn);
 
         switch (item->current_anim_state) {
         case BALDY_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = BALDY_AIM;
             } else if (baldy->mood == MOOD_BORED) {
                 item->goal_anim_state = BALDY_WALK;
@@ -108,7 +107,7 @@ void Baldy_Control(int16_t item_num)
             if (baldy->mood == MOOD_ESCAPE || !info.ahead) {
                 item->required_anim_state = BALDY_RUN;
                 item->goal_anim_state = BALDY_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = BALDY_AIM;
                 item->goal_anim_state = BALDY_STOP;
             } else if (info.distance > BALDY_WALK_RANGE) {
@@ -121,7 +120,7 @@ void Baldy_Control(int16_t item_num)
             baldy->maximum_turn = BALDY_RUN_TURN;
             tilt = angle / 2;
             if (baldy->mood != MOOD_ESCAPE || info.ahead) {
-                if (Targetable(item, &info)) {
+                if (Creature_CanTargetEnemy(item, &info)) {
                     item->required_anim_state = BALDY_AIM;
                     item->goal_anim_state = BALDY_STOP;
                 } else if (info.ahead && info.distance < BALDY_WALK_RANGE) {
@@ -135,7 +134,7 @@ void Baldy_Control(int16_t item_num)
             baldy->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = BALDY_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = BALDY_SHOOT;
             } else {
                 item->goal_anim_state = BALDY_STOP;
@@ -144,10 +143,9 @@ void Baldy_Control(int16_t item_num)
 
         case BALDY_SHOOT:
             if (!baldy->flags) {
-                if (ShotLara(item, info.distance / 2, &m_BaldyGun, head)) {
-                    g_LaraItem->hit_points -= BALDY_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance / 2, &m_BaldyGun, head,
+                    BALDY_SHOT_DAMAGE);
                 baldy->flags = 1;
             }
             if (baldy->mood == MOOD_ESCAPE) {
@@ -157,7 +155,7 @@ void Baldy_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
-    CreatureHead(item, head);
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Tilt(item, tilt);
+    Creature_Head(item, head);
+    Creature_Animate(item_num, angle, 0);
 }

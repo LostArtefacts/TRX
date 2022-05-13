@@ -1,9 +1,8 @@
-#include "game/objects/ai/trex.h"
+#include "game/objects/creatures/trex.h"
 
 #include "config.h"
-
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -42,7 +41,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = TRex_Control;
     obj->draw_routine = DrawUnclippedItem;
     obj->collision = TRex_Collision;
@@ -66,7 +65,7 @@ void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    CreatureCollision(item_num, lara_item, coll);
+    Creature_Collision(item_num, lara_item, coll);
 }
 
 void TRex_Control(int16_t item_num)
@@ -92,15 +91,15 @@ void TRex_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, dino->maximum_turn);
+        angle = Creature_Turn(item, dino->maximum_turn);
 
         if (item->touch_bits) {
             if (item->current_anim_state == TREX_RUN) {
@@ -169,9 +168,9 @@ void TRex_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head >> 1);
+    Creature_Head(item, head >> 1);
     dino->neck_rotation = dino->head_rotation;
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
     item->collidable = 1;
 }
 

@@ -1,7 +1,7 @@
-#include "game/objects/ai/lion.h"
+#include "game/objects/creatures/lion.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
 #include "game/random.h"
@@ -46,9 +46,9 @@ void Lion_SetupLion(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LION_HITPOINTS;
     obj->pivot_length = 400;
@@ -67,9 +67,9 @@ void Lion_SetupLioness(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LIONESS_HITPOINTS;
     obj->pivot_length = 400;
@@ -88,9 +88,9 @@ void Lion_SetupPuma(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PUMA_HITPOINTS;
     obj->pivot_length = 400;
@@ -137,15 +137,15 @@ void Lion_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, lion->maximum_turn);
+        angle = Creature_Turn(item, lion->maximum_turn);
 
         switch (item->current_anim_state) {
         case LION_STOP:
@@ -201,7 +201,7 @@ void Lion_Control(int16_t item_num)
         case LION_ATTACK2:
             if (item->required_anim_state == LION_EMPTY
                 && (item->touch_bits & LION_TOUCH)) {
-                CreatureEffect(item, &m_LionBite, Effect_Blood);
+                Creature_Effect(item, &m_LionBite, Effect_Blood);
                 g_LaraItem->hit_points -= LION_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = LION_STOP;
@@ -210,7 +210,7 @@ void Lion_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
-    CreatureHead(item, head);
-    CreatureAnimation(item_num, angle, tilt);
+    Creature_Tilt(item, tilt);
+    Creature_Head(item, head);
+    Creature_Animate(item_num, angle, tilt);
 }

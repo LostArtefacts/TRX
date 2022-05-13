@@ -1,11 +1,11 @@
-#include "game/objects/ai/rat.h"
+#include "game/objects/creatures/rat.h"
 
-#include "game/box.h"
 #include "game/collide.h"
 #include "game/control.h"
+#include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
-#include "game/objects/ai/rat.h"
+#include "game/objects/creatures/rat.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"
@@ -50,9 +50,9 @@ void Rat_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Rat_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = RAT_HITPOINTS;
     obj->pivot_length = 200;
@@ -89,15 +89,15 @@ void Rat_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, RAT_RUN_TURN);
+        angle = Creature_Turn(item, RAT_RUN_TURN);
 
         switch (item->current_anim_state) {
         case RAT_STOP:
@@ -124,7 +124,7 @@ void Rat_Control(int16_t item_num)
         case RAT_ATTACK1:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &m_RatBite, Effect_Blood);
+                Creature_Effect(item, &m_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_STOP;
@@ -134,7 +134,7 @@ void Rat_Control(int16_t item_num)
         case RAT_ATTACK2:
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &m_RatBite, Effect_Blood);
+                Creature_Effect(item, &m_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_CHARGE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = RAT_RUN;
@@ -150,7 +150,7 @@ void Rat_Control(int16_t item_num)
         }
     }
 
-    CreatureHead(item, head);
+    Creature_Head(item, head);
 
     int32_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -164,7 +164,7 @@ void Rat_Control(int16_t item_num)
         item->pos.y = wh;
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }
 
 void Vole_Setup(OBJECT_INFO *obj)
@@ -172,9 +172,9 @@ void Vole_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Vole_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = RAT_HITPOINTS;
     obj->pivot_length = 200;
@@ -209,7 +209,7 @@ void Vole_Control(int16_t item_num)
             item->frame_number = g_Anims[item->anim_number].frame_base;
         }
 
-        CreatureHead(item, head);
+        Creature_Head(item, head);
 
         AnimateItem(item);
 
@@ -225,15 +225,15 @@ void Vole_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 1);
+        Creature_Mood(item, &info, true);
 
-        angle = CreatureTurn(item, VOLE_SWIM_TURN);
+        angle = Creature_Turn(item, VOLE_SWIM_TURN);
 
         switch (item->current_anim_state) {
         case VOLE_SWIM:
@@ -245,7 +245,7 @@ void Vole_Control(int16_t item_num)
         case VOLE_ATTACK:
             if (item->required_anim_state == VOLE_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
-                CreatureEffect(item, &m_RatBite, Effect_Blood);
+                Creature_Effect(item, &m_RatBite, Effect_Blood);
                 g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
                 g_LaraItem->hit_status = 1;
                 item->required_anim_state = VOLE_SWIM;
@@ -254,7 +254,7 @@ void Vole_Control(int16_t item_num)
             break;
         }
 
-        CreatureHead(item, head);
+        Creature_Head(item, head);
 
         int32_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -270,7 +270,7 @@ void Vole_Control(int16_t item_num)
         int32_t height = item->pos.y;
         item->pos.y = item->floor;
 
-        CreatureAnimation(item_num, angle, 0);
+        Creature_Animate(item_num, angle, 0);
 
         if (height != NO_HEIGHT) {
             if (wh - height < -STEP_L / 8) {

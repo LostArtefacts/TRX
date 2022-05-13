@@ -1,4 +1,4 @@
-#include "game/objects/ai/statue.h"
+#include "game/objects/creatures/statue.h"
 
 #include "game/collide.h"
 #include "game/effects/exploding_death.h"

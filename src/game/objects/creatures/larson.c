@@ -1,9 +1,8 @@
-#include "game/objects/ai/larson.h"
+#include "game/objects/creatures/larson.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "game/random.h"
 #include "global/vars.h"
 
@@ -35,9 +34,9 @@ void Larson_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Larson_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LARSON_HITPOINTS;
     obj->radius = LARSON_RADIUS;
@@ -75,15 +74,15 @@ void Larson_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, person->maximum_turn);
+        angle = Creature_Turn(item, person->maximum_turn);
 
         switch (item->current_anim_state) {
         case LARSON_STOP:
@@ -118,7 +117,7 @@ void Larson_Control(int16_t item_num)
             } else if (person->mood == MOOD_ESCAPE) {
                 item->required_anim_state = LARSON_RUN;
                 item->goal_anim_state = LARSON_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = LARSON_AIM;
                 item->goal_anim_state = LARSON_STOP;
             } else if (!info.ahead || info.distance > LARSON_WALK_RANGE) {
@@ -134,7 +133,7 @@ void Larson_Control(int16_t item_num)
                 && Random_GetControl() < LARSON_POSE_CHANCE) {
                 item->required_anim_state = LARSON_POSE;
                 item->goal_anim_state = LARSON_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = LARSON_AIM;
                 item->goal_anim_state = LARSON_STOP;
             } else if (info.ahead && info.distance < LARSON_WALK_RANGE) {
@@ -146,7 +145,7 @@ void Larson_Control(int16_t item_num)
         case LARSON_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = LARSON_SHOOT;
             } else {
                 item->goal_anim_state = LARSON_STOP;
@@ -155,10 +154,9 @@ void Larson_Control(int16_t item_num)
 
         case LARSON_SHOOT:
             if (!item->required_anim_state) {
-                if (ShotLara(item, info.distance, &m_LarsonGun, head)) {
-                    g_LaraItem->hit_points -= LARSON_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance, &m_LarsonGun, head,
+                    LARSON_SHOT_DAMAGE);
                 item->required_anim_state = LARSON_AIM;
             }
             if (person->mood == MOOD_ESCAPE) {
@@ -168,8 +166,8 @@ void Larson_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
-    CreatureHead(item, head);
+    Creature_Tilt(item, tilt);
+    Creature_Head(item, head);
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }

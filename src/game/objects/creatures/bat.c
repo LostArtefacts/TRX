@@ -1,8 +1,8 @@
-#include "game/objects/ai/bat.h"
+#include "game/objects/creatures/bat.h"
 
 #include "config.h"
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/lot.h"
@@ -79,7 +79,7 @@ void Bat_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Bat_Initialise;
     obj->control = Bat_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BAT_HITPOINTS;
     obj->radius = BAT_RADIUS;
@@ -114,14 +114,13 @@ void Bat_Control(int16_t item_num)
             item->goal_anim_state = BAT_DEATH;
             item->pos.y = item->floor;
         }
-        CreatureAnimation(item_num, 0, 0);
+        Creature_Animate(item_num, 0, 0);
         return;
     } else {
         AI_INFO info;
-
-        CreatureAIInfo(item, &info);
-        CreatureMood(item, &info, 0);
-        angle = CreatureTurn(item, BAT_TURN);
+        Creature_AIInfo(item, &info);
+        Creature_Mood(item, &info, false);
+        angle = Creature_Turn(item, BAT_TURN);
 
         switch (item->current_anim_state) {
         case BAT_STOP:
@@ -131,14 +130,14 @@ void Bat_Control(int16_t item_num)
         case BAT_FLY:
             if (item->touch_bits) {
                 item->goal_anim_state = BAT_ATTACK;
-                CreatureAnimation(item_num, angle, 0);
+                Creature_Animate(item_num, angle, 0);
                 return;
             }
             break;
 
         case BAT_ATTACK:
             if (item->touch_bits) {
-                CreatureEffect(item, &m_BatBite, Effect_Blood);
+                Creature_Effect(item, &m_BatBite, Effect_Blood);
                 g_LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
                 g_LaraItem->hit_status = 1;
             } else {
@@ -149,12 +148,12 @@ void Bat_Control(int16_t item_num)
         }
     }
 
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Animate(item_num, angle, 0);
 }
 
 void Bat_Initialise(int16_t item_num)
 {
-    InitialiseCreature(item_num);
+    Creature_Initialise(item_num);
 
     // Almost all of the bats in the OG levels are embedded in the ceiling.
     // This will move all bats up to the ceiling of their rooms and down

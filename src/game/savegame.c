@@ -5,7 +5,7 @@
 #include "game/gameflow.h"
 #include "game/inv.h"
 #include "game/items.h"
-#include "game/objects/ai/pod.h"
+#include "game/objects/creatures/pod.h"
 #include "game/objects/pickup.h"
 #include "game/objects/puzzle_hole.h"
 #include "game/objects/traps/movable_block.h"

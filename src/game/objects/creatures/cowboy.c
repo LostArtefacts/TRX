@@ -1,11 +1,10 @@
-#include "game/objects/ai/cowboy.h"
+#include "game/objects/creatures/cowboy.h"
 
-#include "game/box.h"
 #include "game/collide.h"
+#include "game/creature.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/people.h"
 #include "global/vars.h"
 
 #define COWBOY_SHOT_DAMAGE 70
@@ -35,9 +34,9 @@ void Cowboy_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = InitialiseCreature;
+    obj->initialise = Creature_Initialise;
     obj->control = Cowboy_Control;
-    obj->collision = CreatureCollision;
+    obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = COWBOY_HITPOINTS;
     obj->radius = COWBOY_RADIUS;
@@ -76,21 +75,21 @@ void Cowboy_Control(int16_t item_num)
         }
     } else {
         AI_INFO info;
-        CreatureAIInfo(item, &info);
+        Creature_AIInfo(item, &info);
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        CreatureMood(item, &info, 0);
+        Creature_Mood(item, &info, false);
 
-        angle = CreatureTurn(item, cowboy->maximum_turn);
+        angle = Creature_Turn(item, cowboy->maximum_turn);
 
         switch (item->current_anim_state) {
         case COWBOY_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = COWBOY_AIM;
             } else if (cowboy->mood == MOOD_BORED) {
                 item->goal_anim_state = COWBOY_WALK;
@@ -104,7 +103,7 @@ void Cowboy_Control(int16_t item_num)
             if (cowboy->mood == MOOD_ESCAPE || !info.ahead) {
                 item->required_anim_state = COWBOY_RUN;
                 item->goal_anim_state = COWBOY_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->required_anim_state = COWBOY_AIM;
                 item->goal_anim_state = COWBOY_STOP;
             } else if (info.distance > COWBOY_WALK_RANGE) {
@@ -117,7 +116,7 @@ void Cowboy_Control(int16_t item_num)
             cowboy->maximum_turn = COWBOY_RUN_TURN;
             tilt = angle / 2;
             if (cowboy->mood != MOOD_ESCAPE || info.ahead) {
-                if (Targetable(item, &info)) {
+                if (Creature_CanTargetEnemy(item, &info)) {
                     item->required_anim_state = COWBOY_AIM;
                     item->goal_anim_state = COWBOY_STOP;
                 } else if (info.ahead && info.distance < COWBOY_WALK_RANGE) {
@@ -131,7 +130,7 @@ void Cowboy_Control(int16_t item_num)
             cowboy->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = COWBOY_STOP;
-            } else if (Targetable(item, &info)) {
+            } else if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = COWBOY_SHOOT;
             } else {
                 item->goal_anim_state = COWBOY_STOP;
@@ -140,19 +139,17 @@ void Cowboy_Control(int16_t item_num)
 
         case COWBOY_SHOOT:
             if (!cowboy->flags) {
-                if (ShotLara(item, info.distance, &m_CowboyGun1, head)) {
-                    g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance, &m_CowboyGun1, head,
+                    COWBOY_SHOT_DAMAGE);
             } else if (cowboy->flags == 6) {
-                if (Targetable(item, &info)) {
-                    if (ShotLara(item, info.distance, &m_CowboyGun2, head)) {
-                        g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
-                        g_LaraItem->hit_status = 1;
-                    }
+                if (Creature_CanTargetEnemy(item, &info)) {
+                    Creature_ShootAtLara(
+                        item, info.distance, &m_CowboyGun2, head,
+                        COWBOY_SHOT_DAMAGE);
                 } else {
                     int16_t fx_num =
-                        CreatureEffect(item, &m_CowboyGun2, Effect_GunShot);
+                        Creature_Effect(item, &m_CowboyGun2, Effect_GunShot);
                     if (fx_num != NO_ITEM) {
                         g_Effects[fx_num].pos.y_rot += head;
                     }
@@ -167,7 +164,7 @@ void Cowboy_Control(int16_t item_num)
         }
     }
 
-    CreatureTilt(item, tilt);
-    CreatureHead(item, head);
-    CreatureAnimation(item_num, angle, 0);
+    Creature_Tilt(item, tilt);
+    Creature_Head(item, head);
+    Creature_Animate(item_num, angle, 0);
 }
