@@ -1108,8 +1108,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LOOP_GAME:
-            ret = GameLoop(level_type);
-            LOG_DEBUG("GameLoop() exited with %d", ret);
+            ret = Game_Loop(level_type);
+            LOG_DEBUG("Game_Loop() exited with %d", ret);
             if (ret != GF_NOP) {
                 return ret;
             }
