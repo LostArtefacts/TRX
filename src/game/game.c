@@ -4,7 +4,6 @@
 #include "game/camera.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
-#include "game/hair.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
@@ -124,7 +123,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         }
 
         Lara_Control();
-        Hair_Control(false);
+        Lara_Hair_Control(false);
 
         Camera_Update();
         Sound_UpdateEffects();
