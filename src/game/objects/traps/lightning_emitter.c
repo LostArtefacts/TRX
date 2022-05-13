@@ -70,7 +70,7 @@ void LightningEmitter_Control(int16_t item_num)
         l->zapped = false;
 
         if (g_FlipStatus) {
-            FlipMap();
+            Room_FlipMap();
         }
 
         Item_RemoveActive(item_num);
@@ -88,7 +88,7 @@ void LightningEmitter_Control(int16_t item_num)
         l->count = 35 + (Random_GetControl() * 45) / 0x8000;
         l->zapped = false;
         if (g_FlipStatus) {
-            FlipMap();
+            Room_FlipMap();
         }
     } else {
         l->active = true;
@@ -142,7 +142,7 @@ void LightningEmitter_Control(int16_t item_num)
         }
 
         if (!g_FlipStatus) {
-            FlipMap();
+            Room_FlipMap();
         }
     }
 

@@ -14,3 +14,5 @@ int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetDoor(FLOOR_INFO *floor);
 int16_t Room_GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
+
+void Room_FlipMap(void);

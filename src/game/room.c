@@ -436,3 +436,33 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         return NO_HEIGHT;
     }
 }
+
+void Room_FlipMap(void)
+{
+    Sound_StopAmbientSounds();
+
+    for (int i = 0; i < g_RoomCount; i++) {
+        ROOM_INFO *r = &g_RoomInfo[i];
+        if (r->flipped_room < 0) {
+            continue;
+        }
+
+        RemoveRoomFlipItems(r);
+
+        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
+        ROOM_INFO temp = *r;
+        *r = *flipped;
+        *flipped = temp;
+
+        r->flipped_room = flipped->flipped_room;
+        flipped->flipped_room = -1;
+
+        // XXX: is this really necessary given the assignments above?
+        r->item_number = flipped->item_number;
+        r->fx_number = flipped->fx_number;
+
+        AddRoomFlipItems(r);
+    }
+
+    g_FlipStatus = !g_FlipStatus;
+}
