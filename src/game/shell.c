@@ -3,8 +3,8 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/clock.h"
-#include "game/demo.h"
 #include "game/fmv.h"
+#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -191,7 +191,7 @@ void Shell_Main(void)
             break;
 
         case GF_START_DEMO:
-            gf_option = StartDemo();
+            gf_option = Game_Demo();
             break;
 
         case GF_LEVEL_COMPLETE:
