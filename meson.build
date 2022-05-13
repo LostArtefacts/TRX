@@ -107,6 +107,7 @@ sources = [
   'src/game/effects/gunshot.c',
   'src/game/fmv.c',
   'src/game/game.c',
+  'src/game/game_cutscene.c',
   'src/game/game_demo.c',
   'src/game/game_pause.c',
   'src/game/gamebuf.c',
