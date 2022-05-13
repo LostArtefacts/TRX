@@ -1,6 +1,5 @@
 #include "game/objects/creatures/bacon_lara.h"
 
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/lara_draw.h"
@@ -79,7 +78,7 @@ void BaconLara_Control(int16_t item_num)
     }
 
     if (item->data) {
-        AnimateItem(item);
+        Item_Animate(item);
 
         int32_t x = item->pos.x;
         int32_t y = item->pos.y;

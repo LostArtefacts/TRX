@@ -1,6 +1,5 @@
 #include "game/objects/traps/falling_block.h"
 
-#include "game/control.h"
 #include "game/items.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -42,7 +41,7 @@ void FallingBlock_Control(int16_t item_num)
         break;
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
         Item_RemoveActive(item_num);
         return;

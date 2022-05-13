@@ -1,7 +1,6 @@
 #include "game/objects/traps/rolling_ball.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -54,7 +53,7 @@ void RollingBall_Control(int16_t item_num)
 
         int32_t oldx = item->pos.x;
         int32_t oldz = item->pos.z;
-        AnimateItem(item);
+        Item_Animate(item);
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor =

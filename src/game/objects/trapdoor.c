@@ -1,6 +1,5 @@
 #include "game/objects/trapdoor.h"
 
-#include "game/control.h"
 #include "game/items.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -49,7 +48,7 @@ void TrapDoor_Control(int16_t item_num)
     } else if (item->current_anim_state == DOOR_OPEN) {
         item->goal_anim_state = DOOR_CLOSED;
     }
-    AnimateItem(item);
+    Item_Animate(item);
 }
 
 void TrapDoor_Floor(

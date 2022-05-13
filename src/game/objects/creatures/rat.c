@@ -1,8 +1,8 @@
 #include "game/objects/creatures/rat.h"
 
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -213,7 +213,7 @@ void Vole_Control(int16_t item_num)
 
         Creature_Head(item, head);
 
-        AnimateItem(item);
+        Item_Animate(item);
 
         int32_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);

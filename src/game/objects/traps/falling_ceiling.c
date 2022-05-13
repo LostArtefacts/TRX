@@ -1,7 +1,6 @@
 #include "game/objects/traps/falling_ceiling.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/items.h"
 #include "global/vars.h"
 
@@ -26,7 +25,7 @@ void FallingCeiling_Control(int16_t item_num)
         g_LaraItem->hit_points -= FALLING_CEILING_DAMAGE;
         g_LaraItem->hit_status = 1;
     }
-    AnimateItem(item);
+    Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
         Item_RemoveActive(item_num);
     } else if (
