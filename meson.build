@@ -146,6 +146,7 @@ sources = [
   'src/game/objects/creatures/centaur.c',
   'src/game/objects/creatures/cowboy.c',
   'src/game/objects/creatures/crocodile.c',
+  'src/game/objects/creatures/cutscene_player.c',
   'src/game/objects/creatures/larson.c',
   'src/game/objects/creatures/lion.c',
   'src/game/objects/creatures/mummy.c',
