@@ -1,6 +1,8 @@
 #include "game/cinema.h"
 
 #include "3dsystem/3d_gen.h"
+#include "game/camera.h"
+#include "game/cinema.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -107,43 +109,13 @@ bool DoCinematic(int32_t nframes)
             fx_num = next_fx_num;
         }
 
-        CalculateCinematicCamera();
+        Camera_UpdateCutscene();
 
         g_CineFrame++;
         m_FrameCount -= 0x10000;
     }
 
     return false;
-}
-
-void CalculateCinematicCamera(void)
-{
-    PHD_VECTOR campos;
-    PHD_VECTOR camtar;
-
-    int16_t *ptr = &g_Cine[8 * g_CineFrame];
-    int32_t tx = ptr[0];
-    int32_t ty = ptr[1];
-    int32_t tz = ptr[2];
-    int32_t cx = ptr[3];
-    int32_t cy = ptr[4];
-    int32_t cz = ptr[5];
-    int16_t fov = ptr[6];
-    int16_t roll = ptr[7];
-
-    int32_t c = Math_Cos(g_Camera.target_angle);
-    int32_t s = Math_Sin(g_Camera.target_angle);
-
-    camtar.x = g_Camera.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
-    camtar.y = g_Camera.pos.y + ty;
-    camtar.z = g_Camera.pos.z + ((tz * c - tx * s) >> W2V_SHIFT);
-    campos.x = g_Camera.pos.x + ((cz * s + cx * c) >> W2V_SHIFT);
-    campos.y = g_Camera.pos.y + cy;
-    campos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
-
-    phd_AlterFOV(fov);
-    phd_LookAt(
-        campos.x, campos.y, campos.z, camtar.x, camtar.y, camtar.z, roll);
 }
 
 void InitialisePlayer1(int16_t item_num)
