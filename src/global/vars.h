@@ -102,24 +102,6 @@ extern int32_t g_FlipEffect;
 extern int32_t g_FlipStatus;
 extern int32_t g_FlipMapTable[MAX_FLIP_MAPS];
 
-extern int32_t g_MeshCount;
-extern int32_t g_MeshPtrCount;
-extern int32_t g_AnimCount;
-extern int32_t g_AnimChangeCount;
-extern int32_t g_AnimRangeCount;
-extern int32_t g_AnimCommandCount;
-extern int32_t g_AnimBoneCount;
-extern int32_t g_AnimFrameCount;
-extern int32_t g_ObjectCount;
-extern int32_t g_StaticCount;
-extern int32_t g_TextureCount;
-extern int32_t g_FloorDataSize;
-extern int32_t g_TexturePageCount;
-extern int32_t g_AnimTextureRangeCount;
-extern int32_t g_SpriteInfoCount;
-extern int32_t g_SpriteCount;
-extern int32_t g_OverlapCount;
-
 extern REQUEST_INFO g_SavegameRequester;
 
 extern int16_t g_InvMode;
