@@ -1116,7 +1116,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_STOP_GAME:
-            ret = StopGame();
+            ret = Game_Stop();
             if (ret != GF_NOP
                 && ((ret & ~((1 << 6) - 1)) != GF_LEVEL_COMPLETE)) {
                 return ret;
