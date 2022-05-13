@@ -2,7 +2,6 @@
 
 #include "3dsystem/3d_gen.h"
 #include "game/camera.h"
-#include "game/cinema.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -18,31 +17,6 @@
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
-
-int32_t StartCinematic(int32_t level_num)
-{
-    if (!Level_Initialise(level_num)) {
-        return END_ACTION;
-    }
-
-    for (int16_t room_num = 0; room_num < g_RoomCount; room_num++) {
-        if (g_RoomInfo[room_num].flipped_room >= 0) {
-            g_RoomInfo[g_RoomInfo[room_num].flipped_room].bound_active = 1;
-        }
-    }
-
-    g_RoomsToDrawCount = 0;
-    for (int16_t room_num = 0; room_num < g_RoomCount; room_num++) {
-        if (!g_RoomInfo[room_num].bound_active) {
-            if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
-                g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
-            }
-        }
-    }
-
-    g_CineFrame = 0;
-    return GF_NOP;
-}
 
 int32_t CinematicLoop(void)
 {
