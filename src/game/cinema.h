@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void InitCinematicRooms(void);
 int32_t StartCinematic(int32_t level_num);
 int32_t StopCinematic(int32_t level_num);
 int32_t CinematicLoop(void);
