@@ -3,7 +3,6 @@
 #include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/clock.h"
-#include "game/output.h"
 #include "game/picture.h"
 #include "game/random.h"
 #include "game/viewport.h"
