@@ -18,9 +18,3 @@ void ControlCinematicPlayer4(int16_t item_num)
 {
     Item_Animate(&g_Items[item_num]);
 }
-
-void InitialiseGenPlayer(int16_t item_num)
-{
-    Item_AddActive(item_num);
-    g_Items[item_num].pos.y_rot = 0;
-}
