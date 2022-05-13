@@ -6,10 +6,8 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/level.h"
-#include "game/music.h"
 #include "game/output.h"
 #include "game/room.h"
-#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -17,16 +15,6 @@
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
-
-int32_t StopCinematic(int32_t level_num)
-{
-    Music_Stop();
-    Sound_StopAllSamples();
-
-    g_LevelComplete = true;
-
-    return level_num | GF_LEVEL_COMPLETE;
-}
 
 bool DoCinematic(int32_t nframes)
 {
