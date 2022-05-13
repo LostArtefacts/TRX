@@ -1140,7 +1140,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_STOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StopCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Stop((int32_t)seq->data);
             }
             break;
 
