@@ -66,7 +66,7 @@ void RollingBall_Control(int16_t item_num)
         item->floor =
             Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         if (item->pos.y >= item->floor - STEP_L) {
             item->gravity_status = 0;

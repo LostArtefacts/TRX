@@ -122,7 +122,7 @@ void MovableBlock_Control(int16_t item_num)
         room_num = item->room_number;
         floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
     }
 }
 

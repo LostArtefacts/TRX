@@ -1,7 +1,6 @@
 #include "game/lara/lara_misc.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -568,7 +567,7 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
 
     item->floor = height;
     item->pos.y = height;
-    TestTriggers(g_TriggerIndex, 0);
+    Room_TestTriggers(g_TriggerIndex, false);
     item->pos.y = oy;
 
     int landspeed = item->fall_speed - DAMAGE_START;

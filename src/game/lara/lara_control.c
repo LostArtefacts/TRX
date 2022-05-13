@@ -14,6 +14,7 @@
 #include "game/lara/lara_look.h"
 #include "game/lara/lara_state.h"
 #include "game/objects/door.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 #include "math/math.h"
@@ -168,7 +169,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     Gun_Control();
-    TestTriggers(coll->trigger, 0);
+    Room_TestTriggers(coll->trigger, false);
 }
 
 void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
@@ -233,7 +234,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, 100);
     Gun_Control();
-    TestTriggers(coll->trigger, 0);
+    Room_TestTriggers(coll->trigger, false);
 }
 
 void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
@@ -316,7 +317,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, 0);
     Gun_Control();
-    TestTriggers(coll->trigger, 0);
+    Room_TestTriggers(coll->trigger, false);
 }
 
 void Lara_CheatGetStuff(void)
