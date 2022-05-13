@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/camera.h"
-#include "game/demo.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/hair.h"
@@ -48,7 +47,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
-            if (!ProcessDemoInput()) {
+            if (!Game_Demo_ProcessInput()) {
                 return GF_EXIT_TO_TITLE;
             }
         }
