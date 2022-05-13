@@ -56,7 +56,7 @@ void ThorsHandle_Control(int16_t item_num)
 
     switch (item->current_anim_state) {
     case THS_SET:
-        if (TriggerActive(item)) {
+        if (Item_IsTriggerActive(item)) {
             item->goal_anim_state = THS_TEASE;
         } else {
             Item_RemoveActive(item_num);
@@ -65,7 +65,7 @@ void ThorsHandle_Control(int16_t item_num)
         break;
 
     case THS_TEASE:
-        if (TriggerActive(item)) {
+        if (Item_IsTriggerActive(item)) {
             item->goal_anim_state = THS_ACTIVE;
         } else {
             item->goal_anim_state = THS_SET;
