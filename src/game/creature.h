@@ -4,7 +4,6 @@
 #include "global/types.h"
 
 #define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 7) // = 51380224
-#define CREATURE_SHOT_DAMAGE 50
 #define CREATURE_MISS_CHANCE 0x2000
 
 void Creature_Initialise(int16_t item_num);
