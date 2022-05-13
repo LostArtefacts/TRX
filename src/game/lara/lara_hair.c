@@ -1,4 +1,4 @@
-#include "game/hair.h"
+#include "game/lara/lara_hair.h"
 
 #include "config.h"
 #include "game/draw.h"
@@ -22,7 +22,7 @@ static bool m_FirstHair = false;
 static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
-void Hair_Initialise(void)
+void Lara_Hair_Initialise(void)
 {
     m_FirstHair = true;
 
@@ -43,7 +43,7 @@ void Hair_Initialise(void)
     }
 }
 
-void Hair_Control(bool in_cutscene)
+void Lara_Hair_Control(bool in_cutscene)
 {
     if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
         return;
@@ -302,7 +302,7 @@ void Hair_Control(bool in_cutscene)
     }
 }
 
-void Hair_Draw(void)
+void Lara_Hair_Draw(void)
 {
     if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
         return;
