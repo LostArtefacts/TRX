@@ -3,6 +3,12 @@
 #include "game/items.h"
 #include "global/vars.h"
 
+void CutscenePlayer_Initialise(int16_t item_num)
+{
+    Item_AddActive(item_num);
+    g_Items[item_num].pos.y_rot = 0;
+}
+
 void CutscenePlayer1_Initialise(int16_t item_num)
 {
     Item_AddActive(item_num);

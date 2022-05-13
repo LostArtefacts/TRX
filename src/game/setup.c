@@ -227,15 +227,15 @@ void ObjectObjects(void)
     g_Objects[O_PLAYER_1].control = ControlCinematicPlayer;
     g_Objects[O_PLAYER_1].hit_points = 1;
 
-    g_Objects[O_PLAYER_2].initialise = InitialiseGenPlayer;
+    g_Objects[O_PLAYER_2].initialise = CutscenePlayer_Initialise;
     g_Objects[O_PLAYER_2].control = ControlCinematicPlayer;
     g_Objects[O_PLAYER_2].hit_points = 1;
 
-    g_Objects[O_PLAYER_3].initialise = InitialiseGenPlayer;
+    g_Objects[O_PLAYER_3].initialise = CutscenePlayer_Initialise;
     g_Objects[O_PLAYER_3].control = ControlCinematicPlayer;
     g_Objects[O_PLAYER_3].hit_points = 1;
 
-    g_Objects[O_PLAYER_4].initialise = InitialiseGenPlayer;
+    g_Objects[O_PLAYER_4].initialise = CutscenePlayer_Initialise;
     g_Objects[O_PLAYER_4].control = ControlCinematicPlayer4;
     g_Objects[O_PLAYER_4].hit_points = 1;
 
