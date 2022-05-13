@@ -1,7 +1,6 @@
 #include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
@@ -197,7 +196,7 @@ void Croc_Control(int16_t item_num)
     if (croc) {
         Creature_Animate(item_num, angle, 0);
     } else {
-        AnimateItem(item);
+        Item_Animate(item);
     }
 }
 
@@ -273,7 +272,7 @@ void Alligator_Control(int16_t item_num)
             }
         }
 
-        AnimateItem(item);
+        Item_Animate(item);
 
         room_num = item->room_number;
         floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);

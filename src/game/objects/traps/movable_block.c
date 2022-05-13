@@ -92,7 +92,7 @@ void MovableBlock_Control(int16_t item_num)
         return;
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
@@ -222,7 +222,7 @@ void MovableBlock_Collision(
         Item_AddActive(item_num);
         AlterFloorHeight(item, WALL_L);
         item->status = IS_ACTIVE;
-        AnimateItem(item);
+        Item_Animate(item);
         Lara_Animate(lara_item);
     }
 }

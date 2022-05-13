@@ -1,6 +1,5 @@
 #include "game/objects/door.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -228,7 +227,7 @@ void Door_Control(int16_t item_num)
         }
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }
 
 void Door_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)

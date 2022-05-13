@@ -1,7 +1,6 @@
 #include "game/objects/traps/pendulum.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/random.h"
@@ -48,5 +47,5 @@ void Pendulum_Control(int16_t item_num)
         item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

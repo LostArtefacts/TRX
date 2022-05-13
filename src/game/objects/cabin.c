@@ -1,7 +1,6 @@
 #include "game/objects/cabin.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/room.h"
@@ -41,5 +40,5 @@ void Cabin_Control(int16_t item_num)
         Item_Kill(item_num);
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

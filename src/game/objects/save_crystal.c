@@ -39,7 +39,7 @@ void SaveCrystal_Initialise(int16_t item_num)
 void SaveCrystal_Control(int16_t item_num)
 {
     if (g_GameFlow.enable_save_crystals) {
-        AnimateItem(&g_Items[item_num]);
+        Item_Animate(&g_Items[item_num]);
     }
 }
 

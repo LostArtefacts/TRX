@@ -436,7 +436,7 @@ void Lara_UseItem(int16_t object_num)
 
 void Lara_ControlExtra(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void Lara_InitialiseLoad(int16_t item_num)
