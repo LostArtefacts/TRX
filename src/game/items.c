@@ -442,6 +442,31 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
+bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
+{
+    if (item->current_anim_state == item->goal_anim_state) {
+        return false;
+    }
+
+    for (int i = 0; i < anim->number_changes; i++) {
+        ANIM_CHANGE_STRUCT *change = &g_AnimChanges[anim->change_index + i];
+        if (change->goal_anim_state != item->goal_anim_state) {
+            for (int j = 0; j < change->number_ranges; j++) {
+                ANIM_RANGE_STRUCT *range =
+                    &g_AnimRanges[change->range_index + j];
+                if (item->frame_number >= range->start_frame
+                    && item->frame_number <= range->end_frame) {
+                    item->anim_number = range->link_anim_num;
+                    item->frame_number = range->link_frame_num;
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 bool Item_IsTriggerActive(ITEM_INFO *item)
 {
     bool ok = item->flags & IF_REVERSE;
