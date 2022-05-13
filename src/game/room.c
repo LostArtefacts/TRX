@@ -1,6 +1,6 @@
 #include "game/room.h"
 
-#include "game/control.h"
+#include "game/camera.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
@@ -634,7 +634,7 @@ void Room_TestTriggers(int16_t *data, bool heavy)
     int16_t timer = flags & 0xFF;
 
     if (g_Camera.type != CAM_HEAVY) {
-        RefreshCamera(type, data);
+        Camera_RefreshFromTrigger(type, data);
     }
 
     if (heavy) {

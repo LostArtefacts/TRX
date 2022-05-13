@@ -1,7 +1,6 @@
 #include "game/cinema.h"
 
 #include "3dsystem/3d_gen.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"

@@ -1,4 +1,3 @@
-#include "game/control.h"
 
 #include "game/draw.h"
 #include "game/gameflow.h"

@@ -727,3 +727,48 @@ void Camera_OffsetReset(void)
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
 }
+
+void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
+{
+    int16_t trigger;
+    int16_t target_ok = 2;
+    do {
+        trigger = *data++;
+        int16_t value = trigger & VALUE_BITS;
+
+        switch (TRIG_BITS(trigger)) {
+        case TO_CAMERA:
+            data++;
+
+            if (value == g_Camera.last) {
+                g_Camera.number = value;
+
+                if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
+                    || g_Camera.type == CAM_COMBAT) {
+                    g_Camera.timer = -1;
+                    target_ok = 0;
+                } else {
+                    g_Camera.type = CAM_FIXED;
+                    target_ok = 1;
+                }
+            } else {
+                target_ok = 0;
+            }
+            break;
+
+        case TO_TARGET:
+            if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
+                g_Camera.item = &g_Items[value];
+            }
+            break;
+        }
+    } while (!(trigger & END_BIT));
+
+    if (g_Camera.item != NULL) {
+        if (!target_ok
+            || (target_ok == 2 && g_Camera.item->looked_at
+                && g_Camera.item != g_Camera.last_item)) {
+            g_Camera.item = NULL;
+        }
+    }
+}
