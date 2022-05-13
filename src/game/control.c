@@ -238,7 +238,7 @@ void AnimateItem(ITEM_INFO *item)
     item->frame_number++;
 
     if (anim->number_changes > 0) {
-        if (GetChange(item, anim)) {
+        if (Item_GetAnimChange(item, anim)) {
             anim = &g_Anims[item->anim_number];
             item->current_anim_state = anim->current_anim_state;
 

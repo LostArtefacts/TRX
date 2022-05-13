@@ -265,7 +265,7 @@ void Lara_Animate(ITEM_INFO *item)
 
     item->frame_number++;
     anim = &g_Anims[item->anim_number];
-    if (anim->number_changes > 0 && GetChange(item, anim)) {
+    if (anim->number_changes > 0 && Item_GetAnimChange(item, anim)) {
         anim = &g_Anims[item->anim_number];
         item->current_anim_state = anim->current_anim_state;
     }
