@@ -90,3 +90,5 @@ void Output_AnimateTextures(int32_t ticks);
 void Output_ApplyWaterEffect(float *r, float *g, float *b);
 
 bool Output_MakeScreenshot(const char *path);
+
+int Output_GetObjectBounds(int16_t *bptr);

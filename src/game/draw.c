@@ -12,7 +12,6 @@
 #include "global/vars.h"
 #include "log.h"
 #include "math/matrix.h"
-#include "specific/s_misc.h"
 #include "util.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
@@ -267,8 +266,8 @@ void PrintRooms(int16_t room_number)
             Matrix_Push();
             Matrix_TranslateAbs(mesh->x, mesh->y, mesh->z);
             Matrix_RotY(mesh->y_rot);
-            int clip =
-                S_GetObjectBounds(&g_StaticObjects[mesh->static_number].x_minp);
+            int clip = Output_GetObjectBounds(
+                &g_StaticObjects[mesh->static_number].x_minp);
             if (clip) {
                 Output_CalculateStaticLight(mesh->shade);
                 Output_DrawPolygons(
@@ -444,7 +443,7 @@ void DrawPickupItem(ITEM_INFO *item)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
     int16_t *frame = &object->frame_base[object->nmeshes * 2 + 10];
-    int32_t clip = S_GetObjectBounds(frame);
+    int32_t clip = Output_GetObjectBounds(frame);
     if (clip) {
         // From this point on the function is a slightly customised version
         // of the code in DrawAnimatingItem starting with the line that
@@ -548,7 +547,7 @@ void DrawAnimatingItem(ITEM_INFO *item)
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    int32_t clip = S_GetObjectBounds(frmptr[0]);
+    int32_t clip = Output_GetObjectBounds(frmptr[0]);
     if (!clip) {
         Matrix_Pop();
         return;
