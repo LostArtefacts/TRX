@@ -12,7 +12,6 @@
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "specific/s_misc.h"
 
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8
@@ -173,7 +172,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int32_t clip = S_GetObjectBounds(frmptr[0]);
+    int32_t clip = Output_GetObjectBounds(frmptr[0]);
     if (!clip) {
         Matrix_Pop();
         return;

@@ -21,7 +21,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "specific/s_misc.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -927,7 +926,7 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
 
     Matrix_Push();
 
-    int32_t clip = S_GetObjectBounds(frame);
+    int32_t clip = Output_GetObjectBounds(frame);
     if (clip) {
         Matrix_TranslateRel(
             frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
