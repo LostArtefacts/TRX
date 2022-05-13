@@ -1,7 +1,6 @@
 #include "game/objects/traps/dart.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/effects/blood.h"

@@ -1,6 +1,5 @@
 #include "game/objects/effects/body_part.h"
 
-#include "game/control.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"

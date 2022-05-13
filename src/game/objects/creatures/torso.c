@@ -1,7 +1,6 @@
 #include "game/objects/creatures/torso.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/creature.h"
 #include "game/effects/exploding_death.h"
 #include "game/items.h"
