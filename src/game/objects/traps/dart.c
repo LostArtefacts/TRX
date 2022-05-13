@@ -91,7 +91,7 @@ void DartEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DART_EMITTER_IDLE) {
             item->goal_anim_state = DART_EMITTER_FIRE;
         }

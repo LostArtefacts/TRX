@@ -379,28 +379,3 @@ void RefreshCamera(int16_t type, int16_t *data)
         }
     }
 }
-
-int32_t TriggerActive(ITEM_INFO *item)
-{
-    int32_t ok = (item->flags & IF_REVERSE) ? 0 : 1;
-
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return !ok;
-    }
-
-    if (!item->timer) {
-        return ok;
-    }
-
-    if (item->timer == -1) {
-        return !ok;
-    }
-
-    item->timer--;
-
-    if (!item->timer) {
-        item->timer = -1;
-    }
-
-    return ok;
-}

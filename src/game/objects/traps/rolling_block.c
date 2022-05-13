@@ -25,7 +25,7 @@ void RollingBlock_Initialise(int16_t item_num)
 void RollingBlock_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == RBS_START) {
             item->goal_anim_state = RBS_END;
             AlterFloorHeight(item, WALL_L * 2);

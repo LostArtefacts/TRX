@@ -66,7 +66,7 @@ void Switch_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     item->flags |= IF_CODE_BITS;
-    if (!TriggerActive(item)) {
+    if (!Item_IsTriggerActive(item)) {
         item->goal_anim_state = SWITCH_STATE_ON;
         item->timer = 0;
     }
