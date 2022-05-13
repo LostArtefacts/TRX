@@ -1,6 +1,5 @@
 #include "game/objects/save_crystal.h"
 
-#include "game/control.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"

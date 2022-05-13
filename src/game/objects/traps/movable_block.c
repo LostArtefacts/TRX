@@ -1,6 +1,5 @@
 #include "game/objects/traps/movable_block.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effect_routines/dino_stomp.h"
 #include "game/input.h"

@@ -3,7 +3,6 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/gun.h"

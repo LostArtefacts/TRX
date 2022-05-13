@@ -1,20 +1,15 @@
 #include "game/control.h"
 
-#include "config.h"
 #include "game/camera.h"
 #include "game/demo.h"
 #include "game/gameflow.h"
 #include "game/hair.h"
 #include "game/input.h"
 #include "game/inv.h"
-#include "game/items.h"
 #include "game/lara.h"
-#include "game/music.h"
 #include "game/overlay.h"
-#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "math/math.h"
 
 #include <stddef.h>
 
@@ -226,49 +221,4 @@ int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     return GF_NOP;
-}
-
-void RefreshCamera(int16_t type, int16_t *data)
-{
-    int16_t trigger;
-    int16_t target_ok = 2;
-    do {
-        trigger = *data++;
-        int16_t value = trigger & VALUE_BITS;
-
-        switch (TRIG_BITS(trigger)) {
-        case TO_CAMERA:
-            data++;
-
-            if (value == g_Camera.last) {
-                g_Camera.number = value;
-
-                if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
-                    || g_Camera.type == CAM_COMBAT) {
-                    g_Camera.timer = -1;
-                    target_ok = 0;
-                } else {
-                    g_Camera.type = CAM_FIXED;
-                    target_ok = 1;
-                }
-            } else {
-                target_ok = 0;
-            }
-            break;
-
-        case TO_TARGET:
-            if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
-                g_Camera.item = &g_Items[value];
-            }
-            break;
-        }
-    } while (!(trigger & END_BIT));
-
-    if (g_Camera.item != NULL) {
-        if (!target_ok
-            || (target_ok == 2 && g_Camera.item->looked_at
-                && g_Camera.item != g_Camera.last_item)) {
-            g_Camera.item = NULL;
-        }
-    }
 }
