@@ -668,7 +668,8 @@ bool Creature_IsTargetable(ITEM_INFO *item, AI_INFO *info)
 }
 
 bool Creature_ShootAtLara(
-    ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation)
+    ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation,
+    int32_t damage)
 {
     bool hit;
     if (distance > CREATURE_SHOOT_RANGE) {
@@ -689,6 +690,11 @@ bool Creature_ShootAtLara(
 
     if (fx_num != NO_ITEM) {
         g_Effects[fx_num].pos.y_rot += extra_rotation;
+    }
+
+    if (hit) {
+        g_LaraItem->hit_points -= damage;
+        g_LaraItem->hit_status = 1;
     }
 
     return hit;

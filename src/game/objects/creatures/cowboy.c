@@ -139,18 +139,14 @@ void Cowboy_Control(int16_t item_num)
 
         case COWBOY_SHOOT:
             if (!cowboy->flags) {
-                if (Creature_ShootAtLara(
-                        item, info.distance, &m_CowboyGun1, head)) {
-                    g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
-                    g_LaraItem->hit_status = 1;
-                }
+                Creature_ShootAtLara(
+                    item, info.distance, &m_CowboyGun1, head,
+                    COWBOY_SHOT_DAMAGE);
             } else if (cowboy->flags == 6) {
                 if (Creature_IsTargetable(item, &info)) {
-                    if (Creature_ShootAtLara(
-                            item, info.distance, &m_CowboyGun2, head)) {
-                        g_LaraItem->hit_points -= COWBOY_SHOT_DAMAGE;
-                        g_LaraItem->hit_status = 1;
-                    }
+                    Creature_ShootAtLara(
+                        item, info.distance, &m_CowboyGun2, head,
+                        COWBOY_SHOT_DAMAGE);
                 } else {
                     int16_t fx_num =
                         Creature_Effect(item, &m_CowboyGun2, Effect_GunShot);
