@@ -191,7 +191,8 @@ void Shell_Main(void)
             break;
 
         case GF_START_DEMO:
-            gf_option = Game_Demo();
+            Game_Demo();
+            gf_option = GF_EXIT_TO_TITLE;
             break;
 
         case GF_LEVEL_COMPLETE:

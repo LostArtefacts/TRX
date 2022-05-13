@@ -74,7 +74,7 @@ bool Game_Demo_ProcessInput(void)
     return true;
 }
 
-int32_t Game_Demo(void)
+void Game_Demo(void)
 {
     TEXTSTRING *txt;
     RESUME_INFO start, *s;
@@ -87,7 +87,7 @@ int32_t Game_Demo(void)
         }
     }
     if (!any_demos) {
-        return GF_EXIT_TO_TITLE;
+        return;
     }
 
     int16_t level_num = m_DemoLevel;
@@ -139,6 +139,4 @@ int32_t Game_Demo(void)
     }
 
     g_Config.enable_enhanced_look = old_enhanced_look;
-
-    return GF_EXIT_TO_TITLE;
 }
