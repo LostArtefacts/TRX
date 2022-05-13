@@ -5,6 +5,5 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-int32_t ControlPhase(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
-
+void CheckCheatMode(void);
 bool Control_Pause(void);
