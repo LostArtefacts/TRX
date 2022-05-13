@@ -3,6 +3,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -23,7 +24,7 @@ void Pendulum_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == TRAP_SET) {
             item->goal_anim_state = TRAP_WORKING;
         }

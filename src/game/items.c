@@ -441,3 +441,28 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.y += y;
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
+
+bool Item_IsTriggerActive(ITEM_INFO *item)
+{
+    bool ok = item->flags & IF_REVERSE;
+
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return !ok;
+    }
+
+    if (!item->timer) {
+        return ok;
+    }
+
+    if (item->timer == -1) {
+        return !ok;
+    }
+
+    item->timer--;
+
+    if (!item->timer) {
+        item->timer = -1;
+    }
+
+    return ok;
+}

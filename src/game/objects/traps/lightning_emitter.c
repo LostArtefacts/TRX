@@ -64,7 +64,7 @@ void LightningEmitter_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     LIGHTNING *l = item->data;
 
-    if (!TriggerActive(item)) {
+    if (!Item_IsTriggerActive(item)) {
         l->count = 1;
         l->active = false;
         l->zapped = false;

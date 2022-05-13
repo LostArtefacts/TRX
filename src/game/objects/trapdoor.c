@@ -1,6 +1,7 @@
 #include "game/objects/trapdoor.h"
 
 #include "game/control.h"
+#include "game/items.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -41,7 +42,7 @@ void TrapDoor_Setup(OBJECT_INFO *obj)
 void TrapDoor_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;
         }

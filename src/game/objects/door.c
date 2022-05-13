@@ -208,7 +208,7 @@ void Door_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     DOOR_DATA *door = item->data;
 
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;
         } else {

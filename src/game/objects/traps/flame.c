@@ -1,8 +1,8 @@
 #include "game/objects/traps/flame.h"
 
-#include "game/control.h"
 #include "game/draw.h"
 #include "game/effects.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -98,7 +98,7 @@ void FlameEmitter_Setup(OBJECT_INFO *obj)
 void FlameEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (!item->data) {
             int16_t fx_num = Effect_Create(item->room_number);
             if (fx_num != NO_ITEM) {
