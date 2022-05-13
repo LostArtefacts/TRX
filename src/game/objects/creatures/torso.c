@@ -250,7 +250,7 @@ void Torso_Control(int16_t item_num)
         FLOOR_INFO *floor = Room_GetFloor(
             item->pos.x, item->pos.y, item->pos.z, &item->room_number);
         Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;

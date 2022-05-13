@@ -118,7 +118,7 @@ void ThorsHandle_Control(int16_t item_num)
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         Room_GetHeight(floor, x, item->pos.y, z);
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         switch (item->pos.y_rot) {
         case 0:
