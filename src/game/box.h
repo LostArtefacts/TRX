@@ -9,7 +9,7 @@ bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion);
 bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion);
 void Box_TargetBox(LOT_INFO *LOT, int16_t box_number);
 bool Box_StalkBox(ITEM_INFO *item, int16_t box_number);
-int32_t EscapeBox(ITEM_INFO *item, int16_t box_number);
+bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number);
 int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number);
 int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT);
 int32_t BadFloor(
