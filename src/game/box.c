@@ -205,7 +205,8 @@ bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
     return true;
 }
 
-int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
+TARGET_TYPE Box_CalculateTarget(
+    PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
 {
     int32_t left = 0;
     int32_t right = 0;
