@@ -16,7 +16,7 @@ static int32_t m_MaxY = 0;
 static int32_t m_Width = 0;
 static int32_t m_Height = 0;
 
-void ViewPort_Init(int32_t width, int32_t height)
+void Viewport_Init(int32_t width, int32_t height)
 {
     m_MinX = 0;
     m_MinY = 0;
@@ -27,53 +27,53 @@ void ViewPort_Init(int32_t width, int32_t height)
     m_Width = width;
     m_Height = height;
 
-    g_PhdLeft = ViewPort_GetMinX();
-    g_PhdTop = ViewPort_GetMinY();
-    g_PhdRight = ViewPort_GetMaxX();
-    g_PhdBottom = ViewPort_GetMaxY();
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdRight = Viewport_GetMaxX();
+    g_PhdBottom = Viewport_GetMaxY();
 }
 
-int32_t ViewPort_GetMinX(void)
+int32_t Viewport_GetMinX(void)
 {
     return m_MinX;
 }
 
-int32_t ViewPort_GetMinY(void)
+int32_t Viewport_GetMinY(void)
 {
     return m_MinY;
 }
 
-int32_t ViewPort_GetCenterX(void)
+int32_t Viewport_GetCenterX(void)
 {
     return m_CenterX;
 }
 
-int32_t ViewPort_GetCenterY(void)
+int32_t Viewport_GetCenterY(void)
 {
     return m_CenterY;
 }
 
-int32_t ViewPort_GetMaxX(void)
+int32_t Viewport_GetMaxX(void)
 {
     return m_MaxX;
 }
 
-int32_t ViewPort_GetMaxY(void)
+int32_t Viewport_GetMaxY(void)
 {
     return m_MaxY;
 }
 
-int32_t ViewPort_GetWidth(void)
+int32_t Viewport_GetWidth(void)
 {
     return m_Width;
 }
 
-int32_t ViewPort_GetHeight(void)
+int32_t Viewport_GetHeight(void)
 {
     return m_Height;
 }
 
-void ViewPort_AlterFOV(PHD_ANGLE fov)
+void Viewport_AlterFOV(PHD_ANGLE fov)
 {
     // In places that use GAME_FOV, it can be safely changed to user's choice.
     // But for cinematics, the FOV value chosen by devs needs to stay

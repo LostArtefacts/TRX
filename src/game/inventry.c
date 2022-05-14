@@ -58,7 +58,7 @@ static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 
         int32_t width = Screen_GetResWidth();
         int32_t height = Screen_GetResHeight();
-        ViewPort_Init(width, height);
+        Viewport_Init(width, height);
     }
 
     Output_SetupAboveWater(false);
@@ -775,10 +775,10 @@ int32_t Display_Inventory(int inv_mode)
 
 void Construct_Inventory(void)
 {
-    g_PhdLeft = ViewPort_GetMinX();
-    g_PhdTop = ViewPort_GetMinY();
-    g_PhdBottom = ViewPort_GetMaxY();
-    g_PhdRight = ViewPort_GetMaxX();
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdBottom = Viewport_GetMaxY();
+    g_PhdRight = Viewport_GetMaxX();
 
     g_InvChosen = 0;
     if (g_InvMode == INV_TITLE_MODE) {
@@ -881,8 +881,8 @@ void DrawInventoryItem(INVENTORY_ITEM *inv_item)
     if (inv_item->sprlist) {
         int32_t zv = g_MatrixPtr->_23;
         int32_t zp = zv / g_PhdPersp;
-        int32_t sx = ViewPort_GetCenterX() + g_MatrixPtr->_03 / zp;
-        int32_t sy = ViewPort_GetCenterY() + g_MatrixPtr->_13 / zp;
+        int32_t sx = Viewport_GetCenterX() + g_MatrixPtr->_03 / zp;
+        int32_t sy = Viewport_GetCenterY() + g_MatrixPtr->_13 / zp;
 
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;

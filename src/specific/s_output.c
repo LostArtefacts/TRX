@@ -408,9 +408,9 @@ static int32_t S_Output_ZedClipper(
 
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + ViewPort_GetCenterX();
+                + Viewport_GetCenterX();
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + ViewPort_GetCenterY();
+                + Viewport_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -427,9 +427,9 @@ static int32_t S_Output_ZedClipper(
         if (near_z > pts0->zv) {
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + ViewPort_GetCenterX();
+                + Viewport_GetCenterX();
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + ViewPort_GetCenterY();
+                + Viewport_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -732,8 +732,8 @@ void S_Output_DrawSprite(
     vertices[3].g = vshade;
     vertices[3].b = vshade;
 
-    if (x1 < 0 || y1 < 0 || x2 > ViewPort_GetWidth()
-        || y2 > ViewPort_GetHeight()) {
+    if (x1 < 0 || y1 < 0 || x2 > Viewport_GetWidth()
+        || y2 > Viewport_GetHeight()) {
         vertex_count = S_Output_ClipVertices(
             vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     }

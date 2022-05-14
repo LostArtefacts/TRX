@@ -226,10 +226,10 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         if (i > 0) {
             Output_DrawLightningSegment(
                 x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2,
-                ViewPort_GetWidth() / 6);
+                Viewport_GetWidth() / 6);
         } else {
             Output_DrawLightningSegment(
-                x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 6);
+                x1, y1, z1, x2, y2, z2, Viewport_GetWidth() / 6);
         }
 
         x1 = x2;
@@ -278,10 +278,10 @@ void LightningEmitter_Draw(ITEM_INFO *item)
             if (j > 0) {
                 Output_DrawLightningSegment(
                     x1, y1 + l->shoot[i][j - 1].y, z1, x2, y2, z2,
-                    ViewPort_GetWidth() / 16);
+                    Viewport_GetWidth() / 16);
             } else {
                 Output_DrawLightningSegment(
-                    x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 16);
+                    x1, y1, z1, x2, y2, z2, Viewport_GetWidth() / 16);
             }
 
             x1 = x2;

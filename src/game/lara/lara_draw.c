@@ -20,10 +20,10 @@ void Lara_Draw(ITEM_INFO *item)
     int32_t bottom = g_PhdBottom;
     int32_t right = g_PhdRight;
 
-    g_PhdLeft = ViewPort_GetMinX();
-    g_PhdTop = ViewPort_GetMinY();
-    g_PhdBottom = ViewPort_GetMaxY();
-    g_PhdRight = ViewPort_GetMaxX();
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdBottom = Viewport_GetMaxY();
+    g_PhdRight = Viewport_GetMaxX();
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;
