@@ -6,7 +6,7 @@
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/input.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
 #include "game/music.h"

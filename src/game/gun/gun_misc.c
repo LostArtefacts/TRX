@@ -2,7 +2,7 @@
 
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/objects/effects/ricochet.h"

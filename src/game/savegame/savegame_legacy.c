@@ -1,7 +1,7 @@
 #include "game/savegame/savegame_legacy.h"
 
 #include "game/gameflow.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"

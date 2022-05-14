@@ -1,7 +1,7 @@
 #include "game/inventory/inventory_ring.h"
 
 #include "game/gameflow.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/output.h"
 #include "game/overlay.h"

@@ -1,8 +1,7 @@
 #include "game/objects/traps/midas_touch.h"
 
 #include "game/input.h"
-#include "game/inventory/inventory_func.h"
-#include "game/inventory/inventory_main.h"
+#include "game/inventory.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "global/const.h"

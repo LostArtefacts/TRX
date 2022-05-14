@@ -3,7 +3,7 @@
 #include "game/gun/gun_pistols.h"
 #include "game/gun/gun_rifle.h"
 #include "game/input.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "global/const.h"

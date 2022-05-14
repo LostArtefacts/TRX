@@ -1,7 +1,7 @@
 #include "specific/s_input.h"
 
 #include "config.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/lara.h"
 #include "game/shell.h"
 #include "global/vars.h"
