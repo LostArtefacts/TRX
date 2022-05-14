@@ -5,7 +5,7 @@
 #include "game/gameflow.h"
 #include "game/inventory/inventory_main.h"
 #include "game/lara/lara_hair.h"
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 #include "game/level.h"
 #include "game/objects/common.h"
 #include "game/objects/creatures/ape.h"

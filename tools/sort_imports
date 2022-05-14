@@ -37,6 +37,7 @@ def sort_imports(path: Path) -> None:
         "game/inventry.c": "game/inv.h",
         "game/invfunc.c": "game/inv.h",
         "game/invvars.c": "game/inv.h",
+        "game/lara/lara.c": "game/lara.h",
         "game/option/option.c": "game/option.h",
         "game/savegame/savegame.c": "game/savegame.h",
         "specific/s_audio_sample.c": "specific/s_audio.h",

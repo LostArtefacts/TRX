@@ -4,7 +4,7 @@
 #include "game/input.h"
 #include "game/inventory/inventory_main.h"
 #include "game/items.h"
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 #include "game/objects/general/pickup.h"
 #include "game/savegame.h"
 #include "game/settings.h"

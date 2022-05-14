@@ -4,7 +4,7 @@
 #include "game/collide.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/random.h"

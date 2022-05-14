@@ -4,7 +4,7 @@
 #include "game/input.h"
 #include "game/inventory/inventory_func.h"
 #include "game/items.h"
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/overlay.h"
 #include "global/const.h"
