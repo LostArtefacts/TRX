@@ -149,7 +149,7 @@ void Setup_Traps(void)
     LavaWedge_Setup(&g_Objects[O_LAVA_WEDGE]);
 }
 
-void ObjectObjects(void)
+void Setup_MiscObjects(void)
 {
     CameraTarget_Setup(&g_Objects[O_CAMERA_TARGET]);
     Bridge_SetupFlat(&g_Objects[O_BRIDGE_FLAT]);
@@ -263,7 +263,7 @@ void InitialiseObjects(void)
 
     Setup_Creatures();
     Setup_Traps();
-    ObjectObjects();
+    Setup_MiscObjects();
 
     Lara_Hair_Initialise();
 
