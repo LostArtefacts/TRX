@@ -11,36 +11,7 @@
 #include "math/matrix.h"
 #include "util.h"
 
-void DrawEffect(int16_t fxnum)
-{
-    FX_INFO *fx = &g_Effects[fxnum];
-    OBJECT_INFO *object = &g_Objects[fx->object_number];
-    if (!object->loaded) {
-        return;
-    }
-
-    if (object->nmeshes < 0) {
-        Output_DrawSprite(
-            fx->pos.x, fx->pos.y, fx->pos.z,
-            object->mesh_index - fx->frame_number, 4096);
-    } else {
-        Matrix_Push();
-        Matrix_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
-        if (g_MatrixPtr->_23 > Output_GetNearZ()
-            && g_MatrixPtr->_23 < Output_GetFarZ()) {
-            Matrix_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
-            if (object->nmeshes) {
-                Output_CalculateStaticLight(fx->shade);
-                Output_DrawPolygons(g_Meshes[object->mesh_index], -1);
-            } else {
-                Output_CalculateLight(
-                    fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
-                Output_DrawPolygons(g_Meshes[fx->frame_number], -1);
-            }
-        }
-        Matrix_Pop();
-    }
-}
+#include <stdint.h>
 
 void DrawSpriteItem(ITEM_INFO *item)
 {
