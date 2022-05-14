@@ -250,7 +250,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
         Box_TargetBox(LOT, item->box_number);
     }
 
-    CalculateTarget(&creature->target, item, &creature->LOT);
+    Box_CalculateTarget(&creature->target, item, &creature->LOT);
 }
 
 int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
