@@ -52,7 +52,7 @@ extern INVENTORY_ITEM g_InvItemLarasHome;
 extern TEXTSTRING *g_InvItemText[];
 extern TEXTSTRING *g_InvRingText;
 
-int32_t Display_Inventory(int inv_mode);
+int32_t Inv_Display(int inv_mode);
 
 void RingIsOpen(RING_INFO *ring);
 void RingIsNotOpen(RING_INFO *ring);

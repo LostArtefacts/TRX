@@ -63,7 +63,7 @@ void SaveCrystal_Collision(
         return;
     }
 
-    int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
+    int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
     if (return_val != GF_NOP) {
         item->status = IS_INVISIBLE;
         Item_RemoveDrawn(item_num);

@@ -80,7 +80,7 @@ void MidasTouch_Collision(
     }
 
     if (g_InvChosen == -1) {
-        Display_Inventory(INV_KEYS_MODE);
+        Inv_Display(INV_KEYS_MODE);
     }
 
     if (g_InvChosen == O_LEADBAR_OPTION) {

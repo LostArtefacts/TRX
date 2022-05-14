@@ -336,7 +336,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
     Matrix_Pop();
 }
 
-int32_t Display_Inventory(int inv_mode)
+int32_t Inv_Display(int inv_mode)
 {
     RING_INFO ring;
     IMOTION_INFO imo;
