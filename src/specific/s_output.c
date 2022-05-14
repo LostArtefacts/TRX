@@ -1,6 +1,5 @@
 #include "specific/s_output.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/draw.h"
 #include "game/output.h"
