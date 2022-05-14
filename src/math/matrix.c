@@ -4,6 +4,7 @@
 #include "game/shell.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 
 #include <stddef.h>
 
@@ -488,4 +489,21 @@ void Matrix_RotYXZpack_I(int32_t r1, int32_t r2)
     g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotYXZpack(r2);
     g_MatrixPtr = old_matrix;
+}
+
+void Matrix_LookAt(
+    int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
+    int32_t ztar, int16_t roll)
+{
+    PHD_ANGLE angles[2];
+    Math_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
+
+    PHD_3DPOS viewer;
+    viewer.x = xsrc;
+    viewer.y = ysrc;
+    viewer.z = zsrc;
+    viewer.x_rot = angles[1];
+    viewer.y_rot = angles[0];
+    viewer.z_rot = roll;
+    Matrix_GenerateW2V(&viewer);
 }

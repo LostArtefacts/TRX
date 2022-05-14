@@ -6,27 +6,9 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "math/math_misc.h"
 #include "math/matrix.h"
 
 #include <math.h>
-
-void phd_LookAt(
-    int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
-    int32_t ztar, int16_t roll)
-{
-    PHD_ANGLE angles[2];
-    Math_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
-
-    PHD_3DPOS viewer;
-    viewer.x = xsrc;
-    viewer.y = ysrc;
-    viewer.z = zsrc;
-    viewer.x_rot = angles[1];
-    viewer.y_rot = angles[0];
-    viewer.z_rot = roll;
-    Matrix_GenerateW2V(&viewer);
-}
 
 int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
 {
