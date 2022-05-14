@@ -506,15 +506,3 @@ int16_t *GetBoundsAccurate(ITEM_INFO *item)
     }
     return m_InterpolatedBounds;
 }
-
-int16_t *GetBestFrame(ITEM_INFO *item)
-{
-    int16_t *frmptr[2];
-    int32_t rate;
-    int32_t frac = GetFrames(item, frmptr, &rate);
-    if (frac <= rate / 2) {
-        return frmptr[0];
-    } else {
-        return frmptr[1];
-    }
-}

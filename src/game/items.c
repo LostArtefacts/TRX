@@ -314,8 +314,8 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
 {
-    int16_t *src_bounds = GetBestFrame(src_item);
-    int16_t *dst_bounds = GetBestFrame(dst_item);
+    int16_t *src_bounds = Item_GetBestFrame(src_item);
+    int16_t *dst_bounds = Item_GetBestFrame(dst_item);
     if (dst_item->pos.y + dst_bounds[FRAME_BOUND_MAX_Y]
             <= src_item->pos.y + src_bounds[FRAME_BOUND_MIN_Y]
         || dst_item->pos.y + dst_bounds[FRAME_BOUND_MIN_Y]
@@ -597,4 +597,16 @@ bool Item_IsTriggerActive(ITEM_INFO *item)
     }
 
     return ok;
+}
+
+int16_t *Item_GetBestFrame(ITEM_INFO *item)
+{
+    int16_t *frmptr[2];
+    int32_t rate;
+    int32_t frac = GetFrames(item, frmptr, &rate);
+    if (frac <= rate / 2) {
+        return frmptr[0];
+    } else {
+        return frmptr[1];
+    }
 }

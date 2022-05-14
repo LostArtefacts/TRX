@@ -1,9 +1,9 @@
 #include "game/gun/gun_misc.h"
 
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/los.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
@@ -248,7 +248,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
 
 void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
 {
-    int16_t *bounds = GetBestFrame(item);
+    int16_t *bounds = Item_GetBestFrame(item);
     int32_t x = (bounds[0] + bounds[1]) / 2;
     int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
     int32_t z = (bounds[5] + bounds[4]) / 2;

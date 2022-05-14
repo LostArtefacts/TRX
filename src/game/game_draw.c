@@ -1,6 +1,5 @@
 #include "game/game.h"
 
-#include "game/draw.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room_draw.h"
