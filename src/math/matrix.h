@@ -3,6 +3,7 @@
 #include "global/const.h"
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
@@ -11,8 +12,8 @@
 void Matrix_ResetStack(void);
 void Matrix_GenerateW2V(PHD_3DPOS *viewpos);
 
-void Matrix_Push(void);
-void Matrix_PushUnit(void);
+bool Matrix_Push(void);
+bool Matrix_PushUnit(void);
 void Matrix_Pop(void);
 
 void Matrix_RotX(PHD_ANGLE rx);
