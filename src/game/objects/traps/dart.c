@@ -65,7 +65,7 @@ void Dart_Control(int16_t item_num)
 void DartEffect_Setup(OBJECT_INFO *obj)
 {
     obj->control = DartEffect_Control;
-    obj->draw_routine = DrawSpriteItem;
+    obj->draw_routine = Object_DrawSpriteItem;
 }
 
 void DartEffect_Control(int16_t fx_num)

@@ -2,6 +2,7 @@
 
 #include "game/collide.h"
 #include "game/lara/lara.h"
+#include "game/output.h"
 #include "global/vars.h"
 
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
@@ -32,4 +33,12 @@ void Object_CollisionTrap(
     } else if (item->status != IS_INVISIBLE) {
         Object_Collision(item_num, lara_item, coll);
     }
+}
+
+void Object_DrawSpriteItem(ITEM_INFO *item)
+{
+    Output_DrawSprite(
+        item->pos.x, item->pos.y, item->pos.z,
+        g_Objects[item->object_number].mesh_index - item->frame_number,
+        item->shade);
 }
