@@ -467,7 +467,7 @@ int32_t Inv_Display(int inv_mode)
             || imo.status == RNG_MAIN2OPTION || imo.status == RNG_OPTION2MAIN
             || imo.status == RNG_EXITING_INVENTORY || imo.status == RNG_DONE
             || ring.rotating) {
-            RingNotActive();
+            Inv_Ring_NotActive();
         }
 
         Sound_UpdateEffects();
