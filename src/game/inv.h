@@ -53,7 +53,6 @@ extern TEXTSTRING *g_InvItemText[];
 extern TEXTSTRING *g_InvRingText;
 
 int32_t Display_Inventory(int inv_mode);
-void DrawInventoryItem(INVENTORY_ITEM *inv_item);
 
 void RingIsOpen(RING_INFO *ring);
 void RingIsNotOpen(RING_INFO *ring);

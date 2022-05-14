@@ -44,6 +44,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo);
 static void Inv_Construct(void);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
+static void Inv_DrawItem(INVENTORY_ITEM *inv_item);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
@@ -129,7 +130,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
         Matrix_RotYXZ(angle, 0, 0);
         Matrix_TranslateRel(ring->radius, 0, 0);
         Matrix_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
-        DrawInventoryItem(inv_item);
+        Inv_DrawItem(inv_item);
         angle += ring->angle_adder;
         Matrix_Pop();
     }
@@ -229,6 +230,110 @@ static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item)
     }
     Inv_SelectMeshes(inv_item);
     return true;
+}
+
+static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
+{
+    Matrix_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
+    Matrix_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
+
+    OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
+    if (obj->nmeshes < 0) {
+        Output_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
+        return;
+    }
+
+    if (inv_item->sprlist) {
+        int32_t zv = g_MatrixPtr->_23;
+        int32_t zp = zv / g_PhdPersp;
+        int32_t sx = Viewport_GetCenterX() + g_MatrixPtr->_03 / zp;
+        int32_t sy = Viewport_GetCenterY() + g_MatrixPtr->_13 / zp;
+
+        INVENTORY_SPRITE **sprlist = inv_item->sprlist;
+        INVENTORY_SPRITE *spr;
+        while ((spr = *sprlist++)) {
+            if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
+                break;
+            }
+
+            while (spr->shape) {
+                switch (spr->shape) {
+                case SHAPE_SPRITE:
+                    Output_DrawScreenSprite(
+                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
+                        spr->param2,
+                        g_Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096,
+                        0);
+                    break;
+                case SHAPE_LINE:
+                    Output_DrawScreenLine(
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2,
+                        Output_RGB2RGBA(
+                            Output_GetPaletteColor((uint8_t)spr->sprnum)));
+                    break;
+                case SHAPE_BOX:
+                    Output_DrawScreenBox(
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
+                    break;
+                case SHAPE_FBOX:
+                    Output_DrawScreenFBox(
+                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
+                    break;
+                }
+                spr++;
+            }
+        }
+    }
+
+    int16_t *frame =
+        &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
+
+    Matrix_Push();
+
+    int32_t clip = Output_GetObjectBounds(frame);
+    if (clip) {
+        Matrix_TranslateRel(
+            frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+        Matrix_RotYXZpack(*packed_rotation++);
+
+        int32_t mesh_num = 1;
+
+        int32_t *bone = &g_AnimBones[obj->bone_index];
+        if (inv_item->drawn_meshes & mesh_num) {
+            Output_DrawPolygons(g_Meshes[obj->mesh_index], clip);
+        }
+
+        for (int i = 1; i < obj->nmeshes; i++) {
+            mesh_num *= 2;
+
+            int32_t bone_extra_flags = bone[0];
+            if (bone_extra_flags & BEB_POP) {
+                Matrix_Pop();
+            }
+            if (bone_extra_flags & BEB_PUSH) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZpack(*packed_rotation++);
+
+            if (inv_item->object_number == O_MAP_OPTION && i == 1) {
+                m_CompassSpeed = m_CompassSpeed * 19 / 20
+                    + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle)
+                        / 50;
+                m_CompassNeedle += m_CompassSpeed;
+                Matrix_RotY(m_CompassNeedle);
+            }
+
+            if (inv_item->drawn_meshes & mesh_num) {
+                Output_DrawPolygons(g_Meshes[obj->mesh_index + i], clip);
+            }
+
+            bone += 4;
+        }
+    }
+    Matrix_Pop();
 }
 
 int32_t Display_Inventory(int inv_mode)
@@ -868,108 +973,4 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     return GF_NOP;
-}
-
-void DrawInventoryItem(INVENTORY_ITEM *inv_item)
-{
-    Matrix_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
-    Matrix_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
-
-    OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
-    if (obj->nmeshes < 0) {
-        Output_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
-        return;
-    }
-
-    if (inv_item->sprlist) {
-        int32_t zv = g_MatrixPtr->_23;
-        int32_t zp = zv / g_PhdPersp;
-        int32_t sx = Viewport_GetCenterX() + g_MatrixPtr->_03 / zp;
-        int32_t sy = Viewport_GetCenterY() + g_MatrixPtr->_13 / zp;
-
-        INVENTORY_SPRITE **sprlist = inv_item->sprlist;
-        INVENTORY_SPRITE *spr;
-        while ((spr = *sprlist++)) {
-            if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
-                break;
-            }
-
-            while (spr->shape) {
-                switch (spr->shape) {
-                case SHAPE_SPRITE:
-                    Output_DrawScreenSprite(
-                        sx + spr->x, sy + spr->y, spr->z, spr->param1,
-                        spr->param2,
-                        g_Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096,
-                        0);
-                    break;
-                case SHAPE_LINE:
-                    Output_DrawScreenLine(
-                        sx + spr->x, sy + spr->y, spr->param1, spr->param2,
-                        Output_RGB2RGBA(
-                            Output_GetPaletteColor((uint8_t)spr->sprnum)));
-                    break;
-                case SHAPE_BOX:
-                    Output_DrawScreenBox(
-                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
-                    break;
-                case SHAPE_FBOX:
-                    Output_DrawScreenFBox(
-                        sx + spr->x, sy + spr->y, spr->param1, spr->param2);
-                    break;
-                }
-                spr++;
-            }
-        }
-    }
-
-    int16_t *frame =
-        &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
-
-    Matrix_Push();
-
-    int32_t clip = Output_GetObjectBounds(frame);
-    if (clip) {
-        Matrix_TranslateRel(
-            frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
-        Matrix_RotYXZpack(*packed_rotation++);
-
-        int32_t mesh_num = 1;
-
-        int32_t *bone = &g_AnimBones[obj->bone_index];
-        if (inv_item->drawn_meshes & mesh_num) {
-            Output_DrawPolygons(g_Meshes[obj->mesh_index], clip);
-        }
-
-        for (int i = 1; i < obj->nmeshes; i++) {
-            mesh_num *= 2;
-
-            int32_t bone_extra_flags = bone[0];
-            if (bone_extra_flags & BEB_POP) {
-                Matrix_Pop();
-            }
-            if (bone_extra_flags & BEB_PUSH) {
-                Matrix_Push();
-            }
-
-            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
-            Matrix_RotYXZpack(*packed_rotation++);
-
-            if (inv_item->object_number == O_MAP_OPTION && i == 1) {
-                m_CompassSpeed = m_CompassSpeed * 19 / 20
-                    + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle)
-                        / 50;
-                m_CompassNeedle += m_CompassSpeed;
-                Matrix_RotY(m_CompassNeedle);
-            }
-
-            if (inv_item->drawn_meshes & mesh_num) {
-                Output_DrawPolygons(g_Meshes[obj->mesh_index + i], clip);
-            }
-
-            bone += 4;
-        }
-    }
-    Matrix_Pop();
 }
