@@ -1,6 +1,5 @@
 #include "game/objects/cabin.h"
 
-#include "game/draw.h"
 #include "game/items.h"
 #include "game/objects.h"
 #include "game/room.h"
@@ -9,7 +8,7 @@
 void Cabin_Setup(OBJECT_INFO *obj)
 {
     obj->control = Cabin_Control;
-    obj->draw_routine = DrawUnclippedItem;
+    obj->draw_routine = Object_DrawUnclippedItem;
     obj->collision = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;

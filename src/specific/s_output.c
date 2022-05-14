@@ -1,7 +1,6 @@
 #include "specific/s_output.h"
 
 #include "config.h"
-#include "game/draw.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"

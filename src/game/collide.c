@@ -1,7 +1,6 @@
 #include "game/collide.h"
 
 #include "config.h"
-#include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/objects.h"

@@ -1,6 +1,5 @@
 #include "game/objects/effects/missile.h"
 
-#include "game/draw.h"
 #include "game/effects.h"
 #include "game/lara.h"
 #include "game/random.h"

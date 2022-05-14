@@ -1,7 +1,7 @@
 #include "game/objects/door.h"
 
 #include "game/collide.h"
-#include "game/draw.h"
+#include "game/objects.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
@@ -73,7 +73,7 @@ void Door_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = Door_Initialise;
     obj->control = Door_Control;
-    obj->draw_routine = DrawUnclippedItem;
+    obj->draw_routine = Object_DrawUnclippedItem;
     obj->collision = Door_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
