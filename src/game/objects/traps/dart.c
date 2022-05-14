@@ -1,10 +1,10 @@
 #include "game/objects/traps/dart.h"
 
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -17,7 +17,7 @@ typedef enum {
 
 void Dart_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = ObjectCollision;
+    obj->collision = Object_Collision;
     obj->control = Dart_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;

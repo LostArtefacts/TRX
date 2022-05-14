@@ -4,6 +4,7 @@
 #include "game/draw.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects.h"
 #include "game/objects/door.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -450,22 +451,6 @@ int32_t CollideStaticObjects(
     return 0;
 }
 
-void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-
-    if (!Lara_TestBoundsCollide(item, coll->radius)) {
-        return;
-    }
-    if (!TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, 0, 1);
-    }
-}
-
 void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -475,6 +460,6 @@ void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             TestCollision(item, lara_item);
         }
     } else if (item->status != IS_INVISIBLE) {
-        ObjectCollision(item_num, lara_item, coll);
+        Object_Collision(item_num, lara_item, coll);
     }
 }

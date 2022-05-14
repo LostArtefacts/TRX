@@ -1,9 +1,9 @@
 #include "game/objects/creatures/mummy.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
@@ -24,7 +24,7 @@ void Mummy_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Mummy_Initialise;
     obj->control = Mummy_Control;
-    obj->collision = ObjectCollision;
+    obj->collision = Object_Collision;
     obj->hit_points = MUMMY_HITPOINTS;
     obj->save_flags = 1;
     obj->save_hitpoints = 1;

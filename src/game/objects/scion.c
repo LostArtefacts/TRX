@@ -1,12 +1,12 @@
 #include "game/objects/scion.h"
 
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects.h"
 #include "game/objects/pickup.h"
 #include "game/overlay.h"
 #include "game/random.h"
@@ -77,7 +77,7 @@ void Scion_Setup4(OBJECT_INFO *obj)
 void Scion_SetupHolder(OBJECT_INFO *obj)
 {
     g_Objects[O_SCION_HOLDER].control = Scion_Control;
-    g_Objects[O_SCION_HOLDER].collision = ObjectCollision;
+    g_Objects[O_SCION_HOLDER].collision = Object_Collision;
     g_Objects[O_SCION_HOLDER].save_anim = 1;
     g_Objects[O_SCION_HOLDER].save_flags = 1;
 }
