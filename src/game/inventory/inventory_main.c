@@ -456,7 +456,7 @@ int32_t Inv_Display(int inv_mode)
             || imo.status == RNG_DESELECT || imo.status == RNG_CLOSING_ITEM) {
             if (!ring.rotating && !g_Input.left && !g_Input.right) {
                 INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
-                RingActive(inv_item);
+                Inv_Ring_Active(inv_item);
             }
             Inv_Ring_IsOpen(&ring);
         } else {
