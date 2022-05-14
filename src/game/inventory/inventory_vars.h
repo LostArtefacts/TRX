@@ -51,38 +51,3 @@ extern INVENTORY_ITEM g_InvItemLarasHome;
 
 extern TEXTSTRING *g_InvItemText[];
 extern TEXTSTRING *g_InvRingText;
-
-int32_t Inv_Display(int inv_mode);
-
-void RingIsOpen(RING_INFO *ring);
-void RingIsNotOpen(RING_INFO *ring);
-void RingActive(INVENTORY_ITEM *inv_item);
-void RingNotActive(void);
-
-bool Inv_AddItem(int32_t item_num);
-void Inv_AddItemNTimes(int32_t item_num, int32_t qty);
-void Inv_InsertItem(INVENTORY_ITEM *inv_item);
-int32_t Inv_RequestItem(int item_num);
-void Inv_RemoveAllItems(void);
-bool Inv_RemoveItem(int32_t item_num);
-int32_t Inv_GetItemOption(int32_t item_num);
-void RemoveInventoryText(void);
-void Inv_RingInit(
-    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
-    int16_t current, IMOTION_INFO *imo);
-void Inv_RingGetView(RING_INFO *a1, PHD_3DPOS *viewer);
-void Inv_RingLight(RING_INFO *ring);
-void Inv_RingCalcAdders(RING_INFO *ring, int16_t rotation_duration);
-void Inv_RingDoMotions(RING_INFO *ring);
-void Inv_RingRotateLeft(RING_INFO *ring);
-void Inv_RingRotateRight(RING_INFO *ring);
-void Inv_RingMotionInit(
-    RING_INFO *ring, int16_t frames, int16_t status, int16_t status_target);
-void Inv_RingMotionSetup(
-    RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames);
-void Inv_RingMotionRadius(RING_INFO *ring, int16_t target);
-void Inv_RingMotionRotation(RING_INFO *ring, int16_t rotation, int16_t target);
-void Inv_RingMotionCameraPos(RING_INFO *ring, int16_t target);
-void Inv_RingMotionCameraPitch(RING_INFO *ring, int16_t target);
-void Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item);
-void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item);

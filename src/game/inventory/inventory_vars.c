@@ -1,4 +1,4 @@
-#include "game/inv.h"
+#include "game/inventory/inventory_vars.h"
 
 #include "global/types.h"
 

@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "game/gameflow.h"
+#include "game/inventory/inventory_func.h"
 #include "game/items.h"
 #include "game/lara/lara_main.h"
 #include "game/lot.h"
@@ -10,7 +11,6 @@
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "inv.h"
 #include "json/bson_parse.h"
 #include "json/bson_write.h"
 #include "json/json_base.h"

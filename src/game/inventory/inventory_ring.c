@@ -1,7 +1,8 @@
-#include "game/inv.h"
+#include "game/inventory/inventory_ring.h"
 
 #include "game/gameflow.h"
-#include "game/items.h"
+#include "game/inventory/inventory_func.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/text.h"
@@ -10,7 +11,6 @@
 #include "global/vars.h"
 #include "math/math_misc.h"
 
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -289,400 +289,6 @@ void RingNotActive(void)
     RemoveInventoryText();
 }
 
-bool Inv_AddItem(int32_t item_num)
-{
-    int32_t item_num_option = Inv_GetItemOption(item_num);
-
-    for (int i = 0; i < g_InvMainObjects; i++) {
-        INVENTORY_ITEM *inv_item = g_InvMainList[i];
-        if (inv_item->object_number == item_num_option) {
-            g_InvMainQtys[i]++;
-            return true;
-        }
-    }
-
-    for (int i = 0; i < g_InvKeysObjects; i++) {
-        INVENTORY_ITEM *inv_item = g_InvKeysList[i];
-        if (inv_item->object_number == item_num_option) {
-            g_InvKeysQtys[i]++;
-            return true;
-        }
-    }
-
-    switch (item_num) {
-    case O_GUN_ITEM:
-    case O_GUN_OPTION:
-        Inv_InsertItem(&g_InvItemPistols);
-        return true;
-
-    case O_SHOTGUN_ITEM:
-    case O_SHOTGUN_OPTION:
-        for (int i = Inv_RequestItem(O_SG_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_SG_AMMO_ITEM);
-            g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
-        }
-        g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
-        Inv_InsertItem(&g_InvItemShotgun);
-        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
-        return false;
-
-    case O_MAGNUM_ITEM:
-    case O_MAGNUM_OPTION:
-        for (int i = Inv_RequestItem(O_MAG_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_MAG_AMMO_ITEM);
-            g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
-        }
-        g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
-        Inv_InsertItem(&g_InvItemMagnum);
-        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
-        return false;
-
-    case O_UZI_ITEM:
-    case O_UZI_OPTION:
-        for (int i = Inv_RequestItem(O_UZI_AMMO_ITEM); i > 0; i--) {
-            Inv_RemoveItem(O_UZI_AMMO_ITEM);
-            g_Lara.uzis.ammo += UZI_AMMO_QTY;
-        }
-        g_Lara.uzis.ammo += UZI_AMMO_QTY;
-        Inv_InsertItem(&g_InvItemUzi);
-        Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
-        return false;
-
-    case O_SG_AMMO_ITEM:
-    case O_SG_AMMO_OPTION:
-        if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            g_Lara.shotgun.ammo += SHOTGUN_AMMO_QTY;
-        } else {
-            Inv_InsertItem(&g_InvItemShotgunAmmo);
-        }
-        return false;
-
-    case O_MAG_AMMO_ITEM:
-    case O_MAG_AMMO_OPTION:
-        if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-            g_Lara.magnums.ammo += MAGNUM_AMMO_QTY;
-        } else {
-            Inv_InsertItem(&g_InvItemMagnumAmmo);
-        }
-        return false;
-
-    case O_UZI_AMMO_ITEM:
-    case O_UZI_AMMO_OPTION:
-        if (Inv_RequestItem(O_UZI_ITEM)) {
-            g_Lara.uzis.ammo += UZI_AMMO_QTY;
-        } else {
-            Inv_InsertItem(&g_InvItemUziAmmo);
-        }
-        return false;
-
-    case O_MEDI_ITEM:
-    case O_MEDI_OPTION:
-        Inv_InsertItem(&g_InvItemMedi);
-        return true;
-
-    case O_BIGMEDI_ITEM:
-    case O_BIGMEDI_OPTION:
-        Inv_InsertItem(&g_InvItemBigMedi);
-        return true;
-
-    case O_PUZZLE_ITEM1:
-    case O_PUZZLE_OPTION1:
-        Inv_InsertItem(&g_InvItemPuzzle1);
-        return true;
-
-    case O_PUZZLE_ITEM2:
-    case O_PUZZLE_OPTION2:
-        Inv_InsertItem(&g_InvItemPuzzle2);
-        return true;
-
-    case O_PUZZLE_ITEM3:
-    case O_PUZZLE_OPTION3:
-        Inv_InsertItem(&g_InvItemPuzzle3);
-        return true;
-
-    case O_PUZZLE_ITEM4:
-    case O_PUZZLE_OPTION4:
-        Inv_InsertItem(&g_InvItemPuzzle4);
-        return true;
-
-    case O_LEADBAR_ITEM:
-    case O_LEADBAR_OPTION:
-        Inv_InsertItem(&g_InvItemLeadBar);
-        return true;
-
-    case O_KEY_ITEM1:
-    case O_KEY_OPTION1:
-        Inv_InsertItem(&g_InvItemKey1);
-        return true;
-
-    case O_KEY_ITEM2:
-    case O_KEY_OPTION2:
-        Inv_InsertItem(&g_InvItemKey2);
-        return true;
-
-    case O_KEY_ITEM3:
-    case O_KEY_OPTION3:
-        Inv_InsertItem(&g_InvItemKey3);
-        return true;
-
-    case O_KEY_ITEM4:
-    case O_KEY_OPTION4:
-        Inv_InsertItem(&g_InvItemKey4);
-        return true;
-
-    case O_PICKUP_ITEM1:
-    case O_PICKUP_OPTION1:
-        Inv_InsertItem(&g_InvItemPickup1);
-        return true;
-
-    case O_PICKUP_ITEM2:
-    case O_PICKUP_OPTION2:
-        Inv_InsertItem(&g_InvItemPickup2);
-        return true;
-
-    case O_SCION_ITEM:
-    case O_SCION_ITEM2:
-    case O_SCION_OPTION:
-        Inv_InsertItem(&g_InvItemScion);
-        return true;
-    }
-
-    return false;
-}
-
-void Inv_AddItemNTimes(int32_t item_num, int32_t qty)
-{
-    for (int i = 0; i < qty; i++) {
-        Inv_AddItem(item_num);
-    }
-}
-
-void Inv_InsertItem(INVENTORY_ITEM *inv_item)
-{
-    int n;
-
-    if (inv_item->inv_pos < 100) {
-        for (n = 0; n < g_InvMainObjects; n++) {
-            if (g_InvMainList[n]->inv_pos > inv_item->inv_pos) {
-                break;
-            }
-        }
-
-        if (n == g_InvMainObjects) {
-            g_InvMainList[g_InvMainObjects] = inv_item;
-            g_InvMainQtys[g_InvMainObjects] = 1;
-            g_InvMainObjects++;
-        } else {
-            for (int i = g_InvMainObjects; i > n - 1; i--) {
-                g_InvMainList[i + 1] = g_InvMainList[i];
-                g_InvMainQtys[i + 1] = g_InvMainQtys[i];
-            }
-            g_InvMainList[n] = inv_item;
-            g_InvMainQtys[n] = 1;
-            g_InvMainObjects++;
-        }
-    } else {
-        for (n = 0; n < g_InvKeysObjects; n++) {
-            if (g_InvKeysList[n]->inv_pos > inv_item->inv_pos) {
-                break;
-            }
-        }
-
-        if (n == g_InvKeysObjects) {
-            g_InvKeysList[g_InvKeysObjects] = inv_item;
-            g_InvKeysQtys[g_InvKeysObjects] = 1;
-            g_InvKeysObjects++;
-        } else {
-            for (int i = g_InvKeysObjects; i > n - 1; i--) {
-                g_InvKeysList[i + 1] = g_InvKeysList[i];
-                g_InvKeysQtys[i + 1] = g_InvKeysQtys[i];
-            }
-            g_InvKeysList[n] = inv_item;
-            g_InvKeysQtys[n] = 1;
-            g_InvKeysObjects++;
-        }
-    }
-}
-
-int32_t Inv_RequestItem(int item_num)
-{
-    int32_t item_num_option = Inv_GetItemOption(item_num);
-
-    for (int i = 0; i < g_InvMainObjects; i++) {
-        if (g_InvMainList[i]->object_number == item_num_option) {
-            return g_InvMainQtys[i];
-        }
-    }
-
-    for (int i = 0; i < g_InvKeysObjects; i++) {
-        if (g_InvKeysList[i]->object_number == item_num_option) {
-            return g_InvKeysQtys[i];
-        }
-    }
-
-    return 0;
-}
-
-void Inv_RemoveAllItems(void)
-{
-    g_InvMainObjects = 1;
-    g_InvMainCurrent = 0;
-
-    g_InvKeysObjects = 0;
-    g_InvKeysCurrent = 0;
-}
-
-bool Inv_RemoveItem(int32_t item_num)
-{
-    int32_t item_num_option = Inv_GetItemOption(item_num);
-
-    for (int i = 0; i < g_InvMainObjects; i++) {
-        if (g_InvMainList[i]->object_number == item_num_option) {
-            g_InvMainQtys[i]--;
-            if (g_InvMainQtys[i] > 0) {
-                return true;
-            }
-            g_InvMainObjects--;
-            for (int j = i; j < g_InvMainObjects; j++) {
-                g_InvMainList[j] = g_InvMainList[j + 1];
-                g_InvMainQtys[j] = g_InvMainQtys[j + 1];
-            }
-        }
-    }
-
-    for (int i = 0; i < g_InvKeysObjects; i++) {
-        if (g_InvKeysList[i]->object_number == item_num_option) {
-            g_InvKeysQtys[i]--;
-            if (g_InvKeysQtys[i] > 0) {
-                return true;
-            }
-            g_InvKeysObjects--;
-            for (int j = i; j < g_InvKeysObjects; j++) {
-                g_InvKeysList[j] = g_InvKeysList[j + 1];
-                g_InvKeysQtys[j] = g_InvKeysQtys[j + 1];
-            }
-            return true;
-        }
-    }
-
-    for (int i = 0; i < g_InvOptionObjects; i++) {
-        if (g_InvOptionList[i]->object_number == item_num_option) {
-            g_InvOptionObjects--;
-            for (int j = i; j < g_InvOptionObjects; j++) {
-                g_InvOptionList[j] = g_InvOptionList[j + 1];
-            }
-            return true;
-        }
-    }
-
-    return false;
-}
-
-int32_t Inv_GetItemOption(int32_t item_num)
-{
-    switch (item_num) {
-    case O_GUN_ITEM:
-    case O_GUN_OPTION:
-        return O_GUN_OPTION;
-
-    case O_SHOTGUN_ITEM:
-    case O_SHOTGUN_OPTION:
-        return O_SHOTGUN_OPTION;
-
-    case O_MAGNUM_ITEM:
-    case O_MAGNUM_OPTION:
-        return O_MAGNUM_OPTION;
-
-    case O_UZI_ITEM:
-    case O_UZI_OPTION:
-        return O_UZI_OPTION;
-
-    case O_SG_AMMO_ITEM:
-    case O_SG_AMMO_OPTION:
-        return O_SG_AMMO_OPTION;
-
-    case O_MAG_AMMO_ITEM:
-    case O_MAG_AMMO_OPTION:
-        return O_MAG_AMMO_OPTION;
-
-    case O_UZI_AMMO_ITEM:
-    case O_UZI_AMMO_OPTION:
-        return O_UZI_AMMO_OPTION;
-
-    case O_EXPLOSIVE_ITEM:
-    case O_EXPLOSIVE_OPTION:
-        return O_EXPLOSIVE_OPTION;
-
-    case O_MEDI_ITEM:
-    case O_MEDI_OPTION:
-        return O_MEDI_OPTION;
-
-    case O_BIGMEDI_ITEM:
-    case O_BIGMEDI_OPTION:
-        return O_BIGMEDI_OPTION;
-
-    case O_PUZZLE_ITEM1:
-    case O_PUZZLE_OPTION1:
-        return O_PUZZLE_OPTION1;
-
-    case O_PUZZLE_ITEM2:
-    case O_PUZZLE_OPTION2:
-        return O_PUZZLE_OPTION2;
-
-    case O_PUZZLE_ITEM3:
-    case O_PUZZLE_OPTION3:
-        return O_PUZZLE_OPTION3;
-
-    case O_PUZZLE_ITEM4:
-    case O_PUZZLE_OPTION4:
-        return O_PUZZLE_OPTION4;
-
-    case O_LEADBAR_ITEM:
-    case O_LEADBAR_OPTION:
-        return O_LEADBAR_OPTION;
-
-    case O_KEY_ITEM1:
-    case O_KEY_OPTION1:
-        return O_KEY_OPTION1;
-
-    case O_KEY_ITEM2:
-    case O_KEY_OPTION2:
-        return O_KEY_OPTION2;
-
-    case O_KEY_ITEM3:
-    case O_KEY_OPTION3:
-        return O_KEY_OPTION3;
-
-    case O_KEY_ITEM4:
-    case O_KEY_OPTION4:
-        return O_KEY_OPTION4;
-
-    case O_PICKUP_ITEM1:
-    case O_PICKUP_OPTION1:
-        return O_PICKUP_OPTION1;
-
-    case O_PICKUP_ITEM2:
-    case O_PICKUP_OPTION2:
-        return O_PICKUP_OPTION2;
-
-    case O_SCION_ITEM:
-    case O_SCION_ITEM2:
-    case O_SCION_OPTION:
-        return O_SCION_OPTION;
-
-    case O_DETAIL_OPTION:
-    case O_SOUND_OPTION:
-    case O_CONTROL_OPTION:
-    case O_GAMMA_OPTION:
-    case O_PASSPORT_OPTION:
-    case O_MAP_OPTION:
-    case O_PHOTO_OPTION:
-        return item_num;
-    }
-
-    return -1;
-}
-
 void RemoveInventoryText(void)
 {
     for (int i = 0; i < IT_NUMBER_OF; i++) {
@@ -693,7 +299,7 @@ void RemoveInventoryText(void)
     }
 }
 
-void Inv_RingInit(
+void Inv_Ring_Init(
     RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
     int16_t current, IMOTION_INFO *imo)
 {
@@ -725,10 +331,10 @@ void Inv_RingInit(
     ring->camera.y_rot = 0;
     ring->camera.z_rot = 0;
 
-    Inv_RingMotionInit(ring, OPEN_FRAMES, RNG_OPENING, RNG_OPEN);
-    Inv_RingMotionRadius(ring, RING_RADIUS);
-    Inv_RingMotionCameraPos(ring, CAMERA_HEIGHT);
-    Inv_RingMotionRotation(
+    Inv_Ring_MotionInit(ring, OPEN_FRAMES, RNG_OPENING, RNG_OPEN);
+    Inv_Ring_MotionRadius(ring, RING_RADIUS);
+    Inv_Ring_MotionCameraPos(ring, CAMERA_HEIGHT);
+    Inv_Ring_MotionRotation(
         ring, OPEN_ROTATION,
         0xC000 - (ring->current_object * ring->angle_adder));
 
@@ -744,7 +350,7 @@ void Inv_RingInit(
     ring->light.z = 1024;
 }
 
-void Inv_RingGetView(RING_INFO *ring, PHD_3DPOS *viewer)
+void Inv_Ring_GetView(RING_INFO *ring, PHD_3DPOS *viewer)
 {
     PHD_ANGLE angles[2];
 
@@ -759,7 +365,7 @@ void Inv_RingGetView(RING_INFO *ring, PHD_3DPOS *viewer)
     viewer->z_rot = 0;
 }
 
-void Inv_RingLight(RING_INFO *ring)
+void Inv_Ring_Light(RING_INFO *ring)
 {
     PHD_ANGLE angles[2];
     g_LsDivider = 0x6000;
@@ -767,14 +373,14 @@ void Inv_RingLight(RING_INFO *ring)
     Output_RotateLight(angles[1], angles[0]);
 }
 
-void Inv_RingCalcAdders(RING_INFO *ring, int16_t rotation_duration)
+void Inv_Ring_CalcAdders(RING_INFO *ring, int16_t rotation_duration)
 {
     ring->angle_adder = 0x10000 / ring->number_of_objects;
     ring->rot_adder_l = ring->angle_adder / rotation_duration;
     ring->rot_adder_r = -ring->rot_adder_l;
 }
 
-void Inv_RingDoMotions(RING_INFO *ring)
+void Inv_Ring_DoMotions(RING_INFO *ring)
 {
     IMOTION_INFO *imo = ring->imo;
 
@@ -840,7 +446,7 @@ void Inv_RingDoMotions(RING_INFO *ring)
     }
 }
 
-void Inv_RingRotateLeft(RING_INFO *ring)
+void Inv_Ring_RotateLeft(RING_INFO *ring)
 {
     ring->rotating = 1;
     ring->target_object = ring->current_object - 1;
@@ -851,7 +457,7 @@ void Inv_RingRotateLeft(RING_INFO *ring)
     ring->rot_adder = ring->rot_adder_l;
 }
 
-void Inv_RingRotateRight(RING_INFO *ring)
+void Inv_Ring_RotateRight(RING_INFO *ring)
 {
     ring->rotating = 1;
     ring->target_object = ring->current_object + 1;
@@ -862,7 +468,7 @@ void Inv_RingRotateRight(RING_INFO *ring)
     ring->rot_adder = ring->rot_adder_r;
 }
 
-void Inv_RingMotionInit(
+void Inv_Ring_MotionInit(
     RING_INFO *ring, int16_t frames, int16_t status, int16_t status_target)
 {
     ring->imo->status_target = status_target;
@@ -887,7 +493,7 @@ void Inv_RingMotionInit(
     ring->imo->misc = 0;
 }
 
-void Inv_RingMotionSetup(
+void Inv_Ring_MotionSetup(
     RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames)
 {
     IMOTION_INFO *imo = ring->imo;
@@ -898,35 +504,35 @@ void Inv_RingMotionSetup(
     imo->camera_yrate = 0;
 }
 
-void Inv_RingMotionRadius(RING_INFO *ring, int16_t target)
+void Inv_Ring_MotionRadius(RING_INFO *ring, int16_t target)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->radius_target = target;
     imo->radius_rate = (target - ring->radius) / imo->count;
 }
 
-void Inv_RingMotionRotation(RING_INFO *ring, int16_t rotation, int16_t target)
+void Inv_Ring_MotionRotation(RING_INFO *ring, int16_t rotation, int16_t target)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->rotate_target = target;
     imo->rotate_rate = rotation / imo->count;
 }
 
-void Inv_RingMotionCameraPos(RING_INFO *ring, int16_t target)
+void Inv_Ring_MotionCameraPos(RING_INFO *ring, int16_t target)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->camera_ytarget = target;
     imo->camera_yrate = (target - ring->camera.y) / imo->count;
 }
 
-void Inv_RingMotionCameraPitch(RING_INFO *ring, int16_t target)
+void Inv_Ring_MotionCameraPitch(RING_INFO *ring, int16_t target)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->camera_pitch_target = target;
     imo->camera_pitch_rate = target / imo->count;
 }
 
-void Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
+void Inv_Ring_MotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->item_ptxrot_target = inv_item->pt_xrot_sel;
@@ -939,7 +545,7 @@ void Inv_RingMotionItemSelect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
     imo->item_ztrans_rate = inv_item->ztrans_sel / imo->count;
 }
 
-void Inv_RingMotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
+void Inv_Ring_MotionItemDeselect(RING_INFO *ring, INVENTORY_ITEM *inv_item)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->item_ptxrot_target = 0;
