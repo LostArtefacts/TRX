@@ -64,7 +64,7 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     }
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    GetBestFrame(item);
+    Item_GetBestFrame(item);
 
     int32_t z = g_LaraItem->pos.z
         - ((Math_Cos(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
@@ -186,7 +186,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
             LOT->target.z = g_LaraItem->pos.z;
             LOT->required_box = g_LaraItem->box_number;
             if (LOT->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
-                int16_t *bounds = GetBestFrame(g_LaraItem);
+                int16_t *bounds = Item_GetBestFrame(g_LaraItem);
                 LOT->target.y += bounds[FRAME_BOUND_MIN_Y];
             }
         }

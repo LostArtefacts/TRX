@@ -34,3 +34,5 @@ void Item_Animate(ITEM_INFO *item);
 bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim);
 
 bool Item_IsTriggerActive(ITEM_INFO *item);
+
+int16_t *Item_GetBestFrame(ITEM_INFO *item);

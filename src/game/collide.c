@@ -480,7 +480,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
 
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int16_t *frame = GetBestFrame(item);
+    int16_t *frame = Item_GetBestFrame(item);
     Matrix_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
@@ -589,7 +589,7 @@ void Collide_GetJointAbsPosition(
 
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
-    int16_t *frame = GetBestFrame(item);
+    int16_t *frame = Item_GetBestFrame(item);
     Matrix_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
