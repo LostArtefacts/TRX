@@ -55,7 +55,7 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (Lara_TestBoundsCollide(item, coll->radius)
-            && TestCollision(item, lara_item)) {
+            && Collide_TestCollision(item, lara_item)) {
             return true;
         }
     }

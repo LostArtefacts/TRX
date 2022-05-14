@@ -1,7 +1,7 @@
 #include "game/objects.h"
 
+#include "game/collide.h"
 #include "game/lara/lara.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
@@ -11,7 +11,7 @@ void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 
@@ -27,7 +27,7 @@ void Object_CollisionTrap(
 
     if (item->status == IS_ACTIVE) {
         if (Lara_TestBoundsCollide(item, coll->radius)) {
-            TestCollision(item, lara_item);
+            Collide_TestCollision(item, lara_item);
         }
     } else if (item->status != IS_INVISIBLE) {
         Object_Collision(item_num, lara_item, coll);

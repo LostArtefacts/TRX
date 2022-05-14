@@ -12,3 +12,5 @@ void Collide_GetCollisionInfo(
 bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t height);
+
+int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item);
