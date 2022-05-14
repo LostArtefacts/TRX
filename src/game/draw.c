@@ -12,7 +12,6 @@
 #include "util.h"
 
 static int16_t m_InterpolatedBounds[6] = { 0 };
-bool g_CameraUnderwater = false;
 
 void DrawEffect(int16_t fxnum)
 {

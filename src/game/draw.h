@@ -5,8 +5,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-extern bool g_CameraUnderwater;
-
 void DrawEffect(int16_t fxnum);
 void DrawSpriteItem(ITEM_INFO *item);
 void DrawDummyItem(ITEM_INFO *item);
