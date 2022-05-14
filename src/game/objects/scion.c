@@ -1,6 +1,5 @@
 #include "game/objects/scion.h"
 
-#include "game/draw.h"
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/inv.h"

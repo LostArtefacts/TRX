@@ -1,7 +1,6 @@
 #include "game/objects/traps/lightning_emitter.h"
 
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"

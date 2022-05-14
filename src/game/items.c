@@ -1,6 +1,5 @@
 #include "game/items.h"
 
-#include "game/draw.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "game/sound.h"

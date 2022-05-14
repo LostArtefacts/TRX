@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/creature.h"
-#include "game/draw.h"
+#include "game/objects.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/lot.h"
@@ -46,7 +46,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Creature_Initialise;
     obj->control = TRex_Control;
-    obj->draw_routine = DrawUnclippedItem;
+    obj->draw_routine = Object_DrawUnclippedItem;
     obj->collision = TRex_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = TREX_HITPOINTS;

@@ -82,7 +82,6 @@ sources = [
   'src/game/clock.c',
   'src/game/collide.c',
   'src/game/creature.c',
-  'src/game/draw.c',
   'src/game/effect_routines/bubbles.c',
   'src/game/effect_routines/chain_block.c',
   'src/game/effect_routines/dino_stomp.c',

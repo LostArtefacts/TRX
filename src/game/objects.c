@@ -2,15 +2,14 @@
 
 #include "config.h"
 #include "game/collide.h"
+#include "game/viewport.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/output.h"
 #include "game/room.h"
-#include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "util.h"
 
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
@@ -372,4 +371,24 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
     }
 
     Matrix_Pop();
+}
+
+void Object_DrawUnclippedItem(ITEM_INFO *item)
+{
+    int32_t left = g_PhdLeft;
+    int32_t top = g_PhdTop;
+    int32_t right = g_PhdRight;
+    int32_t bottom = g_PhdBottom;
+
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdRight = Viewport_GetMaxX();
+    g_PhdBottom = Viewport_GetMaxY();
+
+    Object_DrawAnimatingItem(item);
+
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
 }

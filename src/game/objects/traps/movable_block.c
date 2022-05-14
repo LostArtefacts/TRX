@@ -1,7 +1,6 @@
 #include "game/objects/traps/movable_block.h"
 
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/effect_routines/dino_stomp.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -229,7 +228,7 @@ void MovableBlock_Collision(
 void MovableBlock_Draw(ITEM_INFO *item)
 {
     if (item->status == IS_ACTIVE) {
-        DrawUnclippedItem(item);
+        Object_DrawUnclippedItem(item);
     } else {
         Object_DrawAnimatingItem(item);
     }
