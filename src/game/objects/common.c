@@ -4,7 +4,7 @@
 #include "game/collide.h"
 #include "game/inv.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara/lara_main.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "game/viewport.h"

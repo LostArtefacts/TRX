@@ -2,7 +2,7 @@
 
 #include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/lara/lara.h"
+#include "game/lara/lara_main.h"
 #include "game/random.h"
 #include "global/vars.h"
 
