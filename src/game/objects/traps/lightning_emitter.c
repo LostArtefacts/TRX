@@ -166,7 +166,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 {
     int16_t *frmptr[2];
     int32_t rate;
-    GetFrames(item, frmptr, &rate);
+    Item_GetFrames(item, frmptr, &rate);
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);

@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/inv.h"
+#include "game/items.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -73,7 +74,7 @@ void DrawPickupItem(ITEM_INFO *item)
 
     int16_t *frmptr[2];
     int32_t rate;
-    int32_t frac = GetFrames(item, frmptr, &rate);
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
 
     // Restore the old frame number in case we need to get the sprite again.
     item->frame_number = old_frame_number;
@@ -258,7 +259,7 @@ void DrawAnimatingItem(ITEM_INFO *item)
 
     int16_t *frmptr[2];
     int32_t rate;
-    int32_t frac = GetFrames(item, frmptr, &rate);
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     if (object->shadow_size) {
@@ -457,32 +458,4 @@ void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
     Matrix_Pop();
 
     Output_CalculateLight(x, y, z, item->room_number);
-}
-
-int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
-{
-    ANIM_STRUCT *anim = &g_Anims[item->anim_number];
-    frmptr[0] = anim->frame_ptr;
-    frmptr[1] = anim->frame_ptr;
-
-    *rate = anim->interpolation;
-
-    int32_t frm = item->frame_number - anim->frame_base;
-    int32_t first = frm / anim->interpolation;
-    int32_t frame_size = g_Objects[item->object_number].nmeshes * 2 + 10;
-
-    frmptr[0] += first * frame_size;
-    frmptr[1] = frmptr[0] + frame_size;
-
-    int32_t interp = frm % anim->interpolation;
-    if (!interp) {
-        return 0;
-    }
-
-    int32_t second = anim->interpolation * (first + 1);
-    if (second > anim->frame_end) {
-        *rate = anim->frame_end + anim->interpolation - second;
-    }
-
-    return interp;
 }

@@ -1,6 +1,6 @@
 #include "game/camera.h"
 
-#include "game/draw.h"
+#include "game/items.h"
 #include "game/los.h"
 #include "game/random.h"
 #include "game/room.h"
