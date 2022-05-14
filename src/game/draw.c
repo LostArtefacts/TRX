@@ -14,10 +14,6 @@
 
 #include <stdint.h>
 
-void DrawDummyItem(ITEM_INFO *item)
-{
-}
-
 void DrawPickupItem(ITEM_INFO *item)
 {
     if (!g_Config.enable_3d_pickups) {
