@@ -1,8 +1,8 @@
 #include "game/objects/traps/teeth_trap.h"
 
-#include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "game/sphere.h"
 #include "global/vars.h"
 
@@ -36,7 +36,7 @@ static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
 void TeethTrap_Setup(OBJECT_INFO *obj)
 {
     obj->control = TeethTrap_Control;
-    obj->collision = TrapCollision;
+    obj->collision = Object_CollisionTrap;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

@@ -10,5 +10,3 @@ void GetCollisionInfo(
 int32_t CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t hite);
-
-void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
