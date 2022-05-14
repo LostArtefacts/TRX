@@ -156,7 +156,7 @@ bool Box_StalkBox(ITEM_INFO *item, int16_t box_number)
     return true;
 }
 
-int32_t EscapeBox(ITEM_INFO *item, int16_t box_number)
+bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number)
 {
     BOX_INFO *box = &g_Boxes[box_number];
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
@@ -164,15 +164,15 @@ int32_t EscapeBox(ITEM_INFO *item, int16_t box_number)
 
     if (x > -ESCAPE_DIST && x < ESCAPE_DIST && z > -ESCAPE_DIST
         && z < ESCAPE_DIST) {
-        return 0;
+        return false;
     }
 
     if (((z > 0) ^ (item->pos.z > g_LaraItem->pos.z))
         && ((x > 0) ^ (item->pos.x > g_LaraItem->pos.x))) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
