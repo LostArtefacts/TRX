@@ -244,6 +244,7 @@ sources = [
   'src/json/json_write.c',
   'src/log.c',
   'src/math/math.c',
+  'src/math/math_misc.c',
   'src/math/matrix.c',
   'src/memory.c',
   'src/specific/s_audio.c',

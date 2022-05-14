@@ -6,8 +6,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 #include "math/matrix.h"
-#include "util.h"
 
 #include <math.h>
 
@@ -16,7 +16,7 @@ void phd_LookAt(
     int32_t ztar, int16_t roll)
 {
     PHD_ANGLE angles[2];
-    phd_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
+    Math_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
 
     PHD_3DPOS viewer;
     viewer.x = xsrc;
@@ -26,24 +26,6 @@ void phd_LookAt(
     viewer.y_rot = angles[0];
     viewer.z_rot = roll;
     Matrix_GenerateW2V(&viewer);
-}
-
-void phd_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
-{
-    dest[0] = Math_Atan(z, x);
-
-    while ((int16_t)x != x || (int16_t)y != y || (int16_t)z != z) {
-        x >>= 2;
-        y >>= 2;
-        z >>= 2;
-    }
-
-    PHD_ANGLE pitch = Math_Atan(Math_Sqrt(SQUARE(x) + SQUARE(z)), y);
-    if ((y > 0 && pitch > 0) || (y < 0 && pitch < 0)) {
-        pitch = -pitch;
-    }
-
-    dest[1] = pitch;
 }
 
 int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
