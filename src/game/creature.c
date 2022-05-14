@@ -2,7 +2,6 @@
 
 #include "game/box.h"
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
@@ -421,7 +420,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         return false;
     }
 
-    int16_t *bounds = GetBoundsAccurate(item);
+    int16_t *bounds = Item_GetBoundsAccurate(item);
     int32_t y = item->pos.y + bounds[FRAME_BOUND_MIN_Y];
 
     int16_t room_num = item->room_number;

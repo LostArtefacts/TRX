@@ -23,6 +23,8 @@
         }                                                                      \
     } while (0)
 
+static int16_t m_InterpolatedBounds[6] = { 0 };
+
 static bool Item_Move3DPosTo3DPos(
     PHD_3DPOS *src_pos, PHD_3DPOS *dst_pos, int32_t velocity, int16_t rotation);
 
@@ -301,7 +303,7 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     if (x >= -distance && x <= distance && z >= -distance && z <= distance
         && y >= -WALL_L * 3 && y <= WALL_L * 3
         && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        int16_t *bounds = GetBoundsAccurate(item);
+        int16_t *bounds = Item_GetBoundsAccurate(item);
         if (y >= bounds[FRAME_BOUND_MIN_Y]
             && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
             return true;
@@ -609,4 +611,22 @@ int16_t *Item_GetBestFrame(ITEM_INFO *item)
     } else {
         return frmptr[1];
     }
+}
+
+int16_t *Item_GetBoundsAccurate(ITEM_INFO *item)
+{
+    int32_t rate;
+    int16_t *frmptr[2];
+
+    int32_t frac = GetFrames(item, frmptr, &rate);
+    if (!frac) {
+        return frmptr[0];
+    }
+
+    for (int i = 0; i < 6; i++) {
+        int16_t a = frmptr[0][i];
+        int16_t b = frmptr[1][i];
+        m_InterpolatedBounds[i] = a + (((b - a) * frac) / rate);
+    }
+    return m_InterpolatedBounds;
 }

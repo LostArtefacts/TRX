@@ -1,7 +1,6 @@
 #include "game/objects/switch.h"
 
 #include "config.h"
-#include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
@@ -125,7 +124,7 @@ void Switch_CollisionControlled(
          && item->status == IS_NOT_ACTIVE)
         || (g_Lara.interact_target.is_moving
             && g_Lara.interact_target.item_num == item_num)) {
-        int16_t *bounds = GetBoundsAccurate(item);
+        int16_t *bounds = Item_GetBoundsAccurate(item);
 
         m_Switch_BoundsControlled[0] = bounds[0] - 256;
         m_Switch_BoundsControlled[1] = bounds[1] + 256;

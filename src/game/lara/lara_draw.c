@@ -1,6 +1,7 @@
 #include "game/lara/lara_draw.h"
 
 #include "game/draw.h"
+#include "game/items.h"
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
@@ -324,7 +325,7 @@ void Lara_Draw_I(
     MATRIX saved_matrix;
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    int16_t *bounds = GetBoundsAccurate(item);
+    int16_t *bounds = Item_GetBoundsAccurate(item);
 
     saved_matrix = *g_MatrixPtr;
 

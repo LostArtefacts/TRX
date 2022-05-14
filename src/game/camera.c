@@ -594,7 +594,7 @@ void Camera_Update(void)
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
     ITEM_INFO *item = fixed_camera ? g_Camera.item : g_LaraItem;
 
-    int16_t *bounds = GetBoundsAccurate(item);
+    int16_t *bounds = Item_GetBoundsAccurate(item);
 
     int32_t y = item->pos.y;
     if (!fixed_camera) {
@@ -606,7 +606,7 @@ void Camera_Update(void)
     }
 
     if (g_Camera.item && !fixed_camera) {
-        bounds = GetBoundsAccurate(g_Camera.item);
+        bounds = Item_GetBoundsAccurate(g_Camera.item);
         int16_t shift = Math_Sqrt(
             SQUARE(g_Camera.item->pos.z - item->pos.z)
             + SQUARE(g_Camera.item->pos.x - item->pos.x));
