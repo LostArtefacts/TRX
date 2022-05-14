@@ -326,7 +326,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         object->loaded = 1;
     }
 
-    InitialiseObjects();
+    Setup_AllObjects();
 
     File_Read(&m_StaticCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d statics", m_StaticCount);

@@ -240,7 +240,7 @@ void Setup_MiscObjects(void)
     GunShot_Setup(&g_Objects[O_GUN_FLASH]);
 }
 
-void InitialiseObjects(void)
+void Setup_AllObjects(void)
 {
     for (int i = 0; i < O_NUMBER_OF; i++) {
         OBJECT_INFO *obj = &g_Objects[i];

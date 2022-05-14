@@ -5,4 +5,4 @@
 void Setup_Creatures(void);
 void Setup_Traps(void);
 void Setup_MiscObjects(void);
-void InitialiseObjects(void);
+void Setup_AllObjects(void);
