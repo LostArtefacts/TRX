@@ -6,6 +6,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -230,7 +231,7 @@ void MovableBlock_Draw(ITEM_INFO *item)
     if (item->status == IS_ACTIVE) {
         DrawUnclippedItem(item);
     } else {
-        DrawAnimatingItem(item);
+        Object_DrawAnimatingItem(item);
     }
 }
 

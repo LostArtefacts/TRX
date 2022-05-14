@@ -253,7 +253,7 @@ void Setup_AllObjects(void)
         obj->initialise = NULL;
         obj->collision = NULL;
         obj->control = NULL;
-        obj->draw_routine = DrawAnimatingItem;
+        obj->draw_routine = Object_DrawAnimatingItem;
         obj->ceiling = NULL;
         obj->floor = NULL;
         obj->pivot_length = 0;
