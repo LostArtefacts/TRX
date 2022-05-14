@@ -284,7 +284,7 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
     }
 }
 
-void RingNotActive(void)
+void Inv_Ring_NotActive(void)
 {
     RemoveInventoryText();
 }
