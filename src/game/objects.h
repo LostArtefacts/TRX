@@ -1,6 +1,6 @@
 #pragma once
 
-// Generic collision routines reused between various objects
+// Generic collision and draw routines reused between various objects
 
 #include "global/types.h"
 
@@ -9,3 +9,5 @@
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void Object_CollisionTrap(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+
+void Object_DrawSpriteItem(ITEM_INFO *item);

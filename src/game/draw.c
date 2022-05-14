@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/inv.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "game/viewport.h"
@@ -13,14 +14,6 @@
 
 #include <stdint.h>
 
-void DrawSpriteItem(ITEM_INFO *item)
-{
-    Output_DrawSprite(
-        item->pos.x, item->pos.y, item->pos.z,
-        g_Objects[item->object_number].mesh_index - item->frame_number,
-        item->shade);
-}
-
 void DrawDummyItem(ITEM_INFO *item)
 {
 }
@@ -28,7 +21,7 @@ void DrawDummyItem(ITEM_INFO *item)
 void DrawPickupItem(ITEM_INFO *item)
 {
     if (!g_Config.enable_3d_pickups) {
-        DrawSpriteItem(item);
+        Object_DrawSpriteItem(item);
         return;
     }
 
@@ -51,7 +44,7 @@ void DrawPickupItem(ITEM_INFO *item)
 
     // Fall back to normal sprite rendering if not found.
     if (object->nmeshes < 0) {
-        DrawSpriteItem(item);
+        Object_DrawSpriteItem(item);
         return;
     }
 
