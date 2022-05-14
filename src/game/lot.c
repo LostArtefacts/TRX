@@ -45,7 +45,7 @@ bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
         for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
             CREATURE_INFO *creature = &m_BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
-                InitialiseSlot(item_num, slot);
+                LOT_InitialiseSlot(item_num, slot);
                 return true;
             }
         }
@@ -81,11 +81,11 @@ bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 
     g_Items[m_BaddieSlots[worst_slot].item_num].status = IS_INVISIBLE;
     LOT_DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
-    InitialiseSlot(item_num, worst_slot);
+    LOT_InitialiseSlot(item_num, worst_slot);
     return true;
 }
 
-void InitialiseSlot(int16_t item_num, int32_t slot)
+void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
 {
     CREATURE_INFO *creature = &m_BaddieSlots[slot];
     ITEM_INFO *item = &g_Items[item_num];
