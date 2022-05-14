@@ -78,7 +78,7 @@ void Inv_Ring_IsOpen(RING_INFO *ring)
     }
 }
 
-void RingIsNotOpen(RING_INFO *ring)
+void Inv_Ring_IsNotOpen(RING_INFO *ring)
 {
     if (!g_InvRingText) {
         return;
