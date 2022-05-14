@@ -61,7 +61,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
             if (g_OverlayFlag == 2) {
                 g_OverlayFlag = 1;
-                return_val = Display_Inventory(INV_DEATH_MODE);
+                return_val = Inv_Display(INV_DEATH_MODE);
                 if (return_val != GF_NOP) {
                     return return_val;
                 }
@@ -83,11 +83,11 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
                 }
             } else {
                 if (g_OverlayFlag == -1) {
-                    return_val = Display_Inventory(INV_LOAD_MODE);
+                    return_val = Inv_Display(INV_LOAD_MODE);
                 } else if (g_OverlayFlag == -2) {
-                    return_val = Display_Inventory(INV_SAVE_MODE);
+                    return_val = Inv_Display(INV_SAVE_MODE);
                 } else {
-                    return_val = Display_Inventory(INV_GAME_MODE);
+                    return_val = Inv_Display(INV_GAME_MODE);
                 }
 
                 g_OverlayFlag = 1;
@@ -273,7 +273,7 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
         nframes = Game_ProcessFrame();
 
         if (ask_for_save) {
-            int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);
+            int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
                 Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
                 Settings_Write();

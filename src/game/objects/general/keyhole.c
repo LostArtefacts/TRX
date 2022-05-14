@@ -62,7 +62,7 @@ void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     if (g_InvChosen == -1) {
-        Display_Inventory(INV_KEYS_MODE);
+        Inv_Display(INV_KEYS_MODE);
     } else {
         g_PickUpY = lara_item->pos.y - 1;
     }
