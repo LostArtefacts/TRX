@@ -282,7 +282,7 @@ bool MovableBlock_TestPush(
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
         return false;
     }
 
@@ -331,7 +331,7 @@ bool MovableBlock_TestPull(
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
         return false;
     }
 
@@ -365,7 +365,7 @@ bool MovableBlock_TestPull(
     floor = Room_GetFloor(x, y, z, &room_num);
     coll.radius = LARA_RAD;
     coll.quadrant = (quadrant + 2) & 3;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
         return false;
     }
 

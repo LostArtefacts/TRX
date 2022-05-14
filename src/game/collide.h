@@ -2,11 +2,13 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 void GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight);
-int32_t CollideStaticObjects(
+
+bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
-    int32_t hite);
+    int32_t height);
