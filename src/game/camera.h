@@ -10,6 +10,7 @@ void Camera_Combat(ITEM_INFO *item);
 void Camera_Look(ITEM_INFO *item);
 void Camera_Fixed(void);
 void Camera_Update(void);
+void Camera_UpdateCutscene(void);
 
 void Camera_OffsetAdditionalAngle(int16_t delta);
 void Camera_OffsetAdditionalElevation(int16_t delta);

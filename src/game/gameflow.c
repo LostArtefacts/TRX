@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/cinema.h"
 #include "game/clock.h"
 #include "game/fmv.h"
 #include "game/game.h"
@@ -1128,19 +1127,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_START_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StartCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Start((int32_t)seq->data);
             }
             break;
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = CinematicLoop();
+                ret = Game_Cutscene_Loop();
             }
             break;
 
         case GFS_STOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StopCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Stop((int32_t)seq->data);
             }
             break;
 

@@ -2,10 +2,8 @@
 
 #include "config.h"
 #include "game/camera.h"
-#include "game/demo.h"
 #include "game/draw.h"
 #include "game/gameflow.h"
-#include "game/hair.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
@@ -48,7 +46,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             if (g_Input.any) {
                 return GF_EXIT_TO_TITLE;
             }
-            if (!ProcessDemoInput()) {
+            if (!Game_Demo_ProcessInput()) {
                 return GF_EXIT_TO_TITLE;
             }
         }
@@ -125,7 +123,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         }
 
         Lara_Control();
-        Hair_Control(false);
+        Lara_Hair_Control(false);
 
         Camera_Update();
         Sound_UpdateEffects();
@@ -137,6 +135,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
     return GF_NOP;
 }
+
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;

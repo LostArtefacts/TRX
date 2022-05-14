@@ -1,7 +1,7 @@
 #include "game/lara/lara_draw.h"
 
 #include "game/draw.h"
-#include "game/hair.h"
+#include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -132,7 +132,7 @@ void Lara_Draw(ITEM_INFO *item)
     Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
-    Hair_Draw();
+    Lara_Hair_Draw();
 
     Matrix_Pop();
 
@@ -407,7 +407,7 @@ void Lara_Draw_I(
     Output_DrawPolygons_I(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
-    Hair_Draw();
+    Lara_Hair_Draw();
 
     Matrix_Pop_I();
 

@@ -1,11 +1,9 @@
 #include "game/setup.h"
 
 #include "config.h"
-#include "game/cinema.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
-#include "game/hair.h"
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/level.h"
@@ -21,6 +19,7 @@
 #include "game/objects/creatures/centaur.h"
 #include "game/objects/creatures/cowboy.h"
 #include "game/objects/creatures/crocodile.h"
+#include "game/objects/creatures/cutscene_player.h"
 #include "game/objects/creatures/larson.h"
 #include "game/objects/creatures/lion.h"
 #include "game/objects/creatures/mummy.h"
@@ -222,21 +221,10 @@ void ObjectObjects(void)
     Boat_Setup(&g_Objects[O_BOAT]);
     Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
-    g_Objects[O_PLAYER_1].initialise = InitialisePlayer1;
-    g_Objects[O_PLAYER_1].control = ControlCinematicPlayer;
-    g_Objects[O_PLAYER_1].hit_points = 1;
-
-    g_Objects[O_PLAYER_2].initialise = InitialiseGenPlayer;
-    g_Objects[O_PLAYER_2].control = ControlCinematicPlayer;
-    g_Objects[O_PLAYER_2].hit_points = 1;
-
-    g_Objects[O_PLAYER_3].initialise = InitialiseGenPlayer;
-    g_Objects[O_PLAYER_3].control = ControlCinematicPlayer;
-    g_Objects[O_PLAYER_3].hit_points = 1;
-
-    g_Objects[O_PLAYER_4].initialise = InitialiseGenPlayer;
-    g_Objects[O_PLAYER_4].control = ControlCinematicPlayer4;
-    g_Objects[O_PLAYER_4].hit_points = 1;
+    CutscenePlayer1_Setup(&g_Objects[O_PLAYER_1]);
+    CutscenePlayer2_Setup(&g_Objects[O_PLAYER_2]);
+    CutscenePlayer3_Setup(&g_Objects[O_PLAYER_3]);
+    CutscenePlayer4_Setup(&g_Objects[O_PLAYER_4]);
 
     Blood_Setup(&g_Objects[O_BLOOD1]);
     Bubble_Setup(&g_Objects[O_BUBBLES1]);
@@ -277,7 +265,7 @@ void InitialiseObjects(void)
     TrapObjects();
     ObjectObjects();
 
-    Hair_Initialise();
+    Lara_Hair_Initialise();
 
     if (g_Config.disable_medpacks) {
         g_Objects[O_MEDI_ITEM].initialise = NULL;
