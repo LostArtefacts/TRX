@@ -2,7 +2,9 @@
 
 #include "config.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory/inventory_func.h"
+#include "game/inventory/inventory_main.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/lara/lara_main.h"
 #include "game/sound.h"
 #include "global/vars.h"

@@ -1,10 +1,13 @@
-#include "game/inv.h"
+#include "game/inventory/inventory_main.h"
 
 #include "config.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/inventory/inventory_func.h"
+#include "game/inventory/inventory_ring.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/lara/lara_main.h"
 #include "game/music.h"
 #include "game/option.h"
@@ -68,9 +71,9 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
     Output_SetupAboveWater(false);
 
     PHD_3DPOS viewer;
-    Inv_RingGetView(ring, &viewer);
+    Inv_Ring_GetView(ring, &viewer);
     Matrix_GenerateW2V(&viewer);
-    Inv_RingLight(ring);
+    Inv_Ring_Light(ring);
 
     Matrix_Push();
     Matrix_TranslateAbs(ring->ringpos.x, ring->ringpos.y, ring->ringpos.z);
@@ -372,24 +375,24 @@ int32_t Inv_Display(int inv_mode)
     case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
     case INV_TITLE_MODE:
-        Inv_RingInit(
+        Inv_Ring_Init(
             &ring, RT_OPTION, g_InvOptionList, g_InvOptionObjects,
             g_InvOptionCurrent, &imo);
         break;
 
     case INV_KEYS_MODE:
-        Inv_RingInit(
+        Inv_Ring_Init(
             &ring, RT_KEYS, g_InvKeysList, g_InvKeysObjects, g_InvMainCurrent,
             &imo);
         break;
 
     default:
         if (g_InvMainObjects) {
-            Inv_RingInit(
+            Inv_Ring_Init(
                 &ring, RT_MAIN, g_InvMainList, g_InvMainObjects,
                 g_InvMainCurrent, &imo);
         } else {
-            Inv_RingInit(
+            Inv_Ring_Init(
                 &ring, RT_OPTION, g_InvOptionList, g_InvOptionObjects,
                 g_InvOptionCurrent, &imo);
         }
@@ -421,7 +424,7 @@ int32_t Inv_Display(int inv_mode)
     Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 
     do {
-        Inv_RingCalcAdders(&ring, ROTATE_DURATION);
+        Inv_Ring_CalcAdders(&ring, ROTATE_DURATION);
         Input_Update();
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
@@ -441,7 +444,7 @@ int32_t Inv_Display(int inv_mode)
                     g_IDelay = false;
                 }
             }
-            Inv_RingDoMotions(&ring);
+            Inv_Ring_DoMotions(&ring);
         }
 
         ring.camera.z = ring.radius + CAMERA_2_RING;
@@ -491,13 +494,13 @@ int32_t Inv_Display(int inv_mode)
         switch (imo.status) {
         case RNG_OPEN:
             if (g_Input.right && ring.number_of_objects > 1) {
-                Inv_RingRotateLeft(&ring);
+                Inv_Ring_RotateLeft(&ring);
                 Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
             if (g_Input.left && ring.number_of_objects > 1) {
-                Inv_RingRotateRight(&ring);
+                Inv_Ring_RotateRight(&ring);
                 Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
@@ -517,10 +520,11 @@ int32_t Inv_Display(int inv_mode)
                     Output_FadeToTransparent(false);
                 }
 
-                Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
-                Inv_RingMotionRadius(&ring, 0);
-                Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
-                Inv_RingMotionRotation(
+                Inv_Ring_MotionSetup(
+                    &ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
+                Inv_Ring_MotionRadius(&ring, 0);
+                Inv_Ring_MotionCameraPos(&ring, CAMERA_STARTHEIGHT);
+                Inv_Ring_MotionRotation(
                     &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
                 g_Input = (INPUT_STATE) { 0 };
                 g_InputDB = (INPUT_STATE) { 0 };
@@ -552,11 +556,11 @@ int32_t Inv_Display(int inv_mode)
                 inv_item->goal_frame = inv_item->open_frame;
                 inv_item->anim_direction = 1;
 
-                Inv_RingMotionSetup(
+                Inv_Ring_MotionSetup(
                     &ring, RNG_SELECTING, RNG_SELECTED, SELECTING_FRAMES);
-                Inv_RingMotionRotation(
+                Inv_Ring_MotionRotation(
                     &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
-                Inv_RingMotionItemSelect(&ring, inv_item);
+                Inv_Ring_MotionItemSelect(&ring, inv_item);
                 g_Input = (INPUT_STATE) { 0 };
                 g_InputDB = (INPUT_STATE) { 0 };
 
@@ -590,28 +594,28 @@ int32_t Inv_Display(int inv_mode)
                 && g_InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
                     if (g_InvKeysObjects) {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING, RNG_MAIN2KEYS,
                             RINGSWITCH_FRAMES / 2);
-                        Inv_RingMotionRadius(&ring, 0);
-                        Inv_RingMotionRotation(
+                        Inv_Ring_MotionRadius(&ring, 0);
+                        Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
                             ring.ringpos.y_rot - CLOSE_ROTATION);
-                        Inv_RingMotionCameraPitch(&ring, 0x2000);
+                        Inv_Ring_MotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_OPTION) {
                     if (g_InvMainObjects) {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING, RNG_OPTION2MAIN,
                             RINGSWITCH_FRAMES / 2);
-                        Inv_RingMotionRadius(&ring, 0);
-                        Inv_RingMotionRotation(
+                        Inv_Ring_MotionRadius(&ring, 0);
+                        Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
                             ring.ringpos.y_rot - CLOSE_ROTATION);
-                        Inv_RingMotionCameraPitch(&ring, 0x2000);
+                        Inv_Ring_MotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
                     g_InputDB = (INPUT_STATE) { 0 };
@@ -621,28 +625,28 @@ int32_t Inv_Display(int inv_mode)
                 && g_InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
                     if (g_InvMainObjects) {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING, RNG_KEYS2MAIN,
                             RINGSWITCH_FRAMES / 2);
-                        Inv_RingMotionRadius(&ring, 0);
-                        Inv_RingMotionRotation(
+                        Inv_Ring_MotionRadius(&ring, 0);
+                        Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
                             ring.ringpos.y_rot - CLOSE_ROTATION);
-                        Inv_RingMotionCameraPitch(&ring, -0x2000);
+                        Inv_Ring_MotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
                 } else if (ring.type == RT_MAIN) {
                     if (g_InvOptionObjects) {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING, RNG_MAIN2OPTION,
                             RINGSWITCH_FRAMES / 2);
-                        Inv_RingMotionRadius(&ring, 0);
-                        Inv_RingMotionRotation(
+                        Inv_Ring_MotionRadius(&ring, 0);
+                        Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
                             ring.ringpos.y_rot - CLOSE_ROTATION);
-                        Inv_RingMotionCameraPitch(&ring, -0x2000);
+                        Inv_Ring_MotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
                     g_InputDB = (INPUT_STATE) { 0 };
@@ -651,9 +655,9 @@ int32_t Inv_Display(int inv_mode)
             break;
 
         case RNG_MAIN2OPTION:
-            Inv_RingMotionSetup(
+            Inv_Ring_MotionSetup(
                 &ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
-            Inv_RingMotionRadius(&ring, RING_RADIUS);
+            Inv_Ring_MotionRadius(&ring, RING_RADIUS);
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
@@ -662,17 +666,17 @@ int32_t Inv_Display(int inv_mode)
             ring.type = RT_OPTION;
             ring.number_of_objects = g_InvOptionObjects;
             ring.current_object = g_InvOptionCurrent;
-            Inv_RingCalcAdders(&ring, ROTATE_DURATION);
-            Inv_RingMotionRotation(
+            Inv_Ring_CalcAdders(&ring, ROTATE_DURATION);
+            Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_MAIN2KEYS:
-            Inv_RingMotionSetup(
+            Inv_Ring_MotionSetup(
                 &ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
-            Inv_RingMotionRadius(&ring, RING_RADIUS);
+            Inv_Ring_MotionRadius(&ring, RING_RADIUS);
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
@@ -682,17 +686,17 @@ int32_t Inv_Display(int inv_mode)
             ring.type = RT_KEYS;
             ring.number_of_objects = g_InvKeysObjects;
             ring.current_object = g_InvKeysCurrent;
-            Inv_RingCalcAdders(&ring, ROTATE_DURATION);
-            Inv_RingMotionRotation(
+            Inv_Ring_CalcAdders(&ring, ROTATE_DURATION);
+            Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_KEYS2MAIN:
-            Inv_RingMotionSetup(
+            Inv_Ring_MotionSetup(
                 &ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
-            Inv_RingMotionRadius(&ring, RING_RADIUS);
+            Inv_Ring_MotionRadius(&ring, RING_RADIUS);
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
@@ -701,17 +705,17 @@ int32_t Inv_Display(int inv_mode)
             ring.type = RT_MAIN;
             ring.number_of_objects = g_InvMainObjects;
             ring.current_object = g_InvMainCurrent;
-            Inv_RingCalcAdders(&ring, ROTATE_DURATION);
-            Inv_RingMotionRotation(
+            Inv_Ring_CalcAdders(&ring, ROTATE_DURATION);
+            Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_OPTION2MAIN:
-            Inv_RingMotionSetup(
+            Inv_Ring_MotionSetup(
                 &ring, RNG_OPENING, RNG_OPEN, RINGSWITCH_FRAMES / 2);
-            Inv_RingMotionRadius(&ring, RING_RADIUS);
+            Inv_Ring_MotionRadius(&ring, RING_RADIUS);
             ring.camera_pitch = -imo.misc;
             imo.camera_pitch_rate = imo.misc / (RINGSWITCH_FRAMES / 2);
             imo.camera_pitch_target = 0;
@@ -721,8 +725,8 @@ int32_t Inv_Display(int inv_mode)
             ring.type = RT_MAIN;
             ring.number_of_objects = g_InvMainObjects;
             ring.current_object = g_InvMainCurrent;
-            Inv_RingCalcAdders(&ring, ROTATE_DURATION);
-            Inv_RingMotionRotation(
+            Inv_Ring_CalcAdders(&ring, ROTATE_DURATION);
+            Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
             ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
@@ -747,14 +751,14 @@ int32_t Inv_Display(int inv_mode)
 
                 if (g_InputDB.deselect) {
                     inv_item->sprlist = NULL;
-                    Inv_RingMotionSetup(
+                    Inv_Ring_MotionSetup(
                         &ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                     g_Input = (INPUT_STATE) { 0 };
                     g_InputDB = (INPUT_STATE) { 0 };
 
                     if (g_InvMode == INV_LOAD_MODE || g_InvMode == INV_SAVE_MODE
                         || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                         g_Input = (INPUT_STATE) { 0 };
                         g_InputDB = (INPUT_STATE) { 0 };
@@ -775,10 +779,10 @@ int32_t Inv_Display(int inv_mode)
                             || inv_item->object_number == O_SOUND_OPTION
                             || inv_item->object_number == O_CONTROL_OPTION
                             || inv_item->object_number == O_GAMMA_OPTION)) {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                     } else {
-                        Inv_RingMotionSetup(
+                        Inv_Ring_MotionSetup(
                             &ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                     }
                     g_Input = (INPUT_STATE) { 0 };
@@ -790,9 +794,9 @@ int32_t Inv_Display(int inv_mode)
 
         case RNG_DESELECT:
             Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
-            Inv_RingMotionSetup(
+            Inv_Ring_MotionSetup(
                 &ring, RNG_DESELECTING, RNG_OPEN, SELECTING_FRAMES);
-            Inv_RingMotionRotation(
+            Inv_Ring_MotionRotation(
                 &ring, 0, -PHD_90 - ring.angle_adder * ring.current_object);
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
@@ -808,7 +812,7 @@ int32_t Inv_Display(int inv_mode)
                     }
                     imo.count = SELECTING_FRAMES;
                     imo.status = imo.status_target;
-                    Inv_RingMotionItemDeselect(&ring, inv_item);
+                    Inv_Ring_MotionItemDeselect(&ring, inv_item);
                     break;
                 }
             }
@@ -833,10 +837,11 @@ int32_t Inv_Display(int inv_mode)
             }
 
             if (!imo.count) {
-                Inv_RingMotionSetup(&ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
-                Inv_RingMotionRadius(&ring, 0);
-                Inv_RingMotionCameraPos(&ring, CAMERA_STARTHEIGHT);
-                Inv_RingMotionRotation(
+                Inv_Ring_MotionSetup(
+                    &ring, RNG_CLOSING, RNG_DONE, CLOSE_FRAMES);
+                Inv_Ring_MotionRadius(&ring, 0);
+                Inv_Ring_MotionCameraPos(&ring, CAMERA_STARTHEIGHT);
+                Inv_Ring_MotionRotation(
                     &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
             }
             break;

@@ -1,7 +1,9 @@
 #include "game/objects/general/puzzle_hole.h"
 
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory/inventory_func.h"
+#include "game/inventory/inventory_main.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/lara/lara_main.h"
 #include "game/objects/general/keyhole.h"
 #include "game/sound.h"

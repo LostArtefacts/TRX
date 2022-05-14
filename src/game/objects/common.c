@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/collide.h"
-#include "game/inv.h"
+#include "game/inventory/inventory_func.h"
 #include "game/items.h"
 #include "game/lara/lara_main.h"
 #include "game/output.h"

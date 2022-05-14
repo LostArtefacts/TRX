@@ -2,7 +2,7 @@
 
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/requester.h"
 #include "game/savegame.h"
 #include "game/screen.h"

@@ -6,7 +6,7 @@
 #include "game/gameflow.h"
 #include "game/gun/gun_main.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory/inventory_func.h"
 #include "game/items.h"
 #include "game/lara/lara_col.h"
 #include "game/lara/lara_look.h"
