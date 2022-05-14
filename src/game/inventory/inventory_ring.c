@@ -101,7 +101,7 @@ void Inv_Ring_IsNotOpen(RING_INFO *ring)
     }
 }
 
-void RingActive(INVENTORY_ITEM *inv_item)
+void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 {
     if (!g_InvItemText[IT_NAME]) {
         switch (inv_item->object_number) {
