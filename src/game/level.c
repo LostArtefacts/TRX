@@ -708,7 +708,7 @@ bool Level_Initialise(int32_t level_num)
 
     g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
     Effect_InitialiseArray();
-    InitialiseLOTArray();
+    LOT_InitialiseArray();
 
     Overlay_Init();
     Overlay_BarSetHealthTimer(100);
