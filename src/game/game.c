@@ -269,7 +269,7 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ret != GF_NOP) {
             break;
         }
-        nframes = Draw_ProcessFrame();
+        nframes = Game_ProcessFrame();
 
         if (ask_for_save) {
             int32_t return_val = Display_Inventory(INV_SAVE_CRYSTAL_MODE);

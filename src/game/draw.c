@@ -1,7 +1,6 @@
 #include "game/draw.h"
 
 #include "config.h"
-#include "game/game.h"
 #include "game/inv.h"
 #include "game/output.h"
 #include "game/random.h"
@@ -519,13 +518,4 @@ int16_t *GetBestFrame(ITEM_INFO *item)
     } else {
         return frmptr[1];
     }
-}
-
-int32_t Draw_ProcessFrame(void)
-{
-    Output_InitialisePolyList();
-    Game_DrawScene(true);
-    g_Camera.number_frames = Output_DumpScreen();
-    Output_AnimateTextures(g_Camera.number_frames);
-    return g_Camera.number_frames;
 }
