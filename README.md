@@ -382,8 +382,8 @@ Note: this section may be subject to change.
 - [ ] Beautify the code
     - [x] Refactor GLRage to no longer emulate DDraw
     - [x] Refactor GLRage to no longer emulate ATI3DCIF
-    - [ ] Apply rigid name conventions to function names
-    - [ ] Refactor specific/ away
+    - [x] Apply rigid name conventions to function names
+    - [ ] Refactor specific/ away?
     - [ ] ...
 - [ ] Work on data injection and other features?
 
