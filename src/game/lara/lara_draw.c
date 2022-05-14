@@ -28,7 +28,7 @@ void Lara_Draw(ITEM_INFO *item)
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;
-        int32_t frac = GetFrames(item, frmptr, &rate);
+        int32_t frac = Item_GetFrames(item, frmptr, &rate);
         if (frac) {
             Lara_Draw_I(item, frmptr[0], frmptr[1], frac, rate);
             g_PhdLeft = left;
