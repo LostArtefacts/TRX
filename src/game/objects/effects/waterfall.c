@@ -1,7 +1,7 @@
 #include "game/objects/effects/waterfall.h"
 
-#include "game/draw.h"
 #include "game/effects.h"
+#include "game/objects.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -12,7 +12,7 @@
 void Waterfall_Setup(OBJECT_INFO *obj)
 {
     g_Objects[O_WATERFALL].control = Waterfall_Control;
-    g_Objects[O_WATERFALL].draw_routine = DrawDummyItem;
+    g_Objects[O_WATERFALL].draw_routine = Object_DrawDummyItem;
 }
 
 void Waterfall_Control(int16_t item_num)

@@ -1,9 +1,9 @@
 #include "game/objects/traps/midas_touch.h"
 
-#include "game/draw.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/lara/lara.h"
+#include "game/objects.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -25,7 +25,7 @@ static int16_t m_MidasBounds[12] = {
 void MidasTouch_Setup(OBJECT_INFO *obj)
 {
     obj->collision = MidasTouch_Collision;
-    obj->draw_routine = DrawDummyItem;
+    obj->draw_routine = Object_DrawDummyItem;
 }
 
 void MidasTouch_Collision(

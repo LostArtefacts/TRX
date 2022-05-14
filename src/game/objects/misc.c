@@ -7,7 +7,7 @@
 
 void CameraTarget_Setup(OBJECT_INFO *obj)
 {
-    obj->draw_routine = DrawDummyItem;
+    obj->draw_routine = Object_DrawDummyItem;
 }
 
 void MovingBar_Setup(OBJECT_INFO *obj)

@@ -7,6 +7,7 @@
 #include "game/inv.h"
 #include "game/lara.h"
 #include "game/level.h"
+#include "game/objects.h"
 #include "game/objects/boat.h"
 #include "game/objects/bridge.h"
 #include "game/objects/cabin.h"
@@ -79,7 +80,7 @@
 void Setup_Creatures(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
-    g_Objects[O_LARA].draw_routine = DrawDummyItem;
+    g_Objects[O_LARA].draw_routine = Object_DrawDummyItem;
     g_Objects[O_LARA].hit_points = g_Config.start_lara_hitpoints;
     g_Objects[O_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
     g_Objects[O_LARA].save_position = 1;
@@ -271,14 +272,14 @@ void Setup_AllObjects(void)
         g_Objects[O_MEDI_ITEM].initialise = NULL;
         g_Objects[O_MEDI_ITEM].collision = NULL;
         g_Objects[O_MEDI_ITEM].control = NULL;
-        g_Objects[O_MEDI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MEDI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MEDI_ITEM].floor = NULL;
         g_Objects[O_MEDI_ITEM].ceiling = NULL;
 
         g_Objects[O_BIGMEDI_ITEM].initialise = NULL;
         g_Objects[O_BIGMEDI_ITEM].collision = NULL;
         g_Objects[O_BIGMEDI_ITEM].control = NULL;
-        g_Objects[O_BIGMEDI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_BIGMEDI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_BIGMEDI_ITEM].floor = NULL;
         g_Objects[O_BIGMEDI_ITEM].ceiling = NULL;
     }
@@ -287,14 +288,14 @@ void Setup_AllObjects(void)
         g_Objects[O_MAGNUM_ITEM].initialise = NULL;
         g_Objects[O_MAGNUM_ITEM].collision = NULL;
         g_Objects[O_MAGNUM_ITEM].control = NULL;
-        g_Objects[O_MAGNUM_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MAGNUM_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MAGNUM_ITEM].floor = NULL;
         g_Objects[O_MAGNUM_ITEM].ceiling = NULL;
 
         g_Objects[O_MAG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_MAG_AMMO_ITEM].collision = NULL;
         g_Objects[O_MAG_AMMO_ITEM].control = NULL;
-        g_Objects[O_MAG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MAG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MAG_AMMO_ITEM].floor = NULL;
         g_Objects[O_MAG_AMMO_ITEM].ceiling = NULL;
     }
@@ -303,14 +304,14 @@ void Setup_AllObjects(void)
         g_Objects[O_UZI_ITEM].initialise = NULL;
         g_Objects[O_UZI_ITEM].collision = NULL;
         g_Objects[O_UZI_ITEM].control = NULL;
-        g_Objects[O_UZI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_UZI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_UZI_ITEM].floor = NULL;
         g_Objects[O_UZI_ITEM].ceiling = NULL;
 
         g_Objects[O_UZI_AMMO_ITEM].initialise = NULL;
         g_Objects[O_UZI_AMMO_ITEM].collision = NULL;
         g_Objects[O_UZI_AMMO_ITEM].control = NULL;
-        g_Objects[O_UZI_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_UZI_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_UZI_AMMO_ITEM].floor = NULL;
         g_Objects[O_UZI_AMMO_ITEM].ceiling = NULL;
     }
@@ -319,14 +320,14 @@ void Setup_AllObjects(void)
         g_Objects[O_SHOTGUN_ITEM].initialise = NULL;
         g_Objects[O_SHOTGUN_ITEM].collision = NULL;
         g_Objects[O_SHOTGUN_ITEM].control = NULL;
-        g_Objects[O_SHOTGUN_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_SHOTGUN_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_SHOTGUN_ITEM].floor = NULL;
         g_Objects[O_SHOTGUN_ITEM].ceiling = NULL;
 
         g_Objects[O_SG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_SG_AMMO_ITEM].collision = NULL;
         g_Objects[O_SG_AMMO_ITEM].control = NULL;
-        g_Objects[O_SG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_SG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_SG_AMMO_ITEM].floor = NULL;
         g_Objects[O_SG_AMMO_ITEM].ceiling = NULL;
     }

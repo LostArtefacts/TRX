@@ -10,4 +10,5 @@ void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void Object_CollisionTrap(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 
+void Object_DrawDummyItem(ITEM_INFO *item);
 void Object_DrawSpriteItem(ITEM_INFO *item);
