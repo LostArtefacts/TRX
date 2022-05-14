@@ -18,8 +18,6 @@
 
 #include <stddef.h>
 
-PHD_VECTOR g_LsVectorView = { 0 };
-
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
@@ -30,6 +28,7 @@ static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
+static PHD_VECTOR m_LsVectorView = { 0 };
 
 static void Output_DrawBlackScreen(uint8_t alpha);
 static void Output_FadeAnimate(int ticks);
@@ -226,17 +225,17 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
         if (g_LsDivider) {
-            int32_t xv = (g_MatrixPtr->_00 * g_LsVectorView.x
-                          + g_MatrixPtr->_10 * g_LsVectorView.y
-                          + g_MatrixPtr->_20 * g_LsVectorView.z)
+            int32_t xv = (g_MatrixPtr->_00 * m_LsVectorView.x
+                          + g_MatrixPtr->_10 * m_LsVectorView.y
+                          + g_MatrixPtr->_20 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t yv = (g_MatrixPtr->_01 * g_LsVectorView.x
-                          + g_MatrixPtr->_11 * g_LsVectorView.y
-                          + g_MatrixPtr->_21 * g_LsVectorView.z)
+            int32_t yv = (g_MatrixPtr->_01 * m_LsVectorView.x
+                          + g_MatrixPtr->_11 * m_LsVectorView.y
+                          + g_MatrixPtr->_21 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t zv = (g_MatrixPtr->_02 * g_LsVectorView.x
-                          + g_MatrixPtr->_12 * g_LsVectorView.y
-                          + g_MatrixPtr->_22 * g_LsVectorView.z)
+            int32_t zv = (g_MatrixPtr->_02 * m_LsVectorView.x
+                          + g_MatrixPtr->_12 * m_LsVectorView.y
+                          + g_MatrixPtr->_22 * m_LsVectorView.z)
                 / g_LsDivider;
             for (int i = 0; i < vertex_count; i++) {
                 int16_t shade = g_LsAdder
@@ -477,7 +476,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 
         PHD_ANGLE angles[2];
         Math_GetVectorAngles(ls.x, ls.y, ls.z, angles);
-        phd_RotateLight(angles[1], angles[0]);
+        Output_RotateLight(angles[1], angles[0]);
     }
 
     int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
@@ -855,6 +854,26 @@ void Output_AnimateTextures(int32_t ticks)
         }
         tick_comp -= TICKS_PER_FRAME * 5;
     }
+}
+
+void Output_RotateLight(int16_t pitch, int16_t yaw)
+{
+    int32_t cp = Math_Cos(pitch);
+    int32_t sp = Math_Sin(pitch);
+    int32_t cy = Math_Cos(yaw);
+    int32_t sy = Math_Sin(yaw);
+    int32_t ls_x = TRIGMULT2(cp, sy);
+    int32_t ls_y = -sp;
+    int32_t ls_z = TRIGMULT2(cp, cy);
+    m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
+                        + g_W2VMatrix._02 * ls_z)
+        >> W2V_SHIFT;
+    m_LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
+                        + g_W2VMatrix._12 * ls_z)
+        >> W2V_SHIFT;
+    m_LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
+                        + g_W2VMatrix._22 * ls_z)
+        >> W2V_SHIFT;
 }
 
 static void Output_DrawBlackScreen(uint8_t alpha)
