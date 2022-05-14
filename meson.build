@@ -215,7 +215,6 @@ sources = [
   'src/game/setup.c',
   'src/game/shell.c',
   'src/game/sound.c',
-  'src/game/sphere.c',
   'src/game/stats.c',
   'src/game/text.c',
   'src/game/viewport.c',

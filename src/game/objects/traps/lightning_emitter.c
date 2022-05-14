@@ -1,5 +1,6 @@
 #include "game/objects/traps/lightning_emitter.h"
 
+#include "game/collide.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -8,7 +9,6 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "math/matrix.h"
@@ -121,7 +121,7 @@ void LightningEmitter_Control(int16_t item_num)
             l->target.x = 0;
             l->target.y = 0;
             l->target.z = 0;
-            GetJointAbsPosition(
+            Collide_GetJointAbsPosition(
                 item, &l->target, 1 + (Random_GetControl() * 5) / 0x7FFF);
             l->zapped = false;
         }

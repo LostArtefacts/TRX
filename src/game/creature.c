@@ -10,7 +10,6 @@
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
 
@@ -331,7 +330,7 @@ int16_t Creature_Effect(
     pos.x = bite->x;
     pos.y = bite->y;
     pos.z = bite->z;
-    GetJointAbsPosition(item, &pos, bite->mesh_num);
+    Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     return spawn(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
