@@ -178,7 +178,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         return;
     }
 
-    CalculateObjectLighting(item, frmptr[0]);
+    Output_CalculateObjectLighting(item, frmptr[0]);
 
     Matrix_TranslateRel(
         frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y], frmptr[0][FRAME_POS_Z]);

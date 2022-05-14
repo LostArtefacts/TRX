@@ -12,4 +12,3 @@ void DrawPickupItem(ITEM_INFO *item);
 void DrawAnimatingItem(ITEM_INFO *item);
 void DrawUnclippedItem(ITEM_INFO *item);
 void DrawGunFlash(int32_t weapon_type, int32_t clip);
-void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame);
