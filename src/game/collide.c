@@ -190,7 +190,8 @@ void GetCollisionInfo(
         coll->right_floor = 512;
     }
 
-    if (CollideStaticObjects(coll, xpos, ypos, zpos, room_num, obj_height)) {
+    if (Collide_CollideStaticObjects(
+            coll, xpos, ypos, zpos, room_num, obj_height)) {
         floor = Room_GetFloor(
             xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
         if (Room_GetHeight(
@@ -289,16 +290,16 @@ void GetCollisionInfo(
     }
 }
 
-int32_t CollideStaticObjects(
+bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
-    int32_t hite)
+    int32_t height)
 {
     PHD_VECTOR shifter;
 
     coll->hit_static = 0;
     int32_t inxmin = x - coll->radius;
     int32_t inxmax = x + coll->radius;
-    int32_t inymin = y - hite;
+    int32_t inymin = y - height;
     int32_t inymax = y;
     int32_t inzmin = z - coll->radius;
     int32_t inzmax = z + coll->radius;
@@ -307,7 +308,7 @@ int32_t CollideStaticObjects(
     shifter.y = 0;
     shifter.z = 0;
 
-    Room_GetNearByRooms(x, y, z, coll->radius + 50, hite + 50, room_number);
+    Room_GetNearByRooms(x, y, z, coll->radius + 50, height + 50, room_number);
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         int16_t room_num = g_RoomsToDraw[i];
@@ -444,9 +445,9 @@ int32_t CollideStaticObjects(
             }
 
             coll->hit_static = 1;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
