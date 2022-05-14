@@ -458,7 +458,7 @@ int32_t Inv_Display(int inv_mode)
                 INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
                 RingActive(inv_item);
             }
-            RingIsOpen(&ring);
+            Inv_Ring_IsOpen(&ring);
         } else {
             RingIsNotOpen(&ring);
         }

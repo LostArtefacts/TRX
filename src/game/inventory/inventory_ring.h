@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-void RingIsOpen(RING_INFO *ring);
+void Inv_Ring_IsOpen(RING_INFO *ring);
 void RingIsNotOpen(RING_INFO *ring);
 void RingActive(INVENTORY_ITEM *inv_item);
 void RingNotActive(void);

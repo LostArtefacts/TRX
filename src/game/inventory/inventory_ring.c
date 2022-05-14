@@ -22,7 +22,7 @@ static TEXTSTRING *m_InvDownArrow2 = NULL;
 static TEXTSTRING *m_InvUpArrow1 = NULL;
 static TEXTSTRING *m_InvUpArrow2 = NULL;
 
-void RingIsOpen(RING_INFO *ring)
+void Inv_Ring_IsOpen(RING_INFO *ring)
 {
     if (g_InvMode == INV_TITLE_MODE) {
         return;
