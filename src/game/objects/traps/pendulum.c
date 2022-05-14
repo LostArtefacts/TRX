@@ -1,8 +1,8 @@
 #include "game/objects/traps/pendulum.h"
 
-#include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -13,7 +13,7 @@
 void Pendulum_Setup(OBJECT_INFO *obj)
 {
     obj->control = Pendulum_Control;
-    obj->collision = TrapCollision;
+    obj->collision = Object_CollisionTrap;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;
     obj->save_anim = 1;

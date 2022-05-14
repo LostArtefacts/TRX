@@ -1,7 +1,7 @@
 #include "game/objects/traps/falling_ceiling.h"
 
-#include "game/collide.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "global/vars.h"
 
 #define FALLING_CEILING_DAMAGE 300
@@ -9,7 +9,7 @@
 void FallingCeiling_Setup(OBJECT_INFO *obj)
 {
     obj->control = FallingCeiling_Control;
-    obj->collision = TrapCollision;
+    obj->collision = Object_CollisionTrap;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

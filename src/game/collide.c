@@ -450,16 +450,3 @@ int32_t CollideStaticObjects(
 
     return 0;
 }
-
-void TrapCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-
-    if (item->status == IS_ACTIVE) {
-        if (Lara_TestBoundsCollide(item, coll->radius)) {
-            TestCollision(item, lara_item);
-        }
-    } else if (item->status != IS_INVISIBLE) {
-        Object_Collision(item_num, lara_item, coll);
-    }
-}
