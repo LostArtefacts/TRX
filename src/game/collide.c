@@ -497,7 +497,20 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     if (g_Lara.spaz_effect_count) {
-        EffectSpaz(lara_item, coll);
+        int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
+        int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
+        PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
+        g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
+        if (!g_Lara.hit_frame) {
+            Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+        }
+
+        g_Lara.hit_frame++;
+        if (g_Lara.hit_frame > 34) {
+            g_Lara.hit_frame = 34;
+        }
+
+        g_Lara.spaz_effect_count--;
     }
 
     if (g_Lara.hit_direction == -1) {
@@ -505,24 +518,6 @@ void LaraBaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     g_InvChosen = -1;
-}
-
-void EffectSpaz(ITEM_INFO *lara_item, COLL_INFO *coll)
-{
-    int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
-    int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
-    PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
-    g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
-    if (!g_Lara.hit_frame) {
-        Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
-    }
-
-    g_Lara.hit_frame++;
-    if (g_Lara.hit_frame > 34) {
-        g_Lara.hit_frame = 34;
-    }
-
-    g_Lara.spaz_effect_count--;
 }
 
 void ObjectCollision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
