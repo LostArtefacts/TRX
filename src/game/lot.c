@@ -133,7 +133,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
         break;
     }
 
-    ClearLOT(&creature->LOT);
+    LOT_ClearLOT(&creature->LOT);
     LOT_CreateZone(item);
 
     m_SlotsUsed++;
@@ -179,10 +179,10 @@ void LOT_InitialiseLOT(LOT_INFO *LOT)
 {
     LOT->node =
         GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
-    ClearLOT(LOT);
+    LOT_ClearLOT(LOT);
 }
 
-void ClearLOT(LOT_INFO *LOT)
+void LOT_ClearLOT(LOT_INFO *LOT)
 {
     LOT->search_number = 0;
     LOT->head = NO_BOX;
