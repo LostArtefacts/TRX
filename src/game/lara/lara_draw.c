@@ -78,7 +78,7 @@ void Lara_Draw(ITEM_INFO *item)
 
     Matrix_Push();
 
-    CalculateObjectLighting(item, frame);
+    Output_CalculateObjectLighting(item, frame);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
@@ -342,7 +342,7 @@ void Lara_Draw_I(
 
     Matrix_Push();
 
-    CalculateObjectLighting(item, frame1);
+    Output_CalculateObjectLighting(item, frame1);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
     int32_t *packed_rotation1 = (int32_t *)(frame1 + FRAME_ROT);

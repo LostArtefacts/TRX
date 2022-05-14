@@ -491,6 +491,33 @@ void Output_CalculateStaticLight(int16_t adder)
     CLAMPG(g_LsAdder, 0x1FFF);
 }
 
+void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
+{
+    if (item->shade >= 0) {
+        Output_CalculateStaticLight(item->shade);
+        return;
+    }
+
+    Matrix_PushUnit();
+    g_MatrixPtr->_23 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_03 = 0;
+
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateRel(
+        (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
+        (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
+        (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+
+    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+
+    Matrix_Pop();
+
+    Output_CalculateLight(x, y, z, item->room_number);
+}
+
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
 {
     obj_ptr += 4;
