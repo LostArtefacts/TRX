@@ -8,7 +8,7 @@
 #include "game/inventory/inventory_func.h"
 #include "game/inventory/inventory_ring.h"
 #include "game/inventory/inventory_vars.h"
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"

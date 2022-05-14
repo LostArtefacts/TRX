@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "global/const.h"

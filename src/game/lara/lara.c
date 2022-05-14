@@ -1,4 +1,4 @@
-#include "game/lara/lara_main.h"
+#include "game/lara.h"
 
 #include "config.h"
 #include "game/camera.h"
