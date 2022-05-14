@@ -1,11 +1,11 @@
 #include "game/objects/pickup.h"
 
 #include "config.h"
-#include "game/draw.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
+#include "game/objects.h"
 #include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -73,7 +73,7 @@ static void PickUp_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item)
 
 void Pickup_Setup(OBJECT_INFO *obj)
 {
-    obj->draw_routine = DrawPickupItem;
+    obj->draw_routine = Object_DrawPickupItem;
     obj->collision = Pickup_Collision;
     obj->save_flags = 1;
 }

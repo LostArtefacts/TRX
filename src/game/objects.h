@@ -12,3 +12,4 @@ void Object_CollisionTrap(
 
 void Object_DrawDummyItem(ITEM_INFO *item);
 void Object_DrawSpriteItem(ITEM_INFO *item);
+void Object_DrawPickupItem(ITEM_INFO *item);

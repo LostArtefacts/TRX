@@ -1,6 +1,5 @@
 #include "game/objects/misc.h"
 
-#include "game/draw.h"
 #include "game/objects.h"
 #include "game/objects/cog.h"
 #include "game/objects/pickup.h"
@@ -21,7 +20,7 @@ void MovingBar_Setup(OBJECT_INFO *obj)
 
 void LeadBar_Setup(OBJECT_INFO *obj)
 {
-    obj->draw_routine = DrawPickupItem;
+    obj->draw_routine = Object_DrawPickupItem;
     obj->collision = Pickup_Collision;
     obj->save_flags = 1;
 }
