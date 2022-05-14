@@ -53,7 +53,6 @@ extern TEXTSTRING *g_InvItemText[];
 extern TEXTSTRING *g_InvRingText;
 
 int32_t Display_Inventory(int inv_mode);
-void SelectMeshes(INVENTORY_ITEM *inv_item);
 bool AnimateInventoryItem(INVENTORY_ITEM *inv_item);
 void DrawInventoryItem(INVENTORY_ITEM *inv_item);
 
