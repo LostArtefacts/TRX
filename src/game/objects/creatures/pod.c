@@ -117,7 +117,7 @@ void Pod_Control(int16_t item_num)
             if (g_Objects[bug->object_number].loaded) {
                 bug->touch_bits = 0;
                 Item_AddActive(bug_item_num);
-                if (EnableBaddieAI(bug_item_num, 0)) {
+                if (LOT_EnableBaddieAI(bug_item_num, 0)) {
                     bug->status = IS_ACTIVE;
                 } else {
                     bug->status = IS_INVISIBLE;

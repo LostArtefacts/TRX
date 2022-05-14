@@ -74,7 +74,7 @@ void Statue_Control(int16_t item_num)
         ITEM_INFO *centaur = &g_Items[centaur_item_num];
         centaur->touch_bits = 0;
         Item_AddActive(centaur_item_num);
-        EnableBaddieAI(centaur_item_num, 1);
+        LOT_EnableBaddieAI(centaur_item_num, 1);
         centaur->status = IS_ACTIVE;
 
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);

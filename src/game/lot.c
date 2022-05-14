@@ -35,10 +35,10 @@ void LOT_DisableBaddieAI(int16_t item_num)
     }
 }
 
-int32_t EnableBaddieAI(int16_t item_num, int32_t always)
+bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 {
     if (g_Items[item_num].data) {
-        return 1;
+        return true;
     }
 
     if (m_SlotsUsed < NUM_SLOTS) {
@@ -46,7 +46,7 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
             CREATURE_INFO *creature = &m_BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
                 InitialiseSlot(item_num, slot);
-                return 1;
+                return true;
             }
         }
         Shell_ExitSystem("UnpauseBaddie() grimmer!");
@@ -76,13 +76,13 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
     }
 
     if (worst_slot < 0) {
-        return 0;
+        return false;
     }
 
     g_Items[m_BaddieSlots[worst_slot].item_num].status = IS_INVISIBLE;
     LOT_DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
     InitialiseSlot(item_num, worst_slot);
-    return 1;
+    return true;
 }
 
 void InitialiseSlot(int16_t item_num, int32_t slot)
