@@ -1,12 +1,11 @@
 #include "game/draw.h"
 
 #include "config.h"
+#include "game/game.h"
 #include "game/inv.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/room_draw.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -522,33 +521,10 @@ int16_t *GetBestFrame(ITEM_INFO *item)
     }
 }
 
-void Draw_DrawScene(bool draw_overlay)
-{
-    if (g_Objects[O_LARA].loaded) {
-        Room_DrawAllRooms(g_Camera.pos.room_number);
-        if (draw_overlay) {
-            Overlay_DrawGameInfo();
-        }
-    } else {
-        // cinematic scene
-        g_CameraUnderwater = false;
-        for (int i = 0; i < g_RoomsToDrawCount; i++) {
-            int16_t room_num = g_RoomsToDraw[i];
-            ROOM_INFO *r = &g_RoomInfo[room_num];
-            r->top = 0;
-            r->left = 0;
-            r->right = Viewport_GetMaxX();
-            r->bottom = Viewport_GetMaxY();
-            Room_DrawSingleRoom(room_num);
-        }
-    }
-    Output_DrawBackdropScreen();
-}
-
 int32_t Draw_ProcessFrame(void)
 {
     Output_InitialisePolyList();
-    Draw_DrawScene(true);
+    Game_DrawScene(true);
     g_Camera.number_frames = Output_DumpScreen();
     Output_AnimateTextures(g_Camera.number_frames);
     return g_Camera.number_frames;

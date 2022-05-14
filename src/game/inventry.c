@@ -54,7 +54,7 @@ static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
             m_OldCamera.pos.x, m_OldCamera.pos.y + m_OldCamera.shift,
             m_OldCamera.pos.z, m_OldCamera.target.x, m_OldCamera.target.y,
             m_OldCamera.target.z, 0);
-        Draw_DrawScene(false);
+        Game_DrawScene(false);
 
         int32_t width = Screen_GetResWidth();
         int32_t height = Screen_GetResHeight();
