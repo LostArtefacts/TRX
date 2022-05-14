@@ -40,10 +40,10 @@ static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 static CAMERA_INFO m_OldCamera;
 
-static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo);
+static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo);
 static void Inv_Construct(void);
 
-static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
+static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
     Output_InitialisePolyList();
 
@@ -291,7 +291,7 @@ int32_t Display_Inventory(int inv_mode)
 
         ring.camera.z = ring.radius + CAMERA_2_RING;
 
-        Inventory_Draw(&ring, &imo);
+        Inv_Draw(&ring, &imo);
 
         if (imo.status == RNG_OPEN || imo.status == RNG_SELECTING
             || imo.status == RNG_SELECTED || imo.status == RNG_DESELECTING
@@ -695,7 +695,7 @@ int32_t Display_Inventory(int inv_mode)
     bool fade_finished = !Output_FadeIsAnimating();
     while (!fade_finished) {
         fade_finished = !Output_FadeIsAnimating();
-        Inventory_Draw(&ring, &imo);
+        Inv_Draw(&ring, &imo);
         m_InvNFrames = Output_DumpScreen();
         g_Camera.number_frames = m_InvNFrames;
     }
