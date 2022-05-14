@@ -1,15 +1,17 @@
-#include "game/objects.h"
+#include "game/objects/common.h"
 
 #include "config.h"
 #include "game/collide.h"
-#include "game/viewport.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/output.h"
 #include "game/room.h"
+#include "game/viewport.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
+#include "util.h"
 
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {

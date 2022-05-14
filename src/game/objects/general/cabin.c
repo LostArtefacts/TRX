@@ -1,7 +1,7 @@
-#include "game/objects/cabin.h"
+#include "game/objects/general/cabin.h"
 
 #include "game/items.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "global/vars.h"
 

@@ -1,7 +1,7 @@
 #include "game/objects/traps/falling_ceiling.h"
 
 #include "game/items.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "global/vars.h"
 
 #define FALLING_CEILING_DAMAGE 300

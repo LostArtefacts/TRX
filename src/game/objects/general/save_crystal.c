@@ -1,11 +1,11 @@
-#include "game/objects/save_crystal.h"
+#include "game/objects/general/save_crystal.h"
 
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/objects/pickup.h"
+#include "game/objects/general/pickup.h"
 #include "game/savegame.h"
 #include "game/settings.h"
 #include "game/sound.h"

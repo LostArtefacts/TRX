@@ -12,7 +12,7 @@
 #include "game/lara/lara_col.h"
 #include "game/lara/lara_look.h"
 #include "game/lara/lara_state.h"
-#include "game/objects/door.h"
+#include "game/objects/general/door.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"

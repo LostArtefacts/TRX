@@ -1,4 +1,4 @@
-#include "game/objects/cog.h"
+#include "game/objects/general/cog.h"
 
 #include "game/items.h"
 #include "game/room.h"
