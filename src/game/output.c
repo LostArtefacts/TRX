@@ -10,6 +10,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 #include "math/matrix.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
@@ -475,7 +476,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         g_LsAdder = 0x1FFF - g_LsAdder;
 
         PHD_ANGLE angles[2];
-        phd_GetVectorAngles(ls.x, ls.y, ls.z, angles);
+        Math_GetVectorAngles(ls.x, ls.y, ls.z, angles);
         phd_RotateLight(angles[1], angles[0]);
     }
 

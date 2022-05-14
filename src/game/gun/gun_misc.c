@@ -1,6 +1,5 @@
 #include "game/gun/gun_misc.h"
 
-#include "3dsystem/3d_gen.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/inv.h"
@@ -11,6 +10,7 @@
 #include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 #include "math/matrix.h"
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
@@ -151,7 +151,7 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
     Gun_FindTargetPoint(g_Lara.target, &target);
 
     int16_t ang[2];
-    phd_GetVectorAngles(
+    Math_GetVectorAngles(
         target.x - src.x, target.y - src.y, target.z - src.z, ang);
     ang[0] -= g_LaraItem->pos.y_rot;
     ang[1] -= g_LaraItem->pos.x_rot;
@@ -227,7 +227,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
         }
 
         PHD_ANGLE ang[2];
-        phd_GetVectorAngles(
+        Math_GetVectorAngles(
             target.x - src.x, target.y - src.y, target.z - src.z, ang);
         ang[0] -= g_Lara.torso_y_rot + g_LaraItem->pos.y_rot;
         ang[1] -= g_Lara.torso_x_rot + g_LaraItem->pos.x_rot;
