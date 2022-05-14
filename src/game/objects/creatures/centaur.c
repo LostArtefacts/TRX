@@ -1,6 +1,5 @@
 #include "game/objects/creatures/centaur.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/effects/exploding_death.h"

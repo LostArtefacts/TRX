@@ -6,8 +6,8 @@
 #include "game/screen.h"
 #include "game/settings.h"
 #include "game/text.h"
+#include "gfx/context.h"
 #include "global/vars.h"
-#include "src/gfx/context.h"
 
 #include <stdio.h>
 

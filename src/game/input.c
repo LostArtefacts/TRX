@@ -1,7 +1,9 @@
 #include "game/input.h"
 
+#include "game/clock.h"
 #include "specific/s_input.h"
-#include "src/game/clock.h"
+
+#include <stdint.h>
 
 #define DELAY_FRAMES 12
 #define HOLD_FRAMES 3

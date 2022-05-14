@@ -9,7 +9,7 @@
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/vars.h"
-#include "src/memory.h"
+#include "memory.h"
 
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20

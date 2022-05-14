@@ -6,6 +6,7 @@
 #include "game/option.h"
 #include "game/screen.h"
 #include "game/sound.h"
+#include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -13,7 +14,6 @@
 #include "log.h"
 #include "memory.h"
 #include "specific/s_input.h"
-#include "src/gfx/context.h"
 
 #include <stdint.h>
 #include <string.h>
