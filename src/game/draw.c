@@ -11,8 +11,6 @@
 #include "math/matrix.h"
 #include "util.h"
 
-static int16_t m_InterpolatedBounds[6] = { 0 };
-
 void DrawEffect(int16_t fxnum)
 {
     FX_INFO *fx = &g_Effects[fxnum];
@@ -487,22 +485,4 @@ int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
     }
 
     return interp;
-}
-
-int16_t *GetBoundsAccurate(ITEM_INFO *item)
-{
-    int32_t rate;
-    int16_t *frmptr[2];
-
-    int32_t frac = GetFrames(item, frmptr, &rate);
-    if (!frac) {
-        return frmptr[0];
-    }
-
-    for (int i = 0; i < 6; i++) {
-        int16_t a = frmptr[0][i];
-        int16_t b = frmptr[1][i];
-        m_InterpolatedBounds[i] = a + (((b - a) * frac) / rate);
-    }
-    return m_InterpolatedBounds;
 }

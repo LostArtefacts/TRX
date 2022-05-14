@@ -15,4 +15,3 @@ void DrawGunFlash(int32_t weapon_type, int32_t clip);
 void CalculateObjectLighting(ITEM_INFO *item, int16_t *frame);
 
 int32_t GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
-int16_t *GetBoundsAccurate(ITEM_INFO *item);

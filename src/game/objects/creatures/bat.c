@@ -1,8 +1,8 @@
 #include "game/objects/creatures/bat.h"
 
 #include "game/creature.h"
-#include "game/draw.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -58,7 +58,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
 
         item->anim_number = g_Objects[item->object_number].anim_index;
         item->frame_number = g_Anims[item->anim_number].frame_base;
-        bounds = GetBoundsAccurate(item);
+        bounds = Item_GetBoundsAccurate(item);
 
         item->anim_number = old_anim;
         item->frame_number = old_frame;
