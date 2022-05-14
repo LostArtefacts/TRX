@@ -85,7 +85,7 @@ bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion)
     return true;
 }
 
-bool UpdateLOT(LOT_INFO *LOT, int32_t expansion)
+bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion)
 {
     if (LOT->required_box != NO_BOX && LOT->required_box != LOT->target_box) {
         LOT->target_box = LOT->required_box;
@@ -212,7 +212,7 @@ int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
     int32_t top = 0;
     int32_t bottom = 0;
 
-    UpdateLOT(LOT, MAX_EXPANSION);
+    Box_UpdateLOT(LOT, MAX_EXPANSION);
 
     target->x = item->pos.x;
     target->y = item->pos.y;
