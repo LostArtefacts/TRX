@@ -43,6 +43,7 @@ static CAMERA_INFO m_OldCamera;
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo);
 static void Inv_Construct(void);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
+static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
@@ -207,6 +208,27 @@ static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item)
     } else {
         inv_item->drawn_meshes = -1;
     }
+}
+
+static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item)
+{
+    if (inv_item->current_frame == inv_item->goal_frame) {
+        Inv_SelectMeshes(inv_item);
+        return false;
+    }
+    if (inv_item->anim_count) {
+        inv_item->anim_count--;
+    } else {
+        inv_item->anim_count = inv_item->anim_speed;
+        inv_item->current_frame += inv_item->anim_direction;
+        if (inv_item->current_frame >= inv_item->frames_total) {
+            inv_item->current_frame = 0;
+        } else if (inv_item->current_frame < 0) {
+            inv_item->current_frame = inv_item->frames_total - 1;
+        }
+    }
+    Inv_SelectMeshes(inv_item);
+    return true;
 }
 
 int32_t Display_Inventory(int inv_mode)
@@ -611,7 +633,7 @@ int32_t Display_Inventory(int inv_mode)
             for (int j = 0; j < m_InvNFrames; j++) {
                 busy = false;
                 if (inv_item->y_rot == inv_item->y_rot_sel) {
-                    busy = AnimateInventoryItem(inv_item);
+                    busy = Inv_AnimateItem(inv_item);
                 }
             }
 
@@ -674,7 +696,7 @@ int32_t Display_Inventory(int inv_mode)
         case RNG_CLOSING_ITEM: {
             INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
             for (int j = 0; j < m_InvNFrames; j++) {
-                if (!AnimateInventoryItem(inv_item)) {
+                if (!Inv_AnimateItem(inv_item)) {
                     if (inv_item->object_number == O_PASSPORT_OPTION) {
                         inv_item->object_number = O_PASSPORT_CLOSED;
                         inv_item->current_frame = 0;
@@ -846,27 +868,6 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     return GF_NOP;
-}
-
-bool AnimateInventoryItem(INVENTORY_ITEM *inv_item)
-{
-    if (inv_item->current_frame == inv_item->goal_frame) {
-        Inv_SelectMeshes(inv_item);
-        return false;
-    }
-    if (inv_item->anim_count) {
-        inv_item->anim_count--;
-    } else {
-        inv_item->anim_count = inv_item->anim_speed;
-        inv_item->current_frame += inv_item->anim_direction;
-        if (inv_item->current_frame >= inv_item->frames_total) {
-            inv_item->current_frame = 0;
-        } else if (inv_item->current_frame < 0) {
-            inv_item->current_frame = inv_item->frames_total - 1;
-        }
-    }
-    Inv_SelectMeshes(inv_item);
-    return true;
 }
 
 void DrawInventoryItem(INVENTORY_ITEM *inv_item)
