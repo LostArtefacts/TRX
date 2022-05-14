@@ -120,7 +120,7 @@ void Setup_Creatures(void)
     Statue_Setup(&g_Objects[O_STATUE]);
 }
 
-void TrapObjects(void)
+void Setup_Traps(void)
 {
     FallingBlock_Setup(&g_Objects[O_FALLING_BLOCK]);
     Pendulum_Setup(&g_Objects[O_PENDULUM]);
@@ -262,7 +262,7 @@ void InitialiseObjects(void)
     }
 
     Setup_Creatures();
-    TrapObjects();
+    Setup_Traps();
     ObjectObjects();
 
     Lara_Hair_Initialise();

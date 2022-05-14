@@ -3,6 +3,6 @@
 #include "global/types.h"
 
 void Setup_Creatures(void);
-void TrapObjects(void);
+void Setup_Traps(void);
 void ObjectObjects(void);
 void InitialiseObjects(void);
