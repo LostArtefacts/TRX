@@ -422,31 +422,31 @@ TARGET_TYPE Box_CalculateTarget(
     return TARGET_NONE;
 }
 
-int32_t BadFloor(
+bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
     int16_t room_number, LOT_INFO *LOT)
 {
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
     if (floor->box == NO_BOX) {
-        return 1;
+        return true;
     }
 
     if (g_Boxes[floor->box].overlap_index & LOT->block_mask) {
-        return 1;
+        return true;
     }
 
     int32_t height = g_Boxes[floor->box].height;
     if (box_height - height > LOT->step || box_height - height < LOT->drop) {
-        return 1;
+        return true;
     }
 
     if (box_height - height < -LOT->step && height > next_height) {
-        return 1;
+        return true;
     }
 
     if (LOT->fly && y > height + LOT->fly) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
