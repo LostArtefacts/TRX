@@ -134,12 +134,12 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
     }
 
     ClearLOT(&creature->LOT);
-    CreateZone(item);
+    LOT_CreateZone(item);
 
     m_SlotsUsed++;
 }
 
-void CreateZone(ITEM_INFO *item)
+void LOT_CreateZone(ITEM_INFO *item)
 {
     CREATURE_INFO *creature = item->data;
 
