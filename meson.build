@@ -75,7 +75,6 @@ if python3.found()
 endif
 
 sources = [
-  'src/3dsystem/3d_gen.c',
   'src/config.c',
   'src/filesystem.c',
   'src/game/box.c',

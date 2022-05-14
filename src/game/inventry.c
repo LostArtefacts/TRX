@@ -1,6 +1,5 @@
 #include "game/inv.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/clock.h"
 #include "game/draw.h"
