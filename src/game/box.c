@@ -108,7 +108,7 @@ bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion)
     return Box_SearchLOT(LOT, expansion);
 }
 
-void TargetBox(LOT_INFO *LOT, int16_t box_number)
+void Box_TargetBox(LOT_INFO *LOT, int16_t box_number)
 {
     box_number &= BOX_NUMBER;
 

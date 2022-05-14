@@ -7,7 +7,7 @@
 
 bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion);
 bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion);
-void TargetBox(LOT_INFO *LOT, int16_t box_number);
+void Box_TargetBox(LOT_INFO *LOT, int16_t box_number);
 int32_t StalkBox(ITEM_INFO *item, int16_t box_number);
 int32_t EscapeBox(ITEM_INFO *item, int16_t box_number);
 int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number);
