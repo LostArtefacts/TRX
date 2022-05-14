@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 void LOT_InitialiseArray(void);
-void DisableBaddieAI(int16_t item_num);
+void LOT_DisableBaddieAI(int16_t item_num);
 int32_t EnableBaddieAI(int16_t item_num, int32_t always);
 void InitialiseSlot(int16_t item_num, int32_t slot);
 void CreateZone(ITEM_INFO *item);

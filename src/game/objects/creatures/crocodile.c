@@ -268,7 +268,7 @@ void Alligator_Control(int16_t item_num)
         } else if (item->pos.y < wh) {
             item->pos.y = wh;
             if (gator) {
-                DisableBaddieAI(item_num);
+                LOT_DisableBaddieAI(item_num);
             }
         }
 

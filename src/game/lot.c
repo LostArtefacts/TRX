@@ -24,7 +24,7 @@ void LOT_InitialiseArray(void)
     m_SlotsUsed = 0;
 }
 
-void DisableBaddieAI(int16_t item_num)
+void LOT_DisableBaddieAI(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *creature = item->data;
@@ -80,7 +80,7 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
     }
 
     g_Items[m_BaddieSlots[worst_slot].item_num].status = IS_INVISIBLE;
-    DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
+    LOT_DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
     InitialiseSlot(item_num, worst_slot);
     return 1;
 }
