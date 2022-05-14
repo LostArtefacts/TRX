@@ -107,6 +107,7 @@ sources = [
   'src/game/game.c',
   'src/game/game_cutscene.c',
   'src/game/game_demo.c',
+  'src/game/game_draw.c',
   'src/game/game_pause.c',
   'src/game/gamebuf.c',
   'src/game/gameflow.c',

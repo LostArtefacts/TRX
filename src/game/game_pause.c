@@ -94,7 +94,7 @@ static int32_t Game_Pause_Loop(void)
 
     while (1) {
         Output_InitialisePolyList();
-        Draw_DrawScene(false);
+        Game_DrawScene(false);
         Game_Pause_DisplayText();
         Text_Draw();
         Output_DumpScreen();
