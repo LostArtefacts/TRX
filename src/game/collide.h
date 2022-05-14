@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void GetCollisionInfo(
+void Collide_GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,
     int32_t objheight);
 

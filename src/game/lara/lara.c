@@ -776,7 +776,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
         int16_t old_facing = coll->facing;
         coll->facing = Math_Atan(
             lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
-        GetCollisionInfo(
+        Collide_GetCollisionInfo(
             coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
             lara_item->room_number, LARA_HEIGHT);
         coll->facing = old_facing;
