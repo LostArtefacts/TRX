@@ -41,6 +41,7 @@ static int16_t m_CompassSpeed = 0;
 static CAMERA_INFO m_OldCamera;
 
 static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo);
+static void Inv_Construct(void);
 
 static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
@@ -134,6 +135,52 @@ static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
     Matrix_Pop();
 }
 
+static void Inv_Construct(void)
+{
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdBottom = Viewport_GetMaxY();
+    g_PhdRight = Viewport_GetMaxX();
+
+    g_InvChosen = 0;
+    if (g_InvMode == INV_TITLE_MODE) {
+        g_InvOptionObjects = TITLE_RING_OBJECTS;
+        m_VersionText = Text_Create(-20, -18, g_T1MVersion);
+        Text_AlignRight(m_VersionText, 1);
+        Text_AlignBottom(m_VersionText, 1);
+        Text_SetScale(m_VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
+    } else {
+        g_InvOptionObjects = OPTION_RING_OBJECTS;
+        Text_Remove(m_VersionText);
+        m_VersionText = NULL;
+    }
+
+    for (int i = 0; i < g_InvMainObjects; i++) {
+        INVENTORY_ITEM *inv_item = g_InvMainList[i];
+        inv_item->drawn_meshes = inv_item->which_meshes;
+        inv_item->current_frame = 0;
+        inv_item->goal_frame = inv_item->current_frame;
+        inv_item->anim_count = 0;
+        inv_item->y_rot = 0;
+    }
+
+    for (int i = 0; i < g_InvOptionObjects; i++) {
+        INVENTORY_ITEM *inv_item = g_InvOptionList[i];
+        inv_item->current_frame = 0;
+        inv_item->goal_frame = 0;
+        inv_item->anim_count = 0;
+        inv_item->y_rot = 0;
+    }
+
+    g_InvMainCurrent = 0;
+    g_InvOptionCurrent = 0;
+    g_OptionSelected = 0;
+
+    if (g_GameFlow.gym_level_num == -1) {
+        Inv_RemoveItem(O_PHOTO_OPTION);
+    }
+}
+
 int32_t Display_Inventory(int inv_mode)
 {
     RING_INFO ring;
@@ -156,7 +203,7 @@ int32_t Display_Inventory(int inv_mode)
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
     }
-    Construct_Inventory();
+    Inv_Construct();
 
     if (g_Config.disable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
         Music_Pause();
@@ -771,52 +818,6 @@ int32_t Display_Inventory(int inv_mode)
     }
 
     return GF_NOP;
-}
-
-void Construct_Inventory(void)
-{
-    g_PhdLeft = Viewport_GetMinX();
-    g_PhdTop = Viewport_GetMinY();
-    g_PhdBottom = Viewport_GetMaxY();
-    g_PhdRight = Viewport_GetMaxX();
-
-    g_InvChosen = 0;
-    if (g_InvMode == INV_TITLE_MODE) {
-        g_InvOptionObjects = TITLE_RING_OBJECTS;
-        m_VersionText = Text_Create(-20, -18, g_T1MVersion);
-        Text_AlignRight(m_VersionText, 1);
-        Text_AlignBottom(m_VersionText, 1);
-        Text_SetScale(m_VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);
-    } else {
-        g_InvOptionObjects = OPTION_RING_OBJECTS;
-        Text_Remove(m_VersionText);
-        m_VersionText = NULL;
-    }
-
-    for (int i = 0; i < g_InvMainObjects; i++) {
-        INVENTORY_ITEM *inv_item = g_InvMainList[i];
-        inv_item->drawn_meshes = inv_item->which_meshes;
-        inv_item->current_frame = 0;
-        inv_item->goal_frame = inv_item->current_frame;
-        inv_item->anim_count = 0;
-        inv_item->y_rot = 0;
-    }
-
-    for (int i = 0; i < g_InvOptionObjects; i++) {
-        INVENTORY_ITEM *inv_item = g_InvOptionList[i];
-        inv_item->current_frame = 0;
-        inv_item->goal_frame = 0;
-        inv_item->anim_count = 0;
-        inv_item->y_rot = 0;
-    }
-
-    g_InvMainCurrent = 0;
-    g_InvOptionCurrent = 0;
-    g_OptionSelected = 0;
-
-    if (g_GameFlow.gym_level_num == -1) {
-        Inv_RemoveItem(O_PHOTO_OPTION);
-    }
 }
 
 bool AnimateInventoryItem(INVENTORY_ITEM *inv_item)
