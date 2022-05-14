@@ -16,64 +16,6 @@
 static int16_t m_InterpolatedBounds[6] = { 0 };
 bool g_CameraUnderwater = false;
 
-void PrintRooms(int16_t room_number)
-{
-    ROOM_INFO *r = &g_RoomInfo[room_number];
-    if (r->flags & RF_UNDERWATER) {
-        Output_SetupBelowWater(g_CameraUnderwater);
-    } else {
-        Output_SetupAboveWater(g_CameraUnderwater);
-    }
-
-    r->bound_active = 0;
-
-    Matrix_Push();
-    Matrix_TranslateAbs(r->x, r->y, r->z);
-
-    g_PhdLeft = r->left;
-    g_PhdRight = r->right;
-    g_PhdTop = r->top;
-    g_PhdBottom = r->bottom;
-
-    Output_DrawRoom(r->data);
-
-    for (int i = r->item_number; i != NO_ITEM; i = g_Items[i].next_item) {
-        ITEM_INFO *item = &g_Items[i];
-        if (item->status != IS_INVISIBLE) {
-            g_Objects[item->object_number].draw_routine(item);
-        }
-    }
-
-    for (int i = 0; i < r->num_meshes; i++) {
-        MESH_INFO *mesh = &r->mesh[i];
-        if (g_StaticObjects[mesh->static_number].flags & 2) {
-            Matrix_Push();
-            Matrix_TranslateAbs(mesh->x, mesh->y, mesh->z);
-            Matrix_RotY(mesh->y_rot);
-            int clip = Output_GetObjectBounds(
-                &g_StaticObjects[mesh->static_number].x_minp);
-            if (clip) {
-                Output_CalculateStaticLight(mesh->shade);
-                Output_DrawPolygons(
-                    g_Meshes[g_StaticObjects[mesh->static_number].mesh_number],
-                    clip);
-            }
-            Matrix_Pop();
-        }
-    }
-
-    for (int i = r->fx_number; i != NO_ITEM; i = g_Effects[i].next_fx) {
-        DrawEffect(i);
-    }
-
-    Matrix_Pop();
-
-    r->left = Viewport_GetMaxX();
-    r->bottom = 0;
-    r->right = 0;
-    r->top = Viewport_GetMaxY();
-}
-
 void DrawEffect(int16_t fxnum)
 {
     FX_INFO *fx = &g_Effects[fxnum];
@@ -597,7 +539,7 @@ void Draw_DrawScene(bool draw_overlay)
             r->left = 0;
             r->right = Viewport_GetMaxX();
             r->bottom = Viewport_GetMaxY();
-            PrintRooms(room_num);
+            Room_DrawSingleRoom(room_num);
         }
     }
     Output_DrawBackdropScreen();
