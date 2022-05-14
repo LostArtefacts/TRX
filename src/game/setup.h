@@ -2,7 +2,7 @@
 
 #include "global/types.h"
 
-void BaddyObjects(void);
+void Setup_Creatures(void);
 void TrapObjects(void);
 void ObjectObjects(void);
 void InitialiseObjects(void);
