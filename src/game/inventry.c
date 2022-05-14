@@ -42,6 +42,7 @@ static CAMERA_INFO m_OldCamera;
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo);
 static void Inv_Construct(void);
+static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
@@ -178,6 +179,33 @@ static void Inv_Construct(void)
 
     if (g_GameFlow.gym_level_num == -1) {
         Inv_RemoveItem(O_PHOTO_OPTION);
+    }
+}
+
+static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item)
+{
+    if (inv_item->object_number == O_PASSPORT_OPTION) {
+        if (inv_item->current_frame <= 14) {
+            inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1;
+        } else if (inv_item->current_frame < 19) {
+            inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1 | PPAGE2;
+        } else if (inv_item->current_frame == 19) {
+            inv_item->drawn_meshes = PASS_MESH | PPAGE1 | PPAGE2;
+        } else if (inv_item->current_frame < 24) {
+            inv_item->drawn_meshes = PASS_MESH | PPAGE1 | PPAGE2 | PINBACK;
+        } else if (inv_item->current_frame < 29) {
+            inv_item->drawn_meshes = PASS_MESH | PPAGE2 | PINBACK;
+        } else if (inv_item->current_frame == 29) {
+            inv_item->drawn_meshes = PASS_MESH;
+        }
+    } else if (inv_item->object_number == O_MAP_OPTION) {
+        if (inv_item->current_frame && inv_item->current_frame < 18) {
+            inv_item->drawn_meshes = -1;
+        } else {
+            inv_item->drawn_meshes = inv_item->which_meshes;
+        }
+    } else {
+        inv_item->drawn_meshes = -1;
     }
 }
 
@@ -823,7 +851,7 @@ int32_t Display_Inventory(int inv_mode)
 bool AnimateInventoryItem(INVENTORY_ITEM *inv_item)
 {
     if (inv_item->current_frame == inv_item->goal_frame) {
-        SelectMeshes(inv_item);
+        Inv_SelectMeshes(inv_item);
         return false;
     }
     if (inv_item->anim_count) {
@@ -837,35 +865,8 @@ bool AnimateInventoryItem(INVENTORY_ITEM *inv_item)
             inv_item->current_frame = inv_item->frames_total - 1;
         }
     }
-    SelectMeshes(inv_item);
+    Inv_SelectMeshes(inv_item);
     return true;
-}
-
-void SelectMeshes(INVENTORY_ITEM *inv_item)
-{
-    if (inv_item->object_number == O_PASSPORT_OPTION) {
-        if (inv_item->current_frame <= 14) {
-            inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1;
-        } else if (inv_item->current_frame < 19) {
-            inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1 | PPAGE2;
-        } else if (inv_item->current_frame == 19) {
-            inv_item->drawn_meshes = PASS_MESH | PPAGE1 | PPAGE2;
-        } else if (inv_item->current_frame < 24) {
-            inv_item->drawn_meshes = PASS_MESH | PPAGE1 | PPAGE2 | PINBACK;
-        } else if (inv_item->current_frame < 29) {
-            inv_item->drawn_meshes = PASS_MESH | PPAGE2 | PINBACK;
-        } else if (inv_item->current_frame == 29) {
-            inv_item->drawn_meshes = PASS_MESH;
-        }
-    } else if (inv_item->object_number == O_MAP_OPTION) {
-        if (inv_item->current_frame && inv_item->current_frame < 18) {
-            inv_item->drawn_meshes = -1;
-        } else {
-            inv_item->drawn_meshes = inv_item->which_meshes;
-        }
-    } else {
-        inv_item->drawn_meshes = -1;
-    }
 }
 
 void DrawInventoryItem(INVENTORY_ITEM *inv_item)
