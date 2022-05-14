@@ -175,7 +175,7 @@ bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number)
     return true;
 }
 
-int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
+bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
 {
     CREATURE_INFO *creature = item->data;
 
@@ -189,20 +189,20 @@ int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
     }
 
     if (zone[box_number] != zone_number) {
-        return 0;
+        return false;
     }
 
     BOX_INFO *box = &g_Boxes[box_number];
     if (box->overlap_index & creature->LOT.block_mask) {
-        return 0;
+        return false;
     }
 
     if (item->pos.z > box->left && item->pos.z < box->right
         && item->pos.x > box->top && item->pos.x < box->bottom) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
