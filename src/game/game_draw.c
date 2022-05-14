@@ -29,7 +29,6 @@ void Game_DrawScene(bool draw_overlay)
         }
     } else {
         // cinematic scene
-        g_CameraUnderwater = false;
         for (int i = 0; i < g_RoomsToDrawCount; i++) {
             int16_t room_num = g_RoomsToDraw[i];
             ROOM_INFO *r = &g_RoomInfo[room_num];

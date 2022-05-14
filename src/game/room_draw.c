@@ -202,7 +202,8 @@ void Room_DrawAllRooms(int16_t room_num)
         g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
     }
 
-    g_CameraUnderwater = r->flags & RF_UNDERWATER;
+    bool camera_underwater =
+        g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER;
 
     Matrix_Push();
     Matrix_TranslateAbs(r->x, r->y, r->z);
@@ -223,9 +224,9 @@ void Room_DrawAllRooms(int16_t room_num)
 
     if (g_Objects[O_LARA].loaded) {
         if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
-            Output_SetupBelowWater(g_CameraUnderwater);
+            Output_SetupBelowWater(camera_underwater);
         } else {
-            Output_SetupAboveWater(g_CameraUnderwater);
+            Output_SetupAboveWater(camera_underwater);
         }
         Lara_Draw(g_LaraItem);
     }
@@ -233,11 +234,14 @@ void Room_DrawAllRooms(int16_t room_num)
 
 void Room_DrawSingleRoom(int16_t room_num)
 {
+    bool camera_underwater =
+        g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER;
+
     ROOM_INFO *r = &g_RoomInfo[room_num];
     if (r->flags & RF_UNDERWATER) {
-        Output_SetupBelowWater(g_CameraUnderwater);
+        Output_SetupBelowWater(camera_underwater);
     } else {
-        Output_SetupAboveWater(g_CameraUnderwater);
+        Output_SetupAboveWater(camera_underwater);
     }
 
     r->bound_active = 0;
