@@ -1,5 +1,6 @@
 #include "game/objects/traps/movable_block.h"
 
+#include "game/collide.h"
 #include "game/draw.h"
 #include "game/effect_routines/dino_stomp.h"
 #include "game/input.h"
@@ -8,8 +9,6 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "src/game/collide.h"
-#include "src/game/sphere.h"
 
 typedef enum {
     MBS_STILL = 1,
