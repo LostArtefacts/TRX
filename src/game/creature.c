@@ -416,7 +416,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     if (item->status == IS_DEACTIVATED) {
         item->collidable = 0;
         item->hit_points = DONT_TARGET;
-        DisableBaddieAI(item_num);
+        LOT_DisableBaddieAI(item_num);
         Item_RemoveActive(item_num);
         return false;
     }

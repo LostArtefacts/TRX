@@ -224,7 +224,7 @@ void Pierre_Control(int16_t item_num)
             pierre->flags = 1;
         } else if (pierre->flags > PIERRE_DISAPPEAR) {
             item->hit_points = DONT_TARGET;
-            DisableBaddieAI(item_num);
+            LOT_DisableBaddieAI(item_num);
             Item_Kill(item_num);
             m_PierreItemNum = NO_ITEM;
         }
@@ -234,7 +234,7 @@ void Pierre_Control(int16_t item_num)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT) {
         item->hit_points = DONT_TARGET;
-        DisableBaddieAI(item_num);
+        LOT_DisableBaddieAI(item_num);
         Item_Kill(item_num);
         m_PierreItemNum = NO_ITEM;
     }
