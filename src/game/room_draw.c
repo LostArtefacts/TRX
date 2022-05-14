@@ -1,6 +1,6 @@
 #include "game/room_draw.h"
 
-#include "game/draw.h"
+#include "game/effects.h"
 #include "game/lara/lara_draw.h"
 #include "game/output.h"
 #include "game/shell.h"
@@ -282,7 +282,7 @@ void Room_DrawSingleRoom(int16_t room_num)
     }
 
     for (int i = r->fx_number; i != NO_ITEM; i = g_Effects[i].next_fx) {
-        DrawEffect(i);
+        Effect_Draw(i);
     }
 
     Matrix_Pop();
