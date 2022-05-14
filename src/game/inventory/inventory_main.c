@@ -460,7 +460,7 @@ int32_t Inv_Display(int inv_mode)
             }
             Inv_Ring_IsOpen(&ring);
         } else {
-            RingIsNotOpen(&ring);
+            Inv_Ring_IsNotOpen(&ring);
         }
 
         if (!imo.status || imo.status == RNG_CLOSING
