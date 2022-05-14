@@ -1,5 +1,7 @@
 #include "game/room_draw.h"
 
+#include "game/draw.h"
+#include "game/lara/lara_draw.h"
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/viewport.h"
@@ -179,4 +181,52 @@ void Room_GetBounds(int16_t room_num)
     }
     Matrix_Pop();
     m_RoomNumStackIdx--;
+}
+
+void Room_DrawAllRooms(int16_t room_num)
+{
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdRight = Viewport_GetMaxX();
+    g_PhdBottom = Viewport_GetMaxY();
+
+    ROOM_INFO *r = &g_RoomInfo[room_num];
+    r->left = g_PhdLeft;
+    r->top = g_PhdTop;
+    r->right = g_PhdRight;
+    r->bottom = g_PhdBottom;
+    r->bound_active = 1;
+
+    g_RoomsToDrawCount = 0;
+    if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
+        g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
+    }
+
+    g_CameraUnderwater = r->flags & RF_UNDERWATER;
+
+    Matrix_Push();
+    Matrix_TranslateAbs(r->x, r->y, r->z);
+    if (r->doors) {
+        for (int i = 0; i < r->doors->count; i++) {
+            DOOR_INFO *door = &r->doors->door[i];
+            if (Room_SetBounds(&door->x, door->room_num, r)) {
+                Room_GetBounds(door->room_num);
+            }
+        }
+    }
+    Matrix_Pop();
+    Output_ClearScreen();
+
+    for (int i = 0; i < g_RoomsToDrawCount; i++) {
+        PrintRooms(g_RoomsToDraw[i]);
+    }
+
+    if (g_Objects[O_LARA].loaded) {
+        if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
+            Output_SetupBelowWater(g_CameraUnderwater);
+        } else {
+            Output_SetupAboveWater(g_CameraUnderwater);
+        }
+        Lara_Draw(g_LaraItem);
+    }
 }
