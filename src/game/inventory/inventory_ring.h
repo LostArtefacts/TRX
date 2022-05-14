@@ -4,16 +4,16 @@
 
 #include <stdint.h>
 
+void Inv_Ring_Init(
+    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
+    int16_t current, IMOTION_INFO *imo);
+void Inv_Ring_Shutdown(void);
+
 void Inv_Ring_IsOpen(RING_INFO *ring);
 void Inv_Ring_IsNotOpen(RING_INFO *ring);
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item);
 void Inv_Ring_NotActive(void);
 
-void RemoveInventoryText(void);
-
-void Inv_Ring_Init(
-    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
-    int16_t current, IMOTION_INFO *imo);
 void Inv_Ring_GetView(RING_INFO *a1, PHD_3DPOS *viewer);
 void Inv_Ring_Light(RING_INFO *ring);
 void Inv_Ring_CalcAdders(RING_INFO *ring, int16_t rotation_duration);

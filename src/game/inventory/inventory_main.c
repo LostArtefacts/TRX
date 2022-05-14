@@ -860,7 +860,7 @@ int32_t Inv_Display(int inv_mode)
         g_Camera.number_frames = m_InvNFrames;
     }
 
-    RemoveInventoryText();
+    Inv_Ring_Shutdown();
     Output_FadeReset();
     Output_FadeSetSpeed(1.0);
 
