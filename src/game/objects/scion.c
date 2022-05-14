@@ -49,13 +49,13 @@ static int16_t m_Scion_Bounds4[12] = {
 
 void Scion_Setup1(OBJECT_INFO *obj)
 {
-    g_Objects[O_SCION_ITEM].draw_routine = DrawPickupItem;
+    g_Objects[O_SCION_ITEM].draw_routine = Object_DrawPickupItem;
     g_Objects[O_SCION_ITEM].collision = Scion_Collision;
 }
 
 void Scion_Setup2(OBJECT_INFO *obj)
 {
-    g_Objects[O_SCION_ITEM2].draw_routine = DrawPickupItem;
+    g_Objects[O_SCION_ITEM2].draw_routine = Object_DrawPickupItem;
     g_Objects[O_SCION_ITEM2].collision = Pickup_Collision;
     g_Objects[O_SCION_ITEM2].save_flags = 1;
 }
