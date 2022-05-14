@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/lara_main.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"

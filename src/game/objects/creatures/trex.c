@@ -3,7 +3,7 @@
 #include "config.h"
 #include "game/creature.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara/lara_main.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/random.h"

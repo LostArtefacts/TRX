@@ -3,7 +3,7 @@
 #include "config.h"
 #include "game/input.h"
 #include "game/inv.h"
-#include "game/lara.h"
+#include "game/lara/lara_main.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

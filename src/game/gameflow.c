@@ -7,7 +7,7 @@
 #include "game/game.h"
 #include "game/input.h"
 #include "game/inv.h"
-#include "game/lara/lara.h"
+#include "game/lara/lara_main.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/room.h"

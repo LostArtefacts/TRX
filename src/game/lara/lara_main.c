@@ -1,10 +1,10 @@
-#include "game/lara/lara.h"
+#include "game/lara/lara_main.h"
 
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/gameflow.h"
-#include "game/gun.h"
+#include "game/gun/gun_main.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"

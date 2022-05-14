@@ -2,8 +2,8 @@
 
 #include "config.h"
 #include "game/input.h"
-#include "game/lara/lara.h"
 #include "game/lara/lara_look.h"
+#include "game/lara/lara_main.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"
 #include "game/sound.h"
