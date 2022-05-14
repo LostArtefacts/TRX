@@ -3,7 +3,7 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/music.h"
-#include "game/option.h"
+#include "game/option/option_control.h"
 #include "game/screen.h"
 #include "game/sound.h"
 #include "gfx/context.h"

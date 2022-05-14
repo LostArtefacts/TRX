@@ -1,4 +1,4 @@
-#include "game/option.h"
+#include "game/option/option_passport.h"
 
 #include "game/gameflow.h"
 #include "game/input.h"
