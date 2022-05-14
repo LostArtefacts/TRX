@@ -22,6 +22,67 @@ static TEXTSTRING *m_InvDownArrow2 = NULL;
 static TEXTSTRING *m_InvUpArrow1 = NULL;
 static TEXTSTRING *m_InvUpArrow2 = NULL;
 
+void Inv_Ring_Init(
+    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
+    int16_t current, IMOTION_INFO *imo)
+{
+    ring->type = type;
+    ring->radius = 0;
+    ring->list = list;
+    ring->number_of_objects = qty;
+    ring->current_object = current;
+    ring->angle_adder = 0x10000 / qty;
+
+    if (g_InvMode == INV_TITLE_MODE) {
+        ring->camera_pitch = 1024;
+    } else {
+        ring->camera_pitch = 0;
+    }
+    ring->rotating = 0;
+    ring->rot_count = 0;
+    ring->target_object = 0;
+    ring->rot_adder = 0;
+    ring->rot_adder_l = 0;
+    ring->rot_adder_r = 0;
+
+    ring->imo = imo;
+
+    ring->camera.x = 0;
+    ring->camera.y = CAMERA_STARTHEIGHT;
+    ring->camera.z = 896;
+    ring->camera.x_rot = 0;
+    ring->camera.y_rot = 0;
+    ring->camera.z_rot = 0;
+
+    Inv_Ring_MotionInit(ring, OPEN_FRAMES, RNG_OPENING, RNG_OPEN);
+    Inv_Ring_MotionRadius(ring, RING_RADIUS);
+    Inv_Ring_MotionCameraPos(ring, CAMERA_HEIGHT);
+    Inv_Ring_MotionRotation(
+        ring, OPEN_ROTATION,
+        0xC000 - (ring->current_object * ring->angle_adder));
+
+    ring->ringpos.x = 0;
+    ring->ringpos.y = 0;
+    ring->ringpos.z = 0;
+    ring->ringpos.x_rot = 0;
+    ring->ringpos.y_rot = imo->rotate_target - OPEN_ROTATION;
+    ring->ringpos.z_rot = 0;
+
+    ring->light.x = -1536;
+    ring->light.y = 256;
+    ring->light.z = 1024;
+}
+
+void Inv_Ring_Shutdown(void)
+{
+    for (int i = 0; i < IT_NUMBER_OF; i++) {
+        if (g_InvItemText[i]) {
+            Text_Remove(g_InvItemText[i]);
+            g_InvItemText[i] = NULL;
+        }
+    }
+}
+
 void Inv_Ring_IsOpen(RING_INFO *ring)
 {
     if (g_InvMode == INV_TITLE_MODE) {
@@ -286,68 +347,7 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 
 void Inv_Ring_NotActive(void)
 {
-    RemoveInventoryText();
-}
-
-void RemoveInventoryText(void)
-{
-    for (int i = 0; i < IT_NUMBER_OF; i++) {
-        if (g_InvItemText[i]) {
-            Text_Remove(g_InvItemText[i]);
-            g_InvItemText[i] = NULL;
-        }
-    }
-}
-
-void Inv_Ring_Init(
-    RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
-    int16_t current, IMOTION_INFO *imo)
-{
-    ring->type = type;
-    ring->radius = 0;
-    ring->list = list;
-    ring->number_of_objects = qty;
-    ring->current_object = current;
-    ring->angle_adder = 0x10000 / qty;
-
-    if (g_InvMode == INV_TITLE_MODE) {
-        ring->camera_pitch = 1024;
-    } else {
-        ring->camera_pitch = 0;
-    }
-    ring->rotating = 0;
-    ring->rot_count = 0;
-    ring->target_object = 0;
-    ring->rot_adder = 0;
-    ring->rot_adder_l = 0;
-    ring->rot_adder_r = 0;
-
-    ring->imo = imo;
-
-    ring->camera.x = 0;
-    ring->camera.y = CAMERA_STARTHEIGHT;
-    ring->camera.z = 896;
-    ring->camera.x_rot = 0;
-    ring->camera.y_rot = 0;
-    ring->camera.z_rot = 0;
-
-    Inv_Ring_MotionInit(ring, OPEN_FRAMES, RNG_OPENING, RNG_OPEN);
-    Inv_Ring_MotionRadius(ring, RING_RADIUS);
-    Inv_Ring_MotionCameraPos(ring, CAMERA_HEIGHT);
-    Inv_Ring_MotionRotation(
-        ring, OPEN_ROTATION,
-        0xC000 - (ring->current_object * ring->angle_adder));
-
-    ring->ringpos.x = 0;
-    ring->ringpos.y = 0;
-    ring->ringpos.z = 0;
-    ring->ringpos.x_rot = 0;
-    ring->ringpos.y_rot = imo->rotate_target - OPEN_ROTATION;
-    ring->ringpos.z_rot = 0;
-
-    ring->light.x = -1536;
-    ring->light.y = 256;
-    ring->light.z = 1024;
+    Inv_Ring_Shutdown();
 }
 
 void Inv_Ring_GetView(RING_INFO *ring, PHD_3DPOS *viewer)
