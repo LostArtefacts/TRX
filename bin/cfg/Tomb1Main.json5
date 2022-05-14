@@ -82,9 +82,9 @@
     "enable_fade_effects": true,
 
     // Changes how menus are displayed. Possible values:
-    // - ps1: UI style matches the PS1 version.
     // - pc: UI style matches the PC version.
-    "menu_style": "ps1",
+    // - ps1: UI style matches the PS1 version.
+    "menu_style": "pc",
 
     // Changes how the healthbar is displayed. Possible values:
     // - default: show the healthbar at the start of a level, after getting
