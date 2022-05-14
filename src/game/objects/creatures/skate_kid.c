@@ -1,9 +1,9 @@
 #include "game/objects/creatures/skate_kid.h"
 
 #include "game/creature.h"
-#include "game/draw.h"
 #include "game/items.h"
 #include "game/music.h"
+#include "game/objects.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -158,13 +158,13 @@ void SkateKid_Control(int16_t item_num)
 
 void SkateKid_Draw(ITEM_INFO *item)
 {
-    DrawAnimatingItem(item);
+    Object_DrawAnimatingItem(item);
     int16_t anim = item->anim_number;
     int16_t frame = item->frame_number;
     item->object_number = O_SKATEBOARD;
     item->anim_number = anim + g_Objects[O_SKATEBOARD].anim_index
         - g_Objects[O_SKATEKID].anim_index;
-    DrawAnimatingItem(item);
+    Object_DrawAnimatingItem(item);
     item->anim_number = anim;
     item->frame_number = frame;
     item->object_number = O_SKATEKID;
