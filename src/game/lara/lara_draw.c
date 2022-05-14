@@ -1,6 +1,6 @@
 #include "game/lara/lara_draw.h"
 
-#include "game/draw.h"
+#include "game/gun/gun.h"
 #include "game/items.h"
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
@@ -250,11 +250,11 @@ void Lara_Draw(ITEM_INFO *item)
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_L], clip);
 
         if (g_Lara.left_arm.flash_gun) {
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop();
@@ -303,7 +303,7 @@ void Lara_Draw(ITEM_INFO *item)
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop();
@@ -513,12 +513,12 @@ void Lara_Draw_I(
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_L], clip);
 
         if (g_Lara.left_arm.flash_gun) {
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop_I();
@@ -568,7 +568,7 @@ void Lara_Draw_I(
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop_I();

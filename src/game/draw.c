@@ -4,7 +4,6 @@
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/output.h"
-#include "game/random.h"
 #include "game/room.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -393,42 +392,4 @@ void DrawUnclippedItem(ITEM_INFO *item)
     g_PhdTop = top;
     g_PhdRight = right;
     g_PhdBottom = bottom;
-}
-
-void DrawGunFlash(int32_t weapon_type, int32_t clip)
-{
-    int32_t light;
-    int32_t len;
-    int32_t off;
-
-    switch (weapon_type) {
-    case LGT_MAGNUMS:
-        light = 16 * 256;
-        len = 155;
-        off = 55;
-        break;
-
-    case LGT_UZIS:
-        light = 10 * 256;
-        len = 180;
-        off = 55;
-        break;
-
-    case LGT_SHOTGUN:
-        light = 10 * 256;
-        len = 285;
-        off = 0;
-        break;
-
-    default:
-        light = 20 * 256;
-        len = 155;
-        off = 55;
-        break;
-    }
-
-    Matrix_TranslateRel(0, len, off);
-    Matrix_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(Random_GetDraw() * 2));
-    Output_CalculateStaticLight(light);
-    Output_DrawPolygons(g_Meshes[g_Objects[O_GUN_FLASH].mesh_index], clip);
 }
