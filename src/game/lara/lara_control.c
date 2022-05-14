@@ -72,7 +72,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
 
     coll->facing = (int16_t)Math_Atan(
         item->pos.z - coll->old.z, item->pos.x - coll->old.x);
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
         item->room_number, UW_HEIGHT);
 

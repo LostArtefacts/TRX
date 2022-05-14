@@ -16,7 +16,7 @@
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number,
         LARA_HEIGHT);
 }
@@ -590,7 +590,7 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
 
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
         item->room_number, SURF_HEIGHT);
 
@@ -702,7 +702,7 @@ void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll)
     } else {
         g_Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
     }
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
         item->room_number, UW_HEIGHT);
 
