@@ -36,6 +36,7 @@ def sort_imports(path: Path) -> None:
         "game/invfunc.c": "game/inv.h",
         "game/invvars.c": "game/inv.h",
         "game/option/option.c": "game/option.h",
+        "game/savegame/savegame.c": "game/savegame.h",
         "specific/s_audio_sample.c": "specific/s_audio.h",
         "specific/s_audio_stream.c": "specific/s_audio.h",
     }.get(str(rel_path), own_include)

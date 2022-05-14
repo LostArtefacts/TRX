@@ -1,5 +1,4 @@
-#define SAVEGAME_IMPL
-#include "game/savegame_legacy.h"
+#include "game/savegame/savegame_legacy.h"
 
 #include "game/gameflow.h"
 #include "game/inventory/inventory_func.h"
