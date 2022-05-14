@@ -127,7 +127,7 @@ void Box_TargetBox(LOT_INFO *LOT, int16_t box_number)
     }
 }
 
-int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
+bool Box_StalkBox(ITEM_INFO *item, int16_t box_number)
 {
     BOX_INFO *box = &g_Boxes[box_number];
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
@@ -135,14 +135,14 @@ int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
 
     if (x > STALK_DIST || x < -STALK_DIST || z > STALK_DIST
         || z < -STALK_DIST) {
-        return 0;
+        return false;
     }
 
     int enemy_quad = (g_LaraItem->pos.y_rot >> 14) + 2;
     int box_quad = (z > 0) ? ((x > 0) ? 2 : 1) : ((x > 0) ? 3 : 0);
 
     if (enemy_quad == box_quad) {
-        return 0;
+        return false;
     }
 
     int baddie_quad = (item->pos.z > g_LaraItem->pos.z)
@@ -150,10 +150,10 @@ int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
         : ((item->pos.x > g_LaraItem->pos.x) ? 3 : 0);
 
     if (enemy_quad == baddie_quad && ABS(enemy_quad - box_quad) == 2) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 int32_t EscapeBox(ITEM_INFO *item, int16_t box_number)
