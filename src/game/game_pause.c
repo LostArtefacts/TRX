@@ -7,11 +7,11 @@
 #include "game/output.h"
 #include "game/requester.h"
 #include "game/screen.h"
+#include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "src/game/sound.h"
 
 #include <stddef.h>
 

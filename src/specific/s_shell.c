@@ -10,11 +10,11 @@
 #include "game/random.h"
 #include "game/savegame.h"
 #include "game/shell.h"
+#include "game/sound.h"
 #include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
-#include "src/game/sound.h"
 
 #define SDL_MAIN_HANDLED
 

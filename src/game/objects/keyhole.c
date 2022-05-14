@@ -1,7 +1,6 @@
 #include "game/objects/keyhole.h"
 
 #include "config.h"
-#include "game/collide.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
