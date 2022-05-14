@@ -197,7 +197,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
             LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
                 .box_number;
         if (ValidBox(item, info->zone_number, box_number)) {
-            if (StalkBox(item, box_number)) {
+            if (Box_StalkBox(item, box_number)) {
                 Box_TargetBox(LOT, box_number);
                 creature->mood = MOOD_STALK;
             } else if (LOT->required_box == NO_BOX) {
@@ -208,12 +208,13 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
     }
 
     case MOOD_STALK: {
-        if (LOT->required_box == NO_BOX || !StalkBox(item, LOT->required_box)) {
+        if (LOT->required_box == NO_BOX
+            || !Box_StalkBox(item, LOT->required_box)) {
             int box_number =
                 LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
                     .box_number;
             if (ValidBox(item, info->zone_number, box_number)) {
-                if (StalkBox(item, box_number)) {
+                if (Box_StalkBox(item, box_number)) {
                     Box_TargetBox(LOT, box_number);
                 } else if (LOT->required_box == NO_BOX) {
                     Box_TargetBox(LOT, box_number);
@@ -236,7 +237,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
                 Box_TargetBox(LOT, box_number);
             } else if (
                 info->zone_number == info->enemy_zone
-                && StalkBox(item, box_number)) {
+                && Box_StalkBox(item, box_number)) {
                 Box_TargetBox(LOT, box_number);
                 creature->mood = MOOD_STALK;
             }
