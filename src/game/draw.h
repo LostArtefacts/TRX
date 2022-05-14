@@ -5,9 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void Draw_PrintRoomNumStack(void);
 void DrawRooms(int16_t current_room);
-void GetRoomBounds(int16_t room_num);
 int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent);
 void PrintRooms(int16_t room_number);
 void DrawEffect(int16_t fxnum);
