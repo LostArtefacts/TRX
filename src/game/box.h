@@ -2,10 +2,11 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
-int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion);
-int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion);
+bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion);
+bool UpdateLOT(LOT_INFO *LOT, int32_t expansion);
 void TargetBox(LOT_INFO *LOT, int16_t box_number);
 int32_t StalkBox(ITEM_INFO *item, int16_t box_number);
 int32_t EscapeBox(ITEM_INFO *item, int16_t box_number);

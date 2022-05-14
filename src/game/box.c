@@ -6,7 +6,7 @@
 #include "global/vars.h"
 #include "util.h"
 
-int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
+bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion)
 {
     int16_t *zone;
     if (LOT->fly) {
@@ -20,7 +20,7 @@ int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
     int16_t search_zone = zone[LOT->head];
     for (int i = 0; i < expansion; i++) {
         if (LOT->head == NO_BOX) {
-            return 0;
+            return false;
         }
 
         BOX_NODE *node = &LOT->node[LOT->head];
@@ -82,10 +82,10 @@ int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
         node->next_expansion = NO_BOX;
     }
 
-    return 1;
+    return true;
 }
 
-int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion)
+bool UpdateLOT(LOT_INFO *LOT, int32_t expansion)
 {
     if (LOT->required_box != NO_BOX && LOT->required_box != LOT->target_box) {
         LOT->target_box = LOT->required_box;
@@ -105,7 +105,7 @@ int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion)
         expand->exit_box = NO_BOX;
     }
 
-    return SearchLOT(LOT, expansion);
+    return Box_SearchLOT(LOT, expansion);
 }
 
 void TargetBox(LOT_INFO *LOT, int16_t box_number)
