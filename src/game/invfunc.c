@@ -1,8 +1,8 @@
 #include "game/inv.h"
 
-#include "3dsystem/3d_gen.h"
 #include "game/gameflow.h"
 #include "game/items.h"
+#include "game/output.h"
 #include "game/overlay.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -764,7 +764,7 @@ void Inv_RingLight(RING_INFO *ring)
     PHD_ANGLE angles[2];
     g_LsDivider = 0x6000;
     Math_GetVectorAngles(ring->light.x, ring->light.y, ring->light.z, angles);
-    phd_RotateLight(angles[1], angles[0]);
+    Output_RotateLight(angles[1], angles[0]);
 }
 
 void Inv_RingCalcAdders(RING_INFO *ring, int16_t rotation_duration)

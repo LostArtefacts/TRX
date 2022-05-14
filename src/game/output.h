@@ -5,8 +5,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-extern PHD_VECTOR g_LsVectorView;
-
 bool Output_Init(void);
 void Output_Shutdown(void);
 
@@ -86,6 +84,7 @@ void Output_DisplayPicture(const char *filename);
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 void Output_AnimateTextures(int32_t ticks);
+void Output_RotateLight(int16_t pitch, int16_t yaw);
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b);
 
