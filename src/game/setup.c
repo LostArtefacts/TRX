@@ -76,7 +76,7 @@
 
 #include <stddef.h>
 
-void BaddyObjects(void)
+void Setup_Creatures(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
     g_Objects[O_LARA].draw_routine = DrawDummyItem;
@@ -261,7 +261,7 @@ void InitialiseObjects(void)
         obj->hit_points = DONT_TARGET;
     }
 
-    BaddyObjects();
+    Setup_Creatures();
     TrapObjects();
     ObjectObjects();
 
