@@ -1,5 +1,4 @@
-#define SAVEGAME_IMPL
-#include "game/savegame_bson.h"
+#include "game/savegame/savegame_bson.h"
 
 #include "config.h"
 #include "game/gameflow.h"

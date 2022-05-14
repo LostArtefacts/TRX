@@ -11,13 +11,16 @@
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/rolling_block.h"
 #include "game/room.h"
-#include "game/savegame_bson.h"
-#include "game/savegame_legacy.h"
+#include "game/savegame/savegame_bson.h"
+#include "game/savegame/savegame_legacy.h"
 #include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 #include "memory.h"
 
 #include <assert.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
