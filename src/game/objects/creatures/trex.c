@@ -2,10 +2,10 @@
 
 #include "config.h"
 #include "game/creature.h"
-#include "game/objects.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/lot.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"

@@ -1,4 +1,4 @@
-#include "game/objects/trapdoor.h"
+#include "game/objects/general/trapdoor.h"
 
 #include "game/items.h"
 #include "global/const.h"

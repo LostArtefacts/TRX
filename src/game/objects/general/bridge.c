@@ -1,8 +1,8 @@
-#include "game/objects/bridge.h"
+#include "game/objects/general/bridge.h"
 
 #include "config.h"
-#include "game/objects/cog.h"
-#include "game/objects/door.h"
+#include "game/objects/general/cog.h"
+#include "game/objects/general/door.h"
 #include "global/const.h"
 #include "global/vars.h"
 

@@ -1,10 +1,10 @@
-#include "game/objects/door.h"
+#include "game/objects/general/door.h"
 
 #include "game/collide.h"
-#include "game/objects.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"

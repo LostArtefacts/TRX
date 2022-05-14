@@ -1,21 +1,20 @@
-#include "game/objects/puzzle_hole.h"
+#include "game/objects/general/keyhole.h"
 
+#include "config.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/lara.h"
-#include "game/objects/keyhole.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
-PHD_VECTOR g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
-
-int16_t g_PuzzleHoleBounds[12] = {
+PHD_VECTOR g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
+int16_t g_KeyHoleBounds[12] = {
     -200,
     +200,
-    0,
-    0,
-    WALL_L / 2 - 200,
-    WALL_L / 2,
+    +0,
+    +0,
+    +WALL_L / 2 - 200,
+    +WALL_L / 2,
     -10 * PHD_DEGREE,
     +10 * PHD_DEGREE,
     -30 * PHD_DEGREE,
@@ -24,52 +23,21 @@ int16_t g_PuzzleHoleBounds[12] = {
     +10 * PHD_DEGREE,
 };
 
-void PuzzleHole_Setup(OBJECT_INFO *obj)
+int32_t g_PickUpX;
+int32_t g_PickUpY;
+int32_t g_PickUpZ;
+
+void KeyHole_Setup(OBJECT_INFO *obj)
 {
-    obj->collision = PuzzleHole_Collision;
+    obj->collision = KeyHole_Collision;
     obj->save_flags = 1;
 }
 
-void PuzzleHole_SetupDone(OBJECT_INFO *obj)
-{
-    obj->save_flags = 1;
-}
-
-void PuzzleHole_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (lara_item->current_anim_state == LS_USE_PUZZLE) {
-        if (!Lara_TestPosition(item, g_PuzzleHoleBounds)) {
-            return;
-        }
-
-        if (lara_item->frame_number == AF_USEPUZZLE) {
-            switch (item->object_number) {
-            case O_PUZZLE_HOLE1:
-                item->object_number = O_PUZZLE_DONE1;
-                break;
-
-            case O_PUZZLE_HOLE2:
-                item->object_number = O_PUZZLE_DONE2;
-                break;
-
-            case O_PUZZLE_HOLE3:
-                item->object_number = O_PUZZLE_DONE3;
-                break;
-
-            case O_PUZZLE_HOLE4:
-                item->object_number = O_PUZZLE_DONE4;
-                break;
-
-            default:
-                break;
-            }
-        }
-
-        return;
-    } else if (lara_item->current_anim_state != LS_STOP) {
+    if (lara_item->current_anim_state != LS_STOP) {
         return;
     }
 
@@ -78,7 +46,7 @@ void PuzzleHole_Collision(
         return;
     }
 
-    if (!Lara_TestPosition(item, g_PuzzleHoleBounds)) {
+    if (!Lara_TestPosition(item, g_KeyHoleBounds)) {
         return;
     }
 
@@ -109,30 +77,30 @@ void PuzzleHole_Collision(
 
     int32_t correct = 0;
     switch (item->object_number) {
-    case O_PUZZLE_HOLE1:
-        if (g_InvChosen == O_PUZZLE_OPTION1) {
-            Inv_RemoveItem(O_PUZZLE_OPTION1);
+    case O_KEY_HOLE1:
+        if (g_InvChosen == O_KEY_OPTION1) {
+            Inv_RemoveItem(O_KEY_OPTION1);
             correct = 1;
         }
         break;
 
-    case O_PUZZLE_HOLE2:
-        if (g_InvChosen == O_PUZZLE_OPTION2) {
-            Inv_RemoveItem(O_PUZZLE_OPTION2);
+    case O_KEY_HOLE2:
+        if (g_InvChosen == O_KEY_OPTION2) {
+            Inv_RemoveItem(O_KEY_OPTION2);
             correct = 1;
         }
         break;
 
-    case O_PUZZLE_HOLE3:
-        if (g_InvChosen == O_PUZZLE_OPTION3) {
-            Inv_RemoveItem(O_PUZZLE_OPTION3);
+    case O_KEY_HOLE3:
+        if (g_InvChosen == O_KEY_OPTION3) {
+            Inv_RemoveItem(O_KEY_OPTION3);
             correct = 1;
         }
         break;
 
-    case O_PUZZLE_HOLE4:
-        if (g_InvChosen == O_PUZZLE_OPTION4) {
-            Inv_RemoveItem(O_PUZZLE_OPTION4);
+    case O_KEY_HOLE4:
+        if (g_InvChosen == O_KEY_OPTION4) {
+            Inv_RemoveItem(O_KEY_OPTION4);
             correct = 1;
         }
         break;
@@ -143,8 +111,8 @@ void PuzzleHole_Collision(
 
     g_InvChosen = -1;
     if (correct) {
-        Lara_AlignPosition(item, &g_PuzzleHolePosition);
-        Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
+        Lara_AlignPosition(item, &g_KeyHolePosition);
+        Lara_AnimateUntil(lara_item, LS_USE_KEY);
         lara_item->goal_anim_state = LS_STOP;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
@@ -159,4 +127,14 @@ void PuzzleHole_Collision(
         g_PickUpY = lara_item->pos.y;
         g_PickUpZ = lara_item->pos.z;
     }
+}
+
+bool KeyHole_Trigger(int16_t item_num)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    if (item->status == IS_ACTIVE && g_Lara.gun_status != LGS_HANDS_BUSY) {
+        item->status = IS_DEACTIVATED;
+        return true;
+    }
+    return false;
 }

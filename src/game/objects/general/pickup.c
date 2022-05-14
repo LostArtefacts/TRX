@@ -1,11 +1,11 @@
-#include "game/objects/pickup.h"
+#include "game/objects/general/pickup.h"
 
 #include "config.h"
 #include "game/input.h"
 #include "game/inv.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"

@@ -2,7 +2,7 @@
 
 #include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/const.h"

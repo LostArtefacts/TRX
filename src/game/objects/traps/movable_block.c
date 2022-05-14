@@ -5,7 +5,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"

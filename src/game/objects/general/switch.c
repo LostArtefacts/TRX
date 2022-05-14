@@ -1,10 +1,10 @@
-#include "game/objects/switch.h"
+#include "game/objects/general/switch.h"
 
 #include "config.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "global/const.h"
 #include "global/vars.h"
 

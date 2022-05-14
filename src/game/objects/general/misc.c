@@ -1,8 +1,8 @@
-#include "game/objects/misc.h"
+#include "game/objects/general/misc.h"
 
-#include "game/objects.h"
-#include "game/objects/cog.h"
-#include "game/objects/pickup.h"
+#include "game/objects/common.h"
+#include "game/objects/general/cog.h"
+#include "game/objects/general/pickup.h"
 
 void CameraTarget_Setup(OBJECT_INFO *obj)
 {

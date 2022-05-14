@@ -1,8 +1,8 @@
 #include "game/objects/traps/thors_hammer.h"
 
-#include "game/objects.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"

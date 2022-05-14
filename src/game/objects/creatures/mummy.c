@@ -3,7 +3,7 @@
 #include "game/creature.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"

@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/objects.h"
+#include "game/objects/common.h"
 #include "global/vars.h"
 
 #define TEETH_TRAP_DAMAGE 400
