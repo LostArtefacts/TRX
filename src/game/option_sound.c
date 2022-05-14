@@ -39,9 +39,9 @@ static void Option_SoundInitText(void)
     m_Text[TEXT_LEFT_ARROW] = Text_Create(-45, 0, "\200");
     m_Text[TEXT_RIGHT_ARROW] = Text_Create(40, 0, "\201");
 
+    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
     m_Text[TEXT_TITLE] =
         Text_Create(0, -30, g_GameFlow.strings[GS_SOUND_SET_VOLUMES]);
-    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
 
     if (g_Config.music_volume > 10) {
         g_Config.music_volume = 10;

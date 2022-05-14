@@ -56,6 +56,15 @@ int32_t Requester_Display(REQUEST_INFO *req)
         line_qty = req->items;
     }
 
+    if (!req->background) {
+        req->background = Text_Create(req->x, box_y, " ");
+        Text_CentreH(req->background, 1);
+        Text_AlignBottom(req->background, 1);
+        Text_AddBackground(
+            req->background, box_width, box_height, 0, 0, TS_BACKGROUND);
+        Text_AddOutline(req->background, true, TS_BACKGROUND);
+    }
+
     if (!req->heading) {
         req->heading = Text_Create(
             req->x, line_one_off - req->line_height - BOX_PADDING,
@@ -65,15 +74,6 @@ int32_t Requester_Display(REQUEST_INFO *req)
         Text_AddBackground(
             req->heading, req->pix_width - 2 * BOX_BORDER, 0, 0, 0, TS_HEADING);
         Text_AddOutline(req->heading, true, TS_HEADING);
-    }
-
-    if (!req->background) {
-        req->background = Text_Create(req->x, box_y, " ");
-        Text_CentreH(req->background, 1);
-        Text_AlignBottom(req->background, 1);
-        Text_AddBackground(
-            req->background, box_width, box_height, 0, 0, TS_BACKGROUND);
-        Text_AddOutline(req->background, true, TS_BACKGROUND);
     }
 
     if (req->line_offset) {

@@ -58,7 +58,7 @@ static int8_t m_TextASCIIMap[95] = {
 
 static RGBA8888 m_MenuColorMap[] = {
     // Purple background centre
-    { 70, 30, 107, 225 },
+    { 70, 30, 107, 230 },
     // Purple background edge
     { 70, 30, 107, 0 },
     // Brown background centre
