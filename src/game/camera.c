@@ -380,7 +380,7 @@ static void Camera_LoadCutsceneFrame(void)
     g_Camera.pos.y = g_CinePosition.y + cy;
     g_Camera.pos.z = g_CinePosition.z + ((c * cz - s * cx) >> W2V_SHIFT);
 
-    ViewPort_AlterFOV(fov);
+    Viewport_AlterFOV(fov);
 
     Matrix_LookAt(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, g_Camera.target.x,
@@ -791,7 +791,7 @@ void Camera_UpdateCutscene(void)
     cam_pos.y = g_Camera.pos.y + cy;
     cam_pos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
 
-    ViewPort_AlterFOV(fov);
+    Viewport_AlterFOV(fov);
     Matrix_LookAt(
         cam_pos.x, cam_pos.y, cam_pos.z, cam_tar.x, cam_tar.y, cam_tar.z, roll);
 }

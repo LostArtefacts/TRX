@@ -236,8 +236,8 @@ static bool Level_LoadRooms(MYFILE *fp)
 
         // Initialise some variables
         current_room_info->bound_active = 0;
-        current_room_info->left = ViewPort_GetMaxX();
-        current_room_info->top = ViewPort_GetMaxY();
+        current_room_info->left = Viewport_GetMaxX();
+        current_room_info->top = Viewport_GetMaxY();
         current_room_info->bottom = 0;
         current_room_info->right = 0;
         current_room_info->item_number = -1;
@@ -714,7 +714,7 @@ bool Level_Initialise(int32_t level_num)
 
     Sound_ResetEffects();
 
-    ViewPort_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 
     if (g_GameFlow.levels[g_CurrentLevel].music) {
         Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);

@@ -28,10 +28,10 @@ void Draw_PrintRoomNumStack(void)
 
 void DrawRooms(int16_t current_room)
 {
-    g_PhdLeft = ViewPort_GetMinX();
-    g_PhdTop = ViewPort_GetMinY();
-    g_PhdRight = ViewPort_GetMaxX();
-    g_PhdBottom = ViewPort_GetMaxY();
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdRight = Viewport_GetMaxX();
+    g_PhdBottom = Viewport_GetMaxY();
 
     ROOM_INFO *r = &g_RoomInfo[current_room];
     r->left = g_PhdLeft;
@@ -135,8 +135,8 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
             zv /= g_PhdPersp;
             int32_t xs, ys;
             if (zv) {
-                xs = ViewPort_GetCenterX() + xv / zv;
-                ys = ViewPort_GetCenterY() + yv / zv;
+                xs = Viewport_GetCenterX() + xv / zv;
+                ys = Viewport_GetCenterY() + yv / zv;
             } else {
                 xs = xv >= 0 ? g_PhdRight : g_PhdLeft;
                 ys = yv >= 0 ? g_PhdBottom : g_PhdTop;
@@ -171,19 +171,19 @@ int32_t SetRoomBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
                 if (dest->xv < 0 && last->xv < 0) {
                     left = 0;
                 } else if (dest->xv > 0 && last->xv > 0) {
-                    right = ViewPort_GetMaxX();
+                    right = Viewport_GetMaxX();
                 } else {
                     left = 0;
-                    right = ViewPort_GetMaxX();
+                    right = Viewport_GetMaxX();
                 }
 
                 if (dest->yv < 0 && last->yv < 0) {
                     top = 0;
                 } else if (dest->yv > 0 && last->yv > 0) {
-                    bottom = ViewPort_GetMaxY();
+                    bottom = Viewport_GetMaxY();
                 } else {
                     top = 0;
-                    bottom = ViewPort_GetMaxY();
+                    bottom = Viewport_GetMaxY();
                 }
             }
 
@@ -284,10 +284,10 @@ void PrintRooms(int16_t room_number)
 
     Matrix_Pop();
 
-    r->left = ViewPort_GetMaxX();
+    r->left = Viewport_GetMaxX();
     r->bottom = 0;
     r->right = 0;
-    r->top = ViewPort_GetMaxY();
+    r->top = Viewport_GetMaxY();
 }
 
 void DrawEffect(int16_t fxnum)
@@ -660,10 +660,10 @@ void DrawUnclippedItem(ITEM_INFO *item)
     int32_t right = g_PhdRight;
     int32_t bottom = g_PhdBottom;
 
-    g_PhdLeft = ViewPort_GetMinX();
-    g_PhdTop = ViewPort_GetMinY();
-    g_PhdRight = ViewPort_GetMaxX();
-    g_PhdBottom = ViewPort_GetMaxY();
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdRight = Viewport_GetMaxX();
+    g_PhdBottom = Viewport_GetMaxY();
 
     DrawAnimatingItem(item);
 
@@ -811,8 +811,8 @@ void Draw_DrawScene(bool draw_overlay)
             ROOM_INFO *r = &g_RoomInfo[room_num];
             r->top = 0;
             r->left = 0;
-            r->right = ViewPort_GetMaxX();
-            r->bottom = ViewPort_GetMaxY();
+            r->right = Viewport_GetMaxX();
+            r->bottom = Viewport_GetMaxY();
             PrintRooms(room_num);
         }
     }

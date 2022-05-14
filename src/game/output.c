@@ -148,13 +148,13 @@ static const int16_t *Output_DrawRoomSprites(
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
         int32_t zp = (zv / g_PhdPersp);
         int32_t x1 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
         int32_t y1 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
         int32_t x2 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
         int32_t y2 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
         if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
             && y1 < g_PhdBottom) {
             S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
@@ -192,8 +192,8 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
             clip_flags = 0;
 
             double persp = g_PhdPersp / zv;
-            double xs = ViewPort_GetCenterX() + xv * persp;
-            double ys = ViewPort_GetCenterY() + yv * persp;
+            double xs = Viewport_GetCenterX() + xv * persp;
+            double ys = Viewport_GetCenterY() + yv * persp;
 
             if (xs < g_PhdLeft) {
                 clip_flags |= 1;
@@ -299,8 +299,8 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             }
 
             double persp = g_PhdPersp / zv;
-            double xs = ViewPort_GetCenterX() + xv * persp;
-            double ys = ViewPort_GetCenterY() + yv * persp;
+            double xs = Viewport_GetCenterX() + xv * persp;
+            double ys = Viewport_GetCenterY() + yv * persp;
             if (g_IsWibbleEffect) {
                 xs += g_WibbleTable[(g_WibbleOffset + (int)ys) & 0x1F];
                 ys += g_WibbleTable[(g_WibbleOffset + (int)xs) & 0x1F];
@@ -650,12 +650,12 @@ void Output_DrawSprite(
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
-    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    int32_t x1 = Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = Viewport_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
+    int32_t y2 = Viewport_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -720,8 +720,8 @@ void Output_DrawScreenSprite(
     int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) / PHD_ONE);
     int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
     int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
-        && y1 < ViewPort_GetHeight()) {
+    if (x2 >= 0 && y2 >= 0 && x1 < Viewport_GetWidth()
+        && y1 < Viewport_GetHeight()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
     }
 }
@@ -735,8 +735,8 @@ void Output_DrawScreenSprite2D(
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     int32_t y2 = sy + (scale_v * sprite->y2 / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
-        && y1 < ViewPort_GetHeight()) {
+    if (x2 >= 0 && y2 >= 0 && x1 < Viewport_GetWidth()
+        && y1 < Viewport_GetHeight()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
     }
 }
@@ -757,12 +757,12 @@ void Output_DrawSpriteRel(
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    int32_t x1 = Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = Viewport_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t y2 = Viewport_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -778,8 +778,8 @@ void Output_DrawUISprite(
     int32_t x2 = x + (scale * sprite->x2 >> 16);
     int32_t y1 = y + (scale * sprite->y1 >> 16);
     int32_t y2 = y + (scale * sprite->y2 >> 16);
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
     }
 }
@@ -789,7 +789,7 @@ void Output_DisplayPicture(const char *filename)
     PICTURE *orig_pic = Picture_CreateFromFile(filename);
     if (orig_pic) {
         PICTURE *scaled_pic = Picture_ScaleSmart(
-            orig_pic, ViewPort_GetWidth(), ViewPort_GetHeight());
+            orig_pic, Viewport_GetWidth(), Viewport_GetHeight());
         if (scaled_pic) {
             S_Output_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
@@ -804,10 +804,10 @@ void Output_DrawLightningSegment(
 {
     if (z1 >= Output_GetNearZ() && z1 <= Output_GetFarZ()
         && z2 >= Output_GetNearZ() && z2 <= Output_GetFarZ()) {
-        x1 = ViewPort_GetCenterX() + x1 / (z1 / g_PhdPersp);
-        y1 = ViewPort_GetCenterY() + y1 / (z1 / g_PhdPersp);
-        x2 = ViewPort_GetCenterX() + x2 / (z2 / g_PhdPersp);
-        y2 = ViewPort_GetCenterY() + y2 / (z2 / g_PhdPersp);
+        x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
+        y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
+        x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
+        y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
         S_Output_DrawLightningSegment(
@@ -879,8 +879,8 @@ static void Output_DrawBlackScreen(uint8_t alpha)
 {
     int32_t sx = 0;
     int32_t sy = 0;
-    int32_t sw = ViewPort_GetWidth();
-    int32_t sh = ViewPort_GetHeight();
+    int32_t sw = Viewport_GetWidth();
+    int32_t sh = Viewport_GetHeight();
 
     RGBA8888 background = { 0, 0, 0, alpha };
     S_Output_DisableDepthTest();
@@ -1070,18 +1070,18 @@ int Output_GetObjectBounds(int16_t *bptr)
         }
     }
 
-    x_min += ViewPort_GetCenterX();
-    x_max += ViewPort_GetCenterX();
-    y_min += ViewPort_GetCenterY();
-    y_max += ViewPort_GetCenterY();
+    x_min += Viewport_GetCenterX();
+    x_max += Viewport_GetCenterX();
+    y_min += Viewport_GetCenterY();
+    y_max += Viewport_GetCenterY();
 
     if (!num_z || x_min > g_PhdRight || y_min > g_PhdBottom || x_max < g_PhdLeft
         || y_max < g_PhdTop) {
         return 0; // out of screen
     }
 
-    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > ViewPort_GetMaxX()
-        || y_max > ViewPort_GetMaxY()) {
+    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > Viewport_GetMaxX()
+        || y_max > Viewport_GetMaxY()) {
         return -1; // clipped
     }
 
