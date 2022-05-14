@@ -479,17 +479,18 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t radius = g_Objects[item->object_number].radius;
 
     if (pos_z < radius) {
-        if (BadFloor(x, y, z - radius, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x, y, z - radius, height, next_height, room_num, LOT)) {
             shift_z = radius - pos_z;
         }
 
         if (pos_x < radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x - radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x - radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
@@ -499,12 +500,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 }
             }
         } else if (pos_x > WALL_L - radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x + radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x + radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
@@ -515,17 +516,18 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         }
     } else if (pos_z > WALL_L - radius) {
-        if (BadFloor(x, y, z + radius, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x, y, z + radius, height, next_height, room_num, LOT)) {
             shift_z = WALL_L - radius - pos_z;
         }
 
         if (pos_x < radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x - radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x - radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
@@ -535,12 +537,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 }
             }
         } else if (pos_x > WALL_L - radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x + radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x + radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
@@ -551,11 +553,13 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         }
     } else if (pos_x < radius) {
-        if (BadFloor(x - radius, y, z, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x - radius, y, z, height, next_height, room_num, LOT)) {
             shift_x = radius - pos_x;
         }
     } else if (pos_x > WALL_L - radius) {
-        if (BadFloor(x + radius, y, z, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x + radius, y, z, height, next_height, room_num, LOT)) {
             shift_x = WALL_L - radius - pos_x;
         }
     }
