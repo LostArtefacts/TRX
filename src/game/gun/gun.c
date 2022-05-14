@@ -1,4 +1,4 @@
-#include "game/gun/gun_main.h"
+#include "game/gun.h"
 
 #include "game/gun/gun_pistols.h"
 #include "game/gun/gun_rifle.h"

@@ -33,6 +33,7 @@ def sort_imports(path: Path) -> None:
         "game/game/game_demo.c": "game/game.h",
         "game/game/game_draw.c": "game/game.h",
         "game/game/game_pause.c": "game/game.h",
+        "game/gun/gun.c": "game/gun.h",
         "game/inventry.c": "game/inv.h",
         "game/invfunc.c": "game/inv.h",
         "game/invvars.c": "game/inv.h",

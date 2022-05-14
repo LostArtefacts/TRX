@@ -4,7 +4,7 @@
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/gameflow.h"
-#include "game/gun/gun_main.h"
+#include "game/gun.h"
 #include "game/input.h"
 #include "game/inventory/inventory_func.h"
 #include "game/items.h"
