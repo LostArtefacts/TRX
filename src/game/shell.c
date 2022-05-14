@@ -7,7 +7,7 @@
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inventory/inventory_main.h"
+#include "game/inventory.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"

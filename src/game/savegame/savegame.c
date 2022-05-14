@@ -3,7 +3,7 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/gameflow.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/objects/creatures/pod.h"
 #include "game/objects/general/pickup.h"

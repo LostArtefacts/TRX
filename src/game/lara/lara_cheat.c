@@ -1,7 +1,7 @@
 #include "game/lara/lara_cheat.h"
 
 #include "game/gameflow.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

@@ -1,11 +1,9 @@
-#include "game/inventory/inventory_main.h"
-
 #include "config.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inventory/inventory_func.h"
+#include "game/inventory.h"
 #include "game/inventory/inventory_ring.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
