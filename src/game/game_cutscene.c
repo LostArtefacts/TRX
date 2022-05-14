@@ -103,10 +103,10 @@ int32_t Game_Cutscene_Stop(int32_t level_num)
 int32_t Game_Cutscene_Loop(void)
 {
     Game_Cutscene_Control(2);
-    Draw_ProcessFrame();
+    Game_ProcessFrame();
     int32_t nframes;
     do {
-        nframes = Draw_ProcessFrame();
+        nframes = Game_ProcessFrame();
     } while (!Game_Cutscene_Control(nframes));
     return GF_NOP;
 }

@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/draw.h"
+#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/lara.h"
