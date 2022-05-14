@@ -1,4 +1,4 @@
-#include "game/option.h"
+#include "game/option/option_control.h"
 
 #include "config.h"
 #include "game/gameflow.h"

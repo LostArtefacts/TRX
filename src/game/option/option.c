@@ -1,6 +1,12 @@
 #include "game/option.h"
 
 #include "game/input.h"
+#include "game/option/option_compass.h"
+#include "game/option/option_control.h"
+#include "game/option/option_graphics.h"
+#include "game/option/option_passport.h"
+#include "game/option/option_sound.h"
+#include "global/types.h"
 
 void Option_DoInventory(INVENTORY_ITEM *inv_item)
 {
