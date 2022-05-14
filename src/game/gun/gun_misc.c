@@ -1,5 +1,6 @@
 #include "game/gun/gun_misc.h"
 
+#include "game/collide.h"
 #include "game/draw.h"
 #include "game/effects/blood.h"
 #include "game/inv.h"
@@ -7,7 +8,6 @@
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/math_misc.h"
@@ -355,7 +355,7 @@ int32_t Gun_FireWeapon(
     Matrix_GenerateW2V(&view);
 
     SPHERE slist[33];
-    int32_t nums = GetSpheres(target, slist, 0);
+    int32_t nums = Collide_GetSpheres(target, slist, 0);
 
     int32_t best = -1;
     int32_t bestdist = 0x7FFFFFFF;
