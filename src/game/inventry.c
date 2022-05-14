@@ -51,7 +51,7 @@ static void Inventory_Draw(RING_INFO *ring, IMOTION_INFO *imo)
         Output_CopyPictureToScreen();
         Output_DrawBackdropScreen();
     } else {
-        phd_LookAt(
+        Matrix_LookAt(
             m_OldCamera.pos.x, m_OldCamera.pos.y + m_OldCamera.shift,
             m_OldCamera.pos.z, m_OldCamera.target.x, m_OldCamera.target.y,
             m_OldCamera.target.z, 0);

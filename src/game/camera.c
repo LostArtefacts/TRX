@@ -9,6 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/matrix.h"
 
 #include <stddef.h>
 
@@ -344,7 +345,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
         &g_Camera.pos.room_number);
 
-    phd_LookAt(
+    Matrix_LookAt(
         g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
         g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, 0);
 
@@ -381,7 +382,7 @@ static void Camera_LoadCutsceneFrame(void)
 
     phd_AlterFOV(fov);
 
-    phd_LookAt(
+    Matrix_LookAt(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, g_Camera.target.x,
         g_Camera.target.y, g_Camera.target.z, roll);
     Room_GetFloor(
@@ -791,7 +792,7 @@ void Camera_UpdateCutscene(void)
     cam_pos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
 
     phd_AlterFOV(fov);
-    phd_LookAt(
+    Matrix_LookAt(
         cam_pos.x, cam_pos.y, cam_pos.z, cam_tar.x, cam_tar.y, cam_tar.z, roll);
 }
 
