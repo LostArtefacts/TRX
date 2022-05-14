@@ -11,4 +11,3 @@ void DrawDummyItem(ITEM_INFO *item);
 void DrawPickupItem(ITEM_INFO *item);
 void DrawAnimatingItem(ITEM_INFO *item);
 void DrawUnclippedItem(ITEM_INFO *item);
-void DrawGunFlash(int32_t weapon_type, int32_t clip);
