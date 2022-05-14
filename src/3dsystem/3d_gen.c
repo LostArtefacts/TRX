@@ -10,23 +10,6 @@
 
 #include <math.h>
 
-int32_t phd_VisibleZClip(PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
-{
-    double v1x = vn1->xv;
-    double v1y = vn1->yv;
-    double v1z = vn1->zv;
-    double v2x = vn2->xv;
-    double v2y = vn2->yv;
-    double v2z = vn2->zv;
-    double v3x = vn3->xv;
-    double v3y = vn3->yv;
-    double v3z = vn3->zv;
-    double a = v3y * v1x - v1y * v3x;
-    double b = v3x * v1z - v1x * v3z;
-    double c = v3z * v1y - v1z * v3y;
-    return a * v2z + b * v2y + c * v2x < 0.0;
-}
-
 void phd_RotateLight(int16_t pitch, int16_t yaw)
 {
     int32_t cp = Math_Cos(pitch);
