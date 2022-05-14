@@ -1,11 +1,11 @@
 #include "game/objects/door.h"
 
+#include "game/collide.h"
 #include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
 #include "game/room.h"
-#include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "util.h"
@@ -237,7 +237,7 @@ void Door_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 

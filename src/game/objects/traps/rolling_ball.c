@@ -1,5 +1,6 @@
 #include "game/objects/traps/rolling_ball.h"
 
+#include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -7,7 +8,6 @@
 #include "game/objects.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
@@ -127,7 +127,7 @@ void RollingBall_Collision(
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 

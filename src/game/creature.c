@@ -1,6 +1,7 @@
 #include "game/creature.h"
 
 #include "game/box.h"
+#include "game/collide.h"
 #include "game/draw.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
@@ -374,7 +375,7 @@ void Creature_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 
