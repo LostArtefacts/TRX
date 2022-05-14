@@ -512,7 +512,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
 
             if (json_object_get_bool(
                     item_obj, "intelligent", obj->intelligent)) {
-                EnableBaddieAI(i, 1);
+                LOT_EnableBaddieAI(i, 1);
                 CREATURE_INFO *creature = item->data;
                 if (creature) {
                     creature->head_rotation = json_object_get_int(

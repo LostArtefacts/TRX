@@ -753,10 +753,10 @@ void Room_TestTriggers(int16_t *data, bool heavy)
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
                         Item_AddActive(value);
-                        EnableBaddieAI(value, 1);
+                        LOT_EnableBaddieAI(value, 1);
                     } else if (item->status == IS_INVISIBLE) {
                         item->touch_bits = 0;
-                        if (EnableBaddieAI(value, 0)) {
+                        if (LOT_EnableBaddieAI(value, 0)) {
                             item->status = IS_ACTIVE;
                         } else {
                             item->status = IS_INVISIBLE;

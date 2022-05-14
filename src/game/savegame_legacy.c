@@ -563,7 +563,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             }
 
             if (item->flags & SAVE_CREATURE) {
-                EnableBaddieAI(i, 1);
+                LOT_EnableBaddieAI(i, 1);
                 CREATURE_INFO *creature = item->data;
                 if (creature) {
                     Savegame_Legacy_Read(
