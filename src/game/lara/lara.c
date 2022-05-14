@@ -499,7 +499,7 @@ void Lara_Initialise(int32_t level_num)
 
     g_Lara.current_active = 0;
 
-    InitialiseLOT(&g_Lara.LOT);
+    LOT_InitialiseLOT(&g_Lara.LOT);
     g_Lara.LOT.step = WALL_L * 20;
     g_Lara.LOT.drop = -WALL_L * 20;
     g_Lara.LOT.fly = STEP_L;

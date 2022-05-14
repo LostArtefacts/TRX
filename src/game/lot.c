@@ -175,12 +175,11 @@ void LOT_CreateZone(ITEM_INFO *item)
     }
 }
 
-int32_t InitialiseLOT(LOT_INFO *LOT)
+void LOT_InitialiseLOT(LOT_INFO *LOT)
 {
     LOT->node =
         GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
     ClearLOT(LOT);
-    return 1;
 }
 
 void ClearLOT(LOT_INFO *LOT)
