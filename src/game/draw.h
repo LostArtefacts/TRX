@@ -7,7 +7,6 @@
 
 extern bool g_CameraUnderwater;
 
-void PrintRooms(int16_t room_number);
 void DrawEffect(int16_t fxnum);
 void DrawSpriteItem(ITEM_INFO *item);
 void DrawDummyItem(ITEM_INFO *item);
