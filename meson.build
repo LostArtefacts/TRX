@@ -132,6 +132,7 @@ sources = [
   'src/game/los.c',
   'src/game/lot.c',
   'src/game/music.c',
+  'src/game/objects.c',
   'src/game/objects/boat.c',
   'src/game/objects/bridge.c',
   'src/game/objects/cabin.c',

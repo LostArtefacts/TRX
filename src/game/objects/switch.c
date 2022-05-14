@@ -1,11 +1,11 @@
 #include "game/objects/switch.h"
 
 #include "config.h"
-#include "game/collide.h"
 #include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
+#include "game/objects.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -168,7 +168,7 @@ void Switch_CollisionControlled(
     } else if (
         lara_item->current_anim_state != LS_SWITCH_ON
         && lara_item->current_anim_state != LS_SWITCH_OFF) {
-        ObjectCollision(item_num, lara_item, coll);
+        Object_Collision(item_num, lara_item, coll);
     }
 }
 

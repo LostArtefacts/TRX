@@ -1,10 +1,10 @@
 #include "game/objects/traps/rolling_ball.h"
 
-#include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara/lara.h"
+#include "game/objects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sphere.h"
@@ -119,7 +119,7 @@ void RollingBall_Collision(
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
-            ObjectCollision(item_num, lara_item, coll);
+            Object_Collision(item_num, lara_item, coll);
         }
         return;
     }
