@@ -15,7 +15,7 @@
 #define KEY_DOWN(a) ((m_DIKeys[(a)] & 0x80) != 0)
 
 static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
-static S_INPUT_KEYCODE m_Layout[2][INPUT_ROLE_NUMBER_OF] = {
+static INPUT_SCANCODE m_Layout[2][INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     // built-in controls
     {
@@ -201,26 +201,26 @@ static bool S_Input_DInput_KeyboardRead(void)
 
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
 {
-    S_INPUT_KEYCODE key_code = m_Layout[layout][role];
-    if (KEY_DOWN(key_code)) {
+    INPUT_SCANCODE scancode = m_Layout[layout][role];
+    if (KEY_DOWN(scancode)) {
         return true;
     }
-    if (key_code == DIK_LCONTROL) {
+    if (scancode == DIK_LCONTROL) {
         return KEY_DOWN(DIK_RCONTROL);
     }
-    if (key_code == DIK_RCONTROL) {
+    if (scancode == DIK_RCONTROL) {
         return KEY_DOWN(DIK_LCONTROL);
     }
-    if (key_code == DIK_LSHIFT) {
+    if (scancode == DIK_LSHIFT) {
         return KEY_DOWN(DIK_RSHIFT);
     }
-    if (key_code == DIK_RSHIFT) {
+    if (scancode == DIK_RSHIFT) {
         return KEY_DOWN(DIK_LSHIFT);
     }
-    if (key_code == DIK_LMENU) {
+    if (scancode == DIK_LMENU) {
         return KEY_DOWN(DIK_RMENU);
     }
-    if (key_code == DIK_RMENU) {
+    if (scancode == DIK_RMENU) {
         return KEY_DOWN(DIK_LMENU);
     }
     return false;
@@ -233,11 +233,11 @@ static bool S_Input_Key(INPUT_ROLE role)
             && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
 }
 
-S_INPUT_KEYCODE S_Input_ReadKeyCode(void)
+INPUT_SCANCODE S_Input_ReadScancode(void)
 {
-    for (S_INPUT_KEYCODE key = 0; key < 256; key++) {
-        if (KEY_DOWN(key)) {
-            return key;
+    for (INPUT_SCANCODE scancode = 0; scancode < 256; scancode++) {
+        if (KEY_DOWN(scancode)) {
+            return scancode;
         }
     }
     return -1;
@@ -535,10 +535,10 @@ INPUT_STATE S_Input_GetCurrentState(void)
     return linput;
 }
 
-const char *S_Input_GetKeyCodeName(S_INPUT_KEYCODE key)
+const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
 {
     // clang-format off
-    switch (key) {
+    switch (scancode) {
         case DIK_ESCAPE:       return "ESC";
         case DIK_1:            return "1";
         case DIK_2:            return "2";
@@ -660,13 +660,13 @@ void S_Input_SetKeyAsConflicted(INPUT_ROLE role, bool is_conflicted)
     m_KeyConflict[role] = is_conflicted;
 }
 
-S_INPUT_KEYCODE S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_ROLE role)
+INPUT_SCANCODE S_Input_GetAssignedScancode(int16_t layout_num, INPUT_ROLE role)
 {
     return m_Layout[layout_num][role];
 }
 
-void S_Input_AssignKeyCode(
-    int16_t layout_num, INPUT_ROLE role, S_INPUT_KEYCODE key_code)
+void S_Input_AssignScancode(
+    int16_t layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
 {
-    m_Layout[layout_num][role] = key_code;
+    m_Layout[layout_num][role] = scancode;
 }
