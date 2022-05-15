@@ -1,6 +1,10 @@
 #include "game/input.h"
 
+#include "config.h"
 #include "game/clock.h"
+#include "game/inventory.h"
+#include "game/lara.h"
+#include "global/vars.h"
 #include "specific/s_input.h"
 
 #include <stdint.h>
@@ -49,7 +53,67 @@ void Input_Init(void)
 void Input_Update(void)
 {
     g_Input = S_Input_GetCurrentState();
+
+    g_Input.select |= g_Input.action;
+    g_Input.option &= g_Camera.type != CAM_CINEMATIC;
+    g_Input.roll |= g_Input.forward && g_Input.back;
+    if (g_Input.left && g_Input.right) {
+        g_Input.left = 0;
+        g_Input.right = 0;
+    }
+
+    if (!g_Config.enable_cheats) {
+        g_Input.item_cheat = 0;
+        g_Input.fly_cheat = 0;
+        g_Input.level_skip_cheat = 0;
+        g_Input.turbo_cheat = 0;
+        g_Input.health_cheat = 0;
+    }
+
+    if (g_Config.enable_tr3_sidesteps) {
+        if (g_Input.slow && !g_Input.forward && !g_Input.back
+            && !g_Input.step_left && !g_Input.step_right) {
+            if (g_Input.left) {
+                g_Input.left = 0;
+                g_Input.step_left = 1;
+            } else if (g_Input.right) {
+                g_Input.right = 0;
+                g_Input.step_right = 1;
+            }
+        }
+    }
+
     g_InputDB = Input_GetDebounced(g_Input);
+
+    if (g_Config.enable_numeric_keys) {
+        if (g_InputDB.equip_pistols && Inv_RequestItem(O_GUN_ITEM)) {
+            g_Lara.request_gun_type = LGT_PISTOLS;
+        } else if (g_InputDB.equip_shotgun && Inv_RequestItem(O_SHOTGUN_ITEM)) {
+            g_Lara.request_gun_type = LGT_SHOTGUN;
+        } else if (g_InputDB.equip_magnums && Inv_RequestItem(O_MAGNUM_ITEM)) {
+            g_Lara.request_gun_type = LGT_MAGNUMS;
+        } else if (g_InputDB.equip_uzis && Inv_RequestItem(O_UZI_ITEM)) {
+            g_Lara.request_gun_type = LGT_UZIS;
+        }
+    }
+
+    if (g_InputDB.use_small_medi && Inv_RequestItem(O_MEDI_OPTION)) {
+        Lara_UseItem(O_MEDI_OPTION);
+    } else if (g_InputDB.use_big_medi && Inv_RequestItem(O_BIGMEDI_OPTION)) {
+        Lara_UseItem(O_BIGMEDI_OPTION);
+    }
+
+    if (g_InputDB.toggle_bilinear_filter) {
+        g_Config.rendering.enable_bilinear_filter ^= true;
+    }
+
+    if (g_InputDB.toggle_perspective_filter) {
+        g_Config.rendering.enable_perspective_filter ^= true;
+    }
+
+    if (g_InputDB.toggle_fps_counter) {
+        g_Config.rendering.enable_fps_counter ^= true;
+    }
 
     if (g_InputDB.turbo_cheat) {
         Clock_CycleTurboSpeed();

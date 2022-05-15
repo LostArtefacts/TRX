@@ -73,7 +73,9 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         if ((g_InputDB.option || g_Input.save || g_Input.load
              || g_OverlayFlag <= 0)
             && !g_Lara.death_timer) {
-            if (g_OverlayFlag > 0) {
+            if (g_ModeLock || g_Camera.type == CAM_CINEMATIC) {
+                g_OverlayFlag = 0;
+            } else if (g_OverlayFlag > 0) {
                 if (g_Input.load) {
                     g_OverlayFlag = -1;
                 } else if (g_Input.save) {
