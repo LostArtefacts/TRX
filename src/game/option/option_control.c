@@ -7,7 +7,6 @@
 #include "game/settings.h"
 #include "game/text.h"
 #include "global/types.h"
-#include "specific/s_input.h"
 #include "util.h"
 
 #include <stdbool.h>
@@ -98,6 +97,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 static void Option_ControlInitText(void);
 static void Option_ControlUpdateText(void);
 static void Option_ControlShutdownText(void);
+static void Option_FlashConflicts(void);
 
 static void Option_ControlInitText(void)
 {
@@ -139,11 +139,9 @@ static void Option_ControlInitText(void)
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
 
-            const char *scancode_name =
-                S_Input_GetScancodeName(S_Input_GetAssignedScancode(
-                    g_Config.input.layout, col->option));
-            if (col->option != -1 && scancode_name) {
-                m_TextB[col->option] = Text_Create(x, y, scancode_name);
+            if (col->option != -1) {
+                m_TextB[col->option] = Text_Create(
+                    x, y, Input_GetKeyName(g_Config.input.layout, col->option));
                 Text_CentreV(m_TextB[col->option], 1);
             }
 
@@ -202,8 +200,8 @@ static void Option_ControlUpdateText(void)
 
     for (const TEXT_COLUMN_PLACEMENT *col = cols;
          col->col_num >= 0 && col->col_num <= 1; col++) {
-        const char *scancode_name = S_Input_GetScancodeName(
-            S_Input_GetAssignedScancode(g_Config.input.layout, col->option));
+        const char *scancode_name =
+            Input_GetKeyName(g_Config.input.layout, col->option);
         if (col->option != -1 && scancode_name) {
             Text_ChangeText(m_TextB[col->option], scancode_name);
         }
@@ -228,7 +226,7 @@ static void Option_ControlShutdownText(void)
     }
 }
 
-void Option_FlashConflicts(void)
+static void Option_FlashConflicts(void)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -236,43 +234,11 @@ void Option_FlashConflicts(void)
 
     for (const TEXT_COLUMN_PLACEMENT *item = cols; item->col_num != -1;
          item++) {
-        Text_Flash(m_TextB[item->option], 0, 0);
-    }
-
-    for (const TEXT_COLUMN_PLACEMENT *item1 = cols; item1->col_num != -1;
-         item1++) {
-        if (item1->option == -1) {
-            continue;
-        }
-        INPUT_SCANCODE key_code1 =
-            S_Input_GetAssignedScancode(g_Config.input.layout, item1->option);
-        for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
-             item2->col_num != -1; item2++) {
-            if (item2->option == -1) {
-                continue;
-            }
-            INPUT_SCANCODE key_code2 = S_Input_GetAssignedScancode(
-                g_Config.input.layout, item2->option);
-            if (item1 != item2 && key_code1 == key_code2) {
-                Text_Flash(m_TextB[item1->option], 1, 20);
-                Text_Flash(m_TextB[item2->option], 1, 20);
-            }
-        }
-    }
-}
-
-void Option_DefaultConflict(void)
-{
-    for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
-        INPUT_SCANCODE key_code =
-            S_Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, i);
-        S_Input_SetKeyAsConflicted(i, false);
-        for (int j = 0; j < INPUT_ROLE_NUMBER_OF; j++) {
-            if (key_code == S_Input_GetAssignedScancode(INPUT_LAYOUT_USER, j)) {
-                S_Input_SetKeyAsConflicted(i, true);
-                break;
-            }
-        }
+        Text_Flash(
+            m_TextB[item->option],
+            g_Config.input.layout != INPUT_LAYOUT_DEFAULT && item->option != -1
+                && Input_IsKeyConflictedWithUser(item->option),
+            20);
     }
 }
 
@@ -343,7 +309,6 @@ void Option_Control(INVENTORY_ITEM *inv_item)
         } else if (
             g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
             Option_ControlShutdownText();
-            Option_DefaultConflict();
             return;
         }
 
@@ -433,19 +398,16 @@ void Option_Control(INVENTORY_ITEM *inv_item)
         break;
 
     case 1:
-        if (!g_Input.select) {
+        if (!g_Input.any) {
             m_KeyMode = 2;
         }
         break;
 
-    case 2: {
-        INPUT_SCANCODE key_code = S_Input_ReadScancode();
-
-        const char *scancode_name = S_Input_GetScancodeName(key_code);
-        if (key_code >= 0 && scancode_name) {
-            S_Input_AssignScancode(
-                g_Config.input.layout, m_KeyChange, key_code);
-            Text_ChangeText(m_TextB[m_KeyChange], scancode_name);
+    case 2:
+        if (Input_ReadAndAssignKey(g_Config.input.layout, m_KeyChange)) {
+            Text_ChangeText(
+                m_TextB[m_KeyChange],
+                Input_GetKeyName(g_Config.input.layout, m_KeyChange));
             Text_RemoveBackground(m_TextB[m_KeyChange]);
             Text_RemoveOutline(m_TextB[m_KeyChange]);
             Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
@@ -455,21 +417,12 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             Settings_Write();
         }
         break;
-    }
 
-    case 3: {
-        INPUT_SCANCODE key_code =
-            S_Input_GetAssignedScancode(g_Config.input.layout, m_KeyChange);
-
-        if (S_Input_ReadScancode() < 0 || S_Input_ReadScancode() != key_code) {
+    case 3:
+        if (!g_Input.any) {
             m_KeyMode = 0;
-            Option_FlashConflicts();
-            Settings_Write();
         }
-
-        m_KeyMode = 0;
         break;
-    }
     }
 
     g_Input = (INPUT_STATE) { 0 };
