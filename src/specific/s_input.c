@@ -1,6 +1,7 @@
 #include "specific/s_input.h"
 
 #include "config.h"
+#include "game/input.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/shell.h"
@@ -14,7 +15,6 @@
 
 #define KEY_DOWN(a) ((m_DIKeys[(a)] & 0x80) != 0)
 
-static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static INPUT_SCANCODE m_Layout[2][INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     // built-in controls
@@ -86,12 +86,128 @@ static bool S_Input_DInput_KeyboardRead(void);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role);
 
+static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static HRESULT S_Input_DInput_JoystickCreate(void);
 static void S_Input_DInput_JoystickRelease(void);
 static BOOL CALLBACK
 S_Input_EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE instance, LPVOID context);
 static BOOL CALLBACK
 S_Input_EnumCallback(LPCDIDEVICEINSTANCE instance, LPVOID context);
+
+static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
+{
+    // clang-format off
+    switch (scancode) {
+        case DIK_ESCAPE:       return "ESC";
+        case DIK_1:            return "1";
+        case DIK_2:            return "2";
+        case DIK_3:            return "3";
+        case DIK_4:            return "4";
+        case DIK_5:            return "5";
+        case DIK_6:            return "6";
+        case DIK_7:            return "7";
+        case DIK_8:            return "8";
+        case DIK_9:            return "9";
+        case DIK_0:            return "0";
+        case DIK_MINUS:        return "-";
+        case DIK_EQUALS:       return "+";
+        case DIK_BACK:         return "BKSP";
+        case DIK_TAB:          return "TAB";
+        case DIK_Q:            return "Q";
+        case DIK_W:            return "W";
+        case DIK_E:            return "E";
+        case DIK_R:            return "R";
+        case DIK_T:            return "T";
+        case DIK_Y:            return "Y";
+        case DIK_U:            return "U";
+        case DIK_I:            return "I";
+        case DIK_O:            return "O";
+        case DIK_P:            return "P";
+        case DIK_LBRACKET:     return "<";
+        case DIK_RBRACKET:     return ">";
+        case DIK_RETURN:       return "RET";
+        case DIK_LCONTROL:     return "CTRL";
+        case DIK_A:            return "A";
+        case DIK_S:            return "S";
+        case DIK_D:            return "D";
+        case DIK_F:            return "F";
+        case DIK_G:            return "G";
+        case DIK_H:            return "H";
+        case DIK_J:            return "J";
+        case DIK_K:            return "K";
+        case DIK_L:            return "L";
+        case DIK_SEMICOLON:    return ";";
+        case DIK_APOSTROPHE:   return "\'";
+        case DIK_GRAVE:        return "`";
+        case DIK_LSHIFT:       return "SHIFT";
+        case DIK_BACKSLASH:    return "\\";
+        case DIK_Z:            return "Z";
+        case DIK_X:            return "X";
+        case DIK_C:            return "C";
+        case DIK_V:            return "V";
+        case DIK_B:            return "B";
+        case DIK_N:            return "N";
+        case DIK_M:            return "M";
+        case DIK_COMMA:        return ",";
+        case DIK_PERIOD:       return ".";
+        case DIK_SLASH:        return "/";
+        case DIK_RSHIFT:       return "SHIFT";
+        case DIK_MULTIPLY:     return "PADx";
+        case DIK_LMENU:        return "ALT";
+        case DIK_SPACE:        return "SPACE";
+        case DIK_CAPITAL:      return "CAPS";
+        case DIK_F1:           return "F1";
+        case DIK_F2:           return "F2";
+        case DIK_F3:           return "F3";
+        case DIK_F4:           return "F4";
+        case DIK_F5:           return "F5";
+        case DIK_F6:           return "F6";
+        case DIK_F7:           return "F7";
+        case DIK_F8:           return "F8";
+        case DIK_F9:           return "F9";
+        case DIK_F10:          return "F10";
+        case DIK_NUMLOCK:      return "NMLK";
+        case DIK_SCROLL:       return "SCLK";
+        case DIK_NUMPAD7:      return "PAD7";
+        case DIK_NUMPAD8:      return "PAD8";
+        case DIK_NUMPAD9:      return "PAD9";
+        case DIK_SUBTRACT:     return "PAD-";
+        case DIK_NUMPAD4:      return "PAD4";
+        case DIK_NUMPAD5:      return "PAD5";
+        case DIK_NUMPAD6:      return "PAD6";
+        case DIK_ADD:          return "PAD+";
+        case DIK_NUMPAD1:      return "PAD1";
+        case DIK_NUMPAD2:      return "PAD2";
+        case DIK_NUMPAD3:      return "PAD3";
+        case DIK_NUMPAD0:      return "PAD0";
+        case DIK_DECIMAL:      return "PAD.";
+        case DIK_F11:          return "F11";
+        case DIK_F12:          return "F12";
+        case DIK_F13:          return "F13";
+        case DIK_F14:          return "F14";
+        case DIK_F15:          return "F15";
+        case DIK_NUMPADEQUALS: return "PAD=";
+        case DIK_AT:           return "@";
+        case DIK_COLON:        return ":";
+        case DIK_UNDERLINE:    return "_";
+        case DIK_NUMPADENTER:  return "ENTER";
+        case DIK_RCONTROL:     return "CTRL";
+        case DIK_DIVIDE:       return "PAD/";
+        case DIK_RMENU:        return "ALT";
+        case DIK_HOME:         return "HOME";
+        case DIK_UP:           return "UP";
+        case DIK_PRIOR:        return "PGUP";
+        case DIK_LEFT:         return "LEFT";
+        case DIK_RIGHT:        return "RIGHT";
+        case DIK_END:          return "END";
+        case DIK_DOWN:         return "DOWN";
+        case DIK_NEXT:         return "PGDN";
+        case DIK_INSERT:       return "INS";
+        case DIK_DELETE:       return "DEL";
+    }
+    // clang-format on
+    return "????";
+}
 
 void S_Input_Init(void)
 {
@@ -229,18 +345,8 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
 static bool S_Input_Key(INPUT_ROLE role)
 {
     return S_Input_KbdKey(role, INPUT_LAYOUT_USER)
-        || (!S_Input_IsKeyConflicted(role)
+        || (!Input_IsKeyConflictedWithDefault(role)
             && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
-}
-
-INPUT_SCANCODE S_Input_ReadScancode(void)
-{
-    for (INPUT_SCANCODE scancode = 0; scancode < 256; scancode++) {
-        if (KEY_DOWN(scancode)) {
-            return scancode;
-        }
-    }
-    return -1;
 }
 
 static HRESULT S_Input_DInput_JoystickCreate(void)
@@ -535,131 +641,6 @@ INPUT_STATE S_Input_GetCurrentState(void)
     return linput;
 }
 
-const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
-{
-    // clang-format off
-    switch (scancode) {
-        case DIK_ESCAPE:       return "ESC";
-        case DIK_1:            return "1";
-        case DIK_2:            return "2";
-        case DIK_3:            return "3";
-        case DIK_4:            return "4";
-        case DIK_5:            return "5";
-        case DIK_6:            return "6";
-        case DIK_7:            return "7";
-        case DIK_8:            return "8";
-        case DIK_9:            return "9";
-        case DIK_0:            return "0";
-        case DIK_MINUS:        return "-";
-        case DIK_EQUALS:       return "+";
-        case DIK_BACK:         return "BKSP";
-        case DIK_TAB:          return "TAB";
-        case DIK_Q:            return "Q";
-        case DIK_W:            return "W";
-        case DIK_E:            return "E";
-        case DIK_R:            return "R";
-        case DIK_T:            return "T";
-        case DIK_Y:            return "Y";
-        case DIK_U:            return "U";
-        case DIK_I:            return "I";
-        case DIK_O:            return "O";
-        case DIK_P:            return "P";
-        case DIK_LBRACKET:     return "<";
-        case DIK_RBRACKET:     return ">";
-        case DIK_RETURN:       return "RET";
-        case DIK_LCONTROL:     return "CTRL";
-        case DIK_A:            return "A";
-        case DIK_S:            return "S";
-        case DIK_D:            return "D";
-        case DIK_F:            return "F";
-        case DIK_G:            return "G";
-        case DIK_H:            return "H";
-        case DIK_J:            return "J";
-        case DIK_K:            return "K";
-        case DIK_L:            return "L";
-        case DIK_SEMICOLON:    return ";";
-        case DIK_APOSTROPHE:   return "\'";
-        case DIK_GRAVE:        return "`";
-        case DIK_LSHIFT:       return "SHIFT";
-        case DIK_BACKSLASH:    return "\\";
-        case DIK_Z:            return "Z";
-        case DIK_X:            return "X";
-        case DIK_C:            return "C";
-        case DIK_V:            return "V";
-        case DIK_B:            return "B";
-        case DIK_N:            return "N";
-        case DIK_M:            return "M";
-        case DIK_COMMA:        return ",";
-        case DIK_PERIOD:       return ".";
-        case DIK_SLASH:        return "/";
-        case DIK_RSHIFT:       return "SHIFT";
-        case DIK_MULTIPLY:     return "PADx";
-        case DIK_LMENU:        return "ALT";
-        case DIK_SPACE:        return "SPACE";
-        case DIK_CAPITAL:      return "CAPS";
-        case DIK_F1:           return "F1";
-        case DIK_F2:           return "F2";
-        case DIK_F3:           return "F3";
-        case DIK_F4:           return "F4";
-        case DIK_F5:           return "F5";
-        case DIK_F6:           return "F6";
-        case DIK_F7:           return "F7";
-        case DIK_F8:           return "F8";
-        case DIK_F9:           return "F9";
-        case DIK_F10:          return "F10";
-        case DIK_NUMLOCK:      return "NMLK";
-        case DIK_SCROLL:       return "SCLK";
-        case DIK_NUMPAD7:      return "PAD7";
-        case DIK_NUMPAD8:      return "PAD8";
-        case DIK_NUMPAD9:      return "PAD9";
-        case DIK_SUBTRACT:     return "PAD-";
-        case DIK_NUMPAD4:      return "PAD4";
-        case DIK_NUMPAD5:      return "PAD5";
-        case DIK_NUMPAD6:      return "PAD6";
-        case DIK_ADD:          return "PAD+";
-        case DIK_NUMPAD1:      return "PAD1";
-        case DIK_NUMPAD2:      return "PAD2";
-        case DIK_NUMPAD3:      return "PAD3";
-        case DIK_NUMPAD0:      return "PAD0";
-        case DIK_DECIMAL:      return "PAD.";
-        case DIK_F11:          return "F11";
-        case DIK_F12:          return "F12";
-        case DIK_F13:          return "F13";
-        case DIK_F14:          return "F14";
-        case DIK_F15:          return "F15";
-        case DIK_NUMPADEQUALS: return "PAD=";
-        case DIK_AT:           return "@";
-        case DIK_COLON:        return ":";
-        case DIK_UNDERLINE:    return "_";
-        case DIK_NUMPADENTER:  return "ENTER";
-        case DIK_RCONTROL:     return "CTRL";
-        case DIK_DIVIDE:       return "PAD/";
-        case DIK_RMENU:        return "ALT";
-        case DIK_HOME:         return "HOME";
-        case DIK_UP:           return "UP";
-        case DIK_PRIOR:        return "PGUP";
-        case DIK_LEFT:         return "LEFT";
-        case DIK_RIGHT:        return "RIGHT";
-        case DIK_END:          return "END";
-        case DIK_DOWN:         return "DOWN";
-        case DIK_NEXT:         return "PGDN";
-        case DIK_INSERT:       return "INS";
-        case DIK_DELETE:       return "DEL";
-    }
-    // clang-format on
-    return "????";
-}
-
-bool S_Input_IsKeyConflicted(INPUT_ROLE role)
-{
-    return m_KeyConflict[role];
-}
-
-void S_Input_SetKeyAsConflicted(INPUT_ROLE role, bool is_conflicted)
-{
-    m_KeyConflict[role] = is_conflicted;
-}
-
 INPUT_SCANCODE S_Input_GetAssignedScancode(int16_t layout_num, INPUT_ROLE role)
 {
     return m_Layout[layout_num][role];
@@ -669,4 +650,20 @@ void S_Input_AssignScancode(
     int16_t layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
 {
     m_Layout[layout_num][role] = scancode;
+}
+
+bool S_Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    for (INPUT_SCANCODE scancode = 0; scancode < 256; scancode++) {
+        if (KEY_DOWN(scancode)) {
+            m_Layout[layout_num][role] = scancode;
+            return true;
+        }
+    }
+    return false;
+}
+
+const char *S_Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return S_Input_GetScancodeName(m_Layout[layout_num][role]);
 }
