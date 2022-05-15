@@ -37,6 +37,7 @@ void S_Shell_Shutdown(void)
     GameFlow_Shutdown();
     GameBuf_Shutdown();
     Output_Shutdown();
+    Input_Shutdown();
     S_Audio_Shutdown();
     Savegame_Shutdown();
 }

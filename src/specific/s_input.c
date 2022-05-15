@@ -110,7 +110,7 @@ void S_Input_Init(void)
     }
 }
 
-void InputShutdown(void)
+void S_Input_Shutdown(void)
 {
     S_Input_DInput_KeyboardRelease();
     if (g_Config.enable_xbox_one_controller) {

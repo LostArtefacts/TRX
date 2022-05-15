@@ -50,6 +50,11 @@ void Input_Init(void)
     S_Input_Init();
 }
 
+void Input_Shutdown(void)
+{
+    S_Input_Shutdown();
+}
+
 void Input_Update(void)
 {
     g_Input = S_Input_GetCurrentState();
