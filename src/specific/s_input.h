@@ -8,6 +8,7 @@
 typedef int16_t S_INPUT_KEYCODE;
 
 void S_Input_Init(void);
+void S_Input_Shutdown(void);
 
 INPUT_STATE S_Input_GetCurrentState(void);
 

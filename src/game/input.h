@@ -10,4 +10,5 @@ extern INPUT_STATE g_OldInputDB;
 extern bool g_ConflictLayout[INPUT_KEY_NUMBER_OF];
 
 void Input_Init(void);
+void Input_Shutdown(void);
 void Input_Update(void);
