@@ -7,81 +7,74 @@
 #include "game/shell.h"
 #include "global/vars.h"
 #include "global/vars_platform.h"
-#include "log.h"
 #include "specific/s_shell.h"
 
-#include <dinput.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 
-#define KEY_DOWN(a) ((m_DIKeys[(a)] & 0x80) != 0)
+#define KEY_DOWN(a) (m_KeyboardState[(a)])
 
-static INPUT_SCANCODE m_Layout[2][INPUT_ROLE_NUMBER_OF] = {
+static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     // built-in controls
     {
-        DIK_UP,          // INPUT_ROLE_UP
-        DIK_DOWN,        // INPUT_ROLE_DOWN
-        DIK_LEFT,        // INPUT_ROLE_LEFT
-        DIK_RIGHT,       // INPUT_ROLE_RIGHT
-        DIK_DELETE,      // INPUT_ROLE_STEP_L
-        DIK_NEXT,        // INPUT_ROLE_STEP_R
-        DIK_RSHIFT,      // INPUT_ROLE_SLOW
-        DIK_RMENU,       // INPUT_ROLE_JUMP
-        DIK_RCONTROL,    // INPUT_ROLE_ACTION
-        DIK_SPACE,       // INPUT_ROLE_DRAW
-        DIK_NUMPAD0,     // INPUT_ROLE_LOOK
-        DIK_END,         // INPUT_ROLE_ROLL
-        DIK_ESCAPE,      // INPUT_ROLE_OPTION
-        DIK_O,           // INPUT_ROLE_FLY_CHEAT,
-        DIK_I,           // INPUT_ROLE_ITEM_CHEAT,
-        DIK_L,           // INPUT_ROLE_LEVEL_SKIP_CHEAT,
-        DIK_TAB,         // INPUT_ROLE_TURBO_CHEAT,
-        DIK_P,           // INPUT_ROLE_PAUSE,
-        DIK_W,           // INPUT_ROLE_CAMERA_UP
-        DIK_S,           // INPUT_ROLE_CAMERA_DOWN
-        DIK_A,           // INPUT_ROLE_CAMERA_LEFT
-        DIK_D,           // INPUT_ROLE_CAMERA_RIGHT
-        DIK_SLASH,       // INPUT_ROLE_CAMERA_RESET
+        SDL_SCANCODE_UP,         // INPUT_ROLE_UP
+        SDL_SCANCODE_DOWN,       // INPUT_ROLE_DOWN
+        SDL_SCANCODE_LEFT,       // INPUT_ROLE_LEFT
+        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_RIGHT
+        SDL_SCANCODE_DELETE,     // INPUT_ROLE_STEP_L
+        SDL_SCANCODE_PAGEDOWN,   // INPUT_ROLE_STEP_R
+        SDL_SCANCODE_RSHIFT,     // INPUT_ROLE_SLOW
+        SDL_SCANCODE_RALT,       // INPUT_ROLE_JUMP
+        SDL_SCANCODE_RCTRL,      // INPUT_ROLE_ACTION
+        SDL_SCANCODE_SPACE,      // INPUT_ROLE_DRAW
+        SDL_SCANCODE_KP_0,       // INPUT_ROLE_LOOK
+        SDL_SCANCODE_END,        // INPUT_ROLE_ROLL
+        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_OPTION
+        SDL_SCANCODE_O,          // INPUT_ROLE_FLY_CHEAT,
+        SDL_SCANCODE_I,          // INPUT_ROLE_ITEM_CHEAT,
+        SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+        SDL_SCANCODE_TAB,        // INPUT_ROLE_TURBO_CHEAT,
+        SDL_SCANCODE_P,          // INPUT_ROLE_PAUSE,
+        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_UP
+        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
+        SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
+        SDL_SCANCODE_SLASH,      // INPUT_ROLE_CAMERA_RESET
     },
 
     // default user controls
     {
-        DIK_NUMPAD8,     // INPUT_ROLE_UP
-        DIK_NUMPAD2,     // INPUT_ROLE_DOWN
-        DIK_NUMPAD4,     // INPUT_ROLE_LEFT
-        DIK_NUMPAD6,     // INPUT_ROLE_RIGHT
-        DIK_NUMPAD7,     // INPUT_ROLE_STEP_L
-        DIK_NUMPAD9,     // INPUT_ROLE_STEP_R
-        DIK_NUMPAD1,     // INPUT_ROLE_SLOW
-        DIK_ADD,         // INPUT_ROLE_JUMP
-        DIK_NUMPADENTER, // INPUT_ROLE_ACTION
-        DIK_NUMPAD3,     // INPUT_ROLE_DRAW
-        DIK_NUMPAD0,     // INPUT_ROLE_LOOK
-        DIK_NUMPAD5,     // INPUT_ROLE_ROLL
-        DIK_DECIMAL,     // INPUT_ROLE_OPTION
-        DIK_O,           // INPUT_ROLE_FLY_CHEAT,
-        DIK_I,           // INPUT_ROLE_ITEM_CHEAT,
-        DIK_L,           // INPUT_ROLE_LEVEL_SKIP_CHEAT,
-        DIK_TAB,         // INPUT_ROLE_TURBO_CHEAT,
-        DIK_P,           // INPUT_ROLE_PAUSE,
-        DIK_W,           // INPUT_ROLE_CAMERA_UP
-        DIK_S,           // INPUT_ROLE_CAMERA_DOWN
-        DIK_A,           // INPUT_ROLE_CAMERA_LEFT
-        DIK_D,           // INPUT_ROLE_CAMERA_RIGHT
-        DIK_SLASH,       // INPUT_ROLE_CAMERA_RESET
+        SDL_SCANCODE_KP_8,       // INPUT_ROLE_UP
+        SDL_SCANCODE_KP_2,       // INPUT_ROLE_DOWN
+        SDL_SCANCODE_KP_4,       // INPUT_ROLE_LEFT
+        SDL_SCANCODE_KP_6,       // INPUT_ROLE_RIGHT
+        SDL_SCANCODE_KP_7,       // INPUT_ROLE_STEP_L
+        SDL_SCANCODE_KP_9,       // INPUT_ROLE_STEP_R
+        SDL_SCANCODE_KP_1,       // INPUT_ROLE_SLOW
+        SDL_SCANCODE_KP_PLUS,    // INPUT_ROLE_JUMP
+        SDL_SCANCODE_KP_ENTER,   // INPUT_ROLE_ACTION
+        SDL_SCANCODE_KP_3,       // INPUT_ROLE_DRAW
+        SDL_SCANCODE_KP_0,       // INPUT_ROLE_LOOK
+        SDL_SCANCODE_KP_5,       // INPUT_ROLE_ROLL
+        SDL_SCANCODE_KP_PERIOD,  // INPUT_ROLE_OPTION
+        SDL_SCANCODE_O,          // INPUT_ROLE_FLY_CHEAT,
+        SDL_SCANCODE_I,          // INPUT_ROLE_ITEM_CHEAT,
+        SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+        SDL_SCANCODE_TAB,        // INPUT_ROLE_TURBO_CHEAT,
+        SDL_SCANCODE_P,          // INPUT_ROLE_PAUSE,
+        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_UP
+        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
+        SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
+        SDL_SCANCODE_SLASH,      // INPUT_ROLE_CAMERA_RESET
     }
     // clang-format on
 };
 
-static LPDIRECTINPUT8 m_DInput = NULL;
-static LPDIRECTINPUTDEVICE8 m_IDID_SysKeyboard = NULL;
-static uint8_t m_DIKeys[256] = { 0 };
+const Uint8 *m_KeyboardState;
 
-static bool S_Input_DInput_Create(void);
-static void S_Input_DInput_Shutdown(void);
-static bool S_Input_DInput_KeyboardCreate(void);
-static void S_Input_DInput_KeyboardRelease(void);
-static bool S_Input_DInput_KeyboardRead(void);
+static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role);
 
@@ -91,212 +84,241 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
 {
     // clang-format off
     switch (scancode) {
-        case DIK_ESCAPE:       return "ESC";
-        case DIK_1:            return "1";
-        case DIK_2:            return "2";
-        case DIK_3:            return "3";
-        case DIK_4:            return "4";
-        case DIK_5:            return "5";
-        case DIK_6:            return "6";
-        case DIK_7:            return "7";
-        case DIK_8:            return "8";
-        case DIK_9:            return "9";
-        case DIK_0:            return "0";
-        case DIK_MINUS:        return "-";
-        case DIK_EQUALS:       return "+";
-        case DIK_BACK:         return "BKSP";
-        case DIK_TAB:          return "TAB";
-        case DIK_Q:            return "Q";
-        case DIK_W:            return "W";
-        case DIK_E:            return "E";
-        case DIK_R:            return "R";
-        case DIK_T:            return "T";
-        case DIK_Y:            return "Y";
-        case DIK_U:            return "U";
-        case DIK_I:            return "I";
-        case DIK_O:            return "O";
-        case DIK_P:            return "P";
-        case DIK_LBRACKET:     return "<";
-        case DIK_RBRACKET:     return ">";
-        case DIK_RETURN:       return "RET";
-        case DIK_LCONTROL:     return "CTRL";
-        case DIK_A:            return "A";
-        case DIK_S:            return "S";
-        case DIK_D:            return "D";
-        case DIK_F:            return "F";
-        case DIK_G:            return "G";
-        case DIK_H:            return "H";
-        case DIK_J:            return "J";
-        case DIK_K:            return "K";
-        case DIK_L:            return "L";
-        case DIK_SEMICOLON:    return ";";
-        case DIK_APOSTROPHE:   return "\'";
-        case DIK_GRAVE:        return "`";
-        case DIK_LSHIFT:       return "SHIFT";
-        case DIK_BACKSLASH:    return "\\";
-        case DIK_Z:            return "Z";
-        case DIK_X:            return "X";
-        case DIK_C:            return "C";
-        case DIK_V:            return "V";
-        case DIK_B:            return "B";
-        case DIK_N:            return "N";
-        case DIK_M:            return "M";
-        case DIK_COMMA:        return ",";
-        case DIK_PERIOD:       return ".";
-        case DIK_SLASH:        return "/";
-        case DIK_RSHIFT:       return "SHIFT";
-        case DIK_MULTIPLY:     return "PADx";
-        case DIK_LMENU:        return "ALT";
-        case DIK_SPACE:        return "SPACE";
-        case DIK_CAPITAL:      return "CAPS";
-        case DIK_F1:           return "F1";
-        case DIK_F2:           return "F2";
-        case DIK_F3:           return "F3";
-        case DIK_F4:           return "F4";
-        case DIK_F5:           return "F5";
-        case DIK_F6:           return "F6";
-        case DIK_F7:           return "F7";
-        case DIK_F8:           return "F8";
-        case DIK_F9:           return "F9";
-        case DIK_F10:          return "F10";
-        case DIK_NUMLOCK:      return "NMLK";
-        case DIK_SCROLL:       return "SCLK";
-        case DIK_NUMPAD7:      return "PAD7";
-        case DIK_NUMPAD8:      return "PAD8";
-        case DIK_NUMPAD9:      return "PAD9";
-        case DIK_SUBTRACT:     return "PAD-";
-        case DIK_NUMPAD4:      return "PAD4";
-        case DIK_NUMPAD5:      return "PAD5";
-        case DIK_NUMPAD6:      return "PAD6";
-        case DIK_ADD:          return "PAD+";
-        case DIK_NUMPAD1:      return "PAD1";
-        case DIK_NUMPAD2:      return "PAD2";
-        case DIK_NUMPAD3:      return "PAD3";
-        case DIK_NUMPAD0:      return "PAD0";
-        case DIK_DECIMAL:      return "PAD.";
-        case DIK_F11:          return "F11";
-        case DIK_F12:          return "F12";
-        case DIK_F13:          return "F13";
-        case DIK_F14:          return "F14";
-        case DIK_F15:          return "F15";
-        case DIK_NUMPADEQUALS: return "PAD=";
-        case DIK_AT:           return "@";
-        case DIK_COLON:        return ":";
-        case DIK_UNDERLINE:    return "_";
-        case DIK_NUMPADENTER:  return "ENTER";
-        case DIK_RCONTROL:     return "CTRL";
-        case DIK_DIVIDE:       return "PAD/";
-        case DIK_RMENU:        return "ALT";
-        case DIK_HOME:         return "HOME";
-        case DIK_UP:           return "UP";
-        case DIK_PRIOR:        return "PGUP";
-        case DIK_LEFT:         return "LEFT";
-        case DIK_RIGHT:        return "RIGHT";
-        case DIK_END:          return "END";
-        case DIK_DOWN:         return "DOWN";
-        case DIK_NEXT:         return "PGDN";
-        case DIK_INSERT:       return "INS";
-        case DIK_DELETE:       return "DEL";
+        case SDL_SCANCODE_LCTRL:              return "CTRL";
+        case SDL_SCANCODE_RCTRL:              return "CTRL";
+        case SDL_SCANCODE_RSHIFT:             return "SHIFT";
+        case SDL_SCANCODE_LSHIFT:             return "SHIFT";
+        case SDL_SCANCODE_RALT:               return "ALT";
+        case SDL_SCANCODE_LALT:               return "ALT";
+        case SDL_SCANCODE_LGUI:               return "WIN";
+        case SDL_SCANCODE_RGUI:               return "WIN";
+
+        case SDL_SCANCODE_LEFT:               return "LEFT";
+        case SDL_SCANCODE_UP:                 return "UP";
+        case SDL_SCANCODE_RIGHT:              return "RIGHT";
+        case SDL_SCANCODE_DOWN:               return "DOWN";
+
+        case SDL_SCANCODE_RETURN:             return "RET";
+        case SDL_SCANCODE_ESCAPE:             return "ESC";
+        case SDL_SCANCODE_BACKSPACE:          return "BKSP";
+        case SDL_SCANCODE_TAB:                return "TAB";
+        case SDL_SCANCODE_SPACE:              return "SPACE";
+        case SDL_SCANCODE_CAPSLOCK:           return "CAPS";
+        case SDL_SCANCODE_PRINTSCREEN:        return "PSCRN";
+        case SDL_SCANCODE_SCROLLLOCK:         return "SCLK";
+        case SDL_SCANCODE_PAUSE:              return "PAUSE";
+        case SDL_SCANCODE_INSERT:             return "INS";
+        case SDL_SCANCODE_HOME:               return "HOME";
+        case SDL_SCANCODE_PAGEUP:             return "PGUP";
+        case SDL_SCANCODE_DELETE:             return "DEL";
+        case SDL_SCANCODE_END:                return "END";
+        case SDL_SCANCODE_PAGEDOWN:           return "PGDN";
+
+        case SDL_SCANCODE_A:                  return "A";
+        case SDL_SCANCODE_B:                  return "B";
+        case SDL_SCANCODE_C:                  return "C";
+        case SDL_SCANCODE_D:                  return "D";
+        case SDL_SCANCODE_E:                  return "E";
+        case SDL_SCANCODE_F:                  return "F";
+        case SDL_SCANCODE_G:                  return "G";
+        case SDL_SCANCODE_H:                  return "H";
+        case SDL_SCANCODE_I:                  return "I";
+        case SDL_SCANCODE_J:                  return "J";
+        case SDL_SCANCODE_K:                  return "K";
+        case SDL_SCANCODE_L:                  return "L";
+        case SDL_SCANCODE_M:                  return "M";
+        case SDL_SCANCODE_N:                  return "N";
+        case SDL_SCANCODE_O:                  return "O";
+        case SDL_SCANCODE_P:                  return "P";
+        case SDL_SCANCODE_Q:                  return "Q";
+        case SDL_SCANCODE_R:                  return "R";
+        case SDL_SCANCODE_S:                  return "S";
+        case SDL_SCANCODE_T:                  return "T";
+        case SDL_SCANCODE_U:                  return "U";
+        case SDL_SCANCODE_V:                  return "V";
+        case SDL_SCANCODE_W:                  return "W";
+        case SDL_SCANCODE_X:                  return "X";
+        case SDL_SCANCODE_Y:                  return "Y";
+        case SDL_SCANCODE_Z:                  return "Z";
+
+        case SDL_SCANCODE_0:                  return "0";
+        case SDL_SCANCODE_1:                  return "1";
+        case SDL_SCANCODE_2:                  return "2";
+        case SDL_SCANCODE_3:                  return "3";
+        case SDL_SCANCODE_4:                  return "4";
+        case SDL_SCANCODE_5:                  return "5";
+        case SDL_SCANCODE_6:                  return "6";
+        case SDL_SCANCODE_7:                  return "7";
+        case SDL_SCANCODE_8:                  return "8";
+        case SDL_SCANCODE_9:                  return "9";
+
+        case SDL_SCANCODE_MINUS:              return "-";
+        case SDL_SCANCODE_EQUALS:             return "=";
+        case SDL_SCANCODE_LEFTBRACKET:        return "[";
+        case SDL_SCANCODE_RIGHTBRACKET:       return "]";
+        case SDL_SCANCODE_BACKSLASH:          return "\\";
+        case SDL_SCANCODE_NONUSHASH:          return "#";
+        case SDL_SCANCODE_SEMICOLON:          return ";";
+        case SDL_SCANCODE_APOSTROPHE:         return "'";
+        case SDL_SCANCODE_GRAVE:              return "`";
+        case SDL_SCANCODE_COMMA:              return ",";
+        case SDL_SCANCODE_PERIOD:             return ".";
+        case SDL_SCANCODE_SLASH:              return "/";
+
+        case SDL_SCANCODE_F1:                 return "F1";
+        case SDL_SCANCODE_F2:                 return "F2";
+        case SDL_SCANCODE_F3:                 return "F3";
+        case SDL_SCANCODE_F4:                 return "F4";
+        case SDL_SCANCODE_F5:                 return "F5";
+        case SDL_SCANCODE_F6:                 return "F6";
+        case SDL_SCANCODE_F7:                 return "F7";
+        case SDL_SCANCODE_F8:                 return "F8";
+        case SDL_SCANCODE_F9:                 return "F9";
+        case SDL_SCANCODE_F10:                return "F10";
+        case SDL_SCANCODE_F11:                return "F11";
+        case SDL_SCANCODE_F12:                return "F12";
+        case SDL_SCANCODE_F13:                return "F13";
+        case SDL_SCANCODE_F14:                return "F14";
+        case SDL_SCANCODE_F15:                return "F15";
+        case SDL_SCANCODE_F16:                return "F16";
+        case SDL_SCANCODE_F17:                return "F17";
+        case SDL_SCANCODE_F18:                return "F18";
+        case SDL_SCANCODE_F19:                return "F19";
+        case SDL_SCANCODE_F20:                return "F20";
+        case SDL_SCANCODE_F21:                return "F21";
+        case SDL_SCANCODE_F22:                return "F22";
+        case SDL_SCANCODE_F23:                return "F23";
+        case SDL_SCANCODE_F24:                return "F24";
+
+        case SDL_SCANCODE_NUMLOCKCLEAR:       return "NMLK";
+        case SDL_SCANCODE_KP_0:               return "PAD0";
+        case SDL_SCANCODE_KP_1:               return "PAD1";
+        case SDL_SCANCODE_KP_2:               return "PAD2";
+        case SDL_SCANCODE_KP_3:               return "PAD3";
+        case SDL_SCANCODE_KP_4:               return "PAD4";
+        case SDL_SCANCODE_KP_5:               return "PAD5";
+        case SDL_SCANCODE_KP_6:               return "PAD6";
+        case SDL_SCANCODE_KP_7:               return "PAD7";
+        case SDL_SCANCODE_KP_8:               return "PAD8";
+        case SDL_SCANCODE_KP_9:               return "PAD9";
+        case SDL_SCANCODE_KP_PERIOD:          return "PAD.";
+        case SDL_SCANCODE_KP_DIVIDE:          return "PAD/";
+        case SDL_SCANCODE_KP_MULTIPLY:        return "PAD*";
+        case SDL_SCANCODE_KP_MINUS:           return "PAD-";
+        case SDL_SCANCODE_KP_PLUS:            return "PAD+";
+        case SDL_SCANCODE_KP_EQUALS:          return "PAD=";
+        case SDL_SCANCODE_KP_EQUALSAS400:     return "PAD=";
+        case SDL_SCANCODE_KP_COMMA:           return "PAD,";
+        case SDL_SCANCODE_KP_ENTER:           return "ENTER";
+
+        // extra keys
+        case SDL_SCANCODE_APPLICATION:        return "MENU";
+        case SDL_SCANCODE_POWER:              return "POWER";
+        case SDL_SCANCODE_EXECUTE:            return "EXEC";
+        case SDL_SCANCODE_HELP:               return "HELP";
+        case SDL_SCANCODE_MENU:               return "MENU";
+        case SDL_SCANCODE_SELECT:             return "SEL";
+        case SDL_SCANCODE_STOP:               return "STOP";
+        case SDL_SCANCODE_AGAIN:              return "AGAIN";
+        case SDL_SCANCODE_UNDO:               return "UNDO";
+        case SDL_SCANCODE_CUT:                return "CUT";
+        case SDL_SCANCODE_COPY:               return "COPY";
+        case SDL_SCANCODE_PASTE:              return "PASTE";
+        case SDL_SCANCODE_FIND:               return "FIND";
+        case SDL_SCANCODE_MUTE:               return "MUTE";
+        case SDL_SCANCODE_VOLUMEUP:           return "VOLUP";
+        case SDL_SCANCODE_VOLUMEDOWN:         return "VOLDN";
+        case SDL_SCANCODE_ALTERASE:           return "ALTER";
+        case SDL_SCANCODE_SYSREQ:             return "SYSRQ";
+        case SDL_SCANCODE_CANCEL:             return "CNCEL";
+        case SDL_SCANCODE_CLEAR:              return "CLEAR";
+        case SDL_SCANCODE_PRIOR:              return "PRIOR";
+        case SDL_SCANCODE_RETURN2:            return "RETURN";
+        case SDL_SCANCODE_SEPARATOR:          return "SEP";
+        case SDL_SCANCODE_OUT:                return "OUT";
+        case SDL_SCANCODE_OPER:               return "OPER";
+        case SDL_SCANCODE_CLEARAGAIN:         return "CLEAR";
+        case SDL_SCANCODE_CRSEL:              return "CRSEL";
+        case SDL_SCANCODE_EXSEL:              return "EXSEL";
+        case SDL_SCANCODE_KP_00:              return "PAD00";
+        case SDL_SCANCODE_KP_000:             return "PAD000";
+        case SDL_SCANCODE_THOUSANDSSEPARATOR: return "TSEP";
+        case SDL_SCANCODE_DECIMALSEPARATOR:   return "DSEP";
+        case SDL_SCANCODE_CURRENCYUNIT:       return "CURU";
+        case SDL_SCANCODE_CURRENCYSUBUNIT:    return "CURSU";
+        case SDL_SCANCODE_KP_LEFTPAREN:       return "PAD(";
+        case SDL_SCANCODE_KP_RIGHTPAREN:      return "PAD)";
+        case SDL_SCANCODE_KP_LEFTBRACE:       return "PAD{";
+        case SDL_SCANCODE_KP_RIGHTBRACE:      return "PAD}";
+        case SDL_SCANCODE_KP_TAB:             return "PADT";
+        case SDL_SCANCODE_KP_BACKSPACE:       return "PADBK";
+        case SDL_SCANCODE_KP_A:               return "PADA";
+        case SDL_SCANCODE_KP_B:               return "PADB";
+        case SDL_SCANCODE_KP_C:               return "PADC";
+        case SDL_SCANCODE_KP_D:               return "PADD";
+        case SDL_SCANCODE_KP_E:               return "PADE";
+        case SDL_SCANCODE_KP_F:               return "PADF";
+        case SDL_SCANCODE_KP_XOR:             return "PADXR";
+        case SDL_SCANCODE_KP_POWER:           return "PAD^";
+        case SDL_SCANCODE_KP_PERCENT:         return "PAD%";
+        case SDL_SCANCODE_KP_LESS:            return "PAD<";
+        case SDL_SCANCODE_KP_GREATER:         return "PAD>";
+        case SDL_SCANCODE_KP_AMPERSAND:       return "PAD&";
+        case SDL_SCANCODE_KP_DBLAMPERSAND:    return "PAD&&";
+        case SDL_SCANCODE_KP_VERTICALBAR:     return "PAD|";
+        case SDL_SCANCODE_KP_DBLVERTICALBAR:  return "PAD||";
+        case SDL_SCANCODE_KP_COLON:           return "PAD:";
+        case SDL_SCANCODE_KP_HASH:            return "PAD#";
+        case SDL_SCANCODE_KP_SPACE:           return "PADSP";
+        case SDL_SCANCODE_KP_AT:              return "PAD@";
+        case SDL_SCANCODE_KP_EXCLAM:          return "PAD!";
+        case SDL_SCANCODE_KP_MEMSTORE:        return "PADMS";
+        case SDL_SCANCODE_KP_MEMRECALL:       return "PADMR";
+        case SDL_SCANCODE_KP_MEMCLEAR:        return "PADMC";
+        case SDL_SCANCODE_KP_MEMADD:          return "PADMA";
+        case SDL_SCANCODE_KP_MEMSUBTRACT:     return "PADM-";
+        case SDL_SCANCODE_KP_MEMMULTIPLY:     return "PADM*";
+        case SDL_SCANCODE_KP_MEMDIVIDE:       return "PADM/";
+        case SDL_SCANCODE_KP_PLUSMINUS:       return "PAD+-";
+        case SDL_SCANCODE_KP_CLEAR:           return "PADCL";
+        case SDL_SCANCODE_KP_CLEARENTRY:      return "PADCL";
+        case SDL_SCANCODE_KP_BINARY:          return "PAD02";
+        case SDL_SCANCODE_KP_OCTAL:           return "PAD08";
+        case SDL_SCANCODE_KP_DECIMAL:         return "PAD10";
+        case SDL_SCANCODE_KP_HEXADECIMAL:     return "PAD16";
+        case SDL_SCANCODE_MODE:               return "MODE";
+        case SDL_SCANCODE_AUDIONEXT:          return "NEXT";
+        case SDL_SCANCODE_AUDIOPREV:          return "PREV";
+        case SDL_SCANCODE_AUDIOSTOP:          return "STOP";
+        case SDL_SCANCODE_AUDIOPLAY:          return "PLAY";
+        case SDL_SCANCODE_AUDIOMUTE:          return "MUTE";
+        case SDL_SCANCODE_MEDIASELECT:        return "MEDIA";
+        case SDL_SCANCODE_WWW:                return "WWW";
+        case SDL_SCANCODE_MAIL:               return "MAIL";
+        case SDL_SCANCODE_CALCULATOR:         return "CALC";
+        case SDL_SCANCODE_COMPUTER:           return "COMP";
+        case SDL_SCANCODE_AC_SEARCH:          return "SRCH";
+        case SDL_SCANCODE_AC_HOME:            return "HOME";
+        case SDL_SCANCODE_AC_BACK:            return "BACK";
+        case SDL_SCANCODE_AC_FORWARD:         return "FRWD";
+        case SDL_SCANCODE_AC_STOP:            return "STOP";
+        case SDL_SCANCODE_AC_REFRESH:         return "RFRSH";
+        case SDL_SCANCODE_AC_BOOKMARKS:       return "BKMK";
+        case SDL_SCANCODE_BRIGHTNESSDOWN:     return "BNDN";
+        case SDL_SCANCODE_BRIGHTNESSUP:       return "BNUP";
+        case SDL_SCANCODE_DISPLAYSWITCH:      return "DPSW";
+        case SDL_SCANCODE_KBDILLUMTOGGLE:     return "KBDIT";
+        case SDL_SCANCODE_KBDILLUMDOWN:       return "KBDID";
+        case SDL_SCANCODE_KBDILLUMUP:         return "KBDIU";
+        case SDL_SCANCODE_EJECT:              return "EJECT";
+        case SDL_SCANCODE_SLEEP:              return "SLEEP";
+        case SDL_SCANCODE_APP1:               return "APP1";
+        case SDL_SCANCODE_APP2:               return "APP2";
+        case SDL_SCANCODE_AUDIOREWIND:        return "RWND";
+        case SDL_SCANCODE_AUDIOFASTFORWARD:   return "FF";
     }
     // clang-format on
     return "????";
-}
-
-void S_Input_Init(void)
-{
-    if (!S_Input_DInput_Create()) {
-        Shell_ExitSystem("Fatal DirectInput error!");
-    }
-
-    if (!S_Input_DInput_KeyboardCreate()) {
-        Shell_ExitSystem("Fatal DirectInput error!");
-    }
-}
-
-void S_Input_Shutdown(void)
-{
-    S_Input_DInput_KeyboardRelease();
-    S_Input_DInput_Shutdown();
-}
-
-static bool S_Input_DInput_Create(void)
-{
-    HRESULT result = DirectInput8Create(
-        g_TombModule, DIRECTINPUT_VERSION, &IID_IDirectInput8,
-        (LPVOID *)&m_DInput, NULL);
-
-    if (result) {
-        LOG_ERROR("Error while calling DirectInput8Create: 0x%lx", result);
-        return false;
-    }
-
-    return true;
-}
-
-static void S_Input_DInput_Shutdown(void)
-{
-    if (m_DInput) {
-        IDirectInput_Release(m_DInput);
-        m_DInput = NULL;
-    }
-}
-
-bool S_Input_DInput_KeyboardCreate(void)
-{
-    HRESULT result = IDirectInput8_CreateDevice(
-        m_DInput, &GUID_SysKeyboard, &m_IDID_SysKeyboard, NULL);
-    if (result) {
-        LOG_ERROR(
-            "Error while calling IDirectInput8_CreateDevice: 0x%lx", result);
-        return false;
-    }
-
-    result = IDirectInputDevice_SetCooperativeLevel(
-        m_IDID_SysKeyboard, g_TombHWND, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-    if (result) {
-        LOG_ERROR(
-            "Error while calling IDirectInputDevice_SetCooperativeLevel: 0x%lx",
-            result);
-        return false;
-    }
-
-    result =
-        IDirectInputDevice_SetDataFormat(m_IDID_SysKeyboard, &c_dfDIKeyboard);
-    if (result) {
-        LOG_ERROR(
-            "Error while calling IDirectInputDevice_SetDataFormat: 0x%lx",
-            result);
-        return false;
-    }
-
-    return true;
-}
-
-void S_Input_DInput_KeyboardRelease(void)
-{
-    if (m_IDID_SysKeyboard) {
-        IDirectInputDevice_Unacquire(m_IDID_SysKeyboard);
-        IDirectInputDevice_Release(m_IDID_SysKeyboard);
-        m_IDID_SysKeyboard = NULL;
-    }
-}
-
-static bool S_Input_DInput_KeyboardRead(void)
-{
-    if (!m_IDID_SysKeyboard) {
-        return false;
-    }
-
-    while (IDirectInputDevice_GetDeviceState(
-        m_IDID_SysKeyboard, sizeof(m_DIKeys), m_DIKeys)) {
-        if (IDirectInputDevice_Acquire(m_IDID_SysKeyboard)) {
-            memset(m_DIKeys, 0, sizeof(m_DIKeys));
-            break;
-        }
-    }
-    S_Shell_SpinMessageLoop();
-
-    return true;
 }
 
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
@@ -305,23 +327,23 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
     if (KEY_DOWN(scancode)) {
         return true;
     }
-    if (scancode == DIK_LCONTROL) {
-        return KEY_DOWN(DIK_RCONTROL);
+    if (scancode == SDL_SCANCODE_LCTRL) {
+        return KEY_DOWN(SDL_SCANCODE_RCTRL);
     }
-    if (scancode == DIK_RCONTROL) {
-        return KEY_DOWN(DIK_LCONTROL);
+    if (scancode == SDL_SCANCODE_RCTRL) {
+        return KEY_DOWN(SDL_SCANCODE_LCTRL);
     }
-    if (scancode == DIK_LSHIFT) {
-        return KEY_DOWN(DIK_RSHIFT);
+    if (scancode == SDL_SCANCODE_LSHIFT) {
+        return KEY_DOWN(SDL_SCANCODE_RSHIFT);
     }
-    if (scancode == DIK_RSHIFT) {
-        return KEY_DOWN(DIK_LSHIFT);
+    if (scancode == SDL_SCANCODE_RSHIFT) {
+        return KEY_DOWN(SDL_SCANCODE_LSHIFT);
     }
-    if (scancode == DIK_LMENU) {
-        return KEY_DOWN(DIK_RMENU);
+    if (scancode == SDL_SCANCODE_LALT) {
+        return KEY_DOWN(SDL_SCANCODE_RALT);
     }
-    if (scancode == DIK_RMENU) {
-        return KEY_DOWN(DIK_LMENU);
+    if (scancode == SDL_SCANCODE_RALT) {
+        return KEY_DOWN(SDL_SCANCODE_LALT);
     }
     return false;
 }
@@ -333,10 +355,17 @@ static bool S_Input_Key(INPUT_ROLE role)
             && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
 }
 
+void S_Input_Init(void)
+{
+    m_KeyboardState = SDL_GetKeyboardState(NULL);
+}
+
+void S_Input_Shutdown(void)
+{
+}
+
 INPUT_STATE S_Input_GetCurrentState(void)
 {
-    S_Input_DInput_KeyboardRead();
-
     INPUT_STATE linput = { 0 };
 
     linput.forward = S_Input_Key(INPUT_ROLE_UP);
@@ -363,24 +392,24 @@ INPUT_STATE S_Input_GetCurrentState(void)
     linput.fly_cheat = S_Input_Key(INPUT_ROLE_FLY_CHEAT);
     linput.level_skip_cheat = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT);
     linput.turbo_cheat = S_Input_Key(INPUT_ROLE_TURBO_CHEAT);
-    linput.health_cheat = KEY_DOWN(DIK_F11);
+    linput.health_cheat = KEY_DOWN(SDL_SCANCODE_F11);
 
-    linput.equip_pistols = KEY_DOWN(DIK_1);
-    linput.equip_shotgun = KEY_DOWN(DIK_2);
-    linput.equip_magnums = KEY_DOWN(DIK_3);
-    linput.equip_uzis = KEY_DOWN(DIK_4);
-    linput.use_small_medi = KEY_DOWN(DIK_8);
-    linput.use_big_medi = KEY_DOWN(DIK_9);
+    linput.equip_pistols = KEY_DOWN(SDL_SCANCODE_1);
+    linput.equip_shotgun = KEY_DOWN(SDL_SCANCODE_2);
+    linput.equip_magnums = KEY_DOWN(SDL_SCANCODE_3);
+    linput.equip_uzis = KEY_DOWN(SDL_SCANCODE_4);
+    linput.use_small_medi = KEY_DOWN(SDL_SCANCODE_8);
+    linput.use_big_medi = KEY_DOWN(SDL_SCANCODE_9);
 
-    linput.select = KEY_DOWN(DIK_RETURN);
+    linput.select = KEY_DOWN(SDL_SCANCODE_RETURN);
     linput.deselect = S_Input_Key(INPUT_ROLE_OPTION);
 
-    linput.save = KEY_DOWN(DIK_F5);
-    linput.load = KEY_DOWN(DIK_F6);
+    linput.save = KEY_DOWN(SDL_SCANCODE_F5);
+    linput.load = KEY_DOWN(SDL_SCANCODE_F6);
 
-    linput.toggle_fps_counter = KEY_DOWN(DIK_F2);
-    linput.toggle_bilinear_filter = KEY_DOWN(DIK_F3);
-    linput.toggle_perspective_filter = KEY_DOWN(DIK_F4);
+    linput.toggle_fps_counter = KEY_DOWN(SDL_SCANCODE_F2);
+    linput.toggle_bilinear_filter = KEY_DOWN(SDL_SCANCODE_F3);
+    linput.toggle_perspective_filter = KEY_DOWN(SDL_SCANCODE_F4);
 
     return linput;
 }
@@ -398,7 +427,8 @@ void S_Input_AssignScancode(
 
 bool S_Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
-    for (INPUT_SCANCODE scancode = 0; scancode < 256; scancode++) {
+    for (INPUT_SCANCODE scancode = 0; scancode < SDL_NUM_SCANCODES;
+         scancode++) {
         if (KEY_DOWN(scancode)) {
             m_Layout[layout_num][role] = scancode;
             return true;
