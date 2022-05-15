@@ -78,8 +78,6 @@ static LPDIRECTINPUTDEVICE8 m_IDID_SysKeyboard = NULL;
 static LPDIRECTINPUTDEVICE8 m_IDID_Joystick = NULL;
 static uint8_t m_DIKeys[256] = { 0 };
 
-static int32_t m_MedipackCoolDown = 0;
-
 static bool S_Input_DInput_Create(void);
 static void S_Input_DInput_Shutdown(void);
 static bool S_Input_DInput_KeyboardCreate(void);
@@ -428,10 +426,8 @@ INPUT_STATE S_Input_GetCurrentState(void)
     linput.action = S_Input_Key(INPUT_KEY_ACTION);
     linput.draw = S_Input_Key(INPUT_KEY_DRAW);
     linput.look = S_Input_Key(INPUT_KEY_LOOK);
-    linput.roll =
-        S_Input_Key(INPUT_KEY_ROLL) || (linput.forward && linput.back);
-    linput.option =
-        S_Input_Key(INPUT_KEY_OPTION) && g_Camera.type != CAM_CINEMATIC;
+    linput.roll = S_Input_Key(INPUT_KEY_ROLL);
+    linput.option = S_Input_Key(INPUT_KEY_OPTION);
     linput.pause = S_Input_Key(INPUT_KEY_PAUSE);
     linput.camera_up = S_Input_Key(INPUT_KEY_CAMERA_UP);
     linput.camera_down = S_Input_Key(INPUT_KEY_CAMERA_DOWN);
@@ -439,84 +435,28 @@ INPUT_STATE S_Input_GetCurrentState(void)
     linput.camera_right = S_Input_Key(INPUT_KEY_CAMERA_RIGHT);
     linput.camera_reset = S_Input_Key(INPUT_KEY_CAMERA_RESET);
 
-    if (g_Config.enable_cheats) {
-        linput.item_cheat = S_Input_Key(INPUT_KEY_ITEM_CHEAT);
-        linput.fly_cheat = S_Input_Key(INPUT_KEY_FLY_CHEAT);
-        linput.level_skip_cheat = S_Input_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
-        linput.turbo_cheat = S_Input_Key(INPUT_KEY_TURBO_CHEAT);
-        linput.health_cheat = KEY_DOWN(DIK_F11);
-    }
+    linput.item_cheat = S_Input_Key(INPUT_KEY_ITEM_CHEAT);
+    linput.fly_cheat = S_Input_Key(INPUT_KEY_FLY_CHEAT);
+    linput.level_skip_cheat = S_Input_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
+    linput.turbo_cheat = S_Input_Key(INPUT_KEY_TURBO_CHEAT);
+    linput.health_cheat = KEY_DOWN(DIK_F11);
 
-    if (g_Config.enable_tr3_sidesteps) {
-        if (linput.slow && !linput.forward && !linput.back && !linput.step_left
-            && !linput.step_right) {
-            if (linput.left) {
-                linput.left = 0;
-                linput.step_left = 1;
-            } else if (linput.right) {
-                linput.right = 0;
-                linput.step_right = 1;
-            }
-        }
-    }
+    linput.equip_pistols = KEY_DOWN(DIK_1);
+    linput.equip_shotgun = KEY_DOWN(DIK_2);
+    linput.equip_magnums = KEY_DOWN(DIK_3);
+    linput.equip_uzis = KEY_DOWN(DIK_4);
+    linput.use_small_medi = KEY_DOWN(DIK_8);
+    linput.use_big_medi = KEY_DOWN(DIK_9);
 
-    if (g_Config.enable_numeric_keys) {
-        if (KEY_DOWN(DIK_1) && Inv_RequestItem(O_GUN_ITEM)) {
-            g_Lara.request_gun_type = LGT_PISTOLS;
-        } else if (KEY_DOWN(DIK_2) && Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            g_Lara.request_gun_type = LGT_SHOTGUN;
-        } else if (KEY_DOWN(DIK_3) && Inv_RequestItem(O_MAGNUM_ITEM)) {
-            g_Lara.request_gun_type = LGT_MAGNUMS;
-        } else if (KEY_DOWN(DIK_4) && Inv_RequestItem(O_UZI_ITEM)) {
-            g_Lara.request_gun_type = LGT_UZIS;
-        }
-
-        if (m_MedipackCoolDown) {
-            m_MedipackCoolDown--;
-        } else {
-            if (KEY_DOWN(DIK_8) && Inv_RequestItem(O_MEDI_OPTION)) {
-                Lara_UseItem(O_MEDI_OPTION);
-                m_MedipackCoolDown = FRAMES_PER_SECOND / 2;
-            } else if (KEY_DOWN(DIK_9) && Inv_RequestItem(O_BIGMEDI_OPTION)) {
-                Lara_UseItem(O_BIGMEDI_OPTION);
-                m_MedipackCoolDown = FRAMES_PER_SECOND / 2;
-            }
-        }
-    }
-
-    linput.select = linput.action || KEY_DOWN(DIK_RETURN);
+    linput.select = KEY_DOWN(DIK_RETURN);
     linput.deselect = S_Input_Key(INPUT_KEY_OPTION);
 
-    if (linput.left && linput.right) {
-        linput.left = 0;
-        linput.right = 0;
-    }
+    linput.save = KEY_DOWN(DIK_F5);
+    linput.load = KEY_DOWN(DIK_F6);
 
-    if (!g_ModeLock && g_Camera.type != CAM_CINEMATIC) {
-        linput.save = KEY_DOWN(DIK_F5);
-        linput.load = KEY_DOWN(DIK_F6);
-    }
-
-    if (KEY_DOWN(DIK_F3)) {
-        g_Config.rendering.enable_bilinear_filter ^= true;
-        while (KEY_DOWN(DIK_F3)) {
-            S_Input_DInput_KeyboardRead();
-        }
-    }
-
-    if (KEY_DOWN(DIK_F4)) {
-        g_Config.rendering.enable_perspective_filter ^= true;
-        while (KEY_DOWN(DIK_F4)) {
-            S_Input_DInput_KeyboardRead();
-        }
-    }
-
-    if (KEY_DOWN(DIK_F2)) {
-        g_Config.rendering.enable_fps_counter ^= true;
-        while (KEY_DOWN(DIK_F2)) {
-            S_Input_DInput_KeyboardRead();
-        }
-    }
+    linput.toggle_fps_counter = KEY_DOWN(DIK_F2);
+    linput.toggle_bilinear_filter = KEY_DOWN(DIK_F3);
+    linput.toggle_perspective_filter = KEY_DOWN(DIK_F4);
 
     if (m_IDID_Joystick) {
         DIJOYSTATE2 state;
