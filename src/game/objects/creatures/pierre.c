@@ -1,5 +1,6 @@
 #include "game/objects/creatures/pierre.h"
 
+#include "config.h"
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/los.h"
@@ -64,13 +65,29 @@ void Pierre_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (m_PierreItemNum == NO_ITEM) {
-        m_PierreItemNum = item_num;
-    } else if (m_PierreItemNum != item_num) {
-        if (item->flags & IF_ONESHOT) {
-            Item_Kill(m_PierreItemNum);
-        } else {
-            Item_Kill(item_num);
+    if (g_Config.change_pierre_spawn) {
+        if (m_PierreItemNum == NO_ITEM) {
+            m_PierreItemNum = item_num;
+        } else if (m_PierreItemNum != item_num) {
+            ITEM_INFO *old_pierre = &g_Items[m_PierreItemNum];
+            if (old_pierre->flags & IF_ONESHOT) {
+                if (!(item->flags & IF_ONESHOT)) {
+                    Item_Kill(item_num);
+                }
+            } else {
+                Item_Kill(m_PierreItemNum);
+                m_PierreItemNum = item_num;
+            }
+        }
+    } else {
+        if (m_PierreItemNum == NO_ITEM) {
+            m_PierreItemNum = item_num;
+        } else if (m_PierreItemNum != item_num) {
+            if (item->flags & IF_ONESHOT) {
+                Item_Kill(m_PierreItemNum);
+            } else {
+                Item_Kill(item_num);
+            }
         }
     }
 
