@@ -139,8 +139,9 @@ static void Option_ControlInitText(void)
             int16_t x = xs[col->col_num];
             int16_t y = ys[col->col_num];
 
-            const char *scancode_name = S_Input_GetKeyCodeName(
-                S_Input_GetAssignedKeyCode(g_Config.input.layout, col->option));
+            const char *scancode_name =
+                S_Input_GetScancodeName(S_Input_GetAssignedScancode(
+                    g_Config.input.layout, col->option));
             if (col->option != -1 && scancode_name) {
                 m_TextB[col->option] = Text_Create(x, y, scancode_name);
                 Text_CentreV(m_TextB[col->option], 1);
@@ -201,8 +202,8 @@ static void Option_ControlUpdateText(void)
 
     for (const TEXT_COLUMN_PLACEMENT *col = cols;
          col->col_num >= 0 && col->col_num <= 1; col++) {
-        const char *scancode_name = S_Input_GetKeyCodeName(
-            S_Input_GetAssignedKeyCode(g_Config.input.layout, col->option));
+        const char *scancode_name = S_Input_GetScancodeName(
+            S_Input_GetAssignedScancode(g_Config.input.layout, col->option));
         if (col->option != -1 && scancode_name) {
             Text_ChangeText(m_TextB[col->option], scancode_name);
         }
@@ -243,14 +244,14 @@ void Option_FlashConflicts(void)
         if (item1->option == -1) {
             continue;
         }
-        S_INPUT_KEYCODE key_code1 =
-            S_Input_GetAssignedKeyCode(g_Config.input.layout, item1->option);
+        INPUT_SCANCODE key_code1 =
+            S_Input_GetAssignedScancode(g_Config.input.layout, item1->option);
         for (const TEXT_COLUMN_PLACEMENT *item2 = item1 + 1;
              item2->col_num != -1; item2++) {
             if (item2->option == -1) {
                 continue;
             }
-            S_INPUT_KEYCODE key_code2 = S_Input_GetAssignedKeyCode(
+            INPUT_SCANCODE key_code2 = S_Input_GetAssignedScancode(
                 g_Config.input.layout, item2->option);
             if (item1 != item2 && key_code1 == key_code2) {
                 Text_Flash(m_TextB[item1->option], 1, 20);
@@ -263,11 +264,11 @@ void Option_FlashConflicts(void)
 void Option_DefaultConflict(void)
 {
     for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
-        S_INPUT_KEYCODE key_code =
-            S_Input_GetAssignedKeyCode(INPUT_LAYOUT_DEFAULT, i);
+        INPUT_SCANCODE key_code =
+            S_Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, i);
         S_Input_SetKeyAsConflicted(i, false);
         for (int j = 0; j < INPUT_ROLE_NUMBER_OF; j++) {
-            if (key_code == S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, j)) {
+            if (key_code == S_Input_GetAssignedScancode(INPUT_LAYOUT_USER, j)) {
                 S_Input_SetKeyAsConflicted(i, true);
                 break;
             }
@@ -438,11 +439,12 @@ void Option_Control(INVENTORY_ITEM *inv_item)
         break;
 
     case 2: {
-        S_INPUT_KEYCODE key_code = S_Input_ReadKeyCode();
+        INPUT_SCANCODE key_code = S_Input_ReadScancode();
 
-        const char *scancode_name = S_Input_GetKeyCodeName(key_code);
+        const char *scancode_name = S_Input_GetScancodeName(key_code);
         if (key_code >= 0 && scancode_name) {
-            S_Input_AssignKeyCode(g_Config.input.layout, m_KeyChange, key_code);
+            S_Input_AssignScancode(
+                g_Config.input.layout, m_KeyChange, key_code);
             Text_ChangeText(m_TextB[m_KeyChange], scancode_name);
             Text_RemoveBackground(m_TextB[m_KeyChange]);
             Text_RemoveOutline(m_TextB[m_KeyChange]);
@@ -456,10 +458,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
     }
 
     case 3: {
-        S_INPUT_KEYCODE key_code =
-            S_Input_GetAssignedKeyCode(g_Config.input.layout, m_KeyChange);
+        INPUT_SCANCODE key_code =
+            S_Input_GetAssignedScancode(g_Config.input.layout, m_KeyChange);
 
-        if (S_Input_ReadKeyCode() < 0 || S_Input_ReadKeyCode() != key_code) {
+        if (S_Input_ReadScancode() < 0 || S_Input_ReadScancode() != key_code) {
             m_KeyMode = 0;
             Option_FlashConflicts();
             Settings_Write();

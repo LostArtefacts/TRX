@@ -83,10 +83,10 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
 
     struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
     for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
-        S_INPUT_KEYCODE key_code =
-            S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i);
-        key_code = json_array_get_int(layout_arr, i, key_code);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, i, key_code);
+        INPUT_SCANCODE scancode =
+            S_Input_GetAssignedScancode(INPUT_LAYOUT_USER, i);
+        scancode = json_array_get_int(layout_arr, i, scancode);
+        S_Input_AssignScancode(INPUT_LAYOUT_USER, i, scancode);
     }
 
     if (root) {
@@ -145,7 +145,7 @@ bool Settings_Write(void)
     struct json_array_s *layout_arr = json_array_new();
     for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
         json_array_append_int(
-            layout_arr, S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i));
+            layout_arr, S_Input_GetAssignedScancode(INPUT_LAYOUT_USER, i));
     }
     json_object_append_array(root_obj, "layout", layout_arr);
 
