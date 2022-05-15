@@ -28,33 +28,33 @@ static int32_t m_KeyMode = 0;
 static int32_t m_KeyChange = 0;
 
 static TEXTSTRING *m_Text[2] = { 0 };
-static TEXTSTRING *m_TextA[INPUT_KEY_NUMBER_OF] = { 0 };
-static TEXTSTRING *m_TextB[INPUT_KEY_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_TextA[INPUT_ROLE_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_TextB[INPUT_ROLE_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextArrowLeft = NULL;
 static TEXTSTRING *m_TextArrowRight = NULL;
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column
-    { INPUT_KEY_UP, 0 },
-    { INPUT_KEY_DOWN, 0 },
-    { INPUT_KEY_LEFT, 0 },
-    { INPUT_KEY_RIGHT, 0 },
-    { INPUT_KEY_STEP_L, 0 },
-    { INPUT_KEY_STEP_R, 0 },
-    { INPUT_KEY_LOOK, 0 },
-    { INPUT_KEY_CAMERA_UP, 0 },
-    { INPUT_KEY_CAMERA_DOWN, 0 },
-    { INPUT_KEY_CAMERA_LEFT, 0 },
-    { INPUT_KEY_CAMERA_RIGHT, 0 },
-    { INPUT_KEY_CAMERA_RESET, 0 },
+    { INPUT_ROLE_UP, 0 },
+    { INPUT_ROLE_DOWN, 0 },
+    { INPUT_ROLE_LEFT, 0 },
+    { INPUT_ROLE_RIGHT, 0 },
+    { INPUT_ROLE_STEP_L, 0 },
+    { INPUT_ROLE_STEP_R, 0 },
+    { INPUT_ROLE_LOOK, 0 },
+    { INPUT_ROLE_CAMERA_UP, 0 },
+    { INPUT_ROLE_CAMERA_DOWN, 0 },
+    { INPUT_ROLE_CAMERA_LEFT, 0 },
+    { INPUT_ROLE_CAMERA_RIGHT, 0 },
+    { INPUT_ROLE_CAMERA_RESET, 0 },
     // right column
-    { INPUT_KEY_SLOW, 1 },
-    { INPUT_KEY_JUMP, 1 },
-    { INPUT_KEY_ACTION, 1 },
-    { INPUT_KEY_DRAW, 1 },
-    { INPUT_KEY_ROLL, 1 },
-    { INPUT_KEY_OPTION, 1 },
-    { INPUT_KEY_PAUSE, 1 },
+    { INPUT_ROLE_SLOW, 1 },
+    { INPUT_ROLE_JUMP, 1 },
+    { INPUT_ROLE_ACTION, 1 },
+    { INPUT_ROLE_DRAW, 1 },
+    { INPUT_ROLE_ROLL, 1 },
+    { INPUT_ROLE_OPTION, 1 },
+    { INPUT_ROLE_PAUSE, 1 },
     { -1, 1 },
     { -1, 1 },
     { -1, 1 },
@@ -66,31 +66,31 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     // left column
-    { INPUT_KEY_UP, 0 },
-    { INPUT_KEY_DOWN, 0 },
-    { INPUT_KEY_LEFT, 0 },
-    { INPUT_KEY_RIGHT, 0 },
-    { INPUT_KEY_STEP_L, 0 },
-    { INPUT_KEY_STEP_R, 0 },
-    { INPUT_KEY_LOOK, 0 },
-    { INPUT_KEY_CAMERA_UP, 0 },
-    { INPUT_KEY_CAMERA_DOWN, 0 },
-    { INPUT_KEY_CAMERA_LEFT, 0 },
-    { INPUT_KEY_CAMERA_RIGHT, 0 },
-    { INPUT_KEY_CAMERA_RESET, 0 },
+    { INPUT_ROLE_UP, 0 },
+    { INPUT_ROLE_DOWN, 0 },
+    { INPUT_ROLE_LEFT, 0 },
+    { INPUT_ROLE_RIGHT, 0 },
+    { INPUT_ROLE_STEP_L, 0 },
+    { INPUT_ROLE_STEP_R, 0 },
+    { INPUT_ROLE_LOOK, 0 },
+    { INPUT_ROLE_CAMERA_UP, 0 },
+    { INPUT_ROLE_CAMERA_DOWN, 0 },
+    { INPUT_ROLE_CAMERA_LEFT, 0 },
+    { INPUT_ROLE_CAMERA_RIGHT, 0 },
+    { INPUT_ROLE_CAMERA_RESET, 0 },
     // right column
-    { INPUT_KEY_SLOW, 1 },
-    { INPUT_KEY_JUMP, 1 },
-    { INPUT_KEY_ACTION, 1 },
-    { INPUT_KEY_DRAW, 1 },
-    { INPUT_KEY_ROLL, 1 },
-    { INPUT_KEY_OPTION, 1 },
-    { INPUT_KEY_PAUSE, 1 },
+    { INPUT_ROLE_SLOW, 1 },
+    { INPUT_ROLE_JUMP, 1 },
+    { INPUT_ROLE_ACTION, 1 },
+    { INPUT_ROLE_DRAW, 1 },
+    { INPUT_ROLE_ROLL, 1 },
+    { INPUT_ROLE_OPTION, 1 },
+    { INPUT_ROLE_PAUSE, 1 },
     { -1, 1 },
-    { INPUT_KEY_FLY_CHEAT, 1 },
-    { INPUT_KEY_ITEM_CHEAT, 1 },
-    { INPUT_KEY_LEVEL_SKIP_CHEAT, 1 },
-    { INPUT_KEY_TURBO_CHEAT, 1 },
+    { INPUT_ROLE_FLY_CHEAT, 1 },
+    { INPUT_ROLE_ITEM_CHEAT, 1 },
+    { INPUT_ROLE_LEVEL_SKIP_CHEAT, 1 },
+    { INPUT_ROLE_TURBO_CHEAT, 1 },
     // end
     { -1, -1 },
 };
@@ -166,7 +166,7 @@ static void Option_ControlInitText(void)
                 m_TextA[col->option] = Text_Create(
                     x, y,
                     g_GameFlow
-                        .strings[col->option + GS_KEYMAP_RUN - INPUT_KEY_UP]);
+                        .strings[col->option + GS_KEYMAP_RUN - INPUT_ROLE_UP]);
                 Text_CentreV(m_TextA[col->option], 1);
             }
 
@@ -219,7 +219,7 @@ static void Option_ControlShutdownText(void)
     m_TextArrowLeft = NULL;
     Text_Remove(m_TextArrowRight);
     m_TextArrowRight = NULL;
-    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
+    for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
         Text_Remove(m_TextA[i]);
         Text_Remove(m_TextB[i]);
         m_TextB[i] = NULL;
@@ -262,11 +262,11 @@ void Option_FlashConflicts(void)
 
 void Option_DefaultConflict(void)
 {
-    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
+    for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
         S_INPUT_KEYCODE key_code =
             S_Input_GetAssignedKeyCode(INPUT_LAYOUT_DEFAULT, i);
         S_Input_SetKeyAsConflicted(i, false);
-        for (int j = 0; j < INPUT_KEY_NUMBER_OF; j++) {
+        for (int j = 0; j < INPUT_ROLE_NUMBER_OF; j++) {
             if (key_code == S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, j)) {
                 S_Input_SetKeyAsConflicted(i, true);
                 break;

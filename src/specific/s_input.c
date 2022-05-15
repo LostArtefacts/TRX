@@ -14,61 +14,61 @@
 
 #define KEY_DOWN(a) ((m_DIKeys[(a)] & 0x80) != 0)
 
-static bool m_KeyConflict[INPUT_KEY_NUMBER_OF] = { false };
-static S_INPUT_KEYCODE m_Layout[2][INPUT_KEY_NUMBER_OF] = {
+static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
+static S_INPUT_KEYCODE m_Layout[2][INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     // built-in controls
     {
-        DIK_UP,          // INPUT_KEY_UP
-        DIK_DOWN,        // INPUT_KEY_DOWN
-        DIK_LEFT,        // INPUT_KEY_LEFT
-        DIK_RIGHT,       // INPUT_KEY_RIGHT
-        DIK_DELETE,      // INPUT_KEY_STEP_L
-        DIK_NEXT,        // INPUT_KEY_STEP_R
-        DIK_RSHIFT,      // INPUT_KEY_SLOW
-        DIK_RMENU,       // INPUT_KEY_JUMP
-        DIK_RCONTROL,    // INPUT_KEY_ACTION
-        DIK_SPACE,       // INPUT_KEY_DRAW
-        DIK_NUMPAD0,     // INPUT_KEY_LOOK
-        DIK_END,         // INPUT_KEY_ROLL
-        DIK_ESCAPE,      // INPUT_KEY_OPTION
-        DIK_O,           // INPUT_KEY_FLY_CHEAT,
-        DIK_I,           // INPUT_KEY_ITEM_CHEAT,
-        DIK_L,           // INPUT_KEY_LEVEL_SKIP_CHEAT,
-        DIK_TAB,         // INPUT_KEY_TURBO_CHEAT,
-        DIK_P,           // INPUT_KEY_PAUSE,
-        DIK_W,           // INPUT_KEY_CAMERA_UP
-        DIK_S,           // INPUT_KEY_CAMERA_DOWN
-        DIK_A,           // INPUT_KEY_CAMERA_LEFT
-        DIK_D,           // INPUT_KEY_CAMERA_RIGHT
-        DIK_SLASH,       // INPUT_KEY_CAMERA_RESET
+        DIK_UP,          // INPUT_ROLE_UP
+        DIK_DOWN,        // INPUT_ROLE_DOWN
+        DIK_LEFT,        // INPUT_ROLE_LEFT
+        DIK_RIGHT,       // INPUT_ROLE_RIGHT
+        DIK_DELETE,      // INPUT_ROLE_STEP_L
+        DIK_NEXT,        // INPUT_ROLE_STEP_R
+        DIK_RSHIFT,      // INPUT_ROLE_SLOW
+        DIK_RMENU,       // INPUT_ROLE_JUMP
+        DIK_RCONTROL,    // INPUT_ROLE_ACTION
+        DIK_SPACE,       // INPUT_ROLE_DRAW
+        DIK_NUMPAD0,     // INPUT_ROLE_LOOK
+        DIK_END,         // INPUT_ROLE_ROLL
+        DIK_ESCAPE,      // INPUT_ROLE_OPTION
+        DIK_O,           // INPUT_ROLE_FLY_CHEAT,
+        DIK_I,           // INPUT_ROLE_ITEM_CHEAT,
+        DIK_L,           // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+        DIK_TAB,         // INPUT_ROLE_TURBO_CHEAT,
+        DIK_P,           // INPUT_ROLE_PAUSE,
+        DIK_W,           // INPUT_ROLE_CAMERA_UP
+        DIK_S,           // INPUT_ROLE_CAMERA_DOWN
+        DIK_A,           // INPUT_ROLE_CAMERA_LEFT
+        DIK_D,           // INPUT_ROLE_CAMERA_RIGHT
+        DIK_SLASH,       // INPUT_ROLE_CAMERA_RESET
     },
 
     // default user controls
     {
-        DIK_NUMPAD8,     // INPUT_KEY_UP
-        DIK_NUMPAD2,     // INPUT_KEY_DOWN
-        DIK_NUMPAD4,     // INPUT_KEY_LEFT
-        DIK_NUMPAD6,     // INPUT_KEY_RIGHT
-        DIK_NUMPAD7,     // INPUT_KEY_STEP_L
-        DIK_NUMPAD9,     // INPUT_KEY_STEP_R
-        DIK_NUMPAD1,     // INPUT_KEY_SLOW
-        DIK_ADD,         // INPUT_KEY_JUMP
-        DIK_NUMPADENTER, // INPUT_KEY_ACTION
-        DIK_NUMPAD3,     // INPUT_KEY_DRAW
-        DIK_NUMPAD0,     // INPUT_KEY_LOOK
-        DIK_NUMPAD5,     // INPUT_KEY_ROLL
-        DIK_DECIMAL,     // INPUT_KEY_OPTION
-        DIK_O,           // INPUT_KEY_FLY_CHEAT,
-        DIK_I,           // INPUT_KEY_ITEM_CHEAT,
-        DIK_L,           // INPUT_KEY_LEVEL_SKIP_CHEAT,
-        DIK_TAB,         // INPUT_KEY_TURBO_CHEAT,
-        DIK_P,           // INPUT_KEY_PAUSE,
-        DIK_W,           // INPUT_KEY_CAMERA_UP
-        DIK_S,           // INPUT_KEY_CAMERA_DOWN
-        DIK_A,           // INPUT_KEY_CAMERA_LEFT
-        DIK_D,           // INPUT_KEY_CAMERA_RIGHT
-        DIK_SLASH,       // INPUT_KEY_CAMERA_RESET
+        DIK_NUMPAD8,     // INPUT_ROLE_UP
+        DIK_NUMPAD2,     // INPUT_ROLE_DOWN
+        DIK_NUMPAD4,     // INPUT_ROLE_LEFT
+        DIK_NUMPAD6,     // INPUT_ROLE_RIGHT
+        DIK_NUMPAD7,     // INPUT_ROLE_STEP_L
+        DIK_NUMPAD9,     // INPUT_ROLE_STEP_R
+        DIK_NUMPAD1,     // INPUT_ROLE_SLOW
+        DIK_ADD,         // INPUT_ROLE_JUMP
+        DIK_NUMPADENTER, // INPUT_ROLE_ACTION
+        DIK_NUMPAD3,     // INPUT_ROLE_DRAW
+        DIK_NUMPAD0,     // INPUT_ROLE_LOOK
+        DIK_NUMPAD5,     // INPUT_ROLE_ROLL
+        DIK_DECIMAL,     // INPUT_ROLE_OPTION
+        DIK_O,           // INPUT_ROLE_FLY_CHEAT,
+        DIK_I,           // INPUT_ROLE_ITEM_CHEAT,
+        DIK_L,           // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+        DIK_TAB,         // INPUT_ROLE_TURBO_CHEAT,
+        DIK_P,           // INPUT_ROLE_PAUSE,
+        DIK_W,           // INPUT_ROLE_CAMERA_UP
+        DIK_S,           // INPUT_ROLE_CAMERA_DOWN
+        DIK_A,           // INPUT_ROLE_CAMERA_LEFT
+        DIK_D,           // INPUT_ROLE_CAMERA_RIGHT
+        DIK_SLASH,       // INPUT_ROLE_CAMERA_RESET
     }
     // clang-format on
 };
@@ -83,8 +83,8 @@ static void S_Input_DInput_Shutdown(void);
 static bool S_Input_DInput_KeyboardCreate(void);
 static void S_Input_DInput_KeyboardRelease(void);
 static bool S_Input_DInput_KeyboardRead(void);
-static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout);
-static bool S_Input_Key(INPUT_KEY key);
+static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
+static bool S_Input_Key(INPUT_ROLE role);
 
 static HRESULT S_Input_DInput_JoystickCreate(void);
 static void S_Input_DInput_JoystickRelease(void);
@@ -199,9 +199,9 @@ static bool S_Input_DInput_KeyboardRead(void)
     return true;
 }
 
-static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
+static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
 {
-    S_INPUT_KEYCODE key_code = m_Layout[layout][key];
+    S_INPUT_KEYCODE key_code = m_Layout[layout][role];
     if (KEY_DOWN(key_code)) {
         return true;
     }
@@ -226,11 +226,11 @@ static bool S_Input_KbdKey(INPUT_KEY key, INPUT_LAYOUT layout)
     return false;
 }
 
-static bool S_Input_Key(INPUT_KEY key)
+static bool S_Input_Key(INPUT_ROLE role)
 {
-    return S_Input_KbdKey(key, INPUT_LAYOUT_USER)
-        || (!S_Input_IsKeyConflicted(key)
-            && S_Input_KbdKey(key, INPUT_LAYOUT_DEFAULT));
+    return S_Input_KbdKey(role, INPUT_LAYOUT_USER)
+        || (!S_Input_IsKeyConflicted(role)
+            && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
 }
 
 S_INPUT_KEYCODE S_Input_ReadKeyCode(void)
@@ -415,30 +415,30 @@ INPUT_STATE S_Input_GetCurrentState(void)
 
     INPUT_STATE linput = { 0 };
 
-    linput.forward = S_Input_Key(INPUT_KEY_UP);
-    linput.back = S_Input_Key(INPUT_KEY_DOWN);
-    linput.left = S_Input_Key(INPUT_KEY_LEFT);
-    linput.right = S_Input_Key(INPUT_KEY_RIGHT);
-    linput.step_left = S_Input_Key(INPUT_KEY_STEP_L);
-    linput.step_right = S_Input_Key(INPUT_KEY_STEP_R);
-    linput.slow = S_Input_Key(INPUT_KEY_SLOW);
-    linput.jump = S_Input_Key(INPUT_KEY_JUMP);
-    linput.action = S_Input_Key(INPUT_KEY_ACTION);
-    linput.draw = S_Input_Key(INPUT_KEY_DRAW);
-    linput.look = S_Input_Key(INPUT_KEY_LOOK);
-    linput.roll = S_Input_Key(INPUT_KEY_ROLL);
-    linput.option = S_Input_Key(INPUT_KEY_OPTION);
-    linput.pause = S_Input_Key(INPUT_KEY_PAUSE);
-    linput.camera_up = S_Input_Key(INPUT_KEY_CAMERA_UP);
-    linput.camera_down = S_Input_Key(INPUT_KEY_CAMERA_DOWN);
-    linput.camera_left = S_Input_Key(INPUT_KEY_CAMERA_LEFT);
-    linput.camera_right = S_Input_Key(INPUT_KEY_CAMERA_RIGHT);
-    linput.camera_reset = S_Input_Key(INPUT_KEY_CAMERA_RESET);
+    linput.forward = S_Input_Key(INPUT_ROLE_UP);
+    linput.back = S_Input_Key(INPUT_ROLE_DOWN);
+    linput.left = S_Input_Key(INPUT_ROLE_LEFT);
+    linput.right = S_Input_Key(INPUT_ROLE_RIGHT);
+    linput.step_left = S_Input_Key(INPUT_ROLE_STEP_L);
+    linput.step_right = S_Input_Key(INPUT_ROLE_STEP_R);
+    linput.slow = S_Input_Key(INPUT_ROLE_SLOW);
+    linput.jump = S_Input_Key(INPUT_ROLE_JUMP);
+    linput.action = S_Input_Key(INPUT_ROLE_ACTION);
+    linput.draw = S_Input_Key(INPUT_ROLE_DRAW);
+    linput.look = S_Input_Key(INPUT_ROLE_LOOK);
+    linput.roll = S_Input_Key(INPUT_ROLE_ROLL);
+    linput.option = S_Input_Key(INPUT_ROLE_OPTION);
+    linput.pause = S_Input_Key(INPUT_ROLE_PAUSE);
+    linput.camera_up = S_Input_Key(INPUT_ROLE_CAMERA_UP);
+    linput.camera_down = S_Input_Key(INPUT_ROLE_CAMERA_DOWN);
+    linput.camera_left = S_Input_Key(INPUT_ROLE_CAMERA_LEFT);
+    linput.camera_right = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT);
+    linput.camera_reset = S_Input_Key(INPUT_ROLE_CAMERA_RESET);
 
-    linput.item_cheat = S_Input_Key(INPUT_KEY_ITEM_CHEAT);
-    linput.fly_cheat = S_Input_Key(INPUT_KEY_FLY_CHEAT);
-    linput.level_skip_cheat = S_Input_Key(INPUT_KEY_LEVEL_SKIP_CHEAT);
-    linput.turbo_cheat = S_Input_Key(INPUT_KEY_TURBO_CHEAT);
+    linput.item_cheat = S_Input_Key(INPUT_ROLE_ITEM_CHEAT);
+    linput.fly_cheat = S_Input_Key(INPUT_ROLE_FLY_CHEAT);
+    linput.level_skip_cheat = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT);
+    linput.turbo_cheat = S_Input_Key(INPUT_ROLE_TURBO_CHEAT);
     linput.health_cheat = KEY_DOWN(DIK_F11);
 
     linput.equip_pistols = KEY_DOWN(DIK_1);
@@ -449,7 +449,7 @@ INPUT_STATE S_Input_GetCurrentState(void)
     linput.use_big_medi = KEY_DOWN(DIK_9);
 
     linput.select = KEY_DOWN(DIK_RETURN);
-    linput.deselect = S_Input_Key(INPUT_KEY_OPTION);
+    linput.deselect = S_Input_Key(INPUT_ROLE_OPTION);
 
     linput.save = KEY_DOWN(DIK_F5);
     linput.load = KEY_DOWN(DIK_F6);
@@ -650,23 +650,23 @@ const char *S_Input_GetKeyCodeName(S_INPUT_KEYCODE key)
     return "????";
 }
 
-bool S_Input_IsKeyConflicted(INPUT_KEY key)
+bool S_Input_IsKeyConflicted(INPUT_ROLE role)
 {
-    return m_KeyConflict[key];
+    return m_KeyConflict[role];
 }
 
-void S_Input_SetKeyAsConflicted(INPUT_KEY key, bool is_conflicted)
+void S_Input_SetKeyAsConflicted(INPUT_ROLE role, bool is_conflicted)
 {
-    m_KeyConflict[key] = is_conflicted;
+    m_KeyConflict[role] = is_conflicted;
 }
 
-S_INPUT_KEYCODE S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_KEY key)
+S_INPUT_KEYCODE S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_ROLE role)
 {
-    return m_Layout[layout_num][key];
+    return m_Layout[layout_num][role];
 }
 
 void S_Input_AssignKeyCode(
-    int16_t layout_num, INPUT_KEY key, S_INPUT_KEYCODE key_code)
+    int16_t layout_num, INPUT_ROLE role, S_INPUT_KEYCODE key_code)
 {
-    m_Layout[layout_num][key] = key_code;
+    m_Layout[layout_num][role] = key_code;
 }
