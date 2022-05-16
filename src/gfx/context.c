@@ -31,25 +31,6 @@ typedef struct GFX_Context {
 
 static GFX_Context m_Context = { 0 };
 
-static const char *GFX_Context_GetWindowsErrorStr(void)
-{
-    DWORD error = GetLastError();
-    if (error) {
-        LPSTR msg_buf = NULL;
-        DWORD msg_buf_size = FormatMessageA(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
-                | FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPSTR)&msg_buf, 0, NULL);
-
-        if (msg_buf_size) {
-            return msg_buf;
-        }
-    }
-
-    return "Unknown error";
-}
-
 void GFX_Context_Attach(void *window_handle)
 {
     if (m_Context.window_handle) {
@@ -72,8 +53,7 @@ void GFX_Context_Attach(void *window_handle)
 
     m_Context.hdc = GetDC(hwnd);
     if (!m_Context.hdc) {
-        Shell_ExitSystemFmt(
-            "Can't get device context", GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't get device context");
     }
 
     // get screen dimensions
@@ -92,20 +72,16 @@ void GFX_Context_Attach(void *window_handle)
 
     int pf = ChoosePixelFormat(m_Context.hdc, &pfd);
     if (!pf) {
-        Shell_ExitSystemFmt(
-            "Can't choose pixel format: %s", GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't choose pixel format");
     }
 
     if (!SetPixelFormat(m_Context.hdc, pf, &pfd)) {
-        Shell_ExitSystemFmt(
-            "Can't set pixel format: %s", GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't set pixel format");
     }
 
     m_Context.hglrc = wglCreateContext(m_Context.hdc);
     if (!m_Context.hglrc || !wglMakeCurrent(m_Context.hdc, m_Context.hglrc)) {
-        Shell_ExitSystemFmt(
-            "Can't create OpenGL context: %s",
-            GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't create OpenGL context");
     }
 
     glClearColor(0, 0, 0, 0);
