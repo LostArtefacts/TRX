@@ -1,10 +1,10 @@
 #include "game/objects/creatures/statue.h"
 
-#include "game/collide.h"
 #include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/objects/common.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -18,7 +18,7 @@ void Statue_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Statue_Initialise;
     obj->control = Statue_Control;
-    obj->collision = ObjectCollision;
+    obj->collision = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
@@ -74,7 +74,7 @@ void Statue_Control(int16_t item_num)
         ITEM_INFO *centaur = &g_Items[centaur_item_num];
         centaur->touch_bits = 0;
         Item_AddActive(centaur_item_num);
-        EnableBaddieAI(centaur_item_num, 1);
+        LOT_EnableBaddieAI(centaur_item_num, 1);
         centaur->status = IS_ACTIVE;
 
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);

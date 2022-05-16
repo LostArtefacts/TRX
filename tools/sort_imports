@@ -28,17 +28,18 @@ def sort_imports(path: Path) -> None:
     own_include = str(rel_path.with_suffix(".h"))
     own_include = {
         # files headers of which are not a 1:1 match with their filename
+        "game/game/game.c": "game/game.h",
+        "game/game/game_cutscene.c": "game/game.h",
+        "game/game/game_demo.c": "game/game.h",
+        "game/game/game_draw.c": "game/game.h",
+        "game/game/game_pause.c": "game/game.h",
+        "game/gun/gun.c": "game/gun.h",
         "game/inventry.c": "game/inv.h",
-        "game/game_cutscene.c": "game/game.h",
-        "game/game_demo.c": "game/game.h",
-        "game/game_pause.c": "game/game.h",
         "game/invfunc.c": "game/inv.h",
         "game/invvars.c": "game/inv.h",
-        "game/option_compass.c": "game/option.h",
-        "game/option_control.c": "game/option.h",
-        "game/option_graphics.c": "game/option.h",
-        "game/option_passport.c": "game/option.h",
-        "game/option_sound.c": "game/option.h",
+        "game/lara/lara.c": "game/lara.h",
+        "game/option/option.c": "game/option.h",
+        "game/savegame/savegame.c": "game/savegame.h",
         "specific/s_audio_sample.c": "specific/s_audio.h",
         "specific/s_audio_stream.c": "specific/s_audio.h",
     }.get(str(rel_path), own_include)

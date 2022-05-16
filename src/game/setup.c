@@ -1,16 +1,13 @@
 #include "game/setup.h"
 
 #include "config.h"
-#include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
-#include "game/inv.h"
+#include "game/inventory.h"
 #include "game/lara.h"
+#include "game/lara/lara_hair.h"
 #include "game/level.h"
-#include "game/objects/boat.h"
-#include "game/objects/bridge.h"
-#include "game/objects/cabin.h"
-#include "game/objects/cog.h"
+#include "game/objects/common.h"
 #include "game/objects/creatures/ape.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/objects/creatures/baldy.h"
@@ -34,7 +31,6 @@
 #include "game/objects/creatures/torso.h"
 #include "game/objects/creatures/trex.h"
 #include "game/objects/creatures/wolf.h"
-#include "game/objects/door.h"
 #include "game/objects/effects/blood.h"
 #include "game/objects/effects/body_part.h"
 #include "game/objects/effects/bubble.h"
@@ -46,14 +42,19 @@
 #include "game/objects/effects/splash.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/objects/effects/waterfall.h"
-#include "game/objects/keyhole.h"
-#include "game/objects/misc.h"
-#include "game/objects/pickup.h"
-#include "game/objects/puzzle_hole.h"
-#include "game/objects/save_crystal.h"
-#include "game/objects/scion.h"
-#include "game/objects/switch.h"
-#include "game/objects/trapdoor.h"
+#include "game/objects/general/boat.h"
+#include "game/objects/general/bridge.h"
+#include "game/objects/general/cabin.h"
+#include "game/objects/general/cog.h"
+#include "game/objects/general/door.h"
+#include "game/objects/general/keyhole.h"
+#include "game/objects/general/misc.h"
+#include "game/objects/general/pickup.h"
+#include "game/objects/general/puzzle_hole.h"
+#include "game/objects/general/save_crystal.h"
+#include "game/objects/general/scion.h"
+#include "game/objects/general/switch.h"
+#include "game/objects/general/trapdoor.h"
 #include "game/objects/traps/damocles_sword.h"
 #include "game/objects/traps/dart.h"
 #include "game/objects/traps/falling_block.h"
@@ -76,10 +77,10 @@
 
 #include <stddef.h>
 
-void BaddyObjects(void)
+void Setup_Creatures(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
-    g_Objects[O_LARA].draw_routine = DrawDummyItem;
+    g_Objects[O_LARA].draw_routine = Object_DrawDummyItem;
     g_Objects[O_LARA].hit_points = g_Config.start_lara_hitpoints;
     g_Objects[O_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
     g_Objects[O_LARA].save_position = 1;
@@ -120,7 +121,7 @@ void BaddyObjects(void)
     Statue_Setup(&g_Objects[O_STATUE]);
 }
 
-void TrapObjects(void)
+void Setup_Traps(void)
 {
     FallingBlock_Setup(&g_Objects[O_FALLING_BLOCK]);
     Pendulum_Setup(&g_Objects[O_PENDULUM]);
@@ -149,7 +150,7 @@ void TrapObjects(void)
     LavaWedge_Setup(&g_Objects[O_LAVA_WEDGE]);
 }
 
-void ObjectObjects(void)
+void Setup_MiscObjects(void)
 {
     CameraTarget_Setup(&g_Objects[O_CAMERA_TARGET]);
     Bridge_SetupFlat(&g_Objects[O_BRIDGE_FLAT]);
@@ -240,7 +241,7 @@ void ObjectObjects(void)
     GunShot_Setup(&g_Objects[O_GUN_FLASH]);
 }
 
-void InitialiseObjects(void)
+void Setup_AllObjects(void)
 {
     for (int i = 0; i < O_NUMBER_OF; i++) {
         OBJECT_INFO *obj = &g_Objects[i];
@@ -252,7 +253,7 @@ void InitialiseObjects(void)
         obj->initialise = NULL;
         obj->collision = NULL;
         obj->control = NULL;
-        obj->draw_routine = DrawAnimatingItem;
+        obj->draw_routine = Object_DrawAnimatingItem;
         obj->ceiling = NULL;
         obj->floor = NULL;
         obj->pivot_length = 0;
@@ -261,9 +262,9 @@ void InitialiseObjects(void)
         obj->hit_points = DONT_TARGET;
     }
 
-    BaddyObjects();
-    TrapObjects();
-    ObjectObjects();
+    Setup_Creatures();
+    Setup_Traps();
+    Setup_MiscObjects();
 
     Lara_Hair_Initialise();
 
@@ -271,14 +272,14 @@ void InitialiseObjects(void)
         g_Objects[O_MEDI_ITEM].initialise = NULL;
         g_Objects[O_MEDI_ITEM].collision = NULL;
         g_Objects[O_MEDI_ITEM].control = NULL;
-        g_Objects[O_MEDI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MEDI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MEDI_ITEM].floor = NULL;
         g_Objects[O_MEDI_ITEM].ceiling = NULL;
 
         g_Objects[O_BIGMEDI_ITEM].initialise = NULL;
         g_Objects[O_BIGMEDI_ITEM].collision = NULL;
         g_Objects[O_BIGMEDI_ITEM].control = NULL;
-        g_Objects[O_BIGMEDI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_BIGMEDI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_BIGMEDI_ITEM].floor = NULL;
         g_Objects[O_BIGMEDI_ITEM].ceiling = NULL;
     }
@@ -287,14 +288,14 @@ void InitialiseObjects(void)
         g_Objects[O_MAGNUM_ITEM].initialise = NULL;
         g_Objects[O_MAGNUM_ITEM].collision = NULL;
         g_Objects[O_MAGNUM_ITEM].control = NULL;
-        g_Objects[O_MAGNUM_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MAGNUM_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MAGNUM_ITEM].floor = NULL;
         g_Objects[O_MAGNUM_ITEM].ceiling = NULL;
 
         g_Objects[O_MAG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_MAG_AMMO_ITEM].collision = NULL;
         g_Objects[O_MAG_AMMO_ITEM].control = NULL;
-        g_Objects[O_MAG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MAG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MAG_AMMO_ITEM].floor = NULL;
         g_Objects[O_MAG_AMMO_ITEM].ceiling = NULL;
     }
@@ -303,14 +304,14 @@ void InitialiseObjects(void)
         g_Objects[O_UZI_ITEM].initialise = NULL;
         g_Objects[O_UZI_ITEM].collision = NULL;
         g_Objects[O_UZI_ITEM].control = NULL;
-        g_Objects[O_UZI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_UZI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_UZI_ITEM].floor = NULL;
         g_Objects[O_UZI_ITEM].ceiling = NULL;
 
         g_Objects[O_UZI_AMMO_ITEM].initialise = NULL;
         g_Objects[O_UZI_AMMO_ITEM].collision = NULL;
         g_Objects[O_UZI_AMMO_ITEM].control = NULL;
-        g_Objects[O_UZI_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_UZI_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_UZI_AMMO_ITEM].floor = NULL;
         g_Objects[O_UZI_AMMO_ITEM].ceiling = NULL;
     }
@@ -319,14 +320,14 @@ void InitialiseObjects(void)
         g_Objects[O_SHOTGUN_ITEM].initialise = NULL;
         g_Objects[O_SHOTGUN_ITEM].collision = NULL;
         g_Objects[O_SHOTGUN_ITEM].control = NULL;
-        g_Objects[O_SHOTGUN_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_SHOTGUN_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_SHOTGUN_ITEM].floor = NULL;
         g_Objects[O_SHOTGUN_ITEM].ceiling = NULL;
 
         g_Objects[O_SG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_SG_AMMO_ITEM].collision = NULL;
         g_Objects[O_SG_AMMO_ITEM].control = NULL;
-        g_Objects[O_SG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_SG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_SG_AMMO_ITEM].floor = NULL;
         g_Objects[O_SG_AMMO_ITEM].ceiling = NULL;
     }

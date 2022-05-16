@@ -2,10 +2,9 @@
 
 #include "config.h"
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
 #include "game/lara/lara_misc.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -612,7 +611,7 @@ void Lara_Col_UpJump(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
     coll->facing = g_Lara.move_angle;
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number, 870);
 
     if (Lara_TestHangJumpUp(item, coll)) {

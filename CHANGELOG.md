@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
-- added background color gradients to selected menu text boxes (#517)
+- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre (#532)
+- added the PS1 style UI (#517)
 - fixed Tihocan chain block sound (#433)
 - fixed passport menu with high UI scaling (#546, regression from 2.7)
 - fixed passport menu border being off by one pixel (#547)

@@ -1,7 +1,7 @@
 #include "game/effect_routines/lara_effects.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "util.h"
@@ -15,7 +15,7 @@ void FX_LaraNormal(ITEM_INFO *item)
     item->anim_number = LA_STOP;
     item->frame_number = AF_STOP;
     g_Camera.type = CAM_CHASE;
-    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }
 
 void FX_LaraHandsFree(ITEM_INFO *item)

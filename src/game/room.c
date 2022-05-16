@@ -4,9 +4,9 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/objects/keyhole.h"
-#include "game/objects/pickup.h"
-#include "game/objects/switch.h"
+#include "game/objects/general/keyhole.h"
+#include "game/objects/general/pickup.h"
+#include "game/objects/general/switch.h"
 #include "game/objects/traps/lava.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -753,10 +753,10 @@ void Room_TestTriggers(int16_t *data, bool heavy)
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
                         Item_AddActive(value);
-                        EnableBaddieAI(value, 1);
+                        LOT_EnableBaddieAI(value, 1);
                     } else if (item->status == IS_INVISIBLE) {
                         item->touch_bits = 0;
-                        if (EnableBaddieAI(value, 0)) {
+                        if (LOT_EnableBaddieAI(value, 0)) {
                             item->status = IS_ACTIVE;
                         } else {
                             item->status = IS_INVISIBLE;

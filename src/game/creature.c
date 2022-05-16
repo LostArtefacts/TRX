@@ -1,15 +1,14 @@
 #include "game/creature.h"
 
 #include "game/box.h"
-#include "game/draw.h"
+#include "game/collide.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
 
@@ -64,7 +63,7 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     }
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    GetBestFrame(item);
+    Item_GetBestFrame(item);
 
     int32_t z = g_LaraItem->pos.z
         - ((Math_Cos(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
@@ -99,7 +98,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
     }
 
     if (creature->mood != MOOD_ATTACK && LOT->required_box != NO_BOX
-        && !ValidBox(item, info->zone_number, LOT->target_box)) {
+        && !Box_ValidBox(item, info->zone_number, LOT->target_box)) {
         if (info->zone_number == info->enemy_zone) {
             creature->mood = MOOD_BORED;
         }
@@ -173,7 +172,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
 
     if (mood != creature->mood) {
         if (mood == MOOD_ATTACK) {
-            TargetBox(LOT, LOT->target_box);
+            Box_TargetBox(LOT, LOT->target_box);
         }
         LOT->required_box = NO_BOX;
     }
@@ -186,7 +185,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
             LOT->target.z = g_LaraItem->pos.z;
             LOT->required_box = g_LaraItem->box_number;
             if (LOT->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
-                int16_t *bounds = GetBestFrame(g_LaraItem);
+                int16_t *bounds = Item_GetBestFrame(g_LaraItem);
                 LOT->target.y += bounds[FRAME_BOUND_MIN_Y];
             }
         }
@@ -196,27 +195,28 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
         int box_number =
             LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
                 .box_number;
-        if (ValidBox(item, info->zone_number, box_number)) {
-            if (StalkBox(item, box_number)) {
-                TargetBox(LOT, box_number);
+        if (Box_ValidBox(item, info->zone_number, box_number)) {
+            if (Box_StalkBox(item, box_number)) {
+                Box_TargetBox(LOT, box_number);
                 creature->mood = MOOD_STALK;
             } else if (LOT->required_box == NO_BOX) {
-                TargetBox(LOT, box_number);
+                Box_TargetBox(LOT, box_number);
             }
         }
         break;
     }
 
     case MOOD_STALK: {
-        if (LOT->required_box == NO_BOX || !StalkBox(item, LOT->required_box)) {
+        if (LOT->required_box == NO_BOX
+            || !Box_StalkBox(item, LOT->required_box)) {
             int box_number =
                 LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
                     .box_number;
-            if (ValidBox(item, info->zone_number, box_number)) {
-                if (StalkBox(item, box_number)) {
-                    TargetBox(LOT, box_number);
+            if (Box_ValidBox(item, info->zone_number, box_number)) {
+                if (Box_StalkBox(item, box_number)) {
+                    Box_TargetBox(LOT, box_number);
                 } else if (LOT->required_box == NO_BOX) {
-                    TargetBox(LOT, box_number);
+                    Box_TargetBox(LOT, box_number);
                     if (info->zone_number != info->enemy_zone) {
                         creature->mood = MOOD_BORED;
                     }
@@ -230,14 +230,14 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
         int box_number =
             LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
                 .box_number;
-        if (ValidBox(item, info->zone_number, box_number)
+        if (Box_ValidBox(item, info->zone_number, box_number)
             && LOT->required_box == NO_BOX) {
-            if (EscapeBox(item, box_number)) {
-                TargetBox(LOT, box_number);
+            if (Box_EscapeBox(item, box_number)) {
+                Box_TargetBox(LOT, box_number);
             } else if (
                 info->zone_number == info->enemy_zone
-                && StalkBox(item, box_number)) {
-                TargetBox(LOT, box_number);
+                && Box_StalkBox(item, box_number)) {
+                Box_TargetBox(LOT, box_number);
                 creature->mood = MOOD_STALK;
             }
         }
@@ -246,10 +246,10 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
     }
 
     if (LOT->target_box == NO_BOX) {
-        TargetBox(LOT, item->box_number);
+        Box_TargetBox(LOT, item->box_number);
     }
 
-    CalculateTarget(&creature->target, item, &creature->LOT);
+    Box_CalculateTarget(&creature->target, item, &creature->LOT);
 }
 
 int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
@@ -329,7 +329,7 @@ int16_t Creature_Effect(
     pos.x = bite->x;
     pos.y = bite->y;
     pos.z = bite->z;
-    GetJointAbsPosition(item, &pos, bite->mesh_num);
+    Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     return spawn(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
@@ -373,7 +373,7 @@ void Creature_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 
@@ -415,12 +415,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     if (item->status == IS_DEACTIVATED) {
         item->collidable = 0;
         item->hit_points = DONT_TARGET;
-        DisableBaddieAI(item_num);
+        LOT_DisableBaddieAI(item_num);
         Item_RemoveActive(item_num);
         return false;
     }
 
-    int16_t *bounds = GetBoundsAccurate(item);
+    int16_t *bounds = Item_GetBoundsAccurate(item);
     int32_t y = item->pos.y + bounds[FRAME_BOUND_MIN_Y];
 
     int16_t room_num = item->room_number;
@@ -478,17 +478,18 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t radius = g_Objects[item->object_number].radius;
 
     if (pos_z < radius) {
-        if (BadFloor(x, y, z - radius, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x, y, z - radius, height, next_height, room_num, LOT)) {
             shift_z = radius - pos_z;
         }
 
         if (pos_x < radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x - radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x - radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
@@ -498,12 +499,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 }
             }
         } else if (pos_x > WALL_L - radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x + radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x + radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
@@ -514,17 +515,18 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         }
     } else if (pos_z > WALL_L - radius) {
-        if (BadFloor(x, y, z + radius, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x, y, z + radius, height, next_height, room_num, LOT)) {
             shift_z = WALL_L - radius - pos_z;
         }
 
         if (pos_x < radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x - radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x - radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
@@ -534,12 +536,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 }
             }
         } else if (pos_x > WALL_L - radius) {
-            if (BadFloor(
+            if (Box_BadFloor(
                     x + radius, y, z, height, next_height, room_num, LOT)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
                 !shift_z
-                && BadFloor(
+                && Box_BadFloor(
                     x + radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
                 if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
@@ -550,11 +552,13 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         }
     } else if (pos_x < radius) {
-        if (BadFloor(x - radius, y, z, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x - radius, y, z, height, next_height, room_num, LOT)) {
             shift_x = radius - pos_x;
         }
     } else if (pos_x > WALL_L - radius) {
-        if (BadFloor(x + radius, y, z, height, next_height, room_num, LOT)) {
+        if (Box_BadFloor(
+                x + radius, y, z, height, next_height, room_num, LOT)) {
             shift_x = WALL_L - radius - pos_x;
         }
     }

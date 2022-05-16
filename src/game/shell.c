@@ -7,7 +7,7 @@
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
@@ -214,7 +214,7 @@ void Shell_Main(void)
                 break;
             }
 
-            gf_option = Display_Inventory(INV_TITLE_MODE);
+            gf_option = Inv_Display(INV_TITLE_MODE);
             Music_Stop();
             break;
 

@@ -1,10 +1,9 @@
 #include "game/objects/traps/lava.h"
 
-#include "game/collide.h"
-#include "game/draw.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -125,8 +124,8 @@ void Lava_Control(int16_t fx_num)
 void LavaEmitter_Setup(OBJECT_INFO *obj)
 {
     obj->control = LavaEmitter_Control;
-    obj->draw_routine = DrawDummyItem;
-    obj->collision = ObjectCollision;
+    obj->draw_routine = Object_DrawDummyItem;
+    obj->collision = Object_Collision;
 }
 
 void LavaEmitter_Control(int16_t item_num)
@@ -150,7 +149,7 @@ void LavaEmitter_Control(int16_t item_num)
 void LavaWedge_Setup(OBJECT_INFO *obj)
 {
     obj->control = LavaWedge_Control;
-    obj->collision = ObjectCollision;
+    obj->collision = Object_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

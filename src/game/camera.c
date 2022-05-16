@@ -1,14 +1,15 @@
 #include "game/camera.h"
 
-#include "3dsystem/3d_gen.h"
-#include "game/draw.h"
+#include "game/items.h"
 #include "game/los.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/matrix.h"
 
 #include <stddef.h>
 
@@ -344,7 +345,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
         &g_Camera.pos.room_number);
 
-    phd_LookAt(
+    Matrix_LookAt(
         g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
         g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, 0);
 
@@ -379,9 +380,9 @@ static void Camera_LoadCutsceneFrame(void)
     g_Camera.pos.y = g_CinePosition.y + cy;
     g_Camera.pos.z = g_CinePosition.z + ((c * cz - s * cx) >> W2V_SHIFT);
 
-    phd_AlterFOV(fov);
+    Viewport_AlterFOV(fov);
 
-    phd_LookAt(
+    Matrix_LookAt(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, g_Camera.target.x,
         g_Camera.target.y, g_Camera.target.z, roll);
     Room_GetFloor(
@@ -593,7 +594,7 @@ void Camera_Update(void)
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
     ITEM_INFO *item = fixed_camera ? g_Camera.item : g_LaraItem;
 
-    int16_t *bounds = GetBoundsAccurate(item);
+    int16_t *bounds = Item_GetBoundsAccurate(item);
 
     int32_t y = item->pos.y;
     if (!fixed_camera) {
@@ -605,7 +606,7 @@ void Camera_Update(void)
     }
 
     if (g_Camera.item && !fixed_camera) {
-        bounds = GetBoundsAccurate(g_Camera.item);
+        bounds = Item_GetBoundsAccurate(g_Camera.item);
         int16_t shift = Math_Sqrt(
             SQUARE(g_Camera.item->pos.z - item->pos.z)
             + SQUARE(g_Camera.item->pos.x - item->pos.x));
@@ -790,8 +791,8 @@ void Camera_UpdateCutscene(void)
     cam_pos.y = g_Camera.pos.y + cy;
     cam_pos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
 
-    phd_AlterFOV(fov);
-    phd_LookAt(
+    Viewport_AlterFOV(fov);
+    Matrix_LookAt(
         cam_pos.x, cam_pos.y, cam_pos.z, cam_tar.x, cam_tar.y, cam_tar.z, roll);
 }
 

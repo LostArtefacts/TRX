@@ -1,7 +1,7 @@
 #include "game/lara/lara_hair.h"
 
 #include "config.h"
-#include "game/draw.h"
+#include "game/items.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -86,7 +86,7 @@ void Lara_Hair_Control(bool in_cutscene)
 
         frame += (int)(g_Lara.hit_frame * size);
     } else
-        frame = GetBestFrame(g_LaraItem);
+        frame = Item_GetBestFrame(g_LaraItem);
 
     Matrix_PushUnit();
     g_MatrixPtr->_03 = g_LaraItem->pos.x << W2V_SHIFT;

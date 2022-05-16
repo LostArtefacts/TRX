@@ -1,12 +1,12 @@
 #include "game/objects/traps/flame.h"
 
-#include "game/draw.h"
+#include "game/collide.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 
 #define FLAME_ONFIRE_DAMAGE 5
@@ -41,7 +41,7 @@ void Flame_Control(int16_t fx_num)
             fx->pos.z = 0;
         }
 
-        GetJointAbsPosition(
+        Collide_GetJointAbsPosition(
             g_LaraItem, (PHD_VECTOR *)&fx->pos, -1 - fx->counter);
 
         int32_t y = Room_GetWaterHeight(
@@ -92,7 +92,7 @@ void Flame_Control(int16_t fx_num)
 void FlameEmitter_Setup(OBJECT_INFO *obj)
 {
     obj->control = FlameEmitter_Control;
-    obj->draw_routine = DrawDummyItem;
+    obj->draw_routine = Object_DrawDummyItem;
 }
 
 void FlameEmitter_Control(int16_t item_num)

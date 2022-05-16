@@ -1,6 +1,5 @@
 #include "game/items.h"
 
-#include "game/draw.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -22,6 +21,8 @@
             source = target;                                                   \
         }                                                                      \
     } while (0)
+
+static int16_t m_InterpolatedBounds[6] = { 0 };
 
 static bool Item_Move3DPosTo3DPos(
     PHD_3DPOS *src_pos, PHD_3DPOS *dst_pos, int32_t velocity, int16_t rotation);
@@ -301,7 +302,7 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     if (x >= -distance && x <= distance && z >= -distance && z <= distance
         && y >= -WALL_L * 3 && y <= WALL_L * 3
         && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        int16_t *bounds = GetBoundsAccurate(item);
+        int16_t *bounds = Item_GetBoundsAccurate(item);
         if (y >= bounds[FRAME_BOUND_MIN_Y]
             && y <= bounds[FRAME_BOUND_MAX_Y] + 100) {
             return true;
@@ -314,8 +315,8 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
 {
-    int16_t *src_bounds = GetBestFrame(src_item);
-    int16_t *dst_bounds = GetBestFrame(dst_item);
+    int16_t *src_bounds = Item_GetBestFrame(src_item);
+    int16_t *dst_bounds = Item_GetBestFrame(dst_item);
     if (dst_item->pos.y + dst_bounds[FRAME_BOUND_MAX_Y]
             <= src_item->pos.y + src_bounds[FRAME_BOUND_MIN_Y]
         || dst_item->pos.y + dst_bounds[FRAME_BOUND_MIN_Y]
@@ -556,12 +557,11 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
         return false;
     }
 
-    for (int i = 0; i < anim->number_changes; i++) {
-        ANIM_CHANGE_STRUCT *change = &g_AnimChanges[anim->change_index + i];
-        if (change->goal_anim_state != item->goal_anim_state) {
-            for (int j = 0; j < change->number_ranges; j++) {
-                ANIM_RANGE_STRUCT *range =
-                    &g_AnimRanges[change->range_index + j];
+    ANIM_CHANGE_STRUCT *change = &g_AnimChanges[anim->change_index];
+    for (int i = 0; i < anim->number_changes; i++, change++) {
+        if (change->goal_anim_state == item->goal_anim_state) {
+            ANIM_RANGE_STRUCT *range = &g_AnimRanges[change->range_index];
+            for (int j = 0; j < change->number_ranges; j++, range++) {
                 if (item->frame_number >= range->start_frame
                     && item->frame_number <= range->end_frame) {
                     item->anim_number = range->link_anim_num;
@@ -577,7 +577,7 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
 
 bool Item_IsTriggerActive(ITEM_INFO *item)
 {
-    bool ok = item->flags & IF_REVERSE;
+    bool ok = !(item->flags & IF_REVERSE);
 
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
         return !ok;
@@ -598,4 +598,62 @@ bool Item_IsTriggerActive(ITEM_INFO *item)
     }
 
     return ok;
+}
+
+int16_t *Item_GetBestFrame(ITEM_INFO *item)
+{
+    int16_t *frmptr[2];
+    int32_t rate;
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
+    if (frac <= rate / 2) {
+        return frmptr[0];
+    } else {
+        return frmptr[1];
+    }
+}
+
+int16_t *Item_GetBoundsAccurate(ITEM_INFO *item)
+{
+    int32_t rate;
+    int16_t *frmptr[2];
+
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
+    if (!frac) {
+        return frmptr[0];
+    }
+
+    for (int i = 0; i < 6; i++) {
+        int16_t a = frmptr[0][i];
+        int16_t b = frmptr[1][i];
+        m_InterpolatedBounds[i] = a + (((b - a) * frac) / rate);
+    }
+    return m_InterpolatedBounds;
+}
+
+int32_t Item_GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
+{
+    ANIM_STRUCT *anim = &g_Anims[item->anim_number];
+    frmptr[0] = anim->frame_ptr;
+    frmptr[1] = anim->frame_ptr;
+
+    *rate = anim->interpolation;
+
+    int32_t frm = item->frame_number - anim->frame_base;
+    int32_t first = frm / anim->interpolation;
+    int32_t frame_size = g_Objects[item->object_number].nmeshes * 2 + 10;
+
+    frmptr[0] += first * frame_size;
+    frmptr[1] = frmptr[0] + frame_size;
+
+    int32_t interp = frm % anim->interpolation;
+    if (!interp) {
+        return 0;
+    }
+
+    int32_t second = anim->interpolation * (first + 1);
+    if (second > anim->frame_end) {
+        *rate = anim->frame_end + anim->interpolation - second;
+    }
+
+    return interp;
 }

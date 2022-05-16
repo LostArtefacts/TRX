@@ -6,7 +6,7 @@
 #include "global/vars.h"
 #include "util.h"
 
-int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
+bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion)
 {
     int16_t *zone;
     if (LOT->fly) {
@@ -20,7 +20,7 @@ int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
     int16_t search_zone = zone[LOT->head];
     for (int i = 0; i < expansion; i++) {
         if (LOT->head == NO_BOX) {
-            return 0;
+            return false;
         }
 
         BOX_NODE *node = &LOT->node[LOT->head];
@@ -82,10 +82,10 @@ int32_t SearchLOT(LOT_INFO *LOT, int32_t expansion)
         node->next_expansion = NO_BOX;
     }
 
-    return 1;
+    return true;
 }
 
-int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion)
+bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion)
 {
     if (LOT->required_box != NO_BOX && LOT->required_box != LOT->target_box) {
         LOT->target_box = LOT->required_box;
@@ -105,10 +105,10 @@ int32_t UpdateLOT(LOT_INFO *LOT, int32_t expansion)
         expand->exit_box = NO_BOX;
     }
 
-    return SearchLOT(LOT, expansion);
+    return Box_SearchLOT(LOT, expansion);
 }
 
-void TargetBox(LOT_INFO *LOT, int16_t box_number)
+void Box_TargetBox(LOT_INFO *LOT, int16_t box_number)
 {
     box_number &= BOX_NUMBER;
 
@@ -127,7 +127,7 @@ void TargetBox(LOT_INFO *LOT, int16_t box_number)
     }
 }
 
-int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
+bool Box_StalkBox(ITEM_INFO *item, int16_t box_number)
 {
     BOX_INFO *box = &g_Boxes[box_number];
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
@@ -135,14 +135,14 @@ int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
 
     if (x > STALK_DIST || x < -STALK_DIST || z > STALK_DIST
         || z < -STALK_DIST) {
-        return 0;
+        return false;
     }
 
     int enemy_quad = (g_LaraItem->pos.y_rot >> 14) + 2;
     int box_quad = (z > 0) ? ((x > 0) ? 2 : 1) : ((x > 0) ? 3 : 0);
 
     if (enemy_quad == box_quad) {
-        return 0;
+        return false;
     }
 
     int baddie_quad = (item->pos.z > g_LaraItem->pos.z)
@@ -150,13 +150,13 @@ int32_t StalkBox(ITEM_INFO *item, int16_t box_number)
         : ((item->pos.x > g_LaraItem->pos.x) ? 3 : 0);
 
     if (enemy_quad == baddie_quad && ABS(enemy_quad - box_quad) == 2) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-int32_t EscapeBox(ITEM_INFO *item, int16_t box_number)
+bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number)
 {
     BOX_INFO *box = &g_Boxes[box_number];
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
@@ -164,18 +164,18 @@ int32_t EscapeBox(ITEM_INFO *item, int16_t box_number)
 
     if (x > -ESCAPE_DIST && x < ESCAPE_DIST && z > -ESCAPE_DIST
         && z < ESCAPE_DIST) {
-        return 0;
+        return false;
     }
 
     if (((z > 0) ^ (item->pos.z > g_LaraItem->pos.z))
         && ((x > 0) ^ (item->pos.x > g_LaraItem->pos.x))) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
+bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
 {
     CREATURE_INFO *creature = item->data;
 
@@ -189,30 +189,31 @@ int32_t ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
     }
 
     if (zone[box_number] != zone_number) {
-        return 0;
+        return false;
     }
 
     BOX_INFO *box = &g_Boxes[box_number];
     if (box->overlap_index & creature->LOT.block_mask) {
-        return 0;
+        return false;
     }
 
     if (item->pos.z > box->left && item->pos.z < box->right
         && item->pos.x > box->top && item->pos.x < box->bottom) {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
-int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
+TARGET_TYPE Box_CalculateTarget(
+    PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
 {
     int32_t left = 0;
     int32_t right = 0;
     int32_t top = 0;
     int32_t bottom = 0;
 
-    UpdateLOT(LOT, MAX_EXPANSION);
+    Box_UpdateLOT(LOT, MAX_EXPANSION);
 
     target->x = item->pos.x;
     target->y = item->pos.y;
@@ -421,31 +422,31 @@ int32_t CalculateTarget(PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
     return TARGET_NONE;
 }
 
-int32_t BadFloor(
+bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
     int16_t room_number, LOT_INFO *LOT)
 {
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
     if (floor->box == NO_BOX) {
-        return 1;
+        return true;
     }
 
     if (g_Boxes[floor->box].overlap_index & LOT->block_mask) {
-        return 1;
+        return true;
     }
 
     int32_t height = g_Boxes[floor->box].height;
     if (box_height - height > LOT->step || box_height - height < LOT->drop) {
-        return 1;
+        return true;
     }
 
     if (box_height - height < -LOT->step && height > next_height) {
-        return 1;
+        return true;
     }
 
     if (LOT->fly && y > height + LOT->fly) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }

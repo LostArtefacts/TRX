@@ -168,6 +168,9 @@
     // Fixes alligators dealing no damage if Lara remains still in the water
     "fix_alligator_ai": true,
 
+    // Make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
+    "change_pierre_spawn": true,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,

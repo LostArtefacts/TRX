@@ -449,10 +449,10 @@ void Overlay_DrawPickups(void)
 
     if (time > 0 && time < 60) {
         int32_t sprite_height =
-            MIN(ViewPort_GetWidth(), ViewPort_GetHeight() * 320 / 200) / 10;
+            MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
         int32_t sprite_width = sprite_height * 4 / 3;
-        int32_t y = ViewPort_GetHeight() - sprite_height;
-        int32_t x = ViewPort_GetWidth() - sprite_height;
+        int32_t y = Viewport_GetHeight() - sprite_height;
+        int32_t x = Viewport_GetWidth() - sprite_height;
         for (int i = 0; i < MAX_PICKUPS; i++) {
             DISPLAYPU *pu = &m_Pickups[i];
             pu->duration -= time;
@@ -463,7 +463,7 @@ void Overlay_DrawPickups(void)
                     x, y, Screen_GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
-                    x = ViewPort_GetWidth() - sprite_height;
+                    x = Viewport_GetWidth() - sprite_height;
                     y -= sprite_height;
                 } else {
                     x -= sprite_width;

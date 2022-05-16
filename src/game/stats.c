@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/draw.h"
+#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
@@ -350,7 +350,7 @@ void Stats_Show(int32_t level_num)
     // wait till a skip key is pressed
     do {
         Output_InitialisePolyList();
-        Draw_DrawScene(false);
+        Game_DrawScene(false);
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
@@ -362,7 +362,7 @@ void Stats_Show(int32_t level_num)
     // finish fading
     while (Output_FadeIsAnimating()) {
         Output_InitialisePolyList();
-        Draw_DrawScene(false);
+        Game_DrawScene(false);
         Output_DumpScreen();
     }
 

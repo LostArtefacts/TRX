@@ -6,21 +6,24 @@
 #include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
 #include "game/lara/lara_col.h"
 #include "game/lara/lara_look.h"
 #include "game/lara/lara_state.h"
-#include "game/objects/door.h"
+#include "game/objects/general/door.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 #include "math/math.h"
 
+#define MAX_BADDIE_COLLISION 12
+
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 static void Lara_WaterCurrent(COLL_INFO *coll);
+static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
 
 static void Lara_WaterCurrent(COLL_INFO *coll)
 {
@@ -34,7 +37,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
               + ((item->pos.x - r->x) >> WALL_SHIFT) * r->x_size];
     item->box_number = floor->box;
 
-    if (CalculateTarget(&target, item, &g_Lara.LOT) == TARGET_NONE) {
+    if (Box_CalculateTarget(&target, item, &g_Lara.LOT) == TARGET_NONE) {
         return;
     }
 
@@ -69,7 +72,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
 
     coll->facing = (int16_t)Math_Atan(
         item->pos.z - coll->old.z, item->pos.x - coll->old.x);
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
         item->room_number, UW_HEIGHT);
 
@@ -100,6 +103,74 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
+}
+
+static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
+{
+    lara_item->hit_status = 0;
+    g_Lara.hit_direction = -1;
+    if (lara_item->hit_points <= 0) {
+        return;
+    }
+
+    int16_t numroom = 0;
+    int16_t roomies[MAX_BADDIE_COLLISION];
+
+    roomies[numroom++] = lara_item->room_number;
+
+    DOOR_INFOS *door = g_RoomInfo[lara_item->room_number].doors;
+    if (door) {
+        for (int i = 0; i < door->count; i++) {
+            if (numroom >= MAX_BADDIE_COLLISION) {
+                break;
+            }
+            roomies[numroom++] = door->door[i].room_num;
+        }
+    }
+
+    for (int i = 0; i < numroom; i++) {
+        int16_t item_num = g_RoomInfo[roomies[i]].item_number;
+        while (item_num != NO_ITEM) {
+            ITEM_INFO *item = &g_Items[item_num];
+            if (item->collidable && item->status != IS_INVISIBLE) {
+                OBJECT_INFO *object = &g_Objects[item->object_number];
+                if (object->collision) {
+                    int32_t x = lara_item->pos.x - item->pos.x;
+                    int32_t y = lara_item->pos.y - item->pos.y;
+                    int32_t z = lara_item->pos.z - item->pos.z;
+                    if (x > -TARGET_DIST && x < TARGET_DIST && y > -TARGET_DIST
+                        && y < TARGET_DIST && z > -TARGET_DIST
+                        && z < TARGET_DIST) {
+                        object->collision(item_num, lara_item, coll);
+                    }
+                }
+            }
+            item_num = item->next_item;
+        }
+    }
+
+    if (g_Lara.spaz_effect_count) {
+        int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
+        int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
+        PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
+        g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
+        if (!g_Lara.hit_frame) {
+            Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
+        }
+
+        g_Lara.hit_frame++;
+        if (g_Lara.hit_frame > 34) {
+            g_Lara.hit_frame = 34;
+        }
+
+        g_Lara.spaz_effect_count--;
+    }
+
+    if (g_Lara.hit_direction == -1) {
+        g_Lara.hit_frame = 0;
+    }
+
+    g_InvChosen = -1;
 }
 
 void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
@@ -164,7 +235,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.y_rot += g_Lara.turn_rate;
 
     Lara_Animate(item);
-    LaraBaddieCollision(item, coll);
+    Lara_BaddieCollision(item, coll);
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     Gun_Control();
@@ -228,7 +299,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.z +=
         (Math_Cos(g_Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
 
-    LaraBaddieCollision(item, coll);
+    Lara_BaddieCollision(item, coll);
 
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, 100);
@@ -301,7 +372,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
         >> W2V_SHIFT;
 
     if (g_Lara.water_status != LWS_CHEAT) {
-        LaraBaddieCollision(item, coll);
+        Lara_BaddieCollision(item, coll);
     }
 
     if (g_Lara.water_status == LWS_CHEAT) {

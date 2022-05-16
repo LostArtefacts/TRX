@@ -1,8 +1,8 @@
 #include "game/objects/traps/thors_hammer.h"
 
-#include "game/draw.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -20,7 +20,7 @@ void ThorsHandle_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = ThorsHandle_Initialise;
     obj->control = ThorsHandle_Control;
-    obj->draw_routine = DrawUnclippedItem;
+    obj->draw_routine = Object_DrawUnclippedItem;
     obj->collision = ThorsHandle_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -29,7 +29,7 @@ void ThorsHandle_Setup(OBJECT_INFO *obj)
 void ThorsHead_Setup(OBJECT_INFO *obj)
 {
     obj->collision = ThorsHead_Collision;
-    obj->draw_routine = DrawUnclippedItem;
+    obj->draw_routine = Object_DrawUnclippedItem;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

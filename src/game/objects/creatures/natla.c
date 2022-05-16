@@ -1,6 +1,5 @@
 #include "game/objects/creatures/natla.h"
 
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gun.h"
@@ -67,7 +66,7 @@ void Natla_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
-        if (!EnableBaddieAI(item_num, 0)) {
+        if (!LOT_EnableBaddieAI(item_num, 0)) {
             return;
         }
         item->status = IS_ACTIVE;

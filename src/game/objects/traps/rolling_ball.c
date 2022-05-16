@@ -4,10 +4,10 @@
 #include "game/effects/blood.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
@@ -119,7 +119,7 @@ void RollingBall_Collision(
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
-            ObjectCollision(item_num, lara_item, coll);
+            Object_Collision(item_num, lara_item, coll);
         }
         return;
     }
@@ -127,7 +127,7 @@ void RollingBall_Collision(
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 

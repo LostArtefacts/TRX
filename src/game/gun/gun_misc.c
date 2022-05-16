@@ -1,16 +1,16 @@
 #include "game/gun/gun_misc.h"
 
-#include "3dsystem/3d_gen.h"
-#include "game/draw.h"
+#include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/inv.h"
+#include "game/inventory.h"
+#include "game/items.h"
 #include "game/los.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 #include "math/matrix.h"
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
@@ -151,7 +151,7 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
     Gun_FindTargetPoint(g_Lara.target, &target);
 
     int16_t ang[2];
-    phd_GetVectorAngles(
+    Math_GetVectorAngles(
         target.x - src.x, target.y - src.y, target.z - src.z, ang);
     ang[0] -= g_LaraItem->pos.y_rot;
     ang[1] -= g_LaraItem->pos.x_rot;
@@ -227,7 +227,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
         }
 
         PHD_ANGLE ang[2];
-        phd_GetVectorAngles(
+        Math_GetVectorAngles(
             target.x - src.x, target.y - src.y, target.z - src.z, ang);
         ang[0] -= g_Lara.torso_y_rot + g_LaraItem->pos.y_rot;
         ang[1] -= g_Lara.torso_x_rot + g_LaraItem->pos.x_rot;
@@ -248,7 +248,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
 
 void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
 {
-    int16_t *bounds = GetBestFrame(item);
+    int16_t *bounds = Item_GetBestFrame(item);
     int32_t x = (bounds[0] + bounds[1]) / 2;
     int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
     int32_t z = (bounds[5] + bounds[4]) / 2;
@@ -355,7 +355,7 @@ int32_t Gun_FireWeapon(
     Matrix_GenerateW2V(&view);
 
     SPHERE slist[33];
-    int32_t nums = GetSpheres(target, slist, 0);
+    int32_t nums = Collide_GetSpheres(target, slist, 0);
 
     int32_t best = -1;
     int32_t bestdist = 0x7FFFFFFF;

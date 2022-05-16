@@ -1,6 +1,5 @@
 #include "game/output.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
 #include "game/clock.h"
 #include "game/picture.h"
@@ -10,14 +9,13 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 #include "math/matrix.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 #include "util.h"
 
 #include <stddef.h>
-
-PHD_VECTOR g_LsVectorView = { 0 };
 
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
@@ -29,6 +27,7 @@ static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
+static PHD_VECTOR m_LsVectorView = { 0 };
 
 static void Output_DrawBlackScreen(uint8_t alpha);
 static void Output_FadeAnimate(int ticks);
@@ -149,13 +148,13 @@ static const int16_t *Output_DrawRoomSprites(
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
         int32_t zp = (zv / g_PhdPersp);
         int32_t x1 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
         int32_t y1 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
         int32_t x2 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
         int32_t y2 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
         if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
             && y1 < g_PhdBottom) {
             S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
@@ -193,8 +192,8 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
             clip_flags = 0;
 
             double persp = g_PhdPersp / zv;
-            double xs = ViewPort_GetCenterX() + xv * persp;
-            double ys = ViewPort_GetCenterY() + yv * persp;
+            double xs = Viewport_GetCenterX() + xv * persp;
+            double ys = Viewport_GetCenterY() + yv * persp;
 
             if (xs < g_PhdLeft) {
                 clip_flags |= 1;
@@ -225,17 +224,17 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
         if (g_LsDivider) {
-            int32_t xv = (g_MatrixPtr->_00 * g_LsVectorView.x
-                          + g_MatrixPtr->_10 * g_LsVectorView.y
-                          + g_MatrixPtr->_20 * g_LsVectorView.z)
+            int32_t xv = (g_MatrixPtr->_00 * m_LsVectorView.x
+                          + g_MatrixPtr->_10 * m_LsVectorView.y
+                          + g_MatrixPtr->_20 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t yv = (g_MatrixPtr->_01 * g_LsVectorView.x
-                          + g_MatrixPtr->_11 * g_LsVectorView.y
-                          + g_MatrixPtr->_21 * g_LsVectorView.z)
+            int32_t yv = (g_MatrixPtr->_01 * m_LsVectorView.x
+                          + g_MatrixPtr->_11 * m_LsVectorView.y
+                          + g_MatrixPtr->_21 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t zv = (g_MatrixPtr->_02 * g_LsVectorView.x
-                          + g_MatrixPtr->_12 * g_LsVectorView.y
-                          + g_MatrixPtr->_22 * g_LsVectorView.z)
+            int32_t zv = (g_MatrixPtr->_02 * m_LsVectorView.x
+                          + g_MatrixPtr->_12 * m_LsVectorView.y
+                          + g_MatrixPtr->_22 * m_LsVectorView.z)
                 / g_LsDivider;
             for (int i = 0; i < vertex_count; i++) {
                 int16_t shade = g_LsAdder
@@ -300,8 +299,8 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             }
 
             double persp = g_PhdPersp / zv;
-            double xs = ViewPort_GetCenterX() + xv * persp;
-            double ys = ViewPort_GetCenterY() + yv * persp;
+            double xs = Viewport_GetCenterX() + xv * persp;
+            double ys = Viewport_GetCenterY() + yv * persp;
             if (g_IsWibbleEffect) {
                 xs += g_WibbleTable[(g_WibbleOffset + (int)ys) & 0x1F];
                 ys += g_WibbleTable[(g_WibbleOffset + (int)xs) & 0x1F];
@@ -475,8 +474,8 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         g_LsAdder = 0x1FFF - g_LsAdder;
 
         PHD_ANGLE angles[2];
-        phd_GetVectorAngles(ls.x, ls.y, ls.z, angles);
-        phd_RotateLight(angles[1], angles[0]);
+        Math_GetVectorAngles(ls.x, ls.y, ls.z, angles);
+        Output_RotateLight(angles[1], angles[0]);
     }
 
     int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
@@ -490,6 +489,33 @@ void Output_CalculateStaticLight(int16_t adder)
     int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
     g_LsAdder += Output_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
+}
+
+void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
+{
+    if (item->shade >= 0) {
+        Output_CalculateStaticLight(item->shade);
+        return;
+    }
+
+    Matrix_PushUnit();
+    g_MatrixPtr->_23 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_03 = 0;
+
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateRel(
+        (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
+        (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
+        (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+
+    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+
+    Matrix_Pop();
+
+    Output_CalculateLight(x, y, z, item->room_number);
 }
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
@@ -651,12 +677,12 @@ void Output_DrawSprite(
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
-    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    int32_t x1 = Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = Viewport_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
+    int32_t y2 = Viewport_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -803,8 +829,8 @@ void Output_DrawScreenSprite(
     int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) / PHD_ONE);
     int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
     int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
-        && y1 < ViewPort_GetHeight()) {
+    if (x2 >= 0 && y2 >= 0 && x1 < Viewport_GetWidth()
+        && y1 < Viewport_GetHeight()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
     }
 }
@@ -818,8 +844,8 @@ void Output_DrawScreenSprite2D(
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     int32_t y2 = sy + (scale_v * sprite->y2 / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
-        && y1 < ViewPort_GetHeight()) {
+    if (x2 >= 0 && y2 >= 0 && x1 < Viewport_GetWidth()
+        && y1 < Viewport_GetHeight()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
     }
 }
@@ -840,12 +866,12 @@ void Output_DrawSpriteRel(
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    int32_t x1 = Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = Viewport_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t y2 = Viewport_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -861,8 +887,8 @@ void Output_DrawUISprite(
     int32_t x2 = x + (scale * sprite->x2 >> 16);
     int32_t y1 = y + (scale * sprite->y1 >> 16);
     int32_t y2 = y + (scale * sprite->y2 >> 16);
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
     }
 }
@@ -872,7 +898,7 @@ void Output_DisplayPicture(const char *filename)
     PICTURE *orig_pic = Picture_CreateFromFile(filename);
     if (orig_pic) {
         PICTURE *scaled_pic = Picture_ScaleSmart(
-            orig_pic, ViewPort_GetWidth(), ViewPort_GetHeight());
+            orig_pic, Viewport_GetWidth(), Viewport_GetHeight());
         if (scaled_pic) {
             S_Output_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
@@ -887,10 +913,10 @@ void Output_DrawLightningSegment(
 {
     if (z1 >= Output_GetNearZ() && z1 <= Output_GetFarZ()
         && z2 >= Output_GetNearZ() && z2 <= Output_GetFarZ()) {
-        x1 = ViewPort_GetCenterX() + x1 / (z1 / g_PhdPersp);
-        y1 = ViewPort_GetCenterY() + y1 / (z1 / g_PhdPersp);
-        x2 = ViewPort_GetCenterX() + x2 / (z2 / g_PhdPersp);
-        y2 = ViewPort_GetCenterY() + y2 / (z2 / g_PhdPersp);
+        x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
+        y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
+        x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
+        y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
         S_Output_DrawLightningSegment(
@@ -938,12 +964,32 @@ void Output_AnimateTextures(int32_t ticks)
     }
 }
 
+void Output_RotateLight(int16_t pitch, int16_t yaw)
+{
+    int32_t cp = Math_Cos(pitch);
+    int32_t sp = Math_Sin(pitch);
+    int32_t cy = Math_Cos(yaw);
+    int32_t sy = Math_Sin(yaw);
+    int32_t ls_x = TRIGMULT2(cp, sy);
+    int32_t ls_y = -sp;
+    int32_t ls_z = TRIGMULT2(cp, cy);
+    m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
+                        + g_W2VMatrix._02 * ls_z)
+        >> W2V_SHIFT;
+    m_LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
+                        + g_W2VMatrix._12 * ls_z)
+        >> W2V_SHIFT;
+    m_LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
+                        + g_W2VMatrix._22 * ls_z)
+        >> W2V_SHIFT;
+}
+
 static void Output_DrawBlackScreen(uint8_t alpha)
 {
     int32_t sx = 0;
     int32_t sy = 0;
-    int32_t sw = ViewPort_GetWidth();
-    int32_t sh = ViewPort_GetHeight();
+    int32_t sw = Viewport_GetWidth();
+    int32_t sh = Viewport_GetHeight();
 
     RGBA8888 background = { 0, 0, 0, alpha };
     S_Output_DisableDepthTest();
@@ -1133,18 +1179,18 @@ int Output_GetObjectBounds(int16_t *bptr)
         }
     }
 
-    x_min += ViewPort_GetCenterX();
-    x_max += ViewPort_GetCenterX();
-    y_min += ViewPort_GetCenterY();
-    y_max += ViewPort_GetCenterY();
+    x_min += Viewport_GetCenterX();
+    x_max += Viewport_GetCenterX();
+    y_min += Viewport_GetCenterY();
+    y_max += Viewport_GetCenterY();
 
     if (!num_z || x_min > g_PhdRight || y_min > g_PhdBottom || x_max < g_PhdLeft
         || y_max < g_PhdTop) {
         return 0; // out of screen
     }
 
-    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > ViewPort_GetMaxX()
-        || y_max > ViewPort_GetMaxY()) {
+    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > Viewport_GetMaxX()
+        || y_max > Viewport_GetMaxY()) {
         return -1; // clipped
     }
 

@@ -1,8 +1,8 @@
 #include "game/objects/effects/twinkle.h"
 
+#include "game/collide.h"
 #include "game/effects.h"
 #include "game/random.h"
-#include "game/sphere.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -43,7 +43,7 @@ void Twinkle_SparkleItem(ITEM_INFO *item, int mesh_mask)
     SPHERE slist[34];
     GAME_VECTOR effect_pos;
 
-    int32_t num = GetSpheres(item, slist, 1);
+    int32_t num = Collide_GetSpheres(item, slist, 1);
     effect_pos.room_number = item->room_number;
     for (int i = 0; i < num; i++) {
         if (mesh_mask & (1 << i)) {

@@ -1,6 +1,6 @@
 #include "game/objects/traps/lightning_emitter.h"
 
-#include "game/draw.h"
+#include "game/collide.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -8,7 +8,6 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "game/viewport.h"
 #include "global/vars.h"
 #include "math/matrix.h"
@@ -121,7 +120,7 @@ void LightningEmitter_Control(int16_t item_num)
             l->target.x = 0;
             l->target.y = 0;
             l->target.z = 0;
-            GetJointAbsPosition(
+            Collide_GetJointAbsPosition(
                 item, &l->target, 1 + (Random_GetControl() * 5) / 0x7FFF);
             l->zapped = false;
         }
@@ -166,7 +165,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 {
     int16_t *frmptr[2];
     int32_t rate;
-    GetFrames(item, frmptr, &rate);
+    Item_GetFrames(item, frmptr, &rate);
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
@@ -178,7 +177,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         return;
     }
 
-    CalculateObjectLighting(item, frmptr[0]);
+    Output_CalculateObjectLighting(item, frmptr[0]);
 
     Matrix_TranslateRel(
         frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y], frmptr[0][FRAME_POS_Z]);
@@ -226,10 +225,10 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         if (i > 0) {
             Output_DrawLightningSegment(
                 x1, y1 + l->wibble[i - 1].y, z1, x2, y2, z2,
-                ViewPort_GetWidth() / 6);
+                Viewport_GetWidth() / 6);
         } else {
             Output_DrawLightningSegment(
-                x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 6);
+                x1, y1, z1, x2, y2, z2, Viewport_GetWidth() / 6);
         }
 
         x1 = x2;
@@ -278,10 +277,10 @@ void LightningEmitter_Draw(ITEM_INFO *item)
             if (j > 0) {
                 Output_DrawLightningSegment(
                     x1, y1 + l->shoot[i][j - 1].y, z1, x2, y2, z2,
-                    ViewPort_GetWidth() / 16);
+                    Viewport_GetWidth() / 16);
             } else {
                 Output_DrawLightningSegment(
-                    x1, y1, z1, x2, y2, z2, ViewPort_GetWidth() / 16);
+                    x1, y1, z1, x2, y2, z2, Viewport_GetWidth() / 16);
             }
 
             x1 = x2;

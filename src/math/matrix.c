@@ -1,9 +1,8 @@
 #include "math/matrix.h"
 
-#include "game/draw.h"
-#include "game/shell.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 
 #include <stddef.h>
 
@@ -47,21 +46,20 @@ void Matrix_GenerateW2V(PHD_3DPOS *viewpos)
     g_W2VMatrix = m_MatrixStack[0];
 }
 
-void Matrix_Push(void)
+bool Matrix_Push(void)
 {
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
-        Draw_PrintRoomNumStack();
-        Shell_ExitSystem("Matrix stack overflow.");
+        return false;
     }
     g_MatrixPtr++;
     g_MatrixPtr[0] = g_MatrixPtr[-1];
+    return true;
 }
 
-void Matrix_PushUnit(void)
+bool Matrix_PushUnit(void)
 {
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
-        Draw_PrintRoomNumStack();
-        Shell_ExitSystem("Matrix stack overflow.");
+        return false;
     }
     MATRIX *mptr = ++g_MatrixPtr;
     mptr->_00 = W2V_SCALE;
@@ -73,6 +71,7 @@ void Matrix_PushUnit(void)
     mptr->_20 = 0;
     mptr->_21 = 0;
     mptr->_22 = W2V_SCALE;
+    return true;
 }
 
 void Matrix_Pop(void)
@@ -488,4 +487,21 @@ void Matrix_RotYXZpack_I(int32_t r1, int32_t r2)
     g_MatrixPtr = m_IMMatrixPtr;
     Matrix_RotYXZpack(r2);
     g_MatrixPtr = old_matrix;
+}
+
+void Matrix_LookAt(
+    int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
+    int32_t ztar, int16_t roll)
+{
+    PHD_ANGLE angles[2];
+    Math_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
+
+    PHD_3DPOS viewer;
+    viewer.x = xsrc;
+    viewer.y = ysrc;
+    viewer.z = zsrc;
+    viewer.x_rot = angles[1];
+    viewer.y_rot = angles[0];
+    viewer.z_rot = roll;
+    Matrix_GenerateW2V(&viewer);
 }

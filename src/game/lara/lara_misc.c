@@ -1,10 +1,9 @@
 #include "game/lara/lara_misc.h"
 
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -16,7 +15,7 @@
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number,
         LARA_HEIGHT);
 }
@@ -67,7 +66,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_JUMP_UP;
         item->anim_number = LA_STOP_HANG;
         item->frame_number = AF_STOPHANG;
-        bounds = GetBoundsAccurate(item);
+        bounds = Item_GetBoundsAccurate(item);
         item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
@@ -78,7 +77,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     int32_t hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
 
     if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
@@ -370,7 +369,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
@@ -406,7 +405,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     item->goal_anim_state = LS_HANG;
 
-    // bounds = GetBoundsAccurate(item);
+    // bounds = Item_GetBoundsAccurate(item);
     item->pos.y += hdif;
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
@@ -466,7 +465,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
@@ -496,7 +495,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     item->anim_number = LA_HANG;
     item->frame_number = AF_STARTHANG;
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
@@ -590,7 +589,7 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
 
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
         item->room_number, SURF_HEIGHT);
 
@@ -702,7 +701,7 @@ void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll)
     } else {
         g_Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
     }
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
         item->room_number, UW_HEIGHT);
 

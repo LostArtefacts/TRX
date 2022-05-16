@@ -1,13 +1,12 @@
-#include "game/lara/lara.h"
+#include "game/lara.h"
 
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
-#include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara/lara_control.h"
 #include "game/lot.h"
@@ -499,7 +498,7 @@ void Lara_Initialise(int32_t level_num)
 
     g_Lara.current_active = 0;
 
-    InitialiseLOT(&g_Lara.LOT);
+    LOT_InitialiseLOT(&g_Lara.LOT);
     g_Lara.LOT.step = WALL_L * 20;
     g_Lara.LOT.drop = -WALL_L * 20;
     g_Lara.LOT.fly = STEP_L;
@@ -715,7 +714,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
-    int16_t *bounds = GetBestFrame(item);
+    int16_t *bounds = Item_GetBestFrame(item);
     int32_t minx = bounds[FRAME_BOUND_MIN_X];
     int32_t maxx = bounds[FRAME_BOUND_MAX_X];
     int32_t minz = bounds[FRAME_BOUND_MIN_Z];
@@ -776,7 +775,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
         int16_t old_facing = coll->facing;
         coll->facing = Math_Atan(
             lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
-        GetCollisionInfo(
+        Collide_GetCollisionInfo(
             coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
             lara_item->room_number, LARA_HEIGHT);
         coll->facing = old_facing;

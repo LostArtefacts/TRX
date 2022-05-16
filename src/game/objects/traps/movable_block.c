@@ -1,15 +1,14 @@
 #include "game/objects/traps/movable_block.h"
 
-#include "game/draw.h"
+#include "game/collide.h"
 #include "game/effect_routines/dino_stomp.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "src/game/collide.h"
-#include "src/game/sphere.h"
 
 typedef enum {
     MBS_STILL = 1,
@@ -55,7 +54,7 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (Lara_TestBoundsCollide(item, coll->radius)
-            && TestCollision(item, lara_item)) {
+            && Collide_TestCollision(item, lara_item)) {
             return true;
         }
     }
@@ -229,9 +228,9 @@ void MovableBlock_Collision(
 void MovableBlock_Draw(ITEM_INFO *item)
 {
     if (item->status == IS_ACTIVE) {
-        DrawUnclippedItem(item);
+        Object_DrawUnclippedItem(item);
     } else {
-        DrawAnimatingItem(item);
+        Object_DrawAnimatingItem(item);
     }
 }
 
@@ -282,7 +281,7 @@ bool MovableBlock_TestPush(
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
         return false;
     }
 
@@ -331,7 +330,7 @@ bool MovableBlock_TestPull(
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
         return false;
     }
 
@@ -365,7 +364,7 @@ bool MovableBlock_TestPull(
     floor = Room_GetFloor(x, y, z, &room_num);
     coll.radius = LARA_RAD;
     coll.quadrant = (quadrant + 2) & 3;
-    if (CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
         return false;
     }
 

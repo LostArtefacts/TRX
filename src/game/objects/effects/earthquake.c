@@ -1,7 +1,7 @@
 #include "game/objects/effects/earthquake.h"
 
-#include "game/draw.h"
 #include "game/items.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/vars.h"
@@ -9,7 +9,7 @@
 void Earthquake_Setup(OBJECT_INFO *obj)
 {
     obj->control = Earthquake_Control;
-    obj->draw_routine = DrawDummyItem;
+    obj->draw_routine = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 

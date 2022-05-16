@@ -1,10 +1,10 @@
 #include "game/objects/creatures/pod.h"
 
-#include "game/collide.h"
 #include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/objects/common.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -22,7 +22,7 @@ void Pod_Setup(OBJECT_INFO *obj)
     }
     obj->initialise = Pod_Initialise;
     obj->control = Pod_Control;
-    obj->collision = ObjectCollision;
+    obj->collision = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
@@ -34,7 +34,7 @@ void Pod_SetupBig(OBJECT_INFO *obj)
     }
     obj->initialise = Pod_Initialise;
     obj->control = Pod_Control;
-    obj->collision = ObjectCollision;
+    obj->collision = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
@@ -117,7 +117,7 @@ void Pod_Control(int16_t item_num)
             if (g_Objects[bug->object_number].loaded) {
                 bug->touch_bits = 0;
                 Item_AddActive(bug_item_num);
-                if (EnableBaddieAI(bug_item_num, 0)) {
+                if (LOT_EnableBaddieAI(bug_item_num, 0)) {
                     bug->status = IS_ACTIVE;
                 } else {
                     bug->status = IS_INVISIBLE;

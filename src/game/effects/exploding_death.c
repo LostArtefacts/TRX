@@ -1,7 +1,7 @@
 #include "game/effects/exploding_death.h"
 
-#include "game/draw.h"
 #include "game/effects.h"
+#include "game/items.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -14,7 +14,7 @@ int32_t Effect_ExplodingDeath(
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
-    int16_t *frame = GetBestFrame(item);
+    int16_t *frame = Item_GetBestFrame(item);
 
     Matrix_PushUnit();
     g_MatrixPtr->_03 = 0;

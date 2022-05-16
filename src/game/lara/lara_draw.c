@@ -1,6 +1,7 @@
 #include "game/lara/lara_draw.h"
 
-#include "game/draw.h"
+#include "game/gun.h"
+#include "game/items.h"
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
@@ -20,14 +21,14 @@ void Lara_Draw(ITEM_INFO *item)
     int32_t bottom = g_PhdBottom;
     int32_t right = g_PhdRight;
 
-    g_PhdLeft = ViewPort_GetMinX();
-    g_PhdTop = ViewPort_GetMinY();
-    g_PhdBottom = ViewPort_GetMaxY();
-    g_PhdRight = ViewPort_GetMaxX();
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdBottom = Viewport_GetMaxY();
+    g_PhdRight = Viewport_GetMaxX();
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;
-        int32_t frac = GetFrames(item, frmptr, &rate);
+        int32_t frac = Item_GetFrames(item, frmptr, &rate);
         if (frac) {
             Lara_Draw_I(item, frmptr[0], frmptr[1], frac, rate);
             g_PhdLeft = left;
@@ -77,7 +78,7 @@ void Lara_Draw(ITEM_INFO *item)
 
     Matrix_Push();
 
-    CalculateObjectLighting(item, frame);
+    Output_CalculateObjectLighting(item, frame);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
@@ -249,11 +250,11 @@ void Lara_Draw(ITEM_INFO *item)
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_L], clip);
 
         if (g_Lara.left_arm.flash_gun) {
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop();
@@ -302,7 +303,7 @@ void Lara_Draw(ITEM_INFO *item)
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop();
@@ -324,7 +325,7 @@ void Lara_Draw_I(
     MATRIX saved_matrix;
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    int16_t *bounds = GetBoundsAccurate(item);
+    int16_t *bounds = Item_GetBoundsAccurate(item);
 
     saved_matrix = *g_MatrixPtr;
 
@@ -341,7 +342,7 @@ void Lara_Draw_I(
 
     Matrix_Push();
 
-    CalculateObjectLighting(item, frame1);
+    Output_CalculateObjectLighting(item, frame1);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
     int32_t *packed_rotation1 = (int32_t *)(frame1 + FRAME_ROT);
@@ -512,12 +513,12 @@ void Lara_Draw_I(
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HAND_L], clip);
 
         if (g_Lara.left_arm.flash_gun) {
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop_I();
@@ -567,7 +568,7 @@ void Lara_Draw_I(
 
         if (g_Lara.right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
-            DrawGunFlash(fire_arms, clip);
+            Gun_DrawFlash(fire_arms, clip);
         }
 
         Matrix_Pop_I();
