@@ -76,8 +76,6 @@ static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static bool m_HideArrowLeft = false;
 static bool m_HideArrowRight = false;
-static RGBA8888 m_PurpleCentre = { 70, 30, 107, 255 };
-static RGBA8888 m_PurpleEdge = { 26, 10, 20, 155 };
 
 static void Option_GraphicsInitText(void);
 static void Option_GraphicsShutdownText(void);

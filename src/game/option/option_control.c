@@ -32,8 +32,6 @@ static TEXTSTRING *m_TextA[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextB[INPUT_KEY_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextArrowLeft = NULL;
 static TEXTSTRING *m_TextArrowRight = NULL;
-static RGBA8888 m_PurpleCentre = { 70, 30, 107, 255 };
-static RGBA8888 m_PurpleEdge = { 26, 10, 20, 155 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     // left column

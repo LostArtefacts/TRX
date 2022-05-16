@@ -27,8 +27,6 @@ typedef enum SOUND_TEXT {
 } SOUND_TEXT;
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
-static RGBA8888 m_PurpleCentre = { 70, 30, 107, 255 };
-static RGBA8888 m_PurpleEdge = { 26, 10, 20, 155 };
 
 static void Option_SoundInitText(void);
 

@@ -729,20 +729,6 @@ void Output_DrawScreenBox(
         Output_DrawScreenLine(
             w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, col);
     }
-    // RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
-    // RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
-    // // Top
-    // Output_DrawScreenLine(sx, sy, w + 1, 0, col);
-    // Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_dark);
-    // // Right
-    // Output_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, col);
-    // Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_dark);
-    // // Left
-    // Output_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, col);
-    // Output_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_dark);
-    // // Bottom
-    // Output_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 3, 0, col);
-    // Output_DrawScreenLine(w + sx, h + sy, -w - 1, 0, rgb_border_dark);
 }
 
 void Output_DrawGradientScreenLine(
