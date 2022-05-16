@@ -535,9 +535,11 @@ static void Text_DrawText(TEXTSTRING *textstring)
             }
         } else {
             Output_DrawScreenBox(
-                sx, sy, sh, sv, Text_GetMenuColor(MC_GOLD_LIGHT), OUTLINE_THICKNESS);
+                sx, sy, sh, sv, Text_GetMenuColor(MC_GOLD_LIGHT),
+                OUTLINE_THICKNESS);
             Output_DrawScreenBox(
-                sx - 1, sy - 1, sh, sv, Text_GetMenuColor(MC_GOLD_DARK), OUTLINE_THICKNESS);
+                sx - 1, sy - 1, sh, sv, Text_GetMenuColor(MC_GOLD_DARK),
+                OUTLINE_THICKNESS);
         }
     }
 }
