@@ -234,7 +234,6 @@ sources = [
   'src/gfx/gl/wgl_ext.c',
   'src/gfx/screenshot.c',
   'src/global/vars.c',
-  'src/global/vars_platform.c',
   'src/init.c',
   'src/json/bson_parse.c',
   'src/json/bson_write.c',

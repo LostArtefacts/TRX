@@ -8,10 +8,12 @@
 #include "log.h"
 #include "memory.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 #include <string.h>
 
 typedef struct GFX_Context {
-    HWND hwnd; // window handle
+    void *window_handle;
     HDC hdc; // GDI device context
     HGLRC hglrc; // OpenGL context handle
     bool is_fullscreen; // fullscreen flag
@@ -48,17 +50,27 @@ static const char *GFX_Context_GetWindowsErrorStr(void)
     return "Unknown error";
 }
 
-void GFX_Context_Attach(HWND hwnd)
+void GFX_Context_Attach(void *window_handle)
 {
-    if (m_Context.hglrc || m_Context.hwnd) {
+    if (m_Context.window_handle) {
         return;
     }
 
-    LOG_INFO("Attaching to HWND %p", hwnd);
+    LOG_INFO("Attaching to window %p", window_handle);
 
-    m_Context.hwnd = hwnd;
+    m_Context.window_handle = window_handle;
 
-    m_Context.hdc = GetDC(m_Context.hwnd);
+    SDL_SysWMinfo wm_info;
+    SDL_VERSION(&wm_info.version);
+    SDL_GetWindowWMInfo(window_handle, &wm_info);
+
+    HWND hwnd = wm_info.info.win.window;
+    if (!hwnd) {
+        Shell_ExitSystem("System Error: cannot create window");
+        return;
+    }
+
+    m_Context.hdc = GetDC(hwnd);
     if (!m_Context.hdc) {
         Shell_ExitSystemFmt(
             "Can't get device context", GFX_Context_GetWindowsErrorStr());
@@ -108,7 +120,7 @@ void GFX_Context_Attach(HWND hwnd)
 
 void GFX_Context_Detach(void)
 {
-    if (!m_Context.hwnd) {
+    if (!m_Context.window_handle) {
         return;
     }
 
@@ -118,7 +130,7 @@ void GFX_Context_Detach(void)
     wglDeleteContext(m_Context.hglrc);
     m_Context.hglrc = NULL;
 
-    m_Context.hwnd = NULL;
+    m_Context.window_handle = NULL;
 }
 
 void GFX_Context_SetVSync(bool vsync)
@@ -233,11 +245,6 @@ void GFX_Context_SetRendered(void)
 bool GFX_Context_IsRendered(void)
 {
     return m_Context.is_rendered;
-}
-
-HWND GFX_Context_GetHWnd(void)
-{
-    return m_Context.hwnd;
 }
 
 void GFX_Context_ScheduleScreenshot(const char *path)

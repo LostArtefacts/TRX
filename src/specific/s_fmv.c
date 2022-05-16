@@ -30,7 +30,6 @@
 #include "game/viewport.h"
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"

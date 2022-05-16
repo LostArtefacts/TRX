@@ -10,9 +10,9 @@
 #include "gfx/context.h"
 #include "gfx/screenshot.h"
 #include "global/vars.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
+#include "specific/s_shell.h"
 
 #include <assert.h>
 
@@ -971,7 +971,7 @@ bool S_Output_Init(void)
         m_TextureSurfaces[i] = NULL;
     }
 
-    GFX_Context_Attach(g_TombHWND);
+    GFX_Context_Attach(S_Shell_GetWindowHandle());
     m_Renderer3D = GFX_Context_GetRenderer3D();
 
     S_Output_SetHardwareVideoMode();
