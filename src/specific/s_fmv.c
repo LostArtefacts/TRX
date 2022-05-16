@@ -740,7 +740,7 @@ static int S_FMV_ReallocPrimarySurface(
             return -1;
         }
         memset(surface_desc.pixels, 0, surface_desc.pitch * surface_height);
-        GFX_2D_Surface_Unlock(is->primary_surface, surface_desc.pixels);
+        GFX_2D_Surface_Unlock(is->primary_surface);
     }
 
     GFX_Context_SetDisplaySize(is->surface_width, is->surface_height);
@@ -805,7 +805,7 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
                 frame->linesize, 0, frame->height, surf_planes, surf_linesize);
-            GFX_2D_Surface_Unlock(is->back_surface, surface_desc.pixels);
+            GFX_2D_Surface_Unlock(is->back_surface);
         }
     } else {
         LOG_ERROR("Cannot initialize the conversion context");
