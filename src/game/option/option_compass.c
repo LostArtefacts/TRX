@@ -90,9 +90,9 @@ static void Option_CompassInitText(void)
 
     Text_AddBackground(
         m_Text[TEXT_TITLE_BORDER], row_width, y - top_y, 0, 0, TS_BACKGROUND);
-    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], 1, TS_BACKGROUND);
+    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
     Text_AddBackground(m_Text[TEXT_TITLE], row_width - 4, 0, 0, 0, TS_HEADING);
-    Text_AddOutline(m_Text[TEXT_TITLE], 1, TS_HEADING);
+    Text_AddOutline(m_Text[TEXT_TITLE], true, TS_HEADING);
 
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_CentreH(m_Text[i], 1);
