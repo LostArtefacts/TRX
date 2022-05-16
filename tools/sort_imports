@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import re
 from pathlib import Path
 from shutil import which
@@ -77,8 +78,27 @@ def sort_imports(path: Path) -> None:
         path.write_text(source)
 
 
-for path in sorted(SRC_PATH.glob("**/*.[ch]")):
-    if path == SRC_PATH / "init.c":
-        continue
-    fix_imports(path)
-    sort_imports(path)
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(metavar="path", type=Path, nargs="*", dest='paths')
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    paths = [path.absolute() for path in args.paths]
+
+    if not paths:
+        paths = sorted(
+            path
+            for path in SRC_PATH.glob("**/*.[ch]")
+            if path != SRC_PATH / "init.c"
+        )
+
+    for path in paths:
+        fix_imports(path)
+        sort_imports(path)
+
+
+if __name__ == "__main__":
+    main()
