@@ -1,15 +1,12 @@
 #include "specific/s_input.h"
 
-#include "config.h"
 #include "game/input.h"
-#include "game/inventory.h"
-#include "game/lara.h"
-#include "game/shell.h"
-#include "global/vars.h"
-#include "specific/s_shell.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_scancode.h>
+#include <SDL2/SDL_stdinc.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #define KEY_DOWN(a) (m_KeyboardState[(a)])
 

@@ -1,9 +1,9 @@
 #include "specific/s_clock.h"
 
-#include "config.h"
-#include "global/vars.h"
+#include "global/const.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_timer.h>
 
 static Uint64 m_Ticks = 0;
 static double m_Frequency = 0.0;

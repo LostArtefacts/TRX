@@ -7,8 +7,12 @@
 #include "game/settings.h"
 #include "game/text.h"
 #include "gfx/context.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #define TOP_Y -55

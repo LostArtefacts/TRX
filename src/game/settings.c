@@ -4,16 +4,17 @@
 #include "filesystem.h"
 #include "game/input.h"
 #include "game/music.h"
-#include "game/option/option_control.h"
 #include "game/screen.h"
 #include "game/sound.h"
 #include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "global/vars.h"
-#include "json.h"
+#include "json/json_base.h"
+#include "json/json_parse.h"
+#include "json/json_write.h"
 #include "log.h"
 #include "memory.h"
+#include "util.h"
 
 #include <stdint.h>
 #include <string.h>

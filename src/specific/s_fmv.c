@@ -18,18 +18,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// IWYU pragma: no_include <libavcodec/defs.h>
+
 #include "specific/s_fmv.h"
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
-#include "game/viewport.h"
+#include "gfx/2d/2d_renderer.h"
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
+#include "global/types.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
@@ -37,16 +39,48 @@
 #include "specific/s_shell.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_mutex.h>
+#include <SDL2/SDL_pixels.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_video.h>
+#include <errno.h>
 #include <libavcodec/avcodec.h>
-#include <libavdevice/avdevice.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/codec_id.h>
+#include <libavcodec/codec_par.h>
+#include <libavcodec/packet.h>
 #include <libavformat/avformat.h>
+#include <libavformat/avio.h>
+#include <libavutil/attributes.h>
+#include <libavutil/avutil.h>
 #include <libavutil/channel_layout.h>
+#include <libavutil/common.h>
+#include <libavutil/dict.h>
+#include <libavutil/error.h>
 #include <libavutil/fifo.h>
+#include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
+#include <libavutil/macros.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/mem.h>
+#include <libavutil/pixfmt.h>
+#include <libavutil/rational.h>
+#include <libavutil/samplefmt.h>
 #include <libavutil/time.h>
 #include <libswresample/swresample.h>
 #include <libswscale/swscale.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 // NOTE: subtitles require implementing surface blending.
 #define ENABLE_SUBTITLES 0

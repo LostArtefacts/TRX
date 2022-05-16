@@ -2,7 +2,6 @@
 
 #include "gfx/blitter.h"
 #include "gfx/context.h"
-#include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
 
