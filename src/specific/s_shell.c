@@ -187,7 +187,6 @@ int main(int argc, char **argv)
     SDL_SysWMinfo wm_info;
     SDL_VERSION(&wm_info.version);
     SDL_GetWindowWMInfo(m_Window, &wm_info);
-    g_TombModule = wm_info.info.win.hinstance;
     g_TombHWND = wm_info.info.win.window;
 
     if (!g_TombHWND) {
