@@ -17,8 +17,10 @@
 
 #define SDL_MAIN_HANDLED
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 #include <SDL2/SDL.h>
-#include <windows.h>
 #include <time.h>
 
 static int m_ArgCount = 0;
@@ -60,8 +62,8 @@ static void S_Shell_PostWindowResize(void)
 void S_Shell_ShowFatalError(const char *message)
 {
     LOG_ERROR("%s", message);
-    MessageBoxA(
-        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    SDL_ShowSimpleMessageBox(
+        SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", message, m_Window);
     S_Shell_TerminateGame(1);
 }
 
