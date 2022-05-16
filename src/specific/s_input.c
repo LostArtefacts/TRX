@@ -6,7 +6,6 @@
 #include "game/lara.h"
 #include "game/shell.h"
 #include "global/vars.h"
-#include "global/vars_platform.h"
 #include "specific/s_shell.h"
 
 #include <SDL2/SDL.h>

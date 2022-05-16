@@ -11,7 +11,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
@@ -19,7 +18,7 @@
 #define SDL_MAIN_HANDLED
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
+#include <windows.h>
 #include <time.h>
 
 static int m_ArgCount = 0;
@@ -183,16 +182,6 @@ int main(int argc, char **argv)
     S_Shell_PostWindowResize();
 
     SDL_ShowCursor(SDL_DISABLE);
-
-    SDL_SysWMinfo wm_info;
-    SDL_VERSION(&wm_info.version);
-    SDL_GetWindowWMInfo(m_Window, &wm_info);
-    g_TombHWND = wm_info.info.win.window;
-
-    if (!g_TombHWND) {
-        S_Shell_ShowFatalError("System Error: cannot create window");
-        return 1;
-    }
 
     Shell_Main();
 
