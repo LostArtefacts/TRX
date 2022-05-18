@@ -94,12 +94,11 @@ static void Bridge_FixEmbedded(int16_t item_num)
         floor = Room_GetFloor(x, y, z, &room_number);
         floor_height = Room_GetHeight(floor, x, y, z);
 
-        bounds = Item_GetBoundsAccurate(item);
-        bridge_height =
-            ABS(bounds[FRAME_BOUND_MAX_Y]) - ABS(bounds[FRAME_BOUND_MIN_Y]);
-
         // Only move the bridge up if it's at floor level.
         if (item->floor == floor_height) {
+            bounds = Item_GetBoundsAccurate(item);
+            bridge_height =
+                ABS(bounds[FRAME_BOUND_MAX_Y]) - ABS(bounds[FRAME_BOUND_MIN_Y]);
             item->pos.y = floor_height - bridge_height;
         }
     }
