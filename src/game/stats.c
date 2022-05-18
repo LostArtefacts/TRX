@@ -2,19 +2,19 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/draw.h"
+#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/savegame.h"
-#include "game/screen.h"
-#include "game/shell.h"
 #include "game/text.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -350,7 +350,7 @@ void Stats_Show(int32_t level_num)
     // wait till a skip key is pressed
     do {
         Output_InitialisePolyList();
-        Draw_DrawScene(false);
+        Game_DrawScene(false);
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
@@ -362,7 +362,7 @@ void Stats_Show(int32_t level_num)
     // finish fading
     while (Output_FadeIsAnimating()) {
         Output_InitialisePolyList();
-        Draw_DrawScene(false);
+        Game_DrawScene(false);
         Output_DumpScreen();
     }
 

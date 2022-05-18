@@ -2,11 +2,14 @@
 
 #include "filesystem.h"
 #include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
-#include "json.h"
+#include "json/json_base.h"
+#include "json/json_parse.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_shell.h"
+#include "util.h"
 
 #include <string.h>
 
@@ -149,6 +152,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(fix_bridge_collision, true);
     READ_BOOL(fix_qwop_glitch, false);
     READ_BOOL(fix_alligator_ai, true);
+    READ_BOOL(change_pierre_spawn, true);
     READ_INTEGER(fov_value, 65);
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);

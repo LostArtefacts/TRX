@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+import re
+from pathlib import Path
+from shutil import which
+from subprocess import run
+
+TOOLS_DIR = Path(__file__).parent
+REPO_DIR = TOOLS_DIR.parent
+SRC_PATH = REPO_DIR / "src"
+
+
+def fix_imports(path: Path) -> None:
+    iwyu_result = run(
+        ["include-what-you-use", "-I", "src", path],
+        capture_output=True,
+        text=True,
+    ).stderr
+    run(
+        [which("fix_include") and "fix_include" or "iwyu-fix-includes"],
+        input=iwyu_result,
+        text=True,
+    )
+
+
+def sort_imports(path: Path) -> None:
+    source = path.read_text()
+    rel_path = path.relative_to(SRC_PATH)
+    own_include = str(rel_path.with_suffix(".h"))
+    own_include = {
+        # files headers of which are not a 1:1 match with their filename
+        "game/game/game.c": "game/game.h",
+        "game/game/game_cutscene.c": "game/game.h",
+        "game/game/game_demo.c": "game/game.h",
+        "game/game/game_draw.c": "game/game.h",
+        "game/game/game_pause.c": "game/game.h",
+        "game/gun/gun.c": "game/gun.h",
+        "game/inventry.c": "game/inv.h",
+        "game/invfunc.c": "game/inv.h",
+        "game/invvars.c": "game/inv.h",
+        "game/lara/lara.c": "game/lara.h",
+        "game/option/option.c": "game/option.h",
+        "game/savegame/savegame.c": "game/savegame.h",
+        "specific/s_audio_sample.c": "specific/s_audio.h",
+        "specific/s_audio_stream.c": "specific/s_audio.h",
+    }.get(str(rel_path), own_include)
+
+    def cb(match):
+        includes = re.findall(r'#include (["<][^"<>]+[">])', match.group(0))
+        groups = {
+            "own": set(),
+            "proj": set(),
+            "lib": set(),
+        }
+        for include in includes:
+            if include.strip('"') == own_include:
+                groups["own"].add(include)
+            elif include.startswith("<"):
+                groups["lib"].add(include)
+            else:
+                groups["proj"].add(include)
+
+        groups = {key: value for key, value in groups.items() if value}
+
+        ret = "\n\n".join(
+            "\n".join(f"#include {include}" for include in sorted(group))
+            for group in groups.values()
+        ).strip()
+        return ret
+
+    source = re.sub(
+        "^#include [^\n]+(\n*#include [^\n]+)*",
+        cb,
+        source,
+        flags=re.M,
+    )
+    if source != path.read_text():
+        path.write_text(source)
+
+
+for path in sorted(SRC_PATH.glob("**/*.[ch]")):
+    if path == SRC_PATH / "init.c":
+        continue
+    fix_imports(path)
+    sort_imports(path)

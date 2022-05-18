@@ -1,3 +1,5 @@
+#include "global/vars.h"
+
 #include "game/effect_routines/bubbles.h"
 #include "game/effect_routines/chain_block.h"
 #include "game/effect_routines/dino_stomp.h"
@@ -13,7 +15,8 @@
 #include "game/effect_routines/sand.h"
 #include "game/effect_routines/stairs2slope.h"
 #include "game/effect_routines/turn_180.h"
-#include "global/vars.h"
+
+#include <stddef.h>
 
 char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
@@ -42,8 +45,8 @@ int32_t g_PhdRight = 0;
 int32_t g_PhdTop = 0;
 PHD_SPRITE g_PhdSpriteInfo[MAX_SPRITES] = { 0 };
 PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES] = { 0 };
-PHD_MATRIX *g_PhdMatrixPtr = NULL;
-PHD_MATRIX g_W2VMatrix = { 0 };
+MATRIX *g_MatrixPtr = NULL;
+MATRIX g_W2VMatrix = { 0 };
 
 int32_t g_WibbleOffset = 0;
 int32_t g_WibbleTable[WIBBLE_SIZE] = { 0 };

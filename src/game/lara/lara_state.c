@@ -1,14 +1,14 @@
 #include "game/lara/lara_state.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/input.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
 #include "game/lara/lara_look.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_State_Walk,        Lara_State_Run,       Lara_State_Stop,
@@ -36,9 +36,9 @@ static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
 
 static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
 {
-    int32_t x = item->pos.x + ((phd_sin(ang) * dist) >> W2V_SHIFT);
-    int32_t y = item->pos.y - LARA_HITE;
-    int32_t z = item->pos.z + ((phd_cos(ang) * dist) >> W2V_SHIFT);
+    int32_t x = item->pos.x + ((Math_Sin(ang) * dist) >> W2V_SHIFT);
+    int32_t y = item->pos.y - LARA_HEIGHT;
+    int32_t z = item->pos.z + ((Math_Cos(ang) * dist) >> W2V_SHIFT);
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     int32_t height = Room_GetHeight(floor, x, y, z);

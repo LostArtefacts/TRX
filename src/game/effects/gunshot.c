@@ -1,18 +1,18 @@
-#include "game/objects/effects/gunshot.h"
+#include "game/effects/gunshot.h"
 
+#include "game/collide.h"
+#include "game/effects.h"
 #include "game/effects/blood.h"
-#include "game/items.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 
 int16_t Effect_GunShot(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num)
 {
-    int16_t fx_num = CreateEffect(room_num);
+    int16_t fx_num = Effect_Create(room_num);
     if (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = x;
@@ -38,7 +38,8 @@ int16_t Effect_GunShotHit(
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    GetJointAbsPosition(g_LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
+    Collide_GetJointAbsPosition(
+        g_LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
     Effect_Blood(
         pos.x, pos.y, pos.z, g_LaraItem->speed, g_LaraItem->pos.y_rot,
         g_LaraItem->room_number);

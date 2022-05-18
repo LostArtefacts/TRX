@@ -1,11 +1,12 @@
 #include "game/effects/exploding_death.h"
 
-#include "3dsystem/matrix.h"
-#include "game/draw.h"
+#include "game/effects.h"
 #include "game/items.h"
-#include "game/objects/effects/body_part.h"
 #include "game/random.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
+#include "math/matrix.h"
 
 int32_t Effect_ExplodingDeath(
     int16_t item_num, int32_t mesh_bits, int16_t damage)
@@ -13,19 +14,19 @@ int32_t Effect_ExplodingDeath(
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
-    int16_t *frame = GetBestFrame(item);
+    int16_t *frame = Item_GetBestFrame(item);
 
-    phd_PushUnitMatrix();
-    g_PhdMatrixPtr->_03 = 0;
-    g_PhdMatrixPtr->_13 = 0;
-    g_PhdMatrixPtr->_23 = 0;
+    Matrix_PushUnit();
+    g_MatrixPtr->_03 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_23 = 0;
 
-    phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-    phd_TranslateRel(
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
     int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
-    phd_RotYXZpack(*packed_rotation++);
+    Matrix_RotYXZpack(*packed_rotation++);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
 #if 0
@@ -36,13 +37,13 @@ int32_t Effect_ExplodingDeath(
 
     int32_t bit = 1;
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->room_number = item->room_number;
-            fx->pos.x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-            fx->pos.y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-            fx->pos.z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+            fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+            fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+            fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
             fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
             if (item->object_number == O_TORSO) {
                 fx->speed = Random_GetControl() >> 7;
@@ -61,26 +62,26 @@ int32_t Effect_ExplodingDeath(
     for (int i = 1; i < object->nmeshes; i++) {
         int32_t bone_extra_flags = *bone++;
         if (bone_extra_flags & BEB_POP) {
-            phd_PopMatrix();
+            Matrix_Pop();
         }
         if (bone_extra_flags & BEB_PUSH) {
-            phd_PushMatrix();
+            Matrix_Push();
         }
 
-        phd_TranslateRel(bone[0], bone[1], bone[2]);
-        phd_RotYXZpack(*packed_rotation++);
+        Matrix_TranslateRel(bone[0], bone[1], bone[2]);
+        Matrix_RotYXZpack(*packed_rotation++);
 
 #if 0
     if (extra_rotation) {
         if (bone_extra_flags & (BEB_ROT_X | BEB_ROT_Y | BEB_ROT_Z)) {
             if (bone_extra_flags & BEB_ROT_Y) {
-                phd_RotY(*extra_rotation++);
+                Matrix_RotY(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_X) {
-                phd_RotX(*extra_rotation++);
+                Matrix_RotX(*extra_rotation++);
             }
             if (bone_extra_flags & BEB_ROT_Z) {
-                phd_RotZ(*extra_rotation++);
+                Matrix_RotZ(*extra_rotation++);
             }
         }
     }
@@ -88,13 +89,13 @@ int32_t Effect_ExplodingDeath(
 
         bit <<= 1;
         if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
-            int16_t fx_num = CreateEffect(item->room_number);
+            int16_t fx_num = Effect_Create(item->room_number);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->room_number = item->room_number;
-                fx->pos.x = (g_PhdMatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-                fx->pos.y = (g_PhdMatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-                fx->pos.z = (g_PhdMatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+                fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+                fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+                fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
                 fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
                 if (item->object_number == O_TORSO) {
                     fx->speed = Random_GetControl() >> 7;
@@ -113,7 +114,7 @@ int32_t Effect_ExplodingDeath(
         bone += 3;
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 
     return !(item->mesh_bits & (0x7FFFFFFF >> (31 - object->nmeshes)));
 }

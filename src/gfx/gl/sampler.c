@@ -1,7 +1,5 @@
 #include "gfx/gl/sampler.h"
 
-#include <assert.h>
-
 void GFX_GL_Sampler_Init(GFX_GL_Sampler *sampler)
 {
     glGenSamplers(1, &sampler->id);

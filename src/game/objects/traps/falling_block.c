@@ -1,8 +1,8 @@
 #include "game/objects/traps/falling_block.h"
 
-#include "game/control.h"
 #include "game/items.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 void FallingBlock_Setup(OBJECT_INFO *obj)
@@ -25,7 +25,7 @@ void FallingBlock_Control(int16_t item_num)
             item->goal_anim_state = TRAP_ACTIVATE;
         } else {
             item->status = IS_NOT_ACTIVE;
-            RemoveActiveItem(item_num);
+            Item_RemoveActive(item_num);
             return;
         }
         break;
@@ -41,9 +41,9 @@ void FallingBlock_Control(int16_t item_num)
         break;
     }
 
-    AnimateItem(item);
+    Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
         return;
     }
 
@@ -51,7 +51,7 @@ void FallingBlock_Control(int16_t item_num)
     FLOOR_INFO *floor =
         Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
-        ItemNewRoom(item_num, room_num);
+        Item_NewRoom(item_num, room_num);
     }
 
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);

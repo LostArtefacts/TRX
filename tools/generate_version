@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+import argparse
+from pathlib import Path
+
+REPO_DIR = Path(__file__).parent.parent
+RESOURCES_DIR = REPO_DIR / "tools" / "resources"
+SRC_DIR = REPO_DIR / "src"
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version")
+    parser.add_argument("--output", type=Path, nargs="+")
+    return parser.parse_args()
+
+
+def write_rc_template(output_path: Path, args: argparse.Namespace) -> None:
+    input_path = RESOURCES_DIR / output_path.name
+    template = input_path.read_text()
+    template = template.replace("{version}", args.version)
+    template = template.replace("{icon_path}", str(RESOURCES_DIR / "icon.ico"))
+    output_path.write_text(template)
+
+
+def main() -> None:
+    args = parse_args()
+    for output in args.output:
+        write_rc_template(output, args)
+
+
+if __name__ == "__main__":
+    main()

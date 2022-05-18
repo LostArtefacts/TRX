@@ -44,7 +44,7 @@ void DamoclesSword_Control(int16_t item_num)
             item->pos.y = item->floor + 10;
             item->gravity_status = 0;
             item->status = IS_DEACTIVATED;
-            RemoveActiveItem(item_num);
+            Item_RemoveActive(item_num);
         }
     } else if (item->pos.y != item->floor) {
         item->pos.y_rot += item->required_anim_state;

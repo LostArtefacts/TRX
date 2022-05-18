@@ -265,6 +265,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added unobtainable pickups and kills stats support in the gameflow
 - added the option to pause sound in the inventory screen
 - added level selection to the load game menu
+- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192
@@ -382,15 +383,15 @@ Note: this section may be subject to change.
 - [ ] Beautify the code
     - [x] Refactor GLRage to no longer emulate DDraw
     - [x] Refactor GLRage to no longer emulate ATI3DCIF
-    - [ ] Apply rigid name conventions to function names
-    - [ ] Refactor specific/ away
+    - [x] Apply rigid name conventions to function names
+    - [ ] Refactor specific/ away?
     - [ ] ...
 - [ ] Work on data injection and other features?
 
 ## Importing data to IDA
 
 This option requires IDAPython and a recent version of IDA. Install Python 3.8+
-and IDA 7.5+, then hit alt+f7, then choose `scripts/ida_import.py`.
+and IDA 7.5+, then hit alt+f7, then choose `tools/ida_import.py`.
 
 ## License
 

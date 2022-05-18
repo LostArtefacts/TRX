@@ -1,10 +1,10 @@
 #include "game/effect_routines/bubbles.h"
 
-#include "game/items.h"
+#include "game/collide.h"
+#include "game/effects.h"
 #include "game/objects/effects/bubble.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "global/vars.h"
 
 void FX_Bubbles(ITEM_INFO *item)
@@ -26,10 +26,10 @@ void FX_Bubbles(ITEM_INFO *item)
     offset.x = 0;
     offset.y = 0;
     offset.z = 50;
-    GetJointAbsPosition(item, &offset, LM_HEAD);
+    Collide_GetJointAbsPosition(item, &offset, LM_HEAD);
 
     for (int i = 0; i < count; i++) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = offset.x;

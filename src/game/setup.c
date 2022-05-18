@@ -1,45 +1,36 @@
 #include "game/setup.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
-#include "game/cinema.h"
-#include "game/draw.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
-#include "game/hair.h"
-#include "game/inv.h"
-#include "game/items.h"
+#include "game/inventory.h"
 #include "game/lara.h"
+#include "game/lara/lara_hair.h"
 #include "game/level.h"
-#include "game/lot.h"
-#include "game/music.h"
-#include "game/objects/ai/ape.h"
-#include "game/objects/ai/bacon_lara.h"
-#include "game/objects/ai/baldy.h"
-#include "game/objects/ai/bat.h"
-#include "game/objects/ai/bear.h"
-#include "game/objects/ai/centaur.h"
-#include "game/objects/ai/cowboy.h"
-#include "game/objects/ai/crocodile.h"
-#include "game/objects/ai/larson.h"
-#include "game/objects/ai/lion.h"
-#include "game/objects/ai/mummy.h"
-#include "game/objects/ai/mutant.h"
-#include "game/objects/ai/natla.h"
-#include "game/objects/ai/pierre.h"
-#include "game/objects/ai/pod.h"
-#include "game/objects/ai/raptor.h"
-#include "game/objects/ai/rat.h"
-#include "game/objects/ai/skate_kid.h"
-#include "game/objects/ai/statue.h"
-#include "game/objects/ai/torso.h"
-#include "game/objects/ai/trex.h"
-#include "game/objects/ai/wolf.h"
-#include "game/objects/boat.h"
-#include "game/objects/bridge.h"
-#include "game/objects/cabin.h"
-#include "game/objects/cog.h"
-#include "game/objects/door.h"
+#include "game/objects/common.h"
+#include "game/objects/creatures/ape.h"
+#include "game/objects/creatures/bacon_lara.h"
+#include "game/objects/creatures/baldy.h"
+#include "game/objects/creatures/bat.h"
+#include "game/objects/creatures/bear.h"
+#include "game/objects/creatures/centaur.h"
+#include "game/objects/creatures/cowboy.h"
+#include "game/objects/creatures/crocodile.h"
+#include "game/objects/creatures/cutscene_player.h"
+#include "game/objects/creatures/larson.h"
+#include "game/objects/creatures/lion.h"
+#include "game/objects/creatures/mummy.h"
+#include "game/objects/creatures/mutant.h"
+#include "game/objects/creatures/natla.h"
+#include "game/objects/creatures/pierre.h"
+#include "game/objects/creatures/pod.h"
+#include "game/objects/creatures/raptor.h"
+#include "game/objects/creatures/rat.h"
+#include "game/objects/creatures/skate_kid.h"
+#include "game/objects/creatures/statue.h"
+#include "game/objects/creatures/torso.h"
+#include "game/objects/creatures/trex.h"
+#include "game/objects/creatures/wolf.h"
 #include "game/objects/effects/blood.h"
 #include "game/objects/effects/body_part.h"
 #include "game/objects/effects/bubble.h"
@@ -51,14 +42,19 @@
 #include "game/objects/effects/splash.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/objects/effects/waterfall.h"
-#include "game/objects/keyhole.h"
-#include "game/objects/misc.h"
-#include "game/objects/pickup.h"
-#include "game/objects/puzzle_hole.h"
-#include "game/objects/save_crystal.h"
-#include "game/objects/scion.h"
-#include "game/objects/switch.h"
-#include "game/objects/trapdoor.h"
+#include "game/objects/general/boat.h"
+#include "game/objects/general/bridge.h"
+#include "game/objects/general/cabin.h"
+#include "game/objects/general/cog.h"
+#include "game/objects/general/door.h"
+#include "game/objects/general/keyhole.h"
+#include "game/objects/general/misc.h"
+#include "game/objects/general/pickup.h"
+#include "game/objects/general/puzzle_hole.h"
+#include "game/objects/general/save_crystal.h"
+#include "game/objects/general/scion.h"
+#include "game/objects/general/switch.h"
+#include "game/objects/general/trapdoor.h"
 #include "game/objects/traps/damocles_sword.h"
 #include "game/objects/traps/dart.h"
 #include "game/objects/traps/falling_block.h"
@@ -74,92 +70,17 @@
 #include "game/objects/traps/spikes.h"
 #include "game/objects/traps/teeth_trap.h"
 #include "game/objects/traps/thors_hammer.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
-#include "game/screen.h"
 #include "game/sound.h"
-#include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "log.h"
 
 #include <stddef.h>
 
-bool InitialiseLevel(int32_t level_num)
-{
-    LOG_DEBUG("%d", level_num);
-    g_CurrentLevel = level_num;
-
-    Text_RemoveAll();
-    InitialiseGameFlags();
-
-    Lara_InitialiseLoad(NO_ITEM);
-    if (level_num != g_GameFlow.title_level_num) {
-        Screen_ApplyResolution();
-    }
-
-    if (!Level_Load(g_CurrentLevel)) {
-        return false;
-    }
-
-    if (g_Lara.item_number != NO_ITEM) {
-        Lara_Initialise(level_num);
-    }
-
-    g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
-    InitialiseFXArray();
-    InitialiseLOTArray();
-
-    Overlay_Init();
-    Overlay_BarSetHealthTimer(100);
-
-    Sound_ResetEffects();
-
-    phd_AlterFOV(g_Config.fov_value * PHD_DEGREE);
-
-    if (g_GameFlow.levels[g_CurrentLevel].music) {
-        Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
-    }
-    g_Camera.underwater = 0;
-    return true;
-}
-
-void InitialiseGameFlags(void)
-{
-    g_FlipStatus = 0;
-    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMapTable[i] = 0;
-    }
-
-    for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        g_MusicTrackFlags[i] = 0;
-    }
-
-    /* Clear Object Loaded flags */
-    for (int i = 0; i < O_NUMBER_OF; i++) {
-        g_Objects[i].loaded = 0;
-    }
-
-    g_LevelComplete = false;
-    g_FlipEffect = -1;
-}
-
-void InitialiseLevelFlags(void)
-{
-    // loading a save can override it to false
-    g_GameInfo.death_counter_supported = true;
-
-    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
-}
-
-void BaddyObjects(void)
+void Setup_Creatures(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
-    g_Objects[O_LARA].draw_routine = DrawDummyItem;
+    g_Objects[O_LARA].draw_routine = Object_DrawDummyItem;
     g_Objects[O_LARA].hit_points = g_Config.start_lara_hitpoints;
     g_Objects[O_LARA].shadow_size = (UNIT_SHADOW * 10) / 16;
     g_Objects[O_LARA].save_position = 1;
@@ -200,7 +121,7 @@ void BaddyObjects(void)
     Statue_Setup(&g_Objects[O_STATUE]);
 }
 
-void TrapObjects(void)
+void Setup_Traps(void)
 {
     FallingBlock_Setup(&g_Objects[O_FALLING_BLOCK]);
     Pendulum_Setup(&g_Objects[O_PENDULUM]);
@@ -229,7 +150,7 @@ void TrapObjects(void)
     LavaWedge_Setup(&g_Objects[O_LAVA_WEDGE]);
 }
 
-void ObjectObjects(void)
+void Setup_MiscObjects(void)
 {
     CameraTarget_Setup(&g_Objects[O_CAMERA_TARGET]);
     Bridge_SetupFlat(&g_Objects[O_BRIDGE_FLAT]);
@@ -301,21 +222,10 @@ void ObjectObjects(void)
     Boat_Setup(&g_Objects[O_BOAT]);
     Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
-    g_Objects[O_PLAYER_1].initialise = InitialisePlayer1;
-    g_Objects[O_PLAYER_1].control = ControlCinematicPlayer;
-    g_Objects[O_PLAYER_1].hit_points = 1;
-
-    g_Objects[O_PLAYER_2].initialise = InitialiseGenPlayer;
-    g_Objects[O_PLAYER_2].control = ControlCinematicPlayer;
-    g_Objects[O_PLAYER_2].hit_points = 1;
-
-    g_Objects[O_PLAYER_3].initialise = InitialiseGenPlayer;
-    g_Objects[O_PLAYER_3].control = ControlCinematicPlayer;
-    g_Objects[O_PLAYER_3].hit_points = 1;
-
-    g_Objects[O_PLAYER_4].initialise = InitialiseGenPlayer;
-    g_Objects[O_PLAYER_4].control = ControlCinematicPlayer4;
-    g_Objects[O_PLAYER_4].hit_points = 1;
+    CutscenePlayer1_Setup(&g_Objects[O_PLAYER_1]);
+    CutscenePlayer2_Setup(&g_Objects[O_PLAYER_2]);
+    CutscenePlayer3_Setup(&g_Objects[O_PLAYER_3]);
+    CutscenePlayer4_Setup(&g_Objects[O_PLAYER_4]);
 
     Blood_Setup(&g_Objects[O_BLOOD1]);
     Bubble_Setup(&g_Objects[O_BUBBLES1]);
@@ -331,7 +241,7 @@ void ObjectObjects(void)
     GunShot_Setup(&g_Objects[O_GUN_FLASH]);
 }
 
-void InitialiseObjects(void)
+void Setup_AllObjects(void)
 {
     for (int i = 0; i < O_NUMBER_OF; i++) {
         OBJECT_INFO *obj = &g_Objects[i];
@@ -343,7 +253,7 @@ void InitialiseObjects(void)
         obj->initialise = NULL;
         obj->collision = NULL;
         obj->control = NULL;
-        obj->draw_routine = DrawAnimatingItem;
+        obj->draw_routine = Object_DrawAnimatingItem;
         obj->ceiling = NULL;
         obj->floor = NULL;
         obj->pivot_length = 0;
@@ -352,24 +262,24 @@ void InitialiseObjects(void)
         obj->hit_points = DONT_TARGET;
     }
 
-    BaddyObjects();
-    TrapObjects();
-    ObjectObjects();
+    Setup_Creatures();
+    Setup_Traps();
+    Setup_MiscObjects();
 
-    Hair_Initialise();
+    Lara_Hair_Initialise();
 
     if (g_Config.disable_medpacks) {
         g_Objects[O_MEDI_ITEM].initialise = NULL;
         g_Objects[O_MEDI_ITEM].collision = NULL;
         g_Objects[O_MEDI_ITEM].control = NULL;
-        g_Objects[O_MEDI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MEDI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MEDI_ITEM].floor = NULL;
         g_Objects[O_MEDI_ITEM].ceiling = NULL;
 
         g_Objects[O_BIGMEDI_ITEM].initialise = NULL;
         g_Objects[O_BIGMEDI_ITEM].collision = NULL;
         g_Objects[O_BIGMEDI_ITEM].control = NULL;
-        g_Objects[O_BIGMEDI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_BIGMEDI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_BIGMEDI_ITEM].floor = NULL;
         g_Objects[O_BIGMEDI_ITEM].ceiling = NULL;
     }
@@ -378,14 +288,14 @@ void InitialiseObjects(void)
         g_Objects[O_MAGNUM_ITEM].initialise = NULL;
         g_Objects[O_MAGNUM_ITEM].collision = NULL;
         g_Objects[O_MAGNUM_ITEM].control = NULL;
-        g_Objects[O_MAGNUM_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MAGNUM_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MAGNUM_ITEM].floor = NULL;
         g_Objects[O_MAGNUM_ITEM].ceiling = NULL;
 
         g_Objects[O_MAG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_MAG_AMMO_ITEM].collision = NULL;
         g_Objects[O_MAG_AMMO_ITEM].control = NULL;
-        g_Objects[O_MAG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_MAG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_MAG_AMMO_ITEM].floor = NULL;
         g_Objects[O_MAG_AMMO_ITEM].ceiling = NULL;
     }
@@ -394,14 +304,14 @@ void InitialiseObjects(void)
         g_Objects[O_UZI_ITEM].initialise = NULL;
         g_Objects[O_UZI_ITEM].collision = NULL;
         g_Objects[O_UZI_ITEM].control = NULL;
-        g_Objects[O_UZI_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_UZI_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_UZI_ITEM].floor = NULL;
         g_Objects[O_UZI_ITEM].ceiling = NULL;
 
         g_Objects[O_UZI_AMMO_ITEM].initialise = NULL;
         g_Objects[O_UZI_AMMO_ITEM].collision = NULL;
         g_Objects[O_UZI_AMMO_ITEM].control = NULL;
-        g_Objects[O_UZI_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_UZI_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_UZI_AMMO_ITEM].floor = NULL;
         g_Objects[O_UZI_AMMO_ITEM].ceiling = NULL;
     }
@@ -410,14 +320,14 @@ void InitialiseObjects(void)
         g_Objects[O_SHOTGUN_ITEM].initialise = NULL;
         g_Objects[O_SHOTGUN_ITEM].collision = NULL;
         g_Objects[O_SHOTGUN_ITEM].control = NULL;
-        g_Objects[O_SHOTGUN_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_SHOTGUN_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_SHOTGUN_ITEM].floor = NULL;
         g_Objects[O_SHOTGUN_ITEM].ceiling = NULL;
 
         g_Objects[O_SG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_SG_AMMO_ITEM].collision = NULL;
         g_Objects[O_SG_AMMO_ITEM].control = NULL;
-        g_Objects[O_SG_AMMO_ITEM].draw_routine = DrawDummyItem;
+        g_Objects[O_SG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
         g_Objects[O_SG_AMMO_ITEM].floor = NULL;
         g_Objects[O_SG_AMMO_ITEM].ceiling = NULL;
     }

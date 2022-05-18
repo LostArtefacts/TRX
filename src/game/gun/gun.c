@@ -1,10 +1,17 @@
-#include "game/gun/gun.h"
+#include "game/gun.h"
 
 #include "game/gun/gun_pistols.h"
 #include "game/gun/gun_rifle.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
+#include "game/output.h"
+#include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "math/matrix.h"
+
+#include <stdbool.h>
+#include <stddef.h>
 
 void Gun_Control(void)
 {
@@ -197,4 +204,42 @@ void Gun_InitialiseNewWeapon(void)
         g_Lara.left_arm.frame_base = g_Objects[O_LARA].frame_base;
         break;
     }
+}
+
+void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
+{
+    int32_t light;
+    int32_t len;
+    int32_t off;
+
+    switch (weapon_type) {
+    case LGT_MAGNUMS:
+        light = 16 * 256;
+        len = 155;
+        off = 55;
+        break;
+
+    case LGT_UZIS:
+        light = 10 * 256;
+        len = 180;
+        off = 55;
+        break;
+
+    case LGT_SHOTGUN:
+        light = 10 * 256;
+        len = 285;
+        off = 0;
+        break;
+
+    default:
+        light = 20 * 256;
+        len = 155;
+        off = 55;
+        break;
+    }
+
+    Matrix_TranslateRel(0, len, off);
+    Matrix_RotYXZ(0, -90 * PHD_DEGREE, (PHD_ANGLE)(Random_GetDraw() * 2));
+    Output_CalculateStaticLight(light);
+    Output_DrawPolygons(g_Meshes[g_Objects[O_GUN_FLASH].mesh_index], clip);
 }

@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+
 extern INPUT_STATE g_Input;
 extern INPUT_STATE g_InputDB;
 extern INPUT_STATE g_OldInputDB;

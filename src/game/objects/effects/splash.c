@@ -1,11 +1,11 @@
 #include "game/objects/effects/splash.h"
 
-#include "3dsystem/phd_math.h"
-#include "game/items.h"
+#include "game/effects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "math/math.h"
 
 void Splash_Setup(OBJECT_INFO *obj)
 {
@@ -17,12 +17,12 @@ void Splash_Control(int16_t fx_num)
     FX_INFO *fx = &g_Effects[fx_num];
     fx->frame_number--;
     if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
-        KillEffect(fx_num);
+        Effect_Kill(fx_num);
         return;
     }
 
-    fx->pos.z += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
-    fx->pos.x += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.z += (Math_Cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.x += (Math_Sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 }
 
 void Splash_Spawn(ITEM_INFO *item)
@@ -35,7 +35,7 @@ void Splash_Spawn(ITEM_INFO *item)
     Sound_Effect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);
 
     for (int i = 0; i < 10; i++) {
-        int16_t fx_num = CreateEffect(room_num);
+        int16_t fx_num = Effect_Create(room_num);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x;

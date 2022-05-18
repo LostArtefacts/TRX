@@ -1,10 +1,11 @@
 #include "game/objects/traps/pendulum.h"
 
-#include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 #define PENDULUM_DAMAGE 100
@@ -12,7 +13,7 @@
 void Pendulum_Setup(OBJECT_INFO *obj)
 {
     obj->control = Pendulum_Control;
-    obj->collision = TrapCollision;
+    obj->collision = Object_CollisionTrap;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;
     obj->save_anim = 1;
@@ -22,7 +23,7 @@ void Pendulum_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == TRAP_SET) {
             item->goal_anim_state = TRAP_WORKING;
         }
@@ -46,5 +47,5 @@ void Pendulum_Control(int16_t item_num)
         item->pos.x, item->pos.y, item->pos.z, &item->room_number);
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
-    AnimateItem(item);
+    Item_Animate(item);
 }

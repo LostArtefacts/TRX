@@ -1,15 +1,12 @@
-#include "game/lara/lara.h"
+#include "game/lara.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
-#include "game/control.h"
-#include "game/draw.h"
 #include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara/lara_control.h"
 #include "game/lot.h"
@@ -20,6 +17,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 #include "log.h"
+#include "math/math.h"
 
 #define LARA_MOVE_TIMEOUT 90
 #define LARA_MOVE_ANIM_VELOCITY 12
@@ -127,7 +125,7 @@ void Lara_Control(void)
             g_Lara.head_y_rot = 0;
             g_Lara.torso_x_rot = 0;
             g_Lara.torso_y_rot = 0;
-            Item_UpdateRoom(item, -LARA_HITE / 2);
+            Item_UpdateRoom(item, -LARA_HEIGHT / 2);
             Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
             g_Lara.water_status = LWS_ABOVE_WATER;
@@ -265,7 +263,7 @@ void Lara_Animate(ITEM_INFO *item)
 
     item->frame_number++;
     anim = &g_Anims[item->anim_number];
-    if (anim->number_changes > 0 && GetChange(item, anim)) {
+    if (anim->number_changes > 0 && Item_GetAnimChange(item, anim)) {
         anim = &g_Anims[item->anim_number];
         item->current_anim_state = anim->current_anim_state;
     }
@@ -357,8 +355,8 @@ void Lara_Animate(ITEM_INFO *item)
         item->speed = (int16_t)(speed >> 16);
     }
 
-    item->pos.x += (phd_sin(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
-    item->pos.z += (phd_cos(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
+    item->pos.x += (Math_Sin(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
+    item->pos.z += (Math_Cos(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
 void Lara_AnimateUntil(ITEM_INFO *lara_item, int32_t goal)
@@ -436,7 +434,7 @@ void Lara_UseItem(int16_t object_num)
 
 void Lara_ControlExtra(int16_t item_num)
 {
-    AnimateItem(&g_Items[item_num]);
+    Item_Animate(&g_Items[item_num]);
 }
 
 void Lara_InitialiseLoad(int16_t item_num)
@@ -500,7 +498,7 @@ void Lara_Initialise(int32_t level_num)
 
     g_Lara.current_active = 0;
 
-    InitialiseLOT(&g_Lara.LOT);
+    LOT_InitialiseLOT(&g_Lara.LOT);
     g_Lara.LOT.step = WALL_L * 20;
     g_Lara.LOT.drop = -WALL_L * 20;
     g_Lara.LOT.fly = STEP_L;
@@ -522,7 +520,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     if (resume->flags.got_magnums) {
         Inv_AddItem(O_MAGNUM_ITEM);
         g_Lara.magnums.ammo = resume->magnum_ammo;
-        GlobalItemReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
+        Item_GlobalReplace(O_MAGNUM_ITEM, O_MAG_AMMO_ITEM);
     } else {
         int32_t ammo = resume->magnum_ammo / MAGNUM_AMMO_QTY;
         for (int i = 0; i < ammo; i++) {
@@ -534,7 +532,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     if (resume->flags.got_uzis) {
         Inv_AddItem(O_UZI_ITEM);
         g_Lara.uzis.ammo = resume->uzi_ammo;
-        GlobalItemReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
+        Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
     } else {
         int32_t ammo = resume->uzi_ammo / UZI_AMMO_QTY;
         for (int i = 0; i < ammo; i++) {
@@ -546,7 +544,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     if (resume->flags.got_shotgun) {
         Inv_AddItem(O_SHOTGUN_ITEM);
         g_Lara.shotgun.ammo = resume->shotgun_ammo;
-        GlobalItemReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
+        Item_GlobalReplace(O_SHOTGUN_ITEM, O_SG_AMMO_ITEM);
     } else {
         int32_t ammo = resume->shotgun_ammo / SHOTGUN_AMMO_QTY;
         for (int i = 0; i < ammo; i++) {
@@ -683,7 +681,7 @@ bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
         };
 
         int32_t angle = (PHD_ONE
-                         - phd_atan(
+                         - Math_Atan(
                              g_LaraItem->pos.x - item->pos.x,
                              g_LaraItem->pos.z - item->pos.z))
             % PHD_ONE;
@@ -711,12 +709,12 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
     struct ITEM_INFO *lara_item = g_LaraItem;
     int32_t x = lara_item->pos.x - item->pos.x;
     int32_t z = lara_item->pos.z - item->pos.z;
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->pos.y_rot);
+    int32_t s = Math_Sin(item->pos.y_rot);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
-    int16_t *bounds = GetBestFrame(item);
+    int16_t *bounds = Item_GetBestFrame(item);
     int32_t minx = bounds[FRAME_BOUND_MIN_X];
     int32_t maxx = bounds[FRAME_BOUND_MAX_X];
     int32_t minz = bounds[FRAME_BOUND_MIN_Z];
@@ -758,7 +756,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
 
         if (spaz_on) {
             PHD_ANGLE hitang =
-                lara_item->pos.y_rot - (PHD_180 + phd_atan(z, x));
+                lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
             g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
             if (!g_Lara.hit_frame) {
                 Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
@@ -775,11 +773,11 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
         coll->bad_ceiling = 0;
 
         int16_t old_facing = coll->facing;
-        coll->facing = phd_atan(
+        coll->facing = Math_Atan(
             lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
-        GetCollisionInfo(
+        Collide_GetCollisionInfo(
             coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-            lara_item->room_number, LARA_HITE);
+            lara_item->room_number, LARA_HEIGHT);
         coll->facing = old_facing;
 
         if (coll->coll_type != COLL_NONE) {

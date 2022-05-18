@@ -1,21 +1,23 @@
 #include "game/lara/lara_misc.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
-#include "game/control.h"
-#include "game/draw.h"
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara/lara.h"
+#include "game/lara.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "math/math.h"
+#include "util.h"
+
+#include <stdint.h>
 
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
-    GetCollisionInfo(
+    Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_number,
-        LARA_HITE);
+        LARA_HEIGHT);
 }
 
 void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
@@ -64,7 +66,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_JUMP_UP;
         item->anim_number = LA_STOP_HANG;
         item->frame_number = AF_STOPHANG;
-        bounds = GetBoundsAccurate(item);
+        bounds = Item_GetBoundsAccurate(item);
         item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
@@ -75,7 +77,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     int32_t hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
 
     if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
@@ -234,8 +236,8 @@ void Lara_DeflectEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
         item->speed = 0;
         coll->mid_floor = 0;
         if (item->fall_speed <= 0) {
@@ -265,8 +267,8 @@ void Lara_SlideEdgeJump(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
-        item->pos.z -= (phd_cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (phd_sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
         item->speed = 0;
         coll->mid_floor = 0;
         if (item->fall_speed <= 0) {
@@ -341,7 +343,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         item->anim_number = LA_STOP;
         item->frame_number = AF_STOP;
         g_Lara.calc_fall_speed =
-            -(int16_t)(phd_sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
+            -(int16_t)(Math_Sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         Lara_Animate(item);
         item->pos.y_rot = angle;
         Item_ShiftCol(item, coll);
@@ -367,7 +369,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
@@ -403,7 +405,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     item->goal_anim_state = LS_HANG;
 
-    // bounds = GetBoundsAccurate(item);
+    // bounds = Item_GetBoundsAccurate(item);
     item->pos.y += hdif;
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
@@ -463,7 +465,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
@@ -493,7 +495,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     item->anim_number = LA_HANG;
     item->frame_number = AF_STARTHANG;
-    bounds = GetBoundsAccurate(item);
+    bounds = Item_GetBoundsAccurate(item);
     item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
@@ -560,11 +562,11 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
 
     int oy = item->pos.y;
     int height = Room_GetHeight(
-        floor, item->pos.x, item->pos.y - LARA_HITE, item->pos.z);
+        floor, item->pos.x, item->pos.y - LARA_HEIGHT, item->pos.z);
 
     item->floor = height;
     item->pos.y = height;
-    TestTriggers(g_TriggerIndex, 0);
+    Room_TestTriggers(g_TriggerIndex, false);
     item->pos.y = oy;
 
     int landspeed = item->fall_speed - DAMAGE_START;
@@ -587,9 +589,9 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
 
-    GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + SURF_HITE, item->pos.z,
-        item->room_number, SURF_HITE);
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
+        item->room_number, SURF_HEIGHT);
 
     Item_ShiftCol(item, coll);
 
@@ -660,7 +662,7 @@ bool Lara_TestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     item->pos.y += hdif - 5;
-    Item_UpdateRoom(item, -LARA_HITE / 2);
+    Item_UpdateRoom(item, -LARA_HEIGHT / 2);
 
     switch (angle) {
     case 0:
@@ -699,9 +701,9 @@ void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll)
     } else {
         g_Lara.move_angle = coll->facing = item->pos.y_rot - PHD_180;
     }
-    GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + UW_HITE / 2, item->pos.z,
-        item->room_number, UW_HITE);
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
+        item->room_number, UW_HEIGHT);
 
     Item_ShiftCol(item, coll);
 

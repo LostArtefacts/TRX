@@ -1,12 +1,12 @@
 #include "gfx/context.h"
 
+#include "config.h"
 #include "game/shell.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/wgl_ext.h"
 #include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
-#include "src/config.h"
 
 #include <string.h>
 

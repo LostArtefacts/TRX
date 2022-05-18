@@ -1,16 +1,18 @@
 #include "game/objects/effects/waterfall.h"
 
-#include "game/draw.h"
-#include "game/items.h"
+#include "game/effects.h"
+#include "game/objects/common.h"
 #include "game/random.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #define WATERFALL_RANGE (WALL_L * 10) // = 10240
 
 void Waterfall_Setup(OBJECT_INFO *obj)
 {
     g_Objects[O_WATERFALL].control = Waterfall_Control;
-    g_Objects[O_WATERFALL].draw_routine = DrawDummyItem;
+    g_Objects[O_WATERFALL].draw_routine = Object_DrawDummyItem;
 }
 
 void Waterfall_Control(int16_t item_num)
@@ -26,7 +28,7 @@ void Waterfall_Control(int16_t item_num)
 
     if (ABS(x) <= WATERFALL_RANGE && ABS(z) <= WATERFALL_RANGE
         && ABS(y) <= WATERFALL_RANGE) {
-        int16_t fx_num = CreateEffect(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x

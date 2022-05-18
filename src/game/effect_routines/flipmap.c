@@ -1,8 +1,8 @@
 #include "game/effect_routines/flipmap.h"
 
-#include "game/control.h"
+#include "game/room.h"
 
 void FX_FlipMap(ITEM_INFO *item)
 {
-    FlipMap();
+    Room_FlipMap();
 }

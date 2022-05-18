@@ -1,16 +1,19 @@
 #include "game/objects/traps/rolling_ball.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
-#include "game/sphere.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "math/math.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 
@@ -50,19 +53,19 @@ void RollingBall_Control(int16_t item_num)
 
         int32_t oldx = item->pos.x;
         int32_t oldz = item->pos.z;
-        AnimateItem(item);
+        Item_Animate(item);
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor =
             Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (item->room_number != room_num) {
-            ItemNewRoom(item_num, room_num);
+            Item_NewRoom(item_num, room_num);
         }
 
         item->floor =
             Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
 
-        TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
 
         if (item->pos.y >= item->floor - STEP_L) {
             item->gravity_status = 0;
@@ -71,9 +74,9 @@ void RollingBall_Control(int16_t item_num)
         }
 
         int32_t x = item->pos.x
-            + (((WALL_L / 2) * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
+            + (((WALL_L / 2) * Math_Sin(item->pos.y_rot)) >> W2V_SHIFT);
         int32_t z = item->pos.z
-            + (((WALL_L / 2) * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
+            + (((WALL_L / 2) * Math_Cos(item->pos.y_rot)) >> W2V_SHIFT);
         floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         if (Room_GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
             item->status = IS_DEACTIVATED;
@@ -84,14 +87,14 @@ void RollingBall_Control(int16_t item_num)
             item->fall_speed = 0;
             item->touch_bits = 0;
         }
-    } else if (item->status == IS_DEACTIVATED && !TriggerActive(item)) {
+    } else if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
         item->status = IS_NOT_ACTIVE;
         GAME_VECTOR *data = item->data;
         item->pos.x = data->x;
         item->pos.y = data->y;
         item->pos.z = data->z;
         if (item->room_number != data->room_number) {
-            RemoveDrawnItem(item_num);
+            Item_RemoveDrawn(item_num);
             ROOM_INFO *r = &g_RoomInfo[data->room_number];
             item->next_item = r->item_number;
             r->item_number = item_num;
@@ -105,7 +108,7 @@ void RollingBall_Control(int16_t item_num)
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
         item->required_anim_state = TRAP_SET;
-        RemoveActiveItem(item_num);
+        Item_RemoveActive(item_num);
     }
 }
 
@@ -116,7 +119,7 @@ void RollingBall_Collision(
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {
-            ObjectCollision(item_num, lara_item, coll);
+            Object_Collision(item_num, lara_item, coll);
         }
         return;
     }
@@ -124,7 +127,7 @@ void RollingBall_Collision(
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
-    if (!TestCollision(item, lara_item)) {
+    if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
 
@@ -137,7 +140,7 @@ void RollingBall_Collision(
         x = lara_item->pos.x - item->pos.x;
         z = lara_item->pos.z - item->pos.z;
         y = (lara_item->pos.y - 350) - (item->pos.y - WALL_L / 2);
-        d = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+        d = Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
         if (d < WALL_L / 2) {
             d = WALL_L / 2;
         }
@@ -150,7 +153,7 @@ void RollingBall_Collision(
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
             if (lara_item->room_number != item->room_number) {
-                ItemNewRoom(g_Lara.item_number, item->room_number);
+                Item_NewRoom(g_Lara.item_number, item->room_number);
             }
 
             lara_item->pos.x_rot = 0;

@@ -1,17 +1,17 @@
 #include "game/gun/gun_misc.h"
 
-#include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
-#include "3dsystem/phd_math.h"
-#include "game/control.h"
-#include "game/draw.h"
+#include "game/collide.h"
 #include "game/effects/blood.h"
-#include "game/inv.h"
+#include "game/inventory.h"
+#include "game/items.h"
+#include "game/los.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "game/sphere.h"
 #include "global/vars.h"
+#include "math/math.h"
+#include "math/math_misc.h"
+#include "math/matrix.h"
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
 #define PISTOL_LOCK_YMAX (+60 * PHD_DEGREE)
@@ -151,12 +151,12 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
     Gun_FindTargetPoint(g_Lara.target, &target);
 
     int16_t ang[2];
-    phd_GetVectorAngles(
+    Math_GetVectorAngles(
         target.x - src.x, target.y - src.y, target.z - src.z, ang);
     ang[0] -= g_LaraItem->pos.y_rot;
     ang[1] -= g_LaraItem->pos.x_rot;
 
-    if (LOS(&src, &target)) {
+    if (LOS_Check(&src, &target)) {
         if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1]
             && ang[1] >= winfo->lock_angles[2]
             && ang[1] <= winfo->lock_angles[3]) {
@@ -222,12 +222,12 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
 
         GAME_VECTOR target;
         Gun_FindTargetPoint(item, &target);
-        if (!LOS(&src, &target)) {
+        if (!LOS_Check(&src, &target)) {
             continue;
         }
 
         PHD_ANGLE ang[2];
-        phd_GetVectorAngles(
+        Math_GetVectorAngles(
             target.x - src.x, target.y - src.y, target.z - src.z, ang);
         ang[0] -= g_Lara.torso_y_rot + g_LaraItem->pos.y_rot;
         ang[1] -= g_Lara.torso_x_rot + g_LaraItem->pos.x_rot;
@@ -248,12 +248,12 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
 
 void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
 {
-    int16_t *bounds = GetBestFrame(item);
+    int16_t *bounds = Item_GetBestFrame(item);
     int32_t x = (bounds[0] + bounds[1]) / 2;
     int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
     int32_t z = (bounds[5] + bounds[4]) / 2;
-    int32_t c = phd_cos(item->pos.y_rot);
-    int32_t s = phd_sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->pos.y_rot);
+    int32_t s = Math_Sin(item->pos.y_rot);
     target->x = item->pos.x + ((c * x + s * z) >> W2V_SHIFT);
     target->y = item->pos.y + y;
     target->z = item->pos.z + ((c * z - s * x) >> W2V_SHIFT);
@@ -352,10 +352,10 @@ int32_t Gun_FireWeapon(
     view.y_rot = angles[0]
         + (winfo->shot_accuracy * (Random_GetControl() - PHD_90)) / PHD_ONE;
     view.z_rot = 0;
-    phd_GenerateW2V(&view);
+    Matrix_GenerateW2V(&view);
 
     SPHERE slist[33];
-    int32_t nums = GetSpheres(target, slist, 0);
+    int32_t nums = Collide_GetSpheres(target, slist, 0);
 
     int32_t best = -1;
     int32_t bestdist = 0x7FFFFFFF;
@@ -379,9 +379,9 @@ int32_t Gun_FireWeapon(
     GAME_VECTOR vdest;
     if (best >= 0) {
         ammo->hit++;
-        vdest.x = view.x + ((bestdist * g_PhdMatrixPtr->_20) >> W2V_SHIFT);
-        vdest.y = view.y + ((bestdist * g_PhdMatrixPtr->_21) >> W2V_SHIFT);
-        vdest.z = view.z + ((bestdist * g_PhdMatrixPtr->_22) >> W2V_SHIFT);
+        vdest.x = view.x + ((bestdist * g_MatrixPtr->_20) >> W2V_SHIFT);
+        vdest.y = view.y + ((bestdist * g_MatrixPtr->_21) >> W2V_SHIFT);
+        vdest.z = view.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
         Gun_HitTarget(
             target, &vdest,
             winfo->damage * (g_GameInfo.bonus_flag & GBF_JAPANESE ? 2 : 1));
@@ -389,10 +389,10 @@ int32_t Gun_FireWeapon(
     }
 
     ammo->miss++;
-    vdest.x = vsrc.x + g_PhdMatrixPtr->_20;
-    vdest.y = vsrc.y + g_PhdMatrixPtr->_21;
-    vdest.z = vsrc.z + g_PhdMatrixPtr->_22;
-    LOS(&vsrc, &vdest);
+    vdest.x = vsrc.x + g_MatrixPtr->_20;
+    vdest.y = vsrc.y + g_MatrixPtr->_21;
+    vdest.z = vsrc.z + g_MatrixPtr->_22;
+    LOS_Check(&vsrc, &vdest);
     Ricochet_Spawn(&vdest);
     return -1;
 }

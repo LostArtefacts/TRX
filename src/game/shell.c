@@ -1,36 +1,27 @@
 #include "game/shell.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "filesystem.h"
 #include "game/clock.h"
-#include "game/demo.h"
 #include "game/fmv.h"
 #include "game/game.h"
-#include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
-#include "game/setup.h"
-#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_input.h"
-#include "specific/s_misc.h"
 #include "specific/s_shell.h"
 
-#include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -200,7 +191,8 @@ void Shell_Main(void)
             break;
 
         case GF_START_DEMO:
-            gf_option = StartDemo();
+            Game_Demo();
+            gf_option = GF_EXIT_TO_TITLE;
             break;
 
         case GF_LEVEL_COMPLETE:
@@ -217,12 +209,12 @@ void Shell_Main(void)
 
             Text_RemoveAll();
             Output_DisplayPicture(g_GameFlow.main_menu_background_path);
-            if (!InitialiseLevel(g_GameFlow.title_level_num)) {
+            if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;
             }
 
-            gf_option = Display_Inventory(INV_TITLE_MODE);
+            gf_option = Inv_Display(INV_TITLE_MODE);
             Music_Stop();
             break;
 

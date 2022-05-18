@@ -1,9 +1,9 @@
 #include "game/objects/traps/teeth_trap.h"
 
 #include "game/collide.h"
-#include "game/control.h"
 #include "game/effects/blood.h"
-#include "game/sphere.h"
+#include "game/items.h"
+#include "game/objects/common.h"
 #include "global/vars.h"
 
 #define TEETH_TRAP_DAMAGE 400
@@ -28,7 +28,7 @@ static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
     pos.x = bite->x;
     pos.y = bite->y;
     pos.z = bite->z;
-    GetJointAbsPosition(item, &pos, bite->mesh_num);
+    Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     Effect_Blood(
         pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
 }
@@ -36,7 +36,7 @@ static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
 void TeethTrap_Setup(OBJECT_INFO *obj)
 {
     obj->control = TeethTrap_Control;
-    obj->collision = TrapCollision;
+    obj->collision = Object_CollisionTrap;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
@@ -44,7 +44,7 @@ void TeethTrap_Setup(OBJECT_INFO *obj)
 void TeethTrap_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (TriggerActive(item)) {
+    if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = TT_NASTY;
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
             g_LaraItem->hit_points -= TEETH_TRAP_DAMAGE;
@@ -59,5 +59,5 @@ void TeethTrap_Control(int16_t item_num)
     } else {
         item->goal_anim_state = TT_NICE;
     }
-    AnimateItem(item);
+    Item_Animate(item);
 }

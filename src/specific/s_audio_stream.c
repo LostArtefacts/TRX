@@ -5,9 +5,25 @@
 #include "log.h"
 #include "memory.h"
 
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_error.h>
 #include <assert.h>
+#include <errno.h>
 #include <libavcodec/avcodec.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/codec_par.h>
+#include <libavcodec/packet.h>
 #include <libavformat/avformat.h>
+#include <libavformat/avio.h>
+#include <libavutil/avutil.h>
+#include <libavutil/error.h>
+#include <libavutil/frame.h>
+#include <libavutil/mem.h>
+#include <libavutil/samplefmt.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 #define READ_BUFFER_SIZE                                                       \
     (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))

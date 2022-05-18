@@ -1,9 +1,10 @@
 #include "game/objects/traps/midas_touch.h"
 
-#include "game/draw.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 static int16_t m_MidasBounds[12] = {
@@ -24,7 +25,7 @@ static int16_t m_MidasBounds[12] = {
 void MidasTouch_Setup(OBJECT_INFO *obj)
 {
     obj->collision = MidasTouch_Collision;
-    obj->draw_routine = DrawDummyItem;
+    obj->draw_routine = Object_DrawDummyItem;
 }
 
 void MidasTouch_Collision(
@@ -79,7 +80,7 @@ void MidasTouch_Collision(
     }
 
     if (g_InvChosen == -1) {
-        Display_Inventory(INV_KEYS_MODE);
+        Inv_Display(INV_KEYS_MODE);
     }
 
     if (g_InvChosen == O_LEADBAR_OPTION) {

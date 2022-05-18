@@ -2,28 +2,24 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/cinema.h"
 #include "game/clock.h"
-#include "game/control.h"
 #include "game/fmv.h"
 #include "game/game.h"
-#include "game/gamebuf.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/savegame.h"
-#include "game/screen.h"
-#include "game/settings.h"
+#include "game/room.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "json.h"
+#include "json/json_base.h"
+#include "json/json_parse.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_misc.h"
 
 #include <limits.h>
 #include <string.h>
@@ -1105,22 +1101,22 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         switch (seq->type) {
         case GFS_START_GAME:
-            if (!StartGame((int32_t)seq->data, level_type)) {
+            if (!Game_Start((int32_t)seq->data, level_type)) {
                 g_CurrentLevel = 0;
                 return GF_EXIT_TO_TITLE;
             }
             break;
 
         case GFS_LOOP_GAME:
-            ret = GameLoop(level_type);
-            LOG_DEBUG("GameLoop() exited with %d", ret);
+            ret = Game_Loop(level_type);
+            LOG_DEBUG("Game_Loop() exited with %d", ret);
             if (ret != GF_NOP) {
                 return ret;
             }
             break;
 
         case GFS_STOP_GAME:
-            ret = StopGame();
+            ret = Game_Stop();
             if (ret != GF_NOP
                 && ((ret & ~((1 << 6) - 1)) != GF_LEVEL_COMPLETE)) {
                 return ret;
@@ -1132,19 +1128,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_START_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StartCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Start((int32_t)seq->data);
             }
             break;
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = CinematicLoop();
+                ret = Game_Cutscene_Loop();
             }
             break;
 
         case GFS_STOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StopCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Stop((int32_t)seq->data);
             }
             break;
 
@@ -1223,7 +1219,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             g_Camera.target_angle = (int32_t)seq->data;
             break;
         case GFS_FLIP_MAP:
-            FlipMap();
+            Room_FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
             Music_Play((int32_t)seq->data);

@@ -2,6 +2,8 @@
 
 #include "json/json_base.h"
 
+#include <stddef.h>
+
 enum json_parse_error_e {
     json_parse_error_none = 0,
     json_parse_error_expected_comma_or_closing_bracket,

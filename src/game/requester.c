@@ -5,14 +5,13 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <string.h>
 
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-void InitRequester(REQUEST_INFO *req)
+void Requester_Init(REQUEST_INFO *req)
 {
     req->heading = NULL;
     req->background = NULL;
@@ -26,7 +25,7 @@ void InitRequester(REQUEST_INFO *req)
     req->items = 0;
 }
 
-void RemoveRequester(REQUEST_INFO *req)
+void Requester_Remove(REQUEST_INFO *req)
 {
     Text_Remove(req->heading);
     req->heading = NULL;
@@ -42,7 +41,7 @@ void RemoveRequester(REQUEST_INFO *req)
     }
 }
 
-int32_t DisplayRequester(REQUEST_INFO *req)
+int32_t Requester_Display(REQUEST_INFO *req)
 {
     int32_t edge_y = req->y;
     int32_t lines_height = req->vis_lines * req->line_height;
@@ -161,18 +160,18 @@ int32_t DisplayRequester(REQUEST_INFO *req)
             g_Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
-            RemoveRequester(req);
+            Requester_Remove(req);
             return req->requested + 1;
         }
     } else if (g_InputDB.deselect) {
-        RemoveRequester(req);
+        Requester_Remove(req);
         return -1;
     }
 
     return 0;
 }
 
-void SetRequesterHeading(REQUEST_INFO *req, const char *string)
+void Requester_SetHeading(REQUEST_INFO *req, const char *string)
 {
     Text_Remove(req->heading);
     req->heading = NULL;
@@ -184,7 +183,7 @@ void SetRequesterHeading(REQUEST_INFO *req, const char *string)
     }
 }
 
-void ChangeRequesterItem(
+void Requester_ChangeItem(
     REQUEST_INFO *req, int32_t idx, const char *string, uint16_t flag)
 {
     if (string) {
@@ -195,7 +194,7 @@ void ChangeRequesterItem(
     }
 }
 
-void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag)
+void Requester_AddItem(REQUEST_INFO *req, const char *string, uint16_t flag)
 {
     if (string) {
         strcpy(&req->item_texts[req->items * req->item_text_len], string);
@@ -207,7 +206,7 @@ void AddRequesterItem(REQUEST_INFO *req, const char *string, uint16_t flag)
     req->items++;
 }
 
-void SetRequesterSize(REQUEST_INFO *req, int32_t max_lines, int16_t y)
+void Requester_SetSize(REQUEST_INFO *req, int32_t max_lines, int16_t y)
 {
     req->y = y;
     req->vis_lines = Screen_GetResHeightDownscaled() / 2 / MAX_REQLINES;
