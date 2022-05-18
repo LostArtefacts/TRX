@@ -8,7 +8,7 @@
 
 typedef struct GFX_Context GFX_Context;
 
-void GFX_Context_Attach(HWND hwnd);
+void GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);
 void GFX_Context_SetVSync(bool vsync);
 bool GFX_Context_IsFullscreen(void);
@@ -25,7 +25,6 @@ void GFX_Context_SetupViewport(void);
 void GFX_Context_SwapBuffers(void);
 void GFX_Context_SetRendered(void);
 bool GFX_Context_IsRendered(void);
-HWND GFX_Context_GetHWnd(void);
 void GFX_Context_ScheduleScreenshot(const char *path);
 GFX_2D_Renderer *GFX_Context_GetRenderer2D(void);
 GFX_3D_Renderer *GFX_Context_GetRenderer3D(void);

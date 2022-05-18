@@ -4,6 +4,7 @@
 - fixed passport menu with high UI scaling (#546, regression from 2.7)
 - fixed passport menu border being off by one pixel (#547)
 - fixed floor level bridges embedding in the floor (#523)
+- removed XBox controller support
 
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)

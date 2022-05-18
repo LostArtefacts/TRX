@@ -11,15 +11,16 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
 
 #define SDL_MAIN_HANDLED
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
 #include <time.h>
 
 static int m_ArgCount = 0;
@@ -37,6 +38,7 @@ void S_Shell_Shutdown(void)
     GameFlow_Shutdown();
     GameBuf_Shutdown();
     Output_Shutdown();
+    Input_Shutdown();
     S_Audio_Shutdown();
     Savegame_Shutdown();
 }
@@ -60,8 +62,8 @@ static void S_Shell_PostWindowResize(void)
 void S_Shell_ShowFatalError(const char *message)
 {
     LOG_ERROR("%s", message);
-    MessageBoxA(
-        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    SDL_ShowSimpleMessageBox(
+        SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", message, m_Window);
     S_Shell_TerminateGame(1);
 }
 
@@ -182,17 +184,6 @@ int main(int argc, char **argv)
     S_Shell_PostWindowResize();
 
     SDL_ShowCursor(SDL_DISABLE);
-
-    SDL_SysWMinfo wm_info;
-    SDL_VERSION(&wm_info.version);
-    SDL_GetWindowWMInfo(m_Window, &wm_info);
-    g_TombModule = wm_info.info.win.hinstance;
-    g_TombHWND = wm_info.info.win.window;
-
-    if (!g_TombHWND) {
-        S_Shell_ShowFatalError("System Error: cannot create window");
-        return 1;
-    }
 
     Shell_Main();
 

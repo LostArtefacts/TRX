@@ -18,19 +18,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// IWYU pragma: no_include <libavcodec/defs.h>
+
 #include "specific/s_fmv.h"
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/gamebuf.h"
 #include "game/input.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
-#include "game/viewport.h"
+#include "gfx/2d/2d_renderer.h"
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
-#include "global/vars_platform.h"
+#include "global/types.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_audio.h"
@@ -38,16 +39,48 @@
 #include "specific/s_shell.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_mutex.h>
+#include <SDL2/SDL_pixels.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_video.h>
+#include <errno.h>
 #include <libavcodec/avcodec.h>
-#include <libavdevice/avdevice.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/codec_id.h>
+#include <libavcodec/codec_par.h>
+#include <libavcodec/packet.h>
 #include <libavformat/avformat.h>
+#include <libavformat/avio.h>
+#include <libavutil/attributes.h>
+#include <libavutil/avutil.h>
 #include <libavutil/channel_layout.h>
+#include <libavutil/common.h>
+#include <libavutil/dict.h>
+#include <libavutil/error.h>
 #include <libavutil/fifo.h>
+#include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
+#include <libavutil/macros.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/mem.h>
+#include <libavutil/pixfmt.h>
+#include <libavutil/rational.h>
+#include <libavutil/samplefmt.h>
 #include <libavutil/time.h>
 #include <libswresample/swresample.h>
 #include <libswscale/swscale.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 // NOTE: subtitles require implementing surface blending.
 #define ENABLE_SUBTITLES 0
@@ -740,7 +773,7 @@ static int S_FMV_ReallocPrimarySurface(
             return -1;
         }
         memset(surface_desc.pixels, 0, surface_desc.pitch * surface_height);
-        GFX_2D_Surface_Unlock(is->primary_surface, surface_desc.pixels);
+        GFX_2D_Surface_Unlock(is->primary_surface);
     }
 
     GFX_Context_SetDisplaySize(is->surface_width, is->surface_height);
@@ -805,7 +838,7 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
                 frame->linesize, 0, frame->height, surf_planes, surf_linesize);
-            GFX_2D_Surface_Unlock(is->back_surface, surface_desc.pixels);
+            GFX_2D_Surface_Unlock(is->back_surface);
         }
     } else {
         LOG_ERROR("Cannot initialize the conversion context");

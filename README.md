@@ -374,7 +374,7 @@ Note: this section may be subject to change.
 - [ ] Work on cross platform builds
     - [x] Port DirectSound to libavcodec and SDL
     - [x] Port WinMM to libavcodec and SDL
-    - [ ] Port DirectInput to SDL
+    - [x] Port DirectInput to SDL
     - [ ] Replace wgl_ext.h with cross platform variant
     - [ ] Remove HWND and HINSTANCE usages
     - [ ] ...

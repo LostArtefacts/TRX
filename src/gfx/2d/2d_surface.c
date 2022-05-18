@@ -2,7 +2,6 @@
 
 #include "gfx/blitter.h"
 #include "gfx/context.h"
-#include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
 
@@ -203,7 +202,7 @@ bool GFX_2D_Surface_Lock(GFX_2D_Surface *surface, GFX_2D_SurfaceDesc *out_desc)
     return true;
 }
 
-bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp)
+bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface)
 {
     // ensure that the surface is actually locked
     if (!surface->is_locked) {

@@ -2,18 +2,19 @@
 
 #include "config.h"
 #include "filesystem.h"
+#include "game/input.h"
 #include "game/music.h"
-#include "game/option/option_control.h"
 #include "game/screen.h"
 #include "game/sound.h"
 #include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "global/vars.h"
-#include "json.h"
+#include "json/json_base.h"
+#include "json/json_parse.h"
+#include "json/json_write.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_input.h"
+#include "util.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -81,12 +82,13 @@ static bool Settings_ReadFromJSON(const char *cfg_data)
         json_object_get_double(root_obj, "ui_bar_scale", DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    struct json_array_s *layout_arr = json_object_get_array(root_obj, "layout");
-    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
-        S_INPUT_KEYCODE key_code =
-            S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i);
-        key_code = json_array_get_int(layout_arr, i, key_code);
-        S_Input_AssignKeyCode(INPUT_LAYOUT_USER, i, key_code);
+    struct json_array_s *layout_arr =
+        json_object_get_array(root_obj, "layout_sdl");
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        INPUT_SCANCODE scancode =
+            Input_GetAssignedScancode(INPUT_LAYOUT_USER, role);
+        scancode = json_array_get_int(layout_arr, role, scancode);
+        Input_AssignScancode(INPUT_LAYOUT_USER, role, scancode);
     }
 
     if (root) {
@@ -109,8 +111,6 @@ bool Settings_Read(void)
 
 cleanup:
     Memory_FreePointer(&cfg_data);
-
-    Option_DefaultConflict();
 
     Music_SetVolume(g_Config.music_volume);
     Sound_SetMasterVolume(g_Config.sound_volume);
@@ -143,11 +143,11 @@ bool Settings_Write(void)
     json_object_append_double(root_obj, "brightness", g_Config.brightness);
 
     struct json_array_s *layout_arr = json_array_new();
-    for (int i = 0; i < INPUT_KEY_NUMBER_OF; i++) {
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         json_array_append_int(
-            layout_arr, S_Input_GetAssignedKeyCode(INPUT_LAYOUT_USER, i));
+            layout_arr, Input_GetAssignedScancode(INPUT_LAYOUT_USER, role));
     }
-    json_object_append_array(root_obj, "layout", layout_arr);
+    json_object_append_array(root_obj, "layout_sdl", layout_arr);
 
     struct json_value_s *root = json_value_from_object(root_obj);
     char *data = json_write_pretty(root, "  ", "\n", &size);

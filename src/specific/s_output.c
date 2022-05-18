@@ -10,9 +10,9 @@
 #include "gfx/context.h"
 #include "gfx/screenshot.h"
 #include "global/vars.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
+#include "specific/s_shell.h"
 
 #include <assert.h>
 
@@ -599,7 +599,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
             *output_ptr++ = b | (g << 8) | (r << 16);
         }
 
-        result = GFX_2D_Surface_Unlock(picture_surface, surface_desc.pixels);
+        result = GFX_2D_Surface_Unlock(picture_surface);
         S_Output_CheckError(result);
     }
 
@@ -971,7 +971,7 @@ bool S_Output_Init(void)
         m_TextureSurfaces[i] = NULL;
     }
 
-    GFX_Context_Attach(g_TombHWND);
+    GFX_Context_Attach(S_Shell_GetWindowHandle());
     m_Renderer3D = GFX_Context_GetRenderer3D();
 
     S_Output_SetHardwareVideoMode();
@@ -1237,8 +1237,7 @@ void S_Output_DownloadTextures(int32_t pages)
                 pix.b | (pix.g << 8) | (pix.r << 16) | (alpha << 24);
         }
 
-        result =
-            GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
+        result = GFX_2D_Surface_Unlock(m_TextureSurfaces[i]);
         S_Output_CheckError(result);
 
         m_TextureMap[i] = GFX_3D_Renderer_TextureReg(
