@@ -142,6 +142,11 @@ static void Option_PassportShutdownText(void)
     m_PassportMode = PASSPORT_MODE_FLIP;
     m_IsTextInit = false;
 
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+        Memory_Free(&m_SavegameStrings[i]);
+        m_SavegameStrings = NULL;
+    }
+
     Memory_FreePointer(&m_SavegameStrings);
 }
 
