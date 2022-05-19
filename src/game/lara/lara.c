@@ -6,6 +6,7 @@
 #include "game/collide.h"
 #include "game/control.h"
 #include "game/draw.h"
+#include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inv.h"
@@ -23,18 +24,6 @@
 #define LARA_MOVE_TIMEOUT 90
 #define LARA_MOVE_ANIM_VELOCITY 12
 #define LARA_MOVE_SPEED 16
-
-static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num);
-
-static RESUME_INFO *Lara_GetResumeInfo(int32_t level_num)
-{
-    if (g_GameInfo.current_level_type == GFL_SAVED) {
-        // Use current info for saved games.
-        return &g_GameInfo.current[level_num];
-    }
-    // Use start info for restart / level select.
-    return &g_GameInfo.start[level_num];
-}
 
 void Lara_Control(void)
 {
@@ -462,11 +451,15 @@ void Lara_InitialiseLoad(int16_t item_num)
 
 void Lara_Initialise(int32_t level_num)
 {
-    RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
+    RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     g_LaraItem->collidable = 0;
     g_LaraItem->data = &g_Lara;
-    g_LaraItem->hit_points = resume->lara_hitpoints;
+    if (g_Config.disable_healing_between_levels) {
+        g_LaraItem->hit_points = resume->lara_hitpoints;
+    } else {
+        g_LaraItem->hit_points = g_Config.start_lara_hitpoints;
+    }
 
     g_Lara.air = LARA_AIR;
     g_Lara.torso_y_rot = 0;
@@ -512,14 +505,14 @@ void Lara_Initialise(int32_t level_num)
     g_Lara.LOT.drop = -WALL_L * 20;
     g_Lara.LOT.fly = STEP_L;
 
-    Lara_InitialiseInventory(g_CurrentLevel);
+    Lara_InitialiseInventory(level_num);
 }
 
 void Lara_InitialiseInventory(int32_t level_num)
 {
     Inv_RemoveAllItems();
 
-    RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
+    RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     g_Lara.pistols.ammo = 1000;
     if (resume->flags.got_pistols) {
@@ -584,7 +577,7 @@ void Lara_InitialiseInventory(int32_t level_num)
 
 void Lara_InitialiseMeshes(int32_t level_num)
 {
-    RESUME_INFO *resume = Lara_GetResumeInfo(level_num);
+    RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     if (resume->flags.costume) {
         for (int i = 0; i < LM_NUMBER_OF; i++) {

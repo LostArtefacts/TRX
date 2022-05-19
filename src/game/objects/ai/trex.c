@@ -1,5 +1,7 @@
 #include "game/objects/ai/trex.h"
 
+#include "config.h"
+
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/draw.h"
@@ -43,7 +45,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     obj->initialise = InitialiseCreature;
     obj->control = TRex_Control;
     obj->draw_routine = DrawUnclippedItem;
-    obj->collision = CreatureCollision;
+    obj->collision = TRex_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = TREX_HITPOINTS;
     obj->pivot_length = 2000;
@@ -56,6 +58,15 @@ void TRex_Setup(OBJECT_INFO *obj)
     obj->save_flags = 1;
     g_AnimBones[obj->bone_index + 40] |= BEB_ROT_Y;
     g_AnimBones[obj->bone_index + 44] |= BEB_ROT_Y;
+}
+
+void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+{
+    if (g_Config.disable_trex_collision && g_Items[item_num].hit_points <= 0) {
+        return;
+    }
+
+    CreatureCollision(item_num, lara_item, coll);
 }
 
 void TRex_Control(int16_t item_num)
