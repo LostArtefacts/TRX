@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.8.1...master)
-- ...
+- fixed Lara not picking up items near the edges of room portals (#563, regression from 2.8)
 
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)
