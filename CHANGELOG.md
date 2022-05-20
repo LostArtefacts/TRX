@@ -5,6 +5,9 @@
 - fixed passport menu border being off by one pixel (#547)
 - removed XBox controller support
 
+## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8.1...2.8.2) - 2022-05-20
+- fixed Lara not picking up items near the edges of room portals (#563, regression from 2.8)
+
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)
 - fixed pushables breaking with flipped rooms when loading a save (#536, regression from 2.8)
