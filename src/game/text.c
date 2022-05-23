@@ -87,6 +87,99 @@ static RGBA8888 m_MenuColorMap[] = {
 
 static void Text_DrawText(TEXTSTRING *textstring);
 static uint8_t Text_MapLetterToSpriteNum(char letter);
+static void Text_DrawTextBackground(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style);
+static void Text_DrawTextOutline(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style);
+
+static void Text_DrawTextBackground(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PS1) {
+        // Make sure height and width divisible by 2.
+        w = 2 * ((w + 1) / 2);
+        h = 2 * ((h + 1) / 2);
+        Output_DrawScreenFBox(sx, sy, w, h);
+
+        if (text_style == TS_HEADING) {
+            // Top left
+            Output_DrawScreenGradientQuad(
+                sx, sy, w / 2, h / 2, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
+            // Top right
+            Output_DrawScreenGradientQuad(
+                sx + w, sy, -w / 2, h / 2, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
+            // Bottom left
+            Output_DrawScreenGradientQuad(
+                sx, sy + h, w / 2, -h / 2, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
+            // Bottom right
+            Output_DrawScreenGradientQuad(
+                sx + w, sy + h, -w / 2, -h / 2, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
+        } else if (text_style == TS_REQUESTED) {
+            // Top left
+            Output_DrawScreenGradientQuad(
+                sx, sy, w / 2, h / 2, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+            // Top right
+            Output_DrawScreenGradientQuad(
+                sx + w, sy, -w / 2, h / 2, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+            // Bottom left
+            Output_DrawScreenGradientQuad(
+                sx, sy + h, w / 2, -h / 2, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+            // Bottom right
+            Output_DrawScreenGradientQuad(
+                sx + w, sy + h, -w / 2, -h / 2, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+        }
+    } else {
+        Output_DrawScreenFBox(sx, sy, w, h);
+    }
+}
+
+static void Text_DrawTextOutline(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PS1) {
+        if (text_style == TS_HEADING) {
+            Output_DrawGradientScreenBox(
+                sx, sy, w, h, Text_GetMenuColor(MC_BLACK),
+                Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
+                Text_GetMenuColor(MC_BLACK), OUTLINE_THICKNESS);
+        } else if (text_style == TS_BACKGROUND) {
+            Output_DrawGradientScreenBox(
+                sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
+                Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
+                Text_GetMenuColor(MC_GREY_BR), OUTLINE_THICKNESS);
+        } else if (text_style == TS_REQUESTED) {
+            Output_DrawCentreGradientScreenBox(
+                sx, sy, w, h, Text_GetMenuColor(MC_GREY_E),
+                Text_GetMenuColor(MC_GREY_C));
+        }
+    } else {
+        Output_DrawScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT), OUTLINE_THICKNESS);
+        Output_DrawScreenBox(
+            sx - 1, sy - 1, w, h, Text_GetMenuColor(MC_GOLD_DARK),
+            OUTLINE_THICKNESS);
+    }
+}
 
 static uint8_t Text_MapLetterToSpriteNum(char letter)
 {
@@ -444,70 +537,9 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
 
-        if (g_Config.ui.menu_style == UI_STYLE_PS1) {
-            // Make sure height and width divisible by 2.
-            sh = 2 * ((sh + 1) / 2);
-            sv = 2 * ((sv + 1) / 2);
-            Output_DrawScreenFBox(sx, sy, sh, sv);
-
-            if (textstring->background.style == TS_HEADING) {
-                // Top left
-                Output_DrawScreenGradientQuad(
-                    sx, sy, sh / 2, sv / 2, Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_C));
-                // Top right
-                Output_DrawScreenGradientQuad(
-                    sx + sh, sy, -sh / 2, sv / 2, Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_C));
-                // Bottom left
-                Output_DrawScreenGradientQuad(
-                    sx, sy + sv, sh / 2, -sv / 2, Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_C));
-                // Bottom right
-                Output_DrawScreenGradientQuad(
-                    sx + sh, sy + sv, -sh / 2, -sv / 2,
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_C));
-            } else if (textstring->background.style == TS_REQUESTED) {
-                // Top left
-                Output_DrawScreenGradientQuad(
-                    sx, sy, sh / 2, sv / 2, Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_C));
-                // Top right
-                Output_DrawScreenGradientQuad(
-                    sx + sh, sy, -sh / 2, sv / 2,
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_C));
-                // Bottom left
-                Output_DrawScreenGradientQuad(
-                    sx, sy + sv, sh / 2, -sv / 2,
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_C));
-                // Bottom right
-                Output_DrawScreenGradientQuad(
-                    sx + sh, sy + sv, -sh / 2, -sv / 2,
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_C));
-            }
-        } else {
-            Output_DrawScreenFBox(sx, sy, sh, sv);
-        }
+        Text_DrawTextBackground(
+            g_Config.ui.menu_style, sx, sy, sh, sv,
+            textstring->background.style);
     }
 
     if (textstring->flags.outline) {
@@ -516,30 +548,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
 
-        if (g_Config.ui.menu_style == UI_STYLE_PS1) {
-            if (textstring->outline.style == TS_HEADING) {
-                Output_DrawGradientScreenBox(
-                    sx, sy, sh, sv, Text_GetMenuColor(MC_BLACK),
-                    Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
-                    Text_GetMenuColor(MC_BLACK), OUTLINE_THICKNESS);
-            } else if (textstring->outline.style == TS_BACKGROUND) {
-                Output_DrawGradientScreenBox(
-                    sx, sy, sh, sv, Text_GetMenuColor(MC_GREY_TL),
-                    Text_GetMenuColor(MC_GREY_TR),
-                    Text_GetMenuColor(MC_GREY_BL),
-                    Text_GetMenuColor(MC_GREY_BR), OUTLINE_THICKNESS);
-            } else if (textstring->outline.style == TS_REQUESTED) {
-                Output_DrawCentreGradientScreenBox(
-                    sx, sy, sh, sv, Text_GetMenuColor(MC_GREY_E),
-                    Text_GetMenuColor(MC_GREY_C));
-            }
-        } else {
-            Output_DrawScreenBox(
-                sx, sy, sh, sv, Text_GetMenuColor(MC_GOLD_LIGHT),
-                OUTLINE_THICKNESS);
-            Output_DrawScreenBox(
-                sx - 1, sy - 1, sh, sv, Text_GetMenuColor(MC_GOLD_DARK),
-                OUTLINE_THICKNESS);
-        }
+        Text_DrawTextOutline(
+            g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);
     }
 }
