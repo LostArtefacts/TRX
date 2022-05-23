@@ -113,7 +113,7 @@ typedef struct {
     struct {
         double text_scale;
         double bar_scale;
-        int8_t menu_style;
+        UI_STYLE menu_style;
     } ui;
 
     int32_t sound_volume;
