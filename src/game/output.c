@@ -759,45 +759,30 @@ void Output_DrawGradientScreenBox(
 
 void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
-    RGBA8888 center)
+    RGBA8888 center, int32_t thickness)
 {
-    // Top
-    Output_DrawGradientScreenLine(sx - 1, sy - 1, (w + 4) / 2, 0, edge, center);
-    Output_DrawGradientScreenLine(
-        sx - 1 + (w + 3) / 2, sy - 1, (w + 4) / 2, 0, center, edge);
-    // Thicken top
-    Output_DrawGradientScreenLine(sx, sy, (w + 2) / 2, 0, edge, center);
-    Output_DrawGradientScreenLine(
-        sx + (w + 1) / 2, sy, (w + 2) / 2, 0, center, edge);
-    // Right
-    Output_DrawGradientScreenLine(sx + w + 1, sy, 0, (h + 2) / 2, edge, center);
-    Output_DrawGradientScreenLine(
-        sx + w + 1, sy + (h + 1) / 2, 0, (h + 2) / 2, center, edge);
-    // Thicken right
-    Output_DrawGradientScreenLine(
-        sx + w + 2, sy - 1, 0, (h + 4) / 2, edge, center);
-    Output_DrawGradientScreenLine(
-        sx + w + 2, sy - 1 + (h + 3) / 2, 0, (h + 4) / 2, center, edge);
-    // Bottom
-    Output_DrawGradientScreenLine(
-        w + sx, h + sy, (-w - 2) / 2, 0, edge, center);
-    Output_DrawGradientScreenLine(
-        w + sx + (-w - 1) / 2, h + sy, (-w - 2) / 2, 0, center, edge);
-    // Thicken bottom
-    Output_DrawGradientScreenLine(
-        w + sx + 1, h + sy + 1, (-w - 4) / 2, 0, edge, center);
-    Output_DrawGradientScreenLine(
-        w + sx + 1 + (-w - 3) / 2, h + sy + 1, (-w - 4) / 2, 0, center, edge);
-    // Left
-    Output_DrawGradientScreenLine(
-        sx - 1, h + sy + 2, 0, (-4 - h) / 2, edge, center);
-    Output_DrawGradientScreenLine(
-        sx - 1, h + sy + 2 + (-4 - h) / 2, 0, (-3 - h) / 2, center, edge);
-    // Thicken left
-    Output_DrawGradientScreenLine(
-        sx, h + sy + 1, 0, (-2 - h) / 2, edge, center);
-    Output_DrawGradientScreenLine(
-        sx, h + sy + 1 + (-1 - h) / 2, 0, (-2 - h) / 2, center, edge);
+    for (int i = 0; i < thickness; i++) {
+        // Top
+        Output_DrawGradientScreenLine(
+            sx - i, sy - i, (w / 2) + i, 0, edge, center);
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy - i, (-w / 2) - i, 0, edge, center);
+        // Right
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy - i, 0, (h / 2) + i, edge, center);
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy + h + i, 0, (-h / 2) - i, edge, center);
+        // Left
+        Output_DrawGradientScreenLine(
+            sx - i, sy - i, 0, (h / 2) + i, edge, center);
+        Output_DrawGradientScreenLine(
+            sx - i, sy + h + i, 0, (-h / 2) - i, edge, center);
+        // Bottom
+        Output_DrawGradientScreenLine(
+            sx - i, sy + h + i, (w / 2) + i, 0, edge, center);
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy + h + i, (-w / 2) - i, 0, edge, center);
+    }
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)

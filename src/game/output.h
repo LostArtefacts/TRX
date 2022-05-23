@@ -74,7 +74,7 @@ void Output_DrawGradientScreenBox(
     RGBA8888 bl, RGBA8888 br, int32_t thickness);
 void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
-    RGBA8888 center);
+    RGBA8888 center, int32_t thickness);
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 
 void Output_DrawSprite(
