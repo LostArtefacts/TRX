@@ -33,8 +33,6 @@ c_opts = []
 add_project_arguments(build_opts + c_opts, language: 'c')
 
 dep_opengl32 = c_compiler.find_library('opengl32')
-dep_dinput8 = c_compiler.find_library('dinput8')
-dep_dxguid = c_compiler.find_library('dxguid')
 
 dep_avcodec = dependency('libavcodec', static: true)
 dep_avformat = dependency('libavformat', static: true)
@@ -236,7 +234,6 @@ sources = [
   'src/gfx/gl/wgl_ext.c',
   'src/gfx/screenshot.c',
   'src/global/vars.c',
-  'src/global/vars_platform.c',
   'src/init.c',
   'src/json/bson_parse.c',
   'src/json/bson_write.c',
@@ -265,8 +262,6 @@ dependencies = [
     dep_avcodec,
     dep_avformat,
     dep_avutil,
-    dep_dinput8,
-    dep_dxguid,
     dep_opengl32,
     dep_sdl2,
     dep_swresample,

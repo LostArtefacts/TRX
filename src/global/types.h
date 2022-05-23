@@ -1962,68 +1962,79 @@ typedef struct PICTURE {
 } PICTURE;
 
 typedef union INPUT_STATE {
-    uint32_t any;
+    uint64_t any;
     struct {
-        uint32_t forward : 1;
-        uint32_t back : 1;
-        uint32_t left : 1;
-        uint32_t right : 1;
-        uint32_t jump : 1;
-        uint32_t draw : 1;
-        uint32_t action : 1;
-        uint32_t slow : 1;
-        uint32_t option : 1;
-        uint32_t look : 1;
-        uint32_t step_left : 1;
-        uint32_t step_right : 1;
-        uint32_t roll : 1;
-        uint32_t pause : 1;
-        uint32_t select : 1;
-        uint32_t deselect : 1;
-        uint32_t save : 1;
-        uint32_t load : 1;
-        uint32_t fly_cheat : 1;
-        uint32_t item_cheat : 1;
-        uint32_t level_skip_cheat : 1;
-        uint32_t turbo_cheat : 1;
-        uint32_t health_cheat : 1;
-        uint32_t camera_up : 1;
-        uint32_t camera_down : 1;
-        uint32_t camera_left : 1;
-        uint32_t camera_right : 1;
-        uint32_t camera_reset : 1;
+        uint64_t forward : 1;
+        uint64_t back : 1;
+        uint64_t left : 1;
+        uint64_t right : 1;
+        uint64_t jump : 1;
+        uint64_t draw : 1;
+        uint64_t action : 1;
+        uint64_t slow : 1;
+        uint64_t option : 1;
+        uint64_t look : 1;
+        uint64_t step_left : 1;
+        uint64_t step_right : 1;
+        uint64_t roll : 1;
+        uint64_t pause : 1;
+        uint64_t select : 1;
+        uint64_t deselect : 1;
+        uint64_t save : 1;
+        uint64_t load : 1;
+        uint64_t fly_cheat : 1;
+        uint64_t item_cheat : 1;
+        uint64_t level_skip_cheat : 1;
+        uint64_t turbo_cheat : 1;
+        uint64_t health_cheat : 1;
+        uint64_t camera_up : 1;
+        uint64_t camera_down : 1;
+        uint64_t camera_left : 1;
+        uint64_t camera_right : 1;
+        uint64_t camera_reset : 1;
+        uint64_t equip_pistols : 1;
+        uint64_t equip_shotgun : 1;
+        uint64_t equip_magnums : 1;
+        uint64_t equip_uzis : 1;
+        uint64_t use_small_medi : 1;
+        uint64_t use_big_medi : 1;
+        uint64_t toggle_bilinear_filter : 1;
+        uint64_t toggle_perspective_filter : 1;
+        uint64_t toggle_fps_counter : 1;
     };
 } INPUT_STATE;
 
-typedef enum INPUT_KEY {
-    INPUT_KEY_UP = 0,
-    INPUT_KEY_DOWN = 1,
-    INPUT_KEY_LEFT = 2,
-    INPUT_KEY_RIGHT = 3,
-    INPUT_KEY_STEP_L = 4,
-    INPUT_KEY_STEP_R = 5,
-    INPUT_KEY_SLOW = 6,
-    INPUT_KEY_JUMP = 7,
-    INPUT_KEY_ACTION = 8,
-    INPUT_KEY_DRAW = 9,
-    INPUT_KEY_LOOK = 10,
-    INPUT_KEY_ROLL = 11,
-    INPUT_KEY_OPTION = 12,
-    INPUT_KEY_FLY_CHEAT = 13,
-    INPUT_KEY_ITEM_CHEAT = 14,
-    INPUT_KEY_LEVEL_SKIP_CHEAT = 15,
-    INPUT_KEY_TURBO_CHEAT = 16,
-    INPUT_KEY_PAUSE = 17,
-    INPUT_KEY_CAMERA_UP = 18,
-    INPUT_KEY_CAMERA_DOWN = 19,
-    INPUT_KEY_CAMERA_LEFT = 20,
-    INPUT_KEY_CAMERA_RIGHT = 21,
-    INPUT_KEY_CAMERA_RESET = 22,
-    INPUT_KEY_NUMBER_OF = 23,
-} INPUT_KEY;
+typedef enum INPUT_ROLE {
+    INPUT_ROLE_UP = 0,
+    INPUT_ROLE_DOWN = 1,
+    INPUT_ROLE_LEFT = 2,
+    INPUT_ROLE_RIGHT = 3,
+    INPUT_ROLE_STEP_L = 4,
+    INPUT_ROLE_STEP_R = 5,
+    INPUT_ROLE_SLOW = 6,
+    INPUT_ROLE_JUMP = 7,
+    INPUT_ROLE_ACTION = 8,
+    INPUT_ROLE_DRAW = 9,
+    INPUT_ROLE_LOOK = 10,
+    INPUT_ROLE_ROLL = 11,
+    INPUT_ROLE_OPTION = 12,
+    INPUT_ROLE_FLY_CHEAT = 13,
+    INPUT_ROLE_ITEM_CHEAT = 14,
+    INPUT_ROLE_LEVEL_SKIP_CHEAT = 15,
+    INPUT_ROLE_TURBO_CHEAT = 16,
+    INPUT_ROLE_PAUSE = 17,
+    INPUT_ROLE_CAMERA_UP = 18,
+    INPUT_ROLE_CAMERA_DOWN = 19,
+    INPUT_ROLE_CAMERA_LEFT = 20,
+    INPUT_ROLE_CAMERA_RIGHT = 21,
+    INPUT_ROLE_CAMERA_RESET = 22,
+    INPUT_ROLE_NUMBER_OF = 23,
+} INPUT_ROLE;
 
 typedef enum INPUT_LAYOUT {
     INPUT_LAYOUT_DEFAULT,
     INPUT_LAYOUT_USER,
     INPUT_LAYOUT_NUMBER_OF,
 } INPUT_LAYOUT;
+
+typedef int16_t INPUT_SCANCODE;

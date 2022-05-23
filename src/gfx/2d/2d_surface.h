@@ -31,4 +31,4 @@ bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface);
 GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface);
 
 bool GFX_2D_Surface_Lock(GFX_2D_Surface *surface, GFX_2D_SurfaceDesc *out_desc);
-bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface, LPVOID lp);
+bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface);
