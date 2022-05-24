@@ -85,6 +85,13 @@ static RGBA8888 m_MenuColorMap[] = {
     { 140, 112, 56, 255 },
 };
 
+typedef struct QUAD_INFO {
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
+} QUAD_INFO;
+
 static void Text_DrawText(TEXTSTRING *textstring);
 static uint8_t Text_MapLetterToSpriteNum(char letter);
 static void Text_DrawTextBackground(
@@ -104,48 +111,31 @@ static void Text_DrawTextBackground(
         h = 2 * ((h + 1) / 2);
         Output_DrawScreenFBox(sx, sy, w, h);
 
+        QUAD_INFO gradient_quads[4] = { { sx, sy, w / 2, h / 2 },
+                                        { sx + w, sy, -w / 2, h / 2 },
+                                        { sx, sy + h, w / 2, -h / 2 },
+                                        { sx + w, sy + h, -w / 2, -h / 2 } };
+
         if (text_style == TS_HEADING) {
-            // Top left
-            Output_DrawScreenGradientQuad(
-                sx, sy, w / 2, h / 2, Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_C));
-            // Top right
-            Output_DrawScreenGradientQuad(
-                sx + w, sy, -w / 2, h / 2, Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_C));
-            // Bottom left
-            Output_DrawScreenGradientQuad(
-                sx, sy + h, w / 2, -h / 2, Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_C));
-            // Bottom right
-            Output_DrawScreenGradientQuad(
-                sx + w, sy + h, -w / 2, -h / 2, Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
-                Text_GetMenuColor(MC_BROWN_C));
+            for (int i = 0; i < 4; i++) {
+                Output_DrawScreenGradientQuad(
+                    gradient_quads[i].x, gradient_quads[i].y,
+                    gradient_quads[i].w, gradient_quads[i].h,
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_E),
+                    Text_GetMenuColor(MC_BROWN_C));
+            }
         } else if (text_style == TS_REQUESTED) {
-            // Top left
-            Output_DrawScreenGradientQuad(
-                sx, sy, w / 2, h / 2, Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_C));
-            // Top right
-            Output_DrawScreenGradientQuad(
-                sx + w, sy, -w / 2, h / 2, Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_C));
-            // Bottom left
-            Output_DrawScreenGradientQuad(
-                sx, sy + h, w / 2, -h / 2, Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_C));
-            // Bottom right
-            Output_DrawScreenGradientQuad(
-                sx + w, sy + h, -w / 2, -h / 2, Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
-                Text_GetMenuColor(MC_PURPLE_C));
+            for (int i = 0; i < 4; i++) {
+                Output_DrawScreenGradientQuad(
+                    gradient_quads[i].x, gradient_quads[i].y,
+                    gradient_quads[i].w, gradient_quads[i].h,
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_E),
+                    Text_GetMenuColor(MC_PURPLE_C));
+            }
         }
     } else {
         Output_DrawScreenFBox(sx, sy, w, h);
