@@ -59,7 +59,7 @@ static void PickUp_GetItem(
 
 static void PickUp_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item)
 {
-    int16_t pickup_num = g_RoomInfo[lara_item->room_number].item_number;
+    int16_t pickup_num = g_RoomInfo[item->room_number].item_number;
     while (pickup_num != NO_ITEM) {
         ITEM_INFO *check_item = &g_Items[pickup_num];
         if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
