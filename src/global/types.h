@@ -1562,19 +1562,20 @@ typedef enum {
 } TEXT_STYLE;
 
 typedef enum {
-    MC_PURPLE_C = 0,
-    MC_PURPLE_E = 1,
-    MC_BROWN_C = 2,
-    MC_BROWN_E = 3,
-    MC_GREY_C = 4,
-    MC_GREY_E = 5,
-    MC_GREY_TL = 6,
-    MC_GREY_TR = 7,
-    MC_GREY_BL = 8,
-    MC_GREY_BR = 9,
-    MC_BLACK = 10,
-    MC_GOLD_LIGHT = 11,
-    MC_GOLD_DARK = 12,
+    MC_PURPLE_C,
+    MC_PURPLE_E,
+    MC_BROWN_C,
+    MC_BROWN_E,
+    MC_GREY_C,
+    MC_GREY_E,
+    MC_GREY_TL,
+    MC_GREY_TR,
+    MC_GREY_BL,
+    MC_GREY_BR,
+    MC_BLACK,
+    MC_GOLD_LIGHT,
+    MC_GOLD_DARK,
+    MC_NUMBER_OF,
 } MENU_COLOR;
 
 typedef struct TEXTSTRING {

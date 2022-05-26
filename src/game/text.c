@@ -56,33 +56,20 @@ static int8_t m_TextASCIIMap[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-static RGBA8888 m_MenuColorMap[] = {
-    // Purple background centre
-    { 70, 30, 107, 230 },
-    // Purple background edge
-    { 70, 30, 107, 0 },
-    // Brown background centre
-    { 91, 46, 9, 255 },
-    // Brown background edge
-    { 91, 46, 9, 0 },
-    // Grey outline centre
-    { 197, 197, 197, 255 },
-    // Grey outline edge
-    { 45, 45, 45, 255 },
-    // Grey outline top left
-    { 96, 96, 96, 255 },
-    // Grey outline top right
-    { 32, 32, 32, 255 },
-    // Grey outline bottom left
-    { 63, 63, 63, 255 },
-    // Grey outline bottom right
-    { 0, 0, 0, 255 },
-    // Black outline
-    { 0, 0, 0, 255 },
-    // Gold light
-    { 232, 192, 112, 255 },
-    // Gold dark
-    { 140, 112, 56, 255 },
+static RGBA8888 m_MenuColorMap[MC_NUMBER_OF] = {
+    { 70, 30, 107, 230 }, // MC_PURPLE_C
+    { 70, 30, 107, 0 }, // MC_PURPLE_E
+    { 91, 46, 9, 255 }, // MC_BROWN_C
+    { 91, 46, 9, 0 }, // MC_BROWN_E
+    { 197, 197, 197, 255 }, // MC_GREY_C
+    { 45, 45, 45, 255 }, // MC_GREY_E
+    { 96, 96, 96, 255 }, // MC_GREY_TL
+    { 32, 32, 32, 255 }, // MC_GREY_TR
+    { 63, 63, 63, 255 }, // MC_GREY_BL
+    { 0, 0, 0, 255 }, // MC_GREY_BR
+    { 0, 0, 0, 255 }, // MC_BLACK
+    { 232, 192, 112, 255 }, // MC_GOLD_LIGHT
+    { 140, 112, 56, 255 }, // MC_GOLD_DARK
 };
 
 typedef struct QUAD_INFO {
