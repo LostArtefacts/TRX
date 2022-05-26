@@ -138,26 +138,27 @@ static void Text_DrawTextOutline(
             Output_DrawGradientScreenBox(
                 sx, sy, w, h, Text_GetMenuColor(MC_BLACK),
                 Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
-                Text_GetMenuColor(MC_BLACK), OUTLINE_THICKNESS);
+                Text_GetMenuColor(MC_BLACK), TEXT_OUTLINE_THICKNESS);
         } else if (text_style == TS_BACKGROUND) {
             Output_DrawGradientScreenBox(
                 sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
                 Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
-                Text_GetMenuColor(MC_GREY_BR), OUTLINE_THICKNESS);
+                Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
         } else if (text_style == TS_REQUESTED) {
             // Make sure height and width divisible by 2.
             w = 2 * ((w + 1) / 2);
             h = 2 * ((h + 1) / 2);
             Output_DrawCentreGradientScreenBox(
                 sx, sy, w, h, Text_GetMenuColor(MC_GREY_E),
-                Text_GetMenuColor(MC_GREY_C), OUTLINE_THICKNESS);
+                Text_GetMenuColor(MC_GREY_C), TEXT_OUTLINE_THICKNESS);
         }
     } else {
         Output_DrawScreenBox(
-            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT), OUTLINE_THICKNESS);
+            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT),
+            TEXT_OUTLINE_THICKNESS);
         Output_DrawScreenBox(
             sx - 1, sy - 1, w, h, Text_GetMenuColor(MC_GOLD_DARK),
-            OUTLINE_THICKNESS);
+            TEXT_OUTLINE_THICKNESS);
     }
 }
 

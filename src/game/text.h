@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #define TEXT_HEIGHT 11
-#define OUTLINE_THICKNESS 2
+#define TEXT_OUTLINE_THICKNESS 2
 
 RGBA8888 Text_GetMenuColor(MENU_COLOR color);
 void Text_Init(void);
