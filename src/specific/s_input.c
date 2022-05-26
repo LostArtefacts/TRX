@@ -1,7 +1,10 @@
 #include "specific/s_input.h"
 
 #include "game/input.h"
+#include "log.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_stdinc.h>
@@ -69,10 +72,13 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
 };
 
 const Uint8 *m_KeyboardState;
+static SDL_GameController *m_Controller = NULL;
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role);
+static bool S_Input_JoyBtn(SDL_GameControllerButton button);
+static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 
@@ -351,61 +357,136 @@ static bool S_Input_Key(INPUT_ROLE role)
             && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
 }
 
+static bool S_Input_JoyBtn(SDL_GameControllerButton button)
+{
+    return SDL_GameControllerGetButton(m_Controller, button);
+}
+
+static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
+{
+    Sint16 value = SDL_GameControllerGetAxis(m_Controller, axis);
+    if (value < -SDL_JOYSTICK_AXIS_MAX / 2) {
+        return -1;
+    }
+    if (value > SDL_JOYSTICK_AXIS_MAX / 2) {
+        return 1;
+    }
+    return 0;
+}
+
 void S_Input_Init(void)
 {
     m_KeyboardState = SDL_GetKeyboardState(NULL);
+
+    int32_t result = SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
+    if (result < 0) {
+        LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
+    } else {
+        int controllers = SDL_NumJoysticks();
+        LOG_INFO("%d controllers", controllers);
+        for (int i = 0; i < controllers; i++) {
+            const char *name = SDL_GameControllerNameForIndex(i);
+            bool is_game_controller = SDL_IsGameController(i);
+            LOG_DEBUG("controller %d: %s (%d)", i, name, is_game_controller);
+            if (!m_Controller && is_game_controller) {
+                m_Controller = SDL_GameControllerOpen(i);
+                if (!m_Controller) {
+                    LOG_ERROR("Could not open controller: %s", SDL_GetError());
+                }
+            }
+        }
+    }
 }
 
 void S_Input_Shutdown(void)
 {
+    if (m_Controller) {
+        SDL_GameControllerClose(m_Controller);
+    }
 }
 
 INPUT_STATE S_Input_GetCurrentState(void)
 {
     INPUT_STATE linput = { 0 };
 
-    linput.forward = S_Input_Key(INPUT_ROLE_UP);
-    linput.back = S_Input_Key(INPUT_ROLE_DOWN);
-    linput.left = S_Input_Key(INPUT_ROLE_LEFT);
-    linput.right = S_Input_Key(INPUT_ROLE_RIGHT);
-    linput.step_left = S_Input_Key(INPUT_ROLE_STEP_L);
-    linput.step_right = S_Input_Key(INPUT_ROLE_STEP_R);
-    linput.slow = S_Input_Key(INPUT_ROLE_SLOW);
-    linput.jump = S_Input_Key(INPUT_ROLE_JUMP);
-    linput.action = S_Input_Key(INPUT_ROLE_ACTION);
-    linput.draw = S_Input_Key(INPUT_ROLE_DRAW);
-    linput.look = S_Input_Key(INPUT_ROLE_LOOK);
-    linput.roll = S_Input_Key(INPUT_ROLE_ROLL);
-    linput.option = S_Input_Key(INPUT_ROLE_OPTION);
-    linput.pause = S_Input_Key(INPUT_ROLE_PAUSE);
-    linput.camera_up = S_Input_Key(INPUT_ROLE_CAMERA_UP);
-    linput.camera_down = S_Input_Key(INPUT_ROLE_CAMERA_DOWN);
-    linput.camera_left = S_Input_Key(INPUT_ROLE_CAMERA_LEFT);
-    linput.camera_right = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT);
-    linput.camera_reset = S_Input_Key(INPUT_ROLE_CAMERA_RESET);
+    // clang-format off
+    linput.forward                   = S_Input_Key(INPUT_ROLE_UP);
+    linput.back                      = S_Input_Key(INPUT_ROLE_DOWN);
+    linput.left                      = S_Input_Key(INPUT_ROLE_LEFT);
+    linput.right                     = S_Input_Key(INPUT_ROLE_RIGHT);
+    linput.step_left                 = S_Input_Key(INPUT_ROLE_STEP_L);
+    linput.step_right                = S_Input_Key(INPUT_ROLE_STEP_R);
+    linput.slow                      = S_Input_Key(INPUT_ROLE_SLOW);
+    linput.jump                      = S_Input_Key(INPUT_ROLE_JUMP);
+    linput.action                    = S_Input_Key(INPUT_ROLE_ACTION);
+    linput.draw                      = S_Input_Key(INPUT_ROLE_DRAW);
+    linput.look                      = S_Input_Key(INPUT_ROLE_LOOK);
+    linput.roll                      = S_Input_Key(INPUT_ROLE_ROLL);
+    linput.option                    = S_Input_Key(INPUT_ROLE_OPTION);
+    linput.pause                     = S_Input_Key(INPUT_ROLE_PAUSE);
+    linput.camera_up                 = S_Input_Key(INPUT_ROLE_CAMERA_UP);
+    linput.camera_down               = S_Input_Key(INPUT_ROLE_CAMERA_DOWN);
+    linput.camera_left               = S_Input_Key(INPUT_ROLE_CAMERA_LEFT);
+    linput.camera_right              = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT);
+    linput.camera_reset              = S_Input_Key(INPUT_ROLE_CAMERA_RESET);
 
-    linput.item_cheat = S_Input_Key(INPUT_ROLE_ITEM_CHEAT);
-    linput.fly_cheat = S_Input_Key(INPUT_ROLE_FLY_CHEAT);
-    linput.level_skip_cheat = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT);
-    linput.turbo_cheat = S_Input_Key(INPUT_ROLE_TURBO_CHEAT);
-    linput.health_cheat = KEY_DOWN(SDL_SCANCODE_F11);
+    linput.item_cheat                = S_Input_Key(INPUT_ROLE_ITEM_CHEAT);
+    linput.fly_cheat                 = S_Input_Key(INPUT_ROLE_FLY_CHEAT);
+    linput.level_skip_cheat          = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT);
+    linput.turbo_cheat               = S_Input_Key(INPUT_ROLE_TURBO_CHEAT);
+    linput.health_cheat              = KEY_DOWN(SDL_SCANCODE_F11);
 
-    linput.equip_pistols = KEY_DOWN(SDL_SCANCODE_1);
-    linput.equip_shotgun = KEY_DOWN(SDL_SCANCODE_2);
-    linput.equip_magnums = KEY_DOWN(SDL_SCANCODE_3);
-    linput.equip_uzis = KEY_DOWN(SDL_SCANCODE_4);
-    linput.use_small_medi = KEY_DOWN(SDL_SCANCODE_8);
-    linput.use_big_medi = KEY_DOWN(SDL_SCANCODE_9);
+    linput.equip_pistols             = KEY_DOWN(SDL_SCANCODE_1);
+    linput.equip_shotgun             = KEY_DOWN(SDL_SCANCODE_2);
+    linput.equip_magnums             = KEY_DOWN(SDL_SCANCODE_3);
+    linput.equip_uzis                = KEY_DOWN(SDL_SCANCODE_4);
+    linput.use_small_medi            = KEY_DOWN(SDL_SCANCODE_8);
+    linput.use_big_medi              = KEY_DOWN(SDL_SCANCODE_9);
 
-    linput.select = KEY_DOWN(SDL_SCANCODE_RETURN);
-    linput.deselect = S_Input_Key(INPUT_ROLE_OPTION);
+    linput.select                    = KEY_DOWN(SDL_SCANCODE_RETURN);
+    linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION);
 
-    linput.save = KEY_DOWN(SDL_SCANCODE_F5);
-    linput.load = KEY_DOWN(SDL_SCANCODE_F6);
+    linput.save                      = KEY_DOWN(SDL_SCANCODE_F5);
+    linput.load                      = KEY_DOWN(SDL_SCANCODE_F6);
 
-    linput.toggle_fps_counter = KEY_DOWN(SDL_SCANCODE_F2);
-    linput.toggle_bilinear_filter = KEY_DOWN(SDL_SCANCODE_F3);
+    linput.toggle_fps_counter        = KEY_DOWN(SDL_SCANCODE_F2);
+    linput.toggle_bilinear_filter    = KEY_DOWN(SDL_SCANCODE_F3);
     linput.toggle_perspective_filter = KEY_DOWN(SDL_SCANCODE_F4);
+    // clang-format on
+
+    if (m_Controller) {
+        // clang-format off
+        linput.forward      |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTY) < 0;
+        linput.back         |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTY) > 0;
+        linput.left         |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTX) < 0;
+        linput.right        |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTX) > 0;
+        linput.step_left    |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 0;
+        linput.step_right   |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > 0;
+        linput.camera_left  |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTX) < 0;
+        linput.camera_right |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTX) > 0;
+        linput.camera_up    |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTY) < 0;
+        linput.camera_down  |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTY) > 0;
+        linput.forward      |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_UP);
+        linput.right        |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+        linput.left         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+        linput.back         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+        linput.action       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
+        linput.select       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
+        linput.roll         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
+        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
+        linput.jump         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_X);
+        linput.draw         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
+        linput.look         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+        linput.slow         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_BACK);
+        linput.option       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_BACK);
+        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_TOUCHPAD);
+        linput.option       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_TOUCHPAD);
+        linput.pause        |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_START);
+        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_START);
+        linput.camera_reset |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+        // clang-format on
+    }
 
     return linput;
 }
