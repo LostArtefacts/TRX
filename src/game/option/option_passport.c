@@ -566,7 +566,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
 
     if (g_InputDB.select) {
         g_GameInfo.passport_page = page;
-        if (page == PASSPORT_PAGE_2) {
+        if (page == PASSPORT_PAGE_3) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;
         } else {
