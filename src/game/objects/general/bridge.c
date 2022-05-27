@@ -15,7 +15,7 @@ static bool Bridge_IsSameSector(
 static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
 static int32_t Bridge_GetOffset(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
-static void Bridge_FixEmbedded(int16_t item_num);
+static void Bridge_FixEmbeddedPosition(int16_t item_num);
 
 static bool Bridge_IsSameSector(
     int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
@@ -76,7 +76,7 @@ static int32_t Bridge_GetOffset(
     return offset;
 }
 
-static void Bridge_FixEmbedded(int16_t item_num)
+static void Bridge_FixEmbeddedPosition(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -99,21 +99,21 @@ static void Bridge_FixEmbedded(int16_t item_num)
 
 void Bridge_SetupFlat(OBJECT_INFO *obj)
 {
-    obj->initialise = Bridge_FixEmbedded;
+    obj->initialise = Bridge_Initialise;
     obj->floor = Bridge_FlatFloor;
     obj->ceiling = Bridge_FlatCeiling;
 }
 
 void Bridge_SetupTilt1(OBJECT_INFO *obj)
 {
-    obj->initialise = Bridge_FixEmbedded;
+    obj->initialise = Bridge_Initialise;
     obj->floor = Bridge_Tilt1Floor;
     obj->ceiling = Bridge_Tilt1Ceiling;
 }
 
 void Bridge_SetupTilt2(OBJECT_INFO *obj)
 {
-    obj->initialise = Bridge_FixEmbedded;
+    obj->initialise = Bridge_Initialise;
     obj->floor = Bridge_Tilt2Floor;
     obj->ceiling = Bridge_Tilt2Ceiling;
 }
@@ -249,4 +249,12 @@ void Bridge_Tilt2Ceiling(
     if (y > level) {
         *height = level + STEP_L;
     }
+}
+
+void Bridge_Initialise(int16_t item_num)
+{
+    // Some bridges at floor level are embedded into the floor.
+    // This checks if bridges are below a room's floor level
+    // and moves them up.
+    Bridge_FixEmbeddedPosition(item_num);
 }
