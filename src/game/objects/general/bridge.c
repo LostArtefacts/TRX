@@ -83,9 +83,9 @@ static void Bridge_FixEmbeddedPosition(int16_t item_num)
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z;
-    int16_t room_number = item->room_number;
+    int16_t room_num = item->room_number;
 
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
     int16_t floor_height = Room_GetHeight(floor, x, y, z);
 
     // Only move the bridge up if it's at floor level.
