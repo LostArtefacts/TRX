@@ -133,6 +133,14 @@ void Bridge_SetupDrawBridge(OBJECT_INFO *obj)
     obj->floor = Bridge_DrawBridgeFloor;
 }
 
+void Bridge_Initialise(int16_t item_num)
+{
+    // Some bridges at floor level are embedded into the floor.
+    // This checks if bridges are below a room's floor level
+    // and moves them up.
+    Bridge_FixEmbeddedPosition(item_num);
+}
+
 void Bridge_DrawBridgeFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
@@ -251,12 +259,4 @@ void Bridge_Tilt2Ceiling(
     if (y > level) {
         *height = level + STEP_L;
     }
-}
-
-void Bridge_Initialise(int16_t item_num)
-{
-    // Some bridges at floor level are embedded into the floor.
-    // This checks if bridges are below a room's floor level
-    // and moves them up.
-    Bridge_FixEmbeddedPosition(item_num);
 }
