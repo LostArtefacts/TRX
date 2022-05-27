@@ -3,6 +3,7 @@
 - fixed Tihocan chain block sound (#433)
 - fixed passport menu with high UI scaling (#546, regression from 2.7)
 - fixed passport menu border being off by one pixel (#547)
+- fixed the new game and save game passport options using the wrong closing animation (#542, regression from 2.7)
 - fixed floor level bridges embedding in the floor (#523)
 - removed XBox controller support
 
