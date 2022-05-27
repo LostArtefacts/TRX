@@ -78,26 +78,20 @@ static int32_t Bridge_GetOffset(
 
 static void Bridge_FixEmbedded(int16_t item_num)
 {
-    ITEM_INFO *item;
-    FLOOR_INFO *floor;
-    int32_t x, y, z;
-    int16_t room_number, floor_height, old_anim, old_frame, bridge_height;
-    int16_t *bounds;
+    ITEM_INFO *item = &g_Items[item_num];
 
-    item = &g_Items[item_num];
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_number = item->room_number;
 
-    x = item->pos.x;
-    y = item->pos.y;
-    z = item->pos.z;
-    room_number = item->room_number;
-
-    floor = Room_GetFloor(x, y, z, &room_number);
-    floor_height = Room_GetHeight(floor, x, y, z);
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
+    int16_t floor_height = Room_GetHeight(floor, x, y, z);
 
     // Only move the bridge up if it's at floor level.
     if (item->floor == floor_height) {
-        bounds = Item_GetBoundsAccurate(item);
-        bridge_height =
+        int16_t *bounds = Item_GetBoundsAccurate(item);
+        int16_t bridge_height =
             ABS(bounds[FRAME_BOUND_MAX_Y]) - ABS(bounds[FRAME_BOUND_MIN_Y]);
         item->pos.y = floor_height - bridge_height;
     }
