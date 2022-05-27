@@ -313,6 +313,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed exploded mutant pods sometimes appearing unhatched on reload
 - fixed sound effects playing rapidly in sound menu if input held down
 - fixed underwater caustics animating at 2x speed
+- fixed bridges at floor level appearing under the floor
 
 ## Showcase
 

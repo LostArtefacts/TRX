@@ -9,6 +9,8 @@ void Bridge_SetupTilt1(OBJECT_INFO *obj);
 void Bridge_SetupTilt2(OBJECT_INFO *obj);
 void Bridge_SetupDrawBridge(OBJECT_INFO *obj);
 
+void Bridge_Initialise(int16_t item_num);
+
 void Bridge_DrawBridgeFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 void Bridge_DrawBridgeCeiling(
