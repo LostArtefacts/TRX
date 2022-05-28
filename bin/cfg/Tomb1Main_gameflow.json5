@@ -61,6 +61,7 @@
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 0},
                 {"type": "exit_to_title"},
             ],
 
