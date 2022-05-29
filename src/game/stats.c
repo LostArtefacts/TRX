@@ -259,6 +259,24 @@ int32_t Stats_GetSecrets(void)
 
 void Stats_Show(int32_t level_num)
 {
+    if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+        Output_FadeToSemiBlack(true);
+        Output_InitialisePolyList();
+        Game_DrawScene(false);
+        Input_Update();
+        Text_Draw();
+        Output_DumpScreen();
+        Output_FadeToBlack(false);
+        Text_RemoveAll();
+        while (Output_FadeIsAnimating()) {
+            Output_InitialisePolyList();
+            Game_DrawScene(false);
+            Output_DumpScreen();
+        }
+        Output_FadeReset();
+        return;
+    }
+
     char buf[100];
     char time_str[100];
     TEXTSTRING *txt;
