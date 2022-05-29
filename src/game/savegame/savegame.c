@@ -263,6 +263,10 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
     // Persist Lara's inventory to the current info.
     // Used to carry over Lara's inventory between levels.
 
+    if (level_num == g_GameFlow.gym_level_num) {
+        return;
+    }
+
     RESUME_INFO *current = &g_GameInfo.current[level_num];
 
     current->lara_hitpoints = g_LaraItem->hit_points;
