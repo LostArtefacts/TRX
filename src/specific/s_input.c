@@ -4,7 +4,9 @@
 #include "log.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
 #include <SDL2/SDL_gamecontroller.h>
+#include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_stdinc.h>

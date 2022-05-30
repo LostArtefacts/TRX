@@ -11,6 +11,7 @@
 #include <string.h>
 
 SDL_AudioDeviceID g_AudioDeviceID = 0;
+static int32_t m_RefCount = 0;
 static size_t m_WorkingBufferSize = 0;
 static float *m_WorkingBuffer = NULL;
 static Uint8 m_WorkingSilence = 0;
@@ -27,6 +28,7 @@ static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
 
 bool S_Audio_Init(void)
 {
+    m_RefCount++;
     if (g_AudioDeviceID) {
         // already initialized
         return true;
@@ -73,6 +75,11 @@ bool S_Audio_Init(void)
 
 bool S_Audio_Shutdown(void)
 {
+    m_RefCount--;
+    if (m_RefCount > 0) {
+        return false;
+    }
+
     S_Audio_SampleSoundShutdown();
     S_Audio_StreamSoundShutdown();
 

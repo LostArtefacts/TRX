@@ -193,6 +193,11 @@ bool Sound_Init(void)
     return m_SoundIsActive;
 }
 
+void Sound_Shutdown(void)
+{
+    S_Audio_Shutdown();
+}
+
 void Sound_UpdateEffects(void)
 {
     if (!m_SoundIsActive) {

@@ -5,7 +5,6 @@
 
 void S_Shell_ShowFatalError(const char *message);
 
-void S_Shell_Shutdown(void);
 void S_Shell_SeedRandom(void);
 void S_Shell_SpinMessageLoop(void);
 bool S_Shell_GetCommandLine(int *arg_count, char ***args);
