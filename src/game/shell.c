@@ -5,6 +5,7 @@
 #include "game/clock.h"
 #include "game/fmv.h"
 #include "game/game.h"
+#include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -106,25 +107,8 @@ static char *Shell_GetScreenshotName(void)
     return out;
 }
 
-void Shell_Main(void)
+void Shell_Init(const char *gameflow_path)
 {
-    Config_Read();
-
-    const char *gameflow_path = m_T1MGameflowPath;
-
-    char **args = NULL;
-    int arg_count = 0;
-    S_Shell_GetCommandLine(&arg_count, &args);
-    for (int i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
-            gameflow_path = m_T1MGameflowGoldPath;
-        }
-    }
-    for (int i = 0; i < arg_count; i++) {
-        Memory_FreePointer(&args[i]);
-    }
-    Memory_FreePointer(&args);
-
     S_Shell_SeedRandom();
 
     if (!Output_Init()) {
@@ -149,6 +133,42 @@ void Shell_Main(void)
     Settings_Read();
 
     Screen_ApplyResolution();
+}
+
+void Shell_Shutdown(void)
+{
+    while (g_Input.select) {
+        Input_Update();
+    }
+    GameFlow_Shutdown();
+    GameBuf_Shutdown();
+    Output_Shutdown();
+    Input_Shutdown();
+    Sound_Shutdown();
+    Music_Shutdown();
+    Savegame_Shutdown();
+}
+
+void Shell_Main(void)
+{
+    Config_Read();
+
+    const char *gameflow_path = m_T1MGameflowPath;
+
+    char **args = NULL;
+    int arg_count = 0;
+    S_Shell_GetCommandLine(&arg_count, &args);
+    for (int i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-gold")) {
+            gameflow_path = m_T1MGameflowGoldPath;
+        }
+    }
+    for (int i = 0; i < arg_count; i++) {
+        Memory_FreePointer(&args[i]);
+    }
+    Memory_FreePointer(&args);
+
+    Shell_Init(gameflow_path);
 
     int32_t gf_option = GF_EXIT_TO_TITLE;
     bool intro_played = false;
@@ -234,12 +254,12 @@ void Shell_Main(void)
     }
 
     Settings_Write();
-    S_Shell_Shutdown();
+    Shell_Shutdown();
 }
 
 void Shell_ExitSystem(const char *message)
 {
-    S_Shell_Shutdown();
+    Shell_Shutdown();
     S_Shell_ShowFatalError(message);
 }
 

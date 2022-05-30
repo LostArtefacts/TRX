@@ -51,6 +51,11 @@ bool Music_Init(void)
     return S_Audio_Init();
 }
 
+void Music_Shutdown(void)
+{
+    S_Audio_Shutdown();
+}
+
 bool Music_Play(int16_t track)
 {
     if (track == Music_CurrentTrack()) {
