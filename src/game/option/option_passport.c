@@ -161,6 +161,7 @@ static void Option_PassportShowNewGame(void)
                 g_GameInfo.bonus_flag = 0;
                 break;
             }
+            g_GameInfo.current_save_slot = -1;
             g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
             g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
         } else if (
