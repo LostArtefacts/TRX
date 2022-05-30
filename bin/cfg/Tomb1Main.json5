@@ -218,6 +218,6 @@
     // Lara walks to pickups and switches when nearby instead of teleporting
     "walk_to_items" : false,
 
-    // How many save slots are available. Default is 16.
-    "maximum_save_slots": 16,
+    // How many save slots are available.
+    "maximum_save_slots": 25,
 }
