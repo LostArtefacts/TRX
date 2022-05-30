@@ -160,6 +160,10 @@ void Shell_Main(void)
         LOG_INFO("%d %d", gf_direction, gf_param);
 
         switch (gf_direction) {
+        case GF_START_GYM:
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
+            break;
+
         case GF_START_GAME:
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_NORMAL);
             break;
