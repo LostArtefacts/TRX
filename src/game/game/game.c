@@ -141,7 +141,6 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    LOG_DEBUG("level_type %d", level_type);
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
 
