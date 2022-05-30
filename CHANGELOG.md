@@ -10,6 +10,8 @@
 - fixed the new game and save game passport options using the wrong closing animation (#542, regression from 2.7)
 - fixed bridges at floor level appearing under the floor (#523)
 - fixed Lara's outfit in Lara's Home when replaying the level (#571, regression from 2.7)
+- fixed crash when dying in the gym level with no saves (#576, regression from 2.8)
+- fixed exiting select level menu causing deaths in a new game incremented in that slot (#575, regression from 2.8)
 - removed DInput-based XBox controller support
 
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8.1...2.8.2) - 2022-05-20

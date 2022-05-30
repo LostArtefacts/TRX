@@ -947,7 +947,7 @@ int32_t Inv_Display(int inv_mode)
         }
 
     case O_PHOTO_OPTION:
-        g_GameInfo.current_save_slot = 0;
+        g_GameInfo.current_save_slot = -1;
         return GF_START_GYM | g_GameFlow.gym_level_num;
 
     case O_GUN_OPTION:
