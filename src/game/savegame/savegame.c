@@ -39,7 +39,7 @@ typedef struct SAVEGAME_STRATEGY {
 } SAVEGAME_STRATEGY;
 
 static BOX_NODE *m_OldLaraLOTNode;
-static SAVEGAME_INFO m_SavegameInfo[MAX_SAVE_SLOTS] = { 0 };
+static SAVEGAME_INFO *m_SavegameInfo = NULL;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
     {
@@ -158,6 +158,30 @@ static void Savegame_LoadPostprocess(void)
 
     g_Lara.LOT.node = m_OldLaraLOTNode;
     g_Lara.LOT.target_box = NO_BOX;
+}
+
+void Savegame_Init(void)
+{
+    m_SavegameInfo =
+        Memory_Alloc(sizeof(SAVEGAME_INFO) * g_Config.maximum_save_slots);
+}
+
+void Savegame_Shutdown(void)
+{
+    if (!m_SavegameInfo) {
+        return;
+    }
+
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
+        savegame_info->format = 0;
+        savegame_info->counter = -1;
+        savegame_info->level_num = -1;
+        Memory_FreePointer(&savegame_info->full_path);
+        Memory_FreePointer(&savegame_info->level_title);
+    }
+
+    Memory_FreePointer(&m_SavegameInfo);
 }
 
 void Savegame_PreprocessItems(void)
@@ -457,26 +481,15 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
-void Savegame_Shutdown(void)
-{
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-        savegame_info->format = 0;
-        savegame_info->counter = -1;
-        savegame_info->level_num = -1;
-        Memory_FreePointer(&savegame_info->full_path);
-        Memory_FreePointer(&savegame_info->level_title);
-    }
-}
-
 void Savegame_ScanSavedGames(void)
 {
     Savegame_Shutdown();
+    Savegame_Init();
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
@@ -523,7 +536,7 @@ void Savegame_ScanSavedGames(void)
     REQUEST_INFO *req = &g_SavegameRequester;
 
     req->items = 0;
-    for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         if (savegame_info->level_title) {

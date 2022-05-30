@@ -8,6 +8,16 @@
 #include "game/option/option_sound.h"
 #include "global/types.h"
 
+void Option_Init(void)
+{
+    Option_PassportInit();
+}
+
+void Option_Shutdown(void)
+{
+    Option_PassportShutdown();
+}
+
 void Option_DoInventory(INVENTORY_ITEM *inv_item)
 {
     switch (inv_item->object_number) {
