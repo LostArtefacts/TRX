@@ -948,7 +948,7 @@ int32_t Inv_Display(int inv_mode)
 
     case O_PHOTO_OPTION:
         g_GameInfo.current_save_slot = 0;
-        return GF_START_GAME | g_GameFlow.gym_level_num;
+        return GF_START_GYM | g_GameFlow.gym_level_num;
 
     case O_GUN_OPTION:
         Lara_UseItem(O_GUN_OPTION);
