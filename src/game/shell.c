@@ -11,6 +11,7 @@
 #include "game/inventory.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/option.h"
 #include "game/output.h"
 #include "game/savegame.h"
 #include "game/screen.h"
@@ -122,6 +123,7 @@ void Shell_Init(const char *gameflow_path)
     Music_Init();
     Input_Init();
     FMV_Init();
+    Option_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");
@@ -147,6 +149,7 @@ void Shell_Shutdown(void)
     Sound_Shutdown();
     Music_Shutdown();
     Savegame_Shutdown();
+    Option_Shutdown();
 }
 
 void Shell_Main(void)

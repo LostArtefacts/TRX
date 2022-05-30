@@ -2,6 +2,7 @@
 - added generic SDL-based controller support (#278)
 - added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre (#532)
 - added a fade out when completing Lara's Home (#383)
+- added the config option to change the number of save slots (#170)
 - fixed Tihocan chain block sound (#433)
 - fixed passport menu with high UI scaling (#546, regression from 2.7)
 - fixed passport menu border being off by one pixel (#547)
