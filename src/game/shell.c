@@ -123,13 +123,13 @@ void Shell_Init(const char *gameflow_path)
     Music_Init();
     Input_Init();
     FMV_Init();
-    Option_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");
         return;
     }
 
+    Option_Init();
     Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
     Settings_Read();
