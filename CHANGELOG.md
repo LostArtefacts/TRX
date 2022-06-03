@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
-- ...
+- fixed crash on centaur hatch (#579, regression from 2.9)
 
 ## [2.9](https://github.com/rr-/Tomb1Main/compare/2.8.2...2.9) - 2022-06-01
 - added generic SDL-based controller support (#278)
