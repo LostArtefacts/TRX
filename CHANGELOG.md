@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- ...
+
+## [2.9.1](https://github.com/rr-/Tomb1Main/compare/2.9...2.9.1) - 2022-06-03
 - fixed crash on centaur hatch (#579, regression from 2.9)
 
 ## [2.9](https://github.com/rr-/Tomb1Main/compare/2.8.2...2.9) - 2022-06-01
