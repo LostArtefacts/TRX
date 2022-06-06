@@ -22,5 +22,5 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t "rrdash/tomb1main:latest" . -f docker/Dockerfile
+          docker build -t "rrdash/tomb1main:latest" . -f docker/game/Dockerfile
           docker push "rrdash/tomb1main:latest"
