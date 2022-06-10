@@ -5,6 +5,29 @@ on:
     branch: stable
     tags:
     - 'v?[0-9]*'
+  workflow_call:
+    inputs:
+      draft:
+        description: 'Draft'
+        required: true
+        default: false
+        type: boolean
+      prerelease:
+        description: 'Prerelease'
+        required: true
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: 'Draft'
+        required: true
+        default: true
+        type: boolean
+      prerelease:
+        description: 'Prerelease'
+        required: true
+        default: false
+        type: boolean
 
 jobs:
   publish_release:
@@ -42,8 +65,8 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
 
       - name: Upload release asset
         id: upload-release-asset
