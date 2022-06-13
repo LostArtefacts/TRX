@@ -49,8 +49,12 @@ public class GOGInstallSource : BaseInstallSource
         }
     }
 
-    public override Task CopyOriginalGameFiles(string sourceDirectory, string targetDirectory, IProgress<InstallProgress> progress, bool overwrite)
-    {
+    public override Task CopyOriginalGameFiles(
+        string sourceDirectory,
+        string targetDirectory,
+        IProgress<InstallProgress> progress,
+        bool overwrite
+    ) {
         var cuePath = Path.Combine(sourceDirectory, "game.dat");
         var isoPath = Path.Combine(sourceDirectory, "game.iso");
         CueFile cueFile;
