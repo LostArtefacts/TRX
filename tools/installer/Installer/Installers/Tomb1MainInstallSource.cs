@@ -32,9 +32,13 @@ public class Tomb1MainInstallSource : BaseInstallSource
 
     public override string SourceName => "Tomb1Main";
 
-    public override async Task CopyOriginalGameFiles(string sourceDirectory, string targetDirectory, IProgress<InstallProgress> progress, bool overwrite)
-    {
-        var filterRegex = new Regex(@"(DATA|FMV)[\\/]");
+    public override async Task CopyOriginalGameFiles(
+        string sourceDirectory,
+        string targetDirectory,
+        IProgress<InstallProgress> progress,
+        bool overwrite
+    ) {
+        var filterRegex = new Regex(@"(data|fmv)[\\/]", RegexOptions.IgnoreCase);
         await InstallUtils.CopyDirectoryTree(
             sourceDirectory,
             targetDirectory,

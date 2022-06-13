@@ -43,7 +43,12 @@ public abstract class BaseInstallSource : IInstallSource
         }
     }
 
-    public abstract Task CopyOriginalGameFiles(string sourceDirectory, string targetDirectory, IProgress<InstallProgress> progress, bool overwrite);
+    public abstract Task CopyOriginalGameFiles(
+        string sourceDirectory,
+        string targetDirectory,
+        IProgress<InstallProgress> progress,
+        bool overwrite
+    );
 
     public abstract bool IsGameFound(string sourceDirectory);
 }

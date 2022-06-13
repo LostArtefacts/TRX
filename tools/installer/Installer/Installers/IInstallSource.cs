@@ -13,7 +13,12 @@ public interface IInstallSource
     public bool SuggestDownloadingUnfinishedBusiness { get; }
     public string SuggestedInstallationDirectory { get; }
 
-    public Task CopyOriginalGameFiles(string sourceDirectory, string targetDirectory, IProgress<InstallProgress> progress, bool overwrite);
+    public Task CopyOriginalGameFiles(
+        string sourceDirectory,
+        string targetDirectory,
+        IProgress<InstallProgress> progress,
+        bool overwrite
+    );
 
     public bool IsGameFound(string sourceDirectory);
 };

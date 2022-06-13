@@ -17,8 +17,7 @@ public static class InstallUtils
         IProgress<InstallProgress> progress,
         Func<string, bool>? filterCallback = null,
         Func<string, bool>? overwriteCallback = null
-    )
-    {
+    ) {
         try
         {
             progress.Report(new InstallProgress { Description = "Scanning directory" });
@@ -80,8 +79,7 @@ public static class InstallUtils
         string targetDirectory,
         IProgress<InstallProgress> progress,
         Func<string, bool>? overwriteCallback = null
-    )
-    {
+    ) {
         var response = await DownloadFile(url, progress);
         using var stream = new MemoryStream(response);
         await ExtractZip(stream, targetDirectory, progress, overwriteCallback);
@@ -93,8 +91,7 @@ public static class InstallUtils
         IProgress<InstallProgress> progress,
         Func<string, bool>? filterCallback = null,
         Func<string, bool>? overwriteCallback = null
-    )
-    {
+    ) {
         try
         {
             using var zip = new ZipArchive(stream);
@@ -140,8 +137,11 @@ public static class InstallUtils
 
     public static IEnumerable<string> GetDesktopShortcutDirectories()
     {
-        foreach (var shortcutPath in Directory.EnumerateFiles(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "*.lnk"))
-        {
+        foreach (
+            var shortcutPath in Directory.EnumerateFiles(
+                Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "*.lnk"
+            )
+        ) {
             string? lnkPath;
             try
             {
