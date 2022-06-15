@@ -17,33 +17,45 @@ public static class InstallUtils
         IProgress<InstallProgress> progress,
         Func<string, bool>? filterCallback = null,
         Func<string, bool>? overwriteCallback = null
-    ) {
+    )
+    {
         try
         {
             progress.Report(new InstallProgress { Description = "Scanning directory" });
             var files = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories);
             var currentProgress = 0;
             var maximumProgress = files.Length;
-            foreach (var file in files)
+            foreach (var sourcePath in files)
             {
-                if (filterCallback is not null && !filterCallback(file))
+                if (filterCallback is not null && !filterCallback(sourcePath))
                 {
                     continue;
                 }
-                var relPath = Path.GetRelativePath(sourceDirectory, file);
+                var relPath = Path.GetRelativePath(sourceDirectory, sourcePath);
                 var targetPath = Path.Combine(targetDirectory, relPath);
-                if (!File.Exists(targetPath) || (overwriteCallback is not null && overwriteCallback(file)))
+                var isSamePath = string.Equals(Path.GetFullPath(sourcePath), Path.GetFullPath(targetPath), StringComparison.OrdinalIgnoreCase);
+                if (!File.Exists(targetPath) || (overwriteCallback is not null && overwriteCallback(sourcePath)) && !isSamePath)
                 {
+                    progress.Report(new InstallProgress
+                    {
+                        CurrentValue = currentProgress,
+                        MaximumValue = maximumProgress,
+                        Description = $"Copying {relPath}",
+                    });
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
-                    await Task.Run(() => File.Copy(file, targetPath, true));
+                    await Task.Run(() => File.Copy(sourcePath, targetPath, true));
+                }
+                else
+                {
+                    progress.Report(new InstallProgress
+                    {
+                        CurrentValue = currentProgress,
+                        MaximumValue = maximumProgress,
+                        Description = $"Copying {relPath} - skipped",
+                    });
                 }
 
-                progress.Report(new InstallProgress
-                {
-                    CurrentValue = ++currentProgress,
-                    MaximumValue = maximumProgress,
-                    Description = $"Copying {relPath}",
-                });
+                currentProgress++;
             }
         }
         catch (Exception e)
@@ -52,16 +64,16 @@ public static class InstallUtils
         }
     }
 
-    public static void CreateDesktopShortcut(string path)
+    public static void CreateDesktopShortcut(string name, string targetPath, string[]? args = null)
     {
-        var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Tomb1Main.lnk");
-        ShortcutUtils.CreateShortcut(path, shortcutPath, "Tomb Raider I: Community Edition");
+        var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"{name}.lnk");
+        ShortcutUtils.CreateShortcut(shortcutPath, targetPath, "Tomb Raider I: Community Edition", args);
     }
 
     public static async Task<byte[]> DownloadFile(string url, IProgress<InstallProgress> progress)
     {
         using var wc = new WebClient();
-        progress.Report(new InstallProgress { Description = "Initializing download" });
+        progress.Report(new InstallProgress { Description = $"Initializing download of {url}" });
         wc.DownloadProgressChanged += (sender, e) =>
         {
             progress.Report(new InstallProgress
@@ -79,7 +91,8 @@ public static class InstallUtils
         string targetDirectory,
         IProgress<InstallProgress> progress,
         Func<string, bool>? overwriteCallback = null
-    ) {
+    )
+    {
         var response = await DownloadFile(url, progress);
         using var stream = new MemoryStream(response);
         await ExtractZip(stream, targetDirectory, progress, overwriteCallback);
@@ -91,7 +104,8 @@ public static class InstallUtils
         IProgress<InstallProgress> progress,
         Func<string, bool>? filterCallback = null,
         Func<string, bool>? overwriteCallback = null
-    ) {
+    )
+    {
         try
         {
             using var zip = new ZipArchive(stream);
@@ -117,16 +131,27 @@ public static class InstallUtils
 
                 if (!File.Exists(targetPath) || (overwriteCallback is not null && overwriteCallback(entry.FullName)))
                 {
+                    progress.Report(new InstallProgress
+                    {
+                        CurrentValue = currentProgress,
+                        MaximumValue = maximumProgress,
+                        Description = $"Extracting {entry.FullName}",
+                    });
+
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
                     await Task.Run(() => entry.ExtractToFile(targetPath, true));
                 }
-
-                progress.Report(new InstallProgress
+                else
                 {
-                    CurrentValue = ++currentProgress,
-                    MaximumValue = maximumProgress,
-                    Description = $"Extracting {entry.FullName}",
-                });
+                    progress.Report(new InstallProgress
+                    {
+                        CurrentValue = currentProgress,
+                        MaximumValue = maximumProgress,
+                        Description = $"Extracting {entry.FullName} - skipped",
+                    });
+                }
+
+                currentProgress++;
             }
         }
         catch (Exception e)
@@ -141,7 +166,8 @@ public static class InstallUtils
             var shortcutPath in Directory.EnumerateFiles(
                 Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "*.lnk"
             )
-        ) {
+        )
+        {
             string? lnkPath;
             try
             {

@@ -28,7 +28,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="48" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -36,15 +35,29 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Margin="0,0,10,0">
-            <Image Source="{Binding InstallSource.ImageSource}" Height="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=ActualWidth}" />
+        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Margin="0,0,12,0">
+            <Image Source="{Binding InstallSource.ImageSource}" Height="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=ActualWidth}" VerticalAlignment="Center" />
         </Border>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center" Style="{StaticResource subHeading}" Text="{Binding InstallSource.SourceName}" />
-        <TextBlock Grid.Row="0" Grid.Column="2" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource subHeadingFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibleConverter}}" Text="Found" />
-        <TextBlock Grid.Row="0" Grid.Column="2" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource subHeadingNotFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToHiddenConverter}}" Text="Not found" />
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Padding="0" Margin="0,-3,12,3" VerticalAlignment="Top" Style="{StaticResource subHeading}" Text="{Binding InstallSource.SourceName}" Height="16" />
+            <TextBlock Grid.Column="1" Padding="0" Margin="0,-3,0,3" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource subHeadingFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibleConverter}}" Text="Found" />
+            <TextBlock Grid.Column="1" Padding="0" Margin="0,-3,0,3" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource subHeadingNotFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToHiddenConverter}}" Text="Not found" />
+        </Grid>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding SourceDirectory, TargetNullValue='(no folder selected)'}" TextTrimming="CharacterEllipsis" />
-        <Button Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10,5,0,5" Command="{Binding ChooseLocationCommand}" Content="Change..." />
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{Binding SourceDirectory, TargetNullValue='(no folder selected)'}" TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="6,0,0,0">
+                <Hyperlink Command="{Binding ChooseLocationCommand}" >(change)</Hyperlink>
+            </TextBlock>
+        </Grid>
     </Grid>
 </UserControl>

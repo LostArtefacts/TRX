@@ -25,10 +25,10 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Image Grid.Row="0" Grid.Column="0" Source="/Resources/side.jpg" />
+        <Image Grid.Row="0" Grid.Column="0" Source="{Binding CurrentStep.SidebarImage}" />
 
         <Border Grid.Row="0" Grid.Column="1">
-            <ContentControl Content="{Binding CurrentStep}" Margin="10,0,10,10">
+            <ContentControl Content="{Binding CurrentStep}" Margin="12,0,12,12">
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type models:SourceStep}">
                         <controls:SourceStepControl />
@@ -53,14 +53,14 @@
             </Grid.ColumnDefinitions>
             <Grid.Resources>
                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}">
-                    <Setter Property="Margin" Value="10,0,0,0" />
+                    <Setter Property="Margin" Value="12,0,0,0" />
                 </Style>
             </Grid.Resources>
 
-            <StackPanel Margin="10" Orientation="Horizontal" Grid.Column="1">
+            <StackPanel Margin="12" Orientation="Horizontal" Grid.Column="1">
                 <Button Command="{Binding GoToPreviousStepCommand}" Content="Back" />
                 <Button Command="{Binding GoToNextStepCommand}" Content="Next" />
-                <Button Click="CancelButton_Click" Content="{Binding CloseButtonLabel}"></Button>
+                <Button Command="{Binding CloseWindowCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Content="{Binding CloseButtonLabel}"></Button>
             </StackPanel>
         </Grid>
     </Grid>

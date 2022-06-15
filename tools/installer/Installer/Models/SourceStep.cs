@@ -10,6 +10,7 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
     {
         InstallationSources = new ObservableCollection<InstallSourceViewModel>
         {
+            // NOTE: the order also decides which installation source will be selected by default
             new InstallSourceViewModel(new SteamInstallSource()),
             new InstallSourceViewModel(new GOGInstallSource()),
             new InstallSourceViewModel(new TombATIInstallSource()),
@@ -27,6 +28,15 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
                 }
             };
         }
+
+        foreach (var source in InstallationSources)
+        {
+            if (source.IsAvailable)
+            {
+                // Tomb1Main comes last and always trumps any other installation source
+                SelectedInstallationSource = source;
+            }
+        }
     }
 
     public bool CanProceedToNextStep
@@ -38,7 +48,6 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
     }
 
     public bool CanProceedToPreviousStep => false;
-
     public IEnumerable<InstallSourceViewModel> InstallationSources { get; private set; }
 
     public InstallSourceViewModel? SelectedInstallationSource
@@ -55,5 +64,6 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
         }
     }
 
+    public string SidebarImage => "pack://application:,,,/Tomb1Main_Installer;component/Resources/side1.jpg";
     private InstallSourceViewModel? selectedInstallationSource;
 }

@@ -1,7 +1,6 @@
 using Installer.Installers;
 using System;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Installer.Models;
 
@@ -9,6 +8,7 @@ public class InstallStep : BaseNotifyPropertyChanged, IStep
 {
     public InstallStep(InstallSettings installSettings)
     {
+        Logger = new Logger();
         InstallSettings = installSettings;
     }
 
@@ -54,6 +54,7 @@ public class InstallStep : BaseNotifyPropertyChanged, IStep
     }
 
     public InstallSettings InstallSettings { get; }
+    public Logger Logger { get; }
 
     public int MaximumProgress
     {
@@ -69,14 +70,28 @@ public class InstallStep : BaseNotifyPropertyChanged, IStep
         }
     }
 
+    public string SidebarImage => "pack://application:,,,/Tomb1Main_Installer;component/Resources/side3.jpg";
+
     public void RunInstall()
     {
         var progress = new Progress<InstallProgress>();
         progress.ProgressChanged += (sender, progress) =>
         {
-            CurrentProgress = progress.CurrentValue;
-            MaximumProgress = progress.MaximumValue;
+            if (progress.CurrentValue is not null && progress.MaximumValue is not null)
+            {
+                CurrentProgress = progress.CurrentValue.Value;
+                MaximumProgress = progress.MaximumValue.Value;
+            }
+            else
+            {
+                CurrentProgress = progress.Finished ? 1 : 0;
+                MaximumProgress = 1;
+            }
             Description = progress.Description;
+            if (progress.Description is not null)
+            {
+                Logger.RaiseLogEvent(progress.Description);
+            }
             if (progress.Finished)
             {
                 CanProceedToNextStep = true;
@@ -92,7 +107,7 @@ public class InstallStep : BaseNotifyPropertyChanged, IStep
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                Logger.RaiseLogEvent(ex.ToString());
             }
         });
     }

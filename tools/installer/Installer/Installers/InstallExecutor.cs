@@ -15,7 +15,7 @@ public class InstallExecutor
         _settings = settings;
     }
 
-    public IInstallSource InstallSource
+    public IInstallSource? InstallSource
     {
         get
         {
@@ -25,9 +25,13 @@ public class InstallExecutor
 
     public async Task ExecuteInstall(IProgress<InstallProgress> progress)
     {
-        if (_settings.SourceDirectory is null || _settings.TargetDirectory is null)
+        if (_settings.SourceDirectory is null)
         {
-            return;
+            throw new NullReferenceException();
+        }
+        if (_settings.TargetDirectory is null)
+        {
+            throw new NullReferenceException();
         }
 
         await CopyOriginalGameFiles(_settings.SourceDirectory, _settings.TargetDirectory, progress);
@@ -46,12 +50,16 @@ public class InstallExecutor
             CreateDesktopShortcut(_settings.TargetDirectory);
         }
 
-        progress.Report(new InstallProgress { Finished = true });
+        progress.Report(new InstallProgress { Description = "Finished", Finished = true });
     }
 
     protected async Task CopyOriginalGameFiles(string sourceDirectory, string targetDirectory, IProgress<InstallProgress> progress)
     {
-        await _settings.InstallSource.CopyOriginalGameFiles(sourceDirectory, targetDirectory, progress, _settings.OverwriteAllFiles);
+        if (_settings.InstallSource is null)
+        {
+            throw new NullReferenceException();
+        }
+        await _settings.InstallSource.CopyOriginalGameFiles(sourceDirectory, targetDirectory, progress, _settings.ImportSaves, _settings.OverwriteAllFiles);
     }
 
     protected async Task CopyTomb1MainFiles(string targetDirectory, IProgress<InstallProgress> progress)
@@ -95,7 +103,11 @@ public class InstallExecutor
 
     protected void CreateDesktopShortcut(string targetDirectory)
     {
-        InstallUtils.CreateDesktopShortcut(Path.Combine(targetDirectory, "Tomb1Main.exe"));
+        InstallUtils.CreateDesktopShortcut("Tomb1Main", Path.Combine(targetDirectory, "Tomb1Main.exe"));
+        if (File.Exists(Path.Combine(targetDirectory, "data", "cat.phd")))
+        {
+            InstallUtils.CreateDesktopShortcut("Tomb1Main - UB", Path.Combine(targetDirectory, "Tomb1Main.exe"), new[] { "-gold" });
+        }
     }
 
     protected async Task DownloadMusicFiles(string targetDirectory, IProgress<InstallProgress> progress)

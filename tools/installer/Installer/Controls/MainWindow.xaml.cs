@@ -10,9 +10,4 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = new MainWindowViewModel();
     }
-
-    private void CancelButton_Click(object sender, RoutedEventArgs e)
-    {
-        Close();
-    }
 }
