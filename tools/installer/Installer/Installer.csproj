@@ -45,7 +45,10 @@
   <ItemGroup>
     <None Remove="release.zip" />
     <None Remove="Resources\GOG.png" />
-    <None Remove="Resources\side.jpg" />
+    <None Remove="Resources\side1.jpg" />
+    <None Remove="Resources\side2.jpg" />
+    <None Remove="Resources\side3.jpg" />
+    <None Remove="Resources\side4.jpg" />
     <None Remove="Resources\Steam.png" />
     <None Remove="Resources\Styles.xaml" />
     <None Remove="Resources\Tomb1Main.png" />
@@ -53,11 +56,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Steam.png" />
+    <COMReference Include="IWshRuntimeLibrary">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>f935dc20-1cf0-11d0-adb9-00c04fd58a0b</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\side.jpg" />
+    <Resource Include="Resources\side1.jpg" />
+    <Resource Include="Resources\side2.jpg" />
+    <Resource Include="Resources\side3.jpg" />
+    <Resource Include="Resources\side4.jpg" />
+    <Resource Include="Resources\Steam.png" />
   </ItemGroup>
 
   <ItemGroup>

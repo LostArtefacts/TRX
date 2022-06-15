@@ -43,10 +43,19 @@ public abstract class BaseInstallSource : IInstallSource
         }
     }
 
+    public virtual bool SuggestImportingSaves
+    {
+        get
+        {
+            return false;
+        }
+    }
+
     public abstract Task CopyOriginalGameFiles(
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
+        bool importSaves,
         bool overwrite
     );
 

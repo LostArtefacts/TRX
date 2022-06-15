@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="clr-namespace:Installer.Models" d:DataContext="{d:DesignInstance Type=models:FinishStep}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -13,20 +13,20 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="30" />
-            <RowDefinition Height="Auto" MinHeight="30" />
-        </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,10" Style="{StaticResource heading}">
+    <StackPanel Orientation="Vertical">
+        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
             Step 4: Done
         </TextBlock>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
-            Installation finished. Happy raiding :)
+        <TextBlock VerticalAlignment="Center" Margin="0,0,0,12" TextWrapping="Wrap">
+            Installation complete. To configure more advanced features, you can edit the JSON files in the cfg/ directory with a text editor.
         </TextBlock>
-    </Grid>
+
+        <TextBlock VerticalAlignment="Center" Margin="0,0,0,12">
+            Happy raiding :)
+        </TextBlock>
+
+        <CheckBox IsChecked="{Binding FinishSettings.OpenGameDirectory}" Content="Open game directory after closing this window" Margin="0,0,0,12" />
+        <CheckBox IsChecked="{Binding FinishSettings.LaunchGame}" Content="Launch the game after closing this window" Margin="0,0,0,12" />
+    </StackPanel>
 </UserControl>

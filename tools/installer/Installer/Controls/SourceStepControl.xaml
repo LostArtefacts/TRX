@@ -24,7 +24,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,10" Style="{StaticResource heading}">
+        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
             Step 1: Choose installation source
         </TextBlock>
 
@@ -32,10 +32,12 @@
             Tomb1Main requires original game files to run.
             <LineBreak />
             Please choose the source location where to install the data files from.
+            <LineBreak />
             If you're upgrading an existing installation, please choose Tomb1Main.
         </TextBlock>
 
         <ListView
+            BorderThickness="0"
             Grid.Row="2"
             Grid.Column="0"
             ItemsSource="{Binding InstallationSources}"
@@ -44,11 +46,11 @@
             HorizontalContentAlignment="Stretch"
             ScrollViewer.CanContentScroll="False"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollBarVisibility="Visible">
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="BorderBrush" Value="LightGray" />
-                    <Setter Property="BorderThickness" Value="0,0,0,1" />
+                    <Setter Property="Padding" Value="6" />
+                    <Setter Property="Margin" Value="0,0,0,6" />
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>

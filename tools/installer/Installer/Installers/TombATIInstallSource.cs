@@ -26,13 +26,23 @@ public class TombATIInstallSource : BaseInstallSource
 
     public override string SourceName => "TombATI";
 
+    public override bool SuggestImportingSaves
+    {
+        get
+        {
+            return true;
+        }
+    }
+
     public override async Task CopyOriginalGameFiles(
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
+        bool importSaves,
         bool overwrite
-    ) {
-        var filterRegex = new Regex(@"(data|fmv|music)[\\/]|save.*\.\d+\b", RegexOptions.IgnoreCase);
+    )
+    {
+        var filterRegex = new Regex(importSaves ? @"(data|fmv|music)[\\/]|save.*\.\d+\b" : @"(data|fmv|music)[\\/]", RegexOptions.IgnoreCase);
         await InstallUtils.CopyDirectoryTree(
             sourceDirectory,
             targetDirectory,

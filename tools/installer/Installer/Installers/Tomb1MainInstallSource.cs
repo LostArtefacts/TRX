@@ -32,13 +32,23 @@ public class Tomb1MainInstallSource : BaseInstallSource
 
     public override string SourceName => "Tomb1Main";
 
+    public override bool SuggestImportingSaves
+    {
+        get
+        {
+            return true;
+        }
+    }
+
     public override async Task CopyOriginalGameFiles(
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
+        bool importSaves,
         bool overwrite
-    ) {
-        var filterRegex = new Regex(@"(data|fmv)[\\/]", RegexOptions.IgnoreCase);
+    )
+    {
+        var filterRegex = new Regex(importSaves ? @"(data|fmv|music|saves)[\\/]|save.*\.\d+" : @"(data|fmv|music)[\\/]", RegexOptions.IgnoreCase);
         await InstallUtils.CopyDirectoryTree(
             sourceDirectory,
             targetDirectory,

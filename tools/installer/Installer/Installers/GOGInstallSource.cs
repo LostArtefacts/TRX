@@ -53,8 +53,10 @@ public class GOGInstallSource : BaseInstallSource
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
+        bool importSaves,
         bool overwrite
-    ) {
+    )
+    {
         var cuePath = Path.Combine(sourceDirectory, "game.dat");
         var isoPath = Path.Combine(sourceDirectory, "game.iso");
         CueFile cueFile;
@@ -94,7 +96,7 @@ public class GOGInstallSource : BaseInstallSource
             {
                 MaximumValue = filesToExtract.Count(),
                 CurrentValue = 0,
-                Description = "Scanning the source directory",
+                Description = "Preparing to extract the ISO",
             });
             foreach (var path in filesToExtract)
             {

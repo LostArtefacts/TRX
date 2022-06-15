@@ -4,14 +4,6 @@ namespace Installer.Models;
 
 public class InstallSettings : BaseNotifyPropertyChanged
 {
-    public InstallSettings(IInstallSource installSource)
-    {
-        InstallSource = installSource;
-        DownloadMusic = installSource.SuggestDownloadingMusic;
-        DownloadUnfinishedBusiness = installSource.SuggestDownloadingUnfinishedBusiness;
-        TargetDirectory = installSource.SuggestedInstallationDirectory;
-    }
-
     public bool CreateDesktopShortcut
     {
         get => _createDesktopShortcut;
@@ -51,7 +43,37 @@ public class InstallSettings : BaseNotifyPropertyChanged
         }
     }
 
-    public IInstallSource InstallSource { get; }
+    public bool ImportSaves
+    {
+        get => _importSaves;
+        set
+        {
+            if (value != _importSaves)
+            {
+                _importSaves = value;
+                NotifyPropertyChanged();
+            }
+        }
+    }
+
+    public IInstallSource? InstallSource
+    {
+        get => _installSource;
+        set
+        {
+            if (value != _installSource)
+            {
+                _installSource = value;
+                if (_installSource is not null)
+                {
+                    DownloadMusic = _installSource.SuggestDownloadingMusic;
+                    DownloadUnfinishedBusiness = _installSource.SuggestDownloadingUnfinishedBusiness;
+                    TargetDirectory = _installSource.SuggestedInstallationDirectory;
+                }
+                NotifyPropertyChanged();
+            }
+        }
+    }
 
     public bool OverwriteAllFiles
     {
@@ -94,6 +116,8 @@ public class InstallSettings : BaseNotifyPropertyChanged
     private bool _createDesktopShortcut = true;
     private bool _downloadMusic = true;
     private bool _downloadUnfinishedBusiness = true;
+    private bool _importSaves = true;
+    private IInstallSource? _installSource;
     private bool _overrideAllFiles = false;
     private string? _sourceDirectory;
     private string? _targetDirectory;

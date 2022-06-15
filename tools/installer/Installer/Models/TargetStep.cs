@@ -5,12 +5,9 @@ namespace Installer.Models;
 
 public class TargetStep : BaseNotifyPropertyChanged, IStep
 {
-    public TargetStep(InstallSourceViewModel installSource)
+    public TargetStep(InstallSettings installSettings)
     {
-        InstallSettings = new InstallSettings(installSource.InstallSource)
-        {
-            SourceDirectory = installSource.SourceDirectory
-        };
+        InstallSettings = installSettings;
         InstallSettings.PropertyChanged += (sender, e) =>
         {
             NotifyPropertyChanged(nameof(CanProceedToNextStep));
@@ -29,7 +26,7 @@ public class TargetStep : BaseNotifyPropertyChanged, IStep
     }
 
     public InstallSettings InstallSettings { get; }
-
+    public string SidebarImage => "pack://application:,,,/Tomb1Main_Installer;component/Resources/side2.jpg";
     private RelayCommand? _chooseLocationCommand;
 
     private void ChooseLocation()

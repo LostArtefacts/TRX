@@ -16,25 +16,26 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="30" />
-            <RowDefinition Height="Auto" MinHeight="30" />
-            <RowDefinition Height="Auto" MinHeight="30" />
-            <RowDefinition Height="Auto" MinHeight="30" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,10" Style="{StaticResource heading}">
-            Step 3: Installing
-        </TextBlock>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
+                Step 3: Installing
+            </TextBlock>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Installation in progress. Please wait...</TextBlock>
+            <TextBlock VerticalAlignment="Center" Margin="0,0,0,12" Text="{Binding Description}" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="{Binding Description}" />
+            <ProgressBar VerticalAlignment="Center" Margin="0,0,0,12" Value="{Binding CurrentProgress}" Maximum="{Binding MaximumProgress}" MinHeight="16" />
+        </StackPanel>
 
-        <ProgressBar Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Value="{Binding CurrentProgress}" Maximum="{Binding MaximumProgress}" />
+        <TextBox
+            x:Name="logTextBox"
+            Grid.Row="1"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Auto"
+            AcceptsReturn="True" />
     </Grid>
 </UserControl>
