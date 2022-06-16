@@ -179,7 +179,11 @@ public static class InstallUtils
             }
             if (lnkPath is not null)
             {
-                yield return Path.GetDirectoryName(lnkPath)!;
+                var dirName = Path.GetDirectoryName(lnkPath);
+                if (dirName is not null)
+                {
+                    yield return dirName;
+                }
             }
         }
     }
