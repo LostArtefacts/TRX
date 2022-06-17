@@ -7,10 +7,11 @@ namespace Installer.Installers;
 public interface IInstallSource
 {
     public IEnumerable<string> DirectoriesToTry { get; }
+
     public string ImageSource { get; }
+
     public string SourceName { get; }
-    public bool SuggestDownloadingMusic { get; }
-    public bool SuggestDownloadingUnfinishedBusiness { get; }
+
     public string SuggestedInstallationDirectory { get; }
 
     public Task CopyOriginalGameFiles(
@@ -21,5 +22,11 @@ public interface IInstallSource
         bool overwrite
     );
 
+    bool IsDownloadingMusicNeeded(string sourceDirectory);
+
+    bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory);
+
     public bool IsGameFound(string sourceDirectory);
+
+    bool IsImportingSavesSupported { get; }
 };

@@ -64,24 +64,39 @@ public class InstallSettings : BaseNotifyPropertyChanged
             if (value != _installSource)
             {
                 _installSource = value;
-                if (_installSource is not null)
-                {
-                    DownloadMusic = _installSource.SuggestDownloadingMusic;
-                    DownloadUnfinishedBusiness = _installSource.SuggestDownloadingUnfinishedBusiness;
-                    TargetDirectory = _installSource.SuggestedInstallationDirectory;
-                }
+                DownloadMusic = SourceDirectory is not null && (_installSource?.IsDownloadingMusicNeeded(SourceDirectory) ?? false);
+                DownloadUnfinishedBusiness = SourceDirectory is not null && (_installSource?.IsDownloadingUnfinishedBusinessNeeded(SourceDirectory) ?? false);
+                ImportSaves = _installSource?.IsImportingSavesSupported ?? false;
+                TargetDirectory = _installSource?.SuggestedInstallationDirectory;
                 NotifyPropertyChanged();
             }
         }
     }
 
+    public bool IsDownloadingMusicNeeded
+    {
+        get
+        {
+            return SourceDirectory is not null && (InstallSource?.IsDownloadingMusicNeeded(SourceDirectory) ?? false);
+        }
+    }
+
+    public bool IsDownloadingUnfinishedBusinessNeeded
+    {
+        get
+        {
+            return SourceDirectory is not null && (InstallSource?.IsDownloadingUnfinishedBusinessNeeded(SourceDirectory) ?? false);
+        }
+    }
+
     public bool OverwriteAllFiles
     {
-        get => _overrideAllFiles; set
+        get => _overwriteAllFiles;
+        set
         {
-            if (value != _overrideAllFiles)
+            if (value != _overwriteAllFiles)
             {
-                _overrideAllFiles = value;
+                _overwriteAllFiles = value;
                 NotifyPropertyChanged();
             }
         }
@@ -114,11 +129,11 @@ public class InstallSettings : BaseNotifyPropertyChanged
     }
 
     private bool _createDesktopShortcut = true;
-    private bool _downloadMusic = true;
-    private bool _downloadUnfinishedBusiness = true;
-    private bool _importSaves = true;
+    private bool _downloadMusic;
+    private bool _downloadUnfinishedBusiness;
+    private bool _importSaves;
     private IInstallSource? _installSource;
-    private bool _overrideAllFiles = false;
+    private bool _overwriteAllFiles = false;
     private string? _sourceDirectory;
     private string? _targetDirectory;
 }

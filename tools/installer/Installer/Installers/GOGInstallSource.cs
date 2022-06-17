@@ -31,23 +31,8 @@ public class GOGInstallSource : BaseInstallSource
         }
     }
 
+    public override bool IsImportingSavesSupported => false;
     public override string SourceName => "GOG";
-
-    public override bool SuggestDownloadingMusic
-    {
-        get
-        {
-            return true;
-        }
-    }
-
-    public override bool SuggestDownloadingUnfinishedBusiness
-    {
-        get
-        {
-            return true;
-        }
-    }
 
     public override Task CopyOriginalGameFiles(
         string sourceDirectory,
@@ -130,6 +115,16 @@ public class GOGInstallSource : BaseInstallSource
         File.Delete(isoPath);
 
         return Task.CompletedTask;
+    }
+
+    public override bool IsDownloadingMusicNeeded(string sourceDirectory)
+    {
+        return true;
+    }
+
+    public override bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory)
+    {
+        return true;
     }
 
     public override bool IsGameFound(string sourceDirectory)

@@ -80,7 +80,7 @@
     <Page Include="Controls\InstallStepControl.xaml" />
     <Page Include="Controls\MainWindow.xaml" />
     <Page Include="Controls\SourceStepControl.xaml" />
-    <Page Include="Controls\TargetStepControl.xaml" />
+    <Page Include="Controls\InstallSettingsStepControl.xaml" />
     <Page Include="Resources\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
