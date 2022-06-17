@@ -6,7 +6,7 @@
     </Style>
     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle}" />
     <Style x:Key="heading" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontSize" Value="20" />
     </Style>
     <Style x:Key="subHeading" TargetType="TextBlock">
         <Setter Property="FontSize" Value="15" />
@@ -19,6 +19,10 @@
     </Style>
     <Style x:Key="normal" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style x:Key="small">
+        <Setter Property="Control.FontSize" Value="10" />
+        <Setter Property="Run.FontSize" Value="10" />
     </Style>
 
     <Style TargetType="Image">

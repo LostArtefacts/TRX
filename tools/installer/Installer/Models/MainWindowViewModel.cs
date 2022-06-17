@@ -11,16 +11,9 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
 {
     public MainWindowViewModel()
     {
-        _currentStep = new SourceStep();
+        _sourceStep = new SourceStep();
+        _currentStep = _sourceStep;
         _installSettings = new InstallSettings();
-    }
-
-    public string CloseButtonLabel
-    {
-        get
-        {
-            return CurrentStep is FinishStep ? "Close" : "Cancel";
-        }
     }
 
     public ICommand CloseWindowCommand
@@ -45,7 +38,7 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
                 _goToNextStepCommand?.RaiseCanExecuteChanged();
             };
             NotifyPropertyChanged();
-            NotifyPropertyChanged(nameof(CloseButtonLabel));
+            NotifyPropertyChanged(nameof(IsFinalStep));
         }
     }
 
@@ -65,6 +58,35 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
         }
     }
 
+    public bool IsFinalStep
+    {
+        get
+        {
+            return CurrentStep is FinishStep;
+        }
+    }
+
+    public bool IsSidebarVisible
+    {
+        get
+        {
+            return WindowWidth >= 500;
+        }
+    }
+
+    public int WindowWidth
+    {
+        get => _windowWidth;
+        set
+        {
+            if (value != _windowWidth)
+            {
+                _windowWidth = value;
+                NotifyPropertyChanged(nameof(IsSidebarVisible));
+            }
+        }
+    }
+
     private const bool _autoFinishInstallStep = false;
 
     private RelayCommand<Window>? _closeWindowCommand;
@@ -74,6 +96,8 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
     private RelayCommand? _goToNextStepCommand;
     private RelayCommand? _goToPreviousStepCommand;
     private InstallSettings _installSettings;
+    private IStep _sourceStep;
+    private int _windowWidth;
 
     private bool CanGoToNextStep()
     {
@@ -113,9 +137,9 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
             var installSource = sourceStep.SelectedInstallationSource!.InstallSource;
             _installSettings.InstallSource = installSource;
             _installSettings.SourceDirectory = sourceStep.SelectedInstallationSource.SourceDirectory;
-            CurrentStep = new TargetStep(_installSettings);
+            CurrentStep = new InstallSettingsStep(_installSettings);
         }
-        else if (CurrentStep is TargetStep targetStep)
+        else if (CurrentStep is InstallSettingsStep targetStep)
         {
             var installStep = new InstallStep(targetStep.InstallSettings);
             installStep.RunInstall();
@@ -138,6 +162,6 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
 
     private void GoToPreviousStep()
     {
-        CurrentStep = new SourceStep();
+        CurrentStep = _sourceStep;
     }
 }

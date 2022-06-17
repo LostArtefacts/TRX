@@ -17,37 +17,14 @@ public abstract class BaseInstallSource : IInstallSource
         }
     }
 
+    public abstract bool IsImportingSavesSupported { get; }
     public abstract string SourceName { get; }
-
-    public virtual bool SuggestDownloadingMusic
-    {
-        get
-        {
-            return false;
-        }
-    }
-
-    public virtual bool SuggestDownloadingUnfinishedBusiness
-    {
-        get
-        {
-            return false;
-        }
-    }
 
     public string SuggestedInstallationDirectory
     {
         get
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Tomb1Main");
-        }
-    }
-
-    public virtual bool SuggestImportingSaves
-    {
-        get
-        {
-            return false;
         }
     }
 
@@ -58,6 +35,10 @@ public abstract class BaseInstallSource : IInstallSource
         bool importSaves,
         bool overwrite
     );
+
+    public abstract bool IsDownloadingMusicNeeded(string sourceDirectory);
+
+    public abstract bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory);
 
     public abstract bool IsGameFound(string sourceDirectory);
 }

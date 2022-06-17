@@ -24,15 +24,8 @@ public class TombATIInstallSource : BaseInstallSource
         }
     }
 
+    public override bool IsImportingSavesSupported => true;
     public override string SourceName => "TombATI";
-
-    public override bool SuggestImportingSaves
-    {
-        get
-        {
-            return true;
-        }
-    }
 
     public override async Task CopyOriginalGameFiles(
         string sourceDirectory,
@@ -50,6 +43,16 @@ public class TombATIInstallSource : BaseInstallSource
             file => filterRegex.IsMatch(file),
             file => overwrite
         );
+    }
+
+    public override bool IsDownloadingMusicNeeded(string sourceDirectory)
+    {
+        return !Directory.Exists(Path.Combine(sourceDirectory, "music"));
+    }
+
+    public override bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory)
+    {
+        return !File.Exists(Path.Combine(sourceDirectory, "data", "cat.phd"));
     }
 
     public override bool IsGameFound(string sourceDirectory)

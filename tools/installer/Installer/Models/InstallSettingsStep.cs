@@ -3,9 +3,9 @@ using System.Windows.Input;
 
 namespace Installer.Models;
 
-public class TargetStep : BaseNotifyPropertyChanged, IStep
+public class InstallSettingsStep : BaseNotifyPropertyChanged, IStep
 {
-    public TargetStep(InstallSettings installSettings)
+    public InstallSettingsStep(InstallSettings installSettings)
     {
         InstallSettings = installSettings;
         InstallSettings.PropertyChanged += (sender, e) =>
