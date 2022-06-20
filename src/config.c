@@ -181,6 +181,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
     READ_INTEGER(maximum_save_slots, 25);
+    READ_BOOL(revert_to_pistols, false);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
