@@ -566,8 +566,14 @@ void Lara_InitialiseInventory(int32_t level_num)
     }
 
     g_Lara.gun_status = resume->gun_status;
-    g_Lara.request_gun_type = LGT_PISTOLS;
-    g_Lara.gun_type = LGT_PISTOLS;
+
+    if (g_Config.revert_to_pistols) {
+        g_Lara.request_gun_type = LGT_PISTOLS;
+        g_Lara.gun_type = LGT_PISTOLS;
+    } else {
+        g_Lara.gun_type = resume->gun_type;
+        g_Lara.request_gun_type = resume->gun_type;
+    }
 
     Lara_InitialiseMeshes(level_num);
     Gun_InitialiseNewWeapon();
