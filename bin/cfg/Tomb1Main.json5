@@ -220,4 +220,7 @@
 
     // How many save slots are available.
     "maximum_save_slots": 25,
+
+    // Make Lara revert to pistols on new level start (inline with TombATI behaviour)
+    "revert_to_pistols": false,
 }
