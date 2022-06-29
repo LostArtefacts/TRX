@@ -20,6 +20,7 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_PASSPORT_SELECT_LEVEL, "Select Level" },
     { GS_PASSPORT_RESTART_LEVEL, "Restart Level" },
     { GS_PASSPORT_LOCKED_LEVEL, "Level Locked" },
+    { GS_PASSPORT_STORY_SO_FAR, "Story so far..." },
     { GS_PASSPORT_LEGACY_SELECT_LEVEL_1, "Legacy saves do not" },
     { GS_PASSPORT_LEGACY_SELECT_LEVEL_2, "support this feature." },
     { GS_PASSPORT_SELECT_MODE, "Select Mode" },

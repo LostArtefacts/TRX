@@ -246,6 +246,11 @@ int32_t Game_Stop(void)
         g_GameInfo.passport_page == PASSPORT_PAGE_1
         && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
         return GF_SELECT_GAME | g_GameInfo.select_level_num;
+    } else if (
+        g_GameInfo.passport_page == PASSPORT_PAGE_1
+        && g_GameInfo.passport_mode == PASSPORT_MODE_STORY_SO_FAR) {
+        // page 1: story so far
+        return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
     } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel

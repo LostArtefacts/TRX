@@ -11,6 +11,7 @@
 #include "game/text.h"
 #include "global/vars.h"
 #include "memory.h"
+#include "log.h"
 
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20
@@ -98,7 +99,7 @@ void Option_PassportInit(void)
     g_SavegameRequester.item_texts = Memory_Alloc(
         g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
     m_SelectLevelRequester.item_texts = Memory_Alloc(
-        g_GameFlow.level_count * m_SelectLevelRequester.item_text_len);
+        (g_GameFlow.level_count + 1) * m_SelectLevelRequester.item_text_len);
 }
 
 void Option_PassportShutdown(void)
@@ -181,7 +182,10 @@ static void Option_PassportShowLevelSelect(void)
 {
     int32_t select = Requester_Display(&m_SelectLevelRequester);
     if (select) {
-        if (select > 0) {
+        if (select - 1
+            == g_GameFlow.last_level_num - g_GameFlow.first_level_num + 1) {
+            g_GameInfo.passport_mode = PASSPORT_MODE_STORY_SO_FAR;
+        } else if (select > 0) {
             g_GameInfo.select_level_num =
                 select - 1 + g_GameFlow.first_level_num;
             g_GameInfo.passport_mode = PASSPORT_MODE_SELECT_LEVEL;

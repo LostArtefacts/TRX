@@ -497,6 +497,7 @@
         "PASSPORT_SELECT_LEVEL": "Select Level",
         "PASSPORT_RESTART_LEVEL": "Restart Level",
         "PASSPORT_LOCKED_LEVEL": "Level Locked",
+        "PASSPORT_STORY_SO_FAR": "Story so far...",
         "PASSPORT_LEGACY_SELECT_LEVEL_1": "Legacy saves do not",
         "PASSPORT_LEGACY_SELECT_LEVEL_2": "support this feature.",
         "PASSPORT_SELECT_MODE": "Select Mode",
