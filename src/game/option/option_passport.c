@@ -11,7 +11,6 @@
 #include "game/text.h"
 #include "global/vars.h"
 #include "memory.h"
-#include "log.h"
 
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20

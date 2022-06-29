@@ -1322,7 +1322,6 @@ GameFlow_StorySoFar(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
         case GFS_REMOVE_SCIONS:
         case GFS_FIX_PYRAMID_SECRET_TRIGGER:
-            LOG_DEBUG("Skipping %d", seq->type);
             seq++;
             continue;
 

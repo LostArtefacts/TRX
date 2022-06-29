@@ -23,7 +23,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "log.h"
 
 #define SAVES_DIR "saves"
 
