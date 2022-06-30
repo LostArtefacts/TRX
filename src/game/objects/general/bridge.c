@@ -1,10 +1,13 @@
 #include "game/objects/general/bridge.h"
 
 #include "config.h"
+#include "game/items.h"
 #include "game/objects/general/cog.h"
 #include "game/objects/general/door.h"
+#include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #include <stdbool.h>
 
@@ -13,6 +16,7 @@ static bool Bridge_IsSameSector(
 static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
 static int32_t Bridge_GetOffset(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
+static void Bridge_FixEmbeddedPosition(int16_t item_num);
 
 static bool Bridge_IsSameSector(
     int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
@@ -73,20 +77,46 @@ static int32_t Bridge_GetOffset(
     return offset;
 }
 
+static void Bridge_FixEmbeddedPosition(int16_t item_num)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_number;
+
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
+    int16_t floor_height = Room_GetHeight(floor, x, y, z);
+
+    // Only move the bridge up if it's at floor level.
+    if (item->floor != floor_height) {
+        return;
+    }
+
+    int16_t *bounds = Item_GetBoundsAccurate(item);
+    int16_t bridge_height =
+        ABS(bounds[FRAME_BOUND_MAX_Y]) - ABS(bounds[FRAME_BOUND_MIN_Y]);
+    item->pos.y = floor_height - bridge_height;
+}
+
 void Bridge_SetupFlat(OBJECT_INFO *obj)
 {
+    obj->initialise = Bridge_Initialise;
     obj->floor = Bridge_FlatFloor;
     obj->ceiling = Bridge_FlatCeiling;
 }
 
 void Bridge_SetupTilt1(OBJECT_INFO *obj)
 {
+    obj->initialise = Bridge_Initialise;
     obj->floor = Bridge_Tilt1Floor;
     obj->ceiling = Bridge_Tilt1Ceiling;
 }
 
 void Bridge_SetupTilt2(OBJECT_INFO *obj)
 {
+    obj->initialise = Bridge_Initialise;
     obj->floor = Bridge_Tilt2Floor;
     obj->ceiling = Bridge_Tilt2Ceiling;
 }
@@ -102,6 +132,14 @@ void Bridge_SetupDrawBridge(OBJECT_INFO *obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
     obj->floor = Bridge_DrawBridgeFloor;
+}
+
+void Bridge_Initialise(int16_t item_num)
+{
+    // Some bridges at floor level are embedded into the floor.
+    // This checks if bridges are below a room's floor level
+    // and moves them up.
+    Bridge_FixEmbeddedPosition(item_num);
 }
 
 void Bridge_DrawBridgeFloor(

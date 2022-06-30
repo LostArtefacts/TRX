@@ -1,12 +1,27 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
-- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre (#532)
+- added the option to make Lara revert to pistols on new level start (#557)
 - added the PS1 style UI (#517)
+
+## [2.9.1](https://github.com/rr-/Tomb1Main/compare/2.9...2.9.1) - 2022-06-03
+- fixed crash on centaur hatch (#579, regression from 2.9)
+
+## [2.9](https://github.com/rr-/Tomb1Main/compare/2.8.2...2.9) - 2022-06-01
+- added generic SDL-based controller support (#278)
+- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre (#532)
+- added a fade out when completing Lara's Home (#383)
+- added the config option to change the number of save slots (#170)
+- changed default save slot count to 25 (#170)
 - fixed Tihocan chain block sound (#433)
 - fixed passport menu with high UI scaling (#546, regression from 2.7)
 - fixed passport menu border being off by one pixel (#547)
-- removed XBox controller support
+- fixed the new game and save game passport options using the wrong closing animation (#542, regression from 2.7)
+- fixed bridges at floor level appearing under the floor (#523)
+- fixed Lara's outfit in Lara's Home when replaying the level (#571, regression from 2.7)
+- fixed crash when dying in the gym level with no saves (#576, regression from 2.8)
+- fixed exiting select level menu causing deaths in a new game incremented in that slot (#575, regression from 2.8)
+- removed DInput-based XBox controller support
 
-## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8.1...2.8.2) - 2022-05-20
+## [2.8.2](https://github.com/rr-/Tomb1Main/compare/2.8.1...2.8.2) - 2022-05-20
 - fixed Lara not picking up items near the edges of room portals (#563, regression from 2.8)
 
 ## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05

@@ -8,6 +8,9 @@
 // Initializes music mixer.
 bool Music_Init(void);
 
+// Shuts music mixer down.
+void Music_Shutdown(void);
+
 // Stops playing current track and plays a single track. Once playback is done,
 // if there is an active looped track, the playback resumes from the start of
 // the looped track.

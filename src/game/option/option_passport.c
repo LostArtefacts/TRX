@@ -1,5 +1,6 @@
 #include "game/option/option_passport.h"
 
+#include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory/inventory_vars.h"
@@ -27,9 +28,9 @@ static PASSPORT_MODE m_PassportMode = PASSPORT_MODE_FLIP;
 static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static char m_NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
-static char m_SavegameStrings[MAX_SAVE_SLOTS][MAX_LEVEL_NAME_LENGTH] = { 0 };
+
 static char **m_SelectLevelStrings = NULL;
-static char *m_SelectLevelData = NULL;
+static char *m_SelectLevelBuffer = NULL;
 
 static REQUEST_INFO m_NewGameRequester = {
     .items = MAX_GAME_MODES,
@@ -77,7 +78,7 @@ REQUEST_INFO g_SavegameRequester = {
     .y = -32,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &m_SavegameStrings[0][0],
+    .item_texts = NULL,
     .item_text_len = MAX_LEVEL_NAME_LENGTH,
     0,
 };
@@ -86,13 +87,25 @@ static void Option_PassportInitText(void);
 static void Option_PassportShutdownText(void);
 static void Option_PassportShowNewGame(void);
 static void Option_PassportShowSaves(void);
-static void Option_PassportInitLevelStrings(void);
-static void Option_PassportFreeLevelStrings(void);
 static void Option_PassportInitText(void);
 static void Option_PassportInitNewGameRequester(void);
 static void Option_PassportInitSaveRequester(int16_t page_num);
 static void Option_PassportLoadGame(void);
 static void Option_PassportSelectLevel(void);
+
+void Option_PassportInit(void)
+{
+    g_SavegameRequester.item_texts = Memory_Alloc(
+        g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
+    m_SelectLevelRequester.item_texts = Memory_Alloc(
+        g_GameFlow.level_count * m_SelectLevelRequester.item_text_len);
+}
+
+void Option_PassportShutdown(void)
+{
+    Memory_FreePointer(&g_SavegameRequester.item_texts);
+    Memory_FreePointer(&m_SelectLevelRequester.item_texts);
+}
 
 static void Option_PassportInitText(void)
 {
@@ -114,8 +127,6 @@ static void Option_PassportInitText(void)
         Text_AlignBottom(m_Text[i], 1);
         Text_CentreH(m_Text[i], 1);
     }
-
-    Option_PassportInitLevelStrings();
 }
 
 static void Option_PassportShutdownText(void)
@@ -124,27 +135,8 @@ static void Option_PassportShutdownText(void)
         Text_Remove(m_Text[i]);
         m_Text[i] = NULL;
     }
-    Option_PassportFreeLevelStrings();
     m_PassportMode = PASSPORT_MODE_FLIP;
     m_IsTextInit = false;
-}
-
-static void Option_PassportInitLevelStrings(void)
-{
-    m_SelectLevelStrings =
-        Memory_Alloc(g_GameFlow.level_count * sizeof(char *));
-    m_SelectLevelData = Memory_Alloc(
-        g_GameFlow.level_count * MAX_LEVEL_NAME_LENGTH * sizeof(char));
-
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        m_SelectLevelStrings[i] = &m_SelectLevelData[MAX_LEVEL_NAME_LENGTH * i];
-    }
-}
-
-static void Option_PassportFreeLevelStrings(void)
-{
-    Memory_FreePointer(&m_SelectLevelStrings);
-    Memory_FreePointer(&m_SelectLevelData);
 }
 
 static void Option_PassportShowNewGame(void)
@@ -169,6 +161,7 @@ static void Option_PassportShowNewGame(void)
                 g_GameInfo.bonus_flag = 0;
                 break;
             }
+            g_GameInfo.current_save_slot = -1;
             g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
             g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
         } else if (
@@ -245,7 +238,6 @@ static void Option_PassportInitNewGameRequester(void)
 static void Option_PassportInitSelectLevelRequester(void)
 {
     REQUEST_INFO *req = &m_SelectLevelRequester;
-    req->item_texts = &m_SelectLevelStrings[0][0];
     req->flags |= RIF_BLOCKABLE;
     Requester_Init(req);
     Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
@@ -566,7 +558,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
 
     if (g_InputDB.select) {
         g_GameInfo.passport_page = page;
-        if (page == PASSPORT_PAGE_2) {
+        if (page == PASSPORT_PAGE_3) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;
         } else {

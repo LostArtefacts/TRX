@@ -194,6 +194,14 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         }
         break;
 
+    case GFL_GYM:
+        Savegame_InitCurrentInfo();
+        Level_InitialiseFlags();
+        if (!Level_Initialise(level_num)) {
+            return false;
+        }
+        break;
+
     default:
         Level_InitialiseFlags();
         if (!Level_Initialise(level_num)) {

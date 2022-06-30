@@ -232,20 +232,23 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added save game crystals game mode (enabled via gameflow)
 - added pause screen
 - added movable camera on W,A,S,D
-- added Xbox One Controller support
-    - Per Axis Dead Zone
-    - Left Stick = movement
-    - A = Jump/Select
-    - B = Roll/Deselect
-    - X = Action/Select
-    - Y = Look/Select
-    - LB = Walk
-    - RB = Draw Weapons
-    - Dpad Up = Draw Weapons
-    - Back = Option
-    - Start = Pause
-    - Right Stick = Camera Movement
-    - R3 = Reset Camera
+- added controller support
+    | Xbox button | DualShock button   | Action          |
+    | ----------- | ------------------ | --------------- |
+    | Left Stick  | Left stick         | Movement        |
+    | A           | X                  | Action/select   |
+    | B           | Circle             | Roll/deselect   |
+    | X           | Square             | Jump            |
+    | Y           | Triangle           | Draw weapons    |
+    | LB          | L1                 | Look            |
+    | RB          | R1                 | Walk            |
+    | LT          | L2                 | Sidestep left   |
+    | RT          | R2                 | Sidestep right  |
+    | D-pad       | D-pad              | Movement        |
+    | Back        | Share/Touchpad     | Inventory       |
+    | Start       | Options            | Pause           |
+    | Right Stick | Right stick        | Camera movement |
+    | R3          | R3                 | Reset camera    |
 - added rounded shadows (instead of the default octagon)
 - added per-level customizable water color (with customizable blue component)
 - added per-level customizable fog distance
@@ -314,6 +317,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed exploded mutant pods sometimes appearing unhatched on reload
 - fixed sound effects playing rapidly in sound menu if input held down
 - fixed underwater caustics animating at 2x speed
+- fixed bridges at floor level appearing under the floor
 
 ## Showcase
 
