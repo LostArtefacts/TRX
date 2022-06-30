@@ -92,40 +92,37 @@ static void Text_DrawTextBackground(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
     TEXT_STYLE text_style)
 {
-    if (ui_style == UI_STYLE_PS1) {
-        // Make sure height and width divisible by 2.
-        w = 2 * ((w + 1) / 2);
-        h = 2 * ((h + 1) / 2);
+    if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenFBox(sx, sy, w, h);
+        return;
+    }
 
-        QUAD_INFO gradient_quads[4] = { { sx, sy, w / 2, h / 2 },
-                                        { sx + w, sy, -w / 2, h / 2 },
-                                        { sx, sy + h, w / 2, -h / 2 },
-                                        { sx + w, sy + h, -w / 2, -h / 2 } };
+    // Make sure height and width divisible by 2.
+    w = 2 * ((w + 1) / 2);
+    h = 2 * ((h + 1) / 2);
+    Output_DrawScreenFBox(sx, sy, w, h);
 
-        if (text_style == TS_HEADING) {
-            for (int i = 0; i < 4; i++) {
-                Output_DrawScreenGradientQuad(
-                    gradient_quads[i].x, gradient_quads[i].y,
-                    gradient_quads[i].w, gradient_quads[i].h,
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_E),
-                    Text_GetMenuColor(MC_BROWN_C));
-            }
-        } else if (text_style == TS_REQUESTED) {
-            for (int i = 0; i < 4; i++) {
-                Output_DrawScreenGradientQuad(
-                    gradient_quads[i].x, gradient_quads[i].y,
-                    gradient_quads[i].w, gradient_quads[i].h,
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_E),
-                    Text_GetMenuColor(MC_PURPLE_C));
-            }
+    QUAD_INFO gradient_quads[4] = { { sx, sy, w / 2, h / 2 },
+                                    { sx + w, sy, -w / 2, h / 2 },
+                                    { sx, sy + h, w / 2, -h / 2 },
+                                    { sx + w, sy + h, -w / 2, -h / 2 } };
+
+    if (text_style == TS_HEADING) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
         }
-    } else {
-        Output_DrawScreenFBox(sx, sy, w, h);
+    } else if (text_style == TS_REQUESTED) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+        }
     }
 }
 
@@ -133,32 +130,33 @@ static void Text_DrawTextOutline(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
     TEXT_STYLE text_style)
 {
-    if (ui_style == UI_STYLE_PS1) {
-        if (text_style == TS_HEADING) {
-            Output_DrawGradientScreenBox(
-                sx, sy, w, h, Text_GetMenuColor(MC_BLACK),
-                Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
-                Text_GetMenuColor(MC_BLACK), TEXT_OUTLINE_THICKNESS);
-        } else if (text_style == TS_BACKGROUND) {
-            Output_DrawGradientScreenBox(
-                sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
-                Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
-                Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
-        } else if (text_style == TS_REQUESTED) {
-            // Make sure height and width divisible by 2.
-            w = 2 * ((w + 1) / 2);
-            h = 2 * ((h + 1) / 2);
-            Output_DrawCentreGradientScreenBox(
-                sx, sy, w, h, Text_GetMenuColor(MC_GREY_E),
-                Text_GetMenuColor(MC_GREY_C), TEXT_OUTLINE_THICKNESS);
-        }
-    } else {
+    if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenBox(
             sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT),
             TEXT_OUTLINE_THICKNESS);
         Output_DrawScreenBox(
             sx - 1, sy - 1, w, h, Text_GetMenuColor(MC_GOLD_DARK),
             TEXT_OUTLINE_THICKNESS);
+        return;
+    }
+
+    if (text_style == TS_HEADING) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_BLACK),
+            Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
+            Text_GetMenuColor(MC_BLACK), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_BACKGROUND) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
+            Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
+            Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_REQUESTED) {
+        // Make sure height and width divisible by 2.
+        w = 2 * ((w + 1) / 2);
+        h = 2 * ((h + 1) / 2);
+        Output_DrawCentreGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GREY_E),
+            Text_GetMenuColor(MC_GREY_C), TEXT_OUTLINE_THICKNESS);
     }
 }
 
