@@ -101,14 +101,6 @@ static void Option_FlashConflicts(void);
 
 static void Option_ControlInitText(void)
 {
-    m_Text[0] = Text_Create(
-        0, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
-        g_GameFlow.strings
-            [g_Config.input.layout ? GS_CONTROL_USER_KEYS
-                                   : GS_CONTROL_DEFAULT_KEYS]);
-    Text_CentreH(m_Text[0], 1);
-    Text_CentreV(m_Text[0], 1);
-
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
 
@@ -174,16 +166,24 @@ static void Option_ControlInitText(void)
         }
     }
 
+    m_Text[0] = Text_Create(
+        0, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
+        g_GameFlow.strings
+            [g_Config.input.layout ? GS_CONTROL_USER_KEYS
+                                   : GS_CONTROL_DEFAULT_KEYS]);
+    Text_CentreH(m_Text[0], 1);
+    Text_CentreV(m_Text[0], 1);
+
     int16_t width = 420;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
-    Text_AddBackground(m_Text[1], width, height, 0, 0);
-    Text_AddOutline(m_Text[1], 1);
+    Text_AddBackground(m_Text[1], width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(m_Text[1], true, TS_BACKGROUND);
 
     Option_FlashConflicts();
 
     m_KeyChange = -1;
-    Text_AddBackground(m_Text[0], 0, 0, 0, 0);
-    Text_AddOutline(m_Text[0], 1);
+    Text_AddBackground(m_Text[0], 0, 0, 0, 0, TS_REQUESTED);
+    Text_AddOutline(m_Text[0], true, TS_REQUESTED);
 }
 
 static void Option_ControlUpdateText(void)
@@ -303,8 +303,9 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     }
                 }
 
-                Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
-                Text_AddOutline(m_TextA[m_KeyChange], 1);
+                Text_AddBackground(
+                    m_TextA[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+                Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
             }
         } else if (
             g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
@@ -316,9 +317,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             if (g_InputDB.select) {
                 m_KeyMode = 1;
                 Text_RemoveBackground(m_TextA[m_KeyChange]);
-                Text_AddBackground(m_TextB[m_KeyChange], 0, 0, 0, 0);
+                Text_AddBackground(
+                    m_TextB[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
                 Text_RemoveOutline(m_TextA[m_KeyChange]);
-                Text_AddOutline(m_TextB[m_KeyChange], 1);
+                Text_AddOutline(m_TextB[m_KeyChange], true, TS_REQUESTED);
             } else if (g_InputDB.forward) {
                 Text_RemoveBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
@@ -353,9 +355,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
                 Text_AddBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 0, 0,
-                    0, 0);
+                    0, 0, TS_REQUESTED);
                 Text_AddOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 1);
+                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], true,
+                    TS_REQUESTED);
             } else if (g_InputDB.back) {
                 Text_RemoveBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
@@ -390,9 +393,10 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
                 Text_AddBackground(
                     m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 0, 0,
-                    0, 0);
+                    0, 0, TS_REQUESTED);
                 Text_AddOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 1);
+                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], true,
+                    TS_REQUESTED);
             }
         }
         break;
@@ -410,8 +414,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 Input_GetKeyName(g_Config.input.layout, m_KeyChange));
             Text_RemoveBackground(m_TextB[m_KeyChange]);
             Text_RemoveOutline(m_TextB[m_KeyChange]);
-            Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0);
-            Text_AddOutline(m_TextA[m_KeyChange], 1);
+            Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+            Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
             m_KeyMode = 3;
             Option_FlashConflicts();
             Settings_Write();

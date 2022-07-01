@@ -37,6 +37,10 @@ static void Option_SoundInitText(void)
     m_Text[TEXT_LEFT_ARROW] = Text_Create(-45, 0, "\200");
     m_Text[TEXT_RIGHT_ARROW] = Text_Create(40, 0, "\201");
 
+    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
+    m_Text[TEXT_TITLE] =
+        Text_Create(0, -30, g_GameFlow.strings[GS_SOUND_SET_VOLUMES]);
+
     if (g_Config.music_volume > 10) {
         g_Config.music_volume = 10;
     }
@@ -49,16 +53,12 @@ static void Option_SoundInitText(void)
     sprintf(buf, "} %2d", g_Config.sound_volume);
     m_Text[TEXT_SOUND_VOLUME] = Text_Create(0, 25, buf);
 
-    m_Text[TEXT_TITLE] =
-        Text_Create(0, -30, g_GameFlow.strings[GS_SOUND_SET_VOLUMES]);
-    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
-
-    Text_AddBackground(m_Text[g_OptionSelected], 128, 0, 0, 0);
-    Text_AddOutline(m_Text[g_OptionSelected], 1);
-    Text_AddBackground(m_Text[TEXT_TITLE], 136, 0, 0, 0);
-    Text_AddOutline(m_Text[TEXT_TITLE], 1);
-    Text_AddBackground(m_Text[TEXT_TITLE_BORDER], 140, 85, 0, 0);
-    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], 1);
+    Text_AddBackground(m_Text[g_OptionSelected], 128, 0, 0, 0, TS_REQUESTED);
+    Text_AddOutline(m_Text[g_OptionSelected], true, TS_REQUESTED);
+    Text_AddBackground(m_Text[TEXT_TITLE], 136, 0, 0, 0, TS_HEADING);
+    Text_AddOutline(m_Text[TEXT_TITLE], true, TS_HEADING);
+    Text_AddBackground(m_Text[TEXT_TITLE_BORDER], 140, 85, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
 
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_CentreH(m_Text[i], 1);
@@ -77,8 +77,10 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
     if (g_InputDB.forward && g_OptionSelected > TEXT_OPTION_MIN) {
         Text_RemoveOutline(m_Text[g_OptionSelected]);
         Text_RemoveBackground(m_Text[g_OptionSelected]);
-        Text_AddBackground(m_Text[--g_OptionSelected], 128, 0, 0, 0);
-        Text_AddOutline(m_Text[g_OptionSelected], 1);
+        --g_OptionSelected;
+        Text_AddBackground(
+            m_Text[g_OptionSelected], 128, 0, 0, 0, TS_REQUESTED);
+        Text_AddOutline(m_Text[g_OptionSelected], true, TS_REQUESTED);
         Text_SetPos(m_Text[TEXT_LEFT_ARROW], -45, 0);
         Text_SetPos(m_Text[TEXT_RIGHT_ARROW], 40, 0);
     }
@@ -86,8 +88,10 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
     if (g_InputDB.back && g_OptionSelected < TEXT_OPTION_MAX) {
         Text_RemoveOutline(m_Text[g_OptionSelected]);
         Text_RemoveBackground(m_Text[g_OptionSelected]);
-        Text_AddBackground(m_Text[++g_OptionSelected], 128, 0, 0, 0);
-        Text_AddOutline(m_Text[g_OptionSelected], 1);
+        ++g_OptionSelected;
+        Text_AddBackground(
+            m_Text[g_OptionSelected], 128, 0, 0, 0, TS_REQUESTED);
+        Text_AddOutline(m_Text[g_OptionSelected], true, TS_REQUESTED);
         Text_SetPos(m_Text[TEXT_LEFT_ARROW], -45, 25);
         Text_SetPos(m_Text[TEXT_RIGHT_ARROW], 40, 25);
     }

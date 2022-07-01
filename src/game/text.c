@@ -1,5 +1,6 @@
 #include "game/text.h"
 
+#include "config.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "global/const.h"
@@ -55,8 +56,109 @@ static int8_t m_TextASCIIMap[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
+static RGBA8888 m_MenuColorMap[MC_NUMBER_OF] = {
+    { 70, 30, 107, 230 }, // MC_PURPLE_C
+    { 70, 30, 107, 0 }, // MC_PURPLE_E
+    { 91, 46, 9, 255 }, // MC_BROWN_C
+    { 91, 46, 9, 0 }, // MC_BROWN_E
+    { 197, 197, 197, 255 }, // MC_GREY_C
+    { 45, 45, 45, 255 }, // MC_GREY_E
+    { 96, 96, 96, 255 }, // MC_GREY_TL
+    { 32, 32, 32, 255 }, // MC_GREY_TR
+    { 63, 63, 63, 255 }, // MC_GREY_BL
+    { 0, 0, 0, 255 }, // MC_GREY_BR
+    { 0, 0, 0, 255 }, // MC_BLACK
+    { 232, 192, 112, 255 }, // MC_GOLD_LIGHT
+    { 140, 112, 56, 255 }, // MC_GOLD_DARK
+};
+
+typedef struct QUAD_INFO {
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
+} QUAD_INFO;
+
 static void Text_DrawText(TEXTSTRING *textstring);
 static uint8_t Text_MapLetterToSpriteNum(char letter);
+static void Text_DrawTextBackground(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style);
+static void Text_DrawTextOutline(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style);
+
+static void Text_DrawTextBackground(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenFBox(sx, sy, w, h);
+        return;
+    }
+
+    // Make sure height and width divisible by 2.
+    w = 2 * ((w + 1) / 2);
+    h = 2 * ((h + 1) / 2);
+    Output_DrawScreenFBox(sx, sy, w, h);
+
+    QUAD_INFO gradient_quads[4] = { { sx, sy, w / 2, h / 2 },
+                                    { sx + w, sy, -w / 2, h / 2 },
+                                    { sx, sy + h, w / 2, -h / 2 },
+                                    { sx + w, sy + h, -w / 2, -h / 2 } };
+
+    if (text_style == TS_HEADING) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
+        }
+    } else if (text_style == TS_REQUESTED) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+        }
+    }
+}
+
+static void Text_DrawTextOutline(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT),
+            TEXT_OUTLINE_THICKNESS);
+        Output_DrawScreenBox(
+            sx - 1, sy - 1, w, h, Text_GetMenuColor(MC_GOLD_DARK),
+            TEXT_OUTLINE_THICKNESS);
+        return;
+    }
+
+    if (text_style == TS_HEADING) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_BLACK),
+            Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
+            Text_GetMenuColor(MC_BLACK), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_BACKGROUND) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
+            Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
+            Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_REQUESTED) {
+        // Make sure height and width divisible by 2.
+        w = 2 * ((w + 1) / 2);
+        h = 2 * ((h + 1) / 2);
+        Output_DrawCentreGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GREY_E),
+            Text_GetMenuColor(MC_GREY_C), TEXT_OUTLINE_THICKNESS);
+    }
+}
 
 static uint8_t Text_MapLetterToSpriteNum(char letter)
 {
@@ -71,6 +173,11 @@ static uint8_t Text_MapLetterToSpriteNum(char letter)
     } else {
         return letter + 81;
     }
+}
+
+RGBA8888 Text_GetMenuColor(MENU_COLOR color)
+{
+    return m_MenuColorMap[color];
 }
 
 void Text_Init(void)
@@ -184,7 +291,8 @@ void Text_Hide(TEXTSTRING *textstring, bool enable)
 }
 
 void Text_AddBackground(
-    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y)
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
+    TEXT_STYLE style)
 {
     if (!textstring) {
         return;
@@ -194,6 +302,7 @@ void Text_AddBackground(
     textstring->bgnd_size.y = h;
     textstring->bgnd_off.x = x;
     textstring->bgnd_off.y = y;
+    textstring->background.style = style;
 }
 
 void Text_RemoveBackground(TEXTSTRING *textstring)
@@ -204,12 +313,13 @@ void Text_RemoveBackground(TEXTSTRING *textstring)
     textstring->flags.background = 0;
 }
 
-void Text_AddOutline(TEXTSTRING *textstring, bool enable)
+void Text_AddOutline(TEXTSTRING *textstring, bool enable, TEXT_STYLE style)
 {
     if (!textstring) {
         return;
     }
     textstring->flags.outline = 1;
+    textstring->outline.style = style;
 }
 
 void Text_RemoveOutline(TEXTSTRING *textstring)
@@ -406,7 +516,9 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
 
-        Output_DrawScreenFBox(sx, sy, sh, sv);
+        Text_DrawTextBackground(
+            g_Config.ui.menu_style, sx, sy, sh, sv,
+            textstring->background.style);
     }
 
     if (textstring->flags.outline) {
@@ -414,6 +526,8 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sy = Screen_GetRenderScale(bypos);
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
-        Output_DrawScreenBox(sx, sy, sh, sv);
+
+        Text_DrawTextOutline(
+            g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);
     }
 }
