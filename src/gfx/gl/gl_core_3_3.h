@@ -141,6 +141,7 @@ typedef uint64_t GLuint64EXT;
 typedef struct __GLsync *GLsync;
 struct _cl_context;
 struct _cl_event;
+
 typedef void(APIENTRY *GLDEBUGPROC)(
     GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
     const GLchar *message, const void *userParam);
@@ -3344,7 +3345,7 @@ extern void(CODEGEN_FUNCPTR *_ptrc_glVertexAttribP4uiv)(
     GLuint index, GLenum type, GLboolean normalized, const GLuint *value);
 #define glVertexAttribP4uiv _ptrc_glVertexAttribP4uiv
 
-void ogl_CheckExtensions();
+void ogl_CheckExtensions(void);
 
 #ifdef __cplusplus
 }

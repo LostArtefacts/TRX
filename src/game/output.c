@@ -1,18 +1,21 @@
 #include "game/output.h"
 
-#include "3dsystem/3d_gen.h"
-#include "3dsystem/matrix.h"
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "game/clock.h"
+#include "game/picture.h"
 #include "game/random.h"
 #include "game/viewport.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_misc.h"
+#include "math/math.h"
+#include "math/math_misc.h"
+#include "math/matrix.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
+#include "util.h"
 
-PHD_VECTOR g_LsVectorView = { 0 };
+#include <stddef.h>
 
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
@@ -24,6 +27,7 @@ static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
+static PHD_VECTOR m_LsVectorView = { 0 };
 
 static void Output_DrawBlackScreen(uint8_t alpha);
 static void Output_FadeAnimate(int ticks);
@@ -42,7 +46,7 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr);
 static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr);
 static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
-static void Output_CalcWibbleTable();
+static void Output_CalcWibbleTable(void);
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number)
@@ -144,13 +148,13 @@ static const int16_t *Output_DrawRoomSprites(
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
         int32_t zp = (zv / g_PhdPersp);
         int32_t x1 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
         int32_t y1 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
         int32_t x2 =
-            ViewPort_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterX() + (vbuf->xv + (sprite->x2 << W2V_SHIFT)) / zp;
         int32_t y2 =
-            ViewPort_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
+            Viewport_GetCenterY() + (vbuf->yv + (sprite->y2 << W2V_SHIFT)) / zp;
         if (x2 >= g_PhdLeft && y2 >= g_PhdTop && x1 < g_PhdRight
             && y1 < g_PhdBottom) {
             S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, vbuf->g);
@@ -167,15 +171,15 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
     obj_ptr++;
     int vertex_count = *obj_ptr++;
     for (int i = 0; i < vertex_count; i++) {
-        double xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
-            + g_PhdMatrixPtr->_01 * obj_ptr[1]
-            + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
-        double yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
-            + g_PhdMatrixPtr->_11 * obj_ptr[1]
-            + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
-        int32_t zv_int = g_PhdMatrixPtr->_20 * obj_ptr[0]
-            + g_PhdMatrixPtr->_21 * obj_ptr[1]
-            + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        double xv = g_MatrixPtr->_00 * obj_ptr[0]
+            + g_MatrixPtr->_01 * obj_ptr[1] + g_MatrixPtr->_02 * obj_ptr[2]
+            + g_MatrixPtr->_03;
+        double yv = g_MatrixPtr->_10 * obj_ptr[0]
+            + g_MatrixPtr->_11 * obj_ptr[1] + g_MatrixPtr->_12 * obj_ptr[2]
+            + g_MatrixPtr->_13;
+        int32_t zv_int = g_MatrixPtr->_20 * obj_ptr[0]
+            + g_MatrixPtr->_21 * obj_ptr[1] + g_MatrixPtr->_22 * obj_ptr[2]
+            + g_MatrixPtr->_23;
         double zv = zv_int;
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
@@ -188,8 +192,8 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
             clip_flags = 0;
 
             double persp = g_PhdPersp / zv;
-            double xs = ViewPort_GetCenterX() + xv * persp;
-            double ys = ViewPort_GetCenterY() + yv * persp;
+            double xs = Viewport_GetCenterX() + xv * persp;
+            double ys = Viewport_GetCenterY() + yv * persp;
 
             if (xs < g_PhdLeft) {
                 clip_flags |= 1;
@@ -220,17 +224,17 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
         if (g_LsDivider) {
-            int32_t xv = (g_PhdMatrixPtr->_00 * g_LsVectorView.x
-                          + g_PhdMatrixPtr->_10 * g_LsVectorView.y
-                          + g_PhdMatrixPtr->_20 * g_LsVectorView.z)
+            int32_t xv = (g_MatrixPtr->_00 * m_LsVectorView.x
+                          + g_MatrixPtr->_10 * m_LsVectorView.y
+                          + g_MatrixPtr->_20 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t yv = (g_PhdMatrixPtr->_01 * g_LsVectorView.x
-                          + g_PhdMatrixPtr->_11 * g_LsVectorView.y
-                          + g_PhdMatrixPtr->_21 * g_LsVectorView.z)
+            int32_t yv = (g_MatrixPtr->_01 * m_LsVectorView.x
+                          + g_MatrixPtr->_11 * m_LsVectorView.y
+                          + g_MatrixPtr->_21 * m_LsVectorView.z)
                 / g_LsDivider;
-            int32_t zv = (g_PhdMatrixPtr->_02 * g_LsVectorView.x
-                          + g_PhdMatrixPtr->_12 * g_LsVectorView.y
-                          + g_PhdMatrixPtr->_22 * g_LsVectorView.z)
+            int32_t zv = (g_MatrixPtr->_02 * m_LsVectorView.x
+                          + g_MatrixPtr->_12 * m_LsVectorView.y
+                          + g_MatrixPtr->_22 * m_LsVectorView.z)
                 / g_LsDivider;
             for (int i = 0; i < vertex_count; i++) {
                 int16_t shade = g_LsAdder
@@ -264,15 +268,15 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
 
     for (int i = 0; i < vertex_count; i++) {
-        double xv = g_PhdMatrixPtr->_00 * obj_ptr[0]
-            + g_PhdMatrixPtr->_01 * obj_ptr[1]
-            + g_PhdMatrixPtr->_02 * obj_ptr[2] + g_PhdMatrixPtr->_03;
-        double yv = g_PhdMatrixPtr->_10 * obj_ptr[0]
-            + g_PhdMatrixPtr->_11 * obj_ptr[1]
-            + g_PhdMatrixPtr->_12 * obj_ptr[2] + g_PhdMatrixPtr->_13;
-        int32_t zv_int = g_PhdMatrixPtr->_20 * obj_ptr[0]
-            + g_PhdMatrixPtr->_21 * obj_ptr[1]
-            + g_PhdMatrixPtr->_22 * obj_ptr[2] + g_PhdMatrixPtr->_23;
+        double xv = g_MatrixPtr->_00 * obj_ptr[0]
+            + g_MatrixPtr->_01 * obj_ptr[1] + g_MatrixPtr->_02 * obj_ptr[2]
+            + g_MatrixPtr->_03;
+        double yv = g_MatrixPtr->_10 * obj_ptr[0]
+            + g_MatrixPtr->_11 * obj_ptr[1] + g_MatrixPtr->_12 * obj_ptr[2]
+            + g_MatrixPtr->_13;
+        int32_t zv_int = g_MatrixPtr->_20 * obj_ptr[0]
+            + g_MatrixPtr->_21 * obj_ptr[1] + g_MatrixPtr->_22 * obj_ptr[2]
+            + g_MatrixPtr->_23;
         double zv = zv_int;
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
@@ -295,8 +299,8 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             }
 
             double persp = g_PhdPersp / zv;
-            double xs = ViewPort_GetCenterX() + xv * persp;
-            double ys = ViewPort_GetCenterY() + yv * persp;
+            double xs = Viewport_GetCenterX() + xv * persp;
+            double ys = Viewport_GetCenterY() + yv * persp;
             if (g_IsWibbleEffect) {
                 xs += g_WibbleTable[(g_WibbleOffset + (int)ys) & 0x1F];
                 ys += g_WibbleTable[(g_WibbleOffset + (int)xs) & 0x1F];
@@ -347,23 +351,23 @@ static int32_t Output_CalcFogShade(int32_t depth)
     return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
 }
 
-static void Output_CalcWibbleTable()
+static void Output_CalcWibbleTable(void)
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
-        g_WibbleTable[i] = phd_sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        g_ShadeTable[i] = phd_sin(angle) * MAX_SHADE >> W2V_SHIFT;
+        g_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
+        g_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
         g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }
 
-bool Output_Init()
+bool Output_Init(void)
 {
     Output_CalcWibbleTable();
     return S_Output_Init();
 }
 
-void Output_Shutdown()
+void Output_Shutdown(void)
 {
     S_Output_Shutdown();
 }
@@ -378,7 +382,7 @@ void Output_SetFullscreen(bool fullscreen)
     S_Output_SetFullscreen(fullscreen);
 }
 
-void Output_ApplyResolution()
+void Output_ApplyResolution(void)
 {
     S_Output_ApplyResolution();
 }
@@ -404,22 +408,22 @@ RGB888 Output_GetPaletteColor(uint8_t idx)
     return S_Output_GetPaletteColor(idx);
 }
 
-void Output_ClearScreen()
+void Output_ClearScreen(void)
 {
     S_Output_ClearBackBuffer();
 }
 
-void Output_DrawEmpty()
+void Output_DrawEmpty(void)
 {
     S_Output_DrawEmpty();
 }
 
-void Output_InitialisePolyList()
+void Output_InitialisePolyList(void)
 {
     S_Output_RenderBegin();
 }
 
-int32_t Output_DumpScreen()
+int32_t Output_DumpScreen(void)
 {
     Output_DrawOverlayScreen();
     S_Output_DumpScreen();
@@ -470,11 +474,11 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         g_LsAdder = 0x1FFF - g_LsAdder;
 
         PHD_ANGLE angles[2];
-        phd_GetVectorAngles(ls.x, ls.y, ls.z, angles);
-        phd_RotateLight(angles[1], angles[0]);
+        Math_GetVectorAngles(ls.x, ls.y, ls.z, angles);
+        Output_RotateLight(angles[1], angles[0]);
     }
 
-    int32_t distance = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
     g_LsAdder += Output_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
 }
@@ -482,9 +486,36 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 void Output_CalculateStaticLight(int16_t adder)
 {
     g_LsAdder = adder - 16 * 256;
-    int32_t distance = g_PhdMatrixPtr->_23 >> W2V_SHIFT;
+    int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
     g_LsAdder += Output_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
+}
+
+void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
+{
+    if (item->shade >= 0) {
+        Output_CalculateStaticLight(item->shade);
+        return;
+    }
+
+    Matrix_PushUnit();
+    g_MatrixPtr->_23 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_03 = 0;
+
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_TranslateRel(
+        (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
+        (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
+        (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+
+    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
+    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
+    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+
+    Matrix_Pop();
+
+    Output_CalculateLight(x, y, z, item->room_number);
 }
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
@@ -502,10 +533,10 @@ void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
 
 void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip)
 {
-    phd_PushMatrix();
-    InterpolateMatrix();
+    Matrix_Push();
+    Matrix_Interpolate();
     Output_DrawPolygons(obj_ptr, clip);
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
 void Output_DrawRoom(const int16_t *obj_ptr)
@@ -536,15 +567,15 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
         int32_t angle = (PHD_180 + i * PHD_360) / g_ShadowInfo.vertex_count;
         g_ShadowInfo.vertex[i].x =
-            x_mid + (x_add * 2) * phd_sin(angle) / PHD_90;
+            x_mid + (x_add * 2) * Math_Sin(angle) / PHD_90;
         g_ShadowInfo.vertex[i].z =
-            z_mid + (z_add * 2) * phd_cos(angle) / PHD_90;
+            z_mid + (z_add * 2) * Math_Cos(angle) / PHD_90;
         g_ShadowInfo.vertex[i].y = 0;
     }
 
-    phd_PushMatrix();
-    phd_TranslateAbs(item->pos.x, item->floor, item->pos.z);
-    phd_RotY(item->pos.y_rot);
+    Matrix_Push();
+    Matrix_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    Matrix_RotY(item->pos.y_rot);
 
     if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
         int16_t clip_and = 1;
@@ -569,20 +600,20 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         }
     }
 
-    phd_PopMatrix();
+    Matrix_Pop();
 }
 
-int32_t Output_GetDrawDistMin()
+int32_t Output_GetDrawDistMin(void)
 {
     return 127;
 }
 
-int32_t Output_GetDrawDistFade()
+int32_t Output_GetDrawDistFade(void)
 {
     return m_DrawDistFade;
 }
 
-int32_t Output_GetDrawDistMax()
+int32_t Output_GetDrawDistMax(void)
 {
     return m_DrawDistMax;
 }
@@ -604,12 +635,12 @@ void Output_SetWaterColor(const RGBF *color)
     m_WaterColor.b = color->b;
 }
 
-int32_t Output_GetNearZ()
+int32_t Output_GetNearZ(void)
 {
     return Output_GetDrawDistMin() << W2V_SHIFT;
 }
 
-int32_t Output_GetFarZ()
+int32_t Output_GetFarZ(void)
 {
     return Output_GetDrawDistMax() << W2V_SHIFT;
 }
@@ -646,12 +677,12 @@ void Output_DrawSprite(
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
-    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    int32_t x1 = Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = Viewport_GetCenterX() + (xv + (sprite->x2 << W2V_SHIFT)) / zp;
+    int32_t y2 = Viewport_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -659,7 +690,7 @@ void Output_DrawSprite(
     }
 }
 
-void Output_CopyPictureToScreen()
+void Output_CopyPictureToScreen(void)
 {
     S_Output_CopyFromPicture();
 }
@@ -683,18 +714,75 @@ void Output_DrawScreenLine(
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
-void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
+void Output_DrawScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col,
+    int32_t thickness)
 {
-    RGBA8888 rgb_border_light = Output_RGB2RGBA(Output_GetPaletteColor(15));
-    RGBA8888 rgb_border_dark = Output_RGB2RGBA(Output_GetPaletteColor(31));
-    Output_DrawScreenLine(sx - 1, sy - 1, w + 3, 0, rgb_border_light);
-    Output_DrawScreenLine(sx, sy, w + 1, 0, rgb_border_dark);
-    Output_DrawScreenLine(w + sx + 1, sy, 0, h + 1, rgb_border_light);
-    Output_DrawScreenLine(w + sx + 2, sy - 1, 0, h + 3, rgb_border_dark);
-    Output_DrawScreenLine(w + sx + 1, h + sy + 1, -w - 1, 0, rgb_border_light);
-    Output_DrawScreenLine(w + sx + 2, h + sy + 2, -w - 3, 0, rgb_border_dark);
-    Output_DrawScreenLine(sx - 1, h + sy + 2, 0, -3 - h, rgb_border_light);
-    Output_DrawScreenLine(sx, h + sy + 1, 0, -1 - h, rgb_border_dark);
+    for (int i = 0; i < thickness; i++) {
+        // Top
+        Output_DrawScreenLine(sx - i, sy - i, w + 1 + (i * 2), 0, col);
+        // Right
+        Output_DrawScreenLine(w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), col);
+        // Left
+        Output_DrawScreenLine(sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, col);
+        // Bottom
+        Output_DrawScreenLine(
+            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, col);
+    }
+}
+
+void Output_DrawGradientScreenLine(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col1, RGBA8888 col2)
+{
+    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col1, col2);
+}
+
+void Output_DrawGradientScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br, int32_t thickness)
+{
+    for (int i = 0; i < thickness; i++) {
+        // Top
+        Output_DrawGradientScreenLine(
+            sx - i, sy - i, w + 1 + (i * 2), 0, tl, tr);
+        // Right
+        Output_DrawGradientScreenLine(
+            w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), tr, br);
+        // Left
+        Output_DrawGradientScreenLine(
+            sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, bl, tl);
+        // Bottom
+        Output_DrawGradientScreenLine(
+            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, br, bl);
+    }
+}
+
+void Output_DrawCentreGradientScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
+    RGBA8888 center, int32_t thickness)
+{
+    for (int i = 0; i < thickness; i++) {
+        // Top
+        Output_DrawGradientScreenLine(
+            sx - i, sy - i, (w / 2) + i, 0, edge, center);
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy - i, (-w / 2) - i, 0, edge, center);
+        // Right
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy - i, 0, (h / 2) + i, edge, center);
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy + h + i, 0, (-h / 2) - i, edge, center);
+        // Left
+        Output_DrawGradientScreenLine(
+            sx - i, sy - i, 0, (h / 2) + i, edge, center);
+        Output_DrawGradientScreenLine(
+            sx - i, sy + h + i, 0, (-h / 2) - i, edge, center);
+        // Bottom
+        Output_DrawGradientScreenLine(
+            sx - i, sy + h + i, (w / 2) + i, 0, edge, center);
+        Output_DrawGradientScreenLine(
+            sx + w + i, sy + h + i, (-w / 2) - i, 0, edge, center);
+    }
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
@@ -712,8 +800,8 @@ void Output_DrawScreenSprite(
     int32_t x2 = sx + (scale_h * (sprite->x2 >> 3) / PHD_ONE);
     int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
     int32_t y2 = sy + (scale_v * (sprite->y2 >> 3) / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
-        && y1 < ViewPort_GetHeight()) {
+    if (x2 >= 0 && y2 >= 0 && x1 < Viewport_GetWidth()
+        && y1 < Viewport_GetHeight()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 8 * z, sprnum, shade);
     }
 }
@@ -727,8 +815,8 @@ void Output_DrawScreenSprite2D(
     int32_t x2 = sx + (scale_h * sprite->x2 / PHD_ONE);
     int32_t y1 = sy + (scale_v * sprite->y1 / PHD_ONE);
     int32_t y2 = sy + (scale_v * sprite->y2 / PHD_ONE);
-    if (x2 >= 0 && y2 >= 0 && x1 < ViewPort_GetWidth()
-        && y1 < ViewPort_GetHeight()) {
+    if (x2 >= 0 && y2 >= 0 && x1 < Viewport_GetWidth()
+        && y1 < Viewport_GetHeight()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, 0);
     }
 }
@@ -736,25 +824,25 @@ void Output_DrawScreenSprite2D(
 void Output_DrawSpriteRel(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
 {
-    int32_t zv = g_PhdMatrixPtr->_20 * x + g_PhdMatrixPtr->_21 * y
-        + g_PhdMatrixPtr->_22 * z + g_PhdMatrixPtr->_23;
+    int32_t zv = g_MatrixPtr->_20 * x + g_MatrixPtr->_21 * y
+        + g_MatrixPtr->_22 * z + g_MatrixPtr->_23;
     if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
         return;
     }
 
-    int32_t xv = g_PhdMatrixPtr->_00 * x + g_PhdMatrixPtr->_01 * y
-        + g_PhdMatrixPtr->_02 * z + g_PhdMatrixPtr->_03;
-    int32_t yv = g_PhdMatrixPtr->_10 * x + g_PhdMatrixPtr->_11 * y
-        + g_PhdMatrixPtr->_12 * z + g_PhdMatrixPtr->_13;
+    int32_t xv = g_MatrixPtr->_00 * x + g_MatrixPtr->_01 * y
+        + g_MatrixPtr->_02 * z + g_MatrixPtr->_03;
+    int32_t yv = g_MatrixPtr->_10 * x + g_MatrixPtr->_11 * y
+        + g_MatrixPtr->_12 * z + g_MatrixPtr->_13;
     int32_t zp = zv / g_PhdPersp;
 
     PHD_SPRITE *sprite = &g_PhdSpriteInfo[sprnum];
-    int32_t x1 = ViewPort_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    int32_t y1 = ViewPort_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t x2 = ViewPort_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
-    int32_t y2 = ViewPort_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    int32_t x1 = Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
+    int32_t y1 = Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t x2 = Viewport_GetCenterX() + (xv + (sprite->y1 << W2V_SHIFT)) / zp;
+    int32_t y2 = Viewport_GetCenterY() + (yv + (sprite->y2 << W2V_SHIFT)) / zp;
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
         shade += Output_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
@@ -770,8 +858,8 @@ void Output_DrawUISprite(
     int32_t x2 = x + (scale * sprite->x2 >> 16);
     int32_t y1 = y + (scale * sprite->y1 >> 16);
     int32_t y2 = y + (scale * sprite->y2 >> 16);
-    if (x2 >= ViewPort_GetMinX() && y2 >= ViewPort_GetMinY()
-        && x1 <= ViewPort_GetMaxX() && y1 <= ViewPort_GetMaxY()) {
+    if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
+        && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         S_Output_DrawSprite(x1, y1, x2, y2, 200, sprnum, shade);
     }
 }
@@ -781,7 +869,7 @@ void Output_DisplayPicture(const char *filename)
     PICTURE *orig_pic = Picture_CreateFromFile(filename);
     if (orig_pic) {
         PICTURE *scaled_pic = Picture_ScaleSmart(
-            orig_pic, ViewPort_GetWidth(), ViewPort_GetHeight());
+            orig_pic, Viewport_GetWidth(), Viewport_GetHeight());
         if (scaled_pic) {
             S_Output_DownloadPicture(scaled_pic);
             Picture_Free(scaled_pic);
@@ -796,10 +884,10 @@ void Output_DrawLightningSegment(
 {
     if (z1 >= Output_GetNearZ() && z1 <= Output_GetFarZ()
         && z2 >= Output_GetNearZ() && z2 <= Output_GetFarZ()) {
-        x1 = ViewPort_GetCenterX() + x1 / (z1 / g_PhdPersp);
-        y1 = ViewPort_GetCenterY() + y1 / (z1 / g_PhdPersp);
-        x2 = ViewPort_GetCenterX() + x2 / (z2 / g_PhdPersp);
-        y2 = ViewPort_GetCenterY() + y2 / (z2 / g_PhdPersp);
+        x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
+        y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
+        x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
+        y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
         int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
         int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
         S_Output_DrawLightningSegment(
@@ -823,7 +911,7 @@ void Output_SetupAboveWater(bool underwater)
 
 void Output_AnimateTextures(int32_t ticks)
 {
-    g_WibbleOffset = (g_WibbleOffset + ticks) % WIBBLE_SIZE;
+    g_WibbleOffset = (g_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
 
     static int32_t tick_comp = 0;
     tick_comp += ticks;
@@ -847,20 +935,38 @@ void Output_AnimateTextures(int32_t ticks)
     }
 }
 
+void Output_RotateLight(int16_t pitch, int16_t yaw)
+{
+    int32_t cp = Math_Cos(pitch);
+    int32_t sp = Math_Sin(pitch);
+    int32_t cy = Math_Cos(yaw);
+    int32_t sy = Math_Sin(yaw);
+    int32_t ls_x = TRIGMULT2(cp, sy);
+    int32_t ls_y = -sp;
+    int32_t ls_z = TRIGMULT2(cp, cy);
+    m_LsVectorView.x = (g_W2VMatrix._00 * ls_x + g_W2VMatrix._01 * ls_y
+                        + g_W2VMatrix._02 * ls_z)
+        >> W2V_SHIFT;
+    m_LsVectorView.y = (g_W2VMatrix._10 * ls_x + g_W2VMatrix._11 * ls_y
+                        + g_W2VMatrix._12 * ls_z)
+        >> W2V_SHIFT;
+    m_LsVectorView.z = (g_W2VMatrix._20 * ls_x + g_W2VMatrix._21 * ls_y
+                        + g_W2VMatrix._22 * ls_z)
+        >> W2V_SHIFT;
+}
+
 static void Output_DrawBlackScreen(uint8_t alpha)
 {
-    if (alpha) {
-        int32_t sx = 0;
-        int32_t sy = 0;
-        int32_t sw = ViewPort_GetMaxX();
-        int32_t sh = ViewPort_GetMaxY();
+    int32_t sx = 0;
+    int32_t sy = 0;
+    int32_t sw = Viewport_GetWidth();
+    int32_t sh = Viewport_GetHeight();
 
-        RGBA8888 background = { 0, 0, 0, alpha };
-        S_Output_DisableDepthTest();
-        S_Output_ClearDepthBuffer();
-        Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
-        S_Output_EnableDepthTest();
-    }
+    RGBA8888 background = { 0, 0, 0, alpha };
+    S_Output_DisableDepthTest();
+    S_Output_ClearDepthBuffer();
+    Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
+    S_Output_EnableDepthTest();
 }
 
 static void Output_FadeAnimate(int ticks)
@@ -886,17 +992,17 @@ static void Output_FadeAnimate(int ticks)
     }
 }
 
-void Output_DrawBackdropScreen()
+void Output_DrawBackdropScreen(void)
 {
     Output_DrawBlackScreen(m_BackdropCurAlpha);
 }
 
-void Output_DrawOverlayScreen()
+void Output_DrawOverlayScreen(void)
 {
     Output_DrawBlackScreen(m_OverlayCurAlpha);
 }
 
-void Output_FadeReset()
+void Output_FadeReset(void)
 {
     m_BackdropCurAlpha = 0;
     m_OverlayCurAlpha = 0;
@@ -909,7 +1015,7 @@ void Output_FadeSetSpeed(double speed)
     m_FadeSpeed = speed;
 }
 
-void Output_FadeResetToBlack()
+void Output_FadeResetToBlack(void)
 {
     m_OverlayCurAlpha = 255;
     m_OverlayDstAlpha = 255;
@@ -946,7 +1052,7 @@ void Output_FadeToTransparent(bool allow_immediate)
     }
 }
 
-bool Output_FadeIsAnimating()
+bool Output_FadeIsAnimating(void)
 {
     if (!g_Config.enable_fade_effects) {
         return false;
@@ -967,4 +1073,97 @@ void Output_ApplyWaterEffect(float *r, float *g, float *b)
 bool Output_MakeScreenshot(const char *path)
 {
     return S_Output_MakeScreenshot(path);
+}
+
+int Output_GetObjectBounds(int16_t *bptr)
+{
+    if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
+        return 0;
+    }
+
+    int32_t x_min = bptr[0];
+    int32_t x_max = bptr[1];
+    int32_t y_min = bptr[2];
+    int32_t y_max = bptr[3];
+    int32_t z_min = bptr[4];
+    int32_t z_max = bptr[5];
+
+    PHD_VECTOR vtx[8];
+    vtx[0].x = x_min;
+    vtx[0].y = y_min;
+    vtx[0].z = z_min;
+    vtx[1].x = x_max;
+    vtx[1].y = y_min;
+    vtx[1].z = z_min;
+    vtx[2].x = x_max;
+    vtx[2].y = y_max;
+    vtx[2].z = z_min;
+    vtx[3].x = x_min;
+    vtx[3].y = y_max;
+    vtx[3].z = z_min;
+    vtx[4].x = x_min;
+    vtx[4].y = y_min;
+    vtx[4].z = z_max;
+    vtx[5].x = x_max;
+    vtx[5].y = y_min;
+    vtx[5].z = z_max;
+    vtx[6].x = x_max;
+    vtx[6].y = y_max;
+    vtx[6].z = z_max;
+    vtx[7].x = x_min;
+    vtx[7].y = y_max;
+    vtx[7].z = z_max;
+
+    int num_z = 0;
+    x_min = 0x3FFFFFFF;
+    y_min = 0x3FFFFFFF;
+    x_max = -0x3FFFFFFF;
+    y_max = -0x3FFFFFFF;
+
+    for (int i = 0; i < 8; i++) {
+        int32_t zv = g_MatrixPtr->_20 * vtx[i].x + g_MatrixPtr->_21 * vtx[i].y
+            + g_MatrixPtr->_22 * vtx[i].z + g_MatrixPtr->_23;
+
+        if (zv > Output_GetNearZ() && zv < Output_GetFarZ()) {
+            ++num_z;
+            int32_t zp = zv / g_PhdPersp;
+            int32_t xv =
+                (g_MatrixPtr->_00 * vtx[i].x + g_MatrixPtr->_01 * vtx[i].y
+                 + g_MatrixPtr->_02 * vtx[i].z + g_MatrixPtr->_03)
+                / zp;
+            int32_t yv =
+                (g_MatrixPtr->_10 * vtx[i].x + g_MatrixPtr->_11 * vtx[i].y
+                 + g_MatrixPtr->_12 * vtx[i].z + g_MatrixPtr->_13)
+                / zp;
+
+            if (x_min > xv) {
+                x_min = xv;
+            } else if (x_max < xv) {
+                x_max = xv;
+            }
+
+            if (y_min > yv) {
+                y_min = yv;
+            } else if (y_max < yv) {
+                y_max = yv;
+            }
+        }
+    }
+
+    x_min += Viewport_GetCenterX();
+    x_max += Viewport_GetCenterX();
+    y_min += Viewport_GetCenterY();
+    y_max += Viewport_GetCenterY();
+
+    if (!num_z || x_min > g_PhdRight || y_min > g_PhdBottom || x_max < g_PhdLeft
+        || y_max < g_PhdTop) {
+        return 0; // out of screen
+    }
+
+    if (num_z < 8 || x_min < 0 || y_min < 0 || x_max > Viewport_GetMaxX()
+        || y_max > Viewport_GetMaxY()) {
+        return -1; // clipped
+    }
+
+    return 1; // fully on screen
 }

@@ -9,7 +9,9 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "util.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #define COLOR_STEPS 5
@@ -21,6 +23,7 @@ static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
 static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
+static int32_t m_OldGameTimer = 0;
 
 static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -96,9 +99,9 @@ static BAR_INFO m_HealthBar = { 0 };
 static BAR_INFO m_AirBar = { 0 };
 static BAR_INFO m_EnemyBar = { 0 };
 
-static void Overlay_BarSetupHealth();
-static void Overlay_BarSetupAir();
-static void Overlay_BarSetupEnemy();
+static void Overlay_BarSetupHealth(void);
+static void Overlay_BarSetupAir(void);
+static void Overlay_BarSetupEnemy(void);
 static void Overlay_BarBlink(BAR_INFO *bar_info);
 static int32_t Overlay_BarGetPercent(BAR_INFO *bar_info);
 static void Overlay_BarGetLocation(
@@ -108,7 +111,7 @@ static void Overlay_BarDraw(BAR_INFO *bar_info);
 static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
 static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
 
-static void Overlay_BarSetupHealth()
+static void Overlay_BarSetupHealth(void)
 {
     m_HealthBar.type = BT_LARA_HEALTH;
     m_HealthBar.value = 0;
@@ -122,7 +125,7 @@ static void Overlay_BarSetupHealth()
     m_HealthBar.location = g_Config.healthbar_location;
 }
 
-static void Overlay_BarSetupAir()
+static void Overlay_BarSetupAir(void)
 {
     m_AirBar.type = BT_LARA_AIR;
     m_AirBar.value = LARA_AIR;
@@ -136,7 +139,7 @@ static void Overlay_BarSetupAir()
     m_AirBar.location = g_Config.airbar_location;
 }
 
-static void Overlay_BarSetupEnemy()
+static void Overlay_BarSetupEnemy(void)
 {
     m_EnemyBar.type = BT_ENEMY_HEALTH;
     m_EnemyBar.value = 0;
@@ -272,7 +275,7 @@ static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring)
     m_FPSText = NULL;
 }
 
-void Overlay_Init()
+void Overlay_Init(void)
 {
     for (int i = 0; i < MAX_PICKUPS; i++) {
         m_Pickups[i].duration = 0;
@@ -288,13 +291,13 @@ void Overlay_BarSetHealthTimer(int16_t timer)
     m_HealthBar.timer = timer;
 }
 
-void Overlay_BarHealthTimerTick()
+void Overlay_BarHealthTimerTick(void)
 {
     m_HealthBar.timer--;
     CLAMPL(m_HealthBar.timer, 0);
 }
 
-void Overlay_BarDrawHealth()
+void Overlay_BarDrawHealth(void)
 {
     static int32_t old_hit_points = 0;
 
@@ -337,7 +340,7 @@ void Overlay_BarDrawHealth()
     Overlay_BarDraw(&m_HealthBar);
 }
 
-void Overlay_BarDrawAir()
+void Overlay_BarDrawAir(void)
 {
     m_AirBar.value = g_Lara.air;
     CLAMP(m_AirBar.value, 0, m_AirBar.max_value);
@@ -371,7 +374,7 @@ void Overlay_BarDrawAir()
     Overlay_BarDraw(&m_AirBar);
 }
 
-void Overlay_BarDrawEnemy()
+void Overlay_BarDrawEnemy(void)
 {
     if (!m_EnemyBar.show || !g_Lara.target) {
         return;
@@ -385,7 +388,7 @@ void Overlay_BarDrawEnemy()
     Overlay_BarDraw(&m_EnemyBar);
 }
 
-void Overlay_DrawAmmoInfo()
+void Overlay_DrawAmmoInfo(void)
 {
     const double scale = 0.8;
     const int32_t text_height = 17 * scale;
@@ -438,18 +441,18 @@ void Overlay_DrawAmmoInfo()
         : text_height + screen_margin_v;
 }
 
-void Overlay_DrawPickups()
+void Overlay_DrawPickups(void)
 {
-    static int32_t old_game_timer = 0;
-    int16_t time = g_GameInfo.stats.timer - old_game_timer;
-    old_game_timer = g_GameInfo.stats.timer;
+    int16_t time =
+        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
+    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
 
     if (time > 0 && time < 60) {
         int32_t sprite_height =
-            MIN(ViewPort_GetWidth(), ViewPort_GetHeight() * 320 / 200) / 10;
+            MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
         int32_t sprite_width = sprite_height * 4 / 3;
-        int32_t y = ViewPort_GetHeight() - sprite_height;
-        int32_t x = ViewPort_GetWidth() - sprite_height;
+        int32_t y = Viewport_GetHeight() - sprite_height;
+        int32_t x = Viewport_GetWidth() - sprite_height;
         for (int i = 0; i < MAX_PICKUPS; i++) {
             DISPLAYPU *pu = &m_Pickups[i];
             pu->duration -= time;
@@ -460,7 +463,7 @@ void Overlay_DrawPickups()
                     x, y, Screen_GetRenderScaleGLRage(12288), pu->sprnum, 4096);
 
                 if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
-                    x = ViewPort_GetWidth() - sprite_height;
+                    x = Viewport_GetWidth() - sprite_height;
                     y -= sprite_height;
                 } else {
                     x -= sprite_width;
@@ -470,7 +473,7 @@ void Overlay_DrawPickups()
     }
 }
 
-void Overlay_DrawFPSInfo()
+void Overlay_DrawFPSInfo(void)
 {
     static int32_t elapsed = 0;
 
@@ -496,7 +499,7 @@ void Overlay_DrawFPSInfo()
     }
 }
 
-void Overlay_DrawGameInfo()
+void Overlay_DrawGameInfo(void)
 {
     if (g_OverlayFlag > 0) {
         Overlay_BarDrawHealth();

@@ -5,19 +5,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef int16_t S_INPUT_KEYCODE;
+void S_Input_Init(void);
+void S_Input_Shutdown(void);
 
-void S_Input_Init();
+INPUT_STATE S_Input_GetCurrentState(void);
 
-INPUT_STATE S_Input_GetCurrentState();
+INPUT_SCANCODE S_Input_GetAssignedScancode(int16_t layout_num, INPUT_ROLE role);
 
-S_INPUT_KEYCODE S_Input_ReadKeyCode();
+void S_Input_AssignScancode(
+    int16_t layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode);
 
-const char *S_Input_GetKeyCodeName(S_INPUT_KEYCODE key);
+bool S_Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role);
 
-bool S_Input_IsKeyConflicted(INPUT_KEY key);
-void S_Input_SetKeyAsConflicted(INPUT_KEY key, bool is_conflicted);
-
-S_INPUT_KEYCODE S_Input_GetAssignedKeyCode(int16_t layout_num, INPUT_KEY key);
-void S_Input_AssignKeyCode(
-    int16_t layout_num, INPUT_KEY key, S_INPUT_KEYCODE key_code);
+const char *S_Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role);

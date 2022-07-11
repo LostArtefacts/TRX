@@ -1,25 +1,20 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
-#include "game/clock.h"
-#include "game/gamebuf.h"
-#include "game/gameflow.h"
-#include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/random.h"
-#include "game/savegame.h"
 #include "game/shell.h"
-#include "global/vars_platform.h"
+#include "game/sound.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_audio.h"
-#include "src/game/sound.h"
 
 #define SDL_MAIN_HANDLED
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
 #include <time.h>
 
 static int m_ArgCount = 0;
@@ -27,21 +22,9 @@ static char **m_ArgStrings = NULL;
 static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
 
-static void S_Shell_PostWindowResize();
+static void S_Shell_PostWindowResize(void);
 
-void S_Shell_Shutdown()
-{
-    while (g_Input.select) {
-        Input_Update();
-    }
-    GameFlow_Shutdown();
-    GameBuf_Shutdown();
-    Output_Shutdown();
-    S_Audio_Shutdown();
-    Savegame_Shutdown();
-}
-
-void S_Shell_SeedRandom()
+void S_Shell_SeedRandom(void)
 {
     time_t lt = time(0);
     struct tm *tptr = localtime(&lt);
@@ -49,7 +32,7 @@ void S_Shell_SeedRandom()
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-static void S_Shell_PostWindowResize()
+static void S_Shell_PostWindowResize(void)
 {
     int width;
     int height;
@@ -60,12 +43,12 @@ static void S_Shell_PostWindowResize()
 void S_Shell_ShowFatalError(const char *message)
 {
     LOG_ERROR("%s", message);
-    MessageBoxA(
-        0, message, "Tomb Raider Error", MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    SDL_ShowSimpleMessageBox(
+        SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", message, m_Window);
     S_Shell_TerminateGame(1);
 }
 
-void S_Shell_ToggleFullscreen()
+void S_Shell_ToggleFullscreen(void)
 {
     m_Fullscreen = !m_Fullscreen;
     Output_SetFullscreen(m_Fullscreen);
@@ -77,7 +60,7 @@ void S_Shell_ToggleFullscreen()
 
 void S_Shell_TerminateGame(int exit_code)
 {
-    S_Shell_Shutdown();
+    Shell_Shutdown();
     if (m_Window) {
         SDL_DestroyWindow(m_Window);
     }
@@ -85,7 +68,7 @@ void S_Shell_TerminateGame(int exit_code)
     exit(exit_code);
 }
 
-void S_Shell_SpinMessageLoop()
+void S_Shell_SpinMessageLoop(void)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0) {
@@ -183,17 +166,6 @@ int main(int argc, char **argv)
 
     SDL_ShowCursor(SDL_DISABLE);
 
-    SDL_SysWMinfo wm_info;
-    SDL_VERSION(&wm_info.version);
-    SDL_GetWindowWMInfo(m_Window, &wm_info);
-    g_TombModule = wm_info.info.win.hinstance;
-    g_TombHWND = wm_info.info.win.window;
-
-    if (!g_TombHWND) {
-        S_Shell_ShowFatalError("System Error: cannot create window");
-        return 1;
-    }
-
     Shell_Main();
 
     S_Shell_TerminateGame(0);
@@ -211,19 +183,19 @@ bool S_Shell_GetCommandLine(int *arg_count, char ***args)
     return true;
 }
 
-void *S_Shell_GetWindowHandle()
+void *S_Shell_GetWindowHandle(void)
 {
     return (void *)m_Window;
 }
 
-int S_Shell_GetCurrentDisplayWidth()
+int S_Shell_GetCurrentDisplayWidth(void)
 {
     SDL_DisplayMode dm;
     SDL_GetCurrentDisplayMode(0, &dm);
     return dm.w;
 }
 
-int S_Shell_GetCurrentDisplayHeight()
+int S_Shell_GetCurrentDisplayHeight(void)
 {
     SDL_DisplayMode dm;
     SDL_GetCurrentDisplayMode(0, &dm);

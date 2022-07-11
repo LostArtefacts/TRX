@@ -4,9 +4,7 @@
 #include "memory.h"
 #include "specific/s_filesystem.h"
 
-#include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 struct MYFILE {
@@ -36,7 +34,7 @@ bool File_IsRelative(const char *path)
     return path && !File_IsAbsolute(path);
 }
 
-const char *File_GetGameDirectory()
+const char *File_GetGameDirectory(void)
 {
     return S_File_GetGameDirectory();
 }
@@ -60,7 +58,7 @@ char *File_GetFullPath(const char *path)
             return out;
         }
     }
-    return Memory_Dup(path);
+    return Memory_DupStr(path);
 }
 
 char *File_GuessExtension(const char *path, const char **extensions)
@@ -81,14 +79,14 @@ char *File_GuessExtension(const char *path, const char **extensions)
             }
         }
     }
-    return Memory_Dup(path);
+    return Memory_DupStr(path);
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
     char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
-    file->path = Memory_Dup(path);
+    file->path = Memory_DupStr(path);
     switch (mode) {
     case FILE_OPEN_WRITE:
         file->fp = fopen(full_path, "wb");

@@ -4,27 +4,16 @@
 
 #include <stdint.h>
 
-void InitialiseCamera();
-void MoveCamera(GAME_VECTOR *ideal, int32_t speed);
-void ClipCamera(
-    int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
-    int32_t top, int32_t right, int32_t bottom);
-void ShiftCamera(
-    int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
-    int32_t top, int32_t right, int32_t bottom);
-int32_t BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
-void SmartShift(
-    GAME_VECTOR *ideal,
-    void (*shift)(
-        int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
-        int32_t left, int32_t top, int32_t right, int32_t bottom));
-void ChaseCamera(ITEM_INFO *item);
-int32_t ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
-void CombatCamera(ITEM_INFO *item);
-void LookCamera(ITEM_INFO *item);
-void FixedCamera();
-void CalculateCamera();
+void Camera_Initialise(void);
+void Camera_Chase(ITEM_INFO *item);
+void Camera_Combat(ITEM_INFO *item);
+void Camera_Look(ITEM_INFO *item);
+void Camera_Fixed(void);
+void Camera_Update(void);
+void Camera_UpdateCutscene(void);
 
-void CameraOffsetAdditionalAngle(int16_t delta);
-void CameraOffsetAdditionalElevation(int16_t delta);
-void CameraOffsetReset();
+void Camera_OffsetAdditionalAngle(int16_t delta);
+void Camera_OffsetAdditionalElevation(int16_t delta);
+void Camera_OffsetReset(void);
+
+void Camera_RefreshFromTrigger(int16_t type, int16_t *data);

@@ -4,6 +4,7 @@
 #include "gfx/gl/vertex_array.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef enum {
     GFX_3D_PRIM_LINE = 0,

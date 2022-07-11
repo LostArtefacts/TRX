@@ -1,10 +1,10 @@
 #include "game/sound.h"
 
-#include "3dsystem/phd_math.h"
 #include "game/random.h"
 #include "game/shell.h"
 #include "global/vars.h"
 #include "log.h"
+#include "math/math.h"
 #include "specific/s_audio.h"
 #include "util.h"
 
@@ -137,7 +137,8 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
     }
 
     uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
-    int32_t volume = s->volume - phd_sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
+    int32_t volume =
+        s->volume - Math_Sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
     if (volume < 0) {
         slot->volume = 0;
         return;
@@ -152,7 +153,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
         return;
     }
 
-    int16_t angle = phd_atan(
+    int16_t angle = Math_Atan(
         slot->pos->z - g_LaraItem->pos.z, slot->pos->x - g_LaraItem->pos.x);
     angle -= g_LaraItem->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
     slot->pan = angle;
@@ -179,7 +180,7 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
     }
 }
 
-bool Sound_Init()
+bool Sound_Init(void)
 {
     m_DecibelLUT[0] = -10000;
     for (int i = 1; i < DECIBEL_LUT_SIZE; i++) {
@@ -192,7 +193,12 @@ bool Sound_Init()
     return m_SoundIsActive;
 }
 
-void Sound_UpdateEffects()
+void Sound_Shutdown(void)
+{
+    S_Audio_Shutdown();
+}
+
+void Sound_UpdateEffects(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -299,7 +305,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         distance = 0;
         pan = 0;
     }
-    distance = phd_sqrt(distance);
+    distance = Math_Sqrt(distance);
 
     int32_t volume = s->volume - distance * SOUND_RANGE_MULT_CONSTANT;
     if (s->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
@@ -316,7 +322,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
 
     if (pan) {
         int16_t angle =
-            phd_atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
+            Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
         angle -= g_LaraItem->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
         pan = angle;
     }
@@ -455,7 +461,7 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
     return false;
 }
 
-void Sound_ResetEffects()
+void Sound_ResetEffects(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -493,7 +499,7 @@ void Sound_ResetEffects()
     }
 }
 
-void Sound_ResetAmbientLoudness()
+void Sound_ResetAmbientLoudness(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -505,7 +511,7 @@ void Sound_ResetAmbientLoudness()
     }
 }
 
-void Sound_StopAmbientSounds()
+void Sound_StopAmbientSounds(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -526,7 +532,7 @@ void Sound_LoadSamples(
     S_Audio_SamplesLoad(num_samples, sample_pointers, sizes);
 }
 
-void Sound_StopAllSamples()
+void Sound_StopAllSamples(void)
 {
     S_Audio_SampleSoundCloseAll();
 }

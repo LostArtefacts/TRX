@@ -3,6 +3,8 @@
 #include "game/shell.h"
 #include "memory.h"
 
+#include <stddef.h>
+
 #define MALLOC_SIZE 0x1000000 // 16 MB
 
 static char *m_GameMemoryPointer = NULL;
@@ -51,14 +53,14 @@ static const char *GameBuf_GetBufferName(GAME_BUFFER buffer)
     return "Unknown";
 };
 
-void GameBuf_Init()
+void GameBuf_Init(void)
 {
     m_GameMemoryPointer = Memory_Alloc(MALLOC_SIZE);
     m_GameAllocMemPointer = m_GameMemoryPointer;
     m_GameAllocMemFree = MALLOC_SIZE;
 }
 
-void GameBuf_Shutdown()
+void GameBuf_Shutdown(void)
 {
     Memory_FreePointer(&m_GameMemoryPointer);
     m_GameAllocMemPointer = NULL;

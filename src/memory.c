@@ -34,15 +34,17 @@ void Memory_Free(void *memory)
 
 void Memory_FreePointer(void *arg)
 {
+    assert(arg);
     void *memory;
     memcpy(&memory, arg, sizeof(void *));
     memcpy(arg, &(void *) { NULL }, sizeof(void *));
     Memory_Free(memory);
 }
 
-void *Memory_Dup(const char *string)
+char *Memory_DupStr(const char *string)
 {
-    void *memory = Memory_Alloc(strlen(string) + 1);
+    assert(string);
+    char *memory = Memory_Alloc(strlen(string) + 1);
     strcpy(memory, string);
     return memory;
 }

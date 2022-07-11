@@ -203,6 +203,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added a fly cheat
 - added a level skip cheat
 - added a door open cheat (while in fly mode)
+- added a cheat to increase the game speed
 - added ability to adjust Lara's starting health
 - added ability to disable all medpacks
 - added ability to disable Magnums
@@ -213,6 +214,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added ability to disable cutscenes
 - added ability to disable healing between levels
 - added rendering of pickups on the ground as 3D meshes
+- added ability to automatically walk to items when nearby
 - added braid (currently only works in Lost Valley)
 - added support for displaying more than 3 pickup sprites
 - added a choice whether to play NG or NG+
@@ -230,20 +232,23 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added save game crystals game mode (enabled via gameflow)
 - added pause screen
 - added movable camera on W,A,S,D
-- added Xbox One Controller support
-    - Per Axis Dead Zone
-    - Left Stick = movement
-    - A = Jump/Select
-    - B = Roll/Deselect
-    - X = Action/Select
-    - Y = Look/Select
-    - LB = Walk
-    - RB = Draw Weapons
-    - Dpad Up = Draw Weapons
-    - Back = Option
-    - Start = Pause
-    - Right Stick = Camera Movement
-    - R3 = Reset Camera
+- added controller support
+    | Xbox button | DualShock button   | Action          |
+    | ----------- | ------------------ | --------------- |
+    | Left Stick  | Left stick         | Movement        |
+    | A           | X                  | Action/select   |
+    | B           | Circle             | Roll/deselect   |
+    | X           | Square             | Jump            |
+    | Y           | Triangle           | Draw weapons    |
+    | LB          | L1                 | Look            |
+    | RB          | R1                 | Walk            |
+    | LT          | L2                 | Sidestep left   |
+    | RT          | R2                 | Sidestep right  |
+    | D-pad       | D-pad              | Movement        |
+    | Back        | Share/Touchpad     | Inventory       |
+    | Start       | Options            | Pause           |
+    | Right Stick | Right stick        | Camera movement |
+    | R3          | R3                 | Reset camera    |
 - added rounded shadows (instead of the default octagon)
 - added per-level customizable water color (with customizable blue component)
 - added per-level customizable fog distance
@@ -256,6 +261,15 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added a vsync option
 - added total pickups and kills per level to the stats screen
 - added restart level to passport menu on death
+- added contextual arrows to menu options
+- added a final statistics screen
+- added music during the credits
+- added fade effects to displayed images
+- added unobtainable pickups and kills stats support in the gameflow
+- added the option to pause sound in the inventory screen
+- added level selection to the load game menu
+- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
+- added the PS1 style UI
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192
@@ -300,6 +314,10 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed empty mutant shells in Unfinished Business spawning Lara's hips
 - fixed gun pickups disappearing in rare circumstances on save load (#406)
 - fixed broken dart ricochet effect
+- fixed exploded mutant pods sometimes appearing unhatched on reload
+- fixed sound effects playing rapidly in sound menu if input held down
+- fixed underwater caustics animating at 2x speed
+- fixed bridges at floor level appearing under the floor
 
 ## Showcase
 
@@ -349,39 +367,6 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     and music) and there is planned work towards reducing the amount of
     Windows-only code.
 
-## Level kills and pickup notes
-The game can show the total number of pickups and kills in a level by checking
-the compass in the inventory or at the end of level stats screen. Due to some
-of the levels' design, some of these kills and pickups are not obtainable.
-See the table below for the discrepancies. Unreachable items are in parentheses.
-
-Tomb Raider 1:
-Level | Kills | Pickups | Secrets |
-| ----------- | ----------- | ----------- | ----------- |
-| Caves | 14 | 7 | 3 |
-| City of Vilcabamba | 29  | 13 | 3 |
-| Lost Valley | 13 | 16 | 5 |
-| Tomb of Qualopec | 8 | 8 | 3 |
-| St. Francis' Folly | 23 | 19 | 4 |
-| Colosseum | 26 | 14 | 3 |
-| Palace Midas | 43 | 23 (+1 medipack) | 3 |
-| Cistern | 34 | 28 | 3 |
-| Tomb of Tihocan | 17 | 26 | 2 |
-| City of Khamoon | 14 | 24 | 3 |
-| Obelisk of Khamoon | 16 | 38 | 3 |
-| Sanctuary of the Scion | 15 | 29 | 1 |
-| Natla's Mines | 3 | 30 | 3 |
-| Atlantis | 32 | 53 (+2 medipacks, +1 uzi ammo) | 3 |
-| The Great Pyramid | 6 | 31 | 3 |
-
-Unfinished Business:
-| Level | Kills | Pickups | Secrets |
-| ----------- | ----------- | ----------- | ----------- |
-| Return to Egypt | 42 (+1 panther) | 53 | 3 |
-| Temple of the Cat | 44 | 64 (+1 magnum ammo) | 4 |
-| Atlanetean Stronghold | 32 (+1 Centaur) | 63 | 2 |
-| The Hive | 41 | 60 | 1 |
-
 ## Current road map
 
 Note: this section may be subject to change.
@@ -394,7 +379,7 @@ Note: this section may be subject to change.
 - [ ] Work on cross platform builds
     - [x] Port DirectSound to libavcodec and SDL
     - [x] Port WinMM to libavcodec and SDL
-    - [ ] Port DirectInput to SDL
+    - [x] Port DirectInput to SDL
     - [ ] Replace wgl_ext.h with cross platform variant
     - [ ] Remove HWND and HINSTANCE usages
     - [ ] ...
@@ -403,15 +388,15 @@ Note: this section may be subject to change.
 - [ ] Beautify the code
     - [x] Refactor GLRage to no longer emulate DDraw
     - [x] Refactor GLRage to no longer emulate ATI3DCIF
-    - [ ] Apply rigid name conventions to function names
-    - [ ] Refactor specific/ away
+    - [x] Apply rigid name conventions to function names
+    - [ ] Refactor specific/ away?
     - [ ] ...
 - [ ] Work on data injection and other features?
 
 ## Importing data to IDA
 
 This option requires IDAPython and a recent version of IDA. Install Python 3.8+
-and IDA 7.5+, then hit alt+f7, then choose `scripts/ida_import.py`.
+and IDA 7.5+, then hit alt+f7, then choose `tools/ida_import.py`.
 
 ## License
 

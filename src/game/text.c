@@ -1,11 +1,11 @@
 #include "game/text.h"
 
+#include "config.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -13,6 +13,8 @@
 #define TEXT_BOX_OFFSET 2
 #define TEXT_MAX_STRING_SIZE 100
 #define TEXT_MAX_STRINGS 64
+#define LEFT_ARROW_SYM 108
+#define RIGHT_ARROW_SYM 109
 
 static int16_t m_TextstringCount = 0;
 static TEXTSTRING m_TextstringTable[TEXT_MAX_STRINGS] = { 0 };
@@ -54,9 +56,131 @@ static int8_t m_TextASCIIMap[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-static void Text_DrawText(TEXTSTRING *textstring);
+static RGBA8888 m_MenuColorMap[MC_NUMBER_OF] = {
+    { 70, 30, 107, 230 }, // MC_PURPLE_C
+    { 70, 30, 107, 0 }, // MC_PURPLE_E
+    { 91, 46, 9, 255 }, // MC_BROWN_C
+    { 91, 46, 9, 0 }, // MC_BROWN_E
+    { 197, 197, 197, 255 }, // MC_GREY_C
+    { 45, 45, 45, 255 }, // MC_GREY_E
+    { 96, 96, 96, 255 }, // MC_GREY_TL
+    { 32, 32, 32, 255 }, // MC_GREY_TR
+    { 63, 63, 63, 255 }, // MC_GREY_BL
+    { 0, 0, 0, 255 }, // MC_GREY_BR
+    { 0, 0, 0, 255 }, // MC_BLACK
+    { 232, 192, 112, 255 }, // MC_GOLD_LIGHT
+    { 140, 112, 56, 255 }, // MC_GOLD_DARK
+};
 
-void Text_Init()
+typedef struct QUAD_INFO {
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
+} QUAD_INFO;
+
+static void Text_DrawText(TEXTSTRING *textstring);
+static uint8_t Text_MapLetterToSpriteNum(char letter);
+static void Text_DrawTextBackground(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style);
+static void Text_DrawTextOutline(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style);
+
+static void Text_DrawTextBackground(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenFBox(sx, sy, w, h);
+        return;
+    }
+
+    // Make sure height and width divisible by 2.
+    w = 2 * ((w + 1) / 2);
+    h = 2 * ((h + 1) / 2);
+    Output_DrawScreenFBox(sx, sy, w, h);
+
+    QUAD_INFO gradient_quads[4] = { { sx, sy, w / 2, h / 2 },
+                                    { sx + w, sy, -w / 2, h / 2 },
+                                    { sx, sy + h, w / 2, -h / 2 },
+                                    { sx + w, sy + h, -w / 2, -h / 2 } };
+
+    if (text_style == TS_HEADING) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_E), Text_GetMenuColor(MC_BROWN_E),
+                Text_GetMenuColor(MC_BROWN_C));
+        }
+    } else if (text_style == TS_REQUESTED) {
+        for (int i = 0; i < 4; i++) {
+            Output_DrawScreenGradientQuad(
+                gradient_quads[i].x, gradient_quads[i].y, gradient_quads[i].w,
+                gradient_quads[i].h, Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_E), Text_GetMenuColor(MC_PURPLE_E),
+                Text_GetMenuColor(MC_PURPLE_C));
+        }
+    }
+}
+
+static void Text_DrawTextOutline(
+    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
+    TEXT_STYLE text_style)
+{
+    if (ui_style == UI_STYLE_PC) {
+        Output_DrawScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT),
+            TEXT_OUTLINE_THICKNESS);
+        Output_DrawScreenBox(
+            sx - 1, sy - 1, w, h, Text_GetMenuColor(MC_GOLD_DARK),
+            TEXT_OUTLINE_THICKNESS);
+        return;
+    }
+
+    if (text_style == TS_HEADING) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_BLACK),
+            Text_GetMenuColor(MC_BLACK), Text_GetMenuColor(MC_BLACK),
+            Text_GetMenuColor(MC_BLACK), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_BACKGROUND) {
+        Output_DrawGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
+            Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
+            Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
+    } else if (text_style == TS_REQUESTED) {
+        // Make sure height and width divisible by 2.
+        w = 2 * ((w + 1) / 2);
+        h = 2 * ((h + 1) / 2);
+        Output_DrawCentreGradientScreenBox(
+            sx, sy, w, h, Text_GetMenuColor(MC_GREY_E),
+            Text_GetMenuColor(MC_GREY_C), TEXT_OUTLINE_THICKNESS);
+    }
+}
+
+static uint8_t Text_MapLetterToSpriteNum(char letter)
+{
+    if (letter >= 16) {
+        return m_TextASCIIMap[letter - 32];
+    } else if (letter == '\200') {
+        return LEFT_ARROW_SYM;
+    } else if (letter == '\201') {
+        return RIGHT_ARROW_SYM;
+    } else if (letter >= 11) {
+        return letter + 91;
+    } else {
+        return letter + 81;
+    }
+}
+
+RGBA8888 Text_GetMenuColor(MENU_COLOR color)
+{
+    return m_MenuColorMap[color];
+}
+
+void Text_Init(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         m_TextstringTable[i].flags.all = 0;
@@ -120,11 +244,19 @@ void Text_ChangeText(TEXTSTRING *textstring, const char *string)
         return;
     }
     size_t length = strlen(string) + 1;
-    CLAMPG(length, TEXT_MAX_STRING_SIZE);
-    strncpy(textstring->string, string, length);
+    strncpy(textstring->string, string, TEXT_MAX_STRING_SIZE - 1);
     if (length >= TEXT_MAX_STRING_SIZE) {
         textstring->string[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
+}
+
+void Text_SetPos(TEXTSTRING *textstring, int16_t x, int16_t y)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->pos.x = x;
+    textstring->pos.y = y;
 }
 
 void Text_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
@@ -150,8 +282,17 @@ void Text_Flash(TEXTSTRING *textstring, bool enable, int16_t rate)
     }
 }
 
+void Text_Hide(TEXTSTRING *textstring, bool enable)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->flags.hide = enable;
+}
+
 void Text_AddBackground(
-    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y)
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
+    TEXT_STYLE style)
 {
     if (!textstring) {
         return;
@@ -161,6 +302,7 @@ void Text_AddBackground(
     textstring->bgnd_size.y = h;
     textstring->bgnd_off.x = x;
     textstring->bgnd_off.y = y;
+    textstring->background.style = style;
 }
 
 void Text_RemoveBackground(TEXTSTRING *textstring)
@@ -171,12 +313,13 @@ void Text_RemoveBackground(TEXTSTRING *textstring)
     textstring->flags.background = 0;
 }
 
-void Text_AddOutline(TEXTSTRING *textstring, bool enable)
+void Text_AddOutline(TEXTSTRING *textstring, bool enable, TEXT_STYLE style)
 {
     if (!textstring) {
         return;
     }
     textstring->flags.outline = 1;
+    textstring->outline.style = style;
 }
 
 void Text_RemoveOutline(TEXTSTRING *textstring)
@@ -236,15 +379,8 @@ int32_t Text_GetWidth(TEXTSTRING *textstring)
             continue;
         }
 
-        if (letter >= 16) {
-            letter = m_TextASCIIMap[letter - 32];
-        } else if (letter >= 11) {
-            letter = letter + 91;
-        } else {
-            letter = letter + 81;
-        }
-
-        width += ((m_TextSpacing[(uint8_t)letter] + textstring->letter_spacing)
+        uint8_t sprite_num = Text_MapLetterToSpriteNum(letter);
+        width += ((m_TextSpacing[sprite_num] + textstring->letter_spacing)
                   * textstring->scale.h)
             / PHD_ONE;
     }
@@ -267,7 +403,7 @@ void Text_Remove(TEXTSTRING *textstring)
     }
 }
 
-void Text_RemoveAll()
+void Text_RemoveAll(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];
@@ -278,7 +414,7 @@ void Text_RemoveAll()
     Text_Init();
 }
 
-void Text_Draw()
+void Text_Draw(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];
@@ -291,6 +427,11 @@ void Text_Draw()
 static void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
+
+    if (textstring->flags.hide) {
+        return;
+    }
+
     if (textstring->flags.flash) {
         textstring->flash.count -= (int16_t)g_Camera.number_frames;
         if (textstring->flash.count <= -textstring->flash.rate) {
@@ -333,15 +474,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
             continue;
         }
 
-        int32_t sprite_num = letter;
-        if (letter >= 16) {
-            sprite_num = m_TextASCIIMap[letter - 32];
-        } else if (letter >= 11) {
-            sprite_num = letter + 91;
-        } else {
-            sprite_num = letter + 81;
-        }
-
+        uint8_t sprite_num = Text_MapLetterToSpriteNum(letter);
         sx = Screen_GetRenderScale(x);
         sy = Screen_GetRenderScale(y);
         sh = Screen_GetRenderScale(textstring->scale.h);
@@ -383,7 +516,9 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
 
-        Output_DrawScreenFBox(sx, sy, sh, sv);
+        Text_DrawTextBackground(
+            g_Config.ui.menu_style, sx, sy, sh, sv,
+            textstring->background.style);
     }
 
     if (textstring->flags.outline) {
@@ -391,6 +526,8 @@ static void Text_DrawText(TEXTSTRING *textstring)
         sy = Screen_GetRenderScale(bypos);
         sh = Screen_GetRenderScale(bwidth);
         sv = Screen_GetRenderScale(bheight);
-        Output_DrawScreenBox(sx, sy, sh, sv);
+
+        Text_DrawTextOutline(
+            g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);
     }
 }

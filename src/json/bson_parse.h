@@ -2,6 +2,8 @@
 
 #include "json/json_base.h"
 
+#include <stddef.h>
+
 enum bson_parse_error_e {
     bson_parse_error_none = 0,
     bson_parse_error_invalid_value,

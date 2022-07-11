@@ -8,7 +8,7 @@
 
 FILE *m_LogHandle = NULL;
 
-void Log_Init()
+void Log_Init(void)
 {
     char *full_path = File_GetFullPath("Tomb1Main.log");
     m_LogHandle = fopen(full_path, "w");
@@ -38,7 +38,7 @@ void Log_Message(
     va_end(va);
 }
 
-void Log_Shutdown()
+void Log_Shutdown(void)
 {
     if (m_LogHandle) {
         fclose(m_LogHandle);

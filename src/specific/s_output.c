@@ -1,8 +1,6 @@
 #include "specific/s_output.h"
 
-#include "3dsystem/3d_gen.h"
 #include "config.h"
-#include "game/draw.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -12,9 +10,9 @@
 #include "gfx/context.h"
 #include "gfx/screenshot.h"
 #include "global/vars.h"
-#include "global/vars_platform.h"
 #include "log.h"
 #include "memory.h"
+#include "specific/s_shell.h"
 
 #include <assert.h>
 
@@ -48,20 +46,22 @@ static GFX_2D_Surface *m_BackSurface = NULL;
 static GFX_2D_Surface *m_PictureSurface = NULL;
 static GFX_2D_Surface *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
 
-static void S_Output_SetHardwareVideoMode();
-static void S_Output_SetupRenderContextAndRender();
-static void S_Output_ReleaseTextures();
-static void S_Output_ReleaseSurfaces();
-static void S_Output_FlipPrimaryBuffer();
+static void S_Output_SetHardwareVideoMode(void);
+static void S_Output_SetupRenderContextAndRender(void);
+static void S_Output_ReleaseTextures(void);
+static void S_Output_ReleaseSurfaces(void);
+static void S_Output_FlipPrimaryBuffer(void);
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
 static void S_Output_DrawTriangleStrip(
     GFX_3D_Vertex *vertices, int vertex_count);
 static int32_t S_Output_ClipVertices(
     GFX_3D_Vertex *vertices, int vertex_count, size_t vertices_capacity);
+static int32_t S_Output_VisibleZClip(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
 
-static void S_Output_ReleaseTextures()
+static void S_Output_ReleaseTextures(void)
 {
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureMap[i] != GFX_NO_TEXTURE) {
@@ -71,7 +71,7 @@ static void S_Output_ReleaseTextures()
     }
 }
 
-static void S_Output_SetHardwareVideoMode()
+static void S_Output_SetHardwareVideoMode(void)
 {
     S_Output_ReleaseSurfaces();
 
@@ -110,7 +110,7 @@ static void S_Output_SetHardwareVideoMode()
     S_Output_SetupRenderContextAndRender();
 }
 
-static void S_Output_SetupRenderContextAndRender()
+static void S_Output_SetupRenderContextAndRender(void)
 {
     S_Output_RenderBegin();
     GFX_3D_Renderer_SetSmoothingEnabled(
@@ -118,7 +118,7 @@ static void S_Output_SetupRenderContextAndRender()
     S_Output_RenderToggle();
 }
 
-static void S_Output_ReleaseSurfaces()
+static void S_Output_ReleaseSurfaces(void)
 {
     if (m_PrimarySurface) {
         S_Output_ClearSurface(m_PrimarySurface);
@@ -142,7 +142,7 @@ static void S_Output_ReleaseSurfaces()
     }
 }
 
-static void S_Output_FlipPrimaryBuffer()
+static void S_Output_FlipPrimaryBuffer(void)
 {
     S_Output_RenderEnd();
     bool result = GFX_2D_Surface_Flip(m_PrimarySurface);
@@ -164,7 +164,7 @@ static void S_Output_DrawTriangleStrip(
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
     int left = vertex_count - 2;
     for (int i = vertex_count - 3; i > 0; i--) {
-        memcpy(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
+        memmove(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
         GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
         left--;
     }
@@ -364,6 +364,24 @@ static int32_t S_Output_ClipVertices(
     return j;
 }
 
+static int32_t S_Output_VisibleZClip(
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
+{
+    double v1x = vn1->xv;
+    double v1y = vn1->yv;
+    double v1z = vn1->zv;
+    double v2x = vn2->xv;
+    double v2y = vn2->yv;
+    double v2z = vn2->zv;
+    double v3x = vn3->xv;
+    double v3y = vn3->yv;
+    double v3z = vn3->zv;
+    double a = v3y * v1x - v1y * v3x;
+    double b = v3x * v1z - v1x * v3z;
+    double c = v3z * v1y - v1z * v3y;
+    return a * v2z + b * v2y + c * v2x < 0.0;
+}
+
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices)
 {
@@ -389,9 +407,9 @@ static int32_t S_Output_ZedClipper(
 
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + ViewPort_GetCenterX();
+                + Viewport_GetCenterX();
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + ViewPort_GetCenterY();
+                + Viewport_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -408,9 +426,9 @@ static int32_t S_Output_ZedClipper(
         if (near_z > pts0->zv) {
             clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
             v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + ViewPort_GetCenterX();
+                + Viewport_GetCenterX();
             v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + ViewPort_GetCenterY();
+                + Viewport_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
@@ -472,7 +490,7 @@ void S_Output_DisableDepthTest(void)
     GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, false);
 }
 
-void S_Output_RenderBegin()
+void S_Output_RenderBegin(void)
 {
     m_IsRenderingOld = m_IsRendering;
     if (!m_IsRendering) {
@@ -481,7 +499,7 @@ void S_Output_RenderBegin()
     }
 }
 
-void S_Output_RenderEnd()
+void S_Output_RenderEnd(void)
 {
     m_IsRenderingOld = m_IsRendering;
     if (m_IsRendering) {
@@ -490,7 +508,7 @@ void S_Output_RenderEnd()
     }
 }
 
-void S_Output_RenderToggle()
+void S_Output_RenderToggle(void)
 {
     if (m_IsRenderingOld) {
         S_Output_RenderBegin();
@@ -512,30 +530,30 @@ RGB888 S_Output_GetPaletteColor(uint8_t idx)
     return m_ColorPalette[idx];
 }
 
-void S_Output_DumpScreen()
+void S_Output_DumpScreen(void)
 {
     S_Output_FlipPrimaryBuffer();
     m_SelectedTexture = -1;
 }
 
-void S_Output_ClearDepthBuffer()
+void S_Output_ClearDepthBuffer(void)
 {
     GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
-void S_Output_ClearBackBuffer()
+void S_Output_ClearBackBuffer(void)
 {
     S_Output_RenderEnd();
     S_Output_ClearSurface(m_BackSurface);
     S_Output_RenderToggle();
 }
 
-void S_Output_DrawEmpty()
+void S_Output_DrawEmpty(void)
 {
     GFX_3D_Renderer_RenderEmpty();
 }
 
-void S_Output_CopyFromPicture()
+void S_Output_CopyFromPicture(void)
 {
     S_Output_ClearBackBuffer();
     S_Output_RenderEnd();
@@ -581,7 +599,7 @@ void S_Output_DownloadPicture(const PICTURE *pic)
             *output_ptr++ = b | (g << 8) | (r << 16);
         }
 
-        result = GFX_2D_Surface_Unlock(picture_surface, surface_desc.pixels);
+        result = GFX_2D_Surface_Unlock(picture_surface);
         S_Output_CheckError(result);
     }
 
@@ -713,8 +731,8 @@ void S_Output_DrawSprite(
     vertices[3].g = vshade;
     vertices[3].b = vshade;
 
-    if (x1 < 0 || y1 < 0 || x2 > ViewPort_GetWidth()
-        || y2 > ViewPort_GetHeight()) {
+    if (x1 < 0 || y1 < 0 || x2 > Viewport_GetWidth()
+        || y2 > Viewport_GetHeight()) {
         vertex_count = S_Output_ClipVertices(
             vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     }
@@ -931,7 +949,7 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
-void S_Output_ApplyResolution()
+void S_Output_ApplyResolution(void)
 {
     S_Output_SetHardwareVideoMode();
 }
@@ -946,14 +964,14 @@ void S_Output_SetFullscreen(bool fullscreen)
     GFX_Context_SetFullscreen(fullscreen);
 }
 
-bool S_Output_Init()
+bool S_Output_Init(void)
 {
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         m_TextureMap[i] = GFX_NO_TEXTURE;
         m_TextureSurfaces[i] = NULL;
     }
 
-    GFX_Context_Attach(g_TombHWND);
+    GFX_Context_Attach(S_Shell_GetWindowHandle());
     m_Renderer3D = GFX_Context_GetRenderer3D();
 
     S_Output_SetHardwareVideoMode();
@@ -963,7 +981,7 @@ bool S_Output_Init()
     return true;
 }
 
-void S_Output_Shutdown()
+void S_Output_Shutdown(void)
 {
     S_Output_ReleaseTextures();
     S_Output_ReleaseSurfaces();
@@ -1081,7 +1099,7 @@ void S_Output_DrawTexturedTriangle(
                 vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
         }
     } else {
-        if (!phd_VisibleZClip(vn1, vn2, vn3)) {
+        if (!S_Output_VisibleZClip(vn1, vn2, vn3)) {
             return;
         }
 
@@ -1139,7 +1157,7 @@ void S_Output_DrawTexturedQuad(
                 < 0) {
                 return;
             }
-        } else if (!phd_VisibleZClip(vn1, vn2, vn3)) {
+        } else if (!S_Output_VisibleZClip(vn1, vn2, vn3)) {
             return;
         }
 
@@ -1219,8 +1237,7 @@ void S_Output_DownloadTextures(int32_t pages)
                 pix.b | (pix.g << 8) | (pix.r << 16) | (alpha << 24);
         }
 
-        result =
-            GFX_2D_Surface_Unlock(m_TextureSurfaces[i], surface_desc.pixels);
+        result = GFX_2D_Surface_Unlock(m_TextureSurfaces[i]);
         S_Output_CheckError(result);
 
         m_TextureMap[i] = GFX_3D_Renderer_TextureReg(

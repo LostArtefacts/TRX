@@ -60,8 +60,15 @@
     // Enables braid animation. Currently works only in the Lost Valley level.
     "enable_braid": false,
 
+    // Enables showing maximum pickup count and kill count on each level.
+    // This includes unobtainable items.
+    "enable_detailed_stats": true,
+
     // Enables showing level stats when selecting compass.
     "enable_compass_stats": true,
+
+    // Enables a total game statistics screen that plays after the credits.
+    "enable_total_stats": true,
 
     // Makes the ingame timer work even while the game is showing the
     // inventory.
@@ -73,6 +80,11 @@
     // Makes inventory and pause screen use fade transitions for
     // the semitransparent backdrop, similar to PS1.
     "enable_fade_effects": true,
+
+    // Changes how menus are displayed. Possible values:
+    // - pc: UI style matches the PC version.
+    // - ps1: UI style matches the PS1 version.
+    "menu_style": "pc",
 
     // Changes how the healthbar is displayed. Possible values:
     // - default: show the healthbar at the start of a level, after getting
@@ -156,6 +168,9 @@
     // Fixes alligators dealing no damage if Lara remains still in the water
     "fix_alligator_ai": true,
 
+    // Make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
+    "change_pierre_spawn": true,
+
     // The desired field of view in degrees, which overrides the hardcoded
     // default. The default values are 80 (horizontal) and 65 (vertical).
     "fov_value": 65,
@@ -178,6 +193,13 @@
     // Disables music in the main menu.
     "disable_music_in_menu": false,
 
+    // Pauses sound in the inventory screen.
+    "disable_music_in_inventory": false,
+
+    // Remove all collision with TRex upon death.
+    // This helps when the TRex's body blocks the passage out.
+    "disable_trex_collision": false,
+
     // Overrides game resolution. Leave at 0 or negative values to
     // automatically guess from the screen size. Note: these values
     // only override the last position in the game resolutions menu that
@@ -185,9 +207,6 @@
     // work, make sure you have selected the last resolution.
     "resolution_width": -1,
     "resolution_height": -1,
-
-    // Enables XBox One Controller with PS1 layout and Per Axis Dead Zone.
-    "enable_xbox_one_controller": false,
 
     // Enables round shadow instead of the default octagon one.
     "enable_round_shadow": true,
@@ -200,4 +219,13 @@
 
     // Enhances texture filtering at distances.
     "anisotropy_filter": 16.0,
+
+    // Lara walks to pickups and switches when nearby instead of teleporting
+    "walk_to_items" : false,
+
+    // How many save slots are available.
+    "maximum_save_slots": 25,
+
+    // Make Lara revert to pistols on new level start (inline with TombATI behaviour)
+    "revert_to_pistols": false,
 }

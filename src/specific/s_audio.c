@@ -1,12 +1,17 @@
 #define S_AUDIO_IMPL
 #include "specific/s_audio.h"
 
-#include "memory.h"
 #include "log.h"
+#include "memory.h"
 
-#include <assert.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_stdinc.h>
+#include <stdint.h>
+#include <string.h>
 
 SDL_AudioDeviceID g_AudioDeviceID = 0;
+static int32_t m_RefCount = 0;
 static size_t m_WorkingBufferSize = 0;
 static float *m_WorkingBuffer = NULL;
 static Uint8 m_WorkingSilence = 0;
@@ -21,8 +26,9 @@ static void S_Audio_MixerCallback(void *userdata, Uint8 *stream_data, int len)
     memcpy(stream_data, m_WorkingBuffer, len);
 }
 
-bool S_Audio_Init()
+bool S_Audio_Init(void)
 {
+    m_RefCount++;
     if (g_AudioDeviceID) {
         // already initialized
         return true;
@@ -67,8 +73,13 @@ bool S_Audio_Init()
     return true;
 }
 
-bool S_Audio_Shutdown()
+bool S_Audio_Shutdown(void)
 {
+    m_RefCount--;
+    if (m_RefCount > 0) {
+        return false;
+    }
+
     S_Audio_SampleSoundShutdown();
     S_Audio_StreamSoundShutdown();
 

@@ -4,11 +4,26 @@
 #include "game/shell.h"
 #include "log.h"
 #include "memory.h"
-#include "util.h"
 
+#include <SDL2/SDL_audio.h>
+#include <errno.h>
 #include <libavcodec/avcodec.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/codec_par.h>
+#include <libavcodec/packet.h>
 #include <libavformat/avformat.h>
+#include <libavformat/avio.h>
+#include <libavutil/avutil.h>
+#include <libavutil/error.h>
+#include <libavutil/frame.h>
+#include <libavutil/mem.h>
+#include <libavutil/samplefmt.h>
 #include <libswresample/swresample.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef struct AUDIO_SAMPLE {
     float *sample_data;
@@ -370,7 +385,7 @@ cleanup:
     return ret;
 }
 
-void S_Audio_SampleSoundInit()
+void S_Audio_SampleSoundInit(void)
 {
     for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_SampleSounds[sound_id];
@@ -384,7 +399,7 @@ void S_Audio_SampleSoundInit()
     }
 }
 
-void S_Audio_SampleSoundShutdown()
+void S_Audio_SampleSoundShutdown(void)
 {
     if (!g_AudioDeviceID) {
         return;
@@ -393,7 +408,7 @@ void S_Audio_SampleSoundShutdown()
     S_Audio_SamplesClear();
 }
 
-bool S_Audio_SamplesClear()
+bool S_Audio_SamplesClear(void)
 {
     if (!g_AudioDeviceID) {
         return false;
@@ -501,7 +516,7 @@ bool S_Audio_SampleSoundClose(int sound_id)
     return true;
 }
 
-bool S_Audio_SampleSoundCloseAll()
+bool S_Audio_SampleSoundCloseAll(void)
 {
     if (!g_AudioDeviceID) {
         return false;

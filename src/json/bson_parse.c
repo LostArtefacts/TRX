@@ -1,10 +1,12 @@
 #include "json/bson_parse.h"
 
+#include "json/json_base.h"
 #include "log.h"
 #include "memory.h"
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 

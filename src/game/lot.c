@@ -4,13 +4,14 @@
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #include <stddef.h>
 
 static int32_t m_SlotsUsed = 0;
 static CREATURE_INFO *m_BaddieSlots = NULL;
 
-void InitialiseLOTArray()
+void LOT_InitialiseArray(void)
 {
     m_BaddieSlots =
         GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_INFO);
@@ -23,7 +24,7 @@ void InitialiseLOTArray()
     m_SlotsUsed = 0;
 }
 
-void DisableBaddieAI(int16_t item_num)
+void LOT_DisableBaddieAI(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *creature = item->data;
@@ -34,18 +35,18 @@ void DisableBaddieAI(int16_t item_num)
     }
 }
 
-int32_t EnableBaddieAI(int16_t item_num, int32_t always)
+bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 {
     if (g_Items[item_num].data) {
-        return 1;
+        return true;
     }
 
     if (m_SlotsUsed < NUM_SLOTS) {
         for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
             CREATURE_INFO *creature = &m_BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
-                InitialiseSlot(item_num, slot);
-                return 1;
+                LOT_InitialiseSlot(item_num, slot);
+                return true;
             }
         }
         Shell_ExitSystem("UnpauseBaddie() grimmer!");
@@ -75,16 +76,16 @@ int32_t EnableBaddieAI(int16_t item_num, int32_t always)
     }
 
     if (worst_slot < 0) {
-        return 0;
+        return false;
     }
 
     g_Items[m_BaddieSlots[worst_slot].item_num].status = IS_INVISIBLE;
-    DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
-    InitialiseSlot(item_num, worst_slot);
-    return 1;
+    LOT_DisableBaddieAI(m_BaddieSlots[worst_slot].item_num);
+    LOT_InitialiseSlot(item_num, worst_slot);
+    return true;
 }
 
-void InitialiseSlot(int16_t item_num, int32_t slot)
+void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
 {
     CREATURE_INFO *creature = &m_BaddieSlots[slot];
     ITEM_INFO *item = &g_Items[item_num];
@@ -110,7 +111,7 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
         creature->LOT.fly = STEP_L / 16;
         break;
 
-    case O_DINOSAUR:
+    case O_TREX:
     case O_WARRIOR1:
     case O_CENTAUR:
         creature->LOT.block_mask = BLOCKABLE;
@@ -132,13 +133,13 @@ void InitialiseSlot(int16_t item_num, int32_t slot)
         break;
     }
 
-    ClearLOT(&creature->LOT);
-    CreateZone(item);
+    LOT_ClearLOT(&creature->LOT);
+    LOT_CreateZone(item);
 
     m_SlotsUsed++;
 }
 
-void CreateZone(ITEM_INFO *item)
+void LOT_CreateZone(ITEM_INFO *item)
 {
     CREATURE_INFO *creature = item->data;
 
@@ -174,15 +175,14 @@ void CreateZone(ITEM_INFO *item)
     }
 }
 
-int32_t InitialiseLOT(LOT_INFO *LOT)
+void LOT_InitialiseLOT(LOT_INFO *LOT)
 {
     LOT->node =
         GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
-    ClearLOT(LOT);
-    return 1;
+    LOT_ClearLOT(LOT);
 }
 
-void ClearLOT(LOT_INFO *LOT)
+void LOT_ClearLOT(LOT_INFO *LOT)
 {
     LOT->search_number = 0;
     LOT->head = NO_BOX;

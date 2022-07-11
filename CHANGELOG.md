@@ -1,5 +1,67 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/2.6.4...master)
-- ...
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- added the option to make Lara revert to pistols on new level start (#557)
+- added the PS1 style UI (#517)
+
+## [2.9.1](https://github.com/rr-/Tomb1Main/compare/2.9...2.9.1) - 2022-06-03
+- fixed crash on centaur hatch (#579, regression from 2.9)
+
+## [2.9](https://github.com/rr-/Tomb1Main/compare/2.8.2...2.9) - 2022-06-01
+- added generic SDL-based controller support (#278)
+- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre (#532)
+- added a fade out when completing Lara's Home (#383)
+- added the config option to change the number of save slots (#170)
+- changed default save slot count to 25 (#170)
+- fixed Tihocan chain block sound (#433)
+- fixed passport menu with high UI scaling (#546, regression from 2.7)
+- fixed passport menu border being off by one pixel (#547)
+- fixed the new game and save game passport options using the wrong closing animation (#542, regression from 2.7)
+- fixed bridges at floor level appearing under the floor (#523)
+- fixed Lara's outfit in Lara's Home when replaying the level (#571, regression from 2.7)
+- fixed crash when dying in the gym level with no saves (#576, regression from 2.8)
+- fixed exiting select level menu causing deaths in a new game incremented in that slot (#575, regression from 2.8)
+- removed DInput-based XBox controller support
+
+## [2.8.2](https://github.com/rr-/Tomb1Main/compare/2.8.1...2.8.2) - 2022-05-20
+- fixed Lara not picking up items near the edges of room portals (#563, regression from 2.8)
+
+## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
+- fixed Pierre not resetting across levels (#538, regression from 2.7)
+- fixed pushables breaking with flipped rooms when loading a save (#536, regression from 2.8)
+
+## [2.8](https://github.com/rr-/Tomb1Main/compare/2.7...2.8) - 2022-05-04
+- added the option to pause sound in the inventory screen (#309)
+- added level selection to the load game menu (#197)
+- added the ability to pick up multiple items at once with walk to items enabled (#505)
+- added the ability to skip pictures during fade animation (#510)
+- added a cheat to increase the game speed (#135)
+- added a matrix stack overflow error check and message if GetRoomBounds runs infinitely (#506)
+- added ability to turn off trex collision (#437)
+- changed the savegame dialog to remember the user's requested slot number (#514)
+- changed the new game dialog to always fall back to new game
+- fixed ghost margins during fade animation on HiDPI screens (#438)
+- fixed music rolling over to the main menu if main menu music disabled (#490)
+- fixed Unfinished Business gameflow not using basic / detailed stats strings (#497, regression from 2.7)
+- fixed picking up multiple underwater pickups with walk to items enabled (#500)
+- fixed incorrect Lara health when restarting a level
+- fixed pushables breaking with flipped rooms when loading a save (#496, regression from 2.6)
+- fixed pictures displayed before starting a level causing a black screen (custom levels only)
+- fixed underwater caustics animating at 2x speed (#109)
+- fixed new game plus infinite ammo carrying over to a loaded game (#535, regression from 2.6)
+
+## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
+- added ability to automatically walk to pickups when nearby (#18)
+- added ability to automatically walk to switches when nearby (#222)
+- added ability to turn off detailed end of the level stats (#447)
+- added contextual arrows to passport navigation (#420)
+- added contextual arrows to sound option navigation (#459)
+- added contextual arrows to controls option navigation (#461)
+- added contextual arrows to graphics option navigation (#462)
+- added a final statistics screen (#385)
+- added music during the credits (#356)
+- added fade effects to displayed images (#476)
+- added unobtainable pickups and kills stats support in the gameflow (#470)
+- fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
+- fixed sound effects playing rapidly in sound menu if input held down (#467)
 
 ## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20
 - fixed crash when loading a legacy save and saving on a new slot (#442, regression from 2.6)

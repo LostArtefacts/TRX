@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gfx/3d/vertex_stream.h"
+#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
 #include "gfx/gl/texture.h"
@@ -8,6 +9,7 @@
 #define GFX_MAX_TEXTURES 128
 #define GFX_NO_TEXTURE (-1)
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct GFX_3D_Renderer {
@@ -55,4 +57,4 @@ void GFX_3D_Renderer_SetBlendingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
-void GFX_3D_Renderer_RenderEmpty();
+void GFX_3D_Renderer_RenderEmpty(void);

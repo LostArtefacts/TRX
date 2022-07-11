@@ -1,36 +1,29 @@
 #include "game/shell.h"
 
-#include "3dsystem/phd_math.h"
 #include "config.h"
 #include "filesystem.h"
 #include "game/clock.h"
-#include "game/demo.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inv.h"
+#include "game/inventory.h"
+#include "game/level.h"
 #include "game/music.h"
+#include "game/option.h"
 #include "game/output.h"
-#include "game/random.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/settings.h"
-#include "game/setup.h"
-#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_input.h"
-#include "specific/s_misc.h"
 #include "specific/s_shell.h"
 
-#include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -43,9 +36,9 @@
 static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
 static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
 
-static char *Shell_GetScreenshotName();
+static char *Shell_GetScreenshotName(void);
 
-static char *Shell_GetScreenshotName()
+static char *Shell_GetScreenshotName(void)
 {
     // Get level title of unknown length
     char level_title[100];
@@ -115,25 +108,8 @@ static char *Shell_GetScreenshotName()
     return out;
 }
 
-void Shell_Main()
+void Shell_Init(const char *gameflow_path)
 {
-    Config_Read();
-
-    const char *gameflow_path = m_T1MGameflowPath;
-
-    char **args = NULL;
-    int arg_count = 0;
-    S_Shell_GetCommandLine(&arg_count, &args);
-    for (int i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
-            gameflow_path = m_T1MGameflowGoldPath;
-        }
-    }
-    for (int i = 0; i < arg_count; i++) {
-        Memory_FreePointer(&args[i]);
-    }
-    Memory_FreePointer(&args);
-
     S_Shell_SeedRandom();
 
     if (!Output_Init()) {
@@ -153,11 +129,49 @@ void Shell_Main()
         return;
     }
 
-    Savegame_InitStartEndInfo();
+    Option_Init();
+    Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
     Settings_Read();
 
     Screen_ApplyResolution();
+}
+
+void Shell_Shutdown(void)
+{
+    while (g_Input.select) {
+        Input_Update();
+    }
+    GameFlow_Shutdown();
+    GameBuf_Shutdown();
+    Output_Shutdown();
+    Input_Shutdown();
+    Sound_Shutdown();
+    Music_Shutdown();
+    Savegame_Shutdown();
+    Option_Shutdown();
+}
+
+void Shell_Main(void)
+{
+    Config_Read();
+
+    const char *gameflow_path = m_T1MGameflowPath;
+
+    char **args = NULL;
+    int arg_count = 0;
+    S_Shell_GetCommandLine(&arg_count, &args);
+    for (int i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-gold")) {
+            gameflow_path = m_T1MGameflowGoldPath;
+        }
+    }
+    for (int i = 0; i < arg_count; i++) {
+        Memory_FreePointer(&args[i]);
+    }
+    Memory_FreePointer(&args);
+
+    Shell_Init(gameflow_path);
 
     int32_t gf_option = GF_EXIT_TO_TITLE;
     bool intro_played = false;
@@ -169,6 +183,10 @@ void Shell_Main()
         LOG_INFO("%d %d", gf_direction, gf_param);
 
         switch (gf_direction) {
+        case GF_START_GYM:
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
+            break;
+
         case GF_START_GAME:
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_NORMAL);
             break;
@@ -185,12 +203,23 @@ void Shell_Main()
             break;
         }
 
+        case GF_RESTART_GAME: {
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_RESTART);
+            break;
+        }
+
+        case GF_SELECT_GAME: {
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_SELECT);
+            break;
+        }
+
         case GF_START_CINE:
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
             break;
 
         case GF_START_DEMO:
-            gf_option = StartDemo();
+            Game_Demo();
+            gf_option = GF_EXIT_TO_TITLE;
             break;
 
         case GF_LEVEL_COMPLETE:
@@ -207,12 +236,12 @@ void Shell_Main()
 
             Text_RemoveAll();
             Output_DisplayPicture(g_GameFlow.main_menu_background_path);
-            if (!InitialiseLevel(g_GameFlow.title_level_num)) {
+            if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;
             }
 
-            gf_option = Display_Inventory(INV_TITLE_MODE);
+            gf_option = Inv_Display(INV_TITLE_MODE);
             Music_Stop();
             break;
 
@@ -228,12 +257,12 @@ void Shell_Main()
     }
 
     Settings_Write();
-    S_Shell_Shutdown();
+    Shell_Shutdown();
 }
 
 void Shell_ExitSystem(const char *message)
 {
-    S_Shell_Shutdown();
+    Shell_Shutdown();
     S_Shell_ShowFatalError(message);
 }
 
@@ -258,11 +287,11 @@ void Shell_Wait(int nticks)
     }
 }
 
-bool Shell_MakeScreenshot()
+bool Shell_MakeScreenshot(void)
 {
     File_CreateDirectory(SCREENSHOTS_DIR);
 
-    char *filename = Shell_GetScreenshotName(filename);
+    char *filename = Shell_GetScreenshotName();
 
     const char *ext;
     switch (g_Config.screenshot_format) {

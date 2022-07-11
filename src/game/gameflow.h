@@ -2,6 +2,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct GAMEFLOW_DEFUALT_STRING {
@@ -43,6 +44,10 @@ typedef struct GAMEFLOW_LEVEL {
         bool override;
         float value;
     } draw_distance_max;
+    struct {
+        uint32_t pickups;
+        uint32_t kills;
+    } unobtainable;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
@@ -71,4 +76,4 @@ extern GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[];
 GAMEFLOW_OPTION
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 bool GameFlow_LoadFromFile(const char *file_name);
-void GameFlow_Shutdown();
+void GameFlow_Shutdown(void);

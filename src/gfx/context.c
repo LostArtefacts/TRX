@@ -1,17 +1,19 @@
 #include "gfx/context.h"
 
+#include "config.h"
 #include "game/shell.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/wgl_ext.h"
 #include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
-#include "src/config.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 #include <string.h>
 
 typedef struct GFX_Context {
-    HWND hwnd; // window handle
+    void *window_handle;
     HDC hdc; // GDI device context
     HGLRC hglrc; // OpenGL context handle
     bool is_fullscreen; // fullscreen flag
@@ -29,39 +31,29 @@ typedef struct GFX_Context {
 
 static GFX_Context m_Context = { 0 };
 
-static const char *GFX_Context_GetWindowsErrorStr()
+void GFX_Context_Attach(void *window_handle)
 {
-    DWORD error = GetLastError();
-    if (error) {
-        LPSTR msg_buf = NULL;
-        DWORD msg_buf_size = FormatMessageA(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
-                | FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPSTR)&msg_buf, 0, NULL);
-
-        if (msg_buf_size) {
-            return msg_buf;
-        }
-    }
-
-    return "Unknown error";
-}
-
-void GFX_Context_Attach(HWND hwnd)
-{
-    if (m_Context.hglrc || m_Context.hwnd) {
+    if (m_Context.window_handle) {
         return;
     }
 
-    LOG_INFO("Attaching to HWND %p", hwnd);
+    LOG_INFO("Attaching to window %p", window_handle);
 
-    m_Context.hwnd = hwnd;
+    m_Context.window_handle = window_handle;
 
-    m_Context.hdc = GetDC(m_Context.hwnd);
+    SDL_SysWMinfo wm_info;
+    SDL_VERSION(&wm_info.version);
+    SDL_GetWindowWMInfo(window_handle, &wm_info);
+
+    HWND hwnd = wm_info.info.win.window;
+    if (!hwnd) {
+        Shell_ExitSystem("System Error: cannot create window");
+        return;
+    }
+
+    m_Context.hdc = GetDC(hwnd);
     if (!m_Context.hdc) {
-        Shell_ExitSystemFmt(
-            "Can't get device context", GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't get device context");
     }
 
     // get screen dimensions
@@ -80,20 +72,16 @@ void GFX_Context_Attach(HWND hwnd)
 
     int pf = ChoosePixelFormat(m_Context.hdc, &pfd);
     if (!pf) {
-        Shell_ExitSystemFmt(
-            "Can't choose pixel format: %s", GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't choose pixel format");
     }
 
     if (!SetPixelFormat(m_Context.hdc, pf, &pfd)) {
-        Shell_ExitSystemFmt(
-            "Can't set pixel format: %s", GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't set pixel format");
     }
 
     m_Context.hglrc = wglCreateContext(m_Context.hdc);
     if (!m_Context.hglrc || !wglMakeCurrent(m_Context.hdc, m_Context.hglrc)) {
-        Shell_ExitSystemFmt(
-            "Can't create OpenGL context: %s",
-            GFX_Context_GetWindowsErrorStr());
+        Shell_ExitSystem("Can't create OpenGL context");
     }
 
     glClearColor(0, 0, 0, 0);
@@ -106,9 +94,9 @@ void GFX_Context_Attach(HWND hwnd)
     GFX_3D_Renderer_Init(&m_Context.renderer_3d);
 }
 
-void GFX_Context_Detach()
+void GFX_Context_Detach(void)
 {
-    if (!m_Context.hwnd) {
+    if (!m_Context.window_handle) {
         return;
     }
 
@@ -118,7 +106,7 @@ void GFX_Context_Detach()
     wglDeleteContext(m_Context.hglrc);
     m_Context.hglrc = NULL;
 
-    m_Context.hwnd = NULL;
+    m_Context.window_handle = NULL;
 }
 
 void GFX_Context_SetVSync(bool vsync)
@@ -126,7 +114,7 @@ void GFX_Context_SetVSync(bool vsync)
     wglSwapIntervalEXT(vsync);
 }
 
-bool GFX_Context_IsFullscreen()
+bool GFX_Context_IsFullscreen(void)
 {
     return m_Context.is_fullscreen;
 }
@@ -150,39 +138,39 @@ void GFX_Context_SetDisplaySize(int32_t width, int32_t height)
     m_Context.display_height = height;
 }
 
-int32_t GFX_Context_GetDisplayWidth()
+int32_t GFX_Context_GetDisplayWidth(void)
 {
     return m_Context.display_width;
 }
 
-int32_t GFX_Context_GetDisplayHeight()
+int32_t GFX_Context_GetDisplayHeight(void)
 {
     return m_Context.display_height;
 }
 
-int32_t GFX_Context_GetWindowWidth()
+int32_t GFX_Context_GetWindowWidth(void)
 {
     return m_Context.window_width ? m_Context.window_width
                                   : m_Context.display_width;
 }
 
-int32_t GFX_Context_GetWindowHeight()
+int32_t GFX_Context_GetWindowHeight(void)
 {
     return m_Context.window_height ? m_Context.window_height
                                    : m_Context.display_height;
 }
 
-int32_t GFX_Context_GetScreenWidth()
+int32_t GFX_Context_GetScreenWidth(void)
 {
     return m_Context.screen_width;
 }
 
-int32_t GFX_Context_GetScreenHeight()
+int32_t GFX_Context_GetScreenHeight(void)
 {
     return m_Context.screen_height;
 }
 
-void GFX_Context_SetupViewport()
+void GFX_Context_SetupViewport(void)
 {
     int vp_width = m_Context.window_width;
     int vp_height = m_Context.window_height;
@@ -209,7 +197,7 @@ void GFX_Context_SetupViewport()
     glViewport(vp_x, vp_y, vp_width, vp_height);
 }
 
-void GFX_Context_SwapBuffers()
+void GFX_Context_SwapBuffers(void)
 {
     glFinish();
 
@@ -225,32 +213,27 @@ void GFX_Context_SwapBuffers()
     m_Context.is_rendered = false;
 }
 
-void GFX_Context_SetRendered()
+void GFX_Context_SetRendered(void)
 {
     m_Context.is_rendered = true;
 }
 
-bool GFX_Context_IsRendered()
+bool GFX_Context_IsRendered(void)
 {
     return m_Context.is_rendered;
 }
 
-HWND GFX_Context_GetHWnd()
-{
-    return m_Context.hwnd;
-}
-
 void GFX_Context_ScheduleScreenshot(const char *path)
 {
-    m_Context.scheduled_screenshot_path = Memory_Dup(path);
+    m_Context.scheduled_screenshot_path = Memory_DupStr(path);
 }
 
-GFX_2D_Renderer *GFX_Context_GetRenderer2D()
+GFX_2D_Renderer *GFX_Context_GetRenderer2D(void)
 {
     return &m_Context.renderer_2d;
 }
 
-GFX_3D_Renderer *GFX_Context_GetRenderer3D()
+GFX_3D_Renderer *GFX_Context_GetRenderer3D(void)
 {
     return &m_Context.renderer_3d;
 }

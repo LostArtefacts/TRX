@@ -1,3 +1,4 @@
+// IWYU pragma: no_include <bits/types/struct_tm.h>
 #include "game/clock.h"
 
 #include "specific/s_clock.h"
@@ -5,24 +6,37 @@
 #include <stdio.h>
 #include <time.h>
 
-bool Clock_Init()
+#define MAX_TURBO_SPEED_MUL 3
+
+static int16_t m_TurboSpeedMul = 1;
+
+void Clock_CycleTurboSpeed(void)
+{
+    if (m_TurboSpeedMul >= MAX_TURBO_SPEED_MUL) {
+        m_TurboSpeedMul = 1;
+    } else {
+        m_TurboSpeedMul++;
+    }
+}
+
+bool Clock_Init(void)
 {
     return S_Clock_Init();
 }
 
-int32_t Clock_GetMS()
+int32_t Clock_GetMS(void)
 {
     return S_Clock_GetMS();
 }
 
-int32_t Clock_Sync()
+int32_t Clock_Sync(void)
 {
     return S_Clock_Sync();
 }
 
 int32_t Clock_SyncTicks(int32_t target)
 {
-    return S_Clock_SyncTicks(target);
+    return S_Clock_SyncTicks(target) * m_TurboSpeedMul;
 }
 
 void Clock_GetDateTime(char *date_time)

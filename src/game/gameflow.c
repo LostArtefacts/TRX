@@ -2,26 +2,24 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/cinema.h"
-#include "game/control.h"
+#include "game/clock.h"
 #include "game/fmv.h"
 #include "game/game.h"
-#include "game/gamebuf.h"
-#include "game/inv.h"
+#include "game/input.h"
+#include "game/inventory.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/savegame.h"
-#include "game/screen.h"
-#include "game/settings.h"
+#include "game/room.h"
 #include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "json.h"
+#include "json/json_base.h"
+#include "json/json_parse.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_misc.h"
 
 #include <limits.h>
 #include <string.h>
@@ -56,6 +54,9 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "HEADING_ITEMS", GS_HEADING_ITEMS },
         { "PASSPORT_SELECT_LEVEL", GS_PASSPORT_SELECT_LEVEL },
         { "PASSPORT_RESTART_LEVEL", GS_PASSPORT_RESTART_LEVEL },
+        { "PASSPORT_LOCKED_LEVEL", GS_PASSPORT_LOCKED_LEVEL },
+        { "PASSPORT_LEGACY_SELECT_LEVEL_1", GS_PASSPORT_LEGACY_SELECT_LEVEL_1 },
+        { "PASSPORT_LEGACY_SELECT_LEVEL_2", GS_PASSPORT_LEGACY_SELECT_LEVEL_2 },
         { "PASSPORT_SELECT_MODE", GS_PASSPORT_SELECT_MODE },
         { "PASSPORT_MODE_NEW_GAME", GS_PASSPORT_MODE_NEW_GAME },
         { "PASSPORT_MODE_NEW_GAME_PLUS", GS_PASSPORT_MODE_NEW_GAME_PLUS },
@@ -70,13 +71,15 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "DETAIL_LEVEL_HIGH", GS_DETAIL_LEVEL_HIGH },
         { "DETAIL_LEVEL_MEDIUM", GS_DETAIL_LEVEL_MEDIUM },
         { "DETAIL_LEVEL_LOW", GS_DETAIL_LEVEL_LOW },
-        { "DETAIL_PERSPECTIVE_FMT", GS_DETAIL_PERSPECTIVE_FMT },
-        { "DETAIL_BILINEAR_FMT", GS_DETAIL_BILINEAR_FMT },
-        { "DETAIL_VSYNC_FMT", GS_DETAIL_VSYNC_FMT },
-        { "DETAIL_BRIGHTNESS_FMT", GS_DETAIL_BRIGHTNESS_FMT },
-        { "DETAIL_UI_TEXT_SCALE_FMT", GS_DETAIL_UI_TEXT_SCALE_FMT },
-        { "DETAIL_UI_BAR_SCALE_FMT", GS_DETAIL_UI_BAR_SCALE_FMT },
-        { "DETAIL_VIDEO_MODE_FMT", GS_DETAIL_VIDEO_MODE_FMT },
+        { "DETAIL_PERSPECTIVE", GS_DETAIL_PERSPECTIVE },
+        { "DETAIL_BILINEAR", GS_DETAIL_BILINEAR },
+        { "DETAIL_VSYNC", GS_DETAIL_VSYNC },
+        { "DETAIL_BRIGHTNESS", GS_DETAIL_BRIGHTNESS },
+        { "DETAIL_UI_TEXT_SCALE", GS_DETAIL_UI_TEXT_SCALE },
+        { "DETAIL_UI_BAR_SCALE", GS_DETAIL_UI_BAR_SCALE },
+        { "DETAIL_RESOLUTION", GS_DETAIL_RESOLUTION },
+        { "DETAIL_FLOAT_FMT", GS_DETAIL_FLOAT_FMT },
+        { "DETAIL_RESOLUTION_FMT", GS_DETAIL_RESOLUTION_FMT },
         { "SOUND_SET_VOLUMES", GS_SOUND_SET_VOLUMES },
         { "CONTROL_DEFAULT_KEYS", GS_CONTROL_DEFAULT_KEYS },
         { "CONTROL_USER_KEYS", GS_CONTROL_USER_KEYS },
@@ -96,6 +99,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "KEYMAP_FLY_CHEAT", GS_KEYMAP_FLY_CHEAT },
         { "KEYMAP_ITEM_CHEAT", GS_KEYMAP_ITEM_CHEAT },
         { "KEYMAP_LEVEL_SKIP_CHEAT", GS_KEYMAP_LEVEL_SKIP_CHEAT },
+        { "KEYMAP_TURBO_CHEAT", GS_KEYMAP_TURBO_CHEAT },
         { "KEYMAP_PAUSE", GS_KEYMAP_PAUSE },
         { "KEYMAP_CAMERA_UP", GS_KEYMAP_CAMERA_UP },
         { "KEYMAP_CAMERA_DOWN", GS_KEYMAP_CAMERA_DOWN },
@@ -104,8 +108,12 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "KEYMAP_CAMERA_RESET", GS_KEYMAP_CAMERA_RESET },
         { "STATS_TIME_TAKEN_FMT", GS_STATS_TIME_TAKEN_FMT },
         { "STATS_SECRETS_FMT", GS_STATS_SECRETS_FMT },
-        { "STATS_PICKUPS_FMT", GS_STATS_PICKUPS_FMT },
-        { "STATS_KILLS_FMT", GS_STATS_KILLS_FMT },
+        { "STATS_DEATHS_FMT", GS_STATS_DEATHS_FMT },
+        { "STATS_PICKUPS_DETAIL_FMT", GS_STATS_PICKUPS_DETAIL_FMT },
+        { "STATS_PICKUPS_BASIC_FMT", GS_STATS_PICKUPS_BASIC_FMT },
+        { "STATS_KILLS_DETAIL_FMT", GS_STATS_KILLS_DETAIL_FMT },
+        { "STATS_KILLS_BASIC_FMT", GS_STATS_KILLS_BASIC_FMT },
+        { "STATS_FINAL_STATISTICS", GS_STATS_FINAL_STATISTICS },
         { "PAUSE_PAUSED", GS_PAUSE_PAUSED },
         { "PAUSE_EXIT_TO_TITLE", GS_PAUSE_EXIT_TO_TITLE },
         { "PAUSE_CONTINUE", GS_PAUSE_CONTINUE },
@@ -175,7 +183,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'main_menu_picture' must be a string");
         return false;
     }
-    g_GameFlow.main_menu_background_path = Memory_Dup(tmp_s);
+    g_GameFlow.main_menu_background_path = Memory_DupStr(tmp_s);
 
     tmp_s =
         json_object_get_string(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
@@ -183,7 +191,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'savegame_fmt_legacy' must be a string");
         return false;
     }
-    g_GameFlow.savegame_fmt_legacy = Memory_Dup(tmp_s);
+    g_GameFlow.savegame_fmt_legacy = Memory_DupStr(tmp_s);
 
     tmp_s =
         json_object_get_string(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
@@ -191,7 +199,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'savegame_fmt_bson' must be a string");
         return false;
     }
-    g_GameFlow.savegame_fmt_bson = Memory_Dup(tmp_s);
+    g_GameFlow.savegame_fmt_bson = Memory_DupStr(tmp_s);
 
     tmp_d = json_object_get_double(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
@@ -271,7 +279,7 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
         if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
             LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
-            g_GameFlow.strings[key] = Memory_Dup(value->string);
+            g_GameFlow.strings[key] = Memory_DupStr(value->string);
         }
         strings_elem = strings_elem->next;
     }
@@ -279,7 +287,7 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
     for (const GAMEFLOW_DEFAULT_STRING *def = g_GameFlowDefaultStrings;
          def->string; def++) {
         if (!g_GameFlow.strings[def->key]) {
-            g_GameFlow.strings[def->key] = Memory_Dup(def->string);
+            g_GameFlow.strings[def->key] = Memory_DupStr(def->string);
         }
     }
 
@@ -350,7 +358,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = Memory_Dup(tmp_s);
+            seq->data = Memory_DupStr(tmp_s);
 
         } else if (!strcmp(type_str, "display_picture")) {
             seq->type = GFS_DISPLAY_PICTURE;
@@ -366,7 +374,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            data->path = Memory_Dup(tmp_s);
+            data->path = Memory_DupStr(tmp_s);
 
             double tmp_d =
                 json_object_get_double(jseq_obj, "display_time", -1.0);
@@ -395,6 +403,26 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)tmp;
+
+        } else if (!strcmp(type_str, "total_stats")) {
+            seq->type = GFS_TOTAL_STATS;
+
+            GAMEFLOW_DISPLAY_PICTURE_DATA *data =
+                Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
+
+            const char *tmp_s = json_object_get_string(
+                jseq_obj, "picture_path", JSON_INVALID_STRING);
+            if (tmp_s == JSON_INVALID_STRING) {
+                LOG_ERROR(
+                    "level %d, sequence %s: 'picture_path' must be a string",
+                    level_num, type_str);
+                return false;
+            }
+            data->path = Memory_DupStr(tmp_s);
+
+            data->display_time = 0;
+
+            seq->data = data;
 
         } else if (!strcmp(type_str, "exit_to_title")) {
             seq->type = GFS_EXIT_TO_TITLE;
@@ -577,8 +605,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     int32_t level_count = jlvl_arr->length;
 
     g_GameFlow.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
-    g_GameInfo.start = Memory_Alloc(sizeof(START_INFO) * level_count);
-    g_GameInfo.end = Memory_Alloc(sizeof(END_INFO) * level_count);
+    g_GameInfo.current = Memory_Alloc(sizeof(RESUME_INFO) * level_count);
 
     struct json_array_element_s *jlvl_elem = jlvl_arr->start;
     int level_num = 0;
@@ -614,14 +641,14 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             LOG_ERROR("level %d: 'file' must be a string", level_num);
             return false;
         }
-        cur->level_file = Memory_Dup(tmp_s);
+        cur->level_file = Memory_DupStr(tmp_s);
 
         tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'title' must be a string", level_num);
             return false;
         }
-        cur->level_title = Memory_Dup(tmp_s);
+        cur->level_title = Memory_DupStr(tmp_s);
 
         tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
@@ -702,6 +729,12 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             cur->water_color.override = false;
         }
 
+        cur->unobtainable.pickups =
+            json_object_get_int(jlvl_obj, "unobtainable_pickups", 0);
+
+        cur->unobtainable.kills =
+            json_object_get_int(jlvl_obj, "unobtainable_kills", 0);
+
         struct json_object_s *jlbl_strings_obj =
             json_object_get_object(jlvl_obj, "strings");
         if (!jlbl_strings_obj) {
@@ -711,7 +744,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "pickup1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->pickup1 = Memory_Dup(tmp_s);
+                cur->pickup1 = Memory_DupStr(tmp_s);
             } else {
                 cur->pickup1 = NULL;
             }
@@ -719,7 +752,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "pickup2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->pickup2 = Memory_Dup(tmp_s);
+                cur->pickup2 = Memory_DupStr(tmp_s);
             } else {
                 cur->pickup2 = NULL;
             }
@@ -727,7 +760,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key1 = Memory_Dup(tmp_s);
+                cur->key1 = Memory_DupStr(tmp_s);
             } else {
                 cur->key1 = NULL;
             }
@@ -735,7 +768,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key2 = Memory_Dup(tmp_s);
+                cur->key2 = Memory_DupStr(tmp_s);
             } else {
                 cur->key2 = NULL;
             }
@@ -743,7 +776,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key3", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key3 = Memory_Dup(tmp_s);
+                cur->key3 = Memory_DupStr(tmp_s);
             } else {
                 cur->key3 = NULL;
             }
@@ -751,7 +784,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "key4", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->key4 = Memory_Dup(tmp_s);
+                cur->key4 = Memory_DupStr(tmp_s);
             } else {
                 cur->key4 = NULL;
             }
@@ -759,7 +792,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle1 = Memory_Dup(tmp_s);
+                cur->puzzle1 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle1 = NULL;
             }
@@ -767,7 +800,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle2 = Memory_Dup(tmp_s);
+                cur->puzzle2 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle2 = NULL;
             }
@@ -775,7 +808,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle3", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle3 = Memory_Dup(tmp_s);
+                cur->puzzle3 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle3 = NULL;
             }
@@ -783,7 +816,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             tmp_s = json_object_get_string(
                 jlbl_strings_obj, "puzzle4", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle4 = Memory_Dup(tmp_s);
+                cur->puzzle4 = Memory_DupStr(tmp_s);
             } else {
                 cur->puzzle4 = NULL;
             }
@@ -850,13 +883,12 @@ cleanup:
     return result;
 }
 
-void GameFlow_Shutdown()
+void GameFlow_Shutdown(void)
 {
     Memory_FreePointer(&g_GameFlow.main_menu_background_path);
     Memory_FreePointer(&g_GameFlow.savegame_fmt_legacy);
     Memory_FreePointer(&g_GameFlow.savegame_fmt_bson);
-    Memory_FreePointer(&g_GameInfo.start);
-    Memory_FreePointer(&g_GameInfo.end);
+    Memory_FreePointer(&g_GameInfo.current);
 
     for (int i = 0; i < GS_NUMBER_OF; i++) {
         Memory_FreePointer(&g_GameFlow.strings[i]);
@@ -881,7 +913,8 @@ void GameFlow_Shutdown()
             if (seq) {
                 while (seq->type != GFS_END) {
                     switch (seq->type) {
-                    case GFS_DISPLAY_PICTURE: {
+                    case GFS_DISPLAY_PICTURE:
+                    case GFS_TOTAL_STATS: {
                         GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                         Memory_FreePointer(&data->path);
                         Memory_FreePointer(&data);
@@ -966,7 +999,7 @@ bool GameFlow_LoadFromFile(const char *file_name)
     return result;
 }
 
-static void FixPyramidSecretTrigger()
+static void FixPyramidSecretTrigger(void)
 {
     uint32_t global_secrets = 0;
 
@@ -1053,6 +1086,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             case GFS_EXIT_TO_CINE:
             case GFS_PLAY_FMV:
             case GFS_LEVEL_STATS:
+            case GFS_TOTAL_STATS:
                 skip = false;
                 break;
             default:
@@ -1067,22 +1101,22 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         switch (seq->type) {
         case GFS_START_GAME:
-            if (!StartGame((int32_t)seq->data, level_type)) {
+            if (!Game_Start((int32_t)seq->data, level_type)) {
                 g_CurrentLevel = 0;
                 return GF_EXIT_TO_TITLE;
             }
             break;
 
         case GFS_LOOP_GAME:
-            ret = GameLoop(level_type);
-            LOG_DEBUG("GameLoop() exited with %d", ret);
+            ret = Game_Loop(level_type);
+            LOG_DEBUG("Game_Loop() exited with %d", ret);
             if (ret != GF_NOP) {
                 return ret;
             }
             break;
 
         case GFS_STOP_GAME:
-            ret = StopGame();
+            ret = Game_Stop();
             if (ret != GF_NOP
                 && ((ret & ~((1 << 6) - 1)) != GF_LEVEL_COMPLETE)) {
                 return ret;
@@ -1094,19 +1128,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_START_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StartCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Start((int32_t)seq->data);
             }
             break;
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = CinematicLoop();
+                ret = Game_Cutscene_Loop();
             }
             break;
 
         case GFS_STOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = StopCinematic((int32_t)seq->data);
+                ret = Game_Cutscene_Stop((int32_t)seq->data);
             }
             break;
 
@@ -1120,15 +1154,46 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Stats_Show((int32_t)seq->data);
             break;
 
+        case GFS_TOTAL_STATS:
+            if (g_Config.enable_total_stats && level_type != GFL_SAVED) {
+                GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                Stats_ShowTotal(data->path);
+            }
+            break;
+
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
-                Output_FadeToTransparent(true);
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
                 Output_DisplayPicture(data->path);
-                Output_InitialisePolyList();
-                Output_CopyPictureToScreen();
-                Output_DumpScreen();
-                Shell_Wait(data->display_time);
+                Clock_SyncTicks(1);
+
+                Output_FadeResetToBlack();
+                Output_FadeToTransparent(true);
+                while (Output_FadeIsAnimating()) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Input_Update();
+                    Output_DumpScreen();
+                    if (g_InputDB.any) {
+                        break;
+                    }
+                }
+
+                if (!g_InputDB.any) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Output_DumpScreen();
+                    Shell_Wait(data->display_time);
+                }
+
+                // fade out
+                Output_FadeToBlack(true);
+                while (Output_FadeIsAnimating()) {
+                    Output_InitialisePolyList();
+                    Output_CopyPictureToScreen();
+                    Output_DumpScreen();
+                }
+                Output_FadeReset();
             }
             break;
 
@@ -1154,7 +1219,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             g_Camera.target_angle = (int32_t)seq->data;
             break;
         case GFS_FLIP_MAP:
-            FlipMap();
+            Room_FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
             Music_Play((int32_t)seq->data);
@@ -1168,15 +1233,15 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                     give_item_data->object_num, give_item_data->quantity);
                 if (g_Lara.gun_type == LGT_UNARMED) {
                     if (Inv_RequestItem(O_GUN_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_PISTOLS;
+                        g_GameInfo.current[level_num].gun_type = LGT_PISTOLS;
                     } else if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_SHOTGUN;
+                        g_GameInfo.current[level_num].gun_type = LGT_SHOTGUN;
                     } else if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_MAGNUMS;
+                        g_GameInfo.current[level_num].gun_type = LGT_MAGNUMS;
                     } else if (Inv_RequestItem(O_UZI_ITEM)) {
-                        g_GameInfo.start[level_num].gun_type = LGT_UZIS;
+                        g_GameInfo.current[level_num].gun_type = LGT_UZIS;
                     }
-                    LaraInitialiseMeshes(level_num);
+                    Lara_InitialiseMeshes(level_num);
                 }
             }
             break;
@@ -1184,20 +1249,20 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
             if (level_type != GFL_SAVED
                 && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-                g_GameInfo.start[level_num].flags.got_pistols = 0;
-                g_GameInfo.start[level_num].flags.got_shotgun = 0;
-                g_GameInfo.start[level_num].flags.got_magnums = 0;
-                g_GameInfo.start[level_num].flags.got_uzis = 0;
-                g_GameInfo.start[level_num].gun_type = LGT_UNARMED;
-                g_GameInfo.start[level_num].gun_status = LGS_ARMLESS;
-                InitialiseLaraInventory(level_num);
+                g_GameInfo.current[level_num].flags.got_pistols = 0;
+                g_GameInfo.current[level_num].flags.got_shotgun = 0;
+                g_GameInfo.current[level_num].flags.got_magnums = 0;
+                g_GameInfo.current[level_num].flags.got_uzis = 0;
+                g_GameInfo.current[level_num].gun_type = LGT_UNARMED;
+                g_GameInfo.current[level_num].gun_status = LGS_ARMLESS;
+                Lara_InitialiseInventory(level_num);
             }
             break;
 
         case GFS_REMOVE_SCIONS:
             if (level_type != GFL_SAVED) {
-                g_GameInfo.start[level_num].num_scions = 0;
-                InitialiseLaraInventory(level_num);
+                g_GameInfo.current[level_num].num_scions = 0;
+                Lara_InitialiseInventory(level_num);
             }
             break;
 

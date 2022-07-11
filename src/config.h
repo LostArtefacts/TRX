@@ -9,6 +9,11 @@ typedef enum {
 } SCREENSHOT_FORMAT;
 
 typedef enum {
+    UI_STYLE_PS1 = 0,
+    UI_STYLE_PC = 1,
+} UI_STYLE;
+
+typedef enum {
     BL_TOP_LEFT = 0,
     BL_TOP_CENTER = 1,
     BL_TOP_RIGHT = 2,
@@ -54,6 +59,7 @@ typedef struct {
     bool enable_tr3_sidesteps;
     bool enable_braid;
     bool enable_compass_stats;
+    bool enable_total_stats;
     bool enable_timer_in_inventory;
     bool enable_smooth_bars;
     bool enable_fade_effects;
@@ -73,19 +79,26 @@ typedef struct {
     bool fix_bridge_collision;
     bool fix_qwop_glitch;
     bool fix_alligator_ai;
+    bool change_pierre_spawn;
     int32_t fov_value;
     bool fov_vertical;
     bool disable_demo;
     bool disable_fmv;
     bool disable_cine;
     bool disable_music_in_menu;
+    bool disable_music_in_inventory;
     int32_t resolution_width;
     int32_t resolution_height;
     bool enable_xbox_one_controller;
     float brightness;
     bool enable_round_shadow;
     bool enable_3d_pickups;
+    bool enable_detailed_stats;
     int32_t start_lara_hitpoints;
+    bool walk_to_items;
+    bool disable_trex_collision;
+    int32_t maximum_save_slots;
+    bool revert_to_pistols;
 
     struct {
         int32_t layout;
@@ -102,6 +115,7 @@ typedef struct {
     struct {
         double text_scale;
         double bar_scale;
+        UI_STYLE menu_style;
     } ui;
 
     int32_t sound_volume;
@@ -113,4 +127,4 @@ typedef struct {
 extern CONFIG g_Config;
 
 bool Config_ReadFromJSON(const char *json);
-bool Config_Read();
+bool Config_Read(void);

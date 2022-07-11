@@ -25,6 +25,9 @@ clean:
 	-find build/ -type f -delete
 	-find build/ -mindepth 1 -empty -type d -delete
 
+imports:
+	tools/sort_imports
+
 lint:
 	bash -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
 
@@ -40,4 +43,4 @@ test: build test_base
 test_gold: build test_base
 	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe -gold
 
-.PHONY: debug debugopt release clean lint test_base test_bin test test_gold
+.PHONY: debug debugopt release clean imports lint test_base test_bin test test_gold

@@ -1,5 +1,6 @@
 #include "json/json_parse.h"
 
+#include "json/json_base.h"
 #include "memory.h"
 
 struct json_parse_state_s {

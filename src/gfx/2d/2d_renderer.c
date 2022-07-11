@@ -1,5 +1,6 @@
 #include "gfx/2d/2d_renderer.h"
 
+#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 
 void GFX_2D_Renderer_Init(GFX_2D_Renderer *renderer)

@@ -1,28 +1,33 @@
-#include "game/effects/bubble.h"
-#include "game/effects/chain_block.h"
-#include "game/effects/dino_stomp.h"
-#include "game/effects/earthquake.h"
-#include "game/effects/explosion.h"
-#include "game/effects/finish_level.h"
-#include "game/effects/flicker.h"
-#include "game/effects/flipmap.h"
-#include "game/effects/flood.h"
-#include "game/effects/lara_effects.h"
-#include "game/effects/powerup.h"
-#include "game/effects/raising_block.h"
-#include "game/effects/sand.h"
-#include "game/effects/stairs2slope.h"
-#include "game/effects/turn_180.h"
 #include "global/vars.h"
+
+#include "game/effect_routines/bubbles.h"
+#include "game/effect_routines/chain_block.h"
+#include "game/effect_routines/dino_stomp.h"
+#include "game/effect_routines/earthquake.h"
+#include "game/effect_routines/explosion.h"
+#include "game/effect_routines/finish_level.h"
+#include "game/effect_routines/flicker.h"
+#include "game/effect_routines/flipmap.h"
+#include "game/effect_routines/flood.h"
+#include "game/effect_routines/lara_effects.h"
+#include "game/effect_routines/powerup.h"
+#include "game/effect_routines/raising_block.h"
+#include "game/effect_routines/sand.h"
+#include "game/effect_routines/stairs2slope.h"
+#include "game/effect_routines/turn_180.h"
+
+#include <stddef.h>
 
 char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
 
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
-    Turn180,    DinoStomp, LaraNormal,    LaraBubbles,  FinishLevel,
-    EarthQuake, Flood,     RaisingBlock,  Stairs2Slope, DropSand,
-    PowerUp,    Explosion, LaraHandsFree, FxFlipMap,    LaraDrawRightGun,
-    ChainBlock, Flicker,
+    FX_Turn180,       FX_DinoStomp,    FX_LaraNormal,
+    FX_Bubbles,       FX_FinishLevel,  FX_Earthquake,
+    FX_Flood,         FX_RaisingBlock, FX_Stairs2Slope,
+    FX_DropSand,      FX_PowerUp,      FX_Explosion,
+    FX_LaraHandsFree, FX_FlipMap,      FX_LaraDrawRightGun,
+    FX_ChainBlock,    FX_Flicker,
 };
 
 int16_t g_SampleLUT[MAX_SAMPLES] = { 0 };
@@ -40,8 +45,8 @@ int32_t g_PhdRight = 0;
 int32_t g_PhdTop = 0;
 PHD_SPRITE g_PhdSpriteInfo[MAX_SPRITES] = { 0 };
 PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES] = { 0 };
-PHD_MATRIX *g_PhdMatrixPtr = NULL;
-PHD_MATRIX g_W2VMatrix = { 0 };
+MATRIX *g_MatrixPtr = NULL;
+MATRIX g_W2VMatrix = { 0 };
 
 int32_t g_WibbleOffset = 0;
 int32_t g_WibbleTable[WIBBLE_SIZE] = { 0 };

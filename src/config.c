@@ -2,11 +2,14 @@
 
 #include "filesystem.h"
 #include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
-#include "json.h"
+#include "json/json_base.h"
+#include "json/json_parse.h"
 #include "log.h"
 #include "memory.h"
+#include "specific/s_shell.h"
+#include "util.h"
 
 #include <string.h>
 
@@ -39,6 +42,12 @@ typedef struct ENUM_MAP {
     const char *text;
     int value;
 } ENUM_MAP;
+
+const ENUM_MAP m_UIStyles[] = {
+    { "ps1", UI_STYLE_PS1 },
+    { "pc", UI_STYLE_PC },
+    { NULL, -1 },
+};
 
 const ENUM_MAP m_BarShowingModes[] = {
     { "default", BSM_DEFAULT },
@@ -126,6 +135,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(disable_magnums, false);
     READ_BOOL(disable_uzis, false);
     READ_BOOL(disable_shotgun, false);
+    READ_BOOL(enable_detailed_stats, true);
     READ_BOOL(enable_deaths_counter, true);
     READ_BOOL(enable_enemy_healthbar, true);
     READ_BOOL(enable_enhanced_look, true);
@@ -136,6 +146,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_tr3_sidesteps, true);
     READ_BOOL(enable_braid, false);
     READ_BOOL(enable_compass_stats, true);
+    READ_BOOL(enable_total_stats, true);
     READ_BOOL(enable_timer_in_inventory, true);
     READ_BOOL(enable_smooth_bars, true);
     READ_BOOL(enable_fade_effects, true);
@@ -147,6 +158,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(fix_bridge_collision, true);
     READ_BOOL(fix_qwop_glitch, false);
     READ_BOOL(fix_alligator_ai, true);
+    READ_BOOL(change_pierre_spawn, true);
     READ_INTEGER(fov_value, 65);
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);
@@ -155,11 +167,14 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(disable_fmv, false);
     READ_BOOL(disable_cine, false);
     READ_BOOL(disable_music_in_menu, false);
+    READ_BOOL(disable_music_in_inventory, false);
     READ_BOOL(enable_xbox_one_controller, false);
     READ_FLOAT(brightness, 1.0);
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
     READ_FLOAT(rendering.anisotropy_filter, 16.0f);
+    READ_BOOL(walk_to_items, false);
+    READ_BOOL(disable_trex_collision, false);
     READ_INTEGER(start_lara_hitpoints, LARA_HITPOINTS);
     READ_ENUM(
         healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
@@ -171,6 +186,9 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_ENUM(airbar_color, BC_BLUE, m_BarColors);
     READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
+    READ_ENUM(ui.menu_style, UI_STYLE_PC, m_UIStyles);
+    READ_INTEGER(maximum_save_slots, 25);
+    READ_BOOL(revert_to_pistols, false);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -181,7 +199,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     return result;
 }
 
-bool Config_Read()
+bool Config_Read(void)
 {
     bool result = false;
     char *cfg_data = NULL;

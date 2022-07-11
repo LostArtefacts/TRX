@@ -3,25 +3,25 @@
 #include "game/picture.h"
 #include "global/types.h"
 
-bool S_Output_Init();
-void S_Output_Shutdown();
+bool S_Output_Init(void);
+void S_Output_Shutdown(void);
 
 void S_Output_EnableTextureMode(void);
 void S_Output_DisableTextureMode(void);
 void S_Output_EnableDepthTest(void);
 void S_Output_DisableDepthTest(void);
 
-void S_Output_RenderBegin();
-void S_Output_RenderEnd();
-void S_Output_RenderToggle();
-void S_Output_DumpScreen();
-void S_Output_ClearDepthBuffer();
-void S_Output_ClearBackBuffer();
-void S_Output_DrawEmpty();
+void S_Output_RenderBegin(void);
+void S_Output_RenderEnd(void);
+void S_Output_RenderToggle(void);
+void S_Output_DumpScreen(void);
+void S_Output_ClearDepthBuffer(void);
+void S_Output_ClearBackBuffer(void);
+void S_Output_DrawEmpty(void);
 
 void S_Output_SetViewport(int width, int height);
 void S_Output_SetFullscreen(bool fullscreen);
-void S_Output_ApplyResolution();
+void S_Output_ApplyResolution(void);
 
 void S_Output_SetPalette(RGB888 palette[256]);
 RGB888 S_Output_GetPaletteColor(uint8_t idx);
@@ -29,7 +29,7 @@ RGB888 S_Output_GetPaletteColor(uint8_t idx);
 void S_Output_DownloadTextures(int32_t pages);
 void S_Output_DownloadPicture(const PICTURE *pic);
 void S_Output_SelectTexture(int tex_num);
-void S_Output_CopyFromPicture();
+void S_Output_CopyFromPicture(void);
 
 void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB888 color);

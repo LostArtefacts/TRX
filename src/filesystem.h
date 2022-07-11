@@ -23,7 +23,7 @@ bool File_IsRelative(const char *path);
 
 bool File_Exists(const char *path);
 
-const char *File_GetGameDirectory();
+const char *File_GetGameDirectory(void);
 
 // Get the absolute path to the given file, if possible.
 // Internaly all operations on files within filesystem.c

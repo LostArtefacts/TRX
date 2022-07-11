@@ -3,8 +3,10 @@
 #include "config.h"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
+#include "log.h"
 
 #include <assert.h>
+#include <stddef.h>
 
 static void GFX_3D_Renderer_SelectTextureImpl(
     GFX_3D_Renderer *renderer, int texture_num);
@@ -279,7 +281,7 @@ void GFX_3D_Renderer_SetTexturingEnabled(
         &renderer->program, renderer->loc_texturing_enabled, is_enabled);
 }
 
-void GFX_3D_Renderer_RenderEmpty()
+void GFX_3D_Renderer_RenderEmpty(void)
 {
     GFX_Context_SetRendered();
 }
