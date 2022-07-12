@@ -135,12 +135,10 @@ static void Text_DrawTextOutline(
         double scale = Viewport_GetHeight() / 480.0;
         Output_DrawScreenBox(
             sx - scale, sy - scale, w, h, Text_GetMenuColor(MC_GOLD_LIGHT),
-            TEXT_OUTLINE_THICKNESS * scale,
-            scale, 0);
+            TEXT_OUTLINE_THICKNESS * scale, scale, 0);
         Output_DrawScreenBox(
             sx, sy, w, h, Text_GetMenuColor(MC_GOLD_DARK),
-            TEXT_OUTLINE_THICKNESS * scale, 0,
-           scale);        
+            TEXT_OUTLINE_THICKNESS * scale, 0, scale);
         return;
     }
 
