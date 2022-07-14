@@ -19,6 +19,7 @@
     <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>10.0</LangVersion>
@@ -53,6 +54,10 @@
     <None Remove="Resources\Styles.xaml" />
     <None Remove="Resources\Tomb1Main.png" />
     <None Remove="Resources\TombATI.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
