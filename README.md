@@ -270,6 +270,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added level selection to the load game menu
 - added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
 - added the PS1 style UI
+- added the option to enable inventory buffering
 - changed internal game memory limit from 3.5 MB to 16 MB
 - changed moveable limit from 256 to 10240
 - changed maximum textures from 2048 to 8192

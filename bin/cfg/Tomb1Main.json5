@@ -228,4 +228,7 @@
 
     // Make Lara revert to pistols on new level start (inline with TombATI behaviour)
     "revert_to_pistols": false,
+
+    // Allows the inventory to reopen immediately after closing it by holding down the inventory key.
+    "enable_inventory_buffering": false,
 }
