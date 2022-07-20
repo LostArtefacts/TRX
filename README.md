@@ -20,28 +20,38 @@ This project was inspired by Arsunt's
 <table>
     <tr>
         <th>
-            Mode selection
-            <img src="docs/showcase1.jpg"/>
+            Enemy health bar and UI scaling
+            <img src="docs/showcase/enemy_health_bar_and_scaling.jpg"/>
         </th>
         <th>
-            Braid
-            <img src="docs/showcase2.jpg"/>
+            3D pickups
+            <img src="docs/showcase/3d_pickups.jpg"/>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Improved stats
+            <img src="docs/showcase/compass_stats.jpg"/>
+        </th>
+        <th>
+            Customizable draw distance
+            <img src="docs/showcase/draw_distance.webp"/>
         </th>
     </tr>
     <tr>
         <th>
             Fly cheat
-            <img src="docs/showcase3.jpg"/>
+            <img src="docs/showcase/fly_cheat.jpg"/>
         </th>
         <th>
-            Door open cheat
-            <img src="docs/showcase4.jpg"/>
+            Free camera
+            <img src="docs/showcase/free_camera.jpg"/>
         </th>
     </tr>
     <tr>
         <th>
-            Enemy healthbars
-            <img src="docs/showcase5.jpg"/>
+            PS1 UI and GFX
+            <img src="docs/showcase/ps1_ui_and_gfx.jpg"/>
         </th>
     </tr>
 </table>
