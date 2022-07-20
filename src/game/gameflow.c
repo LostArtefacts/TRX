@@ -1301,7 +1301,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 }
 
 GAMEFLOW_OPTION
-GameFlow_StorySoFar(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
+GameFlow_StorySoFar(
+    int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type, int32_t savegame_level)
 {
     LOG_INFO("%d", level_num);
 
@@ -1311,7 +1312,6 @@ GameFlow_StorySoFar(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
         switch (seq->type) {
-        case GFS_START_GAME:
         case GFS_LOOP_GAME:
         case GFS_STOP_GAME:
         case GFS_LEVEL_STATS:
@@ -1321,6 +1321,13 @@ GameFlow_StorySoFar(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
         case GFS_REMOVE_SCIONS:
         case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+            seq++;
+            continue;
+
+        case GFS_START_GAME:
+            if (level_num == savegame_level) {
+                return GF_EXIT_TO_TITLE;
+            }
             seq++;
             continue;
 
