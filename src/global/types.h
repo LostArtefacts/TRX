@@ -1558,6 +1558,29 @@ typedef struct CREATURE_INFO {
     PHD_VECTOR target;
 } CREATURE_INFO;
 
+typedef enum {
+    TS_HEADING = 0,
+    TS_BACKGROUND = 1,
+    TS_REQUESTED = 2,
+} TEXT_STYLE;
+
+typedef enum {
+    MC_PURPLE_C,
+    MC_PURPLE_E,
+    MC_BROWN_C,
+    MC_BROWN_E,
+    MC_GREY_C,
+    MC_GREY_E,
+    MC_GREY_TL,
+    MC_GREY_TR,
+    MC_GREY_BL,
+    MC_GREY_BR,
+    MC_BLACK,
+    MC_GOLD_LIGHT,
+    MC_GOLD_DARK,
+    MC_NUMBER_OF,
+} MENU_COLOR;
+
 typedef struct TEXTSTRING {
     union {
         uint32_t all;
@@ -1596,6 +1619,12 @@ typedef struct TEXTSTRING {
         int32_t h;
         int32_t v;
     } scale;
+    struct {
+        TEXT_STYLE style;
+    } background;
+    struct {
+        TEXT_STYLE style;
+    } outline;
     char *string;
 
     void (*on_remove)(const struct TEXTSTRING *);

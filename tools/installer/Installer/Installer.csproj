@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>enable</Nullable>
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
+
+    <AssemblyName>Tomb1Main_Installer</AssemblyName>
+    <LangVersion>9.0</LangVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ApplicationDefinitionKurwa Include="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinitionKurwa>
+
+    <Compile Include="**/*.cs" Exclude="bin/**/*.cs;obj/**/*.cs;**/*.xaml.cs" />
+    <Page Update="**/*.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="**/*.xaml.cs" Exclude="bin/**/*.xaml.cs;obj/**/*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="release.zip" />
+    <None Remove="Resources\GOG.png" />
+    <None Remove="Resources\side1.jpg" />
+    <None Remove="Resources\side2.jpg" />
+    <None Remove="Resources\side3.jpg" />
+    <None Remove="Resources\side4.jpg" />
+    <None Remove="Resources\Steam.png" />
+    <None Remove="Resources\Styles.xaml" />
+    <None Remove="Resources\Tomb1Main.png" />
+    <None Remove="Resources\TombATI.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\side1.jpg" />
+    <Resource Include="Resources\side2.jpg" />
+    <Resource Include="Resources\side3.jpg" />
+    <Resource Include="Resources\side4.jpg" />
+    <Resource Include="Resources\Steam.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\GOG.png" />
+    <EmbeddedResource Include="Resources\release.zip" />
+    <Resource Include="Resources\Tomb1Main.png" />
+    <Resource Include="Resources\TombATI.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscUtils.Iso9660" Version="0.16.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Controls\FinishStepControl.xaml" />
+    <Page Include="Controls\InstallSourceControl.xaml" />
+    <Page Include="Controls\InstallStepControl.xaml" />
+    <Page Include="Controls\MainWindow.xaml" />
+    <Page Include="Controls\SourceStepControl.xaml" />
+    <Page Include="Controls\InstallSettingsStepControl.xaml" />
+    <Page Include="Resources\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App" IsWindowsOnly="false" />
+    <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WPF" IsWindowsOnly="false" />
+    <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WindowsForms" IsWindowsOnly="false" />
+  </ItemGroup>
+</Project>

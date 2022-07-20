@@ -425,13 +425,7 @@ void Stats_ShowTotal(const char *filename)
     const int row_height = 20;
     int16_t border = 4;
 
-    // heading
-    sprintf(buf, "%s", g_GameFlow.strings[GS_STATS_FINAL_STATISTICS]);
-    txt = Text_Create(0, y + 2, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
-    Text_AddBackground(txt, row_width - 4, 0, 0, 0);
-    Text_AddOutline(txt, 1);
+    // reserve space for heading
     y += row_height + border * 2;
 
     // kills
@@ -495,12 +489,21 @@ void Stats_ShowTotal(const char *filename)
     Text_CentreV(txt, 1);
     y += row_height;
 
+    // border
     int16_t height = y + border * 2 - top_y;
     txt = Text_Create(0, top_y, " ");
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
-    Text_AddBackground(txt, row_width, height, 0, 0);
-    Text_AddOutline(txt, 1);
+    Text_AddBackground(txt, row_width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(txt, true, TS_BACKGROUND);
+
+    // heading
+    sprintf(buf, "%s", g_GameFlow.strings[GS_STATS_FINAL_STATISTICS]);
+    txt = Text_Create(0, top_y + 2, buf);
+    Text_CentreH(txt, 1);
+    Text_CentreV(txt, 1);
+    Text_AddBackground(txt, row_width - 4, 0, 0, 0, TS_HEADING);
+    Text_AddOutline(txt, true, TS_HEADING);
 
     Output_DisplayPicture(filename);
     Clock_SyncTicks(1);

@@ -43,6 +43,12 @@ typedef struct ENUM_MAP {
     int value;
 } ENUM_MAP;
 
+const ENUM_MAP m_UIStyles[] = {
+    { "ps1", UI_STYLE_PS1 },
+    { "pc", UI_STYLE_PC },
+    { NULL, -1 },
+};
+
 const ENUM_MAP m_BarShowingModes[] = {
     { "default", BSM_DEFAULT },
     { "flashing-or-default", BSM_FLASHING_OR_DEFAULT },
@@ -180,6 +186,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_ENUM(airbar_color, BC_BLUE, m_BarColors);
     READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
     READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
+    READ_ENUM(ui.menu_style, UI_STYLE_PC, m_UIStyles);
     READ_INTEGER(maximum_save_slots, 25);
     READ_BOOL(revert_to_pistols, false);
 

@@ -99,8 +99,8 @@ static void Option_GraphicsInitText(void)
         Text_Create(0, TOP_Y, g_GameFlow.strings[GS_DETAIL_SELECT_DETAIL]);
     Text_CentreH(m_Text[TEXT_TITLE], 1);
     Text_CentreV(m_Text[TEXT_TITLE], 1);
-    Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0);
-    Text_AddOutline(m_Text[TEXT_TITLE], 1);
+    Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0, TS_HEADING);
+    Text_AddOutline(m_Text[TEXT_TITLE], true, TS_HEADING);
 
     if (g_OptionSelected < TEXT_OPTION_MIN) {
         g_OptionSelected = TEXT_OPTION_MIN;
@@ -113,8 +113,9 @@ static void Option_GraphicsInitText(void)
 
     int16_t width = ROW_WIDTH;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
-    Text_AddBackground(m_Text[TEXT_TITLE_BORDER], width, height, 0, 0);
-    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], 1);
+    Text_AddBackground(
+        m_Text[TEXT_TITLE_BORDER], width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
 
     m_Text[TEXT_LEFT_ARROW] = Text_Create(0, 0, "\200");
     Text_CentreV(m_Text[TEXT_LEFT_ARROW], 1);
@@ -136,8 +137,9 @@ static void Option_GraphicsInitText(void)
     m_Text[TEXT_ROW_SELECT] =
         Text_Create(centre - 3, TOP_Y + ROW_HEIGHT + BORDER * 2, " ");
     Text_CentreV(m_Text[TEXT_ROW_SELECT], 1);
-    Text_AddBackground(m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0, 0);
-    Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+    Text_AddBackground(
+        m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0, 0, TS_REQUESTED);
+    Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
 
     Option_GraphicsChangeTextOption(TEXT_PERSPECTIVE);
     Option_GraphicsChangeTextOption(TEXT_BILINEAR);
@@ -309,16 +311,16 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         g_OptionSelected--;
         Text_AddBackground(
             m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
-            ROW_HEIGHT * g_OptionSelected);
-        Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+            ROW_HEIGHT * g_OptionSelected, TS_REQUESTED);
+        Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
     }
 
     if (g_InputDB.back && g_OptionSelected < TEXT_OPTION_MAX) {
         g_OptionSelected++;
         Text_AddBackground(
             m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
-            ROW_HEIGHT * g_OptionSelected);
-        Text_AddOutline(m_Text[TEXT_ROW_SELECT], 1);
+            ROW_HEIGHT * g_OptionSelected, TS_REQUESTED);
+        Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
     }
 
     int32_t reset = -1;

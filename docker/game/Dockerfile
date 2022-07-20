@@ -127,4 +127,4 @@ RUN apt-get update \
         meson \
         ninja
 
-ENTRYPOINT ["/app/docker/entrypoint.sh"]
+ENTRYPOINT ["/app/docker/game/entrypoint.sh"]

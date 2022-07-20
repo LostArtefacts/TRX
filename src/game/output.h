@@ -64,7 +64,17 @@ void Output_DrawScreenGradientQuad(
     RGBA8888 bl, RGBA8888 br);
 void Output_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col);
-void Output_DrawScreenBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
+void Output_DrawScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col,
+    int32_t thickness);
+void Output_DrawGradientScreenLine(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col1, RGBA8888 col2);
+void Output_DrawGradientScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br, int32_t thickness);
+void Output_DrawCentreGradientScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
+    RGBA8888 center, int32_t thickness);
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 
 void Output_DrawSprite(
