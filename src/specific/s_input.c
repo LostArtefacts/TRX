@@ -2,6 +2,8 @@
 
 #include "game/input.h"
 #include "log.h"
+#include "specific/s_shell.h"
+#include "config.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>
@@ -455,6 +457,15 @@ INPUT_STATE S_Input_GetCurrentState(void)
     linput.toggle_bilinear_filter    = KEY_DOWN(SDL_SCANCODE_F3);
     linput.toggle_perspective_filter = KEY_DOWN(SDL_SCANCODE_F4);
     // clang-format on
+
+    if (g_Config.enable_buffering
+        && (KEY_DOWN(SDL_SCANCODE_F2) || KEY_DOWN(SDL_SCANCODE_F3)
+            || KEY_DOWN(SDL_SCANCODE_F4))) {
+        while (KEY_DOWN(SDL_SCANCODE_F2) || KEY_DOWN(SDL_SCANCODE_F3)
+               || KEY_DOWN(SDL_SCANCODE_F4)) {
+            S_Shell_SpinMessageLoop();
+        }
+    }
 
     if (m_Controller) {
         // clang-format off

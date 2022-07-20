@@ -70,9 +70,9 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if ((g_Config.enable_inventory_buffering ? g_Input.option
-                                                 : g_InputDB.option
-                     || g_Input.save || g_Input.load || g_OverlayFlag <= 0)
+        if ((g_Config.enable_buffering ? g_Input.option
+                                       : g_InputDB.option || g_Input.save
+                     || g_Input.load || g_OverlayFlag <= 0)
             && !g_Lara.death_timer) {
             if (g_ModeLock || g_Camera.type == CAM_CINEMATIC) {
                 g_OverlayFlag = 0;
