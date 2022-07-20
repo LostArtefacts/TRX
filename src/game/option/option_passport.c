@@ -181,8 +181,8 @@ static void Option_PassportShowLevelSelect(void)
 {
     int32_t select = Requester_Display(&m_SelectLevelRequester);
     if (select) {
-        if (select - 1
-            == g_GameFlow.last_level_num - g_GameFlow.first_level_num + 1) {
+        if (select - 1 + g_GameFlow.first_level_num
+            == Savegame_GetLevelNumber(g_GameInfo.current_save_slot) + 1) {
             g_GameInfo.passport_mode = PASSPORT_MODE_STORY_SO_FAR;
         } else if (select > 0) {
             g_GameInfo.select_level_num =

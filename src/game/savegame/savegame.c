@@ -586,19 +586,12 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
         return;
     }
 
-    for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
+    for (int i = g_GameFlow.first_level_num; i <= savegame_info->level_num;
          i++) {
-        if (i <= savegame_info->level_num) {
-            req->item_flags[req->items] &= ~RIF_BLOCKED;
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len], "%s",
-                g_GameFlow.levels[i].level_title);
-        } else {
-            req->item_flags[req->items] |= RIF_BLOCKED;
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len],
-                g_GameFlow.strings[GS_PASSPORT_LOCKED_LEVEL]);
-        }
+        req->item_flags[req->items] &= ~RIF_BLOCKED;
+        sprintf(
+            &req->item_texts[req->items * req->item_text_len], "%s",
+            g_GameFlow.levels[i].level_title);
         req->items++;
     }
 
