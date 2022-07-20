@@ -1,9 +1,9 @@
 #include "specific/s_input.h"
 
+#include "config.h"
 #include "game/input.h"
 #include "log.h"
 #include "specific/s_shell.h"
-#include "config.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>
