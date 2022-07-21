@@ -1301,8 +1301,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 }
 
 GAMEFLOW_OPTION
-GameFlow_StorySoFar(
-    int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type, int32_t savegame_level)
+GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 {
     LOG_INFO("%d", level_num);
 
@@ -1321,38 +1320,28 @@ GameFlow_StorySoFar(
         case GFS_REMOVE_GUNS:
         case GFS_REMOVE_SCIONS:
         case GFS_FIX_PYRAMID_SECRET_TRIGGER:
-            seq++;
-            continue;
+            break;
 
         case GFS_START_GAME:
             if (level_num == savegame_level) {
                 return GF_EXIT_TO_TITLE;
             }
-            seq++;
-            continue;
+            break;
 
         case GFS_START_CINE:
-            if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Start((int32_t)seq->data);
-            }
+            ret = Game_Cutscene_Start((int32_t)seq->data);
             break;
 
         case GFS_LOOP_CINE:
-            if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Loop();
-            }
+            ret = Game_Cutscene_Loop();
             break;
 
         case GFS_STOP_CINE:
-            if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Stop((int32_t)seq->data);
-            }
+            ret = Game_Cutscene_Stop((int32_t)seq->data);
             break;
 
         case GFS_PLAY_FMV:
-            if (level_type != GFL_SAVED) {
-                FMV_Play((char *)seq->data);
-            }
+            FMV_Play((char *)seq->data);
             break;
 
         case GFS_EXIT_TO_TITLE:
@@ -1385,9 +1374,7 @@ GameFlow_StorySoFar(
 
         case GFS_MESH_SWAP: {
             GAMEFLOW_MESH_SWAP_DATA *swap_data = seq->data;
-            int16_t *temp;
-
-            temp = g_Meshes
+            int16_t *temp = g_Meshes
                 [g_Objects[swap_data->object1_num].mesh_index
                  + swap_data->mesh_num];
             g_Meshes
