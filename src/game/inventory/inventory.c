@@ -900,6 +900,11 @@ int32_t Inv_Display(int inv_mode)
                 && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
                 // page 1: select level
                 return GF_SELECT_GAME | g_GameInfo.select_level_num;
+            } else if (
+                g_GameInfo.passport_page == PASSPORT_PAGE_1
+                && g_GameInfo.passport_mode == PASSPORT_MODE_STORY_SO_FAR) {
+                // page 1: story so far
+                return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
             } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
                 // page 2: new game
                 Savegame_InitCurrentInfo();
@@ -918,6 +923,11 @@ int32_t Inv_Display(int inv_mode)
                 && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
                 // page 1: select level
                 return GF_SELECT_GAME | g_GameInfo.select_level_num;
+            } else if (
+                g_GameInfo.passport_page == PASSPORT_PAGE_1
+                && g_GameInfo.passport_mode == PASSPORT_MODE_STORY_SO_FAR) {
+                // page 1: story so far
+                return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
             } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
                 // page 2: restart level
                 return GF_RESTART_GAME | g_CurrentLevel;
@@ -935,6 +945,11 @@ int32_t Inv_Display(int inv_mode)
                 && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
                 // page 1: select level
                 return GF_SELECT_GAME | g_GameInfo.select_level_num;
+            } else if (
+                g_GameInfo.passport_page == PASSPORT_PAGE_1
+                && g_GameInfo.passport_mode == PASSPORT_MODE_STORY_SO_FAR) {
+                // page 1: story so far
+                return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
             } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
                 if (g_CurrentLevel == g_GameFlow.gym_level_num) {
                     // page 2: new game in gym
