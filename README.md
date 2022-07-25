@@ -50,7 +50,7 @@ This project was inspired by Arsunt's
     </tr>
     <tr>
         <th>
-            PS1 UI and GFX
+            PS1 UI and new graphics options
             <img src="docs/showcase/ps1_ui_and_gfx.jpg"/>
         </th>
     </tr>
