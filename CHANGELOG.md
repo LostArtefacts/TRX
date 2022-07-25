@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+
+## [2.10](https://github.com/rr-/Tomb1Main/compare/2.9.1...2.10) - 2022-07-26
+- added a .NET-based installer
 - added the option to make Lara revert to pistols on new level start (#557)
 - added the PS1 style UI (#517)
 - added the "Story so far..." option in the select level menu to view cutscenes and FMVs (#201)
