@@ -1,6 +1,9 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - fixed underwater currents breaking in rare cases (#127)
 
+## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
+- fixed Lara being able to equip pistols in the gym level (#594)
+
 ## [2.10](https://github.com/rr-/Tomb1Main/compare/2.9.1...2.10) - 2022-07-26
 - added a .NET-based installer
 - added the option to make Lara revert to pistols on new level start (#557)

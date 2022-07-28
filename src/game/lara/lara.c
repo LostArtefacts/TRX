@@ -567,7 +567,7 @@ void Lara_InitialiseInventory(int32_t level_num)
 
     g_Lara.gun_status = resume->gun_status;
 
-    if (g_Config.revert_to_pistols) {
+    if (g_Config.revert_to_pistols && level_num != g_GameFlow.gym_level_num) {
         g_Lara.request_gun_type = LGT_PISTOLS;
         g_Lara.gun_type = LGT_PISTOLS;
     } else {
