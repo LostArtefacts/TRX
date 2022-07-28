@@ -339,7 +339,6 @@ static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 
 static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
 {
-    lot->node = NULL;
     Savegame_Legacy_Skip(sizeof(BOX_NODE *));
 
     Savegame_Legacy_Read(&lot->head, sizeof(int16_t));

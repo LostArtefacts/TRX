@@ -12,6 +12,7 @@
 #include "game/lara/lara_col.h"
 #include "game/lara/lara_look.h"
 #include "game/lara/lara_state.h"
+#include "game/lot.h"
 #include "game/objects/general/door.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -290,6 +291,8 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         Lara_WaterCurrent(coll);
+    } else {
+        LOT_ClearLOT(&g_Lara.LOT);
     }
 
     Lara_Animate(item);
@@ -356,6 +359,8 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         Lara_WaterCurrent(coll);
+    } else {
+        LOT_ClearLOT(&g_Lara.LOT);
     }
 
     Lara_Animate(item);

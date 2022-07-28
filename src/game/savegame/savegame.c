@@ -17,6 +17,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "memory.h"
+#include "game/lot.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -38,7 +39,6 @@ typedef struct SAVEGAME_STRATEGY {
     bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
 
-static BOX_NODE *m_OldLaraLOTNode;
 static SAVEGAME_INFO *m_SavegameInfo = NULL;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
@@ -72,8 +72,6 @@ static void Savegame_LoadPostprocess(void);
 
 static void Savegame_LoadPreprocess(void)
 {
-    m_OldLaraLOTNode = g_Lara.LOT.node;
-
     Savegame_InitCurrentInfo();
 }
 
@@ -155,9 +153,7 @@ static void Savegame_LoadPostprocess(void)
             g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
-
-    g_Lara.LOT.node = m_OldLaraLOTNode;
-    g_Lara.LOT.target_box = NO_BOX;
+    LOT_ClearLOT(&g_Lara.LOT);
 }
 
 void Savegame_Init(void)
