@@ -5,6 +5,7 @@
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/lot.h"
 #include "game/objects/creatures/pod.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
@@ -17,7 +18,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "memory.h"
-#include "game/lot.h"
 
 #include <assert.h>
 #include <stdbool.h>
