@@ -202,6 +202,16 @@ void GFX_3D_Renderer_RenderPrimStrip(
         &renderer->vertex_stream, vertices, count);
 }
 
+void GFX_3D_Renderer_RenderPrimFan(
+    GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
+{
+    assert(renderer);
+    assert(vertices);
+    GFX_Context_SetRendered();
+    GFX_3D_VertexStream_PushPrimFan(
+        &renderer->vertex_stream, vertices, count);
+}
+
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count)
 {

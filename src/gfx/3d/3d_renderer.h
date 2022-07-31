@@ -44,6 +44,8 @@ void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer);
 
 void GFX_3D_Renderer_RenderPrimStrip(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
+void GFX_3D_Renderer_RenderPrimFan(
+    GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 
