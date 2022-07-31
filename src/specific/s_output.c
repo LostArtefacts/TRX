@@ -52,6 +52,8 @@ static void S_Output_ReleaseTextures(void);
 static void S_Output_ReleaseSurfaces(void);
 static void S_Output_FlipPrimaryBuffer(void);
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
+static void S_Output_DrawTriangleFan(
+    GFX_3D_Vertex *vertices, int vertex_count);
 static void S_Output_DrawTriangleStrip(
     GFX_3D_Vertex *vertices, int vertex_count);
 static int32_t S_Output_ClipVertices(
@@ -158,16 +160,15 @@ static void S_Output_ClearSurface(GFX_2D_Surface *surface)
     S_Output_CheckError(result);
 }
 
-static void S_Output_DrawTriangleStrip(
+static void S_Output_DrawTriangleFan(
     GFX_3D_Vertex *vertices, int vertex_count)
 {
-    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
-    int left = vertex_count - 2;
-    for (int i = vertex_count - 3; i > 0; i--) {
-        memmove(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
-        GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
-        left--;
-    }
+    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
+}
+
+static void S_Output_DrawTriangleStrip(GFX_3D_Vertex *vertices, int vertex_count)
+{
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
 }
 
 static int32_t S_Output_ClipVertices(
@@ -744,10 +745,10 @@ void S_Output_DrawSprite(
     if (m_TextureMap[sprite->tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(sprite->tpage);
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     } else {
         S_Output_DisableTextureMode();
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
 }
 
@@ -823,7 +824,7 @@ void S_Output_Draw2DQuad(
 
     S_Output_DisableTextureMode();
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
@@ -872,7 +873,7 @@ void S_Output_DrawLightningSegment(
     vertex_count = S_Output_ClipVertices(
         vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     if (vertex_count) {
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
 
     vertex_count = 4;
@@ -911,7 +912,7 @@ void S_Output_DrawLightningSegment(
     vertex_count = S_Output_ClipVertices(
         vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     if (vertex_count) {
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
@@ -945,7 +946,7 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     S_Output_DisableTextureMode();
 
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
@@ -1042,7 +1043,7 @@ void S_Output_DrawFlatTriangle(
         return;
     }
 
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
 }
 
 void S_Output_DrawTexturedTriangle(
@@ -1129,10 +1130,10 @@ void S_Output_DrawTexturedTriangle(
     if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     } else {
         S_Output_DisableTextureMode();
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
 }
 
@@ -1252,4 +1253,107 @@ bool S_Output_MakeScreenshot(const char *path)
 {
     GFX_Context_ScheduleScreenshot(path);
     return true;
+}
+
+void S_Output_ScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
+    RGBA8888 colLight, float thickness)
+{
+    #define SB_NUM_VERTS_DARK 12
+    #define SB_NUM_VERTS_LIGHT 12
+    GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+    S_Output_DisableTextureMode();
+
+    //Top Left Dark set
+    screen_box_verticies[0].x = sx;
+    screen_box_verticies[0].y = sy + h - thickness;
+    
+    screen_box_verticies[1].x = sx + thickness;
+    screen_box_verticies[1].y = screen_box_verticies[0].y;
+
+    screen_box_verticies[2].x = sx;
+    screen_box_verticies[2].y = sy;
+
+    screen_box_verticies[3].x = sx + thickness;
+    screen_box_verticies[3].y = sy + thickness;
+
+    screen_box_verticies[4].x = sx + w - thickness;
+    screen_box_verticies[4].y = screen_box_verticies[2].y;
+
+    screen_box_verticies[5].x = screen_box_verticies[4].x;
+    screen_box_verticies[5].y = screen_box_verticies[3].y;
+
+    //Bottom Right Dark set
+    screen_box_verticies[6].x = sx + w + thickness;
+    screen_box_verticies[6].y = sy - thickness;
+
+    screen_box_verticies[7].x = sx + w;
+    screen_box_verticies[7].y = screen_box_verticies[6].y;
+
+    screen_box_verticies[8].x = screen_box_verticies[6].x;
+    screen_box_verticies[8].y = sy + h + thickness;
+
+    screen_box_verticies[9].x = screen_box_verticies[7].x;
+    screen_box_verticies[9].y = sy + h;
+
+    screen_box_verticies[10].x = sx - thickness;    
+    screen_box_verticies[10].y = screen_box_verticies[8].y;
+    
+    screen_box_verticies[11].x = screen_box_verticies[10].x;
+    screen_box_verticies[11].y = screen_box_verticies[9].y;
+    
+    //light box
+    screen_box_verticies[12].x = screen_box_verticies[11].x;
+    screen_box_verticies[12].y = screen_box_verticies[11].y;
+
+    screen_box_verticies[13].x = screen_box_verticies[12].x + thickness;
+    screen_box_verticies[13].y = screen_box_verticies[11].y - thickness;
+
+    screen_box_verticies[14].x = sx - thickness;
+    screen_box_verticies[14].y = sy - thickness;
+
+    screen_box_verticies[15].x = screen_box_verticies[2].x;
+    screen_box_verticies[15].y = screen_box_verticies[2].y;
+
+    screen_box_verticies[16].x = screen_box_verticies[7].x;
+    screen_box_verticies[16].y = screen_box_verticies[7].y;
+
+    screen_box_verticies[17].x = screen_box_verticies[4].x;
+    screen_box_verticies[17].y = screen_box_verticies[4].y;
+
+    screen_box_verticies[18].x = screen_box_verticies[9].x;
+    screen_box_verticies[18].y = screen_box_verticies[9].y;
+
+    screen_box_verticies[19].x = screen_box_verticies[9].x - thickness;
+    screen_box_verticies[19].y = screen_box_verticies[9].y - thickness;
+
+    screen_box_verticies[20].x = screen_box_verticies[12].x;
+    screen_box_verticies[20].y = screen_box_verticies[12].y;
+
+    screen_box_verticies[21].x = screen_box_verticies[13].x;
+    screen_box_verticies[21].y = screen_box_verticies[13].y;
+
+    int i = 0;
+    for (; i < SB_NUM_VERTS_DARK; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+        screen_box_verticies[i].r = colDark.r;
+        screen_box_verticies[i].g = colDark.g;
+        screen_box_verticies[i].b = colDark.b;
+        screen_box_verticies[i].a = colDark.a;
+    }
+    for (; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+        screen_box_verticies[i].r = colLight.r;
+        screen_box_verticies[i].g = colLight.g;
+        screen_box_verticies[i].b = colLight.b;
+        screen_box_verticies[i].a = colLight.a;
+    }
+
+    S_Output_DrawTriangleStrip(screen_box_verticies, 22);
 }

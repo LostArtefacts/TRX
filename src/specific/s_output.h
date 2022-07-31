@@ -53,3 +53,7 @@ void S_Output_DrawLightningSegment(
     int thickness2);
 
 bool S_Output_MakeScreenshot(const char *path);
+
+void S_Output_ScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
+    RGBA8888 colLight, float thickness);

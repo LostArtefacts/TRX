@@ -715,10 +715,10 @@ void Output_DrawScreenLine(
 }
 
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col,
-    int32_t thickness, int32_t bl_extend, int32_t tr_extend)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
+    RGBA8888 colLight, int32_t thickness)
 {
-    int32_t lx = sx - thickness;
+    /* int32_t lx = sx - thickness;
     int32_t rx = lx + w + 1 + thickness;
     int32_t ty = sy - thickness;
     int32_t by = ty + h + 1 + thickness;
@@ -729,7 +729,9 @@ void Output_DrawScreenBox(
     S_Output_Draw2DQuad(lx, by - thickness, rx, by, col, col, col, col);
     S_Output_Draw2DQuad(
         lx, ty, lx + thickness, by + bl_extend, col, col, col, col);
+        */
 
+    S_Output_ScreenBox(sx, sy, w, h, colDark, colLight, thickness/2.0f);
     /*for (int i = 0; i < thickness; i++) {
         // Top
         Output_DrawScreenLine(, sy - i, w + 1 + (i * 2), 0, col);

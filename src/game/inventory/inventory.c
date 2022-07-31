@@ -274,16 +274,18 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
                         Output_RGB2RGBA(
                             Output_GetPaletteColor((uint8_t)spr->sprnum)));
                     break;
-                case SHAPE_BOX:
+                case SHAPE_BOX: {
                     double scale = Viewport_GetHeight() / 480.0;
                     Output_DrawScreenBox(
                         sx + spr->x - scale, sy + spr->y - scale, spr->param1,
-                        spr->param2, Text_GetMenuColor(MC_GOLD_LIGHT),
-                        TEXT_OUTLINE_THICKNESS * scale, scale, 0);
-                    Output_DrawScreenBox(
+                        spr->param2, Text_GetMenuColor(MC_GOLD_DARK),
+                        Text_GetMenuColor(MC_GOLD_LIGHT),
+                        TEXT_OUTLINE_THICKNESS * scale);
+                    /* Output_DrawScreenBox(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2,
                         Text_GetMenuColor(MC_GOLD_DARK),
-                        TEXT_OUTLINE_THICKNESS * scale, 0, scale);
+                        TEXT_OUTLINE_THICKNESS * scale, 0, scale);*/
+                    }
                     break;
                 case SHAPE_FBOX:
                     Output_DrawScreenFBox(
