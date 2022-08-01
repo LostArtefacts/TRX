@@ -1,5 +1,6 @@
 #include "game/objects/traps/flame.h"
 
+#include "config.h"
 #include "game/collide.h"
 #include "game/effects.h"
 #include "game/items.h"
@@ -93,7 +94,9 @@ void FlameEmitter_Setup(OBJECT_INFO *obj)
 {
     obj->control = FlameEmitter_Control;
     obj->draw_routine = Object_DrawDummyItem;
-    obj->save_flags = 1;
+    if (g_Config.enable_enhanced_saves) {
+        obj->save_flags = 1;
+    }
 }
 
 void FlameEmitter_Control(int16_t item_num)

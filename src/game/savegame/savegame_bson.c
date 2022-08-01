@@ -575,18 +575,20 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
         int16_t counter = json_object_get_int(fx_obj, "counter", counter);
         int16_t shade = json_object_get_int(fx_obj, "shade", shade);
 
-        int16_t fx_num = Effect_Create(room_num);
-        if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
-            fx->pos.x = x;
-            fx->pos.y = y;
-            fx->pos.z = z;
-            fx->object_number = object_number;
-            fx->speed = speed;
-            fx->fall_speed = fall_speed;
-            fx->frame_number = frame_number;
-            fx->counter = counter;
-            fx->shade = shade;
+        if (g_Config.enable_enhanced_saves) {
+            int16_t fx_num = Effect_Create(room_num);
+            if (fx_num != NO_ITEM) {
+                FX_INFO *fx = &g_Effects[fx_num];
+                fx->pos.x = x;
+                fx->pos.y = y;
+                fx->pos.z = z;
+                fx->object_number = object_number;
+                fx->speed = speed;
+                fx->fall_speed = fall_speed;
+                fx->frame_number = frame_number;
+                fx->counter = counter;
+                fx->shade = shade;
+            }
         }
     }
 

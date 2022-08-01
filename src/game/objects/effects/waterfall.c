@@ -1,5 +1,6 @@
 #include "game/objects/effects/waterfall.h"
 
+#include "config.h"
 #include "game/effects.h"
 #include "game/objects/common.h"
 #include "game/random.h"
@@ -13,7 +14,9 @@ void Waterfall_Setup(OBJECT_INFO *obj)
 {
     g_Objects[O_WATERFALL].control = Waterfall_Control;
     g_Objects[O_WATERFALL].draw_routine = Object_DrawDummyItem;
-    obj->save_flags = 1;
+    if (g_Config.enable_enhanced_saves) {
+        obj->save_flags = 1;
+    }
 }
 
 void Waterfall_Control(int16_t item_num)
