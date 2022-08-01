@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
 
 ## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
 - fixed Lara being able to equip pistols in the gym level (#594)

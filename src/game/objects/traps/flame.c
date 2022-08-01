@@ -93,6 +93,7 @@ void FlameEmitter_Setup(OBJECT_INFO *obj)
 {
     obj->control = FlameEmitter_Control;
     obj->draw_routine = Object_DrawDummyItem;
+    obj->save_flags = 1;
 }
 
 void FlameEmitter_Control(int16_t item_num)
