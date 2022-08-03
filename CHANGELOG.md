@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+-fix revert_to_pistols ignoring gameflow's remove_guns (#603)
 
 ## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
 - fixed Lara being able to equip pistols in the gym level (#594)
