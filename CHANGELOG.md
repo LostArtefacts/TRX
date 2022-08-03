@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+
+## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
 - fixed revert_to_pistols ignoring gameflow's remove_guns (#603)
 
 ## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
