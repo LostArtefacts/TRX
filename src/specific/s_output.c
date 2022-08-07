@@ -1260,7 +1260,7 @@ void S_Output_ScreenBox(
     RGBA8888 colLight, float thickness)
 {
     #define SB_NUM_VERTS_DARK 12
-    #define SB_NUM_VERTS_LIGHT 12
+    #define SB_NUM_VERTS_LIGHT 10
     GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
     S_Output_DisableTextureMode();
 
@@ -1355,5 +1355,210 @@ void S_Output_ScreenBox(
         screen_box_verticies[i].a = colLight.a;
     }
 
-    S_Output_DrawTriangleStrip(screen_box_verticies, 22);
+    S_Output_DrawTriangleStrip(
+        screen_box_verticies, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
+}
+
+void S_Output_4ColourTextBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br, float thickness)
+{
+    //  0                 2
+    //   *               &
+    //    1             3
+    //                    
+    //    7             5
+    //   #               @
+    //  6                 4 
+    GFX_3D_Vertex screen_box_verticies[10];
+    for (int i = 0; i < 10; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+    }
+    S_Output_DisableTextureMode();
+    screen_box_verticies[0].x = sx - thickness;
+    screen_box_verticies[0].y = sy - thickness;
+
+    screen_box_verticies[1].x = sx + thickness;
+    screen_box_verticies[1].y = sy + thickness;
+
+    screen_box_verticies[0].r = screen_box_verticies[1].r = tl.r;
+    screen_box_verticies[0].g = screen_box_verticies[1].g = tl.g;
+    screen_box_verticies[0].b = screen_box_verticies[1].b = tl.b;
+    screen_box_verticies[0].a = screen_box_verticies[1].a = tl.a;
+
+    screen_box_verticies[2].x = sx + w + thickness;
+    screen_box_verticies[2].y = sy - thickness;
+
+    screen_box_verticies[3].x = sx + w - thickness;
+    screen_box_verticies[3].y = sy + thickness;
+
+    screen_box_verticies[2].r = screen_box_verticies[3].r = tr.r;
+    screen_box_verticies[2].g = screen_box_verticies[3].g = tr.g;
+    screen_box_verticies[2].b = screen_box_verticies[3].b = tr.b;
+    screen_box_verticies[2].a = screen_box_verticies[3].a = tr.a;
+
+    screen_box_verticies[4].x = sx + w + thickness;
+    screen_box_verticies[4].y = sy + h + thickness;
+
+    screen_box_verticies[5].x = sx + w - thickness;
+    screen_box_verticies[5].y = sy + h - thickness;
+
+    screen_box_verticies[4].r = screen_box_verticies[5].r = br.r;
+    screen_box_verticies[4].g = screen_box_verticies[5].g = br.g;
+    screen_box_verticies[4].b = screen_box_verticies[5].b = br.b;
+    screen_box_verticies[4].a = screen_box_verticies[5].a = br.a;
+
+    screen_box_verticies[6].x = sx - thickness;
+    screen_box_verticies[6].y = sy + h + thickness;
+
+    screen_box_verticies[7].x = sx + thickness;
+    screen_box_verticies[7].y = sy + h - thickness;
+
+    screen_box_verticies[6].r = screen_box_verticies[7].r = bl.r;
+    screen_box_verticies[6].g = screen_box_verticies[7].g = bl.g;
+    screen_box_verticies[6].b = screen_box_verticies[7].b = bl.b;
+    screen_box_verticies[6].a = screen_box_verticies[7].a = bl.a;
+
+    screen_box_verticies[8].x = screen_box_verticies[0].x;
+    screen_box_verticies[8].y = screen_box_verticies[0].y;
+
+    screen_box_verticies[9].x = screen_box_verticies[1].x;
+    screen_box_verticies[9].y = screen_box_verticies[1].y;
+
+    screen_box_verticies[8].r = screen_box_verticies[9].r = tl.r;
+    screen_box_verticies[8].g = screen_box_verticies[9].g = tl.g;
+    screen_box_verticies[8].b = screen_box_verticies[9].b = tl.b;
+    screen_box_verticies[8].a = screen_box_verticies[9].a = tl.a;
+
+    S_Output_DrawTriangleStrip(screen_box_verticies, 10);
+}
+
+void S_Output_2ToneColourTextBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge, RGBA8888 centre,
+    float thickness)
+{
+    //  0        2        4
+    //   *               &
+    //    1      3      5
+    //
+    // 14 15            7 6
+    // 
+    //    13    10      9
+    //   #               @
+    // 12       11        8
+
+    int32_t halfW = w / 2;
+    int32_t halfH = h / 2;
+
+    GFX_3D_Vertex screen_box_verticies[18];
+    for (int i = 0; i < 18; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+    }
+    S_Output_DisableTextureMode();
+    screen_box_verticies[0].x = sx - thickness;
+    screen_box_verticies[0].y = sy - thickness;
+
+    screen_box_verticies[1].x = sx + thickness;
+    screen_box_verticies[1].y = sy + thickness;
+
+    screen_box_verticies[0].r = screen_box_verticies[1].r = edge.r;
+    screen_box_verticies[0].g = screen_box_verticies[1].g = edge.g;
+    screen_box_verticies[0].b = screen_box_verticies[1].b = edge.b;
+    screen_box_verticies[0].a = screen_box_verticies[1].a = edge.a;
+
+    screen_box_verticies[2].x = sx + halfW;
+    screen_box_verticies[2].y = sy - thickness;
+
+    screen_box_verticies[3].x = sx + halfW;
+    screen_box_verticies[3].y = sy + thickness;
+
+    screen_box_verticies[2].r = screen_box_verticies[3].r = centre.r;
+    screen_box_verticies[2].g = screen_box_verticies[3].g = centre.g;
+    screen_box_verticies[2].b = screen_box_verticies[3].b = centre.b;
+    screen_box_verticies[2].a = screen_box_verticies[3].a = centre.a;
+
+    screen_box_verticies[4].x = sx + w + thickness;
+    screen_box_verticies[4].y = sy - thickness;
+
+    screen_box_verticies[5].x = sx + w - thickness;
+    screen_box_verticies[5].y = sy + thickness;
+
+    screen_box_verticies[4].r = screen_box_verticies[5].r = edge.r;
+    screen_box_verticies[4].g = screen_box_verticies[5].g = edge.g;
+    screen_box_verticies[4].b = screen_box_verticies[5].b = edge.b;
+    screen_box_verticies[4].a = screen_box_verticies[5].a = edge.a;
+
+    screen_box_verticies[6].x = sx + w + thickness;
+    screen_box_verticies[6].y = sy + halfH;
+
+    screen_box_verticies[7].x = sx + w - thickness;
+    screen_box_verticies[7].y = sy + halfH;
+
+    screen_box_verticies[6].r = screen_box_verticies[7].r = centre.r;
+    screen_box_verticies[6].g = screen_box_verticies[7].g = centre.g;
+    screen_box_verticies[6].b = screen_box_verticies[7].b = centre.b;
+    screen_box_verticies[6].a = screen_box_verticies[7].a = centre.a;
+
+    screen_box_verticies[8].x = sx + w + thickness;
+    screen_box_verticies[8].y = sy + h + thickness;
+
+    screen_box_verticies[9].x = sx + w - thickness;
+    screen_box_verticies[9].y = sy + h - thickness;
+
+    screen_box_verticies[8].r = screen_box_verticies[9].r = edge.r;
+    screen_box_verticies[8].g = screen_box_verticies[9].g = edge.g;
+    screen_box_verticies[8].b = screen_box_verticies[9].b = edge.b;
+    screen_box_verticies[8].a = screen_box_verticies[9].a = edge.a;
+
+    screen_box_verticies[10].x = sx + halfW;
+    screen_box_verticies[10].y = sy + h + thickness;
+
+    screen_box_verticies[11].x = sx + halfW; 
+    screen_box_verticies[11].y = sy + h - thickness;
+
+    screen_box_verticies[10].r = screen_box_verticies[11].r = centre.r;
+    screen_box_verticies[10].g = screen_box_verticies[11].g = centre.g;
+    screen_box_verticies[10].b = screen_box_verticies[11].b = centre.b;
+    screen_box_verticies[10].a = screen_box_verticies[11].a = centre.a;
+
+    screen_box_verticies[12].x = sx - thickness;
+    screen_box_verticies[12].y = sy + h + thickness;
+
+    screen_box_verticies[13].x = sx + thickness;
+    screen_box_verticies[13].y = sy + h - thickness;
+
+    screen_box_verticies[12].r = screen_box_verticies[13].r = edge.r;
+    screen_box_verticies[12].g = screen_box_verticies[13].g = edge.g;
+    screen_box_verticies[12].b = screen_box_verticies[13].b = edge.b;
+    screen_box_verticies[12].a = screen_box_verticies[13].a = edge.a;
+
+    screen_box_verticies[14].x = sx - thickness;
+    screen_box_verticies[14].y = sy + halfH;
+
+    screen_box_verticies[15].x = sx + thickness;
+    screen_box_verticies[15].y = sy + halfH;
+
+    screen_box_verticies[14].r = screen_box_verticies[15].r = centre.r;
+    screen_box_verticies[14].g = screen_box_verticies[15].g = centre.g;
+    screen_box_verticies[14].b = screen_box_verticies[15].b = centre.b;
+    screen_box_verticies[14].a = screen_box_verticies[15].a = centre.a;
+
+    screen_box_verticies[16].x = screen_box_verticies[0].x;
+    screen_box_verticies[16].y = screen_box_verticies[0].y;
+
+    screen_box_verticies[17].x = screen_box_verticies[1].x;
+    screen_box_verticies[17].y = screen_box_verticies[1].y;
+
+    screen_box_verticies[16].r = screen_box_verticies[17].r = edge.r;
+    screen_box_verticies[16].g = screen_box_verticies[17].g = edge.g;
+    screen_box_verticies[16].b = screen_box_verticies[17].b = edge.b;
+    screen_box_verticies[16].a = screen_box_verticies[17].a = edge.a;
+    
+    S_Output_DrawTriangleStrip(screen_box_verticies, 18);
 }
