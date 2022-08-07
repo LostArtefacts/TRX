@@ -164,7 +164,8 @@ static void S_Output_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count)
     GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
 }
 
-static void S_Output_DrawTriangleStrip(GFX_3D_Vertex *vertices, int vertex_count)
+static void S_Output_DrawTriangleStrip(
+    GFX_3D_Vertex *vertices, int vertex_count)
 {
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
 }
@@ -1448,8 +1449,8 @@ void S_Output_2ToneColourTextBox(
     //   #               @
     // 12       11        8
 
-    int32_t halfW = w / 2;
-    int32_t halfH = h / 2;
+    int32_t halfw = w / 2;
+    int32_t halfh = h / 2;
 
     GFX_3D_Vertex screen_box_verticies[18];
     for (int i = 0; i < 18; ++i) {
@@ -1470,10 +1471,10 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[0].b = screen_box_verticies[1].b = edge.b;
     screen_box_verticies[0].a = screen_box_verticies[1].a = edge.a;
 
-    screen_box_verticies[2].x = sx + halfW;
+    screen_box_verticies[2].x = sx + halfw;
     screen_box_verticies[2].y = sy - thickness;
 
-    screen_box_verticies[3].x = sx + halfW;
+    screen_box_verticies[3].x = sx + halfw;
     screen_box_verticies[3].y = sy + thickness;
 
     screen_box_verticies[2].r = screen_box_verticies[3].r = centre.r;
@@ -1493,10 +1494,10 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[4].a = screen_box_verticies[5].a = edge.a;
 
     screen_box_verticies[6].x = sx + w + thickness;
-    screen_box_verticies[6].y = sy + halfH;
+    screen_box_verticies[6].y = sy + halfh;
 
     screen_box_verticies[7].x = sx + w - thickness;
-    screen_box_verticies[7].y = sy + halfH;
+    screen_box_verticies[7].y = sy + halfh;
 
     screen_box_verticies[6].r = screen_box_verticies[7].r = centre.r;
     screen_box_verticies[6].g = screen_box_verticies[7].g = centre.g;
@@ -1514,10 +1515,10 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[8].b = screen_box_verticies[9].b = edge.b;
     screen_box_verticies[8].a = screen_box_verticies[9].a = edge.a;
 
-    screen_box_verticies[10].x = sx + halfW;
+    screen_box_verticies[10].x = sx + halfw;
     screen_box_verticies[10].y = sy + h + thickness;
 
-    screen_box_verticies[11].x = sx + halfW;
+    screen_box_verticies[11].x = sx + halfw;
     screen_box_verticies[11].y = sy + h - thickness;
 
     screen_box_verticies[10].r = screen_box_verticies[11].r = centre.r;
@@ -1537,10 +1538,10 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[12].a = screen_box_verticies[13].a = edge.a;
 
     screen_box_verticies[14].x = sx - thickness;
-    screen_box_verticies[14].y = sy + halfH;
+    screen_box_verticies[14].y = sy + halfh;
 
     screen_box_verticies[15].x = sx + thickness;
-    screen_box_verticies[15].y = sy + halfH;
+    screen_box_verticies[15].y = sy + halfh;
 
     screen_box_verticies[14].r = screen_box_verticies[15].r = centre.r;
     screen_box_verticies[14].g = screen_box_verticies[15].g = centre.g;

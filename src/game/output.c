@@ -746,7 +746,8 @@ void Output_DrawCentreGradientScreenBox(
 {
     float scale = Viewport_GetHeight() / 480.0;
     S_Output_2ToneColourTextBox(
-        sx - scale, sy - scale, w + scale, h + scale, edge, center, thickness * scale / 2.0f);
+        sx - scale, sy - scale, w + scale, h + scale, edge, center,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)

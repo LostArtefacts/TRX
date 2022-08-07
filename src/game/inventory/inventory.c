@@ -250,8 +250,6 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
         int32_t sx = Viewport_GetCenterX() + g_MatrixPtr->_03 / zp;
         int32_t sy = Viewport_GetCenterY() + g_MatrixPtr->_13 / zp;
 
-        int32_t scale = Viewport_GetHeight() / 640;
-
         INVENTORY_SPRITE **sprlist = inv_item->sprlist;
         INVENTORY_SPRITE *spr;
         while ((spr = *sprlist++)) {
@@ -281,7 +279,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
                         spr->param2, Text_GetMenuColor(MC_GOLD_DARK),
                         Text_GetMenuColor(MC_GOLD_LIGHT),
                         TEXT_OUTLINE_THICKNESS * scale);
-                    } break;
+                } break;
                 case SHAPE_FBOX:
                     Output_DrawScreenFBox(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2);
