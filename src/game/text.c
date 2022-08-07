@@ -150,7 +150,7 @@ static void Text_DrawTextOutline(
         Output_DrawGradientScreenBox(
             sx, sy, w, h, Text_GetMenuColor(MC_GREY_TL),
             Text_GetMenuColor(MC_GREY_TR), Text_GetMenuColor(MC_GREY_BL),
-            Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);        
+            Text_GetMenuColor(MC_GREY_BR), TEXT_OUTLINE_THICKNESS);
     } else if (text_style == TS_REQUESTED) {
         // Make sure height and width divisible by 2.
         w = 2 * ((w + 1) / 2);

@@ -281,12 +281,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
                         spr->param2, Text_GetMenuColor(MC_GOLD_DARK),
                         Text_GetMenuColor(MC_GOLD_LIGHT),
                         TEXT_OUTLINE_THICKNESS * scale);
-                    /* Output_DrawScreenBox(
-                        sx + spr->x, sy + spr->y, spr->param1, spr->param2,
-                        Text_GetMenuColor(MC_GOLD_DARK),
-                        TEXT_OUTLINE_THICKNESS * scale, 0, scale);*/
-                    }
-                    break;
+                    } break;
                 case SHAPE_FBOX:
                     Output_DrawScreenFBox(
                         sx + spr->x, sy + spr->y, spr->param1, spr->param2);

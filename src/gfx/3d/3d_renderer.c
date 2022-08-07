@@ -208,8 +208,7 @@ void GFX_3D_Renderer_RenderPrimFan(
     assert(renderer);
     assert(vertices);
     GFX_Context_SetRendered();
-    GFX_3D_VertexStream_PushPrimFan(
-        &renderer->vertex_stream, vertices, count);
+    GFX_3D_VertexStream_PushPrimFan(&renderer->vertex_stream, vertices, count);
 }
 
 void GFX_3D_Renderer_RenderPrimList(

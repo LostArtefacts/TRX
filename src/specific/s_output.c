@@ -52,8 +52,7 @@ static void S_Output_ReleaseTextures(void);
 static void S_Output_ReleaseSurfaces(void);
 static void S_Output_FlipPrimaryBuffer(void);
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
-static void S_Output_DrawTriangleFan(
-    GFX_3D_Vertex *vertices, int vertex_count);
+static void S_Output_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count);
 static void S_Output_DrawTriangleStrip(
     GFX_3D_Vertex *vertices, int vertex_count);
 static int32_t S_Output_ClipVertices(
@@ -160,8 +159,7 @@ static void S_Output_ClearSurface(GFX_2D_Surface *surface)
     S_Output_CheckError(result);
 }
 
-static void S_Output_DrawTriangleFan(
-    GFX_3D_Vertex *vertices, int vertex_count)
+static void S_Output_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count)
 {
     GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
 }
@@ -1259,15 +1257,15 @@ void S_Output_ScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
     RGBA8888 colLight, float thickness)
 {
-    #define SB_NUM_VERTS_DARK 12
-    #define SB_NUM_VERTS_LIGHT 10
+#define SB_NUM_VERTS_DARK 12
+#define SB_NUM_VERTS_LIGHT 10
     GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
     S_Output_DisableTextureMode();
 
-    //Top Left Dark set
+    // Top Left Dark set
     screen_box_verticies[0].x = sx;
     screen_box_verticies[0].y = sy + h - thickness;
-    
+
     screen_box_verticies[1].x = sx + thickness;
     screen_box_verticies[1].y = screen_box_verticies[0].y;
 
@@ -1283,7 +1281,7 @@ void S_Output_ScreenBox(
     screen_box_verticies[5].x = screen_box_verticies[4].x;
     screen_box_verticies[5].y = screen_box_verticies[3].y;
 
-    //Bottom Right Dark set
+    // Bottom Right Dark set
     screen_box_verticies[6].x = sx + w + thickness;
     screen_box_verticies[6].y = sy - thickness;
 
@@ -1296,13 +1294,13 @@ void S_Output_ScreenBox(
     screen_box_verticies[9].x = screen_box_verticies[7].x;
     screen_box_verticies[9].y = sy + h;
 
-    screen_box_verticies[10].x = sx - thickness;    
+    screen_box_verticies[10].x = sx - thickness;
     screen_box_verticies[10].y = screen_box_verticies[8].y;
-    
+
     screen_box_verticies[11].x = screen_box_verticies[10].x;
     screen_box_verticies[11].y = screen_box_verticies[9].y;
-    
-    //light box
+
+    // light box
     screen_box_verticies[12].x = screen_box_verticies[11].x;
     screen_box_verticies[12].y = screen_box_verticies[11].y;
 
@@ -1366,10 +1364,10 @@ void S_Output_4ColourTextBox(
     //  0                 2
     //   *               &
     //    1             3
-    //                    
+    //
     //    7             5
     //   #               @
-    //  6                 4 
+    //  6                 4
     GFX_3D_Vertex screen_box_verticies[10];
     for (int i = 0; i < 10; ++i) {
         screen_box_verticies[i].z = 1.0f;
@@ -1437,15 +1435,15 @@ void S_Output_4ColourTextBox(
 }
 
 void S_Output_2ToneColourTextBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge, RGBA8888 centre,
-    float thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
+    RGBA8888 centre, float thickness)
 {
     //  0        2        4
     //   *               &
     //    1      3      5
     //
     // 14 15            7 6
-    // 
+    //
     //    13    10      9
     //   #               @
     // 12       11        8
@@ -1519,7 +1517,7 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[10].x = sx + halfW;
     screen_box_verticies[10].y = sy + h + thickness;
 
-    screen_box_verticies[11].x = sx + halfW; 
+    screen_box_verticies[11].x = sx + halfW;
     screen_box_verticies[11].y = sy + h - thickness;
 
     screen_box_verticies[10].r = screen_box_verticies[11].r = centre.r;
@@ -1559,6 +1557,6 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[16].g = screen_box_verticies[17].g = edge.g;
     screen_box_verticies[16].b = screen_box_verticies[17].b = edge.b;
     screen_box_verticies[16].a = screen_box_verticies[17].a = edge.a;
-    
+
     S_Output_DrawTriangleStrip(screen_box_verticies, 18);
 }

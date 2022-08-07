@@ -83,7 +83,7 @@ bool GFX_3D_VertexStream_PushPrimStrip(
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i]);
         }
     } else {
-        //convert strip to raw triangles
+        // convert strip to raw triangles
         for (int i = 2; i < count; i++) {
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i - 2]);
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i - 1]);
@@ -107,7 +107,7 @@ bool GFX_3D_VertexStream_PushPrimFan(
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i]);
         }
     } else {
-        //convert Fan to raw triangles
+        // convert Fan to raw triangles
         for (int i = 2; i < count; i++) {
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[0]);
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i - 1]);
