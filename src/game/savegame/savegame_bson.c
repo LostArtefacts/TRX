@@ -950,9 +950,8 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
 {
     struct json_array_s *fx_arr = json_array_new();
 
-    int16_t linknum = g_NextFxActive;
-
-    for (; linknum != NO_ITEM; linknum = g_Effects[linknum].next_active) {
+    for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
+         linknum = g_Effects[linknum].next_active) {
         struct json_object_s *fx_obj = json_object_new();
 
         FX_INFO *fx = &g_Effects[linknum];
