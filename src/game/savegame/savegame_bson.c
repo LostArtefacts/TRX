@@ -951,7 +951,6 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
     struct json_array_s *fx_arr = json_array_new();
 
     int16_t linknum = g_NextFxActive;
-    int16_t num_fx = 0;
 
     for (; linknum != NO_ITEM; linknum = g_Effects[linknum].next_active) {
         struct json_object_s *fx_obj = json_object_new();
@@ -969,8 +968,6 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
         json_object_append_int(fx_obj, "shade", fx->shade);
 
         json_array_append_object(fx_arr, fx_obj);
-
-        num_fx++;
     }
 
     return fx_arr;
