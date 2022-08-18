@@ -1,6 +1,5 @@
 #include "game/objects/traps/lava.h"
 
-#include "config.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara.h"

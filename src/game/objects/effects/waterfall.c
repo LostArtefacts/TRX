@@ -1,6 +1,5 @@
 #include "game/objects/effects/waterfall.h"
 
-#include "config.h"
 #include "game/effects.h"
 #include "game/objects/common.h"
 #include "game/random.h"
