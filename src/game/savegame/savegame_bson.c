@@ -555,9 +555,6 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
         return false;
     }
 
-    int16_t room_num = 0;
-    ROOM_INFO *r;
-
     for (int i = 0; i < (signed)fx_arr->length; i++) {
         struct json_object_s *fx_obj = json_array_get_object(fx_arr, i);
         if (!fx_obj) {
