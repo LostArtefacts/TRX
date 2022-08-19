@@ -48,11 +48,6 @@ PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES] = { 0 };
 MATRIX *g_MatrixPtr = NULL;
 MATRIX g_W2VMatrix = { 0 };
 
-int32_t g_WibbleOffset = 0;
-int32_t g_WibbleTable[WIBBLE_SIZE] = { 0 };
-int32_t g_ShadeTable[WIBBLE_SIZE] = { 0 };
-int32_t g_RandTable[WIBBLE_SIZE] = { 0 };
-
 bool g_ModeLock = false;
 
 LARA_INFO g_Lara = { 0 };
@@ -99,9 +94,6 @@ int32_t g_NumberSoundEffects = 0;
 OBJECT_VECTOR *g_SoundEffectsTable = NULL;
 int16_t g_RoomsToDraw[MAX_ROOMS_TO_DRAW] = { -1 };
 int16_t g_RoomsToDrawCount = 0;
-bool g_IsWibbleEffect = false;
-bool g_IsWaterEffect = false;
-bool g_IsShadeEffect = false;
 
 int16_t *g_TriggerIndex = NULL;
 int32_t g_FlipTimer = 0;

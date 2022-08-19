@@ -19,10 +19,6 @@ extern PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES];
 extern MATRIX *g_MatrixPtr;
 extern MATRIX g_W2VMatrix;
 
-extern int32_t g_WibbleOffset;
-extern int32_t g_WibbleTable[WIBBLE_SIZE];
-extern int32_t g_ShadeTable[WIBBLE_SIZE];
-extern int32_t g_RandTable[WIBBLE_SIZE];
 extern int32_t g_LsAdder;
 extern int32_t g_LsDivider;
 extern SHADOW_INFO g_ShadowInfo;
@@ -86,9 +82,6 @@ extern int32_t g_NumberSoundEffects;
 extern OBJECT_VECTOR *g_SoundEffectsTable;
 extern int16_t g_RoomsToDraw[MAX_ROOMS_TO_DRAW];
 extern int16_t g_RoomsToDrawCount;
-extern bool g_IsWibbleEffect;
-extern bool g_IsWaterEffect;
-extern bool g_IsShadeEffect;
 
 extern int16_t *g_TriggerIndex;
 extern int32_t g_FlipTimer;
