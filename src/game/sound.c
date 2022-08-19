@@ -1,6 +1,7 @@
 #include "game/sound.h"
 
 #include "game/random.h"
+#include "game/room.h"
 #include "game/shell.h"
 #include "global/vars.h"
 #include "log.h"

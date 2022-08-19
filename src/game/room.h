@@ -1,9 +1,16 @@
 #pragma once
 
+#include "global/const.h"
 #include "global/types.h"
 
 #include <stdbool.h>
 #include <stdint.h>
+
+extern int16_t *g_TriggerIndex;
+extern int32_t g_FlipTimer;
+extern int32_t g_FlipEffect;
+extern int32_t g_FlipStatus;
+extern int32_t g_FlipMapTable[MAX_FLIP_MAPS];
 
 int16_t Room_GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z);
 int32_t Room_FindGridShift(int32_t src, int32_t dst);

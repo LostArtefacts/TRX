@@ -95,12 +95,6 @@ OBJECT_VECTOR *g_SoundEffectsTable = NULL;
 int16_t g_RoomsToDraw[MAX_ROOMS_TO_DRAW] = { -1 };
 int16_t g_RoomsToDrawCount = 0;
 
-int16_t *g_TriggerIndex = NULL;
-int32_t g_FlipTimer = 0;
-int32_t g_FlipEffect = -1;
-int32_t g_FlipStatus = 0;
-int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
-
 int16_t g_InvMode = INV_TITLE_MODE;
 int32_t g_InvExtraData[8] = { 0 };
 int16_t g_InvChosen = -1;
