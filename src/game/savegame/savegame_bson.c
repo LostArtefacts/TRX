@@ -1,6 +1,7 @@
 #include "game/savegame/savegame_bson.h"
 
 #include "config.h"
+#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
@@ -49,6 +50,7 @@ static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj);
 static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
 static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr);
 static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr);
+static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr);
 static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm);
 static bool Savegame_BSON_LoadAmmo(
     struct json_object_s *ammo_obj, AMMO_INFO *ammo);
@@ -62,6 +64,7 @@ static struct json_object_s *Savegame_BSON_DumpInventory(void);
 static struct json_object_s *Savegame_BSON_DumpFlipmaps(void);
 static struct json_array_s *Savegame_BSON_DumpCameras(void);
 static struct json_array_s *Savegame_BSON_DumpItems(void);
+static struct json_array_s *SaveGame_BSON_DumpFx(void);
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
@@ -534,6 +537,63 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
     return true;
 }
 
+static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
+{
+    if (!g_Config.enable_enhanced_saves) {
+        return true;
+    }
+
+    if (!fx_arr) {
+        LOG_ERROR("Malformed save: invalid or missing fx array");
+        return false;
+    }
+
+    if ((signed)fx_arr->length >= NUM_EFFECTS - 1) {
+        LOG_ERROR(
+            "Malformed save: expected a max of %d fx, got %d", NUM_EFFECTS - 1,
+            fx_arr->length);
+        return false;
+    }
+
+    for (int i = 0; i < (signed)fx_arr->length; i++) {
+        struct json_object_s *fx_obj = json_array_get_object(fx_arr, i);
+        if (!fx_obj) {
+            LOG_ERROR("Malformed save: invalid fx data");
+            return false;
+        }
+
+        int32_t x = json_object_get_int(fx_obj, "x", x);
+        int32_t y = json_object_get_int(fx_obj, "y", y);
+        int32_t z = json_object_get_int(fx_obj, "z", z);
+        int16_t room_num = json_object_get_int(fx_obj, "room_number", room_num);
+        GAME_OBJECT_ID object_number =
+            json_object_get_int(fx_obj, "object_number", object_number);
+        int16_t speed = json_object_get_int(fx_obj, "speed", speed);
+        int16_t fall_speed =
+            json_object_get_int(fx_obj, "fall_speed", fall_speed);
+        int16_t frame_number =
+            json_object_get_int(fx_obj, "frame_number", frame_number);
+        int16_t counter = json_object_get_int(fx_obj, "counter", counter);
+        int16_t shade = json_object_get_int(fx_obj, "shade", shade);
+
+        int16_t fx_num = Effect_Create(room_num);
+        if (fx_num != NO_ITEM) {
+            FX_INFO *fx = &g_Effects[fx_num];
+            fx->pos.x = x;
+            fx->pos.y = y;
+            fx->pos.z = z;
+            fx->object_number = object_number;
+            fx->speed = speed;
+            fx->fall_speed = fall_speed;
+            fx->frame_number = frame_number;
+            fx->counter = counter;
+            fx->shade = shade;
+        }
+    }
+
+    return true;
+}
+
 static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
 {
     assert(arm);
@@ -883,6 +943,32 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
     return items_arr;
 }
 
+static struct json_array_s *SaveGame_BSON_DumpFx(void)
+{
+    struct json_array_s *fx_arr = json_array_new();
+
+    for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
+         linknum = g_Effects[linknum].next_active) {
+        struct json_object_s *fx_obj = json_object_new();
+
+        FX_INFO *fx = &g_Effects[linknum];
+        json_object_append_int(fx_obj, "x", fx->pos.x);
+        json_object_append_int(fx_obj, "y", fx->pos.y);
+        json_object_append_int(fx_obj, "z", fx->pos.z);
+        json_object_append_int(fx_obj, "room_number", fx->room_number);
+        json_object_append_int(fx_obj, "object_number", fx->object_number);
+        json_object_append_int(fx_obj, "speed", fx->speed);
+        json_object_append_int(fx_obj, "fall_speed", fx->fall_speed);
+        json_object_append_int(fx_obj, "frame_number", fx->frame_number);
+        json_object_append_int(fx_obj, "counter", fx->counter);
+        json_object_append_int(fx_obj, "shade", fx->shade);
+
+        json_array_append_object(fx_arr, fx_obj);
+    }
+
+    return fx_arr;
+}
+
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
 {
     assert(arm);
@@ -1030,6 +1116,13 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     assert(game_info);
 
     bool ret = false;
+
+    // Read savegame version
+    SAVEGAME_BSON_HEADER header;
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_Read(&header, sizeof(SAVEGAME_BSON_HEADER), 1, fp);
+    File_Seek(fp, 0, FILE_SEEK_SET);
+
     struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
@@ -1083,6 +1176,12 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     if (!Savegame_BSON_LoadItems(json_object_get_array(root_obj, "items"))) {
         goto cleanup;
+    }
+
+    if (header.version >= VERSION_2) {
+        if (!SaveGame_BSON_LoadFx(json_object_get_array(root_obj, "fx"))) {
+            goto cleanup;
+        }
     }
 
     if (!Savegame_BSON_LoadLara(
@@ -1154,6 +1253,7 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         root_obj, "flipmap", Savegame_BSON_DumpFlipmaps());
     json_object_append_array(root_obj, "cameras", Savegame_BSON_DumpCameras());
     json_object_append_array(root_obj, "items", Savegame_BSON_DumpItems());
+    json_object_append_array(root_obj, "fx", SaveGame_BSON_DumpFx());
     json_object_append_object(
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
 
