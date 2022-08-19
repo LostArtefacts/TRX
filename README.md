@@ -267,6 +267,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - fixed broken dart ricochet effect
 - fixed exploded mutant pods sometimes appearing unhatched on reload
 - fixed bridges at floor level appearing under the floor
+- fixed underwater currents breaking in rare cases
 
 #### Cheats
 - added a fly cheat
