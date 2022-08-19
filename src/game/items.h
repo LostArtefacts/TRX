@@ -5,7 +5,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+extern ITEM_INFO *g_Items;
+extern int16_t g_NextItemActive;
+
 void Item_InitialiseArray(int32_t num_items);
+void Item_Control(void);
 void Item_Kill(int16_t item_num);
 int16_t Item_Create(void);
 void Item_Initialise(int16_t item_num);

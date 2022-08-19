@@ -2,6 +2,7 @@
 
 #include "game/box.h"
 #include "game/collide.h"
+#include "game/effects.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lara.h"

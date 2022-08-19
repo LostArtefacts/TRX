@@ -1,6 +1,7 @@
 #include "game/savegame/savegame_bson.h"
 
 #include "config.h"
+#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"

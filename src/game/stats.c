@@ -6,6 +6,7 @@
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/items.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/text.h"

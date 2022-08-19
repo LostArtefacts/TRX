@@ -4,7 +4,10 @@
 
 #include <stdint.h>
 
+extern FX_INFO *g_Effects;
+
 void Effect_InitialiseArray(void);
+void Effect_Control(void);
 int16_t Effect_Create(int16_t room_num);
 void Effect_Kill(int16_t fx_num);
 void Effect_NewRoom(int16_t fx_num, int16_t room_num);

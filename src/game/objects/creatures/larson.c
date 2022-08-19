@@ -1,6 +1,7 @@
 #include "game/objects/creatures/larson.h"
 
 #include "game/creature.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"

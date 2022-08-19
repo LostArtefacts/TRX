@@ -2,9 +2,11 @@
 
 #include "config.h"
 #include "game/camera.h"
+#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_cheat.h"
 #include "game/lara/lara_hair.h"
@@ -105,25 +107,8 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        int16_t item_num = g_NextItemActive;
-        while (item_num != NO_ITEM) {
-            ITEM_INFO *item = &g_Items[item_num];
-            OBJECT_INFO *obj = &g_Objects[item->object_number];
-            if (obj->control) {
-                obj->control(item_num);
-            }
-            item_num = item->next_active;
-        }
-
-        item_num = g_NextFxActive;
-        while (item_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[item_num];
-            OBJECT_INFO *obj = &g_Objects[fx->object_number];
-            if (obj->control) {
-                obj->control(item_num);
-            }
-            item_num = fx->next_active;
-        }
+        Item_Control();
+        Effect_Control();
 
         Lara_Control();
         Lara_Hair_Control(false);
