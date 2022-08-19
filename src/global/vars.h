@@ -23,8 +23,6 @@ extern int32_t g_LsAdder;
 extern int32_t g_LsDivider;
 extern SHADOW_INFO g_ShadowInfo;
 
-extern bool g_ModeLock;
-
 extern bool g_IDelay;
 extern int32_t g_IDCount;
 extern int32_t g_OptionSelected;

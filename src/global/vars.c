@@ -18,7 +18,6 @@
 
 #include <stddef.h>
 
-char *GameMemoryPointer = NULL;
 int32_t g_FPSCounter = 0;
 
 void (*g_EffectRoutines[])(ITEM_INFO *item) = {
@@ -47,8 +46,6 @@ PHD_SPRITE g_PhdSpriteInfo[MAX_SPRITES] = { 0 };
 PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES] = { 0 };
 MATRIX *g_MatrixPtr = NULL;
 MATRIX g_W2VMatrix = { 0 };
-
-bool g_ModeLock = false;
 
 LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
