@@ -228,4 +228,8 @@
 
     // Make Lara revert to pistols on new level start (inline with TombATI behaviour)
     "revert_to_pistols": false,
+
+    // Enhances savegames so graphic effects, waterfall mist, flame emitters, and
+    // more are saved instead of disappearing on load.
+    "enable_enhanced_saves": true,
 }

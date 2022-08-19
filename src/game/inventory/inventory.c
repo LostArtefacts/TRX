@@ -371,6 +371,8 @@ int32_t Inv_Display(int inv_mode)
         Music_Pause();
         Sound_StopAmbientSounds();
         Sound_StopAllSamples();
+    } else {
+        Sound_UpdateEffects();
     }
 
     switch (g_InvMode) {
@@ -474,7 +476,6 @@ int32_t Inv_Display(int inv_mode)
             Inv_Ring_NotActive();
         }
 
-        Sound_UpdateEffects();
         Overlay_DrawFPSInfo();
         Text_Draw();
 
@@ -871,7 +872,6 @@ int32_t Inv_Display(int inv_mode)
     if (g_InvMode != INV_TITLE_MODE) {
         Screen_ApplyResolution();
     }
-    g_ModeLock = false;
 
     if (m_VersionText) {
         Text_Remove(m_VersionText);

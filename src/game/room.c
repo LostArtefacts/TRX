@@ -16,6 +16,12 @@
 
 #include <stddef.h>
 
+int16_t *g_TriggerIndex = NULL;
+int32_t g_FlipTimer = 0;
+int32_t g_FlipEffect = -1;
+int32_t g_FlipStatus = 0;
+int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
+
 static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type);
 static void Room_AddFlipItems(ROOM_INFO *r);
 static void Room_RemoveFlipItems(ROOM_INFO *r);

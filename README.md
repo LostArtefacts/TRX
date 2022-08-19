@@ -242,6 +242,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 - added ability to restart level on death
 - added ability to restart the adventure from any level when loading a game
 - added the "Story so far..." option in the select level menu to view cutscenes and FMVs
+- added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load
 - fixed keys and items not working when drawing guns immediately after using them
 - fixed counting the secret in The Great Pyramid
 - fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them

@@ -1,7 +1,6 @@
 #include "game/objects/general/boat.h"
 
 #include "game/items.h"
-#include "global/vars.h"
 
 void Boat_Setup(OBJECT_INFO *obj)
 {

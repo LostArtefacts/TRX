@@ -2,9 +2,9 @@
 
 #include "game/collide.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
-#include "global/vars.h"
 
 #define SPIKE_DAMAGE 15
 
