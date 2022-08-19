@@ -1,5 +1,9 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
+- fixed some sound effects playing in the inventory when disable_music_in_inventory is true (#486)
+
+## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
+- fixed revert_to_pistols ignoring gameflow's remove_guns (#603)
 
 ## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
 - fixed Lara being able to equip pistols in the gym level (#594)
