@@ -1,5 +1,6 @@
 #include "game/effect_routines/flood.h"
 
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

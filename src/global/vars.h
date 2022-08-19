@@ -83,12 +83,6 @@ extern OBJECT_VECTOR *g_SoundEffectsTable;
 extern int16_t g_RoomsToDraw[MAX_ROOMS_TO_DRAW];
 extern int16_t g_RoomsToDrawCount;
 
-extern int16_t *g_TriggerIndex;
-extern int32_t g_FlipTimer;
-extern int32_t g_FlipEffect;
-extern int32_t g_FlipStatus;
-extern int32_t g_FlipMapTable[MAX_FLIP_MAPS];
-
 extern REQUEST_INFO g_SavegameRequester;
 
 extern int16_t g_InvMode;
