@@ -1,5 +1,6 @@
 #include "game/savegame/savegame_legacy.h"
 
+#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"

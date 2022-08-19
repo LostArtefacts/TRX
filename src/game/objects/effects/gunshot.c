@@ -2,7 +2,6 @@
 
 #include "game/effects.h"
 #include "game/random.h"
-#include "global/vars.h"
 
 void GunShot_Setup(OBJECT_INFO *obj)
 {
