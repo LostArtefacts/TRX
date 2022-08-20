@@ -1258,44 +1258,105 @@ void S_Output_ScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
     RGBA8888 colLight, float thickness)
 {
+    // this draws the dark then light two tone border
+    // 2 is the sx+1,sy+1
+    //                       7  6
+    //
+    //     2        |      4
+    //
+    //       3      |      5
+    //
+    //     ~ ~               ~  ~
+    //
+    //     0 1
+    // 11           |        9
+    //
+    // 10           |          8
+    // this is the vertex structure for the dark part
+    // while any machine we would be rendering this on will
+    // handle degenerate triangles, the current render doesn't
+    // actually reander a strip and instead pulls out each
+    // triangle into a triangle buffer. So the 4-5-6 triangle is valid
+    // but will be over drawn by the light box so is not seen.
+    // thus we form triangles
+    // 0,1,2
+    // 1,2,3
+    // 2,3,4
+    // 3,4,5
+    // 4,5,6
+    // 5,6,7
+    // 6,7,8
+    // 7,8,9
+    // 8,9,10
+    // 9,10,11
+    // the light box is then just a simple 4 sided box
+    // we share some vertexs so the square is formed as follows
+    //  13          |        7
+    //
+    //     2        |      4
+    //
+    //  ~  ~               ~ ~
+    //
+    //
+    //     12       |      14
+    //
+    // 11           |        9
+    // however as we are not index we have to duplicate the vertex data
+    // so the above numbers do not match the array below.
+    // we from the triangles
+    // 11,12,13
+    // 12,13,2
+    // 13,2,7
+    // 2,7,4
+    // 7,4,9
+    // 4,9,14
+    // 9,14,11
+    // 14,11,12
+
 #define SB_NUM_VERTS_DARK 12
 #define SB_NUM_VERTS_LIGHT 10
     GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
     S_Output_DisableTextureMode();
 
-    // Top Left Dark set
-    screen_box_verticies[0].x = sx;
-    screen_box_verticies[0].y = sy + h - thickness;
+    //convert them to floats and apply the (+1) from the original line code
+    float sxf = (float)sx + thickness;
+    float syf = (float)sy + thickness;
+    float hf = (float)h;
+    float wf = (float)w;
 
-    screen_box_verticies[1].x = sx + thickness;
+    // Top Left Dark set
+    screen_box_verticies[0].x = sxf;
+    screen_box_verticies[0].y = syf + hf - thickness;
+
+    screen_box_verticies[1].x = sxf + thickness;
     screen_box_verticies[1].y = screen_box_verticies[0].y;
 
-    screen_box_verticies[2].x = sx;
-    screen_box_verticies[2].y = sy;
+    screen_box_verticies[2].x = sxf;
+    screen_box_verticies[2].y = syf;
 
-    screen_box_verticies[3].x = sx + thickness;
-    screen_box_verticies[3].y = sy + thickness;
+    screen_box_verticies[3].x = sxf + thickness;
+    screen_box_verticies[3].y = syf + thickness;
 
-    screen_box_verticies[4].x = sx + w - thickness;
+    screen_box_verticies[4].x = sxf + wf - thickness;
     screen_box_verticies[4].y = screen_box_verticies[2].y;
 
     screen_box_verticies[5].x = screen_box_verticies[4].x;
     screen_box_verticies[5].y = screen_box_verticies[3].y;
 
     // Bottom Right Dark set
-    screen_box_verticies[6].x = sx + w + thickness;
-    screen_box_verticies[6].y = sy - thickness;
+    screen_box_verticies[6].x = sxf + wf + thickness;
+    screen_box_verticies[6].y = syf - thickness;
 
-    screen_box_verticies[7].x = sx + w;
+    screen_box_verticies[7].x = sxf + wf;
     screen_box_verticies[7].y = screen_box_verticies[6].y;
 
     screen_box_verticies[8].x = screen_box_verticies[6].x;
-    screen_box_verticies[8].y = sy + h + thickness;
+    screen_box_verticies[8].y = syf + hf + thickness;
 
     screen_box_verticies[9].x = screen_box_verticies[7].x;
-    screen_box_verticies[9].y = sy + h;
+    screen_box_verticies[9].y = syf + hf;
 
-    screen_box_verticies[10].x = sx - thickness;
+    screen_box_verticies[10].x = sxf - thickness;
     screen_box_verticies[10].y = screen_box_verticies[8].y;
 
     screen_box_verticies[11].x = screen_box_verticies[10].x;
@@ -1308,8 +1369,8 @@ void S_Output_ScreenBox(
     screen_box_verticies[13].x = screen_box_verticies[12].x + thickness;
     screen_box_verticies[13].y = screen_box_verticies[11].y - thickness;
 
-    screen_box_verticies[14].x = sx - thickness;
-    screen_box_verticies[14].y = sy - thickness;
+    screen_box_verticies[14].x = sxf - thickness;
+    screen_box_verticies[14].y = syf - thickness;
 
     screen_box_verticies[15].x = screen_box_verticies[2].x;
     screen_box_verticies[15].y = screen_box_verticies[2].y;
@@ -1332,11 +1393,13 @@ void S_Output_ScreenBox(
     screen_box_verticies[21].x = screen_box_verticies[13].x;
     screen_box_verticies[21].y = screen_box_verticies[13].y;
 
+
+
     int i = 0;
     for (; i < SB_NUM_VERTS_DARK; ++i) {
-        screen_box_verticies[i].z = 1.0f;
-        screen_box_verticies[i].s = 0.0f;
-        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].z = 1.0f;   // the lines were z 0 but that makes them
+        screen_box_verticies[i].s = 0.0f;   // show over text, so I use Z 1 here to make
+        screen_box_verticies[i].t = 0.0f;   // the line behind text as per dos original
         screen_box_verticies[i].w = 0.0f;
         screen_box_verticies[i].r = colDark.r;
         screen_box_verticies[i].g = colDark.g;
