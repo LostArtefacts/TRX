@@ -135,9 +135,6 @@ static void Text_DrawTextOutline(
         Output_DrawScreenBox(
             sx, sy, w, h, Text_GetMenuColor(MC_GOLD_DARK),
             Text_GetMenuColor(MC_GOLD_LIGHT), TEXT_OUTLINE_THICKNESS);
-        /* Output_DrawScreenBox(
-            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_DARK),
-            TEXT_OUTLINE_THICKNESS * scale, 0, scale);*/
         return;
     }
 
