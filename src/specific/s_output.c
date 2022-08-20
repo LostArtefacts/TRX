@@ -1393,8 +1393,6 @@ void S_Output_ScreenBox(
     screen_box_verticies[21].x = screen_box_verticies[13].x;
     screen_box_verticies[21].y = screen_box_verticies[13].y;
 
-
-
     int i = 0;
     for (; i < SB_NUM_VERTS_DARK; ++i) {
         screen_box_verticies[i].z = 1.0f; // the lines were z 0 but that makes
