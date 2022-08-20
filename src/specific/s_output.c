@@ -1318,7 +1318,7 @@ void S_Output_ScreenBox(
     GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
     S_Output_DisableTextureMode();
 
-    //convert them to floats and apply the (+1) from the original line code
+    // convert them to floats and apply the (+1) from the original line code
     float sxf = (float)sx + thickness;
     float syf = (float)sy + thickness;
     float hf = (float)h;
@@ -1397,10 +1397,10 @@ void S_Output_ScreenBox(
 
     int i = 0;
     for (; i < SB_NUM_VERTS_DARK; ++i) {
-        screen_box_verticies[i].z = 1.0f;   // the lines were z 0 but that makes them
-        screen_box_verticies[i].s = 0.0f;   // show over text, so I use Z 1 here to make
-        screen_box_verticies[i].t = 0.0f;   // the line behind text as per dos original
-        screen_box_verticies[i].w = 0.0f;
+        screen_box_verticies[i].z = 1.0f; // the lines were z 0 but that makes
+        screen_box_verticies[i].s = 0.0f; // them show over text, so I use Z 1
+        screen_box_verticies[i].t = 0.0f; // here to make the line behind text
+        screen_box_verticies[i].w = 0.0f; // as per dos original
         screen_box_verticies[i].r = colDark.r;
         screen_box_verticies[i].g = colDark.g;
         screen_box_verticies[i].b = colDark.b;
