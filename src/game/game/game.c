@@ -144,10 +144,10 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         break;
 
     case GFL_RESTART:
-        Savegame_ResetCurrentInfo(level_num);
         if (level_num <= g_GameFlow.first_level_num) {
             Savegame_InitCurrentInfo();
         } else {
+            Savegame_ResetCurrentInfo(level_num);
             // Use previous level's ending info to start current level.
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
@@ -159,16 +159,13 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         break;
 
     case GFL_SELECT:
-        // reset current info to the defaults so that we do not do
-        // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
-        Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
-        for (int i = level_num; i < g_GameFlow.level_count; i++) {
-            Savegame_ResetCurrentInfo(i);
-        }
-        if (level_num <= g_GameFlow.first_level_num) {
-            Savegame_InitCurrentInfo();
-        } else {
+        if (level_num > g_GameFlow.first_level_num) {
+            Savegame_LoadOnlyResumeInfo(
+                g_GameInfo.current_save_slot, &g_GameInfo);
+            for (int i = level_num; i < g_GameFlow.level_count; i++) {
+                Savegame_ResetCurrentInfo(i);
+            }
             // Use previous level's ending info to start current level.
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
