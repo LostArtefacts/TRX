@@ -316,7 +316,7 @@
             "music": 58,
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\canyon.avi"},
-                {"type": "start_game"},
+                {"type": "remove_guns"},
                 {"type": "remove_scions"},
                 {"type": "remove_guns"},
                 {"type": "loop_game"},

@@ -513,6 +513,16 @@ void Lara_InitialiseInventory(int32_t level_num)
     RESUME_INFO *resume = &g_GameInfo.current[level_num];
 
     g_Lara.pistols.ammo = 1000;
+
+    if (g_GameInfo.remove_guns == true) {
+        resume->flags.got_pistols = 0;
+        resume->flags.got_shotgun = 0;
+        resume->flags.got_magnums = 0;
+        resume->flags.got_uzis = 0;
+        resume->gun_type = LGT_UNARMED;
+        resume->gun_status = LGS_ARMLESS;
+    }
+
     if (resume->flags.got_pistols) {
         Inv_AddItem(O_GUN_ITEM);
     }
