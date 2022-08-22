@@ -3,6 +3,7 @@
 - fixed some sound effects playing in the inventory when disable_music_in_inventory is true (#486)
 - fixed underwater currents breaking in rare cases (#127)
 - fixed gameflow option remove_guns preventing weapon pickups in rare situations (#611)
+- fixed gameflow option remove_scions causing Lara to equip weapons even if she has none (#605)
 
 ## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
 - fixed revert_to_pistols ignoring gameflow's remove_guns (#603)
