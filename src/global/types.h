@@ -1546,7 +1546,7 @@ typedef struct GAME_INFO {
     bool death_counter_supported;
     GAMEFLOW_LEVEL_TYPE current_level_type;
     bool remove_guns;
-} GAME_INFO;
+    bool remove_scions;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

@@ -514,13 +514,17 @@ void Lara_InitialiseInventory(int32_t level_num)
 
     g_Lara.pistols.ammo = 1000;
 
-    if (g_GameInfo.remove_guns == true) {
+    if (g_GameInfo.remove_guns) {
         resume->flags.got_pistols = 0;
         resume->flags.got_shotgun = 0;
         resume->flags.got_magnums = 0;
         resume->flags.got_uzis = 0;
         resume->gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
+    }
+
+    if (g_GameInfo.remove_scions) {
+        resume->num_scions = 0;
     }
 
     if (resume->flags.got_pistols) {
