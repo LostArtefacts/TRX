@@ -476,7 +476,9 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_GameInfo.bonus_flag = 0;
                     }
                 } else if (
-                    g_InvMode == INV_SAVE_MODE || g_InvMode == INV_GAME_MODE) {
+                    g_InvMode == INV_SAVE_MODE
+                    || g_InvMode == INV_SAVE_CRYSTAL_MODE
+                    || g_InvMode == INV_GAME_MODE) {
                     g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
                     Option_PassportInitSaveRequester(page);
                     m_PassportMode = PASSPORT_MODE_SHOW_SAVES;
