@@ -6,7 +6,7 @@
 - fixed gameflow option remove_scions causing Lara to equip weapons even if she has none (#605)
 - fixed save crystal mode always saving in the first slot (#607, regression from 2.8)
 - added gameflow option remove_ammo to remove all shotgun, magnum and uzi ammo from the inventory on level start (#599)
-- added gameflow option remove_medpacks to remove all small and large medpacks from the inventory on level start (#599)
+- added gameflow option remove_medipacks to remove all medi packs from the inventory on level start (#599)
 
 ## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
 - fixed revert_to_pistols ignoring gameflow's remove_guns (#603)

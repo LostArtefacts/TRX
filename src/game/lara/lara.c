@@ -533,7 +533,7 @@ void Lara_InitialiseInventory(int32_t level_num)
         resume->uzi_ammo = 0;
     }
 
-    if (g_GameInfo.remove_medpacks) {
+    if (g_GameInfo.remove_medipacks) {
         resume->num_medis = 0;
         resume->num_big_medis = 0;
     }
