@@ -1072,6 +1072,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     LOG_INFO("%d", level_num);
 
+    g_GameInfo.remove_guns = false;
+    g_GameInfo.remove_scions = false;
+
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
     while (seq->type != GFS_END) {
@@ -1249,20 +1252,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
             if (level_type != GFL_SAVED
                 && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-                g_GameInfo.current[level_num].flags.got_pistols = 0;
-                g_GameInfo.current[level_num].flags.got_shotgun = 0;
-                g_GameInfo.current[level_num].flags.got_magnums = 0;
-                g_GameInfo.current[level_num].flags.got_uzis = 0;
-                g_GameInfo.current[level_num].gun_type = LGT_UNARMED;
-                g_GameInfo.current[level_num].gun_status = LGS_ARMLESS;
-                Lara_InitialiseInventory(level_num);
+                g_GameInfo.remove_guns = true;
             }
             break;
 
         case GFS_REMOVE_SCIONS:
             if (level_type != GFL_SAVED) {
-                g_GameInfo.current[level_num].num_scions = 0;
-                Lara_InitialiseInventory(level_num);
+                g_GameInfo.remove_scions = true;
             }
             break;
 
