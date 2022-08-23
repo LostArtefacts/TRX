@@ -508,6 +508,12 @@ static bool GameFlow_LoadLevelSequence(
         } else if (!strcmp(type_str, "remove_scions")) {
             seq->type = GFS_REMOVE_SCIONS;
 
+        } else if (!strcmp(type_str, "remove_ammo")) {
+            seq->type = GFS_REMOVE_AMMO;
+
+        } else if (!strcmp(type_str, "remove_medipacks")) {
+            seq->type = GFS_REMOVE_MEDIPACKS;
+
         } else if (!strcmp(type_str, "give_item")) {
             seq->type = GFS_GIVE_ITEM;
 
@@ -945,6 +951,8 @@ void GameFlow_Shutdown(void)
                     case GFS_REMOVE_SCIONS:
                     case GFS_PLAY_SYNCED_AUDIO:
                     case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+                    case GFS_REMOVE_AMMO:
+                    case GFS_REMOVE_MEDIPACKS:
                         break;
                     }
                     seq++;
@@ -1074,6 +1082,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     g_GameInfo.remove_guns = false;
     g_GameInfo.remove_scions = false;
+    g_GameInfo.remove_ammo = false;
+    g_GameInfo.remove_medipacks = false;
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
@@ -1262,6 +1272,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             }
             break;
 
+        case GFS_REMOVE_AMMO:
+            if (level_type != GFL_SAVED
+                && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+                g_GameInfo.remove_ammo = true;
+            }
+            break;
+
+        case GFS_REMOVE_MEDIPACKS:
+            if (level_type != GFL_SAVED) {
+                g_GameInfo.remove_medipacks = true;
+            }
+            break;
+
         case GFS_MESH_SWAP: {
             GAMEFLOW_MESH_SWAP_DATA *swap_data = seq->data;
             int16_t *temp;
@@ -1316,6 +1339,8 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_REMOVE_GUNS:
         case GFS_REMOVE_SCIONS:
         case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+        case GFS_REMOVE_AMMO:
+        case GFS_REMOVE_MEDIPACKS:
             break;
 
         case GFS_START_GAME:
