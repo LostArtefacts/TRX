@@ -527,6 +527,17 @@ void Lara_InitialiseInventory(int32_t level_num)
         resume->num_scions = 0;
     }
 
+    if (g_GameInfo.remove_ammo) {
+        resume->shotgun_ammo = 0;
+        resume->magnum_ammo = 0;
+        resume->uzi_ammo = 0;
+    }
+
+    if (g_GameInfo.remove_medpacks) {
+        resume->num_medis = 0;
+        resume->num_big_medis = 0;
+    }
+
     if (resume->flags.got_pistols) {
         Inv_AddItem(O_GUN_ITEM);
     }

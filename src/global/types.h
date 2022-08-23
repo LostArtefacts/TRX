@@ -1023,6 +1023,8 @@ typedef enum GAMEFLOW_SEQUENCE_TYPE {
     GFS_PLAY_SYNCED_AUDIO,
     GFS_MESH_SWAP,
     GFS_FIX_PYRAMID_SECRET_TRIGGER,
+    GFS_REMOVE_AMMO,
+    GFS_REMOVE_MEDPACKS,
 } GAMEFLOW_SEQUENCE_TYPE;
 
 typedef enum GAME_STRING_ID {
@@ -1547,6 +1549,8 @@ typedef struct GAME_INFO {
     GAMEFLOW_LEVEL_TYPE current_level_type;
     bool remove_guns;
     bool remove_scions;
+    bool remove_ammo;
+    bool remove_medpacks;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {
