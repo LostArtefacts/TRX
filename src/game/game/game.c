@@ -2,9 +2,11 @@
 
 #include "config.h"
 #include "game/camera.h"
+#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_cheat.h"
 #include "game/lara/lara_hair.h"
@@ -73,7 +75,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         if ((g_InputDB.option || g_Input.save || g_Input.load
              || g_OverlayFlag <= 0)
             && !g_Lara.death_timer) {
-            if (g_ModeLock || g_Camera.type == CAM_CINEMATIC) {
+            if (g_Camera.type == CAM_CINEMATIC) {
                 g_OverlayFlag = 0;
             } else if (g_OverlayFlag > 0) {
                 if (g_Input.load) {
@@ -105,25 +107,8 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        int16_t item_num = g_NextItemActive;
-        while (item_num != NO_ITEM) {
-            ITEM_INFO *item = &g_Items[item_num];
-            OBJECT_INFO *obj = &g_Objects[item->object_number];
-            if (obj->control) {
-                obj->control(item_num);
-            }
-            item_num = item->next_active;
-        }
-
-        item_num = g_NextFxActive;
-        while (item_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[item_num];
-            OBJECT_INFO *obj = &g_Objects[fx->object_number];
-            if (obj->control) {
-                obj->control(item_num);
-            }
-            item_num = fx->next_active;
-        }
+        Item_Control();
+        Effect_Control();
 
         Lara_Control();
         Lara_Hair_Control(false);
@@ -159,10 +144,10 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         break;
 
     case GFL_RESTART:
-        Savegame_ResetCurrentInfo(level_num);
         if (level_num <= g_GameFlow.first_level_num) {
             Savegame_InitCurrentInfo();
         } else {
+            Savegame_ResetCurrentInfo(level_num);
             // Use previous level's ending info to start current level.
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
@@ -174,16 +159,13 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         break;
 
     case GFL_SELECT:
-        // reset current info to the defaults so that we do not do
-        // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
-        Savegame_LoadOnlyResumeInfo(g_GameInfo.current_save_slot, &g_GameInfo);
-        for (int i = level_num; i < g_GameFlow.level_count; i++) {
-            Savegame_ResetCurrentInfo(i);
-        }
-        if (level_num <= g_GameFlow.first_level_num) {
-            Savegame_InitCurrentInfo();
-        } else {
+        if (level_num > g_GameFlow.first_level_num) {
+            Savegame_LoadOnlyResumeInfo(
+                g_GameInfo.current_save_slot, &g_GameInfo);
+            for (int i = level_num; i < g_GameFlow.level_count; i++) {
+                Savegame_ResetCurrentInfo(i);
+            }
             // Use previous level's ending info to start current level.
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
@@ -246,6 +228,11 @@ int32_t Game_Stop(void)
         g_GameInfo.passport_page == PASSPORT_PAGE_1
         && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
         return GF_SELECT_GAME | g_GameInfo.select_level_num;
+    } else if (
+        g_GameInfo.passport_page == PASSPORT_PAGE_1
+        && g_GameInfo.passport_mode == PASSPORT_MODE_STORY_SO_FAR) {
+        // page 1: story so far
+        return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
     } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
         return GF_START_GAME
             | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel

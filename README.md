@@ -1,6 +1,10 @@
+<p align="center">
+<img alt="Tomb1Main logo" src="tools/resources/logo.png" width="400"/>
+</p>
+
 # Tomb Raider I: Community Edition
 
-This is an open source implementation of the classic Tomb Raider I game. It was
+This is an open source implementation of the classic Tomb Raider I game (1996),
 made by reverse engineering the TombATI / GLRage variant of the original game
 and replacing proprietary audio/video libraries with open source variants.
 
@@ -11,47 +15,77 @@ This project was inspired by Arsunt's
 [TR2Main](https://github.com/Arsunt/TR2Main/) project and the legacy name,
 "Tomb1Main", reflects that.
 
-## Installing
+## Showcase
 
-1. Download the latest Tomb1Main release from the GitHub releases.  
-   https://github.com/rr-/Tomb1Main/releases
+<table>
+    <tr>
+        <th>
+            Enemy health bar and UI scaling
+            <img src="docs/showcase/enemy_health_bar_and_scaling.jpg"/>
+        </th>
+        <th>
+            3D pickups
+            <img src="docs/showcase/3d_pickups.jpg"/>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Improved stats
+            <img src="docs/showcase/compass_stats.jpg"/>
+        </th>
+        <th>
+            Customizable draw distance
+            <img src="docs/showcase/draw_distance.webp"/>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Fly cheat
+            <img src="docs/showcase/fly_cheat.jpg"/>
+        </th>
+        <th>
+            Free camera
+            <img src="docs/showcase/free_camera.jpg"/>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            PS1 UI and new graphics options
+            <img src="docs/showcase/ps1_ui_and_gfx.jpg"/>
+        </th>
+    </tr>
+</table>
 
-2. Unpack the contents to your game directory.  
+## Installing (simplified)
+
+1. Head over to GitHub releases: https://github.com/rr-/Tomb1Main/releases
+2. Download the installer. Your browser may complain that the .exe is unsafe, but it's OK to ignore this alert.
+3. Mark the installer EXE as safe to run by right-clicking on the .exe, going to properties and clicking "Unblock".
+4. Run the installer and proceed with the steps.
+
+We hope that eventually these alerts will go away as the popularity of the project rises.
+
+## Installing (advanced / manual)
+
+1. Head over to GitHub releases: https://github.com/rr-/Tomb1Main/releases
+2. Download the zip file.
+3. Extract the zip file into a directory of your choice.  
    Make sure you choose to overwrite existing directories and files
-   (`Tomb1Main_config.json5` can remain).
+   (`cfg/Tomb1Main_config.json5` can remain, but new features will not be configurable).
+4. (First time installation) Put your original game files into the target directory.
+    1. For Steam and GOG users, extract the original `GAME.BIN` file using a tool such as UltraISO to your target directory.
+       Note that neither the GOG nor the Steam releases ship the music files. You have a few options here:
+       - You can download the music files from the link below.  
+         https://tmp.sakuya.pl/tomb1main/music.zip
+         The legality of this approach is disputable.
+       - Rip the assets yourself from a physical PlayStation/SegaSaturn disk.
 
-3. (**Steam users / music**) The Steam version of the game does not ship with the
-   music assets due to the publishers' negligence. If you have previously
-   installed TombATI, you don't need to do anything. Otherwise you can download
-   the music files from the link below.  
-   https://mega.nz/file/f9llhQAY#y0RqaMhR4ghtQ-1IFAGbHep_FCmkV8Q66bzdMWVqtuY  
-   **These assets are not a part of this project.** The legality of these is
-   disputable. The most legal way to get the music on PC is to rip the assets
-   yourself from a physical PlayStation disk. TombATI ships with this music by
-   default, which this project chooses not to do.
-
-4. Launch `Tomb1Main.exe`.
-
-### Unfinished Business
-
-1. (**Steam users / Unfinished Business**) The Unfinished Business expansion
-   pack is freeware, however, the Steam version of the game does not ship with
-   it and you'll need to install it separately. If you have previously
-   installed TombATI, you don't need to do anything. Otherwise you can download
-   the expansion pack from the link below.  
-   https://mega.nz/file/i8s0BAaD#wy3xyhuaHnco7aJKiKUV3zO6vCe86lLa3W7hWu249-M
-
-2. Launch the game with `-gold` command line switch. A more detailed instruction:
-
-    1. Create a shortcut to `Tomb1Main.exe`.
-
-    2. Select the newly created shortcut, go to File Properties.
-
-    3. At the end of the "target" field, append `-gold` so it looks something like
-        this:  
-        `(...)\Tomb1Main.exe -gold`
-
-    4. Launch the shortcut.
+       Optionally you can also install the Unfinished Business expansion pack files.
+       - Either this variant: https://tmp.sakuya.pl/tomb1main/unfinished_business.zip
+       - Or the more manual link: https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
+   2. For TombATI users this means copying the `data`, `fmv` and `music` directories.
+5. To play the game, run `Tomb1Main.exe`.
+6. To play the Unfinished Expansion pack, run `Tomb1Main.exe -gold`.
 
 If you install everything correctly, your game directory should look more or
 less like this (click to expand):
@@ -190,48 +224,59 @@ such as Notepad. All the configuration is explained in that file.
 
 Not all options are turned on by default. Refer to `Tomb1Main.json5` for details.
 
+#### UI
 - added proper UI and bar scaling
-- added enemy health bar
-- added deaths counter
-- added more control over when to show health bar and air bar
-- added customizability to health bar and air bar
+- added enemy health bars
+- added PS1 style UI
+- added fade effects to displayed images
+
+#### Gameplay
 - added ability to set user-defined FOV
 - added ability to select weapons / using items with numeric keys
 - added ability to look around while running
-- added TR3-like sidesteps
-- added shotgun flash sprites
+- added ability to sidestep like in TR3
+- added ability to automatically walk to items when nearby
+- added a pause screen
+- added a choice whether to play NG or NG+ without having to play the entire game
+- added Japanese mode (guns deal twice the damage, inspired by JP release of TR3); available for both NG and NG+
+- added ability to restart level on death
+- added ability to restart the adventure from any level when loading a game
+- added the "Story so far..." option in the select level menu to view cutscenes and FMVs
+- added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load
+- fixed keys and items not working when drawing guns immediately after using them
+- fixed counting the secret in The Great Pyramid
+- fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them
+- fixed a crash when Lara is on fire and goes too far away from where she caught fire
+- fixed settings not being saved when exiting the game with Alt+F4
+- fixed settings not persisting chosen layout (default vs. user keys)
+- fixed the infamous Tihocan crocodile bug (integer overflow causing creatures to deal damage across the entire level)
+- fixed Lara not being able to grab parts of some bridges
+- fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
+- fixed bats being positioned too high
+- fixed alligators dealing no damage if Lara remains still in the water
+- fixed shotgun shooting when a locked target moves out of Lara's sight
+- fixed shotgun shooting too fast when not aiming at a target
+- fixed Lara grabbing ledges she shouldn't in stacked rooms (mainly St. Francis Folly tower)
+- fixed rare cases of Lara getting set on fire on a bridge over lava
+- fixed saving the game near Bacon Lara breaking her movement
+- fixed Lara glitching through static objects into a black void
+- fixed Lara pushing blocks through doors
+- fixed Lara switching to pistols when completing a level with other guns
+- fixed empty mutant shells in Unfinished Business spawning Lara's hips
+- fixed gun pickups disappearing in rare circumstances on save load (#406)
+- fixed broken dart ricochet effect
+- fixed exploded mutant pods sometimes appearing unhatched on reload
+- fixed bridges at floor level appearing under the floor
+- fixed underwater currents breaking in rare cases
+
+#### Cheats
 - added a fly cheat
 - added a level skip cheat
 - added a door open cheat (while in fly mode)
 - added a cheat to increase the game speed
-- added ability to adjust Lara's starting health
-- added ability to disable all medpacks
-- added ability to disable Magnums
-- added ability to disable UZIs
-- added ability to disable shotgun
-- added ability to disable main menu demos
-- added ability to disable FMVs
-- added ability to disable cutscenes
-- added ability to disable healing between levels
-- added rendering of pickups on the ground as 3D meshes
-- added ability to automatically walk to items when nearby
-- added braid (currently only works in Lost Valley)
-- added support for displaying more than 3 pickup sprites
-- added a choice whether to play NG or NG+
-- added Japanese mode (guns deal twice the damage); available for both NG and NG+
-- added external game flow (no longer 2 different .exes for TR1 and TR1UB). For TRLE builders:
-    - the levels can be reordered
-    - the levels can be renamed
-    - all the strings can be translated, including keys and items
-    - you no longer are constrained to 4 or 21 levels only
-    - you can offer a custom Gym level
-    - you can change the main menu backdrop
-- added automatic calculation of secret numbers
-- added compass level stats
-- added ability to keep timer on in inventory
-- added save game crystals game mode (enabled via gameflow)
-- added pause screen
-- added movable camera on W,A,S,D
+
+#### Input
+- added ability to move camera around with W,A,S,D
 - added controller support
     | Xbox button | DualShock button   | Action          |
     | ----------- | ------------------ | --------------- |
@@ -249,97 +294,83 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
     | Start       | Options            | Pause           |
     | Right Stick | Right stick        | Camera movement |
     | R3          | R3                 | Reset camera    |
-- added rounded shadows (instead of the default octagon)
-- added per-level customizable water color (with customizable blue component)
-- added per-level customizable fog distance
-- added adjustable in-game brightness
-- added .jpeg/.png screenshots
-- added support for HD FMVs
-- added fanmade 16:9 menu backgrounds
-- added ability to skip FMVs with the Action key
-- added fade effects
-- added a vsync option
-- added total pickups and kills per level to the stats screen
-- added restart level to passport menu on death
-- added contextual arrows to menu options
-- added a final statistics screen
-- added music during the credits
-- added fade effects to displayed images
-- added unobtainable pickups and kills stats support in the gameflow
-- added the option to pause sound in the inventory screen
-- added level selection to the load game menu
-- added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
-- added the PS1 style UI
-- changed internal game memory limit from 3.5 MB to 16 MB
-- changed moveable limit from 256 to 10240
-- changed maximum textures from 2048 to 8192
-- changed maximum texture pages from 32 to 128
-- changed input method to DirectInput
-- changed saves to be put in the saves/ directory
-- fixed inability to switch Control keys during shimmy
+- fixed freeze when holding the Action key during end of level
+- fixed inability to switch Control keys when shimmying
+- fixed setting user keys being very difficult
 - fixed skipping FMVs triggering inventory
 - fixed skipping credits working too fast
-- fixed setting user keys being very difficult
-- fixed keys and items not working when drawing guns immediately after using them
 - fixed not being able to close level stats with Escape
-- fixed freeze when holding action key during end of level
-- fixed reading user settings not restoring the volume
-- fixed Tomb of Tihocan playing secret sound
-- fixed The Great Pyramid secret
-- fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them
-- fixed a crash when Lara is on fire and goes too far away from where she caught fire
-- fixed settings not being saved when exiting the game with Alt+F4
-- fixed settings not persisting chosen layout (default vs. user keys)
-- fixed the sound of collecting a secret killing the music
-- fixed the infamous Tihocan crocodile bug (integer overflow causing creatures to deal damage across the entire level)
 - fixed Lara jumping forever when alt+tabbing out of the game
-- fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
-- fixed bats being positioned too high
-- fixed Lara not being able to grab parts of some bridges
-- fixed alligators dealing no damage if Lara remains still in the water
-- fixed shotgun shooting when a locked target moves out of Lara's sight
-- fixed shotgun shooting too fast when not aiming at a target
-- fixed Lara grabbing ledges she shouldn't in stacked rooms (mainly St. Francis Folly tower)
-- fixed rare cases of Lara getting set on fire on a bridge over lava
-- fixed saving the game near Bacon Lara breaking her movement
+
+#### Statistics
+- added ability to keep timer on in inventory
+- added optional compass level stats
+- added optional final statistics screen
+- added optional deaths counter
+- added optional total pickups and kills per level
+- added unobtainable pickups and kills stats support in the gameflow
+
+#### Visuals
+- added optional shotgun flash sprites
+- added optional rendering of pickups on the ground as 3D meshes
+- added braid (currently only works in Lost Valley)
+- added support for displaying more than 3 pickup sprites
+- added more control over when to show health bar and air bar
+- added customizable health bar and air bar
+- added rounded shadows (instead of the default octagon)
+- added adjustable in-game brightness
+- added support for HD FMVs
+- added fanmade 16:9 menu backgrounds
+- added optional fade effects
+- added a vsync option
+- added contextual arrows to menu options
 - fixed thin black lines between polygons
-- fixed audio mixer stopping playing sounds on big explosions
-- fixed underwater ambient sound effect not playing
-- fixed Lara glitching through static objects into a black void
 - fixed black screen flashing when navigating the inventory
-- fixed Lara pushing blocks through doors
-- fixed game audio not muting when game is minimized
-- fixed Lara switching to pistols when completing a level with other guns
 - fixed detail levels text flashing with any option change
-- fixed empty mutant shells in Unfinished Business spawning Lara's hips
-- fixed gun pickups disappearing in rare circumstances on save load (#406)
-- fixed broken dart ricochet effect
-- fixed exploded mutant pods sometimes appearing unhatched on reload
-- fixed sound effects playing rapidly in sound menu if input held down
 - fixed underwater caustics animating at 2x speed
-- fixed bridges at floor level appearing under the floor
 
-## Showcase
+#### Audio
+- added music during the credits
+- fixed the sound of collecting a secret killing the music
+- fixed audio mixer stopping playing sounds on big explosions
+- fixed game audio not muting when game is minimized
+- fixed underwater ambient sound effect not playing
+- fixed sound effects playing rapidly in sound menu if input held down
 
-#### Mode selection
+#### Mods
+- added ability to adjust Lara's starting health (easy no damage mod)
+- added ability to disable healing between levels
+- added ability to disable certain item pickups (all medpacks, shotgun, Magnums and/or UZIs)
+- added ability to disable main menu demos, FMVs and/or cutscenes
+- added external game flow (no longer 2 different .exes for TR1 and TR1UB). For TRLE builders:
+    - the levels can be reordered
+    - the levels can be renamed
+    - all the strings can be translated, including keys and items
+    - you no longer are constrained to 4 or 21 levels only
+    - you can offer a custom Gym level
+    - you can change the main menu backdrop
+- added automatic calculation of secret counts (no longer having to fiddle with the .exe to get correct secret stats)
+- added save game crystals game mode (enabled via gameflow)
+- added per-level customizable water color (with customizable blue component)
+- added per-level customizable fog distance
 
-![](docs/showcase1.jpg)
-
-#### Braid
-
-![](docs/showcase2.jpg)
-
-#### Fly cheat
-
-![](docs/showcase3.jpg)
-
-#### Door open cheat
-
-![](docs/showcase4.jpg)
-
-#### Enemy health bars
-
-![](docs/showcase5.jpg)
+#### Miscellaneous
+- added .jpeg/.png screenshots
+- added an option to pause sound in the inventory screen
+- added ability to skip FMVs with the Action key
+- added ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
+- expanded internal game memory limit from 3.5 MB to 16 MB
+- expanded moveable limit from 256 to 10240
+- expanded maximum textures from 2048 to 8192
+- expanded maximum texture pages from 32 to 128
+- ported audio decoding library to ffmpeg
+- ported video decoding library to ffmpeg
+- ported image decoding library to ffmpeg
+- ported audio output library to SDL
+- ported input method to SDL
+- changed saves to be put in the saves/ directory
+- fixed playing the secret sound in Tomb of Tihocan
+- fixed reading user settings not restoring the volume
 
 ## Q&A
 
@@ -347,27 +378,22 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
     Yes. If you encounter a bug, please file a ticket.
 
-2. **Can we get HD textures? Reflections? Other graphical updates?**
+2. **Can we get HD textures? Reflections? Other visual updates?**
 
-    Eventually, probably yes. Please see the road map to have a general idea
-    what is currently being worked on.
+    Eventually, probably yes, but we'd really appreciate help with these.
 
 3. **Can we get braid in every level? Skyboxes? Flyby cameras? New animations? etc.**
 
-    Not sure at this moment; this requires meddling with the original game
-    level files. It's one thing fixing a faulty trigger bit in The Great
-    Pyramid for the final secret, and another to insert a completely new
-    animation, a textured mesh or a sound file and pretend it's always been a
-    part of the original game. So far we haven't found a good way that'll keep
-    the code maintainable.
+    The difficulty here is that these features often require inserting a
+    completely new animation, a textured mesh or a sound file and pretend
+    they're always been a part of the original game. So far we haven't found a
+    good way that'll keep the code maintainable.
 
 4. **Can I play this on Mac, Linux, Android...?**
 
-    No promises here, but the game is now playable with wine (including sound
-    and music) and there is planned work towards reducing the amount of
-    Windows-only code.
+    We'd like to eventually have only SDL dependency.
 
-## Current road map
+## Road map
 
 Note: this section may be subject to change.
 
@@ -376,6 +402,8 @@ Note: this section may be subject to change.
 - [x] Replace the proprietary music player with libavcodec and SDL
 - [x] Replace the proprietary FMV player with libavcodec and SDL
 - [x] Break off TombATI, ship our own .EXE rather than a .DLL
+- [x] Add an installer
+- [ ] Add a config tool
 - [ ] Work on cross platform builds
     - [x] Port DirectSound to libavcodec and SDL
     - [x] Port WinMM to libavcodec and SDL
@@ -385,18 +413,7 @@ Note: this section may be subject to change.
     - [ ] ...
     - [ ] Test for performance and crash resilience
     - [ ] 3.0
-- [ ] Beautify the code
-    - [x] Refactor GLRage to no longer emulate DDraw
-    - [x] Refactor GLRage to no longer emulate ATI3DCIF
-    - [x] Apply rigid name conventions to function names
-    - [ ] Refactor specific/ away?
-    - [ ] ...
 - [ ] Work on data injection and other features?
-
-## Importing data to IDA
-
-This option requires IDAPython and a recent version of IDA. Install Python 3.8+
-and IDA 7.5+, then hit alt+f7, then choose `tools/ida_import.py`.
 
 ## License
 

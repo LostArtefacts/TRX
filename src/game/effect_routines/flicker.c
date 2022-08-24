@@ -2,7 +2,6 @@
 
 #include "game/room.h"
 #include "game/sound.h"
-#include "global/vars.h"
 
 void FX_Flicker(ITEM_INFO *item)
 {

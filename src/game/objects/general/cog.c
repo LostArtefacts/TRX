@@ -2,7 +2,6 @@
 
 #include "game/items.h"
 #include "game/room.h"
-#include "global/vars.h"
 
 void Cog_Setup(OBJECT_INFO *obj)
 {

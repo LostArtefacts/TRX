@@ -12,6 +12,7 @@
 #include "game/objects/creatures/pierre.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/room.h"
 #include "game/screen.h"
 #include "game/setup.h"
 #include "game/shell.h"

@@ -1,6 +1,24 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
+- fixed some sound effects playing in the inventory when disable_music_in_inventory is true (#486)
+- fixed underwater currents breaking in rare cases (#127)
+- fixed gameflow option remove_guns preventing weapon pickups in rare situations (#611)
+- fixed gameflow option remove_scions causing Lara to equip weapons even if she has none (#605)
+- fixed save crystal mode always saving in the first slot (#607, regression from 2.8)
+- added gameflow option remove_ammo to remove all shotgun, magnum and uzi ammo from the inventory on level start (#599)
+- added gameflow option remove_medipacks to remove all medi packs from the inventory on level start (#599)
+
+## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
+- fixed revert_to_pistols ignoring gameflow's remove_guns (#603)
+
+## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
+- fixed Lara being able to equip pistols in the gym level (#594)
+
+## [2.10](https://github.com/rr-/Tomb1Main/compare/2.9.1...2.10) - 2022-07-26
+- added a .NET-based installer
 - added the option to make Lara revert to pistols on new level start (#557)
 - added the PS1 style UI (#517)
+- added the "Story so far..." option in the select level menu to view cutscenes and FMVs (#201)
 
 ## [2.9.1](https://github.com/rr-/Tomb1Main/compare/2.9...2.9.1) - 2022-06-03
 - fixed crash on centaur hatch (#579, regression from 2.9)

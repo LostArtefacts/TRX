@@ -994,6 +994,7 @@ typedef enum GAMEFLOW_OPTION {
     GF_RESTART_GAME = 8 << 6,
     GF_SELECT_GAME = 9 << 6,
     GF_START_GYM = 10 << 6,
+    GF_STORY_SO_FAR = 11 << 6,
 } GAMEFLOW_OPTION;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {
@@ -1022,6 +1023,8 @@ typedef enum GAMEFLOW_SEQUENCE_TYPE {
     GFS_PLAY_SYNCED_AUDIO,
     GFS_MESH_SWAP,
     GFS_FIX_PYRAMID_SECRET_TRIGGER,
+    GFS_REMOVE_AMMO,
+    GFS_REMOVE_MEDIPACKS,
 } GAMEFLOW_SEQUENCE_TYPE;
 
 typedef enum GAME_STRING_ID {
@@ -1031,7 +1034,7 @@ typedef enum GAME_STRING_ID {
     GS_HEADING_ITEMS,
 
     GS_PASSPORT_SELECT_LEVEL,
-    GS_PASSPORT_LOCKED_LEVEL,
+    GS_PASSPORT_STORY_SO_FAR,
     GS_PASSPORT_LEGACY_SELECT_LEVEL_1,
     GS_PASSPORT_LEGACY_SELECT_LEVEL_2,
     GS_PASSPORT_RESTART_LEVEL,
@@ -1181,6 +1184,7 @@ typedef enum PASSPORT_MODE {
     PASSPORT_MODE_SHOW_SAVES = 1,
     PASSPORT_MODE_NEW_GAME = 2,
     PASSPORT_MODE_SELECT_LEVEL = 3,
+    PASSPORT_MODE_STORY_SO_FAR = 4,
 } PASSPORT_MODE;
 
 #pragma pack(push, 1)
@@ -1543,6 +1547,10 @@ typedef struct GAME_INFO {
     int32_t select_level_num;
     bool death_counter_supported;
     GAMEFLOW_LEVEL_TYPE current_level_type;
+    bool remove_guns;
+    bool remove_scions;
+    bool remove_ammo;
+    bool remove_medipacks;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

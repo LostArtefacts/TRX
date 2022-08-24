@@ -1,5 +1,6 @@
 #include "game/savegame/savegame_legacy.h"
 
+#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
@@ -126,7 +127,9 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
         if (obj->save_hitpoints) {
             Savegame_Legacy_Read(&tmp_item.hit_points, sizeof(int16_t));
         }
-        if (obj->save_flags) {
+        if (obj->save_flags && item->object_number != O_LAVA_EMITTER
+            && item->object_number != O_FLAME_EMITTER
+            && item->object_number != O_WATERFALL) {
             Savegame_Legacy_Read(&tmp_item.flags, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.timer, sizeof(int16_t));
             if (tmp_item.flags & SAVE_CREATURE) {
@@ -339,7 +342,6 @@ static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 
 static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
 {
-    lot->node = NULL;
     Savegame_Legacy_Skip(sizeof(BOX_NODE *));
 
     Savegame_Legacy_Read(&lot->head, sizeof(int16_t));
@@ -540,8 +542,10 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
 
         if (obj->save_flags
-            && (item->object_number != O_BACON_LARA
-                || !skip_reading_bacon_lara)) {
+            && (item->object_number != O_BACON_LARA || !skip_reading_bacon_lara)
+            && item->object_number != O_LAVA_EMITTER
+            && item->object_number != O_FLAME_EMITTER
+            && item->object_number != O_WATERFALL) {
             Savegame_Legacy_Read(&item->flags, sizeof(int16_t));
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
 
@@ -706,7 +710,9 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Write(&item->hit_points, sizeof(int16_t));
         }
 
-        if (obj->save_flags) {
+        if (obj->save_flags && item->object_number != O_LAVA_EMITTER
+            && item->object_number != O_FLAME_EMITTER
+            && item->object_number != O_WATERFALL) {
             uint16_t flags = item->flags + item->active + (item->status << 1)
                 + (item->gravity_status << 3) + (item->collidable << 4);
             if (obj->intelligent && item->data) {

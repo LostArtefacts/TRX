@@ -19,15 +19,9 @@ extern PHD_TEXTURE g_PhdTextureInfo[MAX_TEXTURES];
 extern MATRIX *g_MatrixPtr;
 extern MATRIX g_W2VMatrix;
 
-extern int32_t g_WibbleOffset;
-extern int32_t g_WibbleTable[WIBBLE_SIZE];
-extern int32_t g_ShadeTable[WIBBLE_SIZE];
-extern int32_t g_RandTable[WIBBLE_SIZE];
 extern int32_t g_LsAdder;
 extern int32_t g_LsDivider;
 extern SHADOW_INFO g_ShadowInfo;
-
-extern bool g_ModeLock;
 
 extern bool g_IDelay;
 extern int32_t g_IDCount;
@@ -64,12 +58,6 @@ extern STATIC_INFO g_StaticObjects[STATIC_NUMBER_OF];
 extern uint8_t *g_TexturePagePtrs[MAX_TEXTPAGES];
 extern int16_t g_RoomCount;
 extern int32_t g_LevelItemCount;
-extern ITEM_INFO *g_Items;
-extern int16_t g_NextItemFree;
-extern int16_t g_NextItemActive;
-extern FX_INFO *g_Effects;
-extern int16_t g_NextFxFree;
-extern int16_t g_NextFxActive;
 extern int32_t g_NumberBoxes;
 extern BOX_INFO *g_Boxes;
 extern uint16_t *g_Overlap;
@@ -92,15 +80,6 @@ extern int32_t g_NumberSoundEffects;
 extern OBJECT_VECTOR *g_SoundEffectsTable;
 extern int16_t g_RoomsToDraw[MAX_ROOMS_TO_DRAW];
 extern int16_t g_RoomsToDrawCount;
-extern bool g_IsWibbleEffect;
-extern bool g_IsWaterEffect;
-extern bool g_IsShadeEffect;
-
-extern int16_t *g_TriggerIndex;
-extern int32_t g_FlipTimer;
-extern int32_t g_FlipEffect;
-extern int32_t g_FlipStatus;
-extern int32_t g_FlipMapTable[MAX_FLIP_MAPS];
 
 extern REQUEST_INFO g_SavegameRequester;
 

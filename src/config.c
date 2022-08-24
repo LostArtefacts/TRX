@@ -189,6 +189,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_ENUM(ui.menu_style, UI_STYLE_PC, m_UIStyles);
     READ_INTEGER(maximum_save_slots, 25);
     READ_BOOL(revert_to_pistols, false);
+    READ_BOOL(enable_enhanced_saves, true);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);

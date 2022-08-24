@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gun.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/random.h"
