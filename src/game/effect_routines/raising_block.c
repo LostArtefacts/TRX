@@ -1,5 +1,6 @@
 #include "game/effect_routines/raising_block.h"
 
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

@@ -54,7 +54,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "HEADING_ITEMS", GS_HEADING_ITEMS },
         { "PASSPORT_SELECT_LEVEL", GS_PASSPORT_SELECT_LEVEL },
         { "PASSPORT_RESTART_LEVEL", GS_PASSPORT_RESTART_LEVEL },
-        { "PASSPORT_LOCKED_LEVEL", GS_PASSPORT_LOCKED_LEVEL },
+        { "PASSPORT_STORY_SO_FAR", GS_PASSPORT_STORY_SO_FAR },
         { "PASSPORT_LEGACY_SELECT_LEVEL_1", GS_PASSPORT_LEGACY_SELECT_LEVEL_1 },
         { "PASSPORT_LEGACY_SELECT_LEVEL_2", GS_PASSPORT_LEGACY_SELECT_LEVEL_2 },
         { "PASSPORT_SELECT_MODE", GS_PASSPORT_SELECT_MODE },
@@ -508,6 +508,12 @@ static bool GameFlow_LoadLevelSequence(
         } else if (!strcmp(type_str, "remove_scions")) {
             seq->type = GFS_REMOVE_SCIONS;
 
+        } else if (!strcmp(type_str, "remove_ammo")) {
+            seq->type = GFS_REMOVE_AMMO;
+
+        } else if (!strcmp(type_str, "remove_medipacks")) {
+            seq->type = GFS_REMOVE_MEDIPACKS;
+
         } else if (!strcmp(type_str, "give_item")) {
             seq->type = GFS_GIVE_ITEM;
 
@@ -945,6 +951,8 @@ void GameFlow_Shutdown(void)
                     case GFS_REMOVE_SCIONS:
                     case GFS_PLAY_SYNCED_AUDIO:
                     case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+                    case GFS_REMOVE_AMMO:
+                    case GFS_REMOVE_MEDIPACKS:
                         break;
                     }
                     seq++;
@@ -1071,6 +1079,11 @@ GAMEFLOW_OPTION
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     LOG_INFO("%d", level_num);
+
+    g_GameInfo.remove_guns = false;
+    g_GameInfo.remove_scions = false;
+    g_GameInfo.remove_ammo = false;
+    g_GameInfo.remove_medipacks = false;
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
@@ -1249,20 +1262,26 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_REMOVE_GUNS:
             if (level_type != GFL_SAVED
                 && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-                g_GameInfo.current[level_num].flags.got_pistols = 0;
-                g_GameInfo.current[level_num].flags.got_shotgun = 0;
-                g_GameInfo.current[level_num].flags.got_magnums = 0;
-                g_GameInfo.current[level_num].flags.got_uzis = 0;
-                g_GameInfo.current[level_num].gun_type = LGT_UNARMED;
-                g_GameInfo.current[level_num].gun_status = LGS_ARMLESS;
-                Lara_InitialiseInventory(level_num);
+                g_GameInfo.remove_guns = true;
             }
             break;
 
         case GFS_REMOVE_SCIONS:
             if (level_type != GFL_SAVED) {
-                g_GameInfo.current[level_num].num_scions = 0;
-                Lara_InitialiseInventory(level_num);
+                g_GameInfo.remove_scions = true;
+            }
+            break;
+
+        case GFS_REMOVE_AMMO:
+            if (level_type != GFL_SAVED
+                && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
+                g_GameInfo.remove_ammo = true;
+            }
+            break;
+
+        case GFS_REMOVE_MEDIPACKS:
+            if (level_type != GFL_SAVED) {
+                g_GameInfo.remove_medipacks = true;
             }
             break;
 
@@ -1289,6 +1308,106 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 FixPyramidSecretTrigger();
             }
             break;
+
+        case GFS_END:
+            return ret;
+        }
+
+        seq++;
+    }
+
+    return ret;
+}
+
+GAMEFLOW_OPTION
+GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
+{
+    LOG_INFO("%d", level_num);
+
+    GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
+    GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
+    while (seq->type != GFS_END) {
+        LOG_INFO("seq %d %d", seq->type, seq->data);
+
+        switch (seq->type) {
+        case GFS_LOOP_GAME:
+        case GFS_STOP_GAME:
+        case GFS_LEVEL_STATS:
+        case GFS_TOTAL_STATS:
+        case GFS_DISPLAY_PICTURE:
+        case GFS_GIVE_ITEM:
+        case GFS_REMOVE_GUNS:
+        case GFS_REMOVE_SCIONS:
+        case GFS_FIX_PYRAMID_SECRET_TRIGGER:
+        case GFS_REMOVE_AMMO:
+        case GFS_REMOVE_MEDIPACKS:
+            break;
+
+        case GFS_START_GAME:
+            if (level_num == savegame_level) {
+                return GF_EXIT_TO_TITLE;
+            }
+            break;
+
+        case GFS_START_CINE:
+            ret = Game_Cutscene_Start((int32_t)seq->data);
+            break;
+
+        case GFS_LOOP_CINE:
+            ret = Game_Cutscene_Loop();
+            break;
+
+        case GFS_STOP_CINE:
+            ret = Game_Cutscene_Stop((int32_t)seq->data);
+            break;
+
+        case GFS_PLAY_FMV:
+            FMV_Play((char *)seq->data);
+            break;
+
+        case GFS_EXIT_TO_TITLE:
+            return GF_EXIT_TO_TITLE;
+
+        case GFS_EXIT_TO_LEVEL:
+            return GF_START_GAME | ((int32_t)seq->data & ((1 << 6) - 1));
+
+        case GFS_EXIT_TO_CINE:
+            return GF_START_CINE | ((int32_t)seq->data & ((1 << 6) - 1));
+
+        case GFS_SET_CAM_X:
+            g_Camera.pos.x = (int32_t)seq->data;
+            break;
+        case GFS_SET_CAM_Y:
+            g_Camera.pos.y = (int32_t)seq->data;
+            break;
+        case GFS_SET_CAM_Z:
+            g_Camera.pos.z = (int32_t)seq->data;
+            break;
+        case GFS_SET_CAM_ANGLE:
+            g_Camera.target_angle = (int32_t)seq->data;
+            break;
+        case GFS_FLIP_MAP:
+            Room_FlipMap();
+            break;
+        case GFS_PLAY_SYNCED_AUDIO:
+            Music_Play((int32_t)seq->data);
+            break;
+
+        case GFS_MESH_SWAP: {
+            GAMEFLOW_MESH_SWAP_DATA *swap_data = seq->data;
+            int16_t *temp = g_Meshes
+                [g_Objects[swap_data->object1_num].mesh_index
+                 + swap_data->mesh_num];
+            g_Meshes
+                [g_Objects[swap_data->object1_num].mesh_index
+                 + swap_data->mesh_num] = g_Meshes
+                    [g_Objects[swap_data->object2_num].mesh_index
+                     + swap_data->mesh_num];
+            g_Meshes
+                [g_Objects[swap_data->object2_num].mesh_index
+                 + swap_data->mesh_num] = temp;
+            break;
+        }
 
         case GFS_END:
             return ret;

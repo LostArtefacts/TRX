@@ -126,6 +126,7 @@ void LavaEmitter_Setup(OBJECT_INFO *obj)
     obj->control = LavaEmitter_Control;
     obj->draw_routine = Object_DrawDummyItem;
     obj->collision = Object_Collision;
+    obj->save_flags = 1;
 }
 
 void LavaEmitter_Control(int16_t item_num)

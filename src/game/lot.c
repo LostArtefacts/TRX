@@ -1,6 +1,7 @@
 #include "game/lot.h"
 
 #include "game/gamebuf.h"
+#include "game/items.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"

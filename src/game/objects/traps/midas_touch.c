@@ -2,6 +2,7 @@
 
 #include "game/input.h"
 #include "game/inventory.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "global/const.h"

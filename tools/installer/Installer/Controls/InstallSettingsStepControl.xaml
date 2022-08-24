@@ -1,0 +1,155 @@
+<UserControl
+    x:Class="Installer.Controls.InstallSettingsStepControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:Installer.Models"
+    xmlns:utils="clr-namespace:Installer.Utils"
+    d:DataContext="{d:DesignInstance Type=models:InstallSettingsStep}"
+    mc:Ignorable="d"
+    d:DesignHeight="450"
+    d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
+            Step 2: Installation options
+        </TextBlock>
+
+        <ScrollViewer Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <ScrollViewer.Template>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ScrollContentPresenter
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            x:Name="PART_ScrollContentPresenter"
+                            CanContentScroll="{TemplateBinding CanContentScroll}"
+                            CanHorizontallyScroll="False"
+                            CanVerticallyScroll="False"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Content="{TemplateBinding Content}"
+                            Margin="{TemplateBinding Padding}" />
+                        <Rectangle
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            x:Name="Corner"
+                            Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                        <ScrollBar
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            x:Name="PART_VerticalScrollBar"
+                            AutomationProperties.AutomationId="VerticalScrollBar"
+                            Cursor="Arrow"
+                            Minimum="0"
+                            Maximum="{TemplateBinding ScrollableHeight}"
+                            Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                            ViewportSize="{TemplateBinding ViewportHeight}"
+                            Margin="12,0,0,0" />
+                        <ScrollBar
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            x:Name="PART_HorizontalScrollBar"
+                            AutomationProperties.AutomationId="HorizontalScrollBar"
+                            Orientation="Horizontal"
+                            Cursor="Arrow"
+                            Minimum="0"
+                            Maximum="{TemplateBinding ScrollableWidth}"
+                            Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                            ViewportSize="{TemplateBinding ViewportWidth}" />
+                    </Grid>
+                </ControlTemplate>
+            </ScrollViewer.Template>
+
+            <StackPanel Orientation="Vertical">
+                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.DownloadMusic}" IsEnabled="{Binding InstallSettings.IsDownloadingMusicNeeded}">
+                    <TextBlock TextWrapping="Wrap">
+                        Download music tracks
+                        <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingMusicNeeded, Converter={utils:ConditionalMarkupConverter TrueValue='', FalseValue='(already found)'}, Mode=OneWay}" />
+                        <LineBreak />
+                        <Run Style="{StaticResource small}">
+                            Neither the Steam nor GOG versions of the game ship with the
+                            full soundtrack found on the PlayStation or Saturn retail
+                            releases. This option lets you download the missing tracks
+                            automatically (164 MB). The legality of these files is
+                            disputable; the most legal way to import the music to PC is to
+                            rip the audio tracks yourself from a physical PlayStation or
+                            Saturn disc.
+                        </Run>
+                    </TextBlock>
+                </CheckBox>
+
+                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.DownloadUnfinishedBusiness}" IsEnabled="{Binding InstallSettings.IsDownloadingUnfinishedBusinessNeeded}">
+                    <TextBlock TextWrapping="Wrap">
+                        Download Unfinished Business expansion pack
+                        <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingUnfinishedBusinessNeeded, Converter={utils:ConditionalMarkupConverter TrueValue='', FalseValue='(already found)'}, Mode=OneWay}" />
+                        <LineBreak />
+                        <Run Style="{StaticResource small}">
+                        The Unfinished Business expansion pack was made freeware. However, the Steam and GOG versions do not ship it. This option lets you download the expansion files automatically (6 MB).
+                        </Run>
+                    </TextBlock>
+                </CheckBox>
+
+                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.ImportSaves}" IsEnabled="{Binding InstallSettings.InstallSource.IsImportingSavesSupported}">
+                    <TextBlock TextWrapping="Wrap">
+                        Import saves
+                        <LineBreak />
+                        <Run Style="{StaticResource small}">
+                            Imports existing savegame files. Only TombATI and Tomb1Main savegame format is supported at this time.
+                        </Run>
+                    </TextBlock>
+                </CheckBox>
+
+                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.OverwriteAllFiles}">
+                    <TextBlock TextWrapping="Wrap">
+                        Overwrite all existing files
+                        <LineBreak />
+                        <Run Style="{StaticResource small}">
+                            Overwrites any files such as level data, music files and existing user settings.
+                            If this option is off, only overwrites Tomb1Main.exe in order to update the game.
+                        </Run>
+                    </TextBlock>
+                </CheckBox>
+
+                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.CreateDesktopShortcut}">
+                    Create desktop shortcut
+                </CheckBox>
+
+                <Separator />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" Padding="0" Content="Destination folder:" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding InstallSettings.TargetDirectory}" TextTrimming="CharacterEllipsis" />
+                    <Button Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0" Command="{Binding ChooseLocationCommand}" Content="Change..." />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

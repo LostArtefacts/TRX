@@ -2,6 +2,7 @@
 
 #include "game/creature.h"
 #include "game/effects/blood.h"
+#include "game/items.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"

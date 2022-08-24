@@ -5,6 +5,7 @@
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/lot.h"
 #include "game/objects/creatures/pod.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
@@ -38,7 +39,6 @@ typedef struct SAVEGAME_STRATEGY {
     bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
 
-static BOX_NODE *m_OldLaraLOTNode;
 static SAVEGAME_INFO *m_SavegameInfo = NULL;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
@@ -72,8 +72,6 @@ static void Savegame_LoadPostprocess(void);
 
 static void Savegame_LoadPreprocess(void)
 {
-    m_OldLaraLOTNode = g_Lara.LOT.node;
-
     Savegame_InitCurrentInfo();
 }
 
@@ -155,9 +153,7 @@ static void Savegame_LoadPostprocess(void)
             g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
-
-    g_Lara.LOT.node = m_OldLaraLOTNode;
-    g_Lara.LOT.target_box = NO_BOX;
+    LOT_ClearLOT(&g_Lara.LOT);
 }
 
 void Savegame_Init(void)
@@ -586,21 +582,23 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
         return;
     }
 
-    for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
+    for (int i = g_GameFlow.first_level_num; i <= savegame_info->level_num;
          i++) {
-        if (i <= savegame_info->level_num) {
-            req->item_flags[req->items] &= ~RIF_BLOCKED;
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len], "%s",
-                g_GameFlow.levels[i].level_title);
-        } else {
-            req->item_flags[req->items] |= RIF_BLOCKED;
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len],
-                g_GameFlow.strings[GS_PASSPORT_LOCKED_LEVEL]);
-        }
+        req->item_flags[req->items] &= ~RIF_BLOCKED;
+        sprintf(
+            &req->item_texts[req->items * req->item_text_len], "%s",
+            g_GameFlow.levels[i].level_title);
         req->items++;
     }
+
+    if (g_InvMode == INV_TITLE_MODE) {
+        req->item_flags[req->items] &= ~RIF_BLOCKED;
+        sprintf(
+            &req->item_texts[req->items * req->item_text_len], "%s",
+            g_GameFlow.strings[GS_PASSPORT_STORY_SO_FAR]);
+        req->items++;
+    }
+
     req->requested = 0;
     req->line_offset = 0;
 }
@@ -613,4 +611,30 @@ bool Savegame_RestartAvailable(int32_t slot_num)
 
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     return savegame_info->features.restart;
+}
+
+GAMEFLOW_OPTION Savegame_PlayAvailableStory(int32_t slot_num)
+{
+    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
+
+    int32_t gf_option = GF_START_GAME | g_GameFlow.first_level_num;
+
+    bool loop_continue = true;
+    while (loop_continue) {
+        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
+        int32_t gf_param = gf_option & ((1 << 6) - 1);
+
+        gf_option = GameFlow_StorySoFar(gf_param, savegame_info->level_num);
+
+        if (gf_param >= savegame_info->level_num
+            && gf_param <= g_GameFlow.last_level_num) {
+            break;
+        }
+
+        if (gf_direction == GF_EXIT_GAME) {
+            break;
+        }
+    }
+
+    return GF_EXIT_TO_TITLE;
 }

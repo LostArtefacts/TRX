@@ -6,25 +6,45 @@
 #include "global/vars.h"
 #include "math/matrix.h"
 
+#include <stddef.h>
+
+FX_INFO *g_Effects = NULL;
+int16_t g_NextFxActive = NO_ITEM;
+
+static int16_t m_NextFxFree = NO_ITEM;
+
 void Effect_InitialiseArray(void)
 {
     g_NextFxActive = NO_ITEM;
-    g_NextFxFree = 0;
+    m_NextFxFree = 0;
     for (int i = 0; i < NUM_EFFECTS - 1; i++) {
         g_Effects[i].next_fx = i + 1;
     }
     g_Effects[NUM_EFFECTS - 1].next_fx = NO_ITEM;
 }
 
+void Effect_Control(void)
+{
+    int16_t fx_num = g_NextFxActive;
+    while (fx_num != NO_ITEM) {
+        FX_INFO *fx = &g_Effects[fx_num];
+        OBJECT_INFO *obj = &g_Objects[fx->object_number];
+        if (obj->control) {
+            obj->control(fx_num);
+        }
+        fx_num = fx->next_active;
+    }
+}
+
 int16_t Effect_Create(int16_t room_num)
 {
-    int16_t fx_num = g_NextFxFree;
+    int16_t fx_num = m_NextFxFree;
     if (fx_num == NO_ITEM) {
         return fx_num;
     }
 
     FX_INFO *fx = &g_Effects[fx_num];
-    g_NextFxFree = fx->next_fx;
+    m_NextFxFree = fx->next_fx;
 
     ROOM_INFO *r = &g_RoomInfo[room_num];
     fx->room_number = room_num;
@@ -66,8 +86,8 @@ void Effect_Kill(int16_t fx_num)
         }
     }
 
-    fx->next_fx = g_NextFxFree;
-    g_NextFxFree = fx_num;
+    fx->next_fx = m_NextFxFree;
+    m_NextFxFree = fx_num;
 }
 
 void Effect_NewRoom(int16_t fx_num, int16_t room_num)

@@ -2,7 +2,6 @@
 
 #include "game/items.h"
 #include "global/const.h"
-#include "global/vars.h"
 
 #include <stdbool.h>
 

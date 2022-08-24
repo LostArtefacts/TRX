@@ -6,6 +6,7 @@
 #include "global/const.h"
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <string.h>
 
 #define BOX_BORDER 2

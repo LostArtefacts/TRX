@@ -213,6 +213,11 @@ void Shell_Main(void)
             break;
         }
 
+        case GF_STORY_SO_FAR: {
+            gf_option = Savegame_PlayAvailableStory(gf_param);
+            break;
+        }
+
         case GF_START_CINE:
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
             break;

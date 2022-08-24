@@ -98,7 +98,7 @@ void Option_PassportInit(void)
     g_SavegameRequester.item_texts = Memory_Alloc(
         g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
     m_SelectLevelRequester.item_texts = Memory_Alloc(
-        g_GameFlow.level_count * m_SelectLevelRequester.item_text_len);
+        (g_GameFlow.level_count + 1) * m_SelectLevelRequester.item_text_len);
 }
 
 void Option_PassportShutdown(void)
@@ -181,7 +181,10 @@ static void Option_PassportShowLevelSelect(void)
 {
     int32_t select = Requester_Display(&m_SelectLevelRequester);
     if (select) {
-        if (select > 0) {
+        if (select - 1 + g_GameFlow.first_level_num
+            == Savegame_GetLevelNumber(g_GameInfo.current_save_slot) + 1) {
+            g_GameInfo.passport_mode = PASSPORT_MODE_STORY_SO_FAR;
+        } else if (select > 0) {
             g_GameInfo.select_level_num =
                 select - 1 + g_GameFlow.first_level_num;
             g_GameInfo.passport_mode = PASSPORT_MODE_SELECT_LEVEL;
@@ -473,7 +476,9 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_GameInfo.bonus_flag = 0;
                     }
                 } else if (
-                    g_InvMode == INV_SAVE_MODE || g_InvMode == INV_GAME_MODE) {
+                    g_InvMode == INV_SAVE_MODE
+                    || g_InvMode == INV_SAVE_CRYSTAL_MODE
+                    || g_InvMode == INV_GAME_MODE) {
                     g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
                     Option_PassportInitSaveRequester(page);
                     m_PassportMode = PASSPORT_MODE_SHOW_SAVES;

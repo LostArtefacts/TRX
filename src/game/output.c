@@ -17,11 +17,19 @@
 
 #include <stddef.h>
 
+static bool m_IsWibbleEffect = false;
+static bool m_IsWaterEffect = false;
+static bool m_IsShadeEffect = false;
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
 static int m_BackdropDstAlpha = 0;
 static double m_FadeSpeed = 1.0;
+
+static int32_t m_WibbleOffset = 0;
+static int32_t m_WibbleTable[WIBBLE_SIZE] = { 0 };
+static int32_t m_ShadeTable[WIBBLE_SIZE] = { 0 };
+static int32_t m_RandTable[WIBBLE_SIZE] = { 0 };
 
 static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
@@ -293,7 +301,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                 clip_flags |= 16;
             } else if (depth) {
                 m_VBuf[i].g += Output_CalcFogShade(depth);
-                if (!g_IsWaterEffect) {
+                if (!m_IsWaterEffect) {
                     CLAMPG(m_VBuf[i].g, 0x1FFF);
                 }
             }
@@ -301,9 +309,9 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             double persp = g_PhdPersp / zv;
             double xs = Viewport_GetCenterX() + xv * persp;
             double ys = Viewport_GetCenterY() + yv * persp;
-            if (g_IsWibbleEffect) {
-                xs += g_WibbleTable[(g_WibbleOffset + (int)ys) & 0x1F];
-                ys += g_WibbleTable[(g_WibbleOffset + (int)xs) & 0x1F];
+            if (m_IsWibbleEffect) {
+                xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & 0x1F];
+                ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & 0x1F];
             }
 
             if (xs < g_PhdLeft) {
@@ -318,10 +326,10 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                 clip_flags |= 8;
             }
 
-            if (g_IsWaterEffect) {
-                m_VBuf[i].g += g_ShadeTable[(
-                    ((uint8_t)g_WibbleOffset
-                     + (uint8_t)g_RandTable[(vertex_count - i) % WIBBLE_SIZE])
+            if (m_IsWaterEffect) {
+                m_VBuf[i].g += m_ShadeTable[(
+                    ((uint8_t)m_WibbleOffset
+                     + (uint8_t)m_RandTable[(vertex_count - i) % WIBBLE_SIZE])
                     % WIBBLE_SIZE)];
                 CLAMP(m_VBuf[i].g, 0, 0x1FFF);
             }
@@ -355,9 +363,9 @@ static void Output_CalcWibbleTable(void)
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
-        g_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        g_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
+        m_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
+        m_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
+        m_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }
 
@@ -862,21 +870,21 @@ void Output_DrawLightningSegment(
 
 void Output_SetupBelowWater(bool underwater)
 {
-    g_IsWaterEffect = true;
-    g_IsWibbleEffect = !underwater;
-    g_IsShadeEffect = true;
+    m_IsWaterEffect = true;
+    m_IsWibbleEffect = !underwater;
+    m_IsShadeEffect = true;
 }
 
 void Output_SetupAboveWater(bool underwater)
 {
-    g_IsWaterEffect = false;
-    g_IsWibbleEffect = underwater;
-    g_IsShadeEffect = underwater;
+    m_IsWaterEffect = false;
+    m_IsWibbleEffect = underwater;
+    m_IsShadeEffect = underwater;
 }
 
 void Output_AnimateTextures(int32_t ticks)
 {
-    g_WibbleOffset = (g_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
+    m_WibbleOffset = (m_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
 
     static int32_t tick_comp = 0;
     tick_comp += ticks;
@@ -1028,7 +1036,7 @@ bool Output_FadeIsAnimating(void)
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b)
 {
-    if (g_IsShadeEffect) {
+    if (m_IsShadeEffect) {
         *r *= m_WaterColor.r;
         *g *= m_WaterColor.g;
         *b *= m_WaterColor.b;

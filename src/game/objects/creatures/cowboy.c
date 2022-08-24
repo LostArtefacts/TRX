@@ -1,6 +1,7 @@
 #include "game/objects/creatures/cowboy.h"
 
 #include "game/creature.h"
+#include "game/effects.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
 #include "game/lot.h"
