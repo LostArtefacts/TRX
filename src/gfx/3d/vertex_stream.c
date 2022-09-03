@@ -107,7 +107,7 @@ bool GFX_3D_VertexStream_PushPrimFan(
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i]);
         }
     } else {
-        // convert Fan to raw triangles
+        // convert fan to raw triangles
         for (int i = 2; i < count; i++) {
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[0]);
             GFX_3D_VertexStream_PushVertex(vertex_stream, &vertices[i - 1]);
