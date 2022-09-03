@@ -1255,8 +1255,8 @@ bool S_Output_MakeScreenshot(const char *path)
 }
 
 void S_Output_ScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
-    RGBA8888 colLight, float thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col_dark,
+    RGBA8888 col_light, float thickness)
 {
     // this draws the dark then light two tone border
     // 2 is the sx+1,sy+1
@@ -1399,20 +1399,20 @@ void S_Output_ScreenBox(
         screen_box_verticies[i].s = 0.0f; // them show over text, so I use Z 1
         screen_box_verticies[i].t = 0.0f; // here to make the line behind text
         screen_box_verticies[i].w = 0.0f; // as per dos original
-        screen_box_verticies[i].r = colDark.r;
-        screen_box_verticies[i].g = colDark.g;
-        screen_box_verticies[i].b = colDark.b;
-        screen_box_verticies[i].a = colDark.a;
+        screen_box_verticies[i].r = col_dark.r;
+        screen_box_verticies[i].g = col_dark.g;
+        screen_box_verticies[i].b = col_dark.b;
+        screen_box_verticies[i].a = col_dark.a;
     }
     for (; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; ++i) {
         screen_box_verticies[i].z = 1.0f;
         screen_box_verticies[i].s = 0.0f;
         screen_box_verticies[i].t = 0.0f;
         screen_box_verticies[i].w = 0.0f;
-        screen_box_verticies[i].r = colLight.r;
-        screen_box_verticies[i].g = colLight.g;
-        screen_box_verticies[i].b = colLight.b;
-        screen_box_verticies[i].a = colLight.a;
+        screen_box_verticies[i].r = col_light.r;
+        screen_box_verticies[i].g = col_light.g;
+        screen_box_verticies[i].b = col_light.b;
+        screen_box_verticies[i].a = col_light.a;
     }
 
     S_Output_DrawTriangleStrip(

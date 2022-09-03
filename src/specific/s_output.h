@@ -55,8 +55,8 @@ void S_Output_DrawLightningSegment(
 bool S_Output_MakeScreenshot(const char *path);
 
 void S_Output_ScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
-    RGBA8888 colLight, float thickness);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col_dark,
+    RGBA8888 col_light, float thickness);
 void S_Output_4ColourTextBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
     RGBA8888 bl, RGBA8888 br, float thickness);
