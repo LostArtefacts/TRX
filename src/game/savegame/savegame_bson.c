@@ -531,6 +531,13 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             } else if (obj->intelligent) {
                 item->data = NULL;
             }
+
+            if (item->object_number == O_FLAME_EMITTER
+                && g_Config.enable_enhanced_saves) {
+                int32_t flame_num =
+                    json_object_get_int(item_obj, "flame_num", flame_num);
+                item->data = (void *)flame_num;
+            }
         }
     }
 
@@ -935,6 +942,11 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                     item_obj, "creature_flags", creature->flags);
                 json_object_append_int(
                     item_obj, "creature_mood", creature->mood);
+            }
+
+            if (item->object_number == O_FLAME_EMITTER) {
+                int32_t flame_num = (int32_t)item->data;
+                json_object_append_int(item_obj, "flame_num", flame_num);
             }
         }
 
