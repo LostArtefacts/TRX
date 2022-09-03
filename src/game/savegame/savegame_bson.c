@@ -534,9 +534,9 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
 
             if (item->object_number == O_FLAME_EMITTER
                 && g_Config.enable_enhanced_saves) {
-                int16_t flame_num =
+                int32_t flame_num =
                     json_object_get_int(item_obj, "flame_num", flame_num);
-                item->data = (void *)(flame_num + 0);
+                item->data = (void *)(flame_num);
             }
         }
     }
@@ -945,7 +945,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             }
 
             if (item->object_number == O_FLAME_EMITTER) {
-                int16_t flame_num = ((int16_t)(size_t)item->data);
+                int32_t flame_num = ((int32_t)item->data);
                 json_object_append_int(item_obj, "flame_num", flame_num);
             }
         }
