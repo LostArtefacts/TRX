@@ -27,5 +27,3 @@ Release/
 *.sln
 *.vcxproj
 *.filters
-libs/
-Visual Studio 2022
