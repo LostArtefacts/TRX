@@ -723,20 +723,13 @@ void Output_DrawScreenLine(
 }
 
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col,
-    int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
+    RGBA8888 colLight, int32_t thickness)
 {
-    for (int i = 0; i < thickness; i++) {
-        // Top
-        Output_DrawScreenLine(sx - i, sy - i, w + 1 + (i * 2), 0, col);
-        // Right
-        Output_DrawScreenLine(w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), col);
-        // Left
-        Output_DrawScreenLine(sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, col);
-        // Bottom
-        Output_DrawScreenLine(
-            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, col);
-    }
+    float scale = Viewport_GetHeight() / 480.0;
+    S_Output_ScreenBox(
+        sx - scale, sy - scale, w, h, colDark, colLight,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawGradientScreenLine(
@@ -749,48 +742,20 @@ void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
     RGBA8888 bl, RGBA8888 br, int32_t thickness)
 {
-    for (int i = 0; i < thickness; i++) {
-        // Top
-        Output_DrawGradientScreenLine(
-            sx - i, sy - i, w + 1 + (i * 2), 0, tl, tr);
-        // Right
-        Output_DrawGradientScreenLine(
-            w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), tr, br);
-        // Left
-        Output_DrawGradientScreenLine(
-            sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, bl, tl);
-        // Bottom
-        Output_DrawGradientScreenLine(
-            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, br, bl);
-    }
+    float scale = Viewport_GetHeight() / 480.0;
+    S_Output_4ColourTextBox(
+        sx - scale, sy - scale, w + scale, h + scale, tl, tr, bl, br,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
     RGBA8888 center, int32_t thickness)
 {
-    for (int i = 0; i < thickness; i++) {
-        // Top
-        Output_DrawGradientScreenLine(
-            sx - i, sy - i, (w / 2) + i, 0, edge, center);
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy - i, (-w / 2) - i, 0, edge, center);
-        // Right
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy - i, 0, (h / 2) + i, edge, center);
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy + h + i, 0, (-h / 2) - i, edge, center);
-        // Left
-        Output_DrawGradientScreenLine(
-            sx - i, sy - i, 0, (h / 2) + i, edge, center);
-        Output_DrawGradientScreenLine(
-            sx - i, sy + h + i, 0, (-h / 2) - i, edge, center);
-        // Bottom
-        Output_DrawGradientScreenLine(
-            sx - i, sy + h + i, (w / 2) + i, 0, edge, center);
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy + h + i, (-w / 2) - i, 0, edge, center);
-    }
+    float scale = Viewport_GetHeight() / 480.0;
+    S_Output_2ToneColourTextBox(
+        sx - scale, sy - scale, w + scale, h + scale, edge, center,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
