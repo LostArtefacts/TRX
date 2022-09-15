@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+
+## [2.10.3](https://github.com/rr-/Tomb1Main/compare/2.10.2...2.10.3) - 2022-09-15
 - fixed save crystal mode always saving in the first slot (#607, regression from 2.8)
 
 ## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
