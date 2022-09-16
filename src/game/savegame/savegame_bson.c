@@ -555,7 +555,7 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
         return false;
     }
 
-    if ((signed)fx_arr->length > NUM_EFFECTS - 1) {
+    if ((signed)fx_arr->length >= NUM_EFFECTS) {
         LOG_ERROR(
             "Malformed save: expected a max of %d fx, got %d", NUM_EFFECTS - 1,
             fx_arr->length);
