@@ -54,7 +54,7 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info);
 
 void Savegame_ScanSavedGames(void);
 void Savegame_ScanAvailableLevels(REQUEST_INFO *req);
-uint16_t Savegame_GetNewestSlot();
+void Savegame_HighlightNewestSlot(void);
 GAMEFLOW_OPTION Savegame_PlayAvailableStory(int32_t slot_num);
 bool Savegame_RestartAvailable(int32_t slot_num);
 

@@ -606,9 +606,9 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
     req->line_offset = 0;
 }
 
-uint16_t Savegame_GetNewestSlot()
+void Savegame_HighlightNewestSlot(void)
 {
-    return m_NewestSlot;
+    g_SavegameRequester.requested = m_NewestSlot;
 }
 
 bool Savegame_RestartAvailable(int32_t slot_num)
