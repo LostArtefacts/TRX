@@ -593,7 +593,7 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
         floor->floor = ceiling->ceiling + height / 256;
     } else {
         floor->floor += height / 256;
-        if (floor->floor == ceiling->ceiling) {
+        if (floor->floor == ceiling->ceiling && floor->sky_room == NO_ROOM) {
             floor->floor = NO_HEIGHT / 256;
         }
     }
