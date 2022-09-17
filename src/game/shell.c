@@ -132,6 +132,7 @@ void Shell_Init(const char *gameflow_path)
     Option_Init();
     Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
+    Savegame_HighlightNewestSlot();
     Settings_Read();
 
     Screen_ApplyResolution();

@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
+- changed passport to highlight latest save at game start (#618)
 - fixed some sound effects playing in the inventory when disable_music_in_inventory is true (#486)
 - fixed underwater currents breaking in rare cases (#127)
 - fixed gameflow option remove_guns preventing weapon pickups in rare situations (#611)
