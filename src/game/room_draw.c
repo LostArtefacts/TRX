@@ -1,6 +1,7 @@
 #include "game/room_draw.h"
 
 #include "game/effects.h"
+#include "game/items.h"
 #include "game/lara/lara_draw.h"
 #include "game/output.h"
 #include "game/shell.h"

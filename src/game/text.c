@@ -7,6 +7,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -132,11 +133,8 @@ static void Text_DrawTextOutline(
 {
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenBox(
-            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_LIGHT),
-            TEXT_OUTLINE_THICKNESS);
-        Output_DrawScreenBox(
-            sx - 1, sy - 1, w, h, Text_GetMenuColor(MC_GOLD_DARK),
-            TEXT_OUTLINE_THICKNESS);
+            sx, sy, w, h, Text_GetMenuColor(MC_GOLD_DARK),
+            Text_GetMenuColor(MC_GOLD_LIGHT), TEXT_OUTLINE_THICKNESS);
         return;
     }
 

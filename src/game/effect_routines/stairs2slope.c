@@ -1,5 +1,6 @@
 #include "game/effect_routines/stairs2slope.h"
 
+#include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 

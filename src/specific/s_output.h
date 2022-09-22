@@ -53,3 +53,13 @@ void S_Output_DrawLightningSegment(
     int thickness2);
 
 bool S_Output_MakeScreenshot(const char *path);
+
+void S_Output_ScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col_dark,
+    RGBA8888 col_light, float thickness);
+void S_Output_4ColourTextBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br, float thickness);
+void S_Output_2ToneColourTextBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
+    RGBA8888 centre, float thickness);

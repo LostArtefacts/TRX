@@ -39,6 +39,8 @@ void GFX_3D_VertexStream_SetPrimType(
 
 bool GFX_3D_VertexStream_PushPrimStrip(
     GFX_3D_VertexStream *vertex_stream, GFX_3D_Vertex *vertices, int count);
+bool GFX_3D_VertexStream_PushPrimFan(
+    GFX_3D_VertexStream *vertex_stream, GFX_3D_Vertex *vertices, int count);
 bool GFX_3D_VertexStream_PushPrimList(
     GFX_3D_VertexStream *vertex_stream, GFX_3D_Vertex *vertices, int count);
 

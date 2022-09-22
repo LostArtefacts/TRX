@@ -132,6 +132,7 @@ void Shell_Init(const char *gameflow_path)
     Option_Init();
     Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
+    Savegame_HighlightNewestSlot();
     Settings_Read();
 
     Screen_ApplyResolution();
@@ -210,6 +211,11 @@ void Shell_Main(void)
 
         case GF_SELECT_GAME: {
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_SELECT);
+            break;
+        }
+
+        case GF_STORY_SO_FAR: {
+            gf_option = Savegame_PlayAvailableStory(gf_param);
             break;
         }
 

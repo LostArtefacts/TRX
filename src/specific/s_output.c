@@ -52,6 +52,7 @@ static void S_Output_ReleaseTextures(void);
 static void S_Output_ReleaseSurfaces(void);
 static void S_Output_FlipPrimaryBuffer(void);
 static void S_Output_ClearSurface(GFX_2D_Surface *surface);
+static void S_Output_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count);
 static void S_Output_DrawTriangleStrip(
     GFX_3D_Vertex *vertices, int vertex_count);
 static int32_t S_Output_ClipVertices(
@@ -158,16 +159,15 @@ static void S_Output_ClearSurface(GFX_2D_Surface *surface)
     S_Output_CheckError(result);
 }
 
+static void S_Output_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count)
+{
+    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
+}
+
 static void S_Output_DrawTriangleStrip(
     GFX_3D_Vertex *vertices, int vertex_count)
 {
-    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
-    int left = vertex_count - 2;
-    for (int i = vertex_count - 3; i > 0; i--) {
-        memmove(&vertices[1], &vertices[2], left * sizeof(GFX_3D_Vertex));
-        GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, 3);
-        left--;
-    }
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
 }
 
 static int32_t S_Output_ClipVertices(
@@ -744,10 +744,10 @@ void S_Output_DrawSprite(
     if (m_TextureMap[sprite->tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(sprite->tpage);
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     } else {
         S_Output_DisableTextureMode();
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
 }
 
@@ -823,7 +823,7 @@ void S_Output_Draw2DQuad(
 
     S_Output_DisableTextureMode();
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
@@ -872,7 +872,7 @@ void S_Output_DrawLightningSegment(
     vertex_count = S_Output_ClipVertices(
         vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     if (vertex_count) {
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
 
     vertex_count = 4;
@@ -911,7 +911,7 @@ void S_Output_DrawLightningSegment(
     vertex_count = S_Output_ClipVertices(
         vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     if (vertex_count) {
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
@@ -945,7 +945,7 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     S_Output_DisableTextureMode();
 
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
 }
 
@@ -1042,7 +1042,7 @@ void S_Output_DrawFlatTriangle(
         return;
     }
 
-    S_Output_DrawTriangleStrip(vertices, vertex_count);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
 }
 
 void S_Output_DrawTexturedTriangle(
@@ -1129,10 +1129,10 @@ void S_Output_DrawTexturedTriangle(
     if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     } else {
         S_Output_DisableTextureMode();
-        S_Output_DrawTriangleStrip(vertices, vertex_count);
+        S_Output_DrawTriangleFan(vertices, vertex_count);
     }
 }
 
@@ -1252,4 +1252,373 @@ bool S_Output_MakeScreenshot(const char *path)
 {
     GFX_Context_ScheduleScreenshot(path);
     return true;
+}
+
+void S_Output_ScreenBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col_dark,
+    RGBA8888 col_light, float thickness)
+{
+    // this draws the dark then light two tone border
+    // 2 is the sx+1,sy+1
+    //                       7  6
+    //
+    //     2        |      4
+    //
+    //       3      |      5
+    //
+    //     ~ ~               ~  ~
+    //
+    //     0 1
+    // 11           |        9
+    //
+    // 10           |          8
+    // this is the vertex structure for the dark part
+    // while any machine we would be rendering this on will
+    // handle degenerate triangles, the current render doesn't
+    // actually reander a strip and instead pulls out each
+    // triangle into a triangle buffer. So the 4-5-6 triangle is valid
+    // but will be over drawn by the light box so is not seen.
+    // thus we form triangles
+    // 0,1,2
+    // 1,2,3
+    // 2,3,4
+    // 3,4,5
+    // 4,5,6
+    // 5,6,7
+    // 6,7,8
+    // 7,8,9
+    // 8,9,10
+    // 9,10,11
+    // the light box is then just a simple 4 sided box
+    // we share some vertexs so the square is formed as follows
+    //  13          |        7
+    //
+    //     2        |      4
+    //
+    //  ~  ~               ~ ~
+    //
+    //
+    //     12       |      14
+    //
+    // 11           |        9
+    // however as we are not index we have to duplicate the vertex data
+    // so the above numbers do not match the array below.
+    // we from the triangles
+    // 11,12,13
+    // 12,13,2
+    // 13,2,7
+    // 2,7,4
+    // 7,4,9
+    // 4,9,14
+    // 9,14,11
+    // 14,11,12
+
+#define SB_NUM_VERTS_DARK 12
+#define SB_NUM_VERTS_LIGHT 10
+    GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+    S_Output_DisableTextureMode();
+
+    // convert them to floats and apply the (+1) from the original line code
+    float sxf = (float)sx + thickness;
+    float syf = (float)sy + thickness;
+    float hf = (float)h;
+    float wf = (float)w;
+
+    // Top Left Dark set
+    screen_box_verticies[0].x = sxf;
+    screen_box_verticies[0].y = syf + hf - thickness;
+
+    screen_box_verticies[1].x = sxf + thickness;
+    screen_box_verticies[1].y = screen_box_verticies[0].y;
+
+    screen_box_verticies[2].x = sxf;
+    screen_box_verticies[2].y = syf;
+
+    screen_box_verticies[3].x = sxf + thickness;
+    screen_box_verticies[3].y = syf + thickness;
+
+    screen_box_verticies[4].x = sxf + wf - thickness;
+    screen_box_verticies[4].y = screen_box_verticies[2].y;
+
+    screen_box_verticies[5].x = screen_box_verticies[4].x;
+    screen_box_verticies[5].y = screen_box_verticies[3].y;
+
+    // Bottom Right Dark set
+    screen_box_verticies[6].x = sxf + wf + thickness;
+    screen_box_verticies[6].y = syf - thickness;
+
+    screen_box_verticies[7].x = sxf + wf;
+    screen_box_verticies[7].y = screen_box_verticies[6].y;
+
+    screen_box_verticies[8].x = screen_box_verticies[6].x;
+    screen_box_verticies[8].y = syf + hf + thickness;
+
+    screen_box_verticies[9].x = screen_box_verticies[7].x;
+    screen_box_verticies[9].y = syf + hf;
+
+    screen_box_verticies[10].x = sxf - thickness;
+    screen_box_verticies[10].y = screen_box_verticies[8].y;
+
+    screen_box_verticies[11].x = screen_box_verticies[10].x;
+    screen_box_verticies[11].y = screen_box_verticies[9].y;
+
+    // light box
+    screen_box_verticies[12].x = screen_box_verticies[11].x;
+    screen_box_verticies[12].y = screen_box_verticies[11].y;
+
+    screen_box_verticies[13].x = screen_box_verticies[12].x + thickness;
+    screen_box_verticies[13].y = screen_box_verticies[11].y - thickness;
+
+    screen_box_verticies[14].x = sxf - thickness;
+    screen_box_verticies[14].y = syf - thickness;
+
+    screen_box_verticies[15].x = screen_box_verticies[2].x;
+    screen_box_verticies[15].y = screen_box_verticies[2].y;
+
+    screen_box_verticies[16].x = screen_box_verticies[7].x;
+    screen_box_verticies[16].y = screen_box_verticies[7].y;
+
+    screen_box_verticies[17].x = screen_box_verticies[4].x;
+    screen_box_verticies[17].y = screen_box_verticies[4].y;
+
+    screen_box_verticies[18].x = screen_box_verticies[9].x;
+    screen_box_verticies[18].y = screen_box_verticies[9].y;
+
+    screen_box_verticies[19].x = screen_box_verticies[9].x - thickness;
+    screen_box_verticies[19].y = screen_box_verticies[9].y - thickness;
+
+    screen_box_verticies[20].x = screen_box_verticies[12].x;
+    screen_box_verticies[20].y = screen_box_verticies[12].y;
+
+    screen_box_verticies[21].x = screen_box_verticies[13].x;
+    screen_box_verticies[21].y = screen_box_verticies[13].y;
+
+    int i = 0;
+    for (; i < SB_NUM_VERTS_DARK; ++i) {
+        screen_box_verticies[i].z = 1.0f; // the lines were z 0 but that makes
+        screen_box_verticies[i].s = 0.0f; // them show over text, so I use Z 1
+        screen_box_verticies[i].t = 0.0f; // here to make the line behind text
+        screen_box_verticies[i].w = 0.0f; // as per dos original
+        screen_box_verticies[i].r = col_dark.r;
+        screen_box_verticies[i].g = col_dark.g;
+        screen_box_verticies[i].b = col_dark.b;
+        screen_box_verticies[i].a = col_dark.a;
+    }
+    for (; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+        screen_box_verticies[i].r = col_light.r;
+        screen_box_verticies[i].g = col_light.g;
+        screen_box_verticies[i].b = col_light.b;
+        screen_box_verticies[i].a = col_light.a;
+    }
+
+    S_Output_DrawTriangleStrip(
+        screen_box_verticies, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
+}
+
+void S_Output_4ColourTextBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br, float thickness)
+{
+    //  0                 2
+    //   *               &
+    //    1             3
+    //
+    //    7             5
+    //   #               @
+    //  6                 4
+    GFX_3D_Vertex screen_box_verticies[10];
+    for (int i = 0; i < 10; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+    }
+    S_Output_DisableTextureMode();
+    screen_box_verticies[0].x = sx - thickness;
+    screen_box_verticies[0].y = sy - thickness;
+
+    screen_box_verticies[1].x = sx + thickness;
+    screen_box_verticies[1].y = sy + thickness;
+
+    screen_box_verticies[0].r = screen_box_verticies[1].r = tl.r;
+    screen_box_verticies[0].g = screen_box_verticies[1].g = tl.g;
+    screen_box_verticies[0].b = screen_box_verticies[1].b = tl.b;
+    screen_box_verticies[0].a = screen_box_verticies[1].a = tl.a;
+
+    screen_box_verticies[2].x = sx + w + thickness;
+    screen_box_verticies[2].y = sy - thickness;
+
+    screen_box_verticies[3].x = sx + w - thickness;
+    screen_box_verticies[3].y = sy + thickness;
+
+    screen_box_verticies[2].r = screen_box_verticies[3].r = tr.r;
+    screen_box_verticies[2].g = screen_box_verticies[3].g = tr.g;
+    screen_box_verticies[2].b = screen_box_verticies[3].b = tr.b;
+    screen_box_verticies[2].a = screen_box_verticies[3].a = tr.a;
+
+    screen_box_verticies[4].x = sx + w + thickness;
+    screen_box_verticies[4].y = sy + h + thickness;
+
+    screen_box_verticies[5].x = sx + w - thickness;
+    screen_box_verticies[5].y = sy + h - thickness;
+
+    screen_box_verticies[4].r = screen_box_verticies[5].r = br.r;
+    screen_box_verticies[4].g = screen_box_verticies[5].g = br.g;
+    screen_box_verticies[4].b = screen_box_verticies[5].b = br.b;
+    screen_box_verticies[4].a = screen_box_verticies[5].a = br.a;
+
+    screen_box_verticies[6].x = sx - thickness;
+    screen_box_verticies[6].y = sy + h + thickness;
+
+    screen_box_verticies[7].x = sx + thickness;
+    screen_box_verticies[7].y = sy + h - thickness;
+
+    screen_box_verticies[6].r = screen_box_verticies[7].r = bl.r;
+    screen_box_verticies[6].g = screen_box_verticies[7].g = bl.g;
+    screen_box_verticies[6].b = screen_box_verticies[7].b = bl.b;
+    screen_box_verticies[6].a = screen_box_verticies[7].a = bl.a;
+
+    screen_box_verticies[8].x = screen_box_verticies[0].x;
+    screen_box_verticies[8].y = screen_box_verticies[0].y;
+
+    screen_box_verticies[9].x = screen_box_verticies[1].x;
+    screen_box_verticies[9].y = screen_box_verticies[1].y;
+
+    screen_box_verticies[8].r = screen_box_verticies[9].r = tl.r;
+    screen_box_verticies[8].g = screen_box_verticies[9].g = tl.g;
+    screen_box_verticies[8].b = screen_box_verticies[9].b = tl.b;
+    screen_box_verticies[8].a = screen_box_verticies[9].a = tl.a;
+
+    S_Output_DrawTriangleStrip(screen_box_verticies, 10);
+}
+
+void S_Output_2ToneColourTextBox(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
+    RGBA8888 centre, float thickness)
+{
+    //  0        2        4
+    //   *               &
+    //    1      3      5
+    //
+    // 14 15            7 6
+    //
+    //    13    10      9
+    //   #               @
+    // 12       11        8
+
+    int32_t halfw = w / 2;
+    int32_t halfh = h / 2;
+
+    GFX_3D_Vertex screen_box_verticies[18];
+    for (int i = 0; i < 18; ++i) {
+        screen_box_verticies[i].z = 1.0f;
+        screen_box_verticies[i].s = 0.0f;
+        screen_box_verticies[i].t = 0.0f;
+        screen_box_verticies[i].w = 0.0f;
+    }
+    S_Output_DisableTextureMode();
+    screen_box_verticies[0].x = sx - thickness;
+    screen_box_verticies[0].y = sy - thickness;
+
+    screen_box_verticies[1].x = sx + thickness;
+    screen_box_verticies[1].y = sy + thickness;
+
+    screen_box_verticies[0].r = screen_box_verticies[1].r = edge.r;
+    screen_box_verticies[0].g = screen_box_verticies[1].g = edge.g;
+    screen_box_verticies[0].b = screen_box_verticies[1].b = edge.b;
+    screen_box_verticies[0].a = screen_box_verticies[1].a = edge.a;
+
+    screen_box_verticies[2].x = sx + halfw;
+    screen_box_verticies[2].y = sy - thickness;
+
+    screen_box_verticies[3].x = sx + halfw;
+    screen_box_verticies[3].y = sy + thickness;
+
+    screen_box_verticies[2].r = screen_box_verticies[3].r = centre.r;
+    screen_box_verticies[2].g = screen_box_verticies[3].g = centre.g;
+    screen_box_verticies[2].b = screen_box_verticies[3].b = centre.b;
+    screen_box_verticies[2].a = screen_box_verticies[3].a = centre.a;
+
+    screen_box_verticies[4].x = sx + w + thickness;
+    screen_box_verticies[4].y = sy - thickness;
+
+    screen_box_verticies[5].x = sx + w - thickness;
+    screen_box_verticies[5].y = sy + thickness;
+
+    screen_box_verticies[4].r = screen_box_verticies[5].r = edge.r;
+    screen_box_verticies[4].g = screen_box_verticies[5].g = edge.g;
+    screen_box_verticies[4].b = screen_box_verticies[5].b = edge.b;
+    screen_box_verticies[4].a = screen_box_verticies[5].a = edge.a;
+
+    screen_box_verticies[6].x = sx + w + thickness;
+    screen_box_verticies[6].y = sy + halfh;
+
+    screen_box_verticies[7].x = sx + w - thickness;
+    screen_box_verticies[7].y = sy + halfh;
+
+    screen_box_verticies[6].r = screen_box_verticies[7].r = centre.r;
+    screen_box_verticies[6].g = screen_box_verticies[7].g = centre.g;
+    screen_box_verticies[6].b = screen_box_verticies[7].b = centre.b;
+    screen_box_verticies[6].a = screen_box_verticies[7].a = centre.a;
+
+    screen_box_verticies[8].x = sx + w + thickness;
+    screen_box_verticies[8].y = sy + h + thickness;
+
+    screen_box_verticies[9].x = sx + w - thickness;
+    screen_box_verticies[9].y = sy + h - thickness;
+
+    screen_box_verticies[8].r = screen_box_verticies[9].r = edge.r;
+    screen_box_verticies[8].g = screen_box_verticies[9].g = edge.g;
+    screen_box_verticies[8].b = screen_box_verticies[9].b = edge.b;
+    screen_box_verticies[8].a = screen_box_verticies[9].a = edge.a;
+
+    screen_box_verticies[10].x = sx + halfw;
+    screen_box_verticies[10].y = sy + h + thickness;
+
+    screen_box_verticies[11].x = sx + halfw;
+    screen_box_verticies[11].y = sy + h - thickness;
+
+    screen_box_verticies[10].r = screen_box_verticies[11].r = centre.r;
+    screen_box_verticies[10].g = screen_box_verticies[11].g = centre.g;
+    screen_box_verticies[10].b = screen_box_verticies[11].b = centre.b;
+    screen_box_verticies[10].a = screen_box_verticies[11].a = centre.a;
+
+    screen_box_verticies[12].x = sx - thickness;
+    screen_box_verticies[12].y = sy + h + thickness;
+
+    screen_box_verticies[13].x = sx + thickness;
+    screen_box_verticies[13].y = sy + h - thickness;
+
+    screen_box_verticies[12].r = screen_box_verticies[13].r = edge.r;
+    screen_box_verticies[12].g = screen_box_verticies[13].g = edge.g;
+    screen_box_verticies[12].b = screen_box_verticies[13].b = edge.b;
+    screen_box_verticies[12].a = screen_box_verticies[13].a = edge.a;
+
+    screen_box_verticies[14].x = sx - thickness;
+    screen_box_verticies[14].y = sy + halfh;
+
+    screen_box_verticies[15].x = sx + thickness;
+    screen_box_verticies[15].y = sy + halfh;
+
+    screen_box_verticies[14].r = screen_box_verticies[15].r = centre.r;
+    screen_box_verticies[14].g = screen_box_verticies[15].g = centre.g;
+    screen_box_verticies[14].b = screen_box_verticies[15].b = centre.b;
+    screen_box_verticies[14].a = screen_box_verticies[15].a = centre.a;
+
+    screen_box_verticies[16].x = screen_box_verticies[0].x;
+    screen_box_verticies[16].y = screen_box_verticies[0].y;
+
+    screen_box_verticies[17].x = screen_box_verticies[1].x;
+    screen_box_verticies[17].y = screen_box_verticies[1].y;
+
+    screen_box_verticies[16].r = screen_box_verticies[17].r = edge.r;
+    screen_box_verticies[16].g = screen_box_verticies[17].g = edge.g;
+    screen_box_verticies[16].b = screen_box_verticies[17].b = edge.b;
+    screen_box_verticies[16].a = screen_box_verticies[17].a = edge.a;
+
+    S_Output_DrawTriangleStrip(screen_box_verticies, 18);
 }

@@ -99,6 +99,7 @@ typedef struct {
     bool disable_trex_collision;
     int32_t maximum_save_slots;
     bool revert_to_pistols;
+    bool enable_enhanced_saves;
     bool enable_buffering;
 
     struct {

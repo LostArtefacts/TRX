@@ -22,6 +22,9 @@
         }                                                                      \
     } while (0)
 
+ITEM_INFO *g_Items = NULL;
+int16_t g_NextItemActive = NO_ITEM;
+static int16_t m_NextItemFree = NO_ITEM;
 static int16_t m_InterpolatedBounds[6] = { 0 };
 
 static bool Item_Move3DPosTo3DPos(
@@ -56,11 +59,24 @@ static bool Item_Move3DPosTo3DPos(
 void Item_InitialiseArray(int32_t num_items)
 {
     g_NextItemActive = NO_ITEM;
-    g_NextItemFree = g_LevelItemCount;
+    m_NextItemFree = g_LevelItemCount;
     for (int i = g_LevelItemCount; i < num_items - 1; i++) {
         g_Items[i].next_item = i + 1;
     }
     g_Items[num_items - 1].next_item = NO_ITEM;
+}
+
+void Item_Control(void)
+{
+    int16_t item_num = g_NextItemActive;
+    while (item_num != NO_ITEM) {
+        ITEM_INFO *item = &g_Items[item_num];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        if (obj->control) {
+            obj->control(item_num);
+        }
+        item_num = item->next_active;
+    }
 }
 
 void Item_Kill(int16_t item_num)
@@ -99,17 +115,17 @@ void Item_Kill(int16_t item_num)
     if (item_num < g_LevelItemCount) {
         item->flags |= IF_KILLED_ITEM;
     } else {
-        item->next_item = g_NextItemFree;
-        g_NextItemFree = item_num;
+        item->next_item = m_NextItemFree;
+        m_NextItemFree = item_num;
     }
 }
 
 int16_t Item_Create(void)
 {
-    int16_t item_num = g_NextItemFree;
+    int16_t item_num = m_NextItemFree;
     if (item_num != NO_ITEM) {
         g_Items[item_num].flags = 0;
-        g_NextItemFree = g_Items[item_num].next_item;
+        m_NextItemFree = g_Items[item_num].next_item;
     }
     return item_num;
 }

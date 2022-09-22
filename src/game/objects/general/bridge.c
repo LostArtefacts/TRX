@@ -6,7 +6,6 @@
 #include "game/objects/general/door.h"
 #include "game/room.h"
 #include "global/const.h"
-#include "global/vars.h"
 #include "util.h"
 
 #include <stdbool.h>

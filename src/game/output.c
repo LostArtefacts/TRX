@@ -17,11 +17,19 @@
 
 #include <stddef.h>
 
+static bool m_IsWibbleEffect = false;
+static bool m_IsWaterEffect = false;
+static bool m_IsShadeEffect = false;
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
 static int m_BackdropDstAlpha = 0;
 static double m_FadeSpeed = 1.0;
+
+static int32_t m_WibbleOffset = 0;
+static int32_t m_WibbleTable[WIBBLE_SIZE] = { 0 };
+static int32_t m_ShadeTable[WIBBLE_SIZE] = { 0 };
+static int32_t m_RandTable[WIBBLE_SIZE] = { 0 };
 
 static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
@@ -293,7 +301,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                 clip_flags |= 16;
             } else if (depth) {
                 m_VBuf[i].g += Output_CalcFogShade(depth);
-                if (!g_IsWaterEffect) {
+                if (!m_IsWaterEffect) {
                     CLAMPG(m_VBuf[i].g, 0x1FFF);
                 }
             }
@@ -301,9 +309,9 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             double persp = g_PhdPersp / zv;
             double xs = Viewport_GetCenterX() + xv * persp;
             double ys = Viewport_GetCenterY() + yv * persp;
-            if (g_IsWibbleEffect) {
-                xs += g_WibbleTable[(g_WibbleOffset + (int)ys) & 0x1F];
-                ys += g_WibbleTable[(g_WibbleOffset + (int)xs) & 0x1F];
+            if (m_IsWibbleEffect) {
+                xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & 0x1F];
+                ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & 0x1F];
             }
 
             if (xs < g_PhdLeft) {
@@ -318,10 +326,10 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                 clip_flags |= 8;
             }
 
-            if (g_IsWaterEffect) {
-                m_VBuf[i].g += g_ShadeTable[(
-                    ((uint8_t)g_WibbleOffset
-                     + (uint8_t)g_RandTable[(vertex_count - i) % WIBBLE_SIZE])
+            if (m_IsWaterEffect) {
+                m_VBuf[i].g += m_ShadeTable[(
+                    ((uint8_t)m_WibbleOffset
+                     + (uint8_t)m_RandTable[(vertex_count - i) % WIBBLE_SIZE])
                     % WIBBLE_SIZE)];
                 CLAMP(m_VBuf[i].g, 0, 0x1FFF);
             }
@@ -355,9 +363,9 @@ static void Output_CalcWibbleTable(void)
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
-        g_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        g_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        g_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
+        m_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
+        m_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
+        m_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
 }
 
@@ -715,20 +723,13 @@ void Output_DrawScreenLine(
 }
 
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col,
-    int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
+    RGBA8888 colLight, int32_t thickness)
 {
-    for (int i = 0; i < thickness; i++) {
-        // Top
-        Output_DrawScreenLine(sx - i, sy - i, w + 1 + (i * 2), 0, col);
-        // Right
-        Output_DrawScreenLine(w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), col);
-        // Left
-        Output_DrawScreenLine(sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, col);
-        // Bottom
-        Output_DrawScreenLine(
-            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, col);
-    }
+    float scale = Viewport_GetHeight() / 480.0;
+    S_Output_ScreenBox(
+        sx - scale, sy - scale, w, h, colDark, colLight,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawGradientScreenLine(
@@ -741,48 +742,20 @@ void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
     RGBA8888 bl, RGBA8888 br, int32_t thickness)
 {
-    for (int i = 0; i < thickness; i++) {
-        // Top
-        Output_DrawGradientScreenLine(
-            sx - i, sy - i, w + 1 + (i * 2), 0, tl, tr);
-        // Right
-        Output_DrawGradientScreenLine(
-            w + sx + 1 + i, sy - i, 0, h + 1 + (i * 2), tr, br);
-        // Left
-        Output_DrawGradientScreenLine(
-            sx - i, h + sy + 1 + i, 0, (-i * 2) - 1 - h, bl, tl);
-        // Bottom
-        Output_DrawGradientScreenLine(
-            w + sx + 1 + i, h + sy + i, -w - 1 - (i * 2), 0, br, bl);
-    }
+    float scale = Viewport_GetHeight() / 480.0;
+    S_Output_4ColourTextBox(
+        sx - scale, sy - scale, w + scale, h + scale, tl, tr, bl, br,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawCentreGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
     RGBA8888 center, int32_t thickness)
 {
-    for (int i = 0; i < thickness; i++) {
-        // Top
-        Output_DrawGradientScreenLine(
-            sx - i, sy - i, (w / 2) + i, 0, edge, center);
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy - i, (-w / 2) - i, 0, edge, center);
-        // Right
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy - i, 0, (h / 2) + i, edge, center);
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy + h + i, 0, (-h / 2) - i, edge, center);
-        // Left
-        Output_DrawGradientScreenLine(
-            sx - i, sy - i, 0, (h / 2) + i, edge, center);
-        Output_DrawGradientScreenLine(
-            sx - i, sy + h + i, 0, (-h / 2) - i, edge, center);
-        // Bottom
-        Output_DrawGradientScreenLine(
-            sx - i, sy + h + i, (w / 2) + i, 0, edge, center);
-        Output_DrawGradientScreenLine(
-            sx + w + i, sy + h + i, (-w / 2) - i, 0, edge, center);
-    }
+    float scale = Viewport_GetHeight() / 480.0;
+    S_Output_2ToneColourTextBox(
+        sx - scale, sy - scale, w + scale, h + scale, edge, center,
+        thickness * scale / 2.0f);
 }
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
@@ -897,21 +870,21 @@ void Output_DrawLightningSegment(
 
 void Output_SetupBelowWater(bool underwater)
 {
-    g_IsWaterEffect = true;
-    g_IsWibbleEffect = !underwater;
-    g_IsShadeEffect = true;
+    m_IsWaterEffect = true;
+    m_IsWibbleEffect = !underwater;
+    m_IsShadeEffect = true;
 }
 
 void Output_SetupAboveWater(bool underwater)
 {
-    g_IsWaterEffect = false;
-    g_IsWibbleEffect = underwater;
-    g_IsShadeEffect = underwater;
+    m_IsWaterEffect = false;
+    m_IsWibbleEffect = underwater;
+    m_IsShadeEffect = underwater;
 }
 
 void Output_AnimateTextures(int32_t ticks)
 {
-    g_WibbleOffset = (g_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
+    m_WibbleOffset = (m_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
 
     static int32_t tick_comp = 0;
     tick_comp += ticks;
@@ -1063,7 +1036,7 @@ bool Output_FadeIsAnimating(void)
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b)
 {
-    if (g_IsShadeEffect) {
+    if (m_IsShadeEffect) {
         *r *= m_WaterColor.r;
         *g *= m_WaterColor.g;
         *b *= m_WaterColor.b;
