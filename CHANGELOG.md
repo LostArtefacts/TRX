@@ -9,6 +9,7 @@
 - added gameflow option remove_ammo to remove all shotgun, magnum and uzi ammo from the inventory on level start (#599)
 - added gameflow option remove_medipacks to remove all medi packs from the inventory on level start (#599)
 - improved the UI frame drawing, it will now look consistent across all resolutions and no longer have gaps between the lines
+- fixed bridge item in City of Khamoon being incorrectly raised (#627)
 
 ## [2.10.3](https://github.com/rr-/Tomb1Main/compare/2.10.2...2.10.3) - 2022-09-15
 - fixed save crystal mode always saving in the first slot (#607, regression from 2.8)
