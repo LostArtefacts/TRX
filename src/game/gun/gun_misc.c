@@ -337,8 +337,7 @@ int32_t Gun_FireWeapon(
         Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
         if (Inv_RequestItem(O_GUN_ITEM)) {
             g_Lara.request_gun_type = LGT_PISTOLS;
-        }
-        else {
+        } else {
             g_Lara.gun_status = LGS_UNDRAW;
         }
         return 0;
