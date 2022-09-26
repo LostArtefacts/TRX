@@ -338,6 +338,9 @@ int32_t Gun_FireWeapon(
         if (Inv_RequestItem(O_GUN_ITEM)) {
             g_Lara.request_gun_type = LGT_PISTOLS;
         }
+        else {
+            g_Lara.gun_status = LGS_UNDRAW;
+        }
         return 0;
     }
 
