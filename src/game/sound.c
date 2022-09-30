@@ -334,7 +334,6 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
         pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - SOUND_MAX_PITCH_CHANGE;
     }
-    LOG_DEBUG("sfx: %d, pitch: %d", sfx_num, pitch);
 
     int32_t vars = (s->flags >> 2) & 15;
     int32_t sfx_id = s->number;
