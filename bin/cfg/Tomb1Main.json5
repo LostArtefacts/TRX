@@ -234,5 +234,5 @@
     "enable_enhanced_saves": true,
 
     // Sound effects are randomly, slightly pitched to vary the game sounds.
-    "pitch_sound_effects": true,
+    "enable_pitched_sounds": true,
 }
