@@ -331,6 +331,7 @@ Not all options are turned on by default. Refer to `Tomb1Main.json5` for details
 
 #### Audio
 - added music during the credits
+- added an option to turn off sound effect pitching
 - fixed the sound of collecting a secret killing the music
 - fixed audio mixer stopping playing sounds on big explosions
 - fixed game audio not muting when game is minimized

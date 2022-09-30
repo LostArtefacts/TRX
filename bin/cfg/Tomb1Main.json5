@@ -232,4 +232,7 @@
     // Enhances savegames so graphic effects, waterfall mist, flame emitters, and
     // more are saved instead of disappearing on load.
     "enable_enhanced_saves": true,
+
+    // Sound effects are randomly, slightly pitched to vary the game sounds.
+    "pitch_sound_effects": true,
 }
