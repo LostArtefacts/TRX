@@ -100,6 +100,7 @@ typedef struct {
     int32_t maximum_save_slots;
     bool revert_to_pistols;
     bool enable_enhanced_saves;
+    bool enable_pitched_sounds;
 
     struct {
         int32_t layout;
