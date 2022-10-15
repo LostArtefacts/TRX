@@ -18,17 +18,40 @@
 #define HEADER_HEIGHT 25
 #define ROW_HEIGHT 17
 
+#define KM_BROWSE 0
+#define KM_BROWSEKEYUP 1
+#define KM_CHANGE 2
+#define KM_CHANGEKEYUP 3
+#define KC_TITLE -1
+
+typedef struct CONTROL_SCHEME {
+    int scheme_num;
+    GAME_STRING_ID scheme_text;
+} CONTROL_SCHEME;
+
+static const CONTROL_SCHEME m_ControlSchemeNum[] = {
+    { 0, GS_CONTROL_DEFAULT_KEYS },
+    { 1, GS_CONTROL_CUSTOM_1 },
+    { 2, GS_CONTROL_CUSTOM_2 },
+    { 3, GS_CONTROL_CUSTOM_3 },
+};
+typedef enum CONTROL_TEXT {
+    TEXT_TITLE = 0,
+    TEXT_TITLE_BORDER = 1,
+    TEXT_NUMBER_OF = 2,
+} CONTROL_TEXT;
+
 typedef struct TEXT_COLUMN_PLACEMENT {
     int option;
     int col_num;
 } TEXT_COLUMN_PLACEMENT;
 
-static int32_t m_KeyMode = 0;
-static int32_t m_KeyChange = 0;
+static int32_t m_KeyMode = KM_BROWSE;
+static int32_t m_KeyChange = KC_TITLE;
 
 static TEXTSTRING *m_Text[2] = { 0 };
-static TEXTSTRING *m_TextA[INPUT_ROLE_NUMBER_OF] = { 0 };
-static TEXTSTRING *m_TextB[INPUT_ROLE_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_TextKeyRoles[INPUT_ROLE_NUMBER_OF] = { 0 };
+static TEXTSTRING *m_TextKeyNames[INPUT_ROLE_NUMBER_OF] = { 0 };
 static TEXTSTRING *m_TextArrowLeft = NULL;
 static TEXTSTRING *m_TextArrowRight = NULL;
 
@@ -113,7 +136,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 static void Option_ControlInitText(void);
 static void Option_ControlUpdateText(void);
 static void Option_ControlShutdownText(void);
-static void Option_FlashConflicts(void);
+static void Option_ControlFlashConflicts(void);
 
 static void Option_ControlInitText(void)
 {
@@ -128,7 +151,7 @@ static void Option_ControlInitText(void)
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    if (!m_TextB[0]) {
+    if (!m_TextKeyNames[0]) {
         int16_t xs[2] = { centre - 200, centre + 20 };
         int16_t ys[2] = { TOP_Y + HEADER_HEIGHT, TOP_Y + HEADER_HEIGHT };
 
@@ -138,19 +161,17 @@ static void Option_ControlInitText(void)
             int16_t y = ys[col->col_num];
 
             if (col->option != -1) {
-                m_TextB[col->option] = Text_Create(
+                m_TextKeyNames[col->option] = Text_Create(
                     x, y, Input_GetKeyName(g_Config.input.layout, col->option));
-                Text_CentreV(m_TextB[col->option], 1);
+                Text_CentreV(m_TextKeyNames[col->option], 1);
             }
 
             ys[col->col_num] += ROW_HEIGHT;
             max_y = MAX(max_y, ys[col->col_num]);
         }
-
-        m_KeyChange = 0;
     }
 
-    if (!m_TextA[0]) {
+    if (!m_TextKeyRoles[0]) {
         int16_t xs[2] = { centre - 130, centre + 90 };
         int16_t ys[2] = { TOP_Y + HEADER_HEIGHT, TOP_Y + HEADER_HEIGHT };
 
@@ -160,11 +181,11 @@ static void Option_ControlInitText(void)
             int16_t y = ys[col->col_num];
 
             if (col->option != -1) {
-                m_TextA[col->option] = Text_Create(
+                m_TextKeyRoles[col->option] = Text_Create(
                     x, y,
                     g_GameFlow
                         .strings[col->option + GS_KEYMAP_RUN - INPUT_ROLE_UP]);
-                Text_CentreV(m_TextA[col->option], 1);
+                Text_CentreV(m_TextKeyRoles[col->option], 1);
             }
 
             ys[col->col_num] += ROW_HEIGHT;
@@ -172,33 +193,56 @@ static void Option_ControlInitText(void)
         }
     }
 
-    m_Text[0] = Text_Create(
+    m_Text[TEXT_TITLE] = Text_Create(
         0, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
-        g_GameFlow.strings
-            [g_Config.input.layout ? GS_CONTROL_USER_KEYS
-                                   : GS_CONTROL_DEFAULT_KEYS]);
-    Text_CentreH(m_Text[0], 1);
-    Text_CentreV(m_Text[0], 1);
+        g_GameFlow
+            .strings[m_ControlSchemeNum[g_Config.input.layout].scheme_text]);
+    Text_CentreH(m_Text[TEXT_TITLE], 1);
+    Text_CentreV(m_Text[TEXT_TITLE], 1);
+    Text_AddBackground(m_Text[TEXT_TITLE], 0, 0, 0, 0, TS_REQUESTED);
+    Text_AddOutline(m_Text[TEXT_TITLE], true, TS_REQUESTED);
+
+    int32_t tw = Text_GetWidth(m_Text[TEXT_TITLE]);
+
+    m_TextArrowLeft = Text_Create(
+        m_Text[TEXT_TITLE]->pos.x - tw / 2 - 20, m_Text[TEXT_TITLE]->pos.y,
+        "\200");
+    Text_CentreH(m_TextArrowLeft, 1);
+    Text_CentreV(m_TextArrowLeft, 1);
+
+    m_TextArrowRight = Text_Create(
+        m_Text[TEXT_TITLE]->pos.x + tw / 2 + 15, m_Text[TEXT_TITLE]->pos.y,
+        "\201");
+    Text_CentreH(m_TextArrowRight, 1);
+    Text_CentreV(m_TextArrowRight, 1);
 
     int16_t width = 420;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
-    Text_AddBackground(m_Text[1], width, height, 0, 0, TS_BACKGROUND);
-    Text_AddOutline(m_Text[1], true, TS_BACKGROUND);
+    Text_AddBackground(
+        m_Text[TEXT_TITLE_BORDER], width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
 
     Option_FlashConflicts();
 
-    m_KeyChange = -1;
-    Text_AddBackground(m_Text[0], 0, 0, 0, 0, TS_REQUESTED);
-    Text_AddOutline(m_Text[0], true, TS_REQUESTED);
+    Option_ControlFlashConflicts();
+
+    m_KeyChange = KC_TITLE;
 }
 
 static void Option_ControlUpdateText(void)
 {
     Text_ChangeText(
-        m_Text[0],
-        g_GameFlow.strings
-            [g_Config.input.layout ? GS_CONTROL_USER_KEYS
-                                   : GS_CONTROL_DEFAULT_KEYS]);
+        m_Text[TEXT_TITLE],
+        g_GameFlow
+            .strings[m_ControlSchemeNum[g_Config.input.layout].scheme_text]);
+
+    int32_t title_w = Text_GetWidth(m_Text[TEXT_TITLE]);
+    Text_SetPos(
+        m_TextArrowLeft, m_Text[TEXT_TITLE]->pos.x - title_w / 2 - 20,
+        m_Text[TEXT_TITLE]->pos.y);
+    Text_SetPos(
+        m_TextArrowRight, m_Text[TEXT_TITLE]->pos.x + title_w / 2 + 15,
+        m_Text[TEXT_TITLE]->pos.y);
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -209,30 +253,30 @@ static void Option_ControlUpdateText(void)
         const char *scancode_name =
             Input_GetKeyName(g_Config.input.layout, col->option);
         if (col->option != -1 && scancode_name) {
-            Text_ChangeText(m_TextB[col->option], scancode_name);
+            Text_ChangeText(m_TextKeyNames[col->option], scancode_name);
         }
     }
 }
 
 static void Option_ControlShutdownText(void)
 {
-    Text_Remove(m_Text[0]);
-    Text_Remove(m_Text[1]);
-    m_Text[0] = NULL;
-    m_Text[1] = NULL;
+    Text_Remove(m_Text[TEXT_TITLE]);
+    m_Text[TEXT_TITLE] = NULL;
+    Text_Remove(m_Text[TEXT_TITLE_BORDER]);
+    m_Text[TEXT_TITLE_BORDER] = NULL;
     Text_Remove(m_TextArrowLeft);
     m_TextArrowLeft = NULL;
     Text_Remove(m_TextArrowRight);
     m_TextArrowRight = NULL;
     for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
-        Text_Remove(m_TextA[i]);
-        Text_Remove(m_TextB[i]);
-        m_TextB[i] = NULL;
-        m_TextA[i] = NULL;
+        Text_Remove(m_TextKeyRoles[i]);
+        m_TextKeyRoles[i] = NULL;
+        Text_Remove(m_TextKeyNames[i]);
+        m_TextKeyNames[i] = NULL;
     }
 }
 
-static void Option_FlashConflicts(void)
+static void Option_ControlFlashConflicts(void)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -241,16 +285,36 @@ static void Option_FlashConflicts(void)
     for (const TEXT_COLUMN_PLACEMENT *item = cols; item->col_num != -1;
          item++) {
         Text_Flash(
-            m_TextB[item->option],
+            m_TextKeyNames[item->option],
             g_Config.input.layout != INPUT_LAYOUT_DEFAULT && item->option != -1
                 && Input_IsKeyConflictedWithUser(item->option),
             20);
     }
 }
 
+static void Option_ControlChangeScheme()
+{
+    if (g_InputDB.left && g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
+        g_Config.input.layout -= 1;
+    } else if (
+        g_InputDB.left && g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
+        g_Config.input.layout = INPUT_LAYOUT_NUMBER_OF - 1;
+    } else if (
+        g_InputDB.right && g_Config.input.layout < INPUT_LAYOUT_NUMBER_OF - 1) {
+        g_Config.input.layout += 1;
+    } else if (
+        g_InputDB.right
+        && g_Config.input.layout == INPUT_LAYOUT_NUMBER_OF - 1) {
+        g_Config.input.layout = INPUT_LAYOUT_DEFAULT;
+    }
+    Option_ControlUpdateText();
+    Option_ControlFlashConflicts();
+    Settings_Write();
+}
+
 void Option_Control(INVENTORY_ITEM *inv_item)
 {
-    if (!m_Text[0]) {
+    if (!m_Text[TEXT_TITLE]) {
         Option_ControlInitText();
     }
 
@@ -271,16 +335,19 @@ void Option_Control(INVENTORY_ITEM *inv_item)
     }
 
     switch (m_KeyMode) {
-    case 0:
+    case KM_BROWSE:
+        if (g_InputDB.deselect
+            || (g_InputDB.select && m_KeyChange == KC_TITLE)) {
+            Option_ControlShutdownText();
+            return;
+        }
+
         if (g_InputDB.left || g_InputDB.right) {
-            if (m_KeyChange == -1) {
-                g_Config.input.layout ^= 1;
-                Option_ControlUpdateText();
-                Option_FlashConflicts();
-                Settings_Write();
+            if (m_KeyChange == KC_TITLE) {
+                Option_ControlChangeScheme();
             } else {
-                Text_RemoveBackground(m_TextA[m_KeyChange]);
-                Text_RemoveOutline(m_TextA[m_KeyChange]);
+                Text_RemoveBackground(m_TextKeyRoles[m_KeyChange]);
+                Text_RemoveOutline(m_TextKeyRoles[m_KeyChange]);
 
                 int col_idx[2] = { 0, 0 };
                 const TEXT_COLUMN_PLACEMENT *sel_col;
@@ -310,36 +377,32 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 }
 
                 Text_AddBackground(
-                    m_TextA[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
-                Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
+                    m_TextKeyRoles[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+                Text_AddOutline(
+                    m_TextKeyRoles[m_KeyChange], true, TS_REQUESTED);
             }
-        } else if (
-            g_InputDB.deselect || (g_InputDB.select && m_KeyChange == -1)) {
-            Option_ControlShutdownText();
-            return;
         }
 
-        if (g_Config.input.layout) {
+        if (g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
             if (g_InputDB.select) {
-                m_KeyMode = 1;
-                Text_RemoveBackground(m_TextA[m_KeyChange]);
+                m_KeyMode = KM_BROWSEKEYUP;
+                Text_RemoveBackground(m_TextKeyRoles[m_KeyChange]);
                 Text_AddBackground(
-                    m_TextB[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
-                Text_RemoveOutline(m_TextA[m_KeyChange]);
-                Text_AddOutline(m_TextB[m_KeyChange], true, TS_REQUESTED);
+                    m_TextKeyNames[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+                Text_RemoveOutline(m_TextKeyRoles[m_KeyChange]);
+                Text_AddOutline(
+                    m_TextKeyNames[m_KeyChange], true, TS_REQUESTED);
             } else if (g_InputDB.forward) {
                 Text_RemoveBackground(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange]);
                 Text_RemoveOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
-                Text_Hide(m_TextArrowLeft, true);
-                Text_Hide(m_TextArrowRight, true);
-                if (m_KeyChange == -1) {
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange]);
+                if (m_KeyChange == KC_TITLE) {
                     m_KeyChange = last_col->option;
                 } else if (m_KeyChange == first_col->option) {
-                    m_KeyChange = -1;
-                    Text_Hide(m_TextArrowLeft, false);
-                    Text_Hide(m_TextArrowRight, false);
+                    m_KeyChange = KC_TITLE;
                 } else {
                     const TEXT_COLUMN_PLACEMENT *sel_col;
                     for (sel_col = cols;
@@ -360,24 +423,24 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 }
 
                 Text_AddBackground(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 0, 0,
-                    0, 0, TS_REQUESTED);
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange],
+                    0, 0, 0, 0, TS_REQUESTED);
                 Text_AddOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], true,
-                    TS_REQUESTED);
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange],
+                    true, TS_REQUESTED);
             } else if (g_InputDB.back) {
                 Text_RemoveBackground(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange]);
                 Text_RemoveOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange]);
-                Text_Hide(m_TextArrowLeft, true);
-                Text_Hide(m_TextArrowRight, true);
-                if (m_KeyChange == -1) {
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange]);
+                if (m_KeyChange == KC_TITLE) {
                     m_KeyChange = first_col->option;
                 } else if (m_KeyChange == last_col->option) {
-                    m_KeyChange = -1;
-                    Text_Hide(m_TextArrowLeft, false);
-                    Text_Hide(m_TextArrowRight, false);
+                    m_KeyChange = KC_TITLE;
                 } else {
                     const TEXT_COLUMN_PLACEMENT *sel_col;
                     for (sel_col = cols;
@@ -398,39 +461,50 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 }
 
                 Text_AddBackground(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], 0, 0,
-                    0, 0, TS_REQUESTED);
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange],
+                    0, 0, 0, 0, TS_REQUESTED);
                 Text_AddOutline(
-                    m_KeyChange == -1 ? m_Text[0] : m_TextA[m_KeyChange], true,
-                    TS_REQUESTED);
+                    m_KeyChange == KC_TITLE ? m_Text[TEXT_TITLE]
+                                            : m_TextKeyRoles[m_KeyChange],
+                    true, TS_REQUESTED);
             }
         }
-        break;
 
-    case 1:
-        if (!g_Input.any) {
-            m_KeyMode = 2;
+        if (m_KeyChange == KC_TITLE) {
+            Text_Hide(m_TextArrowLeft, false);
+            Text_Hide(m_TextArrowRight, false);
+        } else {
+            Text_Hide(m_TextArrowLeft, true);
+            Text_Hide(m_TextArrowRight, true);
         }
         break;
 
-    case 2:
+    case KM_BROWSEKEYUP:
+        if (!g_Input.any) {
+            m_KeyMode = KM_CHANGE;
+        }
+        break;
+
+    case KM_CHANGE:
         if (Input_ReadAndAssignKey(g_Config.input.layout, m_KeyChange)) {
             Text_ChangeText(
-                m_TextB[m_KeyChange],
+                m_TextKeyNames[m_KeyChange],
                 Input_GetKeyName(g_Config.input.layout, m_KeyChange));
-            Text_RemoveBackground(m_TextB[m_KeyChange]);
-            Text_RemoveOutline(m_TextB[m_KeyChange]);
-            Text_AddBackground(m_TextA[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
-            Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
-            m_KeyMode = 3;
-            Option_FlashConflicts();
+            Text_RemoveBackground(m_TextKeyNames[m_KeyChange]);
+            Text_RemoveOutline(m_TextKeyNames[m_KeyChange]);
+            Text_AddBackground(
+                m_TextKeyRoles[m_KeyChange], 0, 0, 0, 0, TS_REQUESTED);
+            Text_AddOutline(m_TextKeyRoles[m_KeyChange], true, TS_REQUESTED);
+            m_KeyMode = KM_CHANGEKEYUP;
+            Option_ControlFlashConflicts();
             Settings_Write();
         }
         break;
 
-    case 3:
+    case KM_CHANGEKEYUP:
         if (!g_Input.any) {
-            m_KeyMode = 0;
+            m_KeyMode = KM_BROWSE;
         }
         break;
     }

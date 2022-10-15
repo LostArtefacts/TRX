@@ -21,18 +21,19 @@ static bool m_KeyConflictWithDefault[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
 
-static void Input_CheckConflicts(void);
+static void Input_CheckConflicts(INPUT_LAYOUT layout_num);
 static INPUT_STATE Input_GetDebounced(INPUT_STATE input);
 
-static void Input_CheckConflicts(void)
+static void Input_CheckConflicts(INPUT_LAYOUT layout_num)
 {
     for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
         INPUT_SCANCODE scancode1_default =
             Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role1);
-        INPUT_SCANCODE scancode1_user =
-            Input_GetAssignedScancode(INPUT_LAYOUT_USER, role1);
-        m_KeyConflictWithUser[role1] = false;
         m_KeyConflictWithDefault[role1] = false;
+
+        INPUT_SCANCODE scancode1_user =
+            Input_GetAssignedScancode(layout_num, role1);
+        m_KeyConflictWithUser[role1] = false;
 
         for (INPUT_ROLE role2 = 0; role2 < INPUT_ROLE_NUMBER_OF; role2++) {
             if (role1 == role2) {
@@ -40,7 +41,7 @@ static void Input_CheckConflicts(void)
             }
 
             INPUT_SCANCODE scancode2_user =
-                Input_GetAssignedScancode(INPUT_LAYOUT_USER, role2);
+                Input_GetAssignedScancode(layout_num, role2);
 
             if (scancode1_user == scancode2_user) {
                 m_KeyConflictWithUser[role1] = true;
@@ -88,7 +89,7 @@ void Input_Shutdown(void)
 
 void Input_Update(void)
 {
-    g_Input = S_Input_GetCurrentState();
+    g_Input = S_Input_GetCurrentState(g_Config.input.layout);
 
     g_Input.select |= g_Input.action;
     g_Input.option &= g_Camera.type != CAM_CINEMATIC;
@@ -176,13 +177,13 @@ void Input_AssignScancode(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
 {
     S_Input_AssignScancode(layout_num, role, scancode);
-    Input_CheckConflicts();
+    Input_CheckConflicts(layout_num);
 }
 
 bool Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     if (S_Input_ReadAndAssignKey(layout_num, role)) {
-        Input_CheckConflicts();
+        Input_CheckConflicts(layout_num);
         return true;
     }
     return false;

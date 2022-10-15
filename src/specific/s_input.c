@@ -94,7 +94,7 @@ static SDL_GameController *m_Controller = NULL;
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
-static bool S_Input_Key(INPUT_ROLE role);
+static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
 static bool S_Input_JoyBtn(SDL_GameControllerButton button);
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
 
@@ -368,9 +368,9 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
     return false;
 }
 
-static bool S_Input_Key(INPUT_ROLE role)
+static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
 {
-    return S_Input_KbdKey(role, INPUT_LAYOUT_USER)
+    return S_Input_KbdKey(role, layout_num)
         || (!Input_IsKeyConflictedWithDefault(role)
             && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
 }
@@ -423,49 +423,49 @@ void S_Input_Shutdown(void)
     }
 }
 
-INPUT_STATE S_Input_GetCurrentState(void)
+INPUT_STATE S_Input_GetCurrentState(INPUT_LAYOUT layout_num)
 {
     INPUT_STATE linput = { 0 };
 
     // clang-format off
-    linput.forward                   = S_Input_Key(INPUT_ROLE_UP);
-    linput.back                      = S_Input_Key(INPUT_ROLE_DOWN);
-    linput.left                      = S_Input_Key(INPUT_ROLE_LEFT);
-    linput.right                     = S_Input_Key(INPUT_ROLE_RIGHT);
-    linput.step_left                 = S_Input_Key(INPUT_ROLE_STEP_L);
-    linput.step_right                = S_Input_Key(INPUT_ROLE_STEP_R);
-    linput.slow                      = S_Input_Key(INPUT_ROLE_SLOW);
-    linput.jump                      = S_Input_Key(INPUT_ROLE_JUMP);
-    linput.action                    = S_Input_Key(INPUT_ROLE_ACTION);
-    linput.draw                      = S_Input_Key(INPUT_ROLE_DRAW);
-    linput.look                      = S_Input_Key(INPUT_ROLE_LOOK);
-    linput.roll                      = S_Input_Key(INPUT_ROLE_ROLL);
-    linput.option                    = S_Input_Key(INPUT_ROLE_OPTION);
-    linput.pause                     = S_Input_Key(INPUT_ROLE_PAUSE);
-    linput.camera_up                 = S_Input_Key(INPUT_ROLE_CAMERA_UP);
-    linput.camera_down               = S_Input_Key(INPUT_ROLE_CAMERA_DOWN);
-    linput.camera_left               = S_Input_Key(INPUT_ROLE_CAMERA_LEFT);
-    linput.camera_right              = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT);
-    linput.camera_reset              = S_Input_Key(INPUT_ROLE_CAMERA_RESET);
+    linput.forward                   = S_Input_Key(INPUT_ROLE_UP, layout_num);
+    linput.back                      = S_Input_Key(INPUT_ROLE_DOWN, layout_num);
+    linput.left                      = S_Input_Key(INPUT_ROLE_LEFT, layout_num);
+    linput.right                     = S_Input_Key(INPUT_ROLE_RIGHT, layout_num);
+    linput.step_left                 = S_Input_Key(INPUT_ROLE_STEP_L, layout_num);
+    linput.step_right                = S_Input_Key(INPUT_ROLE_STEP_R, layout_num);
+    linput.slow                      = S_Input_Key(INPUT_ROLE_SLOW, layout_num);
+    linput.jump                      = S_Input_Key(INPUT_ROLE_JUMP, layout_num);
+    linput.action                    = S_Input_Key(INPUT_ROLE_ACTION, layout_num);
+    linput.draw                      = S_Input_Key(INPUT_ROLE_DRAW, layout_num);
+    linput.look                      = S_Input_Key(INPUT_ROLE_LOOK, layout_num);
+    linput.roll                      = S_Input_Key(INPUT_ROLE_ROLL, layout_num);
+    linput.option                    = S_Input_Key(INPUT_ROLE_OPTION, layout_num);
+    linput.pause                     = S_Input_Key(INPUT_ROLE_PAUSE, layout_num);
+    linput.camera_up                 = S_Input_Key(INPUT_ROLE_CAMERA_UP, layout_num);
+    linput.camera_down               = S_Input_Key(INPUT_ROLE_CAMERA_DOWN, layout_num);
+    linput.camera_left               = S_Input_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
+    linput.camera_right              = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
+    linput.camera_reset              = S_Input_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
 
-    linput.item_cheat                = S_Input_Key(INPUT_ROLE_ITEM_CHEAT);
-    linput.fly_cheat                 = S_Input_Key(INPUT_ROLE_FLY_CHEAT);
-    linput.level_skip_cheat          = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT);
-    linput.turbo_cheat               = S_Input_Key(INPUT_ROLE_TURBO_CHEAT);
+    linput.item_cheat                = S_Input_Key(INPUT_ROLE_ITEM_CHEAT, layout_num);
+    linput.fly_cheat                 = S_Input_Key(INPUT_ROLE_FLY_CHEAT, layout_num);
+    linput.level_skip_cheat          = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT, layout_num);
+    linput.turbo_cheat               = S_Input_Key(INPUT_ROLE_TURBO_CHEAT, layout_num);
     linput.health_cheat              = KEY_DOWN(SDL_SCANCODE_F11);
 
-    linput.equip_pistols             = S_Input_Key(INPUT_ROLE_EQUIP_PISTOLS);
-    linput.equip_shotgun             = S_Input_Key(INPUT_ROLE_EQUIP_SHOTGUN);
-    linput.equip_magnums             = S_Input_Key(INPUT_ROLE_EQUIP_MAGNUMS);
-    linput.equip_uzis                = S_Input_Key(INPUT_ROLE_EQUIP_UZIS);
-    linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI);
-    linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI);
+    linput.equip_pistols             = S_Input_Key(INPUT_ROLE_EQUIP_PISTOLS, layout_num);
+    linput.equip_shotgun             = S_Input_Key(INPUT_ROLE_EQUIP_SHOTGUN, layout_num);
+    linput.equip_magnums             = S_Input_Key(INPUT_ROLE_EQUIP_MAGNUMS, layout_num);
+    linput.equip_uzis                = S_Input_Key(INPUT_ROLE_EQUIP_UZIS, layout_num);
+    linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
+    linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
 
     linput.select                    = KEY_DOWN(SDL_SCANCODE_RETURN);
-    linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION);
+    linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION, layout_num);
 
-    linput.save                      = S_Input_Key(INPUT_ROLE_SAVE);
-    linput.load                      = S_Input_Key(INPUT_ROLE_LOAD);
+    linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
+    linput.load                      = S_Input_Key(INPUT_ROLE_LOAD, layout_num);
 
     linput.toggle_fps_counter        = KEY_DOWN(SDL_SCANCODE_F2);
     linput.toggle_bilinear_filter    = KEY_DOWN(SDL_SCANCODE_F3);
@@ -509,13 +509,14 @@ INPUT_STATE S_Input_GetCurrentState(void)
     return linput;
 }
 
-INPUT_SCANCODE S_Input_GetAssignedScancode(int16_t layout_num, INPUT_ROLE role)
+INPUT_SCANCODE S_Input_GetAssignedScancode(
+    INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     return m_Layout[layout_num][role];
 }
 
 void S_Input_AssignScancode(
-    int16_t layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
 {
     m_Layout[layout_num][role] = scancode;
 }
