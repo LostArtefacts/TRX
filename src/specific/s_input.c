@@ -42,6 +42,14 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_CAMERA_RESET
+        SDL_SCANCODE_1,          // INPUT_ROLE_EQUIP_PISTOLS
+        SDL_SCANCODE_2,          // INPUT_ROLE_EQUIP_SHOTGUN
+        SDL_SCANCODE_3,          // INPUT_ROLE_EQUIP_MAGNUMS
+        SDL_SCANCODE_4,          // INPUT_ROLE_EQUIP_UZIS
+        SDL_SCANCODE_8,          // INPUT_ROLE_USE_SMALL_MEDI
+        SDL_SCANCODE_9,          // INPUT_ROLE_USE_BIG_MEDI
+        SDL_SCANCODE_F5,         // INPUT_ROLE_SAVE
+        SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
     },
 
     // default user controls
@@ -69,6 +77,14 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_CAMERA_RESET
+        SDL_SCANCODE_1,          // INPUT_ROLE_EQUIP_PISTOLS
+        SDL_SCANCODE_2,          // INPUT_ROLE_EQUIP_SHOTGUN
+        SDL_SCANCODE_3,          // INPUT_ROLE_EQUIP_MAGNUMS
+        SDL_SCANCODE_4,          // INPUT_ROLE_EQUIP_UZIS
+        SDL_SCANCODE_8,          // INPUT_ROLE_USE_SMALL_MEDI
+        SDL_SCANCODE_9,          // INPUT_ROLE_USE_BIG_MEDI
+        SDL_SCANCODE_F5,         // INPUT_ROLE_SAVE
+        SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
     }
     // clang-format on
 };
@@ -438,18 +454,18 @@ INPUT_STATE S_Input_GetCurrentState(void)
     linput.turbo_cheat               = S_Input_Key(INPUT_ROLE_TURBO_CHEAT);
     linput.health_cheat              = KEY_DOWN(SDL_SCANCODE_F11);
 
-    linput.equip_pistols             = KEY_DOWN(SDL_SCANCODE_1);
-    linput.equip_shotgun             = KEY_DOWN(SDL_SCANCODE_2);
-    linput.equip_magnums             = KEY_DOWN(SDL_SCANCODE_3);
-    linput.equip_uzis                = KEY_DOWN(SDL_SCANCODE_4);
-    linput.use_small_medi            = KEY_DOWN(SDL_SCANCODE_8);
-    linput.use_big_medi              = KEY_DOWN(SDL_SCANCODE_9);
+    linput.equip_pistols             = S_Input_Key(INPUT_ROLE_EQUIP_PISTOLS);
+    linput.equip_shotgun             = S_Input_Key(INPUT_ROLE_EQUIP_SHOTGUN);
+    linput.equip_magnums             = S_Input_Key(INPUT_ROLE_EQUIP_MAGNUMS);
+    linput.equip_uzis                = S_Input_Key(INPUT_ROLE_EQUIP_UZIS);
+    linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI);
+    linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI);
 
     linput.select                    = KEY_DOWN(SDL_SCANCODE_RETURN);
     linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION);
 
-    linput.save                      = KEY_DOWN(SDL_SCANCODE_F5);
-    linput.load                      = KEY_DOWN(SDL_SCANCODE_F6);
+    linput.save                      = S_Input_Key(INPUT_ROLE_SAVE);
+    linput.load                      = S_Input_Key(INPUT_ROLE_LOAD);
 
     linput.toggle_fps_counter        = KEY_DOWN(SDL_SCANCODE_F2);
     linput.toggle_bilinear_filter    = KEY_DOWN(SDL_SCANCODE_F3);

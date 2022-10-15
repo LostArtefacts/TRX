@@ -13,7 +13,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define TOP_Y -60
+#define TOP_Y -120
 #define BORDER 4
 #define HEADER_HEIGHT 25
 #define ROW_HEIGHT 17
@@ -41,6 +41,10 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     { INPUT_ROLE_STEP_L, 0 },
     { INPUT_ROLE_STEP_R, 0 },
     { INPUT_ROLE_LOOK, 0 },
+    { INPUT_ROLE_EQUIP_PISTOLS, 0 },
+    { INPUT_ROLE_EQUIP_SHOTGUN, 0 },
+    { INPUT_ROLE_EQUIP_MAGNUMS, 0 },
+    { INPUT_ROLE_EQUIP_UZIS, 0 },
     { INPUT_ROLE_CAMERA_UP, 0 },
     { INPUT_ROLE_CAMERA_DOWN, 0 },
     { INPUT_ROLE_CAMERA_LEFT, 0 },
@@ -54,6 +58,10 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     { INPUT_ROLE_ROLL, 1 },
     { INPUT_ROLE_OPTION, 1 },
     { INPUT_ROLE_PAUSE, 1 },
+    { INPUT_ROLE_USE_SMALL_MEDI, 1 },
+    { INPUT_ROLE_USE_BIG_MEDI, 1 },
+    { INPUT_ROLE_SAVE, 1 },
+    { INPUT_ROLE_LOAD, 1 },
     { -1, 1 },
     { -1, 1 },
     { -1, 1 },
@@ -72,6 +80,10 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { INPUT_ROLE_STEP_L, 0 },
     { INPUT_ROLE_STEP_R, 0 },
     { INPUT_ROLE_LOOK, 0 },
+    { INPUT_ROLE_EQUIP_PISTOLS, 0 },
+    { INPUT_ROLE_EQUIP_SHOTGUN, 0 },
+    { INPUT_ROLE_EQUIP_MAGNUMS, 0 },
+    { INPUT_ROLE_EQUIP_UZIS, 0 },
     { INPUT_ROLE_CAMERA_UP, 0 },
     { INPUT_ROLE_CAMERA_DOWN, 0 },
     { INPUT_ROLE_CAMERA_LEFT, 0 },
@@ -85,6 +97,10 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { INPUT_ROLE_ROLL, 1 },
     { INPUT_ROLE_OPTION, 1 },
     { INPUT_ROLE_PAUSE, 1 },
+    { INPUT_ROLE_USE_SMALL_MEDI, 1 },
+    { INPUT_ROLE_USE_BIG_MEDI, 1 },
+    { INPUT_ROLE_SAVE, 1 },
+    { INPUT_ROLE_LOAD, 1 },
     { -1, 1 },
     { INPUT_ROLE_FLY_CHEAT, 1 },
     { INPUT_ROLE_ITEM_CHEAT, 1 },
@@ -104,19 +120,9 @@ static void Option_ControlInitText(void)
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t max_y = 0;
 
-    m_TextArrowLeft = Text_Create(
-        -75, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2,
-        "\200");
-    Text_CentreH(m_TextArrowLeft, 1);
-    Text_CentreV(m_TextArrowLeft, 1);
-    m_TextArrowRight = Text_Create(
-        70, TOP_Y - BORDER + (HEADER_HEIGHT + BORDER - ROW_HEIGHT) / 2, "\201");
-    Text_CentreH(m_TextArrowRight, 1);
-    Text_CentreV(m_TextArrowRight, 1);
-
-    m_Text[1] = Text_Create(0, TOP_Y - BORDER, " ");
-    Text_CentreH(m_Text[1], 1);
-    Text_CentreV(m_Text[1], 1);
+    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y - BORDER, " ");
+    Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
+    Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
