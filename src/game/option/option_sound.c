@@ -4,7 +4,6 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
-#include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/vars.h"
@@ -106,7 +105,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
-            Settings_Write();
+            Config_Write();
         } else if (g_Input.right && g_Config.music_volume < MAX_VOLUME) {
             g_Config.music_volume++;
             g_IDelay = true;
@@ -115,7 +114,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
-            Settings_Write();
+            Config_Write();
         }
 
         if (g_Config.music_volume == MIN_VOLUME) {
@@ -138,7 +137,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
-            Settings_Write();
+            Config_Write();
         } else if (g_Input.right && g_Config.sound_volume < MAX_VOLUME) {
             g_Config.sound_volume++;
             g_IDelay = true;
@@ -147,7 +146,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
-            Settings_Write();
+            Config_Write();
         }
 
         if (g_Config.sound_volume == MIN_VOLUME) {

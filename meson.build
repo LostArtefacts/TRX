@@ -211,7 +211,6 @@ sources = [
   'src/game/savegame/savegame_bson.c',
   'src/game/savegame/savegame_legacy.c',
   'src/game/screen.c',
-  'src/game/settings.c',
   'src/game/setup.c',
   'src/game/shell.c',
   'src/game/sound.c',

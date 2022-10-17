@@ -13,7 +13,6 @@
 #include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/screen.h"
-#include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/viewport.h"
@@ -365,7 +364,7 @@ int32_t Inv_Display(int inv_mode)
     }
     Inv_Construct();
 
-    if (g_Config.disable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
+    if (!g_Config.enable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
         Music_Pause();
         Sound_StopAmbientSounds();
         Sound_StopAllSamples();
@@ -433,7 +432,7 @@ int32_t Inv_Display(int inv_mode)
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             no_input_count = 0;
-        } else if (!g_Config.disable_demo && imo.status == RNG_OPEN) {
+        } else if (g_Config.enable_demo && imo.status == RNG_OPEN) {
             no_input_count++;
             if (g_GameFlow.has_demo && no_input_count > g_GameFlow.demo_delay) {
                 start_demo = true;
@@ -876,7 +875,7 @@ int32_t Inv_Display(int inv_mode)
         m_VersionText = NULL;
     }
 
-    if (g_Config.disable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
+    if (!g_Config.enable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
         Music_Unpause();
     }
 
@@ -956,7 +955,7 @@ int32_t Inv_Display(int inv_mode)
                 } else {
                     // page 2: save game
                     Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-                    Settings_Write();
+                    Config_Write();
                     return GF_NOP;
                 }
             } else {

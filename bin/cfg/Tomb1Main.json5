@@ -1,83 +1,83 @@
 {
-    // Sets starting Lara's health value (max is 1000).
+    // Sets Lara's health value for the beginning of each level (max is 1000).
     "start_lara_hitpoints": 1000,
 
-    // Disables healing Lara between level reloads (for No Heal challenge runs).
+    // Stops Lara from healing between level reloads (for No Heal challenge runs).
     "disable_healing_between_levels": false,
 
-    // Removes all medpacks (for No Meds challenge runs).
+    // Removes all medipacks from the game (for No Meds challenge runs).
     "disable_medpacks": false,
 
-    // Removes all magnum guns and ammo pickups.
+    // Removes all magnum guns and magnum ammo pickups from the game.
     "disable_magnums": false,
 
-    // Removes all UZI guns and ammo pickups.
+    // Removes all Uzi guns and Uzi ammo pickups from the game.
     "disable_uzis": false,
 
-    // Removes all shotgun and shotgun shells pickups.
+    // Removes all shotgun and shotgun shell pickups from the game.
     "disable_shotgun": false,
 
-    // Enables showing deaths counter in the compass and in the level stats.
+    // Enables showing a deaths counter in the compass and in the level statistics.
     // Death count is updated in the currently loaded save as soon as Lara dies.
     "enable_deaths_counter": true,
 
     // Enables showing healthbar for the active enemy.
     "enable_enemy_healthbar": true,
 
-    // Allows the player to look while running, jumping etc.
-    // (similar to TR2 style).
+    // Allows Lara to look while running, jumping etc. - similar to TR2 style.
     "enable_enhanced_look": true,
 
-    // Draws flame when firing a shotgun, like for other guns.
+    // Draws flames when firing the shotgun, like for other guns.
     "enable_shotgun_flash": true,
 
-    // Shotgun no longer fires when a locked target moves out of Lara's sight like other guns.
+    // Makes the shotgun no longer fire when a locked target moves out of Lara's sight, similar to other guns.
     "fix_shotgun_targeting": true,
 
-    // Enables quick weapon draws and medpack usage.
-    // - 1: draw pistols
-    // - 2: draw shotgun
-    // - 3: draw magnums
-    // - 4: draw UZI
-    // - 8: use small medpack
-    // - 9: use large medpack
+    // Enables quick weapon draws and medipack usage.
+    // - 1: Draw pistols
+    // - 2: Draw shotgun
+    // - 3: Draw magnums
+    // - 4: Draw Uzis
+    // - 8: Use small medipack
+    // - 9: Use large medipack
     "enable_numeric_keys": true,
 
-    // Enables TR3+ style sidesteps, e.g. shift+directional arrows (you still
-    // can use dedicated sidestep buttons).
+    // Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated
+    // sidestep buttons will still work.
     "enable_tr3_sidesteps": true,
 
     // Enables various cheats:
-    // - F11: heal Lara. Hold WALK key to hurt instead.
+    // - F11: hold to heal Lara.
+    // - F11 + WALK key: hold to hurt Lara.
     // - L: immediately end the level.
-    // - I: gives Lara all the guns, ammo, medpacks and plot items for the
-    //   current level.
+    // - I: give Lara all weapons; a boost of ammo and medipacks; and all plot
+    //   items for the current level.
     // - O: enable DOZY cheat (swimming midair).
-    //      - WALK key: exit DOZY
-    //      - GUN key: open the closest door (doesn't work in certain places)
+    //      - WALK key: exit DOZY.
+    //      - GUN key: open the closest door (doesn't work in certain places).
     "enable_cheats": false,
 
-    // Enables braid animation. Currently works only in the Lost Valley level.
+    // Enables Lara's braid. This currently works only in the Lost Valley level.
     "enable_braid": false,
 
-    // Enables showing maximum pickup count and kill count on each level.
+    // Enables showing the maximum pickup count and kill count on each level.
     // This includes unobtainable items.
     "enable_detailed_stats": true,
 
-    // Enables showing level stats when selecting compass.
+    // Enables showing level statistics when the compass is selected.
     "enable_compass_stats": true,
 
     // Enables a total game statistics screen that plays after the credits.
     "enable_total_stats": true,
 
-    // Makes the ingame timer work even while the game is showing the
+    // Makes the in-game timer work even while the game is showing the
     // inventory.
     "enable_timer_in_inventory": true,
 
     // Makes the healthbar and airbar use smooth color transitions.
     "enable_smooth_bars": true,
 
-    // Makes inventory and pause screen use fade transitions for
+    // Makes the inventory and pause screen use fade transitions for
     // the semitransparent backdrop, similar to PS1.
     "enable_fade_effects": true,
 
@@ -89,14 +89,14 @@
     // Changes how the healthbar is displayed. Possible values:
     // - default: show the healthbar at the start of a level, after getting
     //   hit, or while having weapons equipped; flash the healthbar if it's already
-    //   on screen when Lara's health is 20% or below (TombATI)
+    //   on screen when Lara's health is 20% or below (TombATI).
     // - flashing-or-default: constantly flash the healthbar when Lara's
-    //   health is 20% or below, or show under default circumstances
+    //   health is 20% or below, or show under default circumstances.
     // - flashing-only: show the healthbar *only* when Lara's health is 20% or
-    //   below (for challenge runs)
-    // - always: always show the healthbar
-    // - never: never display the healthbar (for challenge runs)
-    // - ps1: show the healthbar under default circumstances with no flashing
+    //   below (for challenge runs).
+    // - always: always show the healthbar.
+    // - never: never display the healthbar (for challenge runs).
+    // - ps1: show the healthbar under default circumstances with no flashing.
     "healthbar_showing_mode": "flashing-or-default",
 
     // Location where the healthbar is displayed. Possible values:
@@ -122,11 +122,11 @@
 
     // Changes how the airbar is displayed. Possible values:
     // - default: show the airbar only in the water and flash the airbar when
-    //   Lara's oxygen is 20% or below (TombATI)
+    //   Lara's oxygen is 20% or below (TombATI).
     // - flashing-only: show the airbar *only* when Lara's oxygen is 20% or
-    //   below (for challenge runs)
-    // - never: never display the airbar (for challenge runs)
-    // - ps1: show the airbar under default circumstances with no flashing
+    //   below (for challenge runs).
+    // - never: never display the airbar (for challenge runs).
+    // - ps1: show the airbar under default circumstances with no flashing.
     "airbar_showing_mode": "default",
 
     // Location where the airbar is displayed.
@@ -141,7 +141,7 @@
     // Color of the enemy healthbar.
     "enemy_healthbar_color": "grey",
 
-    // Disables the secret sound incorrectly playing during using the golden
+    // Prevents the secret sound from incorrectly playing when using the golden
     // key in Tomb of Tihocan.
     "fix_tihocan_secret_sound": true,
 
@@ -152,23 +152,23 @@
     "fix_secrets_killing_music": true,
 
     // Fixes sidestepping and walking backwards on breakable tiles
-    // causing Lara to immediately descend down to the tile underneath.
+    // causing Lara to immediately descend to the tile underneath.
     "fix_descending_glitch": false,
 
-    // Fixes Lara jumping through objects and Lara moving up certain slopes.
+    // Fixes Lara jumping through objects and moving up certain slopes.
     "fix_wall_jump_glitch": false,
 
-    // Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge
+    // Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge.
     "fix_bridge_collision": true,
 
     // Fixes Lara jumping on small steps sometimes resulting in a weird running
     // animation, known as a QWOP state.
     "fix_qwop_glitch": false,
 
-    // Fixes alligators dealing no damage if Lara remains still in the water
+    // Fixes alligators dealing no damage if Lara remains still in the water.
     "fix_alligator_ai": true,
 
-    // Make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
+    // Makes a freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre.
     "change_pierre_spawn": true,
 
     // The desired field of view in degrees, which overrides the hardcoded
@@ -181,23 +181,23 @@
     // of cropping away the top and bottom part of the screen.
     "fov_vertical": true,
 
-    // Disables demos in the main menu.
-    "disable_demo": false,
+    // Enables demos showing in the main menu.
+    "enable_demo": true,
 
-    // Disables FMVs.
-    "disable_fmv": false,
+    // Enables FMVs playing.
+    "enable_fmv": true,
 
-    // Disables ingame cinematics.
-    "disable_cine": false,
+    // Enables cutscenes playing.
+    "enable_cine": true,
 
-    // Disables music in the main menu.
-    "disable_music_in_menu": false,
+    // Plays music in the main menu.
+    "enable_music_in_menu": true,
 
-    // Pauses sound in the inventory screen.
-    "disable_music_in_inventory": false,
+    // Allows game sounds to continue to play in the inventory screen.
+    "enable_music_in_inventory": true,
 
-    // Remove all collision with TRex upon death.
-    // This helps when the TRex's body blocks the passage out.
+    // Removes all collision with T-Rex upon death.
+    // This helps when the T-Rex's body blocks the passage out.
     "disable_trex_collision": false,
 
     // Overrides game resolution. Leave at 0 or negative values to
@@ -208,10 +208,10 @@
     "resolution_width": -1,
     "resolution_height": -1,
 
-    // Enables round shadow instead of the default octagon one.
+    // Enables round shadows instead of the default octagonal ones.
     "enable_round_shadow": true,
 
-    // Enables 3D models to be rendered in place of the sprites for pickup items
+    // Enables 3D models to be rendered in place of the sprites for pickup items.
     "enable_3d_pickups" : true,
 
     // Screenshot file format. Must be either "jpg" or "png".
@@ -220,19 +220,19 @@
     // Enhances texture filtering at distances.
     "anisotropy_filter": 16.0,
 
-    // Lara walks to pickups and switches when nearby instead of teleporting
+    // Makes Lara walk to pickups and switches when nearby instead of teleporting to them.
     "walk_to_items" : false,
 
-    // How many save slots are available.
+    // Changes the number of available save slots.
     "maximum_save_slots": 25,
 
-    // Make Lara revert to pistols on new level start (inline with TombATI behaviour)
+    // Makes Lara revert to pistols at the start of each level (in line with TombATI behavior).
     "revert_to_pistols": false,
 
-    // Enhances savegames so graphic effects, waterfall mist, flame emitters, and
+    // Enhances savegames so that graphic effects, waterfall mist, flame emitters, and
     // more are saved instead of disappearing on load.
     "enable_enhanced_saves": true,
 
-    // Sound effects are randomly, slightly pitched to vary the game sounds.
+    // Allows sound effects to be randomly, slightly pitched to vary the game sounds.
     "enable_pitched_sounds": true,
 }

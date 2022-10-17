@@ -4,7 +4,6 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/screen.h"
-#include "game/settings.h"
 #include "game/text.h"
 #include "gfx/context.h"
 #include "global/const.h"
@@ -437,7 +436,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
 
     if (reset > -1) {
         Option_GraphicsChangeTextOption(reset);
-        Settings_Write();
+        Config_Write();
     }
 
     Option_GraphicsUpdateArrows();
@@ -447,6 +446,6 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         m_IsTextInit = false;
         m_HideArrowLeft = false;
         m_HideArrowRight = false;
-        Settings_Write();
+        Config_Write();
     }
 }
