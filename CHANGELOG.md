@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
 - added an option to turn off sound effect pitching (#625)
+- added a .NET-based configuration tool (#633)
 - changed passport to highlight latest save at game start (#618)
 - fixed some sound effects playing in the inventory when disable_music_in_inventory is true (#486)
 - fixed underwater currents breaking in rare cases (#127)
