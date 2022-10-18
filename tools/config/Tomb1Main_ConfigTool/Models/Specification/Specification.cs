@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Tomb1Main_ConfigTool.Utils;
 
 namespace Tomb1Main_ConfigTool.Models;
@@ -14,24 +15,25 @@ public class Specification
     public Specification(string sourceData)
     {
         JObject data = JObject.Parse(sourceData);
-        Dictionary<string, List<string>> enumTypes = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(data[nameof(Enums)].ToString());
-
+        JObject enumData = data[nameof(Enums)].ToObject<JObject>();
         Enums = new();
-        foreach (string enumName in enumTypes.Keys)
+
+        foreach (KeyValuePair<string, JToken> enumType in enumData)
         {
-            Enums[enumName] = new();
-            foreach (string enumValueID in enumTypes[enumName])
+            List<string> enumValues = enumType.Value.ToObject<List<string>>();
+            IEnumerable<EnumOption> options = enumValues.Select(val => new EnumOption
             {
-                Enums[enumName].Add(new()
-                {
-                    EnumName = enumName,
-                    ID = enumValueID
-                });
-            }
+                EnumName = enumType.Key,
+                ID = val
+            });
+            Enums[enumType.Key] = options.ToList();
         }
 
+        string categoryData = data[nameof(CategorisedProperties)].ToString();
+        PropertyConverter converter = new();
+        CategorisedProperties = JsonConvert.DeserializeObject<List<Category>>(categoryData, converter);
         Properties = new();
-        CategorisedProperties = JsonConvert.DeserializeObject<List<Category>>(data[nameof(CategorisedProperties)].ToString(), new PropertyConverter());
+
         foreach (Category category in CategorisedProperties)
         {
             foreach (BaseProperty property in category.Properties)
