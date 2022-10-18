@@ -43,11 +43,7 @@ public class MainWindowViewModel : BaseLanguageViewModel
 
     public void Load()
     {
-        string defaultConfig = Path.GetFullPath(Tomb1MainConstants.ConfigPath);
-        if (File.Exists(defaultConfig))
-        {
-            Open(defaultConfig);
-        }
+        Open(Path.GetFullPath(Tomb1MainConstants.ConfigPath));
     }
 
     private CategoryViewModel _selectedCategory;
