@@ -280,7 +280,9 @@ bool Config_Read(void)
     char *cfg_data = NULL;
 
     if (!File_Load(m_T1MGlobalSettingsPath, &cfg_data, NULL)) {
-        LOG_WARNING("'%s' not loaded - default settings will apply", m_T1MGlobalSettingsPath);
+        LOG_WARNING(
+            "'%s' not loaded - default settings will apply",
+            m_T1MGlobalSettingsPath);
         result = Config_ReadFromJSON("{}");
     } else {
         result = Config_ReadFromJSON(cfg_data);
