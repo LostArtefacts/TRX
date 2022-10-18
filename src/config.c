@@ -280,12 +280,11 @@ bool Config_Read(void)
     char *cfg_data = NULL;
 
     if (!File_Load(m_T1MGlobalSettingsPath, &cfg_data, NULL)) {
-        LOG_ERROR("Failed to open file '%s'", m_T1MGlobalSettingsPath);
-        result = Config_ReadFromJSON("");
-        goto cleanup;
+        LOG_WARNING("'%s' not loaded - default settings will apply", m_T1MGlobalSettingsPath);
+        result = Config_ReadFromJSON("{}");
+    } else {
+        result = Config_ReadFromJSON(cfg_data);
     }
-
-    result = Config_ReadFromJSON(cfg_data);
 
     if (g_Config.resolution_width > 0) {
         g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
@@ -299,7 +298,6 @@ bool Config_Read(void)
             S_Shell_GetCurrentDisplayHeight();
     }
 
-cleanup:
     Memory_FreePointer(&cfg_data);
     return result;
 }
