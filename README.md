@@ -91,12 +91,13 @@ If you install everything correctly, your game directory should look more or
 less like this (click to expand):
 
 <details>
+<p><em>* Will not be present until the game has been launched.</em></p>
 <pre>
 .
 ├── cfg
 │   ├── Tomb1Main_gameflow.json5
 │   ├── Tomb1Main_gameflow_ub.json5
-│   ├── Tomb1Main.json5
+│   ├── Tomb1Main.json5 *
 ├── data
 │   ├── cat.phd
 │   ├── cred0.pcx
@@ -212,17 +213,20 @@ less like this (click to expand):
 │   ├── 3d.fsh
 │   └── 3d.vsh
 ├── Tomb1Main.exe
+├── Tomb1Main_ConfigTool.exe
 </pre>
 </details>
 
 ## Configuring
 
-To configure Tomb1Main, edit the `Tomb1Main.json5` file in your text editor
-such as Notepad. All the configuration is explained in that file.
+To configure Tomb1Main, run the `Tomb1Main_ConfigTool.exe` application. All the
+configuration is explained in this tool. Alternatively, after running the game
+at least once, you can edit `Tomb1Main.json5` manually in a text editor such
+as Notepad.
 
 ## Improvements over original game
 
-Not all options are turned on by default. Refer to `Tomb1Main.json5` for details.
+Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` for details.
 
 #### UI
 - added proper UI and bar scaling
@@ -404,7 +408,7 @@ Note: this section may be subject to change.
 - [x] Replace the proprietary FMV player with libavcodec and SDL
 - [x] Break off TombATI, ship our own .EXE rather than a .DLL
 - [x] Add an installer
-- [ ] Add a config tool
+- [x] Add a config tool
 - [ ] Work on cross platform builds
     - [x] Port DirectSound to libavcodec and SDL
     - [x] Port WinMM to libavcodec and SDL
