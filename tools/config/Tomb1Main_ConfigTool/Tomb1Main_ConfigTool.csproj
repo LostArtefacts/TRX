@@ -1,21 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
-    <UseWPF>true</UseWPF>
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
+
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>Tomb1Main_ConfigTool</AssemblyName>	
-    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+    <AssemblyName>Tomb1Main_ConfigTool</AssemblyName>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
     <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +32,7 @@
     <None Remove="Resources\Lang\en-GB.json" />
     <EmbeddedResource Include="Resources\Lang\en-GB.json" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Remove="Resources\arrow-down.png" />
     <None Remove="Resources\arrow-up.png" />
