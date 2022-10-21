@@ -15,7 +15,6 @@
 #include "game/output.h"
 #include "game/savegame.h"
 #include "game/screen.h"
-#include "game/settings.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/types.h"
@@ -132,7 +131,8 @@ void Shell_Init(const char *gameflow_path)
     Option_Init();
     Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
-    Settings_Read();
+    Savegame_HighlightNewestSlot();
+    Config_Init();
 
     Screen_ApplyResolution();
 }
@@ -261,7 +261,7 @@ void Shell_Main(void)
         }
     }
 
-    Settings_Write();
+    Config_Write();
     Shell_Shutdown();
 }
 

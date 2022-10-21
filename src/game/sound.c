@@ -1,5 +1,6 @@
 #include "game/sound.h"
 
+#include "config.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -329,7 +330,8 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     }
 
     int32_t pitch = 100;
-    if (s->flags & SAMPLE_FLAG_PITCH_WIBBLE) {
+    if (g_Config.enable_pitched_sounds
+        && (s->flags & SAMPLE_FLAG_PITCH_WIBBLE)) {
         pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - SOUND_MAX_PITCH_CHANGE;
     }

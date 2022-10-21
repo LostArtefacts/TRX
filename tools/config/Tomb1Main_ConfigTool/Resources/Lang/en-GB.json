@@ -1,0 +1,40 @@
+{
+  "Enums": {
+    "ui_color": {
+      "grey": "Grey"
+    },
+    "ui_location": {
+      "top-center": "Top centre",
+      "bottom-center": "Bottom centre"
+    }
+  },
+  "Properties": {
+    "revert_to_pistols": {
+      "Description": "Makes Lara revert to pistols at the start of each level (in line with TombATI behaviour)."
+    },
+    "change_pierre_spawn": {
+      "Title": "Change Pierre spawn behaviour"
+    },
+    "healthbar_showing_mode": {
+      "Title": "Healthbar behaviour"
+    },
+    "healthbar_color": {
+      "Title": "Healthbar colour",
+      "Description": "Colour of the healthbar."
+    },
+    "airbar_showing_mode": {
+      "Title": "Airbar behaviour"
+    },
+    "airbar_color": {
+      "Title": "Airbar colour",
+      "Description": "Colour of the airbar."
+    },
+    "enemy_healthbar_color": {
+      "Title": "Enemy healthbar colour",
+      "Description": "Colour of the enemy healthbar."
+    },
+    "enable_smooth_bars": {
+      "Description": "Makes the healthbar and airbar use smooth colour transitions."
+    }
+  }
+}

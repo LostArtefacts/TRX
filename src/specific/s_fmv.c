@@ -2272,7 +2272,7 @@ bool S_FMV_Init(void)
 bool S_FMV_Play(const char *file_path)
 {
     bool ret = false;
-    if (g_Config.disable_fmv) {
+    if (!g_Config.enable_fmv) {
         return true;
     }
 

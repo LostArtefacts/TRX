@@ -39,6 +39,7 @@ typedef struct SAVEGAME_STRATEGY {
     bool (*update_death_counters)(MYFILE *fp, GAME_INFO *game_info);
 } SAVEGAME_STRATEGY;
 
+static uint16_t m_NewestSlot = 0;
 static SAVEGAME_INFO *m_SavegameInfo = NULL;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
@@ -419,8 +420,6 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
         sprintf(
             &req->item_texts[req->item_text_len * slot_num], "%s %d",
             g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
-        g_SavedGamesCount++;
-        g_SaveCounter++;
     }
 
     Savegame_ScanSavedGames();
@@ -541,6 +540,10 @@ void Savegame_ScanSavedGames(void)
             sprintf(
                 &req->item_texts[req->items * req->item_text_len], "%s %d",
                 savegame_info->level_title, savegame_info->counter);
+
+            if (savegame_info->counter == g_SaveCounter) {
+                m_NewestSlot = i;
+            }
         } else {
             req->item_flags[req->items] |= RIF_BLOCKED;
             sprintf(
@@ -601,6 +604,11 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 
     req->requested = 0;
     req->line_offset = 0;
+}
+
+void Savegame_HighlightNewestSlot(void)
+{
+    g_SavegameRequester.requested = m_NewestSlot;
 }
 
 bool Savegame_RestartAvailable(int32_t slot_num)
