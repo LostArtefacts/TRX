@@ -101,7 +101,7 @@ static void Text_DrawTextBackground(
     // Make sure height and width divisible by 2.
     w = 2 * ((w + 1) / 2);
     h = 2 * ((h + 1) / 2);
-    Output_DrawScreenFBox(sx, sy, w, h);
+    Output_DrawScreenFBox(sx - 1, sy - 1, w + 1, h + 1);
 
     QUAD_INFO gradient_quads[4] = { { sx, sy, w / 2, h / 2 },
                                     { sx + w, sy, -w / 2, h / 2 },
