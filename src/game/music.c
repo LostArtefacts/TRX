@@ -106,7 +106,7 @@ bool Music_PlayLooped(int16_t track)
     }
 
     if (g_CurrentLevel == g_GameFlow.title_level_num
-        && g_Config.disable_music_in_menu) {
+        && !g_Config.enable_music_in_menu) {
         return false;
     }
 

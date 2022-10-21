@@ -1,5 +1,6 @@
 #include "game/objects/general/save_crystal.h"
 
+#include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -7,7 +8,6 @@
 #include "game/lara.h"
 #include "game/objects/general/pickup.h"
 #include "game/savegame.h"
-#include "game/settings.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
@@ -68,7 +68,7 @@ void SaveCrystal_Collision(
         item->status = IS_INVISIBLE;
         Item_RemoveDrawn(item_num);
         Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-        Settings_Write();
+        Config_Write();
         Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {
         item->status = IS_ACTIVE;

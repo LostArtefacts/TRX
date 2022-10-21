@@ -531,6 +531,13 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             } else if (obj->intelligent) {
                 item->data = NULL;
             }
+
+            if (item->object_number == O_FLAME_EMITTER
+                && g_Config.enable_enhanced_saves) {
+                int32_t flame_num =
+                    json_object_get_int(item_obj, "flame_num", flame_num);
+                item->data = (void *)flame_num;
+            }
         }
     }
 
@@ -548,11 +555,11 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
         return false;
     }
 
-    if ((signed)fx_arr->length >= NUM_EFFECTS - 1) {
-        LOG_ERROR(
-            "Malformed save: expected a max of %d fx, got %d", NUM_EFFECTS - 1,
-            fx_arr->length);
-        return false;
+    if ((signed)fx_arr->length >= NUM_EFFECTS) {
+        LOG_WARNING(
+            "Malformed save: expected a max of %d fx, got %d. fx over the "
+            "maximum will not be created.",
+            NUM_EFFECTS - 1, fx_arr->length);
     }
 
     for (int i = 0; i < (signed)fx_arr->length; i++) {
@@ -935,6 +942,11 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                     item_obj, "creature_flags", creature->flags);
                 json_object_append_int(
                     item_obj, "creature_mood", creature->mood);
+            }
+
+            if (item->object_number == O_FLAME_EMITTER) {
+                int32_t flame_num = (int32_t)item->data;
+                json_object_append_int(item_obj, "flame_num", flame_num);
             }
         }
 

@@ -82,11 +82,11 @@ typedef struct {
     bool change_pierre_spawn;
     int32_t fov_value;
     bool fov_vertical;
-    bool disable_demo;
-    bool disable_fmv;
-    bool disable_cine;
-    bool disable_music_in_menu;
-    bool disable_music_in_inventory;
+    bool enable_demo;
+    bool enable_fmv;
+    bool enable_cine;
+    bool enable_music_in_menu;
+    bool enable_music_in_inventory;
     int32_t resolution_width;
     int32_t resolution_height;
     bool enable_xbox_one_controller;
@@ -100,6 +100,7 @@ typedef struct {
     int32_t maximum_save_slots;
     bool revert_to_pistols;
     bool enable_enhanced_saves;
+    bool enable_pitched_sounds;
 
     struct {
         int32_t layout;
@@ -129,3 +130,5 @@ extern CONFIG g_Config;
 
 bool Config_ReadFromJSON(const char *json);
 bool Config_Read(void);
+void Config_Init(void);
+bool Config_Write(void);
