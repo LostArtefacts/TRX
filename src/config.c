@@ -1,18 +1,26 @@
 #include "config.h"
 
 #include "filesystem.h"
+#include "game/input.h"
+#include "game/music.h"
+#include "game/screen.h"
+#include "game/sound.h"
+#include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "json/json_base.h"
 #include "json/json_parse.h"
+#include "json/json_write.h"
 #include "log.h"
 #include "memory.h"
 #include "specific/s_shell.h"
 #include "util.h"
 
+#include <stdio.h>
 #include <string.h>
 
+#define CONTROL_SCHEME_SIZE 13
 #define Q(x) #x
 #define QUOTE(x) Q(x)
 
@@ -32,6 +40,19 @@
     do {                                                                       \
         g_Config.opt = Config_ReadEnum(                                        \
             root_obj, Config_ProcessKey(QUOTE(opt)), default_value, enum_map); \
+    } while (0)
+
+#define WRITE_PRIMITIVE(func, opt)                                             \
+    do {                                                                       \
+        func(root_obj, Config_ProcessKey(QUOTE(opt)), g_Config.opt);           \
+    } while (0)
+#define WRITE_BOOL(opt) WRITE_PRIMITIVE(json_object_append_bool, opt)
+#define WRITE_INTEGER(opt) WRITE_PRIMITIVE(json_object_append_int, opt)
+#define WRITE_FLOAT(opt) WRITE_PRIMITIVE(json_object_append_double, opt)
+#define WRITE_ENUM(opt, enum_map)                                              \
+    do {                                                                       \
+        Config_WriteEnum(                                                      \
+            root_obj, Config_ProcessKey(QUOTE(opt)), g_Config.opt, enum_map);  \
     } while (0)
 
 CONFIG g_Config = { 0 };
@@ -87,6 +108,9 @@ static const char *Config_ProcessKey(const char *key);
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
     const ENUM_MAP *enum_map);
+static void Config_WriteEnum(
+    struct json_object_s *obj, const char *name, int8_t value,
+    const ENUM_MAP *enum_map);
 
 static const char *Config_ProcessKey(const char *key)
 {
@@ -107,6 +131,19 @@ static int Config_ReadEnum(
         }
     }
     return default_value;
+}
+
+static void Config_WriteEnum(
+    struct json_object_s *obj, const char *name, int8_t value,
+    const ENUM_MAP *enum_map)
+{
+    while (enum_map->text) {
+        if (enum_map->value == value) {
+            json_object_append_string(obj, name, enum_map->text);
+            break;
+        }
+        enum_map++;
+    }
 }
 
 bool Config_ReadFromJSON(const char *cfg_data)
@@ -163,13 +200,12 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);
     READ_BOOL(fov_vertical, true);
-    READ_BOOL(disable_demo, false);
-    READ_BOOL(disable_fmv, false);
-    READ_BOOL(disable_cine, false);
-    READ_BOOL(disable_music_in_menu, false);
-    READ_BOOL(disable_music_in_inventory, false);
+    READ_BOOL(enable_demo, true);
+    READ_BOOL(enable_fmv, true);
+    READ_BOOL(enable_cine, true);
+    READ_BOOL(enable_music_in_menu, true);
+    READ_BOOL(enable_music_in_inventory, true);
     READ_BOOL(enable_xbox_one_controller, false);
-    READ_FLOAT(brightness, 1.0);
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
     READ_FLOAT(rendering.anisotropy_filter, 16.0f);
@@ -195,6 +231,50 @@ bool Config_ReadFromJSON(const char *cfg_data)
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
 
+    // User settings
+    READ_BOOL(rendering.enable_bilinear_filter, true);
+    READ_BOOL(rendering.enable_perspective_filter, true);
+    READ_BOOL(rendering.enable_vsync, true);
+
+    {
+        int32_t resolution_idx =
+            json_object_get_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
+        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
+        Screen_SetResIdx(resolution_idx);
+    }
+
+    READ_INTEGER(music_volume, 8);
+    CLAMP(g_Config.music_volume, 0, 10);
+
+    READ_INTEGER(sound_volume, 8);
+    CLAMP(g_Config.sound_volume, 0, 10);
+
+    READ_INTEGER(input.layout, 0);
+    CLAMP(g_Config.input.layout, 0, 1);
+
+    READ_FLOAT(brightness, DEFAULT_BRIGHTNESS);
+    CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+
+    READ_FLOAT(ui.text_scale, DEFAULT_UI_SCALE);
+    CLAMP(g_Config.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
+
+    READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
+    CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
+
+    char *layout_name = Memory_Alloc(CONTROL_SCHEME_SIZE);
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        sprintf(layout_name, "%s_%d", "layout_sdl", layout);
+        struct json_array_s *layout_arr =
+            json_object_get_array(root_obj, layout_name);
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
+            scancode = json_array_get_int(layout_arr, role, scancode);
+            Input_AssignScancode(layout, role, scancode);
+        }
+    }
+    Memory_FreePointer(&layout_name);
+
     if (root) {
         json_value_free(root);
     }
@@ -207,12 +287,13 @@ bool Config_Read(void)
     char *cfg_data = NULL;
 
     if (!File_Load(m_T1MGlobalSettingsPath, &cfg_data, NULL)) {
-        LOG_ERROR("Failed to open file '%s'", m_T1MGlobalSettingsPath);
-        result = Config_ReadFromJSON("");
-        goto cleanup;
+        LOG_WARNING(
+            "'%s' not loaded - default settings will apply",
+            m_T1MGlobalSettingsPath);
+        result = Config_ReadFromJSON("{}");
+    } else {
+        result = Config_ReadFromJSON(cfg_data);
     }
-
-    result = Config_ReadFromJSON(cfg_data);
 
     if (g_Config.resolution_width > 0) {
         g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
@@ -226,7 +307,124 @@ bool Config_Read(void)
             S_Shell_GetCurrentDisplayHeight();
     }
 
-cleanup:
     Memory_FreePointer(&cfg_data);
     return result;
+}
+
+void Config_Init(void)
+{
+    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+    Music_SetVolume(g_Config.music_volume);
+    Sound_SetMasterVolume(g_Config.sound_volume);
+}
+
+bool Config_Write(void)
+{
+    LOG_INFO("Saving user settings");
+
+    MYFILE *fp = File_Open(m_T1MGlobalSettingsPath, FILE_OPEN_WRITE);
+    if (!fp) {
+        return false;
+    }
+
+    size_t size;
+    struct json_object_s *root_obj = json_object_new();
+
+    WRITE_BOOL(disable_healing_between_levels);
+    WRITE_BOOL(disable_medpacks);
+    WRITE_BOOL(disable_magnums);
+    WRITE_BOOL(disable_uzis);
+    WRITE_BOOL(disable_shotgun);
+    WRITE_BOOL(enable_detailed_stats);
+    WRITE_BOOL(enable_deaths_counter);
+    WRITE_BOOL(enable_enemy_healthbar);
+    WRITE_BOOL(enable_enhanced_look);
+    WRITE_BOOL(enable_shotgun_flash);
+    WRITE_BOOL(fix_shotgun_targeting);
+    WRITE_BOOL(enable_cheats);
+    WRITE_BOOL(enable_numeric_keys);
+    WRITE_BOOL(enable_tr3_sidesteps);
+    WRITE_BOOL(enable_braid);
+    WRITE_BOOL(enable_compass_stats);
+    WRITE_BOOL(enable_total_stats);
+    WRITE_BOOL(enable_timer_in_inventory);
+    WRITE_BOOL(enable_smooth_bars);
+    WRITE_BOOL(enable_fade_effects);
+    WRITE_BOOL(fix_tihocan_secret_sound);
+    WRITE_BOOL(fix_pyramid_secret_trigger);
+    WRITE_BOOL(fix_secrets_killing_music);
+    WRITE_BOOL(fix_descending_glitch);
+    WRITE_BOOL(fix_wall_jump_glitch);
+    WRITE_BOOL(fix_bridge_collision);
+    WRITE_BOOL(fix_qwop_glitch);
+    WRITE_BOOL(fix_alligator_ai);
+    WRITE_BOOL(change_pierre_spawn);
+    WRITE_INTEGER(fov_value);
+    WRITE_INTEGER(resolution_width);
+    WRITE_INTEGER(resolution_height);
+    WRITE_BOOL(fov_vertical);
+    WRITE_BOOL(enable_demo);
+    WRITE_BOOL(enable_fmv);
+    WRITE_BOOL(enable_cine);
+    WRITE_BOOL(enable_music_in_menu);
+    WRITE_BOOL(enable_music_in_inventory);
+    WRITE_BOOL(enable_xbox_one_controller);
+    WRITE_BOOL(enable_round_shadow);
+    WRITE_BOOL(enable_3d_pickups);
+    WRITE_FLOAT(rendering.anisotropy_filter);
+    WRITE_BOOL(walk_to_items);
+    WRITE_BOOL(disable_trex_collision);
+    WRITE_INTEGER(start_lara_hitpoints);
+    WRITE_ENUM(healthbar_showing_mode, m_BarShowingModes);
+    WRITE_ENUM(airbar_showing_mode, m_BarShowingModes);
+    WRITE_ENUM(healthbar_location, m_BarLocations);
+    WRITE_ENUM(airbar_location, m_BarLocations);
+    WRITE_ENUM(enemy_healthbar_location, m_BarLocations);
+    WRITE_ENUM(healthbar_color, m_BarColors);
+    WRITE_ENUM(airbar_color, m_BarColors);
+    WRITE_ENUM(enemy_healthbar_color, m_BarColors);
+    WRITE_ENUM(screenshot_format, m_ScreenshotFormats);
+    WRITE_ENUM(ui.menu_style, m_UIStyles);
+    WRITE_INTEGER(maximum_save_slots);
+    WRITE_BOOL(revert_to_pistols);
+    WRITE_BOOL(enable_enhanced_saves);
+    WRITE_BOOL(enable_pitched_sounds);
+
+    // User settings
+    WRITE_BOOL(rendering.enable_bilinear_filter);
+    WRITE_BOOL(rendering.enable_perspective_filter);
+    WRITE_BOOL(rendering.enable_vsync);
+
+    // Not held in g_Config
+    json_object_append_int(root_obj, "hi_res", Screen_GetPendingResIdx());
+
+    WRITE_INTEGER(music_volume);
+    WRITE_INTEGER(sound_volume);
+    WRITE_INTEGER(input.layout);
+    WRITE_FLOAT(brightness);
+    WRITE_FLOAT(ui.text_scale);
+    WRITE_FLOAT(ui.bar_scale);
+
+    char *layout_name = Memory_Alloc(CONTROL_SCHEME_SIZE);
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        struct json_array_s *layout_arr = json_array_new();
+        sprintf(layout_name, "%s_%d", "layout_sdl", layout);
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            json_array_append_int(
+                layout_arr, Input_GetAssignedScancode(layout, role));
+        }
+        json_object_append_array(root_obj, layout_name, layout_arr);
+    }
+    Memory_FreePointer(&layout_name);
+
+    struct json_value_s *root = json_value_from_object(root_obj);
+    char *data = json_write_pretty(root, "  ", "\n", &size);
+    json_value_free(root);
+
+    File_Write(data, sizeof(char), size - 1, fp);
+    File_Close(fp);
+    Memory_FreePointer(&data);
+
+    return true;
 }

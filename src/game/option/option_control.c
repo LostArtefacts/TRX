@@ -4,7 +4,6 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/screen.h"
-#include "game/settings.h"
 #include "game/text.h"
 #include "global/types.h"
 #include "util.h"
@@ -222,8 +221,6 @@ static void Option_ControlInitText(void)
         m_Text[TEXT_TITLE_BORDER], width, height, 0, 0, TS_BACKGROUND);
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
 
-    Option_FlashConflicts();
-
     Option_ControlFlashConflicts();
 
     m_KeyChange = KC_TITLE;
@@ -309,7 +306,7 @@ static void Option_ControlChangeScheme()
     }
     Option_ControlUpdateText();
     Option_ControlFlashConflicts();
-    Settings_Write();
+    Config_Write();
 }
 
 void Option_Control(INVENTORY_ITEM *inv_item)
@@ -498,7 +495,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             Text_AddOutline(m_TextKeyRoles[m_KeyChange], true, TS_REQUESTED);
             m_KeyMode = KM_CHANGEKEYUP;
             Option_ControlFlashConflicts();
-            Settings_Write();
+            Config_Write();
         }
         break;
 

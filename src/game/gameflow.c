@@ -1100,7 +1100,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
-        if (g_Config.disable_cine
+        if (!g_Config.enable_cine
             && g_GameFlow.levels[level_num].level_type == GFL_CUTSCENE) {
             bool skip;
             switch (seq->type) {
