@@ -1,14 +1,20 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- fixed Lara loading inside a movable block if she's on a stack near a room portal (#619)
+
+## [2.11](https://github.com/rr-/Tomb1Main/compare/2.10.3...2.11) - 2022-10-19
+- added a .NET-based configuration tool (#633)
 - added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
+- added an option to turn off sound effect pitching (#625)
+- changed passport to highlight latest save at game start (#618)
 - fixed some sound effects playing in the inventory when disable_music_in_inventory is true (#486)
 - fixed underwater currents breaking in rare cases (#127)
 - fixed gameflow option remove_guns preventing weapon pickups in rare situations (#611)
 - fixed gameflow option remove_scions causing Lara to equip weapons even if she has none (#605)
-- fixed save crystal mode always saving in the first slot (#607, regression from 2.8)
-- fixed Lara loading inside a movable block if she's on a stack near a room portal (#619)
 - added gameflow option remove_ammo to remove all shotgun, magnum and uzi ammo from the inventory on level start (#599)
 - added gameflow option remove_medipacks to remove all medi packs from the inventory on level start (#599)
 - improved the UI frame drawing, it will now look consistent across all resolutions and no longer have gaps between the lines
+- fixed bridge item in City of Khamoon being incorrectly raised (#627)
+- fixed Lara firing blanks indefinitely when she doesn't have pistols and is out of ammo on non-pistol weapons (#629) 
 
 ## [2.10.3](https://github.com/rr-/Tomb1Main/compare/2.10.2...2.10.3) - 2022-09-15
 - fixed save crystal mode always saving in the first slot (#607, regression from 2.8)

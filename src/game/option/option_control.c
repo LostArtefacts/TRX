@@ -4,7 +4,6 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/screen.h"
-#include "game/settings.h"
 #include "game/text.h"
 #include "global/types.h"
 #include "util.h"
@@ -271,7 +270,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 g_Config.input.layout ^= 1;
                 Option_ControlUpdateText();
                 Option_FlashConflicts();
-                Settings_Write();
+                Config_Write();
             } else {
                 Text_RemoveBackground(m_TextA[m_KeyChange]);
                 Text_RemoveOutline(m_TextA[m_KeyChange]);
@@ -418,7 +417,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             Text_AddOutline(m_TextA[m_KeyChange], true, TS_REQUESTED);
             m_KeyMode = 3;
             Option_FlashConflicts();
-            Settings_Write();
+            Config_Write();
         }
         break;
 

@@ -36,7 +36,7 @@ jobs:
     needs: [build_game, build_installer]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: .
           fetch-depth: 0
@@ -45,7 +45,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           path: artifacts/
-          name: game
+          name: game_all
 
       - name: Download built installer asset
         uses: actions/download-artifact@v1
@@ -63,14 +63,19 @@ jobs:
           mv artifacts/Tomb1Main_Installer.exe artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
       - name: Generate Changelog
-        run: python3 -c 'from pathlib import Path; print(Path("CHANGELOG.md").read_text().split("\n\n")[1])' | tail -n -1 > artifacts/changes.txt
+        run: |
+          python3 -c '''
+          import re
+          from pathlib import Path
+          section = [s for s in Path("CHANGELOG.md").read_text().split("\n\n") if re.search("- \w", s)][0]
+          print("\n".join(line for line in section.splitlines() if not line.startswith("#")))
+          ''' > artifacts/changes.txt
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        #if: startsWith(github.ref, 'refs/tags/')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
           body_path: artifacts/changes.txt
           draft: ${{ inputs.draft }}
           prerelease: ${{ inputs.prerelease }}
@@ -79,38 +84,99 @@ jobs:
             artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip
             artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
+  build_configurator:
+    name: Build the configurator
+    runs-on: windows-latest  # https://github.com/dotnet/runtime/issues/3828
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          path: .
+          fetch-depth: 0
+
+      - name: Setup dependencies
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0'
+
+      - name: Build
+        run: |
+          cd tools/config/
+          dotnet restore
+          dotnet publish -c Release -o out
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: configtool
+          path: tools/config/out/Tomb1Main_ConfigTool.exe
+
   build_game:
     name: Build the game
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: .
           fetch-depth: 0
 
       - name: Install dependencies
         run: |
+          echo "$GITHUB_CONTEXT"
           sudo apt-get update
-          sudo apt-get install -y make p7zip-full moby-engine moby-cli
+          sudo apt-get install -y make moby-engine moby-cli
 
       - name: Build the game
         run: |
           make clean release
-
-      - name: Package the game
-        run: |
-          7z a game.zip ./bin/* ./build/*.exe
+          mkdir out/
+          cp build/*.exe out/
+          cp -r bin/* out/
 
       - name: Upload the artifact
         uses: actions/upload-artifact@v1
         with:
           name: game
-          path: game.zip
+          path: out/
+
+  package_game:
+    name: Package the game
+    needs: [build_game, build_configurator]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built config tool assets
+        uses: actions/download-artifact@v1
+        with:
+          path: artifacts/
+          name: configtool
+
+      - name: Download built game assets
+        uses: actions/download-artifact@v1
+        with:
+          path: artifacts/
+          name: game
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make p7zip-full
+
+      - name: Package the game
+        run: |
+          mkdir out
+          cd artifacts
+          7z a ../out/game.zip *
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: game_all
+          path: out/game.zip
 
   build_installer:
     name: Build the installer
-    needs: [build_game]
+    needs: [package_game]
     runs-on: windows-latest  # https://github.com/dotnet/runtime/issues/3828
     steps:
       - name: Checkout code
@@ -123,7 +189,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           path: artifacts/
-          name: game
+          name: game_all
 
       - name: Setup dependencies
         uses: actions/setup-dotnet@v2

@@ -14,7 +14,6 @@
 #include "game/music.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
-#include "game/settings.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -273,7 +272,7 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
             int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
             if (return_val != GF_NOP) {
                 Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-                Settings_Write();
+                Config_Write();
             }
             ask_for_save = false;
         }

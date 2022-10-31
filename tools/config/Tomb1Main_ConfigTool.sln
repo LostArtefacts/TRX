@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tomb1Main_ConfigTool", "Tomb1Main_ConfigTool\Tomb1Main_ConfigTool.csproj", "{DCFCB544-9B88-41D6-A995-EA2D06FE405E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Debug|x64.ActiveCfg = Debug|x64
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Debug|x64.Build.0 = Debug|x64
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Release|x64.ActiveCfg = Release|x64
+		{DCFCB544-9B88-41D6-A995-EA2D06FE405E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49C0A7F4-2D17-424B-BD94-A8FC6E95931D}
+	EndGlobalSection
+EndGlobal
