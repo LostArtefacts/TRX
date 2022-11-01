@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define CONTROL_SCHEME_SIZE 13
+#define CONTROL_SCHEME_STR "layout_sdl_%d"
 #define Q(x) #x
 #define QUOTE(x) Q(x)
 
@@ -261,10 +261,10 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    char *layout_name = Memory_Alloc(CONTROL_SCHEME_SIZE);
+    char layout_name[20];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        sprintf(layout_name, "%s_%d", "layout_sdl", layout);
+        sprintf(layout_name, CONTROL_SCHEME_STR, layout);
         struct json_array_s *layout_arr =
             json_object_get_array(root_obj, layout_name);
         for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -273,7 +273,6 @@ bool Config_ReadFromJSON(const char *cfg_data)
             Input_AssignScancode(layout, role, scancode);
         }
     }
-    Memory_FreePointer(&layout_name);
 
     if (root) {
         json_value_free(root);
@@ -405,18 +404,17 @@ bool Config_Write(void)
     WRITE_FLOAT(ui.text_scale);
     WRITE_FLOAT(ui.bar_scale);
 
-    char *layout_name = Memory_Alloc(CONTROL_SCHEME_SIZE);
+    char layout_name[20];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         struct json_array_s *layout_arr = json_array_new();
-        sprintf(layout_name, "%s_%d", "layout_sdl", layout);
+        sprintf(layout_name, CONTROL_SCHEME_STR, layout);
         for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
             json_array_append_int(
                 layout_arr, Input_GetAssignedScancode(layout, role));
         }
         json_object_append_array(root_obj, layout_name, layout_arr);
     }
-    Memory_FreePointer(&layout_name);
 
     struct json_value_s *root = json_value_from_object(root_obj);
     char *data = json_write_pretty(root, "  ", "\n", &size);
