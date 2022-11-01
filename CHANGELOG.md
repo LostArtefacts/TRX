@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- fixed small cracks in the UI borders for PS1-style menus (#643)
+- fixed Lara loading inside a movable block if she's on a stack near a room portal (#619)
 - added additional custom control schemes (#636)
 
 ## [2.11](https://github.com/rr-/Tomb1Main/compare/2.10.3...2.11) - 2022-10-19
