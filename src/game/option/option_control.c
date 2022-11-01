@@ -17,10 +17,6 @@
 #define HEADER_HEIGHT 25
 #define ROW_HEIGHT 17
 
-#define KM_BROWSE 0
-#define KM_BROWSEKEYUP 1
-#define KM_CHANGE 2
-#define KM_CHANGEKEYUP 3
 #define KC_TITLE -1
 
 typedef struct CONTROL_SCHEME {
@@ -34,6 +30,14 @@ static const CONTROL_SCHEME m_ControlSchemeNum[] = {
     { 2, GS_CONTROL_CUSTOM_2 },
     { 3, GS_CONTROL_CUSTOM_3 },
 };
+
+typedef enum KEYMODE {
+    KM_BROWSE = 0,
+    KM_BROWSEKEYUP = 1,
+    KM_CHANGE = 2,
+    KM_CHANGEKEYUP = 3,
+} KEYMODE;
+
 typedef enum CONTROL_TEXT {
     TEXT_TITLE = 0,
     TEXT_TITLE_BORDER = 1,
