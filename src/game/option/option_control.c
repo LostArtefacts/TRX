@@ -293,7 +293,7 @@ static void Option_ControlFlashConflicts(void)
     }
 }
 
-static void Option_ControlChangeScheme()
+static void Option_ControlChangeScheme(void)
 {
     if (g_InputDB.left && g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
         g_Config.input.layout -= 1;
