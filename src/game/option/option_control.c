@@ -295,19 +295,13 @@ static void Option_ControlFlashConflicts(void)
 
 static void Option_ControlChangeScheme(void)
 {
-    if (g_InputDB.left && g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
-        g_Config.input.layout -= 1;
-    } else if (
-        g_InputDB.left && g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
-        g_Config.input.layout = INPUT_LAYOUT_NUMBER_OF - 1;
-    } else if (
-        g_InputDB.right && g_Config.input.layout < INPUT_LAYOUT_NUMBER_OF - 1) {
-        g_Config.input.layout += 1;
-    } else if (
-        g_InputDB.right
-        && g_Config.input.layout == INPUT_LAYOUT_NUMBER_OF - 1) {
-        g_Config.input.layout = INPUT_LAYOUT_DEFAULT;
+    if (g_InputDB.left || g_InputDB.right) {
+        g_Config.input.layout += g_InputDB.left ? -1 : 0;
+        g_Config.input.layout += g_InputDB.right ? 1 : 0;
+        g_Config.input.layout += INPUT_LAYOUT_NUMBER_OF;
+        g_Config.input.layout %= INPUT_LAYOUT_NUMBER_OF;
     }
+
     Option_ControlUpdateText();
     Option_ControlFlashConflicts();
     Config_Write();
