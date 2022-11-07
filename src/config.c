@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define CONTROL_SCHEME_STR "layout_sdl_%d"
+#define CONTROL_LAYOUT_FMT "layout_%d"
 #define Q(x) #x
 #define QUOTE(x) Q(x)
 
@@ -250,7 +250,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     CLAMP(g_Config.sound_volume, 0, 10);
 
     READ_INTEGER(input.layout, 0);
-    CLAMP(g_Config.input.layout, 0, 1);
+    CLAMP(g_Config.input.layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
 
     READ_FLOAT(brightness, DEFAULT_BRIGHTNESS);
     CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
@@ -264,7 +264,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     char layout_name[20];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        sprintf(layout_name, CONTROL_SCHEME_STR, layout);
+        sprintf(layout_name, CONTROL_LAYOUT_FMT, layout);
         struct json_array_s *layout_arr =
             json_object_get_array(root_obj, layout_name);
         for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -273,6 +273,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
             Input_AssignScancode(layout, role, scancode);
         }
     }
+    Input_CheckConflicts(g_Config.input.layout);
 
     if (root) {
         json_value_free(root);
@@ -408,7 +409,7 @@ bool Config_Write(void)
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         struct json_array_s *layout_arr = json_array_new();
-        sprintf(layout_name, CONTROL_SCHEME_STR, layout);
+        sprintf(layout_name, CONTROL_LAYOUT_FMT, layout);
         for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
             json_array_append_int(
                 layout_arr, Input_GetAssignedScancode(layout, role));

@@ -21,10 +21,33 @@ static bool m_KeyConflictWithDefault[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
 
-static void Input_CheckConflicts(INPUT_LAYOUT layout_num);
 static INPUT_STATE Input_GetDebounced(INPUT_STATE input);
 
-static void Input_CheckConflicts(INPUT_LAYOUT layout_num)
+static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
+{
+    INPUT_STATE result;
+    result.any = input.any & ~g_OldInputDB.any;
+
+    // Allow holding down key to move faster
+    if (input.forward || !input.back) {
+        m_HoldBack = 0;
+    } else if (input.back && ++m_HoldBack >= DELAY_FRAMES + HOLD_FRAMES) {
+        result.back = 1;
+        m_HoldBack = DELAY_FRAMES;
+    }
+
+    if (!input.forward || input.back) {
+        m_HoldForward = 0;
+    } else if (input.forward && ++m_HoldForward >= DELAY_FRAMES + HOLD_FRAMES) {
+        result.forward = 1;
+        m_HoldForward = DELAY_FRAMES;
+    }
+
+    g_OldInputDB = input;
+    return result;
+}
+
+void Input_CheckConflicts(INPUT_LAYOUT layout_num)
 {
     for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
         INPUT_SCANCODE scancode1_default =
@@ -51,30 +74,6 @@ static void Input_CheckConflicts(INPUT_LAYOUT layout_num)
             }
         }
     }
-}
-
-static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
-{
-    INPUT_STATE result;
-    result.any = input.any & ~g_OldInputDB.any;
-
-    // Allow holding down key to move faster
-    if (input.forward || !input.back) {
-        m_HoldBack = 0;
-    } else if (input.back && ++m_HoldBack >= DELAY_FRAMES + HOLD_FRAMES) {
-        result.back = 1;
-        m_HoldBack = DELAY_FRAMES;
-    }
-
-    if (!input.forward || input.back) {
-        m_HoldForward = 0;
-    } else if (input.forward && ++m_HoldForward >= DELAY_FRAMES + HOLD_FRAMES) {
-        result.forward = 1;
-        m_HoldForward = DELAY_FRAMES;
-    }
-
-    g_OldInputDB = input;
-    return result;
 }
 
 void Input_Init(void)
