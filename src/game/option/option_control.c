@@ -352,8 +352,7 @@ static void Option_ControlUpdateText(void)
             m_ControlMenu.key_texts[m_ControlMenu.cur_row], 0, 0, 0, 0,
             TS_REQUESTED);
         Text_AddOutline(
-            m_ControlMenu.key_texts[m_ControlMenu.cur_row], true,
-            TS_REQUESTED);
+            m_ControlMenu.key_texts[m_ControlMenu.cur_row], true, TS_REQUESTED);
         break;
     case KM_CHANGE:
         break;
@@ -462,7 +461,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                     m_ControlMenu.head = cols + m_ControlMenu.num_options - 1
                         - m_ControlMenu.vis_options + 1;
                     m_ControlMenu.tail = cols + m_ControlMenu.num_options - 1;
-                } else if (m_ControlMenu.cur_option == m_ControlMenu.first_option) {
+                } else if (
+                    m_ControlMenu.cur_option == m_ControlMenu.first_option) {
                     m_ControlMenu.cur_row = KC_TITLE;
                     m_ControlMenu.cur_option = KC_TITLE;
                 } else {
@@ -470,7 +470,9 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                         && m_ControlMenu.cur_option
                             != m_ControlMenu.head->option) {
                         m_ControlMenu.cur_row--;
-                    } else if (m_ControlMenu.head->option != m_ControlMenu.first_option) {
+                    } else if (
+                        m_ControlMenu.head->option
+                        != m_ControlMenu.first_option) {
                         m_ControlMenu.head--;
                         m_ControlMenu.tail--;
                     } else {
@@ -493,7 +495,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 if (m_ControlMenu.cur_option == KC_TITLE) {
                     m_ControlMenu.cur_row++;
                     m_ControlMenu.cur_option = m_ControlMenu.first_option;
-                } else if (m_ControlMenu.cur_option == m_ControlMenu.last_option) {
+                } else if (
+                    m_ControlMenu.cur_option == m_ControlMenu.last_option) {
                     m_ControlMenu.cur_row = KC_TITLE;
                     m_ControlMenu.cur_option = KC_TITLE;
                     m_ControlMenu.head = cols;
