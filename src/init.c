@@ -81,6 +81,8 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_KEYMAP_USE_BIG_MEDI, "Large Medi" },
     { GS_KEYMAP_SAVE, "Quick Save" },
     { GS_KEYMAP_LOAD, "Quick Load" },
+    { GS_KEYMAP_FPS, "Show FPS" },
+    { GS_KEYMAP_BILINEAR, "Toggle Bilinear" },
     { GS_STATS_KILLS_DETAIL_FMT, "KILLS %d of %d" },
     { GS_STATS_KILLS_BASIC_FMT, "KILLS %d" },
     { GS_STATS_PICKUPS_DETAIL_FMT, "PICKUPS %d of %d" },

@@ -186,6 +186,8 @@
         "KEYMAP_USE_BIG_MEDI": "Large Medi",
         "KEYMAP_SAVE": "Quick Save",
         "KEYMAP_LOAD": "Quick Load",
+        "KEYMAP_FPS": "Show FPS",
+        "KEYMAP_BILINEAR": "Toggle Bilinear",
         "STATS_KILLS_DETAIL_FMT": "KILLS %d of %d",
         "STATS_KILLS_BASIC_FMT": "KILLS %d",
         "STATS_PICKUPS_DETAIL_FMT": "PICKUPS %d of %d",

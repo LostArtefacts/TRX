@@ -50,9 +50,11 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_9,          // INPUT_ROLE_USE_BIG_MEDI
         SDL_SCANCODE_F5,         // INPUT_ROLE_SAVE
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
+        SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
+        SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
     },
 
-    // default user controls
+    // custom user controls
     {
         SDL_SCANCODE_KP_8,       // INPUT_ROLE_UP
         SDL_SCANCODE_KP_2,       // INPUT_ROLE_DOWN
@@ -85,6 +87,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_9,          // INPUT_ROLE_USE_BIG_MEDI
         SDL_SCANCODE_F5,         // INPUT_ROLE_SAVE
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
+        SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
+        SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
     },
 
     {
@@ -119,6 +123,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_9,          // INPUT_ROLE_USE_BIG_MEDI
         SDL_SCANCODE_F5,         // INPUT_ROLE_SAVE
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
+        SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
+        SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
     },
 
     {
@@ -153,6 +159,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_9,          // INPUT_ROLE_USE_BIG_MEDI
         SDL_SCANCODE_F5,         // INPUT_ROLE_SAVE
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
+        SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
+        SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
     }
     // clang-format on
 };
@@ -535,8 +543,8 @@ INPUT_STATE S_Input_GetCurrentState(INPUT_LAYOUT layout_num)
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
     linput.load                      = S_Input_Key(INPUT_ROLE_LOAD, layout_num);
 
-    linput.toggle_fps_counter        = KEY_DOWN(SDL_SCANCODE_F2);
-    linput.toggle_bilinear_filter    = KEY_DOWN(SDL_SCANCODE_F3);
+    linput.toggle_fps_counter        = S_Input_Key(INPUT_ROLE_FPS, layout_num);
+    linput.toggle_bilinear_filter    = S_Input_Key(INPUT_ROLE_BILINEAR, layout_num);
     linput.toggle_perspective_filter = KEY_DOWN(SDL_SCANCODE_F4);
     // clang-format on
 
