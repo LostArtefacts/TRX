@@ -62,16 +62,15 @@ typedef struct MENU {
     const TEXT_COLUMN_PLACEMENT *tail;
     int32_t cur_option;
     int32_t prev_option;
+    int32_t first_option;
+    int32_t last_option;
     int32_t cur_row;
     int32_t prev_row;
     TEXTSTRING *role_texts[MAX_REQLINES];
-    TEXTSTRING *name_texts[MAX_REQLINES];
+    TEXTSTRING *key_texts[MAX_REQLINES];
 } MENU;
 
 static int32_t m_KeyMode = KM_BROWSE;
-static int m_FirstOption = INPUT_ROLE_UP;
-static int m_LastOption = 0;
-
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
 static MENU m_ControlMenu = {
@@ -81,6 +80,8 @@ static MENU m_ControlMenu = {
     .tail = NULL,
     .cur_option = KC_TITLE,
     .prev_option = KC_TITLE,
+    .first_option = INPUT_ROLE_UP,
+    .last_option = 0,
     .cur_row = KC_TITLE,
     .prev_row = KC_TITLE,
 };
@@ -196,13 +197,11 @@ static void Option_ControlInitMenu(void)
 
 static void Option_ControlInitText(void)
 {
-    const int16_t centre = Screen_GetResWidthDownscaled() / 2;
-    int16_t max_y = 0;
     Option_ControlInitMenu();
 
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y - BORDER, " ");
-    Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
-    Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);
+    Text_CentreH(m_Text[TEXT_TITLE_BORDER], true);
+    Text_CentreV(m_Text[TEXT_TITLE_BORDER], true);
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -210,24 +209,22 @@ static void Option_ControlInitText(void)
 
     const TEXT_COLUMN_PLACEMENT *col = cols;
     m_ControlMenu.head = col;
-    int16_t x_names = centre - 150;
-    int16_t x_roles = centre + 30;
+    const int16_t centre = Screen_GetResWidthDownscaled() / 2;
+    int16_t x_roles = centre - 150;
+    int16_t box_width = 315;
+    int16_t x_names = -centre + box_width / 2 - BORDER;
     int16_t y = TOP_Y + ROW_HEIGHT + BORDER * 2;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
-        m_ControlMenu.name_texts[i] = Text_Create(
-            x_names, y, Input_GetKeyName(g_Config.input.layout, col->option));
-        Text_CentreV(m_ControlMenu.name_texts[i], 1);
-        Text_SetScale(
-            m_ControlMenu.name_texts[i], PHD_ONE * 0.8, PHD_ONE * 0.8);
-
         m_ControlMenu.role_texts[i] =
             Text_Create(x_roles, y, g_GameFlow.strings[col->game_string]);
-        Text_CentreV(m_ControlMenu.role_texts[i], 1);
-        Text_SetScale(
-            m_ControlMenu.role_texts[i], PHD_ONE * 0.8, PHD_ONE * 0.8);
+        Text_CentreV(m_ControlMenu.role_texts[i], true);
+
+        m_ControlMenu.key_texts[i] = Text_Create(
+            x_names, y, Input_GetKeyName(g_Config.input.layout, col->option));
+        Text_CentreV(m_ControlMenu.key_texts[i], true);
+        Text_AlignRight(m_ControlMenu.key_texts[i], true);
 
         y += ROW_HEIGHT;
-        max_y = MAX(max_y, y);
         m_ControlMenu.tail = col;
         col++;
     }
@@ -235,8 +232,8 @@ static void Option_ControlInitText(void)
     m_Text[TEXT_TITLE] = Text_Create(
         0, TOP_Y - BORDER / 2,
         g_GameFlow.strings[m_LayoutMap[g_Config.input.layout].layout_string]);
-    Text_CentreH(m_Text[TEXT_TITLE], 1);
-    Text_CentreV(m_Text[TEXT_TITLE], 1);
+    Text_CentreH(m_Text[TEXT_TITLE], true);
+    Text_CentreV(m_Text[TEXT_TITLE], true);
     Text_AddBackground(m_Text[TEXT_TITLE], 0, 0, 0, 0, TS_REQUESTED);
     Text_AddOutline(m_Text[TEXT_TITLE], true, TS_REQUESTED);
 
@@ -245,31 +242,30 @@ static void Option_ControlInitText(void)
     m_Text[TEXT_LEFT_ARROW] = Text_Create(
         m_Text[TEXT_TITLE]->pos.x - tw / 2 - 20, m_Text[TEXT_TITLE]->pos.y,
         "\200");
-    Text_CentreH(m_Text[TEXT_LEFT_ARROW], 1);
-    Text_CentreV(m_Text[TEXT_LEFT_ARROW], 1);
+    Text_CentreH(m_Text[TEXT_LEFT_ARROW], true);
+    Text_CentreV(m_Text[TEXT_LEFT_ARROW], true);
 
     m_Text[TEXT_RIGHT_ARROW] = Text_Create(
         m_Text[TEXT_TITLE]->pos.x + tw / 2 + 15, m_Text[TEXT_TITLE]->pos.y,
         "\201");
-    Text_CentreH(m_Text[TEXT_RIGHT_ARROW], 1);
-    Text_CentreV(m_Text[TEXT_RIGHT_ARROW], 1);
+    Text_CentreH(m_Text[TEXT_RIGHT_ARROW], true);
+    Text_CentreV(m_Text[TEXT_RIGHT_ARROW], true);
 
     m_Text[TEXT_UP_ARROW] =
-        Text_Create(0, m_ControlMenu.name_texts[0]->pos.y - 12, "[");
+        Text_Create(0, m_ControlMenu.key_texts[0]->pos.y - 12, "[");
     Text_SetScale(m_Text[TEXT_UP_ARROW], PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
-    Text_CentreH(m_Text[TEXT_UP_ARROW], 1);
-    Text_CentreV(m_Text[TEXT_UP_ARROW], 1);
+    Text_CentreH(m_Text[TEXT_UP_ARROW], true);
+    Text_CentreV(m_Text[TEXT_UP_ARROW], true);
 
     m_Text[TEXT_DOWN_ARROW] = Text_Create(
-        0, m_ControlMenu.name_texts[m_ControlMenu.vis_options - 1]->pos.y + 12,
+        0, m_ControlMenu.key_texts[m_ControlMenu.vis_options - 1]->pos.y + 12,
         "]");
     Text_SetScale(m_Text[TEXT_DOWN_ARROW], PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
-    Text_CentreH(m_Text[TEXT_DOWN_ARROW], 1);
-    Text_CentreV(m_Text[TEXT_DOWN_ARROW], 1);
+    Text_CentreH(m_Text[TEXT_DOWN_ARROW], true);
+    Text_CentreV(m_Text[TEXT_DOWN_ARROW], true);
 
-    int32_t lines_height = m_ControlMenu.vis_options * ROW_HEIGHT;
-    int32_t box_height = lines_height + ROW_HEIGHT + BOX_PADDING * 2 + BORDER;
-    int32_t box_width = 315;
+    int16_t lines_height = m_ControlMenu.vis_options * ROW_HEIGHT;
+    int16_t box_height = lines_height + ROW_HEIGHT + BOX_PADDING * 2 + BORDER;
 
     Text_AddBackground(
         m_Text[TEXT_TITLE_BORDER], box_width, box_height, 0, 0, TS_BACKGROUND);
@@ -280,7 +276,7 @@ static void Option_ControlInitText(void)
     for (const TEXT_COLUMN_PLACEMENT *col = cols; col->option != COL_END;
          col++) {
         if (col->option != COL_END) {
-            m_LastOption = col->option;
+            m_ControlMenu.last_option = col->option;
         }
     }
 }
@@ -317,13 +313,10 @@ static void Option_ControlUpdateText(void)
     const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.head;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_ChangeText(
-            m_ControlMenu.name_texts[i],
-            Input_GetKeyName(g_Config.input.layout, col->option));
-        Text_CentreV(m_ControlMenu.name_texts[i], 1);
-
-        Text_ChangeText(
             m_ControlMenu.role_texts[i], g_GameFlow.strings[col->game_string]);
-        Text_CentreV(m_ControlMenu.role_texts[i], 1);
+        Text_ChangeText(
+            m_ControlMenu.key_texts[i],
+            Input_GetKeyName(g_Config.input.layout, col->option));
         col++;
     }
 
@@ -352,20 +345,20 @@ static void Option_ControlUpdateText(void)
         Text_RemoveBackground(m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
         Text_RemoveOutline(m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
         Text_AddBackground(
-            m_ControlMenu.name_texts[m_ControlMenu.cur_row], 0, 0, 0, 0,
+            m_ControlMenu.key_texts[m_ControlMenu.cur_row], 0, 0, 0, 0,
             TS_REQUESTED);
         Text_AddOutline(
-            m_ControlMenu.name_texts[m_ControlMenu.cur_row], true,
+            m_ControlMenu.key_texts[m_ControlMenu.cur_row], true,
             TS_REQUESTED);
         break;
     case KM_CHANGE:
         break;
     case KM_CHANGEKEYUP:
         Text_ChangeText(
-            m_ControlMenu.name_texts[m_ControlMenu.cur_row],
+            m_ControlMenu.key_texts[m_ControlMenu.cur_row],
             Input_GetKeyName(g_Config.input.layout, m_ControlMenu.cur_option));
-        Text_RemoveBackground(m_ControlMenu.name_texts[m_ControlMenu.prev_row]);
-        Text_RemoveOutline(m_ControlMenu.name_texts[m_ControlMenu.prev_row]);
+        Text_RemoveBackground(m_ControlMenu.key_texts[m_ControlMenu.prev_row]);
+        Text_RemoveOutline(m_ControlMenu.key_texts[m_ControlMenu.prev_row]);
         Text_AddBackground(
             m_ControlMenu.role_texts[m_ControlMenu.cur_row], 0, 0, 0, 0,
             TS_REQUESTED);
@@ -385,8 +378,8 @@ static void Option_ControlShutdownText(void)
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_Remove(m_ControlMenu.role_texts[i]);
         m_ControlMenu.role_texts[i] = NULL;
-        Text_Remove(m_ControlMenu.name_texts[i]);
-        m_ControlMenu.name_texts[i] = NULL;
+        Text_Remove(m_ControlMenu.key_texts[i]);
+        m_ControlMenu.key_texts[i] = NULL;
     }
     m_ControlMenu.num_options = 0;
     m_ControlMenu.vis_options = 0;
@@ -394,6 +387,8 @@ static void Option_ControlShutdownText(void)
     m_ControlMenu.tail = NULL;
     m_ControlMenu.cur_option = KC_TITLE;
     m_ControlMenu.prev_option = KC_TITLE;
+    m_ControlMenu.first_option = INPUT_ROLE_UP;
+    m_ControlMenu.last_option = 0;
     m_ControlMenu.cur_row = KC_TITLE;
     m_ControlMenu.prev_row = KC_TITLE;
 }
@@ -407,11 +402,10 @@ static void Option_ControlFlashConflicts(void)
     const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.head;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_Flash(
-            m_ControlMenu.name_texts[i],
+            m_ControlMenu.key_texts[i],
             g_Config.input.layout != INPUT_LAYOUT_DEFAULT
                 && Input_IsKeyConflictedWithUser(col->option),
             20);
-        Text_RemoveOutline(m_ControlMenu.name_texts[i]);
         col++;
     }
 }
@@ -460,11 +454,11 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             } else if (g_InputDB.forward) {
                 if (m_ControlMenu.cur_option == KC_TITLE) {
                     m_ControlMenu.cur_row = m_ControlMenu.vis_options - 1;
-                    m_ControlMenu.cur_option = m_LastOption;
+                    m_ControlMenu.cur_option = m_ControlMenu.last_option;
                     m_ControlMenu.head = cols + m_ControlMenu.num_options - 1
                         - m_ControlMenu.vis_options + 1;
                     m_ControlMenu.tail = cols + m_ControlMenu.num_options - 1;
-                } else if (m_ControlMenu.cur_option == m_FirstOption) {
+                } else if (m_ControlMenu.cur_option == m_ControlMenu.first_option) {
                     m_ControlMenu.cur_row = KC_TITLE;
                     m_ControlMenu.cur_option = KC_TITLE;
                 } else {
@@ -472,7 +466,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                         && m_ControlMenu.cur_option
                             != m_ControlMenu.head->option) {
                         m_ControlMenu.cur_row--;
-                    } else if (m_ControlMenu.head->option != m_FirstOption) {
+                    } else if (m_ControlMenu.head->option != m_ControlMenu.first_option) {
                         m_ControlMenu.head--;
                         m_ControlMenu.tail--;
                     } else {
@@ -494,8 +488,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             } else if (g_InputDB.back) {
                 if (m_ControlMenu.cur_option == KC_TITLE) {
                     m_ControlMenu.cur_row++;
-                    m_ControlMenu.cur_option = m_FirstOption;
-                } else if (m_ControlMenu.cur_option == m_LastOption) {
+                    m_ControlMenu.cur_option = m_ControlMenu.first_option;
+                } else if (m_ControlMenu.cur_option == m_ControlMenu.last_option) {
                     m_ControlMenu.cur_row = KC_TITLE;
                     m_ControlMenu.cur_option = KC_TITLE;
                     m_ControlMenu.head = cols;
