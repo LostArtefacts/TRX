@@ -537,7 +537,7 @@ INPUT_STATE S_Input_GetCurrentState(INPUT_LAYOUT layout_num)
     linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
     linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
 
-    linput.select                    = KEY_DOWN(SDL_SCANCODE_RETURN);
+    linput.select                    = S_Input_Key(INPUT_ROLE_ACTION, layout_num);
     linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION, layout_num);
 
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
