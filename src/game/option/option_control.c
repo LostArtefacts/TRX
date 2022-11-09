@@ -339,6 +339,7 @@ static void Option_ControlUpdateText(void)
                 : m_ControlMenu.role_texts[m_ControlMenu.cur_row],
             true, TS_REQUESTED);
         break;
+
     case KM_BROWSEKEYUP:
         Text_RemoveBackground(m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
         Text_RemoveOutline(m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
@@ -348,8 +349,10 @@ static void Option_ControlUpdateText(void)
         Text_AddOutline(
             m_ControlMenu.key_texts[m_ControlMenu.cur_row], true, TS_REQUESTED);
         break;
+
     case KM_CHANGE:
         break;
+
     case KM_CHANGEKEYUP:
         Text_ChangeText(
             m_ControlMenu.key_texts[m_ControlMenu.cur_row],
