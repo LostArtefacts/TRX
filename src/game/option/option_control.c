@@ -70,6 +70,7 @@ typedef struct MENU {
     TEXTSTRING *key_texts[MAX_REQLINES];
 } MENU;
 
+static bool m_ControlLock = false;
 static int32_t m_KeyMode = KM_BROWSE;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
@@ -428,9 +429,14 @@ static void Option_ControlChangeLayout(void)
     Config_Write();
 }
 
+bool Option_ControlIsLocked(void) {
+    return m_ControlLock;
+}
+
 void Option_Control(INVENTORY_ITEM *inv_item)
 {
     if (!m_Text[TEXT_TITLE]) {
+        m_ControlLock = true;
         Option_ControlInitText();
     }
 
@@ -443,6 +449,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
         if (g_InputDB.deselect
             || (g_InputDB.select && m_ControlMenu.cur_option == KC_TITLE)) {
             Option_ControlShutdownText();
+            m_ControlLock = false;
             return;
         }
 

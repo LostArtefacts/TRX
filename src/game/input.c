@@ -4,6 +4,7 @@
 #include "game/clock.h"
 #include "game/inventory.h"
 #include "game/lara.h"
+#include "game/option/option_control.h"
 #include "global/vars.h"
 #include "specific/s_input.h"
 
@@ -120,6 +121,10 @@ void Input_Update(void)
     }
 
     g_InputDB = Input_GetDebounced(g_Input);
+
+    if (Option_ControlIsLocked()) {
+        return;
+    }
 
     if (g_Config.enable_numeric_keys) {
         if (g_InputDB.equip_pistols && Inv_RequestItem(O_GUN_ITEM)) {
