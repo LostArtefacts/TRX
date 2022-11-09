@@ -169,13 +169,6 @@ static void Option_ControlChangeLayout(void);
 static void Option_ControlInitMenu(void)
 {
     int32_t visible_lines = 0;
-    int32_t height = Screen_GetResHeight();
-    if (height <= 480) {
-        visible_lines = 10;
-    } else {
-        visible_lines = 12;
-    }
-
     if (Screen_GetResHeightDownscaled() <= 240) {
         visible_lines = 5;
     } else if (Screen_GetResHeightDownscaled() <= 384) {
