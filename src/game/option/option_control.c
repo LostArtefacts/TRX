@@ -425,7 +425,8 @@ static void Option_ControlChangeLayout(void)
     Config_Write();
 }
 
-bool Option_ControlIsLocked(void) {
+bool Option_ControlIsLocked(void)
+{
     return m_ControlLock;
 }
 
