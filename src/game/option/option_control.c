@@ -455,78 +455,71 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             Option_ControlChangeLayout();
         }
 
-        if (g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
-            if (g_InputDB.select) {
+        if (g_InputDB.select) {
+            if (g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
                 m_KeyMode = KM_BROWSEKEYUP;
-            } else if (g_InputDB.forward) {
-                if (m_ControlMenu.cur_option == KC_TITLE) {
-                    m_ControlMenu.cur_row = m_ControlMenu.vis_options - 1;
-                    m_ControlMenu.cur_option = m_ControlMenu.last_option;
-                    m_ControlMenu.head = cols + m_ControlMenu.num_options - 1
-                        - m_ControlMenu.vis_options + 1;
-                    m_ControlMenu.tail = cols + m_ControlMenu.num_options - 1;
-                } else if (
-                    m_ControlMenu.cur_option == m_ControlMenu.first_option) {
-                    m_ControlMenu.cur_row = KC_TITLE;
-                    m_ControlMenu.cur_option = KC_TITLE;
-                } else {
-                    if (m_ControlMenu.cur_row > 0
-                        && m_ControlMenu.cur_option
-                            != m_ControlMenu.head->option) {
-                        m_ControlMenu.cur_row--;
-                    } else if (
-                        m_ControlMenu.head->option
-                        != m_ControlMenu.first_option) {
-                        m_ControlMenu.head--;
-                        m_ControlMenu.tail--;
-                    } else {
-                        m_ControlMenu.cur_row--;
-                    }
-
-                    const TEXT_COLUMN_PLACEMENT *sel_col;
-                    for (sel_col = cols; sel_col->option != COL_END;
-                         sel_col++) {
-                        if (sel_col->option == m_ControlMenu.cur_option) {
-                            break;
-                        }
-                    }
-                    sel_col--;
-                    m_ControlMenu.cur_option = sel_col->option;
-                }
-                Option_ControlUpdateText();
-                Option_ControlFlashConflicts();
-            } else if (g_InputDB.back) {
-                if (m_ControlMenu.cur_option == KC_TITLE) {
-                    m_ControlMenu.cur_row++;
-                    m_ControlMenu.cur_option = m_ControlMenu.first_option;
-                } else if (
-                    m_ControlMenu.cur_option == m_ControlMenu.last_option) {
-                    m_ControlMenu.cur_row = KC_TITLE;
-                    m_ControlMenu.cur_option = KC_TITLE;
-                    m_ControlMenu.head = cols;
-                    m_ControlMenu.tail = cols + m_ControlMenu.vis_options - 1;
-                } else {
-                    if (m_ControlMenu.cur_row
-                        >= m_ControlMenu.vis_options - 1) {
-                        m_ControlMenu.head++;
-                        m_ControlMenu.tail++;
-                    } else {
-                        m_ControlMenu.cur_row++;
-                    }
-
-                    const TEXT_COLUMN_PLACEMENT *sel_col;
-                    for (sel_col = cols; sel_col->option != COL_END;
-                         sel_col++) {
-                        if (sel_col->option == m_ControlMenu.cur_option) {
-                            break;
-                        }
-                    }
-                    sel_col++;
-                    m_ControlMenu.cur_option = sel_col->option;
-                }
-                Option_ControlUpdateText();
-                Option_ControlFlashConflicts();
             }
+        } else if (g_InputDB.forward) {
+            if (m_ControlMenu.cur_option == KC_TITLE) {
+                m_ControlMenu.cur_row = m_ControlMenu.vis_options - 1;
+                m_ControlMenu.cur_option = m_ControlMenu.last_option;
+                m_ControlMenu.head = cols + m_ControlMenu.num_options - 1
+                    - m_ControlMenu.vis_options + 1;
+                m_ControlMenu.tail = cols + m_ControlMenu.num_options - 1;
+            } else if (m_ControlMenu.cur_option == m_ControlMenu.first_option) {
+                m_ControlMenu.cur_row = KC_TITLE;
+                m_ControlMenu.cur_option = KC_TITLE;
+            } else {
+                if (m_ControlMenu.cur_row > 0
+                    && m_ControlMenu.cur_option != m_ControlMenu.head->option) {
+                    m_ControlMenu.cur_row--;
+                } else if (
+                    m_ControlMenu.head->option != m_ControlMenu.first_option) {
+                    m_ControlMenu.head--;
+                    m_ControlMenu.tail--;
+                } else {
+                    m_ControlMenu.cur_row--;
+                }
+
+                const TEXT_COLUMN_PLACEMENT *sel_col;
+                for (sel_col = cols; sel_col->option != COL_END; sel_col++) {
+                    if (sel_col->option == m_ControlMenu.cur_option) {
+                        break;
+                    }
+                }
+                sel_col--;
+                m_ControlMenu.cur_option = sel_col->option;
+            }
+            Option_ControlUpdateText();
+            Option_ControlFlashConflicts();
+        } else if (g_InputDB.back) {
+            if (m_ControlMenu.cur_option == KC_TITLE) {
+                m_ControlMenu.cur_row++;
+                m_ControlMenu.cur_option = m_ControlMenu.first_option;
+            } else if (m_ControlMenu.cur_option == m_ControlMenu.last_option) {
+                m_ControlMenu.cur_row = KC_TITLE;
+                m_ControlMenu.cur_option = KC_TITLE;
+                m_ControlMenu.head = cols;
+                m_ControlMenu.tail = cols + m_ControlMenu.vis_options - 1;
+            } else {
+                if (m_ControlMenu.cur_row >= m_ControlMenu.vis_options - 1) {
+                    m_ControlMenu.head++;
+                    m_ControlMenu.tail++;
+                } else {
+                    m_ControlMenu.cur_row++;
+                }
+
+                const TEXT_COLUMN_PLACEMENT *sel_col;
+                for (sel_col = cols; sel_col->option != COL_END; sel_col++) {
+                    if (sel_col->option == m_ControlMenu.cur_option) {
+                        break;
+                    }
+                }
+                sel_col++;
+                m_ControlMenu.cur_option = sel_col->option;
+            }
+            Option_ControlUpdateText();
+            Option_ControlFlashConflicts();
         }
         break;
 
