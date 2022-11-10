@@ -34,10 +34,11 @@ static const LAYOUT_NUM_GS_MAP m_LayoutMap[] = {
 };
 
 typedef enum KEYMODE {
-    KM_BROWSE = 0,
-    KM_BROWSEKEYUP = 1,
-    KM_CHANGE = 2,
-    KM_CHANGEKEYUP = 3,
+    KM_INACTIVE = 0,
+    KM_BROWSE = 1,
+    KM_BROWSEKEYUP = 2,
+    KM_CHANGE = 3,
+    KM_CHANGEKEYUP = 4,
 } KEYMODE;
 
 typedef enum CONTROL_TEXT {
@@ -70,8 +71,7 @@ typedef struct MENU {
     TEXTSTRING *key_texts[MAX_REQLINES];
 } MENU;
 
-static bool m_ControlLock = false;
-static int32_t m_KeyMode = KM_BROWSE;
+static int32_t m_KeyMode = KM_INACTIVE;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
 static MENU m_ControlMenu = {
@@ -427,13 +427,13 @@ static void Option_ControlChangeLayout(void)
 
 bool Option_ControlIsLocked(void)
 {
-    return m_ControlLock;
+    return m_KeyMode != KM_INACTIVE;
 }
 
 void Option_Control(INVENTORY_ITEM *inv_item)
 {
     if (!m_Text[TEXT_TITLE]) {
-        m_ControlLock = true;
+        m_KeyMode = KM_BROWSE;
         Option_ControlInitText();
     }
 
@@ -446,7 +446,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
         if (g_InputDB.deselect
             || (g_InputDB.select && m_ControlMenu.cur_option == KC_TITLE)) {
             Option_ControlShutdownText();
-            m_ControlLock = false;
+            m_KeyMode = KM_INACTIVE;
             return;
         }
 
