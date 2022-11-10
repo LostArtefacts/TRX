@@ -14,6 +14,9 @@ void Input_Init(void);
 void Input_Shutdown(void);
 void Input_Update(void);
 
+// Checks the current layout for conflicts with other layouts.
+void Input_CheckConflicts(INPUT_LAYOUT layout_num);
+
 // Returns whether the key assigned to the given role is also used elsewhere
 // within the custom layout.
 bool Input_IsKeyConflictedWithUser(INPUT_ROLE role);

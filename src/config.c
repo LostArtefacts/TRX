@@ -17,6 +17,7 @@
 #include "specific/s_shell.h"
 #include "util.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #define Q(x) #x
@@ -248,7 +249,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     CLAMP(g_Config.sound_volume, 0, 10);
 
     READ_INTEGER(input.layout, 0);
-    CLAMP(g_Config.input.layout, 0, 1);
+    CLAMP(g_Config.input.layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
 
     READ_FLOAT(brightness, DEFAULT_BRIGHTNESS);
     CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
@@ -259,14 +260,19 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    struct json_array_s *layout_arr =
-        json_object_get_array(root_obj, "layout_sdl");
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        INPUT_SCANCODE scancode =
-            Input_GetAssignedScancode(INPUT_LAYOUT_USER, role);
-        scancode = json_array_get_int(layout_arr, role, scancode);
-        Input_AssignScancode(INPUT_LAYOUT_USER, role, scancode);
+    char layout_name[20];
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        sprintf(layout_name, "layout_%d", layout);
+        struct json_array_s *layout_arr =
+            json_object_get_array(root_obj, layout_name);
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
+            scancode = json_array_get_int(layout_arr, role, scancode);
+            Input_AssignScancode(layout, role, scancode);
+        }
     }
+    Input_CheckConflicts(g_Config.input.layout);
 
     if (root) {
         json_value_free(root);
@@ -398,12 +404,17 @@ bool Config_Write(void)
     WRITE_FLOAT(ui.text_scale);
     WRITE_FLOAT(ui.bar_scale);
 
-    struct json_array_s *layout_arr = json_array_new();
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        json_array_append_int(
-            layout_arr, Input_GetAssignedScancode(INPUT_LAYOUT_USER, role));
+    char layout_name[20];
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        struct json_array_s *layout_arr = json_array_new();
+        sprintf(layout_name, "layout_%d", layout);
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            json_array_append_int(
+                layout_arr, Input_GetAssignedScancode(layout, role));
+        }
+        json_object_append_array(root_obj, layout_name, layout_arr);
     }
-    json_object_append_array(root_obj, "layout_sdl", layout_arr);
 
     struct json_value_s *root = json_value_from_object(root_obj);
     char *data = json_write_pretty(root, "  ", "\n", &size);
