@@ -45,8 +45,8 @@ void S_Output_Draw2DLine(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 color1,
     RGBA8888 color2);
 void S_Output_Draw2DQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br);
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, float z, RGBA8888 tl,
+    RGBA8888 tr, RGBA8888 bl, RGBA8888 br);
 void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count);
 void S_Output_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,

@@ -3,7 +3,9 @@
 #include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/output.h"
 #include "game/screen.h"
+#include "game/sound.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -16,23 +18,17 @@
 #define TOP_Y -60
 #define BORDER 4
 #define HEADER_HEIGHT 25
-#define ROW_HEIGHT 18
+#define ROW_HEIGHT 17
 #define BOX_PADDING 10
 
 #define KC_TITLE -1
 #define COL_END -1
-
-typedef struct LAYOUT_NUM_GS_MAP {
-    INPUT_LAYOUT layout_num;
-    GAME_STRING_ID layout_string;
-} LAYOUT_NUM_GS_MAP;
-
-static const LAYOUT_NUM_GS_MAP m_LayoutMap[] = {
-    { INPUT_LAYOUT_DEFAULT, GS_CONTROL_DEFAULT_KEYS },
-    { INPUT_LAYOUT_CUSTOM_1, GS_CONTROL_CUSTOM_1 },
-    { INPUT_LAYOUT_CUSTOM_2, GS_CONTROL_CUSTOM_2 },
-    { INPUT_LAYOUT_CUSTOM_3, GS_CONTROL_CUSTOM_3 },
-};
+#define COLOR_STEPS 5
+#define RESET_ALL_KEY "R"
+#define UNBIND_KEY "Backspace"
+#define UNBIND_SCANCODE 0
+#define BUTTON_HOLD_TIME 2
+#define HOLD_DELAY_FRAMES 300 * FRAMES_PER_SECOND / 1000
 
 typedef enum KEYMODE {
     KM_INACTIVE = 0,
@@ -49,115 +45,145 @@ typedef enum CONTROL_TEXT {
     TEXT_RIGHT_ARROW = 3,
     TEXT_UP_ARROW = 4,
     TEXT_DOWN_ARROW = 5,
-    TEXT_NUMBER_OF = 6,
+    TEXT_RESET_BORDER = 6,
+    TEXT_RESET = 7,
+    TEXT_UNBIND = 8,
+    TEXT_NUMBER_OF = 9,
 } CONTROL_TEXT;
 
+typedef struct LAYOUT_NUM_GS_MAP {
+    INPUT_LAYOUT layout_num;
+    GAME_STRING_ID layout_string;
+} LAYOUT_NUM_GS_MAP;
+
 typedef struct TEXT_COLUMN_PLACEMENT {
-    int option;
+    int role;
     GAME_STRING_ID game_string;
+    bool can_unbind;
 } TEXT_COLUMN_PLACEMENT;
 
 typedef struct MENU {
     int32_t num_options;
     int32_t vis_options;
-    const TEXT_COLUMN_PLACEMENT *head;
-    const TEXT_COLUMN_PLACEMENT *tail;
-    int32_t cur_option;
-    int32_t prev_option;
-    int32_t first_option;
-    int32_t last_option;
-    int32_t cur_row;
-    int32_t prev_row;
+    const TEXT_COLUMN_PLACEMENT *top_row;
+    const TEXT_COLUMN_PLACEMENT *bot_row;
+    const TEXT_COLUMN_PLACEMENT *cur_row;
+    int32_t cur_role;
+    int32_t first_role;
+    int32_t last_role;
+    int32_t row_num;
+    int32_t prev_row_num;
     TEXTSTRING *role_texts[MAX_REQLINES];
     TEXTSTRING *key_texts[MAX_REQLINES];
 } MENU;
 
 static int32_t m_KeyMode = KM_INACTIVE;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
+static int32_t m_ResetTimer = 0;
+static int32_t m_ResetKeyMode = KM_INACTIVE;
+static int32_t m_ResetKeyDelay = 0;
+static int32_t m_UnbindTimer = 0;
+static int32_t m_UnbindKeyMode = KM_INACTIVE;
+static int32_t m_UnbindKeyDelay = 0;
+
+static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
+    // gold (reversed from overlay since drawn backwards)
+    { { 80, 48, 20, 255 },
+      { 88, 68, 0, 255 },
+      { 112, 92, 44, 255 },
+      { 164, 120, 72, 255 },
+      { 112, 92, 44, 255 } },
+};
 
 static MENU m_ControlMenu = {
     .num_options = 0,
     .vis_options = 0,
-    .head = NULL,
-    .tail = NULL,
-    .cur_option = KC_TITLE,
-    .prev_option = KC_TITLE,
-    .first_option = INPUT_ROLE_UP,
-    .last_option = 0,
-    .cur_row = KC_TITLE,
-    .prev_row = KC_TITLE,
+    .top_row = NULL,
+    .bot_row = NULL,
+    .cur_role = KC_TITLE,
+    .first_role = INPUT_ROLE_UP,
+    .last_role = 0,
+    .row_num = KC_TITLE,
+    .prev_row_num = KC_TITLE,
+};
+
+static const LAYOUT_NUM_GS_MAP m_LayoutMap[] = {
+    { INPUT_LAYOUT_DEFAULT, GS_CONTROL_DEFAULT_KEYS },
+    { INPUT_LAYOUT_CUSTOM_1, GS_CONTROL_CUSTOM_1 },
+    { INPUT_LAYOUT_CUSTOM_2, GS_CONTROL_CUSTOM_2 },
+    { INPUT_LAYOUT_CUSTOM_3, GS_CONTROL_CUSTOM_3 },
 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
-    { INPUT_ROLE_UP, GS_KEYMAP_RUN },
-    { INPUT_ROLE_DOWN, GS_KEYMAP_BACK },
-    { INPUT_ROLE_LEFT, GS_KEYMAP_LEFT },
-    { INPUT_ROLE_RIGHT, GS_KEYMAP_RIGHT },
-    { INPUT_ROLE_STEP_L, GS_KEYMAP_STEP_LEFT },
-    { INPUT_ROLE_STEP_R, GS_KEYMAP_STEP_RIGHT },
-    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK },
-    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS },
-    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN },
-    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS },
-    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS },
-    { INPUT_ROLE_CAMERA_UP, GS_KEYMAP_CAMERA_UP },
-    { INPUT_ROLE_CAMERA_DOWN, GS_KEYMAP_CAMERA_DOWN },
-    { INPUT_ROLE_CAMERA_LEFT, GS_KEYMAP_CAMERA_LEFT },
-    { INPUT_ROLE_CAMERA_RIGHT, GS_KEYMAP_CAMERA_RIGHT },
-    { INPUT_ROLE_CAMERA_RESET, GS_KEYMAP_CAMERA_RESET },
-    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK },
-    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP },
-    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION },
-    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON },
-    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL },
-    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY },
-    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE },
-    { INPUT_ROLE_USE_SMALL_MEDI, GS_KEYMAP_USE_SMALL_MEDI },
-    { INPUT_ROLE_USE_BIG_MEDI, GS_KEYMAP_USE_BIG_MEDI },
-    { INPUT_ROLE_SAVE, GS_KEYMAP_SAVE },
-    { INPUT_ROLE_LOAD, GS_KEYMAP_LOAD },
-    { INPUT_ROLE_FPS, GS_KEYMAP_FPS },
-    { INPUT_ROLE_BILINEAR, GS_KEYMAP_BILINEAR },
+    { INPUT_ROLE_UP, GS_KEYMAP_RUN, false },
+    { INPUT_ROLE_DOWN, GS_KEYMAP_BACK, false },
+    { INPUT_ROLE_LEFT, GS_KEYMAP_LEFT, false },
+    { INPUT_ROLE_RIGHT, GS_KEYMAP_RIGHT, false },
+    { INPUT_ROLE_STEP_L, GS_KEYMAP_STEP_LEFT, false },
+    { INPUT_ROLE_STEP_R, GS_KEYMAP_STEP_RIGHT, false },
+    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK, false },
+    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS, true },
+    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN, true },
+    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS, true },
+    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS, true },
+    { INPUT_ROLE_CAMERA_UP, GS_KEYMAP_CAMERA_UP, true },
+    { INPUT_ROLE_CAMERA_DOWN, GS_KEYMAP_CAMERA_DOWN, true },
+    { INPUT_ROLE_CAMERA_LEFT, GS_KEYMAP_CAMERA_LEFT, true },
+    { INPUT_ROLE_CAMERA_RIGHT, GS_KEYMAP_CAMERA_RIGHT, true },
+    { INPUT_ROLE_CAMERA_RESET, GS_KEYMAP_CAMERA_RESET, true },
+    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK, false },
+    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP, false },
+    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION, false },
+    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON, false },
+    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL, false },
+    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY, false },
+    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE, true },
+    { INPUT_ROLE_USE_SMALL_MEDI, GS_KEYMAP_USE_SMALL_MEDI, true },
+    { INPUT_ROLE_USE_BIG_MEDI, GS_KEYMAP_USE_BIG_MEDI, true },
+    { INPUT_ROLE_SAVE, GS_KEYMAP_SAVE, true },
+    { INPUT_ROLE_LOAD, GS_KEYMAP_LOAD, true },
+    { INPUT_ROLE_FPS, GS_KEYMAP_FPS, true },
+    { INPUT_ROLE_BILINEAR, GS_KEYMAP_BILINEAR, true },
     // end
-    { COL_END, -1 },
+    { COL_END, -1, false },
 };
 
 static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
-    { INPUT_ROLE_UP, GS_KEYMAP_RUN },
-    { INPUT_ROLE_DOWN, GS_KEYMAP_BACK },
-    { INPUT_ROLE_LEFT, GS_KEYMAP_LEFT },
-    { INPUT_ROLE_RIGHT, GS_KEYMAP_RIGHT },
-    { INPUT_ROLE_STEP_L, GS_KEYMAP_STEP_LEFT },
-    { INPUT_ROLE_STEP_R, GS_KEYMAP_STEP_RIGHT },
-    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK },
-    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS },
-    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN },
-    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS },
-    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS },
-    { INPUT_ROLE_CAMERA_UP, GS_KEYMAP_CAMERA_UP },
-    { INPUT_ROLE_CAMERA_DOWN, GS_KEYMAP_CAMERA_DOWN },
-    { INPUT_ROLE_CAMERA_LEFT, GS_KEYMAP_CAMERA_LEFT },
-    { INPUT_ROLE_CAMERA_RIGHT, GS_KEYMAP_CAMERA_RIGHT },
-    { INPUT_ROLE_CAMERA_RESET, GS_KEYMAP_CAMERA_RESET },
-    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK },
-    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP },
-    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION },
-    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON },
-    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL },
-    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY },
-    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE },
-    { INPUT_ROLE_USE_SMALL_MEDI, GS_KEYMAP_USE_SMALL_MEDI },
-    { INPUT_ROLE_USE_BIG_MEDI, GS_KEYMAP_USE_BIG_MEDI },
-    { INPUT_ROLE_SAVE, GS_KEYMAP_SAVE },
-    { INPUT_ROLE_LOAD, GS_KEYMAP_LOAD },
-    { INPUT_ROLE_FPS, GS_KEYMAP_FPS },
-    { INPUT_ROLE_BILINEAR, GS_KEYMAP_BILINEAR },
-    { INPUT_ROLE_FLY_CHEAT, GS_KEYMAP_FLY_CHEAT },
-    { INPUT_ROLE_ITEM_CHEAT, GS_KEYMAP_ITEM_CHEAT },
-    { INPUT_ROLE_LEVEL_SKIP_CHEAT, GS_KEYMAP_LEVEL_SKIP_CHEAT },
-    { INPUT_ROLE_TURBO_CHEAT, GS_KEYMAP_TURBO_CHEAT },
+    { INPUT_ROLE_UP, GS_KEYMAP_RUN, false },
+    { INPUT_ROLE_DOWN, GS_KEYMAP_BACK, false },
+    { INPUT_ROLE_LEFT, GS_KEYMAP_LEFT, false },
+    { INPUT_ROLE_RIGHT, GS_KEYMAP_RIGHT, false },
+    { INPUT_ROLE_STEP_L, GS_KEYMAP_STEP_LEFT, false },
+    { INPUT_ROLE_STEP_R, GS_KEYMAP_STEP_RIGHT, false },
+    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK, false },
+    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS, true },
+    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN, true },
+    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS, true },
+    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS, true },
+    { INPUT_ROLE_CAMERA_UP, GS_KEYMAP_CAMERA_UP, true },
+    { INPUT_ROLE_CAMERA_DOWN, GS_KEYMAP_CAMERA_DOWN, true },
+    { INPUT_ROLE_CAMERA_LEFT, GS_KEYMAP_CAMERA_LEFT, true },
+    { INPUT_ROLE_CAMERA_RIGHT, GS_KEYMAP_CAMERA_RIGHT, true },
+    { INPUT_ROLE_CAMERA_RESET, GS_KEYMAP_CAMERA_RESET, true },
+    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK, false },
+    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP, false },
+    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION, false },
+    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON, false },
+    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL, false },
+    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY, false },
+    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE, true },
+    { INPUT_ROLE_USE_SMALL_MEDI, GS_KEYMAP_USE_SMALL_MEDI, true },
+    { INPUT_ROLE_USE_BIG_MEDI, GS_KEYMAP_USE_BIG_MEDI, true },
+    { INPUT_ROLE_SAVE, GS_KEYMAP_SAVE, true },
+    { INPUT_ROLE_LOAD, GS_KEYMAP_LOAD, true },
+    { INPUT_ROLE_FPS, GS_KEYMAP_FPS, true },
+    { INPUT_ROLE_BILINEAR, GS_KEYMAP_BILINEAR, true },
+    { INPUT_ROLE_FLY_CHEAT, GS_KEYMAP_FLY_CHEAT, true },
+    { INPUT_ROLE_ITEM_CHEAT, GS_KEYMAP_ITEM_CHEAT, true },
+    { INPUT_ROLE_LEVEL_SKIP_CHEAT, GS_KEYMAP_LEVEL_SKIP_CHEAT, true },
+    { INPUT_ROLE_TURBO_CHEAT, GS_KEYMAP_TURBO_CHEAT, true },
     // end
-    { COL_END, -1 },
+    { COL_END, -1, false },
 };
 
 static void Option_ControlInitMenu(void);
@@ -166,6 +192,9 @@ static void Option_ControlUpdateText(void);
 static void Option_ControlShutdownText(void);
 static void Option_ControlFlashConflicts(void);
 static void Option_ControlChangeLayout(void);
+static void Option_ControlCheckResetKeys(void);
+static void Option_ControlCheckUnbindKey(void);
+static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer);
 
 static void Option_ControlInitMenu(void)
 {
@@ -175,9 +204,9 @@ static void Option_ControlInitMenu(void)
     } else if (Screen_GetResHeightDownscaled() <= 384) {
         visible_lines = 8;
     } else if (Screen_GetResHeightDownscaled() <= 480) {
-        visible_lines = 10;
-    } else {
         visible_lines = 12;
+    } else {
+        visible_lines = 18;
     }
     m_ControlMenu.vis_options = visible_lines;
 
@@ -185,9 +214,13 @@ static void Option_ControlInitMenu(void)
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    for (const TEXT_COLUMN_PLACEMENT *col = cols; col->option != COL_END;
-         col++) {
+    m_ControlMenu.top_row = cols;
+    m_ControlMenu.cur_row = cols;
+    m_ControlMenu.bot_row = cols + m_ControlMenu.vis_options - 1;
+
+    for (const TEXT_COLUMN_PLACEMENT *col = cols; col->role != COL_END; col++) {
         m_ControlMenu.num_options++;
+        m_ControlMenu.last_role = col->role;
     }
 
     m_ControlMenu.vis_options =
@@ -207,7 +240,6 @@ static void Option_ControlInitText(void)
         : CtrlTextPlacementNormal;
 
     const TEXT_COLUMN_PLACEMENT *col = cols;
-    m_ControlMenu.head = col;
     const int16_t centre = Screen_GetResWidthDownscaled() / 2;
     int16_t x_roles = centre - 150;
     int16_t box_width = 315;
@@ -219,12 +251,11 @@ static void Option_ControlInitText(void)
         Text_CentreV(m_ControlMenu.role_texts[i], true);
 
         m_ControlMenu.key_texts[i] = Text_Create(
-            x_names, y, Input_GetKeyName(g_Config.input.layout, col->option));
+            x_names, y, Input_GetKeyName(g_Config.input.layout, col->role));
         Text_CentreV(m_ControlMenu.key_texts[i], true);
         Text_AlignRight(m_ControlMenu.key_texts[i], true);
 
         y += ROW_HEIGHT;
-        m_ControlMenu.tail = col;
         col++;
     }
 
@@ -270,19 +301,57 @@ static void Option_ControlInitText(void)
         m_Text[TEXT_TITLE_BORDER], box_width, box_height, 0, 0, TS_BACKGROUND);
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
 
-    Option_ControlFlashConflicts();
+    m_Text[TEXT_RESET] = Text_Create(
+        x_roles, y + BOX_PADDING + BORDER,
+        g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS]);
+    Text_CentreV(m_Text[TEXT_RESET], true);
+    Text_SetScale(m_Text[TEXT_RESET], PHD_ONE * .8, PHD_ONE * .8);
 
-    for (const TEXT_COLUMN_PLACEMENT *col = cols; col->option != COL_END;
-         col++) {
-        if (col->option != COL_END) {
-            m_ControlMenu.last_option = col->option;
-        }
+    m_Text[TEXT_UNBIND] = Text_Create(
+        x_names, y + BOX_PADDING + BORDER,
+        g_GameFlow.strings[GS_CONTROL_UNBIND]);
+    Text_CentreV(m_Text[TEXT_UNBIND], true);
+    Text_AlignRight(m_Text[TEXT_UNBIND], true);
+    Text_SetScale(m_Text[TEXT_UNBIND], PHD_ONE * .8, PHD_ONE * .8);
+
+    if (g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
+        Text_Hide(m_Text[TEXT_RESET], true);
+        Text_Hide(m_Text[TEXT_UNBIND], true);
     }
+
+    m_Text[TEXT_RESET_BORDER] = Text_Create(0, y + BOX_PADDING + BORDER, " ");
+    Text_CentreH(m_Text[TEXT_RESET_BORDER], true);
+    Text_CentreV(m_Text[TEXT_RESET_BORDER], true);
+    Text_AddBackground(
+        m_Text[TEXT_RESET_BORDER], box_width, ROW_HEIGHT, 0, 0, TS_BACKGROUND);
+
+    Option_ControlUpdateText();
+    Option_ControlFlashConflicts();
 }
 
 static void Option_ControlUpdateText(void)
 {
-    if (m_ControlMenu.cur_option == KC_TITLE) {
+    const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
+        ? CtrlTextPlacementCheats
+        : CtrlTextPlacementNormal;
+
+    if (g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
+        Text_Hide(m_Text[TEXT_RESET], true);
+        Text_Hide(m_Text[TEXT_RESET_BORDER], true);
+        Text_Hide(m_Text[TEXT_UNBIND], true);
+    } else {
+        Text_Hide(m_Text[TEXT_RESET], false);
+        Text_Hide(m_Text[TEXT_RESET_BORDER], false);
+
+        if (m_ControlMenu.cur_role == KC_TITLE
+            || !m_ControlMenu.cur_row->can_unbind) {
+            Text_Hide(m_Text[TEXT_UNBIND], true);
+        } else {
+            Text_Hide(m_Text[TEXT_UNBIND], false);
+        }
+    }
+
+    if (m_ControlMenu.cur_role == KC_TITLE) {
         Text_ChangeText(
             m_Text[TEXT_TITLE],
             g_GameFlow
@@ -305,50 +374,48 @@ static void Option_ControlUpdateText(void)
         Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
     }
 
-    const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
-        ? CtrlTextPlacementCheats
-        : CtrlTextPlacementNormal;
-
-    const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.head;
+    const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_ChangeText(
             m_ControlMenu.role_texts[i], g_GameFlow.strings[col->game_string]);
         Text_ChangeText(
             m_ControlMenu.key_texts[i],
-            Input_GetKeyName(g_Config.input.layout, col->option));
+            Input_GetKeyName(g_Config.input.layout, col->role));
         col++;
     }
 
     switch (m_KeyMode) {
     case KM_BROWSE:
         Text_RemoveBackground(
-            m_ControlMenu.prev_row == KC_TITLE
+            m_ControlMenu.prev_row_num == KC_TITLE
                 ? m_Text[TEXT_TITLE]
-                : m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
+                : m_ControlMenu.role_texts[m_ControlMenu.prev_row_num]);
         Text_RemoveOutline(
-            m_ControlMenu.prev_row == KC_TITLE
+            m_ControlMenu.prev_row_num == KC_TITLE
                 ? m_Text[TEXT_TITLE]
-                : m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
+                : m_ControlMenu.role_texts[m_ControlMenu.prev_row_num]);
         Text_AddBackground(
-            m_ControlMenu.cur_row == KC_TITLE
+            m_ControlMenu.row_num == KC_TITLE
                 ? m_Text[TEXT_TITLE]
-                : m_ControlMenu.role_texts[m_ControlMenu.cur_row],
+                : m_ControlMenu.role_texts[m_ControlMenu.row_num],
             0, 0, 0, 0, TS_REQUESTED);
         Text_AddOutline(
-            m_ControlMenu.cur_row == KC_TITLE
+            m_ControlMenu.row_num == KC_TITLE
                 ? m_Text[TEXT_TITLE]
-                : m_ControlMenu.role_texts[m_ControlMenu.cur_row],
+                : m_ControlMenu.role_texts[m_ControlMenu.row_num],
             true, TS_REQUESTED);
         break;
 
     case KM_BROWSEKEYUP:
-        Text_RemoveBackground(m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
-        Text_RemoveOutline(m_ControlMenu.role_texts[m_ControlMenu.prev_row]);
+        Text_RemoveBackground(
+            m_ControlMenu.role_texts[m_ControlMenu.prev_row_num]);
+        Text_RemoveOutline(
+            m_ControlMenu.role_texts[m_ControlMenu.prev_row_num]);
         Text_AddBackground(
-            m_ControlMenu.key_texts[m_ControlMenu.cur_row], 0, 0, 0, 0,
+            m_ControlMenu.key_texts[m_ControlMenu.row_num], 0, 0, 0, 0,
             TS_REQUESTED);
         Text_AddOutline(
-            m_ControlMenu.key_texts[m_ControlMenu.cur_row], true, TS_REQUESTED);
+            m_ControlMenu.key_texts[m_ControlMenu.row_num], true, TS_REQUESTED);
         break;
 
     case KM_CHANGE:
@@ -356,15 +423,16 @@ static void Option_ControlUpdateText(void)
 
     case KM_CHANGEKEYUP:
         Text_ChangeText(
-            m_ControlMenu.key_texts[m_ControlMenu.cur_row],
-            Input_GetKeyName(g_Config.input.layout, m_ControlMenu.cur_option));
-        Text_RemoveBackground(m_ControlMenu.key_texts[m_ControlMenu.prev_row]);
-        Text_RemoveOutline(m_ControlMenu.key_texts[m_ControlMenu.prev_row]);
+            m_ControlMenu.key_texts[m_ControlMenu.row_num],
+            Input_GetKeyName(g_Config.input.layout, m_ControlMenu.cur_role));
+        Text_RemoveBackground(
+            m_ControlMenu.key_texts[m_ControlMenu.prev_row_num]);
+        Text_RemoveOutline(m_ControlMenu.key_texts[m_ControlMenu.prev_row_num]);
         Text_AddBackground(
-            m_ControlMenu.role_texts[m_ControlMenu.cur_row], 0, 0, 0, 0,
+            m_ControlMenu.role_texts[m_ControlMenu.row_num], 0, 0, 0, 0,
             TS_REQUESTED);
         Text_AddOutline(
-            m_ControlMenu.role_texts[m_ControlMenu.cur_row], true,
+            m_ControlMenu.role_texts[m_ControlMenu.row_num], true,
             TS_REQUESTED);
         break;
     }
@@ -384,14 +452,20 @@ static void Option_ControlShutdownText(void)
     }
     m_ControlMenu.num_options = 0;
     m_ControlMenu.vis_options = 0;
-    m_ControlMenu.head = NULL;
-    m_ControlMenu.tail = NULL;
-    m_ControlMenu.cur_option = KC_TITLE;
-    m_ControlMenu.prev_option = KC_TITLE;
-    m_ControlMenu.first_option = INPUT_ROLE_UP;
-    m_ControlMenu.last_option = 0;
-    m_ControlMenu.cur_row = KC_TITLE;
-    m_ControlMenu.prev_row = KC_TITLE;
+    m_ControlMenu.top_row = NULL;
+    m_ControlMenu.bot_row = NULL;
+    m_ControlMenu.cur_role = KC_TITLE;
+    m_ControlMenu.first_role = INPUT_ROLE_UP;
+    m_ControlMenu.last_role = 0;
+    m_ControlMenu.row_num = KC_TITLE;
+    m_ControlMenu.prev_row_num = KC_TITLE;
+
+    m_ResetTimer = 0;
+    m_ResetKeyMode = 0;
+    m_ResetKeyDelay = 0;
+    m_UnbindTimer = 0;
+    m_UnbindKeyMode = 0;
+    m_UnbindKeyDelay = 0;
 }
 
 static void Option_ControlFlashConflicts(void)
@@ -400,12 +474,12 @@ static void Option_ControlFlashConflicts(void)
         ? CtrlTextPlacementCheats
         : CtrlTextPlacementNormal;
 
-    const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.head;
+    const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_Flash(
             m_ControlMenu.key_texts[i],
             g_Config.input.layout != INPUT_LAYOUT_DEFAULT
-                && Input_IsKeyConflictedWithUser(col->option),
+                && Input_IsKeyConflictedWithUser(col->role),
             20);
         col++;
     }
@@ -426,6 +500,139 @@ static void Option_ControlChangeLayout(void)
     Config_Write();
 }
 
+static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
+{
+    const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
+    const RGBA8888 rgb_border_light = { 128, 128, 128, 128 };
+    const RGBA8888 rgb_border_dark = { 64, 64, 64, 128 };
+
+    int32_t width = Text_GetWidth(txt);
+    int32_t height = -TEXT_HEIGHT;
+
+    int32_t x = txt->pos.x;
+    int32_t y = txt->pos.y;
+
+    if (txt->flags.centre_h) {
+        x += (Screen_GetResWidthDownscaled() - width) / 2;
+    } else if (txt->flags.right) {
+        x += Screen_GetResWidthDownscaled() - width;
+    }
+    if (txt->flags.centre_v) {
+        y += Screen_GetResHeightDownscaled() / 2;
+    } else if (txt->flags.bottom) {
+        y += Screen_GetResHeightDownscaled();
+    }
+
+    int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
+    int32_t border = 1;
+    int32_t sx = Screen_GetRenderScale(x) - padding;
+    int32_t sy = Screen_GetRenderScale(y) - padding;
+    int32_t sw =
+        Screen_GetRenderScale(width) * g_Config.ui.bar_scale + padding * 2;
+    int32_t sh =
+        Screen_GetRenderScale(height) * g_Config.ui.bar_scale + padding * 2;
+
+    // border
+    Output_DrawScreenFlatQuadZ(
+        sx - border, sy - border, sw + border, sh + border, .0001f, rgb_border_dark);
+    Output_DrawScreenFlatQuadZ(
+        sx, sy, sw + border, sh + border, .0001f, rgb_border_light);
+
+    // background
+    Output_DrawScreenFlatQuadZ(sx, sy, sw, sh, .0001f, rgb_bgnd);
+
+    int32_t percent = (timer * 100) / (FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
+    CLAMP(percent, 0, 100);
+
+    if (percent) {
+        width = width * percent / 100;
+        sw = Screen_GetRenderScale(width) * g_Config.ui.bar_scale;
+
+        if (g_Config.enable_smooth_bars) {
+            for (int i = 0; i < COLOR_STEPS - 1; i++) {
+                RGBA8888 c1 = m_ColorBarMap[0][i];
+                RGBA8888 c2 = m_ColorBarMap[0][i + 1];
+                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
+                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
+                Output_DrawScreenGradientQuadZ(
+                    sx, lsy, sw, lsh, .0001f, c1, c1, c2, c2);
+            }
+        } else {
+            for (int i = 0; i < COLOR_STEPS; i++) {
+                RGBA8888 color = m_ColorBarMap[0][i];
+                int32_t lsy = sy + i * sh / COLOR_STEPS;
+                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
+                Output_DrawScreenFlatQuadZ(sx, lsy, sw, lsh, .0001f, color);
+            }
+        }
+    }
+}
+
+static void Option_ControlCheckResetKeys(void)
+{
+    if (Input_CheckKeypress(RESET_ALL_KEY)
+        && m_ResetKeyMode != KM_CHANGEKEYUP) {
+        m_ResetKeyDelay++;
+        if (m_ResetKeyDelay >= HOLD_DELAY_FRAMES) {
+            m_ResetKeyMode = KM_CHANGE;
+            m_ResetTimer++;
+            Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
+            if (m_ResetTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
+                Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
+                Input_ResetLayout(g_Config.input.layout);
+                Option_ControlUpdateText();
+                Option_ControlFlashConflicts();
+                Config_Write();
+                m_ResetKeyMode = KM_CHANGEKEYUP;
+                m_ResetTimer = 0;
+                Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
+            }
+        }
+    } else if (m_ResetKeyMode == KM_CHANGEKEYUP) {
+        if (!Input_CheckKeypress(RESET_ALL_KEY)) {
+            m_ResetKeyMode = KM_INACTIVE;
+        }
+    } else {
+        m_ResetTimer = 0;
+        m_ResetKeyMode = KM_INACTIVE;
+        m_ResetKeyDelay = 0;
+    }
+    CLAMP(m_ResetTimer, 0, FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
+}
+
+static void Option_ControlCheckUnbindKey(void)
+{
+    if (Input_CheckKeypress(UNBIND_KEY) && m_UnbindKeyMode != KM_CHANGEKEYUP) {
+        m_UnbindKeyDelay++;
+        if (m_UnbindKeyDelay >= HOLD_DELAY_FRAMES) {
+            m_UnbindKeyMode = KM_CHANGE;
+            m_UnbindTimer++;
+            Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
+            if (m_UnbindTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
+                Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
+                Input_AssignScancode(
+                    g_Config.input.layout, m_ControlMenu.cur_role,
+                    UNBIND_SCANCODE);
+                Option_ControlUpdateText();
+                Option_ControlFlashConflicts();
+                Config_Write();
+                m_UnbindKeyMode = KM_CHANGEKEYUP;
+                m_UnbindTimer = 0;
+                Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
+            }
+        }
+    } else if (m_UnbindKeyMode == KM_CHANGEKEYUP) {
+        if (!Input_CheckKeypress(UNBIND_KEY)) {
+            m_UnbindKeyMode = KM_INACTIVE;
+        }
+    } else {
+        m_UnbindTimer = 0;
+        m_UnbindKeyMode = KM_INACTIVE;
+        m_UnbindKeyDelay = 0;
+    }
+    CLAMP(m_UnbindTimer, 0, FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
+}
+
 bool Option_ControlIsLocked(void)
 {
     return m_KeyMode != KM_INACTIVE;
@@ -444,15 +651,30 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
     switch (m_KeyMode) {
     case KM_BROWSE:
+        if (g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
+            if (m_UnbindKeyMode == KM_INACTIVE) {
+                Option_ControlCheckResetKeys();
+            }
+
+            if (m_ResetKeyMode == KM_INACTIVE
+                && m_ControlMenu.cur_row->can_unbind) {
+                Option_ControlCheckUnbindKey();
+            }
+        }
+
+        if (m_ResetKeyMode != KM_INACTIVE || m_UnbindKeyMode != KM_INACTIVE) {
+            break;
+        }
+
         if (g_InputDB.deselect
-            || (g_InputDB.select && m_ControlMenu.cur_option == KC_TITLE)) {
+            || (g_InputDB.select && m_ControlMenu.cur_role == KC_TITLE)) {
             Option_ControlShutdownText();
             m_KeyMode = KM_INACTIVE;
             return;
         }
 
         if ((g_InputDB.left || g_InputDB.right)
-            && m_ControlMenu.cur_option == KC_TITLE) {
+            && m_ControlMenu.cur_role == KC_TITLE) {
             Option_ControlChangeLayout();
         }
 
@@ -461,63 +683,55 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 m_KeyMode = KM_BROWSEKEYUP;
             }
         } else if (g_InputDB.forward) {
-            if (m_ControlMenu.cur_option == KC_TITLE) {
-                m_ControlMenu.cur_row = m_ControlMenu.vis_options - 1;
-                m_ControlMenu.cur_option = m_ControlMenu.last_option;
-                m_ControlMenu.head = cols + m_ControlMenu.num_options - 1
+            if (m_ControlMenu.cur_role == KC_TITLE) {
+                m_ControlMenu.row_num = m_ControlMenu.vis_options - 1;
+                m_ControlMenu.cur_role = m_ControlMenu.last_role;
+                m_ControlMenu.top_row = cols + m_ControlMenu.num_options - 1
                     - m_ControlMenu.vis_options + 1;
-                m_ControlMenu.tail = cols + m_ControlMenu.num_options - 1;
-            } else if (m_ControlMenu.cur_option == m_ControlMenu.first_option) {
-                m_ControlMenu.cur_row = KC_TITLE;
-                m_ControlMenu.cur_option = KC_TITLE;
+                m_ControlMenu.bot_row = cols + m_ControlMenu.num_options - 1;
+                m_ControlMenu.cur_row = m_ControlMenu.bot_row;
+            } else if (m_ControlMenu.cur_role == m_ControlMenu.first_role) {
+                m_ControlMenu.row_num = KC_TITLE;
+                m_ControlMenu.cur_role = KC_TITLE;
+                m_ControlMenu.cur_row = cols + m_ControlMenu.num_options;
             } else {
-                if (m_ControlMenu.cur_row > 0
-                    && m_ControlMenu.cur_option != m_ControlMenu.head->option) {
-                    m_ControlMenu.cur_row--;
+                if (m_ControlMenu.row_num > 0
+                    && m_ControlMenu.cur_role != m_ControlMenu.top_row->role) {
+                    m_ControlMenu.row_num--;
                 } else if (
-                    m_ControlMenu.head->option != m_ControlMenu.first_option) {
-                    m_ControlMenu.head--;
-                    m_ControlMenu.tail--;
+                    m_ControlMenu.top_row->role != m_ControlMenu.first_role) {
+                    m_ControlMenu.top_row--;
+                    m_ControlMenu.bot_row--;
                 } else {
-                    m_ControlMenu.cur_row--;
+                    m_ControlMenu.row_num--;
                 }
 
-                const TEXT_COLUMN_PLACEMENT *sel_col;
-                for (sel_col = cols; sel_col->option != COL_END; sel_col++) {
-                    if (sel_col->option == m_ControlMenu.cur_option) {
-                        break;
-                    }
-                }
-                sel_col--;
-                m_ControlMenu.cur_option = sel_col->option;
+                m_ControlMenu.cur_row--;
+                m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
             Option_ControlUpdateText();
             Option_ControlFlashConflicts();
         } else if (g_InputDB.back) {
-            if (m_ControlMenu.cur_option == KC_TITLE) {
-                m_ControlMenu.cur_row++;
-                m_ControlMenu.cur_option = m_ControlMenu.first_option;
-            } else if (m_ControlMenu.cur_option == m_ControlMenu.last_option) {
-                m_ControlMenu.cur_row = KC_TITLE;
-                m_ControlMenu.cur_option = KC_TITLE;
-                m_ControlMenu.head = cols;
-                m_ControlMenu.tail = cols + m_ControlMenu.vis_options - 1;
+            if (m_ControlMenu.cur_role == KC_TITLE) {
+                m_ControlMenu.row_num++;
+                m_ControlMenu.cur_role = m_ControlMenu.first_role;
+                m_ControlMenu.cur_row = m_ControlMenu.top_row;
+            } else if (m_ControlMenu.cur_role == m_ControlMenu.last_role) {
+                m_ControlMenu.row_num = KC_TITLE;
+                m_ControlMenu.cur_role = KC_TITLE;
+                m_ControlMenu.top_row = cols;
+                m_ControlMenu.bot_row = cols + m_ControlMenu.vis_options - 1;
+                m_ControlMenu.cur_row = cols + m_ControlMenu.num_options;
             } else {
-                if (m_ControlMenu.cur_row >= m_ControlMenu.vis_options - 1) {
-                    m_ControlMenu.head++;
-                    m_ControlMenu.tail++;
+                if (m_ControlMenu.row_num >= m_ControlMenu.vis_options - 1) {
+                    m_ControlMenu.top_row++;
+                    m_ControlMenu.bot_row++;
                 } else {
-                    m_ControlMenu.cur_row++;
+                    m_ControlMenu.row_num++;
                 }
 
-                const TEXT_COLUMN_PLACEMENT *sel_col;
-                for (sel_col = cols; sel_col->option != COL_END; sel_col++) {
-                    if (sel_col->option == m_ControlMenu.cur_option) {
-                        break;
-                    }
-                }
-                sel_col++;
-                m_ControlMenu.cur_option = sel_col->option;
+                m_ControlMenu.cur_row++;
+                m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
             Option_ControlUpdateText();
             Option_ControlFlashConflicts();
@@ -533,7 +747,7 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
     case KM_CHANGE:
         if (Input_ReadAndAssignKey(
-                g_Config.input.layout, m_ControlMenu.cur_option)) {
+                g_Config.input.layout, m_ControlMenu.cur_role)) {
             Option_ControlUpdateText();
             m_KeyMode = KM_CHANGEKEYUP;
             Option_ControlFlashConflicts();
@@ -552,6 +766,5 @@ void Option_Control(INVENTORY_ITEM *inv_item)
     g_Input = (INPUT_STATE) { 0 };
     g_InputDB = (INPUT_STATE) { 0 };
 
-    m_ControlMenu.prev_option = m_ControlMenu.cur_option;
-    m_ControlMenu.prev_row = m_ControlMenu.cur_row;
+    m_ControlMenu.prev_row_num = m_ControlMenu.row_num;
 }

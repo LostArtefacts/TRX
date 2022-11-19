@@ -50,6 +50,8 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_CONTROL_CUSTOM_1, "Custom Scheme 1" },
     { GS_CONTROL_CUSTOM_2, "Custom Scheme 2" },
     { GS_CONTROL_CUSTOM_3, "Custom Scheme 3" },
+    { GS_CONTROL_RESET_DEFAULTS, "Reset All: Hold R" },
+    { GS_CONTROL_UNBIND, "Unbind: Hold Backspace" },
     { GS_KEYMAP_RUN, "Run" },
     { GS_KEYMAP_BACK, "Back" },
     { GS_KEYMAP_LEFT, "Left" },

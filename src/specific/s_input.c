@@ -412,6 +412,7 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
         case SDL_SCANCODE_APP2:               return "APP2";
         case SDL_SCANCODE_AUDIOREWIND:        return "RWND";
         case SDL_SCANCODE_AUDIOFASTFORWARD:   return "FF";
+        case SDL_SCANCODE_UNKNOWN:            return "";
     }
     // clang-format on
     return "????";
@@ -612,4 +613,14 @@ bool S_Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 const char *S_Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     return S_Input_GetScancodeName(m_Layout[layout_num][role]);
+}
+
+bool S_Input_CheckKeypress(const char *key_name)
+{
+    SDL_Scancode scancode = SDL_GetScancodeFromName(key_name);
+
+    if (KEY_DOWN(scancode)) {
+        return true;
+    }
+    return false;
 }

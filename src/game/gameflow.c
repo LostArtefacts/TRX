@@ -85,6 +85,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "CONTROL_CUSTOM_1", GS_CONTROL_CUSTOM_1 },
         { "CONTROL_CUSTOM_2", GS_CONTROL_CUSTOM_2 },
         { "CONTROL_CUSTOM_3", GS_CONTROL_CUSTOM_3 },
+        { "CONTROL_RESET_DEFAULTS", GS_CONTROL_RESET_DEFAULTS },
         { "KEYMAP_RUN", GS_KEYMAP_RUN },
         { "KEYMAP_BACK", GS_KEYMAP_BACK },
         { "KEYMAP_LEFT", GS_KEYMAP_LEFT },
