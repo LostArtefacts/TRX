@@ -273,6 +273,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed bridges at floor level appearing under the floor
 - fixed underwater currents breaking in rare cases
 - fixed Lara loading inside a movable block if she's on a stack near a room portal
+- fixed a game crash on shutdown if the action button is held down
 
 #### Cheats
 - added a fly cheat
