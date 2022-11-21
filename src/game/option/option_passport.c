@@ -221,6 +221,7 @@ static void Option_PassportShowSaves(void)
         g_InputDB = (INPUT_STATE) { 0 };
     }
 }
+#include "log.h"
 
 static void Option_PassportInitNewGameRequester(void)
 {
@@ -234,8 +235,9 @@ static void Option_PassportInitNewGameRequester(void)
     Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
     Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
-    req->y = -30 * Screen_GetResHeightDownscaled() / 100;
     req->vis_lines = MAX_GAME_MODES;
+    req->y = (-Screen_GetResHeightDownscaled() / 2)
+        + (req->line_height * (req->vis_lines + 1));
 }
 
 static void Option_PassportInitSelectLevelRequester(void)
@@ -244,15 +246,6 @@ static void Option_PassportInitSelectLevelRequester(void)
     req->flags |= RIF_BLOCKABLE;
     Requester_Init(req);
     Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
-
-    int32_t height = Screen_GetResHeight();
-    if (height <= 480) {
-        req->y = -90;
-        req->vis_lines = 10;
-    } else {
-        req->y = -100;
-        req->vis_lines = 12;
-    }
 
     if (Screen_GetResHeightDownscaled() <= 240) {
         req->y = -30;
@@ -280,15 +273,6 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
         g_GameFlow.strings
             [page_num == PASSPORT_PAGE_1 ? GS_PASSPORT_LOAD_GAME
                                          : GS_PASSPORT_SAVE_GAME]);
-
-    int32_t height = Screen_GetResHeight();
-    if (height <= 480) {
-        req->y = -90;
-        req->vis_lines = 10;
-    } else {
-        req->y = -100;
-        req->vis_lines = 12;
-    }
 
     if (Screen_GetResHeightDownscaled() <= 240) {
         req->y = -30;
