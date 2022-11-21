@@ -139,9 +139,6 @@ void Shell_Init(const char *gameflow_path)
 
 void Shell_Shutdown(void)
 {
-    while (g_Input.select) {
-        Input_Update();
-    }
     GameFlow_Shutdown();
     GameBuf_Shutdown();
     Output_Shutdown();
