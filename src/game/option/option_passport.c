@@ -235,8 +235,8 @@ static void Option_PassportInitNewGameRequester(void)
     Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
     req->vis_lines = MAX_GAME_MODES;
-    req->y = (-Screen_GetResHeightDownscaled() / 2)
-        + (req->line_height * (req->vis_lines + 1));
+    req->y = (-Screen_GetResHeightDownscaled() / 2.4)
+        + (req->line_height * req->vis_lines + 1);
 }
 
 static void Option_PassportInitSelectLevelRequester(void)
