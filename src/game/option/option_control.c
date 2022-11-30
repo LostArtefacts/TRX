@@ -5,6 +5,7 @@
 #include "game/input.h"
 #include "game/screen.h"
 #include "game/text.h"
+#include "global/const.h"
 #include "global/types.h"
 #include "util.h"
 

@@ -30,16 +30,21 @@ static void Option_CompassInitText(void);
 static void Option_CompassInitText(void)
 {
     char buf[100];
-    const int top_y = -100;
+    const int top_y = -60;
+    const int border = 4;
     const int row_height = 25;
     const int row_width = 225;
     const GAME_STATS *stats = &g_GameInfo.current[g_CurrentLevel].stats;
 
     int y = top_y;
-    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, y - 2, " ");
+    m_Text[TEXT_TITLE_BORDER] = Text_Create(0, y - border, " ");
+    Text_CentreH(m_Text[TEXT_TITLE_BORDER], true);
+    Text_CentreV(m_Text[TEXT_TITLE_BORDER], true);
 
     sprintf(buf, "%s", g_GameFlow.levels[g_CurrentLevel].level_title);
-    m_Text[TEXT_TITLE] = Text_Create(0, y, buf);
+    m_Text[TEXT_TITLE] = Text_Create(0, y - border / 2, buf);
+    Text_CentreH(m_Text[TEXT_TITLE], true);
+    Text_CentreV(m_Text[TEXT_TITLE], true);
     y += row_height;
 
     // kills

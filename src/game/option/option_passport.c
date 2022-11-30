@@ -234,8 +234,16 @@ static void Option_PassportInitNewGameRequester(void)
     Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
     Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
-    req->y = -30 * Screen_GetResHeightDownscaled() / 100;
     req->vis_lines = MAX_GAME_MODES;
+
+    // Title screen passport is at a different pitch.
+    if (g_InvMode == INV_TITLE_MODE) {
+        req->y = (-Screen_GetResHeightDownscaled() / 2.4)
+            + (req->line_height * req->vis_lines + 1);
+    } else {
+        req->y = (-Screen_GetResHeightDownscaled() / 2)
+            + (req->line_height * req->vis_lines);
+    }
 }
 
 static void Option_PassportInitSelectLevelRequester(void)
@@ -245,27 +253,23 @@ static void Option_PassportInitSelectLevelRequester(void)
     Requester_Init(req);
     Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
 
-    int32_t height = Screen_GetResHeight();
-    if (height <= 480) {
-        req->y = -90;
+    if (Screen_GetResHeightDownscaled() <= 240) {
+        req->vis_lines = 5;
+    } else if (Screen_GetResHeightDownscaled() <= 384) {
+        req->vis_lines = 7;
+    } else if (Screen_GetResHeightDownscaled() <= 480) {
         req->vis_lines = 10;
     } else {
-        req->y = -100;
         req->vis_lines = 12;
     }
 
-    if (Screen_GetResHeightDownscaled() <= 240) {
-        req->y = -30;
-        req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaled() <= 384) {
-        req->y = -30;
-        req->vis_lines = 8;
-    } else if (Screen_GetResHeightDownscaled() <= 480) {
-        req->y = -80;
-        req->vis_lines = 10;
+    // Title screen passport is at a different pitch.
+    if (g_InvMode == INV_TITLE_MODE) {
+        req->y = (-Screen_GetResHeightDownscaled() / 2)
+            + (req->line_height * req->vis_lines);
     } else {
-        req->y = -120;
-        req->vis_lines = 12;
+        req->y = (-Screen_GetResHeightDownscaled() / 1.73)
+            + (req->line_height * req->vis_lines);
     }
 
     Savegame_ScanAvailableLevels(req);
@@ -281,27 +285,23 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
             [page_num == PASSPORT_PAGE_1 ? GS_PASSPORT_LOAD_GAME
                                          : GS_PASSPORT_SAVE_GAME]);
 
-    int32_t height = Screen_GetResHeight();
-    if (height <= 480) {
-        req->y = -90;
+    if (Screen_GetResHeightDownscaled() <= 240) {
+        req->vis_lines = 5;
+    } else if (Screen_GetResHeightDownscaled() <= 384) {
+        req->vis_lines = 7;
+    } else if (Screen_GetResHeightDownscaled() <= 480) {
         req->vis_lines = 10;
     } else {
-        req->y = -100;
         req->vis_lines = 12;
     }
 
-    if (Screen_GetResHeightDownscaled() <= 240) {
-        req->y = -30;
-        req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaled() <= 384) {
-        req->y = -30;
-        req->vis_lines = 8;
-    } else if (Screen_GetResHeightDownscaled() <= 480) {
-        req->y = -80;
-        req->vis_lines = 10;
+    // Title screen passport is at a different pitch.
+    if (g_InvMode == INV_TITLE_MODE) {
+        req->y = (-Screen_GetResHeightDownscaled() / 2)
+            + (req->line_height * req->vis_lines);
     } else {
-        req->y = -120;
-        req->vis_lines = 12;
+        req->y = (-Screen_GetResHeightDownscaled() / 1.73)
+            + (req->line_height * req->vis_lines);
     }
 
     Savegame_ScanSavedGames();
