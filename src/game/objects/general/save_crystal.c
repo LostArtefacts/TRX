@@ -1,6 +1,7 @@
 #include "game/objects/general/save_crystal.h"
 
 #include "config.h"
+#include "game/collide.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -37,15 +38,17 @@ void SaveCrystal_Initialise(int16_t item_num)
 
 void SaveCrystal_Control(int16_t item_num)
 {
-    if (g_GameFlow.enable_save_crystals) {
-        Item_Animate(&g_Items[item_num]);
-    }
+    Item_Animate(&g_Items[item_num]);
 }
 
 void SaveCrystal_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+
+    if (coll->enable_baddie_push) {
+        Lara_Push(item, coll, false, true);
+    }
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
         || lara_item->gravity_status) {
@@ -63,13 +66,12 @@ void SaveCrystal_Collision(
         return;
     }
 
+    item->status = IS_DEACTIVATED;
+    int32_t old_save_count = g_SaveCounter;
     int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
-    if (return_val != GF_NOP) {
-        item->status = IS_INVISIBLE;
+    int32_t new_save_count = g_SaveCounter;
+    if (new_save_count > old_save_count) {
         Item_RemoveDrawn(item_num);
-        Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-        Config_Write();
-        Sound_Effect(SFX_LARA_OBJECT, NULL, SPM_ALWAYS);
     } else {
         item->status = IS_ACTIVE;
     }
