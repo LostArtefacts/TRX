@@ -69,8 +69,7 @@ void SaveCrystal_Collision(
     item->status = IS_DEACTIVATED;
     int32_t old_save_count = g_SaveCounter;
     int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
-    int32_t new_save_count = g_SaveCounter;
-    if (new_save_count > old_save_count) {
+    if (g_SaveCounter > old_save_count) {
         Item_RemoveDrawn(item_num);
     } else {
         item->status = IS_ACTIVE;
