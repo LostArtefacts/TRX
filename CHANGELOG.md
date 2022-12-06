@@ -1,9 +1,12 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- added collision to save crystals (#654)
 - added additional custom control schemes (#636)
 - fixed small cracks in the UI borders for PS1-style menus (#643)
 - fixed Lara loading inside a movable block if she's on a stack near a room portal (#619)
 - fixed a game crash on shutdown if the action button is held down (#646)
 - fixed the compass and new game menus at high text scaling (#648)
+- fixed save crystals so they are single use (#654)
+- removed the puzzle key sound effect when using save crystals (#654)
 
 ## [2.11](https://github.com/rr-/Tomb1Main/compare/2.10.3...2.11) - 2022-10-19
 - added a .NET-based configuration tool (#633)
