@@ -57,16 +57,11 @@ void Output_DrawLightningSegment(
 
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color);
-void Output_DrawScreenFlatQuadZ(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, float z, RGBA8888 color);
 void Output_DrawScreenTranslucentQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color);
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
     RGBA8888 bl, RGBA8888 br);
-void Output_DrawScreenGradientQuadZ(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, float z, RGBA8888 tl,
-    RGBA8888 tr, RGBA8888 bl, RGBA8888 br);
 void Output_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col);
 void Output_DrawScreenBox(

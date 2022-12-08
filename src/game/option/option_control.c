@@ -7,7 +7,6 @@
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "util.h"
 
@@ -85,15 +84,6 @@ static int32_t m_ResetKeyDelay = 0;
 static int32_t m_UnbindTimer = 0;
 static int32_t m_UnbindKeyMode = KM_INACTIVE;
 static int32_t m_UnbindKeyDelay = 0;
-
-static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
-    // gold (reversed from overlay since drawn backwards)
-    { { 80, 48, 20, 255 },
-      { 88, 68, 0, 255 },
-      { 112, 92, 44, 255 },
-      { 164, 120, 72, 255 },
-      { 112, 92, 44, 255 } },
-};
 
 static MENU m_ControlMenu = {
     .num_options = 0,
@@ -200,7 +190,7 @@ static void Option_ControlInitMenu(void)
 {
     int32_t visible_lines = 0;
     if (Screen_GetResHeightDownscaled() <= 240) {
-        visible_lines = 5;
+        visible_lines = 6;
     } else if (Screen_GetResHeightDownscaled() <= 384) {
         visible_lines = 8;
     } else if (Screen_GetResHeightDownscaled() <= 480) {
@@ -301,6 +291,12 @@ static void Option_ControlInitText(void)
         m_Text[TEXT_TITLE_BORDER], box_width, box_height, 0, 0, TS_BACKGROUND);
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
 
+    m_Text[TEXT_RESET_BORDER] = Text_Create(0, y + BOX_PADDING + BORDER, " ");
+    Text_CentreH(m_Text[TEXT_RESET_BORDER], true);
+    Text_CentreV(m_Text[TEXT_RESET_BORDER], true);
+    Text_AddBackground(
+        m_Text[TEXT_RESET_BORDER], box_width, ROW_HEIGHT, 0, 0, TS_BACKGROUND);
+
     m_Text[TEXT_RESET] = Text_Create(
         x_roles, y + BOX_PADDING + BORDER,
         g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS]);
@@ -319,22 +315,12 @@ static void Option_ControlInitText(void)
         Text_Hide(m_Text[TEXT_UNBIND], true);
     }
 
-    m_Text[TEXT_RESET_BORDER] = Text_Create(0, y + BOX_PADDING + BORDER, " ");
-    Text_CentreH(m_Text[TEXT_RESET_BORDER], true);
-    Text_CentreV(m_Text[TEXT_RESET_BORDER], true);
-    Text_AddBackground(
-        m_Text[TEXT_RESET_BORDER], box_width, ROW_HEIGHT, 0, 0, TS_BACKGROUND);
-
     Option_ControlUpdateText();
     Option_ControlFlashConflicts();
 }
 
 static void Option_ControlUpdateText(void)
 {
-    const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
-        ? CtrlTextPlacementCheats
-        : CtrlTextPlacementNormal;
-
     if (g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
         Text_Hide(m_Text[TEXT_RESET], true);
         Text_Hide(m_Text[TEXT_RESET_BORDER], true);
@@ -502,15 +488,11 @@ static void Option_ControlChangeLayout(void)
 
 static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
 {
-    const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
-    const RGBA8888 rgb_border_light = { 128, 128, 128, 128 };
-    const RGBA8888 rgb_border_dark = { 64, 64, 64, 128 };
-
     int32_t width = Text_GetWidth(txt);
-    int32_t height = -TEXT_HEIGHT;
+    int32_t height = TEXT_HEIGHT;
 
     int32_t x = txt->pos.x;
-    int32_t y = txt->pos.y;
+    int32_t y = txt->pos.y - TEXT_HEIGHT;
 
     if (txt->flags.centre_h) {
         x += (Screen_GetResWidthDownscaled() - width) / 2;
@@ -523,49 +505,9 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
         y += Screen_GetResHeightDownscaled();
     }
 
-    int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
-    int32_t border = 1;
-    int32_t sx = Screen_GetRenderScale(x) - padding;
-    int32_t sy = Screen_GetRenderScale(y) - padding;
-    int32_t sw =
-        Screen_GetRenderScale(width) * g_Config.ui.bar_scale + padding * 2;
-    int32_t sh =
-        Screen_GetRenderScale(height) * g_Config.ui.bar_scale + padding * 2;
-
-    // border
-    Output_DrawScreenFlatQuadZ(
-        sx - border, sy - border, sw + border, sh + border, .0001f, rgb_border_dark);
-    Output_DrawScreenFlatQuadZ(
-        sx, sy, sw + border, sh + border, .0001f, rgb_border_light);
-
-    // background
-    Output_DrawScreenFlatQuadZ(sx, sy, sw, sh, .0001f, rgb_bgnd);
-
     int32_t percent = (timer * 100) / (FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
     CLAMP(percent, 0, 100);
-
-    if (percent) {
-        width = width * percent / 100;
-        sw = Screen_GetRenderScale(width) * g_Config.ui.bar_scale;
-
-        if (g_Config.enable_smooth_bars) {
-            for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGBA8888 c1 = m_ColorBarMap[0][i];
-                RGBA8888 c2 = m_ColorBarMap[0][i + 1];
-                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
-                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
-                Output_DrawScreenGradientQuadZ(
-                    sx, lsy, sw, lsh, .0001f, c1, c1, c2, c2);
-            }
-        } else {
-            for (int i = 0; i < COLOR_STEPS; i++) {
-                RGBA8888 color = m_ColorBarMap[0][i];
-                int32_t lsy = sy + i * sh / COLOR_STEPS;
-                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
-                Output_DrawScreenFlatQuadZ(sx, lsy, sw, lsh, .0001f, color);
-            }
-        }
-    }
+    Text_AddProgressBar(txt, width, height, x, y, percent, g_Config.ui.menu_style);
 }
 
 static void Option_ControlCheckResetKeys(void)
@@ -576,7 +518,6 @@ static void Option_ControlCheckResetKeys(void)
         if (m_ResetKeyDelay >= HOLD_DELAY_FRAMES) {
             m_ResetKeyMode = KM_CHANGE;
             m_ResetTimer++;
-            Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
             if (m_ResetTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
                 Input_ResetLayout(g_Config.input.layout);
@@ -585,7 +526,6 @@ static void Option_ControlCheckResetKeys(void)
                 Config_Write();
                 m_ResetKeyMode = KM_CHANGEKEYUP;
                 m_ResetTimer = 0;
-                Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
             }
         }
     } else if (m_ResetKeyMode == KM_CHANGEKEYUP) {
@@ -598,6 +538,7 @@ static void Option_ControlCheckResetKeys(void)
         m_ResetKeyDelay = 0;
     }
     CLAMP(m_ResetTimer, 0, FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
+    Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
 }
 
 static void Option_ControlCheckUnbindKey(void)
@@ -607,7 +548,6 @@ static void Option_ControlCheckUnbindKey(void)
         if (m_UnbindKeyDelay >= HOLD_DELAY_FRAMES) {
             m_UnbindKeyMode = KM_CHANGE;
             m_UnbindTimer++;
-            Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
             if (m_UnbindTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
                 Input_AssignScancode(
@@ -618,7 +558,6 @@ static void Option_ControlCheckUnbindKey(void)
                 Config_Write();
                 m_UnbindKeyMode = KM_CHANGEKEYUP;
                 m_UnbindTimer = 0;
-                Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
             }
         }
     } else if (m_UnbindKeyMode == KM_CHANGEKEYUP) {
@@ -631,6 +570,7 @@ static void Option_ControlCheckUnbindKey(void)
         m_UnbindKeyDelay = 0;
     }
     CLAMP(m_UnbindTimer, 0, FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
+    Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
 }
 
 bool Option_ControlIsLocked(void)

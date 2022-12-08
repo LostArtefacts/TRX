@@ -706,28 +706,14 @@ void Output_CopyPictureToScreen(void)
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color)
 {
-    Output_DrawScreenGradientQuadZ(
-        sx, sy, w, h, 1.0f, color, color, color, color);
-}
-
-void Output_DrawScreenFlatQuadZ(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, float z, RGBA8888 color)
-{
-    Output_DrawScreenGradientQuadZ(sx, sy, w, h, z, color, color, color, color);
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
     RGBA8888 bl, RGBA8888 br)
 {
-    Output_DrawScreenGradientQuadZ(sx, sy, w, h, 1.0f, tl, tr, bl, br);
-}
-
-void Output_DrawScreenGradientQuadZ(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, float z, RGBA8888 tl,
-    RGBA8888 tr, RGBA8888 bl, RGBA8888 br)
-{
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, z, tl, tr, bl, br);
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenLine(
@@ -775,7 +761,7 @@ void Output_DrawCentreGradientScreenBox(
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
     RGBA8888 color = { 0, 0, 0, 128 };
-    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, 1.0f, color, color, color, color);
+    S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenSprite(

@@ -1,6 +1,8 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added collision to save crystals (#654)
 - added additional custom control schemes (#636)
+- added the ability to unbind unessential keys (#657)
+- added the ability to reset control schemes to default (#657)
 - fixed small cracks in the UI borders for PS1-style menus (#643)
 - fixed Lara loading inside a movable block if she's on a stack near a room portal (#619)
 - fixed a game crash on shutdown if the action button is held down (#646)
