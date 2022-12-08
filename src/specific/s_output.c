@@ -783,8 +783,8 @@ void S_Output_Draw2DLine(
 }
 
 void S_Output_Draw2DQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 tl,
-    RGBA8888 tr, RGBA8888 bl, RGBA8888 br)
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 tl, RGBA8888 tr,
+    RGBA8888 bl, RGBA8888 br)
 {
     int vertex_count = 4;
     GFX_3D_Vertex vertices[vertex_count];

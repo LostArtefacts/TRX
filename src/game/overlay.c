@@ -10,7 +10,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "util.h"
-#include "log.h"
 
 #include <stdbool.h>
 #include <stdio.h>

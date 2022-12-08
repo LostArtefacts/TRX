@@ -507,7 +507,8 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
 
     int32_t percent = (timer * 100) / (FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
     CLAMP(percent, 0, 100);
-    Text_AddProgressBar(txt, width, height, x, y, percent, g_Config.ui.menu_style);
+    Text_AddProgressBar(
+        txt, width, height, x, y, percent, g_Config.ui.menu_style);
 }
 
 static void Option_ControlCheckResetKeys(void)

@@ -8,7 +8,6 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -330,8 +329,8 @@ void Text_RemoveOutline(TEXTSTRING *textstring)
 }
 
 void Text_AddProgressBar(
-    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y, int32_t value,
-    UI_STYLE style)
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
+    int32_t value, UI_STYLE style)
 {
     if (!textstring) {
         return;

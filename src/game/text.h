@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.h"
 #include "global/types.h"
 
 #include <stdbool.h>
