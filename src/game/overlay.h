@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 
+struct BAR_INFO;
+
 void Overlay_Init(void);
 
 void Overlay_BarSetHealthTimer(int16_t health_bar_timer);
