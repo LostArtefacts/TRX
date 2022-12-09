@@ -447,9 +447,7 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
 
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
 {
-    return S_Input_KbdKey(role, layout_num)
-        || (!Input_IsKeyConflictedWithDefault(role)
-            && S_Input_KbdKey(role, INPUT_LAYOUT_DEFAULT));
+    return S_Input_KbdKey(role, layout_num);
 }
 
 static bool S_Input_JoyBtn(SDL_GameControllerButton button)
