@@ -155,6 +155,8 @@
         "CONTROL_CUSTOM_1": "Custom Scheme 1",
         "CONTROL_CUSTOM_2": "Custom Scheme 2",
         "CONTROL_CUSTOM_3": "Custom Scheme 3",
+        "CONTROL_RESET_DEFAULTS": "Reset All: Hold R",
+        "CONTROL_UNBIND": "Unbind: Hold Backspace",
         "KEYMAP_RUN": "Run",
         "KEYMAP_BACK": "Back",
         "KEYMAP_LEFT": "Left",

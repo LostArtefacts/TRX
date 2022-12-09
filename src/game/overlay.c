@@ -80,20 +80,13 @@ static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
       { 210, 130, 160, 255 },
       { 165, 100, 120, 255 },
       { 120, 60, 70, 255 } },
+    // purple
+    { { 52, 22, 80, 255 },
+      { 70, 30, 107, 255 },
+      { 52, 22, 80, 255 },
+      { 39, 17, 60, 255 },
+      { 26, 11, 40, 255 } },
 };
-
-typedef struct BAR_INFO {
-    BAR_TYPE type;
-    int32_t value;
-    int32_t max_value;
-    bool show;
-    BAR_SHOW_MODE show_mode;
-    bool blink;
-    int32_t blink_counter;
-    int32_t timer;
-    int32_t color;
-    BAR_LOCATION location;
-} BAR_INFO;
 
 static BAR_INFO m_HealthBar = { 0 };
 static BAR_INFO m_AirBar = { 0 };
@@ -105,9 +98,8 @@ static void Overlay_BarSetupEnemy(void);
 static void Overlay_BarBlink(BAR_INFO *bar_info);
 static int32_t Overlay_BarGetPercent(BAR_INFO *bar_info);
 static void Overlay_BarGetLocation(
-    BAR_LOCATION bar_location, int32_t width, int32_t height, int32_t *x,
+    BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x,
     int32_t *y);
-static void Overlay_BarDraw(BAR_INFO *bar_info);
 static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
 static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
 
@@ -160,7 +152,8 @@ static int32_t Overlay_BarGetPercent(BAR_INFO *bar_info)
 
 static void Overlay_BarBlink(BAR_INFO *bar_info)
 {
-    if (bar_info->show_mode == BSM_PS1 || bar_info->type == BT_ENEMY_HEALTH) {
+    if (bar_info->show_mode == BSM_PS1 || bar_info->type == BT_ENEMY_HEALTH
+        || bar_info->type == BT_PROGRESS) {
         bar_info->blink = false;
         return;
     }
@@ -174,35 +167,44 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
 }
 
 static void Overlay_BarGetLocation(
-    BAR_LOCATION bar_location, int32_t width, int32_t height, int32_t *x,
-    int32_t *y)
+    BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x, int32_t *y)
 {
     const int32_t screen_margin_h = 20;
     const int32_t screen_margin_v = 18;
     const int32_t bar_spacing = 8;
 
-    if (bar_location == BL_TOP_LEFT || bar_location == BL_BOTTOM_LEFT) {
+    if (bar_info->location == BL_CUSTOM) {
+        *width = bar_info->custom_width;
+        *height = bar_info->custom_height;
+        *x = bar_info->custom_x;
+        *y = bar_info->custom_y;
+        return;
+    }
+
+    if (bar_info->location == BL_TOP_LEFT
+        || bar_info->location == BL_BOTTOM_LEFT) {
         *x = screen_margin_h;
     } else if (
-        bar_location == BL_TOP_RIGHT || bar_location == BL_BOTTOM_RIGHT) {
-        *x = Screen_GetResWidthDownscaled() - width * g_Config.ui.bar_scale
+        bar_info->location == BL_TOP_RIGHT
+        || bar_info->location == BL_BOTTOM_RIGHT) {
+        *x = Screen_GetResWidthDownscaled() - *width * g_Config.ui.bar_scale
             - screen_margin_h;
     } else {
-        *x = (Screen_GetResWidthDownscaled() - width) / 2;
+        *x = (Screen_GetResWidthDownscaled() - *width) / 2;
     }
 
-    if (bar_location == BL_TOP_LEFT || bar_location == BL_TOP_CENTER
-        || bar_location == BL_TOP_RIGHT) {
-        *y = screen_margin_v + m_BarOffsetY[bar_location];
+    if (bar_info->location == BL_TOP_LEFT || bar_info->location == BL_TOP_CENTER
+        || bar_info->location == BL_TOP_RIGHT) {
+        *y = screen_margin_v + m_BarOffsetY[bar_info->location];
     } else {
-        *y = Screen_GetResHeightDownscaled() - height * g_Config.ui.bar_scale
-            - screen_margin_v - m_BarOffsetY[bar_location];
+        *y = Screen_GetResHeightDownscaled() - *height * g_Config.ui.bar_scale
+            - screen_margin_v - m_BarOffsetY[bar_info->location];
     }
 
-    m_BarOffsetY[bar_location] += height + bar_spacing;
+    m_BarOffsetY[bar_info->location] += *height + bar_spacing;
 }
 
-static void Overlay_BarDraw(BAR_INFO *bar_info)
+void Overlay_BarDraw(BAR_INFO *bar_info)
 {
     const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
     const RGBA8888 rgb_border_light = { 128, 128, 128, 255 };
@@ -213,7 +215,7 @@ static void Overlay_BarDraw(BAR_INFO *bar_info)
 
     int32_t x = 0;
     int32_t y = 0;
-    Overlay_BarGetLocation(bar_info->location, width, height, &x, &y);
+    Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
 
     int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
     int32_t border = 1;

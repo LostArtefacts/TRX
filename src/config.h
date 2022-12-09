@@ -20,6 +20,7 @@ typedef enum {
     BL_BOTTOM_LEFT = 3,
     BL_BOTTOM_CENTER = 4,
     BL_BOTTOM_RIGHT = 5,
+    BL_CUSTOM = 6,
 } BAR_LOCATION;
 
 typedef enum {
@@ -32,6 +33,7 @@ typedef enum {
     BC_GOLD2 = 6,
     BC_BLUE2 = 7,
     BC_PINK = 8,
+    BC_PURPLE = 9,
 } BAR_COLOR;
 
 typedef enum {

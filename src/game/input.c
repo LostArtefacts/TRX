@@ -197,3 +197,17 @@ const char *Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     return S_Input_GetKeyName(layout_num, role);
 }
+
+bool Input_CheckKeypress(const char *check_key)
+{
+    return S_Input_CheckKeypress(check_key);
+}
+
+void Input_ResetLayout(INPUT_LAYOUT layout_num)
+{
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        INPUT_SCANCODE scancode =
+            Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
+        Input_AssignScancode(layout_num, role, scancode);
+    }
+}

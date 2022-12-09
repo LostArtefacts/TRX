@@ -19,3 +19,5 @@ void S_Input_AssignScancode(
 bool S_Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role);
 
 const char *S_Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role);
+
+bool S_Input_CheckKeypress(const char *key_name);

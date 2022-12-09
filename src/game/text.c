@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/screen.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -327,6 +328,30 @@ void Text_RemoveOutline(TEXTSTRING *textstring)
     textstring->flags.outline = 0;
 }
 
+void Text_AddProgressBar(
+    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
+    int32_t value, UI_STYLE style)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->flags.progress_bar = true;
+    textstring->progress_bar.custom_width = w;
+    textstring->progress_bar.custom_height = h;
+    textstring->progress_bar.custom_x = x;
+    textstring->progress_bar.custom_y = y;
+    textstring->progress_bar.blink = false;
+    textstring->progress_bar.location = BL_CUSTOM;
+    textstring->progress_bar.max_value = 100;
+    textstring->progress_bar.type = BT_PROGRESS;
+    textstring->progress_bar.value = value;
+    if (style == UI_STYLE_PC) {
+        textstring->progress_bar.color = BC_GOLD;
+    } else {
+        textstring->progress_bar.color = BC_PURPLE;
+    }
+}
+
 void Text_CentreH(TEXTSTRING *textstring, bool enable)
 {
     if (!textstring) {
@@ -516,6 +541,10 @@ static void Text_DrawText(TEXTSTRING *textstring)
         Text_DrawTextBackground(
             g_Config.ui.menu_style, sx, sy, sh, sv,
             textstring->background.style);
+    }
+
+    if (textstring->flags.progress_bar && textstring->progress_bar.value) {
+        Overlay_BarDraw(&textstring->progress_bar);
     }
 
     if (textstring->flags.outline) {

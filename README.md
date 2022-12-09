@@ -284,6 +284,8 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 #### Input
 - added ability to move camera around with W,A,S,D
 - added additional custom control schemes
+- added the ability to unbind unessential keys
+- added the ability to reset control schemes to default
 - added controller support
     | Xbox button | DualShock button   | Action          |
     | ----------- | ------------------ | --------------- |

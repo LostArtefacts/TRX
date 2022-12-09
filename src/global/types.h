@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.h"
 #include "global/const.h"
 
 #include <stdbool.h>
@@ -1069,6 +1070,8 @@ typedef enum GAME_STRING_ID {
     GS_CONTROL_CUSTOM_1,
     GS_CONTROL_CUSTOM_2,
     GS_CONTROL_CUSTOM_3,
+    GS_CONTROL_RESET_DEFAULTS,
+    GS_CONTROL_UNBIND,
 
     GS_KEYMAP_RUN,
     GS_KEYMAP_BACK,
@@ -1170,6 +1173,7 @@ typedef enum BAR_TYPE {
     BT_LARA_HEALTH = 0,
     BT_LARA_AIR = 1,
     BT_ENEMY_HEALTH = 2,
+    BT_PROGRESS = 3,
 } BAR_TYPE;
 
 typedef enum SOUND_PLAY_MODE {
@@ -1599,6 +1603,23 @@ typedef enum {
     MC_NUMBER_OF,
 } MENU_COLOR;
 
+typedef struct BAR_INFO {
+    BAR_TYPE type;
+    int32_t value;
+    int32_t max_value;
+    bool show;
+    BAR_SHOW_MODE show_mode;
+    bool blink;
+    int32_t blink_counter;
+    int32_t timer;
+    int32_t color;
+    BAR_LOCATION location;
+    int16_t custom_x;
+    int16_t custom_y;
+    int16_t custom_width;
+    int16_t custom_height;
+} BAR_INFO;
+
 typedef struct TEXTSTRING {
     union {
         uint32_t all;
@@ -1613,6 +1634,7 @@ typedef struct TEXTSTRING {
             uint32_t background : 1;
             uint32_t outline : 1;
             uint32_t hide : 1;
+            uint32_t progress_bar : 1;
         };
     } flags;
     struct {
@@ -1644,6 +1666,7 @@ typedef struct TEXTSTRING {
         TEXT_STYLE style;
     } outline;
     char *string;
+    struct BAR_INFO progress_bar;
 
     void (*on_remove)(const struct TEXTSTRING *);
 } TEXTSTRING;

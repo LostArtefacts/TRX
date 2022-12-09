@@ -40,3 +40,9 @@ bool Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role);
 
 // Given the input layout and input key role, get the assigned key name.
 const char *Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role);
+
+// Checks if the given key is being pressed.
+bool Input_CheckKeypress(const char *check_key);
+
+// Reset a given layout to the default.
+void Input_ResetLayout(INPUT_LAYOUT layout_num);
