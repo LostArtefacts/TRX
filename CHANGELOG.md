@@ -8,6 +8,7 @@
 - fixed a game crash on shutdown if the action button is held down (#646)
 - fixed the compass and new game menus at high text scaling (#648)
 - fixed save crystals so they are single use (#654)
+- fixed demo mode if the do not heal on level finish option is used (#660)
 - removed the puzzle key sound effect when using save crystals (#654)
 
 ## [2.11](https://github.com/rr-/Tomb1Main/compare/2.10.3...2.11) - 2022-10-19
