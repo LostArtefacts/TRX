@@ -106,6 +106,7 @@ void Game_Demo(void)
     s->pistol_ammo = 1000;
     s->gun_status = LGS_ARMLESS;
     s->gun_type = LGT_PISTOLS;
+    s->lara_hitpoints = LARA_HITPOINTS;
 
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
