@@ -19,7 +19,7 @@ void Input_CheckConflicts(INPUT_LAYOUT layout_num);
 
 // Returns whether the key assigned to the given role is also used elsewhere
 // within the custom layout.
-bool Input_IsKeyConflictedWithUser(INPUT_ROLE role);
+bool Input_IsKeyConflicted(INPUT_ROLE role);
 
 // Assign a concrete scancode to the given layout and key role.
 void Input_AssignScancode(

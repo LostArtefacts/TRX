@@ -465,7 +465,7 @@ static void Option_ControlFlashConflicts(void)
         Text_Flash(
             m_ControlMenu.key_texts[i],
             g_Config.input.layout != INPUT_LAYOUT_DEFAULT
-                && Input_IsKeyConflictedWithUser(col->role),
+                && Input_IsKeyConflicted(col->role),
             20);
         col++;
     }
