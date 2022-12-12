@@ -17,8 +17,7 @@ INPUT_STATE g_Input = { 0 };
 INPUT_STATE g_InputDB = { 0 };
 INPUT_STATE g_OldInputDB = { 0 };
 
-static bool m_KeyConflictWithUser[INPUT_ROLE_NUMBER_OF] = { false };
-static bool m_KeyConflictWithDefault[INPUT_ROLE_NUMBER_OF] = { false };
+static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
 
@@ -51,27 +50,17 @@ static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
 void Input_CheckConflicts(INPUT_LAYOUT layout_num)
 {
     for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
-        INPUT_SCANCODE scancode1_default =
-            Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role1);
-        m_KeyConflictWithDefault[role1] = false;
-
-        INPUT_SCANCODE scancode1_user =
-            Input_GetAssignedScancode(layout_num, role1);
-        m_KeyConflictWithUser[role1] = false;
+        INPUT_SCANCODE scancode1 = Input_GetAssignedScancode(layout_num, role1);
+        m_KeyConflict[role1] = false;
 
         for (INPUT_ROLE role2 = 0; role2 < INPUT_ROLE_NUMBER_OF; role2++) {
             if (role1 == role2) {
                 continue;
             }
-
-            INPUT_SCANCODE scancode2_user =
+            INPUT_SCANCODE scancode2 =
                 Input_GetAssignedScancode(layout_num, role2);
-
-            if (scancode1_user == scancode2_user) {
-                m_KeyConflictWithUser[role1] = true;
-            }
-            if (scancode1_default == scancode2_user) {
-                m_KeyConflictWithDefault[role1] = true;
+            if (scancode1 == scancode2) {
+                m_KeyConflict[role1] = true;
             }
         }
     }
@@ -161,14 +150,9 @@ void Input_Update(void)
     }
 }
 
-bool Input_IsKeyConflictedWithUser(INPUT_ROLE role)
+bool Input_IsKeyConflicted(INPUT_ROLE role)
 {
-    return m_KeyConflictWithUser[role];
-}
-
-bool Input_IsKeyConflictedWithDefault(INPUT_ROLE role)
-{
-    return m_KeyConflictWithDefault[role];
+    return m_KeyConflict[role];
 }
 
 INPUT_SCANCODE Input_GetAssignedScancode(

@@ -310,6 +310,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed skipping credits working too fast
 - fixed not being able to close level stats with Escape
 - fixed Lara jumping forever when alt+tabbing out of the game
+- stopped the default controls from functioning when the user unbound them
 
 #### Statistics
 - added ability to keep timer on in inventory
