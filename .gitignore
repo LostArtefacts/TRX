@@ -27,3 +27,5 @@ Release/
 *.sln
 *.vcxproj
 *.filters
+*.bak
+*.original
