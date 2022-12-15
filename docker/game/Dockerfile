@@ -8,6 +8,10 @@
 # MinGW
 FROM ubuntu:latest as mingw
 
+# don't prompt during potential installation/update of tzinfo
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Warsaw
+
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
@@ -15,6 +19,7 @@ RUN apt-get update \
         g++-mingw-w64-i686 \
         git \
         make
+
 
 # zlib
 FROM mingw as zlib
@@ -27,6 +32,7 @@ RUN cd zlib \
         LIBRARY_PATH=/ext/lib \
         PREFIX=i686-w64-mingw32- \
         -j 4 install
+
 
 # libav
 FROM mingw as libav
@@ -78,9 +84,10 @@ RUN cd FFmpeg \
     && make -j 4 \
     && make install
 
+
 # SDL
 FROM mingw as sdl
-RUN git clone https://github.com/libsdl-org/SDL
+RUN git clone https://github.com/libsdl-org/SDL -b SDL2
 RUN apt-get install -y automake
 RUN cd SDL \
     && aclocal -I acinclude \
@@ -96,6 +103,24 @@ RUN cd SDL \
     && make -j 4 \
     && make install
 
+# SDL3 - Compiles fine, but meson cannot find it.
+# TODO - fix that once SDL reaches maturity and releases 3.x as a stable version
+# RUN git clone https://github.com/libsdl-org/SDL
+# RUN apt-get install -y cmake
+# RUN cd SDL \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. \
+#         --toolchain build-scripts/cmake-toolchain-mingw64-i686.cmake \
+#         -DCMAKE_INSTALL_PREFIX=/ext/  \
+#         -DCMAKE_BUILD_TYPE=Release \
+#         -DSDL_VULKAN=ON \
+#         -DSDL_TEST=ON \
+#     && cmake --build . \
+#     && make -j 4 \
+#     && make install
+
+
 # Tomb1Main
 FROM mingw
 
@@ -108,9 +133,6 @@ COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 
 # system dependencies
-# don't prompt during tzinfo installation
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Warsaw
 # configure pkgconfig manually
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=967969
 ENV PKG_CONFIG_LIBDIR=/ext/lib/
