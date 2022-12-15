@@ -103,7 +103,7 @@ static char *Shell_GetScreenshotName(void)
     // Full screenshot name
     size_t out_size = snprintf(NULL, 0, "%s_%s", date_time, level_title) + 1;
     char *out = Memory_Alloc(out_size);
-    snprintf(out, out_size, "%s_%s", date_time, level_title) + 1;
+    snprintf(out, out_size, "%s_%s", date_time, level_title);
     return out;
 }
 
