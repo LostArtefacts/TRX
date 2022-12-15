@@ -4,6 +4,7 @@
 #include "global/const.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 typedef int16_t PHD_ANGLE;

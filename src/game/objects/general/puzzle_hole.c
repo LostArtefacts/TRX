@@ -7,6 +7,7 @@
 #include "game/lara.h"
 #include "game/objects/general/keyhole.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 PHD_VECTOR g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };

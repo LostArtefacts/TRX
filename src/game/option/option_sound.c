@@ -8,6 +8,7 @@
 #include "game/text.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #define MIN_VOLUME 0

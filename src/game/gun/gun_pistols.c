@@ -5,6 +5,9 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <stddef.h>
+#include <stdint.h>
+
 void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
 {
     int16_t ani = g_Lara.left_arm.frame_number;

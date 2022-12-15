@@ -5,8 +5,9 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
-#include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
 

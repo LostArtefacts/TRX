@@ -9,7 +9,11 @@
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define CENTAUR_PART_DAMAGE 100
 #define CENTAUR_REAR_DAMAGE 200

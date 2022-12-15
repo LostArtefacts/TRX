@@ -7,7 +7,11 @@
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define FLAME_ONFIRE_DAMAGE 5
 #define FLAME_TOONEAR_DAMAGE 3

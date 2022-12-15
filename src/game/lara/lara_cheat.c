@@ -3,7 +3,12 @@
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/sound.h"
+#include "global/types.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 void Lara_CheckCheatMode(void)
 {

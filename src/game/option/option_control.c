@@ -3,10 +3,10 @@
 #include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/output.h"
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "global/const.h"
 #include "global/types.h"
 #include "util.h"
 

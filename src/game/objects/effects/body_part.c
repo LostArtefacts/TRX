@@ -1,10 +1,10 @@
 #include "game/objects/effects/body_part.h"
 
 #include "game/effects.h"
-#include "game/items.h"
 #include "game/lara.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 

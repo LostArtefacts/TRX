@@ -8,7 +8,11 @@
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
+
+#include <stdbool.h>
 
 #define FLYER_CHARGE_DAMAGE 100
 #define FLYER_LUNGE_DAMAGE 150

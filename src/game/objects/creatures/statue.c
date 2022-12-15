@@ -7,7 +7,9 @@
 #include "game/objects/common.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
 

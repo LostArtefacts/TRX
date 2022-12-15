@@ -11,7 +11,10 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 static PHD_VECTOR m_Scion_Position = { 0, 640, -310 };
 static PHD_VECTOR m_Scion_Position4 = { 0, 280, -512 + 105 };

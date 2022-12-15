@@ -3,6 +3,7 @@
 #include "global/types.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 bool Sound_Init(void);
