@@ -115,9 +115,7 @@ ENV TZ=Europe/Warsaw
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=967969
 ENV PKG_CONFIG_LIBDIR=/ext/lib/
 ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
-RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y \
+RUN apt-get install -y \
         mingw-w64-tools \
         pkg-config \
         upx \
