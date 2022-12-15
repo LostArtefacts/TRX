@@ -3,7 +3,6 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
-#include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -15,9 +14,13 @@
 #include "game/room.h"
 #include "game/savegame.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
 #include "math/math.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define LARA_MOVE_TIMEOUT 90
 #define LARA_MOVE_ANIM_VELOCITY 12

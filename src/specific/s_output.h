@@ -3,6 +3,9 @@
 #include "game/picture.h"
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 bool S_Output_Init(void);
 void S_Output_Shutdown(void);
 

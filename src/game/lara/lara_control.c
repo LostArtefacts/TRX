@@ -16,8 +16,13 @@
 #include "game/objects/general/door.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define MAX_BADDIE_COLLISION 12
 

@@ -4,6 +4,8 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <stddef.h>
+
 void FX_Explosion(ITEM_INFO *item)
 {
     Sound_Effect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);

@@ -1,12 +1,8 @@
 #include "game/setup.h"
 
 #include "config.h"
-#include "game/gamebuf.h"
-#include "game/gameflow.h"
-#include "game/inventory.h"
 #include "game/lara.h"
 #include "game/lara/lara_hair.h"
-#include "game/level.h"
 #include "game/objects/common.h"
 #include "game/objects/creatures/ape.h"
 #include "game/objects/creatures/bacon_lara.h"
@@ -70,9 +66,8 @@
 #include "game/objects/traps/spikes.h"
 #include "game/objects/traps/teeth_trap.h"
 #include "game/objects/traps/thors_hammer.h"
-#include "game/savegame.h"
-#include "game/sound.h"
 #include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 
 #include <stddef.h>

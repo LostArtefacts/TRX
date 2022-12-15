@@ -2,7 +2,8 @@
 
 #include "game/room.h"
 #include "game/sound.h"
-#include "global/vars.h"
+
+#include <stddef.h>
 
 void FX_Stairs2Slope(ITEM_INFO *item)
 {

@@ -8,10 +8,14 @@
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/math_misc.h"
 #include "math/matrix.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
 #define PISTOL_LOCK_YMAX (+60 * PHD_DEGREE)

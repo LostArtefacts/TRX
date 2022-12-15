@@ -8,7 +8,9 @@
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+#include "util.h"
 
 typedef enum {
     MBS_STILL = 1,

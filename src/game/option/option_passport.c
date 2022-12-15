@@ -9,8 +9,13 @@
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "memory.h"
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20

@@ -2,7 +2,10 @@
 
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stddef.h>
 
 void FX_DropSand(ITEM_INFO *item)
 {

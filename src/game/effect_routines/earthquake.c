@@ -4,6 +4,8 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <stddef.h>
+
 void FX_Earthquake(ITEM_INFO *item)
 {
     if (g_FlipTimer == 0) {
