@@ -311,18 +311,23 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
             int resampled_size = swr_convert(
                 swr.ctx, &out_buffer, out_samples,
                 (const uint8_t **)av.frame->data, av.frame->nb_samples);
-            int out_buffer_size = av_samples_get_buffer_size(
-                NULL, swr.dst_channels, resampled_size, swr.dst_format, 1);
+            while (resampled_size > 0) {
+                int out_buffer_size = av_samples_get_buffer_size(
+                    NULL, swr.dst_channels, resampled_size, swr.dst_format, 1);
 
-            if (out_buffer_size > 0) {
-                working_buffer = Memory_Realloc(
-                    working_buffer, working_buffer_size + out_buffer_size);
-                if (out_buffer) {
-                    memcpy(
-                        (uint8_t *)working_buffer + working_buffer_size,
-                        out_buffer, out_buffer_size);
+                if (out_buffer_size > 0) {
+                    working_buffer = Memory_Realloc(
+                        working_buffer, working_buffer_size + out_buffer_size);
+                    if (out_buffer) {
+                        memcpy(
+                            (uint8_t *)working_buffer + working_buffer_size,
+                            out_buffer, out_buffer_size);
+                    }
+                    working_buffer_size += out_buffer_size;
                 }
-                working_buffer_size += out_buffer_size;
+
+                resampled_size =
+                    swr_convert(swr.ctx, &out_buffer, out_samples, NULL, 0);
             }
 
             av_freep(&out_buffer);
@@ -332,8 +337,9 @@ static bool S_Audio_SampleLoad(int sample_id, const char *content, size_t size)
         av_packet_unref(av.packet);
     }
 
+    int sample_format_bytes = av_get_bytes_per_sample(swr.dst_format);
     sample->num_samples =
-        working_buffer_size / sizeof(swr.dst_channels) / swr.dst_channels;
+        working_buffer_size / sample_format_bytes / swr.dst_channels;
     sample->channels = swr.src_channels;
     sample->sample_data = working_buffer;
 
