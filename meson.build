@@ -196,6 +196,7 @@ sources = [
   'src/game/objects/traps/thors_hammer.c',
   'src/game/option/option.c',
   'src/game/option/option_compass.c',
+  'src/game/option/option_control_pick.c',
   'src/game/option/option_control.c',
   'src/game/option/option_graphics.c',
   'src/game/option/option_passport.c',

@@ -14,6 +14,14 @@
 #define TEXT_BOX_OFFSET 2
 #define TEXT_MAX_STRING_SIZE 100
 #define TEXT_MAX_STRINGS 100
+#define TRIANGLE_SYM 93
+#define CIRCLE_SYM 94
+#define X_SYM 95
+#define SQUARE_SYM 96
+#define L2_SYM 99
+#define RIGHT_ARROW_SYM 109
+#define DOWN_ARROW_SYM 106
+#define UP_ARROW_SYM 107
 #define LEFT_ARROW_SYM 108
 #define RIGHT_ARROW_SYM 109
 
@@ -166,6 +174,20 @@ static uint8_t Text_MapLetterToSpriteNum(char letter)
         return LEFT_ARROW_SYM;
     } else if (letter == '\201') {
         return RIGHT_ARROW_SYM;
+    } else if (letter == '\202') {
+        return DOWN_ARROW_SYM;
+    } else if (letter == '\203') {
+        return UP_ARROW_SYM;
+    } else if (letter == '\204') {
+        return TRIANGLE_SYM;
+    } else if (letter == '\205') {
+        return CIRCLE_SYM;
+    } else if (letter == '\206') {
+        return X_SYM;
+    } else if (letter == '\207') {
+        return SQUARE_SYM;
+    } else if (letter == '\300') {
+        return L2_SYM;
     } else if (letter >= 11) {
         return letter + 91;
     } else {

@@ -18,6 +18,7 @@ INPUT_STATE g_InputDB = { 0 };
 INPUT_STATE g_OldInputDB = { 0 };
 
 static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
+static bool m_BtnConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
 
@@ -47,20 +48,38 @@ static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
     return result;
 }
 
-void Input_CheckConflicts(INPUT_LAYOUT layout_num)
+void Input_CheckConflicts(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
-    for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
-        INPUT_SCANCODE scancode1 = Input_GetAssignedScancode(layout_num, role1);
-        m_KeyConflict[role1] = false;
+    if (mode == CM_KEYBOARD) {
+        for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
+            INPUT_SCANCODE scancode1 =
+                Input_GetAssignedScancode(layout_num, role1);
+            m_KeyConflict[role1] = false;
 
-        for (INPUT_ROLE role2 = 0; role2 < INPUT_ROLE_NUMBER_OF; role2++) {
-            if (role1 == role2) {
-                continue;
+            for (INPUT_ROLE role2 = 0; role2 < INPUT_ROLE_NUMBER_OF; role2++) {
+                if (role1 == role2) {
+                    continue;
+                }
+                INPUT_SCANCODE scancode2 =
+                    Input_GetAssignedScancode(layout_num, role2);
+                if (scancode1 == scancode2) {
+                    m_KeyConflict[role1] = true;
+                }
             }
-            INPUT_SCANCODE scancode2 =
-                Input_GetAssignedScancode(layout_num, role2);
-            if (scancode1 == scancode2) {
-                m_KeyConflict[role1] = true;
+        }
+    } else {
+        for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
+            int16_t bind1 = Input_GetUniqueBind(layout_num, role1);
+            m_BtnConflict[role1] = false;
+
+            for (INPUT_ROLE role2 = 0; role2 < INPUT_ROLE_NUMBER_OF; role2++) {
+                if (role1 == role2) {
+                    continue;
+                }
+                int16_t bind2 = Input_GetUniqueBind(layout_num, role2);
+                if (bind1 == bind2) {
+                    m_BtnConflict[role1] = true;
+                }
             }
         }
     }
@@ -78,7 +97,8 @@ void Input_Shutdown(void)
 
 void Input_Update(void)
 {
-    g_Input = S_Input_GetCurrentState(g_Config.input.layout);
+    g_Input = S_Input_GetCurrentState(
+        g_Config.input.layout, g_Config.input.cntlr_layout);
 
     g_Input.select |= g_Input.action;
     g_Input.option &= g_Camera.type != CAM_CINEMATIC;
@@ -150,9 +170,13 @@ void Input_Update(void)
     }
 }
 
-bool Input_IsKeyConflicted(INPUT_ROLE role)
+bool Input_IsKeyConflicted(CONTROL_MODE mode, INPUT_ROLE role)
 {
-    return m_KeyConflict[role];
+    if (mode == CM_KEYBOARD) {
+        return m_KeyConflict[role];
+    } else {
+        return m_BtnConflict[role];
+    }
 }
 
 INPUT_SCANCODE Input_GetAssignedScancode(
@@ -161,25 +185,60 @@ INPUT_SCANCODE Input_GetAssignedScancode(
     return S_Input_GetAssignedScancode(layout_num, role);
 }
 
+int16_t Input_GetUniqueBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return S_Input_GetUniqueBind(layout_num, role);
+}
+
+int16_t Input_GetAssignedButtonType(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return S_Input_GetAssignedButtonType(layout_num, role);
+}
+
+int16_t Input_GetAssignedBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return S_Input_GetAssignedBind(layout_num, role);
+}
+
+int16_t Input_GetAssignedAxisDir(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return S_Input_GetAssignedAxisDir(layout_num, role);
+}
+
 void Input_AssignScancode(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
 {
     S_Input_AssignScancode(layout_num, role, scancode);
-    Input_CheckConflicts(layout_num);
+    Input_CheckConflicts(CM_KEYBOARD, layout_num);
 }
 
-bool Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+void Input_AssignButton(INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t btn)
 {
-    if (S_Input_ReadAndAssignKey(layout_num, role)) {
-        Input_CheckConflicts(layout_num);
+    S_Input_AssignButton(layout_num, role, btn);
+    Input_CheckConflicts(CM_CONTROLLER, layout_num);
+}
+
+void Input_AssignAxis(
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t axs, int16_t axs_dir)
+{
+    S_Input_AssignAxis(layout_num, role, axs, axs_dir);
+    Input_CheckConflicts(CM_CONTROLLER, layout_num);
+}
+
+bool Input_ReadAndAssignKey(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    if (S_Input_ReadAndAssignKey(mode, layout_num, role)) {
+        Input_CheckConflicts(mode, layout_num);
         return true;
     }
     return false;
 }
 
-const char *Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+const char *Input_GetKeyName(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
-    return S_Input_GetKeyName(layout_num, role);
+    return S_Input_GetKeyName(mode, layout_num, role);
 }
 
 bool Input_CheckKeypress(const char *check_key)
@@ -187,11 +246,25 @@ bool Input_CheckKeypress(const char *check_key)
     return S_Input_CheckKeypress(check_key);
 }
 
-void Input_ResetLayout(INPUT_LAYOUT layout_num)
+const char *Input_GetButtonName(INPUT_LAYOUT layout_num, const char *name)
 {
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        INPUT_SCANCODE scancode =
-            Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
-        Input_AssignScancode(layout_num, role, scancode);
+    return S_Input_GetButtonNameFromString(layout_num, name);
+}
+
+bool Input_CheckButtonPress(const char *check_button)
+{
+    return S_Input_CheckButtonPress(check_button);
+}
+
+void Input_ResetLayout(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+{
+    if (mode == CM_KEYBOARD) {
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            INPUT_SCANCODE scancode =
+                Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
+            Input_AssignScancode(layout_num, role, scancode);
+        }
+    } else {
+        S_Input_ResetControllerToDefault(layout_num);
     }
 }

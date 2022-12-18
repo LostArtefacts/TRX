@@ -5,4 +5,4 @@
 #include <stdbool.h>
 
 bool Option_ControlIsLocked(void);
-void Option_Control(INVENTORY_ITEM *inv_item);
+CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode);

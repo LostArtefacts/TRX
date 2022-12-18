@@ -15,6 +15,17 @@
 
 #define KEY_DOWN(a) (m_KeyboardState[(a)])
 
+typedef union BIND_TYPE {
+    SDL_GameControllerButton btn;
+    SDL_GameControllerAxis axs;
+} BIND_TYPE;
+
+typedef struct CONTROLLER_MAP {
+    BUTTON_TYPE type;
+    BIND_TYPE bind;
+    int16_t axs_dir;
+} CONTROLLER_MAP;
+
 static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     // built-in controls
@@ -56,19 +67,19 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
 
     // custom user controls
     {
-        SDL_SCANCODE_KP_8,       // INPUT_ROLE_UP
-        SDL_SCANCODE_KP_2,       // INPUT_ROLE_DOWN
-        SDL_SCANCODE_KP_4,       // INPUT_ROLE_LEFT
-        SDL_SCANCODE_KP_6,       // INPUT_ROLE_RIGHT
-        SDL_SCANCODE_KP_7,       // INPUT_ROLE_STEP_L
-        SDL_SCANCODE_KP_9,       // INPUT_ROLE_STEP_R
-        SDL_SCANCODE_KP_1,       // INPUT_ROLE_SLOW
-        SDL_SCANCODE_KP_PLUS,    // INPUT_ROLE_JUMP
-        SDL_SCANCODE_KP_ENTER,   // INPUT_ROLE_ACTION
-        SDL_SCANCODE_KP_3,       // INPUT_ROLE_DRAW
+        SDL_SCANCODE_UP,         // INPUT_ROLE_UP
+        SDL_SCANCODE_DOWN,       // INPUT_ROLE_DOWN
+        SDL_SCANCODE_LEFT,       // INPUT_ROLE_LEFT
+        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_RIGHT
+        SDL_SCANCODE_DELETE,     // INPUT_ROLE_STEP_L
+        SDL_SCANCODE_PAGEDOWN,   // INPUT_ROLE_STEP_R
+        SDL_SCANCODE_RSHIFT,     // INPUT_ROLE_SLOW
+        SDL_SCANCODE_RALT,       // INPUT_ROLE_JUMP
+        SDL_SCANCODE_RCTRL,      // INPUT_ROLE_ACTION
+        SDL_SCANCODE_SPACE,      // INPUT_ROLE_DRAW
         SDL_SCANCODE_KP_0,       // INPUT_ROLE_LOOK
-        SDL_SCANCODE_KP_5,       // INPUT_ROLE_ROLL
-        SDL_SCANCODE_KP_PERIOD,  // INPUT_ROLE_OPTION
+        SDL_SCANCODE_END,        // INPUT_ROLE_ROLL
+        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_OPTION
         SDL_SCANCODE_O,          // INPUT_ROLE_FLY_CHEAT,
         SDL_SCANCODE_I,          // INPUT_ROLE_ITEM_CHEAT,
         SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
@@ -165,16 +176,170 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
     // clang-format on
 };
 
+static CONTROLLER_MAP
+    m_ControllerLayout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
+        // clang-format off
+    {
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_UP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_DOWN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_LEFT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_RIGHT
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERLEFT}, 1 },      // INPUT_ROLE_STEP_L
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERRIGHT}, 1 },     // INPUT_ROLE_STEP_R
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSHOULDER}, 0 },  // INPUT_ROLE_SLOW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_X}, 0 },              // INPUT_ROLE_JUMP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_ACTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_Y}, 0 },              // INPUT_ROLE_DRAW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSHOULDER}, 0 },   // INPUT_ROLE_LOOK
+    { BUTTON, {SDL_CONTROLLER_BUTTON_B}, 0 },              // INPUT_ROLE_ROLL
+    { BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_OPTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FLY_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ITEM_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_UZIS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_SMALL_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_BIG_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_SAVE
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+    },
+
+    {
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_UP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_DOWN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_LEFT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_RIGHT
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERLEFT}, 1 },      // INPUT_ROLE_STEP_L
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERRIGHT}, 1 },     // INPUT_ROLE_STEP_R
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSHOULDER}, 0 },  // INPUT_ROLE_SLOW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_X}, 0 },              // INPUT_ROLE_JUMP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_ACTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_Y}, 0 },              // INPUT_ROLE_DRAW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSHOULDER}, 0 },   // INPUT_ROLE_LOOK
+    { BUTTON, {SDL_CONTROLLER_BUTTON_B}, 0 },              // INPUT_ROLE_ROLL
+    { BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_OPTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FLY_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ITEM_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_UZIS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_SMALL_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_BIG_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_SAVE
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+    },
+
+    {
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_UP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_DOWN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_LEFT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_RIGHT
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERLEFT}, 1 },      // INPUT_ROLE_STEP_L
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERRIGHT}, 1 },     // INPUT_ROLE_STEP_R
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSHOULDER}, 0 },  // INPUT_ROLE_SLOW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_X}, 0 },              // INPUT_ROLE_JUMP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_ACTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_Y}, 0 },              // INPUT_ROLE_DRAW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSHOULDER}, 0 },   // INPUT_ROLE_LOOK
+    { BUTTON, {SDL_CONTROLLER_BUTTON_B}, 0 },              // INPUT_ROLE_ROLL
+    { BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_OPTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FLY_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ITEM_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_UZIS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_SMALL_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_BIG_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_SAVE
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+    },
+
+    {
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_UP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_DOWN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_LEFT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_RIGHT
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERLEFT}, 1 },      // INPUT_ROLE_STEP_L
+    { AXIS,   {SDL_CONTROLLER_AXIS_TRIGGERRIGHT}, 1 },     // INPUT_ROLE_STEP_R
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSHOULDER}, 0 },  // INPUT_ROLE_SLOW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_X}, 0 },              // INPUT_ROLE_JUMP
+    { BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_ACTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_Y}, 0 },              // INPUT_ROLE_DRAW
+    { BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSHOULDER}, 0 },   // INPUT_ROLE_LOOK
+    { BUTTON, {SDL_CONTROLLER_BUTTON_B}, 0 },              // INPUT_ROLE_ROLL
+    { BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_OPTION
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FLY_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ITEM_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
+    { BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
+    { AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
+    { BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_UZIS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_SMALL_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_USE_BIG_MEDI
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_SAVE
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
+    { BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+    }
+        // clang-format on
+    };
+
 const Uint8 *m_KeyboardState;
 static SDL_GameController *m_Controller = NULL;
+static const char *m_ControllerName = NULL;
+static SDL_GameControllerType m_ControllerType = SDL_CONTROLLER_TYPE_UNKNOWN;
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
-static bool S_Input_JoyBtn(SDL_GameControllerButton button);
-static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
+static bool S_Input_JoyBtn(SDL_GameControllerButton btn);
+static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axs);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
+static const char *S_Input_GetButtonName(SDL_GameControllerButton btn);
+static const char *S_Input_GetAxisName(
+    SDL_GameControllerAxis axs, int16_t axs_dir);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
 {
@@ -418,9 +583,181 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
     return "????";
 }
 
-static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout)
+static const char *S_Input_GetButtonName(SDL_GameControllerButton btn)
 {
-    INPUT_SCANCODE scancode = m_Layout[layout][role];
+    // clang-format off
+    switch (m_ControllerType) {
+        case SDL_CONTROLLER_TYPE_PS3:
+        case SDL_CONTROLLER_TYPE_PS4:
+        case SDL_CONTROLLER_TYPE_PS5:
+            switch (btn) {
+                case SDL_CONTROLLER_BUTTON_INVALID:       return "";
+                case SDL_CONTROLLER_BUTTON_A:             return "\206";
+                case SDL_CONTROLLER_BUTTON_B:             return "\205";
+                case SDL_CONTROLLER_BUTTON_X:             return "\207";
+                case SDL_CONTROLLER_BUTTON_Y:             return "\204";
+                case SDL_CONTROLLER_BUTTON_BACK:          return "CREATE";
+                case SDL_CONTROLLER_BUTTON_GUIDE:         return "HOME"; /* Home button*/
+                case SDL_CONTROLLER_BUTTON_START:         return "START";
+                case SDL_CONTROLLER_BUTTON_LEFTSTICK:     return "L3";
+                case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R3";
+                case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "^";
+                case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "_";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200";
+                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201";
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "MIC"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE4:       return "PADDLE 4"; /* Xbox Elite paddle P4 (lower right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_TOUCHPAD:      return "TOUCHPAD"; /* PS4/PS5 touchpad button */
+                case SDL_CONTROLLER_BUTTON_MAX:           return "";
+            }
+            break;
+        case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
+        case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
+            switch (btn) {
+                case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
+                case SDL_CONTROLLER_BUTTON_A:             return "B";
+                case SDL_CONTROLLER_BUTTON_B:             return "A";
+                case SDL_CONTROLLER_BUTTON_X:             return "Y";
+                case SDL_CONTROLLER_BUTTON_Y:             return "X";
+                case SDL_CONTROLLER_BUTTON_BACK:          return "BACK";
+                case SDL_CONTROLLER_BUTTON_GUIDE:         return "HOME"; /* Home button*/
+                case SDL_CONTROLLER_BUTTON_START:         return "START";
+                case SDL_CONTROLLER_BUTTON_LEFTSTICK:     return "L STICK";
+                case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R STICK";
+                case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "L BUTTON";
+                case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "R BUTTON";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "CAPTURE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE4:       return "PADDLE 4"; /* Xbox Elite paddle P4 (lower right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_TOUCHPAD:      return "TOUCHPAD"; /* PS4/PS5 touchpad button */
+                case SDL_CONTROLLER_BUTTON_MAX:           return "";
+            }
+            break;
+        case SDL_CONTROLLER_TYPE_XBOX360:
+        case SDL_CONTROLLER_TYPE_XBOXONE:
+            switch (btn) {
+                case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
+                case SDL_CONTROLLER_BUTTON_A:             return "A";
+                case SDL_CONTROLLER_BUTTON_B:             return "B";
+                case SDL_CONTROLLER_BUTTON_X:             return "X";
+                case SDL_CONTROLLER_BUTTON_Y:             return "Y";
+                case SDL_CONTROLLER_BUTTON_BACK:          return "BACK";
+                case SDL_CONTROLLER_BUTTON_GUIDE:         return "XBOX"; /* Home button*/
+                case SDL_CONTROLLER_BUTTON_START:         return "START";
+                case SDL_CONTROLLER_BUTTON_LEFTSTICK:     return "L STICK";
+                case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R STICK";
+                case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "L BUMPER";
+                case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "R BUMPER";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE4:       return "PADDLE 4"; /* Xbox Elite paddle P4 (lower right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_TOUCHPAD:      return "TOUCHPAD"; /* PS4/PS5 touchpad button */
+                case SDL_CONTROLLER_BUTTON_MAX:           return "";
+            }
+            break;
+        default:
+            switch (btn) {
+                case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
+                case SDL_CONTROLLER_BUTTON_A:             return "A";
+                case SDL_CONTROLLER_BUTTON_B:             return "B";
+                case SDL_CONTROLLER_BUTTON_X:             return "X";
+                case SDL_CONTROLLER_BUTTON_Y:             return "Y";
+                case SDL_CONTROLLER_BUTTON_BACK:          return "BACK";
+                case SDL_CONTROLLER_BUTTON_GUIDE:         return "HOME"; /* Home button*/
+                case SDL_CONTROLLER_BUTTON_START:         return "START";
+                case SDL_CONTROLLER_BUTTON_LEFTSTICK:     return "L STICK";
+                case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R STICK";
+                case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "L BUMPER";
+                case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "R BUMPER";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
+                case SDL_CONTROLLER_BUTTON_PADDLE4:       return "PADDLE 4"; /* Xbox Elite paddle P4 (lower right, facing the back) */
+                case SDL_CONTROLLER_BUTTON_TOUCHPAD:      return "TOUCHPAD"; /* PS4/PS5 touchpad button */
+                case SDL_CONTROLLER_BUTTON_MAX:           return "";
+            }
+            break;
+    }
+    // clang-format on
+    return "????";
+}
+
+static const char *S_Input_GetAxisName(
+    SDL_GameControllerAxis axs, int16_t axs_dir)
+{
+    // clang-format off
+    switch (m_ControllerType) {
+        case SDL_CONTROLLER_TYPE_PS3:
+        case SDL_CONTROLLER_TYPE_PS4:
+        case SDL_CONTROLLER_TYPE_PS5:
+            switch (axs) {
+                case SDL_CONTROLLER_AXIS_INVALID:         return "";
+                case SDL_CONTROLLER_AXIS_LEFTX:           return axs_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_LEFTY:           return axs_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_RIGHTX:          return axs_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_RIGHTY:          return axs_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return "\300";
+                case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return "{";
+                case SDL_CONTROLLER_AXIS_MAX:             return "";
+            }
+            break;
+        case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
+        case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
+            switch (axs) {
+                case SDL_CONTROLLER_AXIS_INVALID:         return "";
+                case SDL_CONTROLLER_AXIS_LEFTX:           return axs_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_LEFTY:           return axs_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_RIGHTX:          return axs_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_RIGHTY:          return axs_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return "ZL";
+                case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return "ZR";
+                case SDL_CONTROLLER_AXIS_MAX:             return "";
+            }
+            break;
+        case SDL_CONTROLLER_TYPE_XBOX360:
+        case SDL_CONTROLLER_TYPE_XBOXONE:
+        default:
+            switch (axs) {
+                case SDL_CONTROLLER_AXIS_INVALID:         return "";
+                case SDL_CONTROLLER_AXIS_LEFTX:           return axs_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_LEFTY:           return axs_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_RIGHTX:          return axs_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_RIGHTY:          return axs_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return "L TRIGGER";
+                case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return "R TRIGGER";
+                case SDL_CONTROLLER_AXIS_MAX:             return "";
+            }
+            break;
+    }
+    // clang-format on
+    return "????";
+}
+
+static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout_num)
+{
+    INPUT_SCANCODE scancode = m_Layout[layout_num][role];
     if (KEY_DOWN(scancode)) {
         return true;
     }
@@ -450,14 +787,14 @@ static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
     return S_Input_KbdKey(role, layout_num);
 }
 
-static bool S_Input_JoyBtn(SDL_GameControllerButton button)
+static bool S_Input_JoyBtn(SDL_GameControllerButton btn)
 {
-    return SDL_GameControllerGetButton(m_Controller, button);
+    return SDL_GameControllerGetButton(m_Controller, btn);
 }
 
-static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
+static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axs)
 {
-    Sint16 value = SDL_GameControllerGetAxis(m_Controller, axis);
+    Sint16 value = SDL_GameControllerGetAxis(m_Controller, axs);
     if (value < -SDL_JOYSTICK_AXIS_MAX / 2) {
         return -1;
     }
@@ -478,9 +815,12 @@ void S_Input_Init(void)
         int controllers = SDL_NumJoysticks();
         LOG_INFO("%d controllers", controllers);
         for (int i = 0; i < controllers; i++) {
-            const char *name = SDL_GameControllerNameForIndex(i);
+            m_ControllerName = SDL_GameControllerNameForIndex(i);
+            m_ControllerType = SDL_GameControllerTypeForIndex(i);
             bool is_game_controller = SDL_IsGameController(i);
-            LOG_DEBUG("controller %d: %s (%d)", i, name, is_game_controller);
+            LOG_DEBUG(
+                "controller %d: %s %d (%d)", i, m_ControllerName,
+                m_ControllerType, is_game_controller);
             if (!m_Controller && is_game_controller) {
                 m_Controller = SDL_GameControllerOpen(i);
                 if (!m_Controller) {
@@ -498,7 +838,8 @@ void S_Input_Shutdown(void)
     }
 }
 
-INPUT_STATE S_Input_GetCurrentState(INPUT_LAYOUT layout_num)
+INPUT_STATE S_Input_GetCurrentState(
+    INPUT_LAYOUT layout_num, INPUT_LAYOUT cntlr_layout_num)
 {
     INPUT_STATE linput = { 0 };
 
@@ -549,35 +890,124 @@ INPUT_STATE S_Input_GetCurrentState(INPUT_LAYOUT layout_num)
 
     if (m_Controller) {
         // clang-format off
-        linput.forward      |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTY) < 0;
-        linput.back         |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTY) > 0;
-        linput.left         |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTX) < 0;
-        linput.right        |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_LEFTX) > 0;
-        linput.step_left    |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 0;
-        linput.step_right   |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > 0;
-        linput.camera_left  |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTX) < 0;
-        linput.camera_right |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTX) > 0;
-        linput.camera_up    |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTY) < 0;
-        linput.camera_down  |= S_Input_JoyAxis(SDL_CONTROLLER_AXIS_RIGHTY) > 0;
-        linput.forward      |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_UP);
-        linput.right        |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
-        linput.left         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-        linput.back         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-        linput.action       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
-        linput.select       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
-        linput.roll         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
-        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
-        linput.jump         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_X);
-        linput.draw         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
-        linput.look         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
-        linput.slow         |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
-        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_BACK);
-        linput.option       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_BACK);
-        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_TOUCHPAD);
-        linput.option       |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_TOUCHPAD);
-        linput.pause        |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_START);
-        linput.deselect     |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_START);
-        linput.camera_reset |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+        for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
+            CONTROLLER_MAP role = m_ControllerLayout[cntlr_layout_num][i];
+            int16_t btn_state = 0;
+
+            if (role.type == BUTTON) {
+                btn_state = S_Input_JoyBtn(role.bind.btn);
+            } else {
+                btn_state = S_Input_JoyAxis(role.bind.axs) == role.axs_dir;
+            }
+
+            switch(i) {
+            case INPUT_ROLE_UP:
+                linput.forward                |= btn_state;
+                break;
+            case INPUT_ROLE_DOWN:
+                linput.back                   |= btn_state;
+                break;
+            case INPUT_ROLE_LEFT:
+                linput.left                   |= btn_state;
+                break;
+            case INPUT_ROLE_RIGHT:
+                linput.right                  |= btn_state;
+                break;
+            case INPUT_ROLE_STEP_L:
+                linput.step_left              |= btn_state;
+                break;
+            case INPUT_ROLE_STEP_R:
+                linput.step_right             |= btn_state;
+                break;
+            case INPUT_ROLE_SLOW:
+                linput.slow                   |= btn_state;
+                break;
+            case INPUT_ROLE_JUMP:
+                linput.jump                   |= btn_state;
+                break;
+            case INPUT_ROLE_ACTION:
+                linput.action                 |= btn_state;
+                // TODO Should select always be linked to action?
+                linput.select               |= btn_state;
+                break;
+            case INPUT_ROLE_DRAW:
+                linput.draw                   |= btn_state;
+                break;
+            case INPUT_ROLE_LOOK:
+                linput.look                   |= btn_state;
+                break;
+            case INPUT_ROLE_ROLL:
+                linput.roll                   |= btn_state;
+                break;
+            case INPUT_ROLE_OPTION:
+                linput.option                 |= btn_state;
+                // TODO Should deselect always be linked to option?
+                linput.deselect               |= btn_state;
+                break;
+            case INPUT_ROLE_FLY_CHEAT:
+                linput.fly_cheat              |= btn_state;
+                break;
+            case INPUT_ROLE_ITEM_CHEAT:
+                linput.item_cheat             |= btn_state;
+                break;
+            case INPUT_ROLE_LEVEL_SKIP_CHEAT:
+                linput.level_skip_cheat       |= btn_state;
+                break;
+            case INPUT_ROLE_TURBO_CHEAT:
+                linput.turbo_cheat            |= btn_state;
+                break;
+            case INPUT_ROLE_PAUSE:
+                linput.pause                  |= btn_state;
+                break;
+            case INPUT_ROLE_CAMERA_UP:
+                linput.camera_up              |= btn_state;
+                break;
+            case INPUT_ROLE_CAMERA_DOWN:
+                linput.camera_down            |= btn_state;
+                break;
+            case INPUT_ROLE_CAMERA_LEFT:
+                linput.camera_left            |= btn_state;
+                break;
+            case INPUT_ROLE_CAMERA_RIGHT:
+                linput.camera_right           |= btn_state;
+                break;
+            case INPUT_ROLE_CAMERA_RESET:
+                linput.camera_reset           |= btn_state;
+                break;
+            case INPUT_ROLE_EQUIP_PISTOLS:
+                linput.equip_pistols          |= btn_state;
+                break;
+            case INPUT_ROLE_EQUIP_SHOTGUN:
+                linput.equip_shotgun          |= btn_state;
+                break;
+            case INPUT_ROLE_EQUIP_MAGNUMS:
+                linput.equip_magnums          |= btn_state;
+                break;
+            case INPUT_ROLE_EQUIP_UZIS:
+                linput.equip_uzis             |= btn_state;
+                break;
+            case INPUT_ROLE_USE_SMALL_MEDI:
+                linput.use_small_medi         |= btn_state;
+                break;
+            case INPUT_ROLE_USE_BIG_MEDI:
+                linput.use_big_medi           |= btn_state;
+                break;
+            case INPUT_ROLE_SAVE:
+                linput.save                   |= btn_state;
+                break;
+            case INPUT_ROLE_LOAD:
+                linput.load                   |= btn_state;
+                break;
+            case INPUT_ROLE_FPS:
+                linput.toggle_fps_counter     |= btn_state;
+                break;
+            case INPUT_ROLE_BILINEAR:
+                linput.toggle_bilinear_filter |= btn_state;
+                break;
+            default:
+                break;
+            }
+        }
         // clang-format on
     }
 
@@ -590,27 +1020,127 @@ INPUT_SCANCODE S_Input_GetAssignedScancode(
     return m_Layout[layout_num][role];
 }
 
+int16_t S_Input_GetUniqueBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    CONTROLLER_MAP assigned = m_ControllerLayout[layout_num][role];
+    if (assigned.type == BUTTON) {
+        return m_ControllerLayout[layout_num][role].bind.btn;
+    } else {
+        // Add SDL_CONTROLLER_BUTTON_MAX as an axis offset because button and
+        // axis enum values overlap. Also offset depending on axis direction.
+        if (assigned.axs_dir == -1) {
+            return m_ControllerLayout[layout_num][role].bind.axs
+                + SDL_CONTROLLER_BUTTON_MAX;
+        } else {
+            return m_ControllerLayout[layout_num][role].bind.axs
+                + SDL_CONTROLLER_BUTTON_MAX + 10;
+        }
+    }
+}
+
+int16_t S_Input_GetAssignedButtonType(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return m_ControllerLayout[layout_num][role].type;
+}
+
+int16_t S_Input_GetAssignedBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    if (m_ControllerLayout[layout_num][role].type == BUTTON) {
+        return m_ControllerLayout[layout_num][role].bind.btn;
+    } else {
+        return m_ControllerLayout[layout_num][role].bind.axs;
+    }
+}
+
+int16_t S_Input_GetAssignedAxisDir(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    return m_ControllerLayout[layout_num][role].axs_dir;
+}
+
 void S_Input_AssignScancode(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode)
 {
     m_Layout[layout_num][role] = scancode;
 }
 
-bool S_Input_ReadAndAssignKey(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+void S_Input_AssignButton(
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerButton btn)
 {
-    for (INPUT_SCANCODE scancode = 0; scancode < SDL_NUM_SCANCODES;
-         scancode++) {
-        if (KEY_DOWN(scancode)) {
-            m_Layout[layout_num][role] = scancode;
-            return true;
+    m_ControllerLayout[layout_num][role].type = BUTTON;
+    m_ControllerLayout[layout_num][role].bind.btn = btn;
+    m_ControllerLayout[layout_num][role].axs_dir = 0;
+}
+
+void S_Input_AssignAxis(
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerAxis axs,
+    int16_t axs_dir)
+{
+    m_ControllerLayout[layout_num][role].type = AXIS;
+    m_ControllerLayout[layout_num][role].bind.axs = axs;
+    m_ControllerLayout[layout_num][role].axs_dir = axs_dir;
+}
+
+void S_Input_ResetControllerToDefault(INPUT_LAYOUT layout_num)
+{
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        CONTROLLER_MAP default_btn =
+            m_ControllerLayout[INPUT_LAYOUT_DEFAULT][role];
+        m_ControllerLayout[layout_num][role] = default_btn;
+    }
+}
+
+bool S_Input_ReadAndAssignKey(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num, INPUT_ROLE role)
+{
+    if (mode == CM_KEYBOARD) {
+        for (INPUT_SCANCODE scancode = 0; scancode < SDL_NUM_SCANCODES;
+             scancode++) {
+            if (KEY_DOWN(scancode)) {
+                m_Layout[layout_num][role] = scancode;
+                return true;
+            }
+        }
+    } else {
+        for (SDL_GameControllerButton btn = 0; btn < SDL_CONTROLLER_BUTTON_MAX;
+             btn++) {
+            if (S_Input_JoyBtn(btn)) {
+                S_Input_AssignButton(layout_num, role, btn);
+                return true;
+            }
+        }
+        for (SDL_GameControllerAxis axs = 0; axs < SDL_CONTROLLER_AXIS_MAX;
+             axs++) {
+            int16_t axs_dir = S_Input_JoyAxis(axs);
+            if (axs_dir != 0) {
+                S_Input_AssignAxis(layout_num, role, axs, axs_dir);
+                return true;
+            }
         }
     }
     return false;
 }
 
-const char *S_Input_GetKeyName(INPUT_LAYOUT layout_num, INPUT_ROLE role)
+const char *S_Input_GetKeyName(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
-    return S_Input_GetScancodeName(m_Layout[layout_num][role]);
+    if (mode == CM_KEYBOARD) {
+        return S_Input_GetScancodeName(m_Layout[layout_num][role]);
+    } else {
+        CONTROLLER_MAP check = m_ControllerLayout[layout_num][role];
+        if (check.type == BUTTON) {
+            return S_Input_GetButtonName(check.bind.btn);
+        } else {
+            return S_Input_GetAxisName(check.bind.axs, check.axs_dir);
+        }
+    }
+}
+
+const char *S_Input_GetButtonNameFromString(
+    INPUT_LAYOUT layout_num, const char *btn_name)
+{
+    SDL_GameControllerButton btn =
+        SDL_GameControllerGetButtonFromString(btn_name);
+    return S_Input_GetButtonName(btn);
 }
 
 bool S_Input_CheckKeypress(const char *key_name)
@@ -618,6 +1148,17 @@ bool S_Input_CheckKeypress(const char *key_name)
     SDL_Scancode scancode = SDL_GetScancodeFromName(key_name);
 
     if (KEY_DOWN(scancode)) {
+        return true;
+    }
+    return false;
+}
+
+bool S_Input_CheckButtonPress(const char *btn_name)
+{
+    SDL_GameControllerButton btn =
+        SDL_GameControllerGetButtonFromString(btn_name);
+
+    if (S_Input_JoyBtn(btn)) {
         return true;
     }
     return false;
