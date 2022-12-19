@@ -331,15 +331,15 @@ static const char *m_ControllerName = NULL;
 static SDL_GameControllerType m_ControllerType = SDL_CONTROLLER_TYPE_UNKNOWN;
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
+static const char *S_Input_GetButtonName(SDL_GameControllerButton button);
+static const char *S_Input_GetAxisName(
+    SDL_GameControllerAxis axis, int16_t axis_dir);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
 static bool S_Input_JoyBtn(SDL_GameControllerButton button);
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
+static INPUT_STATE S_Input_GetControllerState(INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num);
 
-static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
-static const char *S_Input_GetButtonName(SDL_GameControllerButton button);
-static const char *S_Input_GetAxisName(
-    SDL_GameControllerAxis axis, int16_t axis_dir);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
 {
@@ -804,6 +804,129 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
     return 0;
 }
 
+ static INPUT_STATE S_Input_GetControllerState(INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
+ {
+    // clang-format off
+    for (int role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
+        int16_t btn_state = 0;
+
+        if (assigned.type == BT_BUTTON) {
+            btn_state = S_Input_JoyBtn(assigned.bind.button);
+        } else {
+            btn_state = S_Input_JoyAxis(assigned.bind.axis) == assigned.axis_dir;
+        }
+
+        switch(role) {
+        case INPUT_ROLE_UP:
+            state.forward                |= btn_state;
+            break;
+        case INPUT_ROLE_DOWN:
+            state.back                   |= btn_state;
+            break;
+        case INPUT_ROLE_LEFT:
+            state.left                   |= btn_state;
+            break;
+        case INPUT_ROLE_RIGHT:
+            state.right                  |= btn_state;
+            break;
+        case INPUT_ROLE_STEP_L:
+            state.step_left              |= btn_state;
+            break;
+        case INPUT_ROLE_STEP_R:
+            state.step_right             |= btn_state;
+            break;
+        case INPUT_ROLE_SLOW:
+            state.slow                   |= btn_state;
+            break;
+        case INPUT_ROLE_JUMP:
+            state.jump                   |= btn_state;
+            break;
+        case INPUT_ROLE_ACTION:
+            state.action                 |= btn_state;
+            state.select                 |= btn_state;
+            break;
+        case INPUT_ROLE_DRAW:
+            state.draw                   |= btn_state;
+            break;
+        case INPUT_ROLE_LOOK:
+            state.look                   |= btn_state;
+            break;
+        case INPUT_ROLE_ROLL:
+            state.roll                   |= btn_state;
+            break;
+        case INPUT_ROLE_OPTION:
+            state.option                 |= btn_state;
+            state.deselect               |= btn_state;
+            break;
+        case INPUT_ROLE_FLY_CHEAT:
+            state.fly_cheat              |= btn_state;
+            break;
+        case INPUT_ROLE_ITEM_CHEAT:
+            state.item_cheat             |= btn_state;
+            break;
+        case INPUT_ROLE_LEVEL_SKIP_CHEAT:
+            state.level_skip_cheat       |= btn_state;
+            break;
+        case INPUT_ROLE_TURBO_CHEAT:
+            state.turbo_cheat            |= btn_state;
+            break;
+        case INPUT_ROLE_PAUSE:
+            state.pause                  |= btn_state;
+            break;
+        case INPUT_ROLE_CAMERA_UP:
+            state.camera_up              |= btn_state;
+            break;
+        case INPUT_ROLE_CAMERA_DOWN:
+            state.camera_down            |= btn_state;
+            break;
+        case INPUT_ROLE_CAMERA_LEFT:
+            state.camera_left            |= btn_state;
+            break;
+        case INPUT_ROLE_CAMERA_RIGHT:
+            state.camera_right           |= btn_state;
+            break;
+        case INPUT_ROLE_CAMERA_RESET:
+            state.camera_reset           |= btn_state;
+            break;
+        case INPUT_ROLE_EQUIP_PISTOLS:
+            state.equip_pistols          |= btn_state;
+            break;
+        case INPUT_ROLE_EQUIP_SHOTGUN:
+            state.equip_shotgun          |= btn_state;
+            break;
+        case INPUT_ROLE_EQUIP_MAGNUMS:
+            state.equip_magnums          |= btn_state;
+            break;
+        case INPUT_ROLE_EQUIP_UZIS:
+            state.equip_uzis             |= btn_state;
+            break;
+        case INPUT_ROLE_USE_SMALL_MEDI:
+            state.use_small_medi         |= btn_state;
+            break;
+        case INPUT_ROLE_USE_BIG_MEDI:
+            state.use_big_medi           |= btn_state;
+            break;
+        case INPUT_ROLE_SAVE:
+            state.save                   |= btn_state;
+            break;
+        case INPUT_ROLE_LOAD:
+            state.load                   |= btn_state;
+            break;
+        case INPUT_ROLE_FPS:
+            state.toggle_fps_counter     |= btn_state;
+            break;
+        case INPUT_ROLE_BILINEAR:
+            state.toggle_bilinear_filter |= btn_state;
+            break;
+        default:
+            break;
+        }
+    }
+    // clang-format on
+    return state;
+ }
+
 void S_Input_Init(void)
 {
     m_KeyboardState = SDL_GetKeyboardState(NULL);
@@ -889,126 +1012,7 @@ INPUT_STATE S_Input_GetCurrentState(
     // clang-format on
 
     if (m_Controller) {
-        // clang-format off
-        for (int i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
-            CONTROLLER_MAP role = m_ControllerLayout[cntlr_layout_num][i];
-            int16_t btn_state = 0;
-
-            if (role.type == BT_BUTTON) {
-                btn_state = S_Input_JoyBtn(role.bind.button);
-            } else {
-                btn_state = S_Input_JoyAxis(role.bind.axis) == role.axis_dir;
-            }
-
-            switch(i) {
-            case INPUT_ROLE_UP:
-                linput.forward                |= btn_state;
-                break;
-            case INPUT_ROLE_DOWN:
-                linput.back                   |= btn_state;
-                break;
-            case INPUT_ROLE_LEFT:
-                linput.left                   |= btn_state;
-                break;
-            case INPUT_ROLE_RIGHT:
-                linput.right                  |= btn_state;
-                break;
-            case INPUT_ROLE_STEP_L:
-                linput.step_left              |= btn_state;
-                break;
-            case INPUT_ROLE_STEP_R:
-                linput.step_right             |= btn_state;
-                break;
-            case INPUT_ROLE_SLOW:
-                linput.slow                   |= btn_state;
-                break;
-            case INPUT_ROLE_JUMP:
-                linput.jump                   |= btn_state;
-                break;
-            case INPUT_ROLE_ACTION:
-                linput.action                 |= btn_state;
-                // TODO Should select always be linked to action?
-                linput.select               |= btn_state;
-                break;
-            case INPUT_ROLE_DRAW:
-                linput.draw                   |= btn_state;
-                break;
-            case INPUT_ROLE_LOOK:
-                linput.look                   |= btn_state;
-                break;
-            case INPUT_ROLE_ROLL:
-                linput.roll                   |= btn_state;
-                break;
-            case INPUT_ROLE_OPTION:
-                linput.option                 |= btn_state;
-                // TODO Should deselect always be linked to option?
-                linput.deselect               |= btn_state;
-                break;
-            case INPUT_ROLE_FLY_CHEAT:
-                linput.fly_cheat              |= btn_state;
-                break;
-            case INPUT_ROLE_ITEM_CHEAT:
-                linput.item_cheat             |= btn_state;
-                break;
-            case INPUT_ROLE_LEVEL_SKIP_CHEAT:
-                linput.level_skip_cheat       |= btn_state;
-                break;
-            case INPUT_ROLE_TURBO_CHEAT:
-                linput.turbo_cheat            |= btn_state;
-                break;
-            case INPUT_ROLE_PAUSE:
-                linput.pause                  |= btn_state;
-                break;
-            case INPUT_ROLE_CAMERA_UP:
-                linput.camera_up              |= btn_state;
-                break;
-            case INPUT_ROLE_CAMERA_DOWN:
-                linput.camera_down            |= btn_state;
-                break;
-            case INPUT_ROLE_CAMERA_LEFT:
-                linput.camera_left            |= btn_state;
-                break;
-            case INPUT_ROLE_CAMERA_RIGHT:
-                linput.camera_right           |= btn_state;
-                break;
-            case INPUT_ROLE_CAMERA_RESET:
-                linput.camera_reset           |= btn_state;
-                break;
-            case INPUT_ROLE_EQUIP_PISTOLS:
-                linput.equip_pistols          |= btn_state;
-                break;
-            case INPUT_ROLE_EQUIP_SHOTGUN:
-                linput.equip_shotgun          |= btn_state;
-                break;
-            case INPUT_ROLE_EQUIP_MAGNUMS:
-                linput.equip_magnums          |= btn_state;
-                break;
-            case INPUT_ROLE_EQUIP_UZIS:
-                linput.equip_uzis             |= btn_state;
-                break;
-            case INPUT_ROLE_USE_SMALL_MEDI:
-                linput.use_small_medi         |= btn_state;
-                break;
-            case INPUT_ROLE_USE_BIG_MEDI:
-                linput.use_big_medi           |= btn_state;
-                break;
-            case INPUT_ROLE_SAVE:
-                linput.save                   |= btn_state;
-                break;
-            case INPUT_ROLE_LOAD:
-                linput.load                   |= btn_state;
-                break;
-            case INPUT_ROLE_FPS:
-                linput.toggle_fps_counter     |= btn_state;
-                break;
-            case INPUT_ROLE_BILINEAR:
-                linput.toggle_bilinear_filter |= btn_state;
-                break;
-            default:
-                break;
-            }
-        }
-        // clang-format on
+        linput = S_Input_GetControllerState(linput, cntlr_layout_num);
     }
 
     return linput;
