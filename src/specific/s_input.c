@@ -1161,8 +1161,5 @@ bool S_Input_CheckButtonPress(const char *btn_name)
     SDL_GameControllerButton button =
         SDL_GameControllerGetButtonFromString(btn_name);
 
-    if (S_Input_JoyBtn(button)) {
-        return true;
-    }
-    return false;
+    return S_Input_JoyBtn(button);
 }
