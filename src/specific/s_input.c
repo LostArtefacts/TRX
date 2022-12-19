@@ -1023,9 +1023,7 @@ INPUT_SCANCODE S_Input_GetAssignedScancode(
 int16_t S_Input_GetUniqueBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     CONTROLLER_MAP assigned = m_ControllerLayout[layout_num][role];
-    if (assigned.type == BT_BUTTON) {
-        return m_ControllerLayout[layout_num][role].bind.btn;
-    } else {
+    if (assigned.type == BT_AXIS) {
         // Add SDL_CONTROLLER_BUTTON_MAX as an axis offset because button and
         // axis enum values overlap. Also offset depending on axis direction.
         if (assigned.axis_dir == -1) {
@@ -1036,6 +1034,7 @@ int16_t S_Input_GetUniqueBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
                 + SDL_CONTROLLER_BUTTON_MAX + 10;
         }
     }
+    return m_ControllerLayout[layout_num][role].bind.btn;
 }
 
 int16_t S_Input_GetAssignedButtonType(INPUT_LAYOUT layout_num, INPUT_ROLE role)
