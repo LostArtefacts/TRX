@@ -274,6 +274,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed underwater currents breaking in rare cases
 - fixed Lara loading inside a movable block if she's on a stack near a room portal
 - fixed a game crash on shutdown if the action button is held down
+- fixed rare bug when Lara was dying without playing the crash animation when her resulting health = 0
 
 #### Cheats
 - added a fly cheat

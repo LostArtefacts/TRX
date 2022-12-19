@@ -579,7 +579,7 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
             / (DAMAGE_LENGTH * DAMAGE_LENGTH);
     }
 
-    if (item->hit_points < 0) {
+    if (item->hit_points <= 0) {
         return true;
     }
     return false;
