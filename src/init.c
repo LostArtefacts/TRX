@@ -134,6 +134,7 @@ GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { GS_INV_ITEM_SOUND, "Sound" },
     { GS_INV_ITEM_CONTROLS, "Controls" },
     { GS_INV_ITEM_LARAS_HOME, "Lara's Home" },
+    { GS_DIFFICULTY_C, "Cheats" },
     { GS_DIFFICULTY_0, "User" },
     { GS_DIFFICULTY_1, "Very Easy" },
     { GS_DIFFICULTY_2, "Easy" },

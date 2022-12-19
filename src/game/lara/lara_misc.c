@@ -1,5 +1,6 @@
 #include "game/lara/lara_misc.h"
 
+#include "config.h"
 #include "game/collide.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -584,7 +585,7 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
                                                // without playing the death
                                                // landing animation
     }
-    g_OldLaraHitPoints = item->hit_points; // important
+    g_Lara.old_hit_points = item->hit_points; // important
 
     if (item->hit_points < 0) {
         return true;

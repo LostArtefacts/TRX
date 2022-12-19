@@ -124,7 +124,7 @@
         {
           "Field": "enable_difficulty",
           "DataType": "Bool",
-          "DefaultValue": true
+          "DefaultValue": false
         },
         {
           "Field": "disable_medpacks",

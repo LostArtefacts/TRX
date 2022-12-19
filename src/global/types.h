@@ -1167,6 +1167,7 @@ typedef enum GAME_STRING_ID {
     GS_INV_ITEM_GAMMA,
     GS_INV_ITEM_LARAS_HOME,
 
+    GS_DIFFICULTY_C,
     GS_DIFFICULTY_0,
     GS_DIFFICULTY_1,
     GS_DIFFICULTY_2,
@@ -1525,6 +1526,7 @@ typedef struct LARA_INFO {
         int32_t move_count;
         bool is_moving;
     } interact_target;
+    int16_t old_hit_points;
 } LARA_INFO;
 
 typedef struct GAME_STATS {

@@ -1,10 +1,14 @@
-#include "config.h"
 #include "game/difficulty.h"
+
+#include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/text.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -20,6 +24,13 @@ int16_t Difficulty_GetCurrentIndex(float damages_to_lara_multiplier)
 
 void Difficulty_GetTextStat(char *str, float damages_to_lara_multiplier)
 {
+    if (g_Config.enable_cheats) {
+        sprintf(
+            str, g_GameFlow.strings[GS_STATS_DIFFICULTY_FMT],
+            g_GameFlow.strings[GS_DIFFICULTY_C]);
+        return;
+    }
+
     int16_t current_index =
         Difficulty_GetCurrentIndex(damages_to_lara_multiplier);
     switch (current_index) {

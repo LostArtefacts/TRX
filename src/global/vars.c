@@ -49,7 +49,6 @@ MATRIX g_W2VMatrix = { 0 };
 
 LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
-int16_t g_OldLaraHitPoints = -1;
 CAMERA_INFO g_Camera = { 0 };
 GAME_INFO g_GameInfo = { 0 };
 int32_t g_SavedGamesCount = 0;

@@ -1,5 +1,6 @@
 #include "game/creature.h"
 
+#include "config.h"
 #include "game/box.h"
 #include "game/collide.h"
 #include "game/effects.h"
@@ -702,7 +703,7 @@ bool Creature_ShootAtLara(
         // to keep it fair: damages_to_lara_multiplier's squared root
         g_LaraItem->hit_points -=
             (int16_t)(damage * ((float)Math_Sqrt(10000 * g_Config.damages_to_lara_multiplier) / 100));
-        g_OldLaraHitPoints = g_LaraItem->hit_points; // important
+        g_Lara.old_hit_points = g_LaraItem->hit_points; // important
         g_LaraItem->hit_status = 1;
     }
 

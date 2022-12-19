@@ -169,6 +169,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "INV_ITEM_CONTROLS", GS_INV_ITEM_CONTROLS },
         { "INV_ITEM_GAMMA", GS_INV_ITEM_GAMMA },
         { "INV_ITEM_LARAS_HOME", GS_INV_ITEM_LARAS_HOME },
+        { "DIFFICULTY_C", GS_DIFFICULTY_C },
         { "DIFFICULTY_0", GS_DIFFICULTY_0 },
         { "DIFFICULTY_1", GS_DIFFICULTY_1 },
         { "DIFFICULTY_2", GS_DIFFICULTY_2 },
