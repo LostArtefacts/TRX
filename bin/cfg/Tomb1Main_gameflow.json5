@@ -568,6 +568,7 @@
         "STATS_PICKUPS_BASIC_FMT": "PICKUPS %d",
         "STATS_SECRETS_FMT": "SECRETS %d of %d",
         "STATS_DEATHS_FMT": "DEATHS %d",
+        "STATS_DIFFICULTY_FMT": "DIFFICULTY %s",
         "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
         "STATS_FINAL_STATISTICS": "Final Statistics",
         "PAUSE_PAUSED": "Paused",
@@ -609,6 +610,14 @@
         "INV_ITEM_DETAILS": "Detail Levels",
         "INV_ITEM_SOUND": "Sound",
         "INV_ITEM_CONTROLS": "Controls",
-        "INV_ITEM_LARAS_HOME": "Lara's Home"
+        "INV_ITEM_LARAS_HOME": "Lara's Home",
+        "DIFFICULTY_0": "User",
+        "DIFFICULTY_1": "Very Easy",
+        "DIFFICULTY_2": "Easy",
+        "DIFFICULTY_3": "Normal",
+        "DIFFICULTY_4": "Hard",
+        "DIFFICULTY_5": "Very Hard",
+        "DIFFICULTY_6": "Extreme",
+        "DIFFICULTY_7": "Impossible",
     },
 }

@@ -1,6 +1,7 @@
 #include "game/option/option_passport.h"
 
 #include "config.h"
+#include "game/difficulty.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory/inventory_vars.h"
@@ -127,6 +128,7 @@ static void Option_PassportInitText(void)
         Text_AlignBottom(m_Text[i], 1);
         Text_CentreH(m_Text[i], 1);
     }
+    Difficulty_Select(DIFFICULTY_SELECT_INIT);
 }
 
 static void Option_PassportShutdownText(void)
@@ -137,6 +139,7 @@ static void Option_PassportShutdownText(void)
     }
     m_PassportMode = PASSPORT_MODE_FLIP;
     m_IsTextInit = false;
+    Difficulty_Select(DIFFICULTY_SELECT_SHUTDOWN);
 }
 
 static void Option_PassportShowNewGame(void)
@@ -396,14 +399,19 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         g_InputDB.right = 0;
     }
 
+    Difficulty_Select(DIFFICULTY_SELECT_HIDEALL);
+
     switch (page) {
     case PASSPORT_PAGE_1:
         Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
         if (m_PassportMode == PASSPORT_MODE_SHOW_SAVES) {
+            Difficulty_Select(DIFFICULTY_SELECT_IN_BACKGROUND);
             Option_PassportLoadGame();
         } else if (m_PassportMode == PASSPORT_MODE_SELECT_LEVEL) {
+            Difficulty_Select(DIFFICULTY_SELECT_IN_BACKGROUND);
             Option_PassportSelectLevel();
         } else if (m_PassportMode == PASSPORT_MODE_FLIP) {
+            Difficulty_Select(DIFFICULTY_SELECT_WAITING_INPUT);
             if (!g_SavedGamesCount || g_InvMode == INV_SAVE_MODE
                 || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
                 g_InputDB = (INPUT_STATE) { 0, .right = 1 };
@@ -427,10 +435,12 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
 
     case PASSPORT_PAGE_2:
         if (m_PassportMode == PASSPORT_MODE_NEW_GAME) {
+            Difficulty_Select(DIFFICULTY_SELECT_IN_BACKGROUND);
             Option_PassportShowNewGame();
         } else if (m_PassportMode == PASSPORT_MODE_SHOW_SAVES) {
             Option_PassportShowSaves();
         } else if (m_PassportMode == PASSPORT_MODE_FLIP) {
+            Difficulty_Select(DIFFICULTY_SELECT_WAITING_INPUT);
             Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
             if (g_SavedGamesCount == 0) {
@@ -454,6 +464,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         : (INPUT_STATE) { 0, .left = 1 };
                 }
             } else {
+                Difficulty_Select(DIFFICULTY_SELECT_HIDEALL);
                 Text_ChangeText(
                     m_Text[TEXT_PAGE_NAME],
                     g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
@@ -569,6 +580,12 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         } else {
             inv_item->goal_frame = 0;
             inv_item->anim_direction = -1;
+        }
+        if (page != PASSPORT_PAGE_3
+            && !(
+                page == PASSPORT_PAGE_2 && g_InvMode == INV_GAME_MODE
+                && g_GameInfo.passport_mode == PASSPORT_MODE_SHOW_SAVES)) {
+            Difficulty_Select(DIFFICULTY_SELECT_CONFIRM);
         }
         Option_PassportShutdownText();
     }

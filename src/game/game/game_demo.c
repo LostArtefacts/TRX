@@ -119,6 +119,9 @@ void Game_Demo(void)
     if (Level_Initialise(m_DemoLevel)) {
         Game_Demo_LoadLaraPos();
 
+        g_GameInfo.current_level_type =
+            GFL_DEMO; // fix: from incorrect GFL_TITLE to GFL_DEMO
+
         Random_SeedDraw(0xD371F947);
         Random_SeedControl(0xD371F947);
 

@@ -12,6 +12,7 @@
 - fixed demo mode if the do not heal on level finish option is used (#660)
 - removed the puzzle key sound effect when using save crystals (#654)
 - stopped the default controls from functioning when the user unbound them (#564)
+- added difficulty selector
 
 ## [2.11](https://github.com/rr-/Tomb1Main/compare/2.10.3...2.11) - 2022-10-19
 - added a .NET-based configuration tool (#633)

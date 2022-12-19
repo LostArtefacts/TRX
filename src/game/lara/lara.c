@@ -162,6 +162,18 @@ void Lara_Control(void)
         g_Lara.torso_y_rot = 0;
     }
 
+    // difficulty variable to multiply damages on Lara. Skips if: demo mode,
+    // Lara HP <= 0, previous Lara HP <= current Lara HP
+    if (g_GameInfo.current_level_type != GFL_DEMO && item->hit_points > 0
+        && g_OldLaraHitPoints > item->hit_points) {
+        int16_t diff_lara_hit_points;
+        diff_lara_hit_points = g_OldLaraHitPoints - item->hit_points;
+        item->hit_points = g_OldLaraHitPoints
+            - (int16_t)(diff_lara_hit_points
+                        * g_Config.damages_to_lara_multiplier);
+    }
+    g_OldLaraHitPoints = item->hit_points; // important
+
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (!g_Lara.death_timer) {
@@ -205,7 +217,13 @@ void Lara_Control(void)
             g_Lara.air--;
             if (g_Lara.air < 0) {
                 g_Lara.air = -1;
-                item->hit_points -= 5;
+                int16_t drowning_damage =
+                    5 * g_Config.damages_to_lara_multiplier;
+                CLAMP(
+                    drowning_damage, 2,
+                    15); // to avoid ridiculous drowning speeds
+                item->hit_points -= drowning_damage;
+                g_OldLaraHitPoints = item->hit_points; // important
             }
         }
         Lara_HandleUnderwater(item, &coll);
@@ -458,6 +476,7 @@ void Lara_Initialise(int32_t level_num)
     } else {
         g_LaraItem->hit_points = g_Config.start_lara_hitpoints;
     }
+    g_OldLaraHitPoints = -1; // important
 
     g_Lara.air = LARA_AIR;
     g_Lara.torso_y_rot = 0;

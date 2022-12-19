@@ -1,6 +1,7 @@
 #include "game/option/option_compass.h"
 
 #include "config.h"
+#include "game/difficulty.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/text.h"
@@ -20,7 +21,8 @@ typedef enum COMPASS_TEXT {
     TEXT_PICKUPS = 4,
     TEXT_DEATHS = 5,
     TEXT_KILLS = 6,
-    TEXT_NUMBER_OF = 7,
+    TEXT_DIFFICULTY = 7,
+    TEXT_NUMBER_OF = 8,
 } COMPASS_TEXT;
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
@@ -87,6 +89,13 @@ static void Option_CompassInitText(void)
         sprintf(
             buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
         m_Text[TEXT_DEATHS] = Text_Create(0, y, buf);
+        y += row_height;
+    }
+
+    // difficulty
+    if (g_Config.enable_difficulty) {
+        Difficulty_GetTextStat(buf, g_Config.damages_to_lara_multiplier);
+        m_Text[TEXT_DIFFICULTY] = Text_Create(0, y, buf);
         y += row_height;
     }
 

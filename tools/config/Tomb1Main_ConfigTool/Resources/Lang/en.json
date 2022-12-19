@@ -130,6 +130,10 @@
       "Title": "Lara's starting health",
       "Description": "Sets Lara's health value for the beginning of each level."
     },
+    "enable_difficulty": {
+      "Title": "Difficulty Selector",
+      "Description": "Allows to select a difficulty (Easy, Normal, Hard, ect...) based on damages on Lara."
+    },
     "disable_medpacks": {
       "Title": "Remove medipacks",
       "Description": "Removes all medipacks from the game (for No Meds challenge runs)."

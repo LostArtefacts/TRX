@@ -211,6 +211,8 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(walk_to_items, false);
     READ_BOOL(disable_trex_collision, false);
     READ_INTEGER(start_lara_hitpoints, LARA_HITPOINTS);
+    READ_BOOL(enable_difficulty, true);
+    READ_FLOAT(damages_to_lara_multiplier, 1.0f);
     READ_ENUM(
         healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
     READ_ENUM(airbar_showing_mode, BSM_DEFAULT, m_BarShowingModes);
@@ -228,6 +230,10 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_pitched_sounds, true);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
+    if (!g_Config.enable_difficulty) {
+        g_Config.damages_to_lara_multiplier = 1.00;
+    }
+    CLAMP(g_Config.damages_to_lara_multiplier, 0.334, 20.0);
     CLAMP(g_Config.fov_value, 30, 255);
 
     // User settings
@@ -374,6 +380,8 @@ bool Config_Write(void)
     WRITE_BOOL(walk_to_items);
     WRITE_BOOL(disable_trex_collision);
     WRITE_INTEGER(start_lara_hitpoints);
+    WRITE_BOOL(enable_difficulty);
+    WRITE_FLOAT(damages_to_lara_multiplier);
     WRITE_ENUM(healthbar_showing_mode, m_BarShowingModes);
     WRITE_ENUM(airbar_showing_mode, m_BarShowingModes);
     WRITE_ENUM(healthbar_location, m_BarLocations);

@@ -699,7 +699,10 @@ bool Creature_ShootAtLara(
     }
 
     if (hit) {
-        g_LaraItem->hit_points -= damage;
+        // to keep it fair: damages_to_lara_multiplier's squared root
+        g_LaraItem->hit_points -=
+            (int16_t)(damage * ((float)Math_Sqrt(10000 * g_Config.damages_to_lara_multiplier) / 100));
+        g_OldLaraHitPoints = g_LaraItem->hit_points; // important
         g_LaraItem->hit_status = 1;
     }
 

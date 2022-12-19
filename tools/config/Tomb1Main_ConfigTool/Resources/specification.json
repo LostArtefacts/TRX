@@ -122,6 +122,11 @@
           "MaximumValue": 1000
         },
         {
+          "Field": "enable_difficulty",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "disable_medpacks",
           "DataType": "Bool",
           "DefaultValue": false

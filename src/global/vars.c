@@ -49,6 +49,7 @@ MATRIX g_W2VMatrix = { 0 };
 
 LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
+int16_t g_OldLaraHitPoints = -1;
 CAMERA_INFO g_Camera = { 0 };
 GAME_INFO g_GameInfo = { 0 };
 int32_t g_SavedGamesCount = 0;
@@ -104,4 +105,8 @@ RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE] = {
     { 640, 480 },   { 800, 600 },   { 1024, 768 },  { 1280, 720 },
     { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 }, { 4096, 2160 },
     { 7680, 4320 }, { -1, -1 },
+};
+
+float g_Difficulty_Presets[MAX_DIFFICULTY_PRESETS] = {
+    0.35, 0.65, 1.00, 2.25, 4.75, 9.50, 20.00,
 };

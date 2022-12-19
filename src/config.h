@@ -97,6 +97,8 @@ typedef struct {
     bool enable_3d_pickups;
     bool enable_detailed_stats;
     int32_t start_lara_hitpoints;
+    bool enable_difficulty;
+    float damages_to_lara_multiplier;
     bool walk_to_items;
     bool disable_trex_collision;
     int32_t maximum_save_slots;

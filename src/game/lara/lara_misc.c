@@ -575,9 +575,16 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
     } else if (landspeed > DAMAGE_LENGTH) {
         item->hit_points = -1;
     } else {
-        item->hit_points -= (LARA_HITPOINTS * landspeed * landspeed)
-            / (DAMAGE_LENGTH * DAMAGE_LENGTH);
+        item->hit_points -= ((LARA_HITPOINTS * landspeed * landspeed)
+                             / (DAMAGE_LENGTH * DAMAGE_LENGTH))
+            * g_Config
+                  .damages_to_lara_multiplier; // g_Config.damages_to_lara_multiplier
+                                               // is required here to prevent
+                                               // lara dying later at lara.c
+                                               // without playing the death
+                                               // landing animation
     }
+    g_OldLaraHitPoints = item->hit_points; // important
 
     if (item->hit_points < 0) {
         return true;

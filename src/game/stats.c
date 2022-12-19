@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/difficulty.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
@@ -334,6 +335,17 @@ void Stats_Show(int32_t level_num)
     if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
         sprintf(
             buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
+        txt = Text_Create(0, y, buf);
+        Text_CentreH(txt, 1);
+        Text_CentreV(txt, 1);
+        y += row_height;
+    }
+
+    // difficulty. Note that since the difficulty is not linked to savefiles, it
+    // will not show in the "Final Statistics" screen. Thus, there is no mistake
+    // to not add it also in Stats_ShowTotal()
+    if (g_Config.enable_difficulty) {
+        Difficulty_GetTextStat(buf, g_Config.damages_to_lara_multiplier);
         txt = Text_Create(0, y, buf);
         Text_CentreH(txt, 1);
         Text_CentreV(txt, 1);

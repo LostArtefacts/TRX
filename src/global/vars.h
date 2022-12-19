@@ -38,6 +38,7 @@ extern void (*g_EffectRoutines[])(ITEM_INFO *item);
 
 extern LARA_INFO g_Lara;
 extern ITEM_INFO *g_LaraItem;
+extern int16_t g_OldLaraHitPoints;
 extern CAMERA_INFO g_Camera;
 extern GAME_INFO g_GameInfo;
 extern int32_t g_SavedGamesCount;
@@ -88,3 +89,4 @@ extern int32_t g_InvExtraData[8];
 extern int16_t g_InvChosen;
 
 extern RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE];
+extern float g_Difficulty_Presets[MAX_DIFFICULTY_PRESETS];

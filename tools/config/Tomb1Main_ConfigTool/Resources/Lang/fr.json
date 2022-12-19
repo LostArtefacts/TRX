@@ -130,6 +130,10 @@
       "Title": "Points de vie de Lara",
       "Description": "Définit les points de vie de Lara à chaque lancement de niveau (de 1 à 1000 maximum)."
     },
+    "enable_difficulty": {
+      "Title": "Sélection de la Difficulté",
+      "Description": "Permet de choisir une difficulté (Facile, Normale, Difficile, ect...) basée sur les dégâts que recevra Lara."
+    },
     "disable_medpacks": {
       "Title": "Supprimer les trousses de soin",
       "Description": "Supprime toutes les trousses de soin de tous les niveaux (Pour un run challenge)."
