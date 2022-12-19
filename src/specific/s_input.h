@@ -27,7 +27,7 @@ void S_Input_AssignScancode(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode);
 
 void S_Input_AssignButton(
-    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerButton btn);
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerButton button);
 
 void S_Input_AssignAxis(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerAxis axis,

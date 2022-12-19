@@ -212,9 +212,9 @@ void Input_AssignScancode(
     Input_CheckConflicts(CM_KEYBOARD, layout_num);
 }
 
-void Input_AssignButton(INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t btn)
+void Input_AssignButton(INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t button)
 {
-    S_Input_AssignButton(layout_num, role, btn);
+    S_Input_AssignButton(layout_num, role, button);
     Input_CheckConflicts(CM_CONTROLLER, layout_num);
 }
 

@@ -16,7 +16,7 @@
 #define KEY_DOWN(a) (m_KeyboardState[(a)])
 
 typedef union BIND_TYPE {
-    SDL_GameControllerButton btn;
+    SDL_GameControllerButton button;
     SDL_GameControllerAxis axis;
 } BIND_TYPE;
 
@@ -333,11 +333,11 @@ static SDL_GameControllerType m_ControllerType = SDL_CONTROLLER_TYPE_UNKNOWN;
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
-static bool S_Input_JoyBtn(SDL_GameControllerButton btn);
+static bool S_Input_JoyBtn(SDL_GameControllerButton button);
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
-static const char *S_Input_GetButtonName(SDL_GameControllerButton btn);
+static const char *S_Input_GetButtonName(SDL_GameControllerButton button);
 static const char *S_Input_GetAxisName(
     SDL_GameControllerAxis axis, int16_t axis_dir);
 
@@ -583,14 +583,14 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
     return "????";
 }
 
-static const char *S_Input_GetButtonName(SDL_GameControllerButton btn)
+static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
 {
     // clang-format off
     switch (m_ControllerType) {
         case SDL_CONTROLLER_TYPE_PS3:
         case SDL_CONTROLLER_TYPE_PS4:
         case SDL_CONTROLLER_TYPE_PS5:
-            switch (btn) {
+            switch (button) {
                 case SDL_CONTROLLER_BUTTON_INVALID:       return "";
                 case SDL_CONTROLLER_BUTTON_A:             return "\206";
                 case SDL_CONTROLLER_BUTTON_B:             return "\205";
@@ -618,7 +618,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton btn)
             break;
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
-            switch (btn) {
+            switch (button) {
                 case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
                 case SDL_CONTROLLER_BUTTON_A:             return "B";
                 case SDL_CONTROLLER_BUTTON_B:             return "A";
@@ -646,7 +646,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton btn)
             break;
         case SDL_CONTROLLER_TYPE_XBOX360:
         case SDL_CONTROLLER_TYPE_XBOXONE:
-            switch (btn) {
+            switch (button) {
                 case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
                 case SDL_CONTROLLER_BUTTON_A:             return "A";
                 case SDL_CONTROLLER_BUTTON_B:             return "B";
@@ -673,7 +673,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton btn)
             }
             break;
         default:
-            switch (btn) {
+            switch (button) {
                 case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
                 case SDL_CONTROLLER_BUTTON_A:             return "A";
                 case SDL_CONTROLLER_BUTTON_B:             return "B";
@@ -787,9 +787,9 @@ static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
     return S_Input_KbdKey(role, layout_num);
 }
 
-static bool S_Input_JoyBtn(SDL_GameControllerButton btn)
+static bool S_Input_JoyBtn(SDL_GameControllerButton button)
 {
-    return SDL_GameControllerGetButton(m_Controller, btn);
+    return SDL_GameControllerGetButton(m_Controller, button);
 }
 
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
@@ -895,7 +895,7 @@ INPUT_STATE S_Input_GetCurrentState(
             int16_t btn_state = 0;
 
             if (role.type == BT_BUTTON) {
-                btn_state = S_Input_JoyBtn(role.bind.btn);
+                btn_state = S_Input_JoyBtn(role.bind.button);
             } else {
                 btn_state = S_Input_JoyAxis(role.bind.axis) == role.axis_dir;
             }
@@ -1034,7 +1034,7 @@ int16_t S_Input_GetUniqueBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
                 + SDL_CONTROLLER_BUTTON_MAX + 10;
         }
     }
-    return m_ControllerLayout[layout_num][role].bind.btn;
+    return m_ControllerLayout[layout_num][role].bind.button;
 }
 
 int16_t S_Input_GetAssignedButtonType(INPUT_LAYOUT layout_num, INPUT_ROLE role)
@@ -1045,7 +1045,7 @@ int16_t S_Input_GetAssignedButtonType(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 int16_t S_Input_GetAssignedBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     if (m_ControllerLayout[layout_num][role].type == BT_BUTTON) {
-        return m_ControllerLayout[layout_num][role].bind.btn;
+        return m_ControllerLayout[layout_num][role].bind.button;
     } else {
         return m_ControllerLayout[layout_num][role].bind.axis;
     }
@@ -1063,10 +1063,10 @@ void S_Input_AssignScancode(
 }
 
 void S_Input_AssignButton(
-    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerButton btn)
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerButton button)
 {
     m_ControllerLayout[layout_num][role].type = BT_BUTTON;
-    m_ControllerLayout[layout_num][role].bind.btn = btn;
+    m_ControllerLayout[layout_num][role].bind.button = button;
     m_ControllerLayout[layout_num][role].axis_dir = 0;
 }
 
@@ -1100,10 +1100,10 @@ bool S_Input_ReadAndAssignKey(
             }
         }
     } else {
-        for (SDL_GameControllerButton btn = 0; btn < SDL_CONTROLLER_BUTTON_MAX;
-             btn++) {
-            if (S_Input_JoyBtn(btn)) {
-                S_Input_AssignButton(layout_num, role, btn);
+        for (SDL_GameControllerButton button = 0; button < SDL_CONTROLLER_BUTTON_MAX;
+             button++) {
+            if (S_Input_JoyBtn(button)) {
+                S_Input_AssignButton(layout_num, role, button);
                 return true;
             }
         }
@@ -1127,7 +1127,7 @@ const char *S_Input_GetKeyName(
     } else {
         CONTROLLER_MAP check = m_ControllerLayout[layout_num][role];
         if (check.type == BT_BUTTON) {
-            return S_Input_GetButtonName(check.bind.btn);
+            return S_Input_GetButtonName(check.bind.button);
         } else {
             return S_Input_GetAxisName(check.bind.axis, check.axis_dir);
         }
@@ -1137,9 +1137,9 @@ const char *S_Input_GetKeyName(
 const char *S_Input_GetButtonNameFromString(
     INPUT_LAYOUT layout_num, const char *btn_name)
 {
-    SDL_GameControllerButton btn =
+    SDL_GameControllerButton button =
         SDL_GameControllerGetButtonFromString(btn_name);
-    return S_Input_GetButtonName(btn);
+    return S_Input_GetButtonName(button);
 }
 
 bool S_Input_CheckKeypress(const char *key_name)
@@ -1154,10 +1154,10 @@ bool S_Input_CheckKeypress(const char *key_name)
 
 bool S_Input_CheckButtonPress(const char *btn_name)
 {
-    SDL_GameControllerButton btn =
+    SDL_GameControllerButton button =
         SDL_GameControllerGetButtonFromString(btn_name);
 
-    if (S_Input_JoyBtn(btn)) {
+    if (S_Input_JoyBtn(button)) {
         return true;
     }
     return false;
