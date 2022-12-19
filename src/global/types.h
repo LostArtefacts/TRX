@@ -2106,8 +2106,8 @@ typedef enum INPUT_LAYOUT {
 } INPUT_LAYOUT;
 
 typedef enum BUTTON_TYPE {
-    BUTTON = 0,
-    AXIS = 1,
+    BT_BUTTON = 0,
+    BT_AXIS = 1,
 } BUTTON_TYPE;
 
 typedef int16_t INPUT_SCANCODE;

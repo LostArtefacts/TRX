@@ -297,7 +297,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
             axs_dir = json_array_get_int(cntlr_arr, i, axs_dir);
             i++;
 
-            if (type == BUTTON) {
+            if (type == BT_BUTTON) {
                 Input_AssignButton(layout, role, bind);
             } else {
                 Input_AssignAxis(layout, role, bind, axs_dir);
