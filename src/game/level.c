@@ -274,7 +274,23 @@ static bool Level_LoadObjects(MYFILE *fp)
     File_Read(&m_AnimCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anims", m_AnimCount);
     g_Anims = GameBuf_Alloc(sizeof(ANIM_STRUCT) * m_AnimCount, GBUF_ANIMS);
-    File_Read(g_Anims, sizeof(ANIM_STRUCT), m_AnimCount, fp);
+    for (int i = 0; i < m_AnimCount; i++) {
+        ANIM_STRUCT *anim = g_Anims + i;
+
+        File_Read(&anim->frame_ofs, sizeof(uint32_t), 1, fp);
+        File_Read(&anim->interpolation, sizeof(int16_t), 1, fp);
+        File_Read(&anim->current_anim_state, sizeof(int16_t), 1, fp);
+        File_Read(&anim->velocity, sizeof(int32_t), 1, fp);
+        File_Read(&anim->acceleration, sizeof(int32_t), 1, fp);
+        File_Read(&anim->frame_base, sizeof(int16_t), 1, fp);
+        File_Read(&anim->frame_end, sizeof(int16_t), 1, fp);
+        File_Read(&anim->jump_anim_num, sizeof(int16_t), 1, fp);
+        File_Read(&anim->jump_frame_num, sizeof(int16_t), 1, fp);
+        File_Read(&anim->number_changes, sizeof(int16_t), 1, fp);
+        File_Read(&anim->change_index, sizeof(int16_t), 1, fp);
+        File_Read(&anim->number_commands, sizeof(int16_t), 1, fp);
+        File_Read(&anim->command_index, sizeof(int16_t), 1, fp);
+    }
 
     File_Read(&m_AnimChangeCount, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim changes", m_AnimChangeCount);
@@ -306,7 +322,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         GameBuf_Alloc(sizeof(int16_t) * m_AnimFrameCount, GBUF_ANIM_FRAMES);
     File_Read(g_AnimFrames, sizeof(int16_t), m_AnimFrameCount, fp);
     for (int i = 0; i < m_AnimCount; i++) {
-        g_Anims[i].frame_ptr = &g_AnimFrames[(size_t)g_Anims[i].frame_ptr / 2];
+        g_Anims[i].frame_ptr = &g_AnimFrames[g_Anims[i].frame_ofs / 2];
     }
 
     File_Read(&m_ObjectCount, sizeof(int32_t), 1, fp);
