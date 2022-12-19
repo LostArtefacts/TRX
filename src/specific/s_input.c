@@ -338,8 +338,8 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
 static bool S_Input_JoyBtn(SDL_GameControllerButton button);
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
-static INPUT_STATE S_Input_GetControllerState(INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num);
-
+static INPUT_STATE S_Input_GetControllerState(
+    INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
 {
@@ -616,6 +616,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_MAX:           return "";
             }
             break;
+
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
             switch (button) {
@@ -644,6 +645,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_MAX:           return "";
             }
             break;
+
         case SDL_CONTROLLER_TYPE_XBOX360:
         case SDL_CONTROLLER_TYPE_XBOXONE:
             switch (button) {
@@ -672,6 +674,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_MAX:           return "";
             }
             break;
+
         default:
             switch (button) {
                 case SDL_CONTROLLER_BUTTON_INVALID:       return "INVALID";
@@ -723,6 +726,7 @@ static const char *S_Input_GetAxisName(
                 case SDL_CONTROLLER_AXIS_MAX:             return "";
             }
             break;
+
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
             switch (axis) {
@@ -736,6 +740,7 @@ static const char *S_Input_GetAxisName(
                 case SDL_CONTROLLER_AXIS_MAX:             return "";
             }
             break;
+
         case SDL_CONTROLLER_TYPE_XBOX360:
         case SDL_CONTROLLER_TYPE_XBOXONE:
         default:
@@ -804,8 +809,9 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
     return 0;
 }
 
- static INPUT_STATE S_Input_GetControllerState(INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
- {
+static INPUT_STATE S_Input_GetControllerState(
+    INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
+{
     // clang-format off
     for (int role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
@@ -925,7 +931,7 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
     }
     // clang-format on
     return state;
- }
+}
 
 void S_Input_Init(void)
 {
@@ -1104,8 +1110,8 @@ bool S_Input_ReadAndAssignKey(
             }
         }
     } else {
-        for (SDL_GameControllerButton button = 0; button < SDL_CONTROLLER_BUTTON_MAX;
-             button++) {
+        for (SDL_GameControllerButton button = 0;
+             button < SDL_CONTROLLER_BUTTON_MAX; button++) {
             if (S_Input_JoyBtn(button)) {
                 S_Input_AssignButton(layout_num, role, button);
                 return true;

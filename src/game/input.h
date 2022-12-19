@@ -29,7 +29,8 @@ void Input_AssignScancode(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, INPUT_SCANCODE scancode);
 
 // Assign a concrete button to the given layout and key role.
-void Input_AssignButton(INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t button);
+void Input_AssignButton(
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t button);
 
 // Assign a concrete axis to the given layout and key role.
 void Input_AssignAxis(
