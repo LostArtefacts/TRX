@@ -293,14 +293,14 @@ bool Config_ReadFromJSON(const char *cfg_data)
             bind = json_array_get_int(cntlr_arr, i, bind);
             i++;
 
-            int16_t axs_dir = Input_GetAssignedAxisDir(layout, role);
-            axs_dir = json_array_get_int(cntlr_arr, i, axs_dir);
+            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
+            axis_dir = json_array_get_int(cntlr_arr, i, axis_dir);
             i++;
 
             if (type == BT_BUTTON) {
                 Input_AssignButton(layout, role, bind);
             } else {
-                Input_AssignAxis(layout, role, bind, axs_dir);
+                Input_AssignAxis(layout, role, bind, axis_dir);
             }
         }
     }

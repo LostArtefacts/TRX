@@ -219,9 +219,9 @@ void Input_AssignButton(INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t btn)
 }
 
 void Input_AssignAxis(
-    INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t axs, int16_t axs_dir)
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t axis, int16_t axis_dir)
 {
-    S_Input_AssignAxis(layout_num, role, axs, axs_dir);
+    S_Input_AssignAxis(layout_num, role, axis, axis_dir);
     Input_CheckConflicts(CM_CONTROLLER, layout_num);
 }
 

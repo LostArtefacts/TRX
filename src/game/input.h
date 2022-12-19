@@ -33,7 +33,7 @@ void Input_AssignButton(INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t btn);
 
 // Assign a concrete axis to the given layout and key role.
 void Input_AssignAxis(
-    INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t axs, int16_t axs_dir);
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, int16_t axis, int16_t axis_dir);
 
 // Retrieve the assigned scancode for the given layout and key role.
 INPUT_SCANCODE Input_GetAssignedScancode(

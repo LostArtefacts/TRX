@@ -17,13 +17,13 @@
 
 typedef union BIND_TYPE {
     SDL_GameControllerButton btn;
-    SDL_GameControllerAxis axs;
+    SDL_GameControllerAxis axis;
 } BIND_TYPE;
 
 typedef struct CONTROLLER_MAP {
     BUTTON_TYPE type;
     BIND_TYPE bind;
-    int16_t axs_dir;
+    int16_t axis_dir;
 } CONTROLLER_MAP;
 
 static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
@@ -334,12 +334,12 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
 static bool S_Input_JoyBtn(SDL_GameControllerButton btn);
-static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axs);
+static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static const char *S_Input_GetButtonName(SDL_GameControllerButton btn);
 static const char *S_Input_GetAxisName(
-    SDL_GameControllerAxis axs, int16_t axs_dir);
+    SDL_GameControllerAxis axis, int16_t axis_dir);
 
 static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
 {
@@ -705,19 +705,19 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton btn)
 }
 
 static const char *S_Input_GetAxisName(
-    SDL_GameControllerAxis axs, int16_t axs_dir)
+    SDL_GameControllerAxis axis, int16_t axis_dir)
 {
     // clang-format off
     switch (m_ControllerType) {
         case SDL_CONTROLLER_TYPE_PS3:
         case SDL_CONTROLLER_TYPE_PS4:
         case SDL_CONTROLLER_TYPE_PS5:
-            switch (axs) {
+            switch (axis) {
                 case SDL_CONTROLLER_AXIS_INVALID:         return "";
-                case SDL_CONTROLLER_AXIS_LEFTX:           return axs_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
-                case SDL_CONTROLLER_AXIS_LEFTY:           return axs_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
-                case SDL_CONTROLLER_AXIS_RIGHTX:          return axs_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
-                case SDL_CONTROLLER_AXIS_RIGHTY:          return axs_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_LEFTX:           return axis_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_LEFTY:           return axis_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_RIGHTX:          return axis_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_RIGHTY:          return axis_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
                 case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return "\300";
                 case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return "{";
                 case SDL_CONTROLLER_AXIS_MAX:             return "";
@@ -725,12 +725,12 @@ static const char *S_Input_GetAxisName(
             break;
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO:
         case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
-            switch (axs) {
+            switch (axis) {
                 case SDL_CONTROLLER_AXIS_INVALID:         return "";
-                case SDL_CONTROLLER_AXIS_LEFTX:           return axs_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
-                case SDL_CONTROLLER_AXIS_LEFTY:           return axs_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
-                case SDL_CONTROLLER_AXIS_RIGHTX:          return axs_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
-                case SDL_CONTROLLER_AXIS_RIGHTY:          return axs_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_LEFTX:           return axis_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_LEFTY:           return axis_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_RIGHTX:          return axis_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_RIGHTY:          return axis_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
                 case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return "ZL";
                 case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return "ZR";
                 case SDL_CONTROLLER_AXIS_MAX:             return "";
@@ -739,12 +739,12 @@ static const char *S_Input_GetAxisName(
         case SDL_CONTROLLER_TYPE_XBOX360:
         case SDL_CONTROLLER_TYPE_XBOXONE:
         default:
-            switch (axs) {
+            switch (axis) {
                 case SDL_CONTROLLER_AXIS_INVALID:         return "";
-                case SDL_CONTROLLER_AXIS_LEFTX:           return axs_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
-                case SDL_CONTROLLER_AXIS_LEFTY:           return axs_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
-                case SDL_CONTROLLER_AXIS_RIGHTX:          return axs_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
-                case SDL_CONTROLLER_AXIS_RIGHTY:          return axs_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_LEFTX:           return axis_dir == -1 ? "L ANALOG LEFT" : "L ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_LEFTY:           return axis_dir == -1 ? "L ANALOG UP" : "L ANALOG DOWN";
+                case SDL_CONTROLLER_AXIS_RIGHTX:          return axis_dir == -1 ? "R ANALOG LEFT" : "R ANALOG RIGHT";
+                case SDL_CONTROLLER_AXIS_RIGHTY:          return axis_dir == -1 ? "R ANALOG UP" : "R ANALOG DOWN";
                 case SDL_CONTROLLER_AXIS_TRIGGERLEFT:     return "L TRIGGER";
                 case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:    return "R TRIGGER";
                 case SDL_CONTROLLER_AXIS_MAX:             return "";
@@ -792,9 +792,9 @@ static bool S_Input_JoyBtn(SDL_GameControllerButton btn)
     return SDL_GameControllerGetButton(m_Controller, btn);
 }
 
-static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axs)
+static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
 {
-    Sint16 value = SDL_GameControllerGetAxis(m_Controller, axs);
+    Sint16 value = SDL_GameControllerGetAxis(m_Controller, axis);
     if (value < -SDL_JOYSTICK_AXIS_MAX / 2) {
         return -1;
     }
@@ -897,7 +897,7 @@ INPUT_STATE S_Input_GetCurrentState(
             if (role.type == BT_BUTTON) {
                 btn_state = S_Input_JoyBtn(role.bind.btn);
             } else {
-                btn_state = S_Input_JoyAxis(role.bind.axs) == role.axs_dir;
+                btn_state = S_Input_JoyAxis(role.bind.axis) == role.axis_dir;
             }
 
             switch(i) {
@@ -1028,11 +1028,11 @@ int16_t S_Input_GetUniqueBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
     } else {
         // Add SDL_CONTROLLER_BUTTON_MAX as an axis offset because button and
         // axis enum values overlap. Also offset depending on axis direction.
-        if (assigned.axs_dir == -1) {
-            return m_ControllerLayout[layout_num][role].bind.axs
+        if (assigned.axis_dir == -1) {
+            return m_ControllerLayout[layout_num][role].bind.axis
                 + SDL_CONTROLLER_BUTTON_MAX;
         } else {
-            return m_ControllerLayout[layout_num][role].bind.axs
+            return m_ControllerLayout[layout_num][role].bind.axis
                 + SDL_CONTROLLER_BUTTON_MAX + 10;
         }
     }
@@ -1048,13 +1048,13 @@ int16_t S_Input_GetAssignedBind(INPUT_LAYOUT layout_num, INPUT_ROLE role)
     if (m_ControllerLayout[layout_num][role].type == BT_BUTTON) {
         return m_ControllerLayout[layout_num][role].bind.btn;
     } else {
-        return m_ControllerLayout[layout_num][role].bind.axs;
+        return m_ControllerLayout[layout_num][role].bind.axis;
     }
 }
 
 int16_t S_Input_GetAssignedAxisDir(INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
-    return m_ControllerLayout[layout_num][role].axs_dir;
+    return m_ControllerLayout[layout_num][role].axis_dir;
 }
 
 void S_Input_AssignScancode(
@@ -1068,16 +1068,16 @@ void S_Input_AssignButton(
 {
     m_ControllerLayout[layout_num][role].type = BT_BUTTON;
     m_ControllerLayout[layout_num][role].bind.btn = btn;
-    m_ControllerLayout[layout_num][role].axs_dir = 0;
+    m_ControllerLayout[layout_num][role].axis_dir = 0;
 }
 
 void S_Input_AssignAxis(
-    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerAxis axs,
-    int16_t axs_dir)
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerAxis axis,
+    int16_t axis_dir)
 {
     m_ControllerLayout[layout_num][role].type = BT_AXIS;
-    m_ControllerLayout[layout_num][role].bind.axs = axs;
-    m_ControllerLayout[layout_num][role].axs_dir = axs_dir;
+    m_ControllerLayout[layout_num][role].bind.axis = axis;
+    m_ControllerLayout[layout_num][role].axis_dir = axis_dir;
 }
 
 void S_Input_ResetControllerToDefault(INPUT_LAYOUT layout_num)
@@ -1108,11 +1108,11 @@ bool S_Input_ReadAndAssignKey(
                 return true;
             }
         }
-        for (SDL_GameControllerAxis axs = 0; axs < SDL_CONTROLLER_AXIS_MAX;
-             axs++) {
-            int16_t axs_dir = S_Input_JoyAxis(axs);
-            if (axs_dir != 0) {
-                S_Input_AssignAxis(layout_num, role, axs, axs_dir);
+        for (SDL_GameControllerAxis axis = 0; axis < SDL_CONTROLLER_AXIS_MAX;
+             axis++) {
+            int16_t axis_dir = S_Input_JoyAxis(axis);
+            if (axis_dir != 0) {
+                S_Input_AssignAxis(layout_num, role, axis, axis_dir);
                 return true;
             }
         }
@@ -1130,7 +1130,7 @@ const char *S_Input_GetKeyName(
         if (check.type == BT_BUTTON) {
             return S_Input_GetButtonName(check.bind.btn);
         } else {
-            return S_Input_GetAxisName(check.bind.axs, check.axs_dir);
+            return S_Input_GetAxisName(check.bind.axis, check.axis_dir);
         }
     }
 }

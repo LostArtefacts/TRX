@@ -30,8 +30,8 @@ void S_Input_AssignButton(
     INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerButton btn);
 
 void S_Input_AssignAxis(
-    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerAxis axs,
-    int16_t axs_dir);
+    INPUT_LAYOUT layout_num, INPUT_ROLE role, SDL_GameControllerAxis axis,
+    int16_t axis_dir);
 
 void S_Input_ResetControllerToDefault(INPUT_LAYOUT layout_num);
 
