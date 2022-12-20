@@ -16,4 +16,4 @@ void Difficulty_GetTextStat(char *str, float damages_to_lara_multiplier);
 void Difficulty_GetTextStat_NoHeader(
     char *str, float damages_to_lara_multiplier);
 
-void Difficulty_Select(int16_t swt);
+void Difficulty_Select(int16_t difficulty_select_mode);
