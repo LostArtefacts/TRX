@@ -702,6 +702,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_MAX:           return "";
             }
             break;
+
     }
     // clang-format on
     return "????";
@@ -755,6 +756,7 @@ static const char *S_Input_GetAxisName(
                 case SDL_CONTROLLER_AXIS_MAX:             return "";
             }
             break;
+
     }
     // clang-format on
     return "????";
