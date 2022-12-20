@@ -59,7 +59,7 @@ static void Option_ControlPickShutdownText(void)
     }
 }
 
-CONTROL_MODE Option_ControlPick(INVENTORY_ITEM *inv_item)
+CONTROL_MODE Option_ControlPick(void)
 {
     char buf[20];
 

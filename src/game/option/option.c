@@ -42,7 +42,7 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
 
     case O_CONTROL_OPTION:
         if (m_ControlMode == CM_PICK) {
-            m_ControlMode = Option_ControlPick(inv_item);
+            m_ControlMode = Option_ControlPick();
         } else {
             m_ControlMode = Option_Control(inv_item, m_ControlMode);
         }
