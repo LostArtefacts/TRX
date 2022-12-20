@@ -9,9 +9,6 @@
 
 #include <stdio.h>
 
-#define MIN_VOLUME 0
-#define MAX_VOLUME 10
-
 typedef enum PICK_TEXT {
     TEXT_KEYBOARD = 0,
     TEXT_CONTROLLER = 1,
