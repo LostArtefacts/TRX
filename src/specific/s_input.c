@@ -814,7 +814,6 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
 static INPUT_STATE S_Input_GetControllerState(
     INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
 {
-    // clang-format off
     for (int role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
         int16_t btn_state = 0;
@@ -822,9 +821,11 @@ static INPUT_STATE S_Input_GetControllerState(
         if (assigned.type == BT_BUTTON) {
             btn_state = S_Input_JoyBtn(assigned.bind.button);
         } else {
-            btn_state = S_Input_JoyAxis(assigned.bind.axis) == assigned.axis_dir;
+            btn_state =
+                S_Input_JoyAxis(assigned.bind.axis) == assigned.axis_dir;
         }
 
+        // clang-format off
         switch(role) {
         case INPUT_ROLE_UP:
             state.forward                |= btn_state;
@@ -930,8 +931,8 @@ static INPUT_STATE S_Input_GetControllerState(
         default:
             break;
         }
+        // clang-format on
     }
-    // clang-format on
     return state;
 }
 
