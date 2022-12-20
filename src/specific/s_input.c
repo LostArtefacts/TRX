@@ -338,6 +338,8 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
 static bool S_Input_JoyBtn(SDL_GameControllerButton button);
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
+static bool S_Input_GetBindState(
+    INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num);
 static INPUT_STATE S_Input_GetControllerState(
     INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num);
 
@@ -811,6 +813,18 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
     return 0;
 }
 
+static bool S_Input_GetBindState(INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num)
+{
+    CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
+    int16_t btn_state = 0;
+
+    if (assigned.type == BT_BUTTON) {
+        return (S_Input_JoyBtn(assigned.bind.button));
+    } else {
+        return (S_Input_JoyAxis(assigned.bind.axis) == assigned.axis_dir);
+    }
+}
+
 static INPUT_STATE S_Input_GetControllerState(
     INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
 {
@@ -826,111 +840,41 @@ static INPUT_STATE S_Input_GetControllerState(
         }
 
         // clang-format off
-        switch(role) {
-        case INPUT_ROLE_UP:
-            state.forward                |= btn_state;
-            break;
-        case INPUT_ROLE_DOWN:
-            state.back                   |= btn_state;
-            break;
-        case INPUT_ROLE_LEFT:
-            state.left                   |= btn_state;
-            break;
-        case INPUT_ROLE_RIGHT:
-            state.right                  |= btn_state;
-            break;
-        case INPUT_ROLE_STEP_L:
-            state.step_left              |= btn_state;
-            break;
-        case INPUT_ROLE_STEP_R:
-            state.step_right             |= btn_state;
-            break;
-        case INPUT_ROLE_SLOW:
-            state.slow                   |= btn_state;
-            break;
-        case INPUT_ROLE_JUMP:
-            state.jump                   |= btn_state;
-            break;
-        case INPUT_ROLE_ACTION:
-            state.action                 |= btn_state;
-            state.select                 |= btn_state;
-            break;
-        case INPUT_ROLE_DRAW:
-            state.draw                   |= btn_state;
-            break;
-        case INPUT_ROLE_LOOK:
-            state.look                   |= btn_state;
-            break;
-        case INPUT_ROLE_ROLL:
-            state.roll                   |= btn_state;
-            break;
-        case INPUT_ROLE_OPTION:
-            state.option                 |= btn_state;
-            state.deselect               |= btn_state;
-            break;
-        case INPUT_ROLE_FLY_CHEAT:
-            state.fly_cheat              |= btn_state;
-            break;
-        case INPUT_ROLE_ITEM_CHEAT:
-            state.item_cheat             |= btn_state;
-            break;
-        case INPUT_ROLE_LEVEL_SKIP_CHEAT:
-            state.level_skip_cheat       |= btn_state;
-            break;
-        case INPUT_ROLE_TURBO_CHEAT:
-            state.turbo_cheat            |= btn_state;
-            break;
-        case INPUT_ROLE_PAUSE:
-            state.pause                  |= btn_state;
-            break;
-        case INPUT_ROLE_CAMERA_UP:
-            state.camera_up              |= btn_state;
-            break;
-        case INPUT_ROLE_CAMERA_DOWN:
-            state.camera_down            |= btn_state;
-            break;
-        case INPUT_ROLE_CAMERA_LEFT:
-            state.camera_left            |= btn_state;
-            break;
-        case INPUT_ROLE_CAMERA_RIGHT:
-            state.camera_right           |= btn_state;
-            break;
-        case INPUT_ROLE_CAMERA_RESET:
-            state.camera_reset           |= btn_state;
-            break;
-        case INPUT_ROLE_EQUIP_PISTOLS:
-            state.equip_pistols          |= btn_state;
-            break;
-        case INPUT_ROLE_EQUIP_SHOTGUN:
-            state.equip_shotgun          |= btn_state;
-            break;
-        case INPUT_ROLE_EQUIP_MAGNUMS:
-            state.equip_magnums          |= btn_state;
-            break;
-        case INPUT_ROLE_EQUIP_UZIS:
-            state.equip_uzis             |= btn_state;
-            break;
-        case INPUT_ROLE_USE_SMALL_MEDI:
-            state.use_small_medi         |= btn_state;
-            break;
-        case INPUT_ROLE_USE_BIG_MEDI:
-            state.use_big_medi           |= btn_state;
-            break;
-        case INPUT_ROLE_SAVE:
-            state.save                   |= btn_state;
-            break;
-        case INPUT_ROLE_LOAD:
-            state.load                   |= btn_state;
-            break;
-        case INPUT_ROLE_FPS:
-            state.toggle_fps_counter     |= btn_state;
-            break;
-        case INPUT_ROLE_BILINEAR:
-            state.toggle_bilinear_filter |= btn_state;
-            break;
-        default:
-            break;
-        }
+        state.forward                |= S_Input_GetBindState(INPUT_ROLE_UP, cntlr_layout_num);
+        state.back                   |= S_Input_GetBindState(INPUT_ROLE_DOWN, cntlr_layout_num);
+        state.left                   |= S_Input_GetBindState(INPUT_ROLE_LEFT, cntlr_layout_num);
+        state.right                  |= S_Input_GetBindState(INPUT_ROLE_RIGHT, cntlr_layout_num);
+        state.step_left              |= S_Input_GetBindState(INPUT_ROLE_STEP_L, cntlr_layout_num);
+        state.step_right             |= S_Input_GetBindState(INPUT_ROLE_STEP_R, cntlr_layout_num);
+        state.slow                   |= S_Input_GetBindState(INPUT_ROLE_SLOW, cntlr_layout_num);
+        state.jump                   |= S_Input_GetBindState(INPUT_ROLE_JUMP, cntlr_layout_num);
+        state.action                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
+        state.select                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
+        state.draw                   |= S_Input_GetBindState(INPUT_ROLE_DRAW, cntlr_layout_num);
+        state.look                   |= S_Input_GetBindState(INPUT_ROLE_LOOK, cntlr_layout_num);
+        state.roll                   |= S_Input_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
+        state.option                 |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
+        state.deselect               |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
+        state.pause                  |= S_Input_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
+        state.camera_up              |= S_Input_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
+        state.camera_down            |= S_Input_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
+        state.camera_left            |= S_Input_GetBindState(INPUT_ROLE_CAMERA_LEFT, cntlr_layout_num);
+        state.camera_right           |= S_Input_GetBindState(INPUT_ROLE_CAMERA_RIGHT, cntlr_layout_num);
+        state.camera_reset           |= S_Input_GetBindState(INPUT_ROLE_CAMERA_RESET, cntlr_layout_num);
+        state.item_cheat             |= S_Input_GetBindState(INPUT_ROLE_ITEM_CHEAT, cntlr_layout_num);
+        state.fly_cheat              |= S_Input_GetBindState(INPUT_ROLE_FLY_CHEAT, cntlr_layout_num);
+        state.level_skip_cheat       |= S_Input_GetBindState(INPUT_ROLE_LEVEL_SKIP_CHEAT, cntlr_layout_num);
+        state.turbo_cheat            |= S_Input_GetBindState(INPUT_ROLE_TURBO_CHEAT, cntlr_layout_num);
+        state.equip_pistols          |= S_Input_GetBindState(INPUT_ROLE_EQUIP_PISTOLS, cntlr_layout_num);
+        state.equip_shotgun          |= S_Input_GetBindState(INPUT_ROLE_EQUIP_SHOTGUN, cntlr_layout_num);
+        state.equip_magnums          |= S_Input_GetBindState(INPUT_ROLE_EQUIP_MAGNUMS, cntlr_layout_num);
+        state.equip_uzis             |= S_Input_GetBindState(INPUT_ROLE_EQUIP_UZIS, cntlr_layout_num);
+        state.use_small_medi         |= S_Input_GetBindState(INPUT_ROLE_USE_SMALL_MEDI, cntlr_layout_num);
+        state.use_big_medi           |= S_Input_GetBindState(INPUT_ROLE_USE_BIG_MEDI, cntlr_layout_num);
+        state.save                   |= S_Input_GetBindState(INPUT_ROLE_SAVE, cntlr_layout_num);
+        state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
+        state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
+        state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
         // clang-format on
     }
     return state;
