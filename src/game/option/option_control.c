@@ -577,6 +577,7 @@ static void Option_ControlCheckResetKeys(
             if (m_ResetTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
                 Input_ResetLayout(mode, layout_num);
+                Input_CheckConflicts(mode, layout_num);
                 Option_ControlUpdateText(mode, layout_num);
                 Option_ControlFlashConflicts(mode, layout_num);
                 Config_Write();
@@ -617,6 +618,7 @@ static void Option_ControlCheckUnbindKey(
                     Input_AssignButton(
                         layout_num, m_ControlMenu.cur_role, UNBIND_ENUM);
                 }
+                Input_CheckConflicts(mode, layout_num);
                 Option_ControlUpdateText(mode, layout_num);
                 Option_ControlFlashConflicts(mode, layout_num);
                 Config_Write();
