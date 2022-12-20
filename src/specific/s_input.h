@@ -42,7 +42,7 @@ const char *S_Input_GetKeyName(
     CONTROL_MODE mode, INPUT_LAYOUT layout_num, INPUT_ROLE role);
 
 const char *S_Input_GetButtonNameFromString(
-    INPUT_LAYOUT layout_num, const char *btn_name);
+    INPUT_LAYOUT layout_num, const char *buttonn_name);
 
 bool S_Input_CheckKeypress(const char *key_name);
 

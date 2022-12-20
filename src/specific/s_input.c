@@ -1148,10 +1148,10 @@ const char *S_Input_GetKeyName(
 }
 
 const char *S_Input_GetButtonNameFromString(
-    INPUT_LAYOUT layout_num, const char *btn_name)
+    INPUT_LAYOUT layout_num, const char *button_name)
 {
     SDL_GameControllerButton button =
-        SDL_GameControllerGetButtonFromString(btn_name);
+        SDL_GameControllerGetButtonFromString(button_name);
     return S_Input_GetButtonName(button);
 }
 

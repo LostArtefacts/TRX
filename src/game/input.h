@@ -68,7 +68,8 @@ bool Input_CheckKeypress(const char *check_key);
 
 // Gets the name of a controller button from the string name depending on the
 // controller type.
-const char *Input_GetButtonName(INPUT_LAYOUT layout_num, const char *name);
+const char *Input_GetButtonName(
+    INPUT_LAYOUT layout_num, const char *button_name);
 
 // Checks if the given button is being pressed.
 bool Input_CheckButtonPress(const char *check_button);

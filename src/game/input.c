@@ -247,9 +247,10 @@ bool Input_CheckKeypress(const char *check_key)
     return S_Input_CheckKeypress(check_key);
 }
 
-const char *Input_GetButtonName(INPUT_LAYOUT layout_num, const char *name)
+const char *Input_GetButtonName(
+    INPUT_LAYOUT layout_num, const char *button_name)
 {
-    return S_Input_GetButtonNameFromString(layout_num, name);
+    return S_Input_GetButtonNameFromString(layout_num, button_name);
 }
 
 bool Input_CheckButtonPress(const char *check_button)
