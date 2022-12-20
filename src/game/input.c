@@ -253,9 +253,9 @@ const char *Input_GetButtonName(
     return S_Input_GetButtonNameFromString(layout_num, button_name);
 }
 
-bool Input_CheckButtonPress(const char *check_button)
+bool Input_CheckButtonPress(const char *button_name)
 {
-    return S_Input_CheckButtonPress(check_button);
+    return S_Input_CheckButtonPress(button_name);
 }
 
 void Input_ResetLayout(CONTROL_MODE mode, INPUT_LAYOUT layout_num)

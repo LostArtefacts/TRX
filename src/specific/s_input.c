@@ -1165,10 +1165,10 @@ bool S_Input_CheckKeypress(const char *key_name)
     return false;
 }
 
-bool S_Input_CheckButtonPress(const char *btn_name)
+bool S_Input_CheckButtonPress(const char *button_name)
 {
     SDL_GameControllerButton button =
-        SDL_GameControllerGetButtonFromString(btn_name);
+        SDL_GameControllerGetButtonFromString(button_name);
 
     return S_Input_JoyBtn(button);
 }

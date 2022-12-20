@@ -72,7 +72,7 @@ const char *Input_GetButtonName(
     INPUT_LAYOUT layout_num, const char *button_name);
 
 // Checks if the given button is being pressed.
-bool Input_CheckButtonPress(const char *check_button);
+bool Input_CheckButtonPress(const char *button_name);
 
 // Reset a given layout to the default.
 void Input_ResetLayout(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
