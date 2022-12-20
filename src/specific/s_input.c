@@ -877,6 +877,8 @@ static INPUT_STATE S_Input_GetControllerState(
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
         // clang-format on
     }
+
+
     return state;
 }
 
