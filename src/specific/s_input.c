@@ -816,7 +816,6 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
 static bool S_Input_GetBindState(INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num)
 {
     CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
-    int16_t btn_state = 0;
 
     if (assigned.type == BT_BUTTON) {
         return (S_Input_JoyBtn(assigned.bind.button));
@@ -829,16 +828,6 @@ static INPUT_STATE S_Input_GetControllerState(
     INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
 {
     for (int role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
-        int16_t btn_state = 0;
-
-        if (assigned.type == BT_BUTTON) {
-            btn_state = S_Input_JoyBtn(assigned.bind.button);
-        } else {
-            btn_state =
-                S_Input_JoyAxis(assigned.bind.axis) == assigned.axis_dir;
-        }
-
         // clang-format off
         state.forward                |= S_Input_GetBindState(INPUT_ROLE_UP, cntlr_layout_num);
         state.back                   |= S_Input_GetBindState(INPUT_ROLE_DOWN, cntlr_layout_num);
@@ -877,7 +866,6 @@ static INPUT_STATE S_Input_GetControllerState(
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
         // clang-format on
     }
-
 
     return state;
 }
