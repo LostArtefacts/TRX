@@ -605,10 +605,10 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R3";
                 case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "^";
                 case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "_";
-                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
-                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
-                case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200";
-                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
                 case SDL_CONTROLLER_BUTTON_MISC1:         return "MIC"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
@@ -634,8 +634,8 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R STICK";
                 case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "L BUTTON";
                 case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "R BUTTON";
-                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
-                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
                 case SDL_CONTROLLER_BUTTON_MISC1:         return "CAPTURE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
@@ -663,8 +663,8 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R STICK";
                 case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "L BUMPER";
                 case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "R BUMPER";
-                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
-                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
                 case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
@@ -691,8 +691,8 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_RIGHTSTICK:    return "R STICK";
                 case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  return "L BUMPER";
                 case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return "R BUMPER";
-                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203";
-                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202";
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:       return "\203 ";
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
                 case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
