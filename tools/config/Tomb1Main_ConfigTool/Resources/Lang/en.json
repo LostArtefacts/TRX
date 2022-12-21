@@ -131,7 +131,7 @@
       "Description": "Sets Lara's health value for the beginning of each level."
     },
     "enable_difficulty": {
-      "Title": "Difficulty Selector",
+      "Title": "Difficulty's selector",
       "Description": "Allows to select a difficulty (Easy, Normal, Hard, ect...) based on damages on Lara."
     },
     "disable_medpacks": {

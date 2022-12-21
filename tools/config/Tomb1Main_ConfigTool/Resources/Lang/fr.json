@@ -131,7 +131,7 @@
       "Description": "Définit les points de vie de Lara à chaque lancement de niveau (de 1 à 1000 maximum)."
     },
     "enable_difficulty": {
-      "Title": "Sélection de la Difficulté",
+      "Title": "Sélectionneur de difficulté",
       "Description": "Permet de choisir une difficulté (Facile, Normale, Difficile, ect...) basée sur les dégâts que recevra Lara."
     },
     "disable_medpacks": {

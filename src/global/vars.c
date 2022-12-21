@@ -107,5 +107,5 @@ RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE] = {
 };
 
 float g_Difficulty_Presets[MAX_DIFFICULTY_PRESETS] = {
-    0.35, 0.65, 1.00, 2.25, 4.75, 9.50, 20.00,
+    0.35, 0.65, 1.00, 2.25, 3.80, 9.50, 20.00,
 };

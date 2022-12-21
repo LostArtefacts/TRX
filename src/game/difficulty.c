@@ -144,9 +144,9 @@ void Difficulty_Select(int16_t difficulty_select_mode)
     case DIFFICULTY_SELECT_INIT:
         next_damages_to_lara_multiplier = g_Config.damages_to_lara_multiplier;
         Difficulty_GetTextStat_NoHeader(buf, next_damages_to_lara_multiplier);
-        m_Text = Text_Create(0, -48, buf);
-        m_Text_moreup = Text_Create(0, -63, "[");
-        m_Text_moredown = Text_Create(0, -38, "]");
+        m_Text = Text_Create(0, -54, buf);
+        m_Text_moreup = Text_Create(0, -69, "[");
+        m_Text_moredown = Text_Create(0, -44, "]");
         Text_Hide(m_Text, true);
         Text_Hide(m_Text_moreup, true);
         Text_Hide(m_Text_moredown, true);
@@ -170,6 +170,8 @@ void Difficulty_Select(int16_t difficulty_select_mode)
         Text_SetScale(m_Text, PHD_ONE * 0.95, PHD_ONE * 0.95);
         break;
     case DIFFICULTY_SELECT_IN_BACKGROUND:
+        return; // ugly but temporary fix agaisnt overlapping text with
+                // savegames list. WIP
         Text_Hide(m_Text, false);
         Text_SetScale(m_Text, PHD_ONE * 0.88, PHD_ONE * 0.88);
         return;
