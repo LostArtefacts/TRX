@@ -209,7 +209,7 @@
 
 #define RESOLUTIONS_SIZE 10
 
-#define MAX_DIFFICULTY_PRESETS 7
+#define MAX_DIFFICULTY_PRESETS 4
 
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function

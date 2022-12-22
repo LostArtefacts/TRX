@@ -55,21 +55,6 @@ void Difficulty_GetTextStat(char *str, float damages_to_lara_multiplier)
             str, g_GameFlow.strings[GS_STATS_DIFFICULTY_FMT],
             g_GameFlow.strings[GS_DIFFICULTY_4]);
         break;
-    case 4:
-        sprintf(
-            str, g_GameFlow.strings[GS_STATS_DIFFICULTY_FMT],
-            g_GameFlow.strings[GS_DIFFICULTY_5]);
-        break;
-    case 5:
-        sprintf(
-            str, g_GameFlow.strings[GS_STATS_DIFFICULTY_FMT],
-            g_GameFlow.strings[GS_DIFFICULTY_6]);
-        break;
-    case 6:
-        sprintf(
-            str, g_GameFlow.strings[GS_STATS_DIFFICULTY_FMT],
-            g_GameFlow.strings[GS_DIFFICULTY_7]);
-        break;
     default:
         sprintf(
             str_user_difficulty, "%s %.1fx",
@@ -99,15 +84,6 @@ void Difficulty_GetTextStat_NoHeader(
         break;
     case 3:
         sprintf(str, "%s", g_GameFlow.strings[GS_DIFFICULTY_4]);
-        break;
-    case 4:
-        sprintf(str, "%s", g_GameFlow.strings[GS_DIFFICULTY_5]);
-        break;
-    case 5:
-        sprintf(str, "%s", g_GameFlow.strings[GS_DIFFICULTY_6]);
-        break;
-    case 6:
-        sprintf(str, "%s", g_GameFlow.strings[GS_DIFFICULTY_7]);
         break;
     default:
         sprintf(

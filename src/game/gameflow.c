@@ -175,9 +175,6 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "DIFFICULTY_2", GS_DIFFICULTY_2 },
         { "DIFFICULTY_3", GS_DIFFICULTY_3 },
         { "DIFFICULTY_4", GS_DIFFICULTY_4 },
-        { "DIFFICULTY_5", GS_DIFFICULTY_5 },
-        { "DIFFICULTY_6", GS_DIFFICULTY_6 },
-        { "DIFFICULTY_7", GS_DIFFICULTY_7 },
         { NULL, 0 },
     };
 

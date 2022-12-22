@@ -26,7 +26,10 @@ void Dart_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->touch_bits) {
-        g_LaraItem->hit_points -= 50;
+        // Using the multiplier's square (prepare square here, but final result
+        // at lara.c:Lara_Control()).
+        g_LaraItem->hit_points -=
+            (int16_t)(50 * g_Config.damages_to_lara_multiplier);
         g_LaraItem->hit_status = 1;
         Effect_Blood(
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
