@@ -21,19 +21,24 @@ void Log_Message(
     va_list va;
     va_start(va, fmt);
 
+    // print to log file
+    if (m_LogHandle) {
+        va_list vb;
+
+        va_copy(vb, va);
+        fprintf(m_LogHandle, "%s %d %s ", file, line, func);
+        vfprintf(m_LogHandle, fmt, vb);
+        fprintf(m_LogHandle, "\n");
+        fflush(m_LogHandle);
+
+        va_end(vb);
+    }
+
     // print to stdout
     printf("%s %d %s ", file, line, func);
     vprintf(fmt, va);
     printf("\n");
     fflush(stdout);
-
-    if (m_LogHandle) {
-        // now print the same to the log file
-        fprintf(m_LogHandle, "%s %d %s ", file, line, func);
-        vfprintf(m_LogHandle, fmt, va);
-        fprintf(m_LogHandle, "\n");
-        fflush(m_LogHandle);
-    }
 
     va_end(va);
 }
