@@ -145,18 +145,27 @@ int main(int argc, char **argv)
     m_ArgCount = argc;
     m_ArgStrings = argv;
 
-    if (SDL_Init(SDL_INIT_EVENTS) < 0) {
+    if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) < 0) {
         char buf[256];
         sprintf(buf, "Cannot initialize SDL: %s", SDL_GetError());
         S_Shell_ShowFatalError(buf);
         return 1;
     }
 
+    // Setup minimum properties of GL context
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
     m_Window = SDL_CreateWindow(
         "Tomb1Main", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280,
         720,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP
-            | SDL_WINDOW_RESIZABLE);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE
+            | SDL_WINDOW_OPENGL);
+
     if (!m_Window) {
         S_Shell_ShowFatalError("System Error: cannot create window");
         return 1;

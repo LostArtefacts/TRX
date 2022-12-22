@@ -231,7 +231,6 @@ sources = [
   'src/gfx/gl/texture.c',
   'src/gfx/gl/utils.c',
   'src/gfx/gl/vertex_array.c',
-  'src/gfx/gl/wgl_ext.c',
   'src/gfx/screenshot.c',
   'src/global/vars.c',
   'src/init.c',

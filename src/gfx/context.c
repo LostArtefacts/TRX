@@ -3,7 +3,7 @@
 #include "config.h"
 #include "game/shell.h"
 #include "gfx/gl/gl_core_3_3.h"
-#include "gfx/gl/wgl_ext.h"
+#include "gfx/gl/utils.h"
 #include "gfx/screenshot.h"
 #include "log.h"
 #include "memory.h"
@@ -13,9 +13,9 @@
 #include <string.h>
 
 typedef struct GFX_Context {
-    void *window_handle;
-    HDC hdc; // GDI device context
-    HGLRC hglrc; // OpenGL context handle
+    SDL_GLContext context;
+    SDL_Window *window_handle;
+
     bool is_fullscreen; // fullscreen flag
     bool is_rendered; // rendering flag
     int32_t display_width;
@@ -31,8 +31,25 @@ typedef struct GFX_Context {
 
 static GFX_Context m_Context = { 0 };
 
+const char *get_extension_supported(const char *name)
+{
+    int i, number_of_extensions;
+
+    glGetIntegerv(GL_NUM_EXTENSIONS, &number_of_extensions);
+
+    for (i = 0; i < number_of_extensions; i++) {
+        const char *gl_ext = (const char *)glGetStringi(GL_EXTENSIONS, i);
+        if (gl_ext && !strcmp(gl_ext, name)) {
+            return "yes";
+        }
+    }
+    return "no";
+}
+
 void GFX_Context_Attach(void *window_handle)
 {
+    const char *shading_ver;
+
     if (m_Context.window_handle) {
         return;
     }
@@ -40,55 +57,47 @@ void GFX_Context_Attach(void *window_handle)
     LOG_INFO("Attaching to window %p", window_handle);
 
     m_Context.window_handle = window_handle;
+    m_Context.context = SDL_GL_CreateContext(m_Context.window_handle);
 
-    SDL_SysWMinfo wm_info;
-    SDL_VERSION(&wm_info.version);
-    SDL_GetWindowWMInfo(window_handle, &wm_info);
-
-    HWND hwnd = wm_info.info.win.window;
-    if (!hwnd) {
-        Shell_ExitSystem("System Error: cannot create window");
-        return;
-    }
-
-    m_Context.hdc = GetDC(hwnd);
-    if (!m_Context.hdc) {
-        Shell_ExitSystem("Can't get device context");
-    }
-
-    // get screen dimensions
-    m_Context.screen_width = GetSystemMetrics(SM_CXSCREEN);
-    m_Context.screen_height = GetSystemMetrics(SM_CYSCREEN);
-
-    // set pixel format
-    PIXELFORMATDESCRIPTOR pfd;
-    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion = 1;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = 32;
-    pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-    pfd.cDepthBits = 32;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-
-    int pf = ChoosePixelFormat(m_Context.hdc, &pfd);
-    if (!pf) {
-        Shell_ExitSystem("Can't choose pixel format");
-    }
-
-    if (!SetPixelFormat(m_Context.hdc, pf, &pfd)) {
-        Shell_ExitSystem("Can't set pixel format");
-    }
-
-    m_Context.hglrc = wglCreateContext(m_Context.hdc);
-    if (!m_Context.hglrc || !wglMakeCurrent(m_Context.hdc, m_Context.hglrc)) {
+    if (!m_Context.context) {
         Shell_ExitSystem("Can't create OpenGL context");
     }
+
+    if (SDL_GL_MakeCurrent(m_Context.window_handle, m_Context.context)) {
+        Shell_ExitSystem("Can't activate OpenGL context");
+    }
+
+    LOG_INFO("OpenGL vendor string:   %s", glGetString(GL_VENDOR));
+    LOG_INFO("OpenGL renderer string: %s", glGetString(GL_RENDERER));
+    LOG_INFO("OpenGL version string:  %s", glGetString(GL_VERSION));
+
+    shading_ver = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    if (shading_ver != NULL) {
+        LOG_INFO("Shading version string: %s", shading_ver);
+    } else {
+        GFX_GL_CheckError();
+    }
+
+    LOG_INFO(
+        "GL_ARB_explicit_attrib_location supported: %s",
+        get_extension_supported("GL_ARB_explicit_attrib_location"));
+    LOG_INFO(
+        "GL_EXT_gpu_shader4 supported: %s",
+        get_extension_supported("GL_EXT_gpu_shader4"));
+
+    // get screen dimensions
+    SDL_DisplayMode DM;
+
+    SDL_GetDesktopDisplayMode(0, &DM);
+    m_Context.screen_width = DM.w;
+    m_Context.screen_height = DM.h;
+    LOG_INFO("GetDesktopDisplayMode=%dx%d", DM.w, DM.h);
 
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
 
     // VSync defaults to on unless user disabled it in runtime json
-    wglSwapIntervalEXT(1);
+    SDL_GL_SetSwapInterval(1);
 
     GFX_2D_Renderer_Init(&m_Context.renderer_2d);
     GFX_3D_Renderer_Init(&m_Context.renderer_3d);
@@ -103,15 +112,18 @@ void GFX_Context_Detach(void)
     GFX_2D_Renderer_Close(&m_Context.renderer_2d);
     GFX_3D_Renderer_Close(&m_Context.renderer_3d);
 
-    wglDeleteContext(m_Context.hglrc);
-    m_Context.hglrc = NULL;
+    SDL_GL_MakeCurrent(NULL, NULL);
 
+    if (m_Context.context != NULL) {
+        SDL_GL_DeleteContext(m_Context.context);
+        m_Context.context = NULL;
+    }
     m_Context.window_handle = NULL;
 }
 
 void GFX_Context_SetVSync(bool vsync)
 {
-    wglSwapIntervalEXT(vsync);
+    SDL_GL_SetSwapInterval(vsync);
 }
 
 bool GFX_Context_IsFullscreen(void)
@@ -206,7 +218,8 @@ void GFX_Context_SwapBuffers(void)
         Memory_FreePointer(&m_Context.scheduled_screenshot_path);
     }
 
-    SwapBuffers(m_Context.hdc);
+    SDL_GL_SwapWindow(m_Context.window_handle);
+
     glDrawBuffer(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
