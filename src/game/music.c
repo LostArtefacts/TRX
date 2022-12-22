@@ -80,7 +80,7 @@ bool Music_Play(int16_t track)
     }
 
     char file_path[64];
-    sprintf(file_path, "music\\track%02d.flac", track);
+    sprintf(file_path, "music/track%02d.flac", track);
 
     Music_StopActiveStream();
     m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
@@ -111,7 +111,7 @@ bool Music_PlayLooped(int16_t track)
     }
 
     char file_path[64];
-    sprintf(file_path, "music\\track%02d.flac", track);
+    sprintf(file_path, "music/track%02d.flac", track);
 
     Music_StopActiveStream();
     m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
