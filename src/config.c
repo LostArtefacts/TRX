@@ -251,6 +251,9 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_INTEGER(input.layout, 0);
     CLAMP(g_Config.input.layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
 
+    READ_INTEGER(input.cntlr_layout, 0);
+    CLAMP(g_Config.input.cntlr_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
+
     READ_FLOAT(brightness, DEFAULT_BRIGHTNESS);
     CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
 
@@ -260,7 +263,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
 
-    char layout_name[20];
+    char layout_name[50];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         sprintf(layout_name, "layout_%d", layout);
@@ -272,7 +275,36 @@ bool Config_ReadFromJSON(const char *cfg_data)
             Input_AssignScancode(layout, role, scancode);
         }
     }
-    Input_CheckConflicts(g_Config.input.layout);
+    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
+
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        sprintf(layout_name, "cntlr_layout_%d", layout);
+        struct json_array_s *cntlr_arr =
+            json_object_get_array(root_obj, layout_name);
+        INPUT_ROLE role = 0;
+        int i = 0;
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            int16_t type = Input_GetAssignedButtonType(layout, role);
+            type = json_array_get_int(cntlr_arr, i, type);
+            i++;
+
+            int16_t bind = Input_GetAssignedBind(layout, role);
+            bind = json_array_get_int(cntlr_arr, i, bind);
+            i++;
+
+            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
+            axis_dir = json_array_get_int(cntlr_arr, i, axis_dir);
+            i++;
+
+            if (type == BT_BUTTON) {
+                Input_AssignButton(layout, role, bind);
+            } else {
+                Input_AssignAxis(layout, role, bind, axis_dir);
+            }
+        }
+    }
+    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
 
     if (root) {
         json_value_free(root);
@@ -400,6 +432,7 @@ bool Config_Write(void)
     WRITE_INTEGER(music_volume);
     WRITE_INTEGER(sound_volume);
     WRITE_INTEGER(input.layout);
+    WRITE_INTEGER(input.cntlr_layout);
     WRITE_FLOAT(brightness);
     WRITE_FLOAT(ui.text_scale);
     WRITE_FLOAT(ui.bar_scale);
@@ -414,6 +447,21 @@ bool Config_Write(void)
                 layout_arr, Input_GetAssignedScancode(layout, role));
         }
         json_object_append_array(root_obj, layout_name, layout_arr);
+    }
+
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        struct json_array_s *cntlr_arr = json_array_new();
+        sprintf(layout_name, "cntlr_layout_%d", layout);
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            json_array_append_int(
+                cntlr_arr, Input_GetAssignedButtonType(layout, role));
+            json_array_append_int(
+                cntlr_arr, Input_GetAssignedBind(layout, role));
+            json_array_append_int(
+                cntlr_arr, Input_GetAssignedAxisDir(layout, role));
+        }
+        json_object_append_array(root_obj, layout_name, cntlr_arr);
     }
 
     struct json_value_s *root = json_value_from_object(root_obj);

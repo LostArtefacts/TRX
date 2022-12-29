@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define TOP_Y -60
 #define BORDER 4
@@ -24,8 +25,11 @@
 #define COL_END -1
 #define COLOR_STEPS 5
 #define RESET_ALL_KEY "R"
+#define RESET_ALL_BUTTON "y"
 #define UNBIND_KEY "Backspace"
+#define UNBIND_BUTTON "x"
 #define UNBIND_SCANCODE 0
+#define UNBIND_ENUM -1
 #define BUTTON_HOLD_TIME 2
 #define HOLD_DELAY_FRAMES 300 * FRAMES_PER_SECOND / 1000
 
@@ -81,9 +85,11 @@ static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static int32_t m_ResetTimer = 0;
 static int32_t m_ResetKeyMode = KM_INACTIVE;
 static int32_t m_ResetKeyDelay = 0;
+static char m_ResetGS[100];
 static int32_t m_UnbindTimer = 0;
 static int32_t m_UnbindKeyMode = KM_INACTIVE;
 static int32_t m_UnbindKeyDelay = 0;
+static char m_UnbindGS[100];
 
 static MENU m_ControlMenu = {
     .num_options = 0,
@@ -109,25 +115,25 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     { INPUT_ROLE_DOWN, GS_KEYMAP_BACK, false },
     { INPUT_ROLE_LEFT, GS_KEYMAP_LEFT, false },
     { INPUT_ROLE_RIGHT, GS_KEYMAP_RIGHT, false },
+    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON, false },
+    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION, false },
+    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP, false },
+    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL, false },
+    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK, false },
+    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK, false },
     { INPUT_ROLE_STEP_L, GS_KEYMAP_STEP_LEFT, false },
     { INPUT_ROLE_STEP_R, GS_KEYMAP_STEP_RIGHT, false },
-    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK, false },
-    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS, true },
-    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN, true },
-    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS, true },
-    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS, true },
+    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY, false },
+    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE, true },
     { INPUT_ROLE_CAMERA_UP, GS_KEYMAP_CAMERA_UP, true },
     { INPUT_ROLE_CAMERA_DOWN, GS_KEYMAP_CAMERA_DOWN, true },
     { INPUT_ROLE_CAMERA_LEFT, GS_KEYMAP_CAMERA_LEFT, true },
     { INPUT_ROLE_CAMERA_RIGHT, GS_KEYMAP_CAMERA_RIGHT, true },
     { INPUT_ROLE_CAMERA_RESET, GS_KEYMAP_CAMERA_RESET, true },
-    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK, false },
-    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP, false },
-    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION, false },
-    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON, false },
-    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL, false },
-    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY, false },
-    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE, true },
+    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS, true },
+    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN, true },
+    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS, true },
+    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS, true },
     { INPUT_ROLE_USE_SMALL_MEDI, GS_KEYMAP_USE_SMALL_MEDI, true },
     { INPUT_ROLE_USE_BIG_MEDI, GS_KEYMAP_USE_BIG_MEDI, true },
     { INPUT_ROLE_SAVE, GS_KEYMAP_SAVE, true },
@@ -143,25 +149,25 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { INPUT_ROLE_DOWN, GS_KEYMAP_BACK, false },
     { INPUT_ROLE_LEFT, GS_KEYMAP_LEFT, false },
     { INPUT_ROLE_RIGHT, GS_KEYMAP_RIGHT, false },
+    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON, false },
+    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION, false },
+    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP, false },
+    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL, false },
+    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK, false },
+    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK, false },
     { INPUT_ROLE_STEP_L, GS_KEYMAP_STEP_LEFT, false },
     { INPUT_ROLE_STEP_R, GS_KEYMAP_STEP_RIGHT, false },
-    { INPUT_ROLE_LOOK, GS_KEYMAP_LOOK, false },
-    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS, true },
-    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN, true },
-    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS, true },
-    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS, true },
+    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY, false },
+    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE, true },
     { INPUT_ROLE_CAMERA_UP, GS_KEYMAP_CAMERA_UP, true },
     { INPUT_ROLE_CAMERA_DOWN, GS_KEYMAP_CAMERA_DOWN, true },
     { INPUT_ROLE_CAMERA_LEFT, GS_KEYMAP_CAMERA_LEFT, true },
     { INPUT_ROLE_CAMERA_RIGHT, GS_KEYMAP_CAMERA_RIGHT, true },
     { INPUT_ROLE_CAMERA_RESET, GS_KEYMAP_CAMERA_RESET, true },
-    { INPUT_ROLE_SLOW, GS_KEYMAP_WALK, false },
-    { INPUT_ROLE_JUMP, GS_KEYMAP_JUMP, false },
-    { INPUT_ROLE_ACTION, GS_KEYMAP_ACTION, false },
-    { INPUT_ROLE_DRAW, GS_KEYMAP_DRAW_WEAPON, false },
-    { INPUT_ROLE_ROLL, GS_KEYMAP_ROLL, false },
-    { INPUT_ROLE_OPTION, GS_KEYMAP_INVENTORY, false },
-    { INPUT_ROLE_PAUSE, GS_KEYMAP_PAUSE, true },
+    { INPUT_ROLE_EQUIP_PISTOLS, GS_KEYMAP_EQUIP_PISTOLS, true },
+    { INPUT_ROLE_EQUIP_SHOTGUN, GS_KEYMAP_EQUIP_SHOTGUN, true },
+    { INPUT_ROLE_EQUIP_MAGNUMS, GS_KEYMAP_EQUIP_MAGNUMS, true },
+    { INPUT_ROLE_EQUIP_UZIS, GS_KEYMAP_EQUIP_UZIS, true },
     { INPUT_ROLE_USE_SMALL_MEDI, GS_KEYMAP_USE_SMALL_MEDI, true },
     { INPUT_ROLE_USE_BIG_MEDI, GS_KEYMAP_USE_BIG_MEDI, true },
     { INPUT_ROLE_SAVE, GS_KEYMAP_SAVE, true },
@@ -177,13 +183,17 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 };
 
 static void Option_ControlInitMenu(void);
-static void Option_ControlInitText(void);
-static void Option_ControlUpdateText(void);
+static void Option_ControlInitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void Option_ControlUpdateText(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
 static void Option_ControlShutdownText(void);
-static void Option_ControlFlashConflicts(void);
-static void Option_ControlChangeLayout(void);
-static void Option_ControlCheckResetKeys(void);
-static void Option_ControlCheckUnbindKey(void);
+static void Option_ControlFlashConflicts(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static INPUT_LAYOUT Option_ControlChangeLayout(CONTROL_MODE mode);
+static void Option_ControlCheckResetKeys(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void Option_ControlCheckUnbindKey(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
 static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer);
 
 static void Option_ControlInitMenu(void)
@@ -217,7 +227,7 @@ static void Option_ControlInitMenu(void)
         MIN(m_ControlMenu.num_options, m_ControlMenu.vis_options);
 }
 
-static void Option_ControlInitText(void)
+static void Option_ControlInitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
     Option_ControlInitMenu();
 
@@ -241,7 +251,7 @@ static void Option_ControlInitText(void)
         Text_CentreV(m_ControlMenu.role_texts[i], true);
 
         m_ControlMenu.key_texts[i] = Text_Create(
-            x_names, y, Input_GetKeyName(g_Config.input.layout, col->role));
+            x_names, y, Input_GetKeyName(mode, layout_num, col->role));
         Text_CentreV(m_ControlMenu.key_texts[i], true);
         Text_AlignRight(m_ControlMenu.key_texts[i], true);
 
@@ -251,7 +261,7 @@ static void Option_ControlInitText(void)
 
     m_Text[TEXT_TITLE] = Text_Create(
         0, TOP_Y - BORDER / 2,
-        g_GameFlow.strings[m_LayoutMap[g_Config.input.layout].layout_string]);
+        g_GameFlow.strings[m_LayoutMap[layout_num].layout_string]);
     Text_CentreH(m_Text[TEXT_TITLE], true);
     Text_CentreV(m_Text[TEXT_TITLE], true);
     Text_AddBackground(m_Text[TEXT_TITLE], 0, 0, 0, 0, TS_REQUESTED);
@@ -297,31 +307,44 @@ static void Option_ControlInitText(void)
     Text_AddBackground(
         m_Text[TEXT_RESET_BORDER], box_width, ROW_HEIGHT, 0, 0, TS_BACKGROUND);
 
-    m_Text[TEXT_RESET] = Text_Create(
-        x_roles, y + BOX_PADDING + BORDER,
-        g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS]);
+    if (mode == CM_KEYBOARD) {
+        sprintf(
+            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_KEY],
+            RESET_ALL_KEY);
+        sprintf(
+            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_KEY], UNBIND_KEY);
+    } else {
+        sprintf(
+            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_BTN],
+            Input_GetButtonName(g_Config.input.cntlr_layout, RESET_ALL_BUTTON));
+        sprintf(
+            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_BTN],
+            Input_GetButtonName(g_Config.input.cntlr_layout, UNBIND_BUTTON));
+    }
+
+    m_Text[TEXT_RESET] =
+        Text_Create(x_roles, y + BOX_PADDING + BORDER, m_ResetGS);
     Text_CentreV(m_Text[TEXT_RESET], true);
     Text_SetScale(m_Text[TEXT_RESET], PHD_ONE * .8, PHD_ONE * .8);
 
-    m_Text[TEXT_UNBIND] = Text_Create(
-        x_names, y + BOX_PADDING + BORDER,
-        g_GameFlow.strings[GS_CONTROL_UNBIND]);
+    m_Text[TEXT_UNBIND] =
+        Text_Create(x_names, y + BOX_PADDING + BORDER, m_UnbindGS);
     Text_CentreV(m_Text[TEXT_UNBIND], true);
     Text_AlignRight(m_Text[TEXT_UNBIND], true);
     Text_SetScale(m_Text[TEXT_UNBIND], PHD_ONE * .8, PHD_ONE * .8);
 
-    if (g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
+    if (layout_num == INPUT_LAYOUT_DEFAULT) {
         Text_Hide(m_Text[TEXT_RESET], true);
         Text_Hide(m_Text[TEXT_UNBIND], true);
     }
 
-    Option_ControlUpdateText();
-    Option_ControlFlashConflicts();
+    Option_ControlUpdateText(mode, layout_num);
+    Option_ControlFlashConflicts(mode, layout_num);
 }
 
-static void Option_ControlUpdateText(void)
+static void Option_ControlUpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
-    if (g_Config.input.layout == INPUT_LAYOUT_DEFAULT) {
+    if (layout_num == INPUT_LAYOUT_DEFAULT) {
         Text_Hide(m_Text[TEXT_RESET], true);
         Text_Hide(m_Text[TEXT_RESET_BORDER], true);
         Text_Hide(m_Text[TEXT_UNBIND], true);
@@ -337,11 +360,29 @@ static void Option_ControlUpdateText(void)
         }
     }
 
+    if (mode == CM_KEYBOARD) {
+        sprintf(
+            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_KEY],
+            RESET_ALL_KEY);
+        Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
+        sprintf(
+            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_KEY], UNBIND_KEY);
+        Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
+    } else {
+        sprintf(
+            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_BTN],
+            Input_GetButtonName(layout_num, RESET_ALL_BUTTON));
+        Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
+        sprintf(
+            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_BTN],
+            Input_GetButtonName(layout_num, UNBIND_BUTTON));
+        Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
+    }
+
     if (m_ControlMenu.cur_role == KC_TITLE) {
         Text_ChangeText(
             m_Text[TEXT_TITLE],
-            g_GameFlow
-                .strings[m_LayoutMap[g_Config.input.layout].layout_string]);
+            g_GameFlow.strings[m_LayoutMap[layout_num].layout_string]);
 
         int32_t title_w = Text_GetWidth(m_Text[TEXT_TITLE]);
         Text_SetPos(
@@ -366,7 +407,7 @@ static void Option_ControlUpdateText(void)
             m_ControlMenu.role_texts[i], g_GameFlow.strings[col->game_string]);
         Text_ChangeText(
             m_ControlMenu.key_texts[i],
-            Input_GetKeyName(g_Config.input.layout, col->role));
+            Input_GetKeyName(mode, layout_num, col->role));
         col++;
     }
 
@@ -410,7 +451,7 @@ static void Option_ControlUpdateText(void)
     case KM_CHANGEKEYUP:
         Text_ChangeText(
             m_ControlMenu.key_texts[m_ControlMenu.row_num],
-            Input_GetKeyName(g_Config.input.layout, m_ControlMenu.cur_role));
+            Input_GetKeyName(mode, layout_num, m_ControlMenu.cur_role));
         Text_RemoveBackground(
             m_ControlMenu.key_texts[m_ControlMenu.prev_row_num]);
         Text_RemoveOutline(m_ControlMenu.key_texts[m_ControlMenu.prev_row_num]);
@@ -454,7 +495,8 @@ static void Option_ControlShutdownText(void)
     m_UnbindKeyDelay = 0;
 }
 
-static void Option_ControlFlashConflicts(void)
+static void Option_ControlFlashConflicts(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -464,26 +506,37 @@ static void Option_ControlFlashConflicts(void)
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_Flash(
             m_ControlMenu.key_texts[i],
-            g_Config.input.layout != INPUT_LAYOUT_DEFAULT
-                && Input_IsKeyConflicted(col->role),
+            layout_num != INPUT_LAYOUT_DEFAULT
+                && Input_IsKeyConflicted(mode, col->role),
             20);
         col++;
     }
 }
 
-static void Option_ControlChangeLayout(void)
+static INPUT_LAYOUT Option_ControlChangeLayout(CONTROL_MODE mode)
 {
-    if (g_InputDB.left || g_InputDB.right) {
+    INPUT_LAYOUT layout_num = INPUT_LAYOUT_DEFAULT;
+    if (mode == CM_KEYBOARD) {
         g_Config.input.layout += g_InputDB.left ? -1 : 0;
         g_Config.input.layout += g_InputDB.right ? 1 : 0;
         g_Config.input.layout += INPUT_LAYOUT_NUMBER_OF;
         g_Config.input.layout %= INPUT_LAYOUT_NUMBER_OF;
+        layout_num = g_Config.input.layout;
     }
 
-    Input_CheckConflicts(g_Config.input.layout);
-    Option_ControlUpdateText();
-    Option_ControlFlashConflicts();
+    if (mode == CM_CONTROLLER) {
+        g_Config.input.cntlr_layout += g_InputDB.left ? -1 : 0;
+        g_Config.input.cntlr_layout += g_InputDB.right ? 1 : 0;
+        g_Config.input.cntlr_layout += INPUT_LAYOUT_NUMBER_OF;
+        g_Config.input.cntlr_layout %= INPUT_LAYOUT_NUMBER_OF;
+        layout_num = g_Config.input.cntlr_layout;
+    }
+
+    Input_CheckConflicts(mode, layout_num);
+    Option_ControlUpdateText(mode, layout_num);
+    Option_ControlFlashConflicts(mode, layout_num);
     Config_Write();
+    return layout_num;
 }
 
 static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
@@ -511,9 +564,11 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
         txt, width, height, x, y, percent, g_Config.ui.menu_style);
 }
 
-static void Option_ControlCheckResetKeys(void)
+static void Option_ControlCheckResetKeys(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
-    if (Input_CheckKeypress(RESET_ALL_KEY)
+    if ((Input_CheckKeypress(RESET_ALL_KEY)
+         || Input_CheckButtonPress(RESET_ALL_BUTTON))
         && m_ResetKeyMode != KM_CHANGEKEYUP) {
         m_ResetKeyDelay++;
         if (m_ResetKeyDelay >= HOLD_DELAY_FRAMES) {
@@ -521,16 +576,18 @@ static void Option_ControlCheckResetKeys(void)
             m_ResetTimer++;
             if (m_ResetTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
-                Input_ResetLayout(g_Config.input.layout);
-                Option_ControlUpdateText();
-                Option_ControlFlashConflicts();
+                Input_ResetLayout(mode, layout_num);
+                Input_CheckConflicts(mode, layout_num);
+                Option_ControlUpdateText(mode, layout_num);
+                Option_ControlFlashConflicts(mode, layout_num);
                 Config_Write();
                 m_ResetKeyMode = KM_CHANGEKEYUP;
                 m_ResetTimer = 0;
             }
         }
     } else if (m_ResetKeyMode == KM_CHANGEKEYUP) {
-        if (!Input_CheckKeypress(RESET_ALL_KEY)) {
+        if (!Input_CheckKeypress(RESET_ALL_KEY)
+            && !Input_CheckButtonPress(RESET_ALL_BUTTON)) {
             m_ResetKeyMode = KM_INACTIVE;
         }
     } else {
@@ -542,27 +599,36 @@ static void Option_ControlCheckResetKeys(void)
     Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
 }
 
-static void Option_ControlCheckUnbindKey(void)
+static void Option_ControlCheckUnbindKey(
+    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
-    if (Input_CheckKeypress(UNBIND_KEY) && m_UnbindKeyMode != KM_CHANGEKEYUP) {
+    if ((Input_CheckKeypress(UNBIND_KEY)
+         || Input_CheckButtonPress(UNBIND_BUTTON))
+        && m_UnbindKeyMode != KM_CHANGEKEYUP) {
         m_UnbindKeyDelay++;
         if (m_UnbindKeyDelay >= HOLD_DELAY_FRAMES) {
             m_UnbindKeyMode = KM_CHANGE;
             m_UnbindTimer++;
             if (m_UnbindTimer >= FRAMES_PER_SECOND * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
-                Input_AssignScancode(
-                    g_Config.input.layout, m_ControlMenu.cur_role,
-                    UNBIND_SCANCODE);
-                Option_ControlUpdateText();
-                Option_ControlFlashConflicts();
+                if (mode == CM_KEYBOARD) {
+                    Input_AssignScancode(
+                        layout_num, m_ControlMenu.cur_role, UNBIND_SCANCODE);
+                } else {
+                    Input_AssignButton(
+                        layout_num, m_ControlMenu.cur_role, UNBIND_ENUM);
+                }
+                Input_CheckConflicts(mode, layout_num);
+                Option_ControlUpdateText(mode, layout_num);
+                Option_ControlFlashConflicts(mode, layout_num);
                 Config_Write();
                 m_UnbindKeyMode = KM_CHANGEKEYUP;
                 m_UnbindTimer = 0;
             }
         }
     } else if (m_UnbindKeyMode == KM_CHANGEKEYUP) {
-        if (!Input_CheckKeypress(UNBIND_KEY)) {
+        if (!Input_CheckKeypress(UNBIND_KEY)
+            && !Input_CheckButtonPress(UNBIND_BUTTON)) {
             m_UnbindKeyMode = KM_INACTIVE;
         }
     } else {
@@ -579,11 +645,18 @@ bool Option_ControlIsLocked(void)
     return m_KeyMode != KM_INACTIVE;
 }
 
-void Option_Control(INVENTORY_ITEM *inv_item)
+CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 {
+    INPUT_LAYOUT layout_num = INPUT_LAYOUT_DEFAULT;
+    if (mode == CM_KEYBOARD) {
+        layout_num = g_Config.input.layout;
+    } else {
+        layout_num = g_Config.input.cntlr_layout;
+    }
+
     if (!m_Text[TEXT_TITLE]) {
         m_KeyMode = KM_BROWSE;
-        Option_ControlInitText();
+        Option_ControlInitText(mode, layout_num);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
@@ -592,14 +665,14 @@ void Option_Control(INVENTORY_ITEM *inv_item)
 
     switch (m_KeyMode) {
     case KM_BROWSE:
-        if (g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
+        if (layout_num > INPUT_LAYOUT_DEFAULT) {
             if (m_UnbindKeyMode == KM_INACTIVE) {
-                Option_ControlCheckResetKeys();
+                Option_ControlCheckResetKeys(mode, layout_num);
             }
 
             if (m_ResetKeyMode == KM_INACTIVE
                 && m_ControlMenu.cur_row->can_unbind) {
-                Option_ControlCheckUnbindKey();
+                Option_ControlCheckUnbindKey(mode, layout_num);
             }
         }
 
@@ -611,16 +684,18 @@ void Option_Control(INVENTORY_ITEM *inv_item)
             || (g_InputDB.select && m_ControlMenu.cur_role == KC_TITLE)) {
             Option_ControlShutdownText();
             m_KeyMode = KM_INACTIVE;
-            return;
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
+            return CM_PICK;
         }
 
         if ((g_InputDB.left || g_InputDB.right)
             && m_ControlMenu.cur_role == KC_TITLE) {
-            Option_ControlChangeLayout();
+            layout_num = Option_ControlChangeLayout(mode);
         }
 
         if (g_InputDB.select) {
-            if (g_Config.input.layout > INPUT_LAYOUT_DEFAULT) {
+            if (layout_num > INPUT_LAYOUT_DEFAULT) {
                 m_KeyMode = KM_BROWSEKEYUP;
             }
         } else if (g_InputDB.forward) {
@@ -650,8 +725,8 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 m_ControlMenu.cur_row--;
                 m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
-            Option_ControlUpdateText();
-            Option_ControlFlashConflicts();
+            Option_ControlUpdateText(mode, layout_num);
+            Option_ControlFlashConflicts(mode, layout_num);
         } else if (g_InputDB.back) {
             if (m_ControlMenu.cur_role == KC_TITLE) {
                 m_ControlMenu.row_num++;
@@ -674,31 +749,30 @@ void Option_Control(INVENTORY_ITEM *inv_item)
                 m_ControlMenu.cur_row++;
                 m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
-            Option_ControlUpdateText();
-            Option_ControlFlashConflicts();
+            Option_ControlUpdateText(mode, layout_num);
+            Option_ControlFlashConflicts(mode, layout_num);
         }
         break;
 
     case KM_BROWSEKEYUP:
         if (!g_Input.any) {
-            Option_ControlUpdateText();
+            Option_ControlUpdateText(mode, layout_num);
             m_KeyMode = KM_CHANGE;
         }
         break;
 
     case KM_CHANGE:
-        if (Input_ReadAndAssignKey(
-                g_Config.input.layout, m_ControlMenu.cur_role)) {
-            Option_ControlUpdateText();
+        if (Input_ReadAndAssignKey(mode, layout_num, m_ControlMenu.cur_role)) {
+            Option_ControlUpdateText(mode, layout_num);
             m_KeyMode = KM_CHANGEKEYUP;
-            Option_ControlFlashConflicts();
+            Option_ControlFlashConflicts(mode, layout_num);
             Config_Write();
         }
         break;
 
     case KM_CHANGEKEYUP:
         if (!g_Input.any) {
-            Option_ControlUpdateText();
+            Option_ControlUpdateText(mode, layout_num);
             m_KeyMode = KM_BROWSE;
         }
         break;
@@ -708,4 +782,6 @@ void Option_Control(INVENTORY_ITEM *inv_item)
     g_InputDB = (INPUT_STATE) { 0 };
 
     m_ControlMenu.prev_row_num = m_ControlMenu.row_num;
+
+    return mode;
 }

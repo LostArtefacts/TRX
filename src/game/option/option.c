@@ -3,10 +3,13 @@
 #include "game/input.h"
 #include "game/option/option_compass.h"
 #include "game/option/option_control.h"
+#include "game/option/option_control_pick.h"
 #include "game/option/option_graphics.h"
 #include "game/option/option_passport.h"
 #include "game/option/option_sound.h"
 #include "global/types.h"
+
+static CONTROL_MODE m_ControlMode = CM_PICK;
 
 void Option_Init(void)
 {
@@ -38,7 +41,11 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
         break;
 
     case O_CONTROL_OPTION:
-        Option_Control(inv_item);
+        if (m_ControlMode == CM_PICK) {
+            m_ControlMode = Option_ControlPick();
+        } else {
+            m_ControlMode = Option_Control(inv_item, m_ControlMode);
+        }
         break;
 
     case O_GAMMA_OPTION:

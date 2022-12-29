@@ -45,9 +45,9 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_VERTEX_SHADER, "shaders\\3d.vsh");
+        &renderer->program, GL_VERTEX_SHADER, "shaders/3d.vsh");
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_FRAGMENT_SHADER, "shaders\\3d.fsh");
+        &renderer->program, GL_FRAGMENT_SHADER, "shaders/3d.fsh");
     GFX_GL_Program_Link(&renderer->program);
 
     renderer->loc_mat_projection =
