@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 PICTURE *Picture_Create(int width, int height);

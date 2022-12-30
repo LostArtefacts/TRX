@@ -2,13 +2,15 @@
 
 #include "config.h"
 #include "game/input.h"
-#include "game/lara.h"
 #include "game/lara/lara_look.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+
+#include <stdint.h>
 
 void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_State_Walk,        Lara_State_Run,       Lara_State_Stop,

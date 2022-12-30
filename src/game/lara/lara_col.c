@@ -8,7 +8,11 @@
 #include "game/lara/lara_misc.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_Col_Walk,        Lara_Col_Run,       Lara_Col_Stop,

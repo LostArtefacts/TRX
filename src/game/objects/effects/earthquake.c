@@ -6,6 +6,8 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <stddef.h>
+
 void Earthquake_Setup(OBJECT_INFO *obj)
 {
     obj->control = Earthquake_Control;

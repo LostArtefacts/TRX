@@ -5,7 +5,12 @@
 #include "game/input.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 void Gun_Rifle_Draw(void)
 {

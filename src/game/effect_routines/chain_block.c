@@ -3,7 +3,8 @@
 #include "config.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "global/vars.h"
+
+#include <stddef.h>
 
 void FX_ChainBlock(ITEM_INFO *item)
 {

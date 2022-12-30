@@ -14,14 +14,11 @@
 #include "game/music.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
-
-#include <stdio.h>
 
 static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
