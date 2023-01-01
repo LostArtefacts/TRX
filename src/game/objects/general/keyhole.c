@@ -1,12 +1,12 @@
 #include "game/objects/general/keyhole.h"
 
-#include "config.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 PHD_VECTOR g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };

@@ -5,16 +5,18 @@
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
+#include "gfx/2d/2d_renderer.h"
 #include "gfx/2d/2d_surface.h"
 #include "gfx/3d/3d_renderer.h"
+#include "gfx/3d/vertex_stream.h"
+#include "gfx/blitter.h"
 #include "gfx/context.h"
-#include "gfx/screenshot.h"
 #include "global/vars.h"
 #include "log.h"
-#include "memory.h"
 #include "specific/s_shell.h"
 
 #include <assert.h>
+#include <stddef.h>
 
 #define CLIP_VERTCOUNT_SCALE 4
 

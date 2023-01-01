@@ -10,7 +10,9 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 
 static bool Camera_BadPosition(

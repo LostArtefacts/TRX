@@ -1,7 +1,6 @@
 #include "game/effect_routines/flicker.h"
 
 #include "game/room.h"
-#include "game/sound.h"
 
 void FX_Flicker(ITEM_INFO *item)
 {

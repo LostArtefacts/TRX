@@ -11,6 +11,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 static const int32_t m_CinematicAnimationRate = 0x8000;

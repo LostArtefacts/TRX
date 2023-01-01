@@ -2,6 +2,7 @@
 
 #include "game/room.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 void FX_Flood(ITEM_INFO *item)

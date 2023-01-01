@@ -1,12 +1,10 @@
-#include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/music.h"
-#include "game/option/option_sound.h"
-#include "game/sound.h"
 #include "game/text.h"
+#include "global/types.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 
 typedef enum PICK_TEXT {

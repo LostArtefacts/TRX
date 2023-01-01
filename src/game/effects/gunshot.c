@@ -6,6 +6,7 @@
 #include "game/objects/effects/ricochet.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
 
 int16_t Effect_GunShot(

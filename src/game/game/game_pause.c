@@ -5,14 +5,14 @@
 #include "game/music.h"
 #include "game/output.h"
 #include "game/requester.h"
-#include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define PAUSE_MAX_ITEMS 5
 #define PAUSE_MAX_TEXT_LENGTH 50

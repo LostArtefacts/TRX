@@ -1,16 +1,13 @@
 #include "game/collide.h"
 
-#include "config.h"
 #include "game/items.h"
-#include "game/lara.h"
-#include "game/objects/general/door.h"
 #include "game/room.h"
-#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "util.h"
 
 void Collide_GetCollisionInfo(
     COLL_INFO *coll, int32_t xpos, int32_t ypos, int32_t zpos, int16_t room_num,

@@ -1,16 +1,14 @@
 #include "game/objects/general/save_crystal.h"
 
-#include "config.h"
-#include "game/collide.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/objects/general/pickup.h"
-#include "game/savegame.h"
-#include "game/sound.h"
+#include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 static int16_t m_CrystalBounds[12] = {
     -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
