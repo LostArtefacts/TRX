@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- added support for .ogg, .mp3 and .wav formats for audio tracks (#688)
 
 ## [2.12](https://github.com/rr-/Tomb1Main/compare/2.11...2.12) - 2022-12-23
 - added collision to save crystals (#654)
