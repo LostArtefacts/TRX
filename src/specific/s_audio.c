@@ -60,15 +60,13 @@ bool S_Audio_Init(void)
         return false;
     }
 
-    SDL_PauseAudioDevice(g_AudioDeviceID, 0);
-
     m_WorkingSilence = desired.silence;
     m_WorkingBufferSize = desired.samples * desired.channels
         * SDL_AUDIO_BITSIZE(desired.format) / 8;
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
     m_WorkingBuffer = Memory_Alloc(m_WorkingBufferSize);
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+
+    SDL_PauseAudioDevice(g_AudioDeviceID, 0);
 
     return true;
 }
