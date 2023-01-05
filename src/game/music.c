@@ -1,13 +1,17 @@
 #include "game/music.h"
 
 #include "config.h"
+#include "filesystem.h"
 #include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
 #include "log.h"
+#include "memory.h"
 #include "specific/s_audio.h"
 
 #include <stdio.h>
+
+static const char *m_Extensions[] = { ".flac", ".ogg", ".mp3", ".wav", NULL };
 
 static float m_MusicVolume = 0.0f;
 static int m_AudioStreamID = -1;
@@ -16,6 +20,7 @@ static int16_t m_TrackLooped = -1;
 
 static void Music_StopActiveStream(void);
 static void Music_StreamFinished(int stream_id, void *user_data);
+static char *Music_GetTrackFileName(int track);
 
 static void Music_StopActiveStream(void)
 {
@@ -29,6 +34,13 @@ static void Music_StopActiveStream(void)
     // just after we stop it.
     S_Audio_StreamSoundSetFinishCallback(m_AudioStreamID, NULL, NULL);
     S_Audio_StreamSoundClose(m_AudioStreamID);
+}
+
+static char *Music_GetTrackFileName(int track)
+{
+    char file_path[64];
+    sprintf(file_path, "music/track%02d.flac", track);
+    return File_GuessExtension(file_path, m_Extensions);
 }
 
 static void Music_StreamFinished(int stream_id, void *user_data)
@@ -79,11 +91,11 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    char file_path[64];
-    sprintf(file_path, "music/track%02d.flac", track);
-
     Music_StopActiveStream();
+
+    char *file_path = Music_GetTrackFileName(track);
     m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
+    Memory_FreePointer(&file_path);
 
     if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
@@ -110,11 +122,11 @@ bool Music_PlayLooped(int16_t track)
         return false;
     }
 
-    char file_path[64];
-    sprintf(file_path, "music/track%02d.flac", track);
-
     Music_StopActiveStream();
+
+    char *file_path = Music_GetTrackFileName(track);
     m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
+    Memory_FreePointer(&file_path);
 
     if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
