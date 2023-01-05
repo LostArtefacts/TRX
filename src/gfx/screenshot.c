@@ -25,7 +25,6 @@ bool GFX_Screenshot_CaptureToFile(const char *path)
 
     ret = Picture_SaveToFile(pic, path);
 
-cleanup:
     if (pic) {
         Picture_Free(pic);
     }
