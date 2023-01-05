@@ -88,8 +88,6 @@ static int16_t Option_GraphicsPlaceColumns(bool create);
 
 static void Option_GraphicsInitText(void)
 {
-    char buf[OPTION_LENGTH];
-
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y - 2, " ");
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);

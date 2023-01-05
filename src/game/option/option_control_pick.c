@@ -24,8 +24,6 @@ static void Option_ControlPickShutdownText(void);
 
 static void Option_ControlPickInitText(void)
 {
-    char buf[20];
-
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
     Text_AddBackground(m_Text[TEXT_TITLE_BORDER], 180, 85, 0, 0, TS_BACKGROUND);
     Text_AddOutline(m_Text[TEXT_TITLE_BORDER], true, TS_BACKGROUND);
@@ -59,8 +57,6 @@ static void Option_ControlPickShutdownText(void)
 
 CONTROL_MODE Option_ControlPick(void)
 {
-    char buf[20];
-
     if (!m_Text[TEXT_KEYBOARD]) {
         Option_ControlPickInitText();
     }
