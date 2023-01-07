@@ -5,10 +5,9 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
 #include "global/const.h"
 #include "global/vars.h"
-
-#include <stdbool.h>
 
 static int16_t m_CrystalBounds[12] = {
     -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
@@ -44,9 +43,7 @@ void SaveCrystal_Collision(
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, false, true);
-    }
+    Object_Collision(item_num, lara_item, coll);
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
         || lara_item->gravity_status) {
