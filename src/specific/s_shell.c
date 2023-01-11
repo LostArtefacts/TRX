@@ -9,6 +9,8 @@
 #include "log.h"
 #include "memory.h"
 
+#include <libavcodec/avcodec.h>
+
 #define SDL_MAIN_HANDLED
 
 #ifdef _WIN32
@@ -140,6 +142,10 @@ int main(int argc, char **argv)
     // necessary for SDL_OpenAudioDevice to work with WASAPI
     // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
+
+#if LIBAVCODEC_VERSION_MAJOR <= 57
+    av_register_all();
 #endif
 
     m_ArgCount = argc;
