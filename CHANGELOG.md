@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added support for .ogg, .mp3 and .wav formats for audio tracks (#688)
+- fix crash when using enhanced saves in levels with flame emitters (#693)
 - fix save crystal collision pushing Lara through walls (#682)
 
 ## [2.12](https://github.com/rr-/Tomb1Main/compare/2.11...2.12) - 2022-12-23
