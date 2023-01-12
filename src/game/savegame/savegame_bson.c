@@ -535,7 +535,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             if (item->object_number == O_FLAME_EMITTER
                 && g_Config.enable_enhanced_saves) {
                 int32_t flame_num =
-                    json_object_get_int(item_obj, "flame_num", flame_num);
+                    json_object_get_int(item_obj, "flame_num", 0);
                 item->data = (void *)flame_num;
             }
         }
@@ -569,19 +569,17 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             return false;
         }
 
-        int32_t x = json_object_get_int(fx_obj, "x", x);
-        int32_t y = json_object_get_int(fx_obj, "y", y);
-        int32_t z = json_object_get_int(fx_obj, "z", z);
-        int16_t room_num = json_object_get_int(fx_obj, "room_number", room_num);
+        int32_t x = json_object_get_int(fx_obj, "x", 0);
+        int32_t y = json_object_get_int(fx_obj, "y", 0);
+        int32_t z = json_object_get_int(fx_obj, "z", 0);
+        int16_t room_num = json_object_get_int(fx_obj, "room_number", 0);
         GAME_OBJECT_ID object_number =
-            json_object_get_int(fx_obj, "object_number", object_number);
-        int16_t speed = json_object_get_int(fx_obj, "speed", speed);
-        int16_t fall_speed =
-            json_object_get_int(fx_obj, "fall_speed", fall_speed);
-        int16_t frame_number =
-            json_object_get_int(fx_obj, "frame_number", frame_number);
-        int16_t counter = json_object_get_int(fx_obj, "counter", counter);
-        int16_t shade = json_object_get_int(fx_obj, "shade", shade);
+            json_object_get_int(fx_obj, "object_number", 0);
+        int16_t speed = json_object_get_int(fx_obj, "speed", 0);
+        int16_t fall_speed = json_object_get_int(fx_obj, "fall_speed", 0);
+        int16_t frame_number = json_object_get_int(fx_obj, "frame_number", 0);
+        int16_t counter = json_object_get_int(fx_obj, "counter", 0);
+        int16_t shade = json_object_get_int(fx_obj, "shade", 0);
 
         int16_t fx_num = Effect_Create(room_num);
         if (fx_num != NO_ITEM) {
@@ -959,11 +957,19 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
 {
     struct json_array_s *fx_arr = json_array_new();
 
+    // Reverse FX array before saving to save in proper order.
+    int16_t remap_effects[NUM_EFFECTS];
+    int32_t fx_count = 0;
     for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
          linknum = g_Effects[linknum].next_active) {
+        remap_effects[fx_count] = linknum;
+        fx_count++;
+    }
+
+    for (int32_t i = fx_count - 1; i >= 0; i--) {
         struct json_object_s *fx_obj = json_object_new();
 
-        FX_INFO *fx = &g_Effects[linknum];
+        FX_INFO *fx = &g_Effects[remap_effects[i]];
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);
