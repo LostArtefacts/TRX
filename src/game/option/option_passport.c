@@ -555,7 +555,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
         } else {
-            if (page == PASSPORT_PAGE_2) {
+            if (page == PASSPORT_PAGE_3) {
                 inv_item->anim_direction = 1;
                 inv_item->goal_frame = inv_item->frames_total - 1;
             } else {
