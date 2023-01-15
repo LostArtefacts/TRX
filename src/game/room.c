@@ -893,7 +893,7 @@ void Room_TestTriggers(int16_t *data, bool heavy)
                 break;
             }
             g_GameInfo.current[g_CurrentLevel].stats.secret_flags |= 1 << value;
-            Music_Play(13);
+            Music_Play(MX_SECRET);
             break;
         }
     } while (!(trigger & END_BIT));

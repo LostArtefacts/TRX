@@ -162,7 +162,7 @@ void Natla_Control(int16_t item_num)
                 natla->flags = 0;
                 timer = 0;
                 item->hit_points = NATLA_NEAR_DEATH;
-                Music_Play(54);
+                Music_Play(MX_NATLA_SPEECH);
             } else {
                 item->hit_points = DONT_TARGET;
             }

@@ -74,7 +74,7 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    if (track <= 1) {
+    if (track <= MX_UNUSED_1) {
         return false;
     }
 
@@ -82,12 +82,7 @@ bool Music_Play(int16_t track)
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
     }
 
-    if (track == 0) {
-        Music_Stop();
-        return false;
-    }
-
-    if (track == 5) {
+    if (track == MX_CAVES_AMBIENT) {
         return false;
     }
 
