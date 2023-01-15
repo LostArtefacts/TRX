@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- fix crash when using enhanced saves in levels with flame emitters (#693)
 
 ## [2.12](https://github.com/rr-/Tomb1Main/compare/2.11...2.12) - 2022-12-23
 - added collision to save crystals (#654)
