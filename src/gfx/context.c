@@ -31,19 +31,29 @@ typedef struct GFX_Context {
 
 static GFX_Context m_Context = { 0 };
 
-const char *get_extension_supported(const char *name)
+static bool GFX_Context_IsExtensionSupported(const char *name);
+static void GFX_Context_CheckExtensionSupport(const char *name);
+
+static bool GFX_Context_IsExtensionSupported(const char *name)
 {
-    int i, number_of_extensions;
+    int number_of_extensions;
 
     glGetIntegerv(GL_NUM_EXTENSIONS, &number_of_extensions);
 
-    for (i = 0; i < number_of_extensions; i++) {
+    for (int i = 0; i < number_of_extensions; i++) {
         const char *gl_ext = (const char *)glGetStringi(GL_EXTENSIONS, i);
         if (gl_ext && !strcmp(gl_ext, name)) {
-            return "yes";
+            return true;
         }
     }
-    return "no";
+    return false;
+}
+
+static void GFX_Context_CheckExtensionSupport(const char *name)
+{
+    LOG_INFO(
+        "%s supported: %s", name,
+        GFX_Context_IsExtensionSupported(name) ? "yes" : "no");
 }
 
 void GFX_Context_Attach(void *window_handle)
@@ -78,12 +88,8 @@ void GFX_Context_Attach(void *window_handle)
         GFX_GL_CheckError();
     }
 
-    LOG_INFO(
-        "GL_ARB_explicit_attrib_location supported: %s",
-        get_extension_supported("GL_ARB_explicit_attrib_location"));
-    LOG_INFO(
-        "GL_EXT_gpu_shader4 supported: %s",
-        get_extension_supported("GL_EXT_gpu_shader4"));
+    GFX_Context_CheckExtensionSupport("GL_ARB_explicit_attrib_location");
+    GFX_Context_CheckExtensionSupport("GL_EXT_gpu_shader4");
 
     // get screen dimensions
     SDL_DisplayMode DM;
