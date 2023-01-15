@@ -62,6 +62,10 @@ void Mummy_Control(int16_t item_num)
     Item_Animate(item);
 
     if (item->status == IS_DEACTIVATED) {
+        // Count kill if Lara touches mummy and it falls.
+        if (item->hit_points > 0) {
+            g_GameInfo.current[g_CurrentLevel].stats.kill_count++;
+        }
         Item_RemoveActive(item_num);
         item->hit_points = DONT_TARGET;
     }
