@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+
+## [2.12.1](https://github.com/rr-/Tomb1Main/compare/2.12...2.12.1) - 2023-01-16
 - fixed crash when using enhanced saves in levels with flame emitters (#693)
 - fixed the death counter from breaking old saves if enhanced saves are turned on (#699)
 
