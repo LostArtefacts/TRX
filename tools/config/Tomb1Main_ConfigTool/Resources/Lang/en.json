@@ -53,10 +53,10 @@
       "png": "PNG"
     },
     "ui_color": {
-      "gold": "Gold (game default)",
+      "gold": "Gold (default for health)",
       "red": "Red",
       "grey": "Gray",
-      "blue": "Blue",
+      "blue": "Blue (default for air)",
       "silver": "Silver",
       "green": "Green",
       "gold2": "Gold (alternative)",
