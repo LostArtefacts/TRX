@@ -53,14 +53,14 @@
       "png": "PNG"
     },
     "ui_color": {
-      "gold": "Or (par défaut dans le jeu original)",
+      "gold": "Or (par défaut pour la santé)",
       "red": "Rouge",
       "grey": "Gris",
-      "blue": "Bleu",
+      "blue": "Bleu (par défaut pour l'air)",
       "silver": "Argent",
       "green": "Vert",
-      "gold2": "Or (Alternatif)",
-      "blue2": "Bleu (Alternatif)",
+      "gold2": "Or (alternatif)",
+      "blue2": "Bleu (alternatif)",
       "pink": "Rose"
     },
     "ui_location": {
