@@ -34,10 +34,14 @@ typedef struct SAVEGAME_BSON_HEADER {
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
 
-static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root);
+static void SaveGame_BSON_SaveRaw(
+    MYFILE *fp, struct json_value_s *root, int32_t version);
 static bool Savegame_BSON_IsValidItemObject(
     int16_t saved_obj_num, int16_t current_obj_num);
-static struct json_value_s *Savegame_BSON_ParseFromFile(MYFILE *fp);
+static struct json_value_s *Savegame_BSON_ParseFromBuffer(
+    const char *buffer, size_t buffer_size, int32_t *version_out);
+static struct json_value_s *Savegame_BSON_ParseFromFile(
+    MYFILE *fp, int32_t *version_out);
 static bool Savegame_BSON_LoadResumeInfo(
     struct json_array_s *levels_arr, RESUME_INFO *resume_info);
 static bool Savegame_BSON_LoadDiscontinuedStartInfo(
@@ -70,7 +74,8 @@ static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara);
 
-static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root)
+static void SaveGame_BSON_SaveRaw(
+    MYFILE *fp, struct json_value_s *root, int32_t version)
 {
     size_t uncompressed_size;
     char *uncompressed = bson_write(root, &uncompressed_size);
@@ -89,7 +94,7 @@ static void SaveGame_BSON_SaveRaw(MYFILE *fp, struct json_value_s *root)
     SAVEGAME_BSON_HEADER header = {
         .magic = SAVEGAME_BSON_MAGIC,
         .initial_version = g_GameInfo.save_initial_version,
-        .version = SAVEGAME_CURRENT_VERSION,
+        .version = version,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
     };
@@ -131,12 +136,16 @@ static bool Savegame_BSON_IsValidItemObject(
 }
 
 static struct json_value_s *Savegame_BSON_ParseFromBuffer(
-    const char *buffer, size_t buffer_size)
+    const char *buffer, size_t buffer_size, int32_t *version_out)
 {
     SAVEGAME_BSON_HEADER *header = (SAVEGAME_BSON_HEADER *)buffer;
     if (header->magic != SAVEGAME_BSON_MAGIC) {
         LOG_ERROR("Invalid savegame magic");
         return NULL;
+    }
+
+    if (version_out) {
+        *version_out = header->version;
     }
 
     const char *compressed = buffer + sizeof(SAVEGAME_BSON_HEADER);
@@ -157,7 +166,8 @@ static struct json_value_s *Savegame_BSON_ParseFromBuffer(
     return root;
 }
 
-static struct json_value_s *Savegame_BSON_ParseFromFile(MYFILE *fp)
+static struct json_value_s *Savegame_BSON_ParseFromFile(
+    MYFILE *fp, int32_t *version_out)
 {
     size_t buffer_size = File_Size(fp);
     char *buffer = Memory_Alloc(buffer_size);
@@ -165,7 +175,7 @@ static struct json_value_s *Savegame_BSON_ParseFromFile(MYFILE *fp)
     File_Read(buffer, sizeof(char), buffer_size, fp);
 
     struct json_value_s *ret =
-        Savegame_BSON_ParseFromBuffer(buffer, buffer_size);
+        Savegame_BSON_ParseFromBuffer(buffer, buffer_size, version_out);
     Memory_FreePointer(&buffer);
     return ret;
 }
@@ -535,7 +545,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             if (item->object_number == O_FLAME_EMITTER
                 && g_Config.enable_enhanced_saves) {
                 int32_t flame_num =
-                    json_object_get_int(item_obj, "flame_num", flame_num);
+                    json_object_get_int(item_obj, "flame_num", 0);
                 item->data = (void *)flame_num;
             }
         }
@@ -569,19 +579,17 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             return false;
         }
 
-        int32_t x = json_object_get_int(fx_obj, "x", x);
-        int32_t y = json_object_get_int(fx_obj, "y", y);
-        int32_t z = json_object_get_int(fx_obj, "z", z);
-        int16_t room_num = json_object_get_int(fx_obj, "room_number", room_num);
+        int32_t x = json_object_get_int(fx_obj, "x", 0);
+        int32_t y = json_object_get_int(fx_obj, "y", 0);
+        int32_t z = json_object_get_int(fx_obj, "z", 0);
+        int16_t room_num = json_object_get_int(fx_obj, "room_number", 0);
         GAME_OBJECT_ID object_number =
-            json_object_get_int(fx_obj, "object_number", object_number);
-        int16_t speed = json_object_get_int(fx_obj, "speed", speed);
-        int16_t fall_speed =
-            json_object_get_int(fx_obj, "fall_speed", fall_speed);
-        int16_t frame_number =
-            json_object_get_int(fx_obj, "frame_number", frame_number);
-        int16_t counter = json_object_get_int(fx_obj, "counter", counter);
-        int16_t shade = json_object_get_int(fx_obj, "shade", shade);
+            json_object_get_int(fx_obj, "object_number", 0);
+        int16_t speed = json_object_get_int(fx_obj, "speed", 0);
+        int16_t fall_speed = json_object_get_int(fx_obj, "fall_speed", 0);
+        int16_t frame_number = json_object_get_int(fx_obj, "frame_number", 0);
+        int16_t counter = json_object_get_int(fx_obj, "counter", 0);
+        int16_t shade = json_object_get_int(fx_obj, "shade", 0);
 
         int16_t fx_num = Effect_Create(room_num);
         if (fx_num != NO_ITEM) {
@@ -959,11 +967,19 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
 {
     struct json_array_s *fx_arr = json_array_new();
 
+    // Reverse FX array before saving to save in proper order.
+    int16_t remap_effects[NUM_EFFECTS];
+    int32_t fx_count = 0;
     for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
          linknum = g_Effects[linknum].next_active) {
+        remap_effects[fx_count] = linknum;
+        fx_count++;
+    }
+
+    for (int32_t i = fx_count - 1; i >= 0; i--) {
         struct json_object_s *fx_obj = json_object_new();
 
-        FX_INFO *fx = &g_Effects[linknum];
+        FX_INFO *fx = &g_Effects[remap_effects[i]];
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);
@@ -1099,7 +1115,7 @@ char *Savegame_BSON_GetSaveFileName(int32_t slot)
 bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 {
     bool ret = false;
-    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp, NULL);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (root_obj) {
         info->counter = json_object_get_int(root_obj, "save_counter", -1);
@@ -1135,7 +1151,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     File_Read(&header, sizeof(SAVEGAME_BSON_HEADER), 1, fp);
     File_Seek(fp, 0, FILE_SEEK_SET);
 
-    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp, NULL);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -1213,7 +1229,7 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     assert(game_info);
 
     bool ret = false;
-    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp, NULL);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -1270,14 +1286,15 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
 
     struct json_value_s *root = json_value_from_object(root_obj);
-    SaveGame_BSON_SaveRaw(fp, root);
+    SaveGame_BSON_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);
     json_value_free(root);
 }
 
 bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
 {
     bool ret = false;
-    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp);
+    int32_t version;
+    struct json_value_s *root = Savegame_BSON_ParseFromFile(fp, &version);
     struct json_object_s *root_obj = json_value_as_object(root);
     if (!root_obj) {
         LOG_ERROR("Cannot find the root object");
@@ -1311,7 +1328,7 @@ bool Savegame_BSON_UpdateDeathCounters(MYFILE *fp, GAME_INFO *game_info)
     }
 
     File_Seek(fp, 0, FILE_SEEK_SET);
-    SaveGame_BSON_SaveRaw(fp, root);
+    SaveGame_BSON_SaveRaw(fp, root, version);
     ret = true;
 
 cleanup:

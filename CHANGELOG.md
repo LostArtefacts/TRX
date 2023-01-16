@@ -1,9 +1,13 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added support for .ogg, .mp3 and .wav formats for audio tracks (#688)
 - added the mummy to the level kill stats if Lara touches it and it falls (#701)
-- fix save crystal collision pushing Lara through walls (#682)
+- fixed save crystal collision pushing Lara through walls (#682)
 - fixed passport animation when deselecting the passport (#703)
 - fixed inconsistent wording in config tool health and air color options (#705)
+
+## [2.12.1](https://github.com/rr-/Tomb1Main/compare/2.12...2.12.1) - 2023-01-16
+- fixed crash when using enhanced saves in levels with flame emitters (#693)
+- fixed the death counter from breaking old saves if enhanced saves are turned on (#699)
 
 ## [2.12](https://github.com/rr-/Tomb1Main/compare/2.11...2.12) - 2022-12-23
 - added collision to save crystals (#654)
