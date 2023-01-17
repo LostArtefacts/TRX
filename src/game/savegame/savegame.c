@@ -106,17 +106,9 @@ static void Savegame_LoadPostprocess(void)
                 item->collidable = 0;
             }
 
-            if (obj->collision == Pickup_Collision
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(i);
-            }
-
-            if (obj->collision == SaveCrystal_Collision
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(i);
-            }
-
-            if (obj->collision == Scion_Collision
+            if ((obj->collision == Pickup_Collision
+                 || obj->collision == SaveCrystal_Collision
+                 || obj->collision == Scion_Collision)
                 && item->status == IS_DEACTIVATED) {
                 Item_RemoveDrawn(i);
             }
