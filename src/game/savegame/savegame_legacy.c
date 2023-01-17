@@ -129,7 +129,8 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
         }
         if (obj->save_flags && item->object_number != O_LAVA_EMITTER
             && item->object_number != O_FLAME_EMITTER
-            && item->object_number != O_WATERFALL) {
+            && item->object_number != O_WATERFALL
+            && item->object_number != O_SCION_ITEM) {
             Savegame_Legacy_Read(&tmp_item.flags, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.timer, sizeof(int16_t));
             if (tmp_item.flags & SAVE_CREATURE) {
@@ -545,7 +546,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             && (item->object_number != O_BACON_LARA || !skip_reading_bacon_lara)
             && item->object_number != O_LAVA_EMITTER
             && item->object_number != O_FLAME_EMITTER
-            && item->object_number != O_WATERFALL) {
+            && item->object_number != O_WATERFALL
+            && item->object_number != O_SCION_ITEM) {
             Savegame_Legacy_Read(&item->flags, sizeof(int16_t));
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
 
@@ -712,7 +714,8 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
         if (obj->save_flags && item->object_number != O_LAVA_EMITTER
             && item->object_number != O_FLAME_EMITTER
-            && item->object_number != O_WATERFALL) {
+            && item->object_number != O_WATERFALL
+            && item->object_number != O_SCION_ITEM) {
             uint16_t flags = item->flags + item->active + (item->status << 1)
                 + (item->gravity_status << 3) + (item->collidable << 4);
             if (obj->intelligent && item->data) {

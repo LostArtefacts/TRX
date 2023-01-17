@@ -53,6 +53,7 @@ void Scion_Setup1(OBJECT_INFO *obj)
 {
     g_Objects[O_SCION_ITEM].draw_routine = Object_DrawPickupItem;
     g_Objects[O_SCION_ITEM].collision = Scion_Collision;
+    g_Objects[O_SCION_ITEM].save_flags = 1;
 }
 
 void Scion_Setup2(OBJECT_INFO *obj)

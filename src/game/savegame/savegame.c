@@ -10,6 +10,7 @@
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
 #include "game/objects/general/save_crystal.h"
+#include "game/objects/general/scion.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/rolling_block.h"
 #include "game/room.h"
@@ -105,12 +106,9 @@ static void Savegame_LoadPostprocess(void)
                 item->collidable = 0;
             }
 
-            if (obj->collision == Pickup_Collision
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(i);
-            }
-
-            if (obj->collision == SaveCrystal_Collision
+            if ((obj->collision == Pickup_Collision
+                 || obj->collision == SaveCrystal_Collision
+                 || obj->collision == Scion_Collision)
                 && item->status == IS_DEACTIVATED) {
                 Item_RemoveDrawn(i);
             }
