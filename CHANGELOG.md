@@ -4,6 +4,7 @@
 - fixed save crystal collision pushing Lara through walls (#682)
 - fixed passport animation when deselecting the passport (#703)
 - fixed inconsistent wording in config tool health and air color options (#705)
+- fixed dead water rats looking alive when the room's water is drained (#687, regression from 0.12.2)
 
 ## [2.12.1](https://github.com/rr-/Tomb1Main/compare/2.12...2.12.1) - 2023-01-16
 - fixed crash when using enhanced saves in levels with flame emitters (#693)
