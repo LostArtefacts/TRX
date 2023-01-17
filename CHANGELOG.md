@@ -5,6 +5,7 @@
 - fixed passport animation when deselecting the passport (#703)
 - fixed inconsistent wording in config tool health and air color options (#705)
 - fixed Scion 1 respawning on load (#707)
+- fixed dead water rats looking alive when a room's water is drained (#687, regression from 0.12.0)
 
 ## [2.12.1](https://github.com/rr-/Tomb1Main/compare/2.12...2.12.1) - 2023-01-16
 - fixed crash when using enhanced saves in levels with flame emitters (#693)

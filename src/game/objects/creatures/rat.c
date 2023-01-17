@@ -222,7 +222,7 @@ void Vole_Control(int16_t item_num)
             item->current_anim_state = RAT_DEATH;
             item->goal_anim_state = RAT_DEATH;
             item->anim_number = g_Objects[O_RAT].anim_index + RAT_DIE_ANIM;
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            item->frame_number = g_Anims[item->anim_number].frame_end;
             item->pos.y = item->floor;
         }
     } else {
