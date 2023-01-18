@@ -13,6 +13,7 @@
 #include "game/level.h"
 #include "game/music.h"
 #include "game/overlay.h"
+#include "game/room.h"
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -110,6 +111,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         Lara_Hair_Control(false);
 
         Camera_Update();
+        Effect_DoRoutine(g_FlipEffect);
         Sound_UpdateEffects();
         g_GameInfo.current[g_CurrentLevel].stats.timer++;
         Overlay_BarHealthTimerTick();

@@ -143,3 +143,11 @@ void Effect_Draw(int16_t fxnum)
         Matrix_Pop();
     }
 }
+
+void Effect_DoRoutine(int32_t effect_num)
+{
+    // XXX: Some of the FX routines rely on the item to be not null!
+    if (effect_num != -1) {
+        g_EffectRoutines[effect_num](NULL);
+    }
+}

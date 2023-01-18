@@ -217,12 +217,6 @@ void Sound_UpdateEffects(void)
         }
     }
 
-    // XXX: Why are we firing this here? Some of the FX routines rely on the
-    // item to be not null!
-    if (g_FlipEffect != -1) {
-        g_EffectRoutines[g_FlipEffect](NULL);
-    }
-
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         SOUND_SLOT *slot = &m_SFXPlaying[i];
         if (!(slot->flags & SOUND_FLAG_USED)) {
