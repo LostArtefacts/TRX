@@ -145,7 +145,7 @@ void Effect_Draw(int16_t fxnum)
     }
 }
 
-void Effect_DoRoutine()
+void Effect_RunActiveFlipEffect()
 {
     // XXX: Some of the FX routines rely on the item to be not null!
     if (g_FlipEffect != -1) {
