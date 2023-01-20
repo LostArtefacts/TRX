@@ -275,6 +275,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed Lara loading inside a movable block if she's on a stack near a room portal
 - fixed a game crash on shutdown if the action button is held down
 - fixed Scion 1 respawning on load
+- fixed triggered flip effects not working if there are no sound devices
 
 #### Cheats
 - added a fly cheat

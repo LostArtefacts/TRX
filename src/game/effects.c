@@ -1,6 +1,7 @@
 #include "game/effects.h"
 
 #include "game/output.h"
+#include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -141,5 +142,13 @@ void Effect_Draw(int16_t fxnum)
             }
         }
         Matrix_Pop();
+    }
+}
+
+void Effect_RunActiveFlipEffect(void)
+{
+    // XXX: Some of the FX routines rely on the item to be not null!
+    if (g_FlipEffect != -1) {
+        g_EffectRoutines[g_FlipEffect](NULL);
     }
 }
