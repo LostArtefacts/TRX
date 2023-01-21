@@ -9,7 +9,6 @@
 #include "memory.h"
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
 #include <string.h>
 
 typedef struct GFX_Context {
