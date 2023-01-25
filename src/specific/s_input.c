@@ -334,7 +334,6 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
 static const char *S_Input_GetButtonName(SDL_GameControllerButton button);
 static const char *S_Input_GetAxisName(
     SDL_GameControllerAxis axis, int16_t axis_dir);
-static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout);
 static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
 static bool S_Input_JoyBtn(SDL_GameControllerButton button);
 static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
@@ -764,7 +763,7 @@ static const char *S_Input_GetAxisName(
     return "????";
 }
 
-static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout_num)
+static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
 {
     INPUT_SCANCODE scancode = m_Layout[layout_num][role];
     if (KEY_DOWN(scancode)) {
@@ -789,11 +788,6 @@ static bool S_Input_KbdKey(INPUT_ROLE role, INPUT_LAYOUT layout_num)
         return KEY_DOWN(SDL_SCANCODE_LALT);
     }
     return false;
-}
-
-static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
-{
-    return S_Input_KbdKey(role, layout_num);
 }
 
 static bool S_Input_JoyBtn(SDL_GameControllerButton button)
