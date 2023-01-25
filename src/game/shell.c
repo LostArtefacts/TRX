@@ -41,14 +41,11 @@ static char *Shell_GetScreenshotName(void)
 {
     // Get level title of unknown length
     char level_title[100];
-    snprintf(
-        level_title, LEVEL_TITLE_SIZE, "%s",
-        g_GameFlow.levels[g_CurrentLevel].level_title);
 
-    // Trim level titles that are too long
-    if (strlen(level_title) >= LEVEL_TITLE_SIZE) {
-        level_title[LEVEL_TITLE_SIZE] = '\0';
-    }
+    strncpy(
+        level_title, g_GameFlow.levels[g_CurrentLevel].level_title,
+        LEVEL_TITLE_SIZE - 1);
+    level_title[LEVEL_TITLE_SIZE] = '\0';
 
     // Prepare level title for screenshot
     char *check = level_title;
