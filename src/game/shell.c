@@ -72,7 +72,7 @@ static char *Shell_GetScreenshotName(void)
                 &level_title[idx], &level_title[idx + 1],
                 strlen(level_title) - idx);
         } else {
-            *check++;
+            check++;
             idx++;
             prev_us = false;
         }
@@ -86,7 +86,7 @@ static char *Shell_GetScreenshotName(void)
 
     // Strip trailing underscores
     if (prev_us) {
-        *check--;
+        check--;
         idx--;
         memmove(
             &level_title[idx], &level_title[idx + 1], strlen(level_title) - 1);
