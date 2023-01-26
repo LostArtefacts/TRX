@@ -986,6 +986,8 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
     GFL_RESTART = 7,
     GFL_SELECT = 8,
+    GFL_TITLE_DEMO_PC = 9,
+    GFL_LEVEL_DEMO_PC = 10,
 } GAMEFLOW_LEVEL_TYPE;
 
 typedef enum GAMEFLOW_OPTION {

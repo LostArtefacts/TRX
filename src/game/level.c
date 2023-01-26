@@ -106,6 +106,13 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
         return false;
     }
 
+    if (g_GameFlow.levels[level_num].level_type == GFL_TITLE_DEMO_PC ||
+        g_GameFlow.levels[level_num].level_type == GFL_LEVEL_DEMO_PC) {
+        if (!Level_LoadPalette(fp)) {
+            return false;
+        }
+    }
+
     if (!Level_LoadCameras(fp)) {
         return false;
     }
@@ -131,8 +138,11 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
         return false;
     }
 
-    if (!Level_LoadPalette(fp)) {
-        return false;
+    if (g_GameFlow.levels[level_num].level_type != GFL_TITLE_DEMO_PC &&
+        g_GameFlow.levels[level_num].level_type != GFL_LEVEL_DEMO_PC) {
+        if (!Level_LoadPalette(fp)) {
+            return false;
+        }
     }
 
     if (!Level_LoadCinematic(fp)) {

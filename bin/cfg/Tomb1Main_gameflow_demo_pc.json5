@@ -1,0 +1,213 @@
+{
+    // NOTE: bad changes to this file may result in crashes.
+    // Lines starting with double slashes are comments and are ignored.
+
+    // path to the main menu background image
+    "main_menu_picture": "data/titleh.png",
+
+    // path to the savegame file
+    "savegame_fmt_legacy": "save_demo_pc.%d",
+    "savegame_fmt_bson": "save_demo_pc_%02d.dat",
+
+    // whether to allow user to select NG/NG+/etc. modes in the new game dialog
+    "enable_game_modes": false,
+
+    // disables saving except in the locations near the crystals.
+    "enable_save_crystals": false,
+
+    // seconds to pass in the main menu before playing the demo
+    "demo_delay": 16,
+
+    // water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+    // [0.6, 0.7, 1.0] is original DOS version filter,
+    // [0.45, 1.0, 1.0] is default TombATI filter.
+    "water_color": [0.45, 1.0, 1.0],
+
+    // The distance (in tiles) at which objects and the world
+    // start to fade into blackness.
+    // The default hardcoded value in TR1 is 12.
+    // The default (disabled) value in TombATI is 72.
+    "draw_distance_fade": 22.0,
+
+    // The distance (in tiles) at which objects and the world are clipped away.
+    // The default hardcoded value in TR1 is 20.
+    // The default (disabled) value in TombATI is 80.
+    "draw_distance_max": 30.0,
+
+    "levels": [
+        // level 2
+        {
+            "title": "City of Vilcabamba",
+            "file": "data_demo_pc/level2.phd",
+            "type": "level_demo_pc",
+            "music": 0,
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 2},
+                {"type": "exit_to_level", "level_id": 3},
+            ],
+            "strings": {
+                "key1": "Silver Key",
+                "puzzle1": "Gold Idol"
+            },
+            "demo": true,
+        },
+
+        // level 3
+        {
+            "title": "Title",
+            "file": "data_demo_pc/title.phd",
+            "type": "title_demo_pc",
+            "music": 0,
+            "sequence": [
+                {"type": "exit_to_title"},
+            ],
+            "strings": {},
+        },
+
+        // level 4
+        // This level is necessary to read TombATI's save files!
+        // OG has a special level called LV_CURRENT to handle save/load logic.
+        // T1M does away without this hack. However, the existing save games
+        // expect the level count to match, otherwise the game will crash.
+        // Hence this dummy level.
+        {
+            "title": "Current Position",
+            "file": "data/current.phd",
+            "type": "current",
+            "music": 0,
+            "sequence": [{"type": "exit_to_title"}],
+            "strings": {},
+        },
+    ],
+
+    "strings": {
+        "HEADING_INVENTORY": "INVENTORY",
+        "HEADING_GAME_OVER": "GAME OVER",
+        "HEADING_OPTION": "OPTION",
+        "HEADING_ITEMS": "ITEMS",
+        "PASSPORT_SELECT_LEVEL": "Select Level",
+        "PASSPORT_RESTART_LEVEL": "Restart Level",
+        "PASSPORT_STORY_SO_FAR": "Story so far...",
+        "PASSPORT_LEGACY_SELECT_LEVEL_1": "Legacy saves do not",
+        "PASSPORT_LEGACY_SELECT_LEVEL_2": "support this feature.",
+        "PASSPORT_SELECT_MODE": "Select Mode",
+        "PASSPORT_MODE_NEW_GAME": "New Game",
+        "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",
+        "PASSPORT_MODE_NEW_GAME_JP": "Japanese NG",
+        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "Japanese NG+",
+        "PASSPORT_NEW_GAME": "New Game",
+        "PASSPORT_LOAD_GAME": "Load Game",
+        "PASSPORT_SAVE_GAME": "Save Game",
+        "PASSPORT_EXIT_GAME": "Exit Game",
+        "PASSPORT_EXIT_TO_TITLE": "Exit to Title",
+        "DETAIL_SELECT_DETAIL": "Select Detail",
+        "DETAIL_LEVEL_HIGH": "High",
+        "DETAIL_LEVEL_MEDIUM": "Medium",
+        "DETAIL_LEVEL_LOW": "Low",
+        "DETAIL_PERSPECTIVE": "Perspective",
+        "DETAIL_BILINEAR": "Bilinear",
+        "DETAIL_VSYNC": "VSync",
+        "DETAIL_BRIGHTNESS": "Brightness",
+        "DETAIL_UI_TEXT_SCALE": "UI text scale",
+        "DETAIL_UI_BAR_SCALE": "UI bar scale",
+        "DETAIL_RESOLUTION": "Resolution",
+        "DETAIL_FLOAT_FMT": "%.1f",
+        "DETAIL_RESOLUTION_FMT": "%dx%d",
+        "SOUND_SET_VOLUMES": "Set Volumes",
+        "CONTROL_CUSTOMIZE": "Customize Controls",
+        "CONTROL_KEYBOARD": "Keyboard",
+        "CONTROL_CONTROLLER": "Controller",
+        "CONTROL_DEFAULT_KEYS": "Default Keys",
+        "CONTROL_CUSTOM_1": "Custom Scheme 1",
+        "CONTROL_CUSTOM_2": "Custom Scheme 2",
+        "CONTROL_CUSTOM_3": "Custom Scheme 3",
+        "CONTROL_RESET_DEFAULTS_KEY": "Reset All: Hold R",
+        "CONTROL_UNBIND_KEY": "Unbind: Hold Backspace",
+        "CONTROL_RESET_DEFAULTS_BTN": "Reset All: Hold %s",
+        "CONTROL_UNBIND_BTN": "Unbind: Hold %s",
+        "KEYMAP_RUN": "Run",
+        "KEYMAP_BACK": "Back",
+        "KEYMAP_LEFT": "Left",
+        "KEYMAP_RIGHT": "Right",
+        "KEYMAP_STEP_LEFT": "Step Left",
+        "KEYMAP_STEP_RIGHT": "Step Right",
+        "KEYMAP_WALK": "Walk",
+        "KEYMAP_JUMP": "Jump",
+        "KEYMAP_ACTION": "Action",
+        "KEYMAP_DRAW_WEAPON": "Draw Weapon",
+        "KEYMAP_LOOK": "Look",
+        "KEYMAP_ROLL": "Roll",
+        "KEYMAP_INVENTORY": "Inventory",
+        "KEYMAP_PAUSE": "Pause",
+        "KEYMAP_FLY_CHEAT": "Fly Cheat",
+        "KEYMAP_ITEM_CHEAT": "Item Cheat",
+        "KEYMAP_LEVEL_SKIP_CHEAT": "Level Skip",
+        "KEYMAP_TURBO_CHEAT": "Turbo Speed",
+        "KEYMAP_CAMERA_UP": "Camera Up",
+        "KEYMAP_CAMERA_DOWN": "Camera Down",
+        "KEYMAP_CAMERA_LEFT": "Camera Left",
+        "KEYMAP_CAMERA_RIGHT": "Camera Right",
+        "KEYMAP_CAMERA_RESET": "Reset Camera",
+        "KEYMAP_EQUIP_PISTOLS": "Equip Pistols",
+        "KEYMAP_EQUIP_SHOTGUN": "Equip Shotgun",
+        "KEYMAP_EQUIP_MAGNUMS": "Equip Magnums",
+        "KEYMAP_EQUIP_UZIS": "Equip Uzis",
+        "KEYMAP_USE_SMALL_MEDI": "Small Medi",
+        "KEYMAP_USE_BIG_MEDI": "Large Medi",
+        "KEYMAP_SAVE": "Quick Save",
+        "KEYMAP_LOAD": "Quick Load",
+        "KEYMAP_FPS": "Show FPS",
+        "KEYMAP_BILINEAR": "Toggle Bilinear",
+        "STATS_KILLS_DETAIL_FMT": "KILLS %d of %d",
+        "STATS_KILLS_BASIC_FMT": "KILLS %d",
+        "STATS_PICKUPS_DETAIL_FMT": "PICKUPS %d of %d",
+        "STATS_PICKUPS_BASIC_FMT": "PICKUPS %d",
+        "STATS_SECRETS_FMT": "SECRETS %d of %d",
+        "STATS_DEATHS_FMT": "DEATHS %d",
+        "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
+        "STATS_FINAL_STATISTICS": "Final Statistics",
+        "PAUSE_PAUSED": "Paused",
+        "PAUSE_EXIT_TO_TITLE": "Exit to title?",
+        "PAUSE_CONTINUE": "Continue",
+        "PAUSE_QUIT": "Quit",
+        "PAUSE_ARE_YOU_SURE": "Are you sure?",
+        "PAUSE_YES": "Yes",
+        "PAUSE_NO": "No",
+        "MISC_ON": "On",
+        "MISC_OFF": "Off",
+        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
+        "MISC_DEMO_MODE": "Demo Mode",
+        "INV_ITEM_MEDI": "Small Medi Pack",
+        "INV_ITEM_BIG_MEDI": "Large Medi Pack",
+        "INV_ITEM_PUZZLE1": "Puzzle",
+        "INV_ITEM_PUZZLE2": "Puzzle",
+        "INV_ITEM_PUZZLE3": "Puzzle",
+        "INV_ITEM_PUZZLE4": "Puzzle",
+        "INV_ITEM_KEY1": "Key",
+        "INV_ITEM_KEY2": "Key",
+        "INV_ITEM_KEY3": "Key",
+        "INV_ITEM_KEY4": "Key",
+        "INV_ITEM_PICKUP1": "Pickup",
+        "INV_ITEM_PICKUP2": "Pickup",
+        "INV_ITEM_LEADBAR": "Lead Bar",
+        "INV_ITEM_SCION": "Scion",
+        "INV_ITEM_PISTOLS": "Pistols",
+        "INV_ITEM_SHOTGUN": "Shotgun",
+        "INV_ITEM_MAGNUM": "Magnums",
+        "INV_ITEM_UZI": "Uzis",
+        "INV_ITEM_GRENADE": "Grenade",
+        "INV_ITEM_PISTOL_AMMO": "Pistol Clips",
+        "INV_ITEM_SHOTGUN_AMMO": "Shotgun Shells",
+        "INV_ITEM_MAGNUM_AMMO": "Magnum Clips",
+        "INV_ITEM_UZI_AMMO": "Uzi Clips",
+        "INV_ITEM_COMPASS": "Compass",
+        "INV_ITEM_GAME": "Game",
+        "INV_ITEM_DETAILS": "Detail Levels",
+        "INV_ITEM_SOUND": "Sound",
+        "INV_ITEM_CONTROLS": "Controls",
+        "INV_ITEM_LARAS_HOME": "Lara's Home",
+    },
+}
