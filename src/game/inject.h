@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 typedef struct INJECTION_INFO {
     int32_t texture_page_count;
     int32_t texture_count;

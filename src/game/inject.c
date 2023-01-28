@@ -5,9 +5,13 @@
 #include "game/gamebuf.h"
 #include "game/output.h"
 #include "game/packer.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
+#include "util.h"
+
+#include <stddef.h>
 
 #define BIN_VERSION 1
 
