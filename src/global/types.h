@@ -2114,3 +2114,30 @@ typedef enum BUTTON_TYPE {
 
 typedef int16_t INPUT_SCANCODE;
 typedef int16_t INPUT_BUTTON;
+
+typedef struct LEVEL_INFO {
+    int32_t mesh_count;
+    int32_t mesh_ptr_count;
+    int32_t anim_count;
+    int32_t anim_change_count;
+    int32_t anim_range_count;
+    int32_t anim_command_count;
+    int32_t anim_bone_count;
+    int32_t anim_frame_count;
+    int32_t object_count;
+    int32_t static_count;
+    int32_t texture_count;
+    int32_t texture_page_count;
+    uint8_t *texture_page_ptrs;
+    int32_t floor_data_size;
+    int32_t anim_texture_range_count;
+    int32_t item_count;
+    int32_t sprite_info_count;
+    int32_t sprite_count;
+    int32_t overlap_count;
+    int32_t sample_info_count;
+    int32_t sample_count;
+    int32_t *sample_offsets;
+    int32_t sample_data_size;
+    char *sample_data;
+} LEVEL_INFO;

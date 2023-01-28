@@ -209,6 +209,10 @@
 
 #define RESOLUTIONS_SIZE 10
 
+#define PAGE_WIDTH 256
+#define PAGE_HEIGHT 256
+#define PAGE_SIZE (PAGE_WIDTH * PAGE_HEIGHT)
+
 #if _MSC_VER > 0x500
     #define strdup _strdup // fixes error about POSIX function
     #define _USE_MATH_DEFINES // makes maths.h also define M_PI

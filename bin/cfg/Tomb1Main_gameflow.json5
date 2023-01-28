@@ -55,6 +55,11 @@
             // music track ID
             "music": 0,
 
+            // data injection file paths
+            "injections": [
+                "data\\braid.bin"
+            ],
+
             // list of actions to execute when this level is played
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\mansion.avi"},
@@ -84,6 +89,10 @@
             "file": "data\\level1.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\snow.avi"},
                 {"type": "start_game"},
@@ -101,6 +110,10 @@
             "file": "data\\level2.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -121,6 +134,10 @@
             "file": "data\\level3a.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -140,6 +157,10 @@
             "file": "data\\level3b.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -155,6 +176,10 @@
             "file": "data\\level4.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\lift.avi"},
                 {"type": "start_game"},
@@ -177,6 +202,10 @@
             "file": "data\\level5.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -195,6 +224,10 @@
             "file": "data\\level6.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -214,6 +247,10 @@
             "file": "data\\level7a.phd",
             "type": "normal",
             "music": 58,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -234,6 +271,10 @@
             "file": "data\\level7b.phd",
             "type": "normal",
             "music": 58,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -253,6 +294,10 @@
             "file": "data\\level8a.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\vision.avi"},
                 {"type": "start_game"},
@@ -272,6 +317,10 @@
             "file": "data\\level8b.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -294,6 +343,10 @@
             "file": "data\\level8c.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -314,6 +367,10 @@
             "file": "data\\level10a.phd",
             "type": "normal",
             "music": 58,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\canyon.avi"},
                 {"type": "remove_guns"},
@@ -336,6 +393,10 @@
             "file": "data\\level10b.phd",
             "type": "normal",
             "music": 60,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv\\pyramid.avi"},
                 {"type": "start_game"},
@@ -355,6 +416,10 @@
             "file": "data\\level10c.phd",
             "type": "normal",
             "music": 60,
+            "injections": [
+                "data\\backpack.bin",
+                "data\\braid.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "fix_pyramid_secret"},

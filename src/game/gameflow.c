@@ -847,6 +847,20 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             }
         }
 
+        tmp_arr = json_object_get_array(jlvl_obj, "injections");
+        if (tmp_arr) {
+            cur->injections.length = tmp_arr->length;
+            cur->injections.data_paths =
+                Memory_Alloc(sizeof(char *) * tmp_arr->length);
+            for (size_t i = 0; i < tmp_arr->length; i++) {
+                struct json_value_s *value = json_array_get_value(tmp_arr, i);
+                struct json_string_s *str = json_value_as_string(value);
+                cur->injections.data_paths[i] = Memory_DupStr(str->string);
+            }
+        } else {
+            cur->injections.length = 0;
+        }
+
         if (!GameFlow_LoadLevelSequence(jlvl_obj, level_num)) {
             return false;
         }
@@ -933,6 +947,11 @@ void GameFlow_Shutdown(void)
             Memory_FreePointer(&g_GameFlow.levels[i].puzzle2);
             Memory_FreePointer(&g_GameFlow.levels[i].puzzle3);
             Memory_FreePointer(&g_GameFlow.levels[i].puzzle4);
+
+            for (int j = 0; j < g_GameFlow.levels[i].injections.length; j++) {
+                Memory_FreePointer(
+                    &g_GameFlow.levels[i].injections.data_paths[j]);
+            }
 
             GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;
             if (seq) {

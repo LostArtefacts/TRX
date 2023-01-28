@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added support for .ogg, .mp3 and .wav formats for audio tracks (#688)
 - added the mummy to the level kill stats if Lara touches it and it falls (#701)
+- added the ability to inject data into levels, with Lara's braid being the initial focus (#27)
 - fixed save crystal collision pushing Lara through walls (#682)
 - fixed passport animation when deselecting the passport (#703)
 - fixed inconsistent wording in config tool health and air color options (#705)

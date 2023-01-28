@@ -5,6 +5,7 @@
 #include "game/effects.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
+#include "game/inject.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
@@ -27,24 +28,10 @@
 #include "memory.h"
 
 #include <stdio.h>
+#include <string.h>
 
-static int32_t m_MeshCount = 0;
-static int32_t m_MeshPtrCount = 0;
-static int32_t m_AnimCount = 0;
-static int32_t m_AnimChangeCount = 0;
-static int32_t m_AnimRangeCount = 0;
-static int32_t m_AnimCommandCount = 0;
-static int32_t m_AnimBoneCount = 0;
-static int32_t m_AnimFrameCount = 0;
-static int32_t m_ObjectCount = 0;
-static int32_t m_StaticCount = 0;
-static int32_t m_TextureCount = 0;
-static int32_t m_FloorDataSize = 0;
-static int32_t m_TexturePageCount = 0;
-static int32_t m_AnimTextureRangeCount = 0;
-static int32_t m_SpriteInfoCount = 0;
-static int32_t m_SpriteCount = 0;
-static int32_t m_OverlapCount = 0;
+static LEVEL_INFO m_LevelInfo;
+static INJECTION_INFO *m_InjectionInfo = NULL;
 
 static bool Level_LoadRooms(MYFILE *fp);
 static bool Level_LoadObjects(MYFILE *fp);
@@ -62,6 +49,7 @@ static bool Level_LoadSamples(MYFILE *fp);
 static bool Level_LoadTexturePages(MYFILE *fp);
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num);
+static bool Level_CompleteSetup(void);
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 {
@@ -148,8 +136,6 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     }
 
     File_Close(fp);
-
-    Output_DownloadTextures(m_TexturePageCount);
 
     return true;
 }
@@ -245,36 +231,44 @@ static bool Level_LoadRooms(MYFILE *fp)
         current_room_info->fx_number = -1;
     }
 
-    File_Read(&m_FloorDataSize, sizeof(uint32_t), 1, fp);
-    g_FloorData =
-        GameBuf_Alloc(sizeof(uint16_t) * m_FloorDataSize, GBUF_FLOOR_DATA);
-    File_Read(g_FloorData, sizeof(uint16_t), m_FloorDataSize, fp);
+    File_Read(&m_LevelInfo.floor_data_size, sizeof(uint32_t), 1, fp);
+    g_FloorData = GameBuf_Alloc(
+        sizeof(uint16_t) * m_LevelInfo.floor_data_size, GBUF_FLOOR_DATA);
+    File_Read(g_FloorData, sizeof(uint16_t), m_LevelInfo.floor_data_size, fp);
 
     return true;
 }
 
 static bool Level_LoadObjects(MYFILE *fp)
 {
-    File_Read(&m_MeshCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d meshes", m_MeshCount);
-    g_MeshBase = GameBuf_Alloc(sizeof(int16_t) * m_MeshCount, GBUF_MESHES);
-    File_Read(g_MeshBase, sizeof(int16_t), m_MeshCount, fp);
+    File_Read(&m_LevelInfo.mesh_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d meshes", m_LevelInfo.mesh_count);
+    g_MeshBase = GameBuf_Alloc(
+        sizeof(int16_t)
+            * (m_LevelInfo.mesh_count + m_InjectionInfo->mesh_count),
+        GBUF_MESHES);
+    File_Read(g_MeshBase, sizeof(int16_t), m_LevelInfo.mesh_count, fp);
 
-    File_Read(&m_MeshPtrCount, sizeof(int32_t), 1, fp);
-    uint32_t *mesh_indices =
-        GameBuf_Alloc(sizeof(uint32_t) * m_MeshPtrCount, GBUF_MESH_POINTERS);
-    File_Read(mesh_indices, sizeof(uint32_t), m_MeshPtrCount, fp);
+    File_Read(&m_LevelInfo.mesh_ptr_count, sizeof(int32_t), 1, fp);
+    uint32_t *mesh_indices = GameBuf_Alloc(
+        sizeof(uint32_t) * m_LevelInfo.mesh_ptr_count, GBUF_MESH_POINTERS);
+    File_Read(mesh_indices, sizeof(uint32_t), m_LevelInfo.mesh_ptr_count, fp);
 
-    g_Meshes =
-        GameBuf_Alloc(sizeof(int16_t *) * m_MeshPtrCount, GBUF_MESH_POINTERS);
-    for (int i = 0; i < m_MeshPtrCount; i++) {
+    g_Meshes = GameBuf_Alloc(
+        sizeof(int16_t *)
+            * (m_LevelInfo.mesh_ptr_count + m_InjectionInfo->mesh_ptr_count),
+        GBUF_MESH_POINTERS);
+    for (int i = 0; i < m_LevelInfo.mesh_ptr_count; i++) {
         g_Meshes[i] = &g_MeshBase[mesh_indices[i] / 2];
     }
 
-    File_Read(&m_AnimCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d anims", m_AnimCount);
-    g_Anims = GameBuf_Alloc(sizeof(ANIM_STRUCT) * m_AnimCount, GBUF_ANIMS);
-    for (int i = 0; i < m_AnimCount; i++) {
+    File_Read(&m_LevelInfo.anim_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anims", m_LevelInfo.anim_count);
+    g_Anims = GameBuf_Alloc(
+        sizeof(ANIM_STRUCT)
+            * (m_LevelInfo.anim_count + m_InjectionInfo->anim_count),
+        GBUF_ANIMS);
+    for (int i = 0; i < m_LevelInfo.anim_count; i++) {
         ANIM_STRUCT *anim = g_Anims + i;
 
         File_Read(&anim->frame_ofs, sizeof(uint32_t), 1, fp);
@@ -292,42 +286,61 @@ static bool Level_LoadObjects(MYFILE *fp)
         File_Read(&anim->command_index, sizeof(int16_t), 1, fp);
     }
 
-    File_Read(&m_AnimChangeCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d anim changes", m_AnimChangeCount);
+    File_Read(&m_LevelInfo.anim_change_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anim changes", m_LevelInfo.anim_change_count);
     g_AnimChanges = GameBuf_Alloc(
-        sizeof(ANIM_CHANGE_STRUCT) * m_AnimChangeCount, GBUF_ANIM_CHANGES);
-    File_Read(g_AnimChanges, sizeof(ANIM_CHANGE_STRUCT), m_AnimChangeCount, fp);
+        sizeof(ANIM_CHANGE_STRUCT)
+            * (m_LevelInfo.anim_change_count
+               + m_InjectionInfo->anim_change_count),
+        GBUF_ANIM_CHANGES);
+    File_Read(
+        g_AnimChanges, sizeof(ANIM_CHANGE_STRUCT),
+        m_LevelInfo.anim_change_count, fp);
 
-    File_Read(&m_AnimRangeCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d anim ranges", m_AnimRangeCount);
+    File_Read(&m_LevelInfo.anim_range_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anim ranges", m_LevelInfo.anim_range_count);
     g_AnimRanges = GameBuf_Alloc(
-        sizeof(ANIM_RANGE_STRUCT) * m_AnimRangeCount, GBUF_ANIM_RANGES);
-    File_Read(g_AnimRanges, sizeof(ANIM_RANGE_STRUCT), m_AnimRangeCount, fp);
+        sizeof(ANIM_RANGE_STRUCT)
+            * (m_LevelInfo.anim_range_count
+               + m_InjectionInfo->anim_range_count),
+        GBUF_ANIM_RANGES);
+    File_Read(
+        g_AnimRanges, sizeof(ANIM_RANGE_STRUCT), m_LevelInfo.anim_range_count,
+        fp);
 
-    File_Read(&m_AnimCommandCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d anim commands", m_AnimCommandCount);
-    g_AnimCommands =
-        GameBuf_Alloc(sizeof(int16_t) * m_AnimCommandCount, GBUF_ANIM_COMMANDS);
-    File_Read(g_AnimCommands, sizeof(int16_t), m_AnimCommandCount, fp);
+    File_Read(&m_LevelInfo.anim_command_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anim commands", m_LevelInfo.anim_command_count);
+    g_AnimCommands = GameBuf_Alloc(
+        sizeof(int16_t)
+            * (m_LevelInfo.anim_command_count
+               + m_InjectionInfo->anim_cmd_count),
+        GBUF_ANIM_COMMANDS);
+    File_Read(
+        g_AnimCommands, sizeof(int16_t), m_LevelInfo.anim_command_count, fp);
 
-    File_Read(&m_AnimBoneCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d anim bones", m_AnimBoneCount);
-    g_AnimBones =
-        GameBuf_Alloc(sizeof(int32_t) * m_AnimBoneCount, GBUF_ANIM_BONES);
-    File_Read(g_AnimBones, sizeof(int32_t), m_AnimBoneCount, fp);
+    File_Read(&m_LevelInfo.anim_bone_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anim bones", m_LevelInfo.anim_bone_count);
+    g_AnimBones = GameBuf_Alloc(
+        sizeof(int32_t)
+            * (m_LevelInfo.anim_bone_count + m_InjectionInfo->anim_bone_count),
+        GBUF_ANIM_BONES);
+    File_Read(g_AnimBones, sizeof(int32_t), m_LevelInfo.anim_bone_count, fp);
 
-    File_Read(&m_AnimFrameCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d anim frames", m_AnimFrameCount);
-    g_AnimFrames =
-        GameBuf_Alloc(sizeof(int16_t) * m_AnimFrameCount, GBUF_ANIM_FRAMES);
-    File_Read(g_AnimFrames, sizeof(int16_t), m_AnimFrameCount, fp);
-    for (int i = 0; i < m_AnimCount; i++) {
+    File_Read(&m_LevelInfo.anim_frame_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anim frames", m_LevelInfo.anim_frame_count);
+    g_AnimFrames = GameBuf_Alloc(
+        sizeof(int16_t)
+            * (m_LevelInfo.anim_frame_count
+               + m_InjectionInfo->anim_frame_count),
+        GBUF_ANIM_FRAMES);
+    File_Read(g_AnimFrames, sizeof(int16_t), m_LevelInfo.anim_frame_count, fp);
+    for (int i = 0; i < m_LevelInfo.anim_count; i++) {
         g_Anims[i].frame_ptr = &g_AnimFrames[g_Anims[i].frame_ofs / 2];
     }
 
-    File_Read(&m_ObjectCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d objects", m_ObjectCount);
-    for (int i = 0; i < m_ObjectCount; i++) {
+    File_Read(&m_LevelInfo.object_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d objects", m_LevelInfo.object_count);
+    for (int i = 0; i < m_LevelInfo.object_count; i++) {
         int32_t tmp;
         File_Read(&tmp, sizeof(int32_t), 1, fp);
         OBJECT_INFO *object = &g_Objects[tmp];
@@ -342,11 +355,9 @@ static bool Level_LoadObjects(MYFILE *fp)
         object->loaded = 1;
     }
 
-    Setup_AllObjects();
-
-    File_Read(&m_StaticCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d statics", m_StaticCount);
-    for (int i = 0; i < m_StaticCount; i++) {
+    File_Read(&m_LevelInfo.static_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d statics", m_LevelInfo.static_count);
+    for (int i = 0; i < m_LevelInfo.static_count; i++) {
         int32_t tmp;
         File_Read(&tmp, sizeof(int32_t), 1, fp);
         STATIC_INFO *object = &g_StaticObjects[tmp];
@@ -357,28 +368,32 @@ static bool Level_LoadObjects(MYFILE *fp)
         File_Read(&object->flags, sizeof(int16_t), 1, fp);
     }
 
-    File_Read(&m_TextureCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d textures", m_TextureCount);
-    if (m_TextureCount > MAX_TEXTURES) {
-        Shell_ExitSystem("Too many Textures in level");
+    File_Read(&m_LevelInfo.texture_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d textures", m_LevelInfo.texture_count);
+    if ((m_LevelInfo.texture_count + m_InjectionInfo->texture_count)
+        > MAX_TEXTURES) {
         return false;
     }
-    File_Read(g_PhdTextureInfo, sizeof(PHD_TEXTURE), m_TextureCount, fp);
+    File_Read(
+        g_PhdTextureInfo, sizeof(PHD_TEXTURE), m_LevelInfo.texture_count, fp);
 
     return true;
 }
 
 static bool Level_LoadSprites(MYFILE *fp)
 {
-    File_Read(&m_SpriteInfoCount, sizeof(int32_t), 1, fp);
-    if (m_SpriteInfoCount > MAX_SPRITES) {
+    File_Read(&m_LevelInfo.sprite_info_count, sizeof(int32_t), 1, fp);
+    if (m_LevelInfo.sprite_info_count + m_InjectionInfo->sprite_info_count
+        > MAX_SPRITES) {
         Shell_ExitSystem("Too many sprites in level");
         return false;
     }
-    File_Read(&g_PhdSpriteInfo, sizeof(PHD_SPRITE), m_SpriteInfoCount, fp);
+    File_Read(
+        &g_PhdSpriteInfo, sizeof(PHD_SPRITE), m_LevelInfo.sprite_info_count,
+        fp);
 
-    File_Read(&m_SpriteCount, sizeof(int32_t), 1, fp);
-    for (int i = 0; i < m_SpriteCount; i++) {
+    File_Read(&m_LevelInfo.sprite_count, sizeof(int32_t), 1, fp);
+    for (int i = 0; i < m_LevelInfo.sprite_count; i++) {
         GAME_OBJECT_ID object_num;
         File_Read(&object_num, sizeof(int32_t), 1, fp);
         if (object_num < O_NUMBER_OF) {
@@ -399,23 +414,22 @@ static bool Level_LoadSprites(MYFILE *fp)
 
 static bool Level_LoadItems(MYFILE *fp)
 {
-    int32_t item_count = 0;
-    File_Read(&item_count, sizeof(int32_t), 1, fp);
+    File_Read(&m_LevelInfo.item_count, sizeof(int32_t), 1, fp);
 
-    LOG_INFO("%d items", item_count);
+    LOG_INFO("%d items", m_LevelInfo.item_count);
 
-    if (item_count) {
-        if (item_count > MAX_ITEMS) {
+    if (m_LevelInfo.item_count) {
+        if (m_LevelInfo.item_count > MAX_ITEMS) {
             Shell_ExitSystem(
                 "Level_LoadItems(): Too Many g_Items being Loaded!!");
             return false;
         }
 
         g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
-        g_LevelItemCount = item_count;
+        g_LevelItemCount = m_LevelInfo.item_count;
         Item_InitialiseArray(MAX_ITEMS);
 
-        for (int i = 0; i < item_count; i++) {
+        for (int i = 0; i < m_LevelInfo.item_count; i++) {
             ITEM_INFO *item = &g_Items[i];
             File_Read(&item->object_number, sizeof(int16_t), 1, fp);
             File_Read(&item->room_number, sizeof(int16_t), 1, fp);
@@ -431,8 +445,6 @@ static bool Level_LoadItems(MYFILE *fp)
                     "Level_LoadItems(): Bad Object number (%d) on Item %d",
                     item->object_number, i);
             }
-
-            Item_Initialise(i);
         }
     }
 
@@ -505,9 +517,10 @@ static bool Level_LoadBoxes(MYFILE *fp)
         return false;
     }
 
-    File_Read(&m_OverlapCount, sizeof(int32_t), 1, fp);
-    g_Overlap = GameBuf_Alloc(sizeof(uint16_t) * m_OverlapCount, 22);
-    if (!File_Read(g_Overlap, sizeof(uint16_t), m_OverlapCount, fp)) {
+    File_Read(&m_LevelInfo.overlap_count, sizeof(int32_t), 1, fp);
+    g_Overlap = GameBuf_Alloc(sizeof(uint16_t) * m_LevelInfo.overlap_count, 22);
+    if (!File_Read(
+            g_Overlap, sizeof(uint16_t), m_LevelInfo.overlap_count, fp)) {
         Shell_ExitSystem("Level_LoadBoxes(): Unable to load box overlaps");
         return false;
     }
@@ -546,13 +559,14 @@ static bool Level_LoadBoxes(MYFILE *fp)
 
 static bool Level_LoadAnimatedTextures(MYFILE *fp)
 {
-    File_Read(&m_AnimTextureRangeCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d animated textures", m_AnimTextureRangeCount);
+    File_Read(&m_LevelInfo.anim_texture_range_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d animated textures", m_LevelInfo.anim_texture_range_count);
     g_AnimTextureRanges = GameBuf_Alloc(
-        sizeof(int16_t) * m_AnimTextureRangeCount,
+        sizeof(int16_t) * m_LevelInfo.anim_texture_range_count,
         GBUF_ANIMATING_TEXTURE_RANGES);
     File_Read(
-        g_AnimTextureRanges, sizeof(int16_t), m_AnimTextureRangeCount, fp);
+        g_AnimTextureRanges, sizeof(int16_t),
+        m_LevelInfo.anim_texture_range_count, fp);
     return true;
 }
 
@@ -586,82 +600,137 @@ static bool Level_LoadDemo(MYFILE *fp)
 static bool Level_LoadSamples(MYFILE *fp)
 {
     File_Read(g_SampleLUT, sizeof(int16_t), MAX_SAMPLES, fp);
-    int32_t num_sample_infos;
-    File_Read(&num_sample_infos, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d sample infos", num_sample_infos);
-    if (!num_sample_infos) {
+    File_Read(&m_LevelInfo.sample_info_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d sample infos", m_LevelInfo.sample_info_count);
+    if (!m_LevelInfo.sample_info_count) {
         Shell_ExitSystem("No Sample Infos");
         return false;
     }
 
     g_SampleInfos = GameBuf_Alloc(
-        sizeof(SAMPLE_INFO) * num_sample_infos, GBUF_SAMPLE_INFOS);
-    File_Read(g_SampleInfos, sizeof(SAMPLE_INFO), num_sample_infos, fp);
+        sizeof(SAMPLE_INFO)
+            * (m_LevelInfo.sample_info_count + m_InjectionInfo->sfx_count),
+        GBUF_SAMPLE_INFOS);
+    File_Read(
+        g_SampleInfos, sizeof(SAMPLE_INFO), m_LevelInfo.sample_info_count, fp);
 
-    int32_t sample_data_size;
-    File_Read(&sample_data_size, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d sample data size", sample_data_size);
-    if (!sample_data_size) {
+    File_Read(&m_LevelInfo.sample_data_size, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d sample data size", m_LevelInfo.sample_data_size);
+    if (!m_LevelInfo.sample_data_size) {
         Shell_ExitSystem("No Sample Data");
         return false;
     }
 
-    char *sample_data = GameBuf_Alloc(sample_data_size, GBUF_SAMPLES);
-    File_Read(sample_data, sizeof(char), sample_data_size, fp);
+    m_LevelInfo.sample_data = GameBuf_Alloc(
+        m_LevelInfo.sample_data_size + m_InjectionInfo->sfx_data_size,
+        GBUF_SAMPLES);
+    File_Read(
+        m_LevelInfo.sample_data, sizeof(char), m_LevelInfo.sample_data_size,
+        fp);
 
-    int32_t num_samples;
-    File_Read(&num_samples, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d samples", num_samples);
-    if (!num_samples) {
+    File_Read(&m_LevelInfo.sample_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d samples", m_LevelInfo.sample_count);
+    if (!m_LevelInfo.sample_count) {
         Shell_ExitSystem("No Samples");
         return false;
     }
 
-    int32_t *sample_offsets = Memory_Alloc(sizeof(int32_t) * num_samples);
-    size_t *sample_sizes = Memory_Alloc(sizeof(size_t) * num_samples);
-    File_Read(sample_offsets, sizeof(int32_t), num_samples, fp);
-
-    const char **sample_pointers = Memory_Alloc(sizeof(char *) * num_samples);
-    for (int i = 0; i < num_samples; i++) {
-        sample_pointers[i] = sample_data + sample_offsets[i];
-    }
-
-    // NOTE: this assumes that sample pointers are sorted
-    for (int i = 0; i < num_samples; i++) {
-        int current_offset = sample_offsets[i];
-        int next_offset =
-            i + 1 >= num_samples ? (int)File_Size(fp) : sample_offsets[i + 1];
-        sample_sizes[i] = next_offset - current_offset;
-    }
-
-    Sound_LoadSamples(num_samples, sample_pointers, sample_sizes);
-
-    Memory_FreePointer(&sample_offsets);
-    Memory_FreePointer(&sample_pointers);
-    Memory_FreePointer(&sample_sizes);
+    m_LevelInfo.sample_offsets = Memory_Alloc(
+        sizeof(int32_t)
+        * (m_LevelInfo.sample_count + m_InjectionInfo->sample_count));
+    File_Read(
+        m_LevelInfo.sample_offsets, sizeof(int32_t), m_LevelInfo.sample_count,
+        fp);
 
     return true;
 }
 
 static bool Level_LoadTexturePages(MYFILE *fp)
 {
-    File_Read(&m_TexturePageCount, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d texture pages", m_TexturePageCount);
-    uint8_t *base =
-        GameBuf_Alloc(m_TexturePageCount * 256 * 256, GBUF_TEXTURE_PAGES);
-    File_Read(base, 256 * 256, m_TexturePageCount, fp);
-    for (int i = 0; i < m_TexturePageCount; i++) {
-        g_TexturePagePtrs[i] = base;
-        base += 256 * 256;
+    File_Read(&m_LevelInfo.texture_page_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d texture pages", m_LevelInfo.texture_page_count);
+    m_LevelInfo.texture_page_ptrs =
+        Memory_Alloc(m_LevelInfo.texture_page_count * PAGE_SIZE);
+    File_Read(
+        m_LevelInfo.texture_page_ptrs, PAGE_SIZE,
+        m_LevelInfo.texture_page_count, fp);
+    return true;
+}
+
+static bool Level_CompleteSetup(void)
+{
+    if (!Inject_AllInjections(&m_LevelInfo)) {
+        return false;
     }
+
+    // Must be called after all g_Anims, g_Meshes etc initialised.
+    Setup_AllObjects();
+
+    // Must be called after Setup_AllObjects using the cached item
+    // count, as individual setups may increment g_LevelItemCount.
+    for (int i = 0; i < m_LevelInfo.item_count; i++) {
+        Item_Initialise(i);
+    }
+
+    // Move the prepared texture pages into g_TexturePagePtrs.
+    uint8_t *base = GameBuf_Alloc(
+        m_LevelInfo.texture_page_count * PAGE_SIZE, GBUF_TEXTURE_PAGES);
+    for (int i = 0; i < m_LevelInfo.texture_page_count; i++) {
+        g_TexturePagePtrs[i] = base;
+        memcpy(base, m_LevelInfo.texture_page_ptrs + i * PAGE_SIZE, PAGE_SIZE);
+        base += PAGE_SIZE;
+    }
+    Output_DownloadTextures(m_LevelInfo.texture_page_count);
+
+    // Initialise the sound effects.
+    size_t *sample_sizes =
+        Memory_Alloc(sizeof(size_t) * m_LevelInfo.sample_count);
+    const char **sample_pointers =
+        Memory_Alloc(sizeof(char *) * m_LevelInfo.sample_count);
+    for (int i = 0; i < m_LevelInfo.sample_count; i++) {
+        sample_pointers[i] =
+            m_LevelInfo.sample_data + m_LevelInfo.sample_offsets[i];
+    }
+
+    // NOTE: this assumes that sample pointers are sorted
+    for (int i = 0; i < m_LevelInfo.sample_count; i++) {
+        int current_offset = m_LevelInfo.sample_offsets[i];
+        int next_offset = i + 1 >= m_LevelInfo.sample_count
+            ? m_LevelInfo.sample_data_size
+            : m_LevelInfo.sample_offsets[i + 1];
+        sample_sizes[i] = next_offset - current_offset;
+    }
+
+    Sound_LoadSamples(m_LevelInfo.sample_count, sample_pointers, sample_sizes);
+
+    Memory_FreePointer(&sample_pointers);
+    Memory_FreePointer(&sample_sizes);
+
     return true;
 }
 
 bool Level_Load(int level_num)
 {
     LOG_INFO("%d (%s)", level_num, g_GameFlow.levels[level_num].level_file);
-    bool ret =
+
+    m_InjectionInfo = Memory_Alloc(sizeof(INJECTION_INFO));
+    bool ret = true;
+
+    if (g_GameFlow.levels[level_num].injections.length) {
+        ret = Inject_Init(
+            g_GameFlow.levels[level_num].injections.length,
+            g_GameFlow.levels[level_num].injections.data_paths,
+            m_InjectionInfo);
+    }
+
+    ret &=
         Level_LoadFromFile(g_GameFlow.levels[level_num].level_file, level_num);
+
+    ret &= Level_CompleteSetup();
+
+    Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
+    Memory_FreePointer(&m_LevelInfo.sample_offsets);
+    Memory_FreePointer(&m_InjectionInfo);
 
     Output_SetWaterColor(
         g_GameFlow.levels[level_num].water_color.override
