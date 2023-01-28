@@ -1,9 +1,12 @@
 #include "game/packer.h"
 
 #include "game/gamebuf.h"
+#include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
 #include "memory.h"
+#include "util.h"
 
 typedef enum RECTANGLE_COMPARISON {
     RC_EQUALS = 0,
