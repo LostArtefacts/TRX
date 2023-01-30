@@ -3,7 +3,7 @@
     // Lines starting with double slashes are comments and are ignored.
 
     // path to the main menu background image
-    "main_menu_picture": "data\\titleh.png",
+    "main_menu_picture": "data/titleh.png",
 
     // path to the savegame file
     "savegame_fmt_legacy": "saveati.%d",
@@ -42,7 +42,7 @@
             "title": "Lara's Home",
 
             // level path
-            "file": "data\\gym.phd",
+            "file": "data/gym.phd",
 
             // level type
             // can be:
@@ -57,7 +57,7 @@
 
             // list of actions to execute when this level is played
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv\\mansion.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -81,11 +81,11 @@
         // level 1
         {
             "title": "Caves",
-            "file": "data\\level1.phd",
+            "file": "data/level1.phd",
             "type": "normal",
             "music": 57,
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv\\snow.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -98,7 +98,7 @@
         // level 2
         {
             "title": "City of Vilcabamba",
-            "file": "data\\level2.phd",
+            "file": "data/level2.phd",
             "type": "normal",
             "music": 57,
             "sequence": [
@@ -118,7 +118,7 @@
         // level 3
         {
             "title": "Lost Valley",
-            "file": "data\\level3a.phd",
+            "file": "data/level3a.phd",
             "type": "normal",
             "music": 57,
             "sequence": [
@@ -137,7 +137,7 @@
         // level 4
         {
             "title": "Tomb of Qualopec",
-            "file": "data\\level3b.phd",
+            "file": "data/level3b.phd",
             "type": "normal",
             "music": 57,
             "sequence": [
@@ -152,11 +152,11 @@
         // level 5
         {
             "title": "St. Francis' Folly",
-            "file": "data\\level4.phd",
+            "file": "data/level4.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv\\lift.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -174,7 +174,7 @@
         // level 6
         {
             "title": "Colosseum",
-            "file": "data\\level5.phd",
+            "file": "data/level5.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
@@ -192,7 +192,7 @@
         // level 7
         {
             "title": "Palace Midas",
-            "file": "data\\level6.phd",
+            "file": "data/level6.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
@@ -211,7 +211,7 @@
         // level 8
         {
             "title": "The Cistern",
-            "file": "data\\level7a.phd",
+            "file": "data/level7a.phd",
             "type": "normal",
             "music": 58,
             "sequence": [
@@ -231,7 +231,7 @@
         // level 9
         {
             "title": "Tomb of Tihocan",
-            "file": "data\\level7b.phd",
+            "file": "data/level7b.phd",
             "type": "normal",
             "music": 58,
             "sequence": [
@@ -250,11 +250,11 @@
         // level 10
         {
             "title": "City of Khamoon",
-            "file": "data\\level8a.phd",
+            "file": "data/level8a.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv\\vision.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/vision.avi"},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -269,7 +269,7 @@
         // level 11
         {
             "title": "Obelisk of Khamoon",
-            "file": "data\\level8b.phd",
+            "file": "data/level8b.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
@@ -291,7 +291,7 @@
         // level 12
         {
             "title": "Sanctuary of the Scion",
-            "file": "data\\level8c.phd",
+            "file": "data/level8c.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
@@ -311,11 +311,11 @@
         // level 13
         {
             "title": "Natla's Mines",
-            "file": "data\\level10a.phd",
+            "file": "data/level10a.phd",
             "type": "normal",
             "music": 58,
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv\\canyon.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/canyon.avi"},
                 {"type": "remove_guns"},
                 {"type": "remove_scions"},
                 {"type": "start_game"},
@@ -333,16 +333,16 @@
         // level 14
         {
             "title": "Atlantis",
-            "file": "data\\level10b.phd",
+            "file": "data/level10b.phd",
             "type": "normal",
             "music": 60,
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv\\pyramid.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
                 {"type": "start_game"},
                 {"type": "give_item", "object_id": 84, "quantity": 1},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
-                {"type": "play_fmv", "fmv_path": "fmv\\prison.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/prison.avi"},
                 {"type": "exit_to_cine", "level_id": 19},
             ],
             "strings": {},
@@ -352,7 +352,7 @@
         // level 15
         {
             "title": "The Great Pyramid",
-            "file": "data\\level10c.phd",
+            "file": "data/level10c.phd",
             "type": "normal",
             "music": 60,
             "sequence": [
@@ -361,13 +361,13 @@
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 15},
-                {"type": "play_fmv", "fmv_path": "fmv\\end.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/end.avi"},
                 {"type": "play_synced_audio", "audio_id": 19},
-                {"type": "display_picture", "picture_path": "data\\end.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred1.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred2.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred3.pcx", "display_time": 7.5},
-                {"type": "total_stats", "picture_path": "data\\install.pcx"},
+                {"type": "display_picture", "picture_path": "data/end.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred1.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred2.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred3.pcx", "display_time": 7.5},
+                {"type": "total_stats", "picture_path": "data/install.pcx"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
@@ -376,7 +376,7 @@
         // level 16
         {
             "title": "Cut Scene 1",
-            "file": "data\\cut1.phd",
+            "file": "data/cut1.phd",
             "type": "cutscene",
             "music": 0,
             "sequence": [
@@ -396,7 +396,7 @@
         // level 17
         {
             "title": "Cut Scene 2",
-            "file": "data\\cut2.phd",
+            "file": "data/cut2.phd",
             "type": "cutscene",
             "music": 0,
             "sequence": [
@@ -418,7 +418,7 @@
         // level 18
         {
             "title": "Cut Scene 3",
-            "file": "data\\cut3.phd",
+            "file": "data/cut3.phd",
             "type": "cutscene",
             "music": 0,
             "sequence": [
@@ -436,7 +436,7 @@
         // level 19
         {
             "title": "Cut Scene 4",
-            "file": "data\\cut4.phd",
+            "file": "data/cut4.phd",
             "type": "cutscene",
             "music": 0,
             "draw_distance_fade": 12.0,
@@ -458,14 +458,14 @@
         // level 20
         {
             "title": "Title",
-            "file": "data\\title.phd",
+            "file": "data/title.phd",
             "type": "title",
             "music": 2,
             "sequence": [
-                {"type": "display_picture", "picture_path": "data\\eidospc.png", "display_time": 1},
-                {"type": "play_fmv", "fmv_path": "fmv\\core.avi"},
-                {"type": "play_fmv", "fmv_path": "fmv\\escape.avi"},
-                {"type": "play_fmv", "fmv_path": "fmv\\cafe.avi"},
+                {"type": "display_picture", "picture_path": "data/eidospc.png", "display_time": 1},
+                {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/escape.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/cafe.avi"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
@@ -479,7 +479,7 @@
         // Hence this dummy level.
         {
             "title": "Current Position",
-            "file": "data\\current.phd",
+            "file": "data/current.phd",
             "type": "current",
             "music": 0,
             "sequence": [
