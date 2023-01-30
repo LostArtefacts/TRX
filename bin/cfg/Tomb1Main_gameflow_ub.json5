@@ -1,7 +1,7 @@
 {
     // NOTE: bad changes to this file may result in crashes.
 
-    "main_menu_picture": "data\\titleh_ub.png",
+    "main_menu_picture": "data/titleh_ub.png",
     "savegame_fmt_legacy": "saveuba.%d",
     "savegame_fmt_bson": "save_trub_%02d.dat",
     "enable_game_modes": true,
@@ -15,7 +15,7 @@
         // level 0
         {
             "title": "Return to Egypt",
-            "file": "data\\egypt.phd",
+            "file": "data/egypt.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
@@ -32,7 +32,7 @@
         // level 1
         {
             "title": "Temple of the Cat",
-            "file": "data\\cat.phd",
+            "file": "data/cat.phd",
             "type": "normal",
             "music": 59,
             "sequence": [
@@ -49,7 +49,7 @@
         // level 2
         {
             "title": "Atlantean Stronghold",
-            "file": "data\\end.phd",
+            "file": "data/end.phd",
             "type": "normal",
             "music": 60,
             "sequence": [
@@ -66,7 +66,7 @@
         // level 3
         {
             "title": "The Hive",
-            "file": "data\\end2.phd",
+            "file": "data/end2.phd",
             "type": "normal",
             "music": 60,
             "sequence": [
@@ -75,12 +75,12 @@
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 3},
                 {"type": "play_synced_audio", "audio_id": 19},
-                {"type": "display_picture", "picture_path": "data\\end.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred0.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred1.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred2.pcx", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data\\cred3.pcx", "display_time": 7.5},
-                {"type": "total_stats", "picture_path": "data\\install.pcx"},
+                {"type": "display_picture", "picture_path": "data/end.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred0.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred1.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred2.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred3.pcx", "display_time": 7.5},
+                {"type": "total_stats", "picture_path": "data/install.pcx"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
@@ -89,13 +89,13 @@
         // level 4
         {
             "title": "Title",
-            "file": "data\\title.phd",
+            "file": "data/title.phd",
             "type": "title",
             "music": 2,
             "sequence": [
-                {"type": "display_picture", "picture_path": "data\\eidospc.png", "display_time": 1},
-                {"type": "play_fmv", "fmv_path": "fmv\\core.avi"},
-                {"type": "play_fmv", "fmv_path": "fmv\\escape.avi"},
+                {"type": "display_picture", "picture_path": "data/eidospc.png", "display_time": 1},
+                {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/escape.avi"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
@@ -109,7 +109,7 @@
         // Hence this dummy level.
         {
             "title": "Current Position",
-            "file": "data\\current.phd",
+            "file": "data/current.phd",
             "type": "current",
             "music": 0,
             "sequence": [{"type": "exit_to_title"}],
