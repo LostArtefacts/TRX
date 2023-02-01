@@ -19,8 +19,8 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data\\backpack.bin",
-                "data\\braid.bin",
+                "data/backpack.bin",
+                "data/braid.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
@@ -40,8 +40,8 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data\\backpack.bin",
-                "data\\braid.bin",
+                "data/backpack.bin",
+                "data/braid.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
@@ -61,8 +61,8 @@
             "type": "normal",
             "music": 60,
             "injections": [
-                "data\\backpack.bin",
-                "data\\braid.bin",
+                "data/backpack.bin",
+                "data/braid.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
@@ -82,8 +82,8 @@
             "type": "normal",
             "music": 60,
             "injections": [
-                "data\\backpack.bin",
-                "data\\braid.bin",
+                "data/backpack.bin",
+                "data/braid.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
