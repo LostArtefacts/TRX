@@ -393,6 +393,8 @@ static void Inject_ObjectData(
     INJECTION_INFO inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
+    // TODO: consider refactoring once we have more injection
+    // use cases.
     for (int i = 0; i < inj_info.object_count; i++) {
         int32_t tmp;
         File_Read(&tmp, sizeof(int32_t), 1, fp);
