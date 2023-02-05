@@ -1,5 +1,6 @@
 #include "game/game.h"
 
+#include "config.h"
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/gameflow.h"
