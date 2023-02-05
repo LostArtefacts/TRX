@@ -52,6 +52,7 @@ typedef struct GAMEFLOW_LEVEL {
         int length;
         char **data_paths;
     } injections;
+    GAME_OBJECT_ID lara_type;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {

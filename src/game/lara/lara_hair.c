@@ -19,12 +19,14 @@
 #define HAIR_OFFSET_Z (-45) // front-back
 
 static bool m_FirstHair = false;
+static GAME_OBJECT_ID m_LaraType = O_LARA;
 static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
 void Lara_Hair_Initialise(void)
 {
     m_FirstHair = true;
+    Lara_Hair_SetLaraType(O_LARA);
 
     int32_t *bone = &g_AnimBones[g_Objects[O_HAIR].bone_index];
 
@@ -43,9 +45,15 @@ void Lara_Hair_Initialise(void)
     }
 }
 
+void Lara_Hair_SetLaraType(GAME_OBJECT_ID lara_type)
+{
+    m_LaraType = lara_type;
+}
+
 void Lara_Hair_Control(bool in_cutscene)
 {
-    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
+    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded
+        || !g_Objects[m_LaraType].loaded) {
         return;
     }
 
@@ -58,9 +66,9 @@ void Lara_Hair_Control(bool in_cutscene)
     SPHERE sphere[5];
     int32_t j, x, y, z;
 
-    object = &g_Objects[O_LARA];
+    object = &g_Objects[m_LaraType];
 
-    if (g_Lara.hit_direction >= 0) {
+    if (!in_cutscene && g_Lara.hit_direction >= 0) {
         int16_t spaz;
 
         switch (g_Lara.hit_direction) {
@@ -104,7 +112,8 @@ void Lara_Hair_Control(bool in_cutscene)
 
     // hips
     Matrix_Push();
-    objptr = g_Lara.mesh_ptrs[LM_HIPS];
+    objptr = in_cutscene ? g_Meshes[object->mesh_index + LM_HIPS]
+                         : g_Lara.mesh_ptrs[LM_HIPS];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
     sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
@@ -117,8 +126,7 @@ void Lara_Hair_Control(bool in_cutscene)
     Matrix_RotYXZpack(packed_rotation[LM_TORSO]);
     Matrix_RotYXZ(g_Lara.torso_y_rot, g_Lara.torso_x_rot, g_Lara.torso_z_rot);
     Matrix_Push();
-    objptr =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO]; // ignore shotgun
+    objptr = g_Meshes[object->mesh_index + LM_TORSO]; // ignore shotgun
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
     sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
@@ -130,7 +138,8 @@ void Lara_Hair_Control(bool in_cutscene)
     Matrix_Push();
     Matrix_TranslateRel(*(bone + 1 + 28), *(bone + 2 + 28), *(bone + 3 + 28));
     Matrix_RotYXZpack(packed_rotation[LM_UARM_R]);
-    objptr = g_Lara.mesh_ptrs[LM_UARM_R];
+    objptr = in_cutscene ? g_Meshes[object->mesh_index + LM_UARM_R]
+                         : g_Lara.mesh_ptrs[LM_UARM_R];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
     sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
@@ -142,7 +151,8 @@ void Lara_Hair_Control(bool in_cutscene)
     Matrix_Push();
     Matrix_TranslateRel(*(bone + 1 + 40), *(bone + 2 + 40), *(bone + 3 + 40));
     Matrix_RotYXZpack(packed_rotation[LM_UARM_L]);
-    objptr = g_Lara.mesh_ptrs[LM_UARM_L];
+    objptr = in_cutscene ? g_Meshes[object->mesh_index + LM_UARM_L]
+                         : g_Lara.mesh_ptrs[LM_UARM_L];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
     sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
@@ -155,7 +165,8 @@ void Lara_Hair_Control(bool in_cutscene)
     Matrix_RotYXZpack(packed_rotation[LM_HEAD]);
     Matrix_RotYXZ(g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
     Matrix_Push();
-    objptr = g_Lara.mesh_ptrs[LM_HEAD];
+    objptr = in_cutscene ? g_Meshes[object->mesh_index + LM_HEAD]
+                         : g_Lara.mesh_ptrs[LM_HEAD];
     Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
     sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
     sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
@@ -304,7 +315,8 @@ void Lara_Hair_Control(bool in_cutscene)
 
 void Lara_Hair_Draw(void)
 {
-    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
+    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded
+        || !g_Objects[m_LaraType].loaded) {
         return;
     }
 

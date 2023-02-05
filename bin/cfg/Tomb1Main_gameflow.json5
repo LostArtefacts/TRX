@@ -395,7 +395,12 @@
             "file": "data/cut1.phd",
             "type": "cutscene",
             "music": 0,
+            "lara_type": 77,
             "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut1.bin"
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_x", "value": 36668},
@@ -416,7 +421,12 @@
             "file": "data/cut2.phd",
             "type": "cutscene",
             "music": 0,
+            "lara_type": 77,
             "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut2_cut4.bin"
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_x", "value": 51962},
@@ -460,7 +470,12 @@
             "music": 0,
             "draw_distance_fade": 12.0,
             "draw_distance_max": 18.0,
+            "lara_type": 77,
             "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut2_cut4.bin"
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_angle", "value": 16384},

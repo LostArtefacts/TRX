@@ -898,6 +898,15 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             cur->injections.length = 0;
         }
 
+        tmp_i = json_object_get_int(jlvl_obj, "lara_type", (int32_t)O_LARA);
+        if (tmp_i < 0 || tmp_i >= O_NUMBER_OF) {
+            LOG_ERROR(
+                "level %d: 'lara_type' must be a valid game object id",
+                level_num);
+            return false;
+        }
+        cur->lara_type = (GAME_OBJECT_ID)tmp_i;
+
         if (!GameFlow_LoadLevelSequence(jlvl_obj, level_num)) {
             return false;
         }
