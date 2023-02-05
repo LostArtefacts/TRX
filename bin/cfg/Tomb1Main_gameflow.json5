@@ -34,6 +34,14 @@
     // The default (disabled) value in TombATI is 80.
     "draw_distance_max": 30.0,
 
+    // Global data injection file paths. Individual levels will inherit
+    // these unless inherit_injections is set to false on those levels.
+    // inherit_injections is by default true on all levels.
+    "injections": [
+        "data/backpack.bin",
+        "data/braid.bin",
+    ],
+
     // list of levels
     "levels": [
         // level 0
@@ -55,7 +63,10 @@
             // music track ID
             "music": 0,
 
-            // data injection file paths
+            // do not use global injections
+            "inherit_injections": false,
+
+            // specific injection data paths
             "injections": [
                 "data/braid.bin"
             ],
@@ -89,10 +100,6 @@
             "file": "data/level1.phd",
             "type": "normal",
             "music": 57,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
                 {"type": "start_game"},
@@ -110,10 +117,6 @@
             "file": "data/level2.phd",
             "type": "normal",
             "music": 57,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -134,10 +137,6 @@
             "file": "data/level3a.phd",
             "type": "normal",
             "music": 57,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -157,10 +156,6 @@
             "file": "data/level3b.phd",
             "type": "normal",
             "music": 57,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -176,10 +171,6 @@
             "file": "data/level4.phd",
             "type": "normal",
             "music": 59,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
                 {"type": "start_game"},
@@ -202,10 +193,6 @@
             "file": "data/level5.phd",
             "type": "normal",
             "music": 59,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -224,10 +211,6 @@
             "file": "data/level6.phd",
             "type": "normal",
             "music": 59,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -247,10 +230,6 @@
             "file": "data/level7a.phd",
             "type": "normal",
             "music": 58,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -271,10 +250,6 @@
             "file": "data/level7b.phd",
             "type": "normal",
             "music": 58,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -294,10 +269,6 @@
             "file": "data/level8a.phd",
             "type": "normal",
             "music": 59,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/vision.avi"},
                 {"type": "start_game"},
@@ -317,10 +288,6 @@
             "file": "data/level8b.phd",
             "type": "normal",
             "music": 59,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -343,10 +310,6 @@
             "file": "data/level8c.phd",
             "type": "normal",
             "music": 59,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -367,10 +330,6 @@
             "file": "data/level10a.phd",
             "type": "normal",
             "music": 58,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/canyon.avi"},
                 {"type": "remove_guns"},
@@ -393,10 +352,6 @@
             "file": "data/level10b.phd",
             "type": "normal",
             "music": 60,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
                 {"type": "start_game"},
@@ -416,10 +371,6 @@
             "file": "data/level10c.phd",
             "type": "normal",
             "music": 60,
-            "injections": [
-                "data/backpack.bin",
-                "data/braid.bin",
-            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "fix_pyramid_secret"},
@@ -444,6 +395,7 @@
             "file": "data/cut1.phd",
             "type": "cutscene",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_x", "value": 36668},
@@ -464,6 +416,7 @@
             "file": "data/cut2.phd",
             "type": "cutscene",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_x", "value": 51962},
@@ -486,6 +439,7 @@
             "file": "data/cut3.phd",
             "type": "cutscene",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "flip_map"},
@@ -506,6 +460,7 @@
             "music": 0,
             "draw_distance_fade": 12.0,
             "draw_distance_max": 18.0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_angle", "value": 16384},
@@ -526,6 +481,7 @@
             "file": "data/title.phd",
             "type": "title",
             "music": 2,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "display_picture", "picture_path": "data/eidospc.png", "display_time": 1},
                 {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
@@ -547,6 +503,7 @@
             "file": "data/current.phd",
             "type": "current",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "exit_to_title"},
             ],

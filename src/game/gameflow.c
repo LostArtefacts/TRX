@@ -279,6 +279,20 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         g_GameFlow.draw_distance_max = 20.0f;
     }
 
+    tmp_arr = json_object_get_array(obj, "injections");
+    if (tmp_arr) {
+        g_GameFlow.injections.length = tmp_arr->length;
+        g_GameFlow.injections.data_paths =
+            Memory_Alloc(sizeof(char *) * tmp_arr->length);
+        for (size_t i = 0; i < tmp_arr->length; i++) {
+            struct json_value_s *value = json_array_get_value(tmp_arr, i);
+            struct json_string_s *str = json_value_as_string(value);
+            g_GameFlow.injections.data_paths[i] = Memory_DupStr(str->string);
+        }
+    } else {
+        g_GameFlow.injections.length = 0;
+    }
+
     return true;
 }
 
@@ -847,15 +861,38 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             }
         }
 
+        tmp_i = json_object_get_bool(jlvl_obj, "inherit_injections", 1);
         tmp_arr = json_object_get_array(jlvl_obj, "injections");
         if (tmp_arr) {
             cur->injections.length = tmp_arr->length;
+            if (tmp_i) {
+                cur->injections.length += g_GameFlow.injections.length;
+            }
             cur->injections.data_paths =
-                Memory_Alloc(sizeof(char *) * tmp_arr->length);
+                Memory_Alloc(sizeof(char *) * cur->injections.length);
+
+            int inj_base_index = 0;
+            if (tmp_i) {
+                for (int i = 0; i < g_GameFlow.injections.length; i++) {
+                    cur->injections.data_paths[i] =
+                        Memory_DupStr(g_GameFlow.injections.data_paths[i]);
+                }
+                inj_base_index = g_GameFlow.injections.length;
+            }
+
             for (size_t i = 0; i < tmp_arr->length; i++) {
                 struct json_value_s *value = json_array_get_value(tmp_arr, i);
                 struct json_string_s *str = json_value_as_string(value);
-                cur->injections.data_paths[i] = Memory_DupStr(str->string);
+                cur->injections.data_paths[inj_base_index + i] =
+                    Memory_DupStr(str->string);
+            }
+        } else if (tmp_i) {
+            cur->injections.length = g_GameFlow.injections.length;
+            cur->injections.data_paths =
+                Memory_Alloc(sizeof(char *) * cur->injections.length);
+            for (int i = 0; i < g_GameFlow.injections.length; i++) {
+                cur->injections.data_paths[i] =
+                    Memory_DupStr(g_GameFlow.injections.data_paths[i]);
             }
         } else {
             cur->injections.length = 0;
@@ -931,6 +968,10 @@ void GameFlow_Shutdown(void)
 
     for (int i = 0; i < GS_NUMBER_OF; i++) {
         Memory_FreePointer(&g_GameFlow.strings[i]);
+    }
+
+    for (int i = 0; i < g_GameFlow.injections.length; i++) {
+        Memory_FreePointer(&g_GameFlow.injections.data_paths[i]);
     }
 
     if (g_GameFlow.levels) {

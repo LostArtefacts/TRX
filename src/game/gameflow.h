@@ -72,6 +72,10 @@ typedef struct GAMEFLOW {
     RGBF water_color;
     float draw_distance_fade;
     float draw_distance_max;
+    struct {
+        int length;
+        char **data_paths;
+    } injections;
 } GAMEFLOW;
 
 extern GAMEFLOW g_GameFlow;
