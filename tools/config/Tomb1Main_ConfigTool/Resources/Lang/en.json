@@ -232,7 +232,7 @@
     },
     "enable_braid": {
       "Title": "Braid",
-      "Description": "Enables Lara's braid. This currently works only in the Lost Valley level."
+      "Description": "Enables Lara's braid."
     },
     "enable_3d_pickups": {
       "Title": "3D pickups",

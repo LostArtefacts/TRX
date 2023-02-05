@@ -232,7 +232,7 @@
     },
     "enable_braid": {
       "Title": "Tresse de Lara",
-      "Description": "Active la tresse de Lara. Ne fonctionne que dans le niveau de la vallée perdue."
+      "Description": "Active la tresse de Lara."
     },
     "enable_3d_pickups": {
       "Title": "Collectibles 3D",
