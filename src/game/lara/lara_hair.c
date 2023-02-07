@@ -20,7 +20,6 @@
 #define HAIR_OFFSET_Z (-45) // front-back
 
 static bool m_FirstHair = false;
-static bool m_InCutscene = false;
 static GAME_OBJECT_ID m_LaraType = O_LARA;
 static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
@@ -50,7 +49,6 @@ void Lara_Hair_Initialise(void)
 void Lara_Hair_SetLaraType(GAME_OBJECT_ID lara_type)
 {
     m_LaraType = lara_type;
-    m_InCutscene = m_LaraType != O_LARA;
 }
 
 void Lara_Hair_Control(void)
@@ -60,6 +58,7 @@ void Lara_Hair_Control(void)
         return;
     }
 
+    bool in_cutscene;
     OBJECT_INFO *object;
     int32_t *bone, distance;
     int16_t *frame, *objptr, room_number;
@@ -70,10 +69,11 @@ void Lara_Hair_Control(void)
     SPHERE sphere[5];
     int32_t j, x, y, z;
 
+    in_cutscene = m_LaraType != O_LARA;
     object = &g_Objects[m_LaraType];
-    mesh_base = m_InCutscene ? &g_Meshes[object->mesh_index] : g_Lara.mesh_ptrs;
+    mesh_base = in_cutscene ? &g_Meshes[object->mesh_index] : g_Lara.mesh_ptrs;
 
-    if (!m_InCutscene && g_Lara.hit_direction >= 0) {
+    if (!in_cutscene && g_Lara.hit_direction >= 0) {
         int16_t spaz;
 
         switch (g_Lara.hit_direction) {
@@ -212,7 +212,7 @@ void Lara_Hair_Control(void)
 
         room_number = g_LaraItem->room_number;
 
-        if (m_InCutscene)
+        if (in_cutscene)
             water_level = NO_HEIGHT;
         else {
             x = g_LaraItem->pos.x
@@ -229,7 +229,7 @@ void Lara_Hair_Control(void)
             m_HVel[0].y = m_Hair[i].y;
             m_HVel[0].z = m_Hair[i].z;
 
-            if (!m_InCutscene) {
+            if (!in_cutscene) {
                 floor = Room_GetFloor(
                     m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
                 height = Room_GetHeight(
