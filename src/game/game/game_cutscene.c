@@ -40,7 +40,7 @@ bool Game_Cutscene_Control(int32_t nframes)
         Item_Control();
         Effect_Control();
 
-        Lara_Hair_Control(true);
+        Lara_Hair_Control();
 
         Camera_UpdateCutscene();
 
@@ -89,23 +89,27 @@ void Game_Cutscene_InitialiseHair(int32_t level_num)
         return;
     }
 
+    int16_t lara_item_num = -1;
     for (int i = 0; i < g_LevelItemCount; i++) {
-        if (g_Items[i].object_number != lara_type) {
-            continue;
+        if (g_Items[i].object_number == lara_type) {
+            lara_item_num = i;
+            break;
         }
-
-        Lara_InitialiseLoad(i);
-        Lara_Initialise(level_num);
-        Lara_Hair_SetLaraType(lara_type);
-
-        g_LaraItem->anim_number = g_Objects[lara_type].anim_index;
-        ANIM_STRUCT *cut_anim = &g_Anims[g_LaraItem->anim_number];
-        g_LaraItem->frame_number = cut_anim->frame_base;
-        g_LaraItem->current_anim_state = g_LaraItem->goal_anim_state =
-            g_LaraItem->required_anim_state = cut_anim->current_anim_state;
-
-        break;
     }
+
+    if (lara_item_num == -1) {
+        return;
+    }
+
+    Lara_InitialiseLoad(lara_item_num);
+    Lara_Initialise(level_num);
+    Lara_Hair_SetLaraType(lara_type);
+
+    g_LaraItem->anim_number = g_Objects[lara_type].anim_index;
+    ANIM_STRUCT *cut_anim = &g_Anims[g_LaraItem->anim_number];
+    g_LaraItem->frame_number = cut_anim->frame_base;
+    g_LaraItem->current_anim_state = g_LaraItem->goal_anim_state =
+        g_LaraItem->required_anim_state = cut_anim->current_anim_state;
 }
 
 int32_t Game_Cutscene_Stop(int32_t level_num)
