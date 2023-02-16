@@ -269,7 +269,7 @@
         {
           "Field": "enable_braid",
           "DataType": "Bool",
-          "DefaultValue": false
+          "DefaultValue": true
         },
         {
           "Field": "enable_3d_pickups",
