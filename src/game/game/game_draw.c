@@ -1,5 +1,6 @@
 #include "game/game.h"
 
+#include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room_draw.h"
@@ -37,6 +38,9 @@ void Game_DrawScene(bool draw_overlay)
             r->bottom = Viewport_GetMaxY();
             Room_DrawSingleRoom(room_num);
         }
+
+        Output_SetupAboveWater(false);
+        Lara_Hair_Draw();
     }
     Output_DrawBackdropScreen();
 }

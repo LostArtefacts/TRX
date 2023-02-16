@@ -10,6 +10,10 @@
     "water_color": [0.45, 1.0, 1.0],
     "draw_distance_fade": 22,
     "draw_distance_max": 30,
+    "injections": [
+        "data/backpack.bin",
+        "data/braid.bin",
+    ],
 
     "levels": [
         // level 0
@@ -92,6 +96,7 @@
             "file": "data/title.phd",
             "type": "title",
             "music": 2,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "display_picture", "picture_path": "data/eidospc.png", "display_time": 1},
                 {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
@@ -112,6 +117,7 @@
             "file": "data/current.phd",
             "type": "current",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [{"type": "exit_to_title"}],
             "strings": {},
         },

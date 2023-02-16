@@ -34,6 +34,14 @@
     // The default (disabled) value in TombATI is 80.
     "draw_distance_max": 30.0,
 
+    // Global data injection file paths. Individual levels will inherit
+    // these unless inherit_injections is set to false on those levels.
+    // inherit_injections is by default true on all levels.
+    "injections": [
+        "data/backpack.bin",
+        "data/braid.bin",
+    ],
+
     // list of levels
     "levels": [
         // level 0
@@ -54,6 +62,14 @@
 
             // music track ID
             "music": 0,
+
+            // do not use global injections
+            "inherit_injections": false,
+
+            // specific injection data paths
+            "injections": [
+                "data/braid.bin"
+            ],
 
             // list of actions to execute when this level is played
             "sequence": [
@@ -379,6 +395,12 @@
             "file": "data/cut1.phd",
             "type": "cutscene",
             "music": 0,
+            "lara_type": 77,
+            "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut1.bin"
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_x", "value": 36668},
@@ -399,6 +421,12 @@
             "file": "data/cut2.phd",
             "type": "cutscene",
             "music": 0,
+            "lara_type": 77,
+            "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut2_cut4.bin"
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_x", "value": 51962},
@@ -421,6 +449,7 @@
             "file": "data/cut3.phd",
             "type": "cutscene",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "flip_map"},
@@ -441,6 +470,12 @@
             "music": 0,
             "draw_distance_fade": 12.0,
             "draw_distance_max": 18.0,
+            "lara_type": 77,
+            "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut2_cut4.bin"
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "set_cam_angle", "value": 16384},
@@ -461,6 +496,7 @@
             "file": "data/title.phd",
             "type": "title",
             "music": 2,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "display_picture", "picture_path": "data/eidospc.png", "display_time": 1},
                 {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
@@ -482,6 +518,7 @@
             "file": "data/current.phd",
             "type": "current",
             "music": 0,
+            "inherit_injections": false,
             "sequence": [
                 {"type": "exit_to_title"},
             ],

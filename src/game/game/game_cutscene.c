@@ -1,9 +1,13 @@
 #include "game/game.h"
 
+#include "config.h"
 #include "game/camera.h"
 #include "game/effects.h"
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/items.h"
+#include "game/lara.h"
+#include "game/lara/lara_hair.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/sound.h"
@@ -18,6 +22,7 @@ static const int32_t m_CinematicAnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
 static bool Game_Cutscene_Control(int32_t nframes);
+static void Game_Cutscene_InitialiseHair(int32_t level_num);
 
 bool Game_Cutscene_Control(int32_t nframes)
 {
@@ -35,6 +40,8 @@ bool Game_Cutscene_Control(int32_t nframes)
         Item_Control();
         Effect_Control();
 
+        Lara_Hair_Control();
+
         Camera_UpdateCutscene();
 
         g_CineFrame++;
@@ -49,6 +56,8 @@ int32_t Game_Cutscene_Start(int32_t level_num)
     if (!Level_Initialise(level_num)) {
         return END_ACTION;
     }
+
+    Game_Cutscene_InitialiseHair(level_num);
 
     for (int16_t room_num = 0; room_num < g_RoomCount; room_num++) {
         if (g_RoomInfo[room_num].flipped_room >= 0) {
@@ -67,6 +76,40 @@ int32_t Game_Cutscene_Start(int32_t level_num)
 
     g_CineFrame = 0;
     return GF_NOP;
+}
+
+void Game_Cutscene_InitialiseHair(int32_t level_num)
+{
+    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
+        return;
+    }
+
+    GAME_OBJECT_ID lara_type = g_GameFlow.levels[level_num].lara_type;
+    if (lara_type == O_LARA) {
+        return;
+    }
+
+    int16_t lara_item_num = -1;
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        if (g_Items[i].object_number == lara_type) {
+            lara_item_num = i;
+            break;
+        }
+    }
+
+    if (lara_item_num == -1) {
+        return;
+    }
+
+    Lara_InitialiseLoad(lara_item_num);
+    Lara_Initialise(level_num);
+    Lara_Hair_SetLaraType(lara_type);
+
+    g_LaraItem->anim_number = g_Objects[lara_type].anim_index;
+    ANIM_STRUCT *cut_anim = &g_Anims[g_LaraItem->anim_number];
+    g_LaraItem->frame_number = cut_anim->frame_base;
+    g_LaraItem->current_anim_state = g_LaraItem->goal_anim_state =
+        g_LaraItem->required_anim_state = cut_anim->current_anim_state;
 }
 
 int32_t Game_Cutscene_Stop(int32_t level_num)

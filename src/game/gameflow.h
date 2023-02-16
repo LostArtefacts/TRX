@@ -48,6 +48,11 @@ typedef struct GAMEFLOW_LEVEL {
         uint32_t pickups;
         uint32_t kills;
     } unobtainable;
+    struct {
+        int length;
+        char **data_paths;
+    } injections;
+    GAME_OBJECT_ID lara_type;
 } GAMEFLOW_LEVEL;
 
 typedef struct GAMEFLOW {
@@ -68,6 +73,10 @@ typedef struct GAMEFLOW {
     RGBF water_color;
     float draw_distance_fade;
     float draw_distance_max;
+    struct {
+        int length;
+        char **data_paths;
+    } injections;
 } GAMEFLOW;
 
 extern GAMEFLOW g_GameFlow;
