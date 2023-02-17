@@ -13,11 +13,12 @@
 
 #include <stddef.h>
 
-#define BIN_VERSION 1
+#define BIN_VERSION 2
 
 typedef enum INJECTION_TYPE {
     INJ_GENERAL = 0,
     INJ_BRAID = 1,
+    INJ_TEXTURE_FIX = 2,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -86,6 +87,8 @@ static void Inject_ApplyFaceEdit(
     FACE_EDIT *face_edit, int16_t *data_ptr, int16_t texture);
 static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit);
 static void Inject_MeshEdits(INJECTION *injection);
+static void Inject_TextureOverwrites(
+    INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map);
 
 bool Inject_Init(
     int num_injections, char *filenames[], INJECTION_INFO *aggregate)
@@ -129,6 +132,7 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
 
     switch (injection->type) {
     case INJ_GENERAL:
+    case INJ_TEXTURE_FIX:
         injection->relevant = true;
         break;
     case INJ_BRAID:
@@ -196,6 +200,7 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
         Inject_SFXData(injection, level_info);
 
         Inject_MeshEdits(injection);
+        Inject_TextureOverwrites(injection, level_info, palette_map);
 
         // Realign base indices for the next injection.
         INJECTION_INFO inj_info = injection->info;
@@ -709,6 +714,39 @@ static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit)
     }
 
     return NULL;
+}
+
+static void Inject_TextureOverwrites(
+    INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map)
+{
+    INJECTION_INFO inj_info = injection->info;
+    MYFILE *fp = injection->fp;
+
+    uint16_t target_page, source_width, source_height;
+    uint8_t target_x, target_y;
+    for (int i = 0; i < inj_info.texture_overwrite_count; i++) {
+        File_Read(&target_page, sizeof(uint16_t), 1, fp);
+        File_Read(&target_x, sizeof(uint8_t), 1, fp);
+        File_Read(&target_y, sizeof(uint8_t), 1, fp);
+        File_Read(&source_width, sizeof(uint16_t), 1, fp);
+        File_Read(&source_height, sizeof(uint16_t), 1, fp);
+
+        uint8_t *source_img = Memory_Alloc(source_width * source_height);
+        File_Read(source_img, source_width * source_height, 1, fp);
+
+        // Copy the source image pixels directly into the target page.
+        uint8_t *page = level_info->texture_page_ptrs + target_page * PAGE_SIZE;
+        int pal_idx, target_pixel;
+        for (int y = 0; y < source_height; y++) {
+            for (int x = 0; x < source_width; x++) {
+                pal_idx = source_img[y * source_width + x];
+                target_pixel = (y + target_y) * PAGE_WIDTH + x + target_x;
+                *(page + target_pixel) = palette_map[pal_idx];
+            }
+        }
+
+        Memory_FreePointer(&source_img);
+    }
 }
 
 static void Inject_Cleanup(void)
