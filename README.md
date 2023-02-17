@@ -309,7 +309,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 #### Visuals
 - added optional shotgun flash sprites
 - added optional rendering of pickups on the ground as 3D meshes
-- added braid (currently only works in Lost Valley)
+- added Lara's braid to each level
 - added support for displaying more than 3 pickup sprites
 - added more control over when to show health bar and air bar
 - added customizable health bar and air bar
@@ -324,6 +324,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed black screen flashing when navigating the inventory
 - fixed detail levels text flashing with any option change
 - fixed underwater caustics animating at 2x speed
+- fixed incorrect ceiling textures in Colosseum 
 
 #### Audio
 - added music during the credits
@@ -383,8 +384,8 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 
     The difficulty here is that these features often require inserting a
     completely new animation, a textured mesh or a sound file and pretend
-    they're always been a part of the original game. So far we haven't found a
-    good way that'll keep the code maintainable.
+    they're always been a part of the original game. Work is underway on an
+    injection framework, and the braid is now supported in each level.
 
 4. **Can I play this on Mac, Linux, Android...?**
 
@@ -410,7 +411,10 @@ Note: this section may be subject to change.
     - [ ] ...
     - [ ] Test for performance and crash resilience
     - [ ] 3.0
-- [ ] Work on data injection and other features?
+- [ ] Work on data injection and other features
+    - [x] Add Lara's braid to each level
+    - [ ] Fix texture/face issues
+    - [ ] ...
 
 ## License
 
