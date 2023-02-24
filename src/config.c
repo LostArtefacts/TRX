@@ -226,6 +226,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(revert_to_pistols, false);
     READ_BOOL(enable_enhanced_saves, true);
     READ_BOOL(enable_pitched_sounds, true);
+    READ_BOOL(enable_ps_uzi_sfx, false);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -420,6 +421,7 @@ bool Config_Write(void)
     WRITE_BOOL(revert_to_pistols);
     WRITE_BOOL(enable_enhanced_saves);
     WRITE_BOOL(enable_pitched_sounds);
+    WRITE_BOOL(enable_ps_uzi_sfx);
 
     // User settings
     WRITE_BOOL(rendering.enable_bilinear_filter);

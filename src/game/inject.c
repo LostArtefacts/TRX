@@ -19,6 +19,7 @@ typedef enum INJECTION_TYPE {
     INJ_GENERAL = 0,
     INJ_BRAID = 1,
     INJ_TEXTURE_FIX = 2,
+    INJ_UZI_SFX = 3,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -137,6 +138,9 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_BRAID:
         injection->relevant = g_Config.enable_braid;
+        break;
+    case INJ_UZI_SFX:
+        injection->relevant = g_Config.enable_ps_uzi_sfx;
         break;
     default:
         injection->relevant = false;

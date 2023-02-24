@@ -266,6 +266,10 @@
       "Title": "Do not stop music on secrets pick-ups",
       "Description": "Fixes the sound of collecting a secret resetting the active music track."
     },
+    "enable_ps_uzi_sfx": {
+      "Title": "Enable PS Uzi SFX",
+      "Description": "Changes the Uzi sound effects to match the PlayStation version."
+    },
     "menu_style": {
       "Title": "Menu style",
       "Description": "Changes how menus are displayed.\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version."
