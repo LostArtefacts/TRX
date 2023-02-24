@@ -266,6 +266,10 @@
       "Title": "Ne pas arrêter la musique au ramassage d'un secret",
       "Description": "Corrige le fait que les musiques et sons soient arrêtés net au déclenchement du son des secrets, lorsqu'ils sont ramassés"
     },
+    "enable_ps_uzi_sfx": {
+      "Title": "Activer les SFX PlayStation des uzis",
+      "Description": "Change les effets sonores des uzis pour correspondre à ceux de la version PlayStation."
+    },
     "menu_style": {
       "Title": "Style des menus",
       "Description": "Changer le rendu des menus.\n - PC: Style d'interface de la version PC.\n - PS1: Style d'interface de la version PlayStation."
