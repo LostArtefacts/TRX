@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- fixed Larson's gun textures in Tomb of Qualopec to match the cutscene and Sanctuary of the Scion (#737)
 
 ## [2.13](https://github.com/rr-/Tomb1Main/compare/2.12.1...2.13)
 - added the ability to inject data into levels, with Lara's braid being the initial focus (#27)

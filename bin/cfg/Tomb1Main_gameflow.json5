@@ -156,6 +156,9 @@
             "file": "data/level3b.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data/larson_gun.bin"
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
