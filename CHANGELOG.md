@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added an option to use the PlayStation Uzi sound effects (#152)
 - fixed a few flip effect sounds not playing (#743, regression from 2.12.1)
+- fixed a game crash when exiting the game with a controller connected (#663)
 
 ## [2.13](https://github.com/rr-/Tomb1Main/compare/2.12.1...2.13)
 - added the ability to inject data into levels, with Lara's braid being the initial focus (#27)

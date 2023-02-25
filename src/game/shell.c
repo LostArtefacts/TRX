@@ -256,7 +256,6 @@ void Shell_Main(void)
     }
 
     Config_Write();
-    Shell_Shutdown();
 }
 
 void Shell_ExitSystem(const char *message)
