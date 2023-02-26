@@ -63,6 +63,7 @@ static SOUND_SLOT *Sound_GetSlot(
 static void Sound_UpdateSlotParams(SOUND_SLOT *slot);
 static void Sound_ClearSlot(SOUND_SLOT *slot);
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
+static void Sound_ResetAmbientLoudness(void);
 
 static int32_t Sound_ConvertVolumeToDecibel(int volume)
 {
@@ -182,6 +183,18 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
     }
 }
 
+static void Sound_ResetAmbientLoudness(void)
+{
+    if (!m_SoundIsActive) {
+        return;
+    }
+
+    for (int i = 0; i < m_AmbientLookupIdx; i++) {
+        SOUND_SLOT *slot = &m_SFXPlaying[i];
+        slot->loudness = SOUND_NOT_AUDIBLE;
+    }
+}
+
 bool Sound_Init(void)
 {
     m_DecibelLUT[0] = -10000;
@@ -204,17 +217,6 @@ void Sound_UpdateEffects(void)
 {
     if (!m_SoundIsActive) {
         return;
-    }
-
-    Sound_ResetAmbientLoudness();
-
-    for (int i = 0; i < g_NumberSoundEffects; i++) {
-        OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
-        if (g_FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
-            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
-        } else if (!g_FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
-            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
-        }
     }
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
@@ -496,18 +498,6 @@ void Sound_ResetEffects(void)
     }
 }
 
-void Sound_ResetAmbientLoudness(void)
-{
-    if (!m_SoundIsActive) {
-        return;
-    }
-
-    for (int i = 0; i < m_AmbientLookupIdx; i++) {
-        SOUND_SLOT *slot = &m_SFXPlaying[i];
-        slot->loudness = SOUND_NOT_AUDIBLE;
-    }
-}
-
 void Sound_StopAmbientSounds(void)
 {
     if (!m_SoundIsActive) {
@@ -539,4 +529,18 @@ void Sound_SetMasterVolume(int8_t volume)
     int8_t raw_volume = volume ? 6 * volume + 3 : 0;
     m_MasterVolumeDefault = raw_volume & 0x3F;
     m_MasterVolume = raw_volume & 0x3F;
+}
+
+void Sound_ResetAmbient(void)
+{
+    Sound_ResetAmbientLoudness();
+
+    for (int i = 0; i < g_NumberSoundEffects; i++) {
+        OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
+        if (g_FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
+            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
+        } else if (!g_FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
+            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
+        }
+    }
 }
