@@ -110,6 +110,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
         Lara_Hair_Control();
 
         Camera_Update();
+        Sound_ResetAmbient();
         Effect_RunActiveFlipEffect();
         Sound_UpdateEffects();
         g_GameInfo.current[g_CurrentLevel].stats.timer++;
