@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+
+## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1)
 - added an option to use the PlayStation Uzi sound effects (#152)
 - fixed a few flip effect sounds not playing (#743, regression from 2.12.1)
 - fixed a game crash when exiting the game with a controller connected (#663)
