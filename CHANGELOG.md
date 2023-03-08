@@ -1,6 +1,4 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
-
-## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2)
 - added Spanish localization to the config tool
 
 ## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1)
