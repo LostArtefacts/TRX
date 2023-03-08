@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+- added Spanish localization to the config tool
 
 ## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1)
 - added an option to use the PlayStation Uzi sound effects (#152)
