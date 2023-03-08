@@ -91,7 +91,7 @@
       "Title": "Ubicación de la barra de aire"
     },
     "airbar_showing_mode": {
-      "Description": "Cambia la forma en que se muestra la barra de aire.\n\n- Predeterminado: muestra la barra de aire solo en el agua y parpadea la barra de aire cuando el oxígeno de Lara está al 20% o menos (TombATI).\n\n- Solo intermitente: muestra la barra de aire *solo* cuando el oxígeno de Lara está al 20% o menos (para carreras de desafío).\n\n- Nunca: nunca mostrar la barra de aire (para carreras de desafío).\n\n- PS1: muestra la barra de aire en circunstancias predeterminadas sin parpadeo.",
+      "Description": "Cambia la forma en que se muestra la barra de aire.\n- Predeterminado: muestra la barra de aire solo en el agua y parpadea la barra de aire cuando el oxígeno de Lara está al 20% o menos (TombATI).\n- Solo intermitente: muestra la barra de aire *solo* cuando el oxígeno de Lara está al 20% o menos (para carreras de desafío).\n- Nunca: nunca mostrar la barra de aire (para carreras de desafío).\n- PS1: muestra la barra de aire en circunstancias predeterminadas sin parpadeo.",
       "Title": "Comportamiento de la barra de aire"
     },
     "anisotropy_filter": {
@@ -135,7 +135,7 @@
       "Title": "Trenza"
     },
     "enable_cheats": {
-      "Description": "Habilita varios trucos:\n- F11: mantén pulsado para curar a Lara.\n- Tecla F11 + CAMINAR: mantén presionada para lastimar a Lara.\n- L: finaliza inmediatamente el nivel.\n- I: da a Lara todas las armas; un impulso de munición y botiquines y todos los elementos de la trama para el nivel actual.\n- O: habilita el truco DOZY (nadar en el aire).\n     \n- Tecla CAMINAR: salir DOZY.\n     \n- Tecla ARMAS: abre la puerta más cercana (no funciona en ciertos lugares).",
+      "Description": "Habilita varios trucos:\n- F11: mantén pulsado para curar a Lara.\n- Tecla F11 + CAMINAR: mantén presionada para lastimar a Lara.\n- L: finaliza inmediatamente el nivel.\n- I: da a Lara todas las armas; un impulso de munición y botiquines y todos los elementos de la trama para el nivel actual.\n- O: habilita el truco DOZY (nadar en el aire).\n     - Tecla CAMINAR: salir DOZY.\n     - Tecla ARMAS: abre la puerta más cercana (no funciona en ciertos lugares).",
       "Title": "Trucos"
     },
     "enable_cine": {
