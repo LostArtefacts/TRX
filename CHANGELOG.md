@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - fixed depth buffer size causing rendering issues on some hardware (#748, regression from 2.13)
+- fixed a game crash when loading a save in which Lara had been struck by an exploding missile (#746)
 
 ## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1)
 - added an option to use the PlayStation Uzi sound effects (#152)

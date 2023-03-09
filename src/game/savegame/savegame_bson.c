@@ -711,7 +711,10 @@ static bool Savegame_BSON_LoadLara(
 
     lara->spaz_effect_count = json_object_get_int(
         lara_obj, "spaz_effect_count", lara->spaz_effect_count);
-    lara->spaz_effect = NULL;
+    int spaz_effect = json_object_get_int(lara_obj, "spaz_effect", 0);
+    lara->spaz_effect = spaz_effect && g_Config.enable_enhanced_saves
+        ? &g_Effects[spaz_effect]
+        : NULL;
 
     lara->mesh_effects =
         json_object_get_int(lara_obj, "mesh_effects", lara->mesh_effects);
