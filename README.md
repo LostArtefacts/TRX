@@ -325,6 +325,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed detail levels text flashing with any option change
 - fixed underwater caustics animating at 2x speed
 - fixed incorrect ceiling textures in Colosseum 
+- fixed inconsistencies in Larson's gun textures
 
 #### Audio
 - added music during the credits
