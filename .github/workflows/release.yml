@@ -1,5 +1,8 @@
 name: Publish a new release
 
+permissions:
+  contents: write
+
 on:
   push:
     branch: stable

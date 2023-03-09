@@ -317,6 +317,11 @@
           "Field": "fix_secrets_killing_music",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "enable_ps_uzi_sfx",
+          "DataType": "Bool",
+          "DefaultValue": false
         }
       ]
     },

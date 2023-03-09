@@ -103,6 +103,7 @@ typedef struct {
     bool revert_to_pistols;
     bool enable_enhanced_saves;
     bool enable_pitched_sounds;
+    bool enable_ps_uzi_sfx;
 
     struct {
         int32_t layout;

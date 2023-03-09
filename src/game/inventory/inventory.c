@@ -370,6 +370,7 @@ int32_t Inv_Display(int inv_mode)
         Sound_StopAmbientSounds();
         Sound_StopAllSamples();
     } else {
+        Sound_ResetAmbient();
         Sound_UpdateEffects();
     }
 
