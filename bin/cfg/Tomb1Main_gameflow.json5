@@ -337,6 +337,11 @@
             "file": "data/level10a.phd",
             "type": "normal",
             "music": 58,
+            "injections": [
+                "data/cowboy_textures.bin",
+                "data/kold_textures.bin",
+                "data/skateboardkid_textures.bin"
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/canyon.avi"},
                 {"type": "remove_guns"},
