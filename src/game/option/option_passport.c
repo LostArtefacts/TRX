@@ -60,7 +60,7 @@ static REQUEST_INFO m_SelectLevelRequester = {
     .vis_lines = -1,
     .line_offset = 0,
     .line_old_offset = 0,
-    .pix_width = 272,
+    .pix_width = 292,
     .line_height = TEXT_HEIGHT + 7,
     .x = 0,
     .y = -32,
@@ -77,7 +77,7 @@ REQUEST_INFO g_SavegameRequester = {
     .vis_lines = -1,
     .line_offset = 0,
     .line_old_offset = 0,
-    .pix_width = 272,
+    .pix_width = 292,
     .line_height = TEXT_HEIGHT + 7,
     .x = 0,
     .y = -32,
@@ -330,7 +330,7 @@ static void Option_PassportLoadGame(void)
             Option_PassportShowSaves();
             if (m_PassportMode == PASSPORT_MODE_SHOW_SAVES) {
                 Text_SetPos(
-                    m_Text[TEXT_LEVEL_ARROW_RIGHT], 120,
+                    m_Text[TEXT_LEVEL_ARROW_RIGHT], 130,
                     g_SavegameRequester
                         .texts
                             [g_SavegameRequester.requested
@@ -367,7 +367,7 @@ static void Option_PassportSelectLevel(void)
         Option_PassportShowLevelSelect();
         if (m_PassportMode == PASSPORT_MODE_SELECT_LEVEL) {
             Text_SetPos(
-                m_Text[TEXT_LEVEL_ARROW_LEFT], -120,
+                m_Text[TEXT_LEVEL_ARROW_LEFT], -130,
                 m_SelectLevelRequester
                     .texts
                         [m_SelectLevelRequester.requested
