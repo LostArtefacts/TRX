@@ -634,11 +634,19 @@ void Lara_InitialiseMeshes(int32_t level_num)
             holster_object_num = O_PISTOLS;
         }
         break;
-    default:
-        if (resume->flags.got_shotgun) {
-            back_object_num = O_SHOTGUN;
-        }
+    case LGT_PISTOLS:
+        holster_object_num = O_PISTOLS;
         break;
+    case LGT_MAGNUMS:
+        holster_object_num = O_MAGNUM;
+        break;
+    case LGT_UZIS:
+        holster_object_num = O_UZI;
+        break;
+    }
+
+    if (resume->flags.got_shotgun) {
+        back_object_num = O_SHOTGUN;
     }
 
     if (holster_object_num != O_INVALID) {
