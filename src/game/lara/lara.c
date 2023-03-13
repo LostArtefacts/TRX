@@ -626,12 +626,13 @@ void Lara_InitialiseMeshes(int32_t level_num)
         g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA].mesh_index + i];
     }
 
-    GAME_OBJECT_ID back_object_num = O_INVALID;
-    GAME_OBJECT_ID hands_object_num = O_INVALID;
     GAME_OBJECT_ID holster_object_num = O_INVALID;
+    GAME_OBJECT_ID back_object_num = O_INVALID;
     switch (resume->gun_type) {
     case LGT_SHOTGUN:
-        hands_object_num = O_SHOTGUN;
+        if (resume->flags.got_pistols) {
+            holster_object_num = O_PISTOLS;
+        }
         break;
     case LGT_PISTOLS:
         holster_object_num = O_PISTOLS;
@@ -646,13 +647,6 @@ void Lara_InitialiseMeshes(int32_t level_num)
 
     if (resume->flags.got_shotgun) {
         back_object_num = O_SHOTGUN;
-    }
-
-    if (g_Lara.gun_status != LGS_ARMLESS && hands_object_num != O_INVALID) {
-        g_Lara.mesh_ptrs[LM_HAND_L] =
-            g_Meshes[g_Objects[hands_object_num].mesh_index + LM_HAND_L];
-        g_Lara.mesh_ptrs[LM_HAND_R] =
-            g_Meshes[g_Objects[hands_object_num].mesh_index + LM_HAND_R];
     }
 
     if (holster_object_num != O_INVALID) {
