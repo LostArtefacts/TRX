@@ -1,6 +1,8 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added Spanish localization to the config tool
 - fixed Larson's gun textures in Tomb of Qualopec to match the cutscene and Sanctuary of the Scion (#737)
+- fixed texture issues in the Cowboy, Kold and Skateboard Kid models (#744)
+- fixed the savegame requestor arrow's position with a large number of savegames and long level titles (#756)
 - fixed empty holsters when starting a level with the shotgun equipped (#749)
 
 ## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2)
