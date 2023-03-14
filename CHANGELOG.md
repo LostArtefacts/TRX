@@ -5,6 +5,7 @@
 - fixed the savegame requestor arrow's position with a large number of savegames and long level titles (#756)
 - fixed empty holsters when starting a level with the shotgun equipped (#749)
 - fixed a crash when taking a screenshot of an opening FMV (#445)
+- improved the control of Lara's braid to result in smoother animation and to detect floor collision (#761)
 
 ## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2)
 - fixed depth buffer size causing rendering issues on some hardware (#748, regression from 2.13)
