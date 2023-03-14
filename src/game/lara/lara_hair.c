@@ -74,7 +74,7 @@ void Lara_Hair_Control(void)
 
     in_cutscene = m_LaraType != O_LARA;
     object = &g_Objects[m_LaraType];
-    mesh_base = in_cutscene ? &g_Meshes[object->mesh_index] : g_Lara.mesh_ptrs;
+    mesh_base = &g_Meshes[object->mesh_index];
 
     if (!in_cutscene && g_Lara.hit_direction >= 0) {
         int16_t spaz;
@@ -423,7 +423,12 @@ void Lara_Hair_Draw(void)
     }
 
     OBJECT_INFO *object = &g_Objects[O_HAIR];
-    int16_t **mesh = &g_Meshes[object->mesh_index];
+    int16_t mesh_index = object->mesh_index;
+    if ((g_Lara.mesh_effects & (1 << LM_HEAD))
+        && object->nmeshes >= HAIR_SEGMENTS * 2) {
+        mesh_index += HAIR_SEGMENTS;
+    }
+    int16_t **mesh = &g_Meshes[mesh_index];
 
     for (int i = 0; i < HAIR_SEGMENTS; i++) {
         Matrix_Push();
