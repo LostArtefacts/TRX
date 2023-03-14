@@ -24,6 +24,8 @@ static GAME_OBJECT_ID m_LaraType = O_LARA;
 static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
+static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z);
+
 void Lara_Hair_Initialise(void)
 {
     m_FirstHair = true;
@@ -62,10 +64,11 @@ void Lara_Hair_Control(void)
     OBJECT_INFO *object;
     int32_t *bone, distance;
     int16_t *frame, *objptr, room_number;
+    int16_t *frm_ptr[2];
     int16_t **mesh_base;
     PHD_VECTOR pos;
     FLOOR_INFO *floor;
-    int32_t i, water_level, height, size;
+    int32_t i, water_level, height, size, frac, rate;
     SPHERE sphere[5];
     int32_t j, x, y, z;
 
@@ -98,8 +101,11 @@ void Lara_Hair_Control(void)
         size = g_Anims[spaz].interpolation >> 8;
 
         frame += (int)(g_Lara.hit_frame * size);
-    } else
+        frac = 0;
+    } else {
         frame = Item_GetBestFrame(g_LaraItem);
+        frac = Item_GetFrames(g_LaraItem, frm_ptr, &rate);
+    }
 
     Matrix_PushUnit();
     g_MatrixPtr->_03 = g_LaraItem->pos.x << W2V_SHIFT;
@@ -109,73 +115,168 @@ void Lara_Hair_Control(void)
         g_LaraItem->pos.y_rot, g_LaraItem->pos.x_rot, g_LaraItem->pos.z_rot);
 
     bone = &g_AnimBones[object->bone_index];
+    if (frac) {
+        Matrix_InitInterpolate(frac, rate);
+        int32_t *packed_rotation1 = (int32_t *)(frm_ptr[0] + FRAME_ROT);
+        int32_t *packed_rotation2 = (int32_t *)(frm_ptr[1] + FRAME_ROT);
+        Matrix_TranslateRel_ID(
+            frm_ptr[0][FRAME_POS_X], frm_ptr[0][FRAME_POS_Y],
+            frm_ptr[0][FRAME_POS_Z], frm_ptr[1][FRAME_POS_X],
+            frm_ptr[1][FRAME_POS_Y], frm_ptr[1][FRAME_POS_Z]);
+        Matrix_RotYXZpack_I(
+            packed_rotation1[LM_HIPS], packed_rotation2[LM_HIPS]);
 
-    Matrix_TranslateRel(
-        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
-    Matrix_RotYXZpack(packed_rotation[LM_HIPS]);
+        // hips
+        Matrix_Push_I();
+        objptr = mesh_base[LM_HIPS];
+        Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
+        Matrix_Interpolate();
+        sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[0].r = (int32_t) * (objptr + 3);
+        Matrix_Pop_I();
 
-    // hips
-    Matrix_Push();
-    objptr = mesh_base[LM_HIPS];
-    Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    sphere[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-    sphere[0].r = (int32_t) * (objptr + 3);
-    Matrix_Pop();
+        // torso
+        Matrix_TranslateRel_I(
+            *(bone + 1 + 24), *(bone + 2 + 24), *(bone + 3 + 24));
+        Matrix_RotYXZpack_I(
+            packed_rotation1[LM_TORSO], packed_rotation2[LM_TORSO]);
+        Matrix_RotYXZ_I(
+            g_Lara.torso_y_rot, g_Lara.torso_x_rot, g_Lara.torso_z_rot);
+        Matrix_Push_I();
+        objptr = g_Meshes[object->mesh_index + LM_TORSO]; // ignore shotgun
+        Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
+        Matrix_Interpolate();
+        sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[1].r = (int32_t) * (objptr + 3);
+        Matrix_Pop_I();
 
-    // torso
-    Matrix_TranslateRel(*(bone + 1 + 24), *(bone + 2 + 24), *(bone + 3 + 24));
-    Matrix_RotYXZpack(packed_rotation[LM_TORSO]);
-    Matrix_RotYXZ(g_Lara.torso_y_rot, g_Lara.torso_x_rot, g_Lara.torso_z_rot);
-    Matrix_Push();
-    objptr = g_Meshes[object->mesh_index + LM_TORSO]; // ignore shotgun
-    Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    sphere[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-    sphere[1].r = (int32_t) * (objptr + 3);
-    Matrix_Pop();
+        // right arm
+        Matrix_Push_I();
+        Matrix_TranslateRel_I(
+            *(bone + 1 + 28), *(bone + 2 + 28), *(bone + 3 + 28));
+        Matrix_RotYXZpack_I(
+            packed_rotation1[LM_UARM_R], packed_rotation2[LM_UARM_R]);
+        objptr = mesh_base[LM_UARM_R];
+        Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
+        Matrix_Interpolate();
+        sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[3].r = (int32_t) * (objptr + 3) * 3 / 2;
+        Matrix_Pop_I();
 
-    // right arm
-    Matrix_Push();
-    Matrix_TranslateRel(*(bone + 1 + 28), *(bone + 2 + 28), *(bone + 3 + 28));
-    Matrix_RotYXZpack(packed_rotation[LM_UARM_R]);
-    objptr = mesh_base[LM_UARM_R];
-    Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    sphere[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-    sphere[3].r = (int32_t) * (objptr + 3) * 3 / 2;
-    Matrix_Pop();
+        // left arm
+        Matrix_Push_I();
+        Matrix_TranslateRel_I(
+            *(bone + 1 + 40), *(bone + 2 + 40), *(bone + 3 + 40));
+        Matrix_RotYXZpack_I(
+            packed_rotation1[LM_UARM_L], packed_rotation2[LM_UARM_L]);
+        objptr = mesh_base[LM_UARM_L];
+        Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
+        Matrix_Interpolate();
+        sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[4].r = (int32_t) * (objptr + 3) * 3 / 2;
+        Matrix_Pop_I();
 
-    // left arm
-    Matrix_Push();
-    Matrix_TranslateRel(*(bone + 1 + 40), *(bone + 2 + 40), *(bone + 3 + 40));
-    Matrix_RotYXZpack(packed_rotation[LM_UARM_L]);
-    objptr = mesh_base[LM_UARM_L];
-    Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    sphere[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-    sphere[4].r = (int32_t) * (objptr + 3) * 3 / 2;
-    Matrix_Pop();
+        // head
+        Matrix_TranslateRel_I(
+            *(bone + 1 + 52), *(bone + 2 + 52), *(bone + 3 + 52));
+        Matrix_RotYXZpack_I(
+            packed_rotation1[LM_HEAD], packed_rotation2[LM_HEAD]);
+        Matrix_RotYXZ_I(
+            g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
+        Matrix_Push_I();
+        objptr = mesh_base[LM_HEAD];
+        Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
+        Matrix_Interpolate();
+        sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[2].r = (int32_t) * (objptr + 3);
+        Matrix_Pop_I();
 
-    // head
-    Matrix_TranslateRel(*(bone + 1 + 52), *(bone + 2 + 52), *(bone + 3 + 52));
-    Matrix_RotYXZpack(packed_rotation[LM_HEAD]);
-    Matrix_RotYXZ(g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
-    Matrix_Push();
-    objptr = mesh_base[LM_HEAD];
-    Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
-    sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    sphere[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-    sphere[2].r = (int32_t) * (objptr + 3);
-    Matrix_Pop();
+        Matrix_TranslateRel_I(HAIR_OFFSET_X, HAIR_OFFSET_Y, HAIR_OFFSET_Z);
+        Matrix_Interpolate();
 
-    Matrix_TranslateRel(HAIR_OFFSET_X, HAIR_OFFSET_Y, HAIR_OFFSET_Z);
+    } else {
+        Matrix_TranslateRel(
+            frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+        Matrix_RotYXZpack(packed_rotation[LM_HIPS]);
+
+        // hips
+        Matrix_Push();
+        objptr = mesh_base[LM_HIPS];
+        Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
+        sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[0].r = (int32_t) * (objptr + 3);
+        Matrix_Pop();
+
+        // torso
+        Matrix_TranslateRel(
+            *(bone + 1 + 24), *(bone + 2 + 24), *(bone + 3 + 24));
+        Matrix_RotYXZpack(packed_rotation[LM_TORSO]);
+        Matrix_RotYXZ(
+            g_Lara.torso_y_rot, g_Lara.torso_x_rot, g_Lara.torso_z_rot);
+        Matrix_Push();
+        objptr = g_Meshes[object->mesh_index + LM_TORSO]; // ignore shotgun
+        Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
+        sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[1].r = (int32_t) * (objptr + 3);
+        Matrix_Pop();
+
+        // right arm
+        Matrix_Push();
+        Matrix_TranslateRel(
+            *(bone + 1 + 28), *(bone + 2 + 28), *(bone + 3 + 28));
+        Matrix_RotYXZpack(packed_rotation[LM_UARM_R]);
+        objptr = mesh_base[LM_UARM_R];
+        Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
+        sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[3].r = (int32_t) * (objptr + 3) * 3 / 2;
+        Matrix_Pop();
+
+        // left arm
+        Matrix_Push();
+        Matrix_TranslateRel(
+            *(bone + 1 + 40), *(bone + 2 + 40), *(bone + 3 + 40));
+        Matrix_RotYXZpack(packed_rotation[LM_UARM_L]);
+        objptr = mesh_base[LM_UARM_L];
+        Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
+        sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[4].r = (int32_t) * (objptr + 3) * 3 / 2;
+        Matrix_Pop();
+
+        // head
+        Matrix_TranslateRel(
+            *(bone + 1 + 52), *(bone + 2 + 52), *(bone + 3 + 52));
+        Matrix_RotYXZpack(packed_rotation[LM_HEAD]);
+        Matrix_RotYXZ(g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
+        Matrix_Push();
+        objptr = mesh_base[LM_HEAD];
+        Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
+        sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
+        sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
+        sphere[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+        sphere[2].r = (int32_t) * (objptr + 3);
+        Matrix_Pop();
+
+        Matrix_TranslateRel(HAIR_OFFSET_X, HAIR_OFFSET_Y, HAIR_OFFSET_Z);
+    }
 
     pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
     pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
@@ -210,11 +311,11 @@ void Lara_Hair_Control(void)
         m_Hair[0].y = pos.y;
         m_Hair[0].z = pos.z;
 
-        room_number = g_LaraItem->room_number;
-
-        if (in_cutscene)
+        if (in_cutscene) {
+            room_number = Lara_Hair_GetRoom(pos.x, pos.y, pos.z);
             water_level = NO_HEIGHT;
-        else {
+        } else {
+            room_number = g_LaraItem->room_number;
             x = g_LaraItem->pos.x
                 + (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2;
             y = g_LaraItem->pos.y
@@ -229,13 +330,10 @@ void Lara_Hair_Control(void)
             m_HVel[0].y = m_Hair[i].y;
             m_HVel[0].z = m_Hair[i].z;
 
-            if (!in_cutscene) {
-                floor = Room_GetFloor(
-                    m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
-                height = Room_GetHeight(
-                    floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
-            } else
-                height = 32767;
+            floor = Room_GetFloor(
+                m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
+            height =
+                Room_GetHeight(floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
 
             m_Hair[i].x += m_HVel[i].x * 3 / 4;
             m_Hair[i].y += m_HVel[i].y * 3 / 4;
@@ -248,6 +346,9 @@ void Lara_Hair_Control(void)
                     m_Hair[i].y = water_level;
                 else if (m_Hair[i].y > height) {
                     m_Hair[i].x = m_HVel[0].x;
+                    if (m_Hair[i].y - height <= STEP_L) {
+                        m_Hair[i].y = height;
+                    }
                     m_Hair[i].z = m_HVel[0].z;
                 }
                 break;
@@ -334,4 +435,21 @@ void Lara_Hair_Draw(void)
 
         Matrix_Pop();
     }
+}
+
+static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z)
+{
+    ROOM_INFO *room;
+    for (int i = 0; i < g_RoomCount; i++) {
+        room = &g_RoomInfo[i];
+        if (x >= room->x + WALL_L
+            && x < (room->y_size << WALL_SHIFT) + room->x - WALL_L
+            && y >= room->max_ceiling && y <= room->min_floor
+            && z >= room->z + WALL_L
+            && z < (room->x_size << WALL_SHIFT) + room->z - WALL_L) {
+            return i;
+        }
+    }
+
+    return g_LaraItem->room_number;
 }
