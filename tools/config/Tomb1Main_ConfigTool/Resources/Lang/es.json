@@ -15,6 +15,7 @@
     "command_exit": "Salir",
     "command_github": "_GitHub",
     "command_launch_game": "_Abrir juego",
+    "command_launch_ub": "Abrir Asuntos _Pendientes",
     "command_open": "_Abierto",
     "command_reload": "_Recargar",
     "command_restore": "_Restaurar los valores predeterminados",

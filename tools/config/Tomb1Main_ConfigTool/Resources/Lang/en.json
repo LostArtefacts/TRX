@@ -7,6 +7,7 @@
     "command_save": "_Save",
     "command_save_as": "Save _As...",
     "command_launch_game": "_Launch Game",
+    "command_launch_ub": "Launch _Unfinished Business",
     "command_exit": "E_xit",
     "menu_tools": "_Tools",
     "command_restore": "_Restore Defaults",

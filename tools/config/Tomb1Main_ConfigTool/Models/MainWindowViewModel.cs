@@ -223,10 +223,16 @@ public class MainWindowViewModel : BaseLanguageViewModel
     private RelayCommand _launchGameCommand;
     public ICommand LaunchGameCommand
     {
-        get => _launchGameCommand ??= new RelayCommand(LaunchGame);
+        get => _launchGameCommand ??= new RelayCommand(() => LaunchGame());
     }
 
-    private void LaunchGame()
+    private RelayCommand _launchUBCommand;
+    public ICommand LaunchUBCommand
+    {
+        get => _launchUBCommand ??= new RelayCommand(() => LaunchGame(Tomb1MainConstants.GoldArgs));
+    }
+
+    private void LaunchGame(string arguments = null)
     {
         if (!ConfirmEditorSaveState())
         {
@@ -235,7 +241,7 @@ public class MainWindowViewModel : BaseLanguageViewModel
 
         try
         {
-            ProcessUtils.Start(Tomb1MainConstants.ExecutableName);
+            ProcessUtils.Start(Path.GetFullPath(Tomb1MainConstants.ExecutableName), arguments);
         }
         catch (Exception e)
         {
