@@ -175,6 +175,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" SharedSizeGroup="SSG"/>
                         <ColumnDefinition Width="Auto" SharedSizeGroup="SSG"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto" SharedSizeGroup="SSG"/>
                     </Grid.ColumnDefinitions>
 
@@ -192,6 +193,13 @@
 
                     <Button
                         Grid.Column="2"
+                        Margin="7,0,0,0"
+                        Command="{Binding LaunchUBCommand}"
+                        Content="{Binding ViewText[command_launch_ub]}"
+                        Style="{StaticResource ButtonStyle}"/>
+
+                    <Button
+                        Grid.Column="3"
                         Margin="7,0,0,0"
                         Command="{Binding ExitCommand}"
                         CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
