@@ -326,6 +326,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed underwater caustics animating at 2x speed
 - fixed incorrect ceiling textures in Colosseum 
 - fixed inconsistencies in some enemy textures
+- fixed the animation of Lara's left arm when the shotgun is equipped
 
 #### Audio
 - added music during the credits

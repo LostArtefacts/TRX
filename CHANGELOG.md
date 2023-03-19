@@ -6,6 +6,7 @@
 - fixed the savegame requestor arrow's position with a large number of savegames and long level titles (#756)
 - fixed empty holsters when starting a level with the shotgun equipped (#749)
 - fixed a crash when taking a screenshot of an opening FMV (#445)
+- fixed the animation of Lara's left arm when the shotgun is equipped (#771)
 - fixed Lara's braid not turning to gold during the Midas touch animation (#769)
 - improved the control of Lara's braid to result in smoother animation and to detect floor collision (#761)
 
