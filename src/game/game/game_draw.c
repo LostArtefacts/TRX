@@ -26,6 +26,8 @@ void Game_DrawScene(bool draw_overlay)
         Room_DrawAllRooms(g_Camera.pos.room_number);
         if (draw_overlay) {
             Overlay_DrawGameInfo();
+        } else {
+            Overlay_RemoveAmmoText();
         }
     } else {
         // cinematic scene

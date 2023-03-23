@@ -8,6 +8,7 @@
 - fixed a crash when taking a screenshot of an opening FMV (#445)
 - fixed the animation of Lara's left arm when the shotgun is equipped (#771)
 - fixed Lara's braid not turning to gold during the Midas touch animation (#769)
+- fixed the equipped weapon's ammo showing on the inventory screen (#777)
 - improved the control of Lara's braid to result in smoother animation and to detect floor collision (#761)
 - increased the number of effects from 100 to 1000 (#623)
 
