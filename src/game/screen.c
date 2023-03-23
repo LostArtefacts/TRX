@@ -76,9 +76,19 @@ int32_t Screen_GetResWidthDownscaled(void)
     return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
 }
 
+int32_t Screen_GetResWidthDownscaledBar(void)
+{
+    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScaleBar(PHD_ONE);
+}
+
 int32_t Screen_GetResHeightDownscaled(void)
 {
     return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
+}
+
+int32_t Screen_GetResHeightDownscaledBar(void)
+{
+    return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScaleBar(PHD_ONE);
 }
 
 int32_t Screen_GetRenderScale(int32_t unit)
@@ -93,6 +103,21 @@ int32_t Screen_GetRenderScale(int32_t unit)
         ? ((double)Screen_GetResHeight() * unit * g_Config.ui.text_scale)
             / baseHeight
         : unit * g_Config.ui.text_scale;
+    return MIN(scale_x, scale_y);
+}
+
+int32_t Screen_GetRenderScaleBar(int32_t unit)
+{
+    int32_t baseWidth = 640;
+    int32_t baseHeight = 480;
+    int32_t scale_x = Screen_GetResWidth() > baseWidth
+        ? ((double)Screen_GetResWidth() * unit * g_Config.ui.bar_scale)
+            / baseWidth
+        : unit * g_Config.ui.bar_scale;
+    int32_t scale_y = Screen_GetResHeight() > baseHeight
+        ? ((double)Screen_GetResHeight() * unit * g_Config.ui.bar_scale)
+            / baseHeight
+        : unit * g_Config.ui.bar_scale;
     return MIN(scale_x, scale_y);
 }
 
