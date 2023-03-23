@@ -8,7 +8,6 @@
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -144,9 +143,6 @@ bool Game_Pause(void)
 {
     g_OldInputDB = g_Input;
 
-    int old_overlay_flag = g_OverlayFlag;
-    g_OverlayFlag = -3;
-
     Text_RemoveAll();
     Output_SetupAboveWater(false);
 
@@ -161,6 +157,5 @@ bool Game_Pause(void)
     Music_Unpause();
     Requester_Remove(&m_PauseRequester);
     Game_Pause_RemoveText();
-    g_OverlayFlag = old_overlay_flag;
     return select < 0;
 }

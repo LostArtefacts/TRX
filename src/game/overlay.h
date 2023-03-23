@@ -14,6 +14,7 @@ void Overlay_BarDraw(struct BAR_INFO *bar_info);
 void Overlay_BarDrawHealth(void);
 void Overlay_BarDrawAir(void);
 void Overlay_BarDrawEnemy(void);
+void Overlay_RemoveAmmoText(void);
 void Overlay_DrawAmmoInfo(void);
 void Overlay_DrawPickups(void);
 void Overlay_DrawFPSInfo(void);

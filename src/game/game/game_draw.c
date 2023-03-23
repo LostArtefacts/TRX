@@ -20,12 +20,17 @@ int32_t Game_ProcessFrame(void)
     return g_Camera.number_frames;
 }
 
+#include "log.h"
+
 void Game_DrawScene(bool draw_overlay)
 {
     if (g_Objects[O_LARA].loaded) {
         Room_DrawAllRooms(g_Camera.pos.room_number);
+        LOG_DEBUG("draw_overlay: %d", draw_overlay);
         if (draw_overlay) {
             Overlay_DrawGameInfo();
+        } else {
+            Overlay_RemoveAmmoText();
         }
     } else {
         // cinematic scene

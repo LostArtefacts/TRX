@@ -390,6 +390,14 @@ void Overlay_BarDrawEnemy(void)
     Overlay_BarDraw(&m_EnemyBar);
 }
 
+void Overlay_RemoveAmmoText(void)
+{
+    if (m_AmmoText) {
+        Text_Remove(m_AmmoText);
+        m_AmmoText = NULL;
+    }
+}
+
 void Overlay_DrawAmmoInfo(void)
 {
     const double scale = 0.8;
@@ -400,12 +408,9 @@ void Overlay_DrawAmmoInfo(void)
 
     char ammostring[80] = "";
 
-    if (g_Lara.gun_status != LGS_READY || g_OverlayFlag <= 0
+    if (g_Lara.gun_status != LGS_READY
         || (g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-        if (m_AmmoText) {
-            Text_Remove(m_AmmoText);
-            m_AmmoText = NULL;
-        }
+        Overlay_RemoveAmmoText();
         return;
     }
 
@@ -503,13 +508,10 @@ void Overlay_DrawFPSInfo(void)
 
 void Overlay_DrawGameInfo(void)
 {
-    if (g_OverlayFlag > 0) {
-        Overlay_BarDrawHealth();
-        Overlay_BarDrawAir();
-        Overlay_BarDrawEnemy();
-        Overlay_DrawPickups();
-    }
-
+    Overlay_BarDrawHealth();
+    Overlay_BarDrawAir();
+    Overlay_BarDrawEnemy();
+    Overlay_DrawPickups();
     Overlay_DrawAmmoInfo();
     Overlay_DrawFPSInfo();
 
