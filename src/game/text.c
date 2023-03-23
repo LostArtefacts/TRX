@@ -491,15 +491,15 @@ static void Text_DrawText(TEXTSTRING *textstring)
     int32_t textwidth = Text_GetWidth(textstring);
 
     if (textstring->flags.centre_h) {
-        x += (Screen_GetResWidthDownscaled() - textwidth) / 2;
+        x += (Screen_GetResWidthDownscaledText() - textwidth) / 2;
     } else if (textstring->flags.right) {
-        x += Screen_GetResWidthDownscaled() - textwidth;
+        x += Screen_GetResWidthDownscaledText() - textwidth;
     }
 
     if (textstring->flags.centre_v) {
-        y += Screen_GetResHeightDownscaled() / 2;
+        y += Screen_GetResHeightDownscaledText() / 2;
     } else if (textstring->flags.bottom) {
-        y += Screen_GetResHeightDownscaled();
+        y += Screen_GetResHeightDownscaledText();
     }
 
     int32_t bxpos = textstring->bgnd_off.x + x - TEXT_BOX_OFFSET;
@@ -519,10 +519,10 @@ static void Text_DrawText(TEXTSTRING *textstring)
         }
 
         uint8_t sprite_num = Text_MapLetterToSpriteNum(letter);
-        sx = Screen_GetRenderScale(x);
-        sy = Screen_GetRenderScale(y);
-        sh = Screen_GetRenderScale(textstring->scale.h);
-        sv = Screen_GetRenderScale(textstring->scale.v);
+        sx = Screen_GetRenderScaleText(x);
+        sy = Screen_GetRenderScaleText(y);
+        sh = Screen_GetRenderScaleText(textstring->scale.h);
+        sv = Screen_GetRenderScaleText(textstring->scale.v);
 
         Output_DrawScreenSprite2D(
             sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
@@ -555,10 +555,10 @@ static void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.background) {
-        sx = Screen_GetRenderScale(bxpos);
-        sy = Screen_GetRenderScale(bypos);
-        sh = Screen_GetRenderScale(bwidth);
-        sv = Screen_GetRenderScale(bheight);
+        sx = Screen_GetRenderScaleText(bxpos);
+        sy = Screen_GetRenderScaleText(bypos);
+        sh = Screen_GetRenderScaleText(bwidth);
+        sv = Screen_GetRenderScaleText(bheight);
 
         Text_DrawTextBackground(
             g_Config.ui.menu_style, sx, sy, sh, sv,
@@ -570,10 +570,10 @@ static void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.outline) {
-        sx = Screen_GetRenderScale(bxpos);
-        sy = Screen_GetRenderScale(bypos);
-        sh = Screen_GetRenderScale(bwidth);
-        sv = Screen_GetRenderScale(bheight);
+        sx = Screen_GetRenderScaleText(bxpos);
+        sy = Screen_GetRenderScaleText(bypos);
+        sh = Screen_GetRenderScaleText(bwidth);
+        sv = Screen_GetRenderScaleText(bheight);
 
         Text_DrawTextOutline(
             g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);

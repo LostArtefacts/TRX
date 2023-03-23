@@ -71,9 +71,14 @@ int32_t Screen_GetPendingResHeight(void)
     return g_AvailableResolutions[m_PendingResolutionIdx].height;
 }
 
-int32_t Screen_GetResWidthDownscaled(void)
+int32_t Screen_GetResWidthDownscaledText(void)
 {
-    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
+    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScaleText(PHD_ONE);
+}
+
+int32_t Screen_GetResHeightDownscaledText(void)
+{
+    return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScaleText(PHD_ONE);
 }
 
 int32_t Screen_GetResWidthDownscaledBar(void)
@@ -81,43 +86,30 @@ int32_t Screen_GetResWidthDownscaledBar(void)
     return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScaleBar(PHD_ONE);
 }
 
-int32_t Screen_GetResHeightDownscaled(void)
-{
-    return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScale(PHD_ONE);
-}
-
 int32_t Screen_GetResHeightDownscaledBar(void)
 {
     return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScaleBar(PHD_ONE);
 }
 
-int32_t Screen_GetRenderScale(int32_t unit)
+int32_t Screen_GetRenderScaleText(int32_t unit)
 {
-    int32_t base_width = 640;
-    int32_t base_height = 480;
-    int32_t scale_x = Screen_GetResWidth() > base_width
-        ? ((double)Screen_GetResWidth() * unit * g_Config.ui.text_scale)
-            / base_width
-        : unit * g_Config.ui.text_scale;
-    int32_t scale_y = Screen_GetResHeight() > base_height
-        ? ((double)Screen_GetResHeight() * unit * g_Config.ui.text_scale)
-            / base_height
-        : unit * g_Config.ui.text_scale;
-    return MIN(scale_x, scale_y);
+    return Screen_GetRenderScaleBase(unit, 640, 480, g_Config.ui.text_scale);
 }
 
 int32_t Screen_GetRenderScaleBar(int32_t unit)
 {
-    int32_t base_width = 640;
-    int32_t base_height = 480;
+    return Screen_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
+}
+
+int32_t Screen_GetRenderScaleBase(
+    int32_t unit, int32_t base_width, int32_t base_height, double factor)
+{
     int32_t scale_x = Screen_GetResWidth() > base_width
-        ? ((double)Screen_GetResWidth() * unit * g_Config.ui.bar_scale)
-            / base_width
-        : unit * g_Config.ui.bar_scale;
+        ? ((double)Screen_GetResWidth() * unit * factor) / base_width
+        : unit * factor;
     int32_t scale_y = Screen_GetResHeight() > base_height
-        ? ((double)Screen_GetResHeight() * unit * g_Config.ui.bar_scale)
-            / base_height
-        : unit * g_Config.ui.bar_scale;
+        ? ((double)Screen_GetResHeight() * unit * factor) / base_height
+        : unit * factor;
     return MIN(scale_x, scale_y);
 }
 
