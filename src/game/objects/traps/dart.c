@@ -84,6 +84,7 @@ void DartEffect_Control(int16_t fx_num)
 void DartEmitter_Setup(OBJECT_INFO *obj)
 {
     obj->control = DartEmitter_Control;
+    obj->save_flags = 1;
 }
 
 void DartEmitter_Control(int16_t item_num)

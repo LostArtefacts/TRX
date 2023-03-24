@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
 - added Spanish localization to the config tool
 - added an option to launch Unfinished Business from the config tool (#739)
+- added dart emitters to the savegame (#774)
 - fixed Larson's gun textures in Tomb of Qualopec to match the cutscene and Sanctuary of the Scion (#737)
 - fixed texture issues in the Cowboy, Kold and Skateboard Kid models (#744)
 - fixed the savegame requestor arrow's position with a large number of savegames and long level titles (#756)

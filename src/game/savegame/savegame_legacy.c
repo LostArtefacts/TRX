@@ -40,6 +40,7 @@ typedef struct SAVEGAME_LEGACY_ITEM_STATS {
 static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
 
+static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item);
 static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer);
 
 static void Savegame_Legacy_Reset(char *buffer);
@@ -56,6 +57,24 @@ static void Savegame_Legacy_Write(void *pointer, int size);
 static void Savegame_Legacy_WriteArm(LARA_ARM *arm);
 static void Savegame_Legacy_WriteLara(LARA_INFO *lara);
 static void Savegame_Legacy_WriteLOT(LOT_INFO *lot);
+
+static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
+{
+    // T1M savegame files are enhanced to store more information by having
+    // changed the save_flags bit for certain item types. However, legacy
+    // TombATI saves do not contain the information that's associated with
+    // these flags for these enhanced items. The way they are structured,
+    // whether this information exists or not, cannot be figured out from the
+    // save file alone. So the object IDs that got changed are listed here
+    // to make sure the legacy savegame reader doesn't try to reach out for
+    // information that's not there.
+    return (
+        obj->save_flags && item->object_number != O_LAVA_EMITTER
+        && item->object_number != O_FLAME_EMITTER
+        && item->object_number != O_WATERFALL
+        && item->object_number != O_SCION_ITEM
+        && item->object_number != O_DART_EMITTER);
+}
 
 static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
 {
@@ -127,10 +146,7 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
         if (obj->save_hitpoints) {
             Savegame_Legacy_Read(&tmp_item.hit_points, sizeof(int16_t));
         }
-        if (obj->save_flags && item->object_number != O_LAVA_EMITTER
-            && item->object_number != O_FLAME_EMITTER
-            && item->object_number != O_WATERFALL
-            && item->object_number != O_SCION_ITEM) {
+        if (Savegame_Legacy_ItemHasSaveFlags(obj, item)) {
             Savegame_Legacy_Read(&tmp_item.flags, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.timer, sizeof(int16_t));
             if (tmp_item.flags & SAVE_CREATURE) {
@@ -542,12 +558,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->hit_points, sizeof(int16_t));
         }
 
-        if (obj->save_flags
-            && (item->object_number != O_BACON_LARA || !skip_reading_bacon_lara)
-            && item->object_number != O_LAVA_EMITTER
-            && item->object_number != O_FLAME_EMITTER
-            && item->object_number != O_WATERFALL
-            && item->object_number != O_SCION_ITEM) {
+        if ((item->object_number != O_BACON_LARA || !skip_reading_bacon_lara)
+            && Savegame_Legacy_ItemHasSaveFlags(obj, item)) {
             Savegame_Legacy_Read(&item->flags, sizeof(int16_t));
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
 
@@ -712,10 +724,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Write(&item->hit_points, sizeof(int16_t));
         }
 
-        if (obj->save_flags && item->object_number != O_LAVA_EMITTER
-            && item->object_number != O_FLAME_EMITTER
-            && item->object_number != O_WATERFALL
-            && item->object_number != O_SCION_ITEM) {
+        if (Savegame_Legacy_ItemHasSaveFlags(obj, item)) {
             uint16_t flags = item->flags + item->active + (item->status << 1)
                 + (item->gravity_status << 3) + (item->collidable << 4);
             if (obj->intelligent && item->data) {
