@@ -11,7 +11,8 @@
 #define PHD_135 (PHD_45 * 3) // = 24576 = 0x6000
 
 #define MIN_UI_SCALE 0.5f
-#define MAX_UI_SCALE 2.0f
+#define MAX_TEXT_SCALE 2.0f
+#define MAX_BAR_SCALE 1.5f
 #define DEFAULT_UI_SCALE 1.0f
 
 #define MIN_BRIGHTNESS 0.1f

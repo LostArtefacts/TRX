@@ -259,10 +259,10 @@ bool Config_ReadFromJSON(const char *cfg_data)
     CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
 
     READ_FLOAT(ui.text_scale, DEFAULT_UI_SCALE);
-    CLAMP(g_Config.ui.text_scale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(g_Config.ui.text_scale, MIN_UI_SCALE, MAX_TEXT_SCALE);
 
     READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
-    CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_UI_SCALE);
+    CLAMP(g_Config.ui.bar_scale, MIN_UI_SCALE, MAX_BAR_SCALE);
 
     char layout_name[50];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
