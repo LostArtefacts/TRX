@@ -130,7 +130,7 @@ static void Option_GraphicsInitText(void)
     m_HideArrowRight =
         g_Config.rendering.enable_perspective_filter ? true : false;
 
-    const int16_t centre = Screen_GetResWidthDownscaled() / 2;
+    const int16_t centre = Screen_GetResWidthDownscaledText() / 2;
     m_Text[TEXT_ROW_SELECT] =
         Text_Create(centre - 3, TOP_Y + ROW_HEIGHT + BORDER * 2, " ");
     Text_CentreV(m_Text[TEXT_ROW_SELECT], 1);
@@ -177,12 +177,12 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowRight = g_Config.brightness >= MAX_BRIGHTNESS;
         break;
     case TEXT_UI_TEXT_SCALE:
-        m_HideArrowLeft = g_Config.ui.text_scale <= MIN_UI_SCALE;
-        m_HideArrowRight = g_Config.ui.text_scale >= MAX_UI_SCALE;
+        m_HideArrowLeft = g_Config.ui.text_scale <= MIN_TEXT_SCALE;
+        m_HideArrowRight = g_Config.ui.text_scale >= MAX_TEXT_SCALE;
         break;
     case TEXT_UI_BAR_SCALE:
-        m_HideArrowLeft = g_Config.ui.bar_scale <= MIN_UI_SCALE;
-        m_HideArrowRight = g_Config.ui.bar_scale >= MAX_UI_SCALE;
+        m_HideArrowLeft = g_Config.ui.bar_scale <= MIN_BAR_SCALE;
+        m_HideArrowRight = g_Config.ui.bar_scale >= MAX_BAR_SCALE;
         break;
     case TEXT_RESOLUTION:
         resolution_offset = 70;
@@ -208,7 +208,7 @@ static void Option_GraphicsUpdateArrows(void)
 
 static int16_t Option_GraphicsPlaceColumns(bool create)
 {
-    const int16_t centre = Screen_GetResWidthDownscaled() / 2;
+    const int16_t centre = Screen_GetResWidthDownscaledText() / 2;
 
     int16_t max_y = 0;
     int16_t xs[2] = { centre - 142, centre + 30 };
@@ -277,7 +277,7 @@ static void Option_GraphicsChangeTextOption(int32_t option_num)
         Text_ChangeText(m_Text[TEXT_UI_TEXT_SCALE_TOGGLE], buf);
         Option_GraphicsPlaceColumns(false);
         Text_SetPos(
-            m_Text[TEXT_ROW_SELECT], Screen_GetResWidthDownscaled() / 2 - 3,
+            m_Text[TEXT_ROW_SELECT], Screen_GetResWidthDownscaledText() / 2 - 3,
             TOP_Y + ROW_HEIGHT + BORDER * 2);
         break;
 
@@ -354,14 +354,14 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             break;
 
         case TEXT_UI_TEXT_SCALE:
-            if (g_Config.ui.text_scale < MAX_UI_SCALE) {
+            if (g_Config.ui.text_scale < MAX_TEXT_SCALE) {
                 g_Config.ui.text_scale += 0.1;
                 reset = TEXT_UI_TEXT_SCALE;
             }
             break;
 
         case TEXT_UI_BAR_SCALE:
-            if (g_Config.ui.bar_scale < MAX_UI_SCALE) {
+            if (g_Config.ui.bar_scale < MAX_BAR_SCALE) {
                 g_Config.ui.bar_scale += 0.1;
                 reset = TEXT_UI_BAR_SCALE;
             }
@@ -407,14 +407,14 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             break;
 
         case TEXT_UI_TEXT_SCALE:
-            if (g_Config.ui.text_scale > MIN_UI_SCALE) {
+            if (g_Config.ui.text_scale > MIN_TEXT_SCALE) {
                 g_Config.ui.text_scale -= 0.1;
                 reset = TEXT_UI_TEXT_SCALE;
             }
             break;
 
         case TEXT_UI_BAR_SCALE:
-            if (g_Config.ui.bar_scale > MIN_UI_SCALE) {
+            if (g_Config.ui.bar_scale > MIN_BAR_SCALE) {
                 g_Config.ui.bar_scale -= 0.1;
                 reset = TEXT_UI_BAR_SCALE;
             }

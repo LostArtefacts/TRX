@@ -199,11 +199,11 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer);
 static void Option_ControlInitMenu(void)
 {
     int32_t visible_lines = 0;
-    if (Screen_GetResHeightDownscaled() <= 240) {
+    if (Screen_GetResHeightDownscaledText() <= 240) {
         visible_lines = 6;
-    } else if (Screen_GetResHeightDownscaled() <= 384) {
+    } else if (Screen_GetResHeightDownscaledText() <= 384) {
         visible_lines = 8;
-    } else if (Screen_GetResHeightDownscaled() <= 480) {
+    } else if (Screen_GetResHeightDownscaledText() <= 480) {
         visible_lines = 12;
     } else {
         visible_lines = 18;
@@ -240,7 +240,7 @@ static void Option_ControlInitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
         : CtrlTextPlacementNormal;
 
     const TEXT_COLUMN_PLACEMENT *col = cols;
-    const int16_t centre = Screen_GetResWidthDownscaled() / 2;
+    const int16_t centre = Screen_GetResWidthDownscaledText() / 2;
     int16_t x_roles = centre - 150;
     int16_t box_width = 315;
     int16_t x_names = -centre + box_width / 2 - BORDER;
@@ -548,14 +548,14 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
     int32_t y = txt->pos.y - TEXT_HEIGHT;
 
     if (txt->flags.centre_h) {
-        x += (Screen_GetResWidthDownscaled() - width) / 2;
+        x += (Screen_GetResWidthDownscaledText() - width) / 2;
     } else if (txt->flags.right) {
-        x += Screen_GetResWidthDownscaled() - width;
+        x += Screen_GetResWidthDownscaledText() - width;
     }
     if (txt->flags.centre_v) {
-        y += Screen_GetResHeightDownscaled() / 2;
+        y += Screen_GetResHeightDownscaledText() / 2;
     } else if (txt->flags.bottom) {
-        y += Screen_GetResHeightDownscaled();
+        y += Screen_GetResHeightDownscaledText();
     }
 
     int32_t percent = (timer * 100) / (FRAMES_PER_SECOND * BUTTON_HOLD_TIME);

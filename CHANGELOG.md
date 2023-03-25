@@ -2,6 +2,7 @@
 - added Spanish localization to the config tool
 - added an option to launch Unfinished Business from the config tool (#739)
 - added dart emitters to the savegame (#774)
+- changed the health, air, and enemy bars to better match the PS1 version (#698)
 - fixed Larson's gun textures in Tomb of Qualopec to match the cutscene and Sanctuary of the Scion (#737)
 - fixed texture issues in the Cowboy, Kold and Skateboard Kid models (#744)
 - fixed the savegame requestor arrow's position with a large number of savegames and long level titles (#756)
@@ -10,6 +11,7 @@
 - fixed the animation of Lara's left arm when the shotgun is equipped (#771)
 - fixed Lara's braid not turning to gold during the Midas touch animation (#769)
 - fixed the equipped weapon's ammo showing on the inventory screen (#777)
+- fixed the health, air, and enemy bars from being affected by the text scaling option (#698)
 - improved the control of Lara's braid to result in smoother animation and to detect floor collision (#761)
 - increased the number of effects from 100 to 1000 (#623)
 

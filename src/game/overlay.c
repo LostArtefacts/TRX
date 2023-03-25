@@ -27,17 +27,17 @@ static int32_t m_OldGameTimer = 0;
 
 static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
-    { { 112, 92, 44, 255 },
-      { 164, 120, 72, 255 },
-      { 112, 92, 44, 255 },
-      { 88, 68, 0, 255 },
-      { 80, 48, 20, 255 } },
+    { { 124, 94, 37, 255 },
+      { 161, 131, 60, 255 },
+      { 124, 94, 37, 255 },
+      { 100, 70, 19, 255 },
+      { 76, 46, 2, 255 } },
     // blue
-    { { 100, 116, 100, 255 },
-      { 92, 160, 156, 255 },
-      { 100, 116, 100, 255 },
-      { 76, 80, 76, 255 },
-      { 48, 48, 48, 255 } },
+    { { 61, 113, 123, 255 },
+      { 101, 146, 154, 255 },
+      { 61, 113, 123, 255 },
+      { 31, 93, 107, 255 },
+      { 0, 74, 91, 255 } },
     // grey
     { { 88, 100, 88, 255 },
       { 116, 132, 116, 255 },
@@ -169,9 +169,9 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
 static void Overlay_BarGetLocation(
     BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x, int32_t *y)
 {
-    const int32_t screen_margin_h = 20;
+    const int32_t screen_margin_h = 25;
     const int32_t screen_margin_v = 18;
-    const int32_t bar_spacing = 8;
+    const int32_t bar_spacing = 16;
 
     if (bar_info->location == BL_CUSTOM) {
         *width = bar_info->custom_width;
@@ -187,18 +187,17 @@ static void Overlay_BarGetLocation(
     } else if (
         bar_info->location == BL_TOP_RIGHT
         || bar_info->location == BL_BOTTOM_RIGHT) {
-        *x = Screen_GetResWidthDownscaled() - *width * g_Config.ui.bar_scale
-            - screen_margin_h;
+        *x = Screen_GetResWidthDownscaledBar() - *width - screen_margin_h;
     } else {
-        *x = (Screen_GetResWidthDownscaled() - *width) / 2;
+        *x = (Screen_GetResWidthDownscaledBar() - *width) / 2;
     }
 
     if (bar_info->location == BL_TOP_LEFT || bar_info->location == BL_TOP_CENTER
         || bar_info->location == BL_TOP_RIGHT) {
         *y = screen_margin_v + m_BarOffsetY[bar_info->location];
     } else {
-        *y = Screen_GetResHeightDownscaled() - *height * g_Config.ui.bar_scale
-            - screen_margin_v - m_BarOffsetY[bar_info->location];
+        *y = Screen_GetResHeightDownscaledBar() - *height - screen_margin_v
+            - m_BarOffsetY[bar_info->location];
     }
 
     m_BarOffsetY[bar_info->location] += *height + bar_spacing;
@@ -207,30 +206,26 @@ static void Overlay_BarGetLocation(
 void Overlay_BarDraw(BAR_INFO *bar_info)
 {
     const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
-    const RGBA8888 rgb_border_light = { 128, 128, 128, 255 };
-    const RGBA8888 rgb_border_dark = { 64, 64, 64, 255 };
+    const RGBA8888 rgb_border = { 53, 53, 53, 255 };
 
-    int32_t width = 100;
-    int32_t height = 5;
+    int32_t width = 200;
+    int32_t height = 10;
 
     int32_t x = 0;
     int32_t y = 0;
     Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
 
-    int32_t padding = Screen_GetResWidth() <= 800 ? 1 : 2;
-    int32_t border = 1;
-    int32_t sx = Screen_GetRenderScale(x) - padding;
-    int32_t sy = Screen_GetRenderScale(y) - padding;
-    int32_t sw =
-        Screen_GetRenderScale(width) * g_Config.ui.bar_scale + padding * 2;
-    int32_t sh =
-        Screen_GetRenderScale(height) * g_Config.ui.bar_scale + padding * 2;
+    int32_t padding = Screen_GetRenderScaleBar(2);
+    int32_t border = Screen_GetRenderScaleBar(2);
+
+    int32_t sx = Screen_GetRenderScaleBar(x) - padding;
+    int32_t sy = Screen_GetRenderScaleBar(y) - padding;
+    int32_t sw = Screen_GetRenderScaleBar(width) + padding * 2;
+    int32_t sh = Screen_GetRenderScaleBar(height) + padding * 2;
 
     // border
     Output_DrawScreenFlatQuad(
-        sx - border, sy - border, sw + border, sh + border, rgb_border_dark);
-    Output_DrawScreenFlatQuad(
-        sx, sy, sw + border, sh + border, rgb_border_light);
+        sx - border, sy - border, sw + 2 * border, sh + 2 * border, rgb_border);
 
     // background
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
@@ -243,10 +238,10 @@ void Overlay_BarDraw(BAR_INFO *bar_info)
     if (percent && !bar_info->blink) {
         width = width * percent / 100;
 
-        sx = Screen_GetRenderScale(x);
-        sy = Screen_GetRenderScale(y);
-        sw = Screen_GetRenderScale(width) * g_Config.ui.bar_scale;
-        sh = Screen_GetRenderScale(height) * g_Config.ui.bar_scale;
+        sx = Screen_GetRenderScaleBar(x);
+        sy = Screen_GetRenderScaleBar(y);
+        sw = Screen_GetRenderScaleBar(width);
+        sh = Screen_GetRenderScaleBar(height);
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
@@ -400,11 +395,13 @@ void Overlay_RemoveAmmoText(void)
 
 void Overlay_DrawAmmoInfo(void)
 {
-    const double scale = 0.8;
+    const double scale = 1.5;
     const int32_t text_height = 17 * scale;
     const int32_t text_offset_x = 3;
-    const int32_t screen_margin_h = 20;
+    const int32_t screen_margin_h = 24;
     const int32_t screen_margin_v = 18;
+
+    double scale_ammo_to_bar = g_Config.ui.bar_scale / g_Config.ui.text_scale;
 
     char ammostring[80] = "";
 
@@ -443,8 +440,13 @@ void Overlay_DrawAmmoInfo(void)
         Text_AlignRight(m_AmmoText, 1);
     }
 
+    m_AmmoText->pos.x = m_BarOffsetY[BL_TOP_RIGHT]
+        ? (-screen_margin_h * scale_ammo_to_bar) - text_offset_x
+        : -screen_margin_h - text_offset_x;
+
     m_AmmoText->pos.y = m_BarOffsetY[BL_TOP_RIGHT]
-        ? text_height + screen_margin_v + m_BarOffsetY[BL_TOP_RIGHT]
+        ? text_height + (screen_margin_v * scale_ammo_to_bar)
+            + (m_BarOffsetY[BL_TOP_RIGHT] * scale_ammo_to_bar)
         : text_height + screen_margin_v;
 }
 
