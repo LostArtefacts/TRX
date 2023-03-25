@@ -401,13 +401,7 @@ void Overlay_DrawAmmoInfo(void)
     const int32_t screen_margin_h = 24;
     const int32_t screen_margin_v = 18;
 
-    // Scale ammo string properly if text scaling used.
-    double scale_ammo_to_bar = g_Config.ui.bar_scale;
-    if (g_Config.ui.text_scale > 1) {
-        scale_ammo_to_bar /= g_Config.ui.text_scale;
-    } else if (g_Config.ui.text_scale < 1) {
-        scale_ammo_to_bar *= 1 / g_Config.ui.text_scale;
-    }
+    double scale_ammo_to_bar = g_Config.ui.bar_scale / g_Config.ui.text_scale;
 
     char ammostring[80] = "";
 
