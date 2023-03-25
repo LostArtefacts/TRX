@@ -23,6 +23,9 @@ bool Music_PlayLooped(int16_t track);
 // Stops any music, whether looped or active speech.
 void Music_Stop(void);
 
+// Stops the provided single track and restarts the looped track if applicable.
+void Music_StopTrack(int16_t track);
+
 // Sets the game volume. Value can be 0-255.
 void Music_SetVolume(int16_t volume);
 
