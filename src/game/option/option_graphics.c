@@ -177,11 +177,11 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowRight = g_Config.brightness >= MAX_BRIGHTNESS;
         break;
     case TEXT_UI_TEXT_SCALE:
-        m_HideArrowLeft = g_Config.ui.text_scale <= MIN_UI_SCALE;
+        m_HideArrowLeft = g_Config.ui.text_scale <= MIN_TEXT_SCALE;
         m_HideArrowRight = g_Config.ui.text_scale >= MAX_TEXT_SCALE;
         break;
     case TEXT_UI_BAR_SCALE:
-        m_HideArrowLeft = g_Config.ui.bar_scale <= MIN_UI_SCALE;
+        m_HideArrowLeft = g_Config.ui.bar_scale <= MIN_BAR_SCALE;
         m_HideArrowRight = g_Config.ui.bar_scale >= MAX_BAR_SCALE;
         break;
     case TEXT_RESOLUTION:
@@ -407,14 +407,14 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             break;
 
         case TEXT_UI_TEXT_SCALE:
-            if (g_Config.ui.text_scale > MIN_UI_SCALE) {
+            if (g_Config.ui.text_scale > MIN_TEXT_SCALE) {
                 g_Config.ui.text_scale -= 0.1;
                 reset = TEXT_UI_TEXT_SCALE;
             }
             break;
 
         case TEXT_UI_BAR_SCALE:
-            if (g_Config.ui.bar_scale > MIN_UI_SCALE) {
+            if (g_Config.ui.bar_scale > MIN_BAR_SCALE) {
                 g_Config.ui.bar_scale -= 0.1;
                 reset = TEXT_UI_BAR_SCALE;
             }
