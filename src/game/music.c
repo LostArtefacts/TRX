@@ -145,6 +145,19 @@ void Music_Stop(void)
     Music_StopActiveStream();
 }
 
+void Music_StopTrack(int16_t track)
+{
+    if (track != Music_CurrentTrack()) {
+        return;
+    }
+
+    Music_StopActiveStream();
+
+    if (m_TrackLooped >= 0) {
+        Music_PlayLooped(m_TrackLooped);
+    }
+}
+
 void Music_SetVolume(int16_t volume)
 {
     m_MusicVolume = volume ? (25 * volume + 5) / 255.0f : 0.0f;

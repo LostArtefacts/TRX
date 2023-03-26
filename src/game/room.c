@@ -99,7 +99,7 @@ static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type)
         }
         Music_Play(track);
     } else {
-        Music_Stop();
+        Music_StopTrack(track);
     }
 }
 
