@@ -28,7 +28,12 @@ static void Room_RemoveFlipItems(ROOM_INFO *r);
 
 static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type)
 {
-    if (track <= 1 || track >= MAX_CD_TRACKS) {
+    if (track == MX_UNUSED_0 && type == TT_ANTIPAD) {
+        Music_Stop();
+        return;
+    }
+
+    if (track <= MX_UNUSED_1 || track >= MAX_CD_TRACKS) {
         return;
     }
 
