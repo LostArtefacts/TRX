@@ -341,8 +341,8 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         case TEXT_VSYNC:
             if (!g_Config.rendering.enable_vsync) {
                 g_Config.rendering.enable_vsync = true;
-                reset = TEXT_VSYNC;
                 GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+                reset = TEXT_VSYNC;
             }
             break;
 
@@ -391,8 +391,8 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         case TEXT_VSYNC:
             if (g_Config.rendering.enable_vsync) {
                 g_Config.rendering.enable_vsync = false;
-                reset = TEXT_VSYNC;
                 GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+                reset = TEXT_VSYNC;
             }
             break;
 
