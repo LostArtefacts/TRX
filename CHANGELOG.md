@@ -14,6 +14,7 @@
 - fixed the equipped weapon's ammo showing on the inventory screen (#777)
 - fixed the health, air, and enemy bars from being affected by the text scaling option (#698)
 - fixed music triggers with partial masks killing the ambient track (#763)
+- fixed the text and bar scaling from being able to be set below the max and min  (#698)
 - improved the control of Lara's braid to result in smoother animation and to detect floor collision (#761)
 - increased the number of effects from 100 to 1000 (#623)
 
