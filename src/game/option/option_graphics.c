@@ -347,10 +347,9 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             break;
 
         case TEXT_BRIGHTNESS:
-            if (g_Config.brightness < MAX_BRIGHTNESS) {
-                g_Config.brightness += 0.1f;
-                reset = TEXT_BRIGHTNESS;
-            }
+            g_Config.brightness += 0.1f;
+            CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+            reset = TEXT_BRIGHTNESS;
             break;
 
         case TEXT_UI_TEXT_SCALE:
@@ -398,10 +397,9 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             break;
 
         case TEXT_BRIGHTNESS:
-            if (g_Config.brightness > MIN_BRIGHTNESS) {
-                g_Config.brightness -= 0.1f;
-                reset = TEXT_BRIGHTNESS;
-            }
+            g_Config.brightness -= 0.1f;
+            CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+            reset = TEXT_BRIGHTNESS;
             break;
 
         case TEXT_UI_TEXT_SCALE:
