@@ -82,6 +82,12 @@ bool Music_Play(int16_t track)
         return Sound_Effect(SFX_SECRET, NULL, SPM_ALWAYS);
     }
 
+    if (g_Config.fix_speeches_killing_music && track >= MX_BALDY_SPEECH
+        && track <= MX_SKATEKID_SPEECH) {
+        return Sound_Effect(
+            SFX_BALDY_SPEECH + track - MX_BALDY_SPEECH, NULL, SPM_ALWAYS);
+    }
+
     if (track == MX_CAVES_AMBIENT) {
         return false;
     }
