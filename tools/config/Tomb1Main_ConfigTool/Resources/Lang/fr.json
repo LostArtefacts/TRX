@@ -267,6 +267,10 @@
       "Title": "Ne pas arrêter la musique au ramassage d'un secret",
       "Description": "Corrige le fait que les musiques et sons soient arrêtés net au déclenchement du son des secrets, lorsqu'ils sont ramassés"
     },
+    "fix_speeches_killing_music": {
+      "Title": "Ne pas arrêter la musique quand les ennemies parlent",
+      "Description": "Corrige le fait que les ennemis stoppent la musique lorsqu'ils se mettent à parler."
+    },
     "enable_ps_uzi_sfx": {
       "Title": "Activer les SFX PlayStation des uzis",
       "Description": "Change les effets sonores des uzis pour correspondre à ceux de la version PlayStation."

@@ -3,6 +3,7 @@
 - added an option to launch Unfinished Business from the config tool (#739)
 - added dart emitters to the savegame (#774)
 - added the ability for level builders to stop all music via triggers (#785)
+- added an option to prevent enemy speeches stopping the current music track (#762)
 - changed the health, air, and enemy bars to better match the PS1 version (#698)
 - fixed Larson's gun textures in Tomb of Qualopec to match the cutscene and Sanctuary of the Scion (#737)
 - fixed texture issues in the Cowboy, Kold and Skateboard Kid models (#744)

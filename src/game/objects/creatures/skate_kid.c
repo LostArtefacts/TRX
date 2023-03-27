@@ -23,6 +23,8 @@
 #define SKATE_KID_HITPOINTS 125
 #define SKATE_KID_RADIUS (WALL_L / 5) // = 204
 #define SKATE_KID_SMARTNESS 0x7FFF
+#define SKATE_KID_SPEECH_HITPOINTS 120
+#define SKATE_KID_SPEECH_STARTED 1
 
 typedef enum {
     SKATE_KID_STOP = 0,
@@ -90,8 +92,10 @@ void SkateKid_Control(int16_t item_num)
 
         angle = Creature_Turn(item, SKATE_KID_SKATE_TURN);
 
-        if (item->hit_points < 120 && Music_CurrentTrack() != 56) {
+        if (item->hit_points < SKATE_KID_SPEECH_HITPOINTS
+            && !(item->flags & SKATE_KID_SPEECH_STARTED)) {
             Music_Play(MX_SKATEKID_SPEECH);
+            item->flags |= SKATE_KID_SPEECH_STARTED;
         }
 
         switch (item->current_anim_state) {

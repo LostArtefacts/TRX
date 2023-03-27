@@ -265,7 +265,11 @@
     },
     "fix_secrets_killing_music": {
       "Title": "Do not stop music on secrets pick-ups",
-      "Description": "Fixes the sound of collecting a secret resetting the active music track."
+      "Description": "Fixes the sound of collecting a secret stopping the active music track."
+    },
+    "fix_speeches_killing_music": {
+      "Title": "Do not stop music when enemies speak",
+      "Description": "Fixes enemies stopping the active music track when they speak."
     },
     "enable_ps_uzi_sfx": {
       "Title": "Enable PS Uzi SFX",

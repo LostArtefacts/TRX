@@ -252,8 +252,12 @@
       "Title": "Solucione la falla de QWOP"
     },
     "fix_secrets_killing_music": {
-      "Description": "Corrige el sonido de recopilar un secreto que reinicia la pista de música activa.",
+      "Description": "Corrige el sonido de recopilar un secreto que detiene la pista de música activa.",
       "Title": "No pares de música en recogidas de secretos"
+    },
+    "fix_speeches_killing_music": {
+      "Title": "No parar la música cuando hablan los enemigos",
+      "Description": "Impide que los enemigos paren la pista de música cuando hablan."
     },
     "fix_shotgun_targeting": {
       "Description": "Hace que la escopeta ya no dispare cuando un objetivo bloqueado se mueve fuera de la vista de Lara, similar a otras armas.",
