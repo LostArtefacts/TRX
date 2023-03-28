@@ -13,13 +13,14 @@
 
 #include <stddef.h>
 
-#define BIN_VERSION 2
+#define BIN_VERSION 3
 
 typedef enum INJECTION_TYPE {
     INJ_GENERAL = 0,
     INJ_BRAID = 1,
     INJ_TEXTURE_FIX = 2,
     INJ_UZI_SFX = 3,
+    INJ_FLOOR_DATA = 4,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -61,6 +62,10 @@ typedef struct MESH_EDIT {
     VERTEX_EDIT *vertex_edits;
 } MESH_EDIT;
 
+typedef enum FLOOR_EDIT_TYPE {
+    FET_TRIGGER_PARAM = 0,
+} FLOOR_EDIT_TYPE;
+
 static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = NULL;
 static INJECTION_INFO *m_Aggregate = NULL;
@@ -90,6 +95,10 @@ static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint8_t *palette_map);
 static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map);
 static void Inject_TextureOverwrites(
     INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map);
+
+static void Inject_FloorDataEdits(INJECTION *injection);
+static void Inject_TriggerParameterChange(
+    INJECTION *injection, FLOOR_INFO *floor);
 
 bool Inject_Init(
     int num_injections, char *filenames[], INJECTION_INFO *aggregate)
@@ -142,6 +151,9 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
     case INJ_UZI_SFX:
         injection->relevant = g_Config.enable_ps_uzi_sfx;
         break;
+    case INJ_FLOOR_DATA:
+        injection->relevant = g_Config.fix_floor_data_issues;
+        break;
     default:
         injection->relevant = false;
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
@@ -168,6 +180,7 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
         m_Aggregate->sfx_count += info.sfx_count;
         m_Aggregate->sfx_data_size += info.sfx_data_size;
         m_Aggregate->sample_count += info.sample_count;
+        m_Aggregate->floor_data_size += info.floor_data_size;
 
         LOG_INFO("%s queued for injection", filename);
     }
@@ -205,6 +218,7 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
 
         Inject_MeshEdits(injection, palette_map);
         Inject_TextureOverwrites(injection, level_info, palette_map);
+        Inject_FloorDataEdits(injection);
 
         // Realign base indices for the next injection.
         INJECTION_INFO inj_info = injection->info;
@@ -757,6 +771,126 @@ static void Inject_TextureOverwrites(
         }
 
         Memory_FreePointer(&source_img);
+    }
+}
+
+static void Inject_FloorDataEdits(INJECTION *injection)
+{
+    INJECTION_INFO inj_info = injection->info;
+    MYFILE *fp = injection->fp;
+
+    int32_t fd_edit_count;
+    FLOOR_EDIT_TYPE edit_type;
+    int16_t room;
+    uint16_t y, x;
+    for (int i = 0; i < inj_info.floor_edit_count; i++) {
+        File_Read(&room, sizeof(int16_t), 1, fp);
+        File_Read(&y, sizeof(uint16_t), 1, fp);
+        File_Read(&x, sizeof(uint16_t), 1, fp);
+        File_Read(&fd_edit_count, sizeof(int32_t), 1, fp);
+
+        // Verify that the given room and coordinates are accurate.
+        // Individual FD functions must check that floor is actually set.
+        ROOM_INFO *r = NULL;
+        FLOOR_INFO *floor = NULL;
+        if (room < 0 || room >= g_RoomCount) {
+            LOG_WARNING("Room index %d is invalid", room);
+        } else {
+            r = &g_RoomInfo[room];
+            if (y >= r->y_size || x >= r->x_size) {
+                LOG_WARNING(
+                    "Sector [%d,%d] is invalid for room %d", y, x, room);
+            } else {
+                floor = &r->floor[r->x_size * y + x];
+            }
+        }
+
+        for (int j = 0; j < fd_edit_count; j++) {
+            File_Read(&edit_type, sizeof(int32_t), 1, fp);
+            switch (edit_type) {
+            case FET_TRIGGER_PARAM:
+                Inject_TriggerParameterChange(injection, floor);
+                break;
+            default:
+                LOG_WARNING("Unknown floor data edit type: %d", edit_type);
+                break;
+            }
+        }
+    }
+}
+
+static void Inject_TriggerParameterChange(
+    INJECTION *injection, FLOOR_INFO *floor)
+{
+    MYFILE *fp = injection->fp;
+
+    uint8_t cmd_type;
+    int16_t old_param, new_param;
+    File_Read(&cmd_type, sizeof(uint8_t), 1, fp);
+    File_Read(&old_param, sizeof(int16_t), 1, fp);
+    File_Read(&new_param, sizeof(int16_t), 1, fp);
+
+    if (!floor) {
+        return;
+    }
+
+    // If we can find an action item for the given floor that matches
+    // the command type and old (current) parameter, change it to the
+    // new parameter.
+
+    uint16_t fd_index = floor->index;
+    if (!fd_index) {
+        return;
+    }
+
+    while (1) {
+        uint16_t data = g_FloorData[fd_index++];
+        switch (data & DATA_TYPE) {
+        case FT_DOOR:
+        case FT_ROOF:
+        case FT_TILT:
+            fd_index++;
+            break;
+
+        case FT_LAVA:
+            break;
+
+        case FT_TRIGGER: {
+            uint16_t trig_type = (data & 0x3F00) >> 8;
+            fd_index++; // skip trigger setup
+
+            if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                || trig_type == TT_PICKUP) {
+                fd_index++; // skip entity reference
+            }
+
+            while (1) {
+                int16_t *command = &g_FloorData[fd_index++];
+
+                if (TRIG_BITS(*command) == cmd_type) {
+                    int16_t param = *command & VALUE_BITS;
+                    if (param == old_param) {
+                        *command =
+                            (*command & ~VALUE_BITS) | (new_param & VALUE_BITS);
+                        return;
+                    }
+                }
+
+                if (TRIG_BITS(*command) == TO_CAMERA) {
+                    fd_index++; // skip camera setup
+                }
+
+                if (*command & END_BIT) {
+                    break;
+                }
+            }
+            break;
+        }
+        }
+
+        if (data & END_BIT) {
+            break;
+        }
     }
 }
 

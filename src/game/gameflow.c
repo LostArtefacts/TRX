@@ -614,9 +614,6 @@ static bool GameFlow_LoadLevelSequence(
 
             seq->data = swap_data;
 
-        } else if (!strcmp(type_str, "fix_pyramid_secret")) {
-            seq->type = GFS_FIX_PYRAMID_SECRET_TRIGGER;
-
         } else {
             LOG_ERROR("unknown sequence type %s", type_str);
             return false;
@@ -1038,7 +1035,6 @@ void GameFlow_Shutdown(void)
                     case GFS_REMOVE_GUNS:
                     case GFS_REMOVE_SCIONS:
                     case GFS_PLAY_SYNCED_AUDIO:
-                    case GFS_FIX_PYRAMID_SECRET_TRIGGER:
                     case GFS_REMOVE_AMMO:
                     case GFS_REMOVE_MEDIPACKS:
                         break;
@@ -1093,74 +1089,6 @@ bool GameFlow_LoadFromFile(const char *file_name)
     g_InvItemLarasHome.string = g_GameFlow.strings[GS_INV_ITEM_LARAS_HOME];
 
     return result;
-}
-
-static void FixPyramidSecretTrigger(void)
-{
-    uint32_t global_secrets = 0;
-
-    for (int i = 0; i < g_RoomCount; i++) {
-        uint32_t room_secrets = 0;
-        ROOM_INFO *r = &g_RoomInfo[i];
-        FLOOR_INFO *floor = &r->floor[0];
-        for (int j = 0; j < r->y_size * r->x_size; j++, floor++) {
-            int k = floor->index;
-            if (!k) {
-                continue;
-            }
-
-            while (1) {
-                uint16_t floor = g_FloorData[k++];
-
-                switch (floor & DATA_TYPE) {
-                case FT_DOOR:
-                case FT_ROOF:
-                case FT_TILT:
-                    k++;
-                    break;
-
-                case FT_LAVA:
-                    break;
-
-                case FT_TRIGGER: {
-                    uint16_t trig_type = (floor & 0x3F00) >> 8;
-                    k++; // skip basic trigger stuff
-
-                    if (trig_type == TT_SWITCH || trig_type == TT_KEY
-                        || trig_type == TT_PICKUP) {
-                        k++;
-                    }
-
-                    while (1) {
-                        int16_t *command = &g_FloorData[k++];
-                        if (TRIG_BITS(*command) == TO_CAMERA) {
-                            k++;
-                        } else if (TRIG_BITS(*command) == TO_SECRET) {
-                            int16_t number = *command & VALUE_BITS;
-                            if (global_secrets & (1 << number) && number == 0) {
-                                // the secret number was already used.
-                                // update the number to 2.
-                                *command |= 2;
-                            } else {
-                                room_secrets |= (1 << number);
-                            }
-                        }
-
-                        if (*command & END_BIT) {
-                            break;
-                        }
-                    }
-                    break;
-                }
-                }
-
-                if (floor & END_BIT) {
-                    break;
-                }
-            }
-        }
-        global_secrets |= room_secrets;
-    }
 }
 
 GAMEFLOW_OPTION
@@ -1391,12 +1319,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
         }
 
-        case GFS_FIX_PYRAMID_SECRET_TRIGGER:
-            if (g_Config.fix_pyramid_secret_trigger) {
-                FixPyramidSecretTrigger();
-            }
-            break;
-
         case GFS_END:
             return ret;
         }
@@ -1426,7 +1348,6 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_GIVE_ITEM:
         case GFS_REMOVE_GUNS:
         case GFS_REMOVE_SCIONS:
-        case GFS_FIX_PYRAMID_SECRET_TRIGGER:
         case GFS_REMOVE_AMMO:
         case GFS_REMOVE_MEDIPACKS:
             break;

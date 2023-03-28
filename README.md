@@ -417,6 +417,7 @@ Note: this section may be subject to change.
 - [ ] Work on data injection and other features
     - [x] Add Lara's braid to each level
     - [ ] Fix texture/face issues
+    - [ ] Fix floor data issues
     - [ ] ...
 
 ## License
