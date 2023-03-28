@@ -383,9 +383,11 @@
             "file": "data/level10c.phd",
             "type": "normal",
             "music": 60,
+            "injections": [
+                "data/pyramid_fd.bin"
+            ],
             "sequence": [
                 {"type": "start_game"},
-                {"type": "fix_pyramid_secret"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 15},

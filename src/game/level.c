@@ -233,7 +233,9 @@ static bool Level_LoadRooms(MYFILE *fp)
 
     File_Read(&m_LevelInfo.floor_data_size, sizeof(uint32_t), 1, fp);
     g_FloorData = GameBuf_Alloc(
-        sizeof(uint16_t) * m_LevelInfo.floor_data_size, GBUF_FLOOR_DATA);
+        sizeof(uint16_t)
+            * (m_LevelInfo.floor_data_size + m_InjectionInfo->floor_data_size),
+        GBUF_FLOOR_DATA);
     File_Read(g_FloorData, sizeof(uint16_t), m_LevelInfo.floor_data_size, fp);
 
     return true;

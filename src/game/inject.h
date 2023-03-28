@@ -24,6 +24,8 @@ typedef struct INJECTION_INFO {
     int32_t sample_count;
     int32_t mesh_edit_count;
     int32_t texture_overwrite_count;
+    int32_t floor_edit_count;
+    int32_t floor_data_size;
 } INJECTION_INFO;
 
 bool Inject_Init(

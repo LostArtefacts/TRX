@@ -18,6 +18,7 @@
 - fixed the text and bar scaling from being able to be set below the max and min  (#698)
 - improved the control of Lara's braid to result in smoother animation and to detect floor collision (#761)
 - increased the number of effects from 100 to 1000 (#623)
+- removed the fix_pyramid_secret gameflow sequence (now handled by data injection) (#788)
 
 ## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2)
 - fixed depth buffer size causing rendering issues on some hardware (#748, regression from 2.13)

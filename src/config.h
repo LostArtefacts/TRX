@@ -74,7 +74,7 @@ typedef struct {
     int8_t enemy_healthbar_location;
     int8_t enemy_healthbar_color;
     bool fix_tihocan_secret_sound;
-    bool fix_pyramid_secret_trigger;
+    bool fix_floor_data_issues;
     bool fix_secrets_killing_music;
     bool fix_speeches_killing_music;
     bool fix_descending_glitch;
