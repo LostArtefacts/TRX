@@ -46,6 +46,7 @@ static void Inv_Construct(void);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item);
+static int32_t Inv_ConstructAndDisplay(int inv_mode);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
@@ -341,7 +342,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
     Matrix_Pop();
 }
 
-int32_t Inv_Display(int inv_mode)
+static int32_t Inv_ConstructAndDisplay(int inv_mode)
 {
     RING_INFO ring;
     IMOTION_INFO imo;
@@ -996,4 +997,12 @@ int32_t Inv_Display(int inv_mode)
     }
 
     return GF_NOP;
+}
+
+int32_t Inv_Display(int inv_mode)
+{
+    g_GameInfo.status = GMS_IN_INVENTORY;
+    int32_t inv_result = Inv_ConstructAndDisplay(inv_mode);
+    g_GameInfo.status = GMS_IN_GAME;
+    return inv_result;
 }

@@ -271,6 +271,8 @@ void Stats_Show(int32_t level_num)
         return;
     }
 
+    g_GameInfo.status = GMS_IN_STATS;
+
     char buf[100];
     char time_str[100];
     TEXTSTRING *txt;
@@ -379,6 +381,7 @@ void Stats_Show(int32_t level_num)
     }
 
     Output_FadeReset();
+    g_GameInfo.status = GMS_IN_GAME;
 }
 
 void Stats_ShowTotal(const char *filename)

@@ -214,9 +214,11 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
         PHD_VECTOR *pos = &l->wibble[i];
-        pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
-        pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
-        pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+        if (g_GameInfo.status == GMS_IN_GAME) {
+            pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+        }
         if (i == LIGHTNING_STEPS - 1) {
             pos->y = 0;
         }
@@ -266,9 +268,11 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
         for (j = 0; j < steps; j++) {
             PHD_VECTOR *pos = l->shoot[i];
-            pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
-            pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
-            pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            if (g_GameInfo.status == GMS_IN_GAME) {
+                pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+                pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+                pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
+            }
             if (j == steps - 1) {
                 pos->y = 0;
             }
