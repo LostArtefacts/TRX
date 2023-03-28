@@ -108,8 +108,8 @@
       "Description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge."
     },
     "fix_floor_data_issues": {
-      "Title": "Fix Great Pyramid secret",
-      "Description": "Fixes the secret trigger in the final level not working."
+      "Title": "Fix floor data issues",
+      "Description": "Fixes original issues with floor data/triggers, including the following.\n- The untriggered bat in Colosseum.\n- The secret in Great Pyramid that does not register."
     },
     "fix_qwop_glitch": {
       "Title": "Fix QWOP glitch",
