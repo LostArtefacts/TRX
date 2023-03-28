@@ -198,6 +198,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/colosseum_fd.bin",
                 "data/colosseum_roof.bin"
             ],
             "sequence": [
