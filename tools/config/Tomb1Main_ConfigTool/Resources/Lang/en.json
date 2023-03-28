@@ -107,7 +107,7 @@
       "Title": "Fix bridge collision",
       "Description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge."
     },
-    "fix_pyramid_secret_trigger": {
+    "fix_floor_data_issues": {
       "Title": "Fix Great Pyramid secret",
       "Description": "Fixes the secret trigger in the final level not working."
     },

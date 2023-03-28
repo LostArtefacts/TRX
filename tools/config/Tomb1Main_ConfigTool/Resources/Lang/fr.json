@@ -107,7 +107,7 @@
       "Title": "Correction colision avec les ponts",
       "Description": "Correction de l'incapacité de Lara à saisir des parties de certains ponts et murs invisibles au bord."
     },
-    "fix_pyramid_secret_trigger": {
+    "fix_floor_data_issues": {
       "Title": "Correction secret manquant dans la Grande Pyramide",
       "Description": "Corrige le déclencheur du secret du niveau final qui ne fonctionnait pas."
     },
