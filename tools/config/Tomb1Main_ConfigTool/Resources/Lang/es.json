@@ -244,8 +244,8 @@
       "Title": "Arreglar caídas de pisos frágiles"
     },
     "fix_floor_data_issues": {
-      "Description": "Corrige el disparador del secreto en el nivel final que no funciona.",
-      "Title": "Arreglar el secreto de la Gran Pirámide"
+      "Description": "Soluciona los problemas originales con los datos/activadores del suelo, incluyendo los siguientes.\n- El murciélago no activado en el Coliseo.\n- El secreto no registrado en la Gran Pirámide.",
+      "Title": "Arreglar problemas de datos de suelo"
     },
     "fix_qwop_glitch": {
       "Description": "Corrige el salto de Lara en pequeños pasos que a veces resulta en una extraña animación en ejecución, conocida como estado QWOP.",

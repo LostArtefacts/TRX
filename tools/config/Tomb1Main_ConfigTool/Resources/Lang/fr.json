@@ -108,8 +108,8 @@
       "Description": "Correction de l'incapacité de Lara à saisir des parties de certains ponts et murs invisibles au bord."
     },
     "fix_floor_data_issues": {
-      "Title": "Correction secret manquant dans la Grande Pyramide",
-      "Description": "Corrige le déclencheur du secret du niveau final qui ne fonctionnait pas."
+      "Title": "Correction de la base de données des niveaux",
+      "Description": "Corrige les bugs originaux de la base de données des niveaux, incluant les points suivants :\n- Les chauves-souris qui ne se déclenchent pas dans le Colisée.\n- Le secret dans la grande pyramide qui n'existait pas."
     },
     "fix_qwop_glitch": {
       "Title": "Correction du glitch QWOP",
