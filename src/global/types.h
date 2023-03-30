@@ -1564,6 +1564,13 @@ typedef struct RESUME_INFO {
     GAME_STATS stats;
 } RESUME_INFO;
 
+typedef enum GAME_STATUS {
+    GMS_IN_GAME = 0,
+    GMS_IN_INVENTORY = 1,
+    GMS_IN_PAUSE = 2,
+    GMS_IN_STATS = 3,
+} GAME_STATUS;
+
 typedef struct GAME_INFO {
     RESUME_INFO *current;
     uint8_t bonus_flag;
@@ -1578,6 +1585,7 @@ typedef struct GAME_INFO {
     bool remove_scions;
     bool remove_ammo;
     bool remove_medipacks;
+    GAME_STATUS status;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

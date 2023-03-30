@@ -126,6 +126,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
+    g_GameInfo.status = GMS_IN_GAME;
 
     switch (level_type) {
     case GFL_SAVED:
