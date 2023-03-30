@@ -8,8 +8,8 @@ layout(location = 2) in vec4 inColor;
 uniform mat4 matProjection;
 uniform mat4 matModelView;
 
-out vec4 vertColor;
-out vec3 vertTexCoords;
+varying vec4 vertColor;
+varying vec3 vertTexCoords;
 
 void main(void) {
     gl_Position = matProjection * matModelView * vec4(inPosition, 1);

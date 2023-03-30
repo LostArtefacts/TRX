@@ -2,8 +2,8 @@
 #extension GL_ARB_explicit_attrib_location: enable
 #extension GL_EXT_gpu_shader4: enable
 
-in vec4 vertColor;
-in vec3 vertTexCoords;
+varying vec4 vertColor;
+varying vec3 vertTexCoords;
 
 layout(location = 0) out vec4 fragColor;
 

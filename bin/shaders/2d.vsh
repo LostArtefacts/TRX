@@ -3,7 +3,7 @@
 
 layout(location = 0) in vec2 inPosition;
 
-out vec2 vertTexCoords;
+varying vec2 vertTexCoords;
 
 void main(void) {
     vertTexCoords = inPosition;
