@@ -1,18 +1,15 @@
 #version 120
-#extension GL_ARB_explicit_attrib_location: enable
 #extension GL_EXT_gpu_shader4: enable
 
 varying vec4 vertColor;
 varying vec3 vertTexCoords;
-
-layout(location = 0) out vec4 fragColor;
 
 uniform sampler2D tex0;
 uniform bool texturingEnabled;
 uniform bool smoothingEnabled;
 
 void main(void) {
-    fragColor = vertColor;
+    gl_FragColor = vertColor;
 
     if (texturingEnabled) {
 #ifdef GL_EXT_gpu_shader4
@@ -33,6 +30,6 @@ void main(void) {
             discard;
         }
 
-        fragColor = vec4(fragColor.rgb * texColor.rgb, texColor.a);
+        gl_FragColor = vec4(gl_FragColor.rgb * texColor.rgb, texColor.a);
     }
 }
