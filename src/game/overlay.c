@@ -24,6 +24,7 @@ static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
 static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
 static int32_t m_OldGameTimer = 0;
+static bool m_FPSBarAware = false;
 
 static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -294,6 +295,11 @@ void Overlay_BarHealthTimerTick(void)
     CLAMPL(m_HealthBar.timer, 0);
 }
 
+BAR_LOCATION Overlay_BarGetHealthLocation()
+{
+    return m_HealthBar.location;
+}
+
 void Overlay_BarDrawHealth(void)
 {
     static int32_t old_hit_points = 0;
@@ -482,11 +488,13 @@ void Overlay_DrawPickups(void)
     }
 }
 
-void Overlay_DrawFPSInfo(void)
+void Overlay_DrawFPSInfo()
 {
-    static int32_t elapsed = 0;
-
     if (g_Config.rendering.enable_fps_counter) {
+        static int32_t elapsed = 0;
+        int16_t x = 21;
+        int16_t y = 10;
+
         if (Clock_GetMS() - elapsed >= 1000) {
             if (m_FPSText) {
                 char fps_buf[20];
@@ -495,12 +503,33 @@ void Overlay_DrawFPSInfo(void)
             } else {
                 char fps_buf[20];
                 sprintf(fps_buf, "? FPS");
-                m_FPSText = Text_Create(10, 30, fps_buf);
+                m_FPSText = Text_Create(x, y, fps_buf);
                 m_FPSText->on_remove = Overlay_OnFPSTextRemoval;
             }
             g_FPSCounter = 0;
             elapsed = Clock_GetMS();
         }
+        const int32_t text_offset_x = 3;
+        const int32_t text_height = 17;
+        double scale_fps_to_bar =
+            g_Config.ui.bar_scale / g_Config.ui.text_scale;
+
+        if (g_GameInfo.status == GMS_IN_INVENTORY && m_FPSBarAware) {
+            x = (x * scale_fps_to_bar) + text_offset_x;
+            y = text_height + (y * scale_fps_to_bar)
+                + (m_BarOffsetY[BL_TOP_LEFT] * scale_fps_to_bar);
+        } else if (g_GameInfo.status == GMS_IN_INVENTORY && !m_FPSBarAware) {
+            y = (text_height * 2) + y;
+        } else if (
+            m_HealthBar.location == BL_TOP_LEFT
+            || m_AirBar.location == BL_TOP_LEFT
+            || m_EnemyBar.location == BL_TOP_LEFT) {
+            x = (x * scale_fps_to_bar) + text_offset_x;
+            y = text_height + (y * scale_fps_to_bar)
+                + (m_BarOffsetY[BL_TOP_LEFT] * scale_fps_to_bar);
+        }
+
+        Text_SetPos(m_FPSText, x, y);
     } else if (m_FPSText) {
         Text_Remove(m_FPSText);
         m_FPSText = NULL;
@@ -543,5 +572,12 @@ void Overlay_MakeAmmoString(char *string)
         } else {
             *c += 1 - '0';
         }
+    }
+}
+
+void Overlay_SetFPSBarAware(bool medi_aware)
+{
+    if (m_HealthBar.location == BL_TOP_LEFT) {
+        m_FPSBarAware = medi_aware;
     }
 }

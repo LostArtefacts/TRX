@@ -21,6 +21,7 @@ static TEXTSTRING *m_InvDownArrow1 = NULL;
 static TEXTSTRING *m_InvDownArrow2 = NULL;
 static TEXTSTRING *m_InvUpArrow1 = NULL;
 static TEXTSTRING *m_InvUpArrow2 = NULL;
+BAR_LOCATION m_HealthBarLoc;
 
 void Inv_Ring_Init(
     RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
@@ -137,6 +138,7 @@ void Inv_Ring_IsOpen(RING_INFO *ring)
             Text_AlignRight(m_InvDownArrow2, 1);
         }
     }
+    m_HealthBarLoc = Overlay_BarGetHealthLocation();
 }
 
 void Inv_Ring_IsNotOpen(RING_INFO *ring)
@@ -298,6 +300,18 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
     case O_MEDI_OPTION:
         Overlay_BarSetHealthTimer(40);
         Overlay_BarDrawHealth();
+        if (g_Config.rendering.enable_fps_counter) {
+            Overlay_SetFPSBarAware(true);
+        }
+        if (m_HealthBarLoc == BL_TOP_LEFT) {
+            Text_Hide(m_InvUpArrow1, true);
+        } else if (m_HealthBarLoc == BL_TOP_RIGHT) {
+            Text_Hide(m_InvUpArrow2, true);
+        } else if (m_HealthBarLoc == BL_BOTTOM_LEFT) {
+            Text_Hide(m_InvDownArrow1, true);
+        } else if (m_HealthBarLoc == BL_BOTTOM_RIGHT) {
+            Text_Hide(m_InvDownArrow2, true);
+        }
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
@@ -310,6 +324,18 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
     case O_BIGMEDI_OPTION:
         Overlay_BarSetHealthTimer(40);
         Overlay_BarDrawHealth();
+        if (g_Config.rendering.enable_fps_counter) {
+            Overlay_SetFPSBarAware(true);
+        }
+        if (m_HealthBarLoc == BL_TOP_LEFT) {
+            Text_Hide(m_InvUpArrow1, true);
+        } else if (m_HealthBarLoc == BL_TOP_RIGHT) {
+            Text_Hide(m_InvUpArrow2, true);
+        } else if (m_HealthBarLoc == BL_BOTTOM_LEFT) {
+            Text_Hide(m_InvDownArrow1, true);
+        } else if (m_HealthBarLoc == BL_BOTTOM_RIGHT) {
+            Text_Hide(m_InvDownArrow2, true);
+        }
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
@@ -342,6 +368,16 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 
     default:
         break;
+    }
+
+    if (g_Config.rendering.enable_fps_counter
+        && inv_item->object_number != O_MEDI_OPTION
+        && inv_item->object_number != O_BIGMEDI_OPTION) {
+        Text_Hide(m_InvUpArrow1, false);
+        Text_Hide(m_InvUpArrow2, false);
+        Text_Hide(m_InvDownArrow1, false);
+        Text_Hide(m_InvDownArrow2, false);
+        Overlay_SetFPSBarAware(false);
     }
 }
 
