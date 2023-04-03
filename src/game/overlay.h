@@ -2,6 +2,7 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 struct BAR_INFO;
@@ -17,7 +18,7 @@ void Overlay_BarDrawEnemy(void);
 void Overlay_RemoveAmmoText(void);
 void Overlay_DrawAmmoInfo(void);
 void Overlay_DrawPickups(void);
-void Overlay_DrawFPSInfo(void);
+void Overlay_DrawFPSInfo(bool inv_ring_above);
 void Overlay_DrawGameInfo(void);
 
 void Overlay_AddPickup(int16_t object_num);

@@ -150,7 +150,7 @@ bool Game_Pause(void)
     Music_Pause();
     Sound_StopAmbientSounds();
     Sound_StopAllSamples();
-    g_GameInfo.status = GMS_IN_PAUSE;
+    g_GameInfo.status |= GMS_IN_PAUSE;
 
     Output_FadeToSemiBlack(true);
     int32_t select = Game_Pause_Loop();
@@ -159,6 +159,6 @@ bool Game_Pause(void)
     Music_Unpause();
     Requester_Remove(&m_PauseRequester);
     Game_Pause_RemoveText();
-    g_GameInfo.status = GMS_IN_GAME;
+    g_GameInfo.status &= ~GMS_IN_PAUSE;
     return select < 0;
 }

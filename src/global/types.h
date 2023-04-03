@@ -1566,9 +1566,10 @@ typedef struct RESUME_INFO {
 
 typedef enum GAME_STATUS {
     GMS_IN_GAME = 0,
-    GMS_IN_INVENTORY = 1,
-    GMS_IN_PAUSE = 2,
-    GMS_IN_STATS = 3,
+    GMS_IN_INVENTORY = 1 << 0,
+    GMS_IN_PAUSE = 1 << 1,
+    GMS_IN_STATS = 1 << 2,
+    GMS_IN_INVENTORY_HEALTH = 1 << 3,
 } GAME_STATUS;
 
 typedef struct GAME_INFO {

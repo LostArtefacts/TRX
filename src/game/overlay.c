@@ -200,6 +200,15 @@ static void Overlay_BarGetLocation(
             - m_BarOffsetY[bar_info->location];
     }
 
+    if ((g_GameInfo.status & GMS_IN_INVENTORY)
+        && (bar_info->location == BL_TOP_CENTER
+            || bar_info->location == BL_BOTTOM_CENTER)) {
+        double scale_bar_to_text =
+            g_Config.ui.text_scale / g_Config.ui.bar_scale;
+        *y = screen_margin_v + m_BarOffsetY[bar_info->location]
+            + scale_bar_to_text * (TEXT_HEIGHT + bar_spacing);
+    }
+
     m_BarOffsetY[bar_info->location] += *height + bar_spacing;
 }
 
@@ -482,11 +491,21 @@ void Overlay_DrawPickups(void)
     }
 }
 
-void Overlay_DrawFPSInfo(void)
+void Overlay_DrawFPSInfo(bool inv_ring_above)
 {
     static int32_t elapsed = 0;
 
     if (g_Config.rendering.enable_fps_counter) {
+        static int32_t elapsed = 0;
+
+        const int32_t text_offset_x = 3;
+        const int32_t text_height = 17;
+        const int32_t text_inv_offset_y = 3;
+        double scale_fps_to_bar =
+            g_Config.ui.bar_scale / g_Config.ui.text_scale;
+        int16_t x = 21;
+        int16_t y = 10;
+
         if (Clock_GetMS() - elapsed >= 1000) {
             if (m_FPSText) {
                 char fps_buf[20];
@@ -501,6 +520,25 @@ void Overlay_DrawFPSInfo(void)
             g_FPSCounter = 0;
             elapsed = Clock_GetMS();
         }
+
+        bool inv_health_showable = (g_GameInfo.status & GMS_IN_INVENTORY_HEALTH)
+            && m_HealthBar.location == BL_TOP_LEFT;
+        bool game_bar_showable = !(g_GameInfo.status & GMS_IN_INVENTORY)
+            && (m_HealthBar.location == BL_TOP_LEFT
+                || m_AirBar.location == BL_TOP_LEFT
+                || m_EnemyBar.location == BL_TOP_LEFT);
+
+        if (inv_health_showable || game_bar_showable) {
+            x = (x * scale_fps_to_bar) + text_offset_x;
+            y = text_height
+                + scale_fps_to_bar * (y + m_BarOffsetY[BL_TOP_LEFT]);
+        } else if ((g_GameInfo.status & GMS_IN_INVENTORY) && inv_ring_above) {
+            y += (text_height * 2) + text_inv_offset_y;
+        } else {
+            y += text_height;
+        }
+
+        Text_SetPos(m_FPSText, x, y);
     } else if (m_FPSText) {
         Text_Remove(m_FPSText);
         m_FPSText = NULL;
@@ -515,7 +553,7 @@ void Overlay_DrawGameInfo(void)
     Overlay_BarDrawEnemy();
     Overlay_DrawPickups();
     Overlay_DrawAmmoInfo();
-    Overlay_DrawFPSInfo();
+    Overlay_DrawFPSInfo(false);
 
     Text_Draw();
 }

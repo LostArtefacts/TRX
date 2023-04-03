@@ -1,5 +1,6 @@
 #include "game/inventory/inventory_ring.h"
 
+#include "config.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
@@ -11,6 +12,7 @@
 #include "global/vars.h"
 #include "math/math_misc.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -342,6 +344,26 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 
     default:
         break;
+    }
+
+    if (inv_item->object_number == O_MEDI_OPTION
+        || inv_item->object_number == O_BIGMEDI_OPTION) {
+        if (g_Config.healthbar_location == BL_TOP_LEFT) {
+            Text_Hide(m_InvUpArrow1, true);
+        } else if (g_Config.healthbar_location == BL_TOP_RIGHT) {
+            Text_Hide(m_InvUpArrow2, true);
+        } else if (g_Config.healthbar_location == BL_BOTTOM_LEFT) {
+            Text_Hide(m_InvDownArrow1, true);
+        } else if (g_Config.healthbar_location == BL_BOTTOM_RIGHT) {
+            Text_Hide(m_InvDownArrow2, true);
+        }
+        g_GameInfo.status |= GMS_IN_INVENTORY_HEALTH;
+    } else {
+        Text_Hide(m_InvUpArrow1, false);
+        Text_Hide(m_InvUpArrow2, false);
+        Text_Hide(m_InvDownArrow1, false);
+        Text_Hide(m_InvDownArrow2, false);
+        g_GameInfo.status &= ~GMS_IN_INVENTORY_HEALTH;
     }
 }
 
