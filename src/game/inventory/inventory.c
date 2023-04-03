@@ -1004,8 +1004,9 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
 int32_t Inv_Display(int inv_mode)
 {
+    GAME_STATUS current_status = g_GameInfo.status;
     g_GameInfo.status |= GMS_IN_INVENTORY;
     int32_t inv_result = Inv_ConstructAndDisplay(inv_mode);
-    g_GameInfo.status &= ~GMS_IN_INVENTORY;
+    g_GameInfo.status = current_status;
     return inv_result;
 }
