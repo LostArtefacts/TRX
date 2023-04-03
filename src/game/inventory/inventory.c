@@ -476,7 +476,10 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_NotActive();
         }
 
-        Overlay_DrawFPSInfo();
+        bool inv_ring_above = g_InvMode == INV_GAME_MODE
+            && ((ring.type == RT_MAIN && g_InvKeysObjects)
+                || (ring.type == RT_OPTION && g_InvMainObjects));
+        Overlay_DrawFPSInfo(inv_ring_above);
         Text_Draw();
 
         m_InvNFrames = Output_DumpScreen();
@@ -1001,8 +1004,8 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
 int32_t Inv_Display(int inv_mode)
 {
-    g_GameInfo.status = GMS_IN_INVENTORY;
+    g_GameInfo.status |= GMS_IN_INVENTORY;
     int32_t inv_result = Inv_ConstructAndDisplay(inv_mode);
-    g_GameInfo.status = GMS_IN_GAME;
+    g_GameInfo.status &= ~GMS_IN_INVENTORY;
     return inv_result;
 }
