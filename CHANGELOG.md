@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop)
+## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+
+## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05
 - added Spanish localization to the config tool
 - added an option to launch Unfinished Business from the config tool (#739)
 - added dart emitters to the savegame (#774)
@@ -23,16 +25,16 @@
 - increased the number of effects from 100 to 1000 (#623)
 - removed the fix_pyramid_secret gameflow sequence (now handled by data injection) (#788)
 
-## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2)
+## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2) - 2023-03-10
 - fixed depth buffer size causing rendering issues on some hardware (#748, regression from 2.13)
 - fixed a game crash when loading a save in which Lara had been struck by an exploding missile (#746)
 
-## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1)
+## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1) - 2023-03-03
 - added an option to use the PlayStation Uzi sound effects (#152)
 - fixed a few flip effect sounds not playing (#743, regression from 2.12.1)
 - fixed a game crash when exiting the game with a controller connected (#663)
 
-## [2.13](https://github.com/rr-/Tomb1Main/compare/2.12.1...2.13)
+## [2.13](https://github.com/rr-/Tomb1Main/compare/2.12.1...2.13) - 2023-02-19
 - added the ability to inject data into levels, with Lara's braid being the initial focus (#27)
 - added support for .ogg, .mp3 and .wav formats for audio tracks (#688)
 - added the mummy to the level kill stats if Lara touches it and it falls (#701)
