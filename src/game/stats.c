@@ -239,17 +239,18 @@ void Stats_CalculateStats(void)
 
     // Check triggers for special pickups / killables
     Stats_TraverseFloor();
+
+    m_LevelPickups -= g_GameFlow.levels[g_CurrentLevel].unobtainable.pickups;
+    m_LevelKillables -= g_GameFlow.levels[g_CurrentLevel].unobtainable.kills;
 }
 
 int32_t Stats_GetPickups(void)
 {
-    m_LevelPickups -= g_GameFlow.levels[g_CurrentLevel].unobtainable.pickups;
     return m_LevelPickups;
 }
 
 int32_t Stats_GetKillables(void)
 {
-    m_LevelKillables -= g_GameFlow.levels[g_CurrentLevel].unobtainable.kills;
     return m_LevelKillables;
 }
 
