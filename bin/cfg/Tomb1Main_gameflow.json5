@@ -40,6 +40,7 @@
     "injections": [
         "data/backpack.bin",
         "data/braid.bin",
+        "data/lara_animations.bin",
         "data/uzi_sfx.bin",
     ],
 
@@ -69,7 +70,8 @@
 
             // specific injection data paths
             "injections": [
-                "data/braid.bin"
+                "data/braid.bin",
+                "data/lara_animations.bin",
             ],
 
             // list of actions to execute when this level is played

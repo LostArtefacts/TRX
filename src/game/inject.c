@@ -21,6 +21,7 @@ typedef enum INJECTION_TYPE {
     INJ_TEXTURE_FIX = 2,
     INJ_UZI_SFX = 3,
     INJ_FLOOR_DATA = 4,
+    INJ_LARA_ANIMS = 5,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -143,6 +144,7 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
     switch (injection->type) {
     case INJ_GENERAL:
     case INJ_TEXTURE_FIX:
+    case INJ_LARA_ANIMS:
         injection->relevant = true;
         break;
     case INJ_BRAID:
@@ -423,11 +425,20 @@ static void Inject_ObjectData(
         File_Read(&tmp, sizeof(int32_t), 1, fp);
         OBJECT_INFO *object = &g_Objects[tmp];
 
-        File_Read(&object->nmeshes, sizeof(int16_t), 1, fp);
-        File_Read(&object->mesh_index, sizeof(int16_t), 1, fp);
-        object->mesh_index += level_info->mesh_ptr_count;
-        File_Read(&object->bone_index, sizeof(int32_t), 1, fp);
-        object->bone_index += level_info->anim_bone_count;
+        int16_t num_meshes, mesh_index;
+        int32_t bone_index;
+        File_Read(&num_meshes, sizeof(int16_t), 1, fp);
+        File_Read(&mesh_index, sizeof(int16_t), 1, fp);
+        File_Read(&bone_index, sizeof(int32_t), 1, fp);
+
+        // When mesh data has been omitted from the injection, this indicates
+        // that we wish to retain what's already defined so to avoid duplicate
+        // packing.
+        if (!object->loaded || num_meshes) {
+            object->nmeshes = num_meshes;
+            object->mesh_index = mesh_index + level_info->mesh_ptr_count;
+            object->bone_index = bone_index + level_info->anim_bone_count;
+        }
 
         File_Read(&tmp, sizeof(int32_t), 1, fp);
         object->frame_base =
@@ -436,8 +447,10 @@ static void Inject_ObjectData(
         object->anim_index += level_info->anim_count;
         object->loaded = 1;
 
-        Inject_AlignTextureReferences(
-            object, palette_map, level_info->texture_count);
+        if (num_meshes) {
+            Inject_AlignTextureReferences(
+                object, palette_map, level_info->texture_count);
+        }
     }
 }
 

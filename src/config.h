@@ -105,6 +105,7 @@ typedef struct {
     bool enable_enhanced_saves;
     bool enable_pitched_sounds;
     bool enable_ps_uzi_sfx;
+    bool enable_jump_twists;
 
     struct {
         int32_t layout;
