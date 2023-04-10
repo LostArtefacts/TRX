@@ -58,6 +58,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_jump_twists",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_numeric_keys",
           "DataType": "Bool",
           "DefaultValue": true

@@ -91,6 +91,10 @@
       "Title": "Observer en mouvement",
       "Description": "Permet à Lara de regarder autour d'elle, lorsqu'elle court, saute etc. - Similaire à TR2."
     },
+    "enable_jump_twists": {
+      "Title": "Sauts retournés",
+      "Description": "Activer les sauts retournés qui permettent à Lara de faire un demi-tour en l'air pendant un saut, et le saut de l'ange alternatif avec saut périlleux avant. Comme depuis TR2. Appuyer sur la touche roulade pendant un saut classique ou un saut de l'ange."
+    },
     "enable_numeric_keys": {
       "Title": "Touches rapide numériques",
       "Description": "Active les touches rapides numériques en haut du clavier, en raccourci d'équipement d'armes ou d'utilisation de soins.\n- 1: Pistolets\n- 2: Fusil à pompe\n- 3: Magnums\n- 4: Uzis\n- 8: Utiliser une petite trousse de soin\n- 9: Utiliser une grande trousse de soin"

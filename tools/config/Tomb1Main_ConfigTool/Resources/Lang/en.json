@@ -91,6 +91,10 @@
       "Title": "Look while running",
       "Description": "Allows Lara to look while running, jumping etc. - similar to TR2 style."
     },
+    "enable_jump_twists": {
+      "Title": "Jump twists",
+      "Description": "Enables TR2+ style jump twists and somersaults i.e. press roll during jump and swan dive animations."
+    },
     "enable_numeric_keys": {
       "Title": "Numeric key quick item use",
       "Description": "Enables quick weapon draws and medipack usage.\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw Uzis\n- 8: Use small medipack\n- 9: Use large medipack"
