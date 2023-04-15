@@ -136,11 +136,11 @@ void Switch_CollisionControlled(
         if (Lara_TestPosition(item, m_Switch_BoundsControlled)) {
             if (Lara_MovePosition(item, &move_vector)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
-                    lara_item->anim_number = LA_WALL_SWITCH_DOWN;
+                    Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_DOWN, -1);
                     lara_item->current_anim_state = LS_SWITCH_OFF;
                     item->goal_anim_state = SWITCH_STATE_OFF;
                 } else {
-                    lara_item->anim_number = LA_WALL_SWITCH_UP;
+                    Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_UP, -1);
                     lara_item->current_anim_state = LS_SWITCH_ON;
                     item->goal_anim_state = SWITCH_STATE_ON;
                 }
@@ -148,8 +148,6 @@ void Switch_CollisionControlled(
                 g_Lara.head_y_rot = 0;
                 g_Lara.torso_x_rot = 0;
                 g_Lara.torso_y_rot = 0;
-                lara_item->frame_number =
-                    g_Anims[lara_item->anim_number].frame_base;
                 g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
                 Item_AddActive(item_num);

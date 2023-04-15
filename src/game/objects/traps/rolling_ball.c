@@ -162,8 +162,7 @@ void RollingBall_Collision(
 
             lara_item->current_anim_state = LS_SPECIAL;
             lara_item->goal_anim_state = LS_SPECIAL;
-            lara_item->anim_number = LA_ROLLING_BALL_DEATH;
-            lara_item->frame_number = AF_RBALL_DEATH;
+            Item_SwitchToAnim(lara_item, LA_ROLLING_BALL_DEATH, AF_RBALL_DEATH);
 
             g_Camera.flags = FOLLOW_CENTRE;
             g_Camera.target_angle = 170 * PHD_DEGREE;
