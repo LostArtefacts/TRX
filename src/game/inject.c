@@ -425,7 +425,8 @@ static void Inject_ObjectData(
         File_Read(&tmp, sizeof(int32_t), 1, fp);
         OBJECT_INFO *object = &g_Objects[tmp];
 
-        int16_t num_meshes, mesh_index;
+        int16_t num_meshes;
+        int16_t mesh_index;
         int32_t bone_index;
         File_Read(&num_meshes, sizeof(int16_t), 1, fp);
         File_Read(&mesh_index, sizeof(int16_t), 1, fp);
