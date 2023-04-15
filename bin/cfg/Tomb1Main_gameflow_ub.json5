@@ -13,6 +13,7 @@
     "injections": [
         "data/backpack.bin",
         "data/braid.bin",
+        "data/lara_animations.bin",
         "data/uzi_sfx.bin",
     ],
 

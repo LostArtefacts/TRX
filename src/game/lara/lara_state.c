@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/input.h"
+#include "game/items.h"
 #include "game/lara/lara_look.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"
@@ -32,6 +33,7 @@ void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_State_SurfLeft,    Lara_State_SurfRight, Lara_State_UseMidas,
     Lara_State_DieMidas,    Lara_State_SwanDive,  Lara_State_FastDive,
     Lara_State_Gymnast,     Lara_State_WaterOut,  Lara_State_Controlled,
+    Lara_State_Twist,
 };
 
 static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
@@ -86,8 +88,7 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Input.roll) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
-        item->anim_number = LA_ROLL;
-        item->frame_number = AF_ROLL;
+        Item_SwitchToAnim(item, LA_ROLL, AF_ROLL);
         return;
     }
 
@@ -130,8 +131,7 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Input.roll) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
-        item->anim_number = LA_ROLL;
-        item->frame_number = AF_ROLL;
+        Item_SwitchToAnim(item, LA_ROLL, AF_ROLL);
         return;
     }
 
@@ -195,6 +195,10 @@ void Lara_State_ForwardJump(ITEM_INFO *item, COLL_INFO *coll)
     if (item->goal_anim_state != LS_DEATH && item->goal_anim_state != LS_STOP) {
         if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_REACH;
+        }
+        if (g_Config.enable_jump_twists && g_Input.roll
+            && item->goal_anim_state != LS_RUN) {
+            item->goal_anim_state = LS_TWIST;
         }
         if (g_Input.slow && g_Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_SWAN_DIVE;
@@ -481,6 +485,11 @@ void Lara_State_BackJump(ITEM_INFO *item, COLL_INFO *coll)
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
+
+    if (g_Config.enable_jump_twists && g_Input.roll
+        && item->goal_anim_state != LS_STOP) {
+        item->goal_anim_state = LS_TWIST;
+    }
 }
 
 void Lara_State_RightJump(ITEM_INFO *item, COLL_INFO *coll)
@@ -748,16 +757,26 @@ void Lara_State_SwanDive(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 1;
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed > LARA_FASTFALL_SPEED
+        && item->goal_anim_state != LS_DIVE) {
         item->goal_anim_state = LS_FAST_DIVE;
     }
 }
 
 void Lara_State_FastDive(ITEM_INFO *item, COLL_INFO *coll)
 {
+    if (g_Config.enable_jump_twists && g_Input.roll
+        && item->goal_anim_state == LS_FAST_DIVE) {
+        item->goal_anim_state = LS_TWIST;
+    }
+
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 1;
     item->speed = (item->speed * 95) / 100;
+}
+
+void Lara_State_Twist(ITEM_INFO *item, COLL_INFO *coll)
+{
 }
 
 void Lara_State_Null(ITEM_INFO *item, COLL_INFO *coll)
@@ -962,8 +981,7 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
         if (g_Lara.dive_timer == DIVE_WAIT) {
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;
-            item->anim_number = LA_SURF_DIVE;
-            item->frame_number = AF_SURFDIVE;
+            Item_SwitchToAnim(item, LA_SURF_DIVE, AF_SURFDIVE);
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = 80;
             g_Lara.water_status = LWS_UNDERWATER;

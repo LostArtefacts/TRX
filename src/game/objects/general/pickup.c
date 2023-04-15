@@ -166,7 +166,7 @@ void Pickup_CollisionControlled(
             if (Lara_TestPosition(item, m_PickUpBoundsControlled)) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
                 if (Lara_MovePosition(item, &m_PickUpPosition)) {
-                    lara_item->anim_number = LA_PICKUP;
+                    Item_SwitchToAnim(lara_item, LA_PICKUP, -1);
                     lara_item->current_anim_state = LS_PICKUP;
                     have_item = true;
                 }
@@ -182,8 +182,6 @@ void Pickup_CollisionControlled(
                 g_Lara.head_x_rot = 0;
                 g_Lara.torso_y_rot = 0;
                 g_Lara.torso_x_rot = 0;
-                lara_item->frame_number =
-                    g_Anims[lara_item->anim_number].frame_base;
                 g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
             }
@@ -205,12 +203,10 @@ void Pickup_CollisionControlled(
 
             if (Lara_TestPosition(item, m_PickUpBoundsUW)) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
-                    lara_item->anim_number = LA_PICKUP_UW;
+                    Item_SwitchToAnim(lara_item, LA_PICKUP_UW, -1);
                     lara_item->current_anim_state = LS_PICKUP;
 
                     lara_item->goal_anim_state = LS_TREAD;
-                    lara_item->frame_number =
-                        g_Anims[lara_item->anim_number].frame_base;
                     g_Lara.interact_target.is_moving = false;
                     g_Lara.gun_status = LGS_HANDS_BUSY;
                 }

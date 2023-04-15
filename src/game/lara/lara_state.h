@@ -63,3 +63,4 @@ void Lara_State_SwanDive(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_State_FastDive(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_State_Gymnast(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_State_WaterOut(ITEM_INFO *item, COLL_INFO *coll);
+void Lara_State_Twist(ITEM_INFO *item, COLL_INFO *coll);

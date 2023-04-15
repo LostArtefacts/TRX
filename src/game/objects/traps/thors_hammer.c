@@ -100,8 +100,8 @@ void ThorsHandle_Control(int16_t item_num)
                 g_LaraItem->gravity_status = 0;
                 g_LaraItem->current_anim_state = LS_SPECIAL;
                 g_LaraItem->goal_anim_state = LS_SPECIAL;
-                g_LaraItem->anim_number = LA_ROLLING_BALL_DEATH;
-                g_LaraItem->frame_number = AF_RBALL_DEATH;
+                Item_SwitchToAnim(
+                    g_LaraItem, LA_ROLLING_BALL_DEATH, AF_RBALL_DEATH);
             }
         }
         break;

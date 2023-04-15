@@ -460,6 +460,13 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
+void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame)
+{
+    item->anim_number = g_Objects[item->object_number].anim_index + anim_index;
+    item->frame_number =
+        frame < 0 ? g_Anims[item->anim_number].frame_base : frame;
+}
+
 void Item_Animate(ITEM_INFO *item)
 {
     item->touch_bits = 0;

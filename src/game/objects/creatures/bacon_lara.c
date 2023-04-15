@@ -25,6 +25,7 @@ void BaconLara_Setup(OBJECT_INFO *obj)
 
 void BaconLara_Initialise(int16_t item_num)
 {
+    g_Objects[O_BACON_LARA].anim_index = g_Objects[O_LARA].anim_index;
     g_Objects[O_BACON_LARA].frame_base = g_Objects[O_LARA].frame_base;
     g_Items[item_num].data = NULL;
 }
@@ -67,8 +68,7 @@ void BaconLara_Control(int16_t item_num)
         if (h >= lh + WALL_L && !g_LaraItem->gravity_status) {
             item->current_anim_state = LS_FAST_FALL;
             item->goal_anim_state = LS_FAST_FALL;
-            item->anim_number = LA_FAST_FALL;
-            item->frame_number = AF_FASTFALL;
+            Item_SwitchToAnim(item, LA_FAST_FALL, AF_FASTFALL);
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity_status = 1;
