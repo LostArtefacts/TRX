@@ -179,6 +179,10 @@
       "Description": "Habilita la reproducción de FMV.",
       "Title": "Habilitar FMV"
     },
+    "enable_jump_twists": {
+      "Title": "Giros al saltar",
+      "Description": "Habilita los giros al saltar y saltos mortales al estilo TR2+, es decir, presione rodar durante las animaciones del salto y salto del cisne."
+    },
     "enable_music_in_inventory": {
       "Description": "Permite que los sonidos del juego continúen sonando en la pantalla de inventario.",
       "Title": "Habilitar sonidos de juegos en el inventario"
