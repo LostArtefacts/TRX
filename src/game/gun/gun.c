@@ -56,8 +56,8 @@ void Gun_Control(void)
         case LGT_UZIS:
             if (g_Lara.gun_status == LGS_ARMLESS) {
                 g_Lara.gun_status = LGS_DRAW;
-                g_Lara.right_arm.frame_number = AF_G_AIM;
-                g_Lara.left_arm.frame_number = AF_G_AIM;
+                g_Lara.right_arm.frame_number = LF_G_AIM;
+                g_Lara.left_arm.frame_number = LF_G_AIM;
             } else if (g_Lara.gun_status == LGS_READY) {
                 g_Lara.gun_status = LGS_UNDRAW;
             }
@@ -66,8 +66,8 @@ void Gun_Control(void)
         case LGT_SHOTGUN:
             if (g_Lara.gun_status == LGS_ARMLESS) {
                 g_Lara.gun_status = LGS_DRAW;
-                g_Lara.left_arm.frame_number = AF_SG_AIM;
-                g_Lara.right_arm.frame_number = AF_SG_AIM;
+                g_Lara.left_arm.frame_number = LF_SG_AIM;
+                g_Lara.right_arm.frame_number = LF_SG_AIM;
             } else if (g_Lara.gun_status == LGS_READY) {
                 g_Lara.gun_status = LGS_UNDRAW;
             }
@@ -171,13 +171,13 @@ void Gun_InitialiseNewWeapon(void)
     g_Lara.left_arm.z_rot = 0;
     g_Lara.left_arm.lock = 0;
     g_Lara.left_arm.flash_gun = 0;
-    g_Lara.left_arm.frame_number = AF_G_AIM;
+    g_Lara.left_arm.frame_number = LF_G_AIM;
     g_Lara.right_arm.x_rot = 0;
     g_Lara.right_arm.y_rot = 0;
     g_Lara.right_arm.z_rot = 0;
     g_Lara.right_arm.lock = 0;
     g_Lara.right_arm.flash_gun = 0;
-    g_Lara.right_arm.frame_number = AF_G_AIM;
+    g_Lara.right_arm.frame_number = LF_G_AIM;
     g_Lara.target = NULL;
 
     switch (g_Lara.gun_type) {

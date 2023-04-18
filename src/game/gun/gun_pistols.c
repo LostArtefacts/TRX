@@ -13,14 +13,14 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
 
-    if (ani < AF_G_DRAW1 || ani > AF_G_DRAW2_L) {
-        ani = AF_G_DRAW1;
-    } else if (ani == AF_G_DRAW2) {
+    if (ani < LF_G_DRAW1 || ani > LF_G_DRAW2_L) {
+        ani = LF_G_DRAW1;
+    } else if (ani == LF_G_DRAW2) {
         Gun_Pistols_DrawMeshes(weapon_type);
         Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-    } else if (ani == AF_G_DRAW2_L) {
+    } else if (ani == LF_G_DRAW2_L) {
         Gun_Pistols_Ready();
-        ani = AF_G_AIM;
+        ani = LF_G_AIM;
     }
 
     g_Lara.left_arm.frame_number = ani;
@@ -30,50 +30,50 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
 void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
 {
     int16_t anil = g_Lara.left_arm.frame_number;
-    if (anil >= AF_G_RECOIL) {
-        anil = AF_G_AIM_L;
-    } else if (anil > AF_G_AIM && anil < AF_G_DRAW1) {
+    if (anil >= LF_G_RECOIL) {
+        anil = LF_G_AIM_L;
+    } else if (anil > LF_G_AIM && anil < LF_G_DRAW1) {
         g_Lara.left_arm.x_rot -= g_Lara.left_arm.x_rot / anil;
         g_Lara.left_arm.y_rot -= g_Lara.left_arm.y_rot / anil;
         anil--;
-    } else if (anil == AF_G_AIM) {
+    } else if (anil == LF_G_AIM) {
         g_Lara.left_arm.x_rot = 0;
         g_Lara.left_arm.y_rot = 0;
         g_Lara.left_arm.z_rot = 0;
-        anil = AF_G_DRAW2_L;
-    } else if (anil > AF_G_DRAW1) {
+        anil = LF_G_DRAW2_L;
+    } else if (anil > LF_G_DRAW1) {
         anil--;
-        if (anil == AF_G_DRAW2) {
+        if (anil == LF_G_DRAW2) {
             Gun_Pistols_UndrawMeshLeft(weapon_type);
         }
     }
     g_Lara.left_arm.frame_number = anil;
 
     int16_t anir = g_Lara.right_arm.frame_number;
-    if (anir >= AF_G_RECOIL) {
-        anir = AF_G_AIM_L;
-    } else if (anir > AF_G_AIM && anir < AF_G_DRAW1) {
+    if (anir >= LF_G_RECOIL) {
+        anir = LF_G_AIM_L;
+    } else if (anir > LF_G_AIM && anir < LF_G_DRAW1) {
         g_Lara.right_arm.x_rot -= g_Lara.right_arm.x_rot / anir;
         g_Lara.right_arm.y_rot -= g_Lara.right_arm.y_rot / anir;
         anir--;
-    } else if (anir == AF_G_AIM) {
+    } else if (anir == LF_G_AIM) {
         g_Lara.right_arm.x_rot = 0;
         g_Lara.right_arm.y_rot = 0;
         g_Lara.right_arm.z_rot = 0;
-        anir = AF_G_DRAW2_L;
-    } else if (anir > AF_G_DRAW1) {
+        anir = LF_G_DRAW2_L;
+    } else if (anir > LF_G_DRAW1) {
         anir--;
-        if (anir == AF_G_DRAW2) {
+        if (anir == LF_G_DRAW2) {
             Gun_Pistols_UndrawMeshRight(weapon_type);
         }
     }
     g_Lara.right_arm.frame_number = anir;
 
-    if (anil == AF_G_DRAW1 && anir == AF_G_DRAW1) {
+    if (anil == LF_G_DRAW1 && anir == LF_G_DRAW1) {
         g_Lara.left_arm.lock = 0;
         g_Lara.right_arm.lock = 0;
-        g_Lara.left_arm.frame_number = AF_G_AIM;
-        g_Lara.right_arm.frame_number = AF_G_AIM;
+        g_Lara.left_arm.frame_number = LF_G_AIM;
+        g_Lara.right_arm.frame_number = LF_G_AIM;
         g_Lara.gun_status = LGS_ARMLESS;
         g_Lara.target = NULL;
     }
@@ -200,9 +200,9 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
 
     int16_t anir = g_Lara.right_arm.frame_number;
     if (g_Lara.right_arm.lock || (g_Input.action && !g_Lara.target)) {
-        if (anir >= AF_G_AIM && anir < AF_G_AIM_L) {
+        if (anir >= LF_G_AIM && anir < LF_G_AIM_L) {
             anir++;
-        } else if (anir == AF_G_AIM_L && g_Input.action) {
+        } else if (anir == LF_G_AIM_L && g_Input.action) {
             angles[0] = g_Lara.right_arm.y_rot + g_LaraItem->pos.y_rot;
             angles[1] = g_Lara.right_arm.x_rot;
             if (Gun_FireWeapon(
@@ -210,25 +210,25 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
                 g_Lara.right_arm.flash_gun = winfo->flash_time;
                 Sound_Effect(winfo->sample_num, &g_LaraItem->pos, SPM_NORMAL);
             }
-            anir = AF_G_RECOIL;
-        } else if (anir >= AF_G_RECOIL) {
+            anir = LF_G_RECOIL;
+        } else if (anir >= LF_G_RECOIL) {
             anir++;
-            if (anir == AF_G_RECOIL + winfo->recoil_frame) {
-                anir = AF_G_AIM_L;
+            if (anir == LF_G_RECOIL + winfo->recoil_frame) {
+                anir = LF_G_AIM_L;
             }
         }
-    } else if (anir >= AF_G_RECOIL) {
-        anir = AF_G_AIM_L;
-    } else if (anir > AF_G_AIM && anir <= AF_G_AIM_L) {
+    } else if (anir >= LF_G_RECOIL) {
+        anir = LF_G_AIM_L;
+    } else if (anir > LF_G_AIM && anir <= LF_G_AIM_L) {
         anir--;
     }
     g_Lara.right_arm.frame_number = anir;
 
     int16_t anil = g_Lara.left_arm.frame_number;
     if (g_Lara.left_arm.lock || (g_Input.action && !g_Lara.target)) {
-        if (anil >= AF_G_AIM && anil < AF_G_AIM_L) {
+        if (anil >= LF_G_AIM && anil < LF_G_AIM_L) {
             anil++;
-        } else if (anil == AF_G_AIM_L && g_Input.action) {
+        } else if (anil == LF_G_AIM_L && g_Input.action) {
             angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->pos.y_rot;
             angles[1] = g_Lara.left_arm.x_rot;
             if (Gun_FireWeapon(
@@ -236,16 +236,16 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
                 g_Lara.left_arm.flash_gun = winfo->flash_time;
                 Sound_Effect(winfo->sample_num, &g_LaraItem->pos, SPM_NORMAL);
             }
-            anil = AF_G_RECOIL;
-        } else if (anil >= AF_G_RECOIL) {
+            anil = LF_G_RECOIL;
+        } else if (anil >= LF_G_RECOIL) {
             anil++;
-            if (anil == AF_G_RECOIL + winfo->recoil_frame) {
-                anil = AF_G_AIM_L;
+            if (anil == LF_G_RECOIL + winfo->recoil_frame) {
+                anil = LF_G_AIM_L;
             }
         }
-    } else if (anil >= AF_G_RECOIL) {
-        anil = AF_G_AIM_L;
-    } else if (anil > AF_G_AIM && anil <= AF_G_AIM_L) {
+    } else if (anil >= LF_G_RECOIL) {
+        anil = LF_G_AIM_L;
+    } else if (anil > LF_G_AIM && anil <= LF_G_AIM_L) {
         anil--;
     }
     g_Lara.left_arm.frame_number = anil;
