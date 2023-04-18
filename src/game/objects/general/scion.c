@@ -148,7 +148,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (lara_item->current_anim_state == LS_PICKUP) {
         if (lara_item->frame_number
-            == g_Anims[lara_item->anim_number].frame_base + AF_PICKUPSCION) {
+            == g_Anims[lara_item->anim_number].frame_base + LF_PICKUPSCION) {
             Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;

@@ -99,7 +99,7 @@ void Lara_Control(void)
         } else {
             item->current_anim_state = LS_DIVE;
             item->goal_anim_state = LS_SWIM;
-            Item_SwitchToAnim(item, LA_JUMP_IN, AF_JUMPIN);
+            Item_SwitchToAnim(item, LA_JUMP_IN, -1);
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = (item->fall_speed * 3) / 2;
         }
@@ -116,7 +116,7 @@ void Lara_Control(void)
             g_Lara.dive_timer = DIVE_WAIT + 1;
             item->current_anim_state = LS_SURF_TREAD;
             item->goal_anim_state = LS_SURF_TREAD;
-            Item_SwitchToAnim(item, LA_SURF_TREAD, AF_SURFTREAD);
+            Item_SwitchToAnim(item, LA_SURF_TREAD, -1);
             item->fall_speed = 0;
             item->pos.y = wh + 1;
             item->pos.x_rot = 0;
@@ -132,7 +132,7 @@ void Lara_Control(void)
             g_Lara.gun_status = LGS_ARMLESS;
             item->current_anim_state = LS_JUMP_FORWARD;
             item->goal_anim_state = LS_JUMP_FORWARD;
-            Item_SwitchToAnim(item, LA_FALL_DOWN, AF_FALLDOWN);
+            Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
             item->gravity_status = 1;
@@ -148,7 +148,7 @@ void Lara_Control(void)
         g_Lara.gun_status = LGS_ARMLESS;
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, AF_FALLDOWN);
+        Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
         item->speed = item->fall_speed / 4;
         item->fall_speed = 0;
         item->gravity_status = 1;
@@ -483,12 +483,12 @@ void Lara_Initialise(int32_t level_num)
         g_LaraItem->fall_speed = 0;
         g_LaraItem->goal_anim_state = LS_TREAD;
         g_LaraItem->current_anim_state = LS_TREAD;
-        Item_SwitchToAnim(g_LaraItem, LA_TREAD, AF_TREAD);
+        Item_SwitchToAnim(g_LaraItem, LA_TREAD, -1);
     } else {
         g_Lara.water_status = LWS_ABOVE_WATER;
         g_LaraItem->goal_anim_state = LS_STOP;
         g_LaraItem->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(g_LaraItem, LA_STOP, AF_STOP);
+        Item_SwitchToAnim(g_LaraItem, LA_STOP, -1);
     }
 
     g_Lara.current_active = 0;

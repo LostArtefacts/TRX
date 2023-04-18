@@ -48,7 +48,7 @@ void PuzzleHole_Collision(
             return;
         }
 
-        if (lara_item->frame_number == AF_USEPUZZLE) {
+        if (lara_item->frame_number == LF_USEPUZZLE) {
             switch (item->object_number) {
             case O_PUZZLE_HOLE1:
                 item->object_number = O_PUZZLE_DONE1;

@@ -96,7 +96,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
-            if (lara_item->frame_number != AF_PICKUP_ERASE) {
+            if (lara_item->frame_number != LF_PICKUP_ERASE) {
                 return;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
@@ -119,7 +119,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
-            if (lara_item->frame_number != AF_PICKUP_UW) {
+            if (lara_item->frame_number != LF_PICKUP_UW) {
                 return;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
@@ -188,7 +188,7 @@ void Pickup_CollisionControlled(
         } else if (
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP) {
-            if (lara_item->frame_number == AF_PICKUP_ERASE) {
+            if (lara_item->frame_number == LF_PICKUP_ERASE) {
                 PickUp_GetAllAtLaraPos(item, lara_item);
             }
         }
@@ -220,7 +220,7 @@ void Pickup_CollisionControlled(
         } else if (
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP
-            && lara_item->frame_number == AF_PICKUP_UW) {
+            && lara_item->frame_number == LF_PICKUP_UW) {
             PickUp_GetAllAtLaraPos(item, lara_item);
             g_Lara.gun_status = LGS_ARMLESS;
         }

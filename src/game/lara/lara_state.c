@@ -88,7 +88,7 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Input.roll) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL, AF_ROLL);
+        Item_SwitchToAnim(item, LA_ROLL, LF_ROLL);
         return;
     }
 
@@ -131,7 +131,7 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Input.roll) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_ROLL, AF_ROLL);
+        Item_SwitchToAnim(item, LA_ROLL, LF_ROLL);
         return;
     }
 
@@ -981,7 +981,7 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
         if (g_Lara.dive_timer == DIVE_WAIT) {
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;
-            Item_SwitchToAnim(item, LA_SURF_DIVE, AF_SURFDIVE);
+            Item_SwitchToAnim(item, LA_SURF_DIVE, -1);
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = 80;
             g_Lara.water_status = LWS_UNDERWATER;
