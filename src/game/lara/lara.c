@@ -174,6 +174,10 @@ void Lara_Control(void)
         // make sure the enemy healthbar is no longer rendered. If g_Lara later
         // is resurrected with DOZY, she should no longer aim at the target.
         g_Lara.target = NULL;
+
+        if (g_LaraItem->flags & IS_INVISIBLE) {
+            return;
+        }
     }
 
     int16_t camera_move_delta = PHD_45 / 30;

@@ -1,5 +1,6 @@
 #include "game/lara/lara_cheat.h"
 
+#include "game/effects/exploding_death.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/sound.h"
@@ -96,6 +97,11 @@ void Lara_CheckCheatMode(void)
                 g_Lara.magnums.ammo = 500;
                 g_Lara.uzis.ammo = 5000;
                 Sound_Effect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
+            } else if (as == LS_SWAN_DIVE) {
+                Effect_ExplodingDeath(g_Lara.item_number, -1, 0);
+                Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
+                g_LaraItem->hit_points = 0;
+                g_LaraItem->flags |= IS_INVISIBLE;
             }
             cheat_mode = 0;
         }
