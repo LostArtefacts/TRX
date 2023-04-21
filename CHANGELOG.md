@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
 - added an option to enable TR2+ jump-twist and somersault animations (#88)
 - added the ability to unbind the sidestep left and sidestep right keys (#766)
+- added a cheat to explode Lara like in TR2 and TR3 (#793)
 
 ## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05
 - added Spanish localization to the config tool
