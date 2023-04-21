@@ -283,6 +283,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added a level skip cheat
 - added a door open cheat (while in fly mode)
 - added a cheat to increase the game speed
+- added a cheat to explode Lara like in TR2 and TR3
 
 #### Input
 - added ability to move camera around with W,A,S,D
