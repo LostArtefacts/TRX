@@ -26,6 +26,26 @@ void Lara_LookLeftRight(int16_t max_head_rot, int16_t head_turn)
     }
 }
 
+void Lara_LookLeftRightSurf(int16_t max_head_rot, int16_t head_turn)
+{
+    g_Camera.type = CAM_LOOK;
+    if (g_Input.left) {
+        g_Input.left = 0;
+        if (g_Lara.head_y_rot > -max_head_rot) {
+            g_Lara.head_y_rot -= head_turn;
+        }
+    } else if (g_Input.right) {
+        g_Input.right = 0;
+        if (g_Lara.head_y_rot < max_head_rot) {
+            g_Lara.head_y_rot += head_turn;
+        }
+    }
+    if (g_Lara.gun_status != LGS_HANDS_BUSY) {
+        g_Lara.torso_y_rot = g_Lara.head_y_rot;
+    }
+    g_Lara.torso_y_rot = g_Lara.head_y_rot / 2;
+}
+
 void Lara_LookUpDown(
     int16_t min_head_tilt, int16_t max_head_tilt, int16_t head_turn)
 {
@@ -44,6 +64,27 @@ void Lara_LookUpDown(
     if (g_Lara.gun_status != LGS_HANDS_BUSY) {
         g_Lara.torso_x_rot = g_Lara.head_x_rot;
     }
+}
+
+void Lara_LookUpDownSurf(
+    int16_t min_head_tilt, int16_t max_head_tilt, int16_t head_turn)
+{
+    g_Camera.type = CAM_LOOK;
+    if (g_Input.forward) {
+        g_Input.forward = 0;
+        if (g_Lara.head_x_rot > min_head_tilt) {
+            g_Lara.head_x_rot -= head_turn;
+        }
+    } else if (g_Input.back) {
+        g_Input.back = 0;
+        if (g_Lara.head_x_rot < max_head_tilt) {
+            g_Lara.head_x_rot += head_turn;
+        }
+    }
+    if (g_Lara.gun_status != LGS_HANDS_BUSY) {
+        g_Lara.torso_x_rot = g_Lara.head_x_rot;
+    }
+    g_Lara.torso_x_rot = 0;
 }
 
 void Lara_ResetLook(void)

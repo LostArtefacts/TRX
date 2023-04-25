@@ -922,10 +922,9 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Input.look) {
-        Lara_LookLeftRight(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
-        g_Lara.torso_y_rot = g_Lara.head_y_rot / 2;
-        Lara_LookUpDown(MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
-        g_Lara.torso_x_rot = 0;
+        Lara_LookLeftRightSurf(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
+        Lara_LookUpDownSurf(
+            MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
