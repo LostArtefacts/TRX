@@ -5,18 +5,20 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-void Lara_LookLeftRight(void)
+#include <stdint.h>
+
+void Lara_LookLeftRight(int16_t max_head_rot, int16_t head_turn)
 {
     g_Camera.type = CAM_LOOK;
     if (g_Input.left) {
         g_Input.left = 0;
-        if (g_Lara.head_y_rot > -MAX_HEAD_ROTATION) {
-            g_Lara.head_y_rot -= HEAD_TURN / 2;
+        if (g_Lara.head_y_rot > -max_head_rot) {
+            g_Lara.head_y_rot -= head_turn / 2;
         }
     } else if (g_Input.right) {
         g_Input.right = 0;
-        if (g_Lara.head_y_rot < MAX_HEAD_ROTATION) {
-            g_Lara.head_y_rot += HEAD_TURN / 2;
+        if (g_Lara.head_y_rot < max_head_rot) {
+            g_Lara.head_y_rot += head_turn / 2;
         }
     }
     if (g_Lara.gun_status != LGS_HANDS_BUSY) {
@@ -24,18 +26,19 @@ void Lara_LookLeftRight(void)
     }
 }
 
-void Lara_LookUpDown(void)
+void Lara_LookUpDown(
+    int16_t min_head_tilt, int16_t max_head_tilt, int16_t head_turn)
 {
     g_Camera.type = CAM_LOOK;
     if (g_Input.forward) {
         g_Input.forward = 0;
-        if (g_Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            g_Lara.head_x_rot -= HEAD_TURN / 2;
+        if (g_Lara.head_x_rot > min_head_tilt) {
+            g_Lara.head_x_rot -= head_turn / 2;
         }
     } else if (g_Input.back) {
         g_Input.back = 0;
-        if (g_Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            g_Lara.head_x_rot += HEAD_TURN / 2;
+        if (g_Lara.head_x_rot < max_head_tilt) {
+            g_Lara.head_x_rot += head_turn / 2;
         }
     }
     if (g_Lara.gun_status != LGS_HANDS_BUSY) {

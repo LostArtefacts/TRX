@@ -137,20 +137,8 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
 
     item->goal_anim_state = LS_STOP;
     if (g_Input.look) {
-        g_Camera.type = CAM_LOOK;
-        if (g_Input.left && g_Lara.head_y_rot > -MAX_HEAD_ROTATION) {
-            g_Lara.head_y_rot -= HEAD_TURN / 2;
-        } else if (g_Input.right && g_Lara.head_y_rot < MAX_HEAD_ROTATION) {
-            g_Lara.head_y_rot += HEAD_TURN / 2;
-        }
-        g_Lara.torso_y_rot = g_Lara.head_y_rot;
-
-        if (g_Input.forward && g_Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            g_Lara.head_x_rot -= HEAD_TURN / 2;
-        } else if (g_Input.back && g_Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            g_Lara.head_x_rot += HEAD_TURN / 2;
-        }
-        g_Lara.torso_x_rot = g_Lara.head_x_rot;
+        Lara_LookLeftRight(MAX_HEAD_ROTATION, HEAD_TURN);
+        Lara_LookUpDown(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN);
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
@@ -934,20 +922,9 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Input.look) {
-        g_Camera.type = CAM_LOOK;
-        if (g_Input.left && g_Lara.head_y_rot > -MAX_HEAD_ROTATION_SURF) {
-            g_Lara.head_y_rot -= HEAD_TURN_SURF;
-        } else if (
-            g_Input.right && g_Lara.head_y_rot < MAX_HEAD_ROTATION_SURF) {
-            g_Lara.head_y_rot += HEAD_TURN_SURF;
-        }
+        Lara_LookLeftRight(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
         g_Lara.torso_y_rot = g_Lara.head_y_rot / 2;
-
-        if (g_Input.forward && g_Lara.head_x_rot > MIN_HEAD_TILT_SURF) {
-            g_Lara.head_x_rot -= HEAD_TURN_SURF;
-        } else if (g_Input.back && g_Lara.head_x_rot < MAX_HEAD_TILT_SURF) {
-            g_Lara.head_x_rot += HEAD_TURN_SURF;
-        }
+        Lara_LookUpDown(MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
         g_Lara.torso_x_rot = 0;
         return;
     }
@@ -1063,7 +1040,7 @@ void Lara_State_Tread(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (g_Config.enable_enhanced_look) {
         if (g_Input.look) {
-            Lara_LookUpDown();
+            Lara_LookUpDown(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN);
         }
     }
 
