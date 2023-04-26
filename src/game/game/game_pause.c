@@ -148,8 +148,7 @@ bool Game_Pause(void)
     Output_SetupAboveWater(false);
 
     Music_Pause();
-    Sound_StopAmbientSounds();
-    Sound_StopAllSamples();
+    Sound_PauseAll();
     g_GameInfo.status |= GMS_IN_PAUSE;
 
     Output_FadeToSemiBlack(true);
@@ -157,6 +156,7 @@ bool Game_Pause(void)
     Output_FadeToTransparent(true);
 
     Music_Unpause();
+    Sound_UnpauseAll();
     Requester_Remove(&m_PauseRequester);
     Game_Pause_RemoveText();
     g_GameInfo.status &= ~GMS_IN_PAUSE;
