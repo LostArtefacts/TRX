@@ -339,6 +339,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed game audio not muting when game is minimized
 - fixed underwater ambient sound effect not playing
 - fixed sound effects playing rapidly in sound menu if input held down
+- fixed sounds stopping instead of pausing when using the inventory or pausing
 
 #### Mods
 - added ability to adjust Lara's starting health (easy no damage mod)

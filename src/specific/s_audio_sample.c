@@ -504,6 +504,66 @@ bool S_Audio_SampleSoundIsPlaying(int sound_id)
     return m_SampleSounds[sound_id].is_playing;
 }
 
+bool S_Audio_SampleSoundPause(int sound_id)
+{
+    if (!g_AudioDeviceID) {
+        return false;
+    }
+
+    if (m_SampleSounds[sound_id].is_playing) {
+        SDL_LockAudioDevice(g_AudioDeviceID);
+        m_SampleSounds[sound_id].is_playing = false;
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+    }
+
+    return true;
+}
+
+bool S_Audio_SampleSoundPauseAll(void)
+{
+    if (!g_AudioDeviceID) {
+        return false;
+    }
+
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
+        if (m_SampleSounds[sound_id].is_used) {
+            S_Audio_SampleSoundPause(sound_id);
+        }
+    }
+
+    return true;
+}
+
+bool S_Audio_SampleSoundUnpause(int sound_id)
+{
+    if (!g_AudioDeviceID) {
+        return false;
+    }
+
+    if (!m_SampleSounds[sound_id].is_playing) {
+        SDL_LockAudioDevice(g_AudioDeviceID);
+        m_SampleSounds[sound_id].is_playing = true;
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+    }
+
+    return true;
+}
+
+bool S_Audio_SampleSoundUnpauseAll(void)
+{
+    if (!g_AudioDeviceID) {
+        return false;
+    }
+
+    for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES; sound_id++) {
+        if (m_SampleSounds[sound_id].is_used) {
+            S_Audio_SampleSoundUnpause(sound_id);
+        }
+    }
+
+    return true;
+}
+
 bool S_Audio_SampleSoundClose(int sound_id)
 {
     if (!g_AudioDeviceID || sound_id < 0

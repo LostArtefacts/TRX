@@ -13,6 +13,8 @@ bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos);
 void Sound_UpdateEffects(void);
 void Sound_ResetEffects(void);
 void Sound_StopAmbientSounds(void);
+void Sound_PauseAll(void);
+void Sound_UnpauseAll(void);
 void Sound_StopAllSamples(void);
 void Sound_SetMasterVolume(int8_t volume);
 void Sound_LoadSamples(

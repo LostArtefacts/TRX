@@ -368,8 +368,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
     if (!g_Config.enable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
         Music_Pause();
-        Sound_StopAmbientSounds();
-        Sound_StopAllSamples();
+        Sound_PauseAll();
     } else {
         Sound_ResetAmbient();
         Sound_UpdateEffects();
@@ -883,6 +882,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
     if (!g_Config.enable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
         Music_Unpause();
+        Sound_UnpauseAll();
     }
 
     if (start_demo) {

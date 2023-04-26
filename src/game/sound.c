@@ -519,6 +519,16 @@ void Sound_LoadSamples(
     S_Audio_SamplesLoad(num_samples, sample_pointers, sizes);
 }
 
+void Sound_PauseAll(void)
+{
+    S_Audio_SampleSoundPauseAll();
+}
+
+void Sound_UnpauseAll(void)
+{
+    S_Audio_SampleSoundUnpauseAll();
+}
+
 void Sound_StopAllSamples(void)
 {
     S_Audio_SampleSoundCloseAll();

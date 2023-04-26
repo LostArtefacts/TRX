@@ -30,6 +30,10 @@ bool S_Audio_SamplesLoad(size_t count, const char **contents, size_t *sizes);
 int S_Audio_SampleSoundPlay(
     int sample_id, int volume, float pitch, int pan, bool is_looped);
 bool S_Audio_SampleSoundIsPlaying(int sound_id);
+bool S_Audio_SampleSoundPause(int sound_id);
+bool S_Audio_SampleSoundPauseAll(void);
+bool S_Audio_SampleSoundUnpause(int sound_id);
+bool S_Audio_SampleSoundUnpauseAll(void);
 bool S_Audio_SampleSoundClose(int sound_id);
 bool S_Audio_SampleSoundCloseAll(void);
 bool S_Audio_SampleSoundSetPan(int sound_id, int pan);
