@@ -17,12 +17,12 @@ static void Lara_LookLeftRightBase(int16_t max_head_rot, int16_t head_turn)
     if (g_Input.left) {
         g_Input.left = 0;
         if (g_Lara.head_y_rot > -max_head_rot) {
-            g_Lara.head_y_rot -= head_turn / 2;
+            g_Lara.head_y_rot -= head_turn;
         }
     } else if (g_Input.right) {
         g_Input.right = 0;
         if (g_Lara.head_y_rot < max_head_rot) {
-            g_Lara.head_y_rot += head_turn / 2;
+            g_Lara.head_y_rot += head_turn;
         }
     }
     if (g_Lara.gun_status != LGS_HANDS_BUSY) {
