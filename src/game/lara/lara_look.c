@@ -37,12 +37,12 @@ static void Lara_LookUpDownBase(
     if (g_Input.forward) {
         g_Input.forward = 0;
         if (g_Lara.head_x_rot > min_head_tilt) {
-            g_Lara.head_x_rot -= head_turn / 2;
+            g_Lara.head_x_rot -= head_turn;
         }
     } else if (g_Input.back) {
         g_Input.back = 0;
         if (g_Lara.head_x_rot < max_head_tilt) {
-            g_Lara.head_x_rot += head_turn / 2;
+            g_Lara.head_x_rot += head_turn;
         }
     }
     if (g_Lara.gun_status != LGS_HANDS_BUSY) {
@@ -52,10 +52,10 @@ static void Lara_LookUpDownBase(
 
 void Lara_LookLeftRight(void)
 {
-    Lara_LookLeftRightBase(MAX_HEAD_ROTATION, HEAD_TURN);
+    Lara_LookLeftRightBase(MAX_HEAD_ROTATION, HEAD_TURN / 2);
 }
 
-void Lara_LookLeftRightSurface(void)
+void Lara_LookLeftRightSurf(void)
 {
     Lara_LookLeftRightBase(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
     g_Lara.torso_y_rot = g_Lara.head_y_rot / 2;
@@ -66,7 +66,7 @@ void Lara_LookUpDown(void)
     Lara_LookUpDownBase(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN);
 }
 
-void Lara_LookUpDownSurface(void)
+void Lara_LookUpDownSurf(void)
 {
     Lara_LookUpDownBase(MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
     g_Lara.torso_x_rot = 0;

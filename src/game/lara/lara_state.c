@@ -922,8 +922,8 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Input.look) {
-        Lara_LookLeftRightSurface();
-        Lara_LookUpDownSurface();
+        Lara_LookLeftRightSurf();
+        Lara_LookUpDownSurf();
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
