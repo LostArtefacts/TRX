@@ -137,8 +137,8 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
 
     item->goal_anim_state = LS_STOP;
     if (g_Input.look) {
-        Lara_LookLeftRight(MAX_HEAD_ROTATION, HEAD_TURN);
-        Lara_LookUpDown(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN);
+        Lara_LookLeftRight();
+        Lara_LookUpDown();
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
@@ -922,9 +922,8 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Input.look) {
-        Lara_LookLeftRightSurf(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
-        Lara_LookUpDownSurf(
-            MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
+        Lara_LookLeftRightSurface();
+        Lara_LookUpDownSurface();
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
@@ -1039,7 +1038,7 @@ void Lara_State_Tread(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (g_Config.enable_enhanced_look) {
         if (g_Input.look) {
-            Lara_LookUpDown(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN);
+            Lara_LookUpDown();
         }
     }
 

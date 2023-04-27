@@ -195,7 +195,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
 
     if (g_Config.enable_enhanced_look && item->hit_points > 0) {
         if (g_Input.look) {
-            Lara_LookLeftRight(MAX_HEAD_ROTATION, HEAD_TURN);
+            Lara_LookLeftRight();
         } else {
             Lara_ResetLook();
         }
@@ -333,7 +333,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
 
     if (g_Config.enable_enhanced_look && item->hit_points > 0) {
         if (g_Input.look) {
-            Lara_LookLeftRight(MAX_HEAD_ROTATION, HEAD_TURN);
+            Lara_LookLeftRight();
         } else {
             Lara_ResetLook();
         }
