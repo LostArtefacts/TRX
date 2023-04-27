@@ -63,7 +63,7 @@ void Lara_LookLeftRightSurf(void)
 
 void Lara_LookUpDown(void)
 {
-    Lara_LookUpDownBase(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN);
+    Lara_LookUpDownBase(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN / 2);
 }
 
 void Lara_LookUpDownSurf(void)
