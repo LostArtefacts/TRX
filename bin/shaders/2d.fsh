@@ -1,12 +1,9 @@
-#version 130
-#extension GL_ARB_explicit_attrib_location: enable
+#version 120
 
-in vec2 vertTexCoords;
-
-layout(location = 0) out vec4 fragColor;
+varying vec2 vertTexCoords;
 
 uniform sampler2D tex0;
 
 void main(void) {
-    fragColor = texture(tex0, vertTexCoords);
+    gl_FragColor = texture2D(tex0, vertTexCoords);
 }

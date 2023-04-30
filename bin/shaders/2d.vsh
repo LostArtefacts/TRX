@@ -1,9 +1,9 @@
-#version 130
+#version 120
 #extension GL_ARB_explicit_attrib_location: enable
 
 layout(location = 0) in vec2 inPosition;
 
-out vec2 vertTexCoords;
+varying vec2 vertTexCoords;
 
 void main(void) {
     vertTexCoords = inPosition;
