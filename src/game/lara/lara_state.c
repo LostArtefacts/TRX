@@ -137,20 +137,8 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
 
     item->goal_anim_state = LS_STOP;
     if (g_Input.look) {
-        g_Camera.type = CAM_LOOK;
-        if (g_Input.left && g_Lara.head_y_rot > -MAX_HEAD_ROTATION) {
-            g_Lara.head_y_rot -= HEAD_TURN / 2;
-        } else if (g_Input.right && g_Lara.head_y_rot < MAX_HEAD_ROTATION) {
-            g_Lara.head_y_rot += HEAD_TURN / 2;
-        }
-        g_Lara.torso_y_rot = g_Lara.head_y_rot;
-
-        if (g_Input.forward && g_Lara.head_x_rot > MIN_HEAD_TILT_LOOK) {
-            g_Lara.head_x_rot -= HEAD_TURN / 2;
-        } else if (g_Input.back && g_Lara.head_x_rot < MAX_HEAD_TILT_LOOK) {
-            g_Lara.head_x_rot += HEAD_TURN / 2;
-        }
-        g_Lara.torso_x_rot = g_Lara.head_x_rot;
+        Lara_LookLeftRight();
+        Lara_LookUpDown();
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
@@ -934,21 +922,8 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Input.look) {
-        g_Camera.type = CAM_LOOK;
-        if (g_Input.left && g_Lara.head_y_rot > -MAX_HEAD_ROTATION_SURF) {
-            g_Lara.head_y_rot -= HEAD_TURN_SURF;
-        } else if (
-            g_Input.right && g_Lara.head_y_rot < MAX_HEAD_ROTATION_SURF) {
-            g_Lara.head_y_rot += HEAD_TURN_SURF;
-        }
-        g_Lara.torso_y_rot = g_Lara.head_y_rot / 2;
-
-        if (g_Input.forward && g_Lara.head_x_rot > MIN_HEAD_TILT_SURF) {
-            g_Lara.head_x_rot -= HEAD_TURN_SURF;
-        } else if (g_Input.back && g_Lara.head_x_rot < MAX_HEAD_TILT_SURF) {
-            g_Lara.head_x_rot += HEAD_TURN_SURF;
-        }
-        g_Lara.torso_x_rot = 0;
+        Lara_LookLeftRightSurf();
+        Lara_LookUpDownSurf();
         return;
     }
     if (g_Camera.type == CAM_LOOK) {
