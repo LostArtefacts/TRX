@@ -33,6 +33,12 @@ static void Lara_LookLeftRightBase(int16_t max_head_rot, int16_t head_turn)
 static void Lara_LookUpDownBase(
     int16_t min_head_tilt, int16_t max_head_tilt, int16_t head_turn)
 {
+    if (g_Config.enabled_inverted_look) {
+        uint16_t temp_forward = g_Input.forward;
+        g_Input.forward = g_Input.back;
+        g_Input.back = temp_forward;
+    }
+
     g_Camera.type = CAM_LOOK;
     if (g_Input.forward) {
         g_Input.forward = 0;

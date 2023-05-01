@@ -99,6 +99,10 @@
       "Title": "Numeric key quick item use",
       "Description": "Enables quick weapon draws and medipack usage.\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw Uzis\n- 8: Use small medipack\n- 9: Use large medipack"
     },
+    "enabled_inverted_look": {
+      "Title": "Inverted look",
+      "Description": "Inverts the Y axis controls when Lara looks."
+    },
     "fix_alligator_ai": {
       "Title": "Fix alligator AI",
       "Description": "Fixes alligators dealing no damage if Lara remains still in the water."

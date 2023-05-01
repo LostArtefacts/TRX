@@ -99,6 +99,10 @@
       "Title": "Touches rapide numériques",
       "Description": "Active les touches rapides numériques en haut du clavier, en raccourci d'équipement d'armes ou d'utilisation de soins.\n- 1: Pistolets\n- 2: Fusil à pompe\n- 3: Magnums\n- 4: Uzis\n- 8: Utiliser une petite trousse de soin\n- 9: Utiliser une grande trousse de soin"
     },
+    "enabled_inverted_look": {
+      "Title": "Inversion verticale du mode regarder",
+      "Description": "Inverse le contrôle de l'axe vertical quand Lara regarde autour d'elle."
+    },
     "fix_alligator_ai": {
       "Title": "Correction de l'intelligence artficielle des aligators",
       "Description": "Corrige les alligators n'infligeant aucun dégât si Lara reste toujours dans l'eau."
