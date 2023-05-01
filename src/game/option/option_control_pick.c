@@ -1,5 +1,3 @@
-#include "game/option/option_control_pick.h"
-
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/text.h"

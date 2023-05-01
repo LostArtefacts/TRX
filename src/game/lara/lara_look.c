@@ -1,5 +1,6 @@
 #include "game/lara/lara_look.h"
 
+#include "config.h"
 #include "game/input.h"
 #include "global/const.h"
 #include "global/types.h"
