@@ -52,4 +52,12 @@ installer:
 		-v $(CWD):/app/ \
 		rrdash/tomb1main_installer
 
-.PHONY: debug debugopt release clean imports lint test_base test_bin test test_gold installer
+config:
+	docker build . -f docker/config/Dockerfile -t rrdash/tomb1main_config
+	docker run --rm \
+		--user $(HOST_USER_UID):$(HOST_USER_GID) \
+		--network host \
+		-v $(CWD):/app/ \
+		rrdash/tomb1main_config
+
+.PHONY: debug debugopt release clean imports lint test_base test_bin test test_gold installer config
