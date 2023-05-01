@@ -3,16 +3,17 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
 
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>Tomb1Main_Installer</AssemblyName>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
 
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
@@ -21,18 +22,8 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
 
   <ItemGroup>
-    <ApplicationDefinitionKurwa Include="App.xaml">
-      <SubType>Designer</SubType>
-    </ApplicationDefinitionKurwa>
-
     <Compile Include="**/*.cs" Exclude="bin/**/*.cs;obj/**/*.cs;**/*.xaml.cs" />
     <Page Update="**/*.xaml">
       <SubType>Designer</SubType>

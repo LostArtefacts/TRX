@@ -5,4 +5,4 @@ RUN chown 1000:1000 /home
 USER 1000
 
 WORKDIR /app
-ENTRYPOINT ["/app/docker/installer/entrypoint.sh"]
+ENTRYPOINT ["/app/docker/config/entrypoint.sh"]
