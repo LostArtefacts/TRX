@@ -291,6 +291,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added the ability to unbind unessential keys
 - added the ability to reset control schemes to default
 - added customizable controller support
+- added an inverted look camera option
 - fixed freeze when holding the Action key during end of level
 - fixed inability to switch Control keys when shimmying
 - fixed setting user keys being very difficult

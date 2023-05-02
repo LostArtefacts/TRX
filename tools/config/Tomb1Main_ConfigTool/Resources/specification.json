@@ -66,6 +66,11 @@
           "Field": "enable_numeric_keys",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "enabled_inverted_look",
+          "DataType": "Bool",
+          "DefaultValue": false
         }
       ]
     },

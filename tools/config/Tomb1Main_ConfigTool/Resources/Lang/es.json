@@ -195,6 +195,10 @@
       "Description": "Permite sacar armas rápidamente y usar medipack.\n- 1: Dibujar pistolas\n- 2: Dibujar escopeta\n- 3: Dibujar magnums\n- 4: Dibujar Uzis\n- 8: Usar botiquín pequeño\n- 9: Usa botiquín grande",
       "Title": "Uso rápido de elementos de teclas numéricas"
     },
+    "enabled_inverted_look": {
+      "Title": "Vista invertida",
+      "Description": "Invierte los controles del eje Y cuando Lara mira."
+    },
     "enable_pitched_sounds": {
       "Description": "Permite que los efectos de sonido sean aleatorios, con distintas alturas para variar los sonidos del juego.",
       "Title": "Habilitar sonidos agudos"
