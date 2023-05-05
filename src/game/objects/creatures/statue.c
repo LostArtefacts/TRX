@@ -48,8 +48,7 @@ void Statue_Initialise(int16_t item_num)
 
     Item_Initialise(centaur_item_num);
 
-    Item_SwitchToAnim(centaur, CENTAUR_REARING_ANIM, -1);
-    centaur->frame_number += CENTAUR_REARING_FRAME;
+    Item_SwitchToAnim(centaur, CENTAUR_REARING_ANIM, CENTAUR_REARING_FRAME);
     centaur->current_anim_state =
         g_Anims[centaur->anim_number].current_anim_state;
     centaur->goal_anim_state = centaur->current_anim_state;
