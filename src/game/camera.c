@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+// Camera speed option ranges from 1-10, so index 0 is unused.
 static double m_ManualCameraMultiplier[11] = {
     1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
 };
