@@ -72,9 +72,7 @@ void Larson_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != LARSON_DEATH) {
             item->current_anim_state = LARSON_DEATH;
-            item->anim_number =
-                g_Objects[O_LARSON].anim_index + LARSON_DIE_ANIM;
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            Item_SwitchToAnim(item, LARSON_DIE_ANIM, -1);
         }
     } else {
         AI_INFO info;

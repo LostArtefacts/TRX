@@ -127,17 +127,10 @@ void Lion_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != LION_DEATH) {
             item->current_anim_state = LION_DEATH;
-            if (item->object_number == O_PUMA) {
-                item->anim_number = g_Objects[O_PUMA].anim_index + PUMA_DIE_ANIM
-                    + (int16_t)(Random_GetControl() / 0x4000);
-            } else if (item->object_number == O_LION) {
-                item->anim_number = g_Objects[O_LION].anim_index + LION_DIE_ANIM
-                    + (int16_t)(Random_GetControl() / 0x4000);
-            } else {
-                item->anim_number = g_Objects[O_LIONESS].anim_index
-                    + LION_DIE_ANIM + (int16_t)(Random_GetControl() / 0x4000);
-            }
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            int16_t anim_index =
+                item->object_number == O_PUMA ? PUMA_DIE_ANIM : LION_DIE_ANIM;
+            Item_SwitchToAnim(
+                item, anim_index + (int16_t)(Random_GetControl() / 0x4000), -1);
         }
     } else {
         AI_INFO info;

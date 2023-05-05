@@ -86,8 +86,7 @@ void Rat_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != RAT_DEATH) {
             item->current_anim_state = RAT_DEATH;
-            item->anim_number = g_Objects[O_RAT].anim_index + RAT_DIE_ANIM;
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            Item_SwitchToAnim(item, RAT_DIE_ANIM, -1);
         }
     } else {
         AI_INFO info;
@@ -158,8 +157,7 @@ void Rat_Control(int16_t item_num)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (wh != NO_HEIGHT) {
         item->object_number = O_VOLE;
-        item->anim_number = g_Objects[O_VOLE].anim_index;
-        item->frame_number = g_Anims[item->anim_number].frame_base;
+        Item_SwitchToAnim(item, VOLE_EMPTY, -1);
         item->current_anim_state =
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
@@ -207,8 +205,7 @@ void Vole_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != VOLE_DEATH) {
             item->current_anim_state = VOLE_DEATH;
-            item->anim_number = g_Objects[O_VOLE].anim_index + VOLE_DIE_ANIM;
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            Item_SwitchToAnim(item, VOLE_DIE_ANIM, -1);
         }
 
         Creature_Head(item, head);
@@ -221,7 +218,7 @@ void Vole_Control(int16_t item_num)
             item->object_number = O_RAT;
             item->current_anim_state = RAT_DEATH;
             item->goal_anim_state = RAT_DEATH;
-            item->anim_number = g_Objects[O_RAT].anim_index + RAT_DIE_ANIM;
+            Item_SwitchToAnim(item, RAT_DIE_ANIM, -1);
             item->frame_number = g_Anims[item->anim_number].frame_end;
             item->pos.y = item->floor;
         }
@@ -262,8 +259,7 @@ void Vole_Control(int16_t item_num)
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
             item->object_number = O_RAT;
-            item->anim_number = g_Objects[O_RAT].anim_index;
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            Item_SwitchToAnim(item, RAT_EMPTY, -1);
             item->current_anim_state =
                 g_Anims[item->anim_number].current_anim_state;
             item->goal_anim_state = item->current_anim_state;
