@@ -234,6 +234,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
+    CLAMP(g_Config.camera_speed, 1, 10);
 
     // User settings
     READ_BOOL(rendering.enable_bilinear_filter, true);
