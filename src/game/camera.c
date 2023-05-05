@@ -853,7 +853,6 @@ void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
 
 void Camera_MoveManual(void)
 {
-
     int16_t camera_delta = (const int)PHD_90 / (const int)FRAMES_PER_SECOND
         * (double)m_ManualCameraMultiplier[g_Config.camera_speed];
 
