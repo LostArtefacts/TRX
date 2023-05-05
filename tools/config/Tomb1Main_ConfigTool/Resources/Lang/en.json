@@ -103,6 +103,10 @@
       "Title": "Inverted look",
       "Description": "Inverts the Y axis controls when Lara looks."
     },
+    "camera_speed": {
+      "Title": "Camera speed",
+      "Description": "Changes how fast the manual camera moves."
+    },
     "fix_alligator_ai": {
       "Title": "Fix alligator AI",
       "Description": "Fixes alligators dealing no damage if Lara remains still in the water."
