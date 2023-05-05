@@ -118,8 +118,7 @@ void Ape_Vault(int16_t item_num, int16_t angle)
 
     item->pos.y = y;
     item->current_anim_state = APE_VAULT;
-    item->anim_number = g_Objects[O_APE].anim_index + APE_VAULT_ANIM;
-    item->frame_number = g_Anims[item->anim_number].frame_base;
+    Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
 }
 
 void Ape_Control(int16_t item_num)
@@ -140,9 +139,9 @@ void Ape_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != APE_DEATH) {
             item->current_anim_state = APE_DEATH;
-            item->anim_number = g_Objects[O_APE].anim_index + APE_DIE_ANIM
-                + (int16_t)(Random_GetControl() / 0x4000);
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            Item_SwitchToAnim(
+                item, APE_DIE_ANIM + (int16_t)(Random_GetControl() / 0x4000),
+                -1);
         }
     } else {
         AI_INFO info;

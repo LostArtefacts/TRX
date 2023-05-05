@@ -135,8 +135,7 @@ void Item_Initialise(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
-    item->anim_number = object->anim_index;
-    item->frame_number = g_Anims[item->anim_number].frame_base;
+    Item_SwitchToAnim(item, 0, -1);
     item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
     item->goal_anim_state = item->current_anim_state;
     item->required_anim_state = 0;

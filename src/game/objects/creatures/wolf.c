@@ -93,9 +93,9 @@ void Wolf_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != WOLF_DEATH) {
             item->current_anim_state = WOLF_DEATH;
-            item->anim_number = g_Objects[O_WOLF].anim_index + WOLF_DIE_ANIM
-                + (int16_t)(Random_GetControl() / 11000);
-            item->frame_number = g_Anims[item->anim_number].frame_base;
+            Item_SwitchToAnim(
+                item, WOLF_DIE_ANIM + (int16_t)(Random_GetControl() / 11000),
+                -1);
         }
     } else {
         AI_INFO info;

@@ -12,6 +12,8 @@
 #include "util.h"
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
+#define CENTAUR_REARING_ANIM 7
+#define CENTAUR_REARING_FRAME 36
 
 void Statue_Setup(OBJECT_INFO *obj)
 {
@@ -46,8 +48,7 @@ void Statue_Initialise(int16_t item_num)
 
     Item_Initialise(centaur_item_num);
 
-    centaur->anim_number = g_Objects[O_CENTAUR].anim_index + 7;
-    centaur->frame_number = g_Anims[centaur->anim_number].frame_base + 36;
+    Item_SwitchToAnim(centaur, CENTAUR_REARING_ANIM, CENTAUR_REARING_FRAME);
     centaur->current_anim_state =
         g_Anims[centaur->anim_number].current_anim_state;
     centaur->goal_anim_state = centaur->current_anim_state;

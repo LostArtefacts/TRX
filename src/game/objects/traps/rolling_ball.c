@@ -102,8 +102,7 @@ void RollingBall_Control(int16_t item_num)
         }
         item->current_anim_state = TRAP_SET;
         item->goal_anim_state = TRAP_SET;
-        item->anim_number = g_Objects[item->object_number].anim_index;
-        item->frame_number = g_Anims[item->anim_number].frame_base;
+        Item_SwitchToAnim(item, 0, -1);
         item->current_anim_state =
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
