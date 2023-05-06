@@ -70,7 +70,7 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
     case O_PICKUP_OPTION1:
     case O_PICKUP_OPTION2:
     case O_SCION_OPTION:
-        g_InputDB.select = 1;
+        g_InputDB.menu_confirm = 1;
         break;
 
     case O_GUN_AMMO_OPTION:
@@ -80,7 +80,7 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
         break;
 
     default:
-        if (g_InputDB.deselect || g_InputDB.select) {
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             inv_item->goal_frame = 0;
             inv_item->anim_direction = -1;
         }

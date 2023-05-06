@@ -369,7 +369,7 @@ void Stats_Show(int32_t level_num)
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
-    } while (!g_InputDB.select && !g_InputDB.deselect);
+    } while (!g_InputDB.menu_confirm && !g_InputDB.menu_back);
 
     Output_FadeToBlack(false);
     Text_RemoveAll();
@@ -529,7 +529,7 @@ void Stats_ShowTotal(const char *filename)
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
-    } while (!g_InputDB.select && !g_InputDB.deselect);
+    } while (!g_InputDB.menu_confirm && !g_InputDB.menu_back);
 
     // fade out
     Output_FadeToBlack(true);

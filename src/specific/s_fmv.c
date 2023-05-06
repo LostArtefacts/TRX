@@ -2185,7 +2185,7 @@ static void S_FMV_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
                event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) {
 
         Input_Update();
-        if (g_InputDB.deselect || g_InputDB.select) {
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             is->abort_request = true;
         }
 

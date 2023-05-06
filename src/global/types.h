@@ -2006,8 +2006,6 @@ typedef union INPUT_STATE {
         uint64_t step_right : 1;
         uint64_t roll : 1;
         uint64_t pause : 1;
-        uint64_t select : 1;
-        uint64_t deselect : 1;
         uint64_t save : 1;
         uint64_t load : 1;
         uint64_t fly_cheat : 1;
@@ -2029,6 +2027,12 @@ typedef union INPUT_STATE {
         uint64_t toggle_bilinear_filter : 1;
         uint64_t toggle_perspective_filter : 1;
         uint64_t toggle_fps_counter : 1;
+        uint64_t menu_up : 1;
+        uint64_t menu_down : 1;
+        uint64_t menu_left : 1;
+        uint64_t menu_right : 1;
+        uint64_t menu_confirm : 1;
+        uint64_t menu_back : 1;
     };
 } INPUT_STATE;
 
@@ -2066,7 +2070,13 @@ typedef enum INPUT_ROLE {
     INPUT_ROLE_LOAD = 30,
     INPUT_ROLE_FPS = 31,
     INPUT_ROLE_BILINEAR = 32,
-    INPUT_ROLE_NUMBER_OF = 33,
+    INPUT_ROLE_MENU_UP = 33,
+    INPUT_ROLE_MENU_DOWN = 34,
+    INPUT_ROLE_MENU_LEFT = 35,
+    INPUT_ROLE_MENU_RIGHT = 36,
+    INPUT_ROLE_MENU_CONFIRM = 37,
+    INPUT_ROLE_MENU_BACK = 38,
+    INPUT_ROLE_NUMBER_OF = 39,
 } INPUT_ROLE;
 
 typedef enum INPUT_LAYOUT {

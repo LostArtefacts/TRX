@@ -132,7 +132,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
         }
     }
 
-    if (g_InputDB.back) {
+    if (g_InputDB.menu_down) {
         if (req->requested < req->items - 1) {
             req->requested++;
         }
@@ -144,7 +144,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
         return 0;
     }
 
-    if (g_InputDB.forward) {
+    if (g_InputDB.menu_up) {
         if (req->requested) {
             req->requested--;
         }
@@ -156,7 +156,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
         return 0;
     }
 
-    if (g_InputDB.select) {
+    if (g_InputDB.menu_confirm) {
         if ((req->item_flags[req->requested] & RIF_BLOCKED)
             && (req->flags & RIF_BLOCKABLE)) {
             g_Input = (INPUT_STATE) { 0 };
@@ -165,7 +165,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
             Requester_Remove(req);
             return req->requested + 1;
         }
-    } else if (g_InputDB.deselect) {
+    } else if (g_InputDB.menu_back) {
         Requester_Remove(req);
         return -1;
     }

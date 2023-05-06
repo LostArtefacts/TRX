@@ -63,6 +63,12 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
+        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
+        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
+        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
+        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
+        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
+        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     },
 
     // custom user controls
@@ -100,6 +106,12 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
+        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
+        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
+        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
+        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
+        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
+        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     },
 
     {
@@ -136,6 +148,12 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
+        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
+        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
+        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
+        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
+        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
+        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     },
 
     {
@@ -172,6 +190,12 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
+        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
+        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
+        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
+        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
+        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
+        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     }
     // clang-format on
 };
@@ -213,6 +237,12 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         },
 
         {
@@ -249,6 +279,12 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         },
 
         {
@@ -285,6 +321,12 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         },
 
         {
@@ -321,6 +363,12 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         }
         // clang-format on
     };
@@ -608,7 +656,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
-                case SDL_CONTROLLER_BUTTON_MISC1:         return "MIC"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "MIC";      /* PS5 microphone button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
@@ -637,7 +685,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
-                case SDL_CONTROLLER_BUTTON_MISC1:         return "CAPTURE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "CAPTURE";  /* Nintendo Switch capture button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
@@ -666,7 +714,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
-                case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE";    /* Xbox Series X share button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
@@ -832,12 +880,10 @@ static INPUT_STATE S_Input_GetControllerState(
         state.slow                   |= S_Input_GetBindState(INPUT_ROLE_SLOW, cntlr_layout_num);
         state.jump                   |= S_Input_GetBindState(INPUT_ROLE_JUMP, cntlr_layout_num);
         state.action                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
-        state.select                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
         state.draw                   |= S_Input_GetBindState(INPUT_ROLE_DRAW, cntlr_layout_num);
         state.look                   |= S_Input_GetBindState(INPUT_ROLE_LOOK, cntlr_layout_num);
         state.roll                   |= S_Input_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
         state.option                 |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
-        state.deselect               |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
         state.pause                  |= S_Input_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
         state.camera_up              |= S_Input_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
         state.camera_down            |= S_Input_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
@@ -858,6 +904,12 @@ static INPUT_STATE S_Input_GetControllerState(
         state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
         state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
+        state.menu_up                |= S_Input_GetBindState(INPUT_ROLE_MENU_UP, cntlr_layout_num);
+        state.menu_down              |= S_Input_GetBindState(INPUT_ROLE_MENU_DOWN, cntlr_layout_num);
+        state.menu_left              |= S_Input_GetBindState(INPUT_ROLE_MENU_LEFT, cntlr_layout_num);
+        state.menu_right             |= S_Input_GetBindState(INPUT_ROLE_MENU_RIGHT, cntlr_layout_num);
+        state.menu_confirm           |= S_Input_GetBindState(INPUT_ROLE_MENU_CONFIRM, cntlr_layout_num);
+        state.menu_back              |= S_Input_GetBindState(INPUT_ROLE_MENU_BACK, cntlr_layout_num);
         // clang-format on
     }
 
@@ -937,8 +989,12 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
     linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
 
-    linput.select                    = S_Input_Key(INPUT_ROLE_ACTION, layout_num);
-    linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION, layout_num);
+    linput.menu_up                   = S_Input_Key(INPUT_ROLE_MENU_UP, layout_num);
+    linput.menu_down                 = S_Input_Key(INPUT_ROLE_MENU_DOWN, layout_num);
+    linput.menu_left                 = S_Input_Key(INPUT_ROLE_MENU_LEFT, layout_num);
+    linput.menu_right                = S_Input_Key(INPUT_ROLE_MENU_RIGHT, layout_num);
+    linput.menu_confirm              = S_Input_Key(INPUT_ROLE_MENU_CONFIRM, layout_num);
+    linput.menu_back                 = S_Input_Key(INPUT_ROLE_MENU_BACK, layout_num);
 
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
     linput.load                      = S_Input_Key(INPUT_ROLE_LOAD, layout_num);
