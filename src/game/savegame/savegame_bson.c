@@ -16,14 +16,13 @@
 #include "json/json_base.h"
 #include "log.h"
 #include "memory.h"
+#include "util.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <zconf.h>
 #include <zlib.h>
 
-#define MKTAG(a, b, c, d)                                                      \
-    ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
 typedef struct SAVEGAME_BSON_HEADER {

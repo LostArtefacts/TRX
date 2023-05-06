@@ -30,3 +30,6 @@
         (a) = (b);                                                             \
         (b) = (c);                                                             \
     } while (0)
+
+#define MKTAG(a, b, c, d)                                                      \
+    ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
