@@ -180,21 +180,7 @@ void Lara_Control(void)
         }
     }
 
-    int16_t camera_move_delta = PHD_45 / 30;
-
-    if (g_Input.camera_left) {
-        Camera_OffsetAdditionalAngle(camera_move_delta);
-    } else if (g_Input.camera_right) {
-        Camera_OffsetAdditionalAngle(-camera_move_delta);
-    }
-    if (g_Input.camera_up) {
-        Camera_OffsetAdditionalElevation(-camera_move_delta);
-    } else if (g_Input.camera_down) {
-        Camera_OffsetAdditionalElevation(camera_move_delta);
-    }
-    if (g_Input.camera_reset) {
-        Camera_OffsetReset();
-    }
+    Camera_MoveManual();
 
     switch (g_Lara.water_status) {
     case LWS_ABOVE_WATER:

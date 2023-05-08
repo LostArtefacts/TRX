@@ -199,6 +199,10 @@
       "Title": "Vista invertida",
       "Description": "Invierte los controles del eje Y cuando Lara mira."
     },
+    "camera_speed": {
+      "Title": "Velocidad de la cámara",
+      "Description": "Cambia la rapidez con la que se mueve la cámara manual."
+    },
     "enable_pitched_sounds": {
       "Description": "Permite que los efectos de sonido sean aleatorios, con distintas alturas para variar los sonidos del juego.",
       "Title": "Habilitar sonidos agudos"

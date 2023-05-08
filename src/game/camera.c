@@ -1,5 +1,7 @@
 #include "game/camera.h"
 
+#include "config.h"
+#include "game/input.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/random.h"
@@ -14,6 +16,11 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+
+// Camera speed option ranges from 1-10, so index 0 is unused.
+static double m_ManualCameraMultiplier[11] = {
+    1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
+};
 
 static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num);
@@ -31,6 +38,8 @@ static void Camera_Shift(
     int32_t top, int32_t right, int32_t bottom);
 static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static void Camera_LoadCutsceneFrame(void);
+static void Camera_OffsetAdditionalAngle(int16_t delta);
+static void Camera_OffsetAdditionalElevation(int16_t delta);
 
 static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num)
@@ -392,6 +401,29 @@ static void Camera_LoadCutsceneFrame(void)
         &g_Camera.pos.room_number);
 }
 
+static void Camera_OffsetAdditionalAngle(int16_t delta)
+{
+    g_Camera.additional_angle += delta;
+}
+
+static void Camera_OffsetAdditionalElevation(int16_t delta)
+{
+    // don't let this value wrap, so clamp it.
+    if (delta > 0) {
+        if (g_Camera.additional_elevation > INT16_MAX - delta) {
+            g_Camera.additional_elevation = INT16_MAX;
+        } else {
+            g_Camera.additional_elevation += delta;
+        }
+    } else {
+        if (g_Camera.additional_elevation < INT16_MIN - delta) {
+            g_Camera.additional_elevation = INT16_MIN;
+        } else {
+            g_Camera.additional_elevation += delta;
+        }
+    }
+}
+
 void Camera_Initialise(void)
 {
     g_Camera.shift = g_LaraItem->pos.y - WALL_L;
@@ -739,29 +771,6 @@ void Camera_Update(void)
     g_ChunkyFlag = false;
 }
 
-void Camera_OffsetAdditionalAngle(int16_t delta)
-{
-    g_Camera.additional_angle += delta;
-}
-
-void Camera_OffsetAdditionalElevation(int16_t delta)
-{
-    // don't let this value wrap, so clamp it.
-    if (delta > 0) {
-        if (g_Camera.additional_elevation > INT16_MAX - delta) {
-            g_Camera.additional_elevation = INT16_MAX;
-        } else {
-            g_Camera.additional_elevation += delta;
-        }
-    } else {
-        if (g_Camera.additional_elevation < INT16_MIN - delta) {
-            g_Camera.additional_elevation = INT16_MIN;
-        } else {
-            g_Camera.additional_elevation += delta;
-        }
-    }
-}
-
 void Camera_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
@@ -840,5 +849,25 @@ void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
                 && g_Camera.item != g_Camera.last_item)) {
             g_Camera.item = NULL;
         }
+    }
+}
+
+void Camera_MoveManual(void)
+{
+    int16_t camera_delta = (const int)PHD_90 / (const int)FRAMES_PER_SECOND
+        * (double)m_ManualCameraMultiplier[g_Config.camera_speed];
+
+    if (g_Input.camera_left) {
+        Camera_OffsetAdditionalAngle(camera_delta);
+    } else if (g_Input.camera_right) {
+        Camera_OffsetAdditionalAngle(-camera_delta);
+    }
+    if (g_Input.camera_up) {
+        Camera_OffsetAdditionalElevation(-camera_delta);
+    } else if (g_Input.camera_down) {
+        Camera_OffsetAdditionalElevation(camera_delta);
+    }
+    if (g_Input.camera_reset) {
+        Camera_OffsetReset();
     }
 }

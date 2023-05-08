@@ -103,6 +103,10 @@
       "Title": "Inversion verticale du mode regarder",
       "Description": "Inverse le contrôle de l'axe vertical quand Lara regarde autour d'elle."
     },
+    "camera_speed": {
+      "Title": "Vitesse de la caméra",
+      "Description": "Modifie la vitesse de mouvement de la caméra manuelle."
+    },
     "fix_alligator_ai": {
       "Title": "Correction de l'intelligence artficielle des aligators",
       "Description": "Corrige les alligators n'infligeant aucun dégât si Lara reste toujours dans l'eau."
