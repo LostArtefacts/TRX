@@ -63,12 +63,6 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
-        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
-        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
-        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
-        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
-        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
-        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     },
 
     // custom user controls
@@ -106,12 +100,6 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
-        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
-        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
-        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
-        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
-        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
-        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     },
 
     {
@@ -148,12 +136,6 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
-        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
-        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
-        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
-        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
-        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
-        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     },
 
     {
@@ -190,12 +172,6 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F6,         // INPUT_ROLE_LOAD
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
-        SDL_SCANCODE_UP,         // INPUT_ROLE_MENU_UP
-        SDL_SCANCODE_DOWN,       // INPUT_ROLE_MENU_DOWN
-        SDL_SCANCODE_LEFT,       // INPUT_ROLE_MENU_LEFT
-        SDL_SCANCODE_RIGHT,      // INPUT_ROLE_MENU_RIGHT
-        SDL_SCANCODE_RETURN,     // INPUT_ROLE_MENU_CONFIRM
-        SDL_SCANCODE_ESCAPE,     // INPUT_ROLE_MENU_BACK
     }
     // clang-format on
 };
@@ -237,12 +213,6 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         },
 
         {
@@ -279,12 +249,6 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         },
 
         {
@@ -321,12 +285,6 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         },
 
         {
@@ -363,12 +321,6 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LOAD
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_UP}, 0 },        // INPUT_ROLE_MENU_UP
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_DOWN}, 0 },      // INPUT_ROLE_MENU_DOWN
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_LEFT}, 0 },      // INPUT_ROLE_MENU_LEFT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_DPAD_RIGHT}, 0 },     // INPUT_ROLE_MENU_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_A}, 0 },              // INPUT_ROLE_MENU_CONFIRM
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_BACK}, 0 },           // INPUT_ROLE_MENU_BACK
         }
         // clang-format on
     };
@@ -904,12 +856,18 @@ static INPUT_STATE S_Input_GetControllerState(
         state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
         state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
-        state.menu_up                |= S_Input_GetBindState(INPUT_ROLE_MENU_UP, cntlr_layout_num);
-        state.menu_down              |= S_Input_GetBindState(INPUT_ROLE_MENU_DOWN, cntlr_layout_num);
-        state.menu_left              |= S_Input_GetBindState(INPUT_ROLE_MENU_LEFT, cntlr_layout_num);
-        state.menu_right             |= S_Input_GetBindState(INPUT_ROLE_MENU_RIGHT, cntlr_layout_num);
-        state.menu_confirm           |= S_Input_GetBindState(INPUT_ROLE_MENU_CONFIRM, cntlr_layout_num);
-        state.menu_back              |= S_Input_GetBindState(INPUT_ROLE_MENU_BACK, cntlr_layout_num);
+        state.menu_up                |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_UP);
+        state.menu_down              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+        state.menu_left              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+        state.menu_right             |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+        if (m_ControllerType == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO || m_ControllerType == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR) {
+            state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
+            state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
+        } else {
+            state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
+            state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
+        }
+
         // clang-format on
     }
 
@@ -989,12 +947,12 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
     linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
 
-    linput.menu_up                   = S_Input_Key(INPUT_ROLE_MENU_UP, layout_num);
-    linput.menu_down                 = S_Input_Key(INPUT_ROLE_MENU_DOWN, layout_num);
-    linput.menu_left                 = S_Input_Key(INPUT_ROLE_MENU_LEFT, layout_num);
-    linput.menu_right                = S_Input_Key(INPUT_ROLE_MENU_RIGHT, layout_num);
-    linput.menu_confirm              = S_Input_Key(INPUT_ROLE_MENU_CONFIRM, layout_num);
-    linput.menu_back                 = S_Input_Key(INPUT_ROLE_MENU_BACK, layout_num);
+    linput.menu_up                   = KEY_DOWN(SDL_SCANCODE_UP);
+    linput.menu_down                 = KEY_DOWN(SDL_SCANCODE_DOWN);
+    linput.menu_left                 = KEY_DOWN(SDL_SCANCODE_LEFT);
+    linput.menu_right                = KEY_DOWN(SDL_SCANCODE_RIGHT);
+    linput.menu_confirm              = KEY_DOWN(SDL_SCANCODE_RETURN);
+    linput.menu_back                 = KEY_DOWN(SDL_SCANCODE_ESCAPE);
 
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
     linput.load                      = S_Input_Key(INPUT_ROLE_LOAD, layout_num);
