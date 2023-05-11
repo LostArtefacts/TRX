@@ -7,6 +7,7 @@
 - added an option to fix original texture issues (#826)
 - fixed sounds stopping instead of pausing if game sounds in inventory are disabled (#717)
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling (#323)
+- fixed Lara not being able to jump off trapdoors or crumbling floors if the sidestep descent fix is enabled (#830)
 - changed shaders to use GLSL 1.20 which should fix most issues with OpenGL 2.1 (#327, #685)
 
 ## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05

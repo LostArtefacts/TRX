@@ -433,10 +433,6 @@ void Lara_Col_Compress(ITEM_INFO *item, COLL_INFO *coll)
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
 
-    if (g_Config.fix_descending_glitch && Lara_Fallen(item, coll)) {
-        return;
-    }
-
     if (coll->mid_ceiling > -100) {
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
