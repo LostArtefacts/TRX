@@ -320,9 +320,9 @@ int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 
     if (f->index) {
         data = &g_FloorData[f->index];
-        type = *data++ & DATA_TYPE;
+        type = *data & DATA_TYPE;
 
-        if (type == FT_TILT) {
+        if (!(*data++ & END_BIT) && type == FT_TILT) {
             data++;
             type = *data++ & DATA_TYPE;
         }
