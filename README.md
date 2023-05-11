@@ -330,7 +330,11 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed incorrect ceiling textures in Colosseum 
 - fixed inconsistencies in some enemy textures
 - fixed the animation of Lara's left arm when the shotgun is equipped
-- fixed room texture issues throughout the game, including Unfinished Business
+- fixed the following room texture issues throughout the game, including Unfinished Business:
+    - incorrect textures
+    - missing faces
+    - wrongly aligned vertices
+    - wrongly rotated faces
 
 #### Audio
 - added music during the credits
