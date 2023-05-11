@@ -71,6 +71,7 @@
             // specific injection data paths
             "injections": [
                 "data/braid.bin",
+                "data/gym_textures.bin",
                 "data/lara_animations.bin",
             ],
 
@@ -103,6 +104,9 @@
             "file": "data/level1.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data/caves_textures.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
                 {"type": "start_game"},
@@ -120,6 +124,9 @@
             "file": "data/level2.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data/vilcabamba_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -140,6 +147,9 @@
             "file": "data/level3a.phd",
             "type": "normal",
             "music": 57,
+            "injections": [
+                "data/valley_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -160,7 +170,8 @@
             "type": "normal",
             "music": 57,
             "injections": [
-                "data/larson_gun.bin"
+                "data/larson_textures.bin",
+                "data/qualopec_textures.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
@@ -177,6 +188,9 @@
             "file": "data/level4.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/folly_textures.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
                 {"type": "start_game"},
@@ -201,7 +215,7 @@
             "music": 59,
             "injections": [
                 "data/colosseum_fd.bin",
-                "data/colosseum_roof.bin"
+                "data/colosseum_textures.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
@@ -221,6 +235,9 @@
             "file": "data/level6.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/midas_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -240,6 +257,9 @@
             "file": "data/level7a.phd",
             "type": "normal",
             "music": 58,
+            "injections": [
+                "data/cistern_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -260,6 +280,9 @@
             "file": "data/level7b.phd",
             "type": "normal",
             "music": 58,
+            "injections": [
+                "data/tihocan_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -279,6 +302,9 @@
             "file": "data/level8a.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/khamoon_textures.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/vision.avi"},
                 {"type": "start_game"},
@@ -320,6 +346,9 @@
             "file": "data/level8c.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/sanctuary_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -343,6 +372,7 @@
             "injections": [
                 "data/cowboy_textures.bin",
                 "data/kold_textures.bin",
+                "data/mines_textures.bin",
                 "data/skateboardkid_textures.bin"
             ],
             "sequence": [
@@ -367,6 +397,9 @@
             "file": "data/level10b.phd",
             "type": "normal",
             "music": 60,
+            "injections": [
+                "data/atlantis_textures.bin",
+            ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
                 {"type": "start_game"},
@@ -387,7 +420,8 @@
             "type": "normal",
             "music": 60,
             "injections": [
-                "data/pyramid_fd.bin"
+                "data/pyramid_fd.bin",
+                "data/pyramid_textures.bin",
             ],
             "sequence": [
                 {"type": "start_game"},
@@ -491,7 +525,8 @@
             "inherit_injections": false,
             "injections": [
                 "data/backpack_cut.bin",
-                "data/braid_cut2_cut4.bin"
+                "data/braid_cut2_cut4.bin",
+                "data/cut4_textures.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},

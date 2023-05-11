@@ -123,6 +123,10 @@
       "Title": "Fix floor data issues",
       "Description": "Fixes original issues with floor data/triggers, including the following.\n- The untriggered bat in Colosseum.\n- The secret in Great Pyramid that does not register."
     },
+    "fix_texture_issues": {
+      "Title": "Fix texture issues",
+      "Description": "Fixes original issues with missing or incorrect textures."
+    },
     "fix_qwop_glitch": {
       "Title": "Fix QWOP glitch",
       "Description": "Fixes Lara jumping on small steps sometimes resulting in a weird running animation, known as a QWOP state."

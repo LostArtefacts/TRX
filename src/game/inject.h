@@ -5,6 +5,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+typedef struct INJECTION_ROOM_MESH {
+    int16_t room_index;
+    uint32_t extra_size;
+} INJECTION_ROOM_MESH;
+
 typedef struct INJECTION_INFO {
     int32_t texture_page_count;
     int32_t texture_count;
@@ -26,8 +31,13 @@ typedef struct INJECTION_INFO {
     int32_t texture_overwrite_count;
     int32_t floor_edit_count;
     int32_t floor_data_size;
+    int32_t room_mesh_count;
+    INJECTION_ROOM_MESH *room_meshes;
+    int32_t room_mesh_edit_count;
+    int32_t room_door_edit_count;
 } INJECTION_INFO;
 
 bool Inject_Init(
     int injection_count, char *filenames[], INJECTION_INFO *aggregate);
 bool Inject_AllInjections(LEVEL_INFO *level_info);
+uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index);

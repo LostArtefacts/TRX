@@ -144,6 +144,7 @@ static bool Level_LoadRooms(MYFILE *fp)
 {
     uint16_t count2;
     uint32_t count4;
+    uint32_t inj_mesh_size;
 
     File_Read(&g_RoomCount, sizeof(uint16_t), 1, fp);
     LOG_INFO("%d rooms", g_RoomCount);
@@ -164,8 +165,9 @@ static bool Level_LoadRooms(MYFILE *fp)
 
         // Room mesh
         File_Read(&count4, sizeof(uint32_t), 1, fp);
-        current_room_info->data =
-            GameBuf_Alloc(sizeof(uint16_t) * count4, GBUF_ROOM_MESH);
+        inj_mesh_size = Inject_GetExtraRoomMeshSize(i);
+        current_room_info->data = GameBuf_Alloc(
+            sizeof(uint16_t) * (count4 + inj_mesh_size), GBUF_ROOM_MESH);
         File_Read(current_room_info->data, sizeof(uint16_t), count4, fp);
 
         // Doors
