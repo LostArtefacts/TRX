@@ -259,6 +259,10 @@
       "Description": "Soluciona los problemas originales con los datos/activadores del suelo, incluyendo los siguientes.\n- El murciélago no activado en el Coliseo.\n- El secreto no registrado en la Gran Pirámide.",
       "Title": "Arreglar problemas de datos de suelo"
     },
+    "fix_texture_issues": {
+      "Title": "Solucionar problemas de textura",
+      "Description": "Soluciona problemas originales con texturas faltantes o incorrectas."
+    },
     "fix_qwop_glitch": {
       "Description": "Corrige el salto de Lara en pequeños pasos que a veces resulta en una extraña animación en ejecución, conocida como estado QWOP.",
       "Title": "Solucione la falla de QWOP"

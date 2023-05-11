@@ -123,6 +123,10 @@
       "Title": "Correction de la base de données des niveaux",
       "Description": "Corrige les bugs originaux de la base de données des niveaux, incluant les points suivants :\n- Les chauves-souris qui ne se déclenchent pas dans le Colisée.\n- Le secret dans la grande pyramide qui n'existait pas."
     },
+    "fix_texture_issues": {
+      "Title": "Corrige les problèmes de texture",
+      "Description": "Corrige les bugs originaux connus de textures manquantes ou incorrectes."
+    },
     "fix_qwop_glitch": {
       "Title": "Correction du glitch QWOP",
       "Description": "Corrige le saut de Lara sur de petites étapes, entraînant parfois une animation de course étrange, connu sous le nom du glitch QWOP."

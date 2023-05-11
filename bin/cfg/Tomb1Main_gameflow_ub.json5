@@ -24,6 +24,9 @@
             "file": "data/egypt.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/egypt_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -41,6 +44,9 @@
             "file": "data/cat.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/cat_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -58,6 +64,9 @@
             "file": "data/end.phd",
             "type": "normal",
             "music": 60,
+            "injections": [
+                "data/stronghold_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -75,6 +84,9 @@
             "file": "data/end2.phd",
             "type": "normal",
             "music": 60,
+            "injections": [
+                "data/hive_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},

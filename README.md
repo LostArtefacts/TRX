@@ -330,6 +330,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed incorrect ceiling textures in Colosseum 
 - fixed inconsistencies in some enemy textures
 - fixed the animation of Lara's left arm when the shotgun is equipped
+- fixed room texture issues throughout the game, including Unfinished Business
 
 #### Audio
 - added music during the credits
@@ -420,7 +421,7 @@ Note: this section may be subject to change.
     - [ ] 3.0
 - [ ] Work on data injection and other features
     - [x] Add Lara's braid to each level
-    - [ ] Fix texture/face issues
+    - [x] Fix texture/face issues
     - [ ] Fix floor data issues
     - [ ] ...
 

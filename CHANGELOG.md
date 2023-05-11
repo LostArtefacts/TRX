@@ -4,6 +4,7 @@
 - added a cheat to explode Lara like in TR2 and TR3 (#793)
 - added an inverted look camera option (#700)
 - added a camera speed option for the manual camera (#815)
+- added an option to fix original texture issues (#826)
 - fixed sounds stopping instead of pausing if game sounds in inventory are disabled (#717)
 - changed shaders to use GLSL 1.20 which should fix most issues with OpenGL 2.1 (#327, #685)
 

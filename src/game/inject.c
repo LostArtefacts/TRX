@@ -14,10 +14,11 @@
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
-#define INJECTION_CURRENT_VERSION 1
+#define INJECTION_CURRENT_VERSION 2
 
 typedef enum INJECTION_VERSION {
     INJ_VERSION_1 = 1,
+    INJ_VERSION_2 = 2,
 } INJECTION_VERSION;
 
 typedef enum INJECTION_TYPE {
@@ -73,6 +74,15 @@ typedef enum FLOOR_EDIT_TYPE {
     FET_TRIGGER_PARAM = 0,
 } FLOOR_EDIT_TYPE;
 
+typedef enum ROOM_MESH_EDIT_TYPE {
+    RMET_TEXTURE_FACE = 0,
+    RMET_MOVE_FACE = 1,
+    RMET_MOVE_VERTEX = 2,
+    RMET_ROTATE_FACE = 3,
+    RMET_ADD_FACE = 4,
+    RMET_ADD_VERTEX = 5,
+} ROOM_MESH_EDIT_TYPE;
+
 static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = NULL;
 static INJECTION_INFO *m_Aggregate = NULL;
@@ -106,6 +116,21 @@ static void Inject_TextureOverwrites(
 static void Inject_FloorDataEdits(INJECTION *injection);
 static void Inject_TriggerParameterChange(
     INJECTION *injection, FLOOR_INFO *floor);
+
+static void Inject_RoomMeshEdits(INJECTION *injection);
+static void Inject_TextureRoomFace(INJECTION *injection);
+static void Inject_MoveRoomFace(INJECTION *injection);
+static void Inject_MoveRoomVertex(INJECTION *injection);
+static void Inject_RotateRoomFace(INJECTION *injection);
+static void Inject_AddRoomFace(INJECTION *injection);
+static void Inject_AddRoomVertex(INJECTION *injection);
+
+static int16_t *Inject_GetRoomTexture(
+    int16_t room, FACE_TYPE face_type, int16_t face_index);
+static int16_t *Inject_GetRoomFace(
+    int16_t room, FACE_TYPE face_type, int16_t face_index);
+
+static void Inject_RoomDoorEdits(INJECTION *injection);
 
 bool Inject_Init(
     int num_injections, char *filenames[], INJECTION_INFO *aggregate)
@@ -153,7 +178,6 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
 
     switch (injection->type) {
     case INJ_GENERAL:
-    case INJ_TEXTURE_FIX:
     case INJ_LARA_ANIMS:
         injection->relevant = true;
         break;
@@ -165,6 +189,9 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_FLOOR_DATA:
         injection->relevant = g_Config.fix_floor_data_issues;
+        break;
+    case INJ_TEXTURE_FIX:
+        injection->relevant = g_Config.fix_texture_issues;
         break;
     default:
         injection->relevant = false;
@@ -196,6 +223,25 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
         File_Read(&info->texture_overwrite_count, sizeof(int32_t), 1, fp);
         File_Read(&info->floor_edit_count, sizeof(int32_t), 1, fp);
         File_Read(&info->floor_data_size, sizeof(int32_t), 1, fp);
+
+        if (injection->version > INJ_VERSION_1) {
+            // room_mesh_count is a summary of the change in mesh size,
+            // while room_mesh_edit_count indicates how many edits to
+            // read and interpret (not all edits incur a size change).
+            File_Read(&info->room_mesh_count, sizeof(uint32_t), 1, fp);
+            info->room_meshes = Memory_Alloc(
+                sizeof(INJECTION_ROOM_MESH) * info->room_mesh_count);
+            for (int i = 0; i < info->room_mesh_count; i++) {
+                INJECTION_ROOM_MESH *mesh = &info->room_meshes[i];
+                File_Read(&mesh->room_index, sizeof(int16_t), 1, fp);
+                File_Read(&mesh->extra_size, sizeof(uint32_t), 1, fp);
+            }
+
+            File_Read(&info->room_mesh_edit_count, sizeof(uint32_t), 1, fp);
+            File_Read(&info->room_door_edit_count, sizeof(uint32_t), 1, fp);
+        } else {
+            info->room_meshes = NULL;
+        }
 
         m_Aggregate->texture_page_count += info->texture_page_count;
         m_Aggregate->texture_count += info->texture_count;
@@ -252,6 +298,8 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
         Inject_MeshEdits(injection, palette_map);
         Inject_TextureOverwrites(injection, level_info, palette_map);
         Inject_FloorDataEdits(injection);
+        Inject_RoomMeshEdits(injection);
+        Inject_RoomDoorEdits(injection);
 
         // Realign base indices for the next injection.
         INJECTION_INFO *inj_info = injection->info;
@@ -940,6 +988,423 @@ static void Inject_TriggerParameterChange(
     }
 }
 
+uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index)
+{
+    uint32_t size = 0;
+    if (!m_Injections) {
+        return size;
+    }
+
+    for (int i = 0; i < m_NumInjections; i++) {
+        INJECTION *injection = &m_Injections[i];
+        if (!injection->relevant || injection->version < INJ_VERSION_2) {
+            continue;
+        }
+
+        INJECTION_INFO *inj_info = injection->info;
+        for (int j = 0; j < inj_info->room_mesh_count; j++) {
+            INJECTION_ROOM_MESH *mesh = &inj_info->room_meshes[j];
+            if (mesh->room_index == room_index) {
+                size += mesh->extra_size;
+            }
+        }
+    }
+
+    return size;
+}
+
+static void Inject_RoomMeshEdits(INJECTION *injection)
+{
+    if (injection->version < INJ_VERSION_2) {
+        return;
+    }
+
+    INJECTION_INFO *inj_info = injection->info;
+    MYFILE *fp = injection->fp;
+
+    ROOM_MESH_EDIT_TYPE edit_type;
+    for (int i = 0; i < inj_info->room_mesh_edit_count; i++) {
+        File_Read(&edit_type, sizeof(int32_t), 1, fp);
+
+        switch (edit_type) {
+        case RMET_TEXTURE_FACE:
+            Inject_TextureRoomFace(injection);
+            break;
+        case RMET_MOVE_FACE:
+            Inject_MoveRoomFace(injection);
+            break;
+        case RMET_MOVE_VERTEX:
+            Inject_MoveRoomVertex(injection);
+            break;
+        case RMET_ROTATE_FACE:
+            Inject_RotateRoomFace(injection);
+            break;
+        case RMET_ADD_FACE:
+            Inject_AddRoomFace(injection);
+            break;
+        case RMET_ADD_VERTEX:
+            Inject_AddRoomVertex(injection);
+            break;
+        default:
+            LOG_WARNING("Unknown room mesh edit type: %d", edit_type);
+            break;
+        }
+    }
+}
+
+static void Inject_TextureRoomFace(INJECTION *injection)
+{
+    MYFILE *fp = injection->fp;
+
+    int16_t target_room;
+    FACE_TYPE target_face_type;
+    int16_t target_face;
+    int16_t source_room;
+    FACE_TYPE source_face_type;
+    int16_t source_face;
+
+    File_Read(&target_room, sizeof(int16_t), 1, fp);
+    File_Read(&target_face_type, sizeof(int32_t), 1, fp);
+    File_Read(&target_face, sizeof(int16_t), 1, fp);
+    File_Read(&source_room, sizeof(int16_t), 1, fp);
+    File_Read(&source_face_type, sizeof(int32_t), 1, fp);
+    File_Read(&source_face, sizeof(int16_t), 1, fp);
+
+    int16_t *source_texture =
+        Inject_GetRoomTexture(source_room, source_face_type, source_face);
+    int16_t *target_texture =
+        Inject_GetRoomTexture(target_room, target_face_type, target_face);
+    if (source_texture && target_texture) {
+        *target_texture = *source_texture;
+    }
+}
+
+static void Inject_MoveRoomFace(INJECTION *injection)
+{
+    MYFILE *fp = injection->fp;
+
+    int16_t target_room;
+    FACE_TYPE face_type;
+    int16_t target_face;
+    int32_t vertex_count;
+    int16_t vertex_index;
+    int16_t new_vertex;
+
+    File_Read(&target_room, sizeof(int16_t), 1, fp);
+    File_Read(&face_type, sizeof(int32_t), 1, fp);
+    File_Read(&target_face, sizeof(int16_t), 1, fp);
+    File_Read(&vertex_count, sizeof(int32_t), 1, fp);
+
+    for (int j = 0; j < vertex_count; j++) {
+        File_Read(&vertex_index, sizeof(int16_t), 1, fp);
+        File_Read(&new_vertex, sizeof(int16_t), 1, fp);
+
+        int16_t *target =
+            Inject_GetRoomFace(target_room, face_type, target_face);
+        if (target) {
+            target += vertex_index;
+            *target = new_vertex;
+        }
+    }
+}
+
+static void Inject_MoveRoomVertex(INJECTION *injection)
+{
+    MYFILE *fp = injection->fp;
+
+    int16_t target_room;
+    int16_t target_vertex;
+    int16_t x_change;
+    int16_t y_change;
+    int16_t z_change;
+
+    File_Read(&target_room, sizeof(int16_t), 1, fp);
+    File_Skip(fp, sizeof(int32_t));
+    File_Read(&target_vertex, sizeof(int16_t), 1, fp);
+    File_Read(&x_change, sizeof(int16_t), 1, fp);
+    File_Read(&y_change, sizeof(int16_t), 1, fp);
+    File_Read(&z_change, sizeof(int16_t), 1, fp);
+
+    if (target_room < 0 || target_room >= g_RoomCount) {
+        LOG_WARNING("Room index %d is invalid", target_room);
+        return;
+    }
+
+    ROOM_INFO *r = &g_RoomInfo[target_room];
+    int16_t vertex_count = *r->data;
+    if (target_vertex < 0 || target_vertex >= vertex_count) {
+        LOG_WARNING(
+            "Vertex index %d, room %d is invalid", target_vertex, target_room);
+        return;
+    }
+
+    int16_t *data_ptr = r->data + target_vertex * 4;
+    *(data_ptr + 1) += x_change;
+    *(data_ptr + 2) += y_change;
+    *(data_ptr + 3) += z_change;
+}
+
+static void Inject_RotateRoomFace(INJECTION *injection)
+{
+    MYFILE *fp = injection->fp;
+
+    int16_t target_room;
+    FACE_TYPE face_type;
+    int16_t target_face;
+    uint8_t num_rotations;
+
+    File_Read(&target_room, sizeof(int16_t), 1, fp);
+    File_Read(&face_type, sizeof(int32_t), 1, fp);
+    File_Read(&target_face, sizeof(int16_t), 1, fp);
+    File_Read(&num_rotations, sizeof(uint8_t), 1, fp);
+
+    int16_t *target = Inject_GetRoomFace(target_room, face_type, target_face);
+    if (!target) {
+        return;
+    }
+
+    int num_vertices = face_type == FT_TEXTURED_QUAD ? 4 : 3;
+    int16_t *vertices[num_vertices];
+    for (int i = 0; i < num_vertices; i++) {
+        vertices[i] = target + i;
+    }
+
+    for (int i = 0; i < num_rotations; i++) {
+        int16_t first = *vertices[0];
+        for (int j = 0; j < num_vertices - 1; j++) {
+            *vertices[j] = *vertices[j + 1];
+        }
+        *vertices[num_vertices - 1] = first;
+    }
+}
+
+static void Inject_AddRoomFace(INJECTION *injection)
+{
+    MYFILE *fp = injection->fp;
+
+    int16_t target_room;
+    FACE_TYPE face_type;
+    int16_t source_room;
+    int16_t source_face;
+
+    File_Read(&target_room, sizeof(int16_t), 1, fp);
+    File_Read(&face_type, sizeof(int32_t), 1, fp);
+    File_Read(&source_room, sizeof(int16_t), 1, fp);
+    File_Read(&source_face, sizeof(int16_t), 1, fp);
+
+    int num_vertices = face_type == FT_TEXTURED_QUAD ? 4 : 3;
+    int16_t vertices[num_vertices];
+    for (int i = 0; i < num_vertices; i++) {
+        File_Read(&vertices[i], sizeof(int16_t), 1, fp);
+    }
+
+    if (target_room < 0 || target_room >= g_RoomCount) {
+        LOG_WARNING("Room index %d is invalid", target_room);
+        return;
+    }
+
+    int16_t *source_texture =
+        Inject_GetRoomTexture(source_room, face_type, source_face);
+    if (!source_texture) {
+        return;
+    }
+
+    ROOM_INFO *r = &g_RoomInfo[target_room];
+    int data_index = 0;
+
+    int32_t vertex_count = r->data[data_index++];
+    data_index += vertex_count * 4;
+
+    // Increment the relevant number of faces and work out the
+    // starting point in the mesh for the injection.
+    int inject_pos;
+    int num_data = r->data[data_index]; // Quads
+    if (face_type == FT_TEXTURED_QUAD) {
+        r->data[data_index]++;
+    }
+
+    data_index += 1 + num_data * 5;
+    if (face_type == FT_TEXTURED_QUAD) {
+        inject_pos = data_index;
+    }
+
+    num_data = r->data[data_index]; // Triangles
+    if (face_type == FT_TEXTURED_TRIANGLE) {
+        r->data[data_index]++;
+    }
+
+    data_index += 1 + num_data * 4;
+    if (face_type == FT_TEXTURED_TRIANGLE) {
+        inject_pos = data_index;
+    }
+
+    num_data = r->data[data_index]; // Sprites
+    data_index += num_data * 2;
+
+    // Move everything at the end of the mesh forwards to make space
+    // for the new face.
+    int inject_length = num_vertices + 1;
+    for (int i = data_index; i >= inject_pos; i--) {
+        r->data[i + inject_length] = r->data[i];
+    }
+
+    // Inject the face data.
+    for (int i = 0; i < num_vertices; i++) {
+        r->data[inject_pos++] = vertices[i];
+    }
+    r->data[inject_pos] = *source_texture;
+}
+
+static void Inject_AddRoomVertex(INJECTION *injection)
+{
+    MYFILE *fp = injection->fp;
+
+    int16_t target_room;
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    int16_t lighting;
+
+    File_Read(&target_room, sizeof(int16_t), 1, fp);
+    File_Skip(fp, sizeof(int32_t));
+    File_Read(&x, sizeof(int16_t), 1, fp);
+    File_Read(&y, sizeof(int16_t), 1, fp);
+    File_Read(&z, sizeof(int16_t), 1, fp);
+    File_Read(&lighting, sizeof(int16_t), 1, fp);
+
+    ROOM_INFO *r = &g_RoomInfo[target_room];
+    int data_index = 0;
+
+    int32_t vertex_count = r->data[data_index];
+    r->data[data_index++]++;
+    data_index += vertex_count * 4;
+
+    int inject_pos = data_index;
+    int num_data = r->data[data_index]; // Quads
+    data_index += 1 + num_data * 5;
+
+    num_data = r->data[data_index]; // Triangles
+    data_index += 1 + num_data * 4;
+
+    num_data = r->data[data_index]; // Sprites
+    data_index += num_data * 2;
+
+    // Move everything at the end of the mesh forwards to make space
+    // for the new vertex.
+    for (int i = data_index; i >= inject_pos; i--) {
+        r->data[i + 4] = r->data[i];
+    }
+
+    // Inject the vertex data.
+    r->data[inject_pos++] = x;
+    r->data[inject_pos++] = y;
+    r->data[inject_pos++] = z;
+    r->data[inject_pos] = lighting;
+}
+
+static int16_t *Inject_GetRoomTexture(
+    int16_t room, FACE_TYPE face_type, int16_t face_index)
+{
+    int16_t *face = Inject_GetRoomFace(room, face_type, face_index);
+    if (face) {
+        face += face_type == FT_TEXTURED_QUAD ? 4 : 3;
+    }
+    return face;
+}
+
+static int16_t *Inject_GetRoomFace(
+    int16_t room, FACE_TYPE face_type, int16_t face_index)
+{
+    ROOM_INFO *r = NULL;
+    if (room < 0 || room >= g_RoomCount) {
+        LOG_WARNING("Room index %d is invalid", room);
+        return NULL;
+    }
+
+    r = &g_RoomInfo[room];
+    int16_t *data_ptr = r->data;
+
+    int32_t vertex_count = *data_ptr++;
+    data_ptr += vertex_count * 4;
+
+    int num_faces = *data_ptr++;
+    if (face_type == FT_TEXTURED_QUAD) {
+        if (face_index < 0 || face_index >= num_faces) {
+            LOG_WARNING("Quad index %d, room %d is invalid", face_index, room);
+            return NULL;
+        }
+        data_ptr += face_index * 5;
+        return data_ptr;
+    }
+
+    data_ptr += 5 * num_faces;
+    num_faces = *data_ptr++;
+    if (face_type == FT_TEXTURED_TRIANGLE) {
+        if (face_index < 0 || face_index >= num_faces) {
+            LOG_WARNING(
+                "Triangle index %d, room %d is invalid", face_index, room);
+            return NULL;
+        }
+        data_ptr += face_index * 4;
+        return data_ptr;
+    }
+
+    return NULL;
+}
+
+static void Inject_RoomDoorEdits(INJECTION *injection)
+{
+    if (injection->version < INJ_VERSION_2) {
+        return;
+    }
+
+    INJECTION_INFO *inj_info = injection->info;
+    MYFILE *fp = injection->fp;
+
+    int16_t base_room;
+    int16_t link_room;
+    int16_t x_change;
+    int16_t y_change;
+    int16_t z_change;
+    for (int i = 0; i < inj_info->room_door_edit_count; i++) {
+        File_Read(&base_room, sizeof(int16_t), 1, fp);
+        File_Read(&link_room, sizeof(int16_t), 1, fp);
+
+        if (base_room < 0 || base_room >= g_RoomCount) {
+            File_Skip(fp, sizeof(int16_t) * 12);
+            LOG_WARNING("Room index %d is invalid", base_room);
+            continue;
+        }
+
+        ROOM_INFO *r = &g_RoomInfo[base_room];
+        DOOR_INFO *door = NULL;
+        for (int j = 0; j < r->doors->count; j++) {
+            DOOR_INFO d = r->doors->door[j];
+            if (d.room_num == link_room) {
+                door = &r->doors->door[j];
+                break;
+            }
+        }
+
+        if (!door) {
+            File_Skip(fp, sizeof(int16_t) * 12);
+            LOG_WARNING(
+                "Room index %d has no door to %d", base_room, link_room);
+            continue;
+        }
+
+        for (int j = 0; j < 4; j++) {
+            File_Read(&x_change, sizeof(int16_t), 1, fp);
+            File_Read(&y_change, sizeof(int16_t), 1, fp);
+            File_Read(&z_change, sizeof(int16_t), 1, fp);
+
+            door->vertex[j].x += x_change;
+            door->vertex[j].y += y_change;
+            door->vertex[j].z += z_change;
+        }
+    }
+}
+
 static void Inject_Cleanup(void)
 {
     for (int i = 0; i < m_NumInjections; i++) {
@@ -948,6 +1413,9 @@ static void Inject_Cleanup(void)
             File_Close(injection->fp);
         }
         if (injection->info) {
+            if (injection->info->room_meshes) {
+                Memory_FreePointer(&injection->info->room_meshes);
+            }
             Memory_FreePointer(&injection->info);
         }
     }
