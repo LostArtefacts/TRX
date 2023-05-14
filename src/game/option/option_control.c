@@ -517,16 +517,16 @@ static INPUT_LAYOUT Option_ControlChangeLayout(CONTROL_MODE mode)
 {
     INPUT_LAYOUT layout_num = INPUT_LAYOUT_DEFAULT;
     if (mode == CM_KEYBOARD) {
-        g_Config.input.layout += g_InputDB.left ? -1 : 0;
-        g_Config.input.layout += g_InputDB.right ? 1 : 0;
+        g_Config.input.layout += g_InputDB.menu_left ? -1 : 0;
+        g_Config.input.layout += g_InputDB.menu_right ? 1 : 0;
         g_Config.input.layout += INPUT_LAYOUT_NUMBER_OF;
         g_Config.input.layout %= INPUT_LAYOUT_NUMBER_OF;
         layout_num = g_Config.input.layout;
     }
 
     if (mode == CM_CONTROLLER) {
-        g_Config.input.cntlr_layout += g_InputDB.left ? -1 : 0;
-        g_Config.input.cntlr_layout += g_InputDB.right ? 1 : 0;
+        g_Config.input.cntlr_layout += g_InputDB.menu_left ? -1 : 0;
+        g_Config.input.cntlr_layout += g_InputDB.menu_right ? 1 : 0;
         g_Config.input.cntlr_layout += INPUT_LAYOUT_NUMBER_OF;
         g_Config.input.cntlr_layout %= INPUT_LAYOUT_NUMBER_OF;
         layout_num = g_Config.input.cntlr_layout;
@@ -680,8 +680,8 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
             break;
         }
 
-        if (g_InputDB.deselect
-            || (g_InputDB.select && m_ControlMenu.cur_role == KC_TITLE)) {
+        if (g_InputDB.menu_back
+            || (g_InputDB.menu_confirm && m_ControlMenu.cur_role == KC_TITLE)) {
             Option_ControlShutdownText();
             m_KeyMode = KM_INACTIVE;
             g_Input = (INPUT_STATE) { 0 };
@@ -689,16 +689,16 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
             return CM_PICK;
         }
 
-        if ((g_InputDB.left || g_InputDB.right)
+        if ((g_InputDB.menu_left || g_InputDB.menu_right)
             && m_ControlMenu.cur_role == KC_TITLE) {
             layout_num = Option_ControlChangeLayout(mode);
         }
 
-        if (g_InputDB.select) {
+        if (g_InputDB.menu_confirm) {
             if (layout_num > INPUT_LAYOUT_DEFAULT) {
                 m_KeyMode = KM_BROWSEKEYUP;
             }
-        } else if (g_InputDB.forward) {
+        } else if (g_InputDB.menu_up) {
             if (m_ControlMenu.cur_role == KC_TITLE) {
                 m_ControlMenu.row_num = m_ControlMenu.vis_options - 1;
                 m_ControlMenu.cur_role = m_ControlMenu.last_role;
@@ -727,7 +727,7 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
             }
             Option_ControlUpdateText(mode, layout_num);
             Option_ControlFlashConflicts(mode, layout_num);
-        } else if (g_InputDB.back) {
+        } else if (g_InputDB.menu_down) {
             if (m_ControlMenu.cur_role == KC_TITLE) {
                 m_ControlMenu.row_num++;
                 m_ControlMenu.cur_role = m_ControlMenu.first_role;

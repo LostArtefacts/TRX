@@ -33,7 +33,7 @@ bool Game_Cutscene_Control(int32_t nframes)
         }
 
         Input_Update();
-        if (g_InputDB.deselect || g_InputDB.select) {
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             return true;
         }
 

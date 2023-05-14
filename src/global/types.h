@@ -2006,8 +2006,6 @@ typedef union INPUT_STATE {
         uint64_t step_right : 1;
         uint64_t roll : 1;
         uint64_t pause : 1;
-        uint64_t select : 1;
-        uint64_t deselect : 1;
         uint64_t save : 1;
         uint64_t load : 1;
         uint64_t fly_cheat : 1;
@@ -2029,6 +2027,12 @@ typedef union INPUT_STATE {
         uint64_t toggle_bilinear_filter : 1;
         uint64_t toggle_perspective_filter : 1;
         uint64_t toggle_fps_counter : 1;
+        uint64_t menu_up : 1;
+        uint64_t menu_down : 1;
+        uint64_t menu_left : 1;
+        uint64_t menu_right : 1;
+        uint64_t menu_confirm : 1;
+        uint64_t menu_back : 1;
     };
 } INPUT_STATE;
 

@@ -112,7 +112,8 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
                     }
                 } else if (
                     ring->number_of_objects == 1
-                    || (!g_Input.left && !g_Input.right) || !g_Input.left) {
+                    || (!g_Input.menu_left && !g_Input.menu_right)
+                    || !g_Input.menu_left) {
                     g_LsAdder = HIGH_LIGHT;
                     inv_item->y_rot += 256;
                 }
@@ -459,7 +460,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         if (imo.status == RNG_OPEN || imo.status == RNG_SELECTING
             || imo.status == RNG_SELECTED || imo.status == RNG_DESELECTING
             || imo.status == RNG_DESELECT || imo.status == RNG_CLOSING_ITEM) {
-            if (!ring.rotating && !g_Input.left && !g_Input.right) {
+            if (!ring.rotating && !g_Input.menu_left && !g_Input.menu_right) {
                 INVENTORY_ITEM *inv_item = ring.list[ring.current_object];
                 Inv_Ring_Active(inv_item);
             }
@@ -495,18 +496,18 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         if ((g_InvMode == INV_SAVE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
              || g_InvMode == INV_LOAD_MODE || g_InvMode == INV_DEATH_MODE)
             && !pass_mode_open) {
-            g_InputDB = (INPUT_STATE) { 0, .select = 1 };
+            g_InputDB = (INPUT_STATE) { 0, .menu_confirm = 1 };
         }
 
         switch (imo.status) {
         case RNG_OPEN:
-            if (g_Input.right && ring.number_of_objects > 1) {
+            if (g_Input.menu_right && ring.number_of_objects > 1) {
                 Inv_Ring_RotateLeft(&ring);
                 Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
             }
 
-            if (g_Input.left && ring.number_of_objects > 1) {
+            if (g_Input.menu_left && ring.number_of_objects > 1) {
                 Inv_Ring_RotateRight(&ring);
                 Sound_Effect(SFX_MENU_ROTATE, NULL, SPM_ALWAYS);
                 break;
@@ -537,7 +538,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                 g_InputDB = (INPUT_STATE) { 0 };
             }
 
-            if (g_InputDB.select) {
+            if (g_InputDB.menu_confirm) {
                 if ((g_InvMode == INV_SAVE_MODE
                      || g_InvMode == INV_SAVE_CRYSTAL_MODE
                      || g_InvMode == INV_LOAD_MODE
@@ -597,7 +598,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                 }
             }
 
-            if (g_InputDB.forward && g_InvMode != INV_TITLE_MODE
+            if (g_InputDB.menu_up && g_InvMode != INV_TITLE_MODE
                 && g_InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_MAIN) {
                     if (g_InvKeysObjects) {
@@ -628,7 +629,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                     g_InputDB = (INPUT_STATE) { 0 };
                 }
             } else if (
-                g_InputDB.back && g_InvMode != INV_TITLE_MODE
+                g_InputDB.menu_down && g_InvMode != INV_TITLE_MODE
                 && g_InvMode != INV_KEYS_MODE) {
                 if (ring.type == RT_KEYS) {
                     if (g_InvMainObjects) {
@@ -756,7 +757,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             if (!busy && !g_IDelay) {
                 Option_DoInventory(inv_item);
 
-                if (g_InputDB.deselect) {
+                if (g_InputDB.menu_back) {
                     inv_item->sprlist = NULL;
                     Inv_Ring_MotionSetup(
                         &ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
@@ -772,7 +773,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                     }
                 }
 
-                if (g_InputDB.select) {
+                if (g_InputDB.menu_confirm) {
                     inv_item->sprlist = NULL;
                     g_InvChosen = inv_item->object_number;
                     if (ring.type == RT_MAIN) {

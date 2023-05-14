@@ -64,8 +64,8 @@ bool Game_Demo_ProcessInput(void)
         .step_left = (bool)(*m_DemoPtr & (1 << 10)),
         .step_right = (bool)(*m_DemoPtr & (1 << 11)),
         .roll = (bool)(*m_DemoPtr & (1 << 12)),
-        .select = (bool)(*m_DemoPtr & (1 << 20)),
-        .deselect = (bool)(*m_DemoPtr & (1 << 21)),
+        .menu_confirm = (bool)(*m_DemoPtr & (1 << 20)),
+        .menu_back = (bool)(*m_DemoPtr & (1 << 21)),
         .save = (bool)(*m_DemoPtr & (1 << 22)),
         .load = (bool)(*m_DemoPtr & (1 << 23)),
     };

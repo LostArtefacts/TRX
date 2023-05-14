@@ -608,7 +608,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
-                case SDL_CONTROLLER_BUTTON_MISC1:         return "MIC"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "MIC";      /* PS5 microphone button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
@@ -637,7 +637,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
-                case SDL_CONTROLLER_BUTTON_MISC1:         return "CAPTURE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "CAPTURE";  /* Nintendo Switch capture button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
@@ -666,7 +666,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
                 case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     return "\202 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     return "\200 ";
                 case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    return "\201 ";
-                case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE"; /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+                case SDL_CONTROLLER_BUTTON_MISC1:         return "SHARE";    /* Xbox Series X share button */
                 case SDL_CONTROLLER_BUTTON_PADDLE1:       return "PADDLE 1"; /* Xbox Elite paddle P1 (upper left, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE2:       return "PADDLE 2"; /* Xbox Elite paddle P3 (upper right, facing the back) */
                 case SDL_CONTROLLER_BUTTON_PADDLE3:       return "PADDLE 3"; /* Xbox Elite paddle P2 (lower left, facing the back) */
@@ -832,12 +832,10 @@ static INPUT_STATE S_Input_GetControllerState(
         state.slow                   |= S_Input_GetBindState(INPUT_ROLE_SLOW, cntlr_layout_num);
         state.jump                   |= S_Input_GetBindState(INPUT_ROLE_JUMP, cntlr_layout_num);
         state.action                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
-        state.select                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
         state.draw                   |= S_Input_GetBindState(INPUT_ROLE_DRAW, cntlr_layout_num);
         state.look                   |= S_Input_GetBindState(INPUT_ROLE_LOOK, cntlr_layout_num);
         state.roll                   |= S_Input_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
         state.option                 |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
-        state.deselect               |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
         state.pause                  |= S_Input_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
         state.camera_up              |= S_Input_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
         state.camera_down            |= S_Input_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
@@ -937,8 +935,12 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
     linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
 
-    linput.select                    = S_Input_Key(INPUT_ROLE_ACTION, layout_num);
-    linput.deselect                  = S_Input_Key(INPUT_ROLE_OPTION, layout_num);
+    linput.menu_up                   = KEY_DOWN(SDL_SCANCODE_UP);
+    linput.menu_down                 = KEY_DOWN(SDL_SCANCODE_DOWN);
+    linput.menu_left                 = KEY_DOWN(SDL_SCANCODE_LEFT);
+    linput.menu_right                = KEY_DOWN(SDL_SCANCODE_RIGHT);
+    linput.menu_confirm              = KEY_DOWN(SDL_SCANCODE_RETURN);
+    linput.menu_back                 = KEY_DOWN(SDL_SCANCODE_ESCAPE);
 
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
     linput.load                      = S_Input_Key(INPUT_ROLE_LOAD, layout_num);

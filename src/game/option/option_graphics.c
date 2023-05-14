@@ -304,7 +304,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         m_IsTextInit = true;
     }
 
-    if (g_InputDB.forward && g_OptionSelected > TEXT_OPTION_MIN) {
+    if (g_InputDB.menu_up && g_OptionSelected > TEXT_OPTION_MIN) {
         g_OptionSelected--;
         Text_AddBackground(
             m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
@@ -312,7 +312,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
     }
 
-    if (g_InputDB.back && g_OptionSelected < TEXT_OPTION_MAX) {
+    if (g_InputDB.menu_down && g_OptionSelected < TEXT_OPTION_MAX) {
         g_OptionSelected++;
         Text_AddBackground(
             m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
@@ -322,7 +322,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
 
     int32_t reset = -1;
 
-    if (g_InputDB.right) {
+    if (g_InputDB.menu_right) {
         switch (g_OptionSelected) {
         case TEXT_PERSPECTIVE:
             if (!g_Config.rendering.enable_perspective_filter) {
@@ -372,7 +372,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (g_InputDB.left) {
+    if (g_InputDB.menu_left) {
         switch (g_OptionSelected) {
         case TEXT_PERSPECTIVE:
             if (g_Config.rendering.enable_perspective_filter) {
@@ -422,7 +422,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         }
     }
 
-    if (g_InputDB.deselect || g_InputDB.select) {
+    if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
         reset = TEXT_NUMBER_OF;
     }
 

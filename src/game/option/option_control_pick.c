@@ -61,7 +61,7 @@ CONTROL_MODE Option_ControlPick(void)
         Option_ControlPickInitText();
     }
 
-    if (g_InputDB.forward && g_OptionSelected > TEXT_OPTION_MIN) {
+    if (g_InputDB.menu_up && g_OptionSelected > TEXT_OPTION_MIN) {
         Text_RemoveOutline(m_Text[g_OptionSelected]);
         Text_RemoveBackground(m_Text[g_OptionSelected]);
         --g_OptionSelected;
@@ -70,7 +70,7 @@ CONTROL_MODE Option_ControlPick(void)
         Text_AddOutline(m_Text[g_OptionSelected], true, TS_REQUESTED);
     }
 
-    if (g_InputDB.back && g_OptionSelected < TEXT_OPTION_MAX) {
+    if (g_InputDB.menu_down && g_OptionSelected < TEXT_OPTION_MAX) {
         Text_RemoveOutline(m_Text[g_OptionSelected]);
         Text_RemoveBackground(m_Text[g_OptionSelected]);
         ++g_OptionSelected;
@@ -81,7 +81,7 @@ CONTROL_MODE Option_ControlPick(void)
 
     switch (g_OptionSelected) {
     case TEXT_KEYBOARD:
-        if (g_InputDB.select) {
+        if (g_InputDB.menu_confirm) {
             Option_ControlPickShutdownText();
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
@@ -90,7 +90,7 @@ CONTROL_MODE Option_ControlPick(void)
         break;
 
     case TEXT_CONTROLLER:
-        if (g_InputDB.select) {
+        if (g_InputDB.menu_confirm) {
             Option_ControlPickShutdownText();
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
@@ -99,7 +99,7 @@ CONTROL_MODE Option_ControlPick(void)
         break;
     }
 
-    if (g_InputDB.deselect) {
+    if (g_InputDB.menu_back) {
         Option_ControlPickShutdownText();
     }
 

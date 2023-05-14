@@ -74,7 +74,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
         Option_SoundInitText();
     }
 
-    if (g_InputDB.forward && g_OptionSelected > TEXT_OPTION_MIN) {
+    if (g_InputDB.menu_up && g_OptionSelected > TEXT_OPTION_MIN) {
         Text_RemoveOutline(m_Text[g_OptionSelected]);
         Text_RemoveBackground(m_Text[g_OptionSelected]);
         --g_OptionSelected;
@@ -85,7 +85,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
         Text_SetPos(m_Text[TEXT_RIGHT_ARROW], 40, 0);
     }
 
-    if (g_InputDB.back && g_OptionSelected < TEXT_OPTION_MAX) {
+    if (g_InputDB.menu_down && g_OptionSelected < TEXT_OPTION_MAX) {
         Text_RemoveOutline(m_Text[g_OptionSelected]);
         Text_RemoveBackground(m_Text[g_OptionSelected]);
         ++g_OptionSelected;
@@ -98,7 +98,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
 
     switch (g_OptionSelected) {
     case TEXT_MUSIC_VOLUME:
-        if (g_Input.left && g_Config.music_volume > MIN_VOLUME) {
+        if (g_Input.menu_left && g_Config.music_volume > MIN_VOLUME) {
             g_Config.music_volume--;
             g_IDelay = true;
             g_IDCount = 10;
@@ -107,7 +107,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
             Config_Write();
-        } else if (g_Input.right && g_Config.music_volume < MAX_VOLUME) {
+        } else if (g_Input.menu_right && g_Config.music_volume < MAX_VOLUME) {
             g_Config.music_volume++;
             g_IDelay = true;
             g_IDCount = 10;
@@ -130,7 +130,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
         break;
 
     case TEXT_SOUND_VOLUME:
-        if (g_Input.left && g_Config.sound_volume > MIN_VOLUME) {
+        if (g_Input.menu_left && g_Config.sound_volume > MIN_VOLUME) {
             g_Config.sound_volume--;
             g_IDelay = true;
             g_IDCount = 10;
@@ -139,7 +139,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
             Config_Write();
-        } else if (g_Input.right && g_Config.sound_volume < MAX_VOLUME) {
+        } else if (g_Input.menu_right && g_Config.sound_volume < MAX_VOLUME) {
             g_Config.sound_volume++;
             g_IDelay = true;
             g_IDCount = 10;
@@ -162,7 +162,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    if (g_InputDB.deselect || g_InputDB.select) {
+    if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
         for (int i = 0; i < TEXT_NUMBER_OF; i++) {
             Text_Remove(m_Text[i]);
             m_Text[i] = NULL;
