@@ -8,9 +8,9 @@
 bool Output_Init(void);
 void Output_Shutdown(void);
 
-void Output_SetViewport(int width, int height);
+void Output_SetWindowSize(int width, int height);
 void Output_SetFullscreen(bool fullscreen);
-void Output_ApplyResolution(void);
+void Output_ApplyRenderSettings(void);
 void Output_DownloadTextures(int page_count);
 
 RGBA8888 Output_RGB2RGBA(const RGB888 color);

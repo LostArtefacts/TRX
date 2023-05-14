@@ -2,9 +2,15 @@
 
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
+#include "log.h"
+
+#include <assert.h>
 
 void GFX_2D_Renderer_Init(GFX_2D_Renderer *renderer)
 {
+    LOG_INFO("");
+    assert(renderer);
+
     GFX_GL_Buffer_Init(&renderer->surface_buffer, GL_ARRAY_BUFFER);
     GFX_GL_Buffer_Bind(&renderer->surface_buffer);
     GLfloat verts[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
@@ -43,6 +49,9 @@ void GFX_2D_Renderer_Init(GFX_2D_Renderer *renderer)
 
 void GFX_2D_Renderer_Close(GFX_2D_Renderer *renderer)
 {
+    LOG_INFO("");
+    assert(renderer);
+
     GFX_GL_VertexArray_Close(&renderer->surface_format);
     GFX_GL_Buffer_Close(&renderer->surface_buffer);
     GFX_GL_Texture_Close(&renderer->surface_texture);
@@ -69,10 +78,12 @@ void GFX_2D_Renderer_Upload(
         glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGBA, renderer->width, renderer->height, 0,
             tex_format, tex_type, data);
+        GFX_GL_CheckError();
     } else {
         glTexSubImage2D(
             GL_TEXTURE_2D, 0, 0, 0, renderer->width, renderer->height,
             tex_format, tex_type, data);
+        GFX_GL_CheckError();
     }
 }
 
@@ -95,6 +106,7 @@ void GFX_2D_Renderer_Render(GFX_2D_Renderer *renderer)
     }
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    GFX_GL_CheckError();
 
     if (blend) {
         glEnable(GL_BLEND);
@@ -103,6 +115,4 @@ void GFX_2D_Renderer_Render(GFX_2D_Renderer *renderer)
     if (depth_test) {
         glEnable(GL_DEPTH_TEST);
     }
-
-    GFX_GL_CheckError();
 }

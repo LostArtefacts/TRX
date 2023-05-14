@@ -21,9 +21,9 @@ void S_Output_DumpScreen(void);
 void S_Output_ClearDepthBuffer(void);
 void S_Output_DrawEmpty(void);
 
-void S_Output_SetViewport(int width, int height);
+void S_Output_SetWindowSize(int width, int height);
 void S_Output_SetFullscreen(bool fullscreen);
-void S_Output_ApplyResolution(void);
+void S_Output_ApplyRenderSettings(void);
 
 void S_Output_SetPalette(RGB888 palette[256]);
 RGB888 S_Output_GetPaletteColor(uint8_t idx);

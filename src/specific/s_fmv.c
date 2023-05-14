@@ -2241,7 +2241,7 @@ static void S_FMV_EventLoop(VideoState *is)
                 is->width = event.window.data1;
                 is->height = event.window.data2;
                 is->force_refresh = true;
-                Output_SetViewport(event.window.data1, event.window.data2);
+                Output_SetWindowSize(event.window.data1, event.window.data2);
                 break;
 
             case SDL_WINDOWEVENT_EXPOSED:
@@ -2312,7 +2312,7 @@ cleanup:
 
     S_Audio_Init();
 
-    S_Output_ApplyResolution();
+    S_Output_ApplyRenderSettings();
 
     return ret;
 }

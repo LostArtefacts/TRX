@@ -39,7 +39,7 @@ static void Screen_ApplyResolution(void)
     int32_t height = Screen_GetResHeight();
     Viewport_Init(width, height);
 
-    Output_ApplyResolution();
+    Output_ApplyRenderSettings();
 
     Matrix_ResetStack();
     Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);

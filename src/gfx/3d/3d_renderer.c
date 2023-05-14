@@ -29,7 +29,9 @@ static void GFX_3D_Renderer_SelectTextureImpl(
 
 void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 {
+    LOG_INFO("");
     assert(renderer);
+
     // TODO: make me configurable
     renderer->wireframe = false;
     renderer->selected_texture_num = GFX_NO_TEXTURE;
@@ -82,7 +84,9 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
 void GFX_3D_Renderer_Close(GFX_3D_Renderer *renderer)
 {
+    LOG_INFO("");
     assert(renderer);
+
     GFX_3D_VertexStream_Close(&renderer->vertex_stream);
     GFX_GL_Program_Close(&renderer->program);
     GFX_GL_Sampler_Close(&renderer->sampler);
@@ -96,6 +100,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
     if (renderer->wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
+    GFX_GL_CheckError();
 
     GFX_GL_Program_Bind(&renderer->program);
     GFX_3D_VertexStream_Bind(&renderer->vertex_stream);
@@ -124,7 +129,6 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
     glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
-
     GFX_GL_CheckError();
 }
 
@@ -143,6 +147,7 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
 void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer)
 {
     glClear(GL_DEPTH_BUFFER_BIT);
+    GFX_GL_CheckError();
 }
 
 int GFX_3D_Renderer_TextureReg(
@@ -151,8 +156,7 @@ int GFX_3D_Renderer_TextureReg(
     assert(renderer);
     assert(data);
     GFX_GL_Texture *texture = GFX_GL_Texture_Create(GL_TEXTURE_2D);
-    GFX_GL_Texture_Bind(texture);
-    GFX_GL_Texture_Load(texture, data, width, height);
+    GFX_GL_Texture_Load(texture, data, width, height, GL_RGBA, GL_BGRA);
 
     int texture_num = GFX_NO_TEXTURE;
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {

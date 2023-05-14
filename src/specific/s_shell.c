@@ -15,6 +15,7 @@
 #define SDL_MAIN_HANDLED
 
 #ifdef _WIN32
+    #include <objbase.h>
     #include <windows.h>
 #endif
 #include <SDL2/SDL.h>
@@ -40,7 +41,7 @@ static void S_Shell_PostWindowResize(void)
     int width;
     int height;
     SDL_GetWindowSize(m_Window, &width, &height);
-    Output_SetViewport(width, height);
+    Output_SetWindowSize(width, height);
 }
 
 void S_Shell_ShowFatalError(const char *message)
@@ -107,7 +108,7 @@ void S_Shell_SpinMessageLoop(void)
                 break;
 
             case SDL_WINDOWEVENT_RESIZED: {
-                Output_SetViewport(event.window.data1, event.window.data2);
+                Output_SetWindowSize(event.window.data1, event.window.data2);
                 break;
             }
             }

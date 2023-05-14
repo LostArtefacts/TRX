@@ -25,32 +25,36 @@ void GFX_GL_Texture_Init(GFX_GL_Texture *texture, GLenum target)
     assert(texture);
     texture->target = target;
     glGenTextures(1, &texture->id);
+    GFX_GL_CheckError();
 }
 
 void GFX_GL_Texture_Close(GFX_GL_Texture *texture)
 {
     assert(texture);
     glDeleteTextures(1, &texture->id);
+    GFX_GL_CheckError();
 }
 
 void GFX_GL_Texture_Bind(GFX_GL_Texture *texture)
 {
     assert(texture);
     glBindTexture(texture->target, texture->id);
+    GFX_GL_CheckError();
 }
 
 void GFX_GL_Texture_Load(
-    GFX_GL_Texture *texture, const void *data, int width, int height)
+    GFX_GL_Texture *texture, const void *data, int width, int height,
+    GLint internal_format, GLint format)
 {
     assert(texture);
-    assert(data);
-
-    glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE,
-        data);
 
     GFX_GL_Texture_Bind(texture);
-    glGenerateMipmap(GL_TEXTURE_2D);
 
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, internal_format, width, height, 0, format,
+        GL_UNSIGNED_BYTE, data);
+    GFX_GL_CheckError();
+
+    glGenerateMipmap(GL_TEXTURE_2D);
     GFX_GL_CheckError();
 }
