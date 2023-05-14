@@ -220,6 +220,7 @@ sources = [
   'src/game/stats.c',
   'src/game/text.c',
   'src/game/viewport.c',
+  'src/gfx/fbo/fbo_renderer.c',
   'src/gfx/2d/2d_renderer.c',
   'src/gfx/2d/2d_surface.c',
   'src/gfx/3d/3d_renderer.c',
