@@ -856,17 +856,6 @@ static INPUT_STATE S_Input_GetControllerState(
         state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
         state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
-        state.menu_up                |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_UP);
-        state.menu_down              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-        state.menu_left              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-        state.menu_right             |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
-        if (m_ControllerType == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO || m_ControllerType == SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR) {
-            state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
-            state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
-        } else {
-            state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
-            state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
-        }
 
         // clang-format on
     }
