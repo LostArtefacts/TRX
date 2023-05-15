@@ -264,7 +264,6 @@ void Stats_Show(int32_t level_num)
     if (g_CurrentLevel == g_GameFlow.gym_level_num) {
         Output_FadeToBlack(false);
         while (Output_FadeIsAnimating()) {
-            Output_InitialisePolyList();
             Game_DrawScene(false);
             Output_DumpScreen();
         }
@@ -364,7 +363,6 @@ void Stats_Show(int32_t level_num)
     Output_FadeToSemiBlack(true);
     // wait till a skip key is pressed
     do {
-        Output_InitialisePolyList();
         Game_DrawScene(false);
         Input_Update();
         Text_Draw();
@@ -376,7 +374,6 @@ void Stats_Show(int32_t level_num)
 
     // finish fading
     while (Output_FadeIsAnimating()) {
-        Output_InitialisePolyList();
         Game_DrawScene(false);
         Output_DumpScreen();
     }
@@ -517,14 +514,12 @@ void Stats_ShowTotal(const char *filename)
     Output_FadeResetToBlack();
     Output_FadeToTransparent(true);
     while (Output_FadeIsAnimating()) {
-        Output_InitialisePolyList();
         Output_CopyPictureToScreen();
         Output_DumpScreen();
     }
 
     // wait till a skip key is pressed
     do {
-        Output_InitialisePolyList();
         Output_CopyPictureToScreen();
         Input_Update();
         Text_Draw();
@@ -534,7 +529,6 @@ void Stats_ShowTotal(const char *filename)
     // fade out
     Output_FadeToBlack(true);
     while (Output_FadeIsAnimating()) {
-        Output_InitialisePolyList();
         Output_CopyPictureToScreen();
         Output_DumpScreen();
     }
