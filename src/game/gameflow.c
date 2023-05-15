@@ -1222,6 +1222,11 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                     Output_CopyPictureToScreen();
                     Output_DumpScreen();
                 }
+
+                // draw black frame
+                Output_DrawBlack();
+                Output_DumpScreen();
+
                 Output_FadeReset();
             }
             break;

@@ -37,7 +37,7 @@ static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
 static PHD_VECTOR m_LsVectorView = { 0 };
 
-static void Output_DrawBlackScreen(uint8_t alpha);
+static void Output_DrawBlackOverlay(uint8_t alpha);
 static void Output_FadeAnimate(int ticks);
 
 static const int16_t *Output_DrawObjectG3(
@@ -419,6 +419,11 @@ RGB888 Output_GetPaletteColor(uint8_t idx)
 void Output_ClearScreen(void)
 {
     S_Output_ClearBackBuffer();
+}
+
+void Output_DrawBlack(void)
+{
+    Output_DrawBlackOverlay(255);
 }
 
 void Output_DrawEmpty(void)
@@ -928,7 +933,7 @@ void Output_RotateLight(int16_t pitch, int16_t yaw)
         >> W2V_SHIFT;
 }
 
-static void Output_DrawBlackScreen(uint8_t alpha)
+static void Output_DrawBlackOverlay(uint8_t alpha)
 {
     int32_t sx = 0;
     int32_t sy = 0;
@@ -967,12 +972,12 @@ static void Output_FadeAnimate(int ticks)
 
 void Output_DrawBackdropScreen(void)
 {
-    Output_DrawBlackScreen(m_BackdropCurAlpha);
+    Output_DrawBlackOverlay(m_BackdropCurAlpha);
 }
 
 void Output_DrawOverlayScreen(void)
 {
-    Output_DrawBlackScreen(m_OverlayCurAlpha);
+    Output_DrawBlackOverlay(m_OverlayCurAlpha);
 }
 
 void Output_FadeReset(void)
