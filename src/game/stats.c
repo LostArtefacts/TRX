@@ -507,20 +507,20 @@ void Stats_ShowTotal(const char *filename)
     Text_AddBackground(txt, row_width - 4, 0, 0, 0, TS_HEADING);
     Text_AddOutline(txt, true, TS_HEADING);
 
-    Output_DisplayPicture(filename);
+    Output_LoadBackdropImage(filename);
     Clock_SyncTicks(1);
 
     Output_FadeReset();
     Output_FadeResetToBlack();
     Output_FadeToTransparent(true);
     while (Output_FadeIsAnimating()) {
-        Output_CopyPictureToScreen();
+        Output_DrawBackdropImage();
         Output_DumpScreen();
     }
 
     // wait till a skip key is pressed
     do {
-        Output_CopyPictureToScreen();
+        Output_DrawBackdropImage();
         Input_Update();
         Text_Draw();
         Output_DumpScreen();
@@ -529,7 +529,7 @@ void Stats_ShowTotal(const char *filename)
     // fade out
     Output_FadeToBlack(true);
     while (Output_FadeIsAnimating()) {
-        Output_CopyPictureToScreen();
+        Output_DrawBackdropImage();
         Output_DumpScreen();
     }
 
