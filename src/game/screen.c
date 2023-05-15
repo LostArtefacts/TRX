@@ -5,8 +5,8 @@
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "global/vars.h"
 #include "math/matrix.h"
+#include "specific/s_shell.h"
 #include "util.h"
 
 #include <math.h>
@@ -14,61 +14,86 @@
 static int32_t m_ResolutionIdx = 0;
 static int32_t m_PendingResolutionIdx = 0;
 
-bool Screen_SetResIdx(int32_t idx)
-{
-    if (idx >= 0 && idx < RESOLUTIONS_SIZE) {
-        m_PendingResolutionIdx = idx;
-        return true;
-    }
-    return false;
-}
+static int32_t m_ResolutionsCount = 0;
 
-bool Screen_SetPrevRes(void)
-{
-    if (m_PendingResolutionIdx - 1 >= 0) {
-        m_PendingResolutionIdx--;
-        return true;
-    }
-    return false;
-}
+static RESOLUTION m_Resolutions[] = {
+    // clang-format off
+    { 0, 0 } /* desktop */,
+    { 640, 480 },
+    { 800, 600 },
+    { 1024, 768 },
+    { 1280, 720 },
+    { 1920, 1080 },
+    { 2560, 1440 },
+    { 3840, 2160 },
+    { 4096, 2160 },
+    { 7680, 4320 },
+    { -1, -1 },
+    // clang-format on
+};
 
-bool Screen_SetNextRes(void)
+void Screen_Init(void)
 {
-    if (m_PendingResolutionIdx + 1 < RESOLUTIONS_SIZE) {
-        m_PendingResolutionIdx++;
-        return true;
-    }
-    return false;
-}
+    RESOLUTION *res;
 
-int32_t Screen_GetResIdx(void)
-{
-    return m_ResolutionIdx;
+    // count resolutions
+    res = &m_Resolutions[0];
+    m_ResolutionsCount = 0;
+    while (res->width != -1) {
+        res++;
+        m_ResolutionsCount++;
+    }
+
+    // set the first resolution size to desktop size
+    res = &m_Resolutions[0];
+    res->width = S_Shell_GetCurrentDisplayWidth();
+    res->height = S_Shell_GetCurrentDisplayHeight();
+
+    // select matching resolution from config
+    if (g_Config.resolution_width > 0 && g_Config.resolution_height > 0) {
+        res = &m_Resolutions[0];
+        m_ResolutionIdx = -1;
+        while (res->width != -1) {
+            if (g_Config.resolution_width == res->width
+                && g_Config.resolution_height == res->height) {
+                m_ResolutionIdx = res - m_Resolutions;
+            }
+            res++;
+        }
+
+        // if the user-supplied size is odd, override the default desktop
+        // resolution with the user choice
+        if (m_ResolutionIdx == -1) {
+            res = &m_Resolutions[0];
+            res->width = g_Config.resolution_width;
+            res->height = g_Config.resolution_height;
+            m_ResolutionIdx = 0;
+        }
+    } else {
+        m_ResolutionIdx = 0;
+    }
+
+    m_PendingResolutionIdx = m_ResolutionIdx;
 }
 
 int32_t Screen_GetResWidth(void)
 {
-    return g_AvailableResolutions[m_ResolutionIdx].width;
+    return m_Resolutions[m_ResolutionIdx].width;
 }
 
 int32_t Screen_GetResHeight(void)
 {
-    return g_AvailableResolutions[m_ResolutionIdx].height;
-}
-
-int32_t Screen_GetPendingResIdx(void)
-{
-    return m_PendingResolutionIdx;
+    return m_Resolutions[m_ResolutionIdx].height;
 }
 
 int32_t Screen_GetPendingResWidth(void)
 {
-    return g_AvailableResolutions[m_PendingResolutionIdx].width;
+    return m_Resolutions[m_PendingResolutionIdx].width;
 }
 
 int32_t Screen_GetPendingResHeight(void)
 {
-    return g_AvailableResolutions[m_PendingResolutionIdx].height;
+    return m_Resolutions[m_PendingResolutionIdx].height;
 }
 
 int32_t Screen_GetResWidthDownscaledText(void)
@@ -126,6 +151,34 @@ int32_t Screen_GetRenderScaleGLRage(int32_t unit)
     }
 
     return round(result);
+}
+
+bool Screen_CanSetPrevRes(void)
+{
+    return m_PendingResolutionIdx - 1 >= 0;
+}
+
+bool Screen_CanSetNextRes(void)
+{
+    return m_PendingResolutionIdx + 1 < m_ResolutionsCount;
+}
+
+bool Screen_SetPrevRes(void)
+{
+    if (m_PendingResolutionIdx - 1 >= 0) {
+        m_PendingResolutionIdx--;
+        return true;
+    }
+    return false;
+}
+
+bool Screen_SetNextRes(void)
+{
+    if (m_PendingResolutionIdx + 1 < m_ResolutionsCount) {
+        m_PendingResolutionIdx++;
+        return true;
+    }
+    return false;
 }
 
 void Screen_ApplyResolution(void)

@@ -3,18 +3,15 @@
 #include "filesystem.h"
 #include "game/input.h"
 #include "game/music.h"
-#include "game/screen.h"
 #include "game/sound.h"
 #include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "global/vars.h"
 #include "json/json_base.h"
 #include "json/json_parse.h"
 #include "json/json_write.h"
 #include "log.h"
 #include "memory.h"
-#include "specific/s_shell.h"
 #include "util.h"
 
 #include <stdio.h>
@@ -242,13 +239,6 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(rendering.enable_perspective_filter, true);
     READ_BOOL(rendering.enable_vsync, true);
 
-    {
-        int32_t resolution_idx =
-            json_object_get_int(root_obj, "hi_res", RESOLUTIONS_SIZE - 1);
-        CLAMP(resolution_idx, 0, RESOLUTIONS_SIZE - 1);
-        Screen_SetResIdx(resolution_idx);
-    }
-
     READ_INTEGER(music_volume, 8);
     CLAMP(g_Config.music_volume, 0, 10);
 
@@ -331,18 +321,6 @@ bool Config_Read(void)
         result = Config_ReadFromJSON("{}");
     } else {
         result = Config_ReadFromJSON(cfg_data);
-    }
-
-    if (g_Config.resolution_width > 0) {
-        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
-            g_Config.resolution_width;
-        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
-            g_Config.resolution_height;
-    } else {
-        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].width =
-            S_Shell_GetCurrentDisplayWidth();
-        g_AvailableResolutions[RESOLUTIONS_SIZE - 1].height =
-            S_Shell_GetCurrentDisplayHeight();
     }
 
     Memory_FreePointer(&cfg_data);
@@ -438,9 +416,6 @@ bool Config_Write(void)
     WRITE_BOOL(rendering.enable_bilinear_filter);
     WRITE_BOOL(rendering.enable_perspective_filter);
     WRITE_BOOL(rendering.enable_vsync);
-
-    // Not held in g_Config
-    json_object_append_int(root_obj, "hi_res", Screen_GetPendingResIdx());
 
     WRITE_INTEGER(music_volume);
     WRITE_INTEGER(sound_volume);

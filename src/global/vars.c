@@ -99,9 +99,3 @@ int16_t g_InvChosen = -1;
 int32_t g_LsAdder = 0;
 int32_t g_LsDivider = 0;
 SHADOW_INFO g_ShadowInfo = { 0 };
-
-RESOLUTION g_AvailableResolutions[RESOLUTIONS_SIZE] = {
-    { 640, 480 },   { 800, 600 },   { 1024, 768 },  { 1280, 720 },
-    { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 }, { 4096, 2160 },
-    { 7680, 4320 }, { -1, -1 },
-};
