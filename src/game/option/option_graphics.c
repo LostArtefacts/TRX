@@ -291,7 +291,7 @@ static void Option_GraphicsChangeTextOption(int32_t option_num)
     case TEXT_RESOLUTION:
         sprintf(
             buf, g_GameFlow.strings[GS_DETAIL_RESOLUTION_FMT],
-            Screen_GetPendingResWidth(), Screen_GetPendingResHeight());
+            Screen_GetResWidth(), Screen_GetResHeight());
         Text_ChangeText(m_Text[TEXT_RESOLUTION_TOGGLE], buf);
         break;
     }
@@ -306,19 +306,16 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
 
     if (g_InputDB.menu_up && g_OptionSelected > TEXT_OPTION_MIN) {
         g_OptionSelected--;
-        Text_AddBackground(
-            m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
-            ROW_HEIGHT * g_OptionSelected, TS_REQUESTED);
-        Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
     }
 
     if (g_InputDB.menu_down && g_OptionSelected < TEXT_OPTION_MAX) {
         g_OptionSelected++;
-        Text_AddBackground(
-            m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
-            ROW_HEIGHT * g_OptionSelected, TS_REQUESTED);
-        Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
     }
+
+    Text_AddBackground(
+        m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0,
+        ROW_HEIGHT * g_OptionSelected, TS_REQUESTED);
+    Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
 
     int32_t reset = -1;
 
@@ -366,9 +363,9 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
 
         case TEXT_RESOLUTION:
             if (Screen_SetNextRes()) {
-                reset = TEXT_RESOLUTION;
-                g_Config.resolution_width = Screen_GetPendingResWidth();
-                g_Config.resolution_height = Screen_GetPendingResHeight();
+                reset = TEXT_NUMBER_OF;
+                g_Config.resolution_width = Screen_GetResWidth();
+                g_Config.resolution_height = Screen_GetResHeight();
             }
             break;
         }
@@ -418,9 +415,9 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
 
         case TEXT_RESOLUTION:
             if (Screen_SetPrevRes()) {
-                reset = TEXT_RESOLUTION;
-                g_Config.resolution_width = Screen_GetPendingResWidth();
-                g_Config.resolution_height = Screen_GetPendingResHeight();
+                reset = TEXT_NUMBER_OF;
+                g_Config.resolution_width = Screen_GetResWidth();
+                g_Config.resolution_height = Screen_GetResHeight();
             }
             break;
         }

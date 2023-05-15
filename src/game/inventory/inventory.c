@@ -360,9 +360,6 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
     int no_input_count = 0;
     bool start_demo = false;
     m_InvNFrames = 2;
-    if (g_InvMode != INV_TITLE_MODE) {
-        Screen_ApplyResolution();
-    }
     Inv_Construct();
 
     if (!g_Config.enable_music_in_inventory && g_InvMode != INV_TITLE_MODE) {
@@ -868,10 +865,6 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
     Inv_Ring_Shutdown();
     Output_FadeReset();
     Output_FadeSetSpeed(1.0);
-
-    if (g_InvMode != INV_TITLE_MODE) {
-        Screen_ApplyResolution();
-    }
 
     if (m_VersionText) {
         Text_Remove(m_VersionText);

@@ -14,7 +14,6 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room.h"
-#include "game/screen.h"
 #include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -783,9 +782,6 @@ bool Level_Initialise(int32_t level_num)
     Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);
-    if (level_num != g_GameFlow.title_level_num) {
-        Screen_ApplyResolution();
-    }
 
     if (!Level_Load(g_CurrentLevel)) {
         return false;

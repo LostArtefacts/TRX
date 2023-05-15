@@ -11,6 +11,7 @@
 #include "math/math.h"
 #include "math/math_misc.h"
 #include "math/matrix.h"
+#include "memory.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 #include "util.h"
@@ -36,6 +37,8 @@ static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
 static PHD_VECTOR m_LsVectorView = { 0 };
+
+char *m_BackdropImagePath = NULL;
 
 static void Output_DrawBlackOverlay(uint8_t alpha);
 static void Output_FadeAnimate(int ticks);
@@ -378,6 +381,7 @@ bool Output_Init(void)
 void Output_Shutdown(void)
 {
     S_Output_Shutdown();
+    Memory_FreePointer(&m_BackdropImagePath);
 }
 
 void Output_SetViewport(int width, int height)
@@ -393,6 +397,9 @@ void Output_SetFullscreen(bool fullscreen)
 void Output_ApplyResolution(void)
 {
     S_Output_ApplyResolution();
+    if (m_BackdropImagePath) {
+        Output_LoadBackdropImage(m_BackdropImagePath);
+    }
 }
 
 void Output_DownloadTextures(int page_count)
@@ -834,7 +841,11 @@ void Output_DrawUISprite(
 
 void Output_LoadBackdropImage(const char *filename)
 {
-    PICTURE *orig_pic = Picture_CreateFromFile(filename);
+    const char *old_path = m_BackdropImagePath;
+    m_BackdropImagePath = Memory_DupStr(filename);
+    Memory_FreePointer(&old_path);
+
+    PICTURE *orig_pic = Picture_CreateFromFile(m_BackdropImagePath);
     if (orig_pic) {
         PICTURE *scaled_pic = Picture_ScaleSmart(
             orig_pic, Viewport_GetWidth(), Viewport_GetHeight());
