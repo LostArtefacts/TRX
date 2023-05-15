@@ -186,8 +186,8 @@ static void Option_GraphicsUpdateArrows(void)
         break;
     case TEXT_RESOLUTION:
         resolution_offset = 70;
-        m_HideArrowLeft = Screen_GetPendingResIdx() == 0;
-        m_HideArrowRight = Screen_GetPendingResIdx() == (RESOLUTIONS_SIZE - 1);
+        m_HideArrowLeft = !Screen_CanSetPrevRes();
+        m_HideArrowRight = !Screen_CanSetNextRes();
         break;
     }
 
@@ -367,6 +367,8 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         case TEXT_RESOLUTION:
             if (Screen_SetNextRes()) {
                 reset = TEXT_RESOLUTION;
+                g_Config.resolution_width = Screen_GetPendingResWidth();
+                g_Config.resolution_height = Screen_GetPendingResHeight();
             }
             break;
         }
@@ -417,6 +419,8 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         case TEXT_RESOLUTION:
             if (Screen_SetPrevRes()) {
                 reset = TEXT_RESOLUTION;
+                g_Config.resolution_width = Screen_GetPendingResWidth();
+                g_Config.resolution_height = Screen_GetPendingResHeight();
             }
             break;
         }

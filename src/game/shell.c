@@ -135,6 +135,7 @@ void Shell_Init(const char *gameflow_path)
     Savegame_HighlightNewestSlot();
     Config_Init();
 
+    Screen_Init();
     Screen_ApplyResolution();
 }
 
