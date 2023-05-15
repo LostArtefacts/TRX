@@ -36,7 +36,6 @@ bool Output_FadeIsAnimating(void);
 void Output_DrawBackdropScreen(void);
 void Output_DrawOverlayScreen(void);
 
-void Output_ClearScreen(void);
 void Output_DrawBlack(void);
 void Output_DrawEmpty(void);
 void Output_CopyPictureToScreen(void);
