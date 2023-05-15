@@ -12,10 +12,7 @@
 #include <math.h>
 
 static int32_t m_ResolutionIdx = 0;
-static int32_t m_PendingResolutionIdx = 0;
-
 static int32_t m_ResolutionsCount = 0;
-
 static RESOLUTION m_Resolutions[] = {
     // clang-format off
     { 0, 0 } /* desktop */,
@@ -31,6 +28,20 @@ static RESOLUTION m_Resolutions[] = {
     { -1, -1 },
     // clang-format on
 };
+
+static void Screen_ApplyResolution(void);
+
+static void Screen_ApplyResolution(void)
+{
+    int32_t width = Screen_GetResWidth();
+    int32_t height = Screen_GetResHeight();
+    Viewport_Init(width, height);
+
+    Output_ApplyResolution();
+
+    Matrix_ResetStack();
+    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+}
 
 void Screen_Init(void)
 {
@@ -73,7 +84,7 @@ void Screen_Init(void)
         m_ResolutionIdx = 0;
     }
 
-    m_PendingResolutionIdx = m_ResolutionIdx;
+    Screen_ApplyResolution();
 }
 
 int32_t Screen_GetResWidth(void)
@@ -84,16 +95,6 @@ int32_t Screen_GetResWidth(void)
 int32_t Screen_GetResHeight(void)
 {
     return m_Resolutions[m_ResolutionIdx].height;
-}
-
-int32_t Screen_GetPendingResWidth(void)
-{
-    return m_Resolutions[m_PendingResolutionIdx].width;
-}
-
-int32_t Screen_GetPendingResHeight(void)
-{
-    return m_Resolutions[m_PendingResolutionIdx].height;
 }
 
 int32_t Screen_GetResWidthDownscaledText(void)
@@ -155,18 +156,19 @@ int32_t Screen_GetRenderScaleGLRage(int32_t unit)
 
 bool Screen_CanSetPrevRes(void)
 {
-    return m_PendingResolutionIdx - 1 >= 0;
+    return m_ResolutionIdx - 1 >= 0;
 }
 
 bool Screen_CanSetNextRes(void)
 {
-    return m_PendingResolutionIdx + 1 < m_ResolutionsCount;
+    return m_ResolutionIdx + 1 < m_ResolutionsCount;
 }
 
 bool Screen_SetPrevRes(void)
 {
-    if (m_PendingResolutionIdx - 1 >= 0) {
-        m_PendingResolutionIdx--;
+    if (m_ResolutionIdx - 1 >= 0) {
+        m_ResolutionIdx--;
+        Screen_ApplyResolution();
         return true;
     }
     return false;
@@ -174,22 +176,10 @@ bool Screen_SetPrevRes(void)
 
 bool Screen_SetNextRes(void)
 {
-    if (m_PendingResolutionIdx + 1 < m_ResolutionsCount) {
-        m_PendingResolutionIdx++;
+    if (m_ResolutionIdx + 1 < m_ResolutionsCount) {
+        m_ResolutionIdx++;
+        Screen_ApplyResolution();
         return true;
     }
     return false;
-}
-
-void Screen_ApplyResolution(void)
-{
-    m_ResolutionIdx = m_PendingResolutionIdx;
-    Output_ApplyResolution();
-
-    int32_t width = Screen_GetResWidth();
-    int32_t height = Screen_GetResHeight();
-    Viewport_Init(width, height);
-
-    Matrix_ResetStack();
-    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }

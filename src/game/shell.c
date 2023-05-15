@@ -136,7 +136,6 @@ void Shell_Init(const char *gameflow_path)
     Config_Init();
 
     Screen_Init();
-    Screen_ApplyResolution();
 }
 
 void Shell_Shutdown(void)

@@ -12,9 +12,6 @@ int32_t Screen_GetResHeightDownscaledText(void);
 int32_t Screen_GetResWidthDownscaledBar(void);
 int32_t Screen_GetResHeightDownscaledBar(void);
 
-int32_t Screen_GetPendingResWidth(void);
-int32_t Screen_GetPendingResHeight(void);
-
 int32_t Screen_GetRenderScaleText(int32_t unit);
 int32_t Screen_GetRenderScaleBar(int32_t unit);
 int32_t Screen_GetRenderScaleBase(
@@ -25,4 +22,3 @@ bool Screen_CanSetPrevRes(void);
 bool Screen_CanSetNextRes(void);
 bool Screen_SetPrevRes(void);
 bool Screen_SetNextRes(void);
-void Screen_ApplyResolution(void);
