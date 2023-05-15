@@ -416,11 +416,6 @@ RGB888 Output_GetPaletteColor(uint8_t idx)
     return S_Output_GetPaletteColor(idx);
 }
 
-void Output_ClearScreen(void)
-{
-    S_Output_ClearBackBuffer();
-}
-
 void Output_DrawBlack(void)
 {
     Output_DrawBlackOverlay(255);

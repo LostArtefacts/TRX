@@ -543,13 +543,6 @@ void S_Output_ClearDepthBuffer(void)
     GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
-void S_Output_ClearBackBuffer(void)
-{
-    S_Output_RenderEnd();
-    S_Output_ClearSurface(m_BackSurface);
-    S_Output_RenderToggle();
-}
-
 void S_Output_DrawEmpty(void)
 {
     GFX_3D_Renderer_RenderEmpty();
@@ -557,7 +550,7 @@ void S_Output_DrawEmpty(void)
 
 void S_Output_CopyFromPicture(void)
 {
-    S_Output_ClearBackBuffer();
+    S_Output_ClearSurface(m_BackSurface);
     S_Output_RenderEnd();
 
     GFX_BlitterRect rect = {

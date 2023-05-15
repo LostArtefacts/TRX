@@ -217,7 +217,6 @@ void Room_DrawAllRooms(int16_t room_num)
         }
     }
     Matrix_Pop();
-    Output_ClearScreen();
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         Room_DrawSingleRoom(g_RoomsToDraw[i]);
