@@ -548,7 +548,7 @@ void S_Output_DrawEmpty(void)
     GFX_3D_Renderer_RenderEmpty();
 }
 
-void S_Output_CopyFromPicture(void)
+void S_Output_DrawBackdropSurface(void)
 {
     S_Output_ClearSurface(m_BackSurface);
     S_Output_RenderEnd();
@@ -566,7 +566,7 @@ void S_Output_CopyFromPicture(void)
     S_Output_RenderToggle();
 }
 
-void S_Output_DownloadPicture(const PICTURE *pic)
+void S_Output_DownloadBackdropSurface(const PICTURE *pic)
 {
     GFX_2D_Surface *picture_surface = NULL;
 

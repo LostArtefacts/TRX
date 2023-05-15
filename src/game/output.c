@@ -693,9 +693,9 @@ void Output_DrawSprite(
     }
 }
 
-void Output_CopyPictureToScreen(void)
+void Output_DrawBackdropImage(void)
 {
-    S_Output_CopyFromPicture();
+    S_Output_DrawBackdropSurface();
 }
 
 void Output_DrawScreenFlatQuad(
@@ -832,14 +832,14 @@ void Output_DrawUISprite(
     }
 }
 
-void Output_DisplayPicture(const char *filename)
+void Output_LoadBackdropImage(const char *filename)
 {
     PICTURE *orig_pic = Picture_CreateFromFile(filename);
     if (orig_pic) {
         PICTURE *scaled_pic = Picture_ScaleSmart(
             orig_pic, Viewport_GetWidth(), Viewport_GetHeight());
         if (scaled_pic) {
-            S_Output_DownloadPicture(scaled_pic);
+            S_Output_DownloadBackdropSurface(scaled_pic);
             Picture_Free(scaled_pic);
         }
         Picture_Free(orig_pic);

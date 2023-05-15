@@ -1193,13 +1193,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_DISPLAY_PICTURE:
             if (level_type != GFL_SAVED) {
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                Output_DisplayPicture(data->path);
+                Output_LoadBackdropImage(data->path);
                 Clock_SyncTicks(1);
 
                 Output_FadeResetToBlack();
                 Output_FadeToTransparent(true);
                 while (Output_FadeIsAnimating()) {
-                    Output_CopyPictureToScreen();
+                    Output_DrawBackdropImage();
                     Input_Update();
                     Output_DumpScreen();
                     if (g_InputDB.any) {
@@ -1208,7 +1208,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 }
 
                 if (!g_InputDB.any) {
-                    Output_CopyPictureToScreen();
+                    Output_DrawBackdropImage();
                     Output_DumpScreen();
                     Shell_Wait(data->display_time);
                 }
@@ -1216,7 +1216,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 // fade out
                 Output_FadeToBlack(true);
                 while (Output_FadeIsAnimating()) {
-                    Output_CopyPictureToScreen();
+                    Output_DrawBackdropImage();
                     Output_DumpScreen();
                 }
 

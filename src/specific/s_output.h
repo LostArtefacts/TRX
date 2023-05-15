@@ -29,9 +29,9 @@ void S_Output_SetPalette(RGB888 palette[256]);
 RGB888 S_Output_GetPaletteColor(uint8_t idx);
 
 void S_Output_DownloadTextures(int32_t pages);
-void S_Output_DownloadPicture(const PICTURE *pic);
 void S_Output_SelectTexture(int tex_num);
-void S_Output_CopyFromPicture(void);
+void S_Output_DownloadBackdropSurface(const PICTURE *pic);
+void S_Output_DrawBackdropSurface(void);
 
 void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB888 color);

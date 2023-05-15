@@ -38,7 +38,7 @@ void Output_DrawOverlayScreen(void);
 
 void Output_DrawBlack(void);
 void Output_DrawEmpty(void);
-void Output_CopyPictureToScreen(void);
+void Output_DrawBackdropImage(void);
 int32_t Output_DumpScreen(void);
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
@@ -89,7 +89,7 @@ void Output_DrawSpriteRel(
 void Output_DrawUISprite(
     int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade);
 
-void Output_DisplayPicture(const char *filename);
+void Output_LoadBackdropImage(const char *filename);
 
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
