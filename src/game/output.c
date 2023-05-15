@@ -431,11 +431,6 @@ void Output_DrawEmpty(void)
     S_Output_DrawEmpty();
 }
 
-void Output_InitialisePolyList(void)
-{
-    S_Output_RenderBegin();
-}
-
 int32_t Output_DumpScreen(void)
 {
     Output_DrawOverlayScreen();

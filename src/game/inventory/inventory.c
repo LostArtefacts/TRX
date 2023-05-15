@@ -50,8 +50,6 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 {
-    Output_InitialisePolyList();
-
     if (g_InvMode == INV_TITLE_MODE) {
         Output_CopyPictureToScreen();
         Output_DrawBackdropScreen();
@@ -418,7 +416,6 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         Output_FadeSetSpeed(2.0);
         Output_FadeToTransparent(true);
         while (Output_FadeIsAnimating()) {
-            Output_InitialisePolyList();
             Output_CopyPictureToScreen();
             Output_DrawBackdropScreen();
             Output_DumpScreen();

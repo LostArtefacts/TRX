@@ -1199,7 +1199,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Output_FadeResetToBlack();
                 Output_FadeToTransparent(true);
                 while (Output_FadeIsAnimating()) {
-                    Output_InitialisePolyList();
                     Output_CopyPictureToScreen();
                     Input_Update();
                     Output_DumpScreen();
@@ -1209,7 +1208,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 }
 
                 if (!g_InputDB.any) {
-                    Output_InitialisePolyList();
                     Output_CopyPictureToScreen();
                     Output_DumpScreen();
                     Shell_Wait(data->display_time);
@@ -1218,7 +1216,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 // fade out
                 Output_FadeToBlack(true);
                 while (Output_FadeIsAnimating()) {
-                    Output_InitialisePolyList();
                     Output_CopyPictureToScreen();
                     Output_DumpScreen();
                 }
