@@ -411,7 +411,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         } else if (m_PassportMode == PASSPORT_MODE_FLIP) {
             if (!g_SavedGamesCount || g_InvMode == INV_SAVE_MODE
                 || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
-                g_InputDB = (INPUT_STATE) { 0, .right = 1 };
+                g_InputDB = (INPUT_STATE) { 0, .menu_right = 1 };
             } else {
                 Text_ChangeText(
                     m_Text[TEXT_PAGE_NAME],
@@ -455,8 +455,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                         g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
                 } else {
                     g_InputDB = inv_item->anim_direction == 1
-                        ? (INPUT_STATE) { 0, .right = 1 }
-                        : (INPUT_STATE) { 0, .left = 1 };
+                        ? (INPUT_STATE) { 0, .menu_right = 1 }
+                        : (INPUT_STATE) { 0, .menu_left = 1 };
                 }
             } else {
                 Text_ChangeText(
