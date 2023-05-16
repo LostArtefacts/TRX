@@ -202,7 +202,6 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_cine, true);
     READ_BOOL(enable_music_in_menu, true);
     READ_BOOL(enable_music_in_inventory, true);
-    READ_BOOL(enable_xbox_one_controller, false);
     READ_BOOL(enable_round_shadow, true);
     READ_BOOL(enable_3d_pickups, true);
     READ_FLOAT(rendering.anisotropy_filter, 16.0f);
@@ -385,7 +384,6 @@ bool Config_Write(void)
     WRITE_BOOL(enable_cine);
     WRITE_BOOL(enable_music_in_menu);
     WRITE_BOOL(enable_music_in_inventory);
-    WRITE_BOOL(enable_xbox_one_controller);
     WRITE_BOOL(enable_round_shadow);
     WRITE_BOOL(enable_3d_pickups);
     WRITE_FLOAT(rendering.anisotropy_filter);
