@@ -782,6 +782,11 @@ bool Level_Initialise(int32_t level_num)
     Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);
+    Output_LoadBackdropImage(
+        level_num == g_GameFlow.title_level_num
+            ? g_GameFlow.main_menu_background_path
+            : NULL);
+    Output_ApplyResolution();
 
     if (!Level_Load(g_CurrentLevel)) {
         return false;

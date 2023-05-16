@@ -510,6 +510,10 @@ void S_Output_DrawEmpty(void)
 
 void S_Output_DrawBackdropSurface(void)
 {
+    if (!m_PictureSurface) {
+        return;
+    }
+
     S_Output_ClearSurface(m_BackSurface);
     S_Output_RenderEnd();
 
@@ -528,6 +532,14 @@ void S_Output_DrawBackdropSurface(void)
 
 void S_Output_DownloadBackdropSurface(const PICTURE *pic)
 {
+    if (!pic) {
+        if (m_PictureSurface) {
+            bool result = GFX_2D_Surface_Clear(m_PictureSurface);
+            S_Output_CheckError(result);
+        }
+        return;
+    }
+
     GFX_2D_Surface *picture_surface = NULL;
 
     // first, download the picture directly to a temporary surface

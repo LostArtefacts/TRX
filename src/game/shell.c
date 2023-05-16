@@ -238,7 +238,6 @@ void Shell_Main(void)
             }
 
             Text_RemoveAll();
-            Output_LoadBackdropImage(g_GameFlow.main_menu_background_path);
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;
