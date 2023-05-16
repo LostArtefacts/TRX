@@ -92,7 +92,6 @@ typedef struct {
     bool enable_music_in_inventory;
     int32_t resolution_width;
     int32_t resolution_height;
-    bool enable_xbox_one_controller;
     float brightness;
     bool enable_round_shadow;
     bool enable_3d_pickups;
