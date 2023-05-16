@@ -841,6 +841,12 @@ void Output_DrawUISprite(
 
 void Output_LoadBackdropImage(const char *filename)
 {
+    if (!filename) {
+        S_Output_DownloadBackdropSurface(NULL);
+        Memory_FreePointer(&m_BackdropImagePath);
+        return;
+    }
+
     const char *old_path = m_BackdropImagePath;
     m_BackdropImagePath = Memory_DupStr(filename);
     Memory_FreePointer(&old_path);
