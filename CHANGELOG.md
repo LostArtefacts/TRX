@@ -11,6 +11,7 @@
 - fixed sounds stopping instead of pausing if game sounds in inventory are disabled (#717)
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling (#323)
 - fixed Lara not being able to jump off trapdoors or crumbling floors if the sidestep descent fix is enabled (#830)
+- fixed walk to pickups feature (#834, regression from 2.8)
 
 ## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05
 - added Spanish localization to the config tool

@@ -1,5 +1,6 @@
 #include "game/items.h"
 
+#include "config.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -26,35 +27,6 @@ ITEM_INFO *g_Items = NULL;
 int16_t g_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 static int16_t m_InterpolatedBounds[6] = { 0 };
-
-static bool Item_Move3DPosTo3DPos(
-    PHD_3DPOS *src_pos, PHD_3DPOS *dst_pos, int32_t velocity, int16_t rotation);
-
-static bool Item_Move3DPosTo3DPos(
-    PHD_3DPOS *src_pos, PHD_3DPOS *dst_pos, int32_t velocity, int16_t rotation)
-{
-    int32_t x = dst_pos->x - src_pos->x;
-    int32_t y = dst_pos->y - src_pos->y;
-    int32_t z = dst_pos->z - src_pos->z;
-    int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
-    if (velocity >= dist) {
-        src_pos->x = dst_pos->x;
-        src_pos->y = dst_pos->y;
-        src_pos->z = dst_pos->z;
-    } else {
-        src_pos->x += (x * velocity) / dist;
-        src_pos->y += (y * velocity) / dist;
-        src_pos->z += (z * velocity) / dist;
-    }
-
-    ITEM_ADJUST_ROT(src_pos->x_rot, dst_pos->x_rot, rotation);
-    ITEM_ADJUST_ROT(src_pos->y_rot, dst_pos->y_rot, rotation);
-    ITEM_ADJUST_ROT(src_pos->z_rot, dst_pos->z_rot, rotation);
-
-    return src_pos->x == dst_pos->x && src_pos->y == dst_pos->y
-        && src_pos->z == dst_pos->z && src_pos->x_rot == dst_pos->x_rot
-        && src_pos->y_rot == dst_pos->y_rot && src_pos->z_rot == dst_pos->z_rot;
-}
 
 void Item_InitialiseArray(int32_t num_items)
 {
@@ -416,28 +388,94 @@ void Item_AlignPosition(
 }
 
 bool Item_MovePosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec, int32_t velocity)
+    ITEM_INFO *item, const ITEM_INFO *ref_item, const PHD_VECTOR *vec,
+    int32_t velocity)
 {
-    PHD_3DPOS dst_pos;
-    dst_pos.x_rot = dst_item->pos.x_rot;
-    dst_pos.y_rot = dst_item->pos.y_rot;
-    dst_pos.z_rot = dst_item->pos.z_rot;
+    const PHD_3DPOS *ref_pos = &ref_item->pos;
     Matrix_PushUnit();
-    Matrix_RotYXZ(
-        dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    Matrix_RotYXZ(ref_pos->y_rot, ref_pos->x_rot, ref_pos->z_rot);
     MATRIX *mptr = g_MatrixPtr;
-    dst_pos.x = dst_item->pos.x
-        + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
-           >> W2V_SHIFT);
-    dst_pos.y = dst_item->pos.y
-        + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
-           >> W2V_SHIFT);
-    dst_pos.z = dst_item->pos.z
-        + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
-           >> W2V_SHIFT);
+
+    PHD_3DPOS dst_pos = {
+        .x = ref_pos->x
+            + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
+               >> W2V_SHIFT),
+        .y = ref_pos->y
+            + ((mptr->_10 * vec->x + mptr->_11 * vec->y + mptr->_12 * vec->z)
+               >> W2V_SHIFT),
+        .z = ref_pos->z
+            + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
+               >> W2V_SHIFT),
+        .x_rot = ref_pos->x_rot,
+        .y_rot = ref_pos->y_rot,
+        .z_rot = ref_pos->z_rot,
+    };
+
     Matrix_Pop();
 
-    return Item_Move3DPosTo3DPos(&src_item->pos, &dst_pos, velocity, MOVE_ANG);
+    const int32_t dx = dst_pos.x - item->pos.x;
+    const int32_t dy = dst_pos.y - item->pos.y;
+    const int32_t dz = dst_pos.z - item->pos.z;
+    const int32_t dist = Math_Sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+    if (velocity >= dist) {
+        item->pos.x = dst_pos.x;
+        item->pos.y = dst_pos.y;
+        item->pos.z = dst_pos.z;
+    } else {
+        item->pos.x += (dx * velocity) / dist;
+        item->pos.y += (dy * velocity) / dist;
+        item->pos.z += (dz * velocity) / dist;
+    }
+
+    if (item == g_LaraItem && g_Config.walk_to_items
+        && !g_Lara.interact_target.is_moving) {
+        if (g_Lara.water_status != LWS_UNDERWATER) {
+            const int16_t step_to_anim_num[4] = {
+                LA_SIDE_STEP_LEFT,
+                LA_WALK_FORWARD,
+                LA_SIDE_STEP_RIGHT,
+                LA_WALK_BACK,
+            };
+            const int16_t step_to_anim_state[4] = {
+                LS_STEP_LEFT,
+                LS_WALK,
+                LS_STEP_RIGHT,
+                LS_BACK,
+            };
+
+            int32_t angle =
+                (PHD_ONE
+                 - Math_Atan(item->pos.x - dst_pos.x, item->pos.z - dst_pos.z))
+                % PHD_ONE;
+            uint32_t quadrant =
+                ((((uint32_t)(angle + PHD_45) >> W2V_SHIFT)
+                  - ((uint16_t)(dst_pos.y_rot + PHD_45) >> W2V_SHIFT))
+                 % 4);
+
+            Item_SwitchToAnim(item, step_to_anim_num[quadrant], -1);
+            item->goal_anim_state = step_to_anim_state[quadrant];
+            item->current_anim_state = step_to_anim_state[quadrant];
+
+            g_Lara.gun_status = LGS_HANDS_BUSY;
+        }
+
+        g_Lara.interact_target.is_moving = true;
+        g_Lara.interact_target.move_count = 0;
+    }
+
+    int16_t rotation = MOVE_ANG;
+    ITEM_ADJUST_ROT(item->pos.x_rot, dst_pos.x_rot, rotation);
+    ITEM_ADJUST_ROT(item->pos.y_rot, dst_pos.y_rot, rotation);
+    ITEM_ADJUST_ROT(item->pos.z_rot, dst_pos.z_rot, rotation);
+
+    // clang-format off
+    return item->pos.x == dst_pos.x
+        && item->pos.y == dst_pos.y
+        && item->pos.z == dst_pos.z
+        && item->pos.x_rot == dst_pos.x_rot
+        && item->pos.y_rot == dst_pos.y_rot
+        && item->pos.z_rot == dst_pos.z_rot;
+    // clang-format on
 }
 
 void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
