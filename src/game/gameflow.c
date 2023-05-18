@@ -1200,8 +1200,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Output_FadeToTransparent(true);
                 while (Output_FadeIsAnimating()) {
                     Output_DrawBackdropImage();
-                    Input_Update();
                     Output_DumpScreen();
+                    Input_Update();
                     if (g_InputDB.any) {
                         break;
                     }
@@ -1218,6 +1218,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 while (Output_FadeIsAnimating()) {
                     Output_DrawBackdropImage();
                     Output_DumpScreen();
+                    Input_Update();
+                    if (g_InputDB.any) {
+                        break;
+                    }
                 }
 
                 // draw black frame

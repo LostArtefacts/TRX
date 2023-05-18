@@ -284,6 +284,7 @@ void Shell_Wait(int nticks)
         if (g_InputDB.any) {
             break;
         }
+        S_Shell_SpinMessageLoop();
         Clock_SyncTicks(1);
     }
 }

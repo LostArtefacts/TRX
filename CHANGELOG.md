@@ -9,6 +9,7 @@
 - changed screen resolution option to apply immediately (#114)
 - changed shaders to use GLSL 1.20 which should fix most issues with OpenGL 2.1 (#327, #685)
 - fixed sounds stopping instead of pausing if game sounds in inventory are disabled (#717)
+- fixed skipping Eidos logo and end credits (#541)
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling (#323)
 - fixed Lara not being able to jump off trapdoors or crumbling floors if the sidestep descent fix is enabled (#830)
 
