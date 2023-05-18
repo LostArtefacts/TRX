@@ -29,7 +29,7 @@ bool Item_TestPosition(
 void Item_AlignPosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec);
 bool Item_MovePosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec,
+    ITEM_INFO *src_item, const ITEM_INFO *dst_item, const PHD_VECTOR *vec,
     int32_t velocity);
 void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll);
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
