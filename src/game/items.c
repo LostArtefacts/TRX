@@ -413,18 +413,20 @@ bool Item_MovePosition(
 
     Matrix_Pop();
 
-    const int32_t dx = dst_pos.x - item->pos.x;
-    const int32_t dy = dst_pos.y - item->pos.y;
-    const int32_t dz = dst_pos.z - item->pos.z;
-    const int32_t dist = Math_Sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-    if (velocity >= dist) {
-        item->pos.x = dst_pos.x;
-        item->pos.y = dst_pos.y;
-        item->pos.z = dst_pos.z;
-    } else {
-        item->pos.x += (dx * velocity) / dist;
-        item->pos.y += (dy * velocity) / dist;
-        item->pos.z += (dz * velocity) / dist;
+    {
+        const int32_t dx = dst_pos.x - item->pos.x;
+        const int32_t dy = dst_pos.y - item->pos.y;
+        const int32_t dz = dst_pos.z - item->pos.z;
+        const int32_t dist = Math_Sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+        if (velocity >= dist) {
+            item->pos.x = dst_pos.x;
+            item->pos.y = dst_pos.y;
+            item->pos.z = dst_pos.z;
+        } else {
+            item->pos.x += (dx * velocity) / dist;
+            item->pos.y += (dy * velocity) / dist;
+            item->pos.z += (dz * velocity) / dist;
+        }
     }
 
     if (item == g_LaraItem && g_Config.walk_to_items
@@ -443,14 +445,13 @@ bool Item_MovePosition(
                 LS_BACK,
             };
 
-            int32_t angle =
-                (PHD_ONE
-                 - Math_Atan(item->pos.x - dst_pos.x, item->pos.z - dst_pos.z))
-                % PHD_ONE;
-            uint32_t quadrant =
-                ((((uint32_t)(angle + PHD_45) >> W2V_SHIFT)
-                  - ((uint16_t)(dst_pos.y_rot + PHD_45) >> W2V_SHIFT))
-                 % 4);
+            const int32_t dx = item->pos.x - dst_pos.x;
+            const int32_t dz = item->pos.z - dst_pos.z;
+            const int32_t angle = (PHD_ONE - Math_Atan(dx, dz)) % PHD_ONE;
+            const uint32_t src_quadrant = (uint32_t)(angle + PHD_45) / PHD_90;
+            const uint32_t dst_quadrant =
+                (uint32_t)(dst_pos.y_rot + PHD_45) / PHD_90;
+            const uint32_t quadrant = (src_quadrant - dst_quadrant) % 4;
 
             Item_SwitchToAnim(item, step_to_anim_num[quadrant], -1);
             item->goal_anim_state = step_to_anim_state[quadrant];
