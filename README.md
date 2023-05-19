@@ -53,6 +53,10 @@ This project was inspired by Arsunt's
             PS1 UI and new graphics options
             <img src="docs/showcase/ps1_ui_and_gfx.jpg"/>
         </th>
+        <th>
+            Restored braid
+            <img src="docs/showcase/braid.jpg"/>
+        </th>
     </tr>
 </table>
 
