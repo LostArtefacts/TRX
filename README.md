@@ -20,42 +20,42 @@ This project was inspired by Arsunt's
 <table>
     <tr>
         <th>
+            Restored braid
+            <img src="docs/showcase/braid.jpg"/>
+        </th>
+        <th>
             Enemy health bar and UI scaling
             <img src="docs/showcase/enemy_health_bar_and_scaling.jpg"/>
         </th>
+    </tr>
+    <tr>
         <th>
             3D pickups
             <img src="docs/showcase/3d_pickups.jpg"/>
         </th>
-    </tr>
-    <tr>
         <th>
             Improved stats
             <img src="docs/showcase/compass_stats.jpg"/>
         </th>
+    </tr>
+    <tr>
         <th>
             Customizable draw distance
             <img src="docs/showcase/draw_distance.webp"/>
         </th>
-    </tr>
-    <tr>
         <th>
             Fly cheat
             <img src="docs/showcase/fly_cheat.jpg"/>
         </th>
+    </tr>
+    <tr>
         <th>
             Free camera
             <img src="docs/showcase/free_camera.jpg"/>
         </th>
-    </tr>
-    <tr>
         <th>
             PS1 UI and new graphics options
             <img src="docs/showcase/ps1_ui_and_gfx.jpg"/>
-        </th>
-        <th>
-            Restored braid
-            <img src="docs/showcase/braid.jpg"/>
         </th>
     </tr>
 </table>
