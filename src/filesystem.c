@@ -18,8 +18,9 @@ static bool File_ExistsRaw(const char *path);
 static void File_RemoveSubstring(char *str, const char *sub)
 {
     size_t len = strlen(sub);
-    if (len == 0)
+    if (len == 0) {
         return;
+    }
 
     char *p = str;
     while ((p = strstr(p, sub)) != NULL) {
