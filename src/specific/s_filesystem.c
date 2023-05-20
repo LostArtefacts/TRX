@@ -21,15 +21,13 @@ static char *S_File_Strsep(char **stringp, const char *delim);
 static char *S_File_Strsep(char **stringp, const char *delim)
 {
     char *start = *stringp;
-    char *p;
+    char *p = start ? strpbrk(start, delim) : NULL;
 
-    p = (start != NULL) ? strpbrk(start, delim) : NULL;
-
-    if (p == NULL) {
-        *stringp = NULL;
-    } else {
+    if (p) {
         *p = '\0';
         *stringp = p + 1;
+    } else {
+        *stringp = NULL;
     }
 
     return start;
