@@ -10,8 +10,6 @@
 
 #if defined(_WIN32)
     #include <direct.h>
-    #define strcasecmp _stricmp
-    #define strncasecmp _strnicmp
 #else
     #include <sys/stat.h>
 #endif
