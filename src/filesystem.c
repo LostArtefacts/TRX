@@ -23,7 +23,7 @@ static void File_RemoveSubstring(char *str, const char *sub)
     }
 
     char *p = str;
-    while ((p = strstr(p, sub)) != NULL) {
+    while ((p = strstr(p, sub))) {
         memmove(p, p + len, strlen(p + len) + 1);
     }
 }
