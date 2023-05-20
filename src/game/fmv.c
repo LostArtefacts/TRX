@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 static const char *m_Extensions[] = {
-    ".mp4", ".mkv", "mpeg", ".avi", ".webm", ".rpl", NULL,
+    ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", NULL,
 };
 
 bool FMV_Init(void)
