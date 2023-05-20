@@ -16,9 +16,9 @@
 
 const char *m_GameDir = NULL;
 
-static char *S_File_MyStrsep(char **stringp, const char *delim);
+static char *S_File_Strsep(char **stringp, const char *delim);
 
-static char *S_File_MyStrsep(char **stringp, const char *delim)
+static char *S_File_Strsep(char **stringp, const char *delim)
 {
     char *start = *stringp;
     char *p;
@@ -78,7 +78,7 @@ bool S_File_CasePath(char const *path, char *r)
     LOG_DEBUG("r: %s", r);
 
     int last = 0;
-    char *c = S_File_MyStrsep(&p, "/");
+    char *c = S_File_Strsep(&p, "/");
     while (c) {
         LOG_DEBUG("while c r: %s", r);
         if (!d) {
@@ -114,7 +114,7 @@ bool S_File_CasePath(char const *path, char *r)
             last = 1;
         }
 
-        c = S_File_MyStrsep(&p, "/");
+        c = S_File_Strsep(&p, "/");
     }
 
     if (d) {
