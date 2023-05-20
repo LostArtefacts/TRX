@@ -12,10 +12,10 @@ struct MYFILE {
     const char *path;
 };
 
-void File_RemoveSubstring(char *str, const char *sub);
+static void File_RemoveSubstring(char *str, const char *sub);
 static bool File_ExistsRaw(const char *path);
 
-void File_RemoveSubstring(char *str, const char *sub)
+static void File_RemoveSubstring(char *str, const char *sub)
 {
     size_t len = strlen(sub);
     if (len == 0)
