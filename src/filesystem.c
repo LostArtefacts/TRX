@@ -12,7 +12,20 @@ struct MYFILE {
     const char *path;
 };
 
+void File_RemoveSubstring(char *str, const char *sub);
 static bool File_ExistsRaw(const char *path);
+
+void File_RemoveSubstring(char *str, const char *sub)
+{
+    size_t len = strlen(sub);
+    if (len == 0)
+        return;
+
+    char *p = str;
+    while ((p = strstr(p, sub)) != NULL) {
+        memmove(p, p + len, strlen(p + len) + 1);
+    }
+}
 
 static bool File_ExistsRaw(const char *path)
 {
@@ -55,6 +68,26 @@ char *File_GetFullPath(const char *path)
             size_t out_size = strlen(game_dir) + strlen(path) + 2;
             char *out = Memory_Alloc(out_size);
             sprintf(out, "%s/%s", game_dir, path);
+            if (!File_ExistsRaw(out)) {
+                Memory_FreePointer(&out);
+            } else {
+                return out;
+            }
+        }
+    }
+
+    // Check for case sensitive path.
+    if (File_IsRelative(path)) {
+        const char *game_dir = File_GetGameDirectory();
+        if (game_dir) {
+            char *case_path = Memory_Alloc(strlen(path) + 2);
+            if (S_File_CasePath(path, case_path)) {
+                File_RemoveSubstring(case_path, "./");
+            }
+            size_t out_size = strlen(game_dir) + strlen(case_path) + 2;
+            char *out = Memory_Alloc(out_size);
+            sprintf(out, "%s%s", game_dir, case_path);
+            Memory_FreePointer(&case_path);
             return out;
         }
     }
@@ -84,6 +117,7 @@ char *File_GuessExtension(const char *path, const char **extensions)
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
+    LOG_DEBUG("path: %s", path);
     char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     file->path = Memory_DupStr(path);
