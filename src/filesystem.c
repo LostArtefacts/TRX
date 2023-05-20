@@ -117,7 +117,6 @@ char *File_GuessExtension(const char *path, const char **extensions)
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
-    LOG_DEBUG("path: %s", path);
     char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     file->path = Memory_DupStr(path);

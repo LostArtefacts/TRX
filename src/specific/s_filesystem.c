@@ -73,12 +73,10 @@ bool S_File_CasePath(char const *path, char *r)
         r[1] = 0;
         rl = 1;
     }
-    LOG_DEBUG("r: %s", r);
 
     int last = 0;
     char *c = S_File_Strsep(&p, "/");
     while (c) {
-        LOG_DEBUG("while c r: %s", r);
         if (!d) {
             Memory_FreePointer(&p);
             return false;
