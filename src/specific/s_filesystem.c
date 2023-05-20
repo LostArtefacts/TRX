@@ -55,68 +55,67 @@ void S_File_CreateDirectory(const char *path)
 #endif
 }
 
-// r must have strlen(path) + 2 bytes
-bool S_File_CasePath(char const *path, char *r)
+bool S_File_CasePath(char const *path, char *case_path)
 {
     size_t length = strlen(path);
-    char *p = Memory_Alloc(length + 1);
-    strcpy(p, path);
-    size_t rl = 0;
+    char *path_copy = Memory_Alloc(length + 1);
+    strcpy(path_copy, path);
+    size_t case_len = 0;
 
-    DIR *d;
-    if (p[0] == '/') {
-        d = opendir("/");
-        p = p + 1;
+    DIR *path_dir;
+    if (path_copy[0] == '/') {
+        path_dir = opendir("/");
+        path_copy = path_copy + 1;
     } else {
-        d = opendir(".");
-        r[0] = '.';
-        r[1] = 0;
-        rl = 1;
+        path_dir = opendir(".");
+        case_path[0] = '.';
+        case_path[1] = 0;
+        case_len = 1;
     }
 
-    int last = 0;
-    char *c = S_File_Strsep(&p, "/");
-    while (c) {
-        if (!d) {
-            Memory_FreePointer(&p);
+    bool last_file = false;
+    char *path_piece = S_File_Strsep(&path_copy, "/");
+    while (path_piece) {
+        if (!path_dir) {
+            Memory_FreePointer(&path_copy);
             return false;
         }
 
-        if (last) {
-            closedir(d);
-            Memory_FreePointer(&p);
+        if (last_file) {
+            closedir(path_dir);
+            Memory_FreePointer(&path_copy);
             return false;
         }
 
-        r[rl] = '/';
-        rl += 1;
-        r[rl] = 0;
+        case_path[case_len] = '/';
+        case_len += 1;
+        case_path[case_len] = 0;
 
-        struct dirent *e = readdir(d);
-        while (e) {
-            if (strcasecmp(c, e->d_name) == 0) {
-                strcpy(r + rl, e->d_name);
-                rl += strlen(e->d_name);
-                closedir(d);
-                d = opendir(r);
+        struct dirent *cur_file = readdir(path_dir);
+        while (cur_file) {
+            if (strcasecmp(path_piece, cur_file->d_name) == 0) {
+                strcpy(case_path + case_len, cur_file->d_name);
+                case_len += strlen(cur_file->d_name);
+                closedir(path_dir);
+                path_dir = opendir(case_path);
                 break;
             }
-            e = readdir(d);
+            cur_file = readdir(path_dir);
         }
 
-        if (!e) {
-            strcpy(r + rl, c);
-            rl += strlen(c);
-            last = 1;
+        if (!cur_file) {
+            strcpy(case_path + case_len, path_piece);
+            case_len += strlen(path_piece);
+            last_file = true;
         }
 
-        c = S_File_Strsep(&p, "/");
+        path_piece = S_File_Strsep(&path_copy, "/");
     }
 
-    if (d) {
-        closedir(d);
+    if (path_dir) {
+        closedir(path_dir);
     }
 
-    Memory_FreePointer(&p);
+    Memory_FreePointer(&path_copy);
     return true;
 }
