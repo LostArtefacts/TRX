@@ -69,11 +69,10 @@ char *File_GetFullPath(const char *path)
             size_t out_size = strlen(game_dir) + strlen(path) + 2;
             char *out = Memory_Alloc(out_size);
             sprintf(out, "%s/%s", game_dir, path);
-            if (!File_ExistsRaw(out)) {
-                Memory_FreePointer(&out);
-            } else {
+            if (File_ExistsRaw(out)) {
                 return out;
             }
+            Memory_FreePointer(&out);
         }
     }
 
