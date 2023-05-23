@@ -137,12 +137,16 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
 
     item->goal_anim_state = LS_STOP;
     if (g_Input.look) {
-        Lara_LookLeftRight();
         Lara_LookUpDown();
-        return;
+        if (!g_Config.enable_enhanced_look) {
+            Lara_LookLeftRight();
+            return;
+        }
     }
-    if (g_Camera.type == CAM_LOOK) {
-        g_Camera.type = CAM_CHASE;
+    if (!g_Config.enable_enhanced_look) {
+        if (g_Camera.type == CAM_LOOK) {
+            g_Camera.type = CAM_CHASE;
+        }
     }
 
     if (g_Input.step_left) {
@@ -305,6 +309,12 @@ void Lara_State_FastFall(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_Hang(ITEM_INFO *item, COLL_INFO *coll)
 {
+    if (g_Config.enable_enhanced_look) {
+        if (g_Input.look) {
+            Lara_LookUpDown();
+        }
+    }
+
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_angle = CAM_A_HANG;
