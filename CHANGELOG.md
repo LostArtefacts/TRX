@@ -7,6 +7,7 @@
 - added an option to fix original texture issues (#826)
 - added menu specific controls meaning arrow keys, return, and escape now always function in menus (#814, regression from 2.12)
 - added forward/backward jumps while looking and looking up/down while hanging if enhanced look is enabled (#848)
+- added case insensitive directory and file detection (#845)
 - changed screen resolution option to apply immediately (#114)
 - changed shaders to use GLSL 1.20 which should fix most issues with OpenGL 2.1 (#327, #685)
 - fixed sounds stopping instead of pausing if game sounds in inventory are disabled (#717)

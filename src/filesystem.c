@@ -49,16 +49,25 @@ bool File_Exists(const char *path)
 
 char *File_GetFullPath(const char *path)
 {
-    if (!File_ExistsRaw(path) && File_IsRelative(path)) {
+    char *full_path = NULL;
+    if (File_IsRelative(path)) {
         const char *game_dir = File_GetGameDirectory();
         if (game_dir) {
-            size_t out_size = strlen(game_dir) + strlen(path) + 2;
-            char *out = Memory_Alloc(out_size);
-            sprintf(out, "%s/%s", game_dir, path);
-            return out;
+            full_path = Memory_Alloc(strlen(game_dir) + strlen(path) + 1);
+            sprintf(full_path, "%s%s", game_dir, path);
         }
     }
-    return Memory_DupStr(path);
+    if (!full_path) {
+        full_path = Memory_DupStr(path);
+    }
+
+    char *case_path = S_File_CasePath(full_path);
+    if (case_path) {
+        Memory_FreePointer(&full_path);
+        return case_path;
+    }
+
+    return full_path;
 }
 
 char *File_GuessExtension(const char *path, const char **extensions)
