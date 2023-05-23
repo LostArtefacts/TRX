@@ -6,6 +6,7 @@
 #include <SDL2/SDL_filesystem.h>
 #include <assert.h>
 #include <dirent.h>
+#include <stdbool.h>
 #include <string.h>
 
 #if defined(_WIN32)
@@ -101,7 +102,6 @@ char *S_File_CasePath(char const *path)
         }
     }
 
-finish:
     Memory_FreePointer(&path_copy);
 
     char *result;
