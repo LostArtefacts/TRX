@@ -53,7 +53,7 @@ char *File_GetFullPath(const char *path)
     if (File_IsRelative(path)) {
         const char *game_dir = File_GetGameDirectory();
         if (game_dir) {
-            full_path = Memory_Alloc(strlen(game_dir) + strlen(path));
+            full_path = Memory_Alloc(strlen(game_dir) + strlen(path) + 1);
             sprintf(full_path, "%s%s", game_dir, path);
         }
     }
