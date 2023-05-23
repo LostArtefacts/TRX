@@ -16,23 +16,6 @@
 
 const char *m_GameDir = NULL;
 
-static char *S_File_Strsep(char **stringp, const char *delim);
-
-static char *S_File_Strsep(char **stringp, const char *delim)
-{
-    char *start = *stringp;
-    char *p = start ? strpbrk(start, delim) : NULL;
-
-    if (p) {
-        *p = '\0';
-        *stringp = p + 1;
-    } else {
-        *stringp = NULL;
-    }
-
-    return start;
-}
-
 const char *S_File_GetGameDirectory(void)
 {
     if (!m_GameDir) {
@@ -55,67 +38,77 @@ void S_File_CreateDirectory(const char *path)
 #endif
 }
 
-bool S_File_CasePath(char const *path, char *case_path)
+char *S_File_CasePath(char const *path)
 {
-    size_t length = strlen(path);
-    char *path_copy = Memory_Alloc(length + 1);
-    strcpy(path_copy, path);
-    size_t case_len = 0;
+    assert(path);
 
-    DIR *path_dir;
+    char *current_path = Memory_Alloc(strlen(path) + 2);
+    const char *sep = strchr(path, '/') ? "/" : "\\";
+
+    char *path_copy = Memory_DupStr(path);
+    char *path_piece = path_copy;
+
+    bool relative;
+
     if (path_copy[0] == '/') {
-        path_dir = opendir("/");
-        path_copy = path_copy + 1;
+        relative = false;
+        strcpy(current_path, "/");
+    } else if (strstr(path_copy, ":\\")) {
+        relative = false;
+        strcpy(current_path, path_copy);
+        strstr(current_path, ":\\")[1] = '\0';
+        path_piece += 3;
     } else {
-        path_dir = opendir(".");
-        case_path[0] = '.';
-        case_path[1] = 0;
-        case_len = 1;
+        relative = true;
+        strcpy(current_path, ".");
     }
 
-    bool last_file = false;
-    char *path_piece = S_File_Strsep(&path_copy, "/");
     while (path_piece) {
+        char *delim = strpbrk(path_piece, "/\\");
+        char old_delim = delim ? *delim : '\0';
+        if (delim) {
+            *delim = '\0';
+        }
+
+        DIR *path_dir = opendir(current_path);
         if (!path_dir) {
             Memory_FreePointer(&path_copy);
-            return false;
+            Memory_FreePointer(&current_path);
+            return NULL;
         }
-
-        if (last_file) {
-            closedir(path_dir);
-            Memory_FreePointer(&path_copy);
-            return false;
-        }
-
-        case_path[case_len] = '/';
-        case_len += 1;
-        case_path[case_len] = 0;
 
         struct dirent *cur_file = readdir(path_dir);
         while (cur_file) {
             if (strcasecmp(path_piece, cur_file->d_name) == 0) {
-                strcpy(case_path + case_len, cur_file->d_name);
-                case_len += strlen(cur_file->d_name);
-                closedir(path_dir);
-                path_dir = opendir(case_path);
+                strcat(current_path, sep);
+                strcat(current_path, cur_file->d_name);
                 break;
             }
             cur_file = readdir(path_dir);
         }
+        closedir(path_dir);
 
         if (!cur_file) {
-            strcpy(case_path + case_len, path_piece);
-            case_len += strlen(path_piece);
-            last_file = true;
+            strcat(current_path, sep);
+            strcat(current_path, path_piece);
         }
 
-        path_piece = S_File_Strsep(&path_copy, "/");
+        if (delim) {
+            *delim = old_delim;
+            path_piece = delim + 1;
+        } else {
+            break;
+        }
     }
 
-    if (path_dir) {
-        closedir(path_dir);
-    }
-
+finish:
     Memory_FreePointer(&path_copy);
-    return true;
+
+    char *result;
+    if (current_path[0] == '.') { /* strip leading ./ */
+        result = Memory_DupStr(current_path + 2);
+    } else {
+        result = Memory_DupStr(current_path);
+    }
+    return result;
 }

@@ -4,6 +4,7 @@
 #include "memory.h"
 #include "specific/s_filesystem.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -12,21 +13,7 @@ struct MYFILE {
     const char *path;
 };
 
-static void File_RemoveSubstring(char *str, const char *sub);
 static bool File_ExistsRaw(const char *path);
-
-static void File_RemoveSubstring(char *str, const char *sub)
-{
-    size_t len = strlen(sub);
-    if (len == 0) {
-        return;
-    }
-
-    char *p = str;
-    while ((p = strstr(p, sub))) {
-        memmove(p, p + len, strlen(p + len) + 1);
-    }
-}
 
 static bool File_ExistsRaw(const char *path)
 {
@@ -63,35 +50,25 @@ bool File_Exists(const char *path)
 
 char *File_GetFullPath(const char *path)
 {
-    if (!File_ExistsRaw(path) && File_IsRelative(path)) {
-        const char *game_dir = File_GetGameDirectory();
-        if (game_dir) {
-            size_t out_size = strlen(game_dir) + strlen(path) + 2;
-            char *out = Memory_Alloc(out_size);
-            sprintf(out, "%s/%s", game_dir, path);
-            if (File_ExistsRaw(out)) {
-                return out;
-            }
-            Memory_FreePointer(&out);
-        }
-    }
-
-    // Check for case sensitive path.
+    char *full_path = NULL;
     if (File_IsRelative(path)) {
         const char *game_dir = File_GetGameDirectory();
         if (game_dir) {
-            char *case_path = Memory_Alloc(strlen(path) + 2);
-            if (S_File_CasePath(path, case_path)) {
-                File_RemoveSubstring(case_path, "./");
-            }
-            size_t out_size = strlen(game_dir) + strlen(case_path) + 2;
-            char *out = Memory_Alloc(out_size);
-            sprintf(out, "%s%s", game_dir, case_path);
-            Memory_FreePointer(&case_path);
-            return out;
+            full_path = Memory_Alloc(strlen(game_dir) + strlen(path));
+            sprintf(full_path, "%s%s", game_dir, path);
         }
     }
-    return Memory_DupStr(path);
+    if (!full_path) {
+        full_path = Memory_DupStr(path);
+    }
+
+    char *case_path = S_File_CasePath(full_path);
+    if (case_path) {
+        Memory_FreePointer(&full_path);
+        return case_path;
+    }
+
+    return full_path;
 }
 
 char *File_GuessExtension(const char *path, const char **extensions)
