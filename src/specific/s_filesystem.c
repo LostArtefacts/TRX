@@ -6,7 +6,6 @@
 #include <SDL2/SDL_filesystem.h>
 #include <assert.h>
 #include <dirent.h>
-#include <stdbool.h>
 #include <string.h>
 
 #if defined(_WIN32)
@@ -49,18 +48,13 @@ char *S_File_CasePath(char const *path)
     char *path_copy = Memory_DupStr(path);
     char *path_piece = path_copy;
 
-    bool relative;
-
     if (path_copy[0] == '/') {
-        relative = false;
         strcpy(current_path, "/");
     } else if (strstr(path_copy, ":\\")) {
-        relative = false;
         strcpy(current_path, path_copy);
         strstr(current_path, ":\\")[1] = '\0';
         path_piece += 3;
     } else {
-        relative = true;
         strcpy(current_path, ".");
     }
 
