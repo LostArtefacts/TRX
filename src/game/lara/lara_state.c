@@ -143,10 +143,8 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
             return;
         }
     }
-    if (!g_Config.enable_enhanced_look) {
-        if (g_Camera.type == CAM_LOOK) {
-            g_Camera.type = CAM_CHASE;
-        }
+    if (!g_Config.enable_enhanced_look && g_Camera.type == CAM_LOOK) {
+        g_Camera.type = CAM_CHASE;
     }
 
     if (g_Input.step_left) {
@@ -309,10 +307,8 @@ void Lara_State_FastFall(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_Hang(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (g_Config.enable_enhanced_look) {
-        if (g_Input.look) {
-            Lara_LookUpDown();
-        }
+    if (g_Config.enable_enhanced_look && g_Input.look) {
+        Lara_LookUpDown();
     }
 
     coll->enable_spaz = 0;
