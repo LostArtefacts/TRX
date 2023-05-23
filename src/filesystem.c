@@ -4,7 +4,6 @@
 #include "memory.h"
 #include "specific/s_filesystem.h"
 
-#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
