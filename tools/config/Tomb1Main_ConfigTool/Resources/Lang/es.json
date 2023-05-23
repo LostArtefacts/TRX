@@ -164,7 +164,7 @@
       "Title": "Mostrar barras de salud enemigas"
     },
     "enable_enhanced_look": {
-      "Description": "Permite que Lara mire mientras corre, salta, etc., similar al estilo TR2.",
+      "Description": "Permite que Lara mire mientras corre, salta, cuelga, etc., similar al estilo TR2.",
       "Title": "Mira mientras corres"
     },
     "enable_enhanced_saves": {

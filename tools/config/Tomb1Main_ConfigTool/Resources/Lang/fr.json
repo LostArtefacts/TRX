@@ -89,7 +89,7 @@
     },
     "enable_enhanced_look": {
       "Title": "Observer en mouvement",
-      "Description": "Permet à Lara de regarder autour d'elle, lorsqu'elle court, saute etc. - Similaire à TR2."
+      "Description": "Permet à Lara de regarder autour d'elle, lorsqu'elle court, saute, se suspend, etc. - Similaire à TR2."
     },
     "enable_jump_twists": {
       "Title": "Sauts retournés",

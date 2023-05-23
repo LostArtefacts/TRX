@@ -89,7 +89,7 @@
     },
     "enable_enhanced_look": {
       "Title": "Look while running",
-      "Description": "Allows Lara to look while running, jumping etc. - similar to TR2 style."
+      "Description": "Allows Lara to look while running, jumping, hanging, etc. - similar to TR2 style."
     },
     "enable_jump_twists": {
       "Title": "Jump twists",
