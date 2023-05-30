@@ -444,7 +444,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
             }
 
             if (g_InvMode == INV_TITLE_MODE
-                || g_CurrentLevel == g_GameFlow.gym_level_num) {
+                || (g_CurrentLevel == g_GameFlow.gym_level_num
+                    && g_InvMode != INV_DEATH_MODE)) {
                 Text_ChangeText(
                     m_Text[TEXT_PAGE_NAME],
                     g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
@@ -465,11 +466,13 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
             }
 
             if (g_InputDB.menu_confirm || g_InvMode == INV_SAVE_MODE
-                || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
+                || g_InvMode == INV_SAVE_CRYSTAL_MODE
+                || (g_InvMode == INV_LOAD_MODE && !g_SavedGamesCount)) {
                 Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
                 Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
                 if (g_InvMode == INV_TITLE_MODE
-                    || g_CurrentLevel == g_GameFlow.gym_level_num) {
+                    || (g_CurrentLevel == g_GameFlow.gym_level_num
+                        && g_InvMode != INV_DEATH_MODE)) {
                     if (g_GameFlow.enable_game_modes) {
                         Option_PassportInitNewGameRequester();
                         m_PassportMode = PASSPORT_MODE_NEW_GAME;
@@ -483,7 +486,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                 } else if (
                     g_InvMode == INV_SAVE_MODE
                     || g_InvMode == INV_SAVE_CRYSTAL_MODE
-                    || g_InvMode == INV_GAME_MODE) {
+                    || g_InvMode == INV_GAME_MODE
+                    || (g_InvMode == INV_LOAD_MODE && !g_SavedGamesCount)) {
                     g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
                     Option_PassportInitSaveRequester(page);
                     m_PassportMode = PASSPORT_MODE_SHOW_SAVES;

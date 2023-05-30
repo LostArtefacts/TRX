@@ -16,6 +16,7 @@
 - fixed Lara not being able to jump off trapdoors or crumbling floors if the sidestep descent fix is enabled (#830)
 - fixed walk to pickups feature (#834, regression from 2.8)
 - fixed .mpeg FMVs not working (#844)
+- fixed the restart level passport text incorrectly showing new game in Lara's Home (#851)
 
 ## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05
 - added Spanish localization to the config tool
