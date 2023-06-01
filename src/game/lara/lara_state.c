@@ -799,6 +799,7 @@ void Lara_State_SurfSwim(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    coll->enable_spaz = 0;
     g_Lara.dive_timer = 0;
 
     if (!g_Config.enable_tr3_sidesteps || !g_Input.slow) {
@@ -829,6 +830,7 @@ void Lara_State_SurfBack(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    coll->enable_spaz = 0;
     g_Lara.dive_timer = 0;
 
     if (!g_Config.enable_tr3_sidesteps || !g_Input.slow) {
@@ -856,6 +858,7 @@ void Lara_State_SurfLeft(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    coll->enable_spaz = 0;
     g_Lara.dive_timer = 0;
 
     if (g_Config.enable_tr3_sidesteps && g_Input.slow && g_Input.left) {
@@ -889,6 +892,7 @@ void Lara_State_SurfRight(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    coll->enable_spaz = 0;
     g_Lara.dive_timer = 0;
 
     if (g_Config.enable_tr3_sidesteps && g_Input.slow && g_Input.right) {
@@ -926,6 +930,8 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_UW_DEATH;
         return;
     }
+
+    coll->enable_spaz = 0;
 
     if (g_Input.look) {
         Lara_LookLeftRightSurf();
@@ -979,6 +985,8 @@ void Lara_State_Swim(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    coll->enable_spaz = 0;
+
     if (g_Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
     }
@@ -1013,6 +1021,8 @@ void Lara_State_Glide(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_UW_DEATH;
         return;
     }
+
+    coll->enable_spaz = 0;
 
     if (g_Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
@@ -1053,6 +1063,8 @@ void Lara_State_Tread(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    coll->enable_spaz = 0;
+
     if (g_Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
     } else if (g_Input.back) {
@@ -1084,6 +1096,7 @@ void Lara_State_Dive(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_UWDeath(ITEM_INFO *item, COLL_INFO *coll)
 {
+    coll->enable_spaz = 0;
     item->fall_speed -= 8;
     if (item->fall_speed <= 0) {
         item->fall_speed = 0;

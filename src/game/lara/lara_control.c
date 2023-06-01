@@ -155,7 +155,7 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     }
 
-    if (g_Lara.spaz_effect_count && g_Lara.spaz_effect) {
+    if (g_Lara.spaz_effect_count && g_Lara.spaz_effect && coll->enable_spaz) {
         int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
         int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
         PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
