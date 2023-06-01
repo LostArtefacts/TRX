@@ -881,21 +881,23 @@ void S_Input_Shutdown(void)
 
 void S_Input_InitController(void)
 {
-    if (!m_Controller) {
-        int controllers = SDL_NumJoysticks();
-        LOG_INFO("%d controllers", controllers);
-        for (int i = 0; i < controllers; i++) {
-            m_ControllerName = SDL_GameControllerNameForIndex(i);
-            m_ControllerType = SDL_GameControllerTypeForIndex(i);
-            bool is_game_controller = SDL_IsGameController(i);
-            LOG_DEBUG(
-                "controller %d: %s %d (%d)", i, m_ControllerName,
-                m_ControllerType, is_game_controller);
-            if (is_game_controller) {
-                m_Controller = SDL_GameControllerOpen(i);
-                if (!m_Controller) {
-                    LOG_ERROR("Could not open controller: %s", SDL_GetError());
-                }
+    if (m_Controller) {
+        return;
+    }
+
+    int controllers = SDL_NumJoysticks();
+    LOG_INFO("%d controllers", controllers);
+    for (int i = 0; i < controllers; i++) {
+        m_ControllerName = SDL_GameControllerNameForIndex(i);
+        m_ControllerType = SDL_GameControllerTypeForIndex(i);
+        bool is_game_controller = SDL_IsGameController(i);
+        LOG_DEBUG(
+            "controller %d: %s %d (%d)", i, m_ControllerName, m_ControllerType,
+            is_game_controller);
+        if (is_game_controller) {
+            m_Controller = SDL_GameControllerOpen(i);
+            if (!m_Controller) {
+                LOG_ERROR("Could not open controller: %s", SDL_GetError());
             }
         }
     }
