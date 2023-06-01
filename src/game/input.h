@@ -11,6 +11,8 @@ extern INPUT_STATE g_OldInputDB;
 
 void Input_Init(void);
 void Input_Shutdown(void);
+void Input_InitController(void);
+void Input_ShutdownController(void);
 void Input_Update(void);
 
 // Checks the current keyboard layout for key conflicts.

@@ -95,6 +95,16 @@ void Input_Shutdown(void)
     S_Input_Shutdown();
 }
 
+void Input_InitController(void)
+{
+    S_Input_InitController();
+}
+
+void Input_ShutdownController(void)
+{
+    S_Input_ShutdownController();
+}
+
 void Input_Update(void)
 {
     g_Input = S_Input_GetCurrentState(

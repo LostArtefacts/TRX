@@ -1,6 +1,7 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
+#include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/random.h"
@@ -110,6 +111,16 @@ void S_Shell_SpinMessageLoop(void)
                 break;
             }
             }
+            break;
+
+        case SDL_CONTROLLERDEVICEADDED:
+        case SDL_JOYDEVICEADDED:
+            Input_InitController();
+            break;
+
+        case SDL_CONTROLLERDEVICEREMOVED:
+        case SDL_JOYDEVICEREMOVED:
+            Input_ShutdownController();
             break;
         }
     }
