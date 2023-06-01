@@ -825,7 +825,8 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             if (g_InvMode == INV_TITLE_MODE) {
             } else if (
                 g_InvChosen == O_PASSPORT_OPTION
-                && (g_InvMode == INV_LOAD_MODE /* f6 menu */
+                && ((g_InvMode == INV_LOAD_MODE
+                     && g_SavedGamesCount) /* f6 menu */
                     || g_InvMode == INV_DEATH_MODE /* Lara died */
                     || (g_InvMode == INV_GAME_MODE /* esc menu */
                         && g_GameInfo.passport_page
