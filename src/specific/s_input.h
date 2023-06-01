@@ -8,6 +8,8 @@
 
 void S_Input_Init(void);
 void S_Input_Shutdown(void);
+void S_Input_InitController(void);
+void S_Input_ShutdownController(void);
 
 INPUT_STATE S_Input_GetCurrentState(
     INPUT_LAYOUT layout_num, INPUT_LAYOUT cntlr_layout_num);

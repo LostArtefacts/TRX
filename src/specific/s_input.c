@@ -870,6 +870,18 @@ void S_Input_Init(void)
     if (result < 0) {
         LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
     } else {
+        S_Input_InitController();
+    }
+}
+
+void S_Input_Shutdown(void)
+{
+    S_Input_ShutdownController();
+}
+
+void S_Input_InitController(void)
+{
+    if (!m_Controller) {
         int controllers = SDL_NumJoysticks();
         LOG_INFO("%d controllers", controllers);
         for (int i = 0; i < controllers; i++) {
@@ -879,7 +891,7 @@ void S_Input_Init(void)
             LOG_DEBUG(
                 "controller %d: %s %d (%d)", i, m_ControllerName,
                 m_ControllerType, is_game_controller);
-            if (!m_Controller && is_game_controller) {
+            if (is_game_controller) {
                 m_Controller = SDL_GameControllerOpen(i);
                 if (!m_Controller) {
                     LOG_ERROR("Could not open controller: %s", SDL_GetError());
@@ -889,10 +901,11 @@ void S_Input_Init(void)
     }
 }
 
-void S_Input_Shutdown(void)
+void S_Input_ShutdownController(void)
 {
     if (m_Controller) {
         SDL_GameControllerClose(m_Controller);
+        m_Controller = NULL;
     }
 }
 
