@@ -9,6 +9,7 @@
 - added forward/backward jumps while looking and looking up/down while hanging if enhanced look is enabled (#848)
 - added case insensitive directory and file detection (#845)
 - added controller detection during runtime (#850)
+- added an option to allow cancelling Lara's ledge-swinging animation (#856)
 - changed screen resolution option to apply immediately (#114)
 - changed shaders to use GLSL 1.20 which should fix most issues with OpenGL 2.1 (#327, #685)
 - fixed sounds stopping instead of pausing if game sounds in inventory are disabled (#717)

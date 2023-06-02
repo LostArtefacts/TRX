@@ -183,6 +183,10 @@
       "Title": "Giros al saltar",
       "Description": "Habilita los giros al saltar y saltos mortales al estilo TR2+, es decir, presione rodar durante las animaciones del salto y salto del cisne."
     },
+    "enable_swing_cancel": {
+      "Title": "Cancelación de balanceo",
+      "Description": "Permite que la animación de balanceo de la repisa de Lara se cancele soltándola y agarrándola rápidamente de nuevo, similar a TR2+."
+    },
     "enable_music_in_inventory": {
       "Description": "Permite que los sonidos del juego continúen sonando en la pantalla de inventario.",
       "Title": "Habilitar sonidos de juegos en el inventario"
