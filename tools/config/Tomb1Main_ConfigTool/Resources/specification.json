@@ -63,6 +63,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_swing_cancel",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_numeric_keys",
           "DataType": "Bool",
           "DefaultValue": true

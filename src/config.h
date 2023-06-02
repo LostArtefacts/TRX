@@ -108,6 +108,7 @@ typedef struct {
     bool enabled_inverted_look;
     int32_t camera_speed;
     bool fix_texture_issues;
+    bool enable_swing_cancel;
 
     struct {
         int32_t layout;

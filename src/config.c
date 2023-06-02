@@ -228,6 +228,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enabled_inverted_look, false);
     READ_INTEGER(camera_speed, 5);
     READ_BOOL(fix_texture_issues, true);
+    READ_BOOL(enable_swing_cancel, true);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -409,6 +410,7 @@ bool Config_Write(void)
     WRITE_BOOL(enabled_inverted_look);
     WRITE_INTEGER(camera_speed);
     WRITE_BOOL(fix_texture_issues);
+    WRITE_BOOL(enable_swing_cancel);
 
     // User settings
     WRITE_BOOL(rendering.enable_bilinear_filter);

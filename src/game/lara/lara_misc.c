@@ -1,5 +1,6 @@
 #include "game/lara/lara_misc.h"
 
+#include "config.h"
 #include "game/collide.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -66,7 +67,11 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_JUMP_UP;
         Item_SwitchToAnim(item, LA_STOP_HANG, LF_STOPHANG);
         bounds = Item_GetBoundsAccurate(item);
-        item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
+        if (g_Config.enable_swing_cancel && item->hit_points > 0) {
+            item->pos.y += bounds[FRAME_BOUND_MAX_Y];
+        } else {
+            item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
+        }
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
         item->gravity_status = 1;
