@@ -247,6 +247,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added ability to sidestep like in TR3
 - added ability to jump-twist and somersault like in TR2+
 - added ability to cancel ledge-swinging animation like in TR2+
+- added ability to jump at any point while running like in TR2+
 - added ability to automatically walk to items when nearby
 - added a pause screen
 - added a choice whether to play NG or NG+ without having to play the entire game

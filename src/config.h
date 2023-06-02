@@ -109,6 +109,7 @@ typedef struct {
     int32_t camera_speed;
     bool fix_texture_issues;
     bool enable_swing_cancel;
+    bool enable_tr2_jumping;
 
     struct {
         int32_t layout;

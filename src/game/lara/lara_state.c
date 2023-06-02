@@ -11,6 +11,7 @@
 #include "global/vars.h"
 #include "math/math.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
@@ -80,6 +81,8 @@ void Lara_State_Walk(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
 {
+    static bool jump_permitted = true;
+
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS_DEATH;
         return;
@@ -112,7 +115,21 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
         }
     }
 
-    if (g_Input.jump && !item->gravity_status) {
+    if (g_Config.enable_tr2_jumping) {
+        int16_t anim =
+            item->anim_number - g_Objects[item->object_number].anim_index;
+        if (anim == LA_RUN_START) {
+            jump_permitted = false;
+        } else if (anim == LA_RUN) {
+            if (item->frame_number == LF_JUMP_READY) {
+                jump_permitted = true;
+            }
+        } else {
+            jump_permitted = true;
+        }
+    }
+
+    if (g_Input.jump && jump_permitted && !item->gravity_status) {
         item->goal_anim_state = LS_JUMP_FORWARD;
     } else if (g_Input.forward) {
         item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;

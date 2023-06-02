@@ -68,6 +68,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_tr2_jumping",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "enable_numeric_keys",
           "DataType": "Bool",
           "DefaultValue": true

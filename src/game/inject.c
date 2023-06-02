@@ -14,11 +14,12 @@
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
-#define INJECTION_CURRENT_VERSION 2
+#define INJECTION_CURRENT_VERSION 3
 
 typedef enum INJECTION_VERSION {
     INJ_VERSION_1 = 1,
     INJ_VERSION_2 = 2,
+    INJ_VERSION_3 = 3,
 } INJECTION_VERSION;
 
 typedef enum INJECTION_TYPE {
@@ -28,6 +29,7 @@ typedef enum INJECTION_TYPE {
     INJ_UZI_SFX = 3,
     INJ_FLOOR_DATA = 4,
     INJ_LARA_ANIMS = 5,
+    INJ_LARA_JUMPS = 6,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -100,6 +102,7 @@ static void Inject_TextureData(
     INJECTION *injection, LEVEL_INFO *level_info, int32_t page_base);
 static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info);
+static void Inject_AnimRangeEdits(INJECTION *injection);
 static void Inject_ObjectData(
     INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map);
 static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info);
@@ -193,6 +196,9 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
     case INJ_TEXTURE_FIX:
         injection->relevant = g_Config.fix_texture_issues;
         break;
+    case INJ_LARA_JUMPS:
+        injection->relevant = g_Config.enable_tr2_jumping;
+        break;
     default:
         injection->relevant = false;
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
@@ -241,6 +247,12 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
             File_Read(&info->room_door_edit_count, sizeof(uint32_t), 1, fp);
         } else {
             info->room_meshes = NULL;
+        }
+
+        if (injection->version > INJ_VERSION_2) {
+            File_Read(&info->anim_range_edit_count, sizeof(int32_t), 1, fp);
+        } else {
+            info->anim_range_edit_count = 0;
         }
 
         m_Aggregate->texture_page_count += info->texture_page_count;
@@ -300,6 +312,7 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
         Inject_FloorDataEdits(injection);
         Inject_RoomMeshEdits(injection);
         Inject_RoomDoorEdits(injection);
+        Inject_AnimRangeEdits(injection);
 
         // Realign base indices for the next injection.
         INJECTION_INFO *inj_info = injection->info;
@@ -489,6 +502,72 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     for (int i = 0; i < inj_info->anim_range_count; i++) {
         g_AnimRanges[level_info->anim_range_count++].link_anim_num +=
             level_info->anim_count;
+    }
+}
+
+static void Inject_AnimRangeEdits(INJECTION *injection)
+{
+    if (injection->version < INJ_VERSION_3) {
+        return;
+    }
+
+    INJECTION_INFO *inj_info = injection->info;
+    MYFILE *fp = injection->fp;
+
+    GAME_OBJECT_ID object_id;
+    int32_t edit_count;
+    int16_t anim_index;
+    int16_t change_index;
+    int16_t range_index;
+    int16_t low_frame;
+    int16_t high_frame;
+
+    for (int i = 0; i < inj_info->anim_range_edit_count; i++) {
+        File_Read(&object_id, sizeof(int32_t), 1, fp);
+        File_Read(&anim_index, sizeof(int16_t), 1, fp);
+        File_Read(&edit_count, sizeof(int32_t), 1, fp);
+
+        if (object_id < 0 || object_id >= O_NUMBER_OF) {
+            LOG_WARNING("Object %d is not recognised", object_id);
+            File_Skip(fp, edit_count * sizeof(int16_t) * 4);
+            continue;
+        }
+
+        OBJECT_INFO *object = &g_Objects[object_id];
+        if (!object->loaded) {
+            LOG_WARNING("Object %d is not loaded", object_id);
+            File_Skip(fp, edit_count * sizeof(int16_t) * 4);
+            continue;
+        }
+
+        ANIM_STRUCT *anim = &g_Anims[object->anim_index + anim_index];
+        for (int j = 0; j < edit_count; j++) {
+            File_Read(&change_index, sizeof(int16_t), 1, fp);
+            File_Read(&range_index, sizeof(int16_t), 1, fp);
+            File_Read(&low_frame, sizeof(int16_t), 1, fp);
+            File_Read(&high_frame, sizeof(int16_t), 1, fp);
+
+            if (change_index >= anim->number_changes) {
+                LOG_WARNING(
+                    "Change %d is invalid for animation %d", change_index,
+                    anim_index);
+                continue;
+            }
+            ANIM_CHANGE_STRUCT *change =
+                &g_AnimChanges[anim->change_index + change_index];
+
+            if (range_index >= change->number_ranges) {
+                LOG_WARNING(
+                    "Range %d is invalid for change %d, animation %d",
+                    range_index, change_index, anim_index);
+                continue;
+            }
+            ANIM_RANGE_STRUCT *range =
+                &g_AnimRanges[change->range_index + range_index];
+
+            range->start_frame = low_frame;
+            range->end_frame = high_frame;
+        }
     }
 }
 

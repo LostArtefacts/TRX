@@ -99,6 +99,10 @@
       "Title": "Swing cancels",
       "Description": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again, similar to TR2+."
     },
+    "enable_tr2_jumping": {
+      "Title": "Responsive jumping",
+      "Description": "Allows Lara to jump at any point while running, similar to TR2+."
+    },
     "enable_numeric_keys": {
       "Title": "Numeric key quick item use",
       "Description": "Enables quick weapon draws and medipack usage.\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw Uzis\n- 8: Use small medipack\n- 9: Use large medipack"
