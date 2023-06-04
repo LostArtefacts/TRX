@@ -21,6 +21,7 @@
 - fixed the restart level passport text incorrectly showing new game in Lara's Home (#851)
 - fixed quick load creating an invalid save if used when no saves are present (#853)
 - fixed Lara entering body hit animations when not appropriate to do so (#857)
+- fixed SkateKid causing a game crash when too many enemies are active (#866)
 
 ## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05
 - added Spanish localization to the config tool
