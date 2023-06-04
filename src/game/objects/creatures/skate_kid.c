@@ -2,6 +2,7 @@
 
 #include "game/creature.h"
 #include "game/items.h"
+#include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/common.h"
 #include "game/random.h"
@@ -68,6 +69,14 @@ void SkateKid_Initialise(int16_t item_num)
 void SkateKid_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
+
+    if (item->status == IS_INVISIBLE) {
+        if (!LOT_EnableBaddieAI(item_num, 0)) {
+            return;
+        }
+        item->status = IS_ACTIVE;
+    }
+
     CREATURE_INFO *kid = item->data;
     int16_t head = 0;
     int16_t angle = 0;
