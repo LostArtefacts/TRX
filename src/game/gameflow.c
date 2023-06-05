@@ -10,6 +10,7 @@
 #include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
 #include "game/music.h"
+#include "game/objects/creatures/bacon_lara.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -614,6 +615,24 @@ static bool GameFlow_LoadLevelSequence(
 
             seq->data = swap_data;
 
+        } else if (!strcmp(type_str, "setup_bacon_lara")) {
+            seq->type = GFS_SETUP_BACON_LARA;
+            int tmp = json_object_get_int(
+                jseq_obj, "anchor_room", JSON_INVALID_NUMBER);
+            if (tmp == JSON_INVALID_NUMBER) {
+                LOG_ERROR(
+                    "level %d, sequence %s: 'anchor_room' must be a number",
+                    level_num, type_str);
+                return false;
+            }
+            if (tmp < 0) {
+                LOG_ERROR(
+                    "level %d, sequence %s: 'anchor_room' must be >= 0",
+                    level_num, type_str);
+                return false;
+            }
+            seq->data = (void *)tmp;
+
         } else {
             LOG_ERROR("unknown sequence type %s", type_str);
             return false;
@@ -1037,6 +1056,7 @@ void GameFlow_Shutdown(void)
                     case GFS_PLAY_SYNCED_AUDIO:
                     case GFS_REMOVE_AMMO:
                     case GFS_REMOVE_MEDIPACKS:
+                    case GFS_SETUP_BACON_LARA:
                         break;
                     }
                     seq++;
@@ -1325,6 +1345,16 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
         }
 
+        case GFS_SETUP_BACON_LARA: {
+            int32_t anchor_room = (int32_t)seq->data;
+            if (!BaconLara_InitialiseAnchor(anchor_room)) {
+                LOG_ERROR(
+                    "Could not anchor Bacon Lara to room %d", anchor_room);
+                return GF_EXIT_TO_TITLE;
+            }
+            break;
+        }
+
         case GFS_END:
             return ret;
         }
@@ -1356,6 +1386,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_REMOVE_SCIONS:
         case GFS_REMOVE_AMMO:
         case GFS_REMOVE_MEDIPACKS:
+        case GFS_SETUP_BACON_LARA:
             break;
 
         case GFS_START_GAME:
