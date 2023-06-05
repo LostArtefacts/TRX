@@ -11,6 +11,7 @@
 #include "global/vars.h"
 #include "math/math.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 
 void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
@@ -35,6 +36,8 @@ void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_State_Gymnast,     Lara_State_WaterOut,  Lara_State_Controlled,
     Lara_State_Twist,
 };
+
+static bool m_JumpPermitted = true;
 
 static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
 
@@ -112,7 +115,17 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
         }
     }
 
-    if (g_Input.jump && !item->gravity_status) {
+    if (g_Config.enable_tr2_jumping) {
+        int16_t anim =
+            item->anim_number - g_Objects[item->object_number].anim_index;
+        if (anim == LA_RUN_START) {
+            m_JumpPermitted = false;
+        } else if (anim != LA_RUN || item->frame_number == LF_JUMP_READY) {
+            m_JumpPermitted = true;
+        }
+    }
+
+    if (g_Input.jump && m_JumpPermitted && !item->gravity_status) {
         item->goal_anim_state = LS_JUMP_FORWARD;
     } else if (g_Input.forward) {
         item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;

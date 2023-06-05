@@ -41,6 +41,7 @@
         "data/backpack.bin",
         "data/braid.bin",
         "data/lara_animations.bin",
+        "data/lara_jumping.bin",
         "data/uzi_sfx.bin",
     ],
 
@@ -73,6 +74,7 @@
                 "data/braid.bin",
                 "data/gym_textures.bin",
                 "data/lara_animations.bin",
+                "data/lara_jumping.bin",
             ],
 
             // list of actions to execute when this level is played

@@ -542,6 +542,7 @@ typedef enum MUSIC_TRACK_ID {
 } MUSIC_TRACK_ID;
 
 typedef enum LARA_ANIMATION_FRAME {
+    LF_JUMP_READY = 4,
     LF_PICKUPSCION = 44,
     LF_STOPHANG = 448,
     LF_FASTFALL = 481,
@@ -574,7 +575,9 @@ typedef enum LARA_GUN_ANIMATION_FRAME {
 } LARA_GUN_ANIMATION_FRAME;
 
 typedef enum LARA_ANIMATION {
+    LA_RUN = 0,
     LA_WALK_FORWARD = 1,
+    LA_RUN_START = 6,
     LA_WALK_BACK = 40,
     LA_VAULT_12 = 50,
     LA_VAULT_34 = 42,

@@ -114,7 +114,9 @@ void Game_Demo(void)
     // changing the controls affects negatively the original game demo data,
     // so temporarily turn off all the T1M enhancements
     int8_t old_enhanced_look = g_Config.enable_enhanced_look;
+    int8_t old_tr2_jumping = g_Config.enable_tr2_jumping;
     g_Config.enable_enhanced_look = 0;
+    g_Config.enable_tr2_jumping = 0;
 
     if (Level_Initialise(m_DemoLevel)) {
         Game_Demo_LoadLaraPos();
@@ -140,4 +142,5 @@ void Game_Demo(void)
     }
 
     g_Config.enable_enhanced_look = old_enhanced_look;
+    g_Config.enable_tr2_jumping = old_tr2_jumping;
 }
