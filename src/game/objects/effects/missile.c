@@ -52,7 +52,7 @@ void Missile_Control(int16_t fx_num)
             int32_t y = fx->pos.y - g_LaraItem->pos.y;
             int32_t z = fx->pos.z - g_LaraItem->pos.z;
             int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
-            if (range < ROCKET_RANGE) {
+            if (range >= 0 && range < ROCKET_RANGE) {
                 g_LaraItem->hit_points -=
                     (int16_t)(ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE);
                 g_LaraItem->hit_status = 1;
