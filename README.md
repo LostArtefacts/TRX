@@ -342,7 +342,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
     - **Gym**: incorrect textures in room 9
     - **Caves**: an incorrect texture in room 6 and missing textures in rooms 1, 10, 14 and 30
     - **City of Vilcabamba**: an incorrect texture in room 26 and a missing texture in room 15
-    - **Lost Valley**: an incorrect texture in room 6 and missing textures in rooms 9, 25, 26, 27, 51, and 90
+    - **Lost Valley**: incorrect textures in rooms 6 and 9, and missing textures in rooms 9, 25, 26, 27, 51, and 90
     - **Tomb of Qualopec**: missing textures in room 8
     - **St. Francis' Folly**: incorrect textures in rooms 18 and 35
     - **Colosseum**: incorrect Midas textures appearing at the roof and missing textures in rooms 2 and 7
@@ -352,9 +352,9 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
     - **City of Khamoon**: incorrect textures in rooms 51 and 64, and a missing texture in room 58
     - **Sanctuary of the Scion**: missing textures in rooms 1, 21, 53, and 54
     - **Natla's Mines**: a missing texture in room 35 and overlapping textures in room 55
-    - **Atlantis**: incorrect textures in rooms 5, 18, 43, 50, 58, 78, 85 and 87, and a missing texture in room 27
+    - **Atlantis**: incorrect textures in rooms 5, 18, 43, 50, 52, 58, 78, 85 and 87, and a missing texture in room 27
     - **Atlantis Cutscene**: an incorrect texture in room 16
-    - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 50, 65 and 66, and missing textures in rooms 21, 25, 26, and 66
+    - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 50, 52, 65 and 66, and missing textures in rooms 21, 25, 26, and 66
     - **Return to Egypt**: a missing texture in room 98
     - **Temple of the Cat**: incorrect textures in rooms 50, 70, 71, 76, 78, 87 and 96, and a missing texture in 75
     - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19 and 74
