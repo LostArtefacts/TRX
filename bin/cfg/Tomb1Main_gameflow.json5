@@ -406,6 +406,7 @@
                 {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
                 {"type": "start_game"},
                 {"type": "give_item", "object_id": 84, "quantity": 1},
+                {"type": "setup_bacon_lara", "anchor_room": 10},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "play_fmv", "fmv_path": "fmv/prison.avi"},

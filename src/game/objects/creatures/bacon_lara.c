@@ -10,6 +10,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+static int32_t m_AnchorX = -1;
+static int32_t m_AnchorZ = -1;
+
 void BaconLara_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = BaconLara_Initialise;
@@ -30,8 +33,25 @@ void BaconLara_Initialise(int16_t item_num)
     g_Items[item_num].data = NULL;
 }
 
+bool BaconLara_InitialiseAnchor(int32_t room_index)
+{
+    if (room_index >= g_RoomCount) {
+        return false;
+    }
+
+    ROOM_INFO *r = &g_RoomInfo[room_index];
+    m_AnchorX = r->x + r->y_size * (WALL_L >> 1);
+    m_AnchorZ = r->z + r->x_size * (WALL_L >> 1);
+
+    return true;
+}
+
 void BaconLara_Control(int16_t item_num)
 {
+    if (m_AnchorX == -1) {
+        return;
+    }
+
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->hit_points < LARA_HITPOINTS) {
@@ -40,9 +60,9 @@ void BaconLara_Control(int16_t item_num)
     }
 
     if (!item->data) {
-        int32_t x = 2 * 36 * WALL_L - g_LaraItem->pos.x;
+        int32_t x = 2 * m_AnchorX - g_LaraItem->pos.x;
         int32_t y = g_LaraItem->pos.y;
-        int32_t z = 2 * 60 * WALL_L - g_LaraItem->pos.z;
+        int32_t z = 2 * m_AnchorZ - g_LaraItem->pos.z;
 
         int16_t room_num = item->room_number;
         FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
