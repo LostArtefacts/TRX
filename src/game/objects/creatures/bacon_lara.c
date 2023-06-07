@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/lara_draw.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -126,6 +127,11 @@ void BaconLara_Control(int16_t item_num)
 
 void BaconLara_Draw(ITEM_INFO *item)
 {
+    if (item->current_anim_state == LS_DEATH) {
+        Object_DrawAnimatingItem(item);
+        return;
+    }
+
     int16_t *old_mesh_ptrs[LM_NUMBER_OF];
 
     for (int i = 0; i < LM_NUMBER_OF; i++) {
