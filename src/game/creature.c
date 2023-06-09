@@ -708,68 +708,69 @@ bool Creature_ShootAtLara(
     return hit;
 }
 
-int32_t Creature_Vault(int16_t item_num, int16_t angle, int32_t vault, int32_t shift)
+int32_t Creature_Vault(
+    int16_t item_num, int16_t angle, int32_t vault, int32_t shift)
 {
-	ITEM_INFO* item = &g_Items[item_num];
-	int32_t x = item->pos.x >> WALL_SHIFT;
-	int32_t y = item->pos.y;
-	int32_t z = item->pos.z >> WALL_SHIFT;
-	int16_t room_number = item->room_number;
-	Creature_Animate(item_num, angle, 0);
+    ITEM_INFO *item = &g_Items[item_num];
+    int32_t x = item->pos.x >> WALL_SHIFT;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z >> WALL_SHIFT;
+    int16_t room_number = item->room_number;
+    Creature_Animate(item_num, angle, 0);
 
-	if (item->floor > y + 1152) {
-		vault = 0;
+    if (item->floor > y + 1152) {
+        vault = 0;
     } else if (item->floor > y + 896) {
-		vault = -4;
+        vault = -4;
     } else if (item->floor > y + 640) {
-		vault = -3;
+        vault = -3;
     } else if (item->floor > y + STEPUP_HEIGHT) {
-		vault = -2;
+        vault = -2;
     } else {
-		if (item->pos.y > y - STEPUP_HEIGHT) {
-			return 0;
+        if (item->pos.y > y - STEPUP_HEIGHT) {
+            return 0;
         }
 
-		if (item->pos.y > y - 640){
-			vault = 2;
+        if (item->pos.y > y - 640) {
+            vault = 2;
         } else if (item->pos.y > y - 896) {
-			vault = 3;
+            vault = 3;
         } else if (item->pos.y > y - 1152) {
-			vault = 4;
+            vault = 4;
         }
-	}
-
-	int32_t x_floor = item->pos.x >> WALL_SHIFT;
-	int32_t z_floor = item->pos.z >> WALL_SHIFT;
-
-	if (z == z_floor) {
-		if (x == x_floor) {
-			return 0;
-        }
-
-		if (x >= x_floor) {
-			item->pos.y_rot = -PHD_90;
-			item->pos.x = (x << WALL_SHIFT) + shift;
-		} else {
-			item->pos.y_rot = PHD_90;
-			item->pos.x = (x_floor << WALL_SHIFT) - shift;
-		}
-	} else if (x == x_floor) {
-		if (z < z_floor) {
-			item->pos.y_rot = 0;
-			item->pos.z = (z_floor << WALL_SHIFT) - shift;
-		} else {
-			item->pos.y_rot = -PHD_180;
-			item->pos.z = shift + (z << WALL_SHIFT);
-		}
-	}
-
-	item->floor = y;
-	item->pos.y = y;
-
-	if (vault) {
-		Item_NewRoom(item_num, room_number);
     }
 
-	return vault;
+    int32_t x_floor = item->pos.x >> WALL_SHIFT;
+    int32_t z_floor = item->pos.z >> WALL_SHIFT;
+
+    if (z == z_floor) {
+        if (x == x_floor) {
+            return 0;
+        }
+
+        if (x >= x_floor) {
+            item->pos.y_rot = -PHD_90;
+            item->pos.x = (x << WALL_SHIFT) + shift;
+        } else {
+            item->pos.y_rot = PHD_90;
+            item->pos.x = (x_floor << WALL_SHIFT) - shift;
+        }
+    } else if (x == x_floor) {
+        if (z < z_floor) {
+            item->pos.y_rot = 0;
+            item->pos.z = (z_floor << WALL_SHIFT) - shift;
+        } else {
+            item->pos.y_rot = -PHD_180;
+            item->pos.z = shift + (z << WALL_SHIFT);
+        }
+    }
+
+    item->floor = y;
+    item->pos.y = y;
+
+    if (vault) {
+        Item_NewRoom(item_num, room_number);
+    }
+
+    return vault;
 }

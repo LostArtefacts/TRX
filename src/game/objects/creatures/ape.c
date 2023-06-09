@@ -162,7 +162,9 @@ void Ape_Control(int16_t item_num)
             ape->flags |= APE_ATTACK_FLAG;
         }
 
-        // LOG_DEBUG("Ape_Control; flags: %d; L&flags: %d; R&flags: %d", ape->flags, ape->flags & APE_TURN_L_FLAG, ape->flags & APE_TURN_R_FLAG);
+        // LOG_DEBUG("Ape_Control; flags: %d; L&flags: %d; R&flags: %d",
+        // ape->flags, ape->flags & APE_TURN_L_FLAG, ape->flags &
+        // APE_TURN_R_FLAG);
         switch (item->current_anim_state) {
         case APE_STOP:
             if (ape->flags & APE_TURN_L_FLAG) {
@@ -253,10 +255,14 @@ void Ape_Control(int16_t item_num)
 
     if (item->current_anim_state == APE_VAULT) {
         Creature_Animate(item_num, angle, 0);
-    // TODO Can't get down from ledge.
-    } else if (Creature_Vault(item_num, angle, 2, APE_SHIFT) > 0) {
-        ape->maximum_turn = 0;
-        item->current_anim_state = APE_VAULT;
-        Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
+        // TODO Can't get down from ledge.
+    } else {
+        int32_t vault = Creature_Vault(item_num, angle, 2, APE_SHIFT);
+        LOG_DEBUG("vault: %d", vault);
+        if (vault > 0) {
+            ape->maximum_turn = 0;
+            item->current_anim_state = APE_VAULT;
+            Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
+        }
     }
 }
