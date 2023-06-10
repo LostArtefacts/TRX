@@ -15,8 +15,6 @@
 
 #include <stddef.h>
 
-#include "log.h"
-
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
 void Creature_Initialise(int16_t item_num)
