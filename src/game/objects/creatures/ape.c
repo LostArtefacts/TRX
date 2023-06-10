@@ -31,7 +31,7 @@
 #define APE_RADIUS (WALL_L / 3) // = 341
 #define APE_SMARTNESS 0x7FFF
 
-typedef enum APE_ANIM {
+typedef enum {
     APE_EMPTY = 0,
     APE_STOP = 1,
     APE_WALK = 2,
@@ -57,7 +57,7 @@ static bool Ape_Vault(int16_t item_num, int16_t angle)
     int32_t x = item->pos.x >> WALL_SHIFT;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z >> WALL_SHIFT;
-    int16_t room_number = item->room_number;
+    int16_t room_num = item->room_number;
 
     if (ape->flags & APE_TURN_L_FLAG) {
         item->pos.y_rot -= PHD_90;
@@ -101,7 +101,7 @@ static bool Ape_Vault(int16_t item_num, int16_t angle)
     item->floor = y;
     item->pos.y = y;
 
-    Item_NewRoom(item_num, room_number);
+    Item_NewRoom(item_num, room_num);
 
     return true;
 }
