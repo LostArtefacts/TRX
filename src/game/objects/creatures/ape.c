@@ -4,7 +4,6 @@
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/common.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"
