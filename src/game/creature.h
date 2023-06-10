@@ -29,5 +29,3 @@ bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info);
 bool Creature_ShootAtLara(
     ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation,
     int32_t damagae);
-int32_t Creature_Vault(
-    int16_t item_num, int16_t angle, int32_t vault, int32_t shift);

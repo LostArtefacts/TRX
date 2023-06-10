@@ -4,14 +4,13 @@
 #include "game/effects/blood.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "util.h"
 
 #include <stdbool.h>
-
-#include "log.h"
 
 #define APE_ATTACK_DAMAGE 200
 #define APE_TOUCH 0xFF00
@@ -33,7 +32,7 @@
 #define APE_RADIUS (WALL_L / 3) // = 341
 #define APE_SMARTNESS 0x7FFF
 
-typedef enum {
+typedef enum APE_ANIM {
     APE_EMPTY = 0,
     APE_STOP = 1,
     APE_WALK = 2,
@@ -49,6 +48,64 @@ typedef enum {
 } APE_ANIM;
 
 static BITE_INFO m_ApeBite = { 0, -19, 75, 15 };
+
+static bool Ape_Vault(int16_t item_num, int16_t angle);
+
+static bool Ape_Vault(int16_t item_num, int16_t angle)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    CREATURE_INFO *ape = item->data;
+    int32_t x = item->pos.x >> WALL_SHIFT;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z >> WALL_SHIFT;
+    int16_t room_number = item->room_number;
+
+    if (ape->flags & APE_TURN_L_FLAG) {
+        item->pos.y_rot -= PHD_90;
+        ape->flags &= ~APE_TURN_L_FLAG;
+    } else if (ape->flags & APE_TURN_R_FLAG) {
+        item->pos.y_rot += PHD_90;
+        ape->flags &= ~APE_TURN_R_FLAG;
+    }
+
+    Creature_Animate(item_num, angle, 0);
+
+    if (item->pos.y > y - STEP_L * 3 / 2) {
+        return false;
+    }
+
+    int32_t x_floor = item->pos.x >> WALL_SHIFT;
+    int32_t z_floor = item->pos.z >> WALL_SHIFT;
+
+    if (z == z_floor) {
+        if (x == x_floor) {
+            return false;
+        }
+
+        if (x >= x_floor) {
+            item->pos.y_rot = -PHD_90;
+            item->pos.x = (x << WALL_SHIFT) + APE_SHIFT;
+        } else {
+            item->pos.y_rot = PHD_90;
+            item->pos.x = (x_floor << WALL_SHIFT) - APE_SHIFT;
+        }
+    } else if (x == x_floor) {
+        if (z < z_floor) {
+            item->pos.y_rot = 0;
+            item->pos.z = (z_floor << WALL_SHIFT) - APE_SHIFT;
+        } else {
+            item->pos.y_rot = -PHD_180;
+            item->pos.z = (z << WALL_SHIFT) + APE_SHIFT;
+        }
+    }
+
+    item->floor = y;
+    item->pos.y = y;
+
+    Item_NewRoom(item_num, room_number);
+
+    return true;
+}
 
 void Ape_Setup(OBJECT_INFO *obj)
 {
@@ -70,59 +127,6 @@ void Ape_Setup(OBJECT_INFO *obj)
     obj->save_flags = 1;
     g_AnimBones[obj->bone_index + 52] |= BEB_ROT_Y;
 }
-
-// void Ape_Vault(int16_t item_num, int16_t angle)
-// {
-//     ITEM_INFO *item = &g_Items[item_num];
-//     CREATURE_INFO *ape = item->data;
-
-//     if (ape->flags & APE_TURN_L_FLAG) {
-//         item->pos.y_rot -= PHD_90;
-//         ape->flags &= ~APE_TURN_L_FLAG;
-//     } else if (ape->flags & APE_TURN_R_FLAG) {
-//         item->pos.y_rot += PHD_90;
-//         ape->flags &= ~APE_TURN_R_FLAG;
-//     }
-
-//     int32_t xx = item->pos.z >> WALL_SHIFT;
-//     int32_t yy = item->pos.x >> WALL_SHIFT;
-//     int32_t y = item->pos.y;
-
-//     Creature_Animate(item_num, angle, 0);
-
-//     if (item->pos.y > y - STEP_L * 3 / 2) {
-//         return;
-//     }
-
-//     int32_t x_floor = item->pos.z >> WALL_SHIFT;
-//     int32_t y_floor = item->pos.x >> WALL_SHIFT;
-//     if (xx == x_floor) {
-//         if (yy == y_floor) {
-//             LOG_DEBUG("return");
-//             // return;
-//         }
-
-//         if (yy < y_floor) {
-//             item->pos.x = (y_floor << WALL_SHIFT) - APE_SHIFT;
-//             item->pos.y_rot = PHD_90;
-//         } else {
-//             item->pos.x = (yy << WALL_SHIFT) + APE_SHIFT;
-//             item->pos.y_rot = -PHD_90;
-//         }
-//     } else if (yy == y_floor) {
-//         if (xx < x_floor) {
-//             item->pos.z = (x_floor << WALL_SHIFT) - APE_SHIFT;
-//             item->pos.y_rot = 0;
-//         } else {
-//             item->pos.z = (xx << WALL_SHIFT) + APE_SHIFT;
-//             item->pos.y_rot = -PHD_180;
-//         }
-//     }
-
-//     item->pos.y = y;
-//     item->current_anim_state = APE_VAULT;
-//     Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
-// }
 
 void Ape_Control(int16_t item_num)
 {
@@ -162,9 +166,6 @@ void Ape_Control(int16_t item_num)
             ape->flags |= APE_ATTACK_FLAG;
         }
 
-        // LOG_DEBUG("Ape_Control; flags: %d; L&flags: %d; R&flags: %d",
-        // ape->flags, ape->flags & APE_TURN_L_FLAG, ape->flags &
-        // APE_TURN_R_FLAG);
         switch (item->current_anim_state) {
         case APE_STOP:
             if (ape->flags & APE_TURN_L_FLAG) {
@@ -255,14 +256,9 @@ void Ape_Control(int16_t item_num)
 
     if (item->current_anim_state == APE_VAULT) {
         Creature_Animate(item_num, angle, 0);
-        // TODO Can't get down from ledge.
-    } else {
-        int32_t vault = Creature_Vault(item_num, angle, 2, APE_SHIFT);
-        LOG_DEBUG("vault: %d", vault);
-        if (vault > 0) {
-            ape->maximum_turn = 0;
-            item->current_anim_state = APE_VAULT;
-            Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
-        }
+    } else if (Ape_Vault(item_num, angle)) {
+        ape->maximum_turn = 0;
+        item->current_anim_state = APE_VAULT;
+        Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
     }
 }
