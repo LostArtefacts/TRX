@@ -631,6 +631,10 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             item->pos.x_rot = angle;
         }
     } else {
+        floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        item->floor =
+            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
         if (item->pos.y > item->floor) {
             item->pos.y = item->floor;
         } else if (item->floor - item->pos.y > STEP_L / 4) {
@@ -640,10 +644,6 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         }
 
         item->pos.x_rot = 0;
-
-        floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor =
-            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
     }
 
     if (item->room_number != room_num) {

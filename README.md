@@ -286,6 +286,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed Scion 1 respawning on load
 - fixed triggered flip effects not working if there are no sound devices
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling
+- fixed the ape not performing the vault animation when climbing
 
 #### Cheats
 - added a fly cheat
