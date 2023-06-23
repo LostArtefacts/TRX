@@ -34,6 +34,7 @@ static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
         m_HoldBack = 0;
     } else if (input.back && ++m_HoldBack >= DELAY_FRAMES + HOLD_FRAMES) {
         result.back = 1;
+        result.menu_down = 1;
         m_HoldBack = DELAY_FRAMES;
     }
 
@@ -41,6 +42,7 @@ static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
         m_HoldForward = 0;
     } else if (input.forward && ++m_HoldForward >= DELAY_FRAMES + HOLD_FRAMES) {
         result.forward = 1;
+        result.menu_up = 1;
         m_HoldForward = DELAY_FRAMES;
     }
 
