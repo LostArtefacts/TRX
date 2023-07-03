@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -140,8 +141,7 @@ void Bat_Control(int16_t item_num)
         case BAT_ATTACK:
             if (item->touch_bits) {
                 Creature_Effect(item, &m_BatBite, Effect_Blood);
-                g_LaraItem->hit_points -= BAT_ATTACK_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(BAT_ATTACK_DAMAGE, true);
             } else {
                 item->goal_anim_state = BAT_FLY;
                 bat->mood = MOOD_BORED;

@@ -10,6 +10,8 @@
 #include "math/math.h"
 #include "util.h"
 
+#include <stdbool.h>
+
 #define SHARD_DAMAGE 30
 #define ROCKET_DAMAGE 100
 #define ROCKET_RANGE SQUARE(WALL_L) // = 1048576
@@ -53,9 +55,9 @@ void Missile_Control(int16_t fx_num)
             int32_t z = fx->pos.z - g_LaraItem->pos.z;
             int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
             if (range >= 0 && range < ROCKET_RANGE) {
-                g_LaraItem->hit_points -=
-                    (int16_t)(ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE);
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(
+                    (int16_t)(ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE),
+                    true);
             }
         }
         return;
@@ -70,11 +72,11 @@ void Missile_Control(int16_t fx_num)
     }
 
     if (fx->object_number == O_MISSILE2) {
-        g_LaraItem->hit_points -= SHARD_DAMAGE;
+        Lara_TakeDamage(SHARD_DAMAGE, true);
         fx->object_number = O_BLOOD1;
         Sound_Effect(SFX_LARA_BULLETHIT, &fx->pos, SPM_NORMAL);
     } else {
-        g_LaraItem->hit_points -= ROCKET_DAMAGE;
+        Lara_TakeDamage(ROCKET_DAMAGE, true);
         fx->object_number = O_EXPLOSION1;
         if (g_LaraItem->hit_points > 0) {
             Sound_Effect(SFX_LARA_INJURY, &g_LaraItem->pos, SPM_NORMAL);
@@ -83,7 +85,6 @@ void Missile_Control(int16_t fx_num)
         }
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
     }
-    g_LaraItem->hit_status = 1;
 
     fx->frame_number = 0;
     fx->pos.y_rot = g_LaraItem->pos.y_rot;

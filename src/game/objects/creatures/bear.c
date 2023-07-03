@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"
@@ -106,8 +107,7 @@ void Bear_Control(int16_t item_num)
 
         case BEAR_DEATH:
             if (bear->flags && (item->touch_bits & BEAR_TOUCH)) {
-                g_LaraItem->hit_points -= BEAR_SLAM_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(BEAR_SLAM_DAMAGE, true);
                 bear->flags = 0;
             }
             break;
@@ -164,8 +164,7 @@ void Bear_Control(int16_t item_num)
         case BEAR_RUN:
             bear->maximum_turn = BEAR_RUN_TURN;
             if (item->touch_bits & BEAR_TOUCH) {
-                g_LaraItem->hit_points -= BEAR_CHARGE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(BEAR_CHARGE_DAMAGE, true);
             }
             if (bear->mood == MOOD_BORED || dead_enemy) {
                 item->goal_anim_state = BEAR_STOP;
@@ -220,16 +219,14 @@ void Bear_Control(int16_t item_num)
         case BEAR_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
                 Creature_Effect(item, &m_BearHeadBite, Effect_Blood);
-                g_LaraItem->hit_points -= BEAR_ATTACK_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(BEAR_ATTACK_DAMAGE, true);
                 item->required_anim_state = BEAR_STOP;
             }
             break;
 
         case BEAR_ATTACK2:
             if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
-                g_LaraItem->hit_points -= BEAR_PAT_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(BEAR_PAT_DAMAGE, true);
                 item->required_anim_state = BEAR_REAR;
             }
             break;

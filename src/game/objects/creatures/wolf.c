@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"
@@ -206,8 +207,7 @@ void Wolf_Control(int16_t item_num)
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH)) {
                 Creature_Effect(item, &m_WolfJawBite, Effect_Blood);
-                g_LaraItem->hit_points -= WOLF_POUNCE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(WOLF_POUNCE_DAMAGE, true);
                 item->required_anim_state = WOLF_RUN;
             }
             item->goal_anim_state = WOLF_RUN;
@@ -217,8 +217,7 @@ void Wolf_Control(int16_t item_num)
             if (item->required_anim_state == WOLF_EMPTY
                 && (item->touch_bits & WOLF_TOUCH) && info.ahead) {
                 Creature_Effect(item, &m_WolfJawBite, Effect_Blood);
-                g_LaraItem->hit_points -= WOLF_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(WOLF_BITE_DAMAGE, true);
                 item->required_anim_state = WOLF_CROUCH;
             }
             break;

@@ -718,3 +718,13 @@ int32_t Item_GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
 
     return interp;
 }
+
+void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
+{
+    item->hit_points -= damage;
+    CLAMPL(item->hit_points, DONT_TARGET + 1);
+
+    if (hit_status) {
+        item->hit_status = 1;
+    }
+}

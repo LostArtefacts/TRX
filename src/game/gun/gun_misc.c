@@ -15,6 +15,7 @@
 #include "math/matrix.h"
 #include "util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #define PISTOL_LOCK_YMIN (-60 * PHD_DEGREE)
@@ -403,13 +404,12 @@ int32_t Gun_FireWeapon(
     return -1;
 }
 
-void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int32_t damage)
+void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         g_GameInfo.current[g_CurrentLevel].stats.kill_count++;
     }
-    item->hit_points -= damage;
-    item->hit_status = 1;
+    Item_TakeDamage(item, damage, true);
 
     Effect_Blood(
         hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot,

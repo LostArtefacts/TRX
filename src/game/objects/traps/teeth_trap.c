@@ -3,8 +3,10 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
+
+#include <stdbool.h>
 
 #define TEETH_TRAP_DAMAGE 400
 
@@ -47,8 +49,7 @@ void TeethTrap_Control(int16_t item_num)
     if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = TT_NASTY;
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
-            g_LaraItem->hit_points -= TEETH_TRAP_DAMAGE;
-            g_LaraItem->hit_status = 1;
+            Lara_TakeDamage(TEETH_TRAP_DAMAGE, true);
             TeethTrap_BiteEffect(item, &m_Teeth1A);
             TeethTrap_BiteEffect(item, &m_Teeth1B);
             TeethTrap_BiteEffect(item, &m_Teeth2A);

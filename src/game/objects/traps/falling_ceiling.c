@@ -1,8 +1,10 @@
 #include "game/objects/traps/falling_ceiling.h"
 
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
-#include "global/vars.h"
+
+#include <stdbool.h>
 
 #define FALLING_CEILING_DAMAGE 300
 
@@ -22,8 +24,7 @@ void FallingCeiling_Control(int16_t item_num)
         item->goal_anim_state = TRAP_ACTIVATE;
         item->gravity_status = 1;
     } else if (item->current_anim_state == TRAP_ACTIVATE && item->touch_bits) {
-        g_LaraItem->hit_points -= FALLING_CEILING_DAMAGE;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(FALLING_CEILING_DAMAGE, true);
     }
     Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {

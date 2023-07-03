@@ -2,6 +2,7 @@
 
 #include "game/creature.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lara/lara_draw.h"
 #include "game/objects/common.h"
 #include "game/room.h"
@@ -56,7 +57,7 @@ void BaconLara_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->hit_points < LARA_HITPOINTS) {
-        g_LaraItem->hit_points -= (LARA_HITPOINTS - item->hit_points) * 10;
+        Lara_TakeDamage((LARA_HITPOINTS - item->hit_points) * 10, false);
         item->hit_points = LARA_HITPOINTS;
     }
 

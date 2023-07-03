@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"
@@ -189,8 +190,7 @@ void Lion_Control(int16_t item_num)
         case LION_ATTACK1:
             if (item->required_anim_state == LION_EMPTY
                 && (item->touch_bits & LION_TOUCH)) {
-                g_LaraItem->hit_points -= LION_POUNCE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(LION_POUNCE_DAMAGE, true);
                 item->required_anim_state = LION_STOP;
             }
             break;
@@ -199,8 +199,7 @@ void Lion_Control(int16_t item_num)
             if (item->required_anim_state == LION_EMPTY
                 && (item->touch_bits & LION_TOUCH)) {
                 Creature_Effect(item, &m_LionBite, Effect_Blood);
-                g_LaraItem->hit_points -= LION_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(LION_BITE_DAMAGE, true);
                 item->required_anim_state = LION_STOP;
             }
             break;

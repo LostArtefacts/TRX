@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"
@@ -245,8 +246,7 @@ void Ape_Control(int16_t item_num)
         case APE_ATTACK1:
             if (!item->required_anim_state && (item->touch_bits & APE_TOUCH)) {
                 Creature_Effect(item, &m_ApeBite, Effect_Blood);
-                g_LaraItem->hit_points -= APE_ATTACK_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(APE_ATTACK_DAMAGE, true);
                 item->required_anim_state = APE_STOP;
             }
             break;

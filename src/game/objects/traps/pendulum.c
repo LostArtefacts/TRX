@@ -2,11 +2,14 @@
 
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 #define PENDULUM_DAMAGE 100
 
@@ -34,8 +37,7 @@ void Pendulum_Control(int16_t item_num)
     }
 
     if (item->current_anim_state == TRAP_WORKING && item->touch_bits) {
-        g_LaraItem->hit_points -= PENDULUM_DAMAGE;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(PENDULUM_DAMAGE, true);
         int32_t x = g_LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = g_LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = g_LaraItem->pos.y - Random_GetControl() / 44;

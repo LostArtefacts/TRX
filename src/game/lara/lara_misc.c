@@ -565,8 +565,10 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
     } else if (landspeed > DAMAGE_LENGTH) {
         item->hit_points = -1;
     } else {
-        item->hit_points -= (LARA_HITPOINTS * landspeed * landspeed)
-            / (DAMAGE_LENGTH * DAMAGE_LENGTH);
+        Lara_TakeDamage(
+            (LARA_HITPOINTS * landspeed * landspeed)
+                / (DAMAGE_LENGTH * DAMAGE_LENGTH),
+            false);
     }
 
     if (item->hit_points < 0) {

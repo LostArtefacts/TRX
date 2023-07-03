@@ -106,9 +106,9 @@ void TRex_Control(int16_t item_num)
 
         if (item->touch_bits) {
             if (item->current_anim_state == TREX_RUN) {
-                g_LaraItem->hit_points -= TREX_TRAMPLE_DAMAGE;
+                Lara_TakeDamage(TREX_TRAMPLE_DAMAGE, false);
             } else {
-                g_LaraItem->hit_points -= TREX_TOUCH_DAMAGE;
+                Lara_TakeDamage(TREX_TOUCH_DAMAGE, false);
             }
         }
 
@@ -161,8 +161,7 @@ void TRex_Control(int16_t item_num)
 
         case TREX_ATTACK2:
             if (item->touch_bits & TREX_TOUCH) {
-                g_LaraItem->hit_points -= TREX_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(TREX_BITE_DAMAGE, true);
                 item->goal_anim_state = TREX_KILL;
                 TRex_LaraDeath(item);
             }
