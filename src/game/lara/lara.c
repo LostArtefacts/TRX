@@ -765,5 +765,5 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
 
 void Lara_TakeDamage(int16_t damage, bool hit_status)
 {
-    return Item_TakeDamage(g_LaraItem, damage, hit_status);
+    Item_TakeDamage(g_LaraItem, damage, hit_status);
 }
