@@ -4,6 +4,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -165,8 +166,7 @@ void Croc_Control(int16_t item_num)
         case CROCODILE_ATTACK1:
             if (item->required_anim_state == CROCODILE_EMPTY) {
                 Creature_Effect(item, &m_CrocodileBite, Effect_Blood);
-                g_LaraItem->hit_points -= CROCODILE_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(CROCODILE_BITE_DAMAGE, true);
                 item->required_anim_state = CROCODILE_STOP;
             }
             break;
@@ -308,8 +308,7 @@ void Alligator_Control(int16_t item_num)
         if (info.bite && item->touch_bits) {
             if (item->required_anim_state == ALLIGATOR_EMPTY) {
                 Creature_Effect(item, &m_CrocodileBite, Effect_Blood);
-                g_LaraItem->hit_points -= ALLIGATOR_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(ALLIGATOR_BITE_DAMAGE, true);
                 item->required_anim_state = ALLIGATOR_SWIM;
             }
             if (g_Config.fix_alligator_ai) {

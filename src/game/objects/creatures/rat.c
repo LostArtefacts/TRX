@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -126,8 +127,7 @@ void Rat_Control(int16_t item_num)
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Effect_Blood);
-                g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(RAT_BITE_DAMAGE, true);
                 item->required_anim_state = RAT_STOP;
             }
             break;
@@ -136,8 +136,7 @@ void Rat_Control(int16_t item_num)
             if (item->required_anim_state == RAT_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Effect_Blood);
-                g_LaraItem->hit_points -= RAT_CHARGE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(RAT_CHARGE_DAMAGE, true);
                 item->required_anim_state = RAT_RUN;
             }
             break;
@@ -245,8 +244,7 @@ void Vole_Control(int16_t item_num)
             if (item->required_anim_state == VOLE_EMPTY && info.ahead
                 && (item->touch_bits & RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Effect_Blood);
-                g_LaraItem->hit_points -= RAT_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(RAT_BITE_DAMAGE, true);
                 item->required_anim_state = VOLE_SWIM;
             }
             item->goal_anim_state = VOLE_EMPTY;

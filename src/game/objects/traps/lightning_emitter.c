@@ -106,8 +106,7 @@ void LightningEmitter_Control(int16_t item_num)
             l->target.y = g_LaraItem->pos.y;
             l->target.z = g_LaraItem->pos.z;
 
-            g_LaraItem->hit_points -= LIGHTNING_DAMAGE;
-            g_LaraItem->hit_status = 1;
+            Lara_TakeDamage(LIGHTNING_DAMAGE, true);
 
             l->zapped = true;
         } else if (l->no_target) {

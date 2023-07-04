@@ -25,6 +25,7 @@
 #define LARA_MOVE_TIMEOUT 90
 #define LARA_MOVE_ANIM_VELOCITY 12
 #define LARA_MOVE_SPEED 16
+#define LARA_UW_DAMAGE 5
 
 void Lara_Control(void)
 {
@@ -193,7 +194,7 @@ void Lara_Control(void)
             g_Lara.air--;
             if (g_Lara.air < 0) {
                 g_Lara.air = -1;
-                item->hit_points -= 5;
+                Lara_TakeDamage(LARA_UW_DAMAGE, false);
             }
         }
         Lara_HandleUnderwater(item, &coll);
@@ -760,4 +761,9 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
             Item_UpdateRoom(item, -10);
         }
     }
+}
+
+void Lara_TakeDamage(int16_t damage, bool hit_status)
+{
+    Item_TakeDamage(g_LaraItem, damage, hit_status);
 }

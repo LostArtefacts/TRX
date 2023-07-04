@@ -3,12 +3,17 @@
 #include "game/effects.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
+
+#define DART_DAMAGE 50
 
 typedef enum {
     DART_EMITTER_IDLE = 0,
@@ -27,8 +32,7 @@ void Dart_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->touch_bits) {
-        g_LaraItem->hit_points -= 50;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(DART_DAMAGE, true);
         Effect_Blood(
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
             g_LaraItem->pos.y_rot, g_LaraItem->room_number);

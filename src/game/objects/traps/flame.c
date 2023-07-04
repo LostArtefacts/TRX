@@ -11,6 +11,7 @@
 #include "global/vars.h"
 #include "util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #define FLAME_ONFIRE_DAMAGE 5
@@ -58,8 +59,7 @@ void Flame_Control(int16_t fx_num)
             Effect_Kill(fx_num);
         } else {
             Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
-            g_LaraItem->hit_points -= FLAME_ONFIRE_DAMAGE;
-            g_LaraItem->hit_status = 1;
+            Lara_TakeDamage(FLAME_ONFIRE_DAMAGE, true);
         }
         return;
     }
@@ -76,8 +76,7 @@ void Flame_Control(int16_t fx_num)
         int32_t z = g_LaraItem->pos.z - fx->pos.z;
         int32_t distance = SQUARE(x) + SQUARE(z);
 
-        g_LaraItem->hit_points -= FLAME_TOONEAR_DAMAGE;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(FLAME_TOONEAR_DAMAGE, true);
 
         if (distance < SQUARE(300)) {
             fx->counter = 100;

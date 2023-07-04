@@ -5,6 +5,7 @@
 #include "game/effects/exploding_death.h"
 #include "game/effects/gun.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -275,8 +276,7 @@ void Mutant_FlyerControl(int16_t item_num)
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
                 Creature_Effect(item, &m_WarriorBite, Effect_Blood);
-                g_LaraItem->hit_points -= FLYER_LUNGE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(FLYER_LUNGE_DAMAGE, true);
                 item->required_anim_state = FLYER_STOP;
             }
             break;
@@ -285,8 +285,7 @@ void Mutant_FlyerControl(int16_t item_num)
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
                 Creature_Effect(item, &m_WarriorBite, Effect_Blood);
-                g_LaraItem->hit_points -= FLYER_CHARGE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(FLYER_CHARGE_DAMAGE, true);
                 item->required_anim_state = FLYER_RUN;
             }
             break;
@@ -295,8 +294,7 @@ void Mutant_FlyerControl(int16_t item_num)
             if (item->required_anim_state == FLYER_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
                 Creature_Effect(item, &m_WarriorBite, Effect_Blood);
-                g_LaraItem->hit_points -= FLYER_PUNCH_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(FLYER_PUNCH_DAMAGE, true);
                 item->required_anim_state = FLYER_STOP;
             }
             break;

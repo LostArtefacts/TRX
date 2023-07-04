@@ -8,6 +8,8 @@
 #include "global/vars.h"
 #include "math/math.h"
 
+#include <stdbool.h>
+
 void BodyPart_Setup(OBJECT_INFO *obj)
 {
     obj->control = BodyPart_Control;
@@ -50,8 +52,7 @@ void BodyPart_Control(int16_t fx_num)
     }
 
     if (Lara_IsNearItem(&fx->pos, fx->counter * 2)) {
-        g_LaraItem->hit_points -= fx->counter;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(fx->counter, true);
 
         if (fx->counter) {
             fx->speed = 0;

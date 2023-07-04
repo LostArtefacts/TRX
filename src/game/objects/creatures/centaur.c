@@ -6,6 +6,7 @@
 #include "game/effects/exploding_death.h"
 #include "game/effects/gun.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/sound.h"
@@ -144,8 +145,7 @@ void Centaur_Control(int16_t item_num)
             if (item->required_anim_state == CENTAUR_EMPTY
                 && (item->touch_bits & CENTAUR_TOUCH)) {
                 Creature_Effect(item, &m_CentaurRear, Effect_Blood);
-                g_LaraItem->hit_points -= CENTAUR_REAR_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(CENTAUR_REAR_DAMAGE, true);
                 item->required_anim_state = CENTAUR_STOP;
             }
             break;

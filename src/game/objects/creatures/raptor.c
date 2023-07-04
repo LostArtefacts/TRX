@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "global/const.h"
@@ -150,8 +151,7 @@ void Raptor_Control(int16_t item_num)
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
                 Creature_Effect(item, &m_RaptorBite, Effect_Blood);
-                g_LaraItem->hit_points -= RAPTOR_LUNGE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(RAPTOR_LUNGE_DAMAGE, true);
                 item->required_anim_state = RAPTOR_STOP;
             }
             break;
@@ -161,8 +161,7 @@ void Raptor_Control(int16_t item_num)
             if (item->required_anim_state == RAPTOR_EMPTY && info.ahead
                 && (item->touch_bits & RAPTOR_TOUCH)) {
                 Creature_Effect(item, &m_RaptorBite, Effect_Blood);
-                g_LaraItem->hit_points -= RAPTOR_CHARGE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(RAPTOR_CHARGE_DAMAGE, true);
                 item->required_anim_state = RAPTOR_RUN;
             }
             break;
@@ -172,8 +171,7 @@ void Raptor_Control(int16_t item_num)
             if (item->required_anim_state == RAPTOR_EMPTY
                 && (item->touch_bits & RAPTOR_TOUCH)) {
                 Creature_Effect(item, &m_RaptorBite, Effect_Blood);
-                g_LaraItem->hit_points -= RAPTOR_BITE_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(RAPTOR_BITE_DAMAGE, true);
                 item->required_anim_state = RAPTOR_STOP;
             }
             break;

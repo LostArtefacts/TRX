@@ -1837,7 +1837,7 @@ typedef struct WEAPON_INFO {
     PHD_ANGLE aim_speed;
     PHD_ANGLE shot_accuracy;
     int32_t gun_height;
-    int32_t damage;
+    int16_t damage;
     int32_t target_dist;
     int16_t recoil_frame;
     int16_t flash_time;

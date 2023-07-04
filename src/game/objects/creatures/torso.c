@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects/exploding_death.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -100,8 +101,7 @@ void Torso_Control(int16_t item_num)
             - item->pos.y_rot;
 
         if (item->touch_bits) {
-            g_LaraItem->hit_points -= TORSO_TOUCH_DAMAGE;
-            g_LaraItem->hit_status = 1;
+            Lara_TakeDamage(TORSO_TOUCH_DAMAGE, true);
         }
 
         switch (item->current_anim_state) {
@@ -181,16 +181,14 @@ void Torso_Control(int16_t item_num)
 
         case TORSO_ATTACK1:
             if (!torso->flags && (item->touch_bits & TORSO_TRIGHT)) {
-                g_LaraItem->hit_points -= TORSO_ATTACK_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(TORSO_ATTACK_DAMAGE, true);
                 torso->flags = 1;
             }
             break;
 
         case TORSO_ATTACK2:
             if (!torso->flags && (item->touch_bits & TORSO_TOUCH)) {
-                g_LaraItem->hit_points -= TORSO_ATTACK_DAMAGE;
-                g_LaraItem->hit_status = 1;
+                Lara_TakeDamage(TORSO_ATTACK_DAMAGE, true);
                 torso->flags = 1;
             }
             break;

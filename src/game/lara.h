@@ -27,3 +27,5 @@ bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds);
 void Lara_AlignPosition(ITEM_INFO *item, PHD_VECTOR *vec);
 bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec);
 void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push);
+
+void Lara_TakeDamage(int16_t damage, bool hit_status);

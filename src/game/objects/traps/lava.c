@@ -11,7 +11,7 @@
 #include "global/vars.h"
 #include "math/math.h"
 
-#define LAVA_GLOB_DAMAGE 10
+#define LAVA_EMBER_DAMAGE 10
 #define LAVA_WEDGE_SPEED 25
 
 bool Lava_TestFloor(ITEM_INFO *item)
@@ -114,8 +114,7 @@ void Lava_Control(int16_t fx_num)
             < Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z)) {
         Effect_Kill(fx_num);
     } else if (Lara_IsNearItem(&fx->pos, 200)) {
-        g_LaraItem->hit_points -= LAVA_GLOB_DAMAGE;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(LAVA_EMBER_DAMAGE, true);
         Effect_Kill(fx_num);
     } else if (room_num != fx->room_number) {
         Effect_NewRoom(fx_num, room_num);

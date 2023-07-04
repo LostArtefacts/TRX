@@ -675,7 +675,7 @@ bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info)
 
 bool Creature_ShootAtLara(
     ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation,
-    int32_t damage)
+    int16_t damage)
 {
     bool hit;
     if (distance > CREATURE_SHOOT_RANGE) {
@@ -699,8 +699,7 @@ bool Creature_ShootAtLara(
     }
 
     if (hit) {
-        g_LaraItem->hit_points -= damage;
-        g_LaraItem->hit_status = 1;
+        Lara_TakeDamage(damage, true);
     }
 
     return hit;
