@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <zconf.h>
 #include <zlib.h>
-#include <inttypes.h>
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
