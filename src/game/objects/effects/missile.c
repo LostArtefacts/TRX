@@ -56,7 +56,7 @@ void Missile_Control(int16_t fx_num)
             int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
             if (range >= 0 && range < ROCKET_RANGE) {
                 Lara_TakeDamage(
-                    (int16_t)(ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE),
+                    (ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE),
                     true);
             }
         }
