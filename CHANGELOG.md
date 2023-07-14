@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+
+## [2.15.1](https://github.com/rr-/Tomb1Main/compare/2.15...2.15.1) - 2023-07-14
 - fixed the ape not performing the vault animation when climbing (#880)
 - fixed holding down up or down to scroll the passport faster (#883, regression from 2.14)
 - fixed Lara becoming stuck in a T-pose on rare occasions after performing a jump tiwst (#889)
