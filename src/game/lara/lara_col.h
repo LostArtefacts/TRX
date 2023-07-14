@@ -63,3 +63,4 @@ void Lara_Col_SwanDive(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_Col_FastDive(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_Col_Gymnast(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_Col_WaterOut(ITEM_INFO *item, COLL_INFO *coll);
+void Lara_Col_Twist(ITEM_INFO *item, COLL_INFO *coll);

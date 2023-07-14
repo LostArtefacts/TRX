@@ -199,9 +199,13 @@ void Lara_State_ForwardJump(ITEM_INFO *item, COLL_INFO *coll)
         if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_REACH;
         }
-        if (g_Config.enable_jump_twists && g_Input.roll
-            && item->goal_anim_state != LS_RUN) {
-            item->goal_anim_state = LS_TWIST;
+        if (g_Config.enable_jump_twists) {
+            if (g_Input.roll && item->goal_anim_state != LS_RUN) {
+                item->goal_anim_state = LS_TWIST;
+            } else if (
+                item->goal_anim_state == LS_TWIST && !item->gravity_status) {
+                item->goal_anim_state = LS_STOP;
+            }
         }
         if (g_Input.slow && g_Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_SWAN_DIVE;
@@ -493,9 +497,12 @@ void Lara_State_BackJump(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_FAST_FALL;
     }
 
-    if (g_Config.enable_jump_twists && g_Input.roll
-        && item->goal_anim_state != LS_STOP) {
-        item->goal_anim_state = LS_TWIST;
+    if (g_Config.enable_jump_twists) {
+        if (g_Input.roll && item->goal_anim_state != LS_STOP) {
+            item->goal_anim_state = LS_TWIST;
+        } else if (item->goal_anim_state == LS_TWIST && !item->gravity_status) {
+            item->goal_anim_state = LS_STOP;
+        }
     }
 }
 
