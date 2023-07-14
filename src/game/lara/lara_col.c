@@ -34,6 +34,7 @@ void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_Col_SurfLeft,    Lara_Col_SurfRight, Lara_Col_UseMidas,
     Lara_Col_DieMidas,    Lara_Col_SwanDive,  Lara_Col_FastDive,
     Lara_Col_Gymnast,     Lara_Col_WaterOut,  Lara_Col_Controlled,
+    Lara_Col_Twist,
 };
 
 static void Lara_Col_Default(ITEM_INFO *item, COLL_INFO *coll);
@@ -672,6 +673,11 @@ void Lara_Col_Pickup(ITEM_INFO *item, COLL_INFO *coll)
 }
 
 void Lara_Col_Controlled(ITEM_INFO *item, COLL_INFO *coll)
+{
+    Lara_Col_Default(item, coll);
+}
+
+void Lara_Col_Twist(ITEM_INFO *item, COLL_INFO *coll)
 {
     Lara_Col_Default(item, coll);
 }
