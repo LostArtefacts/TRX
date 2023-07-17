@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+- fixed Natla not leaving her semi-death state after Lara takes her down for the first time (#892, regression from 2.15.1)
 
 ## [2.15.1](https://github.com/rr-/Tomb1Main/compare/2.15...2.15.1) - 2023-07-14
 - fixed the ape not performing the vault animation when climbing (#880)
