@@ -528,8 +528,14 @@ int64_t S_Audio_StreamGetTimestamp(int sound_id)
         LOG_DEBUG("Getting timestamp for sound_id %d.", sound_id);
         SDL_LockAudioDevice(g_AudioDeviceID);
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
-        return stream->av.frame->best_effort_timestamp;
+        int64_t timestamp = 0;
+        int ret = avcodec_receive_frame(stream->av.codec_ctx, stream->av.frame);
+        if (ret >= 0) {
+            timestamp = stream->av.frame->best_effort_timestamp;
+        }
         SDL_UnlockAudioDevice(g_AudioDeviceID);
+        LOG_DEBUG("Timestamp: %d.", timestamp);
+        return timestamp;
     }
 
     return -1;
