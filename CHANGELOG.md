@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+- fixed Natla's gun moving while she is in her semi death state (#878)
 
 ## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
 - fixed Lara stuttering when performing certain animations (#901, regression from 2.14)
