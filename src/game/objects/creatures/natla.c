@@ -93,7 +93,7 @@ void Natla_Control(int16_t item_num)
         AI_INFO info;
         Creature_AIInfo(item, &info);
 
-        if (info.ahead) {
+        if (info.ahead && item->current_anim_state != NATLA_SEMIDEATH) {
             head = info.angle;
         }
 
