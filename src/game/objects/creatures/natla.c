@@ -42,6 +42,7 @@ typedef enum {
     NATLA_DEATH = 9,
 } NATLA_ANIM;
 
+static int16_t m_Facing = 0;
 static BITE_INFO m_NatlaGun = { 5, 220, 7, 4 };
 
 void Natla_Setup(OBJECT_INFO *obj)
@@ -66,7 +67,6 @@ void Natla_Setup(OBJECT_INFO *obj)
 
 void Natla_Control(int16_t item_num)
 {
-    static int16_t facing = 0;
     ITEM_INFO *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
@@ -105,9 +105,9 @@ void Natla_Control(int16_t item_num)
             && info.angle < NATLA_FIRE_ARC
             && Creature_CanTargetEnemy(item, &info);
 
-        if (facing) {
-            item->pos.y_rot += facing;
-            facing = 0;
+        if (m_Facing) {
+            item->pos.y_rot += m_Facing;
+            m_Facing = 0;
         }
 
         switch (item->current_anim_state) {
@@ -217,21 +217,21 @@ void Natla_Control(int16_t item_num)
             Creature_Mood(item, &info, false);
         }
 
-        item->pos.y_rot -= facing;
+        item->pos.y_rot -= m_Facing;
         angle = Creature_Turn(item, NATLA_FLY_TURN);
 
         if (item->current_anim_state == NATLA_FLY) {
             if (info.angle > NATLA_FLY_TURN) {
-                facing += NATLA_FLY_TURN;
+                m_Facing += NATLA_FLY_TURN;
             } else if (info.angle < -NATLA_FLY_TURN) {
-                facing -= NATLA_FLY_TURN;
+                m_Facing -= NATLA_FLY_TURN;
             } else {
-                facing += info.angle;
+                m_Facing += info.angle;
             }
-            item->pos.y_rot += facing;
+            item->pos.y_rot += m_Facing;
         } else {
-            item->pos.y_rot += facing - angle;
-            facing = 0;
+            item->pos.y_rot += m_Facing - angle;
+            m_Facing = 0;
         }
 
         switch (item->current_anim_state) {
@@ -306,9 +306,9 @@ void Natla_Control(int16_t item_num)
     natla->flags &= ~NATLA_TIMER;
     natla->flags |= timer & NATLA_TIMER;
 
-    item->pos.y_rot -= facing;
+    item->pos.y_rot -= m_Facing;
     Creature_Animate(item_num, angle, 0);
-    item->pos.y_rot += facing;
+    item->pos.y_rot += m_Facing;
 }
 
 void NatlaGun_Setup(OBJECT_INFO *obj)
