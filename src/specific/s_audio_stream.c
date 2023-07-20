@@ -31,6 +31,7 @@ typedef struct AUDIO_STREAM_SOUND {
     bool is_read_done;
     bool is_looped;
     float volume;
+    int64_t timestamp;
 
     void (*finish_callback)(int sound_id, void *user_data);
     void *finish_callback_user_data;
@@ -139,6 +140,8 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
             break;
         }
 
+        stream->timestamp = stream->av.frame->best_effort_timestamp;
+        LOG_DEBUG("Enqueue timestamp: %d.", stream->timestamp);
         av_frame_unref(stream->av.frame);
     }
 
@@ -240,6 +243,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     stream->is_playing = true;
     stream->is_looped = false;
     stream->volume = 1.0f;
+    stream->timestamp = 0;
     stream->finish_callback = NULL;
 
     stream->sdl.stream = SDL_NewAudioStream(
@@ -277,6 +281,7 @@ void S_Audio_StreamSoundInit(void)
         stream->is_playing = false;
         stream->is_read_done = true;
         stream->volume = 0.0f;
+        stream->timestamp = 0;
         stream->sdl.stream = NULL;
         stream->finish_callback = NULL;
     }
@@ -390,6 +395,7 @@ bool S_Audio_StreamSoundClose(int sound_id)
     stream->is_playing = false;
     stream->is_looped = false;
     stream->volume = 0.0f;
+    stream->timestamp = 0;
     SDL_UnlockAudioDevice(g_AudioDeviceID);
 
     if (stream->finish_callback) {
@@ -528,13 +534,9 @@ int64_t S_Audio_StreamGetTimestamp(int sound_id)
         LOG_DEBUG("Getting timestamp for sound_id %d.", sound_id);
         SDL_LockAudioDevice(g_AudioDeviceID);
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
-        int64_t timestamp = 0;
-        int ret = avcodec_receive_frame(stream->av.codec_ctx, stream->av.frame);
-        if (ret >= 0) {
-            timestamp = stream->av.frame->best_effort_timestamp;
-        }
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        int64_t timestamp = stream->timestamp;
         LOG_DEBUG("Timestamp: %d.", timestamp);
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
         return timestamp;
     }
 
@@ -549,10 +551,11 @@ bool S_Audio_StreamSeekTimestamp(int sound_id, int64_t timestamp)
     }
 
     if (m_StreamSounds[sound_id].is_playing) {
-        LOG_DEBUG("Seeking timestamp on sound_id %d.", sound_id);
+        LOG_DEBUG("Seeking timestamp %d on sound_id %d.", timestamp, sound_id);
         SDL_LockAudioDevice(g_AudioDeviceID);
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         av_seek_frame(stream->av.format_ctx, -1, timestamp, AVSEEK_FLAG_ANY);
+        avcodec_flush_buffers(stream->av.codec_ctx); // ?
         SDL_UnlockAudioDevice(g_AudioDeviceID);
         return true;
     }
