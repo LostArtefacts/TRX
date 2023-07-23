@@ -92,6 +92,14 @@ static void S_Output_ReleaseSurfaces(void)
         S_Output_ClearSurface(m_PrimarySurface);
         S_Output_ClearSurface(m_BackSurface);
 
+        // If we already have a primary surface, after we clear them
+        // we should present them to ensure that the full window area
+        // is cleared. So we flip, then flip again to ensure both links
+        // in the render chain have been presented. This solves any 
+        // issues of the previous frame showing in "future" empty areas.
+        S_Output_FlipPrimaryBuffer();
+        S_Output_FlipPrimaryBuffer();
+
         GFX_2D_Surface_Free(m_PrimarySurface);
         m_PrimarySurface = NULL;
         m_BackSurface = NULL;
