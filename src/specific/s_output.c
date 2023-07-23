@@ -95,7 +95,7 @@ static void S_Output_ReleaseSurfaces(void)
         // If we already have a primary surface, after we clear them
         // we should present them to ensure that the full window area
         // is cleared. So we flip, then flip again to ensure both links
-        // in the render chain have been presented. This solves any 
+        // in the render chain have been presented. This solves any
         // issues of the previous frame showing in "future" empty areas.
         S_Output_FlipPrimaryBuffer();
         S_Output_FlipPrimaryBuffer();
