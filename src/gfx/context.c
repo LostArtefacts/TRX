@@ -238,19 +238,16 @@ void GFX_Context_SwapBuffers(void)
 
     GFX_FBO_Renderer_Render(&m_Context.renderer_fbo);
 
-    // TODO: check if this still works and doesn't crash
-    if (m_Context.scheduled_screenshot_path) {
-        GFX_Screenshot_CaptureToFile(m_Context.scheduled_screenshot_path);
-        Memory_FreePointer(&m_Context.scheduled_screenshot_path);
-    }
-
     SDL_GL_SwapWindow(m_Context.window_handle);
 
     GFX_Context_SwitchToRenderViewport();
 
-    // TODO: this doesn't work when changing the resolution
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    GFX_GL_CheckError();
+    // this needs to be called after the render viewport setup
+    // so we get just the rendered portion and not the framebuffer portion
+    if (m_Context.scheduled_screenshot_path) {
+        GFX_Screenshot_CaptureToFile(m_Context.scheduled_screenshot_path);
+        Memory_FreePointer(&m_Context.scheduled_screenshot_path);
+    }
 
     m_Context.is_rendered = false;
 }
