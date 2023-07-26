@@ -207,7 +207,9 @@ void Savegame_InitCurrentInfo(void)
         Savegame_ApplyLogicToCurrentInfo(i);
         g_GameInfo.current[i].flags.available = 0;
     }
-    g_GameInfo.current[g_GameFlow.gym_level_num].flags.available = 1;
+    if (g_GameFlow.gym_level_num != -1) {
+        g_GameInfo.current[g_GameFlow.gym_level_num].flags.available = 1;
+    }
     g_GameInfo.current[g_GameFlow.first_level_num].flags.available = 1;
 }
 
