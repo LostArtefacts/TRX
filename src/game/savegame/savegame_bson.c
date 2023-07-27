@@ -1220,14 +1220,18 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    int16_t load_track = json_object_get_int(root_obj, "music_track", -1);
+    int16_t music_track = json_object_get_int(root_obj, "music_track", -1);
     int32_t timestamp_arr[2];
     timestamp_arr[0] = json_object_get_int(root_obj, "music_timestamp1", -1);
     timestamp_arr[1] = json_object_get_int(root_obj, "music_timestamp2", -1);
     int64_t *music_timestamp = (int64_t *)timestamp_arr;
-    if (load_track) {
-        Music_Play(load_track);
-        Music_SeekTimestamp(load_track, *music_timestamp);
+    if (music_track) {
+        Music_Play(music_track);
+        if (!Music_SeekTimestamp(music_track, *music_timestamp)) {
+            LOG_WARNING(
+                "Could not load music track %d at timestamp %d.", music_track,
+                *music_timestamp);
+        }
     }
 
     ret = true;
