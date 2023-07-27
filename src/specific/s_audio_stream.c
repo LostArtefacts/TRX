@@ -141,7 +141,6 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
         }
 
         stream->timestamp = stream->av.frame->best_effort_timestamp;
-        LOG_DEBUG("Enqueue timestamp: %d.", stream->timestamp);
         av_frame_unref(stream->av.frame);
     }
 
@@ -531,11 +530,9 @@ int64_t S_Audio_StreamGetTimestamp(int sound_id)
     }
 
     if (m_StreamSounds[sound_id].is_playing) {
-        LOG_DEBUG("Getting timestamp for sound_id %d.", sound_id);
         SDL_LockAudioDevice(g_AudioDeviceID);
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         int64_t timestamp = stream->timestamp;
-        LOG_DEBUG("Timestamp: %d.", timestamp);
         SDL_UnlockAudioDevice(g_AudioDeviceID);
         return timestamp;
     }
@@ -551,7 +548,6 @@ bool S_Audio_StreamSeekTimestamp(int sound_id, int64_t timestamp)
     }
 
     if (m_StreamSounds[sound_id].is_playing) {
-        LOG_DEBUG("Seeking timestamp %d on sound_id %d.", timestamp, sound_id);
         SDL_LockAudioDevice(g_AudioDeviceID);
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         av_seek_frame(
