@@ -13,13 +13,14 @@
 // creatures, triggers etc., and is what actually sets Lara's health, creatures
 // status, triggers, inventory etc.
 
-#define SAVEGAME_CURRENT_VERSION 2
+#define SAVEGAME_CURRENT_VERSION 3
 
 typedef enum SAVEGAME_VERSION {
     VERSION_LEGACY = -1,
     VERSION_0 = 0,
     VERSION_1 = 1,
     VERSION_2 = 2,
+    VERSION_3 = 3,
 } SAVEGAME_VERSION;
 
 typedef enum SAVEGAME_FORMAT {

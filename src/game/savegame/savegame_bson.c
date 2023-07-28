@@ -61,6 +61,7 @@ static bool Savegame_BSON_LoadAmmo(
 static bool Savegame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot);
 static bool Savegame_BSON_LoadLara(
     struct json_object_s *lara_obj, LARA_INFO *lara);
+static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj);
 static struct json_array_s *Savegame_BSON_DumpResumeInfo(
     RESUME_INFO *game_info);
 static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info);
@@ -73,6 +74,7 @@ static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara);
+static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void);
 
 static void SaveGame_BSON_SaveRaw(
     MYFILE *fp, struct json_value_s *root, int32_t version)
@@ -798,6 +800,34 @@ static bool Savegame_BSON_LoadLara(
     return true;
 }
 
+static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj)
+{
+    if (!g_Config.load_current_music) {
+        return true;
+    }
+
+    if (!music_obj) {
+        LOG_WARNING("Malformed save: invalid or missing current music");
+        return true;
+    }
+
+    int16_t current_track = json_object_get_int(music_obj, "current_track", -1);
+    int32_t timestamp_arr[2];
+    timestamp_arr[0] = json_object_get_int(music_obj, "timestamp1", 0);
+    timestamp_arr[1] = json_object_get_int(music_obj, "timestamp2", 0);
+    int64_t *timestamp = (int64_t *)timestamp_arr;
+    if (current_track) {
+        Music_Play(current_track);
+        if (!Music_SeekTimestamp(current_track, *timestamp)) {
+            LOG_WARNING(
+                "Could not load current track %d at timestamp %d.",
+                current_track, *timestamp);
+        }
+    }
+
+    return true;
+}
+
 static struct json_array_s *Savegame_BSON_DumpResumeInfo(
     RESUME_INFO *resume_info)
 {
@@ -1107,6 +1137,22 @@ static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara)
     return lara_obj;
 }
 
+static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void)
+{
+    struct json_object_s *current_music_obj = json_object_new();
+    json_object_append_int(
+        current_music_obj, "current_track", Music_CurrentTrack());
+    int64_t timestamp = 0;
+    if (Music_CurrentTrack()) {
+        timestamp = Music_GetTimestamp(Music_CurrentTrack());
+    }
+    int32_t *timestamp_arr = (int32_t *)&timestamp;
+    json_object_append_int(current_music_obj, "timestamp1", timestamp_arr[0]);
+    json_object_append_int(current_music_obj, "timestamp2", timestamp_arr[1]);
+
+    return current_music_obj;
+}
+
 char *Savegame_BSON_GetSaveFileName(int32_t slot)
 {
     size_t out_size = snprintf(NULL, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
@@ -1220,17 +1266,10 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    int16_t music_track = json_object_get_int(root_obj, "music_track", -1);
-    int32_t timestamp_arr[2];
-    timestamp_arr[0] = json_object_get_int(root_obj, "music_timestamp1", -1);
-    timestamp_arr[1] = json_object_get_int(root_obj, "music_timestamp2", -1);
-    int64_t *music_timestamp = (int64_t *)timestamp_arr;
-    if (music_track) {
-        Music_Play(music_track);
-        if (!Music_SeekTimestamp(music_track, *music_timestamp)) {
-            LOG_WARNING(
-                "Could not load music track %d at timestamp %d.", music_track,
-                *music_timestamp);
+    if (header.version >= VERSION_3) {
+        if (!SaveGame_BSON_LoadCurrentMusic(
+                json_object_get_object(root_obj, "music"))) {
+            goto cleanup;
         }
     }
 
@@ -1301,15 +1340,8 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_array(root_obj, "fx", SaveGame_BSON_DumpFx());
     json_object_append_object(
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
-    int16_t music_track = Music_CurrentTrack();
-    json_object_append_int(root_obj, "music_track", music_track);
-    int64_t music_timestamp = 0;
-    if (music_track) {
-        music_timestamp = Music_GetTimestamp(Music_CurrentTrack());
-    }
-    int32_t *timestamp_arr = (int32_t *)&music_timestamp;
-    json_object_append_int(root_obj, "music_timestamp1", timestamp_arr[0]);
-    json_object_append_int(root_obj, "music_timestamp2", timestamp_arr[1]);
+    json_object_append_object(
+        root_obj, "music", SaveGame_BSON_DumpCurrentMusic());
 
     struct json_value_s *root = json_value_from_object(root_obj);
     SaveGame_BSON_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);

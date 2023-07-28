@@ -195,6 +195,10 @@
       "Description": "Permite que los sonidos del juego continúen sonando en la pantalla de inventario.",
       "Title": "Habilitar sonidos de juegos en el inventario"
     },
+    "load_current_music": {
+      "Title": "Load music track",
+      "Description": "TBD."
+    },
     "enable_music_in_menu": {
       "Description": "Reproduce música en el menú principal.",
       "Title": "Habilitar la música del menú principal"
