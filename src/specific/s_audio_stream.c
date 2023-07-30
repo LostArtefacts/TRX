@@ -552,7 +552,6 @@ bool S_Audio_StreamSeekTimestamp(int sound_id, int64_t timestamp)
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
         av_seek_frame(
             stream->av.format_ctx, sound_id, timestamp, AVSEEK_FLAG_ANY);
-        avcodec_flush_buffers(stream->av.codec_ctx); // ?
         SDL_UnlockAudioDevice(g_AudioDeviceID);
         return true;
     }
