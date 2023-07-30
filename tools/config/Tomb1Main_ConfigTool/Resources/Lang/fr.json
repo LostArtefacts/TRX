@@ -277,7 +277,7 @@
     },
     "load_current_music": {
       "Title": "Load music track",
-      "Description": "TBD."
+      "Description": "Charge la musique qui était en cours de lecture lors de la sauvegarde."
     },
     "enable_music_in_menu": {
       "Title": "Activer la musique dans le menu principal",
