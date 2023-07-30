@@ -121,7 +121,7 @@
     },
     "fix_bear_ai": {
       "Title": "Fix bear AI",
-      "Description": "Fixes bears somehow."
+      "Description": "Fixes bear pat attack so it does not miss Lara."
     },
     "fix_descending_glitch": {
       "Title": "Fix breakable floor falls",
