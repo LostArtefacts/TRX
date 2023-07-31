@@ -288,6 +288,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling
 - fixed the ape not performing the vault animation when climbing
 - fixed Natla's gun moving while she is in her semi death state
+- fixed the bear pat attack so it does not miss Lara
 
 #### Cheats
 - added a fly cheat

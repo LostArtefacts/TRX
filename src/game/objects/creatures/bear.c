@@ -1,5 +1,6 @@
 #include "game/objects/creatures/bear.h"
 
+#include "config.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
@@ -24,6 +25,7 @@
 #define BEAR_REAR_RANGE SQUARE(WALL_L * 2) // = 4194304
 #define BEAR_ATTACK_RANGE SQUARE(WALL_L) // = 1048576
 #define BEAR_PAT_RANGE SQUARE(600) // = 360000
+#define BEAR_FIX_PAT_RANGE SQUARE(300) // = 90000
 #define BEAR_RUN_TURN (5 * PHD_DEGREE) // = 910
 #define BEAR_WALK_TURN (2 * PHD_DEGREE) // = 364
 #define BEAR_EAT_RANGE SQUARE(WALL_L * 3 / 4) // = 589824
@@ -56,7 +58,11 @@ void Bear_Setup(OBJECT_INFO *obj)
     obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
-    obj->pivot_length = 500;
+    if (g_Config.fix_bear_ai) {
+        obj->pivot_length = 0;
+    } else {
+        obj->pivot_length = 500;
+    }
     obj->radius = BEAR_RADIUS;
     obj->smartness = BEAR_SMARTNESS;
     obj->intelligent = 1;
@@ -187,7 +193,11 @@ void Bear_Control(int16_t item_num)
                 item->goal_anim_state = item->required_anim_state;
             } else if (bear->mood == MOOD_BORED || bear->mood == MOOD_ESCAPE) {
                 item->goal_anim_state = BEAR_STOP;
-            } else if (info.bite && info.distance < BEAR_PAT_RANGE) {
+            } else if (
+                info.bite
+                && info.distance
+                    < (g_Config.fix_bear_ai ? BEAR_FIX_PAT_RANGE
+                                            : BEAR_PAT_RANGE)) {
                 item->goal_anim_state = BEAR_ATTACK2;
             } else {
                 item->goal_anim_state = BEAR_WALK;
