@@ -257,7 +257,7 @@
     },
     "fix_bear_ai": {
       "Title": "Fix bear AI",
-      "Description": "TBD."
+      "Description": "Corrige el ataque del oso para que golpee a Lara."
     },
     "fix_bridge_collision": {
       "Description": "Soluciona que Lara no pueda agarrar partes de algunos puentes y paredes invisibles en el borde.",
