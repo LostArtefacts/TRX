@@ -119,6 +119,10 @@
       "Title": "Fix alligator AI",
       "Description": "Fixes alligators dealing no damage if Lara remains still in the water."
     },
+    "fix_bear_ai": {
+      "Title": "Fix bear AI",
+      "Description": "Fixes bear pat attack so it does not miss Lara."
+    },
     "fix_descending_glitch": {
       "Title": "Fix breakable floor falls",
       "Description": "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath."

@@ -255,6 +255,10 @@
       "Description": "Soluciona que los cocodrilos que no inflijan daño si Lara permanece inmóvil en el agua.",
       "Title": "Arreglar IA de cocodrilo"
     },
+    "fix_bear_ai": {
+      "Title": "Fix bear AI",
+      "Description": "Corrige el ataque del oso para que golpee a Lara."
+    },
     "fix_bridge_collision": {
       "Description": "Soluciona que Lara no pueda agarrar partes de algunos puentes y paredes invisibles en el borde.",
       "Title": "Arreglar la colisión de puentes"

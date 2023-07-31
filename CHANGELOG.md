@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
 - fixed Natla's gun moving while she is in her semi death state (#878)
 - fixed an error message from showing on exiting the game when the gym level is not present in the gameflow (#899)
+- fixed the bear pat attack so it does not miss Lara (#450)
 
 ## [2.15.2](https://github.com/rr-/Tomb1Main/compare/2.15.1...2.15.2) - 2023-07-17
 - fixed Natla not leaving her semi-death state after Lara takes her down for the first time (#892, regression from 2.15.1)
