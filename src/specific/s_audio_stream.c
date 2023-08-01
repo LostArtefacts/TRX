@@ -59,6 +59,7 @@ static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream);
 static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream);
 static bool S_Audio_StreamSoundInitialiseFromPath(
     int sound_id, const char *file_path);
+static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream);
 
 static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream)
 {
@@ -272,17 +273,23 @@ cleanup:
     return ret;
 }
 
+static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream)
+{
+    stream->is_used = false;
+    stream->is_playing = false;
+    stream->is_looped = false;
+    stream->is_read_done = true;
+    stream->volume = 0.0f;
+    stream->timestamp = 0;
+    stream->sdl.stream = NULL;
+    stream->finish_callback = NULL;
+}
+
 void S_Audio_StreamSoundInit(void)
 {
     for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
         AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
-        stream->is_used = false;
-        stream->is_playing = false;
-        stream->is_read_done = true;
-        stream->volume = 0.0f;
-        stream->timestamp = 0;
-        stream->sdl.stream = NULL;
-        stream->finish_callback = NULL;
+        S_Audio_StreamSoundClear(stream);
     }
 }
 
@@ -386,20 +393,15 @@ bool S_Audio_StreamSoundClose(int sound_id)
 
     if (stream->sdl.stream) {
         SDL_FreeAudioStream(stream->sdl.stream);
-        stream->sdl.stream = NULL;
     }
-
-    stream->is_read_done = true;
-    stream->is_used = false;
-    stream->is_playing = false;
-    stream->is_looped = false;
-    stream->volume = 0.0f;
-    stream->timestamp = 0;
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
 
     if (stream->finish_callback) {
         stream->finish_callback(sound_id, stream->finish_callback_user_data);
     }
+
+    S_Audio_StreamSoundClear(stream);
+
+    SDL_UnlockAudioDevice(g_AudioDeviceID);
 
     return true;
 }
