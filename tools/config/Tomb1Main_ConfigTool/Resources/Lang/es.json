@@ -197,7 +197,7 @@
     },
     "load_current_music": {
       "Title": "Load music track",
-      "Description": "TBD."
+      "Description": "Carga la pista de música que se estaba reproduciendo cuando se guardó el juego."
     },
     "enable_music_in_menu": {
       "Description": "Reproduce música en el menú principal.",
