@@ -98,8 +98,6 @@ bool Music_Play(int16_t track)
     m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
     Memory_FreePointer(&file_path);
 
-    LOG_DEBUG("Playing music on sound_id %d.", m_AudioStreamID);
-
     if (m_AudioStreamID < 0) {
         LOG_ERROR("All music streams are busy");
         return false;

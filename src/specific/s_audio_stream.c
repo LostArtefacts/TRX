@@ -395,13 +395,16 @@ bool S_Audio_StreamSoundClose(int sound_id)
         SDL_FreeAudioStream(stream->sdl.stream);
     }
 
-    if (stream->finish_callback) {
-        stream->finish_callback(sound_id, stream->finish_callback_user_data);
-    }
+    void (*finish_callback)(int, void *) = stream->finish_callback;
+    void *finish_callback_user_data = stream->finish_callback_user_data;
 
     S_Audio_StreamSoundClear(stream);
 
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+
+    if (finish_callback) {
+        finish_callback(sound_id, finish_callback_user_data);
+    }
 
     return true;
 }
