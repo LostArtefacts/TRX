@@ -288,8 +288,7 @@ static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream)
 void S_Audio_StreamSoundInit(void)
 {
     for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
-        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
-        S_Audio_StreamSoundClear(stream);
+        S_Audio_StreamSoundClear(&m_StreamSounds[sound_id]);
     }
 }
 
