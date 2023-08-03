@@ -245,6 +245,7 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     stream->volume = 1.0f;
     stream->timestamp = 0;
     stream->finish_callback = NULL;
+    stream->finish_callback_user_data = NULL;
 
     stream->sdl.stream = SDL_NewAudioStream(
         sdl_format, sdl_channels, sdl_sample_rate, AUDIO_WORKING_FORMAT,
@@ -283,6 +284,7 @@ static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream)
     stream->timestamp = 0;
     stream->sdl.stream = NULL;
     stream->finish_callback = NULL;
+    stream->finish_callback_user_data = NULL;
 }
 
 void S_Audio_StreamSoundInit(void)
