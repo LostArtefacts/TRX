@@ -31,6 +31,7 @@ typedef struct AUDIO_STREAM_SOUND {
     bool is_read_done;
     bool is_looped;
     float volume;
+    int64_t timestamp;
 
     void (*finish_callback)(int sound_id, void *user_data);
     void *finish_callback_user_data;
@@ -58,6 +59,7 @@ static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream);
 static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream);
 static bool S_Audio_StreamSoundInitialiseFromPath(
     int sound_id, const char *file_path);
+static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream);
 
 static bool S_Audio_StreamSoundDecodeFrame(AUDIO_STREAM_SOUND *stream)
 {
@@ -139,6 +141,7 @@ static bool S_Audio_StreamSoundEnqueueFrame(AUDIO_STREAM_SOUND *stream)
             break;
         }
 
+        stream->timestamp = stream->av.frame->best_effort_timestamp;
         av_frame_unref(stream->av.frame);
     }
 
@@ -240,7 +243,9 @@ static bool S_Audio_StreamSoundInitialiseFromPath(
     stream->is_playing = true;
     stream->is_looped = false;
     stream->volume = 1.0f;
+    stream->timestamp = 0;
     stream->finish_callback = NULL;
+    stream->finish_callback_user_data = NULL;
 
     stream->sdl.stream = SDL_NewAudioStream(
         sdl_format, sdl_channels, sdl_sample_rate, AUDIO_WORKING_FORMAT,
@@ -269,16 +274,23 @@ cleanup:
     return ret;
 }
 
+static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream)
+{
+    stream->is_used = false;
+    stream->is_playing = false;
+    stream->is_looped = false;
+    stream->is_read_done = true;
+    stream->volume = 0.0f;
+    stream->timestamp = 0;
+    stream->sdl.stream = NULL;
+    stream->finish_callback = NULL;
+    stream->finish_callback_user_data = NULL;
+}
+
 void S_Audio_StreamSoundInit(void)
 {
     for (int sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS; sound_id++) {
-        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
-        stream->is_used = false;
-        stream->is_playing = false;
-        stream->is_read_done = true;
-        stream->volume = 0.0f;
-        stream->sdl.stream = NULL;
-        stream->finish_callback = NULL;
+        S_Audio_StreamSoundClear(&m_StreamSounds[sound_id]);
     }
 }
 
@@ -382,18 +394,17 @@ bool S_Audio_StreamSoundClose(int sound_id)
 
     if (stream->sdl.stream) {
         SDL_FreeAudioStream(stream->sdl.stream);
-        stream->sdl.stream = NULL;
     }
 
-    stream->is_read_done = true;
-    stream->is_used = false;
-    stream->is_playing = false;
-    stream->is_looped = false;
-    stream->volume = 0.0f;
+    void (*finish_callback)(int, void *) = stream->finish_callback;
+    void *finish_callback_user_data = stream->finish_callback_user_data;
+
+    S_Audio_StreamSoundClear(stream);
+
     SDL_UnlockAudioDevice(g_AudioDeviceID);
 
-    if (stream->finish_callback) {
-        stream->finish_callback(sound_id, stream->finish_callback_user_data);
+    if (finish_callback) {
+        finish_callback(sound_id, finish_callback_user_data);
     }
 
     return true;
@@ -515,4 +526,41 @@ void S_Audio_StreamSoundMix(float *dst_buffer, size_t len)
             S_Audio_StreamSoundClose(sound_id);
         }
     }
+}
+
+int64_t S_Audio_StreamGetTimestamp(int sound_id)
+{
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+        return -1;
+    }
+
+    if (m_StreamSounds[sound_id].is_playing) {
+        SDL_LockAudioDevice(g_AudioDeviceID);
+        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
+        int64_t timestamp = stream->timestamp;
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        return timestamp;
+    }
+
+    return -1;
+}
+
+bool S_Audio_StreamSeekTimestamp(int sound_id, int64_t timestamp)
+{
+    if (!g_AudioDeviceID || sound_id < 0
+        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+        return false;
+    }
+
+    if (m_StreamSounds[sound_id].is_playing) {
+        SDL_LockAudioDevice(g_AudioDeviceID);
+        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
+        av_seek_frame(
+            stream->av.format_ctx, sound_id, timestamp, AVSEEK_FLAG_ANY);
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        return true;
+    }
+
+    return false;
 }

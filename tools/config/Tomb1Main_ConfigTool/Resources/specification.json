@@ -336,6 +336,11 @@
       "Image": "Graphics/graphic6.jpg",
       "Properties": [
         {
+          "Field": "load_current_music",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_music_in_menu",
           "DataType": "Bool",
           "DefaultValue": true

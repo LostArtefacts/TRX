@@ -279,6 +279,10 @@
       "Title": "Format des screenshots",
       "Description": "Selectionner le format voulu pour les captures d'écran en jeu."
     },
+    "load_current_music": {
+      "Title": "Load music track",
+      "Description": "Charge la musique qui était en cours de lecture lors de la sauvegarde."
+    },
     "enable_music_in_menu": {
       "Title": "Activer la musique dans le menu principal",
       "Description": "Chosir d'activer ou non la musique dans le menu principal."

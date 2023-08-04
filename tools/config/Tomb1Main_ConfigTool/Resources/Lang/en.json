@@ -279,6 +279,10 @@
       "Title": "Screenshot format",
       "Description": "Screenshot file format."
     },
+    "load_current_music": {
+      "Title": "Load music track",
+      "Description": "Loads the music track that was playing when the game was saved."
+    },
     "enable_music_in_menu": {
       "Title": "Enable main menu music",
       "Description": "Plays music in the main menu."
