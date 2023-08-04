@@ -812,16 +812,13 @@ static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj)
     }
 
     int16_t current_track = json_object_get_int(music_obj, "current_track", -1);
-    int32_t timestamp_arr[2];
-    timestamp_arr[0] = json_object_get_int(music_obj, "timestamp1", 0);
-    timestamp_arr[1] = json_object_get_int(music_obj, "timestamp2", 0);
-    int64_t *timestamp = (int64_t *)timestamp_arr;
+    int64_t timestamp = json_object_get_int64(music_obj, "timestamp", -1);
     if (current_track) {
         Music_Play(current_track);
-        if (!Music_SeekTimestamp(current_track, *timestamp)) {
+        if (!Music_SeekTimestamp(current_track, timestamp)) {
             LOG_WARNING(
                 "Could not load current track %d at timestamp %d.",
-                current_track, *timestamp);
+                current_track, timestamp);
         }
     }
 
@@ -1146,9 +1143,7 @@ static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void)
     if (Music_CurrentTrack()) {
         timestamp = Music_GetTimestamp(Music_CurrentTrack());
     }
-    int32_t *timestamp_arr = (int32_t *)&timestamp;
-    json_object_append_int(current_music_obj, "timestamp1", timestamp_arr[0]);
-    json_object_append_int(current_music_obj, "timestamp2", timestamp_arr[1]);
+    json_object_append_int64(current_music_obj, "timestamp", timestamp);
 
     return current_music_obj;
 }
