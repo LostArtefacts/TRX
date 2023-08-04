@@ -232,6 +232,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(enable_swing_cancel, true);
     READ_BOOL(enable_tr2_jumping, false);
     READ_BOOL(load_current_music, true);
+    READ_BOOL(load_music_triggers, true);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -417,6 +418,7 @@ bool Config_Write(void)
     WRITE_BOOL(enable_swing_cancel);
     WRITE_BOOL(enable_tr2_jumping);
     WRITE_BOOL(load_current_music);
+    WRITE_BOOL(load_music_triggers);
 
     // User settings
     WRITE_BOOL(rendering.enable_bilinear_filter);
