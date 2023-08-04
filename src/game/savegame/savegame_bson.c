@@ -20,6 +20,7 @@
 #include "util.h"
 
 #include <assert.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <zconf.h>
 #include <zlib.h>
@@ -817,7 +818,7 @@ static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj)
         Music_Play(current_track);
         if (!Music_SeekTimestamp(current_track, timestamp)) {
             LOG_WARNING(
-                "Could not load current track %d at timestamp %d.",
+                "Could not load current track %d at timestamp %" PRId64 ".",
                 current_track, timestamp);
         }
     }
