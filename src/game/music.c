@@ -192,3 +192,19 @@ int16_t Music_CurrentTrack(void)
 {
     return m_Track;
 }
+
+int64_t Music_GetTimestamp(int16_t track)
+{
+    if (m_AudioStreamID < 0) {
+        return -1;
+    }
+    return S_Audio_StreamGetTimestamp(m_AudioStreamID);
+}
+
+bool Music_SeekTimestamp(int16_t track, int64_t timestamp)
+{
+    if (m_AudioStreamID < 0) {
+        return false;
+    }
+    return S_Audio_StreamSeekTimestamp(m_AudioStreamID, timestamp);
+}

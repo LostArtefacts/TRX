@@ -38,3 +38,9 @@ void Music_Unpause(void);
 // Returns currently playing track. If there is a track playing "over" a looped
 // track, returns the "overriding" track number.
 int16_t Music_CurrentTrack(void);
+
+// Get timestamp of current stream.
+int64_t Music_GetTimestamp(int16_t track);
+
+// Seek to timestamp of current stream.
+bool Music_SeekTimestamp(int16_t track, int64_t timestamp);

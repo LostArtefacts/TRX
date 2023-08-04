@@ -2,6 +2,7 @@
 
 #include "memory.h"
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,6 +63,17 @@ struct json_number_s *json_number_new_int(int number)
     size_t size = snprintf(NULL, 0, "%d", number) + 1;
     char *buf = Memory_Alloc(size);
     sprintf(buf, "%d", number);
+    struct json_number_s *elem = Memory_Alloc(sizeof(struct json_number_s));
+    elem->number = buf;
+    elem->number_size = strlen(buf);
+    return elem;
+}
+
+struct json_number_s *json_number_new_int64(int64_t number)
+{
+    size_t size = snprintf(NULL, 0, "%" PRId64, number) + 1;
+    char *buf = Memory_Alloc(size);
+    sprintf(buf, "%" PRId64, number);
     struct json_number_s *elem = Memory_Alloc(sizeof(struct json_number_s));
     elem->number = buf;
     elem->number_size = strlen(buf);
@@ -317,6 +329,13 @@ void json_object_append_int(
         obj, key, json_value_from_number(json_number_new_int(number)));
 }
 
+void json_object_append_int64(
+    struct json_object_s *obj, const char *key, int64_t number)
+{
+    json_object_append(
+        obj, key, json_value_from_number(json_number_new_int64(number)));
+}
+
 void json_object_append_double(
     struct json_object_s *obj, const char *key, double number)
 {
@@ -398,6 +417,17 @@ int json_object_get_int(struct json_object_s *obj, const char *key, int d)
     struct json_number_s *num = json_value_as_number(value);
     if (num) {
         return atoi(num->number);
+    }
+    return d;
+}
+
+int64_t json_object_get_int64(
+    struct json_object_s *obj, const char *key, int64_t d)
+{
+    struct json_value_s *value = json_object_get_value(obj, key);
+    struct json_number_s *num = json_value_as_number(value);
+    if (num) {
+        return strtoll(num->number, NULL, 10);
     }
     return d;
 }

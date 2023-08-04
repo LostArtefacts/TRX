@@ -81,6 +81,7 @@ struct json_value_ex_s {
 
 // numbers
 struct json_number_s *json_number_new_int(int number);
+struct json_number_s *json_number_new_int64(int64_t number);
 struct json_number_s *json_number_new_double(double number);
 void json_number_free(struct json_number_s *num);
 
@@ -126,6 +127,8 @@ void json_object_append(
 void json_object_append_bool(struct json_object_s *obj, const char *key, int b);
 void json_object_append_int(
     struct json_object_s *obj, const char *key, int number);
+void json_object_append_int64(
+    struct json_object_s *obj, const char *key, int64_t number);
 void json_object_append_double(
     struct json_object_s *obj, const char *key, double number);
 void json_object_append_string(
@@ -141,6 +144,8 @@ struct json_value_s *json_object_get_value(
     struct json_object_s *obj, const char *key);
 int json_object_get_bool(struct json_object_s *obj, const char *key, int d);
 int json_object_get_int(struct json_object_s *obj, const char *key, int d);
+int64_t json_object_get_int64(
+    struct json_object_s *obj, const char *key, int64_t d);
 double json_object_get_double(
     struct json_object_s *obj, const char *key, double d);
 const char *json_object_get_string(

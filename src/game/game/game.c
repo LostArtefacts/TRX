@@ -133,6 +133,12 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         // reset current info to the defaults so that we do not do
         // Item_GlobalReplace in the inventory initialization routines too early
         Savegame_InitCurrentInfo();
+
+        // prevent audio clipping that occurs when level plays a music track,
+        // and later savegame routines override it while the stream is already
+        // playing in the background thread
+        Music_Pause();
+
         if (!Level_Initialise(level_num)) {
             return false;
         }
@@ -140,6 +146,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             LOG_ERROR("Failed to load save file!");
             return false;
         }
+        Music_Unpause();
         break;
 
     case GFL_RESTART:

@@ -367,6 +367,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added music during the credits
 - added an option to turn off sound effect pitching
 - added an option to use the PlayStation Uzi sound effects
+- added the current music track and timestamp to the savegame so they now persist on load
 - fixed the sound of collecting a secret killing the music
 - fixed audio mixer stopping playing sounds on big explosions
 - fixed game audio not muting when game is minimized
