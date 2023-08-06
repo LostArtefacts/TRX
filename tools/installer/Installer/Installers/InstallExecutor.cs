@@ -87,7 +87,11 @@ public class InstallExecutor
 
         var alwaysOverwrite = new string[]
         {
-            "Tomb1Main.exe",
+            ".bin",
+            ".exe",
+            ".fsh",
+            ".json5",
+            ".vsh",
         };
 
         await InstallUtils.ExtractZip(
@@ -97,7 +101,7 @@ public class InstallExecutor
             overwriteCallback:
                 file =>
                     _settings.OverwriteAllFiles
-                    || alwaysOverwrite.Any(otherFile => string.Equals(Path.GetFileName(file), otherFile, StringComparison.CurrentCultureIgnoreCase))
+                    || alwaysOverwrite.Any(otherExt => string.Equals(Path.GetExtension(file), otherExt, StringComparison.CurrentCultureIgnoreCase))
         );
     }
 

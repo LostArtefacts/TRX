@@ -127,8 +127,8 @@
                         Overwrite all existing files
                         <LineBreak />
                         <Run Style="{StaticResource small}">
-                            Overwrites any files such as level data, music files and existing user settings.
-                            If this option is off, only overwrites Tomb1Main.exe in order to update the game.
+                            Overwrites any files such as level data and music files. If this option is off, only
+                            overwrites Tomb1Main.exe and other essential files in order to update the game.
                         </Run>
                     </TextBlock>
                 </CheckBox>

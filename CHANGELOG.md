@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
 - added the current music track and timestamp to the savegame so they now persist on load (#419)
+- changed the installer to always overwrite all essential files such as the gameflow and injections (#904)
 - fixed Natla's gun moving while she is in her semi death state (#878)
 - fixed an error message from showing on exiting the game when the gym level is not present in the gameflow (#899)
 - fixed the bear pat attack so it does not miss Lara (#450)
