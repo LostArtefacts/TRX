@@ -32,8 +32,7 @@ public abstract class BaseInstallSource : IInstallSource
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
-        bool importSaves,
-        bool overwrite
+        bool importSaves
     );
 
     public abstract bool IsDownloadingMusicNeeded(string sourceDirectory);

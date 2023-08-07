@@ -31,8 +31,7 @@ public class TombATIInstallSource : BaseInstallSource
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
-        bool importSaves,
-        bool overwrite
+        bool importSaves
     )
     {
         var filterRegex = new Regex(importSaves ? @"(data|fmv|music)[\\/]|save.*\.\d+\b" : @"(data|fmv|music)[\\/]", RegexOptions.IgnoreCase);
@@ -40,8 +39,7 @@ public class TombATIInstallSource : BaseInstallSource
             sourceDirectory,
             targetDirectory,
             progress,
-            file => filterRegex.IsMatch(file),
-            file => overwrite
+            file => filterRegex.IsMatch(file)
         );
     }
 

@@ -38,8 +38,7 @@ public class GOGInstallSource : BaseInstallSource
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
-        bool importSaves,
-        bool overwrite
+        bool importSaves
     )
     {
         var cuePath = Path.Combine(sourceDirectory, "game.dat");
@@ -86,7 +85,7 @@ public class GOGInstallSource : BaseInstallSource
             foreach (var path in filesToExtract)
             {
                 var targetPath = Path.Combine(targetDirectory, path);
-                if (!File.Exists(targetPath) || overwrite)
+                if (!File.Exists(targetPath))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
 

@@ -89,19 +89,6 @@ public class InstallSettings : BaseNotifyPropertyChanged
         }
     }
 
-    public bool OverwriteAllFiles
-    {
-        get => _overwriteAllFiles;
-        set
-        {
-            if (value != _overwriteAllFiles)
-            {
-                _overwriteAllFiles = value;
-                NotifyPropertyChanged();
-            }
-        }
-    }
-
     public string? SourceDirectory
     {
         get => _sourceDirectory;
@@ -133,7 +120,6 @@ public class InstallSettings : BaseNotifyPropertyChanged
     private bool _downloadUnfinishedBusiness;
     private bool _importSaves;
     private IInstallSource? _installSource;
-    private bool _overwriteAllFiles = false;
     private string? _sourceDirectory;
     private string? _targetDirectory;
 }

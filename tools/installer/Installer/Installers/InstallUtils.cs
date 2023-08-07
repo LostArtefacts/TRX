@@ -89,13 +89,12 @@ public static class InstallUtils
     public static async Task DownloadZip(
         string url,
         string targetDirectory,
-        IProgress<InstallProgress> progress,
-        Func<string, bool>? overwriteCallback = null
+        IProgress<InstallProgress> progress
     )
     {
         var response = await DownloadFile(url, progress);
         using var stream = new MemoryStream(response);
-        await ExtractZip(stream, targetDirectory, progress, overwriteCallback);
+        await ExtractZip(stream, targetDirectory, progress);
     }
 
     public static async Task ExtractZip(
@@ -103,7 +102,7 @@ public static class InstallUtils
         string targetDirectory,
         IProgress<InstallProgress> progress,
         Func<string, bool>? filterCallback = null,
-        Func<string, bool>? overwriteCallback = null
+        bool overwrite = false
     )
     {
         try
@@ -129,7 +128,7 @@ public static class InstallUtils
                         targetDirectory,
                         new Regex(@"[\\/]").Replace(entry.FullName, Path.DirectorySeparatorChar.ToString()));
 
-                if (!File.Exists(targetPath) || (overwriteCallback is not null && overwriteCallback(entry.FullName)))
+                if (!File.Exists(targetPath) || overwrite)
                 {
                     progress.Report(new InstallProgress
                     {

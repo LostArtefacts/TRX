@@ -122,17 +122,6 @@
                     </TextBlock>
                 </CheckBox>
 
-                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.OverwriteAllFiles}">
-                    <TextBlock TextWrapping="Wrap">
-                        Overwrite all existing files
-                        <LineBreak />
-                        <Run Style="{StaticResource small}">
-                            Overwrites any files such as level data, music files and existing user settings.
-                            If this option is off, only overwrites Tomb1Main.exe in order to update the game.
-                        </Run>
-                    </TextBlock>
-                </CheckBox>
-
                 <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.CreateDesktopShortcut}">
                     Create desktop shortcut
                 </CheckBox>
