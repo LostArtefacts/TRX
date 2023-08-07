@@ -59,7 +59,7 @@ public class InstallExecutor
         {
             throw new NullReferenceException();
         }
-        await _settings.InstallSource.CopyOriginalGameFiles(sourceDirectory, targetDirectory, progress, _settings.ImportSaves, _settings.OverwriteAllFiles);
+        await _settings.InstallSource.CopyOriginalGameFiles(sourceDirectory, targetDirectory, progress, _settings.ImportSaves);
     }
 
     protected async Task CopyTomb1MainFiles(string targetDirectory, IProgress<InstallProgress> progress)
@@ -85,24 +85,7 @@ public class InstallExecutor
             throw new ApplicationException($"Could not open embedded ZIP.");
         }
 
-        var alwaysOverwrite = new string[]
-        {
-            ".bin",
-            ".exe",
-            ".fsh",
-            ".json5",
-            ".vsh",
-        };
-
-        await InstallUtils.ExtractZip(
-            stream,
-            targetDirectory,
-            progress,
-            overwriteCallback:
-                file =>
-                    _settings.OverwriteAllFiles
-                    || alwaysOverwrite.Any(otherExt => string.Equals(Path.GetExtension(file), otherExt, StringComparison.CurrentCultureIgnoreCase))
-        );
+        await InstallUtils.ExtractZip(stream, targetDirectory, progress, overwrite: true);
     }
 
     protected void CreateDesktopShortcut(string targetDirectory)
