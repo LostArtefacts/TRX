@@ -37,8 +37,7 @@ public class Tomb1MainInstallSource : BaseInstallSource
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
-        bool importSaves,
-        bool overwrite
+        bool importSaves
     )
     {
         var filterRegex = new Regex(importSaves ? @"(data|fmv|music|saves)[\\/]|save.*\.\d+" : @"(data|fmv|music)[\\/]", RegexOptions.IgnoreCase);
@@ -46,8 +45,7 @@ public class Tomb1MainInstallSource : BaseInstallSource
             sourceDirectory,
             targetDirectory,
             progress,
-            file => filterRegex.IsMatch(file),
-            file => overwrite
+            file => filterRegex.IsMatch(file)
         );
     }
 

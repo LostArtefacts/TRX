@@ -18,8 +18,7 @@ public interface IInstallSource
         string sourceDirectory,
         string targetDirectory,
         IProgress<InstallProgress> progress,
-        bool importSaves,
-        bool overwrite
+        bool importSaves
     );
 
     bool IsDownloadingMusicNeeded(string sourceDirectory);
