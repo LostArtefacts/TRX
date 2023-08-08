@@ -1139,7 +1139,7 @@ static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void)
 {
     struct json_object_s *current_music_obj = json_object_new();
     json_object_append_int(
-        current_music_obj, "current_track", Music_CurrentTrack());
+        current_music_obj, "current_track", Music_GetCurrentTrack());
     json_object_append_int64(
         current_music_obj, "timestamp", Music_GetTimestamp());
 

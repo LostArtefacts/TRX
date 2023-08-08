@@ -36,13 +36,13 @@ void Music_Pause(void);
 void Music_Unpause(void);
 
 // Returns the currently playing track. Ignores looped tracks.
-MUSIC_TRACK_ID Music_CurrentTrack(void);
+MUSIC_TRACK_ID Music_GetCurrentTrack(void);
 
 // Returns the last played track. Ignores looped tracks.
-MUSIC_TRACK_ID Music_LastPlayedTrack(void);
+MUSIC_TRACK_ID Music_GetLastPlayedTrack(void);
 
 // Returns the looped track.
-MUSIC_TRACK_ID Music_CurrentTrackLooped(void);
+MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 
 // Get timestamp of current stream.
 int64_t Music_GetTimestamp(void);

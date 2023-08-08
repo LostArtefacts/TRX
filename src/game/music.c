@@ -102,7 +102,9 @@ bool Music_Play(MUSIC_TRACK_ID track)
     }
 
     m_TrackCurrent = track;
-    m_TrackLastPlayed = track;
+    if (track != MX_SECRET) {
+        m_TrackLastPlayed = track;
+    }
 
     S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
     S_Audio_StreamSoundSetFinishCallback(
@@ -190,17 +192,17 @@ void Music_Unpause(void)
     S_Audio_StreamSoundUnpause(m_AudioStreamID);
 }
 
-MUSIC_TRACK_ID Music_CurrentTrack(void)
+MUSIC_TRACK_ID Music_GetCurrentTrack(void)
 {
     return m_TrackCurrent;
 }
 
-MUSIC_TRACK_ID Music_LastPlayedTrack(void)
+MUSIC_TRACK_ID Music_GetLastPlayedTrack(void)
 {
     return m_TrackLastPlayed;
 }
 
-MUSIC_TRACK_ID Music_CurrentTrackLooped(void)
+MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
 {
     return m_TrackLooped;
 }
