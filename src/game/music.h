@@ -35,12 +35,17 @@ void Music_Pause(void);
 // Unpauses the music.
 void Music_Unpause(void);
 
-// Returns currently playing track. If there is a track playing "over" a looped
-// track, returns the "overriding" track number.
-int16_t Music_CurrentTrack(void);
+// Returns the currently playing track. Ignores looped tracks.
+MUSIC_TRACK_ID Music_CurrentTrack(void);
+
+// Returns the last played track. Ignores looped tracks.
+MUSIC_TRACK_ID Music_LastPlayedTrack(void);
+
+// Returns the looped track.
+MUSIC_TRACK_ID Music_CurrentTrackLooped(void);
 
 // Get timestamp of current stream.
-int64_t Music_GetTimestamp(int16_t track);
+int64_t Music_GetTimestamp(void);
 
 // Seek to timestamp of current stream.
-bool Music_SeekTimestamp(int16_t track, int64_t timestamp);
+bool Music_SeekTimestamp(int64_t timestamp);

@@ -477,6 +477,7 @@ typedef enum SOUND_EFFECT_ID {
 } SOUND_EFFECT_ID;
 
 typedef enum MUSIC_TRACK_ID {
+    MX_INACTIVE = -1,
     MX_UNUSED_0 = 0,
     MX_UNUSED_1 = 1,
     MX_TR_THEME = 2,
