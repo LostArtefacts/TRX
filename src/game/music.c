@@ -19,9 +19,15 @@ static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 
+static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track);
 static void Music_StopActiveStream(void);
 static void Music_StreamFinished(int stream_id, void *user_data);
-static char *Music_GetTrackFileName(int track);
+static char *Music_GetTrackFileName(MUSIC_TRACK_ID track);
+
+static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track)
+{
+    return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
+}
 
 static void Music_StopActiveStream(void)
 {
@@ -37,7 +43,7 @@ static void Music_StopActiveStream(void)
     S_Audio_StreamSoundClose(m_AudioStreamID);
 }
 
-static char *Music_GetTrackFileName(int track)
+static char *Music_GetTrackFileName(MUSIC_TRACK_ID track)
 {
     char file_path[64];
     sprintf(file_path, "music/track%02d.flac", track);
@@ -67,13 +73,10 @@ void Music_Shutdown(void)
     S_Audio_Shutdown();
 }
 
-bool Music_Play(int16_t track)
+bool Music_Play(MUSIC_TRACK_ID track)
 {
-    if (track == m_TrackCurrent || track == m_TrackLastPlayed) {
-        return false;
-    }
-
-    if (track <= MX_UNUSED_1) {
+    if (track == m_TrackCurrent || track == m_TrackLastPlayed
+        || Music_IsBrokenTrack(track)) {
         return false;
     }
 
@@ -85,10 +88,6 @@ bool Music_Play(int16_t track)
         && track <= MX_SKATEKID_SPEECH) {
         return Sound_Effect(
             SFX_BALDY_SPEECH + track - MX_BALDY_SPEECH, NULL, SPM_ALWAYS);
-    }
-
-    if (track == MX_CAVES_AMBIENT) {
-        return false;
     }
 
     Music_StopActiveStream();
@@ -112,9 +111,10 @@ bool Music_Play(int16_t track)
     return true;
 }
 
-bool Music_PlayLooped(int16_t track)
+bool Music_PlayLooped(MUSIC_TRACK_ID track)
 {
-    if (track == m_TrackCurrent || track == m_TrackLastPlayed) {
+    if (track == m_TrackCurrent || track == m_TrackLastPlayed
+        || Music_IsBrokenTrack(track)) {
         return false;
     }
 
@@ -152,9 +152,9 @@ void Music_Stop(void)
     Music_StopActiveStream();
 }
 
-void Music_StopTrack(int16_t track)
+void Music_StopTrack(MUSIC_TRACK_ID track)
 {
-    if (track != m_TrackCurrent) {
+    if (track != m_TrackCurrent || Music_IsBrokenTrack(track)) {
         return;
     }
 

@@ -14,17 +14,17 @@ void Music_Shutdown(void);
 // Stops playing current track and plays a single track. Once playback is done,
 // if there is an active looped track, the playback resumes from the start of
 // the looped track.
-bool Music_Play(int16_t track);
+bool Music_Play(MUSIC_TRACK_ID track);
 
 // Stops playing current track and plays a single track. Activates looped
 // playback for the chosen track.
-bool Music_PlayLooped(int16_t track);
+bool Music_PlayLooped(MUSIC_TRACK_ID track);
 
 // Stops any music, whether looped or active speech.
 void Music_Stop(void);
 
 // Stops the provided single track and restarts the looped track if applicable.
-void Music_StopTrack(int16_t track);
+void Music_StopTrack(MUSIC_TRACK_ID track);
 
 // Sets the game volume. Value can be 0-255.
 void Music_SetVolume(int16_t volume);
