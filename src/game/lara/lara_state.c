@@ -522,7 +522,9 @@ void Lara_State_LeftJump(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_UpJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (item->fall_speed > LARA_FASTFALL_SPEED) {
+    if (item->fall_speed
+        > (g_Config.enable_swing_cancel ? LARA_SWING_FASTFALL_SPEED
+                                        : LARA_FASTFALL_SPEED)) {
         item->goal_anim_state = LS_FAST_FALL;
     }
 }

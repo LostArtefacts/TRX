@@ -56,6 +56,7 @@
 #define LARA_LEAN_MAX ((10 * PHD_DEGREE) + LARA_LEAN_UNDO) // = 2002
 #define LARA_LEAN_MAX_UW (LARA_LEAN_MAX * 2)
 #define LARA_FASTFALL_SPEED (FASTFALL_SPEED + 3) // = 131
+#define LARA_SWING_FASTFALL_SPEED (LARA_FASTFALL_SPEED + 2) // = 133
 #define LARA_RAD 100 // global radius of g_Lara
 #define LARA_HEIGHT 762 // global height of g_Lara - less than 3/4 block
 #define UW_MAXSPEED 200
