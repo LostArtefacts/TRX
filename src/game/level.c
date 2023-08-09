@@ -803,6 +803,7 @@ bool Level_Initialise(int32_t level_num)
     Overlay_Init();
     Overlay_BarSetHealthTimer(100);
 
+    Music_Stop();
     Sound_ResetEffects();
 
     Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
