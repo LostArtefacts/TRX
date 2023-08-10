@@ -112,6 +112,15 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadItems(fp)) {
         return false;
     }
+    for (int i = 0; i < g_GameFlow.levels[level_num].item_rots.length; i++) {
+        GAMEFLOW_ITEM_ROT_DATA *rots =
+            &g_GameFlow.levels[level_num].item_rots.rots[i];
+        LOG_DEBUG(
+            "Adjust rot of item num %d by %d %d %d", rots->item_num,
+            rots->x_rot, rots->y_rot, rots->z_rot);
+        Item_AdjustRot(
+            &g_Items[rots->item_num], rots->x_rot, rots->y_rot, rots->z_rot);
+    }
     Stats_ObserveItemsLoad();
 
     if (!Level_LoadDepthQ(fp)) {

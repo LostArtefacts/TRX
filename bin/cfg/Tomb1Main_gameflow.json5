@@ -118,6 +118,9 @@
                 {"type": "exit_to_level", "level_id": 2},
             ],
             "strings": {},
+            "item_rotations": [
+                {"item_num": 54, "x_rot": 180, "y_rot": 0, "z_rot": 0},
+            ],
         },
 
         // level 2
@@ -140,6 +143,9 @@
                 "key1": "Silver Key",
                 "puzzle1": "Gold Idol"
             },
+            "item_rotations": [
+                {"item_num": 4, "x_rot": -90, "y_rot": 0, "z_rot": 0},
+            ],
             "demo": true,
         },
 
@@ -162,6 +168,11 @@
             "strings": {
                 "puzzle1": "Machine Cog"
             },
+            "item_rotations": [
+                {"item_num": 40, "x_rot": 0, "y_rot": -90, "z_rot": 0},
+                {"item_num": 59, "x_rot": 0, "y_rot": 180, "z_rot": 0},
+                {"item_num": 14, "x_rot": 0, "y_rot": -90, "z_rot": 0},
+            ],
             "demo": true,
         },
 
