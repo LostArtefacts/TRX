@@ -15,12 +15,19 @@ static const char *m_Extensions[] = { ".flac", ".ogg", ".mp3", ".wav", NULL };
 
 static float m_MusicVolume = 0.0f;
 static int m_AudioStreamID = -1;
-static int16_t m_Track = 0;
-static int16_t m_TrackLooped = -1;
+static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
+static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
+static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 
+static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track);
 static void Music_StopActiveStream(void);
 static void Music_StreamFinished(int stream_id, void *user_data);
-static char *Music_GetTrackFileName(int track);
+static char *Music_GetTrackFileName(MUSIC_TRACK_ID track);
+
+static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track)
+{
+    return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
+}
 
 static void Music_StopActiveStream(void)
 {
@@ -36,7 +43,7 @@ static void Music_StopActiveStream(void)
     S_Audio_StreamSoundClose(m_AudioStreamID);
 }
 
-static char *Music_GetTrackFileName(int track)
+static char *Music_GetTrackFileName(MUSIC_TRACK_ID track)
 {
     char file_path[64];
     sprintf(file_path, "music/track%02d.flac", track);
@@ -49,9 +56,7 @@ static void Music_StreamFinished(int stream_id, void *user_data)
 
     if (stream_id == m_AudioStreamID) {
         m_AudioStreamID = -1;
-        if (m_Track == MX_SECRET) {
-            m_Track = 0;
-        }
+        m_TrackCurrent = MX_INACTIVE;
         if (m_TrackLooped >= 0) {
             Music_PlayLooped(m_TrackLooped);
         }
@@ -68,13 +73,10 @@ void Music_Shutdown(void)
     S_Audio_Shutdown();
 }
 
-bool Music_Play(int16_t track)
+bool Music_Play(MUSIC_TRACK_ID track)
 {
-    if (track == Music_CurrentTrack()) {
-        return false;
-    }
-
-    if (track <= MX_UNUSED_1) {
+    if (track == m_TrackCurrent || track == m_TrackLastPlayed
+        || Music_IsBrokenTrack(track)) {
         return false;
     }
 
@@ -88,10 +90,6 @@ bool Music_Play(int16_t track)
             SFX_BALDY_SPEECH + track - MX_BALDY_SPEECH, NULL, SPM_ALWAYS);
     }
 
-    if (track == MX_CAVES_AMBIENT) {
-        return false;
-    }
-
     Music_StopActiveStream();
 
     char *file_path = Music_GetTrackFileName(track);
@@ -103,7 +101,10 @@ bool Music_Play(int16_t track)
         return false;
     }
 
-    m_Track = track;
+    m_TrackCurrent = track;
+    if (track != MX_SECRET) {
+        m_TrackLastPlayed = track;
+    }
 
     S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
     S_Audio_StreamSoundSetFinishCallback(
@@ -112,9 +113,10 @@ bool Music_Play(int16_t track)
     return true;
 }
 
-bool Music_PlayLooped(int16_t track)
+bool Music_PlayLooped(MUSIC_TRACK_ID track)
 {
-    if (track == Music_CurrentTrack()) {
+    if (track == m_TrackCurrent || track == m_TrackLastPlayed
+        || Music_IsBrokenTrack(track)) {
         return false;
     }
 
@@ -146,18 +148,20 @@ bool Music_PlayLooped(int16_t track)
 
 void Music_Stop(void)
 {
-    m_Track = 0;
-    m_TrackLooped = -1;
+    m_TrackCurrent = MX_INACTIVE;
+    m_TrackLastPlayed = MX_INACTIVE;
+    m_TrackLooped = MX_INACTIVE;
     Music_StopActiveStream();
 }
 
-void Music_StopTrack(int16_t track)
+void Music_StopTrack(MUSIC_TRACK_ID track)
 {
-    if (track != Music_CurrentTrack()) {
+    if (track != m_TrackCurrent || Music_IsBrokenTrack(track)) {
         return;
     }
 
     Music_StopActiveStream();
+    m_TrackCurrent = MX_INACTIVE;
 
     if (m_TrackLooped >= 0) {
         Music_PlayLooped(m_TrackLooped);
@@ -188,12 +192,22 @@ void Music_Unpause(void)
     S_Audio_StreamSoundUnpause(m_AudioStreamID);
 }
 
-int16_t Music_CurrentTrack(void)
+MUSIC_TRACK_ID Music_GetCurrentTrack(void)
 {
-    return m_Track;
+    return m_TrackCurrent;
 }
 
-int64_t Music_GetTimestamp(int16_t track)
+MUSIC_TRACK_ID Music_GetLastPlayedTrack(void)
+{
+    return m_TrackLastPlayed;
+}
+
+MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
+{
+    return m_TrackLooped;
+}
+
+int64_t Music_GetTimestamp(void)
 {
     if (m_AudioStreamID < 0) {
         return -1;
@@ -201,7 +215,7 @@ int64_t Music_GetTimestamp(int16_t track)
     return S_Audio_StreamGetTimestamp(m_AudioStreamID);
 }
 
-bool Music_SeekTimestamp(int16_t track, int64_t timestamp)
+bool Music_SeekTimestamp(int64_t timestamp)
 {
     if (m_AudioStreamID < 0) {
         return false;
