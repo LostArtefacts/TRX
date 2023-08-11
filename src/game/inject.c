@@ -205,7 +205,7 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
         injection->relevant = g_Config.enable_tr2_jumping;
         break;
     case INJ_ITEM_ROTATION:
-        injection->relevant = true;
+        injection->relevant = g_Config.fix_item_rots;
         break;
     default:
         injection->relevant = false;
