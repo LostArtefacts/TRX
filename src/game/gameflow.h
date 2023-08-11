@@ -15,13 +15,6 @@ typedef struct GAMEFLOW_SEQUENCE {
     void *data;
 } GAMEFLOW_SEQUENCE;
 
-typedef struct GAMEFLOW_ITEM_ROT_DATA {
-    int16_t item_num;
-    int32_t x_rot;
-    int32_t y_rot;
-    int32_t z_rot;
-} GAMEFLOW_ITEM_ROT_DATA;
-
 typedef struct GAMEFLOW_LEVEL {
     GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
@@ -59,10 +52,6 @@ typedef struct GAMEFLOW_LEVEL {
         int length;
         char **data_paths;
     } injections;
-    struct {
-        int length;
-        GAMEFLOW_ITEM_ROT_DATA *rots;
-    } item_rots;
     GAME_OBJECT_ID lara_type;
 } GAMEFLOW_LEVEL;
 

@@ -732,11 +732,3 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
         item->hit_status = 1;
     }
 }
-
-void Item_AdjustRot(
-    ITEM_INFO *item, int32_t x_rot, int32_t y_rot, int32_t z_rot)
-{
-    item->pos.x_rot = x_rot;
-    item->pos.y_rot = y_rot;
-    item->pos.z_rot = z_rot;
-}

@@ -649,75 +649,6 @@ static bool GameFlow_LoadLevelSequence(
     return true;
 }
 
-static bool GameFlow_LoadItemRots(
-    GAMEFLOW_LEVEL *cur, struct json_object_s *obj, int32_t level_num)
-{
-    struct json_array_s *jrot_arr =
-        json_object_get_array(obj, "item_rotations");
-    if (!jrot_arr) {
-        cur->item_rots.length = 0;
-        return true;
-    }
-
-    cur->item_rots.length = jrot_arr->length;
-    LOG_DEBUG("ROT item_rots.length %d", cur->item_rots.length);
-    cur->item_rots.rots =
-        Memory_Alloc(sizeof(GAMEFLOW_ITEM_ROT_DATA) * cur->item_rots.length);
-
-    GAMEFLOW_ITEM_ROT_DATA *rots = cur->item_rots.rots;
-    struct json_array_element_s *jrot_elem = jrot_arr->start;
-    while (jrot_elem) {
-        struct json_object_s *jrot_obj = json_value_as_object(jrot_elem->value);
-        if (!jrot_obj) {
-            LOG_ERROR(
-                "level %d: 'item_rotations' elements must be dictionaries");
-            return false;
-        }
-
-        int item_num =
-            json_object_get_int(jrot_obj, "item_num", JSON_INVALID_NUMBER);
-        LOG_DEBUG("ROT read for item_num %d", item_num);
-        if (item_num == JSON_INVALID_NUMBER) {
-            LOG_ERROR("level %d: 'item_num' must be a number", level_num);
-            return false;
-        }
-        LOG_DEBUG("Read item_num %d", item_num);
-        rots->item_num = item_num;
-
-        int32_t x_rot =
-            json_object_get_int(jrot_obj, "x_rot", JSON_INVALID_NUMBER);
-        if (x_rot == JSON_INVALID_NUMBER) {
-            LOG_ERROR("level %d: 'x_rot' must be a number", level_num);
-            return false;
-        }
-        LOG_DEBUG("Read x_rot %d", x_rot);
-        rots->x_rot = x_rot * PHD_DEGREE;
-
-        int32_t y_rot =
-            json_object_get_int(jrot_obj, "y_rot", JSON_INVALID_NUMBER);
-        if (y_rot == JSON_INVALID_NUMBER) {
-            LOG_ERROR("level %d: 'y_rot' must be a number", level_num);
-            return false;
-        }
-        LOG_DEBUG("Read y_rot %d", y_rot);
-        rots->y_rot = y_rot * PHD_DEGREE;
-
-        int32_t z_rot =
-            json_object_get_int(jrot_obj, "z_rot", JSON_INVALID_NUMBER);
-        if (z_rot == JSON_INVALID_NUMBER) {
-            LOG_ERROR("level %d: 'z_rot' must be a number", level_num);
-            return false;
-        }
-        LOG_DEBUG("Read z_rot %d", z_rot);
-        rots->z_rot = z_rot * PHD_DEGREE;
-
-        jrot_elem = jrot_elem->next;
-        rots++;
-    }
-
-    return true;
-}
-
 static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
 {
     struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
@@ -983,10 +914,6 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             cur->injections.length = 0;
         }
 
-        if (!GameFlow_LoadItemRots(cur, jlvl_obj, level_num)) {
-            return false;
-        }
-
         tmp_i = json_object_get_int(jlvl_obj, "lara_type", (int32_t)O_LARA);
         if (tmp_i < 0 || tmp_i >= O_NUMBER_OF) {
             LOG_ERROR(
@@ -1090,10 +1017,6 @@ void GameFlow_Shutdown(void)
             for (int j = 0; j < g_GameFlow.levels[i].injections.length; j++) {
                 Memory_FreePointer(
                     &g_GameFlow.levels[i].injections.data_paths[j]);
-            }
-
-            for (int j = 0; j < g_GameFlow.levels[i].item_rots.length; j++) {
-                Memory_FreePointer(&g_GameFlow.levels[i].item_rots.rots[j]);
             }
 
             GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;

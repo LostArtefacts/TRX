@@ -107,6 +107,7 @@
             "type": "normal",
             "music": 57,
             "injections": [
+                "data/caves_itemrots.bin",
                 "data/caves_textures.bin",
             ],
             "sequence": [
@@ -118,9 +119,6 @@
                 {"type": "exit_to_level", "level_id": 2},
             ],
             "strings": {},
-            "item_rotations": [
-                {"item_num": 54, "x_rot": 180, "y_rot": 0, "z_rot": 0},
-            ],
         },
 
         // level 2
@@ -130,6 +128,7 @@
             "type": "normal",
             "music": 57,
             "injections": [
+                "data/vilcabamba_itemrots.bin",
                 "data/vilcabamba_textures.bin",
             ],
             "sequence": [
@@ -143,9 +142,6 @@
                 "key1": "Silver Key",
                 "puzzle1": "Gold Idol"
             },
-            "item_rotations": [
-                {"item_num": 4, "x_rot": -90, "y_rot": 0, "z_rot": 0},
-            ],
             "demo": true,
         },
 
@@ -156,6 +152,7 @@
             "type": "normal",
             "music": 57,
             "injections": [
+                "data/valley_itemrots.bin",
                 "data/valley_textures.bin",
             ],
             "sequence": [
@@ -168,11 +165,6 @@
             "strings": {
                 "puzzle1": "Machine Cog"
             },
-            "item_rotations": [
-                {"item_num": 40, "x_rot": 0, "y_rot": -90, "z_rot": 0},
-                {"item_num": 59, "x_rot": 0, "y_rot": 180, "z_rot": 0},
-                {"item_num": 14, "x_rot": 0, "y_rot": -90, "z_rot": 0},
-            ],
             "demo": true,
         },
 
@@ -184,6 +176,7 @@
             "music": 57,
             "injections": [
                 "data/larson_textures.bin",
+                "data/qualopec_itemrots.bin",
                 "data/qualopec_textures.bin",
             ],
             "sequence": [
@@ -202,6 +195,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/folly_itemrots.bin",
                 "data/folly_textures.bin",
             ],
             "sequence": [
@@ -228,6 +222,7 @@
             "music": 59,
             "injections": [
                 "data/colosseum_fd.bin",
+                "data/colosseum_itemrots.bin",
                 "data/colosseum_textures.bin",
             ],
             "sequence": [
@@ -249,6 +244,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/midas_itemrots.bin",
                 "data/midas_textures.bin",
             ],
             "sequence": [
@@ -271,6 +267,7 @@
             "type": "normal",
             "music": 58,
             "injections": [
+                "data/cistern_itemrots.bin",
                 "data/cistern_textures.bin",
             ],
             "sequence": [
@@ -294,6 +291,7 @@
             "type": "normal",
             "music": 58,
             "injections": [
+                "data/tihocan_itemrots.bin",
                 "data/tihocan_textures.bin",
             ],
             "sequence": [
@@ -337,6 +335,9 @@
             "file": "data/level8b.phd",
             "type": "normal",
             "music": 59,
+            "injections": [
+                "data/obelisk_itemrots.bin",
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -360,6 +361,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/sanctuary_itemrots.bin",
                 "data/sanctuary_textures.bin",
             ],
             "sequence": [
@@ -385,6 +387,7 @@
             "injections": [
                 "data/cowboy_textures.bin",
                 "data/kold_textures.bin",
+                "data/mines_itemrots.bin",
                 "data/mines_textures.bin",
                 "data/skateboardkid_textures.bin"
             ],
