@@ -1259,9 +1259,11 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    if (!SaveGame_BSON_LoadCurrentMusic(
-            json_object_get_object(root_obj, "music"))) {
-        goto cleanup;
+    if (header.version >= VERSION_3) {
+        if (!SaveGame_BSON_LoadCurrentMusic(
+                json_object_get_object(root_obj, "music"))) {
+            goto cleanup;
+        }
     }
 
     ret = true;
