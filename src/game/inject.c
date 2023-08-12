@@ -1516,7 +1516,7 @@ static void Inject_ItemRotations(INJECTION *injection)
         File_Read(&y_rot, sizeof(int16_t), 1, fp);
 
         if (item_num < 0 || item_num >= g_LevelItemCount) {
-            LOG_WARNING("Item number %d is outwith level item range", item_num);
+            LOG_WARNING("Item number %d is out of level item range", item_num);
             continue;
         }
 
