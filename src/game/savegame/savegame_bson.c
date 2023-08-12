@@ -63,6 +63,8 @@ static bool Savegame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot);
 static bool Savegame_BSON_LoadLara(
     struct json_object_s *lara_obj, LARA_INFO *lara);
 static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj);
+static bool SaveGame_BSON_LoadMusicTrackFlags(
+    struct json_array_s *music_track_arr);
 static struct json_array_s *Savegame_BSON_DumpResumeInfo(
     RESUME_INFO *game_info);
 static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info);
@@ -76,6 +78,7 @@ static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
 static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara);
 static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void);
+static struct json_array_s *SaveGame_BSON_DumpMusicTrackFlags(void);
 
 static void SaveGame_BSON_SaveRaw(
     MYFILE *fp, struct json_value_s *root, int32_t version)
@@ -822,6 +825,27 @@ static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj)
                 current_track, timestamp);
         }
     }
+    return true;
+}
+
+static bool SaveGame_BSON_LoadMusicTrackFlags(
+    struct json_array_s *music_track_arr)
+{
+    if (!music_track_arr) {
+        LOG_WARNING("Malformed save: invalid or missing music track array");
+        return true;
+    }
+
+    if ((signed)music_track_arr->length != MAX_CD_TRACKS) {
+        LOG_WARNING(
+            "Malformed save: expected %d music track flags, got %d",
+            MAX_CD_TRACKS, music_track_arr->length);
+        return true;
+    }
+
+    for (int i = 0; i < (signed)music_track_arr->length; i++) {
+        g_MusicTrackFlags[i] = json_array_get_int(music_track_arr, i, 0);
+    }
 
     return true;
 }
@@ -1146,6 +1170,15 @@ static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void)
     return current_music_obj;
 }
 
+static struct json_array_s *SaveGame_BSON_DumpMusicTrackFlags(void)
+{
+    struct json_array_s *music_track_arr = json_array_new();
+    for (int i = 0; i < MAX_CD_TRACKS; i++) {
+        json_array_append_int(music_track_arr, g_MusicTrackFlags[i]);
+    }
+    return music_track_arr;
+}
+
 char *Savegame_BSON_GetSaveFileName(int32_t slot)
 {
     size_t out_size = snprintf(NULL, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
@@ -1264,6 +1297,11 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
                 json_object_get_object(root_obj, "music"))) {
             goto cleanup;
         }
+
+        if (!SaveGame_BSON_LoadMusicTrackFlags(
+                json_object_get_array(root_obj, "music_track_flags"))) {
+            goto cleanup;
+        }
     }
 
     ret = true;
@@ -1335,6 +1373,8 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
     json_object_append_object(
         root_obj, "music", SaveGame_BSON_DumpCurrentMusic());
+    json_object_append_array(
+        root_obj, "music_track_flags", SaveGame_BSON_DumpMusicTrackFlags());
 
     struct json_value_s *root = json_value_from_object(root_obj);
     SaveGame_BSON_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION);

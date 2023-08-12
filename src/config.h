@@ -112,6 +112,7 @@ typedef struct {
     bool enable_swing_cancel;
     bool enable_tr2_jumping;
     bool load_current_music;
+    bool load_music_triggers;
 
     struct {
         int32_t layout;

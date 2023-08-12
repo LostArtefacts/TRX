@@ -283,6 +283,10 @@
       "Title": "Load music track",
       "Description": "Charge la musique qui était en cours de lecture lors de la sauvegarde."
     },
+    "load_music_triggers": {
+      "Title": "Garder en mémoire les musiques jouées",
+      "Description": "Garde en mémoire les musiques précédement déclenchées, pour que les pistes ne puissent pas se répéter à un rechargement de partie."
+    },
     "enable_music_in_menu": {
       "Title": "Activer la musique dans le menu principal",
       "Description": "Chosir d'activer ou non la musique dans le menu principal."
