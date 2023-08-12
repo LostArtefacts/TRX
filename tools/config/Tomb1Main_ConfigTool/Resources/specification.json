@@ -139,6 +139,11 @@
           "Field": "fix_wall_jump_glitch",
           "DataType": "Bool",
           "DefaultValue": false
+        },
+        {
+          "Field": "fix_item_rots",
+          "DataType": "Bool",
+          "DefaultValue": true
         }
       ]
     },

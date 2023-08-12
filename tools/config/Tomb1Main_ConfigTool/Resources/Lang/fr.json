@@ -139,6 +139,10 @@
       "Title": "Corrige les problèmes de texture",
       "Description": "Corrige les bugs originaux connus de textures manquantes ou incorrectes."
     },
+    "fix_item_rots": {
+      "Title": "Correction orientation des collectibles",
+      "Description": "Corrige des problèmes avec certains collectibles mal orientés, quand l'option des collectibles en 3D est utilisée."
+    },
     "fix_qwop_glitch": {
       "Title": "Correction du glitch QWOP",
       "Description": "Corrige le saut de Lara sur de petites étapes, entraînant parfois une animation de course étrange, connu sous le nom du glitch QWOP."

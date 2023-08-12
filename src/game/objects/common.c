@@ -160,6 +160,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, offset, item->pos.z);
+    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
     Output_CalculateLight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
