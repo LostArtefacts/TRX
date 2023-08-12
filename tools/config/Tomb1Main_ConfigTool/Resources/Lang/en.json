@@ -283,6 +283,10 @@
       "Title": "Load music track",
       "Description": "Loads the music track that was playing when the game was saved."
     },
+    "load_music_triggers": {
+      "Title": "Remember played music",
+      "Description": "Loads previously triggered music so music tracks do not replay."
+    },
     "enable_music_in_menu": {
       "Title": "Enable main menu music",
       "Description": "Plays music in the main menu."
