@@ -181,6 +181,9 @@ cleanup:
 void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    int16_t rotx = item->pos.x_rot;
+    int16_t roty = item->pos.y_rot;
+    int16_t rotz = item->pos.z_rot;
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.x_rot = 0;
     item->pos.z_rot = 0;
