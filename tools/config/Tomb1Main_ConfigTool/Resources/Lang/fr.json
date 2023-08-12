@@ -120,7 +120,7 @@
       "Description": "Corrige les alligators n'infligeant aucun dégât si Lara reste toujours dans l'eau."
     },
     "fix_bear_ai": {
-      "Title": "Fix bear AI",
+      "Title": "Corrige l'intelligence artificielle de l'ours",
       "Description": "Corrige l'attaque par coup de patte de l'ours pour qu'il ne manque pas Lara."
     },
     "fix_descending_glitch": {
