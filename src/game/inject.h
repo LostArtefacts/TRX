@@ -2,7 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct INJECTION_ROOM_MESH {
@@ -39,7 +38,8 @@ typedef struct INJECTION_INFO {
     int32_t item_rotation_count;
 } INJECTION_INFO;
 
-bool Inject_Init(
+void Inject_Init(
     int injection_count, char *filenames[], INJECTION_INFO *aggregate);
-bool Inject_AllInjections(LEVEL_INFO *level_info);
+void Inject_AllInjections(LEVEL_INFO *level_info);
+void Inject_Cleanup(void);
 uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index);
