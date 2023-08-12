@@ -86,21 +86,24 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     ITEM_INFO *item = &g_Items[item_num];
+    int16_t rotx = item->pos.x_rot;
+    int16_t roty = item->pos.y_rot;
+    int16_t rotz = item->pos.z_rot;
     item->pos.y_rot = lara_item->pos.y_rot;
     item->pos.z_rot = 0;
 
     if (g_Lara.water_status == LWS_ABOVE_WATER) {
         item->pos.x_rot = 0;
         if (!Lara_TestPosition(item, m_PickUpBounds)) {
-            return;
+            goto cleanup;
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
             if (lara_item->frame_number != LF_PICKUP_ERASE) {
-                return;
+                goto cleanup;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
-            return;
+            goto cleanup;
         }
 
         if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
@@ -110,30 +113,35 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             Lara_AnimateUntil(lara_item, LS_PICKUP);
             lara_item->goal_anim_state = LS_STOP;
             g_Lara.gun_status = LGS_HANDS_BUSY;
-            return;
+            goto cleanup;
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
         item->pos.x_rot = -25 * PHD_DEGREE;
         if (!Lara_TestPosition(item, m_PickUpBoundsUW)) {
-            return;
+            goto cleanup;
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
             if (lara_item->frame_number != LF_PICKUP_UW) {
-                return;
+                goto cleanup;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
-            return;
+            goto cleanup;
         }
 
         if (g_Input.action && lara_item->current_anim_state == LS_TREAD) {
             if (!Lara_MovePosition(item, &m_PickUpPositionUW)) {
-                return;
+                goto cleanup;
             }
             Lara_AnimateUntil(lara_item, LS_PICKUP);
             lara_item->goal_anim_state = LS_TREAD;
         }
     }
+
+cleanup:
+    item->pos.x_rot = rotx;
+    item->pos.y_rot = roty;
+    item->pos.z_rot = rotz;
 }
 
 void Pickup_CollisionControlled(

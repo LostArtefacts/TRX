@@ -139,6 +139,10 @@
       "Title": "Fix texture issues",
       "Description": "Fixes original issues with missing or incorrect textures."
     },
+    "fix_item_rots": {
+      "Title": "Fix item rotation issues",
+      "Description": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option."
+    },
     "fix_qwop_glitch": {
       "Title": "Fix QWOP glitch",
       "Description": "Fixes Lara jumping on small steps sometimes resulting in a weird running animation, known as a QWOP state."
