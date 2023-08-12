@@ -199,13 +199,13 @@
       "Title": "Cargar pista de música",
       "Description": "Carga la pista de música que se estaba reproduciendo cuando se guardó el juego."
     },
-    "enable_music_in_menu": {
-      "Title": "Habilitar música en menú principal",
-      "Description": "Reproduce música en el menú principal."
-    },
     "load_music_triggers": {
       "Title": "Recordar la música reproducida",
       "Description": "Carga música activada previamente para que las pistas de música no se reproduzcan."
+    },
+    "enable_music_in_menu": {
+      "Title": "Habilitar música en menú principal",
+      "Description": "Reproduce música en el menú principal."
     },
     "enable_numeric_keys": {
       "Title": "Uso rápido de teclas numéricas",
