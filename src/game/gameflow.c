@@ -328,6 +328,11 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
     return true;
 }
 
+static bool GameFlow_IsLegacySequence(const char *type_str)
+{
+    return !strcmp(type_str, "fix_pyramid_secret");
+}
+
 static bool GameFlow_LoadLevelSequence(
     struct json_object_s *obj, int32_t level_num)
 {
@@ -632,6 +637,12 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)tmp;
+
+        } else if (GameFlow_IsLegacySequence(type_str)) {
+            seq->type = GFS_LEGACY;
+            LOG_WARNING(
+                "level %d, sequence %s: legacy type ignored", level_num,
+                type_str);
 
         } else {
             LOG_ERROR("unknown sequence type %s", type_str);
@@ -1057,6 +1068,7 @@ void GameFlow_Shutdown(void)
                     case GFS_REMOVE_AMMO:
                     case GFS_REMOVE_MEDIPACKS:
                     case GFS_SETUP_BACON_LARA:
+                    case GFS_LEGACY:
                         break;
                     }
                     seq++;
@@ -1355,6 +1367,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
         }
 
+        case GFS_LEGACY:
+            break;
+
         case GFS_END:
             return ret;
         }
@@ -1387,6 +1402,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_REMOVE_AMMO:
         case GFS_REMOVE_MEDIPACKS:
         case GFS_SETUP_BACON_LARA:
+        case GFS_LEGACY:
             break;
 
         case GFS_START_GAME:
