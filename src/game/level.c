@@ -48,7 +48,7 @@ static bool Level_LoadSamples(MYFILE *fp);
 static bool Level_LoadTexturePages(MYFILE *fp);
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num);
-static bool Level_CompleteSetup(void);
+static void Level_CompleteSetup(void);
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 {
@@ -660,11 +660,9 @@ static bool Level_LoadTexturePages(MYFILE *fp)
     return true;
 }
 
-static bool Level_CompleteSetup(void)
+static void Level_CompleteSetup(void)
 {
-    if (!Inject_AllInjections(&m_LevelInfo)) {
-        return false;
-    }
+    Inject_AllInjections(&m_LevelInfo);
 
     // Must be called after all g_Anims, g_Meshes etc initialised.
     Setup_AllObjects();
@@ -708,8 +706,6 @@ static bool Level_CompleteSetup(void)
 
     Memory_FreePointer(&sample_pointers);
     Memory_FreePointer(&sample_sizes);
-
-    return true;
 }
 
 bool Level_Load(int level_num)
@@ -717,19 +713,18 @@ bool Level_Load(int level_num)
     LOG_INFO("%d (%s)", level_num, g_GameFlow.levels[level_num].level_file);
 
     m_InjectionInfo = Memory_Alloc(sizeof(INJECTION_INFO));
-    bool ret = true;
+    Inject_Init(
+        g_GameFlow.levels[level_num].injections.length,
+        g_GameFlow.levels[level_num].injections.data_paths, m_InjectionInfo);
 
-    if (g_GameFlow.levels[level_num].injections.length) {
-        ret = Inject_Init(
-            g_GameFlow.levels[level_num].injections.length,
-            g_GameFlow.levels[level_num].injections.data_paths,
-            m_InjectionInfo);
-    }
-
-    ret &=
+    bool ret =
         Level_LoadFromFile(g_GameFlow.levels[level_num].level_file, level_num);
 
-    ret &= Level_CompleteSetup();
+    if (ret) {
+        Level_CompleteSetup();
+    }
+
+    Inject_Cleanup();
 
     Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
     Memory_FreePointer(&m_LevelInfo.sample_offsets);
