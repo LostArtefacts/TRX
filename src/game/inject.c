@@ -12,6 +12,7 @@
 #include "memory.h"
 #include "util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
@@ -92,8 +93,7 @@ static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = NULL;
 static INJECTION_INFO *m_Aggregate = NULL;
 
-static bool Inject_LoadFromFile(INJECTION *injection, const char *filename);
-static void Inject_Cleanup(void);
+static void Inject_LoadFromFile(INJECTION *injection, const char *filename);
 
 static uint8_t Inject_RemapRGB(RGB888 rgb);
 static void Inject_AlignTextureReferences(
@@ -140,48 +140,49 @@ static void Inject_RoomDoorEdits(INJECTION *injection);
 
 static void Inject_ItemRotations(INJECTION *injection);
 
-bool Inject_Init(
+void Inject_Init(
     int num_injections, char *filenames[], INJECTION_INFO *aggregate)
 {
     m_NumInjections = num_injections;
+    if (!num_injections) {
+        return;
+    }
+
     m_Injections = Memory_Alloc(sizeof(INJECTION) * num_injections);
     m_Aggregate = aggregate;
 
     for (int i = 0; i < num_injections; i++) {
-        INJECTION *injection = &m_Injections[i];
-        if (!Inject_LoadFromFile(injection, filenames[i])) {
-            Inject_Cleanup();
-            return false;
-        }
+        Inject_LoadFromFile(&m_Injections[i], filenames[i]);
     }
-
-    return true;
 }
 
-static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
+static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
 {
+    injection->relevant = false;
+    injection->info = NULL;
+
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
+    injection->fp = fp;
     if (!fp) {
-        LOG_ERROR("Could not open %s", filename);
-        return false;
+        LOG_WARNING("Could not open %s", filename);
+        return;
     }
 
     uint32_t magic;
     File_Read(&magic, sizeof(uint32_t), 1, fp);
     if (magic != INJECTION_MAGIC) {
-        LOG_ERROR("Invalid injection magic in %s", filename);
-        return false;
+        LOG_WARNING("Invalid injection magic in %s", filename);
+        return;
     }
 
     File_Read(&injection->version, sizeof(int32_t), 1, fp);
     if (injection->version < INJ_VERSION_1
         || injection->version > INJECTION_CURRENT_VERSION) {
-        LOG_ERROR(
+        LOG_WARNING(
             "%s uses unsupported version %d", filename, injection->version);
-        return false;
+        return;
     }
 
-    injection->fp = fp;
     File_Read(&injection->type, sizeof(int32_t), 1, fp);
 
     switch (injection->type) {
@@ -208,95 +209,94 @@ static bool Inject_LoadFromFile(INJECTION *injection, const char *filename)
         injection->relevant = g_Config.fix_item_rots;
         break;
     default:
-        injection->relevant = false;
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
         break;
     }
 
-    if (injection->relevant) {
-        injection->info = Memory_Alloc(sizeof(INJECTION_INFO));
-        INJECTION_INFO *info = injection->info;
-
-        File_Read(&info->texture_page_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->texture_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->sprite_info_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->sprite_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->mesh_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->mesh_ptr_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->anim_change_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->anim_range_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->anim_cmd_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->anim_bone_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->anim_frame_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->anim_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->object_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->sfx_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->sfx_data_size, sizeof(int32_t), 1, fp);
-        File_Read(&info->sample_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->mesh_edit_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->texture_overwrite_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->floor_edit_count, sizeof(int32_t), 1, fp);
-        File_Read(&info->floor_data_size, sizeof(int32_t), 1, fp);
-
-        if (injection->version > INJ_VERSION_1) {
-            // room_mesh_count is a summary of the change in mesh size,
-            // while room_mesh_edit_count indicates how many edits to
-            // read and interpret (not all edits incur a size change).
-            File_Read(&info->room_mesh_count, sizeof(uint32_t), 1, fp);
-            info->room_meshes = Memory_Alloc(
-                sizeof(INJECTION_ROOM_MESH) * info->room_mesh_count);
-            for (int i = 0; i < info->room_mesh_count; i++) {
-                INJECTION_ROOM_MESH *mesh = &info->room_meshes[i];
-                File_Read(&mesh->room_index, sizeof(int16_t), 1, fp);
-                File_Read(&mesh->extra_size, sizeof(uint32_t), 1, fp);
-            }
-
-            File_Read(&info->room_mesh_edit_count, sizeof(uint32_t), 1, fp);
-            File_Read(&info->room_door_edit_count, sizeof(uint32_t), 1, fp);
-        } else {
-            info->room_meshes = NULL;
-        }
-
-        if (injection->version > INJ_VERSION_2) {
-            File_Read(&info->anim_range_edit_count, sizeof(int32_t), 1, fp);
-        } else {
-            info->anim_range_edit_count = 0;
-        }
-
-        if (injection->version > INJ_VERSION_3) {
-            File_Read(&info->item_rotation_count, sizeof(int32_t), 1, fp);
-        } else {
-            info->item_rotation_count = 0;
-        }
-
-        m_Aggregate->texture_page_count += info->texture_page_count;
-        m_Aggregate->texture_count += info->texture_count;
-        m_Aggregate->sprite_info_count += info->sprite_info_count;
-        m_Aggregate->sprite_count += info->sprite_count;
-        m_Aggregate->mesh_count += info->mesh_count;
-        m_Aggregate->mesh_ptr_count += info->mesh_ptr_count;
-        m_Aggregate->anim_change_count += info->anim_change_count;
-        m_Aggregate->anim_range_count += info->anim_range_count;
-        m_Aggregate->anim_cmd_count += info->anim_cmd_count;
-        m_Aggregate->anim_bone_count += info->anim_bone_count;
-        m_Aggregate->anim_frame_count += info->anim_frame_count;
-        m_Aggregate->anim_count += info->anim_count;
-        m_Aggregate->object_count += info->object_count;
-        m_Aggregate->sfx_count += info->sfx_count;
-        m_Aggregate->sfx_data_size += info->sfx_data_size;
-        m_Aggregate->sample_count += info->sample_count;
-        m_Aggregate->floor_data_size += info->floor_data_size;
-
-        LOG_INFO("%s queued for injection", filename);
+    if (!injection->relevant) {
+        return;
     }
 
-    return true;
+    injection->info = Memory_Alloc(sizeof(INJECTION_INFO));
+    INJECTION_INFO *info = injection->info;
+
+    File_Read(&info->texture_page_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->texture_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->sprite_info_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->sprite_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->mesh_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->mesh_ptr_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_change_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_range_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_cmd_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_bone_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_frame_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->object_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->sfx_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->sfx_data_size, sizeof(int32_t), 1, fp);
+    File_Read(&info->sample_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->mesh_edit_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->texture_overwrite_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->floor_edit_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->floor_data_size, sizeof(int32_t), 1, fp);
+
+    if (injection->version > INJ_VERSION_1) {
+        // room_mesh_count is a summary of the change in mesh size,
+        // while room_mesh_edit_count indicates how many edits to
+        // read and interpret (not all edits incur a size change).
+        File_Read(&info->room_mesh_count, sizeof(uint32_t), 1, fp);
+        info->room_meshes =
+            Memory_Alloc(sizeof(INJECTION_ROOM_MESH) * info->room_mesh_count);
+        for (int i = 0; i < info->room_mesh_count; i++) {
+            INJECTION_ROOM_MESH *mesh = &info->room_meshes[i];
+            File_Read(&mesh->room_index, sizeof(int16_t), 1, fp);
+            File_Read(&mesh->extra_size, sizeof(uint32_t), 1, fp);
+        }
+
+        File_Read(&info->room_mesh_edit_count, sizeof(uint32_t), 1, fp);
+        File_Read(&info->room_door_edit_count, sizeof(uint32_t), 1, fp);
+    } else {
+        info->room_meshes = NULL;
+    }
+
+    if (injection->version > INJ_VERSION_2) {
+        File_Read(&info->anim_range_edit_count, sizeof(int32_t), 1, fp);
+    } else {
+        info->anim_range_edit_count = 0;
+    }
+
+    if (injection->version > INJ_VERSION_3) {
+        File_Read(&info->item_rotation_count, sizeof(int32_t), 1, fp);
+    } else {
+        info->item_rotation_count = 0;
+    }
+
+    m_Aggregate->texture_page_count += info->texture_page_count;
+    m_Aggregate->texture_count += info->texture_count;
+    m_Aggregate->sprite_info_count += info->sprite_info_count;
+    m_Aggregate->sprite_count += info->sprite_count;
+    m_Aggregate->mesh_count += info->mesh_count;
+    m_Aggregate->mesh_ptr_count += info->mesh_ptr_count;
+    m_Aggregate->anim_change_count += info->anim_change_count;
+    m_Aggregate->anim_range_count += info->anim_range_count;
+    m_Aggregate->anim_cmd_count += info->anim_cmd_count;
+    m_Aggregate->anim_bone_count += info->anim_bone_count;
+    m_Aggregate->anim_frame_count += info->anim_frame_count;
+    m_Aggregate->anim_count += info->anim_count;
+    m_Aggregate->object_count += info->object_count;
+    m_Aggregate->sfx_count += info->sfx_count;
+    m_Aggregate->sfx_data_size += info->sfx_data_size;
+    m_Aggregate->sample_count += info->sample_count;
+    m_Aggregate->floor_data_size += info->floor_data_size;
+
+    LOG_INFO("%s queued for injection", filename);
 }
 
-bool Inject_AllInjections(LEVEL_INFO *level_info)
+void Inject_AllInjections(LEVEL_INFO *level_info)
 {
     if (!m_Injections) {
-        return true;
+        return;
     }
 
     uint8_t palette_map[256];
@@ -342,8 +342,6 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
         tpage_base += inj_info->texture_page_count;
     }
 
-    bool result = true;
-
     if (source_page_count) {
         PACKER_DATA *data = Memory_Alloc(sizeof(PACKER_DATA));
         data->level_page_count = level_info->texture_page_count;
@@ -353,8 +351,7 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
         data->object_count = level_info->texture_count;
         data->sprite_count = level_info->sprite_info_count;
 
-        result = Packer_Pack(data);
-        if (result) {
+        if (Packer_Pack(data)) {
             level_info->texture_page_count += Packer_GetAddedPageCount();
             level_info->texture_page_ptrs = data->level_pages;
         }
@@ -362,10 +359,6 @@ bool Inject_AllInjections(LEVEL_INFO *level_info)
         Memory_FreePointer(&source_pages);
         Memory_FreePointer(&data);
     }
-
-    Inject_Cleanup();
-
-    return result;
 }
 
 static void Inject_LoadTexturePages(
@@ -1524,8 +1517,12 @@ static void Inject_ItemRotations(INJECTION *injection)
     }
 }
 
-static void Inject_Cleanup(void)
+void Inject_Cleanup(void)
 {
+    if (!m_NumInjections) {
+        return;
+    }
+
     for (int i = 0; i < m_NumInjections; i++) {
         INJECTION *injection = &m_Injections[i];
         if (injection->fp) {
