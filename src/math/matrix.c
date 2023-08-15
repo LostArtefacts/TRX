@@ -338,7 +338,7 @@ void Matrix_Interpolate(void)
     MATRIX *mptr = g_MatrixPtr;
     MATRIX *iptr = m_IMMatrixPtr;
 
-    if (m_IMRate == 2 || (m_IMFrac == 2 && m_IMRate == 4)) {
+    if (m_IMRate == 2) {
         mptr->_00 += (iptr->_00 - mptr->_00) >> 1;
         mptr->_01 += (iptr->_01 - mptr->_01) >> 1;
         mptr->_02 += (iptr->_02 - mptr->_02) >> 1;
@@ -351,19 +351,6 @@ void Matrix_Interpolate(void)
         mptr->_21 += (iptr->_21 - mptr->_21) >> 1;
         mptr->_22 += (iptr->_22 - mptr->_22) >> 1;
         mptr->_23 += (iptr->_23 - mptr->_23) >> 1;
-    } else if (m_IMFrac == 1) {
-        mptr->_00 += (iptr->_00 - mptr->_00) >> 2;
-        mptr->_01 += (iptr->_01 - mptr->_01) >> 2;
-        mptr->_02 += (iptr->_02 - mptr->_02) >> 2;
-        mptr->_03 += (iptr->_03 - mptr->_03) >> 2;
-        mptr->_10 += (iptr->_10 - mptr->_10) >> 2;
-        mptr->_11 += (iptr->_11 - mptr->_11) >> 2;
-        mptr->_12 += (iptr->_12 - mptr->_12) >> 2;
-        mptr->_13 += (iptr->_13 - mptr->_13) >> 2;
-        mptr->_20 += (iptr->_20 - mptr->_20) >> 2;
-        mptr->_21 += (iptr->_21 - mptr->_21) >> 2;
-        mptr->_22 += (iptr->_22 - mptr->_22) >> 2;
-        mptr->_23 += (iptr->_23 - mptr->_23) >> 2;
     } else {
         mptr->_00 += ((iptr->_00 - mptr->_00) * m_IMFrac) / m_IMRate;
         mptr->_01 += ((iptr->_01 - mptr->_01) * m_IMFrac) / m_IMRate;
