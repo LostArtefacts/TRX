@@ -9,6 +9,7 @@
 - fixed the bear pat attack so it does not miss Lara (#450)
 - fixed Lara not grabbing certain edges when the swing-cancel option is enabled (#911)
 - fixed some incorrectly rotated pickups when using the 3D pickups option (#253)
+- fixed Lara stuttering when performing certain animations (#901, regression from 2.14)
 - improve spanish localization and added translation for rotated pickups
 
 ## [2.15.2](https://github.com/rr-/Tomb1Main/compare/2.15.1...2.15.2) - 2023-07-17
