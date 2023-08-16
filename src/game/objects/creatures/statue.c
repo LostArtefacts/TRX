@@ -1,6 +1,5 @@
 #include "game/objects/creatures/statue.h"
 
-#include "config.h"
 #include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
