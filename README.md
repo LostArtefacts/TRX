@@ -289,6 +289,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed the ape not performing the vault animation when climbing
 - fixed Natla's gun moving while she is in her semi death state
 - fixed the bear pat attack so it does not miss Lara
+- fixed dead centaurs exploding again after saving and reloading
 
 #### Cheats
 - added a fly cheat
