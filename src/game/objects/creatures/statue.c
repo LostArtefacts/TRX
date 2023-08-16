@@ -64,7 +64,7 @@ void Statue_Initialise(int16_t item_num)
 void Statue_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (g_Config.fix_centaur_explosion && (item->flags & IF_KILLED_ITEM)) {
+    if (item->flags & IF_KILLED_ITEM) {
         return;
     }
 

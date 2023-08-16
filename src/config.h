@@ -84,7 +84,6 @@ typedef struct {
     bool fix_alligator_ai;
     bool change_pierre_spawn;
     bool fix_bear_ai;
-    bool fix_centaur_explosion;
     int32_t fov_value;
     bool fov_vertical;
     bool enable_demo;

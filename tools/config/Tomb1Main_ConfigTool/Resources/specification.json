@@ -106,11 +106,6 @@
           "DefaultValue": true
         },
         {
-          "Field": "fix_centaur_explosion",
-          "DataType": "Bool",
-          "DefaultValue": true
-        },
-        {
           "Field": "fix_descending_glitch",
           "DataType": "Bool",
           "DefaultValue": false
