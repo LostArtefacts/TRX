@@ -1,5 +1,6 @@
 #include "game/objects/creatures/statue.h"
 
+#include "config.h"
 #include "game/effects/exploding_death.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -63,6 +64,10 @@ void Statue_Initialise(int16_t item_num)
 void Statue_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    if (g_Config.fix_centaur_explosion && (item->flags & IF_KILLED_ITEM)) {
+        return;
+    }
+
     int32_t x = g_LaraItem->pos.x - item->pos.x;
     int32_t y = g_LaraItem->pos.y - item->pos.y;
     int32_t z = g_LaraItem->pos.z - item->pos.z;

@@ -194,6 +194,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(fix_alligator_ai, true);
     READ_BOOL(change_pierre_spawn, true);
     READ_BOOL(fix_bear_ai, true);
+    READ_BOOL(fix_centaur_explosion, true);
     READ_INTEGER(fov_value, 65);
     READ_INTEGER(resolution_width, -1);
     READ_INTEGER(resolution_height, -1);
@@ -382,6 +383,7 @@ bool Config_Write(void)
     WRITE_BOOL(fix_alligator_ai);
     WRITE_BOOL(change_pierre_spawn);
     WRITE_BOOL(fix_bear_ai);
+    WRITE_BOOL(fix_centaur_explosion);
     WRITE_INTEGER(fov_value);
     WRITE_INTEGER(resolution_width);
     WRITE_INTEGER(resolution_height);
