@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
 - added the current music track and timestamp to the savegame so they now persist on load (#419)
 - added the triggered music tracks to the savegame so one shot tracks don't replay on load (#371)
+- added forward/backward input detection in line with TR2+ for jump-twists (#931)
 - changed the installer to always overwrite all essential files such as the gameflow and injections (#904)
 - changed the data injection system to warn when it detects invalid or missing files, rather than preventing levels from loading (#918)
 - changed the gameflow to detect and skip over legacy sequence types, rather than preventing the game from starting (#882)

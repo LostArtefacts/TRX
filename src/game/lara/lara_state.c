@@ -200,7 +200,7 @@ void Lara_State_ForwardJump(ITEM_INFO *item, COLL_INFO *coll)
         if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS) {
             item->goal_anim_state = LS_REACH;
         }
-        if (g_Config.enable_jump_twists && g_Input.roll) {
+        if (g_Config.enable_jump_twists && (g_Input.roll || g_Input.back)) {
             item->goal_anim_state = LS_TWIST;
         }
         if (g_Input.slow && g_Lara.gun_status == LGS_ARMLESS) {
@@ -495,7 +495,7 @@ void Lara_State_BackJump(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_STOP;
     } else if (
         item->goal_anim_state != LS_STOP && g_Config.enable_jump_twists
-        && g_Input.roll) {
+        && (g_Input.roll || g_Input.forward)) {
         item->goal_anim_state = LS_TWIST;
     }
 }
