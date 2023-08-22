@@ -271,6 +271,65 @@ void Overlay_BarDraw(BAR_INFO *bar_info)
     }
 }
 
+void Overlay_BarDrawTextScaled(BAR_INFO *bar_info)
+{
+    const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
+    const RGBA8888 rgb_border = { 53, 53, 53, 255 };
+
+    int32_t width = 200;
+    int32_t height = 10;
+
+    int32_t x = 0;
+    int32_t y = 0;
+    Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
+
+    int32_t padding = Screen_GetRenderScaleText(2);
+    int32_t border = Screen_GetRenderScaleText(2);
+
+    int32_t sx = Screen_GetRenderScaleText(x) - padding;
+    int32_t sy = Screen_GetRenderScaleText(y) - padding;
+    int32_t sw = Screen_GetRenderScaleText(width) + padding * 2;
+    int32_t sh = Screen_GetRenderScaleText(height) + padding * 2;
+
+    // border
+    Output_DrawScreenFlatQuad(
+        sx - border, sy - border, sw + 2 * border, sh + 2 * border, rgb_border);
+
+    // background
+    Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
+
+    int32_t percent = Overlay_BarGetPercent(bar_info);
+
+    // Check if bar should flash or not
+    Overlay_BarBlink(bar_info);
+
+    if (percent && !bar_info->blink) {
+        width = width * percent / 100;
+
+        sx = Screen_GetRenderScaleText(x);
+        sy = Screen_GetRenderScaleText(y);
+        sw = Screen_GetRenderScaleText(width);
+        sh = Screen_GetRenderScaleText(height);
+
+        if (g_Config.enable_smooth_bars) {
+            for (int i = 0; i < COLOR_STEPS - 1; i++) {
+                RGBA8888 c1 = m_ColorBarMap[bar_info->color][i];
+                RGBA8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
+                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
+                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
+                Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
+            }
+        } else {
+            for (int i = 0; i < COLOR_STEPS; i++) {
+                RGBA8888 color = m_ColorBarMap[bar_info->color][i];
+                int32_t lsy = sy + i * sh / COLOR_STEPS;
+                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
+                Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
+            }
+        }
+    }
+}
+
 static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring)
 {
     m_AmmoText = NULL;

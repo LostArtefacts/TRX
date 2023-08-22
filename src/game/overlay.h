@@ -12,6 +12,7 @@ void Overlay_Init(void);
 void Overlay_BarSetHealthTimer(int16_t health_bar_timer);
 void Overlay_BarHealthTimerTick(void);
 void Overlay_BarDraw(struct BAR_INFO *bar_info);
+void Overlay_BarDrawTextScaled(BAR_INFO *bar_info);
 void Overlay_BarDrawHealth(void);
 void Overlay_BarDrawAir(void);
 void Overlay_BarDrawEnemy(void);

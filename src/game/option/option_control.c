@@ -552,6 +552,7 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
     } else if (txt->flags.right) {
         x += Screen_GetResWidthDownscaledText() - width;
     }
+
     if (txt->flags.centre_v) {
         y += Screen_GetResHeightDownscaledText() / 2;
     } else if (txt->flags.bottom) {
