@@ -76,6 +76,9 @@ void Lara_State_Walk(ITEM_INFO *item, COLL_INFO *coll)
 
     if (g_Input.forward) {
         item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        if (g_Config.enable_tr2_jumping && !g_Input.slow) {
+            m_JumpPermitted = true;
+        }
     } else {
         item->goal_anim_state = LS_STOP;
     }

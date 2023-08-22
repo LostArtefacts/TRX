@@ -12,6 +12,7 @@
 - fixed dead centaurs exploding again after saving and reloading (#924)
 - fixed the incorrect starting animation on centaurs that spawn from statues (#926, regression from 2.15)
 - fixed jump-twist animations at times being interrupted (#932, regression from 2.15.1)
+- fixed walk-run-jump at times breaking when TR2 jumping is enabled (OG bug in TR2+) (#934)
 - improve spanish localization and added translation for rotated pickups
 
 ## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
