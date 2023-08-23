@@ -566,7 +566,7 @@ static void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.progress_bar && textstring->progress_bar.value) {
-        Overlay_BarDrawTextScaled(&textstring->progress_bar);
+        Overlay_BarDraw(&textstring->progress_bar, Screen_GetRenderScaleText);
     }
 
     if (textstring->flags.outline) {

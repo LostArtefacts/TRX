@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/screen.h"
 #include "global/types.h"
 
 #include <stdbool.h>
@@ -11,8 +12,7 @@ void Overlay_Init(void);
 
 void Overlay_BarSetHealthTimer(int16_t health_bar_timer);
 void Overlay_BarHealthTimerTick(void);
-void Overlay_BarDraw(struct BAR_INFO *bar_info);
-void Overlay_BarDrawTextScaled(BAR_INFO *bar_info);
+void Overlay_BarDraw(BAR_INFO *bar_info, Screen_GetRenderScaleFunc scale_func);
 void Overlay_BarDrawHealth(void);
 void Overlay_BarDrawAir(void);
 void Overlay_BarDrawEnemy(void);

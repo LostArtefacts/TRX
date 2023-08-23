@@ -212,7 +212,7 @@ static void Overlay_BarGetLocation(
     m_BarOffsetY[bar_info->location] += *height + bar_spacing;
 }
 
-void Overlay_BarDraw(BAR_INFO *bar_info)
+void Overlay_BarDraw(BAR_INFO *bar_info, Screen_GetRenderScaleFunc scale_func)
 {
     const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
     const RGBA8888 rgb_border = { 53, 53, 53, 255 };
@@ -224,13 +224,13 @@ void Overlay_BarDraw(BAR_INFO *bar_info)
     int32_t y = 0;
     Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
 
-    int32_t padding = Screen_GetRenderScaleBar(2);
-    int32_t border = Screen_GetRenderScaleBar(2);
+    int32_t padding = scale_func(2);
+    int32_t border = scale_func(2);
 
-    int32_t sx = Screen_GetRenderScaleBar(x) - padding;
-    int32_t sy = Screen_GetRenderScaleBar(y) - padding;
-    int32_t sw = Screen_GetRenderScaleBar(width) + padding * 2;
-    int32_t sh = Screen_GetRenderScaleBar(height) + padding * 2;
+    int32_t sx = scale_func(x) - padding;
+    int32_t sy = scale_func(y) - padding;
+    int32_t sw = scale_func(width) + padding * 2;
+    int32_t sh = scale_func(height) + padding * 2;
 
     // border
     Output_DrawScreenFlatQuad(
@@ -247,69 +247,10 @@ void Overlay_BarDraw(BAR_INFO *bar_info)
     if (percent && !bar_info->blink) {
         width = width * percent / 100;
 
-        sx = Screen_GetRenderScaleBar(x);
-        sy = Screen_GetRenderScaleBar(y);
-        sw = Screen_GetRenderScaleBar(width);
-        sh = Screen_GetRenderScaleBar(height);
-
-        if (g_Config.enable_smooth_bars) {
-            for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGBA8888 c1 = m_ColorBarMap[bar_info->color][i];
-                RGBA8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
-                int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
-                int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
-                Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
-            }
-        } else {
-            for (int i = 0; i < COLOR_STEPS; i++) {
-                RGBA8888 color = m_ColorBarMap[bar_info->color][i];
-                int32_t lsy = sy + i * sh / COLOR_STEPS;
-                int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
-                Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);
-            }
-        }
-    }
-}
-
-void Overlay_BarDrawTextScaled(BAR_INFO *bar_info)
-{
-    const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
-    const RGBA8888 rgb_border = { 53, 53, 53, 255 };
-
-    int32_t width = 200;
-    int32_t height = 10;
-
-    int32_t x = 0;
-    int32_t y = 0;
-    Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
-
-    int32_t padding = Screen_GetRenderScaleText(2);
-    int32_t border = Screen_GetRenderScaleText(2);
-
-    int32_t sx = Screen_GetRenderScaleText(x) - padding;
-    int32_t sy = Screen_GetRenderScaleText(y) - padding;
-    int32_t sw = Screen_GetRenderScaleText(width) + padding * 2;
-    int32_t sh = Screen_GetRenderScaleText(height) + padding * 2;
-
-    // border
-    Output_DrawScreenFlatQuad(
-        sx - border, sy - border, sw + 2 * border, sh + 2 * border, rgb_border);
-
-    // background
-    Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
-
-    int32_t percent = Overlay_BarGetPercent(bar_info);
-
-    // Check if bar should flash or not
-    Overlay_BarBlink(bar_info);
-
-    if (percent && !bar_info->blink) {
-        width = width * percent / 100;
-
-        sx = Screen_GetRenderScaleText(x);
-        sy = Screen_GetRenderScaleText(y);
-        sw = Screen_GetRenderScaleText(width);
-        sh = Screen_GetRenderScaleText(height);
+        sx = scale_func(x);
+        sy = scale_func(y);
+        sw = scale_func(width);
+        sh = scale_func(height);
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
@@ -402,7 +343,7 @@ void Overlay_BarDrawHealth(void)
         return;
     }
 
-    Overlay_BarDraw(&m_HealthBar);
+    Overlay_BarDraw(&m_HealthBar, Screen_GetRenderScaleBar);
 }
 
 void Overlay_BarDrawAir(void)
@@ -436,7 +377,7 @@ void Overlay_BarDrawAir(void)
         return;
     }
 
-    Overlay_BarDraw(&m_AirBar);
+    Overlay_BarDraw(&m_AirBar, Screen_GetRenderScaleBar);
 }
 
 void Overlay_BarDrawEnemy(void)
@@ -450,7 +391,7 @@ void Overlay_BarDrawEnemy(void)
         * ((g_GameInfo.bonus_flag & GBF_NGPLUS) ? 2 : 1);
     CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
-    Overlay_BarDraw(&m_EnemyBar);
+    Overlay_BarDraw(&m_EnemyBar, Screen_GetRenderScaleBar);
 }
 
 void Overlay_RemoveAmmoText(void)

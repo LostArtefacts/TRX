@@ -17,6 +17,7 @@ int32_t Screen_GetRenderScaleBar(int32_t unit);
 int32_t Screen_GetRenderScaleBase(
     int32_t unit, int32_t base_width, int32_t base_height, double factor);
 int32_t Screen_GetRenderScaleGLRage(int32_t unit);
+typedef int32_t (*Screen_GetRenderScaleFunc)(int32_t);
 
 bool Screen_CanSetPrevRes(void);
 bool Screen_CanSetNextRes(void);
