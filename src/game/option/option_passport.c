@@ -243,10 +243,10 @@ static void Option_PassportInitNewGameRequester(void)
 
     // Title screen passport is at a different pitch.
     if (g_InvMode == INV_TITLE_MODE) {
-        req->y = (-Screen_GetResHeightDownscaledText() / 2.4)
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2.4)
             + (req->line_height * req->vis_lines + 1);
     } else {
-        req->y = (-Screen_GetResHeightDownscaledText() / 2)
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2)
             + (req->line_height * req->vis_lines);
     }
 }
@@ -258,11 +258,11 @@ static void Option_PassportInitSelectLevelRequester(void)
     Requester_Init(req);
     Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
 
-    if (Screen_GetResHeightDownscaledText() <= 240) {
+    if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
         req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaledText() <= 384) {
+    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 384) {
         req->vis_lines = 7;
-    } else if (Screen_GetResHeightDownscaledText() <= 480) {
+    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 480) {
         req->vis_lines = 10;
     } else {
         req->vis_lines = 12;
@@ -270,10 +270,10 @@ static void Option_PassportInitSelectLevelRequester(void)
 
     // Title screen passport is at a different pitch.
     if (g_InvMode == INV_TITLE_MODE) {
-        req->y = (-Screen_GetResHeightDownscaledText() / 2)
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2)
             + (req->line_height * req->vis_lines);
     } else {
-        req->y = (-Screen_GetResHeightDownscaledText() / 1.73)
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 1.73)
             + (req->line_height * req->vis_lines);
     }
 
@@ -290,11 +290,11 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
             [page_num == PASSPORT_PAGE_1 ? GS_PASSPORT_LOAD_GAME
                                          : GS_PASSPORT_SAVE_GAME]);
 
-    if (Screen_GetResHeightDownscaledText() <= 240) {
+    if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
         req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaledText() <= 384) {
+    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 384) {
         req->vis_lines = 7;
-    } else if (Screen_GetResHeightDownscaledText() <= 480) {
+    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 480) {
         req->vis_lines = 10;
     } else {
         req->vis_lines = 12;
@@ -302,10 +302,10 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
 
     // Title screen passport is at a different pitch.
     if (g_InvMode == INV_TITLE_MODE) {
-        req->y = (-Screen_GetResHeightDownscaledText() / 2)
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2)
             + (req->line_height * req->vis_lines);
     } else {
-        req->y = (-Screen_GetResHeightDownscaledText() / 1.73)
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 1.73)
             + (req->line_height * req->vis_lines);
     }
 

@@ -491,15 +491,15 @@ static void Text_DrawText(TEXTSTRING *textstring)
     int32_t textwidth = Text_GetWidth(textstring);
 
     if (textstring->flags.centre_h) {
-        x += (Screen_GetResWidthDownscaledText() - textwidth) / 2;
+        x += (Screen_GetResWidthDownscaled(RSR_TEXT) - textwidth) / 2;
     } else if (textstring->flags.right) {
-        x += Screen_GetResWidthDownscaledText() - textwidth;
+        x += Screen_GetResWidthDownscaled(RSR_TEXT) - textwidth;
     }
 
     if (textstring->flags.centre_v) {
-        y += Screen_GetResHeightDownscaledText() / 2;
+        y += Screen_GetResHeightDownscaled(RSR_TEXT) / 2;
     } else if (textstring->flags.bottom) {
-        y += Screen_GetResHeightDownscaledText();
+        y += Screen_GetResHeightDownscaled(RSR_TEXT);
     }
 
     int32_t bxpos = textstring->bgnd_off.x + x - TEXT_BOX_OFFSET;
@@ -519,10 +519,10 @@ static void Text_DrawText(TEXTSTRING *textstring)
         }
 
         uint8_t sprite_num = Text_MapLetterToSpriteNum(letter);
-        sx = Screen_GetRenderScaleText(x);
-        sy = Screen_GetRenderScaleText(y);
-        sh = Screen_GetRenderScaleText(textstring->scale.h);
-        sv = Screen_GetRenderScaleText(textstring->scale.v);
+        sx = Screen_GetRenderScale(x, RSR_TEXT);
+        sy = Screen_GetRenderScale(y, RSR_TEXT);
+        sh = Screen_GetRenderScale(textstring->scale.h, RSR_TEXT);
+        sv = Screen_GetRenderScale(textstring->scale.v, RSR_TEXT);
 
         Output_DrawScreenSprite2D(
             sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
@@ -555,10 +555,10 @@ static void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.background) {
-        sx = Screen_GetRenderScaleText(bxpos);
-        sy = Screen_GetRenderScaleText(bypos);
-        sh = Screen_GetRenderScaleText(bwidth);
-        sv = Screen_GetRenderScaleText(bheight);
+        sx = Screen_GetRenderScale(bxpos, RSR_TEXT);
+        sy = Screen_GetRenderScale(bypos, RSR_TEXT);
+        sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
+        sv = Screen_GetRenderScale(bheight, RSR_TEXT);
 
         Text_DrawTextBackground(
             g_Config.ui.menu_style, sx, sy, sh, sv,
@@ -566,14 +566,14 @@ static void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.progress_bar && textstring->progress_bar.value) {
-        Overlay_BarDraw(&textstring->progress_bar, Screen_GetRenderScaleText);
+        Overlay_BarDraw(&textstring->progress_bar, RSR_TEXT);
     }
 
     if (textstring->flags.outline) {
-        sx = Screen_GetRenderScaleText(bxpos);
-        sy = Screen_GetRenderScaleText(bypos);
-        sh = Screen_GetRenderScaleText(bwidth);
-        sv = Screen_GetRenderScaleText(bheight);
+        sx = Screen_GetRenderScale(bxpos, RSR_TEXT);
+        sy = Screen_GetRenderScale(bypos, RSR_TEXT);
+        sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
+        sv = Screen_GetRenderScale(bheight, RSR_TEXT);
 
         Text_DrawTextOutline(
             g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);
