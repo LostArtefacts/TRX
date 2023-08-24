@@ -178,6 +178,7 @@
 #define DATA_TYPE 0x00FF
 #define VALUE_BITS 0x03FF
 #define TRIG_BITS(T) ((T & 0x3C00) >> 10)
+#define TRIG_TYPE(T) ((T & 0x3F00) >> 8)
 
 #define MIN_SQUARE SQUARE(WALL_L / 4) // = 65536
 #define GROUND_SHIFT (STEP_L)

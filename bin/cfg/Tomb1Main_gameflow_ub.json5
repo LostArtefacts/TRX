@@ -26,6 +26,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/egypt_fd.bin",
                 "data/egypt_textures.bin",
             ],
             "sequence": [
@@ -46,6 +47,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/cat_fd.bin",
                 "data/cat_itemrots.bin",
                 "data/cat_textures.bin",
             ],
@@ -67,6 +69,7 @@
             "type": "normal",
             "music": 60,
             "injections": [
+                "data/stronghold_fd.bin",
                 "data/stronghold_itemrots.bin",
                 "data/stronghold_textures.bin",
             ],
@@ -88,6 +91,7 @@
             "type": "normal",
             "music": 60,
             "injections": [
+                "data/hive_fd.bin",
                 "data/hive_itemrots.bin",
                 "data/hive_textures.bin",
             ],

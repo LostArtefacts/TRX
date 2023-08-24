@@ -107,6 +107,7 @@
             "type": "normal",
             "music": 57,
             "injections": [
+                "data/caves_fd.bin",
                 "data/caves_itemrots.bin",
                 "data/caves_textures.bin",
             ],
@@ -176,6 +177,7 @@
             "music": 57,
             "injections": [
                 "data/larson_textures.bin",
+                "data/qualopec_fd.bin",
                 "data/qualopec_itemrots.bin",
                 "data/qualopec_textures.bin",
             ],
@@ -195,6 +197,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/folly_fd.bin",
                 "data/folly_itemrots.bin",
                 "data/folly_textures.bin",
             ],
@@ -336,6 +339,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/obelisk_fd.bin",
                 "data/obelisk_itemrots.bin",
             ],
             "sequence": [
@@ -361,6 +365,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/sanctuary_fd.bin",
                 "data/sanctuary_itemrots.bin",
                 "data/sanctuary_textures.bin",
             ],
@@ -387,6 +392,7 @@
             "injections": [
                 "data/cowboy_textures.bin",
                 "data/kold_textures.bin",
+                "data/mines_fd.bin",
                 "data/mines_itemrots.bin",
                 "data/mines_textures.bin",
                 "data/skateboardkid_textures.bin"
@@ -414,6 +420,7 @@
             "type": "normal",
             "music": 60,
             "injections": [
+                "data/atlantis_fd.bin",
                 "data/atlantis_textures.bin",
             ],
             "sequence": [

@@ -78,6 +78,7 @@ typedef struct MESH_EDIT {
 
 typedef enum FLOOR_EDIT_TYPE {
     FET_TRIGGER_PARAM = 0,
+    FET_MUSIC_ONESHOT = 1,
 } FLOOR_EDIT_TYPE;
 
 typedef enum ROOM_MESH_EDIT_TYPE {
@@ -122,6 +123,7 @@ static void Inject_TextureOverwrites(
 static void Inject_FloorDataEdits(INJECTION *injection);
 static void Inject_TriggerParameterChange(
     INJECTION *injection, FLOOR_INFO *floor);
+static void Inject_SetMusicOneShot(FLOOR_INFO *floor);
 
 static void Inject_RoomMeshEdits(INJECTION *injection);
 static void Inject_TextureRoomFace(INJECTION *injection);
@@ -993,6 +995,9 @@ static void Inject_FloorDataEdits(INJECTION *injection)
             case FET_TRIGGER_PARAM:
                 Inject_TriggerParameterChange(injection, floor);
                 break;
+            case FET_MUSIC_ONESHOT:
+                Inject_SetMusicOneShot(floor);
+                break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
                 break;
@@ -1067,6 +1072,63 @@ static void Inject_TriggerParameterChange(
                 }
             }
             break;
+        }
+        }
+
+        if (data & END_BIT) {
+            break;
+        }
+    }
+}
+
+static void Inject_SetMusicOneShot(FLOOR_INFO *floor)
+{
+    if (!floor) {
+        return;
+    }
+
+    uint16_t fd_index = floor->index;
+    if (!fd_index) {
+        return;
+    }
+
+    while (1) {
+        uint16_t data = g_FloorData[fd_index++];
+        switch (data & DATA_TYPE) {
+        case FT_DOOR:
+        case FT_ROOF:
+        case FT_TILT:
+            fd_index++;
+            break;
+
+        case FT_LAVA:
+            break;
+
+        case FT_TRIGGER: {
+            uint16_t trig_type = TRIG_TYPE(data);
+            int16_t *flags = &g_FloorData[fd_index++];
+
+            if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                || trig_type == TT_PICKUP) {
+                fd_index++; // skip entity reference
+            }
+
+            while (1) {
+                int16_t *command = &g_FloorData[fd_index++];
+                if (TRIG_BITS(*command) == TO_CD) {
+                    *flags |= IF_ONESHOT;
+                    return;
+                }
+
+                if (TRIG_BITS(*command) == TO_CAMERA) {
+                    fd_index++; // skip camera setup
+                }
+
+                if (*command & END_BIT) {
+                    break;
+                }
+            }
+            return;
         }
         }
 
