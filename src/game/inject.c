@@ -1105,7 +1105,7 @@ static void Inject_SetMusicOneShot(FLOOR_INFO *floor)
             break;
 
         case FT_TRIGGER: {
-            uint16_t trig_type = (data & 0x3F00) >> 8;
+            uint16_t trig_type = TRIG_TYPE(data);
             int16_t *flags = &g_FloorData[fd_index++];
 
             if (trig_type == TT_SWITCH || trig_type == TT_KEY
