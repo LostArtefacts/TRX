@@ -187,16 +187,16 @@ static void Overlay_BarGetLocation(
     } else if (
         bar_info->location == BL_TOP_RIGHT
         || bar_info->location == BL_BOTTOM_RIGHT) {
-        *x = Screen_GetResWidthDownscaledBar() - *width - screen_margin_h;
+        *x = Screen_GetResWidthDownscaled(RSR_BAR) - *width - screen_margin_h;
     } else {
-        *x = (Screen_GetResWidthDownscaledBar() - *width) / 2;
+        *x = (Screen_GetResWidthDownscaled(RSR_BAR) - *width) / 2;
     }
 
     if (bar_info->location == BL_TOP_LEFT || bar_info->location == BL_TOP_CENTER
         || bar_info->location == BL_TOP_RIGHT) {
         *y = screen_margin_v + m_BarOffsetY[bar_info->location];
     } else {
-        *y = Screen_GetResHeightDownscaledBar() - *height - screen_margin_v
+        *y = Screen_GetResHeightDownscaled(RSR_BAR) - *height - screen_margin_v
             - m_BarOffsetY[bar_info->location];
     }
 
@@ -212,7 +212,7 @@ static void Overlay_BarGetLocation(
     m_BarOffsetY[bar_info->location] += *height + bar_spacing;
 }
 
-void Overlay_BarDraw(BAR_INFO *bar_info)
+void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
 {
     const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
     const RGBA8888 rgb_border = { 53, 53, 53, 255 };
@@ -224,13 +224,13 @@ void Overlay_BarDraw(BAR_INFO *bar_info)
     int32_t y = 0;
     Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
 
-    int32_t padding = Screen_GetRenderScaleBar(2);
-    int32_t border = Screen_GetRenderScaleBar(2);
+    int32_t padding = Screen_GetRenderScale(2, scale_ref);
+    int32_t border = Screen_GetRenderScale(2, scale_ref);
 
-    int32_t sx = Screen_GetRenderScaleBar(x) - padding;
-    int32_t sy = Screen_GetRenderScaleBar(y) - padding;
-    int32_t sw = Screen_GetRenderScaleBar(width) + padding * 2;
-    int32_t sh = Screen_GetRenderScaleBar(height) + padding * 2;
+    int32_t sx = Screen_GetRenderScale(x, scale_ref) - padding;
+    int32_t sy = Screen_GetRenderScale(y, scale_ref) - padding;
+    int32_t sw = Screen_GetRenderScale(width, scale_ref) + padding * 2;
+    int32_t sh = Screen_GetRenderScale(height, scale_ref) + padding * 2;
 
     // border
     Output_DrawScreenFlatQuad(
@@ -247,10 +247,10 @@ void Overlay_BarDraw(BAR_INFO *bar_info)
     if (percent && !bar_info->blink) {
         width = width * percent / 100;
 
-        sx = Screen_GetRenderScaleBar(x);
-        sy = Screen_GetRenderScaleBar(y);
-        sw = Screen_GetRenderScaleBar(width);
-        sh = Screen_GetRenderScaleBar(height);
+        sx = Screen_GetRenderScale(x, scale_ref);
+        sy = Screen_GetRenderScale(y, scale_ref);
+        sw = Screen_GetRenderScale(width, scale_ref);
+        sh = Screen_GetRenderScale(height, scale_ref);
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
@@ -343,7 +343,7 @@ void Overlay_BarDrawHealth(void)
         return;
     }
 
-    Overlay_BarDraw(&m_HealthBar);
+    Overlay_BarDraw(&m_HealthBar, RSR_BAR);
 }
 
 void Overlay_BarDrawAir(void)
@@ -377,7 +377,7 @@ void Overlay_BarDrawAir(void)
         return;
     }
 
-    Overlay_BarDraw(&m_AirBar);
+    Overlay_BarDraw(&m_AirBar, RSR_BAR);
 }
 
 void Overlay_BarDrawEnemy(void)
@@ -391,7 +391,7 @@ void Overlay_BarDrawEnemy(void)
         * ((g_GameInfo.bonus_flag & GBF_NGPLUS) ? 2 : 1);
     CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
-    Overlay_BarDraw(&m_EnemyBar);
+    Overlay_BarDraw(&m_EnemyBar, RSR_BAR);
 }
 
 void Overlay_RemoveAmmoText(void)

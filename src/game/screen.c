@@ -30,6 +30,8 @@ static RESOLUTION m_Resolutions[] = {
 };
 
 static void Screen_ApplyResolution(void);
+static int32_t Screen_GetRenderScaleBase(
+    int32_t unit, int32_t base_width, int32_t base_height, double factor);
 
 static void Screen_ApplyResolution(void)
 {
@@ -41,6 +43,18 @@ static void Screen_ApplyResolution(void)
 
     Matrix_ResetStack();
     Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+}
+
+static int32_t Screen_GetRenderScaleBase(
+    int32_t unit, int32_t base_width, int32_t base_height, double factor)
+{
+    int32_t scale_x = Screen_GetResWidth() > base_width
+        ? ((double)Screen_GetResWidth() * unit * factor) / base_width
+        : unit * factor;
+    int32_t scale_y = Screen_GetResHeight() > base_height
+        ? ((double)Screen_GetResHeight() * unit * factor) / base_height
+        : unit * factor;
+    return MIN(scale_x, scale_y);
 }
 
 void Screen_Init(void)
@@ -97,46 +111,27 @@ int32_t Screen_GetResHeight(void)
     return m_Resolutions[m_ResolutionIdx].height;
 }
 
-int32_t Screen_GetResWidthDownscaledText(void)
+int32_t Screen_GetResWidthDownscaled(RENDER_SCALE_REF ref)
 {
-    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScaleText(PHD_ONE);
+    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScale(PHD_ONE, ref);
 }
 
-int32_t Screen_GetResHeightDownscaledText(void)
+int32_t Screen_GetResHeightDownscaled(RENDER_SCALE_REF ref)
 {
-    return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScaleText(PHD_ONE);
+    return Screen_GetResHeight() * PHD_ONE
+        / Screen_GetRenderScale(PHD_ONE, ref);
 }
 
-int32_t Screen_GetResWidthDownscaledBar(void)
+int32_t Screen_GetRenderScale(int32_t unit, RENDER_SCALE_REF ref)
 {
-    return Screen_GetResWidth() * PHD_ONE / Screen_GetRenderScaleBar(PHD_ONE);
-}
-
-int32_t Screen_GetResHeightDownscaledBar(void)
-{
-    return Screen_GetResHeight() * PHD_ONE / Screen_GetRenderScaleBar(PHD_ONE);
-}
-
-int32_t Screen_GetRenderScaleText(int32_t unit)
-{
-    return Screen_GetRenderScaleBase(unit, 640, 480, g_Config.ui.text_scale);
-}
-
-int32_t Screen_GetRenderScaleBar(int32_t unit)
-{
-    return Screen_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
-}
-
-int32_t Screen_GetRenderScaleBase(
-    int32_t unit, int32_t base_width, int32_t base_height, double factor)
-{
-    int32_t scale_x = Screen_GetResWidth() > base_width
-        ? ((double)Screen_GetResWidth() * unit * factor) / base_width
-        : unit * factor;
-    int32_t scale_y = Screen_GetResHeight() > base_height
-        ? ((double)Screen_GetResHeight() * unit * factor) / base_height
-        : unit * factor;
-    return MIN(scale_x, scale_y);
+    if (ref == RSR_TEXT) {
+        return Screen_GetRenderScaleBase(
+            unit, 640, 480, g_Config.ui.text_scale);
+    } else if (ref == RSR_BAR) {
+        return Screen_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
+    } else {
+        return Screen_GetRenderScaleBase(unit, 640, 480, 0);
+    }
 }
 
 int32_t Screen_GetRenderScaleGLRage(int32_t unit)

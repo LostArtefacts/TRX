@@ -211,7 +211,7 @@ void Requester_AddItem(REQUEST_INFO *req, const char *string, uint16_t flag)
 void Requester_SetSize(REQUEST_INFO *req, int32_t max_lines, int16_t y)
 {
     req->y = y;
-    req->vis_lines = Screen_GetResHeightDownscaledText() / 2 / MAX_REQLINES;
+    req->vis_lines = Screen_GetResHeightDownscaled(RSR_TEXT) / 2 / MAX_REQLINES;
     if (req->vis_lines > max_lines) {
         req->vis_lines = max_lines;
     }
