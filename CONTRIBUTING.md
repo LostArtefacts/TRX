@@ -142,7 +142,7 @@ aim to respect the 50/72 rule and have the following form:
     module-prefix: description in an imperative mood (max 50 characters)
 
     Longer description of what happens that can span multiple lines. Each
-    line should be maximally 70 characters long, with the exceptions of
+    line should be maximally 72 characters long, with the exceptions of
     code/log dumps.
 
 The prefix should describe the module that the pull request touches the most.
