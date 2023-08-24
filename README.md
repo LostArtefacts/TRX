@@ -376,6 +376,19 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed underwater ambient sound effect not playing
 - fixed sound effects playing rapidly in sound menu if input held down
 - fixed sounds stopping instead of pausing when using the inventory or pausing
+- fixed the following music triggers:
+    - **Caves**: converted track 9 in room 34 to one shot
+    - **Tomb of Qualopec**: converted track 17 in room 25 to one shot
+    - **St. Francis' Folly**: converted track 7 in room 18 to one shot
+    - **Obelisk of Khamoon**: converted track 3 in room 12 and track 4 in room 32 to one shot
+    - **Sanctuary of the Scion**: converted track 10 in room 0 to one shot
+    - **Natla's Mines**: converted track 3 in room 86 to one shot
+    - **Atlantis**: converted track 8 in room 59 to one shot
+    - **The Great Pyramid**: converted track 8 in room 36 to one shot
+    - **Return to Egypt**: converted track 19 in room 0, track 14 in room 15, track 15 in room 19, track 16 in room 22, track 6 in room 61, and track 11 in room 93 to one shot
+    - **Temple of the Cat**: converted track 12 in room 14, track 7 in room 98, and track 20 in room 100 to one shot
+    - **Atlantean Stronghold**: converted track 20 in room 4, track 19 in room 13, track 11 in room 17, track 15 in room 20, and track 12 in room 25 to one shot
+    - **The Hive**: converted track 9 in room 8, track 6 in room 18, track 12 in room 30, track 18 in room 31, track 3 in room 32, and track 20 in room 35 to one shot
 
 #### Mods
 - added ability to adjust Lara's starting health (easy no damage mod)
