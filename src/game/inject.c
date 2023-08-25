@@ -79,6 +79,7 @@ typedef struct MESH_EDIT {
 typedef enum FLOOR_EDIT_TYPE {
     FET_TRIGGER_PARAM = 0,
     FET_MUSIC_ONESHOT = 1,
+    FET_FD_INSERT = 2,
 } FLOOR_EDIT_TYPE;
 
 typedef enum ROOM_MESH_EDIT_TYPE {
@@ -120,10 +121,12 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map);
 static void Inject_TextureOverwrites(
     INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map);
 
-static void Inject_FloorDataEdits(INJECTION *injection);
+static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_TriggerParameterChange(
     INJECTION *injection, FLOOR_INFO *floor);
 static void Inject_SetMusicOneShot(FLOOR_INFO *floor);
+static void Inject_InsertFloorData(
+    INJECTION *injection, FLOOR_INFO *floor, LEVEL_INFO *level_info);
 
 static void Inject_RoomMeshEdits(INJECTION *injection);
 static void Inject_TextureRoomFace(INJECTION *injection);
@@ -325,7 +328,7 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
 
         Inject_MeshEdits(injection, palette_map);
         Inject_TextureOverwrites(injection, level_info, palette_map);
-        Inject_FloorDataEdits(injection);
+        Inject_FloorDataEdits(injection, level_info);
         Inject_RoomMeshEdits(injection);
         Inject_RoomDoorEdits(injection);
         Inject_AnimRangeEdits(injection);
@@ -958,7 +961,7 @@ static void Inject_TextureOverwrites(
     }
 }
 
-static void Inject_FloorDataEdits(INJECTION *injection)
+static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
 {
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
@@ -997,6 +1000,9 @@ static void Inject_FloorDataEdits(INJECTION *injection)
                 break;
             case FET_MUSIC_ONESHOT:
                 Inject_SetMusicOneShot(floor);
+                break;
+            case FET_FD_INSERT:
+                Inject_InsertFloorData(injection, floor, level_info);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
@@ -1136,6 +1142,29 @@ static void Inject_SetMusicOneShot(FLOOR_INFO *floor)
             break;
         }
     }
+}
+
+static void Inject_InsertFloorData(
+    INJECTION *injection, FLOOR_INFO *floor, LEVEL_INFO *level_info)
+{
+    MYFILE *fp = injection->fp;
+
+    int32_t data_length;
+    File_Read(&data_length, sizeof(int32_t), 1, fp);
+
+    int16_t data[data_length];
+    File_Read(&data, sizeof(int16_t), data_length, fp);
+
+    if (!floor) {
+        return;
+    }
+
+    floor->index = level_info->floor_data_size;
+    for (int i = 0; i < data_length; i++) {
+        g_FloorData[level_info->floor_data_size + i] = data[i];
+    }
+
+    level_info->floor_data_size += data_length;
 }
 
 uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index)
