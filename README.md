@@ -290,6 +290,8 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed Natla's gun moving while she is in her semi death state
 - fixed the bear pat attack so it does not miss Lara
 - fixed dead centaurs exploding again after saving and reloading
+- fixed the following floor data issues:
+    - **Tomb of Tihocan**: missing trigger in room 62 for enemy 34
 
 #### Cheats
 - added a fly cheat
