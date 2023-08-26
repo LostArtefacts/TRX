@@ -292,6 +292,8 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - fixed dead centaurs exploding again after saving and reloading
 - fixed the following floor data issues:
     - **Tomb of Tihocan**: missing trigger in room 62 for enemy 34
+    - **City of Khamoon**: incorrect trapdoor trigger types in rooms 31 and 34
+    - **Obelisk of Khamoon**: missing switch trigger type in room 66
 
 #### Cheats
 - added a fly cheat

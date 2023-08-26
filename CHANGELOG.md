@@ -16,6 +16,7 @@
 - fixed the reset and unbind progress bars in the controls menu for non-default bar scaling (#930)
 - fixed original data issues where music triggers are not set as one shot (#939)
 - fixed a missing enemy trigger in Tomb of Tihocan (#751)
+- fixed incorrect trapdoor triggers in City of Khamoon and a switch trigger in Obelisk of Khamoon (#942)
 - improve spanish localization and added translation for rotated pickups
 
 ## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
