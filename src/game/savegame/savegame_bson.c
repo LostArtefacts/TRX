@@ -555,6 +555,7 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
                 int32_t flame_num =
                     json_object_get_int(item_obj, "flame_num", 0);
                 item->data = (void *)flame_num;
+                LOG_DEBUG("Load flame: %d", flame_num);
             }
         }
     }
@@ -613,6 +614,11 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             fx->counter = counter;
             fx->shade = shade;
         }
+    }
+
+    for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
+         linknum = g_Effects[linknum].next_active) {
+        LOG_DEBUG("linknum: %d; next_active: %d; object_number: %d;", linknum, g_Effects[linknum].next_active, g_Effects[linknum].object_number);
     }
 
     return true;
@@ -1037,8 +1043,12 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             }
 
             if (item->object_number == O_FLAME_EMITTER) {
+                if (item->data == NULL) {
+                    LOG_DEBUG("NULL.");
+                }
                 int32_t flame_num = (int32_t)item->data;
                 json_object_append_int(item_obj, "flame_num", flame_num);
+                LOG_DEBUG("Save flame: %d", flame_num);
             }
         }
 
@@ -1052,18 +1062,21 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
     struct json_array_s *fx_arr = json_array_new();
 
     // Reverse FX array before saving to save in proper order.
-    int16_t remap_effects[NUM_EFFECTS];
+    // int16_t remap_effects[NUM_EFFECTS];
     int32_t fx_count = 0;
     for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
          linknum = g_Effects[linknum].next_active) {
-        remap_effects[fx_count] = linknum;
+        LOG_DEBUG("linknum: %d; next_active: %d; object_number: %d;", linknum, g_Effects[linknum].next_active, g_Effects[linknum].object_number);
+        // remap_effects[fx_count] = linknum;
         fx_count++;
     }
 
-    for (int32_t i = fx_count - 1; i >= 0; i--) {
+    for (int32_t i = 0; i < fx_count; i++) {
         struct json_object_s *fx_obj = json_object_new();
 
-        FX_INFO *fx = &g_Effects[remap_effects[i]];
+        FX_INFO *fx = &g_Effects[i];
+        LOG_DEBUG("Save g_Effects[i]: %d; object_number: %d;", i, g_Effects[i].object_number);
+
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);

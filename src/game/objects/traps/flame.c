@@ -17,6 +17,9 @@
 #define FLAME_ONFIRE_DAMAGE 5
 #define FLAME_TOONEAR_DAMAGE 3
 
+#include "log.h"
+
+
 void Flame_Setup(OBJECT_INFO *obj)
 {
     obj->control = Flame_Control;
@@ -82,6 +85,7 @@ void Flame_Control(int16_t fx_num)
             fx->counter = 100;
 
             fx_num = Effect_Create(g_LaraItem->room_number);
+            LOG_DEBUG("? create flame: %d", fx_num);
             if (fx_num != NO_ITEM) {
                 fx = &g_Effects[fx_num];
                 fx->frame_number = 0;
@@ -105,6 +109,7 @@ void FlameEmitter_Control(int16_t item_num)
     if (Item_IsTriggerActive(item)) {
         if (!item->data) {
             int16_t fx_num = Effect_Create(item->room_number);
+            LOG_DEBUG("emitter %d create flame: %d", item_num, fx_num);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos.x = item->pos.x;
@@ -115,10 +120,12 @@ void FlameEmitter_Control(int16_t item_num)
                 fx->counter = 0;
             }
             item->data = (void *)(fx_num + 1);
+            LOG_DEBUG("emitter %d create item->data: %d", item_num, (int16_t)(size_t)item->data);
         }
     } else if (item->data) {
         Sound_StopEffect(SFX_FIRE, NULL);
         Effect_Kill((int16_t)(size_t)item->data - 1);
+        LOG_DEBUG("emitter %d kill flame: %d", item_num, (int16_t)(size_t)item->data - 1);
         item->data = NULL;
     }
 }
