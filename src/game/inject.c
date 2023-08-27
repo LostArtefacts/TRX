@@ -80,6 +80,7 @@ typedef enum FLOOR_EDIT_TYPE {
     FET_TRIGGER_PARAM = 0,
     FET_MUSIC_ONESHOT = 1,
     FET_FD_INSERT = 2,
+    FET_ROOM_SHIFT = 3,
 } FLOOR_EDIT_TYPE;
 
 typedef enum ROOM_MESH_EDIT_TYPE {
@@ -127,6 +128,7 @@ static void Inject_TriggerParameterChange(
 static void Inject_SetMusicOneShot(FLOOR_INFO *floor);
 static void Inject_InsertFloorData(
     INJECTION *injection, FLOOR_INFO *floor, LEVEL_INFO *level_info);
+static void Inject_RoomShift(INJECTION *injection, int16_t room_num);
 
 static void Inject_RoomMeshEdits(INJECTION *injection);
 static void Inject_TextureRoomFace(INJECTION *injection);
@@ -1004,6 +1006,9 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             case FET_FD_INSERT:
                 Inject_InsertFloorData(injection, floor, level_info);
                 break;
+            case FET_ROOM_SHIFT:
+                Inject_RoomShift(injection, room);
+                break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
                 break;
@@ -1165,6 +1170,61 @@ static void Inject_InsertFloorData(
     }
 
     level_info->floor_data_size += data_length;
+}
+
+static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
+{
+    MYFILE *fp = injection->fp;
+
+    uint32_t x_shift;
+    uint32_t z_shift;
+    int32_t y_shift;
+
+    File_Read(&x_shift, sizeof(uint32_t), 1, fp);
+    File_Read(&z_shift, sizeof(uint32_t), 1, fp);
+    File_Read(&y_shift, sizeof(int32_t), 1, fp);
+
+    ROOM_INFO *room = &g_RoomInfo[room_num];
+    room->x += x_shift;
+    room->z += z_shift;
+    room->min_floor += y_shift;
+    room->max_ceiling += y_shift;
+
+    // Move any items in the room to match.
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        if (item->room_number != room_num) {
+            continue;
+        }
+
+        item->pos.x += x_shift;
+        item->pos.y += y_shift;
+        item->pos.z += z_shift;
+    }
+
+    if (!y_shift) {
+        return;
+    }
+
+    // Update the sector floor and ceiling clicks to match.
+    const int8_t click_shift = y_shift / STEP_L;
+    const int8_t wall_height = NO_HEIGHT / STEP_L;
+    for (int i = 0; i < room->x_size * room->y_size; i++) {
+        FLOOR_INFO *floor = &room->floor[i];
+        if (floor->floor == wall_height || floor->ceiling == wall_height) {
+            continue;
+        }
+
+        floor->floor += click_shift;
+        floor->ceiling += click_shift;
+    }
+
+    // Update vertex Y values to match; x and z are room-relative.
+    int16_t *data_ptr = room->data;
+    int16_t vertex_count = *data_ptr++;
+    for (int i = 0; i < vertex_count; i++) {
+        *(data_ptr + (i * 4) + 1) += y_shift;
+    }
 }
 
 uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index)
