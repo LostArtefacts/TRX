@@ -56,6 +56,7 @@ static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
 static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr);
 static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr);
 static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr);
+static bool SaveGame_BSON_LoadFlippedFx(struct json_array_s *flipped_fx_arr);
 static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm);
 static bool Savegame_BSON_LoadAmmo(
     struct json_object_s *ammo_obj, AMMO_INFO *ammo);
@@ -73,6 +74,7 @@ static struct json_object_s *Savegame_BSON_DumpFlipmaps(void);
 static struct json_array_s *Savegame_BSON_DumpCameras(void);
 static struct json_array_s *Savegame_BSON_DumpItems(void);
 static struct json_array_s *SaveGame_BSON_DumpFx(void);
+static struct json_array_s *SaveGame_BSON_DumpFlippedFx(void);
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
@@ -577,6 +579,7 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             "maximum will not be created.",
             NUM_EFFECTS - 1, fx_arr->length);
     }
+    LOG_DEBUG("fx_arr->length: %d", fx_arr->length);
 
     for (int i = 0; i < (signed)fx_arr->length; i++) {
         struct json_object_s *fx_obj = json_array_get_object(fx_arr, i);
@@ -610,6 +613,32 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             fx->counter = counter;
             fx->shade = shade;
         }
+    }
+
+    return true;
+}
+
+static bool SaveGame_BSON_LoadFlippedFx(struct json_array_s *flipped_fx_arr)
+{
+    if (!g_Config.enable_enhanced_saves) {
+        return true;
+    }
+
+    if (!flipped_fx_arr) {
+        LOG_ERROR("Malformed save: invalid or missing flipped fx number array");
+        return false;
+    }
+
+    for (int i = 0; i < (signed)flipped_fx_arr->length; i++) {
+        ROOM_INFO *r = &g_RoomInfo[i];
+        if (r->flipped_room < 0) {
+            continue;
+        }
+
+        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
+
+        flipped->fx_number = json_array_get_int(flipped_fx_arr, i, 0);
+        LOG_DEBUG("Load flipped->fx_number: %d", flipped->fx_number);
     }
 
     return true;
@@ -1052,6 +1081,24 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
     return fx_arr;
 }
 
+static struct json_array_s *SaveGame_BSON_DumpFlippedFx(void)
+{
+    struct json_array_s *flipped_fx_arr = json_array_new();
+
+    for (int i = 0; i < g_RoomCount; i++) {
+        ROOM_INFO *r = &g_RoomInfo[i];
+        if (r->flipped_room < 0) {
+            continue;
+        }
+
+        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
+        json_array_append_int(flipped_fx_arr, flipped->fx_number);
+        LOG_DEBUG("Dump flip fx_number: %d", flipped->fx_number);
+    }
+
+    return flipped_fx_arr;
+}
+
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
 {
     assert(arm);
@@ -1287,6 +1334,12 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
     }
 
+    if (header.version >= VERSION_3) {
+        if (!SaveGame_BSON_LoadFlippedFx(json_object_get_array(root_obj, "flipped_fx"))) {
+            goto cleanup;
+        }
+    }
+
     if (!Savegame_BSON_LoadLara(
             json_object_get_object(root_obj, "lara"), &g_Lara)) {
         goto cleanup;
@@ -1369,6 +1422,7 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_array(root_obj, "cameras", Savegame_BSON_DumpCameras());
     json_object_append_array(root_obj, "items", Savegame_BSON_DumpItems());
     json_object_append_array(root_obj, "fx", SaveGame_BSON_DumpFx());
+    json_object_append_array(root_obj, "flipped_fx", SaveGame_BSON_DumpFlippedFx());
     json_object_append_object(
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
     json_object_append_object(

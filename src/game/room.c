@@ -614,6 +614,8 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
     }
 }
 
+// #include "log.h"
+
 void Room_FlipMap(void)
 {
     Sound_StopAmbientSounds();
@@ -637,6 +639,7 @@ void Room_FlipMap(void)
         // XXX: is this really necessary given the assignments above?
         r->item_number = flipped->item_number;
         r->fx_number = flipped->fx_number;
+        // LOG_DEBUG("flipped->fx_number: %d", flipped->fx_number);
 
         Room_AddFlipItems(r);
     }
