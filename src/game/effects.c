@@ -9,8 +9,6 @@
 
 #include <stddef.h>
 
-#include "log.h"
-
 FX_INFO *g_Effects = NULL;
 int16_t g_NextFxActive = NO_ITEM;
 
@@ -19,7 +17,6 @@ static int16_t m_NextFxFree = NO_ITEM;
 void Effect_InitialiseArray(void)
 {
     g_NextFxActive = NO_ITEM;
-    // LOG_DEBUG("InitialiseArray");
     m_NextFxFree = 0;
     for (int i = 0; i < NUM_EFFECTS - 1; i++) {
         g_Effects[i].next_fx = i + 1;
@@ -30,16 +27,13 @@ void Effect_InitialiseArray(void)
 void Effect_Control(void)
 {
     int16_t fx_num = g_NextFxActive;
-    // LOG_DEBUG("start Effect_Control fx_num as g_NextFxActive: %d", g_NextFxActive );
     while (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
-        // LOG_DEBUG("  fx_num: %d; next_active: %d", fx_num, fx->next_active);
         OBJECT_INFO *obj = &g_Objects[fx->object_number];
         if (obj->control) {
             obj->control(fx_num);
         }
         fx_num = fx->next_active;
-        // LOG_DEBUG("fx_num: %d", fx_num);
     }
 }
 
@@ -60,25 +54,21 @@ int16_t Effect_Create(int16_t room_num)
 
     fx->next_active = g_NextFxActive;
     g_NextFxActive = fx_num;
-    // LOG_DEBUG("g_NextFxActive: %d; fx->next_active: %d,  fx->next_fx: %d; m_NextFxFree: %d; room_num: %d", fx_num, fx->next_active, fx->next_fx, m_NextFxFree, room_num);
 
     return fx_num;
 }
 
 void Effect_Kill(int16_t fx_num)
 {
-    // LOG_DEBUG("kill: %d", fx_num );
     FX_INFO *fx = &g_Effects[fx_num];
 
     int16_t linknum = g_NextFxActive;
     if (linknum == fx_num) {
         g_NextFxActive = fx->next_active;
-        // LOG_DEBUG("  g_NextFxActive becomes fx->next_active: %d", g_NextFxActive);
     } else {
         for (; linknum != NO_ITEM; linknum = g_Effects[linknum].next_active) {
             if (g_Effects[linknum].next_active == fx_num) {
                 g_Effects[linknum].next_active = fx->next_active;
-                // LOG_DEBUG("  fx %d fx->next_active: %d", linknum, fx->next_active);
                 break;
             }
         }
@@ -92,7 +82,6 @@ void Effect_Kill(int16_t fx_num)
         for (; linknum != NO_ITEM; linknum = g_Effects[linknum].next_fx) {
             if (g_Effects[linknum].next_fx == fx_num) {
                 g_Effects[linknum].next_fx = fx->next_fx;
-                // LOG_DEBUG("  room fx %d fx->next_active: %d", linknum, fx->next_active);
                 break;
             }
         }
@@ -100,7 +89,6 @@ void Effect_Kill(int16_t fx_num)
 
     fx->next_fx = m_NextFxFree;
     m_NextFxFree = fx_num;
-    // LOG_DEBUG("  %d fx->next_fx: %d; m_NextFxFree: %d", fx_num, fx->next_fx, m_NextFxFree);
 }
 
 void Effect_NewRoom(int16_t fx_num, int16_t room_num)

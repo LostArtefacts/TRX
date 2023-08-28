@@ -56,7 +56,6 @@ static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
 static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr);
 static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr);
 static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr);
-static bool SaveGame_BSON_LoadFlippedFx(struct json_array_s *flipped_fx_arr);
 static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm);
 static bool Savegame_BSON_LoadAmmo(
     struct json_object_s *ammo_obj, AMMO_INFO *ammo);
@@ -74,7 +73,6 @@ static struct json_object_s *Savegame_BSON_DumpFlipmaps(void);
 static struct json_array_s *Savegame_BSON_DumpCameras(void);
 static struct json_array_s *Savegame_BSON_DumpItems(void);
 static struct json_array_s *SaveGame_BSON_DumpFx(void);
-static struct json_array_s *SaveGame_BSON_DumpFlippedFx(void);
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm);
 static struct json_object_s *Savegame_BSON_DumpAmmo(AMMO_INFO *ammo);
 static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot);
@@ -549,14 +547,6 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
             } else if (obj->intelligent) {
                 item->data = NULL;
             }
-
-            if (item->object_number == O_FLAME_EMITTER
-                && g_Config.enable_enhanced_saves) {
-                int32_t flame_num =
-                    json_object_get_int(item_obj, "flame_num", 0);
-                item->data = (void *)flame_num;
-                LOG_DEBUG("Load flame: %d", flame_num);
-            }
         }
     }
 
@@ -580,7 +570,6 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             "maximum will not be created.",
             NUM_EFFECTS - 1, fx_arr->length);
     }
-    LOG_DEBUG("fx_arr->length: %d", fx_arr->length);
 
     for (int i = 0; i < (signed)fx_arr->length; i++) {
         struct json_object_s *fx_obj = json_array_get_object(fx_arr, i);
@@ -600,6 +589,8 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
         int16_t frame_number = json_object_get_int(fx_obj, "frame_number", 0);
         int16_t counter = json_object_get_int(fx_obj, "counter", 0);
         int16_t shade = json_object_get_int(fx_obj, "shade", 0);
+        int16_t parent_item =
+            json_object_get_int(fx_obj, "parent_item_number", -1);
 
         int16_t fx_num = Effect_Create(room_num);
         if (fx_num != NO_ITEM) {
@@ -613,38 +604,13 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             fx->frame_number = frame_number;
             fx->counter = counter;
             fx->shade = shade;
+
+            // Map recreated FX to parent item if needed.
+            if (parent_item != -1 && object_number == O_FLAME
+                && g_Config.enable_enhanced_saves) {
+                (&g_Items[parent_item])->data = (void *)(fx_num + 1);
+            }
         }
-    }
-
-    for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
-         linknum = g_Effects[linknum].next_active) {
-        LOG_DEBUG("linknum: %d; next_active: %d; object_number: %d;", linknum, g_Effects[linknum].next_active, g_Effects[linknum].object_number);
-    }
-
-    return true;
-}
-
-static bool SaveGame_BSON_LoadFlippedFx(struct json_array_s *flipped_fx_arr)
-{
-    if (!g_Config.enable_enhanced_saves) {
-        return true;
-    }
-
-    if (!flipped_fx_arr) {
-        LOG_ERROR("Malformed save: invalid or missing flipped fx number array");
-        return false;
-    }
-
-    for (int i = 0; i < (signed)flipped_fx_arr->length; i++) {
-        ROOM_INFO *r = &g_RoomInfo[i];
-        if (r->flipped_room < 0) {
-            continue;
-        }
-
-        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
-
-        flipped->fx_number = json_array_get_int(flipped_fx_arr, i, 0);
-        LOG_DEBUG("Load flipped->fx_number: %d", flipped->fx_number);
     }
 
     return true;
@@ -1041,15 +1007,6 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                 json_object_append_int(
                     item_obj, "creature_mood", creature->mood);
             }
-
-            if (item->object_number == O_FLAME_EMITTER) {
-                if (item->data == NULL) {
-                    LOG_DEBUG("NULL.");
-                }
-                int32_t flame_num = (int32_t)item->data;
-                json_object_append_int(item_obj, "flame_num", flame_num);
-                LOG_DEBUG("Save flame: %d", flame_num);
-            }
         }
 
         json_array_append_object(items_arr, item_obj);
@@ -1061,22 +1018,34 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
 {
     struct json_array_s *fx_arr = json_array_new();
 
-    // Reverse FX array before saving to save in proper order.
-    // int16_t remap_effects[NUM_EFFECTS];
+    // Initialize array that maps an FX to its parent item.
+    int16_t parent_fx[NUM_EFFECTS];
+    for (int i = 0; i < NUM_EFFECTS; i++) {
+        parent_fx[i] = -1;
+    }
+
+    // Map FX to parent item.
+    for (int16_t i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        if (item->object_number == O_FLAME_EMITTER && item->data) {
+            int16_t flame_num = (int16_t)(size_t)item->data - 1;
+            parent_fx[flame_num] = i;
+        }
+    }
+
+    // Create reversed FX array to save in order of creation.
+    int16_t remap_effects[NUM_EFFECTS];
     int32_t fx_count = 0;
     for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
          linknum = g_Effects[linknum].next_active) {
-        LOG_DEBUG("linknum: %d; next_active: %d; object_number: %d;", linknum, g_Effects[linknum].next_active, g_Effects[linknum].object_number);
-        // remap_effects[fx_count] = linknum;
+        remap_effects[fx_count] = linknum;
         fx_count++;
     }
 
-    for (int32_t i = 0; i < fx_count; i++) {
+    for (int32_t i = fx_count - 1; i >= 0; i--) {
         struct json_object_s *fx_obj = json_object_new();
 
-        FX_INFO *fx = &g_Effects[i];
-        LOG_DEBUG("Save g_Effects[i]: %d; object_number: %d;", i, g_Effects[i].object_number);
-
+        FX_INFO *fx = &g_Effects[remap_effects[i]];
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);
@@ -1088,28 +1057,16 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
         json_object_append_int(fx_obj, "counter", fx->counter);
         json_object_append_int(fx_obj, "shade", fx->shade);
 
+        int16_t parent_item = -1;
+        if (fx->object_number == O_FLAME) {
+            parent_item = parent_fx[remap_effects[i]];
+        }
+        json_object_append_int(fx_obj, "parent_item_number", parent_item);
+
         json_array_append_object(fx_arr, fx_obj);
     }
 
     return fx_arr;
-}
-
-static struct json_array_s *SaveGame_BSON_DumpFlippedFx(void)
-{
-    struct json_array_s *flipped_fx_arr = json_array_new();
-
-    for (int i = 0; i < g_RoomCount; i++) {
-        ROOM_INFO *r = &g_RoomInfo[i];
-        if (r->flipped_room < 0) {
-            continue;
-        }
-
-        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
-        json_array_append_int(flipped_fx_arr, flipped->fx_number);
-        LOG_DEBUG("Dump flip fx_number: %d", flipped->fx_number);
-    }
-
-    return flipped_fx_arr;
 }
 
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
@@ -1347,12 +1304,6 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
     }
 
-    if (header.version >= VERSION_3) {
-        if (!SaveGame_BSON_LoadFlippedFx(json_object_get_array(root_obj, "flipped_fx"))) {
-            goto cleanup;
-        }
-    }
-
     if (!Savegame_BSON_LoadLara(
             json_object_get_object(root_obj, "lara"), &g_Lara)) {
         goto cleanup;
@@ -1435,7 +1386,6 @@ void Savegame_BSON_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     json_object_append_array(root_obj, "cameras", Savegame_BSON_DumpCameras());
     json_object_append_array(root_obj, "items", Savegame_BSON_DumpItems());
     json_object_append_array(root_obj, "fx", SaveGame_BSON_DumpFx());
-    json_object_append_array(root_obj, "flipped_fx", SaveGame_BSON_DumpFlippedFx());
     json_object_append_object(
         root_obj, "lara", Savegame_BSON_DumpLara(&g_Lara));
     json_object_append_object(
