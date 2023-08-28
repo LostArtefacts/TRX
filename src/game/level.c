@@ -83,7 +83,6 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
     if (!Level_LoadRooms(fp)) {
         return false;
     }
-    Stats_ObserveRoomsLoad();
 
     if (!Level_LoadObjects(fp)) {
         return false;
@@ -663,6 +662,9 @@ static bool Level_LoadTexturePages(MYFILE *fp)
 static void Level_CompleteSetup(void)
 {
     Inject_AllInjections(&m_LevelInfo);
+
+    // Must be called post-injection to allow for floor data changes.
+    Stats_ObserveRoomsLoad();
 
     // Must be called after all g_Anims, g_Meshes etc initialised.
     Setup_AllObjects();

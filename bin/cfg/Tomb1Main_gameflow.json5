@@ -319,6 +319,7 @@
             "music": 59,
             "injections": [
                 "data/khamoon_fd.bin",
+                "data/khamoon_mummy.bin",
                 "data/khamoon_textures.bin",
             ],
             "sequence": [

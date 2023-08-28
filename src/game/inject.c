@@ -34,6 +34,7 @@ typedef enum INJECTION_TYPE {
     INJ_LARA_ANIMS = 5,
     INJ_LARA_JUMPS = 6,
     INJ_ITEM_ROTATION = 7,
+    INJ_KHAMOON_MUMMY = 8,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -81,6 +82,7 @@ typedef enum FLOOR_EDIT_TYPE {
     FET_MUSIC_ONESHOT = 1,
     FET_FD_INSERT = 2,
     FET_ROOM_SHIFT = 3,
+    FET_TRIGGER_ITEM = 4,
 } FLOOR_EDIT_TYPE;
 
 typedef enum ROOM_MESH_EDIT_TYPE {
@@ -129,6 +131,7 @@ static void Inject_SetMusicOneShot(FLOOR_INFO *floor);
 static void Inject_InsertFloorData(
     INJECTION *injection, FLOOR_INFO *floor, LEVEL_INFO *level_info);
 static void Inject_RoomShift(INJECTION *injection, int16_t room_num);
+static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info);
 
 static void Inject_RoomMeshEdits(INJECTION *injection);
 static void Inject_TextureRoomFace(INJECTION *injection);
@@ -214,6 +217,9 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_ITEM_ROTATION:
         injection->relevant = g_Config.fix_item_rots;
+        break;
+    case INJ_KHAMOON_MUMMY:
+        injection->relevant = g_Config.restore_khamoon_mummy;
         break;
     default:
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
@@ -1009,6 +1015,9 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             case FET_ROOM_SHIFT:
                 Inject_RoomShift(injection, room);
                 break;
+            case FET_TRIGGER_ITEM:
+                Inject_TriggeredItem(injection, level_info);
+                break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
                 break;
@@ -1225,6 +1234,31 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     for (int i = 0; i < vertex_count; i++) {
         *(data_ptr + (i * 4) + 1) += y_shift;
     }
+}
+
+static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
+{
+    MYFILE *fp = injection->fp;
+
+    if (g_LevelItemCount == MAX_ITEMS) {
+        File_Skip(
+            fp, sizeof(int16_t) * 4 + sizeof(int32_t) * 3 + sizeof(uint16_t));
+        LOG_WARNING("Cannot add more than %d items", MAX_ITEMS);
+        return;
+    }
+
+    ITEM_INFO *item = &g_Items[g_LevelItemCount];
+    File_Read(&item->object_number, sizeof(int16_t), 1, fp);
+    File_Read(&item->room_number, sizeof(int16_t), 1, fp);
+    File_Read(&item->pos.x, sizeof(int32_t), 1, fp);
+    File_Read(&item->pos.y, sizeof(int32_t), 1, fp);
+    File_Read(&item->pos.z, sizeof(int32_t), 1, fp);
+    File_Read(&item->pos.y_rot, sizeof(int16_t), 1, fp);
+    File_Read(&item->shade, sizeof(int16_t), 1, fp);
+    File_Read(&item->flags, sizeof(uint16_t), 1, fp);
+
+    level_info->item_count++;
+    g_LevelItemCount++;
 }
 
 uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index)

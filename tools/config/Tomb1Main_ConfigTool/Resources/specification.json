@@ -267,6 +267,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "restore_khamoon_mummy",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "enable_timer_in_inventory",
           "DataType": "Bool",
           "DefaultValue": true

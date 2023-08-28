@@ -114,6 +114,7 @@ typedef struct {
     bool load_current_music;
     bool load_music_triggers;
     bool fix_item_rots;
+    bool restore_khamoon_mummy;
 
     struct {
         int32_t layout;

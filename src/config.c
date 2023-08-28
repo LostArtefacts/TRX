@@ -234,6 +234,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(load_current_music, true);
     READ_BOOL(load_music_triggers, true);
     READ_BOOL(fix_item_rots, true);
+    READ_BOOL(restore_khamoon_mummy, false);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -421,6 +422,7 @@ bool Config_Write(void)
     WRITE_BOOL(load_current_music);
     WRITE_BOOL(load_music_triggers);
     WRITE_BOOL(fix_item_rots);
+    WRITE_BOOL(restore_khamoon_mummy);
 
     // User settings
     WRITE_BOOL(rendering.enable_bilinear_filter);
