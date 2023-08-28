@@ -1602,12 +1602,16 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
 
     int16_t base_room;
     int16_t link_room;
+    int16_t door_index = -1;
     int16_t x_change;
     int16_t y_change;
     int16_t z_change;
     for (int i = 0; i < inj_info->room_door_edit_count; i++) {
         File_Read(&base_room, sizeof(int16_t), 1, fp);
         File_Read(&link_room, sizeof(int16_t), 1, fp);
+        if (injection->version >= INJ_VERSION_4) {
+            File_Read(&door_index, sizeof(int16_t), 1, fp);
+        }
 
         if (base_room < 0 || base_room >= g_RoomCount) {
             File_Skip(fp, sizeof(int16_t) * 12);
@@ -1619,7 +1623,8 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
         DOOR_INFO *door = NULL;
         for (int j = 0; j < r->doors->count; j++) {
             DOOR_INFO d = r->doors->door[j];
-            if (d.room_num == link_room) {
+            if (d.room_num == link_room
+                && (j == door_index || door_index == -1)) {
                 door = &r->doors->door[j];
                 break;
             }
@@ -1628,7 +1633,8 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
         if (!door) {
             File_Skip(fp, sizeof(int16_t) * 12);
             LOG_WARNING(
-                "Room index %d has no door to %d", base_room, link_room);
+                "Room index %d has no matching door to %d", base_room,
+                link_room);
             continue;
         }
 
