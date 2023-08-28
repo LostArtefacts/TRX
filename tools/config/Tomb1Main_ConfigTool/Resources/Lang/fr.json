@@ -239,8 +239,8 @@
       "Title": "Modifier le comportement d'apparition de Pierre",
       "Description": "Fait en sorte que Pierre (en fuite) remplace bien un autre Pierre (en fuite) déjà existant."
     },
-    "restore_khamoon_mummy": {
-      "Title": "Restaure la momie dans la Cité de Khamoon",
+    "restore_ps1_enemies": {
+      "Title": "Restaure les ennemis PlayStation",
       "Description": "Remet la momie absente sur la version PC mais présente dans la version PlayStation (room 25).\nAttention, changer cette option sur une partie en cours nécessite de redémarrer le niveau, pour être prise en charge."
     },
     "enable_timer_in_inventory": {

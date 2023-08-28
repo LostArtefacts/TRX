@@ -34,7 +34,7 @@ typedef enum INJECTION_TYPE {
     INJ_LARA_ANIMS = 5,
     INJ_LARA_JUMPS = 6,
     INJ_ITEM_ROTATION = 7,
-    INJ_KHAMOON_MUMMY = 8,
+    INJ_PS1_ENEMY = 8,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -218,8 +218,8 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     case INJ_ITEM_ROTATION:
         injection->relevant = g_Config.fix_item_rots;
         break;
-    case INJ_KHAMOON_MUMMY:
-        injection->relevant = g_Config.restore_khamoon_mummy;
+    case INJ_PS1_ENEMY:
+        injection->relevant = g_Config.restore_ps1_enemies;
         break;
     default:
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);

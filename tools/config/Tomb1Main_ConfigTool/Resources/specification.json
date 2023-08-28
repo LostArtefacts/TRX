@@ -267,7 +267,7 @@
           "DefaultValue": true
         },
         {
-          "Field": "restore_khamoon_mummy",
+          "Field": "restore_ps1_enemies",
           "DataType": "Bool",
           "DefaultValue": false
         },

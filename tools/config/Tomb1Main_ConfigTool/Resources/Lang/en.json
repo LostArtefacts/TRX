@@ -239,8 +239,8 @@
       "Title": "Change Pierre spawn behavior",
       "Description": "Makes a freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre."
     },
-    "restore_khamoon_mummy": {
-      "Title": "Restore City of Khamoon mummy",
+    "restore_ps1_enemies": {
+      "Title": "Restore PS1 enemies",
       "Description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nNB Changing this option will require restarting the level."
     },
     "enable_timer_in_inventory": {
