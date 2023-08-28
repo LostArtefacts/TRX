@@ -19,6 +19,7 @@
 - fixed incorrect trapdoor triggers in City of Khamoon and a switch trigger in Obelisk of Khamoon (#942)
 - fixed the setup of two music triggers in St. Francis' Folly (#865)
 - fixed data portal issues in Atlantean Stronghold that could result in a crash (#227)
+- fixed flame emitter saving and loading which caused rare crashing (#947)
 - improve spanish localization and added translation for rotated pickups
 
 ## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
