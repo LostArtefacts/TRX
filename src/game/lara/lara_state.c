@@ -484,7 +484,7 @@ void Lara_State_Slide(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Camera.flags = NO_CHUNKY;
     g_Camera.target_elevation = -45 * PHD_DEGREE;
-    if (g_Input.jump) {
+    if (g_Input.jump && (!g_Config.enable_jump_twists || !g_Input.back)) {
         item->goal_anim_state = LS_JUMP_FORWARD;
     }
 }
@@ -560,7 +560,7 @@ void Lara_State_HangRight(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_SlideBack(ITEM_INFO *item, COLL_INFO *coll)
 {
-    if (g_Input.jump) {
+    if (g_Input.jump && (!g_Config.enable_jump_twists || !g_Input.forward)) {
         item->goal_anim_state = LS_JUMP_BACK;
     }
 }
