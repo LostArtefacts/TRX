@@ -241,7 +241,7 @@
     },
     "restore_ps1_enemies": {
       "Title": "Restore PS1 enemies",
-      "Description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nNB Changing this option will require restarting the level."
+      "Description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the level."
     },
     "enable_timer_in_inventory": {
       "Title": "Timer counts in inventory",
