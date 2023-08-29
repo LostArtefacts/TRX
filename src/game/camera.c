@@ -817,7 +817,7 @@ void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
 
         switch (TRIG_BITS(trigger)) {
         case TO_CAMERA:
-            data++;
+            trigger = *data++;
 
             if (value == g_Camera.last) {
                 g_Camera.number = value;
