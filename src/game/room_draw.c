@@ -281,7 +281,7 @@ void Room_DrawSingleRoom(int16_t room_num)
         }
     }
 
-    for (int i = r->fx_number; i != NO_ITEM; i = g_Effects[i].next_fx) {
+    for (int i = r->fx_number; i != NO_ITEM; i = g_Effects[i].next_draw) {
         Effect_Draw(i);
     }
 
