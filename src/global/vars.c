@@ -15,6 +15,7 @@
 #include "game/effect_routines/sand.h"
 #include "game/effect_routines/stairs2slope.h"
 #include "game/effect_routines/turn_180.h"
+#include "game/gameflow.h"
 
 #include <stddef.h>
 
@@ -99,3 +100,10 @@ int16_t g_InvChosen = -1;
 int32_t g_LsAdder = 0;
 int32_t g_LsDivider = 0;
 SHADOW_INFO g_ShadowInfo = { 0 };
+
+#ifndef DOCKER_BUILD
+const char *g_T1MVersion = "T1M (non-Docker build)";
+GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
+    { 0, NULL },
+};
+#endif
