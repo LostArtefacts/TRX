@@ -481,7 +481,6 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     } else {
                         g_GameInfo.save_initial_version =
                             SAVEGAME_CURRENT_VERSION;
-                        g_GameInfo.bonus_flag = 0;
                     }
                 } else if (
                     g_InvMode == INV_SAVE_MODE

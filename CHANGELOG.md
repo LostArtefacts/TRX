@@ -22,6 +22,7 @@
 - fixed data portal issues in Atlantean Stronghold that could result in a crash (#227)
 - fixed the camera in Natla's Mines when pulling the lever in room 67 (#352)
 - fixed flame emitter saving and loading which caused rare crashing (#947)
+- fixed new game plus not working if enable_game_modes was set to false (#960, regression from 2.8)
 - improve spanish localization and added translation for rotated pickups
 
 ## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
