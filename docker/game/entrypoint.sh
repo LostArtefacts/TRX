@@ -2,6 +2,8 @@
 set -x
 set -e
 
+export CFLAGS=-DDOCKER_BUILD
+
 if [ ! -f /app/build/build.ninja ]; then
     meson --buildtype "$TARGET" /app/build/ --cross /app/docker/game/meson_linux_mingw32.txt --pkg-config-path=$PKG_CONFIG_PATH
 fi
