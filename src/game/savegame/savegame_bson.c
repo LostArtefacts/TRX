@@ -35,10 +35,13 @@ typedef struct SAVEGAME_BSON_HEADER {
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
 
+typedef struct SAVEGAME_BSON_FX_ORDER {
+    int16_t count;
+    int16_t id_map[NUM_EFFECTS];
+} SAVEGAME_BSON_FX_ORDER;
+
 static void SaveGame_BSON_SaveRaw(
     MYFILE *fp, struct json_value_s *root, int32_t version);
-static bool Savegame_BSON_IsValidItemObject(
-    int16_t saved_obj_num, int16_t current_obj_num);
 static struct json_value_s *Savegame_BSON_ParseFromBuffer(
     const char *buffer, size_t buffer_size, int32_t *version_out);
 static struct json_value_s *Savegame_BSON_ParseFromFile(
@@ -80,6 +83,10 @@ static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara);
 static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void);
 static struct json_array_s *SaveGame_BSON_DumpMusicTrackFlags(void);
 
+static void SaveGame_BSON_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
+static bool Savegame_BSON_IsValidItemObject(
+    int16_t saved_obj_num, int16_t current_obj_num);
+
 static void SaveGame_BSON_SaveRaw(
     MYFILE *fp, struct json_value_s *root, int32_t version)
 {
@@ -109,6 +116,20 @@ static void SaveGame_BSON_SaveRaw(
     File_Write(compressed, sizeof(char), compressed_size, fp);
 
     Memory_FreePointer(&compressed);
+}
+
+static void SaveGame_BSON_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order)
+{
+    order->count = 0;
+    for (int i = 0; i < NUM_EFFECTS; i++) {
+        order->id_map[i] = -1;
+    }
+
+    for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
+         linknum = g_Effects[linknum].next_active) {
+        order->id_map[linknum] = order->count;
+        order->count++;
+    }
 }
 
 static bool Savegame_BSON_IsValidItemObject(
@@ -550,9 +571,10 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
 
             if (item->object_number == O_FLAME_EMITTER
                 && g_Config.enable_enhanced_saves) {
-                int32_t flame_num =
-                    json_object_get_int(item_obj, "flame_num", 0);
-                item->data = (void *)flame_num;
+                int32_t fx_num = json_object_get_int(item_obj, "fx_num", -1);
+                if (fx_num != -1) {
+                    item->data = (void *)(fx_num + 1);
+                }
             }
         }
     }
@@ -949,6 +971,9 @@ static struct json_array_s *Savegame_BSON_DumpCameras(void)
 
 static struct json_array_s *Savegame_BSON_DumpItems(void)
 {
+    SAVEGAME_BSON_FX_ORDER fx_order;
+    SaveGame_BSON_GetFXOrder(&fx_order);
+
     struct json_array_s *items_arr = json_array_new();
     for (int i = 0; i < g_LevelItemCount; i++) {
         struct json_object_s *item_obj = json_object_new();
@@ -1007,9 +1032,9 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                     item_obj, "creature_mood", creature->mood);
             }
 
-            if (item->object_number == O_FLAME_EMITTER) {
-                int32_t flame_num = (int32_t)item->data;
-                json_object_append_int(item_obj, "flame_num", flame_num);
+            if (item->object_number == O_FLAME_EMITTER && item->data) {
+                int32_t fx_num = fx_order.id_map[(int32_t)item->data - 1];
+                json_object_append_int(item_obj, "fx_num", fx_num);
             }
         }
 
@@ -1022,19 +1047,13 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
 {
     struct json_array_s *fx_arr = json_array_new();
 
-    // Reverse FX array before saving to save in proper order.
-    int16_t remap_effects[NUM_EFFECTS];
-    int32_t fx_count = 0;
+    SAVEGAME_BSON_FX_ORDER fx_order;
+    SaveGame_BSON_GetFXOrder(&fx_order);
+
     for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
          linknum = g_Effects[linknum].next_active) {
-        remap_effects[fx_count] = linknum;
-        fx_count++;
-    }
-
-    for (int32_t i = fx_count - 1; i >= 0; i--) {
         struct json_object_s *fx_obj = json_object_new();
-
-        FX_INFO *fx = &g_Effects[remap_effects[i]];
+        FX_INFO *fx = &g_Effects[linknum];
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);
@@ -1045,7 +1064,6 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
         json_object_append_int(fx_obj, "frame_number", fx->frame_number);
         json_object_append_int(fx_obj, "counter", fx->counter);
         json_object_append_int(fx_obj, "shade", fx->shade);
-
         json_array_append_object(fx_arr, fx_obj);
     }
 
