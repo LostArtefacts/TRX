@@ -1445,8 +1445,9 @@ typedef struct FX_INFO {
     PHD_3DPOS pos;
     int16_t room_number;
     GAME_OBJECT_ID object_number;
-    int16_t next_fx;
+    int16_t next_draw;
     int16_t next_active;
+    int16_t next_free;
     int16_t speed;
     int16_t fall_speed;
     int16_t frame_number;
