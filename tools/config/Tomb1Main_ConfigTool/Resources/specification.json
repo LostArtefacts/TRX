@@ -195,6 +195,11 @@
       "Image": "Graphics/graphic4.jpg",
       "Properties": [
         {
+          "Field": "enable_save_crystals",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "walk_to_items",
           "DataType": "Bool",
           "DefaultValue": false

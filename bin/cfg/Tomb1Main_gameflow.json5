@@ -13,8 +13,9 @@
     // disables the config option enable_game_modes until a playthrough is completed
     "disable_game_modes": false,
 
-    // disables saving except in the locations near the crystals.
-    "enable_save_crystals": false,
+    // forces whether save crystals are enabled or not
+    // overrides the config option enable_save_crystals
+    "enable_save_crystals_option": true,
 
     // seconds to pass in the main menu before playing the demo
     "demo_delay": 16,

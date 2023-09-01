@@ -183,6 +183,10 @@
       "Title": "Supprimer les uzis",
       "Description": "Supprime tous les uzis et leurs munitions de tout le jeu."
     },
+    "enable_save_crystals": {
+      "Title": "Activer le mode de sauvegarde par cristaux",
+      "Description": "Active le système de sauvegarde de la version PlayStation par cristaux.  La sauvegarde se limite à chaque début de niveau et à chaque rencontre d’un cristal de sauvegarde à usage unique dans les niveaux. Changer cette option nécessitera de redémarrer le niveau."
+    },
     "walk_to_items": {
       "Title": "Interactions animées - Placement automatique",
       "Description": "Fait marcher Lara vers les collectibles et les interrupteurs à proximité, au lieu de se téléporter vers eux."

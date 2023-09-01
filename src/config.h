@@ -116,6 +116,7 @@ typedef struct {
     bool fix_item_rots;
     bool restore_ps1_enemies;
     bool enable_game_modes;
+    bool enable_save_crystals;
 
     struct {
         int32_t layout;

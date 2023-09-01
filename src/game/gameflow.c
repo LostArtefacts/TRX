@@ -231,13 +231,14 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     g_GameFlow.disable_game_modes =
         json_object_get_bool(obj, "disable_game_modes ", false);
 
-    tmp_i =
-        json_object_get_bool(obj, "enable_save_crystals", JSON_INVALID_BOOL);
-    if (tmp_i == JSON_INVALID_BOOL) {
-        LOG_ERROR("'enable_save_crystals' must be a boolean");
-        return false;
-    }
-    g_GameFlow.enable_save_crystals = tmp_i;
+    g_GameFlow.enable_save_crystals_option =
+        json_object_get_bool(obj, "enable_save_crystals_option", false);
+    g_Config.enable_save_crystals &= g_GameFlow.enable_save_crystals_option;
+    LOG_DEBUG(
+        "g_GameFlow.enable_save_crystals_option: %d",
+        g_GameFlow.enable_save_crystals_option);
+    LOG_DEBUG(
+        "g_Config.enable_save_crystals: %d", g_Config.enable_save_crystals);
 
     tmp_arr = json_object_get_array(obj, "water_color");
     g_GameFlow.water_color.r = 0.6;

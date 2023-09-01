@@ -5,7 +5,7 @@
     "savegame_fmt_legacy": "saveuba.%d",
     "savegame_fmt_bson": "save_trub_%02d.dat",
     "disable_game_modes ": false,
-    "enable_save_crystals": false,
+    "enable_save_crystals_option": true,
     "demo_delay": 16,
     "water_color": [0.45, 1.0, 1.0],
     "draw_distance_fade": 22,
