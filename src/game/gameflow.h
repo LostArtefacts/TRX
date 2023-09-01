@@ -66,7 +66,7 @@ typedef struct GAMEFLOW {
     char *savegame_fmt_bson;
     int8_t has_demo;
     int32_t demo_delay;
-    int8_t enable_game_modes;
+    bool override_game_modes;
     int8_t enable_save_crystals;
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];

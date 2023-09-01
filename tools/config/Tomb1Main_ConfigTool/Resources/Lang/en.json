@@ -243,6 +243,10 @@
       "Title": "Restore PS1 enemies",
       "Description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the level."
     },
+    "enable_game_modes": {
+      "Title": "Enable game modes",
+      "Description": "Allows new game plus options to be selected from the new game passport menu.\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage.\n- Japanese NG+: combination of New Game+ and Japanese NG."
+    },
     "enable_timer_in_inventory": {
       "Title": "Timer counts in inventory",
       "Description": "Makes the in-game timer work even while the game is showing the inventory."

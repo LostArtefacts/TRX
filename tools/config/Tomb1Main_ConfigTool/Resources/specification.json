@@ -272,6 +272,11 @@
           "DefaultValue": false
         },
         {
+          "Field": "enable_game_modes",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_timer_in_inventory",
           "DataType": "Bool",
           "DefaultValue": true

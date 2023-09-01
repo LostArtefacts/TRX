@@ -115,6 +115,7 @@ typedef struct {
     bool load_music_triggers;
     bool fix_item_rots;
     bool restore_ps1_enemies;
+    bool enable_game_modes;
 
     struct {
         int32_t layout;
