@@ -10,8 +10,8 @@
     "savegame_fmt_bson": "save_tr1_%02d.dat",
 
     // whether to allow user to select NG/NG+/etc. modes in the new game dialog
-    // overrides the config file option enable_game_modes
-    "override_game_modes": false,
+    // disables the config option enable_game_modes until a playthrough is completed
+    "disable_game_modes": false,
 
     // disables saving except in the locations near the crystals.
     "enable_save_crystals": false,

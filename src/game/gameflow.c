@@ -228,8 +228,8 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
     g_GameFlow.demo_delay = tmp_d * FRAMES_PER_SECOND;
 
-    g_GameFlow.override_game_modes =
-        json_object_get_bool(obj, "override_game_modes", false);
+    g_GameFlow.disable_game_modes =
+        json_object_get_bool(obj, "disable_game_modes ", false);
 
     tmp_i =
         json_object_get_bool(obj, "enable_save_crystals", JSON_INVALID_BOOL);
