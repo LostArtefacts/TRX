@@ -243,6 +243,10 @@
       "Title": "Restaure les ennemis PlayStation",
       "Description": "Remet la momie absente sur la version PC mais présente dans la version PlayStation (room 25).\nAttention, changer cette option sur une partie en cours nécessite de redémarrer le niveau, pour être prise en charge."
     },
+    "enable_game_modes": {
+      "Title": "Activer les différents modes de jeu",
+      "Description": "Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie + : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise + : Combine le mode Version Japonaise et le mode Nouvelle partie +."
+    },
     "enable_timer_in_inventory": {
       "Title": "Compteur de temps de jeu dans l'inventaire",
       "Description": "Fait fonctionner le conteur du jeu même en étant dans les menus de l'inventaire."
