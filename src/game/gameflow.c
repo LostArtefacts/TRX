@@ -231,14 +231,8 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     g_GameFlow.disable_game_modes =
         json_object_get_bool(obj, "disable_game_modes ", false);
 
-    g_GameFlow.enable_save_crystals_option =
-        json_object_get_bool(obj, "enable_save_crystals_option", false);
-    g_Config.enable_save_crystals &= g_GameFlow.enable_save_crystals_option;
-    LOG_DEBUG(
-        "g_GameFlow.enable_save_crystals_option: %d",
-        g_GameFlow.enable_save_crystals_option);
-    LOG_DEBUG(
-        "g_Config.enable_save_crystals: %d", g_Config.enable_save_crystals);
+    g_GameFlow.force_enable_save_crystals =
+        json_object_get_bool(obj, "force_enable_save_crystals", false);
 
     tmp_arr = json_object_get_array(obj, "water_color");
     g_GameFlow.water_color.r = 0.6;
@@ -1116,6 +1110,10 @@ bool GameFlow_LoadFromFile(const char *file_name)
     g_InvItemSound.string = g_GameFlow.strings[GS_INV_ITEM_SOUND];
     g_InvItemControls.string = g_GameFlow.strings[GS_INV_ITEM_CONTROLS];
     g_InvItemLarasHome.string = g_GameFlow.strings[GS_INV_ITEM_LARAS_HOME];
+
+    if (g_GameFlow.force_enable_save_crystals) {
+        g_Config.enable_save_crystals = true;
+    }
 
     return result;
 }

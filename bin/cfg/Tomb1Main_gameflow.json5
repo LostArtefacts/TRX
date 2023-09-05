@@ -15,7 +15,7 @@
 
     // forces whether save crystals are enabled or not
     // overrides the config option enable_save_crystals
-    "enable_save_crystals_option": true,
+    "force_enable_save_crystals": false,
 
     // seconds to pass in the main menu before playing the demo
     "demo_delay": 16,

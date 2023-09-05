@@ -67,7 +67,7 @@ typedef struct GAMEFLOW {
     int8_t has_demo;
     int32_t demo_delay;
     bool disable_game_modes;
-    bool enable_save_crystals_option;
+    bool force_enable_save_crystals;
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
     RGBF water_color;
