@@ -57,7 +57,8 @@ static bool Savegame_BSON_LoadMisc(
 static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj);
 static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
 static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr);
-static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr);
+static bool Savegame_BSON_LoadItems(
+    struct json_array_s *items_arr, uint16_t header_version);
 static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr);
 static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm);
 static bool Savegame_BSON_LoadAmmo(
@@ -460,7 +461,8 @@ static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr)
     return true;
 }
 
-static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
+static bool Savegame_BSON_LoadItems(
+    struct json_array_s *items_arr, uint16_t header_version)
 {
     if (!items_arr) {
         LOG_ERROR("Malformed save: invalid or missing items array");
@@ -570,7 +572,8 @@ static bool Savegame_BSON_LoadItems(struct json_array_s *items_arr)
                 item->data = NULL;
             }
 
-            if (item->object_number == O_FLAME_EMITTER
+            if (header_version >= VERSION_3
+                && item->object_number == O_FLAME_EMITTER
                 && g_Config.enable_enhanced_saves) {
                 int32_t fx_num = json_object_get_int(item_obj, "fx_num", -1);
                 if (fx_num != -1) {
@@ -1297,11 +1300,12 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     Savegame_PreprocessItems();
 
-    if (!Savegame_BSON_LoadItems(json_object_get_array(root_obj, "items"))) {
+    if (!Savegame_BSON_LoadItems(
+            json_object_get_array(root_obj, "items"), header.version)) {
         goto cleanup;
     }
 
-    if (header.version >= VERSION_2) {
+    if (header.version >= VERSION_3) {
         if (!SaveGame_BSON_LoadFx(json_object_get_array(root_obj, "fx"))) {
             goto cleanup;
         }
