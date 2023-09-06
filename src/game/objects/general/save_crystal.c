@@ -1,6 +1,6 @@
 #include "game/objects/general/save_crystal.h"
 
-#include "game/gameflow.h"
+#include "config.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/items.h"
@@ -17,7 +17,7 @@ static int16_t m_CrystalBounds[12] = {
 void SaveCrystal_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = SaveCrystal_Initialise;
-    if (g_GameFlow.enable_save_crystals) {
+    if (g_Config.enable_save_crystals) {
         obj->control = SaveCrystal_Control;
         obj->collision = SaveCrystal_Collision;
         obj->save_flags = 1;
@@ -26,7 +26,7 @@ void SaveCrystal_Setup(OBJECT_INFO *obj)
 
 void SaveCrystal_Initialise(int16_t item_num)
 {
-    if (g_GameFlow.enable_save_crystals) {
+    if (g_Config.enable_save_crystals) {
         Item_AddActive(item_num);
     } else {
         g_Items[item_num].status = IS_INVISIBLE;

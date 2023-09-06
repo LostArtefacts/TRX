@@ -255,7 +255,7 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
     g_GameInfo.current[g_CurrentLevel].stats.max_secret_count =
         Stats_GetSecrets();
 
-    bool ask_for_save = g_GameFlow.enable_save_crystals
+    bool ask_for_save = g_Config.enable_save_crystals
         && level_type == GFL_NORMAL
         && g_CurrentLevel != g_GameFlow.first_level_num
         && g_CurrentLevel != g_GameFlow.gym_level_num;

@@ -183,6 +183,10 @@
       "Title": "Remove Uzis",
       "Description": "Removes all Uzi guns and Uzi ammo pickups from the game."
     },
+    "enable_save_crystals": {
+      "Title": "Enable save crystals",
+      "Description": "Limits saving to the beginning of levels save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level."
+    },
     "walk_to_items": {
       "Title": "Animated interactions",
       "Description": "Makes Lara walk to pickups and switches when nearby instead of teleporting to them."
