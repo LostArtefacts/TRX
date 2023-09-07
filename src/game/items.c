@@ -126,6 +126,7 @@ void Item_Initialise(int16_t item_num)
     item->mesh_bits = -1;
     item->touch_bits = 0;
     item->data = NULL;
+    item->priv = NULL;
 
     if (item->flags & IF_NOT_VISIBLE) {
         item->status = IS_INVISIBLE;

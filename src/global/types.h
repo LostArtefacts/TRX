@@ -1394,6 +1394,7 @@ typedef struct ITEM_INFO {
     int16_t flags;
     int16_t shade;
     void *data;
+    void *priv;
     PHD_3DPOS pos;
     uint16_t active : 1;
     uint16_t status : 2;
