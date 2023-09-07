@@ -11,7 +11,7 @@
 
     // whether to allow user to select NG/NG+/etc. modes in the new game dialog
     // disables the config option enable_game_modes until a playthrough is completed
-    "disable_game_modes": false,
+    "force_enable_game_modes": false,
 
     // forces whether save crystals are enabled or not
     // overrides the config option enable_save_crystals
