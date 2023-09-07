@@ -25,7 +25,7 @@
 - fixed new game plus not working if enable_game_modes was set to false (#960, regression from 2.8)
 - moved the enable_game_modes option from the gameflow to the config tool and added a gameflow option to override (#962)
 - moved the enable_save_crystals option from the gameflow to the config tool (#962)
-- improve spanish localization and added translation for rotated pickups
+- improved Spanish localization for the config tool
 
 ## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
 - fixed Lara stuttering when performing certain animations (#901, regression from 2.14)

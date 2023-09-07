@@ -239,6 +239,14 @@
       "Title": "Barras más suaves",
       "Description": "Hace que la barra de salud y la barra de aire utilicen transiciones de color suaves."
     },
+    "restore_ps1_enemies": {
+      "Title": "Restaurar enemigos de PS1",
+      "Description": "Agrega la momia que aparece en la versión de PlayStation de Ciudad de Khamoon, habitación 25.\nCambiar esta opción requerirá reiniciar el nivel."
+    },
+    "enable_game_modes": {
+      "Title": "Habilitar modos de juego",
+      "Description": "Permite seleccionar opciones de Nueva Partida+ desde el menú del pasaporte de Nueva Partida.\n-Nueva Partida+: desbloquea todas las armas con munición infinita; los enemigos tienen el doble de puntos de vida.\n-Nueva Partida Japonesa: las armas hacen el doble de daño.\n-Nueva Partida Japonesa+: combinación de Nueva Partida+ y Nueva Partida Japonesa."
+    },
     "enable_timer_in_inventory": {
       "Title": "Temporizador en el inventario",
       "Description": "Permite que el temporizador del juego siga funcionando incluso cuando se muestra el inventario."
@@ -358,6 +366,10 @@
     "start_lara_hitpoints": {
       "Title": "Salud inicial de Lara",
       "Description": "Establece el valor de salud de Lara al comienzo de cada nivel."
+    },
+    "enable_save_crystals": {
+      "Title": "Habilitar cristales de guardado",
+      "Description": "Limita el guardado a los cristales de guardado al comienzo de los niveles. Los niveles tienen cristales de guardado limitados de un solo uso, al igual que en la versión de PS1. Cambiar esta opción requerirá reiniciar el nivel."
     },
     "walk_to_items": {
       "Title": "Interacciones animadas",
