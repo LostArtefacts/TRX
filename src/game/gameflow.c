@@ -228,8 +228,8 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
     g_GameFlow.demo_delay = tmp_d * FRAMES_PER_SECOND;
 
-    g_GameFlow.disable_game_modes =
-        json_object_get_bool(obj, "disable_game_modes ", false);
+    g_GameFlow.force_disable_game_modes =
+        json_object_get_bool(obj, "force_disable_game_modes", false);
 
     g_GameFlow.force_enable_save_crystals =
         json_object_get_bool(obj, "force_enable_save_crystals", false);
@@ -1113,6 +1113,10 @@ bool GameFlow_LoadFromFile(const char *file_name)
 
     if (g_GameFlow.force_enable_save_crystals) {
         g_Config.enable_save_crystals = true;
+    }
+
+    if (g_GameFlow.force_disable_game_modes) {
+        g_Config.enable_game_modes = false;
     }
 
     return result;
