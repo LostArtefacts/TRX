@@ -9,11 +9,11 @@
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
 
-    // whether to allow user to select NG/NG+/etc. modes in the new game dialog
-    // disables the config option enable_game_modes until a playthrough is completed
-    "force_enable_game_modes": false,
+    // forces game mode selection to be disabled if true so the user can't select NG+ modes until a playthrough is completed
+    // overrides the config option enable_game_modes
+    "force_disable_game_modes": false,
 
-    // forces whether save crystals are enabled or not
+    // forces save crystals to be enabled if true
     // overrides the config option enable_save_crystals
     "force_enable_save_crystals": false,
 
