@@ -1116,7 +1116,7 @@ bool GameFlow_LoadFromFile(const char *file_name)
     }
 
     if (g_GameFlow.force_disable_game_modes) {
-        g_Config.enable_game_modes = true;
+        g_Config.enable_game_modes = false;
     }
 
     return result;
