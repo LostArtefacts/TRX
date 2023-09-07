@@ -14,6 +14,7 @@
 #include "math/math.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #define NATLA_SHOT_DAMAGE 100
 #define NATLA_NEAR_DEATH 200
@@ -42,7 +43,6 @@ typedef enum {
     NATLA_DEATH = 9,
 } NATLA_ANIM;
 
-static int16_t m_Facing = 0;
 static BITE_INFO m_NatlaGun = { 5, 220, 7, 4 };
 
 void Natla_Setup(OBJECT_INFO *obj)
@@ -82,6 +82,7 @@ void Natla_Control(int16_t item_num)
     int16_t tilt = 0;
     int16_t gun = natla->head_rotation * 7 / 8;
     int16_t timer = natla->flags & NATLA_TIMER;
+    int16_t facing = (int16_t)(size_t)item->priv;
 
     if (item->hit_points <= 0 && item->hit_points > DONT_TARGET) {
         item->goal_anim_state = NATLA_DEATH;
@@ -105,9 +106,9 @@ void Natla_Control(int16_t item_num)
             && info.angle < NATLA_FIRE_ARC
             && Creature_CanTargetEnemy(item, &info);
 
-        if (m_Facing) {
-            item->pos.y_rot += m_Facing;
-            m_Facing = 0;
+        if (facing) {
+            item->pos.y_rot += facing;
+            facing = 0;
         }
 
         switch (item->current_anim_state) {
@@ -217,21 +218,21 @@ void Natla_Control(int16_t item_num)
             Creature_Mood(item, &info, false);
         }
 
-        item->pos.y_rot -= m_Facing;
+        item->pos.y_rot -= facing;
         angle = Creature_Turn(item, NATLA_FLY_TURN);
 
         if (item->current_anim_state == NATLA_FLY) {
             if (info.angle > NATLA_FLY_TURN) {
-                m_Facing += NATLA_FLY_TURN;
+                facing += NATLA_FLY_TURN;
             } else if (info.angle < -NATLA_FLY_TURN) {
-                m_Facing -= NATLA_FLY_TURN;
+                facing -= NATLA_FLY_TURN;
             } else {
-                m_Facing += info.angle;
+                facing += info.angle;
             }
-            item->pos.y_rot += m_Facing;
+            item->pos.y_rot += facing;
         } else {
-            item->pos.y_rot += m_Facing - angle;
-            m_Facing = 0;
+            item->pos.y_rot += facing - angle;
+            facing = 0;
         }
 
         switch (item->current_anim_state) {
@@ -306,9 +307,11 @@ void Natla_Control(int16_t item_num)
     natla->flags &= ~NATLA_TIMER;
     natla->flags |= timer & NATLA_TIMER;
 
-    item->pos.y_rot -= m_Facing;
+    item->pos.y_rot -= facing;
     Creature_Animate(item_num, angle, 0);
-    item->pos.y_rot += m_Facing;
+    item->pos.y_rot += facing;
+
+    item->priv = (void *)(size_t)facing;
 }
 
 void NatlaGun_Setup(OBJECT_INFO *obj)
