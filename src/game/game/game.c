@@ -205,7 +205,8 @@ int32_t Game_Stop(void)
     Savegame_PersistGameToCurrentInfo(g_CurrentLevel);
 
     if (g_CurrentLevel == g_GameFlow.last_level_num) {
-        g_GameInfo.bonus_flag = GBF_NGPLUS;
+        g_Config.runtime.new_game_plus_unlock = true;
+        Config_Write();
     } else {
         Savegame_CarryCurrentInfoToNextLevel(
             g_CurrentLevel, g_CurrentLevel + 1);
