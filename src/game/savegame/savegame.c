@@ -160,7 +160,7 @@ static void Savegame_LoadPostprocess(void)
     }
 
     if (g_GameInfo.bonus_flag) {
-        g_Config.runtime.new_game_plus_unlock = true;
+        g_Config.profile.new_game_plus_unlock = true;
     }
 
     LOT_ClearLOT(&g_Lara.LOT);

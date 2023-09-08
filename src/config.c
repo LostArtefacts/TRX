@@ -268,7 +268,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_BAR_SCALE, MAX_BAR_SCALE);
 
-    READ_BOOL(runtime.new_game_plus_unlock, false);
+    READ_BOOL(profile.new_game_plus_unlock, false);
 
     char layout_name[50];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
@@ -443,7 +443,7 @@ bool Config_Write(void)
     WRITE_FLOAT(ui.text_scale);
     WRITE_FLOAT(ui.bar_scale);
 
-    WRITE_BOOL(runtime.new_game_plus_unlock);
+    WRITE_BOOL(profile.new_game_plus_unlock);
 
     char layout_name[20];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;

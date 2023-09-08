@@ -46,10 +46,6 @@ typedef enum {
 } BAR_SHOW_MODE;
 
 typedef struct {
-    bool new_game_plus_unlock;
-} RUNTIME_SETTINGS;
-
-typedef struct {
     bool disable_healing_between_levels;
     bool disable_medpacks;
     bool disable_magnums;
@@ -141,11 +137,14 @@ typedef struct {
         UI_STYLE menu_style;
     } ui;
 
+    typedef struct {
+        bool new_game_plus_unlock;
+    } profile;
+
     int32_t sound_volume;
     int32_t music_volume;
 
     SCREENSHOT_FORMAT screenshot_format;
-    RUNTIME_SETTINGS runtime;
 } CONFIG;
 
 extern CONFIG g_Config;
