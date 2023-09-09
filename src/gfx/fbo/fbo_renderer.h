@@ -26,3 +26,5 @@ void GFX_FBO_Renderer_Close(GFX_FBO_Renderer *renderer);
 void GFX_FBO_Renderer_Render(GFX_FBO_Renderer *renderer);
 void GFX_FBO_Renderer_SetSmoothingEnabled(
     GFX_FBO_Renderer *renderer, bool is_enabled);
+void GFX_FBO_Renderer_Bind(const GFX_FBO_Renderer *renderer);
+void GFX_FBO_Renderer_Unbind(const GFX_FBO_Renderer *renderer);

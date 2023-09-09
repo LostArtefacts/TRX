@@ -262,11 +262,11 @@ void GFX_Context_SwapBuffers(void)
         SDL_GL_SwapWindow(m_Context.window_handle);
 
         GFX_Context_SwitchToWindowViewport();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        GFX_FBO_Renderer_Unbind(&m_Context.renderer_fbo);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         GFX_GL_CheckError();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, m_Context.renderer_fbo.fbo);
+        GFX_FBO_Renderer_Bind(&m_Context.renderer_fbo);
         GFX_Context_SwitchToDisplayViewport();
         break;
 

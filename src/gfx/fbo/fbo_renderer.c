@@ -151,3 +151,13 @@ void GFX_FBO_Renderer_SetSmoothingEnabled(
         &renderer->sampler, GL_TEXTURE_MIN_FILTER,
         is_enabled ? GL_LINEAR : GL_NEAREST);
 }
+
+void GFX_FBO_Renderer_Bind(const GFX_FBO_Renderer *renderer)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, renderer->fbo);
+}
+
+void GFX_FBO_Renderer_Unbind(const GFX_FBO_Renderer *renderer)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
