@@ -4,15 +4,14 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/shell.h"
+#include "global/const.h"
 #include "global/vars.h"
-#include "log.h"
 #include "math/math.h"
 #include "specific/s_audio.h"
 #include "util.h"
 
 #include <math.h>
 #include <stddef.h>
-#include <stdio.h>
 
 #define MAX_PLAYING_FX AUDIO_MAX_ACTIVE_SAMPLES
 #define MAX_AMBIENT_FX 8

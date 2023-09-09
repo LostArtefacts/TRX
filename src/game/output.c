@@ -600,10 +600,9 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         PHD_VBUF *vn2 = &m_VBuf[g_Config.enable_round_shadow ? 4 : 1];
         PHD_VBUF *vn3 = &m_VBuf[g_Config.enable_round_shadow ? 8 : 2];
 
-        bool visible =
-            ((int32_t)(((vn3->xs - vn2->xs) * (vn1->ys - vn2->ys))
-                       - ((vn1->xs - vn2->xs) * (vn3->ys - vn2->ys)))
-             >= 0);
+        int32_t c1 = (vn3->xs - vn2->xs) * (vn1->ys - vn2->ys);
+        int32_t c2 = (vn1->xs - vn2->xs) * (vn3->ys - vn2->ys);
+        bool visible = (int32_t)(c1 - c2) >= 0;
 
         if (!clip_and && clip_positive && visible) {
             S_Output_DrawShadow(

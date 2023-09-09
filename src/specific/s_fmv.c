@@ -42,7 +42,6 @@
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_mutex.h>
 #include <SDL2/SDL_pixels.h>
@@ -53,6 +52,10 @@
 #include <SDL2/SDL_video.h>
 #include <errno.h>
 #include <libavcodec/avcodec.h>
+#include <libavcodec/codec.h>
+#include <libavcodec/codec_id.h>
+#include <libavcodec/codec_par.h>
+#include <libavcodec/packet.h>
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
 #include <libavutil/attributes.h>

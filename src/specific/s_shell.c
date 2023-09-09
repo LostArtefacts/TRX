@@ -10,8 +10,6 @@
 #include "log.h"
 #include "memory.h"
 
-#include <libavcodec/avcodec.h>
-
 #define SDL_MAIN_HANDLED
 
 #ifdef _WIN32
@@ -19,6 +17,16 @@
     #include <windows.h>
 #endif
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_messagebox.h>
+#include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_video.h>
+#include <libavcodec/version.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 static int m_ArgCount = 0;

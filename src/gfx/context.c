@@ -7,7 +7,7 @@
 #include "log.h"
 #include "memory.h"
 
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 #include <string.h>
 
 typedef struct GFX_CONTEXT {
