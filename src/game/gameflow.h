@@ -60,6 +60,8 @@ typedef struct GAMEFLOW {
     int32_t gym_level_num;
     int32_t first_level_num;
     int32_t last_level_num;
+    int32_t first_bonus_num;
+    int32_t last_bonus_num;
     int32_t title_level_num;
     int32_t level_count;
     char *savegame_fmt_legacy;

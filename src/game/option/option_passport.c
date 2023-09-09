@@ -166,6 +166,7 @@ static void Option_PassportShowNewGame(void)
                 g_GameInfo.bonus_flag = 0;
                 break;
             }
+            g_GameInfo.bonus_level_unlock = false;
             g_GameInfo.current_save_slot = -1;
             g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
             g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
@@ -484,6 +485,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                     } else {
                         g_GameInfo.save_initial_version =
                             SAVEGAME_CURRENT_VERSION;
+                        g_GameInfo.bonus_level_unlock = false;
                     }
                 } else if (
                     g_InvMode == INV_SAVE_MODE

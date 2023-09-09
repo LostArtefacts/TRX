@@ -382,7 +382,7 @@ void Stats_Show(int32_t level_num)
     g_GameInfo.status &= ~GMS_IN_STATS;
 }
 
-void Stats_ShowTotal(const char *filename)
+void Stats_ShowTotal(const char *filename, int first_level, int last_level)
 {
     char buf[100];
     char time_str[100];
@@ -399,8 +399,7 @@ void Stats_ShowTotal(const char *filename)
 
     int16_t secret_flags = 0;
 
-    for (int i = g_GameFlow.first_level_num; i <= g_GameFlow.last_level_num;
-         i++) {
+    for (int i = first_level; i <= last_level; i++) {
         const GAME_STATS *stats = &g_GameInfo.current[i].stats;
 
         total_timer += stats->timer;
@@ -418,6 +417,10 @@ void Stats_ShowTotal(const char *filename)
         total_max_secret_count += stats->max_secret_count;
         total_max_pickup_count += stats->max_pickup_count;
     }
+
+    // Check for bonus level unlock.
+    g_GameInfo.bonus_level_unlock =
+        total_secret_count >= total_max_secret_count;
 
     Text_RemoveAll();
 

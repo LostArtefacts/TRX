@@ -53,7 +53,8 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
 static bool Savegame_BSON_LoadDiscontinuedEndInfo(
     struct json_array_s *end_arr, GAME_INFO *game_info);
 static bool Savegame_BSON_LoadMisc(
-    struct json_object_s *misc_obj, GAME_INFO *game_info);
+    struct json_object_s *misc_obj, GAME_INFO *game_info,
+    uint16_t header_version);
 static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj);
 static bool Savegame_BSON_LoadFlipmaps(struct json_object_s *flipmap_obj);
 static bool Savegame_BSON_LoadCameras(struct json_array_s *cameras_arr);
@@ -370,7 +371,8 @@ static bool Savegame_BSON_LoadDiscontinuedEndInfo(
 }
 
 static bool Savegame_BSON_LoadMisc(
-    struct json_object_s *misc_obj, GAME_INFO *game_info)
+    struct json_object_s *misc_obj, GAME_INFO *game_info,
+    uint16_t header_version)
 {
     assert(game_info);
     if (!misc_obj) {
@@ -378,6 +380,11 @@ static bool Savegame_BSON_LoadMisc(
         return false;
     }
     game_info->bonus_flag = json_object_get_int(misc_obj, "bonus_flag", 0);
+    if (header_version >= VERSION_3) {
+        game_info->bonus_level_unlock =
+            json_object_get_bool(misc_obj, "bonus_level_unlock", 0);
+        LOG_DEBUG("Load bonus_level_unlock: %d", game_info->bonus_level_unlock);
+    }
     return true;
 }
 
@@ -929,6 +936,8 @@ static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info)
     assert(game_info);
     struct json_object_s *misc_obj = json_object_new();
     json_object_append_int(misc_obj, "bonus_flag", game_info->bonus_flag);
+    json_object_append_bool(
+        misc_obj, "bonus_level_unlock", game_info->bonus_level_unlock);
     return misc_obj;
 }
 
@@ -1278,7 +1287,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!Savegame_BSON_LoadMisc(
-            json_object_get_object(root_obj, "misc"), game_info)) {
+            json_object_get_object(root_obj, "misc"), game_info,
+            header.version)) {
         goto cleanup;
     }
 

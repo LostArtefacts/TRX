@@ -184,6 +184,15 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         }
         break;
 
+    case GFL_BONUS:
+        Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
+        Savegame_ApplyLogicToCurrentInfo(level_num);
+        Level_InitialiseFlags();
+        if (!Level_Initialise(level_num)) {
+            return false;
+        }
+        break;
+
     default:
         Level_InitialiseFlags();
         if (!Level_Initialise(level_num)) {
@@ -257,7 +266,7 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
         Stats_GetSecrets();
 
     bool ask_for_save = g_Config.enable_save_crystals
-        && level_type == GFL_NORMAL
+        && (level_type == GFL_NORMAL || level_type == GFL_BONUS)
         && g_CurrentLevel != g_GameFlow.first_level_num
         && g_CurrentLevel != g_GameFlow.gym_level_num;
 

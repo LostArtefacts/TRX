@@ -638,15 +638,16 @@ GAMEFLOW_OPTION Savegame_PlayAvailableStory(int32_t slot_num)
 
     int32_t gf_option = GF_START_GAME | g_GameFlow.first_level_num;
 
-    bool loop_continue = true;
-    while (loop_continue) {
+    while (1) {
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
         int32_t gf_param = gf_option & ((1 << 6) - 1);
 
         gf_option = GameFlow_StorySoFar(gf_param, savegame_info->level_num);
 
-        if (gf_param >= savegame_info->level_num
-            && gf_param <= g_GameFlow.last_level_num) {
+        if ((gf_param >= savegame_info->level_num
+             && gf_param <= g_GameFlow.last_level_num)
+            || (gf_param >= savegame_info->level_num
+                && gf_param <= g_GameFlow.last_bonus_num)) {
             break;
         }
 
