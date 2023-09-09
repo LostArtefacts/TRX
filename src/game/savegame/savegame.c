@@ -158,6 +158,11 @@ static void Savegame_LoadPostprocess(void)
             g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
+
+    if (g_GameInfo.bonus_flag) {
+        g_Config.profile.new_game_plus_unlock = true;
+    }
+
     LOT_ClearLOT(&g_Lara.LOT);
 }
 

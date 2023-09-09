@@ -257,6 +257,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added the "Story so far..." option in the select level menu to view cutscenes and FMVs
 - added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load
 - added an option to restore the mummy in City of Khamoon room 25, similar to the PS version
+- added a flag indicating if new game plus is unlocked to the player config which allows the player to select new game plus or not when making a new game
 - fixed keys and items not working when drawing guns immediately after using them
 - fixed counting the secret in The Great Pyramid
 - fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them

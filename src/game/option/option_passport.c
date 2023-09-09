@@ -473,7 +473,8 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
                 if (g_InvMode == INV_TITLE_MODE
                     || (g_CurrentLevel == g_GameFlow.gym_level_num
                         && g_InvMode != INV_DEATH_MODE)) {
-                    if (g_Config.enable_game_modes) {
+                    if (g_Config.enable_game_modes
+                        || g_Config.profile.new_game_plus_unlock) {
                         Option_PassportInitNewGameRequester();
                         m_PassportMode = PASSPORT_MODE_NEW_GAME;
                         g_Input = (INPUT_STATE) { 0 };

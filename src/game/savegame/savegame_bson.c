@@ -378,7 +378,6 @@ static bool Savegame_BSON_LoadMisc(
         return false;
     }
     game_info->bonus_flag = json_object_get_int(misc_obj, "bonus_flag", 0);
-    LOG_DEBUG("Load bonus_flag: %d", game_info->bonus_flag);
     return true;
 }
 
@@ -930,7 +929,6 @@ static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info)
     assert(game_info);
     struct json_object_s *misc_obj = json_object_new();
     json_object_append_int(misc_obj, "bonus_flag", game_info->bonus_flag);
-    LOG_DEBUG("Dump bonus_flag: %d", game_info->bonus_flag);
     return misc_obj;
 }
 

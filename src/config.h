@@ -137,6 +137,10 @@ typedef struct {
         UI_STYLE menu_style;
     } ui;
 
+    struct {
+        bool new_game_plus_unlock;
+    } profile;
+
     int32_t sound_volume;
     int32_t music_volume;
 
