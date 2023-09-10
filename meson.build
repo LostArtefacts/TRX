@@ -21,7 +21,11 @@ build_opts = [
 c_opts = []
 add_project_arguments(build_opts + c_opts, language: 'c')
 
-dep_opengl32 = c_compiler.find_library('opengl32')
+if host_machine.system() == 'windows'
+  dep_opengl32 = c_compiler.find_library('opengl32')
+else
+  dep_opengl32 = dependency('GL')
+endif
 
 dep_avcodec = dependency('libavcodec', static: true)
 dep_avformat = dependency('libavformat', static: true)
@@ -35,43 +39,45 @@ dep_sdl2 = dependency('SDL2', static: true)
 resources = []
 python3 = find_program('python3', required: true)
 git = find_program('git', required: true)
-if python3.found()
-  version = custom_target('version',
-    output: ['version.txt'],
-    command: [python3, meson.source_root() + '/tools/generate_version', '-o', '@OUTPUT0@'],
-    build_by_default: true,
-    build_always_stale: true
-  )
 
-  init = custom_target(
-    'fake_init',
-    depends: [version],
-    input: [version[0]],
-    output: ['init.c'],
-    command: [python3, meson.source_root() + '/tools/generate_init', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
-    build_by_default: true,
-  )
-  version_rc = custom_target(
-    'fake_version',
-    depends: [version],
-    input: [version[0]],
-    output: ['version.rc'],
-    command: [python3, meson.source_root() + '/tools/generate_rcfile', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
-    build_by_default: true,
-  )
-  icon_rc = custom_target(
-    'fake_icon',
-    input: [version[0]],
-    output: ['icon.rc'],
-    command: [python3, meson.source_root() + '/tools/generate_rcfile', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
-  )
-  if host_machine.system() == 'windows'
-    windows = import('windows')
-    resources = [
-      windows.compile_resources(version_rc),
-      windows.compile_resources(icon_rc),
-    ]
-  endif
+version = custom_target('version',
+  output: ['version.txt'],
+  command: [python3, meson.source_root() + '/tools/generate_version', '-o', '@OUTPUT0@'],
+  build_by_default: true,
+  build_always_stale: true
+)
+
+init = custom_target(
+  'fake_init',
+  depends: [version],
+  input: [version[0]],
+  output: ['init.c'],
+  command: [python3, meson.source_root() + '/tools/generate_init', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
+  build_by_default: true,
+)
+version_rc = custom_target(
+  'fake_version',
+  depends: [version],
+  input: [version[0]],
+  output: ['version.rc'],
+  command: [python3, meson.source_root() + '/tools/generate_rcfile', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
+  build_by_default: true,
+)
+icon_rc = custom_target(
+  'fake_icon',
+  input: [version[0]],
+  output: ['icon.rc'],
+  command: [python3, meson.source_root() + '/tools/generate_rcfile', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
+)
+if host_machine.system() == 'windows'
+  windows = import('windows')
+  resources = [
+    windows.compile_resources(version_rc),
+    windows.compile_resources(icon_rc),
+  ]
+  link_args = ['-static']
+else
+  link_args = []
 endif
 
 sources = [
@@ -263,14 +269,14 @@ sources = [
 ]
 
 dependencies = [
-    dep_avcodec,
-    dep_avformat,
-    dep_avutil,
-    dep_opengl32,
-    dep_sdl2,
-    dep_swresample,
-    dep_swscale,
-  ]
+  dep_avcodec,
+  dep_avformat,
+  dep_avutil,
+  dep_opengl32,
+  dep_sdl2,
+  dep_swresample,
+  dep_swscale,
+]
 
 executable(
   'Tomb1Main',
@@ -278,6 +284,6 @@ executable(
   name_prefix: '',
   include_directories: ['src/'],
   dependencies: dependencies,
-  link_args: ['-static'],
+  link_args: link_args,
   gui_app: true,
 )

@@ -7,10 +7,21 @@ define build
 	mkdir -p build
 	docker run --rm \
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
-		--entrypoint /app/docker/game/entrypoint.sh \
+		--entrypoint /app/docker/game-win/entrypoint.sh \
 		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
 		rrdash/tomb1main:latest
+endef
+
+define build-linux
+	$(eval TARGET := $(1))
+	mkdir -p build
+	docker run --rm \
+		--user $(HOST_USER_UID):$(HOST_USER_GID) \
+		--entrypoint /app/docker/game-linux/entrypoint.sh \
+		-e TARGET="$(TARGET)" \
+		-v $(CWD):/app/ \
+		rrdash/tomb1main-linux:latest
 endef
 
 debug:
@@ -22,6 +33,15 @@ debugopt:
 release:
 	$(call build,release)
 
+debug-linux:
+	$(call build-linux,debug)
+
+debugopt-linux:
+	$(call build-linux,debugoptimized)
+
+release-linux:
+	$(call build-linux,release)
+
 clean:
 	-find build/ -type f -delete
 	-find build/ -mindepth 1 -empty -type d -delete
@@ -31,18 +51,6 @@ imports:
 
 lint:
 	bash -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
-
-test_base:
-	cp build/*.exe test/
-
-test_bin:
-	rsync -r bin/ test/
-
-test: build test_base
-	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe
-
-test_gold: build test_base
-	WINEARCH=win32 MESA_GL_VERSION_OVERRIDE=3.3 wine test/Tomb1Main.exe -gold
 
 installer:
 	docker build . -f docker/installer/Dockerfile -t rrdash/tomb1main_installer
@@ -60,4 +68,4 @@ config:
 		-v $(CWD):/app/ \
 		rrdash/tomb1main_config
 
-.PHONY: debug debugopt release clean imports lint test_base test_bin test test_gold installer config
+.PHONY: debug debugopt release clean imports lint installer config

@@ -418,6 +418,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added per-level customizable fog distance
 
 #### Miscellaneous
+- added Linux builds
 - added .jpeg/.png screenshots
 - added an option to pause sound in the inventory screen
 - added ability to skip FMVs with the Action key
@@ -454,33 +455,9 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 
 4. **Can I play this on Mac, Linux, Android...?**
 
-    We'd like to eventually have only SDL dependency.
-
-## Road map
-
-Note: this section may be subject to change.
-
-- [x] Reverse engineer the main game module
-- [x] Integrate the glrage patch
-- [x] Replace the proprietary music player with libavcodec and SDL
-- [x] Replace the proprietary FMV player with libavcodec and SDL
-- [x] Break off TombATI, ship our own .EXE rather than a .DLL
-- [x] Add an installer
-- [x] Add a config tool
-- [ ] Work on cross platform builds
-    - [x] Port DirectSound to libavcodec and SDL
-    - [x] Port WinMM to libavcodec and SDL
-    - [x] Port DirectInput to SDL
-    - [ ] Replace wgl_ext.h with cross platform variant
-    - [ ] Remove HWND and HINSTANCE usages
-    - [ ] ...
-    - [ ] Test for performance and crash resilience
-    - [ ] 3.0
-- [ ] Work on data injection and other features
-    - [x] Add Lara's braid to each level
-    - [x] Fix texture/face issues
-    - [x] Fix floor data issues
-    - [ ] ...
+    Currently supported platforms include Windows and Linux. In the future, it
+    might be possible to run the game on Macs as well – contributions are
+    welcome!
 
 ## License
 
