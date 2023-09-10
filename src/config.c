@@ -4,6 +4,7 @@
 #include "game/input.h"
 #include "game/music.h"
 #include "game/sound.h"
+#include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "json/json_base.h"
@@ -249,7 +250,8 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_INTEGER(rendering.window_y, -1);
     READ_INTEGER(rendering.window_width, -1);
     READ_INTEGER(rendering.window_height, -1);
-    READ_BOOL(rendering.enable_bilinear_filter, true);
+    READ_INTEGER(rendering.texture_filter, GFX_TF_BILINEAR);
+    READ_INTEGER(rendering.fbo_filter, GFX_TF_NN);
     READ_BOOL(rendering.enable_perspective_filter, true);
     READ_BOOL(rendering.enable_vsync, true);
 
@@ -445,7 +447,8 @@ bool Config_Write(void)
     WRITE_INTEGER(rendering.window_y);
     WRITE_INTEGER(rendering.window_width);
     WRITE_INTEGER(rendering.window_height);
-    WRITE_BOOL(rendering.enable_bilinear_filter);
+    WRITE_INTEGER(rendering.texture_filter);
+    WRITE_INTEGER(rendering.fbo_filter);
     WRITE_BOOL(rendering.enable_perspective_filter);
     WRITE_BOOL(rendering.enable_vsync);
 

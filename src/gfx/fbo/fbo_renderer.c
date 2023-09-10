@@ -115,11 +115,9 @@ void GFX_FBO_Renderer_Render(GFX_FBO_Renderer *renderer)
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
 
     GFX_GL_Sampler_Parameteri(
-        &renderer->sampler, GL_TEXTURE_MAG_FILTER,
-        renderer->is_smoothing_enabled ? GL_LINEAR : GL_NEAREST);
+        &renderer->sampler, GL_TEXTURE_MAG_FILTER, renderer->filter);
     GFX_GL_Sampler_Parameteri(
-        &renderer->sampler, GL_TEXTURE_MIN_FILTER,
-        renderer->is_smoothing_enabled ? GL_LINEAR : GL_NEAREST);
+        &renderer->sampler, GL_TEXTURE_MIN_FILTER, renderer->filter);
 
     GLboolean blend = glIsEnabled(GL_BLEND);
     if (blend) {
@@ -147,11 +145,11 @@ void GFX_FBO_Renderer_Render(GFX_FBO_Renderer *renderer)
     GFX_GL_CheckError();
 }
 
-void GFX_FBO_Renderer_SetSmoothingEnabled(
-    GFX_FBO_Renderer *renderer, bool is_enabled)
+void GFX_FBO_Renderer_SetFilter(
+    GFX_FBO_Renderer *renderer, GFX_TEXTURE_FILTER filter)
 {
     assert(renderer);
-    renderer->is_smoothing_enabled = is_enabled;
+    renderer->filter = filter == GFX_TF_BILINEAR ? GL_LINEAR : GL_NEAREST;
 }
 
 void GFX_FBO_Renderer_Bind(const GFX_FBO_Renderer *renderer)

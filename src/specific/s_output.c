@@ -79,10 +79,9 @@ static void S_Output_ReleaseTextures(void)
 static void S_Output_SetupRenderContextAndRender(void)
 {
     S_Output_RenderBegin();
-    GFX_3D_Renderer_SetSmoothingEnabled(
-        m_Renderer3D, g_Config.rendering.enable_bilinear_filter);
-    GFX_FBO_Renderer_SetSmoothingEnabled(
-        m_RendererFBO, g_Config.rendering.enable_bilinear_filter);
+    GFX_3D_Renderer_SetTextureFilter(
+        m_Renderer3D, g_Config.rendering.texture_filter);
+    GFX_FBO_Renderer_SetFilter(m_RendererFBO, g_Config.rendering.fbo_filter);
     S_Output_RenderToggle();
 }
 

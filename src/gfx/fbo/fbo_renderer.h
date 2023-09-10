@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gfx/common.h"
 #include "gfx/gl/buffer.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/program.h"
@@ -14,7 +15,7 @@ typedef struct GFX_FBO_Renderer {
     GLuint fbo;
     GLuint rbo;
 
-    bool is_smoothing_enabled;
+    GLuint filter;
 
     GFX_GL_VertexArray vertex_array;
     GFX_GL_Buffer buffer;
@@ -26,7 +27,7 @@ typedef struct GFX_FBO_Renderer {
 void GFX_FBO_Renderer_Init(GFX_FBO_Renderer *renderer);
 void GFX_FBO_Renderer_Close(GFX_FBO_Renderer *renderer);
 void GFX_FBO_Renderer_Render(GFX_FBO_Renderer *renderer);
-void GFX_FBO_Renderer_SetSmoothingEnabled(
-    GFX_FBO_Renderer *renderer, bool is_enabled);
+void GFX_FBO_Renderer_SetFilter(
+    GFX_FBO_Renderer *renderer, GFX_TEXTURE_FILTER filter);
 void GFX_FBO_Renderer_Bind(const GFX_FBO_Renderer *renderer);
 void GFX_FBO_Renderer_Unbind(const GFX_FBO_Renderer *renderer);
