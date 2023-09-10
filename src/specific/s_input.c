@@ -953,7 +953,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.menu_down                 = KEY_DOWN(SDL_SCANCODE_DOWN);
     linput.menu_left                 = KEY_DOWN(SDL_SCANCODE_LEFT);
     linput.menu_right                = KEY_DOWN(SDL_SCANCODE_RIGHT);
-    linput.menu_confirm              = KEY_DOWN(SDL_SCANCODE_RETURN);
+    linput.menu_confirm              = KEY_DOWN(SDL_SCANCODE_RETURN) && !KEY_DOWN(SDL_SCANCODE_LALT);
     linput.menu_back                 = KEY_DOWN(SDL_SCANCODE_ESCAPE);
 
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
