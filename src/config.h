@@ -48,6 +48,8 @@ typedef enum {
 } BAR_SHOW_MODE;
 
 typedef struct {
+    bool loaded;
+
     bool disable_healing_between_levels;
     bool disable_medpacks;
     bool disable_magnums;
@@ -127,6 +129,12 @@ typedef struct {
 
     struct {
         GFX_RENDER_MODE render_mode;
+        bool enable_fullscreen;
+        bool enable_maximized;
+        int32_t window_x;
+        int32_t window_y;
+        int32_t window_width;
+        int32_t window_height;
         bool enable_perspective_filter;
         bool enable_bilinear_filter;
         bool enable_vsync;

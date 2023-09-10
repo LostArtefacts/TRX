@@ -243,6 +243,12 @@ bool Config_ReadFromJSON(const char *cfg_data)
 
     // User settings
     READ_INTEGER(rendering.render_mode, GFX_RM_LEGACY);
+    READ_BOOL(rendering.enable_fullscreen, true);
+    READ_BOOL(rendering.enable_maximized, true);
+    READ_INTEGER(rendering.window_x, -1);
+    READ_INTEGER(rendering.window_y, -1);
+    READ_INTEGER(rendering.window_width, -1);
+    READ_INTEGER(rendering.window_height, -1);
     READ_BOOL(rendering.enable_bilinear_filter, true);
     READ_BOOL(rendering.enable_perspective_filter, true);
     READ_BOOL(rendering.enable_vsync, true);
@@ -316,6 +322,8 @@ bool Config_ReadFromJSON(const char *cfg_data)
     if (root) {
         json_value_free(root);
     }
+
+    g_Config.loaded = true;
     return result;
 }
 
@@ -430,8 +438,13 @@ bool Config_Write(void)
     WRITE_BOOL(enable_game_modes);
     WRITE_BOOL(enable_save_crystals);
 
-    // User settings
     WRITE_INTEGER(rendering.render_mode);
+    WRITE_BOOL(rendering.enable_fullscreen);
+    WRITE_BOOL(rendering.enable_maximized);
+    WRITE_INTEGER(rendering.window_x);
+    WRITE_INTEGER(rendering.window_y);
+    WRITE_INTEGER(rendering.window_width);
+    WRITE_INTEGER(rendering.window_height);
     WRITE_BOOL(rendering.enable_bilinear_filter);
     WRITE_BOOL(rendering.enable_perspective_filter);
     WRITE_BOOL(rendering.enable_vsync);

@@ -20,7 +20,6 @@ typedef struct GFX_CONTEXT {
     int32_t window_width;
     int32_t window_height;
 
-    bool is_fullscreen; // fullscreen flag
     bool is_rendered; // rendering flag
     char *scheduled_screenshot_path;
     GFX_FBO_Renderer renderer_fbo;
@@ -178,16 +177,6 @@ void GFX_Context_Detach(void)
 void GFX_Context_SetVSync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync);
-}
-
-bool GFX_Context_IsFullscreen(void)
-{
-    return m_Context.is_fullscreen;
-}
-
-void GFX_Context_SetFullscreen(bool fullscreen)
-{
-    m_Context.is_fullscreen = fullscreen;
 }
 
 void GFX_Context_SetWindowSize(int32_t width, int32_t height)

@@ -31,12 +31,15 @@
 
 static int m_ArgCount = 0;
 static char **m_ArgStrings = NULL;
-static bool m_Fullscreen = true;
 static SDL_Window *m_Window = NULL;
 
-static void S_Shell_PostWindowResize(void);
+static void S_Shell_SeedRandom(void);
+static void S_Shell_SetWindowPos(int32_t x, int32_t y, bool update);
+static void S_Shell_SetWindowSize(int32_t width, int32_t height, bool update);
+static void S_Shell_SetWindowMaximized(bool is_enabled, bool update);
+static void S_Shell_SetFullscreen(bool is_enabled, bool update);
 
-void S_Shell_SeedRandom(void)
+static void S_Shell_SeedRandom(void)
 {
     time_t lt = time(0);
     struct tm *tptr = localtime(&lt);
@@ -44,12 +47,109 @@ void S_Shell_SeedRandom(void)
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-static void S_Shell_PostWindowResize(void)
+static void S_Shell_SetWindowPos(int32_t x, int32_t y, bool update)
 {
+    if (x <= 0 || y <= 0) {
+        return;
+    }
+
+    // only save window position if it's in windowed state.
+    if (!g_Config.rendering.enable_fullscreen
+        && !g_Config.rendering.enable_maximized) {
+        g_Config.rendering.window_x = x;
+        g_Config.rendering.window_y = y;
+    }
+
+    if (update) {
+        SDL_SetWindowPosition(m_Window, x, y);
+    }
+}
+
+static void S_Shell_SetWindowSize(int32_t width, int32_t height, bool update)
+{
+    if (width <= 0 || height <= 0) {
+        return;
+    }
+
+    // only save window size if it's in windowed state.
+    if (!g_Config.rendering.enable_fullscreen
+        && !g_Config.rendering.enable_maximized) {
+        g_Config.rendering.window_width = width;
+        g_Config.rendering.window_height = height;
+    }
+
+    Output_SetWindowSize(width, height);
+
+    if (update) {
+        SDL_SetWindowSize(m_Window, width, height);
+    }
+}
+
+static void S_Shell_SetWindowMaximized(bool is_enabled, bool update)
+{
+    g_Config.rendering.enable_maximized = is_enabled;
+
+    if (update && is_enabled) {
+        SDL_MaximizeWindow(m_Window);
+    }
+}
+
+static void S_Shell_SetFullscreen(bool is_enabled, bool update)
+{
+    g_Config.rendering.enable_fullscreen = is_enabled;
+
+    if (update) {
+        SDL_SetWindowFullscreen(
+            m_Window, is_enabled ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+        SDL_ShowCursor(is_enabled ? SDL_DISABLE : SDL_ENABLE);
+    }
+}
+
+void S_Shell_ToggleFullscreen(void)
+{
+    S_Shell_SetFullscreen(!g_Config.rendering.enable_fullscreen, true);
+
+    // save the updated config, but ensure it was loaded first
+    if (g_Config.loaded) {
+        Config_Write();
+    }
+}
+
+void S_Shell_HandleWindowResize(void)
+{
+    int x;
+    int y;
     int width;
     int height;
+    bool is_maximized;
+
+    Uint32 window_flags = SDL_GetWindowFlags(m_Window);
+    is_maximized = window_flags & SDL_WINDOW_MAXIMIZED;
     SDL_GetWindowSize(m_Window, &width, &height);
-    Output_SetWindowSize(width, height);
+    SDL_GetWindowPosition(m_Window, &x, &y);
+    LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
+
+    S_Shell_SetWindowMaximized(is_maximized, false);
+    S_Shell_SetWindowPos(x, y, false);
+    S_Shell_SetWindowSize(width, height, false);
+
+    // save the updated config, but ensure it was loaded first
+    if (g_Config.loaded) {
+        Config_Write();
+    }
+}
+
+void S_Shell_Init(void)
+{
+    S_Shell_SeedRandom();
+
+    S_Shell_SetFullscreen(g_Config.rendering.enable_fullscreen, true);
+    S_Shell_SetWindowPos(
+        g_Config.rendering.window_x, g_Config.rendering.window_y, true);
+    S_Shell_SetWindowSize(
+        g_Config.rendering.window_width, g_Config.rendering.window_height,
+        true);
+    S_Shell_SetWindowMaximized(g_Config.rendering.enable_maximized, true);
 }
 
 void S_Shell_ShowFatalError(const char *message)
@@ -58,16 +158,6 @@ void S_Shell_ShowFatalError(const char *message)
     SDL_ShowSimpleMessageBox(
         SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", message, m_Window);
     S_Shell_TerminateGame(1);
-}
-
-void S_Shell_ToggleFullscreen(void)
-{
-    m_Fullscreen = !m_Fullscreen;
-    Output_SetFullscreen(m_Fullscreen);
-    SDL_SetWindowFullscreen(
-        m_Window, m_Fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
-    SDL_ShowCursor(m_Fullscreen ? SDL_DISABLE : SDL_ENABLE);
-    S_Shell_PostWindowResize();
 }
 
 void S_Shell_TerminateGame(int exit_code)
@@ -115,10 +205,10 @@ void S_Shell_SpinMessageLoop(void)
                 Sound_SetMasterVolume(0);
                 break;
 
-            case SDL_WINDOWEVENT_RESIZED: {
-                Output_SetWindowSize(event.window.data1, event.window.data2);
+            case SDL_WINDOWEVENT_MOVED:
+            case SDL_WINDOWEVENT_RESIZED:
+                S_Shell_HandleWindowResize();
                 break;
-            }
             }
             break;
 
@@ -197,9 +287,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    S_Shell_PostWindowResize();
-
-    SDL_ShowCursor(SDL_DISABLE);
+    S_Shell_HandleWindowResize();
 
     Shell_Main();
 

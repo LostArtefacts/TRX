@@ -22,7 +22,6 @@ void S_Output_ClearDepthBuffer(void);
 void S_Output_DrawEmpty(void);
 
 void S_Output_SetWindowSize(int width, int height);
-void S_Output_SetFullscreen(bool fullscreen);
 void S_Output_ApplyRenderSettings(void);
 
 void S_Output_SetPalette(RGB888 palette[256]);

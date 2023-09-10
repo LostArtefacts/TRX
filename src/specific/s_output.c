@@ -966,11 +966,6 @@ void S_Output_SetWindowSize(int width, int height)
     GFX_Context_SetWindowSize(width, height);
 }
 
-void S_Output_SetFullscreen(bool fullscreen)
-{
-    GFX_Context_SetFullscreen(fullscreen);
-}
-
 bool S_Output_Init(void)
 {
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {

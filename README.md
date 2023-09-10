@@ -237,6 +237,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added enemy health bars
 - added PS1 style UI
 - added fade effects to displayed images
+- improved support for windowed mode
 
 #### Gameplay
 - added ability to set user-defined FOV
