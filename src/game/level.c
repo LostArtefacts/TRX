@@ -783,7 +783,7 @@ bool Level_Initialise(int32_t level_num)
         level_num == g_GameFlow.title_level_num
             ? g_GameFlow.main_menu_background_path
             : NULL);
-    Output_ApplyResolution();
+    Output_ApplyRenderSettings();
 
     if (!Level_Load(g_CurrentLevel)) {
         return false;

@@ -154,7 +154,6 @@ void GFX_3D_VertexStream_RenderPending(GFX_3D_VertexStream *vertex_stream)
     glDrawArrays(
         GL_PRIM_MODES[vertex_stream->prim_type], 0,
         vertex_stream->pending_vertices.count);
-
     GFX_GL_CheckError();
 
     vertex_stream->pending_vertices.count = 0;

@@ -1,6 +1,5 @@
 #include "specific/s_input.h"
 
-#include "game/input.h"
 #include "log.h"
 
 #include <SDL2/SDL.h>

@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <dirent.h>
 #include <string.h>
+#include <strings.h>
 
 #if defined(_WIN32)
     #include <direct.h>

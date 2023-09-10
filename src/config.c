@@ -4,7 +4,6 @@
 #include "game/input.h"
 #include "game/music.h"
 #include "game/sound.h"
-#include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "json/json_base.h"
@@ -243,6 +242,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     CLAMP(g_Config.camera_speed, 1, 10);
 
     // User settings
+    READ_INTEGER(rendering.render_mode, GFX_RM_LEGACY);
     READ_BOOL(rendering.enable_bilinear_filter, true);
     READ_BOOL(rendering.enable_perspective_filter, true);
     READ_BOOL(rendering.enable_vsync, true);
@@ -431,6 +431,7 @@ bool Config_Write(void)
     WRITE_BOOL(enable_save_crystals);
 
     // User settings
+    WRITE_INTEGER(rendering.render_mode);
     WRITE_BOOL(rendering.enable_bilinear_filter);
     WRITE_BOOL(rendering.enable_perspective_filter);
     WRITE_BOOL(rendering.enable_vsync);

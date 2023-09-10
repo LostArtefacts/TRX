@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+- added a new rendering mode called "framebuffer" that lets the game to run at lower resolutions (#114)
 - added the current music track and timestamp to the savegame so they now persist on load (#419)
 - added the triggered music tracks to the savegame so one shot tracks don't replay on load (#371)
 - added forward/backward input detection in line with TR2+ for jump-twists (#931)

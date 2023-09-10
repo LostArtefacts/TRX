@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/output.h"
 #include "game/screen.h"
 #include "game/text.h"
 #include "gfx/context.h"
@@ -23,26 +24,28 @@
 #define RIGHT_ARROW_OFFSET 35
 
 typedef enum GRAPHICS_TEXT {
-    TEXT_PERSPECTIVE = 0,
-    TEXT_BILINEAR = 1,
-    TEXT_VSYNC = 2,
-    TEXT_BRIGHTNESS = 3,
-    TEXT_UI_TEXT_SCALE = 4,
-    TEXT_UI_BAR_SCALE = 5,
-    TEXT_RESOLUTION = 6,
-    TEXT_TITLE = 7,
-    TEXT_TITLE_BORDER = 8,
-    TEXT_PERSPECTIVE_TOGGLE = 9,
-    TEXT_BILINEAR_TOGGLE = 10,
-    TEXT_VSYNC_TOGGLE = 11,
-    TEXT_BRIGHTNESS_TOGGLE = 12,
-    TEXT_UI_TEXT_SCALE_TOGGLE = 13,
-    TEXT_UI_BAR_SCALE_TOGGLE = 14,
-    TEXT_RESOLUTION_TOGGLE = 15,
-    TEXT_LEFT_ARROW = 16,
-    TEXT_RIGHT_ARROW = 17,
-    TEXT_ROW_SELECT = 18,
-    TEXT_NUMBER_OF = 19,
+    TEXT_PERSPECTIVE,
+    TEXT_BILINEAR,
+    TEXT_VSYNC,
+    TEXT_BRIGHTNESS,
+    TEXT_UI_TEXT_SCALE,
+    TEXT_UI_BAR_SCALE,
+    TEXT_RENDER_MODE,
+    TEXT_RESOLUTION,
+    TEXT_TITLE,
+    TEXT_TITLE_BORDER,
+    TEXT_PERSPECTIVE_TOGGLE,
+    TEXT_BILINEAR_TOGGLE,
+    TEXT_VSYNC_TOGGLE,
+    TEXT_BRIGHTNESS_TOGGLE,
+    TEXT_UI_TEXT_SCALE_TOGGLE,
+    TEXT_UI_BAR_SCALE_TOGGLE,
+    TEXT_RENDER_MODE_VALUE,
+    TEXT_RESOLUTION_TOGGLE,
+    TEXT_LEFT_ARROW,
+    TEXT_RIGHT_ARROW,
+    TEXT_ROW_SELECT,
+    TEXT_NUMBER_OF,
     TEXT_EMPTY_ENTRY = -1,
     TEXT_OPTION_MIN = TEXT_PERSPECTIVE,
     TEXT_OPTION_MAX = TEXT_RESOLUTION,
@@ -62,6 +65,7 @@ static const TEXT_COLUMN_PLACEMENT m_GfxTextPlacement[] = {
     { TEXT_BRIGHTNESS, 0, GS_DETAIL_BRIGHTNESS },
     { TEXT_UI_TEXT_SCALE, 0, GS_DETAIL_UI_TEXT_SCALE },
     { TEXT_UI_BAR_SCALE, 0, GS_DETAIL_UI_BAR_SCALE },
+    { TEXT_RENDER_MODE, 0, GS_DETAIL_RENDER_MODE },
     { TEXT_RESOLUTION, 0, GS_DETAIL_RESOLUTION },
     // right column
     { TEXT_PERSPECTIVE_TOGGLE, 1, GS_MISC_ON },
@@ -70,6 +74,7 @@ static const TEXT_COLUMN_PLACEMENT m_GfxTextPlacement[] = {
     { TEXT_BRIGHTNESS_TOGGLE, 1, GS_DETAIL_FLOAT_FMT },
     { TEXT_UI_TEXT_SCALE_TOGGLE, 1, GS_DETAIL_FLOAT_FMT },
     { TEXT_UI_BAR_SCALE_TOGGLE, 1, GS_DETAIL_FLOAT_FMT },
+    { TEXT_RENDER_MODE_VALUE, 1, GS_DETAIL_STRING_FMT },
     { TEXT_RESOLUTION_TOGGLE, 1, GS_DETAIL_RESOLUTION_FMT },
     // end
     { TEXT_EMPTY_ENTRY, -1, -1 },
@@ -144,6 +149,7 @@ static void Option_GraphicsInitText(void)
     Option_GraphicsChangeTextOption(TEXT_BRIGHTNESS);
     Option_GraphicsChangeTextOption(TEXT_UI_TEXT_SCALE);
     Option_GraphicsChangeTextOption(TEXT_UI_BAR_SCALE);
+    Option_GraphicsChangeTextOption(TEXT_RENDER_MODE);
     Option_GraphicsChangeTextOption(TEXT_RESOLUTION);
 }
 
@@ -157,7 +163,7 @@ static void Option_GraphicsShutdownText(void)
 
 static void Option_GraphicsUpdateArrows(void)
 {
-    int16_t resolution_offset = 0;
+    int16_t local_right_arrow_offset = 0;
 
     switch (g_OptionSelected) {
     case TEXT_PERSPECTIVE:
@@ -184,8 +190,13 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowLeft = g_Config.ui.bar_scale <= MIN_BAR_SCALE;
         m_HideArrowRight = g_Config.ui.bar_scale >= MAX_BAR_SCALE;
         break;
+    case TEXT_RENDER_MODE:
+        local_right_arrow_offset = 95;
+        m_HideArrowLeft = false;
+        m_HideArrowRight = false;
+        break;
     case TEXT_RESOLUTION:
-        resolution_offset = 70;
+        local_right_arrow_offset = 95;
         m_HideArrowLeft = !Screen_CanSetPrevRes();
         m_HideArrowRight = !Screen_CanSetNextRes();
         break;
@@ -199,7 +210,7 @@ static void Option_GraphicsUpdateArrows(void)
     Text_SetPos(
         m_Text[TEXT_RIGHT_ARROW],
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.x
-            + RIGHT_ARROW_OFFSET + resolution_offset,
+            + RIGHT_ARROW_OFFSET + local_right_arrow_offset,
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.y);
 
     Text_Hide(m_Text[TEXT_LEFT_ARROW], m_HideArrowLeft);
@@ -211,7 +222,7 @@ static int16_t Option_GraphicsPlaceColumns(bool create)
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
 
     int16_t max_y = 0;
-    int16_t xs[2] = { centre - 142, centre + 30 };
+    int16_t xs[2] = { centre - 142, centre };
     int16_t ys[2] = { TOP_Y + ROW_HEIGHT + BORDER * 2,
                       TOP_Y + ROW_HEIGHT + BORDER * 2 };
 
@@ -289,6 +300,15 @@ static void Option_GraphicsChangeTextOption(int32_t option_num)
         Text_ChangeText(m_Text[TEXT_UI_BAR_SCALE_TOGGLE], buf);
         break;
 
+    case TEXT_RENDER_MODE:
+        sprintf(
+            buf, g_GameFlow.strings[GS_DETAIL_STRING_FMT],
+            (g_Config.rendering.render_mode == GFX_RM_FRAMEBUFFER
+                 ? g_GameFlow.strings[GS_DETAIL_RENDER_MODE_FBO]
+                 : g_GameFlow.strings[GS_DETAIL_RENDER_MODE_LEGACY]));
+        Text_ChangeText(m_Text[TEXT_RENDER_MODE_VALUE], buf);
+        break;
+
     case TEXT_RESOLUTION:
         sprintf(
             buf, g_GameFlow.strings[GS_DETAIL_RESOLUTION_FMT],
@@ -362,6 +382,16 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             reset = TEXT_UI_BAR_SCALE;
             break;
 
+        case TEXT_RENDER_MODE:
+            if (g_Config.rendering.render_mode == GFX_RM_LEGACY) {
+                g_Config.rendering.render_mode = GFX_RM_FRAMEBUFFER;
+            } else {
+                g_Config.rendering.render_mode = GFX_RM_LEGACY;
+            }
+            Output_ApplyRenderSettings();
+            reset = TEXT_RENDER_MODE;
+            break;
+
         case TEXT_RESOLUTION:
             if (Screen_SetNextRes()) {
                 reset = TEXT_NUMBER_OF;
@@ -412,6 +442,16 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             g_Config.ui.bar_scale -= 0.1;
             CLAMP(g_Config.ui.bar_scale, MIN_BAR_SCALE, MAX_BAR_SCALE);
             reset = TEXT_UI_BAR_SCALE;
+            break;
+
+        case TEXT_RENDER_MODE:
+            if (g_Config.rendering.render_mode == GFX_RM_LEGACY) {
+                g_Config.rendering.render_mode = GFX_RM_FRAMEBUFFER;
+            } else {
+                g_Config.rendering.render_mode = GFX_RM_LEGACY;
+            }
+            Output_ApplyRenderSettings();
+            reset = TEXT_RENDER_MODE;
             break;
 
         case TEXT_RESOLUTION:

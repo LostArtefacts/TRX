@@ -163,9 +163,6 @@ bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
         GFX_Context_SwapBuffers();
     }
 
-    // update viewport in case the window size has changed
-    GFX_Context_SetupViewport();
-
     // render surface
     GFX_2D_Renderer_Render(surface->renderer);
 

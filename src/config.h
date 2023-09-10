@@ -1,5 +1,7 @@
 #pragma once
 
+#include "gfx/context.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -124,6 +126,7 @@ typedef struct {
     } input;
 
     struct {
+        GFX_RENDER_MODE render_mode;
         bool enable_perspective_filter;
         bool enable_bilinear_filter;
         bool enable_vsync;
