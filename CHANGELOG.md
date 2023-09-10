@@ -24,6 +24,7 @@
 - fixed the camera in Natla's Mines when pulling the lever in room 67 (#352)
 - fixed flame emitter saving and loading which caused rare crashing (#947)
 - fixed new game plus not working if enable_game_modes was set to false (#960, regression from 2.8)
+- fixed Alt-Enter triggering game actions (#979, regression from 2.15)
 - fixed Natla spinning in her semi-death and second phases when more than one is active in the level (#906)
 - moved the enable_game_modes option from the gameflow to the config tool and added a gameflow option to override (#962)
 - moved the enable_save_crystals option from the gameflow to the config tool (#962)
