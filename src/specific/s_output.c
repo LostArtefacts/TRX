@@ -68,6 +68,9 @@ static int32_t S_Output_ZedClipper(
 
 static void S_Output_ReleaseTextures(void)
 {
+    if (!m_Renderer3D) {
+        return;
+    }
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureMap[i] != GFX_NO_TEXTURE) {
             GFX_3D_Renderer_TextureUnreg(m_Renderer3D, m_TextureMap[i]);

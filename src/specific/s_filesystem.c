@@ -6,16 +6,48 @@
 #include <SDL2/SDL_filesystem.h>
 #include <assert.h>
 #include <dirent.h>
+#include <stdbool.h>
 #include <string.h>
 #include <strings.h>
 
 #if defined(_WIN32)
     #include <direct.h>
+    #define PATH_SEPARATOR "\\"
 #else
     #include <sys/stat.h>
+    #define PATH_SEPARATOR "/"
 #endif
 
 const char *m_GameDir = NULL;
+
+static bool S_File_StringEndsWith(const char *str, const char *suffix);
+static void S_File_PathAppendSeparator(char *path);
+static void S_File_PathAppendPart(char *path, const char *part);
+
+static bool S_File_StringEndsWith(const char *str, const char *suffix)
+{
+    int str_len = strlen(str);
+    int suffix_len = strlen(suffix);
+
+    if (suffix_len > str_len) {
+        return 0;
+    }
+
+    return strcmp(str + str_len - suffix_len, suffix) == 0;
+}
+
+static void S_File_PathAppendSeparator(char *path)
+{
+    if (!S_File_StringEndsWith(path, PATH_SEPARATOR)) {
+        strcat(path, PATH_SEPARATOR);
+    }
+}
+
+static void S_File_PathAppendPart(char *path, const char *part)
+{
+    S_File_PathAppendSeparator(path);
+    strcat(path, part);
+}
 
 const char *S_File_GetGameDirectory(void)
 {
@@ -44,13 +76,13 @@ char *S_File_CasePath(char const *path)
     assert(path);
 
     char *current_path = Memory_Alloc(strlen(path) + 2);
-    const char *sep = strchr(path, '/') ? "/" : "\\";
 
     char *path_copy = Memory_DupStr(path);
     char *path_piece = path_copy;
 
     if (path_copy[0] == '/') {
         strcpy(current_path, "/");
+        path_piece++;
     } else if (strstr(path_copy, ":\\")) {
         strcpy(current_path, path_copy);
         strstr(current_path, ":\\")[1] = '\0';
@@ -76,8 +108,7 @@ char *S_File_CasePath(char const *path)
         struct dirent *cur_file = readdir(path_dir);
         while (cur_file) {
             if (strcasecmp(path_piece, cur_file->d_name) == 0) {
-                strcat(current_path, sep);
-                strcat(current_path, cur_file->d_name);
+                S_File_PathAppendPart(current_path, cur_file->d_name);
                 break;
             }
             cur_file = readdir(path_dir);
@@ -85,8 +116,7 @@ char *S_File_CasePath(char const *path)
         closedir(path_dir);
 
         if (!cur_file) {
-            strcat(current_path, sep);
-            strcat(current_path, path_piece);
+            S_File_PathAppendPart(current_path, path_piece);
         }
 
         if (delim) {
@@ -100,10 +130,13 @@ char *S_File_CasePath(char const *path)
     Memory_FreePointer(&path_copy);
 
     char *result;
-    if (current_path[0] == '.') { /* strip leading ./ */
-        result = Memory_DupStr(current_path + 2);
+    if (current_path[0] == '.'
+        && strcmp(current_path + 1, PATH_SEPARATOR)
+            == 0) { /* strip leading ./ */
+        result = Memory_DupStr(current_path + 1 + strlen(PATH_SEPARATOR));
     } else {
         result = Memory_DupStr(current_path);
     }
+    Memory_FreePointer(&current_path);
     return result;
 }
