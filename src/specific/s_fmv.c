@@ -2240,11 +2240,12 @@ static void S_FMV_EventLoop(VideoState *is)
                 is->audio_volume = 0;
                 break;
 
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
+            case SDL_WINDOWEVENT_MOVED:
+            case SDL_WINDOWEVENT_RESIZED:
                 is->width = event.window.data1;
                 is->height = event.window.data2;
                 is->force_refresh = true;
-                Output_SetWindowSize(event.window.data1, event.window.data2);
+                S_Shell_HandleWindowResize();
                 break;
 
             case SDL_WINDOWEVENT_EXPOSED:

@@ -9,7 +9,6 @@ bool Output_Init(void);
 void Output_Shutdown(void);
 
 void Output_SetWindowSize(int width, int height);
-void Output_SetFullscreen(bool fullscreen);
 void Output_ApplyRenderSettings(void);
 void Output_DownloadTextures(int page_count);
 

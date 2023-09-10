@@ -389,11 +389,6 @@ void Output_SetWindowSize(int width, int height)
     S_Output_SetWindowSize(width, height);
 }
 
-void Output_SetFullscreen(bool fullscreen)
-{
-    S_Output_SetFullscreen(fullscreen);
-}
-
 void Output_ApplyRenderSettings(void)
 {
     S_Output_ApplyRenderSettings();

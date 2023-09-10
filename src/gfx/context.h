@@ -17,8 +17,6 @@ typedef enum GFX_RENDER_MODE {
 void GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);
 void GFX_Context_SetVSync(bool vsync);
-bool GFX_Context_IsFullscreen(void);
-void GFX_Context_SetFullscreen(bool fullscreen);
 void GFX_Context_SetWindowSize(int32_t width, int32_t height);
 void GFX_Context_SetDisplaySize(int32_t width, int32_t height);
 void GFX_Context_SetRenderingMode(GFX_RENDER_MODE target_mode);

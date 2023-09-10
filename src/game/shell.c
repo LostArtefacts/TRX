@@ -110,7 +110,7 @@ static char *Shell_GetScreenshotName(void)
 
 void Shell_Init(const char *gameflow_path)
 {
-    S_Shell_SeedRandom();
+    S_Shell_Init();
 
     if (!Output_Init()) {
         Shell_ExitSystem("Could not initialise video system");
