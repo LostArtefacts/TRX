@@ -1667,11 +1667,6 @@ typedef struct TEXTSTRING {
     void (*on_remove)(const struct TEXTSTRING *);
 } TEXTSTRING;
 
-typedef struct DISPLAYPU {
-    int16_t duration;
-    int16_t sprnum;
-} DISPLAYPU;
-
 typedef struct COLL_INFO {
     int32_t mid_floor;
     int32_t mid_ceiling;

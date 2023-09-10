@@ -2,6 +2,8 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/inventory.h"
+#include "game/objects/common.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/text.h"
@@ -9,6 +11,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "src/math/matrix.h"
 #include "util.h"
 
 #include <stdbool.h>
@@ -16,14 +19,33 @@
 
 #define COLOR_STEPS 5
 #define MAX_PICKUP_COLUMNS 4
+#define MAX_PICKUP_DURATION_DISPLAY (FRAMES_PER_SECOND * 2)
+#define MAX_PICKUP_DURATION_EASE_IN (FRAMES_PER_SECOND / 2)
+#define MAX_PICKUP_DURATION_EASE_OUT FRAMES_PER_SECOND
 #define MAX_PICKUPS 16
 #define BLINK_THRESHOLD 20
+
+typedef enum DISPLAY_PICKUP_PHASE {
+    DPP_EASE_IN,
+    DPP_DISPLAY,
+    DPP_EASE_OUT,
+    DPP_DEAD,
+} DISPLAY_PICKUP_PHASE;
+
+typedef struct DISPLAY_PICKUP_INFO {
+    int16_t obj_num;
+    int16_t duration;
+    int32_t grid_x;
+    int32_t grid_y;
+    int32_t rot_y;
+    DISPLAY_PICKUP_PHASE phase;
+} DISPLAY_PICKUP_INFO;
 
 static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
-static DISPLAYPU m_Pickups[MAX_PICKUPS] = { 0 };
 static int32_t m_OldGameTimer = 0;
+static DISPLAY_PICKUP_INFO m_Pickups[MAX_PICKUPS] = { 0 };
 
 static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -102,6 +124,10 @@ static void Overlay_BarGetLocation(
     int32_t *y);
 static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
 static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
+static float Overlay_Ease(int32_t cur_frame, int32_t max_frames);
+static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu);
+static void Overlay_DrawPickups3D(void);
+static void Overlay_DrawPickupsSprites(void);
 
 static void Overlay_BarSetupHealth(void)
 {
@@ -281,10 +307,207 @@ static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring)
     m_FPSText = NULL;
 }
 
+static float Overlay_Ease(int32_t cur_frame, int32_t max_frames)
+{
+    float ratio = cur_frame / (float)max_frames;
+    if (ratio < 0.5f) {
+        return 2.0f * ratio * ratio;
+    }
+    float new_ratio = ratio - 1.0f;
+    return 1.0f - 2.0f * new_ratio * new_ratio;
+}
+
+static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
+{
+    int32_t screen_width = Screen_GetResWidth();
+    int32_t screen_height = Screen_GetResHeight();
+    int32_t pickup_width = screen_width / 8;
+    int32_t pickup_height = screen_height / 8;
+    int32_t padding_x = ((screen_width + screen_height) / 2) / 8;
+    int32_t padding_y = padding_x * 3 / 4;
+    int32_t scale = 768;
+
+    float aspect_ratio = (float)screen_height / screen_width;
+
+    int32_t vp_x1 = screen_width / 2 - padding_x - pu->grid_x * pickup_width;
+    int32_t vp_x2 = vp_x1 + screen_width;
+    int32_t vp_y1 = screen_height / 2 - padding_y - pu->grid_y * pickup_height;
+    int32_t vp_y2 = vp_y1 + screen_height;
+
+    int32_t dst_x = 0;
+    int32_t dst_y = 0;
+    int32_t src_x = padding_x + (pu->grid_x + 1.0f) * pickup_width;
+    int32_t src_y = 0;
+
+    float ease;
+    switch (pu->phase) {
+    case DPP_EASE_IN:
+        ease = Overlay_Ease(pu->duration, MAX_PICKUP_DURATION_EASE_IN);
+        break;
+    case DPP_EASE_OUT:
+        ease = Overlay_Ease(
+            MAX_PICKUP_DURATION_EASE_OUT - pu->duration,
+            MAX_PICKUP_DURATION_EASE_OUT);
+        break;
+    case DPP_DISPLAY:
+        ease = 1.0f;
+        break;
+    case DPP_DEAD:
+        return;
+    }
+
+    Output_ClearDepthBuffer();
+
+    // Reset the FOV and the W2V matrix in case they get changed by a cinematic
+    // camera (when picking up the Scion). Move the viewport rather than
+    // translating the object in order to avoid perspective distortion in the
+    // screen corners.
+    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+    Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
+    Matrix_LookAt(0, 0, 0, 0, 0, 0, 0);
+
+    Matrix_TranslateSet(
+        src_x + (dst_x - src_x) * ease, src_y + (dst_y - src_y) * ease, scale);
+    Matrix_RotYXZ(0, PHD_DEGREE * 15, 0);
+    Matrix_RotYXZ(pu->rot_y, 0, 0);
+
+    g_LsDivider = 0x6000;
+    g_LsAdder = LOW_LIGHT;
+    Output_RotateLight(0, 0);
+    Output_SetupAboveWater(false);
+
+    OBJECT_INFO *obj = &g_Objects[Inv_GetItemOption(pu->obj_num)];
+    int16_t *frame = g_Anims[obj->anim_index].frame_ptr;
+
+    Matrix_Push();
+    Matrix_TranslateRel(
+        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+    Matrix_TranslateRel(
+        -(frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
+        -(frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
+        -(frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+    int16_t **meshpp = &g_Meshes[obj->mesh_index];
+    int32_t *bone = &g_AnimBones[obj->bone_index];
+    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+    Matrix_RotYXZpack(*packed_rotation++);
+
+    Output_DrawPolygons(*meshpp++, 0);
+
+    for (int i = 1; i < obj->nmeshes; i++) {
+        int32_t bone_extra_flags = *bone;
+        if (bone_extra_flags & BEB_POP) {
+            Matrix_Pop();
+        }
+
+        if (bone_extra_flags & BEB_PUSH) {
+            Matrix_Push();
+        }
+
+        Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+        Matrix_RotYXZpack(*packed_rotation++);
+
+        Output_DrawPolygons(*meshpp, 0);
+
+        bone += 4;
+        meshpp++;
+    }
+    Matrix_Pop();
+
+    Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
+}
+
+static void Overlay_DrawPickups3D(void)
+{
+    int16_t ticks =
+        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
+    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
+
+    for (int i = 0; i < MAX_PICKUPS; i++) {
+        DISPLAY_PICKUP_INFO *pu = &m_Pickups[i];
+
+        switch (pu->phase) {
+        case DPP_DEAD:
+            continue;
+
+        case DPP_EASE_IN:
+            pu->duration += ticks;
+            if (pu->duration == MAX_PICKUP_DURATION_EASE_IN) {
+                pu->phase = DPP_DISPLAY;
+                pu->duration = 0;
+            }
+            break;
+
+        case DPP_DISPLAY:
+            pu->duration += ticks;
+            if (pu->duration == MAX_PICKUP_DURATION_DISPLAY) {
+                pu->phase = DPP_EASE_OUT;
+                pu->duration = 0;
+            }
+            break;
+
+        case DPP_EASE_OUT:
+            pu->duration += ticks;
+            if (pu->duration == MAX_PICKUP_DURATION_EASE_OUT) {
+                pu->phase = DPP_DEAD;
+                pu->duration = 0;
+            }
+            break;
+        }
+
+        pu->rot_y += 4 * PHD_DEGREE;
+
+        Overlay_DrawPickup3D(pu);
+    }
+}
+
+static void Overlay_DrawPickupsSprites(void)
+{
+    int16_t ticks =
+        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
+    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
+
+    if (ticks <= 0 || ticks >= MAX_PICKUP_DURATION_DISPLAY) {
+        return;
+    }
+
+    int32_t sprite_height =
+        MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
+    int32_t sprite_width = sprite_height * 4 / 3;
+    for (int i = 0; i < MAX_PICKUPS; i++) {
+        DISPLAY_PICKUP_INFO *pu = &m_Pickups[i];
+        if (pu->phase == DPP_DEAD) {
+            continue;
+        }
+
+        pu->duration += ticks;
+        if (pu->duration >= MAX_PICKUP_DURATION_DISPLAY) {
+            pu->phase = DPP_DEAD;
+            continue;
+        }
+
+        int32_t x =
+            Viewport_GetWidth() - sprite_height - sprite_width * pu->grid_x;
+        int32_t y =
+            Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
+        int16_t spr_num = g_Objects[pu->obj_num].mesh_index;
+        Output_DrawUISprite(
+            x, y, Screen_GetRenderScaleGLRage(12288), spr_num, 4096);
+    }
+}
+
+static void Overlay_DrawPickups(void)
+{
+    if (g_Config.enable_3d_pickups) {
+        Overlay_DrawPickups3D();
+    } else {
+        Overlay_DrawPickupsSprites();
+    }
+}
+
 void Overlay_Init(void)
 {
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        m_Pickups[i].duration = 0;
+        m_Pickups[i].phase = DPP_DEAD;
     }
 
     Overlay_BarSetupHealth();
@@ -459,38 +682,6 @@ void Overlay_DrawAmmoInfo(void)
         : text_height + screen_margin_v;
 }
 
-void Overlay_DrawPickups(void)
-{
-    int16_t time =
-        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
-    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
-
-    if (time > 0 && time < 60) {
-        int32_t sprite_height =
-            MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
-        int32_t sprite_width = sprite_height * 4 / 3;
-        int32_t y = Viewport_GetHeight() - sprite_height;
-        int32_t x = Viewport_GetWidth() - sprite_height;
-        for (int i = 0; i < MAX_PICKUPS; i++) {
-            DISPLAYPU *pu = &m_Pickups[i];
-            pu->duration -= time;
-            if (pu->duration <= 0) {
-                pu->duration = 0;
-            } else {
-                Output_DrawUISprite(
-                    x, y, Screen_GetRenderScaleGLRage(12288), pu->sprnum, 4096);
-
-                if (i % MAX_PICKUP_COLUMNS == MAX_PICKUP_COLUMNS - 1) {
-                    x = Viewport_GetWidth() - sprite_height;
-                    y -= sprite_height;
-                } else {
-                    x -= sprite_width;
-                }
-            }
-        }
-    }
-}
-
 void Overlay_DrawFPSInfo(bool inv_ring_above)
 {
     static int32_t elapsed = 0;
@@ -560,10 +751,38 @@ void Overlay_DrawGameInfo(void)
 
 void Overlay_AddPickup(int16_t object_num)
 {
+    int32_t grid_x = -1;
+    int32_t grid_y = -1;
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        if (m_Pickups[i].duration <= 0) {
-            m_Pickups[i].duration = 75;
-            m_Pickups[i].sprnum = g_Objects[object_num].mesh_index;
+        int x = i % MAX_PICKUP_COLUMNS;
+        int y = i / MAX_PICKUP_COLUMNS;
+        bool is_occupied = false;
+        for (int j = 0; j < MAX_PICKUPS; j++) {
+            bool is_dead_or_dying = m_Pickups[j].phase == DPP_DEAD
+                || m_Pickups[j].phase == DPP_EASE_OUT;
+            if (m_Pickups[j].grid_x == x && m_Pickups[j].grid_y == y
+                && !is_dead_or_dying) {
+                is_occupied = true;
+                break;
+            }
+        }
+
+        if (!is_occupied) {
+            grid_x = x;
+            grid_y = y;
+            break;
+        }
+    }
+
+    for (int i = 0; i < MAX_PICKUPS; i++) {
+        if (m_Pickups[i].phase == DPP_DEAD) {
+            m_Pickups[i].obj_num = object_num;
+            m_Pickups[i].duration = 0;
+            m_Pickups[i].grid_x = grid_x;
+            m_Pickups[i].grid_y = grid_y;
+            m_Pickups[i].rot_y = 0;
+            m_Pickups[i].phase =
+                g_Config.enable_3d_pickups ? DPP_EASE_IN : DPP_DISPLAY;
             return;
         }
     }

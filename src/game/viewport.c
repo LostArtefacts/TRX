@@ -16,14 +16,14 @@ static int32_t m_MaxY = 0;
 static int32_t m_Width = 0;
 static int32_t m_Height = 0;
 
-void Viewport_Init(int32_t width, int32_t height)
+void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
-    m_MinX = 0;
-    m_MinY = 0;
-    m_CenterX = width / 2;
-    m_CenterY = height / 2;
-    m_MaxX = width - 1;
-    m_MaxY = height - 1;
+    m_MinX = x;
+    m_MinY = y;
+    m_MaxX = x + width - 1;
+    m_MaxY = y + height - 1;
+    m_CenterX = (m_MinX + m_MaxX) / 2;
+    m_CenterY = (m_MinY + m_MaxY) / 2;
     m_Width = width;
     m_Height = height;
 

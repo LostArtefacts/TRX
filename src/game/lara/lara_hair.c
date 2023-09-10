@@ -108,9 +108,8 @@ void Lara_Hair_Control(void)
     }
 
     Matrix_PushUnit();
-    g_MatrixPtr->_03 = g_LaraItem->pos.x << W2V_SHIFT;
-    g_MatrixPtr->_13 = g_LaraItem->pos.y << W2V_SHIFT;
-    g_MatrixPtr->_23 = g_LaraItem->pos.z << W2V_SHIFT;
+    Matrix_TranslateSet(
+        g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
     Matrix_RotYXZ(
         g_LaraItem->pos.y_rot, g_LaraItem->pos.x_rot, g_LaraItem->pos.z_rot);
 
@@ -294,9 +293,7 @@ void Lara_Hair_Control(void)
 
         for (i = 0; i < HAIR_SEGMENTS; i++, bone += 4) {
             Matrix_PushUnit();
-            g_MatrixPtr->_03 = m_Hair[i].x << W2V_SHIFT;
-            g_MatrixPtr->_13 = m_Hair[i].y << W2V_SHIFT;
-            g_MatrixPtr->_23 = m_Hair[i].z << W2V_SHIFT;
+            Matrix_TranslateSet(m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
             Matrix_RotYXZ(m_Hair[i].y_rot, m_Hair[i].x_rot, 0);
             Matrix_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
 
@@ -391,9 +388,8 @@ void Lara_Hair_Control(void)
                 -Math_Atan(distance, m_Hair[i].y - m_Hair[i - 1].y);
 
             Matrix_PushUnit();
-            g_MatrixPtr->_03 = m_Hair[i - 1].x << W2V_SHIFT;
-            g_MatrixPtr->_13 = m_Hair[i - 1].y << W2V_SHIFT;
-            g_MatrixPtr->_23 = m_Hair[i - 1].z << W2V_SHIFT;
+            Matrix_TranslateSet(
+                m_Hair[i - 1].x, m_Hair[i - 1].y, m_Hair[i - 1].z);
             Matrix_RotYXZ(m_Hair[i - 1].y_rot, m_Hair[i - 1].x_rot, 0);
 
             if (i == HAIR_SEGMENTS) {

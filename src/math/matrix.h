@@ -23,6 +23,7 @@ void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz);
 void Matrix_RotYXZpack(int32_t rots);
 void Matrix_TranslateRel(int32_t x, int32_t y, int32_t z);
 void Matrix_TranslateAbs(int32_t x, int32_t y, int32_t z);
+void Matrix_TranslateSet(int32_t x, int32_t y, int32_t z);
 
 void Matrix_Push_I(void);
 void Matrix_Pop_I(void);

@@ -22,8 +22,10 @@
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_messagebox.h>
 #include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_video.h>
 #include <libavcodec/version.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

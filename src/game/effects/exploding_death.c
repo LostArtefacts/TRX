@@ -17,10 +17,6 @@ int32_t Effect_ExplodingDeath(
     int16_t *frame = Item_GetBestFrame(item);
 
     Matrix_PushUnit();
-    g_MatrixPtr->_03 = 0;
-    g_MatrixPtr->_13 = 0;
-    g_MatrixPtr->_23 = 0;
-
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
     Matrix_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);

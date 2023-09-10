@@ -71,6 +71,9 @@ bool Matrix_PushUnit(void)
     mptr->_20 = 0;
     mptr->_21 = 0;
     mptr->_22 = W2V_SCALE;
+    mptr->_03 = 0;
+    mptr->_13 = 0;
+    mptr->_23 = 0;
     return true;
 }
 
@@ -312,6 +315,14 @@ void Matrix_TranslateAbs(int32_t x, int32_t y, int32_t z)
     mptr->_03 = mptr->_00 * x + mptr->_01 * y + mptr->_02 * z;
     mptr->_13 = mptr->_10 * x + mptr->_11 * y + mptr->_12 * z;
     mptr->_23 = mptr->_20 * x + mptr->_21 * y + mptr->_22 * z;
+}
+
+void Matrix_TranslateSet(int32_t x, int32_t y, int32_t z)
+{
+    MATRIX *mptr = g_MatrixPtr;
+    mptr->_03 = x << W2V_SHIFT;
+    mptr->_13 = y << W2V_SHIFT;
+    mptr->_23 = z << W2V_SHIFT;
 }
 
 void Matrix_InitInterpolate(int32_t frac, int32_t rate)

@@ -37,7 +37,7 @@ static void Screen_ApplyResolution(void)
 {
     int32_t width = Screen_GetResWidth();
     int32_t height = Screen_GetResHeight();
-    Viewport_Init(width, height);
+    Viewport_Init(0, 0, width, height);
 
     Output_ApplyRenderSettings();
 
