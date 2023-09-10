@@ -14,6 +14,8 @@ typedef struct GFX_FBO_Renderer {
     GLuint fbo;
     GLuint rbo;
 
+    bool is_smoothing_enabled;
+
     GFX_GL_VertexArray vertex_array;
     GFX_GL_Buffer buffer;
     GFX_GL_Texture texture;
