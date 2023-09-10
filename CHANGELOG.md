@@ -16,6 +16,7 @@
 - fixed the incorrect starting animation on centaurs that spawn from statues (#926, regression from 2.15)
 - fixed jump-twist animations at times being interrupted (#932, regression from 2.15.1)
 - fixed walk-run-jump at times breaking when TR2 jumping is enabled (OG bug in TR2+) (#934)
+- fixed Lara jumping late with TR2 jumping enabled, as compared to normal TR1 jumping when entering the run animation initially (#975)
 - fixed the reset and unbind progress bars in the controls menu for non-default bar scaling (#930)
 - fixed original data issues where music triggers are not set as one shot (#939)
 - fixed a missing enemy trigger in Tomb of Tihocan (#751)

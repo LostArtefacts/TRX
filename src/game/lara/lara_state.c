@@ -123,7 +123,8 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
             item->anim_number - g_Objects[item->object_number].anim_index;
         if (anim == LA_RUN_START) {
             m_JumpPermitted = false;
-        } else if (anim != LA_RUN || item->frame_number == LF_JUMP_READY) {
+        } else if (
+            anim != LA_RUN || (item->frame_number + 1) == LF_JUMP_READY) {
             m_JumpPermitted = true;
         }
     }
