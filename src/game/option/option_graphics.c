@@ -16,13 +16,16 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define TOP_Y -55
+#define TOP_Y (-85)
 #define BORDER 4
+#define COL_OFFSET_0 (-142)
+#define COL_OFFSET_1 10
 #define ROW_HEIGHT 17
 #define ROW_WIDTH 300
 #define OPTION_LENGTH 256
-#define LEFT_ARROW_OFFSET 20
-#define RIGHT_ARROW_OFFSET 35
+#define LEFT_ARROW_OFFSET (-20)
+#define RIGHT_ARROW_OFFSET_MIN 35
+#define RIGHT_ARROW_OFFSET_MAX 85
 
 typedef enum GRAPHICS_TEXT {
     TEXT_PERSPECTIVE,
@@ -201,12 +204,12 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowRight = g_Config.ui.bar_scale >= MAX_BAR_SCALE;
         break;
     case TEXT_RENDER_MODE:
-        local_right_arrow_offset = 95;
+        local_right_arrow_offset = RIGHT_ARROW_OFFSET_MAX;
         m_HideArrowLeft = false;
         m_HideArrowRight = false;
         break;
     case TEXT_RESOLUTION:
-        local_right_arrow_offset = 95;
+        local_right_arrow_offset = RIGHT_ARROW_OFFSET_MAX;
         m_HideArrowLeft = !Screen_CanSetPrevRes();
         m_HideArrowRight = !Screen_CanSetNextRes();
         break;
@@ -215,12 +218,12 @@ static void Option_GraphicsUpdateArrows(void)
     Text_SetPos(
         m_Text[TEXT_LEFT_ARROW],
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.x
-            - LEFT_ARROW_OFFSET,
+            + LEFT_ARROW_OFFSET,
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.y);
     Text_SetPos(
         m_Text[TEXT_RIGHT_ARROW],
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.x
-            + RIGHT_ARROW_OFFSET + local_right_arrow_offset,
+            + RIGHT_ARROW_OFFSET_MIN + local_right_arrow_offset,
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.y);
 
     Text_Hide(m_Text[TEXT_LEFT_ARROW], m_HideArrowLeft);
@@ -232,7 +235,7 @@ static int16_t Option_GraphicsPlaceColumns(bool create)
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
 
     int16_t max_y = 0;
-    int16_t xs[2] = { centre - 142, centre };
+    int16_t xs[2] = { centre + COL_OFFSET_0, centre + COL_OFFSET_1 };
     int16_t ys[2] = { TOP_Y + ROW_HEIGHT + BORDER * 2,
                       TOP_Y + ROW_HEIGHT + BORDER * 2 };
 
