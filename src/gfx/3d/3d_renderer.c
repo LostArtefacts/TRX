@@ -246,19 +246,20 @@ void GFX_3D_Renderer_SetPrimType(
     GFX_3D_VertexStream_SetPrimType(&renderer->vertex_stream, value);
 }
 
-void GFX_3D_Renderer_SetSmoothingEnabled(
-    GFX_3D_Renderer *renderer, bool is_enabled)
+void GFX_3D_Renderer_SetTextureFilter(
+    GFX_3D_Renderer *renderer, GFX_TEXTURE_FILTER filter)
 {
     assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_GL_Sampler_Parameteri(
         &renderer->sampler, GL_TEXTURE_MAG_FILTER,
-        is_enabled ? GL_LINEAR : GL_NEAREST);
+        filter == GFX_TF_BILINEAR ? GL_LINEAR : GL_NEAREST);
     GFX_GL_Sampler_Parameteri(
         &renderer->sampler, GL_TEXTURE_MIN_FILTER,
-        is_enabled ? GL_LINEAR : GL_NEAREST);
+        filter == GFX_TF_BILINEAR ? GL_LINEAR : GL_NEAREST);
     GFX_GL_Program_Uniform1i(
-        &renderer->program, renderer->loc_smoothing_enabled, is_enabled);
+        &renderer->program, renderer->loc_smoothing_enabled,
+        filter == GFX_TF_BILINEAR);
 }
 
 void GFX_3D_Renderer_SetDepthTestEnabled(

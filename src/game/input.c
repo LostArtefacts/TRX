@@ -5,6 +5,7 @@
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/option/option_control.h"
+#include "gfx/common.h"
 #include "global/vars.h"
 #include "specific/s_input.h"
 
@@ -171,7 +172,8 @@ void Input_Update(void)
     }
 
     if (g_InputDB.toggle_bilinear_filter) {
-        g_Config.rendering.enable_bilinear_filter ^= true;
+        g_Config.rendering.texture_filter =
+            (g_Config.rendering.texture_filter + 1) % GFX_TF_NUMBER_OF;
     }
 
     if (g_InputDB.toggle_perspective_filter) {

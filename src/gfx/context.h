@@ -2,17 +2,13 @@
 
 #include "gfx/2d/2d_renderer.h"
 #include "gfx/3d/3d_renderer.h"
+#include "gfx/common.h"
 #include "gfx/fbo/fbo_renderer.h"
 
 #include <stdbool.h>
 #include <stdint.h>
 
 typedef struct GFX_CONTEXT GFX_CONTEXT;
-
-typedef enum GFX_RENDER_MODE {
-    GFX_RM_LEGACY,
-    GFX_RM_FRAMEBUFFER,
-} GFX_RENDER_MODE;
 
 void GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);

@@ -6,6 +6,7 @@
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/text.h"
+#include "gfx/common.h"
 #include "gfx/context.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -15,17 +16,21 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define TOP_Y -55
+#define TOP_Y (-85)
 #define BORDER 4
+#define COL_OFFSET_0 (-142)
+#define COL_OFFSET_1 10
 #define ROW_HEIGHT 17
 #define ROW_WIDTH 300
 #define OPTION_LENGTH 256
-#define LEFT_ARROW_OFFSET 20
-#define RIGHT_ARROW_OFFSET 35
+#define LEFT_ARROW_OFFSET (-20)
+#define RIGHT_ARROW_OFFSET_MIN 35
+#define RIGHT_ARROW_OFFSET_MAX 85
 
 typedef enum GRAPHICS_TEXT {
     TEXT_PERSPECTIVE,
-    TEXT_BILINEAR,
+    TEXT_TEXTURE_FILTER,
+    TEXT_FBO_FILTER,
     TEXT_VSYNC,
     TEXT_BRIGHTNESS,
     TEXT_UI_TEXT_SCALE,
@@ -35,7 +40,8 @@ typedef enum GRAPHICS_TEXT {
     TEXT_TITLE,
     TEXT_TITLE_BORDER,
     TEXT_PERSPECTIVE_TOGGLE,
-    TEXT_BILINEAR_TOGGLE,
+    TEXT_TEXTURE_FILTER_VALUE,
+    TEXT_FBO_FILTER_VALUE,
     TEXT_VSYNC_TOGGLE,
     TEXT_BRIGHTNESS_TOGGLE,
     TEXT_UI_TEXT_SCALE_TOGGLE,
@@ -60,7 +66,8 @@ typedef struct TEXT_COLUMN_PLACEMENT {
 static const TEXT_COLUMN_PLACEMENT m_GfxTextPlacement[] = {
     // left column
     { TEXT_PERSPECTIVE, 0, GS_DETAIL_PERSPECTIVE },
-    { TEXT_BILINEAR, 0, GS_DETAIL_BILINEAR },
+    { TEXT_TEXTURE_FILTER, 0, GS_DETAIL_TEXTURE_FILTER },
+    { TEXT_FBO_FILTER, 0, GS_DETAIL_FBO_FILTER },
     { TEXT_VSYNC, 0, GS_DETAIL_VSYNC },
     { TEXT_BRIGHTNESS, 0, GS_DETAIL_BRIGHTNESS },
     { TEXT_UI_TEXT_SCALE, 0, GS_DETAIL_UI_TEXT_SCALE },
@@ -69,7 +76,8 @@ static const TEXT_COLUMN_PLACEMENT m_GfxTextPlacement[] = {
     { TEXT_RESOLUTION, 0, GS_DETAIL_RESOLUTION },
     // right column
     { TEXT_PERSPECTIVE_TOGGLE, 1, GS_MISC_ON },
-    { TEXT_BILINEAR_TOGGLE, 1, GS_MISC_ON },
+    { TEXT_TEXTURE_FILTER_VALUE, 1, GS_MISC_OFF },
+    { TEXT_FBO_FILTER_VALUE, 1, GS_MISC_OFF },
     { TEXT_VSYNC_TOGGLE, 1, GS_MISC_ON },
     { TEXT_BRIGHTNESS_TOGGLE, 1, GS_DETAIL_FLOAT_FMT },
     { TEXT_UI_TEXT_SCALE_TOGGLE, 1, GS_DETAIL_FLOAT_FMT },
@@ -144,7 +152,8 @@ static void Option_GraphicsInitText(void)
     Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
 
     Option_GraphicsChangeTextOption(TEXT_PERSPECTIVE);
-    Option_GraphicsChangeTextOption(TEXT_BILINEAR);
+    Option_GraphicsChangeTextOption(TEXT_TEXTURE_FILTER);
+    Option_GraphicsChangeTextOption(TEXT_FBO_FILTER);
     Option_GraphicsChangeTextOption(TEXT_VSYNC);
     Option_GraphicsChangeTextOption(TEXT_BRIGHTNESS);
     Option_GraphicsChangeTextOption(TEXT_UI_TEXT_SCALE);
@@ -170,9 +179,13 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowLeft = !g_Config.rendering.enable_perspective_filter;
         m_HideArrowRight = g_Config.rendering.enable_perspective_filter;
         break;
-    case TEXT_BILINEAR:
-        m_HideArrowLeft = !g_Config.rendering.enable_bilinear_filter;
-        m_HideArrowRight = g_Config.rendering.enable_bilinear_filter;
+    case TEXT_TEXTURE_FILTER:
+        m_HideArrowLeft = g_Config.rendering.texture_filter == GFX_TF_FIRST;
+        m_HideArrowRight = g_Config.rendering.texture_filter == GFX_TF_LAST;
+        break;
+    case TEXT_FBO_FILTER:
+        m_HideArrowLeft = g_Config.rendering.fbo_filter == GFX_TF_FIRST;
+        m_HideArrowRight = g_Config.rendering.fbo_filter == GFX_TF_LAST;
         break;
     case TEXT_VSYNC:
         m_HideArrowLeft = !g_Config.rendering.enable_vsync;
@@ -191,12 +204,12 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowRight = g_Config.ui.bar_scale >= MAX_BAR_SCALE;
         break;
     case TEXT_RENDER_MODE:
-        local_right_arrow_offset = 95;
+        local_right_arrow_offset = RIGHT_ARROW_OFFSET_MAX;
         m_HideArrowLeft = false;
         m_HideArrowRight = false;
         break;
     case TEXT_RESOLUTION:
-        local_right_arrow_offset = 95;
+        local_right_arrow_offset = RIGHT_ARROW_OFFSET_MAX;
         m_HideArrowLeft = !Screen_CanSetPrevRes();
         m_HideArrowRight = !Screen_CanSetNextRes();
         break;
@@ -205,12 +218,12 @@ static void Option_GraphicsUpdateArrows(void)
     Text_SetPos(
         m_Text[TEXT_LEFT_ARROW],
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.x
-            - LEFT_ARROW_OFFSET,
+            + LEFT_ARROW_OFFSET,
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.y);
     Text_SetPos(
         m_Text[TEXT_RIGHT_ARROW],
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.x
-            + RIGHT_ARROW_OFFSET + local_right_arrow_offset,
+            + RIGHT_ARROW_OFFSET_MIN + local_right_arrow_offset,
         m_Text[g_OptionSelected + TEXT_PERSPECTIVE_TOGGLE]->pos.y);
 
     Text_Hide(m_Text[TEXT_LEFT_ARROW], m_HideArrowLeft);
@@ -222,7 +235,7 @@ static int16_t Option_GraphicsPlaceColumns(bool create)
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
 
     int16_t max_y = 0;
-    int16_t xs[2] = { centre - 142, centre };
+    int16_t xs[2] = { centre + COL_OFFSET_0, centre + COL_OFFSET_1 };
     int16_t ys[2] = { TOP_Y + ROW_HEIGHT + BORDER * 2,
                       TOP_Y + ROW_HEIGHT + BORDER * 2 };
 
@@ -252,28 +265,37 @@ static void Option_GraphicsChangeTextOption(int32_t option_num)
     char buf[OPTION_LENGTH];
 
     switch (option_num) {
-    case TEXT_PERSPECTIVE:
+    case TEXT_PERSPECTIVE: {
+        bool is_enabled = g_Config.rendering.enable_perspective_filter;
         Text_ChangeText(
             m_Text[TEXT_PERSPECTIVE_TOGGLE],
-            g_GameFlow.strings
-                [g_Config.rendering.enable_perspective_filter ? GS_MISC_ON
-                                                              : GS_MISC_OFF]);
+            g_GameFlow.strings[is_enabled ? GS_MISC_ON : GS_MISC_OFF]);
         break;
+    }
 
-    case TEXT_BILINEAR:
+    case TEXT_TEXTURE_FILTER: {
+        bool is_enabled = g_Config.rendering.texture_filter == GFX_TF_BILINEAR;
         Text_ChangeText(
-            m_Text[TEXT_BILINEAR_TOGGLE],
-            g_GameFlow.strings
-                [g_Config.rendering.enable_bilinear_filter ? GS_MISC_ON
-                                                           : GS_MISC_OFF]);
+            m_Text[TEXT_TEXTURE_FILTER_VALUE],
+            g_GameFlow.strings[is_enabled ? GS_DETAIL_BILINEAR : GS_MISC_OFF]);
         break;
+    }
 
-    case TEXT_VSYNC:
+    case TEXT_FBO_FILTER: {
+        bool is_enabled = g_Config.rendering.fbo_filter == GFX_TF_BILINEAR;
+        Text_ChangeText(
+            m_Text[TEXT_FBO_FILTER_VALUE],
+            g_GameFlow.strings[is_enabled ? GS_DETAIL_BILINEAR : GS_MISC_OFF]);
+        break;
+    }
+
+    case TEXT_VSYNC: {
+        bool is_enabled = g_Config.rendering.enable_vsync;
         Text_ChangeText(
             m_Text[TEXT_VSYNC_TOGGLE],
-            g_GameFlow.strings
-                [g_Config.rendering.enable_vsync ? GS_MISC_ON : GS_MISC_OFF]);
+            g_GameFlow.strings[is_enabled ? GS_MISC_ON : GS_MISC_OFF]);
         break;
+    }
 
     case TEXT_BRIGHTNESS:
         sprintf(
@@ -349,10 +371,17 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             }
             break;
 
-        case TEXT_BILINEAR:
-            if (!g_Config.rendering.enable_bilinear_filter) {
-                g_Config.rendering.enable_bilinear_filter = true;
-                reset = TEXT_BILINEAR;
+        case TEXT_TEXTURE_FILTER:
+            if (g_Config.rendering.texture_filter != GFX_TF_LAST) {
+                g_Config.rendering.texture_filter++;
+                reset = TEXT_TEXTURE_FILTER;
+            }
+            break;
+
+        case TEXT_FBO_FILTER:
+            if (g_Config.rendering.fbo_filter != GFX_TF_LAST) {
+                g_Config.rendering.fbo_filter++;
+                reset = TEXT_FBO_FILTER;
             }
             break;
 
@@ -411,10 +440,17 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             }
             break;
 
-        case TEXT_BILINEAR:
-            if (g_Config.rendering.enable_bilinear_filter) {
-                g_Config.rendering.enable_bilinear_filter = false;
-                reset = TEXT_BILINEAR;
+        case TEXT_TEXTURE_FILTER:
+            if (g_Config.rendering.texture_filter != GFX_TF_FIRST) {
+                g_Config.rendering.texture_filter--;
+                reset = TEXT_TEXTURE_FILTER;
+            }
+            break;
+
+        case TEXT_FBO_FILTER:
+            if (g_Config.rendering.fbo_filter != GFX_TF_FIRST) {
+                g_Config.rendering.fbo_filter--;
+                reset = TEXT_FBO_FILTER;
             }
             break;
 
