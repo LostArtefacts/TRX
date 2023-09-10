@@ -191,12 +191,12 @@ static void Option_GraphicsUpdateArrows(void)
         m_HideArrowRight = g_Config.ui.bar_scale >= MAX_BAR_SCALE;
         break;
     case TEXT_RENDER_MODE:
-        local_right_arrow_offset = 70;
+        local_right_arrow_offset = 95;
         m_HideArrowLeft = false;
         m_HideArrowRight = false;
         break;
     case TEXT_RESOLUTION:
-        local_right_arrow_offset = 70;
+        local_right_arrow_offset = 95;
         m_HideArrowLeft = !Screen_CanSetPrevRes();
         m_HideArrowRight = !Screen_CanSetNextRes();
         break;
@@ -222,7 +222,7 @@ static int16_t Option_GraphicsPlaceColumns(bool create)
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
 
     int16_t max_y = 0;
-    int16_t xs[2] = { centre - 142, centre + 30 };
+    int16_t xs[2] = { centre - 142, centre };
     int16_t ys[2] = { TOP_Y + ROW_HEIGHT + BORDER * 2,
                       TOP_Y + ROW_HEIGHT + BORDER * 2 };
 
