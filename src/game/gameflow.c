@@ -1293,6 +1293,11 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             return GF_EXIT_TO_TITLE;
 
         case GFS_EXIT_TO_LEVEL:
+            if (((int32_t)seq->data & ((1 << 6) - 1))
+                    >= g_GameFlow.first_bonus_num
+                && !g_GameInfo.bonus_level_unlock) {
+                return GF_EXIT_TO_TITLE;
+            }
             return GF_START_GAME
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
