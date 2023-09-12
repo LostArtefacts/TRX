@@ -216,7 +216,9 @@ int32_t Game_Stop(void)
     if (g_CurrentLevel == g_GameFlow.last_level_num) {
         g_Config.profile.new_game_plus_unlock = true;
         Config_Write();
-    } else {
+    }
+
+    if (g_CurrentLevel < g_GameFlow.level_count) {
         Savegame_CarryCurrentInfoToNextLevel(
             g_CurrentLevel, g_CurrentLevel + 1);
         Savegame_ApplyLogicToCurrentInfo(g_CurrentLevel + 1);

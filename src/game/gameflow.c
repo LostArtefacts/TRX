@@ -475,18 +475,6 @@ static bool GameFlow_LoadLevelSequence(
             }
             seq->data = (void *)(intptr_t)tmp;
 
-        } else if (!strcmp(type_str, "exit_to_bonus_level")) {
-            seq->type = GFS_EXIT_TO_BONUS_LEVEL;
-            int tmp =
-                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
-            if (tmp == JSON_INVALID_NUMBER) {
-                LOG_ERROR(
-                    "level %d, sequence %s: 'level_id' must be a number",
-                    level_num, type_str);
-                return false;
-            }
-            seq->data = (void *)tmp;
-
         } else if (!strcmp(type_str, "exit_to_cine")) {
             seq->type = GFS_EXIT_TO_CINE;
             int tmp =
@@ -1073,7 +1061,6 @@ void GameFlow_Shutdown(void)
                     case GFS_LEVEL_STATS:
                     case GFS_EXIT_TO_TITLE:
                     case GFS_EXIT_TO_LEVEL:
-                    case GFS_EXIT_TO_BONUS_LEVEL:
                     case GFS_EXIT_TO_CINE:
                     case GFS_SET_CAM_X:
                     case GFS_SET_CAM_Y:
@@ -1170,7 +1157,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             switch (seq->type) {
             case GFS_EXIT_TO_TITLE:
             case GFS_EXIT_TO_LEVEL:
-            case GFS_EXIT_TO_BONUS_LEVEL:
             case GFS_EXIT_TO_CINE:
             case GFS_PLAY_FMV:
             case GFS_LEVEL_STATS:
@@ -1309,13 +1295,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_EXIT_TO_LEVEL:
             return GF_START_GAME
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
-
-        case GFS_EXIT_TO_BONUS_LEVEL: {
-            if (!g_GameInfo.bonus_level_unlock) {
-                break;
-            }
-            return GF_START_BONUS | ((int32_t)seq->data & ((1 << 6) - 1));
-        }
 
         case GFS_EXIT_TO_CINE:
             return GF_START_CINE
@@ -1481,13 +1460,6 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_EXIT_TO_LEVEL:
             return GF_START_GAME
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
-
-        case GFS_EXIT_TO_BONUS_LEVEL: {
-            if (savegame_level < g_GameFlow.first_bonus_num) {
-                break;
-            }
-            return GF_START_BONUS | ((int32_t)seq->data & ((1 << 6) - 1));
-        }
 
         case GFS_EXIT_TO_CINE:
             return GF_START_CINE
