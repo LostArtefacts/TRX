@@ -3,6 +3,7 @@
 #include "gfx/gl/utils.h"
 
 #include <assert.h>
+#include <stdint.h>
 
 void GFX_GL_VertexArray_Init(GFX_GL_VertexArray *array)
 {
@@ -34,6 +35,6 @@ void GFX_GL_VertexArray_Attribute(
     GFX_GL_CheckError();
 
     glVertexAttribPointer(
-        index, size, type, normalized, stride, (void *)offset);
+        index, size, type, normalized, stride, (void *)(intptr_t)offset);
     GFX_GL_CheckError();
 }

@@ -576,7 +576,7 @@ static bool Savegame_BSON_LoadItems(
                 && g_Config.enable_enhanced_saves) {
                 int32_t fx_num = json_object_get_int(item_obj, "fx_num", -1);
                 if (fx_num != -1) {
-                    item->data = (void *)(fx_num + 1);
+                    item->data = (void *)(intptr_t)(fx_num + 1);
                 }
             }
         }
@@ -1036,7 +1036,8 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             }
 
             if (item->object_number == O_FLAME_EMITTER && item->data) {
-                int32_t fx_num = fx_order.id_map[(int32_t)item->data - 1];
+                int32_t fx_num = (int32_t)(intptr_t)item->data - 1;
+                fx_num = fx_order.id_map[fx_num];
                 json_object_append_int(item_obj, "fx_num", fx_num);
             }
         }

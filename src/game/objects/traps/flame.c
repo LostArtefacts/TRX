@@ -114,11 +114,11 @@ void FlameEmitter_Control(int16_t item_num)
                 fx->object_number = O_FLAME;
                 fx->counter = 0;
             }
-            item->data = (void *)(fx_num + 1);
+            item->data = (void *)(intptr_t)(fx_num + 1);
         }
     } else if (item->data) {
         Sound_StopEffect(SFX_FIRE, NULL);
-        Effect_Kill((int16_t)(size_t)item->data - 1);
+        Effect_Kill((int16_t)(intptr_t)item->data - 1);
         item->data = NULL;
     }
 }
