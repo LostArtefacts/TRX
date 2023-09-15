@@ -231,7 +231,6 @@ static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
     Requester_Init(req);
-    req->requested = 0;
     Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
     Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
     Requester_AddItem(
@@ -240,6 +239,9 @@ static void Option_PassportInitNewGameRequester(void)
     Requester_AddItem(
         req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
     req->vis_lines = MAX_GAME_MODES;
+
+    req->line_offset = 0;
+    req->requested = 0;
 
     // Title screen passport is at a different pitch.
     if (g_InvMode == INV_TITLE_MODE) {
