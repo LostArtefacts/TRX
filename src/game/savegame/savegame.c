@@ -583,12 +583,12 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
     if (!savegame_info->features.select_level) {
         req->item_flags[req->items] |= RIF_BLOCKED;
         sprintf(
-            &req->item_texts[req->items * req->item_text_len],
+            &req->item_texts[req->items * req->item_text_len], "%s",
             g_GameFlow.strings[GS_PASSPORT_LEGACY_SELECT_LEVEL_1]);
         req->items++;
         req->item_flags[req->items] |= RIF_BLOCKED;
         sprintf(
-            &req->item_texts[req->items * req->item_text_len],
+            &req->item_texts[req->items * req->item_text_len], "%s",
             g_GameFlow.strings[GS_PASSPORT_LEGACY_SELECT_LEVEL_2]);
         req->items++;
         req->requested = 0;
