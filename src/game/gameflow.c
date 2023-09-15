@@ -362,27 +362,27 @@ static bool GameFlow_LoadLevelSequence(
 
         if (!strcmp(type_str, "start_game")) {
             seq->type = GFS_START_GAME;
-            seq->data = (void *)level_num;
+            seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "stop_game")) {
             seq->type = GFS_STOP_GAME;
-            seq->data = (void *)level_num;
+            seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "loop_game")) {
             seq->type = GFS_LOOP_GAME;
-            seq->data = (void *)level_num;
+            seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "start_cine")) {
             seq->type = GFS_START_CINE;
-            seq->data = (void *)level_num;
+            seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "stop_cine")) {
             seq->type = GFS_STOP_CINE;
-            seq->data = (void *)level_num;
+            seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "loop_cine")) {
             seq->type = GFS_LOOP_CINE;
-            seq->data = (void *)level_num;
+            seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "play_fmv")) {
             seq->type = GFS_PLAY_FMV;
@@ -438,7 +438,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "total_stats")) {
             seq->type = GFS_TOTAL_STATS;
@@ -473,7 +473,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "exit_to_cine")) {
             seq->type = GFS_EXIT_TO_CINE;
@@ -485,7 +485,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "set_cam_x")) {
             seq->type = GFS_SET_CAM_X;
@@ -497,7 +497,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "set_cam_y")) {
             seq->type = GFS_SET_CAM_Y;
@@ -509,7 +509,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "set_cam_z")) {
             seq->type = GFS_SET_CAM_Z;
@@ -521,7 +521,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "set_cam_angle")) {
             seq->type = GFS_SET_CAM_ANGLE;
@@ -533,7 +533,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "flip_map")) {
             seq->type = GFS_FLIP_MAP;
@@ -580,7 +580,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (!strcmp(type_str, "mesh_swap")) {
             seq->type = GFS_MESH_SWAP;
@@ -633,7 +633,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            seq->data = (void *)tmp;
+            seq->data = (void *)(intptr_t)tmp;
 
         } else if (GameFlow_IsLegacySequence(type_str)) {
             seq->type = GFS_LEGACY;
@@ -1167,7 +1167,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         switch (seq->type) {
         case GFS_START_GAME:
-            if (!Game_Start((int32_t)seq->data, level_type)) {
+            if (!Game_Start((int32_t)(intptr_t)seq->data, level_type)) {
                 g_CurrentLevel = 0;
                 return GF_EXIT_TO_TITLE;
             }
@@ -1194,7 +1194,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_START_CINE:
             if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Start((int32_t)seq->data);
+                ret = Game_Cutscene_Start((int32_t)(intptr_t)seq->data);
             }
             break;
 
@@ -1206,7 +1206,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_STOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Stop((int32_t)seq->data);
+                ret = Game_Cutscene_Stop((int32_t)(intptr_t)seq->data);
             }
             break;
 
@@ -1217,7 +1217,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LEVEL_STATS:
-            Stats_Show((int32_t)seq->data);
+            Stats_Show((int32_t)(intptr_t)seq->data);
             break;
 
         case GFS_TOTAL_STATS:
@@ -1273,28 +1273,30 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             return GF_EXIT_TO_TITLE;
 
         case GFS_EXIT_TO_LEVEL:
-            return GF_START_GAME | ((int32_t)seq->data & ((1 << 6) - 1));
+            return GF_START_GAME
+                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_EXIT_TO_CINE:
-            return GF_START_CINE | ((int32_t)seq->data & ((1 << 6) - 1));
+            return GF_START_CINE
+                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_SET_CAM_X:
-            g_Camera.pos.x = (int32_t)seq->data;
+            g_Camera.pos.x = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Y:
-            g_Camera.pos.y = (int32_t)seq->data;
+            g_Camera.pos.y = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Z:
-            g_Camera.pos.z = (int32_t)seq->data;
+            g_Camera.pos.z = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_ANGLE:
-            g_Camera.target_angle = (int32_t)seq->data;
+            g_Camera.target_angle = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_FLIP_MAP:
             Room_FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
-            Music_Play((int32_t)seq->data);
+            Music_Play((int32_t)(intptr_t)seq->data);
             break;
 
         case GFS_GIVE_ITEM:
@@ -1363,7 +1365,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         }
 
         case GFS_SETUP_BACON_LARA: {
-            int32_t anchor_room = (int32_t)seq->data;
+            int32_t anchor_room = (int32_t)(intptr_t)seq->data;
             if (!BaconLara_InitialiseAnchor(anchor_room)) {
                 LOG_ERROR(
                     "Could not anchor Bacon Lara to room %d", anchor_room);
@@ -1417,7 +1419,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             break;
 
         case GFS_START_CINE:
-            ret = Game_Cutscene_Start((int32_t)seq->data);
+            ret = Game_Cutscene_Start((int32_t)(intptr_t)seq->data);
             break;
 
         case GFS_LOOP_CINE:
@@ -1425,7 +1427,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             break;
 
         case GFS_STOP_CINE:
-            ret = Game_Cutscene_Stop((int32_t)seq->data);
+            ret = Game_Cutscene_Stop((int32_t)(intptr_t)seq->data);
             break;
 
         case GFS_PLAY_FMV:
@@ -1436,28 +1438,30 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             return GF_EXIT_TO_TITLE;
 
         case GFS_EXIT_TO_LEVEL:
-            return GF_START_GAME | ((int32_t)seq->data & ((1 << 6) - 1));
+            return GF_START_GAME
+                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_EXIT_TO_CINE:
-            return GF_START_CINE | ((int32_t)seq->data & ((1 << 6) - 1));
+            return GF_START_CINE
+                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_SET_CAM_X:
-            g_Camera.pos.x = (int32_t)seq->data;
+            g_Camera.pos.x = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Y:
-            g_Camera.pos.y = (int32_t)seq->data;
+            g_Camera.pos.y = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Z:
-            g_Camera.pos.z = (int32_t)seq->data;
+            g_Camera.pos.z = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_ANGLE:
-            g_Camera.target_angle = (int32_t)seq->data;
+            g_Camera.target_angle = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_FLIP_MAP:
             Room_FlipMap();
             break;
         case GFS_PLAY_SYNCED_AUDIO:
-            Music_Play((int32_t)seq->data);
+            Music_Play((int32_t)(intptr_t)seq->data);
             break;
 
         case GFS_MESH_SWAP: {

@@ -225,7 +225,7 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
     Savegame_Legacy_Write(&lara->mesh_effects, sizeof(int32_t));
 
     for (int i = 0; i < LM_NUMBER_OF; i++) {
-        tmp32 = (size_t)lara->mesh_ptrs[i] - (size_t)g_MeshBase;
+        tmp32 = ((intptr_t)lara->mesh_ptrs[i] - (intptr_t)g_MeshBase);
         Savegame_Legacy_Write(&tmp32, sizeof(int32_t));
     }
 
@@ -256,7 +256,7 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
 
 static void Savegame_Legacy_WriteArm(LARA_ARM *arm)
 {
-    int32_t frame_base = (size_t)arm->frame_base - (size_t)g_AnimFrames;
+    int32_t frame_base = (int32_t)(arm->frame_base - g_AnimFrames);
     Savegame_Legacy_Write(&frame_base, sizeof(int32_t));
     Savegame_Legacy_Write(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->lock, sizeof(int16_t));
@@ -317,7 +317,8 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
     Savegame_Legacy_Read(&lara->mesh_effects, sizeof(int32_t));
     for (int i = 0; i < LM_NUMBER_OF; i++) {
         Savegame_Legacy_Read(&tmp32, sizeof(int32_t));
-        lara->mesh_ptrs[i] = (int16_t *)((size_t)g_MeshBase + (size_t)tmp32);
+        lara->mesh_ptrs[i] =
+            (int16_t *)((intptr_t)g_MeshBase + (intptr_t)tmp32);
     }
 
     lara->target = NULL;
@@ -347,7 +348,8 @@ static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 {
     int32_t frame_base;
     Savegame_Legacy_Read(&frame_base, sizeof(int32_t));
-    arm->frame_base = (int16_t *)((size_t)g_AnimFrames + (size_t)frame_base);
+    arm->frame_base =
+        (int16_t *)((intptr_t)g_AnimFrames + (intptr_t)frame_base);
 
     Savegame_Legacy_Read(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->lock, sizeof(int16_t));

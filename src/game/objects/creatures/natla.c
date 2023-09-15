@@ -14,7 +14,6 @@
 #include "math/math.h"
 
 #include <stdbool.h>
-#include <stddef.h>
 
 #define NATLA_SHOT_DAMAGE 100
 #define NATLA_NEAR_DEATH 200
@@ -82,7 +81,7 @@ void Natla_Control(int16_t item_num)
     int16_t tilt = 0;
     int16_t gun = natla->head_rotation * 7 / 8;
     int16_t timer = natla->flags & NATLA_TIMER;
-    int16_t facing = (int16_t)(size_t)item->priv;
+    int16_t facing = (int16_t)(intptr_t)item->priv;
 
     if (item->hit_points <= 0 && item->hit_points > DONT_TARGET) {
         item->goal_anim_state = NATLA_DEATH;
@@ -311,7 +310,7 @@ void Natla_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
     item->pos.y_rot += facing;
 
-    item->priv = (void *)(size_t)facing;
+    item->priv = (void *)(intptr_t)facing;
 }
 
 void NatlaGun_Setup(OBJECT_INFO *obj)
