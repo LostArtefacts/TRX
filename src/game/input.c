@@ -174,14 +174,17 @@ void Input_Update(void)
     if (g_InputDB.toggle_bilinear_filter) {
         g_Config.rendering.texture_filter =
             (g_Config.rendering.texture_filter + 1) % GFX_TF_NUMBER_OF;
+        Config_Write();
     }
 
     if (g_InputDB.toggle_perspective_filter) {
         g_Config.rendering.enable_perspective_filter ^= true;
+        Config_Write();
     }
 
     if (g_InputDB.toggle_fps_counter) {
         g_Config.rendering.enable_fps_counter ^= true;
+        Config_Write();
     }
 
     if (g_InputDB.turbo_cheat) {
