@@ -19,7 +19,7 @@
     ],
 
     "levels": [
-        // level 0
+        // Level 0
         {
             "title": "Return to Egypt",
             "file": "data/egypt.phd",
@@ -40,7 +40,7 @@
             "unobtainable_kills": 1,
         },
 
-        // level 1
+        // Level 1
         {
             "title": "Temple of the Cat",
             "file": "data/cat.phd",
@@ -62,7 +62,7 @@
             "unobtainable_pickups": 1,
         },
 
-        // level 2
+        // Level 2
         {
             "title": "Atlantean Stronghold",
             "file": "data/end.phd",
@@ -84,7 +84,7 @@
             "unobtainable_kills": 1,
         },
 
-        // level 3
+        // Level 3
         {
             "title": "The Hive",
             "file": "data/end2.phd",
@@ -112,7 +112,7 @@
             "strings": {},
         },
 
-        // level 4
+        // Level 4
         {
             "title": "Title",
             "file": "data/title.phd",
@@ -128,7 +128,7 @@
             "strings": {},
         },
 
-        // level 5
+        // Level 5
         // This level is necessary to read TombATI's save files!
         // OG has a special level called LV_CURRENT to handle save/load logic.
         // T1M does away without this hack. However, the existing save games

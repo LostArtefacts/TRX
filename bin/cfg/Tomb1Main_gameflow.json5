@@ -2,25 +2,26 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
-    // path to the main menu background image
+    // Path to the main menu background image.
     "main_menu_picture": "data/titleh.png",
 
-    // path to the savegame file
+    // Path to the savegame file.
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
 
-    // forces game mode selection to be disabled if true so the user can't select NG+ modes until a playthrough is completed
-    // overrides the config option enable_game_modes
+    // Forces game mode selection to be disabled if true so the user can't
+    // select NG+ modes until a playthrough is completed. Overrides the config
+    // option enable_game_modes.
     "force_disable_game_modes": false,
 
-    // forces save crystals to be enabled if true
-    // overrides the config option enable_save_crystals
+    // Forces save crystals to be enabled if true. Overrides the config option
+    // enable_save_crystals.
     "force_enable_save_crystals": false,
 
-    // seconds to pass in the main menu before playing the demo
+    // Seconds to pass in the main menu before playing the demo.
     "demo_delay": 16,
 
-    // water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+    // Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
     // [0.6, 0.7, 1.0] is original DOS version filter,
     // [0.45, 1.0, 1.0] is default TombATI filter.
     "water_color": [0.45, 1.0, 1.0],
@@ -47,31 +48,30 @@
         "data/uzi_sfx.bin",
     ],
 
-    // list of levels
+    // List of levels
     "levels": [
-        // level 0
+        // Level 0
         {
-            // level title
+            // Level title.
             "title": "Lara's Home",
 
-            // level path
+            // Level path.
             "file": "data/gym.phd",
 
-            // level type
-            // can be:
+            // Level type. It can be one of the following values:
             // - gym
             // - normal
             // - cutscene
             // - current
             "type": "gym",
 
-            // music track ID
+            // Music track ID.
             "music": 0,
 
-            // do not use global injections
+            // Whether to use global injections.
             "inherit_injections": false,
 
-            // specific injection data paths
+            // Specific injection data paths.
             "injections": [
                 "data/braid.bin",
                 "data/gym_textures.bin",
@@ -79,7 +79,9 @@
                 "data/lara_jumping.bin",
             ],
 
-            // list of actions to execute when this level is played
+            // List of actions to execute when this level is played.
+            // Currently the list of allowed actions is expanding and as such
+            // it's not documented.
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
                 {"type": "start_game"},
@@ -89,20 +91,18 @@
                 {"type": "exit_to_title"},
             ],
 
-            // keys and puzzle items names
+            // Keys and puzzle items names.
             "strings": {},
 
-            // water color can be customized per level, too.
+            // Water color can be customized per level, too.
             // "water_color": [0.45, 1.0, 1.0],
 
-            // draw_distance_fade can be customized per level, too.
+            // Fog can be customized per level, too.
             // "draw_distance_fade": 22.0,
-
-            // draw_distance_max can be customized per level, too.
             // "draw_distance_max": 30.0,
         },
 
-        // level 1
+        // Level 1
         {
             "title": "Caves",
             "file": "data/level1.phd",
@@ -124,7 +124,7 @@
             "strings": {},
         },
 
-        // level 2
+        // Level 2
         {
             "title": "City of Vilcabamba",
             "file": "data/level2.phd",
@@ -148,7 +148,7 @@
             "demo": true,
         },
 
-        // level 3
+        // Level 3
         {
             "title": "Lost Valley",
             "file": "data/level3a.phd",
@@ -171,7 +171,7 @@
             "demo": true,
         },
 
-        // level 4
+        // Level 4
         {
             "title": "Tomb of Qualopec",
             "file": "data/level3b.phd",
@@ -192,7 +192,7 @@
             "strings": {},
         },
 
-        // level 5
+        // Level 5
         {
             "title": "St. Francis' Folly",
             "file": "data/level4.phd",
@@ -219,7 +219,7 @@
             },
         },
 
-        // level 6
+        // Level 6
         {
             "title": "Colosseum",
             "file": "data/level5.phd",
@@ -242,7 +242,7 @@
             },
         },
 
-        // level 7
+        // Level 7
         {
             "title": "Palace Midas",
             "file": "data/level6.phd",
@@ -265,7 +265,7 @@
             "unobtainable_pickups": 1,
         },
 
-        // level 8
+        // Level 8
         {
             "title": "The Cistern",
             "file": "data/level7a.phd",
@@ -289,7 +289,7 @@
             },
         },
 
-        // level 9
+        // Level 9
         {
             "title": "Tomb of Tihocan",
             "file": "data/level7b.phd",
@@ -313,7 +313,7 @@
             },
         },
 
-        // level 10
+        // Level 10
         {
             "title": "City of Khamoon",
             "file": "data/level8a.phd",
@@ -337,7 +337,7 @@
             },
         },
 
-        // level 11
+        // Level 11
         {
             "title": "Obelisk of Khamoon",
             "file": "data/level8b.phd",
@@ -363,7 +363,7 @@
             },
         },
 
-        // level 12
+        // Level 12
         {
             "title": "Sanctuary of the Scion",
             "file": "data/level8c.phd",
@@ -388,7 +388,7 @@
             },
         },
 
-        // level 13
+        // Level 13
         {
             "title": "Natla's Mines",
             "file": "data/level10a.phd",
@@ -418,7 +418,7 @@
             },
         },
 
-        // level 14
+        // Level 14
         {
             "title": "Atlantis",
             "file": "data/level10b.phd",
@@ -442,7 +442,7 @@
             "unobtainable_pickups": 3,
         },
 
-        // level 15
+        // Level 15
         {
             "title": "The Great Pyramid",
             "file": "data/level10c.phd",
@@ -469,7 +469,7 @@
             "strings": {},
         },
 
-        // level 16
+        // Level 16
         {
             "title": "Cut Scene 1",
             "file": "data/cut1.phd",
@@ -495,7 +495,7 @@
             "strings": {},
         },
 
-        // level 17
+        // Level 17
         {
             "title": "Cut Scene 2",
             "file": "data/cut2.phd",
@@ -523,7 +523,7 @@
             "strings": {},
         },
 
-        // level 18
+        // Level 18
         {
             "title": "Cut Scene 3",
             "file": "data/cut3.phd",
@@ -542,7 +542,7 @@
             "strings": {},
         },
 
-        // level 19
+        // Level 19
         {
             "title": "Cut Scene 4",
             "file": "data/cut4.phd",
@@ -571,7 +571,7 @@
             "strings": {},
         },
 
-        // level 20
+        // Level 20
         {
             "title": "Title",
             "file": "data/title.phd",
@@ -588,7 +588,7 @@
             "strings": {},
         },
 
-        // level 21
+        // Level 21
         // This level is necessary to read TombATI's save files!
         // OG has a special level called LV_CURRENT to handle save/load logic.
         // T1M does away without this hack. However, the existing save games
