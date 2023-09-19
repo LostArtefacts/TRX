@@ -40,6 +40,11 @@
     // Global data injection file paths. Individual levels will inherit
     // these unless inherit_injections is set to false on those levels.
     // inherit_injections is by default true on all levels.
+    //
+    // Disclaimer: Custom levels should not use the injections mechanism and
+    // instead should provide data that is already correct and consistent.
+    // Reports of bugs about injection files not working for custom levels will
+    // not be considered.
     "injections": [
         "data/backpack.bin",
         "data/braid.bin",
