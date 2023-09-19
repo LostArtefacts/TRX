@@ -431,7 +431,7 @@ static void Overlay_DrawPickups3D(void)
 
         case DPP_EASE_IN:
             pu->duration += ticks;
-            if (pu->duration == MAX_PICKUP_DURATION_EASE_IN) {
+            if (pu->duration >= MAX_PICKUP_DURATION_EASE_IN) {
                 pu->phase = DPP_DISPLAY;
                 pu->duration = 0;
             }
@@ -439,7 +439,7 @@ static void Overlay_DrawPickups3D(void)
 
         case DPP_DISPLAY:
             pu->duration += ticks;
-            if (pu->duration == MAX_PICKUP_DURATION_DISPLAY) {
+            if (pu->duration >= MAX_PICKUP_DURATION_DISPLAY) {
                 pu->phase = DPP_EASE_OUT;
                 pu->duration = 0;
             }
@@ -447,14 +447,14 @@ static void Overlay_DrawPickups3D(void)
 
         case DPP_EASE_OUT:
             pu->duration += ticks;
-            if (pu->duration == MAX_PICKUP_DURATION_EASE_OUT) {
+            if (pu->duration >= MAX_PICKUP_DURATION_EASE_OUT) {
                 pu->phase = DPP_DEAD;
                 pu->duration = 0;
             }
             break;
         }
 
-        pu->rot_y += 4 * PHD_DEGREE;
+        pu->rot_y += 4 * PHD_DEGREE * ticks;
 
         Overlay_DrawPickup3D(pu);
     }
