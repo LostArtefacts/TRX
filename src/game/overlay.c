@@ -364,8 +364,8 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     // screen corners.
     Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
     Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
-    Matrix_LookAt(0, 0, 0, 0, 0, 0, 0);
 
+    Matrix_PushUnit();
     Matrix_TranslateSet(
         src_x + (dst_x - src_x) * ease, src_y + (dst_y - src_y) * ease, scale);
     Matrix_RotYXZ(0, PHD_DEGREE * 15, 0);
@@ -413,6 +413,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     }
     Matrix_Pop();
 
+    Matrix_Pop();
     Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
 }
 
