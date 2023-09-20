@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+
+## [2.16](https://github.com/rr-/Tomb1Main/compare/2.15.3...2.16) - 2023-09-20
 - added a new rendering mode called "framebuffer" that lets the game to run at lower resolutions (#114)  
   (forces players to reset their bilinear filter setting)
 - added the current music track and timestamp to the savegame so they now persist on load (#419)
