@@ -36,7 +36,7 @@ jobs:
   publish_release:
     name: Create a GitHub release
     runs-on: ubuntu-latest
-    needs: [build_game, build_installer]
+    needs: [build_game_win, build_installer]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -48,7 +48,13 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           path: artifacts/
-          name: game_all
+          name: game-win-all
+
+      - name: Download built game asset
+        uses: actions/download-artifact@v1
+        with:
+          path: artifacts/
+          name: game-linux-all
 
       - name: Download built installer asset
         uses: actions/download-artifact@v1
@@ -62,7 +68,8 @@ jobs:
 
       - name: Rename assets
         run: |
-          mv artifacts/game.zip artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip
+          mv artifacts/game-win.zip artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Windows.zip
+          mv artifacts/game-linux.zip artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Linux.zip
           mv artifacts/Tomb1Main_Installer.exe artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
       - name: Generate Changelog
@@ -84,7 +91,8 @@ jobs:
           prerelease: ${{ inputs.prerelease }}
           fail_on_unmatched_files: true
           files: |
-            artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}.zip
+            artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Windows.zip
+            artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Linux.zip
             artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
   build_configurator:
@@ -114,8 +122,8 @@ jobs:
           name: configtool
           path: tools/config/out/Tomb1Main_ConfigTool.exe
 
-  build_game:
-    name: Build the game
+  build_game_win:
+    name: Build the game (Windows)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -134,18 +142,18 @@ jobs:
         run: |
           make clean release
           mkdir out/
-          cp build/*.exe out/
+          cp build/win/*.exe out/
           cp -r bin/* out/
 
       - name: Upload the artifact
         uses: actions/upload-artifact@v1
         with:
-          name: game
+          name: game-win
           path: out/
 
-  package_game:
-    name: Package the game
-    needs: [build_game, build_configurator]
+  package_game_win:
+    name: Package the game (Windows)
+    needs: [build_game_win, build_configurator]
     runs-on: ubuntu-latest
     steps:
       - name: Download built config tool assets
@@ -158,7 +166,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           path: artifacts/
-          name: game
+          name: game-win
 
       - name: Install dependencies
         run: |
@@ -169,17 +177,74 @@ jobs:
         run: |
           mkdir out
           cd artifacts
-          7z a ../out/game.zip *
+          7z a ../out/game-win.zip *
 
       - name: Upload the artifact
         uses: actions/upload-artifact@v1
         with:
-          name: game_all
-          path: out/game.zip
+          name: game-win-all
+          path: out/game-win.zip
+
+  build_game_linux:
+    name: Build the game (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          path: .
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          echo "$GITHUB_CONTEXT"
+          sudo apt-get update
+          sudo apt-get install -y make moby-engine moby-cli
+
+      - name: Build the game
+        run: |
+          make clean release-linux
+          mkdir out/
+          cp build/linux/Tomb1Main out/
+          cp -r bin/* out/
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: game-linux
+          path: out/
+
+  package_game_linux:
+    name: Package the game (Linux)
+    needs: [build_game_linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download built game assets
+        uses: actions/download-artifact@v1
+        with:
+          path: artifacts/
+          name: game-linux
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make p7zip-full
+
+      - name: Package the game
+        run: |
+          mkdir out
+          cd artifacts
+          7z a ../out/game-linux.zip *
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: game-linux-all
+          path: out/game-linux.zip
 
   build_installer:
     name: Build the installer
-    needs: [package_game]
+    needs: [package_game_win]
     runs-on: windows-latest  # https://github.com/dotnet/runtime/issues/3828
     steps:
       - name: Checkout code
@@ -192,7 +257,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           path: artifacts/
-          name: game_all
+          name: game-win-all
 
       - name: Setup dependencies
         uses: actions/setup-dotnet@v2
@@ -201,7 +266,7 @@ jobs:
 
       - name: Build
         run: |
-          cp artifacts/game.zip tools/installer/Installer/Resources/release.zip
+          cp artifacts/game-win.zip tools/installer/Installer/Resources/release.zip
           cd tools/installer
           dotnet restore
           dotnet publish -c Release -o out

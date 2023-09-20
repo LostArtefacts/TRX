@@ -1,0 +1,125 @@
+# Tomb1Main building toolchain for Linux.
+#
+# This is a multi-stage Docker image. It is designed to keep the final image
+# size low. Each stage builds an external dependency. The final stage takes the
+# artifacts (binaries, includes etc.) from previous stages and installs all the
+# tools necessary to build Tomb1Main.
+
+FROM ubuntu:latest as base
+
+# don't prompt during potential installation/update of tzinfo
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Warsaw
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+        git \
+        make
+
+
+
+# libav
+FROM base as libav
+RUN apt-get install -y \
+    nasm \
+    gcc \
+    zlib1g-dev
+RUN git clone \
+    --depth 1 \
+    --branch "n4.4.1" \
+    https://github.com/FFmpeg/FFmpeg
+RUN cd FFmpeg \
+    && ./configure \
+        --arch=x86 \
+        --prefix=/ext/ \
+        --enable-gpl \
+        --enable-decoder=pcx \
+        --enable-decoder=png \
+        --enable-decoder=gif \
+        --enable-decoder=mjpeg \
+        --enable-decoder=mpeg4 \
+        --enable-decoder=mdec \
+        --enable-decoder=h264 \
+        --enable-decoder=h264_qsv \
+        --enable-decoder=libopenh264 \
+        --enable-decoder=png \
+        --enable-demuxer=mov \
+        --enable-demuxer=avi \
+        --enable-demuxer=h264 \
+        --enable-demuxer=str \
+        --enable-demuxer=image2 \
+        --enable-zlib \
+        --enable-static \
+        --enable-small \
+        --disable-debug \
+        --disable-ffplay \
+        --disable-ffprobe \
+        --disable-doc \
+        --disable-network \
+        --disable-htmlpages \
+        --disable-manpages \
+        --disable-podpages \
+        --disable-txtpages \
+        --disable-asm \
+    && make -j 4 \
+    && make install
+
+
+
+# SDL
+FROM base as sdl
+RUN git clone https://github.com/libsdl-org/SDL -b SDL2
+RUN apt-get install -y \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libpulse-dev \
+    automake \
+    gcc \
+    libxext-dev
+RUN cd SDL \
+    && aclocal -I acinclude \
+    && autoconf \
+    && mkdir sdl_build \
+    && cd sdl_build \
+    && ../configure \
+        --prefix=/ext/ \
+        --enable-shared \
+        --enable-static \
+    && make -j 4 \
+    && make install
+
+
+
+# Tomb1Main
+FROM base
+
+# set the build dir - actual files are mounted with a Docker volume
+RUN mkdir /app
+WORKDIR /app
+
+# package dependencies
+RUN apt-get install -y \
+    zlib1g-dev \
+    libgl1-mesa-dev
+
+# tooling dependencies
+# configure pkgconfig manually
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=967969
+ENV PKG_CONFIG_LIBDIR=/ext/lib/
+ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
+RUN apt-get install -y \
+        pkg-config \
+        upx \
+        git \
+        python3-pip \
+    && python3 -m pip install \
+        pyjson5 \
+        meson \
+        ninja
+
+# manually built dependencies
+COPY --from=libav /ext/ /ext/
+COPY --from=sdl /ext/ /ext/
+
+ENTRYPOINT ["/app/docker/game-linux/entrypoint-linux.sh"]
