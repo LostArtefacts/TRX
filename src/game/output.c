@@ -439,6 +439,11 @@ int32_t Output_DumpScreen(void)
     return ticks;
 }
 
+void Output_ClearDepthBuffer(void)
+{
+    S_Output_ClearDepthBuffer();
+}
+
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];
@@ -504,10 +509,6 @@ void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
     }
 
     Matrix_PushUnit();
-    g_MatrixPtr->_23 = 0;
-    g_MatrixPtr->_13 = 0;
-    g_MatrixPtr->_03 = 0;
-
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
     Matrix_TranslateRel(
         (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,

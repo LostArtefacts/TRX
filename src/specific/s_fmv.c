@@ -25,7 +25,6 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/input.h"
-#include "game/output.h"
 #include "game/screen.h"
 #include "game/shell.h"
 #include "gfx/2d/2d_renderer.h"

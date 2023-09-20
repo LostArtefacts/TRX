@@ -462,9 +462,6 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         y = item->pos.y;
         z = item->pos.z;
         Matrix_PushUnit();
-        g_MatrixPtr->_03 = 0;
-        g_MatrixPtr->_13 = 0;
-        g_MatrixPtr->_23 = 0;
     } else {
         x = 0;
         y = 0;
@@ -578,10 +575,6 @@ void Collide_GetJointAbsPosition(
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     Matrix_PushUnit();
-    g_MatrixPtr->_03 = 0;
-    g_MatrixPtr->_13 = 0;
-    g_MatrixPtr->_23 = 0;
-
     Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
     int16_t *frame = Item_GetBestFrame(item);

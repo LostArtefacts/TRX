@@ -39,6 +39,7 @@ void Output_DrawBlack(void);
 void Output_DrawEmpty(void);
 void Output_DrawBackdropImage(void);
 int32_t Output_DumpScreen(void);
+void Output_ClearDepthBuffer(void);
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);

@@ -62,7 +62,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 
         int32_t width = Screen_GetResWidth();
         int32_t height = Screen_GetResHeight();
-        Viewport_Init(width, height);
+        Viewport_Init(0, 0, width, height);
     }
 
     Output_SetupAboveWater(false);
@@ -324,9 +324,9 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
             Matrix_RotYXZpack(*packed_rotation++);
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
-                m_CompassSpeed = m_CompassSpeed * 19 / 20
-                    + (int16_t)(-inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle)
-                        / 50;
+                int16_t delta =
+                    -inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle;
+                m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
                 m_CompassNeedle += m_CompassSpeed;
                 Matrix_RotY(m_CompassNeedle);
             }

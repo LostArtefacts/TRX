@@ -6,6 +6,7 @@
 - added forward/backward input detection in line with TR2+ for jump-twists (#931)
 - added an option to restore the mummy in City of Khamoon room 25, similar to the PS1 version (#886)
 - added a flag indicating if new game plus is unlocked to the player config which allows the player to select new game plus or not when making a new game (#966)
+- changed sprite-based pickups to 3D pickups when the 3D pickups option is enabled (#257)
 - changed the installer to always overwrite all essential files such as the gameflow and injections (#904)
 - changed the data injection system to warn when it detects invalid or missing files, rather than preventing levels from loading (#918)
 - changed the gameflow to detect and skip over legacy sequence types, rather than preventing the game from starting (#882)

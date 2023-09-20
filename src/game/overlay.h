@@ -18,7 +18,6 @@ void Overlay_BarDrawAir(void);
 void Overlay_BarDrawEnemy(void);
 void Overlay_RemoveAmmoText(void);
 void Overlay_DrawAmmoInfo(void);
-void Overlay_DrawPickups(void);
 void Overlay_DrawFPSInfo(bool inv_ring_above);
 void Overlay_DrawGameInfo(void);
 
