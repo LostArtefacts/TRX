@@ -339,7 +339,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     int32_t src_x = padding_x + (pu->grid_x + 1.0f) * pickup_width;
     int32_t src_y = 0;
 
-    float ease;
+    float ease = 1.0f;
     switch (pu->phase) {
     case DPP_EASE_IN:
         ease = Overlay_Ease(pu->duration, MAX_PICKUP_DURATION_EASE_IN);
