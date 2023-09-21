@@ -73,6 +73,11 @@
           "DefaultValue": false
         },
         {
+          "Field": "enable_uw_roll",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_numeric_keys",
           "DataType": "Bool",
           "DefaultValue": true

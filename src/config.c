@@ -237,6 +237,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
     READ_BOOL(restore_ps1_enemies, false);
     READ_BOOL(enable_game_modes, true);
     READ_BOOL(enable_save_crystals, false);
+    READ_BOOL(enable_uw_roll, true);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -439,6 +440,7 @@ bool Config_Write(void)
     WRITE_BOOL(restore_ps1_enemies);
     WRITE_BOOL(enable_game_modes);
     WRITE_BOOL(enable_save_crystals);
+    WRITE_BOOL(enable_uw_roll);
 
     WRITE_INTEGER(rendering.render_mode);
     WRITE_BOOL(rendering.enable_fullscreen);
