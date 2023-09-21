@@ -692,6 +692,7 @@ typedef enum LARA_STATE {
     LS_WATER_OUT = 55,
     LS_CONTROLLED = 56,
     LS_TWIST = 57,
+    LS_UW_ROLL = 58,
 } LARA_STATE;
 
 typedef enum LARA_GUN_STATE {

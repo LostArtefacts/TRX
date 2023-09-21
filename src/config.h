@@ -122,6 +122,7 @@ typedef struct {
     bool restore_ps1_enemies;
     bool enable_game_modes;
     bool enable_save_crystals;
+    bool enable_uw_roll;
 
     struct {
         int32_t layout;

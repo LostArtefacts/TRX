@@ -250,6 +250,7 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
 - added ability to cancel ledge-swinging animation like in TR2+
 - added ability to jump at any point while running like in TR2+
 - added ability to automatically walk to items when nearby
+- added ability to roll while underwater like in TR2+
 - added a pause screen
 - added a choice whether to play NG or NG+ without having to play the entire game
 - added Japanese mode (guns deal twice the damage, inspired by JP release of TR3); available for both NG and NG+

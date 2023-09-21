@@ -34,7 +34,7 @@ void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_State_SurfLeft,    Lara_State_SurfRight, Lara_State_UseMidas,
     Lara_State_DieMidas,    Lara_State_SwanDive,  Lara_State_FastDive,
     Lara_State_Gymnast,     Lara_State_WaterOut,  Lara_State_Controlled,
-    Lara_State_Twist,
+    Lara_State_Twist,       Lara_State_UWRoll,
 };
 
 static bool m_JumpPermitted = true;
@@ -793,6 +793,12 @@ void Lara_State_Twist(ITEM_INFO *item, COLL_INFO *coll)
 {
 }
 
+void Lara_State_UWRoll(ITEM_INFO *item, COLL_INFO *coll)
+{
+    item->fall_speed = 0;
+    item->goal_anim_state = LS_TREAD;
+}
+
 void Lara_State_Null(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->enable_spaz = 0;
@@ -1007,6 +1013,11 @@ void Lara_State_Swim(ITEM_INFO *item, COLL_INFO *coll)
 
     coll->enable_spaz = 0;
 
+    if (g_Config.enable_uw_roll && g_Input.roll) {
+        item->goal_anim_state = LS_UW_ROLL;
+        return;
+    }
+
     if (g_Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
     }
@@ -1043,6 +1054,11 @@ void Lara_State_Glide(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     coll->enable_spaz = 0;
+
+    if (g_Config.enable_uw_roll && g_Input.roll) {
+        item->goal_anim_state = LS_UW_ROLL;
+        return;
+    }
 
     if (g_Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
@@ -1084,6 +1100,11 @@ void Lara_State_Tread(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     coll->enable_spaz = 0;
+
+    if (g_Config.enable_uw_roll && g_Input.roll) {
+        item->goal_anim_state = LS_UW_ROLL;
+        return;
+    }
 
     if (g_Input.forward) {
         item->pos.x_rot -= 2 * PHD_DEGREE;
