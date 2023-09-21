@@ -11,8 +11,8 @@ fi
 cd /app/build/linux; meson compile
 
 if [ "$TARGET" = release ]; then
-    for file in Tomb1Main; do
-        upx -t "$file" || ( strip "$file" && upx "$file" )
-    done
+    exe_file=Tomb1Main
+    if ! upx -t "$exe_file"; then
+        strip "$exe_file" && upx "$exe_file"
+    fi
 fi
-

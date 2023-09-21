@@ -20,7 +20,7 @@ RUN apt-get update \
 
 
 # libav
-FROM base as libav
+FROM base AS libav
 RUN apt-get install -y \
     nasm \
     gcc \
@@ -68,7 +68,7 @@ RUN cd FFmpeg \
 
 
 # SDL
-FROM base as sdl
+FROM base AS sdl
 RUN git clone https://github.com/libsdl-org/SDL -b SDL2
 RUN apt-get install -y \
     libgl1-mesa-dev \
