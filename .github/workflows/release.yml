@@ -234,6 +234,7 @@ jobs:
         run: |
           mkdir out
           cd artifacts
+          chmod +x Tomb1Main
           7z a ../out/game-linux.zip *
 
       - name: Upload the artifact
