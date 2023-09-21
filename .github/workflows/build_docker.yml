@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Docker image (Windows)
         run: |
-          docker build -t "rrdash/tomb1main:latest" . -f docker/game/win/Dockerfile
+          docker build -t "rrdash/tomb1main:latest" . -f docker/game-win/Dockerfile
           docker push "rrdash/tomb1main:latest"
 
   publish_docker_image_linux:
@@ -43,5 +43,5 @@ jobs:
 
       - name: Build Docker image (Linux)
         run: |
-          docker build -t "rrdash/tomb1main-linux:latest" . -f docker/game/linux/Dockerfile
+          docker build -t "rrdash/tomb1main-linux:latest" . -f docker/game-linux/Dockerfile
           docker push "rrdash/tomb1main-linux:latest"
