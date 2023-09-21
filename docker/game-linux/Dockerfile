@@ -20,7 +20,7 @@ RUN apt-get update \
 
 
 # libav
-FROM base as libav
+FROM base AS libav
 RUN apt-get install -y \
     nasm \
     gcc \
@@ -68,7 +68,7 @@ RUN cd FFmpeg \
 
 
 # SDL
-FROM base as sdl
+FROM base AS sdl
 RUN git clone https://github.com/libsdl-org/SDL -b SDL2
 RUN apt-get install -y \
     libgl1-mesa-dev \
@@ -91,6 +91,19 @@ RUN cd SDL \
 
 
 
+# UPX
+FROM base AS upx
+
+RUN mkdir /ext/
+WORKDIR /ext/
+
+RUN apt-get install -y wget xz-utils
+RUN wget https://github.com/upx/upx/releases/download/v4.1.0/upx-4.1.0-amd64_linux.tar.xz
+RUN tar -xvf upx-*.tar.xz
+RUN ln -s upx-*/upx
+
+
+
 # Tomb1Main
 FROM base
 
@@ -110,7 +123,6 @@ ENV PKG_CONFIG_LIBDIR=/ext/lib/
 ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
 RUN apt-get install -y \
         pkg-config \
-        upx \
         git \
         python3-pip \
     && python3 -m pip install \
@@ -119,6 +131,7 @@ RUN apt-get install -y \
         ninja
 
 # manually built dependencies
+COPY --from=upx /ext/upx /usr/local/bin/upx
 COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 

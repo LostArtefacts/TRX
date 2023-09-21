@@ -1490,7 +1490,7 @@ static void Inject_AddRoomFace(INJECTION *injection)
 
     // Increment the relevant number of faces and work out the
     // starting point in the mesh for the injection.
-    int inject_pos;
+    int inject_pos = 0;
     int num_data = r->data[data_index]; // Quads
     if (face_type == FT_TEXTURED_QUAD) {
         r->data[data_index]++;
