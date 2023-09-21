@@ -207,6 +207,10 @@
       "Title": "Habilitar música en menú principal",
       "Description": "Reproduce música en el menú principal."
     },
+    "enable_uw_roll": {
+      "Title": "Giro en el agua",
+      "Description": "Permite que Lara realice un giro mientras está bajo el agua, similar a TR2+."
+    },
     "enable_numeric_keys": {
       "Title": "Uso rápido de teclas numéricas",
       "Description": "Permite cambiar rápidamente de armas y usar botiquines.\n- 1: Pistolas\n- 2: Escopeta\n- 3: Magnums\n- 4: Uzis\n- 8: Botiquín pequeño\n- 9: Botiquín grande"
