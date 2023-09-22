@@ -382,7 +382,9 @@ void Stats_Show(int32_t level_num)
     g_GameInfo.status &= ~GMS_IN_STATS;
 }
 
-void Stats_ShowTotal(const char *filename, int first_level, int last_level)
+void Stats_ShowTotal(
+    const char *filename, int first_level, int last_level,
+    GAME_STRING_ID heading)
 {
     char buf[100];
     char time_str[100];
@@ -503,7 +505,7 @@ void Stats_ShowTotal(const char *filename, int first_level, int last_level)
     Text_AddOutline(txt, true, TS_BACKGROUND);
 
     // heading
-    sprintf(buf, "%s", g_GameFlow.strings[GS_STATS_FINAL_STATISTICS]);
+    sprintf(buf, "%s", g_GameFlow.strings[heading]);
     txt = Text_Create(0, top_y + 2, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);

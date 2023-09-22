@@ -140,6 +140,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "STATS_KILLS_DETAIL_FMT", GS_STATS_KILLS_DETAIL_FMT },
         { "STATS_KILLS_BASIC_FMT", GS_STATS_KILLS_BASIC_FMT },
         { "STATS_FINAL_STATISTICS", GS_STATS_FINAL_STATISTICS },
+        { "STATS_BONUS_STATISTICS", GS_STATS_BONUS_STATISTICS },
         { "PAUSE_PAUSED", GS_PAUSE_PAUSED },
         { "PAUSE_EXIT_TO_TITLE", GS_PAUSE_EXIT_TO_TITLE },
         { "PAUSE_CONTINUE", GS_PAUSE_CONTINUE },
@@ -677,6 +678,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     g_GameFlow.gym_level_num = -1;
     g_GameFlow.first_level_num = -1;
     g_GameFlow.last_level_num = -1;
+    g_GameFlow.has_bonus = false;
     g_GameFlow.first_bonus_num = -1;
     g_GameFlow.last_bonus_num = -1;
     g_GameFlow.title_level_num = -1;
@@ -745,6 +747,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
         } else if (!strcmp(tmp_s, "bonus")) {
             cur->level_type = GFL_BONUS;
             if (g_GameFlow.first_bonus_num == -1) {
+                g_GameFlow.has_bonus = true;
                 g_GameFlow.first_bonus_num = level_num;
             }
             g_GameFlow.last_bonus_num = level_num;
@@ -1196,7 +1199,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 return ret;
             }
             if (level_type == GFL_SAVED) {
-                if (level_num >= g_GameFlow.first_bonus_num) {
+                if (g_GameFlow.has_bonus
+                    && level_num >= g_GameFlow.first_bonus_num) {
                     level_type = GFL_BONUS;
                 } else {
                     level_type = GFL_NORMAL;
@@ -1235,14 +1239,15 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_TOTAL_STATS:
             if (g_Config.enable_total_stats && level_type != GFL_SAVED) {
                 GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                LOG_DEBUG("level_type: %d", level_type);
                 if (level_type == GFL_BONUS) {
                     Stats_ShowTotal(
                         data->path, g_GameFlow.first_bonus_num,
-                        g_GameFlow.last_bonus_num);
+                        g_GameFlow.last_bonus_num, GS_STATS_BONUS_STATISTICS);
                 } else {
                     Stats_ShowTotal(
                         data->path, g_GameFlow.first_level_num,
-                        g_GameFlow.last_level_num);
+                        g_GameFlow.last_level_num, GS_STATS_FINAL_STATISTICS);
                 }
             }
             break;
@@ -1292,14 +1297,15 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_EXIT_TO_TITLE:
             return GF_EXIT_TO_TITLE;
 
-        case GFS_EXIT_TO_LEVEL:
-            if (((int32_t)seq->data & ((1 << 6) - 1))
-                    >= g_GameFlow.first_bonus_num
+        case GFS_EXIT_TO_LEVEL: {
+            int32_t next_level =
+                ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
+            if (g_GameFlow.has_bonus && next_level >= g_GameFlow.first_bonus_num
                 && !g_GameInfo.bonus_level_unlock) {
                 return GF_EXIT_TO_TITLE;
             }
-            return GF_START_GAME
-                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
+            return GF_START_GAME | next_level;
+        }
 
         case GFS_EXIT_TO_CINE:
             return GF_START_CINE

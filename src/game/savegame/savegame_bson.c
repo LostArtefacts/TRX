@@ -380,10 +380,9 @@ static bool Savegame_BSON_LoadMisc(
         return false;
     }
     game_info->bonus_flag = json_object_get_int(misc_obj, "bonus_flag", 0);
-    if (header_version >= VERSION_3) {
+    if (header_version >= VERSION_4) {
         game_info->bonus_level_unlock =
             json_object_get_bool(misc_obj, "bonus_level_unlock", 0);
-        LOG_DEBUG("Load bonus_level_unlock: %d", game_info->bonus_level_unlock);
     }
     return true;
 }
