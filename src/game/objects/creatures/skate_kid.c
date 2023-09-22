@@ -1,6 +1,7 @@
 #include "game/objects/creatures/skate_kid.h"
 
 #include "game/creature.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
@@ -85,7 +86,11 @@ void SkateKid_Control(int16_t item_num)
         if (item->current_anim_state != SKATE_KID_DEATH) {
             item->current_anim_state = SKATE_KID_DEATH;
             Item_SwitchToAnim(item, SKATE_KID_DIE_ANIM, -1);
-            Item_Spawn(item, O_UZI_ITEM);
+            if (Inv_RequestItem(O_UZI_ITEM)) {
+                Item_Spawn(item, O_UZI_AMMO_ITEM);
+            } else {
+                Item_Spawn(item, O_UZI_ITEM);
+            }
         }
     } else {
         AI_INFO info;

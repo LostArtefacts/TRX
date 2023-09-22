@@ -1,6 +1,7 @@
 #include "game/objects/creatures/baldy.h"
 
 #include "game/creature.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "global/const.h"
@@ -76,7 +77,11 @@ void Baldy_Control(int16_t item_num)
         if (item->current_anim_state != BALDY_DEATH) {
             item->current_anim_state = BALDY_DEATH;
             Item_SwitchToAnim(item, BALDY_DIE_ANIM, -1);
-            Item_Spawn(item, O_SHOTGUN_ITEM);
+            if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+                Item_Spawn(item, O_SG_AMMO_ITEM);
+            } else {
+                Item_Spawn(item, O_SHOTGUN_ITEM);
+            }
         }
     } else {
         AI_INFO info;
