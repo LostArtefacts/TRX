@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gunshot.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "global/const.h"
@@ -73,7 +74,11 @@ void Cowboy_Control(int16_t item_num)
         if (item->current_anim_state != COWBOY_DEATH) {
             item->current_anim_state = COWBOY_DEATH;
             Item_SwitchToAnim(item, COWBOY_DIE_ANIM, -1);
-            Item_Spawn(item, O_MAGNUM_ITEM);
+            if (Inv_RequestItem(O_MAGNUM_ITEM)) {
+                Item_Spawn(item, O_MAG_AMMO_ITEM);
+            } else {
+                Item_Spawn(item, O_MAGNUM_ITEM);
+            }
         }
     } else {
         AI_INFO info;
