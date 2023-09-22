@@ -644,10 +644,12 @@ GAMEFLOW_OPTION Savegame_PlayAvailableStory(int32_t slot_num)
 
         gf_option = GameFlow_StorySoFar(gf_param, savegame_info->level_num);
 
-        if ((gf_param >= savegame_info->level_num
-             && gf_param <= g_GameFlow.last_level_num)
-            || (gf_param >= savegame_info->level_num
-                && gf_param <= g_GameFlow.last_bonus_num)) {
+        if (g_GameFlow.levels[gf_param].level_type == GFL_BONUS) {
+            continue;
+        }
+
+        if (gf_param >= savegame_info->level_num
+            && gf_param <= g_GameFlow.last_level_num) {
             break;
         }
 

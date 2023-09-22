@@ -11,6 +11,4 @@ int32_t Stats_GetPickups(void);
 int32_t Stats_GetKillables(void);
 int32_t Stats_GetSecrets(void);
 void Stats_Show(int32_t level_num);
-void Stats_ShowTotal(
-    const char *filename, int first_level, int last_level,
-    GAME_STRING_ID heading);
+void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type);

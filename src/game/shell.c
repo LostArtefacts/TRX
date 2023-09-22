@@ -187,8 +187,7 @@ void Shell_Main(void)
 
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
-            if (g_GameFlow.has_bonus
-                && gf_param >= g_GameFlow.first_bonus_num) {
+            if (g_GameFlow.levels[gf_param].level_type == GFL_BONUS) {
                 level_type = GFL_BONUS;
             }
             gf_option = GameFlow_InterpretSequence(gf_param, level_type);

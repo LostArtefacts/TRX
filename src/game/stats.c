@@ -382,9 +382,7 @@ void Stats_Show(int32_t level_num)
     g_GameInfo.status &= ~GMS_IN_STATS;
 }
 
-void Stats_ShowTotal(
-    const char *filename, int first_level, int last_level,
-    GAME_STRING_ID heading)
+void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
 {
     char buf[100];
     char time_str[100];
@@ -401,7 +399,10 @@ void Stats_ShowTotal(
 
     int16_t secret_flags = 0;
 
-    for (int i = first_level; i <= last_level; i++) {
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type != level_type) {
+            continue;
+        }
         const GAME_STATS *stats = &g_GameInfo.current[i].stats;
 
         total_timer += stats->timer;
@@ -505,7 +506,11 @@ void Stats_ShowTotal(
     Text_AddOutline(txt, true, TS_BACKGROUND);
 
     // heading
-    sprintf(buf, "%s", g_GameFlow.strings[heading]);
+    sprintf(
+        buf, "%s",
+        g_GameFlow.strings
+            [level_type == GFL_BONUS ? GS_STATS_BONUS_STATISTICS
+                                     : GS_STATS_FINAL_STATISTICS]);
     txt = Text_Create(0, top_y + 2, buf);
     Text_CentreH(txt, 1);
     Text_CentreV(txt, 1);
