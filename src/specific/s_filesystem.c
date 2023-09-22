@@ -67,7 +67,7 @@ void S_File_CreateDirectory(const char *path)
 #if defined(_WIN32)
     _mkdir(path);
 #else
-    mkdir(path, 0664);
+    mkdir(path, 0775);
 #endif
 }
 
