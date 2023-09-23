@@ -36,7 +36,7 @@ jobs:
   publish_release:
     name: Create a GitHub release
     runs-on: ubuntu-latest
-    needs: [build_game_win, build_game_linux, build_installer]
+    needs: [package_game_win, package_game_linux, build_installer]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
