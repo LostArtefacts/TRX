@@ -1449,13 +1449,16 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             break;
 
         case GFS_EXIT_TO_TITLE:
+            Music_Stop();
             return GF_EXIT_TO_TITLE;
 
         case GFS_EXIT_TO_LEVEL:
+            Music_Stop();
             return GF_START_GAME
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_EXIT_TO_CINE:
+            Music_Stop();
             return GF_START_CINE
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
