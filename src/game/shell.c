@@ -185,9 +185,14 @@ void Shell_Main(void)
             gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
             break;
 
-        case GF_START_GAME:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_NORMAL);
+        case GF_START_GAME: {
+            GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
+            if (g_GameFlow.levels[gf_param].level_type == GFL_BONUS) {
+                level_type = GFL_BONUS;
+            }
+            gf_option = GameFlow_InterpretSequence(gf_param, level_type);
             break;
+        }
 
         case GF_START_SAVED_GAME: {
             int16_t level_num = Savegame_GetLevelNumber(gf_param);

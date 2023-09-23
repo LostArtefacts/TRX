@@ -953,6 +953,7 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
     GFL_RESTART = 7,
     GFL_SELECT = 8,
+    GFL_BONUS = 9,
 } GAMEFLOW_LEVEL_TYPE;
 
 typedef enum GAMEFLOW_OPTION {
@@ -1101,6 +1102,7 @@ typedef enum GAME_STRING_ID {
     GS_STATS_DEATHS_FMT,
     GS_STATS_TIME_TAKEN_FMT,
     GS_STATS_FINAL_STATISTICS,
+    GS_STATS_BONUS_STATISTICS,
 
     GS_PAUSE_PAUSED,
     GS_PAUSE_EXIT_TO_TITLE,
@@ -1552,6 +1554,7 @@ typedef enum GAME_STATUS {
 typedef struct GAME_INFO {
     RESUME_INFO *current;
     uint8_t bonus_flag;
+    bool bonus_level_unlock;
     int32_t current_save_slot;
     int16_t save_initial_version;
     PASSPORT_PAGE passport_page;
