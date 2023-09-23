@@ -556,7 +556,7 @@ void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type)
     }
 }
 
-bool Stats_CheckAllSecretsCollected()
+bool Stats_CheckAllSecretsCollected(void)
 {
     return m_TotalStats.player_secret_count >= m_TotalStats.total_secret_count;
 }

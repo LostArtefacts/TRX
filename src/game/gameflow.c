@@ -1282,8 +1282,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             return GF_EXIT_TO_TITLE;
 
         case GFS_EXIT_TO_LEVEL: {
-            int32_t next_level =
-                ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
+            int32_t next_level = (int32_t)(intptr_t)seq->data & ((1 << 6) - 1);
             if (g_GameFlow.levels[next_level].level_type == GFL_BONUS
                 && !g_GameInfo.bonus_level_unlock) {
                 return GF_EXIT_TO_TITLE;
