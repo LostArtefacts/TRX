@@ -220,8 +220,11 @@ int32_t Game_Stop(void)
         g_GameInfo.bonus_level_unlock = Stats_CheckAllSecretsCollected();
     }
 
-    Savegame_CarryCurrentInfoToNextLevel(g_CurrentLevel, g_CurrentLevel + 1);
-    Savegame_ApplyLogicToCurrentInfo(g_CurrentLevel + 1);
+    if (g_CurrentLevel + 1 < g_GameFlow.level_count) {
+        Savegame_CarryCurrentInfoToNextLevel(
+            g_CurrentLevel, g_CurrentLevel + 1);
+        Savegame_ApplyLogicToCurrentInfo(g_CurrentLevel + 1);
+    }
 
     g_GameInfo.current[g_CurrentLevel].flags.available = 0;
 
