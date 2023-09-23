@@ -44,6 +44,7 @@ static int32_t m_LevelSecrets = 0;
 static uint32_t m_SecretRoom = 0;
 static bool m_KillableItems[MAX_ITEMS] = { 0 };
 static bool m_IfKillable[O_NUMBER_OF] = { 0 };
+static void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type);
 
 int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_KEY_ITEM2,      O_KEY_ITEM3,     O_KEY_ITEM4,
@@ -195,6 +196,36 @@ static bool Stats_IsObjectKillable(int32_t obj_num)
         }
     }
     return false;
+}
+
+static void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type)
+{
+    memset(&m_TotalStats, 0, sizeof(TOTAL_STATS));
+
+    int16_t secret_flags = 0;
+
+    for (int i = 0; i < g_GameFlow.level_count; i++) {
+        if (g_GameFlow.levels[i].level_type != level_type) {
+            continue;
+        }
+        const GAME_STATS *stats = &g_GameInfo.current[i].stats;
+
+        m_TotalStats.player_kill_count += stats->kill_count;
+        m_TotalStats.player_pickup_count += stats->pickup_count;
+        secret_flags = stats->secret_flags;
+        for (int j = 0; j < MAX_SECRETS; j++) {
+            if (secret_flags & 1) {
+                m_TotalStats.player_secret_count++;
+            }
+            secret_flags >>= 1;
+        }
+
+        m_TotalStats.timer += stats->timer;
+        m_TotalStats.death_count += stats->death_count;
+        m_TotalStats.total_kill_count += stats->max_kill_count;
+        m_TotalStats.total_secret_count += stats->max_secret_count;
+        m_TotalStats.total_pickup_count += stats->max_pickup_count;
+    }
 }
 
 void Stats_ObserveRoomsLoad(void)
@@ -526,37 +557,8 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
     Music_Stop();
 }
 
-void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type)
+bool Stats_CheckAllSecretsCollected(GAMEFLOW_LEVEL_TYPE level_type)
 {
-    memset(&m_TotalStats, 0, sizeof(TOTAL_STATS));
-
-    int16_t secret_flags = 0;
-
-    for (int i = 0; i < g_GameFlow.level_count; i++) {
-        if (g_GameFlow.levels[i].level_type != level_type) {
-            continue;
-        }
-        const GAME_STATS *stats = &g_GameInfo.current[i].stats;
-
-        m_TotalStats.player_kill_count += stats->kill_count;
-        m_TotalStats.player_pickup_count += stats->pickup_count;
-        secret_flags = stats->secret_flags;
-        for (int j = 0; j < MAX_SECRETS; j++) {
-            if (secret_flags & 1) {
-                m_TotalStats.player_secret_count++;
-            }
-            secret_flags >>= 1;
-        }
-
-        m_TotalStats.timer += stats->timer;
-        m_TotalStats.death_count += stats->death_count;
-        m_TotalStats.total_kill_count += stats->max_kill_count;
-        m_TotalStats.total_secret_count += stats->max_secret_count;
-        m_TotalStats.total_pickup_count += stats->max_pickup_count;
-    }
-}
-
-bool Stats_CheckAllSecretsCollected(void)
-{
+    Stats_ComputeTotal(level_type);
     return m_TotalStats.player_secret_count >= m_TotalStats.total_secret_count;
 }

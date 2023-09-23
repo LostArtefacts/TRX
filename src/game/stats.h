@@ -13,5 +13,4 @@ int32_t Stats_GetKillables(void);
 int32_t Stats_GetSecrets(void);
 void Stats_Show(int32_t level_num);
 void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type);
-void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type);
-bool Stats_CheckAllSecretsCollected(void);
+bool Stats_CheckAllSecretsCollected(GAMEFLOW_LEVEL_TYPE level_type);
