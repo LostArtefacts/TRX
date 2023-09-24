@@ -250,6 +250,17 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     }
 }
 
+int16_t Item_GetWaterHeight(ITEM_INFO *item)
+{
+    int16_t height = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    if (height != NO_HEIGHT) {
+        height -= item->pos.y;
+    }
+
+    return height;
+}
+
 int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
 {
     int16_t spawn_num = Item_Create();
@@ -579,11 +590,8 @@ void Item_Animate(ITEM_INFO *item)
                 break;
 
             case AC_SOUND_FX:
-                if (item->frame_number == command[0]) {
-                    Sound_Effect(
-                        command[1], &item->pos,
-                        g_RoomInfo[item->room_number].flags);
-                }
+                Item_PlayAnimSFX(
+                    item, command, g_RoomInfo[item->room_number].flags);
                 command += 2;
                 break;
 
@@ -635,6 +643,36 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
     }
 
     return false;
+}
+
+void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags)
+{
+    if (item->frame_number != command[0]) {
+        return;
+    }
+
+    SOUND_PLAY_MODE mode;
+    switch (command[1] & 0xC000) {
+    case 0x4000:
+        mode = SPM_NORMAL;
+        break;
+    case 0x8000:
+        mode = SPM_UNDERWATER;
+        break;
+    default:
+        mode = SPM_ALWAYS;
+        break;
+    }
+
+    if (mode != SPM_ALWAYS) {
+        int16_t height = Item_GetWaterHeight(item);
+        if ((mode == SPM_UNDERWATER && (height >= 0 || height == NO_HEIGHT))
+            || (mode == SPM_NORMAL && height < 0 && height != NO_HEIGHT)) {
+            return;
+        }
+    }
+
+    Sound_Effect(command[1] & 0x3FFF, &item->pos, flags);
 }
 
 bool Item_IsTriggerActive(ITEM_INFO *item)
