@@ -102,7 +102,7 @@ void RollingBall_Control(int16_t item_num)
         }
         item->current_anim_state = TRAP_SET;
         item->goal_anim_state = TRAP_SET;
-        Item_SwitchToAnim(item, 0, -1);
+        Item_SwitchToAnim(item, 0, 0);
         item->current_anim_state =
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
@@ -161,7 +161,7 @@ void RollingBall_Collision(
 
             lara_item->current_anim_state = LS_SPECIAL;
             lara_item->goal_anim_state = LS_SPECIAL;
-            Item_SwitchToAnim(lara_item, LA_ROLLING_BALL_DEATH, -1);
+            Item_SwitchToAnim(lara_item, LA_ROLLING_BALL_DEATH, 0);
 
             g_Camera.flags = FOLLOW_CENTRE;
             g_Camera.target_angle = 170 * PHD_DEGREE;

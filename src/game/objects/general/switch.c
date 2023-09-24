@@ -136,11 +136,11 @@ void Switch_CollisionControlled(
         if (Lara_TestPosition(item, m_Switch_BoundsControlled)) {
             if (Lara_MovePosition(item, &move_vector)) {
                 if (item->current_anim_state == SWITCH_STATE_ON) {
-                    Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_DOWN, -1);
+                    Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_DOWN, 0);
                     lara_item->current_anim_state = LS_SWITCH_OFF;
                     item->goal_anim_state = SWITCH_STATE_OFF;
                 } else {
-                    Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_UP, -1);
+                    Item_SwitchToAnim(lara_item, LA_WALL_SWITCH_UP, 0);
                     lara_item->current_anim_state = LS_SWITCH_ON;
                     item->goal_anim_state = SWITCH_STATE_ON;
                 }

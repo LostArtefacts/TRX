@@ -83,7 +83,7 @@ void Torso_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != TORSO_DEATH) {
             item->current_anim_state = TORSO_DEATH;
-            Item_SwitchToAnim(item, TORSO_DIE_ANIM, -1);
+            Item_SwitchToAnim(item, TORSO_DIE_ANIM, 0);
         }
     } else {
         AI_INFO info;

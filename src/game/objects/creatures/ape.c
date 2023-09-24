@@ -150,7 +150,7 @@ void Ape_Control(int16_t item_num)
             item->current_anim_state = APE_DEATH;
             Item_SwitchToAnim(
                 item, APE_DIE_ANIM + (int16_t)(Random_GetControl() / 0x4000),
-                -1);
+                0);
         }
     } else {
         AI_INFO info;
@@ -260,6 +260,6 @@ void Ape_Control(int16_t item_num)
     } else if (Ape_Vault(item_num, angle)) {
         ape->maximum_turn = 0;
         item->current_anim_state = APE_VAULT;
-        Item_SwitchToAnim(item, APE_VAULT_ANIM, -1);
+        Item_SwitchToAnim(item, APE_VAULT_ANIM, 0);
     }
 }

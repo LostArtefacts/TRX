@@ -10,6 +10,9 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#define LF_PICKUP_ERASE 42
+#define LF_PICKUP_UW 18
+
 static PHD_VECTOR m_PickUpPosition = { 0, 0, -100 };
 static PHD_VECTOR m_PickUpPositionUW = { 0, -200, -350 };
 
@@ -99,7 +102,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
-            if (lara_item->frame_number != LF_PICKUP_ERASE) {
+            if (Item_TestFrame(lara_item, LF_PICKUP_ERASE)) {
                 goto cleanup;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
@@ -122,7 +125,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
-            if (lara_item->frame_number != LF_PICKUP_UW) {
+            if (!Item_TestFrame(lara_item, LF_PICKUP_UW)) {
                 goto cleanup;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
@@ -174,7 +177,7 @@ void Pickup_CollisionControlled(
             if (Lara_TestPosition(item, m_PickUpBoundsControlled)) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
                 if (Lara_MovePosition(item, &m_PickUpPosition)) {
-                    Item_SwitchToAnim(lara_item, LA_PICKUP, -1);
+                    Item_SwitchToAnim(lara_item, LA_PICKUP, 0);
                     lara_item->current_anim_state = LS_PICKUP;
                     have_item = true;
                 }
@@ -196,7 +199,7 @@ void Pickup_CollisionControlled(
         } else if (
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP) {
-            if (lara_item->frame_number == LF_PICKUP_ERASE) {
+            if (Item_TestFrame(lara_item, LF_PICKUP_ERASE)) {
                 PickUp_GetAllAtLaraPos(item, lara_item);
             }
         }
@@ -211,7 +214,7 @@ void Pickup_CollisionControlled(
 
             if (Lara_TestPosition(item, m_PickUpBoundsUW)) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
-                    Item_SwitchToAnim(lara_item, LA_PICKUP_UW, -1);
+                    Item_SwitchToAnim(lara_item, LA_PICKUP_UW, 0);
                     lara_item->current_anim_state = LS_PICKUP;
 
                     lara_item->goal_anim_state = LS_TREAD;
@@ -228,7 +231,7 @@ void Pickup_CollisionControlled(
         } else if (
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP
-            && lara_item->frame_number == LF_PICKUP_UW) {
+            && Item_TestFrame(lara_item, LF_PICKUP_UW)) {
             PickUp_GetAllAtLaraPos(item, lara_item);
             g_Lara.gun_status = LGS_ARMLESS;
         }

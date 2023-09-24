@@ -14,6 +14,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define LF_ROLL 2
+#define LF_JUMP_READY 3
+
 void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_State_Walk,        Lara_State_Run,       Lara_State_Stop,
     Lara_State_ForwardJump, Lara_State_Pose,      Lara_State_FastBack,
@@ -123,8 +126,7 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
             item->anim_number - g_Objects[item->object_number].anim_index;
         if (anim == LA_RUN_START) {
             m_JumpPermitted = false;
-        } else if (
-            anim != LA_RUN || (item->frame_number + 1) == LF_JUMP_READY) {
+        } else if (anim != LA_RUN || Item_TestFrame(item, LF_JUMP_READY - 1)) {
             m_JumpPermitted = true;
         }
     }
@@ -608,7 +610,10 @@ void Lara_State_Controlled(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-    if (item->frame_number == g_Anims[item->anim_number].frame_end - 1) {
+    if (Item_TestFrame(
+            item,
+            g_Anims[item->anim_number].frame_end - 1
+                - g_Anims[item->anim_number].frame_base)) {
         g_Lara.gun_status = LGS_ARMLESS;
     }
 }
@@ -994,7 +999,7 @@ void Lara_State_SurfTread(ITEM_INFO *item, COLL_INFO *coll)
         if (g_Lara.dive_timer == DIVE_WAIT) {
             item->goal_anim_state = LS_SWIM;
             item->current_anim_state = LS_DIVE;
-            Item_SwitchToAnim(item, LA_SURF_DIVE, -1);
+            Item_SwitchToAnim(item, LA_SURF_DIVE, 0);
             item->pos.x_rot = -45 * PHD_DEGREE;
             item->fall_speed = 80;
             g_Lara.water_status = LWS_UNDERWATER;

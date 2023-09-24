@@ -10,6 +10,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#define LF_USEPUZZLE 80
+
 PHD_VECTOR g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
 
 int16_t g_PuzzleHoleBounds[12] = {
@@ -48,7 +50,7 @@ void PuzzleHole_Collision(
             return;
         }
 
-        if (lara_item->frame_number == LF_USEPUZZLE) {
+        if (Item_TestFrame(lara_item, LF_USEPUZZLE)) {
             switch (item->object_number) {
             case O_PUZZLE_HOLE1:
                 item->object_number = O_PUZZLE_DONE1;

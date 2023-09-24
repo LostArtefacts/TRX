@@ -107,7 +107,7 @@ void Item_Initialise(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
-    Item_SwitchToAnim(item, 0, -1);
+    Item_SwitchToAnim(item, 0, 0);
     item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
     item->goal_anim_state = item->current_anim_state;
     item->required_anim_state = 0;
@@ -454,7 +454,7 @@ bool Item_MovePosition(
                 (uint32_t)(dst_pos.y_rot + PHD_45) / PHD_90;
             const uint32_t quadrant = (src_quadrant - dst_quadrant) % 4;
 
-            Item_SwitchToAnim(item, step_to_anim_num[quadrant], -1);
+            Item_SwitchToAnim(item, step_to_anim_num[quadrant], 0);
             item->goal_anim_state = step_to_anim_state[quadrant];
             item->current_anim_state = step_to_anim_state[quadrant];
 
@@ -502,8 +502,7 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame)
 {
     item->anim_number = g_Objects[item->object_number].anim_index + anim_index;
-    item->frame_number =
-        frame < 0 ? g_Anims[item->anim_number].frame_base : frame;
+    item->frame_number = g_Anims[item->anim_number].frame_base + frame;
 }
 
 void Item_Animate(ITEM_INFO *item)
@@ -732,4 +731,9 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
     if (hit_status) {
         item->hit_status = 1;
     }
+}
+
+bool Item_TestFrame(ITEM_INFO *item, int16_t frame)
+{
+    return item->frame_number == g_Anims[item->anim_number].frame_base + frame;
 }

@@ -13,7 +13,7 @@
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
 #define CENTAUR_REARING_ANIM 7
-#define CENTAUR_REARING_FRAME 152
+#define CENTAUR_REARING_FRAME 36
 
 void Statue_Setup(OBJECT_INFO *obj)
 {

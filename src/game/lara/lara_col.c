@@ -94,13 +94,13 @@ void Lara_Col_Walk(ITEM_INFO *item, COLL_INFO *coll)
 
     if (Lara_DeflectEdge(item, coll)) {
         if (item->frame_number >= 29 && item->frame_number <= 47) {
-            Item_SwitchToAnim(item, LA_STOP_RIGHT, -1);
+            Item_SwitchToAnim(item, LA_STOP_RIGHT, 0);
         } else if (
             (item->frame_number >= 22 && item->frame_number <= 28)
             || (item->frame_number >= 48 && item->frame_number <= 57)) {
-            Item_SwitchToAnim(item, LA_STOP_LEFT, -1);
+            Item_SwitchToAnim(item, LA_STOP_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_STOP, -1);
+            Item_SwitchToAnim(item, LA_STOP, 0);
         }
     }
 
@@ -110,17 +110,17 @@ void Lara_Col_Walk(ITEM_INFO *item, COLL_INFO *coll)
 
     if (coll->mid_floor > STEP_L / 2) {
         if (item->frame_number >= 28 && item->frame_number <= 45) {
-            Item_SwitchToAnim(item, LA_WALK_STEP_DOWN_RIGHT, -1);
+            Item_SwitchToAnim(item, LA_WALK_STEP_DOWN_RIGHT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_WALK_STEP_DOWN_LEFT, -1);
+            Item_SwitchToAnim(item, LA_WALK_STEP_DOWN_LEFT, 0);
         }
     }
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
         if (item->frame_number >= 27 && item->frame_number <= 44) {
-            Item_SwitchToAnim(item, LA_WALK_STEP_UP_RIGHT, -1);
+            Item_SwitchToAnim(item, LA_WALK_STEP_UP_RIGHT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_WALK_STEP_UP_LEFT, -1);
+            Item_SwitchToAnim(item, LA_WALK_STEP_UP_LEFT, 0);
         }
     }
 
@@ -159,15 +159,15 @@ void Lara_Col_Run(ITEM_INFO *item, COLL_INFO *coll)
             && coll->front_floor < -(STEP_L * 5) / 2) {
             item->current_anim_state = LS_SPLAT;
             if (item->frame_number >= 0 && item->frame_number <= 9) {
-                Item_SwitchToAnim(item, LA_HIT_WALL_LEFT, -1);
+                Item_SwitchToAnim(item, LA_HIT_WALL_LEFT, 0);
                 return;
             }
             if (item->frame_number >= 10 && item->frame_number <= 21) {
-                Item_SwitchToAnim(item, LA_HIT_WALL_RIGHT, -1);
+                Item_SwitchToAnim(item, LA_HIT_WALL_RIGHT, 0);
                 return;
             }
         }
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
     }
 
     if (Lara_Fallen(item, coll)) {
@@ -176,9 +176,9 @@ void Lara_Col_Run(ITEM_INFO *item, COLL_INFO *coll)
 
     if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
         if (item->frame_number >= 3 && item->frame_number <= 14) {
-            Item_SwitchToAnim(item, LA_RUN_STEP_UP_LEFT, -1);
+            Item_SwitchToAnim(item, LA_RUN_STEP_UP_LEFT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_RUN_STEP_UP_RIGHT, -1);
+            Item_SwitchToAnim(item, LA_RUN_STEP_UP_RIGHT, 0);
         }
     }
 
@@ -216,7 +216,7 @@ void Lara_Col_Stop(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
+        Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -283,14 +283,14 @@ void Lara_Col_FastBack(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_floor > 200) {
         item->current_anim_state = LS_FALL_BACK;
         item->goal_anim_state = LS_FALL_BACK;
-        Item_SwitchToAnim(item, LA_FALL_BACK, -1);
+        Item_SwitchToAnim(item, LA_FALL_BACK, 0);
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
     }
 
     item->pos.y += coll->mid_floor;
@@ -311,7 +311,7 @@ void Lara_Col_TurnR(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
+        Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -359,7 +359,7 @@ void Lara_Col_FastFall(ITEM_INFO *item, COLL_INFO *coll)
         } else {
             item->goal_anim_state = LS_STOP;
             item->current_anim_state = LS_STOP;
-            Item_SwitchToAnim(item, LA_LAND_FAR, -1);
+            Item_SwitchToAnim(item, LA_LAND_FAR, 0);
         }
         Sound_StopEffect(SFX_LARA_FALL, NULL);
         item->pos.y += coll->mid_floor;
@@ -437,7 +437,7 @@ void Lara_Col_Compress(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_ceiling > -100) {
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
         item->gravity_status = 0;
         item->fall_speed = 0;
         item->speed = 0;
@@ -464,7 +464,7 @@ void Lara_Col_Back(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
     }
 
     if (g_Config.fix_descending_glitch && Lara_Fallen(item, coll)) {
@@ -473,9 +473,9 @@ void Lara_Col_Back(ITEM_INFO *item, COLL_INFO *coll)
 
     if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
         if (item->frame_number >= 964 && item->frame_number <= 993) {
-            Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_RIGHT, -1);
+            Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_RIGHT, 0);
         } else {
-            Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_LEFT, -1);
+            Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_LEFT, 0);
         }
     }
 
@@ -513,7 +513,7 @@ void Lara_Col_StepRight(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
     }
 
     if (g_Config.fix_descending_glitch && Lara_Fallen(item, coll)) {
@@ -544,7 +544,7 @@ void Lara_Col_StepLeft(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Lara_DeflectEdge(item, coll)) {
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
     }
 
     if (g_Config.fix_descending_glitch && Lara_Fallen(item, coll)) {
@@ -729,7 +729,7 @@ void Lara_Col_Roll(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_floor > 200) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
-        Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
+        Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;
@@ -761,7 +761,7 @@ void Lara_Col_Roll2(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_floor > 200) {
         item->current_anim_state = LS_FALL_BACK;
         item->goal_anim_state = LS_FALL_BACK;
-        Item_SwitchToAnim(item, LA_FALL_BACK, -1);
+        Item_SwitchToAnim(item, LA_FALL_BACK, 0);
         item->gravity_status = 1;
         item->fall_speed = 0;
         return;

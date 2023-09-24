@@ -16,6 +16,8 @@
 
 #include <stdbool.h>
 
+#define LF_PICKUPSCION 44
+
 static PHD_VECTOR m_Scion_Position = { 0, 640, -310 };
 static PHD_VECTOR m_Scion_Position4 = { 0, 280, -512 + 105 };
 
@@ -150,8 +152,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     if (lara_item->current_anim_state == LS_PICKUP) {
-        if (lara_item->frame_number
-            == g_Anims[lara_item->anim_number].frame_base + LF_PICKUPSCION) {
+        if (Item_TestFrame(lara_item, LF_PICKUPSCION)) {
             Overlay_AddPickup(item->object_number);
             Inv_AddItem(item->object_number);
             item->status = IS_INVISIBLE;

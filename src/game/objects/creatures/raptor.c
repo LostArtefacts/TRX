@@ -82,7 +82,7 @@ void Raptor_Control(int16_t item_num)
         if (item->current_anim_state != RAPTOR_DEATH) {
             item->current_anim_state = RAPTOR_DEATH;
             Item_SwitchToAnim(
-                item, RAPTOR_DIE_ANIM + (Random_GetControl() / 16200), -1);
+                item, RAPTOR_DIE_ANIM + (Random_GetControl() / 16200), 0);
         }
     } else {
         AI_INFO info;

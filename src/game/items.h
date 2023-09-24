@@ -45,3 +45,4 @@ int16_t *Item_GetBoundsAccurate(ITEM_INFO *item);
 int32_t Item_GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 
 void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status);
+bool Item_TestFrame(ITEM_INFO *item, int16_t frame);

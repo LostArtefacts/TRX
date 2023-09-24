@@ -96,7 +96,7 @@ void Wolf_Control(int16_t item_num)
             item->current_anim_state = WOLF_DEATH;
             Item_SwitchToAnim(
                 item, WOLF_DIE_ANIM + (int16_t)(Random_GetControl() / 11000),
-                -1);
+                0);
         }
     } else {
         AI_INFO info;
