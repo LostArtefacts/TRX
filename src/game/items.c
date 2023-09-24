@@ -12,6 +12,11 @@
 
 #include <stddef.h>
 
+#define SFX_MODE_BITS(C) (C & 0xC000)
+#define SFX_ID_BITS(C) (C & 0x3FFF)
+#define SFX_LAND 0x4000
+#define SFX_WATER 0x8000
+
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
     do {                                                                       \
         if ((int16_t)(target - source) > rot) {                                \
@@ -651,28 +656,16 @@ void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags)
         return;
     }
 
-    SOUND_PLAY_MODE mode;
-    switch (command[1] & 0xC000) {
-    case 0x4000:
-        mode = SPM_NORMAL;
-        break;
-    case 0x8000:
-        mode = SPM_UNDERWATER;
-        break;
-    default:
-        mode = SPM_ALWAYS;
-        break;
-    }
-
-    if (mode != SPM_ALWAYS) {
+    uint16_t mode = SFX_MODE_BITS(command[1]);
+    if (mode) {
         int16_t height = Item_GetWaterHeight(item);
-        if ((mode == SPM_UNDERWATER && (height >= 0 || height == NO_HEIGHT))
-            || (mode == SPM_NORMAL && height < 0 && height != NO_HEIGHT)) {
+        if ((mode == SFX_WATER && (height >= 0 || height == NO_HEIGHT))
+            || (mode == SFX_LAND && height < 0 && height != NO_HEIGHT)) {
             return;
         }
     }
 
-    Sound_Effect(command[1] & 0x3FFF, &item->pos, flags);
+    Sound_Effect(SFX_ID_BITS(command[1]), &item->pos, flags);
 }
 
 bool Item_IsTriggerActive(ITEM_INFO *item)
