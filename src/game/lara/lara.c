@@ -309,9 +309,7 @@ void Lara_Animate(ITEM_INFO *item)
                 break;
 
             case AC_SOUND_FX:
-                if (item->frame_number == command[0]) {
-                    Sound_Effect(command[1], &item->pos, SPM_ALWAYS);
-                }
+                Item_PlayAnimSFX(item, command, SPM_ALWAYS);
                 command += 2;
                 break;
 

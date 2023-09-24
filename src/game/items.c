@@ -12,6 +12,11 @@
 
 #include <stddef.h>
 
+#define SFX_MODE_BITS(C) (C & 0xC000)
+#define SFX_ID_BITS(C) (C & 0x3FFF)
+#define SFX_LAND 0x4000
+#define SFX_WATER 0x8000
+
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
     do {                                                                       \
         if ((int16_t)(target - source) > rot) {                                \
@@ -248,6 +253,17 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     if (item->room_number != room_num) {
         Item_NewRoom(g_Lara.item_number, room_num);
     }
+}
+
+int16_t Item_GetWaterHeight(ITEM_INFO *item)
+{
+    int16_t height = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    if (height != NO_HEIGHT) {
+        height -= item->pos.y;
+    }
+
+    return height;
 }
 
 int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
@@ -579,11 +595,8 @@ void Item_Animate(ITEM_INFO *item)
                 break;
 
             case AC_SOUND_FX:
-                if (item->frame_number == command[0]) {
-                    Sound_Effect(
-                        command[1], &item->pos,
-                        g_RoomInfo[item->room_number].flags);
-                }
+                Item_PlayAnimSFX(
+                    item, command, g_RoomInfo[item->room_number].flags);
                 command += 2;
                 break;
 
@@ -635,6 +648,24 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
     }
 
     return false;
+}
+
+void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags)
+{
+    if (item->frame_number != command[0]) {
+        return;
+    }
+
+    uint16_t mode = SFX_MODE_BITS(command[1]);
+    if (mode) {
+        int16_t height = Item_GetWaterHeight(item);
+        if ((mode == SFX_WATER && (height >= 0 || height == NO_HEIGHT))
+            || (mode == SFX_LAND && height < 0 && height != NO_HEIGHT)) {
+            return;
+        }
+    }
+
+    Sound_Effect(SFX_ID_BITS(command[1]), &item->pos, flags);
 }
 
 bool Item_IsTriggerActive(ITEM_INFO *item)

@@ -18,6 +18,7 @@ void Item_RemoveDrawn(int16_t item_num);
 void Item_AddActive(int16_t item_num);
 void Item_NewRoom(int16_t item_num, int16_t room_num);
 void Item_UpdateRoom(ITEM_INFO *item, int32_t height);
+int16_t Item_GetWaterHeight(ITEM_INFO *item);
 int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num);
 int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num);
 
@@ -37,6 +38,7 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame);
 void Item_Animate(ITEM_INFO *item);
 bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim);
+void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags);
 
 bool Item_IsTriggerActive(ITEM_INFO *item);
 
