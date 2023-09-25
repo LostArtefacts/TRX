@@ -1,13 +1,13 @@
-Tomb1Main_runtime.json5
-Tomb1Main.dll
-Tomb1Main.exe
-Tomb1Main.log
+TR1X_runtime.json5
+TR1X.dll
+TR1X.exe
+TR1X.log
 
 # Docker builds garbage
 /build
 /.secrets
 /workflow
-/Tomb1Main*.zip
+/TR1X*.zip
 
 # VS garbage
 v15/

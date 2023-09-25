@@ -1,0 +1,383 @@
+{
+  "Categories": {
+    "controls": "Controles",
+    "gameplay_modifications": "Modificaciones de jugabilidad",
+    "gameplay_fixes": "Correcciones de jugabilidad",
+    "gameplay_options": "Opciones de jugabilidad",
+    "graphics": "Gráficos",
+    "sound": "Audio",
+    "ui": "Interfaz"
+  },
+  "Controls": {
+    "checkbox_enabled": "Habilitado",
+    "command_about": "_Acerca de",
+    "command_close": "_Cerrar",
+    "command_exit": "Salir",
+    "command_github": "_GitHub",
+    "command_launch_game": "_Iniciar juego",
+    "command_launch_ub": "Abrir As_untos Pendientes",
+    "command_open": "_Abrir",
+    "command_reload": "_Recargar",
+    "command_restore": "_Restaurar los valores predeterminados",
+    "command_save": "_Guardar",
+    "command_save_as": "Guardar _como...",
+    "file_dialog_filter": "Archivos de configuración de TR1X",
+    "label_about_details": "Visita la página de TR1X GitHub para obtener más información.",
+    "label_no_file": "Ningún archivo seleccionado",
+    "label_saved": "Guardado",
+    "label_unsaved": "No guardado",
+    "link_github": "Ir a GitHub",
+    "menu_file": "_Archivo",
+    "menu_help": "_Ayuda",
+    "menu_tools": "_Herramientas",
+    "msgbox_unsaved_changes": "¿Deseas guardar los cambios que has realizado?",
+    "msgbox_unsaved_changes_reload": "¿Seguro que deseas recargar y perder los cambios realizados?",
+    "spinner_decrease": "Reducir valor",
+    "spinner_increase": "Aumentar valor",
+    "spinner_msg_comparison_failed": "El valor de entrada debe estar entre {0} y {1}",
+    "spinner_msg_invalid_number": "La cadena de entrada no es un número válido",
+    "window_title_about": "Acerca de la herramienta de configuración de TR1X",
+    "window_title_main": "Herramienta de configuración TR1X"
+  },
+  "Enums": {
+    "airbar_mode": {
+      "default": "Predeterminado",
+      "flashing-only": "Solo parpadeo",
+      "never": "Nunca",
+      "ps1": "PS1"
+    },
+    "healthbar_mode": {
+      "always": "Siempre",
+      "default": "Predeterminado",
+      "flashing-only": "Solo parpadeo",
+      "flashing-or-default": "Parpadeo o predeterminado",
+      "never": "Nunca",
+      "ps1": "PS1"
+    },
+    "menu_style": {
+      "pc": "PC",
+      "ps1": "PS1"
+    },
+    "screenshot_format": {
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "ui_color": {
+      "blue": "Azul (predeterminado para aire)",
+      "blue2": "Azul (alternativo)",
+      "gold": "Oro (predeterminado para salud)",
+      "gold2": "Oro (alternativo)",
+      "green": "Verde",
+      "grey": "Gris",
+      "pink": "Rosa",
+      "red": "Rojo",
+      "silver": "Plata"
+    },
+    "ui_location": {
+      "bottom-center": "Inferior central",
+      "bottom-left": "Inferior izquierda",
+      "bottom-right": "Inferior derecha",
+      "top-center": "Superior central",
+      "top-left": "Superior izquierda",
+      "top-right": "Superior derecha"
+    }
+  },
+  "Properties": {
+    "airbar_color": {
+      "Title": "Color de la barra de aire",
+      "Description": "Color de la barra de aire."
+    },
+    "airbar_location": {
+      "Title": "Ubicación de la barra de aire",
+      "Description": "Ubicación donde se muestra la barra de aire."
+    },
+    "airbar_showing_mode": {
+      "Title": "Modo de visualización de la barra de aire",
+      "Description": "Cambia la forma en que se muestra la barra de aire.\n- Predeterminado: muestra la barra de aire solo cuando Lara está bajo el agua y parpadea cuando el oxígeno está al 20% o menos (TombATI).\n- Solo parpadeo: muestra la barra de aire *solo* cuando el oxígeno de Lara está al 20% o menos (para carreras de desafío).\n- Nunca: nunca muestra la barra de aire (para carreras de desafío).\n- PS1: muestra la barra de aire en circunstancias predeterminadas sin parpadeo."
+    },
+    "anisotropy_filter": {
+      "Title": "Filtro anisotrópico",
+      "Description": "Mejora el filtrado de texturas a distancia."
+    },
+    "change_pierre_spawn": {
+      "Title": "Cambiar comportamiento de generación de Pierre",
+      "Description": "Hace que un Pierre recién activado (huyendo) reemplace a un Pierre ya existente (huyendo)."
+    },
+    "disable_healing_between_levels": {
+      "Title": "No curar al terminar el nivel",
+      "Description": "Evita que Lara se cure entre niveles al recargar (para carreras de desafío Sin Curación)."
+    },
+    "disable_magnums": {
+      "Title": "Desactivar magnum",
+      "Description": "Elimina todas las pistolas magnum y la munición magnum del juego."
+    },
+    "disable_medpacks": {
+      "Title": "Desactivar botiquines",
+      "Description": "Elimina todos los botiquines del juego (para carreras de desafío Sin Botiquines)."
+    },
+    "disable_shotgun": {
+      "Title": "Desactivar escopeta",
+      "Description": "Elimina todos las escopetas y cartuchos de escopeta del juego."
+    },
+    "disable_trex_collision": {
+      "Title": "Desactivar la colisión de T-Rex muerto",
+      "Description": "Elimina toda colisión con T-Rex al morir. \nEsto ayuda cuando el cuerpo del T-Rex bloquea el paso."
+    },
+    "disable_uzis": {
+      "Title": "Desactivar Uzis",
+      "Description": "Elimina todas las armas Uzi y la munición Uzi del juego."
+    },
+    "enable_3d_pickups": {
+      "Title": "Recogidas en 3D",
+      "Description": "Permite que los modelos en 3D se representen en lugar de los sprites para los objetos a recoger."
+    },
+    "enable_braid": {
+      "Title": "Trenza",
+      "Description": "Habilita la trenza de Lara."
+    },
+    "enable_cheats": {
+      "Title": "Trucos",
+      "Description": "Habilita varios trucos:\n- F11: mantén pulsado para curar a Lara.\n- Tecla F11 + CAMINAR: mantén presionada para dañar a Lara.\n- L: finaliza inmediatamente el nivel.\n- I: da a Lara todas las armas, munición, botiquines y todos los elementos de la trama para el nivel actual.\n- O: habilita el truco DOZY (nadar en el aire).\n     - Tecla CAMINAR: salir DOZY.\n     - Tecla ARMAS: abre la puerta más cercana (no funciona en ciertos lugares)."
+    },
+    "enable_cine": {
+      "Title": "Habilitar escenas",
+      "Description": "Habilita la reproducción de escenas."
+    },
+    "enable_compass_stats": {
+      "Title": "Estadísticas del nivel en brújula",
+      "Description": "Habilita mostrar estadísticas del nivel cuando se selecciona la brújula."
+    },
+    "enable_deaths_counter": {
+      "Title": "Contador de muertes",
+      "Description": "Habilita mostrar un contador de muertes en la brújula y en las estadísticas de nivel. El contador de muertes se actualiza en la partida actualmente cargada tan pronto como Lara muere."
+    },
+    "enable_demo": {
+      "Title": "Habilitar modo de demostración",
+      "Description": "Habilita las demostraciones que se muestran en el menú principal."
+    },
+    "enable_detailed_stats": {
+      "Title": "Mostrar total de objetos y muertes",
+      "Description": "Permite mostrar el recuento máximo de objetos recogidos y el recuento de muertes en cada nivel. Esto incluye objetos que no se pueden obtener."
+    },
+    "enable_enemy_healthbar": {
+      "Title": "Mostrar barra de salud enemiga",
+      "Description": "Permite mostrar una barra de salud para el enemigo activo."
+    },
+    "enable_enhanced_look": {
+      "Title": "Mirar mientras corres",
+      "Description": "Permite que Lara mire mientras corre, salta, cuelga, etc., similar al estilo TR2."
+    },
+    "enable_enhanced_saves": {
+      "Title": "Guardar información adicional del juego",
+      "Description": "Mejora las partidas guardadas para que los efectos gráficos, la niebla de las cascadas, los emisores de llamas y más se guarden en lugar de desaparecer al cargar."
+    },
+    "enable_fade_effects": {
+      "Title": "Efectos de fundido",
+      "Description": "Hace que el inventario y la pantalla de pausa usen transiciones de fundido para el fondo semitransparente, similar a PS1."
+    },
+    "enable_fmv": {
+      "Title": "Habilitar FMV",
+      "Description": "Habilita la reproduc,ción de vídeos FMV."
+    },
+    "enable_jump_twists": {
+      "Title": "Giros al saltar",
+      "Description": "Habilita giros y saltos mortales al estilo TR2+, es decir, presiona rodar durante las animaciones de salto y salto del cisne."
+    },
+    "enable_swing_cancel": {
+      "Title": "Cancelación de balanceo",
+      "Description": "Permite cancelar la animación de balanceo de repisas de Lara soltando y agarrando rápidamente de nuevo, similar a TR2+."
+    },
+    "enable_tr2_jumping": {
+      "Title": "Salto sensible",
+      "Description": "Permite que Lara salte en cualquier punto mientras corre, similar a TR2+."
+    },
+    "enable_music_in_inventory": {
+      "Title": "Habilitar sonidos de juegos en el inventario",
+      "Description": "Permite que los sonidos del juego continúen reproduciéndose en la pantalla de inventario."
+    },
+    "load_current_music": {
+      "Title": "Cargar pista de música",
+      "Description": "Carga la pista de música que se estaba reproduciendo cuando se guardó el juego."
+    },
+    "load_music_triggers": {
+      "Title": "Recordar la música reproducida",
+      "Description": "Carga música activada previamente para que las pistas de música no se reproduzcan."
+    },
+    "enable_music_in_menu": {
+      "Title": "Habilitar música en menú principal",
+      "Description": "Reproduce música en el menú principal."
+    },
+    "enable_uw_roll": {
+      "Title": "Giro en el agua",
+      "Description": "Permite que Lara realice un giro mientras está bajo el agua, similar a TR2+."
+    },
+    "enable_numeric_keys": {
+      "Title": "Uso rápido de teclas numéricas",
+      "Description": "Permite cambiar rápidamente de armas y usar botiquines.\n- 1: Pistolas\n- 2: Escopeta\n- 3: Magnums\n- 4: Uzis\n- 8: Botiquín pequeño\n- 9: Botiquín grande"
+    },
+    "enabled_inverted_look": {
+      "Title": "Vista invertida",
+      "Description": "Invierte los controles del eje Y cuando Lara mira."
+    },
+    "camera_speed": {
+      "Title": "Velocidad de cámara",
+      "Description": "Ajusta la velocidad de movimiento de la cámara manual."
+    },
+    "enable_pitched_sounds": {
+      "Title": "Habilitar sonidos agudos",
+      "Description": "Permite que los efectos de sonido sean aleatorios, con diferentes tonos para variar los sonidos del juego."
+    },
+    "enable_ps_uzi_sfx": {
+      "Title": "Habilitar efectos de sonido de PS Uzi",
+      "Description": "Cambia los efectos de sonido de las Uzis para que coincidan con la versión de PlayStation."
+    },
+    "enable_round_shadow": {
+      "Title": "Sombras redondeadas",
+      "Description": "Habilita sombras redondas en lugar de las octogonales predeterminadas."
+    },
+    "enable_shotgun_flash": {
+      "Title": "Destello de escopeta",
+      "Description": "Muestra llamas al disparar la escopeta, al igual que en otras armas."
+    },
+    "enable_smooth_bars": {
+      "Title": "Barras más suaves",
+      "Description": "Hace que la barra de salud y la barra de aire utilicen transiciones de color suaves."
+    },
+    "restore_ps1_enemies": {
+      "Title": "Restaurar enemigos de PS1",
+      "Description": "Agrega la momia que aparece en la versión de PlayStation de Ciudad de Khamoon, habitación 25.\nCambiar esta opción requerirá reiniciar el nivel."
+    },
+    "enable_game_modes": {
+      "Title": "Habilitar modos de juego",
+      "Description": "Permite seleccionar opciones de Nueva Partida+ desde el menú del pasaporte de Nueva Partida.\n-Nueva Partida+: desbloquea todas las armas con munición infinita; los enemigos tienen el doble de puntos de vida.\n-Nueva Partida Japonesa: las armas hacen el doble de daño.\n-Nueva Partida Japonesa+: combinación de Nueva Partida+ y Nueva Partida Japonesa."
+    },
+    "enable_timer_in_inventory": {
+      "Title": "Temporizador en el inventario",
+      "Description": "Permite que el temporizador del juego siga funcionando incluso cuando se muestra el inventario."
+    },
+    "enable_total_stats": {
+      "Title": "Pantalla de estadísticas finales",
+      "Description": "Habilita una pantalla de estadísticas totales del juego que se reproduce después de los créditos."
+    },
+    "enable_tr3_sidesteps": {
+      "Title": "Pasos laterales mejorados",
+      "Description": "Habilita los pasos laterales al estilo TR3+, por ejemplo, shift + flechas direccionales. Los botones dedicados de pasos laterales seguirán funcionando."
+    },
+    "enemy_healthbar_color": {
+      "Title": "Color de la barra de salud del enemigo",
+      "Description": "Color de la barra de salud del enemigo."
+    },
+    "enemy_healthbar_location": {
+      "Title": "Ubicación de la barra de salud del enemigo",
+      "Description": "Ubicación donde se muestra la barra de salud del enemigo."
+    },
+    "fix_alligator_ai": {
+      "Title": "Arreglar IA de cocodrilo",
+      "Description": "Corrige el problema de los cocodrilos que no infligen daño si Lara permanece quieta en el agua."
+    },
+    "fix_bear_ai": {
+      "Title": "Arreglar IA de oso",
+      "Description": "Corrige el ataque del oso para que alcance a Lara."
+    },
+    "fix_bridge_collision": {
+      "Title": "Arreglar colisión en puentes",
+      "Description": "Corrige el problema por el cual Lara no puede agarrarse a partes de algunos puentes y paredes invisibles en los bordes."
+    },
+    "fix_descending_glitch": {
+      "Title": "Arreglar caídas en pisos frágiles",
+      "Description": "Resuelve la situación en la que Lara caía inmediatamente a la baldosa inferior al esquivar y retroceder sobre las baldosas que se rompían."
+    },
+    "fix_floor_data_issues": {
+      "Title": "Arreglar problemas de datos en el suelo",
+      "Description": "Corrige los problemas originales con los datos/activadores del suelo, incluyendo los siguientes.\n- El murciélago no activado en el Coliseo.\n- El secreto no registrado en la Gran Pirámide."
+    },
+    "fix_texture_issues": {
+      "Title": "Arreglar problemas de textura",
+      "Description": "Corrige los problemas originales con texturas faltantes o incorrectas."
+    },
+    "fix_item_rots": {
+      "Title": "Arreglar problemas de rotación de objetos",
+      "Description": "Corrige problemas originales con algunas recogidas giradas incorrectamente al usar la opción de recogidas en 3D."
+    },
+    "fix_qwop_glitch": {
+      "Title": "Arreglar fallo de QWOP",
+      "Description": "Corrige que Lara salte en pequeños pasos, lo que a veces resulta en una animación extraña de carrera, conocida como estado QWOP."
+    },
+    "fix_secrets_killing_music": {
+      "Title": "Evitar detener la música en recogidas de secretos",
+      "Description": "Corrige el sonido de recoger un secreto que detiene la pista de música activa."
+    },
+    "fix_speeches_killing_music": {
+      "Title": "Evitar detener la música durante los discursos enemigos",
+      "Description": "Evita que los enemigos paren la pista de música cuando hablan."
+    },
+    "fix_shotgun_targeting": {
+      "Title": "Mejora de apuntado de la escopeta",
+      "Description": "Hace que la escopeta ya no dispare cuando un objetivo bloqueado se mueve fuera de la vista de Lara, similar a otras armas."
+    },
+    "fix_tihocan_secret_sound": {
+      "Title": "Arreglar sonido secreto de la Tumba de Tihocan",
+      "Description": "Evita que el sonido secreto se reproduzca incorrectamente al usar la llave dorada en la Tumba de Tihocan."
+    },
+    "fix_wall_jump_glitch": {
+      "Title": "Arreglar fallo de salto de pared",
+      "Description": "Corrige a Lara saltando a través de objetos y subiendo ciertas pendientes."
+    },
+    "fov_value": {
+      "Title": "Campo de visión",
+      "Description": "El campo de visión deseado en grados, anulando el valor predeterminado codificado. Los valores predeterminados son 80 (horizontal) y 65 (vertical)."
+    },
+    "fov_vertical": {
+      "Title": "Campo de visión vertical",
+      "Description": "Interpreta el campo de visión como vertical en lugar de horizontal. Puede ser beneficioso para resoluciones de pantalla ancha, especialmente para configuraciones de pantallas múltiples, ya que distorsiona el lado izquierdo y derecho en lugar de recortar la parte superior e inferior de la pantalla."
+    },
+    "healthbar_color": {
+      "Title": "Color de la barra de salud",
+      "Description": "Color de la barra de salud."
+    },
+    "healthbar_location": {
+      "Title": "Ubicación de la barra de salud",
+      "Description": "Ubicación donde se muestra la barra de salud."
+    },
+    "healthbar_showing_mode": {
+      "Title": "Modo de visualización de la barra de salud",
+      "Description": "Cambia cómo se muestra la barra de salud.\n- Predeterminado: muestra la barra de salud al comienzo de un nivel, después de recibir un golpe o mientras tiene armas equipadas; muestra la barra de salud si ya está en la pantalla cuando la salud de Lara es del 20% o menos (TombATI).\n- Intermitente o predeterminada: la barra de salud parpadea constantemente cuando la salud de Lara es del 20% o menos, o se muestra en circunstancias predeterminadas.\n- Solo intermitente: muestra la barra de salud *solo* cuando la salud de Lara es del 20% o menos (para carreras de desafío).\n- Siempre: muestra siempre la barra de salud.\n- Nunca: nunca mostrar la barra de salud (para carreras de desafío).\n- PS1: muestra la barra de salud en circunstancias predeterminadas sin parpadear."
+    },
+    "maximum_save_slots": {
+      "Title": "Número máximo de ranuras para guardar",
+      "Description": "Cambia el número de ranuras para guardar disponibles."
+    },
+    "menu_style": {
+      "Title": "Estilo de menú",
+      "Description": "Cambia la forma en la que se muestran los menús. \n- PC: el estilo de la interfaz de usuario coincide con la versión para PC. \n- PS1: el estilo de la interfaz de usuario coincide con la versión de PS1."
+    },
+    "resolution_height": {
+      "Title": "Altura de resolución",
+      "Description": "Anula la resolución del juego. Consulta las notas sobre el ancho de resolución."
+    },
+    "resolution_width": {
+      "Title": "Ancho de resolución",
+      "Description": "Anula la resolución del juego. Deja en 0 o valores negativos para adivinar automáticamente a partir del tamaño de la pantalla. Nota: estos valores solo anulan la última posición en el menú de resoluciones del juego que normalmente tiene la resolución de pantalla predeterminada, así que para que esto funcione, asegúrese de haber seleccionado la última resolución."
+    },
+    "revert_to_pistols": {
+      "Title": "Pistolas como arma principal",
+      "Description": "Hace que Lara vuelva a usar pistolas al comienzo de cada nivel (en línea con el comportamiento de TombATI)."
+    },
+    "screenshot_format": {
+      "Title": "Formato de captura de pantalla",
+      "Description": "Formato de archivo de captura de pantalla."
+    },
+    "start_lara_hitpoints": {
+      "Title": "Salud inicial de Lara",
+      "Description": "Establece el valor de salud de Lara al comienzo de cada nivel."
+    },
+    "enable_save_crystals": {
+      "Title": "Habilitar cristales de guardado",
+      "Description": "Limita el guardado a los cristales de guardado al comienzo de los niveles. Los niveles tienen cristales de guardado limitados de un solo uso, al igual que en la versión de PS1. Cambiar esta opción requerirá reiniciar el nivel."
+    },
+    "walk_to_items": {
+      "Title": "Interacciones animadas",
+      "Description": "Hace que Lara camine hacia los objetos recogibles y los interruptores cuando están cerca en lugar de teletransportarse hacia ellos."
+    }
+  }
+}

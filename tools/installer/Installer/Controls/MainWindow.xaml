@@ -9,7 +9,7 @@
     xmlns:utils="clr-namespace:Installer.Utils"
     d:DataContext="{d:DesignInstance Type=models:MainWindowViewModel}"
     mc:Ignorable="d"
-    Title="Tomb1Main Installer"
+    Title="TR1X Installer"
     MinWidth="480"
     MinHeight="360"
     Width="{Binding WindowWidth, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, FallbackValue=640}"

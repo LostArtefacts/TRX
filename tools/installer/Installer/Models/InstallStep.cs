@@ -70,7 +70,7 @@ public class InstallStep : BaseNotifyPropertyChanged, IStep
         }
     }
 
-    public string SidebarImage => "pack://application:,,,/Tomb1Main_Installer;component/Resources/side3.jpg";
+    public string SidebarImage => "pack://application:,,,/TR1X_Installer;component/Resources/side3.jpg";
 
     public void RunInstall()
     {

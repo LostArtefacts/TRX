@@ -1,0 +1,749 @@
+{
+    // NOTE: bad changes to this file may result in crashes.
+    // Lines starting with double slashes are comments and are ignored.
+
+    // Path to the main menu background image.
+    "main_menu_picture": "data/titleh.png",
+
+    // Path to the savegame file.
+    "savegame_fmt_legacy": "saveati.%d",
+    "savegame_fmt_bson": "save_tr1_%02d.dat",
+
+    // Forces game mode selection to be disabled if true so the user can't
+    // select NG+ modes until a playthrough is completed. Overrides the config
+    // option enable_game_modes.
+    "force_disable_game_modes": false,
+
+    // Forces save crystals to be enabled if true. Overrides the config option
+    // enable_save_crystals.
+    "force_enable_save_crystals": false,
+
+    // Seconds to pass in the main menu before playing the demo.
+    "demo_delay": 16,
+
+    // Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
+    // [0.6, 0.7, 1.0] is original DOS version filter,
+    // [0.45, 1.0, 1.0] is default TombATI filter.
+    "water_color": [0.45, 1.0, 1.0],
+
+    // The distance (in tiles) at which objects and the world
+    // start to fade into blackness.
+    // The default hardcoded value in TR1 is 12.
+    // The default (disabled) value in TombATI is 72.
+    "draw_distance_fade": 22.0,
+
+    // The distance (in tiles) at which objects and the world are clipped away.
+    // The default hardcoded value in TR1 is 20.
+    // The default (disabled) value in TombATI is 80.
+    "draw_distance_max": 30.0,
+
+    // Global data injection file paths. Individual levels will inherit
+    // these unless inherit_injections is set to false on those levels.
+    // inherit_injections is by default true on all levels.
+    //
+    // Disclaimer: Custom levels should not use the injections mechanism and
+    // instead should provide data that is already correct and consistent.
+    // Reports of bugs about injection files not working for custom levels will
+    // not be considered.
+    "injections": [
+        "data/backpack.bin",
+        "data/braid.bin",
+        "data/lara_animations.bin",
+        "data/lara_jumping.bin",
+        "data/uzi_sfx.bin",
+    ],
+
+    // List of levels
+    "levels": [
+        // Level 0
+        {
+            // Level title.
+            "title": "Lara's Home",
+
+            // Level path.
+            "file": "data/gym.phd",
+
+            // Level type. It can be one of the following values:
+            // - gym
+            // - normal
+            // - cutscene
+            // - current
+            "type": "gym",
+
+            // Music track ID.
+            "music": 0,
+
+            // Whether to use global injections.
+            "inherit_injections": false,
+
+            // Specific injection data paths.
+            "injections": [
+                "data/braid.bin",
+                "data/gym_textures.bin",
+                "data/lara_animations.bin",
+                "data/lara_jumping.bin",
+            ],
+
+            // List of actions to execute when this level is played.
+            // Currently the list of allowed actions is expanding and as such
+            // it's not documented.
+            "sequence": [
+                {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 0},
+                {"type": "exit_to_title"},
+            ],
+
+            // Keys and puzzle items names.
+            "strings": {},
+
+            // Water color can be customized per level, too.
+            // "water_color": [0.45, 1.0, 1.0],
+
+            // Fog can be customized per level, too.
+            // "draw_distance_fade": 22.0,
+            // "draw_distance_max": 30.0,
+        },
+
+        // Level 1
+        {
+            "title": "Caves",
+            "file": "data/level1.phd",
+            "type": "normal",
+            "music": 57,
+            "injections": [
+                "data/caves_fd.bin",
+                "data/caves_itemrots.bin",
+                "data/caves_textures.bin",
+            ],
+            "sequence": [
+                {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 1},
+                {"type": "exit_to_level", "level_id": 2},
+            ],
+            "strings": {},
+        },
+
+        // Level 2
+        {
+            "title": "City of Vilcabamba",
+            "file": "data/level2.phd",
+            "type": "normal",
+            "music": 57,
+            "injections": [
+                "data/vilcabamba_itemrots.bin",
+                "data/vilcabamba_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 2},
+                {"type": "exit_to_level", "level_id": 3},
+            ],
+            "strings": {
+                "key1": "Silver Key",
+                "puzzle1": "Gold Idol"
+            },
+            "demo": true,
+        },
+
+        // Level 3
+        {
+            "title": "Lost Valley",
+            "file": "data/level3a.phd",
+            "type": "normal",
+            "music": 57,
+            "injections": [
+                "data/valley_itemrots.bin",
+                "data/valley_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 3},
+                {"type": "exit_to_level", "level_id": 4},
+            ],
+            "strings": {
+                "puzzle1": "Machine Cog"
+            },
+            "demo": true,
+        },
+
+        // Level 4
+        {
+            "title": "Tomb of Qualopec",
+            "file": "data/level3b.phd",
+            "type": "normal",
+            "music": 57,
+            "injections": [
+                "data/larson_textures.bin",
+                "data/qualopec_fd.bin",
+                "data/qualopec_itemrots.bin",
+                "data/qualopec_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "exit_to_cine", "level_id": 16},
+            ],
+            "strings": {},
+        },
+
+        // Level 5
+        {
+            "title": "St. Francis' Folly",
+            "file": "data/level4.phd",
+            "type": "normal",
+            "music": 59,
+            "injections": [
+                "data/folly_fd.bin",
+                "data/folly_itemrots.bin",
+                "data/folly_textures.bin",
+            ],
+            "sequence": [
+                {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 5},
+                {"type": "exit_to_level", "level_id": 6},
+            ],
+            "strings": {
+                "key1": "Neptune Key",
+                "key2": "Atlas Key",
+                "key3": "Damocles Key",
+                "key4": "Thor Key"
+            },
+        },
+
+        // Level 6
+        {
+            "title": "Colosseum",
+            "file": "data/level5.phd",
+            "type": "normal",
+            "music": 59,
+            "injections": [
+                "data/colosseum_fd.bin",
+                "data/colosseum_itemrots.bin",
+                "data/colosseum_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 6},
+                {"type": "exit_to_level", "level_id": 7},
+            ],
+            "strings": {
+                "key1": "Rusty Key"
+            },
+        },
+
+        // Level 7
+        {
+            "title": "Palace Midas",
+            "file": "data/level6.phd",
+            "type": "normal",
+            "music": 59,
+            "injections": [
+                "data/midas_itemrots.bin",
+                "data/midas_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 7},
+                {"type": "exit_to_level", "level_id": 8},
+            ],
+            "strings": {
+                "puzzle1": "Gold Bar"
+            },
+            "unobtainable_pickups": 1,
+        },
+
+        // Level 8
+        {
+            "title": "The Cistern",
+            "file": "data/level7a.phd",
+            "type": "normal",
+            "music": 58,
+            "injections": [
+                "data/cistern_itemrots.bin",
+                "data/cistern_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 8},
+                {"type": "exit_to_level", "level_id": 9},
+            ],
+            "strings": {
+                "key1": "Gold Key",
+                "key2": "Silver Key",
+                "key3": "Rusty Key"
+            },
+        },
+
+        // Level 9
+        {
+            "title": "Tomb of Tihocan",
+            "file": "data/level7b.phd",
+            "type": "normal",
+            "music": 58,
+            "injections": [
+                "data/tihocan_fd.bin",
+                "data/tihocan_itemrots.bin",
+                "data/tihocan_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "exit_to_cine", "level_id": 17},
+            ],
+            "strings": {
+                "key1": "Gold Key",
+                "key2": "Rusty Key",
+                "key3": "Rusty Key"
+            },
+        },
+
+        // Level 10
+        {
+            "title": "City of Khamoon",
+            "file": "data/level8a.phd",
+            "type": "normal",
+            "music": 59,
+            "injections": [
+                "data/khamoon_fd.bin",
+                "data/khamoon_mummy.bin",
+                "data/khamoon_textures.bin",
+            ],
+            "sequence": [
+                {"type": "play_fmv", "fmv_path": "fmv/vision.avi"},
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 10},
+                {"type": "exit_to_level", "level_id": 11},
+            ],
+            "strings": {
+                "key1": "Sapphire Key"
+            },
+        },
+
+        // Level 11
+        {
+            "title": "Obelisk of Khamoon",
+            "file": "data/level8b.phd",
+            "type": "normal",
+            "music": 59,
+            "injections": [
+                "data/obelisk_fd.bin",
+                "data/obelisk_itemrots.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 11},
+                {"type": "exit_to_level", "level_id": 12},
+            ],
+            "strings": {
+                "key1": "Sapphire Key",
+                "puzzle1": "Eye of Horus",
+                "puzzle2": "Scarab",
+                "puzzle3": "Seal of Anubis",
+                "puzzle4": "Ankh"
+            },
+        },
+
+        // Level 12
+        {
+            "title": "Sanctuary of the Scion",
+            "file": "data/level8c.phd",
+            "type": "normal",
+            "music": 59,
+            "injections": [
+                "data/sanctuary_fd.bin",
+                "data/sanctuary_itemrots.bin",
+                "data/sanctuary_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 12},
+                {"type": "exit_to_level", "level_id": 13},
+            ],
+            "strings": {
+                "key1": "Gold Key",
+                "puzzle1": "Ankh",
+                "puzzle2": "Scarab"
+            },
+        },
+
+        // Level 13
+        {
+            "title": "Natla's Mines",
+            "file": "data/level10a.phd",
+            "type": "normal",
+            "music": 58,
+            "injections": [
+                "data/cowboy_textures.bin",
+                "data/kold_textures.bin",
+                "data/mines_fd.bin",
+                "data/mines_itemrots.bin",
+                "data/mines_textures.bin",
+                "data/skateboardkid_textures.bin"
+            ],
+            "sequence": [
+                {"type": "play_fmv", "fmv_path": "fmv/canyon.avi"},
+                {"type": "remove_guns"},
+                {"type": "remove_scions"},
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 13},
+                {"type": "exit_to_cine", "level_id": 18},
+            ],
+            "strings": {
+                "puzzle1": "Fuse",
+                "puzzle2": "Pyramid Key"
+            },
+        },
+
+        // Level 14
+        {
+            "title": "Atlantis",
+            "file": "data/level10b.phd",
+            "type": "normal",
+            "music": 60,
+            "injections": [
+                "data/atlantis_fd.bin",
+                "data/atlantis_textures.bin",
+            ],
+            "sequence": [
+                {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
+                {"type": "start_game"},
+                {"type": "give_item", "object_id": 84, "quantity": 1},
+                {"type": "setup_bacon_lara", "anchor_room": 10},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "play_fmv", "fmv_path": "fmv/prison.avi"},
+                {"type": "exit_to_cine", "level_id": 19},
+            ],
+            "strings": {},
+            "unobtainable_pickups": 3,
+        },
+
+        // Level 15
+        {
+            "title": "The Great Pyramid",
+            "file": "data/level10c.phd",
+            "type": "normal",
+            "music": 60,
+            "injections": [
+                "data/pyramid_fd.bin",
+                "data/pyramid_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_game"},
+                {"type": "loop_game"},
+                {"type": "stop_game"},
+                {"type": "level_stats", "level_id": 15},
+                {"type": "play_fmv", "fmv_path": "fmv/end.avi"},
+                {"type": "play_synced_audio", "audio_id": 19},
+                {"type": "display_picture", "picture_path": "data/end.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred1.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred2.pcx", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/cred3.pcx", "display_time": 7.5},
+                {"type": "total_stats", "picture_path": "data/install.pcx"},
+                {"type": "exit_to_title"},
+            ],
+            "strings": {},
+        },
+
+        // Level 16
+        {
+            "title": "Cut Scene 1",
+            "file": "data/cut1.phd",
+            "type": "cutscene",
+            "music": 0,
+            "lara_type": 77,
+            "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut1.bin"
+            ],
+            "sequence": [
+                {"type": "start_cine"},
+                {"type": "set_cam_x", "value": 36668},
+                {"type": "set_cam_z", "value": 63180},
+                {"type": "set_cam_angle", "value": -23312},
+                {"type": "play_synced_audio", "audio_id": 23},
+                {"type": "loop_cine"},
+                {"type": "stop_cine"},
+                {"type": "level_stats", "level_id": 4},
+                {"type": "exit_to_level", "level_id": 5},
+            ],
+            "strings": {},
+        },
+
+        // Level 17
+        {
+            "title": "Cut Scene 2",
+            "file": "data/cut2.phd",
+            "type": "cutscene",
+            "music": 0,
+            "lara_type": 77,
+            "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut2_cut4.bin"
+            ],
+            "sequence": [
+                {"type": "start_cine"},
+                {"type": "set_cam_x", "value": 51962},
+                {"type": "set_cam_z", "value": 53760},
+                {"type": "set_cam_angle", "value": 16380},
+                {"type": "play_synced_audio", "audio_id": 25},
+                {"type": "mesh_swap", "object1_id": 77, "object2_id": 1, "mesh_id": 1},
+                {"type": "mesh_swap", "object1_id": 77, "object2_id": 1, "mesh_id": 4},
+                {"type": "loop_cine"},
+                {"type": "stop_cine"},
+                {"type": "level_stats", "level_id": 9},
+                {"type": "exit_to_level", "level_id": 10},
+            ],
+            "strings": {},
+        },
+
+        // Level 18
+        {
+            "title": "Cut Scene 3",
+            "file": "data/cut3.phd",
+            "type": "cutscene",
+            "music": 0,
+            "inherit_injections": false,
+            "sequence": [
+                {"type": "start_cine"},
+                {"type": "flip_map"},
+                {"type": "set_cam_angle", "value": 16384},
+                {"type": "play_synced_audio", "audio_id": 24},
+                {"type": "loop_cine"},
+                {"type": "stop_cine"},
+                {"type": "exit_to_level", "level_id": 14},
+            ],
+            "strings": {},
+        },
+
+        // Level 19
+        {
+            "title": "Cut Scene 4",
+            "file": "data/cut4.phd",
+            "type": "cutscene",
+            "music": 0,
+            "draw_distance_fade": 12.0,
+            "draw_distance_max": 18.0,
+            "lara_type": 77,
+            "inherit_injections": false,
+            "injections": [
+                "data/backpack_cut.bin",
+                "data/braid_cut2_cut4.bin",
+                "data/cut4_textures.bin",
+            ],
+            "sequence": [
+                {"type": "start_cine"},
+                {"type": "set_cam_angle", "value": 16384},
+                {"type": "play_synced_audio", "audio_id": 22},
+                {"type": "mesh_swap", "object1_id": 77, "object2_id": 1, "mesh_id": 1},
+                {"type": "mesh_swap", "object1_id": 77, "object2_id": 1, "mesh_id": 4},
+                {"type": "loop_cine"},
+                {"type": "stop_cine"},
+                {"type": "level_stats", "level_id": 14},
+                {"type": "exit_to_level", "level_id": 15},
+            ],
+            "strings": {},
+        },
+
+        // Level 20
+        {
+            "title": "Title",
+            "file": "data/title.phd",
+            "type": "title",
+            "music": 2,
+            "inherit_injections": false,
+            "sequence": [
+                {"type": "display_picture", "picture_path": "data/eidospc.png", "display_time": 1},
+                {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/escape.avi"},
+                {"type": "play_fmv", "fmv_path": "fmv/cafe.avi"},
+                {"type": "exit_to_title"},
+            ],
+            "strings": {},
+        },
+
+        // Level 21
+        // This level is necessary to read TombATI's save files!
+        // OG has a special level called LV_CURRENT to handle save/load logic.
+        // TR1X does away without this hack. However, the existing save games
+        // expect the level count to match, otherwise the game will crash.
+        // Hence this dummy level.
+        {
+            "title": "Current Position",
+            "file": "data/current.phd",
+            "type": "current",
+            "music": 0,
+            "inherit_injections": false,
+            "sequence": [
+                {"type": "exit_to_title"},
+            ],
+            "strings": {},
+        },
+    ],
+
+    "strings": {
+        "HEADING_INVENTORY": "INVENTORY",
+        "HEADING_GAME_OVER": "GAME OVER",
+        "HEADING_OPTION": "OPTION",
+        "HEADING_ITEMS": "ITEMS",
+        "PASSPORT_SELECT_LEVEL": "Select Level",
+        "PASSPORT_RESTART_LEVEL": "Restart Level",
+        "PASSPORT_STORY_SO_FAR": "Story so far...",
+        "PASSPORT_LEGACY_SELECT_LEVEL_1": "Legacy saves do not",
+        "PASSPORT_LEGACY_SELECT_LEVEL_2": "support this feature.",
+        "PASSPORT_SELECT_MODE": "Select Mode",
+        "PASSPORT_MODE_NEW_GAME": "New Game",
+        "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",
+        "PASSPORT_MODE_NEW_GAME_JP": "Japanese NG",
+        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "Japanese NG+",
+        "PASSPORT_NEW_GAME": "New Game",
+        "PASSPORT_LOAD_GAME": "Load Game",
+        "PASSPORT_SAVE_GAME": "Save Game",
+        "PASSPORT_EXIT_GAME": "Exit Game",
+        "PASSPORT_EXIT_TO_TITLE": "Exit to Title",
+        "DETAIL_SELECT_DETAIL": "Select Detail",
+        "DETAIL_LEVEL_HIGH": "High",
+        "DETAIL_LEVEL_MEDIUM": "Medium",
+        "DETAIL_LEVEL_LOW": "Low",
+        "DETAIL_PERSPECTIVE": "Perspective",
+        "DETAIL_BILINEAR": "Bilinear",
+        "DETAIL_TEXTURE_FILTER": "Texture filter",
+        "DETAIL_FBO_FILTER": "FBO filter",
+        "DETAIL_VSYNC": "VSync",
+        "DETAIL_BRIGHTNESS": "Brightness",
+        "DETAIL_UI_TEXT_SCALE": "UI text scale",
+        "DETAIL_UI_BAR_SCALE": "UI bar scale",
+        "DETAIL_RENDER_MODE": "Render mode",
+        "DETAIL_RENDER_MODE_LEGACY": "Window size",
+        "DETAIL_RENDER_MODE_FBO": "Framebuffer",
+        "DETAIL_RESOLUTION": "Resolution",
+        "DETAIL_STRING_FMT": "%s",
+        "DETAIL_FLOAT_FMT": "%.1f",
+        "DETAIL_RESOLUTION_FMT": "%dx%d",
+        "SOUND_SET_VOLUMES": "Set Volumes",
+        "CONTROL_CUSTOMIZE": "Customize Controls",
+        "CONTROL_KEYBOARD": "Keyboard",
+        "CONTROL_CONTROLLER": "Controller",
+        "CONTROL_DEFAULT_KEYS": "Default Keys",
+        "CONTROL_CUSTOM_1": "Custom Scheme 1",
+        "CONTROL_CUSTOM_2": "Custom Scheme 2",
+        "CONTROL_CUSTOM_3": "Custom Scheme 3",
+        "CONTROL_RESET_DEFAULTS_KEY": "Reset All: Hold R",
+        "CONTROL_UNBIND_KEY": "Unbind: Hold Backspace",
+        "CONTROL_RESET_DEFAULTS_BTN": "Reset All: Hold %s",
+        "CONTROL_UNBIND_BTN": "Unbind: Hold %s",
+        "KEYMAP_RUN": "Run",
+        "KEYMAP_BACK": "Back",
+        "KEYMAP_LEFT": "Left",
+        "KEYMAP_RIGHT": "Right",
+        "KEYMAP_STEP_LEFT": "Step Left",
+        "KEYMAP_STEP_RIGHT": "Step Right",
+        "KEYMAP_WALK": "Walk",
+        "KEYMAP_JUMP": "Jump",
+        "KEYMAP_ACTION": "Action",
+        "KEYMAP_DRAW_WEAPON": "Draw Weapon",
+        "KEYMAP_LOOK": "Look",
+        "KEYMAP_ROLL": "Roll",
+        "KEYMAP_INVENTORY": "Inventory",
+        "KEYMAP_PAUSE": "Pause",
+        "KEYMAP_FLY_CHEAT": "Fly Cheat",
+        "KEYMAP_ITEM_CHEAT": "Item Cheat",
+        "KEYMAP_LEVEL_SKIP_CHEAT": "Level Skip",
+        "KEYMAP_TURBO_CHEAT": "Turbo Speed",
+        "KEYMAP_CAMERA_UP": "Camera Up",
+        "KEYMAP_CAMERA_DOWN": "Camera Down",
+        "KEYMAP_CAMERA_LEFT": "Camera Left",
+        "KEYMAP_CAMERA_RIGHT": "Camera Right",
+        "KEYMAP_CAMERA_RESET": "Reset Camera",
+        "KEYMAP_EQUIP_PISTOLS": "Equip Pistols",
+        "KEYMAP_EQUIP_SHOTGUN": "Equip Shotgun",
+        "KEYMAP_EQUIP_MAGNUMS": "Equip Magnums",
+        "KEYMAP_EQUIP_UZIS": "Equip Uzis",
+        "KEYMAP_USE_SMALL_MEDI": "Small Medi",
+        "KEYMAP_USE_BIG_MEDI": "Large Medi",
+        "KEYMAP_SAVE": "Quick Save",
+        "KEYMAP_LOAD": "Quick Load",
+        "KEYMAP_FPS": "Show FPS",
+        "KEYMAP_BILINEAR": "Toggle Texture Filter",
+        "STATS_KILLS_DETAIL_FMT": "KILLS %d of %d",
+        "STATS_KILLS_BASIC_FMT": "KILLS %d",
+        "STATS_PICKUPS_DETAIL_FMT": "PICKUPS %d of %d",
+        "STATS_PICKUPS_BASIC_FMT": "PICKUPS %d",
+        "STATS_SECRETS_FMT": "SECRETS %d of %d",
+        "STATS_DEATHS_FMT": "DEATHS %d",
+        "STATS_TIME_TAKEN_FMT": "TIME TAKEN %s",
+        "STATS_FINAL_STATISTICS": "Final Statistics",
+        "STATS_BONUS_STATISTICS": "Bonus Statistics",
+        "PAUSE_PAUSED": "Paused",
+        "PAUSE_EXIT_TO_TITLE": "Exit to title?",
+        "PAUSE_CONTINUE": "Continue",
+        "PAUSE_QUIT": "Quit",
+        "PAUSE_ARE_YOU_SURE": "Are you sure?",
+        "PAUSE_YES": "Yes",
+        "PAUSE_NO": "No",
+        "MISC_ON": "On",
+        "MISC_OFF": "Off",
+        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
+        "MISC_DEMO_MODE": "Demo Mode",
+        "INV_ITEM_MEDI": "Small Medi Pack",
+        "INV_ITEM_BIG_MEDI": "Large Medi Pack",
+        "INV_ITEM_PUZZLE1": "Puzzle",
+        "INV_ITEM_PUZZLE2": "Puzzle",
+        "INV_ITEM_PUZZLE3": "Puzzle",
+        "INV_ITEM_PUZZLE4": "Puzzle",
+        "INV_ITEM_KEY1": "Key",
+        "INV_ITEM_KEY2": "Key",
+        "INV_ITEM_KEY3": "Key",
+        "INV_ITEM_KEY4": "Key",
+        "INV_ITEM_PICKUP1": "Pickup",
+        "INV_ITEM_PICKUP2": "Pickup",
+        "INV_ITEM_LEADBAR": "Lead Bar",
+        "INV_ITEM_SCION": "Scion",
+        "INV_ITEM_PISTOLS": "Pistols",
+        "INV_ITEM_SHOTGUN": "Shotgun",
+        "INV_ITEM_MAGNUM": "Magnums",
+        "INV_ITEM_UZI": "Uzis",
+        "INV_ITEM_GRENADE": "Grenade",
+        "INV_ITEM_PISTOL_AMMO": "Pistol Clips",
+        "INV_ITEM_SHOTGUN_AMMO": "Shotgun Shells",
+        "INV_ITEM_MAGNUM_AMMO": "Magnum Clips",
+        "INV_ITEM_UZI_AMMO": "Uzi Clips",
+        "INV_ITEM_COMPASS": "Compass",
+        "INV_ITEM_GAME": "Game",
+        "INV_ITEM_DETAILS": "Detail Levels",
+        "INV_ITEM_SOUND": "Sound",
+        "INV_ITEM_CONTROLS": "Controls",
+        "INV_ITEM_LARAS_HOME": "Lara's Home"
+    },
+}

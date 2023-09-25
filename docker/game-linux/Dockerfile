@@ -1,9 +1,9 @@
-# Tomb1Main building toolchain for Linux.
+# TR1X building toolchain for Linux.
 #
 # This is a multi-stage Docker image. It is designed to keep the final image
 # size low. Each stage builds an external dependency. The final stage takes the
 # artifacts (binaries, includes etc.) from previous stages and installs all the
-# tools necessary to build Tomb1Main.
+# tools necessary to build TR1X.
 
 FROM ubuntu:latest as base
 
@@ -104,7 +104,7 @@ RUN ln -s upx-*/upx
 
 
 
-# Tomb1Main
+# TR1X
 FROM base
 
 # set the build dir - actual files are mounted with a Docker volume

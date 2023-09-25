@@ -13,7 +13,7 @@ public abstract class BaseInstallSource : IInstallSource
     {
         get
         {
-            return $"pack://application:,,,/Tomb1Main_Installer;component/Resources/{SourceName}.png";
+            return $"pack://application:,,,/TR1X_Installer;component/Resources/{SourceName}.png";
         }
     }
 
@@ -24,7 +24,7 @@ public abstract class BaseInstallSource : IInstallSource
     {
         get
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Tomb1Main");
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TR1X");
         }
     }
 

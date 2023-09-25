@@ -149,7 +149,7 @@ static void Inv_Construct(void)
     g_InvChosen = 0;
     if (g_InvMode == INV_TITLE_MODE) {
         g_InvOptionObjects = TITLE_RING_OBJECTS;
-        m_VersionText = Text_Create(-20, -18, g_T1MVersion);
+        m_VersionText = Text_Create(-20, -18, g_TR1XVersion);
         Text_AlignRight(m_VersionText, 1);
         Text_AlignBottom(m_VersionText, 1);
         Text_SetScale(m_VersionText, PHD_ONE * 0.5, PHD_ONE * 0.5);

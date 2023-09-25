@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""This script can be used to analyze Tomb1Main for potential memory leaks.
+"""This script can be used to analyze TR1X for potential memory leaks.
 
 For the script to work, the repository needs to have applied
 tools/analyze_memleaks.patch that logs information about every memory
@@ -126,7 +126,7 @@ def find_problems(operations: Iterable[Operation]) -> Iterable[Problem]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("path", help="Path to the Tomb1Main.log file.")
+    parser.add_argument("path", help="Path to the TR1X.log file.")
     return parser.parse_args()
 
 

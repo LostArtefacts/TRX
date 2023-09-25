@@ -224,7 +224,8 @@ a specific version. See git history for details.
 
 ## Glossary
 
-- T1M: Tomb1Main
+- Tomb1Main: the previous name of this project
+- T1M: short hand of Tomb1Main
 - OG: original game, most often TombATI
 - PS: PlayStation version of the game
 - Vole: a rat that swims

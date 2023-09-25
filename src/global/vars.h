@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-extern const char *g_T1MVersion;
+extern const char *g_TR1XVersion;
 
 extern int32_t g_PhdPersp;
 extern int32_t g_PhdLeft;

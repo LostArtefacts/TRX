@@ -1,4 +1,4 @@
-project('Tomb1Main', ['c'],
+project('TR1X', ['c'],
   default_options: [
     'c_std=c11',
     'warning_level=2',
@@ -279,7 +279,7 @@ dependencies = [
 ]
 
 executable(
-  'Tomb1Main',
+  'TR1X',
   sources,
   name_prefix: '',
   include_directories: ['src/'],

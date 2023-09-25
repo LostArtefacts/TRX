@@ -53,7 +53,7 @@
 
 CONFIG g_Config = { 0 };
 
-static const char *m_T1MGlobalSettingsPath = "cfg/Tomb1Main.json5";
+static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
 
 typedef struct ENUM_MAP {
     const char *text;
@@ -335,10 +335,10 @@ bool Config_Read(void)
     bool result = false;
     char *cfg_data = NULL;
 
-    if (!File_Load(m_T1MGlobalSettingsPath, &cfg_data, NULL)) {
+    if (!File_Load(m_TR1XGlobalSettingsPath, &cfg_data, NULL)) {
         LOG_WARNING(
             "'%s' not loaded - default settings will apply",
-            m_T1MGlobalSettingsPath);
+            m_TR1XGlobalSettingsPath);
         result = Config_ReadFromJSON("{}");
     } else {
         result = Config_ReadFromJSON(cfg_data);
@@ -359,7 +359,7 @@ bool Config_Write(void)
 {
     LOG_INFO("Saving user settings");
 
-    MYFILE *fp = File_Open(m_T1MGlobalSettingsPath, FILE_OPEN_WRITE);
+    MYFILE *fp = File_Open(m_TR1XGlobalSettingsPath, FILE_OPEN_WRITE);
     if (!fp) {
         return false;
     }

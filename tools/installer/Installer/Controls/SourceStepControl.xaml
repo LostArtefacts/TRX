@@ -31,11 +31,11 @@
         </TextBlock>
 
         <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,10">
-            Tomb1Main requires original game files to run.
+            TR1X requires original game files to run.
             <LineBreak />
             Please choose the source location where to install the data files from.
             <LineBreak />
-            If you're upgrading an existing installation, please choose Tomb1Main.
+            If you're upgrading an existing installation, please choose TR1X.
         </TextBlock>
 
         <ListView

@@ -10,7 +10,7 @@ define build
 		--entrypoint /app/docker/game-win/entrypoint.sh \
 		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
-		rrdash/tomb1main:latest
+		rrdash/tr1x:latest
 endef
 
 define build-linux
@@ -21,7 +21,7 @@ define build-linux
 		--entrypoint /app/docker/game-linux/entrypoint.sh \
 		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
-		rrdash/tomb1main-linux:latest
+		rrdash/tr1x-linux:latest
 endef
 
 debug:
@@ -32,6 +32,12 @@ debugopt:
 
 release:
 	$(call build,release)
+
+build-docker-image:
+	docker build --progress plain . -f docker/game-win/Dockerfile -t rrdash/tr1x
+
+build-docker-image-linux:
+	docker build --progress plain . -f docker/game-linux/Dockerfile -t rrdash/tr1x-linux
 
 debug-linux:
 	$(call build-linux,debug)
@@ -53,19 +59,19 @@ lint:
 	bash -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
 
 installer:
-	docker build . -f docker/installer/Dockerfile -t rrdash/tomb1main_installer
+	docker build . -f docker/installer/Dockerfile -t rrdash/tr1x_installer
 	docker run --rm \
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
 		--network host \
 		-v $(CWD):/app/ \
-		rrdash/tomb1main_installer
+		rrdash/tr1x_installer
 
 config:
-	docker build . -f docker/config/Dockerfile -t rrdash/tomb1main_config
+	docker build . -f docker/config/Dockerfile -t rrdash/tr1x_config
 	docker run --rm \
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
 		--network host \
 		-v $(CWD):/app/ \
-		rrdash/tomb1main_config
+		rrdash/tr1x_config
 
 .PHONY: debug debugopt release clean imports lint installer config

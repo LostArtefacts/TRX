@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>TR1X_ConfigTool</AssemblyName>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="out\**" />
+    <EmbeddedResource Remove="out\**" />
+    <None Remove="out\**" />
+    <Page Remove="out\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Lang\en-GB.json" />
+    <None Remove="Resources\Lang\es.json" />
+    <None Remove="Resources\Lang\fr.json" />
+    <EmbeddedResource Include="Resources\Lang\en-GB.json" />
+    <EmbeddedResource Include="Resources\Lang\es.json" />
+    <EmbeddedResource Include="Resources\Lang\fr.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\arrow-down.png" />
+    <None Remove="Resources\arrow-up.png" />
+    <None Remove="Resources\Graphics\graphic1.jpg" />
+    <None Remove="Resources\Graphics\graphic2.jpg" />
+    <None Remove="Resources\Graphics\graphic3.jpg" />
+    <None Remove="Resources\Graphics\graphic4.jpg" />
+    <None Remove="Resources\Graphics\graphic5.jpg" />
+    <None Remove="Resources\Graphics\graphic6.jpg" />
+    <None Remove="Resources\Graphics\graphic7.jpg" />
+    <None Remove="Resources\icon.ico" />
+    <None Remove="Resources\Lang\en.json" />
+    <None Remove="Resources\specification.json" />
+    <None Remove="Resources\TR1X.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Resources\styles.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\arrow-down.png" />
+    <Resource Include="Resources\arrow-up.png" />
+    <Resource Include="Resources\Graphics\graphic1.jpg" />
+    <Resource Include="Resources\Graphics\graphic2.jpg" />
+    <Resource Include="Resources\Graphics\graphic3.jpg" />
+    <Resource Include="Resources\Graphics\graphic4.jpg" />
+    <Resource Include="Resources\Graphics\graphic5.jpg" />
+    <Resource Include="Resources\Graphics\graphic6.jpg" />
+    <Resource Include="Resources\Graphics\graphic7.jpg" />
+    <Resource Include="Resources\icon.ico" />
+    <EmbeddedResource Include="Resources\Lang\en.json" />
+    <EmbeddedResource Include="Resources\specification.json" />
+    <Resource Include="Resources\styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Resources\TR1X.png" />
+  </ItemGroup>
+</Project>

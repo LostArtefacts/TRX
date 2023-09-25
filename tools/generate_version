@@ -13,7 +13,7 @@ def parse_args() -> argparse.Namespace:
 def generate_version() -> str:
     cmd = ["git", "describe", "--abbrev=7", "--tags"]
     version = run(cmd, capture_output=True, text=True).stdout
-    return f'T1M {version or "?"}'
+    return f'TR1X {version or "?"}'
 
 
 def main() -> None:

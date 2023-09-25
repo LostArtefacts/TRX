@@ -35,7 +35,7 @@ public class InstallExecutor
         }
 
         await CopyOriginalGameFiles(_settings.SourceDirectory, _settings.TargetDirectory, progress);
-        await CopyTomb1MainFiles(_settings.TargetDirectory, progress);
+        await CopyTR1XFiles(_settings.TargetDirectory, progress);
         if (_settings.DownloadMusic)
         {
             await DownloadMusicFiles(_settings.TargetDirectory, progress);
@@ -62,7 +62,7 @@ public class InstallExecutor
         await _settings.InstallSource.CopyOriginalGameFiles(sourceDirectory, targetDirectory, progress, _settings.ImportSaves);
     }
 
-    protected async Task CopyTomb1MainFiles(string targetDirectory, IProgress<InstallProgress> progress)
+    protected async Task CopyTR1XFiles(string targetDirectory, IProgress<InstallProgress> progress)
     {
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Tomb1Main");
         if (key is not null)
@@ -90,21 +90,21 @@ public class InstallExecutor
 
     protected void CreateDesktopShortcut(string targetDirectory)
     {
-        InstallUtils.CreateDesktopShortcut("Tomb1Main", Path.Combine(targetDirectory, "Tomb1Main.exe"));
+        InstallUtils.CreateDesktopShortcut("TR1X", Path.Combine(targetDirectory, "TR1X.exe"));
         if (File.Exists(Path.Combine(targetDirectory, "data", "cat.phd")))
         {
-            InstallUtils.CreateDesktopShortcut("Tomb1Main - UB", Path.Combine(targetDirectory, "Tomb1Main.exe"), new[] { "-gold" });
+            InstallUtils.CreateDesktopShortcut("TR1X - UB", Path.Combine(targetDirectory, "TR1X.exe"), new[] { "-gold" });
         }
     }
 
     protected async Task DownloadMusicFiles(string targetDirectory, IProgress<InstallProgress> progress)
     {
-        await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tomb1main/music.zip", targetDirectory, progress);
+        await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tr1x/music.zip", targetDirectory, progress);
     }
 
     protected async Task DownloadUnfinishedBusinessFiles(string targetDirectory, IProgress<InstallProgress> progress)
     {
-        await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tomb1main/unfinished_business.zip", targetDirectory, progress);
+        await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tr1x/unfinished_business.zip", targetDirectory, progress);
     }
 
     private InstallSettings _settings;

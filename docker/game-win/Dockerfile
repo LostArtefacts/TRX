@@ -1,9 +1,9 @@
-# Tomb1Main building toolchain.
+# TR1X building toolchain.
 #
 # This is a multi-stage Docker image. It is designed to keep the final image
 # size low. Each stage builds an external dependency. The final stage takes the
 # artifacts (binaries, includes etc.) from previous stages and installs all the
-# tools necessary to build Tomb1Main.
+# tools necessary to build TR1X.
 
 # MinGW
 FROM ubuntu:latest as mingw
@@ -121,7 +121,7 @@ RUN cd SDL \
 #     && make install
 
 
-# Tomb1Main
+# TR1X
 FROM mingw
 
 # set the build dir - actual files are mounted with a Docker volume
