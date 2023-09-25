@@ -609,13 +609,6 @@ void Lara_State_Controlled(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
-
-    if (Item_TestFrame(
-            item,
-            g_Anims[item->anim_number].frame_end - 1
-                - g_Anims[item->anim_number].frame_base)) {
-        g_Lara.gun_status = LGS_ARMLESS;
-    }
 }
 
 void Lara_State_SwitchOn(ITEM_INFO *item, COLL_INFO *coll)
