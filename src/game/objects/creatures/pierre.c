@@ -113,7 +113,7 @@ void Pierre_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != PIERRE_DEATH) {
             item->current_anim_state = PIERRE_DEATH;
-            Item_SwitchToAnim(item, PIERRE_DIE_ANIM, -1);
+            Item_SwitchToAnim(item, PIERRE_DIE_ANIM, 0);
             if (Inv_RequestItem(O_MAGNUM_ITEM)) {
                 Item_Spawn(item, O_MAG_AMMO_ITEM);
             } else {

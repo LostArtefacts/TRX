@@ -13,7 +13,7 @@ void FX_LaraNormal(ITEM_INFO *item)
 {
     item->current_anim_state = LS_STOP;
     item->goal_anim_state = LS_STOP;
-    Item_SwitchToAnim(item, LA_STOP, -1);
+    Item_SwitchToAnim(item, LA_STOP, 0);
     g_Camera.type = CAM_CHASE;
     Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
 }

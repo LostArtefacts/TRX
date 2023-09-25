@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#define BLF_FASTFALL 1
+
 static int32_t m_AnchorX = -1;
 static int32_t m_AnchorZ = -1;
 
@@ -90,7 +92,7 @@ void BaconLara_Control(int16_t item_num)
         if (h >= lh + WALL_L && !g_LaraItem->gravity_status) {
             item->current_anim_state = LS_FAST_FALL;
             item->goal_anim_state = LS_FAST_FALL;
-            Item_SwitchToAnim(item, LA_FAST_FALL, LF_FASTFALL);
+            Item_SwitchToAnim(item, LA_FAST_FALL, BLF_FASTFALL);
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity_status = 1;

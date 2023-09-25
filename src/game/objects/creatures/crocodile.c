@@ -93,7 +93,7 @@ void Croc_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != CROCODILE_DEATH) {
             item->current_anim_state = CROCODILE_DEATH;
-            Item_SwitchToAnim(item, CROCODILE_DIE_ANIM, -1);
+            Item_SwitchToAnim(item, CROCODILE_DIE_ANIM, 0);
         }
     } else {
         AI_INFO info;
@@ -182,7 +182,7 @@ void Croc_Control(int16_t item_num)
         item->current_anim_state =
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
-        Item_SwitchToAnim(item, ALLIGATOR_EMPTY, -1);
+        Item_SwitchToAnim(item, ALLIGATOR_EMPTY, 0);
         if (croc) {
             croc->LOT.step = WALL_L * 20;
             croc->LOT.drop = -WALL_L * 20;
@@ -239,7 +239,7 @@ void Alligator_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != ALLIGATOR_DEATH) {
             item->current_anim_state = ALLIGATOR_DEATH;
-            Item_SwitchToAnim(item, ALLIGATOR_DIE_ANIM, -1);
+            Item_SwitchToAnim(item, ALLIGATOR_DIE_ANIM, 0);
             item->hit_points = DONT_TARGET;
         }
 
@@ -249,7 +249,7 @@ void Alligator_Control(int16_t item_num)
             item->object_number = O_CROCODILE;
             item->current_anim_state = CROCODILE_DEATH;
             item->goal_anim_state = CROCODILE_DEATH;
-            Item_SwitchToAnim(item, CROCODILE_DIE_ANIM, -1);
+            Item_SwitchToAnim(item, CROCODILE_DIE_ANIM, 0);
             room_num = item->room_number;
             floor =
                 Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -329,7 +329,7 @@ void Alligator_Control(int16_t item_num)
         item->current_anim_state =
             g_Anims[item->anim_number].current_anim_state;
         item->goal_anim_state = item->current_anim_state;
-        Item_SwitchToAnim(item, CROCODILE_EMPTY, -1);
+        Item_SwitchToAnim(item, CROCODILE_EMPTY, 0);
         item->pos.y = item->floor;
         item->pos.x_rot = 0;
         gator->LOT.step = STEP_L;

@@ -12,6 +12,8 @@
 #include "global/vars.h"
 #include "util.h"
 
+#define LF_PPREADY 19
+
 typedef enum {
     MBS_STILL = 1,
     MBS_PUSH = 2,
@@ -195,7 +197,7 @@ void MovableBlock_Collision(
             g_Lara.gun_status = LGS_HANDS_BUSY;
         }
     } else if (lara_item->current_anim_state == LS_PP_READY) {
-        if (lara_item->frame_number != LF_PPREADY) {
+        if (!Item_TestFrame(lara_item, LF_PPREADY)) {
             return;
         }
 

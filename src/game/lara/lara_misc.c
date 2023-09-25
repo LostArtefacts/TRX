@@ -13,6 +13,11 @@
 
 #include <stdint.h>
 
+#define LF_FASTFALL 1
+#define LF_STOPHANG 9
+#define LF_STARTHANG 12
+#define LF_HANG 21
+
 void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
@@ -133,11 +138,11 @@ void Lara_SlideSlope(ITEM_INFO *item, COLL_INFO *coll)
         if (item->current_anim_state == LS_SLIDE) {
             item->current_anim_state = LS_JUMP_FORWARD;
             item->goal_anim_state = LS_JUMP_FORWARD;
-            Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
+            Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
         } else {
             item->current_anim_state = LS_FALL_BACK;
             item->goal_anim_state = LS_FALL_BACK;
-            Item_SwitchToAnim(item, LA_FALL_BACK, -1);
+            Item_SwitchToAnim(item, LA_FALL_BACK, 0);
         }
         item->gravity_status = 1;
         item->fall_speed = 0;
@@ -159,7 +164,7 @@ bool Lara_Fallen(ITEM_INFO *item, COLL_INFO *coll)
     }
     item->current_anim_state = LS_JUMP_FORWARD;
     item->goal_anim_state = LS_JUMP_FORWARD;
-    Item_SwitchToAnim(item, LA_FALL_DOWN, -1);
+    Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
     item->gravity_status = 1;
     item->fall_speed = 0;
     return true;
@@ -176,7 +181,7 @@ bool Lara_HitCeiling(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.z = coll->old.z;
     item->goal_anim_state = LS_STOP;
     item->current_anim_state = LS_STOP;
-    Item_SwitchToAnim(item, LA_STOP, -1);
+    Item_SwitchToAnim(item, LA_STOP, 0);
     item->gravity_status = 0;
     item->fall_speed = 0;
     item->speed = 0;
@@ -311,7 +316,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         }
         item->current_anim_state = LS_NULL;
         item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_VAULT_12, -1);
+        Item_SwitchToAnim(item, LA_VAULT_12, 0);
         item->pos.y += STEP_L * 2 + hdif;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->pos.y_rot = angle;
@@ -326,7 +331,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         }
         item->current_anim_state = LS_NULL;
         item->goal_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_VAULT_34, -1);
+        Item_SwitchToAnim(item, LA_VAULT_34, 0);
         item->pos.y += STEP_L * 3 + hdif;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->pos.y_rot = angle;
@@ -336,7 +341,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
         hdif >= -STEP_L * 7 - STEP_L / 2 && hdif <= -STEP_L * 4 + STEP_L / 2) {
         item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
-        Item_SwitchToAnim(item, LA_STOP, -1);
+        Item_SwitchToAnim(item, LA_STOP, 0);
         g_Lara.calc_fall_speed =
             -(int16_t)(Math_Sqrt((int)(-2 * GRAVITY * (hdif + 800))) + 3);
         Lara_Animate(item);
@@ -391,9 +396,9 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (Lara_TestHangSwingIn(item, angle)) {
-        Item_SwitchToAnim(item, LA_GRAB_LEDGE_IN, -1);
+        Item_SwitchToAnim(item, LA_GRAB_LEDGE_IN, 0);
     } else {
-        Item_SwitchToAnim(item, LA_GRAB_LEDGE, -1);
+        Item_SwitchToAnim(item, LA_GRAB_LEDGE, 0);
     }
     item->current_anim_state = LS_HANG;
     item->goal_anim_state = LS_HANG;
@@ -525,7 +530,7 @@ bool Lara_TestSlide(ITEM_INFO *item, COLL_INFO *coll)
         if (item->current_anim_state != LS_SLIDE || old_angle != ang) {
             item->goal_anim_state = LS_SLIDE;
             item->current_anim_state = LS_SLIDE;
-            Item_SwitchToAnim(item, LA_SLIDE, -1);
+            Item_SwitchToAnim(item, LA_SLIDE, 0);
             item->pos.y_rot = ang;
             g_Lara.move_angle = ang;
             old_angle = ang;
@@ -534,7 +539,7 @@ bool Lara_TestSlide(ITEM_INFO *item, COLL_INFO *coll)
         if (item->current_anim_state != LS_SLIDE_BACK || old_angle != ang) {
             item->goal_anim_state = LS_SLIDE_BACK;
             item->current_anim_state = LS_SLIDE_BACK;
-            Item_SwitchToAnim(item, LA_SLIDE_BACK, -1);
+            Item_SwitchToAnim(item, LA_SLIDE_BACK, 0);
             item->pos.y_rot = ang - PHD_180;
             g_Lara.move_angle = ang;
             old_angle = ang;
@@ -606,7 +611,7 @@ void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll)
     if (wh - item->pos.y <= -100) {
         item->goal_anim_state = LS_SWIM;
         item->current_anim_state = LS_DIVE;
-        Item_SwitchToAnim(item, LA_SURF_DIVE, -1);
+        Item_SwitchToAnim(item, LA_SURF_DIVE, 0);
         item->pos.x_rot = -45 * PHD_DEGREE;
         item->fall_speed = 80;
         g_Lara.water_status = LWS_UNDERWATER;
@@ -670,7 +675,7 @@ bool Lara_TestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
         break;
     }
 
-    Item_SwitchToAnim(item, LA_SURF_CLIMB, -1);
+    Item_SwitchToAnim(item, LA_SURF_CLIMB, 0);
     item->current_anim_state = LS_WATER_OUT;
     item->goal_anim_state = LS_STOP;
     item->pos.x_rot = 0;
