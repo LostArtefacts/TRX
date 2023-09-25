@@ -102,7 +102,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
 
         if (lara_item->current_anim_state == LS_PICKUP) {
-            if (Item_TestFrame(lara_item, LF_PICKUP_ERASE)) {
+            if (!Item_TestFrame(lara_item, LF_PICKUP_ERASE)) {
                 goto cleanup;
             }
             PickUp_GetAllAtLaraPos(item, lara_item);
