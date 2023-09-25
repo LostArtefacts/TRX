@@ -1,8 +1,7 @@
 <p align="center">
-<img alt="TR1X logo" src="tools/resources/logo.png" width="400"/>
+<img alt="TR1X logo" src="tools/resources/logo-light-theme.png#gh-light-mode-only" width="400"/>
+<img alt="TR1X logo" src="tools/resources/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
 </p>
-
-# Tomb Raider I: Community Edition
 
 This is an open source implementation of the classic Tomb Raider I game (1996),
 made by reverse engineering the TombATI / GLRage variant of the original game
