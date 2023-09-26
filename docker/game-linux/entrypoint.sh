@@ -3,7 +3,7 @@ set -x
 set -e
 
 export CFLAGS=-DDOCKER_BUILD
-EXE_FILE=Tomb1Main
+EXE_FILE=TR1X
 
 if [ ! -f /app/build/linux/build.ninja ]; then
     meson --buildtype "$TARGET" /app/build/linux/ --pkg-config-path=$PKG_CONFIG_PATH

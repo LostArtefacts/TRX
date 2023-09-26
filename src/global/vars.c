@@ -102,7 +102,7 @@ int32_t g_LsDivider = 0;
 SHADOW_INFO g_ShadowInfo = { 0 };
 
 #ifndef DOCKER_BUILD
-const char *g_T1MVersion = "T1M (non-Docker build)";
+const char *g_TR1XVersion = "TR1X (non-Docker build)";
 GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { 0, NULL },
 };

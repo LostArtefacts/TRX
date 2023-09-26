@@ -8,7 +8,7 @@
     <UseWindowsForms>true</UseWindowsForms>
 
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>Tomb1Main_Installer</AssemblyName>
+    <AssemblyName>TR1X_Installer</AssemblyName>
     <LangVersion>10.0</LangVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
@@ -43,7 +43,7 @@
     <None Remove="Resources\side4.jpg" />
     <None Remove="Resources\Steam.png" />
     <None Remove="Resources\Styles.xaml" />
-    <None Remove="Resources\Tomb1Main.png" />
+    <None Remove="Resources\TR1X.png" />
     <None Remove="Resources\TombATI.png" />
   </ItemGroup>
 
@@ -62,7 +62,7 @@
   <ItemGroup>
     <Resource Include="Resources\GOG.png" />
     <EmbeddedResource Include="Resources\release.zip" />
-    <Resource Include="Resources\Tomb1Main.png" />
+    <Resource Include="Resources\TR1X.png" />
     <Resource Include="Resources\TombATI.png" />
   </ItemGroup>
 

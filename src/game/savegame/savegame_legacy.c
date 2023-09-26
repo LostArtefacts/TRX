@@ -60,7 +60,7 @@ static void Savegame_Legacy_WriteLOT(LOT_INFO *lot);
 
 static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
 {
-    // T1M savegame files are enhanced to store more information by having
+    // TR1X savegame files are enhanced to store more information by having
     // changed the save_flags bit for certain item types. However, legacy
     // TombATI saves do not contain the information that's associated with
     // these flags for these enhanced items. The way they are structured,
@@ -79,10 +79,10 @@ static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
 static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
-    // Tomb1Main enables save_flags for Bacon Lara, but OG TombATI does not. As
+    // TR1X enables save_flags for Bacon Lara, but OG TombATI does not. As
     // a consequence, Atlantis saves made with OG TombATI (which includes the
     // ones available for download on Stella's website) have different layout
-    // than the saves made with Tomb1Main. This was discovered after it was too
+    // than the saves made with TR1X. This was discovered after it was too
     // late to make a backwards incompatible change. At the same time, enabling
     // save_flags for Bacon Lara is desirable, as not doing this causes her to
     // freeze when the player reloads a save made in her room. This function is

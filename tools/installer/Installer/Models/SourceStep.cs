@@ -14,7 +14,7 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
             new InstallSourceViewModel(new SteamInstallSource()),
             new InstallSourceViewModel(new GOGInstallSource()),
             new InstallSourceViewModel(new TombATIInstallSource()),
-            new InstallSourceViewModel(new Tomb1MainInstallSource()),
+            new InstallSourceViewModel(new TR1XInstallSource()),
         };
 
         foreach (var installationSource in InstallationSources)
@@ -33,7 +33,7 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
         {
             if (source.IsAvailable)
             {
-                // Tomb1Main comes last and always trumps any other installation source
+                // TR1X comes last and always trumps any other installation source
                 SelectedInstallationSource = source;
             }
         }
@@ -64,6 +64,6 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
         }
     }
 
-    public string SidebarImage => "pack://application:,,,/Tomb1Main_Installer;component/Resources/side1.jpg";
+    public string SidebarImage => "pack://application:,,,/TR1X_Installer;component/Resources/side1.jpg";
     private InstallSourceViewModel? selectedInstallationSource;
 }

@@ -1,8 +1,7 @@
 <p align="center">
-<img alt="Tomb1Main logo" src="tools/resources/logo.png" width="400"/>
+<img alt="TR1X logo" src="tools/resources/logo-light-theme.png#gh-light-mode-only" width="400"/>
+<img alt="TR1X logo" src="tools/resources/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
 </p>
-
-# Tomb Raider I: Community Edition
 
 This is an open source implementation of the classic Tomb Raider I game (1996),
 made by reverse engineering the TombATI / GLRage variant of the original game
@@ -10,10 +9,6 @@ and replacing proprietary audio/video libraries with open source variants.
 
 See the [Tomb Raider Forums
 topic](https://www.tombraiderforums.com/showthread.php?p=8286101).
-
-This project was inspired by Arsunt's
-[TR2Main](https://github.com/Arsunt/TR2Main/) project and the legacy name,
-"Tomb1Main", reflects that.
 
 ## Showcase
 
@@ -62,7 +57,7 @@ This project was inspired by Arsunt's
 
 ## Installing (simplified)
 
-1. Head over to GitHub releases: https://github.com/rr-/Tomb1Main/releases
+1. Head over to GitHub releases: https://github.com/LostArtefacts/TR1X/releases
 2. Download the installer. Your browser may complain that the .exe is unsafe, but it's OK to ignore this alert.
 3. Mark the installer EXE as safe to run by right-clicking on the .exe, going to properties and clicking "Unblock".
 4. Run the installer and proceed with the steps.
@@ -71,25 +66,25 @@ We hope that eventually these alerts will go away as the popularity of the proje
 
 ## Installing (advanced / manual)
 
-1. Head over to GitHub releases: https://github.com/rr-/Tomb1Main/releases
+1. Head over to GitHub releases: https://github.com/LostArtefacts/TR1X/releases
 2. Download the zip file.
 3. Extract the zip file into a directory of your choice.  
    Make sure you choose to overwrite existing directories and files
-   (`cfg/Tomb1Main_config.json5` can remain, but new features will not be configurable).
+   (`cfg/TR1X_config.json5` can remain, but new features will not be configurable).
 4. (First time installation) Put your original game files into the target directory.
     1. For Steam and GOG users, extract the original `GAME.BIN` file using a tool such as UltraISO to your target directory.
        Note that neither the GOG nor the Steam releases ship the music files. You have a few options here:
        - You can download the music files from the link below.  
-         https://tmp.sakuya.pl/tomb1main/music.zip
+         https://tmp.sakuya.pl/tr1x/music.zip
          The legality of this approach is disputable.
        - Rip the assets yourself from a physical PlayStation/SegaSaturn disk.
 
        Optionally you can also install the Unfinished Business expansion pack files.
-       - Either this variant: https://tmp.sakuya.pl/tomb1main/unfinished_business.zip
+       - Either this variant: https://tmp.sakuya.pl/tr1x/unfinished_business.zip
        - Or the more manual link: https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
    2. For TombATI users this means copying the `data`, `fmv` and `music` directories.
-5. To play the game, run `Tomb1Main.exe`.
-6. To play the Unfinished Expansion pack, run `Tomb1Main.exe -gold`.
+5. To play the game, run `TR1X.exe`.
+6. To play the Unfinished Expansion pack, run `TR1X.exe -gold`.
 
 If you install everything correctly, your game directory should look more or
 less like this (click to expand):
@@ -99,9 +94,9 @@ less like this (click to expand):
 <pre>
 .
 ├── cfg
-│   ├── Tomb1Main_gameflow.json5
-│   ├── Tomb1Main_gameflow_ub.json5
-│   ├── Tomb1Main.json5 *
+│   ├── TR1X_gameflow.json5
+│   ├── TR1X_gameflow_ub.json5
+│   ├── TR1X.json5 *
 ├── data
 │   ├── cat.phd
 │   ├── cred0.pcx
@@ -216,21 +211,21 @@ less like this (click to expand):
 │   ├── 2d.vsh
 │   ├── 3d.fsh
 │   └── 3d.vsh
-├── Tomb1Main.exe
-├── Tomb1Main_ConfigTool.exe
+├── TR1X.exe
+├── TR1X_ConfigTool.exe
 </pre>
 </details>
 
 ## Configuring
 
-To configure Tomb1Main, run the `Tomb1Main_ConfigTool.exe` application. All the
+To configure TR1X, run the `TR1X_ConfigTool.exe` application. All the
 configuration is explained in this tool. Alternatively, after running the game
-at least once, you can edit `Tomb1Main.json5` manually in a text editor such
+at least once, you can edit `TR1X.json5` manually in a text editor such
 as Notepad.
 
 ## Improvements over original game
 
-Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` for details.
+Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for details.
 
 #### UI
 - added proper UI and bar scaling
@@ -461,6 +456,15 @@ Not all options are turned on by default. Refer to `Tomb1Main_ConfigTool.exe` fo
     Currently supported platforms include Windows and Linux. In the future, it
     might be possible to run the game on Macs as well – contributions are
     welcome!
+
+5. **What's the relation to TR2Main?**
+
+    Initially established as TR1Main in 2021, our project's development paths
+    deviated, leading us to recognize the need for a distinct name. As a
+    result, we rebranded the project as Tomb1Main. However, to further
+    differentiate ourselves, we underwent another rebranding in 2023,
+    ultimately adopting the name TR1X. TR2Main is a separate project with its
+    own unique trajectory and not directly related to our development efforts.
 
 ## License
 

@@ -1,0 +1,383 @@
+{
+  "Controls": {
+    "window_title_main": "TR1X Config Tool",
+    "menu_file": "_File",
+    "command_open": "_Open",
+    "command_reload": "_Reload",
+    "command_save": "_Save",
+    "command_save_as": "Save _As...",
+    "command_launch_game": "_Launch Game",
+    "command_launch_ub": "Launch _Unfinished Business",
+    "command_exit": "E_xit",
+    "menu_tools": "_Tools",
+    "command_restore": "_Restore Defaults",
+    "menu_help": "_Help",
+    "command_github": "_GitHub",
+    "command_about": "_About",
+    "file_dialog_filter": "TR1X Config Files",
+    "checkbox_enabled": "Enabled",
+    "spinner_msg_invalid_number": "The input string is not a valid number",
+    "spinner_msg_comparison_failed": "The input value must be between {0} and {1}",
+    "spinner_increase": "Increase value",
+    "spinner_decrease": "Decrease value",
+    "label_no_file": "No file selected",
+    "label_saved": "Saved",
+    "label_unsaved": "Unsaved",
+    "command_close": "_Close",
+    "msgbox_unsaved_changes": "Do you want to save the changes you have made?",
+    "msgbox_unsaved_changes_reload": "Are you sure you want to reload and lose the changes you have made?",
+    "window_title_about": "About TR1X Config Tool",
+    "label_about_details": "Visit the TR1X GitHub page for further information.",
+    "link_github": "Go to GitHub"
+  },
+  "Enums": {
+    "airbar_mode": {
+      "default": "Default",
+      "flashing-only": "Flashing only",
+      "never": "Never",
+      "ps1": "PS1"
+    },
+    "healthbar_mode": {
+      "default": "Default",
+      "flashing-or-default": "Flashing or default",
+      "flashing-only": "Flashing only",
+      "always": "Always",
+      "never": "Never",
+      "ps1": "PS1"
+    },
+    "menu_style": {
+      "pc": "PC",
+      "ps1": "PS1"
+    },
+    "screenshot_format": {
+      "jpg": "JPEG",
+      "png": "PNG"
+    },
+    "ui_color": {
+      "gold": "Gold (default for health)",
+      "red": "Red",
+      "grey": "Gray",
+      "blue": "Blue (default for air)",
+      "silver": "Silver",
+      "green": "Green",
+      "gold2": "Gold (alternative)",
+      "blue2": "Blue (alternative)",
+      "pink": "Pink"
+    },
+    "ui_location": {
+      "top-left": "Top left",
+      "top-center": "Top center",
+      "top-right": "Top right",
+      "bottom-left": "Bottom left",
+      "bottom-center": "Bottom center",
+      "bottom-right": "Bottom right"
+    }
+  },
+  "Categories": {
+    "controls": "Controls",
+    "gameplay_fixes": "Gameplay fixes",
+    "gameplay_modifications": "Gameplay modifications",
+    "gameplay_options": "Gameplay options",
+    "graphics": "Graphics",
+    "sound": "Sound",
+    "ui": "UI"
+  },
+  "Properties": {
+    "enable_tr3_sidesteps": {
+      "Title": "Enhanced sidesteps",
+      "Description": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work."
+    },
+    "enable_enhanced_look": {
+      "Title": "Look while running",
+      "Description": "Allows Lara to look while running, jumping, hanging, etc. - similar to TR2 style."
+    },
+    "enable_jump_twists": {
+      "Title": "Jump twists",
+      "Description": "Enables TR2+ style jump twists and somersaults i.e. press roll during jump and swan dive animations."
+    },
+    "enable_swing_cancel": {
+      "Title": "Swing cancels",
+      "Description": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again, similar to TR2+."
+    },
+    "enable_tr2_jumping": {
+      "Title": "Responsive jumping",
+      "Description": "Allows Lara to jump at any point while running, similar to TR2+."
+    },
+    "enable_uw_roll": {
+      "Title": "Underwater roll",
+      "Description": "Allows Lara to roll while underwater, similar to TR2+."
+    },
+    "enable_numeric_keys": {
+      "Title": "Numeric key quick item use",
+      "Description": "Enables quick weapon draws and medipack usage.\n- 1: Draw pistols\n- 2: Draw shotgun\n- 3: Draw magnums\n- 4: Draw Uzis\n- 8: Use small medipack\n- 9: Use large medipack"
+    },
+    "enabled_inverted_look": {
+      "Title": "Inverted look",
+      "Description": "Inverts the Y axis controls when Lara looks."
+    },
+    "camera_speed": {
+      "Title": "Camera speed",
+      "Description": "Changes how fast the manual camera moves."
+    },
+    "fix_alligator_ai": {
+      "Title": "Fix alligator AI",
+      "Description": "Fixes alligators dealing no damage if Lara remains still in the water."
+    },
+    "fix_bear_ai": {
+      "Title": "Fix bear AI",
+      "Description": "Fixes bear pat attack so it does not miss Lara."
+    },
+    "fix_descending_glitch": {
+      "Title": "Fix breakable floor falls",
+      "Description": "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath."
+    },
+    "fix_bridge_collision": {
+      "Title": "Fix bridge collision",
+      "Description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge."
+    },
+    "fix_floor_data_issues": {
+      "Title": "Fix floor data issues",
+      "Description": "Fixes original issues with floor data/triggers, including the following.\n- The untriggered bat in Colosseum.\n- The secret in Great Pyramid that does not register."
+    },
+    "fix_texture_issues": {
+      "Title": "Fix texture issues",
+      "Description": "Fixes original issues with missing or incorrect textures."
+    },
+    "fix_item_rots": {
+      "Title": "Fix item rotation issues",
+      "Description": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option."
+    },
+    "fix_qwop_glitch": {
+      "Title": "Fix QWOP glitch",
+      "Description": "Fixes Lara jumping on small steps sometimes resulting in a weird running animation, known as a QWOP state."
+    },
+    "fix_tihocan_secret_sound": {
+      "Title": "Fix Tomb of Tihocan secret sound",
+      "Description": "Prevents the secret sound from incorrectly playing when using the golden key in Tomb of Tihocan."
+    },
+    "fix_wall_jump_glitch": {
+      "Title": "Fix wall jump glitch",
+      "Description": "Fixes Lara jumping through objects and moving up certain slopes."
+    },
+    "enable_cheats": {
+      "Title": "Cheats",
+      "Description": "Enables various cheats:\n- F11: hold to heal Lara.\n- F11 + WALK key: hold to hurt Lara.\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable DOZY cheat (swimming midair).\n     - WALK key: exit DOZY.\n     - GUN key: open the closest door (doesn't work in certain places)."
+    },
+    "start_lara_hitpoints": {
+      "Title": "Lara's starting health",
+      "Description": "Sets Lara's health value for the beginning of each level."
+    },
+    "disable_medpacks": {
+      "Title": "Remove medipacks",
+      "Description": "Removes all medipacks from the game (for No Meds challenge runs)."
+    },
+    "disable_healing_between_levels": {
+      "Title": "Do not heal on level finish",
+      "Description": "Stops Lara from healing between level reloads (for No Heal challenge runs)."
+    },
+    "disable_shotgun": {
+      "Title": "Remove shotgun",
+      "Description": "Removes all shotgun and shotgun shell pickups from the game."
+    },
+    "disable_magnums": {
+      "Title": "Remove magnums",
+      "Description": "Removes all magnum guns and magnum ammo pickups from the game."
+    },
+    "disable_uzis": {
+      "Title": "Remove Uzis",
+      "Description": "Removes all Uzi guns and Uzi ammo pickups from the game."
+    },
+    "enable_save_crystals": {
+      "Title": "Enable save crystals",
+      "Description": "Limits saving to the beginning of levels save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level."
+    },
+    "walk_to_items": {
+      "Title": "Animated interactions",
+      "Description": "Makes Lara walk to pickups and switches when nearby instead of teleporting to them."
+    },
+    "enable_deaths_counter": {
+      "Title": "Count number of deaths",
+      "Description": "Enables showing a deaths counter in the compass and in the level statistics. Death count is updated in the currently loaded save as soon as Lara dies."
+    },
+    "enable_total_stats": {
+      "Title": "Final statistics screen",
+      "Description": "Enables a total game statistics screen that plays after the credits."
+    },
+    "enable_compass_stats": {
+      "Title": "Level statistics in compass",
+      "Description": "Enables showing level statistics when the compass is selected."
+    },
+    "enable_detailed_stats": {
+      "Title": "Show total kills and pickups",
+      "Description": "Enables showing the maximum pickup count and kill count on each level. This includes unobtainable items."
+    },
+    "enable_cine": {
+      "Title": "Enable cutscenes",
+      "Description": "Enables cutscenes playing."
+    },
+    "enable_demo": {
+      "Title": "Enable demo mode",
+      "Description": "Enables demos showing in the main menu."
+    },
+    "enable_fmv": {
+      "Title": "Enable FMVs",
+      "Description": "Enables FMVs playing."
+    },
+    "disable_trex_collision": {
+      "Title": "Remove dead T-Rex collision",
+      "Description": "Removes all collision with T-Rex upon death. This helps when the T-Rex's body blocks the passage out."
+    },
+    "fix_shotgun_targeting": {
+      "Title": "Enhanced shotgun targeting",
+      "Description": "Makes the shotgun no longer fire when a locked target moves out of Lara's sight, similar to other guns."
+    },
+    "revert_to_pistols": {
+      "Title": "Pistols as primary weapon",
+      "Description": "Makes Lara revert to pistols at the start of each level (in line with TombATI behavior)."
+    },
+    "maximum_save_slots": {
+      "Title": "Number of save slots",
+      "Description": "Changes the number of available save slots."
+    },
+    "enable_enhanced_saves": {
+      "Title": "Save additional game information",
+      "Description": "Enhances savegames so that graphic effects, waterfall mist, flame emitters, and more are saved instead of disappearing on load."
+    },
+    "change_pierre_spawn": {
+      "Title": "Change Pierre spawn behavior",
+      "Description": "Makes a freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre."
+    },
+    "restore_ps1_enemies": {
+      "Title": "Restore PS1 enemies",
+      "Description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the level."
+    },
+    "enable_game_modes": {
+      "Title": "Enable game modes",
+      "Description": "Allows new game plus options to be selected from the new game passport menu.\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage.\n- Japanese NG+: combination of New Game+ and Japanese NG."
+    },
+    "enable_timer_in_inventory": {
+      "Title": "Timer counts in inventory",
+      "Description": "Makes the in-game timer work even while the game is showing the inventory."
+    },
+    "anisotropy_filter": {
+      "Title": "Anisotropic filter",
+      "Description": "Enhances texture filtering at distances."
+    },
+    "fov_value": {
+      "Title": "Field of view",
+      "Description": "The desired field of view in degrees, which overrides the hardcoded default. The default values are 80 (horizontal) and 65 (vertical)."
+    },
+    "fov_vertical": {
+      "Title": "Vertical FOV",
+      "Description": "Interprets the field of view as vertical instead of horizontal. May be advantageous for widescreen resolutions, especially for multi-screen setups, since it distorts the left and right side instead of cropping away the top and bottom part of the screen."
+    },
+    "resolution_width": {
+      "Title": "Resolution width",
+      "Description": "Overrides game resolution. Leave at 0 or negative values to automatically guess from the screen size. Note: these values only override the last position in the game resolutions menu that normally defaults to the screen resolution, so in order for this to work, make sure you have selected the last resolution."
+    },
+    "resolution_height": {
+      "Title": "Resolution height",
+      "Description": "Overrides game resolution. See notes on Resolution Width."
+    },
+    "enable_braid": {
+      "Title": "Braid",
+      "Description": "Enables Lara's braid."
+    },
+    "enable_3d_pickups": {
+      "Title": "3D pickups",
+      "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."
+    },
+    "enable_round_shadow": {
+      "Title": "Rounded shadows",
+      "Description": "Enables round shadows instead of the default octagonal ones."
+    },
+    "enable_shotgun_flash": {
+      "Title": "Shotgun flash",
+      "Description": "Draws flames when firing the shotgun, like for other guns."
+    },
+    "screenshot_format": {
+      "Title": "Screenshot format",
+      "Description": "Screenshot file format."
+    },
+    "load_current_music": {
+      "Title": "Load music track",
+      "Description": "Loads the music track that was playing when the game was saved."
+    },
+    "load_music_triggers": {
+      "Title": "Remember played music",
+      "Description": "Loads previously triggered music so music tracks do not replay."
+    },
+    "enable_music_in_menu": {
+      "Title": "Enable main menu music",
+      "Description": "Plays music in the main menu."
+    },
+    "enable_pitched_sounds": {
+      "Title": "Enable pitched sounds",
+      "Description": "Allows sound effects to be randomly, slightly pitched to vary the game sounds."
+    },
+    "enable_music_in_inventory": {
+      "Title": "Enable game sounds in inventory",
+      "Description": "Allows game sounds to continue to play in the inventory screen."
+    },
+    "fix_secrets_killing_music": {
+      "Title": "Do not stop music on secrets pick-ups",
+      "Description": "Fixes the sound of collecting a secret stopping the active music track."
+    },
+    "fix_speeches_killing_music": {
+      "Title": "Do not stop music when enemies speak",
+      "Description": "Fixes enemies stopping the active music track when they speak."
+    },
+    "enable_ps_uzi_sfx": {
+      "Title": "Enable PS Uzi SFX",
+      "Description": "Changes the Uzi sound effects to match the PlayStation version."
+    },
+    "menu_style": {
+      "Title": "Menu style",
+      "Description": "Changes how menus are displayed.\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version."
+    },
+    "healthbar_showing_mode": {
+      "Title": "Healthbar behavior",
+      "Description": "Changes how the healthbar is displayed.\n- Default: show the healthbar at the start of a level, after getting hit, or while having weapons equipped; flash the healthbar if it's already on screen when Lara's health is 20% or below (TombATI).\n- Flashing or default: constantly flash the healthbar when Lara's health is 20% or below, or show under default circumstances.\n- Flashing only: show the healthbar *only* when Lara's health is 20% or below (for challenge runs).\n- Always: always show the healthbar.\n- Never: never display the healthbar (for challenge runs).\n- PS1: show the healthbar under default circumstances with no flashing."
+    },
+    "healthbar_location": {
+      "Title": "Healthbar location",
+      "Description": "Location where the healthbar is displayed."
+    },
+    "healthbar_color": {
+      "Title": "Healthbar color",
+      "Description": "Color of the healthbar."
+    },
+    "airbar_showing_mode": {
+      "Title": "Airbar behavior",
+      "Description": "Changes how the airbar is displayed.\n- Default: show the airbar only in the water and flash the airbar when Lara's oxygen is 20% or below (TombATI).\n- Flashing only: show the airbar *only* when Lara's oxygen is 20% or below (for challenge runs).\n- Never: never display the airbar (for challenge runs).\n- PS1: show the airbar under default circumstances with no flashing."
+    },
+    "airbar_location": {
+      "Title": "Airbar location",
+      "Description": "Location where the airbar is displayed."
+    },
+    "airbar_color": {
+      "Title": "Airbar color",
+      "Description": "Color of the airbar."
+    },
+    "enable_enemy_healthbar": {
+      "Title": "Show enemy Healthbars",
+      "Description": "Enables showing a healthbar for the active enemy."
+    },
+    "enemy_healthbar_location": {
+      "Title": "Enemy healthbar location",
+      "Description": "Location where the enemy healthbar is displayed."
+    },
+    "enemy_healthbar_color": {
+      "Title": "Enemy healthbar color",
+      "Description": "Color of the enemy healthbar."
+    },
+    "enable_smooth_bars": {
+      "Title": "Smoother bars",
+      "Description": "Makes the healthbar and airbar use smooth color transitions."
+    },
+    "enable_fade_effects": {
+      "Title": "Fade effects",
+      "Description": "Makes the inventory and pause screen use fade transitions for the semitransparent backdrop, similar to PS1."
+    }
+  }
+}

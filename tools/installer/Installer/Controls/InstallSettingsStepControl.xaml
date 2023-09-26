@@ -117,7 +117,7 @@
                         Import saves
                         <LineBreak />
                         <Run Style="{StaticResource small}">
-                            Imports existing savegame files. Only TombATI and Tomb1Main savegame format is supported at this time.
+                            Imports existing savegame files. Only TombATI and TR1X savegame format is supported at this time.
                         </Run>
                     </TextBlock>
                 </CheckBox>

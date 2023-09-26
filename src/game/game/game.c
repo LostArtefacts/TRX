@@ -203,7 +203,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     // LaraGun() expects request_gun_type to be set only when it
     // really is needed, not at all times.
-    // https://github.com/rr-/Tomb1Main/issues/36
+    // https://github.com/LostArtefacts/TR1X/issues/36
     g_Lara.request_gun_type = LGT_UNARMED;
 
     return true;

@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Tomb1Main implementation of savegames.
+// TR1X implementation of savegames.
 
 char *Savegame_BSON_GetSaveFileName(int32_t slot);
 bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);

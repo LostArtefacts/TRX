@@ -117,7 +117,7 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
             {
                 throw new NullReferenceException();
             }
-            Process.Start(Path.Combine(_installSettings.TargetDirectory, "Tomb1Main.exe"));
+            Process.Start(Path.Combine(_installSettings.TargetDirectory, "TR1X.exe"));
         }
         if (_finishSettings is not null && _finishSettings.OpenGameDirectory)
         {

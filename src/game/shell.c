@@ -32,8 +32,8 @@
 #define LEVEL_TITLE_SIZE 25
 #define TIMESTAMP_SIZE 20
 
-static const char *m_T1MGameflowPath = "cfg/Tomb1Main_gameflow.json5";
-static const char *m_T1MGameflowGoldPath = "cfg/Tomb1Main_gameflow_ub.json5";
+static const char *m_TR1XGameflowPath = "cfg/TR1X_gameflow.json5";
+static const char *m_TR1XGameflowGoldPath = "cfg/TR1X_gameflow_ub.json5";
 
 static char *Shell_GetScreenshotName(void);
 
@@ -154,14 +154,14 @@ void Shell_Main(void)
 {
     Config_Read();
 
-    const char *gameflow_path = m_T1MGameflowPath;
+    const char *gameflow_path = m_TR1XGameflowPath;
 
     char **args = NULL;
     int arg_count = 0;
     S_Shell_GetCommandLine(&arg_count, &args);
     for (int i = 0; i < arg_count; i++) {
         if (!strcmp(args[i], "-gold")) {
-            gameflow_path = m_T1MGameflowGoldPath;
+            gameflow_path = m_TR1XGameflowGoldPath;
         }
     }
     for (int i = 0; i < arg_count; i++) {

@@ -10,7 +10,7 @@ FILE *m_LogHandle = NULL;
 
 void Log_Init(void)
 {
-    char *full_path = File_GetFullPath("Tomb1Main.log");
+    char *full_path = File_GetFullPath("TR1X.log");
     m_LogHandle = fopen(full_path, "w");
     Memory_FreePointer(&full_path);
 }

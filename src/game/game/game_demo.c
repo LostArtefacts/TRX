@@ -48,7 +48,7 @@ bool Game_Demo_ProcessInput(void)
         return false;
     }
 
-    // Translate demo inputs (that use TombATI key values) to T1M inputs.
+    // Translate demo inputs (that use TombATI key values) to TR1X inputs.
     g_Input = (INPUT_STATE) {
         0,
         .forward = (bool)(*m_DemoPtr & (1 << 0)),
@@ -112,7 +112,7 @@ void Game_Demo(void)
     Random_SeedControl(0xD371F947);
 
     // changing the controls affects negatively the original game demo data,
-    // so temporarily turn off all the T1M enhancements
+    // so temporarily turn off all the TR1X enhancements
     int8_t old_enhanced_look = g_Config.enable_enhanced_look;
     int8_t old_tr2_jumping = g_Config.enable_tr2_jumping;
     g_Config.enable_enhanced_look = 0;
@@ -126,7 +126,7 @@ void Game_Demo(void)
 
         // LaraGun() expects request_gun_type to be set only when it
         // really is needed, not at all times.
-        // https://github.com/rr-/Tomb1Main/issues/36
+        // https://github.com/LostArtefacts/TR1X/issues/36
         g_Lara.request_gun_type = LGT_UNARMED;
 
         txt = Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);

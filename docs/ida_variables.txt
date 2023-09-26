@@ -1,6 +1,6 @@
 # Type information for the IDA importer.
 #
-# This is unrelated to the Tomb1Main codebase which is a subject to changes
+# This is unrelated to the TR1X codebase which is a subject to changes
 # and improvements with regard to the original game. This file documents the
 # TombATI.exe layout.
 

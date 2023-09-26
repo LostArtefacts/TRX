@@ -1,4 +1,5 @@
-## [Unreleased](https://github.com/rr-/Tomb1Main/compare/stable...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
 - added Linux builds and toolchain
 - added an option to allow Lara to roll while underwater, similar to TR2+ (#993)
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
@@ -6,7 +7,7 @@
 - added detection for animation commands to play SFX on land, water or both (#999)
 - improved frame scheduling to use less CPU (#985)
 
-## [2.16](https://github.com/rr-/Tomb1Main/compare/2.15.3...2.16) - 2023-09-20
+## [2.16](https://github.com/LostArtefacts/TR1X/compare/2.15.3...2.16) - 2023-09-20
 - added a new rendering mode called "framebuffer" that lets the game to run at lower resolutions (#114)  
   (forces players to reset their bilinear filter setting)
 - added the current music track and timestamp to the savegame so they now persist on load (#419)
@@ -44,19 +45,19 @@
 - improved Spanish localization for the config tool
 - improved support for windowed mode (#896)
 
-## [2.15.3](https://github.com/rr-/Tomb1Main/compare/2.15.2...2.15.3) - 2023-08-15
+## [2.15.3](https://github.com/LostArtefacts/TR1X/compare/2.15.2...2.15.3) - 2023-08-15
 - fixed Lara stuttering when performing certain animations (#901, regression from 2.14)
 - fixed Lara not grabbing certain edges when the swing-cancel option is enabled (#911)
 
-## [2.15.2](https://github.com/rr-/Tomb1Main/compare/2.15.1...2.15.2) - 2023-07-17
+## [2.15.2](https://github.com/LostArtefacts/TR1X/compare/2.15.1...2.15.2) - 2023-07-17
 - fixed Natla not leaving her semi-death state after Lara takes her down for the first time (#892, regression from 2.15.1)
 
-## [2.15.1](https://github.com/rr-/Tomb1Main/compare/2.15...2.15.1) - 2023-07-14
+## [2.15.1](https://github.com/LostArtefacts/TR1X/compare/2.15...2.15.1) - 2023-07-14
 - fixed the ape not performing the vault animation when climbing (#880)
 - fixed holding down up or down to scroll the passport faster (#883, regression from 2.14)
 - fixed Lara becoming stuck in a T-pose on rare occasions after performing a jump tiwst (#889)
 
-## [2.15](https://github.com/rr-/Tomb1Main/compare/2.14...2.15) - 2023-06-08
+## [2.15](https://github.com/LostArtefacts/TR1X/compare/2.14...2.15) - 2023-06-08
 - added an option to enable TR2+ jump-twist and somersault animations (#88)
 - added the ability to unbind the sidestep left and sidestep right keys (#766)
 - added a cheat to explode Lara like in TR2 and TR3 (#793)
@@ -85,7 +86,7 @@
 - fixed SkateKid causing a game crash when too many enemies are active (#866)
 - fixed missiles damaging Lara when she is far beyond their damage range (#871)
 
-## [2.14](https://github.com/rr-/Tomb1Main/compare/2.13.2...2.14) - 2023-04-05
+## [2.14](https://github.com/LostArtefacts/TR1X/compare/2.13.2...2.14) - 2023-04-05
 - added Spanish localization to the config tool
 - added an option to launch Unfinished Business from the config tool (#739)
 - added dart emitters to the savegame (#774)
@@ -110,16 +111,16 @@
 - increased the number of effects from 100 to 1000 (#623)
 - removed the fix_pyramid_secret gameflow sequence (now handled by data injection) (#788)
 
-## [2.13.2](https://github.com/rr-/Tomb1Main/compare/2.13.1...2.13.2) - 2023-03-10
+## [2.13.2](https://github.com/LostArtefacts/TR1X/compare/2.13.1...2.13.2) - 2023-03-10
 - fixed depth buffer size causing rendering issues on some hardware (#748, regression from 2.13)
 - fixed a game crash when loading a save in which Lara had been struck by an exploding missile (#746)
 
-## [2.13.1](https://github.com/rr-/Tomb1Main/compare/2.13...2.13.1) - 2023-03-03
+## [2.13.1](https://github.com/LostArtefacts/TR1X/compare/2.13...2.13.1) - 2023-03-03
 - added an option to use the PlayStation Uzi sound effects (#152)
 - fixed a few flip effect sounds not playing (#743, regression from 2.12.1)
 - fixed a game crash when exiting the game with a controller connected (#663)
 
-## [2.13](https://github.com/rr-/Tomb1Main/compare/2.12.1...2.13) - 2023-02-19
+## [2.13](https://github.com/LostArtefacts/TR1X/compare/2.12.1...2.13) - 2023-02-19
 - added the ability to inject data into levels, with Lara's braid being the initial focus (#27)
 - added support for .ogg, .mp3 and .wav formats for audio tracks (#688)
 - added the mummy to the level kill stats if Lara touches it and it falls (#701)
@@ -131,11 +132,11 @@
 - fixed triggered flip effects not working if there are no sound devices (#583)
 - fixed the incorrect ceiling textures in Colosseum (#131)
 
-## [2.12.1](https://github.com/rr-/Tomb1Main/compare/2.12...2.12.1) - 2023-01-16
+## [2.12.1](https://github.com/LostArtefacts/TR1X/compare/2.12...2.12.1) - 2023-01-16
 - fixed crash when using enhanced saves in levels with flame emitters (#693)
 - fixed the death counter from breaking old saves if enhanced saves are turned on (#699)
 
-## [2.12](https://github.com/rr-/Tomb1Main/compare/2.11...2.12) - 2022-12-23
+## [2.12](https://github.com/LostArtefacts/TR1X/compare/2.11...2.12) - 2022-12-23
 - added collision to save crystals (#654)
 - added additional custom control schemes (#636)
 - added the ability to unbind unessential keys (#657)
@@ -151,7 +152,7 @@
 - removed the puzzle key sound effect when using save crystals (#654)
 - stopped the default controls from functioning when the user unbound them (#564)
 
-## [2.11](https://github.com/rr-/Tomb1Main/compare/2.10.3...2.11) - 2022-10-19
+## [2.11](https://github.com/LostArtefacts/TR1X/compare/2.10.3...2.11) - 2022-10-19
 - added a .NET-based configuration tool (#633)
 - added graphics effects, lava emitters, flame emitters, and waterfalls to the savegame so they now persist on load (#418)
 - added an option to turn off sound effect pitching (#625)
@@ -166,25 +167,25 @@
 - fixed bridge item in City of Khamoon being incorrectly raised (#627)
 - fixed Lara firing blanks indefinitely when she doesn't have pistols and is out of ammo on non-pistol weapons (#629) 
 
-## [2.10.3](https://github.com/rr-/Tomb1Main/compare/2.10.2...2.10.3) - 2022-09-15
+## [2.10.3](https://github.com/LostArtefacts/TR1X/compare/2.10.2...2.10.3) - 2022-09-15
 - fixed save crystal mode always saving in the first slot (#607, regression from 2.8)
 
-## [2.10.2](https://github.com/rr-/Tomb1Main/compare/2.10.1...2.10.2) - 2022-08-03
+## [2.10.2](https://github.com/LostArtefacts/TR1X/compare/2.10.1...2.10.2) - 2022-08-03
 - fixed revert_to_pistols ignoring gameflow's remove_guns (#603)
 
-## [2.10.1](https://github.com/rr-/Tomb1Main/compare/2.10...2.10.1) - 2022-07-27
+## [2.10.1](https://github.com/LostArtefacts/TR1X/compare/2.10...2.10.1) - 2022-07-27
 - fixed Lara being able to equip pistols in the gym level (#594)
 
-## [2.10](https://github.com/rr-/Tomb1Main/compare/2.9.1...2.10) - 2022-07-26
+## [2.10](https://github.com/LostArtefacts/TR1X/compare/2.9.1...2.10) - 2022-07-26
 - added a .NET-based installer
 - added the option to make Lara revert to pistols on new level start (#557)
 - added the PS1 style UI (#517)
 - added the "Story so far..." option in the select level menu to view cutscenes and FMVs (#201)
 
-## [2.9.1](https://github.com/rr-/Tomb1Main/compare/2.9...2.9.1) - 2022-06-03
+## [2.9.1](https://github.com/LostArtefacts/TR1X/compare/2.9...2.9.1) - 2022-06-03
 - fixed crash on centaur hatch (#579, regression from 2.9)
 
-## [2.9](https://github.com/rr-/Tomb1Main/compare/2.8.2...2.9) - 2022-06-01
+## [2.9](https://github.com/LostArtefacts/TR1X/compare/2.8.2...2.9) - 2022-06-01
 - added generic SDL-based controller support (#278)
 - added the ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre (#532)
 - added a fade out when completing Lara's Home (#383)
@@ -200,14 +201,14 @@
 - fixed exiting select level menu causing deaths in a new game incremented in that slot (#575, regression from 2.8)
 - removed DInput-based XBox controller support
 
-## [2.8.2](https://github.com/rr-/Tomb1Main/compare/2.8.1...2.8.2) - 2022-05-20
+## [2.8.2](https://github.com/LostArtefacts/TR1X/compare/2.8.1...2.8.2) - 2022-05-20
 - fixed Lara not picking up items near the edges of room portals (#563, regression from 2.8)
 
-## [2.8.1](https://github.com/rr-/Tomb1Main/compare/2.8...2.8.1) - 2022-05-05
+## [2.8.1](https://github.com/LostArtefacts/TR1X/compare/2.8...2.8.1) - 2022-05-05
 - fixed Pierre not resetting across levels (#538, regression from 2.7)
 - fixed pushables breaking with flipped rooms when loading a save (#536, regression from 2.8)
 
-## [2.8](https://github.com/rr-/Tomb1Main/compare/2.7...2.8) - 2022-05-04
+## [2.8](https://github.com/LostArtefacts/TR1X/compare/2.7...2.8) - 2022-05-04
 - added the option to pause sound in the inventory screen (#309)
 - added level selection to the load game menu (#197)
 - added the ability to pick up multiple items at once with walk to items enabled (#505)
@@ -227,7 +228,7 @@
 - fixed underwater caustics animating at 2x speed (#109)
 - fixed new game plus infinite ammo carrying over to a loaded game (#535, regression from 2.6)
 
-## [2.7](https://github.com/rr-/Tomb1Main/compare/2.6.4...2.7) - 2022-03-16
+## [2.7](https://github.com/LostArtefacts/TR1X/compare/2.6.4...2.7) - 2022-03-16
 - added ability to automatically walk to pickups when nearby (#18)
 - added ability to automatically walk to switches when nearby (#222)
 - added ability to turn off detailed end of the level stats (#447)
@@ -242,19 +243,19 @@
 - fixed exploded mutant pods sometimes appearing unhatched on reload (#423)
 - fixed sound effects playing rapidly in sound menu if input held down (#467)
 
-## [2.6.4](https://github.com/rr-/Tomb1Main/compare/2.6.3...2.6.4) - 2022-02-20
+## [2.6.4](https://github.com/LostArtefacts/TR1X/compare/2.6.3...2.6.4) - 2022-02-20
 - fixed crash when loading a legacy save and saving on a new slot (#442, regression from 2.6)
 
-## [2.6.3](https://github.com/rr-/Tomb1Main/compare/2.6.2...2.6.3) - 2022-02-18
+## [2.6.3](https://github.com/LostArtefacts/TR1X/compare/2.6.2...2.6.3) - 2022-02-18
 - fixed croc and rats breaking saves after a flipmap (#441, regression from 2.6)
 
-## [2.6.2](https://github.com/rr-/Tomb1Main/compare/2.6.1...2.6.2) - 2022-02-17
+## [2.6.2](https://github.com/LostArtefacts/TR1X/compare/2.6.1...2.6.2) - 2022-02-17
 - fixed equipping gun after starting a demo (#440, regression from 2.6)
 
-## [2.6.1](https://github.com/rr-/Tomb1Main/compare/2.6...2.6.1) - 2022-02-16
+## [2.6.1](https://github.com/LostArtefacts/TR1X/compare/2.6...2.6.1) - 2022-02-16
 - fixed equipping gun after starting the game (#439, regression from 2.6)
 
-## [2.6](https://github.com/rr-/Tomb1Main/compare/2.5...2.6) - 2022-02-16
+## [2.6](https://github.com/LostArtefacts/TR1X/compare/2.5...2.6) - 2022-02-16
 - added deaths counter (#388, requires new saves)
 - added total pickups and kills per level to the compass and end level stats screens (#362)
 - added new, more resilient savegame format (#277)
@@ -281,7 +282,7 @@
 - fixed Lara not getting her pistols in Atlantis if the player finishes Natla's Mines without picking up any gun (#424)
 - fixed broken dart ricochet effect (#429)
 
-## [2.5](https://github.com/rr-/Tomb1Main/compare/2.4...2.5) - 2022-01-31
+## [2.5](https://github.com/LostArtefacts/TR1X/compare/2.4...2.5) - 2022-01-31
 - added CHANGELOG.md
 - added ability to skip cinematics with the Action key
 - added fade animations (#363)
@@ -290,7 +291,7 @@
 - fixed a memory leak in the audio sampler (#369)
 
 
-## [2.4](https://github.com/rr-/Tomb1Main/compare/2.3...2.4) - 2022-01-19
+## [2.4](https://github.com/LostArtefacts/TR1X/compare/2.3...2.4) - 2022-01-19
 - added ability to skip FMVs with the action key (#334)
 - changed shaders to use GLSL version 1.30 (#327)
 - changed savegames to consume less space
@@ -308,7 +309,7 @@
 - fixed a crash when shader compilation fails
 
 
-## [2.3](https://github.com/rr-/Tomb1Main/compare/2.2.1...2.3) - 2022-01-12
+## [2.3](https://github.com/LostArtefacts/TR1X/compare/2.2.1...2.3) - 2022-01-12
 - added ability to hold down forward/back to move through saves faster (#171)
 - changed screenshots to be saved in its own folder and with more meaningful names (#255)
 - fixed audible clicks near the end of samples (#281)
@@ -323,12 +324,12 @@
 - fixed memory leaks
 
 
-## [2.2.1](https://github.com/rr-/Tomb1Main/compare/2.2...2.2.1) - 2022-01-05
+## [2.2.1](https://github.com/LostArtefacts/TR1X/compare/2.2...2.2.1) - 2022-01-05
 - fixed listing available resolutions (a regression from 2.2)
 - fixed Lara's airbar showing up when Lara's dead (a regression from 2.1)
 
 
-## [2.2](https://github.com/rr-/Tomb1Main/compare/2.1...2.2) - 2022-01-05
+## [2.2](https://github.com/LostArtefacts/TR1X/compare/2.1...2.2) - 2022-01-05
 - added ability to control anisotropy filter strength
 - changed the engine look for HD FMVs by default for Unfinished Business
 - removed tiny screen resolutions (might require setting the resolution again)
@@ -339,7 +340,7 @@
 - fixed hang bug for stacked rooms
 
 
-## [2.1](https://github.com/rr-/Tomb1Main/compare/...2.1) - 2021-12-21
+## [2.1](https://github.com/LostArtefacts/TR1X/compare/...2.1) - 2021-12-21
 - added ability to disable healthbar and airbar flashing
 - changed the engine look for HD FMVs by default
 - increased max active samples to 20 (should fix rare mute sounds issues)
@@ -350,11 +351,11 @@
 - fixed grabbing bridges under certain circumstances
 - fixed crash if user presses a key during ring close animation
 
-## [2.0.1](https://github.com/rr-/Tomb1Main/compare/2.0...2.0.1) - 2021-12-13
+## [2.0.1](https://github.com/LostArtefacts/TR1X/compare/2.0...2.0.1) - 2021-12-13
 Added an icon to the .exe (thanks TRFan94!)
 
 
-## [2.0](https://github.com/rr-/Tomb1Main/compare/1.4.0...2.0) - 2021-12-07
+## [2.0](https://github.com/LostArtefacts/TR1X/compare/1.4.0...2.0) - 2021-12-07
 Shipped our own .exe! Tomb1Main is now fully open source and no longer needs injecting itself to the game. It also no longer depends on any of the TombATI .dll files. You can have both versions installed in the same folder.
 - added support for HD FMVs
 - added support for .png and .jpg pictures
@@ -376,7 +377,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed game exiting with "Fatal DirectInput error" when losing focus early
 
 
-## [1.4.0](https://github.com/rr-/Tomb1Main/compare/1.3.0...1.4.0) - 2021-11-16
+## [1.4.0](https://github.com/LostArtefacts/TR1X/compare/1.3.0...1.4.0) - 2021-11-16
 - added adjustable ingame brightness
 - added per-level fog settings
 - added control over fog density (in terms of tiles)
@@ -387,7 +388,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed a crash when compiling the game on MSVC
 
 
-## [1.3.0](https://github.com/rr-/Tomb1Main/compare/1.2.2...1.3.0) - 2021-11-06
+## [1.3.0](https://github.com/LostArtefacts/TR1X/compare/1.2.2...1.3.0) - 2021-11-06
 - added version in the bottom right corner
 - added movable camera on W,A,S,D
 - added Xbox One Controller support
@@ -409,7 +410,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed ability to rebind the pause button
 
 
-## [1.2.2](https://github.com/rr-/Tomb1Main/compare/1.2.1...1.2.2) - 2021-10-17
+## [1.2.2](https://github.com/LostArtefacts/TR1X/compare/1.2.1...1.2.2) - 2021-10-17
 - added ability to mute music in main menu
 - added pausing the music while in pause
 - added more screen resolutions
@@ -420,25 +421,25 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed resolution width/height being ignored
 
 
-## [1.2.1](https://github.com/rr-/Tomb1Main/compare/1.2.0...1.2.1) - 2021-10-17
+## [1.2.1](https://github.com/LostArtefacts/TR1X/compare/1.2.0...1.2.1) - 2021-10-17
 - added resolution_width and resolution_height to the default settings
 - fixed screen resolution regression from 1.2.0
 
 
-## [1.2.0](https://github.com/rr-/Tomb1Main/compare/1.1.5...1.2.0) - 2021-10-15
+## [1.2.0](https://github.com/LostArtefacts/TR1X/compare/1.1.5...1.2.0) - 2021-10-15
 - fixed a common crash on many machines
 
 
-## [1.1.5](https://github.com/rr-/Tomb1Main/compare/1.1.4...1.1.5) - 2021-10-13
+## [1.1.5](https://github.com/LostArtefacts/TR1X/compare/1.1.4...1.1.5) - 2021-10-13
 - fixed a regression resulting in crashes from 1.1.4
 
 
-## [1.1.4](https://github.com/rr-/Tomb1Main/compare/1.1.3...1.1.4) - 2021-10-13
+## [1.1.4](https://github.com/LostArtefacts/TR1X/compare/1.1.3...1.1.4) - 2021-10-13
 - fixed problem with the alt key on certain machines
 - fixed a rare crash on certain machines
 
 
-## [1.1.3](https://github.com/rr-/Tomb1Main/compare/1.1.2...1.1.3) - 2021-03-30
+## [1.1.3](https://github.com/LostArtefacts/TR1X/compare/1.1.2...1.1.3) - 2021-03-30
 - changed smooth bars to be enabled by default
 - changed end of level freeze fix can no longer be disabled
 - changed creature distance fix can no longer be disabled
@@ -451,18 +452,18 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed controls UI missing its borders
 
 
-## [1.1.2](https://github.com/rr-/Tomb1Main/compare/1.1.1...1.1.2) - 2021-03-30
+## [1.1.2](https://github.com/LostArtefacts/TR1X/compare/1.1.1...1.1.2) - 2021-03-30
 - fixed main menu demo mode not playing correctly (regression since 1.1.1)
 - fixed game speeding up on certain machines (regression since 1.1.1)
 
 
-## [1.1.1](https://github.com/rr-/Tomb1Main/compare/1.1...1.1.1) - 2021-03-29
+## [1.1.1](https://github.com/LostArtefacts/TR1X/compare/1.1...1.1.1) - 2021-03-29
 - added deactivating game when Alt-Tabbing
 - improved pink bar color
 - fixed sounds volume slider not working for ingame sounds
 
 
-## [1.1](https://github.com/rr-/Tomb1Main/compare/1.0...1.1) - 2021-03-28
+## [1.1](https://github.com/LostArtefacts/TR1X/compare/1.0...1.1) - 2021-03-28
 - added an alert messagebox whenever something bad (within the code's expectations) happens
 - added smooth bars (needs to be explicitly enabled in the settings)
 - finished porting the input and sound routines
@@ -470,12 +471,12 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed RNG not being seeded (no practical consequences on the gameplay)
 
 
-## [1.0](https://github.com/rr-/Tomb1Main/compare/0.13.3...1.0) - 2021-03-21
+## [1.0](https://github.com/LostArtefacts/TR1X/compare/0.13.3...1.0) - 2021-03-21
 - added pause screen
 - added -gold command line switch to run Unfinished Business
 
 
-## [0.13.3](https://github.com/rr-/Tomb1Main/compare/0.13.2...0.13.3) - 2021-03-21
+## [0.13.3](https://github.com/LostArtefacts/TR1X/compare/0.13.2...0.13.3) - 2021-03-21
 - added crystals mode (can be enabled in the gameflow)
 - improved navigation through keyboard controls UI
 - fixed Unfinished Business gameflow not loading
@@ -484,16 +485,16 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed loading custom layouts that conflict with default controls
 
 
-## [0.13.2](https://github.com/rr-/Tomb1Main/compare/0.13.1...0.13.2) - 2021-03-19
+## [0.13.2](https://github.com/LostArtefacts/TR1X/compare/0.13.1...0.13.2) - 2021-03-19
 - fixed lighting issues (Lara being sometimes very brightly lighted)
 
 
-## [0.13.1](https://github.com/rr-/Tomb1Main/compare/0.13.0...0.13.1) - 2021-03-19
+## [0.13.1](https://github.com/LostArtefacts/TR1X/compare/0.13.0...0.13.1) - 2021-03-19
 - changed demo_delay constant to be stored in the gameflow file
 - fixed regression in LoadSamples
 
 
-## [0.13.0](https://github.com/rr-/Tomb1Main/compare/0.12.7...0.13.0) - 2021-03-19
+## [0.13.0](https://github.com/LostArtefacts/TR1X/compare/0.12.7...0.13.0) - 2021-03-19
 - added display_time parameter to display_picture (requires overwriting your gameflow file)
 - added user controllable UI and bar scaling
 - changed limit of max items (moveables in TRLE lingo) from 256 to 10240
@@ -502,7 +503,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed skipping pictures displayed before starting the level with the escape key causing inventory to open
 
 
-## [0.12.7](https://github.com/rr-/Tomb1Main/compare/0.12.6...0.12.7) - 2021-03-19
+## [0.12.7](https://github.com/LostArtefacts/TR1X/compare/0.12.6...0.12.7) - 2021-03-19
 - added ability to remap cheat keys (except obscure f11 debug key)
 - changed f10 level skip cheat key to 'x' (can be now changed); had to be done because the game does not let mapping to function keys
 - changed lots of variables to stay in T1M memory (may cause regressions)
@@ -510,15 +511,15 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - changed files directory placement to a new directory, cfg/
 
 
-## [0.12.6](https://github.com/rr-/Tomb1Main/compare/0.12.5...0.12.6) - 2021-03-18
+## [0.12.6](https://github.com/LostArtefacts/TR1X/compare/0.12.5...0.12.6) - 2021-03-18
 - fixed loading game in Natla's Mines causing Lara to lose her guns
 
 
-## [0.12.5](https://github.com/rr-/Tomb1Main/compare/0.12.4...0.12.5) - 2021-03-17
+## [0.12.5](https://github.com/LostArtefacts/TR1X/compare/0.12.4...0.12.5) - 2021-03-17
 - fixed collected secrets resetting after using compass
 
 
-## [0.12.4](https://github.com/rr-/Tomb1Main/compare/0.12.3...0.12.4) - 2021-03-17
+## [0.12.4](https://github.com/LostArtefacts/TR1X/compare/0.12.3...0.12.4) - 2021-03-17
 - added showing level stats in compass (can be disabled)
 - added ability to disable game mode selection in gameflow
 - added fallback gameflow strings (in case someone installs new T1M but forgets to't override the gameflow file)
@@ -529,13 +530,13 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed calculating creature distances (fixes Tihocan croc bug)
 
 
-## [0.12.3](https://github.com/rr-/Tomb1Main/compare/0.12.2...0.12.3) - 2021-03-17
+## [0.12.3](https://github.com/LostArtefacts/TR1X/compare/0.12.2...0.12.3) - 2021-03-17
 - add Japanese mode (enemies are 2 times weaker)
 - improve skipping cutscenes
 - fix crash when FMVs are missing (this doesn't add support for HQ FMVs though)
 
 
-## [0.12.2](https://github.com/rr-/Tomb1Main/compare/0.12.1...0.12.2) - 2021-03-14
+## [0.12.2](https://github.com/LostArtefacts/TR1X/compare/0.12.1...0.12.2) - 2021-03-14
 - changed settings to save after each change
 - fixed OG music stopping when playing the secrets chime (can be disabled)
 - fixed OG game not saving key layout choice (default vs. user keys)
@@ -544,7 +545,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed OG holding escape to skip FMVs opening inventory
 
 
-## [0.12.1](https://github.com/rr-/Tomb1Main/compare/0.12.0...0.12.1) - 2021-03-14
+## [0.12.1](https://github.com/LostArtefacts/TR1X/compare/0.12.0...0.12.1) - 2021-03-14
 - huge internal refactors
 - improved door open cheat
 - changed 4k scaling path to be always enabled (previously known as enable_enhanced_ui)
@@ -552,7 +553,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed main menu background for UB
 
 
-## [0.12.0](https://github.com/rr-/Tomb1Main/compare/0.11.1...0.12.0) - 2021-03-12
+## [0.12.0](https://github.com/LostArtefacts/TR1X/compare/0.11.1...0.12.0) - 2021-03-12
 - introduced gameflow sequencer (moves FMVs, cutscenes, level stats etc. logic to the gameflow JSON file); add ability to control number of levels
 - refactored gameflow
 - added ability to disable cinematic scenes
@@ -561,7 +562,7 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed cinematics resetting FOV
 
 
-## [0.11.1](https://github.com/rr-/Tomb1Main/compare/0.11...0.11.1) - 2021-03-11
+## [0.11.1](https://github.com/LostArtefacts/TR1X/compare/0.11...0.11.1) - 2021-03-11
 - added ability to turn off main menu demos
 - added ability to turn off FMVs
 - added reporting JSON parsing errors in the logs
@@ -572,74 +573,74 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed Lara wearing normal clothes in Gym
 
 
-## [0.11](https://github.com/rr-/Tomb1Main/compare/0.10.5...0.11) - 2021-03-11
+## [0.11](https://github.com/LostArtefacts/TR1X/compare/0.10.5...0.11) - 2021-03-11
 - introduced gameflow file (moves all game strings to a gameflow JSON file, including level paths and names); level number, FMVs etc. are still hardcoded
 
 
-## [0.10.5](https://github.com/rr-/Tomb1Main/compare/0.10.4...0.10.5) - 2021-03-10
+## [0.10.5](https://github.com/LostArtefacts/TR1X/compare/0.10.4...0.10.5) - 2021-03-10
 - added arrows to save/load dialogs
 - improved user keys settings dialog - you don't have to hold the key for exactly 1 frame anymore
 - made new game dialog smaller
 - fixed passport closing when exiting new game mode selection dialog
 
 
-## [0.10.4](https://github.com/rr-/Tomb1Main/compare/0.10.3...0.10.4) - 2021-03-08
+## [0.10.4](https://github.com/LostArtefacts/TR1X/compare/0.10.3...0.10.4) - 2021-03-08
 - fixed load game screen
 
 
-## [0.10.3](https://github.com/rr-/Tomb1Main/compare/0.10.2...0.10.3) - 2021-03-08
+## [0.10.3](https://github.com/LostArtefacts/TR1X/compare/0.10.2...0.10.3) - 2021-03-08
 - added NG/NG+ mode selection
 
 
-## [0.10.2](https://github.com/rr-/Tomb1Main/compare/0.10.1...0.10.2) - 2021-03-07
+## [0.10.2](https://github.com/LostArtefacts/TR1X/compare/0.10.1...0.10.2) - 2021-03-07
 - fixed fly cheat resurrection with lava wedges
 
 
-## [0.10.1](https://github.com/rr-/Tomb1Main/compare/0.10...0.10.1) - 2021-03-07
+## [0.10.1](https://github.com/LostArtefacts/TR1X/compare/0.10...0.10.1) - 2021-03-07
 - improved dealing with missing config
 - renamed config to .json5
 - fixed sound going off after playing a cinematic
 
 
-## [0.10](https://github.com/rr-/Tomb1Main/compare/0.9.2...0.10) - 2021-03-06
+## [0.10](https://github.com/LostArtefacts/TR1X/compare/0.9.2...0.10) - 2021-03-06
 - added support for opening closest doors
 
 
-## [0.9.2](https://github.com/rr-/Tomb1Main/compare/0.9.1...0.9.2) - 2021-03-05
+## [0.9.2](https://github.com/LostArtefacts/TR1X/compare/0.9.1...0.9.2) - 2021-03-05
 - fixed messged up FMV sequence IDs
 - fixed crash when drawing lightnings near Scion
 
 
-## [0.9.1](https://github.com/rr-/Tomb1Main/compare/0.9...0.9.1) - 2021-03-04
+## [0.9.1](https://github.com/LostArtefacts/TR1X/compare/0.9...0.9.1) - 2021-03-04
 - fixed bats flying near floor
 - fixed typo in Tomb1Main.json causing everything to be disabled
 
 
-## [0.9](https://github.com/rr-/Tomb1Main/compare/0.8.3...0.9) - 2021-03-03
+## [0.9](https://github.com/LostArtefacts/TR1X/compare/0.8.3...0.9) - 2021-03-03
 - added FOV support (overrides GLrage completely, but should be compatible with it)
 - added support for more than 3 pickups at once (for TRLE builders)
 - fixed smaller pickup sprites
 - fixed showing FPS in the main menu doing weird stuff to the inventory text after starting the game
 
 
-## [0.8.3](https://github.com/rr-/Tomb1Main/compare/0.8.2...0.8.3) - 2021-02-28
+## [0.8.3](https://github.com/LostArtefacts/TR1X/compare/0.8.2...0.8.3) - 2021-02-28
 - improved TR3-like sidesteps
 - improved bar flashing modes
 - fixed Lara targeting enemies even after death
 - fixed version information missing from releases
 
 
-## [0.8.2](https://github.com/rr-/Tomb1Main/compare/0.8.1...0.8.2) - 2021-02-28
+## [0.8.2](https://github.com/LostArtefacts/TR1X/compare/0.8.1...0.8.2) - 2021-02-28
 - fixed Lara drawing guns when loading OG saves
 
 
-## [0.8.1](https://github.com/rr-/Tomb1Main/compare/0.8...0.8.1) - 2021-02-27
+## [0.8.1](https://github.com/LostArtefacts/TR1X/compare/0.8...0.8.1) - 2021-02-27
 - fixed AI sometimes having problems to find Lara
 - fixed shotgun firing sound after running out of ammo
 - fixed OG being able to get pistols by running out of ammo in other weapons, even without having them in the inventory
 
 
-## [0.8](https://github.com/rr-/Tomb1Main/compare/0.7.6...0.8) - 2021-02-27
+## [0.8](https://github.com/LostArtefacts/TR1X/compare/0.7.6...0.8) - 2021-02-27
 - added optional TR3-like sidesteps
 - added "never" to healthbar display modes (so that you can run without ever knowing your health!)
 - added airbar display modes (so that you can swim without ever knowing your remaining oxygen)
@@ -656,74 +657,74 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed OG crash when Lara is on fire and walks too far away from where she caught fire
 
 
-## [0.7.6](https://github.com/rr-/Tomb1Main/compare/0.7.5...0.7.6) - 2021-02-23
+## [0.7.6](https://github.com/LostArtefacts/TR1X/compare/0.7.5...0.7.6) - 2021-02-23
 - fixed Atlanteans behavior
 
 
-## [0.7.5](https://github.com/rr-/Tomb1Main/compare/0.7.4...0.7.5) - 2021-02-22
+## [0.7.5](https://github.com/LostArtefacts/TR1X/compare/0.7.4...0.7.5) - 2021-02-22
 - fixed ammo text placement
 - fixed healthbar placement in the inventory
 
 
-## [0.7.4](https://github.com/rr-/Tomb1Main/compare/0.7.3...0.7.4) - 2021-02-22
+## [0.7.4](https://github.com/LostArtefacts/TR1X/compare/0.7.3...0.7.4) - 2021-02-22
 - added support for user-configured bar colors
 - switched configuration format to use JSON5
 - moved comments to Tomb5Main.json
 - fixed bar placement
 
 
-## [0.7.3](https://github.com/rr-/Tomb1Main/compare/0.7.2...0.7.3) - 2021-02-22
+## [0.7.3](https://github.com/LostArtefacts/TR1X/compare/0.7.2...0.7.3) - 2021-02-22
 - added support for user-configured bar locations
 - fixed pickups scaling
 
 
-## [0.7.2](https://github.com/rr-/Tomb1Main/compare/0.7.1...0.7.2) - 2021-02-22
+## [0.7.2](https://github.com/LostArtefacts/TR1X/compare/0.7.1...0.7.2) - 2021-02-22
 - fixed ability to look around while Lara's dead
 - fixed UI scaling in controls dialog
 - fixed crash for some creatures
 
 
-## [0.7.1](https://github.com/rr-/Tomb1Main/compare/0.7...0.7.1) - 2021-02-22
+## [0.7.1](https://github.com/LostArtefacts/TR1X/compare/0.7...0.7.1) - 2021-02-22
 - added inventory cheat
 - made fly cheat faster
 
 
-## [0.7](https://github.com/rr-/Tomb1Main/compare/0.6...0.7) - 2021-02-21
+## [0.7](https://github.com/LostArtefacts/TR1X/compare/0.6...0.7) - 2021-02-21
 - added fly cheat
 - fixed a crash when hit by a lightning (T1M regression)
 - fixed missing "Demo Mode" text (T1M regression)
 
 
-## [0.6](https://github.com/rr-/Tomb1Main/compare/0.5.1...0.6) - 2021-02-20
+## [0.6](https://github.com/LostArtefacts/TR1X/compare/0.5.1...0.6) - 2021-02-20
 - changed the code to count secrets automatically (useful for custom level builders)
 - fixed secret trigger in The Great Pyramid
 - fixed a crash when loading levels with more than 1024 textures
 - fixed drawing Lara (T1M regression)
 
 
-## [0.5.1](https://github.com/rr-/Tomb1Main/compare/0.5...0.5.1) - 2021-02-20
+## [0.5.1](https://github.com/LostArtefacts/TR1X/compare/0.5...0.5.1) - 2021-02-20
 - added fire sprite to shotgun
 
 
-## [0.5](https://github.com/rr-/Tomb1Main/compare/0.4.1...0.5) - 2021-02-18
+## [0.5](https://github.com/LostArtefacts/TR1X/compare/0.4.1...0.5) - 2021-02-18
 - renamed the project from TR1Main to Tomb1Main on the request of Arsunt
 - improved documentation
 
 
-## [0.4.1](https://github.com/rr-/Tomb1Main/compare/...0.4.1) - 2021-02-15
+## [0.4.1](https://github.com/LostArtefacts/TR1X/compare/...0.4.1) - 2021-02-15
 - added an option to always show the healthbar
 - fixed enemy healthbars in NG+
 - fixed no heal mode
 
-## [0.4](https://github.com/rr-/Tomb1Main/compare/0.3.1...0.4) - 2021-02-14
+## [0.4](https://github.com/LostArtefacts/TR1X/compare/0.3.1...0.4) - 2021-02-14
 - added UI scaling
 - added ability to look around underwater
 
 
-## [0.3.1](https://github.com/rr-/Tomb1Main/compare/...0.3.1) - 2021-02-13
+## [0.3.1](https://github.com/LostArtefacts/TR1X/compare/...0.3.1) - 2021-02-13
 - improved the ability to look around while running
 
-## [0.3](https://github.com/rr-/Tomb1Main/compare/0.2.1...0.3) - 2021-02-13
+## [0.3](https://github.com/LostArtefacts/TR1X/compare/0.2.1...0.3) - 2021-02-13
 - added an option disable magnums
 - added an option disable uzis
 - added an option disable shotgun
@@ -732,15 +733,15 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 - fixed an OG bug with the secret sound in Tomb of Tihocan
 
 
-## [0.2.1](https://github.com/rr-/Tomb1Main/compare/0.2...0.2.1) - 2021-02-11
+## [0.2.1](https://github.com/LostArtefacts/TR1X/compare/0.2...0.2.1) - 2021-02-11
 - changed the default configuration to enable enemy healthbars, red healthbar and end of the level freeze fix
 
 
-## [0.2](https://github.com/rr-/Tomb1Main/compare/0.1...0.2) - 2021-02-11
+## [0.2](https://github.com/LostArtefacts/TR1X/compare/0.1...0.2) - 2021-02-11
 - added enemy healthbars
 - added a red healthbar
 
 
-## [0.1](https://github.com/rr-/Tomb1Main/compare/...0.1) - 2021-02-10
+## [0.1](https://github.com/LostArtefacts/TR1X/compare/...0.1) - 2021-02-10
 
 Initial version.

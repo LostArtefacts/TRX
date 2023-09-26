@@ -10,7 +10,7 @@ REPO_DIR = Path(__file__).parent.parent
 BIN_DIR = REPO_DIR / "bin"
 SRC_DIR = REPO_DIR / "src"
 CONFIG_DIR = BIN_DIR / "cfg"
-GAMEFLOW_PATH = CONFIG_DIR / "Tomb1Main_gameflow.json5"
+GAMEFLOW_PATH = CONFIG_DIR / "TR1X_gameflow.json5"
 
 
 BODY_PREFIX = """
@@ -19,7 +19,7 @@ BODY_PREFIX = """
 
 #include <stddef.h>
 
-const char *g_T1MVersion = "{version}";
+const char *g_TR1XVersion = "{version}";
 
 GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {{"""
 

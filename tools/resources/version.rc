@@ -9,8 +9,8 @@ BEGIN
       VALUE "CompanyName", "rr-"
       VALUE "FileDescription", "Tomb Raider I: Community Edition"
       VALUE "FileVersion", "{version}"
-      VALUE "InternalName", "Tomb1Main"
-      VALUE "OriginalFilename", "Tomb1Main.exe"
+      VALUE "InternalName", "TR1X"
+      VALUE "OriginalFilename", "TR1X.exe"
       VALUE "ProductName", "Tomb Raider I: Community Edition"
       VALUE "ProductVersion", "{version}"
     END

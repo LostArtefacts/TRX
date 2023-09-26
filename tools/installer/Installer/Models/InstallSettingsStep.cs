@@ -26,7 +26,7 @@ public class InstallSettingsStep : BaseNotifyPropertyChanged, IStep
     }
 
     public InstallSettings InstallSettings { get; }
-    public string SidebarImage => "pack://application:,,,/Tomb1Main_Installer;component/Resources/side2.jpg";
+    public string SidebarImage => "pack://application:,,,/TR1X_Installer;component/Resources/side2.jpg";
     private RelayCommand? _chooseLocationCommand;
 
     private void ChooseLocation()

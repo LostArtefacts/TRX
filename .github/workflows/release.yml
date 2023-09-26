@@ -68,9 +68,9 @@ jobs:
 
       - name: Rename assets
         run: |
-          mv artifacts/game-win.zip artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Windows.zip
-          mv artifacts/game-linux.zip artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Linux.zip
-          mv artifacts/Tomb1Main_Installer.exe artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Installer.exe
+          mv artifacts/game-win.zip artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Windows.zip
+          mv artifacts/game-linux.zip artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Linux.zip
+          mv artifacts/Tomb1Main_Installer.exe artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
       - name: Generate Changelog
         run: |
@@ -91,9 +91,9 @@ jobs:
           prerelease: ${{ inputs.prerelease }}
           fail_on_unmatched_files: true
           files: |
-            artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Windows.zip
-            artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Linux.zip
-            artifacts/Tomb1Main-${{ steps.get_version.outputs.VERSION }}-Installer.exe
+            artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Windows.zip
+            artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Linux.zip
+            artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
   build_configurator:
     name: Build the configurator
@@ -205,7 +205,7 @@ jobs:
         run: |
           make clean release-linux
           mkdir out/
-          cp build/linux/Tomb1Main out/
+          cp build/linux/TR1X out/
           cp -r bin/* out/
 
       - name: Upload the artifact
@@ -234,7 +234,7 @@ jobs:
         run: |
           mkdir out
           cd artifacts
-          chmod +x Tomb1Main
+          chmod +x TR1X
           7z a ../out/game-linux.zip *
 
       - name: Upload the artifact
