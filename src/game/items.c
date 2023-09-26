@@ -765,7 +765,7 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
     }
 }
 
-bool Item_TestFrame(ITEM_INFO *item, int16_t frame)
+bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
 {
     return item->frame_number == g_Anims[item->anim_number].frame_base + frame;
 }

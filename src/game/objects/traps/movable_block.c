@@ -197,7 +197,7 @@ void MovableBlock_Collision(
             g_Lara.gun_status = LGS_HANDS_BUSY;
         }
     } else if (lara_item->current_anim_state == LS_PP_READY) {
-        if (!Item_TestFrame(lara_item, LF_PPREADY)) {
+        if (!Item_TestFrameEqual(lara_item, LF_PPREADY)) {
             return;
         }
 
