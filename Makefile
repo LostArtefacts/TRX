@@ -50,7 +50,8 @@ release-linux:
 
 clean:
 	-find build/ -type f -delete
-	-find build/ -mindepth 1 -empty -type d -delete
+	-find tools/ -type f \( -ipath '*/out/*' -or -ipath '*/bin/*' -or -ipath '*/obj/*' \) -delete
+	-find . -mindepth 1 -empty -type d -delete
 
 imports:
 	tools/sort_imports
