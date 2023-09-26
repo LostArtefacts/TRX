@@ -15,7 +15,9 @@
 
 #include <stdbool.h>
 
+#define TORSO_TURN_L_ANIM 8
 #define TORSO_DIE_ANIM 13
+#define TORSO_TURN_R_ANIM 17
 #define TORSO_PART_DAMAGE 250
 #define TORSO_ATTACK_DAMAGE 500
 #define TORSO_TOUCH_DAMAGE 5
@@ -29,6 +31,10 @@
 #define TORSO_HITPOINTS 500
 #define TORSO_RADIUS (WALL_L / 3) // = 341
 #define TORSO_SMARTNESS 0x7FFF
+#define TORSO_FRAME_TURN_L_START 14
+#define TORSO_FRAME_TURN_L_END 22
+#define TORSO_FRAME_TURN_R_START 17
+#define TORSO_FRAME_TURN_R_END 22
 
 typedef enum {
     TORSO_EMPTY = 0,
@@ -155,8 +161,10 @@ void Torso_Control(int16_t item_num)
             if (!torso->flags) {
                 torso->flags = item->frame_number;
             } else if (
-                item->frame_number - torso->flags > 13
-                && item->frame_number - torso->flags < 23) {
+                g_Objects[item->object_number].anim_index + TORSO_TURN_L_ANIM
+                    == item->anim_number
+                && Item_TestFrameRange(
+                    item, TORSO_FRAME_TURN_L_START, TORSO_FRAME_TURN_L_END)) {
                 item->pos.y_rot -= PHD_DEGREE * 9;
             }
 
@@ -169,8 +177,10 @@ void Torso_Control(int16_t item_num)
             if (!torso->flags) {
                 torso->flags = item->frame_number;
             } else if (
-                item->frame_number - torso->flags > 16
-                && item->frame_number - torso->flags < 23) {
+                g_Objects[item->object_number].anim_index + TORSO_TURN_R_ANIM
+                    == item->anim_number
+                && Item_TestFrameRange(
+                    item, TORSO_FRAME_TURN_R_START, TORSO_FRAME_TURN_R_END)) {
                 item->pos.y_rot += PHD_DEGREE * 14;
             }
 

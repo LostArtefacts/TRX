@@ -637,8 +637,12 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
         if (change->goal_anim_state == item->goal_anim_state) {
             ANIM_RANGE_STRUCT *range = &g_AnimRanges[change->range_index];
             for (int j = 0; j < change->number_ranges; j++, range++) {
-                if (item->frame_number >= range->start_frame
-                    && item->frame_number <= range->end_frame) {
+                if (Item_TestFrameRange(
+                        item,
+                        range->start_frame
+                            - g_Anims[item->anim_number].frame_base,
+                        range->end_frame
+                            - g_Anims[item->anim_number].frame_base)) {
                     item->anim_number = range->link_anim_num;
                     item->frame_number = range->link_frame_num;
                     return true;
@@ -768,4 +772,10 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
 bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
 {
     return item->frame_number == g_Anims[item->anim_number].frame_base + frame;
+}
+
+bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
+{
+    return item->frame_number >= g_Anims[item->anim_number].frame_base + start
+        && item->frame_number <= g_Anims[item->anim_number].frame_base + end;
 }

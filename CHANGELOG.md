@@ -6,6 +6,7 @@
 - added detection for animation commands to play SFX on land, water or both (#999)
 - added support for customizable enemy item drops via the gameflow (#967)
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
+- fixed Lara never using the step back down right animation (#1014)
 - improved frame scheduling to use less CPU (#985)
 
 ## [2.16](https://github.com/LostArtefacts/TR1X/compare/2.15.3...2.16) - 2023-09-20
