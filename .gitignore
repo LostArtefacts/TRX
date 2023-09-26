@@ -24,6 +24,5 @@ Release/
 *.user
 *.ipch
 .vs/
-*.sln
 *.vcxproj
 *.filters
