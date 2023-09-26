@@ -1,5 +1,6 @@
 #include "game/objects/creatures/mummy.h"
 
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
@@ -67,6 +68,9 @@ void Mummy_Control(int16_t item_num)
             g_GameInfo.current[g_CurrentLevel].stats.kill_count++;
         }
         Item_RemoveActive(item_num);
+        if (item->hit_points != DONT_TARGET) {
+            Carrier_TestItemDrops(item_num);
+        }
         item->hit_points = DONT_TARGET;
     }
 }

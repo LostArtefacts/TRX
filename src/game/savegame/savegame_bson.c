@@ -1,6 +1,7 @@
 #include "game/savegame/savegame_bson.h"
 
 #include "config.h"
+#include "game/carrier.h"
 #include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
@@ -586,6 +587,32 @@ static bool Savegame_BSON_LoadItems(
                 }
             }
         }
+
+        struct json_array_s *carried_items =
+            json_object_get_array(item_obj, "carried_items");
+        if (carried_items) {
+            CARRIED_ITEM *carried_item = item->carried_item;
+            for (int j = 0; j < (signed)carried_items->length; j++) {
+                if (!carried_item) {
+                    LOG_ERROR("Malformed save: carried item mismatch");
+                    return false;
+                }
+
+                struct json_object_s *carried_item_obj =
+                    json_array_get_object(carried_items, j);
+
+                carried_item->object_id = json_object_get_int(
+                    carried_item_obj, "object_id", carried_item->object_id);
+                carried_item->status = json_object_get_int(
+                    carried_item_obj, "status", carried_item->status);
+
+                carried_item = carried_item->next_item;
+            }
+
+            Carrier_TestItemDrops(i);
+        } else if (header_version < VERSION_4) {
+            Carrier_TestLegacyDrops(i);
+        }
     }
 
     return true;
@@ -1049,6 +1076,28 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                 json_object_append_int(item_obj, "fx_num", fx_num);
             }
         }
+
+        struct json_array_s *carried_items_arr = json_array_new();
+
+        CARRIED_ITEM *drop_item = item->carried_item;
+        while (drop_item) {
+            struct json_object_s *drop_obj = json_object_new();
+            json_object_append_int(drop_obj, "object_id", drop_item->object_id);
+
+            ITEM_STATUS status = drop_item->status;
+            if (status == IS_ACTIVE) {
+                ITEM_INFO *drop = &g_Items[drop_item->spawn_number];
+                if (drop->status == IS_INVISIBLE) {
+                    status = IS_INVISIBLE;
+                }
+            }
+            json_object_append_int(drop_obj, "status", status);
+
+            json_array_append_object(carried_items_arr, drop_obj);
+            drop_item = drop_item->next_item;
+        }
+
+        json_object_append_array(item_obj, "carried_items", carried_items_arr);
 
         json_array_append_object(items_arr, item_obj);
     }

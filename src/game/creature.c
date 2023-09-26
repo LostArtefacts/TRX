@@ -1,6 +1,7 @@
 #include "game/creature.h"
 
 #include "game/box.h"
+#include "game/carrier.h"
 #include "game/collide.h"
 #include "game/effects.h"
 #include "game/effects/gunshot.h"
@@ -418,6 +419,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         item->hit_points = DONT_TARGET;
         LOT_DisableBaddieAI(item_num);
         Item_RemoveActive(item_num);
+        Carrier_TestItemDrops(item_num);
         return false;
     }
 

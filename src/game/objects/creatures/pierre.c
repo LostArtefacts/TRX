@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/creature.h"
-#include "game/inventory.h"
 #include "game/items.h"
 #include "game/los.h"
 #include "game/lot.h"
@@ -114,13 +113,6 @@ void Pierre_Control(int16_t item_num)
         if (item->current_anim_state != PIERRE_DEATH) {
             item->current_anim_state = PIERRE_DEATH;
             Item_SwitchToAnim(item, PIERRE_DIE_ANIM, 0);
-            if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-                Item_Spawn(item, O_MAG_AMMO_ITEM);
-            } else {
-                Item_Spawn(item, O_MAGNUM_ITEM);
-            }
-            Item_Spawn(item, O_SCION_ITEM2);
-            Item_Spawn(item, O_KEY_ITEM1);
         }
     } else {
         AI_INFO info;

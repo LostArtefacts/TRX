@@ -15,6 +15,12 @@ typedef struct GAMEFLOW_SEQUENCE {
     void *data;
 } GAMEFLOW_SEQUENCE;
 
+typedef struct GAMEFLOW_DROP_ITEM_DATA {
+    int32_t enemy_num;
+    int32_t count;
+    int16_t *object_ids;
+} GAMEFLOW_DROP_ITEM_DATA;
+
 typedef struct GAMEFLOW_LEVEL {
     GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
@@ -52,6 +58,10 @@ typedef struct GAMEFLOW_LEVEL {
         int length;
         char **data_paths;
     } injections;
+    struct {
+        int count;
+        GAMEFLOW_DROP_ITEM_DATA *data;
+    } item_drops;
     GAME_OBJECT_ID lara_type;
 } GAMEFLOW_LEVEL;
 
@@ -77,6 +87,7 @@ typedef struct GAMEFLOW {
         int length;
         char **data_paths;
     } injections;
+    bool convert_dropped_guns;
 } GAMEFLOW;
 
 extern GAMEFLOW g_GameFlow;

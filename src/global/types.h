@@ -1369,6 +1369,13 @@ typedef struct ROOM_INFO {
     uint16_t flags;
 } ROOM_INFO;
 
+typedef struct CARRIED_ITEM {
+    int16_t object_id;
+    int16_t spawn_number;
+    enum ITEM_STATUS status;
+    struct CARRIED_ITEM *next_item;
+} CARRIED_ITEM;
+
 typedef struct ITEM_INFO {
     int32_t floor;
     uint32_t touch_bits;
@@ -1391,6 +1398,7 @@ typedef struct ITEM_INFO {
     int16_t shade;
     void *data;
     void *priv;
+    CARRIED_ITEM *carried_item;
     PHD_3DPOS pos;
     uint16_t active : 1;
     uint16_t status : 2;

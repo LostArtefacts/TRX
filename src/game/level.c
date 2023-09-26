@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "filesystem.h"
+#include "game/carrier.h"
 #include "game/effects.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
@@ -48,7 +49,7 @@ static bool Level_LoadSamples(MYFILE *fp);
 static bool Level_LoadTexturePages(MYFILE *fp);
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num);
-static void Level_CompleteSetup(void);
+static void Level_CompleteSetup(int32_t level_num);
 
 static bool Level_LoadFromFile(const char *filename, int32_t level_num)
 {
@@ -659,7 +660,7 @@ static bool Level_LoadTexturePages(MYFILE *fp)
     return true;
 }
 
-static void Level_CompleteSetup(void)
+static void Level_CompleteSetup(int32_t level_num)
 {
     Inject_AllInjections(&m_LevelInfo);
 
@@ -674,6 +675,9 @@ static void Level_CompleteSetup(void)
     for (int i = 0; i < m_LevelInfo.item_count; i++) {
         Item_Initialise(i);
     }
+
+    // Configure enemies who carry and drop items
+    Carrier_InitialiseLevel(level_num);
 
     // Move the prepared texture pages into g_TexturePagePtrs.
     uint8_t *base = GameBuf_Alloc(
@@ -723,7 +727,7 @@ bool Level_Load(int level_num)
         Level_LoadFromFile(g_GameFlow.levels[level_num].level_file, level_num);
 
     if (ret) {
-        Level_CompleteSetup();
+        Level_CompleteSetup(level_num);
     }
 
     Inject_Cleanup();

@@ -132,6 +132,7 @@ void Item_Initialise(int16_t item_num)
     item->touch_bits = 0;
     item->data = NULL;
     item->priv = NULL;
+    item->carried_item = NULL;
 
     if (item->flags & IF_NOT_VISIBLE) {
         item->status = IS_INVISIBLE;
