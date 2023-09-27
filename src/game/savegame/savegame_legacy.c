@@ -1,5 +1,6 @@
 #include "game/savegame/savegame_legacy.h"
 
+#include "game/carrier.h"
 #include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
@@ -600,6 +601,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
                 item->data = NULL;
             }
         }
+
+        Carrier_TestLegacyDrops(i);
     }
 
     Savegame_Legacy_ReadLara(&g_Lara);

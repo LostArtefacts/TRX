@@ -292,6 +292,9 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         g_GameFlow.injections.length = 0;
     }
 
+    g_GameFlow.convert_dropped_guns =
+        json_object_get_bool(obj, "convert_dropped_guns", false);
+
     return true;
 }
 
@@ -934,6 +937,53 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
         }
         cur->lara_type = (GAME_OBJECT_ID)tmp_i;
 
+        tmp_arr = json_object_get_array(jlvl_obj, "item_drops");
+        if (tmp_arr) {
+            cur->item_drops.count = (signed)tmp_arr->length;
+            cur->item_drops.data = Memory_Alloc(
+                sizeof(GAMEFLOW_DROP_ITEM_DATA) * (signed)tmp_arr->length);
+
+            for (int i = 0; i < cur->item_drops.count; i++) {
+                GAMEFLOW_DROP_ITEM_DATA *data = &cur->item_drops.data[i];
+                struct json_object_s *jlvl_data =
+                    json_array_get_object(tmp_arr, i);
+
+                data->enemy_num = json_object_get_int(
+                    jlvl_data, "enemy_num", JSON_INVALID_NUMBER);
+                if (data->enemy_num == JSON_INVALID_NUMBER) {
+                    LOG_ERROR(
+                        "level %d, item drop %d: 'enemy_num' must be a number",
+                        level_num, i);
+                    return false;
+                }
+
+                struct json_array_s *object_arr =
+                    json_object_get_array(jlvl_data, "object_ids");
+                if (!object_arr) {
+                    LOG_ERROR(
+                        "level %d, item drop %d: 'object_ids' must be an array",
+                        level_num, i);
+                    return false;
+                }
+
+                data->count = (signed)object_arr->length;
+                data->object_ids = Memory_Alloc(sizeof(int16_t) * data->count);
+                for (int j = 0; j < data->count; j++) {
+                    int id = json_array_get_int(object_arr, j, -1);
+                    if (id < 0 || id >= O_NUMBER_OF) {
+                        LOG_ERROR(
+                            "level %d, item drop %d, index %d: 'object_id' "
+                            "must be a valid object id",
+                            level_num, i, j);
+                        return false;
+                    }
+                    data->object_ids[j] = (int16_t)id;
+                }
+            }
+        } else {
+            cur->item_drops.count = 0;
+        }
+
         if (!GameFlow_LoadLevelSequence(jlvl_obj, level_num)) {
             return false;
         }
@@ -1028,6 +1078,15 @@ void GameFlow_Shutdown(void)
             for (int j = 0; j < g_GameFlow.levels[i].injections.length; j++) {
                 Memory_FreePointer(
                     &g_GameFlow.levels[i].injections.data_paths[j]);
+            }
+
+            if (g_GameFlow.levels[i].item_drops.count) {
+                for (int j = 0; j < g_GameFlow.levels[i].item_drops.count;
+                     j++) {
+                    Memory_FreePointer(
+                        &g_GameFlow.levels[i].item_drops.data[j].object_ids);
+                }
+                Memory_FreePointer(&g_GameFlow.levels[i].item_drops.data);
             }
 
             GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[i].sequence;

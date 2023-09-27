@@ -17,6 +17,7 @@
         "data/lara_jumping.bin",
         "data/uzi_sfx.bin",
     ],
+    "convert_dropped_guns": false,
 
     "levels": [
         // Level 0

@@ -86,6 +86,7 @@ sources = [
   'src/filesystem.c',
   'src/game/box.c',
   'src/game/camera.c',
+  'src/game/carrier.c',
   'src/game/clock.c',
   'src/game/collide.c',
   'src/game/creature.c',

@@ -410,6 +410,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - you can change the main menu backdrop
     - you can specify the anchor room for Bacon Lara
     - you can add bonus levels that unlock if all main game secrets are found
+    - you can specify which enemies drop items, and the number and types of those items
 - added automatic calculation of secret counts (no longer having to fiddle with the .exe to get correct secret stats)
 - added save game crystals game mode (enabled via gameflow)
 - added per-level customizable water color (with customizable blue component)

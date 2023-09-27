@@ -53,6 +53,11 @@
         "data/uzi_sfx.bin",
     ],
 
+    // When enabled and an enemy is configured to drop a gun, if Lara already has
+    // that gun, then the equivalent ammo will instead be dropped. Otherwise, the
+    // gun will always be dropped.
+    "convert_dropped_guns": false,
+
     // List of levels
     "levels": [
         // Level 0
@@ -305,6 +310,9 @@
                 "data/tihocan_itemrots.bin",
                 "data/tihocan_textures.bin",
             ],
+            "item_drops": [
+                {"enemy_num": 82, "object_ids": [86, 144, 129]},
+            ],
             "sequence": [
                 {"type": "start_game"},
                 {"type": "loop_game"},
@@ -406,6 +414,11 @@
                 "data/mines_itemrots.bin",
                 "data/mines_textures.bin",
                 "data/skateboardkid_textures.bin"
+            ],
+            "item_drops": [
+                {"enemy_num": 17, "object_ids": [86]},
+                {"enemy_num": 50, "object_ids": [87]},
+                {"enemy_num": 75, "object_ids": [85]},
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/canyon.avi"},

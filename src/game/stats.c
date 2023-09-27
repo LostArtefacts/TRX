@@ -1,6 +1,7 @@
 #include "game/stats.h"
 
 #include "config.h"
+#include "game/carrier.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
@@ -18,11 +19,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
-#define PIERRE_ITEMS 3
-#define SKATEKID_ITEMS 1
-#define COWBOY_ITEMS 1
-#define BALDY_ITEMS 1
 
 typedef struct TOTAL_STATS {
     uint32_t timer;
@@ -70,6 +66,7 @@ static void Stats_TraverseFloor(void);
 static void Stats_CheckTriggers(
     ROOM_INFO *r, int room_num, int x_floor, int y_floor);
 static bool Stats_IsObjectKillable(int32_t obj_num);
+static void Stats_IncludeKillableItem(int16_t item_num);
 
 static void Stats_TraverseFloor(void)
 {
@@ -148,9 +145,7 @@ static void Stats_CheckTriggers(
                     // Add Pierre pickup and kills if oneshot
                     if (item->object_number == O_PIERRE
                         && trig_flags & IF_ONESHOT) {
-                        m_KillableItems[idx] = true;
-                        m_LevelPickups += PIERRE_ITEMS;
-                        m_LevelKillables += 1;
+                        Stats_IncludeKillableItem(idx);
                     }
 
                     // Check for only valid pods
@@ -160,26 +155,13 @@ static void Stats_CheckTriggers(
                         int16_t bug_item_num = *(int16_t *)item->data;
                         const ITEM_INFO *bug_item = &g_Items[bug_item_num];
                         if (g_Objects[bug_item->object_number].loaded) {
-                            m_KillableItems[idx] = true;
-                            m_LevelKillables += 1;
+                            Stats_IncludeKillableItem(idx);
                         }
                     }
 
                     // Add killable if object triggered
                     if (Stats_IsObjectKillable(item->object_number)) {
-                        m_KillableItems[idx] = true;
-                        m_LevelKillables += 1;
-
-                        // Add mercenary pickups
-                        if (item->object_number == O_SKATEKID) {
-                            m_LevelPickups += SKATEKID_ITEMS;
-                        }
-                        if (item->object_number == O_COWBOY) {
-                            m_LevelPickups += COWBOY_ITEMS;
-                        }
-                        if (item->object_number == O_BALDY) {
-                            m_LevelPickups += BALDY_ITEMS;
-                        }
+                        Stats_IncludeKillableItem(idx);
                     }
                 }
             } while (!(trigger & END_BIT));
@@ -196,6 +178,13 @@ static bool Stats_IsObjectKillable(int32_t obj_num)
         }
     }
     return false;
+}
+
+static void Stats_IncludeKillableItem(int16_t item_num)
+{
+    m_KillableItems[item_num] = true;
+    m_LevelKillables += 1;
+    m_LevelPickups += Carrier_GetItemCount(item_num);
 }
 
 static void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type)
