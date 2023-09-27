@@ -1370,7 +1370,7 @@ typedef struct ROOM_INFO {
 } ROOM_INFO;
 
 typedef struct CARRIED_ITEM {
-    int16_t object_id;
+    GAME_OBJECT_ID object_id;
     int16_t spawn_number;
     enum ITEM_STATUS status;
     struct CARRIED_ITEM *next_item;
