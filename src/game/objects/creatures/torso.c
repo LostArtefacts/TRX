@@ -161,8 +161,7 @@ void Torso_Control(int16_t item_num)
             if (!torso->flags) {
                 torso->flags = item->frame_number;
             } else if (
-                g_Objects[item->object_number].anim_index + TORSO_TURN_L_ANIM
-                    == item->anim_number
+                Item_TestAnimEqual(item, TORSO_TURN_L_ANIM)
                 && Item_TestFrameRange(
                     item, TORSO_FRAME_TURN_L_START, TORSO_FRAME_TURN_L_END)) {
                 item->pos.y_rot -= PHD_DEGREE * 9;
@@ -177,8 +176,7 @@ void Torso_Control(int16_t item_num)
             if (!torso->flags) {
                 torso->flags = item->frame_number;
             } else if (
-                g_Objects[item->object_number].anim_index + TORSO_TURN_R_ANIM
-                    == item->anim_number
+                Item_TestAnimEqual(item, TORSO_TURN_R_ANIM)
                 && Item_TestFrameRange(
                     item, TORSO_FRAME_TURN_R_START, TORSO_FRAME_TURN_R_END)) {
                 item->pos.y_rot += PHD_DEGREE * 14;
