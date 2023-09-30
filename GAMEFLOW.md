@@ -370,8 +370,8 @@ Following are each of the properties available within a level.
     <td rowspan="12">String-to-string map</td>
     <td rowspan="12">Yes</td>
     <td colspan="2">
-      Keys and puzzle items names. The possible types are as follows. An empty
-      map is permitted.
+      Key and puzzle item names. The possible types are as follows. An empty map
+      is permitted.
     </td>
   </tr>
   <tr valign="top">
@@ -514,7 +514,7 @@ Following are each of the properties available within a level.
     <td>
       <code>title</code>
     </td>
-    <td>One - and only one - of these must defined.</td>
+    <td>One - and only one - of these must be defined.</td>
   </tr>  
   <tr valign="top">
     <td>
@@ -841,7 +841,7 @@ collects all secrets in the game's normal levels. These bonus levels behave just
 like normal levels, so you can include FMVs, cutscenes in-between and so on.
 
 Statistics are maintained separately, so normal end-game statistics are shown
-once, and then separate bonus levels statistics are shown on completion of those
+once, and then separate bonus level statistics are shown on completion of those
 levels.
 
 Following is a sample level configuration with three normal levels and two bonus
@@ -1243,7 +1243,7 @@ provided with the game achieves.
       <code>backpack.bin</code>
     </td>
     <td rowspan="2">
-      Injects mesh edits for Lara's backback, such that is becomes shallower.
+      Injects mesh edits for Lara's backback, such that it becomes shallower.
       This is only applied when the braid is enabled, to avoid the braid
       merging with the backpack. The different files are needed to address mesh
       structure differences between cutscene and normal levels.
