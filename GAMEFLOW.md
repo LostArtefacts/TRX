@@ -514,7 +514,7 @@ Following are each of the properties available within a level.
     <td>
       <code>title</code>
     </td>
-    <td>One - and only one - of these must be defined.</td>
+    <td>The main menu level. One - and only one - of these must be defined.</td>
   </tr>  
   <tr valign="top">
     <td>
@@ -616,6 +616,7 @@ default gameflow for examples.
   </tr>
   <tr valign="top">
     <td rowspan="2">
+      <a name="give-item"></a>
       <code>give_item</code>
     </td>
     <td>
@@ -623,7 +624,8 @@ default gameflow for examples.
     </td>
     <td>Integer</td>
     <td rowspan="2">
-      Adds the specified item and quantity to Lara's inventory.
+      Adds the specified item and quantity to Lara's inventory. If used, this
+      must appear <em>after</em> the <code>start_game</code> sequence.
     </td>
   </tr>
   <tr valign="top">
@@ -703,9 +705,25 @@ default gameflow for examples.
       <code>remove_ammo</code>
     </td>
     <td colspan="2" align="center">N/A</td>
-    <td>
-      Removes all ammo from Lara's inventory (guns and medipacks are retained).
-      If present, this must appear before the <code>start_game</code> sequence.
+    <td rowspan="4">
+      Any combination of these four sequences can be used to modify Lara's
+      inventory at the start of a level. There are a few simple points to note:
+      <ul>
+        <li>
+          If they are specified, they must appear <em>before</em> the
+          <code>start_game</code> sequence.
+        </li>
+        <li>
+          <code>remove_guns</code> does not remove the ammo for those guns, and
+          equally <code>remove_ammo</code> does not remove the guns. Each works
+          independently of the other.
+        </li>
+        <li>
+          These sequences can also work together with
+          <a href="#give-item"><code>give_item</code></a> - so, item removal is
+          performed first, followed by addition.
+        </li>
+      </ul>
     </td>
   </tr>
   <tr valign="top">
@@ -713,30 +731,18 @@ default gameflow for examples.
       <code>remove_guns</code>
     </td>
     <td colspan="2" align="center">N/A</td>
-    <td>
-      Removes all weapons from Lara's inventory. If present, this must appear
-      before the <code>start_game</code> sequence.
-    </td>
   </tr>
   <tr valign="top">
     <td>
       <code>remove_medipacks</code>
     </td>
     <td colspan="2" align="center">N/A</td>
-    <td>
-      Removes all medipacks from Lara's inventory. If present, this must appear
-      before the <code>start_game</code> sequence.
-    </td>
   </tr>
   <tr valign="top">
     <td>
       <code>remove_scions</code>
     </td>
     <td colspan="2" align="center">N/A</td>
-    <td>
-      Removes all scions from Lara's inventory. If present, this must appear
-      before the <code>start_game</code> sequence.
-    </td>
   </tr>
   <tr valign="top">
     <td>
@@ -1037,8 +1043,9 @@ This translates as follows.
 </table>
 
 You can also toggle `convert_dropped_guns` in
-[global properties](#convert-dropped-guns) so that guns that Lara already has
-are converted to ammo when they are dropped by enemies.
+[global properties](#convert-dropped-guns). When `true`, if an enemy drops a gun
+that Lara already has, it will be converted to the equivalent ammo. When
+`false`, the gun will always be dropped.
 
 ### Enemy validity
 
@@ -1234,8 +1241,9 @@ provided with the game achieves.
       <code>*_textures.bin</code>
     </td>
     <td>
-      Injects various texture fixes, such as gaps in the walls or wrongly
-      colored models. Refer to the README for a full list of fixes.
+      Injects fixes for texture issues in the original levels, such as gaps in
+      the walls or wrongly colored models. Refer to the README for a full list
+      of fixes.
     </td>
   </tr>
   <tr valign="top">
