@@ -1,50 +1,17 @@
 {
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
+    // Refer to https://github.com/LostArtefacts/TR1X/GAMEFLOW.md for usage.
 
-    // Path to the main menu background image.
     "main_menu_picture": "data/titleh.png",
-
-    // Path to the savegame file.
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
-
-    // Forces game mode selection to be disabled if true so the user can't
-    // select NG+ modes until a playthrough is completed. Overrides the config
-    // option enable_game_modes.
     "force_disable_game_modes": false,
-
-    // Forces save crystals to be enabled if true. Overrides the config option
-    // enable_save_crystals.
     "force_enable_save_crystals": false,
-
-    // Seconds to pass in the main menu before playing the demo.
     "demo_delay": 16,
-
-    // Water color (R, G, B). 1.0 means pass-through, 0.0 means no value at all.
-    // [0.6, 0.7, 1.0] is original DOS version filter,
-    // [0.45, 1.0, 1.0] is default TombATI filter.
     "water_color": [0.45, 1.0, 1.0],
-
-    // The distance (in tiles) at which objects and the world
-    // start to fade into blackness.
-    // The default hardcoded value in TR1 is 12.
-    // The default (disabled) value in TombATI is 72.
     "draw_distance_fade": 22.0,
-
-    // The distance (in tiles) at which objects and the world are clipped away.
-    // The default hardcoded value in TR1 is 20.
-    // The default (disabled) value in TombATI is 80.
     "draw_distance_max": 30.0,
-
-    // Global data injection file paths. Individual levels will inherit
-    // these unless inherit_injections is set to false on those levels.
-    // inherit_injections is by default true on all levels.
-    //
-    // Disclaimer: Custom levels should not use the injections mechanism and
-    // instead should provide data that is already correct and consistent.
-    // Reports of bugs about injection files not working for custom levels will
-    // not be considered.
     "injections": [
         "data/backpack.bin",
         "data/braid.bin",
@@ -52,46 +19,22 @@
         "data/lara_jumping.bin",
         "data/uzi_sfx.bin",
     ],
-
-    // When enabled and an enemy is configured to drop a gun, if Lara already has
-    // that gun, then the equivalent ammo will instead be dropped. Otherwise, the
-    // gun will always be dropped.
     "convert_dropped_guns": false,
 
-    // List of levels
     "levels": [
         // Level 0
         {
-            // Level title.
             "title": "Lara's Home",
-
-            // Level path.
             "file": "data/gym.phd",
-
-            // Level type. It can be one of the following values:
-            // - gym
-            // - normal
-            // - cutscene
-            // - current
             "type": "gym",
-
-            // Music track ID.
             "music": 0,
-
-            // Whether to use global injections.
             "inherit_injections": false,
-
-            // Specific injection data paths.
             "injections": [
                 "data/braid.bin",
                 "data/gym_textures.bin",
                 "data/lara_animations.bin",
                 "data/lara_jumping.bin",
             ],
-
-            // List of actions to execute when this level is played.
-            // Currently the list of allowed actions is expanding and as such
-            // it's not documented.
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
                 {"type": "start_game"},
@@ -100,16 +43,7 @@
                 {"type": "level_stats", "level_id": 0},
                 {"type": "exit_to_title"},
             ],
-
-            // Keys and puzzle items names.
             "strings": {},
-
-            // Water color can be customized per level, too.
-            // "water_color": [0.45, 1.0, 1.0],
-
-            // Fog can be customized per level, too.
-            // "draw_distance_fade": 22.0,
-            // "draw_distance_max": 30.0,
         },
 
         // Level 1
@@ -607,11 +541,6 @@
         },
 
         // Level 21
-        // This level is necessary to read TombATI's save files!
-        // OG has a special level called LV_CURRENT to handle save/load logic.
-        // TR1X does away without this hack. However, the existing save games
-        // expect the level count to match, otherwise the game will crash.
-        // Hence this dummy level.
         {
             "title": "Current Position",
             "file": "data/current.phd",

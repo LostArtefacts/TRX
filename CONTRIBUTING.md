@@ -117,7 +117,8 @@ a review from the interested parties.
 
 We keep a changelog in `CHANGELOG.md`. Anything other than an internal change
 or refactor needs an entry there. Furthermore, new features and OG bugfixes
-should be documented in README as well.
+should be documented in README as well. If your change modifies gameflow
+behavior, make sure to update `GAMEFLOW.md` as appropriate.
 
 ## Commit scope
 
