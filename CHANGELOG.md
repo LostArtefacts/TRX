@@ -8,6 +8,7 @@
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
 - fixed Lara never using the step back down right animation (#1014)
 - improved frame scheduling to use less CPU (#985)
+- rotated the Scion in Tomb of Qualopec to face the the main gate and Qualopec (#1007)
 
 ## [2.16](https://github.com/LostArtefacts/TR1X/compare/2.15.3...2.16) - 2023-09-20
 - added a new rendering mode called "framebuffer" that lets the game to run at lower resolutions (#114)  
