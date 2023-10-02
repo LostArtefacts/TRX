@@ -245,6 +245,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_buffering",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "disable_trex_collision",
           "DataType": "Bool",
           "DefaultValue": false

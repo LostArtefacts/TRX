@@ -5,6 +5,7 @@
 - added the bonus level type for custom levels that unlocks if all main game secrets are found (#645)
 - added detection for animation commands to play SFX on land, water or both (#999)
 - added support for customizable enemy item drops via the gameflow (#967)
+- added an option to enable F-key and inventory frame buffering (#591)
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
 - fixed Lara never using the step back down right animation (#1014)
 - improved frame scheduling to use less CPU (#985)
