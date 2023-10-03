@@ -401,16 +401,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added ability to disable healing between levels
 - added ability to disable certain item pickups (all medpacks, shotgun, Magnums and/or UZIs)
 - added ability to disable main menu demos, FMVs and/or cutscenes
-- added external game flow (no longer 2 different .exes for TR1 and TR1UB). For TRLE builders:
-    - the levels can be reordered
-    - the levels can be renamed
-    - all the strings can be translated, including keys and items
-    - you no longer are constrained to 4 or 21 levels only
-    - you can offer a custom Gym level
-    - you can change the main menu backdrop
-    - you can specify the anchor room for Bacon Lara
-    - you can add bonus levels that unlock if all main game secrets are found
-    - you can specify which enemies drop items, and the number and types of those items
+- added external game flow (no longer 2 different .exes for TR1 and TR1UB). Refer to [GAMEFLOW.md](GAMEFLOW.md) for details
 - added automatic calculation of secret counts (no longer having to fiddle with the .exe to get correct secret stats)
 - added save game crystals game mode (enabled via gameflow)
 - added per-level customizable water color (with customizable blue component)
