@@ -119,6 +119,10 @@
       "Title": "Desactivar escopeta",
       "Description": "Elimina todos las escopetas y cartuchos de escopeta del juego."
     },
+    "enable_buffering": {
+      "Title": "Habilitar búfer",
+      "Description": "Permite almacenar en búfer una entrada de movimiento pasando por el inventario (búfer de inventario) o cuadro por cuadro (búfer de cuadro) para obtener un control preciso de los movimientos de Lara."
+    },
     "disable_trex_collision": {
       "Title": "Desactivar la colisión de T-Rex muerto",
       "Description": "Elimina toda colisión con T-Rex al morir. \nEsto ayuda cuando el cuerpo del T-Rex bloquea el paso."
