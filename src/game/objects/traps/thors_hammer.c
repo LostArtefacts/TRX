@@ -148,10 +148,11 @@ void ThorsHandle_Control(int16_t item_num)
     Item_Animate(item);
 
     ITEM_INFO *head_item = item->data;
-    int32_t anim = item->anim_number - g_Objects[O_THORS_HANDLE].anim_index;
-    int32_t frm = item->frame_number - g_Anims[item->anim_number].frame_base;
-    head_item->anim_number = g_Objects[O_THORS_HEAD].anim_index + anim;
-    head_item->frame_number = g_Anims[head_item->anim_number].frame_base + frm;
+    int16_t relative_anim =
+        item->anim_number - g_Objects[item->object_number].anim_index;
+    int16_t relative_frame =
+        item->frame_number - g_Anims[item->anim_number].frame_base;
+    Item_SwitchToAnim(head_item, relative_anim, relative_frame);
     head_item->current_anim_state = item->current_anim_state;
 }
 

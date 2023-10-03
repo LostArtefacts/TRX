@@ -105,9 +105,8 @@ void Game_Cutscene_InitialiseHair(int32_t level_num)
     Lara_Initialise(level_num);
     Lara_Hair_SetLaraType(lara_type);
 
-    g_LaraItem->anim_number = g_Objects[lara_type].anim_index;
+    Item_SwitchToObjAnim(g_LaraItem, 0, 0, lara_type);
     ANIM_STRUCT *cut_anim = &g_Anims[g_LaraItem->anim_number];
-    g_LaraItem->frame_number = cut_anim->frame_base;
     g_LaraItem->current_anim_state = g_LaraItem->goal_anim_state =
         g_LaraItem->required_anim_state = cut_anim->current_anim_state;
 }

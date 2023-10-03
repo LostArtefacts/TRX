@@ -79,8 +79,11 @@ void BaconLara_Control(int16_t item_num)
         int32_t lh = Room_GetHeight(
             floor, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
 
-        item->anim_number = g_LaraItem->anim_number;
-        item->frame_number = g_LaraItem->frame_number;
+        int16_t relative_anim = g_LaraItem->anim_number
+            - g_Objects[g_LaraItem->object_number].anim_index;
+        int16_t relative_frame = g_LaraItem->frame_number
+            - g_Anims[g_LaraItem->anim_number].frame_base;
+        Item_SwitchToObjAnim(item, relative_anim, relative_frame, O_LARA);
         item->pos.x = x;
         item->pos.y = y;
         item->pos.z = z;

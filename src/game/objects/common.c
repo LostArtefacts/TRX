@@ -67,8 +67,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     // Save the frame number.
     int16_t old_frame_number = item->frame_number;
     // Modify item to be the anim for inv item and animation 0.
-    item->anim_number = g_Objects[item_num_option].anim_index;
-    item->frame_number = g_Anims[item->anim_number].frame_base;
+    Item_SwitchToObjAnim(item, 0, 0, item_num_option);
 
     OBJECT_INFO *object = &g_Objects[item_num_option];
 
