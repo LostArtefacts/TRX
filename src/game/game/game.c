@@ -12,6 +12,7 @@
 #include "game/lara/lara_hair.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/sound.h"
@@ -20,10 +21,18 @@
 #include "global/vars.h"
 #include "log.h"
 
+#define FRAME_BUFFER(key)                                                      \
+    do {                                                                       \
+        Game_DrawScene(true);                                                  \
+        Output_DumpScreen();                                                   \
+        Input_Update();                                                        \
+    } while (g_Input.key)
+
 static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
 static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
+static void Game_UpdateInput(void);
 
 static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 {
@@ -39,7 +48,7 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             return GF_NOP_BREAK;
         }
 
-        Input_Update();
+        Game_UpdateInput();
 
         if (level_type == GFL_DEMO) {
             if (g_Input.any) {
@@ -68,8 +77,8 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if ((g_InputDB.option || g_Input.save || g_Input.load
-             || g_OverlayFlag <= 0)
+        if (((g_Config.enable_buffering ? g_Input.option : g_InputDB.option)
+             || g_Input.save || g_Input.load || g_OverlayFlag <= 0)
             && !g_Lara.death_timer) {
             if (g_Camera.type == CAM_CINEMATIC) {
                 g_OverlayFlag = 0;
@@ -120,6 +129,22 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     return GF_NOP;
+}
+
+static void Game_UpdateInput(void)
+{
+    Input_Update();
+    if (!g_Config.enable_buffering) {
+        return;
+    }
+
+    if (g_Input.toggle_fps_counter) {
+        FRAME_BUFFER(toggle_fps_counter);
+    } else if (g_Input.toggle_bilinear_filter) {
+        FRAME_BUFFER(toggle_bilinear_filter);
+    } else if (g_Input.toggle_perspective_filter) {
+        FRAME_BUFFER(toggle_perspective_filter);
+    }
 }
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)

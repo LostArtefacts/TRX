@@ -223,6 +223,10 @@
       "Title": "Activer les FMV",
       "Description": "Active les FMV en jeu."
     },
+    "enable_buffering": {
+      "Title": "Activer la mise en mémoire tampon",
+      "Description": "Permet la mise en mémoire tampon d'une saisie de mouvement grâce au passage dans l'inventaire (inventory buffering) ou image par image (frame buffering) pour obtenir un contrôle précis des mouvements de Lara."
+    },
     "disable_trex_collision": {
       "Title": "Supprimer la colision avec le cadavre du T-Rex",
       "Description": "Supprime toutes les collisions avec le cadavre T-Rex. Cela aide lorsque son cadavre bloque un passage."
