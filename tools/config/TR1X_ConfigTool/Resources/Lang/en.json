@@ -223,6 +223,10 @@
       "Title": "Enable FMVs",
       "Description": "Enables FMVs playing."
     },
+    "enable_buffering": {
+      "Title": "Enable buffering",
+      "Description": "Enables F-key (1-frame) and inventory (2-frame) buffering to achieve precise control of Lara's movement."
+    },
     "disable_trex_collision": {
       "Title": "Remove dead T-Rex collision",
       "Description": "Removes all collision with T-Rex upon death. This helps when the T-Rex's body blocks the passage out."

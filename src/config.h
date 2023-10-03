@@ -123,6 +123,7 @@ typedef struct {
     bool enable_game_modes;
     bool enable_save_crystals;
     bool enable_uw_roll;
+    bool enable_buffering;
 
     struct {
         int32_t layout;
