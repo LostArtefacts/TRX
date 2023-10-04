@@ -8,6 +8,9 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#define EXTRA_ANIM_PLACE_BAR 0
+#define EXTRA_ANIM_DIE_GOLD 1
+
 static int16_t m_MidasBounds[12] = {
     -700,
     +700,
@@ -41,8 +44,7 @@ void MidasTouch_Collision(
         && lara_item->pos.z < item->pos.z + 512) {
         lara_item->current_anim_state = LS_DIE_MIDAS;
         lara_item->goal_anim_state = LS_DIE_MIDAS;
-        lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index + 1;
-        lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
+        Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_DIE_GOLD, 0, O_LARA_EXTRA);
         lara_item->hit_points = -1;
         lara_item->gravity_status = 0;
         g_Lara.air = -1;
@@ -89,8 +91,7 @@ void MidasTouch_Collision(
         Inv_AddItem(O_PUZZLE_ITEM1);
         lara_item->current_anim_state = LS_USE_MIDAS;
         lara_item->goal_anim_state = LS_USE_MIDAS;
-        lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = g_Anims[item->anim_number].frame_base;
+        Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
         g_Lara.gun_status = LGS_HANDS_BUSY;
     }
 }

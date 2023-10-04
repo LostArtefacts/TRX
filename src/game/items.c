@@ -524,7 +524,14 @@ bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index)
 
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame)
 {
-    item->anim_number = g_Objects[item->object_number].anim_index + anim_index;
+    Item_SwitchToObjAnim(item, anim_index, frame, item->object_number);
+}
+
+void Item_SwitchToObjAnim(
+    ITEM_INFO *item, int16_t anim_index, int16_t frame,
+    GAME_OBJECT_ID object_number)
+{
+    item->anim_number = g_Objects[object_number].anim_index + anim_index;
     item->frame_number = g_Anims[item->anim_number].frame_base + frame;
 }
 

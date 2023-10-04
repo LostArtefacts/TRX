@@ -16,6 +16,8 @@
 
 #include <stdbool.h>
 
+#define EXTRA_ANIM_PEDESTAL_SCION 0
+#define EXTRA_ANIM_HOLDER_SCION 0
 #define LF_PICKUPSCION 44
 
 static PHD_VECTOR m_Scion_Position = { 0, 640, -310 };
@@ -166,8 +168,8 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         Lara_AlignPosition(item, &m_Scion_Position);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;
-        lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
+        Item_SwitchToObjAnim(
+            lara_item, EXTRA_ANIM_PEDESTAL_SCION, 0, O_LARA_EXTRA);
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
@@ -199,8 +201,8 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         Lara_AlignPosition(item, &m_Scion_Position4);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;
-        lara_item->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
-        lara_item->frame_number = g_Anims[lara_item->anim_number].frame_base;
+        Item_SwitchToObjAnim(
+            lara_item, EXTRA_ANIM_HOLDER_SCION, 0, O_LARA_EXTRA);
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;

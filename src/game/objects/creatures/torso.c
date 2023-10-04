@@ -15,6 +15,7 @@
 
 #include <stdbool.h>
 
+#define EXTRA_ANIM_TORSO_SLAM 0
 #define TORSO_TURN_L_ANIM 8
 #define TORSO_DIE_ANIM 13
 #define TORSO_TURN_R_ANIM 17
@@ -206,9 +207,8 @@ void Torso_Control(int16_t item_num)
                 || g_LaraItem->hit_points <= 0) {
                 item->goal_anim_state = TORSO_KILL;
 
-                g_LaraItem->anim_number = g_Objects[O_LARA_EXTRA].anim_index;
-                g_LaraItem->frame_number =
-                    g_Anims[g_LaraItem->anim_number].frame_base;
+                Item_SwitchToObjAnim(
+                    g_LaraItem, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
                 g_LaraItem->current_anim_state = LS_SPECIAL;
                 g_LaraItem->goal_anim_state = LS_SPECIAL;
                 g_LaraItem->room_number = item->room_number;

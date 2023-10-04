@@ -37,6 +37,9 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 
 bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index);
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame);
+void Item_SwitchToObjAnim(
+    ITEM_INFO *item, int16_t anim_index, int16_t frame,
+    GAME_OBJECT_ID object_number);
 void Item_Animate(ITEM_INFO *item);
 bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim);
 void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags);

@@ -37,7 +37,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
     ITEM_INFO *item;
     FLOOR_INFO *floor;
     int32_t x, y, z;
-    int16_t room_number, ceiling, old_anim, old_frame, bat_height;
+    int16_t room_number, ceiling, bat_height;
     int16_t *bounds;
 
     item = &g_Items[item_num];
@@ -54,15 +54,16 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
         // The bats animation and frame have to be changed to the hanging
         // one to properly measure them. Save it so it can be restored
         // after.
-        old_anim = item->anim_number;
-        old_frame = item->frame_number;
+        int16_t old_anim =
+            item->anim_number - g_Objects[item->object_number].anim_index;
+        int16_t old_frame =
+            item->frame_number - g_Anims[item->anim_number].frame_base;
 
-        item->anim_number = g_Objects[item->object_number].anim_index;
-        item->frame_number = g_Anims[item->anim_number].frame_base;
+        Item_SwitchToAnim(item, 0, 0);
+
         bounds = Item_GetBoundsAccurate(item);
 
-        item->anim_number = old_anim;
-        item->frame_number = old_frame;
+        Item_SwitchToAnim(item, old_anim, old_frame);
 
         bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
 
