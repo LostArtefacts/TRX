@@ -1,5 +1,6 @@
 #include "game/objects/creatures/rat.h"
 
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
@@ -205,6 +206,7 @@ void Vole_Control(int16_t item_num)
         if (item->current_anim_state != VOLE_DEATH) {
             item->current_anim_state = VOLE_DEATH;
             Item_SwitchToAnim(item, VOLE_DIE_ANIM, 0);
+            Carrier_TestItemDrops(item_num);
         }
 
         Creature_Head(item, head);

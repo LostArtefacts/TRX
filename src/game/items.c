@@ -1,6 +1,7 @@
 #include "game/items.h"
 
 #include "config.h"
+#include "game/carrier.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -54,6 +55,8 @@ void Item_Control(void)
         }
         item_num = item->next_active;
     }
+
+    Carrier_AnimateDrops();
 }
 
 void Item_Kill(int16_t item_num)

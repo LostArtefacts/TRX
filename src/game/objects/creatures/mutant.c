@@ -1,5 +1,6 @@
 #include "game/objects/creatures/mutant.h"
 
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/effects/exploding_death.h"
@@ -122,6 +123,7 @@ void Mutant_FlyerControl(int16_t item_num)
             LOT_DisableBaddieAI(item_num);
             Item_Kill(item_num);
             item->status = IS_DEACTIVATED;
+            Carrier_TestItemDrops(item_num);
             return;
         }
     } else {
