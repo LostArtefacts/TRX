@@ -4,6 +4,7 @@
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -13,11 +14,17 @@
 #include <stddef.h>
 
 #define NO_OBJECT O_NUMBER_OF
+#define DROP_FAST_RATE GRAVITY
+#define DROP_SLOW_RATE 1
+#define DROP_FAST_TURN (PHD_DEGREE * 5)
+#define DROP_SLOW_TURN (PHD_DEGREE * 3)
 
 typedef struct GAME_OBJECT_PAIR {
     const GAME_OBJECT_ID key_id;
     const GAME_OBJECT_ID value_id;
 } GAME_OBJECT_PAIR;
+
+static int16_t m_AnimatingCount = 0;
 
 static ITEM_INFO *Carrier_GetCarrier(int16_t item_num);
 static bool Carrier_IsObjectType(
@@ -26,9 +33,11 @@ static GAME_OBJECT_ID Carrier_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
 
 static const GAME_OBJECT_ID m_CarrierObjects[] = {
-    O_WOLF,   O_BEAR,   O_BAT,     O_LION,  O_LIONESS, O_PUMA,   O_APE,
-    O_TREX,   O_RAPTOR, O_CENTAUR, O_MUMMY, O_LARSON,  O_PIERRE, O_SKATEKID,
-    O_COWBOY, O_BALDY,  O_NATLA,   O_TORSO, NO_OBJECT
+    O_WOLF,    O_BEAR,     O_BAT,      O_CROCODILE, O_ALLIGATOR, O_LION,
+    O_LIONESS, O_PUMA,     O_APE,      O_RAT,       O_VOLE,      O_TREX,
+    O_RAPTOR,  O_WARRIOR1, O_WARRIOR2, O_WARRIOR3,  O_CENTAUR,   O_MUMMY,
+    O_LARSON,  O_PIERRE,   O_SKATEKID, O_COWBOY,    O_BALDY,     O_NATLA,
+    O_TORSO,   NO_OBJECT
 };
 
 static const GAME_OBJECT_ID m_PlaceholderObjects[] = { O_STATUE, O_PODS,
@@ -61,6 +70,8 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
 
 void Carrier_InitialiseLevel(int32_t level_num)
 {
+    m_AnimatingCount = 0;
+
     int32_t total_item_count = g_LevelItemCount;
     GAMEFLOW_LEVEL level = g_GameFlow.levels[level_num];
     for (int i = 0; i < level.item_drops.count; i++) {
@@ -95,15 +106,17 @@ void Carrier_InitialiseLevel(int32_t level_num)
         for (int i = 0; i < data->count; i++) {
             drop->object_id = data->object_ids[i];
             drop->spawn_number = NO_ITEM;
+            drop->room_number = NO_ROOM;
+            drop->fall_speed = 0;
 
             if (Carrier_IsObjectType(drop->object_id, m_DropObjects)) {
-                drop->status = IS_NOT_ACTIVE;
+                drop->status = DS_CARRIED;
                 total_item_count++;
             } else {
                 LOG_WARNING(
                     "Items of type %d cannot be carried", drop->object_id);
                 drop->object_id = NO_OBJECT;
-                drop->status = IS_INVISIBLE;
+                drop->status = DS_COLLECTED;
             }
 
             if (i < data->count - 1) {
@@ -181,11 +194,25 @@ int32_t Carrier_GetItemCount(int16_t item_num)
     return count;
 }
 
+DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
+{
+    // This allows us to save drops as still being carried to allow accurate
+    // placement again in Carrier_TestItemDrops on load.
+    if (item->status == DS_DROPPED) {
+        ITEM_INFO *pickup = &g_Items[item->spawn_number];
+        return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_CARRIED;
+    } else if (item->status == DS_FALLING) {
+        return DS_CARRIED;
+    }
+
+    return item->status;
+}
+
 void Carrier_TestItemDrops(int16_t item_num)
 {
     ITEM_INFO *carrier = &g_Items[item_num];
     CARRIED_ITEM *item = carrier->carried_item;
-    if (carrier->status != IS_DEACTIVATED || !item
+    if (carrier->hit_points > 0 || !item
         || (carrier->object_number == O_PIERRE
             && !(carrier->flags & IF_ONESHOT))) {
         return;
@@ -195,7 +222,7 @@ void Carrier_TestItemDrops(int16_t item_num)
     // least one item. Ensure that each item has not already spawned,
     // convert guns to ammo if applicable, and spawn the items.
     do {
-        if (item->status == IS_INVISIBLE) {
+        if (item->status != DS_CARRIED) {
             continue;
         }
 
@@ -207,14 +234,26 @@ void Carrier_TestItemDrops(int16_t item_num)
         }
 
         item->spawn_number = Item_Spawn(carrier, object_id);
-        item->status = IS_ACTIVE;
+        item->status = DS_FALLING;
+        m_AnimatingCount++;
+
+        if (item->room_number != NO_ROOM) {
+            // Handle reloading a save with a falling or landed item.
+            ITEM_INFO *pickup = &g_Items[item->spawn_number];
+            pickup->pos = item->pos;
+            pickup->fall_speed = item->fall_speed;
+            if (pickup->room_number != item->room_number) {
+                Item_NewRoom(item->spawn_number, item->room_number);
+            }
+        }
+
     } while ((item = item->next_item));
 }
 
 void Carrier_TestLegacyDrops(int16_t item_num)
 {
     ITEM_INFO *carrier = &g_Items[item_num];
-    if (carrier->status != IS_DEACTIVATED) {
+    if (carrier->hit_points > 0) {
         return;
     }
 
@@ -234,8 +273,68 @@ void Carrier_TestLegacyDrops(int16_t item_num)
         CARRIED_ITEM *item = carrier->carried_item;
         while (item) {
             // Simulate Lara having picked up the item.
-            item->status = IS_INVISIBLE;
+            item->status = DS_COLLECTED;
             item = item->next_item;
         }
+    }
+}
+
+void Carrier_AnimateDrops(void)
+{
+    if (!m_AnimatingCount) {
+        return;
+    }
+
+    // Make items that spawn in mid-air or water gracefully fall to the floor.
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *carrier = &g_Items[i];
+        CARRIED_ITEM *item = carrier->carried_item;
+        if (!item) {
+            continue;
+        }
+
+        do {
+            if (item->status != DS_FALLING) {
+                continue;
+            }
+
+            ITEM_INFO *pickup = &g_Items[item->spawn_number];
+            int16_t room_num = pickup->room_number;
+            FLOOR_INFO *floor = Room_GetFloor(
+                pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
+            int16_t height = Room_GetHeight(
+                floor, pickup->pos.x, pickup->pos.y, pickup->pos.z);
+            bool in_water =
+                g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
+
+            if (floor->pit_room == NO_ROOM && pickup->pos.y >= height) {
+                item->status = DS_DROPPED;
+                pickup->pos.y = height;
+                pickup->fall_speed = 0;
+                m_AnimatingCount--;
+            } else {
+                pickup->fall_speed +=
+                    (!in_water && pickup->fall_speed < FASTFALL_SPEED)
+                    ? DROP_FAST_RATE
+                    : DROP_SLOW_RATE;
+                pickup->pos.y += pickup->fall_speed;
+                pickup->pos.y_rot += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
+
+                if (floor->pit_room != NO_ROOM
+                    && pickup->pos.y > (floor->floor << 8)) {
+                    room_num = floor->pit_room;
+                }
+            }
+
+            if (room_num != pickup->room_number) {
+                Item_NewRoom(item->spawn_number, room_num);
+            }
+
+            // Track animating status in the carrier for saving/loading.
+            item->pos = pickup->pos;
+            item->room_number = pickup->room_number;
+            item->fall_speed = pickup->fall_speed;
+
+        } while ((item = item->next_item));
     }
 }

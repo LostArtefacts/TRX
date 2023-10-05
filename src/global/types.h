@@ -1369,10 +1369,20 @@ typedef struct ROOM_INFO {
     uint16_t flags;
 } ROOM_INFO;
 
+typedef enum DROP_STATUS {
+    DS_CARRIED = 0,
+    DS_FALLING = 1,
+    DS_DROPPED = 2,
+    DS_COLLECTED = 3,
+} DROP_STATUS;
+
 typedef struct CARRIED_ITEM {
     GAME_OBJECT_ID object_id;
     int16_t spawn_number;
-    enum ITEM_STATUS status;
+    PHD_3DPOS pos;
+    int16_t room_number;
+    int16_t fall_speed;
+    DROP_STATUS status;
     struct CARRIED_ITEM *next_item;
 } CARRIED_ITEM;
 

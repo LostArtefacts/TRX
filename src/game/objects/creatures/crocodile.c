@@ -1,6 +1,7 @@
 #include "game/objects/creatures/crocodile.h"
 
 #include "config.h"
+#include "game/carrier.h"
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
@@ -241,6 +242,7 @@ void Alligator_Control(int16_t item_num)
             item->current_anim_state = ALLIGATOR_DEATH;
             Item_SwitchToAnim(item, ALLIGATOR_DIE_ANIM, 0);
             item->hit_points = DONT_TARGET;
+            Carrier_TestItemDrops(item_num);
         }
 
         wh = Room_GetWaterHeight(

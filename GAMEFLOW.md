@@ -1049,19 +1049,34 @@ that Lara already has, it will be converted to the equivalent ammo. When
 
 ### Enemy validity
 
-The majority of enemies are permitted to carry and drop items. This includes
-regular enemy types as well as Atlantean pods (objects 163, 181) and centaur
-statues (object 161). For pods, this will only work if the enemy within is a
-centaur or Torso.
+All enemy types are permitted to carry and drop items. This includes regular
+enemies as well as Atlantean pods (objects 163, 181) and centaur statues
+(object 161). For pods, the items will be allocated to the creature within
+(obviously empty pods are excluded).
 
-Following is a list of those enemies that are *excluded* from dropping items.
-The gameflow will ignore drops for these enemies if they are defined, and a
-suitable warning message will be produced in the log file.
+Items dropped by flying or swimming creatures will fall to the ground.
+
+For clarity, following is a list of all TR1 enemy type IDs, which you can
+reference when building your gameflow. The gameflow will ignore drops for
+non-enemy type objects, and a suitable warning message will be produced in the
+log file.
 
 <table>
   <tr valign="top" align="left">
     <th>Object ID
     <th>Name</th>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>Wolf</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>Bear</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td>Bat</td>
   </tr>
   <tr>
     <td>10</td>
@@ -1072,12 +1087,36 @@ suitable warning message will be produced in the log file.
     <td>Alligator</td>
   </tr>
   <tr>
+    <td>12</td>
+    <td>Lion</td>
+  </tr>
+  <tr>
+    <td>13</td>
+    <td>Lioness</td>
+  </tr>
+  <tr>
+    <td>14</td>
+    <td>Puma</td>
+  </tr>
+  <tr>
+    <td>15</td>
+    <td>Ape</td>
+  </tr>
+  <tr>
     <td>16</td>
     <td>Rat</td>
   </tr>
   <tr>
     <td>17</td>
     <td>Vole</td>
+  </tr>
+  <tr>
+    <td>18</td>
+    <td>T-rex</td>
+  </tr>
+  <tr>
+    <td>19</td>
+    <td>Raptor</td>
   </tr>
   <tr>
     <td>20</td>
@@ -1090,6 +1129,42 @@ suitable warning message will be produced in the log file.
   <tr>
     <td>22</td>
     <td>Grounded mutant (non-shooter)</td>
+  </tr>
+  <tr>
+    <td>23</td>
+    <td>Centaur</td>
+  </tr>
+  <tr>
+    <td>24</td>
+    <td>Mummy (Tomb of Qualopec)</td>
+  </tr>
+  <tr>
+    <td>27</td>
+    <td>Larson</td>
+  </tr>
+  <tr>
+    <td>28</td>
+    <td>Pierre (not runaway)</td>
+  </tr>
+  <tr>
+    <td>30</td>
+    <td>Skate kid</td>
+  </tr>
+  <tr>
+    <td>31</td>
+    <td>Cowboy</td>
+  </tr>
+  <tr>
+    <td>32</td>
+    <td>Kold</td>
+  </tr>
+  <tr>
+    <td>33</td>
+    <td>Natla (items drop after second phase)</td>
+  </tr>
+  <tr>
+    <td>34</td>
+    <td>Torso</td>
   </tr>
 </table>
 

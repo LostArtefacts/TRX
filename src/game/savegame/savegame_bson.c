@@ -603,6 +603,18 @@ static bool Savegame_BSON_LoadItems(
 
                 carried_item->object_id = json_object_get_int(
                     carried_item_obj, "object_id", carried_item->object_id);
+                carried_item->pos.x = json_object_get_int(
+                    carried_item_obj, "x", carried_item->pos.x);
+                carried_item->pos.y = json_object_get_int(
+                    carried_item_obj, "y", carried_item->pos.y);
+                carried_item->pos.z = json_object_get_int(
+                    carried_item_obj, "z", carried_item->pos.z);
+                carried_item->pos.y_rot = json_object_get_int(
+                    carried_item_obj, "y_rot", carried_item->pos.y_rot);
+                carried_item->room_number = json_object_get_int(
+                    carried_item_obj, "room_num", carried_item->room_number);
+                carried_item->fall_speed = json_object_get_int(
+                    carried_item_obj, "fall_speed", carried_item->fall_speed);
                 carried_item->status = json_object_get_int(
                     carried_item_obj, "status", carried_item->status);
 
@@ -1079,18 +1091,20 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
 
         struct json_array_s *carried_items_arr = json_array_new();
 
-        CARRIED_ITEM *drop_item = item->carried_item;
+        const CARRIED_ITEM *drop_item = item->carried_item;
         while (drop_item) {
             struct json_object_s *drop_obj = json_object_new();
             json_object_append_int(drop_obj, "object_id", drop_item->object_id);
+            json_object_append_int(drop_obj, "x", drop_item->pos.x);
+            json_object_append_int(drop_obj, "y", drop_item->pos.y);
+            json_object_append_int(drop_obj, "z", drop_item->pos.z);
+            json_object_append_int(drop_obj, "y_rot", drop_item->pos.y_rot);
+            json_object_append_int(
+                drop_obj, "room_num", drop_item->room_number);
+            json_object_append_int(
+                drop_obj, "fall_speed", drop_item->fall_speed);
 
-            ITEM_STATUS status = drop_item->status;
-            if (status == IS_ACTIVE) {
-                ITEM_INFO *drop = &g_Items[drop_item->spawn_number];
-                if (drop->status == IS_INVISIBLE) {
-                    status = IS_INVISIBLE;
-                }
-            }
+            DROP_STATUS status = Carrier_GetSaveStatus(drop_item);
             json_object_append_int(drop_obj, "status", status);
 
             json_array_append_object(carried_items_arr, drop_obj);
