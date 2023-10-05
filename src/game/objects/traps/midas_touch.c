@@ -5,11 +5,13 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
+#include "game/overlay.h"
 #include "global/const.h"
 #include "global/vars.h"
 
 #define EXTRA_ANIM_PLACE_BAR 0
 #define EXTRA_ANIM_DIE_GOLD 1
+#define LF_PICKUP_GOLD_BAR 113
 
 static int16_t m_MidasBounds[12] = {
     -700,
@@ -36,6 +38,13 @@ void MidasTouch_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+
+    if (lara_item->current_anim_state == LS_USE_MIDAS) {
+        if (Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
+            Overlay_AddPickup(O_PUZZLE_ITEM1);
+            Inv_AddItem(O_PUZZLE_ITEM1);
+        }
+    }
 
     if (!lara_item->gravity_status && lara_item->current_anim_state == LS_STOP
         && lara_item->pos.x > item->pos.x - 512
@@ -88,7 +97,6 @@ void MidasTouch_Collision(
 
     if (g_InvChosen == O_LEADBAR_OPTION) {
         Inv_RemoveItem(O_LEADBAR_OPTION);
-        Inv_AddItem(O_PUZZLE_ITEM1);
         lara_item->current_anim_state = LS_USE_MIDAS;
         lara_item->goal_anim_state = LS_USE_MIDAS;
         Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
