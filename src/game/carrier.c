@@ -31,6 +31,7 @@ static bool Carrier_IsObjectType(
     GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr);
 static GAME_OBJECT_ID Carrier_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
+static void Carrier_AnimateDrop(CARRIED_ITEM *item);
 
 static const GAME_OBJECT_ID m_CarrierObjects[] = {
     O_WOLF,    O_BEAR,     O_BAT,      O_CROCODILE, O_ALLIGATOR, O_LION,
@@ -289,52 +290,50 @@ void Carrier_AnimateDrops(void)
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *carrier = &g_Items[i];
         CARRIED_ITEM *item = carrier->carried_item;
-        if (!item) {
-            continue;
+        while (item) {
+            Carrier_AnimateDrop(item);
+            item = item->next_item;
         }
-
-        do {
-            if (item->status != DS_FALLING) {
-                continue;
-            }
-
-            ITEM_INFO *pickup = &g_Items[item->spawn_number];
-            int16_t room_num = pickup->room_number;
-            FLOOR_INFO *floor = Room_GetFloor(
-                pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
-            int16_t height = Room_GetHeight(
-                floor, pickup->pos.x, pickup->pos.y, pickup->pos.z);
-            bool in_water =
-                g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
-
-            if (floor->pit_room == NO_ROOM && pickup->pos.y >= height) {
-                item->status = DS_DROPPED;
-                pickup->pos.y = height;
-                pickup->fall_speed = 0;
-                m_AnimatingCount--;
-            } else {
-                pickup->fall_speed +=
-                    (!in_water && pickup->fall_speed < FASTFALL_SPEED)
-                    ? DROP_FAST_RATE
-                    : DROP_SLOW_RATE;
-                pickup->pos.y += pickup->fall_speed;
-                pickup->pos.y_rot += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
-
-                if (floor->pit_room != NO_ROOM
-                    && pickup->pos.y > (floor->floor << 8)) {
-                    room_num = floor->pit_room;
-                }
-            }
-
-            if (room_num != pickup->room_number) {
-                Item_NewRoom(item->spawn_number, room_num);
-            }
-
-            // Track animating status in the carrier for saving/loading.
-            item->pos = pickup->pos;
-            item->room_number = pickup->room_number;
-            item->fall_speed = pickup->fall_speed;
-
-        } while ((item = item->next_item));
     }
+}
+
+static void Carrier_AnimateDrop(CARRIED_ITEM *item)
+{
+    if (item->status != DS_FALLING) {
+        return;
+    }
+
+    ITEM_INFO *pickup = &g_Items[item->spawn_number];
+    int16_t room_num = pickup->room_number;
+    FLOOR_INFO *floor =
+        Room_GetFloor(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
+    int16_t height =
+        Room_GetHeight(floor, pickup->pos.x, pickup->pos.y, pickup->pos.z);
+    bool in_water = g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
+
+    if (floor->pit_room == NO_ROOM && pickup->pos.y >= height) {
+        item->status = DS_DROPPED;
+        pickup->pos.y = height;
+        pickup->fall_speed = 0;
+        m_AnimatingCount--;
+    } else {
+        pickup->fall_speed += (!in_water && pickup->fall_speed < FASTFALL_SPEED)
+            ? DROP_FAST_RATE
+            : DROP_SLOW_RATE;
+        pickup->pos.y += pickup->fall_speed;
+        pickup->pos.y_rot += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
+
+        if (floor->pit_room != NO_ROOM && pickup->pos.y > (floor->floor << 8)) {
+            room_num = floor->pit_room;
+        }
+    }
+
+    if (room_num != pickup->room_number) {
+        Item_NewRoom(item->spawn_number, room_num);
+    }
+
+    // Track animating status in the carrier for saving/loading.
+    item->pos = pickup->pos;
+    item->room_number = pickup->room_number;
+    item->fall_speed = pickup->fall_speed;
 }
