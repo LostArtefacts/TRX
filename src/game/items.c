@@ -535,7 +535,11 @@ void Item_SwitchToObjAnim(
     GAME_OBJECT_ID object_number)
 {
     item->anim_number = g_Objects[object_number].anim_index + anim_index;
-    item->frame_number = g_Anims[item->anim_number].frame_base + frame;
+    if (frame < 0) {
+        item->frame_number = g_Anims[item->anim_number].frame_end + frame + 1;
+    } else {
+        item->frame_number = g_Anims[item->anim_number].frame_base + frame;
+    }
 }
 
 void Item_Animate(ITEM_INFO *item)

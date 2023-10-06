@@ -9,6 +9,7 @@
 - added a pickup overlay for the Midas gold bar when it changes from lead (#1010)
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
 - fixed Lara never using the step back down right animation (#1014)
+- fixed dead crocodiles floating in drained rooms (#1031)
 - improved frame scheduling to use less CPU (#985)
 - improved and expanded gameflow documentation (#1018)
 - rotated the Scion in Tomb of Qualopec to face the the main gate and Qualopec (#1007)
