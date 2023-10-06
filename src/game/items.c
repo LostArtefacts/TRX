@@ -794,8 +794,18 @@ bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
     return item->frame_number == g_Anims[item->anim_number].frame_base + frame;
 }
 
+bool Item_TestRawFrameEqual(int16_t raw_frame, int16_t frame)
+{
+    return raw_frame == frame;
+}
+
 bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
 {
     return item->frame_number >= g_Anims[item->anim_number].frame_base + start
         && item->frame_number <= g_Anims[item->anim_number].frame_base + end;
+}
+
+bool Item_TestRawFrameRange(int16_t raw_frame, int16_t start, int16_t end)
+{
+    return raw_frame >= start && raw_frame <= end;
 }
