@@ -55,6 +55,15 @@ typedef enum {
 
 static BITE_INFO m_CrocodileBite = { 5, -21, 467, 9 };
 
+static const HYBRID_INFO m_CrocodileInfo = {
+    .land.id = O_CROCODILE,
+    .land.active_anim = CROCODILE_EMPTY,
+    .land.death_anim = CROCODILE_DIE_ANIM,
+    .land.death_state = CROCODILE_DEATH,
+    .water.id = O_ALLIGATOR,
+    .water.active_anim = ALLIGATOR_EMPTY
+};
+
 void Croc_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
@@ -178,17 +187,12 @@ void Croc_Control(int16_t item_num)
         Creature_Head(item, head);
     }
 
-    if (g_RoomInfo[item->room_number].flags & RF_UNDERWATER) {
-        item->object_number = O_ALLIGATOR;
-        item->current_anim_state =
-            g_Anims[item->anim_number].current_anim_state;
-        item->goal_anim_state = item->current_anim_state;
-        Item_SwitchToAnim(item, ALLIGATOR_EMPTY, 0);
-        if (croc) {
-            croc->LOT.step = WALL_L * 20;
-            croc->LOT.drop = -WALL_L * 20;
-            croc->LOT.fly = STEP_L / 16;
-        }
+    // Test conversion to alligator and set relevant pathfinding values.
+    int32_t wh;
+    if (Creature_TestHybridState(item_num, &wh, &m_CrocodileInfo) && croc) {
+        croc->LOT.step = WALL_L * 20;
+        croc->LOT.drop = -WALL_L * 20;
+        croc->LOT.fly = STEP_L / 16;
     }
 
     if (croc) {
@@ -245,25 +249,16 @@ void Alligator_Control(int16_t item_num)
             Carrier_TestItemDrops(item_num);
         }
 
-        wh = Room_GetWaterHeight(
-            item->pos.x, item->pos.y, item->pos.z, item->room_number);
-        if (wh == NO_HEIGHT) {
-            item->object_number = O_CROCODILE;
-            item->current_anim_state = CROCODILE_DEATH;
-            item->goal_anim_state = CROCODILE_DEATH;
-            Item_SwitchToAnim(item, CROCODILE_DIE_ANIM, 0);
-            room_num = item->room_number;
-            floor =
-                Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-            item->pos.y =
-                Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
-            item->pos.x_rot = 0;
-        } else if (item->pos.y > wh + ALLIGATOR_FLOAT_SPEED) {
-            item->pos.y -= ALLIGATOR_FLOAT_SPEED;
-        } else if (item->pos.y < wh) {
-            item->pos.y = wh;
-            if (gator) {
-                LOT_DisableBaddieAI(item_num);
+        // Test if we should convert to a crocodile. If not, control the death
+        // pose of the alligator in the water.
+        if (!Creature_TestHybridState(item_num, &wh, &m_CrocodileInfo)) {
+            if (item->pos.y > wh + ALLIGATOR_FLOAT_SPEED) {
+                item->pos.y -= ALLIGATOR_FLOAT_SPEED;
+            } else if (item->pos.y < wh) {
+                item->pos.y = wh;
+                if (gator) {
+                    LOT_DisableBaddieAI(item_num);
+                }
             }
         }
 
@@ -324,16 +319,8 @@ void Alligator_Control(int16_t item_num)
 
     Creature_Head(item, head);
 
-    wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
-    if (wh == NO_HEIGHT) {
-        item->object_number = O_CROCODILE;
-        item->current_anim_state =
-            g_Anims[item->anim_number].current_anim_state;
-        item->goal_anim_state = item->current_anim_state;
-        Item_SwitchToAnim(item, CROCODILE_EMPTY, 0);
-        item->pos.y = item->floor;
-        item->pos.x_rot = 0;
+    // Test alive conversion to crocodile and set relevant pathfinding values.
+    if (Creature_TestHybridState(item_num, &wh, &m_CrocodileInfo)) {
         gator->LOT.step = STEP_L;
         gator->LOT.drop = -STEP_L;
         gator->LOT.fly = 0;

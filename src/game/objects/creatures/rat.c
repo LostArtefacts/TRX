@@ -49,6 +49,13 @@ typedef enum {
 
 static BITE_INFO m_RatBite = { 0, -11, 108, 3 };
 
+static const HYBRID_INFO m_RatInfo = { .land.id = O_RAT,
+                                       .land.active_anim = RAT_EMPTY,
+                                       .land.death_anim = RAT_DIE_ANIM,
+                                       .land.death_state = RAT_DEATH,
+                                       .water.id = O_VOLE,
+                                       .water.active_anim = VOLE_EMPTY };
+
 void Rat_Setup(OBJECT_INFO *obj)
 {
     if (!obj->loaded) {
@@ -153,16 +160,8 @@ void Rat_Control(int16_t item_num)
 
     Creature_Head(item, head);
 
-    int32_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
-    if (wh != NO_HEIGHT) {
-        item->object_number = O_VOLE;
-        Item_SwitchToAnim(item, VOLE_EMPTY, 0);
-        item->current_anim_state =
-            g_Anims[item->anim_number].current_anim_state;
-        item->goal_anim_state = item->current_anim_state;
-        item->pos.y = wh;
-    }
+    int32_t wh;
+    Creature_TestHybridState(item_num, &wh, &m_RatInfo);
 
     Creature_Animate(item_num, angle, 0);
 }
@@ -219,8 +218,7 @@ void Vole_Control(int16_t item_num)
             item->object_number = O_RAT;
             item->current_anim_state = RAT_DEATH;
             item->goal_anim_state = RAT_DEATH;
-            Item_SwitchToAnim(item, RAT_DIE_ANIM, 0);
-            item->frame_number = g_Anims[item->anim_number].frame_end;
+            Item_SwitchToAnim(item, RAT_DIE_ANIM, -1);
             item->pos.y = item->floor;
         }
     } else {
@@ -255,15 +253,8 @@ void Vole_Control(int16_t item_num)
 
         Creature_Head(item, head);
 
-        int32_t wh = Room_GetWaterHeight(
-            item->pos.x, item->pos.y, item->pos.z, item->room_number);
-        if (wh == NO_HEIGHT) {
-            item->object_number = O_RAT;
-            Item_SwitchToAnim(item, RAT_EMPTY, 0);
-            item->current_anim_state =
-                g_Anims[item->anim_number].current_anim_state;
-            item->goal_anim_state = item->current_anim_state;
-        }
+        int32_t wh;
+        Creature_TestHybridState(item_num, &wh, &m_RatInfo);
 
         int32_t height = item->pos.y;
         item->pos.y = item->floor;

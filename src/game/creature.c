@@ -18,6 +18,11 @@
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
+static bool Creature_TestLandState(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+static bool Creature_TestWaterState(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+
 void Creature_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -705,4 +710,81 @@ bool Creature_ShootAtLara(
     }
 
     return hit;
+}
+
+bool Creature_TestHybridState(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+{
+    // Test the environment for a hybrid creature. Record the water height and
+    // return whether or not a type conversion has taken place.
+    ITEM_INFO *item = &g_Items[item_num];
+    return item->object_number == info->land.id
+        ? Creature_TestLandState(item_num, wh, info)
+        : Creature_TestWaterState(item_num, wh, info);
+}
+
+static bool Creature_TestLandState(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    *wh = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    if (*wh == NO_HEIGHT) {
+        return false;
+    }
+
+    if (item->hit_points <= 0) {
+        // Dead land creatures should remain in their pose permanently.
+        return false;
+    }
+
+    // The land creature is alive and the room has been flooded. Switch to the
+    // water creature.
+    item->object_number = info->water.id;
+    Item_SwitchToAnim(item, info->water.active_anim, 0);
+    item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
+    item->goal_anim_state = item->current_anim_state;
+    item->pos.y = *wh;
+
+    return true;
+}
+
+static bool Creature_TestWaterState(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+{
+    ITEM_INFO *item = &g_Items[item_num];
+    *wh = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+    if (*wh != NO_HEIGHT) {
+        return false;
+    }
+
+    // Switch to the land creature regardless of death state.
+    item->object_number = info->land.id;
+    item->pos.x_rot = 0;
+
+    if (item->hit_points > 0) {
+        Item_SwitchToAnim(item, info->land.active_anim, 0);
+        item->current_anim_state =
+            g_Anims[item->anim_number].current_anim_state;
+        item->goal_anim_state = item->current_anim_state;
+
+    } else {
+        Item_SwitchToAnim(item, info->land.death_anim, -1);
+        item->current_anim_state = info->land.death_state;
+        item->goal_anim_state = item->current_anim_state;
+
+        int16_t room_num = item->room_number;
+        FLOOR_INFO *floor =
+            Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        item->floor =
+            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+        item->pos.y = item->floor;
+
+        if (item->room_number != room_num) {
+            Item_NewRoom(item_num, room_num);
+        }
+    }
+
+    return true;
 }
