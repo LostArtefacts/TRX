@@ -42,5 +42,5 @@ bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info);
 bool Creature_ShootAtLara(
     ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation,
     int16_t damage);
-bool Creature_TestHybridState(
+bool Creature_EnsureHabitat(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info);

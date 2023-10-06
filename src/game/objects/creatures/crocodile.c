@@ -61,7 +61,7 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .land.death_anim = CROCODILE_DIE_ANIM,
     .land.death_state = CROCODILE_DEATH,
     .water.id = O_ALLIGATOR,
-    .water.active_anim = ALLIGATOR_EMPTY
+    .water.active_anim = ALLIGATOR_EMPTY,
 };
 
 void Croc_Setup(OBJECT_INFO *obj)
@@ -189,7 +189,7 @@ void Croc_Control(int16_t item_num)
 
     // Test conversion to alligator and set relevant pathfinding values.
     int32_t wh;
-    if (Creature_TestHybridState(item_num, &wh, &m_CrocodileInfo) && croc) {
+    if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo) && croc) {
         croc->LOT.step = WALL_L * 20;
         croc->LOT.drop = -WALL_L * 20;
         croc->LOT.fly = STEP_L / 16;
@@ -251,7 +251,7 @@ void Alligator_Control(int16_t item_num)
 
         // Test if we should convert to a crocodile. If not, control the death
         // pose of the alligator in the water.
-        if (!Creature_TestHybridState(item_num, &wh, &m_CrocodileInfo)) {
+        if (!Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
             if (item->pos.y > wh + ALLIGATOR_FLOAT_SPEED) {
                 item->pos.y -= ALLIGATOR_FLOAT_SPEED;
             } else if (item->pos.y < wh) {
@@ -320,7 +320,7 @@ void Alligator_Control(int16_t item_num)
     Creature_Head(item, head);
 
     // Test alive conversion to crocodile and set relevant pathfinding values.
-    if (Creature_TestHybridState(item_num, &wh, &m_CrocodileInfo)) {
+    if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
         gator->LOT.step = STEP_L;
         gator->LOT.drop = -STEP_L;
         gator->LOT.fly = 0;

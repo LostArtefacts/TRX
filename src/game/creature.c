@@ -18,9 +18,9 @@
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
-static bool Creature_TestLandState(
+static bool Creature_SwitchToWater(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
-static bool Creature_TestWaterState(
+static bool Creature_SwitchToLand(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
 
 void Creature_Initialise(int16_t item_num)
@@ -712,26 +712,28 @@ bool Creature_ShootAtLara(
     return hit;
 }
 
-bool Creature_TestHybridState(
+bool Creature_EnsureHabitat(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
 {
     // Test the environment for a hybrid creature. Record the water height and
     // return whether or not a type conversion has taken place.
     ITEM_INFO *item = &g_Items[item_num];
-    return item->object_number == info->land.id
-        ? Creature_TestLandState(item_num, wh, info)
-        : Creature_TestWaterState(item_num, wh, info);
-}
-
-static bool Creature_TestLandState(
-    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
-{
-    ITEM_INFO *item = &g_Items[item_num];
     *wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
+
+    return item->object_number == info->land.id
+        ? Creature_SwitchToWater(item_num, wh, info)
+        : Creature_SwitchToLand(item_num, wh, info);
+}
+
+static bool Creature_SwitchToWater(
+    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+{
     if (*wh == NO_HEIGHT) {
         return false;
     }
+
+    ITEM_INFO *item = &g_Items[item_num];
 
     if (item->hit_points <= 0) {
         // Dead land creatures should remain in their pose permanently.
@@ -749,15 +751,14 @@ static bool Creature_TestLandState(
     return true;
 }
 
-static bool Creature_TestWaterState(
+static bool Creature_SwitchToLand(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    *wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
     if (*wh != NO_HEIGHT) {
         return false;
     }
+
+    ITEM_INFO *item = &g_Items[item_num];
 
     // Switch to the land creature regardless of death state.
     item->object_number = info->land.id;

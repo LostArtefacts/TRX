@@ -49,12 +49,14 @@ typedef enum {
 
 static BITE_INFO m_RatBite = { 0, -11, 108, 3 };
 
-static const HYBRID_INFO m_RatInfo = { .land.id = O_RAT,
-                                       .land.active_anim = RAT_EMPTY,
-                                       .land.death_anim = RAT_DIE_ANIM,
-                                       .land.death_state = RAT_DEATH,
-                                       .water.id = O_VOLE,
-                                       .water.active_anim = VOLE_EMPTY };
+static const HYBRID_INFO m_RatInfo = {
+    .land.id = O_RAT,
+    .land.active_anim = RAT_EMPTY,
+    .land.death_anim = RAT_DIE_ANIM,
+    .land.death_state = RAT_DEATH,
+    .water.id = O_VOLE,
+    .water.active_anim = VOLE_EMPTY,
+};
 
 void Rat_Setup(OBJECT_INFO *obj)
 {
@@ -161,7 +163,7 @@ void Rat_Control(int16_t item_num)
     Creature_Head(item, head);
 
     int32_t wh;
-    Creature_TestHybridState(item_num, &wh, &m_RatInfo);
+    Creature_EnsureHabitat(item_num, &wh, &m_RatInfo);
 
     Creature_Animate(item_num, angle, 0);
 }
@@ -254,7 +256,7 @@ void Vole_Control(int16_t item_num)
         Creature_Head(item, head);
 
         int32_t wh;
-        Creature_TestHybridState(item_num, &wh, &m_RatInfo);
+        Creature_EnsureHabitat(item_num, &wh, &m_RatInfo);
 
         int32_t height = item->pos.y;
         item->pos.y = item->floor;
