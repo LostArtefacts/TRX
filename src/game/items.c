@@ -811,8 +811,3 @@ bool Item_TestAbsFrameRange(int16_t abs_frame, int16_t start, int16_t end)
 {
     return abs_frame >= start && abs_frame <= end;
 }
-
-bool Item_TestAbsFrameGreater(int16_t abs_frame, int16_t start)
-{
-    return abs_frame >= start;
-}
