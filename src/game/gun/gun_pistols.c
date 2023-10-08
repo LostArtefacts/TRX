@@ -31,7 +31,7 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
 void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
 {
     int16_t anil = g_Lara.left_arm.frame_number;
-    if (Item_TestAbsFrameRange(anil, LF_G_RECOIL, 1024)) {
+    if (Item_TestAbsFrameGreater(anil, LF_G_RECOIL)) {
         anil = LF_G_AIM_L;
     } else if (Item_TestAbsFrameRange(anil, LF_G_AIM + 1, LF_G_DRAW1 - 1)) {
         g_Lara.left_arm.x_rot -= g_Lara.left_arm.x_rot / anil;
@@ -42,7 +42,7 @@ void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
         g_Lara.left_arm.y_rot = 0;
         g_Lara.left_arm.z_rot = 0;
         anil = LF_G_DRAW2_L;
-    } else if (Item_TestAbsFrameRange(anil, LF_G_DRAW1 + 1, 1024)) {
+    } else if (Item_TestAbsFrameGreater(anil, LF_G_DRAW1 + 1)) {
         anil--;
         if (Item_TestAbsFrameEqual(anil, LF_G_DRAW2)) {
             Gun_Pistols_UndrawMeshLeft(weapon_type);
@@ -62,8 +62,7 @@ void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
         g_Lara.right_arm.y_rot = 0;
         g_Lara.right_arm.z_rot = 0;
         anir = LF_G_DRAW2_L;
-        // } else if (anir > LF_G_DRAW1) {
-    } else if (Item_TestAbsFrameRange(anir, LF_G_DRAW1 + 1, 1024)) {
+    } else if (Item_TestAbsFrameGreater(anir, LF_G_DRAW1 + 1)) {
         anir--;
         if (Item_TestAbsFrameEqual(anir, LF_G_DRAW2)) {
             Gun_Pistols_UndrawMeshRight(weapon_type);
