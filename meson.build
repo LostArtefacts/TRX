@@ -17,6 +17,7 @@ endif
 build_opts = [
   '-Wno-unused',
   '-D_GNU_SOURCE',
+  '-DMESON_BUILD',
 ]
 c_opts = []
 add_project_arguments(build_opts + c_opts, language: 'c')

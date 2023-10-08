@@ -2,7 +2,6 @@
 set -x
 set -e
 
-export CFLAGS=-DDOCKER_BUILD
 EXE_FILE=TR1X
 
 if [ ! -f /app/build/linux/build.ninja ]; then
