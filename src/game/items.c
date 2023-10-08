@@ -791,21 +791,23 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
 
 bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
 {
-    return item->frame_number == g_Anims[item->anim_number].frame_base + frame;
+    return Item_TestAbsFrameEqual(
+        item->frame_number, g_Anims[item->anim_number].frame_base + frame);
 }
 
-bool Item_TestRawFrameEqual(int16_t raw_frame, int16_t frame)
+bool Item_TestAbsFrameEqual(int16_t abs_frame, int16_t frame)
 {
-    return raw_frame == frame;
+    return abs_frame == frame;
 }
 
 bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
 {
-    return item->frame_number >= g_Anims[item->anim_number].frame_base + start
-        && item->frame_number <= g_Anims[item->anim_number].frame_base + end;
+    return Item_TestAbsFrameRange(
+        item->frame_number, g_Anims[item->anim_number].frame_base + start,
+        g_Anims[item->anim_number].frame_base + end);
 }
 
-bool Item_TestRawFrameRange(int16_t raw_frame, int16_t start, int16_t end)
+bool Item_TestAbsFrameRange(int16_t abs_frame, int16_t start, int16_t end)
 {
-    return raw_frame >= start && raw_frame <= end;
+    return abs_frame >= start && abs_frame <= end;
 }
