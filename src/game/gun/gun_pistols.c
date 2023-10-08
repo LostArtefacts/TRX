@@ -1,5 +1,6 @@
 #include "game/gun/gun_pistols.h"
 
+#include "game/anim.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -14,12 +15,12 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
 
-    if (!Item_TestAbsFrameRange(ani, LF_G_UNDRAW_START, LF_G_DRAW_END)) {
+    if (!Anim_TestAbsFrameRange(ani, LF_G_UNDRAW_START, LF_G_DRAW_END)) {
         ani = LF_G_UNDRAW_START;
-    } else if (Item_TestAbsFrameEqual(ani, LF_G_DRAW_START)) {
+    } else if (Anim_TestAbsFrameEqual(ani, LF_G_DRAW_START)) {
         Gun_Pistols_DrawMeshes(weapon_type);
         Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-    } else if (Item_TestAbsFrameEqual(ani, LF_G_DRAW_END)) {
+    } else if (Anim_TestAbsFrameEqual(ani, LF_G_DRAW_END)) {
         Gun_Pistols_Ready();
         ani = LF_G_AIM_START;
     }
@@ -31,47 +32,47 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
 void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
 {
     int16_t anil = g_Lara.left_arm.frame_number;
-    if (Item_TestAbsFrameRange(anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+    if (Anim_TestAbsFrameRange(anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anil = LF_G_AIM_END;
-    } else if (Item_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
+    } else if (Anim_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
         g_Lara.left_arm.x_rot -= g_Lara.left_arm.x_rot / anil;
         g_Lara.left_arm.y_rot -= g_Lara.left_arm.y_rot / anil;
         anil--;
-    } else if (Item_TestAbsFrameEqual(anil, LF_G_AIM_START)) {
+    } else if (Anim_TestAbsFrameEqual(anil, LF_G_AIM_START)) {
         g_Lara.left_arm.x_rot = 0;
         g_Lara.left_arm.y_rot = 0;
         g_Lara.left_arm.z_rot = 0;
         anil = LF_G_DRAW_END;
-    } else if (Item_TestAbsFrameRange(anil, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
+    } else if (Anim_TestAbsFrameRange(anil, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anil--;
-        if (Item_TestAbsFrameEqual(anil, LF_G_DRAW_START)) {
+        if (Anim_TestAbsFrameEqual(anil, LF_G_DRAW_START)) {
             Gun_Pistols_UndrawMeshLeft(weapon_type);
         }
     }
     g_Lara.left_arm.frame_number = anil;
 
     int16_t anir = g_Lara.right_arm.frame_number;
-    if (Item_TestAbsFrameRange(anir, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
+    if (Anim_TestAbsFrameRange(anir, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anir = LF_G_AIM_END;
-    } else if (Item_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
+    } else if (Anim_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
         g_Lara.right_arm.x_rot -= g_Lara.right_arm.x_rot / anir;
         g_Lara.right_arm.y_rot -= g_Lara.right_arm.y_rot / anir;
         anir--;
-    } else if (Item_TestAbsFrameEqual(anir, LF_G_AIM_START)) {
+    } else if (Anim_TestAbsFrameEqual(anir, LF_G_AIM_START)) {
         g_Lara.right_arm.x_rot = 0;
         g_Lara.right_arm.y_rot = 0;
         g_Lara.right_arm.z_rot = 0;
         anir = LF_G_DRAW_END;
-    } else if (Item_TestAbsFrameRange(anir, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
+    } else if (Anim_TestAbsFrameRange(anir, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anir--;
-        if (Item_TestAbsFrameEqual(anir, LF_G_DRAW_START)) {
+        if (Anim_TestAbsFrameEqual(anir, LF_G_DRAW_START)) {
             Gun_Pistols_UndrawMeshRight(weapon_type);
         }
     }
     g_Lara.right_arm.frame_number = anir;
 
-    if (Item_TestAbsFrameEqual(anil, LF_G_UNDRAW_START)
-        && Item_TestAbsFrameEqual(anir, LF_G_UNDRAW_START)) {
+    if (Anim_TestAbsFrameEqual(anil, LF_G_UNDRAW_START)
+        && Anim_TestAbsFrameEqual(anir, LF_G_UNDRAW_START)) {
         g_Lara.left_arm.lock = 0;
         g_Lara.right_arm.lock = 0;
         g_Lara.left_arm.frame_number = LF_G_AIM_START;
@@ -202,10 +203,10 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
 
     int16_t anir = g_Lara.right_arm.frame_number;
     if (g_Lara.right_arm.lock || (g_Input.action && !g_Lara.target)) {
-        if (Item_TestAbsFrameRange(anir, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
+        if (Anim_TestAbsFrameRange(anir, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
             anir++;
         } else if (
-            Item_TestAbsFrameEqual(anir, LF_G_AIM_END) && g_Input.action) {
+            Anim_TestAbsFrameEqual(anir, LF_G_AIM_END) && g_Input.action) {
             angles[0] = g_Lara.right_arm.y_rot + g_LaraItem->pos.y_rot;
             angles[1] = g_Lara.right_arm.x_rot;
             if (Gun_FireWeapon(
@@ -214,28 +215,28 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
                 Sound_Effect(winfo->sample_num, &g_LaraItem->pos, SPM_NORMAL);
             }
             anir = LF_G_RECOIL_START;
-        } else if (Item_TestAbsFrameRange(
+        } else if (Anim_TestAbsFrameRange(
                        anir, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
             anir++;
-            if (Item_TestAbsFrameEqual(
+            if (Anim_TestAbsFrameEqual(
                     anir, LF_G_RECOIL_START + winfo->recoil_frame)) {
                 anir = LF_G_AIM_END;
             }
         }
-    } else if (Item_TestAbsFrameRange(
+    } else if (Anim_TestAbsFrameRange(
                    anir, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anir = LF_G_AIM_END;
-    } else if (Item_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
+    } else if (Anim_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
         anir--;
     }
     g_Lara.right_arm.frame_number = anir;
 
     int16_t anil = g_Lara.left_arm.frame_number;
     if (g_Lara.left_arm.lock || (g_Input.action && !g_Lara.target)) {
-        if (Item_TestAbsFrameRange(anil, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
+        if (Anim_TestAbsFrameRange(anil, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
             anil++;
         } else if (
-            Item_TestAbsFrameEqual(anil, LF_G_AIM_END) && g_Input.action) {
+            Anim_TestAbsFrameEqual(anil, LF_G_AIM_END) && g_Input.action) {
             angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->pos.y_rot;
             angles[1] = g_Lara.left_arm.x_rot;
             if (Gun_FireWeapon(
@@ -244,18 +245,18 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
                 Sound_Effect(winfo->sample_num, &g_LaraItem->pos, SPM_NORMAL);
             }
             anil = LF_G_RECOIL_START;
-        } else if (Item_TestAbsFrameRange(
+        } else if (Anim_TestAbsFrameRange(
                        anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
             anil++;
-            if (Item_TestAbsFrameEqual(
+            if (Anim_TestAbsFrameEqual(
                     anil, LF_G_RECOIL_START + winfo->recoil_frame)) {
                 anil = LF_G_AIM_END;
             }
         }
-    } else if (Item_TestAbsFrameRange(
+    } else if (Anim_TestAbsFrameRange(
                    anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anil = LF_G_AIM_END;
-    } else if (Item_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
+    } else if (Anim_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
         anil--;
     }
     g_Lara.left_arm.frame_number = anil;
