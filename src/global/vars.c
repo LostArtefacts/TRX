@@ -101,7 +101,7 @@ int32_t g_LsAdder = 0;
 int32_t g_LsDivider = 0;
 SHADOW_INFO g_ShadowInfo = { 0 };
 
-#ifndef DOCKER_BUILD
+#ifndef MESON_BUILD
 const char *g_TR1XVersion = "TR1X (non-Docker build)";
 GAMEFLOW_DEFAULT_STRING g_GameFlowDefaultStrings[] = {
     { 0, NULL },
