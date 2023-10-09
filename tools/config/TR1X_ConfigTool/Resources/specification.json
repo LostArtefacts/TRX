@@ -78,6 +78,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_lean_jumping",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "enable_numeric_keys",
           "DataType": "Bool",
           "DefaultValue": true
