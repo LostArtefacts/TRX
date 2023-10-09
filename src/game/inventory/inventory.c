@@ -65,6 +65,9 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
         Viewport_Init(0, 0, width, height);
     }
 
+    int16_t old_fov = Viewport_GetFOV();
+    Viewport_SetFOV(PASSPORT_FOV * PHD_DEGREE);
+
     Output_SetupAboveWater(false);
 
     PHD_3DPOS viewer;
@@ -137,6 +140,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
     }
 
     Matrix_Pop();
+    Viewport_SetFOV(old_fov);
 }
 
 static void Inv_Construct(void)
