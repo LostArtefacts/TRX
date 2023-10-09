@@ -26,14 +26,14 @@ CONFIG g_Config = { 0 };
 static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
 
 static int Config_ReadEnum(
-    struct json_object_s *obj, const char *name, int8_t default_value,
+    struct json_object_s *obj, const char *name, int default_value,
     const CONFIG_OPTION_ENUM_MAP *enum_map);
 static void Config_WriteEnum(
-    struct json_object_s *obj, const char *name, int8_t value,
+    struct json_object_s *obj, const char *name, int value,
     const CONFIG_OPTION_ENUM_MAP *enum_map);
 
 static int Config_ReadEnum(
-    struct json_object_s *obj, const char *name, int8_t default_value,
+    struct json_object_s *obj, const char *name, int default_value,
     const CONFIG_OPTION_ENUM_MAP *enum_map)
 {
     const char *value_str = json_object_get_string(obj, name, NULL);
@@ -49,7 +49,7 @@ static int Config_ReadEnum(
 }
 
 static void Config_WriteEnum(
-    struct json_object_s *obj, const char *name, int8_t value,
+    struct json_object_s *obj, const char *name, int value,
     const CONFIG_OPTION_ENUM_MAP *enum_map)
 {
     while (enum_map->text) {
