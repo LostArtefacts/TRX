@@ -181,7 +181,11 @@
     },
     "enable_fmv": {
       "Title": "Habilitar FMV",
-      "Description": "Habilita la reproduc,ción de vídeos FMV."
+      "Description": "Habilita la reproducción de vídeos FMV."
+    },
+    "enable_eidos": {
+      "Title": "Habilitar el logo de EIDOS",
+      "Description": "Habilita el logo de EIDOS al comienzo del juego."
     },
     "enable_jump_twists": {
       "Title": "Giros al saltar",

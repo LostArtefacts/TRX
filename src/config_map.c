@@ -87,6 +87,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "fov_vertical",                   .type = COT_BOOL,   .target = &g_Config.fov_vertical,                        .default_value = &(bool){true},                       0},
     { .name = "enable_demo",                    .type = COT_BOOL,   .target = &g_Config.enable_demo,                         .default_value = &(bool){true},                       0},
     { .name = "enable_fmv",                     .type = COT_BOOL,   .target = &g_Config.enable_fmv,                          .default_value = &(bool){true},                       0},
+    { .name = "enable_eidos_logo",              .type = COT_BOOL,   .target = &g_Config.enable_eidos_logo,                   .default_value = &(bool){true},                       0},
     { .name = "enable_cine",                    .type = COT_BOOL,   .target = &g_Config.enable_cine,                         .default_value = &(bool){true},                       0},
     { .name = "enable_music_in_menu",           .type = COT_BOOL,   .target = &g_Config.enable_music_in_menu,                .default_value = &(bool){true},                       0},
     { .name = "enable_music_in_inventory",      .type = COT_BOOL,   .target = &g_Config.enable_music_in_inventory,           .default_value = &(bool){true},                       0},
