@@ -64,7 +64,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "enable_cheats",                  .type = COT_BOOL,   .target = &g_Config.enable_cheats,                       .default_value = &(bool){false}},
     { .name = "enable_numeric_keys",            .type = COT_BOOL,   .target = &g_Config.enable_numeric_keys,                 .default_value = &(bool){true}},
     { .name = "enable_tr3_sidesteps",           .type = COT_BOOL,   .target = &g_Config.enable_tr3_sidesteps,                .default_value = &(bool){true}},
-    { .name = "enable_braid",                   .type = COT_BOOL,   .target = &g_Config.enable_braid,                        .default_value = &(bool){false}},
+    { .name = "enable_braid",                   .type = COT_BOOL,   .target = &g_Config.enable_braid,                        .default_value = &(bool){true}},
     { .name = "enable_compass_stats",           .type = COT_BOOL,   .target = &g_Config.enable_compass_stats,                .default_value = &(bool){true}},
     { .name = "enable_total_stats",             .type = COT_BOOL,   .target = &g_Config.enable_total_stats,                  .default_value = &(bool){true}},
     { .name = "enable_timer_in_inventory",      .type = COT_BOOL,   .target = &g_Config.enable_timer_in_inventory,           .default_value = &(bool){true}},
