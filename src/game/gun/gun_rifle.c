@@ -4,7 +4,6 @@
 #include "game/anim.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
-#include "game/items.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "global/const.h"

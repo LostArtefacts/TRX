@@ -1,6 +1,7 @@
 #include "game/items.h"
 
 #include "config.h"
+#include "game/anim.h"
 #include "game/carrier.h"
 #include "game/room.h"
 #include "game/shell.h"
