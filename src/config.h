@@ -124,6 +124,7 @@ typedef struct {
     bool enable_save_crystals;
     bool enable_uw_roll;
     bool enable_buffering;
+    bool enable_lean_jumping;
 
     struct {
         int32_t layout;
