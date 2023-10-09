@@ -1,6 +1,5 @@
 #include "game/level.h"
 
-#include "config.h"
 #include "filesystem.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -807,7 +806,7 @@ bool Level_Initialise(int32_t level_num)
     Music_Stop();
     Sound_ResetEffects();
 
-    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+    Viewport_SetFOV(Viewport_GetUserFOV());
 
     if (g_GameFlow.levels[g_CurrentLevel].music) {
         Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);

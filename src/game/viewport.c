@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/screen.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
 
@@ -15,6 +16,7 @@ static int32_t m_MaxX = 0;
 static int32_t m_MaxY = 0;
 static int32_t m_Width = 0;
 static int32_t m_Height = 0;
+static int16_t m_CurrentFOV = PASSPORT_FOV;
 
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
@@ -73,8 +75,20 @@ int32_t Viewport_GetHeight(void)
     return m_Height;
 }
 
-void Viewport_AlterFOV(PHD_ANGLE fov)
+int16_t Viewport_GetFOV(void)
 {
+    return m_CurrentFOV;
+}
+
+int16_t Viewport_GetUserFOV(void)
+{
+    return g_Config.fov_value * PHD_DEGREE;
+}
+
+void Viewport_SetFOV(int16_t fov)
+{
+    m_CurrentFOV = fov;
+
     // In places that use GAME_FOV, it can be safely changed to user's choice.
     // But for cinematics, the FOV value chosen by devs needs to stay
     // unchanged, otherwise the game renders the low camera in the Lost Valley
@@ -82,9 +96,9 @@ void Viewport_AlterFOV(PHD_ANGLE fov)
     if (g_Config.fov_vertical) {
         double aspect_ratio =
             Screen_GetResWidth() / (double)Screen_GetResHeight();
-        double fov_rad_h = fov * M_PI / 32760;
+        double fov_rad_h = fov * M_PI / (180 * PHD_DEGREE);
         double fov_rad_v = 2 * atan(aspect_ratio * tan(fov_rad_h / 2));
-        fov = round((fov_rad_v / M_PI) * 32760);
+        fov = round((fov_rad_v / M_PI) * (180 * PHD_DEGREE));
     }
 
     int16_t c = Math_Cos(fov / 2);

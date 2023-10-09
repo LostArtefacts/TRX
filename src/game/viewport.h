@@ -15,4 +15,6 @@ int32_t Viewport_GetMaxY(void);
 int32_t Viewport_GetWidth(void);
 int32_t Viewport_GetHeight(void);
 
-void Viewport_AlterFOV(PHD_ANGLE fov);
+int16_t Viewport_GetFOV(void);
+int16_t Viewport_GetUserFOV(void);
+void Viewport_SetFOV(int16_t fov);

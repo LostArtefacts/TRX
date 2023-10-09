@@ -362,7 +362,8 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     // camera (when picking up the Scion). Move the viewport rather than
     // translating the object in order to avoid perspective distortion in the
     // screen corners.
-    Viewport_AlterFOV(g_Config.fov_value * PHD_DEGREE);
+    int16_t old_fov = Viewport_GetFOV();
+    Viewport_SetFOV(PICKUPS_FOV * PHD_DEGREE);
     Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
 
     Matrix_PushUnit();
@@ -415,6 +416,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
 
     Matrix_Pop();
     Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
+    Viewport_SetFOV(old_fov);
 }
 
 static void Overlay_DrawPickups3D(void)
