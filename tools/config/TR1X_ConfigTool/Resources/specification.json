@@ -250,6 +250,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_eidos_logo",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_buffering",
           "DataType": "Bool",
           "DefaultValue": false

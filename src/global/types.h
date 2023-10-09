@@ -1570,6 +1570,7 @@ typedef enum GAME_STATUS {
     GMS_IN_PAUSE = 1 << 1,
     GMS_IN_STATS = 1 << 2,
     GMS_IN_INVENTORY_HEALTH = 1 << 3,
+    GMS_GAME_MENU_SHOWN = 1 << 4,
 } GAME_STATUS;
 
 typedef struct GAME_INFO {

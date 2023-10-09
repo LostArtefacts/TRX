@@ -2,6 +2,7 @@
 - renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
 - added Linux builds and toolchain
 - added an option to allow Lara to roll while underwater, similar to TR2+ (#993)
+- added an option to turn off Eidos logo entirely through config (#1044)
 - added the bonus level type for custom levels that unlocks if all main game secrets are found (#645)
 - added detection for animation commands to play SFX on land, water or both (#999)
 - added support for customizable enemy item drops via the gameflow (#967)

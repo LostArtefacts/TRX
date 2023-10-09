@@ -1193,7 +1193,7 @@ bool GameFlow_LoadFromFile(const char *file_name)
 GAMEFLOW_OPTION
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    LOG_INFO("%d", level_num);
+    LOG_INFO("level_num=%d level_type=%d", level_num, level_type);
 
     g_GameInfo.remove_guns = false;
     g_GameInfo.remove_scions = false;
@@ -1296,45 +1296,53 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_DISPLAY_PICTURE:
-            if (level_type != GFL_SAVED) {
-                GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                Output_LoadBackdropImage(data->path);
-                Clock_SyncTicks(1);
-
-                Output_FadeResetToBlack();
-                Output_FadeToTransparent(true);
-                while (Output_FadeIsAnimating()) {
-                    Output_DrawBackdropImage();
-                    Output_DumpScreen();
-                    Input_Update();
-                    if (g_InputDB.any) {
-                        break;
-                    }
-                }
-
-                if (!g_InputDB.any) {
-                    Output_DrawBackdropImage();
-                    Output_DumpScreen();
-                    Shell_Wait(data->display_time);
-                }
-
-                // fade out
-                Output_FadeToBlack(true);
-                while (Output_FadeIsAnimating()) {
-                    Output_DrawBackdropImage();
-                    Output_DumpScreen();
-                    Input_Update();
-                    if (g_InputDB.any) {
-                        break;
-                    }
-                }
-
-                // draw black frame
-                Output_DrawBlack();
-                Output_DumpScreen();
-
-                Output_FadeReset();
+            if (level_type == GFL_SAVED) {
+                break;
             }
+
+            if (level_type == GFL_TITLE
+                && !(g_GameInfo.status & GMS_GAME_MENU_SHOWN)
+                && !g_Config.enable_eidos_logo) {
+                break;
+            }
+
+            GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+            Output_LoadBackdropImage(data->path);
+            Clock_SyncTicks(1);
+
+            Output_FadeResetToBlack();
+            Output_FadeToTransparent(true);
+            while (Output_FadeIsAnimating()) {
+                Output_DrawBackdropImage();
+                Output_DumpScreen();
+                Input_Update();
+                if (g_InputDB.any) {
+                    break;
+                }
+            }
+
+            if (!g_InputDB.any) {
+                Output_DrawBackdropImage();
+                Output_DumpScreen();
+                Shell_Wait(data->display_time);
+            }
+
+            // fade out
+            Output_FadeToBlack(true);
+            while (Output_FadeIsAnimating()) {
+                Output_DrawBackdropImage();
+                Output_DumpScreen();
+                Input_Update();
+                if (g_InputDB.any) {
+                    break;
+                }
+            }
+
+            // draw black frame
+            Output_DrawBlack();
+            Output_DumpScreen();
+
+            Output_FadeReset();
             break;
 
         case GFS_EXIT_TO_TITLE:

@@ -93,6 +93,7 @@ typedef struct {
     bool fov_vertical;
     bool enable_demo;
     bool enable_fmv;
+    bool enable_eidos_logo;
     bool enable_cine;
     bool enable_music_in_menu;
     bool enable_music_in_inventory;

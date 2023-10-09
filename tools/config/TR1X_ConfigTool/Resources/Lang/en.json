@@ -227,6 +227,10 @@
       "Title": "Enable FMVs",
       "Description": "Enables FMVs playing."
     },
+    "enable_eidos_logo": {
+      "Title": "Enable EIDOS logo",
+      "Description": "Enables EIDOS logo at the game start."
+    },
     "enable_buffering": {
       "Title": "Enable buffering",
       "Description": "Enables F-key (1-frame) and inventory (2-frame) buffering to achieve precise control of Lara's movement."

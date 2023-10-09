@@ -178,7 +178,7 @@ void Shell_Main(void)
     while (loop_continue) {
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
         int32_t gf_param = gf_option & ((1 << 6) - 1);
-        LOG_INFO("%d %d", gf_direction, gf_param);
+        LOG_INFO("direction=%d param=%d", gf_direction, gf_param);
 
         switch (gf_direction) {
         case GF_START_GYM:
@@ -238,7 +238,7 @@ void Shell_Main(void)
             g_GameInfo.current_save_slot = -1;
             if (!intro_played) {
                 GameFlow_InterpretSequence(
-                    g_GameFlow.title_level_num, GFL_NORMAL);
+                    g_GameFlow.title_level_num, GFL_TITLE);
                 intro_played = true;
             }
 
