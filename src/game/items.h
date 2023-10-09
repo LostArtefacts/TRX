@@ -52,6 +52,4 @@ int32_t Item_GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 
 void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status);
 bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame);
-bool Anim_TestAbsFrameEqual(int16_t abs_frame, int16_t frame);
 bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end);
-bool Anim_TestAbsFrameRange(int16_t abs_frame, int16_t start, int16_t end);
