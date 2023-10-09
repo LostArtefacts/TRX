@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include "config_map.h"
 #include "filesystem.h"
 #include "game/input.h"
 #include "game/music.h"
@@ -20,93 +21,17 @@
 #define Q(x) #x
 #define QUOTE(x) Q(x)
 
-#define READ_PRIMITIVE(func, opt, default_value)                               \
-    do {                                                                       \
-        g_Config.opt =                                                         \
-            func(root_obj, Config_ProcessKey(QUOTE(opt)), default_value);      \
-    } while (0)
-#define READ_BOOL(opt, default_value)                                          \
-    READ_PRIMITIVE(json_object_get_bool, opt, default_value)
-#define READ_INTEGER(opt, default_value)                                       \
-    READ_PRIMITIVE(json_object_get_int, opt, default_value)
-#define READ_FLOAT(opt, default_value)                                         \
-    READ_PRIMITIVE(json_object_get_double, opt, default_value)
-
-#define READ_ENUM(opt, default_value, enum_map)                                \
-    do {                                                                       \
-        g_Config.opt = Config_ReadEnum(                                        \
-            root_obj, Config_ProcessKey(QUOTE(opt)), default_value, enum_map); \
-    } while (0)
-
-#define WRITE_PRIMITIVE(func, opt)                                             \
-    do {                                                                       \
-        func(root_obj, Config_ProcessKey(QUOTE(opt)), g_Config.opt);           \
-    } while (0)
-#define WRITE_BOOL(opt) WRITE_PRIMITIVE(json_object_append_bool, opt)
-#define WRITE_INTEGER(opt) WRITE_PRIMITIVE(json_object_append_int, opt)
-#define WRITE_FLOAT(opt) WRITE_PRIMITIVE(json_object_append_double, opt)
-#define WRITE_ENUM(opt, enum_map)                                              \
-    do {                                                                       \
-        Config_WriteEnum(                                                      \
-            root_obj, Config_ProcessKey(QUOTE(opt)), g_Config.opt, enum_map);  \
-    } while (0)
-
 CONFIG g_Config = { 0 };
 
 static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
 
-typedef struct ENUM_MAP {
-    const char *text;
-    int value;
-} ENUM_MAP;
-
-const ENUM_MAP m_UIStyles[] = {
-    { "ps1", UI_STYLE_PS1 },
-    { "pc", UI_STYLE_PC },
-    { NULL, -1 },
-};
-
-const ENUM_MAP m_BarShowingModes[] = {
-    { "default", BSM_DEFAULT },
-    { "flashing-or-default", BSM_FLASHING_OR_DEFAULT },
-    { "flashing-only", BSM_FLASHING_ONLY },
-    { "always", BSM_ALWAYS },
-    { "never", BSM_NEVER },
-    { "ps1", BSM_PS1 },
-    { NULL, -1 },
-};
-
-const ENUM_MAP m_BarLocations[] = {
-    { "top-left", BL_TOP_LEFT },
-    { "top-center", BL_TOP_CENTER },
-    { "top-right", BL_TOP_RIGHT },
-    { "bottom-left", BL_BOTTOM_LEFT },
-    { "bottom-center", BL_BOTTOM_CENTER },
-    { "bottom-right", BL_BOTTOM_RIGHT },
-    { NULL, -1 },
-};
-
-const ENUM_MAP m_BarColors[] = {
-    { "gold", BC_GOLD },   { "blue", BC_BLUE },     { "grey", BC_GREY },
-    { "red", BC_RED },     { "silver", BC_SILVER }, { "green", BC_GREEN },
-    { "gold2", BC_GOLD2 }, { "blue2", BC_BLUE2 },   { "pink", BC_PINK },
-    { NULL, -1 },
-};
-
-const ENUM_MAP m_ScreenshotFormats[] = {
-    { "jpg", SCREENSHOT_FORMAT_JPEG },
-    { "jpeg", SCREENSHOT_FORMAT_JPEG },
-    { "png", SCREENSHOT_FORMAT_PNG },
-    { NULL, -1 },
-};
-
 static const char *Config_ProcessKey(const char *key);
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
-    const ENUM_MAP *enum_map);
+    const CONFIG_OPTION_ENUM_MAP *enum_map);
 static void Config_WriteEnum(
     struct json_object_s *obj, const char *name, int8_t value,
-    const ENUM_MAP *enum_map);
+    const CONFIG_OPTION_ENUM_MAP *enum_map);
 
 static const char *Config_ProcessKey(const char *key)
 {
@@ -115,7 +40,7 @@ static const char *Config_ProcessKey(const char *key)
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
-    const ENUM_MAP *enum_map)
+    const CONFIG_OPTION_ENUM_MAP *enum_map)
 {
     const char *value_str = json_object_get_string(obj, name, NULL);
     if (value_str) {
@@ -131,7 +56,7 @@ static int Config_ReadEnum(
 
 static void Config_WriteEnum(
     struct json_object_s *obj, const char *name, int8_t value,
-    const ENUM_MAP *enum_map)
+    const CONFIG_OPTION_ENUM_MAP *enum_map)
 {
     while (enum_map->text) {
         if (enum_map->value == value) {
@@ -163,123 +88,43 @@ bool Config_ReadFromJSON(const char *cfg_data)
 
     struct json_object_s *root_obj = json_value_as_object(root);
 
-    READ_BOOL(disable_healing_between_levels, false);
-    READ_BOOL(disable_medpacks, false);
-    READ_BOOL(disable_magnums, false);
-    READ_BOOL(disable_uzis, false);
-    READ_BOOL(disable_shotgun, false);
-    READ_BOOL(enable_detailed_stats, true);
-    READ_BOOL(enable_deaths_counter, true);
-    READ_BOOL(enable_enemy_healthbar, true);
-    READ_BOOL(enable_enhanced_look, true);
-    READ_BOOL(enable_shotgun_flash, true);
-    READ_BOOL(fix_shotgun_targeting, true);
-    READ_BOOL(enable_cheats, false);
-    READ_BOOL(enable_numeric_keys, true);
-    READ_BOOL(enable_tr3_sidesteps, true);
-    READ_BOOL(enable_braid, false);
-    READ_BOOL(enable_compass_stats, true);
-    READ_BOOL(enable_total_stats, true);
-    READ_BOOL(enable_timer_in_inventory, true);
-    READ_BOOL(enable_smooth_bars, true);
-    READ_BOOL(enable_fade_effects, true);
-    READ_BOOL(fix_tihocan_secret_sound, true);
-    READ_BOOL(fix_floor_data_issues, true);
-    READ_BOOL(fix_secrets_killing_music, true);
-    READ_BOOL(fix_speeches_killing_music, true);
-    READ_BOOL(fix_descending_glitch, false);
-    READ_BOOL(fix_wall_jump_glitch, false);
-    READ_BOOL(fix_bridge_collision, true);
-    READ_BOOL(fix_qwop_glitch, false);
-    READ_BOOL(fix_alligator_ai, true);
-    READ_BOOL(change_pierre_spawn, true);
-    READ_BOOL(fix_bear_ai, true);
-    READ_INTEGER(fov_value, 65);
-    READ_INTEGER(resolution_width, -1);
-    READ_INTEGER(resolution_height, -1);
-    READ_BOOL(fov_vertical, true);
-    READ_BOOL(enable_demo, true);
-    READ_BOOL(enable_fmv, true);
-    READ_BOOL(enable_cine, true);
-    READ_BOOL(enable_music_in_menu, true);
-    READ_BOOL(enable_music_in_inventory, true);
-    READ_BOOL(enable_round_shadow, true);
-    READ_BOOL(enable_3d_pickups, true);
-    READ_FLOAT(rendering.anisotropy_filter, 16.0f);
-    READ_BOOL(walk_to_items, false);
-    READ_BOOL(disable_trex_collision, false);
-    READ_INTEGER(start_lara_hitpoints, LARA_HITPOINTS);
-    READ_ENUM(
-        healthbar_showing_mode, BSM_FLASHING_OR_DEFAULT, m_BarShowingModes);
-    READ_ENUM(airbar_showing_mode, BSM_DEFAULT, m_BarShowingModes);
-    READ_ENUM(healthbar_location, BL_TOP_LEFT, m_BarLocations);
-    READ_ENUM(airbar_location, BL_TOP_RIGHT, m_BarLocations);
-    READ_ENUM(enemy_healthbar_location, BL_BOTTOM_LEFT, m_BarLocations);
-    READ_ENUM(healthbar_color, BC_RED, m_BarColors);
-    READ_ENUM(airbar_color, BC_BLUE, m_BarColors);
-    READ_ENUM(enemy_healthbar_color, BC_GREY, m_BarColors);
-    READ_ENUM(screenshot_format, SCREENSHOT_FORMAT_JPEG, m_ScreenshotFormats);
-    READ_ENUM(ui.menu_style, UI_STYLE_PC, m_UIStyles);
-    READ_INTEGER(maximum_save_slots, 25);
-    READ_BOOL(revert_to_pistols, false);
-    READ_BOOL(enable_enhanced_saves, true);
-    READ_BOOL(enable_pitched_sounds, true);
-    READ_BOOL(enable_ps_uzi_sfx, false);
-    READ_BOOL(enable_jump_twists, true);
-    READ_BOOL(enabled_inverted_look, false);
-    READ_INTEGER(camera_speed, 5);
-    READ_BOOL(fix_texture_issues, true);
-    READ_BOOL(enable_swing_cancel, true);
-    READ_BOOL(enable_tr2_jumping, false);
-    READ_BOOL(load_current_music, true);
-    READ_BOOL(load_music_triggers, true);
-    READ_BOOL(fix_item_rots, true);
-    READ_BOOL(restore_ps1_enemies, false);
-    READ_BOOL(enable_game_modes, true);
-    READ_BOOL(enable_save_crystals, false);
-    READ_BOOL(enable_uw_roll, true);
-    READ_BOOL(enable_buffering, false);
-    READ_BOOL(enable_lean_jumping, false);
+    const CONFIG_OPTION *opt = g_ConfigOptionMap;
+    while (opt->target) {
+        if (opt->type == COT_BOOL) {
+            *(bool *)opt->target = json_object_get_bool(
+                root_obj, Config_ProcessKey(opt->name),
+                *(bool *)opt->default_value);
+        } else if (opt->type == COT_INT32) {
+            *(int32_t *)opt->target = json_object_get_int(
+                root_obj, Config_ProcessKey(opt->name),
+                *(int32_t *)opt->default_value);
+        } else if (opt->type == COT_FLOAT) {
+            *(float *)opt->target = json_object_get_double(
+                root_obj, Config_ProcessKey(opt->name),
+                *(float *)opt->default_value);
+        } else if (opt->type == COT_DOUBLE) {
+            *(double *)opt->target = json_object_get_double(
+                root_obj, Config_ProcessKey(opt->name),
+                *(double *)opt->default_value);
+        } else if (opt->type == COT_ENUM) {
+            *(int *)opt->target = Config_ReadEnum(
+                root_obj, Config_ProcessKey(opt->name),
+                *(int *)opt->default_value,
+                (const CONFIG_OPTION_ENUM_MAP *)opt->param);
+        }
+        opt++;
+    }
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
     CLAMP(g_Config.camera_speed, 1, 10);
-
-    // User settings
-    READ_INTEGER(rendering.render_mode, GFX_RM_LEGACY);
-    READ_BOOL(rendering.enable_fullscreen, true);
-    READ_BOOL(rendering.enable_maximized, true);
-    READ_INTEGER(rendering.window_x, -1);
-    READ_INTEGER(rendering.window_y, -1);
-    READ_INTEGER(rendering.window_width, -1);
-    READ_INTEGER(rendering.window_height, -1);
-    READ_INTEGER(rendering.texture_filter, GFX_TF_BILINEAR);
-    READ_INTEGER(rendering.fbo_filter, GFX_TF_NN);
-    READ_BOOL(rendering.enable_perspective_filter, true);
-    READ_BOOL(rendering.enable_vsync, true);
-
-    READ_INTEGER(music_volume, 8);
     CLAMP(g_Config.music_volume, 0, 10);
-
-    READ_INTEGER(sound_volume, 8);
     CLAMP(g_Config.sound_volume, 0, 10);
-
-    READ_INTEGER(input.layout, 0);
     CLAMP(g_Config.input.layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
-
-    READ_INTEGER(input.cntlr_layout, 0);
     CLAMP(g_Config.input.cntlr_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
-
-    READ_FLOAT(brightness, DEFAULT_BRIGHTNESS);
     CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
-
-    READ_FLOAT(ui.text_scale, DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.text_scale, MIN_TEXT_SCALE, MAX_TEXT_SCALE);
-
-    READ_FLOAT(ui.bar_scale, DEFAULT_UI_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_BAR_SCALE, MAX_BAR_SCALE);
-
-    READ_BOOL(profile.new_game_plus_unlock, false);
 
     char layout_name[50];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
@@ -293,7 +138,6 @@ bool Config_ReadFromJSON(const char *cfg_data)
             Input_AssignScancode(layout, role, scancode);
         }
     }
-    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
@@ -322,7 +166,6 @@ bool Config_ReadFromJSON(const char *cfg_data)
             }
         }
     }
-    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
 
     if (root) {
         json_value_free(root);
@@ -352,6 +195,8 @@ bool Config_Read(void)
 
 void Config_Init(void)
 {
+    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
+    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
     Music_SetVolume(g_Config.music_volume);
     Sound_SetMasterVolume(g_Config.sound_volume);
@@ -369,104 +214,28 @@ bool Config_Write(void)
     size_t size;
     struct json_object_s *root_obj = json_object_new();
 
-    WRITE_BOOL(disable_healing_between_levels);
-    WRITE_BOOL(disable_medpacks);
-    WRITE_BOOL(disable_magnums);
-    WRITE_BOOL(disable_uzis);
-    WRITE_BOOL(disable_shotgun);
-    WRITE_BOOL(enable_detailed_stats);
-    WRITE_BOOL(enable_deaths_counter);
-    WRITE_BOOL(enable_enemy_healthbar);
-    WRITE_BOOL(enable_enhanced_look);
-    WRITE_BOOL(enable_shotgun_flash);
-    WRITE_BOOL(fix_shotgun_targeting);
-    WRITE_BOOL(enable_cheats);
-    WRITE_BOOL(enable_numeric_keys);
-    WRITE_BOOL(enable_tr3_sidesteps);
-    WRITE_BOOL(enable_braid);
-    WRITE_BOOL(enable_compass_stats);
-    WRITE_BOOL(enable_total_stats);
-    WRITE_BOOL(enable_timer_in_inventory);
-    WRITE_BOOL(enable_smooth_bars);
-    WRITE_BOOL(enable_fade_effects);
-    WRITE_BOOL(fix_tihocan_secret_sound);
-    WRITE_BOOL(fix_floor_data_issues);
-    WRITE_BOOL(fix_secrets_killing_music);
-    WRITE_BOOL(fix_speeches_killing_music);
-    WRITE_BOOL(fix_descending_glitch);
-    WRITE_BOOL(fix_wall_jump_glitch);
-    WRITE_BOOL(fix_bridge_collision);
-    WRITE_BOOL(fix_qwop_glitch);
-    WRITE_BOOL(fix_alligator_ai);
-    WRITE_BOOL(change_pierre_spawn);
-    WRITE_BOOL(fix_bear_ai);
-    WRITE_INTEGER(fov_value);
-    WRITE_INTEGER(resolution_width);
-    WRITE_INTEGER(resolution_height);
-    WRITE_BOOL(fov_vertical);
-    WRITE_BOOL(enable_demo);
-    WRITE_BOOL(enable_fmv);
-    WRITE_BOOL(enable_cine);
-    WRITE_BOOL(enable_music_in_menu);
-    WRITE_BOOL(enable_music_in_inventory);
-    WRITE_BOOL(enable_round_shadow);
-    WRITE_BOOL(enable_3d_pickups);
-    WRITE_FLOAT(rendering.anisotropy_filter);
-    WRITE_BOOL(walk_to_items);
-    WRITE_BOOL(disable_trex_collision);
-    WRITE_INTEGER(start_lara_hitpoints);
-    WRITE_ENUM(healthbar_showing_mode, m_BarShowingModes);
-    WRITE_ENUM(airbar_showing_mode, m_BarShowingModes);
-    WRITE_ENUM(healthbar_location, m_BarLocations);
-    WRITE_ENUM(airbar_location, m_BarLocations);
-    WRITE_ENUM(enemy_healthbar_location, m_BarLocations);
-    WRITE_ENUM(healthbar_color, m_BarColors);
-    WRITE_ENUM(airbar_color, m_BarColors);
-    WRITE_ENUM(enemy_healthbar_color, m_BarColors);
-    WRITE_ENUM(screenshot_format, m_ScreenshotFormats);
-    WRITE_ENUM(ui.menu_style, m_UIStyles);
-    WRITE_INTEGER(maximum_save_slots);
-    WRITE_BOOL(revert_to_pistols);
-    WRITE_BOOL(enable_enhanced_saves);
-    WRITE_BOOL(enable_pitched_sounds);
-    WRITE_BOOL(enable_ps_uzi_sfx);
-    WRITE_BOOL(enable_jump_twists);
-    WRITE_BOOL(enabled_inverted_look);
-    WRITE_INTEGER(camera_speed);
-    WRITE_BOOL(fix_texture_issues);
-    WRITE_BOOL(enable_swing_cancel);
-    WRITE_BOOL(enable_tr2_jumping);
-    WRITE_BOOL(load_current_music);
-    WRITE_BOOL(load_music_triggers);
-    WRITE_BOOL(fix_item_rots);
-    WRITE_BOOL(restore_ps1_enemies);
-    WRITE_BOOL(enable_game_modes);
-    WRITE_BOOL(enable_save_crystals);
-    WRITE_BOOL(enable_uw_roll);
-    WRITE_BOOL(enable_buffering);
-    WRITE_BOOL(enable_lean_jumping);
-
-    WRITE_INTEGER(rendering.render_mode);
-    WRITE_BOOL(rendering.enable_fullscreen);
-    WRITE_BOOL(rendering.enable_maximized);
-    WRITE_INTEGER(rendering.window_x);
-    WRITE_INTEGER(rendering.window_y);
-    WRITE_INTEGER(rendering.window_width);
-    WRITE_INTEGER(rendering.window_height);
-    WRITE_INTEGER(rendering.texture_filter);
-    WRITE_INTEGER(rendering.fbo_filter);
-    WRITE_BOOL(rendering.enable_perspective_filter);
-    WRITE_BOOL(rendering.enable_vsync);
-
-    WRITE_INTEGER(music_volume);
-    WRITE_INTEGER(sound_volume);
-    WRITE_INTEGER(input.layout);
-    WRITE_INTEGER(input.cntlr_layout);
-    WRITE_FLOAT(brightness);
-    WRITE_FLOAT(ui.text_scale);
-    WRITE_FLOAT(ui.bar_scale);
-
-    WRITE_BOOL(profile.new_game_plus_unlock);
+    const CONFIG_OPTION *opt = g_ConfigOptionMap;
+    while (opt->target) {
+        if (opt->type == COT_BOOL) {
+            json_object_append_bool(
+                root_obj, Config_ProcessKey(opt->name), *(bool *)opt->target);
+        } else if (opt->type == COT_INT32) {
+            json_object_append_int(
+                root_obj, Config_ProcessKey(opt->name),
+                *(int32_t *)opt->target);
+        } else if (opt->type == COT_FLOAT) {
+            json_object_append_double(
+                root_obj, Config_ProcessKey(opt->name), *(float *)opt->target);
+        } else if (opt->type == COT_DOUBLE) {
+            json_object_append_double(
+                root_obj, Config_ProcessKey(opt->name), *(double *)opt->target);
+        } else if (opt->type == COT_ENUM) {
+            Config_WriteEnum(
+                root_obj, Config_ProcessKey(opt->name), *(int *)opt->target,
+                (const CONFIG_OPTION_ENUM_MAP *)opt->param);
+        }
+        opt++;
+    }
 
     char layout_name[20];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
