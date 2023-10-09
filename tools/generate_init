@@ -4,7 +4,7 @@ import io
 import json
 from pathlib import Path
 
-import pyjson5
+import json5
 
 REPO_DIR = Path(__file__).parent.parent
 BIN_DIR = REPO_DIR / "bin"
@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def get_init_c(version: str) -> str:
-    gameflow = pyjson5.loads(GAMEFLOW_PATH.read_text(encoding="utf-8"))
+    gameflow = json5.loads(GAMEFLOW_PATH.read_text(encoding="utf-8"))
     with io.StringIO() as handle:
         print(BODY_PREFIX.format(version=version).lstrip(), file=handle)
         for key, value in gameflow["strings"].items():
