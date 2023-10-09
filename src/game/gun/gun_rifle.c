@@ -1,6 +1,7 @@
 #include "game/gun/gun_rifle.h"
 
 #include "config.h"
+#include "game/anim.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/random.h"
@@ -17,14 +18,14 @@ void Gun_Rifle_Draw(void)
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
 
-    if (ani < LF_SG_DRAW || ani > LF_SG_RECOIL) {
-        ani = LF_SG_DRAW;
-    } else if (ani == LF_SG_DRAW + 10) {
+    if (!Anim_TestAbsFrameRange(ani, LF_SG_DRAW_START, LF_SG_RECOIL_START)) {
+        ani = LF_SG_DRAW_START;
+    } else if (Anim_TestAbsFrameEqual(ani, LF_SG_DRAW_SFX)) {
         Gun_Rifle_DrawMeshes();
         Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-    } else if (ani == LF_SG_RECOIL) {
+    } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
         Gun_Rifle_Ready();
-        ani = LF_SG_AIM;
+        ani = LF_SG_AIM_START;
     }
     g_Lara.left_arm.frame_number = ani;
     g_Lara.right_arm.frame_number = ani;
@@ -34,34 +35,37 @@ void Gun_Rifle_Undraw(void)
 {
     int16_t ani = ani = g_Lara.left_arm.frame_number;
 
-    if (ani == LF_SG_AIM) {
-        ani = LF_SG_UNDRAW;
-    } else if (ani >= LF_SG_AIM && ani < LF_SG_DRAW) {
+    if (Anim_TestAbsFrameEqual(ani, LF_SG_AIM_START)) {
+        ani = LF_SG_UNDRAW_START;
+    } else if (Anim_TestAbsFrameRange(ani, LF_SG_AIM_START, LF_SG_AIM_END)) {
         ani++;
-        if (ani == LF_SG_DRAW) {
-            ani = LF_SG_UNAIM;
+        if (Anim_TestAbsFrameEqual(ani, LF_SG_DRAW_START)) {
+            ani = LF_SG_UNAIM_START;
         }
-    } else if (ani == LF_SG_RECOIL) {
-        ani = LF_SG_UNAIM;
-    } else if (ani >= LF_SG_RECOIL && ani < LF_SG_UNDRAW) {
+    } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
+        ani = LF_SG_UNAIM_START;
+    } else if (Anim_TestAbsFrameRange(
+                   ani, LF_SG_RECOIL_START, LF_SG_RECOIL_END)) {
         ani++;
-        if (ani == LF_SG_RECOIL + 12) {
-            ani = LF_SG_AIM;
-        } else if (ani == LF_SG_UNDRAW) {
-            ani = LF_SG_UNAIM;
+        if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_UNDRAW_RESET)) {
+            ani = LF_SG_AIM_START;
+        } else if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_START)) {
+            ani = LF_SG_UNAIM_START;
         }
-    } else if (ani >= LF_SG_UNAIM && ani < LF_SG_END) {
+    } else if (Anim_TestAbsFrameRange(
+                   ani, LF_SG_UNAIM_START, LF_SG_UNAIM_RAISE)) {
         ani++;
-        if (ani == LF_SG_END) {
-            ani = LF_SG_UNDRAW;
+        if (Anim_TestAbsFrameEqual(ani, LF_SG_UNAIM_END)) {
+            ani = LF_SG_UNDRAW_START;
         }
-    } else if (ani >= LF_SG_UNDRAW && ani < LF_SG_UNAIM) {
+    } else if (Anim_TestAbsFrameRange(
+                   ani, LF_SG_UNDRAW_START, LF_SG_UNDRAW_END)) {
         ani++;
-        if (ani == LF_SG_UNDRAW + 20) {
+        if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_SFX)) {
             Gun_Rifle_UndrawMeshes();
             Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
-        } else if (ani == LF_SG_UNAIM) {
-            ani = LF_SG_AIM;
+        } else if (Anim_TestAbsFrameEqual(ani, LF_SG_UNAIM_START)) {
+            ani = LF_SG_AIM_START;
             g_Lara.gun_status = LGS_ARMLESS;
             g_Lara.target = NULL;
             g_Lara.right_arm.lock = 0;
@@ -146,86 +150,94 @@ void Gun_Rifle_Animate(void)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     if (g_Lara.left_arm.lock) {
-        if (ani >= LF_SG_AIM && ani < LF_SG_DRAW) {
+        if (Anim_TestAbsFrameRange(ani, LF_SG_AIM_START, LF_SG_AIM_END)) {
             ani++;
-            if (ani == LF_SG_DRAW) {
-                ani = LF_SG_RECOIL;
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_DRAW_START)) {
+                ani = LF_SG_RECOIL_START;
             }
-        } else if (ani == LF_SG_RECOIL) {
+        } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
             if (g_Input.action) {
                 Gun_Rifle_Fire();
                 ani++;
             }
-        } else if (ani > LF_SG_RECOIL && ani < LF_SG_UNDRAW) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_RECOILING, LF_SG_RECOIL_END)) {
             ani++;
-            if (ani == LF_SG_UNDRAW) {
-                ani = LF_SG_RECOIL;
-            } else if (ani == LF_SG_RECOIL + 10) {
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_START)) {
+                ani = LF_SG_RECOIL_START;
+            } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_SFX)) {
                 Sound_Effect(SFX_LARA_RELOAD, &g_LaraItem->pos, SPM_NORMAL);
             }
-        } else if (ani >= LF_SG_UNAIM && ani < LF_SG_END) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_UNAIM_START, LF_SG_UNAIM_RAISE)) {
             ani++;
-            if (ani == LF_SG_END) {
-                ani = LF_SG_AIM;
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_UNAIM_END)) {
+                ani = LF_SG_AIM_START;
             }
         }
     } else if (g_Config.fix_shotgun_targeting && g_Lara.target) {
-        if (ani == LF_SG_RECOIL) {
-            ani = LF_SG_UNAIM;
+        if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
+            ani = LF_SG_UNAIM_START;
             ani++;
-        } else if (ani > LF_SG_RECOIL && ani < LF_SG_UNDRAW) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_RECOILING, LF_SG_RECOIL_END)) {
             ani++;
-            if (ani == LF_SG_RECOIL + 10) {
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_SFX)) {
                 Sound_Effect(SFX_LARA_RELOAD, &g_LaraItem->pos, SPM_NORMAL);
-            } else if (ani == LF_SG_RECOIL + 16) {
-                ani = LF_SG_AIM;
-            } else if (ani == LF_SG_UNDRAW) {
-                ani = LF_SG_UNAIM;
+            } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_RESET_FIX)) {
+                ani = LF_SG_AIM_START;
+            } else if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_START)) {
+                ani = LF_SG_UNAIM_START;
             }
-        } else if (ani >= LF_SG_UNAIM && ani < LF_SG_END) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_UNAIM_START, LF_SG_UNAIM_RAISE)) {
             ani++;
-            if (ani == LF_SG_END) {
-                ani = LF_SG_AIM;
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_UNAIM_END)) {
+                ani = LF_SG_AIM_START;
             }
-        } else if (ani > LF_SG_AIM && ani <= LF_SG_DRAW) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_AIM_BEND, LF_SG_DRAW_START)) {
             ani--;
         }
     } else {
-        if (g_Input.action && ani == LF_SG_AIM) {
+        if (g_Input.action && Anim_TestAbsFrameEqual(ani, LF_SG_AIM_START)) {
             ani++;
-        } else if (ani > LF_SG_AIM && ani < LF_SG_DRAW) {
+        } else if (Anim_TestAbsFrameRange(ani, LF_SG_AIM_BEND, LF_SG_AIM_END)) {
             ani++;
-            if (ani == LF_SG_DRAW) {
-                ani = g_Input.action ? LF_SG_RECOIL : LF_SG_UNAIM;
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_DRAW_START)) {
+                ani = g_Input.action ? LF_SG_RECOIL_START : LF_SG_UNAIM_START;
             }
-        } else if (ani == LF_SG_RECOIL) {
+        } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
             if (g_Input.action) {
                 Gun_Rifle_Fire();
                 ani++;
             } else {
-                ani = LF_SG_UNAIM;
+                ani = LF_SG_UNAIM_START;
             }
-        } else if (ani > LF_SG_RECOIL && ani < LF_SG_UNDRAW) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_RECOILING, LF_SG_RECOIL_END)) {
             ani++;
             if (g_Config.fix_shotgun_targeting) {
-                if (ani == LF_SG_RECOIL + 10) {
+                if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_SFX)) {
                     Sound_Effect(SFX_LARA_RELOAD, &g_LaraItem->pos, SPM_NORMAL);
-                } else if (ani == LF_SG_UNDRAW) {
-                    ani = g_Input.action ? LF_SG_RECOIL : LF_SG_UNAIM;
+                } else if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_START)) {
+                    ani =
+                        g_Input.action ? LF_SG_RECOIL_START : LF_SG_UNAIM_START;
                 }
             } else {
-                if (ani == LF_SG_RECOIL + 12 + 1) {
-                    ani = LF_SG_AIM;
-                } else if (ani == LF_SG_UNDRAW) {
-                    ani = LF_SG_UNAIM;
-                } else if (ani == LF_SG_RECOIL + 10) {
+                if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_RESET_OG)) {
+                    ani = LF_SG_AIM_START;
+                } else if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_START)) {
+                    ani = LF_SG_UNAIM_START;
+                } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_SFX)) {
                     Sound_Effect(SFX_LARA_RELOAD, &g_LaraItem->pos, SPM_NORMAL);
                 }
             }
-        } else if (ani >= LF_SG_UNAIM && ani < LF_SG_END) {
+        } else if (Anim_TestAbsFrameRange(
+                       ani, LF_SG_UNAIM_START, LF_SG_UNAIM_RAISE)) {
             ani++;
-            if (ani == LF_SG_END) {
-                ani = LF_SG_AIM;
+            if (Anim_TestAbsFrameEqual(ani, LF_SG_UNAIM_END)) {
+                ani = LF_SG_AIM_START;
             }
         }
     }

@@ -85,6 +85,7 @@ sources = [
   init,
   'src/config.c',
   'src/filesystem.c',
+  'src/game/anim.c',
   'src/game/box.c',
   'src/game/camera.c',
   'src/game/carrier.c',

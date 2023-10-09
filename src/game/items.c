@@ -1,6 +1,7 @@
 #include "game/items.h"
 
 #include "config.h"
+#include "game/anim.h"
 #include "game/carrier.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -791,11 +792,13 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
 
 bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
 {
-    return item->frame_number == g_Anims[item->anim_number].frame_base + frame;
+    return Anim_TestAbsFrameEqual(
+        item->frame_number, g_Anims[item->anim_number].frame_base + frame);
 }
 
 bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
 {
-    return item->frame_number >= g_Anims[item->anim_number].frame_base + start
-        && item->frame_number <= g_Anims[item->anim_number].frame_base + end;
+    return Anim_TestAbsFrameRange(
+        item->frame_number, g_Anims[item->anim_number].frame_base + start,
+        g_Anims[item->anim_number].frame_base + end);
 }
