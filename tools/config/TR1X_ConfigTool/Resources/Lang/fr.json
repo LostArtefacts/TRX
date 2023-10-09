@@ -107,6 +107,10 @@
       "Title": "Retourné sous-marin",
       "Description": "Permet à Lara de faire un demi tour immédiat, sous l'eau, similaire a TR2+."
     },
+    "enable_lean_jumping": {
+      "Title": "Air controle du saut sur place",
+      "Description": "Permet à Lara d'avancer ou de reculer davantage lors de l'exécution de sauts sur place avec la touche d'entrée appropriée enfoncée (avancer ou reculer), similaire à TR2+."
+    },
     "enable_numeric_keys": {
       "Title": "Touches rapide numériques",
       "Description": "Active les touches rapides numériques en haut du clavier, en raccourci d'équipement d'armes ou d'utilisation de soins.\n- 1: Pistolets\n- 2: Fusil à pompe\n- 3: Magnums\n- 4: Uzis\n- 8: Utiliser une petite trousse de soin\n- 9: Utiliser une grande trousse de soin"
