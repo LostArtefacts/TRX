@@ -1,7 +1,5 @@
 #include "game/anim.h"
 
-#include <stddef.h>
-
 bool Anim_TestAbsFrameEqual(int16_t abs_frame, int16_t frame)
 {
     return abs_frame == frame;
