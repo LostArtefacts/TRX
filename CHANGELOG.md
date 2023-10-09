@@ -11,6 +11,7 @@
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
 - fixed Lara never using the step back down right animation (#1014)
 - fixed dead crocodiles floating in drained rooms (#1031)
+- fixed 3d pickups sometimes triggering z-buffer issues (#1015)
 - fixed oversized passport in cinematic camera mode (eg when Lara steps on the Midas Hand) (#1009)
 - improved frame scheduling to use less CPU (#985)
 - improved and expanded gameflow documentation (#1018)

@@ -146,6 +146,7 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
 
 void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer)
 {
+    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     glClear(GL_DEPTH_BUFFER_BIT);
     GFX_GL_CheckError();
 }
