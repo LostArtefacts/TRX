@@ -25,18 +25,12 @@ CONFIG g_Config = { 0 };
 
 static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
 
-static const char *Config_ProcessKey(const char *key);
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
     const CONFIG_OPTION_ENUM_MAP *enum_map);
 static void Config_WriteEnum(
     struct json_object_s *obj, const char *name, int8_t value,
     const CONFIG_OPTION_ENUM_MAP *enum_map);
-
-static const char *Config_ProcessKey(const char *key)
-{
-    return strchr(key, '.') ? strrchr(key, '.') + 1 : key;
-}
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int8_t default_value,
@@ -92,24 +86,19 @@ bool Config_ReadFromJSON(const char *cfg_data)
     while (opt->target) {
         if (opt->type == COT_BOOL) {
             *(bool *)opt->target = json_object_get_bool(
-                root_obj, Config_ProcessKey(opt->name),
-                *(bool *)opt->default_value);
+                root_obj, opt->name, *(bool *)opt->default_value);
         } else if (opt->type == COT_INT32) {
             *(int32_t *)opt->target = json_object_get_int(
-                root_obj, Config_ProcessKey(opt->name),
-                *(int32_t *)opt->default_value);
+                root_obj, opt->name, *(int32_t *)opt->default_value);
         } else if (opt->type == COT_FLOAT) {
             *(float *)opt->target = json_object_get_double(
-                root_obj, Config_ProcessKey(opt->name),
-                *(float *)opt->default_value);
+                root_obj, opt->name, *(float *)opt->default_value);
         } else if (opt->type == COT_DOUBLE) {
             *(double *)opt->target = json_object_get_double(
-                root_obj, Config_ProcessKey(opt->name),
-                *(double *)opt->default_value);
+                root_obj, opt->name, *(double *)opt->default_value);
         } else if (opt->type == COT_ENUM) {
             *(int *)opt->target = Config_ReadEnum(
-                root_obj, Config_ProcessKey(opt->name),
-                *(int *)opt->default_value,
+                root_obj, opt->name, *(int *)opt->default_value,
                 (const CONFIG_OPTION_ENUM_MAP *)opt->param);
         }
         opt++;
@@ -217,21 +206,19 @@ bool Config_Write(void)
     const CONFIG_OPTION *opt = g_ConfigOptionMap;
     while (opt->target) {
         if (opt->type == COT_BOOL) {
-            json_object_append_bool(
-                root_obj, Config_ProcessKey(opt->name), *(bool *)opt->target);
+            json_object_append_bool(root_obj, opt->name, *(bool *)opt->target);
         } else if (opt->type == COT_INT32) {
             json_object_append_int(
-                root_obj, Config_ProcessKey(opt->name),
-                *(int32_t *)opt->target);
+                root_obj, opt->name, *(int32_t *)opt->target);
         } else if (opt->type == COT_FLOAT) {
             json_object_append_double(
-                root_obj, Config_ProcessKey(opt->name), *(float *)opt->target);
+                root_obj, opt->name, *(float *)opt->target);
         } else if (opt->type == COT_DOUBLE) {
             json_object_append_double(
-                root_obj, Config_ProcessKey(opt->name), *(double *)opt->target);
+                root_obj, opt->name, *(double *)opt->target);
         } else if (opt->type == COT_ENUM) {
             Config_WriteEnum(
-                root_obj, Config_ProcessKey(opt->name), *(int *)opt->target,
+                root_obj, opt->name, *(int *)opt->target,
                 (const CONFIG_OPTION_ENUM_MAP *)opt->param);
         }
         opt++;
