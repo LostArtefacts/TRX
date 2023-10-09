@@ -215,6 +215,10 @@
       "Title": "Giro en el agua",
       "Description": "Permite que Lara realice un giro mientras está bajo el agua, similar a TR2+."
     },
+    "enable_lean_jumping": {
+      "Title": "Saltos inclinados",
+      "Description": "Permite que Lara se desplace hacia adelante o hacia atrás aún más al realizar saltos neutrales con la tecla de entrada correspondiente presionada, similar a TR2+."
+    },
     "enable_numeric_keys": {
       "Title": "Uso rápido de teclas numéricas",
       "Description": "Permite cambiar rápidamente de armas y usar botiquines.\n- 1: Pistolas\n- 2: Escopeta\n- 3: Magnums\n- 4: Uzis\n- 8: Botiquín pequeño\n- 9: Botiquín grande"
