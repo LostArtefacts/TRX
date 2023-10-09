@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+import argparse
+from pathlib import Path
+
+import pyjson5
+
+TOOLS_DIR = Path(__file__).parent
+REPO_DIR = TOOLS_DIR.parent
+CONFIG_TOOL_SPEC_PATH = (
+    TOOLS_DIR / "config/TR1X_ConfigTool/Resources/specification.json"
+)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Compares a given TR1X.json5 file with the default specifications "
+            "of the config tool to find changes in the default values"
+        )
+    )
+    parser.add_argument(
+        "path", type=Path, help="path to the freshly written TR1X.json5"
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    game_config = pyjson5.loads(args.path.read_text())
+    tool_spec = pyjson5.loads(CONFIG_TOOL_SPEC_PATH.read_text())
+
+    spec_map = {
+        option["Field"]: option["DefaultValue"]
+        for section in tool_spec["CategorisedProperties"]
+        for option in section["Properties"]
+    }
+
+    for key, spec_value in spec_map.items():
+        if key in game_config and (game_value := game_config.get(key)) != spec_value:
+            print(f'(!) Wrong value: {key} (tool supplies {spec_value}, game supplies {game_value})')
+
+    for key, spec_value in spec_map.items():
+        if key not in game_config:
+            print(f'Surplus key: {key}')
+
+    for key, spec_value in game_config.items():
+        if key not in spec_map:
+            print(f'Missing key: {key}')
+
+if __name__ == "__main__":
+    main()
