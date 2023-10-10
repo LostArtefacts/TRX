@@ -113,8 +113,8 @@ public class CueTrack
         const int WAV_DATA_HLEN = 8;
         const int WAV_HEADER_LEN = WAV_RIFF_HLEN + WAV_FORMAT_HLEN + WAV_DATA_HLEN;
 
-        MemoryStream memoryStream = new MemoryStream(WAV_HEADER_LEN);
-        using (BinaryWriter writer = new BinaryWriter(memoryStream))
+        MemoryStream memoryStream = new(WAV_HEADER_LEN);
+        using (BinaryWriter writer = new(memoryStream))
         {
             // RIFF header
             writer.Write("RIFF".ToCharArray());
@@ -163,9 +163,7 @@ public class CueTrack
         int ep = BlockSize;
         while (p < ep)
         {
-            byte c = buf[p];
-            buf[p] = buf[p + 1];
-            buf[p + 1] = c;
+            (buf[p + 1], buf[p]) = (buf[p], buf[p + 1]);
             p += 2;
         }
     }

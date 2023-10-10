@@ -65,10 +65,7 @@ public class InstallExecutor
     protected async Task CopyTR1XFiles(string targetDirectory, IProgress<InstallProgress> progress)
     {
         using var key = Registry.CurrentUser.CreateSubKey(@"Software\Tomb1Main");
-        if (key is not null)
-        {
-            key.SetValue("InstallPath", targetDirectory);
-        }
+        key?.SetValue("InstallPath", targetDirectory);
 
         progress.Report(new InstallProgress
         {
@@ -79,12 +76,8 @@ public class InstallExecutor
 
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = assembly.GetManifestResourceNames().Where(n => n.EndsWith("release.zip")).First();
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-        if (stream is null)
-        {
-            throw new ApplicationException($"Could not open embedded ZIP.");
-        }
-
+        using var stream = assembly.GetManifestResourceStream(resourceName)
+            ?? throw new ApplicationException($"Could not open embedded ZIP.");
         await InstallUtils.ExtractZip(stream, targetDirectory, progress, overwrite: true);
     }
 
@@ -107,5 +100,5 @@ public class InstallExecutor
         await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tr1x/unfinished_business.zip", targetDirectory, progress);
     }
 
-    private InstallSettings _settings;
+    private readonly InstallSettings _settings;
 }

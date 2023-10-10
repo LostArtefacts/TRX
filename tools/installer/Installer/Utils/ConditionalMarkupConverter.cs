@@ -7,8 +7,8 @@ namespace Installer.Utils;
 
 public sealed class ConditionalMarkupConverter : MarkupExtension, IValueConverter
 {
-    public object FalseValue { get; set; }
-    public object TrueValue { get; set; }
+    public object FalseValue { get; set; } = new();
+    public object TrueValue { get; set; } = new();
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
