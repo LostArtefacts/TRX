@@ -21,13 +21,21 @@ public partial class InstallStepControl : UserControl
                     if (e.Message != lastMessage)
                     {
                         lastMessage = e.Message;
-                        logTextBox.AppendText(e.Message + Environment.NewLine);
-                        logTextBox.Focus();
-                        logTextBox.CaretIndex = logTextBox.Text.Length;
-                        logTextBox.ScrollToEnd();
+                        AppendMessage(e.Message);
                     }
                 };
             }
         };
+    }
+
+    private void AppendMessage(string message)
+    {
+        logTextBox.Dispatcher.Invoke(() =>
+        {
+            logTextBox.AppendText(message + Environment.NewLine);
+            logTextBox.Focus();
+            logTextBox.CaretIndex = logTextBox.Text.Length;
+            logTextBox.ScrollToEnd();
+        });
     }
 }

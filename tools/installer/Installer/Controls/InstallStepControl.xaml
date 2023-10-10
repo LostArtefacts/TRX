@@ -38,6 +38,7 @@
             Grid.Row="1"
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Auto"
-            AcceptsReturn="True" />
+            AcceptsReturn="True"
+            IsReadOnly="True"/>
     </Grid>
 </UserControl>
