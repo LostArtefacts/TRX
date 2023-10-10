@@ -15,7 +15,7 @@ public static class ShortcutUtils
         using var stream = File.Open(Path.ChangeExtension(shortcutPath, "lnk"), FileMode.Create);
         using var bw = new BinaryWriter(stream);
 
-        var writeShellLinkHeader = () =>
+        void writeShellLinkHeader()
         {
             // HeaderSize
             bw.Write((Int32)0x4C);
@@ -56,9 +56,9 @@ public static class ShortcutUtils
             bw.Write((Int16)0); // Reserved1
             bw.Write((Int32)0); // Reserved2
             bw.Write((Int32)0); // Reserved3
-        };
+        }
 
-        var writeLinkTargetIDList = () =>
+        void writeLinkTargetIDList()
         {
             var idListSizePos = (int)bw.BaseStream.Position;
             bw.Write((UInt16)0); // IDListSize
@@ -95,9 +95,9 @@ public static class ShortcutUtils
 
             // restore pos
             bw.Seek(idListSizePos + idListSize + 2, SeekOrigin.Begin);
-        };
+        }
 
-        var writeStringData = () =>
+        void writeStringData()
         {
             // NAME
             bw.Write((Int16)name.Length);
@@ -129,7 +129,7 @@ public static class ShortcutUtils
             );
             bw.Write((Int16)cmdline.Length);
             bw.Write(Encoding.Unicode.GetBytes(cmdline));
-        };
+        }
 
         writeShellLinkHeader();
         writeLinkTargetIDList();

@@ -100,12 +100,6 @@ public class CueTrack
         });
     }
 
-    private static string GetProgressBar(float position, int length)
-    {
-        int n = (int)(length * position);
-        return "".PadLeft(n, '*').PadRight(length);
-    }
-
     private static byte[] MakeWavHeader(long length)
     {
         const int WAV_RIFF_HLEN = 12;
