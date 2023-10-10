@@ -23,12 +23,12 @@ public class RelayCommand : ICommand
         add
         {
             CommandManager.RequerySuggested += value;
-            _canExecuteChanged += value;
+            CanExecuteChangedPriv += value;
         }
         remove
         {
             CommandManager.RequerySuggested -= value;
-            _canExecuteChanged -= value;
+            CanExecuteChangedPriv -= value;
         }
     }
 
@@ -44,13 +44,13 @@ public class RelayCommand : ICommand
 
     public void RaiseCanExecuteChanged()
     {
-        _canExecuteChanged.Invoke(this, EventArgs.Empty);
+        CanExecuteChangedPriv.Invoke(this, EventArgs.Empty);
     }
 
     private readonly Func<bool> _canExecute;
     private readonly Action _execute;
 
-    private event EventHandler _canExecuteChanged;
+    private event EventHandler CanExecuteChangedPriv;
 }
 
 public class RelayCommand<T> : ICommand
@@ -72,12 +72,12 @@ public class RelayCommand<T> : ICommand
         add
         {
             CommandManager.RequerySuggested += value;
-            _canExecuteChanged += value;
+            CanExecuteChangedPriv += value;
         }
         remove
         {
             CommandManager.RequerySuggested -= value;
-            _canExecuteChanged -= value;
+            CanExecuteChangedPriv -= value;
         }
     }
 
@@ -93,13 +93,13 @@ public class RelayCommand<T> : ICommand
 
     public void RaiseCanExecuteChanged()
     {
-        _canExecuteChanged.Invoke(this, EventArgs.Empty);
+        CanExecuteChangedPriv.Invoke(this, EventArgs.Empty);
     }
 
     private readonly Func<T, bool> _canExecute;
     private readonly Action<T> _execute;
 
-    private event EventHandler _canExecuteChanged;
+    private event EventHandler CanExecuteChangedPriv;
 }
 
 public class RelayKeyBinding : KeyBinding
