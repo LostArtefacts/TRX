@@ -260,6 +260,17 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     }
 }
 
+int16_t Item_GetHeight(ITEM_INFO *item)
+{
+    int16_t room_num = item->room_number;
+    FLOOR_INFO *floor =
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    int32_t height =
+        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+    return height;
+}
+
 int16_t Item_GetWaterHeight(ITEM_INFO *item)
 {
     int16_t height = Room_GetWaterHeight(

@@ -295,6 +295,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **City of Khamoon**: incorrect trapdoor trigger types in rooms 31 and 34
     - **Obelisk of Khamoon**: missing switch trigger type in room 66
     - **Atlantean Stronghold**: fixed poorly configured portals between rooms 74 and 12
+- fixed various bugs with falling movable blocks
 
 #### Cheats
 - added a fly cheat

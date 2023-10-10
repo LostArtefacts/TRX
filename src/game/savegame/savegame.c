@@ -114,9 +114,12 @@ static void Savegame_LoadPostprocess(void)
             }
         }
 
-        if (obj->control == MovableBlock_Control
-            && item->status == IS_NOT_ACTIVE) {
-            Room_AlterFloorHeight(item, -WALL_L);
+        if (obj->control == MovableBlock_Control) {
+            item->priv =
+                item->status == IS_ACTIVE ? (void *)true : (void *)false;
+            if (item->status == IS_NOT_ACTIVE) {
+                Room_AlterFloorHeight(item, -WALL_L);
+            }
         }
 
         if (obj->control == RollingBlock_Control
@@ -179,7 +182,8 @@ void Savegame_PreprocessItems(void)
         ITEM_INFO *item = &g_Items[i];
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
-        if (obj->control == MovableBlock_Control) {
+        if (obj->control == MovableBlock_Control && item->status != IS_INVISIBLE
+            && item->pos.y >= Item_GetHeight(item)) {
             Room_AlterFloorHeight(item, WALL_L);
         }
         if (obj->control == RollingBlock_Control) {
