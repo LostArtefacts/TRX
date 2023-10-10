@@ -79,7 +79,8 @@ void MovableBlock_Setup(OBJECT_INFO *obj)
 void MovableBlock_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (item->status != IS_INVISIBLE) {
+
+    if (item->status != IS_INVISIBLE && item->pos.y >= Item_GetHeight(item)) {
         Room_AlterFloorHeight(item, -WALL_L);
     }
 }
@@ -110,6 +111,11 @@ void MovableBlock_Control(int16_t item_num)
         item->status = IS_DEACTIVATED;
         FX_DinoStomp(item);
         Sound_Effect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
+    } else if (
+        item->pos.y >= height && !item->gravity_status
+        && !(bool)(intptr_t)item->priv) {
+        item->status = IS_NOT_ACTIVE;
+        Item_RemoveActive(item_num);
     }
 
     if (item->room_number != room_num) {
@@ -132,6 +138,10 @@ void MovableBlock_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+
+    if (item->current_anim_state == MBS_STILL) {
+        item->priv = (void *)false;
+    }
 
     if (!g_Input.action || item->status == IS_ACTIVE
         || lara_item->gravity_status || lara_item->pos.y != item->pos.y) {
@@ -226,6 +236,7 @@ void MovableBlock_Collision(
         item->status = IS_ACTIVE;
         Item_Animate(item);
         Lara_Animate(lara_item);
+        item->priv = (void *)true;
     }
 }
 

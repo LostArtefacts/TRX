@@ -590,19 +590,42 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 
 void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
 {
-    int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    FLOOR_INFO *ceiling = Room_GetFloor(
-        item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
+    if (!height) {
+        return;
+    }
 
-    if (floor->floor == NO_HEIGHT / 256) {
-        floor->floor = ceiling->ceiling + height / 256;
-    } else {
-        floor->floor += height / 256;
-        if (floor->floor == ceiling->ceiling && floor->sky_room == NO_ROOM) {
+    int16_t data;
+    FLOOR_INFO *floor;
+    ROOM_INFO *r = &g_RoomInfo[item->room_number];
+
+    do {
+        int32_t z_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+        int32_t x_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+
+        if (z_floor <= 0) {
+            z_floor = 0;
+            CLAMP(x_floor, 1, r->y_size - 2);
+        } else if (z_floor >= r->x_size - 1) {
+            z_floor = r->x_size - 1;
+            CLAMP(x_floor, 1, r->y_size - 2);
+        } else {
+            CLAMP(x_floor, 0, r->y_size - 1);
+        }
+
+        floor = &r->floor[z_floor + x_floor * r->x_size];
+        data = Room_GetDoor(floor);
+        if (data != NO_ROOM) {
+            r = &g_RoomInfo[data];
+        }
+    } while (data != NO_ROOM);
+
+    if (floor->floor != NO_HEIGHT / 256) {
+        floor->floor += height >> 8;
+        if (floor->floor == floor->ceiling && floor->sky_room == NO_ROOM) {
             floor->floor = NO_HEIGHT / 256;
         }
+    } else {
+        floor->floor = floor->ceiling + (height >> 8);
     }
 
     if (g_Boxes[floor->box].overlap_index & BLOCKABLE) {

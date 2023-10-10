@@ -15,6 +15,7 @@
 - fixed 3d pickups sometimes triggering z-buffer issues (#1015)
 - fixed oversized passport in cinematic camera mode (eg when Lara steps on the Midas Hand) (#1009)
 - fixed braid being disabled by default unless the player runs the config tool first (#1043)
+- fixed various bugs with falling movable blocks (#723)
 - improved frame scheduling to use less CPU (#985)
 - improved and expanded gameflow documentation (#1018)
 - rotated the Scion in Tomb of Qualopec to face the the main gate and Qualopec (#1007)
