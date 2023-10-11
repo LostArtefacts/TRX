@@ -43,6 +43,19 @@ public class InstallSettings : BaseNotifyPropertyChanged
         }
     }
 
+    public UBPackType UnfinishedBusinessType
+    {
+        get => _unfinishedBusinessType;
+        set
+        {
+            if (value != _unfinishedBusinessType)
+            {
+                _unfinishedBusinessType = value;
+                NotifyPropertyChanged();
+            }
+        }
+    }
+
     public bool ImportSaves
     {
         get => _importSaves;
@@ -118,6 +131,7 @@ public class InstallSettings : BaseNotifyPropertyChanged
     private bool _createDesktopShortcut = true;
     private bool _downloadMusic;
     private bool _downloadUnfinishedBusiness;
+    private UBPackType _unfinishedBusinessType;
     private bool _importSaves;
     private IInstallSource? _installSource;
     private string? _sourceDirectory;

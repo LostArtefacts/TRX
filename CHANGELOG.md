@@ -9,6 +9,7 @@
 - added an option to enable F-key and inventory frame buffering (#591)
 - added a pickup overlay for the Midas gold bar when it changes from lead (#1010)
 - added an option to allow Lara to creep forwards or backwards further when performing neutral jumps, in line with TR2+ (#998)
+- added an option to the installer to choose between the original and fan-made Unfinished Business level sets (#1019)
 - fixed baddies dropping duplicate guns (only affects mods) (#1000)
 - fixed Lara never using the step back down right animation (#1014)
 - fixed dead crocodiles floating in drained rooms (#1031)
