@@ -22,12 +22,12 @@ public class RelayCommand : ICommand
         add
         {
             CommandManager.RequerySuggested += value;
-            CanExecuteChangedPriv += value;
+            _canExecuteChanged += value;
         }
         remove
         {
             CommandManager.RequerySuggested -= value;
-            CanExecuteChangedPriv -= value;
+            _canExecuteChanged -= value;
         }
     }
 
@@ -43,13 +43,13 @@ public class RelayCommand : ICommand
 
     public void RaiseCanExecuteChanged()
     {
-        CanExecuteChangedPriv?.Invoke(this, EventArgs.Empty);
+        _canExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private readonly Func<bool>? _canExecute;
     private readonly Action _execute;
 
-    private event EventHandler? CanExecuteChangedPriv;
+    private EventHandler? _canExecuteChanged;
 }
 
 public class RelayCommand<T> : ICommand
@@ -71,12 +71,12 @@ public class RelayCommand<T> : ICommand
         add
         {
             CommandManager.RequerySuggested += value;
-            CanExecuteChangedPriv += value;
+            _canExecuteChanged += value;
         }
         remove
         {
             CommandManager.RequerySuggested -= value;
-            CanExecuteChangedPriv -= value;
+            _canExecuteChanged -= value;
         }
     }
 
@@ -92,11 +92,11 @@ public class RelayCommand<T> : ICommand
 
     public void RaiseCanExecuteChanged()
     {
-        CanExecuteChangedPriv?.Invoke(this, EventArgs.Empty);
+        _canExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private readonly Func<T?, bool>? _canExecute;
     private readonly Action<T?> _execute;
 
-    private event EventHandler? CanExecuteChangedPriv;
+    private EventHandler? _canExecuteChanged;
 }
