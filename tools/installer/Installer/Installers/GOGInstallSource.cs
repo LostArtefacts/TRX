@@ -93,7 +93,7 @@ public class GOGInstallSource : BaseInstallSource
                     var readAllByte = new Byte[sourceStream.Length];
                     sourceStream.Read(readAllByte, 0, readAllByte.Length);
 
-                    using FileStream targetStream = new FileStream(targetPath, FileMode.Create);
+                    using FileStream targetStream = new(targetPath, FileMode.Create);
                     targetStream.Position = 0;
                     targetStream.Write(readAllByte, 0, readAllByte.Length);
                 }

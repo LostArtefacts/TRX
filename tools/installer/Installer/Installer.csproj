@@ -7,7 +7,7 @@
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
 
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AssemblyName>TR1X_Installer</AssemblyName>
     <LangVersion>10.0</LangVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>

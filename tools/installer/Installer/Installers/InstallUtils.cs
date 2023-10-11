@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Installer.Utils;
@@ -72,14 +71,14 @@ public static class InstallUtils
 
     public static async Task<byte[]> DownloadFile(string url, IProgress<InstallProgress> progress)
     {
-        using var wc = new WebClient();
+        HttpProgressClient wc = new();
         progress.Report(new InstallProgress { Description = $"Initializing download of {url}" });
-        wc.DownloadProgressChanged += (sender, e) =>
+        wc.DownloadProgressChanged += (totalBytesToReceive, bytesReceived) =>
         {
             progress.Report(new InstallProgress
             {
-                CurrentValue = (int)e.BytesReceived,
-                MaximumValue = (int)e.TotalBytesToReceive,
+                CurrentValue = (int)bytesReceived,
+                MaximumValue = (int)totalBytesToReceive,
                 Description = $"Downloading {url}",
             });
         };

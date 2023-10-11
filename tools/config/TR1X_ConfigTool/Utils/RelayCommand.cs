@@ -50,7 +50,7 @@ public class RelayCommand : ICommand
     private readonly Func<bool> _canExecute;
     private readonly Action _execute;
 
-    private event EventHandler _canExecuteChanged;
+    private EventHandler _canExecuteChanged;
 }
 
 public class RelayCommand<T> : ICommand
@@ -99,7 +99,7 @@ public class RelayCommand<T> : ICommand
     private readonly Func<T, bool> _canExecute;
     private readonly Action<T> _execute;
 
-    private event EventHandler _canExecuteChanged;
+    private EventHandler _canExecuteChanged;
 }
 
 public class RelayKeyBinding : KeyBinding

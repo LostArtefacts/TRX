@@ -11,7 +11,7 @@ public static class BinaryReaderExtensions
         char ch;
         while ((int)(ch = stream.ReadChar()) != 0)
         {
-            str = str + ch;
+            str += ch;
         }
         return str;
     }

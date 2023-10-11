@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Installer.Utils;
@@ -24,7 +25,7 @@ public class CueFile
             throw new ApplicationException($"Could not parse {cueFilePath}: no tracks were found");
         }
 
-        foreach (Match fileMatch in fileMatches)
+        foreach (Match fileMatch in fileMatches.Cast<Match>())
         {
             var binFilePath = GetBinFilePath(fileMatch.Groups["name"].Value.Trim('"'));
             var matches = _trackRegex.Matches(fileMatch.Groups["content"].Value);
@@ -36,7 +37,7 @@ public class CueFile
 
             CueTrack? track = null;
             CueTrack? prevTrack = null;
-            foreach (Match trackMatch in matches)
+            foreach (Match trackMatch in matches.Cast<Match>())
             {
                 track = new CueTrack(
                     binFilePath,

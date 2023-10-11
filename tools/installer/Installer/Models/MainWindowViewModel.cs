@@ -95,8 +95,8 @@ public class MainWindowViewModel : BaseNotifyPropertyChanged
     private FinishSettings? _finishSettings;
     private RelayCommand? _goToNextStepCommand;
     private RelayCommand? _goToPreviousStepCommand;
-    private InstallSettings _installSettings;
-    private IStep _sourceStep;
+    private readonly InstallSettings _installSettings;
+    private readonly IStep _sourceStep;
     private int _windowWidth;
 
     private bool CanGoToNextStep()
