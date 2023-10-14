@@ -484,7 +484,7 @@ bool Item_MovePosition(
             const uint32_t src_quadrant = (uint32_t)(angle + PHD_45) / PHD_90;
             const uint32_t dst_quadrant =
                 (uint32_t)(dst_pos.y_rot + PHD_45) / PHD_90;
-            const uint32_t quadrant = (src_quadrant - dst_quadrant) % 4;
+            const DIRECTION quadrant = (src_quadrant - dst_quadrant) % 4;
 
             Item_SwitchToAnim(item, step_to_anim_num[quadrant], 0);
             item->goal_anim_state = step_to_anim_state[quadrant];

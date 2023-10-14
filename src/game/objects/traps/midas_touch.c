@@ -71,7 +71,7 @@ void MidasTouch_Collision(
         return;
     }
 
-    uint16_t quadrant = (uint16_t)(lara_item->pos.y_rot + PHD_45) / PHD_90;
+    DIRECTION quadrant = (uint16_t)(lara_item->pos.y_rot + PHD_45) / PHD_90;
     switch (quadrant) {
     case DIR_NORTH:
         item->pos.y_rot = 0;
