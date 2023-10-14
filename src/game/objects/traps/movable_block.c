@@ -12,6 +12,8 @@
 #include "global/vars.h"
 #include "util.h"
 
+#include <stdbool.h>
+
 #define LF_PPREADY 19
 
 typedef enum {
@@ -36,6 +38,11 @@ static int16_t m_MovingBlockBounds[12] = {
 };
 
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
+static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height);
+static bool MovableBlock_TestPush(
+    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
+static bool MovableBlock_TestPull(
+    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
 
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
@@ -63,6 +70,143 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     }
     return false;
+}
+
+static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height)
+{
+    int16_t room_num = item->room_number;
+    FLOOR_INFO *floor =
+        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    if (floor->floor == NO_HEIGHT / 256) {
+        return true;
+    }
+
+    if ((floor->floor << 8) != item->pos.y - block_height) {
+        return false;
+    }
+
+    return true;
+}
+
+static bool MovableBlock_TestPush(
+    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant)
+{
+    if (!MovableBlock_TestDestination(item, block_height)) {
+        return false;
+    }
+
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_number;
+
+    switch (quadrant) {
+    case DIR_NORTH:
+        z += WALL_L;
+        break;
+    case DIR_EAST:
+        x += WALL_L;
+        break;
+    case DIR_SOUTH:
+        z -= WALL_L;
+        break;
+    case DIR_WEST:
+        x -= WALL_L;
+        break;
+    }
+
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
+    COLL_INFO coll;
+    coll.quadrant = quadrant;
+    coll.radius = 500;
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+        return false;
+    }
+
+    if (((int32_t)floor->floor << 8) != y) {
+        return false;
+    }
+
+    floor = Room_GetFloor(x, y - block_height, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - block_height) {
+        return false;
+    }
+
+    return true;
+}
+
+static bool MovableBlock_TestPull(
+    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant)
+{
+    if (!MovableBlock_TestDestination(item, block_height)) {
+        return false;
+    }
+
+    int32_t x_add = 0;
+    int32_t z_add = 0;
+    switch (quadrant) {
+    case DIR_NORTH:
+        z_add = -WALL_L;
+        break;
+    case DIR_EAST:
+        x_add = -WALL_L;
+        break;
+    case DIR_SOUTH:
+        z_add = WALL_L;
+        break;
+    case DIR_WEST:
+        x_add = WALL_L;
+        break;
+    }
+
+    int32_t x = item->pos.x + x_add;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z + z_add;
+
+    int16_t room_num = item->room_number;
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
+    COLL_INFO coll;
+    coll.quadrant = quadrant;
+    coll.radius = 500;
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+        return false;
+    }
+
+    if (((int32_t)floor->floor << 8) != y) {
+        return false;
+    }
+
+    floor = Room_GetFloor(x, y - block_height, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - block_height) {
+        return false;
+    }
+
+    x += x_add;
+    z += z_add;
+    room_num = item->room_number;
+    floor = Room_GetFloor(x, y, z, &room_num);
+
+    if (((int32_t)floor->floor << 8) != y) {
+        return false;
+    }
+
+    floor = Room_GetFloor(x, y - LARA_HEIGHT, z, &room_num);
+    if (((int32_t)floor->ceiling << 8) > y - LARA_HEIGHT) {
+        return false;
+    }
+
+    x = g_LaraItem->pos.x + x_add;
+    y = g_LaraItem->pos.y;
+    z = g_LaraItem->pos.z + z_add;
+    room_num = g_LaraItem->room_number;
+    floor = Room_GetFloor(x, y, z, &room_num);
+    coll.radius = LARA_RAD;
+    coll.quadrant = (quadrant + 2) & 3;
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
+        return false;
+    }
+
+    return true;
 }
 
 void MovableBlock_Setup(OBJECT_INFO *obj)
@@ -148,7 +292,7 @@ void MovableBlock_Collision(
         return;
     }
 
-    uint16_t quadrant = ((uint16_t)lara_item->pos.y_rot + PHD_45) / PHD_90;
+    DIRECTION quadrant = ((uint16_t)lara_item->pos.y_rot + PHD_45) / PHD_90;
     if (lara_item->current_anim_state == LS_STOP) {
         if (g_Input.forward || g_Input.back
             || g_Lara.gun_status != LGS_ARMLESS) {
@@ -247,141 +391,4 @@ void MovableBlock_Draw(ITEM_INFO *item)
     } else {
         Object_DrawAnimatingItem(item);
     }
-}
-
-bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t blockhite)
-{
-    int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (floor->floor == NO_HEIGHT / 256) {
-        return true;
-    }
-
-    if ((floor->floor << 8) != item->pos.y - blockhite) {
-        return false;
-    }
-
-    return true;
-}
-
-bool MovableBlock_TestPush(
-    ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
-{
-    if (!MovableBlock_TestDestination(item, blockhite)) {
-        return false;
-    }
-
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
-    int16_t room_num = item->room_number;
-
-    switch (quadrant) {
-    case DIR_NORTH:
-        z += WALL_L;
-        break;
-    case DIR_EAST:
-        x += WALL_L;
-        break;
-    case DIR_SOUTH:
-        z -= WALL_L;
-        break;
-    case DIR_WEST:
-        x -= WALL_L;
-        break;
-    }
-
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-    COLL_INFO coll;
-    coll.quadrant = quadrant;
-    coll.radius = 500;
-    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
-        return false;
-    }
-
-    if (((int32_t)floor->floor << 8) != y) {
-        return false;
-    }
-
-    floor = Room_GetFloor(x, y - blockhite, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - blockhite) {
-        return false;
-    }
-
-    return true;
-}
-
-bool MovableBlock_TestPull(
-    ITEM_INFO *item, int32_t blockhite, uint16_t quadrant)
-{
-    if (!MovableBlock_TestDestination(item, blockhite)) {
-        return false;
-    }
-
-    int32_t x_add = 0;
-    int32_t z_add = 0;
-    switch (quadrant) {
-    case DIR_NORTH:
-        z_add = -WALL_L;
-        break;
-    case DIR_EAST:
-        x_add = -WALL_L;
-        break;
-    case DIR_SOUTH:
-        z_add = WALL_L;
-        break;
-    case DIR_WEST:
-        x_add = WALL_L;
-        break;
-    }
-
-    int32_t x = item->pos.x + x_add;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z + z_add;
-
-    int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-    COLL_INFO coll;
-    coll.quadrant = quadrant;
-    coll.radius = 500;
-    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
-        return false;
-    }
-
-    if (((int32_t)floor->floor << 8) != y) {
-        return false;
-    }
-
-    floor = Room_GetFloor(x, y - blockhite, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - blockhite) {
-        return false;
-    }
-
-    x += x_add;
-    z += z_add;
-    room_num = item->room_number;
-    floor = Room_GetFloor(x, y, z, &room_num);
-
-    if (((int32_t)floor->floor << 8) != y) {
-        return false;
-    }
-
-    floor = Room_GetFloor(x, y - LARA_HEIGHT, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - LARA_HEIGHT) {
-        return false;
-    }
-
-    x = g_LaraItem->pos.x + x_add;
-    y = g_LaraItem->pos.y;
-    z = g_LaraItem->pos.z + z_add;
-    room_num = g_LaraItem->room_number;
-    floor = Room_GetFloor(x, y, z, &room_num);
-    coll.radius = LARA_RAD;
-    coll.quadrant = (quadrant + 2) & 3;
-    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
-        return false;
-    }
-
-    return true;
 }

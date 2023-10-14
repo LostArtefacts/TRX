@@ -1713,7 +1713,7 @@ typedef struct COLL_INFO {
     PHD_VECTOR shift;
     PHD_VECTOR old;
     int16_t facing;
-    int16_t quadrant;
+    DIRECTION quadrant;
     int16_t coll_type;
     int16_t *trigger;
     int8_t tilt_x;
