@@ -10,6 +10,8 @@ namespace Installer.Installers;
 
 public class InstallExecutor
 {
+    private static readonly string _resourceBaseURL = "https://lostartefacts.dev/aux/tr1x";
+
     public InstallExecutor(InstallSettings settings)
     {
         _settings = settings;
@@ -43,7 +45,7 @@ public class InstallExecutor
 
         if (_settings.DownloadUnfinishedBusiness)
         {
-            await DownloadUnfinishedBusinessFiles(_settings.TargetDirectory, progress);
+            await DownloadUnfinishedBusinessFiles(_settings.TargetDirectory, _settings.UnfinishedBusinessType, progress);
         }
         if (_settings.CreateDesktopShortcut)
         {
@@ -92,12 +94,14 @@ public class InstallExecutor
 
     protected static async Task DownloadMusicFiles(string targetDirectory, IProgress<InstallProgress> progress)
     {
-        await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tr1x/music.zip", targetDirectory, progress);
+        await InstallUtils.DownloadZip($"{_resourceBaseURL}/music.zip", targetDirectory, progress);
     }
 
-    protected static async Task DownloadUnfinishedBusinessFiles(string targetDirectory, IProgress<InstallProgress> progress)
+    protected static async Task DownloadUnfinishedBusinessFiles(string targetDirectory, UBPackType type, IProgress<InstallProgress> progress)
     {
-        await InstallUtils.DownloadZip("https://tmp.sakuya.pl/tr1x/unfinished_business.zip", targetDirectory, progress);
+        await InstallUtils.DownloadZip(
+            $"{_resourceBaseURL}/trub-{type.ToString().ToLower()}.zip",
+            targetDirectory, progress);
     }
 
     private readonly InstallSettings _settings;

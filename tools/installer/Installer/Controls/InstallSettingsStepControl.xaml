@@ -101,15 +101,24 @@
                     </TextBlock>
                 </CheckBox>
 
-                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.DownloadUnfinishedBusiness}" IsEnabled="{Binding InstallSettings.IsDownloadingUnfinishedBusinessNeeded}">
-                    <TextBlock TextWrapping="Wrap">
-                        Download Unfinished Business expansion pack
-                        <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingUnfinishedBusinessNeeded, Converter={utils:ConditionalMarkupConverter TrueValue='', FalseValue='(already found)'}, Mode=OneWay}" />
-                        <LineBreak />
-                        <Run Style="{StaticResource small}">
-                        The Unfinished Business expansion pack was made freeware. However, the Steam and GOG versions do not ship it. This option lets you download the expansion files automatically (6 MB).
-                        </Run>
-                    </TextBlock>
+                <CheckBox VerticalAlignment="Center" Margin="0,0,0,6" IsChecked="{Binding InstallSettings.DownloadUnfinishedBusiness}" IsEnabled="{Binding InstallSettings.IsDownloadingUnfinishedBusinessNeeded}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Resources>
+                            <utils:ComparisonConverter x:Key="ComparisonConverter" />
+                        </StackPanel.Resources>
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,6">
+                            Download Unfinished Business expansion pack
+                            <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingUnfinishedBusinessNeeded, Converter={utils:ConditionalMarkupConverter TrueValue='', FalseValue='(already found)'}, Mode=OneWay}" />
+                            <LineBreak />
+                            <Run Style="{StaticResource small}">
+                            The Unfinished Business expansion pack was made freeware. However, the Steam and GOG versions do not ship it. This option lets you download the expansion files automatically (6 MB).
+                            </Run>
+                        </TextBlock>
+                        <RadioButton IsEnabled="{Binding InstallSettings.DownloadUnfinishedBusiness}" Style="{StaticResource small}" Margin="0,0,0,6" Content="Fan-made edition (includes music triggers)"
+                                     IsChecked="{Binding Path=InstallSettings.UnfinishedBusinessType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static models:UBPackType.Music}}"/>
+                        <RadioButton IsEnabled="{Binding InstallSettings.DownloadUnfinishedBusiness}" Style="{StaticResource small}" Margin="0,0,0,6" Content="Original edition (does not include music triggers)"
+                                     IsChecked="{Binding Path=InstallSettings.UnfinishedBusinessType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static models:UBPackType.Vanilla}}"/>
+                    </StackPanel>
                 </CheckBox>
 
                 <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.ImportSaves}" IsEnabled="{Binding InstallSettings.InstallSource.IsImportingSavesSupported}">

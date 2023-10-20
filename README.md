@@ -75,12 +75,14 @@ We hope that eventually these alerts will go away as the popularity of the proje
     1. For Steam and GOG users, extract the original `GAME.BIN` file using a tool such as UltraISO to your target directory.
        Note that neither the GOG nor the Steam releases ship the music files. You have a few options here:
        - You can download the music files from the link below.  
-         https://tmp.sakuya.pl/tr1x/music.zip
+         https://lostartefacts.dev/aux/tr1x/music.zip
          The legality of this approach is disputable.
        - Rip the assets yourself from a physical PlayStation/SegaSaturn disk.
 
        Optionally you can also install the Unfinished Business expansion pack files.
-       - Either this variant: https://tmp.sakuya.pl/tr1x/unfinished_business.zip
+       - Either one of these these variants:
+         - https://lostartefacts.dev/aux/tr1x/trub-music.zip (fan-made patch to include music triggers)
+         - https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (original level files, which do not include music triggers)
        - Or the more manual link: https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
    2. For TombATI users this means copying the `data`, `fmv` and `music` directories.
 5. To play the game, run `TR1X.exe`.
