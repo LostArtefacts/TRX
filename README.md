@@ -81,8 +81,8 @@ We hope that eventually these alerts will go away as the popularity of the proje
 
        Optionally you can also install the Unfinished Business expansion pack files.
        - Either one of these these variants:
-         - https://lostartefacts.dev/aux/tr1x/trub-music.zip (includes music triggers)
-         - https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (does not include music triggers)
+         - https://lostartefacts.dev/aux/tr1x/trub-music.zip (fan-made patch to include music triggers)
+         - https://lostartefacts.dev/aux/tr1x/trub-vanilla.zip (original level files, which do not include music triggers)
        - Or the more manual link: https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
    2. For TombATI users this means copying the `data`, `fmv` and `music` directories.
 5. To play the game, run `TR1X.exe`.
