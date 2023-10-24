@@ -122,7 +122,7 @@ static void Room_AddFlipItems(ROOM_INFO *r)
             Room_AlterFloorHeight(item, -WALL_L);
             break;
 
-        case O_ROLLING_BLOCK:
+        case O_SLIDING_PILLAR:
             Room_AlterFloorHeight(item, -WALL_L * 2);
             break;
 
@@ -146,7 +146,7 @@ static void Room_RemoveFlipItems(ROOM_INFO *r)
             Room_AlterFloorHeight(item, WALL_L);
             break;
 
-        case O_ROLLING_BLOCK:
+        case O_SLIDING_PILLAR:
             Room_AlterFloorHeight(item, WALL_L * 2);
             break;
 

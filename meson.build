@@ -204,7 +204,7 @@ sources = [
   'src/game/objects/traps/movable_block.c',
   'src/game/objects/traps/pendulum.c',
   'src/game/objects/traps/rolling_ball.c',
-  'src/game/objects/traps/rolling_block.c',
+  'src/game/objects/traps/sliding_pillar.c',
   'src/game/objects/traps/spikes.c',
   'src/game/objects/traps/teeth_trap.c',
   'src/game/objects/traps/thors_hammer.c',

@@ -62,7 +62,7 @@
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/pendulum.h"
 #include "game/objects/traps/rolling_ball.h"
-#include "game/objects/traps/rolling_block.h"
+#include "game/objects/traps/sliding_pillar.h"
 #include "game/objects/traps/spikes.h"
 #include "game/objects/traps/teeth_trap.h"
 #include "game/objects/traps/thors_hammer.h"
@@ -130,7 +130,7 @@ void Setup_Traps(void)
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK2]);
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK3]);
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK4]);
-    RollingBlock_Setup(&g_Objects[O_ROLLING_BLOCK]);
+    SlidingPillar_Setup(&g_Objects[O_SLIDING_PILLAR]);
     LightningEmitter_Setup(&g_Objects[O_LIGHTNING_EMITTER]);
     ThorsHandle_Setup(&g_Objects[O_THORS_HANDLE]);
     ThorsHead_Setup(&g_Objects[O_THORS_HEAD]);
