@@ -1,34 +1,34 @@
-#include "game/objects/traps/rolling_block.h"
+#include "game/objects/traps/sliding_pillar.h"
 
 #include "game/items.h"
 #include "game/room.h"
 #include "global/const.h"
 
-void RollingBlock_Setup(OBJECT_INFO *obj)
+void SlidingPillar_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = RollingBlock_Initialise;
-    obj->control = RollingBlock_Control;
+    obj->initialise = SlidingPillar_Initialise;
+    obj->control = SlidingPillar_Control;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void RollingBlock_Initialise(int16_t item_num)
+void SlidingPillar_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     Room_AlterFloorHeight(item, -WALL_L * 2);
 }
 
-void RollingBlock_Control(int16_t item_num)
+void SlidingPillar_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == RBS_START) {
-            item->goal_anim_state = RBS_END;
+        if (item->current_anim_state == SPS_START) {
+            item->goal_anim_state = SPS_END;
             Room_AlterFloorHeight(item, WALL_L * 2);
         }
-    } else if (item->current_anim_state == RBS_END) {
-        item->goal_anim_state = RBS_START;
+    } else if (item->current_anim_state == SPS_END) {
+        item->goal_anim_state = SPS_START;
         Room_AlterFloorHeight(item, WALL_L * 2);
     }
 

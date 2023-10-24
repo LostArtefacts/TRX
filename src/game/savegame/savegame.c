@@ -12,7 +12,7 @@
 #include "game/objects/general/save_crystal.h"
 #include "game/objects/general/scion.h"
 #include "game/objects/traps/movable_block.h"
-#include "game/objects/traps/rolling_block.h"
+#include "game/objects/traps/sliding_pillar.h"
 #include "game/room.h"
 #include "game/savegame/savegame_bson.h"
 #include "game/savegame/savegame_legacy.h"
@@ -122,8 +122,8 @@ static void Savegame_LoadPostprocess(void)
             }
         }
 
-        if (obj->control == RollingBlock_Control
-            && item->current_anim_state != RBS_MOVING) {
+        if (obj->control == SlidingPillar_Control
+            && item->current_anim_state != SPS_MOVING) {
             Room_AlterFloorHeight(item, -WALL_L * 2);
         }
 
@@ -186,7 +186,7 @@ void Savegame_PreprocessItems(void)
             && item->pos.y >= Item_GetHeight(item)) {
             Room_AlterFloorHeight(item, WALL_L);
         }
-        if (obj->control == RollingBlock_Control) {
+        if (obj->control == SlidingPillar_Control) {
             Room_AlterFloorHeight(item, WALL_L * 2);
         }
     }
