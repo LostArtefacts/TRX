@@ -11,7 +11,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "src/math/matrix.h"
+#include "math/matrix.h"
 #include "util.h"
 
 #include <stdbool.h>
