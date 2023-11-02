@@ -3,7 +3,6 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/inventory.h"
-#include "game/objects/common.h"
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/text.h"
@@ -11,7 +10,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "src/math/matrix.h"
+#include "math/matrix.h"
 #include "util.h"
 
 #include <stdbool.h>
