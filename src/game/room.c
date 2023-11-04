@@ -339,12 +339,14 @@ int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
                     height += (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
                     height -=
-                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1)))
+                                  >> 2);
                 }
 
                 if (yoff < 0) {
                     height +=
-                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1)))
+                                  >> 2);
                 } else {
                     height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 }
@@ -469,14 +471,16 @@ int16_t Room_GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
                     height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
                 } else {
                     height +=
-                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1))) >> 2);
+                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1)))
+                                  >> 2);
                 }
 
                 if (yoff < 0) {
                     height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
                 } else {
                     height +=
-                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1))) >> 2);
+                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1)))
+                                  >> 2);
                 }
             }
 
