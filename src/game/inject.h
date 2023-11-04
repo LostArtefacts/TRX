@@ -35,7 +35,7 @@ typedef struct INJECTION_INFO {
     int32_t room_mesh_edit_count;
     int32_t room_door_edit_count;
     int32_t anim_range_edit_count;
-    int32_t item_rotation_count;
+    int32_t item_position_count;
 } INJECTION_INFO;
 
 void Inject_Init(

@@ -16,13 +16,14 @@
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
-#define INJECTION_CURRENT_VERSION 4
+#define INJECTION_CURRENT_VERSION 5
 
 typedef enum INJECTION_VERSION {
     INJ_VERSION_1 = 1,
     INJ_VERSION_2 = 2,
     INJ_VERSION_3 = 3,
     INJ_VERSION_4 = 4,
+    INJ_VERSION_5 = 5,
 } INJECTION_VERSION;
 
 typedef enum INJECTION_TYPE {
@@ -33,7 +34,7 @@ typedef enum INJECTION_TYPE {
     INJ_FLOOR_DATA = 4,
     INJ_LARA_ANIMS = 5,
     INJ_LARA_JUMPS = 6,
-    INJ_ITEM_ROTATION = 7,
+    INJ_ITEM_POSITION = 7,
     INJ_PS1_ENEMY = 8,
 } INJECTION_TYPE;
 
@@ -148,7 +149,7 @@ static int16_t *Inject_GetRoomFace(
 
 static void Inject_RoomDoorEdits(INJECTION *injection);
 
-static void Inject_ItemRotations(INJECTION *injection);
+static void Inject_ItemPositions(INJECTION *injection);
 
 void Inject_Init(
     int num_injections, char *filenames[], INJECTION_INFO *aggregate)
@@ -215,7 +216,7 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     case INJ_LARA_JUMPS:
         injection->relevant = g_Config.enable_tr2_jumping;
         break;
-    case INJ_ITEM_ROTATION:
+    case INJ_ITEM_POSITION:
         injection->relevant = g_Config.fix_item_rots;
         break;
     case INJ_PS1_ENEMY:
@@ -280,9 +281,9 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     }
 
     if (injection->version > INJ_VERSION_3) {
-        File_Read(&info->item_rotation_count, sizeof(int32_t), 1, fp);
+        File_Read(&info->item_position_count, sizeof(int32_t), 1, fp);
     } else {
-        info->item_rotation_count = 0;
+        info->item_position_count = 0;
     }
 
     m_Aggregate->texture_page_count += info->texture_page_count;
@@ -341,7 +342,7 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         Inject_RoomDoorEdits(injection);
         Inject_AnimRangeEdits(injection);
 
-        Inject_ItemRotations(injection);
+        Inject_ItemPositions(injection);
 
         // Realign base indices for the next injection.
         INJECTION_INFO *inj_info = injection->info;
@@ -1684,7 +1685,7 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
     }
 }
 
-static void Inject_ItemRotations(INJECTION *injection)
+static void Inject_ItemPositions(INJECTION *injection)
 {
     if (injection->version < INJ_VERSION_4) {
         return;
@@ -1694,17 +1695,34 @@ static void Inject_ItemRotations(INJECTION *injection)
     MYFILE *fp = injection->fp;
 
     int16_t item_num;
+    int32_t x;
+    int32_t y;
+    int32_t z;
+    int16_t room_num;
     int16_t y_rot;
-    for (int i = 0; i < inj_info->item_rotation_count; i++) {
+    for (int i = 0; i < inj_info->item_position_count; i++) {
         File_Read(&item_num, sizeof(int16_t), 1, fp);
         File_Read(&y_rot, sizeof(int16_t), 1, fp);
+        if (injection->version > INJ_VERSION_4) {
+            File_Read(&x, sizeof(int32_t), 1, fp);
+            File_Read(&y, sizeof(int32_t), 1, fp);
+            File_Read(&z, sizeof(int32_t), 1, fp);
+            File_Read(&room_num, sizeof(int16_t), 1, fp);
+        }
 
         if (item_num < 0 || item_num >= g_LevelItemCount) {
             LOG_WARNING("Item number %d is out of level item range", item_num);
             continue;
         }
 
-        (&g_Items[item_num])->pos.y_rot = y_rot;
+        ITEM_INFO *item = &g_Items[item_num];
+        item->pos.y_rot = y_rot;
+        if (injection->version > INJ_VERSION_4) {
+            item->pos.x = x;
+            item->pos.y = y;
+            item->pos.z = z;
+            item->room_number = room_num;
+        }
     }
 }
 
