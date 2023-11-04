@@ -18,7 +18,6 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "game/text.h"
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -759,8 +758,6 @@ bool Level_Initialise(int32_t level_num)
 {
     LOG_DEBUG("%d", level_num);
     g_CurrentLevel = level_num;
-
-    Text_RemoveAll();
 
     g_FlipStatus = 0;
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {

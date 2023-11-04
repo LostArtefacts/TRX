@@ -440,17 +440,9 @@ void Lara_Hair_Draw(void)
 
 static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z)
 {
-    ROOM_INFO *room;
-    for (int i = 0; i < g_RoomCount; i++) {
-        room = &g_RoomInfo[i];
-        if (x >= room->x + WALL_L
-            && x < (room->y_size << WALL_SHIFT) + room->x - WALL_L
-            && y >= room->max_ceiling && y <= room->min_floor
-            && z >= room->z + WALL_L
-            && z < (room->x_size << WALL_SHIFT) + room->z - WALL_L) {
-            return i;
-        }
+    int16_t room_num = Room_GetIndexFromPos(x, y, z);
+    if (room_num != NO_ROOM) {
+        return room_num;
     }
-
     return g_LaraItem->room_number;
 }

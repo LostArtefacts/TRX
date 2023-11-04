@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "filesystem.h"
+#include "game/console.h"
 #include "game/input.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -2187,6 +2188,9 @@ static void S_FMV_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
                event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) {
 
         Input_Update();
+        Shell_ProcessInput();
+        Console_ScrollLogs();
+
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             is->abort_request = true;
         }

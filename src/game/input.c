@@ -1,11 +1,6 @@
 #include "game/input.h"
 
 #include "config.h"
-#include "game/clock.h"
-#include "game/inventory.h"
-#include "game/lara.h"
-#include "game/option/option_control.h"
-#include "gfx/common.h"
 #include "global/vars.h"
 #include "specific/s_input.h"
 
@@ -148,48 +143,6 @@ void Input_Update(void)
     }
 
     g_InputDB = Input_GetDebounced(g_Input);
-
-    if (Option_ControlIsLocked()) {
-        return;
-    }
-
-    if (g_Config.enable_numeric_keys) {
-        if (g_InputDB.equip_pistols && Inv_RequestItem(O_GUN_ITEM)) {
-            g_Lara.request_gun_type = LGT_PISTOLS;
-        } else if (g_InputDB.equip_shotgun && Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            g_Lara.request_gun_type = LGT_SHOTGUN;
-        } else if (g_InputDB.equip_magnums && Inv_RequestItem(O_MAGNUM_ITEM)) {
-            g_Lara.request_gun_type = LGT_MAGNUMS;
-        } else if (g_InputDB.equip_uzis && Inv_RequestItem(O_UZI_ITEM)) {
-            g_Lara.request_gun_type = LGT_UZIS;
-        }
-    }
-
-    if (g_InputDB.use_small_medi && Inv_RequestItem(O_MEDI_OPTION)) {
-        Lara_UseItem(O_MEDI_OPTION);
-    } else if (g_InputDB.use_big_medi && Inv_RequestItem(O_BIGMEDI_OPTION)) {
-        Lara_UseItem(O_BIGMEDI_OPTION);
-    }
-
-    if (g_InputDB.toggle_bilinear_filter) {
-        g_Config.rendering.texture_filter =
-            (g_Config.rendering.texture_filter + 1) % GFX_TF_NUMBER_OF;
-        Config_Write();
-    }
-
-    if (g_InputDB.toggle_perspective_filter) {
-        g_Config.rendering.enable_perspective_filter ^= true;
-        Config_Write();
-    }
-
-    if (g_InputDB.toggle_fps_counter) {
-        g_Config.rendering.enable_fps_counter ^= true;
-        Config_Write();
-    }
-
-    if (g_InputDB.turbo_cheat) {
-        Clock_CycleTurboSpeed();
-    }
 }
 
 bool Input_IsKeyConflicted(CONTROL_MODE mode, INPUT_ROLE role)

@@ -3,6 +3,7 @@
 #include "config.h"
 #include "filesystem.h"
 #include "game/clock.h"
+#include "game/console.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
@@ -17,6 +18,7 @@
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
+#include "gfx/common.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
@@ -123,6 +125,7 @@ void Shell_Init(const char *gameflow_path)
     Music_Init();
     Input_Init();
     FMV_Init();
+    Console_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");
@@ -148,6 +151,7 @@ void Shell_Shutdown(void)
     Music_Shutdown();
     Savegame_Shutdown();
     Option_Shutdown();
+    Console_Shutdown();
 }
 
 void Shell_Main(void)
@@ -242,7 +246,6 @@ void Shell_Main(void)
                 intro_played = true;
             }
 
-            Text_RemoveAll();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;
@@ -286,11 +289,46 @@ void Shell_Wait(int nticks)
 {
     for (int i = 0; i < nticks; i++) {
         Input_Update();
+        Shell_ProcessInput();
+
         if (g_InputDB.any) {
             break;
         }
         S_Shell_SpinMessageLoop();
         Clock_SyncTicks(1);
+    }
+}
+
+void Shell_ProcessInput(void)
+{
+    if (Console_IsOpened()) {
+        if (g_InputDB.menu_back) {
+            Console_Close();
+        } else if (g_InputDB.menu_confirm) {
+            Console_Confirm();
+        }
+        g_Input.any = 0;
+        g_InputDB.any = 0;
+    }
+
+    if (g_InputDB.toggle_bilinear_filter) {
+        g_Config.rendering.texture_filter =
+            (g_Config.rendering.texture_filter + 1) % GFX_TF_NUMBER_OF;
+        Config_Write();
+    }
+
+    if (g_InputDB.toggle_perspective_filter) {
+        g_Config.rendering.enable_perspective_filter ^= true;
+        Config_Write();
+    }
+
+    if (g_InputDB.toggle_fps_counter) {
+        g_Config.rendering.enable_fps_counter ^= true;
+        Config_Write();
+    }
+
+    if (g_InputDB.turbo_cheat) {
+        Clock_CycleTurboSpeed();
     }
 }
 

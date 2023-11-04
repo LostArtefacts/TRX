@@ -5,6 +5,7 @@
 #include "game/music.h"
 #include "game/output.h"
 #include "game/requester.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/types.h"
@@ -96,7 +97,10 @@ static int32_t Game_Pause_Loop(void)
         Game_Pause_DisplayText();
         Text_Draw();
         Output_DumpScreen();
+
         Input_Update();
+        Shell_ProcessInput();
+        Game_ProcessInput();
 
         switch (state) {
         case 0:
@@ -143,7 +147,6 @@ bool Game_Pause(void)
 {
     g_OldInputDB = g_Input;
 
-    Text_RemoveAll();
     Output_SetupAboveWater(false);
 
     Music_Pause();

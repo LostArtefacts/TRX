@@ -15,6 +15,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -26,13 +27,12 @@
         Game_DrawScene(true);                                                  \
         Output_DumpScreen();                                                   \
         Input_Update();                                                        \
-    } while (g_Input.key)
+    } while (g_Input.key);
 
 static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
 static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
-static void Game_UpdateInput(void);
 
 static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
 {
@@ -48,7 +48,9 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             return GF_NOP_BREAK;
         }
 
-        Game_UpdateInput();
+        Input_Update();
+        Shell_ProcessInput();
+        Game_ProcessInput();
 
         if (level_type == GFL_DEMO) {
             if (g_Input.any) {
@@ -131,19 +133,35 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
     return GF_NOP;
 }
 
-static void Game_UpdateInput(void)
+void Game_ProcessInput(void)
 {
-    Input_Update();
-    if (!g_Config.enable_buffering) {
-        return;
+    if (g_Config.enable_numeric_keys) {
+        if (g_InputDB.equip_pistols && Inv_RequestItem(O_GUN_ITEM)) {
+            g_Lara.request_gun_type = LGT_PISTOLS;
+        } else if (g_InputDB.equip_shotgun && Inv_RequestItem(O_SHOTGUN_ITEM)) {
+            g_Lara.request_gun_type = LGT_SHOTGUN;
+        } else if (g_InputDB.equip_magnums && Inv_RequestItem(O_MAGNUM_ITEM)) {
+            g_Lara.request_gun_type = LGT_MAGNUMS;
+        } else if (g_InputDB.equip_uzis && Inv_RequestItem(O_UZI_ITEM)) {
+            g_Lara.request_gun_type = LGT_UZIS;
+        }
     }
 
-    if (g_Input.toggle_fps_counter) {
-        FRAME_BUFFER(toggle_fps_counter);
-    } else if (g_Input.toggle_bilinear_filter) {
-        FRAME_BUFFER(toggle_bilinear_filter);
-    } else if (g_Input.toggle_perspective_filter) {
-        FRAME_BUFFER(toggle_perspective_filter);
+    if (g_InputDB.use_small_medi && Inv_RequestItem(O_MEDI_OPTION)) {
+        Lara_UseItem(O_MEDI_OPTION);
+    } else if (g_InputDB.use_big_medi && Inv_RequestItem(O_BIGMEDI_OPTION)) {
+        Lara_UseItem(O_BIGMEDI_OPTION);
+    }
+
+    if (g_Config.enable_buffering
+        && !(g_GameInfo.status & (GMS_IN_INVENTORY | GMS_IN_PAUSE))) {
+        if (g_Input.toggle_bilinear_filter) {
+            FRAME_BUFFER(toggle_bilinear_filter);
+        } else if (g_Input.toggle_perspective_filter) {
+            FRAME_BUFFER(toggle_perspective_filter);
+        } else if (g_Input.toggle_fps_counter) {
+            FRAME_BUFFER(toggle_fps_counter);
+        }
     }
 }
 

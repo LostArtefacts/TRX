@@ -1,6 +1,7 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
+#include "game/console.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
@@ -212,6 +213,18 @@ void S_Shell_SpinMessageLoop(void)
                 S_Shell_HandleWindowResize();
                 break;
             }
+            break;
+
+        case SDL_KEYDOWN:
+            Console_HandleKeyDown(event);
+            break;
+
+        case SDL_TEXTEDITING:
+            Console_HandleTextEdit(event);
+            break;
+
+        case SDL_TEXTINPUT:
+            Console_HandleTextInput(event);
             break;
 
         case SDL_CONTROLLERDEVICEADDED:

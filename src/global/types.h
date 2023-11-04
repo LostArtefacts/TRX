@@ -1080,6 +1080,7 @@ typedef enum GAME_STRING_ID {
     GS_KEYMAP_ITEM_CHEAT,
     GS_KEYMAP_LEVEL_SKIP_CHEAT,
     GS_KEYMAP_TURBO_CHEAT,
+    GS_KEYMAP_ENTER_CONSOLE,
     GS_KEYMAP_PAUSE,
     GS_KEYMAP_CAMERA_UP,
     GS_KEYMAP_CAMERA_DOWN,
@@ -1689,8 +1690,6 @@ typedef struct TEXTSTRING {
     } outline;
     char *string;
     struct BAR_INFO progress_bar;
-
-    void (*on_remove)(const struct TEXTSTRING *);
 } TEXTSTRING;
 
 typedef struct COLL_INFO {
@@ -2105,7 +2104,8 @@ typedef enum INPUT_ROLE {
     INPUT_ROLE_LOAD = 30,
     INPUT_ROLE_FPS = 31,
     INPUT_ROLE_BILINEAR = 32,
-    INPUT_ROLE_NUMBER_OF = 33,
+    INPUT_ROLE_ENTER_CONSOLE = 33,
+    INPUT_ROLE_NUMBER_OF = 34,
 } INPUT_ROLE;
 
 typedef enum INPUT_LAYOUT {
@@ -2121,7 +2121,7 @@ typedef enum BUTTON_TYPE {
     BT_AXIS = 1,
 } BUTTON_TYPE;
 
-typedef int16_t INPUT_SCANCODE;
+typedef uint16_t INPUT_SCANCODE;
 typedef int16_t INPUT_BUTTON;
 
 typedef struct LEVEL_INFO {

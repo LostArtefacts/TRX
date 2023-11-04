@@ -1,5 +1,6 @@
 #include "game/game.h"
 
+#include "game/console.h"
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -16,6 +17,7 @@ int32_t Game_ProcessFrame(void)
     Game_DrawScene(true);
     g_Camera.number_frames = Output_DumpScreen();
     Output_AnimateTextures(g_Camera.number_frames);
+    Console_ScrollLogs();
     return g_Camera.number_frames;
 }
 

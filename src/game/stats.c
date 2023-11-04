@@ -10,6 +10,7 @@
 #include "game/items.h"
 #include "game/music.h"
 #include "game/output.h"
+#include "game/shell.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -19,6 +20,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+
+#define MAX_TEXTSTRINGS 10
 
 typedef struct TOTAL_STATS {
     uint32_t timer;
@@ -307,20 +310,20 @@ void Stats_Show(int32_t level_num)
 
     char buf[100];
     char time_str[100];
-    TEXTSTRING *txt;
+    TEXTSTRING *all_txt[MAX_TEXTSTRINGS] = { 0 };
+    TEXTSTRING **cur_txt = &all_txt[0];
 
     const GAME_STATS *stats = &g_GameInfo.current[level_num].stats;
-
-    Text_RemoveAll();
 
     int y = -50;
     const int row_height = 30;
 
     // heading
     sprintf(buf, "%s", g_GameFlow.levels[level_num].level_title);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // kills
@@ -330,9 +333,10 @@ void Stats_Show(int32_t level_num)
             [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
                                             : GS_STATS_KILLS_BASIC_FMT],
         stats->kill_count, stats->max_kill_count);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // pickups
@@ -342,9 +346,10 @@ void Stats_Show(int32_t level_num)
             [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
                                             : GS_STATS_PICKUPS_BASIC_FMT],
         stats->pickup_count, stats->max_pickup_count);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // secrets
@@ -359,18 +364,20 @@ void Stats_Show(int32_t level_num)
     sprintf(
         buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
         stats->max_secret_count);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // deaths
     if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
         sprintf(
             buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
-        txt = Text_Create(0, y, buf);
-        Text_CentreH(txt, 1);
-        Text_CentreV(txt, 1);
+        *cur_txt = Text_Create(0, y, buf);
+        Text_CentreH(*cur_txt, 1);
+        Text_CentreV(*cur_txt, 1);
+        cur_txt++;
         y += row_height;
     }
 
@@ -387,22 +394,25 @@ void Stats_Show(int32_t level_num)
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
     sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     Output_FadeToSemiBlack(true);
     // wait till a skip key is pressed
     do {
         Game_DrawScene(false);
+
         Input_Update();
+        Shell_ProcessInput();
+
         Text_Draw();
         Output_DumpScreen();
     } while (!g_InputDB.menu_confirm && !g_InputDB.menu_back);
 
     Output_FadeToBlack(false);
-    Text_RemoveAll();
 
     // finish fading
     while (Output_FadeIsAnimating()) {
@@ -412,17 +422,23 @@ void Stats_Show(int32_t level_num)
 
     Output_FadeReset();
     g_GameInfo.status &= ~GMS_IN_STATS;
+
+    for (int i = 0; i < MAX_TEXTSTRINGS; i++) {
+        cur_txt = &all_txt[i];
+        if (*cur_txt) {
+            Text_Remove(*cur_txt);
+        }
+    }
 }
 
 void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    Text_RemoveAll();
-
     Stats_ComputeTotal(level_type);
 
     char buf[100];
     char time_str[100];
-    TEXTSTRING *txt;
+    TEXTSTRING *all_txt[MAX_TEXTSTRINGS];
+    TEXTSTRING **cur_txt = &all_txt[0];
 
     int top_y = 55;
     int y = 55;
@@ -440,9 +456,10 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
             [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
                                             : GS_STATS_KILLS_BASIC_FMT],
         m_TotalStats.player_kill_count, m_TotalStats.total_kill_count);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // pickups
@@ -452,18 +469,20 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
             [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
                                             : GS_STATS_PICKUPS_BASIC_FMT],
         m_TotalStats.player_pickup_count, m_TotalStats.total_pickup_count);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // secrets
     sprintf(
         buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT],
         m_TotalStats.player_secret_count, m_TotalStats.total_secret_count);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // deaths
@@ -471,9 +490,10 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
         sprintf(
             buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT],
             m_TotalStats.death_count);
-        txt = Text_Create(0, y, buf);
-        Text_CentreH(txt, 1);
-        Text_CentreV(txt, 1);
+        *cur_txt = Text_Create(0, y, buf);
+        Text_CentreH(*cur_txt, 1);
+        Text_CentreV(*cur_txt, 1);
+        cur_txt++;
         y += row_height;
     }
 
@@ -490,18 +510,20 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
     sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-    txt = Text_Create(0, y, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
+    *cur_txt = Text_Create(0, y, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    cur_txt++;
     y += row_height;
 
     // border
     int16_t height = y + border * 2 - top_y;
-    txt = Text_Create(0, top_y, " ");
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
-    Text_AddBackground(txt, row_width, height, 0, 0, TS_BACKGROUND);
-    Text_AddOutline(txt, true, TS_BACKGROUND);
+    *cur_txt = Text_Create(0, top_y, " ");
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    Text_AddBackground(*cur_txt, row_width, height, 0, 0, TS_BACKGROUND);
+    Text_AddOutline(*cur_txt, true, TS_BACKGROUND);
+    cur_txt++;
 
     // heading
     sprintf(
@@ -509,11 +531,12 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
         g_GameFlow.strings
             [level_type == GFL_BONUS ? GS_STATS_BONUS_STATISTICS
                                      : GS_STATS_FINAL_STATISTICS]);
-    txt = Text_Create(0, top_y + 2, buf);
-    Text_CentreH(txt, 1);
-    Text_CentreV(txt, 1);
-    Text_AddBackground(txt, row_width - 4, 0, 0, 0, TS_HEADING);
-    Text_AddOutline(txt, true, TS_HEADING);
+    *cur_txt = Text_Create(0, top_y + 2, buf);
+    Text_CentreH(*cur_txt, 1);
+    Text_CentreV(*cur_txt, 1);
+    Text_AddBackground(*cur_txt, row_width - 4, 0, 0, 0, TS_HEADING);
+    Text_AddOutline(*cur_txt, true, TS_HEADING);
+    cur_txt++;
 
     Output_LoadBackdropImage(filename);
     Clock_SyncTicks(1);
@@ -529,7 +552,10 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
     // wait till a skip key is pressed
     do {
         Output_DrawBackdropImage();
+
         Input_Update();
+        Shell_ProcessInput();
+
         Text_Draw();
         Output_DumpScreen();
     } while (!g_InputDB.menu_confirm && !g_InputDB.menu_back);
@@ -542,8 +568,14 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     Output_FadeReset();
-    Text_RemoveAll();
     Music_Stop();
+
+    for (int i = 0; i < MAX_TEXTSTRINGS; i++) {
+        cur_txt = &all_txt[i];
+        if (*cur_txt) {
+            Text_Remove(*cur_txt);
+        }
+    }
 }
 
 bool Stats_CheckAllSecretsCollected(GAMEFLOW_LEVEL_TYPE level_type)

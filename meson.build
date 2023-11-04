@@ -92,6 +92,8 @@ sources = [
   'src/game/carrier.c',
   'src/game/clock.c',
   'src/game/collide.c',
+  'src/game/console.c',
+  'src/game/console_cmd.c',
   'src/game/creature.c',
   'src/game/effect_routines/bubbles.c',
   'src/game/effect_routines/chain_block.c',

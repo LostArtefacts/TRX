@@ -401,6 +401,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **The Hive**: converted track 9 in room 8, track 6 in room 18, track 12 in room 30, track 18 in room 31, track 3 in room 32, and track 20 in room 35 to one shot
 
 #### Mods
+- added developer console (accessible with `/`, see [COMMANDS.md] for details)
 - added ability to adjust Lara's starting health (easy no damage mod)
 - added ability to disable healing between levels
 - added ability to disable certain item pickups (all medpacks, shotgun, Magnums and/or UZIs)
