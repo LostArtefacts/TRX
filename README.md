@@ -293,6 +293,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed dead centaurs exploding again after saving and reloading
 - fixed the following floor data issues:
     - **St. Francis' Folly**: moved the music trigger for track 3 in room 4 behind the Neptune door, and restored track 15 to play after using the 4 keys
+    - **The Cistern**: missing trigger in room 56 which could result in a softlock
     - **Tomb of Tihocan**: missing trigger in room 62 for enemy 34
     - **City of Khamoon**: incorrect trapdoor trigger types in rooms 31 and 34
     - **Obelisk of Khamoon**: missing switch trigger type in room 66
