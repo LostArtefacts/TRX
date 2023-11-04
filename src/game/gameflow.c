@@ -116,6 +116,7 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
         { "KEYMAP_ITEM_CHEAT", GS_KEYMAP_ITEM_CHEAT },
         { "KEYMAP_LEVEL_SKIP_CHEAT", GS_KEYMAP_LEVEL_SKIP_CHEAT },
         { "KEYMAP_TURBO_CHEAT", GS_KEYMAP_TURBO_CHEAT },
+        { "KEYMAP_ENTER_CONSOLE", GS_KEYMAP_ENTER_CONSOLE },
         { "KEYMAP_PAUSE", GS_KEYMAP_PAUSE },
         { "KEYMAP_CAMERA_UP", GS_KEYMAP_CAMERA_UP },
         { "KEYMAP_CAMERA_DOWN", GS_KEYMAP_CAMERA_DOWN },
@@ -1315,7 +1316,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             while (Output_FadeIsAnimating()) {
                 Output_DrawBackdropImage();
                 Output_DumpScreen();
+
                 Input_Update();
+                Shell_ProcessInput();
+
                 if (g_InputDB.any) {
                     break;
                 }
@@ -1332,7 +1336,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             while (Output_FadeIsAnimating()) {
                 Output_DrawBackdropImage();
                 Output_DumpScreen();
+
                 Input_Update();
+                Shell_ProcessInput();
+
                 if (g_InputDB.any) {
                     break;
                 }

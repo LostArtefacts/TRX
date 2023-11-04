@@ -217,6 +217,7 @@
         "KEYMAP_ITEM_CHEAT": "Item Cheat",
         "KEYMAP_LEVEL_SKIP_CHEAT": "Level Skip",
         "KEYMAP_TURBO_CHEAT": "Turbo Speed",
+        "KEYMAP_ENTER_CONSOLE": "Enter Console",
         "KEYMAP_CAMERA_UP": "Camera Up",
         "KEYMAP_CAMERA_DOWN": "Camera Down",
         "KEYMAP_CAMERA_LEFT": "Camera Left",

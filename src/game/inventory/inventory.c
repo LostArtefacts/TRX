@@ -1,5 +1,6 @@
 #include "config.h"
 #include "game/clock.h"
+#include "game/console.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
@@ -13,6 +14,7 @@
 #include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/screen.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
 #include "game/viewport.h"
@@ -429,7 +431,11 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
     do {
         Inv_Ring_CalcAdders(&ring, ROTATE_DURATION);
+
         Input_Update();
+        Shell_ProcessInput();
+        Game_ProcessInput();
+        Console_ScrollLogs();
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             no_input_count = 0;

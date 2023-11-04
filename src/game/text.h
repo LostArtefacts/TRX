@@ -32,5 +32,4 @@ void Text_AlignRight(TEXTSTRING *textstring, bool enable);
 void Text_AlignBottom(TEXTSTRING *textstring, bool enable);
 int32_t Text_GetWidth(TEXTSTRING *textstring);
 void Text_Remove(TEXTSTRING *textstring);
-void Text_RemoveAll(void);
 void Text_Draw(void);

@@ -246,8 +246,6 @@ TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
     result->bgnd_off.x = 0;
     result->bgnd_off.y = 0;
 
-    result->on_remove = NULL;
-
     Text_ChangeText(result, string);
 
     m_TextstringCount++;
@@ -439,23 +437,9 @@ void Text_Remove(TEXTSTRING *textstring)
         return;
     }
     if (textstring->flags.active) {
-        if (textstring->on_remove) {
-            textstring->on_remove(textstring);
-        }
         textstring->flags.active = 0;
         m_TextstringCount--;
     }
-}
-
-void Text_RemoveAll(void)
-{
-    for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *textstring = &m_TextstringTable[i];
-        if (textstring->flags.active) {
-            Text_Remove(textstring);
-        }
-    }
-    Text_Init();
 }
 
 void Text_Draw(void)

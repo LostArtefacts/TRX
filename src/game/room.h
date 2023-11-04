@@ -22,6 +22,7 @@ int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetDoor(FLOOR_INFO *floor);
 int16_t Room_GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
+int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
 
 void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height);
 

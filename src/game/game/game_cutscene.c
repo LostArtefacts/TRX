@@ -10,6 +10,7 @@
 #include "game/lara/lara_hair.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/shell.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -33,6 +34,9 @@ bool Game_Cutscene_Control(int32_t nframes)
         }
 
         Input_Update();
+        Shell_ProcessInput();
+        Game_ProcessInput();
+
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             return true;
         }

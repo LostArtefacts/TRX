@@ -140,6 +140,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     { INPUT_ROLE_LOAD, GS_KEYMAP_LOAD, true },
     { INPUT_ROLE_FPS, GS_KEYMAP_FPS, true },
     { INPUT_ROLE_BILINEAR, GS_KEYMAP_BILINEAR, true },
+    { INPUT_ROLE_ENTER_CONSOLE, GS_KEYMAP_ENTER_CONSOLE, true },
     // end
     { COL_END, -1, false },
 };
@@ -178,6 +179,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { INPUT_ROLE_ITEM_CHEAT, GS_KEYMAP_ITEM_CHEAT, true },
     { INPUT_ROLE_LEVEL_SKIP_CHEAT, GS_KEYMAP_LEVEL_SKIP_CHEAT, true },
     { INPUT_ROLE_TURBO_CHEAT, GS_KEYMAP_TURBO_CHEAT, true },
+    { INPUT_ROLE_ENTER_CONSOLE, GS_KEYMAP_ENTER_CONSOLE, true },
     // end
     { COL_END, -1, false },
 };
@@ -639,11 +641,6 @@ static void Option_ControlCheckUnbindKey(
     }
     CLAMP(m_UnbindTimer, 0, FRAMES_PER_SECOND * BUTTON_HOLD_TIME);
     Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
-}
-
-bool Option_ControlIsLocked(void)
-{
-    return m_KeyMode != KM_INACTIVE;
 }
 
 CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)

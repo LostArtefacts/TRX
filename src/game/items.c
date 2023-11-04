@@ -247,6 +247,28 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
     r->item_number = item_num;
 }
 
+bool Item_Teleport(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
+{
+    int16_t room_num = Room_GetIndexFromPos(x, y, z);
+    if (room_num == NO_ROOM) {
+        return false;
+    }
+    FLOOR_INFO *const floor = Room_GetFloor(x, y, z, &room_num);
+    const int16_t height = Room_GetHeight(floor, x, y, z);
+    if (height != NO_HEIGHT) {
+        item->pos.x = x;
+        item->pos.y = y;
+        item->pos.z = z;
+        item->floor = height;
+        if (item->room_number != room_num) {
+            const int16_t item_num = item - g_Items;
+            Item_NewRoom(item_num, room_num);
+        }
+        return true;
+    }
+    return false;
+}
+
 void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
 {
     int32_t x = item->pos.x;

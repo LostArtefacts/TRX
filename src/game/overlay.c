@@ -121,8 +121,6 @@ static int32_t Overlay_BarGetPercent(BAR_INFO *bar_info);
 static void Overlay_BarGetLocation(
     BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x,
     int32_t *y);
-static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring);
-static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring);
 static float Overlay_Ease(int32_t cur_frame, int32_t max_frames);
 static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu);
 static void Overlay_DrawPickups3D(void);
@@ -294,16 +292,6 @@ void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
             }
         }
     }
-}
-
-static void Overlay_OnAmmoTextRemoval(const TEXTSTRING *textstring)
-{
-    m_AmmoText = NULL;
-}
-
-static void Overlay_OnFPSTextRemoval(const TEXTSTRING *textstring)
-{
-    m_FPSText = NULL;
 }
 
 static float Overlay_Ease(int32_t cur_frame, int32_t max_frames)
@@ -669,7 +657,6 @@ void Overlay_DrawAmmoInfo(void)
         m_AmmoText = Text_Create(
             -screen_margin_h - text_offset_x, text_height + screen_margin_v,
             ammostring);
-        m_AmmoText->on_remove = Overlay_OnAmmoTextRemoval;
         Text_SetScale(m_AmmoText, PHD_ONE * scale, PHD_ONE * scale);
         Text_AlignRight(m_AmmoText, 1);
     }
@@ -689,8 +676,6 @@ void Overlay_DrawFPSInfo(bool inv_ring_above)
     static int32_t elapsed = 0;
 
     if (g_Config.rendering.enable_fps_counter) {
-        static int32_t elapsed = 0;
-
         const int32_t text_offset_x = 3;
         const int32_t text_height = 17;
         const int32_t text_inv_offset_y = 3;
@@ -708,7 +693,6 @@ void Overlay_DrawFPSInfo(bool inv_ring_above)
                 char fps_buf[20];
                 sprintf(fps_buf, "? FPS");
                 m_FPSText = Text_Create(10, 30, fps_buf);
-                m_FPSText->on_remove = Overlay_OnFPSTextRemoval;
             }
             g_FPSCounter = 0;
             elapsed = Clock_GetMS();

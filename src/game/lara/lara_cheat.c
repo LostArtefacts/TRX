@@ -3,7 +3,10 @@
 #include "game/effects/exploding_death.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
+#include "game/items.h"
+#include "game/lara.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
 
@@ -111,4 +114,31 @@ void Lara_CheckCheatMode(void)
         cheat_mode = 0;
         break;
     }
+}
+
+void Lara_EnterFlyMode(void)
+{
+    ITEM_INFO *const item = g_LaraItem;
+    if (g_Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
+        item->pos.y -= 0x80;
+        item->current_anim_state = LS_SWIM;
+        item->goal_anim_state = LS_SWIM;
+        Item_SwitchToAnim(item, LA_SWIM_GLIDE, 0);
+        item->gravity_status = 0;
+        item->pos.x_rot = 30 * PHD_DEGREE;
+        item->fall_speed = 30;
+        g_Lara.head_x_rot = 0;
+        g_Lara.head_y_rot = 0;
+        g_Lara.torso_x_rot = 0;
+        g_Lara.torso_y_rot = 0;
+    }
+    g_Lara.water_status = LWS_CHEAT;
+    g_Lara.spaz_effect_count = 0;
+    g_Lara.spaz_effect = NULL;
+    g_Lara.hit_frame = 0;
+    g_Lara.hit_direction = -1;
+    g_Lara.air = LARA_AIR;
+    g_Lara.death_timer = 0;
+    g_Lara.mesh_effects = 0;
+    Lara_InitialiseMeshes(g_CurrentLevel);
 }

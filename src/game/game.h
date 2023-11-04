@@ -9,6 +9,8 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 int32_t Game_Stop(void);
 int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type);
 
+void Game_ProcessInput(void);
+
 int32_t Game_Cutscene_Start(int32_t level_num);
 int32_t Game_Cutscene_Stop(int32_t level_num);
 int32_t Game_Cutscene_Loop(void);
