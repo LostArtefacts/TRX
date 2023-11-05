@@ -53,11 +53,13 @@ clean:
 	-find tools/ -type f \( -ipath '*/out/*' -or -ipath '*/bin/*' -or -ipath '*/obj/*' \) -delete
 	-find . -mindepth 1 -empty -type d -delete
 
-imports:
+lint_imports:
 	tools/sort_imports
 
-lint:
+lint_format:
 	bash -c 'shopt -s globstar; clang-format -i **/*.c **/*.h'
+
+lint: lint_format lint_imports
 
 installer:
 	docker build . -f docker/installer/Dockerfile -t rrdash/tr1x_installer
@@ -75,4 +77,4 @@ config:
 		-v $(CWD):/app/ \
 		rrdash/tr1x_config
 
-.PHONY: debug debugopt release clean imports lint installer config
+.PHONY: debug debugopt release clean lint_imports lint_format lint installer config

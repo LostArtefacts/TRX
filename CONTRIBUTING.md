@@ -96,10 +96,11 @@ Other things:
 
 ### Code formatting
 
-This project uses `clang-format` to take care of automatic code formatting. To
-ensure your code conforms to the standard, please run `make lint` after each
-commit. If for some reason you can't run it, don't worry, our CI pipeline will
-show you what need to be changed in case of mistakes.
+This project uses `clang-format` to take care of automatic code formatting, and
+`include-what-you-use` to remove unused `#include`s. To ensure your code
+conforms to the standard, please run `make lint` after each commit. If for some
+reason you can't run it, don't worry, our CI pipeline will show what needs to
+be changed in case of mistakes.
 
 ## Submitting changes
 
