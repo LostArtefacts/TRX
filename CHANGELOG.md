@@ -18,6 +18,7 @@
 - fixed braid being disabled by default unless the player runs the config tool first (#1043)
 - fixed various bugs with falling movable blocks (#723)
 - fixed the incorrect positioning of door 12 in Tomb of Tihocan (#1063)
+- fixed a potential softlock in The Cistern by restoring a missing trigger in room 56 (#1066)
 - improved frame scheduling to use less CPU (#985)
 - improved and expanded gameflow documentation (#1018)
 - rotated the Scion in Tomb of Qualopec to face the the main gate and Qualopec (#1007)

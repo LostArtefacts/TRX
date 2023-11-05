@@ -216,6 +216,7 @@
             "type": "normal",
             "music": 58,
             "injections": [
+                "data/cistern_fd.bin",
                 "data/cistern_itemrots.bin",
                 "data/cistern_textures.bin",
             ],
