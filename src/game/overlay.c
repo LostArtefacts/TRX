@@ -125,6 +125,11 @@ static float Overlay_Ease(int32_t cur_frame, int32_t max_frames);
 static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu);
 static void Overlay_DrawPickups3D(void);
 static void Overlay_DrawPickupsSprites(void);
+static void Overlay_BarDrawAir(void);
+static void Overlay_BarDrawEnemy(void);
+static void Overlay_ResetBarLocations(void);
+static void Overlay_RemoveAmmoText(void);
+static void Overlay_DrawAmmoInfo(void);
 
 static void Overlay_BarSetupHealth(void)
 {
@@ -494,72 +499,7 @@ static void Overlay_DrawPickups(void)
     }
 }
 
-void Overlay_Init(void)
-{
-    for (int i = 0; i < MAX_PICKUPS; i++) {
-        m_Pickups[i].phase = DPP_DEAD;
-    }
-
-    Overlay_BarSetupHealth();
-    Overlay_BarSetupAir();
-    Overlay_BarSetupEnemy();
-}
-
-void Overlay_BarSetHealthTimer(int16_t timer)
-{
-    m_HealthBar.timer = timer;
-}
-
-void Overlay_BarHealthTimerTick(void)
-{
-    m_HealthBar.timer--;
-    CLAMPL(m_HealthBar.timer, 0);
-}
-
-void Overlay_BarDrawHealth(void)
-{
-    static int32_t old_hit_points = 0;
-
-    for (int i = 0; i < 6; i++) {
-        m_BarOffsetY[i] = 0;
-    }
-
-    m_HealthBar.value = g_LaraItem->hit_points;
-    CLAMP(m_HealthBar.value, 0, m_HealthBar.max_value);
-
-    if (old_hit_points != m_HealthBar.value) {
-        old_hit_points = m_HealthBar.value;
-        m_HealthBar.timer = 40;
-    }
-
-    m_HealthBar.show = m_HealthBar.timer > 0 || m_HealthBar.value <= 0
-        || g_Lara.gun_status == LGS_READY;
-    switch (m_HealthBar.show_mode) {
-    case BSM_FLASHING_OR_DEFAULT:
-        m_HealthBar.show |= m_HealthBar.value
-            <= (m_HealthBar.max_value * BLINK_THRESHOLD) / 100;
-        break;
-    case BSM_FLASHING_ONLY:
-        m_HealthBar.show = m_HealthBar.value
-            <= (m_HealthBar.max_value * BLINK_THRESHOLD) / 100;
-        break;
-    case BSM_ALWAYS:
-        m_HealthBar.show = true;
-        break;
-    case BSM_NEVER:
-        m_HealthBar.show = false;
-        break;
-    default:
-        break;
-    }
-    if (!m_HealthBar.show) {
-        return;
-    }
-
-    Overlay_BarDraw(&m_HealthBar, RSR_BAR);
-}
-
-void Overlay_BarDrawAir(void)
+static void Overlay_BarDrawAir(void)
 {
     m_AirBar.value = g_Lara.air;
     CLAMP(m_AirBar.value, 0, m_AirBar.max_value);
@@ -593,7 +533,7 @@ void Overlay_BarDrawAir(void)
     Overlay_BarDraw(&m_AirBar, RSR_BAR);
 }
 
-void Overlay_BarDrawEnemy(void)
+static void Overlay_BarDrawEnemy(void)
 {
     if (!m_EnemyBar.show || !g_Lara.target) {
         return;
@@ -607,7 +547,14 @@ void Overlay_BarDrawEnemy(void)
     Overlay_BarDraw(&m_EnemyBar, RSR_BAR);
 }
 
-void Overlay_RemoveAmmoText(void)
+static void Overlay_ResetBarLocations(void)
+{
+    for (int i = 0; i < 6; i++) {
+        m_BarOffsetY[i] = 0;
+    }
+}
+
+static void Overlay_RemoveAmmoText(void)
 {
     if (m_AmmoText) {
         Text_Remove(m_AmmoText);
@@ -615,7 +562,7 @@ void Overlay_RemoveAmmoText(void)
     }
 }
 
-void Overlay_DrawAmmoInfo(void)
+static void Overlay_DrawAmmoInfo(void)
 {
     const double scale = 1.5;
     const int32_t text_height = 17 * scale;
@@ -669,9 +616,90 @@ void Overlay_DrawAmmoInfo(void)
         ? text_height + (screen_margin_v * scale_ammo_to_bar)
             + (m_BarOffsetY[BL_TOP_RIGHT] * scale_ammo_to_bar)
         : text_height + screen_margin_v;
+
+    if (m_AmmoText) {
+        Text_DrawText(m_AmmoText);
+    }
 }
 
-void Overlay_DrawFPSInfo(bool inv_ring_above)
+void Overlay_Init(void)
+{
+    for (int i = 0; i < MAX_PICKUPS; i++) {
+        m_Pickups[i].phase = DPP_DEAD;
+    }
+
+    Overlay_BarSetupHealth();
+    Overlay_BarSetupAir();
+    Overlay_BarSetupEnemy();
+}
+
+void Overlay_BarSetHealthTimer(int16_t timer)
+{
+    m_HealthBar.timer = timer;
+}
+
+void Overlay_BarHealthTimerTick(void)
+{
+    m_HealthBar.timer--;
+    CLAMPL(m_HealthBar.timer, 0);
+}
+
+void Overlay_BarDrawHealth(void)
+{
+    static int32_t old_hit_points = 0;
+
+    m_HealthBar.value = g_LaraItem->hit_points;
+    CLAMP(m_HealthBar.value, 0, m_HealthBar.max_value);
+
+    if (old_hit_points != m_HealthBar.value) {
+        old_hit_points = m_HealthBar.value;
+        m_HealthBar.timer = 40;
+    }
+
+    m_HealthBar.show = m_HealthBar.timer > 0 || m_HealthBar.value <= 0
+        || g_Lara.gun_status == LGS_READY;
+    switch (m_HealthBar.show_mode) {
+    case BSM_FLASHING_OR_DEFAULT:
+        m_HealthBar.show |= m_HealthBar.value
+            <= (m_HealthBar.max_value * BLINK_THRESHOLD) / 100;
+        break;
+    case BSM_FLASHING_ONLY:
+        m_HealthBar.show = m_HealthBar.value
+            <= (m_HealthBar.max_value * BLINK_THRESHOLD) / 100;
+        break;
+    case BSM_ALWAYS:
+        m_HealthBar.show = true;
+        break;
+    case BSM_NEVER:
+        m_HealthBar.show = false;
+        break;
+    default:
+        break;
+    }
+    if (!m_HealthBar.show) {
+        return;
+    }
+
+    Overlay_BarDraw(&m_HealthBar, RSR_BAR);
+}
+
+void Overlay_HideGameInfo(void)
+{
+    Overlay_ResetBarLocations();
+    Overlay_RemoveAmmoText();
+}
+
+void Overlay_DrawGameInfo(void)
+{
+    Overlay_ResetBarLocations();
+    Overlay_BarDrawHealth();
+    Overlay_BarDrawAir();
+    Overlay_BarDrawEnemy();
+    Overlay_DrawPickups();
+    Overlay_DrawAmmoInfo();
+}
+
+void Overlay_DrawFPSInfo(void)
 {
     static int32_t elapsed = 0;
 
@@ -709,7 +737,9 @@ void Overlay_DrawFPSInfo(bool inv_ring_above)
             x = (x * scale_fps_to_bar) + text_offset_x;
             y = text_height
                 + scale_fps_to_bar * (y + m_BarOffsetY[BL_TOP_LEFT]);
-        } else if ((g_GameInfo.status & GMS_IN_INVENTORY) && inv_ring_above) {
+        } else if (
+            (g_GameInfo.status & GMS_IN_INVENTORY)
+            && g_GameInfo.inv_ring_above) {
             y += (text_height * 2) + text_inv_offset_y;
         } else {
             y += text_height;
@@ -721,18 +751,10 @@ void Overlay_DrawFPSInfo(bool inv_ring_above)
         m_FPSText = NULL;
         g_FPSCounter = 0;
     }
-}
 
-void Overlay_DrawGameInfo(void)
-{
-    Overlay_BarDrawHealth();
-    Overlay_BarDrawAir();
-    Overlay_BarDrawEnemy();
-    Overlay_DrawPickups();
-    Overlay_DrawAmmoInfo();
-    Overlay_DrawFPSInfo(false);
-
-    Text_Draw();
+    if (m_FPSText) {
+        Text_DrawText(m_FPSText);
+    }
 }
 
 void Overlay_AddPickup(int16_t object_num)

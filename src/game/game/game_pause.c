@@ -4,6 +4,7 @@
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/requester.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -39,7 +40,7 @@ static REQUEST_INFO m_PauseRequester = {
 };
 
 static void Game_Pause_RemoveText(void);
-static void Game_Pause_DisplayText(void);
+static void Game_Pause_UpdateText(void);
 static int32_t Game_Pause_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
@@ -51,7 +52,7 @@ static void Game_Pause_RemoveText(void)
     m_PausedText = NULL;
 }
 
-static void Game_Pause_DisplayText(void)
+static void Game_Pause_UpdateText(void)
 {
     if (m_PausedText == NULL) {
         m_PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
@@ -94,7 +95,7 @@ static int32_t Game_Pause_Loop(void)
 
     while (1) {
         Game_DrawScene(false);
-        Game_Pause_DisplayText();
+        Game_Pause_UpdateText();
         Text_Draw();
         Output_DumpScreen();
 
@@ -147,6 +148,7 @@ bool Game_Pause(void)
 {
     g_OldInputDB = g_Input;
 
+    Overlay_HideGameInfo();
     Output_SetupAboveWater(false);
 
     Music_Pause();

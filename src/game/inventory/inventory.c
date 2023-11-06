@@ -11,7 +11,6 @@
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
-#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -480,10 +479,10 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_NotActive();
         }
 
-        bool inv_ring_above = g_InvMode == INV_GAME_MODE
+        g_GameInfo.inv_ring_above = g_InvMode == INV_GAME_MODE
             && ((ring.type == RT_MAIN && g_InvKeysObjects)
                 || (ring.type == RT_OPTION && g_InvMainObjects));
-        Overlay_DrawFPSInfo(inv_ring_above);
+
         Text_Draw();
 
         m_InvNFrames = Output_DumpScreen();

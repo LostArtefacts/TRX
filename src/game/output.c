@@ -2,6 +2,8 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/console.h"
+#include "game/overlay.h"
 #include "game/picture.h"
 #include "game/random.h"
 #include "game/viewport.h"
@@ -423,14 +425,14 @@ void Output_DrawBlack(void)
     Output_DrawBlackOverlay(255);
 }
 
-void Output_DrawEmpty(void)
-{
-    S_Output_DrawEmpty();
-}
-
 int32_t Output_DumpScreen(void)
 {
     Output_DrawOverlayScreen();
+    S_Output_DisableDepthTest();
+    S_Output_ClearDepthBuffer();
+    Overlay_DrawFPSInfo();
+    Console_Draw();
+    S_Output_EnableDepthTest();
     S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;

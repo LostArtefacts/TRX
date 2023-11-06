@@ -10,6 +10,7 @@
 #include "game/items.h"
 #include "game/music.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/shell.h"
 #include "game/text.h"
 #include "global/const.h"
@@ -315,6 +316,8 @@ void Stats_Show(int32_t level_num)
 
     const GAME_STATS *stats = &g_GameInfo.current[level_num].stats;
 
+    Overlay_HideGameInfo();
+
     int y = -50;
     const int row_height = 30;
 
@@ -437,7 +440,7 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
 
     char buf[100];
     char time_str[100];
-    TEXTSTRING *all_txt[MAX_TEXTSTRINGS];
+    TEXTSTRING *all_txt[MAX_TEXTSTRINGS] = { 0 };
     TEXTSTRING **cur_txt = &all_txt[0];
 
     int top_y = 55;

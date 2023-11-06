@@ -28,7 +28,7 @@ void Game_DrawScene(bool draw_overlay)
         if (draw_overlay) {
             Overlay_DrawGameInfo();
         } else {
-            Overlay_RemoveAmmoText();
+            Overlay_HideGameInfo();
         }
     } else {
         // cinematic scene
@@ -45,5 +45,6 @@ void Game_DrawScene(bool draw_overlay)
         Output_SetupAboveWater(false);
         Lara_Hair_Draw();
     }
+
     Output_DrawBackdropScreen();
 }

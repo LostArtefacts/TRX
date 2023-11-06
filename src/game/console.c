@@ -268,3 +268,18 @@ void Console_ScrollLogs(void)
         i--;
     }
 }
+
+void Console_Draw(void)
+{
+    if (m_Prompt.prompt_ts) {
+        Text_DrawText(m_Prompt.prompt_ts);
+    }
+    if (m_Prompt.caret_ts) {
+        Text_DrawText(m_Prompt.caret_ts);
+    }
+    for (int i = 0; i < MAX_LOG_LINES; i++) {
+        if (m_Logs[i].ts) {
+            Text_DrawText(m_Logs[i].ts);
+        }
+    }
+}

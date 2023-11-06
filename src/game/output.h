@@ -36,7 +36,6 @@ void Output_DrawBackdropScreen(void);
 void Output_DrawOverlayScreen(void);
 
 void Output_DrawBlack(void);
-void Output_DrawEmpty(void);
 void Output_DrawBackdropImage(void);
 int32_t Output_DumpScreen(void);
 void Output_ClearDepthBuffer(void);
