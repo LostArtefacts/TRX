@@ -759,6 +759,8 @@ bool Level_Initialise(int32_t level_num)
     LOG_DEBUG("%d", level_num);
     g_CurrentLevel = level_num;
 
+    Overlay_HideGameInfo();
+
     g_FlipStatus = 0;
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
         g_FlipMapTable[i] = 0;

@@ -88,7 +88,6 @@ typedef struct QUAD_INFO {
     int32_t h;
 } QUAD_INFO;
 
-static void Text_DrawText(TEXTSTRING *textstring);
 static uint8_t Text_MapLetterToSpriteNum(char letter);
 static void Text_DrawTextBackground(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
@@ -452,7 +451,7 @@ void Text_Draw(void)
     }
 }
 
-static void Text_DrawText(TEXTSTRING *textstring)
+void Text_DrawText(TEXTSTRING *textstring)
 {
     int sx, sy, sh, sv;
 

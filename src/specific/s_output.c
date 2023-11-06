@@ -510,11 +510,6 @@ void S_Output_ClearDepthBuffer(void)
     GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
-void S_Output_DrawEmpty(void)
-{
-    GFX_3D_Renderer_RenderEmpty();
-}
-
 void S_Output_DrawBackdropSurface(void)
 {
     if (!m_PictureSurface) {

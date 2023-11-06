@@ -19,7 +19,6 @@ void S_Output_RenderEnd(void);
 void S_Output_RenderToggle(void);
 void S_Output_DumpScreen(void);
 void S_Output_ClearDepthBuffer(void);
-void S_Output_DrawEmpty(void);
 
 void S_Output_SetWindowSize(int width, int height);
 void S_Output_ApplyRenderSettings(void);

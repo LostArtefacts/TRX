@@ -1590,6 +1590,7 @@ typedef struct GAME_INFO {
     bool remove_ammo;
     bool remove_medipacks;
     GAME_STATUS status;
+    bool inv_ring_above;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {
