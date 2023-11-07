@@ -1010,5 +1010,10 @@ int32_t Inv_Display(int inv_mode)
     g_GameInfo.status |= GMS_IN_INVENTORY;
     int32_t inv_result = Inv_ConstructAndDisplay(inv_mode);
     g_GameInfo.status = old_status;
+
+    if (g_Config.enable_buffering) {
+        g_OldInputDB.any = 0;
+    }
+
     return inv_result;
 }

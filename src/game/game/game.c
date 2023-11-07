@@ -25,8 +25,8 @@
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
         Game_DrawScene(true);                                                  \
-        Output_DumpScreen();                                                   \
         Input_Update();                                                        \
+        Output_DumpScreen();                                                   \
     } while (g_Input.key);
 
 static const int32_t m_AnimationRate = 0x8000;
@@ -79,8 +79,8 @@ static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
             }
         }
 
-        if (((g_Config.enable_buffering ? g_Input.option : g_InputDB.option)
-             || g_Input.save || g_Input.load || g_OverlayFlag <= 0)
+        if ((g_InputDB.option || g_Input.save || g_Input.load
+             || g_OverlayFlag <= 0)
             && !g_Lara.death_timer) {
             if (g_Camera.type == CAM_CINEMATIC) {
                 g_OverlayFlag = 0;
