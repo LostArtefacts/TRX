@@ -24,7 +24,7 @@ static bool Console_Cmd_Pos(const char *const input)
         }
         Console_Log(
             "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f,%.3f,%.3f ",
-            g_LaraItem->room_number + 1, g_LaraItem->pos.x / (float)WALL_L,
+            g_LaraItem->room_number, g_LaraItem->pos.x / (float)WALL_L,
             g_LaraItem->pos.y / (float)WALL_L,
             g_LaraItem->pos.z / (float)WALL_L,
             g_LaraItem->pos.x_rot * 360.0f / (float)PHD_ONE,
@@ -65,15 +65,14 @@ static bool Console_Cmd_Teleport(const char *const input)
             if (!g_Objects[O_LARA].loaded || !g_LaraItem->hit_points) {
                 return true;
             }
-            if (room_num < 1 || room_num > g_RoomCount) {
+            if (room_num < 0 || room_num >= g_RoomCount) {
                 Console_Log(
-                    "Invalid room: %d. Valid rooms are 1-%d", room_num,
-                    g_RoomCount);
+                    "Invalid room: %d. Valid rooms are 0-%d", room_num,
+                    g_RoomCount - 1);
                 return true;
             }
-            int16_t room_idx = room_num - 1;
 
-            const ROOM_INFO *const room = &g_RoomInfo[room_idx];
+            const ROOM_INFO *const room = &g_RoomInfo[room_num];
 
             const int32_t x1 = room->x + WALL_L;
             const int32_t x2 = (room->y_size << WALL_SHIFT) + room->x - WALL_L;
