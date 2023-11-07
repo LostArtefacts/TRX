@@ -121,35 +121,37 @@ bool Console_IsOpened(void)
 
 void Console_Confirm(void)
 {
-    LOG_INFO("executing command: %s", m_Prompt.text);
+    if (strcmp(m_Prompt.text, "") != 0) {
+        LOG_INFO("executing command: %s", m_Prompt.text);
 
-    const char *args = NULL;
-    const CONSOLE_COMMAND *matching_cmd = NULL;
+        const char *args = NULL;
+        const CONSOLE_COMMAND *matching_cmd = NULL;
 
-    for (CONSOLE_COMMAND *cur_cmd = &g_ConsoleCommands[0];
-         cur_cmd->proc != NULL; cur_cmd++) {
-        if (strstr(m_Prompt.text, cur_cmd->prefix) != m_Prompt.text) {
-            continue;
+        for (CONSOLE_COMMAND *cur_cmd = &g_ConsoleCommands[0];
+             cur_cmd->proc != NULL; cur_cmd++) {
+            if (strstr(m_Prompt.text, cur_cmd->prefix) != m_Prompt.text) {
+                continue;
+            }
+
+            if (m_Prompt.text[strlen(cur_cmd->prefix)] == ' ') {
+                args = m_Prompt.text + strlen(cur_cmd->prefix) + 1;
+            } else if (m_Prompt.text[strlen(cur_cmd->prefix)] == '\0') {
+                args = "";
+            } else {
+                continue;
+            }
+
+            matching_cmd = cur_cmd;
+            break;
         }
 
-        if (m_Prompt.text[strlen(cur_cmd->prefix)] == ' ') {
-            args = m_Prompt.text + strlen(cur_cmd->prefix) + 1;
-        } else if (m_Prompt.text[strlen(cur_cmd->prefix)] == '\0') {
-            args = "";
+        if (matching_cmd == NULL) {
+            Console_Log("Unknown command: %s", m_Prompt.text);
         } else {
-            continue;
-        }
-
-        matching_cmd = cur_cmd;
-        break;
-    }
-
-    if (matching_cmd == NULL) {
-        Console_Log("Unknown command: %s", m_Prompt.text);
-    } else {
-        bool success = matching_cmd->proc(args);
-        if (!success) {
-            Console_Log("Failed to run: %s", m_Prompt.text);
+            bool success = matching_cmd->proc(args);
+            if (!success) {
+                Console_Log("Failed to run: %s", m_Prompt.text);
+            }
         }
     }
 
