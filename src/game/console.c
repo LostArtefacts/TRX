@@ -20,6 +20,7 @@
 #define MAX_PROMPT_LENGTH 100
 #define HOVER_DELAY_CPS 5
 #define MARGIN 5
+#define PADDING 3
 
 static bool m_IsOpened = false;
 
@@ -36,7 +37,7 @@ static struct {
 } m_Logs[MAX_LOG_LINES] = { 0 };
 
 static const double m_PromptScale = 1.0;
-static const double m_LogScale = 0.9;
+static const double m_LogScale = 0.8;
 static const int32_t m_TextHeight = 15;
 static const char m_ValidPromptChars[] =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.- ";
@@ -62,13 +63,10 @@ void Console_Init(void)
 {
     for (int i = 0; i < MAX_LOG_LINES; i++) {
         m_Logs[i].expire_at = -1;
-        m_Logs[i].ts = Text_Create(
-            MARGIN,
-            -MARGIN - m_TextHeight * m_PromptScale
-                - i * m_TextHeight * m_LogScale,
-            "");
+        m_Logs[i].ts = Text_Create(MARGIN, -MARGIN, "");
         Text_SetScale(m_Logs[i].ts, PHD_ONE * m_LogScale, PHD_ONE * m_LogScale);
-        Text_AlignBottom(m_Logs[i].ts, 1);
+        Text_AlignBottom(m_Logs[i].ts, true);
+        Text_SetMultiline(m_Logs[i].ts, true);
     }
 }
 
@@ -93,12 +91,12 @@ void Console_Open(void)
     m_Prompt.prompt_ts = Text_Create(MARGIN, -MARGIN, m_Prompt.text);
     Text_SetScale(
         m_Prompt.prompt_ts, PHD_ONE * m_PromptScale, PHD_ONE * m_PromptScale);
-    Text_AlignBottom(m_Prompt.prompt_ts, 1);
+    Text_AlignBottom(m_Prompt.prompt_ts, true);
 
     m_Prompt.caret_ts = Text_Create(MARGIN, -MARGIN, "\x80");
     Text_SetScale(
         m_Prompt.caret_ts, PHD_ONE * m_PromptScale, PHD_ONE * m_PromptScale);
-    Text_AlignBottom(m_Prompt.caret_ts, 1);
+    Text_AlignBottom(m_Prompt.caret_ts, true);
     Text_Flash(m_Prompt.caret_ts, 1, 20);
 }
 
@@ -250,6 +248,14 @@ void Console_Log(const char *fmt, ...)
 
     m_Logs[0].expire_at = Clock_GetMS() + 1000 * strlen(text) / HOVER_DELAY_CPS;
     Text_ChangeText(m_Logs[0].ts, text);
+    int32_t y = -MARGIN - m_TextHeight * m_PromptScale;
+
+    for (int i = 0; i < MAX_LOG_LINES; i++) {
+        const int32_t text_height = Text_GetHeight(m_Logs[i].ts);
+        y -= text_height;
+        y -= PADDING * m_LogScale / PHD_ONE;
+        Text_SetPos(m_Logs[i].ts, m_Logs[i].ts->pos.x, y);
+    }
 
     free(text);
 }

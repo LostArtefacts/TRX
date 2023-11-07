@@ -1659,6 +1659,7 @@ typedef struct TEXTSTRING {
             uint32_t outline : 1;
             uint32_t hide : 1;
             uint32_t progress_bar : 1;
+            uint32_t multiline : 1;
         };
     } flags;
     struct {
