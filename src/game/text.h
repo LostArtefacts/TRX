@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #define TEXT_HEIGHT 11
+#define TEXT_Y_SPACING 3
 #define TEXT_OUTLINE_THICKNESS 2
 
 RGBA8888 Text_GetMenuColor(MENU_COLOR color);
@@ -30,7 +31,9 @@ void Text_CentreH(TEXTSTRING *textstring, bool enable);
 void Text_CentreV(TEXTSTRING *textstring, bool enable);
 void Text_AlignRight(TEXTSTRING *textstring, bool enable);
 void Text_AlignBottom(TEXTSTRING *textstring, bool enable);
+void Text_SetMultiline(TEXTSTRING *textstring, bool enable);
 int32_t Text_GetWidth(TEXTSTRING *textstring);
+int32_t Text_GetHeight(TEXTSTRING *textstring);
 void Text_Remove(TEXTSTRING *textstring);
 void Text_Draw(void);
 void Text_DrawText(TEXTSTRING *textstring);

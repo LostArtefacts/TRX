@@ -403,6 +403,29 @@ void Text_AlignBottom(TEXTSTRING *textstring, bool enable)
     textstring->flags.bottom = enable;
 }
 
+void Text_SetMultiline(TEXTSTRING *textstring, bool enable)
+{
+    if (!textstring) {
+        return;
+    }
+    textstring->flags.multiline = enable;
+}
+
+int32_t Text_GetHeight(TEXTSTRING *textstring)
+{
+    int32_t height = TEXT_HEIGHT + 5;
+    char *ptr = textstring->string;
+    if (!*ptr) {
+        return 0;
+    }
+    for (char letter = *ptr; *ptr; letter = *ptr++) {
+        if (textstring->flags.multiline && *ptr == '\n') {
+            height += TEXT_HEIGHT + TEXT_Y_SPACING;
+        }
+    }
+    return height * textstring->scale.v / PHD_ONE;
+}
+
 int32_t Text_GetWidth(TEXTSTRING *textstring)
 {
     if (!textstring) {
@@ -471,12 +494,12 @@ void Text_DrawText(TEXTSTRING *textstring)
     char *string = textstring->string;
     int32_t x = textstring->pos.x;
     int32_t y = textstring->pos.y;
-    int32_t textwidth = Text_GetWidth(textstring);
+    int32_t text_width = Text_GetWidth(textstring);
 
     if (textstring->flags.centre_h) {
-        x += (Screen_GetResWidthDownscaled(RSR_TEXT) - textwidth) / 2;
+        x += (Screen_GetResWidthDownscaled(RSR_TEXT) - text_width) / 2;
     } else if (textstring->flags.right) {
-        x += Screen_GetResWidthDownscaled(RSR_TEXT) - textwidth;
+        x += Screen_GetResWidthDownscaled(RSR_TEXT) - text_width;
     }
 
     if (textstring->flags.centre_v) {
@@ -489,6 +512,8 @@ void Text_DrawText(TEXTSTRING *textstring)
     int32_t bypos =
         textstring->bgnd_off.y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
+    int32_t start_x = x;
+
     int32_t letter = '\0';
     while (*string) {
         letter = *string++;
@@ -496,6 +521,11 @@ void Text_DrawText(TEXTSTRING *textstring)
             continue;
         }
 
+        if (textstring->flags.multiline && letter == '\n') {
+            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * textstring->scale.h / PHD_ONE;
+            x = start_x;
+            continue;
+        }
         if (letter == ' ') {
             x += (textstring->word_spacing * textstring->scale.h) / PHD_ONE;
             continue;
@@ -524,11 +554,11 @@ void Text_DrawText(TEXTSTRING *textstring)
     int32_t bheight = 0;
     if (textstring->flags.background || textstring->flags.outline) {
         if (textstring->bgnd_size.x) {
-            bxpos += textwidth / 2;
+            bxpos += text_width / 2;
             bxpos -= textstring->bgnd_size.x / 2;
             bwidth = textstring->bgnd_size.x + TEXT_BOX_OFFSET * 2;
         } else {
-            bwidth = textwidth + TEXT_BOX_OFFSET * 2;
+            bwidth = text_width + TEXT_BOX_OFFSET * 2;
         }
         if (textstring->bgnd_size.y) {
             bheight = textstring->bgnd_size.y;
