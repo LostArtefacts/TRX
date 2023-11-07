@@ -9,9 +9,12 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+
+#define ENDS_WITH_ZERO(num) (fabsf((num)-roundf((num))) < 0.0001f)
 
 static bool Console_Cmd_Pos(const char *const input)
 {
@@ -20,7 +23,7 @@ static bool Console_Cmd_Pos(const char *const input)
             return true;
         }
         Console_Log(
-            "Room: %d  XYZ: %.3f, %.3f, %.3f  Rotation: %.3f,%.3f,%.3f ",
+            "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f,%.3f,%.3f ",
             g_LaraItem->room_number + 1, g_LaraItem->pos.x / (float)WALL_L,
             g_LaraItem->pos.y / (float)WALL_L,
             g_LaraItem->pos.z / (float)WALL_L,
@@ -38,6 +41,13 @@ static bool Console_Cmd_Teleport(const char *const input)
     {
         float x, y, z;
         if (sscanf(input, "tp %f %f %f", &x, &y, &z) == 3) {
+            if (ENDS_WITH_ZERO(x)) {
+                x += 0.5f;
+            }
+            if (ENDS_WITH_ZERO(z)) {
+                z += 0.5f;
+            }
+
             if (Item_Teleport(g_LaraItem, x * WALL_L, y * WALL_L, z * WALL_L)) {
                 Console_Log("Teleported to position: %.3f %.3f %.3f", x, y, z);
                 return true;
