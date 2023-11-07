@@ -16,31 +16,31 @@
 
 #define ENDS_WITH_ZERO(num) (fabsf((num)-roundf((num))) < 0.0001f)
 
-static bool Console_Cmd_Pos(const char *const input)
+static bool Console_Cmd_Pos(const char *const args)
 {
-    if (strcmp(input, "pos") == 0) {
-        if (!g_Objects[O_LARA].loaded) {
-            return true;
-        }
-        Console_Log(
-            "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f,%.3f,%.3f ",
-            g_LaraItem->room_number, g_LaraItem->pos.x / (float)WALL_L,
-            g_LaraItem->pos.y / (float)WALL_L,
-            g_LaraItem->pos.z / (float)WALL_L,
-            g_LaraItem->pos.x_rot * 360.0f / (float)PHD_ONE,
-            g_LaraItem->pos.y_rot * 360.0f / (float)PHD_ONE,
-            g_LaraItem->pos.z_rot * 360.0f / (float)PHD_ONE);
-        return true;
+    if (!g_Objects[O_LARA].loaded) {
+        return false;
     }
 
-    return false;
+    Console_Log(
+        "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f,%.3f,%.3f ",
+        g_LaraItem->room_number, g_LaraItem->pos.x / (float)WALL_L,
+        g_LaraItem->pos.y / (float)WALL_L, g_LaraItem->pos.z / (float)WALL_L,
+        g_LaraItem->pos.x_rot * 360.0f / (float)PHD_ONE,
+        g_LaraItem->pos.y_rot * 360.0f / (float)PHD_ONE,
+        g_LaraItem->pos.z_rot * 360.0f / (float)PHD_ONE);
+    return true;
 }
 
-static bool Console_Cmd_Teleport(const char *const input)
+static bool Console_Cmd_Teleport(const char *const args)
 {
+    if (!g_Objects[O_LARA].loaded || !g_LaraItem->hit_points) {
+        return false;
+    }
+
     {
         float x, y, z;
-        if (sscanf(input, "tp %f %f %f", &x, &y, &z) == 3) {
+        if (sscanf(args, "%f %f %f", &x, &y, &z) == 3) {
             if (ENDS_WITH_ZERO(x)) {
                 x += 0.5f;
             }
@@ -61,10 +61,7 @@ static bool Console_Cmd_Teleport(const char *const input)
 
     {
         int16_t room_num = -1;
-        if (sscanf(input, "tp %hd", &room_num) == 1) {
-            if (!g_Objects[O_LARA].loaded || !g_LaraItem->hit_points) {
-                return true;
-            }
+        if (sscanf(args, "%hd", &room_num) == 1) {
             if (room_num < 0 || room_num >= g_RoomCount) {
                 Console_Log(
                     "Invalid room: %d. Valid rooms are 0-%d", room_num,
@@ -99,29 +96,25 @@ static bool Console_Cmd_Teleport(const char *const input)
     return false;
 }
 
-static bool Console_Cmd_Fly(const char *const input)
+static bool Console_Cmd_Fly(const char *const args)
 {
-    if (strcmp(input, "fly") == 0) {
-        if (!g_Objects[O_LARA].loaded) {
-            return true;
-        }
-        Console_Log("Fly mode enabled");
-        Lara_EnterFlyMode();
-        return true;
+    if (!g_Objects[O_LARA].loaded) {
+        return false;
     }
-
-    return false;
+    Console_Log("Fly mode enabled");
+    Lara_EnterFlyMode();
+    return true;
 }
 
-static bool Console_Cmd_Braid(const char *const input)
+static bool Console_Cmd_Braid(const char *const args)
 {
-    if (strcmp(input, "braid off") == 0) {
+    if (strcmp(args, "off") == 0) {
         g_Config.enable_braid = 0;
         Console_Log("Braid disabled");
         return true;
     }
 
-    if (strcmp(input, "braid on") == 0) {
+    if (strcmp(args, "on") == 0) {
         g_Config.enable_braid = 1;
         Console_Log("Braid enabled");
         return true;
@@ -130,15 +123,15 @@ static bool Console_Cmd_Braid(const char *const input)
     return false;
 }
 
-static bool Console_Cmd_Cheats(const char *const input)
+static bool Console_Cmd_Cheats(const char *const args)
 {
-    if (strcmp(input, "cheats off") == 0) {
+    if (strcmp(args, "off") == 0) {
         g_Config.enable_cheats = 0;
         Console_Log("Cheats disabled");
         return true;
     }
 
-    if (strcmp(input, "cheats on") == 0) {
+    if (strcmp(args, "on") == 0) {
         g_Config.enable_cheats = 1;
         Console_Log("Cheats enabled");
         return true;
@@ -147,7 +140,34 @@ static bool Console_Cmd_Cheats(const char *const input)
     return false;
 }
 
-ConsoleCmd g_ConsoleCommands[] = {
-    Console_Cmd_Pos,   Console_Cmd_Teleport, Console_Cmd_Fly,
-    Console_Cmd_Braid, Console_Cmd_Cheats,   NULL,
+CONSOLE_COMMAND g_ConsoleCommands[] = {
+    {
+        .prefix = "pos",
+        .proc = Console_Cmd_Pos,
+    },
+
+    {
+        .prefix = "tp",
+        .proc = Console_Cmd_Teleport,
+    },
+
+    {
+        .prefix = "fly",
+        .proc = Console_Cmd_Fly,
+    },
+
+    {
+        .prefix = "braid",
+        .proc = Console_Cmd_Braid,
+    },
+
+    {
+        .prefix = "cheats",
+        .proc = Console_Cmd_Cheats,
+    },
+
+    {
+        .prefix = NULL,
+        .proc = NULL,
+    },
 };
