@@ -2,21 +2,28 @@
 
 #include "config.h"
 #include "game/console.h"
+#include "game/effects/exploding_death.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/los.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/math.h"
+#include "util.h"
 
 #include <assert.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 
 #define ENDS_WITH_ZERO(num) (fabsf((num)-roundf((num))) < 0.0001f)
 
@@ -98,7 +105,7 @@ static const ITEM_NAME m_ItemNames[] = {
     { .obj_id = O_SG_AMMO_ITEM, .inv_item = &g_InvItemShotgunAmmo },
     { .obj_id = O_MAG_AMMO_ITEM, .inv_item = &g_InvItemMagnumAmmo },
     { .obj_id = O_UZI_AMMO_ITEM, .inv_item = &g_InvItemUziAmmo },
-    { .obj_id = -1 },
+    { .obj_id = NO_OBJECT },
 };
 
 static bool Console_Cmd_Pos(const char *const args)
@@ -232,7 +239,8 @@ static bool Console_Cmd_GiveItem(const char *args)
         args = strstr(args, " ") + 1;
     }
 
-    for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != -1; desc++) {
+    for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
+         desc++) {
         const char *desc_name = NULL;
         if (desc->name) {
             desc_name = desc->name;
@@ -328,6 +336,77 @@ static bool Console_Cmd_FlipMap(const char *args)
     return false;
 }
 
+static bool Console_Cmd_Kill(const char *args)
+{
+    if (strcasecmp(args, "all") == 0) {
+        int32_t num = 0;
+        for (int16_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
+            struct ITEM_INFO *item = &g_Items[item_num];
+            if (Object_IsObjectType(item->object_number, g_EnemyObjects)
+                && item->hit_points > 0) {
+                Effect_ExplodingDeath(item_num, -1, 0);
+                Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
+                Item_Kill(item_num);
+                num++;
+            }
+        }
+        if (num > 0) {
+            Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
+            Console_Log("Poof! %d enemies gone!", num);
+        } else {
+            Console_Log("Uh-oh, there are no enemies left to kill...", num);
+        }
+        return true;
+    }
+
+    if (strcmp(args, "") == 0) {
+        int16_t best_item_num = NO_ITEM;
+        int32_t best_dist = -1;
+        for (int16_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
+            struct ITEM_INFO *item = &g_Items[item_num];
+            if (Object_IsObjectType(item->object_number, g_EnemyObjects)
+                && item->hit_points > 0) {
+                GAME_VECTOR target;
+                target.x = item->pos.x;
+                target.y = item->pos.y - WALL_L;
+                target.z = item->pos.z;
+                target.room_number = item->room_number;
+
+                GAME_VECTOR start;
+                start.x = g_Camera.pos.x;
+                start.y = g_Camera.pos.y;
+                start.z = g_Camera.pos.z;
+                start.room_number = g_Camera.pos.room_number;
+
+                if (LOS_Check(&start, &target)) {
+                    int32_t x = (item->pos.x - g_Camera.pos.x) >> WALL_SHIFT;
+                    int32_t y = (item->pos.y - g_Camera.pos.y) >> WALL_SHIFT;
+                    int32_t z = (item->pos.z - g_Camera.pos.z) >> WALL_SHIFT;
+                    int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+
+                    if (best_dist == -1 || dist < best_dist) {
+                        best_dist = dist;
+                        best_item_num = item_num;
+                    }
+                }
+            }
+        }
+
+        if (best_item_num != NO_ITEM) {
+            struct ITEM_INFO *item = &g_Items[best_item_num];
+            Effect_ExplodingDeath(best_item_num, -1, 0);
+            Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
+            Item_Kill(best_item_num);
+            Console_Log("Bye-bye!");
+        } else {
+            Console_Log("No enemy in sight...");
+        }
+        return true;
+    }
+
+    return false;
+}
+
 CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "pos", .proc = Console_Cmd_Pos },
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
@@ -338,5 +417,6 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
     { .prefix = "flip", .proc = Console_Cmd_FlipMap },
     { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },
+    { .prefix = "kill", .proc = Console_Cmd_Kill },
     { .prefix = NULL, .proc = NULL },
 };

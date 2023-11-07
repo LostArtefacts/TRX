@@ -4,6 +4,7 @@
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -13,55 +14,17 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#define NO_OBJECT O_NUMBER_OF
 #define DROP_FAST_RATE GRAVITY
 #define DROP_SLOW_RATE 1
 #define DROP_FAST_TURN (PHD_DEGREE * 5)
 #define DROP_SLOW_TURN (PHD_DEGREE * 3)
 
-typedef struct GAME_OBJECT_PAIR {
-    const GAME_OBJECT_ID key_id;
-    const GAME_OBJECT_ID value_id;
-} GAME_OBJECT_PAIR;
-
 static int16_t m_AnimatingCount = 0;
 
 static ITEM_INFO *Carrier_GetCarrier(int16_t item_num);
-static bool Carrier_IsObjectType(
-    GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr);
 static GAME_OBJECT_ID Carrier_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
 static void Carrier_AnimateDrop(CARRIED_ITEM *item);
-
-static const GAME_OBJECT_ID m_CarrierObjects[] = {
-    O_WOLF,    O_BEAR,     O_BAT,      O_CROCODILE, O_ALLIGATOR, O_LION,
-    O_LIONESS, O_PUMA,     O_APE,      O_RAT,       O_VOLE,      O_TREX,
-    O_RAPTOR,  O_WARRIOR1, O_WARRIOR2, O_WARRIOR3,  O_CENTAUR,   O_MUMMY,
-    O_LARSON,  O_PIERRE,   O_SKATEKID, O_COWBOY,    O_BALDY,     O_NATLA,
-    O_TORSO,   NO_OBJECT
-};
-
-static const GAME_OBJECT_ID m_PlaceholderObjects[] = { O_STATUE, O_PODS,
-                                                       O_BIG_POD, NO_OBJECT };
-
-static const GAME_OBJECT_ID m_DropObjects[] = {
-    O_GUN_ITEM,     O_SHOTGUN_ITEM,  O_MAGNUM_ITEM,   O_UZI_ITEM,
-    O_SG_AMMO_ITEM, O_MAG_AMMO_ITEM, O_UZI_AMMO_ITEM, O_MEDI_ITEM,
-    O_BIGMEDI_ITEM, O_PUZZLE_ITEM1,  O_PUZZLE_ITEM2,  O_PUZZLE_ITEM3,
-    O_PUZZLE_ITEM4, O_KEY_ITEM1,     O_KEY_ITEM2,     O_KEY_ITEM3,
-    O_KEY_ITEM4,    O_PICKUP_ITEM1,  O_PICKUP_ITEM2,  O_LEADBAR_ITEM,
-    O_SCION_ITEM2,  NO_OBJECT
-};
-
-static const GAME_OBJECT_ID m_GunObjects[] = { O_SHOTGUN_ITEM, O_MAGNUM_ITEM,
-                                               O_UZI_ITEM, NO_OBJECT };
-
-static const GAME_OBJECT_PAIR m_GunAmmoMap[] = {
-    { O_SHOTGUN_ITEM, O_SG_AMMO_ITEM },
-    { O_MAGNUM_ITEM, O_MAG_AMMO_ITEM },
-    { O_UZI_ITEM, O_UZI_AMMO_ITEM },
-    { NO_OBJECT, NO_OBJECT },
-};
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { O_PIERRE, O_SCION_ITEM2 }, { O_COWBOY, O_MAGNUM_ITEM },
@@ -94,7 +57,7 @@ void Carrier_InitialiseLevel(int32_t level_num)
             continue;
         }
 
-        if (!Carrier_IsObjectType(item->object_number, m_CarrierObjects)) {
+        if (!Object_IsObjectType(item->object_number, g_EnemyObjects)) {
             LOG_WARNING(
                 "Item %d of type %d cannot carry items", data->enemy_num,
                 item->object_number);
@@ -110,7 +73,7 @@ void Carrier_InitialiseLevel(int32_t level_num)
             drop->room_number = NO_ROOM;
             drop->fall_speed = 0;
 
-            if (Carrier_IsObjectType(drop->object_id, m_DropObjects)) {
+            if (Object_IsObjectType(drop->object_id, g_PickupObjects)) {
                 drop->status = DS_CARRIED;
                 total_item_count++;
             } else {
@@ -139,7 +102,7 @@ static ITEM_INFO *Carrier_GetCarrier(int16_t item_num)
     // Allow carried items to be allocated to holder objects (pods/statues),
     // but then have those items dropped by the actual creatures within.
     ITEM_INFO *item = &g_Items[item_num];
-    if (Carrier_IsObjectType(item->object_number, m_PlaceholderObjects)) {
+    if (Object_IsObjectType(item->object_number, g_PlaceholderObjects)) {
         int16_t child_item_num = *(int16_t *)item->data;
         item = &g_Items[child_item_num];
     }
@@ -149,17 +112,6 @@ static ITEM_INFO *Carrier_GetCarrier(int16_t item_num)
     }
 
     return item;
-}
-
-static bool Carrier_IsObjectType(
-    GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr)
-{
-    for (int i = 0; test_arr[i] != NO_OBJECT; i++) {
-        if (test_arr[i] == object_id) {
-            return true;
-        }
-    }
-    return false;
 }
 
 static GAME_OBJECT_ID Carrier_GetCognate(
@@ -229,9 +181,9 @@ void Carrier_TestItemDrops(int16_t item_num)
 
         GAME_OBJECT_ID object_id = item->object_id;
         if (g_GameFlow.convert_dropped_guns
-            && Carrier_IsObjectType(object_id, m_GunObjects)
+            && Object_IsObjectType(object_id, g_GunObjects)
             && Inv_RequestItem(object_id)) {
-            object_id = Carrier_GetCognate(object_id, m_GunAmmoMap);
+            object_id = Carrier_GetCognate(object_id, g_GunAmmoObjectMap);
         }
 
         item->spawn_number = Item_Spawn(carrier, object_id);

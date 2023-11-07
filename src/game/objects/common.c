@@ -13,6 +13,55 @@
 #include "math/matrix.h"
 #include "util.h"
 
+const GAME_OBJECT_ID g_EnemyObjects[] = {
+    O_WOLF,    O_BEAR,     O_BAT,      O_CROCODILE, O_ALLIGATOR, O_LION,
+    O_LIONESS, O_PUMA,     O_APE,      O_RAT,       O_VOLE,      O_TREX,
+    O_RAPTOR,  O_WARRIOR1, O_WARRIOR2, O_WARRIOR3,  O_CENTAUR,   O_MUMMY,
+    O_LARSON,  O_PIERRE,   O_SKATEKID, O_COWBOY,    O_BALDY,     O_NATLA,
+    O_TORSO,   NO_OBJECT,
+};
+
+const GAME_OBJECT_ID g_PlaceholderObjects[] = {
+    O_STATUE,
+    O_PODS,
+    O_BIG_POD,
+    NO_OBJECT,
+};
+
+const GAME_OBJECT_ID g_PickupObjects[] = {
+    O_GUN_ITEM,     O_SHOTGUN_ITEM,  O_MAGNUM_ITEM,   O_UZI_ITEM,
+    O_SG_AMMO_ITEM, O_MAG_AMMO_ITEM, O_UZI_AMMO_ITEM, O_MEDI_ITEM,
+    O_BIGMEDI_ITEM, O_PUZZLE_ITEM1,  O_PUZZLE_ITEM2,  O_PUZZLE_ITEM3,
+    O_PUZZLE_ITEM4, O_KEY_ITEM1,     O_KEY_ITEM2,     O_KEY_ITEM3,
+    O_KEY_ITEM4,    O_PICKUP_ITEM1,  O_PICKUP_ITEM2,  O_LEADBAR_ITEM,
+    O_SCION_ITEM2,  NO_OBJECT,
+};
+
+const GAME_OBJECT_ID g_GunObjects[] = {
+    O_SHOTGUN_ITEM,
+    O_MAGNUM_ITEM,
+    O_UZI_ITEM,
+    NO_OBJECT,
+};
+
+const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
+    { O_SHOTGUN_ITEM, O_SG_AMMO_ITEM },
+    { O_MAGNUM_ITEM, O_MAG_AMMO_ITEM },
+    { O_UZI_ITEM, O_UZI_AMMO_ITEM },
+    { NO_OBJECT, NO_OBJECT },
+};
+
+bool Object_IsObjectType(
+    GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr)
+{
+    for (int i = 0; test_arr[i] != NO_OBJECT; i++) {
+        if (test_arr[i] == object_id) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
