@@ -71,6 +71,7 @@
 #define DAMAGE_LENGTH 14
 #define NO_ITEM (-1)
 #define NO_CAMERA (-1)
+#define NO_OBJECT O_NUMBER_OF
 #define PELLET_SCATTER (20 * PHD_DEGREE)
 #define NUM_SG_SHELLS 2
 #define GUN_AMMO_CLIP 16

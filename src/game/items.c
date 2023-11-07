@@ -93,6 +93,7 @@ void Item_Kill(int16_t item_num)
         g_Lara.target = NULL;
     }
 
+    item->hit_points = -1;
     if (item_num < g_LevelItemCount) {
         item->flags |= IF_KILLED_ITEM;
     } else {
@@ -140,11 +141,11 @@ void Item_Initialise(int16_t item_num)
 
     if (item->flags & IF_NOT_VISIBLE) {
         item->status = IS_INVISIBLE;
-        item->flags -= IF_NOT_VISIBLE;
+        item->flags &= ~IF_NOT_VISIBLE;
     }
 
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
-        item->flags -= IF_CODE_BITS;
+        item->flags &= ~IF_CODE_BITS;
         item->flags |= IF_REVERSE;
         Item_AddActive(item_num);
         item->status = IS_ACTIVE;
