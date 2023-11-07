@@ -804,7 +804,7 @@ INVENTORY_ITEM g_InvItemControls = {
 };
 
 INVENTORY_ITEM g_InvItemLarasHome = {
-    .string = "g_Lara's Home",
+    .string = "Lara's Home",
     .object_number = O_PHOTO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
