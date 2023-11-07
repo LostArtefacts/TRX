@@ -166,70 +166,11 @@ void Inv_Ring_IsNotOpen(RING_INFO *ring)
 
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 {
-    if (!g_InvItemText[IT_NAME]) {
-        switch (inv_item->object_number) {
-        case O_PUZZLE_OPTION1:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle1);
-            break;
-
-        case O_PUZZLE_OPTION2:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle2);
-            break;
-
-        case O_PUZZLE_OPTION3:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle3);
-            break;
-
-        case O_PUZZLE_OPTION4:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].puzzle4);
-            break;
-
-        case O_KEY_OPTION1:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key1);
-            break;
-
-        case O_KEY_OPTION2:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key2);
-            break;
-
-        case O_KEY_OPTION3:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key3);
-            break;
-
-        case O_KEY_OPTION4:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].key4);
-            break;
-
-        case O_PICKUP_OPTION1:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].pickup1);
-            break;
-
-        case O_PICKUP_OPTION2:
-            g_InvItemText[IT_NAME] =
-                Text_Create(0, -16, g_GameFlow.levels[g_CurrentLevel].pickup2);
-            break;
-
-        case O_PASSPORT_OPTION:
-            break;
-
-        default:
-            g_InvItemText[IT_NAME] = Text_Create(0, -16, inv_item->string);
-            break;
-        }
-
-        if (g_InvItemText[IT_NAME]) {
-            Text_AlignBottom(g_InvItemText[IT_NAME], 1);
-            Text_CentreH(g_InvItemText[IT_NAME], 1);
-        }
+    if (!g_InvItemText[IT_NAME]
+        && inv_item->object_number != O_PASSPORT_OPTION) {
+        g_InvItemText[IT_NAME] = Text_Create(0, -16, inv_item->string);
+        Text_AlignBottom(g_InvItemText[IT_NAME], 1);
+        Text_CentreH(g_InvItemText[IT_NAME], 1);
     }
 
     char temp_text[64];

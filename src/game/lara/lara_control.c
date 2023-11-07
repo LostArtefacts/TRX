@@ -409,76 +409,60 @@ void Lara_CheatGetStuff(void)
     // play pistols drawing sound
     Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
 
-    if (g_Objects[O_GUN_OPTION].loaded && !Inv_RequestItem(O_GUN_ITEM)) {
-        Inv_AddItem(O_GUN_ITEM);
-    }
+    Inv_AddItem(O_GUN_ITEM);
 
-    if (g_Objects[O_SHOTGUN_OPTION].loaded) {
-        if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            Inv_AddItem(O_SHOTGUN_ITEM);
-        }
-        g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
+    if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
+        Inv_AddItem(O_SHOTGUN_ITEM);
     }
+    g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
 
-    if (g_Objects[O_MAGNUM_OPTION].loaded) {
-        if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
-            Inv_AddItem(O_MAGNUM_ITEM);
-        }
-        g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
+    if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
+        Inv_AddItem(O_MAGNUM_ITEM);
     }
+    g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
 
-    if (g_Objects[O_UZI_OPTION].loaded) {
-        if (!Inv_RequestItem(O_UZI_ITEM)) {
-            Inv_AddItem(O_UZI_ITEM);
-        }
-        g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+    if (!Inv_RequestItem(O_UZI_ITEM)) {
+        Inv_AddItem(O_UZI_ITEM);
     }
+    g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
 
     for (int i = 0; i < 10; i++) {
-        if (g_Objects[O_MEDI_OPTION].loaded
-            && Inv_RequestItem(O_MEDI_ITEM) < 240) {
+        if (Inv_RequestItem(O_MEDI_ITEM) < 240) {
             Inv_AddItem(O_MEDI_ITEM);
         }
-        if (g_Objects[O_BIGMEDI_OPTION].loaded
-            && Inv_RequestItem(O_BIGMEDI_ITEM) < 240) {
+        if (Inv_RequestItem(O_BIGMEDI_ITEM) < 240) {
             Inv_AddItem(O_BIGMEDI_ITEM);
         }
     }
 
-    if (g_Objects[O_KEY_OPTION1].loaded && !Inv_RequestItem(O_KEY_ITEM1)) {
+    if (!Inv_RequestItem(O_KEY_ITEM1)) {
         Inv_AddItem(O_KEY_ITEM1);
     }
-    if (g_Objects[O_KEY_OPTION2].loaded && !Inv_RequestItem(O_KEY_ITEM2)) {
+    if (!Inv_RequestItem(O_KEY_ITEM2)) {
         Inv_AddItem(O_KEY_ITEM2);
     }
-    if (g_Objects[O_KEY_OPTION3].loaded && !Inv_RequestItem(O_KEY_ITEM3)) {
+    if (!Inv_RequestItem(O_KEY_ITEM3)) {
         Inv_AddItem(O_KEY_ITEM3);
     }
-    if (g_Objects[O_KEY_OPTION4].loaded && !Inv_RequestItem(O_KEY_ITEM4)) {
+    if (!Inv_RequestItem(O_KEY_ITEM4)) {
         Inv_AddItem(O_KEY_ITEM4);
     }
-    if (g_Objects[O_PUZZLE_OPTION1].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM1)) {
+    if (!Inv_RequestItem(O_PUZZLE_ITEM1)) {
         Inv_AddItem(O_PUZZLE_ITEM1);
     }
-    if (g_Objects[O_PUZZLE_OPTION2].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM2)) {
+    if (!Inv_RequestItem(O_PUZZLE_ITEM2)) {
         Inv_AddItem(O_PUZZLE_ITEM2);
     }
-    if (g_Objects[O_PUZZLE_OPTION3].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM3)) {
+    if (!Inv_RequestItem(O_PUZZLE_ITEM3)) {
         Inv_AddItem(O_PUZZLE_ITEM3);
     }
-    if (g_Objects[O_PUZZLE_OPTION4].loaded
-        && !Inv_RequestItem(O_PUZZLE_ITEM4)) {
+    if (!Inv_RequestItem(O_PUZZLE_ITEM4)) {
         Inv_AddItem(O_PUZZLE_ITEM4);
     }
-    if (g_Objects[O_PICKUP_OPTION1].loaded
-        && !Inv_RequestItem(O_PICKUP_ITEM1)) {
+    if (!Inv_RequestItem(O_PICKUP_ITEM1)) {
         Inv_AddItem(O_PICKUP_ITEM1);
     }
-    if (g_Objects[O_PICKUP_OPTION2].loaded
-        && !Inv_RequestItem(O_PICKUP_ITEM2)) {
+    if (!Inv_RequestItem(O_PICKUP_ITEM2)) {
         Inv_AddItem(O_PICKUP_ITEM2);
     }
 }

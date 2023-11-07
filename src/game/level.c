@@ -6,6 +6,7 @@
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/inject.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lot.h"
@@ -810,6 +811,18 @@ bool Level_Initialise(int32_t level_num)
     if (g_GameFlow.levels[g_CurrentLevel].music) {
         Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
     }
+
+    g_InvItemPuzzle1.string = g_GameFlow.levels[g_CurrentLevel].puzzle1;
+    g_InvItemPuzzle2.string = g_GameFlow.levels[g_CurrentLevel].puzzle2;
+    g_InvItemPuzzle3.string = g_GameFlow.levels[g_CurrentLevel].puzzle3;
+    g_InvItemPuzzle4.string = g_GameFlow.levels[g_CurrentLevel].puzzle4;
+    g_InvItemKey1.string = g_GameFlow.levels[g_CurrentLevel].key1;
+    g_InvItemKey2.string = g_GameFlow.levels[g_CurrentLevel].key2;
+    g_InvItemKey3.string = g_GameFlow.levels[g_CurrentLevel].key3;
+    g_InvItemKey4.string = g_GameFlow.levels[g_CurrentLevel].key4;
+    g_InvItemPickup1.string = g_GameFlow.levels[g_CurrentLevel].pickup1;
+    g_InvItemPickup2.string = g_GameFlow.levels[g_CurrentLevel].pickup2;
+
     g_Camera.underwater = 0;
     return true;
 }
