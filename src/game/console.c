@@ -4,7 +4,10 @@
 #include "game/clock.h"
 #include "game/console_cmd.h"
 #include "game/input.h"
+#include "game/output.h"
+#include "game/screen.h"
 #include "game/text.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "log.h"
@@ -23,6 +26,7 @@
 #define PADDING 3
 
 static bool m_IsOpened = false;
+static bool m_AreAnyLogsOnScreen = false;
 
 static struct {
     char text[MAX_PROMPT_LENGTH];
@@ -257,6 +261,7 @@ void Console_Log(const char *fmt, ...)
         Text_SetPos(m_Logs[i].ts, m_Logs[i].ts->pos.x, y);
     }
 
+    m_AreAnyLogsOnScreen = true;
     free(text);
 }
 
@@ -273,10 +278,28 @@ void Console_ScrollLogs(void)
         Text_ChangeText(m_Logs[i].ts, "");
         i--;
     }
+
+    m_AreAnyLogsOnScreen = i >= 0;
 }
 
 void Console_Draw(void)
 {
+    if (m_IsOpened || m_AreAnyLogsOnScreen) {
+        int32_t sx = 0;
+        int32_t sw = Viewport_GetWidth();
+        int32_t sh = Screen_GetRenderScale(
+            // not entirely accurate, but good enough
+            TEXT_HEIGHT * m_PromptScale
+                + MAX_LOG_LINES * TEXT_HEIGHT * m_LogScale,
+            RSR_TEXT);
+        int32_t sy = Viewport_GetHeight() - sh;
+
+        RGBA8888 top = { 0, 0, 0, 0 };
+        RGBA8888 bottom = { 0, 0, 0, 196 };
+
+        Output_DrawScreenGradientQuad(sx, sy, sw, sh, top, top, bottom, bottom);
+    }
+
     if (m_Prompt.prompt_ts) {
         Text_DrawText(m_Prompt.prompt_ts);
     }
