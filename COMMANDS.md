@@ -23,3 +23,8 @@ Currently supported commands:
 - `/give {item_name}`  
   `/give {num} {item_name}`  
   Give Lara an item. Try `/give guns` to equip her with a full arsenal, and `/give keys` to get her all vital puzzle items.
+
+- `/flip`  
+  `/flip off`  
+  `/flip on`  
+  Turn the global flipmap on or off. Passing no argument toggles it.

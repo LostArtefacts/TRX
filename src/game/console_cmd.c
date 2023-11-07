@@ -2,11 +2,12 @@
 
 #include "config.h"
 #include "game/console.h"
-#include "game/inventory/inventory_vars.h"
 #include "game/inventory.h"
+#include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
+#include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -289,44 +290,53 @@ static bool Console_Cmd_GiveItem(const char *args)
     return true;
 }
 
+static bool Console_Cmd_FlipMap(const char *args)
+{
+    bool flip = false;
+    if (strcasecmp(args, "on") == 0) {
+        if (g_FlipStatus) {
+            Console_Log("Flipmap is already ON");
+            return true;
+        } else {
+            flip = true;
+        }
+    }
+
+    if (strcasecmp(args, "off") == 0) {
+        if (!g_FlipStatus) {
+            Console_Log("Flipmap is already OFF");
+            return true;
+        } else {
+            flip = true;
+        }
+    }
+
+    if (strcmp(args, "") == 0) {
+        flip = true;
+    }
+
+    if (flip) {
+        Room_FlipMap();
+        if (g_FlipStatus) {
+            Console_Log("Flipmap set to ON");
+        } else {
+            Console_Log("Flipmap set to OFF");
+        }
+        return true;
+    }
+
+    return false;
+}
+
 CONSOLE_COMMAND g_ConsoleCommands[] = {
-    {
-        .prefix = "pos",
-        .proc = Console_Cmd_Pos,
-    },
-
-    {
-        .prefix = "tp",
-        .proc = Console_Cmd_Teleport,
-    },
-
-    {
-        .prefix = "fly",
-        .proc = Console_Cmd_Fly,
-    },
-
-    {
-        .prefix = "braid",
-        .proc = Console_Cmd_Braid,
-    },
-
-    {
-        .prefix = "cheats",
-        .proc = Console_Cmd_Cheats,
-    },
-
-    {
-        .prefix = "give",
-        .proc = Console_Cmd_GiveItem,
-    },
-
-    {
-        .prefix = "gimme",
-        .proc = Console_Cmd_GiveItem,
-    },
-
-    {
-        .prefix = NULL,
-        .proc = NULL,
-    },
+    { .prefix = "pos", .proc = Console_Cmd_Pos },
+    { .prefix = "tp", .proc = Console_Cmd_Teleport },
+    { .prefix = "fly", .proc = Console_Cmd_Fly },
+    { .prefix = "braid", .proc = Console_Cmd_Braid },
+    { .prefix = "cheats", .proc = Console_Cmd_Cheats },
+    { .prefix = "give", .proc = Console_Cmd_GiveItem },
+    { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
+    { .prefix = "flip", .proc = Console_Cmd_FlipMap },
+    { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },
+    { .prefix = NULL, .proc = NULL },
 };
