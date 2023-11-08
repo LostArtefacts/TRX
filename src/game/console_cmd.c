@@ -17,6 +17,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "strings.h"
 #include "util.h"
 
 #include <assert.h>
@@ -24,7 +25,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <strings.h>
 
 #define ENDS_WITH_ZERO(num) (fabsf((num)-roundf((num))) < 0.0001f)
 
@@ -254,7 +254,7 @@ static bool Console_Cmd_GiveItem(const char *args)
             continue;
         }
 
-        if (strcasecmp(args, desc_name) != 0) {
+        if (!String_Equivalent(args, desc_name)) {
             continue;
         }
 
@@ -268,7 +268,7 @@ static bool Console_Cmd_GiveItem(const char *args)
         return true;
     }
 
-    if (strcasecmp(args, "keys") == 0) {
+    if (String_Equivalent(args, "keys")) {
         Inv_AddItem(O_PUZZLE_ITEM1);
         Inv_AddItem(O_PUZZLE_ITEM2);
         Inv_AddItem(O_PUZZLE_ITEM3);
@@ -283,7 +283,7 @@ static bool Console_Cmd_GiveItem(const char *args)
         return true;
     }
 
-    if (strcasecmp(args, "guns") == 0) {
+    if (String_Equivalent(args, "guns")) {
         Inv_AddItem(O_GUN_ITEM);
         Inv_AddItem(O_MAGNUM_ITEM);
         Inv_AddItem(O_UZI_ITEM);
@@ -302,7 +302,7 @@ static bool Console_Cmd_GiveItem(const char *args)
 static bool Console_Cmd_FlipMap(const char *args)
 {
     bool flip = false;
-    if (strcasecmp(args, "on") == 0) {
+    if (String_Equivalent(args, "on")) {
         if (g_FlipStatus) {
             Console_Log("Flipmap is already ON");
             return true;
@@ -311,7 +311,7 @@ static bool Console_Cmd_FlipMap(const char *args)
         }
     }
 
-    if (strcasecmp(args, "off") == 0) {
+    if (String_Equivalent(args, "off")) {
         if (!g_FlipStatus) {
             Console_Log("Flipmap is already OFF");
             return true;
@@ -339,7 +339,7 @@ static bool Console_Cmd_FlipMap(const char *args)
 
 static bool Console_Cmd_Kill(const char *args)
 {
-    if (strcasecmp(args, "all") == 0) {
+    if (String_Equivalent(args, "all")) {
         int32_t num = 0;
         for (int16_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
             struct ITEM_INFO *item = &g_Items[item_num];
@@ -431,14 +431,15 @@ static bool Console_Cmd_Level(const char *args)
 
     if (level_to_load == -1 && strlen(args) >= 2) {
         for (int i = 0; i < g_GameFlow.level_count; i++) {
-            if (strcasestr(g_GameFlow.levels[i].level_title, args) != NULL) {
+            if (String_CaseSubstring(g_GameFlow.levels[i].level_title, args)
+                != NULL) {
                 level_to_load = i;
                 break;
             }
         }
     }
 
-    if (level_to_load == -1 && strcasecmp(args, "gym") == 0) {
+    if (level_to_load == -1 && String_Equivalent(args, "gym")) {
         level_to_load = g_GameFlow.gym_level_num;
     }
 
