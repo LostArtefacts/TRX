@@ -167,7 +167,6 @@ void Game_ProcessInput(void)
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    g_CurrentLevel = level_num;
     g_GameInfo.current_level_type = level_type;
     g_GameInfo.status = GMS_IN_GAME;
 
@@ -195,33 +194,41 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
             Savegame_ApplyLogicToCurrentInfo(level_num);
         }
-        Level_InitialiseFlags();
         if (!Level_Initialise(level_num)) {
             return false;
         }
         break;
 
     case GFL_SELECT:
-        Savegame_InitCurrentInfo();
-        if (level_num > g_GameFlow.first_level_num) {
-            Savegame_LoadOnlyResumeInfo(
-                g_GameInfo.current_save_slot, &g_GameInfo);
-            for (int i = level_num; i < g_GameFlow.level_count; i++) {
-                Savegame_ResetCurrentInfo(i);
+        if (g_GameInfo.current_save_slot != -1) {
+            // select level feature
+            Savegame_InitCurrentInfo();
+            if (level_num > g_GameFlow.first_level_num) {
+                Savegame_LoadOnlyResumeInfo(
+                    g_GameInfo.current_save_slot, &g_GameInfo);
+                for (int i = level_num; i < g_GameFlow.level_count; i++) {
+                    Savegame_ResetCurrentInfo(i);
+                }
+                // Use previous level's ending info to start current level.
+                Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
+                Savegame_ApplyLogicToCurrentInfo(level_num);
             }
-            // Use previous level's ending info to start current level.
-            Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
-            Savegame_ApplyLogicToCurrentInfo(level_num);
+        } else if (g_CurrentLevel == g_GameFlow.title_level_num) {
+            // console /play level feature
+            Savegame_InitCurrentInfo();
+            for (int i = g_GameFlow.first_level_num + 1; i <= level_num; i++) {
+                Savegame_CarryCurrentInfoToNextLevel(i - 1, i);
+                Savegame_ApplyLogicToCurrentInfo(i);
+            }
         }
-        Level_InitialiseFlags();
         if (!Level_Initialise(level_num)) {
             return false;
         }
         break;
 
     case GFL_GYM:
-        Savegame_InitCurrentInfo();
-        Level_InitialiseFlags();
+        Savegame_ResetCurrentInfo(level_num);
+        Savegame_ApplyLogicToCurrentInfo(level_num);
         if (!Level_Initialise(level_num)) {
             return false;
         }
@@ -230,14 +237,12 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     case GFL_BONUS:
         Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
         Savegame_ApplyLogicToCurrentInfo(level_num);
-        Level_InitialiseFlags();
         if (!Level_Initialise(level_num)) {
             return false;
         }
         break;
 
     default:
-        Level_InitialiseFlags();
         if (!Level_Initialise(level_num)) {
             return false;
         }
@@ -263,16 +268,28 @@ int32_t Game_Stop(void)
             Stats_CheckAllSecretsCollected(GFL_NORMAL);
     }
 
+    // play specific level
+    if (g_LevelComplete && g_GameInfo.select_level_num != -1) {
+        if (g_CurrentLevel != -1) {
+            Savegame_CarryCurrentInfoToNextLevel(
+                g_CurrentLevel, g_GameInfo.select_level_num);
+        }
+        return GF_SELECT_GAME | g_GameInfo.select_level_num;
+    }
+
+    // carry info to the next level
     if (g_CurrentLevel + 1 < g_GameFlow.level_count) {
+        // TODO: this should be moved to GFS_EXIT_TO_LEVEL handler, probably
         Savegame_CarryCurrentInfoToNextLevel(
             g_CurrentLevel, g_CurrentLevel + 1);
         Savegame_ApplyLogicToCurrentInfo(g_CurrentLevel + 1);
     }
 
-    g_GameInfo.current[g_CurrentLevel].flags.available = 0;
-
+    // normal level completion
     if (g_LevelComplete) {
-        return GF_LEVEL_COMPLETE | g_CurrentLevel;
+        // TODO: why is this made unavailable?
+        g_GameInfo.current[g_CurrentLevel].flags.available = 0;
+        return GF_LEVEL_COMPLETE | g_GameInfo.select_level_num;
     }
 
     if (!g_InvChosen) {

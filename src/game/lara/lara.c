@@ -446,7 +446,7 @@ void Lara_Initialise(int32_t level_num)
     g_Lara.right_arm.lock = 0;
     g_Lara.left_arm.lock = 0;
 
-    if (g_RoomInfo[g_LaraItem->room_number].flags & 1) {
+    if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
         g_Lara.water_status = LWS_UNDERWATER;
         g_LaraItem->fall_speed = 0;
         g_LaraItem->goal_anim_state = LS_TREAD;

@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
+#include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/items.h"
@@ -407,6 +408,55 @@ static bool Console_Cmd_Kill(const char *args)
     return false;
 }
 
+static bool Console_Cmd_EndLevel(const char *args)
+{
+    if (strcmp(args, "") == 0) {
+        g_LevelComplete = true;
+        Console_Log("Level complete!");
+        return true;
+    }
+    return false;
+}
+
+static bool Console_Cmd_Level(const char *args)
+{
+    int32_t level_to_load = -1;
+
+    if (level_to_load == -1) {
+        int32_t num = 0;
+        if (sscanf(args, "%d", &num) == 1) {
+            level_to_load = num;
+        }
+    }
+
+    if (level_to_load == -1 && strlen(args) >= 2) {
+        for (int i = 0; i < g_GameFlow.level_count; i++) {
+            if (strcasestr(g_GameFlow.levels[i].level_title, args) != NULL) {
+                level_to_load = i;
+                break;
+            }
+        }
+    }
+
+    if (level_to_load == -1 && strcasecmp(args, "gym") == 0) {
+        level_to_load = g_GameFlow.gym_level_num;
+    }
+
+    if (level_to_load >= g_GameFlow.level_count) {
+        Console_Log("Invalid level");
+        return true;
+    }
+
+    if (level_to_load != -1) {
+        g_GameInfo.select_level_num = level_to_load;
+        g_LevelComplete = true;
+        Console_Log("Loading %s", g_GameFlow.levels[level_to_load].level_title);
+        return true;
+    }
+
+    return false;
+}
+
 CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "pos", .proc = Console_Cmd_Pos },
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
@@ -418,5 +468,8 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "flip", .proc = Console_Cmd_FlipMap },
     { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },
     { .prefix = "kill", .proc = Console_Cmd_Kill },
+    { .prefix = "endlevel", .proc = Console_Cmd_EndLevel },
+    { .prefix = "play", .proc = Console_Cmd_Level },
+    { .prefix = "level", .proc = Console_Cmd_Level },
     { .prefix = NULL, .proc = NULL },
 };

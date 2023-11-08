@@ -32,3 +32,12 @@ Currently supported commands:
 - `/braid on`  
   `/braid off`  
   Grants the power to switch Lara's iconic braid on and off.
+
+- `/endlevel`  
+  Ends the current level. Ideal for speedruns.
+
+- `/level {num}`  
+  `/level {name}`  
+  `/play {num}`  
+  `/play {name}`  
+  Plays the specified level.
