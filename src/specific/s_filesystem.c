@@ -2,13 +2,13 @@
 
 #include "log.h"
 #include "memory.h"
+#include "strings.h"
 
 #include <SDL2/SDL_filesystem.h>
 #include <assert.h>
 #include <dirent.h>
 #include <stdbool.h>
 #include <string.h>
-#include <strings.h>
 
 #if defined(_WIN32)
     #include <direct.h>
@@ -107,7 +107,7 @@ char *S_File_CasePath(char const *path)
 
         struct dirent *cur_file = readdir(path_dir);
         while (cur_file) {
-            if (strcasecmp(path_piece, cur_file->d_name) == 0) {
+            if (String_Equivalent(path_piece, cur_file->d_name)) {
                 S_File_PathAppendPart(current_path, cur_file->d_name);
                 break;
             }

@@ -271,6 +271,7 @@ sources = [
   'src/specific/s_output.c',
   'src/specific/s_picture.c',
   'src/specific/s_shell.c',
+  'src/strings.c',
   resources,
 ]
 
