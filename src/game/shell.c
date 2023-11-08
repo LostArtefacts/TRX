@@ -133,7 +133,6 @@ void Shell_Init(const char *gameflow_path)
     }
 
     Option_Init();
-    Savegame_InitCurrentInfo();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
     Config_Init();
@@ -178,6 +177,7 @@ void Shell_Main(void)
     int32_t gf_option = GF_EXIT_TO_TITLE;
     bool intro_played = false;
 
+    g_GameInfo.current_save_slot = -1;
     bool loop_continue = true;
     while (loop_continue) {
         int32_t gf_direction = gf_option & ~((1 << 6) - 1);
@@ -246,6 +246,7 @@ void Shell_Main(void)
                 intro_played = true;
             }
 
+            Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 gf_option = GF_EXIT_GAME;
                 break;

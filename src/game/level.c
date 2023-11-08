@@ -758,7 +758,20 @@ bool Level_Load(int level_num)
 bool Level_Initialise(int32_t level_num)
 {
     LOG_DEBUG("%d", level_num);
+
+    // loading a save can override it to false
+    g_GameInfo.death_counter_supported = true;
+
+    g_GameInfo.select_level_num = -1;
+    g_GameInfo.current[level_num].stats.timer = 0;
+    g_GameInfo.current[level_num].stats.secret_flags = 0;
+    g_GameInfo.current[level_num].stats.pickup_count = 0;
+    g_GameInfo.current[level_num].stats.kill_count = 0;
+    g_GameInfo.current[level_num].stats.death_count = 0;
+
+    g_LevelComplete = false;
     g_CurrentLevel = level_num;
+    g_FlipEffect = -1;
 
     Overlay_HideGameInfo();
 
@@ -776,9 +789,6 @@ bool Level_Initialise(int32_t level_num)
         g_Objects[i].loaded = 0;
     }
 
-    g_LevelComplete = false;
-    g_FlipEffect = -1;
-
     Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);
@@ -788,7 +798,7 @@ bool Level_Initialise(int32_t level_num)
             : NULL);
     Output_ApplyRenderSettings();
 
-    if (!Level_Load(g_CurrentLevel)) {
+    if (!Level_Load(level_num)) {
         return false;
     }
 
@@ -808,33 +818,21 @@ bool Level_Initialise(int32_t level_num)
 
     Viewport_SetFOV(Viewport_GetUserFOV());
 
-    if (g_GameFlow.levels[g_CurrentLevel].music) {
-        Music_PlayLooped(g_GameFlow.levels[g_CurrentLevel].music);
+    if (g_GameFlow.levels[level_num].music) {
+        Music_PlayLooped(g_GameFlow.levels[level_num].music);
     }
 
-    g_InvItemPuzzle1.string = g_GameFlow.levels[g_CurrentLevel].puzzle1;
-    g_InvItemPuzzle2.string = g_GameFlow.levels[g_CurrentLevel].puzzle2;
-    g_InvItemPuzzle3.string = g_GameFlow.levels[g_CurrentLevel].puzzle3;
-    g_InvItemPuzzle4.string = g_GameFlow.levels[g_CurrentLevel].puzzle4;
-    g_InvItemKey1.string = g_GameFlow.levels[g_CurrentLevel].key1;
-    g_InvItemKey2.string = g_GameFlow.levels[g_CurrentLevel].key2;
-    g_InvItemKey3.string = g_GameFlow.levels[g_CurrentLevel].key3;
-    g_InvItemKey4.string = g_GameFlow.levels[g_CurrentLevel].key4;
-    g_InvItemPickup1.string = g_GameFlow.levels[g_CurrentLevel].pickup1;
-    g_InvItemPickup2.string = g_GameFlow.levels[g_CurrentLevel].pickup2;
+    g_InvItemPuzzle1.string = g_GameFlow.levels[level_num].puzzle1;
+    g_InvItemPuzzle2.string = g_GameFlow.levels[level_num].puzzle2;
+    g_InvItemPuzzle3.string = g_GameFlow.levels[level_num].puzzle3;
+    g_InvItemPuzzle4.string = g_GameFlow.levels[level_num].puzzle4;
+    g_InvItemKey1.string = g_GameFlow.levels[level_num].key1;
+    g_InvItemKey2.string = g_GameFlow.levels[level_num].key2;
+    g_InvItemKey3.string = g_GameFlow.levels[level_num].key3;
+    g_InvItemKey4.string = g_GameFlow.levels[level_num].key4;
+    g_InvItemPickup1.string = g_GameFlow.levels[level_num].pickup1;
+    g_InvItemPickup2.string = g_GameFlow.levels[level_num].pickup2;
 
     g_Camera.underwater = 0;
     return true;
-}
-
-void Level_InitialiseFlags(void)
-{
-    // loading a save can override it to false
-    g_GameInfo.death_counter_supported = true;
-
-    g_GameInfo.current[g_CurrentLevel].stats.timer = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.secret_flags = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.pickup_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.kill_count = 0;
-    g_GameInfo.current[g_CurrentLevel].stats.death_count = 0;
 }

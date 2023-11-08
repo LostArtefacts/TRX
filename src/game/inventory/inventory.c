@@ -363,6 +363,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
     g_InvMode = inv_mode;
 
     int no_input_count = 0;
+    int32_t start_level = -1;
     bool start_demo = false;
     m_InvNFrames = 2;
     Inv_Construct();
@@ -445,6 +446,8 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             }
         }
 
+        start_level = g_LevelComplete ? g_GameInfo.select_level_num : -1;
+
         for (int i = 0; i < m_InvNFrames; i++) {
             if (g_IDelay) {
                 if (g_IDCount) {
@@ -516,7 +519,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                 break;
             }
 
-            if (start_demo
+            if (start_level != -1 || start_demo
                 || (g_InputDB.option && g_InvMode != INV_TITLE_MODE)) {
                 Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 g_InvChosen = -1;
@@ -886,9 +889,12 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         Sound_UnpauseAll();
     }
 
+    if (start_level != -1) {
+        return GF_SELECT_GAME | start_level;
+    }
+
     if (start_demo) {
         no_input_count = 0;
-        start_demo = false;
         return GF_START_DEMO;
     }
 

@@ -1231,7 +1231,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         switch (seq->type) {
         case GFS_START_GAME:
             if (!Game_Start((int32_t)(intptr_t)seq->data, level_type)) {
-                g_CurrentLevel = 0;
+                g_CurrentLevel = -1;
                 return GF_EXIT_TO_TITLE;
             }
             break;
