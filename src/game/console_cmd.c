@@ -457,6 +457,24 @@ static bool Console_Cmd_Level(const char *args)
     return false;
 }
 
+static bool Console_Cmd_Abortion(const char *args)
+{
+    if (!g_Objects[O_LARA].loaded) {
+        return false;
+    }
+
+    if (g_LaraItem->hit_points <= 0) {
+        return true;
+    }
+
+    Effect_ExplodingDeath(g_Lara.item_number, -1, 0);
+    Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
+    Sound_Effect(SFX_LARA_FALL, &g_LaraItem->pos, SPM_NORMAL);
+    g_LaraItem->hit_points = 0;
+    g_LaraItem->flags |= IS_INVISIBLE;
+    return true;
+}
+
 CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "pos", .proc = Console_Cmd_Pos },
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
@@ -471,5 +489,6 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "endlevel", .proc = Console_Cmd_EndLevel },
     { .prefix = "play", .proc = Console_Cmd_Level },
     { .prefix = "level", .proc = Console_Cmd_Level },
+    { .prefix = "abortion", .proc = Console_Cmd_Abortion },
     { .prefix = NULL, .proc = NULL },
 };
