@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed installer not detecting old Tomb1Main installations (#1071)
 
 ## [3.0](https://github.com/LostArtefacts/TR1X/compare/2.16...3.0) - 2023-11-09
 - renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
