@@ -120,7 +120,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: configtool
-          path: tools/config/out/Tomb1Main_ConfigTool.exe
+          path: tools/config/out/TR1X_ConfigTool.exe
 
   build_game_win:
     name: Build the game (Windows)
@@ -276,4 +276,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: installer
-          path: tools/installer/out/Tomb1Main_Installer.exe
+          path: tools/installer/out/TR1X_Installer.exe
