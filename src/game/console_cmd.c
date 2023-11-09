@@ -495,5 +495,6 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "play", .proc = Console_Cmd_Level },
     { .prefix = "level", .proc = Console_Cmd_Level },
     { .prefix = "abortion", .proc = Console_Cmd_Abortion },
+    { .prefix = "natlastinks", .proc = Console_Cmd_Abortion },
     { .prefix = NULL, .proc = NULL },
 };
