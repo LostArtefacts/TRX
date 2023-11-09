@@ -160,7 +160,7 @@ void Console_Confirm(void)
 
 void Console_HandleKeyDown(const SDL_Event event)
 {
-    if (!m_IsOpened) {
+    if (!m_IsOpened && g_Config.enable_console) {
         const INPUT_SCANCODE open_console_keysym = Input_GetAssignedScancode(
             g_Config.input.layout, INPUT_ROLE_ENTER_CONSOLE);
         if (event.key.keysym.scancode == open_console_keysym) {

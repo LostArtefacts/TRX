@@ -62,6 +62,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "enable_shotgun_flash",           .type = COT_BOOL,   .target = &g_Config.enable_shotgun_flash,                .default_value = &(bool){true},                       0},
     { .name = "fix_shotgun_targeting",          .type = COT_BOOL,   .target = &g_Config.fix_shotgun_targeting,               .default_value = &(bool){true},                       0},
     { .name = "enable_cheats",                  .type = COT_BOOL,   .target = &g_Config.enable_cheats,                       .default_value = &(bool){false},                      0},
+    { .name = "enable_console",                 .type = COT_BOOL,   .target = &g_Config.enable_console,                      .default_value = &(bool){true},                       0},
     { .name = "enable_numeric_keys",            .type = COT_BOOL,   .target = &g_Config.enable_numeric_keys,                 .default_value = &(bool){true},                       0},
     { .name = "enable_tr3_sidesteps",           .type = COT_BOOL,   .target = &g_Config.enable_tr3_sidesteps,                .default_value = &(bool){true},                       0},
     { .name = "enable_braid",                   .type = COT_BOOL,   .target = &g_Config.enable_braid,                        .default_value = &(bool){true},                       0},

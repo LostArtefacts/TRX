@@ -143,6 +143,10 @@
       "Title": "Trucos",
       "Description": "Habilita varios trucos:\n- F11: mantén pulsado para curar a Lara.\n- Tecla F11 + CAMINAR: mantén presionada para dañar a Lara.\n- L: finaliza inmediatamente el nivel.\n- I: da a Lara todas las armas, munición, botiquines y todos los elementos de la trama para el nivel actual.\n- O: habilita el truco DOZY (nadar en el aire).\n     - Tecla CAMINAR: salir DOZY.\n     - Tecla ARMAS: abre la puerta más cercana (no funciona en ciertos lugares)."
     },
+    "enable_console": {
+      "Title": "Consola",
+      "Description": "Habilita la consola de desarrollo."
+    },
     "enable_cine": {
       "Title": "Habilitar escenas",
       "Description": "Habilita la reproducción de escenas."
