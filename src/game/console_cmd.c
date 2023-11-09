@@ -201,13 +201,13 @@ static bool Console_Cmd_Fly(const char *const args)
 
 static bool Console_Cmd_Braid(const char *const args)
 {
-    if (strcmp(args, "off") == 0) {
+    if (String_Equivalent(args, "off")) {
         g_Config.enable_braid = 0;
         Console_Log("Braid disabled");
         return true;
     }
 
-    if (strcmp(args, "on") == 0) {
+    if (String_Equivalent(args, "on")) {
         g_Config.enable_braid = 1;
         Console_Log("Braid enabled");
         return true;
@@ -218,13 +218,13 @@ static bool Console_Cmd_Braid(const char *const args)
 
 static bool Console_Cmd_Cheats(const char *const args)
 {
-    if (strcmp(args, "off") == 0) {
+    if (String_Equivalent(args, "off")) {
         g_Config.enable_cheats = 0;
         Console_Log("Cheats disabled");
         return true;
     }
 
-    if (strcmp(args, "on") == 0) {
+    if (String_Equivalent(args, "on")) {
         g_Config.enable_cheats = 1;
         Console_Log("Cheats enabled");
         return true;
@@ -237,7 +237,11 @@ static bool Console_Cmd_GiveItem(const char *args)
 {
     int32_t num = 1;
     if (sscanf(args, "%d ", &num) == 1) {
-        args = strstr(args, " ") + 1;
+        args = strstr(args, " ");
+        if (!args) {
+            return false;
+        }
+        args++;
     }
 
     for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
