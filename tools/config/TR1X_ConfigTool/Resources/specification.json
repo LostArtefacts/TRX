@@ -167,6 +167,11 @@
           "DefaultValue": false
         },
         {
+          "Field": "enable_console",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "start_lara_hitpoints",
           "DataType": "Numeric",
           "DefaultValue": 1000,

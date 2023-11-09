@@ -167,6 +167,10 @@
       "Title": "Cheats",
       "Description": "Enables various cheats:\n- F11: hold to heal Lara.\n- F11 + WALK key: hold to hurt Lara.\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable DOZY cheat (swimming midair).\n     - WALK key: exit DOZY.\n     - GUN key: open the closest door (doesn't work in certain places)."
     },
+    "enable_console": {
+      "Title": "Console",
+      "Description": "Enables developer console."
+    },
     "start_lara_hitpoints": {
       "Title": "Lara's starting health",
       "Description": "Sets Lara's health value for the beginning of each level."

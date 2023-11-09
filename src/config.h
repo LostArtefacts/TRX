@@ -63,6 +63,7 @@ typedef struct {
     bool enable_shotgun_flash;
     bool fix_shotgun_targeting;
     bool enable_cheats;
+    bool enable_console;
     bool enable_tr3_sidesteps;
     bool enable_braid;
     bool enable_compass_stats;
