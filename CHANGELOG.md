@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [3.0](https://github.com/LostArtefacts/TR1X/compare/2.16...3.0) - 2023-11-09
 - renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
 - added developer console (accessible with `/`, see [COMMANDS.md] for details)
 - added Linux builds and toolchain
