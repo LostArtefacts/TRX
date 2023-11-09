@@ -352,6 +352,7 @@ static bool Console_Cmd_Kill(const char *args)
                 Effect_ExplodingDeath(item_num, -1, 0);
                 Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
                 Item_Kill(item_num);
+                Carrier_TestItemDrops(item_num);
                 num++;
             }
         }
@@ -402,6 +403,7 @@ static bool Console_Cmd_Kill(const char *args)
             Effect_ExplodingDeath(best_item_num, -1, 0);
             Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
             Item_Kill(best_item_num);
+            Carrier_TestItemDrops(best_item_num);
             Console_Log("Bye-bye!");
         } else {
             Console_Log("No enemy in sight...");
