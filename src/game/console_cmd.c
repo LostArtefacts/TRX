@@ -1,6 +1,7 @@
 #include "game/console_cmd.h"
 
 #include "config.h"
+#include "game/carrier.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
 #include "game/gameflow.h"
