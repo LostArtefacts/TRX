@@ -1,7 +1,8 @@
 {
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
-    // Refer to https://github.com/LostArtefacts/TR1X/GAMEFLOW.md for usage.
+    // Refer to https://github.com/LostArtefacts/TR1X/blob/stable/GAMEFLOW.md
+    // for usage.
 
     "main_menu_picture": "data/titleh.png",
     "savegame_fmt_legacy": "saveati.%d",
