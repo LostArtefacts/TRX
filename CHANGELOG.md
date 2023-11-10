@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [3.0.1](https://github.com/LostArtefacts/TR1X/compare/3.0...3.0.1) - 2023-11-10
 - fixed installer not detecting old Tomb1Main installations (#1071)
 
 ## [3.0](https://github.com/LostArtefacts/TR1X/compare/2.16...3.0) - 2023-11-09
