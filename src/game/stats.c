@@ -307,7 +307,7 @@ void Stats_Show(int32_t level_num)
         return;
     }
 
-    g_GameInfo.status |= GMS_IN_STATS;
+    Game_SetStatus(GMS_IN_STATS);
 
     char buf[100];
     char time_str[100];
@@ -424,7 +424,7 @@ void Stats_Show(int32_t level_num)
     }
 
     Output_FadeReset();
-    g_GameInfo.status &= ~GMS_IN_STATS;
+    Game_RestoreStatus();
 
     for (int i = 0; i < MAX_TEXTSTRINGS; i++) {
         cur_txt = &all_txt[i];

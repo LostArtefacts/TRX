@@ -1301,8 +1301,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 break;
             }
 
-            if (level_type == GFL_TITLE
-                && !(g_GameInfo.status & GMS_GAME_MENU_SHOWN)
+            if (level_type == GFL_TITLE && !Game_HasStatus(GMS_GAME_MENU_SHOWN)
                 && !g_Config.enable_eidos_logo) {
                 break;
             }

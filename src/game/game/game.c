@@ -31,6 +31,8 @@
 
 static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
+static GAME_STATUS m_CurrentStatus = GMS_IN_GAME;
+static GAME_STATUS m_PreviousStatus = GMS_IN_GAME;
 
 static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
 
@@ -153,8 +155,7 @@ void Game_ProcessInput(void)
         Lara_UseItem(O_BIGMEDI_OPTION);
     }
 
-    if (g_Config.enable_buffering
-        && !(g_GameInfo.status & (GMS_IN_INVENTORY | GMS_IN_PAUSE))) {
+    if (g_Config.enable_buffering && Game_HasStatus(GMS_IN_GAME)) {
         if (g_Input.toggle_bilinear_filter) {
             FRAME_BUFFER(toggle_bilinear_filter);
         } else if (g_Input.toggle_perspective_filter) {
@@ -165,10 +166,36 @@ void Game_ProcessInput(void)
     }
 }
 
+bool Game_HasStatus(GAME_STATUS status)
+{
+    return m_CurrentStatus & status;
+}
+
+void Game_SetStatus(GAME_STATUS status)
+{
+    m_PreviousStatus = m_CurrentStatus;
+    m_CurrentStatus = status;
+}
+
+void Game_AddStatus(GAME_STATUS status)
+{
+    m_CurrentStatus |= status;
+}
+
+void Game_RemoveStatus(GAME_STATUS status)
+{
+    m_CurrentStatus &= ~status;
+}
+
+void Game_RestoreStatus(void)
+{
+    m_CurrentStatus = m_PreviousStatus;
+}
+
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_GameInfo.current_level_type = level_type;
-    g_GameInfo.status = GMS_IN_GAME;
+    Game_SetStatus(GMS_IN_GAME);
 
     switch (level_type) {
     case GFL_SAVED:

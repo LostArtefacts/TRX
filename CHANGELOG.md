@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - fixed incorrect usage reference URLs in the gameflow files (#1073)
+- fixed random number generation becoming stuck after entering and leaving the inventory, which affected effects and SFX (#1070, #1074)
 
 ## [3.0.1](https://github.com/LostArtefacts/TR1X/compare/3.0...3.0.1) - 2023-11-10
 - fixed installer not detecting old Tomb1Main installations (#1071)

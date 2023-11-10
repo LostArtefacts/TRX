@@ -1,7 +1,7 @@
 #include "game/random.h"
 
+#include "game/game.h"
 #include "global/types.h"
-#include "global/vars.h"
 #include "log.h"
 
 static int32_t m_RandControl = 0xD371F947;
@@ -27,7 +27,7 @@ void Random_SeedDraw(int32_t seed)
 
 int32_t Random_GetDraw(void)
 {
-    if (g_GameInfo.status == GMS_IN_GAME) {
+    if (Game_HasStatus(GMS_IN_GAME)) {
         m_RandDraw = 0x41C64E6D * m_RandDraw + 0x3039;
     }
     return (m_RandDraw >> 10) & 0x7FFF;

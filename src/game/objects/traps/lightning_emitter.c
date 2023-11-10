@@ -1,6 +1,7 @@
 #include "game/objects/traps/lightning_emitter.h"
 
 #include "game/collide.h"
+#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -213,7 +214,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
         PHD_VECTOR *pos = &l->wibble[i];
-        if (g_GameInfo.status == GMS_IN_GAME) {
+        if (Game_HasStatus(GMS_IN_GAME)) {
             pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
@@ -267,7 +268,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
         for (j = 0; j < steps; j++) {
             PHD_VECTOR *pos = l->shoot[i];
-            if (g_GameInfo.status == GMS_IN_GAME) {
+            if (Game_HasStatus(GMS_IN_GAME)) {
                 pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;

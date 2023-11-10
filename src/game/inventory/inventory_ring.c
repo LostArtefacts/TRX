@@ -1,6 +1,7 @@
 #include "game/inventory/inventory_ring.h"
 
 #include "config.h"
+#include "game/game.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
@@ -298,13 +299,13 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
         } else if (g_Config.healthbar_location == BL_BOTTOM_RIGHT) {
             Text_Hide(m_InvDownArrow2, true);
         }
-        g_GameInfo.status |= GMS_IN_INVENTORY_HEALTH;
+        Game_AddStatus(GMS_IN_INVENTORY_HEALTH);
     } else {
         Text_Hide(m_InvUpArrow1, false);
         Text_Hide(m_InvUpArrow2, false);
         Text_Hide(m_InvDownArrow1, false);
         Text_Hide(m_InvDownArrow2, false);
-        g_GameInfo.status &= ~GMS_IN_INVENTORY_HEALTH;
+        Game_RemoveStatus(GMS_IN_INVENTORY_HEALTH);
     }
 }
 

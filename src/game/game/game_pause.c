@@ -10,7 +10,6 @@
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -153,7 +152,7 @@ bool Game_Pause(void)
 
     Music_Pause();
     Sound_PauseAll();
-    g_GameInfo.status |= GMS_IN_PAUSE;
+    Game_SetStatus(GMS_IN_PAUSE);
 
     Output_FadeToSemiBlack(true);
     int32_t select = Game_Pause_Loop();
@@ -163,6 +162,6 @@ bool Game_Pause(void)
     Sound_UnpauseAll();
     Requester_Remove(&m_PauseRequester);
     Game_Pause_RemoveText();
-    g_GameInfo.status &= ~GMS_IN_PAUSE;
+    Game_RestoreStatus();
     return select < 0;
 }
