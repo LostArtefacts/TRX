@@ -70,7 +70,7 @@ jobs:
         run: |
           mv artifacts/game-win.zip artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Windows.zip
           mv artifacts/game-linux.zip artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Linux.zip
-          mv artifacts/Tomb1Main_Installer.exe artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Installer.exe
+          mv artifacts/TR1X_Installer.exe artifacts/TR1X-${{ steps.get_version.outputs.VERSION }}-Installer.exe
 
       - name: Generate Changelog
         run: |
