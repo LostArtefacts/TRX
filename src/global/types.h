@@ -1566,12 +1566,12 @@ typedef struct RESUME_INFO {
 } RESUME_INFO;
 
 typedef enum GAME_STATUS {
-    GMS_IN_GAME = 1 << 0,
-    GMS_IN_INVENTORY = 1 << 1,
-    GMS_IN_PAUSE = 1 << 2,
-    GMS_IN_STATS = 1 << 3,
-    GMS_IN_INVENTORY_HEALTH = 1 << 4,
-    GMS_GAME_MENU_SHOWN = 1 << 5,
+    GS_INITIAL = 0,
+    GS_IN_MAIN_MENU = 1,
+    GS_IN_GAME = 2,
+    GS_IN_INVENTORY = 3,
+    GS_IN_PAUSE = 4,
+    GS_IN_STATS = 5,
 } GAME_STATUS;
 
 typedef struct GAME_INFO {
@@ -1589,6 +1589,7 @@ typedef struct GAME_INFO {
     bool remove_scions;
     bool remove_ammo;
     bool remove_medipacks;
+    bool inv_showing_medpack;
     bool inv_ring_above;
 } GAME_INFO;
 

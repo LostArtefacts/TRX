@@ -5,11 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool Game_HasStatus(GAME_STATUS status);
-void Game_SetStatus(GAME_STATUS status);
-void Game_AddStatus(GAME_STATUS status);
-void Game_RemoveStatus(GAME_STATUS status);
-void Game_RestoreStatus(void);
+GAME_STATUS Game_GetStatus(void);
+void Game_SetStatus(GAME_STATUS stauts);
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 int32_t Game_Stop(void);

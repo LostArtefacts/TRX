@@ -1011,10 +1011,12 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
 int32_t Inv_Display(int inv_mode)
 {
-    Game_AddStatus(GMS_GAME_MENU_SHOWN);
-    Game_SetStatus(GMS_IN_INVENTORY);
+    const GAME_STATUS old_status = Game_GetStatus();
+    Game_SetStatus(
+        g_CurrentLevel == g_GameFlow.title_level_num ? GS_IN_MAIN_MENU
+                                                     : GS_IN_INVENTORY);
     int32_t inv_result = Inv_ConstructAndDisplay(inv_mode);
-    Game_RestoreStatus();
+    Game_SetStatus(old_status);
 
     if (g_Config.enable_buffering) {
         g_OldInputDB.any = 0;

@@ -152,7 +152,8 @@ bool Game_Pause(void)
 
     Music_Pause();
     Sound_PauseAll();
-    Game_SetStatus(GMS_IN_PAUSE);
+    const GAME_STATUS old_status = Game_GetStatus();
+    Game_SetStatus(GS_IN_PAUSE);
 
     Output_FadeToSemiBlack(true);
     int32_t select = Game_Pause_Loop();
@@ -162,6 +163,6 @@ bool Game_Pause(void)
     Sound_UnpauseAll();
     Requester_Remove(&m_PauseRequester);
     Game_Pause_RemoveText();
-    Game_RestoreStatus();
+    Game_SetStatus(old_status);
     return select < 0;
 }
