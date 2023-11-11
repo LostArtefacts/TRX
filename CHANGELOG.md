@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [3.0.2](https://github.com/LostArtefacts/TR1X/compare/3.0.1...3.0.2) - 2023-11-11
 - fixed incorrect usage reference URLs in the gameflow files (#1073)
 - fixed random number generation becoming stuck after entering and leaving the inventory, which affected effects and SFX (#1070, #1074)
 
