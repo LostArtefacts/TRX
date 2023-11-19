@@ -27,7 +27,8 @@ void Random_SeedDraw(int32_t seed)
 
 int32_t Random_GetDraw(void)
 {
-    if (Game_GetStatus() == GS_IN_GAME) {
+    GAME_STATUS status = Game_GetStatus();
+    if (status == GS_INITIAL || status == GS_IN_GAME) {
         m_RandDraw = 0x41C64E6D * m_RandDraw + 0x3039;
     }
     return (m_RandDraw >> 10) & 0x7FFF;
