@@ -244,10 +244,10 @@ void MovableBlock_Control(int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y - 128, item->pos.z, &room_num);
-    int32_t height =
-        Room_GetHeight(floor, item->pos.x, item->pos.y - 128, item->pos.z);
+    FLOOR_INFO *floor = Room_GetFloor(
+        item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+    int32_t height = Room_GetHeight(
+        floor, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
     if (item->pos.y < height) {
         item->gravity_status = 1;
