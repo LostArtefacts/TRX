@@ -130,7 +130,7 @@ static bool MovableBlock_TestPush(
     }
 
     floor = Room_GetFloor(x, y - block_height, z, &room_num);
-    if (Room_GetCeiling(floor, x, y - STEP_L, z) > y - block_height) {
+    if (Room_GetCeiling(floor, x, y - block_height, z) > y - block_height) {
         return false;
     }
 
@@ -179,7 +179,7 @@ static bool MovableBlock_TestPull(
     }
 
     floor = Room_GetFloor(x, y - block_height, z, &room_num);
-    if (Room_GetCeiling(floor, x, y - STEP_L, z) > y - block_height) {
+    if (Room_GetCeiling(floor, x, y - block_height, z) > y - block_height) {
         return false;
     }
 
