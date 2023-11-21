@@ -77,11 +77,13 @@ static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height)
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
         Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (floor->floor == NO_HEIGHT / 256) {
+    if (Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z)
+        == NO_HEIGHT) {
         return true;
     }
 
-    if ((floor->floor << 8) != item->pos.y - block_height) {
+    if (Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z)
+        != item->pos.y - block_height) {
         return false;
     }
 
@@ -123,12 +125,12 @@ static bool MovableBlock_TestPush(
         return false;
     }
 
-    if (((int32_t)floor->floor << 8) != y) {
+    if (Room_GetHeight(floor, x, y, z) != y) {
         return false;
     }
 
     floor = Room_GetFloor(x, y - block_height, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - block_height) {
+    if (Room_GetCeiling(floor, x, y - block_height, z) > y - block_height) {
         return false;
     }
 
@@ -172,12 +174,12 @@ static bool MovableBlock_TestPull(
         return false;
     }
 
-    if (((int32_t)floor->floor << 8) != y) {
+    if (Room_GetHeight(floor, x, y, z) != y) {
         return false;
     }
 
     floor = Room_GetFloor(x, y - block_height, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - block_height) {
+    if (Room_GetCeiling(floor, x, y - block_height, z) > y - block_height) {
         return false;
     }
 
@@ -186,12 +188,12 @@ static bool MovableBlock_TestPull(
     room_num = item->room_number;
     floor = Room_GetFloor(x, y, z, &room_num);
 
-    if (((int32_t)floor->floor << 8) != y) {
+    if (Room_GetHeight(floor, x, y, z) != y) {
         return false;
     }
 
     floor = Room_GetFloor(x, y - LARA_HEIGHT, z, &room_num);
-    if (((int32_t)floor->ceiling << 8) > y - LARA_HEIGHT) {
+    if (Room_GetCeiling(floor, x, y - LARA_HEIGHT, z) > y - LARA_HEIGHT) {
         return false;
     }
 
@@ -242,10 +244,10 @@ void MovableBlock_Control(int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    int32_t height =
-        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    FLOOR_INFO *floor = Room_GetFloor(
+        item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+    int32_t height = Room_GetHeight(
+        floor, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
     if (item->pos.y < height) {
         item->gravity_status = 1;

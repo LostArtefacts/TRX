@@ -640,13 +640,28 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
         }
     } while (data != NO_ROOM);
 
+    FLOOR_INFO *f = floor;
+    while (f->sky_room != NO_ROOM) {
+        ROOM_INFO *r = &g_RoomInfo[f->sky_room];
+        int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+        f = &r->floor[x_floor + y_floor * r->x_size];
+    }
+
+    while (floor->pit_room != NO_ROOM) {
+        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
+        int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+        int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+        floor = &r->floor[x_floor + y_floor * r->x_size];
+    }
+
     if (floor->floor != NO_HEIGHT / 256) {
         floor->floor += height >> 8;
-        if (floor->floor == floor->ceiling && floor->sky_room == NO_ROOM) {
+        if (floor->floor == f->ceiling) {
             floor->floor = NO_HEIGHT / 256;
         }
     } else {
-        floor->floor = floor->ceiling + (height >> 8);
+        floor->floor = f->ceiling + (height >> 8);
     }
 
     if (g_Boxes[floor->box].overlap_index & BLOCKABLE) {
