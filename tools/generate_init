@@ -4,7 +4,10 @@ import io
 import json
 from pathlib import Path
 
-import pyjson5
+try:
+    import pyjson5
+except ImportError:
+    import json5 as pyjson5
 
 REPO_DIR = Path(__file__).parent.parent
 BIN_DIR = REPO_DIR / "bin"
