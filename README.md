@@ -264,6 +264,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed settings not being saved when exiting the game with Alt+F4
 - fixed settings not persisting chosen layout (default vs. user keys)
 - fixed the infamous Tihocan crocodile bug (integer overflow causing creatures to deal damage across the entire level)
+- fixed missiles damaging Lara when she is far beyond their damage range
 - fixed Lara not being able to grab parts of some bridges
 - fixed Lara voiding if a badly placed timed door closes on her (doesn't occur in OG levels)
 - fixed bats being positioned too high
