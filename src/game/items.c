@@ -355,6 +355,11 @@ bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
     return false;
 }
 
+bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
+{
+    return ABS(x) < range && ABS(y) < range && ABS(z) < range;
+}
+
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
 {
