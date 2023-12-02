@@ -31,10 +31,12 @@
             "music": 0,
             "inherit_injections": false,
             "injections": [
+                "data/lara_gym_guns.bin",
                 "data/braid.bin",
                 "data/gym_textures.bin",
                 "data/lara_animations.bin",
                 "data/lara_jumping.bin",
+                "data/uzi_sfx.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
