@@ -24,6 +24,7 @@ int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num);
 int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num);
 
 bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance);
+bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius);
 bool Item_TestPosition(

@@ -1,6 +1,7 @@
 #include "game/objects/effects/missile.h"
 
 #include "game/effects.h"
+#include "game/items.h"
 #include "game/lara.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -14,7 +15,8 @@
 
 #define SHARD_DAMAGE 30
 #define ROCKET_DAMAGE 100
-#define ROCKET_RANGE SQUARE(WALL_L) // = 1048576
+#define ROCKET_RANGE_BASE WALL_L
+#define ROCKET_RANGE SQUARE(ROCKET_RANGE_BASE) // = 1048576
 
 void Missile_Setup(OBJECT_INFO *obj)
 {
@@ -53,8 +55,8 @@ void Missile_Control(int16_t fx_num)
             int32_t x = fx->pos.x - g_LaraItem->pos.x;
             int32_t y = fx->pos.y - g_LaraItem->pos.y;
             int32_t z = fx->pos.z - g_LaraItem->pos.z;
-            int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
-            if (range >= 0 && range < ROCKET_RANGE) {
+            if (Item_Test3DRange(x, y, z, ROCKET_RANGE_BASE)) {
+                int32_t range = SQUARE(x) + SQUARE(y) + SQUARE(z);
                 Lara_TakeDamage(
                     ROCKET_DAMAGE * (ROCKET_RANGE - range) / ROCKET_RANGE,
                     true);
