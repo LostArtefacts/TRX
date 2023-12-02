@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed missiles damaging Lara when she is far beyond their damage range (#1090)
 
 ## [3.0.3](https://github.com/LostArtefacts/TR1X/compare/3.0.2...3.0.3) - 2023-11-27
 - fixed underwater shadow effects rendering always in the same way rather than at random (#1081)
