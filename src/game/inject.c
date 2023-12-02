@@ -720,7 +720,8 @@ static uint8_t Inject_RemapRGB(RGB888 rgb)
 {
     // Find the index of the nearest match to the given RGB
     int best_match = 0x7fffffff, test_match;
-    int r, g, b, best_index;
+    int r, g, b;
+    int best_index = 0;
     RGB888 test_rgb;
     for (int i = 1; i < 256; i++) {
         test_rgb = Output_GetPaletteColor(i);
