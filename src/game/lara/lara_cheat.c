@@ -6,6 +6,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -141,4 +142,6 @@ void Lara_EnterFlyMode(void)
     g_Lara.death_timer = 0;
     g_Lara.mesh_effects = 0;
     Lara_InitialiseMeshes(g_CurrentLevel);
+    g_Camera.type = CAM_CHASE;
+    Viewport_SetFOV(Viewport_GetUserFOV());
 }
