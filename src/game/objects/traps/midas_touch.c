@@ -12,6 +12,8 @@
 #define EXTRA_ANIM_PLACE_BAR 0
 #define EXTRA_ANIM_DIE_GOLD 1
 #define LF_PICKUP_GOLD_BAR 113
+#define MIDAS_RANGE_H (STEP_L * 2)
+#define MIDAS_RANGE_V (STEP_L * 3)
 
 static int16_t m_MidasBounds[12] = {
     -700,
@@ -47,10 +49,12 @@ void MidasTouch_Collision(
     }
 
     if (!lara_item->gravity_status && lara_item->current_anim_state == LS_STOP
-        && lara_item->pos.x > item->pos.x - 512
-        && lara_item->pos.x < item->pos.x + 512
-        && lara_item->pos.z > item->pos.z - 512
-        && lara_item->pos.z < item->pos.z + 512) {
+        && lara_item->pos.x > item->pos.x - MIDAS_RANGE_H
+        && lara_item->pos.x < item->pos.x + MIDAS_RANGE_H
+        && lara_item->pos.y > item->pos.y - MIDAS_RANGE_V
+        && lara_item->pos.y < item->pos.y + MIDAS_RANGE_V
+        && lara_item->pos.z > item->pos.z - MIDAS_RANGE_H
+        && lara_item->pos.z < item->pos.z + MIDAS_RANGE_H) {
         lara_item->current_anim_state = LS_DIE_MIDAS;
         lara_item->goal_anim_state = LS_DIE_MIDAS;
         Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_DIE_GOLD, 0, O_LARA_EXTRA);

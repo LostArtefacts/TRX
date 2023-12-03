@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - fixed bugs when trying to stack multiple movable blocks (#1079)
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)
+- fixed Midas's touch having unrestricted vertical range (#1094)
 
 ## [3.0.5](https://github.com/LostArtefacts/TR1X/compare/3.0.4...3.0.5) - 2023-12-13
 - fixed crash when pressing certain keys and the console is disabled (#1116, regression since 3.0)

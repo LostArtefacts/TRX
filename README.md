@@ -301,6 +301,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Atlantean Stronghold**: fixed poorly configured portals between rooms 74 and 12
 - fixed various bugs with falling movable blocks
 - fixed bugs when trying to stack multiple movable blocks
+- fixed Midas's touch having unrestricted vertical range
 
 #### Cheats
 - added a fly cheat
