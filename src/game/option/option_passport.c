@@ -520,7 +520,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     bool pages_available[PASSPORT_PAGE_COUNT] = {
         g_SavedGamesCount > 0,
         g_InvMode == INV_TITLE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
-            || !g_Config.enable_save_crystals,
+            || !g_Config.enable_save_crystals || g_InvMode == INV_DEATH_MODE,
         true,
     };
 
