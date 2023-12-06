@@ -352,7 +352,7 @@ void MovableBlock_Collision(
         if (lara_item->current_anim_state == LS_PP_READY) {
             g_Lara.gun_status = LGS_HANDS_BUSY;
         }
-    } else if (lara_item->current_anim_state == LS_PP_READY) {
+    } else if (Item_TestAnimEqual(lara_item, LA_PUSHABLE_GRAB)) {
         if (!Item_TestFrameEqual(lara_item, LF_PPREADY)) {
             return;
         }
@@ -362,13 +362,13 @@ void MovableBlock_Collision(
         }
 
         if (g_Input.forward) {
-            if (!MovableBlock_TestPush(item, 1024, quadrant)) {
+            if (!MovableBlock_TestPush(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PUSH;
             lara_item->goal_anim_state = LS_PUSH_BLOCK;
         } else if (g_Input.back) {
-            if (!MovableBlock_TestPull(item, 1024, quadrant)) {
+            if (!MovableBlock_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PULL;
