@@ -1181,19 +1181,24 @@ typedef enum GAME_BONUS_FLAG {
 } GAME_BONUS_FLAG;
 
 typedef enum PASSPORT_PAGE {
-    PASSPORT_PAGE_FLIPPING = -1,
-    PASSPORT_PAGE_1 = 0,
-    PASSPORT_PAGE_2 = 1,
-    PASSPORT_PAGE_3 = 2,
-    PASSPORT_PAGE_COUNT = 3,
+    PAGE_FLIPPING = -1,
+    PAGE_1 = 0,
+    PAGE_2 = 1,
+    PAGE_3 = 2,
+    PAGE_COUNT = 3,
 } PASSPORT_PAGE;
 
 typedef enum PASSPORT_MODE {
-    PASSPORT_MODE_FLIP = 0,
-    PASSPORT_MODE_SHOW_SAVES = 1,
-    PASSPORT_MODE_NEW_GAME = 2,
-    PASSPORT_MODE_SELECT_LEVEL = 3,
-    PASSPORT_MODE_STORY_SO_FAR = 4,
+    PASSPORT_MODE_BROWSE = 0,
+    PASSPORT_MODE_LOAD_GAME = 1,
+    PASSPORT_MODE_SELECT_LEVEL = 2,
+    PASSPORT_MODE_STORY_SO_FAR = 3,
+    PASSPORT_MODE_SAVE_GAME = 4,
+    PASSPORT_MODE_NEW_GAME = 5,
+    PASSPORT_MODE_RESTART = 6,
+    PASSPORT_MODE_EXIT_TITLE = 7,
+    PASSPORT_MODE_EXIT_GAME = 8,
+    PASSPORT_MODE_UNAVAILABLE = 9,
 } PASSPORT_MODE;
 
 #pragma pack(push, 1)
@@ -1581,8 +1586,7 @@ typedef struct GAME_INFO {
     bool bonus_level_unlock;
     int32_t current_save_slot;
     int16_t save_initial_version;
-    PASSPORT_PAGE passport_page;
-    PASSPORT_MODE passport_mode;
+    PASSPORT_MODE passport_selection;
     int32_t select_level_num;
     bool death_counter_supported;
     GAMEFLOW_LEVEL_TYPE current_level_type;

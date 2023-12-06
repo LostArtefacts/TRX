@@ -17,6 +17,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "log.h"
+
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20
 
@@ -29,11 +31,24 @@ typedef enum PASSPORT_TEXT {
     TEXT_NUMBER_OF = 5,
 } PASSPORT_TEXT;
 
-static PASSPORT_MODE m_PassportMode = PASSPORT_MODE_FLIP;
+typedef struct PASSPORT_STATUS {
+    PASSPORT_PAGE page;
+    PASSPORT_MODE mode;
+    bool pages[PAGE_COUNT];
+    PASSPORT_MODE modes[PAGE_COUNT];
+} PASSPORT_STATUS;
+
+static PASSPORT_STATUS m_PassportStatus = {
+    PAGE_FLIPPING,
+    PASSPORT_MODE_BROWSE,
+    { false, true, true },
+    { PASSPORT_MODE_UNAVAILABLE, PASSPORT_MODE_NEW_GAME,
+      PASSPORT_MODE_EXIT_TITLE },
+};
+
 static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static char m_NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
-
 static char **m_SelectLevelStrings = NULL;
 static char *m_SelectLevelBuffer = NULL;
 
@@ -90,13 +105,17 @@ REQUEST_INFO g_SavegameRequester = {
 
 static void Option_PassportInitText(void);
 static void Option_PassportShutdownText(void);
-static void Option_PassportShowNewGame(void);
-static void Option_PassportShowSaves(void);
-static void Option_PassportInitText(void);
-static void Option_PassportInitNewGameRequester(void);
+static void Option_PassportDeterminePages(void);
 static void Option_PassportInitSaveRequester(int16_t page_num);
+static void Option_PassportInitSelectLevelRequester(void);
+static void Option_PassportInitNewGameRequester(void);
+static void Option_PassportShowSaves(PASSPORT_MODE pending_mode);
+static void Option_PassportShowSelectLevel(void);
 static void Option_PassportLoadGame(void);
 static void Option_PassportSelectLevel(void);
+static void Option_PassportSaveGame(void);
+static void Option_PassportNewGame(void);
+static void Option_PassportRestart(INVENTORY_ITEM *inv_item);
 
 void Option_PassportInit(void)
 {
@@ -140,118 +159,129 @@ static void Option_PassportShutdownText(void)
         Text_Remove(m_Text[i]);
         m_Text[i] = NULL;
     }
-    m_PassportMode = PASSPORT_MODE_FLIP;
     m_IsTextInit = false;
 }
 
-static void Option_PassportShowNewGame(void)
+static void Option_PassportDeterminePages(void)
 {
-    int32_t select = Requester_Display(&m_NewGameRequester);
-    if (select) {
-        if (select > 0) {
-            switch (select - 1) {
-            case 0:
-                g_GameInfo.bonus_flag = 0;
-                break;
-            case 1:
-                g_GameInfo.bonus_flag = GBF_NGPLUS;
-                break;
-            case 2:
-                g_GameInfo.bonus_flag = GBF_JAPANESE;
-                break;
-            case 3:
-                g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
-                break;
-            default:
-                g_GameInfo.bonus_flag = 0;
-                break;
-            }
-            g_GameInfo.bonus_level_unlock = false;
-            g_GameInfo.current_save_slot = -1;
-            g_GameInfo.passport_mode = PASSPORT_MODE_NEW_GAME;
-            g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
-        } else if (
-            g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
-            && g_InvMode != INV_LOAD_MODE) {
-            g_Input = (INPUT_STATE) { 0 };
-            g_InputDB = (INPUT_STATE) { 0 };
+    switch (g_InvMode) {
+    case INV_TITLE_MODE:
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+        m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
+        m_PassportStatus.pages[PAGE_2] = true;
+        m_PassportStatus.pages[PAGE_3] = true;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_NEW_GAME;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_GAME;
+        break;
+    case INV_GAME_MODE:
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+        m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
+        m_PassportStatus.pages[PAGE_2] = true;
+        m_PassportStatus.pages[PAGE_3] = true;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+            m_PassportStatus.mode = PASSPORT_MODE_NEW_GAME;
+            m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_NEW_GAME;
+        } else if (g_Config.enable_save_crystals) {
+            m_PassportStatus.mode = PASSPORT_MODE_RESTART;
+            m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_RESTART;
+            m_PassportStatus.pages[PAGE_3] = true;
+            m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
         }
-        m_PassportMode = PASSPORT_MODE_FLIP;
-    } else {
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
+        break;
+    case INV_LOAD_MODE:
+        m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
+        m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
+        m_PassportStatus.pages[PAGE_2] = false;
+        m_PassportStatus.pages[PAGE_3] = false;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_UNAVAILABLE;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
+        Option_PassportInitSaveRequester(PAGE_1);
+        break;
+    case INV_SAVE_MODE:
+        m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
+        m_PassportStatus.pages[PAGE_1] = false;
+        m_PassportStatus.pages[PAGE_2] = true;
+        m_PassportStatus.pages[PAGE_3] = false;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_UNAVAILABLE;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
+        if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+            m_PassportStatus.mode = PASSPORT_MODE_NEW_GAME;
+            m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_NEW_GAME;
+        } else if (g_Config.enable_save_crystals) {
+            m_PassportStatus.mode = PASSPORT_MODE_RESTART;
+            m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_RESTART;
+            m_PassportStatus.pages[PAGE_3] = true;
+            m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        }
+        Option_PassportInitSaveRequester(PAGE_2);
+        break;
+    case INV_SAVE_CRYSTAL_MODE:
+        m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
+        m_PassportStatus.pages[PAGE_1] = false;
+        m_PassportStatus.pages[PAGE_2] = true;
+        m_PassportStatus.pages[PAGE_3] = false;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_UNAVAILABLE;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
+        Option_PassportInitSaveRequester(PAGE_2);
+        break;
+    case INV_DEATH_MODE:
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+        m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
+        m_PassportStatus.pages[PAGE_2] = true;
+        m_PassportStatus.pages[PAGE_3] = true;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_RESTART;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        break;
+    default:
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+        m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
+        m_PassportStatus.pages[PAGE_2] = true;
+        m_PassportStatus.pages[PAGE_3] = true;
+        m_PassportStatus.modes[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
+        m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_NEW_GAME;
+        m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        break;
     }
 }
 
-static void Option_PassportShowLevelSelect(void)
+static void Option_PassportInitSaveRequester(int16_t page_num)
 {
-    int32_t select = Requester_Display(&m_SelectLevelRequester);
-    if (select) {
-        if (select - 1 + g_GameFlow.first_level_num
-            == Savegame_GetLevelNumber(g_GameInfo.current_save_slot) + 1) {
-            g_GameInfo.passport_mode = PASSPORT_MODE_STORY_SO_FAR;
-        } else if (select > 0) {
-            g_GameInfo.select_level_num =
-                select - 1 + g_GameFlow.first_level_num;
-            g_GameInfo.passport_mode = PASSPORT_MODE_SELECT_LEVEL;
-        } else if (
-            g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
-            && g_InvMode != INV_LOAD_MODE) {
-            g_Input = (INPUT_STATE) { 0 };
-            g_InputDB = (INPUT_STATE) { 0 };
-        }
-        m_PassportMode = PASSPORT_MODE_FLIP;
-    } else {
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
-    }
-}
-
-static void Option_PassportShowSaves(void)
-{
-    int32_t select = Requester_Display(&g_SavegameRequester);
-    if (select) {
-        if (select > 0) {
-            g_GameInfo.current_save_slot = select - 1;
-            g_GameInfo.passport_mode = PASSPORT_MODE_SHOW_SAVES;
-        } else {
-            if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
-                && g_InvMode != INV_LOAD_MODE) {
-                g_Input = (INPUT_STATE) { 0 };
-                g_InputDB = (INPUT_STATE) { 0 };
-            }
-        }
-        m_PassportMode = PASSPORT_MODE_FLIP;
-    } else {
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
-    }
-}
-
-static void Option_PassportInitNewGameRequester(void)
-{
-    REQUEST_INFO *req = &m_NewGameRequester;
+    REQUEST_INFO *req = &g_SavegameRequester;
     Requester_Init(req);
-    Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
-    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
-    Requester_AddItem(
-        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
-    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
-    Requester_AddItem(
-        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
-    req->vis_lines = MAX_GAME_MODES;
+    Requester_SetHeading(
+        req,
+        g_GameFlow.strings
+            [page_num == PAGE_1 ? GS_PASSPORT_LOAD_GAME
+                                : GS_PASSPORT_SAVE_GAME]);
 
-    req->line_offset = 0;
-    req->requested = 0;
+    if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
+        req->vis_lines = 5;
+    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 384) {
+        req->vis_lines = 7;
+    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 480) {
+        req->vis_lines = 10;
+    } else {
+        req->vis_lines = 12;
+    }
 
     // Title screen passport is at a different pitch.
     if (g_InvMode == INV_TITLE_MODE) {
-        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2.4)
-            + (req->line_height * req->vis_lines + 1);
-    } else {
         req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2)
             + (req->line_height * req->vis_lines);
+    } else {
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 1.73)
+            + (req->line_height * req->vis_lines);
     }
+
+    Savegame_ScanSavedGames();
 }
 
 static void Option_PassportInitSelectLevelRequester(void)
@@ -283,76 +313,130 @@ static void Option_PassportInitSelectLevelRequester(void)
     Savegame_ScanAvailableLevels(req);
 }
 
-static void Option_PassportInitSaveRequester(int16_t page_num)
+static void Option_PassportInitNewGameRequester(void)
 {
-    REQUEST_INFO *req = &g_SavegameRequester;
+    REQUEST_INFO *req = &m_NewGameRequester;
     Requester_Init(req);
-    Requester_SetHeading(
-        req,
-        g_GameFlow.strings
-            [page_num == PASSPORT_PAGE_1 ? GS_PASSPORT_LOAD_GAME
-                                         : GS_PASSPORT_SAVE_GAME]);
+    Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
+    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
+    Requester_AddItem(
+        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
+    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
+    Requester_AddItem(
+        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
+    req->vis_lines = MAX_GAME_MODES;
 
-    if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
-        req->vis_lines = 5;
-    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 384) {
-        req->vis_lines = 7;
-    } else if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 480) {
-        req->vis_lines = 10;
-    } else {
-        req->vis_lines = 12;
-    }
+    req->line_offset = 0;
+    req->requested = 0;
 
     // Title screen passport is at a different pitch.
     if (g_InvMode == INV_TITLE_MODE) {
+        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2.4)
+            + (req->line_height * req->vis_lines + 1);
+    } else {
         req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 2)
             + (req->line_height * req->vis_lines);
-    } else {
-        req->y = (-Screen_GetResHeightDownscaled(RSR_TEXT) / 1.73)
-            + (req->line_height * req->vis_lines);
     }
+}
 
-    Savegame_ScanSavedGames();
+static void Option_PassportShowSaves(PASSPORT_MODE pending_mode)
+{
+    int32_t select = Requester_Display(&g_SavegameRequester);
+    if (select) {
+        if (select > 0) {
+            g_GameInfo.current_save_slot = select - 1;
+            g_GameInfo.passport_selection = pending_mode;
+        } else {
+            if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
+                && g_InvMode != INV_LOAD_MODE) {
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
+            }
+        }
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+    } else {
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
+    }
+}
+
+static void Option_PassportShowSelectLevel(void)
+{
+    int32_t select = Requester_Display(&m_SelectLevelRequester);
+    if (select) {
+        if (select - 1 + g_GameFlow.first_level_num
+            == Savegame_GetLevelNumber(g_GameInfo.current_save_slot) + 1) {
+            g_GameInfo.passport_selection = PASSPORT_MODE_STORY_SO_FAR;
+        } else if (select > 0) {
+            g_GameInfo.select_level_num =
+                select - 1 + g_GameFlow.first_level_num;
+            g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
+        } else if (
+            g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
+            && g_InvMode != INV_LOAD_MODE) {
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
+        }
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+    } else {
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
+    }
 }
 
 static void Option_PassportLoadGame(void)
 {
-    if (!(g_SavegameRequester.item_flags[g_SavegameRequester.requested]
-          & RIF_BLOCKED)
-        || !(g_SavegameRequester.flags & RIF_BLOCKABLE)) {
-        if (g_InputDB.menu_right) {
-            g_GameInfo.current_save_slot = g_SavegameRequester.requested;
-            Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
-            Requester_Remove(&g_SavegameRequester);
-            Option_PassportInitSelectLevelRequester();
-            m_PassportMode = PASSPORT_MODE_SELECT_LEVEL;
+    Text_ChangeText(
+        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_LOAD_GAME]);
+
+    if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
+        if (g_InputDB.menu_confirm) {
+            g_SavegameRequester.flags |= RIF_BLOCKABLE;
+            Option_PassportInitSaveRequester(m_PassportStatus.page);
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
-            Option_PassportShowLevelSelect();
-        } else {
-            Option_PassportShowSaves();
-            if (m_PassportMode == PASSPORT_MODE_SHOW_SAVES) {
-                Text_SetPos(
-                    m_Text[TEXT_LEVEL_ARROW_RIGHT], 130,
-                    g_SavegameRequester
-                        .texts
-                            [g_SavegameRequester.requested
-                             - g_SavegameRequester.line_offset]
-                        ->pos.y);
-                Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], false);
-            } else {
-                Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
-            }
+            m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
         }
-    } else {
-        Option_PassportShowSaves();
-        Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
-    }
+    } else if (m_PassportStatus.mode == PASSPORT_MODE_LOAD_GAME) {
+        if (!(g_SavegameRequester.item_flags[g_SavegameRequester.requested]
+              & RIF_BLOCKED)
+            || !(g_SavegameRequester.flags & RIF_BLOCKABLE)) {
+            if (g_InputDB.menu_right) {
+                g_GameInfo.current_save_slot = g_SavegameRequester.requested;
+                Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
+                Requester_Remove(&g_SavegameRequester);
+                Option_PassportInitSelectLevelRequester();
+                m_PassportStatus.mode = PASSPORT_MODE_SELECT_LEVEL;
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
+                Option_PassportShowSelectLevel();
+            } else {
+                Option_PassportShowSaves(PASSPORT_MODE_LOAD_GAME);
+                if (m_PassportStatus.mode == PASSPORT_MODE_LOAD_GAME) {
+                    Text_SetPos(
+                        m_Text[TEXT_LEVEL_ARROW_RIGHT], 130,
+                        g_SavegameRequester
+                            .texts
+                                [g_SavegameRequester.requested
+                                 - g_SavegameRequester.line_offset]
+                            ->pos.y);
+                    Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], false);
+                } else {
+                    Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
+                }
+            }
+        } else {
+            Option_PassportShowSaves(PASSPORT_MODE_LOAD_GAME);
+            Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
+        }
 
-    if ((g_SavegameRequester.item_flags[g_SavegameRequester.requested]
-         & RIF_BLOCKED)
-        && (g_SavegameRequester.flags & RIF_BLOCKABLE)) {
-        Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
+        if ((g_SavegameRequester.item_flags[g_SavegameRequester.requested]
+             & RIF_BLOCKED)
+            && (g_SavegameRequester.flags & RIF_BLOCKABLE)) {
+            Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
+        }
+    } else if (m_PassportStatus.mode == PASSPORT_MODE_SELECT_LEVEL) {
+        Option_PassportSelectLevel();
     }
 }
 
@@ -361,14 +445,14 @@ static void Option_PassportSelectLevel(void)
     if (g_InputDB.menu_left) {
         Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
         Requester_Remove(&m_SelectLevelRequester);
-        Option_PassportInitSaveRequester(PASSPORT_PAGE_1);
-        m_PassportMode = PASSPORT_MODE_SHOW_SAVES;
+        Option_PassportInitSaveRequester(m_PassportStatus.page);
+        m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
         g_Input = (INPUT_STATE) { 0 };
         g_InputDB = (INPUT_STATE) { 0 };
-        Option_PassportShowSaves();
+        Option_PassportShowSaves(PASSPORT_MODE_LOAD_GAME);
     } else {
-        Option_PassportShowLevelSelect();
-        if (m_PassportMode == PASSPORT_MODE_SELECT_LEVEL) {
+        Option_PassportShowSelectLevel();
+        if (m_PassportStatus.mode == PASSPORT_MODE_SELECT_LEVEL) {
             Text_SetPos(
                 m_Text[TEXT_LEVEL_ARROW_LEFT], -130,
                 m_SelectLevelRequester
@@ -383,6 +467,95 @@ static void Option_PassportSelectLevel(void)
     }
 }
 
+static void Option_PassportSaveGame(void)
+{
+    Text_ChangeText(
+        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
+
+    if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
+        if (g_InputDB.menu_confirm) {
+            g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
+            Option_PassportInitSaveRequester(m_PassportStatus.page);
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
+            m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
+        }
+    } else if (m_PassportStatus.mode == PASSPORT_MODE_SAVE_GAME) {
+        Option_PassportShowSaves(PASSPORT_MODE_SAVE_GAME);
+    }
+}
+
+static void Option_PassportNewGame(void)
+{
+    Text_ChangeText(
+        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
+
+    if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
+        if (g_InputDB.menu_confirm
+            && (g_Config.enable_game_modes
+                || g_Config.profile.new_game_plus_unlock)) {
+            Option_PassportInitNewGameRequester();
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
+            m_PassportStatus.mode = PASSPORT_MODE_NEW_GAME;
+        } else {
+            g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
+            g_GameInfo.bonus_level_unlock = false;
+        }
+    } else if (m_PassportStatus.mode == PASSPORT_MODE_NEW_GAME) {
+        int32_t select = Requester_Display(&m_NewGameRequester);
+        if (select) {
+            if (select > 0) {
+                switch (select - 1) {
+                case 0:
+                    g_GameInfo.bonus_flag = 0;
+                    break;
+                case 1:
+                    g_GameInfo.bonus_flag = GBF_NGPLUS;
+                    break;
+                case 2:
+                    g_GameInfo.bonus_flag = GBF_JAPANESE;
+                    break;
+                case 3:
+                    g_GameInfo.bonus_flag = GBF_JAPANESE | GBF_NGPLUS;
+                    break;
+                default:
+                    g_GameInfo.bonus_flag = 0;
+                    break;
+                }
+                g_GameInfo.bonus_level_unlock = false;
+                g_GameInfo.current_save_slot = -1;
+                g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
+                g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
+            } else if (
+                g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
+                && g_InvMode != INV_LOAD_MODE) {
+                g_Input = (INPUT_STATE) { 0 };
+                g_InputDB = (INPUT_STATE) { 0 };
+            }
+            m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
+        } else {
+            g_Input = (INPUT_STATE) { 0 };
+            g_InputDB = (INPUT_STATE) { 0 };
+        }
+    }
+}
+
+static void Option_PassportRestart(INVENTORY_ITEM *inv_item)
+{
+    Text_ChangeText(
+        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
+
+    if (Savegame_RestartAvailable(g_GameInfo.current_save_slot)) {
+        if (g_InputDB.menu_confirm) {
+            g_GameInfo.passport_selection = PASSPORT_MODE_RESTART;
+        }
+    } else {
+        inv_item->anim_direction = 1;
+        g_InputDB = (INPUT_STATE) { 0, .menu_right = 1 };
+    }
+}
+
 void Option_Passport(INVENTORY_ITEM *inv_item)
 {
     if (!m_IsTextInit) {
@@ -392,170 +565,116 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         g_InvRingText = NULL;
         Option_PassportInitText();
         m_IsTextInit = true;
+        Option_PassportDeterminePages();
+        LOG_DEBUG(
+            "g_InvMode: %d; pages: (%d %d %d), modes: (%d %d %d)", g_InvMode,
+            m_PassportStatus.pages[PAGE_1], m_PassportStatus.pages[PAGE_2],
+            m_PassportStatus.pages[PAGE_3], m_PassportStatus.modes[PAGE_1],
+            m_PassportStatus.modes[PAGE_2], m_PassportStatus.modes[PAGE_3]);
     }
 
-    int16_t page = (inv_item->goal_frame - inv_item->open_frame) / 5;
+    m_PassportStatus.page = (inv_item->goal_frame - inv_item->open_frame) / 5;
     if ((inv_item->goal_frame - inv_item->open_frame) % 5) {
-        page = PASSPORT_PAGE_FLIPPING;
+        m_PassportStatus.page = PAGE_FLIPPING;
     }
 
-    if (g_InvMode == INV_SAVE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
-        g_InputDB.menu_left = 0;
-        g_InputDB.menu_right = 0;
-    }
-
-    switch (page) {
-    case PASSPORT_PAGE_1:
-        Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-        if (m_PassportMode == PASSPORT_MODE_SHOW_SAVES) {
-            Option_PassportLoadGame();
-        } else if (m_PassportMode == PASSPORT_MODE_SELECT_LEVEL) {
-            Option_PassportSelectLevel();
-        } else if (m_PassportMode == PASSPORT_MODE_FLIP) {
-            if (!g_SavedGamesCount || g_InvMode == INV_SAVE_MODE
-                || g_InvMode == INV_SAVE_CRYSTAL_MODE) {
-                g_InputDB = (INPUT_STATE) { 0, .menu_right = 1 };
-            } else {
-                Text_ChangeText(
-                    m_Text[TEXT_PAGE_NAME],
-                    g_GameFlow.strings[GS_PASSPORT_LOAD_GAME]);
-                if (g_InputDB.menu_confirm || g_InvMode == INV_LOAD_MODE) {
-                    g_SavegameRequester.flags |= RIF_BLOCKABLE;
-                    Option_PassportInitSaveRequester(page);
-                    m_PassportMode = PASSPORT_MODE_SHOW_SAVES;
-                    g_Input = (INPUT_STATE) { 0 };
-                    g_InputDB = (INPUT_STATE) { 0 };
-                    Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
-                } else {
-                    Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
-                }
-            }
-        }
-        break;
-
-    case PASSPORT_PAGE_2:
-        if (m_PassportMode == PASSPORT_MODE_NEW_GAME) {
-            Option_PassportShowNewGame();
-        } else if (m_PassportMode == PASSPORT_MODE_SHOW_SAVES) {
-            Option_PassportShowSaves();
-        } else if (m_PassportMode == PASSPORT_MODE_FLIP) {
+    // TODO Out of bounds index?
+    if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
+        if (m_PassportStatus.page > PAGE_1
+            && m_PassportStatus.pages[m_PassportStatus.page - 1]) {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
-            Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
-            if (g_SavedGamesCount == 0) {
-                g_InputDB.menu_left = 0;
-                Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-            }
-
-            if (g_InvMode == INV_TITLE_MODE
-                || (g_CurrentLevel == g_GameFlow.gym_level_num
-                    && g_InvMode != INV_DEATH_MODE)) {
-                Text_ChangeText(
-                    m_Text[TEXT_PAGE_NAME],
-                    g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
-            } else if (g_InvMode == INV_DEATH_MODE) {
-                if (Savegame_RestartAvailable(g_GameInfo.current_save_slot)) {
-                    Text_ChangeText(
-                        m_Text[TEXT_PAGE_NAME],
-                        g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
-                } else {
-                    g_InputDB = inv_item->anim_direction == 1
-                        ? (INPUT_STATE) { 0, .menu_right = 1 }
-                        : (INPUT_STATE) { 0, .menu_left = 1 };
-                }
-            } else {
-                Text_ChangeText(
-                    m_Text[TEXT_PAGE_NAME],
-                    g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
-            }
-
-            if (g_InputDB.menu_confirm || g_InvMode == INV_SAVE_MODE
-                || g_InvMode == INV_SAVE_CRYSTAL_MODE
-                || (g_InvMode == INV_LOAD_MODE && !g_SavedGamesCount)) {
-                Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-                Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
-                if (g_InvMode == INV_TITLE_MODE
-                    || (g_CurrentLevel == g_GameFlow.gym_level_num
-                        && g_InvMode != INV_DEATH_MODE)) {
-                    if (g_Config.enable_game_modes
-                        || g_Config.profile.new_game_plus_unlock) {
-                        Option_PassportInitNewGameRequester();
-                        m_PassportMode = PASSPORT_MODE_NEW_GAME;
-                        g_Input = (INPUT_STATE) { 0 };
-                        g_InputDB = (INPUT_STATE) { 0 };
-                    } else {
-                        g_GameInfo.save_initial_version =
-                            SAVEGAME_CURRENT_VERSION;
-                        g_GameInfo.bonus_level_unlock = false;
-                    }
-                } else if (
-                    g_InvMode == INV_SAVE_MODE
-                    || g_InvMode == INV_SAVE_CRYSTAL_MODE
-                    || g_InvMode == INV_GAME_MODE
-                    || (g_InvMode == INV_LOAD_MODE && !g_SavedGamesCount)) {
-                    g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
-                    Option_PassportInitSaveRequester(page);
-                    m_PassportMode = PASSPORT_MODE_SHOW_SAVES;
-                    g_Input = (INPUT_STATE) { 0 };
-                    g_InputDB = (INPUT_STATE) { 0 };
-                }
-            }
-        }
-        break;
-
-    case PASSPORT_PAGE_3:
-        Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
-        Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
-        if (g_InvMode == INV_TITLE_MODE) {
-            Text_ChangeText(
-                m_Text[TEXT_PAGE_NAME],
-                g_GameFlow.strings[GS_PASSPORT_EXIT_GAME]);
         } else {
-            Text_ChangeText(
-                m_Text[TEXT_PAGE_NAME],
-                g_GameFlow.strings[GS_PASSPORT_EXIT_TO_TITLE]);
+            Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
         }
+
+        if (m_PassportStatus.page < PAGE_3
+            && m_PassportStatus.pages[m_PassportStatus.page + 1]) {
+            Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
+        } else {
+            Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
+        }
+    } else {
+        Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
+        Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
+    }
+
+    switch (m_PassportStatus.modes[m_PassportStatus.page]) {
+    case PASSPORT_MODE_LOAD_GAME:
+        Option_PassportLoadGame();
+        break;
+
+    case PASSPORT_MODE_SAVE_GAME:
+        Option_PassportSaveGame();
+        break;
+
+    case PASSPORT_MODE_NEW_GAME:
+        Option_PassportNewGame();
+        break;
+
+    case PASSPORT_MODE_RESTART:
+        Option_PassportRestart(inv_item);
+        break;
+
+    case PASSPORT_MODE_EXIT_TITLE:
+        Text_ChangeText(
+            m_Text[TEXT_PAGE_NAME],
+            g_GameFlow.strings[GS_PASSPORT_EXIT_TO_TITLE]);
+        if (g_InputDB.menu_confirm) {
+            g_GameInfo.passport_selection = PASSPORT_MODE_EXIT_TITLE;
+        }
+        break;
+
+    case PASSPORT_MODE_EXIT_GAME:
+        Text_ChangeText(
+            m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_EXIT_GAME]);
+        if (g_InputDB.menu_confirm) {
+            g_GameInfo.passport_selection = PASSPORT_MODE_EXIT_GAME;
+        }
+        break;
+
+    case PASSPORT_MODE_BROWSE:
+    case PASSPORT_MODE_SELECT_LEVEL:
+    case PASSPORT_MODE_STORY_SO_FAR:
+    case PASSPORT_MODE_UNAVAILABLE:
+    default:
         break;
     }
 
-    bool pages_available[PASSPORT_PAGE_COUNT] = {
-        g_SavedGamesCount > 0,
-        g_InvMode == INV_TITLE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
-            || !g_Config.enable_save_crystals || g_InvMode == INV_DEATH_MODE,
-        true,
-    };
+    if (g_InputDB.menu_right
+        || !m_PassportStatus.pages[m_PassportStatus.page]) {
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
 
-    if (g_InputDB.menu_left && (g_SavedGamesCount || page > PASSPORT_PAGE_1)) {
-        while (--page >= PASSPORT_PAGE_1) {
-            if (pages_available[page]) {
+        while (++m_PassportStatus.page < PAGE_COUNT) {
+            if (m_PassportStatus.pages[m_PassportStatus.page]) {
                 break;
             }
         }
 
-        if (page >= PASSPORT_PAGE_1) {
-            inv_item->anim_direction = -1;
-            inv_item->goal_frame = inv_item->open_frame + 5 * page;
+        if (m_PassportStatus.page < PAGE_COUNT) {
+            inv_item->anim_direction = 1;
+            inv_item->goal_frame =
+                inv_item->open_frame + 5 * m_PassportStatus.page;
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
-
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
     }
 
-    if (g_InputDB.menu_right) {
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
-
-        while (++page < PASSPORT_PAGE_COUNT) {
-            if (pages_available[page]) {
+    if (g_InputDB.menu_left) {
+        while (--m_PassportStatus.page >= PAGE_1) {
+            if (m_PassportStatus.pages[m_PassportStatus.page]) {
                 break;
             }
         }
 
-        if (page < PASSPORT_PAGE_COUNT) {
-            inv_item->anim_direction = 1;
-            inv_item->goal_frame = inv_item->open_frame + 5 * page;
+        if (m_PassportStatus.page >= PAGE_1) {
+            inv_item->anim_direction = -1;
+            inv_item->goal_frame =
+                inv_item->open_frame + 5 * m_PassportStatus.page;
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
         }
+
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
     }
 
     if (g_InputDB.menu_back) {
@@ -563,7 +682,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
         } else {
-            if (page == PASSPORT_PAGE_3) {
+            if (m_PassportStatus.page == PAGE_3) {
                 inv_item->anim_direction = 1;
                 inv_item->goal_frame = inv_item->frames_total - 1;
             } else {
@@ -575,8 +694,7 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.menu_confirm) {
-        g_GameInfo.passport_page = page;
-        if (page == PASSPORT_PAGE_3) {
+        if (m_PassportStatus.page == PAGE_3) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame = inv_item->frames_total - 1;
         } else {

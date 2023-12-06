@@ -139,7 +139,6 @@ int32_t Requester_Display(REQUEST_INFO *req)
         req->line_old_offset = req->line_offset;
         if (req->requested > req->line_offset + req->vis_lines - 1) {
             req->line_offset++;
-            return 0;
         }
         return 0;
     }
@@ -151,7 +150,6 @@ int32_t Requester_Display(REQUEST_INFO *req)
         req->line_old_offset = req->line_offset;
         if (req->requested < req->line_offset) {
             req->line_offset--;
-            return 0;
         }
         return 0;
     }
