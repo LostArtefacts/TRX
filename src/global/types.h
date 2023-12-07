@@ -617,6 +617,7 @@ typedef enum LARA_ANIMATION {
     LA_SURF_DIVE = 119,
     LA_SURF_CLIMB = 111,
     LA_JUMP_IN = 112,
+    LA_PUSHABLE_GRAB = 120,
     LA_ROLL = 146,
     LA_PICKUP_UW = 130,
     LA_PICKUP = 135,
