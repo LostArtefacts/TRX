@@ -174,6 +174,7 @@ static void Option_PassportDeterminePages(void)
         m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_NEW_GAME;
         m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_GAME;
         break;
+
     case INV_GAME_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
         m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
@@ -192,6 +193,7 @@ static void Option_PassportDeterminePages(void)
             m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
         }
         break;
+
     case INV_LOAD_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
         m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
@@ -202,6 +204,7 @@ static void Option_PassportDeterminePages(void)
         m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
         Option_PassportInitSaveRequester(PAGE_1);
         break;
+
     case INV_SAVE_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
         m_PassportStatus.pages[PAGE_1] = false;
@@ -221,6 +224,7 @@ static void Option_PassportDeterminePages(void)
         }
         Option_PassportInitSaveRequester(PAGE_2);
         break;
+
     case INV_SAVE_CRYSTAL_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
         m_PassportStatus.pages[PAGE_1] = false;
@@ -240,6 +244,7 @@ static void Option_PassportDeterminePages(void)
         m_PassportStatus.modes[PAGE_2] = PASSPORT_MODE_RESTART;
         m_PassportStatus.modes[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
         break;
+
     default:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
         m_PassportStatus.pages[PAGE_1] = g_SavedGamesCount > 0;
