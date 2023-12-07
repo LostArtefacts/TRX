@@ -17,8 +17,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "log.h"
-
 #define MAX_GAME_MODES 4
 #define MAX_GAME_MODE_LENGTH 20
 
@@ -571,11 +569,6 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         Option_PassportInitText();
         m_IsTextInit = true;
         Option_PassportDeterminePages();
-        LOG_DEBUG(
-            "g_InvMode: %d; pages: (%d %d %d), modes: (%d %d %d)", g_InvMode,
-            m_PassportStatus.pages[PAGE_1], m_PassportStatus.pages[PAGE_2],
-            m_PassportStatus.pages[PAGE_3], m_PassportStatus.modes[PAGE_1],
-            m_PassportStatus.modes[PAGE_2], m_PassportStatus.modes[PAGE_3]);
     }
 
     m_PassportStatus.page = (inv_item->goal_frame - inv_item->open_frame) / 5;
@@ -583,7 +576,6 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         m_PassportStatus.page = PAGE_FLIPPING;
     }
 
-    // TODO Out of bounds index?
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (m_PassportStatus.page > PAGE_1
             && m_PassportStatus.pages[m_PassportStatus.page - 1]) {

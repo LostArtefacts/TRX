@@ -847,7 +847,6 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                     || g_CurrentLevel == g_GameFlow.gym_level_num /* Gym */
                     || g_GameInfo.passport_selection
                         == PASSPORT_MODE_RESTART)) {
-                LOG_DEBUG("Fade to black!");
                 Output_FadeToBlack(false);
             } else {
                 Output_FadeToTransparent(false);
@@ -902,26 +901,30 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
     switch (g_InvChosen) {
     case O_PASSPORT_OPTION:
-        if (g_GameInfo.passport_selection == PASSPORT_MODE_LOAD_GAME) {
+
+        switch (g_GameInfo.passport_selection) {
+        case PASSPORT_MODE_LOAD_GAME:
             return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
-        } else if (
-            g_GameInfo.passport_selection == PASSPORT_MODE_SELECT_LEVEL) {
+        case PASSPORT_MODE_SELECT_LEVEL:
             return GF_SELECT_GAME | g_GameInfo.select_level_num;
-        } else if (
-            g_GameInfo.passport_selection == PASSPORT_MODE_STORY_SO_FAR) {
+        case PASSPORT_MODE_STORY_SO_FAR:
             return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
-        } else if (g_GameInfo.passport_selection == PASSPORT_MODE_NEW_GAME) {
+        case PASSPORT_MODE_NEW_GAME:
             Savegame_InitCurrentInfo();
             return GF_START_GAME | g_GameFlow.first_level_num;
-        } else if (g_GameInfo.passport_selection == PASSPORT_MODE_SAVE_GAME) {
+        case PASSPORT_MODE_SAVE_GAME:
             Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
             Config_Write();
             return GF_NOP;
-        } else if (g_GameInfo.passport_selection == PASSPORT_MODE_RESTART) {
+        case PASSPORT_MODE_RESTART:
             return GF_RESTART_GAME | g_CurrentLevel;
-        } else if (g_GameInfo.passport_selection == PASSPORT_MODE_EXIT_GAME) {
+        case PASSPORT_MODE_EXIT_TITLE:
             return GF_EXIT_GAME;
-        } else {
+        case PASSPORT_MODE_EXIT_GAME:
+            return GF_EXIT_TO_TITLE;
+        case PASSPORT_MODE_BROWSE:
+        case PASSPORT_MODE_UNAVAILABLE:
+        default:
             return GF_EXIT_TO_TITLE;
         }
 
