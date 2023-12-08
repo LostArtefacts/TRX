@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [3.0.4](https://github.com/LostArtefacts/TR1X/compare/3.0.3...3.0.4) - 2023-12-08
 - fixed missiles damaging Lara when she is far beyond their damage range (#1090)
 - fixed pushblocks moving freely if Lara releases but tries to regrab during the release animation (#1101, regression from 3.0)
 
