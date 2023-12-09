@@ -1,6 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added the option to use "shell(s)" to give shotgun ammo in the developer console (#1096)
-- added the restart level option in save crystal mode if Lara dies (#1099)
+- added the restart level option to the passport in save crystal mode (#1099)
 - fixed bugs when trying to stack multiple movable blocks (#1079)
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)
 - fixed Midas's touch having unrestricted vertical range (#1094)
