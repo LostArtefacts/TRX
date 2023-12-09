@@ -306,21 +306,17 @@ int32_t Game_Stop(void)
         return GF_EXIT_TO_TITLE;
     }
 
-    if (g_GameInfo.passport_page == PASSPORT_PAGE_1) {
+    if (g_GameInfo.passport_selection == PASSPORT_MODE_LOAD_GAME) {
         return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
-    } else if (
-        g_GameInfo.passport_page == PASSPORT_PAGE_1
-        && g_GameInfo.passport_mode == PASSPORT_MODE_SELECT_LEVEL) {
+    } else if (g_GameInfo.passport_selection == PASSPORT_MODE_SELECT_LEVEL) {
         return GF_SELECT_GAME | g_GameInfo.select_level_num;
-    } else if (
-        g_GameInfo.passport_page == PASSPORT_PAGE_1
-        && g_GameInfo.passport_mode == PASSPORT_MODE_STORY_SO_FAR) {
-        // page 1: story so far
+    } else if (g_GameInfo.passport_selection == PASSPORT_MODE_STORY_SO_FAR) {
         return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
-    } else if (g_GameInfo.passport_page == PASSPORT_PAGE_2) {
-        return GF_START_GAME
-            | (g_InvMode == INV_DEATH_MODE ? g_CurrentLevel
-                                           : g_GameFlow.first_level_num);
+    } else if (g_GameInfo.passport_selection == PASSPORT_MODE_RESTART) {
+        return GF_RESTART_GAME | g_CurrentLevel;
+    } else if (g_GameInfo.passport_selection == PASSPORT_MODE_NEW_GAME) {
+        Savegame_InitCurrentInfo();
+        return GF_START_GAME | g_GameFlow.first_level_num;
     } else {
         return GF_EXIT_TO_TITLE;
     }
