@@ -3,6 +3,7 @@
 - fixed bugs when trying to stack multiple movable blocks (#1079)
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)
 - fixed Midas's touch having unrestricted vertical range (#1094)
+- fixed flames not being drawn when Lara is on fire but leaves the room where she caught fire (#1106)
 
 ## [3.0.4](https://github.com/LostArtefacts/TR1X/compare/3.0.3...3.0.4) - 2023-12-08
 - fixed missiles damaging Lara when she is far beyond their damage range (#1090)
