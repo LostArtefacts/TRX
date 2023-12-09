@@ -58,6 +58,9 @@ void Flame_Control(int16_t fx_num)
             Sound_StopEffect(SFX_FIRE, NULL);
             Effect_Kill(fx_num);
         } else {
+            if (fx->room_number != g_LaraItem->room_number) {
+                Effect_NewRoom(fx_num, g_LaraItem->room_number);
+            }
             Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
             Lara_TakeDamage(FLAME_ONFIRE_DAMAGE, true);
         }

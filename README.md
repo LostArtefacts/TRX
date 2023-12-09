@@ -261,6 +261,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed counting the secret in The Great Pyramid
 - fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them
 - fixed a crash when Lara is on fire and goes too far away from where she caught fire
+- fixed flames not being drawn when Lara is on fire and leaves the room where she caught fire
 - fixed settings not being saved when exiting the game with Alt+F4
 - fixed settings not persisting chosen layout (default vs. user keys)
 - fixed the infamous Tihocan crocodile bug (integer overflow causing creatures to deal damage across the entire level)
