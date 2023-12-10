@@ -2157,3 +2157,9 @@ typedef struct LEVEL_INFO {
     int32_t sample_data_size;
     char *sample_data;
 } LEVEL_INFO;
+
+typedef enum TRISTATE_BOOL {
+    TB_UNSPECIFIED = -1,
+    TB_OFF = 0,
+    TB_ON = 1,
+} TRISTATE_BOOL;

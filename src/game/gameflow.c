@@ -198,6 +198,28 @@ static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
 
 GAMEFLOW g_GameFlow = { 0 };
 
+static TRISTATE_BOOL GameFlow_ReadTristateBool(
+    struct json_object_s *obj, const char *key);
+static bool GameFlow_LoadScriptMeta(struct json_object_s *obj);
+static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj);
+static bool GameFlow_IsLegacySequence(const char *type_str);
+static bool GameFlow_LoadLevelSequence(
+    struct json_object_s *obj, int32_t level_num);
+static bool GameFlow_LoadScriptLevels(struct json_object_s *obj);
+static bool GameFlow_LoadFromFileImpl(const char *file_name);
+
+static TRISTATE_BOOL GameFlow_ReadTristateBool(
+    struct json_object_s *obj, const char *key)
+{
+    struct json_value_s *value = json_object_get_value(obj, key);
+    if (json_value_is_true(value)) {
+        return TB_ON;
+    } else if (json_value_is_false(value)) {
+        return TB_OFF;
+    }
+    return TB_UNSPECIFIED;
+}
+
 static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
 {
     const char *tmp_s;
@@ -236,11 +258,19 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
     g_GameFlow.demo_delay = tmp_d * FRAMES_PER_SECOND;
 
-    g_GameFlow.force_disable_game_modes =
-        json_object_get_bool(obj, "force_disable_game_modes", false);
+    g_GameFlow.force_game_modes =
+        GameFlow_ReadTristateBool(obj, "force_game_modes");
+    if (json_object_get_bool(obj, "force_disable_game_modes", false)) {
+        // backwards compatibility
+        g_GameFlow.force_game_modes = TB_OFF;
+    }
 
-    g_GameFlow.force_enable_save_crystals =
-        json_object_get_bool(obj, "force_enable_save_crystals", false);
+    g_GameFlow.force_save_crystals =
+        GameFlow_ReadTristateBool(obj, "force_save_crystals");
+    if (json_object_get_bool(obj, "force_enable_save_crystals", false)) {
+        // backwards compatibility
+        g_GameFlow.force_save_crystals = TB_ON;
+    }
 
     tmp_arr = json_object_get_array(obj, "water_color");
     g_GameFlow.water_color.r = 0.6;
@@ -1180,11 +1210,15 @@ bool GameFlow_LoadFromFile(const char *file_name)
     g_InvItemControls.string = g_GameFlow.strings[GS_INV_ITEM_CONTROLS];
     g_InvItemLarasHome.string = g_GameFlow.strings[GS_INV_ITEM_LARAS_HOME];
 
-    if (g_GameFlow.force_enable_save_crystals) {
+    if (g_GameFlow.force_save_crystals == TB_ON) {
         g_Config.enable_save_crystals = true;
+    } else if (g_GameFlow.force_save_crystals == TB_OFF) {
+        g_Config.enable_save_crystals = false;
     }
 
-    if (g_GameFlow.force_disable_game_modes) {
+    if (g_GameFlow.force_game_modes == TB_ON) {
+        g_Config.enable_game_modes = true;
+    } else if (g_GameFlow.force_game_modes == TB_OFF) {
         g_Config.enable_game_modes = false;
     }
 

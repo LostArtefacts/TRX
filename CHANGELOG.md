@@ -1,11 +1,14 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added the option to use "shell(s)" to give shotgun ammo in the developer console (#1096)
 - added the restart level option to the passport in save crystal mode (#1099)
+- changed `force_enable_save_crystals` to `force_save_crystals` to let custom level authors force-disable save crystals (#1102)
+- changed `force_disable_game_modes` to `force_game_modes` to let custom level authors force-enable game modes (#1102)
 - fixed bugs when trying to stack multiple movable blocks (#1079)
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)
 - fixed Midas's touch having unrestricted vertical range (#1094)
 - fixed flames not being drawn when Lara is on fire but leaves the room where she caught fire (#1106)
 - fixed being able to deselect the passport in quick save, quick load, save crystal, and death modes (#1108)
+- fixed inability to save in Unfinished Business in crystals mode as UB doesn't have crystals (#1102)
 
 ## [3.0.4](https://github.com/LostArtefacts/TR1X/compare/3.0.3...3.0.4) - 2023-12-08
 - fixed missiles damaging Lara when she is far beyond their damage range (#1090)
