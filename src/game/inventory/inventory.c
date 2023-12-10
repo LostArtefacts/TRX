@@ -359,7 +359,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         return GF_NOP;
     }
 
-    bool pass_mode_open = false;
+    bool passport_mode_ready = false;
     g_InvMode = inv_mode;
 
     int no_input_count = 0;
@@ -501,7 +501,8 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
         if ((g_InvMode == INV_SAVE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
              || g_InvMode == INV_LOAD_MODE || g_InvMode == INV_DEATH_MODE)
-            && !pass_mode_open) {
+            && !passport_mode_ready) {
+            g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0, .menu_confirm = 1 };
         }
 
@@ -549,8 +550,8 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                      || g_InvMode == INV_SAVE_CRYSTAL_MODE
                      || g_InvMode == INV_LOAD_MODE
                      || g_InvMode == INV_DEATH_MODE)
-                    && !pass_mode_open) {
-                    pass_mode_open = true;
+                    && !passport_mode_ready) {
+                    passport_mode_ready = true;
                 }
 
                 g_OptionSelected = 0;

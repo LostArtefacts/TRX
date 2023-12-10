@@ -5,6 +5,7 @@
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)
 - fixed Midas's touch having unrestricted vertical range (#1094)
 - fixed flames not being drawn when Lara is on fire but leaves the room where she caught fire (#1106)
+- fixed being able to deselect the passport in quick save, quick load, save crystal, and death modes (#1108)
 
 ## [3.0.5](https://github.com/LostArtefacts/TR1X/compare/3.0.4...3.0.5) - 2023-12-13
 - fixed crash when pressing certain keys and the console is disabled (#1116, regression since 3.0)
