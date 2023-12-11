@@ -22,8 +22,8 @@ various pieces of global behaviour.
 "main_menu_picture": "data/titleh.png",
 "savegame_fmt_legacy": "saveati.%d",
 "savegame_fmt_bson": "save_tr1_%02d.dat",
-"force_disable_game_modes": false,
-"force_enable_save_crystals": false,
+"force_game_modes": null,
+"force_save_crystals": null,
 "demo_delay": 16,
 "water_color": [0.45, 1.0, 1.0],
 "draw_distance_fade": 22.0,
@@ -111,25 +111,27 @@ various pieces of global behaviour.
   </tr>
   <tr valign="top">
     <td>
-      <code>force_disable_game_modes</code>
+      <code>force_game_modes</code>
     </td>
-    <td>Boolean</td>
+    <td>Optional Boolean</td>
     <td>No</td>
     <td>
-      Forces game mode selection to be disabled if <code>true</code> so the user
-      can't select NG+ modes until a playthrough is completed. Overrides the
-      config option <code>enable_game_modes</code>.
+      Forces game mode selection to be enabled if <code>true</code> or disabled
+      if <code>false</code>, so the user can't select NG+ modes until a
+      playthrough is completed. Overrides the config option
+      <code>enable_game_modes</code>. Has no action if <code>null</code>.
     </td>
   </tr>
   <tr valign="top">
     <td>
-      <code>force_enable_save_crystals</code>
+      <code>force_save_crystals</code>
     </td>
-    <td>Boolean</td>
+    <td>Optional Boolean</td>
     <td>No</td>
     <td>
-      Forces save crystals to be enabled if <code>true</code>. Overrides the
-      config option <code>enable_save_crystals</code>.
+      Forces save crystals to be enabled if <code>true</code> or disabled if
+      <code>false</code>. Overrides the config option
+      <code>enable_save_crystals</code>. Has no action if <code>null</code>.
     </td>
   </tr>
   <tr valign="top">
