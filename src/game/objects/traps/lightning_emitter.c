@@ -266,14 +266,14 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         dy = (y2 - y1) / steps;
         dz = (z2 - z1) / steps;
 
-        for (j = 0; j < steps; j++) {
-            PHD_VECTOR *pos = l->shoot[i];
+        for (int k = 0; k < steps; k++) {
+            PHD_VECTOR *pos = &l->shoot[i][k];
             if (Game_GetStatus() == GS_IN_GAME) {
                 pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             }
-            if (j == steps - 1) {
+            if (k == steps - 1) {
                 pos->y = 0;
             }
 
@@ -281,9 +281,9 @@ void LightningEmitter_Draw(ITEM_INFO *item)
             y2 = y1 + dy + pos->y;
             z2 = z1 + dz + pos->z;
 
-            if (j > 0) {
+            if (k > 0) {
                 Output_DrawLightningSegment(
-                    x1, y1 + l->shoot[i][j - 1].y, z1, x2, y2, z2,
+                    x1, y1 + l->shoot[i][k - 1].y, z1, x2, y2, z2,
                     Viewport_GetWidth() / 16);
             } else {
                 Output_DrawLightningSegment(
