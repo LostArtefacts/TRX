@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed crash when pressing certain keys and the console is disabled (#1116, regression since 3.0)
 
 ## [3.0.4](https://github.com/LostArtefacts/TR1X/compare/3.0.3...3.0.4) - 2023-12-08
 - fixed missiles damaging Lara when she is far beyond their damage range (#1090)
