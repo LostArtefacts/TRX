@@ -520,7 +520,8 @@ static bool Level_LoadBoxes(MYFILE *fp)
     }
 
     File_Read(&m_LevelInfo.overlap_count, sizeof(int32_t), 1, fp);
-    g_Overlap = GameBuf_Alloc(sizeof(uint16_t) * m_LevelInfo.overlap_count, 22);
+    g_Overlap = GameBuf_Alloc(
+        sizeof(uint16_t) * m_LevelInfo.overlap_count, GBUF_OVERLAPS);
     if (!File_Read(
             g_Overlap, sizeof(uint16_t), m_LevelInfo.overlap_count, fp)) {
         Shell_ExitSystem("Level_LoadBoxes(): Unable to load box overlaps");
