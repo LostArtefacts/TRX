@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [3.0.5](https://github.com/LostArtefacts/TR1X/compare/3.0.4...3.0.5) - 2023-12-13
 - fixed crash when pressing certain keys and the console is disabled (#1116, regression since 3.0)
 - fixed lightning bolts wrongly drawn (#1113, regression since 0.9)
 
