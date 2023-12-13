@@ -2166,7 +2166,7 @@ static VideoState *S_FMV_StreamOpen(const char *filename)
     S_FMV_InitClock(&is->audclk, &is->audioq.serial);
     S_FMV_InitClock(&is->extclk, &is->extclk.serial);
     is->audio_clock_serial = -1;
-    is->audio_volume = SDL_MIX_MAXVOLUME;
+    is->audio_volume = g_Config.sound_volume * 12;
     is->av_sync_type = AV_SYNC_AUDIO_MASTER;
     is->read_tid = SDL_CreateThread(S_FMV_ReadThread, "read_thread", is);
     if (!is->read_tid) {
@@ -2236,7 +2236,7 @@ static void S_FMV_EventLoop(VideoState *is)
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
-                is->audio_volume = SDL_MIX_MAXVOLUME;
+                is->audio_volume = g_Config.sound_volume * 12;
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
