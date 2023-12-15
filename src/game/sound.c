@@ -540,6 +540,21 @@ void Sound_SetMasterVolume(int8_t volume)
     m_MasterVolume = raw_volume & 0x3F;
 }
 
+int8_t Sound_GetMasterVolume(void)
+{
+    return (m_MasterVolume - 3) / 6;
+}
+
+int32_t Sound_GetMinVolume(void)
+{
+    return 0;
+}
+
+int32_t Sound_GetMaxVolume(void)
+{
+    return 10;
+}
+
 void Sound_ResetAmbient(void)
 {
     Sound_ResetAmbientLoudness();

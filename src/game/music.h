@@ -26,8 +26,17 @@ void Music_Stop(void);
 // Stops the provided single track and restarts the looped track if applicable.
 void Music_StopTrack(MUSIC_TRACK_ID track);
 
-// Sets the game volume. Value can be 0-255.
+// Gets the game volume.
+int16_t Music_GetVolume(void);
+
+// Sets the game volume. Value can be 0-10.
 void Music_SetVolume(int16_t volume);
+
+// Gets the minimum possible game volume.
+int16_t Music_GetMinVolume(void);
+
+// Gets the maximum possible game volume.
+int16_t Music_GetMaxVolume(void);
 
 // Pauses the music.
 void Music_Pause(void);

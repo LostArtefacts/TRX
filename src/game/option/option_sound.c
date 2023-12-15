@@ -11,9 +11,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define MIN_VOLUME 0
-#define MAX_VOLUME 10
-
 typedef enum SOUND_TEXT {
     TEXT_MUSIC_VOLUME = 0,
     TEXT_SOUND_VOLUME = 1,
@@ -98,7 +95,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
 
     switch (g_OptionSelected) {
     case TEXT_MUSIC_VOLUME:
-        if (g_Input.menu_left && g_Config.music_volume > MIN_VOLUME) {
+        if (g_Input.menu_left && g_Config.music_volume > Music_GetMinVolume()) {
             g_Config.music_volume--;
             g_IDelay = true;
             g_IDCount = 10;
@@ -107,7 +104,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
             Config_Write();
-        } else if (g_Input.menu_right && g_Config.music_volume < MAX_VOLUME) {
+        } else if (g_Input.menu_right && g_Config.music_volume < Music_GetMaxVolume()) {
             g_Config.music_volume++;
             g_IDelay = true;
             g_IDCount = 10;
@@ -118,9 +115,9 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             Config_Write();
         }
 
-        if (g_Config.music_volume == MIN_VOLUME) {
+        if (g_Config.music_volume == Music_GetMinVolume()) {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-        } else if (g_Config.music_volume == MAX_VOLUME) {
+        } else if (g_Config.music_volume == Music_GetMaxVolume()) {
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
         } else {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
@@ -130,7 +127,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
         break;
 
     case TEXT_SOUND_VOLUME:
-        if (g_Input.menu_left && g_Config.sound_volume > MIN_VOLUME) {
+        if (g_Input.menu_left && g_Config.sound_volume > Sound_GetMinVolume()) {
             g_Config.sound_volume--;
             g_IDelay = true;
             g_IDCount = 10;
@@ -139,7 +136,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
             Config_Write();
-        } else if (g_Input.menu_right && g_Config.sound_volume < MAX_VOLUME) {
+        } else if (g_Input.menu_right && g_Config.sound_volume < Sound_GetMaxVolume()) {
             g_Config.sound_volume++;
             g_IDelay = true;
             g_IDCount = 10;
@@ -150,9 +147,9 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             Config_Write();
         }
 
-        if (g_Config.sound_volume == MIN_VOLUME) {
+        if (g_Config.sound_volume == Sound_GetMinVolume()) {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-        } else if (g_Config.sound_volume == MAX_VOLUME) {
+        } else if (g_Config.sound_volume == Sound_GetMaxVolume()) {
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
         } else {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
