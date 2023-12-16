@@ -104,9 +104,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
             Config_Write();
-        } else if (
-            g_Input.menu_right
-            && g_Config.music_volume < Music_GetMaxVolume()) {
+        } else if (g_Input.menu_right && g_Config.music_volume < Music_GetMaxVolume()) {
             g_Config.music_volume++;
             g_IDelay = true;
             g_IDCount = 10;
@@ -138,9 +136,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
             Config_Write();
-        } else if (
-            g_Input.menu_right
-            && g_Config.sound_volume < Sound_GetMaxVolume()) {
+        } else if (g_Input.menu_right && g_Config.sound_volume < Sound_GetMaxVolume()) {
             g_Config.sound_volume++;
             g_IDelay = true;
             g_IDCount = 10;

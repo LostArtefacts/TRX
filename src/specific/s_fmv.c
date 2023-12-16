@@ -306,8 +306,7 @@ static const struct TextureFormatEntry {
 
 static int S_FMV_GetAudioVolume(void)
 {
-    const float volume_dbl =
-        g_Config.sound_volume / (float)Sound_GetMaxVolume();
+    const float volume_dbl = g_Config.sound_volume / (float)Sound_GetMaxVolume();
     return volume_dbl * SDL_MIX_MAXVOLUME;
 }
 
