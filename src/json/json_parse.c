@@ -1082,9 +1082,8 @@ static void json_parse_string(
                     data[bytes_written++] =
                         (char)(0xF0u | (codepoint >> 18)); /* 11110xxx. */
                     data[bytes_written++] =
-                        (char)(0x80u
-                               | ((codepoint >> 12) & 0x3fu)); /* 10xxxxxx.
-                                                                */
+                        (char)(0x80u | ((codepoint >> 12) & 0x3fu)); /* 10xxxxxx.
+                                                                      */
                     data[bytes_written++] =
                         (char)(0x80u | ((codepoint >> 6) & 0x3fu)); /* 10xxxxxx.
                                                                      */

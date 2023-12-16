@@ -199,10 +199,9 @@ void Lara_Draw(ITEM_INFO *item)
         g_MatrixPtr->_21 = g_MatrixPtr[-2]._21;
         g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
-        packed_rotation = (int32_t *)(g_Lara.right_arm.frame_base
-                                      + g_Lara.right_arm.frame_number
-                                          * (object->nmeshes * 2 + FRAME_ROT)
-                                      + 10);
+        packed_rotation =
+            (int32_t
+                 *)(g_Lara.right_arm.frame_base + g_Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         Matrix_RotYXZ(
             g_Lara.right_arm.y_rot, g_Lara.right_arm.x_rot,
             g_Lara.right_arm.z_rot);
@@ -237,10 +236,9 @@ void Lara_Draw(ITEM_INFO *item)
         g_MatrixPtr->_21 = g_MatrixPtr[-2]._21;
         g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
-        packed_rotation = (int32_t *)(g_Lara.left_arm.frame_base
-                                      + g_Lara.left_arm.frame_number
-                                          * (object->nmeshes * 2 + FRAME_ROT)
-                                      + 10);
+        packed_rotation =
+            (int32_t
+                 *)(g_Lara.left_arm.frame_base + g_Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         Matrix_RotYXZ(
             g_Lara.left_arm.y_rot, g_Lara.left_arm.x_rot,
             g_Lara.left_arm.z_rot);
@@ -269,10 +267,9 @@ void Lara_Draw(ITEM_INFO *item)
     case LGT_SHOTGUN:
         Matrix_Push();
 
-        packed_rotation = (int32_t *)(g_Lara.right_arm.frame_base
-                                      + g_Lara.right_arm.frame_number
-                                          * (object->nmeshes * 2 + FRAME_ROT)
-                                      + 10);
+        packed_rotation =
+            (int32_t
+                 *)(g_Lara.right_arm.frame_base + g_Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         Matrix_TranslateRel(bone[29], bone[30], bone[31]);
         Matrix_RotYXZpack(packed_rotation[LM_UARM_R]);
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_UARM_R], clip);
@@ -293,10 +290,9 @@ void Lara_Draw(ITEM_INFO *item)
 
         Matrix_Push();
 
-        packed_rotation = (int32_t *)(g_Lara.left_arm.frame_base
-                                      + g_Lara.left_arm.frame_number
-                                          * (object->nmeshes * 2 + FRAME_ROT)
-                                      + 10);
+        packed_rotation =
+            (int32_t
+                 *)(g_Lara.left_arm.frame_base + g_Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         Matrix_TranslateRel(bone[41], bone[42], bone[43]);
         Matrix_RotYXZpack(packed_rotation[LM_UARM_L]);
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_UARM_L], clip);
@@ -475,10 +471,9 @@ void Lara_Draw_I(
         Matrix_TranslateRel_I(bone[29], bone[30], bone[31]);
         Matrix_InterpolateArm();
 
-        packed_rotation1 = (int32_t *)(g_Lara.right_arm.frame_base
-                                       + g_Lara.right_arm.frame_number
-                                           * (object->nmeshes * 2 + FRAME_ROT)
-                                       + 10);
+        packed_rotation1 =
+            (int32_t
+                 *)(g_Lara.right_arm.frame_base + g_Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         Matrix_RotYXZ(
             g_Lara.right_arm.y_rot, g_Lara.right_arm.x_rot,
             g_Lara.right_arm.z_rot);
@@ -504,10 +499,9 @@ void Lara_Draw_I(
         Matrix_TranslateRel_I(bone[41], bone[42], bone[43]);
         Matrix_InterpolateArm();
 
-        packed_rotation1 = (int32_t *)(g_Lara.left_arm.frame_base
-                                       + g_Lara.left_arm.frame_number
-                                           * (object->nmeshes * 2 + FRAME_ROT)
-                                       + 10);
+        packed_rotation1 =
+            (int32_t
+                 *)(g_Lara.left_arm.frame_base + g_Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         Matrix_RotYXZ(
             g_Lara.left_arm.y_rot, g_Lara.left_arm.x_rot,
             g_Lara.left_arm.z_rot);
@@ -537,10 +531,9 @@ void Lara_Draw_I(
     case LGT_SHOTGUN:
         Matrix_Push_I();
 
-        packed_rotation1 = (int32_t *)(g_Lara.right_arm.frame_base
-                                       + g_Lara.right_arm.frame_number
-                                           * (object->nmeshes * 2 + FRAME_ROT)
-                                       + 10);
+        packed_rotation1 =
+            (int32_t
+                 *)(g_Lara.right_arm.frame_base + g_Lara.right_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         packed_rotation2 = packed_rotation1;
         Matrix_TranslateRel_I(bone[29], bone[30], bone[31]);
         Matrix_RotYXZpack_I(
@@ -565,10 +558,9 @@ void Lara_Draw_I(
 
         Matrix_Push_I();
 
-        packed_rotation1 = (int32_t *)(g_Lara.left_arm.frame_base
-                                       + g_Lara.left_arm.frame_number
-                                           * (object->nmeshes * 2 + FRAME_ROT)
-                                       + 10);
+        packed_rotation1 =
+            (int32_t
+                 *)(g_Lara.left_arm.frame_base + g_Lara.left_arm.frame_number * (object->nmeshes * 2 + FRAME_ROT) + 10);
         packed_rotation2 = packed_rotation1;
         Matrix_TranslateRel_I(bone[41], bone[42], bone[43]);
         Matrix_RotYXZpack_I(
