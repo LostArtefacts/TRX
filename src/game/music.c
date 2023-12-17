@@ -168,12 +168,27 @@ void Music_StopTrack(MUSIC_TRACK_ID track)
     }
 }
 
+int16_t Music_GetVolume(void)
+{
+    return m_MusicVolume * Music_GetMaxVolume();
+}
+
 void Music_SetVolume(int16_t volume)
 {
     m_MusicVolume = volume ? (25 * volume + 5) / 255.0f : 0.0f;
     if (m_AudioStreamID >= 0) {
         S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
     }
+}
+
+int16_t Music_GetMinVolume(void)
+{
+    return 0;
+}
+
+int16_t Music_GetMaxVolume(void)
+{
+    return 10;
 }
 
 void Music_Pause(void)
