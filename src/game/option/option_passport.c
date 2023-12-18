@@ -188,7 +188,6 @@ static void Option_PassportDeterminePages(void)
             m_PassportStatus.mode = PASSPORT_MODE_RESTART;
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
             m_PassportStatus.page_available[PAGE_3] = true;
-            m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
         }
         break;
 
