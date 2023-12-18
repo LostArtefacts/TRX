@@ -185,7 +185,6 @@ static void Option_PassportDeterminePages(void)
             m_PassportStatus.mode = PASSPORT_MODE_NEW_GAME;
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
         } else if (g_Config.enable_save_crystals) {
-            m_PassportStatus.mode = PASSPORT_MODE_RESTART;
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
             m_PassportStatus.page_available[PAGE_3] = true;
         }
@@ -232,6 +231,7 @@ static void Option_PassportDeterminePages(void)
         m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
         Option_PassportInitSaveRequester(PAGE_2);
         break;
+
     case INV_DEATH_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
         m_PassportStatus.page_available[PAGE_1] = g_SavedGamesCount > 0;
@@ -344,19 +344,17 @@ static void Option_PassportInitNewGameRequester(void)
 static void Option_PassportShowSaves(PASSPORT_MODE pending_mode)
 {
     int32_t select = Requester_Display(&g_SavegameRequester);
-    if (select) {
-        if (select > 0) {
-            g_GameInfo.current_save_slot = select - 1;
-            g_GameInfo.passport_selection = pending_mode;
-        } else {
-            if (g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
-                && g_InvMode != INV_LOAD_MODE) {
-                g_Input = (INPUT_STATE) { 0 };
-                g_InputDB = (INPUT_STATE) { 0 };
-            }
-        }
+    if (select == 0) {
+        g_Input = (INPUT_STATE) { 0 };
+        g_InputDB = (INPUT_STATE) { 0 };
+    } else if (select > 0) {
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
-    } else {
+        g_GameInfo.current_save_slot = select - 1;
+        g_GameInfo.passport_selection = pending_mode;
+    } else if (
+        g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
+        && g_InvMode != INV_LOAD_MODE) {
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
         g_Input = (INPUT_STATE) { 0 };
         g_InputDB = (INPUT_STATE) { 0 };
     }
