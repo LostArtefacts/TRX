@@ -500,6 +500,8 @@ static void Option_PassportNewGame(void)
         } else {
             g_GameInfo.save_initial_version = SAVEGAME_CURRENT_VERSION;
             g_GameInfo.bonus_level_unlock = false;
+            g_GameInfo.current_save_slot = -1;
+            g_GameInfo.passport_selection = PASSPORT_MODE_NEW_GAME;
         }
     } else if (m_PassportStatus.mode == PASSPORT_MODE_NEW_GAME) {
         int32_t select = Requester_Display(&m_NewGameRequester);
