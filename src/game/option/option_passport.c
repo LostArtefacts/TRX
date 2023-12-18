@@ -182,7 +182,6 @@ static void Option_PassportDeterminePages(void)
         m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
         m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
         if (g_CurrentLevel == g_GameFlow.gym_level_num) {
-            m_PassportStatus.mode = PASSPORT_MODE_NEW_GAME;
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
         } else if (g_Config.enable_save_crystals) {
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
@@ -210,7 +209,7 @@ static void Option_PassportDeterminePages(void)
         m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
         m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
         if (g_CurrentLevel == g_GameFlow.gym_level_num) {
-            m_PassportStatus.mode = PASSPORT_MODE_NEW_GAME;
+            m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
         } else if (g_Config.enable_save_crystals) {
             m_PassportStatus.mode = PASSPORT_MODE_RESTART;
