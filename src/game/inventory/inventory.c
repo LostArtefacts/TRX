@@ -920,9 +920,9 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         case PASSPORT_MODE_RESTART:
             return GF_RESTART_GAME | g_CurrentLevel;
         case PASSPORT_MODE_EXIT_TITLE:
-            return GF_EXIT_GAME;
-        case PASSPORT_MODE_EXIT_GAME:
             return GF_EXIT_TO_TITLE;
+        case PASSPORT_MODE_EXIT_GAME:
+            return GF_EXIT_GAME;
         case PASSPORT_MODE_BROWSE:
         case PASSPORT_MODE_UNAVAILABLE:
         default:
