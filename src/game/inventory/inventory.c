@@ -521,7 +521,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             }
 
             if (start_level != -1 || start_demo
-                || ((g_InputDB.option || g_InputDB.roll || g_InputDB.draw) && g_InvMode != INV_TITLE_MODE)) {
+                || (g_InputDB.menu_back && g_InvMode != INV_TITLE_MODE)) {
                 Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
                 g_InvChosen = -1;
 
