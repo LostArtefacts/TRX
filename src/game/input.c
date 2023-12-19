@@ -112,7 +112,6 @@ void Input_Update(void)
     g_Input.menu_down |= g_Input.back;
     g_Input.menu_left |= g_Input.left;
     g_Input.menu_right |= g_Input.right;
-    g_Input.menu_confirm |= g_Input.action;
     g_Input.menu_back |= g_Input.option;
     g_Input.option &= g_Camera.type != CAM_CINEMATIC;
     g_Input.roll |= g_Input.forward && g_Input.back;

@@ -1,9 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added the option to use "shell(s)" to give shotgun ammo in the developer console (#1096)
-- added the ability to back out of menus with the roll and weapon draw buttons when using a gamepad (#1104)
 - added the restart level option to the passport in save crystal mode (#1099)
 - changed `force_enable_save_crystals` to `force_save_crystals` for custom level authors to force enable or disable the save crystals setting (#1102)
 - changed `force_disable_game_modes` to `force_game_modes` for custom level authors to force enable or disable the game modes setting (#1102)
+- added the ability to back out of menus with the circle and triangle buttons when using a gamepad (cross and square now act as confirm) (#1104)
+- changed the gamepad control menu's 'reset all buttons' bind to held R1 (#1104)
 - fixed FMVs always playing at 100% volume – now they'll play at the game sound volume (#1110)
 - fixed bugs when trying to stack multiple movable blocks (#1079)
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)
