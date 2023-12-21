@@ -25,7 +25,7 @@
 #define COL_END -1
 #define COLOR_STEPS 5
 #define RESET_ALL_KEY "R"
-#define RESET_ALL_BUTTON "y"
+#define RESET_ALL_BUTTON "rightshoulder"
 #define UNBIND_KEY "Backspace"
 #define UNBIND_BUTTON "x"
 #define UNBIND_SCANCODE 0

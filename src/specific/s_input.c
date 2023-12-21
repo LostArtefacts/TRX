@@ -863,6 +863,9 @@ static INPUT_STATE S_Input_GetControllerState(
         state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
         state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
+        state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
+        state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
+        state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
         // clang-format on
     }
 
@@ -962,6 +965,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.menu_left                 = KEY_DOWN(SDL_SCANCODE_LEFT);
     linput.menu_right                = KEY_DOWN(SDL_SCANCODE_RIGHT);
     linput.menu_confirm              = KEY_DOWN(SDL_SCANCODE_RETURN) && !KEY_DOWN(SDL_SCANCODE_LALT);
+    linput.menu_confirm             |= linput.action; // we only do this for keyboard input
     linput.menu_back                 = KEY_DOWN(SDL_SCANCODE_ESCAPE);
 
     linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
