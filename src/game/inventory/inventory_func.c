@@ -11,7 +11,7 @@
 bool Inv_AddItem(int32_t item_num)
 {
     int32_t item_num_option = Inv_GetItemOption(item_num);
-    if (!g_Objects[item_num].loaded || !g_Objects[item_num_option].loaded) {
+    if (!g_Objects[item_num_option].loaded) {
         return false;
     }
 

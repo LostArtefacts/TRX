@@ -12,6 +12,7 @@
 - fixed flames not being drawn when Lara is on fire but leaves the room where she caught fire (#1106)
 - fixed being able to deselect the passport in quick save, quick load, save crystal, and death modes (#1108)
 - fixed inability to save in Unfinished Business in crystals mode as UB doesn't have crystals (#1102)
+- fixed items not being added to inventory if the sprite is missing from the level file (#1130)
 
 ## [3.0.5](https://github.com/LostArtefacts/TR1X/compare/3.0.4...3.0.5) - 2023-12-13
 - fixed crash when pressing certain keys and the console is disabled (#1116, regression since 3.0)
