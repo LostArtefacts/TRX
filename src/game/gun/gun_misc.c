@@ -1,5 +1,6 @@
 #include "game/gun/gun_misc.h"
 
+#include "config.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/inventory.h"
@@ -411,9 +412,18 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
     }
     Item_TakeDamage(item, damage, true);
 
-    Effect_Blood(
-        hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot,
-        item->room_number);
+    if (g_Config.fix_texture_issues && item->object_number == O_SCION_ITEM3) {
+        GAME_VECTOR pos;
+        pos.x = hitpos->x;
+        pos.y = hitpos->y;
+        pos.z = hitpos->z;
+        pos.room_number = item->room_number;
+        Ricochet_Spawn(&pos);
+    } else {
+        Effect_Blood(
+            hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot,
+            item->room_number);
+    }
 
     if (item->hit_points > 0) {
         switch (item->object_number) {
