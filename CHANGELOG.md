@@ -6,6 +6,7 @@
 - changed the Scion in The Great Pyramid from spawning blood when hit to a richochet effect if texture fixes enabled (#1121)
 - added the ability to back out of menus with the circle and triangle buttons when using a gamepad (cross acts as confirm) (#1104)
 - changed the gamepad control menu's 'reset all buttons' bind to held R1 (was held triangle) (#1104)
+- changed the number of visible enemies from 8 to 32 (#1122)
 - fixed FMVs always playing at 100% volume – now they'll play at the game sound volume (#1110)
 - fixed bugs when trying to stack multiple movable blocks (#1079)
 - fixed Lara's meshes being swapped in the gym level when using the console to give guns (#1092)

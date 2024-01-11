@@ -29,7 +29,7 @@
 #define MAX_REQLINES 18
 #define MAX_SAMPLES 256
 #define MAX_LEVEL_NAME_LENGTH 48
-#define NUM_SLOTS 8
+#define NUM_SLOTS 32
 #define MAX_FRAMES 10
 #define MAX_CD_TRACKS 64
 #define MAX_TEXTURES 8192
