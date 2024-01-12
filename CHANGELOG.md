@@ -1,10 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added the option to use "shell(s)" to give shotgun ammo in the developer console (#1096)
 - added the restart level option to the passport in save crystal mode (#1099)
+- added the ability to back out of menus with the circle and triangle buttons when using a gamepad (cross acts as confirm) (#1104)
 - changed `force_enable_save_crystals` to `force_save_crystals` for custom level authors to force enable or disable the save crystals setting (#1102)
 - changed `force_disable_game_modes` to `force_game_modes` for custom level authors to force enable or disable the game modes setting (#1102)
 - changed the Scion in The Great Pyramid from spawning blood when hit to a richochet effect if texture fixes enabled (#1121)
-- added the ability to back out of menus with the circle and triangle buttons when using a gamepad (cross acts as confirm) (#1104)
 - changed the gamepad control menu's 'reset all buttons' bind to held R1 (was held triangle) (#1104)
 - changed the number of visible enemies from 8 to 32 (#1122)
 - fixed FMVs always playing at 100% volume – now they'll play at the game sound volume (#1110)
