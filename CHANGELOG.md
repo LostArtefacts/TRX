@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [3.1](https://github.com/LostArtefacts/TR1X/compare/3.0.5...3.1) - 2024-01-14
 - added the option to use "shell(s)" to give shotgun ammo in the developer console (#1096)
 - added the restart level option to the passport in save crystal mode (#1099)
 - added the ability to back out of menus with the circle and triangle buttons when using a gamepad (cross acts as confirm) (#1104)
