@@ -81,7 +81,7 @@ void Lara_LookUpDownSurf(void)
 
 void Lara_ResetLook(void)
 {
-    if (g_Camera.type == CAM_LOOK) {
+    if (g_Camera.type == CAM_LOOK || g_Camera.last_item) {
         return;
     }
     if (g_Lara.head_x_rot <= -HEAD_TURN / 2
