@@ -356,6 +356,8 @@ static void Option_PassportShowSaves(PASSPORT_MODE pending_mode)
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
         g_Input = (INPUT_STATE) { 0 };
         g_InputDB = (INPUT_STATE) { 0 };
+    } else {
+        m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
     }
 }
 

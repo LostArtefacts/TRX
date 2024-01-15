@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed a game crash when the quick load passport is deselected (#1136, regression from 3.1)
 
 ## [3.1](https://github.com/LostArtefacts/TR1X/compare/3.0.5...3.1) - 2024-01-14
 - added the option to use "shell(s)" to give shotgun ammo in the developer console (#1096)
