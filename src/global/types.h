@@ -1181,7 +1181,6 @@ typedef enum GAME_BONUS_FLAG {
 } GAME_BONUS_FLAG;
 
 typedef enum PASSPORT_PAGE {
-    PAGE_FLIPPING = -1,
     PAGE_1 = 0,
     PAGE_2 = 1,
     PAGE_3 = 2,

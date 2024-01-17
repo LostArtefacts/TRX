@@ -37,11 +37,11 @@ typedef struct PASSPORT_STATUS {
 } PASSPORT_STATUS;
 
 static PASSPORT_STATUS m_PassportStatus = {
-    PAGE_FLIPPING,
-    PASSPORT_MODE_BROWSE,
-    { false, true, true },
-    { PASSPORT_MODE_UNAVAILABLE, PASSPORT_MODE_NEW_GAME,
-      PASSPORT_MODE_EXIT_TITLE },
+    .page = PAGE_1,
+    .mode = PASSPORT_MODE_BROWSE,
+    .page_available = { false, true, true },
+    .page_role = { PASSPORT_MODE_UNAVAILABLE, PASSPORT_MODE_NEW_GAME,
+                   PASSPORT_MODE_EXIT_TITLE },
 };
 
 static bool m_IsTextInit = false;
@@ -103,6 +103,7 @@ REQUEST_INFO g_SavegameRequester = {
 
 static void Option_PassportInitText(void);
 static void Option_PassportShutdownText(void);
+static void Option_PassportClose(INVENTORY_ITEM *inv_item);
 static void Option_PassportDeterminePages(void);
 static void Option_PassportInitSaveRequester(int16_t page_num);
 static void Option_PassportInitSelectLevelRequester(void);
@@ -114,6 +115,8 @@ static void Option_PassportSelectLevel(void);
 static void Option_PassportSaveGame(void);
 static void Option_PassportNewGame(void);
 static void Option_PassportRestart(INVENTORY_ITEM *inv_item);
+static void Option_PassportFlipRight(INVENTORY_ITEM *inv_item);
+static void Option_PassportFlipLeft(INVENTORY_ITEM *inv_item);
 
 void Option_PassportInit(void)
 {
@@ -160,6 +163,18 @@ static void Option_PassportShutdownText(void)
     m_IsTextInit = false;
 }
 
+static void Option_PassportClose(INVENTORY_ITEM *inv_item)
+{
+    if (m_PassportStatus.page == PAGE_3) {
+        inv_item->anim_direction = 1;
+        inv_item->goal_frame = inv_item->frames_total - 1;
+    } else {
+        inv_item->anim_direction = -1;
+        inv_item->goal_frame = 0;
+    }
+    Option_PassportShutdownText();
+}
+
 static void Option_PassportDeterminePages(void)
 {
     switch (g_InvMode) {
@@ -185,7 +200,6 @@ static void Option_PassportDeterminePages(void)
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
         } else if (g_Config.enable_save_crystals) {
             m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
-            m_PassportStatus.page_available[PAGE_3] = true;
         }
         break;
 
@@ -559,6 +573,40 @@ static void Option_PassportRestart(INVENTORY_ITEM *inv_item)
     }
 }
 
+static void Option_PassportFlipRight(INVENTORY_ITEM *inv_item)
+{
+    g_Input = (INPUT_STATE) { 0 };
+    g_InputDB = (INPUT_STATE) { 0 };
+
+    while (m_PassportStatus.page < PAGE_3) {
+        m_PassportStatus.page++;
+        if (m_PassportStatus.page_available[m_PassportStatus.page]) {
+            inv_item->anim_direction = 1;
+            inv_item->goal_frame =
+                inv_item->open_frame + 5 * m_PassportStatus.page;
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            break;
+        }
+    }
+}
+
+static void Option_PassportFlipLeft(INVENTORY_ITEM *inv_item)
+{
+    g_Input = (INPUT_STATE) { 0 };
+    g_InputDB = (INPUT_STATE) { 0 };
+
+    while (m_PassportStatus.page > PAGE_1) {
+        m_PassportStatus.page--;
+        if (m_PassportStatus.page_available[m_PassportStatus.page]) {
+            inv_item->anim_direction = -1;
+            inv_item->goal_frame =
+                inv_item->open_frame + 5 * m_PassportStatus.page;
+            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
+            break;
+        }
+    }
+}
+
 void Option_Passport(INVENTORY_ITEM *inv_item)
 {
     if (!m_IsTextInit) {
@@ -572,8 +620,9 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     }
 
     m_PassportStatus.page = (inv_item->goal_frame - inv_item->open_frame) / 5;
-    if ((inv_item->goal_frame - inv_item->open_frame) % 5) {
-        m_PassportStatus.page = PAGE_FLIPPING;
+    if (!m_PassportStatus.page_available[m_PassportStatus.page]) {
+        Option_PassportFlipRight(inv_item);
+        return;
     }
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
@@ -639,39 +688,11 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
 
     if (g_InputDB.menu_right
         || !m_PassportStatus.page_available[m_PassportStatus.page]) {
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
-
-        while (++m_PassportStatus.page < PAGE_COUNT) {
-            if (m_PassportStatus.page_available[m_PassportStatus.page]) {
-                break;
-            }
-        }
-
-        if (m_PassportStatus.page < PAGE_COUNT) {
-            inv_item->anim_direction = 1;
-            inv_item->goal_frame =
-                inv_item->open_frame + 5 * m_PassportStatus.page;
-            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
-        }
+        Option_PassportFlipRight(inv_item);
     }
 
     if (g_InputDB.menu_left) {
-        while (--m_PassportStatus.page >= PAGE_1) {
-            if (m_PassportStatus.page_available[m_PassportStatus.page]) {
-                break;
-            }
-        }
-
-        if (m_PassportStatus.page >= PAGE_1) {
-            inv_item->anim_direction = -1;
-            inv_item->goal_frame =
-                inv_item->open_frame + 5 * m_PassportStatus.page;
-            Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
-        }
-
-        g_Input = (INPUT_STATE) { 0 };
-        g_InputDB = (INPUT_STATE) { 0 };
+        Option_PassportFlipLeft(inv_item);
     }
 
     if (g_InputDB.menu_back) {
@@ -679,25 +700,11 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
         } else {
-            if (m_PassportStatus.page == PAGE_3) {
-                inv_item->anim_direction = 1;
-                inv_item->goal_frame = inv_item->frames_total - 1;
-            } else {
-                inv_item->goal_frame = 0;
-                inv_item->anim_direction = -1;
-            }
-            Option_PassportShutdownText();
+            Option_PassportClose(inv_item);
         }
     }
 
     if (g_InputDB.menu_confirm) {
-        if (m_PassportStatus.page == PAGE_3) {
-            inv_item->anim_direction = 1;
-            inv_item->goal_frame = inv_item->frames_total - 1;
-        } else {
-            inv_item->goal_frame = 0;
-            inv_item->anim_direction = -1;
-        }
-        Option_PassportShutdownText();
+        Option_PassportClose(inv_item);
     }
 }
