@@ -389,10 +389,10 @@ static void Option_PassportLoadGame(void)
 {
     Text_ChangeText(
         m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_LOAD_GAME]);
+    g_SavegameRequester.flags |= RIF_BLOCKABLE;
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
-            g_SavegameRequester.flags |= RIF_BLOCKABLE;
             Option_PassportInitSaveRequester(m_PassportStatus.page);
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
@@ -472,10 +472,10 @@ static void Option_PassportSaveGame(void)
 {
     Text_ChangeText(
         m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
+    g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
-            g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
             Option_PassportInitSaveRequester(m_PassportStatus.page);
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
