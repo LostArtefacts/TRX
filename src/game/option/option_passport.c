@@ -191,7 +191,7 @@ static void Option_PassportDeterminePages(void)
 
     case INV_LOAD_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
-        m_PassportStatus.page_available[PAGE_1] = g_SavedGamesCount > 0;
+        m_PassportStatus.page_available[PAGE_1] = true;
         m_PassportStatus.page_available[PAGE_2] = false;
         m_PassportStatus.page_available[PAGE_3] = false;
         m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
