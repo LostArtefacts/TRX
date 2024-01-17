@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- changed quick load to show empty passport instead of opening the save game menu when there are no saves (#1141)
 - fixed a game crash when the quick load passport is deselected (#1136, regression from 3.1)
 - fixed not being able to save in an empty slot using quick save if the load game menu was opened before (#1140, regression from 3.1)
 
