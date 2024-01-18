@@ -36,7 +36,7 @@ jobs:
   publish_release:
     name: Create a GitHub release
     runs-on: ubuntu-latest
-    needs: [package_game_win, package_game_linux, build_installer]
+    needs: [package_game_linux, build_installer_win]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -243,7 +243,7 @@ jobs:
           name: game-linux-all
           path: out/game-linux.zip
 
-  build_installer:
+  build_installer_win:
     name: Build the installer
     needs: [package_game_win]
     runs-on: windows-latest  # https://github.com/dotnet/runtime/issues/3828
