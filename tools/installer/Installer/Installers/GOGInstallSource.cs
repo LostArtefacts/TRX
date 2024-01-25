@@ -131,7 +131,7 @@ public class GOGInstallSource : BaseInstallSource
         return File.Exists(Path.Combine(sourceDirectory, "GAME.GOG"));
     }
 
-    private IEnumerable<string> GetFilesToExtract(DiscUtils.DiscDirectoryInfo root)
+    private static IEnumerable<string> GetFilesToExtract(DiscUtils.DiscDirectoryInfo root)
     {
         var regex = new Regex(@"^(data|fmv)[\\/].*$", RegexOptions.IgnoreCase);
         foreach (var dir in root.GetDirectories())

@@ -13,7 +13,7 @@
     MinWidth="480"
     MinHeight="360"
     Width="{Binding WindowWidth, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, FallbackValue=640}"
-    Height="480"
+    Height="500"
     WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>

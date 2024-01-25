@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <None Remove="release.zip" />
+    <None Remove="Resources\CDRom.png" />
     <None Remove="Resources\GOG.png" />
     <None Remove="Resources\side1.jpg" />
     <None Remove="Resources\side2.jpg" />
@@ -52,6 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\CDRom.png" />
     <Resource Include="Resources\side1.jpg" />
     <Resource Include="Resources\side2.jpg" />
     <Resource Include="Resources\side3.jpg" />
