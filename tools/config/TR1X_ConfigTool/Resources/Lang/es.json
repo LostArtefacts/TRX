@@ -80,7 +80,12 @@
       "top-center": "Superior central",
       "top-left": "Superior izquierda",
       "top-right": "Superior derecha"
-    }
+    },
+    "target_mode": {
+      "full-lock": "Full lock",
+      "semi-lock": "Semi lock",
+      "no-lock": "No lock"
+      }
   },
   "Properties": {
     "airbar_color": {
@@ -222,6 +227,14 @@
     "enable_uw_roll": {
       "Title": "Giro en el agua",
       "Description": "Permite que Lara realice un giro mientras está bajo el agua, similar a TR2+."
+    },
+    "enable_target_change": {
+      "Title": "Target change",
+      "Description": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets."
+    },
+    "target_lock_mode": {
+      "Title": "Weapon target lock mode",
+      "Description": "Changes the behavior of how weapons lock onto targets.\n- Full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1).\n- Semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies.\n- No lock: lose target lock if the enemy goes out of sight or dies (TR4+)."
     },
     "enable_lean_jumping": {
       "Title": "Saltos inclinados",

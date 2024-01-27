@@ -71,7 +71,12 @@
       "bottom-left": "En bas à gauche",
       "bottom-center": "En bas au centre",
       "bottom-right": "En bas à droite"
-    }
+    },
+    "target_mode": {
+      "full-lock": "Full lock",
+      "semi-lock": "Semi lock",
+      "no-lock": "No lock"
+      }
   },
   "Categories": {
     "controls": "Contrôles",
@@ -106,6 +111,14 @@
     "enable_uw_roll": {
       "Title": "Retourné sous-marin",
       "Description": "Permet à Lara de faire un demi tour immédiat, sous l'eau, similaire a TR2+."
+    },
+    "enable_target_change": {
+      "Title": "Weapon target changing",
+      "Description": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets."
+    },
+    "target_lock_mode": {
+      "Title": "Mode de verrouillage des cibles",
+      "Description": "Modifie le comportement de verrouillage des cibles.\n- Verrouillage complet : Garde toujours le verrouillage des cibles même si l'ennemi se déplace hors du champ de vision ou meurt (Comportement original de TR1).\n- Semi-verrouillage : Conserve le verrouillage des cibles si l'ennemi se déplace hors du champ de vision, mais perd le verrouillage si l'ennemi meurt.\n- Pas de verrouillage : Perd le verrouillage de la cible si l'ennemi disparaît de vue ou meurt (Comportemenent TR4+)."
     },
     "enable_lean_jumping": {
       "Title": "Air controle du saut sur place",

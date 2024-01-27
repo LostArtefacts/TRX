@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/collide.h"
 #include "game/effects/blood.h"
+#include "game/input.h"
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/los.h"
@@ -48,6 +49,9 @@
 #define SHOTGUN_RARM_YMAX (+80 * PHD_DEGREE)
 #define SHOTGUN_RARM_XMIN (-65 * PHD_DEGREE)
 #define SHOTGUN_RARM_XMAX (+65 * PHD_DEGREE)
+
+static ITEM_INFO *m_TargetList[NUM_SLOTS];
+static ITEM_INFO *m_LastTargetList[NUM_SLOTS];
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     // null
@@ -197,6 +201,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
 {
     ITEM_INFO *bestitem = NULL;
     int16_t bestyrot = 0x7FFF;
+    int16_t num_targets = 0;
 
     int32_t maxdist = winfo->target_dist;
     int32_t maxdist2 = maxdist * maxdist;
@@ -241,14 +246,86 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
             && ang[1] >= winfo->lock_angles[2]
             && ang[1] <= winfo->lock_angles[3]) {
             int16_t yrot = ABS(ang[0]);
+            m_TargetList[num_targets] = item;
+            num_targets++;
             if (yrot < bestyrot) {
                 bestyrot = yrot;
                 bestitem = item;
             }
         }
     }
+    m_TargetList[num_targets] = NULL;
 
-    g_Lara.target = bestitem;
+    if ((g_Config.target_lock_mode == TLM_FULL
+         || g_Config.target_lock_mode == TLM_SEMI)
+        && g_Input.action && g_Lara.target) {
+        Gun_TargetInfo(winfo);
+        return;
+    }
+
+    if (num_targets > 0) {
+        for (int slot = 0; slot < NUM_SLOTS; slot++) {
+            if (!m_TargetList[slot]) {
+                g_Lara.target = NULL;
+            }
+
+            if (m_TargetList[slot] == g_Lara.target) {
+                break;
+            }
+        }
+
+        if (!g_Lara.target) {
+            g_Lara.target = bestitem;
+            m_LastTargetList[0] = NULL;
+        }
+    } else {
+        g_Lara.target = NULL;
+    }
+
+    if (g_Lara.target != m_LastTargetList[0]) {
+        for (int slot = NUM_SLOTS - 1; slot > 0; slot--) {
+            m_LastTargetList[slot] = m_LastTargetList[slot - 1];
+        }
+        m_LastTargetList[0] = g_Lara.target;
+    }
+
+    Gun_TargetInfo(winfo);
+}
+
+void Gun_ChangeTarget(WEAPON_INFO *winfo)
+{
+    g_Lara.target = NULL;
+    bool found_new_target = false;
+
+    for (int new_target = 0; new_target < NUM_SLOTS; new_target++) {
+        if (!m_TargetList[new_target]) {
+            break;
+        }
+
+        for (int last_target = 0; last_target < NUM_SLOTS; last_target++) {
+            if (!m_LastTargetList[last_target]) {
+                found_new_target = true;
+                break;
+            }
+
+            if (m_LastTargetList[last_target] == m_TargetList[new_target]) {
+                break;
+            }
+        }
+
+        if (found_new_target == true) {
+            g_Lara.target = m_TargetList[new_target];
+            break;
+        }
+    }
+
+    if (g_Lara.target != m_LastTargetList[0]) {
+        for (int last_target = NUM_SLOTS - 1; last_target > 0; last_target--) {
+            m_LastTargetList[last_target] = m_LastTargetList[last_target - 1];
+        }
+        m_LastTargetList[0] = g_Lara.target;
+    }
+
     Gun_TargetInfo(winfo);
 }
 
@@ -409,6 +486,9 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         g_GameInfo.current[g_CurrentLevel].stats.kill_count++;
+        if (g_Config.target_lock_mode == TLM_SEMI) {
+            g_Lara.target = NULL;
+        }
     }
     Item_TakeDamage(item, damage, true);
 

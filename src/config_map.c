@@ -41,6 +41,13 @@ static const CONFIG_OPTION_ENUM_MAP m_BarColors[] = {
     { NULL, -1 },
 };
 
+static const CONFIG_OPTION_ENUM_MAP m_TargetLockModes[] = {
+    { "full-lock", TLM_FULL },
+    { "semi-lock", TLM_SEMI },
+    { "no-lock", TLM_NO },
+    { NULL, -1 },
+};
+
 static const CONFIG_OPTION_ENUM_MAP m_ScreenshotFormats[] = {
     { "jpg", SCREENSHOT_FORMAT_JPEG },
     { "jpeg", SCREENSHOT_FORMAT_JPEG },
@@ -108,6 +115,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "enemy_healthbar_color",          .type = COT_ENUM,   .target = &g_Config.enemy_healthbar_color,               .default_value = &(int32_t){BC_GREY},                 .param = m_BarColors},
     { .name = "screenshot_format",              .type = COT_ENUM,   .target = &g_Config.screenshot_format,                   .default_value = &(int32_t){SCREENSHOT_FORMAT_JPEG},  .param = m_ScreenshotFormats},
     { .name = "menu_style",                     .type = COT_ENUM,   .target = &g_Config.ui.menu_style,                       .default_value = &(int32_t){UI_STYLE_PC},             .param = m_UIStyles},
+    { .name = "target_lock_mode",               .type = COT_ENUM,   .target = &g_Config.target_lock_mode,                    .default_value = &(int32_t){TLM_FULL},                .param = m_TargetLockModes},
     { .name = "maximum_save_slots",             .type = COT_INT32,  .target = &g_Config.maximum_save_slots,                  .default_value = &(int32_t){25},                      0},
     { .name = "revert_to_pistols",              .type = COT_BOOL,   .target = &g_Config.revert_to_pistols,                   .default_value = &(bool){false},                      0},
     { .name = "enable_enhanced_saves",          .type = COT_BOOL,   .target = &g_Config.enable_enhanced_saves,               .default_value = &(bool){true},                       0},
@@ -128,6 +136,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "enable_uw_roll",                 .type = COT_BOOL,   .target = &g_Config.enable_uw_roll,                      .default_value = &(bool){true},                       0},
     { .name = "enable_buffering",               .type = COT_BOOL,   .target = &g_Config.enable_buffering,                    .default_value = &(bool){false},                      0},
     { .name = "enable_lean_jumping",            .type = COT_BOOL,   .target = &g_Config.enable_lean_jumping,                 .default_value = &(bool){false},                      0},
+    { .name = "enable_target_change",           .type = COT_BOOL,   .target = &g_Config.enable_target_change,                .default_value = &(bool){true},                       0},
     { .name = "render_mode",                    .type = COT_INT32,  .target = &g_Config.rendering.render_mode,               .default_value = &(int32_t){GFX_RM_LEGACY},           0},
     { .name = "enable_fullscreen",              .type = COT_BOOL,   .target = &g_Config.rendering.enable_fullscreen,         .default_value = &(bool){true},                       0},
     { .name = "enable_maximized",               .type = COT_BOOL,   .target = &g_Config.rendering.enable_maximized,          .default_value = &(bool){true},                       0},
