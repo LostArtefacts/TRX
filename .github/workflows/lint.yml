@@ -15,6 +15,21 @@ jobs:
           path: .
           fetch-depth: 0
 
+      - name: Check JSON files validity
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          errors = False
+          for path in Path('.').rglob('**/*.json'):
+              try:
+                  json.loads(path.read_text())
+              except json.JSONDecodeError as ex:
+                  print(f'Malformed JSON in {path}: {ex}')
+                  errors = True
+          if errors:
+              exit(1)
+
       - name: Install dependencies
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
