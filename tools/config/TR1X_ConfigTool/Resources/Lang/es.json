@@ -80,6 +80,11 @@
       "top-center": "Superior central",
       "top-left": "Superior izquierda",
       "top-right": "Superior derecha"
+    },
+    "target_mode": {
+      "full-lock": "Bloqueo total",
+      "semi-lock": "Semibloqueo",
+      "no-lock": "Sin bloqueo"
     }
   },
   "Properties": {
@@ -222,6 +227,14 @@
     "enable_uw_roll": {
       "Title": "Giro en el agua",
       "Description": "Permite que Lara realice un giro mientras está bajo el agua, similar a TR2+."
+    },
+    "enable_target_change": {
+      "Title": "Cambio de objetivo",
+      "Description": "Permite cambiar de objetivo como en TR4+ mientras apuntas con armas. Presiona mirar mientras apuntas para cambiar de objetivo."
+    },
+    "target_lock_mode": {
+      "Title": "Modo de bloqueo del objetivo del arma",
+      "Description": "Cambia el comportamiento de cómo las armas se fijan en los objetivos.\n- Bloqueo total: siempre mantiene el objetivo bloqueado incluso si se pierde de vista al enemigo o muere (TR1 original).\n- Semibloqueo: mantiene el objetivo bloqueado si se pierde de vista al enemigo pero pierde el objetivo fijado si el enemigo muere.\n- Sin bloqueo: pierde el objetivo fijado si se pierde de vista al enemigo o muere (TR4+)."
     },
     "enable_lean_jumping": {
       "Title": "Saltos inclinados",
