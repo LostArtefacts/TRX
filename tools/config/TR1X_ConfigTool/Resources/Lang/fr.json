@@ -233,7 +233,7 @@
     },
     "enable_eidos_logo": {
         "Title": "Activer le logo EIDOS",
-        "Description": "Active le logo EIDOS au début du jeu.",
+        "Description": "Active le logo EIDOS au début du jeu."
     },
     "enable_buffering": {
       "Title": "Activer la mise en mémoire tampon",
