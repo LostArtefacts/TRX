@@ -113,8 +113,8 @@
       "Description": "Permet à Lara de faire un demi tour immédiat, sous l'eau, similaire a TR2+."
     },
     "enable_target_change": {
-      "Title": "Weapon target changing",
-      "Description": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets."
+      "Title": "Changement de cible",
+      "Description": "Permet de changer de cible en visant avec une arme. Appuyez sur la touche Regarder tout en visant pour changer de cible comme dans TR4+."
     },
     "target_lock_mode": {
       "Title": "Mode de verrouillage des cibles",
