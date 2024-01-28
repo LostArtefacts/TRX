@@ -199,8 +199,8 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
 
 void Gun_GetNewTarget(WEAPON_INFO *winfo)
 {
-    ITEM_INFO *bestitem = NULL;
-    int16_t bestyrot = 0x7FFF;
+    ITEM_INFO *best_target = NULL;
+    int16_t best_yrot = 0x7FFF;
     int16_t num_targets = 0;
 
     int32_t maxdist = winfo->target_dist;
@@ -248,9 +248,9 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
             int16_t yrot = ABS(ang[0]);
             m_TargetList[num_targets] = item;
             num_targets++;
-            if (yrot < bestyrot) {
-                bestyrot = yrot;
-                bestitem = item;
+            if (yrot < best_yrot) {
+                best_yrot = yrot;
+                best_target = item;
             }
         }
     }
@@ -264,18 +264,14 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     }
 
     if (num_targets > 0) {
-        for (int slot = 0; slot < NUM_SLOTS; slot++) {
-            if (!m_TargetList[slot]) {
-                g_Lara.target = NULL;
-            }
-
+        for (int slot = 0; slot < num_targets; slot++) {
             if (m_TargetList[slot] == g_Lara.target) {
                 break;
             }
         }
 
         if (!g_Lara.target) {
-            g_Lara.target = bestitem;
+            g_Lara.target = best_target;
             m_LastTargetList[0] = NULL;
         }
     } else {
@@ -313,7 +309,7 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
             }
         }
 
-        if (found_new_target == true) {
+        if (found_new_target) {
             g_Lara.target = m_TargetList[new_target];
             break;
         }
