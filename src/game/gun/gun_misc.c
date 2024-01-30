@@ -199,6 +199,12 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
 
 void Gun_GetNewTarget(WEAPON_INFO *winfo)
 {
+    // Preserve OG targeting behavior.
+    if (g_Config.target_lock_mode == TLM_FULL && !g_Config.enable_target_change
+        && !g_Input.action) {
+        g_Lara.target = NULL;
+    }
+
     ITEM_INFO *best_target = NULL;
     int16_t best_yrot = 0x7FFF;
     int16_t num_targets = 0;
@@ -264,7 +270,11 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     }
 
     if (num_targets > 0) {
-        for (int slot = 0; slot < num_targets; slot++) {
+        for (int slot = 0; slot < NUM_SLOTS; slot++) {
+            if (!m_TargetList[slot]) {
+                g_Lara.target = NULL;
+            }
+
             if (m_TargetList[slot] == g_Lara.target) {
                 break;
             }
