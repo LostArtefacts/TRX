@@ -1,5 +1,6 @@
 #include "game/objects/creatures/natla.h"
 
+#include "config.h"
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gun.h"
