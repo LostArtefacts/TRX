@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#define LOOK_HOLD_TIME 6
+#define LOOK_ENABLED 100
 #define DELAY_FRAMES 12
 #define HOLD_FRAMES 3
 
@@ -29,14 +31,14 @@ static void Input_CheckChangeTarget(INPUT_STATE *input)
     }
 
     if (input->look) {
-        if (m_HoldLook >= 6)
-            m_HoldLook = 100;
-        else {
+        if (m_HoldLook >= LOOK_HOLD_TIME) {
+            m_HoldLook = LOOK_ENABLED;
+        } else {
             input->look = 0;
             m_HoldLook++;
         }
     } else {
-        if (m_HoldLook && m_HoldLook != 100) {
+        if (m_HoldLook && m_HoldLook != LOOK_ENABLED) {
             input->change_target = 1;
         }
         m_HoldLook = 0;
