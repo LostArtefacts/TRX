@@ -164,6 +164,7 @@ void Natla_Control(int16_t item_num)
                 item->hit_points = NATLA_NEAR_DEATH;
                 Music_Play(MX_NATLA_SPEECH);
             } else {
+                g_Lara.target = NULL;
                 item->hit_points = DONT_TARGET;
             }
             break;
