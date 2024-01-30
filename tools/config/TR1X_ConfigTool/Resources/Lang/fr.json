@@ -116,7 +116,7 @@
       "Title": "Changement de cible",
       "Description": "Permet de changer de cible en visant avec une arme. Appuyez sur la touche Regarder tout en visant pour changer de cible comme dans TR4+."
     },
-    "target_lock_mode": {
+    "target_mode": {
       "Title": "Mode de verrouillage des cibles",
       "Description": "Modifie le comportement de verrouillage des cibles.\n- Verrouillage complet : Garde toujours le verrouillage des cibles même si l'ennemi se déplace hors du champ de vision ou meurt (Comportement original de TR1).\n- Semi-verrouillage : Conserve le verrouillage des cibles si l'ennemi se déplace hors du champ de vision, mais perd le verrouillage si l'ennemi meurt.\n- Pas de verrouillage : Perd le verrouillage de la cible si l'ennemi disparaît de vue ou meurt (Comportemenent TR4+)."
     },

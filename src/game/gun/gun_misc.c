@@ -200,7 +200,7 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
 void Gun_GetNewTarget(WEAPON_INFO *winfo)
 {
     // Preserve OG targeting behavior.
-    if (g_Config.target_lock_mode == TLM_FULL && !g_Config.enable_target_change
+    if (g_Config.target_mode == TLM_FULL && !g_Config.enable_target_change
         && !g_Input.action) {
         g_Lara.target = NULL;
     }
@@ -262,8 +262,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     }
     m_TargetList[num_targets] = NULL;
 
-    if ((g_Config.target_lock_mode == TLM_FULL
-         || g_Config.target_lock_mode == TLM_SEMI)
+    if ((g_Config.target_mode == TLM_FULL || g_Config.target_mode == TLM_SEMI)
         && g_Input.action && g_Lara.target) {
         Gun_TargetInfo(winfo);
         return;
@@ -492,7 +491,7 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         g_GameInfo.current[g_CurrentLevel].stats.kill_count++;
-        if (g_Config.target_lock_mode == TLM_SEMI) {
+        if (g_Config.target_mode == TLM_SEMI) {
             g_Lara.target = NULL;
         }
     }

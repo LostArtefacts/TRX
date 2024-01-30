@@ -134,7 +134,7 @@ typedef struct {
     bool enable_buffering;
     bool enable_lean_jumping;
     bool enable_target_change;
-    int32_t target_lock_mode;
+    TARGET_LOCK_MODE target_mode;
 
     struct {
         int32_t layout;

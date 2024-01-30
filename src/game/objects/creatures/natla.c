@@ -165,7 +165,8 @@ void Natla_Control(int16_t item_num)
                 item->hit_points = NATLA_NEAR_DEATH;
                 Music_Play(MX_NATLA_SPEECH);
             } else {
-                if (g_Config.target_lock_mode == TLM_SEMI || g_Config.target_lock_mode == TLM_NONE) {
+                if (g_Config.target_mode == TLM_SEMI
+                    || g_Config.target_mode == TLM_NONE) {
                     g_Lara.target = NULL;
                 }
                 item->hit_points = DONT_TARGET;

@@ -88,7 +88,7 @@
           "DefaultValue": true
         },
         {
-          "Field": "target_lock_mode",
+          "Field": "target_mode",
           "DataType": "Enum",
           "EnumKey": "target_mode",
           "DefaultValue": "full-lock"
