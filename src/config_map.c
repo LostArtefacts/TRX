@@ -44,7 +44,7 @@ static const CONFIG_OPTION_ENUM_MAP m_BarColors[] = {
 static const CONFIG_OPTION_ENUM_MAP m_TargetLockModes[] = {
     { "full-lock", TLM_FULL },
     { "semi-lock", TLM_SEMI },
-    { "no-lock", TLM_NO },
+    { "no-lock", TLM_NONE },
     { NULL, -1 },
 };
 

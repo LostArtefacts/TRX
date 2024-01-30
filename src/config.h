@@ -51,7 +51,7 @@ typedef enum {
 typedef enum {
     TLM_FULL = 0,
     TLM_SEMI = 1,
-    TLM_NO = 2,
+    TLM_NONE = 2,
 } TARGET_LOCK_MODE;
 
 typedef struct {
