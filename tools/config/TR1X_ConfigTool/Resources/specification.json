@@ -40,6 +40,11 @@
       "bottom-left",
       "bottom-center",
       "bottom-right"
+    ],
+    "target_mode": [
+      "full-lock",
+      "semi-lock",
+      "no-lock"
     ]
   },
   "CategorisedProperties": [
@@ -76,6 +81,17 @@
           "Field": "enable_uw_roll",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "enable_target_change",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
+          "Field": "target_mode",
+          "DataType": "Enum",
+          "EnumKey": "target_mode",
+          "DefaultValue": "full-lock"
         },
         {
           "Field": "enable_lean_jumping",

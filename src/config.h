@@ -48,6 +48,12 @@ typedef enum {
     BSM_PS1 = 5,
 } BAR_SHOW_MODE;
 
+typedef enum {
+    TLM_FULL = 0,
+    TLM_SEMI = 1,
+    TLM_NONE = 2,
+} TARGET_LOCK_MODE;
+
 typedef struct {
     bool loaded;
 
@@ -127,6 +133,8 @@ typedef struct {
     bool enable_uw_roll;
     bool enable_buffering;
     bool enable_lean_jumping;
+    bool enable_target_change;
+    TARGET_LOCK_MODE target_mode;
 
     struct {
         int32_t layout;

@@ -1,5 +1,6 @@
 #include "game/objects/creatures/natla.h"
 
+#include "config.h"
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/effects/gun.h"
@@ -14,6 +15,7 @@
 #include "math/math.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #define NATLA_SHOT_DAMAGE 100
 #define NATLA_NEAR_DEATH 200
@@ -164,6 +166,10 @@ void Natla_Control(int16_t item_num)
                 item->hit_points = NATLA_NEAR_DEATH;
                 Music_Play(MX_NATLA_SPEECH);
             } else {
+                if (g_Config.target_mode == TLM_SEMI
+                    || g_Config.target_mode == TLM_NONE) {
+                    g_Lara.target = NULL;
+                }
                 item->hit_points = DONT_TARGET;
             }
             break;

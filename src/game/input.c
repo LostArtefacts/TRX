@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#define LOOK_HOLD_TIME 6
+#define LOOK_ENABLED 100
 #define DELAY_FRAMES 12
 #define HOLD_FRAMES 3
 
@@ -17,8 +19,31 @@ static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static bool m_BtnConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
+static int32_t m_HoldLook = 0;
 
+static void Input_CheckChangeTarget(INPUT_STATE *input);
 static INPUT_STATE Input_GetDebounced(INPUT_STATE input);
+
+static void Input_CheckChangeTarget(INPUT_STATE *input)
+{
+    if (g_Lara.gun_status != LGS_READY) {
+        return;
+    }
+
+    if (input->look) {
+        if (m_HoldLook >= LOOK_HOLD_TIME) {
+            m_HoldLook = LOOK_ENABLED;
+        } else {
+            input->look = 0;
+            m_HoldLook++;
+        }
+    } else {
+        if (m_HoldLook && m_HoldLook != LOOK_ENABLED) {
+            input->change_target = 1;
+        }
+        m_HoldLook = 0;
+    }
+}
 
 static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
 {
@@ -139,6 +164,10 @@ void Input_Update(void)
                 g_Input.step_right = 1;
             }
         }
+    }
+
+    if (g_Config.enable_target_change) {
+        Input_CheckChangeTarget(&g_Input);
     }
 
     g_InputDB = Input_GetDebounced(g_Input);

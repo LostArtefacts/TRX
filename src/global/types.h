@@ -2073,6 +2073,7 @@ typedef union INPUT_STATE {
         uint64_t menu_right : 1;
         uint64_t menu_confirm : 1;
         uint64_t menu_back : 1;
+        uint64_t change_target : 1;
     };
 } INPUT_STATE;
 

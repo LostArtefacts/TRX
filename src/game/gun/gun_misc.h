@@ -11,6 +11,7 @@ extern WEAPON_INFO g_Weapons[NUM_WEAPONS];
 
 void Gun_TargetInfo(WEAPON_INFO *winfo);
 void Gun_GetNewTarget(WEAPON_INFO *winfo);
+void Gun_ChangeTarget(WEAPON_INFO *winfo);
 void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target);
 void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm);
 int32_t Gun_FireWeapon(

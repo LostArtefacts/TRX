@@ -1,5 +1,6 @@
 #include "game/gun/gun_pistols.h"
 
+#include "config.h"
 #include "game/anim.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
@@ -159,13 +160,10 @@ void Gun_Pistols_Control(LARA_GUN_TYPE weapon_type)
 {
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
 
-    if (g_Input.action) {
-        Gun_TargetInfo(winfo);
-    } else {
-        g_Lara.target = NULL;
-    }
-    if (!g_Lara.target) {
-        Gun_GetNewTarget(winfo);
+    Gun_GetNewTarget(winfo);
+
+    if (g_InputDB.change_target && g_Config.enable_target_change) {
+        Gun_ChangeTarget(winfo);
     }
 
     Gun_AimWeapon(winfo, &g_Lara.left_arm);
