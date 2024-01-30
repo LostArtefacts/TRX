@@ -14,6 +14,7 @@
 #include "math/math.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #define NATLA_SHOT_DAMAGE 100
 #define NATLA_NEAR_DEATH 200
