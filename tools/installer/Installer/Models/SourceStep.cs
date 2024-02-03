@@ -11,10 +11,11 @@ public class SourceStep : BaseNotifyPropertyChanged, IStep
         InstallationSources = new ObservableCollection<InstallSourceViewModel>
         {
             // NOTE: the order also decides which installation source will be selected by default
-            new InstallSourceViewModel(new SteamInstallSource()),
-            new InstallSourceViewModel(new GOGInstallSource()),
-            new InstallSourceViewModel(new TombATIInstallSource()),
-            new InstallSourceViewModel(new TR1XInstallSource()),
+            new(new SteamInstallSource()),
+            new(new GOGInstallSource()),
+            new(new TombATIInstallSource()),
+            new(new TR1XInstallSource()),
+            new(new CDRomInstallSource()),
         };
 
         foreach (var installationSource in InstallationSources)
