@@ -21,8 +21,11 @@
 
 static bool m_FirstHair = false;
 static GAME_OBJECT_ID m_LaraType = O_LARA;
-static PHD_3DPOS m_Hair[HAIR_SEGMENTS + 1] = { 0 };
-static PHD_VECTOR m_HVel[HAIR_SEGMENTS + 1] = { 0 };
+static struct {
+    VECTOR_3D pos;
+    VECTOR_3D rot;
+} m_Hair[HAIR_SEGMENTS + 1] = { 0 };
+static VECTOR_3D m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
 static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z);
 
@@ -33,15 +36,16 @@ void Lara_Hair_Initialise(void)
 
     int32_t *bone = &g_AnimBones[g_Objects[O_HAIR].bone_index];
 
-    m_Hair[0].y_rot = 0;
-    m_Hair[0].x_rot = -PHD_90;
+    m_Hair[0].rot.y = 0;
+    m_Hair[0].rot.x = -PHD_90;
 
     for (int i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
-        m_Hair[i].x = *(bone + 1);
-        m_Hair[i].y = *(bone + 2);
-        m_Hair[i].z = *(bone + 3);
-        m_Hair[i].x_rot = -PHD_90;
-        m_Hair[i].y_rot = m_Hair[i].z_rot = 0;
+        m_Hair[i].pos.x = *(bone + 1);
+        m_Hair[i].pos.y = *(bone + 2);
+        m_Hair[i].pos.z = *(bone + 3);
+        m_Hair[i].rot.x = -PHD_90;
+        m_Hair[i].rot.y = 0;
+        m_Hair[i].rot.z = 0;
         m_HVel[i].x = 0;
         m_HVel[i].y = 0;
         m_HVel[i].z = 0;
@@ -66,7 +70,7 @@ void Lara_Hair_Control(void)
     int16_t *frame, *objptr, room_number;
     int16_t *frm_ptr[2];
     int16_t **mesh_base;
-    PHD_VECTOR pos;
+    VECTOR_3D pos;
     FLOOR_INFO *floor;
     int32_t i, water_level, height, size, frac, rate;
     SPHERE sphere[5];
@@ -110,8 +114,7 @@ void Lara_Hair_Control(void)
     Matrix_PushUnit();
     Matrix_TranslateSet(
         g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
-    Matrix_RotYXZ(
-        g_LaraItem->pos.y_rot, g_LaraItem->pos.x_rot, g_LaraItem->pos.z_rot);
+    Matrix_RotYXZ(g_LaraItem->rot.y, g_LaraItem->rot.x, g_LaraItem->rot.z);
 
     bone = &g_AnimBones[object->bone_index];
     if (frac) {
@@ -284,30 +287,25 @@ void Lara_Hair_Control(void)
 
     bone = &g_AnimBones[g_Objects[O_HAIR].bone_index];
 
+    m_Hair[0].pos = pos;
+
     if (m_FirstHair) {
         m_FirstHair = false;
 
-        m_Hair[0].x = pos.x;
-        m_Hair[0].y = pos.y;
-        m_Hair[0].z = pos.z;
-
         for (i = 0; i < HAIR_SEGMENTS; i++, bone += 4) {
             Matrix_PushUnit();
-            Matrix_TranslateSet(m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
-            Matrix_RotYXZ(m_Hair[i].y_rot, m_Hair[i].x_rot, 0);
+            Matrix_TranslateSet(
+                m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
+            Matrix_RotYXZ(m_Hair[i].rot.y, m_Hair[i].rot.x, 0);
             Matrix_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
 
-            m_Hair[i + 1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-            m_Hair[i + 1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-            m_Hair[i + 1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+            m_Hair[i + 1].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+            m_Hair[i + 1].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+            m_Hair[i + 1].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
 
             Matrix_Pop();
         }
     } else {
-        m_Hair[0].x = pos.x;
-        m_Hair[0].y = pos.y;
-        m_Hair[0].z = pos.z;
-
         if (in_cutscene) {
             room_number = Lara_Hair_GetRoom(pos.x, pos.y, pos.z);
             water_level = NO_HEIGHT;
@@ -323,47 +321,46 @@ void Lara_Hair_Control(void)
         }
 
         for (i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
-            m_HVel[0].x = m_Hair[i].x;
-            m_HVel[0].y = m_Hair[i].y;
-            m_HVel[0].z = m_Hair[i].z;
+            m_HVel[0] = m_Hair[i].pos;
 
             floor = Room_GetFloor(
-                m_Hair[i].x, m_Hair[i].y, m_Hair[i].z, &room_number);
-            height =
-                Room_GetHeight(floor, m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
+                m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z,
+                &room_number);
+            height = Room_GetHeight(
+                floor, m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
 
-            m_Hair[i].x += m_HVel[i].x * 3 / 4;
-            m_Hair[i].y += m_HVel[i].y * 3 / 4;
-            m_Hair[i].z += m_HVel[i].z * 3 / 4;
+            m_Hair[i].pos.x += m_HVel[i].x * 3 / 4;
+            m_Hair[i].pos.y += m_HVel[i].y * 3 / 4;
+            m_Hair[i].pos.z += m_HVel[i].z * 3 / 4;
 
             switch (g_Lara.water_status) {
             case LWS_ABOVE_WATER:
-                m_Hair[i].y += 10;
-                if (water_level != NO_HEIGHT && m_Hair[i].y > water_level)
-                    m_Hair[i].y = water_level;
-                else if (m_Hair[i].y > height) {
-                    m_Hair[i].x = m_HVel[0].x;
-                    if (m_Hair[i].y - height <= STEP_L) {
-                        m_Hair[i].y = height;
+                m_Hair[i].pos.y += 10;
+                if (water_level != NO_HEIGHT && m_Hair[i].pos.y > water_level)
+                    m_Hair[i].pos.y = water_level;
+                else if (m_Hair[i].pos.y > height) {
+                    m_Hair[i].pos.x = m_HVel[0].x;
+                    if (m_Hair[i].pos.y - height <= STEP_L) {
+                        m_Hair[i].pos.y = height;
                     }
-                    m_Hair[i].z = m_HVel[0].z;
+                    m_Hair[i].pos.z = m_HVel[0].z;
                 }
                 break;
 
             case LWS_UNDERWATER:
             case LWS_SURFACE:
-                if (m_Hair[i].y < water_level) {
-                    m_Hair[i].y = water_level;
-                } else if (m_Hair[i].y > height) {
-                    m_Hair[i].y = height;
+                if (m_Hair[i].pos.y < water_level) {
+                    m_Hair[i].pos.y = water_level;
+                } else if (m_Hair[i].pos.y > height) {
+                    m_Hair[i].pos.y = height;
                 }
                 break;
             }
 
             for (j = 0; j < 5; j++) {
-                x = m_Hair[i].x - sphere[j].x;
-                y = m_Hair[i].y - sphere[j].y;
-                z = m_Hair[i].z - sphere[j].z;
+                x = m_Hair[i].pos.x - sphere[j].x;
+                y = m_Hair[i].pos.y - sphere[j].y;
+                z = m_Hair[i].pos.z - sphere[j].z;
 
                 distance = x * x + y * y + z * z;
 
@@ -373,24 +370,25 @@ void Lara_Hair_Control(void)
                     if (distance == 0)
                         distance = 1;
 
-                    m_Hair[i].x = sphere[j].x + x * sphere[j].r / distance;
-                    m_Hair[i].y = sphere[j].y + y * sphere[j].r / distance;
-                    m_Hair[i].z = sphere[j].z + z * sphere[j].r / distance;
+                    m_Hair[i].pos.x = sphere[j].x + x * sphere[j].r / distance;
+                    m_Hair[i].pos.y = sphere[j].y + y * sphere[j].r / distance;
+                    m_Hair[i].pos.z = sphere[j].z + z * sphere[j].r / distance;
                 }
             }
 
             distance = Math_Sqrt(
-                SQUARE(m_Hair[i].z - m_Hair[i - 1].z)
-                + SQUARE(m_Hair[i].x - m_Hair[i - 1].x));
-            m_Hair[i - 1].y_rot = Math_Atan(
-                m_Hair[i].z - m_Hair[i - 1].z, m_Hair[i].x - m_Hair[i - 1].x);
-            m_Hair[i - 1].x_rot =
-                -Math_Atan(distance, m_Hair[i].y - m_Hair[i - 1].y);
+                SQUARE(m_Hair[i].pos.z - m_Hair[i - 1].pos.z)
+                + SQUARE(m_Hair[i].pos.x - m_Hair[i - 1].pos.x));
+            m_Hair[i - 1].rot.y = Math_Atan(
+                m_Hair[i].pos.z - m_Hair[i - 1].pos.z,
+                m_Hair[i].pos.x - m_Hair[i - 1].pos.x);
+            m_Hair[i - 1].rot.x =
+                -Math_Atan(distance, m_Hair[i].pos.y - m_Hair[i - 1].pos.y);
 
             Matrix_PushUnit();
             Matrix_TranslateSet(
-                m_Hair[i - 1].x, m_Hair[i - 1].y, m_Hair[i - 1].z);
-            Matrix_RotYXZ(m_Hair[i - 1].y_rot, m_Hair[i - 1].x_rot, 0);
+                m_Hair[i - 1].pos.x, m_Hair[i - 1].pos.y, m_Hair[i - 1].pos.z);
+            Matrix_RotYXZ(m_Hair[i - 1].rot.y, m_Hair[i - 1].rot.x, 0);
 
             if (i == HAIR_SEGMENTS) {
                 Matrix_TranslateRel(*(bone - 3), *(bone - 2), *(bone - 1));
@@ -398,13 +396,13 @@ void Lara_Hair_Control(void)
                 Matrix_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
             }
 
-            m_Hair[i].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-            m_Hair[i].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-            m_Hair[i].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+            m_Hair[i].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+            m_Hair[i].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+            m_Hair[i].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
 
-            m_HVel[i].x = m_Hair[i].x - m_HVel[0].x;
-            m_HVel[i].y = m_Hair[i].y - m_HVel[0].y;
-            m_HVel[i].z = m_Hair[i].z - m_HVel[0].z;
+            m_HVel[i].x = m_Hair[i].pos.x - m_HVel[0].x;
+            m_HVel[i].y = m_Hair[i].pos.y - m_HVel[0].y;
+            m_HVel[i].z = m_Hair[i].pos.z - m_HVel[0].z;
 
             Matrix_Pop();
         }
@@ -429,9 +427,9 @@ void Lara_Hair_Draw(void)
     for (int i = 0; i < HAIR_SEGMENTS; i++) {
         Matrix_Push();
 
-        Matrix_TranslateAbs(m_Hair[i].x, m_Hair[i].y, m_Hair[i].z);
-        Matrix_RotY(m_Hair[i].y_rot);
-        Matrix_RotX(m_Hair[i].x_rot);
+        Matrix_TranslateAbs(m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
+        Matrix_RotY(m_Hair[i].rot.y);
+        Matrix_RotX(m_Hair[i].rot.x);
         Output_DrawPolygons(*mesh++, 1);
 
         Matrix_Pop();

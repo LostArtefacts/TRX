@@ -20,8 +20,8 @@
 #define EXTRA_ANIM_HOLDER_SCION 0
 #define LF_PICKUPSCION 44
 
-static PHD_VECTOR m_Scion_Position = { 0, 640, -310 };
-static PHD_VECTOR m_Scion_Position4 = { 0, 280, -512 + 105 };
+static VECTOR_3D m_Scion_Position = { 0, 640, -310 };
+static VECTOR_3D m_Scion_Position4 = { 0, 280, -512 + 105 };
 
 static int16_t m_Scion_Bounds[12] = {
     -256,
@@ -142,12 +142,12 @@ void Scion_Control3(int16_t item_num)
 void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    int16_t rotx = item->pos.x_rot;
-    int16_t roty = item->pos.y_rot;
-    int16_t rotz = item->pos.z_rot;
-    item->pos.y_rot = lara_item->pos.y_rot;
-    item->pos.x_rot = 0;
-    item->pos.z_rot = 0;
+    int16_t rotx = item->rot.x;
+    int16_t roty = item->rot.y;
+    int16_t rotz = item->rot.z;
+    item->rot.y = lara_item->rot.y;
+    item->rot.x = 0;
+    item->rot.z = 0;
 
     if (!Lara_TestPosition(item, m_Scion_Bounds)) {
         goto cleanup;
@@ -173,23 +173,24 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
-        g_CinePosition = lara_item->pos;
+        g_CinePosition.pos = lara_item->pos;
+        g_CinePosition.rot = lara_item->rot;
     }
 cleanup:
-    item->pos.x_rot = rotx;
-    item->pos.y_rot = roty;
-    item->pos.z_rot = rotz;
+    item->rot.x = rotx;
+    item->rot.y = roty;
+    item->rot.z = rotz;
 }
 
 void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    int16_t rotx = item->pos.x_rot;
-    int16_t roty = item->pos.y_rot;
-    int16_t rotz = item->pos.z_rot;
-    item->pos.y_rot = lara_item->pos.y_rot;
-    item->pos.x_rot = 0;
-    item->pos.z_rot = 0;
+    int16_t rotx = item->rot.x;
+    int16_t roty = item->rot.y;
+    int16_t rotz = item->rot.z;
+    item->rot.y = lara_item->rot.y;
+    item->rot.x = 0;
+    item->rot.z = 0;
 
     if (!Lara_TestPosition(item, m_Scion_Bounds4)) {
         goto cleanup;
@@ -206,11 +207,12 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
-        g_CinePosition = lara_item->pos;
-        g_CinePosition.y_rot -= PHD_90;
+        g_CinePosition.pos = lara_item->pos;
+        g_CinePosition.rot = lara_item->rot;
+        g_CinePosition.rot.y -= PHD_90;
     }
 cleanup:
-    item->pos.x_rot = rotx;
-    item->pos.y_rot = roty;
-    item->pos.z_rot = rotz;
+    item->rot.x = rotx;
+    item->rot.y = roty;
+    item->rot.z = rotz;
 }

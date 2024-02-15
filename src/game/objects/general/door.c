@@ -87,11 +87,11 @@ void Door_Initialise(int16_t item_num)
 
     int32_t dx = 0;
     int32_t dy = 0;
-    if (item->pos.y_rot == 0) {
+    if (item->rot.y == 0) {
         dx--;
-    } else if (item->pos.y_rot == -PHD_180) {
+    } else if (item->rot.y == -PHD_180) {
         dx++;
-    } else if (item->pos.y_rot == PHD_90) {
+    } else if (item->rot.y == PHD_90) {
         dy--;
     } else {
         dy++;

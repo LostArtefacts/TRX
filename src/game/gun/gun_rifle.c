@@ -248,7 +248,7 @@ void Gun_Rifle_Fire(void)
     PHD_ANGLE angles[2];
     PHD_ANGLE dangles[2];
 
-    angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->pos.y_rot;
+    angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->rot.y;
     angles[1] = g_Lara.left_arm.x_rot;
 
     for (int i = 0; i < SHOTGUN_AMMO_CLIP; i++) {

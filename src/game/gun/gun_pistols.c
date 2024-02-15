@@ -204,7 +204,7 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
             anir++;
         } else if (
             Anim_TestAbsFrameEqual(anir, LF_G_AIM_END) && g_Input.action) {
-            angles[0] = g_Lara.right_arm.y_rot + g_LaraItem->pos.y_rot;
+            angles[0] = g_Lara.right_arm.y_rot + g_LaraItem->rot.y;
             angles[1] = g_Lara.right_arm.x_rot;
             if (Gun_FireWeapon(
                     weapon_type, g_Lara.target, g_LaraItem, angles)) {
@@ -234,7 +234,7 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
             anil++;
         } else if (
             Anim_TestAbsFrameEqual(anil, LF_G_AIM_END) && g_Input.action) {
-            angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->pos.y_rot;
+            angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->rot.y;
             angles[1] = g_Lara.left_arm.x_rot;
             if (Gun_FireWeapon(
                     weapon_type, g_Lara.target, g_LaraItem, angles)) {

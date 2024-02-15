@@ -65,7 +65,8 @@ void MidasTouch_Collision(
         g_Lara.gun_type = LGT_UNARMED;
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
-        g_CinePosition = lara_item->pos;
+        g_CinePosition.pos = lara_item->pos;
+        g_CinePosition.rot = lara_item->rot;
         return;
     }
 
@@ -75,19 +76,19 @@ void MidasTouch_Collision(
         return;
     }
 
-    DIRECTION quadrant = (uint16_t)(lara_item->pos.y_rot + PHD_45) / PHD_90;
+    DIRECTION quadrant = (uint16_t)(lara_item->rot.y + PHD_45) / PHD_90;
     switch (quadrant) {
     case DIR_NORTH:
-        item->pos.y_rot = 0;
+        item->rot.y = 0;
         break;
     case DIR_EAST:
-        item->pos.y_rot = PHD_90;
+        item->rot.y = PHD_90;
         break;
     case DIR_SOUTH:
-        item->pos.y_rot = -PHD_180;
+        item->rot.y = -PHD_180;
         break;
     case DIR_WEST:
-        item->pos.y_rot = -PHD_90;
+        item->rot.y = -PHD_90;
         break;
     }
 

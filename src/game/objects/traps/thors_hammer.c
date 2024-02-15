@@ -77,7 +77,7 @@ void ThorsHandle_Control(int16_t item_num)
             int32_t x = item->pos.x;
             int32_t z = item->pos.z;
 
-            switch (item->pos.y_rot) {
+            switch (item->rot.y) {
             case 0:
                 z += WALL_L * 3;
                 break;
@@ -117,7 +117,7 @@ void ThorsHandle_Control(int16_t item_num)
         Room_GetHeight(floor, x, item->pos.y, z);
         Room_TestTriggers(g_TriggerIndex, true);
 
-        switch (item->pos.y_rot) {
+        switch (item->rot.y) {
         case 0:
             z += WALL_L * 3;
             break;

@@ -294,7 +294,7 @@ void MovableBlock_Collision(
         return;
     }
 
-    DIRECTION quadrant = ((uint16_t)lara_item->pos.y_rot + PHD_45) / PHD_90;
+    DIRECTION quadrant = ((uint16_t)lara_item->rot.y + PHD_45) / PHD_90;
     if (lara_item->current_anim_state == LS_STOP) {
         if (g_Input.forward || g_Input.back
             || g_Lara.gun_status != LGS_ARMLESS) {
@@ -303,16 +303,16 @@ void MovableBlock_Collision(
 
         switch (quadrant) {
         case DIR_NORTH:
-            item->pos.y_rot = 0;
+            item->rot.y = 0;
             break;
         case DIR_EAST:
-            item->pos.y_rot = PHD_90;
+            item->rot.y = PHD_90;
             break;
         case DIR_SOUTH:
-            item->pos.y_rot = -PHD_180;
+            item->rot.y = -PHD_180;
             break;
         case DIR_WEST:
-            item->pos.y_rot = -PHD_90;
+            item->rot.y = -PHD_90;
             break;
         }
 
@@ -344,7 +344,7 @@ void MovableBlock_Collision(
             break;
         }
 
-        lara_item->pos.y_rot = item->pos.y_rot;
+        lara_item->rot.y = item->rot.y;
         lara_item->goal_anim_state = LS_PP_READY;
 
         Lara_Animate(lara_item);

@@ -288,7 +288,7 @@ bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t height)
 {
-    PHD_VECTOR shifter;
+    VECTOR_3D shifter;
 
     coll->hit_static = 0;
     int32_t inxmin = x - coll->radius;
@@ -315,39 +315,39 @@ bool Collide_CollideStaticObjects(
                 continue;
             }
 
-            int32_t ymin = mesh->y + sinfo->y_minc;
-            int32_t ymax = mesh->y + sinfo->y_maxc;
+            int32_t ymin = mesh->pos.y + sinfo->y_minc;
+            int32_t ymax = mesh->pos.y + sinfo->y_maxc;
             int32_t xmin;
             int32_t xmax;
             int32_t zmin;
             int32_t zmax;
-            switch (mesh->y_rot) {
+            switch (mesh->rot.y) {
             case PHD_90:
-                xmin = mesh->x + sinfo->z_minc;
-                xmax = mesh->x + sinfo->z_maxc;
-                zmin = mesh->z - sinfo->x_maxc;
-                zmax = mesh->z - sinfo->x_minc;
+                xmin = mesh->pos.x + sinfo->z_minc;
+                xmax = mesh->pos.x + sinfo->z_maxc;
+                zmin = mesh->pos.z - sinfo->x_maxc;
+                zmax = mesh->pos.z - sinfo->x_minc;
                 break;
 
             case -PHD_180:
-                xmin = mesh->x - sinfo->x_maxc;
-                xmax = mesh->x - sinfo->x_minc;
-                zmin = mesh->z - sinfo->z_maxc;
-                zmax = mesh->z - sinfo->z_minc;
+                xmin = mesh->pos.x - sinfo->x_maxc;
+                xmax = mesh->pos.x - sinfo->x_minc;
+                zmin = mesh->pos.z - sinfo->z_maxc;
+                zmax = mesh->pos.z - sinfo->z_minc;
                 break;
 
             case -PHD_90:
-                xmin = mesh->x - sinfo->z_maxc;
-                xmax = mesh->x - sinfo->z_minc;
-                zmin = mesh->z + sinfo->x_minc;
-                zmax = mesh->z + sinfo->x_maxc;
+                xmin = mesh->pos.x - sinfo->z_maxc;
+                xmax = mesh->pos.x - sinfo->z_minc;
+                zmin = mesh->pos.z + sinfo->x_minc;
+                zmax = mesh->pos.z + sinfo->x_maxc;
                 break;
 
             default:
-                xmin = mesh->x + sinfo->x_minc;
-                xmax = mesh->x + sinfo->x_maxc;
-                zmin = mesh->z + sinfo->z_minc;
-                zmax = mesh->z + sinfo->z_maxc;
+                xmin = mesh->pos.x + sinfo->x_minc;
+                xmax = mesh->pos.x + sinfo->x_maxc;
+                zmin = mesh->pos.z + sinfo->z_minc;
+                zmax = mesh->pos.z + sinfo->z_maxc;
                 break;
             }
 
@@ -470,7 +470,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     }
 
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     int16_t *frame = Item_GetBestFrame(item);
     Matrix_TranslateRel(
@@ -569,13 +569,12 @@ int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
     return flags;
 }
 
-void Collide_GetJointAbsPosition(
-    ITEM_INFO *item, PHD_VECTOR *vec, int32_t joint)
+void Collide_GetJointAbsPosition(ITEM_INFO *item, VECTOR_3D *vec, int32_t joint)
 {
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     Matrix_PushUnit();
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     int16_t *frame = Item_GetBestFrame(item);
     Matrix_TranslateRel(

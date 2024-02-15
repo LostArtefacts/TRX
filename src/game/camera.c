@@ -381,15 +381,15 @@ static void Camera_LoadCutsceneFrame(void)
     int16_t fov = ptr[6];
     int16_t roll = ptr[7];
 
-    int32_t c = Math_Cos(g_CinePosition.y_rot);
-    int32_t s = Math_Sin(g_CinePosition.y_rot);
+    int32_t c = Math_Cos(g_CinePosition.rot.y);
+    int32_t s = Math_Sin(g_CinePosition.rot.y);
 
-    g_Camera.target.x = g_CinePosition.x + ((c * tx + s * tz) >> W2V_SHIFT);
-    g_Camera.target.y = g_CinePosition.y + ty;
-    g_Camera.target.z = g_CinePosition.z + ((c * tz - s * tx) >> W2V_SHIFT);
-    g_Camera.pos.x = g_CinePosition.x + ((s * cz + c * cx) >> W2V_SHIFT);
-    g_Camera.pos.y = g_CinePosition.y + cy;
-    g_Camera.pos.z = g_CinePosition.z + ((c * cz - s * cx) >> W2V_SHIFT);
+    g_Camera.target.x = g_CinePosition.pos.x + ((c * tx + s * tz) >> W2V_SHIFT);
+    g_Camera.target.y = g_CinePosition.pos.y + ty;
+    g_Camera.target.z = g_CinePosition.pos.z + ((c * tz - s * tx) >> W2V_SHIFT);
+    g_Camera.pos.x = g_CinePosition.pos.x + ((s * cz + c * cx) >> W2V_SHIFT);
+    g_Camera.pos.y = g_CinePosition.pos.y + cy;
+    g_Camera.pos.z = g_CinePosition.pos.z + ((c * cz - s * cx) >> W2V_SHIFT);
 
     Viewport_SetFOV(fov);
 
@@ -456,7 +456,7 @@ void Camera_Chase(ITEM_INFO *item)
 {
     GAME_VECTOR ideal;
 
-    g_Camera.target_elevation += item->pos.x_rot;
+    g_Camera.target_elevation += item->rot.x;
     if (g_Camera.target_elevation > MAX_ELEVATION) {
         g_Camera.target_elevation = MAX_ELEVATION;
     } else if (g_Camera.target_elevation < -MAX_ELEVATION) {
@@ -472,7 +472,7 @@ void Camera_Chase(ITEM_INFO *item)
 
     g_Camera.target_square = SQUARE(distance);
 
-    PHD_ANGLE angle = item->pos.y_rot + g_Camera.target_angle;
+    PHD_ANGLE angle = item->rot.y + g_Camera.target_angle;
     ideal.x = g_Camera.target.x - (distance * Math_Sin(angle) >> W2V_SHIFT);
     ideal.z = g_Camera.target.z - (distance * Math_Cos(angle) >> W2V_SHIFT);
     ideal.room_number = g_Camera.pos.room_number;
@@ -494,13 +494,13 @@ void Camera_Combat(ITEM_INFO *item)
     g_Camera.target.x = item->pos.x;
 
     if (g_Lara.target) {
-        g_Camera.target_angle = item->pos.y_rot + g_Lara.target_angles[0];
-        g_Camera.target_elevation = item->pos.x_rot + g_Lara.target_angles[1];
+        g_Camera.target_angle = item->rot.y + g_Lara.target_angles[0];
+        g_Camera.target_elevation = item->rot.x + g_Lara.target_angles[1];
     } else {
         g_Camera.target_angle =
-            item->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+            item->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
         g_Camera.target_elevation =
-            item->pos.x_rot + g_Lara.torso_x_rot + g_Lara.head_x_rot;
+            item->rot.x + g_Lara.torso_x_rot + g_Lara.head_x_rot;
     }
 
     g_Camera.target_distance = COMBAT_DISTANCE;
@@ -534,9 +534,9 @@ void Camera_Look(ITEM_INFO *item)
     g_Camera.target.x = item->pos.x;
 
     g_Camera.target_angle =
-        item->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+        item->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
     g_Camera.target_elevation =
-        item->pos.x_rot + g_Lara.torso_x_rot + g_Lara.head_x_rot;
+        item->rot.x + g_Lara.torso_x_rot + g_Lara.head_x_rot;
     g_Camera.target_distance = WALL_L * 3 / 2;
 
     int32_t distance =
@@ -545,10 +545,8 @@ void Camera_Look(ITEM_INFO *item)
 
     g_Camera.shift =
         -STEP_L * 2 * Math_Sin(g_Camera.target_elevation) >> W2V_SHIFT;
-    g_Camera.target.z +=
-        g_Camera.shift * Math_Cos(item->pos.y_rot) >> W2V_SHIFT;
-    g_Camera.target.x +=
-        g_Camera.shift * Math_Sin(item->pos.y_rot) >> W2V_SHIFT;
+    g_Camera.target.z += g_Camera.shift * Math_Cos(item->rot.y) >> W2V_SHIFT;
+    g_Camera.target.x += g_Camera.shift * Math_Sin(item->rot.y) >> W2V_SHIFT;
 
     if (Camera_BadPosition(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
@@ -647,7 +645,7 @@ void Camera_Update(void)
         int16_t angle = Math_Atan(
                             g_Camera.item->pos.z - item->pos.z,
                             g_Camera.item->pos.x - item->pos.x)
-            - item->pos.y_rot;
+            - item->rot.y;
         int16_t tilt = Math_Atan(
             shift,
             y
@@ -712,8 +710,8 @@ void Camera_Update(void)
         if (g_Camera.flags == FOLLOW_CENTRE) {
             int16_t shift =
                 (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
-            g_Camera.target.z += Math_Cos(item->pos.y_rot) * shift >> W2V_SHIFT;
-            g_Camera.target.x += Math_Sin(item->pos.y_rot) * shift >> W2V_SHIFT;
+            g_Camera.target.z += Math_Cos(item->rot.y) * shift >> W2V_SHIFT;
+            g_Camera.target.x += Math_Sin(item->rot.y) * shift >> W2V_SHIFT;
         }
 
         g_Camera.target.room_number = item->room_number;
@@ -779,8 +777,8 @@ void Camera_OffsetReset(void)
 
 void Camera_UpdateCutscene(void)
 {
-    PHD_VECTOR cam_pos;
-    PHD_VECTOR cam_tar;
+    VECTOR_3D cam_pos;
+    VECTOR_3D cam_tar;
 
     int16_t *ptr = &g_Cine[8 * g_CineFrame];
     int32_t tx = ptr[0];

@@ -16,5 +16,5 @@ void GunShot_Control(int16_t fx_num)
         Effect_Kill(fx_num);
         return;
     }
-    fx->pos.z_rot = Random_GetControl();
+    fx->rot.z = Random_GetControl();
 }

@@ -87,9 +87,9 @@ void BaconLara_Control(int16_t item_num)
         item->pos.x = x;
         item->pos.y = y;
         item->pos.z = z;
-        item->pos.x_rot = g_LaraItem->pos.x_rot;
-        item->pos.y_rot = g_LaraItem->pos.y_rot - PHD_180;
-        item->pos.z_rot = g_LaraItem->pos.z_rot;
+        item->rot.x = g_LaraItem->rot.x;
+        item->rot.y = g_LaraItem->rot.y - PHD_180;
+        item->rot.z = g_LaraItem->rot.z;
         Item_NewRoom(item_num, g_LaraItem->room_number);
 
         if (h >= lh + WALL_L && !g_LaraItem->gravity_status) {

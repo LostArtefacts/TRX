@@ -124,9 +124,9 @@ static bool Console_Cmd_Pos(const char *const args)
         "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f,%.3f,%.3f ",
         g_LaraItem->room_number, g_LaraItem->pos.x / (float)WALL_L,
         g_LaraItem->pos.y / (float)WALL_L, g_LaraItem->pos.z / (float)WALL_L,
-        g_LaraItem->pos.x_rot * 360.0f / (float)PHD_ONE,
-        g_LaraItem->pos.y_rot * 360.0f / (float)PHD_ONE,
-        g_LaraItem->pos.z_rot * 360.0f / (float)PHD_ONE);
+        g_LaraItem->rot.x * 360.0f / (float)PHD_ONE,
+        g_LaraItem->rot.y * 360.0f / (float)PHD_ONE,
+        g_LaraItem->rot.z * 360.0f / (float)PHD_ONE);
     return true;
 }
 

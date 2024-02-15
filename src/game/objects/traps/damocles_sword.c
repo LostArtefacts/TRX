@@ -28,7 +28,7 @@ void DamoclesSword_Setup(OBJECT_INFO *obj)
 void DamoclesSword_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    item->pos.y_rot = Random_GetControl();
+    item->rot.y = Random_GetControl();
     item->required_anim_state = (Random_GetControl() - 0x4000) / 16;
     item->fall_speed = 50;
 }
@@ -37,7 +37,7 @@ void DamoclesSword_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->gravity_status) {
-        item->pos.y_rot += item->required_anim_state;
+        item->rot.y += item->required_anim_state;
         item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
         item->pos.y += item->fall_speed;
         item->pos.x += item->current_anim_state;
@@ -51,7 +51,7 @@ void DamoclesSword_Control(int16_t item_num)
             Item_RemoveActive(item_num);
         }
     } else if (item->pos.y != item->floor) {
-        item->pos.y_rot += item->required_anim_state;
+        item->rot.y += item->required_anim_state;
         int32_t x = g_LaraItem->pos.x - item->pos.x;
         int32_t y = g_LaraItem->pos.y - item->pos.y;
         int32_t z = g_LaraItem->pos.z - item->pos.z;
@@ -80,7 +80,7 @@ void DamoclesSword_Collision(
         int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = lara_item->pos.y - Random_GetControl() / 44;
-        int32_t d = lara_item->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
+        int32_t d = lara_item->rot.y + (Random_GetControl() - 0x4000) / 8;
         Effect_Blood(x, y, z, lara_item->speed, d, lara_item->room_number);
     }
 }

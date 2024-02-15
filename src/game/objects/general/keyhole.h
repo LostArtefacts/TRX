@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-extern PHD_VECTOR g_KeyHolePosition;
+extern VECTOR_3D g_KeyHolePosition;
 extern int16_t g_KeyHoleBounds[12];
 
 extern int32_t g_PickUpX;

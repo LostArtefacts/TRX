@@ -1255,7 +1255,7 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     File_Read(&item->pos.x, sizeof(int32_t), 1, fp);
     File_Read(&item->pos.y, sizeof(int32_t), 1, fp);
     File_Read(&item->pos.z, sizeof(int32_t), 1, fp);
-    File_Read(&item->pos.y_rot, sizeof(int16_t), 1, fp);
+    File_Read(&item->rot.y, sizeof(int16_t), 1, fp);
     File_Read(&item->shade, sizeof(int16_t), 1, fp);
     File_Read(&item->flags, sizeof(uint16_t), 1, fp);
 
@@ -1717,7 +1717,7 @@ static void Inject_ItemPositions(INJECTION *injection)
         }
 
         ITEM_INFO *item = &g_Items[item_num];
-        item->pos.y_rot = y_rot;
+        item->rot.y = y_rot;
         if (injection->version > INJ_VERSION_4) {
             item->pos.x = x;
             item->pos.y = y;

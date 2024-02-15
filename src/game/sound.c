@@ -28,7 +28,7 @@
 
 typedef struct SOUND_SLOT {
     int sound_id;
-    PHD_3DPOS *pos;
+    const VECTOR_3D *pos;
     uint32_t loudness;
     int16_t volume;
     int16_t pan;
@@ -58,7 +58,7 @@ static int m_DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
 static bool m_SoundIsActive = false;
 
 static SOUND_SLOT *Sound_GetSlot(
-    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode);
+    int32_t sfx_num, uint32_t loudness, const VECTOR_3D *pos, int16_t mode);
 static void Sound_UpdateSlotParams(SOUND_SLOT *slot);
 static void Sound_ClearSlot(SOUND_SLOT *slot);
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
@@ -89,7 +89,7 @@ static float Sound_CalcPitch(int pitch)
 }
 
 static SOUND_SLOT *Sound_GetSlot(
-    int32_t sfx_num, uint32_t loudness, PHD_3DPOS *pos, int16_t mode)
+    int32_t sfx_num, uint32_t loudness, const VECTOR_3D *pos, int16_t mode)
 {
     switch (mode) {
     case SOUND_MODE_WAIT:
@@ -157,7 +157,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
 
     int16_t angle = Math_Atan(
         slot->pos->z - g_LaraItem->pos.z, slot->pos->x - g_LaraItem->pos.x);
-    angle -= g_LaraItem->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+    angle -= g_LaraItem->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
     slot->pan = angle;
 }
 
@@ -262,7 +262,7 @@ void Sound_UpdateEffects(void)
     }
 }
 
-bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
+bool Sound_Effect(int32_t sfx_num, const VECTOR_3D *pos, uint32_t flags)
 {
     if (!m_SoundIsActive) {
         return false;
@@ -320,7 +320,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     if (pan) {
         int16_t angle =
             Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
-        angle -= g_LaraItem->pos.y_rot + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+        angle -= g_LaraItem->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
         pan = angle;
     }
 
@@ -436,7 +436,7 @@ bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags)
     return false;
 }
 
-bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos)
+bool Sound_StopEffect(int32_t sfx_num, const VECTOR_3D *pos)
 {
     if (!m_SoundIsActive) {
         return false;
@@ -562,9 +562,9 @@ void Sound_ResetAmbient(void)
     for (int i = 0; i < g_NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
         if (g_FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
-            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
+            Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
         } else if (!g_FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
-            Sound_Effect(sound->data, (PHD_3DPOS *)sound, SPM_NORMAL);
+            Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
         }
     }
 }

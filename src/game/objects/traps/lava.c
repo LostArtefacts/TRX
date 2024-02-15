@@ -101,8 +101,8 @@ void Lava_Setup(OBJECT_INFO *obj)
 void Lava_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
-    fx->pos.z += (fx->speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->pos.x += (fx->speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->pos.z += (fx->speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT;
+    fx->pos.x += (fx->speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT;
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
@@ -138,7 +138,7 @@ void LavaEmitter_Control(int16_t item_num)
         fx->pos.x = item->pos.x;
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;
-        fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
+        fx->rot.y = (Random_GetControl() - 0x4000) * 2;
         fx->speed = Random_GetControl() >> 10;
         fx->fall_speed = -Random_GetControl() / 200;
         fx->frame_number = -4 * Random_GetControl() / 0x7FFF;
@@ -170,7 +170,7 @@ void LavaWedge_Control(int16_t item_num)
         int32_t x = item->pos.x;
         int32_t z = item->pos.z;
 
-        switch (item->pos.y_rot) {
+        switch (item->rot.y) {
         case 0:
             item->pos.z += LAVA_WEDGE_SPEED;
             z += 2 * WALL_L;

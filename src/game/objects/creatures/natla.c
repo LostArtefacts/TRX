@@ -108,7 +108,7 @@ void Natla_Control(int16_t item_num)
             && Creature_CanTargetEnemy(item, &info);
 
         if (facing) {
-            item->pos.y_rot += facing;
+            item->rot.y += facing;
             facing = 0;
         }
 
@@ -134,7 +134,7 @@ void Natla_Control(int16_t item_num)
                     Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
-                    gun = fx->pos.x_rot;
+                    gun = fx->rot.x;
                     Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
@@ -148,7 +148,7 @@ void Natla_Control(int16_t item_num)
                     Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
-                    gun = fx->pos.x_rot;
+                    gun = fx->rot.x;
                     Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
@@ -223,7 +223,7 @@ void Natla_Control(int16_t item_num)
             Creature_Mood(item, &info, false);
         }
 
-        item->pos.y_rot -= facing;
+        item->rot.y -= facing;
         angle = Creature_Turn(item, NATLA_FLY_TURN);
 
         if (item->current_anim_state == NATLA_FLY) {
@@ -234,9 +234,9 @@ void Natla_Control(int16_t item_num)
             } else {
                 facing += info.angle;
             }
-            item->pos.y_rot += facing;
+            item->rot.y += facing;
         } else {
-            item->pos.y_rot += facing - angle;
+            item->rot.y += facing - angle;
             facing = 0;
         }
 
@@ -260,7 +260,7 @@ void Natla_Control(int16_t item_num)
                     Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
-                    gun = fx->pos.x_rot;
+                    gun = fx->rot.x;
                     Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
                 timer = 0;
@@ -283,17 +283,17 @@ void Natla_Control(int16_t item_num)
                     Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
-                    gun = fx->pos.x_rot;
+                    gun = fx->rot.x;
                 }
                 fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
-                    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
+                    fx->rot.y += (Random_GetControl() - 0x4000) / 4;
                 }
                 fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
                     FX_INFO *fx = &g_Effects[fx_num];
-                    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 4;
+                    fx->rot.y += (Random_GetControl() - 0x4000) / 4;
                 }
                 item->required_anim_state = NATLA_STOP;
             }
@@ -312,9 +312,9 @@ void Natla_Control(int16_t item_num)
     natla->flags &= ~NATLA_TIMER;
     natla->flags |= timer & NATLA_TIMER;
 
-    item->pos.y_rot -= facing;
+    item->rot.y -= facing;
     Creature_Animate(item_num, angle, 0);
-    item->pos.y_rot += facing;
+    item->rot.y += facing;
 
     item->priv = (void *)(intptr_t)facing;
 }
@@ -338,10 +338,8 @@ void NatlaGun_Control(int16_t fx_num)
         return;
     }
 
-    int32_t z =
-        fx->pos.z + ((fx->speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT);
-    int32_t x =
-        fx->pos.x + ((fx->speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT);
+    int32_t z = fx->pos.z + ((fx->speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT);
+    int32_t x = fx->pos.x + ((fx->speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT);
     int32_t y = fx->pos.y;
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
@@ -357,7 +355,7 @@ void NatlaGun_Control(int16_t fx_num)
         newfx->pos.x = x;
         newfx->pos.y = y;
         newfx->pos.z = z;
-        newfx->pos.y_rot = fx->pos.y_rot;
+        newfx->rot.y = fx->rot.y;
         newfx->room_number = room_num;
         newfx->speed = fx->speed;
         newfx->frame_number = 0;

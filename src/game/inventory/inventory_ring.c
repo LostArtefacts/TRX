@@ -49,12 +49,12 @@ void Inv_Ring_Init(
 
     ring->imo = imo;
 
-    ring->camera.x = 0;
-    ring->camera.y = CAMERA_STARTHEIGHT;
-    ring->camera.z = 896;
-    ring->camera.x_rot = 0;
-    ring->camera.y_rot = 0;
-    ring->camera.z_rot = 0;
+    ring->camera.pos.x = 0;
+    ring->camera.pos.y = CAMERA_STARTHEIGHT;
+    ring->camera.pos.z = 896;
+    ring->camera.rot.x = 0;
+    ring->camera.rot.y = 0;
+    ring->camera.rot.z = 0;
 
     Inv_Ring_MotionInit(ring, OPEN_FRAMES, RNG_OPENING, RNG_OPEN);
     Inv_Ring_MotionRadius(ring, RING_RADIUS);
@@ -63,12 +63,12 @@ void Inv_Ring_Init(
         ring, OPEN_ROTATION,
         0xC000 - (ring->current_object * ring->angle_adder));
 
-    ring->ringpos.x = 0;
-    ring->ringpos.y = 0;
-    ring->ringpos.z = 0;
-    ring->ringpos.x_rot = 0;
-    ring->ringpos.y_rot = imo->rotate_target - OPEN_ROTATION;
-    ring->ringpos.z_rot = 0;
+    ring->ringpos.pos.x = 0;
+    ring->ringpos.pos.y = 0;
+    ring->ringpos.pos.z = 0;
+    ring->ringpos.rot.x = 0;
+    ring->ringpos.rot.y = imo->rotate_target - OPEN_ROTATION;
+    ring->ringpos.rot.z = 0;
 
     ring->light.x = -1536;
     ring->light.y = 256;
@@ -313,19 +313,19 @@ void Inv_Ring_NotActive(void)
     Inv_Ring_Shutdown();
 }
 
-void Inv_Ring_GetView(RING_INFO *ring, PHD_3DPOS *viewer)
+void Inv_Ring_GetView(RING_INFO *ring, VECTOR_3D *view_pos, VECTOR_3D *view_rot)
 {
     PHD_ANGLE angles[2];
 
     Math_GetVectorAngles(
-        -ring->camera.x, CAMERA_YOFFSET - ring->camera.y,
-        ring->radius - ring->camera.z, angles);
-    viewer->x = ring->camera.x;
-    viewer->y = ring->camera.y;
-    viewer->z = ring->camera.z;
-    viewer->x_rot = angles[1] + ring->camera_pitch;
-    viewer->y_rot = angles[0];
-    viewer->z_rot = 0;
+        -ring->camera.pos.x, CAMERA_YOFFSET - ring->camera.pos.y,
+        ring->radius - ring->camera.pos.z, angles);
+    view_pos->x = ring->camera.pos.x;
+    view_pos->y = ring->camera.pos.y;
+    view_pos->z = ring->camera.pos.z;
+    view_rot->x = angles[1] + ring->camera_pitch;
+    view_rot->y = angles[0];
+    view_rot->z = 0;
 }
 
 void Inv_Ring_Light(RING_INFO *ring)
@@ -349,8 +349,8 @@ void Inv_Ring_DoMotions(RING_INFO *ring)
 
     if (imo->count) {
         ring->radius += imo->radius_rate;
-        ring->camera.y += imo->camera_yrate;
-        ring->ringpos.y_rot += imo->rotate_rate;
+        ring->camera.pos.y += imo->camera_yrate;
+        ring->ringpos.rot.y += imo->rotate_rate;
         ring->camera_pitch += imo->camera_pitch_rate;
 
         INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
@@ -368,11 +368,11 @@ void Inv_Ring_DoMotions(RING_INFO *ring)
             }
             if (imo->camera_yrate) {
                 imo->camera_yrate = 0;
-                ring->camera.y = imo->camera_ytarget;
+                ring->camera.pos.y = imo->camera_ytarget;
             }
             if (imo->rotate_rate) {
                 imo->rotate_rate = 0;
-                ring->ringpos.y_rot = imo->rotate_target;
+                ring->ringpos.rot.y = imo->rotate_target;
             }
             if (imo->item_ptxrot_rate) {
                 imo->item_ptxrot_rate = 0;
@@ -398,11 +398,11 @@ void Inv_Ring_DoMotions(RING_INFO *ring)
     }
 
     if (ring->rotating) {
-        ring->ringpos.y_rot += ring->rot_adder;
+        ring->ringpos.rot.y += ring->rot_adder;
         ring->rot_count--;
         if (!ring->rot_count) {
             ring->current_object = ring->target_object;
-            ring->ringpos.y_rot =
+            ring->ringpos.rot.y =
                 0xC000 - (ring->current_object * ring->angle_adder);
             ring->rotating = 0;
         }
@@ -485,7 +485,7 @@ void Inv_Ring_MotionCameraPos(RING_INFO *ring, int16_t target)
 {
     IMOTION_INFO *imo = ring->imo;
     imo->camera_ytarget = target;
-    imo->camera_yrate = (target - ring->camera.y) / imo->count;
+    imo->camera_yrate = (target - ring->camera.pos.y) / imo->count;
 }
 
 void Inv_Ring_MotionCameraPitch(RING_INFO *ring, int16_t target)

@@ -53,7 +53,7 @@ void Lara_CheckCheatMode(void)
 
     case 4:
         if (as != LS_STOP) {
-            cheat_angle = g_LaraItem->pos.y_rot;
+            cheat_angle = g_LaraItem->rot.y;
         }
         cheat_turn = 0;
         if (as == LS_TURN_L) {
@@ -67,8 +67,8 @@ void Lara_CheckCheatMode(void)
 
     case 5:
         if (as == LS_TURN_L || as == LS_FAST_TURN) {
-            cheat_turn += (int16_t)(g_LaraItem->pos.y_rot - cheat_angle);
-            cheat_angle = g_LaraItem->pos.y_rot;
+            cheat_turn += (int16_t)(g_LaraItem->rot.y - cheat_angle);
+            cheat_angle = g_LaraItem->rot.y;
         } else {
             cheat_mode = cheat_turn < -94208 ? 7 : 0;
         }
@@ -76,8 +76,8 @@ void Lara_CheckCheatMode(void)
 
     case 6:
         if (as == LS_TURN_R || as == LS_FAST_TURN) {
-            cheat_turn += (int16_t)(g_LaraItem->pos.y_rot - cheat_angle);
-            cheat_angle = g_LaraItem->pos.y_rot;
+            cheat_turn += (int16_t)(g_LaraItem->rot.y - cheat_angle);
+            cheat_angle = g_LaraItem->rot.y;
         } else {
             cheat_mode = cheat_turn > 94208 ? 7 : 0;
         }
@@ -126,7 +126,7 @@ void Lara_EnterFlyMode(void)
         item->goal_anim_state = LS_SWIM;
         Item_SwitchToAnim(item, LA_SWIM_GLIDE, 0);
         item->gravity_status = 0;
-        item->pos.x_rot = 30 * PHD_DEGREE;
+        item->rot.x = 30 * PHD_DEGREE;
         item->fall_speed = 30;
         g_Lara.head_x_rot = 0;
         g_Lara.head_y_rot = 0;

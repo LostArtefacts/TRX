@@ -14,7 +14,8 @@ void Inv_Ring_IsNotOpen(RING_INFO *ring);
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item);
 void Inv_Ring_NotActive(void);
 
-void Inv_Ring_GetView(RING_INFO *a1, PHD_3DPOS *viewer);
+void Inv_Ring_GetView(
+    RING_INFO *ring, VECTOR_3D *view_pos, VECTOR_3D *view_rot);
 void Inv_Ring_Light(RING_INFO *ring);
 void Inv_Ring_CalcAdders(RING_INFO *ring, int16_t rotation_duration);
 void Inv_Ring_DoMotions(RING_INFO *ring);

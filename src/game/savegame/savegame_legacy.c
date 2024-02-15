@@ -131,7 +131,8 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
         ITEM_INFO tmp_item;
 
         if (obj->save_position) {
-            Savegame_Legacy_Read(&tmp_item.pos, sizeof(PHD_3DPOS));
+            Savegame_Legacy_Read(&tmp_item.pos, sizeof(VECTOR_3D));
+            Savegame_Legacy_Read(&tmp_item.rot, sizeof(VECTOR_3D));
             Savegame_Legacy_Skip(sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.speed, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.fall_speed, sizeof(int16_t));
@@ -282,7 +283,7 @@ static void Savegame_Legacy_WriteLOT(LOT_INFO *lot)
     Savegame_Legacy_Write(&lot->zone_count, sizeof(int16_t));
     Savegame_Legacy_Write(&lot->target_box, sizeof(int16_t));
     Savegame_Legacy_Write(&lot->required_box, sizeof(int16_t));
-    Savegame_Legacy_Write(&lot->target, sizeof(PHD_VECTOR));
+    Savegame_Legacy_Write(&lot->target, sizeof(VECTOR_3D));
 }
 
 static void Savegame_Legacy_Read(void *pointer, int size)
@@ -374,7 +375,7 @@ static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
     Savegame_Legacy_Read(&lot->zone_count, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->target_box, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->required_box, sizeof(int16_t));
-    Savegame_Legacy_Read(&lot->target, sizeof(PHD_VECTOR));
+    Savegame_Legacy_Read(&lot->target, sizeof(VECTOR_3D));
 }
 
 static void Savegame_Legacy_SetCurrentPosition(int level_num)
@@ -539,7 +540,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->save_position) {
-            Savegame_Legacy_Read(&item->pos, sizeof(PHD_3DPOS));
+            Savegame_Legacy_Read(&item->pos, sizeof(VECTOR_3D));
+            Savegame_Legacy_Read(&item->rot, sizeof(VECTOR_3D));
             Savegame_Legacy_Read(&tmp16, sizeof(int16_t));
             Savegame_Legacy_Read(&item->speed, sizeof(int16_t));
             Savegame_Legacy_Read(&item->fall_speed, sizeof(int16_t));
@@ -711,7 +713,8 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->save_position) {
-            Savegame_Legacy_Write(&item->pos, sizeof(PHD_3DPOS));
+            Savegame_Legacy_Write(&item->pos, sizeof(VECTOR_3D));
+            Savegame_Legacy_Write(&item->rot, sizeof(VECTOR_3D));
             Savegame_Legacy_Write(&item->room_number, sizeof(int16_t));
             Savegame_Legacy_Write(&item->speed, sizeof(int16_t));
             Savegame_Legacy_Write(&item->fall_speed, sizeof(int16_t));

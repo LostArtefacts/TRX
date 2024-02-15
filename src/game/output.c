@@ -38,7 +38,7 @@ static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
-static PHD_VECTOR m_LsVectorView = { 0 };
+static VECTOR_3D m_LsVectorView = { 0 };
 
 char *m_BackdropImagePath = NULL;
 
@@ -457,13 +457,13 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         int32_t ambient = 0x1FFF - r->ambient;
         int32_t brightest = 0;
 
-        PHD_VECTOR ls = { 0, 0, 0 };
+        VECTOR_3D ls = { 0, 0, 0 };
         for (int i = 0; i < r->num_lights; i++) {
             LIGHT_INFO *light = &r->light[i];
-            PHD_VECTOR lc;
-            lc.x = x - light->x;
-            lc.y = y - light->y;
-            lc.z = z - light->z;
+            VECTOR_3D lc;
+            lc.x = x - light->pos.x;
+            lc.y = y - light->pos.y;
+            lc.z = z - light->pos.z;
 
             int32_t distance =
                 (SQUARE(lc.x) + SQUARE(lc.y) + SQUARE(lc.z)) >> 12;
@@ -511,7 +511,7 @@ void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
     }
 
     Matrix_PushUnit();
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
     Matrix_TranslateRel(
         (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
         (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
@@ -583,7 +583,7 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->floor, item->pos.z);
-    Matrix_RotY(item->pos.y_rot);
+    Matrix_RotY(item->rot.y);
 
     if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
         int16_t clip_and = 1;
@@ -1071,7 +1071,7 @@ int Output_GetObjectBounds(int16_t *bptr)
     int32_t z_min = bptr[4];
     int32_t z_max = bptr[5];
 
-    PHD_VECTOR vtx[8];
+    VECTOR_3D vtx[8];
     vtx[0].x = x_min;
     vtx[0].y = y_min;
     vtx[0].z = z_min;

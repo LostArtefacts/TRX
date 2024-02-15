@@ -70,7 +70,7 @@ void Pod_Initialise(int16_t item_num)
         bug->pos.x = item->pos.x;
         bug->pos.y = item->pos.y;
         bug->pos.z = item->pos.z;
-        bug->pos.y_rot = item->pos.y_rot;
+        bug->rot.y = item->rot.y;
         bug->flags = IF_NOT_VISIBLE;
         bug->shade = -1;
 

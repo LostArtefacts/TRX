@@ -136,7 +136,7 @@ void Effect_Draw(int16_t fxnum)
         Matrix_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
         if (g_MatrixPtr->_23 > Output_GetNearZ()
             && g_MatrixPtr->_23 < Output_GetFarZ()) {
-            Matrix_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
+            Matrix_RotYXZ(fx->rot.y, fx->rot.x, fx->rot.z);
             if (object->nmeshes) {
                 Output_CalculateStaticLight(fx->shade);
                 Output_DrawPolygons(g_Meshes[object->mesh_index], -1);

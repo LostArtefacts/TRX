@@ -21,15 +21,15 @@ void Matrix_ResetStack(void)
     g_MatrixPtr = &m_MatrixStack[0];
 }
 
-void Matrix_GenerateW2V(PHD_3DPOS *viewpos)
+void Matrix_GenerateW2V(const VECTOR_3D *pos, const VECTOR_3D *rot)
 {
     g_MatrixPtr = &m_MatrixStack[0];
-    int32_t sx = Math_Sin(viewpos->x_rot);
-    int32_t cx = Math_Cos(viewpos->x_rot);
-    int32_t sy = Math_Sin(viewpos->y_rot);
-    int32_t cy = Math_Cos(viewpos->y_rot);
-    int32_t sz = Math_Sin(viewpos->z_rot);
-    int32_t cz = Math_Cos(viewpos->z_rot);
+    int32_t sx = Math_Sin(rot->x);
+    int32_t cx = Math_Cos(rot->x);
+    int32_t sy = Math_Sin(rot->y);
+    int32_t cy = Math_Cos(rot->y);
+    int32_t sz = Math_Sin(rot->z);
+    int32_t cz = Math_Cos(rot->z);
 
     m_MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
     m_MatrixStack[0]._01 = TRIGMULT2(cx, sz);
@@ -40,9 +40,9 @@ void Matrix_GenerateW2V(PHD_3DPOS *viewpos)
     m_MatrixStack[0]._20 = TRIGMULT2(cx, sy);
     m_MatrixStack[0]._21 = -sx;
     m_MatrixStack[0]._22 = TRIGMULT2(cx, cy);
-    m_MatrixStack[0]._03 = viewpos->x;
-    m_MatrixStack[0]._13 = viewpos->y;
-    m_MatrixStack[0]._23 = viewpos->z;
+    m_MatrixStack[0]._03 = pos->x;
+    m_MatrixStack[0]._13 = pos->y;
+    m_MatrixStack[0]._23 = pos->z;
     g_W2VMatrix = m_MatrixStack[0];
 }
 
@@ -507,12 +507,15 @@ void Matrix_LookAt(
     PHD_ANGLE angles[2];
     Math_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
 
-    PHD_3DPOS viewer;
-    viewer.x = xsrc;
-    viewer.y = ysrc;
-    viewer.z = zsrc;
-    viewer.x_rot = angles[1];
-    viewer.y_rot = angles[0];
-    viewer.z_rot = roll;
-    Matrix_GenerateW2V(&viewer);
+    const VECTOR_3D view_pos = {
+        .x = xsrc,
+        .y = ysrc,
+        .z = zsrc,
+    };
+    const VECTOR_3D view_rot = {
+        .x = angles[1],
+        .y = angles[0],
+        .z = roll,
+    };
+    Matrix_GenerateW2V(&view_pos, &view_rot);
 }

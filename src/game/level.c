@@ -438,7 +438,7 @@ static bool Level_LoadItems(MYFILE *fp)
             File_Read(&item->pos.x, sizeof(int32_t), 1, fp);
             File_Read(&item->pos.y, sizeof(int32_t), 1, fp);
             File_Read(&item->pos.z, sizeof(int32_t), 1, fp);
-            File_Read(&item->pos.y_rot, sizeof(int16_t), 1, fp);
+            File_Read(&item->rot.y, sizeof(int16_t), 1, fp);
             File_Read(&item->shade, sizeof(int16_t), 1, fp);
             File_Read(&item->flags, sizeof(uint16_t), 1, fp);
 

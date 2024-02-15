@@ -68,19 +68,19 @@ void Lara_Control(void)
         Sound_StopEffect(SFX_LARA_FALL, NULL);
         if (item->current_anim_state == LS_SWAN_DIVE) {
             item->goal_anim_state = LS_DIVE;
-            item->pos.x_rot = -45 * PHD_DEGREE;
+            item->rot.x = -45 * PHD_DEGREE;
             Lara_Animate(item);
             item->fall_speed *= 2;
         } else if (item->current_anim_state == LS_FAST_DIVE) {
             item->goal_anim_state = LS_DIVE;
-            item->pos.x_rot = -85 * PHD_DEGREE;
+            item->rot.x = -85 * PHD_DEGREE;
             Lara_Animate(item);
             item->fall_speed *= 2;
         } else {
             item->current_anim_state = LS_DIVE;
             item->goal_anim_state = LS_SWIM;
             Item_SwitchToAnim(item, LA_JUMP_IN, 0);
-            item->pos.x_rot = -45 * PHD_DEGREE;
+            item->rot.x = -45 * PHD_DEGREE;
             item->fall_speed = (item->fall_speed * 3) / 2;
         }
         g_Lara.head_x_rot = 0;
@@ -99,8 +99,8 @@ void Lara_Control(void)
             Item_SwitchToAnim(item, LA_SURF_TREAD, 0);
             item->fall_speed = 0;
             item->pos.y = wh + 1;
-            item->pos.x_rot = 0;
-            item->pos.z_rot = 0;
+            item->rot.x = 0;
+            item->rot.z = 0;
             g_Lara.head_x_rot = 0;
             g_Lara.head_y_rot = 0;
             g_Lara.torso_x_rot = 0;
@@ -116,8 +116,8 @@ void Lara_Control(void)
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
             item->gravity_status = 1;
-            item->pos.x_rot = 0;
-            item->pos.z_rot = 0;
+            item->rot.x = 0;
+            item->rot.z = 0;
             g_Lara.head_x_rot = 0;
             g_Lara.head_y_rot = 0;
             g_Lara.torso_x_rot = 0;
@@ -132,8 +132,8 @@ void Lara_Control(void)
         item->speed = item->fall_speed / 4;
         item->fall_speed = 0;
         item->gravity_status = 1;
-        item->pos.x_rot = 0;
-        item->pos.z_rot = 0;
+        item->rot.x = 0;
+        item->rot.z = 0;
         g_Lara.head_x_rot = 0;
         g_Lara.head_y_rot = 0;
         g_Lara.torso_x_rot = 0;
@@ -201,7 +201,7 @@ void Lara_Control(void)
             } else {
                 g_Lara.water_status = LWS_ABOVE_WATER;
                 Item_SwitchToAnim(item, LA_STOP, 0);
-                item->pos.x_rot = item->pos.z_rot = 0;
+                item->rot.x = item->rot.z = 0;
                 g_Lara.head_x_rot = 0;
                 g_Lara.head_y_rot = 0;
                 g_Lara.torso_x_rot = 0;
@@ -622,7 +622,7 @@ void Lara_InitialiseMeshes(int32_t level_num)
     }
 }
 
-bool Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance)
+bool Lara_IsNearItem(const VECTOR_3D *pos, int32_t distance)
 {
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
@@ -637,12 +637,12 @@ bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds)
     return Item_TestPosition(g_LaraItem, item, bounds);
 }
 
-void Lara_AlignPosition(ITEM_INFO *item, PHD_VECTOR *vec)
+void Lara_AlignPosition(ITEM_INFO *item, VECTOR_3D *vec)
 {
     Item_AlignPosition(g_LaraItem, item, vec);
 }
 
-bool Lara_MovePosition(ITEM_INFO *item, PHD_VECTOR *vec)
+bool Lara_MovePosition(ITEM_INFO *item, VECTOR_3D *vec)
 {
     int32_t velocity =
         g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER
@@ -657,8 +657,8 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
     struct ITEM_INFO *lara_item = g_LaraItem;
     int32_t x = lara_item->pos.x - item->pos.x;
     int32_t z = lara_item->pos.z - item->pos.z;
-    int32_t c = Math_Cos(item->pos.y_rot);
-    int32_t s = Math_Sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->rot.y);
+    int32_t s = Math_Sin(item->rot.y);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
@@ -703,8 +703,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 
         if (spaz_on) {
-            PHD_ANGLE hitang =
-                lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
+            PHD_ANGLE hitang = lara_item->rot.y - (PHD_180 + Math_Atan(z, x));
             g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
             if (!g_Lara.hit_frame) {
                 Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);

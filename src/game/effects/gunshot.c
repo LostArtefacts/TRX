@@ -20,9 +20,9 @@ int16_t Effect_GunShot(
         fx->pos.y = y;
         fx->pos.z = z;
         fx->room_number = room_num;
-        fx->pos.x_rot = 0;
-        fx->pos.y_rot = y_rot;
-        fx->pos.z_rot = 0;
+        fx->rot.x = 0;
+        fx->rot.y = y_rot;
+        fx->rot.z = 0;
         fx->counter = 3;
         fx->frame_number = 0;
         fx->object_number = O_GUN_FLASH;
@@ -35,14 +35,14 @@ int16_t Effect_GunShotHit(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num)
 {
-    PHD_VECTOR pos;
+    VECTOR_3D pos;
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
     Collide_GetJointAbsPosition(
         g_LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
     Effect_Blood(
-        pos.x, pos.y, pos.z, g_LaraItem->speed, g_LaraItem->pos.y_rot,
+        pos.x, pos.y, pos.z, g_LaraItem->speed, g_LaraItem->rot.y,
         g_LaraItem->room_number);
     Sound_Effect(SFX_LARA_BULLETHIT, &g_LaraItem->pos, SPM_NORMAL);
     return Effect_GunShot(x, y, z, speed, y_rot, room_num);

@@ -27,7 +27,7 @@ void Creature_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    item->pos.y_rot += (PHD_ANGLE)((Random_GetControl() - PHD_90) >> 1);
+    item->rot.y += (PHD_ANGLE)((Random_GetControl() - PHD_90) >> 1);
     item->collidable = 1;
     item->data = NULL;
 }
@@ -73,10 +73,10 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     Item_GetBestFrame(item);
 
     int32_t z = g_LaraItem->pos.z
-        - ((Math_Cos(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
+        - ((Math_Cos(item->rot.y) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.z;
     int32_t x = g_LaraItem->pos.x
-        - ((Math_Sin(item->pos.y_rot) * object->pivot_length) >> W2V_SHIFT)
+        - ((Math_Sin(item->rot.y) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.x;
 
     PHD_ANGLE angle = Math_Atan(z, x);
@@ -84,8 +84,8 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     if (ABS(x) > MAX_CREATURE_DISTANCE || ABS(z) > MAX_CREATURE_DISTANCE) {
         info->distance = SQUARE(MAX_CREATURE_DISTANCE);
     }
-    info->angle = angle - item->pos.y_rot;
-    info->enemy_facing = angle - g_LaraItem->pos.y_rot + PHD_180;
+    info->angle = angle - item->rot.y;
+    info->enemy_facing = angle - g_LaraItem->rot.y + PHD_180;
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
     info->bite = info->ahead && (g_LaraItem->pos.y > item->pos.y - STEP_L)
         && (g_LaraItem->pos.y < item->pos.y + STEP_L);
@@ -272,7 +272,7 @@ int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
 
     int32_t x = creature->target.x - item->pos.x;
     int32_t z = creature->target.z - item->pos.z;
-    int16_t angle = Math_Atan(z, x) - item->pos.y_rot;
+    int16_t angle = Math_Atan(z, x) - item->rot.y;
     int32_t range = (item->speed << 14) / maximum_turn;
 
     if (angle > FRONT_ARC || angle < -FRONT_ARC) {
@@ -287,20 +287,20 @@ int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
         angle = -maximum_turn;
     }
 
-    item->pos.y_rot += angle;
+    item->rot.y += angle;
 
     return angle;
 }
 
 void Creature_Tilt(ITEM_INFO *item, int16_t angle)
 {
-    angle = angle * 4 - item->pos.z_rot;
+    angle = angle * 4 - item->rot.z;
     if (angle < -MAX_TILT) {
         angle = -MAX_TILT;
     } else if (angle > MAX_TILT) {
         angle = MAX_TILT;
     }
-    item->pos.z_rot += angle;
+    item->rot.z += angle;
 }
 
 void Creature_Head(ITEM_INFO *item, int16_t required)
@@ -332,13 +332,13 @@ int16_t Creature_Effect(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num))
 {
-    PHD_VECTOR pos;
+    VECTOR_3D pos;
     pos.x = bite->x;
     pos.y = bite->y;
     pos.z = bite->z;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     return spawn(
-        pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
+        pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_number);
 }
 
 bool Creature_CheckBaddieOverlap(int16_t item_num)
@@ -402,7 +402,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     }
     LOT_INFO *LOT = &creature->LOT;
 
-    PHD_VECTOR old;
+    VECTOR_3D old;
     old.x = item->pos.x;
     old.y = item->pos.y;
     old.z = item->pos.z;
@@ -500,7 +500,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 && Box_BadFloor(
                     x - radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
+                if (item->rot.y > -PHD_135 && item->rot.y < PHD_45) {
                     shift_z = radius - pos_z;
                 } else {
                     shift_x = radius - pos_x;
@@ -515,7 +515,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 && Box_BadFloor(
                     x + radius, y, z - radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
+                if (item->rot.y > -PHD_45 && item->rot.y < PHD_135) {
                     shift_z = radius - pos_z;
                 } else {
                     shift_x = WALL_L - radius - pos_x;
@@ -537,7 +537,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 && Box_BadFloor(
                     x - radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -PHD_45 && item->pos.y_rot < PHD_135) {
+                if (item->rot.y > -PHD_45 && item->rot.y < PHD_135) {
                     shift_x = radius - pos_x;
                 } else {
                     shift_z = WALL_L - radius - pos_z;
@@ -552,7 +552,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 && Box_BadFloor(
                     x + radius, y, z + radius, height, next_height, room_num,
                     LOT)) {
-                if (item->pos.y_rot > -PHD_135 && item->pos.y_rot < PHD_45) {
+                if (item->rot.y > -PHD_135 && item->rot.y < PHD_45) {
                     shift_x = WALL_L - radius - pos_x;
                 } else {
                     shift_z = WALL_L - radius - pos_z;
@@ -577,7 +577,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     if (shift_x || shift_z) {
         floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
 
-        item->pos.y_rot += angle;
+        item->rot.y += angle;
         Creature_Tilt(item, tilt * 2);
     }
 
@@ -630,12 +630,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         item->floor = Room_GetHeight(floor, item->pos.x, y, item->pos.z);
 
         angle = item->speed ? Math_Atan(item->speed, -dy) : 0;
-        if (angle < item->pos.x_rot - PHD_DEGREE) {
-            item->pos.x_rot -= PHD_DEGREE;
-        } else if (angle > item->pos.x_rot + PHD_DEGREE) {
-            item->pos.x_rot += PHD_DEGREE;
+        if (angle < item->rot.x - PHD_DEGREE) {
+            item->rot.x -= PHD_DEGREE;
+        } else if (angle > item->rot.x + PHD_DEGREE) {
+            item->rot.x += PHD_DEGREE;
         } else {
-            item->pos.x_rot = angle;
+            item->rot.x = angle;
         }
     } else {
         floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -650,7 +650,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             item->pos.y = item->floor;
         }
 
-        item->pos.x_rot = 0;
+        item->rot.x = 0;
     }
 
     if (item->room_number != room_num) {
@@ -702,7 +702,7 @@ bool Creature_ShootAtLara(
     }
 
     if (fx_num != NO_ITEM) {
-        g_Effects[fx_num].pos.y_rot += extra_rotation;
+        g_Effects[fx_num].rot.y += extra_rotation;
     }
 
     if (hit) {
@@ -762,7 +762,7 @@ static bool Creature_SwitchToLand(
 
     // Switch to the land creature regardless of death state.
     item->object_number = info->land.id;
-    item->pos.x_rot = 0;
+    item->rot.x = 0;
 
     if (item->hit_points > 0) {
         Item_SwitchToAnim(item, info->land.active_anim, 0);

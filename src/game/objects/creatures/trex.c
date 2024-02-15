@@ -187,9 +187,9 @@ void TRex_LaraDeath(ITEM_INFO *item)
     g_LaraItem->pos.x = item->pos.x;
     g_LaraItem->pos.y = item->pos.y;
     g_LaraItem->pos.z = item->pos.z;
-    g_LaraItem->pos.x_rot = 0;
-    g_LaraItem->pos.y_rot = item->pos.y_rot;
-    g_LaraItem->pos.z_rot = 0;
+    g_LaraItem->rot.x = 0;
+    g_LaraItem->rot.y = item->rot.y;
+    g_LaraItem->rot.z = 0;
     g_LaraItem->gravity_status = 0;
     g_LaraItem->current_anim_state = LS_SPECIAL;
     g_LaraItem->goal_anim_state = LS_SPECIAL;

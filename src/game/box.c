@@ -138,7 +138,7 @@ bool Box_StalkBox(ITEM_INFO *item, int16_t box_number)
         return false;
     }
 
-    int enemy_quad = (g_LaraItem->pos.y_rot >> 14) + 2;
+    int enemy_quad = (g_LaraItem->rot.y >> 14) + 2;
     int box_quad = (z > 0) ? ((x > 0) ? 2 : 1) : ((x > 0) ? 3 : 0);
 
     if (enemy_quad == box_quad) {
@@ -206,7 +206,7 @@ bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
 }
 
 TARGET_TYPE Box_CalculateTarget(
-    PHD_VECTOR *target, ITEM_INFO *item, LOT_INFO *LOT)
+    VECTOR_3D *target, ITEM_INFO *item, LOT_INFO *LOT)
 {
     int32_t left = 0;
     int32_t right = 0;

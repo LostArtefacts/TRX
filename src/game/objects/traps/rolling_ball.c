@@ -73,10 +73,10 @@ void RollingBall_Control(int16_t item_num)
             item->pos.y = item->floor;
         }
 
-        int32_t x = item->pos.x
-            + (((WALL_L / 2) * Math_Sin(item->pos.y_rot)) >> W2V_SHIFT);
-        int32_t z = item->pos.z
-            + (((WALL_L / 2) * Math_Cos(item->pos.y_rot)) >> W2V_SHIFT);
+        int32_t x =
+            item->pos.x + (((WALL_L / 2) * Math_Sin(item->rot.y)) >> W2V_SHIFT);
+        int32_t z =
+            item->pos.z + (((WALL_L / 2) * Math_Cos(item->rot.y)) >> W2V_SHIFT);
         floor = Room_GetFloor(x, item->pos.y, z, &room_num);
         if (Room_GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
             item->status = IS_DEACTIVATED;
@@ -146,7 +146,7 @@ void RollingBall_Collision(
         x = item->pos.x + (x << WALL_SHIFT) / 2 / d;
         z = item->pos.z + (z << WALL_SHIFT) / 2 / d;
         y = item->pos.y - WALL_L / 2 + (y << WALL_SHIFT) / 2 / d;
-        Effect_Blood(x, y, z, item->speed, item->pos.y_rot, item->room_number);
+        Effect_Blood(x, y, z, item->speed, item->rot.y, item->room_number);
     } else {
         lara_item->hit_status = 1;
         if (lara_item->hit_points > 0) {
@@ -155,9 +155,9 @@ void RollingBall_Collision(
                 Item_NewRoom(g_Lara.item_number, item->room_number);
             }
 
-            lara_item->pos.x_rot = 0;
-            lara_item->pos.z_rot = 0;
-            lara_item->pos.y_rot = item->pos.y_rot;
+            lara_item->rot.x = 0;
+            lara_item->rot.z = 0;
+            lara_item->rot.y = item->rot.y;
 
             lara_item->current_anim_state = LS_SPECIAL;
             lara_item->goal_anim_state = LS_SPECIAL;
@@ -170,7 +170,7 @@ void RollingBall_Collision(
                 x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
                 z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
                 y = lara_item->pos.y - Random_GetControl() / 64;
-                d = item->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
+                d = item->rot.y + (Random_GetControl() - 0x4000) / 8;
                 Effect_Blood(x, y, z, item->speed * 2, d, item->room_number);
             }
         }
