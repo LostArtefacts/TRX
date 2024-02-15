@@ -5,4 +5,4 @@
 
 bool S_Clock_Init(void);
 int32_t S_Clock_GetMS(void);
-int32_t S_Clock_SyncTicks(int32_t target);
+int32_t S_Clock_SyncTicks(void);

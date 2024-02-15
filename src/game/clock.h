@@ -6,5 +6,5 @@
 void Clock_CycleTurboSpeed(void);
 bool Clock_Init(void);
 int32_t Clock_GetMS(void);
-int32_t Clock_SyncTicks(int32_t target);
+int32_t Clock_SyncTicks(void);
 void Clock_GetDateTime(char *date_time);
