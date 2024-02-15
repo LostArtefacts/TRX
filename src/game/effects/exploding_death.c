@@ -17,7 +17,7 @@ int32_t Effect_ExplodingDeath(
     int16_t *frame = Item_GetBestFrame(item);
 
     Matrix_PushUnit();
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
     Matrix_TranslateRel(
         frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
 
@@ -40,7 +40,7 @@ int32_t Effect_ExplodingDeath(
             fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
             fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
             fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-            fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
+            fx->rot.y = (Random_GetControl() - 0x4000) * 2;
             if (item->object_number == O_TORSO) {
                 fx->speed = Random_GetControl() >> 7;
                 fx->fall_speed = -Random_GetControl() >> 7;
@@ -92,7 +92,7 @@ int32_t Effect_ExplodingDeath(
                 fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
                 fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
                 fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-                fx->pos.y_rot = (Random_GetControl() - 0x4000) * 2;
+                fx->rot.y = (Random_GetControl() - 0x4000) * 2;
                 if (item->object_number == O_TORSO) {
                     fx->speed = Random_GetControl() >> 7;
                     fx->fall_speed = -Random_GetControl() >> 7;

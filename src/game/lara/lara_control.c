@@ -33,7 +33,7 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
 
 static void Lara_WaterCurrent(COLL_INFO *coll)
 {
-    PHD_VECTOR target;
+    VECTOR_3D target;
 
     ITEM_INFO *item = g_LaraItem;
     ROOM_INFO *r = &g_RoomInfo[item->room_number];
@@ -83,26 +83,26 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
         item->room_number, UW_HEIGHT);
 
     if (coll->coll_type == COLL_FRONT) {
-        if (item->pos.x_rot > 35 * PHD_DEGREE) {
-            item->pos.x_rot += UW_WALLDEFLECT;
-        } else if (item->pos.x_rot < -35 * PHD_DEGREE) {
-            item->pos.x_rot -= UW_WALLDEFLECT;
+        if (item->rot.x > 35 * PHD_DEGREE) {
+            item->rot.x += UW_WALLDEFLECT;
+        } else if (item->rot.x < -35 * PHD_DEGREE) {
+            item->rot.x -= UW_WALLDEFLECT;
         } else {
             item->fall_speed = 0;
         }
     } else if (coll->coll_type == COLL_TOP) {
-        item->pos.x_rot -= UW_WALLDEFLECT;
+        item->rot.x -= UW_WALLDEFLECT;
     } else if (coll->coll_type == COLL_TOPFRONT) {
         item->fall_speed = 0;
     } else if (coll->coll_type == COLL_LEFT) {
-        item->pos.y_rot += 5 * PHD_DEGREE;
+        item->rot.y += 5 * PHD_DEGREE;
     } else if (coll->coll_type == COLL_RIGHT) {
-        item->pos.y_rot -= 5 * PHD_DEGREE;
+        item->rot.y -= 5 * PHD_DEGREE;
     }
 
     if (coll->mid_floor < 0) {
         item->pos.y += coll->mid_floor;
-        item->pos.x_rot += UW_WALLDEFLECT;
+        item->rot.x += UW_WALLDEFLECT;
     }
     Item_ShiftCol(item, coll);
 
@@ -158,7 +158,7 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     if (g_Lara.spaz_effect_count && g_Lara.spaz_effect && coll->enable_spaz) {
         int32_t x = g_Lara.spaz_effect->pos.x - lara_item->pos.x;
         int32_t z = g_Lara.spaz_effect->pos.z - lara_item->pos.z;
-        PHD_ANGLE hitang = lara_item->pos.y_rot - (PHD_180 + Math_Atan(z, x));
+        PHD_ANGLE hitang = lara_item->rot.y - (PHD_180 + Math_Atan(z, x));
         g_Lara.hit_direction = (hitang + PHD_45) / PHD_90;
         if (!g_Lara.hit_frame) {
             Sound_Effect(SFX_LARA_BODYSL, &lara_item->pos, SPM_NORMAL);
@@ -221,13 +221,12 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
         g_Lara.torso_y_rot = g_Lara.head_y_rot;
     }
 
-    if (item->pos.z_rot >= -LARA_LEAN_UNDO
-        && item->pos.z_rot <= LARA_LEAN_UNDO) {
-        item->pos.z_rot = 0;
-    } else if (item->pos.z_rot < -LARA_LEAN_UNDO) {
-        item->pos.z_rot += LARA_LEAN_UNDO;
+    if (item->rot.z >= -LARA_LEAN_UNDO && item->rot.z <= LARA_LEAN_UNDO) {
+        item->rot.z = 0;
+    } else if (item->rot.z < -LARA_LEAN_UNDO) {
+        item->rot.z += LARA_LEAN_UNDO;
     } else {
-        item->pos.z_rot -= LARA_LEAN_UNDO;
+        item->rot.z -= LARA_LEAN_UNDO;
     }
 
     if (g_Lara.turn_rate >= -LARA_TURN_UNDO
@@ -238,7 +237,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     } else {
         g_Lara.turn_rate -= LARA_TURN_UNDO;
     }
-    item->pos.y_rot += g_Lara.turn_rate;
+    item->rot.y += g_Lara.turn_rate;
 
     Lara_Animate(item);
     Lara_BaddieCollision(item, coll);
@@ -268,12 +267,12 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
 
     g_LaraStateRoutines[item->current_anim_state](item, coll);
 
-    if (item->pos.z_rot >= -364 && item->pos.z_rot <= 364) {
-        item->pos.z_rot = 0;
-    } else if (item->pos.z_rot >= 0) {
-        item->pos.z_rot -= 364;
+    if (item->rot.z >= -364 && item->rot.z <= 364) {
+        item->rot.z = 0;
+    } else if (item->rot.z >= 0) {
+        item->rot.z -= 364;
     } else {
-        item->pos.z_rot += 364;
+        item->rot.z += 364;
     }
 
     if (g_Camera.type != CAM_LOOK) {
@@ -341,25 +340,25 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
 
     g_LaraStateRoutines[item->current_anim_state](item, coll);
 
-    if (item->pos.z_rot >= -(2 * LARA_LEAN_UNDO)
-        && item->pos.z_rot <= 2 * LARA_LEAN_UNDO) {
-        item->pos.z_rot = 0;
-    } else if (item->pos.z_rot < 0) {
-        item->pos.z_rot += 2 * LARA_LEAN_UNDO;
+    if (item->rot.z >= -(2 * LARA_LEAN_UNDO)
+        && item->rot.z <= 2 * LARA_LEAN_UNDO) {
+        item->rot.z = 0;
+    } else if (item->rot.z < 0) {
+        item->rot.z += 2 * LARA_LEAN_UNDO;
     } else {
-        item->pos.z_rot -= 2 * LARA_LEAN_UNDO;
+        item->rot.z -= 2 * LARA_LEAN_UNDO;
     }
 
-    if (item->pos.x_rot < -100 * PHD_DEGREE) {
-        item->pos.x_rot = -100 * PHD_DEGREE;
-    } else if (item->pos.x_rot > 100 * PHD_DEGREE) {
-        item->pos.x_rot = 100 * PHD_DEGREE;
+    if (item->rot.x < -100 * PHD_DEGREE) {
+        item->rot.x = -100 * PHD_DEGREE;
+    } else if (item->rot.x > 100 * PHD_DEGREE) {
+        item->rot.x = 100 * PHD_DEGREE;
     }
 
-    if (item->pos.z_rot < -LARA_LEAN_MAX_UW) {
-        item->pos.z_rot = -LARA_LEAN_MAX_UW;
-    } else if (item->pos.z_rot > LARA_LEAN_MAX_UW) {
-        item->pos.z_rot = LARA_LEAN_MAX_UW;
+    if (item->rot.z < -LARA_LEAN_MAX_UW) {
+        item->rot.z = -LARA_LEAN_MAX_UW;
+    } else if (item->rot.z > LARA_LEAN_MAX_UW) {
+        item->rot.z = LARA_LEAN_MAX_UW;
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
@@ -371,14 +370,14 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
     Lara_Animate(item);
 
     item->pos.y -=
-        (Math_Sin(item->pos.x_rot) * item->fall_speed) >> (W2V_SHIFT + 2);
+        (Math_Sin(item->rot.x) * item->fall_speed) >> (W2V_SHIFT + 2);
     item->pos.x +=
-        (((Math_Sin(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
-         * Math_Cos(item->pos.x_rot))
+        (((Math_Sin(item->rot.y) * item->fall_speed) >> (W2V_SHIFT + 2))
+         * Math_Cos(item->rot.x))
         >> W2V_SHIFT;
     item->pos.z +=
-        (((Math_Cos(item->pos.y_rot) * item->fall_speed) >> (W2V_SHIFT + 2))
-         * Math_Cos(item->pos.x_rot))
+        (((Math_Cos(item->rot.y) * item->fall_speed) >> (W2V_SHIFT + 2))
+         * Math_Cos(item->rot.x))
         >> W2V_SHIFT;
 
     if (g_Lara.water_status != LWS_CHEAT) {

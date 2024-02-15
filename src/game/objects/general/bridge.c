@@ -36,17 +36,16 @@ static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y)
     x >>= WALL_SHIFT;
     y >>= WALL_SHIFT;
 
-    if (item->pos.y_rot == 0 && y == iy && (x == ix - 1 || x == ix - 2)) {
+    if (item->rot.y == 0 && y == iy && (x == ix - 1 || x == ix - 2)) {
         return true;
     }
-    if (item->pos.y_rot == -PHD_180 && y == iy
-        && (x == ix + 1 || x == ix + 2)) {
+    if (item->rot.y == -PHD_180 && y == iy && (x == ix + 1 || x == ix + 2)) {
         return true;
     }
-    if (item->pos.y_rot == PHD_90 && x == ix && (y == iy - 1 || y == iy - 2)) {
+    if (item->rot.y == PHD_90 && x == ix && (y == iy - 1 || y == iy - 2)) {
         return true;
     }
-    if (item->pos.y_rot == -PHD_90 && x == ix && (y == iy + 1 || y == iy + 2)) {
+    if (item->rot.y == -PHD_90 && x == ix && (y == iy + 1 || y == iy + 2)) {
         return true;
     }
 
@@ -57,11 +56,11 @@ static int32_t Bridge_GetOffset(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 {
     int32_t offset = 0;
-    if (item->pos.y_rot == 0) {
+    if (item->rot.y == 0) {
         offset = (WALL_L - x) & (WALL_L - 1);
-    } else if (item->pos.y_rot == -PHD_180) {
+    } else if (item->rot.y == -PHD_180) {
         offset = x & (WALL_L - 1);
-    } else if (item->pos.y_rot == PHD_90) {
+    } else if (item->rot.y == PHD_90) {
         offset = z & (WALL_L - 1);
     } else {
         offset = (WALL_L - z) & (WALL_L - 1);

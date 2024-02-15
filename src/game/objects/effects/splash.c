@@ -22,8 +22,8 @@ void Splash_Control(int16_t fx_num)
         return;
     }
 
-    fx->pos.z += (Math_Cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
-    fx->pos.x += (Math_Sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
+    fx->pos.z += (Math_Cos(fx->rot.y) * fx->speed) >> W2V_SHIFT;
+    fx->pos.x += (Math_Sin(fx->rot.y) * fx->speed) >> W2V_SHIFT;
 }
 
 void Splash_Spawn(ITEM_INFO *item)
@@ -42,7 +42,7 @@ void Splash_Spawn(ITEM_INFO *item)
             fx->pos.x = item->pos.x;
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;
-            fx->pos.y_rot = PHD_180 + 2 * Random_GetDraw();
+            fx->rot.y = PHD_180 + 2 * Random_GetDraw();
             fx->object_number = O_SPLASH1;
             fx->frame_number = 0;
             fx->speed = Random_GetDraw() / 256;

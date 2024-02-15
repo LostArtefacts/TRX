@@ -71,15 +71,17 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 
     Output_SetupAboveWater(false);
 
-    PHD_3DPOS viewer;
-    Inv_Ring_GetView(ring, &viewer);
-    Matrix_GenerateW2V(&viewer);
+    VECTOR_3D view_pos;
+    VECTOR_3D view_rot;
+    Inv_Ring_GetView(ring, &view_pos, &view_rot);
+    Matrix_GenerateW2V(&view_pos, &view_rot);
     Inv_Ring_Light(ring);
 
     Matrix_Push();
-    Matrix_TranslateAbs(ring->ringpos.x, ring->ringpos.y, ring->ringpos.z);
+    Matrix_TranslateAbs(
+        ring->ringpos.pos.x, ring->ringpos.pos.y, ring->ringpos.pos.z);
     Matrix_RotYXZ(
-        ring->ringpos.y_rot, ring->ringpos.x_rot, ring->ringpos.z_rot);
+        ring->ringpos.rot.y, ring->ringpos.rot.x, ring->ringpos.rot.z);
 
     PHD_ANGLE angle = 0;
     for (int i = 0; i < ring->number_of_objects; i++) {
@@ -330,7 +332,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
 
             if (inv_item->object_number == O_MAP_OPTION && i == 1) {
                 int16_t delta =
-                    -inv_item->y_rot - g_LaraItem->pos.y_rot - m_CompassNeedle;
+                    -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
                 m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
                 m_CompassNeedle += m_CompassSpeed;
                 Matrix_RotY(m_CompassNeedle);
@@ -459,7 +461,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_DoMotions(&ring);
         }
 
-        ring.camera.z = ring.radius + CAMERA_2_RING;
+        ring.camera.pos.z = ring.radius + CAMERA_2_RING;
 
         Inv_Draw(&ring, &imo);
 
@@ -540,7 +542,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                 Inv_Ring_MotionRadius(&ring, 0);
                 Inv_Ring_MotionCameraPos(&ring, CAMERA_STARTHEIGHT);
                 Inv_Ring_MotionRotation(
-                    &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
+                    &ring, CLOSE_ROTATION, ring.ringpos.rot.y - CLOSE_ROTATION);
                 g_Input = (INPUT_STATE) { 0 };
                 g_InputDB = (INPUT_STATE) { 0 };
             }
@@ -615,7 +617,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                         Inv_Ring_MotionRadius(&ring, 0);
                         Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
-                            ring.ringpos.y_rot - CLOSE_ROTATION);
+                            ring.ringpos.rot.y - CLOSE_ROTATION);
                         Inv_Ring_MotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
@@ -629,7 +631,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                         Inv_Ring_MotionRadius(&ring, 0);
                         Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
-                            ring.ringpos.y_rot - CLOSE_ROTATION);
+                            ring.ringpos.rot.y - CLOSE_ROTATION);
                         Inv_Ring_MotionCameraPitch(&ring, 0x2000);
                         imo.misc = 0x2000;
                     }
@@ -646,7 +648,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                         Inv_Ring_MotionRadius(&ring, 0);
                         Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
-                            ring.ringpos.y_rot - CLOSE_ROTATION);
+                            ring.ringpos.rot.y - CLOSE_ROTATION);
                         Inv_Ring_MotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
@@ -660,7 +662,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                         Inv_Ring_MotionRadius(&ring, 0);
                         Inv_Ring_MotionRotation(
                             &ring, CLOSE_ROTATION,
-                            ring.ringpos.y_rot - CLOSE_ROTATION);
+                            ring.ringpos.rot.y - CLOSE_ROTATION);
                         Inv_Ring_MotionCameraPitch(&ring, -0x2000);
                         imo.misc = -0x2000;
                     }
@@ -685,7 +687,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
-            ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
+            ring.ringpos.rot.y = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_MAIN2KEYS:
@@ -705,7 +707,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
-            ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
+            ring.ringpos.rot.y = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_KEYS2MAIN:
@@ -724,7 +726,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
-            ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
+            ring.ringpos.rot.y = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_OPTION2MAIN:
@@ -744,7 +746,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Inv_Ring_MotionRotation(
                 &ring, OPEN_ROTATION,
                 -PHD_90 - ring.angle_adder * ring.current_object);
-            ring.ringpos.y_rot = imo.rotate_target + OPEN_ROTATION;
+            ring.ringpos.rot.y = imo.rotate_target + OPEN_ROTATION;
             break;
 
         case RNG_SELECTED: {
@@ -859,7 +861,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
                 Inv_Ring_MotionRadius(&ring, 0);
                 Inv_Ring_MotionCameraPos(&ring, CAMERA_STARTHEIGHT);
                 Inv_Ring_MotionRotation(
-                    &ring, CLOSE_ROTATION, ring.ringpos.y_rot - CLOSE_ROTATION);
+                    &ring, CLOSE_ROTATION, ring.ringpos.rot.y - CLOSE_ROTATION);
             }
             break;
         }

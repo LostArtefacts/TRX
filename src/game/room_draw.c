@@ -175,7 +175,7 @@ void Room_GetBounds(int16_t room_num)
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
             DOOR_INFO *door = &r->doors->door[i];
-            if (Room_SetBounds(&door->x, door->room_num, r)) {
+            if (Room_SetBounds(&door->pos.x, door->room_num, r)) {
                 Room_GetBounds(door->room_num);
             }
         }
@@ -211,7 +211,7 @@ void Room_DrawAllRooms(int16_t room_num)
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
             DOOR_INFO *door = &r->doors->door[i];
-            if (Room_SetBounds(&door->x, door->room_num, r)) {
+            if (Room_SetBounds(&door->pos.x, door->room_num, r)) {
                 Room_GetBounds(door->room_num);
             }
         }
@@ -267,8 +267,8 @@ void Room_DrawSingleRoom(int16_t room_num)
         MESH_INFO *mesh = &r->mesh[i];
         if (g_StaticObjects[mesh->static_number].flags & 2) {
             Matrix_Push();
-            Matrix_TranslateAbs(mesh->x, mesh->y, mesh->z);
-            Matrix_RotY(mesh->y_rot);
+            Matrix_TranslateAbs(mesh->pos.x, mesh->pos.y, mesh->pos.z);
+            Matrix_RotY(mesh->rot.y);
             int clip = Output_GetObjectBounds(
                 &g_StaticObjects[mesh->static_number].x_minp);
             if (clip) {

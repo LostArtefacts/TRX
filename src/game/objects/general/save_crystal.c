@@ -54,9 +54,9 @@ void SaveCrystal_Collision(
         return;
     }
 
-    item->pos.y_rot = lara_item->pos.y_rot;
-    item->pos.z_rot = 0;
-    item->pos.x_rot = 0;
+    item->rot.y = lara_item->rot.y;
+    item->rot.z = 0;
+    item->rot.x = 0;
     if (!Lara_TestPosition(item, m_CrystalBounds)) {
         return;
     }

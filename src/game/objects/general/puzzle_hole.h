@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-extern PHD_VECTOR g_PuzzleHolePosition;
+extern VECTOR_3D g_PuzzleHolePosition;
 extern int16_t g_PuzzleHoleBounds[12];
 
 void PuzzleHole_Setup(OBJECT_INFO *obj);

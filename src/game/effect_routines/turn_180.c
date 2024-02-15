@@ -4,6 +4,6 @@
 
 void FX_Turn180(ITEM_INFO *item)
 {
-    item->pos.y_rot += PHD_180;
-    item->pos.x_rot *= -1;
+    item->rot.y += PHD_180;
+    item->rot.x *= -1;
 }

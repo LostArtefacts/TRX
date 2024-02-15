@@ -24,10 +24,10 @@ void ShootAtLara(FX_INFO *fx)
         + (bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3 / 4;
 
     int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));
-    fx->pos.x_rot = -(PHD_ANGLE)Math_Atan(dist, y);
-    fx->pos.y_rot = Math_Atan(z, x);
-    fx->pos.x_rot += (Random_GetControl() - 0x4000) / 0x40;
-    fx->pos.y_rot += (Random_GetControl() - 0x4000) / 0x40;
+    fx->rot.x = -(PHD_ANGLE)Math_Atan(dist, y);
+    fx->rot.y = Math_Atan(z, x);
+    fx->rot.x += (Random_GetControl() - 0x4000) / 0x40;
+    fx->rot.y += (Random_GetControl() - 0x4000) / 0x40;
 }
 
 int16_t Effect_ShardGun(
@@ -41,9 +41,9 @@ int16_t Effect_ShardGun(
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
-        fx->pos.x_rot = 0;
-        fx->pos.y_rot = y_rot;
-        fx->pos.z_rot = 0;
+        fx->rot.x = 0;
+        fx->rot.y = y_rot;
+        fx->rot.z = 0;
         fx->object_number = O_MISSILE2;
         fx->frame_number = 0;
         fx->speed = SHARD_SPEED;
@@ -64,9 +64,9 @@ int16_t Effect_RocketGun(
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
-        fx->pos.x_rot = 0;
-        fx->pos.y_rot = y_rot;
-        fx->pos.z_rot = 0;
+        fx->rot.x = 0;
+        fx->rot.y = y_rot;
+        fx->rot.z = 0;
         fx->object_number = O_MISSILE3;
         fx->frame_number = 0;
         fx->speed = ROCKET_SPEED;

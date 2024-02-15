@@ -13,16 +13,13 @@ static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z)
     z >>= WALL_SHIFT;
     int32_t tx = item->pos.x >> WALL_SHIFT;
     int32_t tz = item->pos.z >> WALL_SHIFT;
-    if (item->pos.y_rot == 0 && x == tx && (z == tz || z == tz + 1)) {
+    if (item->rot.y == 0 && x == tx && (z == tz || z == tz + 1)) {
         return true;
-    } else if (
-        item->pos.y_rot == -PHD_180 && x == tx && (z == tz || z == tz - 1)) {
+    } else if (item->rot.y == -PHD_180 && x == tx && (z == tz || z == tz - 1)) {
         return true;
-    } else if (
-        item->pos.y_rot == PHD_90 && z == tz && (x == tx || x == tx + 1)) {
+    } else if (item->rot.y == PHD_90 && z == tz && (x == tx || x == tx + 1)) {
         return true;
-    } else if (
-        item->pos.y_rot == -PHD_90 && z == tz && (x == tx || x == tx - 1)) {
+    } else if (item->rot.y == -PHD_90 && z == tz && (x == tx || x == tx - 1)) {
         return true;
     }
     return false;

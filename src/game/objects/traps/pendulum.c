@@ -41,7 +41,7 @@ void Pendulum_Control(int16_t item_num)
         int32_t x = g_LaraItem->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = g_LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = g_LaraItem->pos.y - Random_GetControl() / 44;
-        int32_t d = g_LaraItem->pos.y_rot + (Random_GetControl() - 0x4000) / 8;
+        int32_t d = g_LaraItem->rot.y + (Random_GetControl() - 0x4000) / 8;
         Effect_Blood(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_number);
     }
 

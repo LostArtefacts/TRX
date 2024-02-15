@@ -208,7 +208,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, offset, item->pos.z);
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     Output_CalculateLight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
@@ -317,7 +317,7 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
     int32_t clip = Output_GetObjectBounds(frmptr[0]);
     if (!clip) {
         Matrix_Pop();

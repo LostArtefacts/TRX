@@ -34,13 +34,13 @@ void CutscenePlayer4_Setup(OBJECT_INFO *obj)
 void CutscenePlayer_Initialise(int16_t item_num)
 {
     Item_AddActive(item_num);
-    g_Items[item_num].pos.y_rot = 0;
+    g_Items[item_num].rot.y = 0;
 }
 
 void CutscenePlayer_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    item->pos.y_rot = g_Camera.target_angle;
+    item->rot.y = g_Camera.target_angle;
     item->pos.x = g_Camera.pos.x;
     item->pos.y = g_Camera.pos.y;
     item->pos.z = g_Camera.pos.z;
@@ -57,7 +57,7 @@ void CutscenePlayer1_Initialise(int16_t item_num)
     g_Camera.pos.y = item->pos.y;
     g_Camera.pos.z = item->pos.z;
     g_Camera.target_angle = 0;
-    item->pos.y_rot = 0;
+    item->rot.y = 0;
 }
 
 void CutscenePlayer4_Control(int16_t item_num)

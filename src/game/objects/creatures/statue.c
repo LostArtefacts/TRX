@@ -52,7 +52,7 @@ void Statue_Initialise(int16_t item_num)
     centaur->current_anim_state =
         g_Anims[centaur->anim_number].current_anim_state;
     centaur->goal_anim_state = centaur->current_anim_state;
-    centaur->pos.y_rot = item->pos.y_rot;
+    centaur->rot.y = item->rot.y;
 
     item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
     *(int16_t *)item->data = centaur_item_num;

@@ -35,7 +35,7 @@ void Dart_Control(int16_t item_num)
         Lara_TakeDamage(DART_DAMAGE, true);
         Effect_Blood(
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
-            g_LaraItem->pos.y_rot, g_LaraItem->room_number);
+            g_LaraItem->rot.y, g_LaraItem->room_number);
     }
 
     int32_t old_x = item->pos.x;
@@ -113,12 +113,12 @@ void DartEmitter_Control(int16_t item_num)
             dart->object_number = O_DARTS;
             dart->room_number = item->room_number;
             dart->shade = -1;
-            dart->pos.y_rot = item->pos.y_rot;
+            dart->rot.y = item->rot.y;
             dart->pos.y = item->pos.y - WALL_L / 2;
 
             int32_t x = 0;
             int32_t z = 0;
-            switch (dart->pos.y_rot) {
+            switch (dart->rot.y) {
             case 0:
                 z = -WALL_L / 2 + 100;
                 break;

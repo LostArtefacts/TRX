@@ -51,7 +51,7 @@ void Mummy_Control(int16_t item_num)
         head = Math_Atan(
                    g_LaraItem->pos.z - item->pos.z,
                    g_LaraItem->pos.x - item->pos.x)
-            - item->pos.y_rot;
+            - item->rot.y;
         CLAMP(head, -FRONT_ARC, FRONT_ARC);
 
         if (item->hit_points <= 0 || item->touch_bits) {

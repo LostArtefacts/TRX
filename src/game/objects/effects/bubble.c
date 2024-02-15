@@ -14,12 +14,12 @@ void Bubble_Setup(OBJECT_INFO *obj)
 void Bubble_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
-    fx->pos.y_rot += 9 * PHD_DEGREE;
-    fx->pos.x_rot += 13 * PHD_DEGREE;
+    fx->rot.y += 9 * PHD_DEGREE;
+    fx->rot.x += 13 * PHD_DEGREE;
 
-    int32_t x = fx->pos.x + ((Math_Sin(fx->pos.y_rot) * 11) >> W2V_SHIFT);
+    int32_t x = fx->pos.x + ((Math_Sin(fx->rot.y) * 11) >> W2V_SHIFT);
     int32_t y = fx->pos.y - fx->speed;
-    int32_t z = fx->pos.z + ((Math_Cos(fx->pos.x_rot) * 8) >> W2V_SHIFT);
+    int32_t z = fx->pos.z + ((Math_Cos(fx->rot.x) * 8) >> W2V_SHIFT);
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);

@@ -74,7 +74,7 @@ extern int16_t *g_AnimFrames;
 extern int16_t *g_Cine;
 extern int16_t g_NumCineFrames;
 extern int16_t g_CineFrame;
-extern PHD_3DPOS g_CinePosition;
+extern CINE_POSITION g_CinePosition;
 extern int32_t g_NumberCameras;
 extern int32_t g_NumberSoundEffects;
 extern OBJECT_VECTOR *g_SoundEffectsTable;

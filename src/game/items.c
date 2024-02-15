@@ -121,8 +121,8 @@ void Item_Initialise(int16_t item_num)
     item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
     item->goal_anim_state = item->current_anim_state;
     item->required_anim_state = 0;
-    item->pos.x_rot = 0;
-    item->pos.z_rot = 0;
+    item->rot.x = 0;
+    item->rot.z = 0;
     item->speed = 0;
     item->fall_speed = 0;
     item->status = IS_NOT_ACTIVE;
@@ -336,7 +336,8 @@ int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num)
     return changed;
 }
 
-bool Item_IsNearItem(ITEM_INFO *item, PHD_3DPOS *pos, int32_t distance)
+bool Item_IsNearItem(
+    const ITEM_INFO *item, const VECTOR_3D *pos, int32_t distance)
 {
     int32_t x = pos->x - item->pos.x;
     int32_t y = pos->y - item->pos.y;
@@ -373,8 +374,8 @@ bool Item_TestBoundsCollide(
         return false;
     }
 
-    int32_t c = Math_Cos(dst_item->pos.y_rot);
-    int32_t s = Math_Sin(dst_item->pos.y_rot);
+    int32_t c = Math_Cos(dst_item->rot.y);
+    int32_t s = Math_Sin(dst_item->rot.y);
     int32_t x = src_item->pos.x - dst_item->pos.x;
     int32_t z = src_item->pos.z - dst_item->pos.z;
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
@@ -389,9 +390,9 @@ bool Item_TestBoundsCollide(
 bool Item_TestPosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int16_t *bounds)
 {
-    PHD_ANGLE xrotrel = src_item->pos.x_rot - dst_item->pos.x_rot;
-    PHD_ANGLE yrotrel = src_item->pos.y_rot - dst_item->pos.y_rot;
-    PHD_ANGLE zrotrel = src_item->pos.z_rot - dst_item->pos.z_rot;
+    PHD_ANGLE xrotrel = src_item->rot.x - dst_item->rot.x;
+    PHD_ANGLE yrotrel = src_item->rot.y - dst_item->rot.y;
+    PHD_ANGLE zrotrel = src_item->rot.z - dst_item->rot.z;
     if (xrotrel < bounds[6] || xrotrel > bounds[7]) {
         return false;
     }
@@ -406,8 +407,7 @@ bool Item_TestPosition(
     int32_t y = src_item->pos.y - dst_item->pos.y;
     int32_t z = src_item->pos.z - dst_item->pos.z;
     Matrix_PushUnit();
-    Matrix_RotYXZ(
-        dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    Matrix_RotYXZ(dst_item->rot.y, dst_item->rot.x, dst_item->rot.z);
     MATRIX *mptr = g_MatrixPtr;
     int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
     int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
@@ -427,15 +427,14 @@ bool Item_TestPosition(
 }
 
 void Item_AlignPosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, PHD_VECTOR *vec)
+    ITEM_INFO *src_item, ITEM_INFO *dst_item, VECTOR_3D *vec)
 {
-    src_item->pos.x_rot = dst_item->pos.x_rot;
-    src_item->pos.y_rot = dst_item->pos.y_rot;
-    src_item->pos.z_rot = dst_item->pos.z_rot;
+    src_item->rot.x = dst_item->rot.x;
+    src_item->rot.y = dst_item->rot.y;
+    src_item->rot.z = dst_item->rot.z;
 
     Matrix_PushUnit();
-    Matrix_RotYXZ(
-        dst_item->pos.y_rot, dst_item->pos.x_rot, dst_item->pos.z_rot);
+    Matrix_RotYXZ(dst_item->rot.y, dst_item->rot.x, dst_item->rot.z);
     MATRIX *mptr = g_MatrixPtr;
     src_item->pos.x = dst_item->pos.x
         + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
@@ -450,15 +449,17 @@ void Item_AlignPosition(
 }
 
 bool Item_MovePosition(
-    ITEM_INFO *item, const ITEM_INFO *ref_item, const PHD_VECTOR *vec,
+    ITEM_INFO *item, const ITEM_INFO *ref_item, const VECTOR_3D *vec,
     int32_t velocity)
 {
-    const PHD_3DPOS *ref_pos = &ref_item->pos;
-    Matrix_PushUnit();
-    Matrix_RotYXZ(ref_pos->y_rot, ref_pos->x_rot, ref_pos->z_rot);
-    MATRIX *mptr = g_MatrixPtr;
+    const VECTOR_3D *ref_pos = &ref_item->pos;
+    const VECTOR_3D *ref_rot = &ref_item->rot;
 
-    PHD_3DPOS dst_pos = {
+    Matrix_PushUnit();
+    Matrix_RotYXZ(ref_rot->y, ref_rot->x, ref_rot->z);
+
+    MATRIX *mptr = g_MatrixPtr;
+    const VECTOR_3D dst_pos = {
         .x = ref_pos->x
             + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
                >> W2V_SHIFT),
@@ -468,9 +469,12 @@ bool Item_MovePosition(
         .z = ref_pos->z
             + ((mptr->_20 * vec->x + mptr->_21 * vec->y + mptr->_22 * vec->z)
                >> W2V_SHIFT),
-        .x_rot = ref_pos->x_rot,
-        .y_rot = ref_pos->y_rot,
-        .z_rot = ref_pos->z_rot,
+    };
+
+    const VECTOR_3D dst_rot = {
+        .x = ref_rot->x,
+        .y = ref_rot->y,
+        .z = ref_rot->z,
     };
 
     Matrix_Pop();
@@ -512,7 +516,7 @@ bool Item_MovePosition(
             const int32_t angle = (PHD_ONE - Math_Atan(dx, dz)) % PHD_ONE;
             const uint32_t src_quadrant = (uint32_t)(angle + PHD_45) / PHD_90;
             const uint32_t dst_quadrant =
-                (uint32_t)(dst_pos.y_rot + PHD_45) / PHD_90;
+                (uint32_t)(dst_rot.y + PHD_45) / PHD_90;
             const DIRECTION quadrant = (src_quadrant - dst_quadrant) % 4;
 
             Item_SwitchToAnim(item, step_to_anim_num[quadrant], 0);
@@ -527,17 +531,17 @@ bool Item_MovePosition(
     }
 
     int16_t rotation = MOVE_ANG;
-    ITEM_ADJUST_ROT(item->pos.x_rot, dst_pos.x_rot, rotation);
-    ITEM_ADJUST_ROT(item->pos.y_rot, dst_pos.y_rot, rotation);
-    ITEM_ADJUST_ROT(item->pos.z_rot, dst_pos.z_rot, rotation);
+    ITEM_ADJUST_ROT(item->rot.x, dst_rot.x, rotation);
+    ITEM_ADJUST_ROT(item->rot.y, dst_rot.y, rotation);
+    ITEM_ADJUST_ROT(item->rot.z, dst_rot.z, rotation);
 
     // clang-format off
     return item->pos.x == dst_pos.x
         && item->pos.y == dst_pos.y
         && item->pos.z == dst_pos.z
-        && item->pos.x_rot == dst_pos.x_rot
-        && item->pos.y_rot == dst_pos.y_rot
-        && item->pos.z_rot == dst_pos.z_rot;
+        && item->rot.x == dst_rot.x
+        && item->rot.y == dst_rot.y
+        && item->rot.z == dst_rot.z;
     // clang-format on
 }
 
@@ -553,8 +557,8 @@ void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
 
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 {
-    int32_t c = Math_Cos(item->pos.y_rot);
-    int32_t s = Math_Sin(item->pos.y_rot);
+    int32_t c = Math_Cos(item->rot.y);
+    int32_t s = Math_Sin(item->rot.y);
     item->pos.x += (c * x + s * z) >> W2V_SHIFT;
     item->pos.y += y;
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
@@ -683,8 +687,8 @@ void Item_Animate(ITEM_INFO *item)
         item->pos.y += item->fall_speed;
     }
 
-    item->pos.x += (Math_Sin(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
-    item->pos.z += (Math_Cos(item->pos.y_rot) * item->speed) >> W2V_SHIFT;
+    item->pos.x += (Math_Sin(item->rot.y) * item->speed) >> W2V_SHIFT;
+    item->pos.z += (Math_Cos(item->rot.y) * item->speed) >> W2V_SHIFT;
 }
 
 bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
@@ -758,7 +762,7 @@ bool Item_IsTriggerActive(ITEM_INFO *item)
     return ok;
 }
 
-int16_t *Item_GetBestFrame(ITEM_INFO *item)
+int16_t *Item_GetBestFrame(const ITEM_INFO *item)
 {
     int16_t *frmptr[2];
     int32_t rate;
@@ -770,7 +774,7 @@ int16_t *Item_GetBestFrame(ITEM_INFO *item)
     }
 }
 
-int16_t *Item_GetBoundsAccurate(ITEM_INFO *item)
+int16_t *Item_GetBoundsAccurate(const ITEM_INFO *item)
 {
     int32_t rate;
     int16_t *frmptr[2];
@@ -788,7 +792,7 @@ int16_t *Item_GetBoundsAccurate(ITEM_INFO *item)
     return m_InterpolatedBounds;
 }
 
-int32_t Item_GetFrames(ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
+int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
 {
     ANIM_STRUCT *anim = &g_Anims[item->anim_number];
     frmptr[0] = anim->frame_ptr;

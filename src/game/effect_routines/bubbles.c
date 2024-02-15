@@ -24,7 +24,7 @@ void FX_Bubbles(ITEM_INFO *item)
 
     Sound_Effect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
 
-    PHD_VECTOR offset;
+    VECTOR_3D offset;
     offset.x = 0;
     offset.y = 0;
     offset.z = 50;

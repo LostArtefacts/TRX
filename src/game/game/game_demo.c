@@ -28,9 +28,9 @@ static void Game_Demo_LoadLaraPos(void)
     item->pos.x = *m_DemoPtr++;
     item->pos.y = *m_DemoPtr++;
     item->pos.z = *m_DemoPtr++;
-    item->pos.x_rot = *m_DemoPtr++;
-    item->pos.y_rot = *m_DemoPtr++;
-    item->pos.z_rot = *m_DemoPtr++;
+    item->rot.x = *m_DemoPtr++;
+    item->rot.y = *m_DemoPtr++;
+    item->rot.z = *m_DemoPtr++;
     int16_t room_num = *m_DemoPtr++;
 
     if (item->room_number != room_num) {

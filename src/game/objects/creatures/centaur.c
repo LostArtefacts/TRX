@@ -136,7 +136,7 @@ void Centaur_Control(int16_t item_num)
                 int16_t fx_num =
                     Creature_Effect(item, &m_CentaurRocket, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
-                    centaur->neck_rotation = g_Effects[fx_num].pos.x_rot;
+                    centaur->neck_rotation = g_Effects[fx_num].rot.x;
                 }
             }
             break;

@@ -105,7 +105,7 @@ void Torso_Control(int16_t item_num)
         angle =
             Math_Atan(
                 torso->target.z - item->pos.z, torso->target.x - item->pos.x)
-            - item->pos.y_rot;
+            - item->rot.y;
 
         if (item->touch_bits) {
             Lara_TakeDamage(TORSO_TOUCH_DAMAGE, true);
@@ -165,7 +165,7 @@ void Torso_Control(int16_t item_num)
                 Item_TestAnimEqual(item, TORSO_TURN_L_ANIM)
                 && Item_TestFrameRange(
                     item, TORSO_FRAME_TURN_L_START, TORSO_FRAME_TURN_L_END)) {
-                item->pos.y_rot -= PHD_DEGREE * 9;
+                item->rot.y -= PHD_DEGREE * 9;
             }
 
             if (angle > -TORSO_NEED_TURN) {
@@ -180,7 +180,7 @@ void Torso_Control(int16_t item_num)
                 Item_TestAnimEqual(item, TORSO_TURN_R_ANIM)
                 && Item_TestFrameRange(
                     item, TORSO_FRAME_TURN_R_START, TORSO_FRAME_TURN_R_END)) {
-                item->pos.y_rot += PHD_DEGREE * 14;
+                item->rot.y += PHD_DEGREE * 14;
             }
 
             if (angle < TORSO_NEED_TURN) {
@@ -215,9 +215,9 @@ void Torso_Control(int16_t item_num)
                 g_LaraItem->pos.x = item->pos.x;
                 g_LaraItem->pos.y = item->pos.y;
                 g_LaraItem->pos.z = item->pos.z;
-                g_LaraItem->pos.x_rot = 0;
-                g_LaraItem->pos.y_rot = item->pos.y_rot;
-                g_LaraItem->pos.z_rot = 0;
+                g_LaraItem->rot.x = 0;
+                g_LaraItem->rot.y = item->rot.y;
+                g_LaraItem->rot.z = 0;
                 g_LaraItem->gravity_status = 0;
                 g_LaraItem->hit_points = -1;
                 g_Lara.air = -1;

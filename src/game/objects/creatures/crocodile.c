@@ -116,7 +116,7 @@ void Croc_Control(int16_t item_num)
         Creature_Mood(item, &info, true);
 
         if (item->current_anim_state == CROCODILE_FASTTURN) {
-            item->pos.y_rot += CROCODILE_FASTTURN_TURN;
+            item->rot.y += CROCODILE_FASTTURN_TURN;
         } else {
             angle = Creature_Turn(item, CROCODILE_TURN);
         }

@@ -27,10 +27,10 @@ void Missile_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
 
-    int32_t speed = (fx->speed * Math_Cos(fx->pos.x_rot)) >> W2V_SHIFT;
-    fx->pos.y += (fx->speed * Math_Sin(-fx->pos.x_rot)) >> W2V_SHIFT;
-    fx->pos.z += (speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->pos.x += (speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    int32_t speed = (fx->speed * Math_Cos(fx->rot.x)) >> W2V_SHIFT;
+    fx->pos.y += (fx->speed * Math_Sin(-fx->rot.x)) >> W2V_SHIFT;
+    fx->pos.z += (speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT;
+    fx->pos.x += (speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT;
 
     int16_t room_num = fx->room_number;
     FLOOR_INFO *floor =
@@ -89,7 +89,7 @@ void Missile_Control(int16_t fx_num)
     }
 
     fx->frame_number = 0;
-    fx->pos.y_rot = g_LaraItem->pos.y_rot;
+    fx->rot.y = g_LaraItem->rot.y;
     fx->speed = g_LaraItem->speed;
     fx->counter = 0;
 }

@@ -26,12 +26,12 @@ typedef struct {
     int32_t count;
     bool zapped;
     bool no_target;
-    PHD_VECTOR target;
-    PHD_VECTOR main[LIGHTNING_STEPS];
-    PHD_VECTOR wibble[LIGHTNING_STEPS];
+    VECTOR_3D target;
+    VECTOR_3D main[LIGHTNING_STEPS];
+    VECTOR_3D wibble[LIGHTNING_STEPS];
     int32_t start[LIGHTNING_SHOOTS];
-    PHD_VECTOR end[LIGHTNING_SHOOTS];
-    PHD_VECTOR shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
+    VECTOR_3D end[LIGHTNING_SHOOTS];
+    VECTOR_3D shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
 
 void LightningEmitter_Setup(OBJECT_INFO *obj)
@@ -172,7 +172,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     int32_t clip = Output_GetObjectBounds(frmptr[0]);
     if (!clip) {
@@ -202,7 +202,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     Matrix_Push();
 
     Matrix_TranslateAbs(l->target.x, l->target.y, l->target.z);
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     int32_t x2 = g_MatrixPtr->_03;
     int32_t y2 = g_MatrixPtr->_13;
@@ -213,7 +213,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
     int32_t dz = (z2 - z1) / LIGHTNING_STEPS;
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
-        PHD_VECTOR *pos = &l->wibble[i];
+        VECTOR_3D *pos = &l->wibble[i];
         if (Game_GetStatus() == GS_IN_GAME) {
             pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
@@ -255,7 +255,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         Matrix_Push();
 
         Matrix_TranslateAbs(l->end[i].x, l->end[i].y, l->end[i].z);
-        Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+        Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
         x2 = g_MatrixPtr->_03;
         y2 = g_MatrixPtr->_13;
@@ -267,7 +267,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
         dz = (z2 - z1) / steps;
 
         for (int k = 0; k < steps; k++) {
-            PHD_VECTOR *pos = &l->shoot[i][k];
+            VECTOR_3D *pos = &l->shoot[i][k];
             if (Game_GetStatus() == GS_IN_GAME) {
                 pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;

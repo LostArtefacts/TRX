@@ -8,8 +8,8 @@
 
 bool Sound_Init(void);
 void Sound_Shutdown(void);
-bool Sound_Effect(int32_t sfx_num, PHD_3DPOS *pos, uint32_t flags);
-bool Sound_StopEffect(int32_t sfx_num, PHD_3DPOS *pos);
+bool Sound_Effect(int32_t sfx_num, const VECTOR_3D *pos, uint32_t flags);
+bool Sound_StopEffect(int32_t sfx_num, const VECTOR_3D *pos);
 void Sound_UpdateEffects(void);
 void Sound_ResetEffects(void);
 void Sound_StopAmbientSounds(void);

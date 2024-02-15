@@ -72,7 +72,7 @@ void Lara_Draw(ITEM_INFO *item)
     Output_DrawShadow(object->shadow_size, frame, item);
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     int32_t clip = Output_GetObjectBounds(frame);
     if (!clip) {
@@ -340,7 +340,7 @@ void Lara_Draw_I(
     Output_DrawShadow(object->shadow_size, bounds, item);
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
-    Matrix_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
     int32_t clip = Output_GetObjectBounds(frame1);
     if (!clip) {

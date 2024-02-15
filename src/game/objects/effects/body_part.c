@@ -20,10 +20,10 @@ void BodyPart_Setup(OBJECT_INFO *obj)
 void BodyPart_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
-    fx->pos.x_rot += 5 * PHD_DEGREE;
-    fx->pos.z_rot += 10 * PHD_DEGREE;
-    fx->pos.z += (fx->speed * Math_Cos(fx->pos.y_rot)) >> W2V_SHIFT;
-    fx->pos.x += (fx->speed * Math_Sin(fx->pos.y_rot)) >> W2V_SHIFT;
+    fx->rot.x += 5 * PHD_DEGREE;
+    fx->rot.z += 10 * PHD_DEGREE;
+    fx->pos.z += (fx->speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT;
+    fx->pos.x += (fx->speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT;
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
