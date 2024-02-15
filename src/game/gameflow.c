@@ -32,7 +32,7 @@ typedef struct ENUM_TO_STRING {
 
 typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
     char *path;
-    int32_t display_time;
+    double display_time;
 } GAMEFLOW_DISPLAY_PICTURE_DATA;
 
 typedef struct GAMEFLOW_MESH_SWAP_DATA {
@@ -456,11 +456,7 @@ static bool GameFlow_LoadLevelSequence(
                     level_num, type_str);
                 return false;
             }
-            data->display_time = tmp_d * TICKS_PER_SECOND;
-            if (!data->display_time) {
-                data->display_time = INT_MAX;
-            }
-
+            data->display_time = tmp_d;
             seq->data = data;
 
         } else if (!strcmp(type_str, "level_stats")) {
@@ -490,9 +486,7 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             data->path = Memory_DupStr(tmp_s);
-
             data->display_time = 0;
-
             seq->data = data;
 
         } else if (!strcmp(type_str, "exit_to_title")) {
@@ -1341,8 +1335,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
             GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
             Output_LoadBackdropImage(data->path);
-            Clock_SyncTicks(1);
-
             Output_FadeResetToBlack();
             Output_FadeToTransparent(true);
             while (Output_FadeIsAnimating()) {
@@ -1359,8 +1351,17 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
             if (!g_InputDB.any) {
                 Output_DrawBackdropImage();
-                Output_DumpScreen();
-                Shell_Wait(data->display_time);
+                for (int i = 0; i < data->display_time * FRAMES_PER_SECOND;
+                     i++) {
+                    Output_DumpScreen();
+
+                    Input_Update();
+                    Shell_ProcessInput();
+
+                    if (g_InputDB.any) {
+                        break;
+                    }
+                }
             }
 
             // fade out

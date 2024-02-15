@@ -286,20 +286,6 @@ void Shell_ExitSystemFmt(const char *fmt, ...)
     Shell_ExitSystem(message);
 }
 
-void Shell_Wait(int nticks)
-{
-    for (int i = 0; i < nticks; i++) {
-        Input_Update();
-        Shell_ProcessInput();
-
-        if (g_InputDB.any) {
-            break;
-        }
-        S_Shell_SpinMessageLoop();
-        Clock_SyncTicks(1);
-    }
-}
-
 void Shell_ProcessInput(void)
 {
     if (Console_IsOpened()) {
