@@ -415,7 +415,7 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
     if (g_InvMode == INV_TITLE_MODE) {
         // reset the clock after delay from loading the title level to reset
         // the initial spike in the lost frames and have smooth fades
-        Clock_SyncTicks(TICKS_PER_FRAME);
+        Clock_SyncTicks();
         Output_FadeResetToBlack();
         // make main menu fades faster
         Output_FadeSetSpeed(2.0);

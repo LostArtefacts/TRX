@@ -436,7 +436,7 @@ int32_t Output_DumpScreen(void)
     S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
-    int ticks = Clock_SyncTicks(TICKS_PER_FRAME);
+    int ticks = Clock_SyncTicks();
     Output_FadeAnimate(ticks);
     return ticks;
 }

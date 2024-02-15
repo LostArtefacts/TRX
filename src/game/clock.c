@@ -29,9 +29,9 @@ int32_t Clock_GetMS(void)
     return S_Clock_GetMS();
 }
 
-int32_t Clock_SyncTicks(int32_t target)
+int32_t Clock_SyncTicks(void)
 {
-    return S_Clock_SyncTicks(target) * m_TurboSpeedMul;
+    return S_Clock_SyncTicks() * m_TurboSpeedMul;
 }
 
 void Clock_GetDateTime(char *date_time)
