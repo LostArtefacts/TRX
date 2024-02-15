@@ -543,8 +543,6 @@ void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
     cur_txt++;
 
     Output_LoadBackdropImage(filename);
-    Clock_SyncTicks(1);
-
     Output_FadeReset();
     Output_FadeResetToBlack();
     Output_FadeToTransparent(true);
