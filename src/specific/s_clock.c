@@ -31,13 +31,6 @@ int32_t S_Clock_GetMS(void)
     return SDL_GetTicks();
 }
 
-int32_t S_Clock_Sync(void)
-{
-    Uint64 last_ticks = m_Ticks;
-    S_Clock_UpdateTicks();
-    return ((double)(m_Ticks - last_ticks) / m_Frequency);
-}
-
 int32_t S_Clock_SyncTicks(int32_t target)
 {
     double elapsed = 0.0;
