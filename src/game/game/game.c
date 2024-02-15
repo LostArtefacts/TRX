@@ -322,6 +322,58 @@ int32_t Game_Stop(void)
     }
 }
 
+void Game_DisplayPicture(const char *path, double display_time)
+{
+    Output_LoadBackdropImage(path);
+    Output_FadeResetToBlack();
+    Output_FadeToTransparent(true);
+    while (Output_FadeIsAnimating()) {
+        Output_DrawBackdropImage();
+        Output_DumpScreen();
+
+        Input_Update();
+        Shell_ProcessInput();
+
+        if (g_InputDB.any) {
+            break;
+        }
+    }
+
+    if (!g_InputDB.any) {
+        Output_DrawBackdropImage();
+        for (int i = 0; i < display_time * FRAMES_PER_SECOND; i++) {
+            Output_DumpScreen();
+
+            Input_Update();
+            Shell_ProcessInput();
+
+            if (g_InputDB.any) {
+                break;
+            }
+        }
+    }
+
+    // fade out
+    Output_FadeToBlack(true);
+    while (Output_FadeIsAnimating()) {
+        Output_DrawBackdropImage();
+        Output_DumpScreen();
+
+        Input_Update();
+        Shell_ProcessInput();
+
+        if (g_InputDB.any) {
+            break;
+        }
+    }
+
+    // draw black frame
+    Output_DrawBlack();
+    Output_DumpScreen();
+
+    Output_FadeReset();
+}
+
 int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_OverlayFlag = 1;
