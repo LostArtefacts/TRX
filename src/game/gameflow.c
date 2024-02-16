@@ -9,6 +9,7 @@
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
+#include "game/phase/phase.h"
 #include "game/room.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -1260,7 +1261,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LOOP_GAME:
-            ret = Game_Loop(level_type);
+            Phase_Set(PHASE_GAME);
+            ret = Game_Loop();
             LOG_DEBUG("Game_Loop() exited with %d", ret);
             if (ret != GF_NOP) {
                 return ret;

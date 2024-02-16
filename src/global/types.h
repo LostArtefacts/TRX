@@ -1593,6 +1593,7 @@ typedef struct GAME_INFO {
     bool remove_medipacks;
     bool inv_showing_medpack;
     bool inv_ring_above;
+    bool ask_for_save;
 } GAME_INFO;
 
 typedef struct CREATURE_INFO {

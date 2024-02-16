@@ -1,6 +1,7 @@
 #include "game/game.h"
 
 #include "config.h"
+#include "game/camera.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -19,11 +20,15 @@
 static int32_t m_DemoLevel = -1;
 static uint32_t *m_DemoPtr = NULL;
 
-static void Game_Demo_LoadLaraPos(void);
+static void Game_Demo_Initialise(void);
 
-static void Game_Demo_LoadLaraPos(void)
+static void Game_Demo_Initialise(void)
 {
+    g_OverlayFlag = 1;
+    Camera_Initialise();
+
     m_DemoPtr = g_DemoData;
+
     ITEM_INFO *item = g_LaraItem;
     item->pos.x = *m_DemoPtr++;
     item->pos.y = *m_DemoPtr++;
@@ -40,6 +45,14 @@ static void Game_Demo_LoadLaraPos(void)
     FLOOR_INFO *floor =
         Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+
+    Random_SeedDraw(0xD371F947);
+    Random_SeedControl(0xD371F947);
+
+    // LaraGun() expects request_gun_type to be set only when it
+    // really is needed, not at all times.
+    // https://github.com/LostArtefacts/TR1X/issues/36
+    g_Lara.request_gun_type = LGT_UNARMED;
 }
 
 bool Game_Demo_ProcessInput(void)
@@ -76,7 +89,6 @@ bool Game_Demo_ProcessInput(void)
 
 void Game_Demo(void)
 {
-    TEXTSTRING *txt;
     RESUME_INFO start, *s;
 
     bool any_demos = false;
@@ -118,29 +130,26 @@ void Game_Demo(void)
     g_Config.enable_enhanced_look = 0;
     g_Config.enable_tr2_jumping = 0;
 
-    if (Level_Initialise(m_DemoLevel)) {
-        Game_Demo_LoadLaraPos();
+    TEXTSTRING *txt =
+        Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
+    Text_Flash(txt, 1, 20);
+    Text_AlignBottom(txt, 1);
+    Text_CentreH(txt, 1);
 
-        Random_SeedDraw(0xD371F947);
-        Random_SeedControl(0xD371F947);
-
-        // LaraGun() expects request_gun_type to be set only when it
-        // really is needed, not at all times.
-        // https://github.com/LostArtefacts/TR1X/issues/36
-        g_Lara.request_gun_type = LGT_UNARMED;
-
-        txt = Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
-        Text_Flash(txt, 1, 20);
-        Text_AlignBottom(txt, 1);
-        Text_CentreH(txt, 1);
-
-        Game_Loop(GFL_DEMO);
-
-        Text_Remove(txt);
-
-        *s = start;
+    if (!Level_Initialise(m_DemoLevel)) {
+        goto end;
     }
 
+    Game_Demo_Initialise();
+    g_GameInfo.current_level_type = GFL_DEMO;
+    Game_SetStatus(GS_IN_GAME);
+    Game_Loop();
+
+    Text_Remove(txt);
+
+    *s = start;
+
+end:
     g_Config.enable_enhanced_look = old_enhanced_look;
     g_Config.enable_tr2_jumping = old_tr2_jumping;
 }

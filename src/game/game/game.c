@@ -162,11 +162,29 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     // https://github.com/LostArtefacts/TR1X/issues/36
     g_Lara.request_gun_type = LGT_UNARMED;
 
+    g_OverlayFlag = 1;
+    Camera_Initialise();
+
+    Stats_CalculateStats();
+    g_GameInfo.current[g_CurrentLevel].stats.max_pickup_count =
+        Stats_GetPickups();
+    g_GameInfo.current[g_CurrentLevel].stats.max_kill_count =
+        Stats_GetKillables();
+    g_GameInfo.current[g_CurrentLevel].stats.max_secret_count =
+        Stats_GetSecrets();
+
+    g_GameInfo.ask_for_save = g_Config.enable_save_crystals
+        && (level_type == GFL_NORMAL || level_type == GFL_BONUS)
+        && g_CurrentLevel != g_GameFlow.first_level_num
+        && g_CurrentLevel != g_GameFlow.gym_level_num;
+
     return true;
 }
 
 GAMEFLOW_OPTION Game_Stop(void)
 {
+    Sound_StopAllSamples();
+    Music_Stop();
     Savegame_PersistGameToCurrentInfo(g_CurrentLevel);
 
     if (g_CurrentLevel == g_GameFlow.last_level_num) {
@@ -272,27 +290,8 @@ void Game_DisplayPicture(const char *path, double display_time)
     Output_FadeReset();
 }
 
-GAMEFLOW_OPTION Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
+GAMEFLOW_OPTION Game_Loop(void)
 {
-    g_GameInfo.current_level_type = level_type;
-    Game_SetStatus(GS_IN_GAME);
-
-    g_OverlayFlag = 1;
-    Camera_Initialise();
-
-    Stats_CalculateStats();
-    g_GameInfo.current[g_CurrentLevel].stats.max_pickup_count =
-        Stats_GetPickups();
-    g_GameInfo.current[g_CurrentLevel].stats.max_kill_count =
-        Stats_GetKillables();
-    g_GameInfo.current[g_CurrentLevel].stats.max_secret_count =
-        Stats_GetSecrets();
-
-    bool ask_for_save = g_Config.enable_save_crystals
-        && (level_type == GFL_NORMAL || level_type == GFL_BONUS)
-        && g_CurrentLevel != g_GameFlow.first_level_num
-        && g_CurrentLevel != g_GameFlow.gym_level_num;
-
     int32_t nframes = 1;
     GAMEFLOW_OPTION ret = GF_NOP;
     while (1) {
@@ -304,19 +303,7 @@ GAMEFLOW_OPTION Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
 
         nframes = Output_DumpScreen();
         g_Camera.number_frames = nframes;
-
-        if (ask_for_save) {
-            int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
-            if (return_val != GF_NOP) {
-                Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-                Config_Write();
-            }
-            ask_for_save = false;
-        }
     }
-
-    Sound_StopAllSamples();
-    Music_Stop();
 
     if (ret == GF_NOP_BREAK) {
         return GF_NOP;

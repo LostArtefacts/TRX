@@ -1,5 +1,6 @@
 #include "game/phase/phase_game.h"
 
+#include "config.h"
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -11,6 +12,7 @@
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
@@ -122,6 +124,15 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
         m_FrameCount -= 0x10000;
     }
 
+    if (g_GameInfo.ask_for_save) {
+        int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
+        if (return_val != GF_NOP) {
+            Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
+            Config_Write();
+        }
+        g_GameInfo.ask_for_save = false;
+    }
+
     return GF_NOP;
 }
 
@@ -130,6 +141,7 @@ static void Phase_Game_Draw(void)
     Game_DrawScene(true);
     Text_Draw();
     Output_AnimateTextures(g_Camera.number_frames);
+    Text_Draw();
 }
 
 PHASER g_GamePhaser = {
