@@ -1,6 +1,5 @@
 #include "config.h"
 #include "game/clock.h"
-#include "game/console.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
@@ -437,7 +436,6 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
         Input_Update();
         Shell_ProcessInput();
         Game_ProcessInput();
-        Console_ScrollLogs();
 
         if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
             no_input_count = 0;
