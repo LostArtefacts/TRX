@@ -38,7 +38,7 @@ static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGBF m_WaterColor = { 0 };
-static VECTOR_3D m_LsVectorView = { 0 };
+static XYZ_32 m_LsVectorView = { 0 };
 
 char *m_BackdropImagePath = NULL;
 
@@ -457,13 +457,18 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
         int32_t ambient = 0x1FFF - r->ambient;
         int32_t brightest = 0;
 
-        VECTOR_3D ls = { 0, 0, 0 };
+        XYZ_32 ls = {
+            .x = 0,
+            .y = 0,
+            .z = 0,
+        };
         for (int i = 0; i < r->num_lights; i++) {
             LIGHT_INFO *light = &r->light[i];
-            VECTOR_3D lc;
-            lc.x = x - light->pos.x;
-            lc.y = y - light->pos.y;
-            lc.z = z - light->pos.z;
+            XYZ_32 lc = {
+                .x = x - light->pos.x,
+                .y = y - light->pos.y,
+                .z = z - light->pos.z,
+            };
 
             int32_t distance =
                 (SQUARE(lc.x) + SQUARE(lc.y) + SQUARE(lc.z)) >> 12;
@@ -1071,7 +1076,7 @@ int Output_GetObjectBounds(int16_t *bptr)
     int32_t z_min = bptr[4];
     int32_t z_max = bptr[5];
 
-    VECTOR_3D vtx[8];
+    XYZ_32 vtx[8];
     vtx[0].x = x_min;
     vtx[0].y = y_min;
     vtx[0].z = z_min;

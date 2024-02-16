@@ -33,7 +33,7 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
 
 static void Lara_WaterCurrent(COLL_INFO *coll)
 {
-    VECTOR_3D target;
+    XYZ_32 target;
 
     ITEM_INFO *item = g_LaraItem;
     ROOM_INFO *r = &g_RoomInfo[item->room_number];

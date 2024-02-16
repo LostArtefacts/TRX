@@ -17,5 +17,4 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *slist, int32_t world_space);
 
 int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item);
 
-void Collide_GetJointAbsPosition(
-    ITEM_INFO *item, VECTOR_3D *vec, int32_t joint);
+void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint);

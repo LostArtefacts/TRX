@@ -9,7 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-VECTOR_3D g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
+XYZ_32 g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
 int16_t g_KeyHoleBounds[12] = {
     -200,
     +200,

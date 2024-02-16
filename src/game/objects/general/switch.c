@@ -131,7 +131,7 @@ void Switch_CollisionControlled(
         m_Switch_BoundsControlled[4] = bounds[4] - 200;
         m_Switch_BoundsControlled[5] = bounds[5] + 200;
 
-        VECTOR_3D move_vector = { 0, 0, bounds[4] - 64 };
+        XYZ_32 move_vector = { 0, 0, bounds[4] - 64 };
 
         if (Lara_TestPosition(item, m_Switch_BoundsControlled)) {
             if (Lara_MovePosition(item, &move_vector)) {
@@ -188,7 +188,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (item->current_anim_state == SWITCH_STATE_ON
         || item->current_anim_state == SWITCH_STATE_OFF) {
-        VECTOR_3D move_vector_uw = { 0, 0, 108 };
+        XYZ_32 move_vector_uw = { 0, 0, 108 };
         if (!Lara_MovePosition(item, &move_vector_uw)) {
             return;
         }

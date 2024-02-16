@@ -20,8 +20,8 @@
 #define EXTRA_ANIM_HOLDER_SCION 0
 #define LF_PICKUPSCION 44
 
-static VECTOR_3D m_Scion_Position = { 0, 640, -310 };
-static VECTOR_3D m_Scion_Position4 = { 0, 280, -512 + 105 };
+static XYZ_32 m_Scion_Position = { 0, 640, -310 };
+static XYZ_32 m_Scion_Position4 = { 0, 280, -512 + 105 };
 
 static int16_t m_Scion_Bounds[12] = {
     -256,
@@ -174,7 +174,9 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
         g_CinePosition.pos = lara_item->pos;
-        g_CinePosition.rot = lara_item->rot;
+        g_CinePosition.rot.x = lara_item->rot.x;
+        g_CinePosition.rot.y = lara_item->rot.y;
+        g_CinePosition.rot.z = lara_item->rot.z;
     }
 cleanup:
     item->rot.x = rotx;
@@ -208,7 +210,9 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         g_Camera.type = CAM_CINEMATIC;
         g_CineFrame = 0;
         g_CinePosition.pos = lara_item->pos;
-        g_CinePosition.rot = lara_item->rot;
+        g_CinePosition.rot.x = lara_item->rot.x;
+        g_CinePosition.rot.y = lara_item->rot.y;
+        g_CinePosition.rot.z = lara_item->rot.z;
         g_CinePosition.rot.y -= PHD_90;
     }
 cleanup:

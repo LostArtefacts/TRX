@@ -1226,11 +1226,17 @@ typedef struct RGBA8888 {
     uint8_t a;
 } RGBA8888;
 
-typedef struct VECTOR_3D {
+typedef struct XYZ_16 {
+    int16_t x;
+    int16_t y;
+    int16_t z;
+} XYZ_16;
+
+typedef struct XYZ_32 {
     int32_t x;
     int32_t y;
     int32_t z;
-} VECTOR_3D;
+} XYZ_32;
 
 typedef struct MATRIX {
     int32_t _00;
@@ -1334,13 +1340,13 @@ typedef struct DOOR_DATA {
 } DOOR_DATA;
 
 typedef struct LIGHT_INFO {
-    VECTOR_3D pos;
+    XYZ_32 pos;
     int16_t intensity;
     int32_t falloff;
 } LIGHT_INFO;
 
 typedef struct MESH_INFO {
-    VECTOR_3D pos;
+    XYZ_32 pos;
     struct {
         PHD_ANGLE y;
     } rot;
@@ -1385,8 +1391,8 @@ typedef enum DROP_STATUS {
 typedef struct CARRIED_ITEM {
     GAME_OBJECT_ID object_id;
     int16_t spawn_number;
-    VECTOR_3D pos;
-    VECTOR_3D rot;
+    XYZ_32 pos;
+    XYZ_16 rot;
     int16_t room_number;
     int16_t fall_speed;
     DROP_STATUS status;
@@ -1416,8 +1422,8 @@ typedef struct ITEM_INFO {
     void *data;
     void *priv;
     CARRIED_ITEM *carried_item;
-    VECTOR_3D pos;
-    VECTOR_3D rot;
+    XYZ_32 pos;
+    XYZ_16 rot;
     uint16_t active : 1;
     uint16_t status : 2;
     uint16_t gravity_status : 1;
@@ -1427,8 +1433,8 @@ typedef struct ITEM_INFO {
 } ITEM_INFO;
 
 typedef struct CINE_POSITION {
-    VECTOR_3D pos;
-    VECTOR_3D rot;
+    XYZ_32 pos;
+    XYZ_16 rot;
 } CINE_POSITION;
 
 typedef struct LARA_ARM {
@@ -1466,12 +1472,12 @@ typedef struct LOT_INFO {
     int16_t zone_count;
     int16_t target_box;
     int16_t required_box;
-    VECTOR_3D target;
+    XYZ_32 target;
 } LOT_INFO;
 
 typedef struct FX_INFO {
-    VECTOR_3D pos;
-    VECTOR_3D rot;
+    XYZ_32 pos;
+    XYZ_16 rot;
     int16_t room_number;
     GAME_OBJECT_ID object_number;
     int16_t next_draw;
@@ -1597,7 +1603,7 @@ typedef struct CREATURE_INFO {
     int16_t item_num;
     MOOD_TYPE mood;
     LOT_INFO LOT;
-    VECTOR_3D target;
+    XYZ_32 target;
 } CREATURE_INFO;
 
 typedef enum {
@@ -1707,8 +1713,8 @@ typedef struct COLL_INFO {
     int32_t bad_pos;
     int32_t bad_neg;
     int32_t bad_ceiling;
-    VECTOR_3D shift;
-    VECTOR_3D old;
+    XYZ_32 shift;
+    XYZ_32 old;
     int16_t facing;
     DIRECTION quadrant;
     int16_t coll_type;
@@ -1785,7 +1791,7 @@ typedef struct GAME_VECTOR {
             int32_t y;
             int32_t z;
         };
-        VECTOR_3D pos;
+        XYZ_32 pos;
     };
     int16_t room_number;
 } GAME_VECTOR;
@@ -1797,7 +1803,7 @@ typedef struct OBJECT_VECTOR {
             int32_t y;
             int32_t z;
         };
-        VECTOR_3D pos;
+        XYZ_32 pos;
     };
     int16_t data;
     int16_t flags;
@@ -2010,14 +2016,14 @@ typedef struct RING_INFO {
     int16_t rot_adder_l;
     int16_t rot_adder_r;
     struct {
-        VECTOR_3D pos;
-        VECTOR_3D rot;
+        XYZ_32 pos;
+        XYZ_16 rot;
     } ringpos;
     struct {
-        VECTOR_3D pos;
-        VECTOR_3D rot;
+        XYZ_32 pos;
+        XYZ_16 rot;
     } camera;
-    VECTOR_3D light;
+    XYZ_32 light;
     IMOTION_INFO *imo;
 } RING_INFO;
 

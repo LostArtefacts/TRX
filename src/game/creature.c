@@ -332,10 +332,11 @@ int16_t Creature_Effect(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num))
 {
-    VECTOR_3D pos;
-    pos.x = bite->x;
-    pos.y = bite->y;
-    pos.z = bite->z;
+    XYZ_32 pos = {
+        .x = bite->x,
+        .y = bite->y,
+        .z = bite->z,
+    };
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     return spawn(
         pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_number);
@@ -402,10 +403,11 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     }
     LOT_INFO *LOT = &creature->LOT;
 
-    VECTOR_3D old;
-    old.x = item->pos.x;
-    old.y = item->pos.y;
-    old.z = item->pos.z;
+    XYZ_32 old = {
+        .x = item->pos.x,
+        .y = item->pos.y,
+        .z = item->pos.z,
+    };
 
     int32_t box_height = g_Boxes[item->box_number].height;
 

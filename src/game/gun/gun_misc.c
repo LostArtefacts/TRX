@@ -433,12 +433,12 @@ int32_t Gun_FireWeapon(
 
     ammo->ammo--;
 
-    const VECTOR_3D view_pos = {
+    const XYZ_32 view_pos = {
         .x = src->pos.x,
         .y = src->pos.y - winfo->gun_height,
         .z = src->pos.z,
     };
-    const VECTOR_3D view_rot = {
+    const XYZ_16 view_rot = {
         .x = angles[1]
             + (winfo->shot_accuracy * (Random_GetControl() - PHD_90)) / PHD_ONE,
         .y = angles[0]

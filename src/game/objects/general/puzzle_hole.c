@@ -12,7 +12,7 @@
 
 #define LF_USEPUZZLE 80
 
-VECTOR_3D g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
+XYZ_32 g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
 
 int16_t g_PuzzleHoleBounds[12] = {
     -200,

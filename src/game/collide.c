@@ -288,7 +288,7 @@ bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
     int32_t height)
 {
-    VECTOR_3D shifter;
+    XYZ_32 shifter;
 
     coll->hit_static = 0;
     int32_t inxmin = x - coll->radius;
@@ -569,7 +569,7 @@ int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
     return flags;
 }
 
-void Collide_GetJointAbsPosition(ITEM_INFO *item, VECTOR_3D *vec, int32_t joint)
+void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint)
 {
     OBJECT_INFO *object = &g_Objects[item->object_number];
 

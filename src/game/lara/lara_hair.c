@@ -22,10 +22,10 @@
 static bool m_FirstHair = false;
 static GAME_OBJECT_ID m_LaraType = O_LARA;
 static struct {
-    VECTOR_3D pos;
-    VECTOR_3D rot;
+    XYZ_32 pos;
+    XYZ_16 rot;
 } m_Hair[HAIR_SEGMENTS + 1] = { 0 };
-static VECTOR_3D m_HVel[HAIR_SEGMENTS + 1] = { 0 };
+static XYZ_32 m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
 static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z);
 
@@ -70,7 +70,7 @@ void Lara_Hair_Control(void)
     int16_t *frame, *objptr, room_number;
     int16_t *frm_ptr[2];
     int16_t **mesh_base;
-    VECTOR_3D pos;
+    XYZ_32 pos;
     FLOOR_INFO *floor;
     int32_t i, water_level, height, size, frac, rate;
     SPHERE sphere[5];

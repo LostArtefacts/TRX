@@ -46,8 +46,7 @@ void Flame_Control(int16_t fx_num)
             fx->pos.z = 0;
         }
 
-        Collide_GetJointAbsPosition(
-            g_LaraItem, (VECTOR_3D *)&fx->pos, -1 - fx->counter);
+        Collide_GetJointAbsPosition(g_LaraItem, &fx->pos, -1 - fx->counter);
 
         int32_t y = Room_GetWaterHeight(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,

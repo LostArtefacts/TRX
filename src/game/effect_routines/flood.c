@@ -15,7 +15,7 @@ void FX_Flood(ITEM_INFO *item)
         const int32_t timer = g_FlipTimer < FRAMES_PER_SECOND
             ? FRAMES_PER_SECOND - g_FlipTimer
             : g_FlipTimer - FRAMES_PER_SECOND;
-        const VECTOR_3D pos = {
+        const XYZ_32 pos = {
             .x = g_LaraItem->pos.x,
             .y = g_Camera.target.y + timer * 100,
             .z = g_LaraItem->pos.z,

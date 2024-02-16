@@ -13,8 +13,8 @@
 #define LF_PICKUP_ERASE 42
 #define LF_PICKUP_UW 18
 
-static VECTOR_3D m_PickUpPosition = { 0, 0, -100 };
-static VECTOR_3D m_PickUpPositionUW = { 0, -200, -350 };
+static XYZ_32 m_PickUpPosition = { 0, 0, -100 };
+static XYZ_32 m_PickUpPositionUW = { 0, -200, -350 };
 
 static int16_t m_PickUpBounds[12] = {
     -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,

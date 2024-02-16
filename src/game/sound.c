@@ -28,7 +28,7 @@
 
 typedef struct SOUND_SLOT {
     int sound_id;
-    const VECTOR_3D *pos;
+    const XYZ_32 *pos;
     uint32_t loudness;
     int16_t volume;
     int16_t pan;
@@ -58,7 +58,7 @@ static int m_DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
 static bool m_SoundIsActive = false;
 
 static SOUND_SLOT *Sound_GetSlot(
-    int32_t sfx_num, uint32_t loudness, const VECTOR_3D *pos, int16_t mode);
+    int32_t sfx_num, uint32_t loudness, const XYZ_32 *pos, int16_t mode);
 static void Sound_UpdateSlotParams(SOUND_SLOT *slot);
 static void Sound_ClearSlot(SOUND_SLOT *slot);
 static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
@@ -89,7 +89,7 @@ static float Sound_CalcPitch(int pitch)
 }
 
 static SOUND_SLOT *Sound_GetSlot(
-    int32_t sfx_num, uint32_t loudness, const VECTOR_3D *pos, int16_t mode)
+    int32_t sfx_num, uint32_t loudness, const XYZ_32 *pos, int16_t mode)
 {
     switch (mode) {
     case SOUND_MODE_WAIT:
@@ -262,7 +262,7 @@ void Sound_UpdateEffects(void)
     }
 }
 
-bool Sound_Effect(int32_t sfx_num, const VECTOR_3D *pos, uint32_t flags)
+bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
 {
     if (!m_SoundIsActive) {
         return false;
@@ -436,7 +436,7 @@ bool Sound_Effect(int32_t sfx_num, const VECTOR_3D *pos, uint32_t flags)
     return false;
 }
 
-bool Sound_StopEffect(int32_t sfx_num, const VECTOR_3D *pos)
+bool Sound_StopEffect(int32_t sfx_num, const XYZ_32 *pos)
 {
     if (!m_SoundIsActive) {
         return false;

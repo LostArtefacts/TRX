@@ -10,7 +10,7 @@ void FX_PowerUp(ITEM_INFO *item)
     if (g_FlipTimer > FRAMES_PER_SECOND * 4) {
         g_FlipEffect = -1;
     } else {
-        const VECTOR_3D pos = {
+        const XYZ_32 pos = {
             .x = g_Camera.target.x,
             .y = g_Camera.target.y + g_FlipTimer * 100,
             .z = g_Camera.target.z,
