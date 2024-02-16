@@ -2,18 +2,14 @@
 
 #include "config.h"
 #include "game/camera.h"
-#include "game/effects.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/items.h"
 #include "game/lara.h"
-#include "game/lara/lara_cheat.h"
-#include "game/lara/lara_hair.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
-#include "game/overlay.h"
+#include "game/phase/phase.h"
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -29,110 +25,7 @@
         Output_DumpScreen();                                                   \
     } while (g_Input.key);
 
-static const int32_t m_AnimationRate = 0x8000;
-static int32_t m_FrameCount = 0;
 static GAME_STATUS m_CurrentStatus = GS_INITIAL;
-
-static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type);
-
-static int32_t Game_Control(int32_t nframes, GAMEFLOW_LEVEL_TYPE level_type)
-{
-    int32_t return_val = 0;
-    if (nframes > MAX_FRAMES) {
-        nframes = MAX_FRAMES;
-    }
-
-    m_FrameCount += m_AnimationRate * nframes;
-    while (m_FrameCount >= 0) {
-        Lara_CheckCheatMode();
-        if (g_LevelComplete) {
-            return GF_NOP_BREAK;
-        }
-
-        Input_Update();
-        Shell_ProcessInput();
-        Game_ProcessInput();
-
-        if (level_type == GFL_DEMO) {
-            if (g_Input.any) {
-                return GF_EXIT_TO_TITLE;
-            }
-            if (!Game_Demo_ProcessInput()) {
-                return GF_EXIT_TO_TITLE;
-            }
-        }
-
-        if (g_Lara.death_timer > DEATH_WAIT
-            || (g_Lara.death_timer > DEATH_WAIT_MIN && g_Input.any
-                && !g_Input.fly_cheat)
-            || g_OverlayFlag == 2) {
-            if (level_type == GFL_DEMO) {
-                return GF_EXIT_TO_TITLE;
-            }
-            if (g_OverlayFlag == 2) {
-                g_OverlayFlag = 1;
-                return_val = Inv_Display(INV_DEATH_MODE);
-                if (return_val != GF_NOP) {
-                    return return_val;
-                }
-            } else {
-                g_OverlayFlag = 2;
-            }
-        }
-
-        if ((g_InputDB.option || g_Input.save || g_Input.load
-             || g_OverlayFlag <= 0)
-            && !g_Lara.death_timer) {
-            if (g_Camera.type == CAM_CINEMATIC) {
-                g_OverlayFlag = 0;
-            } else if (g_OverlayFlag > 0) {
-                if (g_Input.load) {
-                    g_OverlayFlag = -1;
-                } else if (g_Input.save) {
-                    g_OverlayFlag = -2;
-                } else {
-                    g_OverlayFlag = 0;
-                }
-            } else {
-                if (g_OverlayFlag == -1) {
-                    return_val = Inv_Display(INV_LOAD_MODE);
-                } else if (g_OverlayFlag == -2) {
-                    return_val = Inv_Display(INV_SAVE_MODE);
-                } else {
-                    return_val = Inv_Display(INV_GAME_MODE);
-                }
-
-                g_OverlayFlag = 1;
-                if (return_val != GF_NOP) {
-                    return return_val;
-                }
-            }
-        }
-
-        if (!g_Lara.death_timer && g_InputDB.pause) {
-            if (Game_Pause()) {
-                return GF_EXIT_TO_TITLE;
-            }
-        }
-
-        Item_Control();
-        Effect_Control();
-
-        Lara_Control();
-        Lara_Hair_Control();
-
-        Camera_Update();
-        Sound_ResetAmbient();
-        Effect_RunActiveFlipEffect();
-        Sound_UpdateEffects();
-        g_GameInfo.current[g_CurrentLevel].stats.timer++;
-        Overlay_BarHealthTimerTick();
-
-        m_FrameCount -= 0x10000;
-    }
-
-    return GF_NOP;
-}
 
 void Game_ProcessInput(void)
 {
@@ -172,6 +65,7 @@ GAME_STATUS Game_GetStatus(void)
 
 void Game_SetStatus(GAME_STATUS status)
 {
+    Phase_Set(PHASE_GAME);
     m_CurrentStatus = status;
 }
 
@@ -376,6 +270,9 @@ void Game_DisplayPicture(const char *path, double display_time)
 
 int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
 {
+    g_GameInfo.current_level_type = level_type;
+    Game_SetStatus(GS_IN_GAME);
+
     g_OverlayFlag = 1;
     Camera_Initialise();
 
@@ -395,11 +292,11 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
     int32_t nframes = 1;
     int32_t ret;
     while (1) {
-        ret = Game_Control(nframes, level_type);
+        ret = Phase_Control(nframes);
         if (ret != GF_NOP) {
             break;
         }
-        nframes = Game_ProcessFrame();
+        nframes = Phase_Draw();
 
         if (ask_for_save) {
             int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
