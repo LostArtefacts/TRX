@@ -313,7 +313,7 @@ void Inv_Ring_NotActive(void)
     Inv_Ring_Shutdown();
 }
 
-void Inv_Ring_GetView(RING_INFO *ring, VECTOR_3D *view_pos, VECTOR_3D *view_rot)
+void Inv_Ring_GetView(RING_INFO *ring, XYZ_32 *view_pos, XYZ_16 *view_rot)
 {
     PHD_ANGLE angles[2];
 

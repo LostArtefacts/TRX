@@ -10,7 +10,7 @@
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
 
 void Matrix_ResetStack(void);
-void Matrix_GenerateW2V(const VECTOR_3D *pos, const VECTOR_3D *rot);
+void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot);
 
 bool Matrix_Push(void);
 bool Matrix_PushUnit(void);

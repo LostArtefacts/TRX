@@ -21,7 +21,7 @@ void Matrix_ResetStack(void)
     g_MatrixPtr = &m_MatrixStack[0];
 }
 
-void Matrix_GenerateW2V(const VECTOR_3D *pos, const VECTOR_3D *rot)
+void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
 {
     g_MatrixPtr = &m_MatrixStack[0];
     int32_t sx = Math_Sin(rot->x);
@@ -507,12 +507,12 @@ void Matrix_LookAt(
     PHD_ANGLE angles[2];
     Math_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
 
-    const VECTOR_3D view_pos = {
+    const XYZ_32 view_pos = {
         .x = xsrc,
         .y = ysrc,
         .z = zsrc,
     };
-    const VECTOR_3D view_rot = {
+    const XYZ_16 view_rot = {
         .x = angles[1],
         .y = angles[0],
         .z = roll,

@@ -622,7 +622,7 @@ void Lara_InitialiseMeshes(int32_t level_num)
     }
 }
 
-bool Lara_IsNearItem(const VECTOR_3D *pos, int32_t distance)
+bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
 {
     return Item_IsNearItem(g_LaraItem, pos, distance);
 }
@@ -637,12 +637,12 @@ bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds)
     return Item_TestPosition(g_LaraItem, item, bounds);
 }
 
-void Lara_AlignPosition(ITEM_INFO *item, VECTOR_3D *vec)
+void Lara_AlignPosition(ITEM_INFO *item, XYZ_32 *vec)
 {
     Item_AlignPosition(g_LaraItem, item, vec);
 }
 
-bool Lara_MovePosition(ITEM_INFO *item, VECTOR_3D *vec)
+bool Lara_MovePosition(ITEM_INFO *item, XYZ_32 *vec)
 {
     int32_t velocity =
         g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER

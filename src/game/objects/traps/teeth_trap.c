@@ -26,10 +26,11 @@ static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite);
 
 static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
 {
-    VECTOR_3D pos;
-    pos.x = bite->x;
-    pos.y = bite->y;
-    pos.z = bite->z;
+    XYZ_32 pos = {
+        .x = bite->x,
+        .y = bite->y,
+        .z = bite->z,
+    };
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     Effect_Blood(
         pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_number);

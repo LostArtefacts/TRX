@@ -24,16 +24,15 @@ int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num);
 int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num);
 
 bool Item_IsNearItem(
-    const ITEM_INFO *item, const VECTOR_3D *pos, int32_t distance);
+    const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance);
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius);
 bool Item_TestPosition(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int16_t *bounds);
-void Item_AlignPosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, VECTOR_3D *vec);
+void Item_AlignPosition(ITEM_INFO *src_item, ITEM_INFO *dst_item, XYZ_32 *vec);
 bool Item_MovePosition(
-    ITEM_INFO *src_item, const ITEM_INFO *dst_item, const VECTOR_3D *vec,
+    ITEM_INFO *src_item, const ITEM_INFO *dst_item, const XYZ_32 *vec,
     int32_t velocity);
 void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll);
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);

@@ -24,10 +24,11 @@ void FX_Bubbles(ITEM_INFO *item)
 
     Sound_Effect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
 
-    VECTOR_3D offset;
-    offset.x = 0;
-    offset.y = 0;
-    offset.z = 50;
+    XYZ_32 offset = {
+        .x = 0,
+        .y = 0,
+        .z = 50,
+    };
     Collide_GetJointAbsPosition(item, &offset, LM_HEAD);
 
     for (int i = 0; i < count; i++) {

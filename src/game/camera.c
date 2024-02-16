@@ -777,8 +777,8 @@ void Camera_OffsetReset(void)
 
 void Camera_UpdateCutscene(void)
 {
-    VECTOR_3D cam_pos;
-    VECTOR_3D cam_tar;
+    XYZ_32 cam_pos;
+    XYZ_32 cam_tar;
 
     int16_t *ptr = &g_Cine[8 * g_CineFrame];
     int32_t tx = ptr[0];

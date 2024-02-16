@@ -15,7 +15,7 @@ void FX_DropSand(ITEM_INFO *item)
         if (!g_FlipTimer) {
             Sound_Effect(SFX_TRAPDOOR_OPEN, NULL, SPM_NORMAL);
         }
-        const VECTOR_3D pos = {
+        const XYZ_32 pos = {
             .x = g_Camera.target.x,
             .y = g_Camera.target.y + g_FlipTimer * 100,
             .z = g_Camera.target.z,

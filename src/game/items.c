@@ -336,8 +336,7 @@ int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num)
     return changed;
 }
 
-bool Item_IsNearItem(
-    const ITEM_INFO *item, const VECTOR_3D *pos, int32_t distance)
+bool Item_IsNearItem(const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance)
 {
     int32_t x = pos->x - item->pos.x;
     int32_t y = pos->y - item->pos.y;
@@ -426,8 +425,7 @@ bool Item_TestPosition(
     return true;
 }
 
-void Item_AlignPosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, VECTOR_3D *vec)
+void Item_AlignPosition(ITEM_INFO *src_item, ITEM_INFO *dst_item, XYZ_32 *vec)
 {
     src_item->rot.x = dst_item->rot.x;
     src_item->rot.y = dst_item->rot.y;
@@ -449,17 +447,16 @@ void Item_AlignPosition(
 }
 
 bool Item_MovePosition(
-    ITEM_INFO *item, const ITEM_INFO *ref_item, const VECTOR_3D *vec,
+    ITEM_INFO *item, const ITEM_INFO *ref_item, const XYZ_32 *vec,
     int32_t velocity)
 {
-    const VECTOR_3D *ref_pos = &ref_item->pos;
-    const VECTOR_3D *ref_rot = &ref_item->rot;
+    const XYZ_32 *ref_pos = &ref_item->pos;
 
     Matrix_PushUnit();
-    Matrix_RotYXZ(ref_rot->y, ref_rot->x, ref_rot->z);
+    Matrix_RotYXZ(ref_item->rot.y, ref_item->rot.x, ref_item->rot.z);
 
     MATRIX *mptr = g_MatrixPtr;
-    const VECTOR_3D dst_pos = {
+    const XYZ_32 dst_pos = {
         .x = ref_pos->x
             + ((mptr->_00 * vec->x + mptr->_01 * vec->y + mptr->_02 * vec->z)
                >> W2V_SHIFT),
@@ -471,11 +468,7 @@ bool Item_MovePosition(
                >> W2V_SHIFT),
     };
 
-    const VECTOR_3D dst_rot = {
-        .x = ref_rot->x,
-        .y = ref_rot->y,
-        .z = ref_rot->z,
-    };
+    const XYZ_16 dst_rot = ref_item->rot;
 
     Matrix_Pop();
 

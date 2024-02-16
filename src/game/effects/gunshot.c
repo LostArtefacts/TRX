@@ -35,10 +35,11 @@ int16_t Effect_GunShotHit(
     int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE y_rot,
     int16_t room_num)
 {
-    VECTOR_3D pos;
-    pos.x = 0;
-    pos.y = 0;
-    pos.z = 0;
+    XYZ_32 pos = {
+        .x = 0,
+        .y = 0,
+        .z = 0,
+    };
     Collide_GetJointAbsPosition(
         g_LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
     Effect_Blood(

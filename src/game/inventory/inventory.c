@@ -70,8 +70,8 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *imo)
 
     Output_SetupAboveWater(false);
 
-    VECTOR_3D view_pos;
-    VECTOR_3D view_rot;
+    XYZ_32 view_pos;
+    XYZ_16 view_rot;
     Inv_Ring_GetView(ring, &view_pos, &view_rot);
     Matrix_GenerateW2V(&view_pos, &view_rot);
     Inv_Ring_Light(ring);
