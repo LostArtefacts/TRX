@@ -56,7 +56,7 @@ static int32_t Phase_Pause_DisplayRequester(
 
 static void Phase_Pause_Start(void);
 static void Phase_Pause_End(void);
-static int32_t Phase_Pause_Control(int32_t nframes);
+static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes);
 static void Phase_Pause_Draw(void);
 
 static void Phase_Pause_RemoveText(void)
@@ -130,7 +130,7 @@ static void Phase_Pause_End(void)
     Phase_Pause_RemoveText();
 }
 
-static int32_t Phase_Pause_Control(int32_t nframes)
+static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
 {
     Phase_Pause_UpdateText();
 

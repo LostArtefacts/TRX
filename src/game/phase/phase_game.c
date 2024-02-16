@@ -25,10 +25,10 @@
 static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
-static int32_t Phase_Game_Control(int32_t nframes);
+static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes);
 static void Phase_Game_Draw(void);
 
-static int32_t Phase_Game_Control(int32_t nframes)
+static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 {
     int32_t return_val = 0;
     if (nframes > MAX_FRAMES) {
