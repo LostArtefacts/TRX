@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/carrier.h"
-#include "game/clock.h"
 #include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"

@@ -2,18 +2,14 @@
 
 #include "config.h"
 #include "filesystem.h"
-#include "game/clock.h"
 #include "game/fmv.h"
 #include "game/game.h"
-#include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
-#include "game/output.h"
 #include "game/room.h"
-#include "game/shell.h"
 #include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -22,7 +18,6 @@
 #include "log.h"
 #include "memory.h"
 
-#include <limits.h>
 #include <string.h>
 
 typedef struct ENUM_TO_STRING {
