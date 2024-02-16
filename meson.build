@@ -233,6 +233,7 @@ sources = [
   'src/game/phase/phase.c',
   'src/game/phase/phase_game.c',
   'src/game/phase/phase_pause.c',
+  'src/game/phase/phase_picture.c',
   'src/game/picture.c',
   'src/game/random.c',
   'src/game/requester.c',

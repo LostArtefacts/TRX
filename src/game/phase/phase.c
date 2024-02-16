@@ -2,6 +2,7 @@
 
 #include "game/phase/phase_game.h"
 #include "game/phase/phase_pause.h"
+#include "game/phase/phase_picture.h"
 #include "global/types.h"
 #include "log.h"
 
@@ -9,7 +10,7 @@
 
 static PHASER *m_Phaser = NULL;
 
-void Phase_Set(const PHASE phase)
+void Phase_Set(const PHASE phase, void *arg)
 {
     if (m_Phaser && m_Phaser->end) {
         m_Phaser->end();
@@ -28,10 +29,14 @@ void Phase_Set(const PHASE phase)
     case PHASE_PAUSE:
         m_Phaser = &g_PausePhaser;
         break;
+
+    case PHASE_PICTURE:
+        m_Phaser = &g_PicturePhaser;
+        break;
     }
 
     if (m_Phaser && m_Phaser->start) {
-        m_Phaser->start();
+        m_Phaser->start(arg);
     }
 }
 

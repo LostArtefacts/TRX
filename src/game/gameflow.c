@@ -10,6 +10,7 @@
 #include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/phase/phase.h"
+#include "game/phase/phase_picture.h"
 #include "game/room.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -1261,7 +1262,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LOOP_GAME:
-            Phase_Set(PHASE_GAME);
+            Phase_Set(PHASE_GAME, NULL);
             ret = Game_Loop();
             LOG_DEBUG("Game_Loop() exited with %d", ret);
             if (ret != GF_NOP) {
@@ -1331,7 +1332,12 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             }
 
             GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-            Game_DisplayPicture(data->path, data->display_time);
+            PHASE_PICTURE_DATA phase_arg = {
+                .path = data->path,
+                .display_time = data->display_time,
+            };
+            Phase_Set(PHASE_PICTURE, &phase_arg);
+            Game_Loop();
             break;
 
         case GFS_EXIT_TO_TITLE:
