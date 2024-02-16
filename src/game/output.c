@@ -905,6 +905,10 @@ void Output_AnimateTextures(int32_t ticks)
     static int32_t tick_comp = 0;
     tick_comp += ticks;
 
+    if (!g_AnimTextureRanges) {
+        return;
+    }
+
     while (tick_comp > TICKS_PER_FRAME * 5) {
         int16_t *ptr = g_AnimTextureRanges;
         int16_t i = *ptr++;

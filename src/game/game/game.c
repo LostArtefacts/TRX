@@ -11,12 +11,12 @@
 #include "game/output.h"
 #include "game/phase/phase.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
-#include "global/const.h"
 #include "global/vars.h"
 #include "log.h"
+
+#include <stddef.h>
 
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
@@ -66,11 +66,11 @@ GAME_STATUS Game_GetStatus(void)
 void Game_SetStatus(GAME_STATUS status)
 {
     if (status == GS_IN_PAUSE) {
-        Phase_Set(PHASE_PAUSE);
+        Phase_Set(PHASE_PAUSE, NULL);
     } else if (status == GS_IN_GAME) {
-        Phase_Set(PHASE_GAME);
+        Phase_Set(PHASE_GAME, NULL);
     } else {
-        Phase_Set(PHASE_NULL);
+        Phase_Set(PHASE_NULL, NULL);
     }
     m_CurrentStatus = status;
 }
@@ -240,58 +240,6 @@ GAMEFLOW_OPTION Game_Stop(void)
     }
 }
 
-void Game_DisplayPicture(const char *path, double display_time)
-{
-    Output_LoadBackdropImage(path);
-    Output_FadeResetToBlack();
-    Output_FadeToTransparent(true);
-    while (Output_FadeIsAnimating()) {
-        Output_DrawBackdropImage();
-        Output_DumpScreen();
-
-        Input_Update();
-        Shell_ProcessInput();
-
-        if (g_InputDB.any) {
-            break;
-        }
-    }
-
-    if (!g_InputDB.any) {
-        Output_DrawBackdropImage();
-        for (int i = 0; i < display_time * FRAMES_PER_SECOND; i++) {
-            Output_DumpScreen();
-
-            Input_Update();
-            Shell_ProcessInput();
-
-            if (g_InputDB.any) {
-                break;
-            }
-        }
-    }
-
-    // fade out
-    Output_FadeToBlack(true);
-    while (Output_FadeIsAnimating()) {
-        Output_DrawBackdropImage();
-        Output_DumpScreen();
-
-        Input_Update();
-        Shell_ProcessInput();
-
-        if (g_InputDB.any) {
-            break;
-        }
-    }
-
-    // draw black frame
-    Output_DrawBlack();
-    Output_DumpScreen();
-
-    Output_FadeReset();
-}
-
 GAMEFLOW_OPTION Game_Loop(void)
 {
     int32_t nframes = 1;
@@ -308,7 +256,7 @@ GAMEFLOW_OPTION Game_Loop(void)
     }
 
     if (ret == GF_NOP_BREAK) {
-        return GF_NOP;
+        ret = GF_NOP;
     }
 
     return ret;

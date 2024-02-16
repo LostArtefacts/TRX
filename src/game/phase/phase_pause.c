@@ -54,7 +54,7 @@ static int32_t Phase_Pause_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
 
-static void Phase_Pause_Start(void);
+static void Phase_Pause_Start(void *arg);
 static void Phase_Pause_End(void);
 static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes);
 static void Phase_Pause_Draw(void);
@@ -102,7 +102,7 @@ static int32_t Phase_Pause_DisplayRequester(
     return select;
 }
 
-static void Phase_Pause_Start(void)
+static void Phase_Pause_Start(void *arg)
 {
     g_OldInputDB = g_Input;
 

@@ -27,8 +27,14 @@
 static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
+static void Phase_Game_Start(void *arg);
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes);
 static void Phase_Game_Draw(void);
+
+static void Phase_Game_Start(void *arg)
+{
+    Output_FadeReset();
+}
 
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 {
@@ -145,7 +151,7 @@ static void Phase_Game_Draw(void)
 }
 
 PHASER g_GamePhaser = {
-    .start = NULL,
+    .start = Phase_Game_Start,
     .end = NULL,
     .control = Phase_Game_Control,
     .draw = Phase_Game_Draw,
