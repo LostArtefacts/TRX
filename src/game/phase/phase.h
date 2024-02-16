@@ -12,9 +12,9 @@ typedef struct PHASER {
     void (*start)();
     void (*end)();
     int32_t (*control)(int32_t nframes);
-    int32_t (*draw)(void);
+    void (*draw)(void);
 } PHASER;
 
 void Phase_Set(PHASE phase);
 int32_t Phase_Control(int32_t nframes);
-int32_t Phase_Draw(void);
+void Phase_Draw(void);

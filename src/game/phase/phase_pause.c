@@ -57,7 +57,7 @@ static int32_t Phase_Pause_DisplayRequester(
 static void Phase_Pause_Start(void);
 static void Phase_Pause_End(void);
 static int32_t Phase_Pause_Control(int32_t nframes);
-static int32_t Phase_Pause_Draw(void);
+static void Phase_Pause_Draw(void);
 
 static void Phase_Pause_RemoveText(void)
 {
@@ -178,11 +178,10 @@ static int32_t Phase_Pause_Control(int32_t nframes)
     return GF_NOP;
 }
 
-static int32_t Phase_Pause_Draw(void)
+static void Phase_Pause_Draw(void)
 {
     Game_DrawScene(false);
     Text_Draw();
-    return Output_DumpScreen();
 }
 
 PHASER g_PausePhaser = {
