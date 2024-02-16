@@ -463,8 +463,8 @@ static bool Level_LoadDepthQ(MYFILE *fp)
 static bool Level_LoadPalette(MYFILE *fp)
 {
     LOG_INFO("");
-    RGB888 palette[256];
-    File_Read(palette, sizeof(RGB888), 256, fp);
+    RGB_888 palette[256];
+    File_Read(palette, sizeof(RGB_888), 256, fp);
     palette[0].r = 0;
     palette[0].g = 0;
     palette[0].b = 0;

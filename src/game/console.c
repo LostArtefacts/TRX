@@ -319,8 +319,8 @@ void Console_Draw(void)
             RSR_TEXT);
         int32_t sy = Viewport_GetHeight() - sh;
 
-        RGBA8888 top = { 0, 0, 0, 0 };
-        RGBA8888 bottom = { 0, 0, 0, 196 };
+        RGBA_8888 top = { 0, 0, 0, 0 };
+        RGBA_8888 bottom = { 0, 0, 0, 196 };
 
         Output_DrawScreenGradientQuad(sx, sy, sw, sh, top, top, bottom, bottom);
     }

@@ -101,7 +101,7 @@ static INJECTION_INFO *m_Aggregate = NULL;
 
 static void Inject_LoadFromFile(INJECTION *injection, const char *filename);
 
-static uint8_t Inject_RemapRGB(RGB888 rgb);
+static uint8_t Inject_RemapRGB(RGB_888 rgb);
 static void Inject_AlignTextureReferences(
     OBJECT_INFO *object, uint8_t *palette_map, int32_t page_base);
 
@@ -382,8 +382,8 @@ static void Inject_LoadTexturePages(
     MYFILE *fp = injection->fp;
 
     palette_map[0] = 0;
-    RGB888 source_palette[256];
-    File_Read(source_palette, sizeof(RGB888), 256, fp);
+    RGB_888 source_palette[256];
+    File_Read(source_palette, sizeof(RGB_888), 256, fp);
     for (int i = 1; i < 256; i++) {
         source_palette[i].r *= 4;
         source_palette[i].g *= 4;
@@ -716,13 +716,13 @@ static void Inject_AlignTextureReferences(
     }
 }
 
-static uint8_t Inject_RemapRGB(RGB888 rgb)
+static uint8_t Inject_RemapRGB(RGB_888 rgb)
 {
     // Find the index of the nearest match to the given RGB
     int best_match = 0x7fffffff, test_match;
     int r, g, b;
     int best_index = 0;
-    RGB888 test_rgb;
+    RGB_888 test_rgb;
     for (int i = 1; i < 256; i++) {
         test_rgb = Output_GetPaletteColor(i);
         r = rgb.r - test_rgb.r;

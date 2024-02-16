@@ -29,7 +29,7 @@
     }
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
-static RGB888 m_ColorPalette[256];
+static RGB_888 m_ColorPalette[256];
 
 static GFX_FBO_Renderer *m_RendererFBO = NULL;
 
@@ -486,7 +486,7 @@ void S_Output_RenderToggle(void)
     }
 }
 
-void S_Output_SetPalette(RGB888 palette[256])
+void S_Output_SetPalette(RGB_888 palette[256])
 {
     for (int i = 0; i < 256; i++) {
         m_ColorPalette[i] = palette[i];
@@ -494,7 +494,7 @@ void S_Output_SetPalette(RGB888 palette[256])
     m_IsPaletteActive = true;
 }
 
-RGB888 S_Output_GetPaletteColor(uint8_t idx)
+RGB_888 S_Output_GetPaletteColor(uint8_t idx)
 {
     return m_ColorPalette[idx];
 }
@@ -559,7 +559,7 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
         S_Output_CheckError(result);
 
         uint32_t *output_ptr = surface_desc.pixels;
-        RGB888 *input_ptr = pic->data;
+        RGB_888 *input_ptr = pic->data;
         for (int i = 0; i < pic->width * pic->height; i++) {
             uint8_t r = input_ptr->r;
             uint8_t g = input_ptr->g;
@@ -721,8 +721,8 @@ void S_Output_DrawSprite(
 }
 
 void S_Output_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 color1,
-    RGBA8888 color2)
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 color1,
+    RGBA_8888 color2)
 {
     int vertex_count = 2;
     GFX_3D_Vertex vertices[vertex_count];
@@ -752,8 +752,8 @@ void S_Output_Draw2DLine(
 }
 
 void S_Output_Draw2DQuad(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br)
+    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br)
 {
     int vertex_count = 4;
     GFX_3D_Vertex vertices[vertex_count];
@@ -991,7 +991,7 @@ void S_Output_Shutdown(void)
 }
 
 void S_Output_DrawFlatTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB888 color)
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB_888 color)
 {
     int vertex_count = 3;
     GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
@@ -1233,7 +1233,7 @@ void S_Output_DownloadTextures(int32_t pages)
             uint8_t pal_idx = *input_ptr++;
             // first color in the palette is chroma key, make it transparent
             uint8_t alpha = pal_idx == 0 ? 0 : 0xFF;
-            RGB888 pix = S_Output_GetPaletteColor(pal_idx);
+            RGB_888 pix = S_Output_GetPaletteColor(pal_idx);
             *output_ptr++ =
                 pix.b | (pix.g << 8) | (pix.r << 16) | (alpha << 24);
         }
@@ -1256,8 +1256,8 @@ bool S_Output_MakeScreenshot(const char *path)
 }
 
 void S_Output_ScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col_dark,
-    RGBA8888 col_light, float thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
+    RGBA_8888 col_light, float thickness)
 {
     // this draws the dark then light two tone border
     // 2 is the sx+1,sy+1
@@ -1421,8 +1421,8 @@ void S_Output_ScreenBox(
 }
 
 void S_Output_4ColourTextBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br, float thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br, float thickness)
 {
     //  0                 2
     //   *               &
@@ -1498,8 +1498,8 @@ void S_Output_4ColourTextBox(
 }
 
 void S_Output_2ToneColourTextBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
-    RGBA8888 centre, float thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
+    RGBA_8888 centre, float thickness)
 {
     //  0        2        4
     //   *               &

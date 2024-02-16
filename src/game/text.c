@@ -65,7 +65,7 @@ static int8_t m_TextASCIIMap[95] = {
     100 /*{*/, 101 /*|*/, 102 /*}*/, 67 /*~*/
 };
 
-static RGBA8888 m_MenuColorMap[MC_NUMBER_OF] = {
+static RGBA_8888 m_MenuColorMap[MC_NUMBER_OF] = {
     { 70, 30, 107, 230 }, // MC_PURPLE_C
     { 70, 30, 107, 0 }, // MC_PURPLE_E
     { 91, 46, 9, 255 }, // MC_BROWN_C
@@ -194,7 +194,7 @@ static uint8_t Text_MapLetterToSpriteNum(char letter)
     }
 }
 
-RGBA8888 Text_GetMenuColor(MENU_COLOR color)
+RGBA_8888 Text_GetMenuColor(MENU_COLOR color)
 {
     return m_MenuColorMap[color];
 }

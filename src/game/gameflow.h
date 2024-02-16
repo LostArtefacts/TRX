@@ -40,7 +40,7 @@ typedef struct GAMEFLOW_LEVEL {
     GAMEFLOW_SEQUENCE *sequence;
     struct {
         bool override;
-        RGBF value;
+        RGB_F value;
     } water_color;
     struct {
         bool override;
@@ -80,7 +80,7 @@ typedef struct GAMEFLOW {
     TRISTATE_BOOL force_save_crystals;
     GAMEFLOW_LEVEL *levels;
     char *strings[GS_NUMBER_OF];
-    RGBF water_color;
+    RGB_F water_color;
     float draw_distance_fade;
     float draw_distance_max;
     struct {
