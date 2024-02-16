@@ -13,6 +13,7 @@
 #include "game/overlay.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -127,6 +128,7 @@ static int32_t Phase_Game_Control(int32_t nframes)
 static int32_t Phase_Game_Draw(void)
 {
     Game_DrawScene(true);
+    Text_Draw();
     g_Camera.number_frames = Output_DumpScreen();
     Output_AnimateTextures(g_Camera.number_frames);
     return g_Camera.number_frames;
