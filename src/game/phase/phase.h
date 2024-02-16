@@ -5,6 +5,7 @@
 typedef enum PHASE {
     PHASE_UNKNOWN,
     PHASE_GAME,
+    PHASE_PAUSE,
 } PHASE;
 
 typedef struct PHASER {

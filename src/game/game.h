@@ -21,6 +21,5 @@ int32_t Game_Cutscene_Loop(void);
 
 void Game_Demo(void);
 bool Game_Demo_ProcessInput(void);
-bool Game_Pause(void);
 
 void Game_DrawScene(bool draw_overlay);

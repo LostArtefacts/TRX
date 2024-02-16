@@ -1,6 +1,7 @@
 #include "game/phase/phase.h"
 
 #include "game/phase/phase_game.h"
+#include "game/phase/phase_pause.h"
 #include "global/types.h"
 #include "log.h"
 
@@ -24,6 +25,10 @@ void Phase_Set(const PHASE phase)
     switch (phase) {
     case PHASE_GAME:
         m_Phaser = &g_GamePhaser;
+        break;
+
+    case PHASE_PAUSE:
+        m_Phaser = &g_PausePhaser;
         break;
 
     case PHASE_UNKNOWN:
