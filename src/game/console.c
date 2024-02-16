@@ -307,6 +307,8 @@ void Console_ScrollLogs(void)
 
 void Console_Draw(void)
 {
+    Console_ScrollLogs();
+
     if (m_IsOpened || m_AreAnyLogsOnScreen) {
         int32_t sx = 0;
         int32_t sw = Viewport_GetWidth();
