@@ -113,7 +113,6 @@ static void Phase_Pause_Start(void)
     Sound_PauseAll();
 
     m_OldGameStatus = Game_GetStatus();
-    Game_SetStatus(GS_IN_PAUSE);
 
     Output_FadeToSemiBlack(true);
 

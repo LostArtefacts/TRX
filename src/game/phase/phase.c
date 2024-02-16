@@ -7,16 +7,10 @@
 
 #include <stddef.h>
 
-static PHASE m_Phase = PHASE_NULL;
 static PHASER *m_Phaser = NULL;
 
 void Phase_Set(const PHASE phase)
 {
-    if (phase == m_Phase) {
-        return;
-    }
-
-    m_Phase = phase;
     if (m_Phaser && m_Phaser->end) {
         m_Phaser->end();
     }
