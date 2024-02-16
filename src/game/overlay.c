@@ -47,7 +47,7 @@ static int16_t m_BarOffsetY[6] = { 0 };
 static int32_t m_OldGameTimer = 0;
 static DISPLAY_PICKUP_INFO m_Pickups[MAX_PICKUPS] = { 0 };
 
-static RGBA8888 m_ColorBarMap[][COLOR_STEPS] = {
+static RGBA_8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
     { { 124, 94, 37, 255 },
       { 161, 131, 60, 255 },
@@ -243,8 +243,8 @@ static void Overlay_BarGetLocation(
 
 void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
 {
-    const RGBA8888 rgb_bgnd = { 0, 0, 0, 255 };
-    const RGBA8888 rgb_border = { 53, 53, 53, 255 };
+    const RGBA_8888 rgb_bgnd = { 0, 0, 0, 255 };
+    const RGBA_8888 rgb_border = { 53, 53, 53, 255 };
 
     int32_t width = 200;
     int32_t height = 10;
@@ -283,15 +283,15 @@ void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
 
         if (g_Config.enable_smooth_bars) {
             for (int i = 0; i < COLOR_STEPS - 1; i++) {
-                RGBA8888 c1 = m_ColorBarMap[bar_info->color][i];
-                RGBA8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
+                RGBA_8888 c1 = m_ColorBarMap[bar_info->color][i];
+                RGBA_8888 c2 = m_ColorBarMap[bar_info->color][i + 1];
                 int32_t lsy = sy + i * sh / (COLOR_STEPS - 1);
                 int32_t lsh = sy + (i + 1) * sh / (COLOR_STEPS - 1) - lsy;
                 Output_DrawScreenGradientQuad(sx, lsy, sw, lsh, c1, c1, c2, c2);
             }
         } else {
             for (int i = 0; i < COLOR_STEPS; i++) {
-                RGBA8888 color = m_ColorBarMap[bar_info->color][i];
+                RGBA_8888 color = m_ColorBarMap[bar_info->color][i];
                 int32_t lsy = sy + i * sh / COLOR_STEPS;
                 int32_t lsh = sy + (i + 1) * sh / COLOR_STEPS - lsy;
                 Output_DrawScreenFlatQuad(sx, lsy, sw, lsh, color);

@@ -37,7 +37,7 @@ static int32_t m_RandTable[WIBBLE_SIZE] = { 0 };
 static PHD_VBUF m_VBuf[1500] = { 0 };
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
-static RGBF m_WaterColor = { 0 };
+static RGB_F m_WaterColor = { 0 };
 static XYZ_32 m_LsVectorView = { 0 };
 
 char *m_BackdropImagePath = NULL;
@@ -73,7 +73,7 @@ static const int16_t *Output_DrawObjectG3(
             &m_VBuf[*obj_ptr++],
         };
         uint8_t color_idx = *obj_ptr++;
-        RGB888 color = Output_GetPaletteColor(color_idx);
+        RGB_888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
     }
 
@@ -93,7 +93,7 @@ static const int16_t *Output_DrawObjectG4(
             &m_VBuf[*obj_ptr++],
         };
         uint8_t color_idx = *obj_ptr++;
-        RGB888 color = Output_GetPaletteColor(color_idx);
+        RGB_888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
         S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
     }
@@ -404,18 +404,18 @@ void Output_DownloadTextures(int page_count)
     S_Output_DownloadTextures(page_count);
 }
 
-RGBA8888 Output_RGB2RGBA(const RGB888 color)
+RGBA_8888 Output_RGB2RGBA(const RGB_888 color)
 {
-    RGBA8888 ret = { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
+    RGBA_8888 ret = { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
     return ret;
 }
 
-void Output_SetPalette(RGB888 palette[256])
+void Output_SetPalette(RGB_888 palette[256])
 {
     S_Output_SetPalette(palette);
 }
 
-RGB888 Output_GetPaletteColor(uint8_t idx)
+RGB_888 Output_GetPaletteColor(uint8_t idx)
 {
     return S_Output_GetPaletteColor(idx);
 }
@@ -641,7 +641,7 @@ void Output_SetDrawDistMax(int32_t dist)
     m_DrawDistMax = dist;
 }
 
-void Output_SetWaterColor(const RGBF *color)
+void Output_SetWaterColor(const RGB_F *color)
 {
     m_WaterColor.r = color->r;
     m_WaterColor.g = color->g;
@@ -709,27 +709,27 @@ void Output_DrawBackdropImage(void)
 }
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color)
 {
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br)
 {
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
 void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col)
 {
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
 }
 
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
-    RGBA8888 colLight, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
+    RGBA_8888 colLight, int32_t thickness)
 {
     float scale = Viewport_GetHeight() / 480.0;
     S_Output_ScreenBox(
@@ -738,14 +738,15 @@ void Output_DrawScreenBox(
 }
 
 void Output_DrawGradientScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col1, RGBA8888 col2)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col1,
+    RGBA_8888 col2)
 {
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col1, col2);
 }
 
 void Output_DrawGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br, int32_t thickness)
 {
     float scale = Viewport_GetHeight() / 480.0;
     S_Output_4ColourTextBox(
@@ -754,8 +755,8 @@ void Output_DrawGradientScreenBox(
 }
 
 void Output_DrawCentreGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
-    RGBA8888 center, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
+    RGBA_8888 center, int32_t thickness)
 {
     float scale = Viewport_GetHeight() / 480.0;
     S_Output_2ToneColourTextBox(
@@ -765,7 +766,7 @@ void Output_DrawCentreGradientScreenBox(
 
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
-    RGBA8888 color = { 0, 0, 0, 128 };
+    RGBA_8888 color = { 0, 0, 0, 128 };
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
@@ -950,7 +951,7 @@ static void Output_DrawBlackOverlay(uint8_t alpha)
     int32_t sw = Viewport_GetWidth();
     int32_t sh = Viewport_GetHeight();
 
-    RGBA8888 background = { 0, 0, 0, alpha };
+    RGBA_8888 background = { 0, 0, 0, alpha };
     S_Output_DisableDepthTest();
     S_Output_ClearDepthBuffer();
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);

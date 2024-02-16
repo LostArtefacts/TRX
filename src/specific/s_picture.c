@@ -133,7 +133,7 @@ PICTURE *S_Picture_CreateFromFile(const char *path)
 
     av_image_copy_to_buffer(
         (uint8_t *)target_pic->data,
-        target_pic->width * target_pic->height * sizeof(RGB888),
+        target_pic->width * target_pic->height * sizeof(RGB_888),
         (const uint8_t *const *)dst_data, dst_linesize, AV_PIX_FMT_RGB24,
         target_pic->width, target_pic->height, 1);
 
@@ -434,7 +434,7 @@ PICTURE *S_Picture_ScaleCrop(
         AV_PIX_FMT_RGB24, source_width, source_height, 1);
 
     src_planes[0] += ((source_height - crop_height) / 2) * src_linesize[0];
-    src_planes[0] += ((source_width - crop_width) / 2) * sizeof(RGB888);
+    src_planes[0] += ((source_width - crop_width) / 2) * sizeof(RGB_888);
 
     av_image_fill_arrays(
         dst_planes, dst_linesize, (const uint8_t *)target_pic->data,

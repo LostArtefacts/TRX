@@ -15,7 +15,7 @@ PICTURE *Picture_Create(int width, int height)
     PICTURE *picture = Memory_Alloc(sizeof(PICTURE));
     picture->width = width;
     picture->height = height;
-    picture->data = Memory_Alloc(width * height * sizeof(RGB888));
+    picture->data = Memory_Alloc(width * height * sizeof(RGB_888));
     return picture;
 }
 

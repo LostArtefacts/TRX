@@ -12,9 +12,9 @@ void Output_SetWindowSize(int width, int height);
 void Output_ApplyRenderSettings(void);
 void Output_DownloadTextures(int page_count);
 
-RGBA8888 Output_RGB2RGBA(const RGB888 color);
-void Output_SetPalette(RGB888 palette[256]);
-RGB888 Output_GetPaletteColor(uint8_t idx);
+RGBA_8888 Output_RGB2RGBA(const RGB_888 color);
+void Output_SetPalette(RGB_888 palette[256]);
+RGB_888 Output_GetPaletteColor(uint8_t idx);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
@@ -23,7 +23,7 @@ int32_t Output_GetDrawDistFade(void);
 int32_t Output_GetDrawDistMax(void);
 void Output_SetDrawDistFade(int32_t dist);
 void Output_SetDrawDistMax(int32_t dist);
-void Output_SetWaterColor(const RGBF *color);
+void Output_SetWaterColor(const RGB_F *color);
 
 void Output_FadeReset(void);
 void Output_FadeSetSpeed(double speed);
@@ -54,25 +54,26 @@ void Output_DrawLightningSegment(
     int32_t width);
 
 void Output_DrawScreenFlatQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color);
 void Output_DrawScreenTranslucentQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 color);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color);
 void Output_DrawScreenGradientQuad(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br);
 void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col);
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 colDark,
-    RGBA8888 colLight, int32_t thickness);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
+    RGBA_8888 colLight, int32_t thickness);
 void Output_DrawGradientScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 col1, RGBA8888 col2);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col1,
+    RGBA_8888 col2);
 void Output_DrawGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 tl, RGBA8888 tr,
-    RGBA8888 bl, RGBA8888 br, int32_t thickness);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
+    RGBA_8888 bl, RGBA_8888 br, int32_t thickness);
 void Output_DrawCentreGradientScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA8888 edge,
-    RGBA8888 center, int32_t thickness);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
+    RGBA_8888 center, int32_t thickness);
 void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 
 void Output_DrawSprite(

@@ -1207,24 +1207,24 @@ typedef struct RESOLUTION {
     int height;
 } RESOLUTION;
 
-typedef struct RGBF {
+typedef struct RGB_F {
     float r;
     float g;
     float b;
-} RGBF;
+} RGB_F;
 
-typedef struct RGB888 {
+typedef struct RGB_888 {
     uint8_t r;
     uint8_t g;
     uint8_t b;
-} RGB888;
+} RGB_888;
 
-typedef struct RGBA8888 {
+typedef struct RGBA_8888 {
     uint8_t r;
     uint8_t g;
     uint8_t b;
     uint8_t a;
-} RGBA8888;
+} RGBA_8888;
 
 typedef struct XYZ_16 {
     int16_t x;
@@ -2039,7 +2039,7 @@ typedef struct SAMPLE_INFO {
 typedef struct PICTURE {
     int32_t width;
     int32_t height;
-    RGB888 *data;
+    RGB_888 *data;
 } PICTURE;
 
 typedef union INPUT_STATE {

@@ -10,7 +10,7 @@
 #define TEXT_Y_SPACING 3
 #define TEXT_OUTLINE_THICKNESS 2
 
-RGBA8888 Text_GetMenuColor(MENU_COLOR color);
+RGBA_8888 Text_GetMenuColor(MENU_COLOR color);
 void Text_Init(void);
 TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string);
 void Text_ChangeText(TEXTSTRING *textstring, const char *string);
