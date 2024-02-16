@@ -67,8 +67,10 @@ void Game_SetStatus(GAME_STATUS status)
 {
     if (status == GS_IN_PAUSE) {
         Phase_Set(PHASE_PAUSE);
-    } else {
+    } else if (status == GS_IN_GAME) {
         Phase_Set(PHASE_GAME);
+    } else {
+        Phase_Set(PHASE_NULL);
     }
     m_CurrentStatus = status;
 }

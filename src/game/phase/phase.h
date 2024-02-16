@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 typedef enum PHASE {
-    PHASE_UNKNOWN,
+    PHASE_NULL,
     PHASE_GAME,
     PHASE_PAUSE,
 } PHASE;

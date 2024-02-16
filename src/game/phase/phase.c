@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-static PHASE m_Phase = PHASE_UNKNOWN;
+static PHASE m_Phase = PHASE_NULL;
 static PHASER *m_Phaser = NULL;
 
 void Phase_Set(const PHASE phase)
@@ -23,16 +23,16 @@ void Phase_Set(const PHASE phase)
 
     LOG_DEBUG("%d", phase);
     switch (phase) {
+    case PHASE_NULL:
+        m_Phaser = NULL;
+        break;
+
     case PHASE_GAME:
         m_Phaser = &g_GamePhaser;
         break;
 
     case PHASE_PAUSE:
         m_Phaser = &g_PausePhaser;
-        break;
-
-    case PHASE_UNKNOWN:
-        m_Phaser = NULL;
         break;
     }
 
