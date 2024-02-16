@@ -56,10 +56,10 @@ bool Game_Cutscene_Control(int32_t nframes)
     return false;
 }
 
-int32_t Game_Cutscene_Start(int32_t level_num)
+GAMEFLOW_OPTION Game_Cutscene_Start(int32_t level_num)
 {
     if (!Level_Initialise(level_num)) {
-        return END_ACTION;
+        return GF_NOP_BREAK;
     }
 
     Game_Cutscene_InitialiseHair(level_num);
@@ -116,17 +116,17 @@ void Game_Cutscene_InitialiseHair(int32_t level_num)
         g_LaraItem->required_anim_state = cut_anim->current_anim_state;
 }
 
-int32_t Game_Cutscene_Stop(int32_t level_num)
+GAMEFLOW_OPTION Game_Cutscene_Stop(int32_t level_num)
 {
     Music_Stop();
     Sound_StopAllSamples();
 
     g_LevelComplete = true;
 
-    return level_num | GF_LEVEL_COMPLETE;
+    return GF_LEVEL_COMPLETE | level_num;
 }
 
-int32_t Game_Cutscene_Loop(void)
+GAMEFLOW_OPTION Game_Cutscene_Loop(void)
 {
     Game_SetStatus(GS_IN_GAME);
 

@@ -165,7 +165,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     return true;
 }
 
-int32_t Game_Stop(void)
+GAMEFLOW_OPTION Game_Stop(void)
 {
     Savegame_PersistGameToCurrentInfo(g_CurrentLevel);
 
@@ -272,7 +272,7 @@ void Game_DisplayPicture(const char *path, double display_time)
     Output_FadeReset();
 }
 
-int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
+GAMEFLOW_OPTION Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_GameInfo.current_level_type = level_type;
     Game_SetStatus(GS_IN_GAME);
@@ -294,7 +294,7 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
         && g_CurrentLevel != g_GameFlow.gym_level_num;
 
     int32_t nframes = 1;
-    int32_t ret;
+    GAMEFLOW_OPTION ret = GF_NOP;
     while (1) {
         ret = Phase_Control(nframes);
         if (ret != GF_NOP) {

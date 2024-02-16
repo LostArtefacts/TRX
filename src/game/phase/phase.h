@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global/types.h"
+
 #include <stdint.h>
 
 typedef enum PHASE {
@@ -16,5 +18,5 @@ typedef struct PHASER {
 } PHASER;
 
 void Phase_Set(PHASE phase);
-int32_t Phase_Control(int32_t nframes);
+GAMEFLOW_OPTION Phase_Control(int32_t nframes);
 void Phase_Draw(void);

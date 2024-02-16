@@ -41,7 +41,7 @@ void Phase_Set(const PHASE phase)
     }
 }
 
-int32_t Phase_Control(int32_t nframes)
+GAMEFLOW_OPTION Phase_Control(int32_t nframes)
 {
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
