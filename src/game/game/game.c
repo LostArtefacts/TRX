@@ -300,7 +300,10 @@ int32_t Game_Loop(GAMEFLOW_LEVEL_TYPE level_type)
         if (ret != GF_NOP) {
             break;
         }
-        nframes = Phase_Draw();
+        Phase_Draw();
+
+        nframes = Output_DumpScreen();
+        g_Camera.number_frames = nframes;
 
         if (ask_for_save) {
             int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);

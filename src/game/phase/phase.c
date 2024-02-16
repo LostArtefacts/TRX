@@ -36,7 +36,7 @@ void Phase_Set(const PHASE phase)
         break;
     }
 
-    if (m_Phaser->start) {
+    if (m_Phaser && m_Phaser->start) {
         m_Phaser->start();
     }
 }
@@ -49,10 +49,9 @@ int32_t Phase_Control(int32_t nframes)
     return GF_NOP;
 }
 
-int32_t Phase_Draw(void)
+void Phase_Draw(void)
 {
     if (m_Phaser && m_Phaser->draw) {
-        return m_Phaser->draw();
+        m_Phaser->draw();
     }
-    return 1;
 }

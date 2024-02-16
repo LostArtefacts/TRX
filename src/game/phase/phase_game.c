@@ -26,7 +26,7 @@ static const int32_t m_AnimationRate = 0x8000;
 static int32_t m_FrameCount = 0;
 
 static int32_t Phase_Game_Control(int32_t nframes);
-static int32_t Phase_Game_Draw(void);
+static void Phase_Game_Draw(void);
 
 static int32_t Phase_Game_Control(int32_t nframes)
 {
@@ -125,13 +125,11 @@ static int32_t Phase_Game_Control(int32_t nframes)
     return GF_NOP;
 }
 
-static int32_t Phase_Game_Draw(void)
+static void Phase_Game_Draw(void)
 {
     Game_DrawScene(true);
     Text_Draw();
-    g_Camera.number_frames = Output_DumpScreen();
     Output_AnimateTextures(g_Camera.number_frames);
-    return g_Camera.number_frames;
 }
 
 PHASER g_GamePhaser = {
