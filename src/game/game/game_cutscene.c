@@ -10,6 +10,7 @@
 #include "game/lara/lara_hair.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -127,11 +128,20 @@ int32_t Game_Cutscene_Stop(int32_t level_num)
 
 int32_t Game_Cutscene_Loop(void)
 {
+    Game_SetStatus(GS_IN_GAME);
+
     Game_Cutscene_Control(2);
-    Game_ProcessFrame();
+
+    Game_DrawScene(true);
+    g_Camera.number_frames = Output_DumpScreen();
+    Output_AnimateTextures(g_Camera.number_frames);
+
     int32_t nframes;
     do {
-        nframes = Game_ProcessFrame();
+        Game_DrawScene(true);
+        g_Camera.number_frames = Output_DumpScreen();
+        Output_AnimateTextures(g_Camera.number_frames);
+        nframes = g_Camera.number_frames;
     } while (!Game_Cutscene_Control(nframes));
     return GF_NOP;
 }

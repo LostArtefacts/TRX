@@ -231,6 +231,8 @@ sources = [
   'src/game/output.c',
   'src/game/overlay.c',
   'src/game/packer.c',
+  'src/game/phase/phase.c',
+  'src/game/phase/phase_game.c',
   'src/game/picture.c',
   'src/game/random.c',
   'src/game/requester.c',

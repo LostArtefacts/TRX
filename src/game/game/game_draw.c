@@ -11,14 +11,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-int32_t Game_ProcessFrame(void)
-{
-    Game_DrawScene(true);
-    g_Camera.number_frames = Output_DumpScreen();
-    Output_AnimateTextures(g_Camera.number_frames);
-    return g_Camera.number_frames;
-}
-
 void Game_DrawScene(bool draw_overlay)
 {
     if (g_Objects[O_LARA].loaded) {

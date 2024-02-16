@@ -23,5 +23,4 @@ void Game_Demo(void);
 bool Game_Demo_ProcessInput(void);
 bool Game_Pause(void);
 
-int32_t Game_ProcessFrame(void);
 void Game_DrawScene(bool draw_overlay);
