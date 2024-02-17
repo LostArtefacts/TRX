@@ -13,7 +13,6 @@
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
-#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "json/json_base.h"
@@ -1324,10 +1323,19 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_TOTAL_STATS:
             if (g_Config.enable_total_stats && level_type != GFL_SAVED) {
-                GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                Stats_ShowTotal(
-                    data->path,
-                    level_type == GFL_BONUS ? GFL_BONUS : GFL_NORMAL);
+                const GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
+                PHASE_STATS_DATA phase_args = {
+                    .level_num = level_num,
+                    .background_path = data->path,
+                    .total = true,
+                    .level_type =
+                        level_type == GFL_BONUS ? GFL_BONUS : GFL_NORMAL,
+                };
+                Phase_Set(PHASE_STATS, &phase_args);
+                ret = Game_Loop();
+                if (ret != GF_NOP) {
+                    return ret;
+                }
             }
             break;
 

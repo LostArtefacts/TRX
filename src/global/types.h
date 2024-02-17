@@ -1569,12 +1569,12 @@ typedef struct RESUME_INFO {
 } RESUME_INFO;
 
 typedef enum GAME_STATUS {
-    GS_INITIAL = 0,
-    GS_IN_MAIN_MENU = 1,
-    GS_IN_GAME = 2,
-    GS_IN_INVENTORY = 3,
-    GS_IN_PAUSE = 4,
-    GS_IN_STATS = 5,
+    GS_INITIAL,
+    GS_IN_MAIN_MENU,
+    GS_IN_GAME,
+    GS_IN_INVENTORY,
+    GS_IN_PAUSE,
+    GS_IN_STATS,
 } GAME_STATUS;
 
 typedef struct GAME_INFO {
