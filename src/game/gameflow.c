@@ -1265,9 +1265,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             Phase_Set(PHASE_GAME, NULL);
             ret = Game_Loop();
             LOG_DEBUG("Game_Loop() exited with %d", ret);
-            if (ret != GF_NOP) {
-                return ret;
-            }
             break;
 
         case GFS_STOP_GAME:
@@ -1313,9 +1310,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             };
             Phase_Set(PHASE_STATS, &phase_args);
             ret = Game_Loop();
-            if (ret != GF_NOP) {
-                return ret;
-            }
             break;
         }
 
@@ -1331,9 +1325,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 };
                 Phase_Set(PHASE_STATS, &phase_args);
                 ret = Game_Loop();
-                if (ret != GF_NOP) {
-                    return ret;
-                }
             }
             break;
 
@@ -1353,9 +1344,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             };
             Phase_Set(PHASE_PICTURE, &phase_arg);
             ret = Game_Loop();
-            if (ret != GF_NOP) {
-                return ret;
-            }
             break;
 
         case GFS_EXIT_TO_TITLE:
@@ -1519,10 +1507,6 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_LOOP_CINE:
             Phase_Set(PHASE_CUTSCENE, NULL);
             ret = Game_Loop();
-            LOG_DEBUG("Game_Loop() exited with %d", ret);
-            if (ret != GF_NOP) {
-                return ret;
-            }
             break;
 
         case GFS_STOP_CINE:
