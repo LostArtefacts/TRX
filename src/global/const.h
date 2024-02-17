@@ -130,10 +130,6 @@
 #define MAX_EXPANSION 5
 #define NO_BOX (-1)
 #define BOX_NUMBER 0x7FFF
-#define EXPAND_LEFT 0x1
-#define EXPAND_RIGHT 0x2
-#define EXPAND_TOP 0x4
-#define EXPAND_BOTTOM 0x8
 #define BLOCKABLE 0x8000
 #define BLOCKED 0x4000
 #define OVERLAP_INDEX 0x3FFF
@@ -154,11 +150,6 @@
 #define PASSPORT_FOV 65
 #define PICKUPS_FOV 65
 
-#define PASS_PT_XROT 0x1220
-#define PASS_ZTRANS 0x180
-#define PASS_YTRANS 0
-#define PASS_X_ROT (-0X10E0)
-#define PASS_Y_ROT 0
 #define PASS_MESH (PFRONT | PSPINE | PBACK)
 
 #define BIFF (WALL_L >> 1)
@@ -196,7 +187,6 @@
 #define CLOSE_ROTATION (-0x8000) // = -32768
 #define OPTION_RING_OBJECTS 4
 #define TITLE_RING_OBJECTS 5
-#define MAX_MAP_SHAPES (32 * 32) // = 1024
 #define RING_RADIUS 688
 #define CAMERA_STARTHEIGHT (-0x600) // = -1536
 #define CAMERA_YOFFSET (-96)
@@ -204,14 +194,6 @@
 #define CAMERA_2_RING 598
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096
-
-#define NO_ACTION 0
-#define GAME_ACTION 1
-#define END_ACTION 2
-#define LOAD_ACTION 4
-#define SAVE_ACTION 8
-#define SOUND_ACTION 16
-#define VIDEO_ACTION 32
 
 #define PAGE_WIDTH 256
 #define PAGE_HEIGHT 256
