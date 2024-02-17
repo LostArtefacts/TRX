@@ -69,6 +69,8 @@ void Game_SetStatus(GAME_STATUS status)
         Phase_Set(PHASE_PAUSE, NULL);
     } else if (status == GS_IN_GAME) {
         Phase_Set(PHASE_GAME, NULL);
+    } else if (status == GS_IN_STATS) {
+        Phase_Set(PHASE_STATS, NULL);
     } else {
         Phase_Set(PHASE_NULL, NULL);
     }
