@@ -293,9 +293,10 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
 
     switch (m_State) {
     case STATS_STATE_FADE_IN:
-        if (!Output_FadeIsAnimating() || g_InputDB.menu_confirm
-            || g_InputDB.menu_back) {
+        if (!Output_FadeIsAnimating()) {
             m_State = STATS_STATE_DISPLAY;
+        } else if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+            m_State = STATS_STATE_FADE_OUT;
         }
         break;
 
