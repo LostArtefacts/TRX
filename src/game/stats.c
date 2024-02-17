@@ -1,15 +1,9 @@
 #include "game/stats.h"
 
-#include "config.h"
 #include "game/carrier.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
-#include "game/input.h"
 #include "game/items.h"
-#include "game/music.h"
-#include "game/output.h"
-#include "game/shell.h"
-#include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -21,18 +15,6 @@
 
 #define MAX_TEXTSTRINGS 10
 
-typedef struct TOTAL_STATS {
-    uint32_t timer;
-    uint32_t death_count;
-    uint32_t player_kill_count;
-    uint16_t player_secret_count;
-    uint16_t player_pickup_count;
-    uint32_t total_kill_count;
-    uint16_t total_secret_count;
-    uint16_t total_pickup_count;
-} TOTAL_STATS;
-
-static TOTAL_STATS m_TotalStats;
 static int32_t m_CachedItemCount = 0;
 static FLOOR_INFO **m_CachedFloorArray = NULL;
 static int32_t m_LevelPickups = 0;
@@ -41,7 +23,6 @@ static int32_t m_LevelSecrets = 0;
 static uint32_t m_SecretRoom = 0;
 static bool m_KillableItems[MAX_ITEMS] = { 0 };
 static bool m_IfKillable[O_NUMBER_OF] = { 0 };
-static void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type);
 
 int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_KEY_ITEM2,      O_KEY_ITEM3,     O_KEY_ITEM4,
@@ -188,9 +169,10 @@ static void Stats_IncludeKillableItem(int16_t item_num)
     m_LevelPickups += Carrier_GetItemCount(item_num);
 }
 
-static void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type)
+void Stats_ComputeTotal(
+    GAMEFLOW_LEVEL_TYPE level_type, TOTAL_STATS *total_stats)
 {
-    memset(&m_TotalStats, 0, sizeof(TOTAL_STATS));
+    memset(total_stats, 0, sizeof(TOTAL_STATS));
 
     int16_t secret_flags = 0;
 
@@ -198,23 +180,23 @@ static void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type)
         if (g_GameFlow.levels[i].level_type != level_type) {
             continue;
         }
-        const GAME_STATS *stats = &g_GameInfo.current[i].stats;
+        const GAME_STATS *level_stats = &g_GameInfo.current[i].stats;
 
-        m_TotalStats.player_kill_count += stats->kill_count;
-        m_TotalStats.player_pickup_count += stats->pickup_count;
-        secret_flags = stats->secret_flags;
+        total_stats->player_kill_count += level_stats->kill_count;
+        total_stats->player_pickup_count += level_stats->pickup_count;
+        secret_flags = level_stats->secret_flags;
         for (int j = 0; j < MAX_SECRETS; j++) {
             if (secret_flags & 1) {
-                m_TotalStats.player_secret_count++;
+                total_stats->player_secret_count++;
             }
             secret_flags >>= 1;
         }
 
-        m_TotalStats.timer += stats->timer;
-        m_TotalStats.death_count += stats->death_count;
-        m_TotalStats.total_kill_count += stats->max_kill_count;
-        m_TotalStats.total_secret_count += stats->max_secret_count;
-        m_TotalStats.total_pickup_count += stats->max_pickup_count;
+        total_stats->timer += level_stats->timer;
+        total_stats->death_count += level_stats->death_count;
+        total_stats->total_kill_count += level_stats->max_kill_count;
+        total_stats->total_secret_count += level_stats->max_secret_count;
+        total_stats->total_pickup_count += level_stats->max_pickup_count;
     }
 }
 
@@ -292,153 +274,9 @@ int32_t Stats_GetSecrets(void)
     return m_LevelSecrets;
 }
 
-void Stats_ShowTotal(const char *filename, GAMEFLOW_LEVEL_TYPE level_type)
-{
-    Stats_ComputeTotal(level_type);
-
-    char buf[100];
-    char time_str[100];
-    TEXTSTRING *all_txt[MAX_TEXTSTRINGS] = { 0 };
-    TEXTSTRING **cur_txt = &all_txt[0];
-
-    int top_y = 55;
-    int y = 55;
-    const int row_width = 220;
-    const int row_height = 20;
-    int16_t border = 4;
-
-    // reserve space for heading
-    y += row_height + border * 2;
-
-    // kills
-    sprintf(
-        buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
-                                            : GS_STATS_KILLS_BASIC_FMT],
-        m_TotalStats.player_kill_count, m_TotalStats.total_kill_count);
-    *cur_txt = Text_Create(0, y, buf);
-    Text_CentreH(*cur_txt, 1);
-    Text_CentreV(*cur_txt, 1);
-    cur_txt++;
-    y += row_height;
-
-    // pickups
-    sprintf(
-        buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
-                                            : GS_STATS_PICKUPS_BASIC_FMT],
-        m_TotalStats.player_pickup_count, m_TotalStats.total_pickup_count);
-    *cur_txt = Text_Create(0, y, buf);
-    Text_CentreH(*cur_txt, 1);
-    Text_CentreV(*cur_txt, 1);
-    cur_txt++;
-    y += row_height;
-
-    // secrets
-    sprintf(
-        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT],
-        m_TotalStats.player_secret_count, m_TotalStats.total_secret_count);
-    *cur_txt = Text_Create(0, y, buf);
-    Text_CentreH(*cur_txt, 1);
-    Text_CentreV(*cur_txt, 1);
-    cur_txt++;
-    y += row_height;
-
-    // deaths
-    if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
-        sprintf(
-            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT],
-            m_TotalStats.death_count);
-        *cur_txt = Text_Create(0, y, buf);
-        Text_CentreH(*cur_txt, 1);
-        Text_CentreV(*cur_txt, 1);
-        cur_txt++;
-        y += row_height;
-    }
-
-    // time taken
-    int seconds = m_TotalStats.timer / 30;
-    int hours = seconds / 3600;
-    int minutes = (seconds / 60) % 60;
-    seconds %= 60;
-    if (hours) {
-        sprintf(
-            time_str, "%d:%d%d:%d%d", hours, minutes / 10, minutes % 10,
-            seconds / 10, seconds % 10);
-    } else {
-        sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
-    }
-    sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
-    *cur_txt = Text_Create(0, y, buf);
-    Text_CentreH(*cur_txt, 1);
-    Text_CentreV(*cur_txt, 1);
-    cur_txt++;
-    y += row_height;
-
-    // border
-    int16_t height = y + border * 2 - top_y;
-    *cur_txt = Text_Create(0, top_y, " ");
-    Text_CentreH(*cur_txt, 1);
-    Text_CentreV(*cur_txt, 1);
-    Text_AddBackground(*cur_txt, row_width, height, 0, 0, TS_BACKGROUND);
-    Text_AddOutline(*cur_txt, true, TS_BACKGROUND);
-    cur_txt++;
-
-    // heading
-    sprintf(
-        buf, "%s",
-        g_GameFlow.strings
-            [level_type == GFL_BONUS ? GS_STATS_BONUS_STATISTICS
-                                     : GS_STATS_FINAL_STATISTICS]);
-    *cur_txt = Text_Create(0, top_y + 2, buf);
-    Text_CentreH(*cur_txt, 1);
-    Text_CentreV(*cur_txt, 1);
-    Text_AddBackground(*cur_txt, row_width - 4, 0, 0, 0, TS_HEADING);
-    Text_AddOutline(*cur_txt, true, TS_HEADING);
-    cur_txt++;
-
-    Output_LoadBackdropImage(filename);
-    Output_FadeReset();
-    Output_FadeResetToBlack();
-    Output_FadeToTransparent(true);
-    while (Output_FadeIsAnimating()) {
-        Output_DrawBackdropImage();
-        Output_DumpScreen();
-    }
-
-    // wait till a skip key is pressed
-    do {
-        Output_DrawBackdropImage();
-
-        Input_Update();
-        Shell_ProcessInput();
-
-        Text_Draw();
-        Output_DumpScreen();
-    } while (!g_InputDB.menu_confirm && !g_InputDB.menu_back);
-
-    // fade out
-    Output_FadeToBlack(true);
-    while (Output_FadeIsAnimating()) {
-        Output_DrawBackdropImage();
-        Output_DumpScreen();
-    }
-
-    Output_FadeReset();
-    Music_Stop();
-
-    for (int i = 0; i < MAX_TEXTSTRINGS; i++) {
-        cur_txt = &all_txt[i];
-        if (*cur_txt) {
-            Text_Remove(*cur_txt);
-        }
-    }
-}
-
 bool Stats_CheckAllSecretsCollected(GAMEFLOW_LEVEL_TYPE level_type)
 {
-    Stats_ComputeTotal(level_type);
-    return m_TotalStats.player_secret_count >= m_TotalStats.total_secret_count;
+    TOTAL_STATS total_stats = { 0 };
+    Stats_ComputeTotal(level_type, &total_stats);
+    return total_stats.player_secret_count >= total_stats.total_secret_count;
 }
