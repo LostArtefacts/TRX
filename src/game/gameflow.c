@@ -1293,14 +1293,12 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Loop();
+                Phase_Set(PHASE_CUTSCENE, NULL);
+                ret = Game_Loop();
             }
             break;
 
         case GFS_STOP_CINE:
-            if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Stop((int32_t)(intptr_t)seq->data);
-            }
             break;
 
         case GFS_PLAY_FMV:
@@ -1519,11 +1517,15 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             break;
 
         case GFS_LOOP_CINE:
-            ret = Game_Cutscene_Loop();
+            Phase_Set(PHASE_CUTSCENE, NULL);
+            ret = Game_Loop();
+            LOG_DEBUG("Game_Loop() exited with %d", ret);
+            if (ret != GF_NOP) {
+                return ret;
+            }
             break;
 
         case GFS_STOP_CINE:
-            ret = Game_Cutscene_Stop((int32_t)(intptr_t)seq->data);
             break;
 
         case GFS_PLAY_FMV:

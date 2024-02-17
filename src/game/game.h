@@ -15,8 +15,6 @@ GAMEFLOW_OPTION Game_Loop(void);
 void Game_ProcessInput(void);
 
 GAMEFLOW_OPTION Game_Cutscene_Start(int32_t level_num);
-GAMEFLOW_OPTION Game_Cutscene_Stop(int32_t level_num);
-GAMEFLOW_OPTION Game_Cutscene_Loop(void);
 
 void Game_Demo(void);
 bool Game_Demo_ProcessInput(void);

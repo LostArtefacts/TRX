@@ -7,6 +7,7 @@
 typedef enum PHASE {
     PHASE_NULL,
     PHASE_GAME,
+    PHASE_CUTSCENE,
     PHASE_PAUSE,
     PHASE_PICTURE,
     PHASE_STATS,
