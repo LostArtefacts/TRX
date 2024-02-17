@@ -11,6 +11,7 @@
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/phase/phase.h"
 #include "game/phase/phase_picture.h"
+#include "game/phase/phase_stats.h"
 #include "game/room.h"
 #include "game/stats.h"
 #include "global/const.h"
@@ -1309,9 +1310,17 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             }
             break;
 
-        case GFS_LEVEL_STATS:
-            Stats_Show((int32_t)(intptr_t)seq->data);
+        case GFS_LEVEL_STATS: {
+            PHASE_STATS_DATA phase_args = {
+                .level_num = (int32_t)(intptr_t)seq->data,
+            };
+            Phase_Set(PHASE_STATS, &phase_args);
+            ret = Game_Loop();
+            if (ret != GF_NOP) {
+                return ret;
+            }
             break;
+        }
 
         case GFS_TOTAL_STATS:
             if (g_Config.enable_total_stats && level_type != GFL_SAVED) {
@@ -1337,7 +1346,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 .display_time = data->display_time,
             };
             Phase_Set(PHASE_PICTURE, &phase_arg);
-            Game_Loop();
+            ret = Game_Loop();
+            if (ret != GF_NOP) {
+                return ret;
+            }
             break;
 
         case GFS_EXIT_TO_TITLE:

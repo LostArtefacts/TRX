@@ -19,6 +19,11 @@ static PICTURE_STATE m_State = PICTURE_STATE_FADE_IN;
 static int32_t m_StartTime = 0;
 static double m_DisplayTime = 0.0;
 
+static void Phase_Picture_Start(void *arg);
+static void Phase_Picture_End(void);
+static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes);
+static void Phase_Picture_Draw(void);
+
 static void Phase_Picture_Start(void *arg)
 {
     const PHASE_PICTURE_DATA *data = (const PHASE_PICTURE_DATA *)arg;
@@ -36,7 +41,7 @@ static void Phase_Picture_End(void)
     Output_FadeReset();
 }
 
-static int32_t Phase_Picture_Control(int32_t nframes)
+static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
 {
     Input_Update();
     Shell_ProcessInput();
@@ -53,20 +58,15 @@ static int32_t Phase_Picture_Control(int32_t nframes)
         break;
 
     case PICTURE_STATE_DISPLAY:
-        if (Clock_GetMS() - m_StartTime >= m_DisplayTime * 1000) {
-            m_State = PICTURE_STATE_FADE_OUT;
-        }
-        if (g_InputDB.any) {
+        if (g_InputDB.any
+            || (Clock_GetMS() - m_StartTime >= m_DisplayTime * 1000)) {
             m_State = PICTURE_STATE_FADE_OUT;
         }
         break;
 
     case PICTURE_STATE_FADE_OUT:
         Output_FadeToBlack(true);
-        if (!Output_FadeIsAnimating()) {
-            return GF_NOP_BREAK;
-        }
-        if (g_InputDB.any) {
+        if (g_InputDB.any || !Output_FadeIsAnimating()) {
             return GF_NOP_BREAK;
         }
         break;

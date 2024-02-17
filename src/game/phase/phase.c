@@ -3,6 +3,7 @@
 #include "game/phase/phase_game.h"
 #include "game/phase/phase_pause.h"
 #include "game/phase/phase_picture.h"
+#include "game/phase/phase_stats.h"
 #include "global/types.h"
 #include "log.h"
 
@@ -32,6 +33,10 @@ void Phase_Set(const PHASE phase, void *arg)
 
     case PHASE_PICTURE:
         m_Phaser = &g_PicturePhaser;
+        break;
+
+    case PHASE_STATS:
+        m_Phaser = &g_StatsPhaser;
         break;
     }
 
