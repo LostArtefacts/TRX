@@ -37,7 +37,6 @@ static void Phase_Picture_Start(void *arg)
 static void Phase_Picture_End(void)
 {
     Output_DrawBlack();
-    Output_DumpScreen();
     Output_FadeReset();
 }
 
