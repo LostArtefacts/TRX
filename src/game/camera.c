@@ -371,31 +371,29 @@ static void Camera_LoadCutsceneFrame(void)
         g_CineFrame = g_NumCineFrames - 1;
     }
 
-    int16_t *ptr = &g_Cine[8 * g_CineFrame];
-    int32_t tx = ptr[0];
-    int32_t ty = ptr[1];
-    int32_t tz = ptr[2];
-    int32_t cx = ptr[3];
-    int32_t cy = ptr[4];
-    int32_t cz = ptr[5];
-    int16_t fov = ptr[6];
-    int16_t roll = ptr[7];
+    CINE_CAMERA *ref = &g_CineCamera[g_CineFrame];
 
     int32_t c = Math_Cos(g_CinePosition.rot.y);
     int32_t s = Math_Sin(g_CinePosition.rot.y);
 
-    g_Camera.target.x = g_CinePosition.pos.x + ((c * tx + s * tz) >> W2V_SHIFT);
-    g_Camera.target.y = g_CinePosition.pos.y + ty;
-    g_Camera.target.z = g_CinePosition.pos.z + ((c * tz - s * tx) >> W2V_SHIFT);
-    g_Camera.pos.x = g_CinePosition.pos.x + ((s * cz + c * cx) >> W2V_SHIFT);
-    g_Camera.pos.y = g_CinePosition.pos.y + cy;
-    g_Camera.pos.z = g_CinePosition.pos.z + ((c * cz - s * cx) >> W2V_SHIFT);
+    g_Camera.target.x =
+        g_CinePosition.pos.x + ((c * ref->tx + s * ref->tz) >> W2V_SHIFT);
+    g_Camera.target.y = g_CinePosition.pos.y + ref->ty;
+    g_Camera.target.z =
+        g_CinePosition.pos.z + ((c * ref->tz - s * ref->tx) >> W2V_SHIFT);
+    g_Camera.pos.x =
+        g_CinePosition.pos.x + ((s * ref->cz + c * ref->cx) >> W2V_SHIFT);
+    g_Camera.pos.y = g_CinePosition.pos.y + ref->cy;
+    g_Camera.pos.z =
+        g_CinePosition.pos.z + ((c * ref->cz - s * ref->cx) >> W2V_SHIFT);
+    g_Camera.roll = ref->roll;
 
-    Viewport_SetFOV(fov);
+    Viewport_SetFOV(ref->fov);
 
     Matrix_LookAt(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, g_Camera.target.x,
-        g_Camera.target.y, g_Camera.target.z, roll);
+        g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
+
     Room_GetFloor(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
         &g_Camera.pos.room_number);
@@ -780,29 +778,23 @@ void Camera_UpdateCutscene(void)
     XYZ_32 cam_pos;
     XYZ_32 cam_tar;
 
-    int16_t *ptr = &g_Cine[8 * g_CineFrame];
-    int32_t tx = ptr[0];
-    int32_t ty = ptr[1];
-    int32_t tz = ptr[2];
-    int32_t cx = ptr[3];
-    int32_t cy = ptr[4];
-    int32_t cz = ptr[5];
-    int16_t fov = ptr[6];
-    int16_t roll = ptr[7];
+    CINE_CAMERA *ref = &g_CineCamera[g_CineFrame];
 
     int32_t c = Math_Cos(g_Camera.target_angle);
     int32_t s = Math_Sin(g_Camera.target_angle);
 
-    cam_tar.x = g_Camera.pos.x + ((tx * c + tz * s) >> W2V_SHIFT);
-    cam_tar.y = g_Camera.pos.y + ty;
-    cam_tar.z = g_Camera.pos.z + ((tz * c - tx * s) >> W2V_SHIFT);
-    cam_pos.x = g_Camera.pos.x + ((cz * s + cx * c) >> W2V_SHIFT);
-    cam_pos.y = g_Camera.pos.y + cy;
-    cam_pos.z = g_Camera.pos.z + ((cz * c - cx * s) >> W2V_SHIFT);
+    cam_tar.x = g_Camera.pos.x + ((ref->tx * c + ref->tz * s) >> W2V_SHIFT);
+    cam_tar.y = g_Camera.pos.y + ref->ty;
+    cam_tar.z = g_Camera.pos.z + ((ref->tz * c - ref->tx * s) >> W2V_SHIFT);
+    cam_pos.x = g_Camera.pos.x + ((ref->cz * s + ref->cx * c) >> W2V_SHIFT);
+    cam_pos.y = g_Camera.pos.y + ref->cy;
+    cam_pos.z = g_Camera.pos.z + ((ref->cz * c - ref->cx * s) >> W2V_SHIFT);
 
-    Viewport_SetFOV(fov);
+    Viewport_SetFOV(ref->fov);
+
     Matrix_LookAt(
-        cam_pos.x, cam_pos.y, cam_pos.z, cam_tar.x, cam_tar.y, cam_tar.z, roll);
+        cam_pos.x, cam_pos.y, cam_pos.z, cam_tar.x, cam_tar.y, cam_tar.z,
+        ref->roll);
 }
 
 void Camera_RefreshFromTrigger(int16_t type, int16_t *data)

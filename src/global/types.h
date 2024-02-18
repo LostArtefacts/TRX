@@ -1432,6 +1432,17 @@ typedef struct ITEM_INFO {
     uint16_t looked_at : 1;
 } ITEM_INFO;
 
+typedef struct CINE_CAMERA {
+    int16_t tx;
+    int16_t ty;
+    int16_t tz;
+    int16_t cx;
+    int16_t cy;
+    int16_t cz;
+    int16_t fov;
+    int16_t roll;
+} CINE_CAMERA;
+
 typedef struct CINE_POSITION {
     XYZ_32 pos;
     XYZ_16 rot;
@@ -1830,6 +1841,7 @@ typedef struct CAMERA_INFO {
     int16_t last;
     int16_t timer;
     int16_t speed;
+    int16_t roll;
     ITEM_INFO *item;
     ITEM_INFO *last_item;
     OBJECT_VECTOR *fixed;

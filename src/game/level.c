@@ -580,9 +580,9 @@ static bool Level_LoadCinematic(MYFILE *fp)
     if (!g_NumCineFrames) {
         return true;
     }
-    g_Cine = GameBuf_Alloc(
-        sizeof(int16_t) * 8 * g_NumCineFrames, GBUF_CINEMATIC_FRAMES);
-    File_Read(g_Cine, sizeof(int16_t) * 8, g_NumCineFrames, fp);
+    g_CineCamera = GameBuf_Alloc(
+        sizeof(CINE_CAMERA) * g_NumCineFrames, GBUF_CINEMATIC_FRAMES);
+    File_Read(g_CineCamera, sizeof(CINE_CAMERA), g_NumCineFrames, fp);
     return true;
 }
 
