@@ -1363,13 +1363,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_SET_CAM_X:
-            g_Camera.pos.x = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.pos.x = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Y:
-            g_Camera.pos.y = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.pos.y = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Z:
-            g_Camera.pos.z = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.pos.z = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_ANGLE:
             g_Camera.target_angle = (int32_t)(intptr_t)seq->data;
@@ -1531,13 +1531,13 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
                 | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
 
         case GFS_SET_CAM_X:
-            g_Camera.pos.x = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.pos.x = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Y:
-            g_Camera.pos.y = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.pos.y = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_Z:
-            g_Camera.pos.z = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.pos.z = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_ANGLE:
             g_Camera.target_angle = (int32_t)(intptr_t)seq->data;
