@@ -41,9 +41,9 @@ void CutscenePlayer_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     item->rot.y = g_Camera.target_angle;
-    item->pos.x = g_Camera.pos.x;
-    item->pos.y = g_Camera.pos.y;
-    item->pos.z = g_Camera.pos.z;
+    item->pos.x = g_CinePosition.pos.x;
+    item->pos.y = g_CinePosition.pos.y;
+    item->pos.z = g_CinePosition.pos.z;
     Item_Animate(item);
 }
 
@@ -53,9 +53,9 @@ void CutscenePlayer1_Initialise(int16_t item_num)
 
     ITEM_INFO *item = &g_Items[item_num];
     g_Camera.pos.room_number = item->room_number;
-    g_Camera.pos.x = item->pos.x;
-    g_Camera.pos.y = item->pos.y;
-    g_Camera.pos.z = item->pos.z;
+    g_CinePosition.pos.x = item->pos.x;
+    g_CinePosition.pos.y = item->pos.y;
+    g_CinePosition.pos.z = item->pos.z;
     g_Camera.target_angle = 0;
     item->rot.y = 0;
 }

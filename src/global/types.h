@@ -1834,7 +1834,6 @@ typedef struct CAMERA_INFO {
     int32_t target_distance;
     int32_t target_square;
     int16_t target_angle;
-    int16_t actual_angle;
     int16_t target_elevation;
     int16_t box;
     int16_t number;

@@ -25,7 +25,7 @@ static void Game_Cutscene_InitialiseHair(int32_t level_num)
         return;
     }
 
-    int16_t lara_item_num = -1;
+    int16_t lara_item_num = NO_ITEM;
     for (int i = 0; i < g_LevelItemCount; i++) {
         if (g_Items[i].object_number == lara_type) {
             lara_item_num = i;
@@ -33,7 +33,7 @@ static void Game_Cutscene_InitialiseHair(int32_t level_num)
         }
     }
 
-    if (lara_item_num == -1) {
+    if (lara_item_num == NO_ITEM) {
         return;
     }
 
