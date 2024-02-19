@@ -244,27 +244,3 @@ GAMEFLOW_OPTION Game_Stop(void)
         return GF_EXIT_TO_TITLE;
     }
 }
-
-GAMEFLOW_OPTION Game_Loop(void)
-{
-    int32_t nframes = 1;
-    GAMEFLOW_OPTION ret = GF_NOP;
-    while (1) {
-        ret = Phase_Control(nframes);
-        if (ret != GF_NOP) {
-            break;
-        }
-        Phase_Draw();
-
-        Output_DumpScreen();
-        nframes = Clock_SyncTicks();
-        Output_AnimateFades(nframes);
-        g_Camera.number_frames = nframes;
-    }
-
-    if (ret == GF_NOP_BREAK) {
-        ret = GF_NOP;
-    }
-
-    return ret;
-}

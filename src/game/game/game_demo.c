@@ -6,6 +6,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/level.h"
+#include "game/phase/phase.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/text.h"
@@ -143,7 +144,7 @@ void Game_Demo(void)
     Game_Demo_Initialise();
     g_GameInfo.current_level_type = GFL_DEMO;
     Game_SetStatus(GS_IN_GAME);
-    Game_Loop();
+    Phase_Run();
 
     Text_Remove(txt);
 

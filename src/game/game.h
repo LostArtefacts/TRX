@@ -10,7 +10,6 @@ void Game_SetStatus(GAME_STATUS stauts);
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
 GAMEFLOW_OPTION Game_Stop(void);
-GAMEFLOW_OPTION Game_Loop(void);
 
 void Game_ProcessInput(void);
 

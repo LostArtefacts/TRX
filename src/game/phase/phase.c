@@ -1,16 +1,37 @@
 #include "game/phase/phase.h"
 
+#include "game/clock.h"
+#include "game/output.h"
 #include "game/phase/phase_cutscene.h"
 #include "game/phase/phase_game.h"
 #include "game/phase/phase_pause.h"
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "global/types.h"
+#include "global/vars.h"
 #include "log.h"
 
 #include <stddef.h>
 
 static PHASER *m_Phaser = NULL;
+
+static GAMEFLOW_OPTION Phase_Control(int32_t nframes);
+static void Phase_Draw(void);
+
+static GAMEFLOW_OPTION Phase_Control(int32_t nframes)
+{
+    if (m_Phaser && m_Phaser->control) {
+        return m_Phaser->control(nframes);
+    }
+    return GF_NOP;
+}
+
+static void Phase_Draw(void)
+{
+    if (m_Phaser && m_Phaser->draw) {
+        m_Phaser->draw();
+    }
+}
 
 void Phase_Set(const PHASE phase, void *arg)
 {
@@ -50,17 +71,27 @@ void Phase_Set(const PHASE phase, void *arg)
     }
 }
 
-GAMEFLOW_OPTION Phase_Control(int32_t nframes)
+GAMEFLOW_OPTION Phase_Run(void)
 {
-    if (m_Phaser && m_Phaser->control) {
-        return m_Phaser->control(nframes);
-    }
-    return GF_NOP;
-}
+    int32_t nframes = 1;
+    GAMEFLOW_OPTION ret = GF_NOP;
+    while (1) {
+        ret = Phase_Control(nframes);
+        if (ret != GF_NOP) {
+            break;
+        }
+        Phase_Draw();
 
-void Phase_Draw(void)
-{
-    if (m_Phaser && m_Phaser->draw) {
-        m_Phaser->draw();
+        Output_DumpScreen();
+        nframes = Clock_SyncTicks();
+        Output_AnimateFades(nframes);
+        g_Camera.number_frames = nframes;
     }
+
+    if (ret == GF_NOP_BREAK) {
+        ret = GF_NOP;
+    }
+
+    LOG_DEBUG("Phase_Run() exited with %d", ret);
+    return ret;
 }

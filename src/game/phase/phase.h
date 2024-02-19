@@ -21,5 +21,4 @@ typedef struct PHASER {
 } PHASER;
 
 void Phase_Set(PHASE phase, void *arg);
-GAMEFLOW_OPTION Phase_Control(int32_t nframes);
-void Phase_Draw(void);
+GAMEFLOW_OPTION Phase_Run();
