@@ -816,13 +816,6 @@ default gameflow for examples.
   </tr>
   <tr valign="top">
     <td>
-      <code>stop_cine</code>
-    </td>
-    <td colspan="2" align="center">N/A</td>
-    <td>Ends a cinematic level.</td>
-  </tr>
-  <tr valign="top">
-    <td>
       <code>stop_game</code>
     </td>
     <td colspan="2" align="center">N/A</td>
@@ -960,7 +953,6 @@ game will exit to title.
         {"type": "set_cam_angle", "value": -23312},
         {"type": "play_synced_audio", "audio_id": 23},
         {"type": "loop_cine"},
-        {"type": "stop_cine"},
         {"type": "level_stats", "level_id": 4},
         {"type": "exit_to_level", "level_id": 5},
     ],

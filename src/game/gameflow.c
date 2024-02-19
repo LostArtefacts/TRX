@@ -359,7 +359,8 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
 
 static bool GameFlow_IsLegacySequence(const char *type_str)
 {
-    return !strcmp(type_str, "fix_pyramid_secret");
+    return !strcmp(type_str, "fix_pyramid_secret")
+        || !strcmp(type_str, "stop_cine");
 }
 
 static bool GameFlow_LoadLevelSequence(
@@ -406,10 +407,6 @@ static bool GameFlow_LoadLevelSequence(
 
         } else if (!strcmp(type_str, "start_cine")) {
             seq->type = GFS_START_CINE;
-            seq->data = (void *)(intptr_t)level_num;
-
-        } else if (!strcmp(type_str, "stop_cine")) {
-            seq->type = GFS_STOP_CINE;
             seq->data = (void *)(intptr_t)level_num;
 
         } else if (!strcmp(type_str, "loop_cine")) {
@@ -1133,7 +1130,6 @@ void GameFlow_Shutdown(void)
                     case GFS_STOP_GAME:
                     case GFS_START_CINE:
                     case GFS_LOOP_CINE:
-                    case GFS_STOP_CINE:
                     case GFS_LEVEL_STATS:
                     case GFS_EXIT_TO_TITLE:
                     case GFS_EXIT_TO_LEVEL:
@@ -1293,9 +1289,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Phase_Set(PHASE_CUTSCENE, NULL);
                 ret = Game_Loop();
             }
-            break;
-
-        case GFS_STOP_CINE:
             break;
 
         case GFS_PLAY_FMV:
@@ -1507,9 +1500,6 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_LOOP_CINE:
             Phase_Set(PHASE_CUTSCENE, NULL);
             ret = Game_Loop();
-            break;
-
-        case GFS_STOP_CINE:
             break;
 
         case GFS_PLAY_FMV:
