@@ -1260,8 +1260,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LOOP_GAME:
             Phase_Set(PHASE_GAME, NULL);
-            ret = Game_Loop();
-            LOG_DEBUG("Game_Loop() exited with %d", ret);
+            ret = Phase_Run();
             break;
 
         case GFS_STOP_GAME:
@@ -1290,7 +1289,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = Game_Loop();
+                ret = Phase_Run();
             }
             // force change the phase to stop the music
             Phase_Set(PHASE_NULL, NULL);
@@ -1307,7 +1306,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 .level_num = (int32_t)(intptr_t)seq->data,
             };
             Phase_Set(PHASE_STATS, &phase_args);
-            ret = Game_Loop();
+            ret = Phase_Run();
             break;
         }
 
@@ -1322,7 +1321,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                         level_type == GFL_BONUS ? GFL_BONUS : GFL_NORMAL,
                 };
                 Phase_Set(PHASE_STATS, &phase_args);
-                ret = Game_Loop();
+                ret = Phase_Run();
             }
             break;
 
@@ -1341,7 +1340,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 .display_time = data->display_time,
             };
             Phase_Set(PHASE_PICTURE, &phase_arg);
-            ret = Game_Loop();
+            ret = Phase_Run();
             break;
 
         case GFS_EXIT_TO_TITLE:
@@ -1507,7 +1506,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         }
 
         case GFS_LOOP_CINE:
-            ret = Game_Loop();
+            ret = Phase_Run();
 
             // force change the phase to stop the music
             Phase_Set(PHASE_NULL, NULL);
