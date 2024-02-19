@@ -37,7 +37,7 @@ void Output_DrawOverlayScreen(void);
 
 void Output_DrawBlack(void);
 void Output_DrawBackdropImage(void);
-int32_t Output_DumpScreen(void);
+void Output_DumpScreen(void);
 void Output_ClearDepthBuffer(void);
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
@@ -94,6 +94,7 @@ void Output_LoadBackdropImage(const char *filename);
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 void Output_AnimateTextures(int32_t ticks);
+void Output_AnimateFades(int32_t ticks);
 void Output_RotateLight(int16_t pitch, int16_t yaw);
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b);

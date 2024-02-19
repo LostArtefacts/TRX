@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/camera.h"
+#include "game/clock.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -23,6 +24,8 @@
         Game_DrawScene(true);                                                  \
         Input_Update();                                                        \
         Output_DumpScreen();                                                   \
+        int ticks = Clock_SyncTicks();                                         \
+        Output_AnimateFades(ticks);                                            \
     } while (g_Input.key);
 
 static GAME_STATUS m_CurrentStatus = GS_INITIAL;
@@ -253,7 +256,9 @@ GAMEFLOW_OPTION Game_Loop(void)
         }
         Phase_Draw();
 
-        nframes = Output_DumpScreen();
+        Output_DumpScreen();
+        nframes = Clock_SyncTicks();
+        Output_AnimateFades(nframes);
         g_Camera.number_frames = nframes;
     }
 
