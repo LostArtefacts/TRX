@@ -53,6 +53,9 @@ MUSIC_TRACK_ID Music_GetLastPlayedTrack(void);
 // Returns the looped track.
 MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void);
 
+// Returns the currently playing track. Includes looped music.
+MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void);
+
 // Get the duration of the current stream in seconds.
 double Music_GetDuration(void);
 
