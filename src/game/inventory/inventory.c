@@ -423,6 +423,8 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
             Output_DrawBackdropImage();
             Output_DrawBackdropScreen();
             Output_DumpScreen();
+            int ticks = Clock_SyncTicks();
+            Output_AnimateFades(ticks);
         }
     } else {
         Output_FadeToSemiBlack(true);
@@ -488,7 +490,9 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
 
         Text_Draw();
 
-        m_InvNFrames = Output_DumpScreen();
+        Output_DumpScreen();
+        m_InvNFrames = Clock_SyncTicks();
+        Output_AnimateFades(m_InvNFrames);
         g_Camera.number_frames = m_InvNFrames;
 
         if (g_Config.enable_timer_in_inventory) {
@@ -873,7 +877,9 @@ static int32_t Inv_ConstructAndDisplay(int inv_mode)
     while (!fade_finished) {
         fade_finished = !Output_FadeIsAnimating();
         Inv_Draw(&ring, &imo);
-        m_InvNFrames = Output_DumpScreen();
+        Output_DumpScreen();
+        m_InvNFrames = Clock_SyncTicks();
+        Output_AnimateFades(m_InvNFrames);
         g_Camera.number_frames = m_InvNFrames;
     }
 

@@ -1,7 +1,6 @@
 #include "game/output.h"
 
 #include "config.h"
-#include "game/clock.h"
 #include "game/console.h"
 #include "game/overlay.h"
 #include "game/picture.h"
@@ -43,7 +42,6 @@ static XYZ_32 m_LsVectorView = { 0 };
 char *m_BackdropImagePath = NULL;
 
 static void Output_DrawBlackOverlay(uint8_t alpha);
-static void Output_FadeAnimate(int ticks);
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number);
@@ -425,7 +423,7 @@ void Output_DrawBlack(void)
     Output_DrawBlackOverlay(255);
 }
 
-int32_t Output_DumpScreen(void)
+void Output_DumpScreen(void)
 {
     Output_DrawOverlayScreen();
     S_Output_DisableDepthTest();
@@ -436,9 +434,6 @@ int32_t Output_DumpScreen(void)
     S_Output_DumpScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
-    int ticks = Clock_SyncTicks();
-    Output_FadeAnimate(ticks);
-    return ticks;
 }
 
 void Output_ClearDepthBuffer(void)
@@ -898,6 +893,29 @@ void Output_SetupAboveWater(bool underwater)
     m_IsShadeEffect = underwater;
 }
 
+void Output_AnimateFades(int ticks)
+{
+    if (!g_Config.enable_fade_effects) {
+        return;
+    }
+
+    const int delta = 5 * m_FadeSpeed * ticks;
+    if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
+        m_OverlayCurAlpha += delta;
+    } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
+        m_OverlayCurAlpha -= delta;
+    } else {
+        m_OverlayCurAlpha = m_OverlayDstAlpha;
+    }
+    if (m_BackdropCurAlpha + delta <= m_BackdropDstAlpha) {
+        m_BackdropCurAlpha += delta;
+    } else if (m_BackdropCurAlpha - delta >= m_BackdropDstAlpha) {
+        m_BackdropCurAlpha -= delta;
+    } else {
+        m_BackdropCurAlpha = m_BackdropDstAlpha;
+    }
+}
+
 void Output_AnimateTextures(int32_t ticks)
 {
     m_WibbleOffset = (m_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
@@ -960,29 +978,6 @@ static void Output_DrawBlackOverlay(uint8_t alpha)
     S_Output_ClearDepthBuffer();
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
     S_Output_EnableDepthTest();
-}
-
-static void Output_FadeAnimate(int ticks)
-{
-    if (!g_Config.enable_fade_effects) {
-        return;
-    }
-
-    const int delta = 5 * m_FadeSpeed * ticks;
-    if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
-        m_OverlayCurAlpha += delta;
-    } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
-        m_OverlayCurAlpha -= delta;
-    } else {
-        m_OverlayCurAlpha = m_OverlayDstAlpha;
-    }
-    if (m_BackdropCurAlpha + delta <= m_BackdropDstAlpha) {
-        m_BackdropCurAlpha += delta;
-    } else if (m_BackdropCurAlpha - delta >= m_BackdropDstAlpha) {
-        m_BackdropCurAlpha -= delta;
-    } else {
-        m_BackdropCurAlpha = m_BackdropDstAlpha;
-    }
 }
 
 void Output_DrawBackdropScreen(void)
