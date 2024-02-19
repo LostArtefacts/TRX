@@ -883,7 +883,7 @@ static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj)
     }
 
     int16_t current_track = json_object_get_int(music_obj, "current_track", -1);
-    int64_t timestamp = json_object_get_int64(music_obj, "timestamp", -1);
+    double timestamp = json_object_get_double(music_obj, "timestamp", -1.0);
     if (current_track != MX_INACTIVE) {
         Music_Play(current_track);
         if (!Music_SeekTimestamp(timestamp)) {
@@ -1254,7 +1254,7 @@ static struct json_object_s *SaveGame_BSON_DumpCurrentMusic(void)
     struct json_object_s *current_music_obj = json_object_new();
     json_object_append_int(
         current_music_obj, "current_track", Music_GetCurrentTrack());
-    json_object_append_int64(
+    json_object_append_double(
         current_music_obj, "timestamp", Music_GetTimestamp());
 
     return current_music_obj;
