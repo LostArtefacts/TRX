@@ -222,6 +222,11 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
     return m_TrackLooped;
 }
 
+MUSIC_TRACK_ID Music_GetCurrentPlayingTrack(void)
+{
+    return m_TrackCurrent == MX_INACTIVE ? m_TrackLooped : m_TrackCurrent;
+}
+
 double Music_GetDuration(void)
 {
     if (m_AudioStreamID < 0) {
