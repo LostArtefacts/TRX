@@ -222,15 +222,23 @@ MUSIC_TRACK_ID Music_GetCurrentLoopedTrack(void)
     return m_TrackLooped;
 }
 
-int64_t Music_GetTimestamp(void)
+double Music_GetDuration(void)
 {
     if (m_AudioStreamID < 0) {
-        return -1;
+        return -1.0;
+    }
+    return S_Audio_StreamGetDuration(m_AudioStreamID);
+}
+
+double Music_GetTimestamp(void)
+{
+    if (m_AudioStreamID < 0) {
+        return -1.0;
     }
     return S_Audio_StreamGetTimestamp(m_AudioStreamID);
 }
 
-bool Music_SeekTimestamp(int64_t timestamp)
+bool Music_SeekTimestamp(double timestamp)
 {
     if (m_AudioStreamID < 0) {
         return false;
