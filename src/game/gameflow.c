@@ -10,6 +10,7 @@
 #include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/phase/phase.h"
+#include "game/phase/phase_cutscene.h"
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
@@ -1280,13 +1281,15 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_START_CINE:
             if (level_type != GFL_SAVED) {
-                ret = Game_Cutscene_Start((int32_t)(intptr_t)seq->data);
+                PHASE_CUTSCENE_DATA phase_args = {
+                    .level_num = (int32_t)(intptr_t)seq->data,
+                };
+                Phase_Set(PHASE_CUTSCENE, &phase_args);
             }
             break;
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                Phase_Set(PHASE_CUTSCENE, NULL);
                 ret = Game_Loop();
             }
             break;
@@ -1493,12 +1496,15 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             }
             break;
 
-        case GFS_START_CINE:
-            ret = Game_Cutscene_Start((int32_t)(intptr_t)seq->data);
+        case GFS_START_CINE: {
+            PHASE_CUTSCENE_DATA phase_args = {
+                .level_num = (int32_t)(intptr_t)seq->data,
+            };
+            Phase_Set(PHASE_CUTSCENE, &phase_args);
             break;
+        }
 
         case GFS_LOOP_CINE:
-            Phase_Set(PHASE_CUTSCENE, NULL);
             ret = Game_Loop();
             break;
 
