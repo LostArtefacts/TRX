@@ -1292,6 +1292,8 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             if (level_type != GFL_SAVED) {
                 ret = Game_Loop();
             }
+            // force change the phase to stop the music
+            Phase_Set(PHASE_NULL, NULL);
             break;
 
         case GFS_PLAY_FMV:
@@ -1506,6 +1508,9 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
         case GFS_LOOP_CINE:
             ret = Game_Loop();
+
+            // force change the phase to stop the music
+            Phase_Set(PHASE_NULL, NULL);
             break;
 
         case GFS_PLAY_FMV:
