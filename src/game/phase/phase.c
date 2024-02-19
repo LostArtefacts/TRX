@@ -69,11 +69,13 @@ void Phase_Set(const PHASE phase, void *arg)
     if (m_Phaser && m_Phaser->start) {
         m_Phaser->start(arg);
     }
+
+    Clock_SyncTicks();
 }
 
 GAMEFLOW_OPTION Phase_Run(void)
 {
-    int32_t nframes = 1;
+    int32_t nframes = Clock_SyncTicks();
     GAMEFLOW_OPTION ret = GF_NOP;
     while (1) {
         ret = Phase_Control(nframes);
