@@ -45,8 +45,8 @@ static void Camera_OffsetAdditionalElevation(int16_t delta);
 static void Camera_Apply(void)
 {
     Matrix_LookAt(
-        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, g_Camera.target.x,
-        g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
+        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
+        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
 }
 
 static bool Camera_BadPosition(
@@ -386,9 +386,9 @@ static void Camera_LoadCutsceneFrame(void)
     g_Camera.pos.z =
         g_CinePosition.pos.z + ((c * ref->cz - s * ref->cx) >> W2V_SHIFT);
     g_Camera.roll = ref->roll;
+    g_Camera.shift = 0;
 
     Viewport_SetFOV(ref->fov);
-
     Camera_Apply();
 }
 
@@ -784,6 +784,7 @@ void Camera_UpdateCutscene(void)
     g_Camera.pos.z =
         g_CinePosition.pos.z + ((ref->cz * c - ref->cx * s) >> W2V_SHIFT);
     g_Camera.roll = ref->roll;
+    g_Camera.shift = 0;
 
     Viewport_SetFOV(ref->fov);
     Camera_Apply();
