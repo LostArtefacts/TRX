@@ -2,6 +2,7 @@
 - added the option to change weapon targets by tapping the look key like in TR4+ (#1145)
 - added three targeting lock options: full lock always keeps target lock (OG), semi lock loses target lock if the enemy dies, and no lock loses target lock if the enemey goes out of sight or dies (TR4+) (#1146)
 - added an option to the installer to install from a CD drive (#1144)
+- changed the way music timestamps are internally handled – resets music position in existing saves
 
 ## [3.1.1](https://github.com/LostArtefacts/TR1X/compare/3.1...3.1.1) - 2024-01-19
 - changed quick load to show empty passport instead of opening the save game menu when there are no saves (#1141)
