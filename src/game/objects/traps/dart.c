@@ -143,6 +143,7 @@ void DartEmitter_Control(int16_t item_num)
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos = dart->pos;
+                fx->rot = dart->rot;
                 fx->speed = 0;
                 fx->frame_number = 0;
                 fx->counter = 0;

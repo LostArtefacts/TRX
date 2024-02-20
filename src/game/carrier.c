@@ -286,6 +286,7 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
 
     // Track animating status in the carrier for saving/loading.
     item->pos = pickup->pos;
+    item->rot = pickup->rot;
     item->room_number = pickup->room_number;
     item->fall_speed = pickup->fall_speed;
 }

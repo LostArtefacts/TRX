@@ -313,6 +313,7 @@ int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
         spawn->object_number = object_num;
         spawn->room_number = item->room_number;
         spawn->pos = item->pos;
+        spawn->rot = item->rot;
         Item_Initialise(spawn_num);
         spawn->status = IS_NOT_ACTIVE;
         spawn->shade = 4096;
