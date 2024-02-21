@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-GAMEFLOW_OPTION Inv_Display(const INV_MODE inv_mode);
+bool Inv_Display(const INV_MODE inv_mode);
 
 bool Inv_AddItem(int32_t item_num);
 void Inv_AddItemNTimes(int32_t item_num, int32_t qty);

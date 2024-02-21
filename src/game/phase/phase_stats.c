@@ -273,7 +273,6 @@ static void Phase_Stats_Start(void *arg)
 
 static void Phase_Stats_End(void)
 {
-    Output_FadeReset();
     Music_Stop();
 
     for (int i = 0; i < MAX_TEXTSTRINGS; i++) {

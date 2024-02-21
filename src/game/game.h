@@ -10,7 +10,9 @@ GAMEFLOW_OPTION Game_Stop(void);
 
 void Game_ProcessInput(void);
 
-void Game_Demo(void);
+GAMEFLOW_OPTION Game_Demo(void);
 bool Game_Demo_ProcessInput(void);
 
 void Game_DrawScene(bool draw_overlay);
+
+GAMEFLOW_OPTION Game_MainMenu(void);
