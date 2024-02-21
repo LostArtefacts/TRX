@@ -1,11 +1,11 @@
 #include "game/objects/traps/lightning_emitter.h"
 
 #include "game/collide.h"
-#include "game/game.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/output.h"
+#include "game/phase/phase.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -214,7 +214,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
     for (int i = 0; i < LIGHTNING_STEPS; i++) {
         XYZ_32 *pos = &l->wibble[i];
-        if (Game_GetStatus() == GS_IN_GAME) {
+        if (Phase_Get() == PHASE_GAME) {
             pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
             pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
@@ -268,7 +268,7 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 
         for (int k = 0; k < steps; k++) {
             XYZ_32 *pos = &l->shoot[i][k];
-            if (Game_GetStatus() == GS_IN_GAME) {
+            if (Phase_Get() == PHASE_GAME) {
                 pos->x += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->y += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;
                 pos->z += (Random_GetDraw() - PHD_90) * LIGHTNING_RND;

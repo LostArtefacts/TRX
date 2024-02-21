@@ -28,7 +28,6 @@ typedef enum STATS_STATE {
     STATS_STATE_FADE_OUT,
 } STATS_STATE;
 
-static GAME_STATUS m_OldGameStatus;
 static bool m_Total = false;
 static STATS_STATE m_State = STATS_STATE_DISPLAY;
 static TEXTSTRING *m_Texts[MAX_TEXTSTRINGS] = { 0 };
@@ -258,7 +257,6 @@ static void Phase_Stats_Start(void *arg)
     }
 
     m_State = STATS_STATE_FADE_IN;
-    m_OldGameStatus = Game_GetStatus();
     m_Total = data && data->total;
 
     if (data && data->total) {
@@ -310,7 +308,6 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
         Output_FadeToBlack(true);
         if (!Output_FadeIsAnimating() || g_InputDB.menu_confirm
             || g_InputDB.menu_back) {
-            Game_SetStatus(m_OldGameStatus);
             return GF_NOP_BREAK;
         }
         break;

@@ -25,7 +25,6 @@ typedef enum PAUSE_STATE {
     PAUSE_STATE_CONFIRM,
 } PAUSE_STATE;
 
-static GAME_STATUS m_OldGameStatus;
 static PAUSE_STATE m_PauseState = PAUSE_STATE_DEFAULT;
 
 static TEXTSTRING *m_PausedText = NULL;
@@ -112,8 +111,6 @@ static void Phase_Pause_Start(void *arg)
     Music_Pause();
     Sound_PauseAll();
 
-    m_OldGameStatus = Game_GetStatus();
-
     Output_FadeToSemiBlack(true);
 
     m_PauseState = PAUSE_STATE_DEFAULT;
@@ -140,9 +137,8 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
     switch (m_PauseState) {
     case PAUSE_STATE_DEFAULT:
         if (g_InputDB.pause) {
-            Game_SetStatus(m_OldGameStatus);
-        }
-        if (g_InputDB.option) {
+            Phase_Set(PHASE_GAME, NULL);
+        } else if (g_InputDB.option) {
             m_PauseState = PAUSE_STATE_ASK;
         }
         break;
@@ -153,7 +149,7 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
             g_GameFlow.strings[GS_PAUSE_CONTINUE],
             g_GameFlow.strings[GS_PAUSE_QUIT], 1);
         if (choice == 1) {
-            Game_SetStatus(m_OldGameStatus);
+            Phase_Set(PHASE_GAME, NULL);
         } else if (choice == 2) {
             m_PauseState = PAUSE_STATE_CONFIRM;
         }
@@ -168,7 +164,7 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
         if (choice == 1) {
             return GF_EXIT_TO_TITLE;
         } else if (choice == 2) {
-            Game_SetStatus(m_OldGameStatus);
+            Phase_Set(PHASE_GAME, NULL);
         }
         break;
     }

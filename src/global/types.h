@@ -1578,15 +1578,6 @@ typedef struct RESUME_INFO {
     GAME_STATS stats;
 } RESUME_INFO;
 
-typedef enum GAME_STATUS {
-    GS_INITIAL,
-    GS_IN_MAIN_MENU,
-    GS_IN_GAME,
-    GS_IN_INVENTORY,
-    GS_IN_PAUSE,
-    GS_IN_STATS,
-} GAME_STATUS;
-
 typedef struct GAME_INFO {
     RESUME_INFO *current;
     uint8_t bonus_flag;

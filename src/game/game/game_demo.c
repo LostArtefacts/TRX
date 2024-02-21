@@ -143,7 +143,7 @@ void Game_Demo(void)
 
     Game_Demo_Initialise();
     g_GameInfo.current_level_type = GFL_DEMO;
-    Game_SetStatus(GS_IN_GAME);
+    Phase_Set(PHASE_GAME, NULL);
     Phase_Run();
 
     Text_Remove(txt);

@@ -185,10 +185,6 @@ void Shell_Main(void)
         LOG_INFO("direction=%d param=%d", gf_direction, gf_param);
 
         switch (gf_direction) {
-        case GF_START_GYM:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
-            break;
-
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
             if (g_GameFlow.levels[gf_param].level_type == GFL_BONUS) {
@@ -258,6 +254,10 @@ void Shell_Main(void)
 
         case GF_EXIT_GAME:
             loop_continue = false;
+            break;
+
+        case GF_START_GYM:
+            gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
             break;
 
         default:

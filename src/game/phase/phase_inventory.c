@@ -45,7 +45,6 @@ static TEXTSTRING *m_VersionText = NULL;
 static int16_t m_InvNFrames = 2;
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
-static GAME_STATUS m_OldGameStatus;
 static CAMERA_INFO m_OldCamera;
 RING_INFO m_Ring;
 IMOTION_INFO m_Motion;
@@ -365,11 +364,6 @@ static void Phase_Inventory_Start(void *arg)
 {
     INV_MODE inv_mode = (INV_MODE)arg;
 
-    m_OldGameStatus = Game_GetStatus();
-    Game_SetStatus(
-        g_CurrentLevel == g_GameFlow.title_level_num ? GS_IN_MAIN_MENU
-                                                     : GS_IN_INVENTORY);
-
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
 
@@ -547,7 +541,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
         }
 
         if (g_InvMode != INV_TITLE_MODE) {
-            Game_SetStatus(m_OldGameStatus);
+            Phase_Set(PHASE_GAME, 0);
         }
         return GF_NOP_BREAK;
     }
