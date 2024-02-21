@@ -7,6 +7,7 @@
 #include "global/types.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 typedef enum PICTURE_STATE {
@@ -84,4 +85,5 @@ PHASER g_PicturePhaser = {
     .end = Phase_Picture_End,
     .control = Phase_Picture_Control,
     .draw = Phase_Picture_Draw,
+    .wait = NULL,
 };

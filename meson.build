@@ -232,6 +232,7 @@ sources = [
   'src/game/phase/phase.c',
   'src/game/phase/phase_cutscene.c',
   'src/game/phase/phase_game.c',
+  'src/game/phase/phase_inventory.c',
   'src/game/phase/phase_pause.c',
   'src/game/phase/phase_picture.c',
   'src/game/phase/phase_stats.c',
