@@ -188,4 +188,5 @@ PHASER g_PausePhaser = {
     .end = Phase_Pause_End,
     .control = Phase_Pause_Control,
     .draw = Phase_Pause_Draw,
+    .wait = NULL,
 };

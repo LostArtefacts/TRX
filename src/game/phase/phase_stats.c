@@ -334,4 +334,5 @@ PHASER g_StatsPhaser = {
     .end = Phase_Stats_End,
     .control = Phase_Stats_Control,
     .draw = Phase_Stats_Draw,
+    .wait = NULL,
 };

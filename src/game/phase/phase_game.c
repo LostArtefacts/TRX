@@ -155,4 +155,5 @@ PHASER g_GamePhaser = {
     .end = NULL,
     .control = Phase_Game_Control,
     .draw = Phase_Game_Draw,
+    .wait = NULL,
 };

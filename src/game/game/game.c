@@ -68,14 +68,21 @@ GAME_STATUS Game_GetStatus(void)
 
 void Game_SetStatus(GAME_STATUS status)
 {
+    LOG_INFO("%d", status);
     if (status == GS_IN_PAUSE) {
         Phase_Set(PHASE_PAUSE, NULL);
     } else if (status == GS_IN_GAME) {
         Phase_Set(PHASE_GAME, NULL);
     } else if (status == GS_IN_STATS) {
         Phase_Set(PHASE_STATS, NULL);
+    } else if (status == GS_IN_MAIN_MENU || status == GS_IN_INVENTORY) {
+        if (Phase_Get() != PHASE_INVENTORY) {
+            Phase_Set(PHASE_INVENTORY, NULL);
+        }
     } else {
-        Phase_Set(PHASE_NULL, NULL);
+        if (Phase_Get() != PHASE_NULL) {
+            Phase_Set(PHASE_NULL, NULL);
+        }
     }
     m_CurrentStatus = status;
 }

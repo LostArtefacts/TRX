@@ -19,6 +19,7 @@
 #include "global/vars.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 static const int32_t m_CinematicAnimationRate = 0x8000;
@@ -138,4 +139,5 @@ PHASER g_CutscenePhaser = {
     .end = Phase_Cutscene_End,
     .control = Phase_Cutscene_Control,
     .draw = Phase_Cutscene_Draw,
+    .wait = NULL,
 };
