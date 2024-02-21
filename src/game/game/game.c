@@ -17,8 +17,6 @@
 #include "global/vars.h"
 #include "log.h"
 
-#include <stddef.h>
-
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
         Game_DrawScene(true);                                                  \
@@ -27,8 +25,6 @@
         int ticks = Clock_SyncTicks();                                         \
         Output_AnimateFades(ticks);                                            \
     } while (g_Input.key);
-
-static GAME_STATUS m_CurrentStatus = GS_INITIAL;
 
 void Game_ProcessInput(void)
 {
@@ -50,7 +46,7 @@ void Game_ProcessInput(void)
         Lara_UseItem(O_BIGMEDI_OPTION);
     }
 
-    if (g_Config.enable_buffering && Game_GetStatus() == GS_IN_GAME) {
+    if (g_Config.enable_buffering && Phase_Get() == PHASE_GAME) {
         if (g_Input.toggle_bilinear_filter) {
             FRAME_BUFFER(toggle_bilinear_filter);
         } else if (g_Input.toggle_perspective_filter) {
@@ -61,36 +57,9 @@ void Game_ProcessInput(void)
     }
 }
 
-GAME_STATUS Game_GetStatus(void)
-{
-    return m_CurrentStatus;
-}
-
-void Game_SetStatus(GAME_STATUS status)
-{
-    LOG_INFO("%d", status);
-    if (status == GS_IN_PAUSE) {
-        Phase_Set(PHASE_PAUSE, NULL);
-    } else if (status == GS_IN_GAME) {
-        Phase_Set(PHASE_GAME, NULL);
-    } else if (status == GS_IN_STATS) {
-        Phase_Set(PHASE_STATS, NULL);
-    } else if (status == GS_IN_MAIN_MENU || status == GS_IN_INVENTORY) {
-        if (Phase_Get() != PHASE_INVENTORY) {
-            Phase_Set(PHASE_INVENTORY, NULL);
-        }
-    } else {
-        if (Phase_Get() != PHASE_NULL) {
-            Phase_Set(PHASE_NULL, NULL);
-        }
-    }
-    m_CurrentStatus = status;
-}
-
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     g_GameInfo.current_level_type = level_type;
-    Game_SetStatus(GS_IN_GAME);
 
     switch (level_type) {
     case GFL_SAVED:

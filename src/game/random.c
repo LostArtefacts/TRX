@@ -1,7 +1,6 @@
 #include "game/random.h"
 
-#include "game/game.h"
-#include "global/types.h"
+#include "game/phase/phase.h"
 #include "log.h"
 
 static int32_t m_RandControl = 0xD371F947;
@@ -30,8 +29,8 @@ int32_t Random_GetDraw(void)
     // Allow draw RNG to advance only during initial game setup (for such things
     // as caustic initialisation) and normal game play. RNG should remain static
     // when the game output is paused e.g. inventory, pause screen etc.
-    GAME_STATUS status = Game_GetStatus();
-    if (status == GS_INITIAL || status == GS_IN_GAME) {
+    PHASE phase = Phase_Get();
+    if (phase == PHASE_NULL || phase == PHASE_GAME) {
         m_RandDraw = 0x41C64E6D * m_RandDraw + 0x3039;
     }
     return (m_RandDraw >> 10) & 0x7FFF;

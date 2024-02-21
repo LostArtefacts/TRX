@@ -43,7 +43,6 @@ PHASE Phase_Get(void)
 
 void Phase_Set(const PHASE phase, void *arg)
 {
-    m_Phase = phase;
     if (m_Phaser && m_Phaser->end) {
         m_Phaser->end();
     }
@@ -82,6 +81,9 @@ void Phase_Set(const PHASE phase, void *arg)
     if (m_Phaser && m_Phaser->start) {
         m_Phaser->start(arg);
     }
+
+    // set it at the end, so that the start callbacks can retrieve the old phase
+    m_Phase = phase;
 
     Clock_SyncTicks();
 }

@@ -1261,6 +1261,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_LOOP_GAME:
             Phase_Set(PHASE_GAME, NULL);
             ret = Phase_Run();
+            if (ret != GF_NOP) {
+                return ret;
+            }
             break;
 
         case GFS_STOP_GAME:
@@ -1330,7 +1333,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 break;
             }
 
-            if (Game_GetStatus() == GS_INITIAL && !g_Config.enable_eidos_logo) {
+            if (Phase_Get() == PHASE_NULL && !g_Config.enable_eidos_logo) {
                 break;
             }
 

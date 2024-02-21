@@ -33,7 +33,9 @@ static void Phase_Game_Draw(void);
 
 static void Phase_Game_Start(void *arg)
 {
-    Output_FadeReset();
+    if (Phase_Get() != PHASE_PAUSE) {
+        Output_FadeReset();
+    }
 }
 
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
@@ -111,7 +113,8 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
         }
 
         if (!g_Lara.death_timer && g_InputDB.pause) {
-            Game_SetStatus(GS_IN_PAUSE);
+            Phase_Set(PHASE_PAUSE, NULL);
+            return GF_NOP;
         } else {
             Item_Control();
             Effect_Control();

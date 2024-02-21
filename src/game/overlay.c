@@ -2,9 +2,10 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/game.h"
+#include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/output.h"
+#include "game/phase/phase.h"
 #include "game/screen.h"
 #include "game/text.h"
 #include "game/viewport.h"
@@ -229,7 +230,8 @@ static void Overlay_BarGetLocation(
             - m_BarOffsetY[bar_info->location];
     }
 
-    if (Game_GetStatus() == GS_IN_INVENTORY
+    if (Phase_Get() == PHASE_INVENTORY
+        && g_CurrentLevel == g_GameFlow.title_level_num
         && (bar_info->location == BL_TOP_CENTER
             || bar_info->location == BL_BOTTOM_CENTER)) {
         double scale_bar_to_text =
@@ -727,10 +729,10 @@ void Overlay_DrawFPSInfo(void)
             elapsed = Clock_GetMS();
         }
 
-        bool inv_health_showable = Game_GetStatus() == GS_IN_INVENTORY
+        bool inv_health_showable = Phase_Get() == PHASE_INVENTORY
             && g_GameInfo.inv_showing_medpack
             && m_HealthBar.location == BL_TOP_LEFT;
-        bool game_bar_showable = Game_GetStatus() == GS_IN_GAME
+        bool game_bar_showable = Phase_Get() == PHASE_GAME
             && (m_HealthBar.location == BL_TOP_LEFT
                 || m_AirBar.location == BL_TOP_LEFT
                 || m_EnemyBar.location == BL_TOP_LEFT);
@@ -740,7 +742,7 @@ void Overlay_DrawFPSInfo(void)
             y = text_height
                 + scale_fps_to_bar * (y + m_BarOffsetY[BL_TOP_LEFT]);
         } else if (
-            Game_GetStatus() == GS_IN_INVENTORY && g_GameInfo.inv_ring_above) {
+            Phase_Get() == PHASE_INVENTORY && g_GameInfo.inv_ring_above) {
             y += (text_height * 2) + text_inv_offset_y;
         } else {
             y += text_height;
