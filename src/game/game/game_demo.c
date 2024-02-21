@@ -88,7 +88,7 @@ bool Game_Demo_ProcessInput(void)
     return true;
 }
 
-void Game_Demo(void)
+GAMEFLOW_OPTION Game_Demo(void)
 {
     RESUME_INFO start, *s;
 
@@ -100,7 +100,7 @@ void Game_Demo(void)
         }
     }
     if (!any_demos) {
-        return;
+        return GF_EXIT_TO_TITLE;
     }
 
     int16_t level_num = m_DemoLevel;
@@ -153,4 +153,5 @@ void Game_Demo(void)
 end:
     g_Config.enable_enhanced_look = old_enhanced_look;
     g_Config.enable_tr2_jumping = old_tr2_jumping;
+    return GF_EXIT_TO_TITLE;
 }

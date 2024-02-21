@@ -1,6 +1,5 @@
 #include "game/phase/phase_game.h"
 
-#include "config.h"
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
@@ -12,7 +11,6 @@
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/text.h"
@@ -35,12 +33,13 @@ static void Phase_Game_Start(void *arg)
 {
     if (Phase_Get() != PHASE_PAUSE) {
         Output_FadeReset();
+        Output_FadeSetSpeed(1.0);
     }
 }
 
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 {
-    int32_t return_val = 0;
+    GAMEFLOW_OPTION return_val = GF_NOP;
     if (nframes > MAX_FRAMES) {
         nframes = MAX_FRAMES;
     }
@@ -74,10 +73,8 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
             }
             if (g_OverlayFlag == 2) {
                 g_OverlayFlag = 1;
-                return_val = Inv_Display(INV_DEATH_MODE);
-                if (return_val != GF_NOP) {
-                    return return_val;
-                }
+                Inv_Display(INV_DEATH_MODE);
+                return GF_NOP;
             } else {
                 g_OverlayFlag = 2;
             }
@@ -98,17 +95,15 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
                 }
             } else {
                 if (g_OverlayFlag == -1) {
-                    return_val = Inv_Display(INV_LOAD_MODE);
+                    Inv_Display(INV_LOAD_MODE);
                 } else if (g_OverlayFlag == -2) {
-                    return_val = Inv_Display(INV_SAVE_MODE);
+                    Inv_Display(INV_SAVE_MODE);
                 } else {
-                    return_val = Inv_Display(INV_GAME_MODE);
+                    Inv_Display(INV_GAME_MODE);
                 }
 
                 g_OverlayFlag = 1;
-                if (return_val != GF_NOP) {
-                    return return_val;
-                }
+                return GF_NOP;
             }
         }
 
@@ -134,11 +129,7 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
     }
 
     if (g_GameInfo.ask_for_save) {
-        int32_t return_val = Inv_Display(INV_SAVE_CRYSTAL_MODE);
-        if (return_val != GF_NOP) {
-            Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-            Config_Write();
-        }
+        Inv_Display(INV_SAVE_CRYSTAL_MODE);
         g_GameInfo.ask_for_save = false;
     }
 
@@ -148,7 +139,6 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 static void Phase_Game_Draw(void)
 {
     Game_DrawScene(true);
-    Text_Draw();
     Output_AnimateTextures(g_Camera.number_frames);
     Text_Draw();
 }

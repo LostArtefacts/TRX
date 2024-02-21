@@ -459,8 +459,6 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
         }
 
         Inv_Ring_Shutdown();
-        Output_FadeReset();
-        Output_FadeSetSpeed(1.0);
 
         if (m_VersionText) {
             Text_Remove(m_VersionText);
@@ -498,6 +496,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
             case PASSPORT_MODE_SAVE_GAME:
                 Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
                 Config_Write();
+                Phase_Set(PHASE_GAME, 0);
                 return GF_NOP;
             case PASSPORT_MODE_RESTART:
                 return GF_RESTART_GAME | g_CurrentLevel;
@@ -540,10 +539,12 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
             break;
         }
 
-        if (g_InvMode != INV_TITLE_MODE) {
+        if (g_InvMode == INV_TITLE_MODE) {
+            return GF_NOP_BREAK;
+        } else {
             Phase_Set(PHASE_GAME, 0);
+            return GF_NOP;
         }
-        return GF_NOP_BREAK;
     }
 
     Inv_Ring_CalcAdders(ring, ROTATE_DURATION);

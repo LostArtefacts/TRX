@@ -37,8 +37,6 @@ static void Phase_Picture_Start(void *arg)
 
 static void Phase_Picture_End(void)
 {
-    Output_DrawBlack();
-    Output_FadeReset();
 }
 
 static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)

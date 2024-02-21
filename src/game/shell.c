@@ -9,7 +9,6 @@
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
-#include "game/inventory.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/option.h"
@@ -226,8 +225,7 @@ void Shell_Main(void)
             break;
 
         case GF_START_DEMO:
-            Game_Demo();
-            gf_option = GF_EXIT_TO_TITLE;
+            gf_option = Game_Demo();
             break;
 
         case GF_LEVEL_COMPLETE:
@@ -248,8 +246,7 @@ void Shell_Main(void)
                 break;
             }
 
-            gf_option = Inv_Display(INV_TITLE_MODE);
-            Music_Stop();
+            gf_option = Game_MainMenu();
             break;
 
         case GF_EXIT_GAME:

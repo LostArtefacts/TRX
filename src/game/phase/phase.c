@@ -12,14 +12,20 @@
 #include "global/vars.h"
 #include "log.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 
 static PHASE m_Phase = PHASE_NULL;
 static PHASER *m_Phaser = NULL;
 
+static bool m_Running = false;
+static PHASE m_PhaseToSet = PHASE_NULL;
+static void *m_PhaseToSetArg = NULL;
+
 static GAMEFLOW_OPTION Phase_Control(int32_t nframes);
 static void Phase_Draw(void);
 static int32_t Phase_Wait(void);
+static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
 static GAMEFLOW_OPTION Phase_Control(int32_t nframes)
 {
@@ -36,12 +42,7 @@ static void Phase_Draw(void)
     }
 }
 
-PHASE Phase_Get(void)
-{
-    return m_Phase;
-}
-
-void Phase_Set(const PHASE phase, void *arg)
+static void Phase_SetUnconditionally(const PHASE phase, void *arg)
 {
     if (m_Phaser && m_Phaser->end) {
         m_Phaser->end();
@@ -88,6 +89,23 @@ void Phase_Set(const PHASE phase, void *arg)
     Clock_SyncTicks();
 }
 
+PHASE Phase_Get(void)
+{
+    return m_Phase;
+}
+
+void Phase_Set(const PHASE phase, void *arg)
+{
+    // changing the phase in the middle of rendering is asking for trouble,
+    // so instead we schedule to run the change on the next iteration
+    if (m_Running) {
+        m_PhaseToSet = phase;
+        m_PhaseToSetArg = arg;
+        return;
+    }
+    Phase_SetUnconditionally(phase, arg);
+}
+
 static int32_t Phase_Wait(void)
 {
     if (m_Phaser && m_Phaser->wait) {
@@ -104,19 +122,34 @@ GAMEFLOW_OPTION Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
     GAMEFLOW_OPTION ret = GF_NOP;
+    m_Running = true;
     while (1) {
         ret = Phase_Control(nframes);
-        if (ret != GF_NOP) {
-            break;
-        }
         Phase_Draw();
         Output_DumpScreen();
-        nframes = Phase_Wait();
+
+        if (m_PhaseToSet != PHASE_NULL) {
+            Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
+            m_PhaseToSet = PHASE_NULL;
+            m_PhaseToSetArg = NULL;
+            if (ret != GF_NOP) {
+                break;
+            }
+            nframes = 2;
+        } else {
+            if (ret != GF_NOP) {
+                break;
+            }
+            nframes = Phase_Wait();
+        }
     }
 
     if (ret == GF_NOP_BREAK) {
         ret = GF_NOP;
     }
+
+    m_Running = false;
+    Phase_Set(PHASE_NULL, NULL);
 
     LOG_DEBUG("Phase_Run() exited with %d", ret);
     return ret;

@@ -130,6 +130,7 @@ sources = [
   'src/game/game/game.c',
   'src/game/game/game_demo.c',
   'src/game/game/game_draw.c',
+  'src/game/game/game_main_menu.c',
   'src/game/gamebuf.c',
   'src/game/gameflow.c',
   'src/game/gun/gun.c',
