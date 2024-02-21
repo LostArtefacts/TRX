@@ -37,6 +37,7 @@ typedef enum {
     PPAGE1 = 64
 } PASS_PAGE;
 
+static bool m_PlayedSpinin;
 static bool m_PassportModeReady;
 static int32_t m_StartLevel;
 static bool m_StartDemo;
@@ -95,63 +96,18 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     Matrix_RotYXZ(
         ring->ringpos.rot.y, ring->ringpos.rot.x, ring->ringpos.rot.z);
 
-    PHD_ANGLE angle = 0;
-    for (int i = 0; i < ring->number_of_objects; i++) {
-        INVENTORY_ITEM *inv_item = ring->list[i];
-
-        if (motion->status == RNG_DONE) {
-            g_LsAdder = LOW_LIGHT;
-        } else if (i == ring->current_object) {
-            for (int j = 0; j < m_InvNFrames; j++) {
-                if (ring->rotating) {
-                    g_LsAdder = LOW_LIGHT;
-                    if (inv_item->y_rot < 0) {
-                        inv_item->y_rot += 512;
-                    } else if (inv_item->y_rot > 0) {
-                        inv_item->y_rot -= 512;
-                    }
-                } else if (
-                    motion->status == RNG_SELECTED
-                    || motion->status == RNG_DESELECTING
-                    || motion->status == RNG_SELECTING
-                    || motion->status == RNG_DESELECT
-                    || motion->status == RNG_CLOSING_ITEM) {
-                    g_LsAdder = HIGH_LIGHT;
-                    if (inv_item->y_rot != inv_item->y_rot_sel) {
-                        if (inv_item->y_rot_sel - inv_item->y_rot > 0
-                            && inv_item->y_rot_sel - inv_item->y_rot < 0x8000) {
-                            inv_item->y_rot += 1024;
-                        } else {
-                            inv_item->y_rot -= 1024;
-                        }
-                        inv_item->y_rot &= 0xFC00u;
-                    }
-                } else if (
-                    ring->number_of_objects == 1
-                    || (!g_Input.menu_left && !g_Input.menu_right)
-                    || !g_Input.menu_left) {
-                    g_LsAdder = HIGH_LIGHT;
-                    inv_item->y_rot += 256;
-                }
-            }
-        } else {
-            g_LsAdder = LOW_LIGHT;
-            for (int j = 0; j < m_InvNFrames; j++) {
-                if (inv_item->y_rot < 0) {
-                    inv_item->y_rot += 256;
-                } else if (inv_item->y_rot > 0) {
-                    inv_item->y_rot -= 256;
-                }
-            }
+    if (!Output_FadeIsAnimating() || motion->status != RNG_OPENING) {
+        PHD_ANGLE angle = 0;
+        for (int i = 0; i < ring->number_of_objects; i++) {
+            INVENTORY_ITEM *inv_item = ring->list[i];
+            Matrix_Push();
+            Matrix_RotYXZ(angle, 0, 0);
+            Matrix_TranslateRel(ring->radius, 0, 0);
+            Matrix_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
+            Inv_DrawItem(inv_item);
+            angle += ring->angle_adder;
+            Matrix_Pop();
         }
-
-        Matrix_Push();
-        Matrix_RotYXZ(angle, 0, 0);
-        Matrix_TranslateRel(ring->radius, 0, 0);
-        Matrix_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
-        Inv_DrawItem(inv_item);
-        angle += ring->angle_adder;
-        Matrix_Pop();
     }
 
     Matrix_Pop();
@@ -254,6 +210,55 @@ static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item)
 
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
 {
+    const RING_INFO *ring = &m_Ring;
+    const IMOTION_INFO *motion = &m_Motion;
+
+    if (motion->status == RNG_DONE) {
+        g_LsAdder = LOW_LIGHT;
+    } else if (inv_item == ring->list[ring->current_object]) {
+        for (int j = 0; j < m_InvNFrames; j++) {
+            if (ring->rotating) {
+                g_LsAdder = LOW_LIGHT;
+                if (inv_item->y_rot < 0) {
+                    inv_item->y_rot += 512;
+                } else if (inv_item->y_rot > 0) {
+                    inv_item->y_rot -= 512;
+                }
+            } else if (
+                motion->status == RNG_SELECTED
+                || motion->status == RNG_DESELECTING
+                || motion->status == RNG_SELECTING
+                || motion->status == RNG_DESELECT
+                || motion->status == RNG_CLOSING_ITEM) {
+                g_LsAdder = HIGH_LIGHT;
+                if (inv_item->y_rot != inv_item->y_rot_sel) {
+                    if (inv_item->y_rot_sel - inv_item->y_rot > 0
+                        && inv_item->y_rot_sel - inv_item->y_rot < 0x8000) {
+                        inv_item->y_rot += 1024;
+                    } else {
+                        inv_item->y_rot -= 1024;
+                    }
+                    inv_item->y_rot &= 0xFC00u;
+                }
+            } else if (
+                ring->number_of_objects == 1
+                || (!g_Input.menu_left && !g_Input.menu_right)
+                || !g_Input.menu_left) {
+                g_LsAdder = HIGH_LIGHT;
+                inv_item->y_rot += 256;
+            }
+        }
+    } else {
+        g_LsAdder = LOW_LIGHT;
+        for (int j = 0; j < m_InvNFrames; j++) {
+            if (inv_item->y_rot < 0) {
+                inv_item->y_rot += 256;
+            } else if (inv_item->y_rot > 0) {
+                inv_item->y_rot -= 256;
+            }
+        }
+    }
+
     Matrix_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
     Matrix_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
@@ -417,8 +422,7 @@ static void Phase_Inventory_Start(void *arg)
         break;
     }
 
-    m_InvNFrames = 2;
-
+    m_PlayedSpinin = false;
     m_OldCamera = g_Camera;
 
     if (g_InvMode == INV_TITLE_MODE) {
@@ -429,24 +433,26 @@ static void Phase_Inventory_Start(void *arg)
         // make main menu fades faster
         Output_FadeSetSpeed(2.0);
         Output_FadeToTransparent(true);
-        while (Output_FadeIsAnimating()) {
-            Output_DrawBackdropImage();
-            Output_DrawBackdropScreen();
-            Output_DumpScreen();
-            int ticks = Clock_SyncTicks();
-            Output_AnimateFades(ticks);
-        }
     } else {
         Output_FadeToSemiBlack(true);
     }
-
-    Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
 }
 
 static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
 {
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
+
+    if (motion->status == RNG_OPENING) {
+        if (Output_FadeIsAnimating()) {
+            return GF_NOP;
+        }
+
+        if (!m_PlayedSpinin) {
+            Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
+            m_PlayedSpinin = true;
+        }
+    }
 
     if (motion->status == RNG_DONE) {
         // finish fading
