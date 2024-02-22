@@ -96,7 +96,8 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     Matrix_RotYXZ(
         ring->ringpos.rot.y, ring->ringpos.rot.x, ring->ringpos.rot.z);
 
-    if (!Output_FadeIsAnimating() || motion->status != RNG_OPENING) {
+    if (!(g_InvMode == INV_TITLE_MODE && Output_FadeIsAnimating()
+          && motion->status == RNG_OPENING)) {
         PHD_ANGLE angle = 0;
         for (int i = 0; i < ring->number_of_objects; i++) {
             INVENTORY_ITEM *inv_item = ring->list[i];
@@ -444,7 +445,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
     IMOTION_INFO *motion = &m_Motion;
 
     if (motion->status == RNG_OPENING) {
-        if (Output_FadeIsAnimating()) {
+        if (g_InvMode == INV_TITLE_MODE && Output_FadeIsAnimating()) {
             return GF_NOP;
         }
 
