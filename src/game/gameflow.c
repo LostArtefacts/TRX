@@ -1261,14 +1261,14 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_LOOP_GAME:
             Phase_Set(PHASE_GAME, NULL);
             ret = Phase_Run();
-            if (ret != GF_NOP) {
+            if (ret != GF_PHASE_CONTINUE) {
                 return ret;
             }
             break;
 
         case GFS_STOP_GAME:
             ret = Game_Stop();
-            if (ret != GF_NOP
+            if (ret != GF_PHASE_CONTINUE
                 && ((ret & ~((1 << 6) - 1)) != GF_LEVEL_COMPLETE)) {
                 return ret;
             }

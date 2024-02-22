@@ -446,7 +446,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
 
     if (motion->status == RNG_OPENING) {
         if (g_InvMode == INV_TITLE_MODE && Output_FadeIsAnimating()) {
-            return GF_NOP;
+            return GF_PHASE_CONTINUE;
         }
 
         if (!m_PlayedSpinin) {
@@ -462,7 +462,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
         }
 
         if (Output_FadeIsAnimating()) {
-            return GF_NOP;
+            return GF_PHASE_CONTINUE;
         }
 
         Inv_Ring_Shutdown();
@@ -504,7 +504,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
                 Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
                 Config_Write();
                 Phase_Set(PHASE_GAME, 0);
-                return GF_NOP;
+                return GF_PHASE_CONTINUE;
             case PASSPORT_MODE_RESTART:
                 return GF_RESTART_GAME | g_CurrentLevel;
             case PASSPORT_MODE_EXIT_TITLE:
@@ -547,10 +547,10 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
         }
 
         if (g_InvMode == INV_TITLE_MODE) {
-            return GF_NOP_BREAK;
+            return GF_PHASE_BREAK;
         } else {
             Phase_Set(PHASE_GAME, 0);
-            return GF_NOP;
+            return GF_PHASE_CONTINUE;
         }
     }
 
@@ -614,7 +614,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
     }
 
     if (ring->rotating) {
-        return GF_NOP;
+        return GF_PHASE_CONTINUE;
     }
 
     if ((g_InvMode == INV_SAVE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
@@ -975,7 +975,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
         break;
     }
 
-    return GF_NOP;
+    return GF_PHASE_CONTINUE;
 }
 
 static void Phase_Inventory_End(void)

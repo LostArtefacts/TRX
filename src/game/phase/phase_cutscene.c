@@ -128,7 +128,7 @@ static GAMEFLOW_OPTION Phase_Cutscene_Control(int32_t nframes)
         m_FrameCount -= 0x10000;
     }
 
-    return GF_NOP;
+    return GF_PHASE_CONTINUE;
 }
 
 static void Phase_Cutscene_Draw(void)

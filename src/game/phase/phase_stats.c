@@ -307,12 +307,12 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
         Output_FadeToBlack(true);
         if (!Output_FadeIsAnimating() || g_InputDB.menu_confirm
             || g_InputDB.menu_back) {
-            return GF_NOP_BREAK;
+            return GF_PHASE_BREAK;
         }
         break;
     }
 
-    return GF_NOP;
+    return GF_PHASE_CONTINUE;
 }
 
 static void Phase_Stats_Draw(void)
