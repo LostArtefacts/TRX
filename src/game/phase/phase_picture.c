@@ -65,12 +65,12 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
     case PICTURE_STATE_FADE_OUT:
         Output_FadeToBlack(true);
         if (g_InputDB.any || !Output_FadeIsAnimating()) {
-            return GF_NOP_BREAK;
+            return GF_PHASE_BREAK;
         }
         break;
     }
 
-    return GF_NOP;
+    return GF_PHASE_CONTINUE;
 }
 
 static void Phase_Picture_Draw(void)

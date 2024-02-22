@@ -32,7 +32,7 @@ static GAMEFLOW_OPTION Phase_Control(int32_t nframes)
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
-    return GF_NOP;
+    return GF_PHASE_CONTINUE;
 }
 
 static void Phase_Draw(void)
@@ -121,7 +121,7 @@ static int32_t Phase_Wait(void)
 GAMEFLOW_OPTION Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_OPTION ret = GF_NOP;
+    GAMEFLOW_OPTION ret = GF_PHASE_CONTINUE;
     m_Running = true;
     while (1) {
         ret = Phase_Control(nframes);
@@ -132,20 +132,20 @@ GAMEFLOW_OPTION Phase_Run(void)
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
-            if (ret != GF_NOP) {
+            if (ret != GF_PHASE_CONTINUE) {
                 break;
             }
             nframes = 2;
         } else {
-            if (ret != GF_NOP) {
+            if (ret != GF_PHASE_CONTINUE) {
                 break;
             }
             nframes = Phase_Wait();
         }
     }
 
-    if (ret == GF_NOP_BREAK) {
-        ret = GF_NOP;
+    if (ret == GF_PHASE_BREAK) {
+        ret = GF_PHASE_CONTINUE;
     }
 
     m_Running = false;
