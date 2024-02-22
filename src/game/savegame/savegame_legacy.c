@@ -533,7 +533,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Read(&g_Camera.fixed[i].flags, sizeof(int16_t));
     }
 
-    Savegame_PreprocessItems();
+    Savegame_ProcessItemsBeforeLoad();
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -707,6 +707,8 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     for (int i = 0; i < g_NumberCameras; i++) {
         Savegame_Legacy_Write(&g_Camera.fixed[i].flags, sizeof(int16_t));
     }
+
+    Savegame_ProcessItemsBeforeSave();
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];

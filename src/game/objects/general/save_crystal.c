@@ -36,14 +36,7 @@ void SaveCrystal_Initialise(int16_t item_num)
 void SaveCrystal_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (item->data) {
-        int32_t old_save_count = (int32_t)(intptr_t)item->data;
-        if (g_SaveCounter > old_save_count) {
-            item->status = IS_DEACTIVATED;
-            Item_RemoveDrawn(item_num);
-        }
-    }
-    Item_Animate(&g_Items[item_num]);
+    Item_Animate(item);
 }
 
 void SaveCrystal_Collision(
@@ -69,6 +62,6 @@ void SaveCrystal_Collision(
         return;
     }
 
-    g_Items[item_num].data = ((void *)(intptr_t)g_SaveCounter);
+    item->data = (void *)(intptr_t)(g_SaveCounter | 0x10000);
     Inv_Display(INV_SAVE_CRYSTAL_MODE);
 }

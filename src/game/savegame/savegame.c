@@ -176,7 +176,7 @@ void Savegame_Shutdown(void)
     Memory_FreePointer(&m_SavegameInfo);
 }
 
-void Savegame_PreprocessItems(void)
+void Savegame_ProcessItemsBeforeLoad(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -188,6 +188,21 @@ void Savegame_PreprocessItems(void)
         }
         if (obj->control == SlidingPillar_Control) {
             Room_AlterFloorHeight(item, WALL_L * 2);
+        }
+    }
+}
+
+void Savegame_ProcessItemsBeforeSave(void)
+{
+    for (int i = 0; i < g_LevelItemCount; i++) {
+        ITEM_INFO *item = &g_Items[i];
+        OBJECT_INFO *obj = &g_Objects[item->object_number];
+
+        if (obj->control == SaveCrystal_Control && item->data) {
+            // need to reset the crystal status
+            item->status = IS_DEACTIVATED;
+            item->data = NULL;
+            Item_RemoveDrawn(i);
         }
     }
 }

@@ -1018,6 +1018,8 @@ static struct json_array_s *Savegame_BSON_DumpCameras(void)
 
 static struct json_array_s *Savegame_BSON_DumpItems(void)
 {
+    Savegame_ProcessItemsBeforeSave();
+
     SAVEGAME_BSON_FX_ORDER fx_order;
     SaveGame_BSON_GetFXOrder(&fx_order);
 
@@ -1366,7 +1368,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         goto cleanup;
     }
 
-    Savegame_PreprocessItems();
+    Savegame_ProcessItemsBeforeLoad();
 
     if (!Savegame_BSON_LoadItems(
             json_object_get_array(root_obj, "items"), header.version)) {

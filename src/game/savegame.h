@@ -65,4 +65,5 @@ void Savegame_ResetCurrentInfo(int level_num);
 void Savegame_CarryCurrentInfoToNextLevel(int32_t src_level, int32_t dst_level);
 void Savegame_PersistGameToCurrentInfo(int level_num);
 
-void Savegame_PreprocessItems(void);
+void Savegame_ProcessItemsBeforeLoad(void);
+void Savegame_ProcessItemsBeforeSave(void);
