@@ -19,6 +19,19 @@ RUN apt-get update \
 
 
 
+# libbacktrace
+FROM base AS backtrace
+RUN apt-get install -y git gcc autoconf libtool
+RUN git clone https://github.com/LostArtefacts/libbacktrace/
+RUN cd libbacktrace && \
+    autoreconf -fi && \
+    ./configure \
+        --prefix=/ext/ \
+    && make -j 4 \
+    && make install
+
+
+
 # libav
 FROM base AS libav
 RUN apt-get install -y \
@@ -134,5 +147,6 @@ RUN apt-get install -y \
 COPY --from=upx /ext/upx /usr/local/bin/upx
 COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
+COPY --from=backtrace /ext/ /ext/
 
 ENTRYPOINT ["/app/docker/game-linux/entrypoint-linux.sh"]

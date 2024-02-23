@@ -21,6 +21,7 @@ RUN apt-get update \
         make
 
 
+
 # zlib
 FROM mingw as zlib
 RUN git clone https://github.com/madler/zlib
@@ -85,6 +86,7 @@ RUN cd FFmpeg \
     && make install
 
 
+
 # SDL
 FROM mingw as sdl
 RUN git clone https://github.com/libsdl-org/SDL -b SDL2
@@ -119,6 +121,7 @@ RUN cd SDL \
 #     && cmake --build . \
 #     && make -j 4 \
 #     && make install
+
 
 
 # TR1X
