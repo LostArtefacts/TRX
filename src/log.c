@@ -2,6 +2,7 @@
 
 #include "filesystem.h"
 #include "memory.h"
+#include "specific/s_log.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -13,6 +14,8 @@ void Log_Init(void)
     char *full_path = File_GetFullPath("TR1X.log");
     m_LogHandle = fopen(full_path, "w");
     Memory_FreePointer(&full_path);
+
+    S_Log_Init();
 }
 
 void Log_Message(

@@ -35,6 +35,7 @@ null_dep = dependency('', required: false)
 dep_avcodec = dependency('libavcodec', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
 dep_avutil = dependency('libavutil', static: staticdeps)
+dep_backtrace = dependency('libbacktrace', static: staticdeps, required: false)
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
 
@@ -303,6 +304,17 @@ dependencies = [
   dep_zlib,
   dep_mathlibrary,
 ]
+
+if dep_backtrace.found() and host_machine.system() == 'linux'
+  sources += ['src/specific/s_log_linux.c']
+  dependencies += [dep_backtrace]
+elif dep_backtrace.found() and host_machine.system() == 'windows'
+  sources += ['src/specific/s_log_windows.c']
+  dep_win_dbghelp = c_compiler.find_library('dbghelp')
+  dependencies += [dep_win_dbghelp]
+else
+  sources += ['src/specific/s_log_unknown.c']
+endif
 
 executable(
   'TR1X',

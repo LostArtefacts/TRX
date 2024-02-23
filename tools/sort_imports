@@ -23,6 +23,15 @@ def fix_imports(path: Path) -> None:
     )
 
 
+def custom_sort(source: list[str], forced_order: list[str]) -> list[str]:
+    def key_func(item: str) -> tuple[int, int, str]:
+        if item in forced_order:
+            return (forced_order[0], forced_order.index(item))
+        return (item, 0)
+
+    return sorted(source, key=key_func)
+
+
 def sort_imports(path: Path) -> None:
     source = path.read_text()
     rel_path = path.relative_to(SRC_PATH)
@@ -43,7 +52,16 @@ def sort_imports(path: Path) -> None:
         "game/savegame/savegame.c": "game/savegame.h",
         "specific/s_audio_sample.c": "specific/s_audio.h",
         "specific/s_audio_stream.c": "specific/s_audio.h",
+        "specific/s_log_unknown.c": "specific/s_log.h",
+        "specific/s_log_linux.c": "specific/s_log.h",
+        "specific/s_log_windows.c": "specific/s_log.h",
     }.get(str(rel_path), own_include)
+
+    forced_order = [
+        "<windows.h>",
+        "<dbghelp.h>",
+        "<tlhelp32.h>",
+    ]
 
     def cb(match):
         includes = re.findall(r'#include (["<][^"<>]+[">])', match.group(0))
@@ -63,7 +81,10 @@ def sort_imports(path: Path) -> None:
         groups = {key: value for key, value in groups.items() if value}
 
         ret = "\n\n".join(
-            "\n".join(f"#include {include}" for include in sorted(group))
+            "\n".join(
+                f"#include {include}"
+                for include in custom_sort(group, forced_order)
+            )
             for group in groups.values()
         ).strip()
         return ret
@@ -80,7 +101,7 @@ def sort_imports(path: Path) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument(metavar="path", type=Path, nargs="*", dest='paths')
+    parser.add_argument(metavar="path", type=Path, nargs="*", dest="paths")
     return parser.parse_args()
 
 
