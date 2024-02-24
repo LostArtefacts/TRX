@@ -55,7 +55,9 @@ topic](https://www.tombraiderforums.com/showthread.php?p=8286101).
     </tr>
 </table>
 
-## Installing (simplified)
+## Windows / Linux
+
+### Installing (simplified)
 
 1. Head over to GitHub releases: https://github.com/LostArtefacts/TR1X/releases
 2. Download the installer. Your browser may complain that the .exe is unsafe, but it's OK to ignore this alert.
@@ -64,7 +66,7 @@ topic](https://www.tombraiderforums.com/showthread.php?p=8286101).
 
 We hope that eventually these alerts will go away as the popularity of the project rises.
 
-## Installing (advanced / manual)
+### Installing (advanced / manual)
 
 1. Head over to GitHub releases: https://github.com/LostArtefacts/TR1X/releases
 2. Download the zip file.
@@ -218,12 +220,21 @@ less like this (click to expand):
 </pre>
 </details>
 
-## Configuring
+### Configuring
 
 To configure TR1X, run the `TR1X_ConfigTool.exe` application. All the
 configuration is explained in this tool. Alternatively, after running the game
 at least once, you can edit `TR1X.json5` manually in a text editor such
 as Notepad.
+
+## macOS
+
+### Installing
+
+1. Head over to GitHub releases: https://github.com/LostArtefacts/TR1X/releases
+2. Download the `TR1X-Installer.dmg` installer image. Mount the image and drag TR1X to the Applications folder.
+3. Find TR1X in your Applications folder. Right-click it and click "Show Package Contents".
+4. Copy your Tomb Raider 1 game data files into `Contents/Resources/data`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
 
 ## Improvements over original game
 
@@ -425,6 +436,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 
 #### Miscellaneous
 - added Linux builds
+- added macOS builds
 - added .jpeg/.png screenshots
 - added an option to pause sound in the inventory screen
 - added ability to skip FMVs with the Action key
@@ -462,9 +474,9 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 
 4. **Can I play this on Mac, Linux, Android...?**
 
-    Currently supported platforms include Windows and Linux. In the future, it
-    might be possible to run the game on Macs as well – contributions are
-    welcome!
+    Currently supported platforms include Windows, Linux and macOS. In the
+    future, it might be possible to run the game on Android as well –
+    contributions are welcome!
 
 5. **What's the relation to TR2Main?**
 
