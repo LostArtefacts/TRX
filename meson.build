@@ -308,6 +308,18 @@ else
   sources += ['src/specific/s_log_unknown.c']
 endif
 
+gfx_options = configuration_data()
+
+if host_machine.system() == 'darwin'
+  gfx_options.set('GFX_GL_DEFAULT_BACKEND', 'GFX_GL_33C')
+else
+  gfx_options.set('GFX_GL_DEFAULT_BACKEND', 'GFX_GL_21')
+endif
+
+configure_file(
+  output: 'gfx_options.h',
+  configuration: gfx_options)
+
 executable(
   'TR1X',
   sources,

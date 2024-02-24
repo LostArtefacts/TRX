@@ -8,6 +8,7 @@
 
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 bool GFX_GL_Program_Init(GFX_GL_Program *program)
 {
@@ -36,6 +37,51 @@ void GFX_GL_Program_Bind(GFX_GL_Program *program)
     GFX_GL_CheckError();
 }
 
+char *GFX_GL_Program_PreprocessShader(
+    const char *content, GLenum type, GFX_GL_BACKEND backend)
+{
+    const char *version_ogl21 =
+        "#version 120\n"
+        "#extension GL_ARB_explicit_attrib_location: enable\n"
+        "#extension GL_EXT_gpu_shader4: enable\n";
+    const char *version_ogl33c = "#version 330 core\n";
+    const char *define_vertex = "#define VERTEX\n";
+    const char *define_ogl33c = "#define OGL33C\n";
+
+    size_t bufsize = strlen(content) + 1;
+
+    if (backend == GFX_GL_33C) {
+        bufsize += strlen(version_ogl33c);
+        bufsize += strlen(define_ogl33c);
+    } else {
+        bufsize += strlen(version_ogl21);
+    }
+
+    if (type == GL_VERTEX_SHADER) {
+        bufsize += strlen(define_vertex);
+    }
+
+    char *processed_content = Memory_Alloc(bufsize);
+    if (!processed_content) {
+        return NULL;
+    }
+    processed_content[0] = '\0';
+
+    if (backend == GFX_GL_33C) {
+        strcpy(processed_content, version_ogl33c);
+        strcat(processed_content, define_ogl33c);
+    } else {
+        strcpy(processed_content, version_ogl21);
+    }
+
+    if (type == GL_VERTEX_SHADER) {
+        strcat(processed_content, define_vertex);
+    }
+
+    strcat(processed_content, content);
+    return processed_content;
+}
+
 void GFX_GL_Program_AttachShader(
     GFX_GL_Program *program, GLenum type, const char *path)
 {
@@ -50,7 +96,14 @@ void GFX_GL_Program_AttachShader(
         Shell_ExitSystemFmt("Unable to find shader file: %s", path);
     }
 
-    glShaderSource(shader_id, 1, (const char **)&content, NULL);
+    char *processed_content =
+        GFX_GL_Program_PreprocessShader(content, type, GFX_GL_DEFAULT_BACKEND);
+    Memory_FreePointer(&content);
+    if (!processed_content) {
+        Shell_ExitSystemFmt("Failed to pre-process shader source:  %s", path);
+    }
+
+    glShaderSource(shader_id, 1, &processed_content, NULL);
 
     GFX_GL_CheckError();
     glCompileShader(shader_id);
@@ -73,7 +126,7 @@ void GFX_GL_Program_AttachShader(
         }
     }
 
-    Memory_FreePointer(&content);
+    Memory_FreePointer(&processed_content);
 
     glAttachShader(program->id, shader_id);
     GFX_GL_CheckError();

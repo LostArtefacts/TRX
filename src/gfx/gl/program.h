@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gfx/common.h"
 #include "gfx/gl/gl_core_3_3.h"
 
 #include <stdbool.h>
@@ -12,6 +13,8 @@ bool GFX_GL_Program_Init(GFX_GL_Program *program);
 void GFX_GL_Program_Close(GFX_GL_Program *program);
 
 void GFX_GL_Program_Bind(GFX_GL_Program *program);
+char *GFX_GL_Program_PreprocessShader(
+    const char *content, GLenum type, GFX_GL_BACKEND backend);
 void GFX_GL_Program_AttachShader(
     GFX_GL_Program *program, GLenum type, const char *path);
 void GFX_GL_Program_Link(GFX_GL_Program *program);
