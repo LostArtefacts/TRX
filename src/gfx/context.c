@@ -118,6 +118,14 @@ void GFX_Context_Attach(void *window_handle)
     m_Context.display_height = 600;
 
     m_Context.window_handle = window_handle;
+
+    if (GFX_GL_DEFAULT_BACKEND == GFX_GL_33C) {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(
+            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    }
+
     m_Context.context = SDL_GL_CreateContext(m_Context.window_handle);
 
     if (!m_Context.context) {
@@ -139,8 +147,11 @@ void GFX_Context_Attach(void *window_handle)
         GFX_GL_CheckError();
     }
 
-    GFX_Context_CheckExtensionSupport("GL_ARB_explicit_attrib_location");
-    GFX_Context_CheckExtensionSupport("GL_EXT_gpu_shader4");
+    // Check the availability of non-Core Profile extensions for OpenGL 2.1
+    if (GFX_GL_DEFAULT_BACKEND == GFX_GL_21) {
+        GFX_Context_CheckExtensionSupport("GL_ARB_explicit_attrib_location");
+        GFX_Context_CheckExtensionSupport("GL_EXT_gpu_shader4");
+    }
 
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);

@@ -38,9 +38,9 @@ void GFX_2D_Renderer_Init(GFX_2D_Renderer *renderer)
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_VERTEX_SHADER, "shaders/2d.vsh");
+        &renderer->program, GL_VERTEX_SHADER, "shaders/2d.glsl");
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_FRAGMENT_SHADER, "shaders/2d.fsh");
+        &renderer->program, GL_FRAGMENT_SHADER, "shaders/2d.glsl");
     GFX_GL_Program_Link(&renderer->program);
     GFX_GL_Program_FragmentData(&renderer->program, "fragColor");
 

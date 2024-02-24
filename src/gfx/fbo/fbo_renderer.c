@@ -42,9 +42,9 @@ void GFX_FBO_Renderer_Init(GFX_FBO_Renderer *renderer)
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_VERTEX_SHADER, "shaders/fbo.vsh");
+        &renderer->program, GL_VERTEX_SHADER, "shaders/fbo.glsl");
     GFX_GL_Program_AttachShader(
-        &renderer->program, GL_FRAGMENT_SHADER, "shaders/fbo.fsh");
+        &renderer->program, GL_FRAGMENT_SHADER, "shaders/fbo.glsl");
     GFX_GL_Program_Link(&renderer->program);
     GFX_GL_Program_FragmentData(&renderer->program, "fragColor");
 
