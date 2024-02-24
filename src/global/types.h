@@ -1200,8 +1200,6 @@ typedef enum PASSPORT_MODE {
     PASSPORT_MODE_UNAVAILABLE = 9,
 } PASSPORT_MODE;
 
-#pragma pack(push, 1)
-
 typedef struct RESOLUTION {
     int width;
     int height;
@@ -2036,8 +2034,6 @@ typedef struct SAMPLE_INFO {
     int16_t randomness;
     int16_t flags;
 } SAMPLE_INFO;
-
-#pragma pack(pop)
 
 typedef struct PICTURE {
     int32_t width;
