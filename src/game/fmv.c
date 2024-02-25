@@ -1,6 +1,8 @@
 #include "game/fmv.h"
 
 #include "filesystem.h"
+#include "game/music.h"
+#include "game/sound.h"
 #include "memory.h"
 #include "specific/s_fmv.h"
 
@@ -17,6 +19,9 @@ bool FMV_Init(void)
 
 bool FMV_Play(const char *path)
 {
+    Music_Stop();
+    Sound_StopAllSamples();
+
     char *final_path = File_GuessExtension(path, m_Extensions);
     bool ret = S_FMV_Play(final_path);
     Memory_FreePointer(&final_path);
