@@ -136,11 +136,13 @@ jobs:
         run: |
           echo "$GITHUB_CONTEXT"
           sudo apt-get update
-          sudo apt-get install -y make moby-engine moby-cli
+          sudo apt-get install -y moby-engine moby-cli
+          sudo snap install --edge --classic just
 
       - name: Build the game
         run: |
-          make clean release
+          just clean
+          just build-win release
           mkdir out/
           cp build/win/*.exe out/
           cp -r bin/* out/
@@ -171,7 +173,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y make p7zip-full
+          sudo apt-get install -y p7zip-full
+          sudo snap install --edge --classic just
 
       - name: Package the game
         run: |
@@ -199,11 +202,13 @@ jobs:
         run: |
           echo "$GITHUB_CONTEXT"
           sudo apt-get update
-          sudo apt-get install -y make moby-engine moby-cli
+          sudo apt-get install -y moby-engine moby-cli
+          sudo snap install --edge --classic just
 
       - name: Build the game
         run: |
-          make clean release-linux
+          just clean
+          just build-linux release
           mkdir out/
           cp build/linux/TR1X out/
           cp -r bin/* out/
@@ -228,7 +233,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y make p7zip-full
+          sudo apt-get install -y p7zip-full
+          sudo snap install --edge --classic just
 
       - name: Package the game
         run: |
