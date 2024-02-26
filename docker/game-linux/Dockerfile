@@ -149,4 +149,4 @@ COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 COPY --from=backtrace /ext/ /ext/
 
-ENTRYPOINT ["/app/docker/game-linux/entrypoint-linux.sh"]
+ENTRYPOINT ["/app/docker/game-linux/entrypoint.sh"]

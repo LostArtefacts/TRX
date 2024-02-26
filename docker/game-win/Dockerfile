@@ -150,4 +150,4 @@ RUN apt-get install -y \
         meson \
         ninja
 
-ENTRYPOINT ["/app/docker/game/entrypoint.sh"]
+ENTRYPOINT ["/app/docker/game-win/entrypoint.sh"]

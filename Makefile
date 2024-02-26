@@ -7,7 +7,6 @@ define build
 	mkdir -p build
 	docker run --rm \
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
-		--entrypoint /app/docker/game-win/entrypoint.sh \
 		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
 		rrdash/tr1x:latest
@@ -18,7 +17,6 @@ define build-linux
 	mkdir -p build
 	docker run --rm \
 		--user $(HOST_USER_UID):$(HOST_USER_GID) \
-		--entrypoint /app/docker/game-linux/entrypoint.sh \
 		-e TARGET="$(TARGET)" \
 		-v $(CWD):/app/ \
 		rrdash/tr1x-linux:latest
