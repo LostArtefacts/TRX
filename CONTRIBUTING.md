@@ -20,8 +20,9 @@ Subsequent builds:
 
 - **With Docker**:
 
-    Make sure to install Docker and make, then run `make debug`.
-    The binaries should appear in the `build/` directory.
+    Make sure to install Docker and [just](https://github.com/casey/just), then
+    run `just`. The binaries should appear in the `build/` directory.
+    To see list of possible build targets, run `just -l`.
 
 - **Without Docker**:
 
@@ -98,7 +99,7 @@ Other things:
 
 This project uses `clang-format` to take care of automatic code formatting, and
 `include-what-you-use` to remove unused `#include`s. To ensure your code
-conforms to the standard, please run `make lint` after each commit. If for some
+conforms to the standard, please run `just lint` after each commit. If for some
 reason you can't run it, don't worry, our CI pipeline will show what needs to
 be changed in case of mistakes.
 

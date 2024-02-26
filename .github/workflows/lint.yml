@@ -37,25 +37,26 @@ jobs:
           echo 'deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main' | sudo tee -a /etc/apt/sources.list
           sudo apt update
           sudo apt-get install -y clang-format-17 iwyu
+          sudo snap install --edge --classic just
           sudo ln -s /usr/bin/clang-format-17 /usr/local/bin/clang-format
-          sudo apt-get install -y make python3-pip
+          sudo apt-get install -y python3-pip
           sudo python3 -m pip install pyjson5
+
+      - name: Check formatted code differences
+        run: |
+          just lint-format
+          git diff --exit-code || (
+            clang-format --version
+            echo 'Please run `just lint` and commit the changes.'
+            exit 1
+          )
 
       - name: Check imports
         run: |
           git add -A
-          make lint_imports
+          just lint-imports
           git diff --exit-code || (
             include-what-you-use --version
-            echo 'Please run `make lint` and commit the changes.'
-            exit 1
-          )
-
-      - name: Check formatted code differences
-        run: |
-          make lint_format
-          git diff --exit-code || (
-            clang-format --version
-            echo 'Please run `make lint` and commit the changes.'
+            echo 'Please run `just lint` and commit the changes.'
             exit 1
           )
