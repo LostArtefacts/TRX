@@ -16,7 +16,6 @@ endif
 
 build_opts = [
   '-Wno-unused',
-  '-D_GNU_SOURCE',
   '-DMESON_BUILD',
 ]
 c_opts = []
