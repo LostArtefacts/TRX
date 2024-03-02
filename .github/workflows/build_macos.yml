@@ -1,0 +1,226 @@
+name: Build macOS app bundle and .dmg installer image
+
+on:
+  - workflow_dispatch
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Extend PATH for MacPorts
+        run: |
+          echo -e "/opt/local/bin" >> $GITHUB_PATH
+          echo -e "/opt/local/sbin" >> $GITHUB_PATH
+
+      - name: Install and update MacPorts
+        run: |
+          wget -O ${{ github.workspace }}/macports.pkg https://github.com/macports/macports-base/releases/download/v2.9.1/MacPorts-2.9.1-14-Sonoma.pkg
+          sudo installer -pkg ${{ github.workspace }}/macports.pkg -target /
+
+      - name: Install build and deployment tools
+        run: |
+          # Install Python first to avoid multiple Python in the dep tree later on.
+          sudo port -N install python312 py312-pip
+          sudo port select --set python python312
+          sudo port select --set python3 python312
+          sudo port select --set pip pip312
+          sudo port select --set pip3 pip312
+
+          # Install the rest.
+          sudo port -N install create-dmg meson ninja pkgconfig py-json5
+
+      - name: "Build dependencies: Compression libraries (universal)"
+        run: |
+          sudo port install zlib +universal
+          sudo port install bzip2 +universal
+          sudo port install xz +universal
+
+      - name: "Build dependency: libsdl2 (universal)"
+        run: sudo port -N install libsdl2 +universal
+
+      - name: "Build dependency: ffmpeg (universal)"
+        run: |
+          git clone --depth 1 --branch "n4.4.1" https://github.com/FFmpeg/FFmpeg
+          cd FFmpeg
+
+          # Locations
+          FFMPEG_INSTALL_TMP_UNIVERSAL=/tmp/install_universal
+          FFMPEG_INSTALL_UNIVERSAL=/opt/local
+          FFMPEG_INSTALL_X86_64=/tmp/install_x86_64
+
+          # Libs
+          FFMPEG_LIBS=(
+            "libavcodec"
+            "libavdevice"
+            "libavfilter"
+            "libavformat"
+            "libavutil"
+            "libpostproc"
+            "libswresample"
+            "libswscale"
+          )
+
+          # Common FFmpeg configure options
+          FFMPEG_CONFIG_OPTIONS=" \
+            --enable-gpl \
+            --enable-decoder=pcx \
+            --enable-decoder=png \
+            --enable-decoder=gif \
+            --enable-decoder=mjpeg \
+            --enable-decoder=mpeg4 \
+            --enable-decoder=mdec \
+            --enable-decoder=h264 \
+            --enable-decoder=png \
+            --enable-demuxer=mov \
+            --enable-demuxer=avi \
+            --enable-demuxer=h264 \
+            --enable-demuxer=str \
+            --enable-demuxer=image2 \
+            --enable-zlib \
+            --enable-small \
+            --enable-shared \
+            --disable-static \
+            --disable-debug \
+            --disable-ffplay \
+            --disable-ffprobe \
+            --disable-doc \
+            --disable-network \
+            --disable-htmlpages \
+            --disable-manpages \
+            --disable-podpages \
+            --disable-txtpages \
+            --disable-asm"
+
+          # Configure for arm64.
+          # We install the arm64 build to the final universal binary
+          # prefix so the pkgconfig files get filled in correctly
+          # and won't require correction.
+          ./configure \
+            --arch=arm64 \
+            --prefix=$FFMPEG_INSTALL_UNIVERSAL \
+            --cc='clang' \
+            $FFMPEG_CONFIG_OPTIONS
+
+          # Build and install.
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+
+          # Reset build directory.
+          make clean
+
+          # Configure for x86-64.
+          # Install to separate staging path in preparation for
+          # fusing universal libraries.
+          ./configure \
+            --arch=x86_64 \
+            --enable-cross-compile \
+            --prefix=$FFMPEG_INSTALL_X86_64 \
+            --cc='clang -arch x86_64' \
+            $FFMPEG_CONFIG_OPTIONS
+
+          # Build and install.
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+
+          # Fuse universal binaries.
+          # `lipo` cannot overwrite binaries in place, so we stage the
+          # fused binaries in a temporary directory.
+          mkdir -p $FFMPEG_INSTALL_TMP_UNIVERSAL
+
+          for LIB in ${FFMPEG_LIBS[@]}; do
+              RESOLVED_LIB=$(ls -l $FFMPEG_INSTALL_UNIVERSAL/lib/${LIB}* \
+                | grep -v '^l' \
+                | awk -F'/' '{print $NF}')
+
+              lipo -create \
+                $FFMPEG_INSTALL_UNIVERSAL/lib/$RESOLVED_LIB \
+                $FFMPEG_INSTALL_X86_64/lib/$RESOLVED_LIB \
+                -output $FFMPEG_INSTALL_TMP_UNIVERSAL/$RESOLVED_LIB
+
+              # Replace the x86_64 library with a link to the universal
+              # binary, so `bundle_dylibs` will always gather a universal
+              # build.
+              sudo ln -s -f $FFMPEG_INSTALL_UNIVERSAL/lib/$RESOLVED_LIB $FFMPEG_INSTALL_X86_64/lib/$RESOLVED_LIB
+          done
+
+          # Move the fused binaries to the MacPorts install prefix.
+          sudo mv $FFMPEG_INSTALL_TMP_UNIVERSAL/*.dylib $FFMPEG_INSTALL_UNIVERSAL/lib/
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build arm64 and create app bundle
+        run: |
+          BUILD_DIR=build-arm64
+          BUILD_OPTIONS="--prefix=/tmp/TR1X.app --bindir=Contents/MacOS"
+          meson setup $BUILD_DIR $BUILD_OPTIONS
+          meson install -C $BUILD_DIR
+
+      - name: Build x86-64
+        run: |
+          BUILD_DIR=build-x86-64
+          BUILD_OPTIONS="--prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/mac/build/x86-64_cross_file.txt"
+          meson setup $BUILD_DIR $BUILD_OPTIONS
+          meson compile -C $BUILD_DIR
+
+      - name: Fuse universal executable
+        run: |
+          BUNDLE_EXEC_DIR=/tmp/TR1X.app/Contents/MacOS
+
+          # Fuse executable and move it into the app bundle.
+          lipo -create build-x86-64/TR1X $BUNDLE_EXEC_DIR/TR1X -output $BUNDLE_EXEC_DIR/TR1X_universal
+          mv $BUNDLE_EXEC_DIR/TR1X_universal $BUNDLE_EXEC_DIR/TR1X
+
+          # Update dynamic library links in the fused executable.
+          ./tools/mac/build/bundle_dylibs --links-only
+
+      - name: Set up signing certificate
+        env:
+          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
+          security list-keychain -d user -s $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
+
+      - name: Sign app bundle
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
+          xattr -cr /tmp/TR1X.app
+          /usr/bin/codesign --force --deep --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v /tmp/TR1X.app
+
+      - name: Create, sign and notarize disk image
+        env:
+          MACOS_APPLEID: ${{ secrets.MACOS_APPLEID }}
+          MACOS_APP_PWD: ${{ secrets.MACOS_APP_PWD }}
+          MACOS_TEAMID: ${{ secrets.MACOS_TEAMID }}
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
+          mkdir installer
+          cd installer
+          ../tools/mac/build/create_installer
+          xattr -cr TR1X-Installer.dmg
+          /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v TR1X-Installer.dmg
+          xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" TR1X-Installer.dmg
+          xcrun stapler staple -v TR1X-Installer.dmg
+
+      - name: Upload signed+notarized installer image
+        uses: actions/upload-artifact@v4
+        with:
+          name: TR1X-Installer.dmg
+          path: ${{ github.workspace }}/installer/TR1X-Installer.dmg
+          compression-level: 0 # .dmg is already compressed.
