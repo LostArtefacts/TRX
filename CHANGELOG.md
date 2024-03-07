@@ -4,6 +4,7 @@
 - added an option to the installer to install from a CD drive (#1144)
 - added stack traces to logs for better crash debugging (#1165)
 - changed the way music timestamps are internally handled – resets music position in existing saves
+- fixed a missing translation for the Spanish config tool for the Eidos logo skip option (#1151)
 
 ## [3.1.1](https://github.com/LostArtefacts/TR1X/compare/3.1...3.1.1) - 2024-01-19
 - changed quick load to show empty passport instead of opening the save game menu when there are no saves (#1141)
