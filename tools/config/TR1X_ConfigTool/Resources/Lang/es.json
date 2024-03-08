@@ -192,7 +192,7 @@
       "Title": "Habilitar FMV",
       "Description": "Habilita la reproducción de vídeos FMV."
     },
-    "enable_eidos": {
+    "enable_eidos_logo": {
       "Title": "Habilitar el logo de EIDOS",
       "Description": "Habilita el logo de EIDOS al comienzo del juego."
     },
