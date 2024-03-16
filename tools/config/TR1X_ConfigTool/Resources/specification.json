@@ -276,6 +276,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_loading_screens",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "enable_buffering",
           "DataType": "Bool",
           "DefaultValue": false

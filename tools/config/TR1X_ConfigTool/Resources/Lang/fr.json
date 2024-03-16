@@ -248,6 +248,10 @@
         "Title": "Activer le logo EIDOS",
         "Description": "Active le logo EIDOS au début du jeu."
     },
+    "enable_loading_screens": {
+      "Title": "Activer les écrans de chargement",
+      "Description": "Active les écrans de chargements avant chaque début des niveaux, comme sur PlayStation 1."
+    },
     "enable_buffering": {
       "Title": "Activer la mise en mémoire tampon",
       "Description": "Permet la mise en mémoire tampon d'une saisie de mouvement grâce au passage dans l'inventaire (inventory buffering) ou image par image (frame buffering) pour obtenir un contrôle précis des mouvements de Lara."

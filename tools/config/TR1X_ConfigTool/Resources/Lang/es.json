@@ -196,6 +196,10 @@
       "Title": "Habilitar el logo de EIDOS",
       "Description": "Habilita el logo de EIDOS al comienzo del juego."
     },
+    "enable_loading_screens": {
+      "Title": "Enable loading screens",
+      "Description": "Enables PS1 style loading screens before each level."
+    },
     "enable_jump_twists": {
       "Title": "Giros al saltar",
       "Description": "Habilita giros y saltos mortales al estilo TR2+, es decir, presiona rodar durante las animaciones de salto y salto del cisne."

@@ -248,6 +248,10 @@
       "Title": "Enable EIDOS logo",
       "Description": "Enables EIDOS logo at the game start."
     },
+    "enable_loading_screens": {
+      "Title": "Enable loading screens",
+      "Description": "Enables PS1 style loading screens before each level."
+    },
     "enable_buffering": {
       "Title": "Enable buffering",
       "Description": "Enables F-key (1-frame) and inventory (2-frame) buffering to achieve precise control of Lara's movement."
