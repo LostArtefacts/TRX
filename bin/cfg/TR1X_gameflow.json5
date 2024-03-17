@@ -157,7 +157,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/greece_saturn.webp", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
