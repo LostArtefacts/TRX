@@ -4,7 +4,7 @@
     // Refer to https://github.com/LostArtefacts/TR1X/blob/stable/GAMEFLOW.md
     // for usage.
 
-    "main_menu_picture": "data/images/title.png",
+    "main_menu_picture": "data/images/title.webp",
     "savegame_fmt_legacy": "saveati.%d",
     "savegame_fmt_bson": "save_tr1_%02d.dat",
     "force_game_modes": null,
@@ -40,7 +40,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/gym.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/gym.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -63,7 +63,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/peru.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -84,7 +84,7 @@
                 "data/vilcabamba_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/peru.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -109,7 +109,7 @@
                 "data/valley_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/peru.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -135,7 +135,7 @@
                 "data/qualopec_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/peru.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -157,7 +157,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/greece_saturn.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/greece_saturn.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -184,7 +184,7 @@
                 "data/colosseum_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/greece.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -207,7 +207,7 @@
                 "data/midas_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/greece.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -232,7 +232,7 @@
                 "data/cistern_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/greece.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -261,7 +261,7 @@
                 {"enemy_num": 82, "object_ids": [86, 144, 129]},
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/greece.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -287,7 +287,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/vision.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/egypt.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/egypt.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -310,7 +310,7 @@
                 "data/obelisk_itemrots.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/egypt.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/egypt.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -338,7 +338,7 @@
                 "data/sanctuary_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/egypt.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/egypt.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
@@ -373,7 +373,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/canyon.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/atlantis.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/atlantis.webp", "display_time": 5},
                 {"type": "remove_guns"},
                 {"type": "remove_scions"},
                 {"type": "start_game"},
@@ -400,7 +400,7 @@
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
-                {"type": "loading_screen", "picture_path": "data/images/atlantis.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/atlantis.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "give_item", "object_id": 84, "quantity": 1},
                 {"type": "setup_bacon_lara", "anchor_room": 10},
@@ -424,18 +424,18 @@
                 "data/pyramid_textures.bin",
             ],
             "sequence": [
-                {"type": "loading_screen", "picture_path": "data/images/atlantis.png", "display_time": 5},
+                {"type": "loading_screen", "picture_path": "data/images/atlantis.webp", "display_time": 5},
                 {"type": "start_game"},
                 {"type": "loop_game"},
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 15},
                 {"type": "play_fmv", "fmv_path": "fmv/end.avi"},
                 {"type": "play_synced_audio", "audio_id": 19},
-                {"type": "display_picture", "picture_path": "data/images/end.png", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_1.png", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_2.png", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_3.png", "display_time": 7.5},
-                {"type": "total_stats", "picture_path": "data/images/install.png"},
+                {"type": "display_picture", "picture_path": "data/images/end.webp", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_1.webp", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_2.webp", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_3.webp", "display_time": 7.5},
+                {"type": "total_stats", "picture_path": "data/images/install.webp"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
@@ -547,7 +547,7 @@
             "music": 2,
             "inherit_injections": false,
             "sequence": [
-                {"type": "display_picture", "picture_path": "data/images/eidos.png", "display_time": 1},
+                {"type": "display_picture", "picture_path": "data/images/eidos.webp", "display_time": 1},
                 {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
                 {"type": "play_fmv", "fmv_path": "fmv/escape.avi"},
                 {"type": "play_fmv", "fmv_path": "fmv/cafe.avi"},

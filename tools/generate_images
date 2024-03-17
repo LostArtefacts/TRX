@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+import argparse
+from pathlib import Path
+from subprocess import check_call
+
+TOOLS_DIR = Path(__file__).parent
+REPO_DIR = TOOLS_DIR.parent
+SOURCE_DIR = TOOLS_DIR / "resources/images"
+TARGET_DIR = REPO_DIR / "bin/data/images"
+
+
+def format_size(size: int) -> str:
+    return f"{size/1024/1024:.02f} MB"
+
+
+def print_size_change(source_size: int, target_size: int) -> None:
+    print(
+        f"{format_size(source_size)} → {format_size(target_size)}"
+        f" ({target_size/source_size:.02%})",
+    )
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("quality", type=int, default=100, nargs="?")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+
+    TARGET_DIR.mkdir(parents=True, exist_ok=True)
+
+    total_source_size = 0
+    total_target_size = 0
+
+    for source_path in SOURCE_DIR.rglob("*.png"):
+        target_path = TARGET_DIR / f"{source_path.stem}.webp"
+
+        print(
+            f"Converting {source_path.relative_to(SOURCE_DIR)} "
+            f"to {target_path.relative_to(TARGET_DIR)}..."
+        )
+        check_call(
+            [
+                "convert",
+                str(source_path),
+                "-quality",
+                str(args.quality),
+                str(target_path),
+            ]
+        )
+
+        source_size = source_path.stat().st_size
+        target_size = target_path.stat().st_size
+        total_source_size += source_size
+        total_target_size += target_size
+        print_size_change(source_size, target_size)
+
+    print()
+    print("Total:")
+    print_size_change(total_source_size, total_target_size)
+
+
+if __name__ == "__main__":
+    main()
