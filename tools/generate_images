@@ -13,16 +13,17 @@ def format_size(size: int) -> str:
     return f"{size/1024/1024:.02f} MB"
 
 
-def print_size_change(source_size: int, target_size: int) -> None:
-    print(
+def format_size_change(source_size: int, target_size: int) -> str:
+    return (
         f"{format_size(source_size)} → {format_size(target_size)}"
-        f" ({target_size/source_size:.02%})",
+        f" ({target_size/source_size:.02%})"
     )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("quality", type=int, default=100, nargs="?")
+    parser.add_argument("-f", "--force", action="store_true")
     return parser.parse_args()
 
 
@@ -41,6 +42,11 @@ def main() -> None:
             f"Converting {source_path.relative_to(SOURCE_DIR)} "
             f"to {target_path.relative_to(TARGET_DIR)}..."
         )
+
+        if target_path.exists() and not args.force:
+            print("    target already exists, skipping")
+            continue
+
         check_call(
             [
                 "convert",
@@ -55,11 +61,11 @@ def main() -> None:
         target_size = target_path.stat().st_size
         total_source_size += source_size
         total_target_size += target_size
-        print_size_change(source_size, target_size)
+        print("    " + format_size_change(source_size, target_size))
 
     print()
     print("Total:")
-    print_size_change(total_source_size, total_target_size)
+    print("    " + format_size_change(total_source_size, total_target_size))
 
 
 if __name__ == "__main__":
