@@ -197,8 +197,8 @@
       "Description": "Habilita el logo de EIDOS al comienzo del juego."
     },
     "enable_loading_screens": {
-      "Title": "Enable loading screens",
-      "Description": "Enables PS1 style loading screens before each level."
+      "Title": "Habilitar pantallas de carga",
+      "Description": "Habilita las pantallas de carga con el estilo de PS1 antes de cada nivel."
     },
     "enable_jump_twists": {
       "Title": "Giros al saltar",
