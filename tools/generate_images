@@ -22,9 +22,22 @@ def format_size_change(source_size: int, target_size: int) -> str:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("quality", type=int, default=100, nargs="?")
-    parser.add_argument("-f", "--force", action="store_true")
+    parser = argparse.ArgumentParser(
+        description="Converts image assets to WEBP format for better file sizes"
+    )
+    parser.add_argument(
+        "quality",
+        type=int,
+        default=100,
+        nargs="?",
+        help="output quality (100 for lossless)",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="force overwrite existing files",
+    )
     return parser.parse_args()
 
 
