@@ -14,9 +14,10 @@ def format_size(size: int) -> str:
 
 
 def format_size_change(source_size: int, target_size: int) -> str:
+    ratio = target_size / source_size if target_size > 0 else 1.0
     return (
         f"{format_size(source_size)} → {format_size(target_size)}"
-        f" ({target_size/source_size:.02%})"
+        f" ({ratio:.02%})"
     )
 
 
