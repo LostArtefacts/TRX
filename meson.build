@@ -15,6 +15,12 @@ build_opts = [
 add_project_arguments(build_opts, language: 'c')
 
 staticdeps = get_option('staticdeps')
+
+# Always dynamically link on macOS
+if host_machine.system() == 'darwin'
+  staticdeps = false
+endif
+
 null_dep = dependency('', required: false)
 
 if host_machine.system() == 'windows'
@@ -327,4 +333,14 @@ executable(
   dependencies: dependencies,
   link_args: link_args,
   gui_app: true,
+  install: true,
 )
+
+if host_machine.system() == 'darwin'
+  install_subdir('bin/cfg', install_dir : 'Contents/Resources')
+  install_subdir('bin/data', install_dir : 'Contents/Resources')
+  install_subdir('bin/shaders', install_dir : 'Contents/Resources')
+  install_data('tools/mac/resources/icon.icns', install_dir : 'Contents/Resources')
+  install_data('tools/mac/resources/Info.plist', install_dir : 'Contents')
+  meson.add_install_script('tools/mac/build/bundle_dylibs')
+endif
