@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import subprocess
+from pathlib import Path
+
+# Configuration
+APP_NAME = "TR1X"
+APP_BUNDLE_PATH = Path(f"/tmp/{APP_NAME}.app")
+DMG_NAME = Path(f"{APP_NAME}-Installer.dmg")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=f"Create a DMG installer for {APP_NAME}."
+    )
+    return parser.parse_args()
+
+
+def create_dmg(app_name: str, dmg_name: str, app_bundle_path: Path) -> None:
+    subprocess.run(
+        (
+            "create-dmg",
+            "--volname",
+            f"{APP_NAME} Installer",
+            "--volicon",
+            "../tools/mac/resources/icon.icns",
+            "--window-pos",
+            "200",
+            "120",
+            "--window-size",
+            "800",
+            "400",
+            "--icon-size",
+            "100",
+            "--icon",
+            f"{APP_NAME}.app",
+            "200",
+            "190",
+            "--hide-extension",
+            f"{APP_NAME}.app",
+            "--app-drop-link",
+            "600",
+            "185",
+            str(dmg_name),
+            str(app_bundle_path),
+        )
+    )
+
+
+def main() -> None:
+    args = parse_args()
+
+    if DMG_NAME.is_file():
+        DMG_NAME.unlink()
+
+    create_dmg(APP_NAME, DMG_NAME, APP_BUNDLE_PATH)
+
+
+if __name__ == "__main__":
+    main()
