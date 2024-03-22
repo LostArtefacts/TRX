@@ -583,6 +583,24 @@ default gameflow for examples.
     <td>Double</td>
   </tr>
   <tr valign="top">
+    <td rowspan="2">
+      <code>loading_screen</code>
+    </td>
+    <td>
+      <code>picture_path</code>
+    </td>
+    <td>String</td>
+    <td rowspan="2">
+      Displays the specified picture for the given number of seconds. Functions identically to display_picture except these pictures can be enabled/disabled by the user with the loading screen option in the config tool.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>display_time</code>
+    </td>
+    <td>Double</td>
+  </tr>
+  <tr valign="top">
     <td>
       <code>exit_to_cine</code>
     </td>

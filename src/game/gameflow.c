@@ -426,8 +426,14 @@ static bool GameFlow_LoadLevelSequence(
             }
             seq->data = Memory_DupStr(tmp_s);
 
-        } else if (!strcmp(type_str, "display_picture")) {
-            seq->type = GFS_DISPLAY_PICTURE;
+        } else if (
+            !strcmp(type_str, "display_picture")
+            || !strcmp(type_str, "loading_screen")) {
+            if (!strcmp(type_str, "loading_screen")) {
+                seq->type = GFS_LOADING_SCREEN;
+            } else {
+                seq->type = GFS_DISPLAY_PICTURE;
+            }
 
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
@@ -1113,6 +1119,7 @@ void GameFlow_Shutdown(void)
             if (seq) {
                 while (seq->type != GFS_END) {
                     switch (seq->type) {
+                    case GFS_LOADING_SCREEN:
                     case GFS_DISPLAY_PICTURE:
                     case GFS_TOTAL_STATS: {
                         GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
@@ -1326,7 +1333,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             }
             break;
 
+        case GFS_LOADING_SCREEN:
         case GFS_DISPLAY_PICTURE:
+            if (seq->type == GFS_LOADING_SCREEN
+                && !g_Config.enable_loading_screens) {
+                break;
+            }
+
             if (level_type == GFL_SAVED) {
                 break;
             }
@@ -1482,6 +1495,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_STOP_GAME:
         case GFS_LEVEL_STATS:
         case GFS_TOTAL_STATS:
+        case GFS_LOADING_SCREEN:
         case GFS_DISPLAY_PICTURE:
         case GFS_GIVE_ITEM:
         case GFS_REMOVE_GUNS:

@@ -135,6 +135,7 @@ typedef struct {
     bool enable_lean_jumping;
     bool enable_target_change;
     TARGET_LOCK_MODE target_mode;
+    bool enable_loading_screens;
 
     struct {
         int32_t layout;

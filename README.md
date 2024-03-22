@@ -234,6 +234,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added enemy health bars
 - added PS1 style UI
 - added fade effects to displayed images
+- added an option to use PS1 loading screens
 - improved support for windowed mode
 
 #### Gameplay
@@ -483,4 +484,5 @@ This project is licensed under the GNU General Public License - see the
 
 (c) 2021 Marcin Kurczewski. All rights reserved. Original game is created by
 Core Design Ltd. in 1996. Lara Croft and Tomb Raider are trademarks of Square
-Enix Ltd. Title image by Kidd Bowyer.
+Enix Ltd. Title image by Kidd Bowyer. Loading screens and high quality images
+by goblan_oldnewpixel and Posix.
