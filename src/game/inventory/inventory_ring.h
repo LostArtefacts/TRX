@@ -7,12 +7,11 @@
 void Inv_Ring_Init(
     RING_INFO *ring, int16_t type, INVENTORY_ITEM **list, int16_t qty,
     int16_t current, IMOTION_INFO *imo);
-void Inv_Ring_Shutdown(void);
 
-void Inv_Ring_IsOpen(RING_INFO *ring);
-void Inv_Ring_IsNotOpen(RING_INFO *ring);
+void Inv_Ring_InitHeader(RING_INFO *ring);
+void Inv_Ring_RemoveHeader(RING_INFO *ring);
+void Inv_Ring_RemoveAlText(void);
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item);
-void Inv_Ring_NotActive(void);
 
 void Inv_Ring_GetView(RING_INFO *ring, XYZ_32 *view_pos, XYZ_16 *view_rot);
 void Inv_Ring_Light(RING_INFO *ring);
