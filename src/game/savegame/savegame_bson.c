@@ -28,6 +28,7 @@
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
+#pragma pack(push, 1)
 typedef struct SAVEGAME_BSON_HEADER {
     uint32_t magic;
     int16_t initial_version;
@@ -35,6 +36,7 @@ typedef struct SAVEGAME_BSON_HEADER {
     int32_t compressed_size;
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
+#pragma pack(pop)
 
 typedef struct SAVEGAME_BSON_FX_ORDER {
     int16_t count;

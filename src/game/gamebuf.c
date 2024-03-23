@@ -5,7 +5,7 @@
 
 #include <stddef.h>
 
-#define MALLOC_SIZE 0x1000000 // 16 MB
+#define MALLOC_SIZE 0x8000000 // 128 MB
 
 static char *m_GameMemoryPointer = NULL;
 static char *m_GameAllocMemPointer = NULL;

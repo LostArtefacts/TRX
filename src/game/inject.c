@@ -383,7 +383,11 @@ static void Inject_LoadTexturePages(
 
     palette_map[0] = 0;
     RGB_888 source_palette[256];
-    File_Read(source_palette, sizeof(RGB_888), 256, fp);
+    for (int32_t i = 0; i < 256; i++) {
+        File_Read(&source_palette[i].r, sizeof(uint8_t), 1, fp);
+        File_Read(&source_palette[i].g, sizeof(uint8_t), 1, fp);
+        File_Read(&source_palette[i].b, sizeof(uint8_t), 1, fp);
+    }
     for (int i = 1; i < 256; i++) {
         source_palette[i].r *= 4;
         source_palette[i].g *= 4;
@@ -408,17 +412,28 @@ static void Inject_TextureData(
     MYFILE *fp = injection->fp;
 
     // Read the tex_infos and align them to the end of the page list.
-    File_Read(
-        g_PhdTextureInfo + level_info->texture_count, sizeof(PHD_TEXTURE),
-        inj_info->texture_count, fp);
-    for (int i = 0; i < inj_info->texture_count; i++) {
+    for (int32_t i = 0; i < inj_info->texture_count; i++) {
+        PHD_TEXTURE *texture = &g_PhdTextureInfo[level_info->texture_count + i];
+        File_Read(&texture->drawtype, sizeof(uint16_t), 1, fp);
+        File_Read(&texture->tpage, sizeof(uint16_t), 1, fp);
+        for (int32_t j = 0; j < 4; j++) {
+            File_Read(&texture->uv[j].u, sizeof(uint16_t), 1, fp);
+            File_Read(&texture->uv[j].v, sizeof(uint16_t), 1, fp);
+        }
         g_PhdTextureInfo[level_info->texture_count + i].tpage += page_base;
     }
 
-    File_Read(
-        g_PhdSpriteInfo + level_info->sprite_info_count, sizeof(PHD_SPRITE),
-        inj_info->sprite_info_count, fp);
-    for (int i = 0; i < inj_info->sprite_info_count; i++) {
+    for (int32_t i = 0; i < inj_info->sprite_info_count; i++) {
+        PHD_SPRITE *sprite =
+            &g_PhdSpriteInfo[level_info->sprite_info_count + i];
+        File_Read(&sprite->tpage, sizeof(uint16_t), 1, fp);
+        File_Read(&sprite->offset, sizeof(uint16_t), 1, fp);
+        File_Read(&sprite->width, sizeof(uint16_t), 1, fp);
+        File_Read(&sprite->height, sizeof(uint16_t), 1, fp);
+        File_Read(&sprite->x1, sizeof(int16_t), 1, fp);
+        File_Read(&sprite->y1, sizeof(int16_t), 1, fp);
+        File_Read(&sprite->x2, sizeof(int16_t), 1, fp);
+        File_Read(&sprite->y2, sizeof(int16_t), 1, fp);
         g_PhdSpriteInfo[level_info->sprite_info_count + i].tpage += page_base;
     }
 
@@ -471,12 +486,21 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
-    File_Read(
-        g_AnimChanges + level_info->anim_change_count,
-        sizeof(ANIM_CHANGE_STRUCT), inj_info->anim_change_count, fp);
-    File_Read(
-        g_AnimRanges + level_info->anim_range_count, sizeof(ANIM_RANGE_STRUCT),
-        inj_info->anim_range_count, fp);
+    for (int32_t i = 0; i < inj_info->anim_change_count; i++) {
+        ANIM_CHANGE_STRUCT *anim_change =
+            &g_AnimChanges[level_info->anim_change_count + i];
+        File_Read(&anim_change->goal_anim_state, sizeof(int16_t), 1, fp);
+        File_Read(&anim_change->number_ranges, sizeof(int16_t), 1, fp);
+        File_Read(&anim_change->range_index, sizeof(int16_t), 1, fp);
+    }
+    for (int32_t i = 0; i < inj_info->anim_range_count; i++) {
+        ANIM_RANGE_STRUCT *anim_range =
+            &g_AnimRanges[level_info->anim_range_count + i];
+        File_Read(&anim_range->start_frame, sizeof(int16_t), 1, fp);
+        File_Read(&anim_range->end_frame, sizeof(int16_t), 1, fp);
+        File_Read(&anim_range->link_anim_num, sizeof(int16_t), 1, fp);
+        File_Read(&anim_range->link_frame_num, sizeof(int16_t), 1, fp);
+    }
     File_Read(
         g_AnimCommands + level_info->anim_command_count, sizeof(int16_t),
         inj_info->anim_cmd_count, fp);
@@ -776,9 +800,13 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
         File_Read(&mesh_edit->vertex_edit_count, sizeof(int32_t), 1, fp);
         mesh_edit->vertex_edits =
             Memory_Alloc(sizeof(VERTEX_EDIT) * mesh_edit->vertex_edit_count);
-        File_Read(
-            mesh_edit->vertex_edits, sizeof(VERTEX_EDIT),
-            mesh_edit->vertex_edit_count, fp);
+        for (int32_t i = 0; i < mesh_edit->vertex_edit_count; i++) {
+            VERTEX_EDIT *vertex_edit = &mesh_edit->vertex_edits[i];
+            File_Read(&vertex_edit->vertex_index, sizeof(int16_t), 1, fp);
+            File_Read(&vertex_edit->x_change, sizeof(int16_t), 1, fp);
+            File_Read(&vertex_edit->y_change, sizeof(int16_t), 1, fp);
+            File_Read(&vertex_edit->z_change, sizeof(int16_t), 1, fp);
+        }
 
         Inject_ApplyMeshEdit(mesh_edit, palette_map);
 

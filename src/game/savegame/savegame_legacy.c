@@ -23,6 +23,7 @@
 #define SAVEGAME_LEGACY_TITLE_SIZE 75
 #define SAVEGAME_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
 
+#pragma pack(push, 1)
 typedef struct SAVEGAME_LEGACY_ITEM_STATS {
     uint8_t num_pickup1;
     uint8_t num_pickup2;
@@ -37,6 +38,7 @@ typedef struct SAVEGAME_LEGACY_ITEM_STATS {
     uint8_t num_leadbar;
     uint8_t dummy;
 } SAVEGAME_LEGACY_ITEM_STATS;
+#pragma pack(pop)
 
 static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
@@ -131,8 +133,12 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
         ITEM_INFO tmp_item;
 
         if (obj->save_position) {
-            Savegame_Legacy_Read(&tmp_item.pos, sizeof(XYZ_32));
-            Savegame_Legacy_Read(&tmp_item.rot, sizeof(XYZ_16));
+            Savegame_Legacy_Read(&tmp_item.pos.x, sizeof(int32_t));
+            Savegame_Legacy_Read(&tmp_item.pos.y, sizeof(int32_t));
+            Savegame_Legacy_Read(&tmp_item.pos.z, sizeof(int32_t));
+            Savegame_Legacy_Read(&tmp_item.rot.x, sizeof(int16_t));
+            Savegame_Legacy_Read(&tmp_item.rot.y, sizeof(int16_t));
+            Savegame_Legacy_Read(&tmp_item.rot.z, sizeof(int16_t));
             Savegame_Legacy_Skip(sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.speed, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.fall_speed, sizeof(int16_t));
@@ -249,10 +255,18 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
 
     Savegame_Legacy_WriteArm(&lara->left_arm);
     Savegame_Legacy_WriteArm(&lara->right_arm);
-    Savegame_Legacy_Write(&lara->pistols, sizeof(AMMO_INFO));
-    Savegame_Legacy_Write(&lara->magnums, sizeof(AMMO_INFO));
-    Savegame_Legacy_Write(&lara->uzis, sizeof(AMMO_INFO));
-    Savegame_Legacy_Write(&lara->shotgun, sizeof(AMMO_INFO));
+    Savegame_Legacy_Write(&lara->pistols.ammo, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->pistols.hit, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->pistols.miss, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->magnums.ammo, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->magnums.hit, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->magnums.miss, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->uzis.ammo, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->uzis.hit, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->uzis.miss, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->shotgun.ammo, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->shotgun.hit, sizeof(int32_t));
+    Savegame_Legacy_Write(&lara->shotgun.miss, sizeof(int32_t));
     Savegame_Legacy_WriteLOT(&lara->LOT);
 }
 
@@ -283,7 +297,9 @@ static void Savegame_Legacy_WriteLOT(LOT_INFO *lot)
     Savegame_Legacy_Write(&lot->zone_count, sizeof(int16_t));
     Savegame_Legacy_Write(&lot->target_box, sizeof(int16_t));
     Savegame_Legacy_Write(&lot->required_box, sizeof(int16_t));
-    Savegame_Legacy_Write(&lot->target, sizeof(XYZ_32));
+    Savegame_Legacy_Write(&lot->target.x, sizeof(int32_t));
+    Savegame_Legacy_Write(&lot->target.y, sizeof(int32_t));
+    Savegame_Legacy_Write(&lot->target.z, sizeof(int32_t));
 }
 
 static void Savegame_Legacy_Read(void *pointer, int size)
@@ -314,7 +330,7 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
     Savegame_Legacy_Read(&lara->spaz_effect_count, sizeof(int16_t));
 
     lara->spaz_effect = NULL;
-    Savegame_Legacy_Skip(sizeof(FX_INFO *));
+    Savegame_Legacy_Skip(4); // pointer to FX_INFO
 
     Savegame_Legacy_Read(&lara->mesh_effects, sizeof(int32_t));
     for (int i = 0; i < LM_NUMBER_OF; i++) {
@@ -324,7 +340,7 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
     }
 
     lara->target = NULL;
-    Savegame_Legacy_Skip(sizeof(ITEM_INFO *));
+    Savegame_Legacy_Skip(4); // pointer to ITEM_INFO
 
     Savegame_Legacy_Read(&lara->target_angles[0], sizeof(PHD_ANGLE));
     Savegame_Legacy_Read(&lara->target_angles[1], sizeof(PHD_ANGLE));
@@ -339,10 +355,18 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
 
     Savegame_Legacy_ReadArm(&lara->left_arm);
     Savegame_Legacy_ReadArm(&lara->right_arm);
-    Savegame_Legacy_Read(&lara->pistols, sizeof(AMMO_INFO));
-    Savegame_Legacy_Read(&lara->magnums, sizeof(AMMO_INFO));
-    Savegame_Legacy_Read(&lara->uzis, sizeof(AMMO_INFO));
-    Savegame_Legacy_Read(&lara->shotgun, sizeof(AMMO_INFO));
+    Savegame_Legacy_Read(&lara->pistols.ammo, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->pistols.hit, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->pistols.miss, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->magnums.ammo, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->magnums.hit, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->magnums.miss, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->uzis.ammo, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->uzis.hit, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->uzis.miss, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->shotgun.ammo, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->shotgun.hit, sizeof(int32_t));
+    Savegame_Legacy_Read(&lara->shotgun.miss, sizeof(int32_t));
     Savegame_Legacy_ReadLOT(&lara->LOT);
 }
 
@@ -363,7 +387,7 @@ static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 
 static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
 {
-    Savegame_Legacy_Skip(sizeof(BOX_NODE *));
+    Savegame_Legacy_Skip(4); // pointer to BOX_NODE
 
     Savegame_Legacy_Read(&lot->head, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->tail, sizeof(int16_t));
@@ -375,7 +399,9 @@ static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
     Savegame_Legacy_Read(&lot->zone_count, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->target_box, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->required_box, sizeof(int16_t));
-    Savegame_Legacy_Read(&lot->target, sizeof(XYZ_32));
+    Savegame_Legacy_Read(&lot->target.x, sizeof(int32_t));
+    Savegame_Legacy_Read(&lot->target.y, sizeof(int32_t));
+    Savegame_Legacy_Read(&lot->target.z, sizeof(int32_t));
 }
 
 static void Savegame_Legacy_SetCurrentPosition(int level_num)
@@ -506,7 +532,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     Lara_InitialiseInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
-    Savegame_Legacy_Read(&item_stats, sizeof(item_stats));
+    Savegame_Legacy_Read(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
     Inv_AddItemNTimes(O_PICKUP_ITEM1, item_stats.num_pickup1);
     Inv_AddItemNTimes(O_PICKUP_ITEM2, item_stats.num_pickup2);
     Inv_AddItemNTimes(O_PUZZLE_ITEM1, item_stats.num_puzzle1);
@@ -540,8 +566,12 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->save_position) {
-            Savegame_Legacy_Read(&item->pos, sizeof(XYZ_32));
-            Savegame_Legacy_Read(&item->rot, sizeof(XYZ_16));
+            Savegame_Legacy_Read(&item->pos.x, sizeof(int32_t));
+            Savegame_Legacy_Read(&item->pos.y, sizeof(int32_t));
+            Savegame_Legacy_Read(&item->pos.z, sizeof(int32_t));
+            Savegame_Legacy_Read(&item->rot.x, sizeof(int16_t));
+            Savegame_Legacy_Read(&item->rot.y, sizeof(int16_t));
+            Savegame_Legacy_Read(&item->rot.z, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp16, sizeof(int16_t));
             Savegame_Legacy_Read(&item->speed, sizeof(int16_t));
             Savegame_Legacy_Read(&item->fall_speed, sizeof(int16_t));
@@ -715,8 +745,12 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         OBJECT_INFO *obj = &g_Objects[item->object_number];
 
         if (obj->save_position) {
-            Savegame_Legacy_Write(&item->pos, sizeof(XYZ_32));
-            Savegame_Legacy_Write(&item->rot, sizeof(XYZ_16));
+            Savegame_Legacy_Write(&item->pos.x, sizeof(int32_t));
+            Savegame_Legacy_Write(&item->pos.y, sizeof(int32_t));
+            Savegame_Legacy_Write(&item->pos.z, sizeof(int32_t));
+            Savegame_Legacy_Write(&item->rot.x, sizeof(int16_t));
+            Savegame_Legacy_Write(&item->rot.y, sizeof(int16_t));
+            Savegame_Legacy_Write(&item->rot.z, sizeof(int16_t));
             Savegame_Legacy_Write(&item->room_number, sizeof(int16_t));
             Savegame_Legacy_Write(&item->speed, sizeof(int16_t));
             Savegame_Legacy_Write(&item->fall_speed, sizeof(int16_t));
