@@ -4,9 +4,16 @@ on:
   - workflow_dispatch
 
 jobs:
-  publish_docker_image_win:
-    name: Build Windows Docker toolchain
+  publish_docker_image:
+    name: Build Docker toolchain
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - platform: linux
+            image: rrdash/tr1x
+          - platform: win
+            image: rrdash/tr1x-linux
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -14,34 +21,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          path: .
-          fetch-depth: 0
-
-      - name: Build Docker image (Windows)
-        run: |
-          docker build -t "rrdash/tr1x:latest" . -f docker/game-win/Dockerfile
-          docker push "rrdash/tr1x:latest"
-
-  publish_docker_image_linux:
-    name: Build Linux Docker toolchain
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Install dependencies
+        uses: taiki-e/install-action@just
 
       - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          path: .
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
-      - name: Build Docker image (Linux)
+      - name: Build Docker image (${{ matrix.platform }})
         run: |
-          docker build -t "rrdash/tr1x-linux:latest" . -f docker/game-linux/Dockerfile
-          docker push "rrdash/tr1x-linux:latest"
+          just image-${{ matrix.platform }}
+          just push-image-${{ matrix.platform }}

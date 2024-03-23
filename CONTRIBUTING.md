@@ -27,7 +27,7 @@ Subsequent builds:
 - **Without Docker**:
 
     This scenario is not officially supported, but you can see how it's done by
-    examining `docker/Dockerfile` and `docker/entrypoint.sh` for the external
+    examining the files in the `tools/docker/` directory for the external
     dependencies and `meson.build` for the local files, then tailoring your
     system to match the process.
 

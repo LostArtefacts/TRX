@@ -1,6 +1,6 @@
 <p align="center">
-<img alt="TR1X logo" src="tools/resources/logo-light-theme.png#gh-light-mode-only" width="400"/>
-<img alt="TR1X logo" src="tools/resources/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
+<img alt="TR1X logo" src="data/logo-light-theme.png#gh-light-mode-only" width="400"/>
+<img alt="TR1X logo" src="data/logo-dark-theme.png#gh-dark-mode-only" width="400"/>
 </p>
 
 This is an open source implementation of the classic Tomb Raider I game (1996),

@@ -5,8 +5,9 @@ from subprocess import check_call
 
 TOOLS_DIR = Path(__file__).parent
 REPO_DIR = TOOLS_DIR.parent
-SOURCE_DIR = TOOLS_DIR / "resources/images"
-TARGET_DIR = REPO_DIR / "bin/data/images"
+DATA_DIR = REPO_DIR / 'data'
+SOURCE_DIR = DATA_DIR / "images"
+TARGET_DIR = DATA_DIR / "ship/data/images"
 
 
 def format_size(size: int) -> str:

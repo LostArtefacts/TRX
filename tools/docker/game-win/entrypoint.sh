@@ -3,7 +3,7 @@ set -x
 set -e
 
 if [ ! -f /app/build/win/build.ninja ]; then
-    meson --buildtype "$TARGET" /app/build/win/ --cross /app/docker/game-win/meson_linux_mingw32.txt --pkg-config-path=$PKG_CONFIG_PATH
+    meson --buildtype "$TARGET" /app/build/win/ --cross /app/tools/docker/game-win/meson_linux_mingw32.txt --pkg-config-path=$PKG_CONFIG_PATH
 fi
 
 cd /app/build/win; meson compile
