@@ -126,10 +126,12 @@ GAMEFLOW_OPTION Game_Demo(void)
 
     // changing the controls affects negatively the original game demo data,
     // so temporarily turn off all the TR1X enhancements
-    int8_t old_enhanced_look = g_Config.enable_enhanced_look;
-    int8_t old_tr2_jumping = g_Config.enable_tr2_jumping;
-    g_Config.enable_enhanced_look = 0;
-    g_Config.enable_tr2_jumping = 0;
+    const bool old_enhanced_look = g_Config.enable_enhanced_look;
+    const bool old_tr2_jumping = g_Config.enable_tr2_jumping;
+    const TARGET_LOCK_MODE old_target_mode = g_Config.target_mode;
+    g_Config.enable_enhanced_look = false;
+    g_Config.enable_tr2_jumping = false;
+    g_Config.target_mode = TLM_FULL;
 
     TEXTSTRING *txt =
         Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
@@ -151,6 +153,7 @@ GAMEFLOW_OPTION Game_Demo(void)
     *s = start;
 
 end:
+    g_Config.target_mode = old_target_mode;
     g_Config.enable_enhanced_look = old_enhanced_look;
     g_Config.enable_tr2_jumping = old_tr2_jumping;
     return GF_EXIT_TO_TITLE;
