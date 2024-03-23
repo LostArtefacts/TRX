@@ -103,7 +103,7 @@ void GFX_GL_Program_AttachShader(
         Shell_ExitSystemFmt("Failed to pre-process shader source:  %s", path);
     }
 
-    glShaderSource(shader_id, 1, &processed_content, NULL);
+    glShaderSource(shader_id, 1, (const char *const *)&processed_content, NULL);
 
     GFX_GL_CheckError();
     glCompileShader(shader_id);
