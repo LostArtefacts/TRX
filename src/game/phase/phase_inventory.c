@@ -465,7 +465,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
             return GF_PHASE_CONTINUE;
         }
 
-        Inv_Ring_Shutdown();
+        Inv_Ring_RemoveAlText();
 
         if (m_VersionText) {
             Text_Remove(m_VersionText);
@@ -583,27 +583,6 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
     }
 
     ring->camera.pos.z = ring->radius + CAMERA_2_RING;
-
-    if (motion->status == RNG_OPEN || motion->status == RNG_SELECTING
-        || motion->status == RNG_SELECTED || motion->status == RNG_DESELECTING
-        || motion->status == RNG_DESELECT
-        || motion->status == RNG_CLOSING_ITEM) {
-        if (!ring->rotating && !g_Input.menu_left && !g_Input.menu_right) {
-            INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
-            Inv_Ring_Active(inv_item);
-        }
-        Inv_Ring_IsOpen(ring);
-    } else {
-        Inv_Ring_IsNotOpen(ring);
-    }
-
-    if (!motion->status || motion->status == RNG_CLOSING
-        || motion->status == RNG_MAIN2OPTION
-        || motion->status == RNG_OPTION2MAIN
-        || motion->status == RNG_EXITING_INVENTORY || motion->status == RNG_DONE
-        || ring->rotating) {
-        Inv_Ring_NotActive();
-    }
 
     g_GameInfo.inv_ring_above = g_InvMode == INV_GAME_MODE
         && ((ring->type == RT_MAIN && g_InvKeysObjects)
@@ -973,6 +952,27 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
                 ring, CLOSE_ROTATION, ring->ringpos.rot.y - CLOSE_ROTATION);
         }
         break;
+    }
+
+    if (motion->status == RNG_OPEN || motion->status == RNG_SELECTING
+        || motion->status == RNG_SELECTED || motion->status == RNG_DESELECTING
+        || motion->status == RNG_DESELECT
+        || motion->status == RNG_CLOSING_ITEM) {
+        if (!ring->rotating && !g_Input.menu_left && !g_Input.menu_right) {
+            INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
+            Inv_Ring_Active(inv_item);
+        }
+        Inv_Ring_InitHeader(ring);
+    } else {
+        Inv_Ring_RemoveHeader(ring);
+    }
+
+    if (!motion->status || motion->status == RNG_CLOSING
+        || motion->status == RNG_MAIN2OPTION
+        || motion->status == RNG_OPTION2MAIN
+        || motion->status == RNG_EXITING_INVENTORY || motion->status == RNG_DONE
+        || ring->rotating) {
+        Inv_Ring_RemoveAlText();
     }
 
     return GF_PHASE_CONTINUE;

@@ -75,17 +75,7 @@ void Inv_Ring_Init(
     ring->light.z = 1024;
 }
 
-void Inv_Ring_Shutdown(void)
-{
-    for (int i = 0; i < IT_NUMBER_OF; i++) {
-        if (g_InvItemText[i]) {
-            Text_Remove(g_InvItemText[i]);
-            g_InvItemText[i] = NULL;
-        }
-    }
-}
-
-void Inv_Ring_IsOpen(RING_INFO *ring)
+void Inv_Ring_InitHeader(RING_INFO *ring)
 {
     if (g_InvMode == INV_TITLE_MODE) {
         return;
@@ -141,7 +131,7 @@ void Inv_Ring_IsOpen(RING_INFO *ring)
     }
 }
 
-void Inv_Ring_IsNotOpen(RING_INFO *ring)
+void Inv_Ring_RemoveHeader(RING_INFO *ring)
 {
     if (!g_InvRingText) {
         return;
@@ -161,6 +151,16 @@ void Inv_Ring_IsNotOpen(RING_INFO *ring)
         Text_Remove(m_InvDownArrow2);
         m_InvDownArrow1 = NULL;
         m_InvDownArrow2 = NULL;
+    }
+}
+
+void Inv_Ring_RemoveAlText(void)
+{
+    for (int i = 0; i < IT_NUMBER_OF; i++) {
+        if (g_InvItemText[i]) {
+            Text_Remove(g_InvItemText[i]);
+            g_InvItemText[i] = NULL;
+        }
     }
 }
 
@@ -306,11 +306,6 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
         Text_Hide(m_InvDownArrow2, false);
         g_GameInfo.inv_showing_medpack = false;
     }
-}
-
-void Inv_Ring_NotActive(void)
-{
-    Inv_Ring_Shutdown();
 }
 
 void Inv_Ring_GetView(RING_INFO *ring, XYZ_32 *view_pos, XYZ_16 *view_rot)
