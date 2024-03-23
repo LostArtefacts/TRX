@@ -52,10 +52,10 @@ IMOTION_INFO m_Motion;
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion);
 static void Inv_Construct(void);
+static GAMEFLOW_OPTION Inv_Close(void);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item);
-static int32_t Inv_ConstructAndDisplay(int inv_mode);
 
 static void Phase_Inventory_Start(void *arg);
 static void Phase_Inventory_End(void);
@@ -158,6 +158,104 @@ static void Inv_Construct(void)
 
     if (g_GameFlow.gym_level_num == -1) {
         Inv_RemoveItem(O_PHOTO_OPTION);
+    }
+}
+
+static GAMEFLOW_OPTION Inv_Close(void)
+{
+    // finish fading
+    if (g_InvMode == INV_TITLE_MODE) {
+        Output_FadeToBlack(true);
+    }
+
+    if (Output_FadeIsAnimating()) {
+        return GF_PHASE_CONTINUE;
+    }
+
+    Inv_Ring_RemoveAlText();
+
+    if (m_VersionText) {
+        Text_Remove(m_VersionText);
+        m_VersionText = NULL;
+    }
+
+    if (m_StartLevel != -1) {
+        return GF_SELECT_GAME | m_StartLevel;
+    }
+
+    if (m_StartDemo) {
+        m_NoInputCount = 0;
+        return GF_START_DEMO;
+    }
+
+    switch (g_InvChosen) {
+    case O_PASSPORT_OPTION:
+
+        switch (g_GameInfo.passport_selection) {
+        case PASSPORT_MODE_LOAD_GAME:
+            return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
+        case PASSPORT_MODE_SELECT_LEVEL:
+            return GF_SELECT_GAME | g_GameInfo.select_level_num;
+        case PASSPORT_MODE_STORY_SO_FAR:
+            return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
+        case PASSPORT_MODE_NEW_GAME:
+            Savegame_InitCurrentInfo();
+            return GF_START_GAME | g_GameFlow.first_level_num;
+        case PASSPORT_MODE_SAVE_GAME:
+            Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
+            Config_Write();
+            Music_Unpause();
+            Sound_UnpauseAll();
+            Phase_Set(PHASE_GAME, 0);
+            return GF_PHASE_CONTINUE;
+        case PASSPORT_MODE_RESTART:
+            return GF_RESTART_GAME | g_CurrentLevel;
+        case PASSPORT_MODE_EXIT_TITLE:
+            return GF_EXIT_TO_TITLE;
+        case PASSPORT_MODE_EXIT_GAME:
+            return GF_EXIT_GAME;
+        case PASSPORT_MODE_BROWSE:
+        case PASSPORT_MODE_UNAVAILABLE:
+        default:
+            return GF_EXIT_TO_TITLE;
+        }
+
+    case O_PHOTO_OPTION:
+        g_GameInfo.current_save_slot = -1;
+        return GF_START_GYM | g_GameFlow.gym_level_num;
+
+    case O_GUN_OPTION:
+        Lara_UseItem(O_GUN_OPTION);
+        break;
+
+    case O_SHOTGUN_OPTION:
+        Lara_UseItem(O_SHOTGUN_OPTION);
+        break;
+
+    case O_MAGNUM_OPTION:
+        Lara_UseItem(O_MAGNUM_OPTION);
+        break;
+
+    case O_UZI_OPTION:
+        Lara_UseItem(O_UZI_OPTION);
+        break;
+
+    case O_MEDI_OPTION:
+        Lara_UseItem(O_MEDI_OPTION);
+        break;
+
+    case O_BIGMEDI_OPTION:
+        Lara_UseItem(O_BIGMEDI_OPTION);
+        break;
+    }
+
+    if (g_InvMode == INV_TITLE_MODE) {
+        return GF_PHASE_BREAK;
+    } else {
+        Music_Unpause();
+        Sound_UnpauseAll();
+        Phase_Set(PHASE_GAME, 0);
+        return GF_PHASE_CONTINUE;
     }
 }
 
@@ -456,102 +554,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
     }
 
     if (motion->status == RNG_DONE) {
-        // finish fading
-        if (g_InvMode == INV_TITLE_MODE) {
-            Output_FadeToBlack(true);
-        }
-
-        if (Output_FadeIsAnimating()) {
-            return GF_PHASE_CONTINUE;
-        }
-
-        Inv_Ring_RemoveAlText();
-
-        if (m_VersionText) {
-            Text_Remove(m_VersionText);
-            m_VersionText = NULL;
-        }
-
-        if (!g_Config.enable_music_in_inventory
-            && g_InvMode != INV_TITLE_MODE) {
-            Music_Unpause();
-            Sound_UnpauseAll();
-        }
-
-        if (m_StartLevel != -1) {
-            return GF_SELECT_GAME | m_StartLevel;
-        }
-
-        if (m_StartDemo) {
-            m_NoInputCount = 0;
-            return GF_START_DEMO;
-        }
-
-        switch (g_InvChosen) {
-        case O_PASSPORT_OPTION:
-
-            switch (g_GameInfo.passport_selection) {
-            case PASSPORT_MODE_LOAD_GAME:
-                return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
-            case PASSPORT_MODE_SELECT_LEVEL:
-                return GF_SELECT_GAME | g_GameInfo.select_level_num;
-            case PASSPORT_MODE_STORY_SO_FAR:
-                return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
-            case PASSPORT_MODE_NEW_GAME:
-                Savegame_InitCurrentInfo();
-                return GF_START_GAME | g_GameFlow.first_level_num;
-            case PASSPORT_MODE_SAVE_GAME:
-                Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
-                Config_Write();
-                Phase_Set(PHASE_GAME, 0);
-                return GF_PHASE_CONTINUE;
-            case PASSPORT_MODE_RESTART:
-                return GF_RESTART_GAME | g_CurrentLevel;
-            case PASSPORT_MODE_EXIT_TITLE:
-                return GF_EXIT_TO_TITLE;
-            case PASSPORT_MODE_EXIT_GAME:
-                return GF_EXIT_GAME;
-            case PASSPORT_MODE_BROWSE:
-            case PASSPORT_MODE_UNAVAILABLE:
-            default:
-                return GF_EXIT_TO_TITLE;
-            }
-
-        case O_PHOTO_OPTION:
-            g_GameInfo.current_save_slot = -1;
-            return GF_START_GYM | g_GameFlow.gym_level_num;
-
-        case O_GUN_OPTION:
-            Lara_UseItem(O_GUN_OPTION);
-            break;
-
-        case O_SHOTGUN_OPTION:
-            Lara_UseItem(O_SHOTGUN_OPTION);
-            break;
-
-        case O_MAGNUM_OPTION:
-            Lara_UseItem(O_MAGNUM_OPTION);
-            break;
-
-        case O_UZI_OPTION:
-            Lara_UseItem(O_UZI_OPTION);
-            break;
-
-        case O_MEDI_OPTION:
-            Lara_UseItem(O_MEDI_OPTION);
-            break;
-
-        case O_BIGMEDI_OPTION:
-            Lara_UseItem(O_BIGMEDI_OPTION);
-            break;
-        }
-
-        if (g_InvMode == INV_TITLE_MODE) {
-            return GF_PHASE_BREAK;
-        } else {
-            Phase_Set(PHASE_GAME, 0);
-            return GF_PHASE_CONTINUE;
-        }
+        return Inv_Close();
     }
 
     Inv_Ring_CalcAdders(ring, ROTATE_DURATION);
