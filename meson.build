@@ -337,10 +337,10 @@ executable(
 )
 
 if host_machine.system() == 'darwin'
-  install_subdir('bin/cfg', install_dir : 'Contents/Resources')
-  install_subdir('bin/data', install_dir : 'Contents/Resources')
-  install_subdir('bin/shaders', install_dir : 'Contents/Resources')
-  install_data('tools/mac/resources/icon.icns', install_dir : 'Contents/Resources')
-  install_data('tools/mac/resources/Info.plist', install_dir : 'Contents')
-  meson.add_install_script('tools/mac/build/bundle_dylibs')
+  install_subdir('data/ship/cfg', install_dir : 'Contents/Resources')
+  install_subdir('data/ship/data', install_dir : 'Contents/Resources')
+  install_subdir('data/ship/shaders', install_dir : 'Contents/Resources')
+  install_data('data/mac/icon.icns', install_dir : 'Contents/Resources')
+  install_data('data/mac/Info.plist', install_dir : 'Contents')
+  meson.add_install_script('tools/mac/bundle_dylibs')
 endif

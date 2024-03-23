@@ -6,8 +6,10 @@ TR1X.log
 # Docker builds garbage
 /build
 /.secrets
+/.local
 /workflow
 /TR1X*.zip
+/TR1X*.exe
 
 # VS garbage
 v15/

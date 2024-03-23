@@ -11,15 +11,26 @@ def parse_args() -> argparse.Namespace:
 
 
 def generate_version() -> str:
-    cmd = ["git", "describe", "--abbrev=7", "--tags"]
-    version = run(cmd, capture_output=True, text=True).stdout
+    cmd = [
+        "git",
+        "describe",
+        "--always",
+        "--abbrev=7",
+        "--tags",
+        "--exclude",
+        "latest",
+    ]
+    version = run(cmd, capture_output=True, text=True).stdout.strip()
     return f'TR1X {version or "?"}'
 
 
 def main() -> None:
     args = parse_args()
     version = generate_version()
-    args.output.write_text(version)
+    if args.output:
+        args.output.write_text(version)
+    else:
+        print(version, end="")
 
 
 if __name__ == "__main__":

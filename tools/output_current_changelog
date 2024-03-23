@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+import re
+from pathlib import Path
+
+TOOLS_DIR = Path(__file__).parent
+ROOT_DIR = TOOLS_DIR.parent
+CHANGELOG_PATH = ROOT_DIR / "CHANGELOG.md"
+
+
+def get_current_changelog() -> str:
+    sections = [
+        section
+        for section in CHANGELOG_PATH.read_text().split("\n\n")
+        if re.search(r"- \w", section)
+    ]
+    if sections:
+        section = sections[0]
+        return "\n".join(
+            line for line in section.splitlines() if not line.startswith("#")
+        )
+
+
+def main() -> None:
+    print(get_current_changelog())
+
+
+if __name__ == "__main__":
+    main()

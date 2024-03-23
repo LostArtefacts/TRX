@@ -1,12 +1,28 @@
 name: Build macOS app bundle and .dmg installer image
 
 on:
-  - workflow_dispatch
+  - workflow_call
 
 jobs:
   build:
     runs-on: macos-14
     steps:
+      - name: Set up signing certificate
+        env:
+          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
+          security list-keychain -d user -s $KEYCHAIN_PATH
+          security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
+
       - name: Select latest stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -153,6 +169,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-tags: true
 
       - name: Build arm64 and create app bundle
         run: |
@@ -164,7 +182,7 @@ jobs:
       - name: Build x86-64
         run: |
           BUILD_DIR=build-x86-64
-          BUILD_OPTIONS="--prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/mac/build/x86-64_cross_file.txt"
+          BUILD_OPTIONS="--prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/mac/x86-64_cross_file.txt"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson compile -C $BUILD_DIR
 
@@ -177,23 +195,7 @@ jobs:
           mv $BUNDLE_EXEC_DIR/TR1X_universal $BUNDLE_EXEC_DIR/TR1X
 
           # Update dynamic library links in the fused executable.
-          ./tools/mac/build/bundle_dylibs --links-only
-
-      - name: Set up signing certificate
-        env:
-          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
-          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
-          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
-          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
+          ./tools/mac/bundle_dylibs --links-only
 
       - name: Sign app bundle
         run: |
@@ -210,17 +212,17 @@ jobs:
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
-          mkdir installer
-          cd installer
-          ../tools/mac/build/create_installer
+          tools/mac/create_installer
           xattr -cr TR1X-Installer.dmg
           /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v TR1X-Installer.dmg
           xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" TR1X-Installer.dmg
           xcrun stapler staple -v TR1X-Installer.dmg
+          mv TR1X-Installer.dmg "$(tools/generate_version)-Installer.dmg"
 
       - name: Upload signed+notarized installer image
         uses: actions/upload-artifact@v4
         with:
-          name: TR1X-Installer.dmg
-          path: ${{ github.workspace }}/installer/TR1X-Installer.dmg
+          name: packaged_asset-mac
+          path: |
+            *.dmg
           compression-level: 0 # .dmg is already compressed.
