@@ -240,7 +240,6 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 
     case O_MEDI_OPTION:
         Overlay_BarSetHealthTimer(40);
-        Overlay_BarDrawHealth();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);
@@ -252,7 +251,6 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 
     case O_BIGMEDI_OPTION:
         Overlay_BarSetHealthTimer(40);
-        Overlay_BarDrawHealth();
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);
             Overlay_MakeAmmoString(temp_text);

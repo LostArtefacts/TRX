@@ -12,6 +12,7 @@
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
+#include "game/overlay.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -109,6 +110,17 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
             angle += ring->angle_adder;
             Matrix_Pop();
         }
+    }
+
+    INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
+    switch (inv_item->object_number) {
+    case O_MEDI_OPTION:
+    case O_BIGMEDI_OPTION:
+        Overlay_BarDrawHealth();
+        break;
+
+    default:
+        break;
     }
 
     Matrix_Pop();
