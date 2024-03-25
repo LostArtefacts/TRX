@@ -33,9 +33,11 @@
     <None Remove="Resources\Lang\en-GB.json" />
     <None Remove="Resources\Lang\es.json" />
     <None Remove="Resources\Lang\fr.json" />
+    <None Remove="Resources\Lang\it.json" />
     <EmbeddedResource Include="Resources\Lang\en-GB.json" />
     <EmbeddedResource Include="Resources\Lang\es.json" />
     <EmbeddedResource Include="Resources\Lang\fr.json" />
+    <EmbeddedResource Include="Resources\Lang\it.json" />
   </ItemGroup>
 
   <ItemGroup>

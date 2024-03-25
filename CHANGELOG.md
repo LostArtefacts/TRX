@@ -7,6 +7,7 @@
 - added high quality images for the Eidos, Unfinished Business title, Unfinished Business credit, and final statistics screens
 - added support for macOS builds (for both Apple Silicon and Intel)
 - added optional support for OpenGL 3.3 Core Profile
+- added Italian localization to the config tool
 - changed the way music timestamps are internally handled – resets music position in existing saves
 - changed vertex and fragment shaders into unified files that are runtime pre-processed for OpenGL versions 2.1 or 3.3
 - fixed a missing translation for the Spanish config tool for the Eidos logo skip option (#1151)
