@@ -44,7 +44,7 @@ jobs:
           - platform: linux
             just_target: package-linux
           - platform: win
-            just_target: package-win
+            just_target: package-win-all
           - platform: win installer
             just_target: package-win-installer
     steps:

@@ -3,12 +3,19 @@ import os
 from pathlib import Path
 from subprocess import check_call, check_output, run
 
+from shared.versioning import generate_version
+from shared.packaging import create_zip
+
+SHIP_DIR = Path("/app/data/ship")
+
 
 class BaseGameEntrypoint:
     BUILD_ROOT: Path = ...
     COMPILE_ARGS: list[str] = ...
     STRIP_TOOL = "strip"
     UPX_TOOL = "upx"
+    RELEASE_ZIP_SUFFIX: str = ...
+    RELEASE_ZIP_FILES: list[tuple[Path, str]] = ...
 
     def __init__(self) -> None:
         self.target = os.environ.get("TARGET", "debug")
@@ -65,3 +72,20 @@ class BaseGameEntrypoint:
         if run([self.UPX_TOOL, "-t", str(path)]).returncode != 0:
             check_call([self.STRIP_TOOL, str(path)])
             check_call([self.UPX_TOOL, str(path)])
+
+    def package(self, args: argparse.Namespace) -> None:
+        if args.output:
+            zip_path = args.output
+        else:
+            version = generate_version()
+            zip_path = Path(f"{version}-{self.RELEASE_ZIP_SUFFIX}.zip")
+        source_files = [
+            *[
+                (path, path.relative_to(SHIP_DIR))
+                for path in SHIP_DIR.rglob("*")
+                if path.is_file()
+            ],
+            *self.RELEASE_ZIP_FILES,
+        ]
+        create_zip(zip_path, source_files)
+        print(f"Created {zip_path}")
