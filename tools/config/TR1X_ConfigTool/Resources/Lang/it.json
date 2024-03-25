@@ -338,7 +338,7 @@
     },
     "load_music_triggers": {
       "Title": "Ricorda la musica riprodotta",
-      "Description": "Contrassegna le tracce musicali riprodotte nel file di salvataggio, in modo che le tracce degli eventi non vengano rieseguite dopo il caricamento della partita."
+      "Description": "Contrassegna le tracce musicali riprodotte nel file di salvataggio, in modo che le tracce legate ad eventi non vengano rieseguite dopo il caricamento della partita."
     },
     "enable_music_in_menu": {
       "Title": "Abilita la musica del menu principale",
