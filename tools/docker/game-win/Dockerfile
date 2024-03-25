@@ -150,4 +150,5 @@ RUN apt-get install -y \
         meson \
         ninja
 
+ENV PYTHONPATH=/app/tools/
 ENTRYPOINT ["/app/tools/docker/game-win/entrypoint.sh"]

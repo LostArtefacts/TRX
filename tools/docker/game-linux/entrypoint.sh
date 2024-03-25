@@ -1,19 +1,16 @@
-#!/bin/sh
-set -x
-set -e
+#!/usr/bin/env python3
+from pathlib import Path
 
-EXE_FILE=TR1X
+from shared.docker import BaseGameEntrypoint
 
-if [ ! -f /app/build/linux/build.ninja ]; then
-    meson --buildtype "$TARGET" /app/build/linux/ --pkg-config-path=$PKG_CONFIG_PATH
-fi
 
-cd /app/build/linux
-meson compile
+class LinuxEntrypoint(BaseGameEntrypoint):
+    BUILD_ROOT = Path("/app/build/linux/")
+    COMPILE_ARGS = []
 
-if [ "$TARGET" = release ]; then
-    if ! upx -t "$EXE_FILE"; then
-        strip "$EXE_FILE"
-        upx "$EXE_FILE"
-    fi
-fi
+    def post_compile(self) -> None:
+        if self.target == "release":
+            self.compress_exe(self.BUILD_ROOT / "TR1X")
+
+if __name__ == "__main__":
+    LinuxEntrypoint().run()

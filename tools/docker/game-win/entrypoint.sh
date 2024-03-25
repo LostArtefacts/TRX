@@ -1,15 +1,21 @@
-#!/bin/sh
-set -x
-set -e
+#!/usr/bin/env python3
+from pathlib import Path
 
-if [ ! -f /app/build/win/build.ninja ]; then
-    meson --buildtype "$TARGET" /app/build/win/ --cross /app/tools/docker/game-win/meson_linux_mingw32.txt --pkg-config-path=$PKG_CONFIG_PATH
-fi
+from shared.docker import BaseGameEntrypoint
 
-cd /app/build/win; meson compile
 
-if [ "$TARGET" = release ]; then
-    for file in *.exe; do
-        upx -t "$file" || ( i686-w64-mingw32-strip "$file" && upx "$file" )
-    done
-fi
+class WindowsEntrypoint(BaseGameEntrypoint):
+    BUILD_ROOT = Path("/app/build/win/")
+    COMPILE_ARGS = [
+        "--cross",
+        "/app/tools/docker/game-win/meson_linux_mingw32.txt",
+    ]
+
+    def post_compile(self) -> None:
+        if self.target == "release":
+            for path in self.BUILD_ROOT.glob("*.exe"):
+                self.compress_exe(path)
+
+
+if __name__ == "__main__":
+    WindowsEntrypoint().run()
