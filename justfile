@@ -54,25 +54,15 @@ build-win target='debug':      (image-win "0")           (_docker_run "-e" "TARG
 build-win-config:              (image-win-config "0")    (_docker_run "rrdash/tr1x-config")
 build-win-installer:           (image-win-installer "0") (_docker_run "rrdash/tr1x-installer")
 
-package-linux: (build-linux "release")
-    #!/bin/sh
-    zip_name=$(tools/generate_version)-Linux.zip
-    7z a "${zip_name}" ./data/ship/* ./build/linux/TR1X
-    echo "Created ${zip_name}"
-package-win zip_name="": (build-win "release") (build-win-config)
-    #!/bin/bash
-    zip_name="{{zip_name}}"
-    if [[ -z $zip_name ]]; then
-        zip_name=$(tools/generate_version)-Windows.zip
-    fi
-    7z a "${zip_name}" ./data/ship/* ./build/win/TR1X.exe ./tools/config/out/TR1X_ConfigTool.exe
-    echo "Created ${zip_name}"
-package-win-installer: (package-win "tools/installer/Installer/Resources/release.zip") (build-win-installer)
+package-linux:                 (build-linux "release") (_docker_run "rrdash/tr1x-linux" "package")
+package-win:                   (build-win "release") (_docker_run "rrdash/tr1x" "package")
+package-win-all:               (build-win "release") (build-win-config) (_docker_run "rrdash/tr1x" "package")
+package-win-installer:         (build-win "release") (build-win-config) (_docker_run "rrdash/tr1x" "package" "-o" "tools/installer/Installer/Resources/release.zip") (build-win-installer)
     #!/bin/sh
     git checkout "tools/installer/Installer/Resources/release.zip"
     exe_name=$(tools/generate_version)-Installer.exe
     cp tools/installer/out/TR1X_Installer.exe "${exe_name}"
-    echo "Created ${exe_ame}"
+    echo "Created ${exe_name}"
 
 output-current-changelog:
     tools/output_current_changelog

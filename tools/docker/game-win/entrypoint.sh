@@ -10,6 +10,11 @@ class WindowsEntrypoint(BaseGameEntrypoint):
         "--cross",
         "/app/tools/docker/game-win/meson_linux_mingw32.txt",
     ]
+    RELEASE_ZIP_SUFFIX = "Windows"
+    RELEASE_ZIP_FILES = [
+        (BUILD_ROOT / "TR1X.exe", "TR1X.exe"),
+        (Path("/app/tools/config/out/TR1X_ConfigTool.exe"), "TR1X_ConfigTool.exe"),
+    ]
 
     def post_compile(self) -> None:
         if self.target == "release":
