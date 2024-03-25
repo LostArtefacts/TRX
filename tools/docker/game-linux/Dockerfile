@@ -149,4 +149,5 @@ COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 COPY --from=backtrace /ext/ /ext/
 
+ENV PYTHONPATH=/app/tools/
 ENTRYPOINT ["/app/tools/docker/game-linux/entrypoint.sh"]
