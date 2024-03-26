@@ -159,7 +159,7 @@
             <Setter.Value>
                 <ControlTemplate
                     TargetType="{x:Type RepeatButton}">
-                    <Border 
+                    <Border
                         Background="{TemplateBinding Background}"
                         Padding="0,2"
                         BorderThickness="1,0,0,0"

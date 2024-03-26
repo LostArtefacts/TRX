@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="TR1X_ConfigTool.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,7 +16,7 @@
     Height="575"
     MinWidth="620"
     MinHeight="355">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <utils:BoolToVisibilityConverter
@@ -35,22 +35,22 @@
     </Window.Resources>
 
     <Window.InputBindings>
-        <utils:RelayKeyBinding 
+        <utils:RelayKeyBinding
             CommandBinding="{Binding OpenCommand}"
             Modifiers="Ctrl"
             Key="O" />
-        <utils:RelayKeyBinding 
+        <utils:RelayKeyBinding
             CommandBinding="{Binding ReloadCommand}"
             Key="F5" />
-        <utils:RelayKeyBinding 
+        <utils:RelayKeyBinding
             CommandBinding="{Binding SaveCommand}"
             Modifiers="Ctrl"
             Key="S" />
-        <utils:RelayKeyBinding 
+        <utils:RelayKeyBinding
             CommandBinding="{Binding SaveAsCommand}"
             Modifiers="Ctrl+Alt"
             Key="S" />
-        <utils:RelayKeyBinding 
+        <utils:RelayKeyBinding
             CommandBinding="{Binding GitHubCommand}"
             Key="F11" />
     </Window.InputBindings>
@@ -121,7 +121,7 @@
                 Visibility="{Binding IsEditorActive, Converter={StaticResource BoolToHiddenConverter}}"/>
             <StatusBarItem>
                 <TextBlock
-                    Text="{Binding IsEditorDirty, Converter={utils:ConditionalViewTextConverter TrueValue='label_unsaved', FalseValue='label_saved'}}" 
+                    Text="{Binding IsEditorDirty, Converter={utils:ConditionalViewTextConverter TrueValue='label_unsaved', FalseValue='label_saved'}}"
                     Foreground="{Binding IsEditorDirty, Converter={utils:ConditionalMarkupConverter TrueValue='DarkRed', FalseValue='DarkGreen'}}"
                     FontWeight="Bold"
                     Visibility="{Binding IsEditorActive, Converter={StaticResource BoolToHiddenConverter}}"/>
@@ -134,7 +134,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
+
             <TabControl
                 Margin="0,0,0,7"
                 Padding="0"
@@ -185,7 +185,7 @@
                         Style="{StaticResource ButtonStyle}"/>
 
                     <Button
-                        Grid.Column="1" 
+                        Grid.Column="1"
                         Margin="7,0,0,0"
                         Command="{Binding LaunchGameCommand}"
                         Content="{Binding ViewText[command_launch_game]}"

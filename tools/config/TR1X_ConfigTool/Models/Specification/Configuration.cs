@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -81,7 +81,7 @@ public class Configuration
 
     public void Read(string jsonPath)
     {
-        JObject externalData = File.Exists(jsonPath) 
+        JObject externalData = File.Exists(jsonPath)
             ? JObject.Parse(File.ReadAllText(jsonPath))
             : new();
         JObject activeData = new();

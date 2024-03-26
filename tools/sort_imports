@@ -5,9 +5,7 @@ from pathlib import Path
 from shutil import which
 from subprocess import run
 
-TOOLS_DIR = Path(__file__).parent
-REPO_DIR = TOOLS_DIR.parent
-SRC_PATH = REPO_DIR / "src"
+from shared.common import SRC_DIR
 
 
 def fix_imports(path: Path) -> None:
@@ -34,7 +32,7 @@ def custom_sort(source: list[str], forced_order: list[str]) -> list[str]:
 
 def sort_imports(path: Path) -> None:
     source = path.read_text()
-    rel_path = path.relative_to(SRC_PATH)
+    rel_path = path.relative_to(SRC_DIR)
     own_include = str(rel_path.with_suffix(".h"))
     own_include = {
         # files headers of which are not a 1:1 match with their filename
@@ -112,8 +110,8 @@ def main() -> None:
     if not paths:
         paths = sorted(
             path
-            for path in SRC_PATH.glob("**/*.[ch]")
-            if path != SRC_PATH / "init.c"
+            for path in SRC_DIR.glob("**/*.[ch]")
+            if path != SRC_DIR / "init.c"
         )
 
     for path in paths:

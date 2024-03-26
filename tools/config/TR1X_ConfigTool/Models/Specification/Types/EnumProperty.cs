@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace TR1X_ConfigTool.Models;
 
 public class EnumProperty : BaseProperty
 {
     public string EnumKey { get; set; }
-    
+
     private EnumOption _value;
 
     public EnumOption Value
