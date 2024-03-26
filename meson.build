@@ -33,6 +33,7 @@ dep_avcodec = dependency('libavcodec', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
 dep_avutil = dependency('libavutil', static: staticdeps)
 dep_backtrace = c_compiler.find_library('backtrace', static: staticdeps, required: false)
+dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : false)
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
 dep_sdl2 = dependency('SDL2', static: staticdeps)
@@ -296,6 +297,7 @@ dependencies = [
   dep_avcodec,
   dep_avformat,
   dep_avutil,
+  dep_mathlibrary,
   dep_opengl,
   dep_sdl2,
   dep_swresample,
