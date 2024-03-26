@@ -79,5 +79,6 @@ lint-format:
     #!/usr/bin/env bash
     shopt -s globstar
     clang-format -i **/*.{c,h}
+    tools/additional_lint
 
 lint: (lint-imports) (lint-format)
