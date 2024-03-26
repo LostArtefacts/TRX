@@ -13,6 +13,25 @@ jobs:
   build:
     runs-on: macos-14
     steps:
+      - name: Set up signing certificate
+        env:
+          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          echo ${{ secrets.MACOS_KEYCHAIN_PWD }}
+          echo ${{ secrets.MACOS_CERTIFICATE }}
+          echo ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
+          security list-keychain -d user -s $KEYCHAIN_PATH
+          security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -168,22 +187,6 @@ jobs:
 
           # Update dynamic library links in the fused executable.
           ./tools/mac/bundle_dylibs --links-only
-
-      - name: Set up signing certificate
-        env:
-          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
-          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
-          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
-          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
 
       - name: Sign app bundle
         run: |
