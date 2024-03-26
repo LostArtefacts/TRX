@@ -3,6 +3,12 @@ name: Build macOS app bundle and .dmg installer image
 on:
   - workflow_call
 
+env:
+  FFMPEG_INSTALL_FUSED: /opt/local
+  FFMPEG_INSTALL_TMP_FUSED: /tmp/fused
+  FFMPEG_INSTALL_TMP_UNIVERSAL: /tmp/install_universal
+  FFMPEG_INSTALL_TMP_X86_64: /tmp/install_x86_64
+
 jobs:
   build:
     runs-on: macos-14
@@ -48,16 +54,61 @@ jobs:
       - name: "Build dependency: libsdl2 (universal)"
         run: sudo port -N install libsdl2 +universal
 
+      - name: "Cache dependency: ffmpeg (universal)"
+        id: cache-ffmpeg
+        uses: actions/cache@v3
+        with:
+          key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
+          path: |
+            ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
+            ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
+
       - name: "Build dependency: ffmpeg (universal)"
+        if: ${{ steps.cache-ffmpeg.outputs.cache-hit != 'true' }}
         run: |
+          # Install to separate staging paths for all architectures in
+          # preparation for fusing universal libraries in a follow-up step.
           cd "$RUNNER_TEMP"
           git clone --depth 1 --branch "n4.4.1" https://github.com/FFmpeg/FFmpeg
           cd FFmpeg
 
-          # Locations
-          FFMPEG_INSTALL_TMP_UNIVERSAL=/tmp/install_universal
-          FFMPEG_INSTALL_UNIVERSAL=/opt/local
-          FFMPEG_INSTALL_X86_64=/tmp/install_x86_64
+          # Common FFmpeg configure options
+          FFMPEG_CONFIG_OPTIONS=" \
+            --enable-shared \
+            --disable-static \
+            $(cat $GITHUB_WORKSPACE/tools/ffmpeg_flags.txt)"
+
+          # Configure for arm64.
+          ./configure \
+            --arch=arm64 \
+            --prefix=$FFMPEG_INSTALL_TMP_UNIVERSAL \
+            --cc='clang' \
+            $FFMPEG_CONFIG_OPTIONS
+
+          # Build and install.
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+
+          # Reset build directory.
+          make clean
+
+          # Configure for x86-64.
+          ./configure \
+            --arch=x86_64 \
+            --enable-cross-compile \
+            --prefix=$FFMPEG_INSTALL_TMP_X86_64 \
+            --cc='clang -arch x86_64' \
+            $FFMPEG_CONFIG_OPTIONS
+
+          # Build and install.
+          make -j$(sysctl -n hw.ncpu)
+          sudo make install
+
+      - name: "Build dependency: ffmpeg (fuse universal libraries)"
+        run: |
+          # Copy universal artefacts to the MacPorts install prefix.
+          sudo rsync -arv "$FFMPEG_INSTALL_TMP_UNIVERSAL/" "$FFMPEG_INSTALL_FUSED/"
+          grep "$FFMPEG_INSTALL_TMP_UNIVERSAL" -rIl "$FFMPEG_INSTALL_FUSED" | xargs -I '{}' sudo sed -i -- "s|$FFMPEG_INSTALL_TMP_UNIVERSAL|$FFMPEG_INSTALL_FUSED|g" '{}'
 
           # Libs
           FFMPEG_LIBS=(
@@ -71,66 +122,27 @@ jobs:
             "libswscale"
           )
 
-          # Common FFmpeg configure options
-          FFMPEG_CONFIG_OPTIONS=" \
-            --enable-shared \
-            --disable-static \
-            $(cat $GITHUB_WORKSPACE/tools/ffmpeg_flags.txt)"
-
-          # Configure for arm64.
-          # We install the arm64 build to the final universal binary
-          # prefix so the pkgconfig files get filled in correctly
-          # and won't require correction.
-          ./configure \
-            --arch=arm64 \
-            --prefix=$FFMPEG_INSTALL_UNIVERSAL \
-            --cc='clang' \
-            $FFMPEG_CONFIG_OPTIONS
-
-          # Build and install.
-          make -j$(sysctl -n hw.ncpu)
-          sudo make install
-
-          # Reset build directory.
-          make clean
-
-          # Configure for x86-64.
-          # Install to separate staging path in preparation for
-          # fusing universal libraries.
-          ./configure \
-            --arch=x86_64 \
-            --enable-cross-compile \
-            --prefix=$FFMPEG_INSTALL_X86_64 \
-            --cc='clang -arch x86_64' \
-            $FFMPEG_CONFIG_OPTIONS
-
-          # Build and install.
-          make -j$(sysctl -n hw.ncpu)
-          sudo make install
-
-          # Fuse universal binaries.
           # `lipo` cannot overwrite binaries in place, so we stage the
           # fused binaries in a temporary directory.
-          mkdir -p $FFMPEG_INSTALL_TMP_UNIVERSAL
-
+          mkdir -p $FFMPEG_INSTALL_TMP_FUSED
           for LIB in ${FFMPEG_LIBS[@]}; do
-              RESOLVED_LIB=$(ls -l $FFMPEG_INSTALL_UNIVERSAL/lib/${LIB}* \
+              RESOLVED_LIB=$(ls -l $FFMPEG_INSTALL_FUSED/lib/${LIB}* \
                 | grep -v '^l' \
                 | awk -F'/' '{print $NF}')
 
               lipo -create \
-                $FFMPEG_INSTALL_UNIVERSAL/lib/$RESOLVED_LIB \
-                $FFMPEG_INSTALL_X86_64/lib/$RESOLVED_LIB \
-                -output $FFMPEG_INSTALL_TMP_UNIVERSAL/$RESOLVED_LIB
+                $FFMPEG_INSTALL_FUSED/lib/$RESOLVED_LIB \
+                $FFMPEG_INSTALL_TMP_X86_64/lib/$RESOLVED_LIB \
+                -output $FFMPEG_INSTALL_TMP_FUSED/$RESOLVED_LIB
 
               # Replace the x86_64 library with a link to the universal
               # binary, so `bundle_dylibs` will always gather a universal
               # build.
-              sudo ln -s -f $FFMPEG_INSTALL_UNIVERSAL/lib/$RESOLVED_LIB $FFMPEG_INSTALL_X86_64/lib/$RESOLVED_LIB
+              sudo ln -s -f $FFMPEG_INSTALL_TMP_FUSED/lib/$RESOLVED_LIB $FFMPEG_INSTALL_TMP_X86_64/lib/$RESOLVED_LIB
           done
 
           # Move the fused binaries to the MacPorts install prefix.
-          sudo mv $FFMPEG_INSTALL_TMP_UNIVERSAL/*.dylib $FFMPEG_INSTALL_UNIVERSAL/lib/
+          sudo mv $FFMPEG_INSTALL_TMP_FUSED/*.dylib $FFMPEG_INSTALL_FUSED/lib/
 
       - name: Build arm64 and create app bundle
         run: |
