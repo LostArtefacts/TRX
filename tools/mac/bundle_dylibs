@@ -2,8 +2,8 @@
 import argparse
 import re
 import shutil
-import subprocess
 from pathlib import Path
+from subprocess import check_output, run
 
 # Configuration
 APP_NAME = "TR1X"
@@ -43,9 +43,7 @@ def should_ignore_lib(lib_path: str) -> bool:
 
 def gather_libs(binary_path: Path) -> None:
     parent_path = binary_path.parent
-    output = subprocess.check_output(
-        ("otool", "-L", str(binary_path))
-    ).decode()
+    output = check_output(["otool", "-L", str(binary_path)], text=True)
     libs = [line.split()[0] for line in output.split("\n")[1:] if line]
 
     rpath_pattern = re.compile(r"@rpath/(.*)")
@@ -75,9 +73,7 @@ def copy_libs() -> None:
 
 
 def update_links(binary_path: Path) -> None:
-    output = subprocess.check_output(
-        ("otool", "-L", str(binary_path))
-    ).decode()
+    output = check_output(["otool", "-L", str(binary_path)], text=True)
     libs = [line.split()[0] for line in output.split("\n")[1:] if line]
 
     for lib in libs:
@@ -87,15 +83,11 @@ def update_links(binary_path: Path) -> None:
         lib_name = Path(lib).name
         target = f"@executable_path/../Frameworks/{lib_name}"
         print(f"Updating link for {lib_name} in {binary_path}")
-        subprocess.run(
-            ("install_name_tool", "-change", lib, target, str(binary_path))
-        )
+        run(["install_name_tool", "-change", lib, target, str(binary_path)])
 
         if lib_name == binary_path.name:
             print(f"Updating id for {lib_name} in {binary_path}")
-            subprocess.run(
-                ("install_name_tool", "-id", target, str(binary_path))
-            )
+            run(["install_name_tool", "-id", target, str(binary_path)])
 
 
 def main() -> None:
