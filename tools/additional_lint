@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+import re
 import sys
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
+from fnmatch import fnmatch
 from pathlib import Path
 
 from shared.common import DATA_DIR, REPO_DIR, SRC_DIR, TOOLS_DIR
@@ -24,6 +26,9 @@ EXTENSIONS = [
     ".json5",
     "Dockerfile",
 ]
+EXCEPTIONS = [
+    re.compile(r"tools/([^/]*/)*(bin|obj)/.*"),
+]
 
 
 @dataclass
@@ -42,7 +47,14 @@ class LintWarning:
 def get_files() -> Iterable[Path]:
     for root_dir in (DATA_DIR, SRC_DIR, TOOLS_DIR):
         for path in root_dir.rglob("**/*"):
-            if path.is_file() and path.suffix in EXTENSIONS:
+            if (
+                path.is_file()
+                and ((path.suffix in EXTENSIONS) or (path.name in EXTENSIONS))
+                and not any(
+                    pattern.match(str(path.relative_to(REPO_DIR)))
+                    for pattern in EXCEPTIONS
+                )
+            ):
                 yield path
 
 
@@ -78,6 +90,7 @@ def main() -> None:
                 exit_code = 1
 
     exit(exit_code)
+
 
 if __name__ == "__main__":
     main()
