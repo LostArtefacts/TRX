@@ -136,8 +136,10 @@ void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type)
     if (g_Lara.left_arm.lock) {
         g_Lara.torso_y_rot = g_Lara.left_arm.y_rot / 2;
         g_Lara.torso_x_rot = g_Lara.left_arm.x_rot / 2;
-        g_Lara.head_x_rot = 0;
-        g_Lara.head_y_rot = 0;
+        if (g_Camera.type != CAM_LOOK) {
+            g_Lara.head_x_rot = 0;
+            g_Lara.head_y_rot = 0;
+        }
     }
 
     Gun_Rifle_Animate();
