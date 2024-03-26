@@ -8,6 +8,7 @@ def generate_version() -> str:
         "--always",
         "--abbrev=7",
         "--tags",
+        "--dirty",
         "--exclude",
         "latest",
     ]
