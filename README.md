@@ -330,6 +330,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added the ability to reset control schemes to default
 - added customizable controller support
 - added an inverted look camera option
+- added the ability to move the look camera while targeting an enemy in combat
 - fixed freeze when holding the Action key during end of level
 - fixed inability to switch Control keys when shimmying
 - fixed setting user keys being very difficult
