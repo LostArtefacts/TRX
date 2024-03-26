@@ -7,21 +7,10 @@ jobs:
   build:
     runs-on: macos-14
     steps:
-      - name: Set up signing certificate
-        env:
-          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
-          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
-          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
-          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Select latest stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -61,6 +50,7 @@ jobs:
 
       - name: "Build dependency: ffmpeg (universal)"
         run: |
+          cd "$RUNNER_TEMP"
           git clone --depth 1 --branch "n4.4.1" https://github.com/FFmpeg/FFmpeg
           cd FFmpeg
 
@@ -83,34 +73,9 @@ jobs:
 
           # Common FFmpeg configure options
           FFMPEG_CONFIG_OPTIONS=" \
-            --enable-gpl \
-            --enable-decoder=pcx \
-            --enable-decoder=png \
-            --enable-decoder=gif \
-            --enable-decoder=mjpeg \
-            --enable-decoder=mpeg4 \
-            --enable-decoder=mdec \
-            --enable-decoder=h264 \
-            --enable-decoder=png \
-            --enable-demuxer=mov \
-            --enable-demuxer=avi \
-            --enable-demuxer=h264 \
-            --enable-demuxer=str \
-            --enable-demuxer=image2 \
-            --enable-zlib \
-            --enable-small \
             --enable-shared \
             --disable-static \
-            --disable-debug \
-            --disable-ffplay \
-            --disable-ffprobe \
-            --disable-doc \
-            --disable-network \
-            --disable-htmlpages \
-            --disable-manpages \
-            --disable-podpages \
-            --disable-txtpages \
-            --disable-asm"
+            $(cat $GITHUB_WORKSPACE/tools/ffmpeg_flags.txt)"
 
           # Configure for arm64.
           # We install the arm64 build to the final universal binary
@@ -167,11 +132,6 @@ jobs:
           # Move the fused binaries to the MacPorts install prefix.
           sudo mv $FFMPEG_INSTALL_TMP_UNIVERSAL/*.dylib $FFMPEG_INSTALL_UNIVERSAL/lib/
 
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Build arm64 and create app bundle
         run: |
           BUILD_DIR=build-arm64
@@ -196,6 +156,22 @@ jobs:
 
           # Update dynamic library links in the fused executable.
           ./tools/mac/bundle_dylibs --links-only
+
+      - name: Set up signing certificate
+        env:
+          MACOS_KEYCHAIN_PWD: ${{ secrets.MACOS_KEYCHAIN_PWD }}
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$MACOS_KEYCHAIN_PWD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$MACOS_KEYCHAIN_PWD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign
+          security list-keychain -d user -s $KEYCHAIN_PATH
+          security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
 
       - name: Sign app bundle
         run: |
