@@ -44,6 +44,7 @@ RUN git clone \
     --branch "n4.4.1" \
     https://github.com/FFmpeg/FFmpeg
 COPY --from=zlib /ext/ /usr/i686-w64-mingw32/
+COPY ./tools/ffmpeg_flags.txt /tmp/ffmpeg_flags.txt
 RUN cd FFmpeg \
     && ./configure \
         --arch=x86 \
@@ -53,35 +54,9 @@ RUN cd FFmpeg \
         --cc=i686-w64-mingw32-gcc \
         --strip=i686-w64-mingw32-strip \
         --pkg-config=i686-w64-mingw32-pkg-config \
-        --enable-gpl \
-        --enable-decoder=pcx \
-        --enable-decoder=png \
-        --enable-decoder=gif \
-        --enable-decoder=mjpeg \
-        --enable-decoder=mpeg4 \
-        --enable-decoder=mdec \
-        --enable-decoder=h264 \
-        --enable-decoder=h264_qsv \
-        --enable-decoder=libopenh264 \
-        --enable-decoder=png \
-        --enable-demuxer=mov \
-        --enable-demuxer=avi \
-        --enable-demuxer=h264 \
-        --enable-demuxer=str \
-        --enable-demuxer=image2 \
-        --enable-zlib \
         --enable-static \
-        --enable-small \
-        --disable-debug \
-        --disable-ffplay \
-        --disable-ffprobe \
-        --disable-doc \
-        --disable-network \
-        --disable-htmlpages \
-        --disable-manpages \
-        --disable-podpages \
-        --disable-txtpages \
-        --disable-asm \
+        --disable-shared \
+        $(cat /tmp/ffmpeg_flags.txt) \
     && make -j 4 \
     && make install
 
