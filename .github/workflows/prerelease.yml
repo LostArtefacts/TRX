@@ -18,3 +18,4 @@ jobs:
       draft: false
       prerelease: true
       tag_name: latest
+    secrets: inherit
