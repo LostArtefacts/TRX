@@ -1344,7 +1344,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 break;
             }
 
-            if (Phase_Get() == PHASE_NULL && !g_Config.enable_eidos_logo) {
+            if (g_CurrentLevel == -1 && !g_Config.enable_eidos_logo) {
                 break;
             }
 
