@@ -73,9 +73,9 @@ jobs:
       - name: "Build dependency: libsdl2 (universal)"
         run: sudo port -N install libsdl2 +universal
 
-      - name: "Cache dependency: ffmpeg (universal)"
-        id: cache-ffmpeg
-        uses: actions/cache@v3
+      - name: "Restore cache dependency: ffmpeg (universal)"
+        id: restore-cache-ffmpeg
+        uses: actions/cache/restore@v3
         with:
           key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
           path: |
@@ -83,7 +83,7 @@ jobs:
             ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
 
       - name: "Build dependency: ffmpeg (universal)"
-        if: ${{ steps.cache-ffmpeg.outputs.cache-hit != 'true' }}
+        if: ${{ steps.restore-cache-ffmpeg.outputs.cache-hit != 'true' }}
         run: |
           # Install to separate staging paths for all architectures in
           # preparation for fusing universal libraries in a follow-up step.
@@ -122,6 +122,16 @@ jobs:
           # Build and install.
           make -j$(sysctl -n hw.ncpu)
           sudo make install
+
+      - name: "Save cache dependency: ffmpeg (universal)"
+        id: save-cache-ffmpeg
+        if: always()
+        uses: actions/cache/save@v3
+        with:
+          key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
+          path: |
+            ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
+            ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
 
       - name: "Build dependency: ffmpeg (fuse universal libraries)"
         run: |
