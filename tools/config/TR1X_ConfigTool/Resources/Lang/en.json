@@ -118,7 +118,7 @@
     },
     "target_mode": {
       "Title": "Weapon target lock mode",
-      "Description": "Changes the behavior of how weapons lock onto targets.\n- Full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1).\n- Semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies.\n- No lock: lose target lock if the enemey goes out of sight or dies (TR4+)."
+      "Description": "Changes the behavior of how weapons lock onto targets.\n- Full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1).\n- Semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies.\n- No lock: lose target lock if the enemy goes out of sight or dies (TR4+)."
     },
     "enable_lean_jumping": {
       "Title": "Lean jumping",

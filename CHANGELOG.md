@@ -1,6 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added the option to change weapon targets by tapping the look key like in TR4+ (#1145)
-- added three targeting lock options: full lock always keeps target lock (OG), semi lock loses target lock if the enemy dies, and no lock loses target lock if the enemey goes out of sight or dies (TR4+) (#1146)
+- added three targeting lock options: full lock always keeps target lock (OG), semi lock loses target lock if the enemy dies, and no lock loses target lock if the enemy goes out of sight or dies (TR4+) (#1146)
 - added an option to the installer to install from a CD drive (#1144)
 - added stack traces to logs for better crash debugging (#1165)
 - added an option to use PS1 loading screens (#358)

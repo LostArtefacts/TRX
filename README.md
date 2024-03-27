@@ -343,7 +343,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added three targeting lock options:
   - full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1)
   - semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies
-  - no lock: lose target lock if the enemey goes out of sight or dies (TR4+)
+  - no lock: lose target lock if the enemy goes out of sight or dies (TR4+)
 
 #### Statistics
 - added ability to keep timer on in inventory
