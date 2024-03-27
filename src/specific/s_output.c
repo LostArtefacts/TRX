@@ -616,6 +616,10 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
     S_Output_CheckError(result);
 
     GFX_2D_Surface_Free(picture_surface);
+
+    S_Output_ClearSurface(m_BackSurface);
+    S_Output_RenderEnd();
+    S_Output_FlipPrimaryBuffer();
 }
 
 void S_Output_SelectTexture(int tex_num)
