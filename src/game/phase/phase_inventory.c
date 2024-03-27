@@ -535,11 +535,7 @@ static void Phase_Inventory_Start(void *arg)
     m_OldCamera = g_Camera;
 
     if (g_InvMode == INV_TITLE_MODE) {
-        // reset the clock after delay from loading the title level to reset
-        // the initial spike in the lost frames and have smooth fades
-        Clock_SyncTicks();
         Output_FadeResetToBlack();
-        // make main menu fades faster
         Output_FadeToTransparent(true);
     } else {
         Output_FadeToSemiBlack(true);
