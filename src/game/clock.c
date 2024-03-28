@@ -1,37 +1,51 @@
 // IWYU pragma: no_include <bits/types/struct_tm.h>
 #include "game/clock.h"
 
-#include "specific/s_clock.h"
+#include "game/phase/phase.h"
+#include "global/vars.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <time.h>
 
-#define MAX_TURBO_SPEED_MUL 3
+#define TURBO_SPEED_COUNT 5
+#define TURBO_SPEED_OFFSET -2
+#define TURBO_SPEED_DEFAULT_IDX 2
 
-static int16_t m_TurboSpeedMul = 1;
+static double m_Progress = 0.0;
+static int16_t m_TurboSpeedIdx = TURBO_SPEED_DEFAULT_IDX;
 
-void Clock_CycleTurboSpeed(void)
+static double m_TurboSpeeds[TURBO_SPEED_COUNT] = {
+    0.25, 0.5, 1.0, 2.0, 3.0,
+};
+
+void Clock_CycleTurboSpeed(bool forward)
 {
-    if (m_TurboSpeedMul >= MAX_TURBO_SPEED_MUL) {
-        m_TurboSpeedMul = 1;
+    if (forward) {
+        m_TurboSpeedIdx++;
     } else {
-        m_TurboSpeedMul++;
+        m_TurboSpeedIdx--;
+        m_TurboSpeedIdx %= TURBO_SPEED_COUNT;
+        m_TurboSpeedIdx += TURBO_SPEED_COUNT;
     }
+    m_TurboSpeedIdx %= TURBO_SPEED_COUNT;
 }
 
-bool Clock_Init(void)
+void Clock_SetTurboSpeed(const int32_t idx)
 {
-    return S_Clock_Init();
+    m_TurboSpeedIdx = idx - TURBO_SPEED_OFFSET;
+    CLAMP(m_TurboSpeedIdx, 0, TURBO_SPEED_COUNT - 1);
+    LOG_INFO("Setting speed to %d (%.2f)", idx, Clock_GetSpeedMultiplier());
 }
 
-int32_t Clock_GetMS(void)
+int32_t Clock_GetTurboSpeed(void)
 {
-    return S_Clock_GetMS();
+    return m_TurboSpeedIdx + TURBO_SPEED_OFFSET;
 }
 
-int32_t Clock_SyncTicks(void)
+double Clock_GetSpeedMultiplier(void)
 {
-    return S_Clock_SyncTicks() * m_TurboSpeedMul;
+    return m_TurboSpeeds[m_TurboSpeedIdx];
 }
 
 void Clock_GetDateTime(char *date_time)

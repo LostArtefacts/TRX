@@ -312,7 +312,7 @@ void Shell_ProcessInput(void)
     }
 
     if (g_InputDB.turbo_cheat) {
-        Clock_CycleTurboSpeed();
+        Clock_CycleTurboSpeed(!g_Input.slow);
     }
 }
 
