@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/carrier.h"
+#include "game/clock.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
 #include "game/gameflow.h"
@@ -202,6 +203,23 @@ static bool Console_Cmd_Fly(const char *const args)
     Console_Log("Fly mode enabled");
     Lara_EnterFlyMode();
     return true;
+}
+
+static bool Console_Cmd_Speed(const char *const args)
+{
+    if (strcmp(args, "") == 0) {
+        Console_Log("Current speed: %d", Clock_GetTurboSpeed());
+        return true;
+    }
+
+    int32_t num = -1;
+    if (sscanf(args, "%d", &num) == 1) {
+        Clock_SetTurboSpeed(num);
+        Console_Log("Speed set to %d", Clock_GetTurboSpeed());
+        return true;
+    }
+
+    return false;
 }
 
 static bool Console_Cmd_Braid(const char *const args)
@@ -491,6 +509,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "pos", .proc = Console_Cmd_Pos },
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
     { .prefix = "fly", .proc = Console_Cmd_Fly },
+    { .prefix = "speed", .proc = Console_Cmd_Speed },
     { .prefix = "braid", .proc = Console_Cmd_Braid },
     { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     { .prefix = "give", .proc = Console_Cmd_GiveItem },

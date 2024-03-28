@@ -41,3 +41,7 @@ Currently supported commands:
   `/play {num}`  
   `/play {name}`  
   Plays the specified level.
+
+- `/speed`  
+- `/speed {num}`  
+  Retrieves or sets current game speed.

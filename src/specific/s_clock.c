@@ -1,39 +1,38 @@
-#include "specific/s_clock.h"
-
+#include "config.h"
+#include "game/clock.h"
 #include "global/const.h"
 
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
+#include <stdbool.h>
+#include <stdint.h>
 
+static Uint64 m_LastCounter = 0;
 static Uint64 m_Counter = 0;
 static Uint64 m_Frequency = 0;
 
-bool S_Clock_Init(void)
+void Clock_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
     m_Counter = SDL_GetPerformanceCounter();
-    return true;
 }
 
-int32_t S_Clock_GetMS(void)
+int32_t Clock_SyncTicks(void)
 {
-    return SDL_GetTicks();
-}
-
-int32_t S_Clock_SyncTicks(void)
-{
-    const Uint64 last_counter = m_Counter;
+    m_LastCounter = m_Counter;
     const double fps = TICKS_PER_SECOND;
+
+    const double frequency = (double)m_Frequency / Clock_GetSpeedMultiplier();
+    const Uint64 target_counter =
+        m_LastCounter + TICKS_PER_FRAME * (frequency / fps);
 
     while (true) {
         m_Counter = SDL_GetPerformanceCounter();
 
-        const Uint64 target_counter =
-            last_counter + TICKS_PER_FRAME * (m_Frequency / fps);
         const double elapsed_sec =
-            (double)(m_Counter - last_counter) / m_Frequency;
+            (double)(m_Counter - m_LastCounter) / frequency;
         const double delay_sec = m_Counter <= target_counter
-            ? (double)(target_counter - m_Counter) / m_Frequency
+            ? (double)(target_counter - m_Counter) / frequency
             : 0.0;
         int32_t delay_ms = delay_sec * 1000;
         if (delay_ms > 0) {
@@ -45,4 +44,9 @@ int32_t S_Clock_SyncTicks(void)
             return elapsed_ticks;
         }
     }
+}
+
+int32_t Clock_GetMS(void)
+{
+    return SDL_GetTicks();
 }

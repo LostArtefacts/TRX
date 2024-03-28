@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- added ability to slow the game down using the turbo cheat (#1215)
+- added /speed command to control the turbo cheat (#1215)
 - added the option to change weapon targets by tapping the look key like in TR4+ (#1145)
 - added three targeting lock options: full lock always keeps target lock (OG), semi lock loses target lock if the enemy dies, and no lock loses target lock if the enemey goes out of sight or dies (TR4+) (#1146)
 - added an option to the installer to install from a CD drive (#1144)
