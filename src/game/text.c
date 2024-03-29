@@ -1,6 +1,7 @@
 #include "game/text.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/screen.h"
@@ -483,7 +484,7 @@ void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.flash) {
-        textstring->flash.count -= (int16_t)g_Camera.number_frames;
+        textstring->flash.count -= Clock_GetFrameAdvance();
         if (textstring->flash.count <= -textstring->flash.rate) {
             textstring->flash.count = textstring->flash.rate;
         } else if (textstring->flash.count < 0) {
