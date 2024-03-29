@@ -26,7 +26,6 @@ void Output_SetDrawDistMax(int32_t dist);
 void Output_SetWaterColor(const RGB_F *color);
 
 void Output_FadeReset(void);
-void Output_FadeSetSpeed(double speed);
 void Output_FadeResetToBlack(void);
 void Output_FadeToBlack(bool allow_immediate);
 void Output_FadeToSemiBlack(bool allow_immediate);
@@ -94,7 +93,7 @@ void Output_LoadBackdropImage(const char *filename);
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 void Output_AnimateTextures(int32_t ticks);
-void Output_AnimateFades(int32_t ticks);
+void Output_AnimateFades(void);
 void Output_RotateLight(int16_t pitch, int16_t yaw);
 
 void Output_ApplyWaterEffect(float *r, float *g, float *b);

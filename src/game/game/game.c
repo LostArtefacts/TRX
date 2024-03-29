@@ -22,8 +22,8 @@
         Game_DrawScene(true);                                                  \
         Input_Update();                                                        \
         Output_DumpScreen();                                                   \
-        int ticks = Clock_SyncTicks();                                         \
-        Output_AnimateFades(ticks);                                            \
+        Output_AnimateFades();                                                 \
+        Clock_SyncTicks();                                                     \
     } while (g_Input.key);
 
 void Game_ProcessInput(void)

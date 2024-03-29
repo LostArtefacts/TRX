@@ -58,3 +58,17 @@ void Clock_GetDateTime(char *date_time)
         tptr->tm_mon + 1, tptr->tm_mday, tptr->tm_hour, tptr->tm_min,
         tptr->tm_sec);
 }
+
+int32_t Clock_GetFrameAdvance(void)
+{
+    return 2;
+}
+
+double Clock_GetFrameAdvanceAdjusted(void)
+{
+    double frames = Clock_GetFrameAdvance();
+    if (Phase_Get() != PHASE_INVENTORY || g_InvMode != INV_TITLE_MODE) {
+        frames /= 2.0;
+    }
+    return frames;
+}

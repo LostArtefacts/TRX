@@ -33,7 +33,6 @@ static void Phase_Game_Start(void *arg)
 {
     if (Phase_Get() != PHASE_PAUSE) {
         Output_FadeReset();
-        Output_FadeSetSpeed(1.0);
     }
 }
 
@@ -139,6 +138,7 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 static void Phase_Game_Draw(void)
 {
     Game_DrawScene(true);
+    Output_AnimateFades();
     Output_AnimateTextures(g_Camera.number_frames);
     Text_Draw();
 }

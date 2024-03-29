@@ -540,7 +540,6 @@ static void Phase_Inventory_Start(void *arg)
         Clock_SyncTicks();
         Output_FadeResetToBlack();
         // make main menu fades faster
-        Output_FadeSetSpeed(2.0);
         Output_FadeToTransparent(true);
     } else {
         Output_FadeToSemiBlack(true);
@@ -1004,13 +1003,13 @@ static void Phase_Inventory_Draw(void)
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
     Inv_Draw(ring, motion);
+    Output_AnimateFades();
     Text_Draw();
 }
 
 static int32_t Phase_Inventory_Wait(void)
 {
     m_InvNFrames = Clock_SyncTicks();
-    Output_AnimateFades(m_InvNFrames);
     g_Camera.number_frames = m_InvNFrames;
     return m_InvNFrames;
 }

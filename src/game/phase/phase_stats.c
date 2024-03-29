@@ -322,6 +322,7 @@ static void Phase_Stats_Draw(void)
     } else {
         Game_DrawScene(false);
     }
+    Output_AnimateFades();
     Text_Draw();
 }
 

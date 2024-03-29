@@ -1,6 +1,7 @@
 #include "game/output.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/console.h"
 #include "game/overlay.h"
 #include "game/picture.h"
@@ -26,7 +27,6 @@ static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
 static int m_BackdropDstAlpha = 0;
-static double m_FadeSpeed = 1.0;
 
 static int32_t m_WibbleOffset = 0;
 static int32_t m_WibbleTable[WIBBLE_SIZE] = { 0 };
@@ -893,13 +893,13 @@ void Output_SetupAboveWater(bool underwater)
     m_IsShadeEffect = underwater;
 }
 
-void Output_AnimateFades(int ticks)
+void Output_AnimateFades(void)
 {
     if (!g_Config.enable_fade_effects) {
         return;
     }
 
-    const int delta = 5 * m_FadeSpeed * ticks;
+    const int32_t delta = 10.0 * Clock_GetFrameAdvanceAdjusted();
     if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
         m_OverlayCurAlpha += delta;
     } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
@@ -996,11 +996,6 @@ void Output_FadeReset(void)
     m_OverlayCurAlpha = 0;
     m_BackdropDstAlpha = 0;
     m_OverlayDstAlpha = 0;
-}
-
-void Output_FadeSetSpeed(double speed)
-{
-    m_FadeSpeed = speed;
 }
 
 void Output_FadeResetToBlack(void)
