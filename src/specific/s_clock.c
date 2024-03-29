@@ -41,7 +41,7 @@ int32_t Clock_SyncTicks(void)
 
         const double elapsed_ticks = elapsed_sec * fps;
         if (elapsed_ticks >= (double)TICKS_PER_FRAME) {
-            return elapsed_ticks;
+            return elapsed_ticks / TICKS_PER_FRAME;
         }
     }
 }

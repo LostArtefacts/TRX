@@ -22,9 +22,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static const int32_t m_CinematicAnimationRate = 0x8000;
-static int32_t m_FrameCount = 0;
-
 static void Phase_Cutscene_InitialiseHair(int32_t level_num);
 
 static void Phase_Cutscene_Start(void *arg);
@@ -102,8 +99,7 @@ static void Phase_Cutscene_End(void)
 
 static GAMEFLOW_OPTION Phase_Cutscene_Control(int32_t nframes)
 {
-    m_FrameCount += m_CinematicAnimationRate * nframes;
-    while (m_FrameCount >= 0) {
+    for (int i = 0; i < nframes; i++) {
         if (g_CineFrame >= g_NumCineFrames - 1) {
             g_LevelComplete = true;
             return GF_LEVEL_COMPLETE | g_CurrentLevel;
@@ -124,7 +120,6 @@ static GAMEFLOW_OPTION Phase_Cutscene_Control(int32_t nframes)
         Camera_UpdateCutscene();
 
         g_CineFrame++;
-        m_FrameCount -= 0x10000;
     }
 
     return GF_PHASE_CONTINUE;

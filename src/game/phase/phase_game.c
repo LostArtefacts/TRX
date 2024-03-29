@@ -22,9 +22,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static const int32_t m_AnimationRate = 0x8000;
-static int32_t m_FrameCount = 0;
-
 static void Phase_Game_Start(void *arg);
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes);
 static void Phase_Game_Draw(void);
@@ -39,12 +36,9 @@ static void Phase_Game_Start(void *arg)
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 {
     GAMEFLOW_OPTION return_val = GF_PHASE_CONTINUE;
-    if (nframes > MAX_FRAMES) {
-        nframes = MAX_FRAMES;
-    }
 
-    m_FrameCount += m_AnimationRate * nframes;
-    while (m_FrameCount >= 0) {
+    CLAMPG(nframes, MAX_FRAMES);
+    for (int32_t i = 0; i < nframes; i++) {
         Lara_CheckCheatMode();
         if (g_LevelComplete) {
             return GF_PHASE_BREAK;
@@ -123,8 +117,6 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
             g_GameInfo.current[g_CurrentLevel].stats.timer++;
             Overlay_BarHealthTimerTick();
         }
-
-        m_FrameCount -= 0x10000;
     }
 
     if (g_GameInfo.ask_for_save) {
