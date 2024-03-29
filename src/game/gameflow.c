@@ -14,7 +14,6 @@
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
-#include "global/const.h"
 #include "global/vars.h"
 #include "json/json_base.h"
 #include "json/json_parse.h"
@@ -254,7 +253,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'demo_delay' must be a positive number");
         return false;
     }
-    g_GameFlow.demo_delay = tmp_d * LOGIC_FPS;
+    g_GameFlow.demo_delay = tmp_d;
 
     g_GameFlow.force_game_modes =
         GameFlow_ReadTristateBool(obj, "force_game_modes");

@@ -75,7 +75,7 @@ typedef struct GAMEFLOW {
     char *savegame_fmt_legacy;
     char *savegame_fmt_bson;
     int8_t has_demo;
-    int32_t demo_delay;
+    double demo_delay;
     TRISTATE_BOOL force_game_modes;
     TRISTATE_BOOL force_save_crystals;
     GAMEFLOW_LEVEL *levels;
