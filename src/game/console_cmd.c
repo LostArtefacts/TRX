@@ -115,6 +115,28 @@ static const ITEM_NAME m_ItemNames[] = {
     { .obj_id = NO_OBJECT },
 };
 
+static bool Console_Cmd_Fps(const char *const args)
+{
+    if (String_Equivalent(args, "60")) {
+        g_Config.rendering.fps = 60;
+        Console_Log("FPS set to 60");
+        return true;
+    }
+
+    if (String_Equivalent(args, "30")) {
+        g_Config.rendering.fps = 30;
+        Console_Log("FPS set to 30");
+        return true;
+    }
+
+    if (String_Equivalent(args, "")) {
+        Console_Log("FPS currently set to %d", g_Config.rendering.fps);
+        return true;
+    }
+
+    return false;
+}
+
 static bool Console_Cmd_Pos(const char *const args)
 {
     if (!g_Objects[O_LARA].loaded) {
@@ -506,6 +528,7 @@ static bool Console_Cmd_Abortion(const char *args)
 }
 
 CONSOLE_COMMAND g_ConsoleCommands[] = {
+    { .prefix = "fps", .proc = Console_Cmd_Fps },
     { .prefix = "pos", .proc = Console_Cmd_Pos },
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
     { .prefix = "fly", .proc = Console_Cmd_Fly },
