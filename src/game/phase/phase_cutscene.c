@@ -133,7 +133,7 @@ static GAMEFLOW_OPTION Phase_Cutscene_Control(int32_t nframes)
 static void Phase_Cutscene_Draw(void)
 {
     Game_DrawScene(true);
-    Output_AnimateTextures(g_Camera.number_frames);
+    Output_AnimateTextures();
     Output_AnimateFades();
 }
 

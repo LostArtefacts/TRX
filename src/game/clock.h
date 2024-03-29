@@ -13,6 +13,8 @@ int32_t Clock_GetTurboSpeed(void);
 double Clock_GetSpeedMultiplier(void);
 
 int32_t Clock_GetMS(void);
+int32_t Clock_GetLogicalFrame(void);
+bool Clock_IsAtLogicalFrame(int32_t how_often);
 void Clock_GetDateTime(char *date_time);
 
 int32_t Clock_GetFrameAdvance(void);

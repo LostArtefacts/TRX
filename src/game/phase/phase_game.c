@@ -138,8 +138,8 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 static void Phase_Game_Draw(void)
 {
     Game_DrawScene(true);
+    Output_AnimateTextures();
     Output_AnimateFades();
-    Output_AnimateTextures(g_Camera.number_frames);
     Text_Draw();
 }
 

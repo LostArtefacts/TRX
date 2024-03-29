@@ -916,18 +916,15 @@ void Output_AnimateFades(void)
     }
 }
 
-void Output_AnimateTextures(int32_t ticks)
+void Output_AnimateTextures(void)
 {
-    m_WibbleOffset = (m_WibbleOffset + ticks / TICKS_PER_FRAME) % WIBBLE_SIZE;
-
-    static int32_t tick_comp = 0;
-    tick_comp += ticks;
+    m_WibbleOffset = Clock_GetLogicalFrame() % WIBBLE_SIZE;
 
     if (!g_AnimTextureRanges) {
         return;
     }
 
-    while (tick_comp > TICKS_PER_FRAME * 5) {
+    if (Clock_IsAtLogicalFrame(5)) {
         int16_t *ptr = g_AnimTextureRanges;
         int16_t i = *ptr++;
         while (i > 0) {
@@ -942,7 +939,6 @@ void Output_AnimateTextures(int32_t ticks)
             i--;
             ptr++;
         }
-        tick_comp -= TICKS_PER_FRAME * 5;
     }
 }
 
