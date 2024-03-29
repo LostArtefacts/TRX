@@ -116,7 +116,7 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
     }
 
     // time taken
-    int seconds = stats->timer / 30;
+    int seconds = stats->timer / LOGIC_FPS;
     int hours = seconds / 3600;
     int minutes = (seconds / 60) % 60;
     seconds %= 60;
@@ -201,7 +201,7 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     }
 
     // time taken
-    int seconds = stats.timer / 30;
+    int seconds = stats.timer / LOGIC_FPS;
     int hours = seconds / 3600;
     int minutes = (seconds / 60) % 60;
     seconds %= 60;

@@ -7,7 +7,7 @@
 
 void FX_PowerUp(ITEM_INFO *item)
 {
-    if (g_FlipTimer > FRAMES_PER_SECOND * 4) {
+    if (g_FlipTimer > LOGIC_FPS * 4) {
         g_FlipEffect = -1;
     } else {
         const XYZ_32 pos = {

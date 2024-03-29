@@ -216,7 +216,7 @@ bool Switch_Trigger(int16_t item_num, int16_t timer)
     if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
         item->timer = timer;
         if (timer != 1) {
-            item->timer *= FRAMES_PER_SECOND;
+            item->timer *= LOGIC_FPS;
         }
         item->status = IS_ACTIVE;
     } else {

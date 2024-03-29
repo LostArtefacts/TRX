@@ -75,7 +75,7 @@ static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type)
         if (g_MusicTrackFlags[track] & IF_ONESHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
-            if (gym_completion_counter == FRAMES_PER_SECOND * 4) {
+            if (gym_completion_counter == LOGIC_FPS * 4) {
                 g_LevelComplete = true;
                 gym_completion_counter = 0;
             }
@@ -800,7 +800,7 @@ void Room_TestTriggers(int16_t *data, bool heavy)
 
             item->timer = timer;
             if (timer != 1) {
-                item->timer *= FRAMES_PER_SECOND;
+                item->timer *= LOGIC_FPS;
             }
 
             if (type == TT_SWITCH) {
@@ -873,7 +873,7 @@ void Room_TestTriggers(int16_t *data, bool heavy)
 
             g_Camera.timer = camera_timer;
             if (g_Camera.timer != 1) {
-                g_Camera.timer *= FRAMES_PER_SECOND;
+                g_Camera.timer *= LOGIC_FPS;
             }
 
             if (camera_flags & IF_ONESHOT) {

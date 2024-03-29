@@ -254,7 +254,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
         LOG_ERROR("'demo_delay' must be a positive number");
         return false;
     }
-    g_GameFlow.demo_delay = tmp_d * FRAMES_PER_SECOND;
+    g_GameFlow.demo_delay = tmp_d * LOGIC_FPS;
 
     g_GameFlow.force_game_modes =
         GameFlow_ReadTristateBool(obj, "force_game_modes");
