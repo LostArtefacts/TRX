@@ -144,10 +144,10 @@ void Switch_CollisionControlled(
                     lara_item->current_anim_state = LS_SWITCH_ON;
                     item->goal_anim_state = SWITCH_STATE_ON;
                 }
-                g_Lara.head_x_rot = 0;
-                g_Lara.head_y_rot = 0;
-                g_Lara.torso_x_rot = 0;
-                g_Lara.torso_y_rot = 0;
+                g_Lara.head_rot.x = 0;
+                g_Lara.head_rot.y = 0;
+                g_Lara.torso_rot.x = 0;
+                g_Lara.torso_rot.y = 0;
                 g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
                 Item_AddActive(item_num);

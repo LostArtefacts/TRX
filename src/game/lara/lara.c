@@ -83,10 +83,10 @@ void Lara_Control(void)
             item->rot.x = -45 * PHD_DEGREE;
             item->fall_speed = (item->fall_speed * 3) / 2;
         }
-        g_Lara.head_x_rot = 0;
-        g_Lara.head_y_rot = 0;
-        g_Lara.torso_x_rot = 0;
-        g_Lara.torso_y_rot = 0;
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x = 0;
+        g_Lara.torso_rot.y = 0;
         Splash_Spawn(item);
     } else if (g_Lara.water_status == LWS_UNDERWATER && !room_submerged) {
         int16_t wh = Room_GetWaterHeight(
@@ -101,10 +101,10 @@ void Lara_Control(void)
             item->pos.y = wh + 1;
             item->rot.x = 0;
             item->rot.z = 0;
-            g_Lara.head_x_rot = 0;
-            g_Lara.head_y_rot = 0;
-            g_Lara.torso_x_rot = 0;
-            g_Lara.torso_y_rot = 0;
+            g_Lara.head_rot.x = 0;
+            g_Lara.head_rot.y = 0;
+            g_Lara.torso_rot.x = 0;
+            g_Lara.torso_rot.y = 0;
             Item_UpdateRoom(item, -LARA_HEIGHT / 2);
             Sound_Effect(SFX_LARA_BREATH, &item->pos, SPM_ALWAYS);
         } else {
@@ -118,10 +118,10 @@ void Lara_Control(void)
             item->gravity_status = 1;
             item->rot.x = 0;
             item->rot.z = 0;
-            g_Lara.head_x_rot = 0;
-            g_Lara.head_y_rot = 0;
-            g_Lara.torso_x_rot = 0;
-            g_Lara.torso_y_rot = 0;
+            g_Lara.head_rot.x = 0;
+            g_Lara.head_rot.y = 0;
+            g_Lara.torso_rot.x = 0;
+            g_Lara.torso_rot.y = 0;
         }
     } else if (g_Lara.water_status == LWS_SURFACE && !room_submerged) {
         g_Lara.water_status = LWS_ABOVE_WATER;
@@ -134,10 +134,10 @@ void Lara_Control(void)
         item->gravity_status = 1;
         item->rot.x = 0;
         item->rot.z = 0;
-        g_Lara.head_x_rot = 0;
-        g_Lara.head_y_rot = 0;
-        g_Lara.torso_x_rot = 0;
-        g_Lara.torso_y_rot = 0;
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x = 0;
+        g_Lara.torso_rot.y = 0;
     }
 
     if (item->hit_points <= 0) {
@@ -202,10 +202,10 @@ void Lara_Control(void)
                 g_Lara.water_status = LWS_ABOVE_WATER;
                 Item_SwitchToAnim(item, LA_STOP, 0);
                 item->rot.x = item->rot.z = 0;
-                g_Lara.head_x_rot = 0;
-                g_Lara.head_y_rot = 0;
-                g_Lara.torso_x_rot = 0;
-                g_Lara.torso_y_rot = 0;
+                g_Lara.head_rot.x = 0;
+                g_Lara.head_rot.y = 0;
+                g_Lara.torso_rot.x = 0;
+                g_Lara.torso_rot.y = 0;
             }
             g_Lara.gun_status = LGS_ARMLESS;
         }
@@ -425,12 +425,12 @@ void Lara_Initialise(int32_t level_num)
     }
 
     g_Lara.air = LARA_AIR;
-    g_Lara.torso_y_rot = 0;
-    g_Lara.torso_x_rot = 0;
-    g_Lara.torso_z_rot = 0;
-    g_Lara.head_y_rot = 0;
-    g_Lara.head_x_rot = 0;
-    g_Lara.head_z_rot = 0;
+    g_Lara.torso_rot.y = 0;
+    g_Lara.torso_rot.x = 0;
+    g_Lara.torso_rot.z = 0;
+    g_Lara.head_rot.y = 0;
+    g_Lara.head_rot.x = 0;
+    g_Lara.head_rot.z = 0;
     g_Lara.calc_fall_speed = 0;
     g_Lara.mesh_effects = 0;
     g_Lara.hit_frame = 0;

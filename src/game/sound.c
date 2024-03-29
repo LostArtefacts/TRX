@@ -157,7 +157,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
 
     int16_t angle = Math_Atan(
         slot->pos->z - g_LaraItem->pos.z, slot->pos->x - g_LaraItem->pos.x);
-    angle -= g_LaraItem->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+    angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
     slot->pan = angle;
 }
 
@@ -320,7 +320,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
     if (pan) {
         int16_t angle =
             Math_Atan(pos->z - g_LaraItem->pos.z, pos->x - g_LaraItem->pos.x);
-        angle -= g_LaraItem->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+        angle -= g_LaraItem->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
         pan = angle;
     }
 

@@ -699,9 +699,9 @@ static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
     arm->frame_number =
         json_object_get_int(arm_obj, "frame_num", arm->frame_number);
     arm->lock = json_object_get_int(arm_obj, "lock", arm->lock);
-    arm->x_rot = json_object_get_int(arm_obj, "x_rot", arm->x_rot);
-    arm->y_rot = json_object_get_int(arm_obj, "y_rot", arm->y_rot);
-    arm->z_rot = json_object_get_int(arm_obj, "z_rot", arm->z_rot);
+    arm->rot.x = json_object_get_int(arm_obj, "x_rot", arm->rot.x);
+    arm->rot.y = json_object_get_int(arm_obj, "y_rot", arm->rot.y);
+    arm->rot.z = json_object_get_int(arm_obj, "z_rot", arm->rot.z);
     arm->flash_gun = json_object_get_int(arm_obj, "flash_gun", arm->flash_gun);
     return true;
 }
@@ -822,18 +822,18 @@ static bool Savegame_BSON_LoadLara(
         json_object_get_int(lara_obj, "turn_rate", lara->turn_rate);
     lara->move_angle =
         json_object_get_int(lara_obj, "move_angle", lara->move_angle);
-    lara->head_y_rot =
-        json_object_get_int(lara_obj, "head_y_rot", lara->head_y_rot);
-    lara->head_x_rot =
-        json_object_get_int(lara_obj, "head_x_rot", lara->head_x_rot);
-    lara->head_z_rot =
-        json_object_get_int(lara_obj, "head_z_rot", lara->head_z_rot);
-    lara->torso_y_rot =
-        json_object_get_int(lara_obj, "torso_y_rot", lara->torso_y_rot);
-    lara->torso_x_rot =
-        json_object_get_int(lara_obj, "torso_x_rot", lara->torso_x_rot);
-    lara->torso_z_rot =
-        json_object_get_int(lara_obj, "torso_z_rot", lara->torso_z_rot);
+    lara->head_rot.y =
+        json_object_get_int(lara_obj, "head_rot.y", lara->head_rot.y);
+    lara->head_rot.x =
+        json_object_get_int(lara_obj, "head_rot.x", lara->head_rot.x);
+    lara->head_rot.z =
+        json_object_get_int(lara_obj, "head_rot.z", lara->head_rot.z);
+    lara->torso_rot.y =
+        json_object_get_int(lara_obj, "torso_rot.y", lara->torso_rot.y);
+    lara->torso_rot.x =
+        json_object_get_int(lara_obj, "torso_rot.x", lara->torso_rot.x);
+    lara->torso_rot.z =
+        json_object_get_int(lara_obj, "torso_rot.z", lara->torso_rot.z);
 
     if (!Savegame_BSON_LoadArm(
             json_object_get_object(lara_obj, "left_arm"), &lara->left_arm)) {
@@ -1154,9 +1154,9 @@ static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
         arm_obj, "frame_base", arm->frame_base - g_AnimFrames);
     json_object_append_int(arm_obj, "frame_num", arm->frame_number);
     json_object_append_int(arm_obj, "lock", arm->lock);
-    json_object_append_int(arm_obj, "x_rot", arm->x_rot);
-    json_object_append_int(arm_obj, "y_rot", arm->y_rot);
-    json_object_append_int(arm_obj, "z_rot", arm->z_rot);
+    json_object_append_int(arm_obj, "x_rot", arm->rot.x);
+    json_object_append_int(arm_obj, "y_rot", arm->rot.y);
+    json_object_append_int(arm_obj, "z_rot", arm->rot.z);
     json_object_append_int(arm_obj, "flash_gun", arm->flash_gun);
     return arm_obj;
 }
@@ -1228,12 +1228,12 @@ static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara)
     json_object_append_int(lara_obj, "target_angle2", lara->target_angles[1]);
     json_object_append_int(lara_obj, "turn_rate", lara->turn_rate);
     json_object_append_int(lara_obj, "move_angle", lara->move_angle);
-    json_object_append_int(lara_obj, "head_y_rot", lara->head_y_rot);
-    json_object_append_int(lara_obj, "head_x_rot", lara->head_x_rot);
-    json_object_append_int(lara_obj, "head_z_rot", lara->head_z_rot);
-    json_object_append_int(lara_obj, "torso_y_rot", lara->torso_y_rot);
-    json_object_append_int(lara_obj, "torso_x_rot", lara->torso_x_rot);
-    json_object_append_int(lara_obj, "torso_z_rot", lara->torso_z_rot);
+    json_object_append_int(lara_obj, "head_rot.y", lara->head_rot.y);
+    json_object_append_int(lara_obj, "head_rot.x", lara->head_rot.x);
+    json_object_append_int(lara_obj, "head_rot.z", lara->head_rot.z);
+    json_object_append_int(lara_obj, "torso_rot.y", lara->torso_rot.y);
+    json_object_append_int(lara_obj, "torso_rot.x", lara->torso_rot.x);
+    json_object_append_int(lara_obj, "torso_rot.z", lara->torso_rot.z);
 
     json_object_append_object(
         lara_obj, "left_arm", Savegame_BSON_DumpArm(&lara->left_arm));

@@ -35,13 +35,13 @@ void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
     if (Anim_TestAbsFrameRange(anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anil = LF_G_AIM_END;
     } else if (Anim_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
-        g_Lara.left_arm.x_rot -= g_Lara.left_arm.x_rot / anil;
-        g_Lara.left_arm.y_rot -= g_Lara.left_arm.y_rot / anil;
+        g_Lara.left_arm.rot.x -= g_Lara.left_arm.rot.x / anil;
+        g_Lara.left_arm.rot.y -= g_Lara.left_arm.rot.y / anil;
         anil--;
     } else if (Anim_TestAbsFrameEqual(anil, LF_G_AIM_START)) {
-        g_Lara.left_arm.x_rot = 0;
-        g_Lara.left_arm.y_rot = 0;
-        g_Lara.left_arm.z_rot = 0;
+        g_Lara.left_arm.rot.x = 0;
+        g_Lara.left_arm.rot.y = 0;
+        g_Lara.left_arm.rot.z = 0;
         anil = LF_G_DRAW_END;
     } else if (Anim_TestAbsFrameRange(anil, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anil--;
@@ -55,13 +55,13 @@ void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
     if (Anim_TestAbsFrameRange(anir, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anir = LF_G_AIM_END;
     } else if (Anim_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
-        g_Lara.right_arm.x_rot -= g_Lara.right_arm.x_rot / anir;
-        g_Lara.right_arm.y_rot -= g_Lara.right_arm.y_rot / anir;
+        g_Lara.right_arm.rot.x -= g_Lara.right_arm.rot.x / anir;
+        g_Lara.right_arm.rot.y -= g_Lara.right_arm.rot.y / anir;
         anir--;
     } else if (Anim_TestAbsFrameEqual(anir, LF_G_AIM_START)) {
-        g_Lara.right_arm.x_rot = 0;
-        g_Lara.right_arm.y_rot = 0;
-        g_Lara.right_arm.z_rot = 0;
+        g_Lara.right_arm.rot.x = 0;
+        g_Lara.right_arm.rot.y = 0;
+        g_Lara.right_arm.rot.z = 0;
         anir = LF_G_DRAW_END;
     } else if (Anim_TestAbsFrameRange(anir, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anir--;
@@ -81,27 +81,27 @@ void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
         g_Lara.target = NULL;
     }
 
-    g_Lara.head_x_rot = (g_Lara.right_arm.x_rot + g_Lara.left_arm.x_rot) / 4;
-    g_Lara.head_y_rot = (g_Lara.right_arm.y_rot + g_Lara.left_arm.y_rot) / 4;
-    g_Lara.torso_x_rot = (g_Lara.right_arm.x_rot + g_Lara.left_arm.x_rot) / 4;
-    g_Lara.torso_y_rot = (g_Lara.right_arm.y_rot + g_Lara.left_arm.y_rot) / 4;
+    g_Lara.head_rot.x = (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
+    g_Lara.head_rot.y = (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
+    g_Lara.torso_rot.x = (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
+    g_Lara.torso_rot.y = (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
 }
 
 void Gun_Pistols_Ready(void)
 {
     g_Lara.gun_status = LGS_READY;
-    g_Lara.left_arm.x_rot = 0;
-    g_Lara.left_arm.y_rot = 0;
-    g_Lara.left_arm.z_rot = 0;
+    g_Lara.left_arm.rot.x = 0;
+    g_Lara.left_arm.rot.y = 0;
+    g_Lara.left_arm.rot.z = 0;
     g_Lara.left_arm.lock = 0;
-    g_Lara.right_arm.x_rot = 0;
-    g_Lara.right_arm.y_rot = 0;
-    g_Lara.right_arm.z_rot = 0;
+    g_Lara.right_arm.rot.x = 0;
+    g_Lara.right_arm.rot.y = 0;
+    g_Lara.right_arm.rot.z = 0;
     g_Lara.right_arm.lock = 0;
-    g_Lara.head_x_rot = 0;
-    g_Lara.head_y_rot = 0;
-    g_Lara.torso_x_rot = 0;
-    g_Lara.torso_y_rot = 0;
+    g_Lara.head_rot.x = 0;
+    g_Lara.head_rot.y = 0;
+    g_Lara.torso_rot.x = 0;
+    g_Lara.torso_rot.y = 0;
     g_Lara.target = NULL;
     g_Lara.right_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
     g_Lara.left_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
@@ -171,29 +171,29 @@ void Gun_Pistols_Control(LARA_GUN_TYPE weapon_type)
 
     if (g_Lara.left_arm.lock && !g_Lara.right_arm.lock) {
         if (g_Camera.type != CAM_LOOK) {
-            g_Lara.head_x_rot = g_Lara.left_arm.x_rot / 2;
-            g_Lara.head_y_rot = g_Lara.left_arm.y_rot / 2;
+            g_Lara.head_rot.x = g_Lara.left_arm.rot.x / 2;
+            g_Lara.head_rot.y = g_Lara.left_arm.rot.y / 2;
         }
-        g_Lara.torso_x_rot = g_Lara.left_arm.x_rot / 2;
-        g_Lara.torso_y_rot = g_Lara.left_arm.y_rot / 2;
+        g_Lara.torso_rot.x = g_Lara.left_arm.rot.x / 2;
+        g_Lara.torso_rot.y = g_Lara.left_arm.rot.y / 2;
     } else if (!g_Lara.left_arm.lock && g_Lara.right_arm.lock) {
         if (g_Camera.type != CAM_LOOK) {
-            g_Lara.head_x_rot = g_Lara.right_arm.x_rot / 2;
-            g_Lara.head_y_rot = g_Lara.right_arm.y_rot / 2;
+            g_Lara.head_rot.x = g_Lara.right_arm.rot.x / 2;
+            g_Lara.head_rot.y = g_Lara.right_arm.rot.y / 2;
         }
-        g_Lara.torso_x_rot = g_Lara.right_arm.x_rot / 2;
-        g_Lara.torso_y_rot = g_Lara.right_arm.y_rot / 2;
+        g_Lara.torso_rot.x = g_Lara.right_arm.rot.x / 2;
+        g_Lara.torso_rot.y = g_Lara.right_arm.rot.y / 2;
     } else if (g_Lara.left_arm.lock && g_Lara.right_arm.lock) {
         if (g_Camera.type != CAM_LOOK) {
-            g_Lara.head_x_rot =
-                (g_Lara.right_arm.x_rot + g_Lara.left_arm.x_rot) / 4;
-            g_Lara.head_y_rot =
-                (g_Lara.right_arm.y_rot + g_Lara.left_arm.y_rot) / 4;
+            g_Lara.head_rot.x =
+                (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
+            g_Lara.head_rot.y =
+                (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
         }
-        g_Lara.torso_x_rot =
-            (g_Lara.right_arm.x_rot + g_Lara.left_arm.x_rot) / 4;
-        g_Lara.torso_y_rot =
-            (g_Lara.right_arm.y_rot + g_Lara.left_arm.y_rot) / 4;
+        g_Lara.torso_rot.x =
+            (g_Lara.right_arm.rot.x + g_Lara.left_arm.rot.x) / 4;
+        g_Lara.torso_rot.y =
+            (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
     }
 
     Gun_Pistols_Animate(weapon_type);
@@ -210,8 +210,8 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
             anir++;
         } else if (
             Anim_TestAbsFrameEqual(anir, LF_G_AIM_END) && g_Input.action) {
-            angles[0] = g_Lara.right_arm.y_rot + g_LaraItem->rot.y;
-            angles[1] = g_Lara.right_arm.x_rot;
+            angles[0] = g_Lara.right_arm.rot.y + g_LaraItem->rot.y;
+            angles[1] = g_Lara.right_arm.rot.x;
             if (Gun_FireWeapon(
                     weapon_type, g_Lara.target, g_LaraItem, angles)) {
                 g_Lara.right_arm.flash_gun = winfo->flash_time;
@@ -240,8 +240,8 @@ void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
             anil++;
         } else if (
             Anim_TestAbsFrameEqual(anil, LF_G_AIM_END) && g_Input.action) {
-            angles[0] = g_Lara.left_arm.y_rot + g_LaraItem->rot.y;
-            angles[1] = g_Lara.left_arm.x_rot;
+            angles[0] = g_Lara.left_arm.rot.y + g_LaraItem->rot.y;
+            angles[1] = g_Lara.left_arm.rot.x;
             if (Gun_FireWeapon(
                     weapon_type, g_Lara.target, g_LaraItem, angles)) {
                 g_Lara.left_arm.flash_gun = winfo->flash_time;

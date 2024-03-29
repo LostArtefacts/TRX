@@ -189,10 +189,10 @@ void Pickup_CollisionControlled(
                 g_Lara.gun_status = LGS_ARMLESS;
             }
             if (have_item) {
-                g_Lara.head_y_rot = 0;
-                g_Lara.head_x_rot = 0;
-                g_Lara.torso_y_rot = 0;
-                g_Lara.torso_x_rot = 0;
+                g_Lara.head_rot.y = 0;
+                g_Lara.head_rot.x = 0;
+                g_Lara.torso_rot.y = 0;
+                g_Lara.torso_rot.x = 0;
                 g_Lara.interact_target.is_moving = false;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
             }

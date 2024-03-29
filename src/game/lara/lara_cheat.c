@@ -128,10 +128,10 @@ void Lara_EnterFlyMode(void)
         item->gravity_status = 0;
         item->rot.x = 30 * PHD_DEGREE;
         item->fall_speed = 30;
-        g_Lara.head_x_rot = 0;
-        g_Lara.head_y_rot = 0;
-        g_Lara.torso_x_rot = 0;
-        g_Lara.torso_y_rot = 0;
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x = 0;
+        g_Lara.torso_rot.y = 0;
     }
     g_Lara.water_status = LWS_CHEAT;
     g_Lara.spaz_effect_count = 0;

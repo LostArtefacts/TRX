@@ -246,12 +246,12 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
     Savegame_Legacy_Write(&lara->target_angles[1], sizeof(PHD_ANGLE));
     Savegame_Legacy_Write(&lara->turn_rate, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->move_angle, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->head_y_rot, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->head_x_rot, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->head_z_rot, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->torso_y_rot, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->torso_x_rot, sizeof(int16_t));
-    Savegame_Legacy_Write(&lara->torso_z_rot, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->head_rot.y, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->head_rot.x, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->head_rot.z, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->torso_rot.y, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->torso_rot.x, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->torso_rot.z, sizeof(int16_t));
 
     Savegame_Legacy_WriteArm(&lara->left_arm);
     Savegame_Legacy_WriteArm(&lara->right_arm);
@@ -276,9 +276,9 @@ static void Savegame_Legacy_WriteArm(LARA_ARM *arm)
     Savegame_Legacy_Write(&frame_base, sizeof(int32_t));
     Savegame_Legacy_Write(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->lock, sizeof(int16_t));
-    Savegame_Legacy_Write(&arm->y_rot, sizeof(PHD_ANGLE));
-    Savegame_Legacy_Write(&arm->x_rot, sizeof(PHD_ANGLE));
-    Savegame_Legacy_Write(&arm->z_rot, sizeof(PHD_ANGLE));
+    Savegame_Legacy_Write(&arm->rot.y, sizeof(PHD_ANGLE));
+    Savegame_Legacy_Write(&arm->rot.x, sizeof(PHD_ANGLE));
+    Savegame_Legacy_Write(&arm->rot.z, sizeof(PHD_ANGLE));
     Savegame_Legacy_Write(&arm->flash_gun, sizeof(int16_t));
 }
 
@@ -346,12 +346,12 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
     Savegame_Legacy_Read(&lara->target_angles[1], sizeof(PHD_ANGLE));
     Savegame_Legacy_Read(&lara->turn_rate, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->move_angle, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->head_y_rot, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->head_x_rot, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->head_z_rot, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->torso_y_rot, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->torso_x_rot, sizeof(int16_t));
-    Savegame_Legacy_Read(&lara->torso_z_rot, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->head_rot.y, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->head_rot.x, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->head_rot.z, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->torso_rot.y, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->torso_rot.x, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->torso_rot.z, sizeof(int16_t));
 
     Savegame_Legacy_ReadArm(&lara->left_arm);
     Savegame_Legacy_ReadArm(&lara->right_arm);
@@ -379,9 +379,9 @@ static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 
     Savegame_Legacy_Read(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->lock, sizeof(int16_t));
-    Savegame_Legacy_Read(&arm->y_rot, sizeof(PHD_ANGLE));
-    Savegame_Legacy_Read(&arm->x_rot, sizeof(PHD_ANGLE));
-    Savegame_Legacy_Read(&arm->z_rot, sizeof(PHD_ANGLE));
+    Savegame_Legacy_Read(&arm->rot.y, sizeof(PHD_ANGLE));
+    Savegame_Legacy_Read(&arm->rot.x, sizeof(PHD_ANGLE));
+    Savegame_Legacy_Read(&arm->rot.z, sizeof(PHD_ANGLE));
     Savegame_Legacy_Read(&arm->flash_gun, sizeof(int16_t));
 }
 
