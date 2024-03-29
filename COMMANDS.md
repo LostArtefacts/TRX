@@ -45,3 +45,7 @@ Currently supported commands:
 - `/speed`  
 - `/speed {num}`  
   Retrieves or sets current game speed.
+
+- `/fps`  
+- `/fps {num}`  
+  Retrieves or sets current frames per second.
