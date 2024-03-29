@@ -10,6 +10,7 @@ TR1X.log
 /workflow
 /TR1X*.zip
 /TR1X*.exe
+__pycache__/
 
 # VS garbage
 v15/
