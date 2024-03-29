@@ -432,7 +432,6 @@ void Camera_Initialise(void)
     g_Camera.target_distance = WALL_L * 3 / 2;
     g_Camera.item = NULL;
 
-    g_Camera.number_frames = 1;
     g_Camera.type = CAM_CHASE;
     g_Camera.flags = 0;
     g_Camera.bounce = 0;

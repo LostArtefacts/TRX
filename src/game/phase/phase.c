@@ -111,9 +111,7 @@ static int32_t Phase_Wait(void)
     if (m_Phaser && m_Phaser->wait) {
         return m_Phaser->wait();
     } else {
-        int32_t nframes = Clock_SyncTicks();
-        g_Camera.number_frames = nframes;
-        return nframes;
+        return Clock_SyncTicks();
     }
 }
 
@@ -134,7 +132,7 @@ GAMEFLOW_OPTION Phase_Run(void)
             if (ret != GF_PHASE_CONTINUE) {
                 break;
             }
-            nframes = 2;
+            nframes = TICKS_PER_FRAME;
         } else {
             if (ret != GF_PHASE_CONTINUE) {
                 break;
