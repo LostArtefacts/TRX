@@ -123,6 +123,9 @@
             "type": "title",
             "music": 2,
             "inherit_injections": false,
+            "injections": [
+                "data/pda_model.bin",
+            ],
             "sequence": [
                 {"type": "display_picture", "picture_path": "data/images/eidos.webp", "display_time": 1},
                 {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
