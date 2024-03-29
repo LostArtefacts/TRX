@@ -204,21 +204,21 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraStateRoutines[item->current_anim_state](item, coll);
 
     if (g_Camera.type != CAM_LOOK) {
-        if (g_Lara.head_x_rot > -HEAD_TURN / 2
-            && g_Lara.head_x_rot < HEAD_TURN / 2) {
-            g_Lara.head_x_rot = 0;
+        if (g_Lara.head_rot.x > -HEAD_TURN / 2
+            && g_Lara.head_rot.x < HEAD_TURN / 2) {
+            g_Lara.head_rot.x = 0;
         } else {
-            g_Lara.head_x_rot -= g_Lara.head_x_rot / 8;
+            g_Lara.head_rot.x -= g_Lara.head_rot.x / 8;
         }
-        g_Lara.torso_x_rot = g_Lara.head_x_rot;
+        g_Lara.torso_rot.x = g_Lara.head_rot.x;
 
-        if (g_Lara.head_y_rot > -HEAD_TURN / 2
-            && g_Lara.head_y_rot < HEAD_TURN / 2) {
-            g_Lara.head_y_rot = 0;
+        if (g_Lara.head_rot.y > -HEAD_TURN / 2
+            && g_Lara.head_rot.y < HEAD_TURN / 2) {
+            g_Lara.head_rot.y = 0;
         } else {
-            g_Lara.head_y_rot -= g_Lara.head_y_rot / 8;
+            g_Lara.head_rot.y -= g_Lara.head_rot.y / 8;
         }
-        g_Lara.torso_y_rot = g_Lara.head_y_rot;
+        g_Lara.torso_rot.y = g_Lara.head_rot.y;
     }
 
     if (item->rot.z >= -LARA_LEAN_UNDO && item->rot.z <= LARA_LEAN_UNDO) {
@@ -276,21 +276,21 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Camera.type != CAM_LOOK) {
-        if (g_Lara.head_y_rot > -HEAD_TURN_SURF
-            && g_Lara.head_y_rot < HEAD_TURN_SURF) {
-            g_Lara.head_y_rot = 0;
+        if (g_Lara.head_rot.y > -HEAD_TURN_SURF
+            && g_Lara.head_rot.y < HEAD_TURN_SURF) {
+            g_Lara.head_rot.y = 0;
         } else {
-            g_Lara.head_y_rot -= g_Lara.head_y_rot / 8;
+            g_Lara.head_rot.y -= g_Lara.head_rot.y / 8;
         }
-        g_Lara.torso_y_rot = g_Lara.head_x_rot / 2;
+        g_Lara.torso_rot.y = g_Lara.head_rot.x / 2;
 
-        if (g_Lara.head_x_rot > -HEAD_TURN_SURF
-            && g_Lara.head_x_rot < HEAD_TURN_SURF) {
-            g_Lara.head_x_rot = 0;
+        if (g_Lara.head_rot.x > -HEAD_TURN_SURF
+            && g_Lara.head_rot.x < HEAD_TURN_SURF) {
+            g_Lara.head_rot.x = 0;
         } else {
-            g_Lara.head_x_rot -= g_Lara.head_x_rot / 8;
+            g_Lara.head_rot.x -= g_Lara.head_rot.x / 8;
         }
-        g_Lara.torso_x_rot = 0;
+        g_Lara.torso_rot.x = 0;
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {

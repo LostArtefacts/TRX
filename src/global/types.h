@@ -1450,9 +1450,7 @@ typedef struct LARA_ARM {
     int16_t *frame_base;
     int16_t frame_number;
     int16_t lock;
-    PHD_ANGLE y_rot;
-    PHD_ANGLE x_rot;
-    PHD_ANGLE z_rot;
+    XYZ_16 rot;
     uint16_t flash_gun;
 } LARA_ARM;
 
@@ -1521,12 +1519,8 @@ typedef struct LARA_INFO {
     PHD_ANGLE target_angles[2];
     int16_t turn_rate;
     int16_t move_angle;
-    int16_t head_y_rot;
-    int16_t head_x_rot;
-    int16_t head_z_rot;
-    int16_t torso_y_rot;
-    int16_t torso_x_rot;
-    int16_t torso_z_rot;
+    XYZ_16 head_rot;
+    XYZ_16 torso_rot;
     LARA_ARM left_arm;
     LARA_ARM right_arm;
     AMMO_INFO pistols;

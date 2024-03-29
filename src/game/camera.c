@@ -489,9 +489,9 @@ void Camera_Combat(ITEM_INFO *item)
         g_Camera.target_elevation = item->rot.x + g_Lara.target_angles[1];
     } else {
         g_Camera.target_angle =
-            item->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+            item->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
         g_Camera.target_elevation =
-            item->rot.x + g_Lara.torso_x_rot + g_Lara.head_x_rot;
+            item->rot.x + g_Lara.torso_rot.x + g_Lara.head_rot.x;
     }
 
     g_Camera.target_distance = COMBAT_DISTANCE;
@@ -525,9 +525,9 @@ void Camera_Look(ITEM_INFO *item)
     g_Camera.target.x = item->pos.x;
 
     g_Camera.target_angle =
-        item->rot.y + g_Lara.torso_y_rot + g_Lara.head_y_rot;
+        item->rot.y + g_Lara.torso_rot.y + g_Lara.head_rot.y;
     g_Camera.target_elevation =
-        item->rot.x + g_Lara.torso_x_rot + g_Lara.head_x_rot;
+        item->rot.x + g_Lara.torso_rot.x + g_Lara.head_rot.x;
     g_Camera.target_distance = WALL_L * 3 / 2;
 
     int32_t distance =
@@ -648,26 +648,26 @@ void Camera_Update(void)
 
         if (angle > -MAX_HEAD_ROTATION && angle < MAX_HEAD_ROTATION
             && tilt > MIN_HEAD_TILT_CAM && tilt < MAX_HEAD_TILT_CAM) {
-            int16_t change = angle - g_Lara.head_y_rot;
+            int16_t change = angle - g_Lara.head_rot.y;
             if (change > HEAD_TURN) {
-                g_Lara.head_y_rot += HEAD_TURN;
+                g_Lara.head_rot.y += HEAD_TURN;
             } else if (change < -HEAD_TURN) {
-                g_Lara.head_y_rot -= HEAD_TURN;
+                g_Lara.head_rot.y -= HEAD_TURN;
             } else {
-                g_Lara.head_y_rot += change;
+                g_Lara.head_rot.y += change;
             }
 
-            change = tilt - g_Lara.head_x_rot;
+            change = tilt - g_Lara.head_rot.x;
             if (change > HEAD_TURN) {
-                g_Lara.head_x_rot += HEAD_TURN;
+                g_Lara.head_rot.x += HEAD_TURN;
             } else if (change < -HEAD_TURN) {
-                g_Lara.head_x_rot -= HEAD_TURN;
+                g_Lara.head_rot.x -= HEAD_TURN;
             } else {
-                g_Lara.head_x_rot += change;
+                g_Lara.head_rot.x += change;
             }
 
-            g_Lara.torso_y_rot = g_Lara.head_y_rot;
-            g_Lara.torso_x_rot = g_Lara.head_x_rot;
+            g_Lara.torso_rot.y = g_Lara.head_rot.y;
+            g_Lara.torso_rot.x = g_Lara.head_rot.x;
 
             g_Camera.type = CAM_LOOK;
             g_Camera.item->looked_at = 1;

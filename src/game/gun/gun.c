@@ -166,15 +166,15 @@ void Gun_Control(void)
 
 void Gun_InitialiseNewWeapon(void)
 {
-    g_Lara.left_arm.x_rot = 0;
-    g_Lara.left_arm.y_rot = 0;
-    g_Lara.left_arm.z_rot = 0;
+    g_Lara.left_arm.rot.x = 0;
+    g_Lara.left_arm.rot.y = 0;
+    g_Lara.left_arm.rot.z = 0;
     g_Lara.left_arm.lock = 0;
     g_Lara.left_arm.flash_gun = 0;
     g_Lara.left_arm.frame_number = LF_G_AIM_START;
-    g_Lara.right_arm.x_rot = 0;
-    g_Lara.right_arm.y_rot = 0;
-    g_Lara.right_arm.z_rot = 0;
+    g_Lara.right_arm.rot.x = 0;
+    g_Lara.right_arm.rot.y = 0;
+    g_Lara.right_arm.rot.z = 0;
     g_Lara.right_arm.lock = 0;
     g_Lara.right_arm.flash_gun = 0;
     g_Lara.right_arm.frame_number = LF_G_AIM_START;

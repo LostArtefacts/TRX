@@ -145,7 +145,7 @@ void Lara_Hair_Control(void)
         Matrix_RotYXZpack_I(
             packed_rotation1[LM_TORSO], packed_rotation2[LM_TORSO]);
         Matrix_RotYXZ_I(
-            g_Lara.torso_y_rot, g_Lara.torso_x_rot, g_Lara.torso_z_rot);
+            g_Lara.torso_rot.y, g_Lara.torso_rot.x, g_Lara.torso_rot.z);
         Matrix_Push_I();
         objptr = g_Meshes[object->mesh_index + LM_TORSO]; // ignore shotgun
         Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
@@ -192,7 +192,7 @@ void Lara_Hair_Control(void)
         Matrix_RotYXZpack_I(
             packed_rotation1[LM_HEAD], packed_rotation2[LM_HEAD]);
         Matrix_RotYXZ_I(
-            g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
+            g_Lara.head_rot.y, g_Lara.head_rot.x, g_Lara.head_rot.z);
         Matrix_Push_I();
         objptr = mesh_base[LM_HEAD];
         Matrix_TranslateRel_I(*objptr, *(objptr + 1), *(objptr + 2));
@@ -227,7 +227,7 @@ void Lara_Hair_Control(void)
             *(bone + 1 + 24), *(bone + 2 + 24), *(bone + 3 + 24));
         Matrix_RotYXZpack(packed_rotation[LM_TORSO]);
         Matrix_RotYXZ(
-            g_Lara.torso_y_rot, g_Lara.torso_x_rot, g_Lara.torso_z_rot);
+            g_Lara.torso_rot.y, g_Lara.torso_rot.x, g_Lara.torso_rot.z);
         Matrix_Push();
         objptr = g_Meshes[object->mesh_index + LM_TORSO]; // ignore shotgun
         Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
@@ -267,7 +267,7 @@ void Lara_Hair_Control(void)
         Matrix_TranslateRel(
             *(bone + 1 + 52), *(bone + 2 + 52), *(bone + 3 + 52));
         Matrix_RotYXZpack(packed_rotation[LM_HEAD]);
-        Matrix_RotYXZ(g_Lara.head_y_rot, g_Lara.head_x_rot, g_Lara.head_z_rot);
+        Matrix_RotYXZ(g_Lara.head_rot.y, g_Lara.head_rot.x, g_Lara.head_rot.z);
         Matrix_Push();
         objptr = mesh_base[LM_HEAD];
         Matrix_TranslateRel(*objptr, *(objptr + 1), *(objptr + 2));
