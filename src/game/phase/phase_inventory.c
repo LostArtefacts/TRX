@@ -42,7 +42,7 @@ static bool m_PlayedSpinin;
 static bool m_PassportModeReady;
 static int32_t m_StartLevel;
 static bool m_StartDemo;
-static int32_t m_NoInputCount;
+static int32_t m_StartMS;
 static TEXTSTRING *m_VersionText = NULL;
 static int16_t m_InvNFrames = 2;
 static int16_t m_CompassNeedle = 0;
@@ -196,7 +196,6 @@ static GAMEFLOW_OPTION Inv_Close(void)
     }
 
     if (m_StartDemo) {
-        m_NoInputCount = 0;
         return GF_START_DEMO;
     }
 
@@ -489,7 +488,6 @@ static void Phase_Inventory_Start(void *arg)
     g_InvMode = inv_mode;
 
     m_PassportModeReady = false;
-    m_NoInputCount = 0;
     m_StartLevel = -1;
     m_StartDemo = false;
     m_InvNFrames = 2;
@@ -559,6 +557,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
             return GF_PHASE_CONTINUE;
         }
 
+        m_StartMS = Clock_GetMS();
         if (!m_PlayedSpinin) {
             Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
             m_PlayedSpinin = true;
@@ -576,10 +575,10 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
     Game_ProcessInput();
 
     if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
-        m_NoInputCount = 0;
+        m_StartMS = Clock_GetMS();
     } else if (g_Config.enable_demo && motion->status == RNG_OPEN) {
-        m_NoInputCount++;
-        if (g_GameFlow.has_demo && m_NoInputCount > g_GameFlow.demo_delay) {
+        if (g_GameFlow.has_demo
+            && (Clock_GetMS() - m_StartMS) / 1000.0 > g_GameFlow.demo_delay) {
             m_StartDemo = true;
         }
     }
