@@ -92,7 +92,7 @@ void Output_LoadBackdropImage(const char *filename);
 
 void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
-void Output_AnimateTextures(int32_t ticks);
+void Output_AnimateTextures(void);
 void Output_AnimateFades(void);
 void Output_RotateLight(int16_t pitch, int16_t yaw);
 

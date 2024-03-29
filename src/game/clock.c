@@ -48,6 +48,11 @@ double Clock_GetSpeedMultiplier(void)
     return m_TurboSpeeds[m_TurboSpeedIdx];
 }
 
+int32_t Clock_GetLogicalFrame(void)
+{
+    return Clock_GetMS() * LOGIC_FPS / 1000;
+}
+
 void Clock_GetDateTime(char *date_time)
 {
     time_t lt = time(0);
@@ -71,4 +76,11 @@ double Clock_GetFrameAdvanceAdjusted(void)
         frames /= 2.0;
     }
     return frames;
+}
+
+bool Clock_IsAtLogicalFrame(const int32_t how_often)
+{
+    const int32_t now = Clock_GetMS();
+    const int32_t elapsed_frames = now * LOGIC_FPS / 1000;
+    return elapsed_frames % how_often == 0;
 }
