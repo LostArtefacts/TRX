@@ -112,7 +112,6 @@ static int32_t Phase_Wait(void)
         return m_Phaser->wait();
     } else {
         int32_t nframes = Clock_SyncTicks();
-        Output_AnimateFades(nframes);
         g_Camera.number_frames = nframes;
         return nframes;
     }

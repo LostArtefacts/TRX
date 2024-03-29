@@ -14,3 +14,6 @@ double Clock_GetSpeedMultiplier(void);
 
 int32_t Clock_GetMS(void);
 void Clock_GetDateTime(char *date_time);
+
+int32_t Clock_GetFrameAdvance(void);
+double Clock_GetFrameAdvanceAdjusted(void);

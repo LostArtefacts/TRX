@@ -68,7 +68,6 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num)
 static void Phase_Cutscene_Start(void *arg)
 {
     Output_FadeReset();
-    Output_FadeSetSpeed(1.0);
 
     const PHASE_CUTSCENE_DATA *data = (const PHASE_CUTSCENE_DATA *)arg;
     if (!Level_Initialise(data->level_num)) {
@@ -135,6 +134,7 @@ static void Phase_Cutscene_Draw(void)
 {
     Game_DrawScene(true);
     Output_AnimateTextures(g_Camera.number_frames);
+    Output_AnimateFades();
 }
 
 PHASER g_CutscenePhaser = {

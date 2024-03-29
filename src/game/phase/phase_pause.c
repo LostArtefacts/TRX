@@ -180,6 +180,7 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
 static void Phase_Pause_Draw(void)
 {
     Game_DrawScene(false);
+    Output_AnimateFades();
     Text_Draw();
 }
 

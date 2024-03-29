@@ -76,6 +76,7 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
 static void Phase_Picture_Draw(void)
 {
     Output_DrawBackdropImage();
+    Output_AnimateFades();
 }
 
 PHASER g_PicturePhaser = {
