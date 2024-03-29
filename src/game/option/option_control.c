@@ -1,6 +1,7 @@
 #include "game/option/option_control.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/screen.h"
@@ -570,14 +571,18 @@ static void Option_ControlProgressBar(TEXTSTRING *txt, int32_t timer)
 static void Option_ControlCheckResetKeys(
     CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
+    const int32_t frame = Clock_GetLogicalFrame();
+
     if ((Input_CheckKeypress(RESET_ALL_KEY)
          || Input_CheckButtonPress(RESET_ALL_BUTTON))
         && m_ResetKeyMode != KM_CHANGEKEYUP) {
-        m_ResetKeyDelay++;
-        if (m_ResetKeyDelay >= HOLD_DELAY_FRAMES) {
+        if (m_ResetKeyDelay == 0) {
+            m_ResetKeyDelay = frame;
+        } else if (frame - m_ResetKeyDelay >= HOLD_DELAY_FRAMES) {
             m_ResetKeyMode = KM_CHANGE;
-            m_ResetTimer++;
-            if (m_ResetTimer >= LOGIC_FPS * BUTTON_HOLD_TIME) {
+            if (m_ResetTimer == 0) {
+                m_ResetTimer = frame;
+            } else if (frame - m_ResetTimer >= LOGIC_FPS * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
                 Input_ResetLayout(mode, layout_num);
                 Input_CheckConflicts(mode, layout_num);
@@ -598,21 +603,27 @@ static void Option_ControlCheckResetKeys(
         m_ResetKeyMode = KM_INACTIVE;
         m_ResetKeyDelay = 0;
     }
-    CLAMP(m_ResetTimer, 0, LOGIC_FPS * BUTTON_HOLD_TIME);
-    Option_ControlProgressBar(m_Text[TEXT_RESET], m_ResetTimer);
+
+    int32_t progress = m_ResetTimer > 0 ? frame - m_ResetTimer : 0;
+    CLAMP(progress, 0, LOGIC_FPS * BUTTON_HOLD_TIME);
+    Option_ControlProgressBar(m_Text[TEXT_RESET], progress);
 }
 
 static void Option_ControlCheckUnbindKey(
     CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
+    const int32_t frame = Clock_GetLogicalFrame();
+
     if ((Input_CheckKeypress(UNBIND_KEY)
          || Input_CheckButtonPress(UNBIND_BUTTON))
         && m_UnbindKeyMode != KM_CHANGEKEYUP) {
-        m_UnbindKeyDelay++;
-        if (m_UnbindKeyDelay >= HOLD_DELAY_FRAMES) {
+        if (m_UnbindKeyDelay == 0) {
+            m_UnbindKeyDelay = frame;
+        } else if (frame - m_UnbindKeyDelay >= HOLD_DELAY_FRAMES) {
             m_UnbindKeyMode = KM_CHANGE;
-            m_UnbindTimer++;
-            if (m_UnbindTimer >= LOGIC_FPS * BUTTON_HOLD_TIME) {
+            if (m_UnbindTimer == 0) {
+                m_UnbindTimer = frame;
+            } else if (frame - m_UnbindTimer >= LOGIC_FPS * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
                 if (mode == CM_KEYBOARD) {
                     Input_AssignScancode(
@@ -639,8 +650,10 @@ static void Option_ControlCheckUnbindKey(
         m_UnbindKeyMode = KM_INACTIVE;
         m_UnbindKeyDelay = 0;
     }
-    CLAMP(m_UnbindTimer, 0, LOGIC_FPS * BUTTON_HOLD_TIME);
-    Option_ControlProgressBar(m_Text[TEXT_UNBIND], m_UnbindTimer);
+
+    int32_t progress = m_UnbindTimer > 0 ? frame - m_UnbindTimer : 0;
+    CLAMP(progress, 0, LOGIC_FPS * BUTTON_HOLD_TIME);
+    Option_ControlProgressBar(m_Text[TEXT_UNBIND], progress);
 }
 
 CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)

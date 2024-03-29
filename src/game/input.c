@@ -1,13 +1,13 @@
 #include "game/input.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "global/vars.h"
 #include "specific/s_input.h"
 
 #include <stdint.h>
 
 #define LOOK_HOLD_TIME 6
-#define LOOK_ENABLED 100
 #define DELAY_FRAMES 12
 #define HOLD_FRAMES 3
 
@@ -30,15 +30,16 @@ static void Input_CheckChangeTarget(INPUT_STATE *input)
         return;
     }
 
+    const int32_t frame = Clock_GetLogicalFrame();
     if (input->look) {
-        if (m_HoldLook >= LOOK_HOLD_TIME) {
-            m_HoldLook = LOOK_ENABLED;
-        } else {
+        if (m_HoldLook == 0 || frame - m_HoldLook < LOOK_HOLD_TIME) {
             input->look = 0;
-            m_HoldLook++;
+            if (m_HoldLook == 0) {
+                m_HoldLook = frame;
+            }
         }
     } else {
-        if (m_HoldLook && m_HoldLook != LOOK_ENABLED) {
+        if (m_HoldLook > 0 && frame - m_HoldLook < LOOK_HOLD_TIME) {
             input->change_target = 1;
         }
         m_HoldLook = 0;
@@ -51,20 +52,26 @@ static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
     result.any = input.any & ~g_OldInputDB.any;
 
     // Allow holding down key to move faster
+    const int32_t frame = Clock_GetLogicalFrame();
     if (input.forward || !input.back) {
         m_HoldBack = 0;
-    } else if (input.back && ++m_HoldBack >= DELAY_FRAMES + HOLD_FRAMES) {
+    } else if (input.back && m_HoldBack == 0) {
+        m_HoldBack = frame;
+    } else if (input.back && frame - m_HoldBack >= DELAY_FRAMES + HOLD_FRAMES) {
         result.back = 1;
         result.menu_down = 1;
-        m_HoldBack = DELAY_FRAMES;
+        m_HoldBack = frame - DELAY_FRAMES;
     }
 
     if (!input.forward || input.back) {
         m_HoldForward = 0;
-    } else if (input.forward && ++m_HoldForward >= DELAY_FRAMES + HOLD_FRAMES) {
+    } else if (input.forward && m_HoldForward == 0) {
+        m_HoldForward = frame;
+    } else if (
+        input.forward && frame - m_HoldForward >= DELAY_FRAMES + HOLD_FRAMES) {
         result.forward = 1;
         result.menu_up = 1;
-        m_HoldForward = DELAY_FRAMES;
+        m_HoldForward = frame - DELAY_FRAMES;
     }
 
     g_OldInputDB = input;
