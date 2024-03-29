@@ -388,7 +388,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
         if (m_OpenDoorsCheatCooldown) {
             m_OpenDoorsCheatCooldown--;
         } else if (g_Input.draw) {
-            m_OpenDoorsCheatCooldown = FRAMES_PER_SECOND;
+            m_OpenDoorsCheatCooldown = LOGIC_FPS;
             Door_OpenNearest(g_LaraItem);
         }
     }

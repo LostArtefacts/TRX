@@ -116,7 +116,8 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
             Option_CompassInitText();
         }
 
-        int32_t seconds = g_GameInfo.current[g_CurrentLevel].stats.timer / 30;
+        int32_t seconds =
+            g_GameInfo.current[g_CurrentLevel].stats.timer / LOGIC_FPS;
         int32_t hours = seconds / 3600;
         int32_t minutes = (seconds / 60) % 60;
         seconds %= 60;

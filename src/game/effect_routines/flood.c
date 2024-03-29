@@ -9,12 +9,11 @@
 
 void FX_Flood(ITEM_INFO *item)
 {
-    if (g_FlipTimer > FRAMES_PER_SECOND * 4) {
+    if (g_FlipTimer > LOGIC_FPS * 4) {
         g_FlipEffect = -1;
     } else {
-        const int32_t timer = g_FlipTimer < FRAMES_PER_SECOND
-            ? FRAMES_PER_SECOND - g_FlipTimer
-            : g_FlipTimer - FRAMES_PER_SECOND;
+        const int32_t timer = g_FlipTimer < LOGIC_FPS ? LOGIC_FPS - g_FlipTimer
+                                                      : g_FlipTimer - LOGIC_FPS;
         const XYZ_32 pos = {
             .x = g_LaraItem->pos.x,
             .y = g_Camera.target.y + timer * 100,
