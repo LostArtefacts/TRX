@@ -788,30 +788,26 @@ int16_t *Item_GetBoundsAccurate(const ITEM_INFO *item)
 
 int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
 {
-    ANIM_STRUCT *anim = &g_Anims[item->anim_number];
-    frmptr[0] = anim->frame_ptr;
-    frmptr[1] = anim->frame_ptr;
+    const ANIM_STRUCT *anim = &g_Anims[item->anim_number];
+    const int32_t cur_frame_num = item->frame_number - anim->frame_base;
+    const int32_t last_frame_num = anim->frame_end - anim->frame_base;
+    const int32_t key_frame_span = anim->interpolation;
+    const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
+    const int32_t second_key_frame_num = first_key_frame_num + 1;
+    const int32_t frame_size = g_Objects[item->object_number].nmeshes * 2 + 10;
 
-    *rate = anim->interpolation;
+    frmptr[0] = anim->frame_ptr + first_key_frame_num * frame_size;
+    frmptr[1] = anim->frame_ptr + second_key_frame_num * frame_size;
 
-    int32_t frm = item->frame_number - anim->frame_base;
-    int32_t first = frm / anim->interpolation;
-    int32_t frame_size = g_Objects[item->object_number].nmeshes * 2 + 10;
-
-    frmptr[0] += first * frame_size;
-    frmptr[1] = frmptr[0] + frame_size;
-
-    int32_t interp = frm % anim->interpolation;
-    if (!interp) {
-        return 0;
+    const int32_t key_frame_shift = cur_frame_num % key_frame_span;
+    const int32_t numerator = key_frame_shift;
+    int32_t denominator = key_frame_span;
+    if (numerator && second_key_frame_num > anim->frame_end) {
+        denominator = anim->frame_end + key_frame_span - second_key_frame_num;
     }
 
-    int32_t second = anim->interpolation * (first + 1);
-    if (second > anim->frame_end) {
-        *rate = anim->frame_end + anim->interpolation - second;
-    }
-
-    return interp;
+    *rate = denominator;
+    return numerator;
 }
 
 void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
