@@ -141,7 +141,6 @@ static void Overlay_BarSetupHealth(void)
     m_HealthBar.show_mode = g_Config.healthbar_showing_mode;
     m_HealthBar.show = false;
     m_HealthBar.blink = false;
-    m_HealthBar.blink_counter = 0;
     m_HealthBar.timer = 40;
     m_HealthBar.color = g_Config.healthbar_color;
     m_HealthBar.location = g_Config.healthbar_location;
@@ -155,7 +154,6 @@ static void Overlay_BarSetupAir(void)
     m_AirBar.show_mode = g_Config.airbar_showing_mode;
     m_AirBar.show = false;
     m_AirBar.blink = false;
-    m_AirBar.blink_counter = 0;
     m_AirBar.timer = 0;
     m_AirBar.color = g_Config.airbar_color;
     m_AirBar.location = g_Config.airbar_location;
@@ -169,7 +167,6 @@ static void Overlay_BarSetupEnemy(void)
     m_EnemyBar.show_mode = g_Config.healthbar_showing_mode;
     m_EnemyBar.show = g_Config.enable_enemy_healthbar;
     m_EnemyBar.blink = false;
-    m_EnemyBar.blink_counter = 0;
     m_EnemyBar.timer = 0;
     m_EnemyBar.color = g_Config.enemy_healthbar_color;
     m_EnemyBar.location = g_Config.enemy_healthbar_location;
@@ -188,12 +185,14 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
         return;
     }
 
-    int32_t percent = Overlay_BarGetPercent(bar_info);
-    const int32_t blink_interval = 20;
-    int32_t blink_time = bar_info->blink_counter++ % blink_interval;
+    const int32_t percent = Overlay_BarGetPercent(bar_info);
+    if (percent > BLINK_THRESHOLD) {
+        return;
+    }
 
-    bar_info->blink =
-        percent <= BLINK_THRESHOLD && blink_time > blink_interval / 2;
+    if (Clock_IsAtLogicalFrame(10)) {
+        bar_info->blink = !bar_info->blink;
+    }
 }
 
 static void Overlay_BarGetLocation(
