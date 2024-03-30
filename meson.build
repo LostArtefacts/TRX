@@ -140,6 +140,7 @@ sources = [
   'src/game/gun/gun_rifle.c',
   'src/game/inject.c',
   'src/game/input.c',
+  'src/game/interpolation.c',
   'src/game/inventory/inventory.c',
   'src/game/inventory/inventory_func.c',
   'src/game/inventory/inventory_ring.c',

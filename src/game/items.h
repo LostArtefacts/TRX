@@ -9,6 +9,7 @@ extern ITEM_INFO *g_Items;
 extern int16_t g_NextItemActive;
 
 void Item_InitialiseArray(int32_t num_items);
+int32_t Item_GetTotalCount(void);
 void Item_Control(void);
 void Item_Kill(int16_t item_num);
 int16_t Item_Create(void);

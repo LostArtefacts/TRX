@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_ring.h"
 #include "game/inventory/inventory_vars.h"
@@ -68,6 +69,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     if (g_InvMode == INV_TITLE_MODE) {
         Output_DrawBackdropImage();
         Output_DrawBackdropScreen();
+        Interpolation_Commit();
     } else {
         Matrix_LookAt(
             m_OldCamera.pos.x, m_OldCamera.pos.y + m_OldCamera.shift,
@@ -477,6 +479,9 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
 
 static void Phase_Inventory_Start(void *arg)
 {
+    Interpolation_Enable();
+    Interpolation_Remember();
+
     INV_MODE inv_mode = (INV_MODE)arg;
 
     RING_INFO *ring = &m_Ring;
@@ -989,6 +994,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
 
 static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
 {
+    Interpolation_Remember();
     for (int32_t i = 0; i < nframes; i++) {
         GAMEFLOW_OPTION result = Phase_Inventory_ControlFrame();
         if (result != GF_PHASE_CONTINUE) {
@@ -1000,6 +1006,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
 
 static void Phase_Inventory_End(void)
 {
+    Interpolation_Disable();
     if (g_Config.enable_buffering) {
         g_OldInputDB.any = 0;
     }

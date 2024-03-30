@@ -1428,6 +1428,13 @@ typedef struct ITEM_INFO {
     uint16_t hit_status : 1;
     uint16_t collidable : 1;
     uint16_t looked_at : 1;
+
+    struct {
+        struct {
+            XYZ_32 pos;
+            XYZ_16 rot;
+        } result, prev;
+    } interp;
 } ITEM_INFO;
 
 typedef struct CINE_CAMERA {
@@ -1452,6 +1459,12 @@ typedef struct LARA_ARM {
     int16_t lock;
     XYZ_16 rot;
     uint16_t flash_gun;
+
+    struct {
+        struct {
+            XYZ_16 rot;
+        } result, prev;
+    } interp;
 } LARA_ARM;
 
 typedef struct AMMO_INFO {
@@ -1828,6 +1841,14 @@ typedef struct CAMERA_INFO {
     // used for the manual camera control
     int16_t additional_angle;
     int16_t additional_elevation;
+
+    struct {
+        struct {
+            XYZ_32 target;
+            XYZ_32 pos;
+            int32_t shift;
+        } result, prev;
+    } interp;
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {
