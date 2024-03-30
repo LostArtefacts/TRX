@@ -31,11 +31,12 @@ static void Phase_Cutscene_Draw(void);
 
 static void Phase_Cutscene_InitialiseHair(int32_t level_num)
 {
-    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded) {
+    const GAME_OBJECT_ID lara_type = g_GameFlow.levels[level_num].lara_type;
+    Lara_Hair_SetLaraType(lara_type);
+    if (!Lara_Hair_IsActive()) {
         return;
     }
 
-    GAME_OBJECT_ID lara_type = g_GameFlow.levels[level_num].lara_type;
     if (lara_type == O_LARA) {
         return;
     }
@@ -54,7 +55,6 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num)
 
     Lara_InitialiseLoad(lara_item_num);
     Lara_Initialise(level_num);
-    Lara_Hair_SetLaraType(lara_type);
 
     Item_SwitchToObjAnim(g_LaraItem, 0, 0, lara_type);
     ANIM_STRUCT *cut_anim = &g_Anims[g_LaraItem->anim_number];
