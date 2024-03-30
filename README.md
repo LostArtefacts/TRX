@@ -311,6 +311,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Tomb of Tihocan**: missing trigger in room 62 for enemy 34
     - **City of Khamoon**: incorrect trapdoor trigger types in rooms 31 and 34
     - **Obelisk of Khamoon**: missing switch trigger type in room 66
+    - **Natla's Mines**: incorrect flipmap indices in room 85
     - **Atlantean Stronghold**: fixed poorly configured portals between rooms 74 and 12
 - fixed various bugs with falling movable blocks
 - fixed bugs when trying to stack multiple movable blocks

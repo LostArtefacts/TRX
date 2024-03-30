@@ -15,6 +15,7 @@
 - changed the way music timestamps are internally handled – resets music position in existing saves
 - changed vertex and fragment shaders into unified files that are runtime pre-processed for OpenGL versions 2.1 or 3.3
 - fixed a missing translation for the Spanish config tool for the Eidos logo skip option (#1151)
+- fixed a flipmap issue in Natla's Mines that could make the cabin appear stacked and prevent normal gameplay (#1052)
 
 ## [3.1.1](https://github.com/LostArtefacts/TR1X/compare/3.1...3.1.1) - 2024-01-19
 - changed quick load to show empty passport instead of opening the save game menu when there are no saves (#1141)
