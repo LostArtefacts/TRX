@@ -35,11 +35,7 @@ void Lara_Draw(ITEM_INFO *item)
         int32_t frac = Item_GetFrames(item, frmptr, &rate);
         if (frac) {
             Lara_Draw_I(item, frmptr[0], frmptr[1], frac, rate);
-            g_PhdLeft = left;
-            g_PhdRight = right;
-            g_PhdTop = top;
-            g_PhdBottom = bottom;
-            return;
+            goto end;
         }
     }
 
@@ -70,6 +66,7 @@ void Lara_Draw(ITEM_INFO *item)
     saved_matrix = *g_MatrixPtr;
 
     Output_DrawShadow(object->shadow_size, frame, item);
+
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
@@ -320,6 +317,8 @@ void Lara_Draw(ITEM_INFO *item)
 
     Matrix_Pop();
     Matrix_Pop();
+
+end:
     g_PhdLeft = left;
     g_PhdRight = right;
     g_PhdTop = top;
@@ -338,6 +337,7 @@ void Lara_Draw_I(
     saved_matrix = *g_MatrixPtr;
 
     Output_DrawShadow(object->shadow_size, bounds, item);
+
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
