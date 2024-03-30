@@ -1631,7 +1631,6 @@ typedef struct BAR_INFO {
     bool show;
     BAR_SHOW_MODE show_mode;
     bool blink;
-    int32_t blink_counter;
     int32_t timer;
     int32_t color;
     BAR_LOCATION location;
