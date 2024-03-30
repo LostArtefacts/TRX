@@ -120,9 +120,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     OBJECT_INFO *object = &g_Objects[item_num_option];
 
-    int16_t *frmptr[2];
-    int32_t rate;
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
+    int16_t *frmptr = g_Anims[item->anim_number].frame_ptr;
 
     // Restore the old frame number in case we need to get the sprite again.
     item->frame_number = old_frame_number;
@@ -157,9 +155,9 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[spr_num];
 
         // and get the animation bounding box, which is not the mesh one.
-        int16_t min_y = frmptr[0][FRAME_BOUND_MIN_Y];
-        int16_t max_y = frmptr[0][FRAME_BOUND_MAX_Y];
-        int16_t anim_y = frmptr[0][FRAME_POS_Y];
+        int16_t min_y = frmptr[FRAME_BOUND_MIN_Y];
+        int16_t max_y = frmptr[FRAME_BOUND_MAX_Y];
+        int16_t anim_y = frmptr[FRAME_POS_Y];
 
         // Different objects need different heuristics.
         switch (item_num_option) {
@@ -223,79 +221,38 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         int16_t **meshpp = &g_Meshes[object->mesh_index];
         int32_t *bone = &g_AnimBones[object->bone_index];
 
-        if (!frac) {
-            Matrix_TranslateRel(
-                frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
-                frmptr[0][FRAME_POS_Z]);
+        Matrix_TranslateRel(
+            frmptr[FRAME_POS_X], frmptr[FRAME_POS_Y], frmptr[FRAME_POS_Z]);
 
-            int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
+        int32_t *packed_rotation = (int32_t *)(&frmptr[FRAME_ROT]);
+        Matrix_RotYXZpack(*packed_rotation++);
+
+        if (item->mesh_bits & bit) {
+            Output_DrawPolygons(*meshpp++, clip);
+        }
+
+        for (int i = 1; i < object->nmeshes; i++) {
+            int32_t bone_extra_flags = *bone;
+            if (bone_extra_flags & BEB_POP) {
+                Matrix_Pop();
+            }
+
+            if (bone_extra_flags & BEB_PUSH) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
             Matrix_RotYXZpack(*packed_rotation++);
 
+            // Extra rotation is ignored in this case as it's not needed.
+
+            bit <<= 1;
             if (item->mesh_bits & bit) {
-                Output_DrawPolygons(*meshpp++, clip);
+                Output_DrawPolygons(*meshpp, clip);
             }
 
-            for (int i = 1; i < object->nmeshes; i++) {
-                int32_t bone_extra_flags = *bone;
-                if (bone_extra_flags & BEB_POP) {
-                    Matrix_Pop();
-                }
-
-                if (bone_extra_flags & BEB_PUSH) {
-                    Matrix_Push();
-                }
-
-                Matrix_TranslateRel(bone[1], bone[2], bone[3]);
-                Matrix_RotYXZpack(*packed_rotation++);
-
-                // Extra rotation is ignored in this case as it's not needed.
-
-                bit <<= 1;
-                if (item->mesh_bits & bit) {
-                    Output_DrawPolygons(*meshpp, clip);
-                }
-
-                bone += 4;
-                meshpp++;
-            }
-        } else {
-            // This should never happen but is here "just in case".
-            Matrix_InitInterpolate(frac, rate);
-            Matrix_TranslateRel_ID(
-                frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
-                frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
-                frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
-            int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
-            int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
-            Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
-
-            if (item->mesh_bits & bit) {
-                Output_DrawPolygons_I(*meshpp++, clip);
-            }
-
-            for (int i = 1; i < object->nmeshes; i++) {
-                int32_t bone_extra_flags = *bone;
-                if (bone_extra_flags & BEB_POP) {
-                    Matrix_Pop_I();
-                }
-
-                if (bone_extra_flags & BEB_PUSH) {
-                    Matrix_Push_I();
-                }
-
-                Matrix_TranslateRel_I(bone[1], bone[2], bone[3]);
-                Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
-
-                // Extra rotation is ignored in this case as it's not needed.
-
-                bit <<= 1;
-                if (item->mesh_bits & bit) {
-                    Output_DrawPolygons_I(*meshpp, clip);
-                }
-
-                bone += 4;
-                meshpp++;
-            }
+            bone += 4;
+            meshpp++;
         }
     }
 
