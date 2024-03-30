@@ -22,7 +22,6 @@ static double m_ManualCameraMultiplier[11] = {
     1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
 };
 
-static void Camera_Apply(void);
 static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num);
 static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
@@ -41,13 +40,6 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static void Camera_LoadCutsceneFrame(void);
 static void Camera_OffsetAdditionalAngle(int16_t delta);
 static void Camera_OffsetAdditionalElevation(int16_t delta);
-
-static void Camera_Apply(void)
-{
-    Matrix_LookAt(
-        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
-        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
-}
 
 static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num)
@@ -359,8 +351,6 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
     } else {
         g_Camera.shift = 0;
     }
-
-    Camera_Apply();
 }
 
 static void Camera_LoadCutsceneFrame(void)
@@ -389,7 +379,6 @@ static void Camera_LoadCutsceneFrame(void)
     g_Camera.shift = 0;
 
     Viewport_SetFOV(ref->fov);
-    Camera_Apply();
 }
 
 static void Camera_OffsetAdditionalAngle(int16_t delta)
@@ -786,7 +775,6 @@ void Camera_UpdateCutscene(void)
     g_Camera.shift = 0;
 
     Viewport_SetFOV(ref->fov);
-    Camera_Apply();
 }
 
 void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
@@ -852,4 +840,11 @@ void Camera_MoveManual(void)
     if (g_Input.camera_reset) {
         Camera_OffsetReset();
     }
+}
+
+void Camera_Apply(void)
+{
+    Matrix_LookAt(
+        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
+        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
 }
