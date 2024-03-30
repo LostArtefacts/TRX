@@ -305,8 +305,9 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
 
     case STATS_STATE_FADE_OUT:
         Output_FadeToBlack(true);
-        if (!Output_FadeIsAnimating() || g_InputDB.menu_confirm
-            || g_InputDB.menu_back) {
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back
+            || !Output_FadeIsAnimating()) {
+            Output_FadeResetToBlack();
             return GF_PHASE_BREAK;
         }
         break;
