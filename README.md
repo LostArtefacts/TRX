@@ -378,23 +378,25 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed the following room texture issues:
     - **Gym**: incorrect textures in room 9
     - **Caves**: an incorrect texture in room 6 and missing textures in rooms 1, 10, 14 and 30
-    - **City of Vilcabamba**: an incorrect texture in room 26 and a missing texture in room 15
-    - **Lost Valley**: incorrect textures in rooms 6 and 9, and missing textures in rooms 9, 25, 26, 27, 51, and 90
-    - **Tomb of Qualopec**: missing textures in room 8
-    - **St. Francis' Folly**: incorrect textures in rooms 18 and 35
-    - **Colosseum**: incorrect Midas textures appearing at the roof and missing textures in rooms 2 and 7
-    - **Palace Midas**: incorrect textures in room 31 and missing textures in rooms 2, 5, 9, 13, 30, and 53
-    - **The Cistern**: missing textures in rooms 3 and 9
-    - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89
-    - **City of Khamoon**: incorrect textures in rooms 51 and 64, and a missing texture in room 58
-    - **Sanctuary of the Scion**: missing textures in rooms 1, 21, 53, and 54
-    - **Natla's Mines**: a missing texture in room 35 and overlapping textures in room 55
-    - **Atlantis**: incorrect textures in rooms 5, 18, 43, 50, 52, 58, 78, 85 and 87, and a missing texture in room 27
-    - **Atlantis Cutscene**: an incorrect texture in room 16
-    - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 50, 52, 65 and 66, and missing textures in rooms 21, 25, 26, and 66
-    - **Return to Egypt**: a missing texture in room 98
+    - **City of Vilcabamba**: an incorrect texture in room 26, and a missing texture and a stretched texture in room 15
+    - **Lost Valley**: incorrect textures in rooms 6, 9, 16 and 35, missing textures in rooms 9, 25, 26, 27, 51, and 90, and stretched textures in room 63
+    - **Tomb of Qualopec**: an incorrect and missing textures in room 8, and a misaligned texture in room 5
+    - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18 and 35, and a misaligned texture in room 3
+    - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 37, 67, 75 and 82, and missing textures in rooms 2 and 7
+    - **Palace Midas**: incorrect textures in rooms 31, 34, 40 and 45, missing textures in rooms 2, 5, 9, 13, 30, and 53, and stretched textures in rooms 7 and 20
+    - **The Cistern**: missing textures in rooms 3 and 9 and a stretched texture in room 102
+    - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89 and a misaligned texture in room 104
+    - **City of Khamoon**: incorrect textures in rooms 47, 48, 51, 60 and 64, and a missing texture in room 58
+    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42 and 65
+    - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54
+    - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 23 and 24
+    - **Pre-Atlantis Cutscene**: stretched textures in rooms 6 and 21
+    - **Atlantis**: incorrect textures in rooms 5, 18, 36, 43, 50, 52, 53, 54, 58, 78, 85 and 87, a missing texture in room 27, and stretched textures in rooms 13, 49 and 50
+    - **Atlantis Cutscene**: incorrect and stretched textures in room 16
+    - **The Great Pyramid**: incorrect textures in rooms 2, 5, 31, 36, 50, 52, 53, 54, 65 and 66, missing textures in rooms 21, 25, 26, and 66, and stretched textures in rooms 49 and 50
+    - **Return to Egypt**: incorrect textures in rooms 46 and 47, a missing texture in room 98, and a stretched texture in room 47
     - **Temple of the Cat**: incorrect textures in rooms 50, 70, 71, 76, 78, 87 and 96, and a missing texture in 75
-    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19 and 74
+    - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
 
 #### Audio

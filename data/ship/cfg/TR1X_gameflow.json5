@@ -308,6 +308,7 @@
             "injections": [
                 "data/obelisk_fd.bin",
                 "data/obelisk_itemrots.bin",
+                "data/obelisk_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/egypt.webp", "display_time": 5},
@@ -500,6 +501,9 @@
             "type": "cutscene",
             "music": 0,
             "inherit_injections": false,
+            "injections": [
+                "data/cut3_textures.bin",
+            ],
             "sequence": [
                 {"type": "start_cine"},
                 {"type": "flip_map"},
