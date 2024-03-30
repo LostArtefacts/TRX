@@ -21,13 +21,16 @@
 
 static bool m_FirstHair = false;
 static GAME_OBJECT_ID m_LaraType = O_LARA;
-static struct {
-    XYZ_32 pos;
-    XYZ_16 rot;
-} m_Hair[HAIR_SEGMENTS + 1] = { 0 };
+static HAIR_SEGMENT m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static XYZ_32 m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
 static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z);
+
+bool Lara_Hair_IsActive(void)
+{
+    return g_Config.enable_braid && g_Objects[O_HAIR].loaded
+        && g_Objects[m_LaraType].loaded;
+}
 
 void Lara_Hair_Initialise(void)
 {
@@ -59,8 +62,7 @@ void Lara_Hair_SetLaraType(GAME_OBJECT_ID lara_type)
 
 void Lara_Hair_Control(void)
 {
-    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded
-        || !g_Objects[m_LaraType].loaded) {
+    if (!Lara_Hair_IsActive()) {
         return;
     }
 
@@ -411,8 +413,7 @@ void Lara_Hair_Control(void)
 
 void Lara_Hair_Draw(void)
 {
-    if (!g_Config.enable_braid || !g_Objects[O_HAIR].loaded
-        || !g_Objects[m_LaraType].loaded) {
+    if (!Lara_Hair_IsActive()) {
         return;
     }
 
