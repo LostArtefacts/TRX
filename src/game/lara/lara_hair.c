@@ -428,9 +428,11 @@ void Lara_Hair_Draw(void)
     for (int i = 0; i < HAIR_SEGMENTS; i++) {
         Matrix_Push();
 
-        Matrix_TranslateAbs(m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
-        Matrix_RotY(m_Hair[i].rot.y);
-        Matrix_RotX(m_Hair[i].rot.x);
+        Matrix_TranslateAbs(
+            m_Hair[i].interp.result.pos.x, m_Hair[i].interp.result.pos.y,
+            m_Hair[i].interp.result.pos.z);
+        Matrix_RotY(m_Hair[i].interp.result.rot.y);
+        Matrix_RotX(m_Hair[i].interp.result.rot.x);
         Output_DrawPolygons(*mesh++, 1);
 
         Matrix_Pop();
@@ -444,4 +446,14 @@ static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z)
         return room_num;
     }
     return g_LaraItem->room_number;
+}
+
+int32_t Lara_Hair_GetSegmentCount(void)
+{
+    return HAIR_SEGMENTS;
+}
+
+HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n)
+{
+    return &m_Hair[n];
 }

@@ -145,6 +145,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "window_y",                       .type = COT_INT32,  .target = &g_Config.rendering.window_y,                  .default_value = &(int32_t){-1},                      0},
     { .name = "window_width",                   .type = COT_INT32,  .target = &g_Config.rendering.window_width,              .default_value = &(int32_t){-1},                      0},
     { .name = "window_height",                  .type = COT_INT32,  .target = &g_Config.rendering.window_height,             .default_value = &(int32_t){-1},                      0},
+    { .name = "fps",                            .type = COT_INT32,  .target = &g_Config.rendering.fps,                       .default_value = &(int32_t){30},                      0},
     { .name = "texture_filter",                 .type = COT_INT32,  .target = &g_Config.rendering.texture_filter,            .default_value = &(int32_t){GFX_TF_BILINEAR},         0},
     { .name = "fbo_filter",                     .type = COT_INT32,  .target = &g_Config.rendering.fbo_filter,                .default_value = &(int32_t){GFX_TF_NN},               0},
     { .name = "enable_perspective_filter",      .type = COT_BOOL,   .target = &g_Config.rendering.enable_perspective_filter, .default_value = &(bool){true},                       0},

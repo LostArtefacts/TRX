@@ -3,6 +3,8 @@
 #include "config.h"
 #include "game/anim.h"
 #include "game/carrier.h"
+#include "game/clock.h"
+#include "game/interpolation.h"
 #include "game/room.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -34,15 +36,22 @@ ITEM_INFO *g_Items = NULL;
 int16_t g_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 static int16_t m_InterpolatedBounds[6] = { 0 };
+static int16_t m_MaxUsedItemCount = 0;
 
 void Item_InitialiseArray(int32_t num_items)
 {
     g_NextItemActive = NO_ITEM;
     m_NextItemFree = g_LevelItemCount;
+    m_MaxUsedItemCount = g_LevelItemCount;
     for (int i = g_LevelItemCount; i < num_items - 1; i++) {
         g_Items[i].next_item = i + 1;
     }
     g_Items[num_items - 1].next_item = NO_ITEM;
+}
+
+int32_t Item_GetTotalCount(void)
+{
+    return m_MaxUsedItemCount;
 }
 
 void Item_Control(void)
@@ -94,11 +103,15 @@ void Item_Kill(int16_t item_num)
     }
 
     item->hit_points = -1;
-    if (item_num < g_LevelItemCount) {
-        item->flags |= IF_KILLED_ITEM;
-    } else {
+    item->flags |= IF_KILLED_ITEM;
+    if (item_num >= g_LevelItemCount) {
         item->next_item = m_NextItemFree;
         m_NextItemFree = item_num;
+    }
+
+    while (m_MaxUsedItemCount > 0
+           && g_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED_ITEM) {
+        m_MaxUsedItemCount--;
     }
 }
 
@@ -109,6 +122,7 @@ int16_t Item_Create(void)
         g_Items[item_num].flags = 0;
         m_NextItemFree = g_Items[item_num].next_item;
     }
+    m_MaxUsedItemCount = MAX(m_MaxUsedItemCount, item_num + 1);
     return item_num;
 }
 
@@ -165,6 +179,8 @@ void Item_Initialise(int16_t item_num)
     if (object->initialise) {
         object->initialise(item_num);
     }
+
+    Interpolation_RememberItem(item);
 }
 
 void Item_RemoveActive(int16_t item_num)
@@ -789,6 +805,7 @@ int16_t *Item_GetBoundsAccurate(const ITEM_INFO *item)
 int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
 {
     const ANIM_STRUCT *anim = &g_Anims[item->anim_number];
+
     const int32_t cur_frame_num = item->frame_number - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
     const int32_t key_frame_span = anim->interpolation;
@@ -806,8 +823,32 @@ int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
         denominator = anim->frame_end + key_frame_span - second_key_frame_num;
     }
 
-    *rate = denominator;
-    return numerator;
+    // OG
+    if (g_Config.rendering.fps == 30) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    // interpolated
+    if ((item != g_LaraItem && !item->active)
+        || (item->object_number == O_ROLLING_BALL
+            && item->status != IS_ACTIVE)) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    const double clock_ratio = Clock_GetTickProgress() - 0.5;
+    const double final =
+        (key_frame_shift + clock_ratio) / (double)key_frame_span;
+    const double interp_frame_num =
+        (first_key_frame_num * key_frame_span) + (final * key_frame_span);
+    if (interp_frame_num >= last_frame_num) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    *rate = 10;
+    return final * 10;
 }
 
 void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)

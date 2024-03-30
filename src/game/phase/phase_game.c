@@ -4,6 +4,7 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/input.h"
+#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -23,18 +24,27 @@
 #include <stdint.h>
 
 static void Phase_Game_Start(void *arg);
+static void Phase_Game_End(void);
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes);
 static void Phase_Game_Draw(void);
 
 static void Phase_Game_Start(void *arg)
 {
+    Interpolation_Enable();
+    Interpolation_Remember();
     if (Phase_Get() != PHASE_PAUSE) {
         Output_FadeReset();
     }
 }
 
+static void Phase_Game_End(void)
+{
+    Interpolation_Disable();
+}
+
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 {
+    Interpolation_Remember();
     GAMEFLOW_OPTION return_val = GF_PHASE_CONTINUE;
 
     CLAMPG(nframes, MAX_FRAMES);
@@ -137,7 +147,7 @@ static void Phase_Game_Draw(void)
 
 PHASER g_GamePhaser = {
     .start = Phase_Game_Start,
-    .end = NULL,
+    .end = Phase_Game_End,
     .control = Phase_Game_Control,
     .draw = Phase_Game_Draw,
     .wait = NULL,

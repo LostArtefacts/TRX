@@ -1,6 +1,7 @@
 // IWYU pragma: no_include <bits/types/struct_tm.h>
 #include "game/clock.h"
 
+#include "game/interpolation.h"
 #include "game/phase/phase.h"
 #include "global/vars.h"
 #include "log.h"
@@ -48,9 +49,27 @@ double Clock_GetSpeedMultiplier(void)
     return m_TurboSpeeds[m_TurboSpeedIdx];
 }
 
+void Clock_SetTickProgress(double progress)
+{
+    m_Progress = progress;
+}
+
+double Clock_GetTickProgress(void)
+{
+    if (!Interpolation_IsEnabled()) {
+        return 1.0;
+    }
+    return m_Progress;
+}
+
 int32_t Clock_GetLogicalFrame(void)
 {
     return Clock_GetMS() * LOGIC_FPS / 1000;
+}
+
+int32_t Clock_GetDrawFrame(void)
+{
+    return Clock_GetMS() * g_Config.rendering.fps / 1000;
 }
 
 void Clock_GetDateTime(char *date_time)
@@ -66,7 +85,7 @@ void Clock_GetDateTime(char *date_time)
 
 int32_t Clock_GetFrameAdvance(void)
 {
-    return 2;
+    return g_Config.rendering.fps == 30 ? 2 : 1;
 }
 
 double Clock_GetFrameAdvanceAdjusted(void)
@@ -80,7 +99,6 @@ double Clock_GetFrameAdvanceAdjusted(void)
 
 bool Clock_IsAtLogicalFrame(const int32_t how_often)
 {
-    const int32_t now = Clock_GetMS();
-    const int32_t elapsed_frames = now * LOGIC_FPS / 1000;
-    return elapsed_frames % how_often == 0;
+    const int32_t multiplier = g_Config.rendering.fps / LOGIC_FPS;
+    return Clock_GetDrawFrame() % (how_often * multiplier) == 0;
 }

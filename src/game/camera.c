@@ -758,19 +758,15 @@ void Camera_UpdateCutscene(void)
 {
     CINE_CAMERA *ref = &g_CineCamera[g_CineFrame];
 
-    int32_t c = Math_Cos(g_Camera.target_angle);
-    int32_t s = Math_Sin(g_Camera.target_angle);
-
-    g_Camera.target.x =
-        g_CinePosition.pos.x + ((ref->tx * c + ref->tz * s) >> W2V_SHIFT);
-    g_Camera.target.y = g_CinePosition.pos.y + ref->ty;
-    g_Camera.target.z =
-        g_CinePosition.pos.z + ((ref->tz * c - ref->tx * s) >> W2V_SHIFT);
-    g_Camera.pos.x =
-        g_CinePosition.pos.x + ((ref->cz * s + ref->cx * c) >> W2V_SHIFT);
-    g_Camera.pos.y = g_CinePosition.pos.y + ref->cy;
-    g_Camera.pos.z =
-        g_CinePosition.pos.z + ((ref->cz * c - ref->cx * s) >> W2V_SHIFT);
+    const int32_t c = Math_Cos(g_Camera.target_angle);
+    const int32_t s = Math_Sin(g_Camera.target_angle);
+    const XYZ_32 *const pos = &g_CinePosition.pos;
+    g_Camera.target.x = pos->x + ((ref->tx * c + ref->tz * s) >> W2V_SHIFT);
+    g_Camera.target.y = pos->y + ref->ty;
+    g_Camera.target.z = pos->z + ((ref->tz * c - ref->tx * s) >> W2V_SHIFT);
+    g_Camera.pos.x = pos->x + ((ref->cz * s + ref->cx * c) >> W2V_SHIFT);
+    g_Camera.pos.y = pos->y + ref->cy;
+    g_Camera.pos.z = pos->z + ((ref->cz * c - ref->cx * s) >> W2V_SHIFT);
     g_Camera.roll = ref->roll;
     g_Camera.shift = 0;
 
@@ -845,6 +841,8 @@ void Camera_MoveManual(void)
 void Camera_Apply(void)
 {
     Matrix_LookAt(
-        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
-        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
+        g_Camera.interp.result.pos.x,
+        g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+        g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
+        g_Camera.interp.result.target.y, g_Camera.interp.result.target.z, 0);
 }

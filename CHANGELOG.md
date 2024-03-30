@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- added experimental support for 60 FPS, available from the in-game graphics menu
 - added ability to slow the game down using the turbo cheat (#1215)
 - added /speed command to control the turbo cheat (#1215)
 - added the option to change weapon targets by tapping the look key like in TR4+ (#1145)

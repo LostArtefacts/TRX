@@ -6,6 +6,7 @@
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/interpolation.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_hair.h"
@@ -64,6 +65,8 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num)
 
 static void Phase_Cutscene_Start(void *arg)
 {
+    Interpolation_Enable();
+
     Output_FadeReset();
 
     const PHASE_CUTSCENE_DATA *data = (const PHASE_CUTSCENE_DATA *)arg;
@@ -93,12 +96,15 @@ static void Phase_Cutscene_Start(void *arg)
 
 static void Phase_Cutscene_End(void)
 {
+    Interpolation_Disable();
     Music_Stop();
     Sound_StopAllSamples();
 }
 
 static GAMEFLOW_OPTION Phase_Cutscene_Control(int32_t nframes)
 {
+    Interpolation_Remember();
+
     for (int i = 0; i < nframes; i++) {
         if (g_CineFrame >= g_NumCineFrames - 1) {
             g_LevelComplete = true;

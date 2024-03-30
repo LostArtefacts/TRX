@@ -1,6 +1,5 @@
 #include "config.h"
 #include "game/clock.h"
-#include "global/const.h"
 
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
@@ -20,11 +19,10 @@ void Clock_Init(void)
 int32_t Clock_SyncTicks(void)
 {
     m_LastCounter = m_Counter;
-    const double fps = TICKS_PER_SECOND;
+    const double fps = g_Config.rendering.fps;
 
     const double frequency = (double)m_Frequency / Clock_GetSpeedMultiplier();
-    const Uint64 target_counter =
-        m_LastCounter + TICKS_PER_FRAME * (frequency / fps);
+    const Uint64 target_counter = m_LastCounter + (frequency / fps);
 
     while (true) {
         m_Counter = SDL_GetPerformanceCounter();
@@ -40,8 +38,8 @@ int32_t Clock_SyncTicks(void)
         }
 
         const double elapsed_ticks = elapsed_sec * fps;
-        if (elapsed_ticks >= (double)TICKS_PER_FRAME) {
-            return elapsed_ticks / TICKS_PER_FRAME;
+        if (elapsed_ticks >= 1) {
+            return elapsed_ticks;
         }
     }
 }
