@@ -1849,6 +1849,7 @@ typedef struct CAMERA_INFO {
             XYZ_32 target;
             XYZ_32 pos;
             int32_t shift;
+            int16_t room_num;
         } result, prev;
     } interp;
 } CAMERA_INFO;
