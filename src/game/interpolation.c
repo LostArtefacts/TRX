@@ -83,6 +83,12 @@ void Interpolation_Commit(void)
     INTERPOLATE_ROT(&g_Lara.right_arm, rot.x, ratio, PHD_45);
     INTERPOLATE_ROT(&g_Lara.right_arm, rot.y, ratio, PHD_45);
     INTERPOLATE_ROT(&g_Lara.right_arm, rot.z, ratio, PHD_45);
+    INTERPOLATE_ROT(&g_Lara, torso_rot.x, ratio, PHD_45);
+    INTERPOLATE_ROT(&g_Lara, torso_rot.y, ratio, PHD_45);
+    INTERPOLATE_ROT(&g_Lara, torso_rot.z, ratio, PHD_45);
+    INTERPOLATE_ROT(&g_Lara, head_rot.x, ratio, PHD_45);
+    INTERPOLATE_ROT(&g_Lara, head_rot.y, ratio, PHD_45);
+    INTERPOLATE_ROT(&g_Lara, head_rot.z, ratio, PHD_45);
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -149,6 +155,12 @@ void Interpolation_Remember(void)
     REMEMBER(&g_Lara.right_arm, rot.x);
     REMEMBER(&g_Lara.right_arm, rot.y);
     REMEMBER(&g_Lara.right_arm, rot.z);
+    REMEMBER(&g_Lara, torso_rot.x);
+    REMEMBER(&g_Lara, torso_rot.y);
+    REMEMBER(&g_Lara, torso_rot.z);
+    REMEMBER(&g_Lara, head_rot.x);
+    REMEMBER(&g_Lara, head_rot.y);
+    REMEMBER(&g_Lara, head_rot.z);
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM_INFO *item = &g_Items[i];
