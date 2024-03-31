@@ -14,6 +14,7 @@
 #include "math/matrix.h"
 #include "util.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -404,8 +405,14 @@ static void Camera_OffsetAdditionalElevation(int16_t delta)
     }
 }
 
+void Camera_Reset(void)
+{
+    g_Camera.pos.room_number = NO_ROOM;
+}
+
 void Camera_Initialise(void)
 {
+    assert(g_LaraItem);
     g_Camera.shift = g_LaraItem->pos.y - WALL_L;
 
     g_Camera.target.x = g_LaraItem->pos.x;

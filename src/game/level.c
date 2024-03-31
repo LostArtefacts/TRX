@@ -1,6 +1,7 @@
 #include "game/level.h"
 
 #include "filesystem.h"
+#include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
 #include "game/gamebuf.h"
@@ -878,6 +879,7 @@ bool Level_Initialise(int32_t level_num)
         g_Objects[i].loaded = 0;
     }
 
+    Camera_Reset();
     Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);

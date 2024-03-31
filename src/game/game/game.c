@@ -5,6 +5,7 @@
 #include "game/clock.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/level.h"
@@ -161,6 +162,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         && g_CurrentLevel != g_GameFlow.first_level_num
         && g_CurrentLevel != g_GameFlow.gym_level_num;
 
+    Interpolation_Remember();
     return true;
 }
 

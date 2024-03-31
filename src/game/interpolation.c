@@ -4,6 +4,7 @@
 #include "game/items.h"
 #include "game/lara/lara_hair.h"
 #include "game/phase/phase.h"
+#include "game/room.h"
 #include "global/vars.h"
 #include "math/math_misc.h"
 #include "util.h"
@@ -60,13 +61,21 @@ void Interpolation_Commit(void)
 {
     const double ratio = Clock_GetTickProgress();
 
-    INTERPOLATE(&g_Camera, shift, ratio, 128);
-    INTERPOLATE(&g_Camera, pos.x, ratio, 512);
-    INTERPOLATE(&g_Camera, pos.y, ratio, 512);
-    INTERPOLATE(&g_Camera, pos.z, ratio, 512);
-    INTERPOLATE(&g_Camera, target.x, ratio, 512);
-    INTERPOLATE(&g_Camera, target.y, ratio, 512);
-    INTERPOLATE(&g_Camera, target.z, ratio, 512);
+    if (g_Camera.pos.room_number != NO_ROOM) {
+        INTERPOLATE(&g_Camera, shift, ratio, 128);
+        INTERPOLATE(&g_Camera, pos.x, ratio, 512);
+        INTERPOLATE(&g_Camera, pos.y, ratio, 512);
+        INTERPOLATE(&g_Camera, pos.z, ratio, 512);
+        INTERPOLATE(&g_Camera, target.x, ratio, 512);
+        INTERPOLATE(&g_Camera, target.y, ratio, 512);
+        INTERPOLATE(&g_Camera, target.z, ratio, 512);
+
+        g_Camera.interp.result.room_num = g_Camera.interp.prev.room_num;
+        Room_GetFloor(
+            g_Camera.interp.result.pos.x,
+            g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+            g_Camera.interp.result.pos.z, &g_Camera.interp.result.room_num);
+    }
 
     INTERPOLATE_ROT(&g_Lara.left_arm, rot.x, ratio, PHD_45);
     INTERPOLATE_ROT(&g_Lara.left_arm, rot.y, ratio, PHD_45);
@@ -123,13 +132,16 @@ void Interpolation_Commit(void)
 
 void Interpolation_Remember(void)
 {
-    REMEMBER(&g_Camera, shift);
-    REMEMBER(&g_Camera, pos.x);
-    REMEMBER(&g_Camera, pos.y);
-    REMEMBER(&g_Camera, pos.z);
-    REMEMBER(&g_Camera, target.x);
-    REMEMBER(&g_Camera, target.y);
-    REMEMBER(&g_Camera, target.z);
+    if (g_Camera.pos.room_number != NO_ROOM) {
+        REMEMBER(&g_Camera, shift);
+        REMEMBER(&g_Camera, pos.x);
+        REMEMBER(&g_Camera, pos.y);
+        REMEMBER(&g_Camera, pos.z);
+        REMEMBER(&g_Camera, target.x);
+        REMEMBER(&g_Camera, target.y);
+        REMEMBER(&g_Camera, target.z);
+        g_Camera.interp.prev.room_num = g_Camera.pos.room_number;
+    }
 
     REMEMBER(&g_Lara.left_arm, rot.x);
     REMEMBER(&g_Lara.left_arm, rot.y);
