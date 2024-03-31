@@ -133,6 +133,11 @@ GAMEFLOW_OPTION Phase_Run(void)
         }
 
         if (m_PhaseToSet != PHASE_NULL) {
+            if (!Interpolation_IsEnabled()) {
+                Phase_Draw();
+                Output_DumpScreen();
+            }
+
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
@@ -145,6 +150,8 @@ GAMEFLOW_OPTION Phase_Run(void)
         }
 
         if (ret != GF_PHASE_CONTINUE) {
+            Phase_Draw();
+            Output_DumpScreen();
             break;
         }
 
