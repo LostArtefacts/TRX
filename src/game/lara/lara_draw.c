@@ -127,14 +127,18 @@ void Lara_Draw(ITEM_INFO *item)
 
     Matrix_TranslateRel(bone[25], bone[26], bone[27]);
     Matrix_RotYXZpack(packed_rotation[LM_TORSO]);
-    Matrix_RotYXZ(g_Lara.torso_rot.y, g_Lara.torso_rot.x, g_Lara.torso_rot.z);
+    Matrix_RotYXZ(
+        g_Lara.interp.result.torso_rot.y, g_Lara.interp.result.torso_rot.x,
+        g_Lara.interp.result.torso_rot.z);
     Output_DrawPolygons(g_Lara.mesh_ptrs[LM_TORSO], clip);
 
     Matrix_Push();
 
     Matrix_TranslateRel(bone[53], bone[54], bone[55]);
     Matrix_RotYXZpack(packed_rotation[LM_HEAD]);
-    Matrix_RotYXZ(g_Lara.head_rot.y, g_Lara.head_rot.x, g_Lara.head_rot.z);
+    Matrix_RotYXZ(
+        g_Lara.interp.result.head_rot.y, g_Lara.interp.result.head_rot.x,
+        g_Lara.interp.result.head_rot.z);
     Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
@@ -415,14 +419,18 @@ void Lara_Draw_I(
 
     Matrix_TranslateRel_I(bone[25], bone[26], bone[27]);
     Matrix_RotYXZpack_I(packed_rotation1[LM_TORSO], packed_rotation2[LM_TORSO]);
-    Matrix_RotYXZ_I(g_Lara.torso_rot.y, g_Lara.torso_rot.x, g_Lara.torso_rot.z);
+    Matrix_RotYXZ_I(
+        g_Lara.interp.result.torso_rot.y, g_Lara.interp.result.torso_rot.x,
+        g_Lara.interp.result.torso_rot.z);
     Output_DrawPolygons_I(g_Lara.mesh_ptrs[LM_TORSO], clip);
 
     Matrix_Push_I();
 
     Matrix_TranslateRel_I(bone[53], bone[54], bone[55]);
     Matrix_RotYXZpack_I(packed_rotation1[LM_HEAD], packed_rotation2[LM_HEAD]);
-    Matrix_RotYXZ_I(g_Lara.head_rot.y, g_Lara.head_rot.x, g_Lara.head_rot.z);
+    Matrix_RotYXZ_I(
+        g_Lara.interp.result.head_rot.y, g_Lara.interp.result.head_rot.x,
+        g_Lara.interp.result.head_rot.z);
     Output_DrawPolygons_I(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;

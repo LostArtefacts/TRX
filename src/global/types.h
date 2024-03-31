@@ -1548,6 +1548,13 @@ typedef struct LARA_INFO {
         int32_t move_count;
         bool is_moving;
     } interact_target;
+
+    struct {
+        struct {
+            XYZ_16 head_rot;
+            XYZ_16 torso_rot;
+        } result, prev;
+    } interp;
 } LARA_INFO;
 
 typedef struct GAME_STATS {
