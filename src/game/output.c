@@ -582,7 +582,8 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     }
 
     Matrix_Push();
-    Matrix_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    Matrix_TranslateAbs(
+        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
 
     if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
