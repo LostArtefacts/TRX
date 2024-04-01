@@ -831,6 +831,7 @@ int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
 
     // interpolated
     if ((item != g_LaraItem && !item->active)
+        || (item->object_number == O_STATUE)
         || (item->object_number == O_ROLLING_BALL
             && item->status != IS_ACTIVE)) {
         *rate = denominator;
