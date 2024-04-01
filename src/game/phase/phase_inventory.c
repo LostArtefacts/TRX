@@ -1010,6 +1010,10 @@ static void Phase_Inventory_End(void)
     if (g_Config.enable_buffering) {
         g_OldInputDB.any = 0;
     }
+    if (g_InvMode == INV_TITLE_MODE) {
+        Music_Stop();
+        Sound_StopAllSamples();
+    }
 }
 
 static void Phase_Inventory_Draw(void)
