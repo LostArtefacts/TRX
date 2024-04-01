@@ -115,6 +115,10 @@ bool Config_ReadFromJSON(const char *cfg_data)
     CLAMP(g_Config.ui.text_scale, MIN_TEXT_SCALE, MAX_TEXT_SCALE);
     CLAMP(g_Config.ui.bar_scale, MIN_BAR_SCALE, MAX_BAR_SCALE);
 
+    if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
+        g_Config.rendering.fps = 30;
+    }
+
     char layout_name[50];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
