@@ -1238,6 +1238,13 @@ typedef struct XYZ_32 {
     int32_t z;
 } XYZ_32;
 
+typedef struct QUATERNION {
+    float x;
+    float y;
+    float z;
+    float w;
+} QUATERNION;
+
 typedef struct MATRIX {
     int32_t _00;
     int32_t _01;

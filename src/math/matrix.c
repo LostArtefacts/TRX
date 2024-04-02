@@ -4,7 +4,9 @@
 #include "math/math.h"
 #include "math/math_misc.h"
 
+#include <math.h>
 #include <stddef.h>
+#include <float.h>
 
 #define EXTRACT_ROT_Y(rots) (((rots >> 10) & 0x3FF) << 6)
 #define EXTRACT_ROT_X(rots) (((rots >> 20) & 0x3FF) << 6)
@@ -15,6 +17,133 @@ static int32_t m_IMRate = 0;
 static int32_t m_IMFrac = 0;
 static MATRIX *m_IMMatrixPtr = NULL;
 static MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = { 0 };
+
+static void Matrix_ToQuaternion(const MATRIX *const m, QUATERNION *result);
+static void Matrix_FromQuaternion(const QUATERNION *const q, MATRIX *result);
+static void Quaternion_Slerp(
+    const QUATERNION *const q1, const QUATERNION *const q2, const float rate,
+    QUATERNION *result);
+
+static void Matrix_ToQuaternion(const MATRIX *const m, QUATERNION *result)
+{
+    const float e00 = m->_00 / (float)W2V_SCALE;
+    const float e01 = m->_01 / (float)W2V_SCALE;
+    const float e02 = m->_02 / (float)W2V_SCALE;
+    const float e10 = m->_10 / (float)W2V_SCALE;
+    const float e11 = m->_11 / (float)W2V_SCALE;
+    const float e12 = m->_12 / (float)W2V_SCALE;
+    const float e20 = m->_20 / (float)W2V_SCALE;
+    const float e21 = m->_21 / (float)W2V_SCALE;
+    const float e22 = m->_22 / (float)W2V_SCALE;
+
+    const float t = 1.0f + e00 + e11 + e22;
+    if (t > 0.0001f) {
+        const float s = 0.5f / sqrtf(t);
+        result->x = (e21 - e12) * s;
+        result->y = (e02 - e20) * s;
+        result->z = (e10 - e01) * s;
+        result->w = 0.25f / s;
+    } else if (e00 > e11 && e00 > e22) {
+        const float s = 0.5f / sqrtf(1.0f + e00 - e11 - e22);
+        result->x = 0.25f / s;
+        result->y = (e01 + e10) * s;
+        result->z = (e02 + e20) * s;
+        result->w = (e21 - e12) * s;
+    } else if (e11 > e22) {
+        const float s = 0.5f / sqrtf(1.0f - e00 + e11 - e22);
+        result->x = (e01 + e10) * s;
+        result->y = 0.25f / s;
+        result->z = (e12 + e21) * s;
+        result->w = (e02 - e20) * s;
+    } else {
+        const float s = 0.5f / sqrtf(1.0f - e00 - e11 + e22);
+        result->x = (e02 + e20) * s;
+        result->y = (e12 + e21) * s;
+        result->z = 0.25f / s;
+        result->w = (e10 - e01) * s;
+    }
+}
+
+static void Matrix_FromQuaternion(const QUATERNION *const q, MATRIX *result)
+{
+    const float sx = q->x * q->x;
+    const float sy = q->y * q->y;
+    const float sz = q->z * q->z;
+    const float sw = q->w * q->w;
+    float inv = 1.0f / (sx + sy + sz + sw);
+
+    const float e00 = (sx - sy - sz + sw) * inv;
+    const float e11 = (-sx + sy - sz + sw) * inv;
+    const float e22 = (-sx - sy + sz + sw) * inv;
+    inv *= 2.0f;
+
+    float t1 = q->x * q->y;
+    float t2 = q->z * q->w;
+    const float e10 = (t1 + t2) * inv;
+    const float e01 = (t1 - t2) * inv;
+
+    t1 = q->x * q->z;
+    t2 = q->y * q->w;
+    const float e20 = (t1 - t2) * inv;
+    const float e02 = (t1 + t2) * inv;
+
+    t1 = q->y * q->z;
+    t2 = q->x * q->w;
+    const float e21 = (t1 + t2) * inv;
+    const float e12 = (t1 - t2) * inv;
+
+    result->_00 = e00 * W2V_SCALE;
+    result->_01 = e01 * W2V_SCALE;
+    result->_02 = e02 * W2V_SCALE;
+    result->_10 = e10 * W2V_SCALE;
+    result->_11 = e11 * W2V_SCALE;
+    result->_12 = e12 * W2V_SCALE;
+    result->_20 = e20 * W2V_SCALE;
+    result->_21 = e21 * W2V_SCALE;
+    result->_22 = e22 * W2V_SCALE;
+}
+
+static void Quaternion_Slerp(
+    const QUATERNION *const q1, const QUATERNION *const q2, const float rate,
+    QUATERNION *result)
+{
+    if (rate <= 0.0f) {
+        *result = *q1;
+        return;
+    }
+    if (rate >= 1.0f) {
+        *result = *q2;
+        return;
+    }
+
+    QUATERNION temp;
+    float cosom = q1->x * q2->x + q1->y * q2->y + q1->z * q2->z + q1->w * q2->w;
+    if (cosom < 0.0f) {
+        temp.x = -q2->x;
+        temp.y = -q2->y;
+        temp.z = -q2->z;
+        temp.w = -q2->w;
+        cosom = -cosom;
+    } else
+        temp = *q2;
+
+    float scale0;
+    float scale1;
+    if (1.0f - cosom > FLT_EPSILON) {
+        const float omega = acosf(cosom);
+        const float sinom = 1.0f / sinf(omega);
+        scale0 = sinf((1.0f - rate) * omega) * sinom;
+        scale1 = sinf(rate * omega) * sinom;
+    } else {
+        scale0 = 1.0f - rate;
+        scale1 = rate;
+    }
+
+    result->x = q1->x * scale0 + temp.x * scale1;
+    result->y = q1->y * scale0 + temp.y * scale1;
+    result->z = q1->z * scale0 + temp.z * scale1;
+    result->w = q1->w * scale0 + temp.w * scale1;
+}
 
 void Matrix_ResetStack(void)
 {
@@ -228,21 +357,21 @@ void Matrix_InitInterpolate(int32_t frac, int32_t rate)
 
 void Matrix_Interpolate(void)
 {
-    MATRIX *mptr = g_MatrixPtr;
-    MATRIX *iptr = m_IMMatrixPtr;
+    MATRIX *m1 = g_MatrixPtr;
+    MATRIX *m2 = m_IMMatrixPtr;
+    MATRIX *result = g_MatrixPtr;
+    const double rate = m_IMFrac / (double)m_IMRate;
 
-    mptr->_00 += ((iptr->_00 - mptr->_00) * m_IMFrac) / m_IMRate;
-    mptr->_01 += ((iptr->_01 - mptr->_01) * m_IMFrac) / m_IMRate;
-    mptr->_02 += ((iptr->_02 - mptr->_02) * m_IMFrac) / m_IMRate;
-    mptr->_03 += ((iptr->_03 - mptr->_03) * m_IMFrac) / m_IMRate;
-    mptr->_10 += ((iptr->_10 - mptr->_10) * m_IMFrac) / m_IMRate;
-    mptr->_11 += ((iptr->_11 - mptr->_11) * m_IMFrac) / m_IMRate;
-    mptr->_12 += ((iptr->_12 - mptr->_12) * m_IMFrac) / m_IMRate;
-    mptr->_13 += ((iptr->_13 - mptr->_13) * m_IMFrac) / m_IMRate;
-    mptr->_20 += ((iptr->_20 - mptr->_20) * m_IMFrac) / m_IMRate;
-    mptr->_21 += ((iptr->_21 - mptr->_21) * m_IMFrac) / m_IMRate;
-    mptr->_22 += ((iptr->_22 - mptr->_22) * m_IMFrac) / m_IMRate;
-    mptr->_23 += ((iptr->_23 - mptr->_23) * m_IMFrac) / m_IMRate;
+    QUATERNION q1, q2, q;
+    Matrix_ToQuaternion(m1, &q1);
+    Matrix_ToQuaternion(m2, &q2);
+
+    Quaternion_Slerp(&q1, &q2, rate, &q);
+
+    Matrix_FromQuaternion(&q, result);
+    result->_03 = m1->_03 + (m2->_03 - m1->_03) * rate;
+    result->_13 = m1->_13 + (m2->_13 - m1->_13) * rate;
+    result->_23 = m1->_23 + (m2->_23 - m1->_23) * rate;
 }
 
 void Matrix_InterpolateArm(void)
