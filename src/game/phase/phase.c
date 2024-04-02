@@ -42,6 +42,7 @@ static void Phase_Draw(void)
     if (m_Phaser && m_Phaser->draw) {
         m_Phaser->draw();
     }
+    Output_DumpScreen();
 }
 
 static void Phase_SetUnconditionally(const PHASE phase, void *arg)
@@ -126,22 +127,15 @@ GAMEFLOW_OPTION Phase_Run(void)
     while (1) {
         ret = Phase_Control(nframes);
 
-        if (Interpolation_IsEnabled()) {
-            Clock_SetTickProgress(0.5);
-            Phase_Draw();
-            Output_DumpScreen();
-        }
-
         if (m_PhaseToSet != PHASE_NULL) {
-            if (!Interpolation_IsEnabled()) {
-                Phase_Draw();
-                Output_DumpScreen();
-            }
+            Clock_SetTickProgress(1.0);
+            Phase_Draw();
 
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
             if (ret != GF_PHASE_CONTINUE) {
+                Phase_Draw();
                 break;
             }
             nframes = 2;
@@ -151,17 +145,17 @@ GAMEFLOW_OPTION Phase_Run(void)
 
         if (ret != GF_PHASE_CONTINUE) {
             Phase_Draw();
-            Output_DumpScreen();
             break;
         }
 
         if (Interpolation_IsEnabled()) {
+            Clock_SetTickProgress(0.5);
+            Phase_Draw();
             Phase_Wait();
         }
 
         Clock_SetTickProgress(1.0);
         Phase_Draw();
-        Output_DumpScreen();
         nframes = Phase_Wait();
     }
 
