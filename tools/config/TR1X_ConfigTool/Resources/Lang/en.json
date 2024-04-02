@@ -338,7 +338,7 @@
     },
     "load_music_triggers": {
       "Title": "Remember played music",
-      "Description": "Loads previously triggered music so music tracks do not replay."
+      "Description": "Loads previously triggered, one shot music so one shot music tracks do not replay."
     },
     "enable_music_in_menu": {
       "Title": "Enable main menu music",

@@ -900,6 +900,10 @@ static bool SaveGame_BSON_LoadCurrentMusic(struct json_object_s *music_obj)
 static bool SaveGame_BSON_LoadMusicTrackFlags(
     struct json_array_s *music_track_arr)
 {
+    if (!g_Config.load_music_triggers) {
+        return true;
+    }
+
     if (!music_track_arr) {
         LOG_WARNING("Malformed save: invalid or missing music track array");
         return true;
