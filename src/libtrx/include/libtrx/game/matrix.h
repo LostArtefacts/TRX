@@ -5,6 +5,13 @@
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))
 
+typedef struct QUATERNION {
+    double x;
+    double y;
+    double z;
+    double w;
+} QUATERNION;
+
 typedef struct {
     int32_t _00;
     int32_t _01;
