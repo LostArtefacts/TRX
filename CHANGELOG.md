@@ -21,6 +21,7 @@
 - fixed several texture issues across the majority of levels (#1231)
 - fixed broken gorilla animations (#1244, regression since 2.15.3)
 - fixed saving and loading the music timestamp when the load current music option is enabled (#1237)
+- fixed the remember played music option always being enabled (#1249, regression since 2.16)
 
 ## [3.1.1](https://github.com/LostArtefacts/TR1X/compare/3.1...3.1.1) - 2024-01-19
 - changed quick load to show empty passport instead of opening the save game menu when there are no saves (#1141)
