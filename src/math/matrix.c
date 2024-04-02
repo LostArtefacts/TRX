@@ -24,12 +24,12 @@ void Matrix_ResetStack(void)
 void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
 {
     g_MatrixPtr = &m_MatrixStack[0];
-    int32_t sx = Math_Sin(rot->x);
-    int32_t cx = Math_Cos(rot->x);
-    int32_t sy = Math_Sin(rot->y);
-    int32_t cy = Math_Cos(rot->y);
-    int32_t sz = Math_Sin(rot->z);
-    int32_t cz = Math_Cos(rot->z);
+    const int32_t sx = Math_Sin(rot->x);
+    const int32_t cx = Math_Cos(rot->x);
+    const int32_t sy = Math_Sin(rot->y);
+    const int32_t cy = Math_Cos(rot->y);
+    const int32_t sz = Math_Sin(rot->z);
+    const int32_t cz = Math_Cos(rot->z);
 
     m_MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
     m_MatrixStack[0]._01 = TRIGMULT2(cx, sz);
@@ -89,8 +89,8 @@ void Matrix_RotX(PHD_ANGLE rx)
     }
 
     MATRIX *mptr = g_MatrixPtr;
-    int32_t sx = Math_Sin(rx);
-    int32_t cx = Math_Cos(rx);
+    const int32_t sx = Math_Sin(rx);
+    const int32_t cx = Math_Cos(rx);
 
     int32_t r0, r1;
     r0 = mptr->_01 * cx + mptr->_02 * sx;
@@ -116,8 +116,8 @@ void Matrix_RotY(PHD_ANGLE ry)
     }
 
     MATRIX *mptr = g_MatrixPtr;
-    int32_t sy = Math_Sin(ry);
-    int32_t cy = Math_Cos(ry);
+    const int32_t sy = Math_Sin(ry);
+    const int32_t cy = Math_Cos(ry);
 
     int32_t r0, r1;
     r0 = mptr->_00 * cy - mptr->_02 * sy;
@@ -143,8 +143,8 @@ void Matrix_RotZ(PHD_ANGLE rz)
     }
 
     MATRIX *mptr = g_MatrixPtr;
-    int32_t sz = Math_Sin(rz);
-    int32_t cz = Math_Cos(rz);
+    const int32_t sz = Math_Sin(rz);
+    const int32_t cz = Math_Cos(rz);
 
     int32_t r0, r1;
     r0 = mptr->_00 * cz + mptr->_01 * sz;
@@ -165,137 +165,19 @@ void Matrix_RotZ(PHD_ANGLE rz)
 
 void Matrix_RotYXZ(PHD_ANGLE ry, PHD_ANGLE rx, PHD_ANGLE rz)
 {
-    MATRIX *mptr = g_MatrixPtr;
-    int32_t r0, r1;
-
-    if (ry) {
-        int32_t sy = Math_Sin(ry);
-        int32_t cy = Math_Cos(ry);
-
-        r0 = mptr->_00 * cy - mptr->_02 * sy;
-        r1 = mptr->_02 * cy + mptr->_00 * sy;
-        mptr->_00 = r0 >> W2V_SHIFT;
-        mptr->_02 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_10 * cy - mptr->_12 * sy;
-        r1 = mptr->_12 * cy + mptr->_10 * sy;
-        mptr->_10 = r0 >> W2V_SHIFT;
-        mptr->_12 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_20 * cy - mptr->_22 * sy;
-        r1 = mptr->_22 * cy + mptr->_20 * sy;
-        mptr->_20 = r0 >> W2V_SHIFT;
-        mptr->_22 = r1 >> W2V_SHIFT;
-    }
-
-    if (rx) {
-        int32_t sx = Math_Sin(rx);
-        int32_t cx = Math_Cos(rx);
-
-        r0 = mptr->_01 * cx + mptr->_02 * sx;
-        r1 = mptr->_02 * cx - mptr->_01 * sx;
-        mptr->_01 = r0 >> W2V_SHIFT;
-        mptr->_02 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_11 * cx + mptr->_12 * sx;
-        r1 = mptr->_12 * cx - mptr->_11 * sx;
-        mptr->_11 = r0 >> W2V_SHIFT;
-        mptr->_12 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_21 * cx + mptr->_22 * sx;
-        r1 = mptr->_22 * cx - mptr->_21 * sx;
-        mptr->_21 = r0 >> W2V_SHIFT;
-        mptr->_22 = r1 >> W2V_SHIFT;
-    }
-
-    if (rz) {
-        int32_t sz = Math_Sin(rz);
-        int32_t cz = Math_Cos(rz);
-
-        r0 = mptr->_00 * cz + mptr->_01 * sz;
-        r1 = mptr->_01 * cz - mptr->_00 * sz;
-        mptr->_00 = r0 >> W2V_SHIFT;
-        mptr->_01 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_10 * cz + mptr->_11 * sz;
-        r1 = mptr->_11 * cz - mptr->_10 * sz;
-        mptr->_10 = r0 >> W2V_SHIFT;
-        mptr->_11 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_20 * cz + mptr->_21 * sz;
-        r1 = mptr->_21 * cz - mptr->_20 * sz;
-        mptr->_20 = r0 >> W2V_SHIFT;
-        mptr->_21 = r1 >> W2V_SHIFT;
-    }
+    Matrix_RotY(ry);
+    Matrix_RotX(rx);
+    Matrix_RotZ(rz);
 }
 
 void Matrix_RotYXZpack(int32_t rots)
 {
-    MATRIX *mptr = g_MatrixPtr;
-    int32_t r0, r1;
-
-    PHD_ANGLE ry = EXTRACT_ROT_Y(rots);
-    if (ry) {
-        int32_t sy = Math_Sin(ry);
-        int32_t cy = Math_Cos(ry);
-
-        r0 = mptr->_00 * cy - mptr->_02 * sy;
-        r1 = mptr->_02 * cy + mptr->_00 * sy;
-        mptr->_00 = r0 >> W2V_SHIFT;
-        mptr->_02 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_10 * cy - mptr->_12 * sy;
-        r1 = mptr->_12 * cy + mptr->_10 * sy;
-        mptr->_10 = r0 >> W2V_SHIFT;
-        mptr->_12 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_20 * cy - mptr->_22 * sy;
-        r1 = mptr->_22 * cy + mptr->_20 * sy;
-        mptr->_20 = r0 >> W2V_SHIFT;
-        mptr->_22 = r1 >> W2V_SHIFT;
-    }
-
-    PHD_ANGLE rx = EXTRACT_ROT_X(rots);
-    if (rx) {
-        int32_t sx = Math_Sin(rx);
-        int32_t cx = Math_Cos(rx);
-
-        r0 = mptr->_01 * cx + mptr->_02 * sx;
-        r1 = mptr->_02 * cx - mptr->_01 * sx;
-        mptr->_01 = r0 >> W2V_SHIFT;
-        mptr->_02 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_11 * cx + mptr->_12 * sx;
-        r1 = mptr->_12 * cx - mptr->_11 * sx;
-        mptr->_11 = r0 >> W2V_SHIFT;
-        mptr->_12 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_21 * cx + mptr->_22 * sx;
-        r1 = mptr->_22 * cx - mptr->_21 * sx;
-        mptr->_21 = r0 >> W2V_SHIFT;
-        mptr->_22 = r1 >> W2V_SHIFT;
-    }
-
-    PHD_ANGLE rz = EXTRACT_ROT_Z(rots);
-    if (rz) {
-        int32_t sz = Math_Sin(rz);
-        int32_t cz = Math_Cos(rz);
-
-        r0 = mptr->_00 * cz + mptr->_01 * sz;
-        r1 = mptr->_01 * cz - mptr->_00 * sz;
-        mptr->_00 = r0 >> W2V_SHIFT;
-        mptr->_01 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_10 * cz + mptr->_11 * sz;
-        r1 = mptr->_11 * cz - mptr->_10 * sz;
-        mptr->_10 = r0 >> W2V_SHIFT;
-        mptr->_11 = r1 >> W2V_SHIFT;
-
-        r0 = mptr->_20 * cz + mptr->_21 * sz;
-        r1 = mptr->_21 * cz - mptr->_20 * sz;
-        mptr->_20 = r0 >> W2V_SHIFT;
-        mptr->_21 = r1 >> W2V_SHIFT;
-    }
+    const PHD_ANGLE ry = EXTRACT_ROT_Y(rots);
+    const PHD_ANGLE rx = EXTRACT_ROT_X(rots);
+    const PHD_ANGLE rz = EXTRACT_ROT_Z(rots);
+    Matrix_RotY(ry);
+    Matrix_RotX(rx);
+    Matrix_RotZ(rz);
 }
 
 void Matrix_TranslateRel(int32_t x, int32_t y, int32_t z)
