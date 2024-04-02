@@ -70,11 +70,11 @@ void Interpolation_Commit(void)
         INTERPOLATE(&g_Camera, target.y, ratio, 512);
         INTERPOLATE(&g_Camera, target.z, ratio, 512);
 
-        g_Camera.interp.result.room_num = g_Camera.interp.prev.room_num;
+        g_Camera.interp.room_num = g_Camera.pos.room_number;
         Room_GetFloor(
             g_Camera.interp.result.pos.x,
             g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
-            g_Camera.interp.result.pos.z, &g_Camera.interp.result.room_num);
+            g_Camera.interp.result.pos.z, &g_Camera.interp.room_num);
     }
 
     INTERPOLATE_ROT(&g_Lara.left_arm, rot.x, ratio, PHD_45);
@@ -146,7 +146,6 @@ void Interpolation_Remember(void)
         REMEMBER(&g_Camera, target.x);
         REMEMBER(&g_Camera, target.y);
         REMEMBER(&g_Camera, target.z);
-        g_Camera.interp.prev.room_num = g_Camera.pos.room_number;
     }
 
     REMEMBER(&g_Lara.left_arm, rot.x);
