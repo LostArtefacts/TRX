@@ -286,9 +286,10 @@ static void S_Audio_StreamSoundClear(AUDIO_STREAM_SOUND *stream)
 {
     stream->is_used = false;
     stream->is_playing = false;
-    stream->is_looped = false;
     stream->is_read_done = true;
+    stream->is_looped = false;
     stream->volume = 0.0f;
+    stream->duration = 0.0;
     stream->timestamp = 0.0;
     stream->sdl.stream = NULL;
     stream->finish_callback = NULL;
@@ -540,18 +541,19 @@ double S_Audio_StreamGetTimestamp(int sound_id)
 {
     if (!g_AudioDeviceID || sound_id < 0
         || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
-        return -1;
+        return -1.0;
     }
 
-    if (m_StreamSounds[sound_id].is_playing) {
+    double timestamp = -1.0;
+    AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
+
+    if (stream->duration > 0.0) {
         SDL_LockAudioDevice(g_AudioDeviceID);
-        AUDIO_STREAM_SOUND *stream = &m_StreamSounds[sound_id];
-        double timestamp = stream->timestamp;
+        timestamp = stream->timestamp;
         SDL_UnlockAudioDevice(g_AudioDeviceID);
-        return timestamp;
     }
 
-    return -1.0;
+    return timestamp;
 }
 
 double S_Audio_StreamGetDuration(int sound_id)
