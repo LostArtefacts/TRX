@@ -16,6 +16,7 @@
 - changed stats no longer disappear during fade-out (#1211)
 - changed the way music timestamps are internally handled – resets music position in existing saves
 - changed vertex and fragment shaders into unified files that are runtime pre-processed for OpenGL versions 2.1 or 3.3
+- changed the `/kill` command to use Lara as a reference point, and kill all creatures that are within a single tile first (#1256)
 - fixed a missing translation for the Spanish config tool for the Eidos logo skip option (#1151)
 - fixed a flipmap issue in Natla's Mines that could make the cabin appear stacked and prevent normal gameplay (#1052)
 - fixed several texture issues across the majority of levels (#1231)

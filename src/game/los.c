@@ -6,12 +6,13 @@
 
 #include <stdint.h>
 
-static int32_t LOS_CheckX(GAME_VECTOR *start, GAME_VECTOR *target);
-static int32_t LOS_CheckZ(GAME_VECTOR *start, GAME_VECTOR *target);
+static int32_t LOS_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
+static int32_t LOS_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
 static bool LOS_ClipTarget(
-    GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor);
+    const GAME_VECTOR *start, GAME_VECTOR *target, const FLOOR_INFO *floor);
 
-static int32_t LOS_CheckX(GAME_VECTOR *start, GAME_VECTOR *target)
+static int32_t LOS_CheckX(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     FLOOR_INFO *floor;
 
@@ -96,7 +97,8 @@ static int32_t LOS_CheckX(GAME_VECTOR *start, GAME_VECTOR *target)
     return 1;
 }
 
-static int32_t LOS_CheckZ(GAME_VECTOR *start, GAME_VECTOR *target)
+static int32_t LOS_CheckZ(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     FLOOR_INFO *floor;
 
@@ -182,7 +184,8 @@ static int32_t LOS_CheckZ(GAME_VECTOR *start, GAME_VECTOR *target)
 }
 
 static bool LOS_ClipTarget(
-    GAME_VECTOR *start, GAME_VECTOR *target, FLOOR_INFO *floor)
+    const GAME_VECTOR *const start, GAME_VECTOR *const target,
+    const FLOOR_INFO *const floor)
 {
     int32_t dx = target->x - start->x;
     int32_t dy = target->y - start->y;
@@ -207,7 +210,7 @@ static bool LOS_ClipTarget(
     return true;
 }
 
-bool LOS_Check(GAME_VECTOR *start, GAME_VECTOR *target)
+bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     int32_t los1;
     int32_t los2;

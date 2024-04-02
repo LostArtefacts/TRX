@@ -302,14 +302,15 @@ FLOOR_INFO *Room_GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
     return floor;
 }
 
-int16_t Room_GetCeiling(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetCeiling(
+    const FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     int16_t *data;
     int16_t type;
     int16_t ended;
     int16_t trigger;
 
-    FLOOR_INFO *f = floor;
+    const FLOOR_INFO *f = floor;
     while (f->sky_room != NO_ROOM) {
         ROOM_INFO *r = &g_RoomInfo[f->sky_room];
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
@@ -431,7 +432,7 @@ int16_t Room_GetDoor(FLOOR_INFO *floor)
     return NO_ROOM;
 }
 
-int16_t Room_GetHeight(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetHeight(const FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
 {
     g_HeightType = HT_WALL;
     while (floor->pit_room != NO_ROOM) {

@@ -372,6 +372,15 @@ bool Item_IsNearItem(const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance)
     return false;
 }
 
+int32_t Item_GetDistance(
+    const ITEM_INFO *const item, const XYZ_32 *const target)
+{
+    const int32_t x = (item->pos.x - target->x);
+    const int32_t y = (item->pos.y - target->y);
+    const int32_t z = (item->pos.z - target->z);
+    return Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+}
+
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 {
     return ABS(x) < range && ABS(y) < range && ABS(z) < range

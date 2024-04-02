@@ -411,47 +411,32 @@ static bool Console_Cmd_Kill(const char *args)
     }
 
     if (strcmp(args, "") == 0) {
-        int16_t best_item_num = NO_ITEM;
-        int32_t best_dist = -1;
-        for (int16_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
-            struct ITEM_INFO *item = &g_Items[item_num];
-            if (Object_IsObjectType(item->object_number, g_EnemyObjects)
-                && item->hit_points > 0) {
-                GAME_VECTOR target;
-                target.x = item->pos.x;
-                target.y = item->pos.y - WALL_L;
-                target.z = item->pos.z;
-                target.room_number = item->room_number;
+        // kill all the enemies around Lara within one tile, or a single
+        // nearest enemy
+        bool found_anything = false;
 
-                GAME_VECTOR start;
-                start.x = g_Camera.pos.x;
-                start.y = g_Camera.pos.y;
-                start.z = g_Camera.pos.z;
-                start.room_number = g_Camera.pos.room_number;
-
-                if (LOS_Check(&start, &target)) {
-                    int32_t x = (item->pos.x - g_Camera.pos.x) >> WALL_SHIFT;
-                    int32_t y = (item->pos.y - g_Camera.pos.y) >> WALL_SHIFT;
-                    int32_t z = (item->pos.z - g_Camera.pos.z) >> WALL_SHIFT;
-                    int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
-
-                    if (best_dist == -1 || dist < best_dist) {
-                        best_dist = dist;
-                        best_item_num = item_num;
-                    }
-                }
+        while (true) {
+            const int16_t best_item_num = Lara_GetNearestEnemy();
+            if (best_item_num == NO_ITEM) {
+                break;
             }
-        }
 
-        if (best_item_num != NO_ITEM) {
             struct ITEM_INFO *item = &g_Items[best_item_num];
+            const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
             Effect_ExplodingDeath(best_item_num, -1, 0);
             Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
             Item_Kill(best_item_num);
             Carrier_TestItemDrops(best_item_num);
+            found_anything = true;
+            if (distance >= WALL_L) {
+                break;
+            }
+        }
+
+        if (found_anything) {
             Console_Log("Bye-bye!");
         } else {
-            Console_Log("No enemy in sight...");
+            Console_Log("No enemy nearby...");
         }
         return true;
     }
