@@ -21,6 +21,8 @@
 static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
     // clang-format off
     LA_JUMP_NEUTRAL_ROLL,
+    LA_JUMP_BACK_ROLL_START,
+    LA_JUMP_BACK_ROLL_END,
     LA_CONTROLLED_DROP_CONTINUE,
     LA_HANG_TO_JUMP_BACK,
     LA_TRX_INVALID, // sentinel
