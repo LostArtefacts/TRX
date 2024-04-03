@@ -8,8 +8,10 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara/lara_control.h"
+#include "game/los.h"
 #include "game/lot.h"
 #include "game/music.h"
+#include "game/objects/common.h"
 #include "game/objects/effects/splash.h"
 #include "game/room.h"
 #include "game/savegame.h"
@@ -625,6 +627,32 @@ void Lara_InitialiseMeshes(int32_t level_num)
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance)
 {
     return Item_IsNearItem(g_LaraItem, pos, distance);
+}
+
+int16_t Lara_GetNearestEnemy(void)
+{
+    if (g_LaraItem == NULL) {
+        return NO_ITEM;
+    }
+
+    int32_t best_distance = -1;
+    int16_t best_item_num = NO_ITEM;
+    int16_t item_num = g_NextItemActive;
+    while (item_num != NO_ITEM) {
+        ITEM_INFO *item = &g_Items[item_num];
+
+        if (Object_IsObjectType(item->object_number, g_EnemyObjects)) {
+            const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
+            if (best_item_num == NO_ITEM || distance < best_distance) {
+                best_item_num = item_num;
+                best_distance = distance;
+            }
+        }
+
+        item_num = item->next_active;
+    }
+
+    return best_item_num;
 }
 
 bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius)
