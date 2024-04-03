@@ -41,6 +41,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static void Camera_LoadCutsceneFrame(void);
 static void Camera_OffsetAdditionalAngle(int16_t delta);
 static void Camera_OffsetAdditionalElevation(int16_t delta);
+static void Camera_EnsureEnvironment(void);
 
 static bool Camera_BadPosition(
     int32_t x, int32_t y, int32_t z, int16_t room_num)
@@ -589,16 +590,6 @@ void Camera_Fixed(void)
 
 void Camera_Update(void)
 {
-    if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
-        Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
-        if (!g_Camera.underwater) {
-            g_Camera.underwater = 1;
-        }
-    } else if (g_Camera.underwater) {
-        Sound_StopEffect(SFX_UNDERWATER, NULL);
-        g_Camera.underwater = 0;
-    }
-
     if (g_Camera.type == CAM_CINEMATIC) {
         Camera_LoadCutsceneFrame();
         return;
@@ -755,6 +746,21 @@ void Camera_Update(void)
     g_ChunkyFlag = false;
 }
 
+static void Camera_EnsureEnvironment(void)
+{
+    if (g_Camera.pos.room_number == NO_ROOM) {
+        return;
+    }
+
+    if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
+        Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
+        g_Camera.underwater = true;
+    } else if (g_Camera.underwater) {
+        Sound_StopEffect(SFX_UNDERWATER, NULL);
+        g_Camera.underwater = false;
+    }
+}
+
 void Camera_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
@@ -847,6 +853,7 @@ void Camera_MoveManual(void)
 
 void Camera_Apply(void)
 {
+    Camera_EnsureEnvironment();
     Matrix_LookAt(
         g_Camera.interp.result.pos.x,
         g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
