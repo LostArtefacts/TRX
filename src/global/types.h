@@ -1833,7 +1833,7 @@ typedef struct CAMERA_INFO {
     int32_t flags;
     int32_t fixed_camera;
     int32_t bounce;
-    int32_t underwater;
+    bool underwater;
     int32_t target_distance;
     int32_t target_square;
     int16_t target_angle;
