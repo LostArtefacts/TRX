@@ -32,6 +32,15 @@ static void Config_WriteEnum(
     struct json_object_s *obj, const char *name, int value,
     const CONFIG_OPTION_ENUM_MAP *enum_map);
 
+static void Config_ReadKeyboardLayout(
+    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+static void Config_ReadControllerLayout(
+    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+static void Config_WriteKeyboardLayout(
+    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+static void Config_WriteControllerLayout(
+    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
     const CONFIG_OPTION_ENUM_MAP *enum_map)
@@ -58,6 +67,186 @@ static void Config_WriteEnum(
             break;
         }
         enum_map++;
+    }
+}
+
+static void Config_ReadKeyboardLayout(
+    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+{
+    char layout_name[20];
+    sprintf(layout_name, "layout_%d", layout);
+    struct json_array_s *const arr =
+        json_object_get_array(parent_obj, layout_name);
+    if (!arr) {
+        return;
+    }
+
+    const struct json_value_s *const first_value = json_array_get_value(arr, 0);
+    if (first_value != json_null && first_value->type == json_type_number) {
+        // legacy config for versions <= 3.1.1
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
+            scancode = json_array_get_int(arr, role, scancode);
+            Input_AssignScancode(layout, role, scancode);
+        }
+    } else {
+        // version 3.2+
+        for (size_t i = 0; i < arr->length; i++) {
+            struct json_object_s *const bind_obj =
+                json_array_get_object(arr, i);
+            if (!bind_obj) {
+                continue;
+            }
+
+            const INPUT_ROLE role = json_object_get_int(bind_obj, "role", -1);
+            if (role == (INPUT_ROLE)-1) {
+                continue;
+            }
+
+            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
+            scancode = json_object_get_int(bind_obj, "scancode", scancode);
+
+            Input_AssignScancode(layout, role, scancode);
+        }
+    }
+}
+
+static void Config_ReadControllerLayout(
+    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+{
+    char layout_name[20];
+    sprintf(layout_name, "cntlr_layout_%d", layout);
+    struct json_array_s *const arr =
+        json_object_get_array(parent_obj, layout_name);
+    if (!arr) {
+        return;
+    }
+
+    const struct json_value_s *const first_value = json_array_get_value(arr, 0);
+    if (first_value != json_null && first_value->type == json_type_number) {
+        // legacy config for versions <= 3.1.1
+        int i = 0;
+        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+            int16_t type = Input_GetAssignedButtonType(layout, role);
+            type = json_array_get_int(arr, i, type);
+            i++;
+
+            int16_t bind = Input_GetAssignedBind(layout, role);
+            bind = json_array_get_int(arr, i, bind);
+            i++;
+
+            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
+            axis_dir = json_array_get_int(arr, i, axis_dir);
+            i++;
+
+            if (type == BT_BUTTON) {
+                Input_AssignButton(layout, role, bind);
+            } else {
+                Input_AssignAxis(layout, role, bind, axis_dir);
+            }
+        }
+    } else {
+        // version 3.2+
+        for (size_t i = 0; i < arr->length; i++) {
+            struct json_object_s *const bind_obj =
+                json_array_get_object(arr, i);
+            if (!bind_obj) {
+                continue;
+            }
+
+            const INPUT_ROLE role = json_object_get_int(bind_obj, "role", -1);
+            if (role == (INPUT_ROLE)-1) {
+                continue;
+            }
+
+            int16_t type = Input_GetAssignedButtonType(layout, role);
+            type = json_object_get_int(bind_obj, "button_type", type);
+
+            int16_t bind = Input_GetAssignedBind(layout, role);
+            bind = json_object_get_int(bind_obj, "bind", bind);
+
+            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
+            axis_dir = json_object_get_int(bind_obj, "axis_dir", axis_dir);
+
+            if (type == BT_BUTTON) {
+                Input_AssignButton(layout, role, bind);
+            } else {
+                Input_AssignAxis(layout, role, bind, axis_dir);
+            }
+        }
+    }
+}
+
+static void Config_WriteKeyboardLayout(
+    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+{
+    struct json_array_s *const arr = json_array_new();
+
+    bool has_elements = false;
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        const INPUT_SCANCODE default_scancode =
+            Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
+        const INPUT_SCANCODE user_scancode =
+            Input_GetAssignedScancode(layout, role);
+
+        if (user_scancode == default_scancode) {
+            continue;
+        }
+
+        struct json_object_s *const bind_obj = json_object_new();
+        json_object_append_int(bind_obj, "role", role);
+        json_object_append_int(bind_obj, "scancode", user_scancode);
+        json_array_append_object(arr, bind_obj);
+        has_elements = true;
+    }
+
+    if (has_elements) {
+        char layout_name[20];
+        sprintf(layout_name, "layout_%d", layout);
+        json_object_append_array(parent_obj, layout_name, arr);
+    } else {
+        json_array_free(arr);
+    }
+}
+
+static void Config_WriteControllerLayout(
+    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+{
+    struct json_array_s *const arr = json_array_new();
+
+    bool has_elements = false;
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        const int16_t default_button_type =
+            Input_GetAssignedButtonType(INPUT_LAYOUT_DEFAULT, role);
+        const int16_t default_axis_dir =
+            Input_GetAssignedAxisDir(INPUT_LAYOUT_DEFAULT, role);
+        const int16_t default_bind =
+            Input_GetAssignedBind(INPUT_LAYOUT_DEFAULT, role);
+        const int16_t user_button_type =
+            Input_GetAssignedButtonType(layout, role);
+        const int16_t user_axis_dir = Input_GetAssignedAxisDir(layout, role);
+        const int16_t user_bind = Input_GetAssignedBind(layout, role);
+
+        if (user_button_type == default_button_type
+            && user_axis_dir == default_axis_dir && user_bind == default_bind) {
+            continue;
+        }
+
+        struct json_object_s *const bind_obj = json_object_new();
+        json_object_append_int(bind_obj, "role", role);
+        json_object_append_int(bind_obj, "button_type", user_button_type);
+        json_object_append_int(bind_obj, "bind", user_bind);
+        json_object_append_int(bind_obj, "axis_dir", user_axis_dir);
+        json_array_append_object(arr, bind_obj);
+        has_elements = true;
+    }
+
+    if (has_elements) {
+        char layout_name[20];
+        sprintf(layout_name, "cntlr_layout_%d", layout);
+        json_object_append_array(parent_obj, layout_name, arr);
+    } else {
+        json_array_free(arr);
     }
 }
 
@@ -104,6 +293,12 @@ bool Config_ReadFromJSON(const char *cfg_data)
         opt++;
     }
 
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        Config_ReadKeyboardLayout(root_obj, layout);
+        Config_ReadControllerLayout(root_obj, layout);
+    }
+
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
     CLAMP(g_Config.camera_speed, 1, 10);
@@ -117,47 +312,6 @@ bool Config_ReadFromJSON(const char *cfg_data)
 
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;
-    }
-
-    char layout_name[50];
-    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
-         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        sprintf(layout_name, "layout_%d", layout);
-        struct json_array_s *layout_arr =
-            json_object_get_array(root_obj, layout_name);
-        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
-            scancode = json_array_get_int(layout_arr, role, scancode);
-            Input_AssignScancode(layout, role, scancode);
-        }
-    }
-
-    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
-         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        sprintf(layout_name, "cntlr_layout_%d", layout);
-        struct json_array_s *cntlr_arr =
-            json_object_get_array(root_obj, layout_name);
-        INPUT_ROLE role = 0;
-        int i = 0;
-        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-            int16_t type = Input_GetAssignedButtonType(layout, role);
-            type = json_array_get_int(cntlr_arr, i, type);
-            i++;
-
-            int16_t bind = Input_GetAssignedBind(layout, role);
-            bind = json_array_get_int(cntlr_arr, i, bind);
-            i++;
-
-            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
-            axis_dir = json_array_get_int(cntlr_arr, i, axis_dir);
-            i++;
-
-            if (type == BT_BUTTON) {
-                Input_AssignButton(layout, role, bind);
-            } else {
-                Input_AssignAxis(layout, role, bind, axis_dir);
-            }
-        }
     }
 
     if (root) {
@@ -228,31 +382,14 @@ bool Config_Write(void)
         opt++;
     }
 
-    char layout_name[20];
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        struct json_array_s *layout_arr = json_array_new();
-        sprintf(layout_name, "layout_%d", layout);
-        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-            json_array_append_int(
-                layout_arr, Input_GetAssignedScancode(layout, role));
-        }
-        json_object_append_array(root_obj, layout_name, layout_arr);
+        Config_WriteKeyboardLayout(root_obj, layout);
     }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        struct json_array_s *cntlr_arr = json_array_new();
-        sprintf(layout_name, "cntlr_layout_%d", layout);
-        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-            json_array_append_int(
-                cntlr_arr, Input_GetAssignedButtonType(layout, role));
-            json_array_append_int(
-                cntlr_arr, Input_GetAssignedBind(layout, role));
-            json_array_append_int(
-                cntlr_arr, Input_GetAssignedAxisDir(layout, role));
-        }
-        json_object_append_array(root_obj, layout_name, cntlr_arr);
+        Config_WriteControllerLayout(root_obj, layout);
     }
 
     struct json_value_s *root = json_value_from_object(root_obj);
