@@ -20,7 +20,7 @@ Currently supported commands:
 
 - `/kill`  
   `/kill all`  
-  Tired of bats, crocs, rats, lions, Frenchmen and literally every living thing trying to spoil your adventure? This command instantly disposes a single nearest enemy, or kills them all at once.
+  Tired of bats, crocs, rats, lions, Frenchmen and literally every living thing trying to spoil your adventure? This command instantly disposes of the nearest enemy, or kills them all at once.
 
 - `/fly`  
   Turns on the fly cheat. Why even walk?
