@@ -924,6 +924,6 @@ bool Level_Initialise(int32_t level_num)
     g_InvItemPickup1.string = g_GameFlow.levels[level_num].pickup1;
     g_InvItemPickup2.string = g_GameFlow.levels[level_num].pickup2;
 
-    g_Camera.underwater = 0;
+    g_Camera.underwater = false;
     return true;
 }
