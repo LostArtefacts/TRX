@@ -1,7 +1,13 @@
 name: Build macOS app bundle and .dmg installer image
 
 on:
-  - workflow_call
+  workflow_call:
+    inputs:
+      let_mac_fail:
+        description: "Do not require Mac builds to pass"
+        required: false
+        type: boolean
+        default: false
 
 env:
   FFMPEG_INSTALL_FUSED: /opt/local
@@ -12,6 +18,7 @@ env:
 jobs:
   build:
     runs-on: macos-14
+    continue-on-error: ${{ inputs.let_mac_fail }}
     steps:
       - name: Set up signing certificate
         env:

@@ -30,6 +30,11 @@ on:
         required: false
         default: "${{ github.ref }}"
         type: string
+      let_mac_fail:
+        description: "Do not require Mac builds to pass"
+        required: false
+        type: boolean
+        default: false
 
   workflow_dispatch:
     inputs:
@@ -94,6 +99,8 @@ jobs:
       vars.RELEASE_ENABLE == 'true' &&
       vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/build_macos.yml
+    with:
+      let_mac_fail: ${{ inputs.let_mac_fail }}
     secrets: inherit
 
   publish_release:
