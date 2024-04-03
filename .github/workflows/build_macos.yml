@@ -49,7 +49,7 @@ jobs:
 
       - name: Install and update MacPorts
         run: |
-          wget -O ${{ github.workspace }}/macports.pkg https://github.com/macports/macports-base/releases/download/v2.9.1/MacPorts-2.9.1-14-Sonoma.pkg
+          wget -O ${{ github.workspace }}/macports.pkg https://github.com/macports/macports-base/releases/download/v2.9.2/MacPorts-2.9.2-14-Sonoma.pkg
           sudo installer -pkg ${{ github.workspace }}/macports.pkg -target /
 
       - name: Install build and deployment tools
