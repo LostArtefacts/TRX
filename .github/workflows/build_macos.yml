@@ -62,7 +62,8 @@ jobs:
           sudo port select --set pip3 pip312
 
           # Install the rest.
-          sudo port -N install create-dmg meson ninja pkgconfig py-json5
+          sudo port -N install create-dmg meson ninja pkgconfig
+          sudo pip3 install pyjson5
 
       - name: "Build dependencies: Compression libraries (universal)"
         run: |
