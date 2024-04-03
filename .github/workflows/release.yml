@@ -89,6 +89,7 @@ jobs:
 
   package_mac:
     name: "Build release assets (mac)"
+    if: ${{ secrets.MACOS_CERTIFICATE != '' }}
     uses: ./.github/workflows/build_macos.yml
     secrets: inherit
 
