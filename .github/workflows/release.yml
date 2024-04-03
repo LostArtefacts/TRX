@@ -58,6 +58,7 @@ jobs:
   package_multiplatform:
     name: Build release assets
     runs-on: ubuntu-latest
+    if: vars.RELEASE_ENABLE == 'true'
     strategy:
       matrix:
         include:
@@ -89,11 +90,14 @@ jobs:
 
   package_mac:
     name: "Build release assets (mac)"
-    if: vars.MACOS_ENABLE == 'true'
+    if: |
+      vars.RELEASE_ENABLE == 'true' &&
+      vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/build_macos.yml
     secrets: inherit
 
   publish_release:
+    if: vars.RELEASE_ENABLE == 'true'
     name: Create a GitHub release
     runs-on: ubuntu-latest
     needs:

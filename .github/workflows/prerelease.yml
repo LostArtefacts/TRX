@@ -12,7 +12,9 @@ jobs:
   publish_prerelease:
     name: 'Create a prerelease'
     uses: ./.github/workflows/release.yml
-    if: github.ref == 'refs/heads/develop'
+    if: |
+      github.ref == 'refs/heads/develop' &&
+      vars.RELEASE_ENABLE == 'true'
     with:
       release_name: 'Development snapshot'
       draft: false
