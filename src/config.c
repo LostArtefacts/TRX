@@ -90,7 +90,7 @@ static void Config_ReadKeyboardLayout(
             Input_AssignScancode(layout, role, scancode);
         }
     } else {
-        // version 3.2+
+        // version 4.0+
         for (size_t i = 0; i < arr->length; i++) {
             struct json_object_s *const bind_obj =
                 json_array_get_object(arr, i);
@@ -146,7 +146,7 @@ static void Config_ReadControllerLayout(
             }
         }
     } else {
-        // version 3.2+
+        // version 4.0+
         for (size_t i = 0; i < arr->length; i++) {
             struct json_object_s *const bind_obj =
                 json_array_get_object(arr, i);
