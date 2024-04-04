@@ -32,6 +32,7 @@
 
 typedef enum STATE {
     STATE_RUN,
+    STATE_FADE_OUT,
     STATE_INVALID,
 } STATE;
 
@@ -52,6 +53,7 @@ static int32_t Phase_Demo_ChooseLevel(void);
 static void Phase_Demo_Start(void *arg);
 static void Phase_Demo_End(void);
 static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes);
+static GAMEFLOW_OPTION Phase_Demo_FadeOut(void);
 static GAMEFLOW_OPTION Phase_Demo_Control(int32_t nframes);
 static void Phase_Demo_Draw(void);
 
@@ -211,7 +213,8 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
     for (int32_t i = 0; i < nframes; i++) {
         Lara_CheckCheatMode();
         if (g_LevelComplete) {
-            return GF_EXIT_TO_TITLE;
+            m_State = STATE_FADE_OUT;
+            return GF_PHASE_CONTINUE;
         }
 
         Input_Update();
@@ -219,7 +222,8 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
         Game_ProcessInput();
 
         if (g_Input.any || !Phase_Demo_ProcessInput()) {
-            return GF_EXIT_TO_TITLE;
+            m_State = STATE_FADE_OUT;
+            return GF_PHASE_CONTINUE;
         }
 
         Item_Control();
@@ -239,6 +243,19 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
     return GF_PHASE_CONTINUE;
 }
 
+static GAMEFLOW_OPTION Phase_Demo_FadeOut(void)
+{
+    Text_Flash(m_DemoModeText, 0, 0);
+    Input_Update();
+    Output_FadeToBlack(true);
+    if (g_InputDB.menu_confirm || g_InputDB.menu_back
+        || !Output_FadeIsAnimating()) {
+        Output_FadeResetToBlack();
+        return GF_EXIT_TO_TITLE;
+    }
+    return GF_PHASE_CONTINUE;
+}
+
 static GAMEFLOW_OPTION Phase_Demo_Control(int32_t nframes)
 {
     switch (m_State) {
@@ -247,6 +264,9 @@ static GAMEFLOW_OPTION Phase_Demo_Control(int32_t nframes)
 
     case STATE_RUN:
         return Phase_Demo_Run(nframes);
+
+    case STATE_FADE_OUT:
+        return Phase_Demo_FadeOut();
     }
 
     assert(false);
