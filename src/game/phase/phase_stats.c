@@ -22,14 +22,14 @@
 
 #define MAX_TEXTSTRINGS 10
 
-typedef enum STATS_STATE {
-    STATS_STATE_FADE_IN,
-    STATS_STATE_DISPLAY,
-    STATS_STATE_FADE_OUT,
-} STATS_STATE;
+typedef enum STATE {
+    STATE_FADE_IN,
+    STATE_DISPLAY,
+    STATE_FADE_OUT,
+} STATE;
 
 static bool m_Total = false;
-static STATS_STATE m_State = STATS_STATE_DISPLAY;
+static STATE m_State = STATE_DISPLAY;
 static TEXTSTRING *m_Texts[MAX_TEXTSTRINGS] = { 0 };
 
 static void Phase_Stats_CreateTexts(int32_t level_num);
@@ -252,11 +252,11 @@ static void Phase_Stats_Start(void *arg)
 
     if (g_CurrentLevel == g_GameFlow.gym_level_num) {
         Output_FadeToBlack(false);
-        m_State = STATS_STATE_FADE_OUT;
+        m_State = STATE_FADE_OUT;
         return;
     }
 
-    m_State = STATS_STATE_FADE_IN;
+    m_State = STATE_FADE_IN;
     m_Total = data && data->total;
 
     if (data && data->total) {
@@ -289,21 +289,21 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
     Shell_ProcessInput();
 
     switch (m_State) {
-    case STATS_STATE_FADE_IN:
+    case STATE_FADE_IN:
         if (!Output_FadeIsAnimating()) {
-            m_State = STATS_STATE_DISPLAY;
+            m_State = STATE_DISPLAY;
         } else if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-            m_State = STATS_STATE_FADE_OUT;
+            m_State = STATE_FADE_OUT;
         }
         break;
 
-    case STATS_STATE_DISPLAY:
+    case STATE_DISPLAY:
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-            m_State = STATS_STATE_FADE_OUT;
+            m_State = STATE_FADE_OUT;
         }
         break;
 
-    case STATS_STATE_FADE_OUT:
+    case STATE_FADE_OUT:
         Output_FadeToBlack(true);
         if (g_InputDB.menu_confirm || g_InputDB.menu_back
             || !Output_FadeIsAnimating()) {

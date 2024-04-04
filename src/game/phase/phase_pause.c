@@ -19,13 +19,13 @@
 #define PAUSE_MAX_ITEMS 5
 #define PAUSE_MAX_TEXT_LENGTH 50
 
-typedef enum PAUSE_STATE {
-    PAUSE_STATE_DEFAULT,
-    PAUSE_STATE_ASK,
-    PAUSE_STATE_CONFIRM,
-} PAUSE_STATE;
+typedef enum STATE {
+    STATE_DEFAULT,
+    STATE_ASK,
+    STATE_CONFIRM,
+} STATE;
 
-static PAUSE_STATE m_PauseState = PAUSE_STATE_DEFAULT;
+static STATE m_PauseState = STATE_DEFAULT;
 
 static TEXTSTRING *m_PausedText = NULL;
 
@@ -113,7 +113,7 @@ static void Phase_Pause_Start(void *arg)
 
     Output_FadeToSemiBlack(true);
 
-    m_PauseState = PAUSE_STATE_DEFAULT;
+    m_PauseState = STATE_DEFAULT;
 }
 
 static void Phase_Pause_End(void)
@@ -133,17 +133,17 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
     Game_ProcessInput();
 
     switch (m_PauseState) {
-    case PAUSE_STATE_DEFAULT:
+    case STATE_DEFAULT:
         if (g_InputDB.pause) {
             Music_Unpause();
             Sound_UnpauseAll();
             Phase_Set(PHASE_GAME, NULL);
         } else if (g_InputDB.option) {
-            m_PauseState = PAUSE_STATE_ASK;
+            m_PauseState = STATE_ASK;
         }
         break;
 
-    case PAUSE_STATE_ASK: {
+    case STATE_ASK: {
         int32_t choice = Phase_Pause_DisplayRequester(
             g_GameFlow.strings[GS_PAUSE_EXIT_TO_TITLE],
             g_GameFlow.strings[GS_PAUSE_CONTINUE],
@@ -153,12 +153,12 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
             Sound_UnpauseAll();
             Phase_Set(PHASE_GAME, NULL);
         } else if (choice == 2) {
-            m_PauseState = PAUSE_STATE_CONFIRM;
+            m_PauseState = STATE_CONFIRM;
         }
         break;
     }
 
-    case PAUSE_STATE_CONFIRM: {
+    case STATE_CONFIRM: {
         int32_t choice = Phase_Pause_DisplayRequester(
             g_GameFlow.strings[GS_PAUSE_ARE_YOU_SURE],
             g_GameFlow.strings[GS_PAUSE_YES], g_GameFlow.strings[GS_PAUSE_NO],

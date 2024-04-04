@@ -13,6 +13,7 @@
 #include "game/music.h"
 #include "game/option.h"
 #include "game/output.h"
+#include "game/phase/phase.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/sound.h"
@@ -225,7 +226,8 @@ void Shell_Main(void)
             break;
 
         case GF_START_DEMO:
-            gf_option = Game_Demo();
+            Phase_Set(PHASE_DEMO, NULL);
+            gf_option = Phase_Run();
             break;
 
         case GF_LEVEL_COMPLETE:
