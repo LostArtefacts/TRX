@@ -10,13 +10,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum PICTURE_STATE {
-    PICTURE_STATE_FADE_IN,
-    PICTURE_STATE_DISPLAY,
-    PICTURE_STATE_FADE_OUT,
-} PICTURE_STATE;
+typedef enum STATE {
+    STATE_FADE_IN,
+    STATE_DISPLAY,
+    STATE_FADE_OUT,
+} STATE;
 
-static PICTURE_STATE m_State = PICTURE_STATE_FADE_IN;
+static STATE m_State = STATE_FADE_IN;
 static int32_t m_StartTime = 0;
 static double m_DisplayTime = 0.0;
 
@@ -28,7 +28,7 @@ static void Phase_Picture_Draw(void);
 static void Phase_Picture_Start(void *arg)
 {
     const PHASE_PICTURE_DATA *data = (const PHASE_PICTURE_DATA *)arg;
-    m_State = PICTURE_STATE_FADE_IN;
+    m_State = STATE_FADE_IN;
     m_DisplayTime = data->display_time;
     Output_LoadBackdropImage(data->path);
     Output_FadeResetToBlack();
@@ -45,24 +45,24 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
     Shell_ProcessInput();
 
     switch (m_State) {
-    case PICTURE_STATE_FADE_IN:
+    case STATE_FADE_IN:
         if (!Output_FadeIsAnimating()) {
-            m_State = PICTURE_STATE_DISPLAY;
+            m_State = STATE_DISPLAY;
             m_StartTime = Clock_GetMS();
         }
         if (g_InputDB.any) {
-            m_State = PICTURE_STATE_FADE_OUT;
+            m_State = STATE_FADE_OUT;
         }
         break;
 
-    case PICTURE_STATE_DISPLAY:
+    case STATE_DISPLAY:
         if (g_InputDB.any
             || (Clock_GetMS() - m_StartTime >= m_DisplayTime * 1000)) {
-            m_State = PICTURE_STATE_FADE_OUT;
+            m_State = STATE_FADE_OUT;
         }
         break;
 
-    case PICTURE_STATE_FADE_OUT:
+    case STATE_FADE_OUT:
         Output_FadeToBlack(true);
         if (g_InputDB.any || !Output_FadeIsAnimating()) {
             Output_FadeResetToBlack();

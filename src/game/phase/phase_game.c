@@ -19,6 +19,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -45,9 +46,8 @@ static void Phase_Game_End(void)
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
 {
     Interpolation_Remember();
-    GAMEFLOW_OPTION return_val = GF_PHASE_CONTINUE;
-
     CLAMPG(nframes, MAX_FRAMES);
+
     for (int32_t i = 0; i < nframes; i++) {
         Lara_CheckCheatMode();
         if (g_LevelComplete) {
@@ -58,22 +58,10 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
         Shell_ProcessInput();
         Game_ProcessInput();
 
-        if (g_GameInfo.current_level_type == GFL_DEMO) {
-            if (g_Input.any) {
-                return GF_EXIT_TO_TITLE;
-            }
-            if (!Game_Demo_ProcessInput()) {
-                return GF_EXIT_TO_TITLE;
-            }
-        }
-
         if (g_Lara.death_timer > DEATH_WAIT
             || (g_Lara.death_timer > DEATH_WAIT_MIN && g_Input.any
                 && !g_Input.fly_cheat)
             || g_OverlayFlag == 2) {
-            if (g_GameInfo.current_level_type == GFL_DEMO) {
-                return GF_EXIT_TO_TITLE;
-            }
             if (g_OverlayFlag == 2) {
                 g_OverlayFlag = 1;
                 Inv_Display(INV_DEATH_MODE);
