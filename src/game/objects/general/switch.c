@@ -41,12 +41,29 @@ static const OBJECT_BOUNDS m_Switch_BoundsUW = {
     },
 };
 
+static const OBJECT_BOUNDS *Switch_Bounds(void);
+static const OBJECT_BOUNDS *Switch_BoundsUW(void);
+
+static const OBJECT_BOUNDS *Switch_Bounds(void)
+{
+    if (g_Config.walk_to_items) {
+        return &m_Switch_BoundsControlled;
+    }
+    return &m_Switch_Bounds;
+}
+
+static const OBJECT_BOUNDS *Switch_BoundsUW(void)
+{
+    return &m_Switch_BoundsUW;
+}
+
 void Switch_Setup(OBJECT_INFO *obj)
 {
     obj->control = Switch_Control;
     obj->collision = Switch_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->bounds = Switch_Bounds;
 }
 
 void Switch_SetupUW(OBJECT_INFO *obj)
@@ -55,6 +72,7 @@ void Switch_SetupUW(OBJECT_INFO *obj)
     obj->collision = Switch_CollisionUW;
     obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->bounds = Switch_BoundsUW;
 }
 
 void Switch_Control(int16_t item_num)
@@ -76,6 +94,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (!g_Input.action || item->status != IS_NOT_ACTIVE
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
@@ -86,7 +105,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, &m_Switch_Bounds)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         return;
     }
 
@@ -169,6 +188,7 @@ void Switch_CollisionControlled(
 void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (!g_Input.action || item->status != IS_NOT_ACTIVE
         || g_Lara.water_status != LWS_UNDERWATER) {
@@ -179,7 +199,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, &m_Switch_BoundsUW)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         return;
     }
 

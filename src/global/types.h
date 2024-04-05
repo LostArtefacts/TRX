@@ -1766,6 +1766,7 @@ typedef struct OBJECT_INFO {
         ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
     void (*draw_routine)(ITEM_INFO *item);
     void (*collision)(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+    const OBJECT_BOUNDS *(*bounds)(void);
     int16_t anim_index;
     int16_t hit_points;
     int16_t pivot_length;

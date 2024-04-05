@@ -26,15 +26,24 @@ int32_t g_PickUpX;
 int32_t g_PickUpY;
 int32_t g_PickUpZ;
 
+static const OBJECT_BOUNDS *KeyHole_Bounds(void);
+
+static const OBJECT_BOUNDS *KeyHole_Bounds(void)
+{
+    return &m_KeyHoleBounds;
+}
+
 void KeyHole_Setup(OBJECT_INFO *obj)
 {
     obj->collision = KeyHole_Collision;
     obj->save_flags = 1;
+    obj->bounds = KeyHole_Bounds;
 }
 
 void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (lara_item->current_anim_state != LS_STOP) {
         return;
@@ -45,7 +54,7 @@ void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, &m_KeyHoleBounds)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         return;
     }
 
