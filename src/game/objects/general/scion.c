@@ -23,34 +23,34 @@
 static XYZ_32 m_Scion_Position = { 0, 640, -310 };
 static XYZ_32 m_Scion_Position4 = { 0, 280, -512 + 105 };
 
-static int16_t m_Scion_Bounds[12] = {
-    -256,
-    +256,
-    +640 - 100,
-    +640 + 100,
-    -350,
-    -200,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    0,
-    0,
-    0,
-    0,
+static OBJECT_BOUNDS m_Scion_Bounds = {
+    .min_shift_x = -256,
+    .max_shift_x = +256,
+    .min_shift_y = +640 - 100,
+    .max_shift_y = +640 + 100,
+    .min_shift_z = -350,
+    .max_shift_z = -200,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = 0,
+    .max_rot_y = 0,
+    .min_rot_z = 0,
+    .max_rot_z = 0,
 };
 
-static int16_t m_Scion_Bounds4[12] = {
-    -256,
-    +256,
-    +256 - 50,
-    +256 + 50,
-    -512 - 350,
-    -200,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    0,
-    0,
-    0,
-    0,
+static OBJECT_BOUNDS m_Scion_Bounds4 = {
+    .min_shift_x = -256,
+    .max_shift_x = +256,
+    .min_shift_y = +256 - 50,
+    .max_shift_y = +256 + 50,
+    .min_shift_z = -512 - 350,
+    .max_shift_z = -200,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = 0,
+    .max_rot_y = 0,
+    .min_rot_z = 0,
+    .max_rot_z = 0,
 };
 
 void Scion_Setup1(OBJECT_INFO *obj)
@@ -149,7 +149,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, m_Scion_Bounds)) {
+    if (!Lara_TestPosition(item, &m_Scion_Bounds)) {
         goto cleanup;
     }
 
@@ -194,7 +194,7 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, m_Scion_Bounds4)) {
+    if (!Lara_TestPosition(item, &m_Scion_Bounds4)) {
         goto cleanup;
     }
 

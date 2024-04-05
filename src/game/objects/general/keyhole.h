@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 extern XYZ_32 g_KeyHolePosition;
-extern int16_t g_KeyHoleBounds[12];
 
 extern int32_t g_PickUpX;
 extern int32_t g_PickUpY;

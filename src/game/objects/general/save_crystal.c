@@ -9,9 +9,19 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-static int16_t m_CrystalBounds[12] = {
-    -256, +256, -100, +100, -256, +256, -10 * PHD_DEGREE, +10 * PHD_DEGREE,
-    0,    0,    0,    0,
+static OBJECT_BOUNDS m_CrystalBounds = {
+    .min_shift_x = -256,
+    .max_shift_x = +256,
+    .min_shift_y = -100,
+    .max_shift_y = +100,
+    .min_shift_z = -256,
+    .max_shift_z = +256,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = 0,
+    .max_rot_y = 0,
+    .min_rot_z = 0,
+    .max_rot_z = 0,
 };
 
 void SaveCrystal_Setup(OBJECT_INFO *obj)
@@ -58,7 +68,7 @@ void SaveCrystal_Collision(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
     item->rot.x = 0;
-    if (!Lara_TestPosition(item, m_CrystalBounds)) {
+    if (!Lara_TestPosition(item, &m_CrystalBounds)) {
         return;
     }
 

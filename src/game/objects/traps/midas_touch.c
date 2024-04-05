@@ -15,19 +15,19 @@
 #define MIDAS_RANGE_H (STEP_L * 2)
 #define MIDAS_RANGE_V (STEP_L * 3)
 
-static int16_t m_MidasBounds[12] = {
-    -700,
-    +700,
-    +384 - 100,
-    +384 + 100 + 512,
-    -700,
-    +700,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    -30 * PHD_DEGREE,
-    +30 * PHD_DEGREE,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
+static OBJECT_BOUNDS m_MidasBounds = {
+    .min_shift_x = -700,
+    .max_shift_x = +700,
+    .min_shift_y = +384 - 100,
+    .max_shift_y = +384 + 100 + 512,
+    .min_shift_z = -700,
+    .max_shift_z = +700,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = -30 * PHD_DEGREE,
+    .max_rot_y = +30 * PHD_DEGREE,
+    .min_rot_z = -10 * PHD_DEGREE,
+    .max_rot_z = +10 * PHD_DEGREE,
 };
 
 void MidasTouch_Setup(OBJECT_INFO *obj)
@@ -94,7 +94,7 @@ void MidasTouch_Collision(
         break;
     }
 
-    if (!Lara_TestPosition(item, m_MidasBounds)) {
+    if (!Lara_TestPosition(item, &m_MidasBounds)) {
         return;
     }
 

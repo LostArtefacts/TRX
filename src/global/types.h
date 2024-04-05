@@ -1746,6 +1746,21 @@ typedef struct COLL_INFO {
     uint16_t enable_spaz : 1;
 } COLL_INFO;
 
+typedef struct OBJECT_BOUNDS {
+    int16_t min_shift_x;
+    int16_t max_shift_x;
+    int16_t min_shift_y;
+    int16_t max_shift_y;
+    int16_t min_shift_z;
+    int16_t max_shift_z;
+    int16_t min_rot_x;
+    int16_t max_rot_x;
+    int16_t min_rot_y;
+    int16_t max_rot_y;
+    int16_t min_rot_z;
+    int16_t max_rot_z;
+} OBJECT_BOUNDS;
+
 typedef struct OBJECT_INFO {
     int16_t nmeshes;
     int16_t mesh_index;

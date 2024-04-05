@@ -22,19 +22,19 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-static int16_t m_MovingBlockBounds[12] = {
-    -300,
-    +300,
-    0,
-    0,
-    -WALL_L / 2 - (LARA_RAD + 80),
-    -WALL_L / 2,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    -30 * PHD_DEGREE,
-    +30 * PHD_DEGREE,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
+static OBJECT_BOUNDS m_MovingBlockBounds = {
+    .min_shift_x = -300,
+    .max_shift_x = +300,
+    .min_shift_y = 0,
+    .max_shift_y = 0,
+    .min_shift_z = -WALL_L / 2 - (LARA_RAD + 80),
+    .max_shift_z = -WALL_L / 2,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = -30 * PHD_DEGREE,
+    .max_rot_y = +30 * PHD_DEGREE,
+    .min_rot_z = -10 * PHD_DEGREE,
+    .max_rot_z = +10 * PHD_DEGREE,
 };
 
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
@@ -316,7 +316,7 @@ void MovableBlock_Collision(
             break;
         }
 
-        if (!Lara_TestPosition(item, m_MovingBlockBounds)) {
+        if (!Lara_TestPosition(item, &m_MovingBlockBounds)) {
             return;
         }
 
@@ -357,7 +357,7 @@ void MovableBlock_Collision(
             return;
         }
 
-        if (!Lara_TestPosition(item, m_MovingBlockBounds)) {
+        if (!Lara_TestPosition(item, &m_MovingBlockBounds)) {
             return;
         }
 
