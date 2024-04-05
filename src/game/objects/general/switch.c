@@ -8,7 +8,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-static OBJECT_BOUNDS m_Switch_Bounds = {
+static const OBJECT_BOUNDS m_Switch_Bounds = {
     .shift = {
         .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
         .max = { .x = +200, .y = +0, .z = +WALL_L / 2, },
@@ -30,7 +30,7 @@ static OBJECT_BOUNDS m_Switch_BoundsControlled = {
     },
 };
 
-static OBJECT_BOUNDS m_Switch_BoundsUW = {
+static const OBJECT_BOUNDS m_Switch_BoundsUW = {
     .shift = {
         .min = { .x = -WALL_L, .y = -WALL_L, .z = -WALL_L, },
         .max = { .x = +WALL_L, .y = +WALL_L, .z = +WALL_L / 2, },

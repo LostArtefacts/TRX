@@ -15,7 +15,7 @@
 #define MIDAS_RANGE_H (STEP_L * 2)
 #define MIDAS_RANGE_V (STEP_L * 3)
 
-static OBJECT_BOUNDS m_MidasBounds = {
+static const OBJECT_BOUNDS m_MidasBounds = {
     .shift = {
         .min = { .x = -700, .y = +384 - 100, .z = -700, },
         .max = { .x = +700, .y = +384 + 100 + 512, .z = +700, },

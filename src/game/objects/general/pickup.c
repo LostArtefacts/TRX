@@ -16,7 +16,7 @@
 static XYZ_32 m_PickUpPosition = { 0, 0, -100 };
 static XYZ_32 m_PickUpPositionUW = { 0, -200, -350 };
 
-static OBJECT_BOUNDS m_PickUpBounds = {
+static const OBJECT_BOUNDS m_PickUpBounds = {
     .shift = {
         .min = { .x = -256, .y = -100, .z = -256, },
         .max = { .x = +256, .y = +100, .z = +256, },
@@ -27,7 +27,7 @@ static OBJECT_BOUNDS m_PickUpBounds = {
     },
 };
 
-static OBJECT_BOUNDS m_PickUpBoundsControlled = {
+static const OBJECT_BOUNDS m_PickUpBoundsControlled = {
     .shift = {
         .min = { .x = -256, .y = -200, .z = -256, },
         .max = { .x = +256, .y = +200, .z = +256, },
@@ -38,7 +38,7 @@ static OBJECT_BOUNDS m_PickUpBoundsControlled = {
     },
 };
 
-static OBJECT_BOUNDS m_PickUpBoundsUW = {
+static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     .shift = {
         .min = { .x = -512, .y = -512, .z = -512, },
         .max = { .x = +512, .y = +512, .z = +512, },
