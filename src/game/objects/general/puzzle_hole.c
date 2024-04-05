@@ -15,18 +15,22 @@
 XYZ_32 g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
 
 static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
-    .min_shift_x = -200,
-    .max_shift_x = +200,
-    .min_shift_y = 0,
-    .max_shift_y = 0,
-    .min_shift_z = WALL_L / 2 - 200,
-    .max_shift_z = WALL_L / 2,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = -30 * PHD_DEGREE,
-    .max_rot_y = +30 * PHD_DEGREE,
-    .min_rot_z = -10 * PHD_DEGREE,
-    .max_rot_z = +10 * PHD_DEGREE,
+    .shift = {
+        .min = { .x = -200, .y = 0, .z = WALL_L / 2 - 200, },
+        .max = { .x = +200, .y = 0, .z = WALL_L / 2, },
+    },
+    .rot = {
+        .min = {
+            .x = -10 * PHD_DEGREE,
+            .y = -30 * PHD_DEGREE,
+            .z = -10 * PHD_DEGREE,
+        },
+        .max = {
+            .x = +10 * PHD_DEGREE,
+            .y = +30 * PHD_DEGREE,
+            .z = +10 * PHD_DEGREE,
+        },
+    },
 };
 
 void PuzzleHole_Setup(OBJECT_INFO *obj)

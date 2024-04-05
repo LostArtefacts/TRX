@@ -23,18 +23,14 @@ typedef enum {
 } MOVABLE_BLOCK_STATE;
 
 static OBJECT_BOUNDS m_MovingBlockBounds = {
-    .min_shift_x = -300,
-    .max_shift_x = +300,
-    .min_shift_y = 0,
-    .max_shift_y = 0,
-    .min_shift_z = -WALL_L / 2 - (LARA_RAD + 80),
-    .max_shift_z = -WALL_L / 2,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = -30 * PHD_DEGREE,
-    .max_rot_y = +30 * PHD_DEGREE,
-    .min_rot_z = -10 * PHD_DEGREE,
-    .max_rot_z = +10 * PHD_DEGREE,
+    .shift = {
+        .min = { .x = -300, .y = 0, .z = -WALL_L / 2 - (LARA_RAD + 80), },
+        .max = { .x = +300, .y = 0, .z = -WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = -30 * PHD_DEGREE, .z = -10 * PHD_DEGREE, },
+        .max = { .x = +10 * PHD_DEGREE, .y = +30 * PHD_DEGREE, .z = +10 * PHD_DEGREE, },
+    },
 };
 
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);

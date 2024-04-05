@@ -24,33 +24,25 @@ static XYZ_32 m_Scion_Position = { 0, 640, -310 };
 static XYZ_32 m_Scion_Position4 = { 0, 280, -512 + 105 };
 
 static OBJECT_BOUNDS m_Scion_Bounds = {
-    .min_shift_x = -256,
-    .max_shift_x = +256,
-    .min_shift_y = +640 - 100,
-    .max_shift_y = +640 + 100,
-    .min_shift_z = -350,
-    .max_shift_z = -200,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = 0,
-    .max_rot_y = 0,
-    .min_rot_z = 0,
-    .max_rot_z = 0,
+    .shift = {
+        .min = { .x = -256, .y = +640 - 100, .z = -350, },
+        .max = { .x = +256, .y = +640 + 100, .z = -200, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = 0, .z = 0, },
+        .max = { .x = +10 * PHD_DEGREE, .y = 0, .z = 0, },
+    },
 };
 
 static OBJECT_BOUNDS m_Scion_Bounds4 = {
-    .min_shift_x = -256,
-    .max_shift_x = +256,
-    .min_shift_y = +256 - 50,
-    .max_shift_y = +256 + 50,
-    .min_shift_z = -512 - 350,
-    .max_shift_z = -200,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = 0,
-    .max_rot_y = 0,
-    .min_rot_z = 0,
-    .max_rot_z = 0,
+    .shift = {
+        .min = { .x = -256, .y = +256 - 50, .z = -512 - 350, },
+        .max = { .x = +256, .y = +256 + 50, .z = -200, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = 0, .z = 0, },
+        .max = { .x = +10 * PHD_DEGREE, .y = 0, .z = 0, },
+    },
 };
 
 void Scion_Setup1(OBJECT_INFO *obj)
