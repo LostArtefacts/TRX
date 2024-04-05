@@ -9,48 +9,36 @@
 #include "global/vars.h"
 
 static OBJECT_BOUNDS m_Switch_Bounds = {
-    .min_shift_x = -200,
-    .max_shift_x = +200,
-    .min_shift_y = +0,
-    .max_shift_y = +0,
-    .min_shift_z = +WALL_L / 2 - 200,
-    .max_shift_z = +WALL_L / 2,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = -30 * PHD_DEGREE,
-    .max_rot_y = +30 * PHD_DEGREE,
-    .min_rot_z = -10 * PHD_DEGREE,
-    .max_rot_z = +10 * PHD_DEGREE,
+    .shift = {
+        .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
+        .max = { .x = +200, .y = +0, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = -30 * PHD_DEGREE, .z = -10 * PHD_DEGREE, },
+        .max = { .x = +10 * PHD_DEGREE, .y = +30 * PHD_DEGREE, .z = +10 * PHD_DEGREE, },
+    },
 };
 
 static OBJECT_BOUNDS m_Switch_BoundsControlled = {
-    .min_shift_x = +0,
-    .max_shift_x = +0,
-    .min_shift_y = +0,
-    .max_shift_y = +0,
-    .min_shift_z = +0,
-    .max_shift_z = +0,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = -30 * PHD_DEGREE,
-    .max_rot_y = +30 * PHD_DEGREE,
-    .min_rot_z = -10 * PHD_DEGREE,
-    .max_rot_z = +10 * PHD_DEGREE,
+    .shift = {
+        .min = { .x = +0, .y = +0, .z = +0, },
+        .max = { .x = +0, .y = +0, .z = +0, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = -30 * PHD_DEGREE, .z = -10 * PHD_DEGREE, },
+        .max = { .x = +10 * PHD_DEGREE, .y = +30 * PHD_DEGREE, .z = +10 * PHD_DEGREE, },
+    },
 };
 
 static OBJECT_BOUNDS m_Switch_BoundsUW = {
-    .min_shift_x = -WALL_L,
-    .max_shift_x = +WALL_L,
-    .min_shift_y = -WALL_L,
-    .max_shift_y = +WALL_L,
-    .min_shift_z = -WALL_L,
-    .max_shift_z = +WALL_L / 2,
-    .min_rot_x = -80 * PHD_DEGREE,
-    .max_rot_x = +80 * PHD_DEGREE,
-    .min_rot_y = -80 * PHD_DEGREE,
-    .max_rot_y = +80 * PHD_DEGREE,
-    .min_rot_z = -80 * PHD_DEGREE,
-    .max_rot_z = +80 * PHD_DEGREE,
+    .shift = {
+        .min = { .x = -WALL_L, .y = -WALL_L, .z = -WALL_L, },
+        .max = { .x = +WALL_L, .y = +WALL_L, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -80 * PHD_DEGREE, .y = -80 * PHD_DEGREE, .z = -80 * PHD_DEGREE, },
+        .max = { .x = +80 * PHD_DEGREE, .y = +80 * PHD_DEGREE, .z = +80 * PHD_DEGREE, },
+    },
 };
 
 void Switch_Setup(OBJECT_INFO *obj)
@@ -135,10 +123,10 @@ void Switch_CollisionControlled(
             && g_Lara.interact_target.item_num == item_num)) {
         int16_t *bounds = Item_GetBoundsAccurate(item);
 
-        m_Switch_BoundsControlled.min_shift_x = bounds[0] - 256;
-        m_Switch_BoundsControlled.max_shift_x = bounds[1] + 256;
-        m_Switch_BoundsControlled.min_shift_z = bounds[4] - 200;
-        m_Switch_BoundsControlled.max_shift_z = bounds[5] + 200;
+        m_Switch_BoundsControlled.shift.min.x = bounds[0] - 256;
+        m_Switch_BoundsControlled.shift.max.x = bounds[1] + 256;
+        m_Switch_BoundsControlled.shift.min.z = bounds[4] - 200;
+        m_Switch_BoundsControlled.shift.max.z = bounds[5] + 200;
 
         XYZ_32 move_vector = { 0, 0, bounds[4] - 64 };
 

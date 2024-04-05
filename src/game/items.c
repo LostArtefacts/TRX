@@ -416,18 +416,14 @@ bool Item_TestPosition(
     const ITEM_INFO *const src_item, const ITEM_INFO *const dst_item,
     const OBJECT_BOUNDS *const bounds)
 {
-    const XYZ_16 rot_rel = {
+    const XYZ_16 rot = {
         .x = src_item->rot.x - dst_item->rot.x,
         .y = src_item->rot.y - dst_item->rot.y,
         .z = src_item->rot.z - dst_item->rot.z,
     };
-    if (rot_rel.x < bounds->min_rot_x || rot_rel.x > bounds->max_rot_x) {
-        return false;
-    }
-    if (rot_rel.y < bounds->min_rot_y || rot_rel.y > bounds->max_rot_y) {
-        return false;
-    }
-    if (rot_rel.z < bounds->min_rot_z || rot_rel.z > bounds->max_rot_z) {
+    if (rot.x < bounds->rot.min.x || rot.x > bounds->rot.max.x
+        || rot.y < bounds->rot.min.y || rot.y > bounds->rot.max.y
+        || rot.z < bounds->rot.min.z || rot.z > bounds->rot.max.z) {
         return false;
     }
 
@@ -450,13 +446,9 @@ bool Item_TestPosition(
     };
     Matrix_Pop();
 
-    if (shift.x < bounds->min_shift_x || shift.x > bounds->max_shift_x) {
-        return false;
-    }
-    if (shift.y < bounds->min_shift_y || shift.y > bounds->max_shift_y) {
-        return false;
-    }
-    if (shift.z < bounds->min_shift_z || shift.z > bounds->max_shift_z) {
+    if (shift.x < bounds->shift.min.x || shift.x > bounds->shift.max.x
+        || shift.y < bounds->shift.min.y || shift.y > bounds->shift.max.y
+        || shift.z < bounds->shift.min.z || shift.z > bounds->shift.max.z) {
         return false;
     }
 

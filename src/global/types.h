@@ -1747,18 +1747,10 @@ typedef struct COLL_INFO {
 } COLL_INFO;
 
 typedef struct OBJECT_BOUNDS {
-    int16_t min_shift_x;
-    int16_t max_shift_x;
-    int16_t min_shift_y;
-    int16_t max_shift_y;
-    int16_t min_shift_z;
-    int16_t max_shift_z;
-    int16_t min_rot_x;
-    int16_t max_rot_x;
-    int16_t min_rot_y;
-    int16_t max_rot_y;
-    int16_t min_rot_z;
-    int16_t max_rot_z;
+    struct {
+        XYZ_16 min;
+        XYZ_16 max;
+    } shift, rot;
 } OBJECT_BOUNDS;
 
 typedef struct OBJECT_INFO {

@@ -17,48 +17,36 @@ static XYZ_32 m_PickUpPosition = { 0, 0, -100 };
 static XYZ_32 m_PickUpPositionUW = { 0, -200, -350 };
 
 static OBJECT_BOUNDS m_PickUpBounds = {
-    .min_shift_x = -256,
-    .max_shift_x = +256,
-    .min_shift_y = -100,
-    .max_shift_y = +100,
-    .min_shift_z = -256,
-    .max_shift_z = +256,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = 0,
-    .max_rot_y = 0,
-    .min_rot_z = 0,
-    .max_rot_z = 0,
+    .shift = {
+        .min = { .x = -256, .y = -100, .z = -256, },
+        .max = { .x = +256, .y = +100, .z = +256, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = 0, .z = 0, },
+        .max = { .x = +10 * PHD_DEGREE, .y = 0, .z = 0, },
+    },
 };
 
 static OBJECT_BOUNDS m_PickUpBoundsControlled = {
-    .min_shift_x = -256,
-    .max_shift_x = +256,
-    .min_shift_y = -200,
-    .max_shift_y = +200,
-    .min_shift_z = -256,
-    .max_shift_z = +256,
-    .min_rot_x = -10 * PHD_DEGREE,
-    .max_rot_x = +10 * PHD_DEGREE,
-    .min_rot_y = 0,
-    .max_rot_y = 0,
-    .min_rot_z = 0,
-    .max_rot_z = 0,
+    .shift = {
+        .min = { .x = -256, .y = -200, .z = -256, },
+        .max = { .x = +256, .y = +200, .z = +256, },
+    },
+    .rot = {
+        .min = { .x = -10 * PHD_DEGREE, .y = 0, .z = 0, },
+        .max = { .x = +10 * PHD_DEGREE, .y = 0, .z = 0, },
+    },
 };
 
 static OBJECT_BOUNDS m_PickUpBoundsUW = {
-    .min_shift_x = -512,
-    .max_shift_x = +512,
-    .min_shift_y = -512,
-    .max_shift_y = +512,
-    .min_shift_z = -512,
-    .max_shift_z = +512,
-    .min_rot_x = -45 * PHD_DEGREE,
-    .max_rot_x = +45 * PHD_DEGREE,
-    .min_rot_y = -45 * PHD_DEGREE,
-    .max_rot_y = +45 * PHD_DEGREE,
-    .min_rot_z = -45 * PHD_DEGREE,
-    .max_rot_z = +45 * PHD_DEGREE,
+    .shift = {
+        .min = { .x = -512, .y = -512, .z = -512, },
+        .max = { .x = +512, .y = +512, .z = +512, },
+    },
+    .rot = {
+        .min = { .x = -45 * PHD_DEGREE, .y = -45 * PHD_DEGREE, .z = -45 * PHD_DEGREE, },
+        .max = { .x = +45 * PHD_DEGREE, .y = +45 * PHD_DEGREE, .z = +45 * PHD_DEGREE, },
+    },
 };
 
 static void PickUp_GetItem(
