@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 extern XYZ_32 g_PuzzleHolePosition;
-extern int16_t g_PuzzleHoleBounds[12];
 
 void PuzzleHole_Setup(OBJECT_INFO *obj);
 void PuzzleHole_SetupDone(OBJECT_INFO *obj);

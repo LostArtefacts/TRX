@@ -30,7 +30,8 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius);
 bool Item_TestPosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, int16_t *bounds);
+    const ITEM_INFO *src_item, const ITEM_INFO *dst_item,
+    const OBJECT_BOUNDS *bounds);
 void Item_AlignPosition(ITEM_INFO *src_item, ITEM_INFO *dst_item, XYZ_32 *vec);
 bool Item_MovePosition(
     ITEM_INFO *src_item, const ITEM_INFO *dst_item, const XYZ_32 *vec,

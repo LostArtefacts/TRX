@@ -21,7 +21,7 @@
 #define LIGHTNING_RND ((64 << W2V_SHIFT) / 0x8000) // = 32
 #define LIGHTNING_SHOOTS 2
 
-typedef struct {
+typedef struct LIGHTNING {
     bool active;
     int32_t count;
     bool zapped;

@@ -660,7 +660,7 @@ bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius)
     return Item_TestBoundsCollide(g_LaraItem, item, radius);
 }
 
-bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds)
+bool Lara_TestPosition(const ITEM_INFO *item, const OBJECT_BOUNDS *const bounds)
 {
     return Item_TestPosition(g_LaraItem, item, bounds);
 }

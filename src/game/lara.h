@@ -24,7 +24,7 @@ void Lara_UseItem(int16_t object_num);
 int16_t Lara_GetNearestEnemy(void);
 
 bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius);
-bool Lara_TestPosition(ITEM_INFO *item, int16_t *bounds);
+bool Lara_TestPosition(const ITEM_INFO *item, const OBJECT_BOUNDS *bounds);
 void Lara_AlignPosition(ITEM_INFO *item, XYZ_32 *vec);
 bool Lara_MovePosition(ITEM_INFO *item, XYZ_32 *vec);
 void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push);

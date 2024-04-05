@@ -14,19 +14,19 @@
 
 XYZ_32 g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
 
-int16_t g_PuzzleHoleBounds[12] = {
-    -200,
-    +200,
-    0,
-    0,
-    WALL_L / 2 - 200,
-    WALL_L / 2,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    -30 * PHD_DEGREE,
-    +30 * PHD_DEGREE,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
+static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
+    .min_shift_x = -200,
+    .max_shift_x = +200,
+    .min_shift_y = 0,
+    .max_shift_y = 0,
+    .min_shift_z = WALL_L / 2 - 200,
+    .max_shift_z = WALL_L / 2,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = -30 * PHD_DEGREE,
+    .max_rot_y = +30 * PHD_DEGREE,
+    .min_rot_z = -10 * PHD_DEGREE,
+    .max_rot_z = +10 * PHD_DEGREE,
 };
 
 void PuzzleHole_Setup(OBJECT_INFO *obj)
@@ -46,7 +46,7 @@ void PuzzleHole_Collision(
     ITEM_INFO *item = &g_Items[item_num];
 
     if (lara_item->current_anim_state == LS_USE_PUZZLE) {
-        if (!Lara_TestPosition(item, g_PuzzleHoleBounds)) {
+        if (!Lara_TestPosition(item, &m_PuzzleHoleBounds)) {
             return;
         }
 
@@ -83,7 +83,7 @@ void PuzzleHole_Collision(
         return;
     }
 
-    if (!Lara_TestPosition(item, g_PuzzleHoleBounds)) {
+    if (!Lara_TestPosition(item, &m_PuzzleHoleBounds)) {
         return;
     }
 

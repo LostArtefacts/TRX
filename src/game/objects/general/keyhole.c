@@ -10,19 +10,20 @@
 #include "global/vars.h"
 
 XYZ_32 g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
-int16_t g_KeyHoleBounds[12] = {
-    -200,
-    +200,
-    +0,
-    +0,
-    +WALL_L / 2 - 200,
-    +WALL_L / 2,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
-    -30 * PHD_DEGREE,
-    +30 * PHD_DEGREE,
-    -10 * PHD_DEGREE,
-    +10 * PHD_DEGREE,
+
+static OBJECT_BOUNDS m_KeyHoleBounds = {
+    .min_shift_x = -200,
+    .max_shift_x = +200,
+    .min_shift_y = +0,
+    .max_shift_y = +0,
+    .min_shift_z = +WALL_L / 2 - 200,
+    .max_shift_z = +WALL_L / 2,
+    .min_rot_x = -10 * PHD_DEGREE,
+    .max_rot_x = +10 * PHD_DEGREE,
+    .min_rot_y = -30 * PHD_DEGREE,
+    .max_rot_y = +30 * PHD_DEGREE,
+    .min_rot_z = -10 * PHD_DEGREE,
+    .max_rot_z = +10 * PHD_DEGREE,
 };
 
 int32_t g_PickUpX;
@@ -48,7 +49,7 @@ void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, g_KeyHoleBounds)) {
+    if (!Lara_TestPosition(item, &m_KeyHoleBounds)) {
         return;
     }
 

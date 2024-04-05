@@ -413,38 +413,50 @@ bool Item_TestBoundsCollide(
 }
 
 bool Item_TestPosition(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, int16_t *bounds)
+    const ITEM_INFO *const src_item, const ITEM_INFO *const dst_item,
+    const OBJECT_BOUNDS *const bounds)
 {
-    PHD_ANGLE xrotrel = src_item->rot.x - dst_item->rot.x;
-    PHD_ANGLE yrotrel = src_item->rot.y - dst_item->rot.y;
-    PHD_ANGLE zrotrel = src_item->rot.z - dst_item->rot.z;
-    if (xrotrel < bounds[6] || xrotrel > bounds[7]) {
+    const XYZ_16 rot_rel = {
+        .x = src_item->rot.x - dst_item->rot.x,
+        .y = src_item->rot.y - dst_item->rot.y,
+        .z = src_item->rot.z - dst_item->rot.z,
+    };
+    if (rot_rel.x < bounds->min_rot_x || rot_rel.x > bounds->max_rot_x) {
         return false;
     }
-    if (yrotrel < bounds[8] || yrotrel > bounds[9]) {
+    if (rot_rel.y < bounds->min_rot_y || rot_rel.y > bounds->max_rot_y) {
         return false;
     }
-    if (zrotrel < bounds[10] || zrotrel > bounds[11]) {
+    if (rot_rel.z < bounds->min_rot_z || rot_rel.z > bounds->max_rot_z) {
         return false;
     }
 
-    int32_t x = src_item->pos.x - dst_item->pos.x;
-    int32_t y = src_item->pos.y - dst_item->pos.y;
-    int32_t z = src_item->pos.z - dst_item->pos.z;
+    const XYZ_32 dist = {
+        .x = src_item->pos.x - dst_item->pos.x,
+        .y = src_item->pos.y - dst_item->pos.y,
+        .z = src_item->pos.z - dst_item->pos.z,
+    };
+
     Matrix_PushUnit();
     Matrix_RotYXZ(dst_item->rot.y, dst_item->rot.x, dst_item->rot.z);
     MATRIX *mptr = g_MatrixPtr;
-    int32_t rx = (mptr->_00 * x + mptr->_10 * y + mptr->_20 * z) >> W2V_SHIFT;
-    int32_t ry = (mptr->_01 * x + mptr->_11 * y + mptr->_21 * z) >> W2V_SHIFT;
-    int32_t rz = (mptr->_02 * x + mptr->_12 * y + mptr->_22 * z) >> W2V_SHIFT;
+    const XYZ_32 shift = {
+        .x = (mptr->_00 * dist.x + mptr->_10 * dist.y + mptr->_20 * dist.z)
+            >> W2V_SHIFT,
+        .y = (mptr->_01 * dist.x + mptr->_11 * dist.y + mptr->_21 * dist.z)
+            >> W2V_SHIFT,
+        .z = (mptr->_02 * dist.x + mptr->_12 * dist.y + mptr->_22 * dist.z)
+            >> W2V_SHIFT,
+    };
     Matrix_Pop();
-    if (rx < bounds[0] || rx > bounds[1]) {
+
+    if (shift.x < bounds->min_shift_x || shift.x > bounds->max_shift_x) {
         return false;
     }
-    if (ry < bounds[2] || ry > bounds[3]) {
+    if (shift.y < bounds->min_shift_y || shift.y > bounds->max_shift_y) {
         return false;
     }
-    if (rz < bounds[4] || rz > bounds[5]) {
+    if (shift.z < bounds->min_shift_z || shift.z > bounds->max_shift_z) {
         return false;
     }
 
