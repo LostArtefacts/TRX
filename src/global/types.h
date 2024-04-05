@@ -1791,21 +1791,16 @@ typedef struct SHADOW_INFO {
     } vertex[32];
 } SHADOW_INFO;
 
+typedef struct BOUNDS_16 {
+    XYZ_16 min;
+    XYZ_16 max;
+} BOUNDS_16;
+
 typedef struct STATIC_INFO {
     int16_t mesh_number;
     int16_t flags;
-    int16_t x_minp;
-    int16_t x_maxp;
-    int16_t y_minp;
-    int16_t y_maxp;
-    int16_t z_minp;
-    int16_t z_maxp;
-    int16_t x_minc;
-    int16_t x_maxc;
-    int16_t y_minc;
-    int16_t y_maxc;
-    int16_t z_minc;
-    int16_t z_maxc;
+    BOUNDS_16 p;
+    BOUNDS_16 c;
 } STATIC_INFO;
 
 typedef struct GAME_VECTOR {

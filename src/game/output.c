@@ -1147,3 +1147,12 @@ int Output_GetObjectBounds(int16_t *bptr)
 
     return 1; // fully on screen
 }
+
+int Output_GetObjectBoundsNew(const BOUNDS_16 *const bounds)
+{
+    int16_t arr[6] = {
+        bounds->min.x, bounds->max.x, bounds->min.y,
+        bounds->max.y, bounds->min.z, bounds->max.z,
+    };
+    return Output_GetObjectBounds(arr);
+}

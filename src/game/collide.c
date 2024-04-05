@@ -315,39 +315,39 @@ bool Collide_CollideStaticObjects(
                 continue;
             }
 
-            int32_t ymin = mesh->pos.y + sinfo->y_minc;
-            int32_t ymax = mesh->pos.y + sinfo->y_maxc;
+            int32_t ymin = mesh->pos.y + sinfo->c.min.y;
+            int32_t ymax = mesh->pos.y + sinfo->c.max.y;
             int32_t xmin;
             int32_t xmax;
             int32_t zmin;
             int32_t zmax;
             switch (mesh->rot.y) {
             case PHD_90:
-                xmin = mesh->pos.x + sinfo->z_minc;
-                xmax = mesh->pos.x + sinfo->z_maxc;
-                zmin = mesh->pos.z - sinfo->x_maxc;
-                zmax = mesh->pos.z - sinfo->x_minc;
+                xmin = mesh->pos.x + sinfo->c.min.z;
+                xmax = mesh->pos.x + sinfo->c.max.z;
+                zmin = mesh->pos.z - sinfo->c.max.x;
+                zmax = mesh->pos.z - sinfo->c.min.x;
                 break;
 
             case -PHD_180:
-                xmin = mesh->pos.x - sinfo->x_maxc;
-                xmax = mesh->pos.x - sinfo->x_minc;
-                zmin = mesh->pos.z - sinfo->z_maxc;
-                zmax = mesh->pos.z - sinfo->z_minc;
+                xmin = mesh->pos.x - sinfo->c.max.x;
+                xmax = mesh->pos.x - sinfo->c.min.x;
+                zmin = mesh->pos.z - sinfo->c.max.z;
+                zmax = mesh->pos.z - sinfo->c.min.z;
                 break;
 
             case -PHD_90:
-                xmin = mesh->pos.x - sinfo->z_maxc;
-                xmax = mesh->pos.x - sinfo->z_minc;
-                zmin = mesh->pos.z + sinfo->x_minc;
-                zmax = mesh->pos.z + sinfo->x_maxc;
+                xmin = mesh->pos.x - sinfo->c.max.z;
+                xmax = mesh->pos.x - sinfo->c.min.z;
+                zmin = mesh->pos.z + sinfo->c.min.x;
+                zmax = mesh->pos.z + sinfo->c.max.x;
                 break;
 
             default:
-                xmin = mesh->pos.x + sinfo->x_minc;
-                xmax = mesh->pos.x + sinfo->x_maxc;
-                zmin = mesh->pos.z + sinfo->z_minc;
-                zmax = mesh->pos.z + sinfo->z_maxc;
+                xmin = mesh->pos.x + sinfo->c.min.x;
+                xmax = mesh->pos.x + sinfo->c.max.x;
+                zmin = mesh->pos.z + sinfo->c.min.z;
+                zmax = mesh->pos.z + sinfo->c.max.z;
                 break;
             }
 

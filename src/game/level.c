@@ -402,8 +402,18 @@ static bool Level_LoadObjects(MYFILE *fp)
         STATIC_INFO *object = &g_StaticObjects[tmp];
 
         File_Read(&object->mesh_number, sizeof(int16_t), 1, fp);
-        File_Read(&object->x_minp, sizeof(int16_t), 6, fp);
-        File_Read(&object->x_minc, sizeof(int16_t), 6, fp);
+        File_Read(&object->p.min.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.max.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.min.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.max.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.min.z, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.max.z, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.min.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.max.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.min.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.max.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.min.z, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.max.z, sizeof(int16_t), 1, fp);
         File_Read(&object->flags, sizeof(int16_t), 1, fp);
     }
 
