@@ -23,7 +23,7 @@
 static XYZ_32 m_Scion_Position = { 0, 640, -310 };
 static XYZ_32 m_Scion_Position4 = { 0, 280, -512 + 105 };
 
-static OBJECT_BOUNDS m_Scion_Bounds = {
+static const OBJECT_BOUNDS m_Scion_Bounds = {
     .shift = {
         .min = { .x = -256, .y = +640 - 100, .z = -350, },
         .max = { .x = +256, .y = +640 + 100, .z = -200, },
@@ -34,7 +34,7 @@ static OBJECT_BOUNDS m_Scion_Bounds = {
     },
 };
 
-static OBJECT_BOUNDS m_Scion_Bounds4 = {
+static const OBJECT_BOUNDS m_Scion_Bounds4 = {
     .shift = {
         .min = { .x = -256, .y = +256 - 50, .z = -512 - 350, },
         .max = { .x = +256, .y = +256 + 50, .z = -200, },

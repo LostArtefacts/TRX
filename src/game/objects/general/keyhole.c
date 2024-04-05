@@ -11,7 +11,7 @@
 
 XYZ_32 g_KeyHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 50 };
 
-static OBJECT_BOUNDS m_KeyHoleBounds = {
+static const OBJECT_BOUNDS m_KeyHoleBounds = {
     .shift = {
         .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
         .max = { .x = +200, .y = +0, .z = +WALL_L / 2, },

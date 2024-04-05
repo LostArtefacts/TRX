@@ -22,7 +22,7 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-static OBJECT_BOUNDS m_MovingBlockBounds = {
+static const OBJECT_BOUNDS m_MovingBlockBounds = {
     .shift = {
         .min = { .x = -300, .y = 0, .z = -WALL_L / 2 - (LARA_RAD + 80), },
         .max = { .x = +300, .y = 0, .z = -WALL_L / 2, },

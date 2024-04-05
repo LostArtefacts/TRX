@@ -9,7 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-static OBJECT_BOUNDS m_CrystalBounds = {
+static const OBJECT_BOUNDS m_CrystalBounds = {
     .shift = {
         .min = { .x = -256, .y = -100, .z = -256, },
         .max = { .x = +256, .y = +100, .z = +256, },
