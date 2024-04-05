@@ -45,11 +45,25 @@ static const OBJECT_BOUNDS m_Scion_Bounds4 = {
     },
 };
 
+static const OBJECT_BOUNDS *Scion_Bounds(void);
+static const OBJECT_BOUNDS *Scion_Bounds4(void);
+
+static const OBJECT_BOUNDS *Scion_Bounds(void)
+{
+    return &m_Scion_Bounds;
+}
+
+static const OBJECT_BOUNDS *Scion_Bounds4(void)
+{
+    return &m_Scion_Bounds4;
+}
+
 void Scion_Setup1(OBJECT_INFO *obj)
 {
     g_Objects[O_SCION_ITEM].draw_routine = Object_DrawPickupItem;
     g_Objects[O_SCION_ITEM].collision = Scion_Collision;
     g_Objects[O_SCION_ITEM].save_flags = 1;
+    g_Objects[O_SCION_ITEM].bounds = Scion_Bounds;
 }
 
 void Scion_Setup2(OBJECT_INFO *obj)
@@ -57,6 +71,7 @@ void Scion_Setup2(OBJECT_INFO *obj)
     g_Objects[O_SCION_ITEM2].draw_routine = Object_DrawPickupItem;
     g_Objects[O_SCION_ITEM2].collision = Pickup_Collision;
     g_Objects[O_SCION_ITEM2].save_flags = 1;
+    g_Objects[O_SCION_ITEM2].bounds = Pickup_Bounds;
 }
 
 void Scion_Setup3(OBJECT_INFO *obj)
@@ -71,6 +86,7 @@ void Scion_Setup4(OBJECT_INFO *obj)
     g_Objects[O_SCION_ITEM4].control = Scion_Control;
     g_Objects[O_SCION_ITEM4].collision = Scion_Collision4;
     g_Objects[O_SCION_ITEM4].save_flags = 1;
+    g_Objects[O_SCION_ITEM4].bounds = Scion_Bounds4;
 }
 
 void Scion_SetupHolder(OBJECT_INFO *obj)
@@ -134,6 +150,7 @@ void Scion_Control3(int16_t item_num)
 void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
     int16_t rotx = item->rot.x;
     int16_t roty = item->rot.y;
     int16_t rotz = item->rot.z;
@@ -141,7 +158,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, &m_Scion_Bounds)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         goto cleanup;
     }
 
@@ -179,6 +196,7 @@ cleanup:
 void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
     int16_t rotx = item->rot.x;
     int16_t roty = item->rot.y;
     int16_t rotz = item->rot.z;
@@ -186,7 +204,7 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, &m_Scion_Bounds4)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         goto cleanup;
     }
 

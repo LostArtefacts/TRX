@@ -9,7 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-static const OBJECT_BOUNDS m_CrystalBounds = {
+static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
         .min = { .x = -256, .y = -100, .z = -256, },
         .max = { .x = +256, .y = +100, .z = +256, },
@@ -20,6 +20,13 @@ static const OBJECT_BOUNDS m_CrystalBounds = {
     },
 };
 
+static const OBJECT_BOUNDS *SaveCrystal_Bounds(void);
+
+static const OBJECT_BOUNDS *SaveCrystal_Bounds(void)
+{
+    return &m_SaveCrystal_Bounds;
+}
+
 void SaveCrystal_Setup(OBJECT_INFO *obj)
 {
     obj->initialise = SaveCrystal_Initialise;
@@ -28,6 +35,7 @@ void SaveCrystal_Setup(OBJECT_INFO *obj)
         obj->collision = SaveCrystal_Collision;
         obj->save_flags = 1;
     }
+    obj->bounds = SaveCrystal_Bounds;
 }
 
 void SaveCrystal_Initialise(int16_t item_num)
@@ -49,6 +57,7 @@ void SaveCrystal_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     Object_Collision(item_num, lara_item, coll);
 
@@ -64,7 +73,7 @@ void SaveCrystal_Collision(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
     item->rot.x = 0;
-    if (!Lara_TestPosition(item, &m_CrystalBounds)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         return;
     }
 

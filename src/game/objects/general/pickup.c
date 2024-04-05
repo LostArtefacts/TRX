@@ -87,6 +87,18 @@ void Pickup_Setup(OBJECT_INFO *obj)
     obj->draw_routine = Object_DrawPickupItem;
     obj->collision = Pickup_Collision;
     obj->save_flags = 1;
+    obj->bounds = Pickup_Bounds;
+}
+
+const OBJECT_BOUNDS *Pickup_Bounds(void)
+{
+    if (g_Lara.water_status == LWS_UNDERWATER) {
+        return &m_PickUpBoundsUW;
+    } else if (g_Config.walk_to_items) {
+        return &m_PickUpBoundsControlled;
+    } else {
+        return &m_PickUpBounds;
+    }
 }
 
 void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
@@ -97,6 +109,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
     int16_t rotx = item->rot.x;
     int16_t roty = item->rot.y;
     int16_t rotz = item->rot.z;
@@ -105,7 +118,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (g_Lara.water_status == LWS_ABOVE_WATER) {
         item->rot.x = 0;
-        if (!Lara_TestPosition(item, &m_PickUpBounds)) {
+        if (!Lara_TestPosition(item, obj->bounds())) {
             goto cleanup;
         }
 
@@ -128,7 +141,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
         item->rot.x = -25 * PHD_DEGREE;
-        if (!Lara_TestPosition(item, &m_PickUpBoundsUW)) {
+        if (!Lara_TestPosition(item, obj->bounds())) {
             goto cleanup;
         }
 
@@ -159,6 +172,7 @@ void Pickup_CollisionControlled(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (item->status == IS_INVISIBLE) {
         return;
@@ -182,7 +196,7 @@ void Pickup_CollisionControlled(
             have_item = false;
             item->rot.x = 0;
 
-            if (Lara_TestPosition(item, &m_PickUpBoundsControlled)) {
+            if (Lara_TestPosition(item, obj->bounds())) {
                 m_PickUpPosition.y = lara_item->pos.y - item->pos.y;
                 if (Lara_MovePosition(item, &m_PickUpPosition)) {
                     Item_SwitchToAnim(lara_item, LA_PICKUP, 0);
@@ -220,7 +234,7 @@ void Pickup_CollisionControlled(
             || (g_Lara.interact_target.is_moving
                 && g_Lara.interact_target.item_num == item_num)) {
 
-            if (Lara_TestPosition(item, &m_PickUpBoundsUW)) {
+            if (Lara_TestPosition(item, obj->bounds())) {
                 if (Lara_MovePosition(item, &m_PickUpPositionUW)) {
                     Item_SwitchToAnim(lara_item, LA_PICKUP_UW, 0);
                     lara_item->current_anim_state = LS_PICKUP;

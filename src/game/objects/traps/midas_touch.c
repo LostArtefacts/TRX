@@ -15,7 +15,7 @@
 #define MIDAS_RANGE_H (STEP_L * 2)
 #define MIDAS_RANGE_V (STEP_L * 3)
 
-static const OBJECT_BOUNDS m_MidasBounds = {
+static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     .shift = {
         .min = { .x = -700, .y = +384 - 100, .z = -700, },
         .max = { .x = +700, .y = +384 + 100 + 512, .z = +700, },
@@ -26,16 +26,23 @@ static const OBJECT_BOUNDS m_MidasBounds = {
     },
 };
 
+static const OBJECT_BOUNDS *MidasTouch_Bounds(void)
+{
+    return &m_MidasTouch_Bounds;
+}
+
 void MidasTouch_Setup(OBJECT_INFO *obj)
 {
     obj->collision = MidasTouch_Collision;
     obj->draw_routine = Object_DrawDummyItem;
+    obj->bounds = MidasTouch_Bounds;
 }
 
 void MidasTouch_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (lara_item->current_anim_state == LS_USE_MIDAS) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
@@ -90,7 +97,7 @@ void MidasTouch_Collision(
         break;
     }
 
-    if (!Lara_TestPosition(item, &m_MidasBounds)) {
+    if (!Lara_TestPosition(item, obj->bounds())) {
         return;
     }
 

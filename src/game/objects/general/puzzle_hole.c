@@ -12,7 +12,9 @@
 
 #define LF_USEPUZZLE 80
 
-XYZ_32 g_PuzzleHolePosition = { 0, 0, WALL_L / 2 - LARA_RAD - 85 };
+static XYZ_32 m_PuzzleHolePosition = { .x = 0,
+                                       .y = 0,
+                                       .z = WALL_L / 2 - LARA_RAD - 85 };
 
 static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
     .shift = {
@@ -33,10 +35,18 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
     },
 };
 
+static const OBJECT_BOUNDS *PuzzleHole_Bounds(void);
+
+static const OBJECT_BOUNDS *PuzzleHole_Bounds(void)
+{
+    return &m_PuzzleHoleBounds;
+}
+
 void PuzzleHole_Setup(OBJECT_INFO *obj)
 {
     obj->collision = PuzzleHole_Collision;
     obj->save_flags = 1;
+    obj->bounds = PuzzleHole_Bounds;
 }
 
 void PuzzleHole_SetupDone(OBJECT_INFO *obj)
@@ -48,9 +58,10 @@ void PuzzleHole_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (lara_item->current_anim_state == LS_USE_PUZZLE) {
-        if (!Lara_TestPosition(item, &m_PuzzleHoleBounds)) {
+        if (!Lara_TestPosition(item, obj->bounds())) {
             return;
         }
 
@@ -152,7 +163,7 @@ void PuzzleHole_Collision(
 
     g_InvChosen = -1;
     if (correct) {
-        Lara_AlignPosition(item, &g_PuzzleHolePosition);
+        Lara_AlignPosition(item, &m_PuzzleHolePosition);
         Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
         lara_item->goal_anim_state = LS_STOP;
         g_Lara.gun_status = LGS_HANDS_BUSY;

@@ -22,7 +22,7 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
-static const OBJECT_BOUNDS m_MovingBlockBounds = {
+static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
     .shift = {
         .min = { .x = -300, .y = 0, .z = -WALL_L / 2 - (LARA_RAD + 80), },
         .max = { .x = +300, .y = 0, .z = -WALL_L / 2, },
@@ -33,12 +33,18 @@ static const OBJECT_BOUNDS m_MovingBlockBounds = {
     },
 };
 
+static const OBJECT_BOUNDS *MovableBlock_Bounds(void);
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
 static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height);
 static bool MovableBlock_TestPush(
     ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
 static bool MovableBlock_TestPull(
     ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
+
+static const OBJECT_BOUNDS *MovableBlock_Bounds(void)
+{
+    return &m_MovableBlock_Bounds;
+}
 
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
@@ -216,6 +222,7 @@ void MovableBlock_Setup(OBJECT_INFO *obj)
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->bounds = MovableBlock_Bounds;
 }
 
 void MovableBlock_Initialise(int16_t item_num)
@@ -280,6 +287,7 @@ void MovableBlock_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
     if (item->current_anim_state == MBS_STILL) {
         item->priv = (void *)false;
@@ -312,7 +320,7 @@ void MovableBlock_Collision(
             break;
         }
 
-        if (!Lara_TestPosition(item, &m_MovingBlockBounds)) {
+        if (!Lara_TestPosition(item, obj->bounds())) {
             return;
         }
 
@@ -353,7 +361,7 @@ void MovableBlock_Collision(
             return;
         }
 
-        if (!Lara_TestPosition(item, &m_MovingBlockBounds)) {
+        if (!Lara_TestPosition(item, obj->bounds())) {
             return;
         }
 
