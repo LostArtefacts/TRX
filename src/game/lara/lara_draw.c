@@ -57,7 +57,6 @@ void Lara_Draw(ITEM_INFO *item)
             break;
         }
 
-        // TODO!!!
         frame += g_Lara.hit_frame;
     } else {
         frame = frmptr[0];
