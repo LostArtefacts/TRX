@@ -820,56 +820,6 @@ const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item)
     return result;
 }
 
-int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
-{
-    const ANIM_STRUCT *anim = &g_Anims[item->anim_number];
-
-    const int32_t cur_frame_num = item->frame_number - anim->frame_base;
-    const int32_t last_frame_num = anim->frame_end - anim->frame_base;
-    const int32_t key_frame_span = anim->interpolation;
-    const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
-    const int32_t second_key_frame_num = first_key_frame_num + 1;
-    const int32_t frame_size = g_Objects[item->object_number].nmeshes * 2 + 10;
-
-    frmptr[0] = anim->frame_ptr + first_key_frame_num * frame_size;
-    frmptr[1] = anim->frame_ptr + second_key_frame_num * frame_size;
-
-    const int32_t key_frame_shift = cur_frame_num % key_frame_span;
-    const int32_t numerator = key_frame_shift;
-    int32_t denominator = key_frame_span;
-    if (numerator && second_key_frame_num > anim->frame_end) {
-        denominator = anim->frame_end + key_frame_span - second_key_frame_num;
-    }
-
-    // OG
-    if (g_Config.rendering.fps == 30) {
-        *rate = denominator;
-        return numerator;
-    }
-
-    // interpolated
-    if ((item != g_LaraItem && !item->active)
-        || (item->object_number == O_STATUE)
-        || (item->object_number == O_ROLLING_BALL
-            && item->status != IS_ACTIVE)) {
-        *rate = denominator;
-        return numerator;
-    }
-
-    const double clock_ratio = Clock_GetTickProgress() - 0.5;
-    const double final =
-        (key_frame_shift + clock_ratio) / (double)key_frame_span;
-    const double interp_frame_num =
-        (first_key_frame_num * key_frame_span) + (final * key_frame_span);
-    if (interp_frame_num >= last_frame_num) {
-        *rate = denominator;
-        return numerator;
-    }
-
-    *rate = 10;
-    return final * 10;
-}
-
 int32_t Item_GetFramesNew(
     const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate)
 {

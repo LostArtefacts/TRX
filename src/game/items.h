@@ -54,7 +54,6 @@ bool Item_IsTriggerActive(ITEM_INFO *item);
 
 FRAME_INFO *Item_GetBestFrameNew(const ITEM_INFO *item);
 const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item);
-int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate);
 int32_t Item_GetFramesNew(
     const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate);
 
