@@ -12,6 +12,7 @@
 #include "memory.h"
 #include "util.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -171,7 +172,6 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
 {
     injection->relevant = false;
     injection->info = NULL;
-    return;
 
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     injection->fp = fp;
@@ -287,6 +287,48 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         info->item_position_count = 0;
     }
 
+    // Get detailed frame counts
+    {
+        const size_t prev_pos = File_Pos(fp);
+
+        // texture pages
+        File_Skip(fp, 256 * 3);
+        File_Skip(fp, info->texture_page_count * PAGE_SIZE);
+
+        // textures
+        File_Skip(fp, info->texture_count * 20);
+
+        // sprites
+        File_Skip(fp, info->sprite_info_count * 16);
+        File_Skip(fp, info->sprite_count * 8);
+
+        // meshes
+        File_Skip(fp, info->mesh_count * 2);
+        File_Skip(fp, info->mesh_ptr_count * 4);
+
+        File_Skip(fp, info->anim_change_count * 6);
+        File_Skip(fp, info->anim_range_count * 8);
+        File_Skip(fp, info->anim_cmd_count * 2);
+        File_Skip(fp, info->anim_bone_count * 4);
+
+        info->anim_frame_count = 0;
+        info->anim_frame_mesh_rot_count = 0;
+        const size_t frame_data_start = File_Pos(fp);
+        const size_t frame_data_end =
+            frame_data_start + info->anim_frame_data_count * sizeof(int16_t);
+        while (File_Pos(fp) < frame_data_end) {
+            File_Skip(fp, 9 * sizeof(int16_t));
+            int16_t num_meshes;
+            File_Read(&num_meshes, sizeof(int16_t), 1, fp);
+            File_Skip(fp, num_meshes * sizeof(int32_t));
+            info->anim_frame_count++;
+            info->anim_frame_mesh_rot_count += num_meshes;
+        }
+        assert(File_Pos(fp) == frame_data_end);
+
+        File_Seek(fp, prev_pos, FILE_SEEK_SET);
+    }
+
     m_Aggregate->texture_page_count += info->texture_page_count;
     m_Aggregate->texture_count += info->texture_count;
     m_Aggregate->sprite_info_count += info->sprite_info_count;
@@ -298,6 +340,8 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     m_Aggregate->anim_cmd_count += info->anim_cmd_count;
     m_Aggregate->anim_bone_count += info->anim_bone_count;
     m_Aggregate->anim_frame_data_count += info->anim_frame_data_count;
+    m_Aggregate->anim_frame_count += info->anim_frame_count;
+    m_Aggregate->anim_frame_mesh_rot_count += info->anim_frame_mesh_rot_count;
     m_Aggregate->anim_count += info->anim_count;
     m_Aggregate->object_count += info->object_count;
     m_Aggregate->sfx_count += info->sfx_count;
@@ -350,6 +394,9 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         level_info->anim_command_count += inj_info->anim_cmd_count;
         level_info->anim_bone_count += inj_info->anim_bone_count;
         level_info->anim_frame_data_count += inj_info->anim_frame_data_count;
+        level_info->anim_frame_count += inj_info->anim_frame_count;
+        level_info->anim_frame_mesh_rot_count +=
+            inj_info->anim_frame_mesh_rot_count;
         level_info->anim_count += inj_info->anim_count;
         level_info->mesh_ptr_count += inj_info->mesh_ptr_count;
         level_info->texture_count += inj_info->texture_count;
@@ -508,9 +555,33 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     File_Read(
         g_AnimBones + level_info->anim_bone_count, sizeof(int32_t),
         inj_info->anim_bone_count, fp);
+    const size_t frame_data_start = File_Pos(fp);
     File_Read(
         g_AnimFrames + level_info->anim_frame_data_count, sizeof(int16_t),
         inj_info->anim_frame_data_count, fp);
+    const size_t frame_data_end = File_Pos(fp);
+
+    File_Seek(fp, frame_data_start, FILE_SEEK_SET);
+    int32_t *mesh_rots =
+        &g_AnimFrameMeshRots[level_info->anim_frame_mesh_rot_count];
+    for (int32_t i = 0; i < inj_info->anim_frame_count; i++) {
+        level_info->anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
+        FRAME_INFO *frame = &g_AnimFramesNew[level_info->anim_frame_count + i];
+        File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.max.x, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.min.y, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.max.y, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.min.z, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.max.z, sizeof(int16_t), 1, fp);
+        File_Read(&frame->offset.x, sizeof(int16_t), 1, fp);
+        File_Read(&frame->offset.y, sizeof(int16_t), 1, fp);
+        File_Read(&frame->offset.z, sizeof(int16_t), 1, fp);
+        File_Read(&frame->nmeshes, sizeof(int16_t), 1, fp);
+        frame->mesh_rots = mesh_rots;
+        File_Read(mesh_rots, sizeof(int32_t), frame->nmeshes, fp);
+        mesh_rots += frame->nmeshes;
+    }
+    assert(File_Pos(fp) == frame_data_end);
 
     for (int i = 0; i < inj_info->anim_count; i++) {
         ANIM_STRUCT *anim = &g_Anims[level_info->anim_count + i];
@@ -531,8 +602,19 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
 
         // Re-align to the level.
         anim->jump_anim_num += level_info->anim_count;
+        bool found = false;
+        for (int j = 0;
+             j < level_info->anim_frame_count + inj_info->anim_frame_count;
+             j++) {
+            if (level_info->anim_frame_offsets[j] == (signed)anim->frame_ofs) {
+                anim->frame_ptr_new = &g_AnimFramesNew[j];
+                found = true;
+                break;
+            }
+        }
         anim->frame_ofs += level_info->anim_frame_data_count * 2;
         anim->frame_ptr = &g_AnimFrames[anim->frame_ofs / 2];
+        assert(found);
         if (anim->number_changes) {
             anim->change_index += level_info->anim_change_count;
         }
@@ -628,9 +710,9 @@ static void Inject_ObjectData(
     // TODO: consider refactoring once we have more injection
     // use cases.
     for (int i = 0; i < inj_info->object_count; i++) {
-        int32_t tmp;
-        File_Read(&tmp, sizeof(int32_t), 1, fp);
-        OBJECT_INFO *object = &g_Objects[tmp];
+        int32_t object_num;
+        File_Read(&object_num, sizeof(int32_t), 1, fp);
+        OBJECT_INFO *object = &g_Objects[object_num];
 
         int16_t num_meshes;
         int16_t mesh_index;
@@ -648,13 +730,27 @@ static void Inject_ObjectData(
             object->bone_index = bone_index + level_info->anim_bone_count;
         }
 
-        File_Read(&tmp, sizeof(int32_t), 1, fp);
+        int32_t frame_offset;
+        File_Read(&frame_offset, sizeof(int32_t), 1, fp);
         object->frame_base =
-            &g_AnimFrames[(tmp + level_info->anim_frame_data_count * 2) / 2];
+            &g_AnimFrames
+                [(frame_offset + level_info->anim_frame_data_count * 2) / 2];
         File_Read(&object->anim_index, sizeof(int16_t), 1, fp);
         object->anim_index += level_info->anim_count;
         object->loaded = 1;
 
+        bool found = false;
+        for (int j = 0;
+             j < level_info->anim_frame_count + inj_info->anim_frame_count;
+             j++) {
+            if (level_info->anim_frame_offsets[j] == frame_offset) {
+                object->frame_base_new = &g_AnimFramesNew[j];
+                found = true;
+                break;
+            }
+        }
+
+        assert(found);
         if (num_meshes) {
             Inject_AlignTextureReferences(
                 object, palette_map, level_info->texture_count);

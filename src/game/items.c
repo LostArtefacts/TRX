@@ -887,10 +887,9 @@ int32_t Item_GetFramesNew(
     const int32_t key_frame_span = anim->interpolation;
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
     const int32_t second_key_frame_num = first_key_frame_num + 1;
-    const int32_t frame_size = g_Objects[item->object_number].nmeshes * 2 + 10;
 
-    frmptr[0] = anim->frame_ptr_new + first_key_frame_num * frame_size;
-    frmptr[1] = anim->frame_ptr_new + second_key_frame_num * frame_size;
+    frmptr[0] = &anim->frame_ptr_new[first_key_frame_num];
+    frmptr[1] = &anim->frame_ptr_new[second_key_frame_num];
 
     const int32_t key_frame_shift = cur_frame_num % key_frame_span;
     const int32_t numerator = key_frame_shift;
