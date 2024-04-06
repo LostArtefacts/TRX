@@ -266,13 +266,13 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
 {
     static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    int16_t *frmptr[2];
+    FRAME_INFO *frmptr[2];
     int32_t rate;
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
+    int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     if (object->shadow_size) {
-        Output_DrawShadow(object->shadow_size, frmptr[0], item);
+        Output_DrawShadowNew(object->shadow_size, &frmptr[0]->bounds, item);
     }
 
     Matrix_Push();
@@ -283,13 +283,13 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBounds(frmptr[0]);
+    int32_t clip = Output_GetObjectBoundsNew(&frmptr[0]->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
     }
 
-    Output_CalculateObjectLighting(item, frmptr[0]);
+    Output_CalculateObjectLightingNew(item, &frmptr[0]->bounds);
     int16_t *extra_rotation = item->data ? item->data : &null_rotation;
 
     int32_t bit = 1;
@@ -298,10 +298,9 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
 
     if (!frac) {
         Matrix_TranslateRel(
-            frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
-            frmptr[0][FRAME_POS_Z]);
+            frmptr[0]->offset.x, frmptr[0]->offset.y, frmptr[0]->offset.z);
 
-        int32_t *packed_rotation = (int32_t *)(frmptr[0] + FRAME_ROT);
+        int32_t *packed_rotation = frmptr[0]->mesh_rots;
         Matrix_RotYXZpack(*packed_rotation++);
 
         if (item->mesh_bits & bit) {
@@ -342,11 +341,10 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
     } else {
         Matrix_InitInterpolate(frac, rate);
         Matrix_TranslateRel_ID(
-            frmptr[0][FRAME_POS_X], frmptr[0][FRAME_POS_Y],
-            frmptr[0][FRAME_POS_Z], frmptr[1][FRAME_POS_X],
-            frmptr[1][FRAME_POS_Y], frmptr[1][FRAME_POS_Z]);
-        int32_t *packed_rotation1 = (int32_t *)(frmptr[0] + FRAME_ROT);
-        int32_t *packed_rotation2 = (int32_t *)(frmptr[1] + FRAME_ROT);
+            frmptr[0]->offset.x, frmptr[0]->offset.y, frmptr[0]->offset.z,
+            frmptr[1]->offset.x, frmptr[1]->offset.y, frmptr[1]->offset.z);
+        int32_t *packed_rotation1 = frmptr[0]->mesh_rots;
+        int32_t *packed_rotation2 = frmptr[1]->mesh_rots;
         Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
 
         if (item->mesh_bits & bit) {
