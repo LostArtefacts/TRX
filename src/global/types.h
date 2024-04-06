@@ -1455,8 +1455,20 @@ typedef struct CINE_POSITION {
     XYZ_16 rot;
 } CINE_POSITION;
 
+typedef struct BOUNDS_16 {
+    XYZ_16 min;
+    XYZ_16 max;
+} BOUNDS_16;
+
+typedef struct FRAME_INFO {
+    BOUNDS_16 bounds;
+    XYZ_16 offset;
+    int16_t nmeshes;
+    int32_t *mesh_rots;
+} FRAME_INFO;
+
 typedef struct LARA_ARM {
-    int16_t *frame_base;
+    FRAME_INFO *frame_base_new;
     int16_t frame_number;
     int16_t lock;
     XYZ_16 rot;
@@ -1753,23 +1765,10 @@ typedef struct OBJECT_BOUNDS {
     } shift, rot;
 } OBJECT_BOUNDS;
 
-typedef struct BOUNDS_16 {
-    XYZ_16 min;
-    XYZ_16 max;
-} BOUNDS_16;
-
-typedef struct FRAME_INFO {
-    BOUNDS_16 bounds;
-    XYZ_16 offset;
-    int16_t nmeshes;
-    int32_t *mesh_rots;
-} FRAME_INFO;
-
 typedef struct OBJECT_INFO {
     int16_t nmeshes;
     int16_t mesh_index;
     int32_t bone_index;
-    int16_t *frame_base;
     FRAME_INFO *frame_base_new;
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);

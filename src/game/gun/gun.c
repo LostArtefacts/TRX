@@ -184,24 +184,24 @@ void Gun_InitialiseNewWeapon(void)
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
     case LGT_UZIS:
-        g_Lara.right_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
-        g_Lara.left_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
+        g_Lara.right_arm.frame_base_new = g_Objects[O_PISTOLS].frame_base_new;
+        g_Lara.left_arm.frame_base_new = g_Objects[O_PISTOLS].frame_base_new;
         if (g_Lara.gun_status != LGS_ARMLESS) {
             Gun_Pistols_DrawMeshes(g_Lara.gun_type);
         }
         break;
 
     case LGT_SHOTGUN:
-        g_Lara.right_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
-        g_Lara.left_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
+        g_Lara.right_arm.frame_base_new = g_Objects[O_SHOTGUN].frame_base_new;
+        g_Lara.left_arm.frame_base_new = g_Objects[O_SHOTGUN].frame_base_new;
         if (g_Lara.gun_status != LGS_ARMLESS) {
             Gun_Rifle_DrawMeshes();
         }
         break;
 
     default:
-        g_Lara.right_arm.frame_base = g_Objects[O_LARA].frame_base;
-        g_Lara.left_arm.frame_base = g_Objects[O_LARA].frame_base;
+        g_Lara.right_arm.frame_base_new = g_Objects[O_LARA].frame_base_new;
+        g_Lara.left_arm.frame_base_new = g_Objects[O_LARA].frame_base_new;
         break;
     }
 }

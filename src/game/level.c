@@ -456,7 +456,6 @@ static bool Level_LoadObjects(MYFILE *fp)
 
         int32_t frame_offset;
         File_Read(&frame_offset, sizeof(int32_t), 1, fp);
-        object->frame_base = &g_AnimFrames[frame_offset / 2];
         File_Read(&object->anim_index, sizeof(int16_t), 1, fp);
 
         bool found = false;
@@ -467,9 +466,7 @@ static bool Level_LoadObjects(MYFILE *fp)
                 break;
             }
         }
-        assert(found);
-
-        object->loaded = 1;
+        object->loaded = found;
     }
 
     File_Read(&m_LevelInfo.static_count, sizeof(int32_t), 1, fp);

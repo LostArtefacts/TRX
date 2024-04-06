@@ -214,8 +214,8 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     Output_CalculateLight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
-    int16_t *frame = &object->frame_base[object->nmeshes * 2 + 10];
-    int32_t clip = Output_GetObjectBounds(frame);
+    const FRAME_INFO *frame = object->frame_base_new;
+    int32_t clip = Output_GetObjectBoundsNew(&frame->bounds);
     if (clip) {
         // From this point on the function is a slightly customised version
         // of the code in DrawAnimatingItem starting with the line that

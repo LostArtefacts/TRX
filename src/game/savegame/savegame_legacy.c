@@ -272,8 +272,9 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
 
 static void Savegame_Legacy_WriteArm(LARA_ARM *arm)
 {
-    int32_t frame_base = (int32_t)(arm->frame_base - g_AnimFrames);
-    Savegame_Legacy_Write(&frame_base, sizeof(int32_t));
+    // TODO!!!
+    int32_t frame_base_new = (int32_t)(arm->frame_base_new - g_AnimFramesNew);
+    Savegame_Legacy_Write(&frame_base_new, sizeof(int32_t));
     Savegame_Legacy_Write(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->lock, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->rot.y, sizeof(PHD_ANGLE));
@@ -372,10 +373,11 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
 
 static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 {
-    int32_t frame_base;
-    Savegame_Legacy_Read(&frame_base, sizeof(int32_t));
-    arm->frame_base =
-        (int16_t *)((intptr_t)g_AnimFrames + (intptr_t)frame_base);
+    // TODO!!!
+    int32_t frame_base_new;
+    Savegame_Legacy_Read(&frame_base_new, sizeof(int32_t));
+    arm->frame_base_new =
+        (FRAME_INFO *)((intptr_t)g_AnimFramesNew + (intptr_t)frame_base_new);
 
     Savegame_Legacy_Read(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->lock, sizeof(int16_t));

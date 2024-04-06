@@ -426,16 +426,14 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
         }
     }
 
-    int16_t *frame =
-        &obj->frame_base[inv_item->current_frame * (obj->nmeshes * 2 + 10)];
+    FRAME_INFO *frame = &obj->frame_base_new[inv_item->current_frame];
 
     Matrix_Push();
 
-    int32_t clip = Output_GetObjectBounds(frame);
+    int32_t clip = Output_GetObjectBoundsNew(&frame->bounds);
     if (clip) {
-        Matrix_TranslateRel(
-            frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+        Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
+        int32_t *packed_rotation = frame->mesh_rots;
         Matrix_RotYXZpack(*packed_rotation++);
 
         int32_t mesh_num = 1;
