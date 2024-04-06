@@ -70,8 +70,6 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     }
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    Item_GetBestFrame(item);
-
     int32_t z = g_LaraItem->pos.z
         - ((Math_Cos(item->rot.y) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.z;

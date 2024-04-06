@@ -472,11 +472,10 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
 
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
-    int16_t *frame = Item_GetBestFrame(item);
-    Matrix_TranslateRel(
-        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+    FRAME_INFO *frame = Item_GetBestFrameNew(item);
+    Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
-    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+    int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
@@ -576,11 +575,10 @@ void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint)
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
-    int16_t *frame = Item_GetBestFrame(item);
-    Matrix_TranslateRel(
-        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+    FRAME_INFO *frame = Item_GetBestFrameNew(item);
+    Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
-    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+    int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
     int32_t *bone = &g_AnimBones[object->bone_index];

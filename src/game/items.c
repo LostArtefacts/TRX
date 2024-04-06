@@ -390,26 +390,26 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
 {
-    int16_t *src_bounds = Item_GetBestFrame(src_item);
-    int16_t *dst_bounds = Item_GetBestFrame(dst_item);
-    if (dst_item->pos.y + dst_bounds[FRAME_BOUND_MAX_Y]
-            <= src_item->pos.y + src_bounds[FRAME_BOUND_MIN_Y]
-        || dst_item->pos.y + dst_bounds[FRAME_BOUND_MIN_Y]
-            >= src_item->pos.y + src_bounds[FRAME_BOUND_MAX_Y]) {
+    const BOUNDS_16 *const src_bounds = &Item_GetBestFrameNew(src_item)->bounds;
+    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrameNew(dst_item)->bounds;
+    if (dst_item->pos.y + dst_bounds->max.y
+            <= src_item->pos.y + src_bounds->min.y
+        || dst_item->pos.y + dst_bounds->min.y
+            >= src_item->pos.y + src_bounds->max.y) {
         return false;
     }
 
-    int32_t c = Math_Cos(dst_item->rot.y);
-    int32_t s = Math_Sin(dst_item->rot.y);
-    int32_t x = src_item->pos.x - dst_item->pos.x;
-    int32_t z = src_item->pos.z - dst_item->pos.z;
-    int32_t rx = (c * x - s * z) >> W2V_SHIFT;
-    int32_t rz = (c * z + s * x) >> W2V_SHIFT;
-    int32_t minx = dst_bounds[FRAME_BOUND_MIN_X] - radius;
-    int32_t maxx = dst_bounds[FRAME_BOUND_MAX_X] + radius;
-    int32_t minz = dst_bounds[FRAME_BOUND_MIN_Z] - radius;
-    int32_t maxz = dst_bounds[FRAME_BOUND_MAX_Z] + radius;
-    return rx >= minx && rx <= maxx && rz >= minz && rz <= maxz;
+    const int32_t c = Math_Cos(dst_item->rot.y);
+    const int32_t s = Math_Sin(dst_item->rot.y);
+    const int32_t x = src_item->pos.x - dst_item->pos.x;
+    const int32_t z = src_item->pos.z - dst_item->pos.z;
+    const int32_t rx = (c * x - s * z) >> W2V_SHIFT;
+    const int32_t rz = (c * z + s * x) >> W2V_SHIFT;
+    const int32_t min_x = dst_bounds->min.x - radius;
+    const int32_t max_x = dst_bounds->max.x + radius;
+    const int32_t min_z = dst_bounds->min.z - radius;
+    const int32_t max_z = dst_bounds->max.z + radius;
+    return rx >= min_x && rx <= max_x && rz >= min_z && rz <= max_z;
 }
 
 bool Item_TestPosition(
@@ -785,18 +785,6 @@ bool Item_IsTriggerActive(ITEM_INFO *item)
     return ok;
 }
 
-int16_t *Item_GetBestFrame(const ITEM_INFO *item)
-{
-    int16_t *frmptr[2];
-    int32_t rate;
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (frac <= rate / 2) {
-        return frmptr[0];
-    } else {
-        return frmptr[1];
-    }
-}
-
 FRAME_INFO *Item_GetBestFrameNew(const ITEM_INFO *item)
 {
     FRAME_INFO *frmptr[2];
@@ -807,24 +795,6 @@ FRAME_INFO *Item_GetBestFrameNew(const ITEM_INFO *item)
     } else {
         return frmptr[1];
     }
-}
-
-int16_t *Item_GetBoundsAccurate(const ITEM_INFO *item)
-{
-    int32_t rate;
-    int16_t *frmptr[2];
-
-    int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    if (!frac) {
-        return frmptr[0];
-    }
-
-    for (int i = 0; i < 6; i++) {
-        int16_t a = frmptr[0][i];
-        int16_t b = frmptr[1][i];
-        m_InterpolatedBounds[i] = a + (((b - a) * frac) / rate);
-    }
-    return m_InterpolatedBounds;
 }
 
 const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item)
