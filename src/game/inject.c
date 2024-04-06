@@ -607,7 +607,7 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
              j < level_info->anim_frame_count + inj_info->anim_frame_count;
              j++) {
             if (level_info->anim_frame_offsets[j] == (signed)anim->frame_ofs) {
-                anim->frame_ptr_new = &g_AnimFramesNew[j];
+                anim->frame_ptr = &g_AnimFramesNew[j];
                 found = true;
                 break;
             }
@@ -740,7 +740,7 @@ static void Inject_ObjectData(
              j < level_info->anim_frame_count + inj_info->anim_frame_count;
              j++) {
             if (level_info->anim_frame_offsets[j] == frame_offset) {
-                object->frame_base_new = &g_AnimFramesNew[j];
+                object->frame_base = &g_AnimFramesNew[j];
                 found = true;
                 break;
             }

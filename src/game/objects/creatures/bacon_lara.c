@@ -33,7 +33,7 @@ void BaconLara_Setup(OBJECT_INFO *obj)
 void BaconLara_Initialise(int16_t item_num)
 {
     g_Objects[O_BACON_LARA].anim_index = g_Objects[O_LARA].anim_index;
-    g_Objects[O_BACON_LARA].frame_base_new = g_Objects[O_LARA].frame_base_new;
+    g_Objects[O_BACON_LARA].frame_base = g_Objects[O_LARA].frame_base;
     g_Items[item_num].data = NULL;
 }
 

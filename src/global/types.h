@@ -1468,7 +1468,7 @@ typedef struct FRAME_INFO {
 } FRAME_INFO;
 
 typedef struct LARA_ARM {
-    FRAME_INFO *frame_base_new;
+    FRAME_INFO *frame_base;
     int16_t frame_number;
     int16_t lock;
     XYZ_16 rot;
@@ -1769,7 +1769,7 @@ typedef struct OBJECT_INFO {
     int16_t nmeshes;
     int16_t mesh_index;
     int32_t bone_index;
-    FRAME_INFO *frame_base_new;
+    FRAME_INFO *frame_base;
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);
     void (*floor)(
@@ -1872,7 +1872,7 @@ typedef struct CAMERA_INFO {
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {
-    FRAME_INFO *frame_ptr_new;
+    FRAME_INFO *frame_ptr;
     uint32_t frame_ofs;
     int16_t interpolation;
     int16_t current_anim_state;

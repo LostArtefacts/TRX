@@ -44,16 +44,16 @@ void Lara_Draw(ITEM_INFO *item)
         switch (g_Lara.hit_direction) {
         default:
         case DIR_NORTH:
-            frame = g_Anims[object->anim_index + LA_SPAZ_FORWARD].frame_ptr_new;
+            frame = g_Anims[object->anim_index + LA_SPAZ_FORWARD].frame_ptr;
             break;
         case DIR_EAST:
-            frame = g_Anims[object->anim_index + LA_SPAZ_RIGHT].frame_ptr_new;
+            frame = g_Anims[object->anim_index + LA_SPAZ_RIGHT].frame_ptr;
             break;
         case DIR_SOUTH:
-            frame = g_Anims[object->anim_index + LA_SPAZ_BACK].frame_ptr_new;
+            frame = g_Anims[object->anim_index + LA_SPAZ_BACK].frame_ptr;
             break;
         case DIR_WEST:
-            frame = g_Anims[object->anim_index + LA_SPAZ_LEFT].frame_ptr_new;
+            frame = g_Anims[object->anim_index + LA_SPAZ_LEFT].frame_ptr;
             break;
         }
 
@@ -205,7 +205,7 @@ void Lara_Draw(ITEM_INFO *item)
         g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
         packed_rotation =
-            g_Lara.right_arm.frame_base_new[g_Lara.right_arm.frame_number]
+            g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_number]
                 .mesh_rots;
         Matrix_RotYXZ(
             g_Lara.right_arm.interp.result.rot.y,
@@ -243,8 +243,7 @@ void Lara_Draw(ITEM_INFO *item)
         g_MatrixPtr->_22 = g_MatrixPtr[-2]._22;
 
         packed_rotation =
-            g_Lara.left_arm.frame_base_new[g_Lara.left_arm.frame_number]
-                .mesh_rots;
+            g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_number].mesh_rots;
         Matrix_RotYXZ(
             g_Lara.left_arm.interp.result.rot.y,
             g_Lara.left_arm.interp.result.rot.x,
@@ -275,7 +274,7 @@ void Lara_Draw(ITEM_INFO *item)
         Matrix_Push();
 
         packed_rotation =
-            g_Lara.right_arm.frame_base_new[g_Lara.right_arm.frame_number]
+            g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_number]
                 .mesh_rots;
         Matrix_TranslateRel(bone[29], bone[30], bone[31]);
         Matrix_RotYXZpack(packed_rotation[LM_UARM_R]);
@@ -298,8 +297,7 @@ void Lara_Draw(ITEM_INFO *item)
         Matrix_Push();
 
         packed_rotation =
-            g_Lara.left_arm.frame_base_new[g_Lara.left_arm.frame_number]
-                .mesh_rots;
+            g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_number].mesh_rots;
         Matrix_TranslateRel(bone[41], bone[42], bone[43]);
         Matrix_RotYXZpack(packed_rotation[LM_UARM_L]);
         Output_DrawPolygons(g_Lara.mesh_ptrs[LM_UARM_L], clip);
@@ -490,7 +488,7 @@ void Lara_Draw_I(
         Matrix_InterpolateArm();
 
         packed_rotation1 =
-            g_Lara.right_arm.frame_base_new[g_Lara.right_arm.frame_number]
+            g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_number]
                 .mesh_rots;
         Matrix_RotYXZ(
             g_Lara.right_arm.interp.result.rot.y,
@@ -519,8 +517,7 @@ void Lara_Draw_I(
         Matrix_InterpolateArm();
 
         packed_rotation1 =
-            g_Lara.left_arm.frame_base_new[g_Lara.left_arm.frame_number]
-                .mesh_rots;
+            g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_number].mesh_rots;
         Matrix_RotYXZ(
             g_Lara.left_arm.interp.result.rot.y,
             g_Lara.left_arm.interp.result.rot.x,
@@ -552,7 +549,7 @@ void Lara_Draw_I(
         Matrix_Push_I();
 
         packed_rotation1 =
-            g_Lara.right_arm.frame_base_new[g_Lara.right_arm.frame_number]
+            g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_number]
                 .mesh_rots;
         packed_rotation2 = packed_rotation1;
         Matrix_TranslateRel_I(bone[29], bone[30], bone[31]);
@@ -579,8 +576,7 @@ void Lara_Draw_I(
         Matrix_Push_I();
 
         packed_rotation1 =
-            g_Lara.left_arm.frame_base_new[g_Lara.left_arm.frame_number]
-                .mesh_rots;
+            g_Lara.left_arm.frame_base[g_Lara.left_arm.frame_number].mesh_rots;
         packed_rotation2 = packed_rotation1;
         Matrix_TranslateRel_I(bone[41], bone[42], bone[43]);
         Matrix_RotYXZpack_I(

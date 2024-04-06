@@ -434,7 +434,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
             if (m_LevelInfo.anim_frame_offsets[j] == (signed)anim->frame_ofs) {
-                anim->frame_ptr_new = &g_AnimFramesNew[j];
+                anim->frame_ptr = &g_AnimFramesNew[j];
                 found = true;
                 break;
             }
@@ -461,7 +461,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
             if (m_LevelInfo.anim_frame_offsets[j] == frame_offset) {
-                object->frame_base_new = &g_AnimFramesNew[j];
+                object->frame_base = &g_AnimFramesNew[j];
                 found = true;
                 break;
             }

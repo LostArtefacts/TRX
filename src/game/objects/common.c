@@ -120,7 +120,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     OBJECT_INFO *object = &g_Objects[item_num_option];
 
-    FRAME_INFO *frmptr = g_Anims[item->anim_number].frame_ptr_new;
+    FRAME_INFO *frmptr = g_Anims[item->anim_number].frame_ptr;
 
     // Restore the old frame number in case we need to get the sprite again.
     item->frame_number = old_frame_number;
@@ -214,7 +214,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     Output_CalculateLight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
-    const FRAME_INFO *frame = object->frame_base_new;
+    const FRAME_INFO *frame = object->frame_base;
     int32_t clip = Output_GetObjectBounds(&frame->bounds);
     if (clip) {
         // From this point on the function is a slightly customised version

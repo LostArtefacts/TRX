@@ -103,8 +103,8 @@ void Gun_Pistols_Ready(void)
     g_Lara.torso_rot.x = 0;
     g_Lara.torso_rot.y = 0;
     g_Lara.target = NULL;
-    g_Lara.right_arm.frame_base_new = g_Objects[O_PISTOLS].frame_base_new;
-    g_Lara.left_arm.frame_base_new = g_Objects[O_PISTOLS].frame_base_new;
+    g_Lara.right_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
+    g_Lara.left_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
 }
 
 void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)

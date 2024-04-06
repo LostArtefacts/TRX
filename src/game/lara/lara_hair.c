@@ -113,7 +113,7 @@ void Lara_Hair_Control(void)
             break;
         }
 
-        frame = g_Anims[spaz].frame_ptr_new;
+        frame = g_Anims[spaz].frame_ptr;
 #if 0
         // TODO!!!
         const int32_t size = g_Anims[spaz].interpolation >> 8;

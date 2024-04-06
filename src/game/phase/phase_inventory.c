@@ -426,7 +426,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
         }
     }
 
-    FRAME_INFO *frame = &obj->frame_base_new[inv_item->current_frame];
+    FRAME_INFO *frame = &obj->frame_base[inv_item->current_frame];
 
     Matrix_Push();
 
