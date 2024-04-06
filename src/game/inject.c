@@ -564,7 +564,8 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         &g_AnimFrameMeshRots[level_info->anim_frame_mesh_rot_count];
     for (int32_t i = 0; i < inj_info->anim_frame_count; i++) {
         level_info->anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
-        FRAME_INFO *frame = &g_AnimFrames[level_info->anim_frame_count + i];
+        FRAME_INFO *const frame =
+            &g_AnimFrames[level_info->anim_frame_count + i];
         File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.max.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.min.y, sizeof(int16_t), 1, fp);

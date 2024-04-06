@@ -373,7 +373,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     Output_SetupAboveWater(false);
 
     OBJECT_INFO *obj = &g_Objects[Inv_GetItemOption(pu->obj_num)];
-    FRAME_INFO *frame = g_Anims[obj->anim_index].frame_ptr;
+    const FRAME_INFO *const frame = g_Anims[obj->anim_index].frame_ptr;
 
     Matrix_Push();
     Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);

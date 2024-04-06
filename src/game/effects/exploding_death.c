@@ -14,7 +14,7 @@ int32_t Effect_ExplodingDeath(
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
-    FRAME_INFO *frame = Item_GetBestFrame(item);
+    const FRAME_INFO *const frame = Item_GetBestFrame(item);
 
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);

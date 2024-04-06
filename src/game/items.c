@@ -363,7 +363,7 @@ bool Item_IsNearItem(const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance)
     if (x >= -distance && x <= distance && z >= -distance && z <= distance
         && y >= -WALL_L * 3 && y <= WALL_L * 3
         && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
+        const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
         if (y >= bounds->min.y && y <= bounds->max.y + 100) {
             return true;
         }

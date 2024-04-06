@@ -406,7 +406,7 @@ static bool Level_LoadObjects(MYFILE *fp)
     int32_t *mesh_rots = g_AnimFrameMeshRots;
     for (int32_t i = 0; i < m_LevelInfo.anim_frame_count; i++) {
         m_LevelInfo.anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
-        FRAME_INFO *frame = &g_AnimFrames[i];
+        FRAME_INFO *const frame = &g_AnimFrames[i];
         File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.max.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.min.y, sizeof(int16_t), 1, fp);

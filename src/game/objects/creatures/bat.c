@@ -56,7 +56,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
         item->frame_number - g_Anims[item->anim_number].frame_base;
 
     Item_SwitchToAnim(item, 0, 0);
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     Item_SwitchToAnim(item, old_anim, old_frame);
 
     const int16_t bat_height = ABS(bounds->min.y);

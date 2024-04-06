@@ -366,7 +366,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     const int32_t hdif = coll->front_floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;

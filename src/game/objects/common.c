@@ -120,7 +120,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     OBJECT_INFO *object = &g_Objects[item_num_option];
 
-    FRAME_INFO *frmptr = g_Anims[item->anim_number].frame_ptr;
+    const FRAME_INFO *frame = g_Anims[item->anim_number].frame_ptr;
 
     // Restore the old frame number in case we need to get the sprite again.
     item->frame_number = old_frame_number;
@@ -155,9 +155,9 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[spr_num];
 
         // and get the animation bounding box, which is not the mesh one.
-        int16_t min_y = frmptr->bounds.min.y;
-        int16_t max_y = frmptr->bounds.max.y;
-        int16_t anim_y = frmptr->offset.y;
+        int16_t min_y = frame->bounds.min.y;
+        int16_t max_y = frame->bounds.max.y;
+        int16_t anim_y = frame->offset.y;
 
         // Different objects need different heuristics.
         switch (item_num_option) {
@@ -214,7 +214,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     Output_CalculateLight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
-    const FRAME_INFO *frame = object->frame_base;
+    frame = object->frame_base;
     int32_t clip = Output_GetObjectBounds(&frame->bounds);
     if (clip) {
         // From this point on the function is a slightly customised version
@@ -224,10 +224,9 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         int16_t **meshpp = &g_Meshes[object->mesh_index];
         int32_t *bone = &g_AnimBones[object->bone_index];
 
-        Matrix_TranslateRel(
-            frmptr->offset.x, frmptr->offset.y, frmptr->offset.z);
+        Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
-        int32_t *packed_rotation = frmptr->mesh_rots;
+        int32_t *packed_rotation = frame->mesh_rots;
         Matrix_RotYXZpack(*packed_rotation++);
 
         if (item->mesh_bits & bit) {
