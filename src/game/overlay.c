@@ -187,6 +187,7 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
 
     const int32_t percent = Overlay_BarGetPercent(bar_info);
     if (percent > BLINK_THRESHOLD) {
+        bar_info->blink = false;
         return;
     }
 
