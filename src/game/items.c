@@ -36,6 +36,7 @@ ITEM_INFO *g_Items = NULL;
 int16_t g_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 static int16_t m_InterpolatedBounds[6] = { 0 };
+static BOUNDS_16 m_InterpolatedBoundsNew = { 0 };
 static int16_t m_MaxUsedItemCount = 0;
 
 void Item_InitialiseArray(int32_t num_items)
@@ -825,6 +826,29 @@ int16_t *Item_GetBoundsAccurate(const ITEM_INFO *item)
         m_InterpolatedBounds[i] = a + (((b - a) * frac) / rate);
     }
     return m_InterpolatedBounds;
+}
+
+const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item)
+{
+    int32_t rate;
+    FRAME_INFO *frmptr[2];
+
+    int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
+    if (!frac) {
+        return &frmptr[0]->bounds;
+    }
+
+    const BOUNDS_16 *const a = &frmptr[0]->bounds;
+    const BOUNDS_16 *const b = &frmptr[1]->bounds;
+    BOUNDS_16 *const result = &m_InterpolatedBoundsNew;
+
+    result->min.x = a->min.x + (((b->min.x - a->min.x) * frac) / rate);
+    result->min.y = a->min.y + (((b->min.y - a->min.y) * frac) / rate);
+    result->min.z = a->min.z + (((b->min.z - a->min.z) * frac) / rate);
+    result->max.x = a->max.x + (((b->max.x - a->max.x) * frac) / rate);
+    result->max.y = a->max.y + (((b->max.y - a->max.y) * frac) / rate);
+    result->max.z = a->max.z + (((b->max.z - a->max.z) * frac) / rate);
+    return result;
 }
 
 int32_t Item_GetFrames(const ITEM_INFO *item, int16_t *frmptr[], int32_t *rate)
