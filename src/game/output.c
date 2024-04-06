@@ -1138,18 +1138,18 @@ bool Output_MakeScreenshot(const char *path)
     return S_Output_MakeScreenshot(path);
 }
 
-int Output_GetObjectBounds(int16_t *bptr)
+int Output_GetObjectBoundsNew(const BOUNDS_16 *const bounds)
 {
     if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
         return 0;
     }
 
-    int32_t x_min = bptr[0];
-    int32_t x_max = bptr[1];
-    int32_t y_min = bptr[2];
-    int32_t y_max = bptr[3];
-    int32_t z_min = bptr[4];
-    int32_t z_max = bptr[5];
+    int32_t x_min = bounds->min.x;
+    int32_t x_max = bounds->max.x;
+    int32_t y_min = bounds->min.y;
+    int32_t y_max = bounds->max.y;
+    int32_t z_min = bounds->min.z;
+    int32_t z_max = bounds->max.z;
 
     XYZ_32 vtx[8];
     vtx[0].x = x_min;
@@ -1229,13 +1229,4 @@ int Output_GetObjectBounds(int16_t *bptr)
     }
 
     return 1; // fully on screen
-}
-
-int Output_GetObjectBoundsNew(const BOUNDS_16 *const bounds)
-{
-    int16_t arr[6] = {
-        bounds->min.x, bounds->max.x, bounds->min.y,
-        bounds->max.y, bounds->min.z, bounds->max.z,
-    };
-    return Output_GetObjectBounds(arr);
 }
