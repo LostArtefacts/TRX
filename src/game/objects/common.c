@@ -120,7 +120,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     OBJECT_INFO *object = &g_Objects[item_num_option];
 
-    int16_t *frmptr = g_Anims[item->anim_number].frame_ptr;
+    FRAME_INFO *frmptr = g_Anims[item->anim_number].frame_ptr_new;
 
     // Restore the old frame number in case we need to get the sprite again.
     item->frame_number = old_frame_number;
@@ -155,9 +155,9 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[spr_num];
 
         // and get the animation bounding box, which is not the mesh one.
-        int16_t min_y = frmptr[FRAME_BOUND_MIN_Y];
-        int16_t max_y = frmptr[FRAME_BOUND_MAX_Y];
-        int16_t anim_y = frmptr[FRAME_POS_Y];
+        int16_t min_y = frmptr->bounds.min.y;
+        int16_t max_y = frmptr->bounds.max.y;
+        int16_t anim_y = frmptr->offset.y;
 
         // Different objects need different heuristics.
         switch (item_num_option) {
@@ -225,9 +225,9 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         int32_t *bone = &g_AnimBones[object->bone_index];
 
         Matrix_TranslateRel(
-            frmptr[FRAME_POS_X], frmptr[FRAME_POS_Y], frmptr[FRAME_POS_Z]);
+            frmptr->offset.x, frmptr->offset.y, frmptr->offset.z);
 
-        int32_t *packed_rotation = (int32_t *)(&frmptr[FRAME_ROT]);
+        int32_t *packed_rotation = frmptr->mesh_rots;
         Matrix_RotYXZpack(*packed_rotation++);
 
         if (item->mesh_bits & bit) {
