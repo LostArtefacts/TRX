@@ -68,15 +68,25 @@ void Lara_Hair_Control(void)
 
     bool in_cutscene;
     OBJECT_INFO *object;
-    int32_t *bone, distance;
-    int16_t *frame, *objptr, room_number;
-    int16_t *frm_ptr[2];
+    int32_t *bone;
+    int32_t distance;
+    FRAME_INFO *frame;
+    int16_t *objptr;
+    int16_t room_number;
+    FRAME_INFO *frmptr[2];
     int16_t **mesh_base;
     XYZ_32 pos;
     FLOOR_INFO *floor;
-    int32_t i, water_level, height, size, frac, rate;
+    int32_t i;
+    int32_t water_level;
+    int32_t height;
+    int32_t frac;
+    int32_t rate;
     SPHERE sphere[5];
-    int32_t j, x, y, z;
+    int32_t j;
+    int32_t x;
+    int32_t y;
+    int32_t z;
 
     in_cutscene = m_LaraType != O_LARA;
     object = &g_Objects[m_LaraType];
@@ -103,14 +113,17 @@ void Lara_Hair_Control(void)
             break;
         }
 
-        frame = g_Anims[spaz].frame_ptr;
-        size = g_Anims[spaz].interpolation >> 8;
-
+        frame = g_Anims[spaz].frame_ptr_new;
+#if 0
+        // TODO!!!
+        const int32_t size = g_Anims[spaz].interpolation >> 8;
         frame += (int)(g_Lara.hit_frame * size);
+#endif
+
         frac = 0;
     } else {
-        frame = Item_GetBestFrame(g_LaraItem);
-        frac = Item_GetFrames(g_LaraItem, frm_ptr, &rate);
+        frame = Item_GetBestFrameNew(g_LaraItem);
+        frac = Item_GetFramesNew(g_LaraItem, frmptr, &rate);
     }
 
     Matrix_PushUnit();
@@ -121,12 +134,11 @@ void Lara_Hair_Control(void)
     bone = &g_AnimBones[object->bone_index];
     if (frac) {
         Matrix_InitInterpolate(frac, rate);
-        int32_t *packed_rotation1 = (int32_t *)(frm_ptr[0] + FRAME_ROT);
-        int32_t *packed_rotation2 = (int32_t *)(frm_ptr[1] + FRAME_ROT);
+        int32_t *packed_rotation1 = frmptr[0]->mesh_rots;
+        int32_t *packed_rotation2 = frmptr[1]->mesh_rots;
         Matrix_TranslateRel_ID(
-            frm_ptr[0][FRAME_POS_X], frm_ptr[0][FRAME_POS_Y],
-            frm_ptr[0][FRAME_POS_Z], frm_ptr[1][FRAME_POS_X],
-            frm_ptr[1][FRAME_POS_Y], frm_ptr[1][FRAME_POS_Z]);
+            frmptr[0]->offset.x, frmptr[0]->offset.y, frmptr[0]->offset.z,
+            frmptr[1]->offset.x, frmptr[1]->offset.y, frmptr[1]->offset.z);
         Matrix_RotYXZpack_I(
             packed_rotation1[LM_HIPS], packed_rotation2[LM_HIPS]);
 
@@ -211,9 +223,8 @@ void Lara_Hair_Control(void)
         Matrix_Interpolate();
 
     } else {
-        Matrix_TranslateRel(
-            frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-        int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+        Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
+        int32_t *packed_rotation = frame->mesh_rots;
         Matrix_RotYXZpack(packed_rotation[LM_HIPS]);
 
         // hips
@@ -319,11 +330,11 @@ void Lara_Hair_Control(void)
         } else {
             room_number = g_LaraItem->room_number;
             x = g_LaraItem->pos.x
-                + (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2;
+                + (frame->bounds.min.x + frame->bounds.max.x) / 2;
             y = g_LaraItem->pos.y
-                + (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2;
+                + (frame->bounds.min.y + frame->bounds.max.y) / 2;
             z = g_LaraItem->pos.z
-                + (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2;
+                + (frame->bounds.min.z + frame->bounds.max.z) / 2;
             water_level = Room_GetWaterHeight(x, y, z, room_number);
         }
 

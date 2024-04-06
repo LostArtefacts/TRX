@@ -20,7 +20,7 @@ typedef struct INJECTION_INFO {
     int32_t anim_range_count;
     int32_t anim_cmd_count;
     int32_t anim_bone_count;
-    int32_t anim_frame_count;
+    int32_t anim_frame_data_count;
     int32_t anim_count;
     int32_t object_count;
     int32_t sfx_count;

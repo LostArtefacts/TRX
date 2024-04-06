@@ -171,6 +171,7 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
 {
     injection->relevant = false;
     injection->info = NULL;
+    return;
 
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     injection->fp = fp;
@@ -244,7 +245,7 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     File_Read(&info->anim_range_count, sizeof(int32_t), 1, fp);
     File_Read(&info->anim_cmd_count, sizeof(int32_t), 1, fp);
     File_Read(&info->anim_bone_count, sizeof(int32_t), 1, fp);
-    File_Read(&info->anim_frame_count, sizeof(int32_t), 1, fp);
+    File_Read(&info->anim_frame_data_count, sizeof(int32_t), 1, fp);
     File_Read(&info->anim_count, sizeof(int32_t), 1, fp);
     File_Read(&info->object_count, sizeof(int32_t), 1, fp);
     File_Read(&info->sfx_count, sizeof(int32_t), 1, fp);
@@ -296,7 +297,7 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     m_Aggregate->anim_range_count += info->anim_range_count;
     m_Aggregate->anim_cmd_count += info->anim_cmd_count;
     m_Aggregate->anim_bone_count += info->anim_bone_count;
-    m_Aggregate->anim_frame_count += info->anim_frame_count;
+    m_Aggregate->anim_frame_data_count += info->anim_frame_data_count;
     m_Aggregate->anim_count += info->anim_count;
     m_Aggregate->object_count += info->object_count;
     m_Aggregate->sfx_count += info->sfx_count;
@@ -348,7 +349,7 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         INJECTION_INFO *inj_info = injection->info;
         level_info->anim_command_count += inj_info->anim_cmd_count;
         level_info->anim_bone_count += inj_info->anim_bone_count;
-        level_info->anim_frame_count += inj_info->anim_frame_count;
+        level_info->anim_frame_data_count += inj_info->anim_frame_data_count;
         level_info->anim_count += inj_info->anim_count;
         level_info->mesh_ptr_count += inj_info->mesh_ptr_count;
         level_info->texture_count += inj_info->texture_count;
@@ -508,8 +509,8 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         g_AnimBones + level_info->anim_bone_count, sizeof(int32_t),
         inj_info->anim_bone_count, fp);
     File_Read(
-        g_AnimFrames + level_info->anim_frame_count, sizeof(int16_t),
-        inj_info->anim_frame_count, fp);
+        g_AnimFrames + level_info->anim_frame_data_count, sizeof(int16_t),
+        inj_info->anim_frame_data_count, fp);
 
     for (int i = 0; i < inj_info->anim_count; i++) {
         ANIM_STRUCT *anim = &g_Anims[level_info->anim_count + i];
@@ -530,7 +531,7 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
 
         // Re-align to the level.
         anim->jump_anim_num += level_info->anim_count;
-        anim->frame_ofs += level_info->anim_frame_count * 2;
+        anim->frame_ofs += level_info->anim_frame_data_count * 2;
         anim->frame_ptr = &g_AnimFrames[anim->frame_ofs / 2];
         if (anim->number_changes) {
             anim->change_index += level_info->anim_change_count;
@@ -649,7 +650,7 @@ static void Inject_ObjectData(
 
         File_Read(&tmp, sizeof(int32_t), 1, fp);
         object->frame_base =
-            &g_AnimFrames[(tmp + level_info->anim_frame_count * 2) / 2];
+            &g_AnimFrames[(tmp + level_info->anim_frame_data_count * 2) / 2];
         File_Read(&object->anim_index, sizeof(int16_t), 1, fp);
         object->anim_index += level_info->anim_count;
         object->loaded = 1;

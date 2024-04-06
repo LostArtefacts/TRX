@@ -526,6 +526,32 @@ void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
     Output_CalculateLight(x, y, z, item->room_number);
 }
 
+void Output_CalculateObjectLightingNew(
+    const ITEM_INFO *const item, const BOUNDS_16 *const bounds)
+{
+    if (item->shade >= 0) {
+        Output_CalculateStaticLight(item->shade);
+        return;
+    }
+
+    Matrix_PushUnit();
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
+    Matrix_TranslateRel(
+        (bounds->min.x + bounds->max.x) / 2,
+        (bounds->min.y + bounds->max.y) / 2,
+        (bounds->min.z + bounds->max.z) / 2);
+
+    const XYZ_32 offset = {
+        .x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+        .y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+        .z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    };
+
+    Matrix_Pop();
+
+    Output_CalculateLight(offset.x, offset.y, offset.z, item->room_number);
+}
+
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
 {
     obj_ptr += 4;

@@ -1753,11 +1753,24 @@ typedef struct OBJECT_BOUNDS {
     } shift, rot;
 } OBJECT_BOUNDS;
 
+typedef struct BOUNDS_16 {
+    XYZ_16 min;
+    XYZ_16 max;
+} BOUNDS_16;
+
+typedef struct FRAME_INFO {
+    BOUNDS_16 bounds;
+    XYZ_16 offset;
+    int16_t nmeshes;
+    int32_t *mesh_rots;
+} FRAME_INFO;
+
 typedef struct OBJECT_INFO {
     int16_t nmeshes;
     int16_t mesh_index;
     int32_t bone_index;
     int16_t *frame_base;
+    FRAME_INFO *frame_base_new;
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);
     void (*floor)(
@@ -1790,11 +1803,6 @@ typedef struct SHADOW_INFO {
         uint16_t z;
     } vertex[32];
 } SHADOW_INFO;
-
-typedef struct BOUNDS_16 {
-    XYZ_16 min;
-    XYZ_16 max;
-} BOUNDS_16;
 
 typedef struct STATIC_INFO {
     int16_t mesh_number;
@@ -1866,6 +1874,7 @@ typedef struct CAMERA_INFO {
 
 typedef struct ANIM_STRUCT {
     int16_t *frame_ptr;
+    FRAME_INFO *frame_ptr_new;
     uint32_t frame_ofs;
     int16_t interpolation;
     int16_t current_anim_state;
@@ -2177,7 +2186,10 @@ typedef struct LEVEL_INFO {
     int32_t anim_range_count;
     int32_t anim_command_count;
     int32_t anim_bone_count;
+    int32_t anim_frame_data_count;
     int32_t anim_frame_count;
+    int32_t anim_frame_mesh_rot_count;
+    int32_t *anim_frame_offsets;
     int32_t object_count;
     int32_t static_count;
     int32_t texture_count;

@@ -71,6 +71,8 @@ extern int16_t *g_AnimTextureRanges;
 extern int16_t *g_AnimCommands;
 extern int32_t *g_AnimBones;
 extern int16_t *g_AnimFrames;
+extern FRAME_INFO *g_AnimFramesNew;
+extern int32_t *g_AnimFrameMeshRots;
 extern int16_t g_NumCineFrames;
 extern int16_t g_CineFrame;
 extern CINE_CAMERA *g_CineCamera;

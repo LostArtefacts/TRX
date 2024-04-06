@@ -42,6 +42,8 @@ void Output_ClearDepthBuffer(void);
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);
 void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame);
+void Output_CalculateObjectLightingNew(
+    const ITEM_INFO *item, const BOUNDS_16 *bounds);
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip);
 void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip);
