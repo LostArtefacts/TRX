@@ -431,7 +431,6 @@ static bool Level_LoadObjects(MYFILE *fp)
 
     for (int i = 0; i < m_LevelInfo.anim_count; i++) {
         ANIM_STRUCT *anim = &g_Anims[i];
-        anim->frame_ptr = &g_AnimFrames[anim->frame_ofs / 2];
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
             if (m_LevelInfo.anim_frame_offsets[j] == (signed)anim->frame_ofs) {

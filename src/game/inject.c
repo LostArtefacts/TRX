@@ -613,7 +613,6 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
             }
         }
         anim->frame_ofs += level_info->anim_frame_data_count * 2;
-        anim->frame_ptr = &g_AnimFrames[anim->frame_ofs / 2];
         assert(found);
         if (anim->number_changes) {
             anim->change_index += level_info->anim_change_count;

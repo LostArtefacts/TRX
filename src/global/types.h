@@ -1873,7 +1873,6 @@ typedef struct CAMERA_INFO {
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {
-    int16_t *frame_ptr;
     FRAME_INFO *frame_ptr_new;
     uint32_t frame_ofs;
     int16_t interpolation;
