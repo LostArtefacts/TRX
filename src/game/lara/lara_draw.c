@@ -12,8 +12,8 @@
 void Lara_Draw(ITEM_INFO *item)
 {
     OBJECT_INFO *object;
-    int16_t *frame;
-    int16_t *frmptr[2];
+    FRAME_INFO *frame;
+    FRAME_INFO *frmptr[2];
     MATRIX saved_matrix;
 
     int32_t top = g_PhdTop;
@@ -32,7 +32,7 @@ void Lara_Draw(ITEM_INFO *item)
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;
-        int32_t frac = Item_GetFrames(item, frmptr, &rate);
+        int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
         if (frac) {
             Lara_Draw_I(item, frmptr[0], frmptr[1], frac, rate);
             goto end;
@@ -44,20 +44,21 @@ void Lara_Draw(ITEM_INFO *item)
         switch (g_Lara.hit_direction) {
         default:
         case DIR_NORTH:
-            frame = g_Anims[object->anim_index + LA_SPAZ_FORWARD].frame_ptr;
+            frame = g_Anims[object->anim_index + LA_SPAZ_FORWARD].frame_ptr_new;
             break;
         case DIR_EAST:
-            frame = g_Anims[object->anim_index + LA_SPAZ_RIGHT].frame_ptr;
+            frame = g_Anims[object->anim_index + LA_SPAZ_RIGHT].frame_ptr_new;
             break;
         case DIR_SOUTH:
-            frame = g_Anims[object->anim_index + LA_SPAZ_BACK].frame_ptr;
+            frame = g_Anims[object->anim_index + LA_SPAZ_BACK].frame_ptr_new;
             break;
         case DIR_WEST:
-            frame = g_Anims[object->anim_index + LA_SPAZ_LEFT].frame_ptr;
+            frame = g_Anims[object->anim_index + LA_SPAZ_LEFT].frame_ptr_new;
             break;
         }
 
-        frame += g_Lara.hit_frame * (object->nmeshes * 2 + FRAME_ROT);
+        // TODO!!!
+        frame += g_Lara.hit_frame;
     } else {
         frame = frmptr[0];
     }
@@ -65,7 +66,7 @@ void Lara_Draw(ITEM_INFO *item)
     // save matrix for hair
     saved_matrix = *g_MatrixPtr;
 
-    Output_DrawShadow(object->shadow_size, frame, item);
+    Output_DrawShadowNew(object->shadow_size, &frame->bounds, item);
 
     Matrix_Push();
     Matrix_TranslateAbs(
@@ -75,7 +76,7 @@ void Lara_Draw(ITEM_INFO *item)
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBounds(frame);
+    int32_t clip = Output_GetObjectBoundsNew(&frame->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
@@ -83,13 +84,12 @@ void Lara_Draw(ITEM_INFO *item)
 
     Matrix_Push();
 
-    Output_CalculateObjectLighting(item, frame);
+    Output_CalculateObjectLightingNew(item, &frame->bounds);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
-    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+    int32_t *packed_rotation = frame->mesh_rots;
 
-    Matrix_TranslateRel(
-        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+    Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
     Matrix_RotYXZpack(packed_rotation[LM_HIPS]);
     Output_DrawPolygons(g_Lara.mesh_ptrs[LM_HIPS], clip);
 
@@ -336,7 +336,7 @@ end:
 }
 
 void Lara_Draw_I(
-    ITEM_INFO *item, int16_t *frame1, int16_t *frame2, int32_t frac,
+    ITEM_INFO *item, FRAME_INFO *frame1, FRAME_INFO *frame2, int32_t frac,
     int32_t rate)
 {
     MATRIX saved_matrix;
@@ -356,7 +356,7 @@ void Lara_Draw_I(
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBounds(frame1);
+    int32_t clip = Output_GetObjectBoundsNew(&frame1->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
@@ -364,17 +364,17 @@ void Lara_Draw_I(
 
     Matrix_Push();
 
-    Output_CalculateObjectLighting(item, frame1);
+    Output_CalculateObjectLightingNew(item, &frame1->bounds);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
-    int32_t *packed_rotation1 = (int32_t *)(frame1 + FRAME_ROT);
-    int32_t *packed_rotation2 = (int32_t *)(frame2 + FRAME_ROT);
+    int32_t *packed_rotation1 = frame1->mesh_rots;
+    int32_t *packed_rotation2 = frame2->mesh_rots;
 
     Matrix_InitInterpolate(frac, rate);
 
     Matrix_TranslateRel_ID(
-        frame1[FRAME_POS_X], frame1[FRAME_POS_Y], frame1[FRAME_POS_Z],
-        frame2[FRAME_POS_X], frame2[FRAME_POS_Y], frame2[FRAME_POS_Z]);
+        frame1->offset.x, frame1->offset.y, frame1->offset.z, frame2->offset.x,
+        frame2->offset.y, frame2->offset.z);
 
     Matrix_RotYXZpack_I(packed_rotation1[LM_HIPS], packed_rotation2[LM_HIPS]);
     Output_DrawPolygons_I(g_Lara.mesh_ptrs[LM_HIPS], clip);

@@ -50,6 +50,8 @@ void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip);
 
 void Output_DrawRoom(const int16_t *obj_ptr);
 void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item);
+void Output_DrawShadowNew(
+    int16_t size, const BOUNDS_16 *bounds, const ITEM_INFO *item);
 void Output_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width);

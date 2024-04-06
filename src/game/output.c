@@ -638,6 +638,63 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     Matrix_Pop();
 }
 
+void Output_DrawShadowNew(
+    const int16_t size, const BOUNDS_16 *const bounds,
+    const ITEM_INFO *const item)
+{
+    g_ShadowInfo.vertex_count = g_Config.enable_round_shadow ? 32 : 8;
+
+    int32_t x0 = bounds->min.x;
+    int32_t x1 = bounds->max.x;
+    int32_t z0 = bounds->min.z;
+    int32_t z1 = bounds->max.z;
+
+    int32_t x_mid = (x0 + x1) / 2;
+    int32_t z_mid = (z0 + z1) / 2;
+
+    int32_t x_add = (x1 - x0) * size / 1024;
+    int32_t z_add = (z1 - z0) * size / 1024;
+
+    for (int32_t i = 0; i < g_ShadowInfo.vertex_count; i++) {
+        int32_t angle = (PHD_180 + i * PHD_360) / g_ShadowInfo.vertex_count;
+        g_ShadowInfo.vertex[i].x =
+            x_mid + (x_add * 2) * Math_Sin(angle) / PHD_90;
+        g_ShadowInfo.vertex[i].z =
+            z_mid + (z_add * 2) * Math_Cos(angle) / PHD_90;
+        g_ShadowInfo.vertex[i].y = 0;
+    }
+
+    Matrix_Push();
+    Matrix_TranslateAbs(
+        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
+    Matrix_RotY(item->rot.y);
+
+    if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
+        int16_t clip_and = 1;
+        int16_t clip_positive = 1;
+        int16_t clip_or = 0;
+        for (int32_t i = 0; i < g_ShadowInfo.vertex_count; i++) {
+            clip_and &= m_VBuf[i].clip;
+            clip_positive &= m_VBuf[i].clip >= 0;
+            clip_or |= m_VBuf[i].clip;
+        }
+        PHD_VBUF *vn1 = &m_VBuf[0];
+        PHD_VBUF *vn2 = &m_VBuf[g_Config.enable_round_shadow ? 4 : 1];
+        PHD_VBUF *vn3 = &m_VBuf[g_Config.enable_round_shadow ? 8 : 2];
+
+        int32_t c1 = (vn3->xs - vn2->xs) * (vn1->ys - vn2->ys);
+        int32_t c2 = (vn1->xs - vn2->xs) * (vn3->ys - vn2->ys);
+        bool visible = (int32_t)(c1 - c2) >= 0;
+
+        if (!clip_and && clip_positive && visible) {
+            S_Output_DrawShadow(
+                &m_VBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
+        }
+    }
+
+    Matrix_Pop();
+}
+
 int32_t Output_GetDrawDistMin(void)
 {
     return 127;
