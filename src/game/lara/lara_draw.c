@@ -32,7 +32,7 @@ void Lara_Draw(ITEM_INFO *item)
 
     if (g_Lara.hit_direction < 0) {
         int32_t rate;
-        int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
+        int32_t frac = Item_GetFrames(item, frmptr, &rate);
         if (frac) {
             Lara_Draw_I(item, frmptr[0], frmptr[1], frac, rate);
             goto end;
@@ -66,7 +66,7 @@ void Lara_Draw(ITEM_INFO *item)
     // save matrix for hair
     saved_matrix = *g_MatrixPtr;
 
-    Output_DrawShadowNew(object->shadow_size, &frame->bounds, item);
+    Output_DrawShadow(object->shadow_size, &frame->bounds, item);
 
     Matrix_Push();
     Matrix_TranslateAbs(
@@ -76,7 +76,7 @@ void Lara_Draw(ITEM_INFO *item)
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBoundsNew(&frame->bounds);
+    int32_t clip = Output_GetObjectBounds(&frame->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
@@ -84,7 +84,7 @@ void Lara_Draw(ITEM_INFO *item)
 
     Matrix_Push();
 
-    Output_CalculateObjectLightingNew(item, &frame->bounds);
+    Output_CalculateObjectLighting(item, &frame->bounds);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
     int32_t *packed_rotation = frame->mesh_rots;
@@ -338,11 +338,11 @@ void Lara_Draw_I(
     MATRIX saved_matrix;
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
 
     saved_matrix = *g_MatrixPtr;
 
-    Output_DrawShadowNew(object->shadow_size, bounds, item);
+    Output_DrawShadow(object->shadow_size, bounds, item);
 
     Matrix_Push();
     Matrix_TranslateAbs(
@@ -352,7 +352,7 @@ void Lara_Draw_I(
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBoundsNew(&frame1->bounds);
+    int32_t clip = Output_GetObjectBounds(&frame1->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
@@ -360,7 +360,7 @@ void Lara_Draw_I(
 
     Matrix_Push();
 
-    Output_CalculateObjectLightingNew(item, &frame1->bounds);
+    Output_CalculateObjectLighting(item, &frame1->bounds);
 
     int32_t *bone = &g_AnimBones[object->bone_index];
     int32_t *packed_rotation1 = frame1->mesh_rots;

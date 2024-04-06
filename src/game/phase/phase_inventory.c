@@ -430,7 +430,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
 
     Matrix_Push();
 
-    int32_t clip = Output_GetObjectBoundsNew(&frame->bounds);
+    int32_t clip = Output_GetObjectBounds(&frame->bounds);
     if (clip) {
         Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
         int32_t *packed_rotation = frame->mesh_rots;

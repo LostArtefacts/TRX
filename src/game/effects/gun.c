@@ -19,7 +19,7 @@ void ShootAtLara(FX_INFO *fx)
     int32_t y = g_LaraItem->pos.y - fx->pos.y;
     int32_t z = g_LaraItem->pos.z - fx->pos.z;
 
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(g_LaraItem);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(g_LaraItem);
     y += bounds->max.y + (bounds->min.y - bounds->max.y) * 3 / 4;
 
     int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));

@@ -503,30 +503,7 @@ void Output_CalculateStaticLight(int16_t adder)
     CLAMPG(g_LsAdder, 0x1FFF);
 }
 
-void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
-{
-    if (item->shade >= 0) {
-        Output_CalculateStaticLight(item->shade);
-        return;
-    }
-
-    Matrix_PushUnit();
-    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
-    Matrix_TranslateRel(
-        (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
-        (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
-        (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
-
-    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
-
-    Matrix_Pop();
-
-    Output_CalculateLight(x, y, z, item->room_number);
-}
-
-void Output_CalculateObjectLightingNew(
+void Output_CalculateObjectLighting(
     const ITEM_INFO *const item, const BOUNDS_16 *const bounds)
 {
     if (item->shade >= 0) {
@@ -581,64 +558,7 @@ void Output_DrawRoom(const int16_t *obj_ptr)
     obj_ptr = Output_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
 }
 
-void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
-{
-    int i;
-
-    g_ShadowInfo.vertex_count = g_Config.enable_round_shadow ? 32 : 8;
-
-    int32_t x0 = bptr[FRAME_BOUND_MIN_X];
-    int32_t x1 = bptr[FRAME_BOUND_MAX_X];
-    int32_t z0 = bptr[FRAME_BOUND_MIN_Z];
-    int32_t z1 = bptr[FRAME_BOUND_MAX_Z];
-
-    int32_t x_mid = (x0 + x1) / 2;
-    int32_t z_mid = (z0 + z1) / 2;
-
-    int32_t x_add = (x1 - x0) * size / 1024;
-    int32_t z_add = (z1 - z0) * size / 1024;
-
-    for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
-        int32_t angle = (PHD_180 + i * PHD_360) / g_ShadowInfo.vertex_count;
-        g_ShadowInfo.vertex[i].x =
-            x_mid + (x_add * 2) * Math_Sin(angle) / PHD_90;
-        g_ShadowInfo.vertex[i].z =
-            z_mid + (z_add * 2) * Math_Cos(angle) / PHD_90;
-        g_ShadowInfo.vertex[i].y = 0;
-    }
-
-    Matrix_Push();
-    Matrix_TranslateAbs(
-        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
-    Matrix_RotY(item->rot.y);
-
-    if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
-        int16_t clip_and = 1;
-        int16_t clip_positive = 1;
-        int16_t clip_or = 0;
-        for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
-            clip_and &= m_VBuf[i].clip;
-            clip_positive &= m_VBuf[i].clip >= 0;
-            clip_or |= m_VBuf[i].clip;
-        }
-        PHD_VBUF *vn1 = &m_VBuf[0];
-        PHD_VBUF *vn2 = &m_VBuf[g_Config.enable_round_shadow ? 4 : 1];
-        PHD_VBUF *vn3 = &m_VBuf[g_Config.enable_round_shadow ? 8 : 2];
-
-        int32_t c1 = (vn3->xs - vn2->xs) * (vn1->ys - vn2->ys);
-        int32_t c2 = (vn1->xs - vn2->xs) * (vn3->ys - vn2->ys);
-        bool visible = (int32_t)(c1 - c2) >= 0;
-
-        if (!clip_and && clip_positive && visible) {
-            S_Output_DrawShadow(
-                &m_VBuf[0], clip_or ? 1 : 0, g_ShadowInfo.vertex_count);
-        }
-    }
-
-    Matrix_Pop();
-}
-
-void Output_DrawShadowNew(
+void Output_DrawShadow(
     const int16_t size, const BOUNDS_16 *const bounds,
     const ITEM_INFO *const item)
 {
@@ -1138,7 +1058,7 @@ bool Output_MakeScreenshot(const char *path)
     return S_Output_MakeScreenshot(path);
 }
 
-int Output_GetObjectBoundsNew(const BOUNDS_16 *const bounds)
+int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 {
     if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
         return 0;

@@ -41,16 +41,14 @@ void Output_ClearDepthBuffer(void);
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);
-void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame);
-void Output_CalculateObjectLightingNew(
+void Output_CalculateObjectLighting(
     const ITEM_INFO *item, const BOUNDS_16 *bounds);
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip);
 void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip);
 
 void Output_DrawRoom(const int16_t *obj_ptr);
-void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item);
-void Output_DrawShadowNew(
+void Output_DrawShadow(
     int16_t size, const BOUNDS_16 *bounds, const ITEM_INFO *item);
 void Output_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
@@ -104,4 +102,4 @@ void Output_ApplyWaterEffect(float *r, float *g, float *b);
 
 bool Output_MakeScreenshot(const char *path);
 
-int Output_GetObjectBoundsNew(const BOUNDS_16 *bounds);
+int Output_GetObjectBounds(const BOUNDS_16 *bounds);

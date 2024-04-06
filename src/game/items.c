@@ -363,7 +363,7 @@ bool Item_IsNearItem(const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance)
     if (x >= -distance && x <= distance && z >= -distance && z <= distance
         && y >= -WALL_L * 3 && y <= WALL_L * 3
         && SQUARE(x) + SQUARE(z) <= SQUARE(distance)) {
-        const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+        const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
         if (y >= bounds->min.y && y <= bounds->max.y + 100) {
             return true;
         }
@@ -390,8 +390,8 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
 bool Item_TestBoundsCollide(
     ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
 {
-    const BOUNDS_16 *const src_bounds = &Item_GetBestFrameNew(src_item)->bounds;
-    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrameNew(dst_item)->bounds;
+    const BOUNDS_16 *const src_bounds = &Item_GetBestFrame(src_item)->bounds;
+    const BOUNDS_16 *const dst_bounds = &Item_GetBestFrame(dst_item)->bounds;
     if (dst_item->pos.y + dst_bounds->max.y
             <= src_item->pos.y + src_bounds->min.y
         || dst_item->pos.y + dst_bounds->min.y
@@ -785,11 +785,11 @@ bool Item_IsTriggerActive(ITEM_INFO *item)
     return ok;
 }
 
-FRAME_INFO *Item_GetBestFrameNew(const ITEM_INFO *item)
+FRAME_INFO *Item_GetBestFrame(const ITEM_INFO *item)
 {
     FRAME_INFO *frmptr[2];
     int32_t rate;
-    int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
     if (frac <= rate / 2) {
         return frmptr[0];
     } else {
@@ -797,12 +797,12 @@ FRAME_INFO *Item_GetBestFrameNew(const ITEM_INFO *item)
     }
 }
 
-const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item)
+const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item)
 {
     int32_t rate;
     FRAME_INFO *frmptr[2];
 
-    int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
     if (!frac) {
         return &frmptr[0]->bounds;
     }
@@ -820,7 +820,7 @@ const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item)
     return result;
 }
 
-int32_t Item_GetFramesNew(
+int32_t Item_GetFrames(
     const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate)
 {
     const ANIM_STRUCT *anim = &g_Anims[item->anim_number];

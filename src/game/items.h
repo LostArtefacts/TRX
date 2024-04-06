@@ -52,9 +52,9 @@ void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags);
 
 bool Item_IsTriggerActive(ITEM_INFO *item);
 
-FRAME_INFO *Item_GetBestFrameNew(const ITEM_INFO *item);
-const BOUNDS_16 *Item_GetBoundsAccurateNew(const ITEM_INFO *item);
-int32_t Item_GetFramesNew(
+FRAME_INFO *Item_GetBestFrame(const ITEM_INFO *item);
+const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item);
+int32_t Item_GetFrames(
     const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate);
 
 void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status);

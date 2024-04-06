@@ -215,7 +215,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
     const FRAME_INFO *frame = object->frame_base_new;
-    int32_t clip = Output_GetObjectBoundsNew(&frame->bounds);
+    int32_t clip = Output_GetObjectBounds(&frame->bounds);
     if (clip) {
         // From this point on the function is a slightly customised version
         // of the code in DrawAnimatingItem starting with the line that
@@ -268,11 +268,11 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
 
     FRAME_INFO *frmptr[2];
     int32_t rate;
-    int32_t frac = Item_GetFramesNew(item, frmptr, &rate);
+    int32_t frac = Item_GetFrames(item, frmptr, &rate);
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
     if (object->shadow_size) {
-        Output_DrawShadowNew(object->shadow_size, &frmptr[0]->bounds, item);
+        Output_DrawShadow(object->shadow_size, &frmptr[0]->bounds, item);
     }
 
     Matrix_Push();
@@ -283,13 +283,13 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBoundsNew(&frmptr[0]->bounds);
+    int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
     }
 
-    Output_CalculateObjectLightingNew(item, &frmptr[0]->bounds);
+    Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
     int16_t *extra_rotation = item->data ? item->data : &null_rotation;
 
     int32_t bit = 1;

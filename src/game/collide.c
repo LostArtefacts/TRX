@@ -472,7 +472,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
 
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
-    FRAME_INFO *frame = Item_GetBestFrameNew(item);
+    FRAME_INFO *frame = Item_GetBestFrame(item);
     Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
     int32_t *packed_rotation = frame->mesh_rots;
@@ -575,7 +575,7 @@ void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint)
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
-    FRAME_INFO *frame = Item_GetBestFrameNew(item);
+    FRAME_INFO *frame = Item_GetBestFrame(item);
     Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
     int32_t *packed_rotation = frame->mesh_rots;

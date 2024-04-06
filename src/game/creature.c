@@ -190,7 +190,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
             LOT->target.z = g_LaraItem->pos.z;
             LOT->required_box = g_LaraItem->box_number;
             if (LOT->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
-                const FRAME_INFO *frame = Item_GetBestFrameNew(g_LaraItem);
+                const FRAME_INFO *frame = Item_GetBestFrame(g_LaraItem);
                 LOT->target.y += frame->bounds.min.y;
             }
         }
@@ -428,7 +428,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         return false;
     }
 
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
     int32_t y = item->pos.y + bounds->min.y;
 
     int16_t room_num = item->room_number;

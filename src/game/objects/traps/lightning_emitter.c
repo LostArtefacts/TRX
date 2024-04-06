@@ -168,19 +168,19 @@ void LightningEmitter_Draw(ITEM_INFO *item)
 {
     FRAME_INFO *frmptr[2];
     int32_t rate;
-    Item_GetFramesNew(item, frmptr, &rate);
+    Item_GetFrames(item, frmptr, &rate);
 
     Matrix_Push();
     Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
 
-    int32_t clip = Output_GetObjectBoundsNew(&frmptr[0]->bounds);
+    int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
     if (!clip) {
         Matrix_Pop();
         return;
     }
 
-    Output_CalculateObjectLightingNew(item, &frmptr[0]->bounds);
+    Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
 
     Matrix_TranslateRel(
         frmptr[0]->offset.x, frmptr[0]->offset.y, frmptr[0]->offset.z);

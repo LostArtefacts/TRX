@@ -71,7 +71,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_JUMP_UP;
         Item_SwitchToAnim(item, LA_STOP_HANG, LF_STOPHANG);
-        bounds = Item_GetBoundsAccurateNew(item);
+        bounds = Item_GetBoundsAccurate(item);
         if (g_Config.enable_swing_cancel && item->hit_points > 0) {
             item->pos.y += bounds->max.y;
         } else {
@@ -86,7 +86,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
-    bounds = Item_GetBoundsAccurateNew(item);
+    bounds = Item_GetBoundsAccurate(item);
     const int32_t hdif = coll->front_floor - bounds->min.y;
 
     if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
@@ -366,7 +366,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
     const int32_t hdif = coll->front_floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
@@ -400,7 +400,7 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     item->goal_anim_state = LS_HANG;
 
-    // bounds = Item_GetBoundsAccurateNew(item);
+    // bounds = Item_GetBoundsAccurate(item);
     item->pos.y += hdif;
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
@@ -457,7 +457,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
     const int32_t hdif = coll->front_floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
@@ -486,7 +486,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->goal_anim_state = LS_HANG;
     item->current_anim_state = LS_HANG;
     Item_SwitchToAnim(item, LA_HANG, LF_STARTHANG);
-    bounds = Item_GetBoundsAccurateNew(item);
+    bounds = Item_GetBoundsAccurate(item);
     item->pos.y += coll->front_floor - bounds->min.y;
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;

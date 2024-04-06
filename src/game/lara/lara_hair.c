@@ -122,8 +122,8 @@ void Lara_Hair_Control(void)
 
         frac = 0;
     } else {
-        frame = Item_GetBestFrameNew(g_LaraItem);
-        frac = Item_GetFramesNew(g_LaraItem, frmptr, &rate);
+        frame = Item_GetBestFrame(g_LaraItem);
+        frac = Item_GetFrames(g_LaraItem, frmptr, &rate);
     }
 
     Matrix_PushUnit();

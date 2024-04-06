@@ -690,7 +690,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
-    const BOUNDS_16 *const bounds = &Item_GetBestFrameNew(item)->bounds;
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
     int32_t min_x = bounds->min.x;
     int32_t max_x = bounds->max.x;
     int32_t min_z = bounds->min.z;
