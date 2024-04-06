@@ -556,9 +556,7 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         g_AnimBones + level_info->anim_bone_count, sizeof(int32_t),
         inj_info->anim_bone_count, fp);
     const size_t frame_data_start = File_Pos(fp);
-    File_Read(
-        g_AnimFrames + level_info->anim_frame_data_count, sizeof(int16_t),
-        inj_info->anim_frame_data_count, fp);
+    File_Skip(fp, inj_info->anim_frame_data_count * sizeof(int16_t));
     const size_t frame_data_end = File_Pos(fp);
 
     File_Seek(fp, frame_data_start, FILE_SEEK_SET);
@@ -566,7 +564,7 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         &g_AnimFrameMeshRots[level_info->anim_frame_mesh_rot_count];
     for (int32_t i = 0; i < inj_info->anim_frame_count; i++) {
         level_info->anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
-        FRAME_INFO *frame = &g_AnimFramesNew[level_info->anim_frame_count + i];
+        FRAME_INFO *frame = &g_AnimFrames[level_info->anim_frame_count + i];
         File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.max.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.min.y, sizeof(int16_t), 1, fp);
@@ -607,7 +605,7 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
              j < level_info->anim_frame_count + inj_info->anim_frame_count;
              j++) {
             if (level_info->anim_frame_offsets[j] == (signed)anim->frame_ofs) {
-                anim->frame_ptr = &g_AnimFramesNew[j];
+                anim->frame_ptr = &g_AnimFrames[j];
                 found = true;
                 break;
             }
@@ -740,7 +738,7 @@ static void Inject_ObjectData(
              j < level_info->anim_frame_count + inj_info->anim_frame_count;
              j++) {
             if (level_info->anim_frame_offsets[j] == frame_offset) {
-                object->frame_base = &g_AnimFramesNew[j];
+                object->frame_base = &g_AnimFrames[j];
                 found = true;
                 break;
             }

@@ -368,15 +368,9 @@ static bool Level_LoadObjects(MYFILE *fp)
 
     File_Read(&m_LevelInfo.anim_frame_data_count, sizeof(int32_t), 1, fp);
     LOG_INFO("%d anim frames data", m_LevelInfo.anim_frame_data_count);
-    g_AnimFrames = GameBuf_Alloc(
-        sizeof(int16_t)
-            * (m_LevelInfo.anim_frame_data_count
-               + m_InjectionInfo->anim_frame_data_count),
-        GBUF_ANIM_FRAMES);
-    const size_t frame_data_start = File_Pos(fp);
-    File_Read(
-        g_AnimFrames, sizeof(int16_t), m_LevelInfo.anim_frame_data_count, fp);
 
+    const size_t frame_data_start = File_Pos(fp);
+    File_Skip(fp, m_LevelInfo.anim_frame_data_count * sizeof(int16_t));
     const size_t frame_data_end = File_Pos(fp);
 
     m_LevelInfo.anim_frame_count = 0;
@@ -399,7 +393,7 @@ static bool Level_LoadObjects(MYFILE *fp)
             * (m_LevelInfo.anim_frame_mesh_rot_count
                + m_InjectionInfo->anim_frame_mesh_rot_count),
         GBUF_ANIM_FRAMES);
-    g_AnimFramesNew = GameBuf_Alloc(
+    g_AnimFrames = GameBuf_Alloc(
         sizeof(FRAME_INFO)
             * (m_LevelInfo.anim_frame_count
                + m_InjectionInfo->anim_frame_count),
@@ -412,7 +406,7 @@ static bool Level_LoadObjects(MYFILE *fp)
     int32_t *mesh_rots = g_AnimFrameMeshRots;
     for (int32_t i = 0; i < m_LevelInfo.anim_frame_count; i++) {
         m_LevelInfo.anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
-        FRAME_INFO *frame = &g_AnimFramesNew[i];
+        FRAME_INFO *frame = &g_AnimFrames[i];
         File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.max.x, sizeof(int16_t), 1, fp);
         File_Read(&frame->bounds.min.y, sizeof(int16_t), 1, fp);
@@ -434,7 +428,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
             if (m_LevelInfo.anim_frame_offsets[j] == (signed)anim->frame_ofs) {
-                anim->frame_ptr = &g_AnimFramesNew[j];
+                anim->frame_ptr = &g_AnimFrames[j];
                 found = true;
                 break;
             }
@@ -461,7 +455,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
             if (m_LevelInfo.anim_frame_offsets[j] == frame_offset) {
-                object->frame_base = &g_AnimFramesNew[j];
+                object->frame_base = &g_AnimFrames[j];
                 found = true;
                 break;
             }
