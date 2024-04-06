@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static LEVEL_INFO m_LevelInfo;
+static LEVEL_INFO m_LevelInfo = { 0 };
 static INJECTION_INFO *m_InjectionInfo = NULL;
 
 static bool Level_LoadRooms(MYFILE *fp);
@@ -886,6 +886,12 @@ bool Level_Load(int level_num)
 {
     LOG_INFO("%d (%s)", level_num, g_GameFlow.levels[level_num].level_file);
 
+    // clean previous level data
+    Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
+    Memory_FreePointer(&m_LevelInfo.anim_frame_offsets);
+    Memory_FreePointer(&m_LevelInfo.sample_offsets);
+    Memory_FreePointer(&m_InjectionInfo);
+
     m_InjectionInfo = Memory_Alloc(sizeof(INJECTION_INFO));
     Inject_Init(
         g_GameFlow.levels[level_num].injections.length,
@@ -899,11 +905,6 @@ bool Level_Load(int level_num)
     }
 
     Inject_Cleanup();
-
-    Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
-    Memory_FreePointer(&m_LevelInfo.anim_frame_offsets);
-    Memory_FreePointer(&m_LevelInfo.sample_offsets);
-    Memory_FreePointer(&m_InjectionInfo);
 
     Output_SetWaterColor(
         g_GameFlow.levels[level_num].water_color.override
@@ -1006,4 +1007,9 @@ bool Level_Initialise(int32_t level_num)
 
     g_Camera.underwater = false;
     return true;
+}
+
+const LEVEL_INFO *Level_GetInfo(void)
+{
+    return &m_LevelInfo;
 }

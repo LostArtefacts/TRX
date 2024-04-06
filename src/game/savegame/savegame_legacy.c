@@ -6,6 +6,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/level.h"
 #include "game/lot.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -56,7 +57,7 @@ static void Savegame_Legacy_ReadLOT(LOT_INFO *lot);
 static void Savegame_Legacy_SetCurrentPosition(int level_num);
 static void Savegame_Legacy_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info);
 
-static void Savegame_Legacy_Write(void *pointer, int size);
+static void Savegame_Legacy_Write(const void *pointer, int size);
 static void Savegame_Legacy_WriteArm(LARA_ARM *arm);
 static void Savegame_Legacy_WriteLara(LARA_INFO *lara);
 static void Savegame_Legacy_WriteLOT(LOT_INFO *lot);
@@ -192,14 +193,14 @@ static void Savegame_Legacy_Skip(int size)
     m_SGBufPos += size; // missing from OG
 }
 
-static void Savegame_Legacy_Write(void *pointer, int size)
+static void Savegame_Legacy_Write(const void *pointer, int size)
 {
     m_SGBufPos += size;
     if (m_SGBufPos >= SAVEGAME_LEGACY_MAX_BUFFER_SIZE) {
         Shell_ExitSystem("FATAL: Savegame is too big to fit in buffer");
     }
 
-    char *data = (char *)pointer;
+    const char *data = (const char *)pointer;
     for (int i = 0; i < size; i++) {
         *m_SGBufPtr++ = *data++;
     }
@@ -272,8 +273,9 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
 
 static void Savegame_Legacy_WriteArm(LARA_ARM *arm)
 {
-    // TODO!!!
-    int32_t frame_base = (int32_t)(arm->frame_base - g_AnimFrames);
+    const LEVEL_INFO *const level_info = Level_GetInfo();
+    const int32_t frame_base =
+        level_info->anim_frame_offsets[arm->frame_base - g_AnimFrames];
     Savegame_Legacy_Write(&frame_base, sizeof(int32_t));
     Savegame_Legacy_Write(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->lock, sizeof(int16_t));
@@ -373,11 +375,18 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
 
 static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 {
-    // TODO!!!
     int32_t frame_base;
     Savegame_Legacy_Read(&frame_base, sizeof(int32_t));
-    arm->frame_base =
-        (FRAME_INFO *)((intptr_t)g_AnimFrames + (intptr_t)frame_base);
+
+    bool found = false;
+    const LEVEL_INFO *const level_info = Level_GetInfo();
+    for (int i = 0; i < level_info->anim_frame_count; i++) {
+        if (level_info->anim_frame_offsets[i] == frame_base) {
+            arm->frame_base = &g_AnimFrames[i];
+            found = true;
+        }
+    }
+    assert(found);
 
     Savegame_Legacy_Read(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->lock, sizeof(int16_t));
