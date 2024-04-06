@@ -563,7 +563,8 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     int32_t *mesh_rots =
         &g_AnimFrameMeshRots[level_info->anim_frame_mesh_rot_count];
     for (int32_t i = 0; i < inj_info->anim_frame_count; i++) {
-        level_info->anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
+        level_info->anim_frame_offsets[level_info->anim_frame_count + i] =
+            File_Pos(fp) - frame_data_start;
         FRAME_INFO *const frame =
             &g_AnimFrames[level_info->anim_frame_count + i];
         File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
@@ -602,11 +603,11 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         // Re-align to the level.
         anim->jump_anim_num += level_info->anim_count;
         bool found = false;
-        for (int j = 0;
-             j < level_info->anim_frame_count + inj_info->anim_frame_count;
-             j++) {
-            if (level_info->anim_frame_offsets[j] == (signed)anim->frame_ofs) {
-                anim->frame_ptr = &g_AnimFrames[j];
+        for (int j = 0; j < inj_info->anim_frame_count; j++) {
+            if (level_info->anim_frame_offsets[level_info->anim_frame_count + j]
+                == (signed)anim->frame_ofs) {
+                anim->frame_ptr =
+                    &g_AnimFrames[level_info->anim_frame_count + j];
                 found = true;
                 break;
             }
@@ -734,18 +735,21 @@ static void Inject_ObjectData(
         object->anim_index += level_info->anim_count;
         object->loaded = 1;
 
-        bool found = false;
-        for (int j = 0;
-             j < level_info->anim_frame_count + inj_info->anim_frame_count;
-             j++) {
-            if (level_info->anim_frame_offsets[j] == frame_offset) {
-                object->frame_base = &g_AnimFrames[j];
-                found = true;
-                break;
+        if (inj_info->anim_frame_count > 0) {
+            bool found = false;
+            for (int j = 0; j < inj_info->anim_frame_count; j++) {
+                if (level_info
+                        ->anim_frame_offsets[level_info->anim_frame_count + j]
+                    == frame_offset) {
+                    object->frame_base =
+                        &g_AnimFrames[level_info->anim_frame_count + j];
+                    found = true;
+                    break;
+                }
             }
+            assert(found);
         }
 
-        assert(found);
         if (num_meshes) {
             Inject_AlignTextureReferences(
                 object, palette_map, level_info->texture_count);
