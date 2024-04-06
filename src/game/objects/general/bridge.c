@@ -84,9 +84,8 @@ static void Bridge_FixEmbeddedPosition(int16_t item_num)
     int32_t z = item->pos.z;
     int16_t room_num = item->room_number;
 
-    int16_t *bounds = Item_GetBoundsAccurate(item);
-    int16_t bridge_height =
-        ABS(bounds[FRAME_BOUND_MAX_Y]) - ABS(bounds[FRAME_BOUND_MIN_Y]);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+    int16_t bridge_height = ABS(bounds->max.y) - ABS(bounds->min.y);
 
     FLOOR_INFO *floor = Room_GetFloor(x, y - bridge_height, z, &room_num);
     int16_t floor_height = Room_GetHeight(floor, x, y, z);

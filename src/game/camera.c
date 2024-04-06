@@ -603,19 +603,17 @@ void Camera_Update(void)
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
     ITEM_INFO *item = fixed_camera ? g_Camera.item : g_LaraItem;
 
-    int16_t *bounds = Item_GetBoundsAccurate(item);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
 
     int32_t y = item->pos.y;
     if (!fixed_camera) {
-        y += bounds[FRAME_BOUND_MAX_Y]
-            + ((bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3
-               >> 2);
+        y += bounds->max.y + ((bounds->min.y - bounds->max.y) * 3 >> 2);
     } else {
-        y += (bounds[FRAME_BOUND_MIN_Y] + bounds[FRAME_BOUND_MAX_Y]) / 2;
+        y += (bounds->min.y + bounds->max.y) / 2;
     }
 
     if (g_Camera.item && !fixed_camera) {
-        bounds = Item_GetBoundsAccurate(g_Camera.item);
+        bounds = Item_GetBoundsAccurateNew(g_Camera.item);
         int16_t shift = Math_Sqrt(
             SQUARE(g_Camera.item->pos.z - item->pos.z)
             + SQUARE(g_Camera.item->pos.x - item->pos.x));
@@ -625,10 +623,7 @@ void Camera_Update(void)
             - item->rot.y;
         int16_t tilt = Math_Atan(
             shift,
-            y
-                - (g_Camera.item->pos.y
-                   + (bounds[FRAME_BOUND_MIN_Y] + bounds[FRAME_BOUND_MAX_Y])
-                       / 2));
+            y - (g_Camera.item->pos.y + (bounds->min.y + bounds->max.y) / 2));
         angle >>= 1;
         tilt >>= 1;
 
@@ -685,8 +680,7 @@ void Camera_Update(void)
         g_Camera.target.z = item->pos.z;
 
         if (g_Camera.flags == FOLLOW_CENTRE) {
-            int16_t shift =
-                (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
+            int16_t shift = (bounds->min.z + bounds->max.z) / 2;
             g_Camera.target.z += Math_Cos(item->rot.y) * shift >> W2V_SHIFT;
             g_Camera.target.x += Math_Sin(item->rot.y) * shift >> W2V_SHIFT;
         }

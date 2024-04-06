@@ -140,14 +140,14 @@ void Switch_CollisionControlled(
          && item->status == IS_NOT_ACTIVE)
         || (g_Lara.interact_target.is_moving
             && g_Lara.interact_target.item_num == item_num)) {
-        int16_t *bounds = Item_GetBoundsAccurate(item);
+        const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
 
-        m_Switch_BoundsControlled.shift.min.x = bounds[0] - 256;
-        m_Switch_BoundsControlled.shift.max.x = bounds[1] + 256;
-        m_Switch_BoundsControlled.shift.min.z = bounds[4] - 200;
-        m_Switch_BoundsControlled.shift.max.z = bounds[5] + 200;
+        m_Switch_BoundsControlled.shift.min.x = bounds->min.x - 256;
+        m_Switch_BoundsControlled.shift.max.x = bounds->max.x + 256;
+        m_Switch_BoundsControlled.shift.min.z = bounds->min.z - 200;
+        m_Switch_BoundsControlled.shift.max.z = bounds->max.z + 200;
 
-        XYZ_32 move_vector = { 0, 0, bounds[4] - 64 };
+        XYZ_32 move_vector = { 0, 0, bounds->min.z - 64 };
 
         if (Lara_TestPosition(item, &m_Switch_BoundsControlled)) {
             if (Lara_MovePosition(item, &move_vector)) {

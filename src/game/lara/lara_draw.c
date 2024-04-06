@@ -342,11 +342,11 @@ void Lara_Draw_I(
     MATRIX saved_matrix;
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    int16_t *bounds = Item_GetBoundsAccurate(item);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
 
     saved_matrix = *g_MatrixPtr;
 
-    Output_DrawShadow(object->shadow_size, bounds, item);
+    Output_DrawShadowNew(object->shadow_size, bounds, item);
 
     Matrix_Push();
     Matrix_TranslateAbs(

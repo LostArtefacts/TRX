@@ -34,45 +34,38 @@ static void Bat_FixEmbeddedPosition(int16_t item_num);
 
 static void Bat_FixEmbeddedPosition(int16_t item_num)
 {
-    ITEM_INFO *item;
-    FLOOR_INFO *floor;
-    int32_t x, y, z;
-    int16_t room_number, ceiling, bat_height;
-    int16_t *bounds;
+    ITEM_INFO *item = &g_Items[item_num];
+    if (item->status == IS_ACTIVE) {
+        return;
+    }
 
-    item = &g_Items[item_num];
-    if (item->status != IS_ACTIVE) {
-        x = item->pos.x;
-        y = item->pos.y;
-        z = item->pos.z;
-        room_number = item->room_number;
+    const int32_t x = item->pos.x;
+    const int32_t y = item->pos.y;
+    const int32_t z = item->pos.z;
+    int16_t room_number = item->room_number;
+    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
+    Room_GetHeight(floor, x, y, z);
+    const int16_t ceiling = Room_GetCeiling(floor, x, y, z);
 
-        floor = Room_GetFloor(x, y, z, &room_number);
-        Room_GetHeight(floor, x, y, z);
-        ceiling = Room_GetCeiling(floor, x, y, z);
+    // The bats animation and frame have to be changed to the hanging
+    // one to properly measure them. Save it so it can be restored
+    // after.
+    int16_t old_anim =
+        item->anim_number - g_Objects[item->object_number].anim_index;
+    int16_t old_frame =
+        item->frame_number - g_Anims[item->anim_number].frame_base;
 
-        // The bats animation and frame have to be changed to the hanging
-        // one to properly measure them. Save it so it can be restored
-        // after.
-        int16_t old_anim =
-            item->anim_number - g_Objects[item->object_number].anim_index;
-        int16_t old_frame =
-            item->frame_number - g_Anims[item->anim_number].frame_base;
+    Item_SwitchToAnim(item, 0, 0);
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurateNew(item);
+    Item_SwitchToAnim(item, old_anim, old_frame);
 
-        Item_SwitchToAnim(item, 0, 0);
+    const int16_t bat_height = ABS(bounds->min.y);
 
-        bounds = Item_GetBoundsAccurate(item);
-
-        Item_SwitchToAnim(item, old_anim, old_frame);
-
-        bat_height = ABS(bounds[FRAME_BOUND_MIN_Y]);
-
-        // Only move the bat if it's above the calculated position,
-        // Palace Midas has many bats that aren't intended to be at
-        // ceiling level.
-        if (item->pos.y < ceiling + bat_height) {
-            item->pos.y = ceiling + bat_height;
-        }
+    // Only move the bat if it's above the calculated position,
+    // Palace Midas has many bats that aren't intended to be at
+    // ceiling level.
+    if (item->pos.y < ceiling + bat_height) {
+        item->pos.y = ceiling + bat_height;
     }
 }
 
