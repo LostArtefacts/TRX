@@ -375,18 +375,8 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
 
 static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
 {
-    int32_t frame_base;
-    Savegame_Legacy_Read(&frame_base, sizeof(int32_t));
-
-    bool found = false;
-    const LEVEL_INFO *const level_info = Level_GetInfo();
-    for (int i = 0; i < level_info->anim_frame_count; i++) {
-        if (level_info->anim_frame_offsets[i] == frame_base) {
-            arm->frame_base = &g_AnimFrames[i];
-            found = true;
-        }
-    }
-    assert(found);
+    // frame_base is superfluous
+    Savegame_Legacy_Skip(sizeof(int32_t));
 
     Savegame_Legacy_Read(&arm->frame_number, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->lock, sizeof(int16_t));

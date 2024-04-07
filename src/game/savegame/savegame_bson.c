@@ -7,7 +7,6 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/level.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/room.h"
@@ -693,19 +692,6 @@ static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
         return false;
     }
 
-    const int32_t frame_base = json_object_get_int(arm_obj, "frame_base", -1);
-    if (frame_base != -1) {
-        bool found = false;
-        const LEVEL_INFO *const level_info = Level_GetInfo();
-        for (int i = 0; i < level_info->anim_frame_count; i++) {
-            if (level_info->anim_frame_offsets[i] == frame_base) {
-                arm->frame_base = &g_AnimFrames[i];
-                found = true;
-            }
-        }
-        assert(found);
-    }
-
     arm->frame_number =
         json_object_get_int(arm_obj, "frame_num", arm->frame_number);
     arm->lock = json_object_get_int(arm_obj, "lock", arm->lock);
@@ -1163,11 +1149,7 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
 static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
 {
     assert(arm);
-    const LEVEL_INFO *const level_info = Level_GetInfo();
-    const int32_t frame_base =
-        level_info->anim_frame_offsets[arm->frame_base - g_AnimFrames];
     struct json_object_s *arm_obj = json_object_new();
-    json_object_append_int(arm_obj, "frame_base", frame_base);
     json_object_append_int(arm_obj, "frame_num", arm->frame_number);
     json_object_append_int(arm_obj, "lock", arm->lock);
     json_object_append_int(arm_obj, "x_rot", arm->rot.x);
