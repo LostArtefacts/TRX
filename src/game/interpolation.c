@@ -127,7 +127,8 @@ void Interpolation_Commit(void)
         for (int i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
             HAIR_SEGMENT *hair = Lara_Hair_GetSegment(i);
             INTERPOLATE(hair, pos.x, ratio, 128);
-            INTERPOLATE(hair, pos.y, ratio, 128);
+            INTERPOLATE(
+                hair, pos.y, ratio, MAX(128, g_LaraItem->fall_speed * 2));
             INTERPOLATE(hair, pos.z, ratio, 128);
             INTERPOLATE_ROT(hair, rot.x, ratio, PHD_45);
             INTERPOLATE_ROT(hair, rot.y, ratio, PHD_45);
