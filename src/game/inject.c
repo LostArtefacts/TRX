@@ -37,6 +37,7 @@ typedef enum INJECTION_TYPE {
     INJ_LARA_JUMPS = 6,
     INJ_ITEM_POSITION = 7,
     INJ_PS1_ENEMY = 8,
+    INJ_DISABLE_ANIM_SPRITE = 9,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -222,6 +223,9 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_PS1_ENEMY:
         injection->relevant = g_Config.restore_ps1_enemies;
+        break;
+    case INJ_DISABLE_ANIM_SPRITE:
+        injection->relevant = !g_Config.fix_animated_sprites;
         break;
     default:
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
@@ -487,24 +491,24 @@ static void Inject_TextureData(
 
     for (int i = 0; i < inj_info->sprite_count; i++) {
         GAME_OBJECT_ID object_num;
+        int16_t num_meshes;
+        int16_t mesh_index;
         File_Read(&object_num, sizeof(int32_t), 1, fp);
+        File_Read(&num_meshes, sizeof(int16_t), 1, fp);
+        File_Read(&mesh_index, sizeof(int16_t), 1, fp);
+
         if (object_num < O_NUMBER_OF) {
-            File_Read(&g_Objects[object_num], sizeof(int16_t), 1, fp);
-            File_Read(
-                &g_Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
-            g_Objects[object_num].mesh_index += level_info->sprite_info_count;
-            level_info->sprite_info_count -= g_Objects[object_num].nmeshes;
-            g_Objects[object_num].loaded = 1;
-        } else {
-            int32_t static_num = object_num - O_NUMBER_OF;
-            File_Skip(fp, 2);
-            File_Read(
-                &g_StaticObjects[static_num].mesh_number, sizeof(int16_t), 1,
-                fp);
-            g_StaticObjects[static_num].mesh_number +=
-                level_info->sprite_info_count;
-            level_info->sprite_info_count++;
+            OBJECT_INFO *object = &g_Objects[object_num];
+            object->nmeshes = num_meshes;
+            object->mesh_index = mesh_index + level_info->sprite_info_count;
+            object->loaded = 1;
+        } else if (object_num - O_NUMBER_OF < STATIC_NUMBER_OF) {
+            STATIC_INFO *object = &g_StaticObjects[object_num - O_NUMBER_OF];
+            object->nmeshes = num_meshes;
+            object->mesh_number = mesh_index + level_info->sprite_info_count;
+            object->loaded = true;
         }
+        level_info->sprite_info_count -= num_meshes;
         level_info->sprite_count++;
     }
 }

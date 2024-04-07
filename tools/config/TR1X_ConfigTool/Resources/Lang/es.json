@@ -328,6 +328,10 @@
       "Title": "Arreglar problemas de textura",
       "Description": "Corrige los problemas originales con texturas faltantes o incorrectas."
     },
+    "fix_animated_sprites": {
+      "Title": "Arreglar animaciones de sprites",
+      "Description": "Corrige los problemas originales en La Cisterna y La Tumba de Tihocan donde los duendes de las plantas en las áreas de agua no se animan."
+    },
     "fix_item_rots": {
       "Title": "Arreglar problemas de rotación de objetos",
       "Description": "Corrige problemas originales con algunas recogidas giradas incorrectamente al usar la opción de recogidas en 3D."

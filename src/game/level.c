@@ -484,6 +484,7 @@ static bool Level_LoadObjects(MYFILE *fp)
         File_Read(&object->c.min.z, sizeof(int16_t), 1, fp);
         File_Read(&object->c.max.z, sizeof(int16_t), 1, fp);
         File_Read(&object->flags, sizeof(int16_t), 1, fp);
+        object->loaded = true;
     }
 
     File_Read(&m_LevelInfo.texture_count, sizeof(int32_t), 1, fp);
@@ -528,18 +529,22 @@ static bool Level_LoadSprites(MYFILE *fp)
     File_Read(&m_LevelInfo.sprite_count, sizeof(int32_t), 1, fp);
     for (int i = 0; i < m_LevelInfo.sprite_count; i++) {
         GAME_OBJECT_ID object_num;
+        int16_t num_meshes;
+        int16_t mesh_index;
         File_Read(&object_num, sizeof(int32_t), 1, fp);
+        File_Read(&num_meshes, sizeof(int16_t), 1, fp);
+        File_Read(&mesh_index, sizeof(int16_t), 1, fp);
+
         if (object_num < O_NUMBER_OF) {
-            File_Read(&g_Objects[object_num], sizeof(int16_t), 1, fp);
-            File_Read(
-                &g_Objects[object_num].mesh_index, sizeof(int16_t), 1, fp);
-            g_Objects[object_num].loaded = 1;
-        } else {
-            int32_t static_num = object_num - O_NUMBER_OF;
-            File_Skip(fp, 2);
-            File_Read(
-                &g_StaticObjects[static_num].mesh_number, sizeof(int16_t), 1,
-                fp);
+            OBJECT_INFO *object = &g_Objects[object_num];
+            object->nmeshes = num_meshes;
+            object->mesh_index = mesh_index;
+            object->loaded = 1;
+        } else if (object_num - O_NUMBER_OF < STATIC_NUMBER_OF) {
+            STATIC_INFO *object = &g_StaticObjects[object_num - O_NUMBER_OF];
+            object->nmeshes = num_meshes;
+            object->mesh_number = mesh_index;
+            object->loaded = true;
         }
     }
     return true;
@@ -947,17 +952,20 @@ bool Level_Initialise(int32_t level_num)
     Overlay_HideGameInfo();
 
     g_FlipStatus = 0;
-    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
+    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         g_FlipMapTable[i] = 0;
     }
 
-    for (int i = 0; i < MAX_CD_TRACKS; i++) {
+    for (int32_t i = 0; i < MAX_CD_TRACKS; i++) {
         g_MusicTrackFlags[i] = 0;
     }
 
     /* Clear Object Loaded flags */
-    for (int i = 0; i < O_NUMBER_OF; i++) {
+    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         g_Objects[i].loaded = 0;
+    }
+    for (int32_t i = 0; i < STATIC_NUMBER_OF; i++) {
+        g_StaticObjects[i].loaded = false;
     }
 
     Camera_Reset();

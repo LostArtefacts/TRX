@@ -160,6 +160,10 @@
       "Title": "Correggi i problemi delle texture",
       "Description": "Risolve i problemi riguardanti texture mancanti o errate."
     },
+    "fix_animated_sprites": {
+      "Title": "Correggi le animazioni degli sprite",
+      "Description": "Risolve i problemi originali nella Cisterna e nella Tomba di Tihocan per cui gli sprite delle piante nelle aree acquatiche non si animavano."
+    },
     "fix_item_rots": {
       "Title": "Correggi l'orientamento degli oggetti",
       "Description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D."

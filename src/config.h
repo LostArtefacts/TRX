@@ -136,6 +136,7 @@ typedef struct {
     bool enable_target_change;
     TARGET_LOCK_MODE target_mode;
     bool enable_loading_screens;
+    bool fix_animated_sprites;
 
     struct {
         int32_t layout;

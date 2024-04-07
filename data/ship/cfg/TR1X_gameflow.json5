@@ -229,6 +229,7 @@
             "injections": [
                 "data/cistern_fd.bin",
                 "data/cistern_itemrots.bin",
+                "data/cistern_plants.bin",
                 "data/cistern_textures.bin",
             ],
             "sequence": [
@@ -253,6 +254,7 @@
             "type": "normal",
             "music": 58,
             "injections": [
+                "data/cistern_plants.bin",
                 "data/tihocan_fd.bin",
                 "data/tihocan_itemrots.bin",
                 "data/tihocan_textures.bin",

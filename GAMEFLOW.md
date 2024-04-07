@@ -1373,6 +1373,15 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>cistern_plants.bin</code>
+    </td>
+    <td>
+      This disables the animation on sprite ID 193 in The Cistern and Tomb of
+      Tihocan.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>khamoon_mummy.bin</code>
     </td>
     <td>

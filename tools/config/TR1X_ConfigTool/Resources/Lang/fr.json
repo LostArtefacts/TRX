@@ -160,6 +160,10 @@
       "Title": "Corrige les problèmes de texture",
       "Description": "Corrige les bugs originaux connus de textures manquantes ou incorrectes."
     },
+    "fix_animated_sprites": {
+      "Title": "Correction des animations des sprites",
+      "Description": "Corrige les problèmes originaux dans La Citerne et Le Tombe de Tihocan où les sprites végétaux dans les zones aquatiques ne s'animent pas."
+    },
     "fix_item_rots": {
       "Title": "Correction orientation des collectibles",
       "Description": "Corrige des problèmes avec certains collectibles mal orientés, quand l'option des collectibles en 3D est utilisée."
