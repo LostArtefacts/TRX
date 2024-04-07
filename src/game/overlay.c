@@ -373,18 +373,17 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     Output_SetupAboveWater(false);
 
     OBJECT_INFO *obj = &g_Objects[Inv_GetItemOption(pu->obj_num)];
-    int16_t *frame = g_Anims[obj->anim_index].frame_ptr;
+    const FRAME_INFO *const frame = g_Anims[obj->anim_index].frame_ptr;
 
     Matrix_Push();
+    Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
     Matrix_TranslateRel(
-        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
-    Matrix_TranslateRel(
-        -(frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
-        -(frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
-        -(frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+        -(frame->bounds.min.x + frame->bounds.max.x) / 2,
+        -(frame->bounds.min.y + frame->bounds.max.y) / 2,
+        -(frame->bounds.min.z + frame->bounds.max.z) / 2);
     int16_t **meshpp = &g_Meshes[obj->mesh_index];
     int32_t *bone = &g_AnimBones[obj->bone_index];
-    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+    int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
     Output_DrawPolygons(*meshpp++, 0);

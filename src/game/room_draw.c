@@ -269,8 +269,8 @@ void Room_DrawSingleRoom(int16_t room_num)
             Matrix_Push();
             Matrix_TranslateAbs(mesh->pos.x, mesh->pos.y, mesh->pos.z);
             Matrix_RotY(mesh->rot.y);
-            int clip = Output_GetObjectBounds(
-                &g_StaticObjects[mesh->static_number].x_minp);
+            int clip =
+                Output_GetObjectBounds(&g_StaticObjects[mesh->static_number].p);
             if (clip) {
                 Output_CalculateStaticLight(mesh->shade);
                 Output_DrawPolygons(

@@ -152,19 +152,9 @@
 
 #define BIFF (WALL_L >> 1)
 
-#define FRAME_BOUND_MIN_X 0
-#define FRAME_BOUND_MAX_X 1
-#define FRAME_BOUND_MIN_Y 2
-#define FRAME_BOUND_MAX_Y 3
-#define FRAME_BOUND_MIN_Z 4
-#define FRAME_BOUND_MAX_Z 5
-#define FRAME_POS_X 6
-#define FRAME_POS_Y 7
-#define FRAME_POS_Z 8
 #define SLOPE_DIF 60
 #define VAULT_ANGLE (30 * PHD_DEGREE)
 #define HANG_ANGLE (35 * PHD_DEGREE)
-#define FRAME_ROT 10
 #define END_BIT 0x8000
 #define DATA_TYPE 0x00FF
 #define VALUE_BITS 0x03FF

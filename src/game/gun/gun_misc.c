@@ -336,12 +336,12 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
 
 void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
 {
-    int16_t *bounds = Item_GetBestFrame(item);
-    int32_t x = (bounds[0] + bounds[1]) / 2;
-    int32_t y = (bounds[3] - bounds[2]) / 3 + bounds[2];
-    int32_t z = (bounds[5] + bounds[4]) / 2;
-    int32_t c = Math_Cos(item->rot.y);
-    int32_t s = Math_Sin(item->rot.y);
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    const int32_t x = (bounds->min.x + bounds->max.x) / 2;
+    const int32_t y = (bounds->max.y - bounds->min.y) / 3 + bounds->min.y;
+    const int32_t z = (bounds->min.z + bounds->max.z) / 2;
+    const int32_t c = Math_Cos(item->rot.y);
+    const int32_t s = Math_Sin(item->rot.y);
     target->x = item->pos.x + ((c * x + s * z) >> W2V_SHIFT);
     target->y = item->pos.y + y;
     target->z = item->pos.z + ((c * z - s * x) >> W2V_SHIFT);

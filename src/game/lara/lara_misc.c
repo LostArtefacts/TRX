@@ -29,7 +29,7 @@ void Lara_GetCollisionInfo(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
 {
     int flag = 0;
-    int16_t *bounds;
+    const BOUNDS_16 *bounds;
 
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = NO_BAD_NEG;
@@ -73,9 +73,9 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
         Item_SwitchToAnim(item, LA_STOP_HANG, LF_STOPHANG);
         bounds = Item_GetBoundsAccurate(item);
         if (g_Config.enable_swing_cancel && item->hit_points > 0) {
-            item->pos.y += bounds[FRAME_BOUND_MAX_Y];
+            item->pos.y += bounds->max.y;
         } else {
-            item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y] + 2;
+            item->pos.y += coll->front_floor - bounds->min.y + 2;
         }
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
@@ -87,7 +87,7 @@ void Lara_HangTest(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     bounds = Item_GetBoundsAccurate(item);
-    int32_t hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    const int32_t hdif = coll->front_floor - bounds->min.y;
 
     if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
         || coll->mid_ceiling >= 0 || coll->coll_type != COLL_FRONT
@@ -355,9 +355,6 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
 
 bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
 {
-    int hdif;
-    int16_t *bounds;
-
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
@@ -369,8 +366,8 @@ bool Lara_TestHangJump(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    bounds = Item_GetBoundsAccurate(item);
-    hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    const int32_t hdif = coll->front_floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
     }
@@ -450,9 +447,6 @@ bool Lara_TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
 
 bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
 {
-    int hdif;
-    int16_t *bounds;
-
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS
         || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
@@ -463,8 +457,8 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    bounds = Item_GetBoundsAccurate(item);
-    hdif = coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
+    const int32_t hdif = coll->front_floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
     }
@@ -493,7 +487,7 @@ bool Lara_TestHangJumpUp(ITEM_INFO *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     Item_SwitchToAnim(item, LA_HANG, LF_STARTHANG);
     bounds = Item_GetBoundsAccurate(item);
-    item->pos.y += coll->front_floor - bounds[FRAME_BOUND_MIN_Y];
+    item->pos.y += coll->front_floor - bounds->min.y;
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
     item->rot.y = angle;
@@ -637,7 +631,7 @@ bool Lara_TestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll)
         return false;
     }
 
-    int hdif = coll->front_floor + 700;
+    const int32_t hdif = coll->front_floor + 700;
     if (hdif < -512 || hdif > 100) {
         return false;
     }

@@ -685,29 +685,29 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
     struct ITEM_INFO *lara_item = g_LaraItem;
     int32_t x = lara_item->pos.x - item->pos.x;
     int32_t z = lara_item->pos.z - item->pos.z;
-    int32_t c = Math_Cos(item->rot.y);
-    int32_t s = Math_Sin(item->rot.y);
+    const int32_t c = Math_Cos(item->rot.y);
+    const int32_t s = Math_Sin(item->rot.y);
     int32_t rx = (c * x - s * z) >> W2V_SHIFT;
     int32_t rz = (c * z + s * x) >> W2V_SHIFT;
 
-    int16_t *bounds = Item_GetBestFrame(item);
-    int32_t minx = bounds[FRAME_BOUND_MIN_X];
-    int32_t maxx = bounds[FRAME_BOUND_MAX_X];
-    int32_t minz = bounds[FRAME_BOUND_MIN_Z];
-    int32_t maxz = bounds[FRAME_BOUND_MAX_Z];
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    int32_t min_x = bounds->min.x;
+    int32_t max_x = bounds->max.x;
+    int32_t min_z = bounds->min.z;
+    int32_t max_z = bounds->max.z;
 
     if (big_push) {
-        minx -= coll->radius;
-        maxx += coll->radius;
-        minz -= coll->radius;
-        maxz += coll->radius;
+        min_x -= coll->radius;
+        max_x += coll->radius;
+        min_z -= coll->radius;
+        max_z += coll->radius;
     }
 
-    if (rx >= minx && rx <= maxx && rz >= minz && rz <= maxz) {
-        int32_t l = rx - minx;
-        int32_t r = maxx - rx;
-        int32_t t = maxz - rz;
-        int32_t b = rz - minz;
+    if (rx >= min_x && rx <= max_x && rz >= min_z && rz <= max_z) {
+        int32_t l = rx - min_x;
+        int32_t r = max_x - rx;
+        int32_t t = max_z - rz;
+        int32_t b = rz - min_z;
 
         if (l <= r && l <= t && l <= b) {
             rx -= l;
@@ -725,8 +725,8 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
         lara_item->pos.x = item->pos.x + ax;
         lara_item->pos.z = item->pos.z + az;
 
-        rx = (bounds[FRAME_BOUND_MIN_X] + bounds[FRAME_BOUND_MAX_X]) / 2;
-        rz = (bounds[FRAME_BOUND_MIN_Z] + bounds[FRAME_BOUND_MAX_Z]) / 2;
+        rx = (bounds->min.x + bounds->max.x) / 2;
+        rz = (bounds->min.z + bounds->max.z) / 2;
         x -= (c * rx + s * rz) >> W2V_SHIFT;
         z -= (c * rz - s * rx) >> W2V_SHIFT;
 

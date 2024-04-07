@@ -70,8 +70,6 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     }
 
     OBJECT_INFO *object = &g_Objects[item->object_number];
-    Item_GetBestFrame(item);
-
     int32_t z = g_LaraItem->pos.z
         - ((Math_Cos(item->rot.y) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.z;
@@ -192,8 +190,8 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
             LOT->target.z = g_LaraItem->pos.z;
             LOT->required_box = g_LaraItem->box_number;
             if (LOT->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
-                int16_t *bounds = Item_GetBestFrame(g_LaraItem);
-                LOT->target.y += bounds[FRAME_BOUND_MIN_Y];
+                const FRAME_INFO *const frame = Item_GetBestFrame(g_LaraItem);
+                LOT->target.y += frame->bounds.min.y;
             }
         }
         break;
@@ -430,8 +428,8 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         return false;
     }
 
-    int16_t *bounds = Item_GetBoundsAccurate(item);
-    int32_t y = item->pos.y + bounds[FRAME_BOUND_MIN_Y];
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    int32_t y = item->pos.y + bounds->min.y;
 
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
@@ -612,12 +610,10 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             int32_t ceiling =
                 Room_GetCeiling(floor, item->pos.x, y, item->pos.z);
 
-            if (item->object_number == O_ALLIGATOR) {
-                bounds[FRAME_BOUND_MIN_Y] = 0;
-            }
-
-            if (item->pos.y + bounds[FRAME_BOUND_MIN_Y] + dy < ceiling) {
-                if (item->pos.y + bounds[FRAME_BOUND_MIN_Y] < ceiling) {
+            int32_t min_y =
+                item->object_number == O_ALLIGATOR ? 0 : bounds->min.y;
+            if (item->pos.y + min_y + dy < ceiling) {
+                if (item->pos.y + min_y < ceiling) {
                     item->pos.x = old.x;
                     item->pos.z = old.z;
                     dy = LOT->fly;

@@ -27,10 +27,11 @@
 #include "log.h"
 #include "memory.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
-static LEVEL_INFO m_LevelInfo;
+static LEVEL_INFO m_LevelInfo = { 0 };
 static INJECTION_INFO *m_InjectionInfo = NULL;
 
 static bool Level_LoadRooms(MYFILE *fp);
@@ -365,33 +366,101 @@ static bool Level_LoadObjects(MYFILE *fp)
         GBUF_ANIM_BONES);
     File_Read(g_AnimBones, sizeof(int32_t), m_LevelInfo.anim_bone_count, fp);
 
-    File_Read(&m_LevelInfo.anim_frame_count, sizeof(int32_t), 1, fp);
+    File_Read(&m_LevelInfo.anim_frame_data_count, sizeof(int32_t), 1, fp);
+    LOG_INFO("%d anim frames data", m_LevelInfo.anim_frame_data_count);
+
+    const size_t frame_data_start = File_Pos(fp);
+    File_Skip(fp, m_LevelInfo.anim_frame_data_count * sizeof(int16_t));
+    const size_t frame_data_end = File_Pos(fp);
+
+    m_LevelInfo.anim_frame_count = 0;
+    m_LevelInfo.anim_frame_mesh_rot_count = 0;
+    File_Seek(fp, frame_data_start, SEEK_SET);
+    while (File_Pos(fp) < frame_data_end) {
+        File_Skip(fp, 9 * sizeof(int16_t));
+        int16_t num_meshes;
+        File_Read(&num_meshes, sizeof(int16_t), 1, fp);
+        File_Skip(fp, num_meshes * sizeof(int32_t));
+        m_LevelInfo.anim_frame_count++;
+        m_LevelInfo.anim_frame_mesh_rot_count += num_meshes;
+    }
     LOG_INFO("%d anim frames", m_LevelInfo.anim_frame_count);
+    LOG_INFO(
+        "%d anim frame mesh rotations", m_LevelInfo.anim_frame_mesh_rot_count);
+
+    g_AnimFrameMeshRots = GameBuf_Alloc(
+        sizeof(int32_t)
+            * (m_LevelInfo.anim_frame_mesh_rot_count
+               + m_InjectionInfo->anim_frame_mesh_rot_count),
+        GBUF_ANIM_FRAMES);
     g_AnimFrames = GameBuf_Alloc(
-        sizeof(int16_t)
+        sizeof(FRAME_INFO)
             * (m_LevelInfo.anim_frame_count
                + m_InjectionInfo->anim_frame_count),
         GBUF_ANIM_FRAMES);
-    File_Read(g_AnimFrames, sizeof(int16_t), m_LevelInfo.anim_frame_count, fp);
-    for (int i = 0; i < m_LevelInfo.anim_count; i++) {
-        g_Anims[i].frame_ptr = &g_AnimFrames[g_Anims[i].frame_ofs / 2];
+    m_LevelInfo.anim_frame_offsets = Memory_Alloc(
+        sizeof(int32_t)
+        * (m_LevelInfo.anim_frame_count + m_InjectionInfo->anim_frame_count));
+
+    File_Seek(fp, frame_data_start, SEEK_SET);
+    int32_t *mesh_rots = g_AnimFrameMeshRots;
+    for (int32_t i = 0; i < m_LevelInfo.anim_frame_count; i++) {
+        m_LevelInfo.anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
+        FRAME_INFO *const frame = &g_AnimFrames[i];
+        File_Read(&frame->bounds.min.x, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.max.x, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.min.y, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.max.y, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.min.z, sizeof(int16_t), 1, fp);
+        File_Read(&frame->bounds.max.z, sizeof(int16_t), 1, fp);
+        File_Read(&frame->offset.x, sizeof(int16_t), 1, fp);
+        File_Read(&frame->offset.y, sizeof(int16_t), 1, fp);
+        File_Read(&frame->offset.z, sizeof(int16_t), 1, fp);
+        File_Read(&frame->nmeshes, sizeof(int16_t), 1, fp);
+        frame->mesh_rots = mesh_rots;
+        File_Read(mesh_rots, sizeof(int32_t), frame->nmeshes, fp);
+        mesh_rots += frame->nmeshes;
     }
+    assert(File_Pos(fp) == frame_data_end);
+
+    for (int i = 0; i < m_LevelInfo.anim_count; i++) {
+        ANIM_STRUCT *anim = &g_Anims[i];
+        bool found = false;
+        for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
+            if (m_LevelInfo.anim_frame_offsets[j] == (signed)anim->frame_ofs) {
+                anim->frame_ptr = &g_AnimFrames[j];
+                found = true;
+                break;
+            }
+        }
+        assert(found);
+    }
+    File_Seek(fp, frame_data_end, SEEK_SET);
 
     File_Read(&m_LevelInfo.object_count, sizeof(int32_t), 1, fp);
     LOG_INFO("%d objects", m_LevelInfo.object_count);
     for (int i = 0; i < m_LevelInfo.object_count; i++) {
-        int32_t tmp;
-        File_Read(&tmp, sizeof(int32_t), 1, fp);
-        OBJECT_INFO *object = &g_Objects[tmp];
+        int32_t object_num;
+        File_Read(&object_num, sizeof(int32_t), 1, fp);
+        OBJECT_INFO *object = &g_Objects[object_num];
 
         File_Read(&object->nmeshes, sizeof(int16_t), 1, fp);
         File_Read(&object->mesh_index, sizeof(int16_t), 1, fp);
         File_Read(&object->bone_index, sizeof(int32_t), 1, fp);
 
-        File_Read(&tmp, sizeof(int32_t), 1, fp);
-        object->frame_base = &g_AnimFrames[tmp / 2];
+        int32_t frame_offset;
+        File_Read(&frame_offset, sizeof(int32_t), 1, fp);
         File_Read(&object->anim_index, sizeof(int16_t), 1, fp);
-        object->loaded = 1;
+
+        bool found = false;
+        for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
+            if (m_LevelInfo.anim_frame_offsets[j] == frame_offset) {
+                object->frame_base = &g_AnimFrames[j];
+                found = true;
+                break;
+            }
+        }
+        object->loaded = found;
     }
 
     File_Read(&m_LevelInfo.static_count, sizeof(int32_t), 1, fp);
@@ -402,8 +471,18 @@ static bool Level_LoadObjects(MYFILE *fp)
         STATIC_INFO *object = &g_StaticObjects[tmp];
 
         File_Read(&object->mesh_number, sizeof(int16_t), 1, fp);
-        File_Read(&object->x_minp, sizeof(int16_t), 6, fp);
-        File_Read(&object->x_minc, sizeof(int16_t), 6, fp);
+        File_Read(&object->p.min.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.max.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.min.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.max.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.min.z, sizeof(int16_t), 1, fp);
+        File_Read(&object->p.max.z, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.min.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.max.x, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.min.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.max.y, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.min.z, sizeof(int16_t), 1, fp);
+        File_Read(&object->c.max.z, sizeof(int16_t), 1, fp);
         File_Read(&object->flags, sizeof(int16_t), 1, fp);
     }
 
@@ -807,6 +886,12 @@ bool Level_Load(int level_num)
 {
     LOG_INFO("%d (%s)", level_num, g_GameFlow.levels[level_num].level_file);
 
+    // clean previous level data
+    Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
+    Memory_FreePointer(&m_LevelInfo.anim_frame_offsets);
+    Memory_FreePointer(&m_LevelInfo.sample_offsets);
+    Memory_FreePointer(&m_InjectionInfo);
+
     m_InjectionInfo = Memory_Alloc(sizeof(INJECTION_INFO));
     Inject_Init(
         g_GameFlow.levels[level_num].injections.length,
@@ -820,10 +905,6 @@ bool Level_Load(int level_num)
     }
 
     Inject_Cleanup();
-
-    Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
-    Memory_FreePointer(&m_LevelInfo.sample_offsets);
-    Memory_FreePointer(&m_InjectionInfo);
 
     Output_SetWaterColor(
         g_GameFlow.levels[level_num].water_color.override
@@ -926,4 +1007,9 @@ bool Level_Initialise(int32_t level_num)
 
     g_Camera.underwater = false;
     return true;
+}
+
+const LEVEL_INFO *Level_GetInfo(void)
+{
+    return &m_LevelInfo;
 }

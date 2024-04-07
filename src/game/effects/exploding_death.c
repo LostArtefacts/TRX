@@ -14,14 +14,13 @@ int32_t Effect_ExplodingDeath(
     ITEM_INFO *item = &g_Items[item_num];
     OBJECT_INFO *object = &g_Objects[item->object_number];
 
-    int16_t *frame = Item_GetBestFrame(item);
+    const FRAME_INFO *const frame = Item_GetBestFrame(item);
 
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
-    Matrix_TranslateRel(
-        frame[FRAME_POS_X], frame[FRAME_POS_Y], frame[FRAME_POS_Z]);
+    Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
-    int32_t *packed_rotation = (int32_t *)(frame + FRAME_ROT);
+    int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
     int32_t *bone = &g_AnimBones[object->bone_index];

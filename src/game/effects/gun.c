@@ -19,9 +19,8 @@ void ShootAtLara(FX_INFO *fx)
     int32_t y = g_LaraItem->pos.y - fx->pos.y;
     int32_t z = g_LaraItem->pos.z - fx->pos.z;
 
-    int16_t *bounds = Item_GetBoundsAccurate(g_LaraItem);
-    y += bounds[FRAME_BOUND_MAX_Y]
-        + (bounds[FRAME_BOUND_MIN_Y] - bounds[FRAME_BOUND_MAX_Y]) * 3 / 4;
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(g_LaraItem);
+    y += bounds->max.y + (bounds->min.y - bounds->max.y) * 3 / 4;
 
     int32_t dist = Math_Sqrt(SQUARE(x) + SQUARE(z));
     fx->rot.x = -(PHD_ANGLE)Math_Atan(dist, y);

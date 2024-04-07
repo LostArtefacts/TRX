@@ -1455,8 +1455,20 @@ typedef struct CINE_POSITION {
     XYZ_16 rot;
 } CINE_POSITION;
 
+typedef struct BOUNDS_16 {
+    XYZ_16 min;
+    XYZ_16 max;
+} BOUNDS_16;
+
+typedef struct FRAME_INFO {
+    BOUNDS_16 bounds;
+    XYZ_16 offset;
+    int16_t nmeshes;
+    int32_t *mesh_rots;
+} FRAME_INFO;
+
 typedef struct LARA_ARM {
-    int16_t *frame_base;
+    FRAME_INFO *frame_base;
     int16_t frame_number;
     int16_t lock;
     XYZ_16 rot;
@@ -1757,7 +1769,7 @@ typedef struct OBJECT_INFO {
     int16_t nmeshes;
     int16_t mesh_index;
     int32_t bone_index;
-    int16_t *frame_base;
+    FRAME_INFO *frame_base;
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);
     void (*floor)(
@@ -1794,18 +1806,8 @@ typedef struct SHADOW_INFO {
 typedef struct STATIC_INFO {
     int16_t mesh_number;
     int16_t flags;
-    int16_t x_minp;
-    int16_t x_maxp;
-    int16_t y_minp;
-    int16_t y_maxp;
-    int16_t z_minp;
-    int16_t z_maxp;
-    int16_t x_minc;
-    int16_t x_maxc;
-    int16_t y_minc;
-    int16_t y_maxc;
-    int16_t z_minc;
-    int16_t z_maxc;
+    BOUNDS_16 p;
+    BOUNDS_16 c;
 } STATIC_INFO;
 
 typedef struct GAME_VECTOR {
@@ -1870,7 +1872,7 @@ typedef struct CAMERA_INFO {
 } CAMERA_INFO;
 
 typedef struct ANIM_STRUCT {
-    int16_t *frame_ptr;
+    FRAME_INFO *frame_ptr;
     uint32_t frame_ofs;
     int16_t interpolation;
     int16_t current_anim_state;
@@ -2182,7 +2184,10 @@ typedef struct LEVEL_INFO {
     int32_t anim_range_count;
     int32_t anim_command_count;
     int32_t anim_bone_count;
+    int32_t anim_frame_data_count;
     int32_t anim_frame_count;
+    int32_t anim_frame_mesh_rot_count;
+    int32_t *anim_frame_offsets;
     int32_t object_count;
     int32_t static_count;
     int32_t texture_count;

@@ -692,10 +692,6 @@ static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
         return false;
     }
 
-    size_t idx = arm->frame_base - g_AnimFrames;
-    idx = json_object_get_int(arm_obj, "frame_base", idx);
-    arm->frame_base = &g_AnimFrames[idx];
-
     arm->frame_number =
         json_object_get_int(arm_obj, "frame_num", arm->frame_number);
     arm->lock = json_object_get_int(arm_obj, "lock", arm->lock);
@@ -1154,8 +1150,6 @@ static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
 {
     assert(arm);
     struct json_object_s *arm_obj = json_object_new();
-    json_object_append_int(
-        arm_obj, "frame_base", arm->frame_base - g_AnimFrames);
     json_object_append_int(arm_obj, "frame_num", arm->frame_number);
     json_object_append_int(arm_obj, "lock", arm->lock);
     json_object_append_int(arm_obj, "x_rot", arm->rot.x);

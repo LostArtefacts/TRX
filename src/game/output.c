@@ -503,7 +503,8 @@ void Output_CalculateStaticLight(int16_t adder)
     CLAMPG(g_LsAdder, 0x1FFF);
 }
 
-void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
+void Output_CalculateObjectLighting(
+    const ITEM_INFO *const item, const BOUNDS_16 *const bounds)
 {
     if (item->shade >= 0) {
         Output_CalculateStaticLight(item->shade);
@@ -513,17 +514,19 @@ void Output_CalculateObjectLighting(ITEM_INFO *item, int16_t *frame)
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
     Matrix_TranslateRel(
-        (frame[FRAME_BOUND_MIN_X] + frame[FRAME_BOUND_MAX_X]) / 2,
-        (frame[FRAME_BOUND_MIN_Y] + frame[FRAME_BOUND_MAX_Y]) / 2,
-        (frame[FRAME_BOUND_MIN_Z] + frame[FRAME_BOUND_MAX_Z]) / 2);
+        (bounds->min.x + bounds->max.x) / 2,
+        (bounds->min.y + bounds->max.y) / 2,
+        (bounds->min.z + bounds->max.z) / 2);
 
-    int32_t x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
-    int32_t y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
-    int32_t z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
+    const XYZ_32 offset = {
+        .x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+        .y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+        .z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    };
 
     Matrix_Pop();
 
-    Output_CalculateLight(x, y, z, item->room_number);
+    Output_CalculateLight(offset.x, offset.y, offset.z, item->room_number);
 }
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
@@ -555,16 +558,16 @@ void Output_DrawRoom(const int16_t *obj_ptr)
     obj_ptr = Output_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
 }
 
-void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
+void Output_DrawShadow(
+    const int16_t size, const BOUNDS_16 *const bounds,
+    const ITEM_INFO *const item)
 {
-    int i;
-
     g_ShadowInfo.vertex_count = g_Config.enable_round_shadow ? 32 : 8;
 
-    int32_t x0 = bptr[FRAME_BOUND_MIN_X];
-    int32_t x1 = bptr[FRAME_BOUND_MAX_X];
-    int32_t z0 = bptr[FRAME_BOUND_MIN_Z];
-    int32_t z1 = bptr[FRAME_BOUND_MAX_Z];
+    int32_t x0 = bounds->min.x;
+    int32_t x1 = bounds->max.x;
+    int32_t z0 = bounds->min.z;
+    int32_t z1 = bounds->max.z;
 
     int32_t x_mid = (x0 + x1) / 2;
     int32_t z_mid = (z0 + z1) / 2;
@@ -572,7 +575,7 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
     int32_t x_add = (x1 - x0) * size / 1024;
     int32_t z_add = (z1 - z0) * size / 1024;
 
-    for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
+    for (int32_t i = 0; i < g_ShadowInfo.vertex_count; i++) {
         int32_t angle = (PHD_180 + i * PHD_360) / g_ShadowInfo.vertex_count;
         g_ShadowInfo.vertex[i].x =
             x_mid + (x_add * 2) * Math_Sin(angle) / PHD_90;
@@ -590,7 +593,7 @@ void Output_DrawShadow(int16_t size, int16_t *bptr, ITEM_INFO *item)
         int16_t clip_and = 1;
         int16_t clip_positive = 1;
         int16_t clip_or = 0;
-        for (i = 0; i < g_ShadowInfo.vertex_count; i++) {
+        for (int32_t i = 0; i < g_ShadowInfo.vertex_count; i++) {
             clip_and &= m_VBuf[i].clip;
             clip_positive &= m_VBuf[i].clip >= 0;
             clip_or |= m_VBuf[i].clip;
@@ -1055,18 +1058,18 @@ bool Output_MakeScreenshot(const char *path)
     return S_Output_MakeScreenshot(path);
 }
 
-int Output_GetObjectBounds(int16_t *bptr)
+int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 {
     if (g_MatrixPtr->_23 >= Output_GetFarZ()) {
         return 0;
     }
 
-    int32_t x_min = bptr[0];
-    int32_t x_max = bptr[1];
-    int32_t y_min = bptr[2];
-    int32_t y_max = bptr[3];
-    int32_t z_min = bptr[4];
-    int32_t z_max = bptr[5];
+    int32_t x_min = bounds->min.x;
+    int32_t x_max = bounds->max.x;
+    int32_t y_min = bounds->min.y;
+    int32_t y_max = bounds->max.y;
+    int32_t z_min = bounds->min.z;
+    int32_t z_max = bounds->max.z;
 
     XYZ_32 vtx[8];
     vtx[0].x = x_min;
