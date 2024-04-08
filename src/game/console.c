@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/console_cmd.h"
+#include "game/gameflow.h"
 #include "game/input.h"
 #include "game/output.h"
 #include "game/screen.h"
@@ -146,11 +147,13 @@ void Console_Confirm(void)
         }
 
         if (matching_cmd == NULL) {
-            Console_Log("Unknown command: %s", m_Prompt.text);
+            Console_Log(
+                g_GameFlow.strings[GS_OSD_INVALID_COMMAND], m_Prompt.text);
         } else {
             bool success = matching_cmd->proc(args);
             if (!success) {
-                Console_Log("Failed to run: %s", m_Prompt.text);
+                Console_Log(
+                    g_GameFlow.strings[GS_OSD_COMMAND_FAIL], m_Prompt.text);
             }
         }
     }
