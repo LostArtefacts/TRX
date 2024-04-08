@@ -2,11 +2,8 @@
 import argparse
 from pathlib import Path
 
+from shared.common import DATA_DIR
 from shared.versioning import generate_version
-
-REPO_DIR = Path(__file__).parent.parent
-DATA_DIR = REPO_DIR / "data"
-SRC_DIR = REPO_DIR / "src"
 
 
 def parse_args() -> argparse.Namespace:
