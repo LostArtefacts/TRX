@@ -203,10 +203,6 @@ GAMEFLOW_OPTION Game_Stop(void)
         return GF_LEVEL_COMPLETE | g_GameInfo.select_level_num;
     }
 
-    if (!g_InvChosen) {
-        return GF_EXIT_TO_TITLE;
-    }
-
     if (g_GameInfo.passport_selection == PASSPORT_MODE_LOAD_GAME) {
         return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_SELECT_LEVEL) {

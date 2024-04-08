@@ -93,90 +93,30 @@ void PuzzleHole_Collision(
         return;
     }
 
-    if ((g_InvChosen == -1 && !g_Input.action)
-        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
-        return;
-    }
-
-    if (!Lara_TestPosition(item, &m_PuzzleHoleBounds)) {
-        return;
-    }
-
-    if (item->status != IS_NOT_ACTIVE) {
-        if (lara_item->pos.x != g_PickUpX || lara_item->pos.y != g_PickUpY
-            || lara_item->pos.z != g_PickUpZ) {
-            g_PickUpX = lara_item->pos.x;
-            g_PickUpY = lara_item->pos.y;
-            g_PickUpZ = lara_item->pos.z;
-            Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
-        }
-        return;
-    }
-
-    if (g_InvChosen == -1) {
-        Inv_Display(INV_KEYS_MODE);
-    } else {
-        g_PickUpY = lara_item->pos.y - 1;
-    }
-
-    if (g_InvChosen == -1 && g_InvKeysObjects) {
-        return;
-    }
-
-    if (g_InvChosen != -1) {
-        g_PickUpY = lara_item->pos.y - 1;
-    }
-
-    int32_t correct = 0;
-    switch (item->object_number) {
-    case O_PUZZLE_HOLE1:
-        if (g_InvChosen == O_PUZZLE_OPTION1) {
-            Inv_RemoveItem(O_PUZZLE_OPTION1);
-            correct = 1;
-        }
-        break;
-
-    case O_PUZZLE_HOLE2:
-        if (g_InvChosen == O_PUZZLE_OPTION2) {
-            Inv_RemoveItem(O_PUZZLE_OPTION2);
-            correct = 1;
-        }
-        break;
-
-    case O_PUZZLE_HOLE3:
-        if (g_InvChosen == O_PUZZLE_OPTION3) {
-            Inv_RemoveItem(O_PUZZLE_OPTION3);
-            correct = 1;
-        }
-        break;
-
-    case O_PUZZLE_HOLE4:
-        if (g_InvChosen == O_PUZZLE_OPTION4) {
-            Inv_RemoveItem(O_PUZZLE_OPTION4);
-            correct = 1;
-        }
-        break;
-
-    default:
-        break;
-    }
-
-    g_InvChosen = -1;
-    if (correct) {
+    if (g_Lara.interact_target.is_moving
+        && g_Lara.interact_target.item_num == item_num) {
         Lara_AlignPosition(item, &m_PuzzleHolePosition);
         Lara_AnimateUntil(lara_item, LS_USE_PUZZLE);
         lara_item->goal_anim_state = LS_STOP;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         item->status = IS_ACTIVE;
-        g_PickUpX = lara_item->pos.x;
-        g_PickUpY = lara_item->pos.y;
-        g_PickUpZ = lara_item->pos.z;
-    } else if (
-        lara_item->pos.x != g_PickUpX || lara_item->pos.y != g_PickUpY
-        || lara_item->pos.z != g_PickUpZ) {
-        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
-        g_PickUpX = lara_item->pos.x;
-        g_PickUpY = lara_item->pos.y;
-        g_PickUpZ = lara_item->pos.z;
+        g_Lara.interact_target.is_moving = false;
+        g_Lara.interact_target.item_num = NO_OBJECT;
     }
+
+    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
+        || lara_item->gravity_status) {
+        return;
+    }
+
+    if (!Lara_TestPosition(item, obj->bounds())) {
+        return;
+    }
+
+    if (item->status != IS_NOT_ACTIVE) {
+        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
+        return;
+    }
+
+    Inv_Display(INV_KEYS_MODE);
 }

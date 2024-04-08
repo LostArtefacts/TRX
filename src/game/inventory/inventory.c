@@ -9,7 +9,6 @@
 bool Inv_Display(const INV_MODE inv_mode)
 {
     if (inv_mode == INV_KEYS_MODE && !g_InvKeysObjects) {
-        g_InvChosen = -1;
         return false;
     }
     Phase_Set(PHASE_INVENTORY, (void *)(intptr_t)inv_mode);

@@ -148,6 +148,10 @@ void Lara_State_Stop(ITEM_INFO *item, COLL_INFO *coll)
         return;
     }
 
+    if (g_Lara.interact_target.is_moving) {
+        return;
+    }
+
     if (g_Input.roll) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;

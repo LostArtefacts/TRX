@@ -20,7 +20,7 @@ void Lara_InitialiseMeshes(int32_t level_num);
 
 void Lara_SwapMeshExtra(void);
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
-void Lara_UseItem(int16_t object_num);
+void Lara_UseItem(GAME_OBJECT_ID object_num);
 int16_t Lara_GetNearestEnemy(void);
 
 bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius);

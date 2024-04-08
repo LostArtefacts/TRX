@@ -4,8 +4,6 @@
 
 #include <stdint.h>
 
-extern XYZ_32 g_PuzzleHolePosition;
-
 void PuzzleHole_Setup(OBJECT_INFO *obj);
 void PuzzleHole_SetupDone(OBJECT_INFO *obj);
 void PuzzleHole_Collision(

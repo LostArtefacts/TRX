@@ -175,8 +175,6 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     if (g_Lara.hit_direction == -1) {
         g_Lara.hit_frame = 0;
     }
-
-    g_InvChosen = -1;
 }
 
 void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
