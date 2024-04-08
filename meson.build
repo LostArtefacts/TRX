@@ -48,36 +48,24 @@ resources = []
 python3 = find_program('python3', required: true)
 git = find_program('git', required: true)
 
-version = custom_target('version',
-  output: ['version.txt'],
-  command: [python3, meson.source_root() + '/tools/generate_version', '-o', '@OUTPUT0@'],
-  build_by_default: true,
-  build_always_stale: true
-)
-
 init = custom_target(
   'fake_init',
-  depends: [version],
-  input: [version[0]],
   output: ['init.c'],
-  command: [python3, meson.source_root() + '/tools/generate_init', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
-  build_by_default: true,
+  command: [python3, meson.source_root() + '/tools/generate_init', '-o', '@OUTPUT0@'],
+  build_always_stale: true,
 )
 
 version_rc = custom_target(
   'fake_version',
-  depends: [version],
-  input: [version[0]],
   output: ['version.rc'],
-  command: [python3, meson.source_root() + '/tools/generate_rcfile', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
-  build_by_default: true,
+  command: [python3, meson.source_root() + '/tools/generate_rcfile', '-o', '@OUTPUT0@'],
+  build_always_stale: true,
 )
 
 icon_rc = custom_target(
   'fake_icon',
-  input: [version[0]],
   output: ['icon.rc'],
-  command: [python3, meson.source_root() + '/tools/generate_rcfile', '--version-file', '@INPUT@', '-o', '@OUTPUT0@'],
+  command: [python3, meson.source_root() + '/tools/generate_rcfile', '-o', '@OUTPUT0@'],
 )
 
 link_args = []
