@@ -211,7 +211,7 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
     CLAMPG(nframes, MAX_FRAMES);
 
     for (int32_t i = 0; i < nframes; i++) {
-        Lara_CheckCheatMode();
+        Lara_Cheat_Control();
         if (g_LevelComplete) {
             m_State = STATE_FADE_OUT;
             return GF_PHASE_CONTINUE;

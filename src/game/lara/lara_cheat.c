@@ -5,6 +5,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/room.h"
 #include "game/sound.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -15,7 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void Lara_CheckCheatMode(void)
+void Lara_Cheat_Control(void)
 {
     static int32_t cheat_mode = 0;
     static int16_t cheat_angle = 0;
@@ -117,7 +118,12 @@ void Lara_CheckCheatMode(void)
     }
 }
 
-void Lara_EnterFlyMode(void)
+void Lara_Cheat_EndLevel(void)
+{
+    g_LevelComplete = true;
+}
+
+void Lara_Cheat_EnterFlyMode(void)
 {
     ITEM_INFO *const item = g_LaraItem;
     if (g_Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
@@ -144,4 +150,94 @@ void Lara_EnterFlyMode(void)
     Lara_InitialiseMeshes(g_CurrentLevel);
     g_Camera.type = CAM_CHASE;
     Viewport_SetFOV(Viewport_GetUserFOV());
+}
+
+void Lara_Cheat_ExitFlyMode(void)
+{
+    const ROOM_INFO *const room = &g_RoomInfo[g_LaraItem->room_number];
+    const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
+    const int16_t water_height = Room_GetWaterHeight(
+        g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,
+        g_LaraItem->room_number);
+
+    if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
+        g_Lara.water_status = LWS_UNDERWATER;
+    } else {
+        g_Lara.water_status = LWS_ABOVE_WATER;
+        Item_SwitchToAnim(g_LaraItem, LA_STOP, 0);
+        g_LaraItem->rot.x = 0;
+        g_LaraItem->rot.z = 0;
+        g_Lara.head_rot.x = 0;
+        g_Lara.head_rot.y = 0;
+        g_Lara.torso_rot.x = 0;
+        g_Lara.torso_rot.y = 0;
+    }
+    g_Lara.gun_status = LGS_ARMLESS;
+}
+
+void Lara_Cheat_GetStuff(void)
+{
+    if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+        return;
+    }
+
+    // play pistols drawing sound
+    Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
+
+    Inv_AddItem(O_GUN_ITEM);
+
+    if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
+        Inv_AddItem(O_SHOTGUN_ITEM);
+    }
+    g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
+
+    if (!Inv_RequestItem(O_MAGNUM_ITEM)) {
+        Inv_AddItem(O_MAGNUM_ITEM);
+    }
+    g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
+
+    if (!Inv_RequestItem(O_UZI_ITEM)) {
+        Inv_AddItem(O_UZI_ITEM);
+    }
+    g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
+
+    for (int i = 0; i < 10; i++) {
+        if (Inv_RequestItem(O_MEDI_ITEM) < 240) {
+            Inv_AddItem(O_MEDI_ITEM);
+        }
+        if (Inv_RequestItem(O_BIGMEDI_ITEM) < 240) {
+            Inv_AddItem(O_BIGMEDI_ITEM);
+        }
+    }
+
+    if (!Inv_RequestItem(O_KEY_ITEM1)) {
+        Inv_AddItem(O_KEY_ITEM1);
+    }
+    if (!Inv_RequestItem(O_KEY_ITEM2)) {
+        Inv_AddItem(O_KEY_ITEM2);
+    }
+    if (!Inv_RequestItem(O_KEY_ITEM3)) {
+        Inv_AddItem(O_KEY_ITEM3);
+    }
+    if (!Inv_RequestItem(O_KEY_ITEM4)) {
+        Inv_AddItem(O_KEY_ITEM4);
+    }
+    if (!Inv_RequestItem(O_PUZZLE_ITEM1)) {
+        Inv_AddItem(O_PUZZLE_ITEM1);
+    }
+    if (!Inv_RequestItem(O_PUZZLE_ITEM2)) {
+        Inv_AddItem(O_PUZZLE_ITEM2);
+    }
+    if (!Inv_RequestItem(O_PUZZLE_ITEM3)) {
+        Inv_AddItem(O_PUZZLE_ITEM3);
+    }
+    if (!Inv_RequestItem(O_PUZZLE_ITEM4)) {
+        Inv_AddItem(O_PUZZLE_ITEM4);
+    }
+    if (!Inv_RequestItem(O_PICKUP_ITEM1)) {
+        Inv_AddItem(O_PICKUP_ITEM1);
+    }
+    if (!Inv_RequestItem(O_PICKUP_ITEM2)) {
+        Inv_AddItem(O_PICKUP_ITEM2);
+    }
 }
