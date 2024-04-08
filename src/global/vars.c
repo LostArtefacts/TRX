@@ -96,7 +96,6 @@ int16_t g_RoomsToDrawCount = 0;
 
 int16_t g_InvMode = INV_TITLE_MODE;
 int32_t g_InvExtraData[8] = { 0 };
-int16_t g_InvChosen = -1;
 
 int32_t g_LsAdder = 0;
 int32_t g_LsDivider = 0;

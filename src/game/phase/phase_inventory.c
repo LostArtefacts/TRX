@@ -48,12 +48,13 @@ static TEXTSTRING *m_VersionText = NULL;
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 static CAMERA_INFO m_OldCamera;
+static GAME_OBJECT_ID m_InvChosen;
 RING_INFO m_Ring;
 IMOTION_INFO m_Motion;
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion);
 static void Inv_Construct(void);
-static GAMEFLOW_OPTION Inv_Close(void);
+static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item);
@@ -136,7 +137,7 @@ static void Inv_Construct(void)
     g_PhdBottom = Viewport_GetMaxY();
     g_PhdRight = Viewport_GetMaxX();
 
-    g_InvChosen = 0;
+    m_InvChosen = NO_OBJECT;
     if (g_InvMode == INV_TITLE_MODE) {
         g_InvOptionObjects = TITLE_RING_OBJECTS;
         m_VersionText = Text_Create(-20, -18, g_TR1XVersion);
@@ -175,7 +176,7 @@ static void Inv_Construct(void)
     }
 }
 
-static GAMEFLOW_OPTION Inv_Close(void)
+static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen)
 {
     // finish fading
     if (g_InvMode == INV_TITLE_MODE) {
@@ -187,6 +188,7 @@ static GAMEFLOW_OPTION Inv_Close(void)
     }
 
     Inv_Ring_RemoveAlText();
+    m_InvChosen = NO_OBJECT;
 
     if (m_VersionText) {
         Text_Remove(m_VersionText);
@@ -201,9 +203,8 @@ static GAMEFLOW_OPTION Inv_Close(void)
         return GF_START_DEMO;
     }
 
-    switch (g_InvChosen) {
+    switch (inv_chosen) {
     case O_PASSPORT_OPTION:
-
         switch (g_GameInfo.passport_selection) {
         case PASSPORT_MODE_LOAD_GAME:
             return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
@@ -238,27 +239,24 @@ static GAMEFLOW_OPTION Inv_Close(void)
         return GF_START_GYM | g_GameFlow.gym_level_num;
 
     case O_GUN_OPTION:
-        Lara_UseItem(O_GUN_OPTION);
-        break;
-
     case O_SHOTGUN_OPTION:
-        Lara_UseItem(O_SHOTGUN_OPTION);
-        break;
-
     case O_MAGNUM_OPTION:
-        Lara_UseItem(O_MAGNUM_OPTION);
-        break;
-
     case O_UZI_OPTION:
-        Lara_UseItem(O_UZI_OPTION);
-        break;
-
     case O_MEDI_OPTION:
-        Lara_UseItem(O_MEDI_OPTION);
+    case O_BIGMEDI_OPTION:
+    case O_KEY_OPTION1:
+    case O_KEY_OPTION2:
+    case O_KEY_OPTION3:
+    case O_KEY_OPTION4:
+    case O_PUZZLE_OPTION1:
+    case O_PUZZLE_OPTION2:
+    case O_PUZZLE_OPTION3:
+    case O_PUZZLE_OPTION4:
+    case O_LEADBAR_OPTION:
+        Lara_UseItem(inv_chosen);
         break;
 
-    case O_BIGMEDI_OPTION:
-        Lara_UseItem(O_BIGMEDI_OPTION);
+    default:
         break;
     }
 
@@ -562,7 +560,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
     }
 
     if (motion->status == RNG_DONE) {
-        return Inv_Close();
+        return Inv_Close(m_InvChosen);
     }
 
     Inv_Ring_CalcAdders(ring, ROTATE_DURATION);
@@ -632,7 +630,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
         if (m_StartLevel != -1 || m_StartDemo
             || (g_InputDB.menu_back && g_InvMode != INV_TITLE_MODE)) {
             Sound_Effect(SFX_MENU_SPINOUT, NULL, SPM_ALWAYS);
-            g_InvChosen = -1;
+            m_InvChosen = NO_OBJECT;
 
             if (ring->type == RT_MAIN) {
                 g_InvMainCurrent = ring->current_object;
@@ -888,7 +886,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
 
             if (g_InputDB.menu_confirm) {
                 inv_item->sprlist = NULL;
-                g_InvChosen = inv_item->object_number;
+                m_InvChosen = inv_item->object_number;
                 if (ring->type == RT_MAIN) {
                     g_InvMainCurrent = ring->current_object;
                 } else {
@@ -942,7 +940,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
     case RNG_EXITING_INVENTORY:
         if (g_InvMode == INV_TITLE_MODE) {
         } else if (
-            g_InvChosen == O_PASSPORT_OPTION
+            m_InvChosen == O_PASSPORT_OPTION
             && ((g_InvMode == INV_LOAD_MODE && g_SavedGamesCount) /* f6 menu */
                 || g_InvMode == INV_DEATH_MODE /* Lara died */
                 || (g_InvMode == INV_GAME_MODE /* esc menu */

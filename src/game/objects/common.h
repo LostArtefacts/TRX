@@ -18,6 +18,9 @@ extern const GAME_OBJECT_ID g_PickupObjects[];
 extern const GAME_OBJECT_ID g_GunObjects[];
 extern const GAME_OBJECT_PAIR g_GunAmmoObjectMap[];
 
+GAME_OBJECT_ID Object_GetCognate(
+    GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
+int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id);
 bool Object_IsObjectType(
     GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr);
 void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);

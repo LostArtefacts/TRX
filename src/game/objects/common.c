@@ -51,6 +51,45 @@ const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
+const GAME_OBJECT_PAIR g_KeyItemToHoleMap[] = {
+    { O_KEY_OPTION1, O_KEY_HOLE1 },       { O_KEY_OPTION2, O_KEY_HOLE2 },
+    { O_KEY_OPTION3, O_KEY_HOLE3 },       { O_KEY_OPTION4, O_KEY_HOLE4 },
+    { O_PUZZLE_OPTION1, O_PUZZLE_HOLE1 }, { O_PUZZLE_OPTION2, O_PUZZLE_HOLE2 },
+    { O_PUZZLE_OPTION3, O_PUZZLE_HOLE3 }, { O_PUZZLE_OPTION4, O_PUZZLE_HOLE4 },
+    { O_LEADBAR_OPTION, O_MIDAS_TOUCH },  { NO_OBJECT, NO_OBJECT },
+};
+
+GAME_OBJECT_ID Object_GetCognate(
+    GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
+{
+    const GAME_OBJECT_PAIR *pair = &test_map[0];
+    while (pair->key_id != NO_OBJECT) {
+        if (pair->key_id == key_id) {
+            return pair->value_id;
+        }
+        pair++;
+    }
+
+    return NO_OBJECT;
+}
+
+int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id)
+{
+    GAME_OBJECT_ID receptacle_to_check =
+        Object_GetCognate(object_id, g_KeyItemToHoleMap);
+    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
+        ITEM_INFO *item = &g_Items[item_num];
+        if (item->object_number == receptacle_to_check) {
+            const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+            if (Lara_TestPosition(item, obj->bounds())) {
+                return item_num;
+            }
+        }
+    }
+
+    return NO_OBJECT;
+}
+
 bool Object_IsObjectType(
     GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr)
 {

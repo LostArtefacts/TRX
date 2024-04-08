@@ -334,7 +334,7 @@ void Lara_AnimateUntil(ITEM_INFO *lara_item, int32_t goal)
     } while (lara_item->current_anim_state != goal);
 }
 
-void Lara_UseItem(int16_t object_num)
+void Lara_UseItem(GAME_OBJECT_ID object_num)
 {
     LOG_INFO("%d", object_num);
     switch (object_num) {
@@ -396,6 +396,40 @@ void Lara_UseItem(int16_t object_num)
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
+
+    case O_KEY_ITEM1:
+    case O_KEY_OPTION1:
+    case O_KEY_ITEM2:
+    case O_KEY_OPTION2:
+    case O_KEY_ITEM3:
+    case O_KEY_OPTION3:
+    case O_KEY_ITEM4:
+    case O_KEY_OPTION4:
+    case O_PUZZLE_ITEM1:
+    case O_PUZZLE_OPTION1:
+    case O_PUZZLE_ITEM2:
+    case O_PUZZLE_OPTION2:
+    case O_PUZZLE_ITEM3:
+    case O_PUZZLE_OPTION3:
+    case O_PUZZLE_ITEM4:
+    case O_PUZZLE_OPTION4:
+    case O_LEADBAR_ITEM:
+    case O_LEADBAR_OPTION: {
+        int16_t receptacle_item_number = Object_FindReceptacle(object_num);
+        if (receptacle_item_number == NO_OBJECT) {
+            Sound_Effect(SFX_LARA_NO, NULL, SPM_NORMAL);
+            return;
+        }
+        ITEM_INFO *item = &g_Items[receptacle_item_number];
+        g_Lara.interact_target.item_num = receptacle_item_number;
+        g_Lara.interact_target.is_moving = true;
+        g_Lara.interact_target.move_count = 0;
+        Inv_RemoveItem(object_num);
+        break;
+    }
+
+    default:
+        break;
     }
 }
 
@@ -447,6 +481,9 @@ void Lara_Initialise(int32_t level_num)
     g_Lara.left_arm.flash_gun = 0;
     g_Lara.right_arm.lock = 0;
     g_Lara.left_arm.lock = 0;
+    g_Lara.interact_target.is_moving = false;
+    g_Lara.interact_target.item_num = NO_OBJECT;
+    g_Lara.interact_target.move_count = 0;
 
     if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
         g_Lara.water_status = LWS_UNDERWATER;

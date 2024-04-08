@@ -22,8 +22,6 @@
 static int16_t m_AnimatingCount = 0;
 
 static ITEM_INFO *Carrier_GetCarrier(int16_t item_num);
-static GAME_OBJECT_ID Carrier_GetCognate(
-    GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
 static void Carrier_AnimateDrop(CARRIED_ITEM *item);
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
@@ -114,20 +112,6 @@ static ITEM_INFO *Carrier_GetCarrier(int16_t item_num)
     return item;
 }
 
-static GAME_OBJECT_ID Carrier_GetCognate(
-    GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
-{
-    const GAME_OBJECT_PAIR *pair = &test_map[0];
-    while (pair->key_id != NO_OBJECT) {
-        if (pair->key_id == key_id) {
-            return pair->value_id;
-        }
-        pair++;
-    }
-
-    return NO_OBJECT;
-}
-
 int32_t Carrier_GetItemCount(int16_t item_num)
 {
     ITEM_INFO *carrier = Carrier_GetCarrier(item_num);
@@ -183,7 +167,7 @@ void Carrier_TestItemDrops(int16_t item_num)
         if (g_GameFlow.convert_dropped_guns
             && Object_IsObjectType(object_id, g_GunObjects)
             && Inv_RequestItem(object_id)) {
-            object_id = Carrier_GetCognate(object_id, g_GunAmmoObjectMap);
+            object_id = Object_GetCognate(object_id, g_GunAmmoObjectMap);
         }
 
         item->spawn_number = Item_Spawn(carrier, object_id);
@@ -215,7 +199,7 @@ void Carrier_TestLegacyDrops(int16_t item_num)
     // them by using a test cognate in each case. Ensure also that
     // collected items do not re-spawn now or in future saves.
     GAME_OBJECT_ID test_id =
-        Carrier_GetCognate(carrier->object_number, m_LegacyMap);
+        Object_GetCognate(carrier->object_number, m_LegacyMap);
     if (test_id == NO_OBJECT) {
         return;
     }

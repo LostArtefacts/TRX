@@ -316,6 +316,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed various bugs with falling movable blocks
 - fixed bugs when trying to stack multiple movable blocks
 - fixed Midas's touch having unrestricted vertical range
+- fixed Lara saying "no" when taking valid actions in front of a key item receptacle
 
 #### Cheats
 - added a fly cheat

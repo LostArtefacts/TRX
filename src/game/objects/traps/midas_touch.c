@@ -44,6 +44,22 @@ void MidasTouch_Collision(
     ITEM_INFO *item = &g_Items[item_num];
     const OBJECT_INFO *const obj = &g_Objects[item->object_number];
 
+    DIRECTION quadrant = (uint16_t)(lara_item->rot.y + PHD_45) / PHD_90;
+    switch (quadrant) {
+    case DIR_NORTH:
+        item->rot.y = 0;
+        break;
+    case DIR_EAST:
+        item->rot.y = PHD_90;
+        break;
+    case DIR_SOUTH:
+        item->rot.y = -PHD_180;
+        break;
+    case DIR_WEST:
+        item->rot.y = -PHD_90;
+        break;
+    }
+
     if (lara_item->current_anim_state == LS_USE_MIDAS) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
             Overlay_AddPickup(O_PUZZLE_ITEM1);
@@ -75,41 +91,25 @@ void MidasTouch_Collision(
         return;
     }
 
-    if ((g_InvChosen == -1 && !g_Input.action)
-        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status
-        || lara_item->current_anim_state != LS_STOP) {
-        return;
+    if (g_Lara.interact_target.is_moving
+        && g_Lara.interact_target.item_num == item_num) {
+        lara_item->current_anim_state = LS_USE_MIDAS;
+        lara_item->goal_anim_state = LS_USE_MIDAS;
+        Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
+        g_Lara.gun_status = LGS_HANDS_BUSY;
+        g_Lara.interact_target.is_moving = false;
+        g_Lara.interact_target.item_num = NO_OBJECT;
     }
 
-    DIRECTION quadrant = (uint16_t)(lara_item->rot.y + PHD_45) / PHD_90;
-    switch (quadrant) {
-    case DIR_NORTH:
-        item->rot.y = 0;
-        break;
-    case DIR_EAST:
-        item->rot.y = PHD_90;
-        break;
-    case DIR_SOUTH:
-        item->rot.y = -PHD_180;
-        break;
-    case DIR_WEST:
-        item->rot.y = -PHD_90;
-        break;
+    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
+        || lara_item->gravity_status
+        || lara_item->current_anim_state != LS_STOP) {
+        return;
     }
 
     if (!Lara_TestPosition(item, obj->bounds())) {
         return;
     }
 
-    if (g_InvChosen == -1) {
-        Inv_Display(INV_KEYS_MODE);
-    }
-
-    if (g_InvChosen == O_LEADBAR_OPTION) {
-        Inv_RemoveItem(O_LEADBAR_OPTION);
-        lara_item->current_anim_state = LS_USE_MIDAS;
-        lara_item->goal_anim_state = LS_USE_MIDAS;
-        Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
-        g_Lara.gun_status = LGS_HANDS_BUSY;
-    }
+    Inv_Display(INV_KEYS_MODE);
 }
