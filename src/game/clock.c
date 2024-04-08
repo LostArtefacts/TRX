@@ -1,6 +1,8 @@
 // IWYU pragma: no_include <bits/types/struct_tm.h>
 #include "game/clock.h"
 
+#include "game/console.h"
+#include "game/gameflow.h"
 #include "game/interpolation.h"
 #include "game/phase/phase.h"
 #include "global/vars.h"
@@ -22,14 +24,8 @@ static double m_TurboSpeeds[TURBO_SPEED_COUNT] = {
 
 void Clock_CycleTurboSpeed(bool forward)
 {
-    if (forward) {
-        m_TurboSpeedIdx++;
-    } else {
-        m_TurboSpeedIdx--;
-        m_TurboSpeedIdx %= TURBO_SPEED_COUNT;
-        m_TurboSpeedIdx += TURBO_SPEED_COUNT;
-    }
-    m_TurboSpeedIdx %= TURBO_SPEED_COUNT;
+    const int32_t idx = m_TurboSpeedIdx + TURBO_SPEED_OFFSET;
+    Clock_SetTurboSpeed(idx + (forward ? 1 : -1));
 }
 
 void Clock_SetTurboSpeed(const int32_t idx)
@@ -37,6 +33,7 @@ void Clock_SetTurboSpeed(const int32_t idx)
     m_TurboSpeedIdx = idx - TURBO_SPEED_OFFSET;
     CLAMP(m_TurboSpeedIdx, 0, TURBO_SPEED_COUNT - 1);
     LOG_INFO("Setting speed to %d (%.2f)", idx, Clock_GetSpeedMultiplier());
+    Console_Log(g_GameFlow.strings[GS_OSD_SPEED_SET], Clock_GetTurboSpeed());
 }
 
 int32_t Clock_GetTurboSpeed(void)

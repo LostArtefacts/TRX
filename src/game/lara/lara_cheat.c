@@ -1,5 +1,6 @@
 #include "game/lara/lara_cheat.h"
 
+#include "game/console.h"
 #include "game/effects/exploding_death.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
@@ -121,6 +122,7 @@ void Lara_Cheat_Control(void)
 void Lara_Cheat_EndLevel(void)
 {
     g_LevelComplete = true;
+    Console_Log(g_GameFlow.strings[GS_OSD_COMPLETE_LEVEL]);
 }
 
 void Lara_Cheat_EnterFlyMode(void)
@@ -150,6 +152,7 @@ void Lara_Cheat_EnterFlyMode(void)
     Lara_InitialiseMeshes(g_CurrentLevel);
     g_Camera.type = CAM_CHASE;
     Viewport_SetFOV(Viewport_GetUserFOV());
+    Console_Log(g_GameFlow.strings[GS_OSD_FLY_MODE_ON]);
 }
 
 void Lara_Cheat_ExitFlyMode(void)
@@ -173,6 +176,7 @@ void Lara_Cheat_ExitFlyMode(void)
         g_Lara.torso_rot.y = 0;
     }
     g_Lara.gun_status = LGS_ARMLESS;
+    Console_Log(g_GameFlow.strings[GS_OSD_FLY_MODE_OFF]);
 }
 
 void Lara_Cheat_GetStuff(void)
@@ -180,6 +184,8 @@ void Lara_Cheat_GetStuff(void)
     if (g_CurrentLevel == g_GameFlow.gym_level_num) {
         return;
     }
+
+    Console_Log(g_GameFlow.strings[GS_OSD_GIVE_ITEM_CHEAT]);
 
     // play pistols drawing sound
     Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);

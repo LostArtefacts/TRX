@@ -14,6 +14,7 @@
 - added the ability to move the look camera while targeting an enemy in combat (#1187)
 - added the ability to skip fade-out in stats screens
 - added support for animated room sprites in custom levels and an option to animate plant sprites in The Cistern and Tomb of Tihocan (#449)
+- added OSD messages for cheats (#1220)
 - changed stats no longer disappear during fade-out (#1211)
 - changed the way music timestamps are internally handled – resets music position in existing saves
 - changed vertex and fragment shaders into unified files that are runtime pre-processed for OpenGL versions 2.1 or 3.3
