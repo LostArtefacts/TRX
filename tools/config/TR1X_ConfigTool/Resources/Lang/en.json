@@ -160,6 +160,10 @@
       "Title": "Fix texture issues",
       "Description": "Fixes original issues with missing or incorrect textures."
     },
+    "fix_animated_sprites": {
+      "Title": "Fix sprite animations",
+      "Description": "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate."
+    },
     "fix_item_rots": {
       "Title": "Fix item rotation issues",
       "Description": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option."

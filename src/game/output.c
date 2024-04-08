@@ -924,16 +924,16 @@ void Output_AnimateTextures(void)
 {
     m_WibbleOffset = Clock_GetLogicalFrame() % WIBBLE_SIZE;
 
-    if (!g_AnimTextureRanges) {
+    if (!Clock_IsAtLogicalFrame(5)) {
         return;
     }
 
-    if (Clock_IsAtLogicalFrame(5)) {
-        int16_t *ptr = g_AnimTextureRanges;
+    if (g_AnimTextureRanges) {
+        const int16_t *ptr = g_AnimTextureRanges;
         int16_t i = *ptr++;
         while (i > 0) {
             int16_t j = *ptr++;
-            PHD_TEXTURE temp = g_PhdTextureInfo[*ptr];
+            const PHD_TEXTURE temp = g_PhdTextureInfo[*ptr];
             while (j > 0) {
                 g_PhdTextureInfo[ptr[0]] = g_PhdTextureInfo[ptr[1]];
                 j--;
@@ -943,6 +943,21 @@ void Output_AnimateTextures(void)
             i--;
             ptr++;
         }
+    }
+
+    for (int32_t i = 0; i < STATIC_NUMBER_OF; i++) {
+        const STATIC_INFO *const static_info = &g_StaticObjects[i];
+        if (!static_info->loaded || static_info->nmeshes >= -1) {
+            continue;
+        }
+
+        const int32_t num_meshes = -static_info->nmeshes;
+        const PHD_SPRITE temp = g_PhdSpriteInfo[static_info->mesh_number];
+        for (int32_t j = 0; j < num_meshes - 1; j++) {
+            g_PhdSpriteInfo[static_info->mesh_number + j] =
+                g_PhdSpriteInfo[static_info->mesh_number + j + 1];
+        }
+        g_PhdSpriteInfo[static_info->mesh_number + num_meshes - 1] = temp;
     }
 }
 

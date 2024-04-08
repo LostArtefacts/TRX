@@ -158,6 +158,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "text_scale",                     .type = COT_DOUBLE, .target = &g_Config.ui.text_scale,                       .default_value = &(double){DEFAULT_UI_SCALE},         0},
     { .name = "bar_scale",                      .type = COT_DOUBLE, .target = &g_Config.ui.bar_scale,                        .default_value = &(double){DEFAULT_UI_SCALE},         0},
     { .name = "new_game_plus_unlock",           .type = COT_BOOL,   .target = &g_Config.profile.new_game_plus_unlock,        .default_value = &(bool){false},                      0},
+    { .name = "fix_animated_sprites",           .type = COT_BOOL,   .target = &g_Config.fix_animated_sprites,                .default_value = &(bool){true},                       0},
     // clang-format on
 
     // guard

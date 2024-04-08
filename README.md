@@ -369,6 +369,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added optional fade effects
 - added a vsync option
 - added contextual arrows to menu options
+- added support for animated room sprites, which also restores intended behavior in, for example, The Cistern room 0
 - changed the Scion in The Great Pyramid from spawning blood when hit to a richochet effect
 - fixed thin black lines between polygons
 - fixed black screen flashing when navigating the inventory

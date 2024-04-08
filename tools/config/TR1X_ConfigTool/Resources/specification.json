@@ -152,6 +152,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "fix_animated_sprites",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "fix_qwop_glitch",
           "DataType": "Bool",
           "DefaultValue": false
