@@ -49,7 +49,7 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
     CLAMPG(nframes, MAX_FRAMES);
 
     for (int32_t i = 0; i < nframes; i++) {
-        Lara_CheckCheatMode();
+        Lara_Cheat_Control();
         if (g_LevelComplete) {
             return GF_PHASE_BREAK;
         }

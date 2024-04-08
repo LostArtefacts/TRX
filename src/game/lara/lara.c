@@ -7,6 +7,7 @@
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/lara/lara_cheat.h"
 #include "game/lara/lara_control.h"
 #include "game/los.h"
 #include "game/lot.h"
@@ -34,8 +35,8 @@ void Lara_Control(void)
     COLL_INFO coll = { 0 };
 
     ITEM_INFO *item = g_LaraItem;
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
-    int32_t room_submerged = r->flags & RF_UNDERWATER;
+    const ROOM_INFO *const room = &g_RoomInfo[item->room_number];
+    const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.move_count++ > LARA_MOVE_TIMEOUT) {
@@ -44,7 +45,7 @@ void Lara_Control(void)
     }
 
     if (g_Input.level_skip_cheat) {
-        g_LevelComplete = true;
+        Lara_Cheat_EndLevel();
     }
 
     if (g_Input.health_cheat) {
@@ -54,11 +55,11 @@ void Lara_Control(void)
     }
 
     if (g_InputDB.item_cheat) {
-        Lara_CheatGetStuff();
+        Lara_Cheat_GetStuff();
     }
 
     if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
-        Lara_EnterFlyMode();
+        Lara_Cheat_EnterFlyMode();
     }
 
     if (g_Lara.water_status == LWS_ABOVE_WATER && room_submerged) {
@@ -91,16 +92,17 @@ void Lara_Control(void)
         g_Lara.torso_rot.y = 0;
         Splash_Spawn(item);
     } else if (g_Lara.water_status == LWS_UNDERWATER && !room_submerged) {
-        int16_t wh = Room_GetWaterHeight(
+        const int16_t water_height = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
-        if (wh != NO_HEIGHT && ABS(wh - item->pos.y) < STEP_L) {
+        if (water_height != NO_HEIGHT
+            && ABS(water_height - item->pos.y) < STEP_L) {
             g_Lara.water_status = LWS_SURFACE;
             g_Lara.dive_timer = DIVE_WAIT + 1;
             item->current_anim_state = LS_SURF_TREAD;
             item->goal_anim_state = LS_SURF_TREAD;
             Item_SwitchToAnim(item, LA_SURF_TREAD, 0);
             item->fall_speed = 0;
-            item->pos.y = wh + 1;
+            item->pos.y = water_height + 1;
             item->rot.x = 0;
             item->rot.z = 0;
             g_Lara.head_rot.x = 0;
@@ -196,20 +198,7 @@ void Lara_Control(void)
         g_Lara.death_timer = 0;
         Lara_HandleUnderwater(item, &coll);
         if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
-            int16_t wh = Room_GetWaterHeight(
-                item->pos.x, item->pos.y, item->pos.z, item->room_number);
-            if (room_submerged || (wh != NO_HEIGHT && wh > 0)) {
-                g_Lara.water_status = LWS_UNDERWATER;
-            } else {
-                g_Lara.water_status = LWS_ABOVE_WATER;
-                Item_SwitchToAnim(item, LA_STOP, 0);
-                item->rot.x = item->rot.z = 0;
-                g_Lara.head_rot.x = 0;
-                g_Lara.head_rot.y = 0;
-                g_Lara.torso_rot.x = 0;
-                g_Lara.torso_rot.y = 0;
-            }
-            g_Lara.gun_status = LGS_ARMLESS;
+            Lara_Cheat_ExitFlyMode();
         }
         break;
     }

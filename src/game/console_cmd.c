@@ -10,6 +10,7 @@
 #include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/lara/lara_cheat.h"
 #include "game/los.h"
 #include "game/objects/common.h"
 #include "game/random.h"
@@ -223,7 +224,7 @@ static bool Console_Cmd_Fly(const char *const args)
         return false;
     }
     Console_Log(g_GameFlow.strings[GS_OSD_FLY_MODE_ON]);
-    Lara_EnterFlyMode();
+    Lara_Cheat_EnterFlyMode();
     return true;
 }
 
@@ -238,8 +239,6 @@ static bool Console_Cmd_Speed(const char *const args)
     int32_t num = -1;
     if (sscanf(args, "%d", &num) == 1) {
         Clock_SetTurboSpeed(num);
-        Console_Log(
-            g_GameFlow.strings[GS_OSD_SPEED_SET], Clock_GetTurboSpeed());
         return true;
     }
 
@@ -449,8 +448,7 @@ static bool Console_Cmd_Kill(const char *args)
 static bool Console_Cmd_EndLevel(const char *args)
 {
     if (strcmp(args, "") == 0) {
-        g_LevelComplete = true;
-        Console_Log(g_GameFlow.strings[GS_OSD_COMPLETE_LEVEL]);
+        Lara_Cheat_EndLevel();
         return true;
     }
     return false;
