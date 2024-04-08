@@ -317,6 +317,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed bugs when trying to stack multiple movable blocks
 - fixed Midas's touch having unrestricted vertical range
 - fixed Lara saying "no" when taking valid actions in front of a key item receptacle
+- fixed flickering in bats' death animations and rapid shooting if Lara continues to fire when they are killed
 
 #### Cheats
 - added a fly cheat
