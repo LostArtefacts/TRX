@@ -19,6 +19,6 @@ jobs:
       release_name: 'Development snapshot'
       draft: false
       prerelease: true
-      tag_name: latest
+      tag_name: 'latest'
       let_mac_fail: true
     secrets: inherit

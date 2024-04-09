@@ -4,9 +4,9 @@ on:
   workflow_call:
     inputs:
       let_mac_fail:
+        type: boolean
         description: "Do not require Mac builds to pass"
         required: false
-        type: boolean
         default: false
 
 env:
@@ -18,7 +18,7 @@ env:
 jobs:
   build:
     runs-on: macos-14
-    continue-on-error: ${{ inputs.let_mac_fail }}
+    continue-on-error: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     steps:
       - name: Set up signing certificate
         env:

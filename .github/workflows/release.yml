@@ -12,28 +12,29 @@ on:
   workflow_call:
     inputs:
       draft:
+        type: boolean
         description: "Draft"
         required: true
         default: false
-        type: boolean
       prerelease:
+        type: boolean
         description: "Prerelease"
         required: true
-        type: boolean
+        default: false
       release_name:
+        type: string
         description: "Release name"
         required: true
         default: "Release ${{ github.ref_name }}"
-        type: string
       tag_name:
+        type: string
         description: "Tag name"
         required: false
-        default: "${{ github.ref }}"
-        type: string
+        default: github.ref_name
       let_mac_fail:
+        type: boolean
         description: "Do not require Mac builds to pass"
         required: false
-        type: boolean
         default: false
 
   workflow_dispatch:
@@ -41,23 +42,23 @@ on:
       draft:
         description: "Draft"
         required: true
-        default: true
         type: boolean
+        default: false
       prerelease:
         description: "Prerelease"
         required: true
-        default: false
         type: boolean
+        default: false
       release_name:
         description: "Release name"
         required: true
-        default: "Draft release"
         type: string
+        default: "Release name"
       tag_name:
         description: "Tag name"
         required: false
-        default: null
         type: string
+        default: github.ref_Name
 
 jobs:
   package_multiplatform:
@@ -100,7 +101,7 @@ jobs:
       vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/build_macos.yml
     with:
-      let_mac_fail: ${{ inputs.let_mac_fail }}
+      let_mac_fail: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     secrets: inherit
 
   publish_release:
@@ -129,7 +130,7 @@ jobs:
           just output-current-changelog > _changes.txt
 
       - name: "Get information on the latest pre-release"
-        if: ${{ inputs.prerelease }}
+        if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
         id: last_release
         uses: InsonusK/get-latest-release@v1.0.1
         with:
@@ -137,11 +138,11 @@ jobs:
           exclude_types: "draft|release"
 
       - name: 'Mark the pre-release as latest'
-        if: ${{ inputs.prerelease }}
+        if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
         uses: EndBug/latest-tag@latest
 
       - name: "Delete old pre-release assets"
-        if: ${{ inputs.prerelease }}
+        if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
         uses: mknejp/delete-release-assets@v1
         continue-on-error: true
         with:
@@ -156,8 +157,8 @@ jobs:
           name: ${{ inputs.release_name }}
           tag_name: ${{ inputs.tag_name }}
           body_path: _changes.txt
-          draft: ${{ inputs.draft }}
-          prerelease: ${{ inputs.prerelease }}
+          draft: ${{ inputs.draft == true || inputs.draft == 'true' }}
+          prerelease: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
           fail_on_unmatched_files: true
           files: |
             artifacts/*
