@@ -404,13 +404,17 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
     case O_PUZZLE_ITEM4:
     case O_PUZZLE_OPTION4:
     case O_LEADBAR_ITEM:
-    case O_LEADBAR_OPTION: {
+    case O_LEADBAR_OPTION:
+    case O_SCION_ITEM:
+    case O_SCION_ITEM2:
+    case O_SCION_ITEM3:
+    case O_SCION_ITEM4:
+    case O_SCION_OPTION: {
         int16_t receptacle_item_number = Object_FindReceptacle(object_num);
         if (receptacle_item_number == NO_OBJECT) {
             Sound_Effect(SFX_LARA_NO, NULL, SPM_NORMAL);
             return;
         }
-        ITEM_INFO *item = &g_Items[receptacle_item_number];
         g_Lara.interact_target.item_num = receptacle_item_number;
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
