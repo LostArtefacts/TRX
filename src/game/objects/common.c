@@ -51,8 +51,8 @@ const GAME_OBJECT_ID g_DoorObjects[] = {
 
 const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     O_TRAPDOOR,
-    O_BIGTRAPDOOR,
     O_TRAPDOOR2,
+    O_BIGTRAPDOOR,
     NO_OBJECT,
 };
 
