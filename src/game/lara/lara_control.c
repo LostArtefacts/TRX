@@ -9,6 +9,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/lara/lara_cheat.h"
 #include "game/lara/lara_col.h"
 #include "game/lara/lara_look.h"
 #include "game/lara/lara_state.h"
@@ -387,7 +388,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
             m_OpenDoorsCheatCooldown--;
         } else if (g_Input.draw) {
             m_OpenDoorsCheatCooldown = LOGIC_FPS;
-            Door_OpenNearest(g_LaraItem);
+            Lara_Cheat_OpenNearestDoor();
         }
     }
 

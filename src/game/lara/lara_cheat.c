@@ -7,6 +7,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "game/viewport.h"
@@ -246,5 +247,42 @@ void Lara_Cheat_GetStuff(void)
     }
     if (!Inv_RequestItem(O_PICKUP_ITEM2)) {
         Inv_AddItem(O_PICKUP_ITEM2);
+    }
+}
+
+void Lara_Cheat_OpenNearestDoor(void)
+{
+    if (g_LaraItem == NULL) {
+        return;
+    }
+
+    const int32_t shift = 8; // constant shift to avoid overflow errors
+    const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
+    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
+        ITEM_INFO *const item = &g_Items[item_num];
+        if (!Object_IsObjectType(item->object_number, g_DoorObjects)
+            && !Object_IsObjectType(item->object_number, g_TrapdoorObjects)) {
+            continue;
+        }
+
+        const int32_t dx = (item->pos.x - g_LaraItem->pos.x) >> shift;
+        const int32_t dy = (item->pos.y - g_LaraItem->pos.y) >> shift;
+        const int32_t dz = (item->pos.z - g_LaraItem->pos.z) >> shift;
+        const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+        if (dist > max_dist) {
+            continue;
+        }
+
+        if (!item->active) {
+            Item_AddActive(item_num);
+            item->flags |= IF_CODE_BITS;
+        } else if (item->flags & IF_CODE_BITS) {
+            item->flags &= ~IF_CODE_BITS;
+        } else {
+            item->flags |= IF_CODE_BITS;
+        }
+        item->timer = 0;
+        item->touch_bits = 0;
+        break;
     }
 }

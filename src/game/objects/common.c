@@ -44,6 +44,18 @@ const GAME_OBJECT_ID g_GunObjects[] = {
     NO_OBJECT,
 };
 
+const GAME_OBJECT_ID g_DoorObjects[] = {
+    O_DOOR_TYPE1, O_DOOR_TYPE2, O_DOOR_TYPE3, O_DOOR_TYPE4, O_DOOR_TYPE5,
+    O_DOOR_TYPE6, O_DOOR_TYPE7, O_DOOR_TYPE8, NO_OBJECT,
+};
+
+const GAME_OBJECT_ID g_TrapdoorObjects[] = {
+    O_TRAPDOOR,
+    O_BIGTRAPDOOR,
+    O_TRAPDOOR2,
+    NO_OBJECT,
+};
+
 const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
     { O_SHOTGUN_ITEM, O_SG_AMMO_ITEM },
     { O_MAGNUM_ITEM, O_MAG_AMMO_ITEM },
