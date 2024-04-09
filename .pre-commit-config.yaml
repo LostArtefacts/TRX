@@ -7,3 +7,9 @@ repos:
     args: ["-style=file", "-i"]
     language: system
     files: \.[ch](pp)?$
+
+  - id: update-gameflow
+    name: Update game flow files
+    entry: tools/update_gameflow
+    language: python
+    stages: [commit]

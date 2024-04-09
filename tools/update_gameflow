@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+import json
+import re
+
+from shared.common import DATA_DIR, SRC_DIR
+
+SHIP_DIR = DATA_DIR / "ship"
+GAME_STRING_DEF_PATH = SRC_DIR / "game/game_string.def"
+
+
+def get_default_string_map() -> dict[str, str]:
+    result: dict[str, str] = {}
+    for line in GAME_STRING_DEF_PATH.read_text().splitlines():
+        if match := re.match(r'^GS_DEFINE\((\w+), "([^"]+)"\)$', line.strip()):
+            result[match.group(1)] = match.group(2)
+    return result
+
+
+def postprocess_gameflow(gameflow: str, string_map: dict[str, str]) -> str:
+    gameflow = re.sub(
+        r'^(    "strings": {)[^}]*(})',
+        '    "strings": {\n'
+        + "\n".join(
+            f"        {json.dumps(key)}: {json.dumps(value)},"
+            for key, value in string_map.items()
+        )
+        + "\n    }",
+        gameflow,
+        flags=re.M | re.DOTALL,
+    )
+    return gameflow
+
+
+def main() -> None:
+    string_map = get_default_string_map()
+    assert string_map
+
+    for gameflow_path in SHIP_DIR.rglob("*gameflow*.json*"):
+        gameflow = gameflow_path.read_text()
+        gameflow = postprocess_gameflow(gameflow, string_map)
+        gameflow_path.write_text(gameflow)
+
+
+if __name__ == "__main__":
+    main()

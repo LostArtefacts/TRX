@@ -40,11 +40,11 @@ jobs:
           sudo snap install --edge --classic just
           sudo ln -s /usr/bin/clang-format-17 /usr/local/bin/clang-format
           sudo apt-get install -y python3-pip
-          sudo python3 -m pip install pyjson5
+          sudo python3 -m pip install pyjson5 pre-commit
 
       - name: Check formatted code differences
         run: |
-          just lint-format
+          just lint-format || /bin/true
           git diff --exit-code || (
             clang-format --version
             echo 'Please run `just lint` and commit the changes.'
