@@ -182,7 +182,7 @@ void Lara_Cheat_ExitFlyMode(void)
 
 void Lara_Cheat_GetStuff(void)
 {
-    if (g_CurrentLevel == g_GameFlow.gym_level_num) {
+    if (g_LaraItem == NULL) {
         return;
     }
 

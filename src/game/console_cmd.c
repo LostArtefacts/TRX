@@ -278,6 +278,11 @@ static bool Console_Cmd_Cheats(const char *const args)
 
 static bool Console_Cmd_GiveItem(const char *args)
 {
+    if (g_LaraItem == NULL) {
+        Console_Log(GS(OSD_INVALID_LEVEL), args);
+        return true;
+    }
+
     int32_t num = 1;
     if (sscanf(args, "%d ", &num) == 1) {
         args = strstr(args, " ");
