@@ -1,6 +1,7 @@
 #include "game/phase/phase_pause.h"
 
 #include "game/game.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
@@ -67,7 +68,7 @@ static void Phase_Pause_RemoveText(void)
 static void Phase_Pause_UpdateText(void)
 {
     if (m_PausedText == NULL) {
-        m_PausedText = Text_Create(0, -24, g_GameFlow.strings[GS_PAUSE_PAUSED]);
+        m_PausedText = Text_Create(0, -24, GS(PAUSE_PAUSED));
         Text_CentreH(m_PausedText, 1);
         Text_AlignBottom(m_PausedText, 1);
     }
@@ -145,9 +146,7 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
 
     case STATE_ASK: {
         int32_t choice = Phase_Pause_DisplayRequester(
-            g_GameFlow.strings[GS_PAUSE_EXIT_TO_TITLE],
-            g_GameFlow.strings[GS_PAUSE_CONTINUE],
-            g_GameFlow.strings[GS_PAUSE_QUIT], 1);
+            GS(PAUSE_EXIT_TO_TITLE), GS(PAUSE_CONTINUE), GS(PAUSE_QUIT), 1);
         if (choice == 1) {
             Music_Unpause();
             Sound_UnpauseAll();
@@ -160,9 +159,7 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
 
     case STATE_CONFIRM: {
         int32_t choice = Phase_Pause_DisplayRequester(
-            g_GameFlow.strings[GS_PAUSE_ARE_YOU_SURE],
-            g_GameFlow.strings[GS_PAUSE_YES], g_GameFlow.strings[GS_PAUSE_NO],
-            1);
+            GS(PAUSE_ARE_YOU_SURE), GS(PAUSE_YES), GS(PAUSE_NO), 1);
         if (choice == 1) {
             return GF_EXIT_TO_TITLE;
         } else if (choice == 2) {

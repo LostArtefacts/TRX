@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/gameflow.h"
+#include "game/game_string.h"
 #include "game/input.h"
 #include "game/screen.h"
 #include "game/sound.h"
@@ -250,7 +250,7 @@ static void Option_ControlInitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     int16_t y = TOP_Y + ROW_HEIGHT + BORDER * 2;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         m_ControlMenu.role_texts[i] =
-            Text_Create(x_roles, y, g_GameFlow.strings[col->game_string]);
+            Text_Create(x_roles, y, GameString_Get(col->game_string));
         Text_CentreV(m_ControlMenu.role_texts[i], true);
 
         m_ControlMenu.key_texts[i] = Text_Create(
@@ -264,7 +264,7 @@ static void Option_ControlInitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 
     m_Text[TEXT_TITLE] = Text_Create(
         0, TOP_Y - BORDER / 2,
-        g_GameFlow.strings[m_LayoutMap[layout_num].layout_string]);
+        GameString_Get(m_LayoutMap[layout_num].layout_string));
     Text_CentreH(m_Text[TEXT_TITLE], true);
     Text_CentreV(m_Text[TEXT_TITLE], true);
     Text_AddBackground(m_Text[TEXT_TITLE], 0, 0, 0, 0, TS_REQUESTED);
@@ -311,17 +311,14 @@ static void Option_ControlInitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
         m_Text[TEXT_RESET_BORDER], box_width, ROW_HEIGHT, 0, 0, TS_BACKGROUND);
 
     if (mode == CM_KEYBOARD) {
-        sprintf(
-            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_KEY],
-            RESET_ALL_KEY);
-        sprintf(
-            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_KEY], UNBIND_KEY);
+        sprintf(m_ResetGS, GS(CONTROL_RESET_DEFAULTS_KEY), RESET_ALL_KEY);
+        sprintf(m_UnbindGS, GS(CONTROL_UNBIND_KEY), UNBIND_KEY);
     } else {
         sprintf(
-            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_BTN],
+            m_ResetGS, GS(CONTROL_RESET_DEFAULTS_BTN),
             Input_GetButtonName(g_Config.input.cntlr_layout, RESET_ALL_BUTTON));
         sprintf(
-            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_BTN],
+            m_UnbindGS, GS(CONTROL_UNBIND_BTN),
             Input_GetButtonName(g_Config.input.cntlr_layout, UNBIND_BUTTON));
     }
 
@@ -364,20 +361,17 @@ static void Option_ControlUpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     }
 
     if (mode == CM_KEYBOARD) {
-        sprintf(
-            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_KEY],
-            RESET_ALL_KEY);
+        sprintf(m_ResetGS, GS(CONTROL_RESET_DEFAULTS_KEY), RESET_ALL_KEY);
         Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
-        sprintf(
-            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_KEY], UNBIND_KEY);
+        sprintf(m_UnbindGS, GS(CONTROL_UNBIND_KEY), UNBIND_KEY);
         Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
     } else {
         sprintf(
-            m_ResetGS, g_GameFlow.strings[GS_CONTROL_RESET_DEFAULTS_BTN],
+            m_ResetGS, GS(CONTROL_RESET_DEFAULTS_BTN),
             Input_GetButtonName(layout_num, RESET_ALL_BUTTON));
         Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
         sprintf(
-            m_UnbindGS, g_GameFlow.strings[GS_CONTROL_UNBIND_BTN],
+            m_UnbindGS, GS(CONTROL_UNBIND_BTN),
             Input_GetButtonName(layout_num, UNBIND_BUTTON));
         Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
     }
@@ -385,7 +379,7 @@ static void Option_ControlUpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     if (m_ControlMenu.cur_role == KC_TITLE) {
         Text_ChangeText(
             m_Text[TEXT_TITLE],
-            g_GameFlow.strings[m_LayoutMap[layout_num].layout_string]);
+            GameString_Get(m_LayoutMap[layout_num].layout_string));
 
         int32_t title_w = Text_GetWidth(m_Text[TEXT_TITLE]);
         Text_SetPos(
@@ -407,7 +401,7 @@ static void Option_ControlUpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     const TEXT_COLUMN_PLACEMENT *col = m_ControlMenu.top_row;
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_ChangeText(
-            m_ControlMenu.role_texts[i], g_GameFlow.strings[col->game_string]);
+            m_ControlMenu.role_texts[i], GameString_Get(col->game_string));
         Text_ChangeText(
             m_ControlMenu.key_texts[i],
             Input_GetKeyName(mode, layout_num, col->role));

@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/game.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/music.h"
@@ -63,9 +64,8 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
     // kills
     sprintf(
         buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
-                                            : GS_STATS_KILLS_BASIC_FMT],
+        g_Config.enable_detailed_stats ? GS(STATS_KILLS_DETAIL_FMT)
+                                       : GS(STATS_KILLS_BASIC_FMT),
         stats->kill_count, stats->max_kill_count);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
@@ -76,9 +76,8 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
     // pickups
     sprintf(
         buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
-                                            : GS_STATS_PICKUPS_BASIC_FMT],
+        g_Config.enable_detailed_stats ? GS(STATS_PICKUPS_DETAIL_FMT)
+                                       : GS(STATS_PICKUPS_BASIC_FMT),
         stats->pickup_count, stats->max_pickup_count);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
@@ -95,9 +94,7 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
         }
         secret_flags >>= 1;
     }
-    sprintf(
-        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
-        stats->max_secret_count);
+    sprintf(buf, GS(STATS_SECRETS_FMT), secret_count, stats->max_secret_count);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
     Text_CentreV(*cur_txt, 1);
@@ -106,8 +103,7 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
 
     // deaths
     if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
-        sprintf(
-            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
+        sprintf(buf, GS(STATS_DEATHS_FMT), stats->death_count);
         *cur_txt = Text_Create(0, y, buf);
         Text_CentreH(*cur_txt, 1);
         Text_CentreV(*cur_txt, 1);
@@ -127,7 +123,7 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
     } else {
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
-    sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
+    sprintf(buf, GS(STATS_TIME_TAKEN_FMT), time_str);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
     Text_CentreV(*cur_txt, 1);
@@ -156,9 +152,8 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     // kills
     sprintf(
         buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
-                                            : GS_STATS_KILLS_BASIC_FMT],
+        g_Config.enable_detailed_stats ? GS(STATS_KILLS_DETAIL_FMT)
+                                       : GS(STATS_KILLS_BASIC_FMT),
         stats.player_kill_count, stats.total_kill_count);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
@@ -169,9 +164,8 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     // pickups
     sprintf(
         buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
-                                            : GS_STATS_PICKUPS_BASIC_FMT],
+        g_Config.enable_detailed_stats ? GS(STATS_PICKUPS_DETAIL_FMT)
+                                       : GS(STATS_PICKUPS_BASIC_FMT),
         stats.player_pickup_count, stats.total_pickup_count);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
@@ -181,8 +175,8 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
 
     // secrets
     sprintf(
-        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT],
-        stats.player_secret_count, stats.total_secret_count);
+        buf, GS(STATS_SECRETS_FMT), stats.player_secret_count,
+        stats.total_secret_count);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
     Text_CentreV(*cur_txt, 1);
@@ -191,8 +185,7 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
 
     // deaths
     if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
-        sprintf(
-            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats.death_count);
+        sprintf(buf, GS(STATS_DEATHS_FMT), stats.death_count);
         *cur_txt = Text_Create(0, y, buf);
         Text_CentreH(*cur_txt, 1);
         Text_CentreV(*cur_txt, 1);
@@ -212,7 +205,7 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     } else {
         sprintf(time_str, "%d:%d%d", minutes, seconds / 10, seconds % 10);
     }
-    sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_str);
+    sprintf(buf, GS(STATS_TIME_TAKEN_FMT), time_str);
     *cur_txt = Text_Create(0, y, buf);
     Text_CentreH(*cur_txt, 1);
     Text_CentreV(*cur_txt, 1);
@@ -231,9 +224,8 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     // heading
     sprintf(
         buf, "%s",
-        g_GameFlow.strings
-            [level_type == GFL_BONUS ? GS_STATS_BONUS_STATISTICS
-                                     : GS_STATS_FINAL_STATISTICS]);
+        level_type == GFL_BONUS ? GS(STATS_BONUS_STATISTICS)
+                                : GS(STATS_FINAL_STATISTICS));
     *cur_txt = Text_Create(0, top_y + 2, buf);
     Text_CentreH(*cur_txt, 1);
     Text_CentreV(*cur_txt, 1);

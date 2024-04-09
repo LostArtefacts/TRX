@@ -1,6 +1,7 @@
 #include "game/option/option_passport.h"
 
 #include "config.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/inventory/inventory_vars.h"
@@ -273,9 +274,7 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
     Requester_Init(req);
     Requester_SetHeading(
         req,
-        g_GameFlow.strings
-            [page_num == PAGE_1 ? GS_PASSPORT_LOAD_GAME
-                                : GS_PASSPORT_SAVE_GAME]);
+        page_num == PAGE_1 ? GS(PASSPORT_LOAD_GAME) : GS(PASSPORT_SAVE_GAME));
 
     if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
         req->vis_lines = 5;
@@ -304,7 +303,7 @@ static void Option_PassportInitSelectLevelRequester(void)
     REQUEST_INFO *req = &m_SelectLevelRequester;
     req->flags |= RIF_BLOCKABLE;
     Requester_Init(req);
-    Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_LEVEL]);
+    Requester_SetHeading(req, GS(PASSPORT_SELECT_LEVEL));
 
     if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
         req->vis_lines = 5;
@@ -332,13 +331,11 @@ static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
     Requester_Init(req);
-    Requester_SetHeading(req, g_GameFlow.strings[GS_PASSPORT_SELECT_MODE]);
-    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME], 0);
-    Requester_AddItem(
-        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_PLUS], 0);
-    Requester_AddItem(req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP], 0);
-    Requester_AddItem(
-        req, g_GameFlow.strings[GS_PASSPORT_MODE_NEW_GAME_JP_PLUS], 0);
+    Requester_SetHeading(req, GS(PASSPORT_SELECT_MODE));
+    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME), 0);
+    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME_PLUS), 0);
+    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME_JP), 0);
+    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME_JP_PLUS), 0);
     req->vis_lines = MAX_GAME_MODES;
 
     req->line_offset = 0;
@@ -401,8 +398,7 @@ static void Option_PassportShowSelectLevel(void)
 
 static void Option_PassportLoadGame(void)
 {
-    Text_ChangeText(
-        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_LOAD_GAME]);
+    Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_LOAD_GAME));
     g_SavegameRequester.flags |= RIF_BLOCKABLE;
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
@@ -484,8 +480,7 @@ static void Option_PassportSelectLevel(void)
 
 static void Option_PassportSaveGame(void)
 {
-    Text_ChangeText(
-        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_SAVE_GAME]);
+    Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_SAVE_GAME));
     g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
@@ -502,8 +497,7 @@ static void Option_PassportSaveGame(void)
 
 static void Option_PassportNewGame(void)
 {
-    Text_ChangeText(
-        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_NEW_GAME]);
+    Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_NEW_GAME));
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm
@@ -560,8 +554,7 @@ static void Option_PassportNewGame(void)
 
 static void Option_PassportRestart(INVENTORY_ITEM *inv_item)
 {
-    Text_ChangeText(
-        m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_RESTART_LEVEL]);
+    Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_RESTART_LEVEL));
 
     if (Savegame_RestartAvailable(g_GameInfo.current_save_slot)) {
         if (g_InputDB.menu_confirm) {
@@ -662,17 +655,14 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
         break;
 
     case PASSPORT_MODE_EXIT_TITLE:
-        Text_ChangeText(
-            m_Text[TEXT_PAGE_NAME],
-            g_GameFlow.strings[GS_PASSPORT_EXIT_TO_TITLE]);
+        Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_EXIT_TO_TITLE));
         if (g_InputDB.menu_confirm) {
             g_GameInfo.passport_selection = PASSPORT_MODE_EXIT_TITLE;
         }
         break;
 
     case PASSPORT_MODE_EXIT_GAME:
-        Text_ChangeText(
-            m_Text[TEXT_PAGE_NAME], g_GameFlow.strings[GS_PASSPORT_EXIT_GAME]);
+        Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_EXIT_GAME));
         if (g_InputDB.menu_confirm) {
             g_GameInfo.passport_selection = PASSPORT_MODE_EXIT_GAME;
         }

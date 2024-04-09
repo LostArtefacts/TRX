@@ -4,6 +4,7 @@
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/interpolation.h"
@@ -148,7 +149,7 @@ static void Phase_Demo_Start(void *arg)
     g_Config.enable_tr2_jumping = false;
     g_Config.target_mode = TLM_FULL;
 
-    m_DemoModeText = Text_Create(0, -16, g_GameFlow.strings[GS_MISC_DEMO_MODE]);
+    m_DemoModeText = Text_Create(0, -16, GS(MISC_DEMO_MODE));
     Text_Flash(m_DemoModeText, 1, 20);
     Text_AlignBottom(m_DemoModeText, 1);
     Text_CentreH(m_DemoModeText, 1);

@@ -1,7 +1,7 @@
 #include "game/inventory/inventory_ring.h"
 
 #include "config.h"
-#include "game/gameflow.h"
+#include "game/game_string.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/output.h"
@@ -84,23 +84,19 @@ void Inv_Ring_InitHeader(RING_INFO *ring)
     if (!g_InvRingText) {
         switch (ring->type) {
         case RT_MAIN:
-            g_InvRingText =
-                Text_Create(0, 26, g_GameFlow.strings[GS_HEADING_INVENTORY]);
+            g_InvRingText = Text_Create(0, 26, GS(HEADING_INVENTORY));
             break;
 
         case RT_OPTION:
             if (g_InvMode == INV_DEATH_MODE) {
-                g_InvRingText = Text_Create(
-                    0, 26, g_GameFlow.strings[GS_HEADING_GAME_OVER]);
+                g_InvRingText = Text_Create(0, 26, GS(HEADING_GAME_OVER));
             } else {
-                g_InvRingText =
-                    Text_Create(0, 26, g_GameFlow.strings[GS_HEADING_OPTION]);
+                g_InvRingText = Text_Create(0, 26, GS(HEADING_OPTION));
             }
             break;
 
         case RT_KEYS:
-            g_InvRingText =
-                Text_Create(0, 26, g_GameFlow.strings[GS_HEADING_ITEMS]);
+            g_InvRingText = Text_Create(0, 26, GS(HEADING_ITEMS));
             break;
         }
 

@@ -6,6 +6,7 @@
 #include "game/console.h"
 #include "game/fmv.h"
 #include "game/game.h"
+#include "game/game_string.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/input.h"
@@ -303,14 +304,11 @@ void Shell_ProcessInput(void)
 
         switch (g_Config.rendering.texture_filter) {
         case GFX_TF_NN:
-            Console_Log(
-                g_GameFlow.strings[GS_OSD_TEXTURE_FILTER_SET],
-                g_GameFlow.strings[GS_OSD_TEXTURE_FILTER_NN]);
+            Console_Log(GS(OSD_TEXTURE_FILTER_SET), GS(OSD_TEXTURE_FILTER_NN));
             break;
         case GFX_TF_BILINEAR:
             Console_Log(
-                g_GameFlow.strings[GS_OSD_TEXTURE_FILTER_SET],
-                g_GameFlow.strings[GS_OSD_TEXTURE_FILTER_BILINEAR]);
+                GS(OSD_TEXTURE_FILTER_SET), GS(OSD_TEXTURE_FILTER_BILINEAR));
             break;
         case GFX_TF_NUMBER_OF:
             break;
@@ -321,19 +319,18 @@ void Shell_ProcessInput(void)
 
     if (g_InputDB.toggle_perspective_filter) {
         g_Config.rendering.enable_perspective_filter ^= true;
-        Console_Log(g_GameFlow.strings
-                        [g_Config.rendering.enable_perspective_filter
-                             ? GS_OSD_PERSPECTIVE_FILTER_ON
-                             : GS_OSD_PERSPECTIVE_FILTER_OFF]);
+        Console_Log(
+            g_Config.rendering.enable_perspective_filter
+                ? GS(OSD_PERSPECTIVE_FILTER_ON)
+                : GS(OSD_PERSPECTIVE_FILTER_OFF));
         Config_Write();
     }
 
     if (g_InputDB.toggle_fps_counter) {
         g_Config.rendering.enable_fps_counter ^= true;
-        Console_Log(g_GameFlow.strings
-                        [g_Config.rendering.enable_fps_counter
-                             ? GS_OSD_FPS_COUNTER_ON
-                             : GS_OSD_FPS_COUNTER_OFF]);
+        Console_Log(
+            g_Config.rendering.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
+                                                  : GS(OSD_FPS_COUNTER_OFF));
         Config_Write();
     }
 

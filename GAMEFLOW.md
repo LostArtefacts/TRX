@@ -17,7 +17,7 @@ various pieces of global behaviour.
 
 <details>
 <summary>Show snippet</summary>
-  
+
 ```json5
 "main_menu_picture": "data/titleh.png",
 "savegame_fmt_legacy": "saveati.%d",
@@ -156,7 +156,7 @@ various pieces of global behaviour.
       This is where the individual level details are defined - see
       <a href="#level-properties">Level properties</a> for full details.
     </td>
-  </tr>  
+  </tr>
   <tr valign="top">
     <td>
       <code>main_menu_picture</code>
@@ -451,7 +451,7 @@ Following are each of the properties available within a level.
     <td>String</td>
     <td>Yes</td>
     <td colspan="2">The title of the level.</td>
-  </tr>  
+  </tr>
   <tr valign="top">
     <td rowspan="8">
       <code>type</code>
@@ -517,7 +517,7 @@ Following are each of the properties available within a level.
       <code>title</code>
     </td>
     <td>The main menu level. One - and only one - of these must be defined.</td>
-  </tr>  
+  </tr>
   <tr valign="top">
     <td>
       <code>unobtainable_kills</code>
@@ -915,7 +915,7 @@ game will exit to title.
          {"type": "start_game"},
          {"type": "loop_game"},
          {"type": "stop_game"},
-         {"type": "level_stats", "level_id": 3},               
+         {"type": "level_stats", "level_id": 3},
          {"type": "play_synced_audio", "audio_id": 19},
          {"type": "display_picture", "picture_path": "data/end.pcx", "display_time": 7.5},
          {"type": "display_picture", "picture_path": "data/cred1.pcx", "display_time": 7.5},

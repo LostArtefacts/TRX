@@ -1,6 +1,7 @@
 #include "game/option/option_compass.h"
 
 #include "config.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/text.h"
@@ -50,9 +51,8 @@ static void Option_CompassInitText(void)
     // kills
     sprintf(
         buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_KILLS_DETAIL_FMT
-                                            : GS_STATS_KILLS_BASIC_FMT],
+        g_Config.enable_detailed_stats ? GS(STATS_KILLS_DETAIL_FMT)
+                                       : GS(STATS_KILLS_BASIC_FMT),
         stats->kill_count, stats->max_kill_count);
     m_Text[TEXT_KILLS] = Text_Create(0, y, buf);
     y += row_height;
@@ -60,9 +60,8 @@ static void Option_CompassInitText(void)
     // pickups
     sprintf(
         buf,
-        g_GameFlow.strings
-            [g_Config.enable_detailed_stats ? GS_STATS_PICKUPS_DETAIL_FMT
-                                            : GS_STATS_PICKUPS_BASIC_FMT],
+        g_Config.enable_detailed_stats ? GS(STATS_PICKUPS_DETAIL_FMT)
+                                       : GS(STATS_PICKUPS_BASIC_FMT),
         stats->pickup_count, stats->max_pickup_count);
     m_Text[TEXT_PICKUPS] = Text_Create(0, y, buf);
     y += row_height;
@@ -77,15 +76,14 @@ static void Option_CompassInitText(void)
         secret_flags >>= 1;
     }
     sprintf(
-        buf, g_GameFlow.strings[GS_STATS_SECRETS_FMT], secret_count,
+        buf, GS(STATS_SECRETS_FMT), secret_count,
         g_GameInfo.current[g_CurrentLevel].stats.max_secret_count);
     m_Text[TEXT_SECRETS] = Text_Create(0, y, buf);
     y += row_height;
 
     // deaths
     if (g_Config.enable_deaths_counter && g_GameInfo.death_counter_supported) {
-        sprintf(
-            buf, g_GameFlow.strings[GS_STATS_DEATHS_FMT], stats->death_count);
+        sprintf(buf, GS(STATS_DEATHS_FMT), stats->death_count);
         m_Text[TEXT_DEATHS] = Text_Create(0, y, buf);
         y += row_height;
     }
@@ -128,7 +126,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
         } else {
             sprintf(time_buf, "%d:%d%d", minutes, seconds / 10, seconds % 10);
         }
-        sprintf(buf, g_GameFlow.strings[GS_STATS_TIME_TAKEN_FMT], time_buf);
+        sprintf(buf, GS(STATS_TIME_TAKEN_FMT), time_buf);
         Text_ChangeText(m_Text[TEXT_TIME], buf);
     }
 

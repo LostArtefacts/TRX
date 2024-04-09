@@ -1,12 +1,40 @@
 import argparse
+import json
 import os
+import re
+import sys
+import zipfile
+from collections.abc import Iterable
 from pathlib import Path
 from subprocess import check_call, check_output, run
 
+from shared.common import DATA_DIR, SRC_DIR
 from shared.versioning import generate_version
-from shared.packaging import create_zip
 
-SHIP_DIR = Path("/app/data/ship")
+SHIP_DIR = DATA_DIR / "ship"
+GAME_STRING_DEF_PATH = SRC_DIR / "game/game_string.def"
+
+
+def get_default_string_map() -> dict[str, str]:
+    result: dict[str, str] = {}
+    for line in GAME_STRING_DEF_PATH.read_text().splitlines():
+        if match := re.match(r'^GS_DEFINE\((\w+), "([^"]+)"\)$', line.strip()):
+            result[match.group(1)] = match.group(2)
+    return result
+
+
+def postprocess_gameflow(gameflow: str, string_map: dict[str, str]) -> str:
+    gameflow = re.sub(
+        r'^(    "strings": {$)',
+        r"\1\n"
+        + "\n".join(
+            f"        {json.dumps(key)}: {json.dumps(value)},"
+            for key, value in string_map.items()
+        ),
+        gameflow,
+        flags=re.M,
+    )
+    return gameflow
 
 
 class BaseGameEntrypoint:
@@ -74,18 +102,24 @@ class BaseGameEntrypoint:
             check_call([self.UPX_TOOL, str(path)])
 
     def package(self, args: argparse.Namespace) -> None:
+        string_map = get_default_string_map()
+        assert string_map
+
         if args.output:
             zip_path = args.output
         else:
             version = generate_version()
             zip_path = Path(f"{version}-{self.RELEASE_ZIP_SUFFIX}.zip")
-        source_files = [
-            *[
-                (path, path.relative_to(SHIP_DIR))
-                for path in SHIP_DIR.rglob("*")
-                if path.is_file()
-            ],
-            *self.RELEASE_ZIP_FILES,
-        ]
-        create_zip(zip_path, source_files)
-        print(f"Created {zip_path}")
+
+        with zipfile.ZipFile(zip_path, "w") as handle:
+            for path in SHIP_DIR.rglob("*"):
+                arcname = path.relative_to(SHIP_DIR)
+                if "gameflow" in path.name:
+                    handle.writestr(
+                        str(arcname),
+                        data=postprocess_gameflow(
+                            path.read_text(), string_map
+                        ),
+                    )
+                elif path.is_file():
+                    handle.write(path, arcname=arcname)

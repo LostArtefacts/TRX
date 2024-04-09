@@ -4,6 +4,7 @@
 #include "filesystem.h"
 #include "game/fmv.h"
 #include "game/game.h"
+#include "game/game_string.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
@@ -22,11 +23,6 @@
 
 #include <string.h>
 
-typedef struct ENUM_TO_STRING {
-    const char *str;
-    const int32_t val;
-} ENUM_TO_STRING;
-
 typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
     char *path;
     double display_time;
@@ -42,199 +38,6 @@ typedef struct GAMEFLOW_GIVE_ITEM_DATA {
     GAME_OBJECT_ID object_num;
     int quantity;
 } GAMEFLOW_GIVE_ITEM_DATA;
-
-static GAME_STRING_ID GameFlow_StringToGameStringID(const char *str)
-{
-    static const ENUM_TO_STRING map[] = {
-        { "HEADING_INVENTORY", GS_HEADING_INVENTORY },
-        { "HEADING_GAME_OVER", GS_HEADING_GAME_OVER },
-        { "HEADING_OPTION", GS_HEADING_OPTION },
-        { "HEADING_ITEMS", GS_HEADING_ITEMS },
-        { "PASSPORT_SELECT_LEVEL", GS_PASSPORT_SELECT_LEVEL },
-        { "PASSPORT_RESTART_LEVEL", GS_PASSPORT_RESTART_LEVEL },
-        { "PASSPORT_STORY_SO_FAR", GS_PASSPORT_STORY_SO_FAR },
-        { "PASSPORT_LEGACY_SELECT_LEVEL_1", GS_PASSPORT_LEGACY_SELECT_LEVEL_1 },
-        { "PASSPORT_LEGACY_SELECT_LEVEL_2", GS_PASSPORT_LEGACY_SELECT_LEVEL_2 },
-        { "PASSPORT_SELECT_MODE", GS_PASSPORT_SELECT_MODE },
-        { "PASSPORT_MODE_NEW_GAME", GS_PASSPORT_MODE_NEW_GAME },
-        { "PASSPORT_MODE_NEW_GAME_PLUS", GS_PASSPORT_MODE_NEW_GAME_PLUS },
-        { "PASSPORT_MODE_NEW_GAME_JP", GS_PASSPORT_MODE_NEW_GAME_JP },
-        { "PASSPORT_MODE_NEW_GAME_JP_PLUS", GS_PASSPORT_MODE_NEW_GAME_JP_PLUS },
-        { "PASSPORT_NEW_GAME", GS_PASSPORT_NEW_GAME },
-        { "PASSPORT_LOAD_GAME", GS_PASSPORT_LOAD_GAME },
-        { "PASSPORT_SAVE_GAME", GS_PASSPORT_SAVE_GAME },
-        { "PASSPORT_EXIT_GAME", GS_PASSPORT_EXIT_GAME },
-        { "PASSPORT_EXIT_TO_TITLE", GS_PASSPORT_EXIT_TO_TITLE },
-        { "DETAIL_SELECT_DETAIL", GS_DETAIL_SELECT_DETAIL },
-        { "DETAIL_LEVEL_HIGH", GS_DETAIL_LEVEL_HIGH },
-        { "DETAIL_LEVEL_MEDIUM", GS_DETAIL_LEVEL_MEDIUM },
-        { "DETAIL_LEVEL_LOW", GS_DETAIL_LEVEL_LOW },
-        { "DETAIL_PERSPECTIVE", GS_DETAIL_PERSPECTIVE },
-        { "DETAIL_FPS", GS_DETAIL_FPS },
-        { "DETAIL_DECIMAL_FMT", GS_DETAIL_DECIMAL_FMT },
-        { "DETAIL_BILINEAR", GS_DETAIL_BILINEAR },
-        { "DETAIL_TEXTURE_FILTER", GS_DETAIL_TEXTURE_FILTER },
-        { "DETAIL_FBO_FILTER", GS_DETAIL_FBO_FILTER },
-        { "DETAIL_VSYNC", GS_DETAIL_VSYNC },
-        { "DETAIL_BRIGHTNESS", GS_DETAIL_BRIGHTNESS },
-        { "DETAIL_UI_TEXT_SCALE", GS_DETAIL_UI_TEXT_SCALE },
-        { "DETAIL_UI_BAR_SCALE", GS_DETAIL_UI_BAR_SCALE },
-        { "DETAIL_RENDER_MODE", GS_DETAIL_RENDER_MODE },
-        { "DETAIL_RENDER_MODE_LEGACY", GS_DETAIL_RENDER_MODE_LEGACY },
-        { "DETAIL_RENDER_MODE_FBO", GS_DETAIL_RENDER_MODE_FBO },
-        { "DETAIL_RESOLUTION", GS_DETAIL_RESOLUTION },
-        { "DETAIL_STRING_FMT", GS_DETAIL_STRING_FMT },
-        { "DETAIL_FLOAT_FMT", GS_DETAIL_FLOAT_FMT },
-        { "DETAIL_RESOLUTION_FMT", GS_DETAIL_RESOLUTION_FMT },
-        { "SOUND_SET_VOLUMES", GS_SOUND_SET_VOLUMES },
-        { "CONTROL_CUSTOMIZE", GS_CONTROL_CUSTOMIZE },
-        { "CONTROL_KEYBOARD", GS_CONTROL_KEYBOARD },
-        { "CONTROL_CONTROLLER", GS_CONTROL_CONTROLLER },
-        { "CONTROL_DEFAULT_KEYS", GS_CONTROL_DEFAULT_KEYS },
-        { "CONTROL_CUSTOM_1", GS_CONTROL_CUSTOM_1 },
-        { "CONTROL_CUSTOM_2", GS_CONTROL_CUSTOM_2 },
-        { "CONTROL_CUSTOM_3", GS_CONTROL_CUSTOM_3 },
-        { "CONTROL_RESET_DEFAULTS_KEY", GS_CONTROL_RESET_DEFAULTS_KEY },
-        { "CONTROL_UNBIND_KEY", GS_CONTROL_UNBIND_KEY },
-        { "CONTROL_RESET_DEFAULTS_BTN", GS_CONTROL_RESET_DEFAULTS_BTN },
-        { "CONTROL_UNBIND_BTN", GS_CONTROL_UNBIND_BTN },
-        { "KEYMAP_RUN", GS_KEYMAP_RUN },
-        { "KEYMAP_BACK", GS_KEYMAP_BACK },
-        { "KEYMAP_LEFT", GS_KEYMAP_LEFT },
-        { "KEYMAP_RIGHT", GS_KEYMAP_RIGHT },
-        { "KEYMAP_STEP_LEFT", GS_KEYMAP_STEP_LEFT },
-        { "KEYMAP_STEP_RIGHT", GS_KEYMAP_STEP_RIGHT },
-        { "KEYMAP_WALK", GS_KEYMAP_WALK },
-        { "KEYMAP_JUMP", GS_KEYMAP_JUMP },
-        { "KEYMAP_ACTION", GS_KEYMAP_ACTION },
-        { "KEYMAP_DRAW_WEAPON", GS_KEYMAP_DRAW_WEAPON },
-        { "KEYMAP_LOOK", GS_KEYMAP_LOOK },
-        { "KEYMAP_ROLL", GS_KEYMAP_ROLL },
-        { "KEYMAP_INVENTORY", GS_KEYMAP_INVENTORY },
-        { "KEYMAP_FLY_CHEAT", GS_KEYMAP_FLY_CHEAT },
-        { "KEYMAP_ITEM_CHEAT", GS_KEYMAP_ITEM_CHEAT },
-        { "KEYMAP_LEVEL_SKIP_CHEAT", GS_KEYMAP_LEVEL_SKIP_CHEAT },
-        { "KEYMAP_TURBO_CHEAT", GS_KEYMAP_TURBO_CHEAT },
-        { "KEYMAP_ENTER_CONSOLE", GS_KEYMAP_ENTER_CONSOLE },
-        { "KEYMAP_PAUSE", GS_KEYMAP_PAUSE },
-        { "KEYMAP_CAMERA_UP", GS_KEYMAP_CAMERA_UP },
-        { "KEYMAP_CAMERA_DOWN", GS_KEYMAP_CAMERA_DOWN },
-        { "KEYMAP_CAMERA_LEFT", GS_KEYMAP_CAMERA_LEFT },
-        { "KEYMAP_CAMERA_RIGHT", GS_KEYMAP_CAMERA_RIGHT },
-        { "KEYMAP_CAMERA_RESET", GS_KEYMAP_CAMERA_RESET },
-        { "KEYMAP_EQUIP_PISTOLS", GS_KEYMAP_EQUIP_PISTOLS },
-        { "KEYMAP_EQUIP_SHOTGUN", GS_KEYMAP_EQUIP_SHOTGUN },
-        { "KEYMAP_EQUIP_MAGNUMS", GS_KEYMAP_EQUIP_MAGNUMS },
-        { "KEYMAP_EQUIP_UZIS", GS_KEYMAP_EQUIP_UZIS },
-        { "KEYMAP_USE_SMALL_MEDI", GS_KEYMAP_USE_SMALL_MEDI },
-        { "KEYMAP_USE_BIG_MEDI", GS_KEYMAP_USE_BIG_MEDI },
-        { "KEYMAP_SAVE", GS_KEYMAP_SAVE },
-        { "KEYMAP_LOAD", GS_KEYMAP_LOAD },
-        { "KEYMAP_FPS", GS_KEYMAP_FPS },
-        { "KEYMAP_BILINEAR", GS_KEYMAP_BILINEAR },
-        { "STATS_TIME_TAKEN_FMT", GS_STATS_TIME_TAKEN_FMT },
-        { "STATS_SECRETS_FMT", GS_STATS_SECRETS_FMT },
-        { "STATS_DEATHS_FMT", GS_STATS_DEATHS_FMT },
-        { "STATS_PICKUPS_DETAIL_FMT", GS_STATS_PICKUPS_DETAIL_FMT },
-        { "STATS_PICKUPS_BASIC_FMT", GS_STATS_PICKUPS_BASIC_FMT },
-        { "STATS_KILLS_DETAIL_FMT", GS_STATS_KILLS_DETAIL_FMT },
-        { "STATS_KILLS_BASIC_FMT", GS_STATS_KILLS_BASIC_FMT },
-        { "STATS_FINAL_STATISTICS", GS_STATS_FINAL_STATISTICS },
-        { "STATS_BONUS_STATISTICS", GS_STATS_BONUS_STATISTICS },
-        { "PAUSE_PAUSED", GS_PAUSE_PAUSED },
-        { "PAUSE_EXIT_TO_TITLE", GS_PAUSE_EXIT_TO_TITLE },
-        { "PAUSE_CONTINUE", GS_PAUSE_CONTINUE },
-        { "PAUSE_QUIT", GS_PAUSE_QUIT },
-        { "PAUSE_ARE_YOU_SURE", GS_PAUSE_ARE_YOU_SURE },
-        { "PAUSE_YES", GS_PAUSE_YES },
-        { "PAUSE_NO", GS_PAUSE_NO },
-        { "MISC_ON", GS_MISC_ON },
-        { "MISC_OFF", GS_MISC_OFF },
-        { "MISC_EMPTY_SLOT_FMT", GS_MISC_EMPTY_SLOT_FMT },
-        { "MISC_DEMO_MODE", GS_MISC_DEMO_MODE },
-        { "INV_ITEM_MEDI", GS_INV_ITEM_MEDI },
-        { "INV_ITEM_BIG_MEDI", GS_INV_ITEM_BIG_MEDI },
-        { "INV_ITEM_PUZZLE1", GS_INV_ITEM_PUZZLE1 },
-        { "INV_ITEM_PUZZLE2", GS_INV_ITEM_PUZZLE2 },
-        { "INV_ITEM_PUZZLE3", GS_INV_ITEM_PUZZLE3 },
-        { "INV_ITEM_PUZZLE4", GS_INV_ITEM_PUZZLE4 },
-        { "INV_ITEM_KEY1", GS_INV_ITEM_KEY1 },
-        { "INV_ITEM_KEY2", GS_INV_ITEM_KEY2 },
-        { "INV_ITEM_KEY3", GS_INV_ITEM_KEY3 },
-        { "INV_ITEM_KEY4", GS_INV_ITEM_KEY4 },
-        { "INV_ITEM_PICKUP1", GS_INV_ITEM_PICKUP1 },
-        { "INV_ITEM_PICKUP2", GS_INV_ITEM_PICKUP2 },
-        { "INV_ITEM_LEADBAR", GS_INV_ITEM_LEADBAR },
-        { "INV_ITEM_SCION", GS_INV_ITEM_SCION },
-        { "INV_ITEM_PISTOLS", GS_INV_ITEM_PISTOLS },
-        { "INV_ITEM_SHOTGUN", GS_INV_ITEM_SHOTGUN },
-        { "INV_ITEM_MAGNUM", GS_INV_ITEM_MAGNUM },
-        { "INV_ITEM_UZI", GS_INV_ITEM_UZI },
-        { "INV_ITEM_GRENADE", GS_INV_ITEM_GRENADE },
-        { "INV_ITEM_PISTOL_AMMO", GS_INV_ITEM_PISTOL_AMMO },
-        { "INV_ITEM_SHOTGUN_AMMO", GS_INV_ITEM_SHOTGUN_AMMO },
-        { "INV_ITEM_MAGNUM_AMMO", GS_INV_ITEM_MAGNUM_AMMO },
-        { "INV_ITEM_UZI_AMMO", GS_INV_ITEM_UZI_AMMO },
-        { "INV_ITEM_COMPASS", GS_INV_ITEM_COMPASS },
-        { "INV_ITEM_GAME", GS_INV_ITEM_GAME },
-        { "INV_ITEM_DETAILS", GS_INV_ITEM_DETAILS },
-        { "INV_ITEM_SOUND", GS_INV_ITEM_SOUND },
-        { "INV_ITEM_CONTROLS", GS_INV_ITEM_CONTROLS },
-        { "INV_ITEM_GAMMA", GS_INV_ITEM_GAMMA },
-        { "INV_ITEM_LARAS_HOME", GS_INV_ITEM_LARAS_HOME },
-        { "OSD_FLY_MODE_ON", GS_OSD_FLY_MODE_ON },
-        { "OSD_FLY_MODE_OFF", GS_OSD_FLY_MODE_OFF },
-        { "OSD_FPS_GET", GS_OSD_FPS_GET },
-        { "OSD_FPS_SET", GS_OSD_FPS_SET },
-        { "OSD_POS_GET", GS_OSD_POS_GET },
-        { "OSD_POS_SET_POS", GS_OSD_POS_SET_POS },
-        { "OSD_POS_SET_POS_FAIL", GS_OSD_POS_SET_POS_FAIL },
-        { "OSD_POS_SET_ROOM", GS_OSD_POS_SET_ROOM },
-        { "OSD_POS_SET_ROOM_FAIL", GS_OSD_POS_SET_ROOM_FAIL },
-        { "OSD_SPEED_GET", GS_OSD_SPEED_GET },
-        { "OSD_SPEED_SET", GS_OSD_SPEED_SET },
-        { "OSD_BRAID_ON", GS_OSD_BRAID_ON },
-        { "OSD_BRAID_OFF", GS_OSD_BRAID_OFF },
-        { "OSD_CHEATS_ON", GS_OSD_CHEATS_ON },
-        { "OSD_CHEATS_OFF", GS_OSD_CHEATS_OFF },
-        { "OSD_GIVE_ITEM", GS_OSD_GIVE_ITEM },
-        { "OSD_GIVE_ITEM_ALL_KEYS", GS_OSD_GIVE_ITEM_ALL_KEYS },
-        { "OSD_GIVE_ITEM_ALL_GUNS", GS_OSD_GIVE_ITEM_ALL_GUNS },
-        { "OSD_FLIPMAP_ON", GS_OSD_FLIPMAP_ON },
-        { "OSD_FLIPMAP_OFF", GS_OSD_FLIPMAP_OFF },
-        { "OSD_FLIPMAP_FAIL_ALREADY_ON", GS_OSD_FLIPMAP_FAIL_ALREADY_ON },
-        { "OSD_FLIPMAP_FAIL_ALREADY_OFF", GS_OSD_FLIPMAP_FAIL_ALREADY_OFF },
-        { "OSD_KILL_ALL", GS_OSD_KILL_ALL },
-        { "OSD_KILL_ALL_FAIL", GS_OSD_KILL_ALL_FAIL },
-        { "OSD_KILL", GS_OSD_KILL },
-        { "OSD_KILL_FAIL", GS_OSD_KILL_FAIL },
-        { "OSD_COMPLETE_LEVEL", GS_OSD_COMPLETE_LEVEL },
-        { "OSD_PLAY_LEVEL", GS_OSD_PLAY_LEVEL },
-        { "OSD_TEXTURE_FILTER_SET", GS_OSD_TEXTURE_FILTER_SET },
-        { "OSD_TEXTURE_FILTER_NN", GS_OSD_TEXTURE_FILTER_NN },
-        { "OSD_TEXTURE_FILTER_BILINEAR", GS_OSD_TEXTURE_FILTER_BILINEAR },
-        { "OSD_PERSPECTIVE_FILTER_ON", GS_OSD_PERSPECTIVE_FILTER_ON },
-        { "OSD_PERSPECTIVE_FILTER_OFF", GS_OSD_PERSPECTIVE_FILTER_OFF },
-        { "OSD_FPS_COUNTER_ON", GS_OSD_FPS_COUNTER_ON },
-        { "OSD_FPS_COUNTER_OFF", GS_OSD_FPS_COUNTER_OFF },
-        { "OSD_UNAVAILABLE_ITEM", GS_OSD_UNAVAILABLE_ITEM },
-        { "OSD_INVALID_ITEM", GS_OSD_INVALID_ITEM },
-        { "OSD_INVALID_ROOM", GS_OSD_INVALID_ROOM },
-        { "OSD_INVALID_LEVEL", GS_OSD_INVALID_LEVEL },
-        { "OSD_INVALID_COMMAND", GS_OSD_INVALID_COMMAND },
-        { "OSD_COMMAND_FAIL", GS_OSD_COMMAND_FAIL },
-        { NULL, 0 },
-    };
-
-    const ENUM_TO_STRING *current = &map[0];
-    while (current->str) {
-        if (!strcmp(str, current->str)) {
-            return current->val;
-        }
-        current++;
-    }
-    return -1;
-}
 
 GAMEFLOW g_GameFlow = { 0 };
 
@@ -379,22 +182,15 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
 
     struct json_object_element_s *strings_elem = strings_obj->start;
     while (strings_elem) {
-        GAME_STRING_ID key =
-            GameFlow_StringToGameStringID(strings_elem->name->string);
+        const GAME_STRING_ID key =
+            GameString_IDFromEnum(strings_elem->name->string);
         struct json_string_s *value = json_value_as_string(strings_elem->value);
         if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
             LOG_ERROR("invalid string key %s", strings_elem->name->string);
         } else {
-            g_GameFlow.strings[key] = Memory_DupStr(value->string);
+            GameString_Set(key, value->string);
         }
         strings_elem = strings_elem->next;
-    }
-
-    for (const GAMEFLOW_DEFAULT_STRING *def = g_GameFlowDefaultStrings;
-         def->string; def++) {
-        if (!g_GameFlow.strings[def->key]) {
-            g_GameFlow.strings[def->key] = Memory_DupStr(def->string);
-        }
     }
 
     return true;
@@ -1120,10 +916,6 @@ void GameFlow_Shutdown(void)
     Memory_FreePointer(&g_GameFlow.savegame_fmt_bson);
     Memory_FreePointer(&g_GameInfo.current);
 
-    for (int i = 0; i < GS_NUMBER_OF; i++) {
-        Memory_FreePointer(&g_GameFlow.strings[i]);
-    }
-
     for (int i = 0; i < g_GameFlow.injections.length; i++) {
         Memory_FreePointer(&g_GameFlow.injections.data_paths[i]);
     }
@@ -1211,41 +1003,41 @@ bool GameFlow_LoadFromFile(const char *file_name)
 {
     bool result = GameFlow_LoadFromFileImpl(file_name);
 
-    g_InvItemMedi.string = g_GameFlow.strings[GS_INV_ITEM_MEDI],
-    g_InvItemBigMedi.string = g_GameFlow.strings[GS_INV_ITEM_BIG_MEDI],
+    g_InvItemMedi.string = GS(INV_ITEM_MEDI),
+    g_InvItemBigMedi.string = GS(INV_ITEM_BIG_MEDI),
 
-    g_InvItemPuzzle1.string = g_GameFlow.strings[GS_INV_ITEM_PUZZLE1],
-    g_InvItemPuzzle2.string = g_GameFlow.strings[GS_INV_ITEM_PUZZLE2],
-    g_InvItemPuzzle3.string = g_GameFlow.strings[GS_INV_ITEM_PUZZLE3],
-    g_InvItemPuzzle4.string = g_GameFlow.strings[GS_INV_ITEM_PUZZLE4],
+    g_InvItemPuzzle1.string = GS(INV_ITEM_PUZZLE1),
+    g_InvItemPuzzle2.string = GS(INV_ITEM_PUZZLE2),
+    g_InvItemPuzzle3.string = GS(INV_ITEM_PUZZLE3),
+    g_InvItemPuzzle4.string = GS(INV_ITEM_PUZZLE4),
 
-    g_InvItemKey1.string = g_GameFlow.strings[GS_INV_ITEM_KEY1],
-    g_InvItemKey2.string = g_GameFlow.strings[GS_INV_ITEM_KEY2],
-    g_InvItemKey3.string = g_GameFlow.strings[GS_INV_ITEM_KEY3],
-    g_InvItemKey4.string = g_GameFlow.strings[GS_INV_ITEM_KEY4],
+    g_InvItemKey1.string = GS(INV_ITEM_KEY1),
+    g_InvItemKey2.string = GS(INV_ITEM_KEY2),
+    g_InvItemKey3.string = GS(INV_ITEM_KEY3),
+    g_InvItemKey4.string = GS(INV_ITEM_KEY4),
 
-    g_InvItemPickup1.string = g_GameFlow.strings[GS_INV_ITEM_PICKUP1],
-    g_InvItemPickup2.string = g_GameFlow.strings[GS_INV_ITEM_PICKUP2],
-    g_InvItemLeadBar.string = g_GameFlow.strings[GS_INV_ITEM_LEADBAR],
-    g_InvItemScion.string = g_GameFlow.strings[GS_INV_ITEM_SCION],
+    g_InvItemPickup1.string = GS(INV_ITEM_PICKUP1),
+    g_InvItemPickup2.string = GS(INV_ITEM_PICKUP2),
+    g_InvItemLeadBar.string = GS(INV_ITEM_LEADBAR),
+    g_InvItemScion.string = GS(INV_ITEM_SCION),
 
-    g_InvItemPistols.string = g_GameFlow.strings[GS_INV_ITEM_PISTOLS],
-    g_InvItemShotgun.string = g_GameFlow.strings[GS_INV_ITEM_SHOTGUN],
-    g_InvItemMagnum.string = g_GameFlow.strings[GS_INV_ITEM_MAGNUM],
-    g_InvItemUzi.string = g_GameFlow.strings[GS_INV_ITEM_UZI],
-    g_InvItemGrenade.string = g_GameFlow.strings[GS_INV_ITEM_GRENADE],
+    g_InvItemPistols.string = GS(INV_ITEM_PISTOLS),
+    g_InvItemShotgun.string = GS(INV_ITEM_SHOTGUN),
+    g_InvItemMagnum.string = GS(INV_ITEM_MAGNUM),
+    g_InvItemUzi.string = GS(INV_ITEM_UZI),
+    g_InvItemGrenade.string = GS(INV_ITEM_GRENADE),
 
-    g_InvItemPistolAmmo.string = g_GameFlow.strings[GS_INV_ITEM_PISTOL_AMMO],
-    g_InvItemShotgunAmmo.string = g_GameFlow.strings[GS_INV_ITEM_SHOTGUN_AMMO],
-    g_InvItemMagnumAmmo.string = g_GameFlow.strings[GS_INV_ITEM_MAGNUM_AMMO],
-    g_InvItemUziAmmo.string = g_GameFlow.strings[GS_INV_ITEM_UZI_AMMO],
+    g_InvItemPistolAmmo.string = GS(INV_ITEM_PISTOL_AMMO),
+    g_InvItemShotgunAmmo.string = GS(INV_ITEM_SHOTGUN_AMMO),
+    g_InvItemMagnumAmmo.string = GS(INV_ITEM_MAGNUM_AMMO),
+    g_InvItemUziAmmo.string = GS(INV_ITEM_UZI_AMMO),
 
-    g_InvItemCompass.string = g_GameFlow.strings[GS_INV_ITEM_COMPASS],
-    g_InvItemGame.string = g_GameFlow.strings[GS_INV_ITEM_GAME];
-    g_InvItemDetails.string = g_GameFlow.strings[GS_INV_ITEM_DETAILS];
-    g_InvItemSound.string = g_GameFlow.strings[GS_INV_ITEM_SOUND];
-    g_InvItemControls.string = g_GameFlow.strings[GS_INV_ITEM_CONTROLS];
-    g_InvItemLarasHome.string = g_GameFlow.strings[GS_INV_ITEM_LARAS_HOME];
+    g_InvItemCompass.string = GS(INV_ITEM_COMPASS),
+    g_InvItemGame.string = GS(INV_ITEM_GAME);
+    g_InvItemDetails.string = GS(INV_ITEM_DETAILS);
+    g_InvItemSound.string = GS(INV_ITEM_SOUND);
+    g_InvItemControls.string = GS(INV_ITEM_CONTROLS);
+    g_InvItemLarasHome.string = GS(INV_ITEM_LARAS_HOME);
 
     if (g_GameFlow.force_save_crystals == TB_ON) {
         g_Config.enable_save_crystals = true;

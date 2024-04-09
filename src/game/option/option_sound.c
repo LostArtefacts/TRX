@@ -1,7 +1,7 @@
 #include "game/option/option_sound.h"
 
 #include "config.h"
-#include "game/gameflow.h"
+#include "game/game_string.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/sound.h"
@@ -35,8 +35,7 @@ static void Option_SoundInitText(void)
     m_Text[TEXT_RIGHT_ARROW] = Text_Create(40, 0, "\201");
 
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
-    m_Text[TEXT_TITLE] =
-        Text_Create(0, -30, g_GameFlow.strings[GS_SOUND_SET_VOLUMES]);
+    m_Text[TEXT_TITLE] = Text_Create(0, -30, GS(SOUND_SET_VOLUMES));
 
     if (g_Config.music_volume > 10) {
         g_Config.music_volume = 10;

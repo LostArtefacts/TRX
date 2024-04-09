@@ -1,7 +1,7 @@
 #include "game/option/option_graphics.h"
 
 #include "config.h"
-#include "game/gameflow.h"
+#include "game/game_string.h"
 #include "game/input.h"
 #include "game/output.h"
 #include "game/screen.h"
@@ -185,8 +185,7 @@ static void Option_GraphicsInitText(void)
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
     Text_CentreV(m_Text[TEXT_TITLE_BORDER], 1);
 
-    m_Text[TEXT_TITLE] =
-        Text_Create(0, TOP_Y, g_GameFlow.strings[GS_DETAIL_SELECT_DETAIL]);
+    m_Text[TEXT_TITLE] = Text_Create(0, TOP_Y, GS(DETAIL_SELECT_DETAIL));
     Text_CentreH(m_Text[TEXT_TITLE], 1);
     Text_CentreV(m_Text[TEXT_TITLE], 1);
     Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0, TS_HEADING);
@@ -359,11 +358,11 @@ static int16_t Option_GraphicsPlaceColumns(bool create)
          && row->option_name != OPTION_NUMBER_OF;
          i++, row++) {
         if (create) {
-            m_GraphicsMenu.option_texts[i] = Text_Create(
-                name_x, name_y, g_GameFlow.strings[row->option_string]);
+            m_GraphicsMenu.option_texts[i] =
+                Text_Create(name_x, name_y, GameString_Get(row->option_string));
 
             m_GraphicsMenu.value_texts[i] = Text_Create(
-                value_x, value_y, g_GameFlow.strings[row->value_string]);
+                value_x, value_y, GameString_Get(row->value_string));
         } else {
             Text_SetPos(m_GraphicsMenu.option_texts[i], name_x, name_y);
             Text_SetPos(m_GraphicsMenu.value_texts[i], value_x, value_y);
@@ -385,50 +384,41 @@ static void Option_GraphicsChangeTextOption(
 {
     char buf[OPTION_LENGTH];
 
-    Text_ChangeText(option_text, g_GameFlow.strings[row->option_string]);
+    Text_ChangeText(option_text, GameString_Get(row->option_string));
 
     switch (row->option_name) {
     case OPTION_FPS:
-        sprintf(
-            buf, g_GameFlow.strings[GS_DETAIL_DECIMAL_FMT],
-            g_Config.rendering.fps);
+        sprintf(buf, GS(DETAIL_DECIMAL_FMT), g_Config.rendering.fps);
         Text_ChangeText(value_text, buf);
         break;
 
     case OPTION_TEXTURE_FILTER: {
         bool is_enabled = g_Config.rendering.texture_filter == GFX_TF_BILINEAR;
         Text_ChangeText(
-            value_text,
-            g_GameFlow.strings[is_enabled ? GS_DETAIL_BILINEAR : GS_MISC_OFF]);
+            value_text, is_enabled ? GS(DETAIL_BILINEAR) : GS(MISC_OFF));
         break;
     }
 
     case OPTION_FBO_FILTER: {
         bool is_enabled = g_Config.rendering.fbo_filter == GFX_TF_BILINEAR;
         Text_ChangeText(
-            value_text,
-            g_GameFlow.strings[is_enabled ? GS_DETAIL_BILINEAR : GS_MISC_OFF]);
+            value_text, is_enabled ? GS(DETAIL_BILINEAR) : GS(MISC_OFF));
         break;
     }
 
     case OPTION_VSYNC: {
         bool is_enabled = g_Config.rendering.enable_vsync;
-        Text_ChangeText(
-            value_text,
-            g_GameFlow.strings[is_enabled ? GS_MISC_ON : GS_MISC_OFF]);
+        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
         break;
     }
 
     case OPTION_BRIGHTNESS:
-        sprintf(
-            buf, g_GameFlow.strings[GS_DETAIL_FLOAT_FMT], g_Config.brightness);
+        sprintf(buf, GS(DETAIL_FLOAT_FMT), g_Config.brightness);
         Text_ChangeText(value_text, buf);
         break;
 
     case OPTION_UI_TEXT_SCALE:
-        sprintf(
-            buf, g_GameFlow.strings[GS_DETAIL_FLOAT_FMT],
-            g_Config.ui.text_scale);
+        sprintf(buf, GS(DETAIL_FLOAT_FMT), g_Config.ui.text_scale);
         Text_ChangeText(value_text, buf);
         // Text_SetPos(
         //     m_Text[TEXT_ROW_SELECT],
@@ -437,33 +427,29 @@ static void Option_GraphicsChangeTextOption(
         break;
 
     case OPTION_UI_BAR_SCALE:
-        sprintf(
-            buf, g_GameFlow.strings[GS_DETAIL_FLOAT_FMT],
-            g_Config.ui.bar_scale);
+        sprintf(buf, GS(DETAIL_FLOAT_FMT), g_Config.ui.bar_scale);
         Text_ChangeText(value_text, buf);
         break;
 
     case OPTION_RENDER_MODE:
         sprintf(
-            buf, g_GameFlow.strings[GS_DETAIL_STRING_FMT],
+            buf, GS(DETAIL_STRING_FMT),
             (g_Config.rendering.render_mode == GFX_RM_FRAMEBUFFER
-                 ? g_GameFlow.strings[GS_DETAIL_RENDER_MODE_FBO]
-                 : g_GameFlow.strings[GS_DETAIL_RENDER_MODE_LEGACY]));
+                 ? GS(DETAIL_RENDER_MODE_FBO)
+                 : GS(DETAIL_RENDER_MODE_LEGACY)));
         Text_ChangeText(value_text, buf);
         break;
 
     case OPTION_RESOLUTION:
         sprintf(
-            buf, g_GameFlow.strings[GS_DETAIL_RESOLUTION_FMT],
-            Screen_GetResWidth(), Screen_GetResHeight());
+            buf, GS(DETAIL_RESOLUTION_FMT), Screen_GetResWidth(),
+            Screen_GetResHeight());
         Text_ChangeText(value_text, buf);
         break;
 
     case OPTION_PERSPECTIVE: {
         bool is_enabled = g_Config.rendering.enable_perspective_filter;
-        Text_ChangeText(
-            value_text,
-            g_GameFlow.strings[is_enabled ? GS_MISC_ON : GS_MISC_OFF]);
+        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
         break;
     }
 

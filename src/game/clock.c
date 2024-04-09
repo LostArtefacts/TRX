@@ -2,7 +2,7 @@
 #include "game/clock.h"
 
 #include "game/console.h"
-#include "game/gameflow.h"
+#include "game/game_string.h"
 #include "game/interpolation.h"
 #include "game/phase/phase.h"
 #include "global/vars.h"
@@ -33,7 +33,7 @@ void Clock_SetTurboSpeed(const int32_t idx)
     m_TurboSpeedIdx = idx - TURBO_SPEED_OFFSET;
     CLAMP(m_TurboSpeedIdx, 0, TURBO_SPEED_COUNT - 1);
     LOG_INFO("Setting speed to %d (%.2f)", idx, Clock_GetSpeedMultiplier());
-    Console_Log(g_GameFlow.strings[GS_OSD_SPEED_SET], Clock_GetTurboSpeed());
+    Console_Log(GS(OSD_SPEED_SET), Clock_GetTurboSpeed());
 }
 
 int32_t Clock_GetTurboSpeed(void)
