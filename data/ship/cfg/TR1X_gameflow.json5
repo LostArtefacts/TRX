@@ -179,6 +179,7 @@
             "type": "normal",
             "music": 59,
             "injections": [
+                "data/colosseum_door.bin",
                 "data/colosseum_fd.bin",
                 "data/colosseum_itemrots.bin",
                 "data/colosseum_textures.bin",
