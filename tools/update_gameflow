@@ -36,9 +36,10 @@ def main() -> None:
     assert string_map
 
     for gameflow_path in SHIP_DIR.rglob("*gameflow*.json*"):
-        gameflow = gameflow_path.read_text()
-        gameflow = postprocess_gameflow(gameflow, string_map)
-        gameflow_path.write_text(gameflow)
+        old_gameflow = gameflow_path.read_text()
+        new_gameflow = postprocess_gameflow(old_gameflow, string_map)
+        if new_gameflow != old_gameflow:
+            gameflow_path.write_text(new_gameflow)
 
 
 if __name__ == "__main__":

@@ -83,7 +83,7 @@ pre-commit install
 To install required external dependencies on Ubuntu:
 
 ```
-apt-get install -y iwyu clang-format-17
+apt-get install -y iwyu clang-format-18
 ```
 
 After this, each time you make a commit a hook should trigger to automatically

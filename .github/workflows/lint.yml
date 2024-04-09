@@ -33,12 +33,12 @@ jobs:
       - name: Install dependencies
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
-          echo 'deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main' | sudo tee -a /etc/apt/sources.list
-          echo 'deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main' | sudo tee -a /etc/apt/sources.list
+          echo 'deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main' | sudo tee -a /etc/apt/sources.list
+          echo 'deb-src http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main' | sudo tee -a /etc/apt/sources.list
           sudo apt update
-          sudo apt-get install -y clang-format-17 iwyu
+          sudo apt-get install -y clang-format-18 iwyu
           sudo snap install --edge --classic just
-          sudo ln -s /usr/bin/clang-format-17 /usr/local/bin/clang-format
+          sudo ln -s /usr/bin/clang-format-18 /usr/local/bin/clang-format
           sudo apt-get install -y python3-pip
           sudo python3 -m pip install pyjson5 pre-commit
 

@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ENDS_WITH_ZERO(num) (fabsf((num)-roundf((num))) < 0.0001f)
+#define ENDS_WITH_ZERO(num) (fabsf((num) - roundf((num))) < 0.0001f)
 
 typedef struct ITEM_NAME {
     const GAME_OBJECT_ID obj_id;
