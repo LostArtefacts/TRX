@@ -5,14 +5,16 @@
 Initial build:
 
 - Compile the project (described in the next section)
-- Copy all .dll and .exe files from `build/` to your game directory
+- Copy all executable files from `build/` to your game directory
 - Copy the contents of `bin/` to your game directory
 
 Subsequent builds:
 
 - Compile the project
-- Copy all .dll and .exe files from `build/` to your game directory
+- Copy all executable files from `build/` to your game directory
   (we recommend making a script file to do this)
+
+
 
 ## Compiling
 
@@ -31,6 +33,7 @@ Subsequent builds:
     dependencies and `meson.build` for the local files, then tailoring your
     system to match the process.
 
+
 ### Compiling on Windows
 
 - **Using WSL**:
@@ -45,6 +48,7 @@ Subsequent builds:
 
     Run WSL and continue with the instructions from the `Compiling on Ubuntu` section.
 
+
 ### Supported compilers
 
 Please be advised that any build systems that are not the one we use for
@@ -52,7 +56,45 @@ automating releases (= mingw-w64) come at user's own risk. They might crash or
 even refuse to compile. Pull requests are welcome, but those other toolchains
 will be always considered supplementary.
 
-## Coding conventions
+
+
+## Working with the project
+
+### Top values
+
+- Compatibility with the original game's look and feel
+- Maintainability
+- Automation where possible
+- Documentation (git history and GitHub issues are great for this purpose)
+
+### Automatic code formatting
+
+This project uses [pre-commit](https://pre-commit.com/) to make sure the code
+is formatted the right way. This tool has additional external dependencies:
+`clang-format` for automatic code formatting and `include-what-you-use` to
+remove unused `#include`s.
+To install pre-commit:
+
+```
+python3 -m pip install --user pre-commit
+pre-commit install
+```
+
+To install required external dependencies on Ubuntu:
+
+```
+apt-get install -y iwyu clang-format-17
+```
+
+After this, each time you make a commit a hook should trigger to automatically
+format your changes. Additionally, in order to trigger this process manually,
+you can run `just lint-format`. This doesn't include the slowest checks that
+would hinder productivity – to run the full process, you can run `just lint`.
+If for any reason you can't install the above software on your machine, our CI
+pipeline will still show what needs to be changed in case of mistakes.
+
+
+### Coding convention
 
 While the existing source code does not conform to the rules because it uses
 the original Core Design's naming, new code should adhere to the following
@@ -95,15 +137,8 @@ Other things:
     If the expressions are extraordinarily complex, we refactor these into
     smaller conditions or functions.
 
-### Code formatting
 
-This project uses `clang-format` to take care of automatic code formatting, and
-`include-what-you-use` to remove unused `#include`s. To ensure your code
-conforms to the standard, please run `just lint` after each commit. If for some
-reason you can't run it, don't worry, our CI pipeline will show what needs to
-be changed in case of mistakes.
-
-## Submitting changes
+### Submitting changes
 
 We commit via pull requests and avoid committing directly to `develop`, which
 is a protected branch. Each pull request gets peer-reviewed and should have at
@@ -115,14 +150,16 @@ Otherwise we don't mark the discussions as resolved and give a chance for the
 reviewer to reply. Once all change requests are addressed, we should re-request
 a review from the interested parties.
 
-## Changelog
+
+### Changelog
 
 We keep a changelog in `CHANGELOG.md`. Anything other than an internal change
 or refactor needs an entry there. Furthermore, new features and OG bugfixes
 should be documented in README as well. If your change modifies gameflow
 behavior, make sure to update `GAMEFLOW.md` as appropriate.
 
-## Commit scope
+
+### Commit scope
 
 Either you can make a lot of throwaway commits such as 'test' 'continue
 testing' 'fix 1' 'fix 2' 'fix of the fix' and then squash your pull request as
@@ -132,7 +169,8 @@ general we prefer the latter approach. As a principle, refactors should made in
 separate commits. Code review changes are best made incrementally and then
 squashed prior to merging, for easing the review process.
 
-## Commit messages
+
+### Commit messages
 
 **The most important thing to remember:** bug fixes and feature implementations
 should always include the phrase `Resolves #123`. If there's no ticket and the
@@ -208,7 +246,8 @@ When merging via squash, it's OK to have GitHub append the pull request number,
 but pay special attention to the body field which often gets filled with
 garbage.
 
-## Branching model
+
+### Branching model
 
 We have two branches: `develop` and `stable`. `develop` is where all changes
 about to be published in the next release land. `stable` is the latest release.
@@ -218,12 +257,21 @@ released ahead of unpublished work in `develop` are merged directly to
 `stable`, and `develop` needs to be then rebased on top of the now-patched
 `stable`.
 
-## Releasing a new version
+
+### Tooling
+
+We try to code all of our internal tools in a reasonably recent version of
+Python. Avoid bash, shell and other similar languages.
+
+
+### Releasing a new version
 
 New version releases happen automatically whenever a new tag is pushed to the
 `stable` branch with the help of GitHub actions. In general this is accompanied
 with a special commit `docs: release X.Y.Z` that assigns unreleased changes to
 a specific version. See git history for details.
+
+
 
 ## Glossary
 
