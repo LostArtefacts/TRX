@@ -13,3 +13,9 @@ repos:
     entry: tools/update_gameflow
     language: python
     stages: [commit]
+
+  - id: additional-lint
+    name: Run additional linters
+    entry: tools/additional_lint
+    language: python
+    stages: [commit]
