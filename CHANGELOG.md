@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [4.0](https://github.com/LostArtefacts/TR1X/compare/3.1.1...4.0) - 2024-04-09
 - added experimental support for 60 FPS, available from the in-game graphics menu
 - added ability to slow the game down using the turbo cheat (#1215)
 - added /speed command to control the turbo cheat (#1215)
