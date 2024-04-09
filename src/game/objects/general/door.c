@@ -249,39 +249,3 @@ void Door_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     }
 }
-
-void Door_OpenNearest(ITEM_INFO *lara_item)
-{
-    int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
-
-    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
-        ITEM_INFO *item = &g_Items[item_num];
-        int32_t dx = (item->pos.x - lara_item->pos.x) >> 8;
-        int32_t dy = (item->pos.y - lara_item->pos.y) >> 8;
-        int32_t dz = (item->pos.z - lara_item->pos.z) >> 8;
-        int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-
-        if (dist > max_dist) {
-            continue;
-        }
-
-        if ((item->object_number < O_DOOR_TYPE1
-             || item->object_number > O_DOOR_TYPE8)
-            && item->object_number != O_TRAPDOOR
-            && item->object_number != O_BIGTRAPDOOR
-            && item->object_number != O_TRAPDOOR2) {
-            continue;
-        }
-
-        if (!item->active) {
-            Item_AddActive(item_num);
-            item->flags |= IF_CODE_BITS;
-        } else if (item->flags & IF_CODE_BITS) {
-            item->flags &= ~IF_CODE_BITS;
-        } else {
-            item->flags |= IF_CODE_BITS;
-        }
-        item->timer = 0;
-        item->touch_bits = 0;
-    }
-}

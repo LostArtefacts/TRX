@@ -5,3 +5,4 @@ void Lara_Cheat_EndLevel(void);
 void Lara_Cheat_EnterFlyMode(void);
 void Lara_Cheat_ExitFlyMode(void);
 void Lara_Cheat_GetStuff(void);
+void Lara_Cheat_OpenNearestDoor(void);

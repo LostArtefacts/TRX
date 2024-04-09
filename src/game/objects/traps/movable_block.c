@@ -49,20 +49,20 @@ static const OBJECT_BOUNDS *MovableBlock_Bounds(void)
 static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     // OG fix: stop pushing blocks through doors
-    int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
-    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
-        ITEM_INFO *item = &g_Items[item_num];
-        int32_t dx = (item->pos.x - lara_item->pos.x) >> 8;
-        int32_t dy = (item->pos.y - lara_item->pos.y) >> 8;
-        int32_t dz = (item->pos.z - lara_item->pos.z) >> 8;
-        int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
 
-        if (dist > max_dist) {
+    const int32_t shift = 8; // constant shift to avoid overflow errors
+    const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
+    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
+        ITEM_INFO *const item = &g_Items[item_num];
+        if (!Object_IsObjectType(item->object_number, g_DoorObjects)) {
             continue;
         }
 
-        if ((item->object_number < O_DOOR_TYPE1
-             || item->object_number > O_DOOR_TYPE8)) {
+        const int32_t dx = (item->pos.x - lara_item->pos.x) >> shift;
+        const int32_t dy = (item->pos.y - lara_item->pos.y) >> shift;
+        const int32_t dz = (item->pos.z - lara_item->pos.z) >> shift;
+        const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+        if (dist > max_dist) {
             continue;
         }
 
