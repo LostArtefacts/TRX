@@ -127,17 +127,20 @@ void Lara_Cheat_EndLevel(void)
     Console_Log(GS(OSD_COMPLETE_LEVEL));
 }
 
-void Lara_Cheat_EnterFlyMode(void)
+bool Lara_Cheat_EnterFlyMode(void)
 {
-    ITEM_INFO *const item = g_LaraItem;
-    if (g_Lara.water_status != LWS_UNDERWATER || item->hit_points <= 0) {
-        item->pos.y -= 0x80;
-        item->current_anim_state = LS_SWIM;
-        item->goal_anim_state = LS_SWIM;
-        Item_SwitchToAnim(item, LA_SWIM_GLIDE, 0);
-        item->gravity_status = 0;
-        item->rot.x = 30 * PHD_DEGREE;
-        item->fall_speed = 30;
+    if (g_LaraItem == NULL) {
+        return false;
+    }
+
+    if (g_Lara.water_status != LWS_UNDERWATER || g_LaraItem->hit_points <= 0) {
+        g_LaraItem->pos.y -= 0x80;
+        g_LaraItem->current_anim_state = LS_SWIM;
+        g_LaraItem->goal_anim_state = LS_SWIM;
+        Item_SwitchToAnim(g_LaraItem, LA_SWIM_GLIDE, 0);
+        g_LaraItem->gravity_status = 0;
+        g_LaraItem->rot.x = 30 * PHD_DEGREE;
+        g_LaraItem->fall_speed = 30;
         g_Lara.head_rot.x = 0;
         g_Lara.head_rot.y = 0;
         g_Lara.torso_rot.x = 0;
@@ -155,10 +158,15 @@ void Lara_Cheat_EnterFlyMode(void)
     g_Camera.type = CAM_CHASE;
     Viewport_SetFOV(Viewport_GetUserFOV());
     Console_Log(GS(OSD_FLY_MODE_ON));
+    return true;
 }
 
-void Lara_Cheat_ExitFlyMode(void)
+bool Lara_Cheat_ExitFlyMode(void)
 {
+    if (g_LaraItem == NULL) {
+        return false;
+    }
+
     const ROOM_INFO *const room = &g_RoomInfo[g_LaraItem->room_number];
     const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
     const int16_t water_height = Room_GetWaterHeight(
@@ -179,12 +187,13 @@ void Lara_Cheat_ExitFlyMode(void)
     }
     g_Lara.gun_status = LGS_ARMLESS;
     Console_Log(GS(OSD_FLY_MODE_OFF));
+    return true;
 }
 
-void Lara_Cheat_GetStuff(void)
+bool Lara_Cheat_GetStuff(void)
 {
     if (g_LaraItem == NULL) {
-        return;
+        return false;
     }
 
     Console_Log(GS(OSD_GIVE_ITEM_CHEAT));
@@ -248,13 +257,17 @@ void Lara_Cheat_GetStuff(void)
     if (!Inv_RequestItem(O_PICKUP_ITEM2)) {
         Inv_AddItem(O_PICKUP_ITEM2);
     }
+    return true;
 }
 
-void Lara_Cheat_OpenNearestDoor(void)
+bool Lara_Cheat_OpenNearestDoor(void)
 {
     if (g_LaraItem == NULL) {
-        return;
+        return false;
     }
+
+    int32_t opened = 0;
+    int32_t closed = 0;
 
     const int32_t shift = 8; // constant shift to avoid overflow errors
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
@@ -276,13 +289,22 @@ void Lara_Cheat_OpenNearestDoor(void)
         if (!item->active) {
             Item_AddActive(item_num);
             item->flags |= IF_CODE_BITS;
+            opened++;
         } else if (item->flags & IF_CODE_BITS) {
             item->flags &= ~IF_CODE_BITS;
+            closed++;
         } else {
             item->flags |= IF_CODE_BITS;
+            opened++;
         }
         item->timer = 0;
         item->touch_bits = 0;
-        break;
     }
+
+    if (opened > 0 || closed > 0) {
+        Console_Log(opened > 0 ? GS(OSD_DOOR_OPEN) : GS(OSD_DOOR_CLOSE));
+        return true;
+    }
+    Console_Log(GS(OSD_DOOR_OPEN_FAIL));
+    return false;
 }
