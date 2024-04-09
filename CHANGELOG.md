@@ -28,6 +28,7 @@
 - fixed the underwater SFX playing for one frame at the start of Palace Midas (#1251)
 - fixed an incorrect frame in Lara's underwater twist animation (OG bug in TR2 onwards) (#1242)
 - fixed Lara saying "no" when taking valid actions in front of a key item receptacle (#1268)
+- fixed Lara not saying "no" when using the Scion incorrectly (#1278)
 - fixed flickering in bats' death animations and rapid shooting if Lara continues to fire when they are killed (#992)
 
 ## [3.1.1](https://github.com/LostArtefacts/TR1X/compare/3.1...3.1.1) - 2024-01-19

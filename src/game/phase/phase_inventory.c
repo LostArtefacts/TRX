@@ -253,6 +253,7 @@ static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen)
     case O_PUZZLE_OPTION3:
     case O_PUZZLE_OPTION4:
     case O_LEADBAR_OPTION:
+    case O_SCION_OPTION:
         Lara_UseItem(inv_chosen);
         break;
 
