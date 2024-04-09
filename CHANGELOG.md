@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed Mac binaries not working on x86-64 (eg not Apple Silicon)
 
 ## [4.0.1](https://github.com/LostArtefacts/TR1X/compare/4.0...4.0.1) - 2024-04-10
 - fixed trying to pick up a lead bar crashing the game (#1293, regression from 4.0)
