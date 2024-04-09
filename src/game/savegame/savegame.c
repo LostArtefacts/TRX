@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "filesystem.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
@@ -561,7 +562,7 @@ void Savegame_ScanSavedGames(void)
             req->item_flags[req->items] |= RIF_BLOCKED;
             sprintf(
                 &req->item_texts[req->items * req->item_text_len],
-                g_GameFlow.strings[GS_MISC_EMPTY_SLOT_FMT], i + 1);
+                GS(MISC_EMPTY_SLOT_FMT), i + 1);
         }
 
         req->items++;
@@ -586,12 +587,12 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
         req->item_flags[req->items] |= RIF_BLOCKED;
         sprintf(
             &req->item_texts[req->items * req->item_text_len], "%s",
-            g_GameFlow.strings[GS_PASSPORT_LEGACY_SELECT_LEVEL_1]);
+            GS(PASSPORT_LEGACY_SELECT_LEVEL_1));
         req->items++;
         req->item_flags[req->items] |= RIF_BLOCKED;
         sprintf(
             &req->item_texts[req->items * req->item_text_len], "%s",
-            g_GameFlow.strings[GS_PASSPORT_LEGACY_SELECT_LEVEL_2]);
+            GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
         req->items++;
         req->requested = 0;
         req->line_offset = 0;
@@ -611,7 +612,7 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
         req->item_flags[req->items] &= ~RIF_BLOCKED;
         sprintf(
             &req->item_texts[req->items * req->item_text_len], "%s",
-            g_GameFlow.strings[GS_PASSPORT_STORY_SO_FAR]);
+            GS(PASSPORT_STORY_SO_FAR));
         req->items++;
     }
 

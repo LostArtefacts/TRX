@@ -5,6 +5,7 @@
 #include "game/clock.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
+#include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
@@ -120,18 +121,18 @@ static bool Console_Cmd_Fps(const char *const args)
 {
     if (String_Equivalent(args, "60")) {
         g_Config.rendering.fps = 60;
-        Console_Log(g_GameFlow.strings[GS_OSD_FPS_SET], g_Config.rendering.fps);
+        Console_Log(GS(OSD_FPS_SET), g_Config.rendering.fps);
         return true;
     }
 
     if (String_Equivalent(args, "30")) {
         g_Config.rendering.fps = 30;
-        Console_Log(g_GameFlow.strings[GS_OSD_FPS_SET], g_Config.rendering.fps);
+        Console_Log(GS(OSD_FPS_SET), g_Config.rendering.fps);
         return true;
     }
 
     if (String_Equivalent(args, "")) {
-        Console_Log(g_GameFlow.strings[GS_OSD_FPS_GET], g_Config.rendering.fps);
+        Console_Log(GS(OSD_FPS_GET), g_Config.rendering.fps);
         return true;
     }
 
@@ -145,7 +146,7 @@ static bool Console_Cmd_Pos(const char *const args)
     }
 
     Console_Log(
-        g_GameFlow.strings[GS_OSD_POS_GET], g_LaraItem->room_number,
+        GS(OSD_POS_GET), g_LaraItem->room_number,
         g_LaraItem->pos.x / (float)WALL_L, g_LaraItem->pos.y / (float)WALL_L,
         g_LaraItem->pos.z / (float)WALL_L,
         g_LaraItem->rot.x * 360.0f / (float)PHD_ONE,
@@ -171,11 +172,11 @@ static bool Console_Cmd_Teleport(const char *const args)
             }
 
             if (Item_Teleport(g_LaraItem, x * WALL_L, y * WALL_L, z * WALL_L)) {
-                Console_Log(g_GameFlow.strings[GS_OSD_POS_SET_POS], x, y, z);
+                Console_Log(GS(OSD_POS_SET_POS), x, y, z);
                 return true;
             }
 
-            Console_Log(g_GameFlow.strings[GS_OSD_POS_SET_POS_FAIL], x, y, z);
+            Console_Log(GS(OSD_POS_SET_POS_FAIL), x, y, z);
             return true;
         }
     }
@@ -184,9 +185,7 @@ static bool Console_Cmd_Teleport(const char *const args)
         int16_t room_num = -1;
         if (sscanf(args, "%hd", &room_num) == 1) {
             if (room_num < 0 || room_num >= g_RoomCount) {
-                Console_Log(
-                    g_GameFlow.strings[GS_OSD_INVALID_ROOM], room_num,
-                    g_RoomCount - 1);
+                Console_Log(GS(OSD_INVALID_ROOM), room_num, g_RoomCount - 1);
                 return true;
             }
 
@@ -204,13 +203,12 @@ static bool Console_Cmd_Teleport(const char *const args)
                 int32_t y = y1;
                 int32_t z = z1 + Random_GetControl() * (z2 - z1) / 0x7FFF;
                 if (Item_Teleport(g_LaraItem, x, y, z)) {
-                    Console_Log(
-                        g_GameFlow.strings[GS_OSD_POS_SET_ROOM], room_num);
+                    Console_Log(GS(OSD_POS_SET_ROOM), room_num);
                     return true;
                 }
             }
 
-            Console_Log(g_GameFlow.strings[GS_OSD_POS_SET_ROOM_FAIL], room_num);
+            Console_Log(GS(OSD_POS_SET_ROOM_FAIL), room_num);
             return true;
         }
     }
@@ -223,7 +221,7 @@ static bool Console_Cmd_Fly(const char *const args)
     if (!g_Objects[O_LARA].loaded) {
         return false;
     }
-    Console_Log(g_GameFlow.strings[GS_OSD_FLY_MODE_ON]);
+    Console_Log(GS(OSD_FLY_MODE_ON));
     Lara_Cheat_EnterFlyMode();
     return true;
 }
@@ -231,8 +229,7 @@ static bool Console_Cmd_Fly(const char *const args)
 static bool Console_Cmd_Speed(const char *const args)
 {
     if (strcmp(args, "") == 0) {
-        Console_Log(
-            g_GameFlow.strings[GS_OSD_SPEED_GET], Clock_GetTurboSpeed());
+        Console_Log(GS(OSD_SPEED_GET), Clock_GetTurboSpeed());
         return true;
     }
 
@@ -249,13 +246,13 @@ static bool Console_Cmd_Braid(const char *const args)
 {
     if (String_Equivalent(args, "off")) {
         g_Config.enable_braid = 0;
-        Console_Log(g_GameFlow.strings[GS_OSD_BRAID_OFF]);
+        Console_Log(GS(OSD_BRAID_OFF));
         return true;
     }
 
     if (String_Equivalent(args, "on")) {
         g_Config.enable_braid = 1;
-        Console_Log(g_GameFlow.strings[GS_OSD_BRAID_ON]);
+        Console_Log(GS(OSD_BRAID_ON));
         return true;
     }
 
@@ -266,13 +263,13 @@ static bool Console_Cmd_Cheats(const char *const args)
 {
     if (String_Equivalent(args, "off")) {
         g_Config.enable_cheats = false;
-        Console_Log(g_GameFlow.strings[GS_OSD_CHEATS_OFF]);
+        Console_Log(GS(OSD_CHEATS_OFF));
         return true;
     }
 
     if (String_Equivalent(args, "on")) {
         g_Config.enable_cheats = true;
-        Console_Log(g_GameFlow.strings[GS_OSD_CHEATS_ON]);
+        Console_Log(GS(OSD_CHEATS_ON));
         return true;
     }
 
@@ -310,9 +307,9 @@ static bool Console_Cmd_GiveItem(const char *args)
 
         if (g_Objects[desc->obj_id].loaded) {
             Inv_AddItemNTimes(desc->obj_id, num);
-            Console_Log(g_GameFlow.strings[GS_OSD_GIVE_ITEM], desc_name);
+            Console_Log(GS(OSD_GIVE_ITEM), desc_name);
         } else {
-            Console_Log(g_GameFlow.strings[GS_OSD_UNAVAILABLE_ITEM]);
+            Console_Log(GS(OSD_UNAVAILABLE_ITEM));
         }
 
         return true;
@@ -329,7 +326,7 @@ static bool Console_Cmd_GiveItem(const char *args)
         Inv_AddItem(O_KEY_ITEM4);
         Inv_AddItem(O_PICKUP_ITEM1);
         Inv_AddItem(O_PICKUP_ITEM2);
-        Console_Log(g_GameFlow.strings[GS_OSD_GIVE_ITEM_ALL_KEYS]);
+        Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
         return true;
     }
 
@@ -341,11 +338,11 @@ static bool Console_Cmd_GiveItem(const char *args)
         g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
         g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
         g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
-        Console_Log(g_GameFlow.strings[GS_OSD_GIVE_ITEM_ALL_GUNS]);
+        Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
         return true;
     }
 
-    Console_Log(g_GameFlow.strings[GS_OSD_INVALID_ITEM], args);
+    Console_Log(GS(OSD_INVALID_ITEM), args);
     return true;
 }
 
@@ -354,7 +351,7 @@ static bool Console_Cmd_FlipMap(const char *args)
     bool flip = false;
     if (String_Equivalent(args, "on")) {
         if (g_FlipStatus) {
-            Console_Log(g_GameFlow.strings[GS_OSD_FLIPMAP_FAIL_ALREADY_OFF]);
+            Console_Log(GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
             return true;
         } else {
             flip = true;
@@ -363,7 +360,7 @@ static bool Console_Cmd_FlipMap(const char *args)
 
     if (String_Equivalent(args, "off")) {
         if (!g_FlipStatus) {
-            Console_Log(g_GameFlow.strings[GS_OSD_FLIPMAP_FAIL_ALREADY_OFF]);
+            Console_Log(GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
             return true;
         } else {
             flip = true;
@@ -377,9 +374,9 @@ static bool Console_Cmd_FlipMap(const char *args)
     if (flip) {
         Room_FlipMap();
         if (g_FlipStatus) {
-            Console_Log(g_GameFlow.strings[GS_OSD_FLIPMAP_ON]);
+            Console_Log(GS(OSD_FLIPMAP_ON));
         } else {
-            Console_Log(g_GameFlow.strings[GS_OSD_FLIPMAP_OFF]);
+            Console_Log(GS(OSD_FLIPMAP_OFF));
         }
         return true;
     }
@@ -404,9 +401,9 @@ static bool Console_Cmd_Kill(const char *args)
         }
         if (num > 0) {
             Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
-            Console_Log(g_GameFlow.strings[GS_OSD_KILL_ALL], num);
+            Console_Log(GS(OSD_KILL_ALL), num);
         } else {
-            Console_Log(g_GameFlow.strings[GS_OSD_KILL_ALL_FAIL], num);
+            Console_Log(GS(OSD_KILL_ALL_FAIL), num);
         }
         return true;
     }
@@ -435,9 +432,9 @@ static bool Console_Cmd_Kill(const char *args)
         }
 
         if (found_anything) {
-            Console_Log(g_GameFlow.strings[GS_OSD_KILL]);
+            Console_Log(GS(OSD_KILL));
         } else {
-            Console_Log(g_GameFlow.strings[GS_OSD_KILL_FAIL]);
+            Console_Log(GS(OSD_KILL_FAIL));
         }
         return true;
     }
@@ -480,7 +477,7 @@ static bool Console_Cmd_Level(const char *args)
     }
 
     if (level_to_load >= g_GameFlow.level_count) {
-        Console_Log(g_GameFlow.strings[GS_OSD_INVALID_LEVEL]);
+        Console_Log(GS(OSD_INVALID_LEVEL));
         return true;
     }
 
@@ -488,8 +485,7 @@ static bool Console_Cmd_Level(const char *args)
         g_GameInfo.select_level_num = level_to_load;
         g_LevelComplete = true;
         Console_Log(
-            g_GameFlow.strings[GS_OSD_PLAY_LEVEL],
-            g_GameFlow.levels[level_to_load].level_title);
+            GS(OSD_PLAY_LEVEL), g_GameFlow.levels[level_to_load].level_title);
         return true;
     }
 

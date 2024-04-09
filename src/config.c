@@ -18,9 +18,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define Q(x) #x
-#define QUOTE(x) Q(x)
-
 CONFIG g_Config = { 0 };
 
 static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";

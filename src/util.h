@@ -1,5 +1,8 @@
 #pragma once
 
+#define Q(x) #x
+#define QUOTE(x) Q(x)
+
 #define SQUARE(A) ((A) * (A))
 #ifndef ABS
     #define ABS(x) (((x) < 0) ? (-(x)) : (x))
