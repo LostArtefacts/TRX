@@ -10,9 +10,9 @@ on:
         default: false
 
 env:
-  FFMPEG_INSTALL_FUSED: /opt/local
-  FFMPEG_INSTALL_TMP_FUSED: /tmp/fused
+  FFMPEG_INSTALL_FINAL: /opt/local
   FFMPEG_INSTALL_TMP_UNIVERSAL: /tmp/install_universal
+  FFMPEG_INSTALL_TMP_ARM64: /tmp/install_arm64
   FFMPEG_INSTALL_TMP_X86_64: /tmp/install_x86_64
 
 jobs:
@@ -87,7 +87,7 @@ jobs:
         with:
           key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
           path: |
-            ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
+            ${{ env.FFMPEG_INSTALL_TMP_ARM64 }}
             ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
 
       - name: "Build dependency: ffmpeg (universal)"
@@ -108,7 +108,7 @@ jobs:
           # Configure for arm64.
           ./configure \
             --arch=arm64 \
-            --prefix=$FFMPEG_INSTALL_TMP_UNIVERSAL \
+            --prefix=$FFMPEG_INSTALL_TMP_ARM64 \
             --cc='clang' \
             $FFMPEG_CONFIG_OPTIONS
 
@@ -138,15 +138,11 @@ jobs:
         with:
           key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
           path: |
-            ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
+            ${{ env.FFMPEG_INSTALL_TMP_ARM64 }}
             ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
 
       - name: "Build dependency: ffmpeg (fuse universal libraries)"
         run: |
-          # Copy universal artefacts to the MacPorts install prefix.
-          sudo rsync -arv "$FFMPEG_INSTALL_TMP_UNIVERSAL/" "$FFMPEG_INSTALL_FUSED/"
-          grep "$FFMPEG_INSTALL_TMP_UNIVERSAL" -rIl "$FFMPEG_INSTALL_FUSED" | xargs -I '{}' sudo sed -i -- "s|$FFMPEG_INSTALL_TMP_UNIVERSAL|$FFMPEG_INSTALL_FUSED|g" '{}'
-
           # Libs
           FFMPEG_LIBS=(
             "libavcodec"
@@ -159,27 +155,37 @@ jobs:
             "libswscale"
           )
 
+          # Recreate library symlinks in MacPorts install prefix.
+          sudo find $FFMPEG_INSTALL_TMP_ARM64/lib -type l -exec cp -P '{}' $FFMPEG_INSTALL_FINAL/LIB ';'
+
           # `lipo` cannot overwrite binaries in place, so we stage the
           # fused binaries in a temporary directory.
-          mkdir -p $FFMPEG_INSTALL_TMP_FUSED
+          mkdir -p $FFMPEG_INSTALL_TMP_UNIVERSAL
           for LIB in ${FFMPEG_LIBS[@]}; do
-              RESOLVED_LIB=$(ls -l $FFMPEG_INSTALL_FUSED/lib/${LIB}* \
+              RESOLVED_LIB=$(ls -l $FFMPEG_INSTALL_TMP_ARM64/lib/${LIB}* \
                 | grep -v '^l' \
                 | awk -F'/' '{print $NF}')
 
               lipo -create \
-                $FFMPEG_INSTALL_FUSED/lib/$RESOLVED_LIB \
+                $FFMPEG_INSTALL_TMP_ARM64/lib/$RESOLVED_LIB \
                 $FFMPEG_INSTALL_TMP_X86_64/lib/$RESOLVED_LIB \
-                -output $FFMPEG_INSTALL_TMP_FUSED/$RESOLVED_LIB
+                -output $FFMPEG_INSTALL_TMP_UNIVERSAL/$RESOLVED_LIB
 
-              # Replace the x86_64 library with a link to the universal
-              # binary, so `bundle_dylibs` will always gather a universal
-              # build.
-              sudo ln -s -f $FFMPEG_INSTALL_TMP_FUSED/lib/$RESOLVED_LIB $FFMPEG_INSTALL_TMP_X86_64/lib/$RESOLVED_LIB
+              # Replace the arch-specific libraries with links to the universal
+              # binary, so `bundle_dylibs` will always gather a universal build.
+              sudo ln -s -f $FFMPEG_INSTALL_TMP_UNIVERSAL/$RESOLVED_LIB $FFMPEG_INSTALL_TMP_ARM64/lib/$RESOLVED_LIB
+              sudo ln -s -f $FFMPEG_INSTALL_TMP_UNIVERSAL/$RESOLVED_LIB $FFMPEG_INSTALL_TMP_X86_64/lib/$RESOLVED_LIB
           done
 
-          # Move the fused binaries to the MacPorts install prefix.
-          sudo mv $FFMPEG_INSTALL_TMP_FUSED/*.dylib $FFMPEG_INSTALL_FUSED/lib/
+          # Copy the fused binaries to the MacPorts install prefix.
+          sudo cp $FFMPEG_INSTALL_TMP_UNIVERSAL/*.dylib $FFMPEG_INSTALL_FINAL/lib/
+
+          # Update and install pkgconfig files.
+          for file in "$FFMPEG_INSTALL_TMP_ARM64/lib/pkgconfig"/*.pc; do
+            sudo sed -i '' "s|^prefix=.*|prefix=$FFMPEG_INSTALL_FINAL|" "$file"
+            sudo sed -i '' "s|^libdir=.*|libdir=$FFMPEG_INSTALL_FINAL/lib|" "$file"
+          done
+          sudo mv $FFMPEG_INSTALL_TMP_ARM64/lib/pkgconfig/* $FFMPEG_INSTALL_FINAL/lib/pkgconfig/
 
       - name: Build arm64 and create app bundle
         run: |
