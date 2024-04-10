@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [4.0.1](https://github.com/LostArtefacts/TR1X/compare/4.0...4.0.1) - 2024-04-10
 - fixed trying to pick up a lead bar crashing the game (#1293, regression from 4.0)
 
 ## [4.0](https://github.com/LostArtefacts/TR1X/compare/3.1.1...4.0) - 2024-04-09
