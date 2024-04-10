@@ -23,4 +23,5 @@ void LeadBar_Setup(OBJECT_INFO *obj)
     obj->draw_routine = Object_DrawPickupItem;
     obj->collision = Pickup_Collision;
     obj->save_flags = 1;
+    obj->bounds = Pickup_Bounds;
 }
