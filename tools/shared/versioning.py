@@ -1,16 +1,22 @@
-from subprocess import run
+from subprocess import check_output
+
+
+def get_branch_version(branch: str | None) -> str:
+    return check_output(
+        [
+            "git",
+            "describe",
+            *([branch] if branch else ["--dirty"]),
+            "--always",
+            "--abbrev=7",
+            "--tags",
+            "--exclude",
+            "latest",
+        ],
+        text=True,
+    ).strip()
 
 
 def generate_version() -> str:
-    cmd = [
-        "git",
-        "describe",
-        "--always",
-        "--abbrev=7",
-        "--tags",
-        "--dirty",
-        "--exclude",
-        "latest",
-    ]
-    version = run(cmd, capture_output=True, text=True).stdout.strip()
+    version = get_branch_version(None)
     return f'TR1X {version or "?"}'
