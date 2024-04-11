@@ -4,7 +4,7 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from subprocess import check_output
+from subprocess import check_output, run
 
 from shared.common import REPO_DIR
 from shared.versioning import get_branch_version
@@ -40,7 +40,7 @@ class Git:
         )
 
     def delete_tag(self, tag_name: str) -> None:
-        check_output(["git", "tag", "-d", tag_name])
+        run(["git", "tag", "-d", tag_name])
 
     def create_tag(self, tag_name: str) -> None:
         check_output(["git", "tag", tag_name])
