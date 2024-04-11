@@ -1,3 +1,4 @@
+from shared.common import SRC_DIR
 from subprocess import check_output
 
 
@@ -13,6 +14,7 @@ def get_branch_version(branch: str | None) -> str:
             "--exclude",
             "latest",
         ],
+        cwd=SRC_DIR,
         text=True,
     ).strip()
 

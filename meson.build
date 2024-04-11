@@ -51,7 +51,7 @@ git = find_program('git', required: true)
 init = custom_target(
   'fake_init',
   output: ['init.c'],
-  command: [python3, meson.source_root() + '/tools/generate_init', '-o', '@OUTPUT0@'],
+  command: [python3, meson.source_root() + '/tools/generate_init', '-o', meson.current_build_dir() / '@OUTPUT0@'],
   build_always_stale: true,
 )
 
