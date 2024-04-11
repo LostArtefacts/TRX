@@ -32,9 +32,9 @@
 - fixed a missing translation for the Spanish config tool for the Eidos logo skip option (#1151)
 - fixed a flipmap issue in Natla's Mines that could make the cabin appear stacked and prevent normal gameplay (#1052)
 - fixed several texture issues across the majority of levels (#1231)
-- fixed broken gorilla animations (#1244, regression since 2.15.3)
+- fixed broken gorilla animations (#1244, regression from 2.15.3)
 - fixed saving and loading the music timestamp when the load current music option is enabled and game sounds in inventory are disabled (#1237)
-- fixed the remember played music option always being enabled (#1249, regression since 2.16)
+- fixed the remember played music option always being enabled (#1249, regression from 2.16)
 - fixed the underwater SFX playing for one frame at the start of Palace Midas (#1251)
 - fixed an incorrect frame in Lara's underwater twist animation (OG bug in TR2 onwards) (#1242)
 - fixed Lara saying "no" when taking valid actions in front of a key item receptacle (#1268)
@@ -68,8 +68,8 @@
 - fixed differences when looking at items from triggers that do not use fixed cameras when the enhanced look option is enabled (#1026)
 
 ## [3.0.5](https://github.com/LostArtefacts/TR1X/compare/3.0.4...3.0.5) - 2023-12-13
-- fixed crash when pressing certain keys and the console is disabled (#1116, regression since 3.0)
-- fixed lightning bolts wrongly drawn (#1113, regression since 0.9)
+- fixed crash when pressing certain keys and the console is disabled (#1116, regression from 3.0)
+- fixed lightning bolts wrongly drawn (#1113, regression from 0.9)
 
 ## [3.0.4](https://github.com/LostArtefacts/TR1X/compare/3.0.3...3.0.4) - 2023-12-08
 - fixed missiles damaging Lara when she is far beyond their damage range (#1090)
@@ -557,8 +557,8 @@ Shipped our own .exe! Tomb1Main is now fully open source and no longer needs inj
 
 
 ## [1.1.2](https://github.com/LostArtefacts/TR1X/compare/1.1.1...1.1.2) - 2021-03-30
-- fixed main menu demo mode not playing correctly (regression since 1.1.1)
-- fixed game speeding up on certain machines (regression since 1.1.1)
+- fixed main menu demo mode not playing correctly (regression from 1.1.1)
+- fixed game speeding up on certain machines (regression from 1.1.1)
 
 
 ## [1.1.1](https://github.com/LostArtefacts/TR1X/compare/1.1...1.1.1) - 2021-03-29
