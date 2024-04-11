@@ -1,5 +1,6 @@
-from shared.common import SRC_DIR
 from subprocess import run
+
+from shared.common import SRC_DIR
 
 
 def get_branch_version(branch: str | None) -> str:
