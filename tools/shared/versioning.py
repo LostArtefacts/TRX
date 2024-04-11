@@ -1,5 +1,7 @@
 from subprocess import check_output
 
+from shared.common import SRC_DIR
+
 
 def get_branch_version(branch: str | None) -> str:
     return check_output(
@@ -13,6 +15,7 @@ def get_branch_version(branch: str | None) -> str:
             "--exclude",
             "latest",
         ],
+        cwd=SRC_DIR,
         text=True,
     ).strip()
 
