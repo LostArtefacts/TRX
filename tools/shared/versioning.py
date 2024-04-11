@@ -1,10 +1,10 @@
-from subprocess import check_output
+from subprocess import run
 
 from shared.common import SRC_DIR
 
 
 def get_branch_version(branch: str | None) -> str:
-    return check_output(
+    return run(
         [
             "git",
             "describe",
@@ -17,7 +17,9 @@ def get_branch_version(branch: str | None) -> str:
         ],
         cwd=SRC_DIR,
         text=True,
-    ).strip()
+        capture_output=True,
+        check=False,
+    ).stdout.strip()
 
 
 def generate_version() -> str:
