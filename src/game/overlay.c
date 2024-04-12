@@ -45,7 +45,6 @@ typedef struct DISPLAY_PICKUP_INFO {
 static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
-static int32_t m_OldGameTimer = 0;
 static DISPLAY_PICKUP_INFO m_Pickups[MAX_PICKUPS] = { 0 };
 
 static RGBA_8888 m_ColorBarMap[][COLOR_STEPS] = {
@@ -415,12 +414,10 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
 
 static void Overlay_DrawPickups3D(void)
 {
-    int16_t ticks =
-        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
-    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
+    const int16_t ticks = Clock_IsAtLogicalFrame(1);
 
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        DISPLAY_PICKUP_INFO *pu = &m_Pickups[i];
+        DISPLAY_PICKUP_INFO *const pu = &m_Pickups[i];
 
         switch (pu->phase) {
         case DPP_DEAD:
@@ -459,19 +456,14 @@ static void Overlay_DrawPickups3D(void)
 
 static void Overlay_DrawPickupsSprites(void)
 {
-    int16_t ticks =
-        g_GameInfo.current[g_CurrentLevel].stats.timer - m_OldGameTimer;
-    m_OldGameTimer = g_GameInfo.current[g_CurrentLevel].stats.timer;
+    const int16_t ticks = Clock_IsAtLogicalFrame(1);
 
-    if (ticks <= 0 || ticks >= MAX_PICKUP_DURATION_DISPLAY) {
-        return;
-    }
-
-    int32_t sprite_height =
+    const int32_t sprite_height =
         MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
-    int32_t sprite_width = sprite_height * 4 / 3;
+    const int32_t sprite_width = sprite_height * 4 / 3;
+
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        DISPLAY_PICKUP_INFO *pu = &m_Pickups[i];
+        DISPLAY_PICKUP_INFO *const pu = &m_Pickups[i];
         if (pu->phase == DPP_DEAD) {
             continue;
         }
@@ -482,13 +474,13 @@ static void Overlay_DrawPickupsSprites(void)
             continue;
         }
 
-        int32_t x =
+        const int32_t x =
             Viewport_GetWidth() - sprite_height - sprite_width * pu->grid_x;
-        int32_t y =
+        const int32_t y =
             Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
-        int16_t spr_num = g_Objects[pu->obj_num].mesh_index;
-        Output_DrawUISprite(
-            x, y, Screen_GetRenderScaleGLRage(12288), spr_num, 4096);
+        const int32_t scale = Screen_GetRenderScaleGLRage(12288);
+        const int16_t sprite_num = g_Objects[pu->obj_num].mesh_index;
+        Output_DrawUISprite(x, y, scale, sprite_num, 4096);
     }
 }
 
