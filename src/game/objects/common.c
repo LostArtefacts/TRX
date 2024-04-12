@@ -150,7 +150,8 @@ void Object_DrawDummyItem(ITEM_INFO *item)
 void Object_DrawSpriteItem(ITEM_INFO *item)
 {
     Output_DrawSprite(
-        item->pos.x, item->pos.y, item->pos.z,
+        item->interp.result.pos.x, item->interp.result.pos.y,
+        item->interp.result.pos.z,
         g_Objects[item->object_number].mesh_index - item->frame_number,
         item->shade);
 }

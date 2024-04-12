@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed flickering sprite pickups (#1298)
 
 ## [4.0.2](https://github.com/LostArtefacts/TR1X/compare/4.0.1...4.0.2) - 2024-04-11
 - fixed Mac binaries not working on x86-64 (eg not Apple Silicon)
