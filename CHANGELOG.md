@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [4.0.3](https://github.com/LostArtefacts/TR1X/compare/4.0.2...4.0.3) - 2024-04-14
 - fixed flickering sprite pickups (#1298)
 
 ## [4.0.2](https://github.com/LostArtefacts/TR1X/compare/4.0.1...4.0.2) - 2024-04-11
