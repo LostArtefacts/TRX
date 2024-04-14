@@ -928,21 +928,16 @@ void Output_AnimateTextures(void)
         return;
     }
 
-    if (g_AnimTextureRanges) {
-        const int16_t *ptr = g_AnimTextureRanges;
-        int16_t i = *ptr++;
-        while (i > 0) {
-            int16_t j = *ptr++;
-            const PHD_TEXTURE temp = g_PhdTextureInfo[*ptr];
-            while (j > 0) {
-                g_PhdTextureInfo[ptr[0]] = g_PhdTextureInfo[ptr[1]];
-                j--;
-                ptr++;
-            }
-            g_PhdTextureInfo[*ptr] = temp;
-            i--;
-            ptr++;
+    const TEXTURE_RANGE *range = g_AnimTextureRanges;
+    while (range) {
+        int32_t i = 0;
+        const PHD_TEXTURE temp = g_PhdTextureInfo[range->textures[i]];
+        for (; i < range->num_textures - 1; i++) {
+            g_PhdTextureInfo[range->textures[i]] =
+                g_PhdTextureInfo[range->textures[i + 1]];
         }
+        g_PhdTextureInfo[range->textures[i]] = temp;
+        range = range->next_range;
     }
 
     for (int32_t i = 0; i < STATIC_NUMBER_OF; i++) {

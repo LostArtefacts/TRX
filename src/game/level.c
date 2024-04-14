@@ -720,14 +720,33 @@ static bool Level_LoadBoxes(MYFILE *fp)
 
 static bool Level_LoadAnimatedTextures(MYFILE *fp)
 {
+    int16_t num_ranges;
     File_Read(&m_LevelInfo.anim_texture_range_count, sizeof(int32_t), 1, fp);
-    LOG_INFO("%d animated textures", m_LevelInfo.anim_texture_range_count);
+    File_Read(&num_ranges, sizeof(int16_t), 1, fp);
+    LOG_INFO("%d animated texture ranges", num_ranges);
+    if (!num_ranges) {
+        g_AnimTextureRanges = NULL;
+        return true;
+    }
+
     g_AnimTextureRanges = GameBuf_Alloc(
-        sizeof(int16_t) * m_LevelInfo.anim_texture_range_count,
-        GBUF_ANIMATING_TEXTURE_RANGES);
-    File_Read(
-        g_AnimTextureRanges, sizeof(int16_t),
-        m_LevelInfo.anim_texture_range_count, fp);
+        sizeof(TEXTURE_RANGE) * num_ranges, GBUF_ANIMATING_TEXTURE_RANGES);
+    for (int32_t i = 0; i < num_ranges; i++) {
+        TEXTURE_RANGE *range = &g_AnimTextureRanges[i];
+        range->next_range =
+            i == num_ranges - 1 ? NULL : &g_AnimTextureRanges[i + 1];
+
+        // Level data is tied to the original logic in Output_AnimateTextures
+        // and hence stores one less than the actual count here.
+        File_Read(&range->num_textures, sizeof(int16_t), 1, fp);
+        range->num_textures++;
+
+        range->textures = GameBuf_Alloc(
+            sizeof(int16_t) * range->num_textures,
+            GBUF_ANIMATING_TEXTURE_RANGES);
+        File_Read(range->textures, sizeof(int16_t), range->num_textures, fp);
+    }
+
     return true;
 }
 
