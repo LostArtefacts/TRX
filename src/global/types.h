@@ -1142,6 +1142,12 @@ typedef struct PHD_SPRITE {
     int16_t y2;
 } PHD_SPRITE;
 
+typedef struct TEXTURE_RANGE {
+    int16_t num_textures;
+    int16_t *textures;
+    struct TEXTURE_RANGE *next_range;
+} TEXTURE_RANGE;
+
 typedef struct DOOR_INFO {
     int16_t room_num;
     struct {

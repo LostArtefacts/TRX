@@ -67,7 +67,7 @@ extern int16_t *g_FlyZone[2];
 extern ANIM_STRUCT *g_Anims;
 extern ANIM_CHANGE_STRUCT *g_AnimChanges;
 extern ANIM_RANGE_STRUCT *g_AnimRanges;
-extern int16_t *g_AnimTextureRanges;
+extern TEXTURE_RANGE *g_AnimTextureRanges;
 extern int16_t *g_AnimCommands;
 extern int32_t *g_AnimBones;
 extern FRAME_INFO *g_AnimFrames;
