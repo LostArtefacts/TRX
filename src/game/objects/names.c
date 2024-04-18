@@ -299,24 +299,3 @@ const char *Object_GetCanonicalName(
 
     return user_input;
 }
-
-bool Object_IsNamed(const GAME_OBJECT_ID obj_id, const char *name)
-{
-    for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
-         desc++) {
-        if (desc->obj_id == obj_id && String_Match(name, desc->regex)) {
-            return true;
-        }
-    }
-
-    for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
-         item_ptr++) {
-        const INVENTORY_ITEM *item = *item_ptr;
-        if (Inv_GetItemOption(item->object_number) == Inv_GetItemOption(obj_id)
-            && String_Match(name, item->string)) {
-            return true;
-        }
-    }
-
-    return false;
-}
