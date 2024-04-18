@@ -19,6 +19,19 @@ RUN apt-get update \
 
 
 
+# pcre2
+FROM base AS pcre2
+RUN apt-get install -y git gcc autoconf libtool
+RUN git clone https://github.com/PCRE2Project/pcre2
+RUN cd pcre2 \
+    && autoreconf -fi \
+    && ./configure \
+        --prefix=/ext/ \
+    && make -j 4 \
+    && make install
+
+
+
 # libbacktrace
 FROM base AS backtrace
 RUN apt-get install -y git gcc autoconf libtool
@@ -123,6 +136,7 @@ COPY --from=upx /ext/upx /usr/local/bin/upx
 COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 COPY --from=backtrace /ext/ /ext/
+COPY --from=pcre2 /ext/ /ext/
 
 ENV PYTHONPATH=/app/tools/
 ENTRYPOINT ["/app/tools/docker/game-linux/entrypoint.sh"]

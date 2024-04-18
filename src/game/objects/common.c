@@ -59,6 +59,7 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     O_SHOTGUN_ITEM,
     O_MAGNUM_ITEM,
     O_UZI_ITEM,
+    O_GUN_AMMO_ITEM,
     O_SG_AMMO_ITEM,
     O_MAG_AMMO_ITEM,
     O_UZI_AMMO_ITEM,
@@ -207,6 +208,20 @@ GAME_OBJECT_ID Object_GetCognate(
     while (pair->key_id != NO_OBJECT) {
         if (pair->key_id == key_id) {
             return pair->value_id;
+        }
+        pair++;
+    }
+
+    return NO_OBJECT;
+}
+
+GAME_OBJECT_ID Object_GetCognateInverse(
+    GAME_OBJECT_ID value_id, const GAME_OBJECT_PAIR *test_map)
+{
+    const GAME_OBJECT_PAIR *pair = &test_map[0];
+    while (pair->key_id != NO_OBJECT) {
+        if (pair->value_id == value_id) {
+            return pair->key_id;
         }
         pair++;
     }

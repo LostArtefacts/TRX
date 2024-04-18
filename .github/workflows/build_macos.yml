@@ -78,6 +78,10 @@ jobs:
           sudo port install bzip2 +universal
           sudo port install xz +universal
 
+      - name: "Build dependencies: Regex libraries (universal)"
+        run: |
+          sudo port install pcre2 +universal
+
       - name: "Build dependency: libsdl2 (universal)"
         run: sudo port -N install libsdl2 +universal
 

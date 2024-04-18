@@ -24,6 +24,8 @@ extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];
 
 GAME_OBJECT_ID Object_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
+GAME_OBJECT_ID Object_GetCognateInverse(
+    GAME_OBJECT_ID value_id, const GAME_OBJECT_PAIR *test_map);
 int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id);
 bool Object_IsObjectType(
     GAME_OBJECT_ID object_id, const GAME_OBJECT_ID *test_arr);
