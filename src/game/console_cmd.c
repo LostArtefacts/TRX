@@ -1,7 +1,6 @@
 #include "game/console_cmd.h"
 
 #include "config.h"
-#include "game/carrier.h"
 #include "game/clock.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
@@ -351,16 +350,12 @@ static bool Console_Cmd_FlipMap(const char *args)
 
 static bool Console_Cmd_Kill(const char *args)
 {
+    // kill all the enemies in the level
     if (String_Equivalent(args, "all")) {
         int32_t num = 0;
-        for (int16_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
-            struct ITEM_INFO *item = &g_Items[item_num];
-            if (Object_IsObjectType(item->object_number, g_EnemyObjects)
-                && item->hit_points > 0) {
-                Effect_ExplodingDeath(item_num, -1, 0);
-                Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
-                Item_Kill(item_num);
-                Carrier_TestItemDrops(item_num);
+        for (int16_t item_num = 0; item_num < Item_GetTotalCount();
+             item_num++) {
+            if (Lara_Cheat_KillEnemy(item_num)) {
                 num++;
             }
         }
@@ -373,11 +368,10 @@ static bool Console_Cmd_Kill(const char *args)
         return true;
     }
 
+    // kill all the enemies around Lara within one tile, or a single nearest
+    // enemy
     if (strcmp(args, "") == 0) {
-        // kill all the enemies around Lara within one tile, or a single
-        // nearest enemy
-        bool found_anything = false;
-
+        bool found = false;
         while (true) {
             const int16_t best_item_num = Lara_GetNearestEnemy();
             if (best_item_num == NO_ITEM) {
@@ -386,22 +380,48 @@ static bool Console_Cmd_Kill(const char *args)
 
             struct ITEM_INFO *item = &g_Items[best_item_num];
             const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
-            Effect_ExplodingDeath(best_item_num, -1, 0);
-            Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
-            Item_Kill(best_item_num);
-            Carrier_TestItemDrops(best_item_num);
-            found_anything = true;
+            found |= Lara_Cheat_KillEnemy(best_item_num);
             if (distance >= WALL_L) {
                 break;
             }
         }
 
-        if (found_anything) {
+        if (found) {
             Console_Log(GS(OSD_KILL));
         } else {
             Console_Log(GS(OSD_KILL_FAIL));
         }
         return true;
+    }
+
+    // kill a single enemy type
+    {
+        int32_t match_count = 0;
+        GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
+        bool matched = false;
+        int32_t num = 0;
+        for (int32_t i = 0; i < match_count; i++) {
+            const GAME_OBJECT_ID obj_id = matching_objs[i];
+            if (Object_IsObjectType(obj_id, g_EnemyObjects)) {
+                matched = true;
+                for (int16_t item_num = 0; item_num < Item_GetTotalCount();
+                     item_num++) {
+                    if (g_Items[item_num].object_number == obj_id
+                        && Lara_Cheat_KillEnemy(item_num)) {
+                        num++;
+                    }
+                }
+            }
+        }
+        Memory_FreePointer(&matching_objs);
+        if (matched) {
+            if (num > 0) {
+                Console_Log(GS(OSD_KILL_ALL), num);
+            } else {
+                Console_Log(GS(OSD_KILL_ALL_FAIL));
+            }
+            return true;
+        }
     }
 
     return false;

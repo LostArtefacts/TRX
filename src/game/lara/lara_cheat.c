@@ -1,5 +1,6 @@
 #include "game/lara/lara_cheat.h"
 
+#include "game/carrier.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
 #include "game/game_string.h"
@@ -307,4 +308,19 @@ bool Lara_Cheat_OpenNearestDoor(void)
     }
     Console_Log(GS(OSD_DOOR_OPEN_FAIL));
     return false;
+}
+
+bool Lara_Cheat_KillEnemy(const int16_t item_num)
+{
+    struct ITEM_INFO *item = &g_Items[item_num];
+    if (!Object_IsObjectType(item->object_number, g_EnemyObjects)
+        || item->hit_points <= 0) {
+        return false;
+    }
+
+    Effect_ExplodingDeath(item_num, -1, 0);
+    Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
+    Item_Kill(item_num);
+    Carrier_TestItemDrops(item_num);
+    return true;
 }
