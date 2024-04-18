@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- changed injection files to be placed in its own directory (#1306)
 
 ## [4.0.3](https://github.com/LostArtefacts/TR1X/compare/4.0.2...4.0.3) - 2024-04-14
 - fixed flickering sprite pickups (#1298)
