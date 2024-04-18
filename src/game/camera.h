@@ -6,6 +6,7 @@
 
 void Camera_Initialise(void);
 void Camera_Reset(void);
+void Camera_ResetPosition(void);
 void Camera_Chase(ITEM_INFO *item);
 void Camera_Combat(ITEM_INFO *item);
 void Camera_Look(ITEM_INFO *item);
