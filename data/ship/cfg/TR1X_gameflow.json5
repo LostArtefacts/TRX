@@ -725,6 +725,8 @@
         "OSD_POS_SET_POS_FAIL": "Failed to teleport to position: %.3f %.3f %.3f",
         "OSD_POS_SET_ROOM": "Teleported to room: %d",
         "OSD_POS_SET_ROOM_FAIL": "Failed to teleport to room: %d",
+        "OSD_POS_SET_ITEM": "Teleported to object: %s",
+        "OSD_POS_SET_ITEM_FAIL": "Failed to teleport to object: %s",
         "OSD_SPEED_GET": "Current speed: %d",
         "OSD_SPEED_SET": "Speed set to %d",
         "OSD_BRAID_ON": "Braid enabled",

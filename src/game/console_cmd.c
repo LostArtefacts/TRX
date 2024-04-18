@@ -77,6 +77,7 @@ static bool Console_Cmd_Teleport(const char *const args)
         return false;
     }
 
+    // X Y Z
     {
         float x, y, z;
         if (sscanf(args, "%f %f %f", &x, &y, &z) == 3) {
@@ -97,8 +98,9 @@ static bool Console_Cmd_Teleport(const char *const args)
         }
     }
 
+    // Room number
     {
-        int16_t room_num = -1;
+        int16_t room_num = NO_ROOM;
         if (sscanf(args, "%hd", &room_num) == 1) {
             if (room_num < 0 || room_num >= g_RoomCount) {
                 Console_Log(GS(OSD_INVALID_ROOM), room_num, g_RoomCount - 1);
@@ -125,6 +127,54 @@ static bool Console_Cmd_Teleport(const char *const args)
             }
 
             Console_Log(GS(OSD_POS_SET_ROOM_FAIL), room_num);
+            return true;
+        }
+    }
+
+    // Nearest item of this name
+    if (!String_Equivalent(args, "")) {
+        int32_t match_count = 0;
+        GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
+
+        const ITEM_INFO *best_item = NULL;
+        for (int i = 0; i < match_count; i++) {
+            const GAME_OBJECT_ID obj_id = matching_objs[i];
+
+            bool matched = false;
+            int32_t best_distance = INT32_MAX;
+            for (int16_t item_num = 0; item_num < Item_GetTotalCount();
+                 item_num++) {
+                const ITEM_INFO *const item = &g_Items[item_num];
+                if (item->object_number != obj_id
+                    || (item->flags & IF_KILLED_ITEM)) {
+                    continue;
+                }
+
+                const int32_t distance =
+                    Item_GetDistance(item, &g_LaraItem->pos);
+                if (distance >= best_distance) {
+                    continue;
+                }
+
+                best_distance = distance;
+                best_item = item;
+                matched = true;
+            }
+
+            if (matched) {
+                // abort for the first matching item
+                break;
+            }
+        }
+
+        if (best_item != NULL) {
+            Item_Teleport(
+                g_LaraItem, best_item->pos.x, best_item->pos.y,
+                best_item->pos.z);
+            Console_Log(GS(OSD_POS_SET_ITEM), args);
+            return true;
+        } else {
+            Console_Log(GS(OSD_POS_SET_ITEM_FAIL), args);
             return true;
         }
     }
