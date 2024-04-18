@@ -10,6 +10,8 @@ c_compiler = meson.get_compiler('c')
 build_opts = [
   '-Wno-unused',
   '-DMESON_BUILD',
+  '-DPCRE2_STATIC',
+  '-DPCRE2_CODE_UNIT_WIDTH=8',
 ]
 
 add_project_arguments(build_opts, language: 'c')
@@ -37,6 +39,7 @@ dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : fa
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
 dep_sdl2 = dependency('SDL2', static: staticdeps)
+dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
 dep_zlib = null_dep
 
 if not staticdeps
@@ -195,6 +198,7 @@ sources = [
   'src/game/objects/general/scion.c',
   'src/game/objects/general/switch.c',
   'src/game/objects/general/trapdoor.c',
+  'src/game/objects/names.c',
   'src/game/objects/traps/damocles_sword.c',
   'src/game/objects/traps/dart.c',
   'src/game/objects/traps/falling_block.c',
@@ -293,6 +297,7 @@ dependencies = [
   dep_swresample,
   dep_swscale,
   dep_zlib,
+  dep_pcre2,
   dep_backtrace
 ]
 

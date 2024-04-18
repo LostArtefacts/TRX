@@ -8,12 +8,12 @@
 #include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
-#include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_cheat.h"
 #include "game/los.h"
 #include "game/objects/common.h"
+#include "game/objects/names.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -21,6 +21,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "memory.h"
 #include "strings.h"
 #include "util.h"
 
@@ -31,91 +32,6 @@
 #include <string.h>
 
 #define ENDS_WITH_ZERO(num) (fabsf((num) - roundf((num))) < 0.0001f)
-
-typedef struct ITEM_NAME {
-    const GAME_OBJECT_ID obj_id;
-    const char *name;
-    const INVENTORY_ITEM *inv_item;
-} ITEM_NAME;
-
-static const ITEM_NAME m_ItemNames[] = {
-    { .obj_id = O_MEDI_ITEM, .name = "med" },
-    { .obj_id = O_MEDI_ITEM, .name = "medi" },
-    { .obj_id = O_MEDI_ITEM, .name = "small med" },
-    { .obj_id = O_MEDI_ITEM, .name = "small medi" },
-    { .obj_id = O_MEDI_ITEM, .name = "small medpack" },
-    { .obj_id = O_MEDI_ITEM, .name = "small medipack" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "big med" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "big medi" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "big medpack" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "big medipack" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "large med" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "large medi" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "large medpack" },
-    { .obj_id = O_BIGMEDI_ITEM, .name = "large medipack" },
-    { .obj_id = O_GUN_ITEM, .name = "pistols" },
-    { .obj_id = O_SHOTGUN_ITEM, .name = "shotgun" },
-    { .obj_id = O_MAGNUM_ITEM, .name = "magnum" },
-    { .obj_id = O_MAGNUM_ITEM, .name = "magnums" },
-    { .obj_id = O_UZI_ITEM, .name = "uzi" },
-    { .obj_id = O_UZI_ITEM, .name = "uzis" },
-    { .obj_id = O_GUN_AMMO_ITEM, .name = "pistol ammo" },
-    { .obj_id = O_GUN_AMMO_ITEM, .name = "pistols ammo" },
-    { .obj_id = O_SG_AMMO_ITEM, .name = "sg ammo" },
-    { .obj_id = O_SG_AMMO_ITEM, .name = "shotgun ammo" },
-    { .obj_id = O_SG_AMMO_ITEM, .name = "sg shell" },
-    { .obj_id = O_SG_AMMO_ITEM, .name = "shotgun shell" },
-    { .obj_id = O_SG_AMMO_ITEM, .name = "sg shells" },
-    { .obj_id = O_SG_AMMO_ITEM, .name = "shotgun shells" },
-    { .obj_id = O_MAG_AMMO_ITEM, .name = "magnum ammo" },
-    { .obj_id = O_MAG_AMMO_ITEM, .name = "magnums ammo" },
-    { .obj_id = O_MAG_AMMO_ITEM, .name = "magnum clip" },
-    { .obj_id = O_MAG_AMMO_ITEM, .name = "magnums clip" },
-    { .obj_id = O_MAG_AMMO_ITEM, .name = "magnum clips" },
-    { .obj_id = O_MAG_AMMO_ITEM, .name = "magnums clips" },
-    { .obj_id = O_UZI_AMMO_ITEM, .name = "uzi ammo" },
-    { .obj_id = O_UZI_AMMO_ITEM, .name = "uzis ammo" },
-    { .obj_id = O_UZI_AMMO_ITEM, .name = "uzi clip" },
-    { .obj_id = O_UZI_AMMO_ITEM, .name = "uzis clip" },
-    { .obj_id = O_UZI_AMMO_ITEM, .name = "uzi clips" },
-    { .obj_id = O_UZI_AMMO_ITEM, .name = "uzis clips" },
-    { .obj_id = O_KEY_ITEM1, .name = "key1" },
-    { .obj_id = O_KEY_ITEM2, .name = "key2" },
-    { .obj_id = O_KEY_ITEM3, .name = "key3" },
-    { .obj_id = O_KEY_ITEM4, .name = "key4" },
-    { .obj_id = O_PUZZLE_ITEM1, .name = "puzzle1" },
-    { .obj_id = O_PUZZLE_ITEM2, .name = "puzzle2" },
-    { .obj_id = O_PUZZLE_ITEM3, .name = "puzzle3" },
-    { .obj_id = O_PUZZLE_ITEM4, .name = "puzzle4" },
-    { .obj_id = O_PICKUP_ITEM1, .name = "pickup1" },
-    { .obj_id = O_PICKUP_ITEM2, .name = "pickup2" },
-    { .obj_id = O_LEADBAR_ITEM, .name = "leadbar" },
-    { .obj_id = O_LEADBAR_ITEM, .name = "lead bar" },
-    { .obj_id = O_SCION_ITEM, .name = "scion" },
-    { .obj_id = O_MEDI_ITEM, .inv_item = &g_InvItemMedi },
-    { .obj_id = O_BIGMEDI_ITEM, .inv_item = &g_InvItemBigMedi },
-    { .obj_id = O_PUZZLE_ITEM1, .inv_item = &g_InvItemPuzzle1 },
-    { .obj_id = O_PUZZLE_ITEM2, .inv_item = &g_InvItemPuzzle2 },
-    { .obj_id = O_PUZZLE_ITEM3, .inv_item = &g_InvItemPuzzle3 },
-    { .obj_id = O_PUZZLE_ITEM4, .inv_item = &g_InvItemPuzzle4 },
-    { .obj_id = O_KEY_ITEM1, .inv_item = &g_InvItemKey1 },
-    { .obj_id = O_KEY_ITEM2, .inv_item = &g_InvItemKey2 },
-    { .obj_id = O_KEY_ITEM3, .inv_item = &g_InvItemKey3 },
-    { .obj_id = O_KEY_ITEM4, .inv_item = &g_InvItemKey4 },
-    { .obj_id = O_PICKUP_ITEM1, .inv_item = &g_InvItemPickup1 },
-    { .obj_id = O_PICKUP_ITEM2, .inv_item = &g_InvItemPickup2 },
-    { .obj_id = O_LEADBAR_ITEM, .inv_item = &g_InvItemLeadBar },
-    { .obj_id = O_SCION_ITEM, .inv_item = &g_InvItemScion },
-    { .obj_id = O_GUN_ITEM, .inv_item = &g_InvItemPistols },
-    { .obj_id = O_SHOTGUN_ITEM, .inv_item = &g_InvItemShotgunAmmo },
-    { .obj_id = O_MAGNUM_ITEM, .inv_item = &g_InvItemMagnum },
-    { .obj_id = O_UZI_ITEM, .inv_item = &g_InvItemUzi },
-    { .obj_id = O_GUN_AMMO_OPTION, .inv_item = &g_InvItemPistolAmmo },
-    { .obj_id = O_SG_AMMO_ITEM, .inv_item = &g_InvItemShotgunAmmo },
-    { .obj_id = O_MAG_AMMO_ITEM, .inv_item = &g_InvItemMagnumAmmo },
-    { .obj_id = O_UZI_AMMO_ITEM, .inv_item = &g_InvItemUziAmmo },
-    { .obj_id = NO_OBJECT },
-};
 
 static bool Console_Cmd_Fps(const char *const args)
 {
@@ -292,31 +208,25 @@ static bool Console_Cmd_GiveItem(const char *args)
         args++;
     }
 
-    for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
-         desc++) {
-        const char *desc_name = NULL;
-        if (desc->name) {
-            desc_name = desc->name;
-        } else if (desc->inv_item) {
-            desc_name = desc->inv_item->string;
-        } else {
-            assert(false);
+    bool found = false;
+    int32_t match_count = 0;
+    GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
+    for (int32_t i = 0; i < match_count; i++) {
+        const GAME_OBJECT_ID obj_id = matching_objs[i];
+        if (Object_IsObjectType(obj_id, g_PickupObjects)) {
+            if (g_Objects[obj_id].loaded) {
+                Inv_AddItemNTimes(obj_id, num);
+                Console_Log(
+                    GS(OSD_GIVE_ITEM), Object_GetCanonicalName(obj_id, args));
+            } else {
+                Console_Log(GS(OSD_UNAVAILABLE_ITEM));
+            }
+            found = true;
         }
-        if (desc_name == NULL) {
-            continue;
-        }
+    }
+    Memory_FreePointer(&matching_objs);
 
-        if (!String_Equivalent(args, desc_name)) {
-            continue;
-        }
-
-        if (g_Objects[desc->obj_id].loaded) {
-            Inv_AddItemNTimes(desc->obj_id, num);
-            Console_Log(GS(OSD_GIVE_ITEM), desc_name);
-        } else {
-            Console_Log(GS(OSD_UNAVAILABLE_ITEM));
-        }
-
+    if (found) {
         return true;
     }
 

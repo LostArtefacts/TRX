@@ -22,6 +22,19 @@ RUN apt-get update \
 
 
 
+# pcre
+FROM mingw as pcre2
+RUN git clone https://github.com/PCRE2Project/pcre2
+RUN apt-get -y install libtool
+RUN cd pcre2 \
+    && autoreconf -fi \
+    && ./configure \
+        --host=i686-w64-mingw32 \
+        --prefix=/ext/ \
+    && make -j 4 \
+    && make install
+
+
 # zlib
 FROM mingw as zlib
 RUN git clone https://github.com/madler/zlib
@@ -106,6 +119,7 @@ FROM mingw
 RUN mkdir /app
 WORKDIR /app
 
+COPY --from=pcre2 /ext/ /ext/
 COPY --from=zlib /ext/ /ext/
 COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
