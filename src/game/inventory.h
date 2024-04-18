@@ -13,4 +13,4 @@ void Inv_InsertItem(INVENTORY_ITEM *inv_item);
 int32_t Inv_RequestItem(int item_num);
 void Inv_RemoveAllItems(void);
 bool Inv_RemoveItem(int32_t item_num);
-int32_t Inv_GetItemOption(int32_t item_num);
+GAME_OBJECT_ID Inv_GetItemOption(GAME_OBJECT_ID item_num);

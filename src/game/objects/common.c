@@ -14,61 +14,190 @@
 #include "util.h"
 
 const GAME_OBJECT_ID g_EnemyObjects[] = {
-    O_WOLF,    O_BEAR,     O_BAT,      O_CROCODILE, O_ALLIGATOR, O_LION,
-    O_LIONESS, O_PUMA,     O_APE,      O_RAT,       O_VOLE,      O_TREX,
-    O_RAPTOR,  O_WARRIOR1, O_WARRIOR2, O_WARRIOR3,  O_CENTAUR,   O_MUMMY,
-    O_LARSON,  O_PIERRE,   O_SKATEKID, O_COWBOY,    O_BALDY,     O_NATLA,
-    O_TORSO,   NO_OBJECT,
+    // clang-format off
+    O_WOLF,
+    O_BEAR,
+    O_BAT,
+    O_CROCODILE,
+    O_ALLIGATOR,
+    O_LION,
+    O_LIONESS,
+    O_PUMA,
+    O_APE,
+    O_RAT,
+    O_VOLE,
+    O_TREX,
+    O_RAPTOR,
+    O_WARRIOR1,
+    O_WARRIOR2,
+    O_WARRIOR3,
+    O_CENTAUR,
+    O_MUMMY,
+    O_LARSON,
+    O_PIERRE,
+    O_SKATEKID,
+    O_COWBOY,
+    O_BALDY,
+    O_NATLA,
+    O_TORSO,
+    NO_OBJECT,
+    // clang-format on
 };
 
 const GAME_OBJECT_ID g_PlaceholderObjects[] = {
+    // clang-format off
     O_STATUE,
     O_PODS,
     O_BIG_POD,
     NO_OBJECT,
+    // clang-format on
 };
 
 const GAME_OBJECT_ID g_PickupObjects[] = {
-    O_GUN_ITEM,     O_SHOTGUN_ITEM,  O_MAGNUM_ITEM,   O_UZI_ITEM,
-    O_SG_AMMO_ITEM, O_MAG_AMMO_ITEM, O_UZI_AMMO_ITEM, O_MEDI_ITEM,
-    O_BIGMEDI_ITEM, O_PUZZLE_ITEM1,  O_PUZZLE_ITEM2,  O_PUZZLE_ITEM3,
-    O_PUZZLE_ITEM4, O_KEY_ITEM1,     O_KEY_ITEM2,     O_KEY_ITEM3,
-    O_KEY_ITEM4,    O_PICKUP_ITEM1,  O_PICKUP_ITEM2,  O_LEADBAR_ITEM,
-    O_SCION_ITEM2,  NO_OBJECT,
+    // clang-format off
+    O_GUN_ITEM,
+    O_SHOTGUN_ITEM,
+    O_MAGNUM_ITEM,
+    O_UZI_ITEM,
+    O_SG_AMMO_ITEM,
+    O_MAG_AMMO_ITEM,
+    O_UZI_AMMO_ITEM,
+    O_MEDI_ITEM,
+    O_BIGMEDI_ITEM,
+    O_PUZZLE_ITEM1,
+    O_PUZZLE_ITEM2,
+    O_PUZZLE_ITEM3,
+    O_PUZZLE_ITEM4,
+    O_KEY_ITEM1,
+    O_KEY_ITEM2,
+    O_KEY_ITEM3,
+    O_KEY_ITEM4,
+    O_PICKUP_ITEM1,
+    O_PICKUP_ITEM2,
+    O_LEADBAR_ITEM,
+    O_SCION_ITEM2,
+    NO_OBJECT,
+    // clang-format on
 };
 
 const GAME_OBJECT_ID g_GunObjects[] = {
+    // clang-format off
     O_SHOTGUN_ITEM,
     O_MAGNUM_ITEM,
     O_UZI_ITEM,
     NO_OBJECT,
+    // clang-format on
 };
 
 const GAME_OBJECT_ID g_DoorObjects[] = {
-    O_DOOR_TYPE1, O_DOOR_TYPE2, O_DOOR_TYPE3, O_DOOR_TYPE4, O_DOOR_TYPE5,
-    O_DOOR_TYPE6, O_DOOR_TYPE7, O_DOOR_TYPE8, NO_OBJECT,
+    // clang-format off
+    O_DOOR_TYPE1,
+    O_DOOR_TYPE2,
+    O_DOOR_TYPE3,
+    O_DOOR_TYPE4,
+    O_DOOR_TYPE5,
+    O_DOOR_TYPE6,
+    O_DOOR_TYPE7,
+    O_DOOR_TYPE8,
+    NO_OBJECT,
+    // clang-format on
 };
 
 const GAME_OBJECT_ID g_TrapdoorObjects[] = {
+    // clang-format off
     O_TRAPDOOR,
     O_TRAPDOOR2,
     O_BIGTRAPDOOR,
     NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_InvObjects[] = {
+    // clang-format off
+    O_GUN_OPTION,
+    O_SHOTGUN_OPTION,
+    O_MAGNUM_OPTION,
+    O_UZI_OPTION,
+    O_SG_AMMO_OPTION,
+    O_MAG_AMMO_OPTION,
+    O_UZI_AMMO_OPTION,
+    O_EXPLOSIVE_OPTION,
+    O_MEDI_OPTION,
+    O_BIGMEDI_OPTION,
+    O_PUZZLE_OPTION1,
+    O_PUZZLE_OPTION2,
+    O_PUZZLE_OPTION3,
+    O_PUZZLE_OPTION4,
+    O_LEADBAR_OPTION,
+    O_KEY_OPTION1,
+    O_KEY_OPTION2,
+    O_KEY_OPTION3,
+    O_KEY_OPTION4,
+    O_PICKUP_OPTION1,
+    O_PICKUP_OPTION2,
+    O_SCION_OPTION,
+    O_DETAIL_OPTION,
+    O_SOUND_OPTION,
+    O_CONTROL_OPTION,
+    O_GAMMA_OPTION,
+    O_PASSPORT_OPTION,
+    O_MAP_OPTION,
+    O_PHOTO_OPTION,
+    NO_OBJECT,
+    // clang-format on
 };
 
 const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
+    // clang-format off
     { O_SHOTGUN_ITEM, O_SG_AMMO_ITEM },
     { O_MAGNUM_ITEM, O_MAG_AMMO_ITEM },
     { O_UZI_ITEM, O_UZI_AMMO_ITEM },
     { NO_OBJECT, NO_OBJECT },
+    // clang-format on
 };
 
-const GAME_OBJECT_PAIR g_KeyItemToHoleMap[] = {
-    { O_KEY_OPTION1, O_KEY_HOLE1 },       { O_KEY_OPTION2, O_KEY_HOLE2 },
-    { O_KEY_OPTION3, O_KEY_HOLE3 },       { O_KEY_OPTION4, O_KEY_HOLE4 },
-    { O_PUZZLE_OPTION1, O_PUZZLE_HOLE1 }, { O_PUZZLE_OPTION2, O_PUZZLE_HOLE2 },
-    { O_PUZZLE_OPTION3, O_PUZZLE_HOLE3 }, { O_PUZZLE_OPTION4, O_PUZZLE_HOLE4 },
-    { O_LEADBAR_OPTION, O_MIDAS_TOUCH },  { NO_OBJECT, NO_OBJECT },
+static const GAME_OBJECT_PAIR m_KeyItemToReceptacleMap[] = {
+    // clang-format off
+    { O_KEY_OPTION1, O_KEY_HOLE1 },
+    { O_KEY_OPTION2, O_KEY_HOLE2 },
+    { O_KEY_OPTION3, O_KEY_HOLE3 },
+    { O_KEY_OPTION4, O_KEY_HOLE4 },
+    { O_PUZZLE_OPTION1, O_PUZZLE_HOLE1 },
+    { O_PUZZLE_OPTION2, O_PUZZLE_HOLE2 },
+    { O_PUZZLE_OPTION3, O_PUZZLE_HOLE3 },
+    { O_PUZZLE_OPTION4, O_PUZZLE_HOLE4 },
+    { O_LEADBAR_OPTION, O_MIDAS_TOUCH },
+    { NO_OBJECT, NO_OBJECT },
+    // clang-format on
+};
+
+const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
+    // clang-format off
+    { O_GUN_ITEM, O_GUN_OPTION },
+    { O_SHOTGUN_ITEM, O_SHOTGUN_OPTION },
+    { O_MAGNUM_ITEM, O_MAGNUM_OPTION },
+    { O_UZI_ITEM, O_UZI_OPTION },
+    { O_SG_AMMO_ITEM, O_SG_AMMO_OPTION },
+    { O_MAG_AMMO_ITEM, O_MAG_AMMO_OPTION },
+    { O_UZI_AMMO_ITEM, O_UZI_AMMO_OPTION },
+    { O_EXPLOSIVE_ITEM, O_EXPLOSIVE_OPTION },
+    { O_MEDI_ITEM, O_MEDI_OPTION },
+    { O_BIGMEDI_ITEM, O_BIGMEDI_OPTION },
+    { O_PUZZLE_ITEM1, O_PUZZLE_OPTION1 },
+    { O_PUZZLE_ITEM2, O_PUZZLE_OPTION2 },
+    { O_PUZZLE_ITEM3, O_PUZZLE_OPTION3 },
+    { O_PUZZLE_ITEM4, O_PUZZLE_OPTION4 },
+    { O_LEADBAR_ITEM, O_LEADBAR_OPTION },
+    { O_KEY_ITEM1, O_KEY_OPTION1 },
+    { O_KEY_ITEM2, O_KEY_OPTION2 },
+    { O_KEY_ITEM3, O_KEY_OPTION3 },
+    { O_KEY_ITEM4, O_KEY_OPTION4 },
+    { O_PICKUP_ITEM1, O_PICKUP_OPTION1 },
+    { O_PICKUP_ITEM2, O_PICKUP_OPTION2 },
+    { O_SCION_ITEM, O_SCION_OPTION },
+    { O_SCION_ITEM2, O_SCION_OPTION },
+    { NO_OBJECT, NO_OBJECT },
+    // clang-format on
 };
 
 GAME_OBJECT_ID Object_GetCognate(
@@ -88,7 +217,7 @@ GAME_OBJECT_ID Object_GetCognate(
 int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id)
 {
     GAME_OBJECT_ID receptacle_to_check =
-        Object_GetCognate(object_id, g_KeyItemToHoleMap);
+        Object_GetCognate(object_id, m_KeyItemToReceptacleMap);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
         ITEM_INFO *item = &g_Items[item_num];
         if (item->object_number == receptacle_to_check) {

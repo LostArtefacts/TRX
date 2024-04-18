@@ -18,7 +18,9 @@ extern const GAME_OBJECT_ID g_PickupObjects[];
 extern const GAME_OBJECT_ID g_GunObjects[];
 extern const GAME_OBJECT_ID g_DoorObjects[];
 extern const GAME_OBJECT_ID g_TrapdoorObjects[];
+extern const GAME_OBJECT_ID g_InvObjects[];
 extern const GAME_OBJECT_PAIR g_GunAmmoObjectMap[];
+extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];
 
 GAME_OBJECT_ID Object_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
