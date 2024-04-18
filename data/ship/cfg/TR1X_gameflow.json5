@@ -14,11 +14,11 @@
     "draw_distance_fade": 22.0,
     "draw_distance_max": 30.0,
     "injections": [
-        "data/backpack.bin",
-        "data/braid.bin",
-        "data/lara_animations.bin",
-        "data/lara_jumping.bin",
-        "data/uzi_sfx.bin",
+        "data/injections/backpack.bin",
+        "data/injections/braid.bin",
+        "data/injections/lara_animations.bin",
+        "data/injections/lara_jumping.bin",
+        "data/injections/uzi_sfx.bin",
     ],
     "convert_dropped_guns": false,
 
@@ -31,12 +31,12 @@
             "music": 0,
             "inherit_injections": false,
             "injections": [
-                "data/lara_gym_guns.bin",
-                "data/braid.bin",
-                "data/gym_textures.bin",
-                "data/lara_animations.bin",
-                "data/lara_jumping.bin",
-                "data/uzi_sfx.bin",
+                "data/injections/lara_gym_guns.bin",
+                "data/injections/braid.bin",
+                "data/injections/gym_textures.bin",
+                "data/injections/lara_animations.bin",
+                "data/injections/lara_jumping.bin",
+                "data/injections/uzi_sfx.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
@@ -57,9 +57,9 @@
             "type": "normal",
             "music": 57,
             "injections": [
-                "data/caves_fd.bin",
-                "data/caves_itemrots.bin",
-                "data/caves_textures.bin",
+                "data/injections/caves_fd.bin",
+                "data/injections/caves_itemrots.bin",
+                "data/injections/caves_textures.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
@@ -80,8 +80,8 @@
             "type": "normal",
             "music": 57,
             "injections": [
-                "data/vilcabamba_itemrots.bin",
-                "data/vilcabamba_textures.bin",
+                "data/injections/vilcabamba_itemrots.bin",
+                "data/injections/vilcabamba_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
@@ -105,8 +105,8 @@
             "type": "normal",
             "music": 57,
             "injections": [
-                "data/valley_itemrots.bin",
-                "data/valley_textures.bin",
+                "data/injections/valley_itemrots.bin",
+                "data/injections/valley_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
@@ -129,10 +129,10 @@
             "type": "normal",
             "music": 57,
             "injections": [
-                "data/larson_textures.bin",
-                "data/qualopec_fd.bin",
-                "data/qualopec_itemrots.bin",
-                "data/qualopec_textures.bin",
+                "data/injections/larson_textures.bin",
+                "data/injections/qualopec_fd.bin",
+                "data/injections/qualopec_itemrots.bin",
+                "data/injections/qualopec_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/peru.webp", "display_time": 5},
@@ -151,9 +151,9 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data/folly_fd.bin",
-                "data/folly_itemrots.bin",
-                "data/folly_textures.bin",
+                "data/injections/folly_fd.bin",
+                "data/injections/folly_itemrots.bin",
+                "data/injections/folly_textures.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/lift.avi"},
@@ -179,10 +179,10 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data/colosseum_door.bin",
-                "data/colosseum_fd.bin",
-                "data/colosseum_itemrots.bin",
-                "data/colosseum_textures.bin",
+                "data/injections/colosseum_door.bin",
+                "data/injections/colosseum_fd.bin",
+                "data/injections/colosseum_itemrots.bin",
+                "data/injections/colosseum_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
@@ -204,8 +204,8 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data/midas_itemrots.bin",
-                "data/midas_textures.bin",
+                "data/injections/midas_itemrots.bin",
+                "data/injections/midas_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
@@ -228,10 +228,10 @@
             "type": "normal",
             "music": 58,
             "injections": [
-                "data/cistern_fd.bin",
-                "data/cistern_itemrots.bin",
-                "data/cistern_plants.bin",
-                "data/cistern_textures.bin",
+                "data/injections/cistern_fd.bin",
+                "data/injections/cistern_itemrots.bin",
+                "data/injections/cistern_plants.bin",
+                "data/injections/cistern_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},
@@ -255,10 +255,10 @@
             "type": "normal",
             "music": 58,
             "injections": [
-                "data/cistern_plants.bin",
-                "data/tihocan_fd.bin",
-                "data/tihocan_itemrots.bin",
-                "data/tihocan_textures.bin",
+                "data/injections/cistern_plants.bin",
+                "data/injections/tihocan_fd.bin",
+                "data/injections/tihocan_itemrots.bin",
+                "data/injections/tihocan_textures.bin",
             ],
             "item_drops": [
                 {"enemy_num": 82, "object_ids": [86, 144, 129]},
@@ -284,9 +284,9 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data/khamoon_fd.bin",
-                "data/khamoon_mummy.bin",
-                "data/khamoon_textures.bin",
+                "data/injections/khamoon_fd.bin",
+                "data/injections/khamoon_mummy.bin",
+                "data/injections/khamoon_textures.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/vision.avi"},
@@ -309,9 +309,9 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data/obelisk_fd.bin",
-                "data/obelisk_itemrots.bin",
-                "data/obelisk_textures.bin",
+                "data/injections/obelisk_fd.bin",
+                "data/injections/obelisk_itemrots.bin",
+                "data/injections/obelisk_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/egypt.webp", "display_time": 5},
@@ -337,9 +337,9 @@
             "type": "normal",
             "music": 59,
             "injections": [
-                "data/sanctuary_fd.bin",
-                "data/sanctuary_itemrots.bin",
-                "data/sanctuary_textures.bin",
+                "data/injections/sanctuary_fd.bin",
+                "data/injections/sanctuary_itemrots.bin",
+                "data/injections/sanctuary_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/egypt.webp", "display_time": 5},
@@ -363,12 +363,12 @@
             "type": "normal",
             "music": 58,
             "injections": [
-                "data/cowboy_textures.bin",
-                "data/kold_textures.bin",
-                "data/mines_fd.bin",
-                "data/mines_itemrots.bin",
-                "data/mines_textures.bin",
-                "data/skateboardkid_textures.bin"
+                "data/injections/cowboy_textures.bin",
+                "data/injections/kold_textures.bin",
+                "data/injections/mines_fd.bin",
+                "data/injections/mines_itemrots.bin",
+                "data/injections/mines_textures.bin",
+                "data/injections/skateboardkid_textures.bin"
             ],
             "item_drops": [
                 {"enemy_num": 17, "object_ids": [86]},
@@ -399,8 +399,8 @@
             "type": "normal",
             "music": 60,
             "injections": [
-                "data/atlantis_fd.bin",
-                "data/atlantis_textures.bin",
+                "data/injections/atlantis_fd.bin",
+                "data/injections/atlantis_textures.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/pyramid.avi"},
@@ -424,8 +424,8 @@
             "type": "normal",
             "music": 60,
             "injections": [
-                "data/pyramid_fd.bin",
-                "data/pyramid_textures.bin",
+                "data/injections/pyramid_fd.bin",
+                "data/injections/pyramid_textures.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/atlantis.webp", "display_time": 5},
@@ -454,8 +454,8 @@
             "lara_type": 77,
             "inherit_injections": false,
             "injections": [
-                "data/backpack_cut.bin",
-                "data/braid_cut1.bin"
+                "data/injections/backpack_cut.bin",
+                "data/injections/braid_cut1.bin"
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -479,8 +479,8 @@
             "lara_type": 77,
             "inherit_injections": false,
             "injections": [
-                "data/backpack_cut.bin",
-                "data/braid_cut2_cut4.bin"
+                "data/injections/backpack_cut.bin",
+                "data/injections/braid_cut2_cut4.bin"
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -505,7 +505,7 @@
             "music": 0,
             "inherit_injections": false,
             "injections": [
-                "data/cut3_textures.bin",
+                "data/injections/cut3_textures.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -529,9 +529,9 @@
             "lara_type": 77,
             "inherit_injections": false,
             "injections": [
-                "data/backpack_cut.bin",
-                "data/braid_cut2_cut4.bin",
-                "data/cut4_textures.bin",
+                "data/injections/backpack_cut.bin",
+                "data/injections/braid_cut2_cut4.bin",
+                "data/injections/cut4_textures.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -554,7 +554,7 @@
             "music": 2,
             "inherit_injections": false,
             "injections": [
-                "data/pda_model.bin",
+                "data/injections/pda_model.bin",
             ],
             "sequence": [
                 {"type": "display_picture", "picture_path": "data/images/eidos.webp", "display_time": 1},
