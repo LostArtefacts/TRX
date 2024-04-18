@@ -7,7 +7,8 @@ Currently supported commands:
 
 - `/tp {room_number}`  
   `/tp {x} {y} {z}`  
-  Instant travel! Teleports Lara into a random spot within the specified room, or the specified X,Y,Z coordinates.
+  `/tp {object}`  
+  Instant travel! Teleports Lara into a random spot within the specified room, the specified X,Y,Z coordinates, or at the nearest object of specific type.
 
 - `/flip`  
   `/flip off`  
