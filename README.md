@@ -301,6 +301,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed Scion 1 respawning on load
 - fixed triggered flip effects not working if there are no sound devices
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling
+- fixed the camera being thrown through doors for one frame when looked at from fixed camera positions
 - fixed the ape not performing the vault animation when climbing
 - fixed Natla's gun moving while she is in her semi death state
 - fixed the bear pat attack so it does not miss Lara
