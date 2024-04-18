@@ -576,10 +576,6 @@ void Camera_Fixed(void)
     ideal.z = fixed->z;
     ideal.room_number = fixed->data;
 
-    if (!LOS_Check(&g_Camera.target, &ideal)) {
-        Camera_ShiftClamp(&ideal, STEP_L);
-    }
-
     g_Camera.fixed_camera = 1;
 
     Camera_Move(&ideal, g_Camera.speed);
