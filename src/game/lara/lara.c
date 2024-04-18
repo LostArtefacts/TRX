@@ -619,8 +619,8 @@ void Lara_InitialiseMeshes(int32_t level_num)
         g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA].mesh_index + i];
     }
 
-    GAME_OBJECT_ID holster_object_num = O_INVALID;
-    GAME_OBJECT_ID back_object_num = O_INVALID;
+    GAME_OBJECT_ID holster_object_num = NO_OBJECT;
+    GAME_OBJECT_ID back_object_num = NO_OBJECT;
     switch (resume->gun_type) {
     case LGT_SHOTGUN:
         if (resume->flags.got_pistols) {
@@ -642,14 +642,14 @@ void Lara_InitialiseMeshes(int32_t level_num)
         back_object_num = O_SHOTGUN;
     }
 
-    if (holster_object_num != O_INVALID) {
+    if (holster_object_num != NO_OBJECT) {
         g_Lara.mesh_ptrs[LM_THIGH_L] =
             g_Meshes[g_Objects[holster_object_num].mesh_index + LM_THIGH_L];
         g_Lara.mesh_ptrs[LM_THIGH_R] =
             g_Meshes[g_Objects[holster_object_num].mesh_index + LM_THIGH_R];
     }
 
-    if (back_object_num != O_INVALID) {
+    if (back_object_num != NO_OBJECT) {
         g_Lara.mesh_ptrs[LM_TORSO] =
             g_Meshes[g_Objects[back_object_num].mesh_index + LM_TORSO];
     }
