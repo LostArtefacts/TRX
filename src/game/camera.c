@@ -411,7 +411,7 @@ void Camera_Reset(void)
     g_Camera.pos.room_number = NO_ROOM;
 }
 
-void Camera_Initialise(void)
+void Camera_ResetPosition(void)
 {
     assert(g_LaraItem);
     g_Camera.shift = g_LaraItem->pos.y - WALL_L;
@@ -435,7 +435,11 @@ void Camera_Initialise(void)
     g_Camera.number = NO_CAMERA;
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
+}
 
+void Camera_Initialise(void)
+{
+    Camera_ResetPosition();
     Camera_Update();
 }
 

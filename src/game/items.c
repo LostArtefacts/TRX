@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/anim.h"
+#include "game/camera.h"
 #include "game/carrier.h"
 #include "game/clock.h"
 #include "game/interpolation.h"
@@ -281,6 +282,10 @@ bool Item_Teleport(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
         if (item->room_number != room_num) {
             const int16_t item_num = item - g_Items;
             Item_NewRoom(item_num, room_num);
+        }
+
+        if (item->object_number == O_LARA) {
+            Camera_ResetPosition();
         }
         return true;
     }
