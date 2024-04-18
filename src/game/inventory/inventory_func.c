@@ -402,5 +402,5 @@ int32_t Inv_GetItemOption(int32_t item_num)
         return item_num;
     }
 
-    return -1;
+    return NO_OBJECT;
 }
