@@ -269,6 +269,10 @@ static bool Console_Cmd_GiveItem(const char *args)
         args++;
     }
 
+    if (strcmp(args, "") == 0) {
+        return false;
+    }
+
     bool found = false;
     int32_t match_count = 0;
     GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
