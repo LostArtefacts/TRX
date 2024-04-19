@@ -156,6 +156,7 @@ static bool Console_Cmd_Teleport(const char *const args)
         const ITEM_INFO *best_item = NULL;
         for (int i = 0; i < match_count; i++) {
             const GAME_OBJECT_ID obj_id = matching_objs[i];
+            const bool is_pickup = Object_IsObjectType(obj_id, g_PickupObjects);
 
             bool matched = false;
             int32_t best_distance = INT32_MAX;
@@ -163,7 +164,10 @@ static bool Console_Cmd_Teleport(const char *const args)
                  item_num++) {
                 const ITEM_INFO *const item = &g_Items[item_num];
                 if (item->object_number != obj_id
-                    || (item->flags & IF_KILLED_ITEM)) {
+                    || (item->flags & IF_KILLED_ITEM)
+                    || (is_pickup
+                        && (item->status == IS_INVISIBLE
+                            || item->status == IS_DEACTIVATED))) {
                     continue;
                 }
 
