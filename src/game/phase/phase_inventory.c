@@ -11,7 +11,9 @@
 #include "game/inventory/inventory_vars.h"
 #include "game/lara.h"
 #include "game/music.h"
+#include "game/objects/common.h"
 #include "game/option.h"
+#include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -57,6 +59,9 @@ static void Inv_Construct(void);
 static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
+static int32_t InvItem_GetFrames(
+    const INVENTORY_ITEM *inv_item, FRAME_INFO **out_frame1,
+    FRAME_INFO **out_frame2, int32_t *out_rate);
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item);
 
 static void Phase_Inventory_Start(void *arg);
@@ -76,7 +81,9 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
             m_OldCamera.pos.x, m_OldCamera.pos.y + m_OldCamera.shift,
             m_OldCamera.pos.z, m_OldCamera.target.x, m_OldCamera.target.y,
             m_OldCamera.target.z, 0);
+        Interpolation_Disable();
         Game_DrawScene(false);
+        Interpolation_Enable();
 
         int32_t width = Screen_GetResWidth();
         int32_t height = Screen_GetResHeight();
@@ -128,6 +135,14 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
 
     Matrix_Pop();
     Viewport_SetFOV(old_fov);
+
+    if ((motion->status != RNG_OPENING
+         || (g_InvMode != INV_TITLE_MODE || !Output_FadeIsAnimating()))
+        && motion->status != RNG_DONE) {
+        for (int i = 0; i < Clock_GetFrameAdvance(); i++) {
+            Inv_Ring_DoMotions(ring);
+        }
+    }
 }
 
 static void Inv_Construct(void)
@@ -155,7 +170,6 @@ static void Inv_Construct(void)
         inv_item->drawn_meshes = inv_item->which_meshes;
         inv_item->current_frame = 0;
         inv_item->goal_frame = inv_item->current_frame;
-        inv_item->anim_count = 0;
         inv_item->y_rot = 0;
     }
 
@@ -163,7 +177,6 @@ static void Inv_Construct(void)
         INVENTORY_ITEM *inv_item = g_InvOptionList[i];
         inv_item->current_frame = 0;
         inv_item->goal_frame = 0;
-        inv_item->anim_count = 0;
         inv_item->y_rot = 0;
     }
 
@@ -187,7 +200,7 @@ static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen)
         return GF_PHASE_CONTINUE;
     }
 
-    Inv_Ring_RemoveAlText();
+    Inv_Ring_RemoveAllText();
     m_InvChosen = NO_OBJECT;
 
     if (m_VersionText) {
@@ -304,19 +317,53 @@ static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item)
         Inv_SelectMeshes(inv_item);
         return false;
     }
-    if (inv_item->anim_count) {
-        inv_item->anim_count--;
-    } else {
-        inv_item->anim_count = inv_item->anim_speed;
-        inv_item->current_frame += inv_item->anim_direction;
-        if (inv_item->current_frame >= inv_item->frames_total) {
-            inv_item->current_frame = 0;
-        } else if (inv_item->current_frame < 0) {
-            inv_item->current_frame = inv_item->frames_total - 1;
-        }
+    inv_item->current_frame += inv_item->anim_direction;
+    if (inv_item->current_frame >= inv_item->frames_total) {
+        inv_item->current_frame = 0;
+    } else if (inv_item->current_frame < 0) {
+        inv_item->current_frame = inv_item->frames_total - 1;
     }
     Inv_SelectMeshes(inv_item);
     return true;
+}
+
+static int32_t InvItem_GetFrames(
+    const INVENTORY_ITEM *inv_item, FRAME_INFO **out_frame1,
+    FRAME_INFO **out_frame2, int32_t *out_rate)
+{
+    const IMOTION_INFO *motion = &m_Motion;
+    const OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
+    if (motion->status != RNG_SELECTED && motion->status != RNG_CLOSING_ITEM) {
+        // only apply to animations, eg. the states where Inv_AnimateItem is
+        // being actively called
+        goto fallback;
+    }
+
+    if (inv_item->current_frame == inv_item->goal_frame
+        || inv_item->frames_total == 1 || g_Config.rendering.fps == 30) {
+        goto fallback;
+    }
+
+    const int32_t cur_frame_num = inv_item->current_frame;
+    int32_t next_frame_num = inv_item->current_frame + inv_item->anim_direction;
+    if (next_frame_num < 0) {
+        next_frame_num = 0;
+    }
+    if (next_frame_num >= inv_item->frames_total) {
+        next_frame_num = 0;
+    }
+
+    *out_frame1 = &obj->frame_base[cur_frame_num];
+    *out_frame2 = &obj->frame_base[next_frame_num];
+    *out_rate = 10;
+    return (Clock_GetTickProgress() - 0.5) * 10.0;
+
+    // OG
+fallback:
+    *out_frame1 = &obj->frame_base[inv_item->current_frame];
+    *out_frame2 = *out_frame1;
+    *out_rate = 1;
+    return 0;
 }
 
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
@@ -324,24 +371,25 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
     const RING_INFO *ring = &m_Ring;
     const IMOTION_INFO *motion = &m_Motion;
 
+    const int32_t advance = Clock_GetFrameAdvance();
     if (motion->status == RNG_DONE) {
         g_LsAdder = LOW_LIGHT;
     } else if (inv_item == ring->list[ring->current_object]) {
-        for (int j = 0; j < Clock_GetFrameAdvance(); j++) {
-            if (ring->rotating) {
-                g_LsAdder = LOW_LIGHT;
+        if (ring->rotating) {
+            g_LsAdder = LOW_LIGHT;
+            for (int j = 0; j < advance; j++) {
                 if (inv_item->y_rot < 0) {
                     inv_item->y_rot += 512;
                 } else if (inv_item->y_rot > 0) {
                     inv_item->y_rot -= 512;
                 }
-            } else if (
-                motion->status == RNG_SELECTED
-                || motion->status == RNG_DESELECTING
-                || motion->status == RNG_SELECTING
-                || motion->status == RNG_DESELECT
-                || motion->status == RNG_CLOSING_ITEM) {
-                g_LsAdder = HIGH_LIGHT;
+            }
+        } else if (
+            motion->status == RNG_SELECTED || motion->status == RNG_DESELECTING
+            || motion->status == RNG_SELECTING || motion->status == RNG_DESELECT
+            || motion->status == RNG_CLOSING_ITEM) {
+            g_LsAdder = HIGH_LIGHT;
+            for (int j = 0; j < advance; j++) {
                 if (inv_item->y_rot != inv_item->y_rot_sel) {
                     if (inv_item->y_rot_sel - inv_item->y_rot > 0
                         && inv_item->y_rot_sel - inv_item->y_rot < 0x8000) {
@@ -351,17 +399,19 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
                     }
                     inv_item->y_rot &= 0xFC00u;
                 }
-            } else if (
-                ring->number_of_objects == 1
-                || (!g_Input.menu_left && !g_Input.menu_right)
-                || !g_Input.menu_left) {
-                g_LsAdder = HIGH_LIGHT;
+            }
+        } else if (
+            ring->number_of_objects == 1
+            || (!g_Input.menu_left && !g_Input.menu_right)
+            || !g_Input.menu_left) {
+            g_LsAdder = HIGH_LIGHT;
+            for (int j = 0; j < advance; j++) {
                 inv_item->y_rot += 256;
             }
         }
     } else {
         g_LsAdder = LOW_LIGHT;
-        for (int j = 0; j < Clock_GetFrameAdvance(); j++) {
+        for (int j = 0; j < advance; j++) {
             if (inv_item->y_rot < 0) {
                 inv_item->y_rot += 256;
             } else if (inv_item->y_rot > 0) {
@@ -425,58 +475,28 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
         }
     }
 
-    const FRAME_INFO *const frame = &obj->frame_base[inv_item->current_frame];
-
-    Matrix_Push();
-
-    int32_t clip = Output_GetObjectBounds(&frame->bounds);
-    if (clip) {
-        Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
-        int32_t *packed_rotation = frame->mesh_rots;
-        Matrix_RotYXZpack(*packed_rotation++);
-
-        int32_t mesh_num = 1;
-
-        int32_t *bone = &g_AnimBones[obj->bone_index];
-        if (inv_item->drawn_meshes & mesh_num) {
-            Output_DrawPolygons(g_Meshes[obj->mesh_index], clip);
-        }
-
-        for (int i = 1; i < obj->nmeshes; i++) {
-            mesh_num *= 2;
-
-            int32_t bone_extra_flags = bone[0];
-            if (bone_extra_flags & BEB_POP) {
-                Matrix_Pop();
-            }
-            if (bone_extra_flags & BEB_PUSH) {
-                Matrix_Push();
-            }
-
-            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
-            Matrix_RotYXZpack(*packed_rotation++);
-
-            if (inv_item->object_number == O_MAP_OPTION && i == 1) {
-                int16_t delta =
-                    -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
-                m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
-                m_CompassNeedle += m_CompassSpeed;
-                Matrix_RotY(m_CompassNeedle);
-            }
-
-            if (inv_item->drawn_meshes & mesh_num) {
-                Output_DrawPolygons(g_Meshes[obj->mesh_index + i], clip);
-            }
-
-            bone += 4;
-        }
+    int32_t rate;
+    FRAME_INFO *frame1;
+    FRAME_INFO *frame2;
+    const int32_t frac = InvItem_GetFrames(inv_item, &frame1, &frame2, &rate);
+    if (inv_item->object_number == O_MAP_OPTION) {
+        int16_t delta = -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
+        m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
+        m_CompassNeedle += m_CompassSpeed;
+        const int16_t extra_rotation[1] = { m_CompassNeedle };
+        int32_t *const bone = &g_AnimBones[obj->bone_index];
+        bone[0] |= BEB_ROT_Y;
+        Object_DrawInterpolatedObject(
+            obj, inv_item->drawn_meshes, extra_rotation, frame1, frame2, frac,
+            rate);
+    } else {
+        Object_DrawInterpolatedObject(
+            obj, inv_item->drawn_meshes, NULL, frame1, frame2, frac, rate);
     }
-    Matrix_Pop();
 }
 
 static void Phase_Inventory_Start(void *arg)
 {
-    Interpolation_Enable();
     Interpolation_Remember();
 
     INV_MODE inv_mode = (INV_MODE)arg;
@@ -589,7 +609,6 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
                 g_IDelay = false;
             }
         }
-        Inv_Ring_DoMotions(ring);
     }
 
     ring->camera.pos.z = ring->radius + CAMERA_2_RING;
@@ -860,11 +879,8 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
         }
 
         bool busy = false;
-        for (int j = 0; j < Clock_GetFrameAdvance(); j++) {
-            busy = false;
-            if (inv_item->y_rot == inv_item->y_rot_sel) {
-                busy = Inv_AnimateItem(inv_item);
-            }
+        if (inv_item->y_rot == inv_item->y_rot_sel) {
+            busy = Inv_AnimateItem(inv_item);
         }
 
         if (!busy && !g_IDelay) {
@@ -923,17 +939,15 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
 
     case RNG_CLOSING_ITEM: {
         INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
-        for (int j = 0; j < Clock_GetFrameAdvance(); j++) {
-            if (!Inv_AnimateItem(inv_item)) {
-                if (inv_item->object_number == O_PASSPORT_OPTION) {
-                    inv_item->object_number = O_PASSPORT_CLOSED;
-                    inv_item->current_frame = 0;
-                }
-                motion->count = SELECTING_FRAMES;
-                motion->status = motion->status_target;
-                Inv_Ring_MotionItemDeselect(ring, inv_item);
-                break;
+        if (!Inv_AnimateItem(inv_item)) {
+            if (inv_item->object_number == O_PASSPORT_OPTION) {
+                inv_item->object_number = O_PASSPORT_CLOSED;
+                inv_item->current_frame = 0;
             }
+            motion->count = SELECTING_FRAMES;
+            motion->status = motion->status_target;
+            Inv_Ring_MotionItemDeselect(ring, inv_item);
+            break;
         }
         break;
     }
@@ -983,7 +997,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
         || motion->status == RNG_OPTION2MAIN
         || motion->status == RNG_EXITING_INVENTORY || motion->status == RNG_DONE
         || ring->rotating) {
-        Inv_Ring_RemoveAlText();
+        Inv_Ring_RemoveAllText();
     }
 
     return GF_PHASE_CONTINUE;
@@ -1003,7 +1017,6 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
 
 static void Phase_Inventory_End(void)
 {
-    Interpolation_Disable();
     if (g_Config.enable_buffering) {
         g_OldInputDB.any = 0;
     }

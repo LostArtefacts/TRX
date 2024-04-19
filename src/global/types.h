@@ -1869,8 +1869,6 @@ typedef struct INVENTORY_ITEM {
     int16_t goal_frame;
     int16_t open_frame;
     int16_t anim_direction;
-    int16_t anim_speed;
-    int16_t anim_count;
     PHD_ANGLE pt_xrot_sel;
     PHD_ANGLE pt_xrot;
     PHD_ANGLE x_rot_sel;

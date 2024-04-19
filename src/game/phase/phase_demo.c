@@ -124,7 +124,6 @@ static void Phase_Demo_Start(void *arg)
 
     m_State = STATE_RUN;
 
-    Interpolation_Enable();
     Interpolation_Remember();
     Output_FadeReset();
 
@@ -196,7 +195,6 @@ static void Phase_Demo_End(void)
         return;
     }
 
-    Interpolation_Disable();
     Text_Remove(m_DemoModeText);
 
     g_GameInfo.current[m_DemoLevel] = m_OldResumeInfo;
@@ -276,7 +274,14 @@ static GAMEFLOW_OPTION Phase_Demo_Control(int32_t nframes)
 
 static void Phase_Demo_Draw(void)
 {
+    if (m_State == STATE_FADE_OUT) {
+        Interpolation_Disable();
+    }
     Game_DrawScene(true);
+    if (m_State == STATE_FADE_OUT) {
+        Interpolation_Enable();
+    }
+
     Output_AnimateTextures();
     Output_AnimateFades();
     Text_Draw();

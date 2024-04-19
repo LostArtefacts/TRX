@@ -13,6 +13,8 @@
 #include "math/matrix.h"
 #include "util.h"
 
+#include <assert.h>
+
 const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format off
     O_WOLF,
@@ -457,10 +459,117 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     Matrix_Pop();
 }
 
+void Object_DrawInterpolatedObject(
+    const OBJECT_INFO *const object, uint32_t meshes,
+    const int16_t *extra_rotation, const FRAME_INFO *const frame1,
+    const FRAME_INFO *const frame2, const int32_t frac, const int32_t rate)
+{
+    assert(frame1);
+    int32_t clip = Output_GetObjectBounds(&frame1->bounds);
+    if (!clip) {
+        return;
+    }
+
+    Matrix_Push();
+    int32_t mesh_num = 1;
+    int16_t **meshpp = &g_Meshes[object->mesh_index];
+    int32_t *bone = &g_AnimBones[object->bone_index];
+
+    assert(rate);
+    if (!frac) {
+        Matrix_TranslateRel(
+            frame1->offset.x, frame1->offset.y, frame1->offset.z);
+
+        int32_t *packed_rotation = frame1->mesh_rots;
+        Matrix_RotYXZpack(*packed_rotation++);
+
+        if (meshes & mesh_num) {
+            Output_DrawPolygons(*meshpp++, clip);
+        }
+
+        for (int i = 1; i < object->nmeshes; i++) {
+            int32_t bone_flags = *bone;
+            if (bone_flags & BEB_POP) {
+                Matrix_Pop();
+            }
+
+            if (bone_flags & BEB_PUSH) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZpack(*packed_rotation++);
+
+            if (extra_rotation != NULL && (bone_flags & BEB_ROT_Y) != 0) {
+                Matrix_RotY(*extra_rotation++);
+            }
+            if (extra_rotation != NULL && (bone_flags & BEB_ROT_X) != 0) {
+                Matrix_RotX(*extra_rotation++);
+            }
+            if (extra_rotation != NULL && (bone_flags & BEB_ROT_Z) != 0) {
+                Matrix_RotZ(*extra_rotation++);
+            }
+
+            mesh_num <<= 1;
+            if (meshes & mesh_num) {
+                Output_DrawPolygons(*meshpp, clip);
+            }
+
+            bone += 4;
+            meshpp++;
+        }
+    } else {
+        assert(frame2);
+        Matrix_InitInterpolate(frac, rate);
+        Matrix_TranslateRel_ID(
+            frame1->offset.x, frame1->offset.y, frame1->offset.z,
+            frame2->offset.x, frame2->offset.y, frame2->offset.z);
+        int32_t *packed_rotation1 = frame1->mesh_rots;
+        int32_t *packed_rotation2 = frame2->mesh_rots;
+        Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+        if (meshes & mesh_num) {
+            Output_DrawPolygons_I(*meshpp++, clip);
+        }
+
+        for (int i = 1; i < object->nmeshes; i++) {
+            int32_t bone_flags = *bone;
+            if (bone_flags & BEB_POP) {
+                Matrix_Pop_I();
+            }
+
+            if (bone_flags & BEB_PUSH) {
+                Matrix_Push_I();
+            }
+
+            Matrix_TranslateRel_I(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
+
+            if (extra_rotation != NULL && (bone_flags & BEB_ROT_Y) != 0) {
+                Matrix_RotY_I(*extra_rotation++);
+            }
+            if (extra_rotation != NULL && (bone_flags & BEB_ROT_X) != 0) {
+                Matrix_RotX_I(*extra_rotation++);
+            }
+            if (extra_rotation != NULL && (bone_flags & BEB_ROT_Z) != 0) {
+                Matrix_RotZ_I(*extra_rotation++);
+            }
+
+            mesh_num <<= 1;
+            if (meshes & mesh_num) {
+                Output_DrawPolygons_I(*meshpp, clip);
+            }
+
+            bone += 4;
+            meshpp++;
+        }
+    }
+
+    Matrix_Pop();
+}
+
 void Object_DrawAnimatingItem(ITEM_INFO *item)
 {
-    static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
     FRAME_INFO *frmptr[2];
     int32_t rate;
     int32_t frac = Item_GetFrames(item, frmptr, &rate);
@@ -478,107 +587,12 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
         item->interp.result.rot.y, item->interp.result.rot.x,
         item->interp.result.rot.z);
 
-    int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
-    if (!clip) {
-        Matrix_Pop();
-        return;
-    }
-
     Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
-    int16_t *extra_rotation = item->data ? item->data : &null_rotation;
+    const int16_t *extra_rotation = item->data ? item->data : NULL;
 
-    int32_t bit = 1;
-    int16_t **meshpp = &g_Meshes[object->mesh_index];
-    int32_t *bone = &g_AnimBones[object->bone_index];
-
-    if (!frac) {
-        Matrix_TranslateRel(
-            frmptr[0]->offset.x, frmptr[0]->offset.y, frmptr[0]->offset.z);
-
-        int32_t *packed_rotation = frmptr[0]->mesh_rots;
-        Matrix_RotYXZpack(*packed_rotation++);
-
-        if (item->mesh_bits & bit) {
-            Output_DrawPolygons(*meshpp++, clip);
-        }
-
-        for (int i = 1; i < object->nmeshes; i++) {
-            int32_t bone_extra_flags = *bone;
-            if (bone_extra_flags & BEB_POP) {
-                Matrix_Pop();
-            }
-
-            if (bone_extra_flags & BEB_PUSH) {
-                Matrix_Push();
-            }
-
-            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
-            Matrix_RotYXZpack(*packed_rotation++);
-
-            if (bone_extra_flags & BEB_ROT_Y) {
-                Matrix_RotY(*extra_rotation++);
-            }
-            if (bone_extra_flags & BEB_ROT_X) {
-                Matrix_RotX(*extra_rotation++);
-            }
-            if (bone_extra_flags & BEB_ROT_Z) {
-                Matrix_RotZ(*extra_rotation++);
-            }
-
-            bit <<= 1;
-            if (item->mesh_bits & bit) {
-                Output_DrawPolygons(*meshpp, clip);
-            }
-
-            bone += 4;
-            meshpp++;
-        }
-    } else {
-        Matrix_InitInterpolate(frac, rate);
-        Matrix_TranslateRel_ID(
-            frmptr[0]->offset.x, frmptr[0]->offset.y, frmptr[0]->offset.z,
-            frmptr[1]->offset.x, frmptr[1]->offset.y, frmptr[1]->offset.z);
-        int32_t *packed_rotation1 = frmptr[0]->mesh_rots;
-        int32_t *packed_rotation2 = frmptr[1]->mesh_rots;
-        Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
-
-        if (item->mesh_bits & bit) {
-            Output_DrawPolygons_I(*meshpp++, clip);
-        }
-
-        for (int i = 1; i < object->nmeshes; i++) {
-            int32_t bone_extra_flags = *bone;
-            if (bone_extra_flags & BEB_POP) {
-                Matrix_Pop_I();
-            }
-
-            if (bone_extra_flags & BEB_PUSH) {
-                Matrix_Push_I();
-            }
-
-            Matrix_TranslateRel_I(bone[1], bone[2], bone[3]);
-            Matrix_RotYXZpack_I(*packed_rotation1++, *packed_rotation2++);
-
-            if (bone_extra_flags & BEB_ROT_Y) {
-                Matrix_RotY_I(*extra_rotation++);
-            }
-            if (bone_extra_flags & BEB_ROT_X) {
-                Matrix_RotX_I(*extra_rotation++);
-            }
-            if (bone_extra_flags & BEB_ROT_Z) {
-                Matrix_RotZ_I(*extra_rotation++);
-            }
-
-            bit <<= 1;
-            if (item->mesh_bits & bit) {
-                Output_DrawPolygons_I(*meshpp, clip);
-            }
-
-            bone += 4;
-            meshpp++;
-        }
-    }
-
+    Object_DrawInterpolatedObject(
+        &g_Objects[item->object_number], item->mesh_bits, extra_rotation,
+        frmptr[0], frmptr[1], frac, rate);
     Matrix_Pop();
 }
 

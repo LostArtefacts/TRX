@@ -4,6 +4,7 @@
 #include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/interpolation.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -176,7 +177,9 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
 
 static void Phase_Pause_Draw(void)
 {
+    Interpolation_Disable();
     Game_DrawScene(false);
+    Interpolation_Enable();
     Output_AnimateFades();
     Text_Draw();
 }

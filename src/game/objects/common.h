@@ -33,6 +33,10 @@ void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void Object_CollisionTrap(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 
+void Object_DrawInterpolatedObject(
+    const OBJECT_INFO *object, uint32_t meshes, const int16_t *extra_rotation,
+    const FRAME_INFO *frame1, const FRAME_INFO *frame2, int32_t frac,
+    int32_t rate);
 void Object_DrawDummyItem(ITEM_INFO *item);
 void Object_DrawSpriteItem(ITEM_INFO *item);
 void Object_DrawPickupItem(ITEM_INFO *item);
