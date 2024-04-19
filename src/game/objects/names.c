@@ -291,8 +291,9 @@ const char *Object_GetCanonicalName(
     for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
          item_ptr++) {
         const INVENTORY_ITEM *item = *item_ptr;
-        if (Inv_GetItemOption(item->object_number)
-            == Inv_GetItemOption(obj_id)) {
+        if (item->string != NULL
+            && Inv_GetItemOption(item->object_number)
+                == Inv_GetItemOption(obj_id)) {
             return item->string;
         }
     }

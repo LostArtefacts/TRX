@@ -11,7 +11,7 @@ GAME_STRING_DEF_PATH = SRC_DIR / "game/game_string.def"
 def get_default_string_map() -> dict[str, str]:
     result: dict[str, str] = {}
     for line in GAME_STRING_DEF_PATH.read_text().splitlines():
-        if match := re.match(r'^GS_DEFINE\((\w+), "([^"]+)"\)$', line.strip()):
+        if match := re.match(r'^GS_DEFINE\((\w+),\s*"([^"]+)"\)$', line.strip()):
             result[match.group(1)] = match.group(2)
     return result
 

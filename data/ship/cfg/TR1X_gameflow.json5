@@ -754,6 +754,7 @@
         "OSD_PERSPECTIVE_FILTER_OFF": "Perspective filter disabled",
         "OSD_FPS_COUNTER_ON": "FPS counter enabled",
         "OSD_FPS_COUNTER_OFF": "FPS counter disabled",
+        "OSD_UNAVAILABLE_ITEM": "%s is not currently available",
         "OSD_INVALID_ITEM": "Unknown item: %s",
         "OSD_INVALID_ROOM": "Invalid room: %d. Valid rooms are 0-%d",
         "OSD_INVALID_LEVEL": "Invalid level",
