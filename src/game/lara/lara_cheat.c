@@ -191,7 +191,7 @@ bool Lara_Cheat_ExitFlyMode(void)
     return true;
 }
 
-bool Lara_Cheat_GetStuff(void)
+bool Lara_Cheat_GiveItems(void)
 {
     if (g_LaraItem == NULL) {
         return false;

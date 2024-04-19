@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added ability to kill specific enemy types (#1313)
 - added ability to teleport to nearest specific object (#1312)
+- added `/give all` variant of the item cheat
 - changed injection files to be placed in its own directory (#1306)
 - fixed camera vibrations when using the teleport command in 60 FPS (#1274)
 - fixed the camera being thrown through doors for one frame when looked at from fixed camera positions (#954)
