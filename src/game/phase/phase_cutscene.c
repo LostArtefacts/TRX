@@ -65,8 +65,6 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num)
 
 static void Phase_Cutscene_Start(void *arg)
 {
-    Interpolation_Enable();
-
     Output_FadeReset();
 
     const PHASE_CUTSCENE_DATA *data = (const PHASE_CUTSCENE_DATA *)arg;
@@ -96,7 +94,6 @@ static void Phase_Cutscene_Start(void *arg)
 
 static void Phase_Cutscene_End(void)
 {
-    Interpolation_Disable();
     Music_Stop();
     Sound_StopAllSamples();
 }

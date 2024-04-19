@@ -5,6 +5,7 @@
 #include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/input.h"
+#include "game/interpolation.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -313,7 +314,9 @@ static void Phase_Stats_Draw(void)
     if (m_Total) {
         Output_DrawBackdropImage();
     } else {
+        Interpolation_Disable();
         Game_DrawScene(false);
+        Interpolation_Enable();
     }
     Output_AnimateFades();
     Text_Draw();

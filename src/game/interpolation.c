@@ -39,12 +39,11 @@
     (target)->interp.result.member = Math_AngleMean(                           \
         (target)->interp.prev.member, (target)->member, (ratio))
 
-static bool m_IsEnabled = false;
+static bool m_IsEnabled = true;
 
 bool Interpolation_IsEnabled(void)
 {
-    return m_IsEnabled
-        && (Phase_Get() != PHASE_INVENTORY && g_Config.rendering.fps == 60);
+    return m_IsEnabled && g_Config.rendering.fps == 60;
 }
 
 void Interpolation_Disable(void)

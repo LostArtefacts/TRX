@@ -1,6 +1,7 @@
 #include "game/inventory/inventory_ring.h"
 
 #include "config.h"
+#include "game/clock.h"
 #include "game/game_string.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
@@ -150,7 +151,7 @@ void Inv_Ring_RemoveHeader(RING_INFO *ring)
     }
 }
 
-void Inv_Ring_RemoveAlText(void)
+void Inv_Ring_RemoveAllText(void)
 {
     for (int i = 0; i < IT_NUMBER_OF; i++) {
         if (g_InvItemText[i]) {

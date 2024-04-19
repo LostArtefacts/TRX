@@ -31,7 +31,6 @@ static void Phase_Game_Draw(void);
 
 static void Phase_Game_Start(void *arg)
 {
-    Interpolation_Enable();
     Interpolation_Remember();
     if (Phase_Get() != PHASE_PAUSE) {
         Output_FadeReset();
@@ -40,7 +39,6 @@ static void Phase_Game_Start(void *arg)
 
 static void Phase_Game_End(void)
 {
-    Interpolation_Disable();
 }
 
 static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
