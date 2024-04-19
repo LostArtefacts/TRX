@@ -284,7 +284,9 @@ static bool Console_Cmd_GiveItem(const char *args)
                 Console_Log(
                     GS(OSD_GIVE_ITEM), Object_GetCanonicalName(obj_id, args));
             } else {
-                Console_Log(GS(OSD_UNAVAILABLE_ITEM));
+                Console_Log(
+                    GS(OSD_UNAVAILABLE_ITEM),
+                    Object_GetCanonicalName(obj_id, args));
             }
             found = true;
         }
