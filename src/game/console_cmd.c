@@ -249,34 +249,15 @@ static bool Console_Cmd_GiveItem(const char *args)
     }
 
     if (String_Equivalent(args, "keys")) {
-        Inv_AddItem(O_PUZZLE_ITEM1);
-        Inv_AddItem(O_PUZZLE_ITEM2);
-        Inv_AddItem(O_PUZZLE_ITEM3);
-        Inv_AddItem(O_PUZZLE_ITEM4);
-        Inv_AddItem(O_KEY_ITEM1);
-        Inv_AddItem(O_KEY_ITEM2);
-        Inv_AddItem(O_KEY_ITEM3);
-        Inv_AddItem(O_KEY_ITEM4);
-        Inv_AddItem(O_PICKUP_ITEM1);
-        Inv_AddItem(O_PICKUP_ITEM2);
-        Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
-        return true;
+        return Lara_Cheat_GiveAllKeys();
     }
 
     if (String_Equivalent(args, "guns")) {
-        Inv_AddItem(O_GUN_ITEM);
-        Inv_AddItem(O_MAGNUM_ITEM);
-        Inv_AddItem(O_UZI_ITEM);
-        Inv_AddItem(O_SHOTGUN_ITEM);
-        g_Lara.shotgun.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 300;
-        g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
-        g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
-        Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
-        return true;
+        return Lara_Cheat_GiveAllGuns();
     }
 
     if (String_Equivalent(args, "all")) {
-        return Lara_Cheat_GiveItems();
+        return Lara_Cheat_GiveAllItems();
     }
 
     int32_t num = 1;

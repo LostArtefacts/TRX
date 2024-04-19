@@ -56,7 +56,7 @@ void Lara_Control(void)
     }
 
     if (g_InputDB.item_cheat) {
-        Lara_Cheat_GiveItems();
+        Lara_Cheat_GiveAllItems();
     }
 
     if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
