@@ -208,6 +208,7 @@ bool Lara_Cheat_GiveAllKeys(void)
     Inv_AddItem(O_PICKUP_ITEM1);
     Inv_AddItem(O_PICKUP_ITEM2);
 
+    Sound_Effect(SFX_LARA_KEY, NULL, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
     return true;
 }
@@ -226,6 +227,7 @@ bool Lara_Cheat_GiveAllGuns(void)
     g_Lara.magnums.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 1000;
     g_Lara.uzis.ammo = g_GameInfo.bonus_flag & GBF_NGPLUS ? 10001 : 2000;
 
+    Sound_Effect(SFX_LARA_RELOAD, NULL, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
     return true;
 }
@@ -293,7 +295,7 @@ bool Lara_Cheat_GiveAllItems(void)
         Inv_AddItem(O_PICKUP_ITEM2);
     }
 
-    Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
+    Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
     Console_Log(GS(OSD_GIVE_ITEM_CHEAT));
     return true;
 }

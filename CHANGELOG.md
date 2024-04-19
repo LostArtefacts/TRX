@@ -3,6 +3,7 @@
 - added ability to teleport to nearest specific object (#1312)
 - added `/give all` variant of the item cheat
 - changed injection files to be placed in its own directory (#1306)
+- changed item cheat sound effects
 - fixed camera vibrations when using the teleport command in 60 FPS (#1274)
 - fixed the camera being thrown through doors for one frame when looked at from fixed camera positions (#954)
 
