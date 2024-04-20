@@ -11,6 +11,7 @@
 - fixed passport inventory item not being animated in 60 FPS (#1314)
 - fixed compass needle being too fast in 60 FPS (#1316, regression from 4.0)
 - fixed black screen flickers that can occur in 60 FPS (#1295)
+- decreased initial flicker upon game launch (#1322)
 
 ## [4.0.3](https://github.com/LostArtefacts/TR1X/compare/4.0.2...4.0.3) - 2024-04-14
 - fixed flickering sprite pickups (#1298)
