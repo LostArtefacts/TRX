@@ -112,10 +112,10 @@ void GFX_Context_Attach(void *window_handle)
     LOG_INFO("Attaching to window %p", window_handle);
 
     m_Context.render_mode = -1;
-    m_Context.window_width = 800;
-    m_Context.window_height = 600;
-    m_Context.display_width = 800;
-    m_Context.display_height = 600;
+    SDL_GetWindowSize(
+        window_handle, &m_Context.window_width, &m_Context.window_height);
+    m_Context.display_width = m_Context.window_width;
+    m_Context.display_height = m_Context.window_height;
 
     m_Context.window_handle = window_handle;
 
