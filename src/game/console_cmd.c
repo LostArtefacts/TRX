@@ -54,12 +54,14 @@ static bool Console_Cmd_Fps(const char *const args)
 {
     if (String_Equivalent(args, "60")) {
         g_Config.rendering.fps = 60;
+        Config_Write();
         Console_Log(GS(OSD_FPS_SET), g_Config.rendering.fps);
         return true;
     }
 
     if (String_Equivalent(args, "30")) {
         g_Config.rendering.fps = 30;
+        Config_Write();
         Console_Log(GS(OSD_FPS_SET), g_Config.rendering.fps);
         return true;
     }
@@ -232,13 +234,15 @@ static bool Console_Cmd_Speed(const char *const args)
 static bool Console_Cmd_Braid(const char *const args)
 {
     if (String_Equivalent(args, "off")) {
-        g_Config.enable_braid = 0;
+        g_Config.enable_braid = false;
+        Config_Write();
         Console_Log(GS(OSD_BRAID_OFF));
         return true;
     }
 
     if (String_Equivalent(args, "on")) {
-        g_Config.enable_braid = 1;
+        g_Config.enable_braid = true;
+        Config_Write();
         Console_Log(GS(OSD_BRAID_ON));
         return true;
     }
@@ -250,12 +254,14 @@ static bool Console_Cmd_Cheats(const char *const args)
 {
     if (String_Equivalent(args, "off")) {
         g_Config.enable_cheats = false;
+        Config_Write();
         Console_Log(GS(OSD_CHEATS_OFF));
         return true;
     }
 
     if (String_Equivalent(args, "on")) {
         g_Config.enable_cheats = true;
+        Config_Write();
         Console_Log(GS(OSD_CHEATS_ON));
         return true;
     }
