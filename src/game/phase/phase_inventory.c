@@ -337,9 +337,13 @@ static int32_t InvItem_GetFrames(
     const INVENTORY_ITEM *inv_item, FRAME_INFO **out_frame1,
     FRAME_INFO **out_frame2, int32_t *out_rate)
 {
-    const IMOTION_INFO *motion = &m_Motion;
-    const OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
-    if (motion->status != RNG_SELECTED && motion->status != RNG_CLOSING_ITEM) {
+    const RING_INFO *const ring = &m_Ring;
+    const IMOTION_INFO *const motion = &m_Motion;
+    const OBJECT_INFO *const obj = &g_Objects[inv_item->object_number];
+    const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
+    if (inv_item != cur_inv_item
+        || (motion->status != RNG_SELECTED
+            && motion->status != RNG_CLOSING_ITEM)) {
         // only apply to animations, eg. the states where Inv_AnimateItem is
         // being actively called
         goto fallback;
