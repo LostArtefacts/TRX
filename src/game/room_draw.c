@@ -15,6 +15,7 @@ static int32_t m_RoomNumStack[MAX_ROOMS_TO_DRAW] = { 0 };
 static int32_t m_RoomNumStackIdx = 0;
 
 static void Room_PrintDrawStack(void);
+static void Room_PrepareToDraw(int16_t room_num);
 
 static void Room_PrintDrawStack(void)
 {
@@ -184,27 +185,48 @@ void Room_GetBounds(int16_t room_num)
     m_RoomNumStackIdx--;
 }
 
-void Room_DrawAllRooms(int16_t room_num)
+void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
 {
     g_PhdLeft = Viewport_GetMinX();
     g_PhdTop = Viewport_GetMinY();
     g_PhdRight = Viewport_GetMaxX();
     g_PhdBottom = Viewport_GetMaxY();
 
+    g_RoomsToDrawCount = 0;
+
+    Room_PrepareToDraw(base_room);
+    Room_PrepareToDraw(target_room);
+
+    for (int i = 0; i < g_RoomsToDrawCount; i++) {
+        Room_DrawSingleRoom(g_RoomsToDraw[i]);
+    }
+
+    if (g_Objects[O_LARA].loaded) {
+        if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
+            Output_SetupBelowWater(g_Camera.underwater);
+        } else {
+            Output_SetupAboveWater(g_Camera.underwater);
+        }
+        Lara_Draw(g_LaraItem);
+    }
+}
+
+static void Room_PrepareToDraw(int16_t room_num)
+{
     ROOM_INFO *r = &g_RoomInfo[room_num];
+    if (r->bound_active) {
+        return;
+    }
+
     r->left = g_PhdLeft;
     r->top = g_PhdTop;
     r->right = g_PhdRight;
     r->bottom = g_PhdBottom;
     r->bound_active = 1;
 
-    g_RoomsToDrawCount = 0;
     if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
         g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
     }
-
-    bool camera_underwater =
-        g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER;
 
     Matrix_Push();
     Matrix_TranslateAbs(r->x, r->y, r->z);
@@ -217,19 +239,6 @@ void Room_DrawAllRooms(int16_t room_num)
         }
     }
     Matrix_Pop();
-
-    for (int i = 0; i < g_RoomsToDrawCount; i++) {
-        Room_DrawSingleRoom(g_RoomsToDraw[i]);
-    }
-
-    if (g_Objects[O_LARA].loaded) {
-        if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
-            Output_SetupBelowWater(camera_underwater);
-        } else {
-            Output_SetupAboveWater(camera_underwater);
-        }
-        Lara_Draw(g_LaraItem);
-    }
 }
 
 void Room_DrawSingleRoom(int16_t room_num)
