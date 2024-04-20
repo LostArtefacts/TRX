@@ -10,9 +10,9 @@ int32_t Clock_SyncTicks(void);
 void Clock_SetTickProgress(double progress);
 double Clock_GetTickProgress(void);
 
-void Clock_CycleTurboSpeed(bool forward);
-void Clock_SetTurboSpeed(const int32_t idx);
 int32_t Clock_GetTurboSpeed(void);
+void Clock_CycleTurboSpeed(bool forward);
+void Clock_SetTurboSpeed(int32_t value);
 double Clock_GetSpeedMultiplier(void);
 
 int32_t Clock_GetMS(void);

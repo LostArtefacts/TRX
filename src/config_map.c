@@ -103,6 +103,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "enable_round_shadow",            .type = COT_BOOL,   .target = &g_Config.enable_round_shadow,                 .default_value = &(bool){true},                       0},
     { .name = "enable_3d_pickups",              .type = COT_BOOL,   .target = &g_Config.enable_3d_pickups,                   .default_value = &(bool){true},                       0},
     { .name = "anisotropy_filter",              .type = COT_FLOAT,  .target = &g_Config.rendering.anisotropy_filter,         .default_value = &(float){16.0f},                     0},
+    { .name = "turbo_speed",                    .type = COT_INT32,  .target = &g_Config.rendering.turbo_speed,               .default_value = &(int32_t){0},                       0},
     { .name = "walk_to_items",                  .type = COT_BOOL,   .target = &g_Config.walk_to_items,                       .default_value = &(bool){false},                      0},
     { .name = "disable_trex_collision",         .type = COT_BOOL,   .target = &g_Config.disable_trex_collision,              .default_value = &(bool){false},                      0},
     { .name = "start_lara_hitpoints",           .type = COT_INT32,  .target = &g_Config.start_lara_hitpoints,                .default_value = &(int32_t){LARA_HITPOINTS},          0},

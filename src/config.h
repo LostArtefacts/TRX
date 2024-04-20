@@ -158,6 +158,7 @@ typedef struct {
         bool enable_vsync;
         bool enable_fps_counter;
         float anisotropy_filter;
+        int32_t turbo_speed;
     } rendering;
 
     struct {

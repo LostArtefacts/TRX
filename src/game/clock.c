@@ -8,42 +8,42 @@
 #include "global/vars.h"
 #include "log.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <time.h>
 
-#define TURBO_SPEED_COUNT 5
-#define TURBO_SPEED_OFFSET -2
-#define TURBO_SPEED_DEFAULT_IDX 2
+#define CLOCK_TURBO_SPEED_MIN -2
+#define CLOCK_TURBO_SPEED_MAX 2
 
 static double m_Progress = 0.0;
-static int16_t m_TurboSpeedIdx = TURBO_SPEED_DEFAULT_IDX;
-
-static double m_TurboSpeeds[TURBO_SPEED_COUNT] = {
-    0.25, 0.5, 1.0, 2.0, 3.0,
-};
-
-void Clock_CycleTurboSpeed(bool forward)
-{
-    const int32_t idx = m_TurboSpeedIdx + TURBO_SPEED_OFFSET;
-    Clock_SetTurboSpeed(idx + (forward ? 1 : -1));
-}
-
-void Clock_SetTurboSpeed(const int32_t idx)
-{
-    m_TurboSpeedIdx = idx - TURBO_SPEED_OFFSET;
-    CLAMP(m_TurboSpeedIdx, 0, TURBO_SPEED_COUNT - 1);
-    LOG_INFO("Setting speed to %d (%.2f)", idx, Clock_GetSpeedMultiplier());
-    Console_Log(GS(OSD_SPEED_SET), Clock_GetTurboSpeed());
-}
 
 int32_t Clock_GetTurboSpeed(void)
 {
-    return m_TurboSpeedIdx + TURBO_SPEED_OFFSET;
+    return g_Config.rendering.turbo_speed;
+}
+
+void Clock_CycleTurboSpeed(const bool forward)
+{
+    Clock_SetTurboSpeed(g_Config.rendering.turbo_speed + (forward ? 1 : -1));
+}
+
+void Clock_SetTurboSpeed(int32_t value)
+{
+    CLAMP(value, CLOCK_TURBO_SPEED_MIN, CLOCK_TURBO_SPEED_MAX);
+    g_Config.rendering.turbo_speed = value;
+    Console_Log(GS(OSD_SPEED_SET), value);
+    Config_Write();
 }
 
 double Clock_GetSpeedMultiplier(void)
 {
-    return m_TurboSpeeds[m_TurboSpeedIdx];
+    if (g_Config.rendering.turbo_speed > 0) {
+        return g_Config.rendering.turbo_speed;
+    } else if (g_Config.rendering.turbo_speed < 0) {
+        return pow(2.0, g_Config.rendering.turbo_speed);
+    } else {
+        return 1.0;
+    }
 }
 
 void Clock_SetTickProgress(double progress)

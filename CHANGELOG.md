@@ -4,6 +4,7 @@
 - added `/give all` variant of the item cheat
 - changed injection files to be placed in its own directory (#1306)
 - changed item cheat sound effects
+- fixed turbo speed setting not saved across game relaunches (#1320)
 - fixed camera vibrations when using the teleport command in 60 FPS (#1274)
 - fixed the camera being thrown through doors for one frame when looked at from fixed camera positions (#954)
 
