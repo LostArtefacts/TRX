@@ -9,6 +9,7 @@
 - fixed the camera being thrown through doors for one frame when looked at from fixed camera positions (#954)
 - fixed console not retaining changed user settings across game relaunches (#1318)
 - fixed passport inventory item not being animated in 60 FPS (#1314)
+- fixed compass needle being too fast in 60 FPS (#1316, regression from 4.0)
 
 ## [4.0.3](https://github.com/LostArtefacts/TR1X/compare/4.0.2...4.0.3) - 2024-04-14
 - fixed flickering sprite pickups (#1298)

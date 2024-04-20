@@ -313,6 +313,12 @@ static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item)
 
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item)
 {
+    if (inv_item->object_number == O_MAP_OPTION) {
+        int16_t delta = -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
+        m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
+        m_CompassNeedle += m_CompassSpeed;
+    }
+
     if (inv_item->current_frame == inv_item->goal_frame) {
         Inv_SelectMeshes(inv_item);
         return false;
@@ -480,9 +486,6 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
     FRAME_INFO *frame2;
     const int32_t frac = InvItem_GetFrames(inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_number == O_MAP_OPTION) {
-        int16_t delta = -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
-        m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
-        m_CompassNeedle += m_CompassSpeed;
         const int16_t extra_rotation[1] = { m_CompassNeedle };
         int32_t *const bone = &g_AnimBones[obj->bone_index];
         bone[0] |= BEB_ROT_Y;
