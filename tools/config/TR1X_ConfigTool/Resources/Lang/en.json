@@ -45,6 +45,11 @@
       "never": "Never",
       "ps1": "PS1"
     },
+    "enemy_healthbar_mode": {
+      "never": "Never",
+      "always": "Always",
+      "boss-only": "Bosses only"
+    },
     "menu_style": {
       "pc": "PC",
       "ps1": "PS1"
@@ -396,8 +401,8 @@
       "Title": "Airbar color",
       "Description": "Color of the airbar."
     },
-    "enable_enemy_healthbar": {
-      "Title": "Show enemy Healthbars",
+    "enemy_healthbar_showing_mode": {
+      "Title": "Show enemy healthbars",
       "Description": "Enables showing a healthbar for the active enemy."
     },
     "enemy_healthbar_location": {

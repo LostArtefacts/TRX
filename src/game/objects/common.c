@@ -46,6 +46,20 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_BossObjects[] = {
+    // clang-format off
+    O_TREX,
+    O_LARSON,
+    O_PIERRE,
+    O_SKATEKID,
+    O_COWBOY,
+    O_BALDY,
+    O_NATLA,
+    O_TORSO,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_PlaceholderObjects[] = {
     // clang-format off
     O_STATUE,

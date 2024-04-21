@@ -45,6 +45,11 @@
       "never": "Mai",
       "ps1": "PS1"
     },
+    "enemy_healthbar_mode": {
+      "never": "Mai",
+      "always": "Sempre",
+      "boss-only": "Solo i boss"
+    },
     "menu_style": {
       "pc": "PC",
       "ps1": "PS1"
@@ -396,7 +401,7 @@
       "Title": "Colore della barra dell'ossigeno",
       "Description": "Colore utilizzato per la barra dell'ossigeno."
     },
-    "enable_enemy_healthbar": {
+    "enemy_healthbar_showing_mode": {
       "Title": "Mostra la barra della salute dei nemici",
       "Description": "Abilita la visualizzazione della barra della salute per il nemico ingaggiato."
     },

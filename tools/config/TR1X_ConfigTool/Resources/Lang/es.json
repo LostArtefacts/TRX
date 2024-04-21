@@ -54,6 +54,11 @@
       "never": "Nunca",
       "ps1": "PS1"
     },
+    "enemy_healthbar_mode": {
+      "never": "Nunca",
+      "always": "Siempre",
+      "boss-only": "Solo jefes"
+    },
     "menu_style": {
       "pc": "PC",
       "ps1": "PS1"
@@ -172,7 +177,7 @@
       "Title": "Mostrar total de objetos y muertes",
       "Description": "Permite mostrar el recuento máximo de objetos recogidos y el recuento de muertes en cada nivel. Esto incluye objetos que no se pueden obtener."
     },
-    "enable_enemy_healthbar": {
+    "enemy_healthbar_showing_mode": {
       "Title": "Mostrar barra de salud enemiga",
       "Description": "Permite mostrar una barra de salud para el enemigo activo."
     },

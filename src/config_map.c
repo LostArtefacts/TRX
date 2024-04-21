@@ -14,13 +14,14 @@ static const CONFIG_OPTION_ENUM_MAP m_UIStyles[] = {
     { NULL, -1 },
 };
 
-static const CONFIG_OPTION_ENUM_MAP m_BarShowingModes[] = {
+static const CONFIG_OPTION_ENUM_MAP m_BarShowModes[] = {
     { "default", BSM_DEFAULT },
     { "flashing-or-default", BSM_FLASHING_OR_DEFAULT },
     { "flashing-only", BSM_FLASHING_ONLY },
     { "always", BSM_ALWAYS },
     { "never", BSM_NEVER },
     { "ps1", BSM_PS1 },
+    { "boss-only", BSM_BOSS_ONLY },
     { NULL, -1 },
 };
 
@@ -64,7 +65,6 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "disable_shotgun",                .type = COT_BOOL,   .target = &g_Config.disable_shotgun,                     .default_value = &(bool){false},                      0},
     { .name = "enable_detailed_stats",          .type = COT_BOOL,   .target = &g_Config.enable_detailed_stats,               .default_value = &(bool){true},                       0},
     { .name = "enable_deaths_counter",          .type = COT_BOOL,   .target = &g_Config.enable_deaths_counter,               .default_value = &(bool){true},                       0},
-    { .name = "enable_enemy_healthbar",         .type = COT_BOOL,   .target = &g_Config.enable_enemy_healthbar,              .default_value = &(bool){true},                       0},
     { .name = "enable_enhanced_look",           .type = COT_BOOL,   .target = &g_Config.enable_enhanced_look,                .default_value = &(bool){true},                       0},
     { .name = "enable_shotgun_flash",           .type = COT_BOOL,   .target = &g_Config.enable_shotgun_flash,                .default_value = &(bool){true},                       0},
     { .name = "fix_shotgun_targeting",          .type = COT_BOOL,   .target = &g_Config.fix_shotgun_targeting,               .default_value = &(bool){true},                       0},
@@ -107,8 +107,9 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "walk_to_items",                  .type = COT_BOOL,   .target = &g_Config.walk_to_items,                       .default_value = &(bool){false},                      0},
     { .name = "disable_trex_collision",         .type = COT_BOOL,   .target = &g_Config.disable_trex_collision,              .default_value = &(bool){false},                      0},
     { .name = "start_lara_hitpoints",           .type = COT_INT32,  .target = &g_Config.start_lara_hitpoints,                .default_value = &(int32_t){LARA_HITPOINTS},          0},
-    { .name = "healthbar_showing_mode",         .type = COT_ENUM,   .target = &g_Config.healthbar_showing_mode,              .default_value = &(int32_t){BSM_FLASHING_OR_DEFAULT}, .param = m_BarShowingModes},
-    { .name = "airbar_showing_mode",            .type = COT_ENUM,   .target = &g_Config.airbar_showing_mode,                 .default_value = &(int32_t){BSM_DEFAULT},             .param = m_BarShowingModes},
+    { .name = "healthbar_showing_mode",         .type = COT_ENUM,   .target = &g_Config.healthbar_show_mode,                 .default_value = &(int32_t){BSM_FLASHING_OR_DEFAULT}, .param = m_BarShowModes},
+    { .name = "airbar_showing_mode",            .type = COT_ENUM,   .target = &g_Config.airbar_show_mode,                    .default_value = &(int32_t){BSM_DEFAULT},             .param = m_BarShowModes},
+    { .name = "enemy_healthbar_showing_mode",   .type = COT_ENUM,   .target = &g_Config.enemy_healthbar_show_mode,           .default_value = &(int32_t){BSM_ALWAYS},              .param = m_BarShowModes},
     { .name = "healthbar_location",             .type = COT_ENUM,   .target = &g_Config.healthbar_location,                  .default_value = &(int32_t){BL_TOP_LEFT},             .param = m_BarLocations},
     { .name = "airbar_location",                .type = COT_ENUM,   .target = &g_Config.airbar_location,                     .default_value = &(int32_t){BL_TOP_RIGHT},            .param = m_BarLocations},
     { .name = "enemy_healthbar_location",       .type = COT_ENUM,   .target = &g_Config.enemy_healthbar_location,            .default_value = &(int32_t){BL_BOTTOM_LEFT},          .param = m_BarLocations},

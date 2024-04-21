@@ -13,6 +13,7 @@ typedef struct GAME_OBJECT_PAIR {
 } GAME_OBJECT_PAIR;
 
 extern const GAME_OBJECT_ID g_EnemyObjects[];
+extern const GAME_OBJECT_ID g_BossObjects[];
 extern const GAME_OBJECT_ID g_PlaceholderObjects[];
 extern const GAME_OBJECT_ID g_PickupObjects[];
 extern const GAME_OBJECT_ID g_GunObjects[];
