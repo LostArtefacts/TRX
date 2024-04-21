@@ -38,7 +38,7 @@ void Clock_SetTurboSpeed(int32_t value)
 double Clock_GetSpeedMultiplier(void)
 {
     if (g_Config.rendering.turbo_speed > 0) {
-        return g_Config.rendering.turbo_speed;
+        return 1.0 + g_Config.rendering.turbo_speed;
     } else if (g_Config.rendering.turbo_speed < 0) {
         return pow(2.0, g_Config.rendering.turbo_speed);
     } else {
