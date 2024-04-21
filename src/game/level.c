@@ -181,13 +181,13 @@ static bool Level_LoadRooms(MYFILE *fp)
             for (int32_t j = 0; j < count2; j++) {
                 DOOR_INFO *door = &current_room_info->doors->door[j];
                 File_Read(&door->room_num, sizeof(int16_t), 1, fp);
-                File_Read(&door->pos.x, sizeof(int16_t), 1, fp);
-                File_Read(&door->pos.y, sizeof(int16_t), 1, fp);
-                File_Read(&door->pos.z, sizeof(int16_t), 1, fp);
+                File_Read(&door->normal.x, sizeof(int16_t), 1, fp);
+                File_Read(&door->normal.y, sizeof(int16_t), 1, fp);
+                File_Read(&door->normal.z, sizeof(int16_t), 1, fp);
                 for (int32_t k = 0; k < 4; k++) {
-                    File_Read(&door->vertex[k].x, sizeof(uint16_t), 1, fp);
-                    File_Read(&door->vertex[k].y, sizeof(uint16_t), 1, fp);
-                    File_Read(&door->vertex[k].z, sizeof(uint16_t), 1, fp);
+                    File_Read(&door->vertex[k].x, sizeof(int16_t), 1, fp);
+                    File_Read(&door->vertex[k].y, sizeof(int16_t), 1, fp);
+                    File_Read(&door->vertex[k].z, sizeof(int16_t), 1, fp);
                 }
             }
         }

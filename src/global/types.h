@@ -1150,16 +1150,8 @@ typedef struct TEXTURE_RANGE {
 
 typedef struct DOOR_INFO {
     int16_t room_num;
-    struct {
-        int16_t x;
-        int16_t y;
-        int16_t z;
-    } pos;
-    struct {
-        uint16_t x;
-        uint16_t y;
-        uint16_t z;
-    } vertex[4];
+    XYZ_16 normal;
+    XYZ_16 vertex[4];
 } DOOR_INFO;
 
 typedef struct DOOR_INFOS {

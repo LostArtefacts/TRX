@@ -7,14 +7,19 @@
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/const.h"
+#include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
 #include "math/matrix.h"
+
+#include <stdbool.h>
 
 static int32_t m_RoomNumStack[MAX_ROOMS_TO_DRAW] = { 0 };
 static int32_t m_RoomNumStackIdx = 0;
 
 static void Room_PrintDrawStack(void);
+static bool Room_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent);
+static void Room_GetBounds(int16_t room_num);
 static void Room_PrepareToDraw(int16_t room_num);
 
 static void Room_PrintDrawStack(void)
@@ -24,15 +29,15 @@ static void Room_PrintDrawStack(void)
     }
 }
 
-bool Room_SetBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
+static bool Room_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent)
 {
-    // XXX: the way the game passes the objptr is dangerous and relies on
-    // layout of DOOR_INFO
-
-    if ((objptr[0] * (parent->x + objptr[3] - g_W2VMatrix._03))
-            + (objptr[1] * (parent->y + objptr[4] - g_W2VMatrix._13))
-            + (objptr[2] * (parent->z + objptr[5] - g_W2VMatrix._23))
-        >= 0) {
+    const int32_t x =
+        door->normal.x * (parent->x + door->vertex[0].x - g_W2VMatrix._03);
+    const int32_t y =
+        door->normal.y * (parent->y + door->vertex[0].y - g_W2VMatrix._13);
+    const int32_t z =
+        door->normal.z * (parent->z + door->vertex[0].z - g_W2VMatrix._23);
+    if (x + y + z >= 0) {
         return false;
     }
 
@@ -42,22 +47,23 @@ bool Room_SetBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
     int32_t top = parent->bottom;
     int32_t bottom = parent->top;
 
-    objptr += 3;
     int32_t z_toofar = 0;
     int32_t z_behind = 0;
 
     const MATRIX *mptr = g_MatrixPtr;
     for (int i = 0; i < 4; i++) {
-        int32_t xv = mptr->_00 * objptr[0] + mptr->_01 * objptr[1]
-            + mptr->_02 * objptr[2] + mptr->_03;
-        int32_t yv = mptr->_10 * objptr[0] + mptr->_11 * objptr[1]
-            + mptr->_12 * objptr[2] + mptr->_13;
-        int32_t zv = mptr->_20 * objptr[0] + mptr->_21 * objptr[1]
-            + mptr->_22 * objptr[2] + mptr->_23;
+        int32_t xv = mptr->_00 * door->vertex[i].x
+            + mptr->_01 * door->vertex[i].y + mptr->_02 * door->vertex[i].z
+            + mptr->_03;
+        int32_t yv = mptr->_10 * door->vertex[i].x
+            + mptr->_11 * door->vertex[i].y + mptr->_12 * door->vertex[i].z
+            + mptr->_13;
+        int32_t zv = mptr->_20 * door->vertex[i].x
+            + mptr->_21 * door->vertex[i].y + mptr->_22 * door->vertex[i].z
+            + mptr->_23;
         door_vbuf[i].xv = xv;
         door_vbuf[i].yv = yv;
         door_vbuf[i].zv = zv;
-        objptr += 3;
 
         if (zv > 0) {
             if (zv > Output_GetFarZ()) {
@@ -141,7 +147,7 @@ bool Room_SetBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
         return false;
     }
 
-    ROOM_INFO *r = &g_RoomInfo[room_num];
+    ROOM_INFO *r = &g_RoomInfo[door->room_num];
     if (left < r->left) {
         r->left = left;
     }
@@ -157,14 +163,14 @@ bool Room_SetBounds(int16_t *objptr, int16_t room_num, ROOM_INFO *parent)
 
     if (!r->bound_active) {
         if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
-            g_RoomsToDraw[g_RoomsToDrawCount++] = room_num;
+            g_RoomsToDraw[g_RoomsToDrawCount++] = door->room_num;
         }
         r->bound_active = 1;
     }
     return true;
 }
 
-void Room_GetBounds(int16_t room_num)
+static void Room_GetBounds(int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];
     if (!Matrix_Push()) {
@@ -175,8 +181,8 @@ void Room_GetBounds(int16_t room_num)
     Matrix_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
-            DOOR_INFO *door = &r->doors->door[i];
-            if (Room_SetBounds(&door->pos.x, door->room_num, r)) {
+            const DOOR_INFO *door = &r->doors->door[i];
+            if (Room_SetBounds(door, r)) {
                 Room_GetBounds(door->room_num);
             }
         }
@@ -232,8 +238,8 @@ static void Room_PrepareToDraw(int16_t room_num)
     Matrix_TranslateAbs(r->x, r->y, r->z);
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
-            DOOR_INFO *door = &r->doors->door[i];
-            if (Room_SetBounds(&door->pos.x, door->room_num, r)) {
+            const DOOR_INFO *door = &r->doors->door[i];
+            if (Room_SetBounds(door, r)) {
                 Room_GetBounds(door->room_num);
             }
         }
