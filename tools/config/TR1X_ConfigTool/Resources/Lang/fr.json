@@ -45,6 +45,11 @@
       "never": "Jamais",
       "ps1": "PS1"
     },
+    "enemy_healthbar_mode": {
+      "never": "Jamais",
+      "always": "Toujours",
+      "boss-only": "Seulement les boss"
+    },
     "menu_style": {
       "pc": "PC",
       "ps1": "PS1"
@@ -396,7 +401,7 @@
       "Title": "Couleur de la barre d'air",
       "Description": "Choisir la couleur de la barre d'air."
     },
-    "enable_enemy_healthbar": {
+    "enemy_healthbar_showing_mode": {
       "Title": "Afficher la barre de santé des ennemis",
       "Description": "Affiche la barre de santé de l'ennemi sur lequel Lara vise et tire"
     },

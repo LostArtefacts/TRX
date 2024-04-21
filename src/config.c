@@ -33,6 +33,7 @@ static void Config_ReadKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
 static void Config_ReadControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj);
 static void Config_WriteKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
 static void Config_WriteControllerLayout(
@@ -174,6 +175,20 @@ static void Config_ReadControllerLayout(
     }
 }
 
+static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj)
+{
+    // 0.10..4.0.3: enable_enemy_healthbar
+    {
+        const struct json_value_s *const value =
+            json_object_get_value(parent_obj, "enable_enemy_healthbar");
+        if (json_value_is_true(value)) {
+            g_Config.enemy_healthbar_show_mode = BSM_ALWAYS;
+        } else if (json_value_is_false(value)) {
+            g_Config.enemy_healthbar_show_mode = BSM_NEVER;
+        }
+    }
+}
+
 static void Config_WriteKeyboardLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
@@ -295,6 +310,8 @@ bool Config_ReadFromJSON(const char *cfg_data)
         Config_ReadKeyboardLayout(root_obj, layout);
         Config_ReadControllerLayout(root_obj, layout);
     }
+
+    Config_ReadLegacyOptions(root_obj);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);

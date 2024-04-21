@@ -9,6 +9,7 @@
 #include "game/lara.h"
 #include "game/los.h"
 #include "game/lot.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"
@@ -722,6 +723,12 @@ bool Creature_EnsureHabitat(
     return item->object_number == info->land.id
         ? Creature_SwitchToWater(item_num, wh, info)
         : Creature_SwitchToLand(item_num, wh, info);
+}
+
+bool Creature_IsBoss(const int16_t item_num)
+{
+    const ITEM_INFO *const item = &g_Items[item_num];
+    return Object_IsObjectType(item->object_number, g_BossObjects);
 }
 
 static bool Creature_SwitchToWater(

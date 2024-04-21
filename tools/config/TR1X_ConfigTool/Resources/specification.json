@@ -14,6 +14,11 @@
       "never",
       "ps1"
     ],
+    "enemy_healthbar_mode": [
+      "never",
+      "always",
+      "boss-only"
+    ],
     "menu_style": [
       "pc",
       "ps1"
@@ -495,9 +500,10 @@
           "DefaultValue": "blue"
         },
         {
-          "Field": "enable_enemy_healthbar",
-          "DataType": "Bool",
-          "DefaultValue": true
+          "Field": "enemy_healthbar_showing_mode",
+          "DataType": "Enum",
+          "EnumKey": "enemy_healthbar_mode",
+          "DefaultValue": "always"
         },
         {
           "Field": "enemy_healthbar_location",

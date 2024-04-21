@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- added ability to show enemy healthbars only for bosses (#1300)
 - added ability to kill specific enemy types (#1313)
 - added ability to teleport to nearest specific object (#1312)
 - added `/give all` variant of the item cheat

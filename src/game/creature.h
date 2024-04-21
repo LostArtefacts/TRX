@@ -44,3 +44,4 @@ bool Creature_ShootAtLara(
     int16_t damage);
 bool Creature_EnsureHabitat(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+bool Creature_IsBoss(int16_t item_num);

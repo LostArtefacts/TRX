@@ -2,8 +2,10 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/creature.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
+#include "game/items.h"
 #include "game/output.h"
 #include "game/phase/phase.h"
 #include "game/screen.h"
@@ -137,7 +139,7 @@ static void Overlay_BarSetupHealth(void)
     m_HealthBar.type = BT_LARA_HEALTH;
     m_HealthBar.value = 0;
     m_HealthBar.max_value = LARA_HITPOINTS;
-    m_HealthBar.show_mode = g_Config.healthbar_showing_mode;
+    m_HealthBar.show_mode = g_Config.healthbar_show_mode;
     m_HealthBar.show = false;
     m_HealthBar.blink = false;
     m_HealthBar.timer = 40;
@@ -150,7 +152,7 @@ static void Overlay_BarSetupAir(void)
     m_AirBar.type = BT_LARA_AIR;
     m_AirBar.value = LARA_AIR;
     m_AirBar.max_value = LARA_AIR;
-    m_AirBar.show_mode = g_Config.airbar_showing_mode;
+    m_AirBar.show_mode = g_Config.airbar_show_mode;
     m_AirBar.show = false;
     m_AirBar.blink = false;
     m_AirBar.timer = 0;
@@ -163,8 +165,8 @@ static void Overlay_BarSetupEnemy(void)
     m_EnemyBar.type = BT_ENEMY_HEALTH;
     m_EnemyBar.value = 0;
     m_EnemyBar.max_value = 0;
-    m_EnemyBar.show_mode = g_Config.healthbar_showing_mode;
-    m_EnemyBar.show = g_Config.enable_enemy_healthbar;
+    m_EnemyBar.show_mode = g_Config.enemy_healthbar_show_mode;
+    m_EnemyBar.show = false;
     m_EnemyBar.blink = false;
     m_EnemyBar.timer = 0;
     m_EnemyBar.color = g_Config.enemy_healthbar_color;
@@ -529,7 +531,29 @@ static void Overlay_BarDrawAir(void)
 
 static void Overlay_BarDrawEnemy(void)
 {
-    if (!m_EnemyBar.show || !g_Lara.target) {
+    if (!g_Lara.target) {
+        return;
+    }
+
+    switch (m_EnemyBar.show_mode) {
+    case BSM_DEFAULT:
+    case BSM_PS1:
+    case BSM_NEVER:
+        m_EnemyBar.show = false;
+        break;
+
+    case BSM_FLASHING_ONLY:
+    case BSM_FLASHING_OR_DEFAULT:
+    case BSM_ALWAYS:
+        m_EnemyBar.show = true;
+        break;
+
+    case BSM_BOSS_ONLY:
+        m_EnemyBar.show = Creature_IsBoss(g_Lara.target - g_Items);
+        break;
+    }
+
+    if (!m_EnemyBar.show) {
         return;
     }
 

@@ -40,12 +40,13 @@ typedef enum {
 } BAR_COLOR;
 
 typedef enum {
-    BSM_DEFAULT = 0,
-    BSM_FLASHING_OR_DEFAULT = 1,
-    BSM_FLASHING_ONLY = 2,
-    BSM_ALWAYS = 3,
-    BSM_NEVER = 4,
-    BSM_PS1 = 5,
+    BSM_DEFAULT,
+    BSM_FLASHING_OR_DEFAULT,
+    BSM_FLASHING_ONLY,
+    BSM_ALWAYS,
+    BSM_NEVER,
+    BSM_PS1,
+    BSM_BOSS_ONLY,
 } BAR_SHOW_MODE;
 
 typedef enum {
@@ -63,7 +64,6 @@ typedef struct {
     bool disable_uzis;
     bool disable_shotgun;
     bool enable_deaths_counter;
-    bool enable_enemy_healthbar;
     bool enable_enhanced_look;
     bool enable_numeric_keys;
     bool enable_shotgun_flash;
@@ -77,14 +77,15 @@ typedef struct {
     bool enable_timer_in_inventory;
     bool enable_smooth_bars;
     bool enable_fade_effects;
-    int32_t healthbar_showing_mode;
-    int32_t healthbar_location;
-    int32_t healthbar_color;
-    int32_t airbar_showing_mode;
-    int32_t airbar_location;
-    int32_t airbar_color;
-    int32_t enemy_healthbar_location;
-    int32_t enemy_healthbar_color;
+    BAR_SHOW_MODE healthbar_show_mode;
+    BAR_LOCATION healthbar_location;
+    BAR_COLOR healthbar_color;
+    BAR_SHOW_MODE airbar_show_mode;
+    BAR_LOCATION airbar_location;
+    BAR_COLOR airbar_color;
+    BAR_SHOW_MODE enemy_healthbar_show_mode;
+    BAR_LOCATION enemy_healthbar_location;
+    BAR_COLOR enemy_healthbar_color;
     bool fix_tihocan_secret_sound;
     bool fix_floor_data_issues;
     bool fix_secrets_killing_music;
