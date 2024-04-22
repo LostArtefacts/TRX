@@ -119,30 +119,36 @@ void Effect_NewRoom(int16_t fx_num, int16_t room_num)
     r->fx_number = fx_num;
 }
 
-void Effect_Draw(int16_t fxnum)
+void Effect_Draw(const int16_t fxnum)
 {
-    FX_INFO *fx = &g_Effects[fxnum];
-    OBJECT_INFO *object = &g_Objects[fx->object_number];
+    const FX_INFO *const fx = &g_Effects[fxnum];
+    const OBJECT_INFO *const object = &g_Objects[fx->object_number];
     if (!object->loaded) {
         return;
     }
 
     if (object->nmeshes < 0) {
         Output_DrawSprite(
-            fx->pos.x, fx->pos.y, fx->pos.z,
-            object->mesh_index - fx->frame_number, 4096);
+            fx->interp.result.pos.x, fx->interp.result.pos.y,
+            fx->interp.result.pos.z, object->mesh_index - fx->frame_number,
+            4096);
     } else {
         Matrix_Push();
-        Matrix_TranslateAbs(fx->pos.x, fx->pos.y, fx->pos.z);
+        Matrix_TranslateAbs(
+            fx->interp.result.pos.x, fx->interp.result.pos.y,
+            fx->interp.result.pos.z);
         if (g_MatrixPtr->_23 > Output_GetNearZ()
             && g_MatrixPtr->_23 < Output_GetFarZ()) {
-            Matrix_RotYXZ(fx->rot.y, fx->rot.x, fx->rot.z);
+            Matrix_RotYXZ(
+                fx->interp.result.rot.y, fx->interp.result.rot.x,
+                fx->interp.result.rot.z);
             if (object->nmeshes) {
                 Output_CalculateStaticLight(fx->shade);
                 Output_DrawPolygons(g_Meshes[object->mesh_index], -1);
             } else {
                 Output_CalculateLight(
-                    fx->pos.x, fx->pos.y, fx->pos.z, fx->room_number);
+                    fx->interp.result.pos.x, fx->interp.result.pos.y,
+                    fx->interp.result.pos.z, fx->room_number);
                 Output_DrawPolygons(g_Meshes[fx->frame_number], -1);
             }
         }
