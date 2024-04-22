@@ -1,6 +1,7 @@
 #include "game/interpolation.h"
 
 #include "game/clock.h"
+#include "game/effects.h"
 #include "game/items.h"
 #include "game/lara/lara_hair.h"
 #include "game/phase/phase.h"
@@ -90,7 +91,7 @@ void Interpolation_Commit(void)
     INTERPOLATE_ROT(&g_Lara, head_rot.z, ratio, PHD_45);
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
-        ITEM_INFO *item = &g_Items[i];
+        ITEM_INFO *const item = &g_Items[i];
         if ((item->flags & IF_KILLED_ITEM) || item->status == IS_NOT_ACTIVE
             || item->object_number == O_BAT) {
             COMMIT(item, pos.x);
@@ -122,9 +123,21 @@ void Interpolation_Commit(void)
         INTERPOLATE_ROT(g_LaraItem, rot.z, ratio, PHD_45);
     }
 
+    int16_t fx_num = g_NextFxActive;
+    while (fx_num != NO_ITEM) {
+        FX_INFO *const fx = &g_Effects[fx_num];
+        INTERPOLATE(fx, pos.x, ratio, 128);
+        INTERPOLATE(fx, pos.y, ratio, MAX(128, fx->fall_speed * 2));
+        INTERPOLATE(fx, pos.z, ratio, 128);
+        INTERPOLATE_ROT(fx, rot.x, ratio, PHD_45);
+        INTERPOLATE_ROT(fx, rot.y, ratio, PHD_45);
+        INTERPOLATE_ROT(fx, rot.z, ratio, PHD_45);
+        fx_num = fx->next_active;
+    }
+
     if (Lara_Hair_IsActive()) {
         for (int i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
-            HAIR_SEGMENT *hair = Lara_Hair_GetSegment(i);
+            HAIR_SEGMENT *const hair = Lara_Hair_GetSegment(i);
             INTERPOLATE(hair, pos.x, ratio, 128);
             INTERPOLATE(
                 hair, pos.y, ratio, MAX(128, g_LaraItem->fall_speed * 2));
@@ -162,7 +175,7 @@ void Interpolation_Remember(void)
     REMEMBER(&g_Lara, head_rot.z);
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
-        ITEM_INFO *item = &g_Items[i];
+        ITEM_INFO *const item = &g_Items[i];
         REMEMBER(item, pos.x);
         REMEMBER(item, pos.y);
         REMEMBER(item, pos.z);
@@ -180,9 +193,21 @@ void Interpolation_Remember(void)
         REMEMBER(g_LaraItem, rot.z);
     }
 
+    int16_t fx_num = g_NextFxActive;
+    while (fx_num != NO_ITEM) {
+        FX_INFO *const fx = &g_Effects[fx_num];
+        REMEMBER(fx, pos.x);
+        REMEMBER(fx, pos.y);
+        REMEMBER(fx, pos.z);
+        REMEMBER(fx, rot.x);
+        REMEMBER(fx, rot.y);
+        REMEMBER(fx, rot.z);
+        fx_num = fx->next_active;
+    }
+
     if (Lara_Hair_IsActive()) {
         for (int i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
-            HAIR_SEGMENT *hair = Lara_Hair_GetSegment(i);
+            HAIR_SEGMENT *const hair = Lara_Hair_GetSegment(i);
             REMEMBER(hair, pos.x);
             REMEMBER(hair, pos.y);
             REMEMBER(hair, pos.z);

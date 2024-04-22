@@ -1364,6 +1364,13 @@ typedef struct FX_INFO {
     int16_t frame_number;
     int16_t counter;
     int16_t shade;
+
+    struct {
+        struct {
+            XYZ_32 pos;
+            XYZ_16 rot;
+        } result, prev;
+    } interp;
 } FX_INFO;
 
 typedef struct LARA_INFO {
