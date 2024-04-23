@@ -72,6 +72,8 @@ static void Phase_Inventory_Draw(void);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
 {
+    ring->camera.pos.z = ring->radius + CAMERA_2_RING;
+
     if (g_InvMode == INV_TITLE_MODE) {
         Output_DrawBackdropImage();
         Output_DrawBackdropScreen();
@@ -617,8 +619,6 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
             }
         }
     }
-
-    ring->camera.pos.z = ring->radius + CAMERA_2_RING;
 
     g_GameInfo.inv_ring_above = g_InvMode == INV_GAME_MODE
         && ((ring->type == RT_MAIN && g_InvKeysObjects)
