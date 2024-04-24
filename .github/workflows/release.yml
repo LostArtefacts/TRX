@@ -118,6 +118,8 @@ jobs:
 
       - name: "Checkout code"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: "Download built game assets"
         uses: actions/download-artifact@v4
@@ -127,7 +129,10 @@ jobs:
 
       - name: "Generate changelog"
         run: |
-          just output-current-changelog > _changes.txt
+          hash=$(git log -1 --pretty=format:%H)
+          tag=$(just output-current-version)
+          echo -e "**Commit: $hash**  \n**Tag: $tag**\n\n### Changes\n" > _changes.txt
+          just output-current-changelog >> _changes.txt
 
       - name: "Get information on the latest pre-release"
         if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}

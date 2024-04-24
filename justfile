@@ -64,6 +64,9 @@ package-win-installer:         (build-win "release") (build-win-config) (_docker
     cp tools/installer/out/TR1X_Installer.exe "${exe_name}"
     echo "Created ${exe_name}"
 
+output-current-version:
+    tools/get_version
+
 output-current-changelog:
     tools/output_current_changelog
 

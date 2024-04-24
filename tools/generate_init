@@ -5,7 +5,7 @@ from pathlib import Path
 from shared.versioning import generate_version
 
 TEMPLATE = """
-const char *g_TR1XVersion = "{version}";
+const char *g_TR1XVersion = "TR1X {version}";
 """.lstrip()
 
 

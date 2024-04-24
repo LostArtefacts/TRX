@@ -8,11 +8,11 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "rr-"
       VALUE "FileDescription", "Tomb Raider I: Community Edition"
-      VALUE "FileVersion", "{version}"
+      VALUE "FileVersion", "TR1X {version}"
       VALUE "InternalName", "TR1X"
       VALUE "OriginalFilename", "TR1X.exe"
       VALUE "ProductName", "Tomb Raider I: Community Edition"
-      VALUE "ProductVersion", "{version}"
+      VALUE "ProductVersion", "TR1X {version}"
     END
   END
   BLOCK "VarFileInfo"

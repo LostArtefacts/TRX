@@ -79,7 +79,7 @@ class BaseGameEntrypoint:
             zip_path = args.output
         else:
             version = generate_version()
-            zip_path = Path(f"{version}-{self.RELEASE_ZIP_SUFFIX}.zip")
+            zip_path = Path(f"TR1X-{version}-{self.RELEASE_ZIP_SUFFIX}.zip")
         source_files = [
             *[
                 (path, path.relative_to(SHIP_DIR))

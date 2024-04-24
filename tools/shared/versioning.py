@@ -24,4 +24,4 @@ def get_branch_version(branch: str | None) -> str:
 
 def generate_version() -> str:
     version = get_branch_version(None)
-    return f'TR1X {version or "?"}'
+    return version or "?"
