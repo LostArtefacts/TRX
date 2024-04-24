@@ -77,6 +77,26 @@ int32_t Requester_Display(REQUEST_INFO *req)
         Text_AddOutline(req->heading, true, TS_HEADING);
     }
 
+    if (g_InputDB.menu_down) {
+        if (req->requested < req->items - 1) {
+            req->requested++;
+        }
+        req->line_old_offset = req->line_offset;
+        if (req->requested > req->line_offset + req->vis_lines - 1) {
+            req->line_offset++;
+        }
+    }
+
+    if (g_InputDB.menu_up) {
+        if (req->requested) {
+            req->requested--;
+        }
+        req->line_old_offset = req->line_offset;
+        if (req->requested < req->line_offset) {
+            req->line_offset--;
+        }
+    }
+
     if (req->line_offset) {
         if (!req->moreup) {
             req->moreup =
@@ -130,28 +150,6 @@ int32_t Requester_Display(REQUEST_INFO *req)
                          [req->item_text_len * (req->line_offset + i)]);
             }
         }
-    }
-
-    if (g_InputDB.menu_down) {
-        if (req->requested < req->items - 1) {
-            req->requested++;
-        }
-        req->line_old_offset = req->line_offset;
-        if (req->requested > req->line_offset + req->vis_lines - 1) {
-            req->line_offset++;
-        }
-        return 0;
-    }
-
-    if (g_InputDB.menu_up) {
-        if (req->requested) {
-            req->requested--;
-        }
-        req->line_old_offset = req->line_offset;
-        if (req->requested < req->line_offset) {
-            req->line_offset--;
-        }
-        return 0;
     }
 
     if (g_InputDB.menu_confirm) {
