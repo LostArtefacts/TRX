@@ -51,7 +51,7 @@ MATRIX g_W2VMatrix = { 0 };
 LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
 CAMERA_INFO g_Camera = { 0 };
-GAME_INFO g_GameInfo = { 0 };
+GAME_INFO g_GameInfo = { .override_option = GF_PHASE_CONTINUE, 0 };
 int32_t g_SavedGamesCount = 0;
 int32_t g_SaveCounter = 0;
 int16_t g_CurrentLevel = -1;

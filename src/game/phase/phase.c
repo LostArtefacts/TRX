@@ -32,6 +32,12 @@ static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
 static GAMEFLOW_OPTION Phase_Control(int32_t nframes)
 {
+    if (g_GameInfo.override_option != GF_PHASE_CONTINUE) {
+        const GAMEFLOW_OPTION result = g_GameInfo.override_option;
+        g_GameInfo.override_option = GF_PHASE_CONTINUE;
+        return result;
+    }
+
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
