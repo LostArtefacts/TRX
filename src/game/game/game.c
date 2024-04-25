@@ -105,7 +105,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Savegame_CarryCurrentInfoToNextLevel(level_num - 1, level_num);
                 Savegame_ApplyLogicToCurrentInfo(level_num);
             }
-        } else if (g_CurrentLevel == g_GameFlow.title_level_num) {
+        } else {
             // console /play level feature
             Savegame_InitCurrentInfo();
             for (int i = g_GameFlow.first_level_num + 1; i <= level_num; i++) {
