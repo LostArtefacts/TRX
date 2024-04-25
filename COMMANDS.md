@@ -53,6 +53,9 @@ Currently supported commands:
 - `/save {slot_num}`  
   Saves the game to the specified savegame slot.
 
+- `/demo`  
+  Starts the demo.
+
 - `/speed`  
 - `/speed {num}`  
   Retrieves or sets current game speed.

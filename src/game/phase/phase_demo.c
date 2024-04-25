@@ -43,7 +43,7 @@ static TARGET_LOCK_MODE m_OldTargetMode;
 static RESUME_INFO m_OldResumeInfo;
 static TEXTSTRING *m_DemoModeText = NULL;
 static STATE m_State = STATE_RUN;
-static GAMEFLOW_OPTION m_Result = GF_EXIT_TO_TITLE;
+static INPUT_STATE m_OldInput = { 0 };
 
 static int32_t m_DemoLevel = -1;
 static uint32_t *m_DemoPtr = NULL;
@@ -123,6 +123,12 @@ static void Phase_Demo_Start(void *arg)
     }
 
     m_State = STATE_RUN;
+
+    // Remember old inputs in case the demo was forcefully started with some
+    // keys pressed. In that case, it should only be stopped if the user
+    // presses some other key.
+    Input_Update();
+    m_OldInput = g_Input;
 
     Interpolation_Remember();
     Output_FadeReset();
@@ -216,14 +222,11 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
             return GF_PHASE_CONTINUE;
         }
 
-        Input_Update();
-        Shell_ProcessInput();
-        Game_ProcessInput();
-
-        if (g_Input.any || !Phase_Demo_ProcessInput()) {
+        if (!Phase_Demo_ProcessInput()) {
             m_State = STATE_FADE_OUT;
             return GF_PHASE_CONTINUE;
         }
+        Game_ProcessInput();
 
         Item_Control();
         Effect_Control();
@@ -237,6 +240,14 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
         Sound_UpdateEffects();
         g_GameInfo.current[g_CurrentLevel].stats.timer++;
         Overlay_BarHealthTimerTick();
+
+        // Discard demo input; check for debounced real keypresses
+        g_Input = m_OldInput;
+        Input_Update();
+        if (g_InputDB.any) {
+            m_State = STATE_FADE_OUT;
+            return GF_PHASE_CONTINUE;
+        }
     }
 
     return GF_PHASE_CONTINUE;
