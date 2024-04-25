@@ -56,6 +56,9 @@ Currently supported commands:
 - `/demo`  
   Starts the demo.
 
+- `/title`  
+  Exits the game to main screen.
+
 - `/speed`  
 - `/speed {num}`  
   Retrieves or sets current game speed.

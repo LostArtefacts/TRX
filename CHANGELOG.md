@@ -4,6 +4,7 @@
 - added ability to teleport to nearest specific object (#1312)
 - added `/load` and `/save` commands for even quicker savegame operations
 - added `/demo` command to quickly play the demo
+- added `/title` command to quickly exit to title
 - added `/give all` variant of the item cheat
 - changed injection files to be placed in its own directory (#1306)
 - changed item cheat sound effects
