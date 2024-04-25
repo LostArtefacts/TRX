@@ -14,6 +14,8 @@ env:
   FFMPEG_INSTALL_TMP_UNIVERSAL: /tmp/install_universal
   FFMPEG_INSTALL_TMP_ARM64: /tmp/install_arm64
   FFMPEG_INSTALL_TMP_X86_64: /tmp/install_x86_64
+  CACHE_TMP_DIR: /tmp/opt_local/
+  CACHE_DST_DIR: /opt/local/
 
 jobs:
   build:
@@ -44,22 +46,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Select latest stable Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
-
       - name: Extend PATH for MacPorts
         run: |
           echo -e "/opt/local/bin" >> $GITHUB_PATH
           echo -e "/opt/local/sbin" >> $GITHUB_PATH
 
+      - name: "Restore dependencies from cache"
+        id: restore-cache
+        uses: actions/cache/restore@v4
+        with:
+          key: ${{ runner.os }}-tooling-${{ hashFiles('.github/workflows/build_macos.yml') }}
+          path: |
+            ${{ env.CACHE_TMP_DIR }}
+            ${{ env.FFMPEG_INSTALL_TMP_ARM64 }}
+            ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
+            ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
+
+      - name: "Prepare cached dependencies for use"
+        if: steps.restore-cache.outputs.cache-hit == 'true'
+        run: |
+          sudo rsync -arvq ${{ env.CACHE_TMP_DIR }} ${{ env.CACHE_DST_DIR }}
+
+      - name: Select latest stable Xcode
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       - name: Install and update MacPorts
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           wget -O ${{ github.workspace }}/macports.pkg https://github.com/macports/macports-base/releases/download/v2.9.2/MacPorts-2.9.2-14-Sonoma.pkg
           sudo installer -pkg ${{ github.workspace }}/macports.pkg -target /
 
       - name: Install build and deployment tools
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           # Install Python first to avoid multiple Python in the dep tree later on.
           sudo port -N install python312 py312-pip
@@ -73,29 +94,22 @@ jobs:
           sudo pip3 install pyjson5
 
       - name: "Build dependencies: Compression libraries (universal)"
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
-          sudo port install zlib +universal
-          sudo port install bzip2 +universal
-          sudo port install xz +universal
+          sudo port -N install zlib +universal
+          sudo port -N install bzip2 +universal
+          sudo port -N install xz +universal
 
-      - name: "Build dependencies: Regex libraries (universal)"
-        run: |
-          sudo port install pcre2 +universal
+      - name: "Build dependency: pcre2 (universal)"
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: sudo port -N install pcre2 +universal
 
       - name: "Build dependency: libsdl2 (universal)"
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: sudo port -N install libsdl2 +universal
 
-      - name: "Restore cache dependency: ffmpeg (universal)"
-        id: restore-cache-ffmpeg
-        uses: actions/cache/restore@v3
-        with:
-          key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
-          path: |
-            ${{ env.FFMPEG_INSTALL_TMP_ARM64 }}
-            ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
-
       - name: "Build dependency: ffmpeg (universal)"
-        if: ${{ steps.restore-cache-ffmpeg.outputs.cache-hit != 'true' }}
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           # Install to separate staging paths for all architectures in
           # preparation for fusing universal libraries in a follow-up step.
@@ -135,17 +149,8 @@ jobs:
           make -j$(sysctl -n hw.ncpu)
           sudo make install
 
-      - name: "Save cache dependency: ffmpeg (universal)"
-        id: save-cache-ffmpeg
-        if: always()
-        uses: actions/cache/save@v3
-        with:
-          key: ${{ runner.os }}-build-ffmpeg-${{ hashFiles('.github/workflows/build_macos.yml') }}
-          path: |
-            ${{ env.FFMPEG_INSTALL_TMP_ARM64 }}
-            ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
-
       - name: "Build dependency: ffmpeg (fuse universal libraries)"
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           # Libs
           FFMPEG_LIBS=(
@@ -190,6 +195,26 @@ jobs:
             sudo sed -i '' "s|^libdir=.*|libdir=$FFMPEG_INSTALL_FINAL/lib|" "$file"
           done
           sudo mv $FFMPEG_INSTALL_TMP_ARM64/lib/pkgconfig/* $FFMPEG_INSTALL_FINAL/lib/pkgconfig/
+
+      - name: "Prepare dependencies for caching"
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: |
+          # Remove MacPorts leftover build and download files
+          sudo rm -rf /opt/local/var/macports/build/*
+          sudo rm -rf /opt/local/var/macports/distfiles/*
+          sudo rm -rf /opt/local/var/macports/packages/*
+          sudo rsync -arvq ${{ env.CACHE_DST_DIR }} ${{ env.CACHE_TMP_DIR }}
+
+      - name: "Save dependencies to cache"
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+          path: |
+            ${{ env.CACHE_TMP_DIR }}
+            ${{ env.FFMPEG_INSTALL_TMP_ARM64 }}
+            ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
+            ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
 
       - name: Build arm64 and create app bundle
         run: |
