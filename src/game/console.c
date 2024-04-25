@@ -274,7 +274,8 @@ void Console_Log(const char *fmt, ...)
         m_Logs[i].expire_at = m_Logs[i - 1].expire_at;
     }
 
-    m_Logs[0].expire_at = Clock_GetMS() + 1000 * strlen(text) / HOVER_DELAY_CPS;
+    m_Logs[0].expire_at =
+        Clock_GetHighPrecisionCounter() + 1000 * strlen(text) / HOVER_DELAY_CPS;
     Text_ChangeText(m_Logs[0].ts, text);
     int32_t y = -MARGIN - m_TextHeight * m_PromptScale;
 
@@ -297,7 +298,7 @@ void Console_ScrollLogs(void)
     }
 
     while (i >= 0 && m_Logs[i].expire_at
-           && Clock_GetMS() >= m_Logs[i].expire_at) {
+           && Clock_GetHighPrecisionCounter() >= m_Logs[i].expire_at) {
         m_Logs[i].expire_at = 0;
         Text_ChangeText(m_Logs[i].ts, "");
         i--;

@@ -27,6 +27,7 @@
 #include "global/vars.h"
 #include "math/matrix.h"
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -45,12 +46,15 @@ static bool m_PlayedSpinin;
 static bool m_PassportModeReady;
 static int32_t m_StartLevel;
 static bool m_StartDemo;
-static int32_t m_StartMS;
 static TEXTSTRING *m_VersionText = NULL;
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
+static int32_t m_StatsCounter;
 static CAMERA_INFO m_OldCamera;
 static GAME_OBJECT_ID m_InvChosen;
+static CLOCK_TIMER m_DemoTimer = { 0 };
+static CLOCK_TIMER m_MotionTimer = { 0 };
+static CLOCK_TIMER m_StatsTimer = { 0 };
 RING_INFO m_Ring;
 IMOTION_INFO m_Motion;
 
@@ -63,7 +67,7 @@ static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
 static int32_t InvItem_GetFrames(
     const INVENTORY_ITEM *inv_item, FRAME_INFO **out_frame1,
     FRAME_INFO **out_frame2, int32_t *out_rate);
-static void Inv_DrawItem(INVENTORY_ITEM *inv_item);
+static void Inv_DrawItem(INVENTORY_ITEM *inv_item, int32_t frames);
 
 static void Phase_Inventory_Start(void *arg);
 static void Phase_Inventory_End(void);
@@ -73,6 +77,8 @@ static void Phase_Inventory_Draw(void);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
 {
+    const int32_t frames = Clock_GetFrameAdvance()
+        * round(Clock_GetElapsedDrawFrames(&m_MotionTimer));
     ring->camera.pos.z = ring->radius + CAMERA_2_RING;
 
     if (g_InvMode == INV_TITLE_MODE) {
@@ -119,7 +125,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
             Matrix_RotYXZ(angle, 0, 0);
             Matrix_TranslateRel(ring->radius, 0, 0);
             Matrix_RotYXZ(PHD_90, inv_item->pt_xrot, 0);
-            Inv_DrawItem(inv_item);
+            Inv_DrawItem(inv_item, frames);
             angle += ring->angle_adder;
             Matrix_Pop();
         }
@@ -142,7 +148,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     if ((motion->status != RNG_OPENING
          || (g_InvMode != INV_TITLE_MODE || !Output_FadeIsAnimating()))
         && motion->status != RNG_DONE) {
-        for (int i = 0; i < Clock_GetFrameAdvance(); i++) {
+        for (int i = 0; i < frames; i++) {
             Inv_Ring_DoMotions(ring);
         }
     }
@@ -190,6 +196,9 @@ static void Inv_Construct(void)
     if (g_GameFlow.gym_level_num == -1) {
         Inv_RemoveItem(O_PHOTO_OPTION);
     }
+
+    // reset the delta timer before starting the spinout animation
+    Clock_ResetTimer(&m_MotionTimer);
 }
 
 static void Inv_Destroy(void)
@@ -375,18 +384,17 @@ fallback:
     return 0;
 }
 
-static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
+static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
 {
     const RING_INFO *ring = &m_Ring;
     const IMOTION_INFO *motion = &m_Motion;
 
-    const int32_t advance = Clock_GetFrameAdvance();
     if (motion->status == RNG_DONE) {
         g_LsAdder = LOW_LIGHT;
     } else if (inv_item == ring->list[ring->current_object]) {
         if (ring->rotating) {
             g_LsAdder = LOW_LIGHT;
-            for (int j = 0; j < advance; j++) {
+            for (int j = 0; j < frames; j++) {
                 if (inv_item->y_rot < 0) {
                     inv_item->y_rot += 512;
                 } else if (inv_item->y_rot > 0) {
@@ -398,7 +406,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
             || motion->status == RNG_SELECTING || motion->status == RNG_DESELECT
             || motion->status == RNG_CLOSING_ITEM) {
             g_LsAdder = HIGH_LIGHT;
-            for (int j = 0; j < advance; j++) {
+            for (int j = 0; j < frames; j++) {
                 if (inv_item->y_rot != inv_item->y_rot_sel) {
                     if (inv_item->y_rot_sel - inv_item->y_rot > 0
                         && inv_item->y_rot_sel - inv_item->y_rot < 0x8000) {
@@ -414,13 +422,13 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item)
             || (!g_Input.menu_left && !g_Input.menu_right)
             || !g_Input.menu_left) {
             g_LsAdder = HIGH_LIGHT;
-            for (int j = 0; j < advance; j++) {
+            for (int j = 0; j < frames; j++) {
                 inv_item->y_rot += 256;
             }
         }
     } else {
         g_LsAdder = LOW_LIGHT;
-        for (int j = 0; j < advance; j++) {
+        for (int j = 0; j < frames; j++) {
             if (inv_item->y_rot < 0) {
                 inv_item->y_rot += 256;
             } else if (inv_item->y_rot > 0) {
@@ -579,7 +587,7 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
             return GF_PHASE_CONTINUE;
         }
 
-        m_StartMS = Clock_GetMS();
+        Clock_ResetTimer(&m_DemoTimer);
         if (!m_PlayedSpinin) {
             Sound_Effect(SFX_MENU_SPININ, NULL, SPM_ALWAYS);
             m_PlayedSpinin = true;
@@ -606,10 +614,11 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
     Game_ProcessInput();
 
     if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
-        m_StartMS = Clock_GetMS();
+        Clock_ResetTimer(&m_DemoTimer);
     } else if (g_Config.enable_demo && motion->status == RNG_OPEN) {
         if (g_GameFlow.has_demo
-            && (Clock_GetMS() - m_StartMS) / 1000.0 > g_GameFlow.demo_delay) {
+            && Clock_CheckElapsedMilliseconds(
+                &m_DemoTimer, g_GameFlow.demo_delay * 1000.0)) {
             m_StartDemo = true;
         }
     }
@@ -631,8 +640,8 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
             || (ring->type == RT_OPTION && g_InvMainObjects));
 
     if (g_Config.enable_timer_in_inventory) {
-        g_GameInfo.current[g_CurrentLevel].stats.timer +=
-            Clock_IsAtLogicalFrame(1);
+        const double ticks = Clock_GetElapsedLogicalFrames(&m_StatsTimer);
+        g_GameInfo.current[g_CurrentLevel].stats.timer += round(ticks);
     }
 
     if (ring->rotating) {

@@ -26,6 +26,8 @@
 #define LEFT_ARROW_SYM 108
 #define RIGHT_ARROW_SYM 109
 
+static int32_t m_FlashFrames = 0;
+static CLOCK_TIMER m_FlashTimer = { 0 };
 static int16_t m_TextstringCount = 0;
 static TEXTSTRING m_TextstringTable[TEXT_MAX_STRINGS] = { 0 };
 static char m_TextstringBuffers[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE] = { 0 };
@@ -467,6 +469,8 @@ void Text_Remove(TEXTSTRING *textstring)
 
 void Text_Draw(void)
 {
+    m_FlashFrames =
+        Clock_GetFrameAdvance() * Clock_GetElapsedDrawFrames(&m_FlashTimer);
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];
         if (textstring->flags.active) {
@@ -484,7 +488,7 @@ void Text_DrawText(TEXTSTRING *textstring)
     }
 
     if (textstring->flags.flash) {
-        textstring->flash.count -= Clock_GetFrameAdvance();
+        textstring->flash.count -= m_FlashFrames;
         if (textstring->flash.count <= -textstring->flash.rate) {
             textstring->flash.count = textstring->flash.rate;
         } else if (textstring->flash.count < 0) {

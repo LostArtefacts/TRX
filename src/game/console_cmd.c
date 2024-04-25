@@ -13,6 +13,7 @@
 #include "game/los.h"
 #include "game/objects/common.h"
 #include "game/objects/names.h"
+#include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/savegame.h"

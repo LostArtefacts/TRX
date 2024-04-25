@@ -37,7 +37,7 @@ typedef enum DISPLAY_PICKUP_PHASE {
 
 typedef struct DISPLAY_PICKUP_INFO {
     int16_t obj_num;
-    int16_t duration;
+    double duration;
     int32_t grid_x;
     int32_t grid_y;
     int32_t rot_y;
@@ -48,6 +48,9 @@ static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
 static DISPLAY_PICKUP_INFO m_Pickups[MAX_PICKUPS] = { 0 };
+static CLOCK_TIMER m_PickupsTimer = { 0 };
+static CLOCK_TIMER m_BlinkTimer = { 0 };
+static CLOCK_TIMER m_FPSTimer = { 0 };
 
 static RGBA_8888 m_ColorBarMap[][COLOR_STEPS] = {
     // gold
@@ -192,7 +195,7 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
         return;
     }
 
-    if (Clock_IsAtLogicalFrame(10)) {
+    if (Clock_CheckElapsedLogicalFrames(&m_BlinkTimer, 10)) {
         bar_info->blink = !bar_info->blink;
     }
 }
@@ -416,7 +419,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
 
 static void Overlay_DrawPickups3D(void)
 {
-    const int16_t ticks = Clock_IsAtLogicalFrame(1);
+    const double ticks = Clock_GetElapsedLogicalFrames(&m_PickupsTimer);
 
     for (int i = 0; i < MAX_PICKUPS; i++) {
         DISPLAY_PICKUP_INFO *const pu = &m_Pickups[i];
@@ -458,7 +461,7 @@ static void Overlay_DrawPickups3D(void)
 
 static void Overlay_DrawPickupsSprites(void)
 {
-    const int16_t ticks = Clock_IsAtLogicalFrame(1);
+    const double ticks = Clock_GetElapsedLogicalFrames(&m_PickupsTimer);
 
     const int32_t sprite_height =
         MIN(Viewport_GetWidth(), Viewport_GetHeight() * 320 / 200) / 10;
@@ -719,8 +722,6 @@ void Overlay_DrawGameInfo(void)
 
 void Overlay_DrawFPSInfo(void)
 {
-    static int32_t elapsed = 0;
-
     if (g_Config.rendering.enable_fps_counter) {
         const int32_t text_offset_x = 3;
         const int32_t text_height = 17;
@@ -730,7 +731,8 @@ void Overlay_DrawFPSInfo(void)
         int16_t x = 21;
         int16_t y = 10;
 
-        if (Clock_GetMS() - elapsed >= 1000) {
+        const double counter = Clock_GetHighPrecisionCounter();
+        if (Clock_CheckElapsedRawMilliseconds(&m_FPSTimer, 1000)) {
             if (m_FPSText) {
                 char fps_buf[20];
                 sprintf(fps_buf, "%d FPS", g_FPSCounter);
@@ -741,7 +743,6 @@ void Overlay_DrawFPSInfo(void)
                 m_FPSText = Text_Create(10, 30, fps_buf);
             }
             g_FPSCounter = 0;
-            elapsed = Clock_GetMS();
         }
 
         bool inv_health_showable = Phase_Get() == PHASE_INVENTORY

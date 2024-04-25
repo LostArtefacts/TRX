@@ -17,8 +17,8 @@ typedef enum STATE {
 } STATE;
 
 static STATE m_State = STATE_FADE_IN;
-static int32_t m_StartTime = 0;
 static double m_DisplayTime = 0.0;
+static CLOCK_TIMER m_DisplayTimer = { 0 };
 
 static void Phase_Picture_Start(void *arg);
 static void Phase_Picture_End(void);
@@ -30,6 +30,7 @@ static void Phase_Picture_Start(void *arg)
     const PHASE_PICTURE_DATA *data = (const PHASE_PICTURE_DATA *)arg;
     m_State = STATE_FADE_IN;
     m_DisplayTime = data->display_time;
+    Clock_ResetTimer(&m_DisplayTimer);
     Output_LoadBackdropImage(data->path);
     Output_FadeResetToBlack();
     Output_FadeToTransparent(true);
@@ -48,7 +49,6 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
     case STATE_FADE_IN:
         if (!Output_FadeIsAnimating()) {
             m_State = STATE_DISPLAY;
-            m_StartTime = Clock_GetMS();
         }
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
@@ -57,7 +57,8 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
 
     case STATE_DISPLAY:
         if (g_InputDB.any
-            || (Clock_GetMS() - m_StartTime >= m_DisplayTime * 1000)) {
+            || Clock_CheckElapsedMilliseconds(
+                &m_DisplayTimer, m_DisplayTime * 1000)) {
             m_State = STATE_FADE_OUT;
         }
         break;
