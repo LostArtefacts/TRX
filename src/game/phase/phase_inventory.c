@@ -56,6 +56,7 @@ IMOTION_INFO m_Motion;
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion);
 static void Inv_Construct(void);
+static void Inv_Destroy(void);
 static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
@@ -191,17 +192,8 @@ static void Inv_Construct(void)
     }
 }
 
-static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen)
+static void Inv_Destroy(void)
 {
-    // finish fading
-    if (g_InvMode == INV_TITLE_MODE) {
-        Output_FadeToBlack(true);
-    }
-
-    if (Output_FadeIsAnimating()) {
-        return GF_PHASE_CONTINUE;
-    }
-
     Inv_Ring_RemoveAllText();
     m_InvChosen = NO_OBJECT;
 
@@ -209,6 +201,11 @@ static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen)
         Text_Remove(m_VersionText);
         m_VersionText = NULL;
     }
+}
+
+static GAMEFLOW_OPTION Inv_Close(GAME_OBJECT_ID inv_chosen)
+{
+    Inv_Destroy();
 
     if (m_StartLevel != -1) {
         return GF_SELECT_GAME | m_StartLevel;
@@ -590,6 +587,15 @@ static GAMEFLOW_OPTION Phase_Inventory_ControlFrame(void)
     }
 
     if (motion->status == RNG_DONE) {
+        // finish fading
+        if (g_InvMode == INV_TITLE_MODE) {
+            Output_FadeToBlack(true);
+        }
+
+        if (Output_FadeIsAnimating()) {
+            return GF_PHASE_CONTINUE;
+        }
+
         return Inv_Close(m_InvChosen);
     }
 
@@ -1024,6 +1030,7 @@ static GAMEFLOW_OPTION Phase_Inventory_Control(int32_t nframes)
 
 static void Phase_Inventory_End(void)
 {
+    Inv_Destroy();
     if (g_Config.enable_buffering) {
         g_OldInputDB.any = 0;
     }

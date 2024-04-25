@@ -47,6 +47,9 @@ Currently supported commands:
   `/play {name}`  
   Plays the specified level.
 
+- `/load {slot_num}`  
+  Loads the specified savegame slot.
+
 - `/speed`  
 - `/speed {num}`  
   Retrieves or sets current game speed.

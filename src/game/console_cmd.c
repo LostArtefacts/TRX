@@ -41,6 +41,7 @@ static bool Console_Cmd_Cheats(const char *const args);
 static bool Console_Cmd_GiveItem(const char *args);
 static bool Console_Cmd_FlipMap(const char *args);
 static bool Console_Cmd_Kill(const char *args);
+static bool Console_Cmd_LoadGame(const char *args);
 static bool Console_Cmd_EndLevel(const char *args);
 static bool Console_Cmd_Level(const char *args);
 static bool Console_Cmd_Abortion(const char *args);
@@ -446,6 +447,29 @@ static bool Console_Cmd_Kill(const char *args)
     return false;
 }
 
+static bool Console_Cmd_LoadGame(const char *args)
+{
+    int32_t slot_num = -1;
+    if (sscanf(args, "%d", &slot_num) != 1) {
+        return false;
+    }
+    const int32_t slot_idx = slot_num - 1; // convert 1-indexing to 0-indexing
+
+    if (slot_idx < 0 || slot_idx >= g_Config.maximum_save_slots) {
+        Console_Log(GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT));
+        return true;
+    }
+
+    if ((g_SavegameRequester.item_flags[slot_idx] & RIF_BLOCKED)) {
+        Console_Log(GS(OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT), slot_num);
+        return true;
+    }
+
+    g_GameInfo.override_option = GF_START_SAVED_GAME | slot_idx;
+    Console_Log(GS(OSD_LOAD_GAME), slot_num);
+    return true;
+}
+
 static bool Console_Cmd_EndLevel(const char *args)
 {
     if (strcmp(args, "") == 0) {
@@ -530,6 +554,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "endlevel", .proc = Console_Cmd_EndLevel },
     { .prefix = "play", .proc = Console_Cmd_Level },
     { .prefix = "level", .proc = Console_Cmd_Level },
+    { .prefix = "load", .proc = Console_Cmd_LoadGame },
     { .prefix = "abortion", .proc = Console_Cmd_Abortion },
     { .prefix = "natlastinks", .proc = Console_Cmd_Abortion },
     { .prefix = NULL, .proc = NULL },
