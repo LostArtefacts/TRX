@@ -338,5 +338,8 @@
         "OSD_LOAD_GAME": "Loaded game from save slot %d",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Save slot %d is not available",
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
+        "OSD_SAVE_GAME": "Save game to save slot %d",
+        "OSD_SAVE_GAME_FAIL": "Cannot save the game in the current state",
+        "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
     },
 }
