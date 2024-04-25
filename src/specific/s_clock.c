@@ -7,13 +7,21 @@
 #include <stdint.h>
 
 static Uint64 m_LastCounter = 0;
+static Uint64 m_InitCounter = 0;
 static Uint64 m_Counter = 0;
 static Uint64 m_Frequency = 0;
 
 void Clock_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
+    m_InitCounter = SDL_GetPerformanceCounter();
     m_Counter = SDL_GetPerformanceCounter();
+}
+
+double Clock_GetHighPrecisionCounter(void)
+{
+    return (SDL_GetPerformanceCounter() - m_InitCounter) * 1000.0
+        / (double)m_Frequency;
 }
 
 int32_t Clock_SyncTicks(void)
@@ -42,9 +50,4 @@ int32_t Clock_SyncTicks(void)
             return elapsed_ticks;
         }
     }
-}
-
-int32_t Clock_GetMS(void)
-{
-    return SDL_GetTicks();
 }

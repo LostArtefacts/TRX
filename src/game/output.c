@@ -4,6 +4,7 @@
 #include "game/clock.h"
 #include "game/console.h"
 #include "game/overlay.h"
+#include "game/phase/phase.h"
 #include "game/picture.h"
 #include "game/random.h"
 #include "game/viewport.h"
@@ -29,6 +30,10 @@ static int m_BackdropCurAlpha = 0;
 static int m_BackdropDstAlpha = 0;
 
 static int32_t m_WibbleOffset = 0;
+static double m_WibbleOffsetDbl = 0.0;
+static CLOCK_TIMER m_WibbleTimer = { 0 };
+static CLOCK_TIMER m_AnimatedTexturesTimer = { 0 };
+static CLOCK_TIMER m_FadeTimer = { 0 };
 static int32_t m_WibbleTable[WIBBLE_SIZE] = { 0 };
 static int32_t m_ShadeTable[WIBBLE_SIZE] = { 0 };
 static int32_t m_RandTable[WIBBLE_SIZE] = { 0 };
@@ -903,7 +908,12 @@ void Output_AnimateFades(void)
         return;
     }
 
-    const int32_t delta = 10.0 * Clock_GetFrameAdvanceAdjusted();
+    double delta = 5.0 * Clock_GetElapsedDrawFrames(&m_FadeTimer);
+    // make title screen fades faster
+    if (Phase_Get() == PHASE_INVENTORY && g_InvMode == INV_TITLE_MODE) {
+        delta *= 2.0;
+    }
+
     if (m_OverlayCurAlpha + delta <= m_OverlayDstAlpha) {
         m_OverlayCurAlpha += delta;
     } else if (m_OverlayCurAlpha - delta >= m_OverlayDstAlpha) {
@@ -922,9 +932,10 @@ void Output_AnimateFades(void)
 
 void Output_AnimateTextures(void)
 {
-    m_WibbleOffset = Clock_GetLogicalFrame() % WIBBLE_SIZE;
+    m_WibbleOffsetDbl += Clock_GetElapsedLogicalFrames(&m_WibbleTimer);
+    m_WibbleOffset = (int32_t)(m_WibbleOffsetDbl) % WIBBLE_SIZE;
 
-    if (!Clock_IsAtLogicalFrame(5)) {
+    if (!Clock_CheckElapsedLogicalFrames(&m_AnimatedTexturesTimer, 5)) {
         return;
     }
 
@@ -1006,12 +1017,14 @@ void Output_FadeReset(void)
     m_OverlayCurAlpha = 0;
     m_BackdropDstAlpha = 0;
     m_OverlayDstAlpha = 0;
+    Clock_ResetTimer(&m_FadeTimer);
 }
 
 void Output_FadeResetToBlack(void)
 {
     m_OverlayCurAlpha = 255;
     m_OverlayDstAlpha = 255;
+    Clock_ResetTimer(&m_FadeTimer);
 }
 
 void Output_FadeToBlack(bool allow_immediate)

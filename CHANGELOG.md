@@ -9,7 +9,17 @@
 - changed injection files to be placed in its own directory (#1306)
 - changed item cheat sound effects
 - changed the `/play` command to work immediately in the title screen
-- fixed turbo speed setting not saved across game relaunches (#1320)
+- fixed turbo cheat speed setting not saved across game relaunches (#1320)
+- fixed turbo cheat behavior with the following game elements (#1341):
+    - animated textures animation rate (regression from 4.0.3)
+    - 3D pickups animation rate (regression from 4.0.3)
+    - healthbar flashing rate
+    - UI text flashing rate
+    - inventory stats timer
+    - underwater wibble effect rate
+    - loading screen and credit images display time
+    - title screen demo delay
+    - fade times
 - fixed camera vibrations when using the teleport command in 60 FPS (#1274)
 - fixed the camera being thrown through doors for one frame when looked at from fixed camera positions (#954)
 - fixed console not retaining changed user settings across game relaunches (#1318)

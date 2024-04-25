@@ -8,6 +8,7 @@
 #include "global/vars.h"
 #include "log.h"
 
+#include <assert.h>
 #include <math.h>
 #include <stdio.h>
 #include <time.h>
@@ -16,6 +17,37 @@
 #define CLOCK_TURBO_SPEED_MAX 2
 
 static double m_Progress = 0.0;
+
+static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit);
+static bool Clock_CheckElapsedUnit(
+    CLOCK_TIMER *const timer, const double how_often, const double unit,
+    bool bypass_turbo_cheat);
+
+static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit)
+{
+    assert(timer != NULL);
+    const double delta = Clock_GetHighPrecisionCounter() - timer->prev_counter;
+    const double multiplier = Clock_GetSpeedMultiplier() / 1000.0;
+    const double frames = delta * multiplier * unit;
+    Clock_ResetTimer(timer);
+    return frames;
+}
+
+static bool Clock_CheckElapsedUnit(
+    CLOCK_TIMER *const timer, const double how_often, const double unit,
+    bool bypass_turbo_cheat)
+{
+    assert(timer != NULL);
+    const double delta = Clock_GetHighPrecisionCounter() - timer->prev_counter;
+    const double multiplier =
+        (bypass_turbo_cheat ? 1.0 : Clock_GetSpeedMultiplier()) / 1000.0;
+    const double frames = delta * multiplier * unit;
+    if (frames >= how_often || g_Config.rendering.fps != timer->prev_fps) {
+        Clock_ResetTimer(timer);
+        return true;
+    }
+    return false;
+}
 
 int32_t Clock_GetTurboSpeed(void)
 {
@@ -59,16 +91,6 @@ double Clock_GetTickProgress(void)
     return m_Progress;
 }
 
-int32_t Clock_GetLogicalFrame(void)
-{
-    return Clock_GetMS() * LOGIC_FPS / 1000;
-}
-
-int32_t Clock_GetDrawFrame(void)
-{
-    return Clock_GetMS() * g_Config.rendering.fps / 1000;
-}
-
 void Clock_GetDateTime(char *date_time)
 {
     time_t lt = time(0);
@@ -85,17 +107,59 @@ int32_t Clock_GetFrameAdvance(void)
     return g_Config.rendering.fps == 30 ? 2 : 1;
 }
 
-double Clock_GetFrameAdvanceAdjusted(void)
+int32_t Clock_GetLogicalFrame(void)
 {
-    double frames = Clock_GetFrameAdvance();
-    if (Phase_Get() != PHASE_INVENTORY || g_InvMode != INV_TITLE_MODE) {
-        frames /= 2.0;
-    }
-    return frames;
+    return Clock_GetHighPrecisionCounter() * LOGIC_FPS / 1000.0;
 }
 
-bool Clock_IsAtLogicalFrame(const int32_t how_often)
+int32_t Clock_GetDrawFrame(void)
 {
-    const int32_t multiplier = g_Config.rendering.fps / LOGIC_FPS;
-    return Clock_GetDrawFrame() % (how_often * multiplier) == 0;
+    return Clock_GetHighPrecisionCounter() * g_Config.rendering.fps / 1000.0;
+}
+
+void Clock_ResetTimer(CLOCK_TIMER *const timer)
+{
+    assert(timer != NULL);
+    timer->prev_counter = Clock_GetHighPrecisionCounter();
+    timer->prev_fps = g_Config.rendering.fps;
+}
+
+double Clock_GetElapsedLogicalFrames(CLOCK_TIMER *const timer)
+{
+    return Clock_GetElapsedUnit(timer, LOGIC_FPS);
+}
+
+double Clock_GetElapsedDrawFrames(CLOCK_TIMER *const timer)
+{
+    return Clock_GetElapsedUnit(timer, g_Config.rendering.fps);
+}
+
+double Clock_GetElapsedMilliseconds(CLOCK_TIMER *const timer)
+{
+    return Clock_GetElapsedUnit(timer, 1000.0);
+}
+
+bool Clock_CheckElapsedLogicalFrames(
+    CLOCK_TIMER *const timer, const int32_t how_often)
+{
+    return Clock_CheckElapsedUnit(timer, how_often, LOGIC_FPS, false);
+}
+
+bool Clock_CheckElapsedDrawFrames(
+    CLOCK_TIMER *const timer, const int32_t how_often)
+{
+    return Clock_CheckElapsedUnit(
+        timer, how_often, g_Config.rendering.fps, false);
+}
+
+bool Clock_CheckElapsedMilliseconds(
+    CLOCK_TIMER *const timer, const int32_t how_often)
+{
+    return Clock_CheckElapsedUnit(timer, how_often, 1000, false);
+}
+
+bool Clock_CheckElapsedRawMilliseconds(
+    CLOCK_TIMER *const timer, const int32_t how_often)
+{
+    return Clock_CheckElapsedUnit(timer, how_often, 1000, true);
 }
