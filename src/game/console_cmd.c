@@ -15,6 +15,7 @@
 #include "game/objects/names.h"
 #include "game/random.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -42,6 +43,7 @@ static bool Console_Cmd_GiveItem(const char *args);
 static bool Console_Cmd_FlipMap(const char *args);
 static bool Console_Cmd_Kill(const char *args);
 static bool Console_Cmd_LoadGame(const char *args);
+static bool Console_Cmd_SaveGame(const char *args);
 static bool Console_Cmd_EndLevel(const char *args);
 static bool Console_Cmd_Level(const char *args);
 static bool Console_Cmd_Abortion(const char *args);
@@ -470,6 +472,29 @@ static bool Console_Cmd_LoadGame(const char *args)
     return true;
 }
 
+static bool Console_Cmd_SaveGame(const char *args)
+{
+    int32_t slot_num = -1;
+    if (sscanf(args, "%d", &slot_num) != 1) {
+        return false;
+    }
+    const int32_t slot_idx = slot_num - 1; // convert 1-indexing to 0-indexing
+
+    if (slot_idx < 0 || slot_idx >= g_Config.maximum_save_slots) {
+        Console_Log(GS(OSD_SAVE_GAME_FAIL_INVALID_SLOT));
+        return true;
+    }
+
+    if (g_LaraItem == NULL) {
+        Console_Log(GS(OSD_SAVE_GAME_FAIL), slot_num);
+        return true;
+    }
+
+    Savegame_Save(slot_idx, &g_GameInfo);
+    Console_Log(GS(OSD_SAVE_GAME), slot_num);
+    return true;
+}
+
 static bool Console_Cmd_EndLevel(const char *args)
 {
     if (strcmp(args, "") == 0) {
@@ -555,6 +580,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "play", .proc = Console_Cmd_Level },
     { .prefix = "level", .proc = Console_Cmd_Level },
     { .prefix = "load", .proc = Console_Cmd_LoadGame },
+    { .prefix = "save", .proc = Console_Cmd_SaveGame },
     { .prefix = "abortion", .proc = Console_Cmd_Abortion },
     { .prefix = "natlastinks", .proc = Console_Cmd_Abortion },
     { .prefix = NULL, .proc = NULL },

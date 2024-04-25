@@ -50,6 +50,9 @@ Currently supported commands:
 - `/load {slot_num}`  
   Loads the specified savegame slot.
 
+- `/save {slot_num}`  
+  Saves the game to the specified savegame slot.
+
 - `/speed`  
 - `/speed {num}`  
   Retrieves or sets current game speed.
