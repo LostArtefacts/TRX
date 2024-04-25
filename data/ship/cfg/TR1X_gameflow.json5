@@ -731,6 +731,8 @@
         "OSD_SPEED_SET": "Speed set to %d",
         "OSD_BRAID_ON": "Braid enabled",
         "OSD_BRAID_OFF": "Braid disabled",
+        "OSD_VSYNC_ON": "VSync enabled",
+        "OSD_VSYNC_OFF": "VSync disabled",
         "OSD_CHEATS_ON": "Cheats enabled",
         "OSD_CHEATS_OFF": "Cheats disabled",
         "OSD_GIVE_ITEM": "Added %s to Lara's inventory",

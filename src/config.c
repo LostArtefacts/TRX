@@ -358,7 +358,6 @@ void Config_Init(void)
 {
     Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
     Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
-    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
     Music_SetVolume(g_Config.music_volume);
     Sound_SetMasterVolume(g_Config.sound_volume);
 }

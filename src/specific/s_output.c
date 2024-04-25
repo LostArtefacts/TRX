@@ -933,6 +933,7 @@ void S_Output_ApplyRenderSettings(void)
     m_SurfaceMaxX = Screen_GetResWidth() - 1.0f;
     m_SurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
+    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
     GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
 
@@ -979,7 +980,6 @@ bool S_Output_Init(void)
     m_RendererFBO = GFX_Context_GetRendererFBO();
 
     S_Output_ApplyRenderSettings();
-
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 
     return true;

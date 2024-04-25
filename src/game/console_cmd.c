@@ -38,6 +38,7 @@ static bool Console_Cmd_Pos(const char *const args);
 static bool Console_Cmd_Teleport(const char *const args);
 static bool Console_Cmd_Fly(const char *const args);
 static bool Console_Cmd_Speed(const char *const args);
+static bool Console_Cmd_VSync(const char *const args);
 static bool Console_Cmd_Braid(const char *const args);
 static bool Console_Cmd_Cheats(const char *const args);
 static bool Console_Cmd_GiveItem(const char *args);
@@ -231,6 +232,27 @@ static bool Console_Cmd_Speed(const char *const args)
     int32_t num = -1;
     if (sscanf(args, "%d", &num) == 1) {
         Clock_SetTurboSpeed(num);
+        return true;
+    }
+
+    return false;
+}
+
+static bool Console_Cmd_VSync(const char *const args)
+{
+    if (String_Equivalent(args, "off")) {
+        g_Config.rendering.enable_vsync = false;
+        Config_Write();
+        Output_ApplyRenderSettings();
+        Console_Log(GS(OSD_VSYNC_OFF));
+        return true;
+    }
+
+    if (String_Equivalent(args, "on")) {
+        g_Config.rendering.enable_vsync = true;
+        Config_Write();
+        Output_ApplyRenderSettings();
+        Console_Log(GS(OSD_VSYNC_ON));
         return true;
     }
 
@@ -583,6 +605,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
     { .prefix = "fly", .proc = Console_Cmd_Fly },
     { .prefix = "speed", .proc = Console_Cmd_Speed },
+    { .prefix = "vsync", .proc = Console_Cmd_VSync },
     { .prefix = "braid", .proc = Console_Cmd_Braid },
     { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     { .prefix = "give", .proc = Console_Cmd_GiveItem },
