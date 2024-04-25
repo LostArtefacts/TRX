@@ -63,6 +63,10 @@ Currently supported commands:
 - `/speed {num}`  
   Retrieves or sets current game speed.
 
+- `/vsync on`  
+- `/vsync off`  
+  Enables or disables VSync.
+
 - `/fps`  
 - `/fps {num}`  
   Retrieves or sets current frames per second.
