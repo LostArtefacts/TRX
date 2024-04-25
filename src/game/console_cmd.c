@@ -44,6 +44,7 @@ static bool Console_Cmd_FlipMap(const char *args);
 static bool Console_Cmd_Kill(const char *args);
 static bool Console_Cmd_LoadGame(const char *args);
 static bool Console_Cmd_SaveGame(const char *args);
+static bool Console_Cmd_StartDemo(const char *args);
 static bool Console_Cmd_EndLevel(const char *args);
 static bool Console_Cmd_Level(const char *args);
 static bool Console_Cmd_Abortion(const char *args);
@@ -449,6 +450,12 @@ static bool Console_Cmd_Kill(const char *args)
     return false;
 }
 
+static bool Console_Cmd_StartDemo(const char *args)
+{
+    g_GameInfo.override_option = GF_START_DEMO;
+    return true;
+}
+
 static bool Console_Cmd_LoadGame(const char *args)
 {
     int32_t slot_num = -1;
@@ -581,6 +588,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "level", .proc = Console_Cmd_Level },
     { .prefix = "load", .proc = Console_Cmd_LoadGame },
     { .prefix = "save", .proc = Console_Cmd_SaveGame },
+    { .prefix = "demo", .proc = Console_Cmd_StartDemo },
     { .prefix = "abortion", .proc = Console_Cmd_Abortion },
     { .prefix = "natlastinks", .proc = Console_Cmd_Abortion },
     { .prefix = NULL, .proc = NULL },
