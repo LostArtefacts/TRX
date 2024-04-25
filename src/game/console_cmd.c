@@ -549,8 +549,7 @@ static bool Console_Cmd_Level(const char *args)
     }
 
     if (level_to_load != -1) {
-        g_GameInfo.select_level_num = level_to_load;
-        g_LevelComplete = true;
+        g_GameInfo.override_option = GF_SELECT_GAME | level_to_load;
         Console_Log(
             GS(OSD_PLAY_LEVEL), g_GameFlow.levels[level_to_load].level_title);
         return true;
