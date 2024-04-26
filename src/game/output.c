@@ -908,7 +908,8 @@ void Output_AnimateFades(void)
         return;
     }
 
-    double delta = 5.0 * Clock_GetElapsedDrawFrames(&m_FadeTimer);
+    double delta = 5.0 * Clock_GetFrameAdvance()
+        * Clock_GetElapsedDrawFrames(&m_FadeTimer);
     // make title screen fades faster
     if (Phase_Get() == PHASE_INVENTORY && g_InvMode == INV_TITLE_MODE) {
         delta *= 2.0;
