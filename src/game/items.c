@@ -861,7 +861,7 @@ int32_t Item_GetFrames(
         return numerator;
     }
 
-    const double clock_ratio = Clock_GetTickProgress() - 0.5;
+    const double clock_ratio = Interpolation_GetRate() - 0.5;
     const double final =
         (key_frame_shift + clock_ratio) / (double)key_frame_span;
     const double interp_frame_num =
