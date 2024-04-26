@@ -60,7 +60,7 @@ package-win-all:               (build-win "release") (build-win-config) (_docker
 package-win-installer:         (build-win "release") (build-win-config) (_docker_run "rrdash/tr1x" "package" "-o" "tools/installer/Installer/Resources/release.zip") (build-win-installer)
     #!/bin/sh
     git checkout "tools/installer/Installer/Resources/release.zip"
-    exe_name=$(tools/get_version)-Installer.exe
+    exe_name=TR1X-$(tools/get_version)-Installer.exe
     cp tools/installer/out/TR1X_Installer.exe "${exe_name}"
     echo "Created ${exe_name}"
 

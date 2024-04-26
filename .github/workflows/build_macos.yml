@@ -261,7 +261,7 @@ jobs:
           /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v TR1X-Installer.dmg
           xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" TR1X-Installer.dmg
           xcrun stapler staple -v TR1X-Installer.dmg
-          mv TR1X-Installer.dmg "$(tools/get_version)-Installer.dmg"
+          mv TR1X-Installer.dmg "TR1X-$(tools/get_version)-Installer.dmg"
 
       - name: Upload signed+notarized installer image
         uses: actions/upload-artifact@v4
