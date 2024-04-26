@@ -139,7 +139,7 @@ GAMEFLOW_OPTION Phase_Run(void)
         ret = Phase_Control(nframes);
 
         if (m_PhaseToSet != PHASE_NULL) {
-            Clock_SetTickProgress(1.0);
+            Interpolation_SetRate(1.0);
             Phase_Draw();
 
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
@@ -160,12 +160,12 @@ GAMEFLOW_OPTION Phase_Run(void)
         }
 
         if (Interpolation_IsEnabled()) {
-            Clock_SetTickProgress(0.5);
+            Interpolation_SetRate(0.5);
             Phase_Draw();
             Phase_Wait();
         }
 
-        Clock_SetTickProgress(1.0);
+        Interpolation_SetRate(1.0);
         Phase_Draw();
         nframes = Phase_Wait();
     }

@@ -374,7 +374,7 @@ static int32_t InvItem_GetFrames(
     *out_frame1 = &obj->frame_base[cur_frame_num];
     *out_frame2 = &obj->frame_base[next_frame_num];
     *out_rate = 10;
-    return (Clock_GetTickProgress() - 0.5) * 10.0;
+    return (Interpolation_GetRate() - 0.5) * 10.0;
 
     // OG
 fallback:

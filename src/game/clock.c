@@ -3,7 +3,6 @@
 
 #include "game/console.h"
 #include "game/game_string.h"
-#include "game/interpolation.h"
 #include "game/phase/phase.h"
 #include "global/vars.h"
 #include "log.h"
@@ -15,8 +14,6 @@
 
 #define CLOCK_TURBO_SPEED_MIN -2
 #define CLOCK_TURBO_SPEED_MAX 2
-
-static double m_Progress = 0.0;
 
 static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit);
 static bool Clock_CheckElapsedUnit(
@@ -76,19 +73,6 @@ double Clock_GetSpeedMultiplier(void)
     } else {
         return 1.0;
     }
-}
-
-void Clock_SetTickProgress(double progress)
-{
-    m_Progress = progress;
-}
-
-double Clock_GetTickProgress(void)
-{
-    if (!Interpolation_IsEnabled()) {
-        return 1.0;
-    }
-    return m_Progress;
 }
 
 void Clock_GetDateTime(char *date_time)
