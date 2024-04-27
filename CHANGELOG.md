@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed reading animated texture data in levels (#1346, regression from 4.1)
 
 ## [4.1](https://github.com/LostArtefacts/TR1X/compare/4.0.3...4.1) - 2024-04-26
 - added ability to show enemy healthbars only for bosses (#1300)

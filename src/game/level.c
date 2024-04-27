@@ -720,13 +720,16 @@ static bool Level_LoadBoxes(MYFILE *fp)
 
 static bool Level_LoadAnimatedTextures(MYFILE *fp)
 {
-    int16_t num_ranges;
     File_Read(&m_LevelInfo.anim_texture_range_count, sizeof(int32_t), 1, fp);
+    size_t end_position =
+        File_Pos(fp) + m_LevelInfo.anim_texture_range_count * sizeof(int16_t);
+
+    int16_t num_ranges;
     File_Read(&num_ranges, sizeof(int16_t), 1, fp);
     LOG_INFO("%d animated texture ranges", num_ranges);
     if (!num_ranges) {
         g_AnimTextureRanges = NULL;
-        return true;
+        goto cleanup;
     }
 
     g_AnimTextureRanges = GameBuf_Alloc(
@@ -747,6 +750,10 @@ static bool Level_LoadAnimatedTextures(MYFILE *fp)
         File_Read(range->textures, sizeof(int16_t), range->num_textures, fp);
     }
 
+cleanup:
+    // Ensure to read everything intended by the level compiler, even if it
+    // does not wholly contain accurate texture data.
+    File_Seek(fp, MAX(end_position, File_Pos(fp)), SEEK_SET);
     return true;
 }
 
