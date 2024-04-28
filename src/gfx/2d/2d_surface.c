@@ -3,7 +3,7 @@
 #include "gfx/blitter.h"
 #include "gfx/context.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <string.h>
 

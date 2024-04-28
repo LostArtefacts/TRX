@@ -1,5 +1,5 @@
 #include "game_string.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "util.h"
 
 #include <assert.h>

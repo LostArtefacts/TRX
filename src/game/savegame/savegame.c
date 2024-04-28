@@ -20,7 +20,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <assert.h>
 #include <stdbool.h>

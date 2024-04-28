@@ -12,7 +12,7 @@
 #include "json/json_parse.h"
 #include "json/json_write.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "util.h"
 
 #include <stdio.h>

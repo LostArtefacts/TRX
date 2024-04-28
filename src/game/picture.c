@@ -1,7 +1,7 @@
 #include "game/picture.h"
 
 #include "filesystem.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "specific/s_picture.h"
 
 #include <assert.h>

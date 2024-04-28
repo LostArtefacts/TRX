@@ -1,7 +1,7 @@
 #include "specific/s_filesystem.h"
 
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "strings.h"
 
 #include <SDL2/SDL_filesystem.h>

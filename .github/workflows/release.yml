@@ -81,6 +81,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          submodules: 'true'
           fetch-depth: 0
 
       - name: Package asset (${{ matrix.platform }})
@@ -119,6 +120,7 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
         with:
+          submodules: 'true'
           fetch-depth: 0
 
       - name: "Download built game assets"

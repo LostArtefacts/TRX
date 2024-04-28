@@ -1,0 +1,3 @@
+[submodule "libtrx"]
+	path = subprojects/libtrx
+	url = git@github.com:LostArtefacts/libtrx.git

@@ -1,6 +1,6 @@
 #include "json/json_base.h"
 
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <inttypes.h>
 #include <stdio.h>

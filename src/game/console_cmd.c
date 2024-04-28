@@ -22,7 +22,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "strings.h"
 #include "util.h"
 

@@ -1,7 +1,7 @@
 #include "game/gamebuf.h"
 
 #include "game/shell.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <stddef.h>
 

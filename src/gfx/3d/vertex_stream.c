@@ -3,7 +3,7 @@
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 static const GLenum GL_PRIM_MODES[] = {
     GL_LINES, // GFX_3D_PRIM_LINE

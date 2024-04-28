@@ -1,7 +1,7 @@
 #include "json/json_parse.h"
 
 #include "json/json_base.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 struct json_parse_state_s {
     const char *src;

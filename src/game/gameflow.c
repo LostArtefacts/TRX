@@ -19,7 +19,7 @@
 #include "json/json_base.h"
 #include "json/json_parse.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <string.h>
 
