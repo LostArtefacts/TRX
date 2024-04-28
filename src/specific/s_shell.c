@@ -247,6 +247,8 @@ int main(int argc, char **argv)
     Log_Init(log_path);
     Memory_FreePointer(&log_path);
 
+    LOG_INFO("Game directory: %s", File_GetGameDirectory());
+
 #ifdef _WIN32
     // Enable HiDPI mode in Windows to detect DPI scaling
     typedef enum PROCESS_DPI_AWARENESS {
