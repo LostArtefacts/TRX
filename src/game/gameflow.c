@@ -18,7 +18,7 @@
 #include "global/vars.h"
 #include "json/json_base.h"
 #include "json/json_parse.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 
 #include <string.h>

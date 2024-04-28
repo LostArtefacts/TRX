@@ -11,7 +11,7 @@
 #include "json/json_base.h"
 #include "json/json_parse.h"
 #include "json/json_write.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 #include "util.h"
 

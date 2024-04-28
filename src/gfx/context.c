@@ -4,7 +4,7 @@
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "gfx/screenshot.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 
 #include <SDL2/SDL_video.h>

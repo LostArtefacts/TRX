@@ -3,7 +3,7 @@
 #include "filesystem.h"
 #include "game/shell.h"
 #include "gfx/gl/utils.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 
 #include <assert.h>

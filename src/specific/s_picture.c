@@ -2,7 +2,7 @@
 
 #include "filesystem.h"
 #include "game/picture.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 
 #include <assert.h>

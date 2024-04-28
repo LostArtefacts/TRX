@@ -13,7 +13,7 @@
 #include "gfx/context.h"
 #include "gfx/fbo/fbo_renderer.h"
 #include "global/vars.h"
-#include "log.h"
+#include "shared/log.h"
 #include "specific/s_shell.h"
 
 #include <assert.h>

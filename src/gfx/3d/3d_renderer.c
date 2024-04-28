@@ -3,7 +3,7 @@
 #include "config.h"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
-#include "log.h"
+#include "shared/log.h"
 
 #include <assert.h>
 #include <stddef.h>

@@ -32,7 +32,7 @@
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
 #include "global/types.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 #include "specific/s_audio.h"
 #include "specific/s_output.h"
