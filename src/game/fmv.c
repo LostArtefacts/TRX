@@ -1,8 +1,8 @@
 #include "game/fmv.h"
 
-#include "filesystem.h"
 #include "game/music.h"
 #include "game/sound.h"
+#include "shared/filesystem.h"
 #include "shared/memory.h"
 #include "specific/s_fmv.h"
 

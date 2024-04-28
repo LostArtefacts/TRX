@@ -6,26 +6,6 @@
 #include <pcre2.h>
 #include <string.h>
 
-bool String_Equivalent(const char *a, const char *b)
-{
-    if (a == NULL || b == NULL) {
-        return false;
-    }
-
-    size_t a_size = strlen(a);
-    size_t b_size = strlen(b);
-    if (a_size != b_size) {
-        return false;
-    }
-
-    for (size_t i = 0; i < a_size; i++) {
-        if (tolower(a[i]) != tolower(b[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
 const char *String_CaseSubstring(const char *subject, const char *pattern)
 {
     if (subject == NULL || pattern == NULL) {

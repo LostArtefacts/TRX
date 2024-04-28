@@ -1,6 +1,5 @@
 #include "game/level.h"
 
-#include "filesystem.h"
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -24,6 +23,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "shared/filesystem.h"
 #include "shared/log.h"
 #include "shared/memory.h"
 

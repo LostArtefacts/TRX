@@ -23,7 +23,6 @@
 #include "specific/s_fmv.h"
 
 #include "config.h"
-#include "filesystem.h"
 #include "game/input.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -32,6 +31,7 @@
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
 #include "global/types.h"
+#include "shared/filesystem.h"
 #include "shared/log.h"
 #include "shared/memory.h"
 #include "specific/s_audio.h"

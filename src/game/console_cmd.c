@@ -23,7 +23,7 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "shared/memory.h"
-#include "strings.h"
+#include "shared/strings.h"
 #include "util.h"
 
 #include <assert.h>
