@@ -8,7 +8,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "items.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 #include "util.h"
 

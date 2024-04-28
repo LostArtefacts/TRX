@@ -13,7 +13,7 @@
 #include "game/phase/phase_stats.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "log.h"
+#include "shared/log.h"
 
 #include <stdbool.h>
 #include <stddef.h>

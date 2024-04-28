@@ -3,7 +3,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 #include "util.h"
 

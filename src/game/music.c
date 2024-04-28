@@ -5,7 +5,7 @@
 #include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 #include "specific/s_audio.h"
 

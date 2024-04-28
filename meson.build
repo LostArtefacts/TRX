@@ -35,7 +35,6 @@ endif
 dep_avcodec = dependency('libavcodec', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
 dep_avutil = dependency('libavutil', static: staticdeps)
-dep_backtrace = c_compiler.find_library('backtrace', static: staticdeps, required: false)
 dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : false)
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
@@ -269,7 +268,6 @@ sources = [
   'src/json/json_base.c',
   'src/json/json_parse.c',
   'src/json/json_write.c',
-  'src/log.c',
   'src/math/math.c',
   'src/math/math_misc.c',
   'src/math/matrix.c',
@@ -298,18 +296,7 @@ dependencies = [
   dep_swscale,
   dep_zlib,
   dep_pcre2,
-  dep_backtrace
 ]
-
-if dep_backtrace.found() and host_machine.system() == 'linux'
-  sources += ['src/specific/s_log_linux.c']
-elif host_machine.system() == 'windows'
-  sources += ['src/specific/s_log_windows.c']
-  dep_dbghelp = c_compiler.find_library('dbghelp')
-  dependencies += [dep_dbghelp]
-else
-  sources += ['src/specific/s_log_unknown.c']
-endif
 
 gfx_options = configuration_data()
 

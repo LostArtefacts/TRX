@@ -20,8 +20,8 @@
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "log.h"
 #include "math/math.h"
+#include "shared/log.h"
 #include "util.h"
 
 #include <stddef.h>

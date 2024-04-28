@@ -2,7 +2,7 @@
 #include "specific/s_audio.h"
 
 #include "filesystem.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 
 #include <SDL2/SDL_audio.h>

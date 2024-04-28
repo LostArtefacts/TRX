@@ -16,7 +16,7 @@
 #include "json/bson_parse.h"
 #include "json/bson_write.h"
 #include "json/json_base.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 #include "util.h"
 

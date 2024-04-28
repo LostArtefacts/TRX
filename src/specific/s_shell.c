@@ -9,7 +9,7 @@
 #include "game/random.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "log.h"
+#include "shared/log.h"
 #include "shared/memory.h"
 
 #define SDL_MAIN_HANDLED
