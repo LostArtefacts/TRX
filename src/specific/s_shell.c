@@ -1,6 +1,7 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
+#include "filesystem.h"
 #include "game/console.h"
 #include "game/input.h"
 #include "game/music.h"
@@ -242,7 +243,9 @@ void S_Shell_SpinMessageLoop(void)
 
 int main(int argc, char **argv)
 {
-    Log_Init();
+    char *log_path = File_GetFullPath("TR1X.log");
+    Log_Init(log_path);
+    Memory_FreePointer(&log_path);
 
 #ifdef _WIN32
     // Enable HiDPI mode in Windows to detect DPI scaling

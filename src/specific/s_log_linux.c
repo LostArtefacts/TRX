@@ -44,8 +44,12 @@ static void S_Log_SignalHandler(int sig)
     exit(EXIT_FAILURE);
 }
 
-void S_Log_Init(void)
+void S_Log_Init(const char *path)
 {
     signal(SIGSEGV, S_Log_SignalHandler);
     signal(SIGFPE, S_Log_SignalHandler);
+}
+
+void S_Log_Shutdown(void)
+{
 }
