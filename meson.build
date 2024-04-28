@@ -303,7 +303,7 @@ dependencies = [
 
 if dep_backtrace.found() and host_machine.system() == 'linux'
   sources += ['src/specific/s_log_linux.c']
-elif dep_backtrace.found() and host_machine.system() == 'windows'
+elif host_machine.system() == 'windows'
   sources += ['src/specific/s_log_windows.c']
   dep_dbghelp = c_compiler.find_library('dbghelp')
   dependencies += [dep_dbghelp]
