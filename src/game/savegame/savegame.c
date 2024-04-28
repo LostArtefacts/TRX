@@ -1,7 +1,6 @@
 #include "game/savegame.h"
 
 #include "config.h"
-#include "filesystem.h"
 #include "game/game_string.h"
 #include "game/gameflow.h"
 #include "game/inventory.h"
@@ -20,6 +19,7 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "shared/filesystem.h"
 #include "shared/memory.h"
 
 #include <assert.h>

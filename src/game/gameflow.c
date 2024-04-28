@@ -1,7 +1,6 @@
 #include "game/gameflow.h"
 
 #include "config.h"
-#include "filesystem.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_string.h"
@@ -18,6 +17,7 @@
 #include "global/vars.h"
 #include "json/json_base.h"
 #include "json/json_parse.h"
+#include "shared/filesystem.h"
 #include "shared/log.h"
 #include "shared/memory.h"
 

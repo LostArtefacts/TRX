@@ -1,6 +1,6 @@
 #include "game/picture.h"
 
-#include "filesystem.h"
+#include "shared/filesystem.h"
 #include "shared/memory.h"
 #include "specific/s_picture.h"
 

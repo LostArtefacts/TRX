@@ -1,7 +1,6 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
-#include "filesystem.h"
 #include "game/console.h"
 #include "game/input.h"
 #include "game/music.h"
@@ -9,6 +8,7 @@
 #include "game/random.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "shared/filesystem.h"
 #include "shared/log.h"
 #include "shared/memory.h"
 

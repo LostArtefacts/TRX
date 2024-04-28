@@ -1,7 +1,6 @@
 #include "game/shell.h"
 
 #include "config.h"
-#include "filesystem.h"
 #include "game/clock.h"
 #include "game/console.h"
 #include "game/fmv.h"
@@ -22,6 +21,7 @@
 #include "gfx/common.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "shared/filesystem.h"
 #include "shared/log.h"
 #include "shared/memory.h"
 #include "specific/s_shell.h"
