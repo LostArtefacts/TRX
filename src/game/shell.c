@@ -152,6 +152,7 @@ void Shell_Shutdown(void)
     Savegame_Shutdown();
     Option_Shutdown();
     Console_Shutdown();
+    Log_Shutdown();
 }
 
 void Shell_Main(void)
