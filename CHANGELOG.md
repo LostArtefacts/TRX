@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [4.1.2](https://github.com/LostArtefacts/TR1X/compare/4.1.1...4.1.2) - 2024-04-28
 - fixed pictures display time (#1349, regression from 4.1)
 
 ## [4.1.1](https://github.com/LostArtefacts/TR1X/compare/4.1...4.1.1) - 2024-04-27
