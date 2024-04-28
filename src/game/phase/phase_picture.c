@@ -49,6 +49,7 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
     case STATE_FADE_IN:
         if (!Output_FadeIsAnimating()) {
             m_State = STATE_DISPLAY;
+            Clock_ResetTimer(&m_DisplayTimer);
         }
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
