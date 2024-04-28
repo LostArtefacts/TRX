@@ -4,7 +4,7 @@
 #include "game/shell.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <assert.h>
 #include <stddef.h>

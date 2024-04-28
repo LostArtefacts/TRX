@@ -3,7 +3,7 @@
 #include "filesystem.h"
 #include "game/music.h"
 #include "game/sound.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "specific/s_fmv.h"
 
 #include <stddef.h>

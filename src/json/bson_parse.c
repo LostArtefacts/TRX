@@ -2,7 +2,7 @@
 
 #include "json/json_base.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <assert.h>
 #include <stdbool.h>

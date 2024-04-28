@@ -24,6 +24,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: 'true'
 
       - name: Build Docker image (${{ matrix.platform }})
         run: |

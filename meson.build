@@ -1,10 +1,11 @@
-project('TR1X', ['c'],
+project('TR1X', 'c',
   default_options: [
     'c_std=c11',
     'warning_level=2',
   ],
 )
 
+dep_trx = subproject('libtrx')
 c_compiler = meson.get_compiler('c')
 
 build_opts = [
@@ -272,7 +273,6 @@ sources = [
   'src/math/math.c',
   'src/math/math_misc.c',
   'src/math/matrix.c',
-  'src/memory.c',
   'src/specific/s_audio.c',
   'src/specific/s_audio_sample.c',
   'src/specific/s_audio_stream.c',
@@ -328,6 +328,7 @@ executable(
   sources,
   include_directories: ['src/'],
   dependencies: dependencies,
+  link_with: dep_trx.get_variable('libtrx'),
   link_args: link_args,
   gui_app: true,
   install: true,

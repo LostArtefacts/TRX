@@ -1,7 +1,7 @@
 #include "log.h"
 
 #include "filesystem.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "specific/s_log.h"
 
 #include <stdarg.h>

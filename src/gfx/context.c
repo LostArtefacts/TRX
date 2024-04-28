@@ -5,7 +5,7 @@
 #include "gfx/gl/utils.h"
 #include "gfx/screenshot.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <SDL2/SDL_video.h>
 #include <string.h>

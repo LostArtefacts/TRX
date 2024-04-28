@@ -3,7 +3,7 @@
 
 #include "game/shell.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <SDL2/SDL_audio.h>
 #include <errno.h>

@@ -4,7 +4,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "util.h"
 
 #include <stddef.h>

@@ -33,7 +33,7 @@
 #include "gfx/context.h"
 #include "global/types.h"
 #include "log.h"
-#include "memory.h"
+#include "shared/memory.h"
 #include "specific/s_audio.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"

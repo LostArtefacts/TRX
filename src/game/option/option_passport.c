@@ -12,7 +12,7 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "memory.h"
+#include "shared/memory.h"
 
 #include <stdbool.h>
 #include <stddef.h>
