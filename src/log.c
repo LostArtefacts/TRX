@@ -1,6 +1,5 @@
 #include "log.h"
 
-#include "filesystem.h"
 #include "shared/memory.h"
 #include "specific/s_log.h"
 
@@ -9,13 +8,12 @@
 
 FILE *m_LogHandle = NULL;
 
-void Log_Init(void)
+void Log_Init(const char *path)
 {
-    char *full_path = File_GetFullPath("TR1X.log");
-    m_LogHandle = fopen(full_path, "w");
-    Memory_FreePointer(&full_path);
-
-    S_Log_Init();
+    if (path != NULL) {
+        m_LogHandle = fopen(path, "w");
+    }
+    S_Log_Init(path);
 }
 
 void Log_Message(
@@ -25,7 +23,7 @@ void Log_Message(
     va_start(va, fmt);
 
     // print to log file
-    if (m_LogHandle) {
+    if (m_LogHandle != NULL) {
         va_list vb;
 
         va_copy(vb, va);
@@ -48,7 +46,8 @@ void Log_Message(
 
 void Log_Shutdown(void)
 {
-    if (m_LogHandle) {
+    S_Log_Shutdown();
+    if (m_LogHandle != NULL) {
         fclose(m_LogHandle);
     }
 }
