@@ -13,8 +13,6 @@ c_compiler = meson.get_compiler('c')
 build_opts = [
   '-Wno-unused',
   '-DMESON_BUILD',
-  '-DPCRE2_STATIC',
-  '-DPCRE2_CODE_UNIT_WIDTH=8',
 ]
 
 add_project_arguments(build_opts, language: 'c')
@@ -42,7 +40,6 @@ dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : fa
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
 dep_sdl2 = dependency('SDL2', static: staticdeps)
-dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
 dep_zlib = null_dep
 
 if not staticdeps
@@ -277,7 +274,6 @@ sources = [
   'src/specific/s_output.c',
   'src/specific/s_picture.c',
   'src/specific/s_shell.c',
-  'src/strings.c',
   resources,
 ]
 
@@ -292,7 +288,6 @@ dependencies = [
   dep_swresample,
   dep_swscale,
   dep_zlib,
-  dep_pcre2,
 ]
 
 gfx_options = configuration_data()
