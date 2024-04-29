@@ -15,10 +15,11 @@
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
 #include "global/vars.h"
-#include "shared/filesystem.h"
-#include "shared/json.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/json.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <string.h>
 

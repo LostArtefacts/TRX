@@ -64,17 +64,20 @@ def sort_imports(path: Path) -> None:
     def cb(match):
         includes = re.findall(r'#include (["<][^"<>]+[">])', match.group(0))
         groups = {
-            "own": set(),
-            "proj": set(),
-            "lib": set(),
+            "self": set(),
+            "local": set(),
+            "shared": set(),
+            "external": set(),
         }
         for include in includes:
             if include.strip('"') == own_include:
-                groups["own"].add(include)
+                groups["self"].add(include)
+            elif include.startswith("<libtrx"):
+                groups["shared"].add(include)
             elif include.startswith("<"):
-                groups["lib"].add(include)
-            else:
-                groups["proj"].add(include)
+                groups["external"].add(include)
+            elif include.startswith('"'):
+                groups["local"].add(include)
 
         groups = {key: value for key, value in groups.items() if value}
 

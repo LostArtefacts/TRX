@@ -1,6 +1,6 @@
 #include "strings.h"
 
-#include "shared/log.h"
+#include <libtrx/log.h>
 
 #include <ctype.h>
 #include <pcre2.h>

@@ -21,8 +21,9 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "shared/log.h"
 #include "util.h"
+
+#include <libtrx/log.h>
 
 #include <stddef.h>
 

@@ -22,9 +22,10 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "shared/memory.h"
-#include "shared/strings.h"
 #include "util.h"
+
+#include <libtrx/memory.h>
+#include <libtrx/strings.h>
 
 #include <assert.h>
 #include <math.h>

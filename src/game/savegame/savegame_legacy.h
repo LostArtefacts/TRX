@@ -2,7 +2,8 @@
 
 #include "game/savegame.h"
 #include "global/types.h"
-#include "shared/filesystem.h"
+
+#include <libtrx/filesystem.h>
 
 #include <stdbool.h>
 #include <stdint.h>

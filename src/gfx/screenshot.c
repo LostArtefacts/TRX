@@ -2,7 +2,8 @@
 
 #include "game/picture.h"
 #include "global/types.h"
-#include "shared/memory.h"
+
+#include <libtrx/memory.h>
 
 #include <assert.h>
 #include <string.h>

@@ -8,9 +8,10 @@
 #include "game/random.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "shared/filesystem.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #define SDL_MAIN_HANDLED
 

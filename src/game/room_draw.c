@@ -10,7 +10,8 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 #include <stdbool.h>
 

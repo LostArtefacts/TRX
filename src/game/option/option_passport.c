@@ -12,7 +12,8 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "shared/memory.h"
+
+#include <libtrx/memory.h>
 
 #include <stdbool.h>
 #include <stddef.h>

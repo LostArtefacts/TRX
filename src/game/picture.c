@@ -1,8 +1,9 @@
 #include "game/picture.h"
 
-#include "shared/filesystem.h"
-#include "shared/memory.h"
 #include "specific/s_picture.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/memory.h>
 
 #include <assert.h>
 

@@ -1,6 +1,6 @@
 #include "specific/s_input.h"
 
-#include "shared/log.h"
+#include <libtrx/log.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>

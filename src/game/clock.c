@@ -5,7 +5,8 @@
 #include "game/game_string.h"
 #include "game/phase/phase.h"
 #include "global/vars.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 #include <assert.h>
 #include <math.h>

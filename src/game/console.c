@@ -11,7 +11,8 @@
 #include "game/viewport.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 #include <SDL2/SDL_keycode.h>
 #include <stdarg.h>

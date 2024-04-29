@@ -2,8 +2,9 @@
 #include "specific/s_audio.h"
 
 #include "game/shell.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <SDL2/SDL_audio.h>
 #include <errno.h>
