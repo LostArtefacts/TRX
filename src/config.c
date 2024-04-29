@@ -7,12 +7,12 @@
 #include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "util.h"
 
 #include <libtrx/filesystem.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <stdio.h>
 #include <string.h>

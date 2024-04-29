@@ -9,7 +9,8 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 

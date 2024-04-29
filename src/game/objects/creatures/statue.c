@@ -9,7 +9,8 @@
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
 #define CENTAUR_REARING_ANIM 7

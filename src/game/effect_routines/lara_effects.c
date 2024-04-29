@@ -3,7 +3,8 @@
 #include "game/items.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdint.h>
 

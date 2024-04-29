@@ -6,7 +6,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util.h"
+#include <libtrx/utils.h>
 
 #define PHD_ONE 0x10000
 #define PHD_DEGREE (PHD_ONE / 360) // = 182

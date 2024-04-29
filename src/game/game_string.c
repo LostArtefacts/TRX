@@ -1,7 +1,7 @@
 #include "game_string.h"
-#include "util.h"
 
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <stddef.h>

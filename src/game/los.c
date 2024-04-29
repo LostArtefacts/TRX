@@ -2,7 +2,8 @@
 
 #include "game/room.h"
 #include "global/const.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdint.h>
 

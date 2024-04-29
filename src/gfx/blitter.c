@@ -1,6 +1,6 @@
 #include "gfx/blitter.h"
 
-#include "util.h"
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <stdbool.h>

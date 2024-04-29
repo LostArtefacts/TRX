@@ -9,7 +9,8 @@
 #include "gfx/common.h"
 #include "gfx/context.h"
 #include "global/const.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 #include <stdint.h>

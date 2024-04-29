@@ -7,7 +7,8 @@
 #include "global/types.h"
 #include "math/matrix.h"
 #include "specific/s_shell.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <math.h>
 

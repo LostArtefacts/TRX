@@ -9,7 +9,8 @@
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 #include <stddef.h>

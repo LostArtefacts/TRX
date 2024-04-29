@@ -7,11 +7,11 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "items.h"
-#include "util.h"
 
 #include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <stdbool.h>
