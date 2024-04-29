@@ -4,7 +4,6 @@
 #include "game/anim.h"
 #include "game/camera.h"
 #include "game/carrier.h"
-#include "game/clock.h"
 #include "game/interpolation.h"
 #include "game/room.h"
 #include "game/shell.h"

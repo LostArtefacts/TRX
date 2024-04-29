@@ -2,6 +2,9 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+#include <stdint.h>
+
 typedef struct HAIR_SEGMENT {
     XYZ_32 pos;
     XYZ_16 rot;

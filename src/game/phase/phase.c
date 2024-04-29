@@ -1,6 +1,5 @@
 #include "game/phase/phase.h"
 
-#include "config.h"
 #include "game/clock.h"
 #include "game/interpolation.h"
 #include "game/output.h"

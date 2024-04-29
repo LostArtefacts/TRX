@@ -15,6 +15,7 @@
 #include "global/vars.h"
 
 #include <libtrx/bson.h>
+#include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

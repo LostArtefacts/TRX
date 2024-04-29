@@ -8,7 +8,6 @@
 #include "game/gameflow.h"
 #include "game/input.h"
 #include "game/interpolation.h"
-#include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_cheat.h"
@@ -25,6 +24,8 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <stdbool.h>

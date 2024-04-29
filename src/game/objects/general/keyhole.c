@@ -2,7 +2,6 @@
 
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/sound.h"

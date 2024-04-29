@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdbool.h>
+
 bool Interpolation_IsEnabled(void);
 void Interpolation_Disable(void);
 void Interpolation_Enable(void);

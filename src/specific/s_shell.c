@@ -13,6 +13,8 @@
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
+#include <libavcodec/version.h>
+
 #define SDL_MAIN_HANDLED
 
 #ifdef _WIN32
@@ -27,7 +29,6 @@
 #include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_video.h>
-#include <libavcodec/version.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,41 +1,16 @@
 #!/usr/bin/env python3
-import argparse
-import re
-from pathlib import Path
-from shutil import which
-from subprocess import run
+from libtrx.cli.sort_imports import run_script
+from tr1x.paths import TR1X_REPO_DIR, TR1X_SRC_DIR
 
-from shared.common import SRC_DIR
-
-
-def fix_imports(path: Path) -> None:
-    iwyu_result = run(
-        ["include-what-you-use", "-I", "src", path],
-        capture_output=True,
-        text=True,
-    ).stderr
-    run(
-        [which("fix_include") and "fix_include" or "iwyu-fix-includes"],
-        input=iwyu_result,
-        text=True,
-    )
-
-
-def custom_sort(source: list[str], forced_order: list[str]) -> list[str]:
-    def key_func(item: str) -> tuple[int, int, str]:
-        if item in forced_order:
-            return (forced_order[0], forced_order.index(item))
-        return (item, 0)
-
-    return sorted(source, key=key_func)
-
-
-def sort_imports(path: Path) -> None:
-    source = path.read_text()
-    rel_path = path.relative_to(SRC_DIR)
-    own_include = str(rel_path.with_suffix(".h"))
-    own_include = {
-        # files headers of which are not a 1:1 match with their filename
+run_script(
+    root_dir=TR1X_SRC_DIR,
+    include_dirs=[
+        TR1X_SRC_DIR,
+        TR1X_REPO_DIR / "build/linux",
+        TR1X_REPO_DIR / "build/windows",
+    ],
+    system_include_dirs=[TR1X_REPO_DIR / "subprojects/libtrx/include"],
+    own_include_map={
         "game/game/game.c": "game/game.h",
         "game/game/game_cutscene.c": "game/game.h",
         "game/game/game_demo.c": "game/game.h",
@@ -50,77 +25,8 @@ def sort_imports(path: Path) -> None:
         "game/savegame/savegame.c": "game/savegame.h",
         "specific/s_audio_sample.c": "specific/s_audio.h",
         "specific/s_audio_stream.c": "specific/s_audio.h",
-        "specific/s_log_unknown.c": "specific/s_log.h",
-        "specific/s_log_linux.c": "specific/s_log.h",
-        "specific/s_log_windows.c": "specific/s_log.h",
-    }.get(str(rel_path), own_include)
-
-    forced_order = [
-        "<windows.h>",
-        "<dbghelp.h>",
-        "<tlhelp32.h>",
-    ]
-
-    def cb(match):
-        includes = re.findall(r'#include (["<][^"<>]+[">])', match.group(0))
-        groups = {
-            "self": set(),
-            "local": set(),
-            "shared": set(),
-            "external": set(),
-        }
-        for include in includes:
-            if include.strip('"') == own_include:
-                groups["self"].add(include)
-            elif include.startswith("<libtrx"):
-                groups["shared"].add(include)
-            elif include.startswith("<"):
-                groups["external"].add(include)
-            elif include.startswith('"'):
-                groups["local"].add(include)
-
-        groups = {key: value for key, value in groups.items() if value}
-
-        ret = "\n\n".join(
-            "\n".join(
-                f"#include {include}"
-                for include in custom_sort(group, forced_order)
-            )
-            for group in groups.values()
-        ).strip()
-        return ret
-
-    source = re.sub(
-        "^#include [^\n]+(\n*#include [^\n]+)*",
-        cb,
-        source,
-        flags=re.M,
-    )
-    if source != path.read_text():
-        path.write_text(source)
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    parser.add_argument(metavar="path", type=Path, nargs="*", dest="paths")
-    return parser.parse_args()
-
-
-def main() -> None:
-    args = parse_args()
-    paths = [path.absolute() for path in args.paths]
-
-    if not paths:
-        paths = sorted(
-            path
-            for path in SRC_DIR.glob("**/*.[ch]")
-            if path != SRC_DIR / "init.c"
-        )
-
-    for path in paths:
-        fix_imports(path)
-        sort_imports(path)
-
-
-if __name__ == "__main__":
-    main()
+        "specific/s_shell.c": "specific/s_shell.h",
+    },
+    fix_map={"libavcodec/version_major.h": "libavcodec/version.h"},
+    forced_order=[],
+)

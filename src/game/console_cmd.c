@@ -10,7 +10,6 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_cheat.h"
-#include "game/los.h"
 #include "game/objects/common.h"
 #include "game/objects/names.h"
 #include "game/output.h"
@@ -21,13 +20,10 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "math/math.h"
 
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
-#include <libtrx/utils.h>
 
-#include <assert.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>

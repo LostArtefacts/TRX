@@ -3,10 +3,10 @@ import argparse
 from pathlib import Path
 from subprocess import check_call
 
-from common import DATA_DIR
+from tr1x.paths import TR1X_DATA_DIR
 
-SOURCE_DIR = DATA_DIR / "images"
-TARGET_DIR = DATA_DIR / "ship/data/images"
+SOURCE_DIR = TR1X_DATA_DIR / "images"
+TARGET_DIR = TR1X_DATA_DIR / "ship/data/images"
 
 
 def format_size(size: int) -> str:

@@ -4,7 +4,6 @@
 #include "game/input.h"
 #include "game/music.h"
 #include "game/sound.h"
-#include "gfx/context.h"
 #include "global/const.h"
 #include "global/types.h"
 
@@ -14,6 +13,7 @@
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 

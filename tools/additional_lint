@@ -1,1 +1,4 @@
-../subprojects/libtrx/tools/additional_lint
+#!/usr/bin/env python3
+from libtrx.cli.additional_lint import run_script
+
+run_script(ignored_extensions=[".patch", ".bin"])

@@ -13,7 +13,6 @@
 #include "game/music.h"
 #include "game/objects/common.h"
 #include "game/option.h"
-#include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"

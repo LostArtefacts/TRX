@@ -5,7 +5,6 @@
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
-#include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
 

@@ -2,6 +2,7 @@
 
 #include "game/shell.h"
 #include "gfx/gl/utils.h"
+#include "gfx_options.h"
 
 #include <libtrx/filesystem.h>
 #include <libtrx/log.h>
