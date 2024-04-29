@@ -1,6 +1,5 @@
 #include "game/phase/phase_cutscene.h"
 
-#include "config.h"
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"

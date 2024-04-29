@@ -2,13 +2,13 @@
 
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/inventory/inventory_vars.h"
 #include "game/items.h"
 #include "game/lara.h"
-#include "game/objects/general/keyhole.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
+
+#include <stdbool.h>
 
 #define LF_USEPUZZLE 80
 

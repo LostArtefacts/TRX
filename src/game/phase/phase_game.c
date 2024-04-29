@@ -19,7 +19,8 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-#include <assert.h>
+#include <libtrx/utils.h>
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

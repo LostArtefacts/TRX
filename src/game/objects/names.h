@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <stdint.h>
+
 // Return a list of object ids that match given string.
 // out_match_count may be NULL.
 // The result must be freed by the caller.

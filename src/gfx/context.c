@@ -4,6 +4,7 @@
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "gfx/screenshot.h"
+#include "gfx_options.h"
 
 #include <libtrx/log.h>
 #include <libtrx/memory.h>

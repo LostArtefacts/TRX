@@ -2,8 +2,8 @@
 import argparse
 from pathlib import Path
 
-from shared.common import DATA_DIR
-from shared.versioning import generate_version
+from libtrx.versioning import generate_version
+from tr1x.paths import TR1X_DATA_DIR
 
 
 def parse_args() -> argparse.Namespace:
@@ -17,7 +17,7 @@ def write_rc_template(
 ) -> None:
     template = input_path.read_text()
     template = template.replace("{version}", version)
-    template = template.replace("{icon_path}", str(DATA_DIR / "icon.ico"))
+    template = template.replace("{icon_path}", str(TR1X_DATA_DIR / "icon.ico"))
     output_path.write_text(template)
 
 
@@ -27,7 +27,7 @@ def main() -> None:
 
     for output_path in args.output:
         write_rc_template(
-            input_path=DATA_DIR / output_path.name,
+            input_path=TR1X_DATA_DIR / output_path.name,
             output_path=output_path,
             version=version,
         )

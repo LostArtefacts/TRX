@@ -1,17 +1,17 @@
 #include "game/interpolation.h"
 
-#include "game/clock.h"
+#include "config.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara/lara_hair.h"
-#include "game/phase/phase.h"
 #include "game/room.h"
+#include "global/const.h"
 #include "global/vars.h"
 #include "math/math_misc.h"
 
 #include <libtrx/utils.h>
 
-#include <assert.h>
+#include <stdint.h>
 
 #define REMEMBER(target, member) (target)->interp.prev.member = (target)->member
 

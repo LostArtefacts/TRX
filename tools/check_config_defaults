@@ -3,11 +3,10 @@ import argparse
 from pathlib import Path
 
 import pyjson5
+from tr1x.paths import TR1X_TOOLS_DIR
 
-TOOLS_DIR = Path(__file__).parent
-REPO_DIR = TOOLS_DIR.parent
 CONFIG_TOOL_SPEC_PATH = (
-    TOOLS_DIR / "config/TR1X_ConfigTool/Resources/specification.json"
+    TR1X_TOOLS_DIR / "config/TR1X_ConfigTool/Resources/specification.json"
 )
 
 
@@ -36,16 +35,22 @@ def main() -> None:
     }
 
     for key, spec_value in spec_map.items():
-        if key in game_config and (game_value := game_config.get(key)) != spec_value:
-            print(f'(!) Wrong value: {key} (tool supplies {spec_value}, game supplies {game_value})')
+        if (
+            key in game_config
+            and (game_value := game_config.get(key)) != spec_value
+        ):
+            print(
+                f"(!) Wrong value: {key} (tool supplies {spec_value}, game supplies {game_value})"
+            )
 
     for key, spec_value in spec_map.items():
         if key not in game_config:
-            print(f'Surplus key: {key}')
+            print(f"Surplus key: {key}")
 
     for key, spec_value in game_config.items():
         if key not in spec_map:
-            print(f'Missing key: {key}')
+            print(f"Missing key: {key}")
+
 
 if __name__ == "__main__":
     main()

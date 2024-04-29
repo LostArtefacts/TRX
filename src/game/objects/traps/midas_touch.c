@@ -9,6 +9,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <stdbool.h>
+
 #define EXTRA_ANIM_PLACE_BAR 0
 #define EXTRA_ANIM_DIE_GOLD 1
 #define LF_PICKUP_GOLD_BAR 113

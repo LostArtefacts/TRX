@@ -1,7 +1,6 @@
 #include "game/inventory/inventory_vars.h"
 #include "game/phase/phase.h"
 #include "global/types.h"
-#include "global/vars.h"
 
 #include <stdbool.h>
 #include <stdint.h>

@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
-from shared.docker import BaseGameEntrypoint
+from libtrx.cli.game_docker_entrypoint import run_script
 
-
-class LinuxEntrypoint(BaseGameEntrypoint):
-    BUILD_ROOT = Path("/app/build/linux/")
-    COMPILE_ARGS = []
-    RELEASE_ZIP_SUFFIX = "Linux"
-    RELEASE_ZIP_FILES = [
-        (BUILD_ROOT / "TR1X", "TR1X"),
-    ]
-
-    def post_compile(self) -> None:
-        if self.target == "release":
-            self.compress_exe(self.BUILD_ROOT / "TR1X")
-
-if __name__ == "__main__":
-    LinuxEntrypoint().run()
+run_script(
+    ship_dir=Path("/app/data/ship/"),
+    build_root=Path("/app/build/linux/"),
+    compile_args=[],
+    release_zip_filename="TR1X-{version}-Linux.zip",
+    release_zip_files=[
+        (Path("/app/build/linux/TR1X"), "TR1X"),
+    ],
+    compressable_exes=[
+        Path("/app/build/linux/TR1X"),
+    ],
+)

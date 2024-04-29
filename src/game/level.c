@@ -27,6 +27,7 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <stdio.h>

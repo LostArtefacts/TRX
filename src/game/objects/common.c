@@ -15,6 +15,7 @@
 #include <libtrx/utils.h>
 
 #include <assert.h>
+#include <stddef.h>
 
 const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format off

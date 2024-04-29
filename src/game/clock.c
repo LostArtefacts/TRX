@@ -1,12 +1,12 @@
 // IWYU pragma: no_include <bits/types/struct_tm.h>
 #include "game/clock.h"
 
+#include "config.h"
 #include "game/console.h"
 #include "game/game_string.h"
-#include "game/phase/phase.h"
-#include "global/vars.h"
+#include "global/const.h"
 
-#include <libtrx/log.h>
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <math.h>
