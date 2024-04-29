@@ -1,7 +1,8 @@
 #include "game/random.h"
 
 #include "game/phase/phase.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 static int32_t m_RandControl = 0xD371F947;
 static int32_t m_RandDraw = 0xD371F947;

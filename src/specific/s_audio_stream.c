@@ -1,9 +1,9 @@
 #define S_AUDIO_IMPL
 #include "specific/s_audio.h"
 
-#include "shared/filesystem.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+#include <libtrx/filesystem.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_error.h>

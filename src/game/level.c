@@ -23,9 +23,10 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "shared/filesystem.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <assert.h>
 #include <stdio.h>

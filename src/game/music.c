@@ -4,10 +4,11 @@
 #include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "shared/filesystem.h"
-#include "shared/log.h"
-#include "shared/memory.h"
 #include "specific/s_audio.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <stdio.h>
 

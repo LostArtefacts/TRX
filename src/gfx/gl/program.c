@@ -2,9 +2,10 @@
 
 #include "game/shell.h"
 #include "gfx/gl/utils.h"
-#include "shared/filesystem.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <assert.h>
 #include <stddef.h>

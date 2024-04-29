@@ -13,8 +13,9 @@
 #include "gfx/context.h"
 #include "gfx/fbo/fbo_renderer.h"
 #include "global/vars.h"
-#include "shared/log.h"
 #include "specific/s_shell.h"
+
+#include <libtrx/log.h>
 
 #include <assert.h>
 #include <stddef.h>

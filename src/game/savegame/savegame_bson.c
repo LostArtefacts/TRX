@@ -13,10 +13,11 @@
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "shared/json.h"
-#include "shared/log.h"
-#include "shared/memory.h"
 #include "util.h"
+
+#include <libtrx/bson.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <assert.h>
 #include <inttypes.h>

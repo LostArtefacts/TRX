@@ -2,8 +2,9 @@
 
 #include "gfx/blitter.h"
 #include "gfx/context.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <string.h>
 

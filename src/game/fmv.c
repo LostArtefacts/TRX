@@ -2,9 +2,10 @@
 
 #include "game/music.h"
 #include "game/sound.h"
-#include "shared/filesystem.h"
-#include "shared/memory.h"
 #include "specific/s_fmv.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/memory.h>
 
 #include <stddef.h>
 

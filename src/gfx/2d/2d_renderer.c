@@ -2,7 +2,8 @@
 
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 #include <assert.h>
 

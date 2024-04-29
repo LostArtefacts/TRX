@@ -31,12 +31,13 @@
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
 #include "global/types.h"
-#include "shared/filesystem.h"
-#include "shared/log.h"
-#include "shared/memory.h"
 #include "specific/s_audio.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
+
+#include <libtrx/filesystem.h>
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>

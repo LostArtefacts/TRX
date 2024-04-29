@@ -1,6 +1,7 @@
 #include "game_string.h"
-#include "shared/memory.h"
 #include "util.h"
+
+#include <libtrx/memory.h>
 
 #include <assert.h>
 #include <stddef.h>

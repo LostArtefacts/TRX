@@ -2,7 +2,8 @@
 
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 #include <assert.h>
 #include <stddef.h>

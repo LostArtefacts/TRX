@@ -4,8 +4,9 @@
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "gfx/screenshot.h"
-#include "shared/log.h"
-#include "shared/memory.h"
+
+#include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <SDL2/SDL_video.h>
 #include <string.h>

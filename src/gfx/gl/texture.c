@@ -1,7 +1,8 @@
 #include "gfx/gl/texture.h"
 
 #include "gfx/gl/utils.h"
-#include "shared/memory.h"
+
+#include <libtrx/memory.h>
 
 #include <assert.h>
 

@@ -3,8 +3,9 @@
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/objects/common.h"
-#include "shared/memory.h"
 #include "strings.h"
+
+#include <libtrx/memory.h>
 
 #include <string.h>
 

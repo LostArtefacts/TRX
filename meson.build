@@ -1,11 +1,13 @@
-project('TR1X', 'c',
+project(
+  'TR1X',
+  'c',
   default_options: [
     'c_std=c11',
     'warning_level=2',
   ],
 )
 
-dep_trx = subproject('libtrx')
+trx = subproject('libtrx')
 c_compiler = meson.get_compiler('c')
 
 build_opts = [
@@ -32,6 +34,7 @@ else
   dep_opengl = dependency('GL')
 endif
 
+dep_trx = trx.get_variable('dep_trx')
 dep_avcodec = dependency('libavcodec', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
 dep_avutil = dependency('libavutil', static: staticdeps)
@@ -279,6 +282,7 @@ sources = [
 ]
 
 dependencies = [
+  dep_trx,
   dep_avcodec,
   dep_avformat,
   dep_avutil,
@@ -306,9 +310,11 @@ configure_file(
 executable(
   'TR1X',
   sources,
-  include_directories: ['src/'],
+  include_directories: [
+    'src/',
+    include_directories('subprojects/libtrx/include', is_system: true),
+  ],
   dependencies: dependencies,
-  link_with: dep_trx.get_variable('libtrx'),
   link_args: link_args,
   gui_app: true,
   install: true,

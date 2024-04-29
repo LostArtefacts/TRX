@@ -16,7 +16,8 @@
 #include "game/sound.h"
 #include "game/stats.h"
 #include "global/vars.h"
-#include "shared/log.h"
+
+#include <libtrx/log.h>
 
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \

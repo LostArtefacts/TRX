@@ -1,7 +1,8 @@
 #include "game/gamebuf.h"
 
 #include "game/shell.h"
-#include "shared/memory.h"
+
+#include <libtrx/memory.h>
 
 #include <stddef.h>
 
