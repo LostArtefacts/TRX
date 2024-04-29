@@ -8,7 +8,8 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "specific/s_audio.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <math.h>
 #include <stddef.h>

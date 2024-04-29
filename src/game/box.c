@@ -4,7 +4,8 @@
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion)
 {

@@ -15,7 +15,8 @@
 #include "math/math.h"
 #include "math/math_misc.h"
 #include "math/matrix.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 #include <stddef.h>

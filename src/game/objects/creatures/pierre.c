@@ -9,7 +9,8 @@
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 

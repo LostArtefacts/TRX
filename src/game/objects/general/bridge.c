@@ -6,7 +6,8 @@
 #include "game/objects/general/door.h"
 #include "game/room.h"
 #include "global/const.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 

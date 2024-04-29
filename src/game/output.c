@@ -16,9 +16,9 @@
 #include "math/matrix.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
-#include "util.h"
 
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <stddef.h>
 

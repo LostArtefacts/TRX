@@ -15,7 +15,8 @@
 #include "global/types.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 #include <stdio.h>

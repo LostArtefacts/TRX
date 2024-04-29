@@ -7,7 +7,8 @@
 #include "game/objects/common.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
 

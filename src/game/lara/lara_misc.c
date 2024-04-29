@@ -9,7 +9,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <stdint.h>
 

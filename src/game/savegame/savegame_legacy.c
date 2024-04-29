@@ -12,10 +12,10 @@
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <assert.h>
 #include <stdio.h>

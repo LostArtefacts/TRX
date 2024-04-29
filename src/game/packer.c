@@ -3,10 +3,10 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
-#include "util.h"
 
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <stddef.h>
 

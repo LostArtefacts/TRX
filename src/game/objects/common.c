@@ -11,7 +11,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/matrix.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <assert.h>
 

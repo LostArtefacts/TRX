@@ -8,7 +8,8 @@
 #include "game/room.h"
 #include "global/vars.h"
 #include "math/math_misc.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 #include <assert.h>
 

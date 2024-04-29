@@ -3,7 +3,8 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "math/math.h"
-#include "util.h"
+
+#include <libtrx/utils.h>
 
 void Math_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest)
 {
