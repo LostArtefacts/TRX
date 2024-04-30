@@ -134,7 +134,7 @@ RUN apt-get install -y \
         pkg-config \
         upx \
         python3-pip \
-    && python3 -m pip install \
+    && python3 -m pip install --break-system-packages \
         pyjson5 \
         meson \
         ninja

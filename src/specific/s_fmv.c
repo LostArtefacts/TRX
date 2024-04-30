@@ -31,10 +31,10 @@
 #include "gfx/2d/2d_surface.h"
 #include "gfx/context.h"
 #include "global/types.h"
-#include "specific/s_audio.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 
+#include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -2294,7 +2294,7 @@ bool S_FMV_Play(const char *file_path)
         return false;
     }
 
-    S_Audio_Shutdown();
+    Audio_Shutdown();
 
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
     if (SDL_Init(flags)) {
@@ -2324,7 +2324,7 @@ cleanup:
 
     LOG_DEBUG("Finished playing FMV: %s", file_path);
 
-    S_Audio_Init();
+    Audio_Init();
 
     S_Output_ApplyRenderSettings();
 
