@@ -4,8 +4,8 @@
 #include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/s_audio.h"
 
+#include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -40,8 +40,8 @@ static void Music_StopActiveStream(void)
     // finished by itself. In cases where we end the streams early by hand,
     // we clear the finish callback in order to avoid resuming the BGM playback
     // just after we stop it.
-    S_Audio_StreamSoundSetFinishCallback(m_AudioStreamID, NULL, NULL);
-    S_Audio_StreamSoundClose(m_AudioStreamID);
+    Audio_Stream_SetFinishCallback(m_AudioStreamID, NULL, NULL);
+    Audio_Stream_Close(m_AudioStreamID);
 }
 
 static char *Music_GetTrackFileName(MUSIC_TRACK_ID track)
@@ -66,12 +66,12 @@ static void Music_StreamFinished(int stream_id, void *user_data)
 
 bool Music_Init(void)
 {
-    return S_Audio_Init();
+    return Audio_Init();
 }
 
 void Music_Shutdown(void)
 {
-    S_Audio_Shutdown();
+    Audio_Shutdown();
 }
 
 bool Music_Play(MUSIC_TRACK_ID track)
@@ -94,7 +94,7 @@ bool Music_Play(MUSIC_TRACK_ID track)
     Music_StopActiveStream();
 
     char *file_path = Music_GetTrackFileName(track);
-    m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
+    m_AudioStreamID = Audio_Stream_CreateFromFile(file_path);
     Memory_FreePointer(&file_path);
 
     if (m_AudioStreamID < 0) {
@@ -107,9 +107,8 @@ bool Music_Play(MUSIC_TRACK_ID track)
         m_TrackLastPlayed = track;
     }
 
-    S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
-    S_Audio_StreamSoundSetFinishCallback(
-        m_AudioStreamID, Music_StreamFinished, NULL);
+    Audio_Stream_SetVolume(m_AudioStreamID, m_MusicVolume);
+    Audio_Stream_SetFinishCallback(m_AudioStreamID, Music_StreamFinished, NULL);
 
     return true;
 }
@@ -129,7 +128,7 @@ bool Music_PlayLooped(MUSIC_TRACK_ID track)
     Music_StopActiveStream();
 
     char *file_path = Music_GetTrackFileName(track);
-    m_AudioStreamID = S_Audio_StreamSoundCreateFromFile(file_path);
+    m_AudioStreamID = Audio_Stream_CreateFromFile(file_path);
     Memory_FreePointer(&file_path);
 
     if (m_AudioStreamID < 0) {
@@ -137,10 +136,9 @@ bool Music_PlayLooped(MUSIC_TRACK_ID track)
         return false;
     }
 
-    S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
-    S_Audio_StreamSoundSetFinishCallback(
-        m_AudioStreamID, Music_StreamFinished, NULL);
-    S_Audio_StreamSoundSetIsLooped(m_AudioStreamID, true);
+    Audio_Stream_SetVolume(m_AudioStreamID, m_MusicVolume);
+    Audio_Stream_SetFinishCallback(m_AudioStreamID, Music_StreamFinished, NULL);
+    Audio_Stream_SetIsLooped(m_AudioStreamID, true);
 
     m_TrackLooped = track;
 
@@ -178,7 +176,7 @@ void Music_SetVolume(int16_t volume)
 {
     m_MusicVolume = volume ? (25 * volume + 5) / 255.0f : 0.0f;
     if (m_AudioStreamID >= 0) {
-        S_Audio_StreamSoundSetVolume(m_AudioStreamID, m_MusicVolume);
+        Audio_Stream_SetVolume(m_AudioStreamID, m_MusicVolume);
     }
 }
 
@@ -197,7 +195,7 @@ void Music_Pause(void)
     if (m_AudioStreamID < 0) {
         return;
     }
-    S_Audio_StreamSoundPause(m_AudioStreamID);
+    Audio_Stream_Pause(m_AudioStreamID);
 }
 
 void Music_Unpause(void)
@@ -205,7 +203,7 @@ void Music_Unpause(void)
     if (m_AudioStreamID < 0) {
         return;
     }
-    S_Audio_StreamSoundUnpause(m_AudioStreamID);
+    Audio_Stream_Unpause(m_AudioStreamID);
 }
 
 MUSIC_TRACK_ID Music_GetCurrentTrack(void)
@@ -233,7 +231,7 @@ double Music_GetDuration(void)
     if (m_AudioStreamID < 0) {
         return -1.0;
     }
-    return S_Audio_StreamGetDuration(m_AudioStreamID);
+    return Audio_Stream_GetDuration(m_AudioStreamID);
 }
 
 double Music_GetTimestamp(void)
@@ -241,7 +239,7 @@ double Music_GetTimestamp(void)
     if (m_AudioStreamID < 0) {
         return -1.0;
     }
-    return S_Audio_StreamGetTimestamp(m_AudioStreamID);
+    return Audio_Stream_GetTimestamp(m_AudioStreamID);
 }
 
 bool Music_SeekTimestamp(double timestamp)
@@ -249,5 +247,5 @@ bool Music_SeekTimestamp(double timestamp)
     if (m_AudioStreamID < 0) {
         return false;
     }
-    return S_Audio_StreamSeekTimestamp(m_AudioStreamID, timestamp);
+    return Audio_Stream_SeekTimestamp(m_AudioStreamID, timestamp);
 }

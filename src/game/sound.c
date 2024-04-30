@@ -7,8 +7,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
-#include "specific/s_audio.h"
 
+#include <libtrx/engine/audio.h>
 #include <libtrx/utils.h>
 
 #include <math.h>
@@ -204,13 +204,13 @@ bool Sound_Init(void)
 
     m_MasterVolume = 32;
     m_MasterVolumeDefault = 32;
-    m_SoundIsActive = S_Audio_Init();
+    m_SoundIsActive = Audio_Init();
     return m_SoundIsActive;
 }
 
 void Sound_Shutdown(void)
 {
-    S_Audio_Shutdown();
+    Audio_Shutdown();
 }
 
 void Sound_UpdateEffects(void)
@@ -228,31 +228,31 @@ void Sound_UpdateEffects(void)
         if (slot->flags & SOUND_FLAG_AMBIENT) {
             if (slot->loudness != (uint32_t)SOUND_NOT_AUDIBLE
                 && slot->sound_id != AUDIO_NO_SOUND) {
-                S_Audio_SampleSoundSetPan(
+                Audio_Sample_SetPan(
                     slot->sound_id, Sound_ConvertPanToDecibel(slot->pan));
-                S_Audio_SampleSoundSetVolume(
+                Audio_Sample_SetVolume(
                     slot->sound_id,
                     Sound_ConvertVolumeToDecibel(
                         (m_MasterVolume * slot->volume) >> 6));
             } else {
                 if (slot->sound_id != AUDIO_NO_SOUND) {
-                    S_Audio_SampleSoundClose(slot->sound_id);
+                    Audio_Sample_Close(slot->sound_id);
                 }
                 Sound_ClearSlot(slot);
             }
-        } else if (S_Audio_SampleSoundIsPlaying(slot->sound_id)) {
+        } else if (Audio_Sample_IsPlaying(slot->sound_id)) {
             if (slot->pos != NULL) {
                 Sound_UpdateSlotParams(slot);
                 if (slot->volume > 0 && slot->sound_id != AUDIO_NO_SOUND) {
-                    S_Audio_SampleSoundSetPan(
+                    Audio_Sample_SetPan(
                         slot->sound_id, Sound_ConvertPanToDecibel(slot->pan));
-                    S_Audio_SampleSoundSetVolume(
+                    Audio_Sample_SetVolume(
                         slot->sound_id,
                         Sound_ConvertVolumeToDecibel(
                             (m_MasterVolume * slot->volume) >> 6));
                 } else {
                     if (slot->sound_id != AUDIO_NO_SOUND) {
-                        S_Audio_SampleSoundClose(slot->sound_id);
+                        Audio_Sample_Close(slot->sound_id);
                     }
                     Sound_ClearSlot(slot);
                 }
@@ -352,7 +352,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
             fxslot->flags &= ~SOUND_FLAG_RESTARTED;
             return true;
         }
-        fxslot->sound_id = S_Audio_SampleSoundPlay(
+        fxslot->sound_id = Audio_Sample_Play(
             sfx_id, Sound_ConvertVolumeToDecibel(volume),
             Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
         if (fxslot->sound_id == AUDIO_NO_SOUND) {
@@ -371,15 +371,15 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
             return false;
         }
         if (fxslot->flags & SOUND_FLAG_RESTARTED) {
-            S_Audio_SampleSoundClose(fxslot->sound_id);
-            fxslot->sound_id = S_Audio_SampleSoundPlay(
+            Audio_Sample_Close(fxslot->sound_id);
+            fxslot->sound_id = Audio_Sample_Play(
                 sfx_id, Sound_ConvertVolumeToDecibel(volume),
                 Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
 
             Sound_ClearSlotHandles(fxslot);
             return true;
         }
-        fxslot->sound_id = S_Audio_SampleSoundPlay(
+        fxslot->sound_id = Audio_Sample_Play(
             sfx_id, Sound_ConvertVolumeToDecibel(volume),
             Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
         if (fxslot->sound_id == AUDIO_NO_SOUND) {
@@ -412,7 +412,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
         }
 
         if (volume > 0) {
-            fxslot->sound_id = S_Audio_SampleSoundPlay(
+            fxslot->sound_id = Audio_Sample_Play(
                 sfx_id, Sound_ConvertVolumeToDecibel(volume),
                 Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
             if (fxslot->sound_id == AUDIO_NO_SOUND) {
@@ -446,11 +446,11 @@ bool Sound_StopEffect(int32_t sfx_num, const XYZ_32 *pos)
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         SOUND_SLOT *slot = &m_SFXPlaying[i];
         if ((slot->flags & SOUND_FLAG_USED)
-            && S_Audio_SampleSoundIsPlaying(slot->sound_id)) {
+            && Audio_Sample_IsPlaying(slot->sound_id)) {
             if ((!pos && slot->fxnum == sfx_num)
                 || (pos && sfx_num >= 0 && slot->fxnum == sfx_num)
                 || (pos && sfx_num < 0)) {
-                S_Audio_SampleSoundClose(slot->sound_id);
+                Audio_Sample_Close(slot->sound_id);
                 Sound_ClearSlot(slot);
                 return true;
             }
@@ -506,8 +506,8 @@ void Sound_StopAmbientSounds(void)
 
     for (int i = 0; i < m_AmbientLookupIdx; i++) {
         SOUND_SLOT *slot = &m_SFXPlaying[i];
-        if (S_Audio_SampleSoundIsPlaying(slot->sound_id)) {
-            S_Audio_SampleSoundClose(slot->sound_id);
+        if (Audio_Sample_IsPlaying(slot->sound_id)) {
+            Audio_Sample_Close(slot->sound_id);
             Sound_ClearSlot(slot);
         }
     }
@@ -516,22 +516,22 @@ void Sound_StopAmbientSounds(void)
 void Sound_LoadSamples(
     size_t num_samples, const char **sample_pointers, size_t *sizes)
 {
-    S_Audio_SamplesLoad(num_samples, sample_pointers, sizes);
+    Audio_Sample_Load(num_samples, sample_pointers, sizes);
 }
 
 void Sound_PauseAll(void)
 {
-    S_Audio_SampleSoundPauseAll();
+    Audio_Sample_PauseAll();
 }
 
 void Sound_UnpauseAll(void)
 {
-    S_Audio_SampleSoundUnpauseAll();
+    Audio_Sample_UnpauseAll();
 }
 
 void Sound_StopAllSamples(void)
 {
-    S_Audio_SampleSoundCloseAll();
+    Audio_Sample_CloseAll();
 }
 
 void Sound_SetMasterVolume(int8_t volume)
