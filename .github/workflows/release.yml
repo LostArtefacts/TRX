@@ -58,7 +58,7 @@ on:
         description: "Tag name"
         required: false
         type: string
-        default: github.ref_Name
+        default: github.ref_name
 
 jobs:
   package_multiplatform:
