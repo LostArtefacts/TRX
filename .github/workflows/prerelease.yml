@@ -14,7 +14,7 @@ jobs:
     uses: ./.github/workflows/release.yml
     if: |
       github.ref == 'refs/heads/develop' &&
-      vars.RELEASE_ENABLE == 'true'
+      vars.PRERELEASE_ENABLE == 'true'
     with:
       release_name: 'Development snapshot'
       draft: false
