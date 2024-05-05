@@ -516,7 +516,7 @@ void Sound_StopAmbientSounds(void)
 void Sound_LoadSamples(
     size_t num_samples, const char **sample_pointers, size_t *sizes)
 {
-    Audio_Sample_Load(num_samples, sample_pointers, sizes);
+    Audio_Sample_LoadMany(num_samples, sample_pointers, sizes);
 }
 
 void Sound_PauseAll(void)
