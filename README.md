@@ -233,8 +233,9 @@ as Notepad.
 
 1. Head over to GitHub releases: https://github.com/LostArtefacts/TR1X/releases
 2. Download the `TR1X-Installer.dmg` installer image. Mount the image and drag TR1X to the Applications folder.
-3. Find TR1X in your Applications folder. Right-click it and click "Show Package Contents".
-4. Copy your Tomb Raider 1 game data files into `Contents/Resources/data`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
+3. Run TR1X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
+4. Find TR1X in your Applications folder. Right-click it and click "Show Package Contents".
+5. Copy your Tomb Raider 1 game data files into `Contents/Resources/data`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
 
 ## Improvements over original game
 
