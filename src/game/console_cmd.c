@@ -238,12 +238,12 @@ static COMMAND_RESULT Console_Cmd_Heal(const char *const args)
         return CR_UNAVAILABLE;
     }
 
-    if (g_LaraItem->hit_points == LARA_HITPOINTS) {
+    if (g_LaraItem->hit_points == LARA_MAX_HITPOINTS) {
         Console_Log(GS(OSD_HEAL_ALREADY_FULL_HP));
         return CR_SUCCESS;
     }
 
-    g_LaraItem->hit_points = LARA_HITPOINTS;
+    g_LaraItem->hit_points = LARA_MAX_HITPOINTS;
     Console_Log(GS(OSD_HEAL_SUCCESS));
     return CR_SUCCESS;
 }

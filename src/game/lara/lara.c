@@ -50,8 +50,8 @@ void Lara_Control(void)
 
     if (g_Input.health_cheat) {
         item->hit_points +=
-            (g_Input.slow ? -2 : 2) * LARA_HITPOINTS / 100; // change by 2%
-        CLAMP(item->hit_points, 0, LARA_HITPOINTS);
+            (g_Input.slow ? -2 : 2) * LARA_MAX_HITPOINTS / 100; // change by 2%
+        CLAMP(item->hit_points, 0, LARA_MAX_HITPOINTS);
     }
 
     if (g_InputDB.item_cheat) {
@@ -194,7 +194,7 @@ void Lara_Control(void)
         break;
 
     case LWS_CHEAT:
-        item->hit_points = LARA_HITPOINTS;
+        item->hit_points = LARA_MAX_HITPOINTS;
         g_Lara.death_timer = 0;
         Lara_HandleUnderwater(item, &coll);
         if (g_Input.slow && !g_Input.look && !g_Input.fly_cheat) {
@@ -365,11 +365,11 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
     case O_MEDI_ITEM:
     case O_MEDI_OPTION:
         if (g_LaraItem->hit_points <= 0
-            || g_LaraItem->hit_points >= LARA_HITPOINTS) {
+            || g_LaraItem->hit_points >= LARA_MAX_HITPOINTS) {
             return;
         }
-        g_LaraItem->hit_points += LARA_HITPOINTS / 2;
-        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
+        g_LaraItem->hit_points += LARA_MAX_HITPOINTS / 2;
+        CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
@@ -377,11 +377,11 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
     case O_BIGMEDI_ITEM:
     case O_BIGMEDI_OPTION:
         if (g_LaraItem->hit_points <= 0
-            || g_LaraItem->hit_points >= LARA_HITPOINTS) {
+            || g_LaraItem->hit_points >= LARA_MAX_HITPOINTS) {
             return;
         }
-        g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_HITPOINTS;
-        CLAMPG(g_LaraItem->hit_points, LARA_HITPOINTS);
+        g_LaraItem->hit_points = g_LaraItem->hit_points + LARA_MAX_HITPOINTS;
+        CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;

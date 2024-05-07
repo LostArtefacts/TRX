@@ -23,7 +23,7 @@ void BaconLara_Setup(OBJECT_INFO *obj)
     obj->control = BaconLara_Control;
     obj->draw_routine = BaconLara_Draw;
     obj->collision = Creature_Collision;
-    obj->hit_points = LARA_HITPOINTS;
+    obj->hit_points = LARA_MAX_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
@@ -58,9 +58,9 @@ void BaconLara_Control(int16_t item_num)
 
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (item->hit_points < LARA_HITPOINTS) {
-        Lara_TakeDamage((LARA_HITPOINTS - item->hit_points) * 10, false);
-        item->hit_points = LARA_HITPOINTS;
+    if (item->hit_points < LARA_MAX_HITPOINTS) {
+        Lara_TakeDamage((LARA_MAX_HITPOINTS - item->hit_points) * 10, false);
+        item->hit_points = LARA_MAX_HITPOINTS;
     }
 
     if (!item->data) {

@@ -106,7 +106,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "turbo_speed",                    .type = COT_INT32,  .target = &g_Config.rendering.turbo_speed,               .default_value = &(int32_t){0},                       0},
     { .name = "walk_to_items",                  .type = COT_BOOL,   .target = &g_Config.walk_to_items,                       .default_value = &(bool){false},                      0},
     { .name = "disable_trex_collision",         .type = COT_BOOL,   .target = &g_Config.disable_trex_collision,              .default_value = &(bool){false},                      0},
-    { .name = "start_lara_hitpoints",           .type = COT_INT32,  .target = &g_Config.start_lara_hitpoints,                .default_value = &(int32_t){LARA_HITPOINTS},          0},
+    { .name = "start_lara_hitpoints",           .type = COT_INT32,  .target = &g_Config.start_lara_hitpoints,                .default_value = &(int32_t){LARA_MAX_HITPOINTS},      0},
     { .name = "healthbar_showing_mode",         .type = COT_ENUM,   .target = &g_Config.healthbar_show_mode,                 .default_value = &(int32_t){BSM_FLASHING_OR_DEFAULT}, .param = m_BarShowModes},
     { .name = "airbar_showing_mode",            .type = COT_ENUM,   .target = &g_Config.airbar_show_mode,                    .default_value = &(int32_t){BSM_DEFAULT},             .param = m_BarShowModes},
     { .name = "enemy_healthbar_showing_mode",   .type = COT_ENUM,   .target = &g_Config.enemy_healthbar_show_mode,           .default_value = &(int32_t){BSM_ALWAYS},              .param = m_BarShowModes},

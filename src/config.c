@@ -312,7 +312,7 @@ bool Config_ReadFromJSON(const char *cfg_data)
 
     Config_ReadLegacyOptions(root_obj);
 
-    CLAMP(g_Config.start_lara_hitpoints, 1, LARA_HITPOINTS);
+    CLAMP(g_Config.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
     CLAMP(g_Config.camera_speed, 1, 10);
     CLAMP(g_Config.music_volume, 0, 10);
