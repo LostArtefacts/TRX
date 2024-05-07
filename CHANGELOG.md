@@ -1,5 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added creating minidump files on crashes
+- added new console commands:
+    - `/hp`
+    - `/hp [num]`
+    - `/heal`
 - fixed config tool and installer missing icons (#1358, regression from 4.0)
 
 ## [4.1.2](https://github.com/LostArtefacts/TR1X/compare/4.1.1...4.1.2) - 2024-04-28

@@ -772,5 +772,9 @@
         "OSD_SAVE_GAME": "Save game to save slot %d",
         "OSD_SAVE_GAME_FAIL": "Cannot save the game in the current state",
         "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
+        "OSD_CURRENT_HEALTH_GET": "Current Lara's health: %d",
+        "OSD_CURRENT_HEALTH_SET": "Lara's health set to %d",
+        "OSD_HEAL_ALREADY_FULL_HP": "Lara's already at full health",
+        "OSD_HEAL_SUCCESS": "Healed Lara back to full health",
     },
 }
