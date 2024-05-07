@@ -141,7 +141,7 @@ static void Phase_Demo_Start(void *arg)
     resume_info->pistol_ammo = 1000;
     resume_info->gun_status = LGS_ARMLESS;
     resume_info->gun_type = LGT_PISTOLS;
-    resume_info->lara_hitpoints = LARA_HITPOINTS;
+    resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
 
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);

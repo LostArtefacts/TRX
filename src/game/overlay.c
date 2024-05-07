@@ -142,7 +142,7 @@ static void Overlay_BarSetupHealth(void)
 {
     m_HealthBar.type = BT_LARA_HEALTH;
     m_HealthBar.value = 0;
-    m_HealthBar.max_value = LARA_HITPOINTS;
+    m_HealthBar.max_value = LARA_MAX_HITPOINTS;
     m_HealthBar.show_mode = g_Config.healthbar_show_mode;
     m_HealthBar.show = false;
     m_HealthBar.blink = false;
