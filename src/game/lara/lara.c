@@ -64,7 +64,7 @@ void Lara_Control(void)
 
     if (g_Lara.water_status == LWS_ABOVE_WATER && room_submerged) {
         g_Lara.water_status = LWS_UNDERWATER;
-        g_Lara.air = LARA_AIR;
+        g_Lara.air = LARA_MAX_AIR;
         item->pos.y += 100;
         item->gravity_status = 0;
         Item_UpdateRoom(item, 0);
@@ -168,7 +168,7 @@ void Lara_Control(void)
 
     switch (g_Lara.water_status) {
     case LWS_ABOVE_WATER:
-        g_Lara.air = LARA_AIR;
+        g_Lara.air = LARA_MAX_AIR;
         Lara_HandleAboveWater(item, &coll);
         break;
 
@@ -186,8 +186,8 @@ void Lara_Control(void)
     case LWS_SURFACE:
         if (item->hit_points >= 0) {
             g_Lara.air += 10;
-            if (g_Lara.air > LARA_AIR) {
-                g_Lara.air = LARA_AIR;
+            if (g_Lara.air > LARA_MAX_AIR) {
+                g_Lara.air = LARA_MAX_AIR;
             }
         }
         Lara_HandleSurface(item, &coll);
@@ -453,7 +453,7 @@ void Lara_Initialise(int32_t level_num)
         g_LaraItem->hit_points = g_Config.start_lara_hitpoints;
     }
 
-    g_Lara.air = LARA_AIR;
+    g_Lara.air = LARA_MAX_AIR;
     g_Lara.torso_rot.y = 0;
     g_Lara.torso_rot.x = 0;
     g_Lara.torso_rot.z = 0;

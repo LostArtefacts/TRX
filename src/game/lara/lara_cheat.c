@@ -154,7 +154,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     g_Lara.spaz_effect = NULL;
     g_Lara.hit_frame = 0;
     g_Lara.hit_direction = -1;
-    g_Lara.air = LARA_AIR;
+    g_Lara.air = LARA_MAX_AIR;
     g_Lara.death_timer = 0;
     g_Lara.mesh_effects = 0;
     Lara_InitialiseMeshes(g_CurrentLevel);

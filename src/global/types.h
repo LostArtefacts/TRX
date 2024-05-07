@@ -1010,7 +1010,7 @@ typedef enum GAMEFLOW_SEQUENCE_TYPE {
 
 typedef enum BAR_TYPE {
     BT_LARA_HEALTH = 0,
-    BT_LARA_AIR = 1,
+    BT_LARA_MAX_AIR = 1,
     BT_ENEMY_HEALTH = 2,
     BT_PROGRESS = 3,
 } BAR_TYPE;
