@@ -10,6 +10,13 @@ Currently supported commands:
   `/tp {object}`  
   Instant travel! Teleports Lara into a random spot within the specified room, the specified X,Y,Z coordinates, or at the nearest object of specific type.
 
+- `/hp`  
+  `/hp {health}`  
+  Sets Lara's health points to the specified value. Tougher trials await!
+
+- `/heal`  
+  Tough day, Lara? Heals our girl back to full health.
+
 - `/flip`  
   `/flip off`  
   `/flip on`  

@@ -33,6 +33,8 @@ static bool Console_Cmd_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
 static COMMAND_RESULT Console_Cmd_Pos(const char *const args);
 static COMMAND_RESULT Console_Cmd_Teleport(const char *const args);
+static COMMAND_RESULT Console_Cmd_SetHealth(const char *const args);
+static COMMAND_RESULT Console_Cmd_Heal(const char *const args);
 static COMMAND_RESULT Console_Cmd_Fly(const char *const args);
 static COMMAND_RESULT Console_Cmd_Speed(const char *const args);
 static COMMAND_RESULT Console_Cmd_VSync(const char *const args);
@@ -207,6 +209,43 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
     }
 
     return CR_BAD_INVOCATION;
+}
+
+static COMMAND_RESULT Console_Cmd_SetHealth(const char *const args)
+{
+    if (!g_Objects[O_LARA].loaded) {
+        return CR_UNAVAILABLE;
+    }
+
+    if (strcmp(args, "") == 0) {
+        Console_Log(GS(OSD_CURRENT_HEALTH_GET), g_LaraItem->hit_points);
+        return CR_SUCCESS;
+    }
+
+    int32_t hp;
+    if (sscanf(args, "%d", &hp) != 1) {
+        return CR_BAD_INVOCATION;
+    }
+
+    g_LaraItem->hit_points = hp;
+    Console_Log(GS(OSD_CURRENT_HEALTH_SET), hp);
+    return CR_SUCCESS;
+}
+
+static COMMAND_RESULT Console_Cmd_Heal(const char *const args)
+{
+    if (!g_Objects[O_LARA].loaded) {
+        return CR_UNAVAILABLE;
+    }
+
+    if (g_LaraItem->hit_points == LARA_HITPOINTS) {
+        Console_Log(GS(OSD_HEAL_ALREADY_FULL_HP));
+        return CR_SUCCESS;
+    }
+
+    g_LaraItem->hit_points = LARA_HITPOINTS;
+    Console_Log(GS(OSD_HEAL_SUCCESS));
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_Fly(const char *const args)
@@ -605,6 +644,8 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "fps", .proc = Console_Cmd_Fps },
     { .prefix = "pos", .proc = Console_Cmd_Pos },
     { .prefix = "tp", .proc = Console_Cmd_Teleport },
+    { .prefix = "hp", .proc = Console_Cmd_SetHealth },
+    { .prefix = "heal", .proc = Console_Cmd_Heal },
     { .prefix = "fly", .proc = Console_Cmd_Fly },
     { .prefix = "speed", .proc = Console_Cmd_Speed },
     { .prefix = "vsync", .proc = Console_Cmd_VSync },
