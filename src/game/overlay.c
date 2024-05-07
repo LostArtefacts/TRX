@@ -153,9 +153,9 @@ static void Overlay_BarSetupHealth(void)
 
 static void Overlay_BarSetupAir(void)
 {
-    m_AirBar.type = BT_LARA_AIR;
-    m_AirBar.value = LARA_AIR;
-    m_AirBar.max_value = LARA_AIR;
+    m_AirBar.type = BT_LARA_MAX_AIR;
+    m_AirBar.value = LARA_MAX_AIR;
+    m_AirBar.max_value = LARA_MAX_AIR;
     m_AirBar.show_mode = g_Config.airbar_show_mode;
     m_AirBar.show = false;
     m_AirBar.blink = false;
