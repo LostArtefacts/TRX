@@ -50,6 +50,7 @@ static const char m_ValidPromptChars[] =
 
 static void Console_UpdatePromptTextstring(void);
 static void Console_UpdateCaretTextstring(void);
+static COMMAND_RESULT Console_Eval(const char *const cmdline);
 
 static void Console_UpdatePromptTextstring(void)
 {
@@ -63,6 +64,53 @@ static void Console_UpdateCaretTextstring(void)
     const int32_t width = Text_GetWidth(m_Prompt.prompt_ts);
     m_Prompt.prompt_ts->string[m_Prompt.caret] = old;
     Text_SetPos(m_Prompt.caret_ts, MARGIN + width, -MARGIN);
+}
+
+static COMMAND_RESULT Console_Eval(const char *const cmdline)
+{
+    LOG_INFO("executing command: %s", cmdline);
+
+    const char *args = NULL;
+    const CONSOLE_COMMAND *matching_cmd = NULL;
+
+    for (CONSOLE_COMMAND *cur_cmd = &g_ConsoleCommands[0];
+         cur_cmd->proc != NULL; cur_cmd++) {
+        if (strstr(cmdline, cur_cmd->prefix) != cmdline) {
+            continue;
+        }
+
+        if (cmdline[strlen(cur_cmd->prefix)] == ' ') {
+            args = cmdline + strlen(cur_cmd->prefix) + 1;
+        } else if (cmdline[strlen(cur_cmd->prefix)] == '\0') {
+            args = "";
+        } else {
+            continue;
+        }
+
+        matching_cmd = cur_cmd;
+        break;
+    }
+
+    if (matching_cmd == NULL) {
+        Console_Log(GS(OSD_UNKNOWN_COMMAND), cmdline);
+        return CR_BAD_INVOCATION;
+    }
+
+    const COMMAND_RESULT result = matching_cmd->proc(args);
+    switch (result) {
+    case CR_BAD_INVOCATION:
+        Console_Log(GS(OSD_COMMAND_BAD_INVOCATION), cmdline);
+        break;
+    case CR_UNAVAILABLE:
+        Console_Log(GS(OSD_COMMAND_UNAVAILABLE));
+        break;
+    case CR_SUCCESS:
+    case CR_FAILURE:
+        // logging these statuses are supposed to be
+        // handled by the console commands themselves
+        break;
+    }
+    return result;
 }
 
 void Console_Init(void)
@@ -123,40 +171,12 @@ bool Console_IsOpened(void)
 
 void Console_Confirm(void)
 {
-    if (strcmp(m_Prompt.text, "") != 0) {
-        LOG_INFO("executing command: %s", m_Prompt.text);
-
-        const char *args = NULL;
-        const CONSOLE_COMMAND *matching_cmd = NULL;
-
-        for (CONSOLE_COMMAND *cur_cmd = &g_ConsoleCommands[0];
-             cur_cmd->proc != NULL; cur_cmd++) {
-            if (strstr(m_Prompt.text, cur_cmd->prefix) != m_Prompt.text) {
-                continue;
-            }
-
-            if (m_Prompt.text[strlen(cur_cmd->prefix)] == ' ') {
-                args = m_Prompt.text + strlen(cur_cmd->prefix) + 1;
-            } else if (m_Prompt.text[strlen(cur_cmd->prefix)] == '\0') {
-                args = "";
-            } else {
-                continue;
-            }
-
-            matching_cmd = cur_cmd;
-            break;
-        }
-
-        if (matching_cmd == NULL) {
-            Console_Log(GS(OSD_INVALID_COMMAND), m_Prompt.text);
-        } else {
-            bool success = matching_cmd->proc(args);
-            if (!success) {
-                Console_Log(GS(OSD_COMMAND_FAIL), m_Prompt.text);
-            }
-        }
+    if (strcmp(m_Prompt.text, "") == 0) {
+        Console_Close();
+        return;
     }
 
+    Console_Eval(m_Prompt.text);
     Console_Close();
 }
 
