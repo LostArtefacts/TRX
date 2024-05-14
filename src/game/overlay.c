@@ -749,7 +749,8 @@ void Overlay_DrawFPSInfo(void)
         bool inv_health_showable = Phase_Get() == PHASE_INVENTORY
             && g_GameInfo.inv_showing_medpack
             && m_HealthBar.location == BL_TOP_LEFT;
-        bool game_bar_showable = Phase_Get() == PHASE_GAME
+        bool game_bar_showable =
+            (Phase_Get() == PHASE_GAME || Phase_Get() == PHASE_DEMO)
             && (m_HealthBar.location == BL_TOP_LEFT
                 || m_AirBar.location == BL_TOP_LEFT
                 || m_EnemyBar.location == BL_TOP_LEFT);
