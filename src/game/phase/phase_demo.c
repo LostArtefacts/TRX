@@ -40,6 +40,7 @@ typedef enum STATE {
 
 static bool m_OldEnhancedLook;
 static bool m_OldTR2Jumping;
+static bool m_oldFixBearAI;
 static TARGET_LOCK_MODE m_OldTargetMode;
 static RESUME_INFO m_OldResumeInfo;
 static TEXTSTRING *m_DemoModeText = NULL;
@@ -151,9 +152,11 @@ static void Phase_Demo_Start(void *arg)
     m_OldEnhancedLook = g_Config.enable_enhanced_look;
     m_OldTR2Jumping = g_Config.enable_tr2_jumping;
     m_OldTargetMode = g_Config.target_mode;
+    m_oldFixBearAI = g_Config.fix_bear_ai;
     g_Config.enable_enhanced_look = false;
     g_Config.enable_tr2_jumping = false;
     g_Config.target_mode = TLM_FULL;
+    g_Config.fix_bear_ai = false;
 
     m_DemoModeText = Text_Create(0, -16, GS(MISC_DEMO_MODE));
     Text_Flash(m_DemoModeText, 1, 20);
@@ -209,6 +212,7 @@ static void Phase_Demo_End(void)
     g_Config.target_mode = m_OldTargetMode;
     g_Config.enable_enhanced_look = m_OldEnhancedLook;
     g_Config.enable_tr2_jumping = m_OldTR2Jumping;
+    g_Config.fix_bear_ai = m_oldFixBearAI;
 }
 
 static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
