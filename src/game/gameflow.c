@@ -23,6 +23,11 @@
 
 #include <string.h>
 
+typedef struct STRING_TO_ENUM_TYPE {
+    const char *str;
+    const int32_t val;
+} STRING_TO_ENUM_TYPE;
+
 typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
     char *path;
     double display_time;
@@ -41,6 +46,8 @@ typedef struct GAMEFLOW_GIVE_ITEM_DATA {
 
 GAMEFLOW g_GameFlow = { 0 };
 
+static int32_t GameFlow_StringToEnumType(
+    const char *const str, const STRING_TO_ENUM_TYPE *map);
 static TRISTATE_BOOL GameFlow_ReadTristateBool(
     struct json_object_s *obj, const char *key);
 static bool GameFlow_LoadScriptMeta(struct json_object_s *obj);
@@ -50,6 +57,58 @@ static bool GameFlow_LoadLevelSequence(
     struct json_object_s *obj, int32_t level_num);
 static bool GameFlow_LoadScriptLevels(struct json_object_s *obj);
 static bool GameFlow_LoadFromFileImpl(const char *file_name);
+
+static const STRING_TO_ENUM_TYPE m_GameflowLevelTypeEnumMap[] = {
+    { "title", GFL_TITLE },
+    { "normal", GFL_NORMAL },
+    { "cutscene", GFL_CUTSCENE },
+    { "gym", GFL_GYM },
+    { "current", GFL_CURRENT },
+    { "bonus", GFL_BONUS },
+    { NULL, -1 },
+};
+
+static const STRING_TO_ENUM_TYPE m_GameflowSeqTypeEnumMap[] = {
+    { "start_game", GFS_START_GAME },
+    { "stop_game", GFS_STOP_GAME },
+    { "loop_game", GFS_LOOP_GAME },
+    { "start_cine", GFS_START_CINE },
+    { "loop_cine", GFS_LOOP_CINE },
+    { "play_fmv", GFS_PLAY_FMV },
+    { "loading_screen", GFS_LOADING_SCREEN },
+    { "display_picture", GFS_DISPLAY_PICTURE },
+    { "level_stats", GFS_LEVEL_STATS },
+    { "total_stats", GFS_TOTAL_STATS },
+    { "exit_to_title", GFS_EXIT_TO_TITLE },
+    { "exit_to_level", GFS_EXIT_TO_LEVEL },
+    { "exit_to_cine", GFS_EXIT_TO_CINE },
+    { "set_cam_x", GFS_SET_CAM_X },
+    { "set_cam_y", GFS_SET_CAM_Y },
+    { "set_cam_z", GFS_SET_CAM_Z },
+    { "set_cam_angle", GFS_SET_CAM_ANGLE },
+    { "flip_map", GFS_FLIP_MAP },
+    { "remove_guns", GFS_REMOVE_GUNS },
+    { "remove_scions", GFS_REMOVE_SCIONS },
+    { "remove_ammo", GFS_REMOVE_AMMO },
+    { "remove_medipacks", GFS_REMOVE_MEDIPACKS },
+    { "give_item", GFS_GIVE_ITEM },
+    { "play_synced_audio", GFS_PLAY_SYNCED_AUDIO },
+    { "mesh_swap", GFS_MESH_SWAP },
+    { "setup_bacon_lara", GFS_SETUP_BACON_LARA },
+    { NULL, -1 },
+};
+
+static int32_t GameFlow_StringToEnumType(
+    const char *const str, const STRING_TO_ENUM_TYPE *map)
+{
+    while (map->str) {
+        if (!strcmp(str, map->str)) {
+            break;
+        }
+        map++;
+    }
+    return map->val;
+}
 
 static TRISTATE_BOOL GameFlow_ReadTristateBool(
     struct json_object_s *obj, const char *key)
@@ -232,28 +291,19 @@ static bool GameFlow_LoadLevelSequence(
             return false;
         }
 
-        if (!strcmp(type_str, "start_game")) {
-            seq->type = GFS_START_GAME;
-            seq->data = (void *)(intptr_t)level_num;
+        seq->type =
+            GameFlow_StringToEnumType(type_str, m_GameflowSeqTypeEnumMap);
 
-        } else if (!strcmp(type_str, "stop_game")) {
-            seq->type = GFS_STOP_GAME;
+        switch (seq->type) {
+        case GFS_START_GAME:
+        case GFS_STOP_GAME:
+        case GFS_LOOP_GAME:
+        case GFS_START_CINE:
+        case GFS_LOOP_CINE:
             seq->data = (void *)(intptr_t)level_num;
+            break;
 
-        } else if (!strcmp(type_str, "loop_game")) {
-            seq->type = GFS_LOOP_GAME;
-            seq->data = (void *)(intptr_t)level_num;
-
-        } else if (!strcmp(type_str, "start_cine")) {
-            seq->type = GFS_START_CINE;
-            seq->data = (void *)(intptr_t)level_num;
-
-        } else if (!strcmp(type_str, "loop_cine")) {
-            seq->type = GFS_LOOP_CINE;
-            seq->data = (void *)(intptr_t)level_num;
-
-        } else if (!strcmp(type_str, "play_fmv")) {
-            seq->type = GFS_PLAY_FMV;
+        case GFS_PLAY_FMV: {
             const char *tmp_s = json_object_get_string(
                 jseq_obj, "fmv_path", JSON_INVALID_STRING);
             if (tmp_s == JSON_INVALID_STRING) {
@@ -263,16 +313,10 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = Memory_DupStr(tmp_s);
-
-        } else if (
-            !strcmp(type_str, "display_picture")
-            || !strcmp(type_str, "loading_screen")) {
-            if (!strcmp(type_str, "loading_screen")) {
-                seq->type = GFS_LOADING_SCREEN;
-            } else {
-                seq->type = GFS_DISPLAY_PICTURE;
-            }
-
+            break;
+        }
+        case GFS_LOADING_SCREEN:
+        case GFS_DISPLAY_PICTURE: {
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
 
@@ -297,9 +341,9 @@ static bool GameFlow_LoadLevelSequence(
             }
             data->display_time = tmp_d;
             seq->data = data;
-
-        } else if (!strcmp(type_str, "level_stats")) {
-            seq->type = GFS_LEVEL_STATS;
+            break;
+        }
+        case GFS_LEVEL_STATS: {
             int tmp =
                 json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
@@ -309,10 +353,9 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "total_stats")) {
-            seq->type = GFS_TOTAL_STATS;
-
+            break;
+        }
+        case GFS_TOTAL_STATS: {
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
 
@@ -327,12 +370,13 @@ static bool GameFlow_LoadLevelSequence(
             data->path = Memory_DupStr(tmp_s);
             data->display_time = 0;
             seq->data = data;
+            break;
+        }
+        case GFS_EXIT_TO_TITLE:
+            break;
 
-        } else if (!strcmp(type_str, "exit_to_title")) {
-            seq->type = GFS_EXIT_TO_TITLE;
-
-        } else if (!strcmp(type_str, "exit_to_level")) {
-            seq->type = GFS_EXIT_TO_LEVEL;
+        case GFS_EXIT_TO_LEVEL:
+        case GFS_EXIT_TO_CINE: {
             int tmp =
                 json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
@@ -342,21 +386,12 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "exit_to_cine")) {
-            seq->type = GFS_EXIT_TO_CINE;
-            int tmp =
-                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
-            if (tmp == JSON_INVALID_NUMBER) {
-                LOG_ERROR(
-                    "level %d, sequence %s: 'level_id' must be a number",
-                    level_num, type_str);
-                return false;
-            }
-            seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "set_cam_x")) {
-            seq->type = GFS_SET_CAM_X;
+            break;
+        }
+        case GFS_SET_CAM_X:
+        case GFS_SET_CAM_Y:
+        case GFS_SET_CAM_Z:
+        case GFS_SET_CAM_ANGLE: {
             int tmp =
                 json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
@@ -366,61 +401,16 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)(intptr_t)tmp;
+            break;
+        }
+        case GFS_FLIP_MAP:
+        case GFS_REMOVE_GUNS:
+        case GFS_REMOVE_SCIONS:
+        case GFS_REMOVE_AMMO:
+        case GFS_REMOVE_MEDIPACKS:
+            break;
 
-        } else if (!strcmp(type_str, "set_cam_y")) {
-            seq->type = GFS_SET_CAM_Y;
-            int tmp =
-                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
-            if (tmp == JSON_INVALID_NUMBER) {
-                LOG_ERROR(
-                    "level %d, sequence %s: 'value' must be a number",
-                    level_num, type_str);
-                return false;
-            }
-            seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "set_cam_z")) {
-            seq->type = GFS_SET_CAM_Z;
-            int tmp =
-                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
-            if (tmp == JSON_INVALID_NUMBER) {
-                LOG_ERROR(
-                    "level %d, sequence %s: 'value' must be a number",
-                    level_num, type_str);
-                return false;
-            }
-            seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "set_cam_angle")) {
-            seq->type = GFS_SET_CAM_ANGLE;
-            int tmp =
-                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
-            if (tmp == JSON_INVALID_NUMBER) {
-                LOG_ERROR(
-                    "level %d, sequence %s: 'value' must be a number",
-                    level_num, type_str);
-                return false;
-            }
-            seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "flip_map")) {
-            seq->type = GFS_FLIP_MAP;
-
-        } else if (!strcmp(type_str, "remove_guns")) {
-            seq->type = GFS_REMOVE_GUNS;
-
-        } else if (!strcmp(type_str, "remove_scions")) {
-            seq->type = GFS_REMOVE_SCIONS;
-
-        } else if (!strcmp(type_str, "remove_ammo")) {
-            seq->type = GFS_REMOVE_AMMO;
-
-        } else if (!strcmp(type_str, "remove_medipacks")) {
-            seq->type = GFS_REMOVE_MEDIPACKS;
-
-        } else if (!strcmp(type_str, "give_item")) {
-            seq->type = GFS_GIVE_ITEM;
-
+        case GFS_GIVE_ITEM: {
             GAMEFLOW_GIVE_ITEM_DATA *give_item_data =
                 Memory_Alloc(sizeof(GAMEFLOW_GIVE_ITEM_DATA));
 
@@ -437,9 +427,9 @@ static bool GameFlow_LoadLevelSequence(
                 json_object_get_int(jseq_obj, "quantity", 1);
 
             seq->data = give_item_data;
-
-        } else if (!strcmp(type_str, "play_synced_audio")) {
-            seq->type = GFS_PLAY_SYNCED_AUDIO;
+            break;
+        }
+        case GFS_PLAY_SYNCED_AUDIO: {
             int tmp =
                 json_object_get_int(jseq_obj, "audio_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
@@ -449,10 +439,9 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)(intptr_t)tmp;
-
-        } else if (!strcmp(type_str, "mesh_swap")) {
-            seq->type = GFS_MESH_SWAP;
-
+            break;
+        }
+        case GFS_MESH_SWAP: {
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
 
@@ -484,9 +473,9 @@ static bool GameFlow_LoadLevelSequence(
             }
 
             seq->data = swap_data;
-
-        } else if (!strcmp(type_str, "setup_bacon_lara")) {
-            seq->type = GFS_SETUP_BACON_LARA;
+            break;
+        }
+        case GFS_SETUP_BACON_LARA: {
             int tmp = json_object_get_int(
                 jseq_obj, "anchor_room", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
@@ -502,16 +491,20 @@ static bool GameFlow_LoadLevelSequence(
                 return false;
             }
             seq->data = (void *)(intptr_t)tmp;
+            break;
+        }
+        default:
+            if (GameFlow_IsLegacySequence(type_str)) {
+                seq->type = GFS_LEGACY;
+                LOG_WARNING(
+                    "level %d, sequence %s: legacy type ignored", level_num,
+                    type_str);
 
-        } else if (GameFlow_IsLegacySequence(type_str)) {
-            seq->type = GFS_LEGACY;
-            LOG_WARNING(
-                "level %d, sequence %s: legacy type ignored", level_num,
-                type_str);
-
-        } else {
-            LOG_ERROR("unknown sequence type %s", type_str);
-            return false;
+            } else {
+                LOG_ERROR("unknown sequence type %s", type_str);
+                return false;
+            }
+            break;
         }
 
         jseq_elem = jseq_elem->next;
@@ -586,35 +579,42 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             LOG_ERROR("level %d: 'type' must be a string", level_num);
             return false;
         }
-        if (!strcmp(tmp_s, "title")) {
-            cur->level_type = GFL_TITLE;
+
+        cur->level_type =
+            GameFlow_StringToEnumType(tmp_s, m_GameflowLevelTypeEnumMap);
+
+        switch (cur->level_type) {
+        case GFL_TITLE:
             if (g_GameFlow.title_level_num != -1) {
                 LOG_ERROR(
                     "level %d: there can be only one title level", level_num);
                 return false;
             }
             g_GameFlow.title_level_num = level_num;
-        } else if (!strcmp(tmp_s, "gym")) {
-            cur->level_type = GFL_GYM;
+            break;
+
+        case GFL_GYM:
             if (g_GameFlow.gym_level_num != -1) {
                 LOG_ERROR(
                     "level %d: there can be only one gym level", level_num);
                 return false;
             }
             g_GameFlow.gym_level_num = level_num;
-        } else if (!strcmp(tmp_s, "normal")) {
-            cur->level_type = GFL_NORMAL;
+            break;
+
+        case GFL_NORMAL:
             if (g_GameFlow.first_level_num == -1) {
                 g_GameFlow.first_level_num = level_num;
             }
             g_GameFlow.last_level_num = level_num;
-        } else if (!strcmp(tmp_s, "bonus")) {
-            cur->level_type = GFL_BONUS;
-        } else if (!strcmp(tmp_s, "cutscene")) {
-            cur->level_type = GFL_CUTSCENE;
-        } else if (!strcmp(tmp_s, "current")) {
-            cur->level_type = GFL_CURRENT;
-        } else {
+            break;
+
+        case GFL_BONUS:
+        case GFL_CUTSCENE:
+        case GFL_CURRENT:
+            break;
+
+        default:
             LOG_ERROR("level %d: unknown level type %s", level_num, tmp_s);
             return false;
         }
