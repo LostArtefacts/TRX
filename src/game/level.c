@@ -51,10 +51,12 @@ static bool Level_LoadDemo(MYFILE *fp);
 static bool Level_LoadSamples(MYFILE *fp);
 static bool Level_LoadTexturePages(MYFILE *fp);
 
-static bool Level_LoadFromFile(const char *filename, int32_t level_num);
+static bool Level_LoadFromFile(
+    const char *filename, int32_t level_num, bool is_demo);
 static void Level_CompleteSetup(int32_t level_num);
 
-static bool Level_LoadFromFile(const char *filename, int32_t level_num)
+static bool Level_LoadFromFile(
+    const char *filename, int32_t level_num, bool is_demo)
 {
     int32_t version;
     int32_t file_level_num;
@@ -96,6 +98,12 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
         return false;
     }
 
+    if (is_demo) {
+        if (!Level_LoadPalette(fp)) {
+            return false;
+        }
+    }
+
     if (!Level_LoadCameras(fp)) {
         return false;
     }
@@ -121,8 +129,10 @@ static bool Level_LoadFromFile(const char *filename, int32_t level_num)
         return false;
     }
 
-    if (!Level_LoadPalette(fp)) {
-        return false;
+    if (!is_demo) {
+        if (!Level_LoadPalette(fp)) {
+            return false;
+        }
     }
 
     if (!Level_LoadCinematic(fp)) {
@@ -930,8 +940,12 @@ bool Level_Load(int level_num)
         g_GameFlow.levels[level_num].injections.length,
         g_GameFlow.levels[level_num].injections.data_paths, m_InjectionInfo);
 
-    bool ret =
-        Level_LoadFromFile(g_GameFlow.levels[level_num].level_file, level_num);
+    bool is_demo =
+        (g_GameFlow.levels[level_num].level_type == GFL_TITLE_DEMO_PC)
+        | (g_GameFlow.levels[level_num].level_type == GFL_LEVEL_DEMO_PC);
+
+    bool ret = Level_LoadFromFile(
+        g_GameFlow.levels[level_num].level_file, level_num, is_demo);
 
     if (ret) {
         Level_CompleteSetup(level_num);

@@ -65,6 +65,8 @@ static const STRING_TO_ENUM_TYPE m_GameflowLevelTypeEnumMap[] = {
     { "gym", GFL_GYM },
     { "current", GFL_CURRENT },
     { "bonus", GFL_BONUS },
+    { "title_demo_pc", GFL_TITLE_DEMO_PC },
+    { "level_demo_pc", GFL_LEVEL_DEMO_PC },
     { NULL, -1 },
 };
 
@@ -585,6 +587,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
 
         switch (cur->level_type) {
         case GFL_TITLE:
+        case GFL_TITLE_DEMO_PC:
             if (g_GameFlow.title_level_num != -1) {
                 LOG_ERROR(
                     "level %d: there can be only one title level", level_num);
@@ -602,6 +605,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             g_GameFlow.gym_level_num = level_num;
             break;
 
+        case GFL_LEVEL_DEMO_PC:
         case GFL_NORMAL:
             if (g_GameFlow.first_level_num == -1) {
                 g_GameFlow.first_level_num = level_num;
