@@ -239,7 +239,7 @@
     },
     "enable_detailed_stats": {
       "Title": "Show total kills and pickups",
-      "Description": "Enables showing the maximum pickup count and kill count on each level. This includes unobtainable items."
+      "Description": "Enables showing the maximum pickup count and kill count on each level."
     },
     "enable_cine": {
       "Title": "Enable cutscenes",

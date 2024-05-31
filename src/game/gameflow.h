@@ -48,6 +48,7 @@ typedef struct GAMEFLOW_LEVEL {
     struct {
         uint32_t pickups;
         uint32_t kills;
+        uint32_t secrets;
     } unobtainable;
     struct {
         int length;
