@@ -258,6 +258,7 @@ void Stats_CalculateStats(void)
 
     m_LevelPickups -= g_GameFlow.levels[g_CurrentLevel].unobtainable.pickups;
     m_LevelKillables -= g_GameFlow.levels[g_CurrentLevel].unobtainable.kills;
+    m_LevelSecrets -= g_GameFlow.levels[g_CurrentLevel].unobtainable.secrets;
 }
 
 int32_t Stats_GetPickups(void)

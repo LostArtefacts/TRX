@@ -358,7 +358,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added optional final statistics screen
 - added optional deaths counter
 - added optional total pickups and kills per level
-- added unobtainable pickups and kills stats support in the gameflow
+- added unobtainable pickups, kills, and secrets stats support in the gameflow
 
 #### Visuals
 - added optional shotgun flash sprites

@@ -540,6 +540,16 @@ Following are each of the properties available within a level.
   </tr>
   <tr valign="top">
     <td>
+      <code>unobtainable_secrets</code>
+    </td>
+    <td>Integer</td>
+    <td>No</td>
+    <td colspan="2">
+      A count of secrets that will be excluded from secret statistics. Useful for level demos.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>water_color</code>
     </td>
     <td>Float array</td>
