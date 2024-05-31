@@ -36,8 +36,9 @@
 #define LEVEL_TITLE_SIZE 25
 #define TIMESTAMP_SIZE 20
 
-static const char *m_TR1XGameflowPath = "cfg/TR1X_gameflow.json5";
-static const char *m_TR1XGameflowGoldPath = "cfg/TR1X_gameflow_ub.json5";
+static const char m_TR1XGameflowPath[] = "cfg/TR1X_gameflow.json5";
+static const char m_TR1XGameflowGoldPath[] = "cfg/TR1X_gameflow_ub.json5";
+static const char m_TR1XGameflowDemoPath[] = "cfg/TR1X_gameflow_demo_pc.json5";
 
 static char *Shell_GetScreenshotName(void);
 
@@ -168,6 +169,9 @@ void Shell_Main(void)
     for (int i = 0; i < arg_count; i++) {
         if (!strcmp(args[i], "-gold")) {
             gameflow_path = m_TR1XGameflowGoldPath;
+        }
+        if (!strcmp(args[i], "-demo_pc")) {
+            gameflow_path = m_TR1XGameflowDemoPath;
         }
     }
     for (int i = 0; i < arg_count; i++) {
