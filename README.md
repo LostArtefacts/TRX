@@ -322,6 +322,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed Lara not saying "no" when using the Scion incorrectly
 - fixed flickering in bats' death animations and rapid shooting if Lara continues to fire when they are killed
 - fixed looking forward too far causing an upside down camera frame
+- fixed the Scion being extremely difficult to shoot with the shotgun
 
 #### Cheats
 - added a fly cheat

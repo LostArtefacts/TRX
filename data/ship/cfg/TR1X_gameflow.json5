@@ -426,6 +426,7 @@
             "injections": [
                 "data/injections/pyramid_fd.bin",
                 "data/injections/pyramid_textures.bin",
+                "data/injections/scion_collision.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/atlantis.webp", "display_time": 5},

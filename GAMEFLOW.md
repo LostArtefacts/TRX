@@ -1417,4 +1417,13 @@ provided with the game achieves.
       jumping, if that option is enabled.
     </td>
   </tr>
+  <tr valign="top">
+    <td>
+      <code>scion_collision.bin</code>
+    </td>
+    <td>
+      Increases the collision radius on the (targetable) Scion such that it can
+      be shot with the shotgun.
+    </td>
+  </tr>
 </table>

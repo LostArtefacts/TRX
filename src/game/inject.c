@@ -18,7 +18,7 @@
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
-#define INJECTION_CURRENT_VERSION 5
+#define INJECTION_CURRENT_VERSION 6
 
 typedef enum INJECTION_VERSION {
     INJ_VERSION_1 = 1,
@@ -26,6 +26,7 @@ typedef enum INJECTION_VERSION {
     INJ_VERSION_3 = 3,
     INJ_VERSION_4 = 4,
     INJ_VERSION_5 = 5,
+    INJ_VERSION_6 = 6,
 } INJECTION_VERSION;
 
 typedef enum INJECTION_TYPE {
@@ -75,6 +76,8 @@ typedef struct VERTEX_EDIT {
 typedef struct MESH_EDIT {
     GAME_OBJECT_ID object_id;
     int16_t mesh_index;
+    XYZ_16 centre_shift;
+    int32_t radius_shift;
     int32_t face_edit_count;
     int32_t vertex_edit_count;
     FACE_EDIT *face_edits;
@@ -880,6 +883,13 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
         File_Read(&mesh_edit->object_id, sizeof(int32_t), 1, fp);
         File_Read(&mesh_edit->mesh_index, sizeof(int16_t), 1, fp);
 
+        if (injection->version >= INJ_VERSION_6) {
+            File_Read(&mesh_edit->centre_shift.x, sizeof(int16_t), 1, fp);
+            File_Read(&mesh_edit->centre_shift.y, sizeof(int16_t), 1, fp);
+            File_Read(&mesh_edit->centre_shift.z, sizeof(int16_t), 1, fp);
+            File_Read(&mesh_edit->radius_shift, sizeof(int32_t), 1, fp);
+        }
+
         File_Read(&mesh_edit->face_edit_count, sizeof(int32_t), 1, fp);
         mesh_edit->face_edits =
             Memory_Alloc(sizeof(FACE_EDIT) * mesh_edit->face_edit_count);
@@ -932,7 +942,14 @@ static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint8_t *palette_map)
 
     int16_t **mesh = &g_Meshes[object.mesh_index];
     int16_t *data_ptr = *(mesh + mesh_edit->mesh_index);
-    data_ptr += 5; // Skip centre and collision radius
+
+    *data_ptr++ += mesh_edit->centre_shift.x;
+    *data_ptr++ += mesh_edit->centre_shift.y;
+    *data_ptr++ += mesh_edit->centre_shift.z;
+
+    int32_t *radius = (int32_t *)data_ptr;
+    *radius += mesh_edit->radius_shift;
+    data_ptr += 2;
 
     int vertex_count = *data_ptr++;
     for (int i = 0; i < mesh_edit->vertex_edit_count; i++) {
