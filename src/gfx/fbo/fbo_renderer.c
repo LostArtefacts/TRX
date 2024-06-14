@@ -106,6 +106,7 @@ void GFX_FBO_Renderer_Render(GFX_FBO_Renderer *renderer)
 {
     assert(renderer);
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     GFX_GL_CheckError();
 

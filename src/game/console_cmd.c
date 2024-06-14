@@ -39,6 +39,7 @@ static COMMAND_RESULT Console_Cmd_Fly(const char *const args);
 static COMMAND_RESULT Console_Cmd_Speed(const char *const args);
 static COMMAND_RESULT Console_Cmd_VSync(const char *const args);
 static COMMAND_RESULT Console_Cmd_Braid(const char *const args);
+static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args);
 static COMMAND_RESULT Console_Cmd_Cheats(const char *const args);
 static COMMAND_RESULT Console_Cmd_GiveItem(const char *args);
 static COMMAND_RESULT Console_Cmd_FlipMap(const char *args);
@@ -308,6 +309,25 @@ static COMMAND_RESULT Console_Cmd_Braid(const char *const args)
         g_Config.enable_braid = true;
         Config_Write();
         Console_Log(GS(OSD_BRAID_ON));
+        return CR_SUCCESS;
+    }
+
+    return CR_BAD_INVOCATION;
+}
+
+static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args)
+{
+    if (String_Equivalent(args, "off")) {
+        g_Config.rendering.enable_wireframe = false;
+        Config_Write();
+        Console_Log(GS(OSD_WIREFRAME_OFF));
+        return CR_SUCCESS;
+    }
+
+    if (String_Equivalent(args, "on")) {
+        g_Config.rendering.enable_wireframe = true;
+        Config_Write();
+        Console_Log(GS(OSD_WIREFRAME_ON));
         return CR_SUCCESS;
     }
 
@@ -650,6 +670,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "speed", .proc = Console_Cmd_Speed },
     { .prefix = "vsync", .proc = Console_Cmd_VSync },
     { .prefix = "braid", .proc = Console_Cmd_Braid },
+    { .prefix = "wireframe", .proc = Console_Cmd_Wireframe },
     { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     { .prefix = "give", .proc = Console_Cmd_GiveItem },
     { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
