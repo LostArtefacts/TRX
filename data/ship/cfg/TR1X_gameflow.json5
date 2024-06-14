@@ -732,6 +732,8 @@
         "OSD_SPEED_SET": "Speed set to %d",
         "OSD_BRAID_ON": "Braid enabled",
         "OSD_BRAID_OFF": "Braid disabled",
+        "OSD_WIREFRAME_ON": "Wireframe enabled",
+        "OSD_WIREFRAME_OFF": "Wireframe disabled",
         "OSD_VSYNC_ON": "VSync enabled",
         "OSD_VSYNC_OFF": "VSync disabled",
         "OSD_CHEATS_ON": "Cheats enabled",

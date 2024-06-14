@@ -4,7 +4,9 @@
     - `/hp`
     - `/hp [num]`
     - `/heal`
+    - `/wireframe`
 - added unobtainable secrets stat support in the gameflow (#1379)
+- added an option to enable wireframe mode
 - fixed config tool and installer missing icons (#1358, regression from 4.0)
 - fixed looking forward too far causing an upside down camera frame (#1338)
 - fixed the enemy bear behavior in demo mode (#1370, regression since 2.16)

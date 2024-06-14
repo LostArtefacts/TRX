@@ -33,8 +33,6 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     LOG_INFO("");
     assert(renderer);
 
-    // TODO: make me configurable
-    renderer->wireframe = false;
     renderer->selected_texture_num = GFX_NO_TEXTURE;
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         renderer->textures[i] = NULL;
@@ -80,6 +78,7 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
     GFX_3D_VertexStream_Init(&renderer->vertex_stream);
 
+    glLineWidth(2.5);
     GFX_GL_CheckError();
 }
 
@@ -98,9 +97,9 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
     assert(renderer);
     glEnable(GL_BLEND);
 
-    if (renderer->wireframe) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
+    glPolygonMode(
+        GL_FRONT_AND_BACK,
+        g_Config.rendering.enable_wireframe ? GL_LINE : GL_FILL);
     GFX_GL_CheckError();
 
     GFX_GL_Program_Bind(&renderer->program);
@@ -137,10 +136,6 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer)
 {
     assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
-
-    if (renderer->wireframe) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
 
     GFX_GL_CheckError();
 }

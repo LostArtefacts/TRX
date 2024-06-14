@@ -14,7 +14,6 @@
 #include <stdint.h>
 
 typedef struct GFX_3D_Renderer {
-    bool wireframe;
     GFX_GL_Program program;
     GFX_GL_Sampler sampler;
     GFX_3D_VertexStream vertex_stream;

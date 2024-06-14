@@ -45,6 +45,10 @@ Currently supported commands:
   `/braid off`  
   Grants the power to switch Lara's iconic braid on and off.
 
+- `/wireframe on`  
+  `/wireframe off`  
+  Enables or disables the wireframe mode. Enter the debugging realm!
+
 - `/endlevel`  
   Ends the current level. Ideal for speedruns.
 
