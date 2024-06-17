@@ -101,6 +101,8 @@ void GFX_2D_Renderer_Render(GFX_2D_Renderer *renderer)
         glDisable(GL_BLEND);
     }
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
     if (depth_test) {
         glDisable(GL_DEPTH_TEST);
