@@ -247,6 +247,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added PS1 style UI
 - added fade effects to displayed images
 - added an option to use PS1 loading screens
+- added a wireframe mode
 - improved support for windowed mode
 
 #### Gameplay
