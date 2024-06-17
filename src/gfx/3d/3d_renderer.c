@@ -78,7 +78,7 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
     GFX_3D_VertexStream_Init(&renderer->vertex_stream);
 
-    glLineWidth(2.5);
+    glLineWidth(g_Config.rendering.wireframe_width);
     GFX_GL_CheckError();
 }
 

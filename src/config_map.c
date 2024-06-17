@@ -151,6 +151,7 @@ const CONFIG_OPTION g_ConfigOptionMap[] = {
     { .name = "texture_filter",                 .type = COT_INT32,  .target = &g_Config.rendering.texture_filter,            .default_value = &(int32_t){GFX_TF_BILINEAR},         0},
     { .name = "fbo_filter",                     .type = COT_INT32,  .target = &g_Config.rendering.fbo_filter,                .default_value = &(int32_t){GFX_TF_NN},               0},
     { .name = "enable_wireframe",               .type = COT_BOOL,   .target = &g_Config.rendering.enable_wireframe,          .default_value = &(bool){false},                      0},
+    { .name = "wireframe_width",                .type = COT_DOUBLE, .target = &g_Config.rendering.wireframe_width,           .default_value = &(double){2.5},                      0},
     { .name = "enable_perspective_filter",      .type = COT_BOOL,   .target = &g_Config.rendering.enable_perspective_filter, .default_value = &(bool){true},                       0},
     { .name = "enable_vsync",                   .type = COT_BOOL,   .target = &g_Config.rendering.enable_vsync,              .default_value = &(bool){true},                       0},
     { .name = "music_volume",                   .type = COT_INT32,  .target = &g_Config.music_volume,                        .default_value = &(int32_t){8},                       0},
