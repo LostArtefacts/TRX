@@ -25,7 +25,6 @@ int32_t GFX_Context_GetDisplayHeight(void);
 void GFX_Context_Clear(void);
 void GFX_Context_SwapBuffers(void);
 void GFX_Context_SetRendered(void);
-bool GFX_Context_IsRendered(void);
 
 void GFX_Context_SwitchToWindowViewport(void);
 void GFX_Context_SwitchToWindowViewportAR(void);
