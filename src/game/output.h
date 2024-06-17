@@ -34,9 +34,11 @@ bool Output_FadeIsAnimating(void);
 void Output_DrawBackdropScreen(void);
 void Output_DrawOverlayScreen(void);
 
+void Output_BeginScene(void);
+void Output_EndScene(void);
+
 void Output_DrawBlack(void);
 void Output_DrawBackdropImage(void);
-void Output_DumpScreen(void);
 void Output_ClearDepthBuffer(void);
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);

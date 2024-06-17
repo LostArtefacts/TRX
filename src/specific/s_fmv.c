@@ -857,6 +857,8 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 
 static void S_FMV_VideoImageDisplay(VideoState *is)
 {
+    S_Output_RenderBegin();
+
     Frame *vp;
     Frame *sp = NULL;
     SDL_Rect rect;
@@ -937,7 +939,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
 
     S_Output_RenderEnd();
     GFX_2D_Surface_Flip(is->primary_surface);
-    S_Output_RenderToggle();
+    S_Output_FlipScreen();
 }
 
 static void S_FMV_StreamComponentClose(VideoState *is, int stream_index)
