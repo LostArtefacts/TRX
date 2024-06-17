@@ -1,5 +1,6 @@
 #include "gfx/context.h"
 
+#include "config.h"
 #include "game/shell.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
@@ -258,6 +259,16 @@ int32_t GFX_Context_GetDisplayWidth(void)
 int32_t GFX_Context_GetDisplayHeight(void)
 {
     return m_Context.display_height;
+}
+
+void GFX_Context_Clear(void)
+{
+    if (g_Config.rendering.enable_wireframe) {
+        glClearColor(1.0, 1.0, 1.0, 0.0);
+    } else {
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+    }
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void GFX_Context_SwapBuffers(void)
