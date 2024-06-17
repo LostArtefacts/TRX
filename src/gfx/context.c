@@ -25,7 +25,6 @@ typedef struct GFX_CONTEXT {
     int32_t window_width;
     int32_t window_height;
 
-    bool is_rendered; // rendering flag
     char *scheduled_screenshot_path;
     GFX_Renderer *renderer;
     GFX_2D_Renderer renderer_2d;
@@ -280,17 +279,6 @@ void GFX_Context_SwapBuffers(void)
         && m_Context.renderer->swap_buffers != NULL) {
         m_Context.renderer->swap_buffers(m_Context.renderer);
     }
-    m_Context.is_rendered = false;
-}
-
-void GFX_Context_SetRendered(void)
-{
-    m_Context.is_rendered = true;
-}
-
-bool GFX_Context_IsRendered(void)
-{
-    return m_Context.is_rendered;
 }
 
 void GFX_Context_ScheduleScreenshot(const char *path)

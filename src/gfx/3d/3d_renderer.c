@@ -198,7 +198,6 @@ void GFX_3D_Renderer_RenderPrimStrip(
 {
     assert(renderer);
     assert(vertices);
-    GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimStrip(
         &renderer->vertex_stream, vertices, count);
 }
@@ -208,7 +207,6 @@ void GFX_3D_Renderer_RenderPrimFan(
 {
     assert(renderer);
     assert(vertices);
-    GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimFan(&renderer->vertex_stream, vertices, count);
 }
 
@@ -217,7 +215,6 @@ void GFX_3D_Renderer_RenderPrimList(
 {
     assert(renderer);
     assert(vertices);
-    GFX_Context_SetRendered();
     GFX_3D_VertexStream_PushPrimList(&renderer->vertex_stream, vertices, count);
 }
 
@@ -290,9 +287,4 @@ void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_GL_Program_Uniform1i(
         &renderer->program, renderer->loc_texturing_enabled, is_enabled);
-}
-
-void GFX_3D_Renderer_RenderEmpty(void)
-{
-    GFX_Context_SetRendered();
 }
