@@ -248,8 +248,8 @@ typedef struct VideoState {
     int target_surface_y;
     int target_surface_width;
     int target_surface_height;
+    GFX_2D_Renderer *renderer_2d;
     GFX_2D_Surface *primary_surface;
-    GFX_2D_Surface *back_surface;
 
     int subtitle_stream;
     AVStream *subtitle_st;
@@ -762,15 +762,8 @@ static int S_FMV_ReallocPrimarySurface(
         GFX_2D_SurfaceDesc surface_desc = {
             .width = is->surface_width,
             .height = is->surface_height,
-            .flags = {
-                .primary = 1,
-                .flip = 1,
-            },
-            .has_back_buffer = 1,
         };
         is->primary_surface = GFX_2D_Surface_Create(&surface_desc);
-        is->back_surface =
-            GFX_2D_Surface_GetAttachedSurface(is->primary_surface);
     }
 
     if (clear) {
@@ -830,7 +823,7 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
 
     if (is->img_convert_ctx) {
         GFX_2D_SurfaceDesc surface_desc = { 0 };
-        bool result = GFX_2D_Surface_Lock(is->back_surface, &surface_desc);
+        bool result = GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
         if (result) {
             uint8_t *surf_planes[4];
             int surf_linesize[4];
@@ -845,7 +838,11 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
                 frame->linesize, 0, frame->height, surf_planes, surf_linesize);
-            GFX_2D_Surface_Unlock(is->back_surface);
+            GFX_2D_Surface_Unlock(is->primary_surface);
+            GFX_2D_Renderer_Upload(
+                is->renderer_2d, &is->primary_surface->desc,
+                is->primary_surface->buffer);
+            GFX_2D_Renderer_Render(is->renderer_2d);
         }
     } else {
         LOG_ERROR("Cannot initialize the conversion context");
@@ -938,7 +935,6 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
     }
 
     S_Output_RenderEnd();
-    GFX_2D_Surface_Flip(is->primary_surface);
     S_Output_FlipScreen();
 }
 
@@ -1963,6 +1959,7 @@ static int S_FMV_ReadThread(void *arg)
     }
 
     is->ic = ic;
+    is->renderer_2d = GFX_Context_GetRenderer2D();
 
     avformat_find_stream_info(ic, NULL);
     av_format_inject_global_side_data(ic);

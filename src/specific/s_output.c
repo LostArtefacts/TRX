@@ -31,6 +31,7 @@
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static RGB_888 m_ColorPalette[256];
 
+static GFX_2D_Renderer *m_Renderer2D = NULL;
 static GFX_3D_Renderer *m_Renderer3D = NULL;
 static bool m_IsPaletteActive = false;
 static bool m_IsTextureMode = false;
@@ -43,7 +44,6 @@ static float m_SurfaceMinY = 0.0f;
 static float m_SurfaceMaxX = 0.0f;
 static float m_SurfaceMaxY = 0.0f;
 static GFX_2D_Surface *m_PrimarySurface = NULL;
-static GFX_2D_Surface *m_BackSurface = NULL;
 static GFX_2D_Surface *m_PictureSurface = NULL;
 static GFX_2D_Surface *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
 
@@ -78,11 +78,9 @@ static void S_Output_ReleaseSurfaces(void)
 {
     if (m_PrimarySurface) {
         S_Output_ClearSurface(m_PrimarySurface);
-        S_Output_ClearSurface(m_BackSurface);
 
         GFX_2D_Surface_Free(m_PrimarySurface);
         m_PrimarySurface = NULL;
-        m_BackSurface = NULL;
     }
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
@@ -100,8 +98,7 @@ static void S_Output_ReleaseSurfaces(void)
 
 static void S_Output_FlipPrimaryBuffer(void)
 {
-    bool result = GFX_2D_Surface_Flip(m_PrimarySurface);
-    S_Output_CheckError(result);
+    GFX_Context_SwapBuffers();
 }
 
 static void S_Output_ClearSurface(GFX_2D_Surface *surface)
@@ -443,6 +440,7 @@ void S_Output_DisableDepthTest(void)
 
 void S_Output_RenderBegin(void)
 {
+    S_Output_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
         m_Renderer3D, g_Config.rendering.texture_filter);
@@ -483,17 +481,13 @@ void S_Output_DrawBackdropSurface(void)
         return;
     }
 
-    S_Output_ClearSurface(m_BackSurface);
+    if (m_PictureSurface->is_dirty) {
+        GFX_2D_Renderer_Upload(
+            m_Renderer2D, &m_PictureSurface->desc, m_PictureSurface->buffer);
+        m_PictureSurface->is_dirty = false;
+    }
 
-    GFX_BlitterRect rect = {
-        .left = 0,
-        .top = 0,
-        .right = m_SurfaceWidth,
-        .bottom = m_SurfaceHeight,
-    };
-    bool result =
-        GFX_2D_Surface_Blt(m_BackSurface, &rect, m_PictureSurface, &rect);
-    S_Output_CheckError(result);
+    GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
 void S_Output_DownloadBackdropSurface(const PICTURE *pic)
@@ -580,8 +574,6 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
     S_Output_CheckError(result);
 
     GFX_2D_Surface_Free(picture_surface);
-
-    S_Output_ClearSurface(m_BackSurface);
 }
 
 void S_Output_SelectTexture(int tex_num)
@@ -900,18 +892,10 @@ void S_Output_ApplyRenderSettings(void)
     GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
 
     {
-        GFX_2D_SurfaceDesc surface_desc = {
-            .flags = {
-                .primary = 1,
-                .flip = 1,
-            },
-            .has_back_buffer = 1,
-        };
+        GFX_2D_SurfaceDesc surface_desc = { 0 };
         m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
-        m_BackSurface = GFX_2D_Surface_GetAttachedSurface(m_PrimarySurface);
 
         S_Output_ClearSurface(m_PrimarySurface);
-        S_Output_ClearSurface(m_BackSurface);
     }
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
@@ -936,6 +920,7 @@ bool S_Output_Init(void)
     }
 
     GFX_Context_Attach(S_Shell_GetWindowHandle());
+    m_Renderer2D = GFX_Context_GetRenderer2D();
     m_Renderer3D = GFX_Context_GetRenderer3D();
 
     S_Output_ApplyRenderSettings();
