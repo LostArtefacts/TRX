@@ -440,6 +440,7 @@ void S_Output_DisableDepthTest(void)
 
 void S_Output_RenderBegin(void)
 {
+    GFX_Context_Clear();
     S_Output_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
