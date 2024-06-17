@@ -6,13 +6,13 @@
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
+#include <assert.h>
 #include <string.h>
 
 GFX_2D_Surface *GFX_2D_Surface_Create(const GFX_2D_SurfaceDesc *desc)
 {
-    GFX_2D_Renderer *renderer = GFX_Context_GetRenderer2D();
     GFX_2D_Surface *surface = Memory_Alloc(sizeof(GFX_2D_Surface));
-    GFX_2D_Surface_Init(surface, renderer, desc);
+    GFX_2D_Surface_Init(surface, desc);
     return surface;
 }
 
@@ -25,13 +25,10 @@ void GFX_2D_Surface_Free(GFX_2D_Surface *surface)
 }
 
 void GFX_2D_Surface_Init(
-    GFX_2D_Surface *surface, GFX_2D_Renderer *renderer,
-    const GFX_2D_SurfaceDesc *desc)
+    GFX_2D_Surface *surface, const GFX_2D_SurfaceDesc *desc)
 {
-    surface->back_buffer = NULL;
     surface->is_locked = false;
     surface->is_dirty = false;
-    surface->renderer = renderer;
     surface->desc = *desc;
 
     GFX_2D_SurfaceDesc display_desc = {
@@ -53,25 +50,10 @@ void GFX_2D_Surface_Init(
 
     surface->buffer = Memory_Alloc(surface->desc.pitch * surface->desc.height);
     surface->desc.pixels = NULL;
-
-    if (surface->desc.has_back_buffer > 0) {
-        GFX_2D_SurfaceDesc back_buffer_desc = surface->desc;
-        back_buffer_desc.flags.flip = 1;
-        back_buffer_desc.flags.front = 0;
-        back_buffer_desc.has_back_buffer = 0;
-        surface->back_buffer = GFX_2D_Surface_Create(&back_buffer_desc);
-        surface->desc.flags.front = 1;
-        surface->desc.flags.flip = 1;
-    }
 }
 
 void GFX_2D_Surface_Close(GFX_2D_Surface *surface)
 {
-    if (surface->back_buffer) {
-        GFX_2D_Surface_Free(surface->back_buffer);
-        surface->back_buffer = NULL;
-    }
-
     Memory_FreePointer(&surface->buffer);
 }
 
@@ -125,65 +107,9 @@ bool GFX_2D_Surface_Blt(
     return true;
 }
 
-bool GFX_2D_Surface_Flip(GFX_2D_Surface *surface)
-{
-    // check if the surface can be flipped
-    if (!surface->desc.flags.flip || !surface->desc.flags.front
-        || !surface->back_buffer) {
-        LOG_ERROR("Surface cannot be flipped");
-        return false;
-    }
-
-    bool rendered = GFX_Context_IsRendered();
-
-    // don't re-upload surfaces if external rendering was active after
-    // lock() has been called, since it wouldn't be visible anyway
-    if (rendered) {
-        surface->is_dirty = false;
-    }
-
-    // swap front and back buffers
-    uint8_t *buffer_tmp = surface->back_buffer->buffer;
-    surface->back_buffer->buffer = surface->buffer;
-    surface->buffer = buffer_tmp;
-
-    bool dirty_tmp = surface->is_dirty;
-    surface->is_dirty = surface->back_buffer->is_dirty;
-    surface->back_buffer->is_dirty = dirty_tmp;
-
-    // upload surface if dirty
-    if (surface->is_dirty) {
-        GFX_2D_Renderer_Upload(
-            surface->renderer, &surface->desc, surface->buffer);
-        surface->is_dirty = false;
-    }
-
-    // swap buffer now if there was external rendering, otherwise the
-    // surface would overwrite it
-    if (rendered) {
-        GFX_Context_SwapBuffers();
-    }
-
-    // render surface
-    GFX_2D_Renderer_Render(surface->renderer);
-
-    // swap buffer after the surface has been rendered if there was no
-    // external rendering for this frame, fixes title screens and other pure
-    // 2D operations that aren't continuously updated
-    if (!rendered) {
-        GFX_Context_SwapBuffers();
-    }
-
-    return true;
-}
-
-GFX_2D_Surface *GFX_2D_Surface_GetAttachedSurface(GFX_2D_Surface *surface)
-{
-    return surface->back_buffer;
-}
-
 bool GFX_2D_Surface_Lock(GFX_2D_Surface *surface, GFX_2D_SurfaceDesc *out_desc)
 {
+    assert(surface != NULL);
     if (surface->is_locked) {
         LOG_ERROR("Surface is busy");
         return false;

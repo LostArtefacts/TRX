@@ -714,11 +714,6 @@ void Output_DrawSprite(
     }
 }
 
-void Output_DrawBackdropImage(void)
-{
-    S_Output_DrawBackdropSurface();
-}
-
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color)
 {

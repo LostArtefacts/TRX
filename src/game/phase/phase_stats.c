@@ -241,6 +241,8 @@ static void Phase_Stats_Start(void *arg)
     if (data && data->total) {
         assert(data->level_type);
         Output_LoadBackdropImage(data->background_path);
+    } else {
+        Output_LoadBackdropImage(NULL);
     }
 
     if (g_CurrentLevel == g_GameFlow.gym_level_num) {
@@ -311,9 +313,7 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
 
 static void Phase_Stats_Draw(void)
 {
-    if (m_Total) {
-        Output_DrawBackdropImage();
-    } else {
+    if (!m_Total) {
         Interpolation_Disable();
         Game_DrawScene(false);
         Interpolation_Enable();

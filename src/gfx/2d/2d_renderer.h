@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gfx/2d/2d_surface.h"
 #include "gfx/gl/buffer.h"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
@@ -8,20 +9,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-
-typedef struct GFX_2D_SurfaceDesc {
-    int width;
-    int height;
-    int pitch;
-    bool has_back_buffer;
-    void *pixels;
-    int bit_count;
-    struct {
-        bool front;
-        bool primary;
-        bool flip;
-    } flags;
-} GFX_2D_SurfaceDesc;
 
 typedef struct GFX_2D_Renderer {
     uint32_t width;

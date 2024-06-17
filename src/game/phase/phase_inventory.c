@@ -81,7 +81,6 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     ring->camera.pos.z = ring->radius + CAMERA_2_RING;
 
     if (g_InvMode == INV_TITLE_MODE) {
-        Output_DrawBackdropImage();
         Output_DrawBackdropScreen();
         Interpolation_Commit();
     } else {
