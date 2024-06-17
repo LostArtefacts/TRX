@@ -429,7 +429,12 @@ void Output_DrawBlack(void)
     Output_DrawBlackOverlay(255);
 }
 
-void Output_DumpScreen(void)
+void Output_BeginScene(void)
+{
+    S_Output_RenderBegin();
+}
+
+void Output_EndScene(void)
 {
     Output_DrawOverlayScreen();
     S_Output_DisableDepthTest();
@@ -437,7 +442,8 @@ void Output_DumpScreen(void)
     Overlay_DrawFPSInfo();
     Console_Draw();
     S_Output_EnableDepthTest();
-    S_Output_DumpScreen();
+    S_Output_RenderEnd();
+    S_Output_FlipScreen();
     S_Shell_SpinMessageLoop();
     g_FPSCounter++;
 }

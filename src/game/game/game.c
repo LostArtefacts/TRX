@@ -21,9 +21,10 @@
 
 #define FRAME_BUFFER(key)                                                      \
     do {                                                                       \
+        Output_BeginScene();                                                   \
         Game_DrawScene(true);                                                  \
         Input_Update();                                                        \
-        Output_DumpScreen();                                                   \
+        Output_EndScene();                                                     \
         Output_AnimateFades();                                                 \
         Clock_SyncTicks();                                                     \
     } while (g_Input.key);

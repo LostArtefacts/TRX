@@ -46,10 +46,11 @@ static GAMEFLOW_OPTION Phase_Control(int32_t nframes)
 
 static void Phase_Draw(void)
 {
+    Output_BeginScene();
     if (m_Phaser && m_Phaser->draw) {
         m_Phaser->draw();
     }
-    Output_DumpScreen();
+    Output_EndScene();
 }
 
 static void Phase_SetUnconditionally(const PHASE phase, void *arg)
