@@ -11,7 +11,6 @@
 #include "gfx/3d/vertex_stream.h"
 #include "gfx/blitter.h"
 #include "gfx/context.h"
-#include "gfx/fbo/fbo_renderer.h"
 #include "global/vars.h"
 #include "specific/s_shell.h"
 
@@ -31,8 +30,6 @@
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static RGB_888 m_ColorPalette[256];
-
-static GFX_FBO_Renderer *m_RendererFBO = NULL;
 
 static GFX_3D_Renderer *m_Renderer3D = NULL;
 static bool m_IsPaletteActive = false;
@@ -449,7 +446,6 @@ void S_Output_RenderBegin(void)
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
         m_Renderer3D, g_Config.rendering.texture_filter);
-    GFX_FBO_Renderer_SetFilter(m_RendererFBO, g_Config.rendering.fbo_filter);
 }
 
 void S_Output_RenderEnd(void)
@@ -941,7 +937,6 @@ bool S_Output_Init(void)
 
     GFX_Context_Attach(S_Shell_GetWindowHandle());
     m_Renderer3D = GFX_Context_GetRenderer3D();
-    m_RendererFBO = GFX_Context_GetRendererFBO();
 
     S_Output_ApplyRenderSettings();
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
@@ -955,7 +950,6 @@ void S_Output_Shutdown(void)
     S_Output_ReleaseSurfaces();
     GFX_Context_Detach();
     m_Renderer3D = NULL;
-    m_RendererFBO = NULL;
 }
 
 void S_Output_DrawFlatTriangle(

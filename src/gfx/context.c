@@ -3,6 +3,8 @@
 #include "game/shell.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
+#include "gfx/renderers/fbo_renderer.h"
+#include "gfx/renderers/legacy_renderer.h"
 #include "gfx/screenshot.h"
 #include "gfx_options.h"
 
@@ -24,7 +26,7 @@ typedef struct GFX_CONTEXT {
 
     bool is_rendered; // rendering flag
     char *scheduled_screenshot_path;
-    GFX_FBO_Renderer renderer_fbo;
+    GFX_Renderer *renderer;
     GFX_2D_Renderer renderer_2d;
     GFX_3D_Renderer renderer_3d;
 } GFX_CONTEXT;
@@ -33,9 +35,6 @@ static GFX_CONTEXT m_Context = { 0 };
 
 static bool GFX_Context_IsExtensionSupported(const char *name);
 static void GFX_Context_CheckExtensionSupport(const char *name);
-static void GFX_Context_SwitchToWindowViewport(void);
-static void GFX_Context_SwitchToWindowViewportAR(void);
-static void GFX_Context_SwitchToDisplayViewport(void);
 
 static bool GFX_Context_IsExtensionSupported(const char *name)
 {
@@ -62,13 +61,13 @@ static void GFX_Context_CheckExtensionSupport(const char *name)
         GFX_Context_IsExtensionSupported(name) ? "yes" : "no");
 }
 
-static void GFX_Context_SwitchToWindowViewport(void)
+void GFX_Context_SwitchToWindowViewport(void)
 {
     glViewport(0, 0, m_Context.window_width, m_Context.window_height);
     GFX_GL_CheckError();
 }
 
-static void GFX_Context_SwitchToWindowViewportAR(void)
+void GFX_Context_SwitchToWindowViewportAR(void)
 {
     // switch to window viewport at the aspect ratio of the display viewport
     int vp_width = m_Context.window_width;
@@ -97,7 +96,7 @@ static void GFX_Context_SwitchToWindowViewportAR(void)
     GFX_GL_CheckError();
 }
 
-static void GFX_Context_SwitchToDisplayViewport(void)
+void GFX_Context_SwitchToDisplayViewport(void)
 {
     glViewport(0, 0, m_Context.display_width, m_Context.display_height);
     GFX_GL_CheckError();
@@ -172,9 +171,10 @@ void GFX_Context_Detach(void)
         return;
     }
 
-    if (m_Context.render_mode == GFX_RM_FRAMEBUFFER) {
-        GFX_FBO_Renderer_Close(&m_Context.renderer_fbo);
+    if (m_Context.renderer != NULL && m_Context.renderer->shutdown != NULL) {
+        m_Context.renderer->shutdown(m_Context.renderer);
     }
+
     GFX_2D_Renderer_Close(&m_Context.renderer_2d);
     GFX_3D_Renderer_Close(&m_Context.renderer_3d);
 
@@ -214,9 +214,9 @@ void GFX_Context_SetDisplaySize(int32_t width, int32_t height)
 
     m_Context.display_width = width;
     m_Context.display_height = height;
-    if (m_Context.render_mode == GFX_RM_FRAMEBUFFER) {
-        GFX_FBO_Renderer_Close(&m_Context.renderer_fbo);
-        GFX_FBO_Renderer_Init(&m_Context.renderer_fbo);
+
+    if (m_Context.renderer != NULL && m_Context.renderer->reset != NULL) {
+        m_Context.renderer->reset(m_Context.renderer);
     }
 }
 
@@ -228,12 +228,26 @@ void GFX_Context_SetRenderingMode(GFX_RENDER_MODE target_mode)
     }
 
     LOG_INFO("Render mode: %d", target_mode);
-    if (current_mode == GFX_RM_FRAMEBUFFER) {
-        GFX_FBO_Renderer_Close(&m_Context.renderer_fbo);
-    } else if (target_mode == GFX_RM_FRAMEBUFFER) {
-        GFX_FBO_Renderer_Init(&m_Context.renderer_fbo);
+    if (m_Context.renderer != NULL && m_Context.renderer->shutdown != NULL) {
+        m_Context.renderer->shutdown(m_Context.renderer);
+    }
+    switch (target_mode) {
+    case GFX_RM_FRAMEBUFFER:
+        m_Context.renderer = &g_GFX_Renderer_FBO;
+        break;
+    case GFX_RM_LEGACY:
+        m_Context.renderer = &g_GFX_Renderer_Legacy;
+        break;
+    }
+    if (m_Context.renderer != NULL && m_Context.renderer->init != NULL) {
+        m_Context.renderer->init(m_Context.renderer);
     }
     m_Context.render_mode = target_mode;
+}
+
+void *GFX_Context_GetWindowHandle(void)
+{
+    return m_Context.window_handle;
 }
 
 int32_t GFX_Context_GetDisplayWidth(void)
@@ -251,42 +265,10 @@ void GFX_Context_SwapBuffers(void)
     glFinish();
     GFX_GL_CheckError();
 
-    switch (m_Context.render_mode) {
-    case GFX_RM_FRAMEBUFFER:
-        if (m_Context.scheduled_screenshot_path) {
-            GFX_Screenshot_CaptureToFile(m_Context.scheduled_screenshot_path);
-            Memory_FreePointer(&m_Context.scheduled_screenshot_path);
-        }
-
-        GFX_Context_SwitchToWindowViewportAR();
-        GFX_FBO_Renderer_Render(&m_Context.renderer_fbo);
-
-        SDL_GL_SwapWindow(m_Context.window_handle);
-
-        GFX_Context_SwitchToWindowViewport();
-        GFX_FBO_Renderer_Unbind(&m_Context.renderer_fbo);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        GFX_GL_CheckError();
-
-        GFX_FBO_Renderer_Bind(&m_Context.renderer_fbo);
-        GFX_Context_SwitchToDisplayViewport();
-        break;
-
-    case GFX_RM_LEGACY:
-        GFX_Context_SwitchToWindowViewportAR();
-        if (m_Context.scheduled_screenshot_path) {
-            GFX_Screenshot_CaptureToFile(m_Context.scheduled_screenshot_path);
-            Memory_FreePointer(&m_Context.scheduled_screenshot_path);
-        }
-
-        SDL_GL_SwapWindow(m_Context.window_handle);
-
-        glDrawBuffer(GL_BACK);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        GFX_GL_CheckError();
-        break;
+    if (m_Context.renderer != NULL
+        && m_Context.renderer->swap_buffers != NULL) {
+        m_Context.renderer->swap_buffers(m_Context.renderer);
     }
-
     m_Context.is_rendered = false;
 }
 
@@ -306,6 +288,16 @@ void GFX_Context_ScheduleScreenshot(const char *path)
     m_Context.scheduled_screenshot_path = Memory_DupStr(path);
 }
 
+const char *GFX_Context_GetScheduledScreenshotPath(void)
+{
+    return m_Context.scheduled_screenshot_path;
+}
+
+void GFX_Context_ClearScheduledScreenshotPath(void)
+{
+    Memory_FreePointer(&m_Context.scheduled_screenshot_path);
+}
+
 GFX_2D_Renderer *GFX_Context_GetRenderer2D(void)
 {
     return &m_Context.renderer_2d;
@@ -314,9 +306,4 @@ GFX_2D_Renderer *GFX_Context_GetRenderer2D(void)
 GFX_3D_Renderer *GFX_Context_GetRenderer3D(void)
 {
     return &m_Context.renderer_3d;
-}
-
-GFX_FBO_Renderer *GFX_Context_GetRendererFBO(void)
-{
-    return &m_Context.renderer_fbo;
 }
