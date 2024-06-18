@@ -779,5 +779,7 @@
         "OSD_CURRENT_HEALTH_SET": "Lara's health set to %d",
         "OSD_HEAL_ALREADY_FULL_HP": "Lara's already at full health",
         "OSD_HEAL_SUCCESS": "Healed Lara back to full health",
+        "OSD_CONFIG_OPTION_GET": "%s is currently set to %s",
+        "OSD_CONFIG_OPTION_SET": "%s changed to %s",
     },
 }

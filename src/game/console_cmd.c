@@ -1,6 +1,7 @@
 #include "game/console_cmd.h"
 
 #include "config.h"
+#include "config_map.h"
 #include "game/clock.h"
 #include "game/console.h"
 #include "game/effects/exploding_death.h"
@@ -18,17 +19,20 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "global/const.h"
+#include "global/enum_str.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
+#include <assert.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
+static bool Console_Cmd_Set_SameKey(const char *key1, const char *key2);
 static bool Console_Cmd_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
 static COMMAND_RESULT Console_Cmd_Pos(const char *const args);
@@ -51,6 +55,7 @@ static COMMAND_RESULT Console_Cmd_ExitToTitle(const char *args);
 static COMMAND_RESULT Console_Cmd_EndLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_Level(const char *args);
 static COMMAND_RESULT Console_Cmd_Abortion(const char *args);
+static COMMAND_RESULT Console_Cmd_Set(const char *const args);
 
 static inline bool Console_Cmd_IsFloatRound(const float num)
 {
@@ -294,6 +299,149 @@ static COMMAND_RESULT Console_Cmd_VSync(const char *const args)
     }
 
     return CR_BAD_INVOCATION;
+}
+
+static bool Console_Cmd_Set_SameKey(const char *key1, const char *key2)
+{
+    key1 = Config_ResolveOptionName(key1);
+    key2 = Config_ResolveOptionName(key2);
+    const size_t len1 = strlen(key1);
+    const size_t len2 = strlen(key2);
+    if (len1 != len2) {
+        return false;
+    }
+    for (uint32_t i = 0; i < len1; i++) {
+        char c1 = key1[i];
+        char c2 = key2[i];
+        if (c1 == '_') {
+            c1 = '-';
+        }
+        if (c2 == '_') {
+            c2 = '-';
+        }
+        if (c1 != c2) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static COMMAND_RESULT Console_Cmd_Set(const char *const args)
+{
+    COMMAND_RESULT result = CR_BAD_INVOCATION;
+
+    char *key = Memory_DupStr(args);
+    char *space = strchr(key, ' ');
+    char *new_value = NULL;
+    if (space != NULL) {
+        new_value = space + 1;
+        space[0] = '\0'; // NULL-terminate the key
+    }
+
+    if (new_value != NULL) {
+        for (const CONFIG_OPTION *option = g_ConfigOptionMap;
+             option->name != NULL; option++) {
+            if (!Console_Cmd_Set_SameKey(option->name, key)) {
+                continue;
+            }
+
+            switch (option->type) {
+            case COT_BOOL:
+                if (String_Equivalent(new_value, "on")) {
+                    *(bool *)option->target = true;
+                    result = CR_SUCCESS;
+                } else if (String_Equivalent(new_value, "off")) {
+                    *(bool *)option->target = false;
+                    result = CR_SUCCESS;
+                }
+                break;
+
+            case COT_INT32: {
+                int32_t new_value_typed;
+                if (sscanf(new_value, "%d", &new_value_typed) == 1) {
+                    *(int32_t *)option->target = new_value_typed;
+                    result = CR_SUCCESS;
+                }
+                break;
+            }
+
+            case COT_FLOAT: {
+                float new_value_typed;
+                if (sscanf(new_value, "%f", &new_value_typed) == 1) {
+                    *(float *)option->target = new_value_typed;
+                    result = CR_SUCCESS;
+                }
+                break;
+            }
+
+            case COT_DOUBLE: {
+                double new_value_typed;
+                if (sscanf(new_value, "%lf", &new_value_typed) == 1) {
+                    *(double *)option->target = new_value_typed;
+                    result = CR_SUCCESS;
+                }
+                break;
+            }
+
+            case COT_ENUM:
+                for (const ENUM_STRING_MAP *enum_map = option->param;
+                     enum_map->text != NULL; enum_map++) {
+                    if (String_Equivalent(enum_map->text, new_value)) {
+                        *(int32_t *)option->target = enum_map->value;
+                        result = CR_SUCCESS;
+                        break;
+                    }
+                }
+                break;
+            }
+
+            if (result == CR_SUCCESS) {
+                Console_Log(GS(OSD_CONFIG_OPTION_SET), key, new_value);
+            }
+            break;
+        }
+    } else {
+        for (const CONFIG_OPTION *option = g_ConfigOptionMap;
+             option->name != NULL; option++) {
+            if (!Console_Cmd_Set_SameKey(option->name, key)) {
+                continue;
+            }
+
+            char cur_value[128] = "";
+            assert(option->target != NULL);
+            switch (option->type) {
+            case COT_BOOL:
+                sprintf(
+                    cur_value, "%s",
+                    *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
+                break;
+            case COT_INT32:
+                sprintf(cur_value, "%d", *(int32_t *)option->target);
+                break;
+            case COT_FLOAT:
+                sprintf(cur_value, "%.2f", *(float *)option->target);
+                break;
+            case COT_DOUBLE:
+                sprintf(cur_value, "%.2f", *(double *)option->target);
+                break;
+            case COT_ENUM:
+                for (const ENUM_STRING_MAP *enum_map = option->param;
+                     enum_map->text != NULL; enum_map++) {
+                    if (enum_map->value == *(int32_t *)option->target) {
+                        strcpy(cur_value, enum_map->text);
+                    }
+                }
+                break;
+            }
+            Console_Log(GS(OSD_CONFIG_OPTION_GET), key, cur_value);
+            result = CR_SUCCESS;
+            break;
+        }
+    }
+
+cleanup:
+    Memory_FreePointer(&key);
+    return result;
 }
 
 static COMMAND_RESULT Console_Cmd_Braid(const char *const args)
@@ -673,6 +821,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "wireframe", .proc = Console_Cmd_Wireframe },
     { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     { .prefix = "give", .proc = Console_Cmd_GiveItem },
+    { .prefix = "set", .proc = Console_Cmd_Set },
     { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
     { .prefix = "flip", .proc = Console_Cmd_FlipMap },
     { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },

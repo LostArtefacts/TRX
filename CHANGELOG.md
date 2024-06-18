@@ -5,6 +5,7 @@
     - `/hp [num]`
     - `/heal`
     - `/wireframe`
+    - `/set`
 - added unobtainable secrets stat support in the gameflow (#1379)
 - added a wireframe mode
 - fixed config tool and installer missing icons (#1358, regression from 4.0)
