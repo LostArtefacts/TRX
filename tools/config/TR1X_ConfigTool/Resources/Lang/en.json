@@ -377,7 +377,7 @@
       "Title": "Menu style",
       "Description": "Changes how menus are displayed.\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version."
     },
-    "healthbar_showing_mode": {
+    "healthbar_show_mode": {
       "Title": "Healthbar behavior",
       "Description": "Changes how the healthbar is displayed.\n- Default: show the healthbar at the start of a level, after getting hit, or while having weapons equipped; flash the healthbar if it's already on screen when Lara's health is 20% or below (TombATI).\n- Flashing or default: constantly flash the healthbar when Lara's health is 20% or below, or show under default circumstances.\n- Flashing only: show the healthbar *only* when Lara's health is 20% or below (for challenge runs).\n- Always: always show the healthbar.\n- Never: never display the healthbar (for challenge runs).\n- PS1: show the healthbar under default circumstances with no flashing."
     },
@@ -389,7 +389,7 @@
       "Title": "Healthbar color",
       "Description": "Color of the healthbar."
     },
-    "airbar_showing_mode": {
+    "airbar_show_mode": {
       "Title": "Airbar behavior",
       "Description": "Changes how the airbar is displayed.\n- Default: show the airbar only in the water and flash the airbar when Lara's oxygen is 20% or below (TombATI).\n- Flashing only: show the airbar *only* when Lara's oxygen is 20% or below (for challenge runs).\n- Never: never display the airbar (for challenge runs).\n- PS1: show the airbar under default circumstances with no flashing."
     },
@@ -401,7 +401,7 @@
       "Title": "Airbar color",
       "Description": "Color of the airbar."
     },
-    "enemy_healthbar_showing_mode": {
+    "enemy_healthbar_show_mode": {
       "Title": "Show enemy healthbars",
       "Description": "Enables showing a healthbar for the active enemy."
     },

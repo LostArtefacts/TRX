@@ -2,58 +2,10 @@
 
 #include "gfx/common.h"
 #include "gfx/context.h"
+#include "global/types.h"
 
 #include <stdbool.h>
 #include <stdint.h>
-
-typedef enum {
-    SCREENSHOT_FORMAT_JPEG,
-    SCREENSHOT_FORMAT_PNG,
-} SCREENSHOT_FORMAT;
-
-typedef enum {
-    UI_STYLE_PS1 = 0,
-    UI_STYLE_PC = 1,
-} UI_STYLE;
-
-typedef enum {
-    BL_TOP_LEFT = 0,
-    BL_TOP_CENTER = 1,
-    BL_TOP_RIGHT = 2,
-    BL_BOTTOM_LEFT = 3,
-    BL_BOTTOM_CENTER = 4,
-    BL_BOTTOM_RIGHT = 5,
-    BL_CUSTOM = 6,
-} BAR_LOCATION;
-
-typedef enum {
-    BC_GOLD = 0,
-    BC_BLUE = 1,
-    BC_GREY = 2,
-    BC_RED = 3,
-    BC_SILVER = 4,
-    BC_GREEN = 5,
-    BC_GOLD2 = 6,
-    BC_BLUE2 = 7,
-    BC_PINK = 8,
-    BC_PURPLE = 9,
-} BAR_COLOR;
-
-typedef enum {
-    BSM_DEFAULT,
-    BSM_FLASHING_OR_DEFAULT,
-    BSM_FLASHING_ONLY,
-    BSM_ALWAYS,
-    BSM_NEVER,
-    BSM_PS1,
-    BSM_BOSS_ONLY,
-} BAR_SHOW_MODE;
-
-typedef enum {
-    TLM_FULL = 0,
-    TLM_SEMI = 1,
-    TLM_NONE = 2,
-} TARGET_LOCK_MODE;
 
 typedef struct {
     bool loaded;

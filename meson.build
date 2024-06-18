@@ -262,6 +262,7 @@ sources = [
   'src/gfx/renderers/fbo_renderer.c',
   'src/gfx/renderers/legacy_renderer.c',
   'src/gfx/screenshot.c',
+  'src/global/enum_str.c',
   'src/global/vars.c',
   'src/math/math.c',
   'src/math/math_misc.c',
