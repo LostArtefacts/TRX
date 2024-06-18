@@ -101,7 +101,7 @@
       "Title": "Ubicación de la barra de aire",
       "Description": "Ubicación donde se muestra la barra de aire."
     },
-    "airbar_showing_mode": {
+    "airbar_show_mode": {
       "Title": "Modo de visualización de la barra de aire",
       "Description": "Cambia la forma en que se muestra la barra de aire.\n- Predeterminado: muestra la barra de aire solo cuando Lara está bajo el agua y parpadea cuando el oxígeno está al 20% o menos (TombATI).\n- Solo parpadeo: muestra la barra de aire *solo* cuando el oxígeno de Lara está al 20% o menos (para carreras de desafío).\n- Nunca: nunca muestra la barra de aire (para carreras de desafío).\n- PS1: muestra la barra de aire en circunstancias predeterminadas sin parpadeo."
     },
@@ -177,7 +177,7 @@
       "Title": "Mostrar total de objetos y muertes",
       "Description": "Permite mostrar el recuento máximo de objetos recogidos y el recuento de muertes en cada nivel. Esto incluye objetos que no se pueden obtener."
     },
-    "enemy_healthbar_showing_mode": {
+    "enemy_healthbar_show_mode": {
       "Title": "Mostrar barra de salud enemiga",
       "Description": "Permite mostrar una barra de salud para el enemigo activo."
     },
@@ -381,7 +381,7 @@
       "Title": "Ubicación de la barra de salud",
       "Description": "Ubicación donde se muestra la barra de salud."
     },
-    "healthbar_showing_mode": {
+    "healthbar_show_mode": {
       "Title": "Modo de visualización de la barra de salud",
       "Description": "Cambia cómo se muestra la barra de salud.\n- Predeterminado: muestra la barra de salud al comienzo de un nivel, después de recibir un golpe o mientras tiene armas equipadas; muestra la barra de salud si ya está en la pantalla cuando la salud de Lara es del 20% o menos (TombATI).\n- Intermitente o predeterminada: la barra de salud parpadea constantemente cuando la salud de Lara es del 20% o menos, o se muestra en circunstancias predeterminadas.\n- Solo intermitente: muestra la barra de salud *solo* cuando la salud de Lara es del 20% o menos (para carreras de desafío).\n- Siempre: muestra siempre la barra de salud.\n- Nunca: nunca mostrar la barra de salud (para carreras de desafío).\n- PS1: muestra la barra de salud en circunstancias predeterminadas sin parpadear."
     },

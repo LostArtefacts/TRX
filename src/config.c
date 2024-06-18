@@ -5,6 +5,7 @@
 #include "game/music.h"
 #include "game/sound.h"
 #include "global/const.h"
+#include "global/enum_str.h"
 #include "global/types.h"
 
 #include <libtrx/filesystem.h>
@@ -21,12 +22,14 @@ CONFIG g_Config = { 0 };
 
 static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
 
+static const char *Config_ResolveOptionName(const char *option_name);
+
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
-    const CONFIG_OPTION_ENUM_MAP *enum_map);
+    const ENUM_STRING_MAP *enum_map);
 static void Config_WriteEnum(
     struct json_object_s *obj, const char *name, int value,
-    const CONFIG_OPTION_ENUM_MAP *enum_map);
+    const ENUM_STRING_MAP *enum_map);
 
 static void Config_ReadKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
@@ -38,9 +41,18 @@ static void Config_WriteKeyboardLayout(
 static void Config_WriteControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
 
+static const char *Config_ResolveOptionName(const char *option_name)
+{
+    const char *dot = strrchr(option_name, '.');
+    if (dot) {
+        return dot + 1;
+    }
+    return option_name;
+}
+
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
-    const CONFIG_OPTION_ENUM_MAP *enum_map)
+    const ENUM_STRING_MAP *enum_map)
 {
     const char *value_str = json_object_get_string(obj, name, NULL);
     if (value_str) {
@@ -56,7 +68,7 @@ static int Config_ReadEnum(
 
 static void Config_WriteEnum(
     struct json_object_s *obj, const char *name, int value,
-    const CONFIG_OPTION_ENUM_MAP *enum_map)
+    const ENUM_STRING_MAP *enum_map)
 {
     while (enum_map->text) {
         if (enum_map->value == value) {
@@ -186,6 +198,19 @@ static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj)
             g_Config.enemy_healthbar_show_mode = BSM_NEVER;
         }
     }
+
+    // ..4.1.2: healthbar_show_mode, airbar_show_mode, enemy_healthbar_show_mode
+    {
+        g_Config.healthbar_show_mode = Config_ReadEnum(
+            parent_obj, "healthbar_showing_mode", g_Config.healthbar_show_mode,
+            ENUM_STR_MAP(BAR_SHOW_MODE));
+        g_Config.airbar_show_mode = Config_ReadEnum(
+            parent_obj, "airbar_showing_mode", g_Config.airbar_show_mode,
+            ENUM_STR_MAP(BAR_SHOW_MODE));
+        g_Config.enemy_healthbar_show_mode = Config_ReadEnum(
+            parent_obj, "enemy_healthbar_showing_mode",
+            g_Config.enemy_healthbar_show_mode, ENUM_STR_MAP(BAR_SHOW_MODE));
+    }
 }
 
 static void Config_WriteKeyboardLayout(
@@ -284,22 +309,36 @@ bool Config_ReadFromJSON(const char *cfg_data)
 
     const CONFIG_OPTION *opt = g_ConfigOptionMap;
     while (opt->target) {
-        if (opt->type == COT_BOOL) {
+        switch (opt->type) {
+        case COT_BOOL:
             *(bool *)opt->target = json_object_get_bool(
-                root_obj, opt->name, *(bool *)opt->default_value);
-        } else if (opt->type == COT_INT32) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(bool *)opt->default_value);
+            break;
+
+        case COT_INT32:
             *(int32_t *)opt->target = json_object_get_int(
-                root_obj, opt->name, *(int32_t *)opt->default_value);
-        } else if (opt->type == COT_FLOAT) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(int32_t *)opt->default_value);
+            break;
+
+        case COT_FLOAT:
             *(float *)opt->target = json_object_get_double(
-                root_obj, opt->name, *(float *)opt->default_value);
-        } else if (opt->type == COT_DOUBLE) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(float *)opt->default_value);
+            break;
+
+        case COT_DOUBLE:
             *(double *)opt->target = json_object_get_double(
-                root_obj, opt->name, *(double *)opt->default_value);
-        } else if (opt->type == COT_ENUM) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(double *)opt->default_value);
+            break;
+
+        case COT_ENUM:
             *(int *)opt->target = Config_ReadEnum(
-                root_obj, opt->name, *(int *)opt->default_value,
-                (const CONFIG_OPTION_ENUM_MAP *)opt->param);
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(int *)opt->default_value,
+                (const ENUM_STRING_MAP *)opt->param);
         }
         opt++;
     }
@@ -375,21 +414,36 @@ bool Config_Write(void)
 
     const CONFIG_OPTION *opt = g_ConfigOptionMap;
     while (opt->target) {
-        if (opt->type == COT_BOOL) {
-            json_object_append_bool(root_obj, opt->name, *(bool *)opt->target);
-        } else if (opt->type == COT_INT32) {
+        switch (opt->type) {
+        case COT_BOOL:
+            json_object_append_bool(
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(bool *)opt->target);
+            break;
+
+        case COT_INT32:
             json_object_append_int(
-                root_obj, opt->name, *(int32_t *)opt->target);
-        } else if (opt->type == COT_FLOAT) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(int32_t *)opt->target);
+            break;
+
+        case COT_FLOAT:
             json_object_append_double(
-                root_obj, opt->name, *(float *)opt->target);
-        } else if (opt->type == COT_DOUBLE) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(float *)opt->target);
+            break;
+
+        case COT_DOUBLE:
             json_object_append_double(
-                root_obj, opt->name, *(double *)opt->target);
-        } else if (opt->type == COT_ENUM) {
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(double *)opt->target);
+            break;
+
+        case COT_ENUM:
             Config_WriteEnum(
-                root_obj, opt->name, *(int *)opt->target,
-                (const CONFIG_OPTION_ENUM_MAP *)opt->param);
+                root_obj, Config_ResolveOptionName(opt->name),
+                *(int *)opt->target, (const ENUM_STRING_MAP *)opt->param);
+            break;
         }
         opt++;
     }

@@ -15,14 +15,14 @@
     "change_pierre_spawn": {
       "Title": "Change Pierre spawn behaviour"
     },
-    "healthbar_showing_mode": {
+    "healthbar_show_mode": {
       "Title": "Healthbar behaviour"
     },
     "healthbar_color": {
       "Title": "Healthbar colour",
       "Description": "Colour of the healthbar."
     },
-    "airbar_showing_mode": {
+    "airbar_show_mode": {
       "Title": "Airbar behaviour"
     },
     "airbar_color": {

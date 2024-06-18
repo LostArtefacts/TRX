@@ -1,10 +1,5 @@
 #pragma once
 
-typedef struct CONFIG_OPTION_ENUM_MAP {
-    const char *text;
-    int value;
-} CONFIG_OPTION_ENUM_MAP;
-
 typedef enum CONFIG_OPTION_TYPE {
     COT_BOOL = 0,
     COT_INT32 = 1,

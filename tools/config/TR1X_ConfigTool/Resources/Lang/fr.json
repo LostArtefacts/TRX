@@ -377,7 +377,7 @@
       "Title": "Style des menus",
       "Description": "Changer le rendu des menus.\n - PC: Style d'interface de la version PC.\n - PS1: Style d'interface de la version PlayStation."
     },
-    "healthbar_showing_mode": {
+    "healthbar_show_mode": {
       "Title": "Comportement de la barre de santé",
       "Description": "Modifie l'affichage de la barre de santé.\n- Par défaut : affiche la barre de santé au début d'un niveau, après avoir été touché ou lorsque des armes sont équipées ; fait clignoter la barre de santé si elle est déjà à l'écran lorsque la santé de Lara est de 20 % ou moins (TombATI).\n- Clignotant ou par défaut : la barre de santé clignotte constamment lorsque la santé de Lara est à 20 % ou moins, ou s'affiche dans des circonstances par défaut.\n- Clignotant uniquement : affiche la barre de santé *uniquement* lorsque la santé de Lara est à 20 % ou moins (pour les courses de défi ).\n- Toujours : affiche toujours la barre de santé.\n- Jamais : n'affiche jamais la barre de santé (pour les défis).\n- PS1 : affiche la barre de santé dans les circonstances par défaut sans clignoter."
     },
@@ -389,7 +389,7 @@
       "Title": "Couleur de la barre de santé",
       "Description": "Choisir la couleur de la barre de santé de Lara."
     },
-    "airbar_showing_mode": {
+    "airbar_show_mode": {
       "Title": "Comportement de la barre d'air",
       "Description": "Modifie l'affichage de la barre d'air.\n- Par défaut : affiche la barre d'air uniquement dans l'eau et clignote lorsque l'oxygène de Lara est à 20 % ou moins (TombATI).\n- Clignotant uniquement : affiche la barre d'air *uniquement* lorsque l'oxygène de Lara est à 20 % ou moins (pour challenge runs).\n- Jamais : n'affiche jamais la barre d'air (pour les challenge runs).\n- PS1 : affiche la barre d'air dans les circonstances par défaut sans clignoter."
     },
@@ -401,7 +401,7 @@
       "Title": "Couleur de la barre d'air",
       "Description": "Choisir la couleur de la barre d'air."
     },
-    "enemy_healthbar_showing_mode": {
+    "enemy_healthbar_show_mode": {
       "Title": "Afficher la barre de santé des ennemis",
       "Description": "Affiche la barre de santé de l'ennemi sur lequel Lara vise et tire"
     },

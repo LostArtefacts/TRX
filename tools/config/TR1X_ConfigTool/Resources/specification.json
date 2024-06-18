@@ -464,7 +464,7 @@
           "DefaultValue": "pc"
         },
         {
-          "Field": "healthbar_showing_mode",
+          "Field": "healthbar_show_mode",
           "DataType": "Enum",
           "EnumKey": "healthbar_mode",
           "DefaultValue": "flashing-or-default"
@@ -482,7 +482,7 @@
           "DefaultValue": "red"
         },
         {
-          "Field": "airbar_showing_mode",
+          "Field": "airbar_show_mode",
           "DataType": "Enum",
           "EnumKey": "airbar_mode",
           "DefaultValue": "default"
@@ -500,7 +500,7 @@
           "DefaultValue": "blue"
         },
         {
-          "Field": "enemy_healthbar_showing_mode",
+          "Field": "enemy_healthbar_show_mode",
           "DataType": "Enum",
           "EnumKey": "enemy_healthbar_mode",
           "DefaultValue": "always"
