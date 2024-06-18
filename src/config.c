@@ -22,8 +22,6 @@ CONFIG g_Config = { 0 };
 
 static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
 
-static const char *Config_ResolveOptionName(const char *option_name);
-
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
     const ENUM_STRING_MAP *enum_map);
@@ -40,15 +38,6 @@ static void Config_WriteKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
 static void Config_WriteControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-
-static const char *Config_ResolveOptionName(const char *option_name)
-{
-    const char *dot = strrchr(option_name, '.');
-    if (dot) {
-        return dot + 1;
-    }
-    return option_name;
-}
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
@@ -284,6 +273,15 @@ static void Config_WriteControllerLayout(
     } else {
         json_array_free(arr);
     }
+}
+
+const char *Config_ResolveOptionName(const char *option_name)
+{
+    const char *dot = strrchr(option_name, '.');
+    if (dot) {
+        return dot + 1;
+    }
+    return option_name;
 }
 
 bool Config_ReadFromJSON(const char *cfg_data)
