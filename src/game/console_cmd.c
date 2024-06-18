@@ -397,6 +397,7 @@ static COMMAND_RESULT Console_Cmd_Set(const char *const args)
 
             if (result == CR_SUCCESS) {
                 Console_Log(GS(OSD_CONFIG_OPTION_SET), key, new_value);
+                Config_Write();
             }
             break;
         }
