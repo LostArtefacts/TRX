@@ -347,10 +347,10 @@ static COMMAND_RESULT Console_Cmd_Set(const char *const args)
 
             switch (option->type) {
             case COT_BOOL:
-                if (String_Equivalent(new_value, "on")) {
+                if (String_Match(new_value, "on|true|1")) {
                     *(bool *)option->target = true;
                     result = CR_SUCCESS;
-                } else if (String_Equivalent(new_value, "off")) {
+                } else if (String_Match(new_value, "off|false|0")) {
                     *(bool *)option->target = false;
                     result = CR_SUCCESS;
                 }
