@@ -926,6 +926,7 @@ void GameFlow_Shutdown(void)
     for (int i = 0; i < g_GameFlow.injections.length; i++) {
         Memory_FreePointer(&g_GameFlow.injections.data_paths[i]);
     }
+    Memory_FreePointer(&g_GameFlow.injections.data_paths);
 
     if (g_GameFlow.levels) {
         for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -946,6 +947,7 @@ void GameFlow_Shutdown(void)
                 Memory_FreePointer(
                     &g_GameFlow.levels[i].injections.data_paths[j]);
             }
+            Memory_FreePointer(&g_GameFlow.levels[i].injections.data_paths);
 
             if (g_GameFlow.levels[i].item_drops.count) {
                 for (int j = 0; j < g_GameFlow.levels[i].item_drops.count;
