@@ -14,6 +14,7 @@
 #include "game/option.h"
 #include "game/output.h"
 #include "game/phase/phase.h"
+#include "game/phase/phase_pause.h"
 #include "game/savegame.h"
 #include "game/screen.h"
 #include "game/sound.h"
@@ -136,6 +137,7 @@ void Shell_Init(const char *gameflow_path)
     }
 
     Option_Init();
+    Phase_Pause_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
     Config_Init();
@@ -153,6 +155,7 @@ void Shell_Shutdown(void)
     Music_Shutdown();
     Savegame_Shutdown();
     Option_Shutdown();
+    Phase_Pause_Shutdown();
     Console_Shutdown();
     Log_Shutdown();
 }
@@ -181,67 +184,69 @@ void Shell_Main(void)
 
     Shell_Init(gameflow_path);
 
-    int32_t gf_option = GF_EXIT_TO_TITLE;
+    g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
     bool intro_played = false;
 
     g_GameInfo.current_save_slot = -1;
     bool loop_continue = true;
     while (loop_continue) {
-        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
-        int32_t gf_param = gf_option & ((1 << 6) - 1);
-        LOG_INFO("direction=%d param=%d", gf_direction, gf_param);
+        LOG_INFO(
+            "direction=%d param=%d", g_GameflowInfo.direction,
+            g_GameflowInfo.param);
 
-        switch (gf_direction) {
+        switch (g_GameflowInfo.direction) {
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
-            if (g_GameFlow.levels[gf_param].level_type == GFL_BONUS) {
+            if (g_GameFlow.levels[g_GameflowInfo.param].level_type
+                == GFL_BONUS) {
                 level_type = GFL_BONUS;
             }
-            gf_option = GameFlow_InterpretSequence(gf_param, level_type);
+            GameFlow_InterpretSequence(g_GameflowInfo.param, level_type);
             break;
         }
 
         case GF_START_SAVED_GAME: {
-            int16_t level_num = Savegame_GetLevelNumber(gf_param);
+            int16_t level_num = Savegame_GetLevelNumber(g_GameflowInfo.param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
-                gf_option = GF_EXIT_TO_TITLE;
+                g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
             } else {
-                g_GameInfo.current_save_slot = gf_param;
-                gf_option = GameFlow_InterpretSequence(level_num, GFL_SAVED);
+                g_GameInfo.current_save_slot = g_GameflowInfo.param;
+                GameFlow_InterpretSequence(level_num, GFL_SAVED);
             }
             break;
         }
 
         case GF_RESTART_GAME: {
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_RESTART);
+            GameFlow_InterpretSequence(g_GameflowInfo.param, GFL_RESTART);
             break;
         }
 
         case GF_SELECT_GAME: {
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_SELECT);
+            GameFlow_InterpretSequence(g_GameflowInfo.param, GFL_SELECT);
             break;
         }
 
         case GF_STORY_SO_FAR: {
-            gf_option = Savegame_PlayAvailableStory(gf_param);
+            Savegame_PlayAvailableStory(g_GameflowInfo.param);
             break;
         }
 
         case GF_START_CINE:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
+            GameFlow_InterpretSequence(g_GameflowInfo.param, GFL_CUTSCENE);
             break;
 
         case GF_START_DEMO:
             Phase_Set(PHASE_DEMO, NULL);
-            gf_option = Phase_Run();
+            Phase_Run();
             break;
 
         case GF_LEVEL_COMPLETE:
-            gf_option = GF_EXIT_TO_TITLE;
+            g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
             break;
 
         case GF_EXIT_TO_TITLE:
+            LOG_DEBUG("GF_EXIT_TO_TITLE");
             g_GameInfo.current_save_slot = -1;
             if (!intro_played) {
                 GameFlow_InterpretSequence(
@@ -251,11 +256,11 @@ void Shell_Main(void)
 
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
-                gf_option = GF_EXIT_GAME;
+                g_GameflowInfo.direction = GF_EXIT_GAME;
                 break;
             }
 
-            gf_option = Game_MainMenu();
+            Game_MainMenu();
             break;
 
         case GF_EXIT_GAME:
@@ -263,12 +268,13 @@ void Shell_Main(void)
             break;
 
         case GF_START_GYM:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
+            GameFlow_InterpretSequence(g_GameflowInfo.param, GFL_GYM);
             break;
 
         default:
             Shell_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", gf_direction, gf_param);
+                "MAIN: Unknown request %x %d", g_GameflowInfo.direction,
+                g_GameflowInfo.param);
             return;
         }
     }

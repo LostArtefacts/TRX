@@ -37,7 +37,7 @@ static TEXTSTRING *m_Texts[MAX_TEXTSTRINGS] = { 0 };
 static void Phase_Stats_CreateTexts(int32_t level_num);
 static void Phase_Stats_Start(void *arg);
 static void Phase_Stats_End(void);
-static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes);
+static void Phase_Stats_Control(int32_t nframes);
 static void Phase_Stats_Draw(void);
 
 static void Phase_Stats_CreateTexts(int32_t level_num)
@@ -278,7 +278,7 @@ static void Phase_Stats_End(void)
     }
 }
 
-static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
+static void Phase_Stats_Control(int32_t nframes)
 {
     Input_Update();
     Shell_ProcessInput();
@@ -303,12 +303,13 @@ static GAMEFLOW_OPTION Phase_Stats_Control(int32_t nframes)
         if (g_InputDB.menu_confirm || g_InputDB.menu_back
             || !Output_FadeIsAnimating()) {
             Output_FadeResetToBlack();
-            return GF_PHASE_BREAK;
+            g_GameflowInfo.direction = GF_PHASE_BREAK;
+            return;
         }
         break;
     }
 
-    return GF_PHASE_CONTINUE;
+    g_GameflowInfo.direction = GF_PHASE_CONTINUE;
 }
 
 static void Phase_Stats_Draw(void)

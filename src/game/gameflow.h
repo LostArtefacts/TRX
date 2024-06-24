@@ -87,9 +87,8 @@ typedef struct GAMEFLOW {
 
 extern GAMEFLOW g_GameFlow;
 
-GAMEFLOW_OPTION
-GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
-GAMEFLOW_OPTION
-GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level);
+void GameFlow_InterpretSequence(
+    int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
+void GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level);
 bool GameFlow_LoadFromFile(const char *file_name);
 void GameFlow_Shutdown(void);

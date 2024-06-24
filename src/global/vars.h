@@ -39,6 +39,7 @@ extern void (*g_EffectRoutines[])(ITEM_INFO *item);
 extern LARA_INFO g_Lara;
 extern ITEM_INFO *g_LaraItem;
 extern CAMERA_INFO g_Camera;
+extern GAMEFLOW_INFO g_GameflowInfo;
 extern GAME_INFO g_GameInfo;
 extern int32_t g_SavedGamesCount;
 extern int32_t g_SaveCounter;

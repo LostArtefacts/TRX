@@ -62,8 +62,6 @@ void Game_ProcessInput(void)
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
-    g_GameInfo.current_level_type = level_type;
-
     switch (level_type) {
     case GFL_SAVED:
         // reset current info to the defaults so that we do not do
@@ -168,7 +166,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     return true;
 }
 
-GAMEFLOW_OPTION Game_Stop(void)
+void Game_Stop(void)
 {
     Sound_StopAllSamples();
     Music_Stop();
@@ -187,7 +185,9 @@ GAMEFLOW_OPTION Game_Stop(void)
             Savegame_CarryCurrentInfoToNextLevel(
                 g_CurrentLevel, g_GameInfo.select_level_num);
         }
-        return GF_SELECT_GAME | g_GameInfo.select_level_num;
+        g_GameflowInfo.direction = GF_SELECT_GAME;
+        g_GameflowInfo.param = g_GameInfo.select_level_num;
+        return;
     }
 
     // carry info to the next level
@@ -202,21 +202,34 @@ GAMEFLOW_OPTION Game_Stop(void)
     if (g_LevelComplete) {
         // TODO: why is this made unavailable?
         g_GameInfo.current[g_CurrentLevel].flags.available = 0;
-        return GF_LEVEL_COMPLETE | g_GameInfo.select_level_num;
+        g_GameflowInfo.direction = GF_LEVEL_COMPLETE;
+        g_GameflowInfo.param = g_GameInfo.select_level_num;
+        return;
     }
 
     if (g_GameInfo.passport_selection == PASSPORT_MODE_LOAD_GAME) {
-        return GF_START_SAVED_GAME | g_GameInfo.current_save_slot;
+        g_GameflowInfo.direction = GF_START_SAVED_GAME;
+        g_GameflowInfo.param = g_GameInfo.current_save_slot;
+        return;
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_SELECT_LEVEL) {
-        return GF_SELECT_GAME | g_GameInfo.select_level_num;
+        g_GameflowInfo.direction = GF_SELECT_GAME;
+        g_GameflowInfo.param = g_GameInfo.select_level_num;
+        return;
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_STORY_SO_FAR) {
-        return GF_STORY_SO_FAR | g_GameInfo.current_save_slot;
+        g_GameflowInfo.direction = GF_STORY_SO_FAR;
+        g_GameflowInfo.param = g_GameInfo.current_save_slot;
+        return;
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_RESTART) {
-        return GF_RESTART_GAME | g_CurrentLevel;
+        g_GameflowInfo.direction = GF_RESTART_GAME;
+        g_GameflowInfo.param = g_CurrentLevel;
+        return;
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_NEW_GAME) {
         Savegame_InitCurrentInfo();
-        return GF_START_GAME | g_GameFlow.first_level_num;
+        g_GameflowInfo.direction = GF_START_GAME;
+        g_GameflowInfo.param = g_GameFlow.first_level_num;
+        return;
     } else {
-        return GF_EXIT_TO_TITLE;
+        g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
+        return;
     }
 }

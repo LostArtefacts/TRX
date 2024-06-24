@@ -55,9 +55,9 @@ static int32_t Phase_Demo_ChooseLevel(void);
 
 static void Phase_Demo_Start(void *arg);
 static void Phase_Demo_End(void);
-static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes);
-static GAMEFLOW_OPTION Phase_Demo_FadeOut(void);
-static GAMEFLOW_OPTION Phase_Demo_Control(int32_t nframes);
+static void Phase_Demo_Run(int32_t nframes);
+static void Phase_Demo_FadeOut(void);
+static void Phase_Demo_Control(int32_t nframes);
 static void Phase_Demo_Draw(void);
 
 static bool Phase_Demo_ProcessInput(void)
@@ -196,7 +196,6 @@ static void Phase_Demo_Start(void *arg)
     // really is needed, not at all times.
     // https://github.com/LostArtefacts/TR1X/issues/36
     g_Lara.request_gun_type = LGT_UNARMED;
-    g_GameInfo.current_level_type = GFL_DEMO;
 }
 
 static void Phase_Demo_End(void)
@@ -215,7 +214,7 @@ static void Phase_Demo_End(void)
     g_Config.fix_bear_ai = m_oldFixBearAI;
 }
 
-static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
+static void Phase_Demo_Run(int32_t nframes)
 {
     Interpolation_Remember();
     CLAMPG(nframes, MAX_FRAMES);
@@ -224,12 +223,14 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
         Lara_Cheat_Control();
         if (g_LevelComplete) {
             m_State = STATE_FADE_OUT;
-            return GF_PHASE_CONTINUE;
+            g_GameflowInfo.direction = GF_PHASE_CONTINUE;
+            return;
         }
 
         if (!Phase_Demo_ProcessInput()) {
             m_State = STATE_FADE_OUT;
-            return GF_PHASE_CONTINUE;
+            g_GameflowInfo.direction = GF_PHASE_CONTINUE;
+            return;
         }
         Game_ProcessInput();
 
@@ -251,14 +252,15 @@ static GAMEFLOW_OPTION Phase_Demo_Run(int32_t nframes)
         Input_Update();
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
-            return GF_PHASE_CONTINUE;
+            g_GameflowInfo.direction = GF_PHASE_CONTINUE;
+            return;
         }
     }
 
-    return GF_PHASE_CONTINUE;
+    g_GameflowInfo.direction = GF_PHASE_CONTINUE;
 }
 
-static GAMEFLOW_OPTION Phase_Demo_FadeOut(void)
+static void Phase_Demo_FadeOut(void)
 {
     Text_Flash(m_DemoModeText, 0, 0);
     Input_Update();
@@ -266,26 +268,31 @@ static GAMEFLOW_OPTION Phase_Demo_FadeOut(void)
     if (g_InputDB.menu_confirm || g_InputDB.menu_back
         || !Output_FadeIsAnimating()) {
         Output_FadeResetToBlack();
-        return GF_EXIT_TO_TITLE;
+        g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
+        return;
     }
-    return GF_PHASE_CONTINUE;
+    g_GameflowInfo.direction = GF_PHASE_CONTINUE;
 }
 
-static GAMEFLOW_OPTION Phase_Demo_Control(int32_t nframes)
+static void Phase_Demo_Control(int32_t nframes)
 {
     switch (m_State) {
     case STATE_INVALID:
-        return GF_EXIT_TO_TITLE;
+        g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
+        return;
 
     case STATE_RUN:
-        return Phase_Demo_Run(nframes);
+        Phase_Demo_Run(nframes);
+        return;
 
     case STATE_FADE_OUT:
-        return Phase_Demo_FadeOut();
+        Phase_Demo_FadeOut();
+        return;
     }
 
     assert(false);
-    return GF_PHASE_BREAK;
+    g_GameflowInfo.direction = GF_PHASE_BREAK;
+    return;
 }
 
 static void Phase_Demo_Draw(void)

@@ -965,17 +965,17 @@ typedef enum GAMEFLOW_OPTION {
     GF_PHASE_BREAK = -2,
     GF_PHASE_CONTINUE = -1,
     GF_START_GAME = 0,
-    GF_START_CINE = 1 << 6,
-    GF_START_FMV = 2 << 6,
-    GF_START_DEMO = 3 << 6,
-    GF_EXIT_TO_TITLE = 4 << 6,
-    GF_LEVEL_COMPLETE = 5 << 6,
-    GF_EXIT_GAME = 6 << 6,
-    GF_START_SAVED_GAME = 7 << 6,
-    GF_RESTART_GAME = 8 << 6,
-    GF_SELECT_GAME = 9 << 6,
-    GF_START_GYM = 10 << 6,
-    GF_STORY_SO_FAR = 11 << 6,
+    GF_START_CINE = 1,
+    GF_START_FMV = 2,
+    GF_START_DEMO = 3,
+    GF_EXIT_TO_TITLE = 4,
+    GF_LEVEL_COMPLETE = 5,
+    GF_EXIT_GAME = 6,
+    GF_START_SAVED_GAME = 7,
+    GF_RESTART_GAME = 8,
+    GF_SELECT_GAME = 9,
+    GF_START_GYM = 10,
+    GF_STORY_SO_FAR = 11,
 } GAMEFLOW_OPTION;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {
@@ -1008,6 +1008,12 @@ typedef enum GAMEFLOW_SEQUENCE_TYPE {
     GFS_SETUP_BACON_LARA,
     GFS_LEGACY,
 } GAMEFLOW_SEQUENCE_TYPE;
+
+typedef struct GAMEFLOW_INFO {
+    GAMEFLOW_OPTION override_option;
+    GAMEFLOW_OPTION direction;
+    int32_t param;
+} GAMEFLOW_INFO;
 
 typedef enum BAR_TYPE {
     BT_LARA_HEALTH = 0,
@@ -1464,8 +1470,6 @@ typedef struct GAME_INFO {
     PASSPORT_MODE passport_selection;
     int32_t select_level_num;
     bool death_counter_supported;
-    GAMEFLOW_LEVEL_TYPE current_level_type;
-    GAMEFLOW_OPTION override_option;
     bool remove_guns;
     bool remove_scions;
     bool remove_ammo;
@@ -1828,25 +1832,26 @@ typedef struct BOX_INFO {
 } BOX_INFO;
 
 typedef struct REQUEST_INFO {
-    uint16_t items;
+    uint16_t items_used;
+    uint16_t max_items;
     uint16_t requested;
     uint16_t vis_lines;
     uint16_t line_offset;
     uint16_t line_old_offset;
     uint16_t pix_width;
     uint16_t line_height;
+    uint16_t flags;
+    uint32_t *item_flags;
     int16_t x;
     int16_t y;
-    uint16_t flags;
-    const char *heading_text;
-    char *item_texts;
+    char *heading_text;
+    char **item_texts;
     int16_t item_text_len;
     TEXTSTRING *heading;
     TEXTSTRING *background;
     TEXTSTRING *moreup;
     TEXTSTRING *moredown;
     TEXTSTRING *texts[MAX_REQLINES];
-    uint16_t item_flags[MAX_REQLINES];
 } REQUEST_INFO;
 
 typedef struct IMOTION_INFO {

@@ -12,6 +12,9 @@
 #include "game/sound.h"
 #include "game/text.h"
 #include "global/types.h"
+#include "global/vars.h"
+
+#include <libtrx/memory.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -19,6 +22,7 @@
 
 #define PAUSE_MAX_ITEMS 5
 #define PAUSE_MAX_TEXT_LENGTH 50
+#define PAUSE_NUM_ITEM_TEXTS 2
 
 typedef enum STATE {
     STATE_DEFAULT,
@@ -32,7 +36,8 @@ static TEXTSTRING *m_PausedText = NULL;
 
 static char m_PauseStrings[PAUSE_MAX_ITEMS][PAUSE_MAX_TEXT_LENGTH] = { 0 };
 static REQUEST_INFO m_PauseRequester = {
-    .items = 0,
+    .items_used = 0,
+    .max_items = PAUSE_NUM_ITEM_TEXTS,
     .requested = 0,
     .vis_lines = 0,
     .line_offset = 0,
@@ -43,7 +48,7 @@ static REQUEST_INFO m_PauseRequester = {
     .y = 0,
     .flags = 0,
     .heading_text = NULL,
-    .item_texts = &m_PauseStrings[0][0],
+    .item_texts = NULL,
     .item_text_len = PAUSE_MAX_TEXT_LENGTH,
     0,
 };
@@ -56,7 +61,7 @@ static int32_t Phase_Pause_DisplayRequester(
 
 static void Phase_Pause_Start(void *arg);
 static void Phase_Pause_End(void);
-static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes);
+static void Phase_Pause_Control(int32_t nframes);
 static void Phase_Pause_Draw(void);
 
 static void Phase_Pause_RemoveText(void)
@@ -80,12 +85,8 @@ static int32_t Phase_Pause_DisplayRequester(
 {
     static bool is_pause_text_ready = false;
     if (!is_pause_text_ready) {
-        Requester_Init(&m_PauseRequester);
-        Requester_SetSize(&m_PauseRequester, 2, -48);
-        m_PauseRequester.requested = requested;
-        Requester_SetHeading(&m_PauseRequester, header);
-        Requester_AddItem(&m_PauseRequester, option1, 0);
-        Requester_AddItem(&m_PauseRequester, option2, 0);
+        Requester_ChangeItem(&m_PauseRequester, 0, option1, 0);
+        Requester_ChangeItem(&m_PauseRequester, 1, option2, 0);
 
         is_pause_text_ready = true;
         g_InputDB = (INPUT_STATE) { 0 };
@@ -121,11 +122,11 @@ static void Phase_Pause_End(void)
 {
     Output_FadeToTransparent(true);
 
-    Requester_Remove(&m_PauseRequester);
+    Requester_Clear(&m_PauseRequester);
     Phase_Pause_RemoveText();
 }
 
-static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
+static void Phase_Pause_Control(int32_t nframes)
 {
     Phase_Pause_UpdateText();
 
@@ -141,6 +142,12 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
             Phase_Set(PHASE_GAME, NULL);
         } else if (g_InputDB.option) {
             m_PauseState = STATE_ASK;
+            Requester_Clear(&m_PauseRequester);
+            Requester_SetSize(&m_PauseRequester, 2, -48);
+            m_PauseRequester.requested = 1;
+            Requester_SetHeading(&m_PauseRequester, GS(PAUSE_EXIT_TO_TITLE));
+            Requester_AddItem(&m_PauseRequester, GS(PAUSE_CONTINUE), 0);
+            Requester_AddItem(&m_PauseRequester, GS(PAUSE_QUIT), 0);
         }
         break;
 
@@ -161,7 +168,8 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
         int32_t choice = Phase_Pause_DisplayRequester(
             GS(PAUSE_ARE_YOU_SURE), GS(PAUSE_YES), GS(PAUSE_NO), 1);
         if (choice == 1) {
-            return GF_EXIT_TO_TITLE;
+            g_GameflowInfo.direction = GF_EXIT_TO_TITLE;
+            return;
         } else if (choice == 2) {
             Music_Unpause();
             Sound_UnpauseAll();
@@ -171,7 +179,7 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
     }
     }
 
-    return GF_PHASE_CONTINUE;
+    g_GameflowInfo.direction = GF_PHASE_CONTINUE;
 }
 
 static void Phase_Pause_Draw(void)
@@ -181,6 +189,16 @@ static void Phase_Pause_Draw(void)
     Interpolation_Enable();
     Output_AnimateFades();
     Text_Draw();
+}
+
+void Phase_Pause_Init(void)
+{
+    Requester_Init(&m_PauseRequester, PAUSE_NUM_ITEM_TEXTS);
+}
+
+void Phase_Pause_Shutdown(void)
+{
+    Requester_Shutdown(&m_PauseRequester);
 }
 
 PHASER g_PausePhaser = {
