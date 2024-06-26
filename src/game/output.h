@@ -54,6 +54,7 @@ void Output_DrawShadow(
 void Output_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width);
+void Output_FlushTranslucentObjects(void);
 
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color);

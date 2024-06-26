@@ -42,5 +42,6 @@ void Game_DrawScene(bool draw_overlay)
         Lara_Hair_Draw();
     }
 
+    Output_FlushTranslucentObjects();
     Output_DrawBackdropScreen();
 }

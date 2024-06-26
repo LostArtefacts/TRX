@@ -22,6 +22,15 @@
 
 #include <stddef.h>
 
+#define MAX_LIGHTNINGS 8
+
+typedef struct {
+    struct {
+        XYZ_32 pos;
+        int32_t thickness;
+    } edges[2];
+} LIGHTNING;
+
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
@@ -44,6 +53,9 @@ static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGB_F m_WaterColor = { 0 };
 static XYZ_32 m_LsVectorView = { 0 };
+
+static int32_t m_LightningCount = 0;
+static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
 
 char *m_BackdropImagePath = NULL;
 
@@ -429,9 +441,23 @@ void Output_DrawBlack(void)
     Output_DrawBlackOverlay(255);
 }
 
+void Output_FlushTranslucentObjects(void)
+{
+    // draw transparent lightnings as last in the 3D geometry pipeline
+    for (int32_t i = 0; i < m_LightningCount; i++) {
+        LIGHTNING *lightning = &m_LightningTable[i];
+        S_Output_DrawLightningSegment(
+            lightning->edges[0].pos.x, lightning->edges[0].pos.y,
+            lightning->edges[0].pos.z, lightning->edges[0].thickness,
+            lightning->edges[1].pos.x, lightning->edges[1].pos.y,
+            lightning->edges[1].pos.z, lightning->edges[1].thickness);
+    }
+}
+
 void Output_BeginScene(void)
 {
     S_Output_RenderBegin();
+    m_LightningCount = 0;
 }
 
 void Output_EndScene(void)
@@ -877,17 +903,32 @@ void Output_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width)
 {
-    if (z1 >= Output_GetNearZ() && z1 <= Output_GetFarZ()
-        && z2 >= Output_GetNearZ() && z2 <= Output_GetFarZ()) {
-        x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
-        y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
-        x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
-        y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
-        int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
-        int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
-        S_Output_DrawLightningSegment(
-            x1, y1, z1, thickness1, x2, y2, z2, thickness2);
+    if (m_LightningCount >= MAX_LIGHTNINGS) {
+        return;
     }
+
+    if (z1 < Output_GetNearZ() || z1 > Output_GetFarZ()
+        || z2 < Output_GetNearZ() || z2 > Output_GetFarZ()) {
+        return;
+    }
+
+    x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
+    y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
+    x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
+    y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
+    const int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
+    const int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
+
+    LIGHTNING *lightning = &m_LightningTable[m_LightningCount];
+    lightning->edges[0].pos.x = x1;
+    lightning->edges[0].pos.y = y1;
+    lightning->edges[0].pos.z = z1;
+    lightning->edges[0].thickness = thickness1;
+    lightning->edges[1].pos.x = x2;
+    lightning->edges[1].pos.y = y2;
+    lightning->edges[1].pos.z = z2;
+    lightning->edges[1].thickness = thickness2;
+    m_LightningCount++;
 }
 
 void Output_SetupBelowWater(bool underwater)
