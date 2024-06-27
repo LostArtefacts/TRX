@@ -22,7 +22,7 @@
 
 #include <stddef.h>
 
-#define MAX_LIGHTNINGS 8
+#define MAX_LIGHTNINGS 64
 
 typedef struct {
     struct {
@@ -445,7 +445,7 @@ void Output_FlushTranslucentObjects(void)
 {
     // draw transparent lightnings as last in the 3D geometry pipeline
     for (int32_t i = 0; i < m_LightningCount; i++) {
-        LIGHTNING *lightning = &m_LightningTable[i];
+        const LIGHTNING *const lightning = &m_LightningTable[i];
         S_Output_DrawLightningSegment(
             lightning->edges[0].pos.x, lightning->edges[0].pos.y,
             lightning->edges[0].pos.z, lightning->edges[0].thickness,
@@ -900,8 +900,8 @@ void Output_LoadBackdropImage(const char *filename)
 }
 
 void Output_DrawLightningSegment(
-    int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
-    int32_t width)
+    int32_t x1, int32_t y1, const int32_t z1, int32_t x2, int32_t y2,
+    const int32_t z2, const int32_t width)
 {
     if (m_LightningCount >= MAX_LIGHTNINGS) {
         return;
@@ -919,7 +919,7 @@ void Output_DrawLightningSegment(
     const int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
     const int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
 
-    LIGHTNING *lightning = &m_LightningTable[m_LightningCount];
+    LIGHTNING *const lightning = &m_LightningTable[m_LightningCount];
     lightning->edges[0].pos.x = x1;
     lightning->edges[0].pos.y = y1;
     lightning->edges[0].pos.z = z1;
