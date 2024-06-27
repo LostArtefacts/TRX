@@ -8,6 +8,7 @@
 
 #include <libtrx/memory.h>
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,16 +16,12 @@
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-void Requester_Init(REQUEST_INFO *req, uint16_t max_items)
+void Requester_Init(REQUEST_INFO *req, const uint16_t max_items)
 {
     req->max_items = max_items;
     req->heading_text = Memory_Alloc(sizeof(char) * req->item_text_len);
-    req->item_flags = Memory_Alloc(sizeof(uint32_t) * max_items);
+    req->item_blocked = Memory_Alloc(sizeof(bool) * max_items);
     req->item_texts = Memory_Alloc(sizeof(char *) * max_items);
-    for (int i = 0; i < max_items; i++) {
-        req->item_texts[i] = Memory_Alloc(sizeof(char) * req->item_text_len);
-        req->item_flags[i] = 0;
-    }
     Requester_ClearTextstrings(req);
 }
 
@@ -33,7 +30,7 @@ void Requester_Shutdown(REQUEST_INFO *req)
     Requester_ClearTextstrings(req);
 
     Memory_FreePointer(&req->heading_text);
-    Memory_FreePointer(&req->item_flags);
+    Memory_FreePointer(&req->item_blocked);
     for (int i = 0; i < req->max_items; i++) {
         Memory_FreePointer(&req->item_texts[i]);
     }
@@ -168,8 +165,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
     }
 
     if (g_InputDB.menu_confirm) {
-        if ((req->item_flags[req->requested] & RIF_BLOCKED)
-            && (req->flags & RIF_BLOCKABLE)) {
+        if (req->item_blocked[req->requested] && req->blockable) {
             g_Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
@@ -189,27 +185,60 @@ void Requester_SetHeading(REQUEST_INFO *req, const char *string)
     Text_Remove(req->heading);
     req->heading = NULL;
 
-    size_t out_size = snprintf(NULL, 0, "%s", string) + 1;
+    const size_t out_size = snprintf(NULL, 0, "%s", string) + 1;
     snprintf(req->heading_text, out_size, "%s", string);
 }
 
 void Requester_ChangeItem(
-    REQUEST_INFO *req, int32_t idx, const char *string, uint16_t flag)
+    REQUEST_INFO *req, int32_t idx, bool blocked, const char *fmt, ...)
 {
-    if (idx > 0 && idx < req->max_items && string) {
-        size_t out_size = snprintf(NULL, 0, "%s", string) + 1;
-        snprintf(req->item_texts[idx], out_size, "%s", string);
-        req->item_flags[idx] = flag;
+    if (idx < 0 || idx >= req->max_items || !fmt) {
+        return;
+    }
+
+    if (req->item_texts[idx]) {
+        Memory_FreePointer(&req->item_texts[idx]);
+    }
+
+    va_list va;
+    va_start(va, fmt);
+    const size_t out_size = vsnprintf(NULL, 0, fmt, va) + 1;
+    req->item_texts[idx] = Memory_Alloc(sizeof(char) * out_size);
+    va_end(va);
+    Memory_FreePointer(&req->item_texts[idx]);
+
+    if (req->item_texts[idx] != NULL) {
+        va_start(va, fmt);
+        vsnprintf(req->item_texts[idx], out_size, fmt, va);
+        req->item_blocked[idx] = blocked;
+        va_end(va);
     }
 }
 
-void Requester_AddItem(REQUEST_INFO *req, const char *string, uint16_t flag)
+void Requester_AddItem(REQUEST_INFO *req, bool blocked, const char *fmt, ...)
 {
-    if (req->items_used < req->max_items && string) {
-        size_t out_size = snprintf(NULL, 0, "%s", string) + 1;
-        snprintf(req->item_texts[req->items_used], out_size, "%s", string);
-        req->item_flags[req->items_used] = flag;
+    if (req->items_used >= req->max_items || !fmt) {
+        return;
+    }
+
+    if (req->item_texts[req->items_used]) {
+        Memory_FreePointer(&req->item_texts[req->items_used]);
+    }
+
+    va_list va;
+    va_start(va, fmt);
+    const size_t out_size = vsnprintf(NULL, 0, fmt, va) + 1;
+    req->item_texts[req->items_used] = Memory_Alloc(sizeof(char) * out_size);
+    va_end(va);
+
+    if (req->item_texts[req->items_used] != NULL) {
+        va_start(va, fmt);
+        vsnprintf(req->item_texts[req->items_used], out_size, fmt, va);
+        req->item_blocked[req->items_used] = blocked;
         req->items_used++;
+        va_end(va);
+    } else {
+        Memory_FreePointer(&req->item_texts[req->items_used]);
     }
 }
 

@@ -941,11 +941,6 @@ typedef enum SLIDING_PILLAR_STATE {
     SPS_MOVING = 2,
 } SLIDING_PILLAR_STATE;
 
-typedef enum REQUEST_INFO_FLAGS {
-    RIF_BLOCKED = 1 << 0,
-    RIF_BLOCKABLE = 1 << 1,
-} REQUEST_INFO_FLAGS;
-
 typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_TITLE = 0,
     GFL_NORMAL = 1,
@@ -1836,8 +1831,8 @@ typedef struct REQUEST_INFO {
     uint16_t line_old_offset;
     uint16_t pix_width;
     uint16_t line_height;
-    uint16_t flags;
-    uint32_t *item_flags;
+    bool blockable;
+    bool *item_blocked;
     int16_t x;
     int16_t y;
     char *heading_text;

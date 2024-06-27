@@ -45,8 +45,8 @@ static REQUEST_INFO m_PauseRequester = {
     .line_old_offset = 0,
     .pix_width = 160,
     .line_height = TEXT_HEIGHT + 7,
-    .flags = 0,
-    .item_flags = NULL,
+    .blockable = false,
+    .item_blocked = NULL,
     .x = 0,
     .y = 0,
     .heading_text = NULL,
@@ -89,14 +89,15 @@ static int32_t Phase_Pause_DisplayRequester(
         Requester_SetSize(&m_PauseRequester, 2, -48);
         m_PauseRequester.requested = requested;
         Requester_SetHeading(&m_PauseRequester, header);
-        Requester_AddItem(&m_PauseRequester, option1, 0);
-        Requester_AddItem(&m_PauseRequester, option2, 0);
+        Requester_AddItem(&m_PauseRequester, 0, "%s", option1);
+        Requester_AddItem(&m_PauseRequester, 0, "%s", option2);
         m_IsTextReady = true;
         g_InputDB = (INPUT_STATE) { 0 };
         g_Input = (INPUT_STATE) { 0 };
     }
 
-    // Don't allow back because it breaks the requestor items.
+    // Don't allow menu_back because it clears the requester text.
+    // The player must use the pause requester options to quit or continue.
     if (g_InputDB.menu_back) {
         g_InputDB = (INPUT_STATE) { 0 };
         g_Input = (INPUT_STATE) { 0 };
