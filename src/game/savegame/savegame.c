@@ -13,6 +13,7 @@
 #include "game/objects/general/scion.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/sliding_pillar.h"
+#include "game/requester.h"
 #include "game/room.h"
 #include "game/savegame/savegame_bson.h"
 #include "game/savegame/savegame_legacy.h"
@@ -432,8 +433,13 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
     if (ret) {
         REQUEST_INFO *req = &g_SavegameRequester;
         req->item_flags[slot_num] &= ~RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->item_text_len * slot_num], "%s %d",
+        size_t out_size =
+            snprintf(
+                NULL, 0, "%s %d", g_GameFlow.levels[g_CurrentLevel].level_title,
+                g_SaveCounter)
+            + 1;
+        snprintf(
+            req->item_texts[slot_num], out_size, "%s %d",
             g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
     }
 
@@ -509,7 +515,9 @@ void Savegame_ScanSavedGames(void)
 
                 char *full_path =
                     Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
-                sprintf(full_path, "%s/%s", SAVES_DIR, filename);
+                size_t out_size =
+                    snprintf(NULL, 0, "%s/%s", SAVES_DIR, filename) + 1;
+                snprintf(full_path, out_size, "%s/%s", SAVES_DIR, filename);
 
                 MYFILE *fp = NULL;
                 if (!fp) {
@@ -544,29 +552,33 @@ void Savegame_ScanSavedGames(void)
     }
 
     REQUEST_INFO *req = &g_SavegameRequester;
+    Requester_ClearTextstrings(req);
+    char savegame_text[MAX_LEVEL_NAME_LENGTH] = { 0 };
+    uint16_t flags = 0;
 
-    req->items = 0;
-    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+    for (int i = 0; i < req->max_items; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         if (savegame_info->level_title) {
-            req->item_flags[req->items] &= ~RIF_BLOCKED;
-
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len], "%s %d",
-                savegame_info->level_title, savegame_info->counter);
-
             if (savegame_info->counter == g_SaveCounter) {
                 m_NewestSlot = i;
             }
-        } else {
-            req->item_flags[req->items] |= RIF_BLOCKED;
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len],
-                GS(MISC_EMPTY_SLOT_FMT), i + 1);
-        }
 
-        req->items++;
+            flags = req->item_flags[req->items_used] & ~RIF_BLOCKED;
+            size_t out_size = snprintf(
+                                  NULL, 0, "%s %d", savegame_info->level_title,
+                                  savegame_info->counter)
+                + 1;
+            snprintf(
+                savegame_text, out_size, "%s %d", savegame_info->level_title,
+                savegame_info->counter);
+        } else {
+            flags = req->item_flags[req->items_used] | RIF_BLOCKED;
+            size_t out_size =
+                snprintf(NULL, 0, GS(MISC_EMPTY_SLOT_FMT), i + 1) + 1;
+            snprintf(savegame_text, out_size, GS(MISC_EMPTY_SLOT_FMT), i + 1);
+        }
+        Requester_AddItem(req, savegame_text, flags);
     }
 
     if (req->requested >= req->vis_lines) {
@@ -582,39 +594,48 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 {
     SAVEGAME_INFO *savegame_info =
         &m_SavegameInfo[g_GameInfo.current_save_slot];
-    req->items = 0;
+    req->items_used = 0;
 
     if (!savegame_info->features.select_level) {
-        req->item_flags[req->items] |= RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
+        req->item_flags[req->items_used] |= RIF_BLOCKED;
+        size_t out_size =
+            snprintf(NULL, 0, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_2)) + 1;
+        snprintf(
+            req->item_texts[0], out_size, "%s",
             GS(PASSPORT_LEGACY_SELECT_LEVEL_1));
-        req->items++;
-        req->item_flags[req->items] |= RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
+        req->items_used++;
+
+        req->item_flags[req->items_used] |= RIF_BLOCKED;
+        out_size = snprintf(NULL, 0, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
+        snprintf(
+            req->item_texts[1], out_size, "%s",
             GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
-        req->items++;
+        req->items_used++;
         req->requested = 0;
         req->line_offset = 0;
         return;
     }
 
+    int story_so_far_pos = 0;
     for (int i = g_GameFlow.first_level_num; i <= savegame_info->level_num;
          i++) {
-        req->item_flags[req->items] &= ~RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
+        req->item_flags[req->items_used] &= ~RIF_BLOCKED;
+        size_t out_size =
+            snprintf(NULL, 0, "%s", g_GameFlow.levels[i].level_title) + 1;
+        snprintf(
+            req->item_texts[req->items_used], out_size, "%s",
             g_GameFlow.levels[i].level_title);
-        req->items++;
+        req->items_used++;
     }
 
     if (g_InvMode == INV_TITLE_MODE) {
-        req->item_flags[req->items] &= ~RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
+        req->item_flags[req->items_used] &= ~RIF_BLOCKED;
+        size_t out_size =
+            snprintf(NULL, 0, "%s", GS(PASSPORT_STORY_SO_FAR)) + 1;
+        snprintf(
+            req->item_texts[req->items_used], out_size, "%s",
             GS(PASSPORT_STORY_SO_FAR));
-        req->items++;
+        req->items_used++;
     }
 
     req->requested = 0;

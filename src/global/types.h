@@ -1828,25 +1828,26 @@ typedef struct BOX_INFO {
 } BOX_INFO;
 
 typedef struct REQUEST_INFO {
-    uint16_t items;
+    uint16_t items_used;
+    uint16_t max_items;
     uint16_t requested;
     uint16_t vis_lines;
     uint16_t line_offset;
     uint16_t line_old_offset;
     uint16_t pix_width;
     uint16_t line_height;
+    uint16_t flags;
+    uint32_t *item_flags;
     int16_t x;
     int16_t y;
-    uint16_t flags;
-    const char *heading_text;
-    char *item_texts;
+    char *heading_text;
+    char **item_texts;
     int16_t item_text_len;
     TEXTSTRING *heading;
     TEXTSTRING *background;
     TEXTSTRING *moreup;
     TEXTSTRING *moredown;
     TEXTSTRING *texts[MAX_REQLINES];
-    uint16_t item_flags[MAX_REQLINES];
 } REQUEST_INFO;
 
 typedef struct IMOTION_INFO {
