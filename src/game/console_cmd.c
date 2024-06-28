@@ -709,7 +709,7 @@ static COMMAND_RESULT Console_Cmd_LoadGame(const char *args)
         return CR_FAILURE;
     }
 
-    if (g_SavegameRequester.item_blocked[slot_idx]) {
+    if (g_SavegameRequester.is_item_blocked[slot_idx]) {
         Console_Log(GS(OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT), slot_num);
         return CR_FAILURE;
     }

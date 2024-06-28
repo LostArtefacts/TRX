@@ -1831,13 +1831,12 @@ typedef struct REQUEST_INFO {
     uint16_t line_old_offset;
     uint16_t pix_width;
     uint16_t line_height;
-    bool blockable;
-    bool *item_blocked;
+    bool is_blockable;
+    bool *is_item_blocked;
     int16_t x;
     int16_t y;
     char *heading_text;
     char **item_texts;
-    int16_t item_text_len;
     TEXTSTRING *heading;
     TEXTSTRING *background;
     TEXTSTRING *moreup;

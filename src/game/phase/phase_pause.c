@@ -21,7 +21,6 @@
 #include <stdint.h>
 
 #define PAUSE_MAX_ITEMS 5
-#define PAUSE_MAX_TEXT_LENGTH 50
 #define PAUSE_NUM_ITEM_TEXTS 2
 
 typedef enum STATE {
@@ -35,7 +34,6 @@ static bool m_IsTextReady = false;
 
 static TEXTSTRING *m_PausedText = NULL;
 
-static char m_PauseStrings[PAUSE_MAX_ITEMS][PAUSE_MAX_TEXT_LENGTH] = { 0 };
 static REQUEST_INFO m_PauseRequester = {
     .items_used = 0,
     .max_items = PAUSE_NUM_ITEM_TEXTS,
@@ -45,13 +43,12 @@ static REQUEST_INFO m_PauseRequester = {
     .line_old_offset = 0,
     .pix_width = 160,
     .line_height = TEXT_HEIGHT + 7,
-    .blockable = false,
-    .item_blocked = NULL,
+    .is_blockable = false,
+    .is_item_blocked = NULL,
     .x = 0,
     .y = 0,
     .heading_text = NULL,
     .item_texts = NULL,
-    .item_text_len = PAUSE_MAX_TEXT_LENGTH,
     0,
 };
 
@@ -89,8 +86,8 @@ static int32_t Phase_Pause_DisplayRequester(
         Requester_SetSize(&m_PauseRequester, 2, -48);
         m_PauseRequester.requested = requested;
         Requester_SetHeading(&m_PauseRequester, header);
-        Requester_AddItem(&m_PauseRequester, 0, "%s", option1);
-        Requester_AddItem(&m_PauseRequester, 0, "%s", option2);
+        Requester_AddItem(&m_PauseRequester, false, "%s", option1);
+        Requester_AddItem(&m_PauseRequester, false, "%s", option2);
         m_IsTextReady = true;
         g_InputDB = (INPUT_STATE) { 0 };
         g_Input = (INPUT_STATE) { 0 };
