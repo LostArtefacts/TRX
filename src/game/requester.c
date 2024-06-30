@@ -17,12 +17,12 @@
 #define BOX_PADDING 10
 
 static void Requester_SetItem(
-    REQUEST_INFO *req, int32_t idx, bool is_blocked, const char *const fmt,
-    va_list va);
+    REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
+    const char *const fmt, va_list va);
 
 static void Requester_SetItem(
-    REQUEST_INFO *req, int32_t idx, bool is_blocked, const char *const fmt,
-    va_list va)
+    REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
+    const char *const fmt, va_list va)
 {
     if (req->item_texts[idx]) {
         Memory_FreePointer(&req->item_texts[idx]);
@@ -214,7 +214,8 @@ void Requester_SetHeading(REQUEST_INFO *req, const char *string)
 }
 
 void Requester_ChangeItem(
-    REQUEST_INFO *req, int32_t idx, bool is_blocked, const char *const fmt, ...)
+    REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
+    const char *const fmt, ...)
 {
     if (idx < 0 || idx >= req->max_items || !fmt) {
         return;
@@ -227,7 +228,7 @@ void Requester_ChangeItem(
 }
 
 void Requester_AddItem(
-    REQUEST_INFO *req, bool is_blocked, const char *const fmt, ...)
+    REQUEST_INFO *req, const bool is_blocked, const char *const fmt, ...)
 {
     if (req->items_used >= req->max_items || !fmt) {
         return;
