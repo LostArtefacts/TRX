@@ -44,12 +44,10 @@ static REQUEST_INFO m_PauseRequester = {
     .pix_width = 160,
     .line_height = TEXT_HEIGHT + 7,
     .is_blockable = false,
-    .is_item_blocked = NULL,
     .x = 0,
     .y = 0,
     .heading_text = NULL,
-    .item_texts = NULL,
-    0,
+    .items = NULL,
 };
 
 static void Phase_Pause_RemoveText(void);

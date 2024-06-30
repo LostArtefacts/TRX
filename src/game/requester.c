@@ -24,24 +24,23 @@ static void Requester_SetItem(
     REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
     const char *const fmt, va_list va)
 {
-    if (req->item_texts[idx]) {
-        Memory_FreePointer(&req->item_texts[idx]);
+    if (req->items[idx].content_text) {
+        Memory_FreePointer(&req->items[idx].content_text);
     }
 
     va_list va_dup;
     va_copy(va_dup, va);
     const size_t out_size = vsnprintf(NULL, 0, fmt, va) + 1;
-    req->item_texts[idx] = Memory_Alloc(sizeof(char) * out_size);
-    vsnprintf(req->item_texts[idx], out_size, fmt, va_dup);
-    req->is_item_blocked[idx] = is_blocked;
+    req->items[idx].content_text = Memory_Alloc(sizeof(char) * out_size);
+    vsnprintf(req->items[idx].content_text, out_size, fmt, va_dup);
+    req->items[idx].is_blocked = is_blocked;
     va_end(va_dup);
 }
 
 void Requester_Init(REQUEST_INFO *req, const uint16_t max_items)
 {
     req->max_items = max_items;
-    req->is_item_blocked = Memory_Alloc(sizeof(bool) * max_items);
-    req->item_texts = Memory_Alloc(sizeof(char *) * max_items);
+    req->items = Memory_Alloc(sizeof(REQUESTER_ITEM) * max_items);
     Requester_ClearTextstrings(req);
 }
 
@@ -50,11 +49,10 @@ void Requester_Shutdown(REQUEST_INFO *req)
     Requester_ClearTextstrings(req);
 
     Memory_FreePointer(&req->heading_text);
-    Memory_FreePointer(&req->is_item_blocked);
     for (int i = 0; i < req->max_items; i++) {
-        Memory_FreePointer(&req->item_texts[i]);
+        Memory_FreePointer(&req->items[i].content_text);
     }
-    Memory_FreePointer(&req->item_texts);
+    Memory_FreePointer(&req->items);
 }
 
 void Requester_ClearTextstrings(REQUEST_INFO *req)
@@ -68,9 +66,9 @@ void Requester_ClearTextstrings(REQUEST_INFO *req)
     Text_Remove(req->moredown);
     req->moredown = NULL;
 
-    for (int i = 0; i < MAX_REQLINES; i++) {
-        Text_Remove(req->texts[i]);
-        req->texts[i] = NULL;
+    for (int i = 0; i < req->max_items; i++) {
+        Text_Remove(req->items[i].content);
+        req->items[i].content = NULL;
     }
 
     req->items_used = 0;
@@ -157,35 +155,38 @@ int32_t Requester_Display(REQUEST_INFO *req)
     }
 
     for (int i = 0; i < line_qty; i++) {
-        if (!req->texts[i]) {
-            req->texts[i] = Text_Create(
+        if (!req->items[i].content) {
+            req->items[i].content = Text_Create(
                 0, line_one_off + req->line_height * i,
-                req->item_texts[req->line_offset + i]);
-            Text_CentreH(req->texts[i], 1);
-            Text_AlignBottom(req->texts[i], 1);
+                req->items[req->line_offset + i].content_text);
+            Text_CentreH(req->items[i].content, 1);
+            Text_AlignBottom(req->items[i].content, 1);
         }
         if (req->line_offset + i == req->requested) {
             Text_AddBackground(
-                req->texts[i], req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0,
-                0, 0, TS_REQUESTED);
-            Text_AddOutline(req->texts[i], true, TS_REQUESTED);
+                req->items[i].content,
+                req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0, 0, 0,
+                TS_REQUESTED);
+            Text_AddOutline(req->items[i].content, true, TS_REQUESTED);
         } else {
-            Text_RemoveBackground(req->texts[i]);
-            Text_RemoveOutline(req->texts[i]);
+            Text_RemoveBackground(req->items[i].content);
+            Text_RemoveOutline(req->items[i].content);
         }
     }
 
     if (req->line_offset != req->line_old_offset) {
         for (int i = 0; i < line_qty; i++) {
-            if (req->texts[i]) {
+            if (req->items[i].content) {
                 Text_ChangeText(
-                    req->texts[i], req->item_texts[req->line_offset + i]);
+                    req->items[i].content,
+                    req->items[req->line_offset + i].content_text);
+                ;
             }
         }
     }
 
     if (g_InputDB.menu_confirm) {
-        if (req->is_item_blocked[req->requested] && req->is_blockable) {
+        if (req->is_blockable && req->items[req->requested].is_blocked) {
             g_Input = (INPUT_STATE) { 0 };
             return 0;
         } else {

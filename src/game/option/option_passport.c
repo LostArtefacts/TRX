@@ -58,12 +58,10 @@ static REQUEST_INFO m_NewGameRequester = {
     .pix_width = 162,
     .line_height = TEXT_HEIGHT + 7,
     .is_blockable = false,
-    .is_item_blocked = NULL,
     .x = 0,
     .y = 0,
     .heading_text = NULL,
-    .item_texts = NULL,
-    0,
+    .items = NULL,
 };
 
 static REQUEST_INFO m_SelectLevelRequester = {
@@ -76,12 +74,10 @@ static REQUEST_INFO m_SelectLevelRequester = {
     .pix_width = 292,
     .line_height = TEXT_HEIGHT + 7,
     .is_blockable = false,
-    .is_item_blocked = NULL,
     .x = 0,
     .y = -32,
     .heading_text = NULL,
-    .item_texts = NULL,
-    0,
+    .items = NULL,
 };
 
 REQUEST_INFO g_SavegameRequester = {
@@ -94,12 +90,10 @@ REQUEST_INFO g_SavegameRequester = {
     .pix_width = 292,
     .line_height = TEXT_HEIGHT + 7,
     .is_blockable = false,
-    .is_item_blocked = NULL,
     .x = 0,
     .y = -32,
     .heading_text = NULL,
-    .item_texts = NULL,
-    0,
+    .items = NULL,
 };
 
 static void Option_PassportInitText(void);
@@ -409,7 +403,7 @@ static void Option_PassportLoadGame(void)
             m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
         }
     } else if (m_PassportStatus.mode == PASSPORT_MODE_LOAD_GAME) {
-        if (!g_SavegameRequester.is_item_blocked[g_SavegameRequester.requested]
+        if (!g_SavegameRequester.items[g_SavegameRequester.requested].is_blocked
             || !g_SavegameRequester.is_blockable) {
             if (g_InputDB.menu_right) {
                 g_GameInfo.current_save_slot = g_SavegameRequester.requested;
@@ -426,10 +420,10 @@ static void Option_PassportLoadGame(void)
                     Text_SetPos(
                         m_Text[TEXT_LEVEL_ARROW_RIGHT], 130,
                         g_SavegameRequester
-                            .texts
+                            .items
                                 [g_SavegameRequester.requested
                                  - g_SavegameRequester.line_offset]
-                            ->pos.y);
+                            .content->pos.y);
                     Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], false);
                 } else {
                     Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
@@ -440,7 +434,7 @@ static void Option_PassportLoadGame(void)
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
         }
 
-        if (g_SavegameRequester.is_item_blocked[g_SavegameRequester.requested]
+        if (g_SavegameRequester.items[g_SavegameRequester.requested].is_blocked
             && g_SavegameRequester.is_blockable) {
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
         }
@@ -465,10 +459,10 @@ static void Option_PassportSelectLevel(void)
             Text_SetPos(
                 m_Text[TEXT_LEVEL_ARROW_LEFT], -130,
                 m_SelectLevelRequester
-                    .texts
+                    .items
                         [m_SelectLevelRequester.requested
                          - m_SelectLevelRequester.line_offset]
-                    ->pos.y);
+                    .content->pos.y);
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], false);
         } else {
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);

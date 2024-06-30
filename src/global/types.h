@@ -1822,6 +1822,12 @@ typedef struct BOX_INFO {
     int16_t overlap_index;
 } BOX_INFO;
 
+typedef struct {
+    bool is_blocked;
+    char *content_text;
+    TEXTSTRING *content;
+} REQUESTER_ITEM;
+
 typedef struct REQUEST_INFO {
     uint16_t items_used;
     uint16_t max_items;
@@ -1832,16 +1838,14 @@ typedef struct REQUEST_INFO {
     uint16_t pix_width;
     uint16_t line_height;
     bool is_blockable;
-    bool *is_item_blocked;
     int16_t x;
     int16_t y;
     char *heading_text;
-    char **item_texts;
     TEXTSTRING *heading;
     TEXTSTRING *background;
     TEXTSTRING *moreup;
     TEXTSTRING *moredown;
-    TEXTSTRING *texts[MAX_REQLINES];
+    REQUESTER_ITEM *items;
 } REQUEST_INFO;
 
 typedef struct IMOTION_INFO {
