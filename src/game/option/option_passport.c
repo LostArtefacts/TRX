@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #define MAX_GAME_MODES 4
-#define MAX_GAME_MODE_LENGTH 20
 
 typedef enum PASSPORT_TEXT {
     TEXT_PAGE_NAME = 0,
@@ -48,59 +47,53 @@ static PASSPORT_STATUS m_PassportStatus = {
 
 static bool m_IsTextInit = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
-static char m_NewGameStrings[MAX_GAME_MODES][MAX_GAME_MODE_LENGTH] = { 0 };
-static char **m_SelectLevelStrings = NULL;
-static char *m_SelectLevelBuffer = NULL;
 
 static REQUEST_INFO m_NewGameRequester = {
-    .items = MAX_GAME_MODES,
+    .items_used = 0,
+    .max_items = MAX_GAME_MODES,
     .requested = 0,
     .vis_lines = MAX_GAME_MODES,
     .line_offset = 0,
     .line_old_offset = 0,
     .pix_width = 162,
     .line_height = TEXT_HEIGHT + 7,
+    .is_blockable = false,
     .x = 0,
     .y = 0,
-    .flags = 0,
     .heading_text = NULL,
-    .item_texts = &m_NewGameStrings[0][0],
-    .item_text_len = MAX_GAME_MODE_LENGTH,
-    0,
+    .items = NULL,
 };
 
 static REQUEST_INFO m_SelectLevelRequester = {
-    .items = 1,
+    .items_used = 0,
+    .max_items = 2,
     .requested = 0,
     .vis_lines = -1,
     .line_offset = 0,
     .line_old_offset = 0,
     .pix_width = 292,
     .line_height = TEXT_HEIGHT + 7,
+    .is_blockable = false,
     .x = 0,
     .y = -32,
-    .flags = 0,
     .heading_text = NULL,
-    .item_texts = NULL,
-    .item_text_len = MAX_LEVEL_NAME_LENGTH,
-    0,
+    .items = NULL,
 };
 
 REQUEST_INFO g_SavegameRequester = {
-    .items = 1,
+    .items_used = 0,
+    .max_items = 1,
     .requested = 0,
     .vis_lines = -1,
     .line_offset = 0,
     .line_old_offset = 0,
     .pix_width = 292,
     .line_height = TEXT_HEIGHT + 7,
+    .is_blockable = false,
     .x = 0,
     .y = -32,
-    .flags = 0,
     .heading_text = NULL,
-    .item_texts = NULL,
-    .item_text_len = MAX_LEVEL_NAME_LENGTH,
-    0,
+    .items = NULL,
 };
 
 static void Option_PassportInitText(void);
@@ -122,16 +115,16 @@ static void Option_PassportFlipLeft(INVENTORY_ITEM *inv_item);
 
 void Option_PassportInit(void)
 {
-    g_SavegameRequester.item_texts = Memory_Alloc(
-        g_Config.maximum_save_slots * g_SavegameRequester.item_text_len);
-    m_SelectLevelRequester.item_texts = Memory_Alloc(
-        (g_GameFlow.level_count + 1) * m_SelectLevelRequester.item_text_len);
+    Requester_Init(&g_SavegameRequester, g_Config.maximum_save_slots);
+    Requester_Init(&m_SelectLevelRequester, g_GameFlow.level_count + 1);
+    Requester_Init(&m_NewGameRequester, MAX_GAME_MODES);
 }
 
 void Option_PassportShutdown(void)
 {
-    Memory_FreePointer(&g_SavegameRequester.item_texts);
-    Memory_FreePointer(&m_SelectLevelRequester.item_texts);
+    Requester_Shutdown(&g_SavegameRequester);
+    Requester_Shutdown(&m_SelectLevelRequester);
+    Requester_Shutdown(&m_NewGameRequester);
 }
 
 static void Option_PassportInitText(void)
@@ -272,7 +265,7 @@ static void Option_PassportDeterminePages(void)
 static void Option_PassportInitSaveRequester(int16_t page_num)
 {
     REQUEST_INFO *req = &g_SavegameRequester;
-    Requester_Init(req);
+    Requester_ClearTextstrings(req);
     Requester_SetHeading(
         req,
         page_num == PAGE_1 ? GS(PASSPORT_LOAD_GAME) : GS(PASSPORT_SAVE_GAME));
@@ -302,8 +295,8 @@ static void Option_PassportInitSaveRequester(int16_t page_num)
 static void Option_PassportInitSelectLevelRequester(void)
 {
     REQUEST_INFO *req = &m_SelectLevelRequester;
-    req->flags |= RIF_BLOCKABLE;
-    Requester_Init(req);
+    req->is_blockable = true;
+    Requester_ClearTextstrings(req);
     Requester_SetHeading(req, GS(PASSPORT_SELECT_LEVEL));
 
     if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
@@ -331,12 +324,12 @@ static void Option_PassportInitSelectLevelRequester(void)
 static void Option_PassportInitNewGameRequester(void)
 {
     REQUEST_INFO *req = &m_NewGameRequester;
-    Requester_Init(req);
+    Requester_ClearTextstrings(req);
     Requester_SetHeading(req, GS(PASSPORT_SELECT_MODE));
-    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME), 0);
-    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME_PLUS), 0);
-    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME_JP), 0);
-    Requester_AddItem(req, GS(PASSPORT_MODE_NEW_GAME_JP_PLUS), 0);
+    Requester_AddItem(req, false, "%s", GS(PASSPORT_MODE_NEW_GAME));
+    Requester_AddItem(req, false, "%s", GS(PASSPORT_MODE_NEW_GAME_PLUS));
+    Requester_AddItem(req, false, "%s", GS(PASSPORT_MODE_NEW_GAME_JP));
+    Requester_AddItem(req, false, "%s", GS(PASSPORT_MODE_NEW_GAME_JP_PLUS));
     req->vis_lines = MAX_GAME_MODES;
 
     req->line_offset = 0;
@@ -400,7 +393,7 @@ static void Option_PassportShowSelectLevel(void)
 static void Option_PassportLoadGame(void)
 {
     Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_LOAD_GAME));
-    g_SavegameRequester.flags |= RIF_BLOCKABLE;
+    g_SavegameRequester.is_blockable = true;
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
@@ -410,13 +403,12 @@ static void Option_PassportLoadGame(void)
             m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
         }
     } else if (m_PassportStatus.mode == PASSPORT_MODE_LOAD_GAME) {
-        if (!(g_SavegameRequester.item_flags[g_SavegameRequester.requested]
-              & RIF_BLOCKED)
-            || !(g_SavegameRequester.flags & RIF_BLOCKABLE)) {
+        if (!g_SavegameRequester.items[g_SavegameRequester.requested].is_blocked
+            || !g_SavegameRequester.is_blockable) {
             if (g_InputDB.menu_right) {
                 g_GameInfo.current_save_slot = g_SavegameRequester.requested;
                 Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
-                Requester_Remove(&g_SavegameRequester);
+                Requester_ClearTextstrings(&g_SavegameRequester);
                 Option_PassportInitSelectLevelRequester();
                 m_PassportStatus.mode = PASSPORT_MODE_SELECT_LEVEL;
                 g_Input = (INPUT_STATE) { 0 };
@@ -428,10 +420,10 @@ static void Option_PassportLoadGame(void)
                     Text_SetPos(
                         m_Text[TEXT_LEVEL_ARROW_RIGHT], 130,
                         g_SavegameRequester
-                            .texts
+                            .items
                                 [g_SavegameRequester.requested
                                  - g_SavegameRequester.line_offset]
-                            ->pos.y);
+                            .content->pos.y);
                     Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], false);
                 } else {
                     Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
@@ -442,9 +434,8 @@ static void Option_PassportLoadGame(void)
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
         }
 
-        if ((g_SavegameRequester.item_flags[g_SavegameRequester.requested]
-             & RIF_BLOCKED)
-            && (g_SavegameRequester.flags & RIF_BLOCKABLE)) {
+        if (g_SavegameRequester.items[g_SavegameRequester.requested].is_blocked
+            && g_SavegameRequester.is_blockable) {
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_RIGHT], true);
         }
     } else if (m_PassportStatus.mode == PASSPORT_MODE_SELECT_LEVEL) {
@@ -456,7 +447,7 @@ static void Option_PassportSelectLevel(void)
 {
     if (g_InputDB.menu_left) {
         Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
-        Requester_Remove(&m_SelectLevelRequester);
+        Requester_ClearTextstrings(&m_SelectLevelRequester);
         Option_PassportInitSaveRequester(m_PassportStatus.page);
         m_PassportStatus.mode = PASSPORT_MODE_LOAD_GAME;
         g_Input = (INPUT_STATE) { 0 };
@@ -468,10 +459,10 @@ static void Option_PassportSelectLevel(void)
             Text_SetPos(
                 m_Text[TEXT_LEVEL_ARROW_LEFT], -130,
                 m_SelectLevelRequester
-                    .texts
+                    .items
                         [m_SelectLevelRequester.requested
                          - m_SelectLevelRequester.line_offset]
-                    ->pos.y);
+                    .content->pos.y);
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], false);
         } else {
             Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
@@ -482,7 +473,7 @@ static void Option_PassportSelectLevel(void)
 static void Option_PassportSaveGame(void)
 {
     Text_ChangeText(m_Text[TEXT_PAGE_NAME], GS(PASSPORT_SAVE_GAME));
-    g_SavegameRequester.flags &= ~RIF_BLOCKABLE;
+    g_SavegameRequester.is_blockable = false;
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {

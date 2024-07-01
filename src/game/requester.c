@@ -6,27 +6,56 @@
 #include "global/const.h"
 #include "global/types.h"
 
+#include <libtrx/memory.h>
+
+#include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-void Requester_Init(REQUEST_INFO *req)
+static void Requester_SetItem(
+    REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
+    const char *const fmt, va_list va);
+
+static void Requester_SetItem(
+    REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
+    const char *const fmt, va_list va)
 {
-    req->heading = NULL;
-    req->background = NULL;
-    req->moreup = NULL;
-    req->moredown = NULL;
-    for (int i = 0; i < MAX_REQLINES; i++) {
-        req->texts[i] = NULL;
-        req->item_flags[i] = 0;
+    if (req->items[idx].content_text) {
+        Memory_FreePointer(&req->items[idx].content_text);
     }
 
-    req->items = 0;
+    va_list va_dup;
+    va_copy(va_dup, va);
+    const size_t out_size = vsnprintf(NULL, 0, fmt, va) + 1;
+    req->items[idx].content_text = Memory_Alloc(sizeof(char) * out_size);
+    vsnprintf(req->items[idx].content_text, out_size, fmt, va_dup);
+    req->items[idx].is_blocked = is_blocked;
+    va_end(va_dup);
 }
 
-void Requester_Remove(REQUEST_INFO *req)
+void Requester_Init(REQUEST_INFO *req, const uint16_t max_items)
+{
+    req->max_items = max_items;
+    req->items = Memory_Alloc(sizeof(REQUESTER_ITEM) * max_items);
+    Requester_ClearTextstrings(req);
+}
+
+void Requester_Shutdown(REQUEST_INFO *req)
+{
+    Requester_ClearTextstrings(req);
+
+    Memory_FreePointer(&req->heading_text);
+    for (int i = 0; i < req->max_items; i++) {
+        Memory_FreePointer(&req->items[i].content_text);
+    }
+    Memory_FreePointer(&req->items);
+}
+
+void Requester_ClearTextstrings(REQUEST_INFO *req)
 {
     Text_Remove(req->heading);
     req->heading = NULL;
@@ -36,10 +65,13 @@ void Requester_Remove(REQUEST_INFO *req)
     req->moreup = NULL;
     Text_Remove(req->moredown);
     req->moredown = NULL;
-    for (int i = 0; i < MAX_REQLINES; i++) {
-        Text_Remove(req->texts[i]);
-        req->texts[i] = NULL;
+
+    for (int i = 0; i < req->max_items; i++) {
+        Text_Remove(req->items[i].content);
+        req->items[i].content = NULL;
     }
+
+    req->items_used = 0;
 }
 
 int32_t Requester_Display(REQUEST_INFO *req)
@@ -53,8 +85,8 @@ int32_t Requester_Display(REQUEST_INFO *req)
     int32_t line_one_off = edge_y - lines_height - BOX_PADDING;
     int32_t box_y = line_one_off - req->line_height - BOX_PADDING - BOX_BORDER;
     int32_t line_qty = req->vis_lines;
-    if (req->items < req->vis_lines) {
-        line_qty = req->items;
+    if (req->items_used < req->vis_lines) {
+        line_qty = req->items_used;
     }
 
     if (!req->background) {
@@ -78,7 +110,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
     }
 
     if (g_InputDB.menu_down) {
-        if (req->requested < req->items - 1) {
+        if (req->requested < req->items_used - 1) {
             req->requested++;
         }
         req->line_old_offset = req->line_offset;
@@ -110,7 +142,7 @@ int32_t Requester_Display(REQUEST_INFO *req)
         req->moreup = NULL;
     }
 
-    if (req->items > req->vis_lines + req->line_offset) {
+    if (req->items_used > req->vis_lines + req->line_offset) {
         if (!req->moredown) {
             req->moredown = Text_Create(req->x, edge_y - 12, "]");
             Text_SetScale(req->moredown, PHD_ONE * 2 / 3, PHD_ONE * 2 / 3);
@@ -123,46 +155,46 @@ int32_t Requester_Display(REQUEST_INFO *req)
     }
 
     for (int i = 0; i < line_qty; i++) {
-        if (!req->texts[i]) {
-            req->texts[i] = Text_Create(
+        if (!req->items[i].content) {
+            req->items[i].content = Text_Create(
                 0, line_one_off + req->line_height * i,
-                &req->item_texts[req->item_text_len * (req->line_offset + i)]);
-            Text_CentreH(req->texts[i], 1);
-            Text_AlignBottom(req->texts[i], 1);
+                req->items[req->line_offset + i].content_text);
+            Text_CentreH(req->items[i].content, 1);
+            Text_AlignBottom(req->items[i].content, 1);
         }
         if (req->line_offset + i == req->requested) {
             Text_AddBackground(
-                req->texts[i], req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0,
-                0, 0, TS_REQUESTED);
-            Text_AddOutline(req->texts[i], true, TS_REQUESTED);
+                req->items[i].content,
+                req->pix_width - BOX_PADDING - 1 * BOX_BORDER, 0, 0, 0,
+                TS_REQUESTED);
+            Text_AddOutline(req->items[i].content, true, TS_REQUESTED);
         } else {
-            Text_RemoveBackground(req->texts[i]);
-            Text_RemoveOutline(req->texts[i]);
+            Text_RemoveBackground(req->items[i].content);
+            Text_RemoveOutline(req->items[i].content);
         }
     }
 
     if (req->line_offset != req->line_old_offset) {
         for (int i = 0; i < line_qty; i++) {
-            if (req->texts[i]) {
+            if (req->items[i].content) {
                 Text_ChangeText(
-                    req->texts[i],
-                    &req->item_texts
-                         [req->item_text_len * (req->line_offset + i)]);
+                    req->items[i].content,
+                    req->items[req->line_offset + i].content_text);
+                ;
             }
         }
     }
 
     if (g_InputDB.menu_confirm) {
-        if ((req->item_flags[req->requested] & RIF_BLOCKED)
-            && (req->flags & RIF_BLOCKABLE)) {
+        if (req->is_blockable && req->items[req->requested].is_blocked) {
             g_Input = (INPUT_STATE) { 0 };
             return 0;
         } else {
-            Requester_Remove(req);
+            Requester_ClearTextstrings(req);
             return req->requested + 1;
         }
     } else if (g_InputDB.menu_back) {
-        Requester_Remove(req);
+        Requester_ClearTextstrings(req);
         return -1;
     }
 
@@ -173,35 +205,41 @@ void Requester_SetHeading(REQUEST_INFO *req, const char *string)
 {
     Text_Remove(req->heading);
     req->heading = NULL;
-
-    if (string) {
-        req->heading_text = string; // unsafe
-    } else {
-        req->heading_text = NULL;
+    if (req->heading_text) {
+        Memory_FreePointer(&req->heading_text);
     }
+
+    const size_t out_size = snprintf(NULL, 0, "%s", string) + 1;
+    req->heading_text = Memory_Alloc(sizeof(char) * out_size);
+    snprintf(req->heading_text, out_size, "%s", string);
 }
 
 void Requester_ChangeItem(
-    REQUEST_INFO *req, int32_t idx, const char *string, uint16_t flag)
+    REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
+    const char *const fmt, ...)
 {
-    if (string) {
-        strcpy(&req->item_texts[idx * req->item_text_len], string);
-        req->item_flags[idx] = flag;
-    } else {
-        req->item_flags[idx] = 0;
+    if (idx < 0 || idx >= req->max_items || !fmt) {
+        return;
     }
+
+    va_list va;
+    va_start(va, fmt);
+    Requester_SetItem(req, idx, is_blocked, fmt, va);
+    va_end(va);
 }
 
-void Requester_AddItem(REQUEST_INFO *req, const char *string, uint16_t flag)
+void Requester_AddItem(
+    REQUEST_INFO *req, const bool is_blocked, const char *const fmt, ...)
 {
-    if (string) {
-        strcpy(&req->item_texts[req->items * req->item_text_len], string);
-        req->item_flags[req->items] = flag;
-    } else {
-        req->item_flags[req->items] = 0;
+    if (req->items_used >= req->max_items || !fmt) {
+        return;
     }
 
-    req->items++;
+    va_list va;
+    va_start(va, fmt);
+    Requester_SetItem(req, req->items_used, is_blocked, fmt, va);
+    va_end(va);
+    req->items_used++;
 }
 
 void Requester_SetSize(REQUEST_INFO *req, int32_t max_lines, int16_t y)

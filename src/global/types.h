@@ -941,11 +941,6 @@ typedef enum SLIDING_PILLAR_STATE {
     SPS_MOVING = 2,
 } SLIDING_PILLAR_STATE;
 
-typedef enum REQUEST_INFO_FLAGS {
-    RIF_BLOCKED = 1 << 0,
-    RIF_BLOCKABLE = 1 << 1,
-} REQUEST_INFO_FLAGS;
-
 typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_TITLE = 0,
     GFL_NORMAL = 1,
@@ -1827,26 +1822,30 @@ typedef struct BOX_INFO {
     int16_t overlap_index;
 } BOX_INFO;
 
+typedef struct {
+    bool is_blocked;
+    char *content_text;
+    TEXTSTRING *content;
+} REQUESTER_ITEM;
+
 typedef struct REQUEST_INFO {
-    uint16_t items;
+    uint16_t items_used;
+    uint16_t max_items;
     uint16_t requested;
     uint16_t vis_lines;
     uint16_t line_offset;
     uint16_t line_old_offset;
     uint16_t pix_width;
     uint16_t line_height;
+    bool is_blockable;
     int16_t x;
     int16_t y;
-    uint16_t flags;
-    const char *heading_text;
-    char *item_texts;
-    int16_t item_text_len;
+    char *heading_text;
     TEXTSTRING *heading;
     TEXTSTRING *background;
     TEXTSTRING *moreup;
     TEXTSTRING *moredown;
-    TEXTSTRING *texts[MAX_REQLINES];
-    uint16_t item_flags[MAX_REQLINES];
+    REQUESTER_ITEM *items;
 } REQUEST_INFO;
 
 typedef struct IMOTION_INFO {

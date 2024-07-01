@@ -13,6 +13,7 @@
 #include "game/objects/general/scion.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/sliding_pillar.h"
+#include "game/requester.h"
 #include "game/room.h"
 #include "game/savegame/savegame_bson.h"
 #include "game/savegame/savegame_legacy.h"
@@ -431,9 +432,8 @@ bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
 
     if (ret) {
         REQUEST_INFO *req = &g_SavegameRequester;
-        req->item_flags[slot_num] &= ~RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->item_text_len * slot_num], "%s %d",
+        Requester_ChangeItem(
+            req, slot_num, false, "%s %d",
             g_GameFlow.levels[g_CurrentLevel].level_title, g_SaveCounter);
     }
 
@@ -544,29 +544,21 @@ void Savegame_ScanSavedGames(void)
     }
 
     REQUEST_INFO *req = &g_SavegameRequester;
+    Requester_ClearTextstrings(req);
 
-    req->items = 0;
-    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+    for (int i = 0; i < req->max_items; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
         if (savegame_info->level_title) {
-            req->item_flags[req->items] &= ~RIF_BLOCKED;
-
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len], "%s %d",
-                savegame_info->level_title, savegame_info->counter);
-
             if (savegame_info->counter == g_SaveCounter) {
                 m_NewestSlot = i;
             }
+            Requester_AddItem(
+                req, false, "%s %d", savegame_info->level_title,
+                savegame_info->counter);
         } else {
-            req->item_flags[req->items] |= RIF_BLOCKED;
-            sprintf(
-                &req->item_texts[req->items * req->item_text_len],
-                GS(MISC_EMPTY_SLOT_FMT), i + 1);
+            Requester_AddItem(req, true, GS(MISC_EMPTY_SLOT_FMT), i + 1);
         }
-
-        req->items++;
     }
 
     if (req->requested >= req->vis_lines) {
@@ -582,19 +574,10 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 {
     SAVEGAME_INFO *savegame_info =
         &m_SavegameInfo[g_GameInfo.current_save_slot];
-    req->items = 0;
 
     if (!savegame_info->features.select_level) {
-        req->item_flags[req->items] |= RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
-            GS(PASSPORT_LEGACY_SELECT_LEVEL_1));
-        req->items++;
-        req->item_flags[req->items] |= RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
-            GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
-        req->items++;
+        Requester_AddItem(req, true, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_1));
+        Requester_AddItem(req, true, "%s", GS(PASSPORT_LEGACY_SELECT_LEVEL_2));
         req->requested = 0;
         req->line_offset = 0;
         return;
@@ -602,19 +585,11 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 
     for (int i = g_GameFlow.first_level_num; i <= savegame_info->level_num;
          i++) {
-        req->item_flags[req->items] &= ~RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
-            g_GameFlow.levels[i].level_title);
-        req->items++;
+        Requester_AddItem(req, false, "%s", g_GameFlow.levels[i].level_title);
     }
 
     if (g_InvMode == INV_TITLE_MODE) {
-        req->item_flags[req->items] &= ~RIF_BLOCKED;
-        sprintf(
-            &req->item_texts[req->items * req->item_text_len], "%s",
-            GS(PASSPORT_STORY_SO_FAR));
-        req->items++;
+        Requester_AddItem(req, false, "%s", GS(PASSPORT_STORY_SO_FAR));
     }
 
     req->requested = 0;
