@@ -36,7 +36,7 @@ static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
         const GAMEFLOW_OPTION override = g_GameInfo.override_option;
         g_GameInfo.override_option = GF_PHASE_CONTINUE;
         return (GAMEFLOW_COMMAND) {
-            .instruction = override,
+            .command = override,
             .param = 0,
         };
     }
@@ -45,7 +45,7 @@ static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
         return m_Phaser->control(nframes);
     }
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }
@@ -140,7 +140,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
     GAMEFLOW_COMMAND ret = {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
     m_Running = true;
@@ -155,7 +155,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
-            if (ret.instruction != GF_PHASE_CONTINUE) {
+            if (ret.command != GF_PHASE_CONTINUE) {
                 Phase_Draw();
                 break;
             }
@@ -164,7 +164,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             continue;
         }
 
-        if (ret.instruction != GF_PHASE_CONTINUE) {
+        if (ret.command != GF_PHASE_CONTINUE) {
             Phase_Draw();
             break;
         }
@@ -180,8 +180,8 @@ GAMEFLOW_COMMAND Phase_Run(void)
         nframes = Phase_Wait();
     }
 
-    if (ret.instruction == GF_PHASE_BREAK) {
-        ret.instruction = GF_PHASE_CONTINUE;
+    if (ret.command == GF_PHASE_BREAK) {
+        ret.command = GF_PHASE_CONTINUE;
     }
 
     m_Running = false;

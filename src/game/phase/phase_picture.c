@@ -69,7 +69,7 @@ static GAMEFLOW_COMMAND Phase_Picture_Control(int32_t nframes)
         if (g_InputDB.any || !Output_FadeIsAnimating()) {
             Output_FadeResetToBlack();
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_PHASE_BREAK,
+                .command = GF_PHASE_BREAK,
                 .param = 0,
             };
         }
@@ -77,7 +77,7 @@ static GAMEFLOW_COMMAND Phase_Picture_Control(int32_t nframes)
     }
 
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }

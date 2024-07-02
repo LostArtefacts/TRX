@@ -225,7 +225,7 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         if (g_LevelComplete) {
             m_State = STATE_FADE_OUT;
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_PHASE_CONTINUE,
+                .command = GF_PHASE_CONTINUE,
                 .param = 0,
             };
         }
@@ -233,7 +233,7 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         if (!Phase_Demo_ProcessInput()) {
             m_State = STATE_FADE_OUT;
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_PHASE_CONTINUE,
+                .command = GF_PHASE_CONTINUE,
                 .param = 0,
             };
         }
@@ -258,14 +258,14 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_PHASE_CONTINUE,
+                .command = GF_PHASE_CONTINUE,
                 .param = 0,
             };
         }
     }
 
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }
@@ -279,12 +279,12 @@ static GAMEFLOW_COMMAND Phase_Demo_FadeOut(void)
         || !Output_FadeIsAnimating()) {
         Output_FadeResetToBlack();
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_EXIT_TO_TITLE,
+            .command = GF_EXIT_TO_TITLE,
             .param = 0,
         };
     }
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }
@@ -294,7 +294,7 @@ static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)
     switch (m_State) {
     case STATE_INVALID:
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_EXIT_TO_TITLE,
+            .command = GF_EXIT_TO_TITLE,
             .param = 0,
         };
 
@@ -307,7 +307,7 @@ static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)
 
     assert(false);
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_BREAK,
+        .command = GF_PHASE_BREAK,
         .param = 0,
     };
 }

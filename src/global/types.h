@@ -974,7 +974,7 @@ typedef enum GAMEFLOW_OPTION {
 } GAMEFLOW_OPTION;
 
 typedef struct GAMEFLOW_COMMAND {
-    GAMEFLOW_OPTION instruction;
+    GAMEFLOW_OPTION command;
     int32_t param;
 } GAMEFLOW_COMMAND;
 

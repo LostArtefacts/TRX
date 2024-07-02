@@ -51,7 +51,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
         Lara_Cheat_Control();
         if (g_LevelComplete) {
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_PHASE_BREAK,
+                .command = GF_PHASE_BREAK,
                 .param = 0,
             };
         }
@@ -68,7 +68,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
                 g_OverlayFlag = 1;
                 Inv_Display(INV_DEATH_MODE);
                 return (GAMEFLOW_COMMAND) {
-                    .instruction = GF_PHASE_CONTINUE,
+                    .command = GF_PHASE_CONTINUE,
                     .param = 0,
                 };
             } else {
@@ -100,7 +100,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
 
                 g_OverlayFlag = 1;
                 return (GAMEFLOW_COMMAND) {
-                    .instruction = GF_PHASE_CONTINUE,
+                    .command = GF_PHASE_CONTINUE,
                     .param = 0,
                 };
             }
@@ -109,7 +109,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
         if (!g_Lara.death_timer && g_InputDB.pause) {
             Phase_Set(PHASE_PAUSE, NULL);
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_PHASE_CONTINUE,
+                .command = GF_PHASE_CONTINUE,
                 .param = 0,
             };
         } else {
@@ -134,7 +134,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
     }
 
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }

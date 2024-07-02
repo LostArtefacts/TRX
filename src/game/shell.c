@@ -182,7 +182,7 @@ void Shell_Main(void)
     Shell_Init(gameflow_path);
 
     GAMEFLOW_COMMAND flow = {
-        .instruction = GF_EXIT_TO_TITLE,
+        .command = GF_EXIT_TO_TITLE,
         .param = 0,
     };
     bool intro_played = false;
@@ -190,9 +190,9 @@ void Shell_Main(void)
     g_GameInfo.current_save_slot = -1;
     bool loop_continue = true;
     while (loop_continue) {
-        LOG_INFO("instruction=%d param=%d", flow.instruction, flow.param);
+        LOG_INFO("command=%d param=%d", flow.command, flow.param);
 
-        switch (flow.instruction) {
+        switch (flow.command) {
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
             if (g_GameFlow.levels[flow.param].level_type == GFL_BONUS) {
@@ -207,7 +207,7 @@ void Shell_Main(void)
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
                 flow = (GAMEFLOW_COMMAND) {
-                    .instruction = GF_EXIT_TO_TITLE,
+                    .command = GF_EXIT_TO_TITLE,
                     .param = 0,
                 };
             } else {
@@ -243,7 +243,7 @@ void Shell_Main(void)
 
         case GF_LEVEL_COMPLETE:
             flow = (GAMEFLOW_COMMAND) {
-                .instruction = GF_EXIT_TO_TITLE,
+                .command = GF_EXIT_TO_TITLE,
                 .param = 0,
             };
             break;
@@ -259,7 +259,7 @@ void Shell_Main(void)
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
                 flow = (GAMEFLOW_COMMAND) {
-                    .instruction = GF_EXIT_GAME,
+                    .command = GF_EXIT_GAME,
                     .param = 0,
                 };
                 break;
@@ -278,7 +278,7 @@ void Shell_Main(void)
 
         default:
             Shell_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", flow.instruction, flow.param);
+                "MAIN: Unknown request %x %d", flow.command, flow.param);
             return;
         }
     }

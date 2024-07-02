@@ -105,7 +105,7 @@ static GAMEFLOW_COMMAND Phase_Cutscene_Control(int32_t nframes)
         if (g_CineFrame >= g_NumCineFrames - 1) {
             g_LevelComplete = true;
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_LEVEL_COMPLETE,
+                .command = GF_LEVEL_COMPLETE,
                 .param = g_CurrentLevel,
             };
         }
@@ -117,7 +117,7 @@ static GAMEFLOW_COMMAND Phase_Cutscene_Control(int32_t nframes)
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             g_LevelComplete = true;
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_LEVEL_COMPLETE,
+                .command = GF_LEVEL_COMPLETE,
                 .param = g_CurrentLevel,
             };
         }
@@ -131,7 +131,7 @@ static GAMEFLOW_COMMAND Phase_Cutscene_Control(int32_t nframes)
     }
 
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }

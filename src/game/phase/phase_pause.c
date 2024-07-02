@@ -169,7 +169,7 @@ static GAMEFLOW_COMMAND Phase_Pause_Control(int32_t nframes)
             GS(PAUSE_ARE_YOU_SURE), GS(PAUSE_YES), GS(PAUSE_NO), 1);
         if (choice == 1) {
             return (GAMEFLOW_COMMAND) {
-                .instruction = GF_EXIT_TO_TITLE,
+                .command = GF_EXIT_TO_TITLE,
                 .param = 0,
             };
         } else if (choice == 2) {
@@ -182,7 +182,7 @@ static GAMEFLOW_COMMAND Phase_Pause_Control(int32_t nframes)
     }
 
     return (GAMEFLOW_COMMAND) {
-        .instruction = GF_PHASE_CONTINUE,
+        .command = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }

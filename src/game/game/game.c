@@ -188,7 +188,7 @@ GAMEFLOW_COMMAND Game_Stop(void)
                 g_CurrentLevel, g_GameInfo.select_level_num);
         }
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_SELECT_GAME,
+            .command = GF_SELECT_GAME,
             .param = g_GameInfo.select_level_num,
         };
     }
@@ -206,40 +206,40 @@ GAMEFLOW_COMMAND Game_Stop(void)
         // TODO: why is this made unavailable?
         g_GameInfo.current[g_CurrentLevel].flags.available = 0;
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_LEVEL_COMPLETE,
+            .command = GF_LEVEL_COMPLETE,
             .param = g_GameInfo.select_level_num,
         };
     }
 
     if (g_GameInfo.passport_selection == PASSPORT_MODE_LOAD_GAME) {
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_START_SAVED_GAME,
+            .command = GF_START_SAVED_GAME,
             .param = g_GameInfo.current_save_slot,
         };
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_SELECT_LEVEL) {
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_SELECT_GAME,
+            .command = GF_SELECT_GAME,
             .param = g_GameInfo.select_level_num,
         };
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_STORY_SO_FAR) {
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_STORY_SO_FAR,
+            .command = GF_STORY_SO_FAR,
             .param = g_GameInfo.current_save_slot,
         };
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_RESTART) {
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_RESTART_GAME,
+            .command = GF_RESTART_GAME,
             .param = g_CurrentLevel,
         };
     } else if (g_GameInfo.passport_selection == PASSPORT_MODE_NEW_GAME) {
         Savegame_InitCurrentInfo();
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_START_GAME,
+            .command = GF_START_GAME,
             .param = g_GameFlow.first_level_num,
         };
     } else {
         return (GAMEFLOW_COMMAND) {
-            .instruction = GF_EXIT_TO_TITLE,
+            .command = GF_EXIT_TO_TITLE,
             .param = 0,
         };
     }
