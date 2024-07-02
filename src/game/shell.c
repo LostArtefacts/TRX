@@ -181,64 +181,71 @@ void Shell_Main(void)
 
     Shell_Init(gameflow_path);
 
-    int32_t gf_option = GF_EXIT_TO_TITLE;
+    GAMEFLOW_COMMAND flow = {
+        .command = GF_EXIT_TO_TITLE,
+        .param = 0,
+    };
     bool intro_played = false;
 
     g_GameInfo.current_save_slot = -1;
     bool loop_continue = true;
     while (loop_continue) {
-        int32_t gf_direction = gf_option & ~((1 << 6) - 1);
-        int32_t gf_param = gf_option & ((1 << 6) - 1);
-        LOG_INFO("direction=%d param=%d", gf_direction, gf_param);
+        LOG_INFO("command=%d param=%d", flow.command, flow.param);
 
-        switch (gf_direction) {
+        switch (flow.command) {
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
-            if (g_GameFlow.levels[gf_param].level_type == GFL_BONUS) {
+            if (g_GameFlow.levels[flow.param].level_type == GFL_BONUS) {
                 level_type = GFL_BONUS;
             }
-            gf_option = GameFlow_InterpretSequence(gf_param, level_type);
+            flow = GameFlow_InterpretSequence(flow.param, level_type);
             break;
         }
 
         case GF_START_SAVED_GAME: {
-            int16_t level_num = Savegame_GetLevelNumber(gf_param);
+            int16_t level_num = Savegame_GetLevelNumber(flow.param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
-                gf_option = GF_EXIT_TO_TITLE;
+                flow = (GAMEFLOW_COMMAND) {
+                    .command = GF_EXIT_TO_TITLE,
+                    .param = 0,
+                };
             } else {
-                g_GameInfo.current_save_slot = gf_param;
-                gf_option = GameFlow_InterpretSequence(level_num, GFL_SAVED);
+                g_GameInfo.current_save_slot = flow.param;
+                flow = GameFlow_InterpretSequence(level_num, GFL_SAVED);
             }
             break;
         }
 
         case GF_RESTART_GAME: {
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_RESTART);
+            flow = GameFlow_InterpretSequence(flow.param, GFL_RESTART);
             break;
         }
 
         case GF_SELECT_GAME: {
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_SELECT);
+            flow = GameFlow_InterpretSequence(flow.param, GFL_SELECT);
             break;
         }
 
         case GF_STORY_SO_FAR: {
-            gf_option = Savegame_PlayAvailableStory(gf_param);
+            flow = Savegame_PlayAvailableStory(flow.param);
             break;
         }
 
         case GF_START_CINE:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_CUTSCENE);
+            flow = GameFlow_InterpretSequence(flow.param, GFL_CUTSCENE);
             break;
 
         case GF_START_DEMO:
             Phase_Set(PHASE_DEMO, NULL);
-            gf_option = Phase_Run();
+            flow = Phase_Run();
             break;
 
         case GF_LEVEL_COMPLETE:
-            gf_option = GF_EXIT_TO_TITLE;
+            flow = (GAMEFLOW_COMMAND) {
+                .command = GF_EXIT_TO_TITLE,
+                .param = 0,
+            };
             break;
 
         case GF_EXIT_TO_TITLE:
@@ -251,11 +258,14 @@ void Shell_Main(void)
 
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
-                gf_option = GF_EXIT_GAME;
+                flow = (GAMEFLOW_COMMAND) {
+                    .command = GF_EXIT_GAME,
+                    .param = 0,
+                };
                 break;
             }
 
-            gf_option = Game_MainMenu();
+            flow = Game_MainMenu();
             break;
 
         case GF_EXIT_GAME:
@@ -263,12 +273,12 @@ void Shell_Main(void)
             break;
 
         case GF_START_GYM:
-            gf_option = GameFlow_InterpretSequence(gf_param, GFL_GYM);
+            flow = GameFlow_InterpretSequence(flow.param, GFL_GYM);
             break;
 
         default:
             Shell_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", gf_direction, gf_param);
+                "MAIN: Unknown request %x %d", flow.command, flow.param);
             return;
         }
     }

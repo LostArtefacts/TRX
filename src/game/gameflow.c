@@ -1063,7 +1063,7 @@ bool GameFlow_LoadFromFile(const char *file_name)
     return result;
 }
 
-GAMEFLOW_OPTION
+GAMEFLOW_COMMAND
 GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 {
     LOG_INFO("level_num=%d level_type=%d", level_num, level_type);
@@ -1074,7 +1074,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     g_GameInfo.remove_medipacks = false;
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
-    GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
+    GAMEFLOW_COMMAND ret = {
+        .command = GF_EXIT_TO_TITLE,
+        .param = 0,
+    };
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
@@ -1104,22 +1107,25 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_START_GAME:
             if (!Game_Start((int32_t)(intptr_t)seq->data, level_type)) {
                 g_CurrentLevel = -1;
-                return GF_EXIT_TO_TITLE;
+                return (GAMEFLOW_COMMAND) {
+                    .command = GF_EXIT_TO_TITLE,
+                    .param = 0,
+                };
             }
             break;
 
         case GFS_LOOP_GAME:
             Phase_Set(PHASE_GAME, NULL);
             ret = Phase_Run();
-            if (ret != GF_PHASE_CONTINUE) {
+            if (ret.command != GF_PHASE_CONTINUE) {
                 return ret;
             }
             break;
 
         case GFS_STOP_GAME:
             ret = Game_Stop();
-            if (ret != GF_PHASE_CONTINUE
-                && ((ret & ~((1 << 6) - 1)) != GF_LEVEL_COMPLETE)) {
+            if (ret.command != GF_PHASE_CONTINUE
+                && ret.command != GF_LEVEL_COMPLETE) {
                 return ret;
             }
             if (level_type == GFL_SAVED) {
@@ -1201,20 +1207,31 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_EXIT_TO_TITLE:
-            return GF_EXIT_TO_TITLE;
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_EXIT_TO_TITLE,
+                .param = 0,
+            };
 
         case GFS_EXIT_TO_LEVEL: {
             int32_t next_level = (int32_t)(intptr_t)seq->data & ((1 << 6) - 1);
             if (g_GameFlow.levels[next_level].level_type == GFL_BONUS
                 && !g_GameInfo.bonus_level_unlock) {
-                return GF_EXIT_TO_TITLE;
+                return (GAMEFLOW_COMMAND) {
+                    .command = GF_EXIT_TO_TITLE,
+                    .param = 0,
+                };
             }
-            return GF_START_GAME | next_level;
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_START_GAME,
+                .param = next_level,
+            };
         }
 
         case GFS_EXIT_TO_CINE:
-            return GF_START_CINE
-                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_START_CINE,
+                .param = (int32_t)(intptr_t)seq->data & ((1 << 6) - 1),
+            };
 
         case GFS_SET_CAM_X:
             g_CinePosition.pos.x = (int32_t)(intptr_t)seq->data;
@@ -1305,7 +1322,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             if (!BaconLara_InitialiseAnchor(anchor_room)) {
                 LOG_ERROR(
                     "Could not anchor Bacon Lara to room %d", anchor_room);
-                return GF_EXIT_TO_TITLE;
+                return (GAMEFLOW_COMMAND) {
+                    .command = GF_EXIT_TO_TITLE,
+                    .param = 0,
+                };
             }
             break;
         }
@@ -1323,13 +1343,16 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     return ret;
 }
 
-GAMEFLOW_OPTION
+GAMEFLOW_COMMAND
 GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 {
     LOG_INFO("%d", level_num);
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
-    GAMEFLOW_OPTION ret = GF_EXIT_TO_TITLE;
+    GAMEFLOW_COMMAND ret = {
+        .command = GF_EXIT_TO_TITLE,
+        .param = 0,
+    };
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
@@ -1351,7 +1374,10 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
         case GFS_START_GAME:
             if (level_num == savegame_level) {
-                return GF_EXIT_TO_TITLE;
+                return (GAMEFLOW_COMMAND) {
+                    .command = GF_EXIT_TO_TITLE,
+                    .param = 0,
+                };
             }
             break;
 
@@ -1373,17 +1399,24 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
         case GFS_EXIT_TO_TITLE:
             Music_Stop();
-            return GF_EXIT_TO_TITLE;
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_EXIT_TO_TITLE,
+                .param = 0,
+            };
 
         case GFS_EXIT_TO_LEVEL:
             Music_Stop();
-            return GF_START_GAME
-                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_START_GAME,
+                .param = (int32_t)(intptr_t)seq->data & ((1 << 6) - 1),
+            };
 
         case GFS_EXIT_TO_CINE:
             Music_Stop();
-            return GF_START_CINE
-                | ((int32_t)(intptr_t)seq->data & ((1 << 6) - 1));
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_START_CINE,
+                .param = (int32_t)(intptr_t)seq->data & ((1 << 6) - 1),
+            };
 
         case GFS_SET_CAM_X:
             g_CinePosition.pos.x = (int32_t)(intptr_t)seq->data;

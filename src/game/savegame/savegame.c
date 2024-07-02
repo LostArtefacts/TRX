@@ -611,23 +611,27 @@ bool Savegame_RestartAvailable(int32_t slot_num)
     return savegame_info->features.restart;
 }
 
-GAMEFLOW_OPTION Savegame_PlayAvailableStory(int32_t slot_num)
+GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
 {
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
 
-    int32_t gf_option = GF_START_GAME | g_GameFlow.first_level_num;
+    GAMEFLOW_COMMAND flow = {
+        .command = GF_START_GAME,
+        .param = g_GameFlow.first_level_num,
+    };
 
     while (1) {
-        int32_t gf_param = gf_option & ((1 << 6) - 1);
+        flow = GameFlow_StorySoFar(flow.param, savegame_info->level_num);
 
-        gf_option = GameFlow_StorySoFar(gf_param, savegame_info->level_num);
-
-        if ((g_GameFlow.levels[gf_param].level_type == GFL_NORMAL
-             || g_GameFlow.levels[gf_param].level_type == GFL_BONUS)
-            && gf_param >= savegame_info->level_num) {
+        if ((g_GameFlow.levels[flow.param].level_type == GFL_NORMAL
+             || g_GameFlow.levels[flow.param].level_type == GFL_BONUS)
+            && flow.param >= savegame_info->level_num) {
             break;
         }
     }
 
-    return GF_EXIT_TO_TITLE;
+    return (GAMEFLOW_COMMAND) {
+        .command = GF_EXIT_TO_TITLE,
+        .param = 0,
+    };
 }

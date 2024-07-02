@@ -57,7 +57,7 @@ static int32_t Phase_Pause_DisplayRequester(
     int16_t requested);
 static void Phase_Pause_Start(void *arg);
 static void Phase_Pause_End(void);
-static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes);
+static GAMEFLOW_COMMAND Phase_Pause_Control(int32_t nframes);
 static void Phase_Pause_Draw(void);
 
 static void Phase_Pause_RemoveText(void)
@@ -132,7 +132,7 @@ static void Phase_Pause_End(void)
     Requester_Shutdown(&m_PauseRequester);
 }
 
-static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
+static GAMEFLOW_COMMAND Phase_Pause_Control(int32_t nframes)
 {
     Phase_Pause_UpdateText();
 
@@ -168,7 +168,10 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
         int32_t choice = Phase_Pause_DisplayRequester(
             GS(PAUSE_ARE_YOU_SURE), GS(PAUSE_YES), GS(PAUSE_NO), 1);
         if (choice == 1) {
-            return GF_EXIT_TO_TITLE;
+            return (GAMEFLOW_COMMAND) {
+                .command = GF_EXIT_TO_TITLE,
+                .param = 0,
+            };
         } else if (choice == 2) {
             Music_Unpause();
             Sound_UnpauseAll();
@@ -178,7 +181,10 @@ static GAMEFLOW_OPTION Phase_Pause_Control(int32_t nframes)
     }
     }
 
-    return GF_PHASE_CONTINUE;
+    return (GAMEFLOW_COMMAND) {
+        .command = GF_PHASE_CONTINUE,
+        .param = 0,
+    };
 }
 
 static void Phase_Pause_Draw(void)
