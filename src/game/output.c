@@ -78,7 +78,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
 static void Output_CalcWibbleTable(void);
 
-void Output_ReserveVertexBuffer(const size_t size)
+void Output_ReserveVertexBuffer(size_t size)
 {
     m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
 }
