@@ -611,11 +611,11 @@ bool Savegame_RestartAvailable(int32_t slot_num)
     return savegame_info->features.restart;
 }
 
-GAMEFLOW_INSTRUCTION Savegame_PlayAvailableStory(int32_t slot_num)
+GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
 {
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
 
-    GAMEFLOW_INSTRUCTION flow = {
+    GAMEFLOW_COMMAND flow = {
         .instruction = GF_START_GAME,
         .param = g_GameFlow.first_level_num,
     };
@@ -630,7 +630,7 @@ GAMEFLOW_INSTRUCTION Savegame_PlayAvailableStory(int32_t slot_num)
         }
     }
 
-    return (GAMEFLOW_INSTRUCTION) {
+    return (GAMEFLOW_COMMAND) {
         .instruction = GF_EXIT_TO_TITLE,
         .param = 0,
     };

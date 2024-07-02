@@ -25,17 +25,18 @@ static bool m_Running = false;
 static PHASE m_PhaseToSet = PHASE_NULL;
 static void *m_PhaseToSetArg = NULL;
 
-static GAMEFLOW_INSTRUCTION Phase_Control(int32_t nframes);
+static GAMEFLOW_COMMAND Phase_Control(int32_t nframes);
 static void Phase_Draw(void);
 static int32_t Phase_Wait(void);
 static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
-static GAMEFLOW_INSTRUCTION Phase_Control(int32_t nframes)
+static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
 {
     if (g_GameInfo.override_option != GF_PHASE_CONTINUE) {
+        const GAMEFLOW_OPTION override = g_GameInfo.override_option;
         g_GameInfo.override_option = GF_PHASE_CONTINUE;
-        return (GAMEFLOW_INSTRUCTION) {
-            .instruction = g_GameInfo.override_option,
+        return (GAMEFLOW_COMMAND) {
+            .instruction = override,
             .param = 0,
         };
     }
@@ -43,7 +44,7 @@ static GAMEFLOW_INSTRUCTION Phase_Control(int32_t nframes)
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
-    return (GAMEFLOW_INSTRUCTION) {
+    return (GAMEFLOW_COMMAND) {
         .instruction = GF_PHASE_CONTINUE,
         .param = 0,
     };
@@ -135,10 +136,10 @@ static int32_t Phase_Wait(void)
     }
 }
 
-GAMEFLOW_INSTRUCTION Phase_Run(void)
+GAMEFLOW_COMMAND Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_INSTRUCTION ret = {
+    GAMEFLOW_COMMAND ret = {
         .instruction = GF_PHASE_CONTINUE,
         .param = 0,
     };

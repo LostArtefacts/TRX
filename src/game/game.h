@@ -6,10 +6,10 @@
 #include <stdint.h>
 
 bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);
-GAMEFLOW_INSTRUCTION Game_Stop(void);
+GAMEFLOW_COMMAND Game_Stop(void);
 
 void Game_ProcessInput(void);
 
 void Game_DrawScene(bool draw_overlay);
 
-GAMEFLOW_INSTRUCTION Game_MainMenu(void);
+GAMEFLOW_COMMAND Game_MainMenu(void);

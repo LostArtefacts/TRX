@@ -60,7 +60,7 @@ IMOTION_INFO m_Motion;
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion);
 static void Inv_Construct(void);
 static void Inv_Destroy(void);
-static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen);
+static GAMEFLOW_COMMAND Inv_Close(GAME_OBJECT_ID inv_chosen);
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item);
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item);
 static int32_t InvItem_GetFrames(
@@ -70,8 +70,8 @@ static void Inv_DrawItem(INVENTORY_ITEM *inv_item, int32_t frames);
 
 static void Phase_Inventory_Start(void *arg);
 static void Phase_Inventory_End(void);
-static GAMEFLOW_INSTRUCTION Phase_Inventory_ControlFrame(void);
-static GAMEFLOW_INSTRUCTION Phase_Inventory_Control(int32_t nframes);
+static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void);
+static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes);
 static void Phase_Inventory_Draw(void);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
@@ -210,19 +210,19 @@ static void Inv_Destroy(void)
     }
 }
 
-static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen)
+static GAMEFLOW_COMMAND Inv_Close(GAME_OBJECT_ID inv_chosen)
 {
     Inv_Destroy();
 
     if (m_StartLevel != -1) {
-        return (GAMEFLOW_INSTRUCTION) {
+        return (GAMEFLOW_COMMAND) {
             .instruction = GF_SELECT_GAME,
             .param = m_StartLevel,
         };
     }
 
     if (m_StartDemo) {
-        return (GAMEFLOW_INSTRUCTION) {
+        return (GAMEFLOW_COMMAND) {
             .instruction = GF_START_DEMO,
             .param = 0,
         };
@@ -232,23 +232,23 @@ static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen)
     case O_PASSPORT_OPTION:
         switch (g_GameInfo.passport_selection) {
         case PASSPORT_MODE_LOAD_GAME:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_START_SAVED_GAME,
                 .param = g_GameInfo.current_save_slot,
             };
         case PASSPORT_MODE_SELECT_LEVEL:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_SELECT_GAME,
                 .param = g_GameInfo.select_level_num,
             };
         case PASSPORT_MODE_STORY_SO_FAR:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_STORY_SO_FAR,
                 .param = g_GameInfo.current_save_slot,
             };
         case PASSPORT_MODE_NEW_GAME:
             Savegame_InitCurrentInfo();
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_START_GAME,
                 .param = g_GameFlow.first_level_num,
             };
@@ -258,29 +258,29 @@ static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen)
             Music_Unpause();
             Sound_UnpauseAll();
             Phase_Set(PHASE_GAME, 0);
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_PHASE_CONTINUE,
                 .param = 0,
             };
         case PASSPORT_MODE_RESTART:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_RESTART_GAME,
                 .param = g_CurrentLevel,
             };
         case PASSPORT_MODE_EXIT_TITLE:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_EXIT_TO_TITLE,
                 .param = 0,
             };
         case PASSPORT_MODE_EXIT_GAME:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_EXIT_GAME,
                 .param = 0,
             };
         case PASSPORT_MODE_BROWSE:
         case PASSPORT_MODE_UNAVAILABLE:
         default:
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_EXIT_TO_TITLE,
                 .param = 0,
             };
@@ -288,7 +288,7 @@ static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen)
 
     case O_PHOTO_OPTION:
         g_GameInfo.current_save_slot = -1;
-        return (GAMEFLOW_INSTRUCTION) {
+        return (GAMEFLOW_COMMAND) {
             .instruction = GF_START_GYM,
             .param = g_GameFlow.gym_level_num,
         };
@@ -317,7 +317,7 @@ static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen)
     }
 
     if (g_InvMode == INV_TITLE_MODE) {
-        return (GAMEFLOW_INSTRUCTION) {
+        return (GAMEFLOW_COMMAND) {
             .instruction = GF_PHASE_BREAK,
             .param = 0,
         };
@@ -325,7 +325,7 @@ static GAMEFLOW_INSTRUCTION Inv_Close(GAME_OBJECT_ID inv_chosen)
         Music_Unpause();
         Sound_UnpauseAll();
         Phase_Set(PHASE_GAME, 0);
-        return (GAMEFLOW_INSTRUCTION) {
+        return (GAMEFLOW_COMMAND) {
             .instruction = GF_PHASE_CONTINUE,
             .param = 0,
         };
@@ -617,14 +617,14 @@ static void Phase_Inventory_Start(void *arg)
     }
 }
 
-static GAMEFLOW_INSTRUCTION Phase_Inventory_ControlFrame(void)
+static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
 {
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
 
     if (motion->status == RNG_OPENING) {
         if (g_InvMode == INV_TITLE_MODE && Output_FadeIsAnimating()) {
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_PHASE_CONTINUE,
                 .param = 0,
             };
@@ -644,7 +644,7 @@ static GAMEFLOW_INSTRUCTION Phase_Inventory_ControlFrame(void)
         }
 
         if (Output_FadeIsAnimating()) {
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_PHASE_CONTINUE,
                 .param = 0,
             };
@@ -691,7 +691,7 @@ static GAMEFLOW_INSTRUCTION Phase_Inventory_ControlFrame(void)
     }
 
     if (ring->rotating) {
-        return (GAMEFLOW_INSTRUCTION) {
+        return (GAMEFLOW_COMMAND) {
             .instruction = GF_PHASE_CONTINUE,
             .param = 0,
         };
@@ -1071,22 +1071,22 @@ static GAMEFLOW_INSTRUCTION Phase_Inventory_ControlFrame(void)
         Inv_Ring_RemoveAllText();
     }
 
-    return (GAMEFLOW_INSTRUCTION) {
+    return (GAMEFLOW_COMMAND) {
         .instruction = GF_PHASE_CONTINUE,
         .param = 0,
     };
 }
 
-static GAMEFLOW_INSTRUCTION Phase_Inventory_Control(int32_t nframes)
+static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes)
 {
     Interpolation_Remember();
     for (int32_t i = 0; i < nframes; i++) {
-        GAMEFLOW_INSTRUCTION result = Phase_Inventory_ControlFrame();
+        GAMEFLOW_COMMAND result = Phase_Inventory_ControlFrame();
         if (result.instruction != GF_PHASE_CONTINUE) {
             return result;
         }
     }
-    return (GAMEFLOW_INSTRUCTION) {
+    return (GAMEFLOW_COMMAND) {
         .instruction = GF_PHASE_CONTINUE,
         .param = 0,
     };

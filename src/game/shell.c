@@ -181,7 +181,7 @@ void Shell_Main(void)
 
     Shell_Init(gameflow_path);
 
-    GAMEFLOW_INSTRUCTION flow = {
+    GAMEFLOW_COMMAND flow = {
         .instruction = GF_EXIT_TO_TITLE,
         .param = 0,
     };
@@ -206,7 +206,7 @@ void Shell_Main(void)
             int16_t level_num = Savegame_GetLevelNumber(flow.param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
-                flow = (GAMEFLOW_INSTRUCTION) {
+                flow = (GAMEFLOW_COMMAND) {
                     .instruction = GF_EXIT_TO_TITLE,
                     .param = 0,
                 };
@@ -242,7 +242,7 @@ void Shell_Main(void)
             break;
 
         case GF_LEVEL_COMPLETE:
-            flow = (GAMEFLOW_INSTRUCTION) {
+            flow = (GAMEFLOW_COMMAND) {
                 .instruction = GF_EXIT_TO_TITLE,
                 .param = 0,
             };
@@ -258,7 +258,7 @@ void Shell_Main(void)
 
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
-                flow = (GAMEFLOW_INSTRUCTION) {
+                flow = (GAMEFLOW_COMMAND) {
                     .instruction = GF_EXIT_GAME,
                     .param = 0,
                 };

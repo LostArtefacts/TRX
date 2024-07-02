@@ -26,7 +26,7 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num);
 
 static void Phase_Cutscene_Start(void *arg);
 static void Phase_Cutscene_End(void);
-static GAMEFLOW_INSTRUCTION Phase_Cutscene_Control(int32_t nframes);
+static GAMEFLOW_COMMAND Phase_Cutscene_Control(int32_t nframes);
 static void Phase_Cutscene_Draw(void);
 
 static void Phase_Cutscene_InitialiseHair(int32_t level_num)
@@ -97,14 +97,14 @@ static void Phase_Cutscene_End(void)
     Sound_StopAllSamples();
 }
 
-static GAMEFLOW_INSTRUCTION Phase_Cutscene_Control(int32_t nframes)
+static GAMEFLOW_COMMAND Phase_Cutscene_Control(int32_t nframes)
 {
     Interpolation_Remember();
 
     for (int i = 0; i < nframes; i++) {
         if (g_CineFrame >= g_NumCineFrames - 1) {
             g_LevelComplete = true;
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_LEVEL_COMPLETE,
                 .param = g_CurrentLevel,
             };
@@ -116,7 +116,7 @@ static GAMEFLOW_INSTRUCTION Phase_Cutscene_Control(int32_t nframes)
 
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             g_LevelComplete = true;
-            return (GAMEFLOW_INSTRUCTION) {
+            return (GAMEFLOW_COMMAND) {
                 .instruction = GF_LEVEL_COMPLETE,
                 .param = g_CurrentLevel,
             };
@@ -130,7 +130,7 @@ static GAMEFLOW_INSTRUCTION Phase_Cutscene_Control(int32_t nframes)
         g_CineFrame++;
     }
 
-    return (GAMEFLOW_INSTRUCTION) {
+    return (GAMEFLOW_COMMAND) {
         .instruction = GF_PHASE_CONTINUE,
         .param = 0,
     };
