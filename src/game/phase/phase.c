@@ -32,13 +32,13 @@ static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
 static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
 {
-    if (g_GameInfo.override_option != GF_PHASE_CONTINUE) {
-        const GAMEFLOW_OPTION override = g_GameInfo.override_option;
-        g_GameInfo.override_option = GF_PHASE_CONTINUE;
-        return (GAMEFLOW_COMMAND) {
-            .command = override,
+    if (g_GameInfo.override_gf_command.command != GF_PHASE_CONTINUE) {
+        const GAMEFLOW_COMMAND override = g_GameInfo.override_gf_command;
+        g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
+            .command = GF_PHASE_CONTINUE,
             .param = 0,
         };
+        return override;
     }
 
     if (m_Phaser && m_Phaser->control) {

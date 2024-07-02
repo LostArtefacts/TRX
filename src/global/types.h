@@ -1465,7 +1465,7 @@ typedef struct GAME_INFO {
     int32_t select_level_num;
     bool death_counter_supported;
     GAMEFLOW_LEVEL_TYPE current_level_type;
-    GAMEFLOW_OPTION override_option;
+    GAMEFLOW_COMMAND override_gf_command;
     bool remove_guns;
     bool remove_scions;
     bool remove_ammo;
