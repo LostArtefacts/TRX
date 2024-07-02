@@ -22,7 +22,7 @@ static CLOCK_TIMER m_DisplayTimer = { 0 };
 
 static void Phase_Picture_Start(void *arg);
 static void Phase_Picture_End(void);
-static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes);
+static GAMEFLOW_INSTRUCTION Phase_Picture_Control(int32_t nframes);
 static void Phase_Picture_Draw(void);
 
 static void Phase_Picture_Start(void *arg)
@@ -40,7 +40,7 @@ static void Phase_Picture_End(void)
 {
 }
 
-static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
+static GAMEFLOW_INSTRUCTION Phase_Picture_Control(int32_t nframes)
 {
     Input_Update();
     Shell_ProcessInput();
@@ -68,12 +68,18 @@ static GAMEFLOW_OPTION Phase_Picture_Control(int32_t nframes)
         Output_FadeToBlack(true);
         if (g_InputDB.any || !Output_FadeIsAnimating()) {
             Output_FadeResetToBlack();
-            return GF_PHASE_BREAK;
+            return (GAMEFLOW_INSTRUCTION) {
+                .instruction = GF_PHASE_BREAK,
+                .param = 0,
+            };
         }
         break;
     }
 
-    return GF_PHASE_CONTINUE;
+    return (GAMEFLOW_INSTRUCTION) {
+        .instruction = GF_PHASE_CONTINUE,
+        .param = 0,
+    };
 }
 
 static void Phase_Picture_Draw(void)

@@ -960,18 +960,23 @@ typedef enum GAMEFLOW_OPTION {
     GF_PHASE_BREAK = -2,
     GF_PHASE_CONTINUE = -1,
     GF_START_GAME = 0,
-    GF_START_CINE = 1 << 6,
-    GF_START_FMV = 2 << 6,
-    GF_START_DEMO = 3 << 6,
-    GF_EXIT_TO_TITLE = 4 << 6,
-    GF_LEVEL_COMPLETE = 5 << 6,
-    GF_EXIT_GAME = 6 << 6,
-    GF_START_SAVED_GAME = 7 << 6,
-    GF_RESTART_GAME = 8 << 6,
-    GF_SELECT_GAME = 9 << 6,
-    GF_START_GYM = 10 << 6,
-    GF_STORY_SO_FAR = 11 << 6,
+    GF_START_CINE = 1,
+    GF_START_FMV = 2,
+    GF_START_DEMO = 3,
+    GF_EXIT_TO_TITLE = 4,
+    GF_LEVEL_COMPLETE = 5,
+    GF_EXIT_GAME = 6,
+    GF_START_SAVED_GAME = 7,
+    GF_RESTART_GAME = 8,
+    GF_SELECT_GAME = 9,
+    GF_START_GYM = 10,
+    GF_STORY_SO_FAR = 11,
 } GAMEFLOW_OPTION;
+
+typedef struct GAMEFLOW_INSTRUCTION {
+    GAMEFLOW_OPTION instruction;
+    int32_t param;
+} GAMEFLOW_INSTRUCTION;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {
     GFS_END = -1,

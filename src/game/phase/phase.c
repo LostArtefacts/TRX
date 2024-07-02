@@ -25,23 +25,28 @@ static bool m_Running = false;
 static PHASE m_PhaseToSet = PHASE_NULL;
 static void *m_PhaseToSetArg = NULL;
 
-static GAMEFLOW_OPTION Phase_Control(int32_t nframes);
+static GAMEFLOW_INSTRUCTION Phase_Control(int32_t nframes);
 static void Phase_Draw(void);
 static int32_t Phase_Wait(void);
 static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
-static GAMEFLOW_OPTION Phase_Control(int32_t nframes)
+static GAMEFLOW_INSTRUCTION Phase_Control(int32_t nframes)
 {
     if (g_GameInfo.override_option != GF_PHASE_CONTINUE) {
-        const GAMEFLOW_OPTION result = g_GameInfo.override_option;
         g_GameInfo.override_option = GF_PHASE_CONTINUE;
-        return result;
+        return (GAMEFLOW_INSTRUCTION) {
+            .instruction = g_GameInfo.override_option,
+            .param = 0,
+        };
     }
 
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
-    return GF_PHASE_CONTINUE;
+    return (GAMEFLOW_INSTRUCTION) {
+        .instruction = GF_PHASE_CONTINUE,
+        .param = 0,
+    };
 }
 
 static void Phase_Draw(void)
@@ -130,10 +135,13 @@ static int32_t Phase_Wait(void)
     }
 }
 
-GAMEFLOW_OPTION Phase_Run(void)
+GAMEFLOW_INSTRUCTION Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_OPTION ret = GF_PHASE_CONTINUE;
+    GAMEFLOW_INSTRUCTION ret = {
+        .instruction = GF_PHASE_CONTINUE,
+        .param = 0,
+    };
     m_Running = true;
 
     while (1) {
@@ -146,7 +154,7 @@ GAMEFLOW_OPTION Phase_Run(void)
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
-            if (ret != GF_PHASE_CONTINUE) {
+            if (ret.instruction != GF_PHASE_CONTINUE) {
                 Phase_Draw();
                 break;
             }
@@ -155,7 +163,7 @@ GAMEFLOW_OPTION Phase_Run(void)
             continue;
         }
 
-        if (ret != GF_PHASE_CONTINUE) {
+        if (ret.instruction != GF_PHASE_CONTINUE) {
             Phase_Draw();
             break;
         }
@@ -171,8 +179,8 @@ GAMEFLOW_OPTION Phase_Run(void)
         nframes = Phase_Wait();
     }
 
-    if (ret == GF_PHASE_BREAK) {
-        ret = GF_PHASE_CONTINUE;
+    if (ret.instruction == GF_PHASE_BREAK) {
+        ret.instruction = GF_PHASE_CONTINUE;
     }
 
     m_Running = false;

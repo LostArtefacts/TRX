@@ -27,7 +27,7 @@
 
 static void Phase_Game_Start(void *arg);
 static void Phase_Game_End(void);
-static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes);
+static GAMEFLOW_INSTRUCTION Phase_Game_Control(int32_t nframes);
 static void Phase_Game_Draw(void);
 
 static void Phase_Game_Start(void *arg)
@@ -42,7 +42,7 @@ static void Phase_Game_End(void)
 {
 }
 
-static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
+static GAMEFLOW_INSTRUCTION Phase_Game_Control(int32_t nframes)
 {
     Interpolation_Remember();
     CLAMPG(nframes, MAX_FRAMES);
@@ -50,7 +50,10 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
     for (int32_t i = 0; i < nframes; i++) {
         Lara_Cheat_Control();
         if (g_LevelComplete) {
-            return GF_PHASE_BREAK;
+            return (GAMEFLOW_INSTRUCTION) {
+                .instruction = GF_PHASE_BREAK,
+                .param = 0,
+            };
         }
 
         Input_Update();
@@ -64,7 +67,10 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
             if (g_OverlayFlag == 2) {
                 g_OverlayFlag = 1;
                 Inv_Display(INV_DEATH_MODE);
-                return GF_PHASE_CONTINUE;
+                return (GAMEFLOW_INSTRUCTION) {
+                    .instruction = GF_PHASE_CONTINUE,
+                    .param = 0,
+                };
             } else {
                 g_OverlayFlag = 2;
             }
@@ -93,13 +99,19 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
                 }
 
                 g_OverlayFlag = 1;
-                return GF_PHASE_CONTINUE;
+                return (GAMEFLOW_INSTRUCTION) {
+                    .instruction = GF_PHASE_CONTINUE,
+                    .param = 0,
+                };
             }
         }
 
         if (!g_Lara.death_timer && g_InputDB.pause) {
             Phase_Set(PHASE_PAUSE, NULL);
-            return GF_PHASE_CONTINUE;
+            return (GAMEFLOW_INSTRUCTION) {
+                .instruction = GF_PHASE_CONTINUE,
+                .param = 0,
+            };
         } else {
             Item_Control();
             Effect_Control();
@@ -121,7 +133,10 @@ static GAMEFLOW_OPTION Phase_Game_Control(int32_t nframes)
         g_GameInfo.ask_for_save = false;
     }
 
-    return GF_PHASE_CONTINUE;
+    return (GAMEFLOW_INSTRUCTION) {
+        .instruction = GF_PHASE_CONTINUE,
+        .param = 0,
+    };
 }
 
 static void Phase_Game_Draw(void)
