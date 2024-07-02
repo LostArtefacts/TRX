@@ -15,6 +15,7 @@ void Output_DownloadTextures(int page_count);
 RGBA_8888 Output_RGB2RGBA(const RGB_888 color);
 void Output_SetPalette(RGB_888 palette[256]);
 RGB_888 Output_GetPaletteColor(uint8_t idx);
+void Output_ReserveVertexBuffer(const size_t size);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);

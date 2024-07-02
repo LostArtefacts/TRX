@@ -16,6 +16,7 @@
 - fixed lightning rendering z-buffer issues (#1385, regression from 1.4)
 - fixed possible game crashes if more than 16 savegame slots are set (#1374)
 - fixed savegame slots higher than 64 not working (#1395)
+- fixed a crash in custom levels if a room had more than 1500 vertices (#1398)
 
 ## [4.1.2](https://github.com/LostArtefacts/TR1X/compare/4.1.1...4.1.2) - 2024-04-28
 - fixed pictures display time (#1349, regression from 4.1)

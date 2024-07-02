@@ -54,6 +54,7 @@ static bool Level_LoadTexturePages(MYFILE *fp);
 static bool Level_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo);
 static void Level_CompleteSetup(int32_t level_num);
+static void Level_CalculateMaxVertices(void);
 
 static bool Level_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo)
@@ -890,6 +891,8 @@ static void Level_CompleteSetup(int32_t level_num)
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level_num);
 
+    Level_CalculateMaxVertices();
+
     // Move the prepared texture pages into g_TexturePagePtrs.
     uint8_t *base = GameBuf_Alloc(
         m_LevelInfo.texture_page_count * PAGE_SIZE, GBUF_TEXTURE_PAGES);
@@ -923,6 +926,39 @@ static void Level_CompleteSetup(int32_t level_num)
 
     Memory_FreePointer(&sample_pointers);
     Memory_FreePointer(&sample_sizes);
+}
+
+static void Level_CalculateMaxVertices(void)
+{
+    size_t max_vertices = 0;
+    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
+        OBJECT_INFO *object_info = &g_Objects[i];
+        if (!object_info->loaded) {
+            continue;
+        }
+
+        for (int32_t j = 0; j < object_info->nmeshes; j++) {
+            max_vertices =
+                MAX(max_vertices, *(g_Meshes[object_info->mesh_index + j] + 5));
+        }
+    }
+
+    for (int32_t i = 0; i < STATIC_NUMBER_OF; i++) {
+        STATIC_INFO *static_info = &g_StaticObjects[i];
+        if (!static_info->loaded || static_info->nmeshes < 0) {
+            continue;
+        }
+
+        max_vertices =
+            MAX(max_vertices, *(g_Meshes[static_info->mesh_number] + 5));
+    }
+
+    for (int32_t i = 0; i < g_RoomCount; i++) {
+        max_vertices = MAX(max_vertices, *g_RoomInfo[i].data);
+    }
+
+    LOG_INFO("Maximum vertices: %d", max_vertices);
+    Output_ReserveVertexBuffer(max_vertices);
 }
 
 bool Level_Load(int level_num)

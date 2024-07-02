@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/clock.h"
 #include "game/console.h"
+#include "game/gamebuf.h"
 #include "game/overlay.h"
 #include "game/phase/phase.h"
 #include "game/picture.h"
@@ -48,7 +49,7 @@ static int32_t m_WibbleTable[WIBBLE_SIZE] = { 0 };
 static int32_t m_ShadeTable[WIBBLE_SIZE] = { 0 };
 static int32_t m_RandTable[WIBBLE_SIZE] = { 0 };
 
-static PHD_VBUF m_VBuf[1500] = { 0 };
+static PHD_VBUF *m_VBuf = NULL;
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGB_F m_WaterColor = { 0 };
@@ -76,6 +77,11 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr);
 static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
 static void Output_CalcWibbleTable(void);
+
+void Output_ReserveVertexBuffer(const size_t size)
+{
+    m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
+}
 
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number)
