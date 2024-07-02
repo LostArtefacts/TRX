@@ -932,7 +932,7 @@ static void Level_CalculateMaxVertices(void)
 {
     size_t max_vertices = 0;
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        OBJECT_INFO *object_info = &g_Objects[i];
+        const OBJECT_INFO *object_info = &g_Objects[i];
         if (!object_info->loaded) {
             continue;
         }
@@ -944,7 +944,7 @@ static void Level_CalculateMaxVertices(void)
     }
 
     for (int32_t i = 0; i < STATIC_NUMBER_OF; i++) {
-        STATIC_INFO *static_info = &g_StaticObjects[i];
+        const STATIC_INFO *static_info = &g_StaticObjects[i];
         if (!static_info->loaded || static_info->nmeshes < 0) {
             continue;
         }
