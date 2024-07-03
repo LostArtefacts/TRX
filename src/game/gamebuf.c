@@ -50,6 +50,7 @@ static const char *GameBuf_GetBufferName(GAME_BUFFER buffer)
         case GBUF_SAMPLES:                  return "Samples";
         case GBUF_TRAP_DATA:                return "Trap data";
         case GBUF_CREATURE_DATA:            return "Creature data";
+        case GBUF_VERTEX_BUFFER:            return "Vertex buffer";
     }
     // clang-format on
     return "Unknown";

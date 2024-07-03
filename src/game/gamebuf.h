@@ -44,6 +44,7 @@ typedef enum GAME_BUFFER {
     GBUF_SAMPLES,
     GBUF_TRAP_DATA,
     GBUF_CREATURE_DATA,
+    GBUF_VERTEX_BUFFER,
 } GAME_BUFFER;
 
 void GameBuf_Init(void);

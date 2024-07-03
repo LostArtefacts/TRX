@@ -458,6 +458,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - expanded moveable limit from 256 to 10240
 - expanded maximum textures from 2048 to 8192
 - expanded maximum texture pages from 32 to 128
+- expanded maximum vertices of a single drawable object from 1500 to unlimited
 - expanded the number of visible enemies from 8 to 32
 - ported audio decoding library to ffmpeg
 - ported video decoding library to ffmpeg
