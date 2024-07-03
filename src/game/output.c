@@ -78,11 +78,6 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
 static void Output_CalcWibbleTable(void);
 
-void Output_ReserveVertexBuffer(size_t size)
-{
-    m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
-}
-
 static const int16_t *Output_DrawObjectG3(
     const int16_t *obj_ptr, int32_t number)
 {
@@ -406,6 +401,11 @@ void Output_Shutdown(void)
 {
     S_Output_Shutdown();
     Memory_FreePointer(&m_BackdropImagePath);
+}
+
+void Output_ReserveVertexBuffer(const size_t size)
+{
+    m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
 }
 
 void Output_SetWindowSize(int width, int height)

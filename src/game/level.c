@@ -891,7 +891,7 @@ static void Level_CompleteSetup(int32_t level_num)
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level_num);
 
-    size_t max_vertices = Level_CalculateMaxVertices();
+    const size_t max_vertices = Level_CalculateMaxVertices();
     LOG_INFO("Maximum vertices: %d", max_vertices);
     Output_ReserveVertexBuffer(max_vertices);
 
