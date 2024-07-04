@@ -65,7 +65,7 @@ static void Phase_SetUnconditionally(const PHASE phase, void *arg)
         m_Phaser->end();
     }
 
-    LOG_DEBUG("%d", phase);
+    LOG_DEBUG("phase=%d", phase);
     switch (phase) {
     case PHASE_NULL:
         m_Phaser = NULL;
@@ -144,6 +144,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
         .param = 0,
     };
     m_Running = true;
+    LOG_DEBUG("phase start, phase=%d", m_Phase);
 
     while (1) {
         ret = Phase_Control(nframes);
@@ -187,6 +188,6 @@ GAMEFLOW_COMMAND Phase_Run(void)
     m_Running = false;
     Phase_Set(PHASE_NULL, NULL);
 
-    LOG_DEBUG("Phase_Run() exited with %d", ret);
+    LOG_DEBUG("phase end, command=%d, param=%d", ret.command, ret.param);
     return ret;
 }
