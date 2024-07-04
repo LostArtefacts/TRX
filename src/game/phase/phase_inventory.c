@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/console.h"
 #include "game/game.h"
 #include "game/gameflow.h"
 #include "game/input.h"
@@ -656,10 +657,10 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
     Inv_Ring_CalcAdders(ring, ROTATE_DURATION);
 
     Input_Update();
-    Shell_ProcessInput();
-    Game_ProcessInput();
 
-    if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any) {
+    // Do the demo inactivity check prior to postprocessing of the inputs.
+    if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
+        || Console_IsOpened()) {
         Clock_ResetTimer(&m_DemoTimer);
     } else if (g_Config.enable_demo && motion->status == RNG_OPEN) {
         if (g_GameFlow.has_demo
@@ -668,6 +669,9 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
             m_StartDemo = true;
         }
     }
+
+    Shell_ProcessInput();
+    Game_ProcessInput();
 
     m_StartLevel = g_LevelComplete ? g_GameInfo.select_level_num : -1;
 
