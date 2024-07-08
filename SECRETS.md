@@ -60,7 +60,7 @@ MacOS builds require a paid Apple Developer account.
 
        2. Create a Certificate Signing Request and Private Key pair:
 
-           > openssl req -new -newkey rsa:2048 -nodes -keyout TR1X.key -out TR1X.csr
+           > openssl req -new -newkey rsa:2048 -nodes -keyout TR1X.key -out TR1X.csr -subj "/emailAddress=your-mail@example.com, CN=TR1X"
 
        3. Upload the newly generated `TR1X.csr` file; continue to the next page.
 
