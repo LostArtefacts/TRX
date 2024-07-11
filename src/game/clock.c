@@ -40,7 +40,11 @@ static bool Clock_CheckElapsedUnit(
     const double multiplier =
         (bypass_turbo_cheat ? 1.0 : Clock_GetSpeedMultiplier()) / 1000.0;
     const double frames = delta * multiplier * unit;
-    if (frames >= how_often || g_Config.rendering.fps != timer->prev_fps) {
+    if (g_Config.rendering.fps != timer->prev_fps) {
+        Clock_ResetTimer(timer);
+        return false;
+    }
+    if (frames >= how_often) {
         Clock_ResetTimer(timer);
         return true;
     }

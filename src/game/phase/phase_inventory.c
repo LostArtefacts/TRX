@@ -68,6 +68,7 @@ static int32_t InvItem_GetFrames(
     const INVENTORY_ITEM *inv_item, FRAME_INFO **out_frame1,
     FRAME_INFO **out_frame2, int32_t *out_rate);
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item, int32_t frames);
+static bool Inv_CheckDemoTimer(const IMOTION_INFO *motion);
 
 static void Phase_Inventory_Start(void *arg);
 static void Phase_Inventory_End(void);
@@ -550,6 +551,23 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
     }
 }
 
+static bool Inv_CheckDemoTimer(const IMOTION_INFO *const motion)
+{
+    if (!g_Config.enable_demo || !g_GameFlow.has_demo) {
+        return false;
+    }
+
+    if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
+        || Console_IsOpened()) {
+        Clock_ResetTimer(&m_DemoTimer);
+        return false;
+    }
+
+    return motion->status == RNG_OPEN
+        && Clock_CheckElapsedMilliseconds(
+               &m_DemoTimer, g_GameFlow.demo_delay * 1000.0);
+}
+
 static void Phase_Inventory_Start(void *arg)
 {
     Interpolation_Remember();
@@ -657,19 +675,10 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
     Inv_Ring_CalcAdders(ring, ROTATE_DURATION);
 
     Input_Update();
-
     // Do the demo inactivity check prior to postprocessing of the inputs.
-    if (g_InvMode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
-        || Console_IsOpened()) {
-        Clock_ResetTimer(&m_DemoTimer);
-    } else if (g_Config.enable_demo && motion->status == RNG_OPEN) {
-        if (g_GameFlow.has_demo
-            && Clock_CheckElapsedMilliseconds(
-                &m_DemoTimer, g_GameFlow.demo_delay * 1000.0)) {
-            m_StartDemo = true;
-        }
+    if (Inv_CheckDemoTimer(motion)) {
+        m_StartDemo = true;
     }
-
     Shell_ProcessInput();
     Game_ProcessInput();
 
