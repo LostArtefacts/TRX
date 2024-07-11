@@ -8,6 +8,7 @@
     - `/set`
 - added unobtainable secrets stat support in the gameflow (#1379)
 - added a wireframe mode
+- changed console caret blinking rate (#1377)
 - fixed config tool and installer missing icons (#1358, regression from 4.0)
 - fixed looking forward too far causing an upside down camera frame (#1338)
 - fixed the enemy bear behavior in demo mode (#1370, regression since 2.16)
@@ -17,8 +18,9 @@
 - fixed possible game crashes if more than 16 savegame slots are set (#1374)
 - fixed savegame slots higher than 64 not working (#1395)
 - fixed a crash in custom levels if a room had more than 1500 vertices (#1398)
-- fixed the console command to change FPS also starting demo mode (#1368)
 - fixed a crash in custom levels with certain music files
+- fixed the console command to change FPS also starting demo mode (#1368)
+- fixed text blinking rate being different in 30 and 60 FPS (#1377)
 
 ## [4.1.2](https://github.com/LostArtefacts/TR1X/compare/4.1.1...4.1.2) - 2024-04-28
 - fixed pictures display time (#1349, regression from 4.1)

@@ -151,7 +151,7 @@ void Console_Open(void)
     Text_SetScale(
         m_Prompt.caret_ts, PHD_ONE * m_PromptScale, PHD_ONE * m_PromptScale);
     Text_AlignBottom(m_Prompt.caret_ts, true);
-    Text_Flash(m_Prompt.caret_ts, 1, 20);
+    Text_Flash(m_Prompt.caret_ts, 1, LOGIC_FPS * 1.5);
 }
 
 void Console_Close(void)

@@ -469,8 +469,7 @@ void Text_Remove(TEXTSTRING *textstring)
 
 void Text_Draw(void)
 {
-    m_FlashFrames =
-        Clock_GetFrameAdvance() * Clock_GetElapsedDrawFrames(&m_FlashTimer);
+    m_FlashFrames = Clock_GetFrameAdvance();
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];
         if (textstring->flags.active) {
