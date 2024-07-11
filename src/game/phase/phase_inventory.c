@@ -675,13 +675,11 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
 
     m_StartLevel = g_LevelComplete ? g_GameInfo.select_level_num : -1;
 
-    for (int i = 0; i < Clock_GetFrameAdvance(); i++) {
-        if (g_IDelay) {
-            if (g_IDCount) {
-                g_IDCount--;
-            } else {
-                g_IDelay = false;
-            }
+    if (g_IDelay) {
+        if (g_IDCount) {
+            g_IDCount--;
+        } else {
+            g_IDelay = false;
         }
     }
 

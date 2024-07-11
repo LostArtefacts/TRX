@@ -21,6 +21,7 @@
 - fixed a crash in custom levels with certain music files
 - fixed the console command to change FPS also starting demo mode (#1368)
 - fixed text blinking rate being different in 30 and 60 FPS (#1377)
+- fixed slow sound volume adjustment at 60 FPS when holding arrow keys (#1407)
 
 ## [4.1.2](https://github.com/LostArtefacts/TR1X/compare/4.1.1...4.1.2) - 2024-04-28
 - fixed pictures display time (#1349, regression from 4.1)
