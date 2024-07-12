@@ -13,20 +13,24 @@ public class TR1XInstallSource : BaseInstallSource
     {
         get
         {
-            using var key = Registry.CurrentUser.OpenSubKey(@"Software\Tomb1Main");
-            if (key is not null)
+            var previousPath = GetPreviousInstallationPath();
+            if (previousPath is not null)
             {
-                var value = key.GetValue("InstallPath")?.ToString();
-                if (value is not null)
-                {
-                    yield return value;
-                }
+                yield return previousPath;
             }
 
             foreach (var path in InstallUtils.GetDesktopShortcutDirectories())
             {
                 yield return path;
             }
+        }
+    }
+
+    public override string SuggestedInstallationDirectory
+    {
+        get
+        {
+            return GetPreviousInstallationPath() ?? base.SuggestedInstallationDirectory;
         }
     }
 
@@ -62,5 +66,11 @@ public class TR1XInstallSource : BaseInstallSource
     public override bool IsGameFound(string sourceDirectory)
     {
         return File.Exists(Path.Combine(sourceDirectory, "TR1X.exe")) || File.Exists(Path.Combine(sourceDirectory, "Tomb1Main.exe"));
+    }
+
+    private static string? GetPreviousInstallationPath()
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(@"Software\Tomb1Main");
+        return key?.GetValue("InstallPath")?.ToString();
     }
 }

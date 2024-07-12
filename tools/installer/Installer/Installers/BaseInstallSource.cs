@@ -20,7 +20,7 @@ public abstract class BaseInstallSource : IInstallSource
     public abstract bool IsImportingSavesSupported { get; }
     public abstract string SourceName { get; }
 
-    public string SuggestedInstallationDirectory
+    public virtual string SuggestedInstallationDirectory
     {
         get
         {
