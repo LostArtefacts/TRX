@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +12,7 @@ public class TR1XInstallSource : BaseInstallSource
     {
         get
         {
-            var previousPath = GetPreviousInstallationPath();
+            var previousPath = InstallUtils.GetPreviousInstallationPath();
             if (previousPath is not null)
             {
                 yield return previousPath;
@@ -30,7 +29,7 @@ public class TR1XInstallSource : BaseInstallSource
     {
         get
         {
-            return GetPreviousInstallationPath() ?? base.SuggestedInstallationDirectory;
+            return InstallUtils.GetPreviousInstallationPath() ?? base.SuggestedInstallationDirectory;
         }
     }
 
@@ -66,11 +65,5 @@ public class TR1XInstallSource : BaseInstallSource
     public override bool IsGameFound(string sourceDirectory)
     {
         return File.Exists(Path.Combine(sourceDirectory, "TR1X.exe")) || File.Exists(Path.Combine(sourceDirectory, "Tomb1Main.exe"));
-    }
-
-    private static string? GetPreviousInstallationPath()
-    {
-        using var key = Registry.CurrentUser.OpenSubKey(@"Software\Tomb1Main");
-        return key?.GetValue("InstallPath")?.ToString();
     }
 }

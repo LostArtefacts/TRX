@@ -1,15 +1,19 @@
+using Installer.Utils;
+using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using Installer.Utils;
+using System.Threading.Tasks;
 
 namespace Installer.Installers;
 
 public static class InstallUtils
 {
+    private static readonly string _legacyStorageKey = @"Software\Tomb1Main";
+    private static readonly string _registryStorageKey = @"Software\TR1X";
+
     public static async Task CopyDirectoryTree(
         string sourceDirectory,
         string targetDirectory,
@@ -184,5 +188,48 @@ public static class InstallUtils
                 }
             }
         }
+    }
+
+    public static void StoreInstallationPath(string installPath)
+    {
+        RenameLegacyStorage();
+        using var key = Registry.CurrentUser.CreateSubKey(_registryStorageKey);
+        key?.SetValue("InstallPath", installPath);
+    }
+
+    public static string? GetPreviousInstallationPath()
+    {
+        RenameLegacyStorage();
+        using var key = Registry.CurrentUser.OpenSubKey(_registryStorageKey);
+        return key?.GetValue("InstallPath")?.ToString();
+    }
+
+    private static void RenameLegacyStorage()
+    {
+        // Added in #1411 - to be removed in the future.
+        using var legacyKey = Registry.CurrentUser.OpenSubKey(_legacyStorageKey);
+        if (legacyKey is null)
+        {
+            return;
+        }
+
+        using var currentKey = Registry.CurrentUser.OpenSubKey(_registryStorageKey);
+        if (currentKey is not null)
+        {
+            return;
+        }
+
+        using var destinationKey = Registry.CurrentUser.CreateSubKey(_registryStorageKey);
+        foreach (string valueName in legacyKey.GetValueNames())
+        {
+            object? objValue = legacyKey.GetValue(valueName);
+            if (objValue is not null)
+            {
+                RegistryValueKind valueKind = legacyKey.GetValueKind(valueName);
+                destinationKey.SetValue(valueName, objValue, valueKind);
+            }
+        }
+
+        Registry.CurrentUser.DeleteSubKey(_legacyStorageKey);
     }
 }
