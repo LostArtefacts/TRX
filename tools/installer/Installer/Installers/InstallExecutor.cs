@@ -1,5 +1,4 @@
 using Installer.Models;
-using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
@@ -66,8 +65,7 @@ public class InstallExecutor
 
     protected static async Task CopyTR1XFiles(string targetDirectory, IProgress<InstallProgress> progress)
     {
-        using var key = Registry.CurrentUser.CreateSubKey(@"Software\Tomb1Main");
-        key?.SetValue("InstallPath", targetDirectory);
+        InstallUtils.StoreInstallationPath(targetDirectory);
 
         progress.Report(new InstallProgress
         {

@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,20 +12,24 @@ public class TR1XInstallSource : BaseInstallSource
     {
         get
         {
-            using var key = Registry.CurrentUser.OpenSubKey(@"Software\Tomb1Main");
-            if (key is not null)
+            var previousPath = InstallUtils.GetPreviousInstallationPath();
+            if (previousPath is not null)
             {
-                var value = key.GetValue("InstallPath")?.ToString();
-                if (value is not null)
-                {
-                    yield return value;
-                }
+                yield return previousPath;
             }
 
             foreach (var path in InstallUtils.GetDesktopShortcutDirectories())
             {
                 yield return path;
             }
+        }
+    }
+
+    public override string SuggestedInstallationDirectory
+    {
+        get
+        {
+            return InstallUtils.GetPreviousInstallationPath() ?? base.SuggestedInstallationDirectory;
         }
     }
 
