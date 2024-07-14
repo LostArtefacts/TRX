@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes
 - added new console commands:
     - `/hp`
