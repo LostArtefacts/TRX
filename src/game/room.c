@@ -712,10 +712,8 @@ void Room_TestTriggers(int16_t *data, bool heavy)
     }
 
     if ((*data & DATA_TYPE) == FT_LAVA) {
-        if (!heavy && g_LaraItem->pos.y == g_LaraItem->floor) {
-            if (Lava_TestFloor(g_LaraItem)) {
-                Lava_Burn(g_LaraItem);
-            }
+        if (!heavy && Lava_TestFloor(g_LaraItem)) {
+            Lava_Burn(g_LaraItem);
         }
 
         if (*data & END_BIT) {

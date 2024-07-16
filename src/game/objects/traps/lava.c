@@ -16,15 +16,13 @@
 
 bool Lava_TestFloor(ITEM_INFO *item)
 {
+    if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT
+        || (g_Lara.water_status == LWS_ABOVE_WATER
+            && item->pos.y != item->floor)) {
+        return false;
+    }
+
     // OG fix: check if floor index has lava
-    if (g_Lara.water_status == LWS_CHEAT) {
-        return false;
-    }
-
-    if (item->hit_points < 0) {
-        return false;
-    }
-
     int16_t room_num = item->room_number;
     FLOOR_INFO *floor =
         Room_GetFloor(item->pos.x, 32000, item->pos.z, &room_num);
@@ -81,6 +79,10 @@ void Lava_Burn(ITEM_INFO *item)
 
     item->hit_points = -1;
     item->hit_status = 1;
+    if (g_Lara.water_status != LWS_ABOVE_WATER) {
+        return;
+    }
+
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
