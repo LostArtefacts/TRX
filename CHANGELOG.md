@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- added deadly water feature from TR2+ for custom levels (#1404)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes
