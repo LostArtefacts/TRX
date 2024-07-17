@@ -321,6 +321,10 @@
       "Title": "Altezza risoluzione",
       "Description": "Sostituisce la risoluzione del gioco. Osserva le note dell'opzione 'Larghezza risoluzione'."
     },
+    "enable_skybox": {
+      "Title": "Cielo",
+      "Description": "Abilita un cielo predefinito nella Valle Perduta e nel Colosseo."
+    },
     "enable_braid": {
       "Title": "Treccia",
       "Description": "Abilita la treccia di Lara."

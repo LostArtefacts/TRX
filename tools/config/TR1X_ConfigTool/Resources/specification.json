@@ -380,6 +380,11 @@
           "MinimumValue": -1
         },
         {
+          "Field": "enable_skybox",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_braid",
           "DataType": "Bool",
           "DefaultValue": true

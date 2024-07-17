@@ -22,6 +22,7 @@ static void Room_PrintDrawStack(void);
 static bool Room_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent);
 static void Room_GetBounds(int16_t room_num);
 static void Room_PrepareToDraw(int16_t room_num);
+static void Room_DrawSkybox(void);
 
 static void Room_PrintDrawStack(void)
 {
@@ -203,6 +204,7 @@ void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
 
     Room_PrepareToDraw(base_room);
     Room_PrepareToDraw(target_room);
+    Room_DrawSkybox();
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         Room_DrawSingleRoom(g_RoomsToDraw[i]);
@@ -245,6 +247,24 @@ static void Room_PrepareToDraw(int16_t room_num)
             }
         }
     }
+    Matrix_Pop();
+}
+
+static void Room_DrawSkybox(void)
+{
+    const OBJECT_INFO skybox = g_Objects[O_SKYBOX];
+    if (!skybox.loaded) {
+        return;
+    }
+
+    Output_SetupAboveWater(g_Camera.underwater);
+    Matrix_Push();
+    g_MatrixPtr->_03 = g_MatrixPtr->_13 = g_MatrixPtr->_23 = 0;
+
+    const FRAME_INFO *const frame = g_Anims[skybox.anim_index].frame_ptr;
+    Matrix_RotYXZpack(frame->mesh_rots[0]);
+    Output_DrawSkybox(g_Meshes[skybox.mesh_index]);
+
     Matrix_Pop();
 }
 

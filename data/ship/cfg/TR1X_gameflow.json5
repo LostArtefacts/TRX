@@ -105,6 +105,7 @@
             "type": "normal",
             "music": 57,
             "injections": [
+                "data/injections/skybox.bin",
                 "data/injections/valley_itemrots.bin",
                 "data/injections/valley_textures.bin",
             ],
@@ -183,6 +184,7 @@
                 "data/injections/colosseum_fd.bin",
                 "data/injections/colosseum_itemrots.bin",
                 "data/injections/colosseum_textures.bin",
+                "data/injections/skybox.bin",
             ],
             "sequence": [
                 {"type": "loading_screen", "picture_path": "data/images/greece.webp", "display_time": 5},

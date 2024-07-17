@@ -40,6 +40,7 @@ typedef enum INJECTION_TYPE {
     INJ_ITEM_POSITION = 7,
     INJ_PS1_ENEMY = 8,
     INJ_DISABLE_ANIM_SPRITE = 9,
+    INJ_SKYBOX = 10,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -230,6 +231,9 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_DISABLE_ANIM_SPRITE:
         injection->relevant = !g_Config.fix_animated_sprites;
+        break;
+    case INJ_SKYBOX:
+        injection->relevant = g_Config.enable_skybox;
         break;
     default:
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);

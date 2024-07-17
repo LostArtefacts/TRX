@@ -20,6 +20,9 @@
 #include <stddef.h>
 
 #define CLIP_VERTCOUNT_SCALE 4
+#define VBUF_VISIBLE(a, b, c)                                                  \
+    (((a).ys - (b).ys) * ((c).xs - (b).xs)                                     \
+     >= ((c).ys - (b).ys) * ((a).xs - (b).xs))
 
 #define S_Output_CheckError(result)                                            \
     {                                                                          \
@@ -333,62 +336,40 @@ static int32_t S_Output_VisibleZClip(
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices)
 {
-    int32_t count;
-    POINT_INFO *pts0;
-    POINT_INFO *pts1;
-    GFX_3D_Vertex *v;
-    float clip;
+    const float multiplier = g_Config.brightness / 16.0f;
+    const float near_z = Output_GetNearZ();
+    const float persp_o_near_z = g_PhdPersp / near_z;
 
-    float multiplier = g_Config.brightness / 16.0f;
-    float near_z = Output_GetNearZ();
-    float persp_o_near_z = g_PhdPersp / near_z;
-
-    v = &vertices[0];
-    pts0 = &pts[vertex_count - 1];
+    GFX_3D_Vertex *v = &vertices[0];
+    POINT_INFO *pts0 = &pts[0];
+    POINT_INFO *pts1 = &pts[vertex_count - 1];
     for (int i = 0; i < vertex_count; i++) {
-        pts1 = pts0;
-        pts0 = &pts[i];
-        if (near_z > pts1->zv) {
-            if (near_z > pts0->zv) {
-                continue;
-            }
+        int32_t diff0 = near_z - pts0->zv;
+        int32_t diff1 = near_z - pts1->zv;
+        if ((diff0 | diff1) >= 0) {
+            goto loop_end;
+        }
 
-            clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
-            v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
+        if ((diff0 ^ diff1) < 0) {
+            double clip = diff0 / (pts1->zv - pts0->zv);
+            v->x = (pts0->xv + (pts1->xv - pts0->xv) * clip) * persp_o_near_z
                 + Viewport_GetCenterX();
-            v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
+            v->y = (pts0->yv + (pts1->yv - pts0->yv) * clip) * persp_o_near_z
                 + Viewport_GetCenterY();
             v->z = near_z * 0.0001f;
 
             v->w = 65536.0f / near_z;
-            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) / 256.0f;
-            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) / 256.0f;
+            v->s = v->w * (pts0->u + (pts1->u - pts0->u) * clip) / 256.0f;
+            v->t = v->w * (pts0->v + (pts1->v - pts0->v) * clip) / 256.0f;
 
             v->r = v->g = v->b =
-                (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
+                (8192.0f - (pts0->g + (pts1->g - pts0->g) * clip)) * multiplier;
             Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
 
             v++;
         }
 
-        if (near_z > pts0->zv) {
-            clip = (near_z - pts0->zv) / (pts1->zv - pts0->zv);
-            v->x = ((pts1->xv - pts0->xv) * clip + pts0->xv) * persp_o_near_z
-                + Viewport_GetCenterX();
-            v->y = ((pts1->yv - pts0->yv) * clip + pts0->yv) * persp_o_near_z
-                + Viewport_GetCenterY();
-            v->z = near_z * 0.0001f;
-
-            v->w = 65536.0f / near_z;
-            v->s = v->w * ((pts1->u - pts0->u) * clip + pts0->u) / 256.0f;
-            v->t = v->w * ((pts1->v - pts0->v) * clip + pts0->v) / 256.0f;
-
-            v->r = v->g = v->b =
-                (8192.0f - ((pts1->g - pts0->g) * clip + pts0->g)) * multiplier;
-            Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
-
-            v++;
-        } else {
+        if (diff0 < 0) {
             v->x = pts0->xs;
             v->y = pts0->ys;
             v->z = pts0->zv * 0.0001f;
@@ -402,9 +383,12 @@ static int32_t S_Output_ZedClipper(
 
             v++;
         }
+
+    loop_end:
+        pts1 = pts0++;
     }
 
-    count = v - vertices;
+    const int32_t count = v - vertices;
     return count < 3 ? 0 : count;
 }
 
@@ -943,50 +927,67 @@ void S_Output_DrawFlatTriangle(
 {
     int vertex_count = 3;
     GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    float light;
+    PHD_VBUF *src_vbuf[3];
 
-    if (!((vn3->clip & vn2->clip & vn1->clip) == 0 && vn1->clip >= 0
-          && vn2->clip >= 0 && vn3->clip >= 0
-          && (vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
-                  - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
-              >= 0)) {
+    src_vbuf[0] = vn1;
+    src_vbuf[1] = vn2;
+    src_vbuf[2] = vn3;
+
+    if (vn3->clip & vn2->clip & vn1->clip) {
         return;
     }
 
     float multiplier = g_Config.brightness / (16.0f * 255.0f);
-
-    light = (8192.0f - vn1->g) * multiplier;
-    vertices[0].x = vn1->xs;
-    vertices[0].y = vn1->ys;
-    vertices[0].z = vn1->zv * 0.0001f;
-    vertices[0].r = color.r * light;
-    vertices[0].g = color.g * light;
-    vertices[0].b = color.b * light;
-
-    light = (8192.0f - vn2->g) * multiplier;
-    vertices[1].x = vn2->xs;
-    vertices[1].y = vn2->ys;
-    vertices[1].z = vn2->zv * 0.0001f;
-    vertices[1].r = color.r * light;
-    vertices[1].g = color.g * light;
-    vertices[1].b = color.b * light;
-
-    light = (8192.0f - vn3->g) * multiplier;
-    vertices[2].x = vn3->xs;
-    vertices[2].y = vn3->ys;
-    vertices[2].z = vn3->zv * 0.0001f;
-    vertices[2].r = color.r * light;
-    vertices[2].g = color.g * light;
-    vertices[2].b = color.b * light;
-
     for (int i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = src_vbuf[i]->zv * 0.0001f;
+        const float light = (8192.0f - src_vbuf[i]->g) * multiplier;
+        vertices[i].r = color.r * light;
+        vertices[i].g = color.g * light;
+        vertices[i].b = color.b * light;
+
         Output_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
-    if (vn1->clip || vn2->clip || vn3->clip) {
+    if ((vn1->clip | vn2->clip | vn3->clip) >= 0) {
+        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
+            return;
+        }
+
+        if (vn1->clip || vn2->clip || vn3->clip) {
+            vertex_count = S_Output_ClipVertices(
+                vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
+        }
+    } else {
+        if (!S_Output_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        POINT_INFO points[3];
+        for (int i = 0; i < vertex_count; i++) {
+            points[i].xv = src_vbuf[i]->xv;
+            points[i].yv = src_vbuf[i]->yv;
+            points[i].zv = src_vbuf[i]->zv;
+            points[i].xs = src_vbuf[i]->xs;
+            points[i].ys = src_vbuf[i]->ys;
+            points[i].g = src_vbuf[i]->g;
+        }
+
+        vertex_count = S_Output_ZedClipper(vertex_count, points, vertices);
+        if (!vertex_count) {
+            return;
+        }
+        for (int i = 0; i < vertex_count; i++) {
+            vertices[i].r *= color.r / 255.0f;
+            vertices[i].g *= color.g / 255.0f;
+            vertices[i].b *= color.b / 255.0f;
+        }
+
         vertex_count = S_Output_ClipVertices(
             vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
     }
+
     if (!vertex_count) {
         return;
     }
@@ -1019,9 +1020,7 @@ void S_Output_DrawTexturedTriangle(
     }
 
     if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0) {
-        if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
-                - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
-            < 0) {
+        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
             return;
         }
 
@@ -1101,9 +1100,7 @@ void S_Output_DrawTexturedQuad(
 
         if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
             && vn4->clip >= 0) {
-            if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
-                    - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
-                < 0) {
+            if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
                 return;
             }
         } else if (!S_Output_VisibleZClip(vn1, vn2, vn3)) {
@@ -1117,9 +1114,7 @@ void S_Output_DrawTexturedQuad(
         return;
     }
 
-    if ((vn1->ys - vn2->ys) * (vn3->xs - vn2->xs)
-            - (vn3->ys - vn2->ys) * (vn1->xs - vn2->xs)
-        < 0) {
+    if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
         return;
     }
 
