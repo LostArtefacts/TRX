@@ -346,6 +346,9 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
                 m_VBuf[i].g = 0x1FFF;
+                if (!g_Objects[O_SKYBOX].loaded) {
+                    clip_flags |= 16;
+                }
             } else if (depth) {
                 m_VBuf[i].g += Output_CalcFogShade(depth);
                 if (!m_IsWaterEffect) {

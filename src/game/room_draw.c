@@ -259,7 +259,9 @@ static void Room_DrawSkybox(void)
 
     Output_SetupAboveWater(g_Camera.underwater);
     Matrix_Push();
-    g_MatrixPtr->_03 = g_MatrixPtr->_13 = g_MatrixPtr->_23 = 0;
+    g_MatrixPtr->_03 = 0;
+    g_MatrixPtr->_13 = 0;
+    g_MatrixPtr->_23 = 0;
 
     const FRAME_INFO *const frame = g_Anims[skybox.anim_index].frame_ptr;
     Matrix_RotYXZpack(frame->mesh_rots[0]);
