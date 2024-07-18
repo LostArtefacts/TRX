@@ -32,6 +32,7 @@ typedef struct {
     } edges[2];
 } LIGHTNING;
 
+static bool m_IsSkyboxEnabled = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
@@ -346,7 +347,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
                 m_VBuf[i].g = 0x1FFF;
-                if (!g_Objects[O_SKYBOX].loaded) {
+                if (!m_IsSkyboxEnabled) {
                     clip_flags |= 16;
                 }
             } else if (depth) {
@@ -620,6 +621,16 @@ void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip)
     Matrix_Interpolate();
     Output_DrawPolygons(obj_ptr, clip);
     Matrix_Pop();
+}
+
+void Output_SetSkyboxEnabled(const bool enabled)
+{
+    m_IsSkyboxEnabled = enabled;
+}
+
+bool Output_IsSkyboxEnabled(void)
+{
+    return m_IsSkyboxEnabled;
 }
 
 void Output_DrawSkybox(const int16_t *obj_ptr)

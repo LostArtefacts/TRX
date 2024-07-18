@@ -323,7 +323,7 @@
     },
     "enable_skybox": {
       "Title": "Skybox",
-      "Description": "Enables a default skybox in Lost Valley and Colosseum."
+      "Description": "Enables the skybox in supported levels."
     },
     "enable_braid": {
       "Title": "Braid",

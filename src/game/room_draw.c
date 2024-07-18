@@ -252,8 +252,7 @@ static void Room_PrepareToDraw(int16_t room_num)
 
 static void Room_DrawSkybox(void)
 {
-    const OBJECT_INFO skybox = g_Objects[O_SKYBOX];
-    if (!skybox.loaded) {
+    if (!Output_IsSkyboxEnabled()) {
         return;
     }
 
@@ -263,6 +262,7 @@ static void Room_DrawSkybox(void)
     g_MatrixPtr->_13 = 0;
     g_MatrixPtr->_23 = 0;
 
+    const OBJECT_INFO skybox = g_Objects[O_SKYBOX];
     const FRAME_INFO *const frame = g_Anims[skybox.anim_index].frame_ptr;
     Matrix_RotYXZpack(frame->mesh_rots[0]);
     Output_DrawSkybox(g_Meshes[skybox.mesh_index]);

@@ -147,7 +147,7 @@
     },
     "enable_skybox": {
       "Title": "Cielo",
-      "Description": "Habilita un cielo predeterminado en Valle perdido y El Coliseo."
+      "Description": "Habilita el cielo en niveles soportados."
     },
     "enable_braid": {
       "Title": "Trenza",

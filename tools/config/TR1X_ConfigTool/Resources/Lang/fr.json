@@ -323,7 +323,7 @@
     },
     "enable_skybox": {
       "Title": "Ciel",
-      "Description": "Active un ciel par défaut dans la Vallée perdue et le Colisée."
+      "Description": "Active le ciel dans les niveaux pris en charge."
     },
     "enable_braid": {
       "Title": "Tresse de Lara",
