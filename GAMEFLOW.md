@@ -1335,6 +1335,14 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>*_skybox.bin</code>
+    </td>
+    <td>
+      Injects a predefined skybox model into specific levels.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>*_textures.bin</code>
     </td>
     <td>

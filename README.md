@@ -554,7 +554,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added a vsync option
 - added contextual arrows to menu options
 - added support for animated room sprites, which also restores intended behavior in, for example, The Cistern room 0
-- added skybox support, with a default option provided for Lost Valley and Colosseum; custom level builders can use object slot `184`
+- added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon; custom level builders can use object slot `184`
 - changed the Scion in The Great Pyramid from spawning blood when hit to a richochet effect
 - fixed thin black lines between polygons
 - fixed black screen flashing when navigating the inventory
@@ -574,7 +574,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **The Cistern**: missing textures in rooms 3 and 9 and a stretched texture in room 102
     - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89 and a misaligned texture in room 104
     - **City of Khamoon**: incorrect textures in rooms 47, 48, 51, 60 and 64, and a missing texture in room 58
-    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42 and 65
+    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42 and 65; added shading to the gaps into City of Khamoon in rooms 8 and 20/21
     - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54
     - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 23 and 24
     - **Pre-Atlantis Cutscene**: stretched textures in rooms 6 and 21
