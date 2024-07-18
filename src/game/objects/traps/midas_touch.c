@@ -62,11 +62,12 @@ void MidasTouch_Collision(
         break;
     }
 
-    if (lara_item->current_anim_state == LS_USE_MIDAS) {
-        if (Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
-            Overlay_AddPickup(O_PUZZLE_ITEM1);
-            Inv_AddItem(O_PUZZLE_ITEM1);
-        }
+    if (lara_item->current_anim_state == LS_USE_MIDAS
+        && g_Lara.interact_target.item_num == item_num
+        && Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
+        Overlay_AddPickup(O_PUZZLE_ITEM1);
+        Inv_AddItem(O_PUZZLE_ITEM1);
+        g_Lara.interact_target.item_num = NO_OBJECT;
     }
 
     if (!lara_item->gravity_status && lara_item->current_anim_state == LS_STOP
@@ -100,7 +101,6 @@ void MidasTouch_Collision(
         Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_PLACE_BAR, 0, O_LARA_EXTRA);
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Lara.interact_target.is_moving = false;
-        g_Lara.interact_target.item_num = NO_OBJECT;
     }
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
