@@ -35,12 +35,22 @@ topic](https://www.tombraiderforums.com/showthread.php?p=8286101).
     </tr>
     <tr>
         <th>
+            Skybox support
+            <img src="docs/showcase/skybox.jpg"/>
+        </th>
+        <th>
             Customizable draw distance
             <img src="docs/showcase/draw_distance.webp"/>
         </th>
+    </tr>
+    <tr>
         <th>
             Fly cheat
             <img src="docs/showcase/fly_cheat.jpg"/>
+        </th>
+        <th>
+            Developer console
+            <img src="docs/showcase/console.webp"/>
         </th>
     </tr>
     <tr>
