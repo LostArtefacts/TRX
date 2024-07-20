@@ -32,6 +32,7 @@ typedef struct {
     } edges[2];
 } LIGHTNING;
 
+static bool m_IsSkyboxEnabled = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
@@ -74,6 +75,7 @@ static const int16_t *Output_DrawRoomSprites(
     const int16_t *obj_ptr, int32_t vertex_count);
 static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr);
 static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr);
+static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr);
 static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
 static void Output_CalcWibbleTable(void);
@@ -201,21 +203,29 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
     obj_ptr++;
     int vertex_count = *obj_ptr++;
     for (int i = 0; i < vertex_count; i++) {
-        double xv = g_MatrixPtr->_00 * obj_ptr[0]
-            + g_MatrixPtr->_01 * obj_ptr[1] + g_MatrixPtr->_02 * obj_ptr[2]
-            + g_MatrixPtr->_03;
-        double yv = g_MatrixPtr->_10 * obj_ptr[0]
-            + g_MatrixPtr->_11 * obj_ptr[1] + g_MatrixPtr->_12 * obj_ptr[2]
-            + g_MatrixPtr->_13;
-        int32_t zv_int = g_MatrixPtr->_20 * obj_ptr[0]
-            + g_MatrixPtr->_21 * obj_ptr[1] + g_MatrixPtr->_22 * obj_ptr[2]
-            + g_MatrixPtr->_23;
-        double zv = zv_int;
+        // clang-format off
+        double xv =
+            g_MatrixPtr->_00 * obj_ptr[0] +
+            g_MatrixPtr->_01 * obj_ptr[1] +
+            g_MatrixPtr->_02 * obj_ptr[2] +
+            g_MatrixPtr->_03;
+        double yv =
+            g_MatrixPtr->_10 * obj_ptr[0] +
+            g_MatrixPtr->_11 * obj_ptr[1] +
+            g_MatrixPtr->_12 * obj_ptr[2] +
+            g_MatrixPtr->_13;
+        double zv =
+            g_MatrixPtr->_20 * obj_ptr[0] +
+            g_MatrixPtr->_21 * obj_ptr[1] +
+            g_MatrixPtr->_22 * obj_ptr[2] +
+            g_MatrixPtr->_23;
+        // clang-format on
+
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
         m_VBuf[i].zv = zv;
 
-        int32_t clip_flags;
+        int16_t clip_flags;
         if (zv < Output_GetNearZ()) {
             clip_flags = -32768;
         } else {
@@ -293,6 +303,23 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
+static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr)
+{
+    int32_t vertex_count = *obj_ptr++;
+    if (vertex_count > 0) {
+        obj_ptr += 3 * vertex_count;
+    } else {
+        vertex_count = -vertex_count;
+        obj_ptr += vertex_count;
+    }
+
+    for (int i = 0; i < vertex_count; i++) {
+        m_VBuf[i].g = 0xFFF;
+    }
+
+    return obj_ptr;
+}
+
 static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
@@ -320,7 +347,9 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
                 m_VBuf[i].g = 0x1FFF;
-                clip_flags |= 16;
+                if (!m_IsSkyboxEnabled) {
+                    clip_flags |= 16;
+                }
             } else if (depth) {
                 m_VBuf[i].g += Output_CalcFogShade(depth);
                 if (!m_IsWaterEffect) {
@@ -592,6 +621,37 @@ void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip)
     Matrix_Interpolate();
     Output_DrawPolygons(obj_ptr, clip);
     Matrix_Pop();
+}
+
+void Output_SetSkyboxEnabled(const bool enabled)
+{
+    m_IsSkyboxEnabled = enabled;
+}
+
+bool Output_IsSkyboxEnabled(void)
+{
+    return m_IsSkyboxEnabled;
+}
+
+void Output_DrawSkybox(const int16_t *obj_ptr)
+{
+    g_PhdLeft = Viewport_GetMinX();
+    g_PhdTop = Viewport_GetMinY();
+    g_PhdRight = Viewport_GetMaxX();
+    g_PhdBottom = Viewport_GetMaxY();
+
+    obj_ptr = Output_CalcObjectVertices(obj_ptr + 4);
+    if (!obj_ptr) {
+        return;
+    }
+
+    S_Output_DisableDepthTest();
+    obj_ptr = Output_CalcSkyboxLight(obj_ptr);
+    obj_ptr = Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = Output_DrawObjectG4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = Output_DrawObjectG3(obj_ptr + 1, *obj_ptr);
+    S_Output_EnableDepthTest();
 }
 
 void Output_DrawRoom(const int16_t *obj_ptr)

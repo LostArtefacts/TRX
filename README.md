@@ -35,12 +35,22 @@ topic](https://www.tombraiderforums.com/showthread.php?p=8286101).
     </tr>
     <tr>
         <th>
+            Skybox support
+            <img src="docs/showcase/skybox.jpg"/>
+        </th>
+        <th>
             Customizable draw distance
             <img src="docs/showcase/draw_distance.webp"/>
         </th>
+    </tr>
+    <tr>
         <th>
             Fly cheat
             <img src="docs/showcase/fly_cheat.jpg"/>
+        </th>
+        <th>
+            Developer console
+            <img src="docs/showcase/console.webp"/>
         </th>
     </tr>
     <tr>
@@ -554,6 +564,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added a vsync option
 - added contextual arrows to menu options
 - added support for animated room sprites, which also restores intended behavior in, for example, The Cistern room 0
+- added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon; custom level builders can use object slot `184`
 - changed the Scion in The Great Pyramid from spawning blood when hit to a richochet effect
 - fixed thin black lines between polygons
 - fixed black screen flashing when navigating the inventory
@@ -565,7 +576,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Gym**: incorrect textures in room 9
     - **Caves**: an incorrect texture in room 6 and missing textures in rooms 1, 10, 14 and 30
     - **City of Vilcabamba**: an incorrect texture in room 26, and a missing texture and a stretched texture in room 15
-    - **Lost Valley**: incorrect textures in rooms 6, 9, 16 and 35, missing textures in rooms 9, 25, 26, 27, 51, and 90, and stretched textures in room 63
+    - **Lost Valley**: incorrect textures in rooms 6, 9, 16, 34 and 35, missing textures in rooms 6, 9, 25, 26, 27, 51, and 90, and stretched textures in room 63
     - **Tomb of Qualopec**: an incorrect and missing textures in room 8, and a misaligned texture in room 5
     - **St. Francis' Folly**: incorrect textures in rooms 1, 4, 18 and 35, and a misaligned texture in room 3
     - **Colosseum**: incorrect Midas textures appearing at the roof, incorrect textures in rooms 37, 67, 75 and 82, and missing textures in rooms 2 and 7
@@ -573,7 +584,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **The Cistern**: missing textures in rooms 3 and 9 and a stretched texture in room 102
     - **Tomb of Tihocan**: incorrect textures in rooms 75 and 89 and a misaligned texture in room 104
     - **City of Khamoon**: incorrect textures in rooms 47, 48, 51, 60 and 64, and a missing texture in room 58
-    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42 and 65
+    - **Obelisk of Khamoon**: incorrect textures in rooms 22, 23, 42 and 65; added shading to the gaps into City of Khamoon in rooms 8 and 20/21
     - **Sanctuary of the Scion**: missing textures in rooms 1, 11, 21, 52, 53, and 54
     - **Natla's Mines**: a missing texture in room 35, overlapping textures in room 55, an incorrect texture in room 69, and stretched textures in rooms 23 and 24
     - **Pre-Atlantis Cutscene**: stretched textures in rooms 6 and 21

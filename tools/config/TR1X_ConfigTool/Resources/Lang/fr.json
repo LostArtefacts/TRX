@@ -321,6 +321,10 @@
       "Title": "Hauteur de résolution",
       "Description": "Remplace la résolution du jeu. Voir les notes sur la largeur de résolution."
     },
+    "enable_skybox": {
+      "Title": "Ciel",
+      "Description": "Active le ciel dans les niveaux pris en charge."
+    },
     "enable_braid": {
       "Title": "Tresse de Lara",
       "Description": "Active la tresse de Lara."

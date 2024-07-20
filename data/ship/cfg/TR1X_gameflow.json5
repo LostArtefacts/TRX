@@ -106,6 +106,7 @@
             "music": 57,
             "injections": [
                 "data/injections/valley_itemrots.bin",
+                "data/injections/valley_skybox.bin",
                 "data/injections/valley_textures.bin",
             ],
             "sequence": [
@@ -182,6 +183,7 @@
                 "data/injections/colosseum_door.bin",
                 "data/injections/colosseum_fd.bin",
                 "data/injections/colosseum_itemrots.bin",
+                "data/injections/colosseum_skybox.bin",
                 "data/injections/colosseum_textures.bin",
             ],
             "sequence": [
@@ -311,6 +313,7 @@
             "injections": [
                 "data/injections/obelisk_fd.bin",
                 "data/injections/obelisk_itemrots.bin",
+                "data/injections/obelisk_skybox.bin",
                 "data/injections/obelisk_textures.bin",
             ],
             "sequence": [

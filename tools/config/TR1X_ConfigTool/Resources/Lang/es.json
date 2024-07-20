@@ -145,6 +145,10 @@
       "Title": "Recogidas en 3D",
       "Description": "Permite que los modelos en 3D se representen en lugar de los sprites para los objetos a recoger."
     },
+    "enable_skybox": {
+      "Title": "Cielo",
+      "Description": "Habilita el cielo en niveles soportados."
+    },
     "enable_braid": {
       "Title": "Trenza",
       "Description": "Habilita la trenza de Lara."

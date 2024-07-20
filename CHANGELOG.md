@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added deadly water feature from TR2+ for custom levels (#1404)
+- added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon (#94)
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417)
 

@@ -90,6 +90,7 @@ typedef struct {
     TARGET_LOCK_MODE target_mode;
     bool enable_loading_screens;
     bool fix_animated_sprites;
+    bool enable_skybox;
 
     struct {
         int32_t layout;

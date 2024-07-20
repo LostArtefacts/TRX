@@ -321,6 +321,10 @@
       "Title": "Altezza risoluzione",
       "Description": "Sostituisce la risoluzione del gioco. Osserva le note dell'opzione 'Larghezza risoluzione'."
     },
+    "enable_skybox": {
+      "Title": "Cielo",
+      "Description": "Abilita il cielo nei livelli supportati."
+    },
     "enable_braid": {
       "Title": "Treccia",
       "Description": "Abilita la treccia di Lara."

@@ -18,7 +18,7 @@
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
-#define INJECTION_CURRENT_VERSION 6
+#define INJECTION_CURRENT_VERSION 7
 
 typedef enum INJECTION_VERSION {
     INJ_VERSION_1 = 1,
@@ -27,6 +27,7 @@ typedef enum INJECTION_VERSION {
     INJ_VERSION_4 = 4,
     INJ_VERSION_5 = 5,
     INJ_VERSION_6 = 6,
+    INJ_VERSION_7 = 7,
 } INJECTION_VERSION;
 
 typedef enum INJECTION_TYPE {
@@ -40,6 +41,7 @@ typedef enum INJECTION_TYPE {
     INJ_ITEM_POSITION = 7,
     INJ_PS1_ENEMY = 8,
     INJ_DISABLE_ANIM_SPRITE = 9,
+    INJ_SKYBOX = 10,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -95,7 +97,7 @@ typedef enum FLOOR_EDIT_TYPE {
 typedef enum ROOM_MESH_EDIT_TYPE {
     RMET_TEXTURE_FACE = 0,
     RMET_MOVE_FACE = 1,
-    RMET_MOVE_VERTEX = 2,
+    RMET_ALTER_VERTEX = 2,
     RMET_ROTATE_FACE = 3,
     RMET_ADD_FACE = 4,
     RMET_ADD_VERTEX = 5,
@@ -143,7 +145,7 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_RoomMeshEdits(INJECTION *injection);
 static void Inject_TextureRoomFace(INJECTION *injection);
 static void Inject_MoveRoomFace(INJECTION *injection);
-static void Inject_MoveRoomVertex(INJECTION *injection);
+static void Inject_AlterRoomVertex(INJECTION *injection);
 static void Inject_RotateRoomFace(INJECTION *injection);
 static void Inject_AddRoomFace(INJECTION *injection);
 static void Inject_AddRoomVertex(INJECTION *injection);
@@ -230,6 +232,9 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_DISABLE_ANIM_SPRITE:
         injection->relevant = !g_Config.fix_animated_sprites;
+        break;
+    case INJ_SKYBOX:
+        injection->relevant = g_Config.enable_skybox;
         break;
     default:
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
@@ -1456,8 +1461,8 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
         case RMET_MOVE_FACE:
             Inject_MoveRoomFace(injection);
             break;
-        case RMET_MOVE_VERTEX:
-            Inject_MoveRoomVertex(injection);
+        case RMET_ALTER_VERTEX:
+            Inject_AlterRoomVertex(injection);
             break;
         case RMET_ROTATE_FACE:
             Inject_RotateRoomFace(injection);
@@ -1531,7 +1536,7 @@ static void Inject_MoveRoomFace(INJECTION *injection)
     }
 }
 
-static void Inject_MoveRoomVertex(INJECTION *injection)
+static void Inject_AlterRoomVertex(INJECTION *injection)
 {
     MYFILE *fp = injection->fp;
 
@@ -1540,6 +1545,7 @@ static void Inject_MoveRoomVertex(INJECTION *injection)
     int16_t x_change;
     int16_t y_change;
     int16_t z_change;
+    int16_t shade_change;
 
     File_Read(&target_room, sizeof(int16_t), 1, fp);
     File_Skip(fp, sizeof(int32_t));
@@ -1547,24 +1553,30 @@ static void Inject_MoveRoomVertex(INJECTION *injection)
     File_Read(&x_change, sizeof(int16_t), 1, fp);
     File_Read(&y_change, sizeof(int16_t), 1, fp);
     File_Read(&z_change, sizeof(int16_t), 1, fp);
+    if (injection->version >= INJ_VERSION_7) {
+        File_Read(&shade_change, sizeof(int16_t), 1, fp);
+    } else {
+        shade_change = 0;
+    }
 
     if (target_room < 0 || target_room >= g_RoomCount) {
         LOG_WARNING("Room index %d is invalid", target_room);
         return;
     }
 
-    ROOM_INFO *r = &g_RoomInfo[target_room];
-    int16_t vertex_count = *r->data;
+    const ROOM_INFO *const room = &g_RoomInfo[target_room];
+    const int16_t vertex_count = *room->data;
     if (target_vertex < 0 || target_vertex >= vertex_count) {
         LOG_WARNING(
             "Vertex index %d, room %d is invalid", target_vertex, target_room);
         return;
     }
 
-    int16_t *data_ptr = r->data + target_vertex * 4;
+    int16_t *const data_ptr = room->data + target_vertex * 4;
     *(data_ptr + 1) += x_change;
     *(data_ptr + 2) += y_change;
     *(data_ptr + 3) += z_change;
+    *(data_ptr + 4) += shade_change;
 }
 
 static void Inject_RotateRoomFace(INJECTION *injection)

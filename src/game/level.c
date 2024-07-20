@@ -1,5 +1,6 @@
 #include "game/level.h"
 
+#include "config.h"
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
@@ -1006,6 +1007,9 @@ bool Level_Load(int level_num)
              ? g_GameFlow.levels[level_num].draw_distance_max.value
              : g_GameFlow.draw_distance_max)
         * WALL_L);
+
+    Output_SetSkyboxEnabled(
+        g_Config.enable_skybox && g_Objects[O_SKYBOX].loaded);
 
     return ret;
 }

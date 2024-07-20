@@ -321,6 +321,10 @@
       "Title": "Resolution height",
       "Description": "Overrides game resolution. See notes on Resolution Width."
     },
+    "enable_skybox": {
+      "Title": "Skybox",
+      "Description": "Enables the skybox in supported levels."
+    },
     "enable_braid": {
       "Title": "Braid",
       "Description": "Enables Lara's braid."

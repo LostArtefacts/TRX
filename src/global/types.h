@@ -209,7 +209,7 @@ typedef enum GAME_OBJECT_ID {
     O_BIG_POD = 181,
     O_BOAT = 182,
     O_EARTHQUAKE = 183,
-    O_TEMP5 = 184,
+    O_SKYBOX = 184,
     O_TEMP6 = 185,
     O_TEMP7 = 186,
     O_TEMP8 = 187,
