@@ -304,10 +304,7 @@ configure_file(
 executable(
   'TR1X',
   sources,
-  include_directories: [
-    'src/',
-    include_directories('subprojects/libtrx/include', is_system: true),
-  ],
+  include_directories: ['src/'],
   dependencies: dependencies,
   link_args: link_args,
   gui_app: true,
