@@ -15,30 +15,31 @@
 #include <stddef.h>
 
 static void Door_Open(DOORPOS_DATA *d);
-static void Door_Shut(DOORPOS_DATA *d, ITEM_INFO *item);
-static bool Door_LaraDoorCollision(ITEM_INFO *item);
+static void Door_Shut(DOORPOS_DATA *d, const ITEM_INFO *door);
+static bool Door_LaraDoorCollision(
+    const ITEM_INFO *door, const FLOOR_INFO *const floor);
 
-static bool Door_LaraDoorCollision(ITEM_INFO *item)
+static bool Door_LaraDoorCollision(
+    const ITEM_INFO *const door, const FLOOR_INFO *const floor)
 {
-    if (!g_LaraItem) {
+    if (g_LaraItem == NULL) {
         return false;
     }
-    int32_t max_dist = SQUARE((WALL_L * 2) >> 8);
-    int32_t dx = ABS(item->pos.x - g_LaraItem->pos.x) >> 8;
-    int32_t dy = ABS(item->pos.y - g_LaraItem->pos.y) >> 8;
-    int32_t dz = ABS(item->pos.z - g_LaraItem->pos.z) >> 8;
-    int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-    return dist < max_dist;
+
+    int16_t room_num = g_LaraItem->room_number;
+    const FLOOR_INFO *const lara_floor = Room_GetFloor(
+        g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
+    return lara_floor == floor;
 }
 
-static void Door_Shut(DOORPOS_DATA *d, ITEM_INFO *item)
+static void Door_Shut(DOORPOS_DATA *const d, const ITEM_INFO *const door)
 {
     FLOOR_INFO *floor = d->floor;
     if (!floor) {
         return;
     }
 
-    if (item && Door_LaraDoorCollision(item)) {
+    if (door && Door_LaraDoorCollision(door, floor)) {
         return;
     }
 

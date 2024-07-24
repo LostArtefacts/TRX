@@ -5,6 +5,7 @@
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)
 - fixed the ingame timer being skewed upon inventory open (#1420, regression from 4.1)
+- fixed Lara able to reach triggers through closed doors (#1419, regression since 1.1.4)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes
