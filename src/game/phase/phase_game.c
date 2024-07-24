@@ -14,6 +14,7 @@
 #include "game/overlay.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "game/text.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -33,6 +34,7 @@ static void Phase_Game_Draw(void);
 static void Phase_Game_Start(void *arg)
 {
     Interpolation_Remember();
+    Stats_StartTimer();
     if (Phase_Get() != PHASE_PAUSE) {
         Output_FadeReset();
     }
@@ -45,6 +47,7 @@ static void Phase_Game_End(void)
 static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
 {
     Interpolation_Remember();
+    Stats_UpdateTimer();
     CLAMPG(nframes, MAX_FRAMES);
 
     for (int32_t i = 0; i < nframes; i++) {
@@ -123,7 +126,6 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
             Sound_ResetAmbient();
             Effect_RunActiveFlipEffect();
             Sound_UpdateEffects();
-            g_GameInfo.current[g_CurrentLevel].stats.timer++;
             Overlay_BarHealthTimerTick();
         }
     }

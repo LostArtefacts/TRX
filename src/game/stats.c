@@ -1,6 +1,7 @@
 #include "game/stats.h"
 
 #include "game/carrier.h"
+#include "game/clock.h"
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/items.h"
@@ -24,6 +25,11 @@ static int32_t m_LevelSecrets = 0;
 static uint32_t m_SecretRoom = 0;
 static bool m_KillableItems[MAX_ITEMS] = { 0 };
 static bool m_IfKillable[O_NUMBER_OF] = { 0 };
+
+static struct {
+    double start_counter;
+    int32_t start_timer;
+} m_StatsTimer = { 0 };
 
 int16_t m_PickupObjs[] = { O_PICKUP_ITEM1,   O_PICKUP_ITEM2,  O_KEY_ITEM1,
                            O_KEY_ITEM2,      O_KEY_ITEM3,     O_KEY_ITEM4,
@@ -282,3 +288,20 @@ bool Stats_CheckAllSecretsCollected(GAMEFLOW_LEVEL_TYPE level_type)
     Stats_ComputeTotal(level_type, &total_stats);
     return total_stats.player_secret_count >= total_stats.total_secret_count;
 }
+
+void Stats_StartTimer(void)
+{
+    m_StatsTimer.start_counter = Clock_GetHighPrecisionCounter();
+    m_StatsTimer.start_timer = g_GameInfo.current[g_CurrentLevel].stats.timer;
+}
+
+void Stats_UpdateTimer(void)
+{
+    const double elapsed =
+        (Clock_GetHighPrecisionCounter() - m_StatsTimer.start_counter)
+        * LOGIC_FPS / 1000.0;
+    g_GameInfo.current[g_CurrentLevel].stats.timer =
+        m_StatsTimer.start_timer + elapsed;
+}
+
+void Stats_StopTimer(void);

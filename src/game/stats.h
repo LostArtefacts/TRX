@@ -24,3 +24,7 @@ int32_t Stats_GetKillables(void);
 int32_t Stats_GetSecrets(void);
 void Stats_ComputeTotal(GAMEFLOW_LEVEL_TYPE level_type, TOTAL_STATS *stats);
 bool Stats_CheckAllSecretsCollected(GAMEFLOW_LEVEL_TYPE level_type);
+
+void Stats_StartTimer(void);
+void Stats_UpdateTimer(void);
+void Stats_StopTimer(void);

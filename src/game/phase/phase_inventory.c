@@ -20,6 +20,7 @@
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "game/text.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -571,6 +572,9 @@ static bool Inv_CheckDemoTimer(const IMOTION_INFO *const motion)
 static void Phase_Inventory_Start(void *arg)
 {
     Interpolation_Remember();
+    if (g_Config.enable_timer_in_inventory) {
+        Stats_StartTimer();
+    }
 
     INV_MODE inv_mode = (INV_MODE)arg;
 
@@ -695,11 +699,6 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
     g_GameInfo.inv_ring_above = g_InvMode == INV_GAME_MODE
         && ((ring->type == RT_MAIN && g_InvKeysObjects)
             || (ring->type == RT_OPTION && g_InvMainObjects));
-
-    if (g_Config.enable_timer_in_inventory) {
-        const double ticks = Clock_GetElapsedLogicalFrames(&m_StatsTimer);
-        g_GameInfo.current[g_CurrentLevel].stats.timer += round(ticks);
-    }
 
     if (ring->rotating) {
         return (GAMEFLOW_COMMAND) {
@@ -1091,12 +1090,17 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
 static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes)
 {
     Interpolation_Remember();
+    if (g_Config.enable_timer_in_inventory) {
+        Stats_UpdateTimer();
+    }
+
     for (int32_t i = 0; i < nframes; i++) {
         GAMEFLOW_COMMAND result = Phase_Inventory_ControlFrame();
         if (result.command != GF_PHASE_CONTINUE) {
             return result;
         }
     }
+
     return (GAMEFLOW_COMMAND) {
         .command = GF_PHASE_CONTINUE,
         .param = 0,

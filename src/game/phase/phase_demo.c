@@ -249,7 +249,6 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Sound_ResetAmbient();
         Effect_RunActiveFlipEffect();
         Sound_UpdateEffects();
-        g_GameInfo.current[g_CurrentLevel].stats.timer++;
         Overlay_BarHealthTimerTick();
 
         // Discard demo input; check for debounced real keypresses
