@@ -2,7 +2,7 @@
 - added deadly water feature from TR2+ for custom levels (#1404)
 - added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon (#94)
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
-- fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417)
+- fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes
@@ -25,7 +25,7 @@
 - fixed possible game crashes if more than 16 savegame slots are set (#1374)
 - fixed savegame slots higher than 64 not working (#1395)
 - fixed a crash in custom levels if a room had more than 1500 vertices (#1398)
-- fixed a crash in custom levels with certain music files
+- fixed a potential crash or silence with certain music files (#794, regression from 2.0)
 - fixed the console command to change FPS also starting demo mode (#1368)
 - fixed text blinking rate being different in 30 and 60 FPS (#1377)
 - fixed slow sound volume adjustment at 60 FPS when holding arrow keys (#1407)
