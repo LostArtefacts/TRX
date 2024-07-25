@@ -14,12 +14,14 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+static bool Door_LaraDoorCollision(const FLOOR_INFO *floor);
+static void Door_Check(DOORPOS_DATA *d);
 static void Door_Open(DOORPOS_DATA *d);
-static void Door_Shut(DOORPOS_DATA *d, const ITEM_INFO *door);
-static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor);
+static void Door_Shut(DOORPOS_DATA *d);
 
 static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor)
 {
+    // Check if Lara is on the same tile as the invisible block.
     if (g_LaraItem == NULL) {
         return false;
     }
@@ -30,14 +32,22 @@ static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor)
     return lara_floor == floor;
 }
 
-static void Door_Shut(DOORPOS_DATA *const d, const ITEM_INFO *const door)
+static void Door_Check(DOORPOS_DATA *const d)
 {
-    FLOOR_INFO *const floor = d->floor;
-    if (!floor) {
-        return;
+    // Forcefully remove the invisible block if Lara happens to occupy the same
+    // tile. This ensures that Lara doesn't void if a timed door happens to
+    // close right on her, or the player loads the game while standing on a
+    // closed door's block tile.
+    if (Door_LaraDoorCollision(d->floor)) {
+        Door_Open(d);
     }
+}
 
-    if (door && Door_LaraDoorCollision(floor)) {
+static void Door_Shut(DOORPOS_DATA *const d)
+{
+    // Change the level geometry so that the door tile is impassable.
+    FLOOR_INFO *const floor = d->floor;
+    if (floor == NULL) {
         return;
     }
 
@@ -56,6 +66,7 @@ static void Door_Shut(DOORPOS_DATA *const d, const ITEM_INFO *const door)
 
 static void Door_Open(DOORPOS_DATA *const d)
 {
+    // Restore the level geometry so that the door tile is passable.
     FLOOR_INFO *const floor = d->floor;
     if (!floor) {
         return;
@@ -147,8 +158,8 @@ void Door_Initialise(int16_t item_num)
     }
 
     room_num = Room_GetDoor(door->d1.floor);
-    Door_Shut(&door->d1, NULL);
-    Door_Shut(&door->d1flip, NULL);
+    Door_Shut(&door->d1);
+    Door_Shut(&door->d1flip);
 
     if (room_num == NO_ROOM) {
         door->d2.floor = NULL;
@@ -198,8 +209,8 @@ void Door_Initialise(int16_t item_num)
         door->d2flip.floor = NULL;
     }
 
-    Door_Shut(&door->d2, NULL);
-    Door_Shut(&door->d2flip, NULL);
+    Door_Shut(&door->d2);
+    Door_Shut(&door->d2flip);
 }
 
 void Door_Control(int16_t item_num)
@@ -220,13 +231,17 @@ void Door_Control(int16_t item_num)
         if (item->current_anim_state == DOOR_OPEN) {
             item->goal_anim_state = DOOR_CLOSED;
         } else {
-            Door_Shut(&door->d1, item);
-            Door_Shut(&door->d2, item);
-            Door_Shut(&door->d1flip, item);
-            Door_Shut(&door->d2flip, item);
+            Door_Shut(&door->d1);
+            Door_Shut(&door->d2);
+            Door_Shut(&door->d1flip);
+            Door_Shut(&door->d2flip);
         }
     }
 
+    Door_Check(&door->d1);
+    Door_Check(&door->d2);
+    Door_Check(&door->d1flip);
+    Door_Check(&door->d2flip);
     Item_Animate(item);
 }
 
