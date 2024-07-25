@@ -16,11 +16,9 @@
 
 static void Door_Open(DOORPOS_DATA *d);
 static void Door_Shut(DOORPOS_DATA *d, const ITEM_INFO *door);
-static bool Door_LaraDoorCollision(
-    const ITEM_INFO *door, const FLOOR_INFO *const floor);
+static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor);
 
-static bool Door_LaraDoorCollision(
-    const ITEM_INFO *const door, const FLOOR_INFO *const floor)
+static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor)
 {
     if (g_LaraItem == NULL) {
         return false;
@@ -34,38 +32,38 @@ static bool Door_LaraDoorCollision(
 
 static void Door_Shut(DOORPOS_DATA *const d, const ITEM_INFO *const door)
 {
-    FLOOR_INFO *floor = d->floor;
+    FLOOR_INFO *const floor = d->floor;
     if (!floor) {
         return;
     }
 
-    if (door && Door_LaraDoorCollision(door, floor)) {
+    if (door && Door_LaraDoorCollision(floor)) {
         return;
     }
 
     floor->index = 0;
     floor->box = NO_BOX;
-    floor->floor = NO_HEIGHT / 256;
-    floor->ceiling = NO_HEIGHT / 256;
+    floor->floor = NO_HEIGHT / STEP_L;
+    floor->ceiling = NO_HEIGHT / STEP_L;
     floor->sky_room = NO_ROOM;
     floor->pit_room = NO_ROOM;
 
-    int16_t box_num = d->block;
+    const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
         g_Boxes[box_num].overlap_index |= BLOCKED;
     }
 }
 
-static void Door_Open(DOORPOS_DATA *d)
+static void Door_Open(DOORPOS_DATA *const d)
 {
-    FLOOR_INFO *floor = d->floor;
+    FLOOR_INFO *const floor = d->floor;
     if (!floor) {
         return;
     }
 
     *floor = d->old_floor;
 
-    int16_t box_num = d->block;
+    const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
         g_Boxes[box_num].overlap_index &= ~BLOCKED;
     }
