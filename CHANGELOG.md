@@ -7,6 +7,7 @@
 - fixed the ingame timer being skewed upon inventory open (#1420, regression from 4.1)
 - fixed Lara able to reach triggers through closed doors (#1419, regression since 1.1.4)
 - fixed Lara voiding when loading the game on a closed door (#1419)
+- improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes
