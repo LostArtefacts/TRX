@@ -303,5 +303,3 @@ void Stats_UpdateTimer(void)
     g_GameInfo.current[g_CurrentLevel].stats.timer =
         m_StatsTimer.start_timer + elapsed;
 }
-
-void Stats_StopTimer(void);
