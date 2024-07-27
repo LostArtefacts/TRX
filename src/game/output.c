@@ -1042,7 +1042,8 @@ void Output_AnimateFades(void)
 
 void Output_AnimateTextures(void)
 {
-    m_WibbleOffsetDbl += Clock_GetElapsedLogicalFrames(&m_WibbleTimer);
+    m_WibbleOffsetDbl +=
+        Clock_GetFrameAdvance() * Clock_GetSpeedMultiplier() / 2.0;
     m_WibbleOffset = (int32_t)(m_WibbleOffsetDbl) % WIBBLE_SIZE;
 
     if (!Clock_CheckElapsedLogicalFrames(&m_AnimatedTexturesTimer, 5)) {
