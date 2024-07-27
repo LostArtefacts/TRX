@@ -5,8 +5,9 @@
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)
 - fixed the ingame timer being skewed upon inventory open (#1420, regression from 4.1)
-- fixed Lara able to reach triggers through closed doors (#1419, regression since 1.1.4)
+- fixed Lara able to reach triggers through closed doors (#1419, regression from 1.1.4)
 - fixed Lara voiding when loading the game on a closed door (#1419)
+- fixed underwater caustics not resumed smoothly when unpausing (#1423, regression 3.2)
 - improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
@@ -23,7 +24,7 @@
 - changed the TR1X install source in the installer to suggest using the existing installation directory (#1350)
 - fixed config tool and installer missing icons (#1358, regression from 4.0)
 - fixed looking forward too far causing an upside down camera frame (#1338)
-- fixed the enemy bear behavior in demo mode (#1370, regression since 2.16)
+- fixed the enemy bear behavior in demo mode (#1370, regression from 2.16)
 - fixed the FPS counter overlapping the healthbar in demo mode (#1369)
 - fixed the Scion being extremely difficult to shoot with the shotgun (#1381)
 - fixed lightning rendering z-buffer issues (#1385, regression from 1.4)
