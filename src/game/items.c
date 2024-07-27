@@ -36,8 +36,7 @@
 ITEM_INFO *g_Items = NULL;
 int16_t g_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
-static int16_t m_InterpolatedBounds[6] = { 0 };
-static BOUNDS_16 m_InterpolatedBoundsNew = { 0 };
+static BOUNDS_16 m_InterpolatedBounds = { 0 };
 static int16_t m_MaxUsedItemCount = 0;
 
 void Item_InitialiseArray(int32_t num_items)
@@ -814,7 +813,7 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item)
 
     const BOUNDS_16 *const a = &frmptr[0]->bounds;
     const BOUNDS_16 *const b = &frmptr[1]->bounds;
-    BOUNDS_16 *const result = &m_InterpolatedBoundsNew;
+    BOUNDS_16 *const result = &m_InterpolatedBounds;
 
     result->min.x = a->min.x + (((b->min.x - a->min.x) * frac) / rate);
     result->min.y = a->min.y + (((b->min.y - a->min.y) * frac) / rate);
