@@ -656,7 +656,7 @@ typedef enum LARA_STATE {
     LS_BACK = 16,
     LS_SWIM = 17,
     LS_GLIDE = 18,
-    LS_NULL = 19,
+    LS_CLIMB_UP = 19,
     LS_FAST_TURN = 20,
     LS_STEP_RIGHT = 21,
     LS_STEP_LEFT = 22,
