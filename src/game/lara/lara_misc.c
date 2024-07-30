@@ -315,7 +315,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
             || coll->right_floor - coll->right_ceiling < 0) {
             return false;
         }
-        item->current_anim_state = LS_NULL;
+        item->current_anim_state = LS_CLIMB_UP;
         item->goal_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_VAULT_12, 0);
         item->pos.y += STEP_L * 2 + hdif;
@@ -330,7 +330,7 @@ bool Lara_TestVault(ITEM_INFO *item, COLL_INFO *coll)
             || coll->right_floor - coll->right_ceiling < 0) {
             return false;
         }
-        item->current_anim_state = LS_NULL;
+        item->current_anim_state = LS_CLIMB_UP;
         item->goal_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_VAULT_34, 0);
         item->pos.y += STEP_L * 3 + hdif;
