@@ -117,6 +117,10 @@
       "Title": "Retourné sous-marin",
       "Description": "Permet à Lara de faire un demi tour immédiat, sous l'eau, similaire a TR2+."
     },
+    "enable_tr2_swimming": {
+      "Title": "Natation fluide",
+      "Description": "Donne au taux de rotation sous l'eau de Lara une courbe d'accélération pour un mouvement plus fluide, similaire à TR2+."
+    },
     "enable_target_change": {
       "Title": "Changement de cible",
       "Description": "Permet de changer de cible en visant avec une arme. Appuyez sur la touche Regarder tout en visant pour changer de cible comme dans TR4+."

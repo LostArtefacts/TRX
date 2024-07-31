@@ -40,6 +40,7 @@ typedef enum STATE {
 
 static bool m_OldEnhancedLook;
 static bool m_OldTR2Jumping;
+static bool m_OldTR2Swimming;
 static bool m_oldFixBearAI;
 static TARGET_LOCK_MODE m_OldTargetMode;
 static RESUME_INFO m_OldResumeInfo;
@@ -151,10 +152,12 @@ static void Phase_Demo_Start(void *arg)
     // so temporarily turn off all the TR1X enhancements
     m_OldEnhancedLook = g_Config.enable_enhanced_look;
     m_OldTR2Jumping = g_Config.enable_tr2_jumping;
+    m_OldTR2Swimming = g_Config.enable_tr2_swimming;
     m_OldTargetMode = g_Config.target_mode;
     m_oldFixBearAI = g_Config.fix_bear_ai;
     g_Config.enable_enhanced_look = false;
     g_Config.enable_tr2_jumping = false;
+    g_Config.enable_tr2_swimming = false;
     g_Config.target_mode = TLM_FULL;
     g_Config.fix_bear_ai = false;
 
@@ -212,6 +215,7 @@ static void Phase_Demo_End(void)
     g_Config.target_mode = m_OldTargetMode;
     g_Config.enable_enhanced_look = m_OldEnhancedLook;
     g_Config.enable_tr2_jumping = m_OldTR2Jumping;
+    g_Config.enable_tr2_swimming = m_OldTR2Swimming;
     g_Config.fix_bear_ai = m_oldFixBearAI;
 }
 
