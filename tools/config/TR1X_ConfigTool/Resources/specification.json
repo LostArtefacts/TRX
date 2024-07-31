@@ -88,6 +88,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_tr2_swimming",
+          "DataType": "Bool",
+          "DefaultValue": false
+        },
+        {
           "Field": "enable_target_change",
           "DataType": "Bool",
           "DefaultValue": true

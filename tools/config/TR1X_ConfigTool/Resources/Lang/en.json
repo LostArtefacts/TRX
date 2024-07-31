@@ -117,6 +117,10 @@
       "Title": "Underwater roll",
       "Description": "Allows Lara to roll while underwater, similar to TR2+."
     },
+    "enable_tr2_swimming": {
+      "Title": "Smooth swimming",
+      "Description": "Gives Lara's underwater turn rate an acceleration curve for smoother movement, similar to TR2+."
+    },
     "enable_target_change": {
       "Title": "Target change",
       "Description": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets."

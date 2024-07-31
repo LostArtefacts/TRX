@@ -1025,12 +1025,24 @@ void Lara_State_Swim(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Input.back) {
         item->rot.x += 2 * PHD_DEGREE;
     }
-    if (g_Input.left) {
-        item->rot.y -= LARA_MED_TURN;
-        item->rot.z -= LARA_LEAN_RATE * 2;
-    } else if (g_Input.right) {
-        item->rot.y += LARA_MED_TURN;
-        item->rot.z += LARA_LEAN_RATE * 2;
+    if (g_Config.enable_tr2_swimming) {
+        if (g_Input.left) {
+            g_Lara.turn_rate -= LARA_TURN_RATE;
+            CLAMPL(g_Lara.turn_rate, -LARA_MED_TURN);
+            item->rot.z -= LARA_LEAN_RATE_SWIM;
+        } else if (g_Input.right) {
+            g_Lara.turn_rate += LARA_TURN_RATE;
+            CLAMPG(g_Lara.turn_rate, LARA_MED_TURN);
+            item->rot.z += LARA_LEAN_RATE_SWIM;
+        }
+    } else {
+        if (g_Input.left) {
+            item->rot.y -= LARA_MED_TURN;
+            item->rot.z -= LARA_LEAN_RATE * 2;
+        } else if (g_Input.right) {
+            item->rot.y += LARA_MED_TURN;
+            item->rot.z += LARA_LEAN_RATE * 2;
+        }
     }
 
     item->fall_speed += 8;
@@ -1066,13 +1078,26 @@ void Lara_State_Glide(ITEM_INFO *item, COLL_INFO *coll)
     } else if (g_Input.back) {
         item->rot.x += 2 * PHD_DEGREE;
     }
-    if (g_Input.left) {
-        item->rot.y -= LARA_MED_TURN;
-        item->rot.z -= LARA_LEAN_RATE * 2;
-    } else if (g_Input.right) {
-        item->rot.y += LARA_MED_TURN;
-        item->rot.z += LARA_LEAN_RATE * 2;
+    if (g_Config.enable_tr2_swimming) {
+        if (g_Input.left) {
+            g_Lara.turn_rate -= LARA_TURN_RATE;
+            CLAMPL(g_Lara.turn_rate, -LARA_MED_TURN);
+            item->rot.z -= LARA_LEAN_RATE_SWIM;
+        } else if (g_Input.right) {
+            g_Lara.turn_rate += LARA_TURN_RATE;
+            CLAMPG(g_Lara.turn_rate, LARA_MED_TURN);
+            item->rot.z += LARA_LEAN_RATE_SWIM;
+        }
+    } else {
+        if (g_Input.left) {
+            item->rot.y -= LARA_MED_TURN;
+            item->rot.z -= LARA_LEAN_RATE * 2;
+        } else if (g_Input.right) {
+            item->rot.y += LARA_MED_TURN;
+            item->rot.z += LARA_LEAN_RATE * 2;
+        }
     }
+
     if (g_Input.jump) {
         item->goal_anim_state = LS_SWIM;
     }
@@ -1112,13 +1137,26 @@ void Lara_State_Tread(ITEM_INFO *item, COLL_INFO *coll)
     } else if (g_Input.back) {
         item->rot.x += 2 * PHD_DEGREE;
     }
-    if (g_Input.left) {
-        item->rot.y -= LARA_MED_TURN;
-        item->rot.z -= LARA_LEAN_RATE * 2;
-    } else if (g_Input.right) {
-        item->rot.y += LARA_MED_TURN;
-        item->rot.z += LARA_LEAN_RATE * 2;
+    if (g_Config.enable_tr2_swimming) {
+        if (g_Input.left) {
+            g_Lara.turn_rate -= LARA_TURN_RATE;
+            CLAMPL(g_Lara.turn_rate, -LARA_MED_TURN);
+            item->rot.z -= LARA_LEAN_RATE_SWIM;
+        } else if (g_Input.right) {
+            g_Lara.turn_rate += LARA_TURN_RATE;
+            CLAMPG(g_Lara.turn_rate, LARA_MED_TURN);
+            item->rot.z += LARA_LEAN_RATE_SWIM;
+        }
+    } else {
+        if (g_Input.left) {
+            item->rot.y -= LARA_MED_TURN;
+            item->rot.z -= LARA_LEAN_RATE * 2;
+        } else if (g_Input.right) {
+            item->rot.y += LARA_MED_TURN;
+            item->rot.z += LARA_LEAN_RATE * 2;
+        }
     }
+
     if (g_Input.jump) {
         item->goal_anim_state = LS_SWIM;
     }

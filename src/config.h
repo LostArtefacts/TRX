@@ -77,6 +77,7 @@ typedef struct {
     bool fix_texture_issues;
     bool enable_swing_cancel;
     bool enable_tr2_jumping;
+    bool enable_tr2_swimming;
     bool load_current_music;
     bool load_music_triggers;
     bool fix_item_rots;
