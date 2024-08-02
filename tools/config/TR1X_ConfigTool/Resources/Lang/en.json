@@ -155,7 +155,7 @@
     },
     "fix_bridge_collision": {
       "Title": "Fix bridge collision",
-      "Description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge."
+      "Description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground."
     },
     "fix_floor_data_issues": {
       "Title": "Fix floor data issues",

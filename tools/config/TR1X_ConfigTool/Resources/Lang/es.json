@@ -323,7 +323,7 @@
     },
     "fix_bridge_collision": {
       "Title": "Arreglar colisión en puentes",
-      "Description": "Corrige el problema por el cual Lara no puede agarrarse a partes de algunos puentes y paredes invisibles en los bordes."
+      "Description": "Corrige el problema por el cual Lara no puede agarrarse a partes de algunos puentes y paredes invisibles en los bordes. También soluciona problemas de colisión con puentes levadizos, trampillas y puentes cuando se apilan unos sobre otros, en pendientes y cerca del suelo."
     },
     "fix_descending_glitch": {
       "Title": "Arreglar caídas en pisos frágiles",

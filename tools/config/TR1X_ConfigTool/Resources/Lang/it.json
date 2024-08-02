@@ -155,7 +155,7 @@
     },
     "fix_bridge_collision": {
       "Title": "Correggi la collisione dei ponti",
-      "Description": "Risolve il problema per cui Lara non era in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi."
+      "Description": "Risolve il problema per cui Lara non era in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendenze o vicino al suolo."
     },
     "fix_floor_data_issues": {
       "Title": "Correggi i dati dei livelli",

@@ -14,7 +14,7 @@
 static bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item);
 static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t z);
 static int32_t Bridge_GetOffset(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
+    const ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 static void Bridge_FixEmbeddedPosition(int16_t item_num);
 
 static bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item)
@@ -51,23 +51,45 @@ static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t z)
 }
 
 static int32_t Bridge_GetOffset(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
+    const ITEM_INFO *const item, int32_t x, int32_t y, int32_t z)
 {
+    // Set the offset to the max value of 1023 if Lara is outside of the
+    // bridge x/z position depending on its angle. This makes sure
+    // the height is calculated properly for the front collision since
+    // the low end of tilted bridges have a lower height.
     int32_t offset = 0;
     if (item->rot.y == 0) {
-        offset = (WALL_L - x) & (WALL_L - 1);
+        if (g_Config.fix_bridge_collision && x <= item->pos.x - WALL_L / 2) {
+            offset = WALL_L - 1;
+        } else {
+            offset = (WALL_L - x) & (WALL_L - 1);
+        }
     } else if (item->rot.y == -PHD_180) {
-        offset = x & (WALL_L - 1);
+        if (g_Config.fix_bridge_collision && x >= item->pos.x + WALL_L / 2) {
+            offset = 0;
+        } else {
+            offset = x & (WALL_L - 1);
+        }
     } else if (item->rot.y == PHD_90) {
-        offset = z & (WALL_L - 1);
+        if (g_Config.fix_bridge_collision && z >= item->pos.z + WALL_L / 2) {
+            offset = WALL_L - 1;
+        } else {
+            offset = z & (WALL_L - 1);
+        }
     } else {
-        offset = (WALL_L - z) & (WALL_L - 1);
-        // Fixes edge case of an invisible wall on the tilt2 bridge floor
-        // Offset would get set to 0 on a specific z pos on bottom of slope
-        // This fix sets the offset to the max value (1023) when Lara's at the
-        // bottom of the slope
+        if (g_Config.fix_bridge_collision && z <= item->pos.z - WALL_L / 2) {
+            offset = 0;
+        } else {
+            offset = (WALL_L - z) & (WALL_L - 1);
+        }
+        // Fixes an edge case of an invisible wall on the tilt2 bridge floor.
+        // The offset would get set to 0 on a specific z pos at the bottom of a
+        // slope. The game would then set an invisible wall because it thought
+        // Lara was at the high end of the tilt2 slope which is higher than a
+        // step. This fix sets the offset to the max value (1023) when Lara's at
+        // the bottom of the slope.
         if (g_Config.fix_bridge_collision && offset == 0 && y < item->pos.y) {
-            offset = (WALL_L - z - 1) & (WALL_L - 1);
+            offset = (WALL_L - 1 - z) & (WALL_L - 1);
         }
     }
     return offset;
@@ -150,9 +172,15 @@ void Bridge_DrawBridgeFloor(
         return;
     }
 
-    if (y <= item->pos.y) {
-        *height = item->pos.y;
+    if (y > item->pos.y) {
+        return;
     }
+
+    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
+        return;
+    }
+
+    *height = item->pos.y;
 }
 
 void Bridge_DrawBridgeCeiling(
@@ -166,9 +194,15 @@ void Bridge_DrawBridgeCeiling(
         return;
     }
 
-    if (y > item->pos.y) {
-        *height = item->pos.y + STEP_L;
+    if (y <= item->pos.y) {
+        return;
     }
+
+    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
+        return;
+    }
+
+    *height = item->pos.y + STEP_L;
 }
 
 void Bridge_DrawBridgeCollision(
@@ -183,10 +217,15 @@ void Bridge_DrawBridgeCollision(
 void Bridge_FlatFloor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
         return;
     }
+
     if (y > item->pos.y) {
+        return;
+    }
+
+    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
         return;
     }
 
@@ -196,67 +235,97 @@ void Bridge_FlatFloor(
 void Bridge_FlatCeiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
         return;
     }
 
-    if (y > item->pos.y) {
-        *height = item->pos.y + STEP_L;
+    if (y <= item->pos.y) {
+        return;
     }
+
+    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
+        return;
+    }
+
+    *height = item->pos.y + STEP_L;
 }
 
 void Bridge_Tilt1Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (Bridge_GetOffset(item, x, y, z) >> 2);
-    if (y > level) {
+    const int32_t offset_height =
+        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 4);
+    if (y > offset_height || item->pos.y >= *height) {
         return;
     }
 
-    *height = level;
+    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
+        return;
+    }
+
+    *height = offset_height;
 }
 
 void Bridge_Tilt1Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (Bridge_GetOffset(item, x, y, z) >> 2);
-    if (y > level) {
-        *height = level + STEP_L;
+    const int32_t offset_height =
+        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 4);
+    if (y <= offset_height) {
+        return;
     }
+
+    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
+        return;
+    }
+
+    *height = offset_height + STEP_L;
 }
 
 void Bridge_Tilt2Floor(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (Bridge_GetOffset(item, x, y, z) >> 1);
-    if (y > level) {
+    const int32_t offset_height =
+        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 2);
+    if (y > offset_height) {
         return;
     }
 
-    *height = level;
+    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
+        return;
+    }
+
+    *height = offset_height;
 }
 
 void Bridge_Tilt2Ceiling(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
-    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, y, z, item)) {
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
         return;
     }
 
-    int32_t level = item->pos.y + (Bridge_GetOffset(item, x, y, z) >> 1);
-    if (y > level) {
-        *height = level + STEP_L;
+    const int32_t offset_height =
+        item->pos.y + (Bridge_GetOffset(item, x, y, z) / 2);
+    if (y <= offset_height) {
+        return;
     }
+
+    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
+        return;
+    }
+
+    *height = offset_height + STEP_L;
 }
