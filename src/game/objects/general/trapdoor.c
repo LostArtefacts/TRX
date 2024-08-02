@@ -9,10 +9,11 @@ static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z);
 
 static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z)
 {
-    x >>= WALL_SHIFT;
-    z >>= WALL_SHIFT;
     int32_t tx = item->pos.x >> WALL_SHIFT;
     int32_t tz = item->pos.z >> WALL_SHIFT;
+    x >>= WALL_SHIFT;
+    z >>= WALL_SHIFT;
+
     if (item->rot.y == 0 && x == tx && (z == tz || z == tz + 1)) {
         return true;
     } else if (item->rot.y == -PHD_180 && x == tx && (z == tz || z == tz - 1)) {
@@ -53,10 +54,13 @@ void TrapDoor_Floor(
     if (!TrapDoor_StandingOn(item, x, z)) {
         return;
     }
-    if (y <= item->pos.y && item->current_anim_state == DOOR_CLOSED
-        && item->pos.y < *height) {
-        *height = item->pos.y;
+
+    if (item->current_anim_state == DOOR_OPEN || y > item->pos.y
+        || item->pos.y >= *height) {
+        return;
     }
+
+    *height = item->pos.y;
 }
 
 void TrapDoor_Ceiling(
@@ -65,8 +69,11 @@ void TrapDoor_Ceiling(
     if (!TrapDoor_StandingOn(item, x, z)) {
         return;
     }
-    if (y > item->pos.y && item->current_anim_state == DOOR_CLOSED
-        && item->pos.y > *height) {
-        *height = (int16_t)item->pos.y + STEP_L;
+
+    if (item->current_anim_state == DOOR_OPEN || y <= item->pos.y
+        || item->pos.y <= *height) {
+        return;
     }
+
+    *height = item->pos.y + STEP_L;
 }
