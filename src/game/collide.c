@@ -1,5 +1,6 @@
 #include "game/collide.h"
 
+#include "config.h"
 #include "game/items.h"
 #include "game/room.h"
 #include "global/const.h"
@@ -27,6 +28,7 @@ void Collide_GetCollisionInfo(
 
     FLOOR_INFO *floor = Room_GetFloor(x, ytop, z, &room_num);
     int32_t height = Room_GetHeight(floor, x, ytop, z);
+    int32_t room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -41,9 +43,15 @@ void Collide_GetCollisionInfo(
     coll->mid_type = g_HeightType;
     coll->trigger = g_TriggerIndex;
 
-    int16_t tilt = Room_GetTiltType(floor, x, g_LaraItem->pos.y, z);
-    coll->tilt_z = tilt >> 8;
-    coll->tilt_x = (int8_t)tilt;
+    if (!g_Config.fix_bridge_collision
+        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        int16_t tilt = Room_GetTiltType(floor, x, g_LaraItem->pos.y, z);
+        coll->tilt_z = tilt >> 8;
+        coll->tilt_x = (int8_t)tilt;
+    } else {
+        coll->tilt_z = 0;
+        coll->tilt_x = 0;
+    }
 
     int32_t xleft;
     int32_t zleft;
@@ -98,10 +106,12 @@ void Collide_GetCollisionInfo(
         break;
     }
 
+    // Front.
     x = xpos + xfront;
     z = zpos + zfront;
     floor = Room_GetFloor(x, ytop, z, &room_num);
     height = Room_GetHeight(floor, x, ytop, z);
+    room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -114,23 +124,29 @@ void Collide_GetCollisionInfo(
     coll->front_floor = height;
     coll->front_ceiling = ceiling;
     coll->front_type = g_HeightType;
-    if (coll->slopes_are_walls && coll->front_type == HT_BIG_SLOPE
-        && coll->front_floor < 0) {
-        coll->front_floor = -32767;
-    } else if (
-        coll->slopes_are_pits && coll->front_type == HT_BIG_SLOPE
-        && coll->front_floor > 0) {
-        coll->front_floor = 512;
-    } else if (
-        coll->lava_is_pit && coll->front_floor > 0 && g_TriggerIndex
-        && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
-        coll->front_floor = 512;
+
+    if (!g_Config.fix_bridge_collision
+        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        if (coll->slopes_are_walls && coll->front_type == HT_BIG_SLOPE
+            && coll->front_floor < 0) {
+            coll->front_floor = -32767;
+        } else if (
+            coll->slopes_are_pits && coll->front_type == HT_BIG_SLOPE
+            && coll->front_floor > 0) {
+            coll->front_floor = 512;
+        } else if (
+            coll->lava_is_pit && coll->front_floor > 0 && g_TriggerIndex
+            && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+            coll->front_floor = 512;
+        }
     }
 
+    // Left.
     x = xpos + xleft;
     z = zpos + zleft;
     floor = Room_GetFloor(x, ytop, z, &room_num);
     height = Room_GetHeight(floor, x, ytop, z);
+    room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -143,23 +159,29 @@ void Collide_GetCollisionInfo(
     coll->left_floor = height;
     coll->left_ceiling = ceiling;
     coll->left_type = g_HeightType;
-    if (coll->slopes_are_walls && coll->left_type == HT_BIG_SLOPE
-        && coll->left_floor < 0) {
-        coll->left_floor = -32767;
-    } else if (
-        coll->slopes_are_pits && coll->left_type == HT_BIG_SLOPE
-        && coll->left_floor > 0) {
-        coll->left_floor = 512;
-    } else if (
-        coll->lava_is_pit && coll->left_floor > 0 && g_TriggerIndex
-        && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
-        coll->left_floor = 512;
+
+    if (!g_Config.fix_bridge_collision
+        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        if (coll->slopes_are_walls && coll->left_type == HT_BIG_SLOPE
+            && coll->left_floor < 0) {
+            coll->left_floor = -32767;
+        } else if (
+            coll->slopes_are_pits && coll->left_type == HT_BIG_SLOPE
+            && coll->left_floor > 0) {
+            coll->left_floor = 512;
+        } else if (
+            coll->lava_is_pit && coll->left_floor > 0 && g_TriggerIndex
+            && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+            coll->left_floor = 512;
+        }
     }
 
+    // Right.
     x = xpos + xright;
     z = zpos + zright;
     floor = Room_GetFloor(x, ytop, z, &room_num);
     height = Room_GetHeight(floor, x, ytop, z);
+    room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
@@ -172,17 +194,21 @@ void Collide_GetCollisionInfo(
     coll->right_floor = height;
     coll->right_ceiling = ceiling;
     coll->right_type = g_HeightType;
-    if (coll->slopes_are_walls && coll->right_type == HT_BIG_SLOPE
-        && coll->right_floor < 0) {
-        coll->right_floor = -32767;
-    } else if (
-        coll->slopes_are_pits && coll->right_type == HT_BIG_SLOPE
-        && coll->right_floor > 0) {
-        coll->right_floor = 512;
-    } else if (
-        coll->lava_is_pit && coll->right_floor > 0 && g_TriggerIndex
-        && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
-        coll->right_floor = 512;
+
+    if (!g_Config.fix_bridge_collision
+        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        if (coll->slopes_are_walls && coll->right_type == HT_BIG_SLOPE
+            && coll->right_floor < 0) {
+            coll->right_floor = -32767;
+        } else if (
+            coll->slopes_are_pits && coll->right_type == HT_BIG_SLOPE
+            && coll->right_floor > 0) {
+            coll->right_floor = 512;
+        } else if (
+            coll->lava_is_pit && coll->right_floor > 0 && g_TriggerIndex
+            && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+            coll->right_floor = 512;
+        }
     }
 
     if (Collide_CollideStaticObjects(

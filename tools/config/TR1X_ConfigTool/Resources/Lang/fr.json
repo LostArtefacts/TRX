@@ -159,7 +159,7 @@
     },
     "fix_bridge_collision": {
       "Title": "Correction colision avec les ponts",
-      "Description": "Correction de l'incapacité de Lara à saisir des parties de certains ponts et murs invisibles au bord."
+      "Description": "Correction de l'incapacité de Lara à saisir des parties de certains ponts et murs invisibles au bord. Corrige également les problèmes de collision avec les ponts-levis, les trappes et les ponts lorsqu'ils sont empilés les uns sur les autres, sur des pentes ou près du sol."
     },
     "fix_floor_data_issues": {
       "Title": "Correction de la base de données des niveaux",

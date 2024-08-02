@@ -4,6 +4,8 @@
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
+#include "game/objects/common.h"
+#include "game/objects/general/bridge.h"
 #include "game/objects/general/keyhole.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/switch.h"
@@ -976,4 +978,65 @@ void Room_TestTriggers(int16_t *data, bool heavy)
             g_FlipTimer = 0;
         }
     }
+}
+
+bool Room_IsOnWalkable(
+    const FLOOR_INFO *floor, const int32_t x, const int32_t y, const int32_t z,
+    const int32_t room_height)
+{
+    while (floor->pit_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[floor->pit_room];
+        const int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        const int32_t z_floor = (x - r->x) >> WALL_SHIFT;
+        floor = &r->floor[x_floor + z_floor * r->x_size];
+    }
+
+    int16_t height = floor->floor << 8;
+
+    int16_t *floor_data = &g_FloorData[floor->index];
+    int16_t type;
+    int16_t trigger;
+    int16_t trig_flags;
+    int16_t trig_type;
+
+    do {
+        type = *floor_data++;
+
+        switch (type & DATA_TYPE) {
+        case FT_TILT:
+        case FT_ROOF:
+        case FT_DOOR:
+            floor_data++;
+            break;
+
+        case FT_LAVA:
+            break;
+
+        case FT_TRIGGER:
+            trig_flags = *floor_data;
+            floor_data++;
+            trig_type = (type >> 8) & 0x3F;
+            do {
+                trigger = *floor_data++;
+
+                if (TRIG_BITS(trigger) == TO_OBJECT) {
+                    const int16_t item_num = trigger & VALUE_BITS;
+                    ITEM_INFO *item = &g_Items[item_num];
+                    OBJECT_INFO *object = &g_Objects[item->object_number];
+                    if (object->floor) {
+                        object->floor(item, x, y, z, &height);
+                    }
+                } else if (TRIG_BITS(trigger) == TO_CAMERA) {
+                    trigger = *floor_data++;
+                }
+            } while (!(trigger & END_BIT));
+            break;
+        }
+    } while (!(type & END_BIT));
+
+    if (room_height == height) {
+        return true;
+    }
+
+    return false;
 }
