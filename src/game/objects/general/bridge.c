@@ -11,15 +11,13 @@
 
 #include <stdbool.h>
 
-static bool Bridge_IsSameSector(
-    int32_t x, int32_t y, int32_t z, const ITEM_INFO *item);
-static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y);
+static bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item);
+static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t z);
 static int32_t Bridge_GetOffset(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 static void Bridge_FixEmbeddedPosition(int16_t item_num);
 
-static bool Bridge_IsSameSector(
-    int32_t x, int32_t y, int32_t z, const ITEM_INFO *item)
+static bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item)
 {
     int32_t sector_x = x / WALL_L;
     int32_t sector_z = z / WALL_L;
@@ -29,24 +27,23 @@ static bool Bridge_IsSameSector(
     return sector_x == item_sector_x && sector_z == item_sector_z;
 }
 
-static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t y)
+static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t z)
 {
-    int32_t ix = item->pos.z >> WALL_SHIFT;
-    int32_t iy = item->pos.x >> WALL_SHIFT;
-
+    int32_t ix = item->pos.x >> WALL_SHIFT;
+    int32_t iz = item->pos.z >> WALL_SHIFT;
     x >>= WALL_SHIFT;
-    y >>= WALL_SHIFT;
+    z >>= WALL_SHIFT;
 
-    if (item->rot.y == 0 && y == iy && (x == ix - 1 || x == ix - 2)) {
+    if (item->rot.y == 0 && x == ix && (z == iz - 1 || z == iz - 2)) {
         return true;
-    }
-    if (item->rot.y == -PHD_180 && y == iy && (x == ix + 1 || x == ix + 2)) {
+    } else if (
+        item->rot.y == -PHD_180 && x == ix && (z == iz + 1 || z == iz + 2)) {
         return true;
-    }
-    if (item->rot.y == PHD_90 && x == ix && (y == iy - 1 || y == iy - 2)) {
+    } else if (
+        item->rot.y == PHD_90 && z == iz && (x == ix - 1 || x == ix - 2)) {
         return true;
-    }
-    if (item->rot.y == -PHD_90 && x == ix && (y == iy + 1 || y == iy + 2)) {
+    } else if (
+        item->rot.y == -PHD_90 && z == iz && (x == ix + 1 || x == ix + 2)) {
         return true;
     }
 
@@ -148,7 +145,8 @@ void Bridge_DrawBridgeFloor(
     if (item->current_anim_state != DOOR_OPEN) {
         return;
     }
-    if (!Bridge_OnDrawBridge(item, z, x)) {
+
+    if (!Bridge_OnDrawBridge(item, x, z)) {
         return;
     }
 
@@ -163,7 +161,8 @@ void Bridge_DrawBridgeCeiling(
     if (item->current_anim_state != DOOR_OPEN) {
         return;
     }
-    if (!Bridge_OnDrawBridge(item, z, x)) {
+
+    if (!Bridge_OnDrawBridge(item, x, z)) {
         return;
     }
 
