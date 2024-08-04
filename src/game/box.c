@@ -426,16 +426,16 @@ bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
     int16_t room_number, LOT_INFO *LOT)
 {
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
-    if (floor->box == NO_BOX) {
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_number);
+    if (sector->box == NO_BOX) {
         return true;
     }
 
-    if (g_Boxes[floor->box].overlap_index & LOT->block_mask) {
+    if (g_Boxes[sector->box].overlap_index & LOT->block_mask) {
         return true;
     }
 
-    int32_t height = g_Boxes[floor->box].height;
+    const int32_t height = g_Boxes[sector->box].height;
     if (box_height - height > LOT->step || box_height - height < LOT->drop) {
         return true;
     }

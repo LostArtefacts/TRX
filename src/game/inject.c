@@ -135,10 +135,10 @@ static void Inject_TextureOverwrites(
 
 static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_TriggerParameterChange(
-    INJECTION *injection, FLOOR_INFO *floor);
-static void Inject_SetMusicOneShot(FLOOR_INFO *floor);
+    INJECTION *injection, SECTOR_INFO *sector);
+static void Inject_SetMusicOneShot(SECTOR_INFO *sector);
 static void Inject_InsertFloorData(
-    INJECTION *injection, FLOOR_INFO *floor, LEVEL_INFO *level_info);
+    INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info);
 static void Inject_RoomShift(INJECTION *injection, int16_t room_num);
 static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info);
 
@@ -1138,9 +1138,9 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
         File_Read(&fd_edit_count, sizeof(int32_t), 1, fp);
 
         // Verify that the given room and coordinates are accurate.
-        // Individual FD functions must check that floor is actually set.
+        // Individual FD functions must check that sector is actually set.
         ROOM_INFO *r = NULL;
-        FLOOR_INFO *floor = NULL;
+        SECTOR_INFO *sector = NULL;
         if (room < 0 || room >= g_RoomCount) {
             LOG_WARNING("Room index %d is invalid", room);
         } else {
@@ -1149,7 +1149,7 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
                 LOG_WARNING(
                     "Sector [%d,%d] is invalid for room %d", y, x, room);
             } else {
-                floor = &r->floor[r->x_size * y + x];
+                sector = &r->sectors[r->x_size * y + x];
             }
         }
 
@@ -1157,13 +1157,13 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             File_Read(&edit_type, sizeof(int32_t), 1, fp);
             switch (edit_type) {
             case FET_TRIGGER_PARAM:
-                Inject_TriggerParameterChange(injection, floor);
+                Inject_TriggerParameterChange(injection, sector);
                 break;
             case FET_MUSIC_ONESHOT:
-                Inject_SetMusicOneShot(floor);
+                Inject_SetMusicOneShot(sector);
                 break;
             case FET_FD_INSERT:
-                Inject_InsertFloorData(injection, floor, level_info);
+                Inject_InsertFloorData(injection, sector, level_info);
                 break;
             case FET_ROOM_SHIFT:
                 Inject_RoomShift(injection, room);
@@ -1180,7 +1180,7 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
 }
 
 static void Inject_TriggerParameterChange(
-    INJECTION *injection, FLOOR_INFO *floor)
+    INJECTION *injection, SECTOR_INFO *sector)
 {
     MYFILE *fp = injection->fp;
 
@@ -1190,15 +1190,15 @@ static void Inject_TriggerParameterChange(
     File_Read(&old_param, sizeof(int16_t), 1, fp);
     File_Read(&new_param, sizeof(int16_t), 1, fp);
 
-    if (!floor) {
+    if (!sector) {
         return;
     }
 
-    // If we can find an action item for the given floor that matches
+    // If we can find an action item for the given sector that matches
     // the command type and old (current) parameter, change it to the
     // new parameter.
 
-    uint16_t fd_index = floor->index;
+    uint16_t fd_index = sector->index;
     if (!fd_index) {
         return;
     }
@@ -1254,13 +1254,13 @@ static void Inject_TriggerParameterChange(
     }
 }
 
-static void Inject_SetMusicOneShot(FLOOR_INFO *floor)
+static void Inject_SetMusicOneShot(SECTOR_INFO *sector)
 {
-    if (!floor) {
+    if (!sector) {
         return;
     }
 
-    uint16_t fd_index = floor->index;
+    uint16_t fd_index = sector->index;
     if (!fd_index) {
         return;
     }
@@ -1312,7 +1312,7 @@ static void Inject_SetMusicOneShot(FLOOR_INFO *floor)
 }
 
 static void Inject_InsertFloorData(
-    INJECTION *injection, FLOOR_INFO *floor, LEVEL_INFO *level_info)
+    INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info)
 {
     MYFILE *fp = injection->fp;
 
@@ -1322,11 +1322,11 @@ static void Inject_InsertFloorData(
     int16_t data[data_length];
     File_Read(&data, sizeof(int16_t), data_length, fp);
 
-    if (!floor) {
+    if (!sector) {
         return;
     }
 
-    floor->index = level_info->floor_data_size;
+    sector->index = level_info->floor_data_size;
     for (int i = 0; i < data_length; i++) {
         g_FloorData[level_info->floor_data_size + i] = data[i];
     }
@@ -1372,13 +1372,13 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     const int8_t click_shift = y_shift / STEP_L;
     const int8_t wall_height = NO_HEIGHT / STEP_L;
     for (int i = 0; i < room->x_size * room->y_size; i++) {
-        FLOOR_INFO *floor = &room->floor[i];
-        if (floor->floor == wall_height || floor->ceiling == wall_height) {
+        SECTOR_INFO *sector = &room->sectors[i];
+        if (sector->floor == wall_height || sector->ceiling == wall_height) {
             continue;
         }
 
-        floor->floor += click_shift;
-        floor->ceiling += click_shift;
+        sector->floor += click_shift;
+        sector->ceiling += click_shift;
     }
 
     // Update vertex Y values to match; x and z are room-relative.

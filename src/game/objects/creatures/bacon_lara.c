@@ -69,15 +69,15 @@ void BaconLara_Control(int16_t item_num)
         int32_t z = 2 * m_AnchorZ - g_LaraItem->pos.z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-        int32_t h = Room_GetHeight(floor, x, y, z);
+        const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+        const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
         room_num = g_LaraItem->room_number;
-        floor = Room_GetFloor(
+        sector = Room_GetSector(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
         int32_t lh = Room_GetHeight(
-            floor, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
+            sector, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
 
         int16_t relative_anim = g_LaraItem->anim_number
             - g_Objects[g_LaraItem->object_number].anim_index;
@@ -112,16 +112,16 @@ void BaconLara_Control(int16_t item_num)
         int32_t z = item->pos.z;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-        int32_t h = Room_GetHeight(floor, x, y, z);
+        const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+        const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
         Room_TestTriggers(g_TriggerIndex, true);
         if (item->pos.y >= h) {
             item->floor = h;
             item->pos.y = h;
-            floor = Room_GetFloor(x, h, z, &room_num);
-            Room_GetHeight(floor, x, h, z);
+            sector = Room_GetSector(x, h, z, &room_num);
+            Room_GetHeight(sector, x, h, z);
             Room_TestTriggers(g_TriggerIndex, true);
             item->gravity_status = 0;
             item->fall_speed = 0;

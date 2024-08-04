@@ -89,10 +89,10 @@ static void Savegame_LoadPostprocess(void)
 
         if (obj->save_position && obj->shadow_size) {
             int16_t room_num = item->room_number;
-            FLOOR_INFO *floor =
-                Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+            const SECTOR_INFO *const sector = Room_GetSector(
+                item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->floor =
-                Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+                Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         }
 
         if (obj->save_flags) {

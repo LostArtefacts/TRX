@@ -33,13 +33,13 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
 {
     XYZ_32 target;
 
-    ITEM_INFO *item = g_LaraItem;
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
-    FLOOR_INFO *floor =
-        &r->floor
+    ITEM_INFO *const item = g_LaraItem;
+    const ROOM_INFO *const r = &g_RoomInfo[item->room_number];
+    const SECTOR_INFO *const sector =
+        &r->sectors
              [((item->pos.z - r->z) >> WALL_SHIFT)
               + ((item->pos.x - r->x) >> WALL_SHIFT) * r->x_size];
-    item->box_number = floor->box;
+    item->box_number = sector->box;
 
     if (Box_CalculateTarget(&target, item, &g_Lara.LOT) == TARGET_NONE) {
         return;

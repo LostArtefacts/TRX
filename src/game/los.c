@@ -10,12 +10,12 @@
 static int32_t LOS_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
 static int32_t LOS_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
 static bool LOS_ClipTarget(
-    const GAME_VECTOR *start, GAME_VECTOR *target, const FLOOR_INFO *floor);
+    const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR_INFO *sector);
 
 static int32_t LOS_CheckX(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
-    FLOOR_INFO *floor;
+    const SECTOR_INFO *sector;
 
     int32_t dx = target->x - start->x;
     if (dx == 0) {
@@ -34,9 +34,9 @@ static int32_t LOS_CheckX(
         int32_t z = start->z + ((dz * (x - start->x)) >> WALL_SHIFT);
 
         while (x > target->x) {
-            floor = Room_GetFloor(x, y, z, &room_num);
-            if (y > Room_GetHeight(floor, x, y, z)
-                || y < Room_GetCeiling(floor, x, y, z)) {
+            sector = Room_GetSector(x, y, z, &room_num);
+            if (y > Room_GetHeight(sector, x, y, z)
+                || y < Room_GetCeiling(sector, x, y, z)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -46,9 +46,9 @@ static int32_t LOS_CheckX(
 
             last_room = room_num;
 
-            floor = Room_GetFloor(x - 1, y, z, &room_num);
-            if (y > Room_GetHeight(floor, x - 1, y, z)
-                || y < Room_GetCeiling(floor, x - 1, y, z)) {
+            sector = Room_GetSector(x - 1, y, z, &room_num);
+            if (y > Room_GetHeight(sector, x - 1, y, z)
+                || y < Room_GetCeiling(sector, x - 1, y, z)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -66,9 +66,9 @@ static int32_t LOS_CheckX(
         int32_t z = start->z + ((dz * (x - start->x)) >> WALL_SHIFT);
 
         while (x < target->x) {
-            floor = Room_GetFloor(x, y, z, &room_num);
-            if (y > Room_GetHeight(floor, x, y, z)
-                || y < Room_GetCeiling(floor, x, y, z)) {
+            sector = Room_GetSector(x, y, z, &room_num);
+            if (y > Room_GetHeight(sector, x, y, z)
+                || y < Room_GetCeiling(sector, x, y, z)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -78,9 +78,9 @@ static int32_t LOS_CheckX(
 
             last_room = room_num;
 
-            floor = Room_GetFloor(x + 1, y, z, &room_num);
-            if (y > Room_GetHeight(floor, x + 1, y, z)
-                || y < Room_GetCeiling(floor, x + 1, y, z)) {
+            sector = Room_GetSector(x + 1, y, z, &room_num);
+            if (y > Room_GetHeight(sector, x + 1, y, z)
+                || y < Room_GetCeiling(sector, x + 1, y, z)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -101,7 +101,7 @@ static int32_t LOS_CheckX(
 static int32_t LOS_CheckZ(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
-    FLOOR_INFO *floor;
+    const SECTOR_INFO *sector;
 
     int32_t dz = target->z - start->z;
     if (dz == 0) {
@@ -120,9 +120,9 @@ static int32_t LOS_CheckZ(
         int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
 
         while (z > target->z) {
-            floor = Room_GetFloor(x, y, z, &room_num);
-            if (y > Room_GetHeight(floor, x, y, z)
-                || y < Room_GetCeiling(floor, x, y, z)) {
+            sector = Room_GetSector(x, y, z, &room_num);
+            if (y > Room_GetHeight(sector, x, y, z)
+                || y < Room_GetCeiling(sector, x, y, z)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -132,9 +132,9 @@ static int32_t LOS_CheckZ(
 
             last_room = room_num;
 
-            floor = Room_GetFloor(x, y, z - 1, &room_num);
-            if (y > Room_GetHeight(floor, x, y, z - 1)
-                || y < Room_GetCeiling(floor, x, y, z - 1)) {
+            sector = Room_GetSector(x, y, z - 1, &room_num);
+            if (y > Room_GetHeight(sector, x, y, z - 1)
+                || y < Room_GetCeiling(sector, x, y, z - 1)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -152,9 +152,9 @@ static int32_t LOS_CheckZ(
         int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
 
         while (z < target->z) {
-            floor = Room_GetFloor(x, y, z, &room_num);
-            if (y > Room_GetHeight(floor, x, y, z)
-                || y < Room_GetCeiling(floor, x, y, z)) {
+            sector = Room_GetSector(x, y, z, &room_num);
+            if (y > Room_GetHeight(sector, x, y, z)
+                || y < Room_GetCeiling(sector, x, y, z)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -164,9 +164,9 @@ static int32_t LOS_CheckZ(
 
             last_room = room_num;
 
-            floor = Room_GetFloor(x, y, z + 1, &room_num);
-            if (y > Room_GetHeight(floor, x, y, z + 1)
-                || y < Room_GetCeiling(floor, x, y, z + 1)) {
+            sector = Room_GetSector(x, y, z + 1, &room_num);
+            if (y > Room_GetHeight(sector, x, y, z + 1)
+                || y < Room_GetCeiling(sector, x, y, z + 1)) {
                 target->x = x;
                 target->y = y;
                 target->z = z;
@@ -186,13 +186,14 @@ static int32_t LOS_CheckZ(
 
 static bool LOS_ClipTarget(
     const GAME_VECTOR *const start, GAME_VECTOR *const target,
-    const FLOOR_INFO *const floor)
+    const SECTOR_INFO *const sector)
 {
     int32_t dx = target->x - start->x;
     int32_t dy = target->y - start->y;
     int32_t dz = target->z - start->z;
 
-    int32_t height = Room_GetHeight(floor, target->x, target->y, target->z);
+    const int32_t height =
+        Room_GetHeight(sector, target->x, target->y, target->z);
     if (target->y > height && start->y < height) {
         target->y = height;
         target->x = start->x + dx * (height - start->y) / dy;
@@ -200,7 +201,8 @@ static bool LOS_ClipTarget(
         return false;
     }
 
-    int32_t ceiling = Room_GetCeiling(floor, target->x, target->y, target->z);
+    const int32_t ceiling =
+        Room_GetCeiling(sector, target->x, target->y, target->z);
     if (target->y < ceiling && start->y > ceiling) {
         target->y = ceiling;
         target->x = start->x + dx * (ceiling - start->y) / dy;
@@ -228,8 +230,8 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
         return false;
     }
 
-    FLOOR_INFO *floor =
-        Room_GetFloor(target->x, target->y, target->z, &target->room_number);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(target->x, target->y, target->z, &target->room_number);
 
-    return LOS_ClipTarget(start, target, floor) && los1 == 1 && los2 == 1;
+    return LOS_ClipTarget(start, target, sector) && los1 == 1 && los2 == 1;
 }

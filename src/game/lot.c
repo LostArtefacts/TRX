@@ -161,7 +161,7 @@ void LOT_CreateZone(ITEM_INFO *item)
     ROOM_INFO *r = &g_RoomInfo[item->room_number];
     int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-    item->box_number = r->floor[x_floor + y_floor * r->x_size].box;
+    item->box_number = r->sectors[x_floor + y_floor * r->x_size].box;
 
     int16_t zone_number = zone[item->box_number];
     int16_t flip_number = flip[item->box_number];

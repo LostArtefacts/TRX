@@ -240,15 +240,15 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         return;
     }
 
-    ITEM_INFO *pickup = &g_Items[item->spawn_number];
+    ITEM_INFO *const pickup = &g_Items[item->spawn_number];
     int16_t room_num = pickup->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
-    int16_t height =
-        Room_GetHeight(floor, pickup->pos.x, pickup->pos.y, pickup->pos.z);
-    bool in_water = g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
+    const SECTOR_INFO *const sector =
+        Room_GetSector(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
+    const int16_t height =
+        Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
+    const bool in_water = g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
 
-    if (floor->pit_room == NO_ROOM && pickup->pos.y >= height) {
+    if (sector->pit_room == NO_ROOM && pickup->pos.y >= height) {
         item->status = DS_DROPPED;
         pickup->pos.y = height;
         pickup->fall_speed = 0;
@@ -260,8 +260,9 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         pickup->pos.y += pickup->fall_speed;
         pickup->rot.y += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
 
-        if (floor->pit_room != NO_ROOM && pickup->pos.y > (floor->floor << 8)) {
-            room_num = floor->pit_room;
+        if (sector->pit_room != NO_ROOM
+            && pickup->pos.y > (sector->floor << 8)) {
+            room_num = sector->pit_room;
         }
     }
 

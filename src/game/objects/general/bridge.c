@@ -105,14 +105,15 @@ static void Bridge_FixEmbeddedPosition(int16_t item_num)
     int16_t room_num = item->room_number;
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    int16_t bridge_height = ABS(bounds->max.y) - ABS(bounds->min.y);
+    const int16_t bridge_height = ABS(bounds->max.y) - ABS(bounds->min.y);
 
-    FLOOR_INFO *floor = Room_GetFloor(x, y - bridge_height, z, &room_num);
-    int16_t floor_height = Room_GetHeight(floor, x, y, z);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(x, y - bridge_height, z, &room_num);
+    const int16_t floor_height = Room_GetHeight(sector, x, y, z);
 
     // Only move the bridge up if it's at floor level and there
     // isn't a room portal below.
-    if (item->floor != floor_height || floor->pit_room != NO_ROOM) {
+    if (item->floor != floor_height || sector->pit_room != NO_ROOM) {
         return;
     }
 

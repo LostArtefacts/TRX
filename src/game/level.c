@@ -210,16 +210,16 @@ static bool Level_LoadRooms(MYFILE *fp)
         File_Read(&current_room_info->x_size, sizeof(uint16_t), 1, fp);
         File_Read(&current_room_info->y_size, sizeof(uint16_t), 1, fp);
         count4 = current_room_info->y_size * current_room_info->x_size;
-        current_room_info->floor =
-            GameBuf_Alloc(sizeof(FLOOR_INFO) * count4, GBUF_ROOM_FLOOR);
+        current_room_info->sectors =
+            GameBuf_Alloc(sizeof(SECTOR_INFO) * count4, GBUF_ROOM_SECTOR);
         for (int32_t j = 0; j < (signed)count4; j++) {
-            FLOOR_INFO *floor = &current_room_info->floor[j];
-            File_Read(&floor->index, sizeof(uint16_t), 1, fp);
-            File_Read(&floor->box, sizeof(int16_t), 1, fp);
-            File_Read(&floor->pit_room, sizeof(uint8_t), 1, fp);
-            File_Read(&floor->floor, sizeof(int8_t), 1, fp);
-            File_Read(&floor->sky_room, sizeof(uint8_t), 1, fp);
-            File_Read(&floor->ceiling, sizeof(int8_t), 1, fp);
+            SECTOR_INFO *const sector = &current_room_info->sectors[j];
+            File_Read(&sector->index, sizeof(uint16_t), 1, fp);
+            File_Read(&sector->box, sizeof(int16_t), 1, fp);
+            File_Read(&sector->pit_room, sizeof(uint8_t), 1, fp);
+            File_Read(&sector->floor, sizeof(int8_t), 1, fp);
+            File_Read(&sector->sky_room, sizeof(uint8_t), 1, fp);
+            File_Read(&sector->ceiling, sizeof(int8_t), 1, fp);
         }
 
         // Room lights

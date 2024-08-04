@@ -35,7 +35,7 @@ void SlidingPillar_Control(int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_number;
-    Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
         Item_NewRoom(item_num, room_num);
     }

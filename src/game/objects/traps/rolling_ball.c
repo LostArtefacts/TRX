@@ -57,14 +57,14 @@ void RollingBall_Control(int16_t item_num)
         Item_Animate(item);
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor =
-            Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        const SECTOR_INFO *sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (item->room_number != room_num) {
             Item_NewRoom(item_num, room_num);
         }
 
         item->floor =
-            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
         Room_TestTriggers(g_TriggerIndex, true);
 
@@ -78,8 +78,8 @@ void RollingBall_Control(int16_t item_num)
             item->pos.x + (((WALL_L / 2) * Math_Sin(item->rot.y)) >> W2V_SHIFT);
         int32_t z =
             item->pos.z + (((WALL_L / 2) * Math_Cos(item->rot.y)) >> W2V_SHIFT);
-        floor = Room_GetFloor(x, item->pos.y, z, &room_num);
-        if (Room_GetHeight(floor, x, item->pos.y, z) < item->pos.y) {
+        sector = Room_GetSector(x, item->pos.y, z, &room_num);
+        if (Room_GetHeight(sector, x, item->pos.y, z) < item->pos.y) {
             item->status = IS_DEACTIVATED;
             item->pos.x = oldx;
             item->pos.y = item->floor;

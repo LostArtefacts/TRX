@@ -28,7 +28,7 @@ static const char *GameBuf_GetBufferName(GAME_BUFFER buffer)
         case GBUF_ROOM_INFOS:               return "Room information";
         case GBUF_ROOM_MESH:                return "Room meshes";
         case GBUF_ROOM_DOOR:                return "Room doors";
-        case GBUF_ROOM_FLOOR:               return "Room floor information";
+        case GBUF_ROOM_SECTOR:              return "Room sector information";
         case GBUF_ROOM_LIGHTS:              return "Room lights";
         case GBUF_ROOM_STATIC_MESH_INFOS:   return "Room static meshes";
         case GBUF_FLOOR_DATA:               return "Floor data";

@@ -43,13 +43,13 @@ void Dart_Control(int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_number != room_num) {
         Item_NewRoom(item_num, room_num);
     }
 
-    item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     if (item->pos.y >= item->floor) {
         Item_Kill(item_num);
         int16_t fx_num = Effect_Create(item->room_number);

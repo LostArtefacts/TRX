@@ -18,7 +18,7 @@
 #define MAX_TEXTSTRINGS 10
 
 static int32_t m_CachedItemCount = 0;
-static FLOOR_INFO **m_CachedFloorArray = NULL;
+static SECTOR_INFO **m_CachedSectorArray = NULL;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 static int32_t m_LevelSecrets = 0;
@@ -80,14 +80,14 @@ static void Stats_CheckTriggers(
         }
     }
 
-    FLOOR_INFO *floor =
-        &m_CachedFloorArray[room_num][x_floor + y_floor * r->x_size];
+    const SECTOR_INFO *const sector =
+        &m_CachedSectorArray[room_num][x_floor + y_floor * r->x_size];
 
-    if (!floor->index) {
+    if (!sector->index) {
         return;
     }
 
-    int16_t *data = &g_FloorData[floor->index];
+    int16_t *data = &g_FloorData[sector->index];
     int16_t type;
     int16_t trigger;
     int16_t trig_flags;
@@ -209,16 +209,16 @@ void Stats_ComputeTotal(
 
 void Stats_ObserveRoomsLoad(void)
 {
-    m_CachedFloorArray =
-        GameBuf_Alloc(g_RoomCount * sizeof(FLOOR_INFO *), GBUF_ROOM_FLOOR);
+    m_CachedSectorArray =
+        GameBuf_Alloc(g_RoomCount * sizeof(SECTOR_INFO *), GBUF_ROOM_SECTOR);
     for (int i = 0; i < g_RoomCount; i++) {
         const ROOM_INFO *current_room_info = &g_RoomInfo[i];
         int count = current_room_info->y_size * current_room_info->x_size;
-        m_CachedFloorArray[i] =
-            GameBuf_Alloc(count * sizeof(FLOOR_INFO), GBUF_ROOM_FLOOR);
+        m_CachedSectorArray[i] =
+            GameBuf_Alloc(count * sizeof(SECTOR_INFO), GBUF_ROOM_SECTOR);
         memcpy(
-            m_CachedFloorArray[i], current_room_info->floor,
-            count * sizeof(FLOOR_INFO));
+            m_CachedSectorArray[i], current_room_info->sectors,
+            count * sizeof(SECTOR_INFO));
     }
 }
 

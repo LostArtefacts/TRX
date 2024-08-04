@@ -159,23 +159,24 @@ static void Room_RemoveFlipItems(ROOM_INFO *r)
     }
 }
 
-int16_t Room_GetTiltType(FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetTiltType(
+    const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z)
 {
     ROOM_INFO *r;
 
-    while (floor->pit_room != NO_ROOM) {
-        r = &g_RoomInfo[floor->pit_room];
-        floor = &r->floor
-                     [((z - r->z) >> WALL_SHIFT)
-                      + ((x - r->x) >> WALL_SHIFT) * r->x_size];
+    while (sector->pit_room != NO_ROOM) {
+        r = &g_RoomInfo[sector->pit_room];
+        sector = &r->sectors
+                      [((z - r->z) >> WALL_SHIFT)
+                       + ((x - r->x) >> WALL_SHIFT) * r->x_size];
     }
 
-    if (y + 512 < ((int32_t)floor->floor << 8)) {
+    if (y + 512 < ((int32_t)sector->floor << 8)) {
         return 0;
     }
 
-    if (floor->index) {
-        int16_t *data = &g_FloorData[floor->index];
+    if (sector->index) {
+        int16_t *data = &g_FloorData[sector->index];
         if ((data[0] & DATA_TYPE) == FT_TILT) {
             return data[1];
         }
@@ -219,7 +220,7 @@ void Room_GetNearByRooms(
 
 void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    Room_GetFloor(x, y, z, &room_num);
+    Room_GetSector(x, y, z, &room_num);
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         int16_t drawn_room = g_RoomsToDraw[i];
@@ -233,11 +234,11 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-FLOOR_INFO *Room_GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
+SECTOR_INFO *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
 {
     int16_t data;
-    FLOOR_INFO *floor;
-    ROOM_INFO *r = &g_RoomInfo[*room_num];
+    SECTOR_INFO *sector;
+    const ROOM_INFO *r = &g_RoomInfo[*room_num];
     do {
         int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         int32_t y_floor = (x - r->x) >> WALL_SHIFT;
@@ -262,69 +263,69 @@ FLOOR_INFO *Room_GetFloor(int32_t x, int32_t y, int32_t z, int16_t *room_num)
             y_floor = r->y_size - 1;
         }
 
-        floor = &r->floor[x_floor + y_floor * r->x_size];
-        if (!floor->index) {
+        sector = &r->sectors[x_floor + y_floor * r->x_size];
+        if (!sector->index) {
             break;
         }
 
-        data = Room_GetDoor(floor);
+        data = Room_GetDoor(sector);
         if (data != NO_ROOM) {
             *room_num = data;
             r = &g_RoomInfo[data];
         }
     } while (data != NO_ROOM);
 
-    if (y >= ((int32_t)floor->floor << 8)) {
+    if (y >= ((int32_t)sector->floor << 8)) {
         do {
-            if (floor->pit_room == NO_ROOM) {
+            if (sector->pit_room == NO_ROOM) {
                 break;
             }
 
-            *room_num = floor->pit_room;
+            *room_num = sector->pit_room;
 
-            r = &g_RoomInfo[floor->pit_room];
+            r = &g_RoomInfo[sector->pit_room];
             int32_t x_floor = (z - r->z) >> WALL_SHIFT;
             int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-            floor = &r->floor[x_floor + y_floor * r->x_size];
-        } while (y >= ((int32_t)floor->floor << 8));
-    } else if (y < ((int32_t)floor->ceiling << 8)) {
+            sector = &r->sectors[x_floor + y_floor * r->x_size];
+        } while (y >= ((int32_t)sector->floor << 8));
+    } else if (y < ((int32_t)sector->ceiling << 8)) {
         do {
-            if (floor->sky_room == NO_ROOM) {
+            if (sector->sky_room == NO_ROOM) {
                 break;
             }
 
-            *room_num = floor->sky_room;
+            *room_num = sector->sky_room;
 
-            r = &g_RoomInfo[floor->sky_room];
+            r = &g_RoomInfo[sector->sky_room];
             int32_t x_floor = (z - r->z) >> WALL_SHIFT;
             int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-            floor = &r->floor[x_floor + y_floor * r->x_size];
-        } while (y < ((int32_t)floor->ceiling << 8));
+            sector = &r->sectors[x_floor + y_floor * r->x_size];
+        } while (y < ((int32_t)sector->ceiling << 8));
     }
 
-    return floor;
+    return sector;
 }
 
 int16_t Room_GetCeiling(
-    const FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+    const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z)
 {
     int16_t *data;
     int16_t type;
     int16_t ended;
     int16_t trigger;
 
-    const FLOOR_INFO *f = floor;
-    while (f->sky_room != NO_ROOM) {
-        ROOM_INFO *r = &g_RoomInfo[f->sky_room];
-        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-        f = &r->floor[x_floor + y_floor * r->x_size];
+    const SECTOR_INFO *sky_sector = sector;
+    while (sky_sector->sky_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[sky_sector->sky_room];
+        const int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        const int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+        sky_sector = &r->sectors[x_floor + y_floor * r->x_size];
     }
 
-    int16_t height = f->ceiling << 8;
+    int16_t height = sky_sector->ceiling << 8;
 
-    if (f->index) {
-        data = &g_FloorData[f->index];
+    if (sky_sector->index) {
+        data = &g_FloorData[sky_sector->index];
         type = *data & DATA_TYPE;
         ended = *data++ & END_BIT;
 
@@ -358,18 +359,18 @@ int16_t Room_GetCeiling(
         }
     }
 
-    while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
-        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-        floor = &r->floor[x_floor + y_floor * r->x_size];
+    while (sector->pit_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[sector->pit_room];
+        const int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        const int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+        sector = &r->sectors[x_floor + y_floor * r->x_size];
     }
 
-    if (!floor->index) {
+    if (!sector->index) {
         return height;
     }
 
-    data = &g_FloorData[floor->index];
+    data = &g_FloorData[sector->index];
     do {
         type = *data++;
 
@@ -410,13 +411,13 @@ int16_t Room_GetCeiling(
     return height;
 }
 
-int16_t Room_GetDoor(FLOOR_INFO *floor)
+int16_t Room_GetDoor(const SECTOR_INFO *sector)
 {
-    if (!floor->index) {
+    if (!sector->index) {
         return NO_ROOM;
     }
 
-    int16_t *data = &g_FloorData[floor->index];
+    int16_t *data = &g_FloorData[sector->index];
     int16_t type = *data++;
 
     if (type == FT_TILT) {
@@ -435,25 +436,26 @@ int16_t Room_GetDoor(FLOOR_INFO *floor)
     return NO_ROOM;
 }
 
-int16_t Room_GetHeight(const FLOOR_INFO *floor, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetHeight(
+    const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z)
 {
     g_HeightType = HT_WALL;
-    while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
-        int32_t x_floor = (z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (x - r->x) >> WALL_SHIFT;
-        floor = &r->floor[x_floor + y_floor * r->x_size];
+    while (sector->pit_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[sector->pit_room];
+        const int32_t x_floor = (z - r->z) >> WALL_SHIFT;
+        const int32_t y_floor = (x - r->x) >> WALL_SHIFT;
+        sector = &r->sectors[x_floor + y_floor * r->x_size];
     }
 
-    int16_t height = floor->floor << 8;
+    int16_t height = sector->floor << 8;
 
     g_TriggerIndex = NULL;
 
-    if (!floor->index) {
+    if (!sector->index) {
         return height;
     }
 
-    int16_t *data = &g_FloorData[floor->index];
+    int16_t *data = &g_FloorData[sector->index];
     int16_t type;
     int16_t trigger;
     do {
@@ -537,7 +539,7 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     ROOM_INFO *r = &g_RoomInfo[room_num];
 
     int16_t data;
-    FLOOR_INFO *floor;
+    SECTOR_INFO *sector;
     int32_t x_floor, y_floor;
 
     do {
@@ -564,33 +566,33 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             y_floor = r->y_size - 1;
         }
 
-        floor = &r->floor[x_floor + y_floor * r->x_size];
-        data = Room_GetDoor(floor);
+        sector = &r->sectors[x_floor + y_floor * r->x_size];
+        data = Room_GetDoor(sector);
         if (data != NO_ROOM) {
             r = &g_RoomInfo[data];
         }
     } while (data != NO_ROOM);
 
     if (r->flags & RF_UNDERWATER) {
-        while (floor->sky_room != NO_ROOM) {
-            r = &g_RoomInfo[floor->sky_room];
+        while (sector->sky_room != NO_ROOM) {
+            r = &g_RoomInfo[sector->sky_room];
             if (!(r->flags & RF_UNDERWATER)) {
                 break;
             }
             x_floor = (z - r->z) >> WALL_SHIFT;
             y_floor = (x - r->x) >> WALL_SHIFT;
-            floor = &r->floor[x_floor + y_floor * r->x_size];
+            sector = &r->sectors[x_floor + y_floor * r->x_size];
         }
-        return floor->ceiling << 8;
+        return sector->ceiling << 8;
     } else {
-        while (floor->pit_room != NO_ROOM) {
-            r = &g_RoomInfo[floor->pit_room];
+        while (sector->pit_room != NO_ROOM) {
+            r = &g_RoomInfo[sector->pit_room];
             if (r->flags & RF_UNDERWATER) {
-                return floor->floor << 8;
+                return sector->floor << 8;
             }
             x_floor = (z - r->z) >> WALL_SHIFT;
             y_floor = (x - r->x) >> WALL_SHIFT;
-            floor = &r->floor[x_floor + y_floor * r->x_size];
+            sector = &r->sectors[x_floor + y_floor * r->x_size];
         }
         return NO_HEIGHT;
     }
@@ -620,7 +622,7 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
     }
 
     int16_t data;
-    FLOOR_INFO *floor;
+    SECTOR_INFO *sector;
     ROOM_INFO *r = &g_RoomInfo[item->room_number];
 
     do {
@@ -637,42 +639,42 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
             CLAMP(x_floor, 0, r->y_size - 1);
         }
 
-        floor = &r->floor[z_floor + x_floor * r->x_size];
-        data = Room_GetDoor(floor);
+        sector = &r->sectors[z_floor + x_floor * r->x_size];
+        data = Room_GetDoor(sector);
         if (data != NO_ROOM) {
             r = &g_RoomInfo[data];
         }
     } while (data != NO_ROOM);
 
-    FLOOR_INFO *f = floor;
-    while (f->sky_room != NO_ROOM) {
-        ROOM_INFO *r = &g_RoomInfo[f->sky_room];
-        int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-        f = &r->floor[x_floor + y_floor * r->x_size];
+    SECTOR_INFO *sky_sector = sector;
+    while (sky_sector->sky_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[sky_sector->sky_room];
+        const int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+        const int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+        sky_sector = &r->sectors[x_floor + y_floor * r->x_size];
     }
 
-    while (floor->pit_room != NO_ROOM) {
-        ROOM_INFO *r = &g_RoomInfo[floor->pit_room];
-        int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-        int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-        floor = &r->floor[x_floor + y_floor * r->x_size];
+    while (sector->pit_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[sector->pit_room];
+        const int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
+        const int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+        sector = &r->sectors[x_floor + y_floor * r->x_size];
     }
 
-    if (floor->floor != NO_HEIGHT / 256) {
-        floor->floor += height >> 8;
-        if (floor->floor == f->ceiling) {
-            floor->floor = NO_HEIGHT / 256;
+    if (sector->floor != NO_HEIGHT / 256) {
+        sector->floor += height >> 8;
+        if (sector->floor == sky_sector->ceiling) {
+            sector->floor = NO_HEIGHT / 256;
         }
     } else {
-        floor->floor = f->ceiling + (height >> 8);
+        sector->floor = sky_sector->ceiling + (height >> 8);
     }
 
-    if (g_Boxes[floor->box].overlap_index & BLOCKABLE) {
+    if (g_Boxes[sector->box].overlap_index & BLOCKABLE) {
         if (height < 0) {
-            g_Boxes[floor->box].overlap_index |= BLOCKED;
+            g_Boxes[sector->box].overlap_index |= BLOCKED;
         } else {
-            g_Boxes[floor->box].overlap_index &= ~BLOCKED;
+            g_Boxes[sector->box].overlap_index &= ~BLOCKED;
         }
     }
 }
@@ -981,19 +983,19 @@ void Room_TestTriggers(int16_t *data, bool heavy)
 }
 
 bool Room_IsOnWalkable(
-    const FLOOR_INFO *floor, const int32_t x, const int32_t y, const int32_t z,
-    const int32_t room_height)
+    const SECTOR_INFO *sector, const int32_t x, const int32_t y,
+    const int32_t z, const int32_t room_height)
 {
-    while (floor->pit_room != NO_ROOM) {
-        const ROOM_INFO *const r = &g_RoomInfo[floor->pit_room];
+    while (sector->pit_room != NO_ROOM) {
+        const ROOM_INFO *const r = &g_RoomInfo[sector->pit_room];
         const int32_t x_floor = (z - r->z) >> WALL_SHIFT;
         const int32_t z_floor = (x - r->x) >> WALL_SHIFT;
-        floor = &r->floor[x_floor + z_floor * r->x_size];
+        sector = &r->sectors[x_floor + z_floor * r->x_size];
     }
 
-    int16_t height = floor->floor << 8;
+    int16_t height = sector->floor << 8;
 
-    int16_t *floor_data = &g_FloorData[floor->index];
+    int16_t *floor_data = &g_FloorData[sector->index];
     int16_t type;
     int16_t trigger;
     int16_t trig_flags;

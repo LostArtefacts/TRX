@@ -14,12 +14,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-static bool Door_LaraDoorCollision(const FLOOR_INFO *floor);
+static bool Door_LaraDoorCollision(const SECTOR_INFO *sector);
 static void Door_Check(DOORPOS_DATA *d);
 static void Door_Open(DOORPOS_DATA *d);
 static void Door_Shut(DOORPOS_DATA *d);
 
-static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor)
+static bool Door_LaraDoorCollision(const SECTOR_INFO *const sector)
 {
     // Check if Lara is on the same tile as the invisible block.
     if (g_LaraItem == NULL) {
@@ -27,9 +27,9 @@ static bool Door_LaraDoorCollision(const FLOOR_INFO *const floor)
     }
 
     int16_t room_num = g_LaraItem->room_number;
-    const FLOOR_INFO *const lara_floor = Room_GetFloor(
+    const SECTOR_INFO *const lara_sector = Room_GetSector(
         g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
-    return lara_floor == floor;
+    return lara_sector == sector;
 }
 
 static void Door_Check(DOORPOS_DATA *const d)
@@ -38,7 +38,7 @@ static void Door_Check(DOORPOS_DATA *const d)
     // tile. This ensures that Lara doesn't void if a timed door happens to
     // close right on her, or the player loads the game while standing on a
     // closed door's block tile.
-    if (Door_LaraDoorCollision(d->floor)) {
+    if (Door_LaraDoorCollision(d->sector)) {
         Door_Open(d);
     }
 }
@@ -46,17 +46,17 @@ static void Door_Check(DOORPOS_DATA *const d)
 static void Door_Shut(DOORPOS_DATA *const d)
 {
     // Change the level geometry so that the door tile is impassable.
-    FLOOR_INFO *const floor = d->floor;
-    if (floor == NULL) {
+    SECTOR_INFO *const sector = d->sector;
+    if (sector == NULL) {
         return;
     }
 
-    floor->index = 0;
-    floor->box = NO_BOX;
-    floor->floor = NO_HEIGHT / STEP_L;
-    floor->ceiling = NO_HEIGHT / STEP_L;
-    floor->sky_room = NO_ROOM;
-    floor->pit_room = NO_ROOM;
+    sector->index = 0;
+    sector->box = NO_BOX;
+    sector->floor = NO_HEIGHT / STEP_L;
+    sector->ceiling = NO_HEIGHT / STEP_L;
+    sector->sky_room = NO_ROOM;
+    sector->pit_room = NO_ROOM;
 
     const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
@@ -67,12 +67,12 @@ static void Door_Shut(DOORPOS_DATA *const d)
 static void Door_Open(DOORPOS_DATA *const d)
 {
     // Restore the level geometry so that the door tile is passable.
-    FLOOR_INFO *const floor = d->floor;
-    if (!floor) {
+    SECTOR_INFO *const sector = d->sector;
+    if (!sector) {
         return;
     }
 
-    *floor = d->old_floor;
+    *sector = d->old_sector;
 
     const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
@@ -118,95 +118,95 @@ void Door_Initialise(int16_t item_num)
     r = &g_RoomInfo[item->room_number];
     x_floor = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
     y_floor = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
-    door->d1.floor = &r->floor[x_floor + y_floor * r->x_size];
-    room_num = Room_GetDoor(door->d1.floor);
+    door->d1.sector = &r->sectors[x_floor + y_floor * r->x_size];
+    room_num = Room_GetDoor(door->d1.sector);
     if (room_num == NO_ROOM) {
-        box_num = door->d1.floor->box;
+        box_num = door->d1.sector->box;
     } else {
         b = &g_RoomInfo[room_num];
         x_floor = ((item->pos.z - b->z) >> WALL_SHIFT) + dx;
         y_floor = ((item->pos.x - b->x) >> WALL_SHIFT) + dy;
-        box_num = b->floor[x_floor + y_floor * b->x_size].box;
+        box_num = b->sectors[x_floor + y_floor * b->x_size].box;
     }
     if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
         box_num = NO_BOX;
     }
     door->d1.block = box_num;
-    door->d1.old_floor = *door->d1.floor;
+    door->d1.old_sector = *door->d1.sector;
 
     if (r->flipped_room != -1) {
         r = &g_RoomInfo[r->flipped_room];
         x_floor = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
         y_floor = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
-        door->d1flip.floor = &r->floor[x_floor + y_floor * r->x_size];
-        room_num = Room_GetDoor(door->d1flip.floor);
+        door->d1flip.sector = &r->sectors[x_floor + y_floor * r->x_size];
+        room_num = Room_GetDoor(door->d1flip.sector);
         if (room_num == NO_ROOM) {
-            box_num = door->d1flip.floor->box;
+            box_num = door->d1flip.sector->box;
         } else {
             b = &g_RoomInfo[room_num];
             x_floor = ((item->pos.z - b->z) >> WALL_SHIFT) + dx;
             y_floor = ((item->pos.x - b->x) >> WALL_SHIFT) + dy;
-            box_num = b->floor[x_floor + y_floor * b->x_size].box;
+            box_num = b->sectors[x_floor + y_floor * b->x_size].box;
         }
         if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
             box_num = NO_BOX;
         }
         door->d1flip.block = box_num;
-        door->d1flip.old_floor = *door->d1flip.floor;
+        door->d1flip.old_sector = *door->d1flip.sector;
     } else {
-        door->d1flip.floor = NULL;
+        door->d1flip.sector = NULL;
     }
 
-    room_num = Room_GetDoor(door->d1.floor);
+    room_num = Room_GetDoor(door->d1.sector);
     Door_Shut(&door->d1);
     Door_Shut(&door->d1flip);
 
     if (room_num == NO_ROOM) {
-        door->d2.floor = NULL;
-        door->d2flip.floor = NULL;
+        door->d2.sector = NULL;
+        door->d2flip.sector = NULL;
         return;
     }
 
     r = &g_RoomInfo[room_num];
     x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
     y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-    door->d2.floor = &r->floor[x_floor + y_floor * r->x_size];
-    room_num = Room_GetDoor(door->d2.floor);
+    door->d2.sector = &r->sectors[x_floor + y_floor * r->x_size];
+    room_num = Room_GetDoor(door->d2.sector);
     if (room_num == NO_ROOM) {
-        box_num = door->d2.floor->box;
+        box_num = door->d2.sector->box;
     } else {
         b = &g_RoomInfo[room_num];
         x_floor = (item->pos.z - b->z) >> WALL_SHIFT;
         y_floor = (item->pos.x - b->x) >> WALL_SHIFT;
-        box_num = b->floor[x_floor + y_floor * b->x_size].box;
+        box_num = b->sectors[x_floor + y_floor * b->x_size].box;
     }
     if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
         box_num = NO_BOX;
     }
     door->d2.block = box_num;
-    door->d2.old_floor = *door->d2.floor;
+    door->d2.old_sector = *door->d2.sector;
 
     if (r->flipped_room != -1) {
         r = &g_RoomInfo[r->flipped_room];
         x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
         y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-        door->d2flip.floor = &r->floor[x_floor + y_floor * r->x_size];
-        room_num = Room_GetDoor(door->d2flip.floor);
+        door->d2flip.sector = &r->sectors[x_floor + y_floor * r->x_size];
+        room_num = Room_GetDoor(door->d2flip.sector);
         if (room_num == NO_ROOM) {
-            box_num = door->d2flip.floor->box;
+            box_num = door->d2flip.sector->box;
         } else {
             b = &g_RoomInfo[room_num];
             x_floor = (item->pos.z - b->z) >> WALL_SHIFT;
             y_floor = (item->pos.x - b->x) >> WALL_SHIFT;
-            box_num = b->floor[x_floor + y_floor * b->x_size].box;
+            box_num = b->sectors[x_floor + y_floor * b->x_size].box;
         }
         if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
             box_num = NO_BOX;
         }
         door->d2flip.block = box_num;
-        door->d2flip.old_floor = *door->d2flip.floor;
+        door->d2flip.old_sector = *door->d2flip.sector;
     } else {
-        door->d2flip.floor = NULL;
+        door->d2flip.sector = NULL;
     }
 
     Door_Shut(&door->d2);

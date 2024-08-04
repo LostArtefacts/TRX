@@ -86,7 +86,7 @@ void Interpolation_Commit(void)
         INTERPOLATE(&g_Camera, target.z, ratio, 512);
 
         g_Camera.interp.room_num = g_Camera.pos.room_number;
-        Room_GetFloor(
+        Room_GetSector(
             g_Camera.interp.result.pos.x,
             g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
             g_Camera.interp.result.pos.z, &g_Camera.interp.room_num);

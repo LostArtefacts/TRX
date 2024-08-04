@@ -171,8 +171,9 @@ void Item_Initialise(int16_t item_num)
     r->item_number = item_num;
     int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
     int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-    FLOOR_INFO *floor = &r->floor[x_floor + y_floor * r->x_size];
-    item->floor = floor->floor << 8;
+    const SECTOR_INFO *const sector =
+        &r->sectors[x_floor + y_floor * r->x_size];
+    item->floor = sector->floor << 8;
 
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
         item->hit_points *= 2;
@@ -271,8 +272,8 @@ bool Item_Teleport(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     if (room_num == NO_ROOM) {
         return false;
     }
-    FLOOR_INFO *const floor = Room_GetFloor(x, y, z, &room_num);
-    const int16_t height = Room_GetHeight(floor, x, y, z);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    const int16_t height = Room_GetHeight(sector, x, y, z);
     if (height != NO_HEIGHT) {
         item->pos.x = x;
         item->pos.y = y;
@@ -297,8 +298,8 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     int32_t y = item->pos.y + height;
     int32_t z = item->pos.z;
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-    item->floor = Room_GetHeight(floor, x, y, z);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    item->floor = Room_GetHeight(sector, x, y, z);
     if (item->room_number != room_num) {
         Item_NewRoom(g_Lara.item_number, room_num);
     }
@@ -307,10 +308,10 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
 int16_t Item_GetHeight(ITEM_INFO *item)
 {
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    int32_t height =
-        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     return height;
 }

@@ -111,10 +111,10 @@ void LightningEmitter_Control(int16_t item_num)
 
             l->zapped = true;
         } else if (l->no_target) {
-            FLOOR_INFO *floor = Room_GetFloor(
+            const SECTOR_INFO *const sector = Room_GetSector(
                 item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-            int32_t h =
-                Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            const int32_t h =
+                Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
             l->target.x = item->pos.x;
             l->target.y = h;
             l->target.z = item->pos.z;

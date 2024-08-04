@@ -22,13 +22,13 @@ void Bubble_Control(int16_t fx_num)
     int32_t z = fx->pos.z + ((Math_Cos(fx->rot.x) * 8) >> W2V_SHIFT);
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-    if (!floor || !(g_RoomInfo[room_num].flags & RF_UNDERWATER)) {
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    if (!sector || !(g_RoomInfo[room_num].flags & RF_UNDERWATER)) {
         Effect_Kill(fx_num);
         return;
     }
 
-    int32_t height = Room_GetCeiling(floor, x, y, z);
+    const int32_t height = Room_GetCeiling(sector, x, y, z);
     if (height == NO_HEIGHT || y <= height) {
         Effect_Kill(fx_num);
         return;

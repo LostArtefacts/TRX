@@ -434,9 +434,9 @@ bool Lara_TestHangSwingIn(ITEM_INFO *item, PHD_ANGLE angle)
         break;
     }
 
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-    int h = Room_GetHeight(floor, x, y, z);
-    int c = Room_GetCeiling(floor, x, y, z);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    const int32_t h = Room_GetHeight(sector, x, y, z);
+    const int32_t c = Room_GetCeiling(sector, x, y, z);
 
     if (h != NO_HEIGHT) {
         if ((h - y) > 0 && (c - y) < -400) {
@@ -547,17 +547,17 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
 {
     int16_t room_num = item->room_number;
 
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
-    int oy = item->pos.y;
-    int height = Room_GetHeight(
-        floor, item->pos.x, item->pos.y - LARA_HEIGHT, item->pos.z);
+    const int32_t old_y = item->pos.y;
+    const int32_t height = Room_GetHeight(
+        sector, item->pos.x, item->pos.y - LARA_HEIGHT, item->pos.z);
 
     item->floor = height;
     item->pos.y = height;
     Room_TestTriggers(g_TriggerIndex, false);
-    item->pos.y = oy;
+    item->pos.y = old_y;
 
     int landspeed = item->fall_speed - DAMAGE_START;
     if (landspeed <= 0) {
