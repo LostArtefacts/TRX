@@ -77,7 +77,7 @@ void Lara_Hair_Control(void)
     FRAME_INFO *frmptr[2];
     int16_t **mesh_base;
     XYZ_32 pos;
-    FLOOR_INFO *floor;
+    const SECTOR_INFO *sector;
     int32_t i;
     int32_t water_level;
     int32_t height;
@@ -338,11 +338,11 @@ void Lara_Hair_Control(void)
         for (i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
             m_HVel[0] = m_Hair[i].pos;
 
-            floor = Room_GetFloor(
+            sector = Room_GetSector(
                 m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z,
                 &room_number);
             height = Room_GetHeight(
-                floor, m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
+                sector, m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
 
             m_Hair[i].pos.x += m_HVel[i].x * 3 / 4;
             m_Hair[i].pos.y += m_HVel[i].y * 3 / 4;

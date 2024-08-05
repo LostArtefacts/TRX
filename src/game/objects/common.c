@@ -351,10 +351,10 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     // This is mostly true, but for example the 4 items in the Obelisk of
     // Khamoon the 4 items are sitting on top of a static mesh which is not
     // floor.
-    FLOOR_INFO *floor = Room_GetFloor(
+    const SECTOR_INFO *const sector = Room_GetSector(
         item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-    int16_t floor_height =
-        Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    const int16_t floor_height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     // Assume this is our offset.
     int16_t offset = floor_height;

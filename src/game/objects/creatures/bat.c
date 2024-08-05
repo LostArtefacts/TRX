@@ -44,9 +44,8 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
     const int32_t y = item->pos.y;
     const int32_t z = item->pos.z;
     int16_t room_number = item->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_number);
-    Room_GetHeight(floor, x, y, z);
-    const int16_t ceiling = Room_GetCeiling(floor, x, y, z);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_number);
+    const int16_t ceiling = Room_GetCeiling(sector, x, y, z);
 
     // The bats animation and frame have to be changed to the hanging
     // one to properly measure them. Save it so it can be restored

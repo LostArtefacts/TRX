@@ -26,14 +26,14 @@ void Collide_GetCollisionInfo(
     int32_t z = zpos;
     int32_t ytop = y - 160;
 
-    FLOOR_INFO *floor = Room_GetFloor(x, ytop, z, &room_num);
-    int32_t height = Room_GetHeight(floor, x, ytop, z);
+    const SECTOR_INFO *sector = Room_GetSector(x, ytop, z, &room_num);
+    int32_t height = Room_GetHeight(sector, x, ytop, z);
     int32_t room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
 
-    int32_t ceiling = Room_GetCeiling(floor, x, ytop, z);
+    int32_t ceiling = Room_GetCeiling(sector, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -44,8 +44,8 @@ void Collide_GetCollisionInfo(
     coll->trigger = g_TriggerIndex;
 
     if (!g_Config.fix_bridge_collision
-        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
-        int16_t tilt = Room_GetTiltType(floor, x, g_LaraItem->pos.y, z);
+        || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
+        const int16_t tilt = Room_GetTiltType(sector, x, g_LaraItem->pos.y, z);
         coll->tilt_z = tilt >> 8;
         coll->tilt_x = (int8_t)tilt;
     } else {
@@ -109,14 +109,14 @@ void Collide_GetCollisionInfo(
     // Front.
     x = xpos + xfront;
     z = zpos + zfront;
-    floor = Room_GetFloor(x, ytop, z, &room_num);
-    height = Room_GetHeight(floor, x, ytop, z);
+    sector = Room_GetSector(x, ytop, z, &room_num);
+    height = Room_GetHeight(sector, x, ytop, z);
     room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
 
-    ceiling = Room_GetCeiling(floor, x, ytop, z);
+    ceiling = Room_GetCeiling(sector, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -126,7 +126,7 @@ void Collide_GetCollisionInfo(
     coll->front_type = g_HeightType;
 
     if (!g_Config.fix_bridge_collision
-        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
         if (coll->slopes_are_walls && coll->front_type == HT_BIG_SLOPE
             && coll->front_floor < 0) {
             coll->front_floor = -32767;
@@ -144,14 +144,14 @@ void Collide_GetCollisionInfo(
     // Left.
     x = xpos + xleft;
     z = zpos + zleft;
-    floor = Room_GetFloor(x, ytop, z, &room_num);
-    height = Room_GetHeight(floor, x, ytop, z);
+    sector = Room_GetSector(x, ytop, z, &room_num);
+    height = Room_GetHeight(sector, x, ytop, z);
     room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
 
-    ceiling = Room_GetCeiling(floor, x, ytop, z);
+    ceiling = Room_GetCeiling(sector, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -161,7 +161,7 @@ void Collide_GetCollisionInfo(
     coll->left_type = g_HeightType;
 
     if (!g_Config.fix_bridge_collision
-        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
         if (coll->slopes_are_walls && coll->left_type == HT_BIG_SLOPE
             && coll->left_floor < 0) {
             coll->left_floor = -32767;
@@ -179,14 +179,14 @@ void Collide_GetCollisionInfo(
     // Right.
     x = xpos + xright;
     z = zpos + zright;
-    floor = Room_GetFloor(x, ytop, z, &room_num);
-    height = Room_GetHeight(floor, x, ytop, z);
+    sector = Room_GetSector(x, ytop, z, &room_num);
+    height = Room_GetHeight(sector, x, ytop, z);
     room_height = height;
     if (height != NO_HEIGHT) {
         height -= ypos;
     }
 
-    ceiling = Room_GetCeiling(floor, x, ytop, z);
+    ceiling = Room_GetCeiling(sector, x, ytop, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -196,7 +196,7 @@ void Collide_GetCollisionInfo(
     coll->right_type = g_HeightType;
 
     if (!g_Config.fix_bridge_collision
-        || !Room_IsOnWalkable(floor, x, ytop, z, room_height)) {
+        || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
         if (coll->slopes_are_walls && coll->right_type == HT_BIG_SLOPE
             && coll->right_floor < 0) {
             coll->right_floor = -32767;
@@ -213,13 +213,13 @@ void Collide_GetCollisionInfo(
 
     if (Collide_CollideStaticObjects(
             coll, xpos, ypos, zpos, room_num, obj_height)) {
-        floor = Room_GetFloor(
+        sector = Room_GetSector(
             xpos + coll->shift.x, ypos, zpos + coll->shift.z, &room_num);
         if (Room_GetHeight(
-                floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
+                sector, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
                 < ypos - 512
             || Room_GetCeiling(
-                   floor, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
+                   sector, xpos + coll->shift.x, ypos, zpos + coll->shift.z)
                 > y) {
             coll->shift.x = -coll->shift.x;
             coll->shift.z = -coll->shift.z;

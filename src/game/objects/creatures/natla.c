@@ -342,10 +342,10 @@ void NatlaGun_Control(int16_t fx_num)
     int32_t x = fx->pos.x + ((fx->speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT);
     int32_t y = fx->pos.y;
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
 
-    if (y >= Room_GetHeight(floor, x, y, z)
-        || y <= Room_GetCeiling(floor, x, y, z)) {
+    if (y >= Room_GetHeight(sector, x, y, z)
+        || y <= Room_GetCeiling(sector, x, y, z)) {
         return;
     }
 

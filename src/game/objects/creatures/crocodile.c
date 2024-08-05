@@ -236,7 +236,7 @@ void Alligator_Control(int16_t item_num)
     }
 
     CREATURE_INFO *gator = item->data;
-    FLOOR_INFO *floor;
+    const SECTOR_INFO *sector;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t room_num;
@@ -266,9 +266,10 @@ void Alligator_Control(int16_t item_num)
         Item_Animate(item);
 
         room_num = item->room_number;
-        floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         item->floor =
-            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         if (room_num != item->room_number) {
             Item_NewRoom(item_num, room_num);
         }

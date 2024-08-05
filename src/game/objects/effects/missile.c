@@ -34,10 +34,12 @@ void Missile_Control(int16_t fx_num)
     fx->pos.x += (speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT;
 
     int16_t room_num = fx->room_number;
-    FLOOR_INFO *floor =
-        Room_GetFloor(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
-    int32_t height = Room_GetHeight(floor, fx->pos.x, fx->pos.y, fx->pos.z);
-    int32_t ceiling = Room_GetCeiling(floor, fx->pos.x, fx->pos.y, fx->pos.z);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, fx->pos.x, fx->pos.y, fx->pos.z);
+    const int32_t ceiling =
+        Room_GetCeiling(sector, fx->pos.x, fx->pos.y, fx->pos.z);
 
     if (fx->pos.y >= height || fx->pos.y <= ceiling) {
         if (fx->object_number == O_MISSILE2) {

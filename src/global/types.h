@@ -1160,18 +1160,18 @@ typedef struct DOOR_INFOS {
     DOOR_INFO door[];
 } DOOR_INFOS;
 
-typedef struct FLOOR_INFO {
+typedef struct SECTOR_INFO {
     uint16_t index;
     int16_t box;
     uint8_t pit_room;
     int8_t floor;
     uint8_t sky_room;
     int8_t ceiling;
-} FLOOR_INFO;
+} SECTOR_INFO;
 
 typedef struct DOORPOS_DATA {
-    FLOOR_INFO *floor;
-    FLOOR_INFO old_floor;
+    SECTOR_INFO *sector;
+    SECTOR_INFO old_sector;
     int16_t block;
 } DOORPOS_DATA;
 
@@ -1200,7 +1200,7 @@ typedef struct MESH_INFO {
 typedef struct ROOM_INFO {
     int16_t *data;
     DOOR_INFOS *doors;
-    FLOOR_INFO *floor;
+    SECTOR_INFO *sectors;
     LIGHT_INFO *light;
     MESH_INFO *mesh;
     int32_t x;
@@ -1208,8 +1208,8 @@ typedef struct ROOM_INFO {
     int32_t z;
     int32_t min_floor;
     int32_t max_ceiling;
+    int16_t z_size;
     int16_t x_size;
-    int16_t y_size;
     int16_t ambient;
     int16_t num_lights;
     int16_t num_meshes;

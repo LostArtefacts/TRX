@@ -49,16 +49,16 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         zone = g_GroundZone2[g_FlipStatus];
     }
 
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
-    int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-    int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-    item->box_number = r->floor[x_floor + y_floor * r->x_size].box;
+    const ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
+    int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
+    item->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
     info->zone_number = zone[item->box_number];
 
     r = &g_RoomInfo[g_LaraItem->room_number];
-    x_floor = (g_LaraItem->pos.z - r->z) >> WALL_SHIFT;
-    y_floor = (g_LaraItem->pos.x - r->x) >> WALL_SHIFT;
-    g_LaraItem->box_number = r->floor[x_floor + y_floor * r->x_size].box;
+    z_sector = (g_LaraItem->pos.z - r->z) >> WALL_SHIFT;
+    x_sector = (g_LaraItem->pos.x - r->x) >> WALL_SHIFT;
+    g_LaraItem->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
     info->enemy_zone = zone[g_LaraItem->box_number];
 
     if (g_Boxes[g_LaraItem->box_number].overlap_index
@@ -433,9 +433,10 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t y = item->pos.y + bounds->min.y;
 
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
-    int32_t height = g_Boxes[floor->box].height;
-    int16_t next_box = LOT->node[floor->box].exit_box;
+    const SECTOR_INFO *sector =
+        Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+    int32_t height = g_Boxes[sector->box].height;
+    int16_t next_box = LOT->node[sector->box].exit_box;
     int32_t next_height;
     if (next_box != NO_BOX) {
         next_height = g_Boxes[next_box].height;
@@ -447,7 +448,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t pos_z;
     int32_t shift_x;
     int32_t shift_z;
-    if (floor->box == NO_BOX || zone[item->box_number] != zone[floor->box]
+    if (sector->box == NO_BOX || zone[item->box_number] != zone[sector->box]
         || box_height - height > LOT->step || box_height - height < LOT->drop) {
         pos_x = item->pos.x >> WALL_SHIFT;
 
@@ -466,9 +467,9 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             item->pos.z = old.z | (WALL_L - 1);
         }
 
-        floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
-        height = g_Boxes[floor->box].height;
-        next_box = LOT->node[floor->box].exit_box;
+        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        height = g_Boxes[sector->box].height;
+        next_box = LOT->node[sector->box].exit_box;
         if (next_box != NO_BOX) {
             next_height = g_Boxes[next_box].height;
         } else {
@@ -576,7 +577,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     item->pos.z += shift_z;
 
     if (shift_x || shift_z) {
-        floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
+        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
 
         item->rot.y += angle;
         Creature_Tilt(item, tilt * 2);
@@ -597,7 +598,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             dy = -LOT->fly;
         }
 
-        height = Room_GetHeight(floor, item->pos.x, y, item->pos.z);
+        height = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
         if (item->pos.y + dy > height) {
             if (item->pos.y > height) {
                 item->pos.x = old.x;
@@ -609,7 +610,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         } else {
             int32_t ceiling =
-                Room_GetCeiling(floor, item->pos.x, y, item->pos.z);
+                Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
 
             int32_t min_y =
                 item->object_number == O_ALLIGATOR ? 0 : bounds->min.y;
@@ -625,8 +626,8 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         }
 
         item->pos.y += dy;
-        floor = Room_GetFloor(item->pos.x, y, item->pos.z, &room_num);
-        item->floor = Room_GetHeight(floor, item->pos.x, y, item->pos.z);
+        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
 
         angle = item->speed ? Math_Atan(item->speed, -dy) : 0;
         if (angle < item->rot.x - PHD_DEGREE) {
@@ -637,9 +638,10 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             item->rot.x = angle;
         }
     } else {
-        floor = Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         item->floor =
-            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
         if (item->pos.y > item->floor) {
             item->pos.y = item->floor;
@@ -781,10 +783,10 @@ static bool Creature_SwitchToLand(
         item->goal_anim_state = item->current_anim_state;
 
         int16_t room_num = item->room_number;
-        FLOOR_INFO *floor =
-            Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        const SECTOR_INFO *const sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         item->floor =
-            Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         item->pos.y = item->floor;
 
         if (item->room_number != room_num) {

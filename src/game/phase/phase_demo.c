@@ -188,9 +188,9 @@ static void Phase_Demo_Start(void *arg)
         Item_NewRoom(g_Lara.item_number, room_num);
     }
 
-    FLOOR_INFO *floor =
-        Room_GetFloor(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(floor, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);

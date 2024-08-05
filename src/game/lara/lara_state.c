@@ -50,8 +50,8 @@ static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
     int32_t y = item->pos.y - LARA_HEIGHT;
     int32_t z = item->pos.z + ((Math_Cos(ang) * dist) >> W2V_SHIFT);
     int16_t room_num = item->room_number;
-    FLOOR_INFO *floor = Room_GetFloor(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(floor, x, y, z);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    int32_t height = Room_GetHeight(sector, x, y, z);
     if (height != NO_HEIGHT) {
         height -= item->pos.y;
     }
