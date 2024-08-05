@@ -1208,8 +1208,8 @@ typedef struct ROOM_INFO {
     int32_t z;
     int32_t min_floor;
     int32_t max_ceiling;
+    int16_t z_size;
     int16_t x_size;
-    int16_t y_size;
     int16_t ambient;
     int16_t num_lights;
     int16_t num_meshes;

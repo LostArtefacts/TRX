@@ -108,25 +108,25 @@ void Door_Initialise(int16_t item_num)
         dy++;
     }
 
-    ROOM_INFO *r;
-    ROOM_INFO *b;
-    int32_t x_floor;
-    int32_t y_floor;
+    const ROOM_INFO *r;
+    const ROOM_INFO *b;
+    int32_t z_sector;
+    int32_t x_sector;
     int16_t room_num;
     int16_t box_num;
 
     r = &g_RoomInfo[item->room_number];
-    x_floor = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
-    y_floor = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
-    door->d1.sector = &r->sectors[x_floor + y_floor * r->x_size];
+    z_sector = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
+    x_sector = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
+    door->d1.sector = &r->sectors[z_sector + x_sector * r->z_size];
     room_num = Room_GetDoor(door->d1.sector);
     if (room_num == NO_ROOM) {
         box_num = door->d1.sector->box;
     } else {
         b = &g_RoomInfo[room_num];
-        x_floor = ((item->pos.z - b->z) >> WALL_SHIFT) + dx;
-        y_floor = ((item->pos.x - b->x) >> WALL_SHIFT) + dy;
-        box_num = b->sectors[x_floor + y_floor * b->x_size].box;
+        z_sector = ((item->pos.z - b->z) >> WALL_SHIFT) + dx;
+        x_sector = ((item->pos.x - b->x) >> WALL_SHIFT) + dy;
+        box_num = b->sectors[z_sector + x_sector * b->z_size].box;
     }
     if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
         box_num = NO_BOX;
@@ -136,17 +136,17 @@ void Door_Initialise(int16_t item_num)
 
     if (r->flipped_room != -1) {
         r = &g_RoomInfo[r->flipped_room];
-        x_floor = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
-        y_floor = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
-        door->d1flip.sector = &r->sectors[x_floor + y_floor * r->x_size];
+        z_sector = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
+        x_sector = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
+        door->d1flip.sector = &r->sectors[z_sector + x_sector * r->z_size];
         room_num = Room_GetDoor(door->d1flip.sector);
         if (room_num == NO_ROOM) {
             box_num = door->d1flip.sector->box;
         } else {
             b = &g_RoomInfo[room_num];
-            x_floor = ((item->pos.z - b->z) >> WALL_SHIFT) + dx;
-            y_floor = ((item->pos.x - b->x) >> WALL_SHIFT) + dy;
-            box_num = b->sectors[x_floor + y_floor * b->x_size].box;
+            z_sector = ((item->pos.z - b->z) >> WALL_SHIFT) + dx;
+            x_sector = ((item->pos.x - b->x) >> WALL_SHIFT) + dy;
+            box_num = b->sectors[z_sector + x_sector * b->z_size].box;
         }
         if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
             box_num = NO_BOX;
@@ -168,17 +168,17 @@ void Door_Initialise(int16_t item_num)
     }
 
     r = &g_RoomInfo[room_num];
-    x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-    y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-    door->d2.sector = &r->sectors[x_floor + y_floor * r->x_size];
+    z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
+    x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
+    door->d2.sector = &r->sectors[z_sector + x_sector * r->z_size];
     room_num = Room_GetDoor(door->d2.sector);
     if (room_num == NO_ROOM) {
         box_num = door->d2.sector->box;
     } else {
         b = &g_RoomInfo[room_num];
-        x_floor = (item->pos.z - b->z) >> WALL_SHIFT;
-        y_floor = (item->pos.x - b->x) >> WALL_SHIFT;
-        box_num = b->sectors[x_floor + y_floor * b->x_size].box;
+        z_sector = (item->pos.z - b->z) >> WALL_SHIFT;
+        x_sector = (item->pos.x - b->x) >> WALL_SHIFT;
+        box_num = b->sectors[z_sector + x_sector * b->z_size].box;
     }
     if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
         box_num = NO_BOX;
@@ -188,17 +188,17 @@ void Door_Initialise(int16_t item_num)
 
     if (r->flipped_room != -1) {
         r = &g_RoomInfo[r->flipped_room];
-        x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-        y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-        door->d2flip.sector = &r->sectors[x_floor + y_floor * r->x_size];
+        z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
+        x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
+        door->d2flip.sector = &r->sectors[z_sector + x_sector * r->z_size];
         room_num = Room_GetDoor(door->d2flip.sector);
         if (room_num == NO_ROOM) {
             box_num = door->d2flip.sector->box;
         } else {
             b = &g_RoomInfo[room_num];
-            x_floor = (item->pos.z - b->z) >> WALL_SHIFT;
-            y_floor = (item->pos.x - b->x) >> WALL_SHIFT;
-            box_num = b->sectors[x_floor + y_floor * b->x_size].box;
+            z_sector = (item->pos.z - b->z) >> WALL_SHIFT;
+            x_sector = (item->pos.x - b->x) >> WALL_SHIFT;
+            box_num = b->sectors[z_sector + x_sector * b->z_size].box;
         }
         if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
             box_num = NO_BOX;

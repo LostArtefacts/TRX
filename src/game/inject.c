@@ -1130,11 +1130,11 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
     int32_t fd_edit_count;
     FLOOR_EDIT_TYPE edit_type;
     int16_t room;
-    uint16_t y, x;
+    uint16_t x, z;
     for (int i = 0; i < inj_info->floor_edit_count; i++) {
         File_Read(&room, sizeof(int16_t), 1, fp);
-        File_Read(&y, sizeof(uint16_t), 1, fp);
         File_Read(&x, sizeof(uint16_t), 1, fp);
+        File_Read(&z, sizeof(uint16_t), 1, fp);
         File_Read(&fd_edit_count, sizeof(int32_t), 1, fp);
 
         // Verify that the given room and coordinates are accurate.
@@ -1145,11 +1145,11 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             LOG_WARNING("Room index %d is invalid", room);
         } else {
             r = &g_RoomInfo[room];
-            if (y >= r->y_size || x >= r->x_size) {
+            if (x >= r->x_size || z >= r->z_size) {
                 LOG_WARNING(
-                    "Sector [%d,%d] is invalid for room %d", y, x, room);
+                    "Sector [%d,%d] is invalid for room %d", x, z, room);
             } else {
-                sector = &r->sectors[r->x_size * y + x];
+                sector = &r->sectors[r->z_size * x + z];
             }
         }
 
@@ -1371,7 +1371,7 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     // Update the sector floor and ceiling clicks to match.
     const int8_t click_shift = y_shift / STEP_L;
     const int8_t wall_height = NO_HEIGHT / STEP_L;
-    for (int i = 0; i < room->x_size * room->y_size; i++) {
+    for (int i = 0; i < room->z_size * room->x_size; i++) {
         SECTOR_INFO *sector = &room->sectors[i];
         if (sector->floor == wall_height || sector->ceiling == wall_height) {
             continue;

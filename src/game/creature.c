@@ -49,16 +49,16 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         zone = g_GroundZone2[g_FlipStatus];
     }
 
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
-    int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-    int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
-    item->box_number = r->sectors[x_floor + y_floor * r->x_size].box;
+    const ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
+    int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
+    item->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
     info->zone_number = zone[item->box_number];
 
     r = &g_RoomInfo[g_LaraItem->room_number];
-    x_floor = (g_LaraItem->pos.z - r->z) >> WALL_SHIFT;
-    y_floor = (g_LaraItem->pos.x - r->x) >> WALL_SHIFT;
-    g_LaraItem->box_number = r->sectors[x_floor + y_floor * r->x_size].box;
+    z_sector = (g_LaraItem->pos.z - r->z) >> WALL_SHIFT;
+    x_sector = (g_LaraItem->pos.x - r->x) >> WALL_SHIFT;
+    g_LaraItem->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
     info->enemy_zone = zone[g_LaraItem->box_number];
 
     if (g_Boxes[g_LaraItem->box_number].overlap_index

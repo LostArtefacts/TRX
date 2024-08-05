@@ -53,7 +53,7 @@ int16_t m_KillableObjs[] = {
 
 static void Stats_TraverseFloor(void);
 static void Stats_CheckTriggers(
-    ROOM_INFO *r, int room_num, int x_floor, int y_floor);
+    ROOM_INFO *r, int room_num, int z_sector, int x_sector);
 static bool Stats_IsObjectKillable(int32_t obj_num);
 static void Stats_IncludeKillableItem(int16_t item_num);
 
@@ -63,25 +63,25 @@ static void Stats_TraverseFloor(void)
 
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM_INFO *r = &g_RoomInfo[i];
-        for (int x_floor = 0; x_floor < r->x_size; x_floor++) {
-            for (int y_floor = 0; y_floor < r->y_size; y_floor++) {
-                Stats_CheckTriggers(r, i, x_floor, y_floor);
+        for (int z_sector = 0; z_sector < r->z_size; z_sector++) {
+            for (int x_sector = 0; x_sector < r->x_size; x_sector++) {
+                Stats_CheckTriggers(r, i, z_sector, x_sector);
             }
         }
     }
 }
 
 static void Stats_CheckTriggers(
-    ROOM_INFO *r, int room_num, int x_floor, int y_floor)
+    ROOM_INFO *r, int room_num, int z_sector, int x_sector)
 {
-    if (x_floor == 0 || x_floor == r->x_size - 1) {
-        if (y_floor == 0 || y_floor == r->y_size - 1) {
+    if (z_sector == 0 || z_sector == r->z_size - 1) {
+        if (x_sector == 0 || x_sector == r->x_size - 1) {
             return;
         }
     }
 
     const SECTOR_INFO *const sector =
-        &m_CachedSectorArray[room_num][x_floor + y_floor * r->x_size];
+        &m_CachedSectorArray[room_num][z_sector + x_sector * r->z_size];
 
     if (!sector->index) {
         return;
@@ -213,7 +213,8 @@ void Stats_ObserveRoomsLoad(void)
         GameBuf_Alloc(g_RoomCount * sizeof(SECTOR_INFO *), GBUF_ROOM_SECTOR);
     for (int i = 0; i < g_RoomCount; i++) {
         const ROOM_INFO *current_room_info = &g_RoomInfo[i];
-        int count = current_room_info->y_size * current_room_info->x_size;
+        const int32_t count =
+            current_room_info->x_size * current_room_info->z_size;
         m_CachedSectorArray[i] =
             GameBuf_Alloc(count * sizeof(SECTOR_INFO), GBUF_ROOM_SECTOR);
         memcpy(

@@ -44,8 +44,8 @@ bool BaconLara_InitialiseAnchor(int32_t room_index)
     }
 
     ROOM_INFO *r = &g_RoomInfo[room_index];
-    m_AnchorX = r->x + r->y_size * (WALL_L >> 1);
-    m_AnchorZ = r->z + r->x_size * (WALL_L >> 1);
+    m_AnchorX = r->x + r->x_size * (WALL_L >> 1);
+    m_AnchorZ = r->z + r->z_size * (WALL_L >> 1);
 
     return true;
 }

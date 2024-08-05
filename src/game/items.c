@@ -166,13 +166,13 @@ void Item_Initialise(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    ROOM_INFO *const r = &g_RoomInfo[item->room_number];
     item->next_item = r->item_number;
     r->item_number = item_num;
-    int32_t x_floor = (item->pos.z - r->z) >> WALL_SHIFT;
-    int32_t y_floor = (item->pos.x - r->x) >> WALL_SHIFT;
+    const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
+    const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     const SECTOR_INFO *const sector =
-        &r->sectors[x_floor + y_floor * r->x_size];
+        &r->sectors[z_sector + x_sector * r->z_size];
     item->floor = sector->floor << 8;
 
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
