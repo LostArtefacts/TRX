@@ -994,6 +994,7 @@ bool Room_IsOnWalkable(
     }
 
     int16_t height = sector->floor << 8;
+    bool object_found = false;
 
     int16_t *floor_data = &g_FloorData[sector->index];
     int16_t type;
@@ -1027,6 +1028,7 @@ bool Room_IsOnWalkable(
                     OBJECT_INFO *object = &g_Objects[item->object_number];
                     if (object->floor) {
                         object->floor(item, x, y, z, &height);
+                        object_found = true;
                     }
                 } else if (TRIG_BITS(trigger) == TO_CAMERA) {
                     trigger = *floor_data++;
@@ -1036,9 +1038,7 @@ bool Room_IsOnWalkable(
         }
     } while (!(type & END_BIT));
 
-    if (room_height == height) {
-        return true;
-    }
+    return object_found && room_height == height;
 
     return false;
 }
