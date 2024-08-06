@@ -662,12 +662,13 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
     }
 
     if (sector->floor.height != NO_HEIGHT) {
-        sector->floor.height += height;
+        sector->floor.height += ROUND_TO_CLICK(height);
         if (sector->floor.height == sky_sector->ceiling.height) {
             sector->floor.height = NO_HEIGHT;
         }
     } else {
-        sector->floor.height = sky_sector->ceiling.height + height;
+        sector->floor.height =
+            sky_sector->ceiling.height + ROUND_TO_CLICK(height);
     }
 
     if (g_Boxes[sector->box].overlap_index & BLOCKABLE) {

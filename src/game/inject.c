@@ -1346,6 +1346,10 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     File_Read(&z_shift, sizeof(uint32_t), 1, fp);
     File_Read(&y_shift, sizeof(int32_t), 1, fp);
 
+    x_shift = ROUND_TO_SECTOR(x_shift);
+    y_shift = ROUND_TO_CLICK(y_shift);
+    z_shift = ROUND_TO_SECTOR(z_shift);
+
     ROOM_INFO *room = &g_RoomInfo[room_num];
     room->x += x_shift;
     room->z += z_shift;
@@ -1369,8 +1373,8 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     }
 
     // Update the sector floor and ceiling heights to match.
-    for (int i = 0; i < room->z_size * room->x_size; i++) {
-        SECTOR_INFO *sector = &room->sectors[i];
+    for (int32_t i = 0; i < room->z_size * room->x_size; i++) {
+        SECTOR_INFO *const sector = &room->sectors[i];
         if (sector->floor.height == NO_HEIGHT
             || sector->ceiling.height == NO_HEIGHT) {
             continue;
