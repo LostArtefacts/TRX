@@ -8,8 +8,8 @@
 void FallingBlock_Setup(OBJECT_INFO *obj)
 {
     obj->control = FallingBlock_Control;
-    obj->floor_height_routine = FallingBlock_AlterFloorHeight;
-    obj->ceiling_height_routine = FallingBlock_AlterCeilingHeight;
+    obj->floor_height_func = FallingBlock_GetFloorHeight;
+    obj->ceiling_height_func = FallingBlock_GetCeilingHeight;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
@@ -65,22 +65,28 @@ void FallingBlock_Control(int16_t item_num)
     }
 }
 
-void FallingBlock_AlterFloorHeight(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t FallingBlock_GetFloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (y <= item->pos.y - STEP_L * 2
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
-        *height = item->pos.y - STEP_L * 2;
+        return item->pos.y - STEP_L * 2;
     }
+
+    return height;
 }
 
-void FallingBlock_AlterCeilingHeight(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t FallingBlock_GetCeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (y > item->pos.y - STEP_L * 2
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
-        *height = item->pos.y - STEP_L;
+        return item->pos.y - STEP_L;
     }
+
+    return height;
 }
