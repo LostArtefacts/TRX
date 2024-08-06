@@ -261,7 +261,7 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         pickup->rot.y += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
 
         if (sector->pit_room != NO_ROOM
-            && pickup->pos.y > (sector->floor.height << 8)) {
+            && pickup->pos.y > sector->floor.height) {
             room_num = sector->pit_room;
         }
     }

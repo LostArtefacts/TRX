@@ -1368,17 +1368,16 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
         return;
     }
 
-    // Update the sector floor and ceiling clicks to match.
-    const int8_t click_shift = y_shift / STEP_L;
+    // Update the sector floor and ceiling heights to match.
     for (int i = 0; i < room->z_size * room->x_size; i++) {
         SECTOR_INFO *sector = &room->sectors[i];
-        if (sector->floor.height == WALL_CLICKS
-            || sector->ceiling.height == WALL_CLICKS) {
+        if (sector->floor.height == NO_HEIGHT
+            || sector->ceiling.height == NO_HEIGHT) {
             continue;
         }
 
-        sector->floor.height += click_shift;
-        sector->ceiling.height += click_shift;
+        sector->floor.height += y_shift;
+        sector->ceiling.height += y_shift;
     }
 
     // Update vertex Y values to match; x and z are room-relative.

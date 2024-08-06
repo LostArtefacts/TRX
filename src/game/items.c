@@ -173,7 +173,7 @@ void Item_Initialise(int16_t item_num)
     const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     const SECTOR_INFO *const sector =
         &r->sectors[z_sector + x_sector * r->z_size];
-    item->floor = sector->floor.height << 8;
+    item->floor = sector->floor.height;
 
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
         item->hit_points *= 2;

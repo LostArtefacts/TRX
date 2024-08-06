@@ -214,12 +214,17 @@ static bool Level_LoadRooms(MYFILE *fp)
             GameBuf_Alloc(sizeof(SECTOR_INFO) * count4, GBUF_ROOM_SECTOR);
         for (int32_t j = 0; j < (signed)count4; j++) {
             SECTOR_INFO *const sector = &current_room_info->sectors[j];
+            int8_t floor_clicks;
+            int8_t ceiling_clicks;
             File_Read(&sector->index, sizeof(uint16_t), 1, fp);
             File_Read(&sector->box, sizeof(int16_t), 1, fp);
             File_Read(&sector->pit_room, sizeof(uint8_t), 1, fp);
-            File_Read(&sector->floor.height, sizeof(int8_t), 1, fp);
+            File_Read(&floor_clicks, sizeof(int8_t), 1, fp);
             File_Read(&sector->sky_room, sizeof(uint8_t), 1, fp);
-            File_Read(&sector->ceiling.height, sizeof(int8_t), 1, fp);
+            File_Read(&ceiling_clicks, sizeof(int8_t), 1, fp);
+
+            sector->floor.height = floor_clicks * STEP_L;
+            sector->ceiling.height = ceiling_clicks * STEP_L;
         }
 
         // Room lights

@@ -53,8 +53,8 @@ static void Door_Shut(DOORPOS_DATA *const d)
 
     sector->index = 0;
     sector->box = NO_BOX;
-    sector->floor.height = WALL_CLICKS;
-    sector->ceiling.height = WALL_CLICKS;
+    sector->floor.height = NO_HEIGHT;
+    sector->ceiling.height = NO_HEIGHT;
     sector->sky_room = NO_ROOM;
     sector->pit_room = NO_ROOM;
 

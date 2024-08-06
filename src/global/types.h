@@ -1166,7 +1166,7 @@ typedef struct SECTOR_INFO {
     uint8_t pit_room;
     uint8_t sky_room;
     struct {
-        int8_t height;
+        int16_t height;
     } floor, ceiling;
 } SECTOR_INFO;
 
