@@ -29,8 +29,8 @@ static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z)
 void TrapDoor_Setup(OBJECT_INFO *obj)
 {
     obj->control = TrapDoor_Control;
-    obj->floor = TrapDoor_Floor;
-    obj->ceiling = TrapDoor_Ceiling;
+    obj->floor_height_routine = TrapDoor_AlterFloorHeight;
+    obj->ceiling_height_routine = TrapDoor_AlterCeilingHeight;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
@@ -48,7 +48,7 @@ void TrapDoor_Control(int16_t item_num)
     Item_Animate(item);
 }
 
-void TrapDoor_Floor(
+void TrapDoor_AlterFloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (!TrapDoor_StandingOn(item, x, z)) {
@@ -63,7 +63,7 @@ void TrapDoor_Floor(
     *height = item->pos.y;
 }
 
-void TrapDoor_Ceiling(
+void TrapDoor_AlterCeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (!TrapDoor_StandingOn(item, x, z)) {

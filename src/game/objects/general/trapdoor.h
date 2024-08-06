@@ -6,7 +6,7 @@
 
 void TrapDoor_Setup(OBJECT_INFO *obj);
 void TrapDoor_Control(int16_t item_num);
-void TrapDoor_Floor(
+void TrapDoor_AlterFloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void TrapDoor_Ceiling(
+void TrapDoor_AlterCeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);

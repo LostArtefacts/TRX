@@ -249,8 +249,8 @@ void Setup_AllObjects(void)
         obj->collision = NULL;
         obj->control = NULL;
         obj->draw_routine = Object_DrawAnimatingItem;
-        obj->ceiling = NULL;
-        obj->floor = NULL;
+        obj->ceiling_height_routine = NULL;
+        obj->floor_height_routine = NULL;
         obj->pivot_length = 0;
         obj->radius = DEFAULT_RADIUS;
         obj->shadow_size = 0;
@@ -268,15 +268,15 @@ void Setup_AllObjects(void)
         g_Objects[O_MEDI_ITEM].collision = NULL;
         g_Objects[O_MEDI_ITEM].control = NULL;
         g_Objects[O_MEDI_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_MEDI_ITEM].floor = NULL;
-        g_Objects[O_MEDI_ITEM].ceiling = NULL;
+        g_Objects[O_MEDI_ITEM].floor_height_routine = NULL;
+        g_Objects[O_MEDI_ITEM].ceiling_height_routine = NULL;
 
         g_Objects[O_BIGMEDI_ITEM].initialise = NULL;
         g_Objects[O_BIGMEDI_ITEM].collision = NULL;
         g_Objects[O_BIGMEDI_ITEM].control = NULL;
         g_Objects[O_BIGMEDI_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_BIGMEDI_ITEM].floor = NULL;
-        g_Objects[O_BIGMEDI_ITEM].ceiling = NULL;
+        g_Objects[O_BIGMEDI_ITEM].floor_height_routine = NULL;
+        g_Objects[O_BIGMEDI_ITEM].ceiling_height_routine = NULL;
     }
 
     if (g_Config.disable_magnums) {
@@ -284,15 +284,15 @@ void Setup_AllObjects(void)
         g_Objects[O_MAGNUM_ITEM].collision = NULL;
         g_Objects[O_MAGNUM_ITEM].control = NULL;
         g_Objects[O_MAGNUM_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_MAGNUM_ITEM].floor = NULL;
-        g_Objects[O_MAGNUM_ITEM].ceiling = NULL;
+        g_Objects[O_MAGNUM_ITEM].floor_height_routine = NULL;
+        g_Objects[O_MAGNUM_ITEM].ceiling_height_routine = NULL;
 
         g_Objects[O_MAG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_MAG_AMMO_ITEM].collision = NULL;
         g_Objects[O_MAG_AMMO_ITEM].control = NULL;
         g_Objects[O_MAG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_MAG_AMMO_ITEM].floor = NULL;
-        g_Objects[O_MAG_AMMO_ITEM].ceiling = NULL;
+        g_Objects[O_MAG_AMMO_ITEM].floor_height_routine = NULL;
+        g_Objects[O_MAG_AMMO_ITEM].ceiling_height_routine = NULL;
     }
 
     if (g_Config.disable_uzis) {
@@ -300,15 +300,15 @@ void Setup_AllObjects(void)
         g_Objects[O_UZI_ITEM].collision = NULL;
         g_Objects[O_UZI_ITEM].control = NULL;
         g_Objects[O_UZI_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_UZI_ITEM].floor = NULL;
-        g_Objects[O_UZI_ITEM].ceiling = NULL;
+        g_Objects[O_UZI_ITEM].floor_height_routine = NULL;
+        g_Objects[O_UZI_ITEM].ceiling_height_routine = NULL;
 
         g_Objects[O_UZI_AMMO_ITEM].initialise = NULL;
         g_Objects[O_UZI_AMMO_ITEM].collision = NULL;
         g_Objects[O_UZI_AMMO_ITEM].control = NULL;
         g_Objects[O_UZI_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_UZI_AMMO_ITEM].floor = NULL;
-        g_Objects[O_UZI_AMMO_ITEM].ceiling = NULL;
+        g_Objects[O_UZI_AMMO_ITEM].floor_height_routine = NULL;
+        g_Objects[O_UZI_AMMO_ITEM].ceiling_height_routine = NULL;
     }
 
     if (g_Config.disable_shotgun) {
@@ -316,14 +316,14 @@ void Setup_AllObjects(void)
         g_Objects[O_SHOTGUN_ITEM].collision = NULL;
         g_Objects[O_SHOTGUN_ITEM].control = NULL;
         g_Objects[O_SHOTGUN_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_SHOTGUN_ITEM].floor = NULL;
-        g_Objects[O_SHOTGUN_ITEM].ceiling = NULL;
+        g_Objects[O_SHOTGUN_ITEM].floor_height_routine = NULL;
+        g_Objects[O_SHOTGUN_ITEM].ceiling_height_routine = NULL;
 
         g_Objects[O_SG_AMMO_ITEM].initialise = NULL;
         g_Objects[O_SG_AMMO_ITEM].collision = NULL;
         g_Objects[O_SG_AMMO_ITEM].control = NULL;
         g_Objects[O_SG_AMMO_ITEM].draw_routine = Object_DrawDummyItem;
-        g_Objects[O_SG_AMMO_ITEM].floor = NULL;
-        g_Objects[O_SG_AMMO_ITEM].ceiling = NULL;
+        g_Objects[O_SG_AMMO_ITEM].floor_height_routine = NULL;
+        g_Objects[O_SG_AMMO_ITEM].ceiling_height_routine = NULL;
     }
 }

@@ -19,17 +19,17 @@ void Bridge_DrawBridgeCollision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
 void Bridge_DrawBridgeControl(int16_t item_num);
 
-void Bridge_FlatFloor(
+void Bridge_AlterFlatFloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void Bridge_FlatCeiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-
-void Bridge_Tilt1Floor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void Bridge_Tilt1Ceiling(
+void Bridge_AlterFlatCeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
 
-void Bridge_Tilt2Floor(
+void Bridge_AlterTilt1FloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-void Bridge_Tilt2Ceiling(
+void Bridge_AlterTilt1CeilingHeight(
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+
+void Bridge_AlterTilt2FloorHeight(
+    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+void Bridge_AlterTilt2CeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);

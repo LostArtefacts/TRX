@@ -123,22 +123,22 @@ static void Bridge_FixEmbeddedPosition(int16_t item_num)
 void Bridge_SetupFlat(OBJECT_INFO *obj)
 {
     obj->initialise = Bridge_Initialise;
-    obj->floor = Bridge_FlatFloor;
-    obj->ceiling = Bridge_FlatCeiling;
+    obj->floor_height_routine = Bridge_AlterFlatFloorHeight;
+    obj->ceiling_height_routine = Bridge_AlterFlatCeilingHeight;
 }
 
 void Bridge_SetupTilt1(OBJECT_INFO *obj)
 {
     obj->initialise = Bridge_Initialise;
-    obj->floor = Bridge_Tilt1Floor;
-    obj->ceiling = Bridge_Tilt1Ceiling;
+    obj->floor_height_routine = Bridge_AlterTilt1FloorHeight;
+    obj->ceiling_height_routine = Bridge_AlterTilt1CeilingHeight;
 }
 
 void Bridge_SetupTilt2(OBJECT_INFO *obj)
 {
     obj->initialise = Bridge_Initialise;
-    obj->floor = Bridge_Tilt2Floor;
-    obj->ceiling = Bridge_Tilt2Ceiling;
+    obj->floor_height_routine = Bridge_AlterTilt2FloorHeight;
+    obj->ceiling_height_routine = Bridge_AlterTilt2CeilingHeight;
 }
 
 void Bridge_SetupDrawBridge(OBJECT_INFO *obj)
@@ -146,12 +146,12 @@ void Bridge_SetupDrawBridge(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->ceiling = Bridge_DrawBridgeCeiling;
+    obj->ceiling_height_routine = Bridge_DrawBridgeCeiling;
     obj->collision = Bridge_DrawBridgeCollision;
     obj->control = Cog_Control;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->floor = Bridge_DrawBridgeFloor;
+    obj->floor_height_routine = Bridge_DrawBridgeFloor;
 }
 
 void Bridge_Initialise(int16_t item_num)
@@ -215,7 +215,7 @@ void Bridge_DrawBridgeCollision(
     }
 }
 
-void Bridge_FlatFloor(
+void Bridge_AlterFlatFloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
@@ -233,7 +233,7 @@ void Bridge_FlatFloor(
     *height = item->pos.y;
 }
 
-void Bridge_FlatCeiling(
+void Bridge_AlterFlatCeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
@@ -251,7 +251,7 @@ void Bridge_FlatCeiling(
     *height = item->pos.y + STEP_L;
 }
 
-void Bridge_Tilt1Floor(
+void Bridge_AlterTilt1FloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
@@ -271,7 +271,7 @@ void Bridge_Tilt1Floor(
     *height = offset_height;
 }
 
-void Bridge_Tilt1Ceiling(
+void Bridge_AlterTilt1CeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
@@ -291,7 +291,7 @@ void Bridge_Tilt1Ceiling(
     *height = offset_height + STEP_L;
 }
 
-void Bridge_Tilt2Floor(
+void Bridge_AlterTilt2FloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
@@ -311,7 +311,7 @@ void Bridge_Tilt2Floor(
     *height = offset_height;
 }
 
-void Bridge_Tilt2Ceiling(
+void Bridge_AlterTilt2CeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {

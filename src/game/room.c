@@ -395,8 +395,8 @@ int16_t Room_GetCeiling(
                 } else {
                     ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
                     OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->ceiling) {
-                        object->ceiling(item, x, y, z, &height);
+                    if (object->ceiling_height_routine) {
+                        object->ceiling_height_routine(item, x, y, z, &height);
                     }
                 }
             } while (!(trigger & END_BIT));
@@ -518,8 +518,8 @@ int16_t Room_GetHeight(
                 } else {
                     ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
                     OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->floor) {
-                        object->floor(item, x, y, z, &height);
+                    if (object->floor_height_routine) {
+                        object->floor_height_routine(item, x, y, z, &height);
                     }
                 }
             } while (!(trigger & END_BIT));
@@ -1026,8 +1026,8 @@ bool Room_IsOnWalkable(
                     const int16_t item_num = trigger & VALUE_BITS;
                     ITEM_INFO *item = &g_Items[item_num];
                     OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->floor) {
-                        object->floor(item, x, y, z, &height);
+                    if (object->floor_height_routine) {
+                        object->floor_height_routine(item, x, y, z, &height);
                         object_found = true;
                     }
                 } else if (TRIG_BITS(trigger) == TO_CAMERA) {

@@ -8,8 +8,8 @@
 void FallingBlock_Setup(OBJECT_INFO *obj)
 {
     obj->control = FallingBlock_Control;
-    obj->floor = FallingBlock_Floor;
-    obj->ceiling = FallingBlock_Ceiling;
+    obj->floor_height_routine = FallingBlock_AlterFloorHeight;
+    obj->ceiling_height_routine = FallingBlock_AlterCeilingHeight;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
@@ -65,7 +65,7 @@ void FallingBlock_Control(int16_t item_num)
     }
 }
 
-void FallingBlock_Floor(
+void FallingBlock_AlterFloorHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y <= item->pos.y - STEP_L * 2
@@ -75,7 +75,7 @@ void FallingBlock_Floor(
     }
 }
 
-void FallingBlock_Ceiling(
+void FallingBlock_AlterCeilingHeight(
     ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
 {
     if (y > item->pos.y - STEP_L * 2
