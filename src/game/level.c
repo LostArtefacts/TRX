@@ -217,9 +217,9 @@ static bool Level_LoadRooms(MYFILE *fp)
             File_Read(&sector->index, sizeof(uint16_t), 1, fp);
             File_Read(&sector->box, sizeof(int16_t), 1, fp);
             File_Read(&sector->pit_room, sizeof(uint8_t), 1, fp);
-            File_Read(&sector->floor, sizeof(int8_t), 1, fp);
+            File_Read(&sector->floor.height, sizeof(int8_t), 1, fp);
             File_Read(&sector->sky_room, sizeof(uint8_t), 1, fp);
-            File_Read(&sector->ceiling, sizeof(int8_t), 1, fp);
+            File_Read(&sector->ceiling.height, sizeof(int8_t), 1, fp);
         }
 
         // Room lights

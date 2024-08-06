@@ -1164,9 +1164,10 @@ typedef struct SECTOR_INFO {
     uint16_t index;
     int16_t box;
     uint8_t pit_room;
-    int8_t floor;
     uint8_t sky_room;
-    int8_t ceiling;
+    struct {
+        int8_t height;
+    } floor, ceiling;
 } SECTOR_INFO;
 
 typedef struct DOORPOS_DATA {

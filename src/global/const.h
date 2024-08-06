@@ -121,6 +121,7 @@
 #define DONT_TARGET (-16384)
 #define UNIT_SHADOW 256
 #define NO_HEIGHT (-32512)
+#define WALL_CLICKS (NO_HEIGHT / STEP_L)
 #define NO_BAD_POS (-NO_HEIGHT)
 #define NO_BAD_NEG NO_HEIGHT
 #define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
