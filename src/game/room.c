@@ -1039,6 +1039,4 @@ bool Room_IsOnWalkable(
     } while (!(type & END_BIT));
 
     return object_found && room_height == height;
-
-    return false;
 }
