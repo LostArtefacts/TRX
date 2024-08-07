@@ -475,11 +475,11 @@ bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     File_Seek(fp, 0, SEEK_SET);
 
     char title[SAVEGAME_LEGACY_TITLE_SIZE];
-    File_Read(title, sizeof(char), SAVEGAME_LEGACY_TITLE_SIZE, fp);
+    File_ReadItems(fp, title, sizeof(char), SAVEGAME_LEGACY_TITLE_SIZE);
     info->level_title = Memory_DupStr(title);
 
     int32_t counter;
-    File_Read(&counter, sizeof(int32_t), 1, fp);
+    counter = File_ReadS32(fp);
     info->counter = counter;
 
     for (int i = 0; i < g_GameFlow.level_count; i++) {
@@ -498,8 +498,7 @@ bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     File_Skip(fp, sizeof(uint32_t)); // kills
     File_Skip(fp, sizeof(uint16_t)); // secrets
 
-    uint16_t level_num;
-    File_Read(&level_num, sizeof(int16_t), 1, fp);
+    const uint16_t level_num = File_ReadS16(fp);
     info->level_num = level_num;
 
     info->initial_version = VERSION_LEGACY;
@@ -519,7 +518,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(buffer, sizeof(char), File_Size(fp), fp);
+    File_ReadData(fp, buffer, File_Size(fp));
 
     bool skip_reading_bacon_lara = Savegame_Legacy_NeedsBaconLaraFix(buffer);
     if (skip_reading_bacon_lara) {
@@ -652,7 +651,7 @@ bool Savegame_Legacy_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
 
     char *buffer = Memory_Alloc(File_Size(fp));
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(buffer, sizeof(char), File_Size(fp), fp);
+    File_ReadData(fp, buffer, File_Size(fp));
 
     Savegame_Legacy_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     Savegame_Legacy_Skip(sizeof(int32_t)); // save counter
@@ -796,7 +795,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Write(&g_FlipEffect, sizeof(int32_t));
     Savegame_Legacy_Write(&g_FlipTimer, sizeof(int32_t));
 
-    File_Write(buffer, sizeof(char), m_SGBufPos, fp);
+    File_WriteData(fp, buffer, m_SGBufPos);
     Memory_FreePointer(&buffer);
 }
 

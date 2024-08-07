@@ -300,7 +300,7 @@ bool S_Picture_SaveToFile(const PICTURE *pic, const char *path)
             goto cleanup;
         }
 
-        File_Write(packet->data, 1, packet->size, fp);
+        File_WriteData(fp, packet->data, packet->size);
         av_packet_unref(packet);
     }
 

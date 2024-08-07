@@ -460,7 +460,7 @@ bool Config_Write(void)
     char *data = json_write_pretty(root, "  ", "\n", &size);
     json_value_free(root);
 
-    File_Write(data, sizeof(char), size - 1, fp);
+    File_WriteData(fp, data, size - 1);
     File_Close(fp);
     Memory_FreePointer(&data);
 
