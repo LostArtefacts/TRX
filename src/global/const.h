@@ -99,6 +99,8 @@
 #define WALL_L 1024
 #define WALL_SHIFT 10
 #define STEP_L 256
+#define ROUND_TO_CLICK(V) ((V) & ~(STEP_L - 1))
+#define ROUND_TO_SECTOR(V) ((V) & ~(WALL_L - 1))
 #define NO_ROOM 0xFF
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define FRONT_ARC PHD_90

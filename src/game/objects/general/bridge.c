@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 static bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item);
-static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t z);
+static bool Bridge_OnDrawBridge(const ITEM_INFO *item, int32_t x, int32_t z);
 static int32_t Bridge_GetOffset(
     const ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 static void Bridge_FixEmbeddedPosition(int16_t item_num);
@@ -27,7 +27,7 @@ static bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item)
     return sector_x == item_sector_x && sector_z == item_sector_z;
 }
 
-static bool Bridge_OnDrawBridge(ITEM_INFO *item, int32_t x, int32_t z)
+static bool Bridge_OnDrawBridge(const ITEM_INFO *item, int32_t x, int32_t z)
 {
     int32_t ix = item->pos.x >> WALL_SHIFT;
     int32_t iz = item->pos.z >> WALL_SHIFT;
@@ -123,22 +123,22 @@ static void Bridge_FixEmbeddedPosition(int16_t item_num)
 void Bridge_SetupFlat(OBJECT_INFO *obj)
 {
     obj->initialise = Bridge_Initialise;
-    obj->floor = Bridge_FlatFloor;
-    obj->ceiling = Bridge_FlatCeiling;
+    obj->floor_height_func = Bridge_GetFlatFloorHeight;
+    obj->ceiling_height_func = Bridge_GetFlatCeilingHeight;
 }
 
 void Bridge_SetupTilt1(OBJECT_INFO *obj)
 {
     obj->initialise = Bridge_Initialise;
-    obj->floor = Bridge_Tilt1Floor;
-    obj->ceiling = Bridge_Tilt1Ceiling;
+    obj->floor_height_func = Bridge_GetTilt1FloorHeight;
+    obj->ceiling_height_func = Bridge_GetTilt1CeilingHeight;
 }
 
 void Bridge_SetupTilt2(OBJECT_INFO *obj)
 {
     obj->initialise = Bridge_Initialise;
-    obj->floor = Bridge_Tilt2Floor;
-    obj->ceiling = Bridge_Tilt2Ceiling;
+    obj->floor_height_func = Bridge_GetTilt2FloorHeight;
+    obj->ceiling_height_func = Bridge_GetTilt2CeilingHeight;
 }
 
 void Bridge_SetupDrawBridge(OBJECT_INFO *obj)
@@ -146,12 +146,12 @@ void Bridge_SetupDrawBridge(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->ceiling = Bridge_DrawBridgeCeiling;
+    obj->ceiling_height_func = Bridge_GetDrawBridgeCeilingHeight;
     obj->collision = Bridge_DrawBridgeCollision;
     obj->control = Cog_Control;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->floor = Bridge_DrawBridgeFloor;
+    obj->floor_height_func = Bridge_GetDrawBridgeFloorHeight;
 }
 
 void Bridge_Initialise(int16_t item_num)
@@ -162,48 +162,50 @@ void Bridge_Initialise(int16_t item_num)
     Bridge_FixEmbeddedPosition(item_num);
 }
 
-void Bridge_DrawBridgeFloor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetDrawBridgeFloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
-        return;
+        return height;
     }
 
     if (!Bridge_OnDrawBridge(item, x, z)) {
-        return;
+        return height;
     }
 
     if (y > item->pos.y) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y >= height) {
+        return height;
     }
 
-    *height = item->pos.y;
+    return item->pos.y;
 }
 
-void Bridge_DrawBridgeCeiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetDrawBridgeCeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
-        return;
+        return height;
     }
 
     if (!Bridge_OnDrawBridge(item, x, z)) {
-        return;
+        return height;
     }
 
     if (y <= item->pos.y) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y <= height) {
+        return height;
     }
 
-    *height = item->pos.y + STEP_L;
+    return item->pos.y + STEP_L;
 }
 
 void Bridge_DrawBridgeCollision(
@@ -215,118 +217,124 @@ void Bridge_DrawBridgeCollision(
     }
 }
 
-void Bridge_FlatFloor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetFlatFloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
-        return;
+        return height;
     }
 
     if (y > item->pos.y) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y >= height) {
+        return height;
     }
 
-    *height = item->pos.y;
+    return item->pos.y;
 }
 
-void Bridge_FlatCeiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetFlatCeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
-        return;
+        return height;
     }
 
     if (y <= item->pos.y) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y <= height) {
+        return height;
     }
 
-    *height = item->pos.y + STEP_L;
+    return item->pos.y + STEP_L;
 }
 
-void Bridge_Tilt1Floor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetTilt1FloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
-        return;
+        return height;
     }
 
     const int32_t offset_height =
         item->pos.y + (Bridge_GetOffset(item, x, y, z) / 4);
-    if (y > offset_height || item->pos.y >= *height) {
-        return;
+    if (y > offset_height || item->pos.y >= height) {
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y >= height) {
+        return height;
     }
 
-    *height = offset_height;
+    return offset_height;
 }
 
-void Bridge_Tilt1Ceiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetTilt1CeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
-        return;
+        return height;
     }
 
     const int32_t offset_height =
         item->pos.y + (Bridge_GetOffset(item, x, y, z) / 4);
     if (y <= offset_height) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y <= height) {
+        return height;
     }
 
-    *height = offset_height + STEP_L;
+    return offset_height + STEP_L;
 }
 
-void Bridge_Tilt2Floor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetTilt2FloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
-        return;
+        return height;
     }
 
     const int32_t offset_height =
         item->pos.y + (Bridge_GetOffset(item, x, y, z) / 2);
     if (y > offset_height) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y >= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y >= height) {
+        return height;
     }
 
-    *height = offset_height;
+    return offset_height;
 }
 
-void Bridge_Tilt2Ceiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t Bridge_GetTilt2CeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
-        return;
+        return height;
     }
 
     const int32_t offset_height =
         item->pos.y + (Bridge_GetOffset(item, x, y, z) / 2);
     if (y <= offset_height) {
-        return;
+        return height;
     }
 
-    if (g_Config.fix_bridge_collision && item->pos.y <= *height) {
-        return;
+    if (g_Config.fix_bridge_collision && item->pos.y <= height) {
+        return height;
     }
 
-    *height = offset_height + STEP_L;
+    return offset_height + STEP_L;
 }
