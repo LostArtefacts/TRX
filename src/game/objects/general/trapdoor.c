@@ -5,9 +5,9 @@
 
 #include <stdbool.h>
 
-static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z);
+static bool TrapDoor_StandingOn(const ITEM_INFO *item, int32_t x, int32_t z);
 
-static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z)
+static bool TrapDoor_StandingOn(const ITEM_INFO *item, int32_t x, int32_t z)
 {
     int32_t tx = item->pos.x >> WALL_SHIFT;
     int32_t tz = item->pos.z >> WALL_SHIFT;
@@ -29,8 +29,8 @@ static bool TrapDoor_StandingOn(ITEM_INFO *item, int32_t x, int32_t z)
 void TrapDoor_Setup(OBJECT_INFO *obj)
 {
     obj->control = TrapDoor_Control;
-    obj->floor = TrapDoor_Floor;
-    obj->ceiling = TrapDoor_Ceiling;
+    obj->floor_height_func = TrapDoor_GetFloorHeight;
+    obj->ceiling_height_func = TrapDoor_GetCeilingHeight;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
@@ -48,32 +48,34 @@ void TrapDoor_Control(int16_t item_num)
     Item_Animate(item);
 }
 
-void TrapDoor_Floor(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t TrapDoor_GetFloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (!TrapDoor_StandingOn(item, x, z)) {
-        return;
+        return height;
     }
 
     if (item->current_anim_state == DOOR_OPEN || y > item->pos.y
-        || item->pos.y >= *height) {
-        return;
+        || item->pos.y >= height) {
+        return height;
     }
 
-    *height = item->pos.y;
+    return item->pos.y;
 }
 
-void TrapDoor_Ceiling(
-    ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height)
+int16_t TrapDoor_GetCeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
 {
     if (!TrapDoor_StandingOn(item, x, z)) {
-        return;
+        return height;
     }
 
     if (item->current_anim_state == DOOR_OPEN || y <= item->pos.y
-        || item->pos.y <= *height) {
-        return;
+        || item->pos.y <= height) {
+        return height;
     }
 
-    *height = item->pos.y + STEP_L;
+    return item->pos.y + STEP_L;
 }

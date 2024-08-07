@@ -1164,9 +1164,10 @@ typedef struct SECTOR_INFO {
     uint16_t index;
     int16_t box;
     uint8_t pit_room;
-    int8_t floor;
     uint8_t sky_room;
-    int8_t ceiling;
+    struct {
+        int16_t height;
+    } floor, ceiling;
 } SECTOR_INFO;
 
 typedef struct DOORPOS_DATA {
@@ -1643,10 +1644,10 @@ typedef struct OBJECT_INFO {
     FRAME_INFO *frame_base;
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);
-    void (*floor)(
-        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
-    void (*ceiling)(
-        ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t *height);
+    int16_t (*floor_height_func)(
+        const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
+    int16_t (*ceiling_height_func)(
+        const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
     void (*draw_routine)(ITEM_INFO *item);
     void (*collision)(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
     const OBJECT_BOUNDS *(*bounds)(void);

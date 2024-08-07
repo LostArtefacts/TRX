@@ -1310,9 +1310,9 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
 {
     MYFILE *fp = injection->fp;
 
-    const uint32_t x_shift = File_ReadU32(fp);
-    const uint32_t z_shift = File_ReadU32(fp);
-    const int32_t y_shift = File_ReadS32(fp);
+    const uint32_t x_shift = ROUND_TO_SECTOR(File_ReadU32(fp));
+    const uint32_t z_shift = ROUND_TO_SECTOR(File_ReadU32(fp));
+    const int32_t y_shift = ROUND_TO_CLICK(File_ReadS32(fp));
 
     ROOM_INFO *room = &g_RoomInfo[room_num];
     room->x += x_shift;
@@ -1336,17 +1336,16 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
         return;
     }
 
-    // Update the sector floor and ceiling clicks to match.
-    const int8_t click_shift = y_shift / STEP_L;
-    const int8_t wall_height = NO_HEIGHT / STEP_L;
+    // Update the sector floor and ceiling heights to match.
     for (int32_t i = 0; i < room->z_size * room->x_size; i++) {
-        SECTOR_INFO *sector = &room->sectors[i];
-        if (sector->floor == wall_height || sector->ceiling == wall_height) {
+        SECTOR_INFO *const sector = &room->sectors[i];
+        if (sector->floor.height == NO_HEIGHT
+            || sector->ceiling.height == NO_HEIGHT) {
             continue;
         }
 
-        sector->floor += click_shift;
-        sector->ceiling += click_shift;
+        sector->floor.height += y_shift;
+        sector->ceiling.height += y_shift;
     }
 
     // Update vertex Y values to match; x and z are room-relative.
