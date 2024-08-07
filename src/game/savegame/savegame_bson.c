@@ -117,8 +117,8 @@ static void SaveGame_BSON_SaveRaw(
         .uncompressed_size = uncompressed_size,
     };
 
-    File_Write(&header, sizeof(header), 1, fp);
-    File_Write(compressed, sizeof(char), compressed_size, fp);
+    File_WriteData(fp, &header, sizeof(header));
+    File_WriteData(fp, compressed, compressed_size);
 
     Memory_FreePointer(&compressed);
 }
@@ -201,10 +201,10 @@ static struct json_value_s *Savegame_BSON_ParseFromBuffer(
 static struct json_value_s *Savegame_BSON_ParseFromFile(
     MYFILE *fp, int32_t *version_out)
 {
-    size_t buffer_size = File_Size(fp);
+    const size_t buffer_size = File_Size(fp);
     char *buffer = Memory_Alloc(buffer_size);
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(buffer, sizeof(char), buffer_size, fp);
+    File_ReadData(fp, buffer, buffer_size);
 
     struct json_value_s *ret =
         Savegame_BSON_ParseFromBuffer(buffer, buffer_size, version_out);
@@ -1298,7 +1298,7 @@ bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(&header, sizeof(SAVEGAME_BSON_HEADER), 1, fp);
+    File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
     info->initial_version = header.initial_version;
     info->features.restart = header.initial_version >= VERSION_LEGACY;
     info->features.select_level = header.initial_version >= VERSION_1;
@@ -1315,7 +1315,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     // Read savegame version
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_Read(&header, sizeof(SAVEGAME_BSON_HEADER), 1, fp);
+    File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
     File_Seek(fp, 0, FILE_SEEK_SET);
 
     struct json_value_s *root = Savegame_BSON_ParseFromFile(fp, NULL);
