@@ -19,6 +19,9 @@
 
 #include <stddef.h>
 
+#define NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
+#define POS_TILT(T, H) ((T * ((WALL_L - 1 - H) & (WALL_L - 1))) >> 2)
+
 int16_t *g_TriggerIndex = NULL;
 int32_t g_FlipTimer = 0;
 int32_t g_FlipEffect = -1;
@@ -28,6 +31,12 @@ int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type);
 static void Room_AddFlipItems(ROOM_INFO *r);
 static void Room_RemoveFlipItems(ROOM_INFO *r);
+
+static int16_t Room_GetFloorTiltHeight(
+    const SECTOR_INFO *sector, const int32_t x, const int32_t z);
+static int16_t Room_GetCeilingTiltHeight(
+    const SECTOR_INFO *sector, const int32_t x, const int32_t z);
+
 static void Room_PopulateSectorData(
     SECTOR_INFO *sector, const int16_t *floor_data);
 
@@ -173,18 +182,11 @@ int16_t Room_GetTiltType(
                        + ((x - r->x) >> WALL_SHIFT) * r->z_size];
     }
 
-    if ((y + 512) < sector->floor.height) {
+    if ((y + STEP_L * 2) < sector->floor.height) {
         return 0;
     }
 
-    if (sector->index) {
-        int16_t *data = &g_FloorData[sector->index];
-        if ((data[0] & DATA_TYPE) == FT_TILT) {
-            return data[1];
-        }
-    }
-
-    return 0;
+    return sector->floor.tilt;
 }
 
 int32_t Room_FindGridShift(int32_t src, int32_t dst)
@@ -313,7 +315,6 @@ int16_t Room_GetCeiling(
 {
     int16_t *data;
     int16_t type;
-    int16_t ended;
     int16_t trigger;
 
     const SECTOR_INFO *sky_sector = sector;
@@ -324,42 +325,7 @@ int16_t Room_GetCeiling(
         sky_sector = &r->sectors[z_sector + x_sector * r->z_size];
     }
 
-    int16_t height = sky_sector->ceiling.height;
-
-    if (sky_sector->index) {
-        data = &g_FloorData[sky_sector->index];
-        type = *data & DATA_TYPE;
-        ended = *data++ & END_BIT;
-
-        if (!ended && type == FT_TILT) {
-            data++;
-            type = *data++ & DATA_TYPE;
-        }
-
-        if (type == FT_ROOF) {
-            int32_t xoff = data[0] >> 8;
-            int32_t yoff = (int8_t)data[0];
-
-            if (!g_ChunkyFlag
-                || (xoff >= -2 && xoff <= 2 && yoff >= -2 && yoff <= 2)) {
-                if (xoff < 0) {
-                    height += (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
-                } else {
-                    height -=
-                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1)))
-                                  >> 2);
-                }
-
-                if (yoff < 0) {
-                    height +=
-                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1)))
-                                  >> 2);
-                } else {
-                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
-                }
-            }
-        }
-    }
+    int16_t height = Room_GetCeilingTiltHeight(sky_sector, x, z);
 
     while (sector->pit_room != NO_ROOM) {
         const ROOM_INFO *const r = &g_RoomInfo[sector->pit_room];
@@ -450,7 +416,7 @@ int16_t Room_GetHeight(
         sector = &r->sectors[z_sector + x_sector * r->z_size];
     }
 
-    int16_t height = sector->floor.height;
+    int16_t height = Room_GetFloorTiltHeight(sector, x, z);
 
     g_TriggerIndex = NULL;
 
@@ -465,38 +431,7 @@ int16_t Room_GetHeight(
         type = *data++;
 
         switch (type & DATA_TYPE) {
-        case FT_TILT: {
-            int32_t xoff = data[0] >> 8;
-            int32_t yoff = (int8_t)data[0];
-
-            if (!g_ChunkyFlag || (ABS(xoff) <= 2 && ABS(yoff) <= 2)) {
-                if (ABS(xoff) > 2 || ABS(yoff) > 2) {
-                    g_HeightType = HT_BIG_SLOPE;
-                } else {
-                    g_HeightType = HT_SMALL_SLOPE;
-                }
-
-                if (xoff < 0) {
-                    height -= (int16_t)((xoff * (z & (WALL_L - 1))) >> 2);
-                } else {
-                    height +=
-                        (int16_t)((xoff * ((WALL_L - 1 - z) & (WALL_L - 1)))
-                                  >> 2);
-                }
-
-                if (yoff < 0) {
-                    height -= (int16_t)((yoff * (x & (WALL_L - 1))) >> 2);
-                } else {
-                    height +=
-                        (int16_t)((yoff * ((WALL_L - 1 - x) & (WALL_L - 1)))
-                                  >> 2);
-                }
-            }
-
-            data++;
-            break;
-        }
-
+        case FT_TILT:
         case FT_ROOF:
         case FT_DOOR:
             data++;
@@ -534,6 +469,70 @@ int16_t Room_GetHeight(
             break;
         }
     } while (!(type & END_BIT));
+
+    return height;
+}
+
+static int16_t Room_GetFloorTiltHeight(
+    const SECTOR_INFO *sector, const int32_t x, const int32_t z)
+{
+    int16_t height = sector->floor.height;
+    if (sector->floor.tilt == 0) {
+        return height;
+    }
+
+    const int32_t zoff = sector->floor.tilt >> 8;
+    const int32_t xoff = (int8_t)sector->floor.tilt;
+
+    const HEIGHT_TYPE slope_type =
+        (ABS(zoff) > 2 || ABS(xoff) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
+    if (g_ChunkyFlag && slope_type == HT_BIG_SLOPE) {
+        return height;
+    }
+
+    g_HeightType = slope_type;
+
+    if (zoff < 0) {
+        height -= (int16_t)NEG_TILT(zoff, z);
+    } else {
+        height += (int16_t)POS_TILT(zoff, z);
+    }
+
+    if (xoff < 0) {
+        height -= (int16_t)NEG_TILT(xoff, x);
+    } else {
+        height += (int16_t)POS_TILT(xoff, x);
+    }
+
+    return height;
+}
+
+static int16_t Room_GetCeilingTiltHeight(
+    const SECTOR_INFO *sector, const int32_t x, const int32_t z)
+{
+    int16_t height = sector->ceiling.height;
+    if (sector->ceiling.tilt == 0) {
+        return height;
+    }
+
+    const int32_t zoff = sector->ceiling.tilt >> 8;
+    const int32_t xoff = (int8_t)sector->ceiling.tilt;
+
+    if (g_ChunkyFlag && (ABS(zoff) > 2 || ABS(xoff) > 2)) {
+        return height;
+    }
+
+    if (zoff < 0) {
+        height += (int16_t)NEG_TILT(zoff, z);
+    } else {
+        height -= (int16_t)POS_TILT(zoff, z);
+    }
+
+    if (xoff < 0) {
+        height += (int16_t)POS_TILT(xoff, x);
+    } else {
+        height -= (int16_t)NEG_TILT(xoff, x);
+    }
 
     return height;
 }
@@ -727,6 +726,9 @@ void Room_ParseFloorData(const int16_t *floor_data)
 static void Room_PopulateSectorData(
     SECTOR_INFO *const sector, const int16_t *floor_data)
 {
+    sector->floor.tilt = 0;
+    sector->ceiling.tilt = 0;
+
     if (sector->index == 0) {
         return;
     }
@@ -738,11 +740,11 @@ static void Room_PopulateSectorData(
 
         switch (fd_entry & DATA_TYPE) {
         case FT_TILT:
-            data++; // TODO: (int16_t)floor.tilt
+            sector->floor.tilt = *data++;
             break;
 
         case FT_ROOF:
-            data++; // TODO: (int16_t)ceiling.tilt
+            sector->ceiling.tilt = *data++;
             break;
 
         case FT_DOOR:
