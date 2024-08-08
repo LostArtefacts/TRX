@@ -212,9 +212,9 @@ static bool Level_LoadRooms(MYFILE *fp)
             SECTOR_INFO *const sector = &current_room_info->sectors[j];
             sector->index = File_ReadU16(fp);
             sector->box = File_ReadS16(fp);
-            sector->pit_room = File_ReadU8(fp);
+            sector->portal_room.pit = File_ReadU8(fp);
             const int8_t floor_clicks = File_ReadS8(fp);
-            sector->sky_room = File_ReadU8(fp);
+            sector->portal_room.sky = File_ReadU8(fp);
             const int8_t ceiling_clicks = File_ReadS8(fp);
 
             sector->floor.height = floor_clicks * STEP_L;

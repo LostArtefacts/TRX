@@ -248,7 +248,7 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
     const bool in_water = g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
 
-    if (sector->pit_room == NO_ROOM && pickup->pos.y >= height) {
+    if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
         item->status = DS_DROPPED;
         pickup->pos.y = height;
         pickup->fall_speed = 0;
@@ -260,9 +260,9 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         pickup->pos.y += pickup->fall_speed;
         pickup->rot.y += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
 
-        if (sector->pit_room != NO_ROOM
+        if (sector->portal_room.pit != NO_ROOM
             && pickup->pos.y > sector->floor.height) {
-            room_num = sector->pit_room;
+            room_num = sector->portal_room.pit;
         }
     }
 
