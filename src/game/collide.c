@@ -135,8 +135,8 @@ void Collide_GetCollisionInfo(
             && coll->front_floor > 0) {
             coll->front_floor = 512;
         } else if (
-            coll->lava_is_pit && coll->front_floor > 0 && g_TriggerIndex
-            && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+            coll->lava_is_pit && coll->front_floor > 0
+            && Room_GetPitSector(sector, x, z)->is_death_sector) {
             coll->front_floor = 512;
         }
     }
@@ -170,8 +170,8 @@ void Collide_GetCollisionInfo(
             && coll->left_floor > 0) {
             coll->left_floor = 512;
         } else if (
-            coll->lava_is_pit && coll->left_floor > 0 && g_TriggerIndex
-            && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+            coll->lava_is_pit && coll->left_floor > 0
+            && Room_GetPitSector(sector, x, z)->is_death_sector) {
             coll->left_floor = 512;
         }
     }
@@ -205,8 +205,8 @@ void Collide_GetCollisionInfo(
             && coll->right_floor > 0) {
             coll->right_floor = 512;
         } else if (
-            coll->lava_is_pit && coll->right_floor > 0 && g_TriggerIndex
-            && (g_TriggerIndex[0] & DATA_TYPE) == FT_LAVA) {
+            coll->lava_is_pit && coll->right_floor > 0
+            && Room_GetPitSector(sector, x, z)->is_death_sector) {
             coll->right_floor = 512;
         }
     }

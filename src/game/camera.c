@@ -782,20 +782,14 @@ void Camera_UpdateCutscene(void)
     Viewport_SetFOV(ref->fov);
 }
 
-void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
+void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 {
-    int16_t trigger;
     int16_t target_ok = 2;
-    do {
-        trigger = *data++;
-        int16_t value = trigger & VALUE_BITS;
-
-        switch (TRIG_BITS(trigger)) {
-        case TO_CAMERA:
-            trigger = *data++;
-
-            if (value == g_Camera.last) {
-                g_Camera.number = value;
+    for (int32_t i = 0; i < trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &trigger->commands[i];
+        if (cmd->type == TO_CAMERA) {
+            if (cmd->parameter == g_Camera.last) {
+                g_Camera.number = cmd->parameter;
 
                 if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
                     || g_Camera.type == CAM_COMBAT) {
@@ -808,15 +802,12 @@ void Camera_RefreshFromTrigger(int16_t type, int16_t *data)
             } else {
                 target_ok = 0;
             }
-            break;
-
-        case TO_TARGET:
+        } else if (cmd->type == TO_TARGET) {
             if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
-                g_Camera.item = &g_Items[value];
+                g_Camera.item = &g_Items[cmd->parameter];
             }
-            break;
         }
-    } while (!(trigger & END_BIT));
+    }
 
     if (g_Camera.item != NULL) {
         if (!target_ok

@@ -1,6 +1,7 @@
 #include "game/room.h"
 
 #include "game/camera.h"
+#include "game/gamebuf.h"
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/music.h"
@@ -17,6 +18,7 @@
 
 #include <libtrx/utils.h>
 
+#include <assert.h>
 #include <stddef.h>
 
 #define NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
@@ -28,7 +30,7 @@ int32_t g_FlipEffect = -1;
 int32_t g_FlipStatus = 0;
 int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 
-static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type);
+static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
 static void Room_AddFlipItems(ROOM_INFO *r);
 static void Room_RemoveFlipItems(ROOM_INFO *r);
 
@@ -36,17 +38,15 @@ static int16_t Room_GetFloorTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z);
 static int16_t Room_GetCeilingTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z);
-static SECTOR_INFO *Room_GetPitSector(
-    const SECTOR_INFO *sector, int32_t x, int32_t z);
 static SECTOR_INFO *Room_GetSkySector(
     const SECTOR_INFO *sector, int32_t x, int32_t z);
 
 static void Room_PopulateSectorData(
     SECTOR_INFO *sector, const int16_t *floor_data);
 
-static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type)
+static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
-    if (track == MX_UNUSED_0 && type == TT_ANTIPAD) {
+    if (track == MX_UNUSED_0 && trigger->type == TT_ANTIPAD) {
         Music_Stop();
         return;
     }
@@ -108,16 +108,16 @@ static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type)
         return;
     }
 
-    if (type == TT_SWITCH) {
-        g_MusicTrackFlags[track] ^= flags & IF_CODE_BITS;
-    } else if (type == TT_ANTIPAD) {
-        g_MusicTrackFlags[track] &= -1 - (flags & IF_CODE_BITS);
-    } else if (flags & IF_CODE_BITS) {
-        g_MusicTrackFlags[track] |= flags & IF_CODE_BITS;
+    if (trigger->type == TT_SWITCH) {
+        g_MusicTrackFlags[track] ^= trigger->mask;
+    } else if (trigger->type == TT_ANTIPAD) {
+        g_MusicTrackFlags[track] &= -1 - trigger->mask;
+    } else if (trigger->mask) {
+        g_MusicTrackFlags[track] |= trigger->mask;
     }
 
     if ((g_MusicTrackFlags[track] & IF_CODE_BITS) == IF_CODE_BITS) {
-        if (flags & IF_ONESHOT) {
+        if (trigger->one_shot) {
             g_MusicTrackFlags[track] |= IF_ONESHOT;
         }
         Music_Play(track);
@@ -235,7 +235,7 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-static SECTOR_INFO *Room_GetPitSector(
+SECTOR_INFO *Room_GetPitSector(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z)
 {
     while (sector->portal_room.pit != NO_ROOM) {
@@ -344,48 +344,22 @@ int16_t Room_GetCeiling(
     int16_t height = Room_GetCeilingTiltHeight(sky_sector, x, z);
 
     sector = Room_GetPitSector(sector, x, z);
-    if (!sector->index) {
+    if (sector->trigger == NULL) {
         return height;
     }
 
-    data = &g_FloorData[sector->index];
-    do {
-        type = *data++;
-
-        switch (type & DATA_TYPE) {
-        case FT_DOOR:
-        case FT_TILT:
-        case FT_ROOF:
-            data++;
-            break;
-
-        case FT_LAVA:
-            break;
-
-        case FT_TRIGGER:
-            data++;
-            do {
-                trigger = *data++;
-                if (TRIG_BITS(trigger) != TO_OBJECT) {
-                    if (TRIG_BITS(trigger) == TO_CAMERA) {
-                        trigger = *data++;
-                    }
-                } else {
-                    ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
-                    OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->ceiling_height_func) {
-                        height =
-                            object->ceiling_height_func(item, x, y, z, height);
-                    }
-                }
-            } while (!(trigger & END_BIT));
-            break;
-
-        default:
-            Shell_ExitSystem("GetCeiling(): Unknown type");
-            break;
+    for (int32_t i = 0; i < sector->trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
+        if (cmd->type != TO_OBJECT) {
+            continue;
         }
-    } while (!(type & END_BIT));
+
+        const ITEM_INFO *const item = &g_Items[cmd->parameter];
+        const OBJECT_INFO *const object = &g_Objects[item->object_number];
+        if (object->ceiling_height_func) {
+            height = object->ceiling_height_func(item, x, y, z, height);
+        }
+    }
 
     return height;
 }
@@ -398,57 +372,22 @@ int16_t Room_GetHeight(
 
     int16_t height = Room_GetFloorTiltHeight(sector, x, z);
 
-    g_TriggerIndex = NULL;
-
-    if (!sector->index) {
+    if (sector->trigger == NULL) {
         return height;
     }
 
-    int16_t *data = &g_FloorData[sector->index];
-    int16_t type;
-    int16_t trigger;
-    do {
-        type = *data++;
-
-        switch (type & DATA_TYPE) {
-        case FT_TILT:
-        case FT_ROOF:
-        case FT_DOOR:
-            data++;
-            break;
-
-        case FT_LAVA:
-            g_TriggerIndex = data - 1;
-            break;
-
-        case FT_TRIGGER:
-            if (!g_TriggerIndex) {
-                g_TriggerIndex = data - 1;
-            }
-
-            data++;
-            do {
-                trigger = *data++;
-                if (TRIG_BITS(trigger) != TO_OBJECT) {
-                    if (TRIG_BITS(trigger) == TO_CAMERA) {
-                        trigger = *data++;
-                    }
-                } else {
-                    ITEM_INFO *item = &g_Items[trigger & VALUE_BITS];
-                    OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->floor_height_func) {
-                        height =
-                            object->floor_height_func(item, x, y, z, height);
-                    }
-                }
-            } while (!(trigger & END_BIT));
-            break;
-
-        default:
-            Shell_ExitSystem("GetHeight(): Unknown type");
-            break;
+    for (int32_t i = 0; i < sector->trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
+        if (cmd->type != TO_OBJECT) {
+            continue;
         }
-    } while (!(type & END_BIT));
+
+        const ITEM_INFO *const item = &g_Items[cmd->parameter];
+        const OBJECT_INFO *const object = &g_Objects[item->object_number];
+        if (object->floor_height_func) {
+            height = object->floor_height_func(item, x, y, z, height);
+        }
+    }
 
     return height;
 }
@@ -698,6 +637,8 @@ static void Room_PopulateSectorData(
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
     sector->portal_room.wall = NO_ROOM;
+    sector->is_death_sector = false;
+    sector->trigger = NULL;
 
     if (sector->index == 0) {
         return;
@@ -722,24 +663,61 @@ static void Room_PopulateSectorData(
             break;
 
         case FT_LAVA:
-            break; // TODO: (bool)is_death_sector
+            sector->is_death_sector = true;
+            break;
 
         case FT_TRIGGER: {
-            // TODO: (TRIGGER *)trigger
+            assert(sector->trigger == NULL);
+
+            TRIGGER *const trigger =
+                GameBuf_Alloc(sizeof(TRIGGER), GBUF_FLOOR_DATA);
+            sector->trigger = trigger;
+
             const int16_t trig_setup = *data++;
-            const TRIGGER_TYPE trig_type = TRIG_TYPE(fd_entry);
-            if (trig_type == TT_SWITCH || trig_type == TT_KEY
-                || trig_type == TT_PICKUP) {
-                data++; // TODO: (int16_t)item_index
+            trigger->type = TRIG_TYPE(fd_entry);
+            trigger->timer = trig_setup & 0xFF;
+            trigger->one_shot = trig_setup & IF_ONESHOT;
+            trigger->mask = trig_setup & IF_CODE_BITS;
+            trigger->item_index = NO_ITEM;
+            trigger->command_count = 0;
+
+            if (trigger->type == TT_SWITCH || trigger->type == TT_KEY
+                || trigger->type == TT_PICKUP) {
+                const int16_t item_data = *data++;
+                trigger->item_index = item_data & VALUE_BITS;
+                if (item_data & END_BIT) {
+                    // See City of Khamoon room 49 - two dangling key triggers
+                    // with no commands. Exit early to avoid populating garbage
+                    // command data.
+                    break;
+                }
             }
 
+            const int16_t *command_data = data;
             while (true) {
+                trigger->command_count++;
                 int16_t command = *data++;
                 if (TRIG_BITS(command) == TO_CAMERA) {
                     command = *data++;
                 }
                 if (command & END_BIT) {
                     break;
+                }
+            }
+
+            trigger->commands = GameBuf_Alloc(
+                sizeof(TRIGGER_CMD) * trigger->command_count, GBUF_FLOOR_DATA);
+            for (int32_t i = 0; i < trigger->command_count; i++) {
+                int16_t command = *command_data++;
+                TRIGGER_CMD *const cmd = &trigger->commands[i];
+                cmd->type = TRIG_BITS(command);
+                cmd->parameter = command & VALUE_BITS;
+
+                if (cmd->type == TO_CAMERA) {
+                    command = *command_data++;
+                    cmd->camera.timer = command & 0xFF;
+                    cmd->camera.glide = (command & IF_CODE_BITS) >> 6;
+                    cmd->camera.one_shot = command & IF_ONESHOT;
                 }
             }
 
@@ -752,68 +730,65 @@ static void Room_PopulateSectorData(
     } while (!(fd_entry & END_BIT));
 }
 
-void Room_TestTriggers(int16_t *data, bool heavy)
+void Room_TestTriggers(const ITEM_INFO *const item)
 {
-    if (!data) {
+    const bool is_heavy = item->object_number != O_LARA;
+    int16_t room_num = item->room_number;
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+
+    if (!is_heavy && sector->is_death_sector && Lava_TestFloor(item)) {
+        Lava_Burn(g_LaraItem);
+    }
+
+    const TRIGGER *const trigger = sector->trigger;
+    if (trigger == NULL) {
         return;
     }
 
-    if ((*data & DATA_TYPE) == FT_LAVA) {
-        if (!heavy && Lava_TestFloor(g_LaraItem)) {
-            Lava_Burn(g_LaraItem);
-        }
-
-        if (*data & END_BIT) {
-            return;
-        }
-
-        data++;
-    }
-
-    int16_t type = (*data++ >> 8) & 0x3F;
-    int32_t switch_off = 0;
-    int32_t flip = 0;
-    int32_t new_effect = -1;
-    int16_t flags = *data++;
-    int16_t timer = flags & 0xFF;
-
     if (g_Camera.type != CAM_HEAVY) {
-        Camera_RefreshFromTrigger(type, data);
+        Camera_RefreshFromTrigger(trigger);
     }
 
-    if (heavy) {
-        if (type != TT_HEAVY) {
+    bool switch_off = false;
+    bool flip_map = false;
+    int32_t new_effect = -1;
+    ITEM_INFO *camera_item = NULL;
+
+    if (is_heavy) {
+        if (trigger->type != TT_HEAVY) {
             return;
         }
     } else {
-        switch (type) {
+        switch (trigger->type) {
+        case TT_TRIGGER:
+            break;
+
         case TT_SWITCH: {
-            int16_t value = *data++ & VALUE_BITS;
-            if (!Switch_Trigger(value, timer)) {
+            if (!Switch_Trigger(trigger->item_index, trigger->timer)) {
                 return;
             }
-            switch_off = g_Items[value].current_anim_state == LS_RUN;
+            switch_off =
+                g_Items[trigger->item_index].current_anim_state == LS_RUN;
             break;
         }
 
         case TT_PAD:
         case TT_ANTIPAD:
-            if (g_LaraItem->pos.y != g_LaraItem->floor) {
+            if (item->pos.y != item->floor) {
                 return;
             }
             break;
 
         case TT_KEY: {
-            int16_t value = *data++ & VALUE_BITS;
-            if (!KeyHole_Trigger(value)) {
+            if (!KeyHole_Trigger(trigger->item_index)) {
                 return;
             }
             break;
         }
 
         case TT_PICKUP: {
-            int16_t value = *data++ & VALUE_BITS;
-            if (!Pickup_Trigger(value)) {
+            if (!Pickup_Trigger(trigger->item_index)) {
                 return;
             }
             break;
@@ -831,38 +806,35 @@ void Room_TestTriggers(int16_t *data, bool heavy)
         }
     }
 
-    ITEM_INFO *camera_item = NULL;
-    int16_t trigger;
-    do {
-        trigger = *data++;
-        int16_t value = trigger & VALUE_BITS;
+    for (int32_t i = 0; i < trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &trigger->commands[i];
 
-        switch (TRIG_BITS(trigger)) {
+        switch (cmd->type) {
         case TO_OBJECT: {
-            ITEM_INFO *item = &g_Items[value];
-
+            const int16_t item_num = cmd->parameter;
+            ITEM_INFO *const item = &g_Items[item_num];
             if (item->flags & IF_ONESHOT) {
                 break;
             }
 
-            item->timer = timer;
-            if (timer != 1) {
+            item->timer = trigger->timer;
+            if (item->timer != 1) {
                 item->timer *= LOGIC_FPS;
             }
 
-            if (type == TT_SWITCH) {
-                item->flags ^= flags & IF_CODE_BITS;
-            } else if (type == TT_ANTIPAD) {
-                item->flags &= -1 - (flags & IF_CODE_BITS);
-            } else if (flags & IF_CODE_BITS) {
-                item->flags |= flags & IF_CODE_BITS;
+            if (trigger->type == TT_SWITCH) {
+                item->flags ^= trigger->mask;
+            } else if (trigger->type == TT_ANTIPAD) {
+                item->flags &= -1 - trigger->mask;
+            } else if (trigger->mask) {
+                item->flags |= trigger->mask;
             }
 
             if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
                 break;
             }
 
-            if (flags & IF_ONESHOT) {
+            if (trigger->one_shot) {
                 item->flags |= IF_ONESHOT;
             }
 
@@ -871,73 +843,71 @@ void Room_TestTriggers(int16_t *data, bool heavy)
                     if (item->status == IS_NOT_ACTIVE) {
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
-                        Item_AddActive(value);
-                        LOT_EnableBaddieAI(value, 1);
+                        Item_AddActive(item_num);
+                        LOT_EnableBaddieAI(item_num, 1);
                     } else if (item->status == IS_INVISIBLE) {
                         item->touch_bits = 0;
-                        if (LOT_EnableBaddieAI(value, 0)) {
+                        if (LOT_EnableBaddieAI(item_num, 0)) {
                             item->status = IS_ACTIVE;
                         } else {
                             item->status = IS_INVISIBLE;
                         }
-                        Item_AddActive(value);
+                        Item_AddActive(item_num);
                     }
                 } else {
                     item->touch_bits = 0;
                     item->status = IS_ACTIVE;
-                    Item_AddActive(value);
+                    Item_AddActive(item_num);
                 }
             }
             break;
         }
 
         case TO_CAMERA: {
-            trigger = *data++;
-            int16_t camera_flags = trigger;
-            int16_t camera_timer = trigger & 0xFF;
-
-            if (g_Camera.fixed[value].flags & IF_ONESHOT) {
+            const int16_t camera_num = cmd->parameter;
+            if (g_Camera.fixed[camera_num].flags & IF_ONESHOT) {
                 break;
             }
 
-            g_Camera.number = value;
+            g_Camera.number = camera_num;
 
             if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
                 break;
             }
 
-            if (type == TT_COMBAT) {
+            if (trigger->type == TT_COMBAT) {
                 break;
             }
 
-            if (type == TT_SWITCH && timer && switch_off) {
+            if (trigger->type == TT_SWITCH && trigger->timer && switch_off) {
                 break;
             }
 
-            if (g_Camera.number == g_Camera.last && type != TT_SWITCH) {
+            if (g_Camera.number == g_Camera.last
+                && trigger->type != TT_SWITCH) {
                 break;
             }
 
-            g_Camera.timer = camera_timer;
+            g_Camera.timer = cmd->camera.timer;
             if (g_Camera.timer != 1) {
                 g_Camera.timer *= LOGIC_FPS;
             }
 
-            if (camera_flags & IF_ONESHOT) {
+            if (cmd->camera.one_shot) {
                 g_Camera.fixed[g_Camera.number].flags |= IF_ONESHOT;
             }
 
-            g_Camera.speed = ((camera_flags & IF_CODE_BITS) >> 6) + 1;
-            g_Camera.type = heavy ? CAM_HEAVY : CAM_FIXED;
+            g_Camera.speed = cmd->camera.glide + 1;
+            g_Camera.type = is_heavy ? CAM_HEAVY : CAM_FIXED;
             break;
         }
 
         case TO_TARGET:
-            camera_item = &g_Items[value];
+            camera_item = &g_Items[cmd->parameter];
             break;
 
         case TO_SINK: {
-            OBJECT_VECTOR *obvector = &g_Camera.fixed[value];
+            OBJECT_VECTOR *obvector = &g_Camera.fixed[cmd->parameter];
 
             if (g_Lara.LOT.required_box != obvector->flags) {
                 g_Lara.LOT.target.x = obvector->x;
@@ -950,46 +920,48 @@ void Room_TestTriggers(int16_t *data, bool heavy)
             break;
         }
 
-        case TO_FLIPMAP:
-            if (g_FlipMapTable[value] & IF_ONESHOT) {
+        case TO_FLIPMAP: {
+            const int16_t flip_slot = cmd->parameter;
+            if (g_FlipMapTable[flip_slot] & IF_ONESHOT) {
                 break;
             }
 
-            if (type == TT_SWITCH) {
-                g_FlipMapTable[value] ^= flags & IF_CODE_BITS;
-            } else if (flags & IF_CODE_BITS) {
-                g_FlipMapTable[value] |= flags & IF_CODE_BITS;
+            if (trigger->type == TT_SWITCH) {
+                g_FlipMapTable[flip_slot] ^= trigger->mask;
+            } else if (trigger->mask) {
+                g_FlipMapTable[flip_slot] |= trigger->mask;
             }
 
-            if ((g_FlipMapTable[value] & IF_CODE_BITS) == IF_CODE_BITS) {
-                if (flags & IF_ONESHOT) {
-                    g_FlipMapTable[value] |= IF_ONESHOT;
+            if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS) {
+                if (trigger->one_shot) {
+                    g_FlipMapTable[flip_slot] |= IF_ONESHOT;
                 }
 
                 if (!g_FlipStatus) {
-                    flip = 1;
+                    flip_map = true;
                 }
             } else if (g_FlipStatus) {
-                flip = 1;
+                flip_map = true;
             }
             break;
+        }
 
         case TO_FLIPON:
-            if ((g_FlipMapTable[value] & IF_CODE_BITS) == IF_CODE_BITS
+            if ((g_FlipMapTable[cmd->parameter] & IF_CODE_BITS) == IF_CODE_BITS
                 && !g_FlipStatus) {
-                flip = 1;
+                flip_map = true;
             }
             break;
 
         case TO_FLIPOFF:
-            if ((g_FlipMapTable[value] & IF_CODE_BITS) == IF_CODE_BITS
+            if ((g_FlipMapTable[cmd->parameter] & IF_CODE_BITS) == IF_CODE_BITS
                 && g_FlipStatus) {
-                flip = 1;
+                flip_map = true;
             }
             break;
 
         case TO_FLIPEFFECT:
-            new_effect = value;
+            new_effect = cmd->parameter;
             break;
 
         case TO_FINISH:
@@ -997,26 +969,28 @@ void Room_TestTriggers(int16_t *data, bool heavy)
             break;
 
         case TO_CD:
-            Room_TriggerMusicTrack(value, flags, type);
+            Room_TriggerMusicTrack(cmd->parameter, trigger);
             break;
 
-        case TO_SECRET:
-            if ((g_GameInfo.current[g_CurrentLevel].stats.secret_flags
-                 & (1 << value))) {
+        case TO_SECRET: {
+            const int16_t secret_num = 1 << cmd->parameter;
+            if (g_GameInfo.current[g_CurrentLevel].stats.secret_flags
+                & secret_num) {
                 break;
             }
-            g_GameInfo.current[g_CurrentLevel].stats.secret_flags |= 1 << value;
+            g_GameInfo.current[g_CurrentLevel].stats.secret_flags |= secret_num;
             Music_Play(MX_SECRET);
             break;
         }
-    } while (!(trigger & END_BIT));
+        }
+    }
 
     if (camera_item
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY)) {
         g_Camera.item = camera_item;
     }
 
-    if (flip) {
+    if (flip_map) {
         Room_FlipMap();
         if (new_effect != -1) {
             g_FlipEffect = new_effect;
@@ -1032,50 +1006,24 @@ bool Room_IsOnWalkable(
     sector = Room_GetPitSector(sector, x, z);
 
     int16_t height = sector->floor.height;
+    if (sector->trigger == NULL) {
+        return room_height == height;
+    }
+
     bool object_found = false;
-
-    int16_t *floor_data = &g_FloorData[sector->index];
-    int16_t type;
-    int16_t trigger;
-    int16_t trig_flags;
-    int16_t trig_type;
-
-    do {
-        type = *floor_data++;
-
-        switch (type & DATA_TYPE) {
-        case FT_TILT:
-        case FT_ROOF:
-        case FT_DOOR:
-            floor_data++;
-            break;
-
-        case FT_LAVA:
-            break;
-
-        case FT_TRIGGER:
-            trig_flags = *floor_data;
-            floor_data++;
-            trig_type = (type >> 8) & 0x3F;
-            do {
-                trigger = *floor_data++;
-
-                if (TRIG_BITS(trigger) == TO_OBJECT) {
-                    const int16_t item_num = trigger & VALUE_BITS;
-                    ITEM_INFO *item = &g_Items[item_num];
-                    OBJECT_INFO *object = &g_Objects[item->object_number];
-                    if (object->floor_height_func) {
-                        height =
-                            object->floor_height_func(item, x, y, z, height);
-                        object_found = true;
-                    }
-                } else if (TRIG_BITS(trigger) == TO_CAMERA) {
-                    trigger = *floor_data++;
-                }
-            } while (!(trigger & END_BIT));
-            break;
+    for (int32_t i = 0; i < sector->trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
+        if (cmd->type != TO_OBJECT) {
+            continue;
         }
-    } while (!(type & END_BIT));
+
+        const ITEM_INFO *const item = &g_Items[cmd->parameter];
+        const OBJECT_INFO *const object = &g_Objects[item->object_number];
+        if (object->floor_height_func) {
+            height = object->floor_height_func(item, x, y, z, height);
+            object_found = true;
+        }
+    }
 
     return object_found && room_height == height;
 }

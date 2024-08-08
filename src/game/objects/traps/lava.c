@@ -14,7 +14,7 @@
 #define LAVA_EMBER_DAMAGE 10
 #define LAVA_WEDGE_SPEED 25
 
-bool Lava_TestFloor(ITEM_INFO *item)
+bool Lava_TestFloor(const ITEM_INFO *const item)
 {
     if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT
         || (g_Lara.water_status == LWS_ABOVE_WATER
@@ -25,40 +25,11 @@ bool Lava_TestFloor(ITEM_INFO *item)
     // OG fix: check if floor index has lava
     int16_t room_num = item->room_number;
     const SECTOR_INFO *const sector =
-        Room_GetSector(item->pos.x, 32000, item->pos.z, &room_num);
-
-    int16_t *data = &g_FloorData[sector->index];
-    int16_t type;
-    do {
-        type = *data++;
-
-        switch (type & DATA_TYPE) {
-        case FT_TILT: {
-            data++;
-            break;
-        }
-
-        case FT_ROOF:
-        case FT_DOOR:
-            data++;
-            break;
-
-        case FT_LAVA:
-            return true;
-
-        case FT_TRIGGER:
-            data++;
-            break;
-
-        default:
-            break;
-        }
-    } while (!(type & END_BIT));
-
-    return false;
+        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    return sector->is_death_sector;
 }
 
-void Lava_Burn(ITEM_INFO *item)
+void Lava_Burn(ITEM_INFO *const item)
 {
     if (g_Lara.water_status == LWS_CHEAT) {
         return;
@@ -70,8 +41,9 @@ void Lava_Burn(ITEM_INFO *item)
 
     int16_t room_num = item->room_number;
     const SECTOR_INFO *const sector =
-        Room_GetSector(item->pos.x, 32000, item->pos.z, &room_num);
-    int16_t height = Room_GetHeight(sector, item->pos.x, 32000, item->pos.z);
+        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    const int16_t height =
+        Room_GetHeight(sector, item->pos.x, MAX_HEIGHT, item->pos.z);
 
     if (item->floor != height) {
         return;
@@ -84,7 +56,7 @@ void Lava_Burn(ITEM_INFO *item)
     }
 
     for (int i = 0; i < 10; i++) {
-        int16_t fx_num = Effect_Create(item->room_number);
+        const int16_t fx_num = Effect_Create(item->room_number);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->object_number = O_FLAME;

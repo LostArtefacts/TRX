@@ -255,10 +255,7 @@ void Torso_Control(int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         Effect_ExplodingDeath(item_num, -1, TORSO_PART_DAMAGE);
-        const SECTOR_INFO *const sector = Room_GetSector(
-            item->pos.x, item->pos.y, item->pos.z, &item->room_number);
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        Room_TestTriggers(g_TriggerIndex, true);
+        Room_TestTriggers(item);
 
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;

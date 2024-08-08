@@ -19,6 +19,7 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Room_GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
 SECTOR_INFO *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num);
+SECTOR_INFO *Room_GetPitSector(const SECTOR_INFO *sector, int32_t x, int32_t z);
 int16_t Room_GetCeiling(
     const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetHeight(
@@ -29,7 +30,7 @@ int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
 void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height);
 
 void Room_ParseFloorData(const int16_t *floor_data);
-void Room_TestTriggers(int16_t *data, bool heavy);
+void Room_TestTriggers(const ITEM_INFO *item);
 void Room_FlipMap(void);
 bool Room_IsOnWalkable(
     const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z,

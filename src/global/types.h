@@ -1160,9 +1160,31 @@ typedef struct DOOR_INFOS {
     DOOR_INFO door[];
 } DOOR_INFOS;
 
+typedef struct TRIGGER_CMD {
+    TRIGGER_OBJECT type;
+    int16_t parameter;
+    struct {
+        int8_t timer;
+        int8_t glide;
+        bool one_shot;
+    } camera;
+} TRIGGER_CMD;
+
+typedef struct TRIGGER {
+    TRIGGER_TYPE type;
+    int8_t timer;
+    int16_t mask;
+    bool one_shot;
+    int16_t item_index;
+    int32_t command_count;
+    TRIGGER_CMD *commands;
+} TRIGGER;
+
 typedef struct SECTOR_INFO {
     uint16_t index;
     int16_t box;
+    bool is_death_sector;
+    TRIGGER *trigger;
     struct {
         uint8_t pit;
         uint8_t sky;

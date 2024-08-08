@@ -116,13 +116,11 @@ void BaconLara_Control(int16_t item_num)
         const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
-        Room_TestTriggers(g_TriggerIndex, true);
+        Room_TestTriggers(item);
         if (item->pos.y >= h) {
             item->floor = h;
             item->pos.y = h;
-            sector = Room_GetSector(x, h, z, &room_num);
-            Room_GetHeight(sector, x, h, z);
-            Room_TestTriggers(g_TriggerIndex, true);
+            Room_TestTriggers(item);
             item->gravity_status = 0;
             item->fall_speed = 0;
             item->goal_anim_state = LS_DEATH;

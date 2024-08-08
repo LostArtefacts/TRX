@@ -556,7 +556,7 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll)
 
     item->floor = height;
     item->pos.y = height;
-    Room_TestTriggers(g_TriggerIndex, false);
+    Room_TestTriggers(item);
     item->pos.y = old_y;
 
     int landspeed = item->fall_speed - DAMAGE_START;
