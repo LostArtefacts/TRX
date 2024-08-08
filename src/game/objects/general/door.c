@@ -55,8 +55,8 @@ static void Door_Shut(DOORPOS_DATA *const d)
     sector->box = NO_BOX;
     sector->floor.height = NO_HEIGHT;
     sector->ceiling.height = NO_HEIGHT;
-    sector->sky_room = NO_ROOM;
-    sector->pit_room = NO_ROOM;
+    sector->portal_room.sky = NO_ROOM;
+    sector->portal_room.pit = NO_ROOM;
 
     const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
@@ -119,7 +119,7 @@ void Door_Initialise(int16_t item_num)
     z_sector = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
     x_sector = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
     door->d1.sector = &r->sectors[z_sector + x_sector * r->z_size];
-    room_num = Room_GetDoor(door->d1.sector);
+    room_num = door->d1.sector->portal_room.wall;
     if (room_num == NO_ROOM) {
         box_num = door->d1.sector->box;
     } else {
@@ -139,7 +139,7 @@ void Door_Initialise(int16_t item_num)
         z_sector = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
         x_sector = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
         door->d1flip.sector = &r->sectors[z_sector + x_sector * r->z_size];
-        room_num = Room_GetDoor(door->d1flip.sector);
+        room_num = door->d1flip.sector->portal_room.wall;
         if (room_num == NO_ROOM) {
             box_num = door->d1flip.sector->box;
         } else {
@@ -157,7 +157,7 @@ void Door_Initialise(int16_t item_num)
         door->d1flip.sector = NULL;
     }
 
-    room_num = Room_GetDoor(door->d1.sector);
+    room_num = door->d1.sector->portal_room.wall;
     Door_Shut(&door->d1);
     Door_Shut(&door->d1flip);
 
@@ -171,7 +171,7 @@ void Door_Initialise(int16_t item_num)
     z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     door->d2.sector = &r->sectors[z_sector + x_sector * r->z_size];
-    room_num = Room_GetDoor(door->d2.sector);
+    room_num = door->d2.sector->portal_room.wall;
     if (room_num == NO_ROOM) {
         box_num = door->d2.sector->box;
     } else {
@@ -191,7 +191,7 @@ void Door_Initialise(int16_t item_num)
         z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
         x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
         door->d2flip.sector = &r->sectors[z_sector + x_sector * r->z_size];
-        room_num = Room_GetDoor(door->d2flip.sector);
+        room_num = door->d2flip.sector->portal_room.wall;
         if (room_num == NO_ROOM) {
             box_num = door->d2flip.sector->box;
         } else {

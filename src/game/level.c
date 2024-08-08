@@ -212,9 +212,9 @@ static bool Level_LoadRooms(MYFILE *fp)
             SECTOR_INFO *const sector = &current_room_info->sectors[j];
             sector->index = File_ReadU16(fp);
             sector->box = File_ReadS16(fp);
-            sector->pit_room = File_ReadU8(fp);
+            sector->portal_room.pit = File_ReadU8(fp);
             const int8_t floor_clicks = File_ReadS8(fp);
-            sector->sky_room = File_ReadU8(fp);
+            sector->portal_room.sky = File_ReadU8(fp);
             const int8_t ceiling_clicks = File_ReadS8(fp);
 
             sector->floor.height = floor_clicks * STEP_L;
@@ -852,6 +852,11 @@ static bool Level_LoadTexturePages(MYFILE *fp)
 static void Level_CompleteSetup(int32_t level_num)
 {
     Inject_AllInjections(&m_LevelInfo);
+
+    // Expand raw floor data into sectors
+    Room_ParseFloorData(g_FloorData);
+    // TODO: store raw FD temporarily in m_LevelInfo, release here and eliminate
+    // g_FloorData
 
     // Must be called post-injection to allow for floor data changes.
     Stats_ObserveRoomsLoad();
