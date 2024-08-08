@@ -240,7 +240,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     Gun_Control();
-    Room_TestTriggers(coll->trigger, false);
+    Room_TestTriggers(item);
 }
 
 void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
@@ -307,7 +307,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, 100);
     Gun_Control();
-    Room_TestTriggers(coll->trigger, false);
+    Room_TestTriggers(item);
 }
 
 void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
@@ -397,5 +397,5 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, 0);
     Gun_Control();
-    Room_TestTriggers(coll->trigger, false);
+    Room_TestTriggers(item);
 }

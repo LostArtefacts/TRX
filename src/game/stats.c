@@ -83,80 +83,49 @@ static void Stats_CheckTriggers(
     const SECTOR_INFO *const sector =
         &m_CachedSectorArray[room_num][z_sector + x_sector * r->z_size];
 
-    if (!sector->index) {
+    if (sector->trigger == NULL) {
         return;
     }
 
-    int16_t *data = &g_FloorData[sector->index];
-    int16_t type;
-    int16_t trigger;
-    int16_t trig_flags;
-    int16_t trig_type;
-    do {
-        type = *data++;
+    for (int32_t i = 0; i < sector->trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
 
-        switch (type & DATA_TYPE) {
-        case FT_TILT:
-        case FT_ROOF:
-        case FT_DOOR:
-            data++;
-            break;
+        if (cmd->type == TO_SECRET) {
+            const int16_t secret_num = 1 << cmd->parameter;
+            if (!(m_SecretRoom & secret_num)) {
+                m_SecretRoom |= secret_num;
+                m_LevelSecrets++;
+            }
+        } else if (cmd->type == TO_OBJECT) {
+            const int16_t item_num = cmd->parameter;
+            if (m_KillableItems[item_num]) {
+                continue;
+            }
 
-        case FT_LAVA:
-            break;
+            const ITEM_INFO *const item = &g_Items[item_num];
 
-        case FT_TRIGGER:
-            trig_flags = *data;
-            data++;
-            trig_type = (type >> 8) & 0x3F;
-            do {
-                trigger = *data++;
-                if (TRIG_BITS(trigger) == TO_SECRET) {
-                    int16_t number = trigger & VALUE_BITS;
-                    if (!(m_SecretRoom & (1 << number))) {
-                        m_SecretRoom |= (1 << number);
-                        m_LevelSecrets++;
-                    }
+            // Add Pierre pickup and kills if oneshot
+            if (item->object_number == O_PIERRE && sector->trigger->one_shot) {
+                Stats_IncludeKillableItem(item_num);
+            }
+
+            // Check for only valid pods
+            if ((item->object_number == O_PODS
+                 || item->object_number == O_BIG_POD)
+                && item->data != NULL) {
+                const int16_t bug_item_num = *(int16_t *)item->data;
+                const ITEM_INFO *const bug_item = &g_Items[bug_item_num];
+                if (g_Objects[bug_item->object_number].loaded) {
+                    Stats_IncludeKillableItem(item_num);
                 }
-                if (TRIG_BITS(trigger) != TO_OBJECT) {
-                    if (TRIG_BITS(trigger) == TO_CAMERA) {
-                        trigger = *data++;
-                    }
-                } else {
-                    int16_t idx = trigger & VALUE_BITS;
+            }
 
-                    if (m_KillableItems[idx]) {
-                        continue;
-                    }
-
-                    ITEM_INFO *item = &g_Items[idx];
-
-                    // Add Pierre pickup and kills if oneshot
-                    if (item->object_number == O_PIERRE
-                        && trig_flags & IF_ONESHOT) {
-                        Stats_IncludeKillableItem(idx);
-                    }
-
-                    // Check for only valid pods
-                    if ((item->object_number == O_PODS
-                         || item->object_number == O_BIG_POD)
-                        && item->data != NULL) {
-                        int16_t bug_item_num = *(int16_t *)item->data;
-                        const ITEM_INFO *bug_item = &g_Items[bug_item_num];
-                        if (g_Objects[bug_item->object_number].loaded) {
-                            Stats_IncludeKillableItem(idx);
-                        }
-                    }
-
-                    // Add killable if object triggered
-                    if (Stats_IsObjectKillable(item->object_number)) {
-                        Stats_IncludeKillableItem(idx);
-                    }
-                }
-            } while (!(trigger & END_BIT));
-            break;
+            // Add killable if object triggered
+            if (Stats_IsObjectKillable(item->object_number)) {
+                Stats_IncludeKillableItem(item_num);
+            }
         }
-    } while (!(type & END_BIT));
+    }
 }
 
 static bool Stats_IsObjectKillable(int32_t obj_num)

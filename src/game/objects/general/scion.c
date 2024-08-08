@@ -116,11 +116,7 @@ void Scion_Control3(int16_t item_num)
     if (counter == 0) {
         item->status = IS_INVISIBLE;
         item->hit_points = DONT_TARGET;
-        int16_t room_num = item->room_number;
-        const SECTOR_INFO *const sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        Room_TestTriggers(g_TriggerIndex, true);
+        Room_TestTriggers(item);
         Item_RemoveDrawn(item_num);
     }
 

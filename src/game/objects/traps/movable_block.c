@@ -276,12 +276,7 @@ void MovableBlock_Control(int16_t item_num)
         item->status = IS_NOT_ACTIVE;
         Item_RemoveActive(item_num);
         Room_AlterFloorHeight(item, -WALL_L);
-
-        room_num = item->room_number;
-        sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        Room_TestTriggers(g_TriggerIndex, true);
+        Room_TestTriggers(item);
     }
 }
 
