@@ -461,27 +461,27 @@ static int16_t Room_GetFloorTiltHeight(
         return height;
     }
 
-    const int32_t zoff = sector->floor.tilt >> 8;
-    const int32_t xoff = (int8_t)sector->floor.tilt;
+    const int32_t z_off = sector->floor.tilt >> 8;
+    const int32_t x_off = (int8_t)sector->floor.tilt;
 
     const HEIGHT_TYPE slope_type =
-        (ABS(zoff) > 2 || ABS(xoff) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
+        (ABS(z_off) > 2 || ABS(x_off) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
     if (g_ChunkyFlag && slope_type == HT_BIG_SLOPE) {
         return height;
     }
 
     g_HeightType = slope_type;
 
-    if (zoff < 0) {
-        height -= (int16_t)NEG_TILT(zoff, z);
+    if (z_off < 0) {
+        height -= (int16_t)NEG_TILT(z_off, z);
     } else {
-        height += (int16_t)POS_TILT(zoff, z);
+        height += (int16_t)POS_TILT(z_off, z);
     }
 
-    if (xoff < 0) {
-        height -= (int16_t)NEG_TILT(xoff, x);
+    if (x_off < 0) {
+        height -= (int16_t)NEG_TILT(x_off, x);
     } else {
-        height += (int16_t)POS_TILT(xoff, x);
+        height += (int16_t)POS_TILT(x_off, x);
     }
 
     return height;
@@ -495,23 +495,23 @@ static int16_t Room_GetCeilingTiltHeight(
         return height;
     }
 
-    const int32_t zoff = sector->ceiling.tilt >> 8;
-    const int32_t xoff = (int8_t)sector->ceiling.tilt;
+    const int32_t z_off = sector->ceiling.tilt >> 8;
+    const int32_t x_off = (int8_t)sector->ceiling.tilt;
 
-    if (g_ChunkyFlag && (ABS(zoff) > 2 || ABS(xoff) > 2)) {
+    if (g_ChunkyFlag && (ABS(z_off) > 2 || ABS(x_off) > 2)) {
         return height;
     }
 
-    if (zoff < 0) {
-        height += (int16_t)NEG_TILT(zoff, z);
+    if (z_off < 0) {
+        height += (int16_t)NEG_TILT(z_off, z);
     } else {
-        height -= (int16_t)POS_TILT(zoff, z);
+        height -= (int16_t)POS_TILT(z_off, z);
     }
 
-    if (xoff < 0) {
-        height += (int16_t)POS_TILT(xoff, x);
+    if (x_off < 0) {
+        height += (int16_t)POS_TILT(x_off, x);
     } else {
-        height -= (int16_t)NEG_TILT(xoff, x);
+        height -= (int16_t)NEG_TILT(x_off, x);
     }
 
     return height;
