@@ -853,6 +853,11 @@ static void Level_CompleteSetup(int32_t level_num)
 {
     Inject_AllInjections(&m_LevelInfo);
 
+    // Expand raw floor data into sectors
+    Room_ParseFloorData(g_FloorData);
+    // TODO: store raw FD temporarily in m_LevelInfo, release here and eliminate
+    // g_FloorData
+
     // Must be called post-injection to allow for floor data changes.
     Stats_ObserveRoomsLoad();
 

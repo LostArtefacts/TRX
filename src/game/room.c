@@ -28,6 +28,8 @@ int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type);
 static void Room_AddFlipItems(ROOM_INFO *r);
 static void Room_RemoveFlipItems(ROOM_INFO *r);
+static void Room_PopulateSectorData(
+    SECTOR_INFO *sector, const int16_t *floor_data);
 
 static void Room_TriggerMusicTrack(int16_t track, int16_t flags, int16_t type)
 {
@@ -710,6 +712,72 @@ void Room_FlipMap(void)
     }
 
     g_FlipStatus = !g_FlipStatus;
+}
+
+void Room_ParseFloorData(const int16_t *floor_data)
+{
+    for (int32_t i = 0; i < g_RoomCount; i++) {
+        const ROOM_INFO *const room = &g_RoomInfo[i];
+        for (int32_t j = 0; j < room->x_size * room->z_size; j++) {
+            Room_PopulateSectorData(&room->sectors[j], floor_data);
+        }
+    }
+}
+
+static void Room_PopulateSectorData(
+    SECTOR_INFO *const sector, const int16_t *floor_data)
+{
+    if (sector->index == 0) {
+        return;
+    }
+
+    const int16_t *data = &floor_data[sector->index];
+    int16_t fd_entry;
+    do {
+        fd_entry = *data++;
+
+        switch (fd_entry & DATA_TYPE) {
+        case FT_TILT:
+            data++; // TODO: (int16_t)floor.tilt
+            break;
+
+        case FT_ROOF:
+            data++; // TODO: (int16_t)ceiling.tilt
+            break;
+
+        case FT_DOOR:
+            data++; // TODO: (int16_t)portal_room
+            break;
+
+        case FT_LAVA:
+            break; // TODO: (bool)is_death_sector
+
+        case FT_TRIGGER: {
+            // TODO: (TRIGGER *)trigger
+            const int16_t trig_setup = *data++;
+            const TRIGGER_TYPE trig_type = TRIG_TYPE(fd_entry);
+            if (trig_type == TT_SWITCH || trig_type == TT_KEY
+                || trig_type == TT_PICKUP) {
+                data++; // TODO: (int16_t)item_index
+            }
+
+            while (true) {
+                int16_t command = *data++;
+                if (TRIG_BITS(command) == TO_CAMERA) {
+                    command = *data++;
+                }
+                if (command & END_BIT) {
+                    break;
+                }
+            }
+
+            break;
+        }
+
+        default:
+            break;
+        }
+    } while (!(fd_entry & END_BIT));
 }
 
 void Room_TestTriggers(int16_t *data, bool heavy)
