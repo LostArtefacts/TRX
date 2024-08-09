@@ -2095,7 +2095,7 @@ typedef struct LEVEL_INFO {
     int32_t texture_count;
     int32_t texture_page_count;
     uint8_t *texture_page_ptrs;
-    int32_t floor_data_size;
+    int16_t *floor_data;
     int32_t anim_texture_range_count;
     int32_t item_count;
     int32_t sprite_info_count;
