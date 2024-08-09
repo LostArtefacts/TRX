@@ -1644,7 +1644,6 @@ typedef struct COLL_INFO {
     int16_t facing;
     DIRECTION quadrant;
     int16_t coll_type;
-    int16_t *trigger;
     int8_t tilt_x;
     int8_t tilt_z;
     int8_t hit_by_baddie;
