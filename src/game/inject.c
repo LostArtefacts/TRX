@@ -4,6 +4,7 @@
 #include "game/gamebuf.h"
 #include "game/output.h"
 #include "game/packer.h"
+#include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "items.h"
@@ -19,6 +20,7 @@
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
 #define INJECTION_CURRENT_VERSION 7
+#define NULL_FD_INDEX ((uint16_t)(-1))
 
 typedef enum INJECTION_VERSION {
     INJ_VERSION_1 = 1,
@@ -1163,65 +1165,13 @@ static void Inject_TriggerParameterChange(
     const int16_t old_param = File_ReadS16(fp);
     const int16_t new_param = File_ReadS16(fp);
 
-    if (!sector) {
-        return;
-    }
-
     // If we can find an action item for the given sector that matches
     // the command type and old (current) parameter, change it to the
     // new parameter.
-
-    uint16_t fd_index = sector->index;
-    if (!fd_index) {
-        return;
-    }
-
-    while (1) {
-        uint16_t data = g_FloorData[fd_index++];
-        switch (data & DATA_TYPE) {
-        case FT_DOOR:
-        case FT_ROOF:
-        case FT_TILT:
-            fd_index++;
-            break;
-
-        case FT_LAVA:
-            break;
-
-        case FT_TRIGGER: {
-            uint16_t trig_type = (data & 0x3F00) >> 8;
-            fd_index++; // skip trigger setup
-
-            if (trig_type == TT_SWITCH || trig_type == TT_KEY
-                || trig_type == TT_PICKUP) {
-                fd_index++; // skip entity reference
-            }
-
-            while (1) {
-                int16_t *command = &g_FloorData[fd_index++];
-
-                if (TRIG_BITS(*command) == cmd_type) {
-                    int16_t param = *command & VALUE_BITS;
-                    if (param == old_param) {
-                        *command =
-                            (*command & ~VALUE_BITS) | (new_param & VALUE_BITS);
-                        return;
-                    }
-                }
-
-                if (TRIG_BITS(*command) == TO_CAMERA) {
-                    fd_index++; // skip camera setup
-                }
-
-                if (*command & END_BIT) {
-                    break;
-                }
-            }
-            break;
-        }
-        }
-
-        if (data & END_BIT) {
+    for (int32_t i = 0; i < sector->trigger->command_count; i++) {
+        TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
+        if (cmd->type == cmd_type && cmd->parameter == old_param) {
+            cmd->parameter = new_param;
             break;
         }
     }
@@ -1229,57 +1179,14 @@ static void Inject_TriggerParameterChange(
 
 static void Inject_SetMusicOneShot(SECTOR_INFO *sector)
 {
-    if (!sector) {
+    if (sector == NULL || sector->trigger == NULL) {
         return;
     }
 
-    uint16_t fd_index = sector->index;
-    if (!fd_index) {
-        return;
-    }
-
-    while (1) {
-        uint16_t data = g_FloorData[fd_index++];
-        switch (data & DATA_TYPE) {
-        case FT_DOOR:
-        case FT_ROOF:
-        case FT_TILT:
-            fd_index++;
-            break;
-
-        case FT_LAVA:
-            break;
-
-        case FT_TRIGGER: {
-            uint16_t trig_type = TRIG_TYPE(data);
-            int16_t *flags = &g_FloorData[fd_index++];
-
-            if (trig_type == TT_SWITCH || trig_type == TT_KEY
-                || trig_type == TT_PICKUP) {
-                fd_index++; // skip entity reference
-            }
-
-            while (1) {
-                int16_t *command = &g_FloorData[fd_index++];
-                if (TRIG_BITS(*command) == TO_CD) {
-                    *flags |= IF_ONESHOT;
-                    return;
-                }
-
-                if (TRIG_BITS(*command) == TO_CAMERA) {
-                    fd_index++; // skip camera setup
-                }
-
-                if (*command & END_BIT) {
-                    break;
-                }
-            }
-            return;
-        }
-        }
-
-        if (data & END_BIT) {
-            break;
+    for (int32_t i = 0; i < sector->trigger->command_count; i++) {
+        const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
+        if (cmd->type == TO_CD) {
+            sector->trigger->one_shot = true;
         }
     }
 }
@@ -1294,16 +1201,14 @@ static void Inject_InsertFloorData(
     int16_t data[data_length];
     File_ReadItems(fp, data, sizeof(int16_t), data_length);
 
-    if (!sector) {
+    if (sector == NULL) {
         return;
     }
 
-    sector->index = level_info->floor_data_size;
-    for (int32_t i = 0; i < data_length; i++) {
-        g_FloorData[level_info->floor_data_size + i] = data[i];
-    }
-
-    level_info->floor_data_size += data_length;
+    // This will reset all FD properties in the sector based on the raw data
+    // imported. We pass a dummy null index to allow it to read from the
+    // beginning of the array.
+    Room_PopulateSectorData(sector, data, 0, NULL_FD_INDEX);
 }
 
 static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
