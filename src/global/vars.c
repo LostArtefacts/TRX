@@ -63,7 +63,6 @@ int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;
 
 ROOM_INFO *g_RoomInfo = NULL;
-int16_t *g_FloorData = NULL;
 int16_t *g_MeshBase = NULL;
 int16_t **g_Meshes = NULL;
 OBJECT_INFO g_Objects[O_NUMBER_OF] = { 0 };

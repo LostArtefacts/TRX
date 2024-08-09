@@ -19,7 +19,7 @@
 #include <stddef.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
-#define INJECTION_CURRENT_VERSION 7
+#define INJECTION_CURRENT_VERSION 8
 #define NULL_FD_INDEX ((uint16_t)(-1))
 
 typedef enum INJECTION_VERSION {
@@ -30,6 +30,7 @@ typedef enum INJECTION_VERSION {
     INJ_VERSION_5 = 5,
     INJ_VERSION_6 = 6,
     INJ_VERSION_7 = 7,
+    INJ_VERSION_8 = 8,
 } INJECTION_VERSION;
 
 typedef enum INJECTION_TYPE {
@@ -268,7 +269,11 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     info->mesh_edit_count = File_ReadS32(fp);
     info->texture_overwrite_count = File_ReadS32(fp);
     info->floor_edit_count = File_ReadS32(fp);
-    info->floor_data_size = File_ReadS32(fp);
+
+    if (injection->version < INJ_VERSION_8) {
+        // Legacy value that stored the total injected floor data length.
+        File_Skip(fp, sizeof(int32_t));
+    }
 
     if (injection->version > INJ_VERSION_1) {
         // room_mesh_count is a summary of the change in mesh size,
@@ -360,7 +365,6 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     m_Aggregate->sfx_count += info->sfx_count;
     m_Aggregate->sfx_data_size += info->sfx_data_size;
     m_Aggregate->sample_count += info->sample_count;
-    m_Aggregate->floor_data_size += info->floor_data_size;
 
     LOG_INFO("%s queued for injection", filename);
 }

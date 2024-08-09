@@ -31,7 +31,6 @@ typedef struct INJECTION_INFO {
     int32_t mesh_edit_count;
     int32_t texture_overwrite_count;
     int32_t floor_edit_count;
-    int32_t floor_data_size;
     int32_t room_mesh_count;
     INJECTION_ROOM_MESH *room_meshes;
     int32_t room_mesh_edit_count;

@@ -50,7 +50,6 @@ extern int32_t g_OverlayFlag;
 extern int32_t g_HeightType;
 
 extern ROOM_INFO *g_RoomInfo;
-extern int16_t *g_FloorData;
 extern int16_t *g_MeshBase;
 extern int16_t **g_Meshes;
 extern OBJECT_INFO g_Objects[O_NUMBER_OF];

@@ -275,13 +275,9 @@ static bool Level_LoadRooms(MYFILE *fp)
         current_room_info->fx_number = NO_ITEM;
     }
 
-    m_LevelInfo.floor_data_size = File_ReadS32(fp);
-    g_FloorData = GameBuf_Alloc(
-        sizeof(int16_t)
-            * (m_LevelInfo.floor_data_size + m_InjectionInfo->floor_data_size),
-        GBUF_FLOOR_DATA);
-    File_ReadItems(
-        fp, g_FloorData, sizeof(int16_t), m_LevelInfo.floor_data_size);
+    const int32_t fd_length = File_ReadS32(fp);
+    m_LevelInfo.floor_data = Memory_Alloc(sizeof(int16_t) * fd_length);
+    File_ReadItems(fp, m_LevelInfo.floor_data, fd_length, sizeof(int16_t));
 
     return true;
 }
@@ -852,9 +848,8 @@ static bool Level_LoadTexturePages(MYFILE *fp)
 static void Level_CompleteSetup(int32_t level_num)
 {
     // Expand raw floor data into sectors
-    Room_ParseFloorData(g_FloorData);
-    // TODO: store raw FD temporarily in m_LevelInfo, release here and eliminate
-    // g_FloorData
+    Room_ParseFloorData(m_LevelInfo.floor_data);
+    Memory_FreePointer(&m_LevelInfo.floor_data);
 
     Inject_AllInjections(&m_LevelInfo);
 
