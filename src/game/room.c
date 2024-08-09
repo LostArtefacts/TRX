@@ -21,6 +21,7 @@
 #include <assert.h>
 #include <stddef.h>
 
+#define NULL_FD_INDEX 0
 #define NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
 #define POS_TILT(T, H) ((T * ((WALL_L - 1 - H) & (WALL_L - 1))) >> 2)
 
@@ -40,9 +41,6 @@ static int16_t Room_GetCeilingTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z);
 static SECTOR_INFO *Room_GetSkySector(
     const SECTOR_INFO *sector, int32_t x, int32_t z);
-
-static void Room_PopulateSectorData(
-    SECTOR_INFO *sector, const int16_t *floor_data);
 
 static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
@@ -622,13 +620,16 @@ void Room_ParseFloorData(const int16_t *floor_data)
     for (int32_t i = 0; i < g_RoomCount; i++) {
         const ROOM_INFO *const room = &g_RoomInfo[i];
         for (int32_t j = 0; j < room->x_size * room->z_size; j++) {
-            Room_PopulateSectorData(&room->sectors[j], floor_data);
+            SECTOR_INFO *const sector = &room->sectors[j];
+            Room_PopulateSectorData(
+                &room->sectors[j], floor_data, sector->index, NULL_FD_INDEX);
         }
     }
 }
 
-static void Room_PopulateSectorData(
-    SECTOR_INFO *const sector, const int16_t *floor_data)
+void Room_PopulateSectorData(
+    SECTOR_INFO *const sector, const int16_t *floor_data,
+    const uint16_t start_index, const uint16_t null_index)
 {
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
@@ -636,11 +637,11 @@ static void Room_PopulateSectorData(
     sector->is_death_sector = false;
     sector->trigger = NULL;
 
-    if (sector->index == 0) {
+    if (start_index == null_index) {
         return;
     }
 
-    const int16_t *data = &floor_data[sector->index];
+    const int16_t *data = &floor_data[start_index];
     int16_t fd_entry;
     do {
         fd_entry = *data++;

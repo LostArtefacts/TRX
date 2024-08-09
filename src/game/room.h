@@ -30,6 +30,9 @@ int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
 void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height);
 
 void Room_ParseFloorData(const int16_t *floor_data);
+void Room_PopulateSectorData(
+    SECTOR_INFO *sector, const int16_t *floor_data, uint16_t start_index,
+    uint16_t null_index);
 void Room_TestTriggers(const ITEM_INFO *item);
 void Room_FlipMap(void);
 bool Room_IsOnWalkable(
