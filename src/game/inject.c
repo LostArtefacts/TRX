@@ -1169,6 +1169,10 @@ static void Inject_TriggerParameterChange(
     const int16_t old_param = File_ReadS16(fp);
     const int16_t new_param = File_ReadS16(fp);
 
+    if (sector == NULL || sector->trigger == NULL) {
+        return;
+    }
+
     // If we can find an action item for the given sector that matches
     // the command type and old (current) parameter, change it to the
     // new parameter.
