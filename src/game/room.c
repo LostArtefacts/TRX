@@ -291,10 +291,6 @@ SECTOR_INFO *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
         }
 
         sector = &r->sectors[z_sector + x_sector * r->z_size];
-        if (!sector->index) {
-            break;
-        }
-
         portal_room = sector->portal_room.wall;
         if (portal_room != NO_ROOM) {
             *room_num = portal_room;
