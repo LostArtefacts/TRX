@@ -51,12 +51,12 @@ static void Door_Shut(DOORPOS_DATA *const d)
         return;
     }
 
-    sector->index = 0;
     sector->box = NO_BOX;
     sector->floor.height = NO_HEIGHT;
     sector->ceiling.height = NO_HEIGHT;
     sector->portal_room.sky = NO_ROOM;
     sector->portal_room.pit = NO_ROOM;
+    sector->portal_room.wall = NO_ROOM;
 
     const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
