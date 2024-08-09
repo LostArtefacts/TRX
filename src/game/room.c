@@ -25,7 +25,6 @@
 #define NEG_TILT(T, H) ((T * (H & (WALL_L - 1))) >> 2)
 #define POS_TILT(T, H) ((T * ((WALL_L - 1 - H) & (WALL_L - 1))) >> 2)
 
-int16_t *g_TriggerIndex = NULL;
 int32_t g_FlipTimer = 0;
 int32_t g_FlipEffect = -1;
 int32_t g_FlipStatus = 0;

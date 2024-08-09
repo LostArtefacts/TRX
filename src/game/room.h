@@ -6,7 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-extern int16_t *g_TriggerIndex;
 extern int32_t g_FlipTimer;
 extern int32_t g_FlipEffect;
 extern int32_t g_FlipStatus;

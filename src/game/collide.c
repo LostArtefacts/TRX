@@ -41,7 +41,6 @@ void Collide_GetCollisionInfo(
     coll->mid_floor = height;
     coll->mid_ceiling = ceiling;
     coll->mid_type = g_HeightType;
-    coll->trigger = g_TriggerIndex;
 
     if (!g_Config.fix_bridge_collision
         || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
