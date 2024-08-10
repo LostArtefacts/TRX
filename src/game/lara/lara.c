@@ -623,11 +623,11 @@ void Lara_InitialiseMeshes(int32_t level_num)
     switch (resume->gun_type) {
     case LGT_SHOTGUN:
         if (resume->flags.got_pistols) {
-            holster_object_num = O_PISTOLS;
+            holster_object_num = O_PISTOL_ANIM;
         }
         break;
     case LGT_PISTOLS:
-        holster_object_num = O_PISTOLS;
+        holster_object_num = O_PISTOL_ANIM;
         break;
     case LGT_MAGNUMS:
         holster_object_num = O_MAGNUM;

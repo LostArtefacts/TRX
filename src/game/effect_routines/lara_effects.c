@@ -26,7 +26,7 @@ void FX_LaraDrawRightGun(ITEM_INFO *item)
 {
     int16_t *tmp_mesh;
     OBJECT_INFO *obj = &g_Objects[item->object_number];
-    OBJECT_INFO *obj2 = &g_Objects[O_PISTOLS];
+    OBJECT_INFO *obj2 = &g_Objects[O_PISTOL_ANIM];
 
     SWAP(
         g_Meshes[obj->mesh_index + LM_THIGH_R],

@@ -199,7 +199,7 @@ GAME_OBJECT_ID Gun_GetLaraAnimation(LARA_GUN_TYPE gun_type)
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
     case LGT_UZIS:
-        return O_PISTOLS;
+        return O_PISTOL_ANIM;
     case LGT_SHOTGUN:
         return O_SHOTGUN;
     default:

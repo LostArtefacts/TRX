@@ -152,7 +152,7 @@ static bool Savegame_BSON_IsValidItemObject(
         case O_PUZZLE_DONE3: return initial_obj_num == O_PUZZLE_HOLE3;
         case O_PUZZLE_DONE4: return initial_obj_num == O_PUZZLE_HOLE4;
         // pickups
-        case O_GUN_AMMO_ITEM: return initial_obj_num == O_PISTOLS;
+        case O_GUN_AMMO_ITEM: return initial_obj_num == O_PISTOL_ANIM;
         case O_SG_AMMO_ITEM: return initial_obj_num == O_SHOTGUN_ITEM;
         case O_MAG_AMMO_ITEM: return initial_obj_num == O_MAGNUM_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_num == O_UZI_ITEM;
