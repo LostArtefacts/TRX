@@ -221,7 +221,7 @@ bool Lara_Cheat_GiveAllGuns(void)
         return false;
     }
 
-    Inv_AddItem(O_GUN_ITEM);
+    Inv_AddItem(O_PISTOL_ITEM);
     Inv_AddItem(O_MAGNUM_ITEM);
     Inv_AddItem(O_UZI_ITEM);
     Inv_AddItem(O_SHOTGUN_ITEM);
@@ -240,7 +240,7 @@ bool Lara_Cheat_GiveAllItems(void)
         return false;
     }
 
-    Inv_AddItem(O_GUN_ITEM);
+    Inv_AddItem(O_PISTOL_ITEM);
 
     if (!Inv_RequestItem(O_SHOTGUN_ITEM)) {
         Inv_AddItem(O_SHOTGUN_ITEM);

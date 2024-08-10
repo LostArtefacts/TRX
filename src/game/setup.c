@@ -179,7 +179,7 @@ void Setup_MiscObjects(void)
     Pickup_Setup(&g_Objects[O_PUZZLE_ITEM2]);
     Pickup_Setup(&g_Objects[O_PUZZLE_ITEM3]);
     Pickup_Setup(&g_Objects[O_PUZZLE_ITEM4]);
-    Pickup_Setup(&g_Objects[O_GUN_ITEM]);
+    Pickup_Setup(&g_Objects[O_PISTOL_ITEM]);
     Pickup_Setup(&g_Objects[O_SHOTGUN_ITEM]);
     Pickup_Setup(&g_Objects[O_MAGNUM_ITEM]);
     Pickup_Setup(&g_Objects[O_UZI_ITEM]);
