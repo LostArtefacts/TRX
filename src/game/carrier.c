@@ -167,7 +167,7 @@ void Carrier_TestItemDrops(int16_t item_num)
         GAME_OBJECT_ID object_id = item->object_id;
         if (g_GameFlow.convert_dropped_guns
             && Object_IsObjectType(object_id, g_GunObjects)
-            && Inv_RequestItem(object_id)) {
+            && Inv_RequestItem(object_id) && object_id != O_PISTOL_ITEM) {
             object_id = Object_GetCognate(object_id, g_GunAmmoObjectMap);
         }
 
