@@ -73,7 +73,7 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
         g_InputDB.menu_confirm = 1;
         break;
 
-    case O_GUN_AMMO_OPTION:
+    case O_PISTOL_AMMO_OPTION:
     case O_SG_AMMO_OPTION:
     case O_MAG_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:

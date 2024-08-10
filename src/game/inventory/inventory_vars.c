@@ -557,7 +557,7 @@ INVENTORY_ITEM g_InvItemGrenade = {
 
 INVENTORY_ITEM g_InvItemPistolAmmo = {
     .string = "Pistol Clips",
-    .object_number = O_GUN_AMMO_OPTION,
+    .object_number = O_PISTOL_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
