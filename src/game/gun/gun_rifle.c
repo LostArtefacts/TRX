@@ -84,9 +84,9 @@ void Gun_Rifle_Undraw(void)
 void Gun_Rifle_DrawMeshes(void)
 {
     g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_HAND_L];
+        g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_HAND_L];
     g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_HAND_R];
+        g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_HAND_R];
     g_Lara.mesh_ptrs[LM_TORSO] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO];
 }
@@ -98,7 +98,7 @@ void Gun_Rifle_UndrawMeshes(void)
     g_Lara.mesh_ptrs[LM_HAND_R] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_R];
     g_Lara.mesh_ptrs[LM_TORSO] =
-        g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
+        g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_TORSO];
 }
 
 void Gun_Rifle_Ready(void)
@@ -117,8 +117,8 @@ void Gun_Rifle_Ready(void)
     g_Lara.torso_rot.x = 0;
     g_Lara.torso_rot.y = 0;
     g_Lara.target = NULL;
-    g_Lara.right_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
-    g_Lara.left_arm.frame_base = g_Objects[O_SHOTGUN].frame_base;
+    g_Lara.right_arm.frame_base = g_Objects[O_SHOTGUN_ANIM].frame_base;
+    g_Lara.left_arm.frame_base = g_Objects[O_SHOTGUN_ANIM].frame_base;
 }
 
 void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type)
