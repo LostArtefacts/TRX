@@ -183,7 +183,7 @@ void Setup_MiscObjects(void)
     Pickup_Setup(&g_Objects[O_SHOTGUN_ITEM]);
     Pickup_Setup(&g_Objects[O_MAGNUM_ITEM]);
     Pickup_Setup(&g_Objects[O_UZI_ITEM]);
-    Pickup_Setup(&g_Objects[O_GUN_AMMO_ITEM]);
+    Pickup_Setup(&g_Objects[O_PISTOL_AMMO_ITEM]);
     Pickup_Setup(&g_Objects[O_SG_AMMO_ITEM]);
     Pickup_Setup(&g_Objects[O_MAG_AMMO_ITEM]);
     Pickup_Setup(&g_Objects[O_UZI_AMMO_ITEM]);
