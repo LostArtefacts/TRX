@@ -109,7 +109,7 @@ void Gun_Pistols_Ready(void)
 
 void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
 {
-    int16_t object_num = O_PISTOL_ANIM;
+    GAME_OBJECT_ID object_num = O_PISTOL_ANIM;
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM_ANIM;
     } else if (weapon_type == LGT_UZIS) {
@@ -128,7 +128,7 @@ void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
 {
-    int16_t object_num = O_PISTOL_ANIM;
+    GAME_OBJECT_ID object_num = O_PISTOL_ANIM;
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM_ANIM;
     } else if (weapon_type == LGT_UZIS) {
@@ -143,7 +143,7 @@ void Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_UndrawMeshRight(LARA_GUN_TYPE weapon_type)
 {
-    int16_t object_num = O_PISTOL_ANIM;
+    GAME_OBJECT_ID object_num = O_PISTOL_ANIM;
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM_ANIM;
     } else if (weapon_type == LGT_UZIS) {
