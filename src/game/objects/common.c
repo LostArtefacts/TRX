@@ -133,7 +133,7 @@ const GAME_OBJECT_ID g_TrapdoorObjects[] = {
 
 const GAME_OBJECT_ID g_InvObjects[] = {
     // clang-format off
-    O_GUN_OPTION,
+    O_PISTOL_OPTION,
     O_SHOTGUN_OPTION,
     O_MAGNUM_OPTION,
     O_UZI_OPTION,
@@ -192,7 +192,7 @@ static const GAME_OBJECT_PAIR m_KeyItemToReceptacleMap[] = {
 
 const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format off
-    { O_PISTOL_ITEM, O_GUN_OPTION },
+    { O_PISTOL_ITEM, O_PISTOL_OPTION },
     { O_SHOTGUN_ITEM, O_SHOTGUN_OPTION },
     { O_MAGNUM_ITEM, O_MAGNUM_OPTION },
     { O_UZI_ITEM, O_UZI_OPTION },
@@ -375,7 +375,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
         // Different objects need different heuristics.
         switch (item_num_option) {
-        case O_GUN_OPTION:
+        case O_PISTOL_OPTION:
         case O_SHOTGUN_OPTION:
         case O_MAGNUM_OPTION:
         case O_UZI_OPTION:

@@ -34,7 +34,7 @@ bool Inv_AddItem(int32_t item_num)
 
     switch (item_num) {
     case O_PISTOL_ITEM:
-    case O_GUN_OPTION:
+    case O_PISTOL_OPTION:
         Inv_InsertItem(&g_InvItemPistols);
         return true;
 
