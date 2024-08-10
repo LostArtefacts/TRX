@@ -347,7 +347,8 @@ int16_t Room_GetCeiling(
             continue;
         }
 
-        const ITEM_INFO *const item = &g_Items[cmd->parameter];
+        const ITEM_INFO *const item =
+            &g_Items[(int16_t)(intptr_t)cmd->parameter];
         const OBJECT_INFO *const object = &g_Objects[item->object_number];
         if (object->ceiling_height_func) {
             height = object->ceiling_height_func(item, x, y, z, height);
@@ -375,7 +376,8 @@ int16_t Room_GetHeight(
             continue;
         }
 
-        const ITEM_INFO *const item = &g_Items[cmd->parameter];
+        const ITEM_INFO *const item =
+            &g_Items[(int16_t)(intptr_t)cmd->parameter];
         const OBJECT_INFO *const object = &g_Objects[item->object_number];
         if (object->floor_height_func) {
             height = object->floor_height_func(item, x, y, z, height);
@@ -707,13 +709,19 @@ void Room_PopulateSectorData(
                 int16_t command = *command_data++;
                 TRIGGER_CMD *const cmd = &trigger->commands[i];
                 cmd->type = TRIG_BITS(command);
-                cmd->parameter = command & VALUE_BITS;
 
                 if (cmd->type == TO_CAMERA) {
+                    TRIGGER_CAMERA_DATA *const cam_data = GameBuf_Alloc(
+                        sizeof(TRIGGER_CAMERA_DATA), GBUF_FLOOR_DATA);
+                    cmd->parameter = (void *)cam_data;
+                    cam_data->camera_num = command & VALUE_BITS;
+
                     command = *command_data++;
-                    cmd->camera.timer = command & 0xFF;
-                    cmd->camera.glide = (command & IF_CODE_BITS) >> 6;
-                    cmd->camera.one_shot = command & IF_ONESHOT;
+                    cam_data->timer = command & 0xFF;
+                    cam_data->glide = (command & IF_CODE_BITS) >> 6;
+                    cam_data->one_shot = command & IF_ONESHOT;
+                } else {
+                    cmd->parameter = (void *)(intptr_t)(command & VALUE_BITS);
                 }
             }
 
@@ -807,7 +815,7 @@ void Room_TestTriggers(const ITEM_INFO *const item)
 
         switch (cmd->type) {
         case TO_OBJECT: {
-            const int16_t item_num = cmd->parameter;
+            const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
             ITEM_INFO *const item = &g_Items[item_num];
             if (item->flags & IF_ONESHOT) {
                 break;
@@ -860,12 +868,13 @@ void Room_TestTriggers(const ITEM_INFO *const item)
         }
 
         case TO_CAMERA: {
-            const int16_t camera_num = cmd->parameter;
-            if (g_Camera.fixed[camera_num].flags & IF_ONESHOT) {
+            const TRIGGER_CAMERA_DATA *const cam_data =
+                (TRIGGER_CAMERA_DATA *)cmd->parameter;
+            if (g_Camera.fixed[cam_data->camera_num].flags & IF_ONESHOT) {
                 break;
             }
 
-            g_Camera.number = camera_num;
+            g_Camera.number = cam_data->camera_num;
 
             if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
                 break;
@@ -884,26 +893,27 @@ void Room_TestTriggers(const ITEM_INFO *const item)
                 break;
             }
 
-            g_Camera.timer = cmd->camera.timer;
+            g_Camera.timer = cam_data->timer;
             if (g_Camera.timer != 1) {
                 g_Camera.timer *= LOGIC_FPS;
             }
 
-            if (cmd->camera.one_shot) {
+            if (cam_data->one_shot) {
                 g_Camera.fixed[g_Camera.number].flags |= IF_ONESHOT;
             }
 
-            g_Camera.speed = cmd->camera.glide + 1;
+            g_Camera.speed = cam_data->glide + 1;
             g_Camera.type = is_heavy ? CAM_HEAVY : CAM_FIXED;
             break;
         }
 
         case TO_TARGET:
-            camera_item = &g_Items[cmd->parameter];
+            camera_item = &g_Items[(int16_t)(intptr_t)cmd->parameter];
             break;
 
         case TO_SINK: {
-            OBJECT_VECTOR *obvector = &g_Camera.fixed[cmd->parameter];
+            const OBJECT_VECTOR *const obvector =
+                &g_Camera.fixed[(int16_t)(intptr_t)cmd->parameter];
 
             if (g_Lara.LOT.required_box != obvector->flags) {
                 g_Lara.LOT.target.x = obvector->x;
@@ -917,7 +927,7 @@ void Room_TestTriggers(const ITEM_INFO *const item)
         }
 
         case TO_FLIPMAP: {
-            const int16_t flip_slot = cmd->parameter;
+            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             if (g_FlipMapTable[flip_slot] & IF_ONESHOT) {
                 break;
             }
@@ -942,22 +952,26 @@ void Room_TestTriggers(const ITEM_INFO *const item)
             break;
         }
 
-        case TO_FLIPON:
-            if ((g_FlipMapTable[cmd->parameter] & IF_CODE_BITS) == IF_CODE_BITS
+        case TO_FLIPON: {
+            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
                 && !g_FlipStatus) {
                 flip_map = true;
             }
             break;
+        }
 
-        case TO_FLIPOFF:
-            if ((g_FlipMapTable[cmd->parameter] & IF_CODE_BITS) == IF_CODE_BITS
+        case TO_FLIPOFF: {
+            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
                 && g_FlipStatus) {
                 flip_map = true;
             }
             break;
+        }
 
         case TO_FLIPEFFECT:
-            new_effect = cmd->parameter;
+            new_effect = (int16_t)(intptr_t)cmd->parameter;
             break;
 
         case TO_FINISH:
@@ -965,11 +979,11 @@ void Room_TestTriggers(const ITEM_INFO *const item)
             break;
 
         case TO_CD:
-            Room_TriggerMusicTrack(cmd->parameter, trigger);
+            Room_TriggerMusicTrack((int16_t)(intptr_t)cmd->parameter, trigger);
             break;
 
         case TO_SECRET: {
-            const int16_t secret_num = 1 << cmd->parameter;
+            const int16_t secret_num = 1 << (int16_t)(intptr_t)cmd->parameter;
             if (g_GameInfo.current[g_CurrentLevel].stats.secret_flags
                 & secret_num) {
                 break;
@@ -1013,7 +1027,8 @@ bool Room_IsOnWalkable(
             continue;
         }
 
-        const ITEM_INFO *const item = &g_Items[cmd->parameter];
+        const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
+        const ITEM_INFO *const item = &g_Items[item_num];
         const OBJECT_INFO *const object = &g_Objects[item->object_number];
         if (object->floor_height_func) {
             height = object->floor_height_func(item, x, y, z, height);

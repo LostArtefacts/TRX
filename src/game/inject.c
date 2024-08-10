@@ -1178,9 +1178,22 @@ static void Inject_TriggerParameterChange(
     // new parameter.
     for (int32_t i = 0; i < sector->trigger->command_count; i++) {
         TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
-        if (cmd->type == cmd_type && cmd->parameter == old_param) {
-            cmd->parameter = new_param;
-            break;
+        if (cmd->type != cmd_type) {
+            continue;
+        }
+
+        if (cmd->type == TO_CAMERA) {
+            TRIGGER_CAMERA_DATA *const cam_data =
+                (TRIGGER_CAMERA_DATA *)cmd->parameter;
+            if (cam_data->camera_num == old_param) {
+                cam_data->camera_num = new_param;
+                break;
+            }
+        } else {
+            if ((int16_t)(intptr_t)cmd->parameter == old_param) {
+                cmd->parameter = (void *)(intptr_t)new_param;
+                break;
+            }
         }
     }
 }

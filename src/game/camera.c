@@ -788,8 +788,10 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
     for (int32_t i = 0; i < trigger->command_count; i++) {
         const TRIGGER_CMD *const cmd = &trigger->commands[i];
         if (cmd->type == TO_CAMERA) {
-            if (cmd->parameter == g_Camera.last) {
-                g_Camera.number = cmd->parameter;
+            const TRIGGER_CAMERA_DATA *const cam_data =
+                (TRIGGER_CAMERA_DATA *)cmd->parameter;
+            if (cam_data->camera_num == g_Camera.last) {
+                g_Camera.number = cam_data->camera_num;
 
                 if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
                     || g_Camera.type == CAM_COMBAT) {
@@ -804,7 +806,7 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
             }
         } else if (cmd->type == TO_TARGET) {
             if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
-                g_Camera.item = &g_Items[cmd->parameter];
+                g_Camera.item = &g_Items[(int16_t)(intptr_t)cmd->parameter];
             }
         }
     }

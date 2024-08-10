@@ -91,13 +91,13 @@ static void Stats_CheckTriggers(
         const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
 
         if (cmd->type == TO_SECRET) {
-            const int16_t secret_num = 1 << cmd->parameter;
+            const int16_t secret_num = 1 << (int16_t)(intptr_t)cmd->parameter;
             if (!(m_SecretRoom & secret_num)) {
                 m_SecretRoom |= secret_num;
                 m_LevelSecrets++;
             }
         } else if (cmd->type == TO_OBJECT) {
-            const int16_t item_num = cmd->parameter;
+            const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
             if (m_KillableItems[item_num]) {
                 continue;
             }
