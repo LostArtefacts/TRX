@@ -9,16 +9,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool Inv_AddItem(int32_t item_num)
+bool Inv_AddItem(const GAME_OBJECT_ID object_id)
 {
-    int32_t item_num_option = Inv_GetItemOption(item_num);
-    if (!g_Objects[item_num_option].loaded) {
+    const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
+    if (!g_Objects[inv_object_id].loaded) {
         return false;
     }
 
     for (int i = 0; i < g_InvMainObjects; i++) {
         INVENTORY_ITEM *inv_item = g_InvMainList[i];
-        if (inv_item->object_number == item_num_option) {
+        if (inv_item->object_number == inv_object_id) {
             g_InvMainQtys[i]++;
             return true;
         }
@@ -26,13 +26,13 @@ bool Inv_AddItem(int32_t item_num)
 
     for (int i = 0; i < g_InvKeysObjects; i++) {
         INVENTORY_ITEM *inv_item = g_InvKeysList[i];
-        if (inv_item->object_number == item_num_option) {
+        if (inv_item->object_number == inv_object_id) {
             g_InvKeysQtys[i]++;
             return true;
         }
     }
 
-    switch (item_num) {
+    switch (object_id) {
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
         Inv_InsertItem(&g_InvItemPistols);
@@ -168,15 +168,18 @@ bool Inv_AddItem(int32_t item_num)
     case O_SCION_OPTION:
         Inv_InsertItem(&g_InvItemScion);
         return true;
+
+    default:
+        return false;
     }
 
     return false;
 }
 
-void Inv_AddItemNTimes(int32_t item_num, int32_t qty)
+void Inv_AddItemNTimes(const GAME_OBJECT_ID object_id, int32_t qty)
 {
     for (int i = 0; i < qty; i++) {
-        Inv_AddItem(item_num);
+        Inv_AddItem(object_id);
     }
 }
 
@@ -227,18 +230,18 @@ void Inv_InsertItem(INVENTORY_ITEM *inv_item)
     }
 }
 
-int32_t Inv_RequestItem(int item_num)
+int32_t Inv_RequestItem(const GAME_OBJECT_ID object_id)
 {
-    int32_t item_num_option = Inv_GetItemOption(item_num);
+    const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
 
     for (int i = 0; i < g_InvMainObjects; i++) {
-        if (g_InvMainList[i]->object_number == item_num_option) {
+        if (g_InvMainList[i]->object_number == inv_object_id) {
             return g_InvMainQtys[i];
         }
     }
 
     for (int i = 0; i < g_InvKeysObjects; i++) {
-        if (g_InvKeysList[i]->object_number == item_num_option) {
+        if (g_InvKeysList[i]->object_number == inv_object_id) {
             return g_InvKeysQtys[i];
         }
     }
@@ -255,12 +258,12 @@ void Inv_RemoveAllItems(void)
     g_InvKeysCurrent = 0;
 }
 
-bool Inv_RemoveItem(int32_t item_num)
+bool Inv_RemoveItem(const GAME_OBJECT_ID object_id)
 {
-    int32_t item_num_option = Inv_GetItemOption(item_num);
+    const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
 
     for (int i = 0; i < g_InvMainObjects; i++) {
-        if (g_InvMainList[i]->object_number == item_num_option) {
+        if (g_InvMainList[i]->object_number == inv_object_id) {
             g_InvMainQtys[i]--;
             if (g_InvMainQtys[i] > 0) {
                 return true;
@@ -274,7 +277,7 @@ bool Inv_RemoveItem(int32_t item_num)
     }
 
     for (int i = 0; i < g_InvKeysObjects; i++) {
-        if (g_InvKeysList[i]->object_number == item_num_option) {
+        if (g_InvKeysList[i]->object_number == inv_object_id) {
             g_InvKeysQtys[i]--;
             if (g_InvKeysQtys[i] > 0) {
                 return true;
@@ -289,7 +292,7 @@ bool Inv_RemoveItem(int32_t item_num)
     }
 
     for (int i = 0; i < g_InvOptionObjects; i++) {
-        if (g_InvOptionList[i]->object_number == item_num_option) {
+        if (g_InvOptionList[i]->object_number == inv_object_id) {
             g_InvOptionObjects--;
             for (int j = i; j < g_InvOptionObjects; j++) {
                 g_InvOptionList[j] = g_InvOptionList[j + 1];
@@ -301,11 +304,11 @@ bool Inv_RemoveItem(int32_t item_num)
     return false;
 }
 
-GAME_OBJECT_ID Inv_GetItemOption(GAME_OBJECT_ID item_num)
+GAME_OBJECT_ID Inv_GetItemOption(const GAME_OBJECT_ID object_id)
 {
-    if (Object_IsObjectType(item_num, g_InvObjects)) {
-        return item_num;
+    if (Object_IsObjectType(object_id, g_InvObjects)) {
+        return object_id;
     }
 
-    return Object_GetCognate(item_num, g_ItemToInvObjectMap);
+    return Object_GetCognate(object_id, g_ItemToInvObjectMap);
 }
