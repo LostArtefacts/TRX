@@ -103,13 +103,13 @@ void Gun_Pistols_Ready(void)
     g_Lara.torso_rot.x = 0;
     g_Lara.torso_rot.y = 0;
     g_Lara.target = NULL;
-    g_Lara.right_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
-    g_Lara.left_arm.frame_base = g_Objects[O_PISTOLS].frame_base;
+    g_Lara.right_arm.frame_base = g_Objects[O_PISTOL_ANIM].frame_base;
+    g_Lara.left_arm.frame_base = g_Objects[O_PISTOL_ANIM].frame_base;
 }
 
 void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
 {
-    int16_t object_num = O_PISTOLS;
+    int16_t object_num = O_PISTOL_ANIM;
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM;
     } else if (weapon_type == LGT_UZIS) {
@@ -128,7 +128,7 @@ void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
 {
-    int16_t object_num = O_PISTOLS;
+    int16_t object_num = O_PISTOL_ANIM;
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM;
     } else if (weapon_type == LGT_UZIS) {
@@ -143,7 +143,7 @@ void Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_UndrawMeshRight(LARA_GUN_TYPE weapon_type)
 {
-    int16_t object_num = O_PISTOLS;
+    int16_t object_num = O_PISTOL_ANIM;
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM;
     } else if (weapon_type == LGT_UZIS) {
