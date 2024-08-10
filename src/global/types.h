@@ -1162,13 +1162,15 @@ typedef struct DOOR_INFOS {
 
 typedef struct TRIGGER_CMD {
     TRIGGER_OBJECT type;
-    int16_t parameter;
-    struct {
-        int8_t timer;
-        int8_t glide;
-        bool one_shot;
-    } camera;
+    void *parameter;
 } TRIGGER_CMD;
+
+typedef struct TRIGGER_CAMERA_DATA {
+    int16_t camera_num;
+    int8_t timer;
+    int8_t glide;
+    bool one_shot;
+} TRIGGER_CAMERA_DATA;
 
 typedef struct TRIGGER {
     TRIGGER_TYPE type;
