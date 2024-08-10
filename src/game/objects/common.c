@@ -101,6 +101,7 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
 
 const GAME_OBJECT_ID g_GunObjects[] = {
     // clang-format off
+    O_PISTOL_ITEM,
     O_SHOTGUN_ITEM,
     O_MAGNUM_ITEM,
     O_UZI_ITEM,
@@ -168,6 +169,7 @@ const GAME_OBJECT_ID g_InvObjects[] = {
 
 const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
     // clang-format off
+    { O_PISTOL_ITEM, O_PISTOL_AMMO_ITEM },
     { O_SHOTGUN_ITEM, O_SG_AMMO_ITEM },
     { O_MAGNUM_ITEM, O_MAG_AMMO_ITEM },
     { O_UZI_ITEM, O_UZI_AMMO_ITEM },
