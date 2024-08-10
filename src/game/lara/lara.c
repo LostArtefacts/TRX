@@ -638,7 +638,7 @@ void Lara_InitialiseMeshes(int32_t level_num)
     }
 
     if (resume->flags.got_shotgun) {
-        back_object_num = O_SHOTGUN;
+        back_object_num = O_SHOTGUN_ANIM;
     }
 
     if (holster_object_num != NO_OBJECT) {

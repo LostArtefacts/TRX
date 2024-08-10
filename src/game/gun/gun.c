@@ -185,7 +185,7 @@ void Gun_InitialiseNewWeapon(void)
     g_Lara.left_arm.frame_base = g_Objects[anim_type].frame_base;
 
     if (g_Lara.gun_status != LGS_ARMLESS) {
-        if (anim_type == O_SHOTGUN) {
+        if (anim_type == O_SHOTGUN_ANIM) {
             Gun_Rifle_DrawMeshes();
         } else {
             Gun_Pistols_DrawMeshes(g_Lara.gun_type);
@@ -201,7 +201,7 @@ GAME_OBJECT_ID Gun_GetLaraAnimation(LARA_GUN_TYPE gun_type)
     case LGT_UZIS:
         return O_PISTOL_ANIM;
     case LGT_SHOTGUN:
-        return O_SHOTGUN;
+        return O_SHOTGUN_ANIM;
     default:
         return O_LARA;
     }

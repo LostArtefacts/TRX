@@ -58,7 +58,7 @@ static void PickUp_GetItem(
 {
     if (item->object_number == O_SHOTGUN_ITEM) {
         g_Lara.mesh_ptrs[LM_TORSO] =
-            g_Meshes[g_Objects[O_SHOTGUN].mesh_index + LM_TORSO];
+            g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_TORSO];
     }
     Overlay_AddPickup(item->object_number);
     Inv_AddItem(item->object_number);
