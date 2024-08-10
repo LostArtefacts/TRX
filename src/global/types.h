@@ -29,7 +29,7 @@ typedef enum GAME_OBJECT_ID {
     O_PISTOL_ANIM = 1,
     O_SHOTGUN_ANIM = 2,
     O_MAGNUM_ANIM = 3,
-    O_UZI = 4,
+    O_UZI_ANIM = 4,
     O_LARA_EXTRA = 5,
     O_BACON_LARA = 6,
     O_WOLF = 7,
