@@ -437,7 +437,7 @@ INVENTORY_ITEM g_InvItemKey4 = {
 
 INVENTORY_ITEM g_InvItemPistols = {
     .string = "Pistols",
-    .object_number = O_GUN_OPTION,
+    .object_number = O_PISTOL_OPTION,
     .frames_total = 12,
     .current_frame = 0,
     .goal_frame = 0,

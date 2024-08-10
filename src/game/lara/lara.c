@@ -328,7 +328,7 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
     LOG_INFO("%d", object_num);
     switch (object_num) {
     case O_PISTOL_ITEM:
-    case O_GUN_OPTION:
+    case O_PISTOL_OPTION:
         g_Lara.request_gun_type = LGT_PISTOLS;
         if (g_Lara.gun_status == LGS_ARMLESS
             && g_Lara.gun_type == LGT_PISTOLS) {

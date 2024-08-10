@@ -52,7 +52,7 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
         // not implemented in TombATI
         break;
 
-    case O_GUN_OPTION:
+    case O_PISTOL_OPTION:
     case O_SHOTGUN_OPTION:
     case O_MAGNUM_OPTION:
     case O_UZI_OPTION:

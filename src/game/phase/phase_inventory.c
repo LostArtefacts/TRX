@@ -296,7 +296,7 @@ static GAMEFLOW_COMMAND Inv_Close(GAME_OBJECT_ID inv_chosen)
             .param = g_GameFlow.gym_level_num,
         };
 
-    case O_GUN_OPTION:
+    case O_PISTOL_OPTION:
     case O_SHOTGUN_OPTION:
     case O_MAGNUM_OPTION:
     case O_UZI_OPTION:
@@ -798,7 +798,7 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_ALWAYS);
                 break;
 
-            case O_GUN_OPTION:
+            case O_PISTOL_OPTION:
             case O_SHOTGUN_OPTION:
             case O_MAGNUM_OPTION:
             case O_UZI_OPTION:
