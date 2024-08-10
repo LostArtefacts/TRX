@@ -113,7 +113,7 @@ void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM_ANIM;
     } else if (weapon_type == LGT_UZIS) {
-        object_num = O_UZI;
+        object_num = O_UZI_ANIM;
     }
 
     g_Lara.mesh_ptrs[LM_HAND_L] =
@@ -132,7 +132,7 @@ void Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM_ANIM;
     } else if (weapon_type == LGT_UZIS) {
-        object_num = O_UZI;
+        object_num = O_UZI_ANIM;
     }
     g_Lara.mesh_ptrs[LM_THIGH_L] =
         g_Meshes[g_Objects[object_num].mesh_index + LM_THIGH_L];
@@ -147,7 +147,7 @@ void Gun_Pistols_UndrawMeshRight(LARA_GUN_TYPE weapon_type)
     if (weapon_type == LGT_MAGNUMS) {
         object_num = O_MAGNUM_ANIM;
     } else if (weapon_type == LGT_UZIS) {
-        object_num = O_UZI;
+        object_num = O_UZI_ANIM;
     }
     g_Lara.mesh_ptrs[LM_THIGH_R] =
         g_Meshes[g_Objects[object_num].mesh_index + LM_THIGH_R];

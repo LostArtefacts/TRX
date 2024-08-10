@@ -633,7 +633,7 @@ void Lara_InitialiseMeshes(int32_t level_num)
         holster_object_num = O_MAGNUM_ANIM;
         break;
     case LGT_UZIS:
-        holster_object_num = O_UZI;
+        holster_object_num = O_UZI_ANIM;
         break;
     }
 

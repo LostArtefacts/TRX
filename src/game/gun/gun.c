@@ -119,7 +119,7 @@ void Gun_Control(void)
         case LGT_PISTOLS:
             if (g_Lara.pistols.ammo && g_Input.action) {
                 g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
+                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -130,7 +130,7 @@ void Gun_Control(void)
         case LGT_MAGNUMS:
             if (g_Lara.magnums.ammo && g_Input.action) {
                 g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
+                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -141,7 +141,7 @@ void Gun_Control(void)
         case LGT_UZIS:
             if (g_Lara.uzis.ammo && g_Input.action) {
                 g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
+                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -152,7 +152,7 @@ void Gun_Control(void)
         case LGT_SHOTGUN:
             if (g_Lara.shotgun.ammo && g_Input.action) {
                 g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI].mesh_index + LM_HEAD];
+                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
