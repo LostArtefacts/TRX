@@ -113,7 +113,7 @@ typedef enum GAME_OBJECT_ID {
     O_SHOTGUN_ITEM = 85,
     O_MAGNUM_ITEM = 86,
     O_UZI_ITEM = 87,
-    O_GUN_AMMO_ITEM = 88,
+    O_PISTOL_AMMO_ITEM = 88,
     O_SG_AMMO_ITEM = 89,
     O_MAG_AMMO_ITEM = 90,
     O_UZI_AMMO_ITEM = 91,

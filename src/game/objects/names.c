@@ -141,7 +141,7 @@ static const ITEM_NAME m_ItemNames[] = {
     { O_SHOTGUN_ITEM, "^(sg|shotgun)$" },
     { O_MAGNUM_ITEM, "^magnums?$" },
     { O_UZI_ITEM, "^uzis?$" },
-    { O_GUN_AMMO_ITEM, "^pistol[- ]?(ammo|clips?)$" },
+    { O_PISTOL_AMMO_ITEM, "^pistol[- ]?(ammo|clips?)$" },
     { O_SG_AMMO_ITEM, "^(sg|shotgun)[- ]?(ammo|shells?)$" },
     { O_MAG_AMMO_ITEM, "^magnums?[- ]?(ammo|clips?)$" },
     { O_UZI_AMMO_ITEM, "^uzis?[- ]?(ammo|clips?)$" },
