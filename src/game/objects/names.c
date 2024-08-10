@@ -137,7 +137,7 @@ static const ITEM_NAME m_ItemNames[] = {
     { O_PLAYER_3, "^player([- ]?3)?$" },
     { O_PLAYER_4, "^player([- ]?4)?$" },
     { O_SAVEGAME_ITEM, "^(save(game)?[- ]?)?crystal$" },
-    { O_GUN_ITEM, "^pistols$" },
+    { O_PISTOL_ITEM, "^pistols$" },
     { O_SHOTGUN_ITEM, "^(sg|shotgun)$" },
     { O_MAGNUM_ITEM, "^magnums?$" },
     { O_UZI_ITEM, "^uzis?$" },

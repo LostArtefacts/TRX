@@ -424,7 +424,7 @@ int32_t Gun_FireWeapon(
     if (ammo->ammo <= 0) {
         ammo->ammo = 0;
         Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
-        if (Inv_RequestItem(O_GUN_ITEM)) {
+        if (Inv_RequestItem(O_PISTOL_ITEM)) {
             g_Lara.request_gun_type = LGT_PISTOLS;
         } else {
             g_Lara.gun_status = LGS_UNDRAW;

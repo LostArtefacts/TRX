@@ -307,7 +307,7 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
     current->flags.costume = 0;
 
     current->pistol_ammo = 1000;
-    if (Inv_RequestItem(O_GUN_ITEM)) {
+    if (Inv_RequestItem(O_PISTOL_ITEM)) {
         current->flags.got_pistols = 1;
     } else {
         current->flags.got_pistols = 0;

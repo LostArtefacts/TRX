@@ -38,7 +38,8 @@ void Gun_Control(void)
                 draw = true;
             }
         } else if (g_Input.draw) {
-            if (g_Lara.gun_type == LGT_UNARMED && Inv_RequestItem(O_GUN_ITEM)) {
+            if (g_Lara.gun_type == LGT_UNARMED
+                && Inv_RequestItem(O_PISTOL_ITEM)) {
                 g_Lara.gun_type = LGT_PISTOLS;
                 Gun_InitialiseNewWeapon();
             }

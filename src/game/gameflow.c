@@ -1259,7 +1259,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Inv_AddItemNTimes(
                     give_item_data->object_num, give_item_data->quantity);
                 if (g_Lara.gun_type == LGT_UNARMED) {
-                    if (Inv_RequestItem(O_GUN_ITEM)) {
+                    if (Inv_RequestItem(O_PISTOL_ITEM)) {
                         g_GameInfo.current[level_num].gun_type = LGT_PISTOLS;
                     } else if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
                         g_GameInfo.current[level_num].gun_type = LGT_SHOTGUN;

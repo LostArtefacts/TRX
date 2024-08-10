@@ -109,7 +109,7 @@ typedef enum GAME_OBJECT_ID {
     O_PASSPORT_CLOSED = 81,
     O_MAP_CLOSED = 82,
     O_SAVEGAME_ITEM = 83,
-    O_GUN_ITEM = 84,
+    O_PISTOL_ITEM = 84,
     O_SHOTGUN_ITEM = 85,
     O_MAGNUM_ITEM = 86,
     O_UZI_ITEM = 87,

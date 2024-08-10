@@ -32,7 +32,7 @@
 void Game_ProcessInput(void)
 {
     if (g_Config.enable_numeric_keys) {
-        if (g_InputDB.equip_pistols && Inv_RequestItem(O_GUN_ITEM)) {
+        if (g_InputDB.equip_pistols && Inv_RequestItem(O_PISTOL_ITEM)) {
             g_Lara.request_gun_type = LGT_PISTOLS;
         } else if (g_InputDB.equip_shotgun && Inv_RequestItem(O_SHOTGUN_ITEM)) {
             g_Lara.request_gun_type = LGT_SHOTGUN;

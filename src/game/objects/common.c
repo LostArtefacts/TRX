@@ -73,7 +73,7 @@ const GAME_OBJECT_ID g_PlaceholderObjects[] = {
 
 const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format off
-    O_GUN_ITEM,
+    O_PISTOL_ITEM,
     O_SHOTGUN_ITEM,
     O_MAGNUM_ITEM,
     O_UZI_ITEM,
@@ -192,7 +192,7 @@ static const GAME_OBJECT_PAIR m_KeyItemToReceptacleMap[] = {
 
 const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format off
-    { O_GUN_ITEM, O_GUN_OPTION },
+    { O_PISTOL_ITEM, O_GUN_OPTION },
     { O_SHOTGUN_ITEM, O_SHOTGUN_OPTION },
     { O_MAGNUM_ITEM, O_MAGNUM_OPTION },
     { O_UZI_ITEM, O_UZI_OPTION },

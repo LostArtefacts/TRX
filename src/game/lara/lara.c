@@ -327,7 +327,7 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
 {
     LOG_INFO("%d", object_num);
     switch (object_num) {
-    case O_GUN_ITEM:
+    case O_PISTOL_ITEM:
     case O_GUN_OPTION:
         g_Lara.request_gun_type = LGT_PISTOLS;
         if (g_Lara.gun_status == LGS_ARMLESS
@@ -534,7 +534,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     }
 
     if (resume->flags.got_pistols) {
-        Inv_AddItem(O_GUN_ITEM);
+        Inv_AddItem(O_PISTOL_ITEM);
     }
 
     if (resume->flags.got_magnums) {
