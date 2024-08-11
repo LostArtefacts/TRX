@@ -49,3 +49,12 @@ const ENUM_STRING_MAP g_EnumStr_SCREENSHOT_FORMAT[] = {
     { "png", SCREENSHOT_FORMAT_PNG },
     { NULL, -1 },
 };
+
+const ENUM_STRING_MAP g_EnumStr_UNDERWATER_MUSIC_MODE[] = {
+    { "full", UMM_FULL },
+    { "quiet", UMM_QUIET },
+    { "full_no_ambient", UMM_FULL_NO_AMBIENT },
+    { "quiet_no_ambient", UMM_QUIET_NO_AMBIENT },
+    { "none", UMM_NONE },
+    { NULL, -1 },
+};

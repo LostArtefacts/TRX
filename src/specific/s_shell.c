@@ -202,12 +202,12 @@ void S_Shell_SpinMessageLoop(void)
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
-                Music_SetVolume(g_Config.music_volume);
+                Music_Unmute();
                 Sound_SetMasterVolume(g_Config.sound_volume);
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
-                Music_SetVolume(0);
+                Music_Mute();
                 Sound_SetMasterVolume(0);
                 break;
 

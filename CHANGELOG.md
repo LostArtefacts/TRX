@@ -3,6 +3,7 @@
 - added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon (#94)
 - added an option for Lara to use her underwater swimming physics from TR2+ (#1003)
 - added weapons to Lara's empty holsters on pickup (#1291)
+- added options to quiet or mute music while underwater (#528)
 - changed the turbo cheat to no longer affect the gameplay time (#1420)
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)

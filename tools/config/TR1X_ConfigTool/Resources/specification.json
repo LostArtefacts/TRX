@@ -50,6 +50,13 @@
       "full-lock",
       "semi-lock",
       "no-lock"
+    ],
+    "underwater_music": [
+      "full",
+      "quiet",
+      "full_no_ambient",
+      "quiet_no_ambient",
+      "none"
     ]
   },
   "CategorisedProperties": [
@@ -460,6 +467,12 @@
           "Field": "enable_ps_uzi_sfx",
           "DataType": "Bool",
           "DefaultValue": false
+        },
+        {
+          "Field": "underwater_music_mode",
+          "DataType": "Enum",
+          "EnumKey": "underwater_music",
+          "DefaultValue": "full"
         }
       ]
     },

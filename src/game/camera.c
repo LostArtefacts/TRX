@@ -4,6 +4,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/los.h"
+#include "game/music.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -42,6 +43,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static void Camera_LoadCutsceneFrame(void);
 static void Camera_OffsetAdditionalAngle(int16_t delta);
 static void Camera_OffsetAdditionalElevation(int16_t delta);
+static void Camera_AdjustMusicVolume(bool underwater);
 static void Camera_EnsureEnvironment(void);
 
 static bool Camera_BadPosition(
@@ -408,6 +410,39 @@ static void Camera_OffsetAdditionalElevation(int16_t delta)
     }
 }
 
+static void Camera_AdjustMusicVolume(const bool underwater)
+{
+    const bool is_ambient =
+        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+
+    double multiplier = 1.0;
+
+    if (underwater) {
+        switch (g_Config.underwater_music_mode) {
+        case UMM_FULL:
+            multiplier = 1.0;
+            break;
+        case UMM_QUIET:
+            multiplier = 0.5;
+            break;
+        case UMM_NONE:
+            multiplier = 0.0;
+            break;
+        case UMM_FULL_NO_AMBIENT:
+            multiplier = is_ambient ? 0.0 : 1.0;
+            break;
+        case UMM_QUIET_NO_AMBIENT:
+            multiplier = is_ambient ? 0.0 : 0.5;
+            break;
+        default:
+            multiplier = 1.0;
+            break;
+        }
+    }
+
+    Music_SetVolume(g_Config.music_volume * multiplier);
+}
+
 void Camera_Reset(void)
 {
     g_Camera.pos.room_number = NO_ROOM;
@@ -749,11 +784,15 @@ static void Camera_EnsureEnvironment(void)
     }
 
     if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
+        Camera_AdjustMusicVolume(true);
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
         g_Camera.underwater = true;
-    } else if (g_Camera.underwater) {
-        Sound_StopEffect(SFX_UNDERWATER, NULL);
-        g_Camera.underwater = false;
+    } else {
+        Camera_AdjustMusicVolume(false);
+        if (g_Camera.underwater) {
+            Sound_StopEffect(SFX_UNDERWATER, NULL);
+            g_Camera.underwater = false;
+        }
     }
 }
 
