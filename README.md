@@ -460,7 +460,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added an option to restore the mummy in City of Khamoon room 25, similar to the PS version
 - added a flag indicating if new game plus is unlocked to the player config which allows the player to select new game plus or not when making a new game
 - added weapons to Lara's empty holsters on pickup
-- added the option to quiet or mute music while underwater
+- added options to quiet or mute music while underwater
 - fixed keys and items not working when drawing guns immediately after using them
 - fixed counting the secret in The Great Pyramid
 - fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them

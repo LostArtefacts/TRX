@@ -13,6 +13,7 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
+#include "specific/s_shell.h"
 
 #include <libtrx/utils.h>
 
@@ -43,6 +44,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static void Camera_LoadCutsceneFrame(void);
 static void Camera_OffsetAdditionalAngle(int16_t delta);
 static void Camera_OffsetAdditionalElevation(int16_t delta);
+static void Camera_SetUnderwaterMusicVolume(bool underwater);
 static void Camera_EnsureEnvironment(void);
 
 static bool Camera_BadPosition(
@@ -409,6 +411,37 @@ static void Camera_OffsetAdditionalElevation(int16_t delta)
     }
 }
 
+static void Camera_SetUnderwaterMusicVolume(bool underwater)
+{
+    if (!S_Shell_IsWindowFocused()) {
+        return;
+    }
+
+    if (underwater) {
+        if (g_Config.underwater_music_mode == UMM_QUIET) {
+            Music_SetVolume(g_Config.music_volume / 2);
+        } else if (g_Config.underwater_music_mode == UMM_NONE) {
+            Music_SetVolume(0);
+        } else if (g_Config.underwater_music_mode == UMM_FULL_NO_AMBIENT) {
+            if (Music_GetCurrentPlayingTrack()
+                == Music_GetCurrentLoopedTrack()) {
+                Music_SetVolume(0);
+            } else {
+                Music_SetVolume(g_Config.music_volume);
+            }
+        } else if (g_Config.underwater_music_mode == UMM_QUIET_NO_AMBIENT) {
+            if (Music_GetCurrentPlayingTrack()
+                == Music_GetCurrentLoopedTrack()) {
+                Music_SetVolume(0);
+            } else {
+                Music_SetVolume(g_Config.music_volume / 2);
+            }
+        }
+    } else {
+        Music_SetVolume(g_Config.music_volume);
+    }
+}
+
 void Camera_Reset(void)
 {
     g_Camera.pos.room_number = NO_ROOM;
@@ -750,19 +783,12 @@ static void Camera_EnsureEnvironment(void)
     }
 
     if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
+        Camera_SetUnderwaterMusicVolume(true);
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
-        if (g_Config.underwater_music_mode == UMM_QUIET) {
-            Music_SetVolume(g_Config.music_volume / 2);
-        } else if (g_Config.underwater_music_mode == UMM_NONE) {
-            Music_SetVolume(0);
-        }
         g_Camera.underwater = true;
     } else if (g_Camera.underwater) {
+        Camera_SetUnderwaterMusicVolume(false);
         Sound_StopEffect(SFX_UNDERWATER, NULL);
-        if (g_Config.underwater_music_mode == UMM_QUIET
-            || g_Config.underwater_music_mode == UMM_NONE) {
-            Music_SetVolume(g_Config.music_volume);
-        }
         g_Camera.underwater = false;
     }
 }

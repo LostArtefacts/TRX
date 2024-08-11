@@ -54,6 +54,8 @@
     "underwater_music": [
       "full",
       "quiet",
+      "full_no_ambient",
+      "quiet_no_ambient",
       "none"
     ]
   },

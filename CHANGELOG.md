@@ -3,7 +3,7 @@
 - added skybox support, with a default option provided for Lost Valley, Colosseum and Obelisk of Khamoon (#94)
 - added an option for Lara to use her underwater swimming physics from TR2+ (#1003)
 - added weapons to Lara's empty holsters on pickup (#1291)
-- added the option to quiet or mute music while underwater (#528)
+- added options to quiet or mute music while underwater (#528)
 - changed the turbo cheat to no longer affect the gameplay time (#1420)
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)
@@ -173,7 +173,7 @@
 
 ## [3.0](https://github.com/LostArtefacts/TR1X/compare/2.16...3.0) - 2023-11-09
 - renamed the project from Tomb1Main to TR1X in an effort to establish our own unique identity, while respectfully disassociating from TR2Main.
-- added developer console (accessible with `/`, see [COMMANDS.md] for details)
+- added developer console (accessible with `/`, see [COMMANDS.md)] for details)
 - added Linux builds and toolchain
 - added an option to allow Lara to roll while underwater, similar to TR2+ (#993)
 - added an option to turn off Eidos logo entirely through config (#1044)

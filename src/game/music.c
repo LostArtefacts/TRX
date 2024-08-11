@@ -4,6 +4,7 @@
 #include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
+#include "specific/s_shell.h"
 
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
@@ -150,6 +151,10 @@ void Music_Stop(void)
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLastPlayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
+    // Reset volume in case Lara was underwater.
+    if (S_Shell_IsWindowFocused()) {
+        Music_SetVolume(g_Config.music_volume);
+    }
     Music_StopActiveStream();
 }
 

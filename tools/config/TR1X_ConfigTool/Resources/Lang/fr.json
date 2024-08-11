@@ -85,6 +85,8 @@
     "underwater_music": {
       "full": "Complète",
       "quiet": "Calme",
+      "full_no_ambient": "Plein mais sans ambiance",
+      "quiet_no_ambient": "Calme mais sans ambiance",
       "none": "Aucune"
       }
   },
@@ -388,7 +390,7 @@
     },
     "underwater_music_mode": {
       "Title": "Comportement de la musique sous l'eau",
-      "Description": "Modifie la façon dont la musique est jouée sous l'eau.\n- Complète: la musique joue normalement sous l'eau.\n- Calme: music plays at half volume while underwater.\n- Aucune: aucune musique ne joue sous l'eau."
+      "Description": "Modifie la façon dont la musique est jouée sous l'eau.\n- Complète: la musique joue normalement sous l'eau (Comportement original de TR1).\n- Calme: music plays at half volume while underwater.\n- Plein mais sans ambiance: la musique joue normalement sous l'eau, sauf la musique d'ambiance qui est coupée.\n- Calme mais sans ambiance: la musique joue à moitié volume sous l'eau, sauf la musique d'ambiance qui est coupée.\n- Aucune: aucune musique ne joue sous l'eau."
     },
     "menu_style": {
       "Title": "Style des menus",

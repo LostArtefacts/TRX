@@ -94,6 +94,8 @@
     "underwater_music": {
       "full": "Completo",
       "quiet": "Tranquilo",
+      "full_no_ambient": "Completo pero sin ambiente",
+      "quiet_no_ambient": "Tranquilo pero sin ambientet",
       "none": "Ninguno"
       }
   },
@@ -284,7 +286,7 @@
     },
     "underwater_music_mode": {
       "Title": "Comportamiento de la música bajo el agua",
-      "Description": "Cambia cómo se reproduce la música bajo el agua.\n- Completo: la música se reproduce normalmente mientras estás bajo el agua.\n- Tranquilo: la música se reproduce a la mitad del volumen mientras estás bajo el agua.\n- Ninguno: no se reproduce música mientras estás bajo el agua."
+      "Description": "Cambia cómo se reproduce la música bajo el agua.\n- Completo: la música se reproduce normalmente mientras estás bajo el agua (TR1 original).\n- Tranquilo: la música se reproduce a la mitad del volumen mientras estás bajo el agua.\n- Completo pero sin ambiente: la música suena normalmente mientras estás bajo el agua, excepto la música ambiental, que está silenciada.\n- Tranquilo pero sin ambiente: la música suena a la mitad del volumen mientras estás bajo el agua, excepto la música ambiental, que está silenciada.\n- Ninguno: no se reproduce música mientras estás bajo el agua."
     },
     "enable_round_shadow": {
       "Title": "Sombras redondeadas",

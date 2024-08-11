@@ -85,6 +85,8 @@
   "underwater_music": {
     "full": "Full",
     "quiet": "Quiet",
+    "full_no_ambient": "Full but no ambient",
+    "quiet_no_ambient": "Quiet but no ambient",
     "none": "None"
     }
   },
@@ -388,7 +390,7 @@
     },
     "underwater_music_mode": {
       "Title": "Underwater music behavior",
-      "Description": "Changes how the music is played underwater.\n- Full: music plays normally while underwater.\n- Quiet: music plays at half volume while underwater.\n- None: no music plays while underwater."
+      "Description": "Changes how the music is played underwater.\n- Full: music plays normally while underwater (OG TR1).\n- Quiet: music plays at half volume while underwater.\n- Full but no ambient: music plays normally while underwater except ambient music is muted.\n- Quiet but no ambient: music plays at half volume while underwater except ambient music is muted.\n- None: no music plays while underwater."
     },
     "menu_style": {
       "Title": "Menu style",

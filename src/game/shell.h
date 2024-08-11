@@ -9,3 +9,4 @@ void Shell_Main(void);
 void Shell_ExitSystem(const char *message);
 void Shell_ExitSystemFmt(const char *fmt, ...);
 bool Shell_MakeScreenshot(void);
+bool Shell_IsWindowFocused(void);

@@ -85,6 +85,8 @@
     "underwater_music": {
       "full": "Completa",
       "quiet": "Tranquilla",
+      "full_no_ambient": "Completo ma senza ambiente",
+      "quiet_no_ambient": "Tranquilla ma senza ambiente",
       "none": "Nessuna"
       }
   },
@@ -388,7 +390,7 @@
     },
     "underwater_music_mode": {
       "Title": "Underwater music behavior",
-      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica viene riprodotta normalmente sott'acqua.\n- Tranquilla: la musica viene riprodotta a metà volume sott'acqua.\n- Nessuna: nessuna musica viene riprodotta sott'acqua."
+      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica viene riprodotta normalmente sott'acqua (TR1).\n- Tranquilla: la musica viene riprodotta a metà volume sott'acqua.\n- Completo ma senza ambiente: la musica suona normalmente mentre sei sott'acqua, eccetto la musica ambientale che è silenziata.\n- Tranquilla ma senza ambiente: la musica suona a metà volume mentre sei sott'acqua, eccetto la musica ambientale che è silenziata.\n- Nessuna: nessuna musica viene riprodotta sott'acqua."
     },
     "menu_style": {
       "Title": "Stile del menù",
