@@ -1022,6 +1022,12 @@ typedef enum SOUND_PLAY_MODE {
     SPM_ALWAYS = 2,
 } SOUND_PLAY_MODE;
 
+typedef enum UNDERWATER_MUSIC_MODE {
+    UMM_FULL,
+    UMM_QUIET,
+    UMM_NONE,
+} UNDERWATER_MUSIC_MODE;
+
 typedef enum GAME_BONUS_FLAG {
     GBF_NGPLUS = 1 << 0,
     GBF_JAPANESE = 1 << 1,

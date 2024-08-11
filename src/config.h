@@ -71,6 +71,7 @@ typedef struct {
     bool enable_enhanced_saves;
     bool enable_pitched_sounds;
     bool enable_ps_uzi_sfx;
+    UNDERWATER_MUSIC_MODE underwater_music_mode;
     bool enable_jump_twists;
     bool enabled_inverted_look;
     int32_t camera_speed;

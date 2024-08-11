@@ -4,6 +4,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/los.h"
+#include "game/music.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -750,9 +751,18 @@ static void Camera_EnsureEnvironment(void)
 
     if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
+        if (g_Config.underwater_music_mode == UMM_QUIET) {
+            Music_SetVolume(g_Config.music_volume / 2);
+        } else if (g_Config.underwater_music_mode == UMM_NONE) {
+            Music_SetVolume(0);
+        }
         g_Camera.underwater = true;
     } else if (g_Camera.underwater) {
         Sound_StopEffect(SFX_UNDERWATER, NULL);
+        if (g_Config.underwater_music_mode == UMM_QUIET
+            || g_Config.underwater_music_mode == UMM_NONE) {
+            Music_SetVolume(g_Config.music_volume);
+        }
         g_Camera.underwater = false;
     }
 }

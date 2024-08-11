@@ -81,6 +81,11 @@
     "full-lock": "Full lock",
     "semi-lock": "Semi lock",
     "no-lock": "No lock"
+    },
+  "underwater_music": {
+    "full": "Full",
+    "quiet": "Quiet",
+    "none": "None"
     }
   },
   "Categories": {
@@ -380,6 +385,10 @@
     "enable_ps_uzi_sfx": {
       "Title": "Enable PS Uzi SFX",
       "Description": "Changes the Uzi sound effects to match the PlayStation version."
+    },
+    "underwater_music_mode": {
+      "Title": "Underwater music behavior",
+      "Description": "Changes how the music is played underwater.\n- Full: music plays normally while underwater.\n- Quiet: music plays at half volume while underwater.\n- None: no music plays while underwater."
     },
     "menu_style": {
       "Title": "Menu style",

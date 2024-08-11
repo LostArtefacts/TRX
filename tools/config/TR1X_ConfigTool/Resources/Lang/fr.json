@@ -81,6 +81,11 @@
       "full-lock": "Full lock",
       "semi-lock": "Semi lock",
       "no-lock": "No lock"
+      },
+    "underwater_music": {
+      "full": "Complète",
+      "quiet": "Calme",
+      "none": "Aucune"
       }
   },
   "Categories": {
@@ -380,6 +385,10 @@
     "enable_ps_uzi_sfx": {
       "Title": "Activer les SFX PlayStation des uzis",
       "Description": "Change les effets sonores des uzis pour correspondre à ceux de la version PlayStation."
+    },
+    "underwater_music_mode": {
+      "Title": "Comportement de la musique sous l'eau",
+      "Description": "Modifie la façon dont la musique est jouée sous l'eau.\n- Complète: la musique joue normalement sous l'eau.\n- Calme: music plays at half volume while underwater.\n- Aucune: aucune musique ne joue sous l'eau."
     },
     "menu_style": {
       "Title": "Style des menus",
