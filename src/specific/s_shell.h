@@ -14,4 +14,3 @@ void S_Shell_HandleWindowResize(void);
 void S_Shell_TerminateGame(int exit_code);
 int S_Shell_GetCurrentDisplayWidth(void);
 int S_Shell_GetCurrentDisplayHeight(void);
-bool S_Shell_IsWindowFocused(void);

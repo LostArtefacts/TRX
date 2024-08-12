@@ -345,8 +345,3 @@ int S_Shell_GetCurrentDisplayHeight(void)
     SDL_GetCurrentDisplayMode(0, &dm);
     return dm.h;
 }
-
-bool S_Shell_IsWindowFocused(void)
-{
-    return m_IsWindowFocused;
-}
