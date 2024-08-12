@@ -13,7 +13,6 @@
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/matrix.h"
-#include "specific/s_shell.h"
 
 #include <libtrx/utils.h>
 
@@ -411,7 +410,7 @@ static void Camera_OffsetAdditionalElevation(int16_t delta)
     }
 }
 
-static void Camera_AdjustMusicVolume(bool underwater)
+static void Camera_AdjustMusicVolume(const bool underwater)
 {
     const bool is_ambient =
         Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
