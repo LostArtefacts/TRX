@@ -4,7 +4,6 @@
 #include "game/gameflow.h"
 #include "game/sound.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
@@ -15,16 +14,27 @@
 
 static const char *m_Extensions[] = { ".flac", ".ogg", ".mp3", ".wav", NULL };
 
-static float m_MusicVolume = 0.0f;
+static bool m_Muted = false;
+static int16_t m_Volume = 0;
 static int m_AudioStreamID = -1;
 static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 
+static void Music_SyncVolume(const int32_t audio_stream_id);
 static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track);
 static void Music_StopActiveStream(void);
 static void Music_StreamFinished(int stream_id, void *user_data);
 static char *Music_GetTrackFileName(MUSIC_TRACK_ID track);
+
+static void Music_SyncVolume(const int32_t audio_stream_id)
+{
+    if (audio_stream_id < 0) {
+        return;
+    }
+    const float multiplier = m_Volume ? (25 * m_Volume + 5) / 255.0f : 0.0f;
+    Audio_Stream_SetVolume(audio_stream_id, m_Muted ? 0 : multiplier);
+}
 
 static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track)
 {
@@ -108,7 +118,7 @@ bool Music_Play(MUSIC_TRACK_ID track)
         m_TrackLastPlayed = track;
     }
 
-    Audio_Stream_SetVolume(m_AudioStreamID, m_MusicVolume);
+    Music_SyncVolume(m_AudioStreamID);
     Audio_Stream_SetFinishCallback(m_AudioStreamID, Music_StreamFinished, NULL);
 
     return true;
@@ -137,7 +147,7 @@ bool Music_PlayLooped(MUSIC_TRACK_ID track)
         return false;
     }
 
-    Audio_Stream_SetVolume(m_AudioStreamID, m_MusicVolume);
+    Music_SyncVolume(m_AudioStreamID);
     Audio_Stream_SetFinishCallback(m_AudioStreamID, Music_StreamFinished, NULL);
     Audio_Stream_SetIsLooped(m_AudioStreamID, true);
 
@@ -151,10 +161,6 @@ void Music_Stop(void)
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLastPlayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
-    // Reset volume in case Lara was underwater.
-    if (S_Shell_IsWindowFocused()) {
-        Music_SetVolume(g_Config.music_volume);
-    }
     Music_StopActiveStream();
 }
 
@@ -172,16 +178,28 @@ void Music_StopTrack(MUSIC_TRACK_ID track)
     }
 }
 
+void Music_Mute(void)
+{
+    m_Muted = true;
+    Music_SyncVolume(m_AudioStreamID);
+}
+
+void Music_Unmute(void)
+{
+    m_Muted = false;
+    Music_SyncVolume(m_AudioStreamID);
+}
+
 int16_t Music_GetVolume(void)
 {
-    return m_MusicVolume * Music_GetMaxVolume();
+    return m_Volume;
 }
 
 void Music_SetVolume(int16_t volume)
 {
-    m_MusicVolume = volume ? (25 * volume + 5) / 255.0f : 0.0f;
-    if (m_AudioStreamID >= 0) {
-        Audio_Stream_SetVolume(m_AudioStreamID, m_MusicVolume);
+    if (volume != m_Volume) {
+        m_Volume = volume;
+        Music_SyncVolume(m_AudioStreamID);
     }
 }
 

@@ -26,6 +26,12 @@ void Music_Stop(void);
 // Stops the provided single track and restarts the looped track if applicable.
 void Music_StopTrack(MUSIC_TRACK_ID track);
 
+// Mutes the game music. Doesn't change the music volume.
+void Music_Mute(void);
+
+// Unmutes the game music. Doesn't change the music volume.
+void Music_Unmute(void);
+
 // Gets the game volume.
 int16_t Music_GetVolume(void);
 

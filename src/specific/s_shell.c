@@ -38,7 +38,6 @@
 static int m_ArgCount = 0;
 static char **m_ArgStrings = NULL;
 static SDL_Window *m_Window = NULL;
-static bool m_IsWindowFocused = true;
 
 static void S_Shell_SeedRandom(void);
 static void S_Shell_SetWindowPos(int32_t x, int32_t y, bool update);
@@ -203,15 +202,13 @@ void S_Shell_SpinMessageLoop(void)
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
-                Music_SetVolume(g_Config.music_volume);
+                Music_Unmute();
                 Sound_SetMasterVolume(g_Config.sound_volume);
-                m_IsWindowFocused = true;
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
-                Music_SetVolume(0);
+                Music_Mute();
                 Sound_SetMasterVolume(0);
-                m_IsWindowFocused = false;
                 break;
 
             case SDL_WINDOWEVENT_MOVED:

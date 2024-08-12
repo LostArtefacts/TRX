@@ -44,7 +44,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
 static void Camera_LoadCutsceneFrame(void);
 static void Camera_OffsetAdditionalAngle(int16_t delta);
 static void Camera_OffsetAdditionalElevation(int16_t delta);
-static void Camera_SetUnderwaterMusicVolume(bool underwater);
+static void Camera_AdjustMusicVolume(bool underwater);
 static void Camera_EnsureEnvironment(void);
 
 static bool Camera_BadPosition(
@@ -411,35 +411,36 @@ static void Camera_OffsetAdditionalElevation(int16_t delta)
     }
 }
 
-static void Camera_SetUnderwaterMusicVolume(bool underwater)
+static void Camera_AdjustMusicVolume(bool underwater)
 {
-    if (!S_Shell_IsWindowFocused()) {
-        return;
-    }
+    const bool is_ambient =
+        Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
+
+    double multiplier = 1.0;
 
     if (underwater) {
-        if (g_Config.underwater_music_mode == UMM_QUIET) {
-            Music_SetVolume(g_Config.music_volume / 2);
-        } else if (g_Config.underwater_music_mode == UMM_NONE) {
-            Music_SetVolume(0);
-        } else if (g_Config.underwater_music_mode == UMM_FULL_NO_AMBIENT) {
-            if (Music_GetCurrentPlayingTrack()
-                == Music_GetCurrentLoopedTrack()) {
-                Music_SetVolume(0);
-            } else {
-                Music_SetVolume(g_Config.music_volume);
-            }
-        } else if (g_Config.underwater_music_mode == UMM_QUIET_NO_AMBIENT) {
-            if (Music_GetCurrentPlayingTrack()
-                == Music_GetCurrentLoopedTrack()) {
-                Music_SetVolume(0);
-            } else {
-                Music_SetVolume(g_Config.music_volume / 2);
-            }
-        }
-    } else {
-        Music_SetVolume(g_Config.music_volume);
+        switch (g_Config.underwater_music_mode) {
+        case UMM_FULL:
+            multiplier = 1.0;
+            break;
+        case UMM_QUIET:
+            multiplier = 0.5;
+            break;
+        case UMM_NONE:
+            multiplier = 0.0;
+            break;
+        case UMM_FULL_NO_AMBIENT:
+            multiplier = is_ambient ? 0.0 : 1.0;
+            break;
+        case UMM_QUIET_NO_AMBIENT:
+            multiplier = is_ambient ? 0.0 : 0.5;
+            break;
+        default:
+            multiplier = 1.0;
+            break;
     }
+
+    Music_SetVolume(g_Config.music_volume * multiplier);
 }
 
 void Camera_Reset(void)
@@ -783,13 +784,15 @@ static void Camera_EnsureEnvironment(void)
     }
 
     if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
-        Camera_SetUnderwaterMusicVolume(true);
+        Camera_AdjustMusicVolume(true);
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
         g_Camera.underwater = true;
-    } else if (g_Camera.underwater) {
-        Camera_SetUnderwaterMusicVolume(false);
-        Sound_StopEffect(SFX_UNDERWATER, NULL);
-        g_Camera.underwater = false;
+    } else {
+        Camera_AdjustMusicVolume(false);
+        if (g_Camera.underwater) {
+            Sound_StopEffect(SFX_UNDERWATER, NULL);
+            g_Camera.underwater = false;
+        }
     }
 }
 
