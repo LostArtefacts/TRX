@@ -438,6 +438,7 @@ static void Camera_AdjustMusicVolume(bool underwater)
         default:
             multiplier = 1.0;
             break;
+        }
     }
 
     Music_SetVolume(g_Config.music_volume * multiplier);
