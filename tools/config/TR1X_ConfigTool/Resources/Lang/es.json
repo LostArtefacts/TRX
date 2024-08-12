@@ -249,7 +249,7 @@
       "Title": "Cambio de objetivo",
       "Description": "Permite cambiar de objetivo como en TR4+ mientras apuntas con armas. Presiona mirar mientras apuntas para cambiar de objetivo."
     },
-    "target_lock_mode": {
+    "target_mode": {
       "Title": "Modo de bloqueo del objetivo del arma",
       "Description": "Cambia el comportamiento de cómo las armas se fijan en los objetivos.\n- Bloqueo total: siempre mantiene el objetivo bloqueado incluso si se pierde de vista al enemigo o muere (TR1 original).\n- Semibloqueo: mantiene el objetivo bloqueado si se pierde de vista al enemigo pero pierde el objetivo fijado si el enemigo muere.\n- Sin bloqueo: pierde el objetivo fijado si se pierde de vista al enemigo o muere (TR4+)."
     },
