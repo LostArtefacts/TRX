@@ -7,11 +7,11 @@
 
 #include "global/types.h"
 
-void Gun_Rifle_Draw(void);
-void Gun_Rifle_Undraw(void);
-void Gun_Rifle_DrawMeshes(void);
-void Gun_Rifle_UndrawMeshes(void);
-void Gun_Rifle_Ready(void);
+void Gun_Rifle_Draw(LARA_GUN_TYPE weapon_type);
+void Gun_Rifle_Undraw(LARA_GUN_TYPE weapon_type);
+void Gun_Rifle_DrawMeshes(LARA_GUN_TYPE weapon_type);
+void Gun_Rifle_UndrawMeshes(LARA_GUN_TYPE weapon_type);
+void Gun_Rifle_Ready(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type);
-void Gun_Rifle_Animate(void);
-void Gun_Rifle_Fire(void);
+void Gun_Rifle_Animate(LARA_GUN_TYPE weapon_type);
+void Gun_Rifle_Fire(LARA_GUN_TYPE weapon_type);
