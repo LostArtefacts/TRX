@@ -4,6 +4,7 @@
 #include "game/gun/gun_rifle.h"
 #include "game/input.h"
 #include "game/inventory.h"
+#include "game/lara.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "global/const.h"
@@ -105,8 +106,7 @@ void Gun_Control(void)
         break;
 
     case LGS_UNDRAW:
-        g_Lara.mesh_ptrs[LM_HEAD] =
-            g_Meshes[g_Objects[O_LARA].mesh_index + LM_HEAD];
+        Lara_SwapSingleMesh(LM_HEAD, O_LARA);
 
         switch (g_Lara.gun_type) {
         case LGT_PISTOLS:
@@ -125,14 +125,12 @@ void Gun_Control(void)
         break;
 
     case LGS_READY:
-        g_Lara.mesh_ptrs[LM_HEAD] =
-            g_Meshes[g_Objects[O_LARA].mesh_index + LM_HEAD];
+        Lara_SwapSingleMesh(LM_HEAD, O_LARA);
 
         switch (g_Lara.gun_type) {
         case LGT_PISTOLS:
             if (g_Lara.pistols.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
+                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -142,8 +140,7 @@ void Gun_Control(void)
 
         case LGT_MAGNUMS:
             if (g_Lara.magnums.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
+                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -153,8 +150,7 @@ void Gun_Control(void)
 
         case LGT_UZIS:
             if (g_Lara.uzis.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
+                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -164,8 +160,7 @@ void Gun_Control(void)
 
         case LGT_SHOTGUN:
             if (g_Lara.shotgun.ammo && g_Input.action) {
-                g_Lara.mesh_ptrs[LM_HEAD] =
-                    g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_HEAD];
+                Lara_SwapSingleMesh(LM_HEAD, O_UZI_ANIM);
             }
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -312,8 +307,7 @@ void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID object_id =
         weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
     assert(object_id != NO_OBJECT);
-    g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_L];
+    Lara_SwapSingleMesh(LM_HAND_L, object_id);
 }
 
 void Gun_SetLaraHandRMesh(const LARA_GUN_TYPE weapon_type)
@@ -321,8 +315,7 @@ void Gun_SetLaraHandRMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID object_id =
         weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
     assert(object_id != NO_OBJECT);
-    g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_R];
+    Lara_SwapSingleMesh(LM_HAND_R, object_id);
 }
 
 void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
@@ -330,8 +323,7 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID object_id =
         weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
     assert(object_id != NO_OBJECT);
-    g_Lara.mesh_ptrs[LM_TORSO] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_TORSO];
+    Lara_SwapSingleMesh(LM_TORSO, object_id);
     g_Lara.back_gun_type = weapon_type;
 }
 
@@ -340,8 +332,7 @@ void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID object_id =
         weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
     assert(object_id != NO_OBJECT);
-    g_Lara.mesh_ptrs[LM_THIGH_L] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_THIGH_L];
+    Lara_SwapSingleMesh(LM_THIGH_L, object_id);
     g_Lara.holsters_gun_type = weapon_type;
 }
 
@@ -350,7 +341,6 @@ void Gun_SetLaraHolsterRMesh(const LARA_GUN_TYPE weapon_type)
     const GAME_OBJECT_ID object_id =
         weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
     assert(object_id != NO_OBJECT);
-    g_Lara.mesh_ptrs[LM_THIGH_R] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_THIGH_R];
+    Lara_SwapSingleMesh(LM_THIGH_R, object_id);
     g_Lara.holsters_gun_type = weapon_type;
 }

@@ -138,14 +138,14 @@ void BaconLara_Draw(ITEM_INFO *item)
 
     int16_t *old_mesh_ptrs[LM_NUMBER_OF];
 
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        old_mesh_ptrs[i] = g_Lara.mesh_ptrs[i];
-        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_BACON_LARA].mesh_index + i];
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        old_mesh_ptrs[mesh] = g_Lara.mesh_ptrs[mesh];
+        Lara_SwapSingleMesh(mesh, O_BACON_LARA);
     }
 
     Lara_Draw(item);
 
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        g_Lara.mesh_ptrs[i] = old_mesh_ptrs[i];
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        g_Lara.mesh_ptrs[mesh] = old_mesh_ptrs[mesh];
     }
 }

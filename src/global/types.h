@@ -732,6 +732,7 @@ typedef enum LARA_MESH {
     LM_LARM_L = 12,
     LM_HAND_L = 13,
     LM_HEAD = 14,
+    LM_FIRST = LM_HIPS,
     LM_NUMBER_OF = 15,
 } LARA_MESH;
 

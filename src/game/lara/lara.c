@@ -210,9 +210,14 @@ void Lara_SwapMeshExtra(void)
     if (!g_Objects[O_LARA_EXTRA].loaded) {
         return;
     }
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA_EXTRA].mesh_index + i];
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        Lara_SwapSingleMesh(mesh, O_LARA_EXTRA);
     }
+}
+
+void Lara_SwapSingleMesh(const LARA_MESH mesh, const GAME_OBJECT_ID object_id)
+{
+    g_Lara.mesh_ptrs[mesh] = g_Meshes[g_Objects[object_id].mesh_index + mesh];
 }
 
 void Lara_Animate(ITEM_INFO *item)
@@ -610,17 +615,14 @@ void Lara_InitialiseMeshes(int32_t level_num)
     const RESUME_INFO *const resume = &g_GameInfo.current[level_num];
 
     if (resume->flags.costume) {
-        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-            const bool use_orig_mesh = i == LM_HEAD;
-            g_Lara.mesh_ptrs[i] = g_Meshes
-                [g_Objects[use_orig_mesh ? O_LARA : O_LARA_EXTRA].mesh_index
-                 + i];
+        for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+            Lara_SwapSingleMesh(mesh, mesh == LM_HEAD ? O_LARA : O_LARA_EXTRA);
         }
         return;
     }
 
-    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA].mesh_index + i];
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        Lara_SwapSingleMesh(mesh, O_LARA);
     }
 
     LARA_GUN_TYPE holsters_gun_type = resume->holsters_gun_type;
