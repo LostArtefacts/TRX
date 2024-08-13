@@ -247,7 +247,9 @@ void Savegame_ApplyLogicToCurrentInfo(int level_num)
         current->flags.got_shotgun = 0;
         current->flags.got_magnums = 0;
         current->flags.got_uzis = 0;
-        current->gun_type = LGT_UNARMED;
+        current->equipped_gun_type = LGT_UNARMED;
+        current->holsters_gun_type = LGT_UNARMED;
+        current->back_gun_type = LGT_UNARMED;
         current->gun_status = LGS_ARMLESS;
     }
 
@@ -265,7 +267,9 @@ void Savegame_ApplyLogicToCurrentInfo(int level_num)
         current->flags.got_shotgun = 0;
         current->flags.got_magnums = 0;
         current->flags.got_uzis = 0;
-        current->gun_type = LGT_PISTOLS;
+        current->equipped_gun_type = LGT_PISTOLS;
+        current->holsters_gun_type = LGT_PISTOLS;
+        current->back_gun_type = LGT_UNARMED;
         current->gun_status = LGS_ARMLESS;
     }
 
@@ -278,7 +282,41 @@ void Savegame_ApplyLogicToCurrentInfo(int level_num)
         current->shotgun_ammo = 1234;
         current->magnum_ammo = 1234;
         current->uzi_ammo = 1234;
-        current->gun_type = LGT_UZIS;
+        current->equipped_gun_type = LGT_UZIS;
+    }
+
+    // Fallback logic to figure out holster and back gun items for versions 4.2
+    // and earlier, as well as TombATI saves, where these values are missing.
+    // Make educated guesses based on the type of gun equipped.
+    if (current->holsters_gun_type == LGT_UNKNOWN) {
+        switch (current->equipped_gun_type) {
+        case LGT_PISTOLS:
+        case LGT_MAGNUMS:
+        case LGT_UZIS:
+            current->holsters_gun_type = current->equipped_gun_type;
+            break;
+        case LGT_SHOTGUN:
+            if (current->flags.got_pistols) {
+                current->holsters_gun_type = LGT_PISTOLS;
+            } else if (current->flags.got_magnums) {
+                current->holsters_gun_type = LGT_MAGNUMS;
+            } else if (current->flags.got_uzis) {
+                current->holsters_gun_type = LGT_UZIS;
+            } else {
+                current->holsters_gun_type = LGT_UNARMED;
+            }
+            break;
+        default:
+            current->holsters_gun_type = LGT_UNARMED;
+            break;
+        }
+    }
+    if (current->back_gun_type == LGT_UNKNOWN) {
+        if (current->flags.got_shotgun) {
+            current->back_gun_type = LGT_SHOTGUN;
+        } else {
+            current->back_gun_type = LGT_UNARMED;
+        }
     }
 }
 
@@ -299,7 +337,6 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
 {
     // Persist Lara's inventory to the current info.
     // Used to carry over Lara's inventory between levels.
-
     RESUME_INFO *current = &g_GameInfo.current[level_num];
 
     current->lara_hitpoints = g_LaraItem->hit_points;
@@ -343,7 +380,9 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
     current->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
     current->num_scions = Inv_RequestItem(O_SCION_ITEM);
 
-    current->gun_type = g_Lara.gun_type;
+    current->equipped_gun_type = g_Lara.gun_type;
+    current->holsters_gun_type = g_Lara.holsters_gun_type;
+    current->back_gun_type = g_Lara.back_gun_type;
     if (g_Lara.gun_status == LGS_READY) {
         current->gun_status = LGS_READY;
     } else {

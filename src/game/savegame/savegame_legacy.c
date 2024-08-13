@@ -428,7 +428,9 @@ static void Savegame_Legacy_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Read(&current->num_big_medis, sizeof(uint8_t));
         Savegame_Legacy_Read(&current->num_scions, sizeof(uint8_t));
         Savegame_Legacy_Read(&current->gun_status, sizeof(int8_t));
-        Savegame_Legacy_Read(&current->gun_type, sizeof(int8_t));
+        Savegame_Legacy_Read(&current->equipped_gun_type, sizeof(int8_t));
+        current->holsters_gun_type = LGT_UNKNOWN;
+        current->back_gun_type = LGT_UNKNOWN;
         uint16_t flags;
         Savegame_Legacy_Read(&flags, sizeof(uint16_t));
         current->flags.available = flags & 1 ? 1 : 0;
@@ -530,6 +532,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Skip(sizeof(int32_t)); // save counter
 
     Savegame_Legacy_ReadResumeInfo(fp, game_info);
+    g_Lara.holsters_gun_type = LGT_UNKNOWN;
+    g_Lara.back_gun_type = LGT_UNKNOWN;
 
     Lara_InitialiseInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
@@ -688,7 +692,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
         Savegame_Legacy_Write(&current->num_big_medis, sizeof(uint8_t));
         Savegame_Legacy_Write(&current->num_scions, sizeof(uint8_t));
         Savegame_Legacy_Write(&current->gun_status, sizeof(int8_t));
-        Savegame_Legacy_Write(&current->gun_type, sizeof(int8_t));
+        Savegame_Legacy_Write(&current->equipped_gun_type, sizeof(int8_t));
         uint16_t flags = 0;
         flags |= current->flags.available ? 1 : 0;
         flags |= current->flags.got_pistols ? 2 : 0;
