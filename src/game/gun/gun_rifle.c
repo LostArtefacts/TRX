@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/anim.h"
+#include "game/gun.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/random.h"
@@ -13,7 +14,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void Gun_Rifle_Draw(void)
+void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
@@ -21,17 +22,17 @@ void Gun_Rifle_Draw(void)
     if (!Anim_TestAbsFrameRange(ani, LF_SG_DRAW_START, LF_SG_RECOIL_START)) {
         ani = LF_SG_DRAW_START;
     } else if (Anim_TestAbsFrameEqual(ani, LF_SG_DRAW_SFX)) {
-        Gun_Rifle_DrawMeshes();
+        Gun_Rifle_DrawMeshes(weapon_type);
         Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
     } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
-        Gun_Rifle_Ready();
+        Gun_Rifle_Ready(weapon_type);
         ani = LF_SG_AIM_START;
     }
     g_Lara.left_arm.frame_number = ani;
     g_Lara.right_arm.frame_number = ani;
 }
 
-void Gun_Rifle_Undraw(void)
+void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
 {
     int16_t ani = ani = g_Lara.left_arm.frame_number;
 
@@ -62,7 +63,7 @@ void Gun_Rifle_Undraw(void)
                    ani, LF_SG_UNDRAW_START, LF_SG_UNDRAW_END)) {
         ani++;
         if (Anim_TestAbsFrameEqual(ani, LF_SG_UNDRAW_SFX)) {
-            Gun_Rifle_UndrawMeshes();
+            Gun_Rifle_UndrawMeshes(weapon_type);
             Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
         } else if (Anim_TestAbsFrameEqual(ani, LF_SG_UNAIM_START)) {
             ani = LF_SG_AIM_START;
@@ -81,27 +82,35 @@ void Gun_Rifle_Undraw(void)
     g_Lara.left_arm.frame_number = ani;
 }
 
-void Gun_Rifle_DrawMeshes(void)
+void Gun_Rifle_DrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
+    const GAME_OBJECT_ID object_id = Gun_GetRifleAnim(weapon_type);
+    if (object_id == NO_OBJECT) {
+        return;
+    }
     g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_HAND_L];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_L];
     g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_HAND_R];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_R];
     g_Lara.mesh_ptrs[LM_TORSO] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO];
 }
 
-void Gun_Rifle_UndrawMeshes(void)
+void Gun_Rifle_UndrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
+    const GAME_OBJECT_ID object_id = Gun_GetRifleAnim(weapon_type);
+    if (object_id == NO_OBJECT) {
+        return;
+    }
     g_Lara.mesh_ptrs[LM_HAND_L] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_L];
     g_Lara.mesh_ptrs[LM_HAND_R] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_R];
     g_Lara.mesh_ptrs[LM_TORSO] =
-        g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_TORSO];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_TORSO];
 }
 
-void Gun_Rifle_Ready(void)
+void Gun_Rifle_Ready(const LARA_GUN_TYPE weapon_type)
 {
     g_Lara.gun_status = LGS_READY;
     g_Lara.left_arm.rot.x = 0;
@@ -121,9 +130,9 @@ void Gun_Rifle_Ready(void)
     g_Lara.left_arm.frame_base = g_Objects[O_SHOTGUN_ANIM].frame_base;
 }
 
-void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type)
+void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
 {
-    WEAPON_INFO *winfo = &g_Weapons[LGT_SHOTGUN];
+    WEAPON_INFO *winfo = &g_Weapons[weapon_type];
 
     Gun_GetNewTarget(winfo);
 
@@ -142,10 +151,10 @@ void Gun_Rifle_Control(LARA_GUN_TYPE weapon_type)
         }
     }
 
-    Gun_Rifle_Animate();
+    Gun_Rifle_Animate(weapon_type);
 }
 
-void Gun_Rifle_Animate(void)
+void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     if (g_Lara.left_arm.lock) {
@@ -156,7 +165,7 @@ void Gun_Rifle_Animate(void)
             }
         } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
             if (g_Input.action) {
-                Gun_Rifle_Fire();
+                Gun_Rifle_Fire(weapon_type);
                 ani++;
             }
         } else if (Anim_TestAbsFrameRange(
@@ -208,7 +217,7 @@ void Gun_Rifle_Animate(void)
             }
         } else if (Anim_TestAbsFrameEqual(ani, LF_SG_RECOIL_START)) {
             if (g_Input.action) {
-                Gun_Rifle_Fire();
+                Gun_Rifle_Fire(weapon_type);
                 ani++;
             } else {
                 ani = LF_SG_UNAIM_START;
@@ -244,7 +253,7 @@ void Gun_Rifle_Animate(void)
     g_Lara.left_arm.frame_number = ani;
 }
 
-void Gun_Rifle_Fire(void)
+void Gun_Rifle_Fire(const LARA_GUN_TYPE weapon_type)
 {
     bool fired = false;
     PHD_ANGLE angles[2];
@@ -258,7 +267,7 @@ void Gun_Rifle_Fire(void)
             + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
         dangles[1] = angles[1]
             + (int)((Random_GetControl() - 16384) * PELLET_SCATTER) / 65536;
-        if (Gun_FireWeapon(LGT_SHOTGUN, g_Lara.target, g_LaraItem, dangles)) {
+        if (Gun_FireWeapon(weapon_type, g_Lara.target, g_LaraItem, dangles)) {
             fired = true;
         }
     }
@@ -268,8 +277,8 @@ void Gun_Rifle_Fire(void)
     }
 
     if (g_Config.enable_shotgun_flash) {
-        g_Lara.right_arm.flash_gun = g_Weapons[LGT_SHOTGUN].flash_time;
+        g_Lara.right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
     }
     Sound_Effect(
-        g_Weapons[LGT_SHOTGUN].sample_num, &g_LaraItem->pos, SPM_NORMAL);
+        g_Weapons[weapon_type].sample_num, &g_LaraItem->pos, SPM_NORMAL);
 }

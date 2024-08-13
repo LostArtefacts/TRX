@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/anim.h"
+#include "game/gun.h"
 #include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/sound.h"
@@ -10,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
 {
     int16_t ani = g_Lara.left_arm.frame_number;
     ani++;
@@ -21,7 +22,7 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
         Gun_Pistols_DrawMeshes(weapon_type);
         Sound_Effect(SFX_LARA_DRAW, &g_LaraItem->pos, SPM_NORMAL);
     } else if (Anim_TestAbsFrameEqual(ani, LF_G_DRAW_END)) {
-        Gun_Pistols_Ready();
+        Gun_Pistols_Ready(weapon_type);
         ani = LF_G_AIM_START;
     }
 
@@ -29,7 +30,7 @@ void Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type)
     g_Lara.right_arm.frame_number = ani;
 }
 
-void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
 {
     int16_t anil = g_Lara.left_arm.frame_number;
     if (Anim_TestAbsFrameRange(anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
@@ -87,7 +88,7 @@ void Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type)
     g_Lara.torso_rot.y = (g_Lara.right_arm.rot.y + g_Lara.left_arm.rot.y) / 4;
 }
 
-void Gun_Pistols_Ready(void)
+void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
 {
     g_Lara.gun_status = LGS_READY;
     g_Lara.left_arm.rot.x = 0;
@@ -107,56 +108,49 @@ void Gun_Pistols_Ready(void)
     g_Lara.left_arm.frame_base = g_Objects[O_PISTOL_ANIM].frame_base;
 }
 
-void Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
-    GAME_OBJECT_ID object_num = O_PISTOL_ANIM;
-    if (weapon_type == LGT_MAGNUMS) {
-        object_num = O_MAGNUM_ANIM;
-    } else if (weapon_type == LGT_UZIS) {
-        object_num = O_UZI_ANIM;
+    const GAME_OBJECT_ID object_id = Gun_GetPistolsAnim(weapon_type);
+    if (object_id == NO_OBJECT) {
+        return;
     }
-
     g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[object_num].mesh_index + LM_HAND_L];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_L];
     g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[object_num].mesh_index + LM_HAND_R];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_R];
     g_Lara.mesh_ptrs[LM_THIGH_L] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_THIGH_L];
     g_Lara.mesh_ptrs[LM_THIGH_R] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_THIGH_R];
 }
 
-void Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_UndrawMeshLeft(const LARA_GUN_TYPE weapon_type)
 {
-    GAME_OBJECT_ID object_num = O_PISTOL_ANIM;
-    if (weapon_type == LGT_MAGNUMS) {
-        object_num = O_MAGNUM_ANIM;
-    } else if (weapon_type == LGT_UZIS) {
-        object_num = O_UZI_ANIM;
+    const GAME_OBJECT_ID object_id = Gun_GetPistolsAnim(weapon_type);
+    if (object_id == NO_OBJECT) {
+        return;
     }
     g_Lara.mesh_ptrs[LM_THIGH_L] =
-        g_Meshes[g_Objects[object_num].mesh_index + LM_THIGH_L];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_THIGH_L];
     g_Lara.mesh_ptrs[LM_HAND_L] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_L];
     Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
 }
 
-void Gun_Pistols_UndrawMeshRight(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
 {
-    GAME_OBJECT_ID object_num = O_PISTOL_ANIM;
-    if (weapon_type == LGT_MAGNUMS) {
-        object_num = O_MAGNUM_ANIM;
-    } else if (weapon_type == LGT_UZIS) {
-        object_num = O_UZI_ANIM;
+    const GAME_OBJECT_ID object_id = Gun_GetPistolsAnim(weapon_type);
+    if (object_id == NO_OBJECT) {
+        return;
     }
     g_Lara.mesh_ptrs[LM_THIGH_R] =
-        g_Meshes[g_Objects[object_num].mesh_index + LM_THIGH_R];
+        g_Meshes[g_Objects[object_id].mesh_index + LM_THIGH_R];
     g_Lara.mesh_ptrs[LM_HAND_R] =
         g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_R];
     Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
 }
 
-void Gun_Pistols_Control(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
 
@@ -199,7 +193,7 @@ void Gun_Pistols_Control(LARA_GUN_TYPE weapon_type)
     Gun_Pistols_Animate(weapon_type);
 }
 
-void Gun_Pistols_Animate(LARA_GUN_TYPE weapon_type)
+void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
 {
     PHD_ANGLE angles[2];
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
