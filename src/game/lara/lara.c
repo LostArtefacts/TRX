@@ -611,7 +611,9 @@ void Lara_RevertToPistolsIfNeeded(void)
 
     g_Lara.gun_type = LGT_PISTOLS;
 
-    g_Lara.holsters_gun_type = LGT_UNARMED;
+    if (g_Lara.gun_status != LGS_ARMLESS) {
+        g_Lara.holsters_gun_type = LGT_UNARMED;
+    }
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
         g_Lara.back_gun_type = LGT_SHOTGUN;
     } else {

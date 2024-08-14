@@ -283,6 +283,7 @@ void Savegame_ApplyLogicToCurrentInfo(int level_num)
         current->magnum_ammo = 1234;
         current->uzi_ammo = 1234;
         current->equipped_gun_type = LGT_UZIS;
+        current->holsters_gun_type = LGT_UZIS;
     }
 
     // Fallback logic to figure out holster and back gun items for versions 4.2
