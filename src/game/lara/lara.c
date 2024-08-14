@@ -594,20 +594,33 @@ void Lara_InitialiseInventory(int32_t level_num)
     }
 
     g_Lara.gun_status = resume->gun_status;
-
-    if (g_Config.revert_to_pistols
-        && g_GameInfo.current[level_num].flags.got_pistols != 0) {
-        g_Lara.request_gun_type = LGT_PISTOLS;
-        g_Lara.gun_type = LGT_PISTOLS;
-    } else {
-        g_Lara.gun_type = resume->equipped_gun_type;
-        g_Lara.request_gun_type = resume->equipped_gun_type;
-    }
+    g_Lara.gun_type = resume->equipped_gun_type;
+    g_Lara.request_gun_type = resume->equipped_gun_type;
     g_Lara.holsters_gun_type = resume->holsters_gun_type;
     g_Lara.back_gun_type = resume->back_gun_type;
 
     Lara_InitialiseMeshes(level_num);
     Gun_InitialiseNewWeapon();
+}
+
+void Lara_RevertToPistolsIfNeeded(void)
+{
+    if (!g_Config.revert_to_pistols || !Inv_RequestItem(O_PISTOL_ITEM)) {
+        return;
+    }
+
+    g_Lara.gun_type = LGT_PISTOLS;
+
+    g_Lara.holsters_gun_type = LGT_UNARMED;
+    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+        g_Lara.back_gun_type = LGT_SHOTGUN;
+    } else {
+        g_Lara.back_gun_type = LGT_UNARMED;
+    }
+    Gun_InitialiseNewWeapon();
+    Gun_SetLaraHolsterLMesh(g_Lara.holsters_gun_type);
+    Gun_SetLaraHolsterRMesh(g_Lara.holsters_gun_type);
+    Gun_SetLaraBackMesh(g_Lara.back_gun_type);
 }
 
 void Lara_InitialiseMeshes(int32_t level_num)

@@ -1115,6 +1115,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LOOP_GAME:
+            if (level_type != GFL_SAVED) {
+                Lara_RevertToPistolsIfNeeded();
+            }
             Phase_Set(PHASE_GAME, NULL);
             ret = Phase_Run();
             if (ret.command != GF_PHASE_CONTINUE) {
