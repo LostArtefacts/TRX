@@ -84,30 +84,16 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Rifle_DrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID object_id = Gun_GetRifleAnim(weapon_type);
-    if (object_id == NO_OBJECT) {
-        return;
-    }
-    g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_L];
-    g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_R];
-    g_Lara.mesh_ptrs[LM_TORSO] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_TORSO];
+    Gun_SetLaraHandLMesh(weapon_type);
+    Gun_SetLaraHandRMesh(weapon_type);
+    Gun_SetLaraBackMesh(LGT_UNARMED);
 }
 
 void Gun_Rifle_UndrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID object_id = Gun_GetRifleAnim(weapon_type);
-    if (object_id == NO_OBJECT) {
-        return;
-    }
-    g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_L];
-    g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_R];
-    g_Lara.mesh_ptrs[LM_TORSO] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_TORSO];
+    Gun_SetLaraHandLMesh(LGT_UNARMED);
+    Gun_SetLaraHandRMesh(LGT_UNARMED);
+    Gun_SetLaraBackMesh(weapon_type);
 }
 
 void Gun_Rifle_Ready(const LARA_GUN_TYPE weapon_type)

@@ -1,6 +1,7 @@
 #include "game/objects/general/pickup.h"
 
 #include "config.h"
+#include "game/gun.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/items.h"
@@ -49,45 +50,13 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
-static void PickUp_AddGunToMesh(
-    const GAME_OBJECT_ID obj_num, const ITEM_INFO *lara_item);
 static void PickUp_GetItem(
     int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item);
 static void PickUp_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item);
 
-static void PickUp_AddGunToMesh(
-    const GAME_OBJECT_ID obj_num, const ITEM_INFO *const lara_item)
-{
-    const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
-        || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_UZI_ITEM);
-
-    if (!Inv_RequestItem(O_SHOTGUN_ITEM) && obj_num == O_SHOTGUN_ITEM) {
-        g_Lara.mesh_ptrs[LM_TORSO] =
-            g_Meshes[g_Objects[O_SHOTGUN_ANIM].mesh_index + LM_TORSO];
-    } else if (!lara_has_pistols && obj_num == O_PISTOL_ITEM) {
-        g_Lara.mesh_ptrs[LM_THIGH_L] =
-            g_Meshes[g_Objects[O_PISTOL_ANIM].mesh_index + LM_THIGH_L];
-        g_Lara.mesh_ptrs[LM_THIGH_R] =
-            g_Meshes[g_Objects[O_PISTOL_ANIM].mesh_index + LM_THIGH_R];
-    } else if (!lara_has_pistols && obj_num == O_MAGNUM_ITEM) {
-        g_Lara.mesh_ptrs[LM_THIGH_L] =
-            g_Meshes[g_Objects[O_MAGNUM_ANIM].mesh_index + LM_THIGH_L];
-        g_Lara.mesh_ptrs[LM_THIGH_R] =
-            g_Meshes[g_Objects[O_MAGNUM_ANIM].mesh_index + LM_THIGH_R];
-    } else if (!lara_has_pistols && obj_num == O_UZI_ITEM) {
-        g_Lara.mesh_ptrs[LM_THIGH_L] =
-            g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_THIGH_L];
-        g_Lara.mesh_ptrs[LM_THIGH_R] =
-            g_Meshes[g_Objects[O_UZI_ANIM].mesh_index + LM_THIGH_R];
-    }
-}
-
 static void PickUp_GetItem(
     int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
 {
-    if (Object_IsObjectType(item->object_number, g_GunObjects)) {
-        PickUp_AddGunToMesh(item->object_number, lara_item);
-    }
     Overlay_AddPickup(item->object_number);
     Inv_AddItem(item->object_number);
     item->status = IS_INVISIBLE;

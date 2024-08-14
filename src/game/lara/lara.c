@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/camera.h"
 #include "game/collide.h"
+#include "game/gameflow.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -209,9 +210,14 @@ void Lara_SwapMeshExtra(void)
     if (!g_Objects[O_LARA_EXTRA].loaded) {
         return;
     }
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA_EXTRA].mesh_index + i];
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        Lara_SwapSingleMesh(mesh, O_LARA_EXTRA);
     }
+}
+
+void Lara_SwapSingleMesh(const LARA_MESH mesh, const GAME_OBJECT_ID object_id)
+{
+    g_Lara.mesh_ptrs[mesh] = g_Meshes[g_Objects[object_id].mesh_index + mesh];
 }
 
 void Lara_Animate(ITEM_INFO *item)
@@ -514,7 +520,9 @@ void Lara_InitialiseInventory(int32_t level_num)
         resume->flags.got_shotgun = 0;
         resume->flags.got_magnums = 0;
         resume->flags.got_uzis = 0;
-        resume->gun_type = LGT_UNARMED;
+        resume->equipped_gun_type = LGT_UNARMED;
+        resume->holsters_gun_type = LGT_UNARMED;
+        resume->back_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     }
 
@@ -586,71 +594,62 @@ void Lara_InitialiseInventory(int32_t level_num)
     }
 
     g_Lara.gun_status = resume->gun_status;
-
-    if (g_Config.revert_to_pistols
-        && g_GameInfo.current[level_num].flags.got_pistols != 0) {
-        g_Lara.request_gun_type = LGT_PISTOLS;
-        g_Lara.gun_type = LGT_PISTOLS;
-    } else {
-        g_Lara.gun_type = resume->gun_type;
-        g_Lara.request_gun_type = resume->gun_type;
-    }
+    g_Lara.gun_type = resume->equipped_gun_type;
+    g_Lara.request_gun_type = resume->equipped_gun_type;
+    g_Lara.holsters_gun_type = resume->holsters_gun_type;
+    g_Lara.back_gun_type = resume->back_gun_type;
 
     Lara_InitialiseMeshes(level_num);
     Gun_InitialiseNewWeapon();
 }
 
+void Lara_RevertToPistolsIfNeeded(void)
+{
+    if (!g_Config.revert_to_pistols || !Inv_RequestItem(O_PISTOL_ITEM)) {
+        return;
+    }
+
+    g_Lara.gun_type = LGT_PISTOLS;
+
+    if (g_Lara.gun_status != LGS_ARMLESS) {
+        g_Lara.holsters_gun_type = LGT_UNARMED;
+    }
+    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+        g_Lara.back_gun_type = LGT_SHOTGUN;
+    } else {
+        g_Lara.back_gun_type = LGT_UNARMED;
+    }
+    Gun_InitialiseNewWeapon();
+    Gun_SetLaraHolsterLMesh(g_Lara.holsters_gun_type);
+    Gun_SetLaraHolsterRMesh(g_Lara.holsters_gun_type);
+    Gun_SetLaraBackMesh(g_Lara.back_gun_type);
+}
+
 void Lara_InitialiseMeshes(int32_t level_num)
 {
-    RESUME_INFO *resume = &g_GameInfo.current[level_num];
+    const RESUME_INFO *const resume = &g_GameInfo.current[level_num];
 
     if (resume->flags.costume) {
-        for (int i = 0; i < LM_NUMBER_OF; i++) {
-            int32_t use_orig_mesh = i == LM_HEAD;
-            g_Lara.mesh_ptrs[i] = g_Meshes
-                [g_Objects[use_orig_mesh ? O_LARA : O_LARA_EXTRA].mesh_index
-                 + i];
+        for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+            Lara_SwapSingleMesh(mesh, mesh == LM_HEAD ? O_LARA : O_LARA_EXTRA);
         }
         return;
     }
 
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        g_Lara.mesh_ptrs[i] = g_Meshes[g_Objects[O_LARA].mesh_index + i];
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        Lara_SwapSingleMesh(mesh, O_LARA);
     }
 
-    GAME_OBJECT_ID holster_object_num = NO_OBJECT;
-    GAME_OBJECT_ID back_object_num = NO_OBJECT;
-    switch (resume->gun_type) {
-    case LGT_SHOTGUN:
-        if (resume->flags.got_pistols) {
-            holster_object_num = O_PISTOL_ANIM;
-        }
-        break;
-    case LGT_PISTOLS:
-        holster_object_num = O_PISTOL_ANIM;
-        break;
-    case LGT_MAGNUMS:
-        holster_object_num = O_MAGNUM_ANIM;
-        break;
-    case LGT_UZIS:
-        holster_object_num = O_UZI_ANIM;
-        break;
+    LARA_GUN_TYPE holsters_gun_type = resume->holsters_gun_type;
+    LARA_GUN_TYPE back_gun_type = resume->back_gun_type;
+
+    if (holsters_gun_type != LGT_UNKNOWN) {
+        Gun_SetLaraHolsterLMesh(holsters_gun_type);
+        Gun_SetLaraHolsterRMesh(holsters_gun_type);
     }
 
-    if (resume->flags.got_shotgun) {
-        back_object_num = O_SHOTGUN_ANIM;
-    }
-
-    if (holster_object_num != NO_OBJECT) {
-        g_Lara.mesh_ptrs[LM_THIGH_L] =
-            g_Meshes[g_Objects[holster_object_num].mesh_index + LM_THIGH_L];
-        g_Lara.mesh_ptrs[LM_THIGH_R] =
-            g_Meshes[g_Objects[holster_object_num].mesh_index + LM_THIGH_R];
-    }
-
-    if (back_object_num != NO_OBJECT) {
-        g_Lara.mesh_ptrs[LM_TORSO] =
-            g_Meshes[g_Objects[back_object_num].mesh_index + LM_TORSO];
+    if (back_gun_type != LGT_UNKNOWN) {
+        Gun_SetLaraBackMesh(back_gun_type);
     }
 }
 

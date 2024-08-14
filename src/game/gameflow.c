@@ -1115,6 +1115,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LOOP_GAME:
+            if (level_type != GFL_SAVED
+                && level_num != g_GameFlow.first_level_num) {
+                Lara_RevertToPistolsIfNeeded();
+            }
             Phase_Set(PHASE_GAME, NULL);
             ret = Phase_Run();
             if (ret.command != GF_PHASE_CONTINUE) {
@@ -1258,18 +1262,6 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                     (const GAMEFLOW_GIVE_ITEM_DATA *)seq->data;
                 Inv_AddItemNTimes(
                     give_item_data->object_num, give_item_data->quantity);
-                if (g_Lara.gun_type == LGT_UNARMED) {
-                    if (Inv_RequestItem(O_PISTOL_ITEM)) {
-                        g_GameInfo.current[level_num].gun_type = LGT_PISTOLS;
-                    } else if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-                        g_GameInfo.current[level_num].gun_type = LGT_SHOTGUN;
-                    } else if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-                        g_GameInfo.current[level_num].gun_type = LGT_MAGNUMS;
-                    } else if (Inv_RequestItem(O_UZI_ITEM)) {
-                        g_GameInfo.current[level_num].gun_type = LGT_UZIS;
-                    }
-                    Lara_InitialiseMeshes(level_num);
-                }
             }
             break;
 

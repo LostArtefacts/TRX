@@ -245,7 +245,12 @@ static bool Savegame_BSON_LoadResumeInfo(
             json_object_get_int(resume_obj, "num_big_medis", 0);
         resume->num_scions = json_object_get_int(resume_obj, "num_scions", 0);
         resume->gun_status = json_object_get_int(resume_obj, "gun_status", 0);
-        resume->gun_type = json_object_get_int(resume_obj, "gun_type", 0);
+        resume->equipped_gun_type =
+            json_object_get_int(resume_obj, "gun_type", LGT_UNARMED);
+        resume->holsters_gun_type =
+            json_object_get_int(resume_obj, "holsters_gun_type", LGT_UNKNOWN);
+        resume->back_gun_type =
+            json_object_get_int(resume_obj, "back_gun_type", LGT_UNKNOWN);
         resume->flags.available =
             json_object_get_bool(resume_obj, "available", 0);
         resume->flags.got_pistols =
@@ -314,7 +319,10 @@ static bool Savegame_BSON_LoadDiscontinuedStartInfo(
             json_object_get_int(start_obj, "num_big_medis", 0);
         start->num_scions = json_object_get_int(start_obj, "num_scions", 0);
         start->gun_status = json_object_get_int(start_obj, "gun_status", 0);
-        start->gun_type = json_object_get_int(start_obj, "gun_type", 0);
+        start->equipped_gun_type =
+            json_object_get_int(start_obj, "gun_type", LGT_UNARMED);
+        start->holsters_gun_type = LGT_UNKNOWN;
+        start->back_gun_type = LGT_UNKNOWN;
         start->flags.available =
             json_object_get_bool(start_obj, "available", 0);
         start->flags.got_pistols =
@@ -939,7 +947,12 @@ static struct json_array_s *Savegame_BSON_DumpResumeInfo(
             resume_obj, "num_big_medis", resume->num_big_medis);
         json_object_append_int(resume_obj, "num_scions", resume->num_scions);
         json_object_append_int(resume_obj, "gun_status", resume->gun_status);
-        json_object_append_int(resume_obj, "gun_type", resume->gun_type);
+        json_object_append_int(
+            resume_obj, "gun_type", resume->equipped_gun_type);
+        json_object_append_int(
+            resume_obj, "holsters_gun_type", resume->holsters_gun_type);
+        json_object_append_int(
+            resume_obj, "back_gun_type", resume->back_gun_type);
         json_object_append_bool(
             resume_obj, "available", resume->flags.available);
         json_object_append_bool(

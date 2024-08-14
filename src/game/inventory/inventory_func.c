@@ -1,3 +1,4 @@
+#include "game/gun.h"
 #include "game/inventory.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/items.h"
@@ -11,6 +12,10 @@
 
 bool Inv_AddItem(const GAME_OBJECT_ID object_id)
 {
+    if (Object_IsObjectType(object_id, g_GunObjects)) {
+        Gun_UpdateLaraMeshes(object_id);
+    }
+
     const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
     if (!g_Objects[inv_object_id].loaded) {
         return false;

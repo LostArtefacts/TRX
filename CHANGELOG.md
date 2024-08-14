@@ -10,9 +10,11 @@
 - fixed the ingame timer being skewed upon inventory open (#1420, regression from 4.1)
 - fixed Lara able to reach triggers through closed doors (#1419, regression from 1.1.4)
 - fixed Lara voiding when loading the game on a closed door (#1419)
-- fixed underwater caustics not resumed smoothly when unpausing (#1423, regression 3.2)
+- fixed underwater caustics not resumed smoothly when unpausing (#1423, regression from 3.2)
 - fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground (#606)
 - fixed an issue with a missing Spanish config tool translation for the target mode (#1439)
+- fixed carrying over unexpected guns in holsters to the next level under rare scenarios (#1437, regression from 2.4)
+- fixed item cheats not updating Lara holster and backpack meshes (#1437)
 - improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14

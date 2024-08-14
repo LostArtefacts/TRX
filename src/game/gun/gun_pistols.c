@@ -110,43 +110,23 @@ void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID object_id = Gun_GetPistolsAnim(weapon_type);
-    if (object_id == NO_OBJECT) {
-        return;
-    }
-    g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_L];
-    g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_HAND_R];
-    g_Lara.mesh_ptrs[LM_THIGH_L] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_THIGH_L];
-    g_Lara.mesh_ptrs[LM_THIGH_R] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_THIGH_R];
+    Gun_SetLaraHandLMesh(weapon_type);
+    Gun_SetLaraHandRMesh(weapon_type);
+    Gun_SetLaraHolsterLMesh(LGT_UNARMED);
+    Gun_SetLaraHolsterRMesh(LGT_UNARMED);
 }
 
 void Gun_Pistols_UndrawMeshLeft(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID object_id = Gun_GetPistolsAnim(weapon_type);
-    if (object_id == NO_OBJECT) {
-        return;
-    }
-    g_Lara.mesh_ptrs[LM_THIGH_L] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_THIGH_L];
-    g_Lara.mesh_ptrs[LM_HAND_L] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_L];
+    Gun_SetLaraHandLMesh(LGT_UNARMED);
+    Gun_SetLaraHolsterLMesh(weapon_type);
     Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
 }
 
 void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
 {
-    const GAME_OBJECT_ID object_id = Gun_GetPistolsAnim(weapon_type);
-    if (object_id == NO_OBJECT) {
-        return;
-    }
-    g_Lara.mesh_ptrs[LM_THIGH_R] =
-        g_Meshes[g_Objects[object_id].mesh_index + LM_THIGH_R];
-    g_Lara.mesh_ptrs[LM_HAND_R] =
-        g_Meshes[g_Objects[O_LARA].mesh_index + LM_HAND_R];
+    Gun_SetLaraHandRMesh(LGT_UNARMED);
+    Gun_SetLaraHolsterRMesh(weapon_type);
     Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);
 }
 

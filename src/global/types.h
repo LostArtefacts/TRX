@@ -707,6 +707,7 @@ typedef enum LARA_GUN_STATE {
 } LARA_GUN_STATE;
 
 typedef enum LARA_GUN_TYPE {
+    LGT_UNKNOWN = -1, // for legacy saves
     LGT_UNARMED = 0,
     LGT_PISTOLS = 1,
     LGT_MAGNUMS = 2,
@@ -731,6 +732,7 @@ typedef enum LARA_MESH {
     LM_LARM_L = 12,
     LM_HAND_L = 13,
     LM_HEAD = 14,
+    LM_FIRST = LM_HIPS,
     LM_NUMBER_OF = 15,
 } LARA_MESH;
 
@@ -1414,8 +1416,10 @@ typedef struct FX_INFO {
 typedef struct LARA_INFO {
     int16_t item_number;
     int16_t gun_status;
-    int16_t gun_type;
-    int16_t request_gun_type;
+    LARA_GUN_TYPE gun_type;
+    LARA_GUN_TYPE request_gun_type;
+    LARA_GUN_TYPE holsters_gun_type;
+    LARA_GUN_TYPE back_gun_type;
     int16_t calc_fall_speed;
     int16_t water_status;
     int16_t pose_count;
@@ -1477,7 +1481,9 @@ typedef struct RESUME_INFO {
     uint8_t num_big_medis;
     uint8_t num_scions;
     int8_t gun_status;
-    int8_t gun_type;
+    LARA_GUN_TYPE equipped_gun_type;
+    LARA_GUN_TYPE holsters_gun_type;
+    LARA_GUN_TYPE back_gun_type;
     union {
         uint16_t all;
         struct {

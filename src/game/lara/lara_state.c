@@ -3,6 +3,7 @@
 #include "config.h"
 #include "game/input.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/lara/lara_look.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"
@@ -683,85 +684,70 @@ void Lara_State_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
     case 5:
         g_Lara.mesh_effects |= (1 << LM_FOOT_L);
         g_Lara.mesh_effects |= (1 << LM_FOOT_R);
-        g_Lara.mesh_ptrs[LM_FOOT_L] =
-            g_Meshes[g_Objects[O_LARA_EXTRA].mesh_index + LM_FOOT_L];
-        g_Lara.mesh_ptrs[LM_FOOT_R] =
-            g_Meshes[g_Objects[O_LARA_EXTRA].mesh_index + LM_FOOT_R];
+        Lara_SwapSingleMesh(LM_FOOT_L, O_LARA_EXTRA);
+        Lara_SwapSingleMesh(LM_FOOT_R, O_LARA_EXTRA);
         break;
 
     case 70:
         g_Lara.mesh_effects |= (1 << LM_CALF_L);
-        g_Lara.mesh_ptrs[LM_CALF_L] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_CALF_L];
+        Lara_SwapSingleMesh(LM_CALF_L, O_LARA_EXTRA);
         break;
 
     case 90:
         g_Lara.mesh_effects |= (1 << LM_THIGH_L);
-        g_Lara.mesh_ptrs[LM_THIGH_L] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_THIGH_L];
+        Lara_SwapSingleMesh(LM_THIGH_L, O_LARA_EXTRA);
         break;
 
     case 100:
         g_Lara.mesh_effects |= (1 << LM_CALF_R);
-        g_Lara.mesh_ptrs[LM_CALF_R] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_CALF_R];
+        Lara_SwapSingleMesh(LM_CALF_R, O_LARA_EXTRA);
         break;
 
     case 120:
         g_Lara.mesh_effects |= (1 << LM_HIPS);
         g_Lara.mesh_effects |= (1 << LM_THIGH_R);
-        g_Lara.mesh_ptrs[LM_HIPS] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_HIPS];
-        g_Lara.mesh_ptrs[LM_THIGH_R] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_THIGH_R];
+        Lara_SwapSingleMesh(LM_HIPS, O_LARA_EXTRA);
+        Lara_SwapSingleMesh(LM_THIGH_R, O_LARA_EXTRA);
         break;
 
     case 135:
         g_Lara.mesh_effects |= (1 << LM_TORSO);
-        g_Lara.mesh_ptrs[LM_TORSO] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_TORSO];
+        Lara_SwapSingleMesh(LM_TORSO, O_LARA_EXTRA);
         break;
 
     case 150:
         g_Lara.mesh_effects |= (1 << LM_UARM_L);
-        g_Lara.mesh_ptrs[LM_UARM_L] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_UARM_L];
+        Lara_SwapSingleMesh(LM_UARM_L, O_LARA_EXTRA);
         break;
 
     case 163:
         g_Lara.mesh_effects |= (1 << LM_LARM_L);
-        g_Lara.mesh_ptrs[LM_LARM_L] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_LARM_L];
+        Lara_SwapSingleMesh(LM_LARM_L, O_LARA_EXTRA);
         break;
 
     case 174:
         g_Lara.mesh_effects |= (1 << LM_HAND_L);
-        g_Lara.mesh_ptrs[LM_HAND_L] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_HAND_L];
+        Lara_SwapSingleMesh(LM_HAND_L, O_LARA_EXTRA);
         break;
 
     case 186:
         g_Lara.mesh_effects |= (1 << LM_UARM_R);
-        g_Lara.mesh_ptrs[LM_UARM_R] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_UARM_R];
+        Lara_SwapSingleMesh(LM_UARM_R, O_LARA_EXTRA);
         break;
 
     case 195:
         g_Lara.mesh_effects |= (1 << LM_LARM_R);
-        g_Lara.mesh_ptrs[LM_LARM_R] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_LARM_R];
+        Lara_SwapSingleMesh(LM_LARM_R, O_LARA_EXTRA);
         break;
 
     case 218:
         g_Lara.mesh_effects |= (1 << LM_HAND_R);
-        g_Lara.mesh_ptrs[LM_HAND_R] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_HAND_R];
+        Lara_SwapSingleMesh(LM_HAND_R, O_LARA_EXTRA);
         break;
 
     case 225:
         g_Lara.mesh_effects |= (1 << LM_HEAD);
-        g_Lara.mesh_ptrs[LM_HEAD] =
-            g_Meshes[(&g_Objects[O_LARA_EXTRA])->mesh_index + LM_HEAD];
+        Lara_SwapSingleMesh(LM_HEAD, O_LARA_EXTRA);
         break;
     }
 
