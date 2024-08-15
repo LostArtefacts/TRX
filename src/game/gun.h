@@ -15,6 +15,7 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage);
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip);
 GAME_OBJECT_ID Gun_GetLaraAnim(LARA_GUN_TYPE gun_type);
 GAME_OBJECT_ID Gun_GetWeaponAnim(LARA_GUN_TYPE gun_type);
+LARA_GUN_TYPE Gun_GetType(GAME_OBJECT_ID object_id);
 void Gun_UpdateLaraMeshes(GAME_OBJECT_ID object_id);
 void Gun_SetLaraBackMesh(LARA_GUN_TYPE weapon_type);
 void Gun_SetLaraHandLMesh(LARA_GUN_TYPE weapon_type);

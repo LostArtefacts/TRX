@@ -5,6 +5,7 @@
 - added weapons to Lara's empty holsters on pickup (#1291)
 - added options to quiet or mute music while underwater (#528)
 - changed the turbo cheat to no longer affect the gameplay time (#1420)
+- changed weapon pickup behavior when unarmed to set any weapon as the default weapon, not just pistols (#1443)
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)
 - fixed the ingame timer being skewed upon inventory open (#1420, regression from 4.1)
