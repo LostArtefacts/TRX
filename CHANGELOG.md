@@ -5,6 +5,7 @@
 - added weapons to Lara's empty holsters on pickup (#1291)
 - added options to quiet or mute music while underwater (#528)
 - changed the turbo cheat to no longer affect the gameplay time (#1420)
+- changed weapon pickup behavior when unarmed to set any weapon as the default weapon, not just pistols (#1443)
 - fixed adjacent Midas Touch objects potentially allowing gold bar duplication in custom levels (#1415)
 - fixed the excessive pitch and playback speed correction for music files with sampling rate other than 44100 Hz (#1417, regression from 2.0)
 - fixed the ingame timer being skewed upon inventory open (#1420, regression from 4.1)
@@ -16,7 +17,6 @@
 - fixed carrying over unexpected guns in holsters to the next level under rare scenarios (#1437, regression from 2.4)
 - fixed item cheats not updating Lara holster and backpack meshes (#1437)
 - improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
-- set Lara's default weapon to any weapon she picks up when unarmed, not just pistols (#1443)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes

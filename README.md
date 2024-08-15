@@ -461,6 +461,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added a flag indicating if new game plus is unlocked to the player config which allows the player to select new game plus or not when making a new game
 - added weapons to Lara's empty holsters on pickup
 - added options to quiet or mute music while underwater
+- changed weapon pickup behavior when unarmed to set any weapon as the default weapon, not just pistols
 - fixed keys and items not working when drawing guns immediately after using them
 - fixed counting the secret in The Great Pyramid
 - fixed running out of ammo forcing Lara to equip pistols even if she doesn't carry them
@@ -515,7 +516,6 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed looking forward too far causing an upside down camera frame
 - fixed the Scion being extremely difficult to shoot with the shotgun
 - fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground
-- set Lara's default weapon to any weapon she picks up when unarmed, not just pistols
 
 #### Cheats
 - added a fly cheat
