@@ -515,6 +515,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed looking forward too far causing an upside down camera frame
 - fixed the Scion being extremely difficult to shoot with the shotgun
 - fixed collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground
+- set Lara's default weapon to any weapon she picks up when unarmed, not just pistols
 
 #### Cheats
 - added a fly cheat

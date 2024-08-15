@@ -16,6 +16,7 @@
 - fixed carrying over unexpected guns in holsters to the next level under rare scenarios (#1437, regression from 2.4)
 - fixed item cheats not updating Lara holster and backpack meshes (#1437)
 - improved initial level load time by lazy-loading audio samples (LostArtefacts/TR2X#114)
+- set Lara's default weapon to any weapon she picks up when unarmed, not just pistols (#1443)
 
 ## [4.2](https://github.com/LostArtefacts/TR1X/compare/4.1.2...4.2) - 2024-07-14
 - added creating minidump files on crashes

@@ -234,6 +234,22 @@ GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
     }
 }
 
+LARA_GUN_TYPE Gun_GetType(const GAME_OBJECT_ID object_id)
+{
+    switch (object_id) {
+    case O_PISTOL_ITEM:
+        return LGT_PISTOLS;
+    case O_MAGNUM_ITEM:
+        return LGT_MAGNUMS;
+    case O_UZI_ITEM:
+        return LGT_UZIS;
+    case O_SHOTGUN_ITEM:
+        return LGT_SHOTGUN;
+    default:
+        return LGT_UNARMED;
+    }
+}
+
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip)
 {
     int32_t light;
