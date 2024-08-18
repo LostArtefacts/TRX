@@ -6,7 +6,7 @@
 # tools necessary to build TR1X.
 
 # MinGW
-FROM ubuntu:latest as mingw
+FROM ubuntu:latest AS mingw
 
 # don't prompt during potential installation/update of tzinfo
 ENV DEBIAN_FRONTEND=noninteractive
@@ -23,7 +23,7 @@ RUN apt-get update \
 
 
 # pcre
-FROM mingw as pcre2
+FROM mingw AS pcre2
 RUN git clone https://github.com/PCRE2Project/pcre2
 RUN apt-get -y install libtool
 RUN cd pcre2 \
@@ -36,7 +36,7 @@ RUN cd pcre2 \
 
 
 # zlib
-FROM mingw as zlib
+FROM mingw AS zlib
 RUN git clone https://github.com/madler/zlib
 RUN cd zlib \
     && make -f win32/Makefile.gcc \
@@ -49,7 +49,7 @@ RUN cd zlib \
 
 
 # libav
-FROM mingw as libav
+FROM mingw AS libav
 RUN apt-get install -y \
     nasm
 RUN git clone \
@@ -76,7 +76,7 @@ RUN cd FFmpeg \
 
 
 # SDL
-FROM mingw as sdl
+FROM mingw AS sdl
 RUN git clone https://github.com/libsdl-org/SDL -b SDL2
 RUN apt-get install -y automake
 RUN cd SDL \

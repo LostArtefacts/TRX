@@ -5,7 +5,7 @@
 # artifacts (binaries, includes etc.) from previous stages and installs all the
 # tools necessary to build TR1X.
 
-FROM ubuntu:latest as base
+FROM ubuntu:latest AS base
 
 # don't prompt during potential installation/update of tzinfo
 ENV DEBIAN_FRONTEND=noninteractive
@@ -36,9 +36,9 @@ RUN cd pcre2 \
 FROM base AS backtrace
 RUN apt-get install -y git gcc autoconf libtool
 RUN git clone https://github.com/LostArtefacts/libbacktrace/
-RUN cd libbacktrace && \
-    autoreconf -fi && \
-    ./configure \
+RUN cd libbacktrace \
+    && autoreconf -fi \
+    && ./configure \
         --prefix=/ext/ \
     && make -j 4 \
     && make install
