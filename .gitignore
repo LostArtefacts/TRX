@@ -28,3 +28,8 @@ Release/
 .vs/
 *.vcxproj
 *.filters
+
+# libtrx artefacts
+subprojects/packagecache/
+subprojects/dwarfstack-*/
+subprojects/dwarfstack.wrap

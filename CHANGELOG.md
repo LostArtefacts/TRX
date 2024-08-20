@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - improved logs module names readability
+- improved crash debug information on Windows
 
 ## [4.3](https://github.com/LostArtefacts/TR1X/compare/4.2...4.3) - 2024-08-15
 - added deadly water feature from TR2+ for custom levels (#1404)
