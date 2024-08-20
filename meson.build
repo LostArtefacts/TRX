@@ -13,6 +13,7 @@ c_compiler = meson.get_compiler('c')
 build_opts = [
   '-Wno-unused',
   '-DMESON_BUILD',
+  '-ffile-prefix-map=../../src/=',
 ]
 
 add_project_arguments(build_opts, language: 'c')
