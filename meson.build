@@ -233,7 +233,6 @@ sources = [
   'src/game/phase/phase_pause.c',
   'src/game/phase/phase_picture.c',
   'src/game/phase/phase_stats.c',
-  'src/game/picture.c',
   'src/game/random.c',
   'src/game/requester.c',
   'src/game/room.c',
@@ -273,7 +272,6 @@ sources = [
   'src/specific/s_fmv.c',
   'src/specific/s_input.c',
   'src/specific/s_output.c',
-  'src/specific/s_picture.c',
   'src/specific/s_shell.c',
   resources,
 ]

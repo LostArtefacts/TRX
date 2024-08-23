@@ -475,9 +475,9 @@ void S_Output_DrawBackdropSurface(void)
     GFX_2D_Renderer_Render(m_Renderer2D);
 }
 
-void S_Output_DownloadBackdropSurface(const PICTURE *pic)
+void S_Output_DownloadBackdropSurface(const IMAGE *const image)
 {
-    if (!pic) {
+    if (!image) {
         if (m_PictureSurface) {
             bool result = GFX_2D_Surface_Clear(m_PictureSurface);
             S_Output_CheckError(result);
@@ -490,8 +490,8 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
     // first, download the picture directly to a temporary surface
     {
         GFX_2D_SurfaceDesc surface_desc = {
-            .width = pic->width,
-            .height = pic->height,
+            .width = image->width,
+            .height = image->height,
         };
         picture_surface = GFX_2D_Surface_Create(&surface_desc);
     }
@@ -502,8 +502,8 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
         S_Output_CheckError(result);
 
         uint32_t *output_ptr = surface_desc.pixels;
-        RGB_888 *input_ptr = pic->data;
-        for (int i = 0; i < pic->width * pic->height; i++) {
+        IMAGE_PIXEL *input_ptr = image->data;
+        for (int i = 0; i < image->width * image->height; i++) {
             uint8_t r = input_ptr->r;
             uint8_t g = input_ptr->g;
             uint8_t b = input_ptr->b;
@@ -525,8 +525,8 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
 
     int32_t target_width = m_SurfaceWidth;
     int32_t target_height = m_SurfaceHeight;
-    int32_t source_width = pic->width;
-    int32_t source_height = pic->height;
+    int32_t source_width = image->width;
+    int32_t source_height = image->height;
 
     // keep aspect ratio and fit inside, adding black bars on the sides
     const float source_ratio = source_width / (float)source_height;
@@ -541,8 +541,8 @@ void S_Output_DownloadBackdropSurface(const PICTURE *pic)
     GFX_BlitterRect source_rect = {
         .left = 0,
         .top = 0,
-        .right = pic->width,
-        .bottom = pic->height,
+        .right = image->width,
+        .bottom = image->height,
     };
     GFX_BlitterRect target_rect = {
         .left = (target_width - new_width) / 2,

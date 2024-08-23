@@ -1,7 +1,8 @@
 #pragma once
 
-#include "game/picture.h"
 #include "global/types.h"
+
+#include <libtrx/engine/image.h>
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -27,7 +28,7 @@ RGB_888 S_Output_GetPaletteColor(uint8_t idx);
 
 void S_Output_DownloadTextures(int32_t pages);
 void S_Output_SelectTexture(int tex_num);
-void S_Output_DownloadBackdropSurface(const PICTURE *pic);
+void S_Output_DownloadBackdropSurface(const IMAGE *image);
 void S_Output_DrawBackdropSurface(void);
 
 void S_Output_DrawFlatTriangle(

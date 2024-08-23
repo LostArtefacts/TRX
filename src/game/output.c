@@ -6,7 +6,6 @@
 #include "game/gamebuf.h"
 #include "game/overlay.h"
 #include "game/phase/phase.h"
-#include "game/picture.h"
 #include "game/random.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -18,6 +17,8 @@
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 
+#include <libtrx/engine/image.h>
+#include <libtrx/filesystem.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
@@ -59,7 +60,10 @@ static XYZ_32 m_LsVectorView = { 0 };
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
 
-char *m_BackdropImagePath = NULL;
+static char *m_BackdropImagePath = NULL;
+static const char *m_ImageExtensions[] = {
+    ".png", ".jpg", ".jpeg", ".pcx", NULL,
+};
 
 static void Output_DrawBlackOverlay(uint8_t alpha);
 
@@ -950,18 +954,18 @@ void Output_LoadBackdropImage(const char *filename)
     }
 
     const char *old_path = m_BackdropImagePath;
-    m_BackdropImagePath = Memory_DupStr(filename);
+    m_BackdropImagePath = File_GuessExtension(filename, m_ImageExtensions);
     Memory_FreePointer(&old_path);
 
-    PICTURE *orig_pic = Picture_CreateFromFile(m_BackdropImagePath);
-    if (orig_pic) {
-        PICTURE *scaled_pic = Picture_ScaleSmart(
-            orig_pic, Viewport_GetWidth(), Viewport_GetHeight());
-        if (scaled_pic) {
-            S_Output_DownloadBackdropSurface(scaled_pic);
-            Picture_Free(scaled_pic);
+    IMAGE *orig_img = Image_CreateFromFile(m_BackdropImagePath);
+    if (orig_img) {
+        IMAGE *scaled_img = Image_ScaleSmart(
+            orig_img, Viewport_GetWidth(), Viewport_GetHeight());
+        if (scaled_img) {
+            S_Output_DownloadBackdropSurface(scaled_img);
+            Image_Free(scaled_img);
         }
-        Picture_Free(orig_pic);
+        Image_Free(orig_img);
     }
 }
 

@@ -1,8 +1,8 @@
 #include "gfx/screenshot.h"
 
-#include "game/picture.h"
 #include "global/types.h"
 
+#include <libtrx/engine/image.h>
 #include <libtrx/memory.h>
 
 #include <assert.h>
@@ -17,17 +17,17 @@ bool GFX_Screenshot_CaptureToFile(const char *path)
     GFX_Screenshot_CaptureToBuffer(
         NULL, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
 
-    PICTURE *pic = Picture_Create(width, height);
-    assert(pic);
+    IMAGE *image = Image_Create(width, height);
+    assert(image);
 
     GFX_Screenshot_CaptureToBuffer(
-        (uint8_t *)pic->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
+        (uint8_t *)image->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
         true);
 
-    ret = Picture_SaveToFile(pic, path);
+    ret = Image_SaveToFile(image, path);
 
-    if (pic) {
-        Picture_Free(pic);
+    if (image) {
+        Image_Free(image);
     }
     return ret;
 }

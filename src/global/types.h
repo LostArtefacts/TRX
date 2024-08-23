@@ -1985,12 +1985,6 @@ typedef struct SAMPLE_INFO {
     int16_t flags;
 } SAMPLE_INFO;
 
-typedef struct PICTURE {
-    int32_t width;
-    int32_t height;
-    RGB_888 *data;
-} PICTURE;
-
 typedef union INPUT_STATE {
     uint64_t any;
     struct {
