@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- fixed holstering pistols hiding the gun meshes 1 frame too early (#1449, regression from 0.6)
 - improved logs module names readability
 - improved crash debug information on Windows
 

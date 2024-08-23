@@ -44,11 +44,11 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
         g_Lara.left_arm.rot.y = 0;
         g_Lara.left_arm.rot.z = 0;
         anil = LF_G_DRAW_END;
+    } else if (Anim_TestAbsFrameEqual(anil, LF_G_DRAW_START)) {
+        Gun_Pistols_UndrawMeshLeft(weapon_type);
+        anil--;
     } else if (Anim_TestAbsFrameRange(anil, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anil--;
-        if (Anim_TestAbsFrameEqual(anil, LF_G_DRAW_START)) {
-            Gun_Pistols_UndrawMeshLeft(weapon_type);
-        }
     }
     g_Lara.left_arm.frame_number = anil;
 
@@ -64,11 +64,11 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
         g_Lara.right_arm.rot.y = 0;
         g_Lara.right_arm.rot.z = 0;
         anir = LF_G_DRAW_END;
+    } else if (Anim_TestAbsFrameEqual(anir, LF_G_DRAW_START)) {
+        Gun_Pistols_UndrawMeshRight(weapon_type);
+        anir--;
     } else if (Anim_TestAbsFrameRange(anir, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anir--;
-        if (Anim_TestAbsFrameEqual(anir, LF_G_DRAW_START)) {
-            Gun_Pistols_UndrawMeshRight(weapon_type);
-        }
     }
     g_Lara.right_arm.frame_number = anir;
 
