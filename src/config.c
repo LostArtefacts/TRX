@@ -8,6 +8,7 @@
 #include "global/enum_str.h"
 #include "global/types.h"
 
+#include <libtrx/config/config_file.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
@@ -20,7 +21,7 @@
 
 CONFIG g_Config = { 0 };
 
-static const char *m_TR1XGlobalSettingsPath = "cfg/TR1X.json5";
+static const char *m_ConfigPath = "cfg/TR1X.json5";
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
@@ -38,6 +39,9 @@ static void Config_WriteKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
 static void Config_WriteControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+
+static void Config_ReadImpl(struct json_object_s *root_obj);
+static void Config_WriteImpl(struct json_object_s *root_obj);
 
 static int Config_ReadEnum(
     struct json_object_s *obj, const char *name, int default_value,
@@ -192,13 +196,13 @@ static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj)
     {
         g_Config.healthbar_show_mode = Config_ReadEnum(
             parent_obj, "healthbar_showing_mode", g_Config.healthbar_show_mode,
-            ENUM_STR_MAP(BAR_SHOW_MODE));
+            ENUM_STRING_MAP(BAR_SHOW_MODE));
         g_Config.airbar_show_mode = Config_ReadEnum(
             parent_obj, "airbar_showing_mode", g_Config.airbar_show_mode,
-            ENUM_STR_MAP(BAR_SHOW_MODE));
+            ENUM_STRING_MAP(BAR_SHOW_MODE));
         g_Config.enemy_healthbar_show_mode = Config_ReadEnum(
             parent_obj, "enemy_healthbar_showing_mode",
-            g_Config.enemy_healthbar_show_mode, ENUM_STR_MAP(BAR_SHOW_MODE));
+            g_Config.enemy_healthbar_show_mode, ENUM_STRING_MAP(BAR_SHOW_MODE));
     }
 }
 
@@ -275,36 +279,8 @@ static void Config_WriteControllerLayout(
     }
 }
 
-const char *Config_ResolveOptionName(const char *option_name)
+static void Config_ReadImpl(struct json_object_s *root_obj)
 {
-    const char *dot = strrchr(option_name, '.');
-    if (dot) {
-        return dot + 1;
-    }
-    return option_name;
-}
-
-bool Config_ReadFromJSON(const char *cfg_data)
-{
-    bool result = false;
-    struct json_value_s *root;
-    struct json_parse_result_s parse_result;
-
-    root = json_parse_ex(
-        cfg_data, strlen(cfg_data), json_parse_flags_allow_json5, NULL, NULL,
-        &parse_result);
-    if (root) {
-        result = true;
-    } else {
-        LOG_ERROR(
-            "failed to parse config file: %s in line %d, char %d",
-            json_get_error_description(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no);
-        // continue to supply the default values
-    }
-
-    struct json_object_s *root_obj = json_value_as_object(root);
-
     const CONFIG_OPTION *opt = g_ConfigOptionMap;
     while (opt->target) {
         switch (opt->type) {
@@ -363,53 +339,10 @@ bool Config_ReadFromJSON(const char *cfg_data)
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;
     }
-
-    if (root) {
-        json_value_free(root);
-    }
-
-    g_Config.loaded = true;
-    return result;
 }
 
-bool Config_Read(void)
+static void Config_WriteImpl(struct json_object_s *root_obj)
 {
-    bool result = false;
-    char *cfg_data = NULL;
-
-    if (!File_Load(m_TR1XGlobalSettingsPath, &cfg_data, NULL)) {
-        LOG_WARNING(
-            "'%s' not loaded - default settings will apply",
-            m_TR1XGlobalSettingsPath);
-        result = Config_ReadFromJSON("{}");
-    } else {
-        result = Config_ReadFromJSON(cfg_data);
-    }
-
-    Memory_FreePointer(&cfg_data);
-    return result;
-}
-
-void Config_Init(void)
-{
-    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
-    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
-    Music_SetVolume(g_Config.music_volume);
-    Sound_SetMasterVolume(g_Config.sound_volume);
-}
-
-bool Config_Write(void)
-{
-    LOG_INFO("Saving user settings");
-
-    MYFILE *fp = File_Open(m_TR1XGlobalSettingsPath, FILE_OPEN_WRITE);
-    if (!fp) {
-        return false;
-    }
-
-    size_t size;
-    struct json_object_s *root_obj = json_object_new();
-
     const CONFIG_OPTION *opt = g_ConfigOptionMap;
     while (opt->target) {
         switch (opt->type) {
@@ -455,14 +388,28 @@ bool Config_Write(void)
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         Config_WriteControllerLayout(root_obj, layout);
     }
+}
 
-    struct json_value_s *root = json_value_from_object(root_obj);
-    char *data = json_write_pretty(root, "  ", "\n", &size);
-    json_value_free(root);
+const char *Config_ResolveOptionName(const char *option_name)
+{
+    const char *dot = strrchr(option_name, '.');
+    if (dot) {
+        return dot + 1;
+    }
+    return option_name;
+}
 
-    File_WriteData(fp, data, size - 1);
-    File_Close(fp);
-    Memory_FreePointer(&data);
+bool Config_Read(void)
+{
+    const bool result = ConfigFile_Read(m_ConfigPath, &Config_ReadImpl);
+    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
+    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
+    Music_SetVolume(g_Config.music_volume);
+    Sound_SetMasterVolume(g_Config.sound_volume);
+    return result;
+}
 
-    return true;
+bool Config_Write(void)
+{
+    return ConfigFile_Write(m_ConfigPath, &Config_WriteImpl);
 }

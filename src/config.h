@@ -138,7 +138,5 @@ typedef struct {
 extern CONFIG g_Config;
 
 const char *Config_ResolveOptionName(const char *option_name);
-bool Config_ReadFromJSON(const char *json);
 bool Config_Read(void);
-void Config_Init(void);
 bool Config_Write(void);
