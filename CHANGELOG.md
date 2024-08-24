@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - fixed holstering pistols hiding the gun meshes 1 frame too early (#1449, regression from 0.6)
+- fixed Lara's sliding animation sometimes being interrupted by a stumble (#1452, regression from 4.3)
 - improved logs module names readability
 - improved crash debug information on Windows
 
