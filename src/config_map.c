@@ -1,10 +1,9 @@
 #include "config_map.h"
 
 #include "config.h"
-#include "gfx/common.h"
-#include "global/const.h"
 #include "global/enum_str.h"
-#include "global/types.h"
+
+#include <libtrx/utils.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -43,7 +42,7 @@
       .type = COT_ENUM,                                                        \
       .target = &g_Config.target_,                                             \
       .default_value = &(int32_t) { default_value_ },                          \
-      .param = ENUM_STR_MAP(enum_map) },
+      .param = ENUM_STRING_MAP(enum_map) },
 
 const CONFIG_OPTION g_ConfigOptionMap[] = {
 #include "config_map.def"

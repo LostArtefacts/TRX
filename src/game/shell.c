@@ -138,7 +138,6 @@ void Shell_Init(const char *gameflow_path)
     Option_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
-    Config_Init();
 
     Screen_Init();
 }
