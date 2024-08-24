@@ -23,56 +23,20 @@ CONFIG g_Config = { 0 };
 
 static const char *m_ConfigPath = "cfg/TR1X.json5";
 
-static int Config_ReadEnum(
-    struct json_object_s *obj, const char *name, int default_value,
-    const ENUM_STRING_MAP *enum_map);
-static void Config_WriteEnum(
-    struct json_object_s *obj, const char *name, int value,
-    const ENUM_STRING_MAP *enum_map);
-
-static void Config_ReadKeyboardLayout(
+static void Config_LoadKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void Config_ReadControllerLayout(
+static void Config_LoadControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj);
-static void Config_WriteKeyboardLayout(
+static void Config_LoadLegacyOptions(struct json_object_s *const parent_obj);
+static void Config_DumpKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void Config_WriteControllerLayout(
+static void Config_DumpControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
 
-static void Config_ReadImpl(struct json_object_s *root_obj);
-static void Config_WriteImpl(struct json_object_s *root_obj);
+static void Config_Load(struct json_object_s *root_obj);
+static void Config_Dump(struct json_object_s *root_obj);
 
-static int Config_ReadEnum(
-    struct json_object_s *obj, const char *name, int default_value,
-    const ENUM_STRING_MAP *enum_map)
-{
-    const char *value_str = json_object_get_string(obj, name, NULL);
-    if (value_str) {
-        while (enum_map->text) {
-            if (!strcmp(value_str, enum_map->text)) {
-                return enum_map->value;
-            }
-            enum_map++;
-        }
-    }
-    return default_value;
-}
-
-static void Config_WriteEnum(
-    struct json_object_s *obj, const char *name, int value,
-    const ENUM_STRING_MAP *enum_map)
-{
-    while (enum_map->text) {
-        if (enum_map->value == value) {
-            json_object_append_string(obj, name, enum_map->text);
-            break;
-        }
-        enum_map++;
-    }
-}
-
-static void Config_ReadKeyboardLayout(
+static void Config_LoadKeyboardLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     char layout_name[20];
@@ -113,7 +77,7 @@ static void Config_ReadKeyboardLayout(
     }
 }
 
-static void Config_ReadControllerLayout(
+static void Config_LoadControllerLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     char layout_name[20];
@@ -179,7 +143,7 @@ static void Config_ReadControllerLayout(
     }
 }
 
-static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj)
+static void Config_LoadLegacyOptions(struct json_object_s *const parent_obj)
 {
     // 0.10..4.0.3: enable_enemy_healthbar
     {
@@ -194,19 +158,19 @@ static void Config_ReadLegacyOptions(struct json_object_s *const parent_obj)
 
     // ..4.1.2: healthbar_show_mode, airbar_show_mode, enemy_healthbar_show_mode
     {
-        g_Config.healthbar_show_mode = Config_ReadEnum(
+        g_Config.healthbar_show_mode = ConfigFile_ReadEnum(
             parent_obj, "healthbar_showing_mode", g_Config.healthbar_show_mode,
             ENUM_STRING_MAP(BAR_SHOW_MODE));
-        g_Config.airbar_show_mode = Config_ReadEnum(
+        g_Config.airbar_show_mode = ConfigFile_ReadEnum(
             parent_obj, "airbar_showing_mode", g_Config.airbar_show_mode,
             ENUM_STRING_MAP(BAR_SHOW_MODE));
-        g_Config.enemy_healthbar_show_mode = Config_ReadEnum(
+        g_Config.enemy_healthbar_show_mode = ConfigFile_ReadEnum(
             parent_obj, "enemy_healthbar_showing_mode",
             g_Config.enemy_healthbar_show_mode, ENUM_STRING_MAP(BAR_SHOW_MODE));
     }
 }
 
-static void Config_WriteKeyboardLayout(
+static void Config_DumpKeyboardLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     struct json_array_s *const arr = json_array_new();
@@ -238,7 +202,7 @@ static void Config_WriteKeyboardLayout(
     }
 }
 
-static void Config_WriteControllerLayout(
+static void Config_DumpControllerLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     struct json_array_s *const arr = json_array_new();
@@ -279,51 +243,17 @@ static void Config_WriteControllerLayout(
     }
 }
 
-static void Config_ReadImpl(struct json_object_s *root_obj)
+static void Config_Load(struct json_object_s *root_obj)
 {
-    const CONFIG_OPTION *opt = g_ConfigOptionMap;
-    while (opt->target) {
-        switch (opt->type) {
-        case COT_BOOL:
-            *(bool *)opt->target = json_object_get_bool(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(bool *)opt->default_value);
-            break;
-
-        case COT_INT32:
-            *(int32_t *)opt->target = json_object_get_int(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(int32_t *)opt->default_value);
-            break;
-
-        case COT_FLOAT:
-            *(float *)opt->target = json_object_get_double(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(float *)opt->default_value);
-            break;
-
-        case COT_DOUBLE:
-            *(double *)opt->target = json_object_get_double(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(double *)opt->default_value);
-            break;
-
-        case COT_ENUM:
-            *(int *)opt->target = Config_ReadEnum(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(int *)opt->default_value,
-                (const ENUM_STRING_MAP *)opt->param);
-        }
-        opt++;
-    }
+    ConfigFile_LoadOptions(root_obj, g_ConfigOptionMap);
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        Config_ReadKeyboardLayout(root_obj, layout);
-        Config_ReadControllerLayout(root_obj, layout);
+        Config_LoadKeyboardLayout(root_obj, layout);
+        Config_LoadControllerLayout(root_obj, layout);
     }
 
-    Config_ReadLegacyOptions(root_obj);
+    Config_LoadLegacyOptions(root_obj);
 
     CLAMP(g_Config.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
     CLAMP(g_Config.fov_value, 30, 255);
@@ -341,67 +271,24 @@ static void Config_ReadImpl(struct json_object_s *root_obj)
     }
 }
 
-static void Config_WriteImpl(struct json_object_s *root_obj)
+static void Config_Dump(struct json_object_s *root_obj)
 {
-    const CONFIG_OPTION *opt = g_ConfigOptionMap;
-    while (opt->target) {
-        switch (opt->type) {
-        case COT_BOOL:
-            json_object_append_bool(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(bool *)opt->target);
-            break;
+    ConfigFile_DumpOptions(root_obj, g_ConfigOptionMap);
 
-        case COT_INT32:
-            json_object_append_int(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(int32_t *)opt->target);
-            break;
-
-        case COT_FLOAT:
-            json_object_append_double(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(float *)opt->target);
-            break;
-
-        case COT_DOUBLE:
-            json_object_append_double(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(double *)opt->target);
-            break;
-
-        case COT_ENUM:
-            Config_WriteEnum(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(int *)opt->target, (const ENUM_STRING_MAP *)opt->param);
-            break;
-        }
-        opt++;
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        Config_DumpKeyboardLayout(root_obj, layout);
     }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        Config_WriteKeyboardLayout(root_obj, layout);
+        Config_DumpControllerLayout(root_obj, layout);
     }
-
-    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
-         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        Config_WriteControllerLayout(root_obj, layout);
-    }
-}
-
-const char *Config_ResolveOptionName(const char *option_name)
-{
-    const char *dot = strrchr(option_name, '.');
-    if (dot) {
-        return dot + 1;
-    }
-    return option_name;
 }
 
 bool Config_Read(void)
 {
-    const bool result = ConfigFile_Read(m_ConfigPath, &Config_ReadImpl);
+    const bool result = ConfigFile_Read(m_ConfigPath, &Config_Load);
     Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
     Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
     Music_SetVolume(g_Config.music_volume);
@@ -411,5 +298,5 @@ bool Config_Read(void)
 
 bool Config_Write(void)
 {
-    return ConfigFile_Write(m_ConfigPath, &Config_WriteImpl);
+    return ConfigFile_Write(m_ConfigPath, &Config_Dump);
 }

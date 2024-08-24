@@ -137,6 +137,5 @@ typedef struct {
 
 extern CONFIG g_Config;
 
-const char *Config_ResolveOptionName(const char *option_name);
 bool Config_Read(void);
 bool Config_Write(void);
