@@ -1014,12 +1014,11 @@ bool Room_IsOnWalkable(
     const int32_t z, const int32_t room_height)
 {
     sector = Room_GetPitSector(sector, x, z);
-
-    int16_t height = sector->floor.height;
     if (sector->trigger == NULL) {
-        return room_height == height;
+        return false;
     }
 
+    int16_t height = sector->floor.height;
     bool object_found = false;
     for (int32_t i = 0; i < sector->trigger->command_count; i++) {
         const TRIGGER_CMD *const cmd = &sector->trigger->commands[i];
