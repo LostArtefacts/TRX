@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <string.h>
 
+static const char *Console_Cmd_Set_Resolve(const char *option_name);
 static bool Console_Cmd_Set_SameKey(const char *key1, const char *key2);
 static bool Console_Cmd_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
@@ -301,10 +302,19 @@ static COMMAND_RESULT Console_Cmd_VSync(const char *const args)
     return CR_BAD_INVOCATION;
 }
 
+static const char *Console_Cmd_Set_Resolve(const char *option_name)
+{
+    const char *dot = strrchr(option_name, '.');
+    if (dot) {
+        return dot + 1;
+    }
+    return option_name;
+}
+
 static bool Console_Cmd_Set_SameKey(const char *key1, const char *key2)
 {
-    key1 = Config_ResolveOptionName(key1);
-    key2 = Config_ResolveOptionName(key2);
+    key1 = Console_Cmd_Set_Resolve(key1);
+    key2 = Console_Cmd_Set_Resolve(key2);
     const size_t len1 = strlen(key1);
     const size_t len2 = strlen(key2);
     if (len1 != len2) {
