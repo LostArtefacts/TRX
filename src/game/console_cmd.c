@@ -54,7 +54,7 @@ static COMMAND_RESULT Console_Cmd_SaveGame(const char *args);
 static COMMAND_RESULT Console_Cmd_StartDemo(const char *args);
 static COMMAND_RESULT Console_Cmd_ExitToTitle(const char *args);
 static COMMAND_RESULT Console_Cmd_EndLevel(const char *args);
-static COMMAND_RESULT Console_Cmd_Level(const char *args);
+static COMMAND_RESULT Console_Cmd_StartLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_Abortion(const char *args);
 static COMMAND_RESULT Console_Cmd_Set(const char *const args);
 
@@ -224,7 +224,7 @@ static COMMAND_RESULT Console_Cmd_SetHealth(const char *const args)
         return CR_UNAVAILABLE;
     }
 
-    if (strcmp(args, "") == 0) {
+    if (String_Equivalent(args, "")) {
         Console_Log(GS(OSD_CURRENT_HEALTH_GET), g_LaraItem->hit_points);
         return CR_SUCCESS;
     }
@@ -267,7 +267,7 @@ static COMMAND_RESULT Console_Cmd_Fly(const char *const args)
 
 static COMMAND_RESULT Console_Cmd_Speed(const char *const args)
 {
-    if (strcmp(args, "") == 0) {
+    if (String_Equivalent(args, "")) {
         Console_Log(GS(OSD_SPEED_GET), Clock_GetTurboSpeed());
         return CR_SUCCESS;
     }
@@ -283,26 +283,19 @@ static COMMAND_RESULT Console_Cmd_Speed(const char *const args)
 
 static COMMAND_RESULT Console_Cmd_VSync(const char *const args)
 {
-    if (String_Equivalent(args, "off")) {
-        g_Config.rendering.enable_vsync = false;
-        Config_Write();
-        Output_ApplyRenderSettings();
-        Console_Log(GS(OSD_VSYNC_OFF));
-        return CR_SUCCESS;
+    bool enable;
+    if (!String_ParseBool(args, &enable)) {
+        return CR_BAD_INVOCATION;
     }
 
-    if (String_Equivalent(args, "on")) {
-        g_Config.rendering.enable_vsync = true;
-        Config_Write();
-        Output_ApplyRenderSettings();
-        Console_Log(GS(OSD_VSYNC_ON));
-        return CR_SUCCESS;
-    }
-
-    return CR_BAD_INVOCATION;
+    g_Config.rendering.enable_vsync = enable;
+    Config_Write();
+    Output_ApplyRenderSettings();
+    Console_Log(enable ? GS(OSD_VSYNC_ON) : GS(OSD_VSYNC_OFF));
+    return CR_SUCCESS;
 }
 
-static const char *Console_Cmd_Set_Resolve(const char *option_name)
+static const char *Console_Cmd_Set_Resolve(const char *const option_name)
 {
     const char *dot = strrchr(option_name, '.');
     if (dot) {
@@ -457,59 +450,41 @@ cleanup:
 
 static COMMAND_RESULT Console_Cmd_Braid(const char *const args)
 {
-    if (String_Equivalent(args, "off")) {
-        g_Config.enable_braid = false;
-        Config_Write();
-        Console_Log(GS(OSD_BRAID_OFF));
-        return CR_SUCCESS;
+    bool enable;
+    if (!String_ParseBool(args, &enable)) {
+        return CR_BAD_INVOCATION;
     }
 
-    if (String_Equivalent(args, "on")) {
-        g_Config.enable_braid = true;
-        Config_Write();
-        Console_Log(GS(OSD_BRAID_ON));
-        return CR_SUCCESS;
-    }
-
-    return CR_BAD_INVOCATION;
+    g_Config.enable_braid = enable;
+    Config_Write();
+    Console_Log(enable ? GS(OSD_BRAID_ON) : GS(OSD_BRAID_OFF));
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args)
 {
-    if (String_Equivalent(args, "off")) {
-        g_Config.rendering.enable_wireframe = false;
-        Config_Write();
-        Console_Log(GS(OSD_WIREFRAME_OFF));
-        return CR_SUCCESS;
+    bool enable;
+    if (!String_ParseBool(args, &enable)) {
+        return CR_BAD_INVOCATION;
     }
 
-    if (String_Equivalent(args, "on")) {
-        g_Config.rendering.enable_wireframe = true;
-        Config_Write();
-        Console_Log(GS(OSD_WIREFRAME_ON));
-        return CR_SUCCESS;
-    }
-
-    return CR_BAD_INVOCATION;
+    g_Config.rendering.enable_wireframe = enable;
+    Config_Write();
+    Console_Log(enable ? GS(OSD_WIREFRAME_ON) : GS(OSD_WIREFRAME_OFF));
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_Cheats(const char *const args)
 {
-    if (String_Equivalent(args, "off")) {
-        g_Config.enable_cheats = false;
-        Config_Write();
-        Console_Log(GS(OSD_CHEATS_OFF));
-        return CR_SUCCESS;
+    bool enable;
+    if (!String_ParseBool(args, &enable)) {
+        return CR_BAD_INVOCATION;
     }
 
-    if (String_Equivalent(args, "on")) {
-        g_Config.enable_cheats = true;
-        Config_Write();
-        Console_Log(GS(OSD_CHEATS_ON));
-        return CR_SUCCESS;
-    }
-
-    return CR_BAD_INVOCATION;
+    g_Config.enable_cheats = enable;
+    Config_Write();
+    Console_Log(enable ? GS(OSD_CHEATS_ON) : GS(OSD_CHEATS_OFF));
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
@@ -540,7 +515,7 @@ static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
         args++;
     }
 
-    if (strcmp(args, "") == 0) {
+    if (String_Equivalent(args, "")) {
         return CR_BAD_INVOCATION;
     }
 
@@ -570,40 +545,23 @@ static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
 
 static COMMAND_RESULT Console_Cmd_FlipMap(const char *args)
 {
-    bool flip = false;
-    if (String_Equivalent(args, "on")) {
-        if (g_FlipStatus) {
-            Console_Log(GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
-            return CR_SUCCESS;
-        } else {
-            flip = true;
-        }
+    bool new_state;
+    if (String_Equivalent(args, "")) {
+        new_state = !g_FlipStatus;
+    } else if (!String_ParseBool(args, &new_state)) {
+        return CR_BAD_INVOCATION;
     }
 
-    if (String_Equivalent(args, "off")) {
-        if (!g_FlipStatus) {
-            Console_Log(GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
-            return CR_SUCCESS;
-        } else {
-            flip = true;
-        }
-    }
-
-    if (strcmp(args, "") == 0) {
-        flip = true;
-    }
-
-    if (flip) {
-        Room_FlipMap();
-        if (g_FlipStatus) {
-            Console_Log(GS(OSD_FLIPMAP_ON));
-        } else {
-            Console_Log(GS(OSD_FLIPMAP_OFF));
-        }
+    if (g_FlipStatus == new_state) {
+        Console_Log(
+            new_state ? GS(OSD_FLIPMAP_FAIL_ALREADY_ON)
+                      : GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
         return CR_SUCCESS;
     }
 
-    return CR_FAILURE;
+    Room_FlipMap();
+    Console_Log(new_state ? GS(OSD_FLIPMAP_ON) : GS(OSD_FLIPMAP_OFF));
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_Kill(const char *args)
@@ -617,19 +575,20 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
                 num++;
             }
         }
-        if (num > 0) {
-            Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
-            Console_Log(GS(OSD_KILL_ALL), num);
-            return CR_SUCCESS;
-        } else {
+
+        if (num == 0) {
             Console_Log(GS(OSD_KILL_ALL_FAIL), num);
             return CR_FAILURE;
         }
+
+        Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
+        Console_Log(GS(OSD_KILL_ALL), num);
+        return CR_SUCCESS;
     }
 
     // kill all the enemies around Lara within one tile, or a single nearest
     // enemy
-    if (strcmp(args, "") == 0) {
+    if (String_Equivalent(args, "")) {
         bool found = false;
         while (true) {
             const int16_t best_item_num = Lara_GetNearestEnemy();
@@ -645,13 +604,13 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
             }
         }
 
-        if (found) {
-            Console_Log(GS(OSD_KILL));
-            return CR_SUCCESS;
-        } else {
+        if (!found) {
             Console_Log(GS(OSD_KILL_FAIL));
             return CR_FAILURE;
         }
+
+        Console_Log(GS(OSD_KILL));
+        return CR_SUCCESS;
     }
 
     // kill a single enemy type
@@ -675,19 +634,16 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
         }
         Memory_FreePointer(&matching_objs);
 
-        if (matched) {
-            if (num > 0) {
-                Console_Log(GS(OSD_KILL_ALL), num);
-                return CR_SUCCESS;
-            } else {
-                Console_Log(GS(OSD_KILL_ALL_FAIL));
-                return CR_FAILURE;
-            }
+        if (!matched) {
+            return CR_BAD_INVOCATION;
         }
-        return CR_BAD_INVOCATION;
+        if (num == 0) {
+            Console_Log(GS(OSD_KILL_ALL_FAIL));
+            return CR_FAILURE;
+        }
+        Console_Log(GS(OSD_KILL_ALL), num);
+        return CR_SUCCESS;
     }
-
-    return CR_BAD_INVOCATION;
 }
 
 static COMMAND_RESULT Console_Cmd_StartDemo(const char *args)
@@ -757,27 +713,24 @@ static COMMAND_RESULT Console_Cmd_SaveGame(const char *args)
     return CR_SUCCESS;
 }
 
-static COMMAND_RESULT Console_Cmd_EndLevel(const char *args)
+static COMMAND_RESULT Console_Cmd_EndLevel(const char *const args)
 {
-    if (strcmp(args, "") == 0) {
-        Lara_Cheat_EndLevel();
-        return CR_SUCCESS;
+    if (!String_Equivalent(args, "")) {
+        return CR_BAD_INVOCATION;
     }
-    return CR_FAILURE;
+
+    Lara_Cheat_EndLevel();
+    return CR_SUCCESS;
 }
 
-static COMMAND_RESULT Console_Cmd_Level(const char *args)
+static COMMAND_RESULT Console_Cmd_StartLevel(const char *const args)
 {
-    int32_t level_to_load = -1;
-
-    if (level_to_load == -1) {
-        int32_t num = 0;
-        if (sscanf(args, "%d", &num) == 1) {
-            level_to_load = num;
-        }
+    if (String_Equivalent(args, "")) {
+        return CR_BAD_INVOCATION;
     }
 
-    if (level_to_load == -1 && strlen(args) >= 2) {
+    int32_t level_to_load = -1;
+    if (!String_ParseInteger(args, &level_to_load)) {
         for (int i = 0; i < g_GameFlow.level_count; i++) {
             if (String_CaseSubstring(g_GameFlow.levels[i].level_title, args)
                 != NULL) {
@@ -785,10 +738,17 @@ static COMMAND_RESULT Console_Cmd_Level(const char *args)
                 break;
             }
         }
+        if (level_to_load == -1 && String_Equivalent(args, "gym")) {
+            level_to_load = g_GameFlow.gym_level_num;
+        }
+        if (level_to_load == -1) {
+            Console_Log(GS(OSD_INVALID_LEVEL));
+            return CR_FAILURE;
+        }
     }
 
-    if (level_to_load == -1 && String_Equivalent(args, "gym")) {
-        level_to_load = g_GameFlow.gym_level_num;
+    if (level_to_load == -1) {
+        return CR_BAD_INVOCATION;
     }
 
     if (level_to_load >= g_GameFlow.level_count) {
@@ -796,17 +756,13 @@ static COMMAND_RESULT Console_Cmd_Level(const char *args)
         return CR_FAILURE;
     }
 
-    if (level_to_load != -1) {
-        g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
-            .command = GF_SELECT_GAME,
-            .param = level_to_load,
-        };
-        Console_Log(
-            GS(OSD_PLAY_LEVEL), g_GameFlow.levels[level_to_load].level_title);
-        return CR_SUCCESS;
-    }
-
-    return CR_BAD_INVOCATION;
+    g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
+        .command = GF_SELECT_GAME,
+        .param = level_to_load,
+    };
+    Console_Log(
+        GS(OSD_PLAY_LEVEL), g_GameFlow.levels[level_to_load].level_title);
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_Abortion(const char *args)
@@ -846,8 +802,8 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },
     { .prefix = "kill", .proc = Console_Cmd_Kill },
     { .prefix = "endlevel", .proc = Console_Cmd_EndLevel },
-    { .prefix = "play", .proc = Console_Cmd_Level },
-    { .prefix = "level", .proc = Console_Cmd_Level },
+    { .prefix = "play", .proc = Console_Cmd_StartLevel },
+    { .prefix = "level", .proc = Console_Cmd_StartLevel },
     { .prefix = "load", .proc = Console_Cmd_LoadGame },
     { .prefix = "save", .proc = Console_Cmd_SaveGame },
     { .prefix = "demo", .proc = Console_Cmd_StartDemo },
