@@ -94,22 +94,22 @@ static bool m_HideArrowLeft = false;
 static bool m_HideArrowRight = false;
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
-static void Option_GraphicsUpdateMenuVisible(void);
-static void Option_GraphicsReinitialize(GRAPHICS_OPTION_NAME starting_option);
-static void Option_GraphicsMenuUp(void);
-static void Option_GraphicsMenuDown(void);
-static void Option_GraphicsInitText(void);
-static void Option_GraphicsUpdateText(void);
-static void Option_GraphicsShutdown(void);
-static void Option_GraphicsUpdateArrows(
+static void Option_Graphics_UpdateMenuVisible(void);
+static void Option_Graphics_Reinitialize(GRAPHICS_OPTION_NAME starting_option);
+static void Option_Graphics_MenuUp(void);
+static void Option_Graphics_MenuDown(void);
+static void Option_Graphics_InitText(void);
+static void Option_Graphics_UpdateText(void);
+static void Option_Graphics_Shutdown(void);
+static void Option_Graphics_UpdateArrows(
     GRAPHICS_OPTION_NAME option_name, TEXTSTRING value_text, bool more_up,
     bool more_down);
-static void Option_GraphicsChangeTextOption(
+static void Option_Graphics_ChangeTextOption(
     const GRAPHICS_OPTION_ROW *row, TEXTSTRING *option_text,
     TEXTSTRING *value_text);
-static int16_t Option_GraphicsPlaceColumns(bool create);
+static int16_t Option_Graphics_PlaceColumns(bool create);
 
-static void Option_GraphicsInitMenu(void)
+static void Option_Graphics_InitMenu(void)
 {
     m_GraphicsMenu.first_option = &m_GfxOptionRows[OPTION_FPS];
     m_GraphicsMenu.last_option = &m_GfxOptionRows[OPTION_PERSPECTIVE];
@@ -120,7 +120,7 @@ static void Option_GraphicsInitMenu(void)
     m_GraphicsMenu.last_visible = &m_GfxOptionRows[OPTION_FPS];
 }
 
-static void Option_GraphicsUpdateMenuVisible(void)
+static void Option_Graphics_UpdateMenuVisible(void)
 {
     int32_t visible_lines = 0;
     if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
@@ -138,18 +138,18 @@ static void Option_GraphicsUpdateMenuVisible(void)
         &m_GfxOptionRows[OPTION_FPS] + m_GraphicsMenu.num_vis_options - 1;
 }
 
-static void Option_GraphicsReinitialize(GRAPHICS_OPTION_NAME starting_option)
+static void Option_Graphics_Reinitialize(GRAPHICS_OPTION_NAME starting_option)
 {
-    Option_GraphicsShutdown();
-    Option_GraphicsInitText();
+    Option_Graphics_Shutdown();
+    Option_Graphics_InitText();
     m_IsTextInit = true;
     for (const GRAPHICS_OPTION_ROW *row = m_GraphicsMenu.first_option;
          row->option_name != starting_option; row++) {
-        Option_GraphicsMenuDown();
+        Option_Graphics_MenuDown();
     }
 }
 
-static void Option_GraphicsMenuUp(void)
+static void Option_Graphics_MenuUp(void)
 {
     if (m_GraphicsMenu.cur_option != m_GraphicsMenu.first_option) {
         if (m_GraphicsMenu.cur_option == m_GraphicsMenu.first_visible) {
@@ -159,11 +159,11 @@ static void Option_GraphicsMenuUp(void)
             m_GraphicsMenu.row_num--;
         }
         m_GraphicsMenu.cur_option--;
-        Option_GraphicsUpdateText();
+        Option_Graphics_UpdateText();
     }
 }
 
-static void Option_GraphicsMenuDown(void)
+static void Option_Graphics_MenuDown(void)
 {
     if (m_GraphicsMenu.cur_option != m_GraphicsMenu.last_option) {
         if (m_GraphicsMenu.cur_option == m_GraphicsMenu.last_visible) {
@@ -173,14 +173,14 @@ static void Option_GraphicsMenuDown(void)
             m_GraphicsMenu.row_num++;
         }
         m_GraphicsMenu.cur_option++;
-        Option_GraphicsUpdateText();
+        Option_Graphics_UpdateText();
     }
 }
 
-static void Option_GraphicsInitText(void)
+static void Option_Graphics_InitText(void)
 {
-    Option_GraphicsInitMenu();
-    Option_GraphicsUpdateMenuVisible();
+    Option_Graphics_InitMenu();
+    Option_Graphics_UpdateMenuVisible();
 
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y - 2, " ");
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], 1);
@@ -192,7 +192,7 @@ static void Option_GraphicsInitText(void)
     Text_AddBackground(m_Text[TEXT_TITLE], ROW_WIDTH - 4, 0, 0, 0, TS_HEADING);
     Text_AddOutline(m_Text[TEXT_TITLE], true, TS_HEADING);
 
-    int16_t max_y = Option_GraphicsPlaceColumns(true);
+    int16_t max_y = Option_Graphics_PlaceColumns(true);
 
     int16_t width = ROW_WIDTH;
     int16_t height = max_y + BORDER * 2 - TOP_Y;
@@ -234,21 +234,21 @@ static void Option_GraphicsInitText(void)
     //     m_Text[TEXT_ROW_SELECT], ROW_WIDTH - 7, 0, 0, 0, TS_REQUESTED);
     // Text_AddOutline(m_Text[TEXT_ROW_SELECT], true, TS_REQUESTED);
 
-    Option_GraphicsUpdateText();
+    Option_Graphics_UpdateText();
 }
 
-static void Option_GraphicsUpdateText(void)
+static void Option_Graphics_UpdateText(void)
 {
     int i;
     const GRAPHICS_OPTION_ROW *row;
     for (i = 0, row = m_GraphicsMenu.first_visible;
          row <= m_GraphicsMenu.last_visible; i++, row++) {
-        Option_GraphicsChangeTextOption(
+        Option_Graphics_ChangeTextOption(
             row, m_GraphicsMenu.option_texts[i], m_GraphicsMenu.value_texts[i]);
     }
 }
 
-static void Option_GraphicsShutdown(void)
+static void Option_Graphics_Shutdown(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
@@ -263,10 +263,10 @@ static void Option_GraphicsShutdown(void)
     m_IsTextInit = false;
     m_HideArrowLeft = false;
     m_HideArrowRight = false;
-    Option_GraphicsInitMenu();
+    Option_Graphics_InitMenu();
 }
 
-static void Option_GraphicsUpdateArrows(
+static void Option_Graphics_UpdateArrows(
     GRAPHICS_OPTION_NAME option_name, TEXTSTRING value_text, bool more_up,
     bool more_down)
 {
@@ -345,7 +345,7 @@ static void Option_GraphicsUpdateArrows(
     }
 }
 
-static int16_t Option_GraphicsPlaceColumns(bool create)
+static int16_t Option_Graphics_PlaceColumns(bool create)
 {
     const int16_t centre = Screen_GetResWidthDownscaled(RSR_TEXT) / 2;
     const GRAPHICS_OPTION_ROW *row = m_GraphicsMenu.first_visible;
@@ -379,7 +379,7 @@ static int16_t Option_GraphicsPlaceColumns(bool create)
     return MAX(name_y, value_y);
 }
 
-static void Option_GraphicsChangeTextOption(
+static void Option_Graphics_ChangeTextOption(
     const GRAPHICS_OPTION_ROW *row, TEXTSTRING *option_text,
     TEXTSTRING *value_text)
 {
@@ -463,16 +463,16 @@ static void Option_GraphicsChangeTextOption(
 void Option_Graphics(INVENTORY_ITEM *inv_item)
 {
     if (!m_IsTextInit) {
-        Option_GraphicsInitText();
+        Option_Graphics_InitText();
         m_IsTextInit = true;
     }
 
     if (g_InputDB.menu_up) {
-        Option_GraphicsMenuUp();
+        Option_Graphics_MenuUp();
     }
 
     if (g_InputDB.menu_down) {
-        Option_GraphicsMenuDown();
+        Option_Graphics_MenuDown();
     }
 
     Text_AddBackground(
@@ -521,7 +521,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         case OPTION_UI_TEXT_SCALE:
             g_Config.ui.text_scale += 0.1;
             CLAMP(g_Config.ui.text_scale, MIN_TEXT_SCALE, MAX_TEXT_SCALE);
-            Option_GraphicsReinitialize(OPTION_UI_TEXT_SCALE);
+            Option_Graphics_Reinitialize(OPTION_UI_TEXT_SCALE);
             reset = OPTION_UI_TEXT_SCALE;
             break;
 
@@ -545,7 +545,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (Screen_SetNextRes()) {
                 g_Config.resolution_width = Screen_GetResWidth();
                 g_Config.resolution_height = Screen_GetResHeight();
-                Option_GraphicsReinitialize(OPTION_RESOLUTION);
+                Option_Graphics_Reinitialize(OPTION_RESOLUTION);
                 reset = OPTION_RESOLUTION;
             }
             break;
@@ -601,7 +601,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         case OPTION_UI_TEXT_SCALE:
             g_Config.ui.text_scale -= 0.1;
             CLAMP(g_Config.ui.text_scale, MIN_TEXT_SCALE, MAX_TEXT_SCALE);
-            Option_GraphicsReinitialize(OPTION_UI_TEXT_SCALE);
+            Option_Graphics_Reinitialize(OPTION_UI_TEXT_SCALE);
             reset = OPTION_UI_TEXT_SCALE;
             break;
 
@@ -626,7 +626,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
                 reset = OPTION_RESOLUTION;
                 g_Config.resolution_width = Screen_GetResWidth();
                 g_Config.resolution_height = Screen_GetResHeight();
-                Option_GraphicsReinitialize(OPTION_RESOLUTION);
+                Option_Graphics_Reinitialize(OPTION_RESOLUTION);
             }
             break;
 
@@ -648,21 +648,21 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
     }
 
     if (reset > -1) {
-        Option_GraphicsChangeTextOption(
+        Option_Graphics_ChangeTextOption(
             m_GraphicsMenu.cur_option,
             m_GraphicsMenu.option_texts[m_GraphicsMenu.row_num],
             m_GraphicsMenu.value_texts[m_GraphicsMenu.row_num]);
         Config_Write();
     }
 
-    Option_GraphicsUpdateArrows(
+    Option_Graphics_UpdateArrows(
         m_GraphicsMenu.cur_option->option_name,
         *m_GraphicsMenu.value_texts[m_GraphicsMenu.row_num],
         m_GraphicsMenu.first_visible != m_GraphicsMenu.first_option,
         m_GraphicsMenu.last_visible != m_GraphicsMenu.last_option);
 
     if (reset == OPTION_NUMBER_OF) {
-        Option_GraphicsShutdown();
+        Option_Graphics_Shutdown();
         Config_Write();
     }
 }

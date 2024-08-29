@@ -26,9 +26,9 @@ typedef enum COMPASS_TEXT {
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
-static void Option_CompassInitText(void);
+static void Option_Compass_InitText(void);
 
-static void Option_CompassInitText(void)
+static void Option_Compass_InitText(void)
 {
     char buf[100];
     const int top_y = -60;
@@ -111,7 +111,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
         char time_buf[100];
 
         if (!m_Text[0]) {
-            Option_CompassInitText();
+            Option_Compass_InitText();
         }
 
         int32_t seconds =
