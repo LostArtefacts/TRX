@@ -38,36 +38,36 @@
 static LEVEL_INFO m_LevelInfo = { 0 };
 static INJECTION_INFO *m_InjectionInfo = NULL;
 
-static bool Level_LoadFromFile(
+static void Level_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo);
-static bool Level_LoadTexturePages(MYFILE *fp);
-static bool Level_LoadRooms(MYFILE *fp);
-static bool Level_LoadMeshBase(MYFILE *fp);
-static bool Level_LoadMeshes(MYFILE *fp);
-static bool Level_LoadAnims(MYFILE *fp);
-static bool Level_LoadAnimChanges(MYFILE *fp);
-static bool Level_LoadAnimRanges(MYFILE *fp);
-static bool Level_LoadAnimCommands(MYFILE *fp);
-static bool Level_LoadAnimBones(MYFILE *fp);
-static bool Level_LoadAnimFrames(MYFILE *fp);
-static bool Level_LoadObjects(MYFILE *fp);
-static bool Level_LoadStaticObjects(MYFILE *fp);
-static bool Level_LoadTextures(MYFILE *fp);
-static bool Level_LoadSprites(MYFILE *fp);
-static bool Level_LoadCameras(MYFILE *fp);
-static bool Level_LoadSoundEffects(MYFILE *fp);
-static bool Level_LoadBoxes(MYFILE *fp);
-static bool Level_LoadAnimatedTextures(MYFILE *fp);
-static bool Level_LoadItems(MYFILE *fp);
-static bool Level_LoadDepthQ(MYFILE *fp);
-static bool Level_LoadPalette(MYFILE *fp);
-static bool Level_LoadCinematic(MYFILE *fp);
-static bool Level_LoadDemo(MYFILE *fp);
-static bool Level_LoadSamples(MYFILE *fp);
+static void Level_LoadTexturePages(MYFILE *fp);
+static void Level_LoadRooms(MYFILE *fp);
+static void Level_LoadMeshBase(MYFILE *fp);
+static void Level_LoadMeshes(MYFILE *fp);
+static void Level_LoadAnims(MYFILE *fp);
+static void Level_LoadAnimChanges(MYFILE *fp);
+static void Level_LoadAnimRanges(MYFILE *fp);
+static void Level_LoadAnimCommands(MYFILE *fp);
+static void Level_LoadAnimBones(MYFILE *fp);
+static void Level_LoadAnimFrames(MYFILE *fp);
+static void Level_LoadObjects(MYFILE *fp);
+static void Level_LoadStaticObjects(MYFILE *fp);
+static void Level_LoadTextures(MYFILE *fp);
+static void Level_LoadSprites(MYFILE *fp);
+static void Level_LoadCameras(MYFILE *fp);
+static void Level_LoadSoundEffects(MYFILE *fp);
+static void Level_LoadBoxes(MYFILE *fp);
+static void Level_LoadAnimatedTextures(MYFILE *fp);
+static void Level_LoadItems(MYFILE *fp);
+static void Level_LoadDepthQ(MYFILE *fp);
+static void Level_LoadPalette(MYFILE *fp);
+static void Level_LoadCinematic(MYFILE *fp);
+static void Level_LoadDemo(MYFILE *fp);
+static void Level_LoadSamples(MYFILE *fp);
 static void Level_CompleteSetup(int32_t level_num);
 static size_t Level_CalculateMaxVertices(void);
 
-static bool Level_LoadFromFile(
+static void Level_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo)
 {
     GameBuf_Shutdown();
@@ -77,7 +77,6 @@ static bool Level_LoadFromFile(
     if (!fp) {
         Shell_ExitSystemFmt(
             "Level_LoadFromFile(): Could not open %s", filename);
-        return false;
     }
 
     const int32_t version = File_ReadS32(fp);
@@ -85,123 +84,51 @@ static bool Level_LoadFromFile(
         Shell_ExitSystemFmt(
             "Level %d (%s) is version %d (this game code is version %d)",
             level_num, filename, version, 32);
-        return false;
     }
 
-    if (!Level_LoadTexturePages(fp)) {
-        return false;
-    }
+    Level_LoadTexturePages(fp);
 
     const int32_t file_level_num = File_ReadS32(fp);
     LOG_INFO("file level num: %d", file_level_num);
 
-    if (!Level_LoadRooms(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadMeshBase(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadMeshes(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnims(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnimChanges(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnimRanges(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnimCommands(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnimBones(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnimFrames(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadObjects(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadStaticObjects(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadTextures(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadSprites(fp)) {
-        return false;
-    }
+    Level_LoadRooms(fp);
+    Level_LoadMeshBase(fp);
+    Level_LoadMeshes(fp);
+    Level_LoadAnims(fp);
+    Level_LoadAnimChanges(fp);
+    Level_LoadAnimRanges(fp);
+    Level_LoadAnimCommands(fp);
+    Level_LoadAnimBones(fp);
+    Level_LoadAnimFrames(fp);
+    Level_LoadObjects(fp);
+    Level_LoadStaticObjects(fp);
+    Level_LoadTextures(fp);
+    Level_LoadSprites(fp);
 
     if (is_demo) {
-        if (!Level_LoadPalette(fp)) {
-            return false;
-        }
+        Level_LoadPalette(fp);
     }
 
-    if (!Level_LoadCameras(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadSoundEffects(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadBoxes(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadAnimatedTextures(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadItems(fp)) {
-        return false;
-    }
+    Level_LoadCameras(fp);
+    Level_LoadSoundEffects(fp);
+    Level_LoadBoxes(fp);
+    Level_LoadAnimatedTextures(fp);
+    Level_LoadItems(fp);
     Stats_ObserveItemsLoad();
-
-    if (!Level_LoadDepthQ(fp)) {
-        return false;
-    }
+    Level_LoadDepthQ(fp);
 
     if (!is_demo) {
-        if (!Level_LoadPalette(fp)) {
-            return false;
-        }
+        Level_LoadPalette(fp);
     }
 
-    if (!Level_LoadCinematic(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadDemo(fp)) {
-        return false;
-    }
-
-    if (!Level_LoadSamples(fp)) {
-        return false;
-    }
+    Level_LoadCinematic(fp);
+    Level_LoadDemo(fp);
+    Level_LoadSamples(fp);
 
     File_Close(fp);
-
-    return true;
 }
 
-static bool Level_LoadTexturePages(MYFILE *fp)
+static void Level_LoadTexturePages(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.texture_page_count = File_ReadS32(fp);
@@ -212,10 +139,9 @@ static bool Level_LoadTexturePages(MYFILE *fp)
         fp, m_LevelInfo.texture_page_ptrs, PAGE_SIZE,
         m_LevelInfo.texture_page_count);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadRooms(MYFILE *fp)
+static void Level_LoadRooms(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_RoomCount = File_ReadU16(fp);
@@ -344,10 +270,9 @@ static bool Level_LoadRooms(MYFILE *fp)
     m_LevelInfo.floor_data = Memory_Alloc(sizeof(int16_t) * fd_length);
     File_ReadItems(fp, m_LevelInfo.floor_data, fd_length, sizeof(int16_t));
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadMeshBase(MYFILE *const fp)
+static void Level_LoadMeshBase(MYFILE *const fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.mesh_count = File_ReadS32(fp);
@@ -358,10 +283,9 @@ static bool Level_LoadMeshBase(MYFILE *const fp)
         GBUF_MESHES);
     File_ReadItems(fp, g_MeshBase, sizeof(int16_t), m_LevelInfo.mesh_count);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadMeshes(MYFILE *const fp)
+static void Level_LoadMeshes(MYFILE *const fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.mesh_ptr_count = File_ReadS32(fp);
@@ -378,10 +302,9 @@ static bool Level_LoadMeshes(MYFILE *const fp)
         g_Meshes[i] = &g_MeshBase[mesh_indices[i] / 2];
     }
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnims(MYFILE *fp)
+static void Level_LoadAnims(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_count = File_ReadS32(fp);
@@ -408,10 +331,9 @@ static bool Level_LoadAnims(MYFILE *fp)
         anim->command_index = File_ReadS16(fp);
     }
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnimChanges(MYFILE *fp)
+static void Level_LoadAnimChanges(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_change_count = File_ReadS32(fp);
@@ -428,10 +350,9 @@ static bool Level_LoadAnimChanges(MYFILE *fp)
         anim_change->range_index = File_ReadS16(fp);
     }
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnimRanges(MYFILE *fp)
+static void Level_LoadAnimRanges(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_range_count = File_ReadS32(fp);
@@ -449,10 +370,9 @@ static bool Level_LoadAnimRanges(MYFILE *fp)
         anim_range->link_frame_num = File_ReadS16(fp);
     }
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnimCommands(MYFILE *fp)
+static void Level_LoadAnimCommands(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_command_count = File_ReadS32(fp);
@@ -465,10 +385,9 @@ static bool Level_LoadAnimCommands(MYFILE *fp)
     File_ReadItems(
         fp, g_AnimCommands, sizeof(int16_t), m_LevelInfo.anim_command_count);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnimBones(MYFILE *fp)
+static void Level_LoadAnimBones(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_bone_count = File_ReadS32(fp);
@@ -480,10 +399,9 @@ static bool Level_LoadAnimBones(MYFILE *fp)
     File_ReadItems(
         fp, g_AnimBones, sizeof(int32_t), m_LevelInfo.anim_bone_count);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnimFrames(MYFILE *fp)
+static void Level_LoadAnimFrames(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_frame_data_count = File_ReadS32(fp);
@@ -557,10 +475,9 @@ static bool Level_LoadAnimFrames(MYFILE *fp)
     File_Seek(fp, frame_data_end, SEEK_SET);
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadObjects(MYFILE *fp)
+static void Level_LoadObjects(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.object_count = File_ReadS32(fp);
@@ -588,10 +505,9 @@ static bool Level_LoadObjects(MYFILE *fp)
     }
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadStaticObjects(MYFILE *fp)
+static void Level_LoadStaticObjects(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.static_count = File_ReadS32(fp);
@@ -618,17 +534,16 @@ static bool Level_LoadStaticObjects(MYFILE *fp)
     }
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadTextures(MYFILE *fp)
+static void Level_LoadTextures(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.texture_count = File_ReadS32(fp);
     LOG_INFO("%d textures", m_LevelInfo.texture_count);
     if ((m_LevelInfo.texture_count + m_InjectionInfo->texture_count)
         > MAX_TEXTURES) {
-        return false;
+        Shell_ExitSystem("Too many textures in level");
     }
     for (int32_t i = 0; i < m_LevelInfo.texture_count; i++) {
         PHD_TEXTURE *texture = &g_PhdTextureInfo[i];
@@ -639,19 +554,16 @@ static bool Level_LoadTextures(MYFILE *fp)
             texture->uv[j].v = File_ReadU16(fp);
         }
     }
-
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadSprites(MYFILE *fp)
+static void Level_LoadSprites(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.sprite_info_count = File_ReadS32(fp);
     if (m_LevelInfo.sprite_info_count + m_InjectionInfo->sprite_info_count
         > MAX_SPRITES) {
         Shell_ExitSystem("Too many sprites in level");
-        return false;
     }
     for (int32_t i = 0; i < m_LevelInfo.sprite_info_count; i++) {
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[i];
@@ -686,21 +598,20 @@ static bool Level_LoadSprites(MYFILE *fp)
     }
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadCameras(MYFILE *fp)
+static void Level_LoadCameras(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumberCameras = File_ReadS32(fp);
     LOG_INFO("%d cameras", g_NumberCameras);
     if (!g_NumberCameras) {
-        return true;
+        return;
     }
     g_Camera.fixed =
         GameBuf_Alloc(sizeof(OBJECT_VECTOR) * g_NumberCameras, GBUF_CAMERAS);
     if (!g_Camera.fixed) {
-        return false;
+        Shell_ExitSystem("Error allocating the fixed cameras.");
     }
     for (int32_t i = 0; i < g_NumberCameras; i++) {
         OBJECT_VECTOR *camera = &g_Camera.fixed[i];
@@ -710,23 +621,21 @@ static bool Level_LoadCameras(MYFILE *fp)
         camera->data = File_ReadS16(fp);
         camera->flags = File_ReadS16(fp);
     }
-
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadSoundEffects(MYFILE *fp)
+static void Level_LoadSoundEffects(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumberSoundEffects = File_ReadS32(fp);
     LOG_INFO("%d sound effects", g_NumberSoundEffects);
     if (!g_NumberSoundEffects) {
-        return true;
+        return;
     }
     g_SoundEffectsTable = GameBuf_Alloc(
         sizeof(OBJECT_VECTOR) * g_NumberSoundEffects, GBUF_SOUND_FX);
     if (!g_SoundEffectsTable) {
-        return false;
+        Shell_ExitSystem("Error allocating the sound effects table.");
     }
     for (int32_t i = 0; i < g_NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
@@ -736,12 +645,10 @@ static bool Level_LoadSoundEffects(MYFILE *fp)
         sound->data = File_ReadS16(fp);
         sound->flags = File_ReadS16(fp);
     }
-
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadBoxes(MYFILE *fp)
+static void Level_LoadBoxes(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumberBoxes = File_ReadS32(fp);
@@ -776,10 +683,9 @@ static bool Level_LoadBoxes(MYFILE *fp)
     }
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadAnimatedTextures(MYFILE *fp)
+static void Level_LoadAnimatedTextures(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_texture_range_count = File_ReadS32(fp);
@@ -817,10 +723,9 @@ cleanup:
     // does not wholly contain accurate texture data.
     File_Seek(fp, MAX(end_position, File_Pos(fp)), SEEK_SET);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadItems(MYFILE *fp)
+static void Level_LoadItems(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.item_count = File_ReadS32(fp);
@@ -831,7 +736,6 @@ static bool Level_LoadItems(MYFILE *fp)
         if (m_LevelInfo.item_count > MAX_ITEMS) {
             Shell_ExitSystem(
                 "Level_LoadItems(): Too Many g_Items being Loaded!!");
-            return false;
         }
 
         g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
@@ -858,19 +762,17 @@ static bool Level_LoadItems(MYFILE *fp)
     }
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadDepthQ(MYFILE *fp)
+static void Level_LoadDepthQ(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
     File_Seek(fp, sizeof(uint8_t) * 32 * 256, FILE_SEEK_CUR);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadPalette(MYFILE *fp)
+static void Level_LoadPalette(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
@@ -890,16 +792,15 @@ static bool Level_LoadPalette(MYFILE *fp)
     }
     Output_SetPalette(palette);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadCinematic(MYFILE *fp)
+static void Level_LoadCinematic(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumCineFrames = File_ReadS16(fp);
     LOG_INFO("%d cinematic frames", g_NumCineFrames);
     if (!g_NumCineFrames) {
-        return true;
+        return;
     }
     g_CineCamera = GameBuf_Alloc(
         sizeof(CINE_CAMERA) * g_NumCineFrames, GBUF_CINEMATIC_FRAMES);
@@ -916,10 +817,9 @@ static bool Level_LoadCinematic(MYFILE *fp)
     }
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadDemo(MYFILE *fp)
+static void Level_LoadDemo(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_DemoData =
@@ -927,14 +827,13 @@ static bool Level_LoadDemo(MYFILE *fp)
     const uint16_t size = File_ReadS16(fp);
     LOG_INFO("%d demo buffer size", size);
     if (!size) {
-        return true;
+        return;
     }
     File_ReadData(fp, g_DemoData, size);
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
-static bool Level_LoadSamples(MYFILE *fp)
+static void Level_LoadSamples(MYFILE *fp)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     File_ReadItems(fp, g_SampleLUT, sizeof(int16_t), MAX_SAMPLES);
@@ -942,7 +841,6 @@ static bool Level_LoadSamples(MYFILE *fp)
     LOG_INFO("%d sample infos", m_LevelInfo.sample_info_count);
     if (!m_LevelInfo.sample_info_count) {
         Shell_ExitSystem("No Sample Infos");
-        return false;
     }
 
     g_SampleInfos = GameBuf_Alloc(
@@ -961,7 +859,6 @@ static bool Level_LoadSamples(MYFILE *fp)
     LOG_INFO("%d sample data size", m_LevelInfo.sample_data_size);
     if (!m_LevelInfo.sample_data_size) {
         Shell_ExitSystem("No Sample Data");
-        return false;
     }
 
     m_LevelInfo.sample_data = GameBuf_Alloc(
@@ -975,7 +872,6 @@ static bool Level_LoadSamples(MYFILE *fp)
     LOG_INFO("%d samples", m_LevelInfo.sample_count);
     if (!m_LevelInfo.sample_count) {
         Shell_ExitSystem("No Samples");
-        return false;
     }
 
     m_LevelInfo.sample_offsets = Memory_Alloc(
@@ -986,7 +882,6 @@ static bool Level_LoadSamples(MYFILE *fp)
         m_LevelInfo.sample_count);
 
     Benchmark_End(benchmark, NULL);
-    return true;
 }
 
 static void Level_CompleteSetup(int32_t level_num)
@@ -1089,7 +984,7 @@ static size_t Level_CalculateMaxVertices(void)
     return max_vertices;
 }
 
-bool Level_Load(int level_num)
+void Level_Load(int level_num)
 {
     LOG_INFO("%d (%s)", level_num, g_GameFlow.levels[level_num].level_file);
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -1109,12 +1004,9 @@ bool Level_Load(int level_num)
         (g_GameFlow.levels[level_num].level_type == GFL_TITLE_DEMO_PC)
         | (g_GameFlow.levels[level_num].level_type == GFL_LEVEL_DEMO_PC);
 
-    bool ret = Level_LoadFromFile(
+    Level_LoadFromFile(
         g_GameFlow.levels[level_num].level_file, level_num, is_demo);
-
-    if (ret) {
-        Level_CompleteSetup(level_num);
-    }
+    Level_CompleteSetup(level_num);
 
     Inject_Cleanup();
 
@@ -1139,7 +1031,6 @@ bool Level_Load(int level_num)
         g_Config.enable_skybox && g_Objects[O_SKYBOX].loaded);
 
     Benchmark_End(benchmark, NULL);
-    return ret;
 }
 
 bool Level_Initialise(int32_t level_num)
@@ -1189,9 +1080,7 @@ bool Level_Initialise(int32_t level_num)
             : NULL);
     Output_ApplyRenderSettings();
 
-    if (!Level_Load(level_num)) {
-        return false;
-    }
+    Level_Load(level_num);
 
     if (g_Lara.item_number != NO_ITEM) {
         Lara_Initialise(level_num);
