@@ -407,20 +407,21 @@ static void Level_LoadAnimFrames(MYFILE *fp)
     m_LevelInfo.anim_frame_data_count = File_ReadS32(fp);
     LOG_INFO("%d anim frames data", m_LevelInfo.anim_frame_data_count);
 
-    const size_t frame_data_start = File_Pos(fp);
-    File_Skip(fp, m_LevelInfo.anim_frame_data_count * sizeof(int16_t));
-    const size_t frame_data_end = File_Pos(fp);
+    const int32_t raw_data_size = m_LevelInfo.anim_frame_data_count;
+    int16_t *raw_data = Memory_Alloc(sizeof(int16_t) * raw_data_size);
+    File_ReadItems(fp, raw_data, sizeof(int16_t), raw_data_size);
 
     m_LevelInfo.anim_frame_count = 0;
     m_LevelInfo.anim_frame_mesh_rot_count = 0;
-    File_Seek(fp, frame_data_start, SEEK_SET);
-    while (File_Pos(fp) < frame_data_end) {
-        File_Skip(fp, 9 * sizeof(int16_t));
-        const int16_t num_meshes = File_ReadS16(fp);
-        File_Skip(fp, num_meshes * sizeof(int32_t));
+    int16_t *raw_data_ptr = raw_data;
+    while (raw_data_ptr - raw_data < raw_data_size) {
+        raw_data_ptr += 9;
+        const int16_t num_meshes = *raw_data_ptr++;
+        raw_data_ptr += num_meshes * sizeof(int32_t) / sizeof(int16_t);
         m_LevelInfo.anim_frame_count++;
         m_LevelInfo.anim_frame_mesh_rot_count += num_meshes;
     }
+
     LOG_INFO("%d anim frames", m_LevelInfo.anim_frame_count);
     LOG_INFO(
         "%d anim frame mesh rotations", m_LevelInfo.anim_frame_mesh_rot_count);
@@ -439,26 +440,28 @@ static void Level_LoadAnimFrames(MYFILE *fp)
         sizeof(int32_t)
         * (m_LevelInfo.anim_frame_count + m_InjectionInfo->anim_frame_count));
 
-    File_Seek(fp, frame_data_start, SEEK_SET);
+    raw_data_ptr = raw_data;
     int32_t *mesh_rots = g_AnimFrameMeshRots;
     for (int32_t i = 0; i < m_LevelInfo.anim_frame_count; i++) {
-        m_LevelInfo.anim_frame_offsets[i] = File_Pos(fp) - frame_data_start;
+        m_LevelInfo.anim_frame_offsets[i] =
+            (raw_data_ptr - raw_data) * sizeof(int16_t);
         FRAME_INFO *const frame = &g_AnimFrames[i];
-        frame->bounds.min.x = File_ReadS16(fp);
-        frame->bounds.max.x = File_ReadS16(fp);
-        frame->bounds.min.y = File_ReadS16(fp);
-        frame->bounds.max.y = File_ReadS16(fp);
-        frame->bounds.min.z = File_ReadS16(fp);
-        frame->bounds.max.z = File_ReadS16(fp);
-        frame->offset.x = File_ReadS16(fp);
-        frame->offset.y = File_ReadS16(fp);
-        frame->offset.z = File_ReadS16(fp);
-        frame->nmeshes = File_ReadS16(fp);
+        frame->bounds.min.x = *raw_data_ptr++;
+        frame->bounds.max.x = *raw_data_ptr++;
+        frame->bounds.min.y = *raw_data_ptr++;
+        frame->bounds.max.y = *raw_data_ptr++;
+        frame->bounds.min.z = *raw_data_ptr++;
+        frame->bounds.max.z = *raw_data_ptr++;
+        frame->offset.x = *raw_data_ptr++;
+        frame->offset.y = *raw_data_ptr++;
+        frame->offset.z = *raw_data_ptr++;
+        frame->nmeshes = *raw_data_ptr++;
         frame->mesh_rots = mesh_rots;
-        File_ReadItems(fp, mesh_rots, sizeof(int32_t), frame->nmeshes);
+        memcpy(mesh_rots, raw_data_ptr, sizeof(int32_t) * frame->nmeshes);
+        raw_data_ptr += frame->nmeshes * sizeof(int32_t) / sizeof(int16_t);
         mesh_rots += frame->nmeshes;
     }
-    assert(File_Pos(fp) == frame_data_end);
+    Memory_FreePointer(&raw_data);
 
     for (int i = 0; i < m_LevelInfo.anim_count; i++) {
         ANIM_STRUCT *anim = &g_Anims[i];
@@ -472,7 +475,6 @@ static void Level_LoadAnimFrames(MYFILE *fp)
         }
         assert(found);
     }
-    File_Seek(fp, frame_data_end, SEEK_SET);
 
     Benchmark_End(benchmark, NULL);
 }
