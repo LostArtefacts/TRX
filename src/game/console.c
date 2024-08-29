@@ -15,6 +15,7 @@
 #include <libtrx/log.h>
 
 #include <SDL2/SDL_keycode.h>
+#include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -74,7 +75,7 @@ static COMMAND_RESULT Console_Eval(const char *const cmdline)
     const CONSOLE_COMMAND *matching_cmd = NULL;
 
     for (CONSOLE_COMMAND *cur_cmd = &g_ConsoleCommands[0];
-         cur_cmd->proc != NULL; cur_cmd++) {
+         cur_cmd->prefix != NULL; cur_cmd++) {
         if (strstr(cmdline, cur_cmd->prefix) != cmdline) {
             continue;
         }
@@ -96,7 +97,9 @@ static COMMAND_RESULT Console_Eval(const char *const cmdline)
         return CR_BAD_INVOCATION;
     }
 
+    assert(matching_cmd->proc != NULL);
     const COMMAND_RESULT result = matching_cmd->proc(args);
+
     switch (result) {
     case CR_BAD_INVOCATION:
         Console_Log(GS(OSD_COMMAND_BAD_INVOCATION), cmdline);
