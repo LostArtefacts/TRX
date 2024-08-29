@@ -96,6 +96,7 @@ REQUEST_INFO g_SavegameRequester = {
     .items = NULL,
 };
 
+static void Option_Passport_InitRequesters(void);
 static void Option_Passport_InitText(void);
 static void Option_Passport_ShutdownText(void);
 static void Option_Passport_Close(INVENTORY_ITEM *inv_item);
@@ -113,18 +114,12 @@ static void Option_Passport_Restart(INVENTORY_ITEM *inv_item);
 static void Option_Passport_FlipRight(INVENTORY_ITEM *inv_item);
 static void Option_Passport_FlipLeft(INVENTORY_ITEM *inv_item);
 
-void Option_Passport_Init(void)
+void Option_Passport_InitRequesters(void)
 {
-    Requester_Init(&g_SavegameRequester, g_Config.maximum_save_slots);
-    Requester_Init(&m_SelectLevelRequester, g_GameFlow.level_count + 1);
-    Requester_Init(&m_NewGameRequester, MAX_GAME_MODES);
-}
-
-void Option_Passport_Shutdown(void)
-{
-    Requester_Shutdown(&g_SavegameRequester);
     Requester_Shutdown(&m_SelectLevelRequester);
     Requester_Shutdown(&m_NewGameRequester);
+    Requester_Init(&m_SelectLevelRequester, g_GameFlow.level_count + 1);
+    Requester_Init(&m_NewGameRequester, MAX_GAME_MODES);
 }
 
 static void Option_Passport_InitText(void)
@@ -595,6 +590,7 @@ static void Option_Passport_FlipLeft(INVENTORY_ITEM *inv_item)
 void Option_Passport(INVENTORY_ITEM *inv_item)
 {
     if (!m_IsTextInit) {
+        Option_Passport_InitRequesters();
         Text_Remove(g_InvItemText[IT_NAME]);
         g_InvItemText[IT_NAME] = NULL;
         Text_Remove(g_InvRingText);
@@ -689,4 +685,12 @@ void Option_Passport(INVENTORY_ITEM *inv_item)
     if (g_InputDB.menu_confirm) {
         Option_Passport_Close(inv_item);
     }
+}
+
+void Option_Passport_Shutdown(void)
+{
+    Option_Passport_ShutdownText();
+    Requester_Shutdown(&m_SelectLevelRequester);
+    Requester_Shutdown(&m_NewGameRequester);
+    Requester_ClearTextstrings(&g_SavegameRequester);
 }

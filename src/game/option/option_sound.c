@@ -163,9 +163,14 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        for (int i = 0; i < TEXT_NUMBER_OF; i++) {
-            Text_Remove(m_Text[i]);
-            m_Text[i] = NULL;
-        }
+        Option_Sound_Shutdown();
+    }
+}
+
+void Option_Sound_Shutdown(void)
+{
+    for (int i = 0; i < TEXT_NUMBER_OF; i++) {
+        Text_Remove(m_Text[i]);
+        m_Text[i] = NULL;
     }
 }

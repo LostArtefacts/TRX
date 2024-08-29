@@ -11,14 +11,36 @@
 
 static CONTROL_MODE m_ControlMode = CM_PICK;
 
-void Option_Init(void)
+void Option_Shutdown(INVENTORY_ITEM *inv_item)
 {
-    Option_PassportInit();
-}
+    switch (inv_item->object_number) {
+    case O_PASSPORT_OPTION:
+        Option_Passport_Shutdown();
+        break;
 
-void Option_Shutdown(void)
-{
-    Option_PassportShutdown();
+    case O_MAP_OPTION:
+        Option_Compass_Shutdown();
+        break;
+
+    case O_DETAIL_OPTION:
+        Option_Graphics_Shutdown();
+        break;
+
+    case O_SOUND_OPTION:
+        Option_Sound_Shutdown();
+        break;
+
+    case O_CONTROL_OPTION:
+        if (m_ControlMode == CM_PICK) {
+            Option_ControlPick_Shutdown();
+        } else {
+            Option_Control_Shutdown();
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
 void Option_DoInventory(INVENTORY_ITEM *inv_item)

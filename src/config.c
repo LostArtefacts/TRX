@@ -3,10 +3,12 @@
 #include "config_map.h"
 #include "game/input.h"
 #include "game/music.h"
+#include "game/requester.h"
 #include "game/sound.h"
 #include "global/const.h"
 #include "global/enum_str.h"
 #include "global/types.h"
+#include "global/vars.h"
 
 #include <libtrx/config/config_file.h>
 #include <libtrx/filesystem.h>
@@ -293,6 +295,8 @@ bool Config_Read(void)
     Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
     Music_SetVolume(g_Config.music_volume);
     Sound_SetMasterVolume(g_Config.sound_volume);
+    Requester_Shutdown(&g_SavegameRequester);
+    Requester_Init(&g_SavegameRequester, g_Config.maximum_save_slots);
     return result;
 }
 

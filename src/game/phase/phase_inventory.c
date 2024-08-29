@@ -176,18 +176,11 @@ static void Inv_Construct(void)
     }
 
     for (int i = 0; i < g_InvMainObjects; i++) {
-        INVENTORY_ITEM *inv_item = g_InvMainList[i];
-        inv_item->drawn_meshes = inv_item->which_meshes;
-        inv_item->current_frame = 0;
-        inv_item->goal_frame = inv_item->current_frame;
-        inv_item->y_rot = 0;
+        Inv_Ring_ResetItem(g_InvMainList[i]);
     }
 
     for (int i = 0; i < g_InvOptionObjects; i++) {
-        INVENTORY_ITEM *inv_item = g_InvOptionList[i];
-        inv_item->current_frame = 0;
-        inv_item->goal_frame = 0;
-        inv_item->y_rot = 0;
+        Inv_Ring_ResetItem(g_InvOptionList[i]);
     }
 
     g_InvMainCurrent = 0;
@@ -1070,7 +1063,7 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
         }
         Inv_Ring_InitHeader(ring);
     } else {
-        Inv_Ring_RemoveHeader(ring);
+        Inv_Ring_RemoveHeader();
     }
 
     if (!motion->status || motion->status == RNG_CLOSING
@@ -1109,6 +1102,11 @@ static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes)
 
 static void Phase_Inventory_End(void)
 {
+    INVENTORY_ITEM *const inv_item = m_Ring.list[m_Ring.current_object];
+    if (inv_item != NULL) {
+        Option_Shutdown(inv_item);
+    }
+
     Inv_Destroy();
     if (g_Config.enable_buffering) {
         g_OldInputDB.any = 0;

@@ -135,7 +135,6 @@ void Shell_Init(const char *gameflow_path)
         return;
     }
 
-    Option_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
 
@@ -151,7 +150,6 @@ void Shell_Shutdown(void)
     Sound_Shutdown();
     Music_Shutdown();
     Savegame_Shutdown();
-    Option_Shutdown();
     Console_Shutdown();
     Log_Shutdown();
 }

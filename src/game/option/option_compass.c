@@ -104,6 +104,14 @@ static void Option_Compass_InitText(void)
     }
 }
 
+static void Option_Compass_ShutdownText(void)
+{
+    for (int i = 0; i < TEXT_NUMBER_OF; i++) {
+        Text_Remove(m_Text[i]);
+        m_Text[i] = NULL;
+    }
+}
+
 void Option_Compass(INVENTORY_ITEM *inv_item)
 {
     if (g_Config.enable_compass_stats) {
@@ -131,11 +139,13 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        for (int i = 0; i < TEXT_NUMBER_OF; i++) {
-            Text_Remove(m_Text[i]);
-            m_Text[i] = NULL;
-        }
+        Option_Compass_ShutdownText();
         inv_item->goal_frame = inv_item->frames_total - 1;
         inv_item->anim_direction = 1;
     }
+}
+
+void Option_Compass_Shutdown(void)
+{
+    Option_Compass_ShutdownText();
 }

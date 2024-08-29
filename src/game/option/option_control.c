@@ -792,3 +792,8 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
     return mode;
 }
+
+void Option_Control_Shutdown(void)
+{
+    Option_Control_ShutdownText();
+}

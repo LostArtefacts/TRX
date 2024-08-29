@@ -102,3 +102,8 @@ CONTROL_MODE Option_ControlPick(void)
 
     return CM_PICK;
 }
+
+void Option_ControlPick_Shutdown(void)
+{
+    Option_ControlPick_ShutdownText();
+}

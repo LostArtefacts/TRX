@@ -5,3 +5,4 @@
 #include <stdbool.h>
 
 CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode);
+void Option_Control_Shutdown(void);

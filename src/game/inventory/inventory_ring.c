@@ -127,7 +127,7 @@ void Inv_Ring_InitHeader(RING_INFO *ring)
     }
 }
 
-void Inv_Ring_RemoveHeader(RING_INFO *ring)
+void Inv_Ring_RemoveHeader(void)
 {
     if (!g_InvRingText) {
         return;
@@ -152,6 +152,7 @@ void Inv_Ring_RemoveHeader(RING_INFO *ring)
 
 void Inv_Ring_RemoveAllText(void)
 {
+    Inv_Ring_RemoveHeader();
     for (int i = 0; i < IT_NUMBER_OF; i++) {
         if (g_InvItemText[i]) {
             Text_Remove(g_InvItemText[i]);
@@ -299,6 +300,21 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
         Text_Hide(m_InvDownArrow1, false);
         Text_Hide(m_InvDownArrow2, false);
         g_GameInfo.inv_showing_medpack = false;
+    }
+}
+
+void Inv_Ring_ResetItem(INVENTORY_ITEM *const inv_item)
+{
+    inv_item->drawn_meshes = inv_item->which_meshes;
+    inv_item->current_frame = 0;
+    inv_item->goal_frame = inv_item->current_frame;
+    inv_item->pt_xrot = 0;
+    inv_item->x_rot = 0;
+    inv_item->y_rot = 0;
+    inv_item->ytrans = 0;
+    inv_item->ztrans = 0;
+    if (inv_item->object_number == O_PASSPORT_OPTION) {
+        inv_item->object_number = O_PASSPORT_CLOSED;
     }
 }
 

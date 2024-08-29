@@ -49,8 +49,10 @@ void Requester_Shutdown(REQUEST_INFO *req)
     Requester_ClearTextstrings(req);
 
     Memory_FreePointer(&req->heading_text);
-    for (int i = 0; i < req->max_items; i++) {
-        Memory_FreePointer(&req->items[i].content_text);
+    if (req->items != NULL) {
+        for (int i = 0; i < req->max_items; i++) {
+            Memory_FreePointer(&req->items[i].content_text);
+        }
     }
     Memory_FreePointer(&req->items);
 }
@@ -66,9 +68,11 @@ void Requester_ClearTextstrings(REQUEST_INFO *req)
     Text_Remove(req->moredown);
     req->moredown = NULL;
 
-    for (int i = 0; i < req->max_items; i++) {
-        Text_Remove(req->items[i].content);
-        req->items[i].content = NULL;
+    if (req->items != NULL) {
+        for (int i = 0; i < req->max_items; i++) {
+            Text_Remove(req->items[i].content);
+            req->items[i].content = NULL;
+        }
     }
 
     req->items_used = 0;

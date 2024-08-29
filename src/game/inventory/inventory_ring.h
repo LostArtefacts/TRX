@@ -9,9 +9,10 @@ void Inv_Ring_Init(
     int16_t current, IMOTION_INFO *imo);
 
 void Inv_Ring_InitHeader(RING_INFO *ring);
-void Inv_Ring_RemoveHeader(RING_INFO *ring);
+void Inv_Ring_RemoveHeader(void);
 void Inv_Ring_RemoveAllText(void);
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item);
+void Inv_Ring_ResetItem(INVENTORY_ITEM *inv_item);
 
 void Inv_Ring_GetView(RING_INFO *ring, XYZ_32 *view_pos, XYZ_16 *view_rot);
 void Inv_Ring_Light(RING_INFO *ring);

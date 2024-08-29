@@ -100,7 +100,6 @@ static void Option_Graphics_MenuUp(void);
 static void Option_Graphics_MenuDown(void);
 static void Option_Graphics_InitText(void);
 static void Option_Graphics_UpdateText(void);
-static void Option_Graphics_Shutdown(void);
 static void Option_Graphics_UpdateArrows(
     GRAPHICS_OPTION_NAME option_name, TEXTSTRING value_text, bool more_up,
     bool more_down);
@@ -246,24 +245,6 @@ static void Option_Graphics_UpdateText(void)
         Option_Graphics_ChangeTextOption(
             row, m_GraphicsMenu.option_texts[i], m_GraphicsMenu.value_texts[i]);
     }
-}
-
-static void Option_Graphics_Shutdown(void)
-{
-    for (int i = 0; i < TEXT_NUMBER_OF; i++) {
-        Text_Remove(m_Text[i]);
-        m_Text[i] = NULL;
-    }
-    for (int i = 0; i < OPTION_NUMBER_OF; i++) {
-        Text_Remove(m_GraphicsMenu.option_texts[i]);
-        m_GraphicsMenu.option_texts[i] = NULL;
-        Text_Remove(m_GraphicsMenu.value_texts[i]);
-        m_GraphicsMenu.value_texts[i] = NULL;
-    }
-    m_IsTextInit = false;
-    m_HideArrowLeft = false;
-    m_HideArrowRight = false;
-    Option_Graphics_InitMenu();
 }
 
 static void Option_Graphics_UpdateArrows(
@@ -665,4 +646,22 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
         Option_Graphics_Shutdown();
         Config_Write();
     }
+}
+
+void Option_Graphics_Shutdown(void)
+{
+    for (int i = 0; i < TEXT_NUMBER_OF; i++) {
+        Text_Remove(m_Text[i]);
+        m_Text[i] = NULL;
+    }
+    for (int i = 0; i < OPTION_NUMBER_OF; i++) {
+        Text_Remove(m_GraphicsMenu.option_texts[i]);
+        m_GraphicsMenu.option_texts[i] = NULL;
+        Text_Remove(m_GraphicsMenu.value_texts[i]);
+        m_GraphicsMenu.value_texts[i] = NULL;
+    }
+    m_IsTextInit = false;
+    m_HideArrowLeft = false;
+    m_HideArrowRight = false;
+    Option_Graphics_InitMenu();
 }
