@@ -719,13 +719,15 @@ static void Level_LoadAnimatedTextures(VFILE *file)
             file, range->textures, sizeof(int16_t) * range->num_textures);
     }
 
-cleanup:
+cleanup: {
     // Ensure to read everything intended by the level compiler, even if it
     // does not wholly contain accurate texture data.
-    if (end_position - VFile_GetPos(file) > 0) {
-        VFile_Skip(file, MAX(end_position, VFile_GetPos(file)));
+    const int32_t skip_length = end_position - VFile_GetPos(file);
+    if (skip_length > 0) {
+        VFile_Skip(file, skip_length);
     }
     Benchmark_End(benchmark, NULL);
+}
 }
 
 static void Level_LoadItems(VFILE *file)
