@@ -63,6 +63,18 @@ void GameBuf_Init(void)
     m_GameAllocMemFree = MALLOC_SIZE;
 }
 
+void GameBuf_Reset(void)
+{
+    if (m_GameMemoryPointer == NULL) {
+        m_GameAllocMemPointer = NULL;
+        m_GameAllocMemFree = 0;
+        return;
+    }
+
+    m_GameAllocMemPointer = m_GameMemoryPointer;
+    m_GameAllocMemFree = MALLOC_SIZE;
+}
+
 void GameBuf_Shutdown(void)
 {
     Memory_FreePointer(&m_GameMemoryPointer);

@@ -70,8 +70,7 @@ static size_t Level_CalculateMaxVertices(void);
 static void Level_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo)
 {
-    GameBuf_Shutdown();
-    GameBuf_Init();
+    GameBuf_Reset();
 
     MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
     if (!fp) {

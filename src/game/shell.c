@@ -122,6 +122,7 @@ void Shell_Init(const char *gameflow_path)
         return;
     }
 
+    GameBuf_Init();
     Text_Init();
     Clock_Init();
     Sound_Init();
