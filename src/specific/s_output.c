@@ -863,7 +863,12 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 
 void S_Output_ApplyRenderSettings(void)
 {
-    S_Output_ReleaseSurfaces();
+    if (m_PictureSurface != NULL
+        && (Screen_GetResWidth() != m_SurfaceWidth
+            || Screen_GetResHeight() != m_SurfaceHeight)) {
+        GFX_2D_Surface_Free(m_PictureSurface);
+        m_PictureSurface = NULL;
+    }
 
     m_SurfaceWidth = Screen_GetResWidth();
     m_SurfaceHeight = Screen_GetResHeight();
@@ -876,19 +881,21 @@ void S_Output_ApplyRenderSettings(void)
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
     GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
 
-    {
+    if (m_PrimarySurface == NULL) {
         GFX_2D_SurfaceDesc surface_desc = { 0 };
         m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
-
-        S_Output_ClearSurface(m_PrimarySurface);
     }
+
+    S_Output_ClearSurface(m_PrimarySurface);
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         GFX_2D_SurfaceDesc surface_desc = {
             .width = 256,
             .height = 256,
         };
-        m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
+        if (m_TextureSurfaces[i] == NULL) {
+            m_TextureSurfaces[i] = GFX_2D_Surface_Create(&surface_desc);
+        }
     }
 }
 
