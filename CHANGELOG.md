@@ -3,6 +3,7 @@
 - fixed Lara's sliding animation sometimes being interrupted by a stumble (#1452, regression from 4.3)
 - fixed cameras with glide values sometimes moving in the wrong direction (#1451, regression from 4.3)
 - fixed `/give` console command giving duplicate items under some circumstances (#1463, regression from 3.0)
+- fixed `/give` console command confusing logging around mismatched items (#1463, regression from 3.0)
 - improved logs module names readability
 - improved crash debug information on Windows
 

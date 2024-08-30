@@ -554,22 +554,18 @@ static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
                 Inv_AddItemNTimes(obj_id, num);
                 Console_Log(
                     GS(OSD_GIVE_ITEM), Object_GetCanonicalName(obj_id, args));
-            } else {
-                Console_Log(
-                    GS(OSD_UNAVAILABLE_ITEM),
-                    Object_GetCanonicalName(obj_id, args));
+                found = true;
             }
-            found = true;
         }
     }
     Memory_FreePointer(&matching_objs);
 
-    if (found) {
-        return CR_SUCCESS;
+    if (!found) {
+        Console_Log(GS(OSD_INVALID_ITEM), args);
+        return CR_FAILURE;
     }
 
-    Console_Log(GS(OSD_INVALID_ITEM), args);
-    return CR_FAILURE;
+    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_FlipMap(const char *args)
