@@ -1,4 +1,4 @@
-name: Build macOS app bundle and .dmg installer image
+name: Build the game and the installer (macOS)
 
 on:
   workflow_call:
@@ -19,6 +19,7 @@ env:
 
 jobs:
   build:
+    name: Build release assets
     runs-on: macos-14
     continue-on-error: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     steps:
@@ -264,10 +265,14 @@ jobs:
           xcrun stapler staple -v TR1X-Installer.dmg
           mv TR1X-Installer.dmg "TR1X-$(tools/get_version)-Installer.dmg"
 
+      - id: vars
+        name: Prepare variables
+        run: echo "version=$(tools/get_version)" >> $GITHUB_OUTPUT
+
       - name: Upload signed+notarized installer image
         uses: actions/upload-artifact@v4
         with:
-          name: packaged_asset-mac
+          name: ${{ github.event.repository.name }}-${{ steps.vars.outputs.version }}-mac
           path: |
             *.dmg
           compression-level: 0 # .dmg is already compressed.
