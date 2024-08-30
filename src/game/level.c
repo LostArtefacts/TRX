@@ -26,10 +26,10 @@
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>
-#include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
+#include <libtrx/virtual_file.h>
 
 #include <assert.h>
 #include <stdio.h>
@@ -40,30 +40,30 @@ static INJECTION_INFO *m_InjectionInfo = NULL;
 
 static void Level_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo);
-static void Level_LoadTexturePages(MYFILE *fp);
-static void Level_LoadRooms(MYFILE *fp);
-static void Level_LoadMeshBase(MYFILE *fp);
-static void Level_LoadMeshes(MYFILE *fp);
-static void Level_LoadAnims(MYFILE *fp);
-static void Level_LoadAnimChanges(MYFILE *fp);
-static void Level_LoadAnimRanges(MYFILE *fp);
-static void Level_LoadAnimCommands(MYFILE *fp);
-static void Level_LoadAnimBones(MYFILE *fp);
-static void Level_LoadAnimFrames(MYFILE *fp);
-static void Level_LoadObjects(MYFILE *fp);
-static void Level_LoadStaticObjects(MYFILE *fp);
-static void Level_LoadTextures(MYFILE *fp);
-static void Level_LoadSprites(MYFILE *fp);
-static void Level_LoadCameras(MYFILE *fp);
-static void Level_LoadSoundEffects(MYFILE *fp);
-static void Level_LoadBoxes(MYFILE *fp);
-static void Level_LoadAnimatedTextures(MYFILE *fp);
-static void Level_LoadItems(MYFILE *fp);
-static void Level_LoadDepthQ(MYFILE *fp);
-static void Level_LoadPalette(MYFILE *fp);
-static void Level_LoadCinematic(MYFILE *fp);
-static void Level_LoadDemo(MYFILE *fp);
-static void Level_LoadSamples(MYFILE *fp);
+static void Level_LoadTexturePages(VFILE *file);
+static void Level_LoadRooms(VFILE *file);
+static void Level_LoadMeshBase(VFILE *file);
+static void Level_LoadMeshes(VFILE *file);
+static void Level_LoadAnims(VFILE *file);
+static void Level_LoadAnimChanges(VFILE *file);
+static void Level_LoadAnimRanges(VFILE *file);
+static void Level_LoadAnimCommands(VFILE *file);
+static void Level_LoadAnimBones(VFILE *file);
+static void Level_LoadAnimFrames(VFILE *file);
+static void Level_LoadObjects(VFILE *file);
+static void Level_LoadStaticObjects(VFILE *file);
+static void Level_LoadTextures(VFILE *file);
+static void Level_LoadSprites(VFILE *file);
+static void Level_LoadCameras(VFILE *file);
+static void Level_LoadSoundEffects(VFILE *file);
+static void Level_LoadBoxes(VFILE *file);
+static void Level_LoadAnimatedTextures(VFILE *file);
+static void Level_LoadItems(VFILE *file);
+static void Level_LoadDepthQ(VFILE *file);
+static void Level_LoadPalette(VFILE *file);
+static void Level_LoadCinematic(VFILE *file);
+static void Level_LoadDemo(VFILE *file);
+static void Level_LoadSamples(VFILE *file);
 static void Level_CompleteSetup(int32_t level_num);
 static size_t Level_CalculateMaxVertices(void);
 
@@ -72,78 +72,78 @@ static void Level_LoadFromFile(
 {
     GameBuf_Reset();
 
-    MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
-    if (!fp) {
+    VFILE *file = VFile_CreateFromPath(filename);
+    if (!file) {
         Shell_ExitSystemFmt(
             "Level_LoadFromFile(): Could not open %s", filename);
     }
 
-    const int32_t version = File_ReadS32(fp);
+    const int32_t version = VFile_ReadS32(file);
     if (version != 32) {
         Shell_ExitSystemFmt(
             "Level %d (%s) is version %d (this game code is version %d)",
             level_num, filename, version, 32);
     }
 
-    Level_LoadTexturePages(fp);
+    Level_LoadTexturePages(file);
 
-    const int32_t file_level_num = File_ReadS32(fp);
+    const int32_t file_level_num = VFile_ReadS32(file);
     LOG_INFO("file level num: %d", file_level_num);
 
-    Level_LoadRooms(fp);
-    Level_LoadMeshBase(fp);
-    Level_LoadMeshes(fp);
-    Level_LoadAnims(fp);
-    Level_LoadAnimChanges(fp);
-    Level_LoadAnimRanges(fp);
-    Level_LoadAnimCommands(fp);
-    Level_LoadAnimBones(fp);
-    Level_LoadAnimFrames(fp);
-    Level_LoadObjects(fp);
-    Level_LoadStaticObjects(fp);
-    Level_LoadTextures(fp);
-    Level_LoadSprites(fp);
+    Level_LoadRooms(file);
+    Level_LoadMeshBase(file);
+    Level_LoadMeshes(file);
+    Level_LoadAnims(file);
+    Level_LoadAnimChanges(file);
+    Level_LoadAnimRanges(file);
+    Level_LoadAnimCommands(file);
+    Level_LoadAnimBones(file);
+    Level_LoadAnimFrames(file);
+    Level_LoadObjects(file);
+    Level_LoadStaticObjects(file);
+    Level_LoadTextures(file);
+    Level_LoadSprites(file);
 
     if (is_demo) {
-        Level_LoadPalette(fp);
+        Level_LoadPalette(file);
     }
 
-    Level_LoadCameras(fp);
-    Level_LoadSoundEffects(fp);
-    Level_LoadBoxes(fp);
-    Level_LoadAnimatedTextures(fp);
-    Level_LoadItems(fp);
+    Level_LoadCameras(file);
+    Level_LoadSoundEffects(file);
+    Level_LoadBoxes(file);
+    Level_LoadAnimatedTextures(file);
+    Level_LoadItems(file);
     Stats_ObserveItemsLoad();
-    Level_LoadDepthQ(fp);
+    Level_LoadDepthQ(file);
 
     if (!is_demo) {
-        Level_LoadPalette(fp);
+        Level_LoadPalette(file);
     }
 
-    Level_LoadCinematic(fp);
-    Level_LoadDemo(fp);
-    Level_LoadSamples(fp);
+    Level_LoadCinematic(file);
+    Level_LoadDemo(file);
+    Level_LoadSamples(file);
 
-    File_Close(fp);
+    VFile_Close(file);
 }
 
-static void Level_LoadTexturePages(MYFILE *fp)
+static void Level_LoadTexturePages(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.texture_page_count = File_ReadS32(fp);
+    m_LevelInfo.texture_page_count = VFile_ReadS32(file);
     LOG_INFO("%d texture pages", m_LevelInfo.texture_page_count);
     m_LevelInfo.texture_page_ptrs =
         Memory_Alloc(m_LevelInfo.texture_page_count * PAGE_SIZE);
-    File_ReadItems(
-        fp, m_LevelInfo.texture_page_ptrs, PAGE_SIZE,
-        m_LevelInfo.texture_page_count);
+    VFile_Read(
+        file, m_LevelInfo.texture_page_ptrs,
+        PAGE_SIZE * m_LevelInfo.texture_page_count);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadRooms(MYFILE *fp)
+static void Level_LoadRooms(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    g_RoomCount = File_ReadU16(fp);
+    g_RoomCount = VFile_ReadU16(file);
     LOG_INFO("%d rooms", g_RoomCount);
 
     g_RoomInfo =
@@ -152,24 +152,24 @@ static void Level_LoadRooms(MYFILE *fp)
     for (ROOM_INFO *current_room_info = g_RoomInfo; i < g_RoomCount;
          i++, current_room_info++) {
         // Room position
-        current_room_info->x = File_ReadS32(fp);
+        current_room_info->x = VFile_ReadS32(file);
         current_room_info->y = 0;
-        current_room_info->z = File_ReadS32(fp);
+        current_room_info->z = VFile_ReadS32(file);
 
         // Room floor/ceiling
-        current_room_info->min_floor = File_ReadS32(fp);
-        current_room_info->max_ceiling = File_ReadS32(fp);
+        current_room_info->min_floor = VFile_ReadS32(file);
+        current_room_info->max_ceiling = VFile_ReadS32(file);
 
         // Room mesh
-        const uint32_t num_meshes = File_ReadS32(fp);
+        const uint32_t num_meshes = VFile_ReadS32(file);
         const uint32_t inj_mesh_size = Inject_GetExtraRoomMeshSize(i);
         current_room_info->data = GameBuf_Alloc(
             sizeof(uint16_t) * (num_meshes + inj_mesh_size), GBUF_ROOM_MESH);
-        File_ReadItems(
-            fp, current_room_info->data, sizeof(uint16_t), num_meshes);
+        VFile_Read(
+            file, current_room_info->data, sizeof(uint16_t) * num_meshes);
 
         // Doors
-        const uint16_t num_doors = File_ReadS16(fp);
+        const uint16_t num_doors = VFile_ReadS16(file);
         if (!num_doors) {
             current_room_info->doors = NULL;
         } else {
@@ -179,41 +179,41 @@ static void Level_LoadRooms(MYFILE *fp)
             current_room_info->doors->count = num_doors;
             for (int32_t j = 0; j < num_doors; j++) {
                 DOOR_INFO *door = &current_room_info->doors->door[j];
-                door->room_num = File_ReadS16(fp);
-                door->normal.x = File_ReadS16(fp);
-                door->normal.y = File_ReadS16(fp);
-                door->normal.z = File_ReadS16(fp);
+                door->room_num = VFile_ReadS16(file);
+                door->normal.x = VFile_ReadS16(file);
+                door->normal.y = VFile_ReadS16(file);
+                door->normal.z = VFile_ReadS16(file);
                 for (int32_t k = 0; k < 4; k++) {
-                    door->vertex[k].x = File_ReadS16(fp);
-                    door->vertex[k].y = File_ReadS16(fp);
-                    door->vertex[k].z = File_ReadS16(fp);
+                    door->vertex[k].x = VFile_ReadS16(file);
+                    door->vertex[k].y = VFile_ReadS16(file);
+                    door->vertex[k].z = VFile_ReadS16(file);
                 }
             }
         }
 
         // Room floor
-        current_room_info->z_size = File_ReadS16(fp);
-        current_room_info->x_size = File_ReadS16(fp);
+        current_room_info->z_size = VFile_ReadS16(file);
+        current_room_info->x_size = VFile_ReadS16(file);
         const int32_t sector_count =
             current_room_info->x_size * current_room_info->z_size;
         current_room_info->sectors =
             GameBuf_Alloc(sizeof(SECTOR_INFO) * sector_count, GBUF_ROOM_SECTOR);
         for (int32_t j = 0; j < sector_count; j++) {
             SECTOR_INFO *const sector = &current_room_info->sectors[j];
-            sector->index = File_ReadU16(fp);
-            sector->box = File_ReadS16(fp);
-            sector->portal_room.pit = File_ReadU8(fp);
-            const int8_t floor_clicks = File_ReadS8(fp);
-            sector->portal_room.sky = File_ReadU8(fp);
-            const int8_t ceiling_clicks = File_ReadS8(fp);
+            sector->index = VFile_ReadU16(file);
+            sector->box = VFile_ReadS16(file);
+            sector->portal_room.pit = VFile_ReadU8(file);
+            const int8_t floor_clicks = VFile_ReadS8(file);
+            sector->portal_room.sky = VFile_ReadU8(file);
+            const int8_t ceiling_clicks = VFile_ReadS8(file);
 
             sector->floor.height = floor_clicks * STEP_L;
             sector->ceiling.height = ceiling_clicks * STEP_L;
         }
 
         // Room lights
-        current_room_info->ambient = File_ReadS16(fp);
-        current_room_info->num_lights = File_ReadS16(fp);
+        current_room_info->ambient = VFile_ReadS16(file);
+        current_room_info->num_lights = VFile_ReadS16(file);
         if (!current_room_info->num_lights) {
             current_room_info->light = NULL;
         } else {
@@ -222,16 +222,16 @@ static void Level_LoadRooms(MYFILE *fp)
                 GBUF_ROOM_LIGHTS);
             for (int32_t j = 0; j < current_room_info->num_lights; j++) {
                 LIGHT_INFO *light = &current_room_info->light[j];
-                light->pos.x = File_ReadS32(fp);
-                light->pos.y = File_ReadS32(fp);
-                light->pos.z = File_ReadS32(fp);
-                light->intensity = File_ReadS16(fp);
-                light->falloff = File_ReadS32(fp);
+                light->pos.x = VFile_ReadS32(file);
+                light->pos.y = VFile_ReadS32(file);
+                light->pos.z = VFile_ReadS32(file);
+                light->intensity = VFile_ReadS16(file);
+                light->falloff = VFile_ReadS32(file);
             }
         }
 
         // Static mesh infos
-        current_room_info->num_meshes = File_ReadS16(fp);
+        current_room_info->num_meshes = VFile_ReadS16(file);
         if (!current_room_info->num_meshes) {
             current_room_info->mesh = NULL;
         } else {
@@ -240,20 +240,20 @@ static void Level_LoadRooms(MYFILE *fp)
                 GBUF_ROOM_STATIC_MESH_INFOS);
             for (int32_t j = 0; j < current_room_info->num_meshes; j++) {
                 MESH_INFO *mesh = &current_room_info->mesh[j];
-                mesh->pos.x = File_ReadS32(fp);
-                mesh->pos.y = File_ReadS32(fp);
-                mesh->pos.z = File_ReadS32(fp);
-                mesh->rot.y = File_ReadS16(fp);
-                mesh->shade = File_ReadU16(fp);
-                mesh->static_number = File_ReadU16(fp);
+                mesh->pos.x = VFile_ReadS32(file);
+                mesh->pos.y = VFile_ReadS32(file);
+                mesh->pos.z = VFile_ReadS32(file);
+                mesh->rot.y = VFile_ReadS16(file);
+                mesh->shade = VFile_ReadU16(file);
+                mesh->static_number = VFile_ReadU16(file);
             }
         }
 
         // Flipped (alternative) room
-        current_room_info->flipped_room = File_ReadS16(fp);
+        current_room_info->flipped_room = VFile_ReadS16(file);
 
         // Room flags
-        current_room_info->flags = File_ReadU16(fp);
+        current_room_info->flags = VFile_ReadU16(file);
 
         // Initialise some variables
         current_room_info->bound_active = 0;
@@ -265,33 +265,33 @@ static void Level_LoadRooms(MYFILE *fp)
         current_room_info->fx_number = NO_ITEM;
     }
 
-    const int32_t fd_length = File_ReadS32(fp);
+    const int32_t fd_length = VFile_ReadS32(file);
     m_LevelInfo.floor_data = Memory_Alloc(sizeof(int16_t) * fd_length);
-    File_ReadItems(fp, m_LevelInfo.floor_data, fd_length, sizeof(int16_t));
+    VFile_Read(file, m_LevelInfo.floor_data, sizeof(int16_t) * fd_length);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadMeshBase(MYFILE *const fp)
+static void Level_LoadMeshBase(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.mesh_count = File_ReadS32(fp);
+    m_LevelInfo.mesh_count = VFile_ReadS32(file);
     LOG_INFO("%d meshes", m_LevelInfo.mesh_count);
     g_MeshBase = GameBuf_Alloc(
         sizeof(int16_t)
             * (m_LevelInfo.mesh_count + m_InjectionInfo->mesh_count),
         GBUF_MESHES);
-    File_ReadItems(fp, g_MeshBase, sizeof(int16_t), m_LevelInfo.mesh_count);
+    VFile_Read(file, g_MeshBase, sizeof(int16_t) * m_LevelInfo.mesh_count);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadMeshes(MYFILE *const fp)
+static void Level_LoadMeshes(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.mesh_ptr_count = File_ReadS32(fp);
+    m_LevelInfo.mesh_ptr_count = VFile_ReadS32(file);
     int32_t *mesh_indices = GameBuf_Alloc(
         sizeof(int32_t) * m_LevelInfo.mesh_ptr_count, GBUF_MESH_POINTERS);
-    File_ReadItems(
-        fp, mesh_indices, sizeof(int32_t), m_LevelInfo.mesh_ptr_count);
+    VFile_Read(
+        file, mesh_indices, sizeof(int32_t) * m_LevelInfo.mesh_ptr_count);
 
     g_Meshes = GameBuf_Alloc(
         sizeof(int16_t *)
@@ -303,10 +303,10 @@ static void Level_LoadMeshes(MYFILE *const fp)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnims(MYFILE *fp)
+static void Level_LoadAnims(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_count = File_ReadS32(fp);
+    m_LevelInfo.anim_count = VFile_ReadS32(file);
     LOG_INFO("%d anims", m_LevelInfo.anim_count);
     g_Anims = GameBuf_Alloc(
         sizeof(ANIM_STRUCT)
@@ -315,27 +315,27 @@ static void Level_LoadAnims(MYFILE *fp)
     for (int i = 0; i < m_LevelInfo.anim_count; i++) {
         ANIM_STRUCT *anim = g_Anims + i;
 
-        anim->frame_ofs = File_ReadU32(fp);
-        anim->interpolation = File_ReadS16(fp);
-        anim->current_anim_state = File_ReadS16(fp);
-        anim->velocity = File_ReadS32(fp);
-        anim->acceleration = File_ReadS32(fp);
-        anim->frame_base = File_ReadS16(fp);
-        anim->frame_end = File_ReadS16(fp);
-        anim->jump_anim_num = File_ReadS16(fp);
-        anim->jump_frame_num = File_ReadS16(fp);
-        anim->number_changes = File_ReadS16(fp);
-        anim->change_index = File_ReadS16(fp);
-        anim->number_commands = File_ReadS16(fp);
-        anim->command_index = File_ReadS16(fp);
+        anim->frame_ofs = VFile_ReadU32(file);
+        anim->interpolation = VFile_ReadS16(file);
+        anim->current_anim_state = VFile_ReadS16(file);
+        anim->velocity = VFile_ReadS32(file);
+        anim->acceleration = VFile_ReadS32(file);
+        anim->frame_base = VFile_ReadS16(file);
+        anim->frame_end = VFile_ReadS16(file);
+        anim->jump_anim_num = VFile_ReadS16(file);
+        anim->jump_frame_num = VFile_ReadS16(file);
+        anim->number_changes = VFile_ReadS16(file);
+        anim->change_index = VFile_ReadS16(file);
+        anim->number_commands = VFile_ReadS16(file);
+        anim->command_index = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimChanges(MYFILE *fp)
+static void Level_LoadAnimChanges(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_change_count = File_ReadS32(fp);
+    m_LevelInfo.anim_change_count = VFile_ReadS32(file);
     LOG_INFO("%d anim changes", m_LevelInfo.anim_change_count);
     g_AnimChanges = GameBuf_Alloc(
         sizeof(ANIM_CHANGE_STRUCT)
@@ -344,17 +344,17 @@ static void Level_LoadAnimChanges(MYFILE *fp)
         GBUF_ANIM_CHANGES);
     for (int32_t i = 0; i < m_LevelInfo.anim_change_count; i++) {
         ANIM_CHANGE_STRUCT *anim_change = &g_AnimChanges[i];
-        anim_change->goal_anim_state = File_ReadS16(fp);
-        anim_change->number_ranges = File_ReadS16(fp);
-        anim_change->range_index = File_ReadS16(fp);
+        anim_change->goal_anim_state = VFile_ReadS16(file);
+        anim_change->number_ranges = VFile_ReadS16(file);
+        anim_change->range_index = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimRanges(MYFILE *fp)
+static void Level_LoadAnimRanges(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_range_count = File_ReadS32(fp);
+    m_LevelInfo.anim_range_count = VFile_ReadS32(file);
     LOG_INFO("%d anim ranges", m_LevelInfo.anim_range_count);
     g_AnimRanges = GameBuf_Alloc(
         sizeof(ANIM_RANGE_STRUCT)
@@ -363,52 +363,52 @@ static void Level_LoadAnimRanges(MYFILE *fp)
         GBUF_ANIM_RANGES);
     for (int32_t i = 0; i < m_LevelInfo.anim_range_count; i++) {
         ANIM_RANGE_STRUCT *anim_range = &g_AnimRanges[i];
-        anim_range->start_frame = File_ReadS16(fp);
-        anim_range->end_frame = File_ReadS16(fp);
-        anim_range->link_anim_num = File_ReadS16(fp);
-        anim_range->link_frame_num = File_ReadS16(fp);
+        anim_range->start_frame = VFile_ReadS16(file);
+        anim_range->end_frame = VFile_ReadS16(file);
+        anim_range->link_anim_num = VFile_ReadS16(file);
+        anim_range->link_frame_num = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimCommands(MYFILE *fp)
+static void Level_LoadAnimCommands(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_command_count = File_ReadS32(fp);
+    m_LevelInfo.anim_command_count = VFile_ReadS32(file);
     LOG_INFO("%d anim commands", m_LevelInfo.anim_command_count);
     g_AnimCommands = GameBuf_Alloc(
         sizeof(int16_t)
             * (m_LevelInfo.anim_command_count
                + m_InjectionInfo->anim_cmd_count),
         GBUF_ANIM_COMMANDS);
-    File_ReadItems(
-        fp, g_AnimCommands, sizeof(int16_t), m_LevelInfo.anim_command_count);
+    VFile_Read(
+        file, g_AnimCommands, sizeof(int16_t) * m_LevelInfo.anim_command_count);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimBones(MYFILE *fp)
+static void Level_LoadAnimBones(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_bone_count = File_ReadS32(fp);
+    m_LevelInfo.anim_bone_count = VFile_ReadS32(file);
     LOG_INFO("%d anim bones", m_LevelInfo.anim_bone_count);
     g_AnimBones = GameBuf_Alloc(
         sizeof(int32_t)
             * (m_LevelInfo.anim_bone_count + m_InjectionInfo->anim_bone_count),
         GBUF_ANIM_BONES);
-    File_ReadItems(
-        fp, g_AnimBones, sizeof(int32_t), m_LevelInfo.anim_bone_count);
+    VFile_Read(
+        file, g_AnimBones, sizeof(int32_t) * m_LevelInfo.anim_bone_count);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimFrames(MYFILE *fp)
+static void Level_LoadAnimFrames(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_frame_data_count = File_ReadS32(fp);
+    m_LevelInfo.anim_frame_data_count = VFile_ReadS32(file);
     LOG_INFO("%d anim frames data", m_LevelInfo.anim_frame_data_count);
 
     const int32_t raw_data_size = m_LevelInfo.anim_frame_data_count;
     int16_t *raw_data = Memory_Alloc(sizeof(int16_t) * raw_data_size);
-    File_ReadItems(fp, raw_data, sizeof(int16_t), raw_data_size);
+    VFile_Read(file, raw_data, sizeof(int16_t) * raw_data_size);
 
     m_LevelInfo.anim_frame_count = 0;
     m_LevelInfo.anim_frame_mesh_rot_count = 0;
@@ -478,21 +478,21 @@ static void Level_LoadAnimFrames(MYFILE *fp)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadObjects(MYFILE *fp)
+static void Level_LoadObjects(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.object_count = File_ReadS32(fp);
+    m_LevelInfo.object_count = VFile_ReadS32(file);
     LOG_INFO("%d objects", m_LevelInfo.object_count);
     for (int i = 0; i < m_LevelInfo.object_count; i++) {
-        const int32_t object_num = File_ReadS32(fp);
+        const int32_t object_num = VFile_ReadS32(file);
         OBJECT_INFO *object = &g_Objects[object_num];
 
-        object->nmeshes = File_ReadS16(fp);
-        object->mesh_index = File_ReadS16(fp);
-        object->bone_index = File_ReadS32(fp);
+        object->nmeshes = VFile_ReadS16(file);
+        object->mesh_index = VFile_ReadS16(file);
+        object->bone_index = VFile_ReadS32(file);
 
-        const int32_t frame_offset = File_ReadS32(fp);
-        object->anim_index = File_ReadS16(fp);
+        const int32_t frame_offset = VFile_ReadS32(file);
+        object->anim_index = VFile_ReadS16(file);
 
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
@@ -508,39 +508,39 @@ static void Level_LoadObjects(MYFILE *fp)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadStaticObjects(MYFILE *fp)
+static void Level_LoadStaticObjects(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.static_count = File_ReadS32(fp);
+    m_LevelInfo.static_count = VFile_ReadS32(file);
     LOG_INFO("%d statics", m_LevelInfo.static_count);
     for (int i = 0; i < m_LevelInfo.static_count; i++) {
-        const int32_t tmp = File_ReadS32(fp);
+        const int32_t tmp = VFile_ReadS32(file);
         STATIC_INFO *object = &g_StaticObjects[tmp];
 
-        object->mesh_number = File_ReadS16(fp);
-        object->p.min.x = File_ReadS16(fp);
-        object->p.max.x = File_ReadS16(fp);
-        object->p.min.y = File_ReadS16(fp);
-        object->p.max.y = File_ReadS16(fp);
-        object->p.min.z = File_ReadS16(fp);
-        object->p.max.z = File_ReadS16(fp);
-        object->c.min.x = File_ReadS16(fp);
-        object->c.max.x = File_ReadS16(fp);
-        object->c.min.y = File_ReadS16(fp);
-        object->c.max.y = File_ReadS16(fp);
-        object->c.min.z = File_ReadS16(fp);
-        object->c.max.z = File_ReadS16(fp);
-        object->flags = File_ReadS16(fp);
+        object->mesh_number = VFile_ReadS16(file);
+        object->p.min.x = VFile_ReadS16(file);
+        object->p.max.x = VFile_ReadS16(file);
+        object->p.min.y = VFile_ReadS16(file);
+        object->p.max.y = VFile_ReadS16(file);
+        object->p.min.z = VFile_ReadS16(file);
+        object->p.max.z = VFile_ReadS16(file);
+        object->c.min.x = VFile_ReadS16(file);
+        object->c.max.x = VFile_ReadS16(file);
+        object->c.min.y = VFile_ReadS16(file);
+        object->c.max.y = VFile_ReadS16(file);
+        object->c.min.z = VFile_ReadS16(file);
+        object->c.max.z = VFile_ReadS16(file);
+        object->flags = VFile_ReadS16(file);
         object->loaded = true;
     }
 
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadTextures(MYFILE *fp)
+static void Level_LoadTextures(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.texture_count = File_ReadS32(fp);
+    m_LevelInfo.texture_count = VFile_ReadS32(file);
     LOG_INFO("%d textures", m_LevelInfo.texture_count);
     if ((m_LevelInfo.texture_count + m_InjectionInfo->texture_count)
         > MAX_TEXTURES) {
@@ -548,42 +548,42 @@ static void Level_LoadTextures(MYFILE *fp)
     }
     for (int32_t i = 0; i < m_LevelInfo.texture_count; i++) {
         PHD_TEXTURE *texture = &g_PhdTextureInfo[i];
-        texture->drawtype = File_ReadU16(fp);
-        texture->tpage = File_ReadU16(fp);
+        texture->drawtype = VFile_ReadU16(file);
+        texture->tpage = VFile_ReadU16(file);
         for (int32_t j = 0; j < 4; j++) {
-            texture->uv[j].u = File_ReadU16(fp);
-            texture->uv[j].v = File_ReadU16(fp);
+            texture->uv[j].u = VFile_ReadU16(file);
+            texture->uv[j].v = VFile_ReadU16(file);
         }
     }
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadSprites(MYFILE *fp)
+static void Level_LoadSprites(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.sprite_info_count = File_ReadS32(fp);
+    m_LevelInfo.sprite_info_count = VFile_ReadS32(file);
     if (m_LevelInfo.sprite_info_count + m_InjectionInfo->sprite_info_count
         > MAX_SPRITES) {
         Shell_ExitSystem("Too many sprites in level");
     }
     for (int32_t i = 0; i < m_LevelInfo.sprite_info_count; i++) {
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[i];
-        sprite->tpage = File_ReadU16(fp);
-        sprite->offset = File_ReadU16(fp);
-        sprite->width = File_ReadU16(fp);
-        sprite->height = File_ReadU16(fp);
-        sprite->x1 = File_ReadS16(fp);
-        sprite->y1 = File_ReadS16(fp);
-        sprite->x2 = File_ReadS16(fp);
-        sprite->y2 = File_ReadS16(fp);
+        sprite->tpage = VFile_ReadU16(file);
+        sprite->offset = VFile_ReadU16(file);
+        sprite->width = VFile_ReadU16(file);
+        sprite->height = VFile_ReadU16(file);
+        sprite->x1 = VFile_ReadS16(file);
+        sprite->y1 = VFile_ReadS16(file);
+        sprite->x2 = VFile_ReadS16(file);
+        sprite->y2 = VFile_ReadS16(file);
     }
 
-    m_LevelInfo.sprite_count = File_ReadS32(fp);
+    m_LevelInfo.sprite_count = VFile_ReadS32(file);
     for (int i = 0; i < m_LevelInfo.sprite_count; i++) {
         GAME_OBJECT_ID object_num;
-        object_num = File_ReadS32(fp);
-        const int16_t num_meshes = File_ReadS16(fp);
-        const int16_t mesh_index = File_ReadS16(fp);
+        object_num = VFile_ReadS32(file);
+        const int16_t num_meshes = VFile_ReadS16(file);
+        const int16_t mesh_index = VFile_ReadS16(file);
 
         if (object_num < O_NUMBER_OF) {
             OBJECT_INFO *object = &g_Objects[object_num];
@@ -601,10 +601,10 @@ static void Level_LoadSprites(MYFILE *fp)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadCameras(MYFILE *fp)
+static void Level_LoadCameras(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    g_NumberCameras = File_ReadS32(fp);
+    g_NumberCameras = VFile_ReadS32(file);
     LOG_INFO("%d cameras", g_NumberCameras);
     if (!g_NumberCameras) {
         return;
@@ -616,19 +616,19 @@ static void Level_LoadCameras(MYFILE *fp)
     }
     for (int32_t i = 0; i < g_NumberCameras; i++) {
         OBJECT_VECTOR *camera = &g_Camera.fixed[i];
-        camera->x = File_ReadS32(fp);
-        camera->y = File_ReadS32(fp);
-        camera->z = File_ReadS32(fp);
-        camera->data = File_ReadS16(fp);
-        camera->flags = File_ReadS16(fp);
+        camera->x = VFile_ReadS32(file);
+        camera->y = VFile_ReadS32(file);
+        camera->z = VFile_ReadS32(file);
+        camera->data = VFile_ReadS16(file);
+        camera->flags = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadSoundEffects(MYFILE *fp)
+static void Level_LoadSoundEffects(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    g_NumberSoundEffects = File_ReadS32(fp);
+    g_NumberSoundEffects = VFile_ReadS32(file);
     LOG_INFO("%d sound effects", g_NumberSoundEffects);
     if (!g_NumberSoundEffects) {
         return;
@@ -640,60 +640,60 @@ static void Level_LoadSoundEffects(MYFILE *fp)
     }
     for (int32_t i = 0; i < g_NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
-        sound->x = File_ReadS32(fp);
-        sound->y = File_ReadS32(fp);
-        sound->z = File_ReadS32(fp);
-        sound->data = File_ReadS16(fp);
-        sound->flags = File_ReadS16(fp);
+        sound->x = VFile_ReadS32(file);
+        sound->y = VFile_ReadS32(file);
+        sound->z = VFile_ReadS32(file);
+        sound->data = VFile_ReadS16(file);
+        sound->flags = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadBoxes(MYFILE *fp)
+static void Level_LoadBoxes(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    g_NumberBoxes = File_ReadS32(fp);
+    g_NumberBoxes = VFile_ReadS32(file);
     g_Boxes = GameBuf_Alloc(sizeof(BOX_INFO) * g_NumberBoxes, GBUF_BOXES);
     for (int32_t i = 0; i < g_NumberBoxes; i++) {
         BOX_INFO *box = &g_Boxes[i];
-        box->left = File_ReadS32(fp);
-        box->right = File_ReadS32(fp);
-        box->top = File_ReadS32(fp);
-        box->bottom = File_ReadS32(fp);
-        box->height = File_ReadS16(fp);
-        box->overlap_index = File_ReadS16(fp);
+        box->left = VFile_ReadS32(file);
+        box->right = VFile_ReadS32(file);
+        box->top = VFile_ReadS32(file);
+        box->bottom = VFile_ReadS32(file);
+        box->height = VFile_ReadS16(file);
+        box->overlap_index = VFile_ReadS16(file);
     }
 
-    m_LevelInfo.overlap_count = File_ReadS32(fp);
+    m_LevelInfo.overlap_count = VFile_ReadS32(file);
     g_Overlap = GameBuf_Alloc(
         sizeof(uint16_t) * m_LevelInfo.overlap_count, GBUF_OVERLAPS);
-    File_ReadItems(fp, g_Overlap, sizeof(uint16_t), m_LevelInfo.overlap_count);
+    VFile_Read(file, g_Overlap, sizeof(uint16_t) * m_LevelInfo.overlap_count);
 
     for (int i = 0; i < 2; i++) {
         g_GroundZone[i] =
             GameBuf_Alloc(sizeof(int16_t) * g_NumberBoxes, GBUF_GROUNDZONE);
-        File_ReadItems(fp, g_GroundZone[i], sizeof(int16_t), g_NumberBoxes);
+        VFile_Read(file, g_GroundZone[i], sizeof(int16_t) * g_NumberBoxes);
 
         g_GroundZone2[i] =
             GameBuf_Alloc(sizeof(int16_t) * g_NumberBoxes, GBUF_GROUNDZONE);
-        File_ReadItems(fp, g_GroundZone2[i], sizeof(int16_t), g_NumberBoxes);
+        VFile_Read(file, g_GroundZone2[i], sizeof(int16_t) * g_NumberBoxes);
 
         g_FlyZone[i] =
             GameBuf_Alloc(sizeof(int16_t) * g_NumberBoxes, GBUF_FLYZONE);
-        File_ReadItems(fp, g_FlyZone[i], sizeof(int16_t), g_NumberBoxes);
+        VFile_Read(file, g_FlyZone[i], sizeof(int16_t) * g_NumberBoxes);
     }
 
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimatedTextures(MYFILE *fp)
+static void Level_LoadAnimatedTextures(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.anim_texture_range_count = File_ReadS32(fp);
-    size_t end_position =
-        File_Pos(fp) + m_LevelInfo.anim_texture_range_count * sizeof(int16_t);
+    m_LevelInfo.anim_texture_range_count = VFile_ReadS32(file);
+    size_t end_position = VFile_GetPos(file)
+        + m_LevelInfo.anim_texture_range_count * sizeof(int16_t);
 
-    const int16_t num_ranges = File_ReadS16(fp);
+    const int16_t num_ranges = VFile_ReadS16(file);
     LOG_INFO("%d animated texture ranges", num_ranges);
     if (!num_ranges) {
         g_AnimTextureRanges = NULL;
@@ -709,27 +709,31 @@ static void Level_LoadAnimatedTextures(MYFILE *fp)
 
         // Level data is tied to the original logic in Output_AnimateTextures
         // and hence stores one less than the actual count here.
-        range->num_textures = File_ReadS16(fp);
+        range->num_textures = VFile_ReadS16(file);
         range->num_textures++;
 
         range->textures = GameBuf_Alloc(
             sizeof(int16_t) * range->num_textures,
             GBUF_ANIMATING_TEXTURE_RANGES);
-        File_ReadItems(
-            fp, range->textures, sizeof(int16_t), range->num_textures);
+        VFile_Read(
+            file, range->textures, sizeof(int16_t) * range->num_textures);
     }
 
-cleanup:
+cleanup: {
     // Ensure to read everything intended by the level compiler, even if it
     // does not wholly contain accurate texture data.
-    File_Seek(fp, MAX(end_position, File_Pos(fp)), SEEK_SET);
+    const int32_t skip_length = end_position - VFile_GetPos(file);
+    if (skip_length > 0) {
+        VFile_Skip(file, skip_length);
+    }
     Benchmark_End(benchmark, NULL);
 }
+}
 
-static void Level_LoadItems(MYFILE *fp)
+static void Level_LoadItems(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.item_count = File_ReadS32(fp);
+    m_LevelInfo.item_count = VFile_ReadS32(file);
 
     LOG_INFO("%d items", m_LevelInfo.item_count);
 
@@ -745,14 +749,14 @@ static void Level_LoadItems(MYFILE *fp)
 
         for (int i = 0; i < m_LevelInfo.item_count; i++) {
             ITEM_INFO *item = &g_Items[i];
-            item->object_number = File_ReadS16(fp);
-            item->room_number = File_ReadS16(fp);
-            item->pos.x = File_ReadS32(fp);
-            item->pos.y = File_ReadS32(fp);
-            item->pos.z = File_ReadS32(fp);
-            item->rot.y = File_ReadS16(fp);
-            item->shade = File_ReadS16(fp);
-            item->flags = File_ReadU16(fp);
+            item->object_number = VFile_ReadS16(file);
+            item->room_number = VFile_ReadS16(file);
+            item->pos.x = VFile_ReadS32(file);
+            item->pos.y = VFile_ReadS32(file);
+            item->pos.z = VFile_ReadS32(file);
+            item->rot.y = VFile_ReadS16(file);
+            item->shade = VFile_ReadS16(file);
+            item->flags = VFile_ReadU16(file);
 
             if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
                 Shell_ExitSystemFmt(
@@ -765,23 +769,23 @@ static void Level_LoadItems(MYFILE *fp)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadDepthQ(MYFILE *fp)
+static void Level_LoadDepthQ(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
-    File_Seek(fp, sizeof(uint8_t) * 32 * 256, FILE_SEEK_CUR);
+    VFile_Skip(file, sizeof(uint8_t) * 32 * 256);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadPalette(MYFILE *fp)
+static void Level_LoadPalette(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
     RGB_888 palette[256];
     for (int32_t i = 0; i < 256; i++) {
-        palette[i].r = File_ReadU8(fp);
-        palette[i].g = File_ReadU8(fp);
-        palette[i].b = File_ReadU8(fp);
+        palette[i].r = VFile_ReadU8(file);
+        palette[i].g = VFile_ReadU8(file);
+        palette[i].b = VFile_ReadU8(file);
     }
     palette[0].r = 0;
     palette[0].g = 0;
@@ -795,10 +799,10 @@ static void Level_LoadPalette(MYFILE *fp)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadCinematic(MYFILE *fp)
+static void Level_LoadCinematic(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    g_NumCineFrames = File_ReadS16(fp);
+    g_NumCineFrames = VFile_ReadS16(file);
     LOG_INFO("%d cinematic frames", g_NumCineFrames);
     if (!g_NumCineFrames) {
         return;
@@ -807,38 +811,38 @@ static void Level_LoadCinematic(MYFILE *fp)
         sizeof(CINE_CAMERA) * g_NumCineFrames, GBUF_CINEMATIC_FRAMES);
     for (int32_t i = 0; i < g_NumCineFrames; i++) {
         CINE_CAMERA *camera = &g_CineCamera[i];
-        camera->tx = File_ReadS16(fp);
-        camera->ty = File_ReadS16(fp);
-        camera->tz = File_ReadS16(fp);
-        camera->cx = File_ReadS16(fp);
-        camera->cy = File_ReadS16(fp);
-        camera->cz = File_ReadS16(fp);
-        camera->fov = File_ReadS16(fp);
-        camera->roll = File_ReadS16(fp);
+        camera->tx = VFile_ReadS16(file);
+        camera->ty = VFile_ReadS16(file);
+        camera->tz = VFile_ReadS16(file);
+        camera->cx = VFile_ReadS16(file);
+        camera->cy = VFile_ReadS16(file);
+        camera->cz = VFile_ReadS16(file);
+        camera->fov = VFile_ReadS16(file);
+        camera->roll = VFile_ReadS16(file);
     }
 
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadDemo(MYFILE *fp)
+static void Level_LoadDemo(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_DemoData =
         GameBuf_Alloc(sizeof(uint32_t) * DEMO_COUNT_MAX, GBUF_LOADDEMO_BUFFER);
-    const uint16_t size = File_ReadS16(fp);
+    const uint16_t size = VFile_ReadS16(file);
     LOG_INFO("%d demo buffer size", size);
     if (!size) {
         return;
     }
-    File_ReadData(fp, g_DemoData, size);
+    VFile_Read(file, g_DemoData, size);
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadSamples(MYFILE *fp)
+static void Level_LoadSamples(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    File_ReadItems(fp, g_SampleLUT, sizeof(int16_t), MAX_SAMPLES);
-    m_LevelInfo.sample_info_count = File_ReadS32(fp);
+    VFile_Read(file, g_SampleLUT, sizeof(int16_t) * MAX_SAMPLES);
+    m_LevelInfo.sample_info_count = VFile_ReadS32(file);
     LOG_INFO("%d sample infos", m_LevelInfo.sample_info_count);
     if (!m_LevelInfo.sample_info_count) {
         Shell_ExitSystem("No Sample Infos");
@@ -850,13 +854,13 @@ static void Level_LoadSamples(MYFILE *fp)
         GBUF_SAMPLE_INFOS);
     for (int32_t i = 0; i < m_LevelInfo.sample_info_count; i++) {
         SAMPLE_INFO *sample_info = &g_SampleInfos[i];
-        sample_info->number = File_ReadS16(fp);
-        sample_info->volume = File_ReadS16(fp);
-        sample_info->randomness = File_ReadS16(fp);
-        sample_info->flags = File_ReadS16(fp);
+        sample_info->number = VFile_ReadS16(file);
+        sample_info->volume = VFile_ReadS16(file);
+        sample_info->randomness = VFile_ReadS16(file);
+        sample_info->flags = VFile_ReadS16(file);
     }
 
-    m_LevelInfo.sample_data_size = File_ReadS32(fp);
+    m_LevelInfo.sample_data_size = VFile_ReadS32(file);
     LOG_INFO("%d sample data size", m_LevelInfo.sample_data_size);
     if (!m_LevelInfo.sample_data_size) {
         Shell_ExitSystem("No Sample Data");
@@ -865,11 +869,11 @@ static void Level_LoadSamples(MYFILE *fp)
     m_LevelInfo.sample_data = GameBuf_Alloc(
         m_LevelInfo.sample_data_size + m_InjectionInfo->sfx_data_size,
         GBUF_SAMPLES);
-    File_ReadItems(
-        fp, m_LevelInfo.sample_data, sizeof(char),
-        m_LevelInfo.sample_data_size);
+    VFile_Read(
+        file, m_LevelInfo.sample_data,
+        sizeof(char) * m_LevelInfo.sample_data_size);
 
-    m_LevelInfo.sample_count = File_ReadS32(fp);
+    m_LevelInfo.sample_count = VFile_ReadS32(file);
     LOG_INFO("%d samples", m_LevelInfo.sample_count);
     if (!m_LevelInfo.sample_count) {
         Shell_ExitSystem("No Samples");
@@ -878,9 +882,9 @@ static void Level_LoadSamples(MYFILE *fp)
     m_LevelInfo.sample_offsets = Memory_Alloc(
         sizeof(int32_t)
         * (m_LevelInfo.sample_count + m_InjectionInfo->sample_count));
-    File_ReadItems(
-        fp, m_LevelInfo.sample_offsets, sizeof(int32_t),
-        m_LevelInfo.sample_count);
+    VFile_Read(
+        file, m_LevelInfo.sample_offsets,
+        sizeof(int32_t) * m_LevelInfo.sample_count);
 
     Benchmark_End(benchmark, NULL);
 }
