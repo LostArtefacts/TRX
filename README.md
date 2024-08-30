@@ -148,23 +148,23 @@ less like this (click to expand):
 │   ├── titleh_ub.pcx
 │   │── title.phd
 │   │── images
-│   │   ├── atlantis.webp
-│   │   ├── credits_1.webp
-│   │   ├── credits_2.webp
-│   │   ├── credits_3.webp
-│   │   ├── credits_3_alt.webp
-│   │   ├── credits_ps1.webp
-│   │   ├── egypt.webp
-│   │   ├── eidos.webp
-│   │   ├── end.webp
-│   │   ├── greece.webp
-│   │   ├── greece_saturn.webp
-│   │   ├── gym.webp
-│   │   ├── install.webp
-│   │   ├── peru.webp
-│   │   ├── title.webp
-│   │   ├── title_og_alt.webp
-│   │   └── title_ub.webp
+│   │   ├── atlantis.jpg
+│   │   ├── credits_1.jpg
+│   │   ├── credits_2.jpg
+│   │   ├── credits_3.jpg
+│   │   ├── credits_3_alt.jpg
+│   │   ├── credits_ps1.jpg
+│   │   ├── egypt.jpg
+│   │   ├── eidos.jpg
+│   │   ├── end.jpg
+│   │   ├── greece.jpg
+│   │   ├── greece_saturn.jpg
+│   │   ├── gym.jpg
+│   │   ├── install.jpg
+│   │   ├── peru.jpg
+│   │   ├── title.jpg
+│   │   ├── title_og_alt.jpg
+│   │   └── title_ub.jpg
 │   └── injections
 │       ├── atlantis_fd.bin
 │       ├── atlantis_textures.bin
@@ -322,23 +322,23 @@ less like this (click to expand):
         │   ├── titleh_ub.pcx
         │   │── title.phd
         │   │── images
-        │   │   ├── atlantis.webp
-        │   │   ├── credits_1.webp
-        │   │   ├── credits_2.webp
-        │   │   ├── credits_3.webp
-        │   │   ├── credits_3_alt.webp
-        │   │   ├── credits_ps1.webp
-        │   │   ├── egypt.webp
-        │   │   ├── eidos.webp
-        │   │   ├── end.webp
-        │   │   ├── greece.webp
-        │   │   ├── greece_saturn.webp
-        │   │   ├── gym.webp
-        │   │   ├── install.webp
-        │   │   ├── peru.webp
-        │   │   ├── title.webp
-        │   │   ├── title_og_alt.webp
-        │   │   └── title_ub.webp
+        │   │   ├── atlantis.jpg
+        │   │   ├── credits_1.jpg
+        │   │   ├── credits_2.jpg
+        │   │   ├── credits_3.jpg
+        │   │   ├── credits_3_alt.jpg
+        │   │   ├── credits_ps1.jpg
+        │   │   ├── egypt.jpg
+        │   │   ├── eidos.jpg
+        │   │   ├── end.jpg
+        │   │   ├── greece.jpg
+        │   │   ├── greece_saturn.jpg
+        │   │   ├── gym.jpg
+        │   │   ├── install.jpg
+        │   │   ├── peru.jpg
+        │   │   ├── title.jpg
+        │   │   ├── title_og_alt.jpg
+        │   │   └── title_ub.jpg
         │   └── injections
         │       ├── atlantis_fd.bin
         │       ├── atlantis_textures.bin

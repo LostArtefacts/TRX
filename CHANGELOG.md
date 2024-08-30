@@ -6,6 +6,7 @@
 - fixed `/give` console command confusing logging around mismatched items (#1463, regression from 3.0)
 - fixed `/flip` console command misreporting an already enabled flipmap as off (regression from 4.0)
 - fixed console commands causing improper ring shutdown with selected inventory item (#1460, regression from 3.0)
+- changed WEBP images to JPEG with 95% quality (no visual difference, but the title menu loads significantly faster)
 - improved level load times
 - improved logs module names readability
 - improved crash debug information on Windows

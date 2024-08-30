@@ -4,7 +4,7 @@
     // Refer to https://github.com/LostArtefacts/TR1X/blob/stable/GAMEFLOW.md
     // for usage.
 
-    "main_menu_picture": "data/images/title_ub.webp",
+    "main_menu_picture": "data/images/title_ub.jpg",
     "savegame_fmt_legacy": "saveuba.%d",
     "savegame_fmt_bson": "save_trub_%02d.dat",
     "force_game_modes": null,
@@ -105,12 +105,12 @@
                 {"type": "stop_game"},
                 {"type": "level_stats", "level_id": 3},
                 {"type": "play_synced_audio", "audio_id": 19},
-                {"type": "display_picture", "picture_path": "data/images/end.webp", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_ub.webp", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_1.webp", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_2.webp", "display_time": 7.5},
-                {"type": "display_picture", "picture_path": "data/images/credits_3.webp", "display_time": 7.5},
-                {"type": "total_stats", "picture_path": "data/images/install.webp"},
+                {"type": "display_picture", "picture_path": "data/images/end.jpg", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_ub.jpg", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_1.jpg", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_2.jpg", "display_time": 7.5},
+                {"type": "display_picture", "picture_path": "data/images/credits_3.jpg", "display_time": 7.5},
+                {"type": "total_stats", "picture_path": "data/images/install.jpg"},
                 {"type": "exit_to_title"},
             ],
             "strings": {},
@@ -127,7 +127,7 @@
                 "data/injections/pda_model.bin",
             ],
             "sequence": [
-                {"type": "display_picture", "picture_path": "data/images/eidos.webp", "display_time": 1},
+                {"type": "display_picture", "picture_path": "data/images/eidos.jpg", "display_time": 1},
                 {"type": "play_fmv", "fmv_path": "fmv/core.avi"},
                 {"type": "play_fmv", "fmv_path": "fmv/escape.avi"},
                 {"type": "exit_to_title"},

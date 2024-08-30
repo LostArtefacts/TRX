@@ -23,12 +23,12 @@ def format_size_change(source_size: int, target_size: int) -> str:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Converts image assets to WEBP format for better file sizes"
+        description="Converts image assets to JPG format for better file sizes"
     )
     parser.add_argument(
         "quality",
         type=int,
-        default=100,
+        default=95,
         nargs="?",
         help="output quality (100 for lossless)",
     )
@@ -50,7 +50,7 @@ def main() -> None:
     total_target_size = 0
 
     for source_path in SOURCE_DIR.rglob("*.png"):
-        target_path = TARGET_DIR / f"{source_path.stem}.webp"
+        target_path = TARGET_DIR / f"{source_path.stem}.jpg"
 
         print(
             f"Converting {source_path.relative_to(SOURCE_DIR)} "
@@ -63,7 +63,7 @@ def main() -> None:
 
         check_call(
             [
-                "convert",
+                "magick",
                 str(source_path),
                 "-quality",
                 str(args.quality),
