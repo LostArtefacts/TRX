@@ -6,6 +6,7 @@
 
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
+#include <libtrx/vector.h>
 
 #include <string.h>
 
@@ -218,72 +219,75 @@ static const ITEM_NAME m_ItemNames[] = {
 GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
 {
     // first, calculate the number of matches to allocate
-    int32_t count = 0;
+    VECTOR *matches = Vector_Create(sizeof(MATCH));
 
-    // count matching hardcoded strings
-    for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
-         desc++) {
-        if (String_Match(name, desc->regex) > 0) {
-            count++;
-        }
-    }
-
-    // count matching customizable inventory strings
-    for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
-         item_ptr++) {
-        const INVENTORY_ITEM *item = *item_ptr;
-        if (String_CaseSubstring(item->string, name)) {
-            count++;
-        }
-    }
-
-    // append matching hardcoded strings
-    MATCH *matches = Memory_Alloc(sizeof(MATCH) * count);
-    count = 0;
+    // Store matches from hardcoded strings
     for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
          desc++) {
         const int32_t match_length = String_Match(name, desc->regex);
         if (match_length > 0) {
-            matches[count].match_length = match_length;
-            matches[count].obj_id = desc->obj_id;
-            count++;
+            MATCH match = {
+                .match_length = match_length,
+                .obj_id = desc->obj_id,
+            };
+            Vector_Add(matches, &match);
         }
     }
 
-    // append matching customizable inventory strings
+    // Store matches from customizable inventory strings
     for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
          item_ptr++) {
         const INVENTORY_ITEM *item = *item_ptr;
         if (String_CaseSubstring(item->string, name)) {
-            matches[count].match_length = strlen(name);
-            matches[count].obj_id = Object_GetCognateInverse(
-                item->object_number, g_ItemToInvObjectMap);
-            count++;
+            MATCH match = {
+                .match_length = strlen(name),
+                .obj_id = Object_GetCognateInverse(
+                    item->object_number, g_ItemToInvObjectMap),
+            };
+            Vector_Add(matches, &match);
         }
     }
 
     // sort by match length so that best-matching results appear first
-    for (int i = 0; i < count; i++) {
-        for (int j = i + 1; j < count; j++) {
-            if (matches[i].match_length < matches[j].match_length) {
-                MATCH tmp = matches[i];
-                matches[i] = matches[j];
-                matches[j] = tmp;
+    for (int i = 0; i < matches->count; i++) {
+        for (int j = i + 1; j < matches->count; j++) {
+            if (((MATCH *)Vector_Get(matches, i))->match_length
+                < ((MATCH *)Vector_Get(matches, j))->match_length) {
+                Vector_Swap(matches, i, j);
             }
         }
     }
 
-    // construct results
-    GAME_OBJECT_ID *result = Memory_Alloc(sizeof(GAME_OBJECT_ID) * (count + 1));
-    for (int i = 0; i < count; i++) {
-        result[i] = matches[i].obj_id;
+    // Make sure the returned matching object ids are unique
+    GAME_OBJECT_ID *unique_ids =
+        Memory_Alloc(sizeof(GAME_OBJECT_ID) * (matches->count + 1));
+
+    int32_t unique_count = 0;
+    for (int32_t i = 0; i < matches->count; i++) {
+        const GAME_OBJECT_ID obj_id = ((MATCH *)Vector_Get(matches, i))->obj_id;
+        bool is_unique = true;
+        for (int32_t j = 0; j < unique_count; j++) {
+            if (obj_id == unique_ids[j]) {
+                is_unique = false;
+                break;
+            }
+        }
+        if (is_unique) {
+            unique_ids[unique_count++] = obj_id;
+        }
     }
-    result[count] = NO_OBJECT;
+
+    Vector_Free(matches);
+    matches = NULL;
+
+    // Finalize results
+    unique_ids[unique_count] = NO_OBJECT;
     if (out_match_count != NULL) {
-        *out_match_count = count;
+        *out_match_count = unique_count;
     }
+
     Memory_FreePointer(&matches);
-    return result;
+    return unique_ids;
 }
 
 const char *Object_GetCanonicalName(
