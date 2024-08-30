@@ -13,13 +13,13 @@ on:
 jobs:
   package_multiplatform:
     name: 'Create a test build'
-    uses: ./.github/workflows/build_game.yml
+    uses: ./.github/workflows/job_build_game.yml
     secrets: inherit
 
   package_mac:
     name: 'Create a test build (macOS)'
     if: vars.MACOS_ENABLE == 'true'
-    uses: ./.github/workflows/build_game_macos.yml
+    uses: ./.github/workflows/job_build_game_macos.yml
     with:
       let_mac_fail: true
     secrets: inherit

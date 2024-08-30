@@ -9,16 +9,31 @@ on:
     - develop
 
 jobs:
-  publish_prerelease:
-    name: 'Create a prerelease'
-    uses: ./.github/workflows/release.yml
+  package_multiplatform:
+    name: Build prerelease assets
+    if: vars.PRERELEASE_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_game.yml
+    secrets: inherit
+
+  package_mac:
+    name: "Build prerelease assets (mac)"
     if: |
-      github.ref == 'refs/heads/develop' &&
-      vars.PRERELEASE_ENABLE == 'true'
+      vars.PRERELEASE_ENABLE == 'true' &&
+      vars.MACOS_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_game_macos.yml
+    with:
+      let_mac_fail: true
+    secrets: inherit
+
+  publish_prerelease:
+    if: vars.PRERELEASE_ENABLE == 'true'
+    name: Create a prerelease
+    needs:
+      - package_multiplatform
+      - package_mac
     with:
       release_name: 'Development snapshot'
       draft: false
       prerelease: true
       tag_name: 'latest'
-      let_mac_fail: true
-    secrets: inherit
+    uses: ./.github/workflows/job_release.yml

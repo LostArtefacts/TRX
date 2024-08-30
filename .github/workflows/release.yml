@@ -9,34 +9,6 @@ on:
     tags:
       - "v?[0-9]*"
 
-  workflow_call:
-    inputs:
-      draft:
-        type: boolean
-        description: "Draft"
-        required: true
-        default: false
-      prerelease:
-        type: boolean
-        description: "Prerelease"
-        required: true
-        default: false
-      release_name:
-        type: string
-        description: "Release name"
-        required: true
-        default: "Release ${{ github.ref_name }}"
-      tag_name:
-        type: string
-        description: "Tag name"
-        required: false
-        default: github.ref_name
-      let_mac_fail:
-        type: boolean
-        description: "Do not require Mac builds to pass"
-        required: false
-        default: false
-
   workflow_dispatch:
     inputs:
       draft:
@@ -63,9 +35,8 @@ on:
 jobs:
   package_multiplatform:
     name: Build release assets
-    runs-on: ubuntu-latest
     if: vars.RELEASE_ENABLE == 'true'
-    uses: ./.github/workflows/build_game.yml
+    uses: ./.github/workflows/job_build_game.yml
     secrets: inherit
 
   package_mac:
@@ -73,7 +44,7 @@ jobs:
     if: |
       vars.RELEASE_ENABLE == 'true' &&
       vars.MACOS_ENABLE == 'true'
-    uses: ./.github/workflows/build_game_macos.yml
+    uses: ./.github/workflows/job_build_game_macos.yml
     with:
       let_mac_fail: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     secrets: inherit
@@ -81,64 +52,12 @@ jobs:
   publish_release:
     if: vars.RELEASE_ENABLE == 'true'
     name: Create a GitHub release
-    runs-on: ubuntu-latest
     needs:
       - package_multiplatform
       - package_mac
-
-    steps:
-      - name: "Install dependencies"
-        uses: taiki-e/install-action@just
-
-      - name: "Checkout code"
-        uses: actions/checkout@v4
-        with:
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: "Download built game assets"
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts/
-          merge-multiple: true
-
-      - name: "Generate changelog"
-        run: |
-          hash=$(git log -1 --pretty=format:%H)
-          tag=$(just output-current-version)
-          echo -e "**Commit: $hash**  \n**Tag: $tag**\n\n### Changes\n" > _changes.txt
-          just output-current-changelog >> _changes.txt
-
-      - name: "Get information on the latest pre-release"
-        if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
-        id: last_release
-        uses: InsonusK/get-latest-release@v1.0.1
-        with:
-          myToken: ${{ github.token }}
-          exclude_types: "draft|release"
-
-      - name: 'Mark the pre-release as latest'
-        if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
-        uses: EndBug/latest-tag@latest
-
-      - name: "Delete old pre-release assets"
-        if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
-        uses: mknejp/delete-release-assets@v1
-        continue-on-error: true
-        with:
-          token: ${{ github.token }}
-          tag: ${{ steps.last_release.outputs.tag_name }}
-          assets: "*.*"
-
-      - name: "Publish a release"
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: ${{ inputs.release_name }}
-          tag_name: ${{ inputs.tag_name }}
-          body_path: _changes.txt
-          draft: ${{ inputs.draft == true || inputs.draft == 'true' }}
-          prerelease: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
-          fail_on_unmatched_files: true
-          files: |
-            artifacts/*
+    with:
+      release_name: ${{ inputs.release_name }}
+      draft: ${{ inputs.draft }}
+      prerelease: ${{ inputs.draft }}
+      tag_name: ${{ inputs.tag_name }}
+    uses: ./.github/workflows/job_release.yml

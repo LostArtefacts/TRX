@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    name: Build release assets
+    name: Build release assets (mac)
     runs-on: macos-14
     continue-on-error: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     steps:
