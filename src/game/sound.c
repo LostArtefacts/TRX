@@ -489,8 +489,8 @@ void Sound_ResetEffects(void)
         int32_t mode = s->flags & 3;
         if (mode == SOUND_MODE_AMBIENT) {
             if (m_AmbientLookupIdx >= MAX_AMBIENT_FX) {
-                Shell_ExitSystem("Ran out of ambient fx slots in "
-                                 "Sound_ResetEffects()");
+                Shell_ExitSystem(
+                    "Ran out of ambient fx slots in Sound_ResetEffects()");
             }
             m_AmbientLookup[m_AmbientLookupIdx] = i;
             m_AmbientLookupIdx++;

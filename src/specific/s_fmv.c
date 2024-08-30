@@ -575,14 +575,13 @@ static int S_FMV_DecoderDecodeFrame(Decoder *d, AVFrame *frame, AVSubtitle *sub)
                     : (d->pkt->data ? AVERROR(EAGAIN) : AVERROR_EOF);
             }
             av_packet_unref(d->pkt);
+        } else if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN)) {
+            LOG_ERROR(
+                "Receive_frame and send_packet both returned EAGAIN, "
+                "which is an API violation.");
+            d->packet_pending = true;
         } else {
-            if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN)) {
-                LOG_ERROR("Receive_frame and send_packet both returned EAGAIN, "
-                          "which is an API violation.");
-                d->packet_pending = true;
-            } else {
-                av_packet_unref(d->pkt);
-            }
+            av_packet_unref(d->pkt);
         }
     }
 }

@@ -1347,8 +1347,9 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
-        LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
-                    "save is legacy.");
+        LOG_WARNING(
+            "Failed to load RESUME_INFO current properly. "
+            "Checking if save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!Savegame_BSON_LoadDiscontinuedStartInfo(
                 json_object_get_array(root_obj, "start_info"), game_info)) {
@@ -1433,8 +1434,9 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     if (!Savegame_BSON_LoadResumeInfo(
             json_object_get_array(root_obj, "current_info"),
             game_info->current)) {
-        LOG_WARNING("Failed to load RESUME_INFO current properly. Checking if "
-                    "save is legacy.");
+        LOG_WARNING(
+            "Failed to load RESUME_INFO current properly. Checking if "
+            "save is legacy.");
         // Check for 2.6 and 2.7 legacy start and end info.
         if (!Savegame_BSON_LoadDiscontinuedStartInfo(
                 json_object_get_array(root_obj, "start_info"), game_info)) {

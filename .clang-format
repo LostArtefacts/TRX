@@ -4,6 +4,8 @@ AllowShortFunctionsOnASingleLine: None
 AlwaysBreakAfterReturnType: None
 BasedOnStyle: Webkit
 BreakBeforeBinaryOperators: NonAssignment
+BreakAdjacentStringLiterals: true
+AlwaysBreakBeforeMultilineStrings: true
 ColumnLimit: 80
 IndentPPDirectives: BeforeHash
 NamespaceIndentation: None
