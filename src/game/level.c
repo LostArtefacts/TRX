@@ -1040,6 +1040,7 @@ void Level_Load(int level_num)
 
 bool Level_Initialise(int32_t level_num)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
     LOG_DEBUG("%d", level_num);
 
     // loading a save can override it to false
@@ -1119,6 +1120,7 @@ bool Level_Initialise(int32_t level_num)
     g_InvItemPickup2.string = g_GameFlow.levels[level_num].pickup2;
 
     g_Camera.underwater = false;
+    Benchmark_End(benchmark, NULL);
     return true;
 }
 
