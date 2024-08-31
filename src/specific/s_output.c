@@ -477,8 +477,8 @@ void S_Output_DrawBackdropSurface(void)
 
 void S_Output_DownloadBackdropSurface(const IMAGE *const image)
 {
-    if (!image) {
-        if (m_PictureSurface) {
+    if (image == NULL) {
+        if (m_PictureSurface != NULL) {
             bool result = GFX_2D_Surface_Clear(m_PictureSurface);
             S_Output_CheckError(result);
         }
@@ -515,7 +515,7 @@ void S_Output_DownloadBackdropSurface(const IMAGE *const image)
         S_Output_CheckError(result);
     }
 
-    if (!m_PictureSurface) {
+    if (m_PictureSurface == NULL) {
         GFX_2D_SurfaceDesc surface_desc = {
             .width = m_SurfaceWidth,
             .height = m_SurfaceHeight,

@@ -957,15 +957,12 @@ void Output_LoadBackdropImage(const char *filename)
     m_BackdropImagePath = File_GuessExtension(filename, m_ImageExtensions);
     Memory_FreePointer(&old_path);
 
-    IMAGE *orig_img = Image_CreateFromFile(m_BackdropImagePath);
-    if (orig_img) {
-        IMAGE *scaled_img = Image_ScaleSmart(
-            orig_img, Viewport_GetWidth(), Viewport_GetHeight());
-        if (scaled_img) {
-            S_Output_DownloadBackdropSurface(scaled_img);
-            Image_Free(scaled_img);
-        }
-        Image_Free(orig_img);
+    IMAGE *img = Image_CreateFromFileInto(
+        m_BackdropImagePath, Viewport_GetWidth(), Viewport_GetHeight(),
+        IMAGE_FIT_SMART);
+    if (img != NULL) {
+        S_Output_DownloadBackdropSurface(img);
+        Image_Free(img);
     }
 }
 
