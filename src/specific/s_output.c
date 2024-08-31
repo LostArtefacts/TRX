@@ -9,7 +9,6 @@
 #include "gfx/2d/2d_surface.h"
 #include "gfx/3d/3d_renderer.h"
 #include "gfx/3d/vertex_stream.h"
-#include "gfx/blitter.h"
 #include "gfx/context.h"
 #include "global/vars.h"
 #include "specific/s_shell.h"
@@ -477,88 +476,14 @@ void S_Output_DrawBackdropSurface(void)
 
 void S_Output_DownloadBackdropSurface(const IMAGE *const image)
 {
+    GFX_2D_Surface_Free(m_PictureSurface);
+    m_PictureSurface = NULL;
+
     if (image == NULL) {
-        if (m_PictureSurface != NULL) {
-            bool result = GFX_2D_Surface_Clear(m_PictureSurface);
-            S_Output_CheckError(result);
-        }
         return;
     }
 
-    GFX_2D_Surface *picture_surface = NULL;
-
-    // first, download the picture directly to a temporary surface
-    {
-        GFX_2D_SurfaceDesc surface_desc = {
-            .width = image->width,
-            .height = image->height,
-        };
-        picture_surface = GFX_2D_Surface_Create(&surface_desc);
-    }
-
-    {
-        GFX_2D_SurfaceDesc surface_desc = { 0 };
-        bool result = GFX_2D_Surface_Lock(picture_surface, &surface_desc);
-        S_Output_CheckError(result);
-
-        uint32_t *output_ptr = surface_desc.pixels;
-        IMAGE_PIXEL *input_ptr = image->data;
-        for (int i = 0; i < image->width * image->height; i++) {
-            uint8_t r = input_ptr->r;
-            uint8_t g = input_ptr->g;
-            uint8_t b = input_ptr->b;
-            input_ptr++;
-            *output_ptr++ = b | (g << 8) | (r << 16);
-        }
-
-        result = GFX_2D_Surface_Unlock(picture_surface);
-        S_Output_CheckError(result);
-    }
-
-    if (m_PictureSurface == NULL) {
-        GFX_2D_SurfaceDesc surface_desc = {
-            .width = m_SurfaceWidth,
-            .height = m_SurfaceHeight,
-        };
-        m_PictureSurface = GFX_2D_Surface_Create(&surface_desc);
-    }
-
-    int32_t target_width = m_SurfaceWidth;
-    int32_t target_height = m_SurfaceHeight;
-    int32_t source_width = image->width;
-    int32_t source_height = image->height;
-
-    // keep aspect ratio and fit inside, adding black bars on the sides
-    const float source_ratio = source_width / (float)source_height;
-    const float target_ratio = target_width / (float)target_height;
-    int32_t new_width = source_ratio < target_ratio
-        ? target_height * source_ratio
-        : target_width;
-    int32_t new_height = source_ratio < target_ratio
-        ? target_height
-        : target_width / source_ratio;
-
-    GFX_BlitterRect source_rect = {
-        .left = 0,
-        .top = 0,
-        .right = image->width,
-        .bottom = image->height,
-    };
-    GFX_BlitterRect target_rect = {
-        .left = (target_width - new_width) / 2,
-        .top = (target_height - new_height) / 2,
-        .right = target_rect.left + new_width,
-        .bottom = target_rect.top + new_height,
-    };
-
-    bool result = GFX_2D_Surface_Clear(m_PictureSurface);
-    S_Output_CheckError(result);
-
-    result = GFX_2D_Surface_Blt(
-        m_PictureSurface, &target_rect, picture_surface, &source_rect);
-    S_Output_CheckError(result);
-
-    GFX_2D_Surface_Free(picture_surface);
+    m_PictureSurface = GFX_2D_Surface_CreateFromImage(image);
 }
 
 void S_Output_SelectTexture(int tex_num)

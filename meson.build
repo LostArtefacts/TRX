@@ -251,7 +251,6 @@ sources = [
   'src/gfx/2d/2d_surface.c',
   'src/gfx/3d/3d_renderer.c',
   'src/gfx/3d/vertex_stream.c',
-  'src/gfx/blitter.c',
   'src/gfx/context.c',
   'src/gfx/gl/buffer.c',
   'src/gfx/gl/gl_core_3_3.c',

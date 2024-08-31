@@ -1,6 +1,8 @@
 #pragma once
 
-#include "gfx/blitter.h"
+#include "gfx/gl/gl_core_3_3.h"
+
+#include <libtrx/engine/image.h>
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -11,6 +13,8 @@ typedef struct {
     int32_t pitch;
     void *pixels;
     int32_t bit_count;
+    GLenum tex_format;
+    GLenum tex_type;
 } GFX_2D_SurfaceDesc;
 
 typedef struct GFX_2D_Surface {
@@ -21,6 +25,7 @@ typedef struct GFX_2D_Surface {
 } GFX_2D_Surface;
 
 GFX_2D_Surface *GFX_2D_Surface_Create(const GFX_2D_SurfaceDesc *desc);
+GFX_2D_Surface *GFX_2D_Surface_CreateFromImage(const IMAGE *image);
 void GFX_2D_Surface_Free(GFX_2D_Surface *surface);
 
 void GFX_2D_Surface_Init(
@@ -28,9 +33,6 @@ void GFX_2D_Surface_Init(
 void GFX_2D_Surface_Close(GFX_2D_Surface *surface);
 
 bool GFX_2D_Surface_Clear(GFX_2D_Surface *surface);
-bool GFX_2D_Surface_Blt(
-    GFX_2D_Surface *surface, const GFX_BlitterRect *dst_rect,
-    GFX_2D_Surface *src, const GFX_BlitterRect *src_rect);
 
 bool GFX_2D_Surface_Lock(GFX_2D_Surface *surface, GFX_2D_SurfaceDesc *out_desc);
 bool GFX_2D_Surface_Unlock(GFX_2D_Surface *surface);

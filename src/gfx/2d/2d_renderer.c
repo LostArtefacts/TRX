@@ -63,11 +63,9 @@ void GFX_2D_Renderer_Close(GFX_2D_Renderer *renderer)
 void GFX_2D_Renderer_Upload(
     GFX_2D_Renderer *renderer, GFX_2D_SurfaceDesc *desc, const uint8_t *data)
 {
-    uint32_t width = desc->width;
-    uint32_t height = desc->height;
+    const uint32_t width = desc->width;
+    const uint32_t height = desc->height;
 
-    GLenum tex_format = GL_BGRA;
-    GLenum tex_type = GL_UNSIGNED_INT_8_8_8_8_REV;
     GFX_GL_Texture_Bind(&renderer->surface_texture);
 
     // TODO: implement texture packs
@@ -78,12 +76,12 @@ void GFX_2D_Renderer_Upload(
         renderer->height = height;
         glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGBA, renderer->width, renderer->height, 0,
-            tex_format, tex_type, data);
+            desc->tex_format, desc->tex_type, data);
         GFX_GL_CheckError();
     } else {
         glTexSubImage2D(
             GL_TEXTURE_2D, 0, 0, 0, renderer->width, renderer->height,
-            tex_format, tex_type, data);
+            desc->tex_format, desc->tex_type, data);
         GFX_GL_CheckError();
     }
 }
