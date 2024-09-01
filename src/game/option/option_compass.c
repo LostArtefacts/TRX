@@ -25,6 +25,8 @@ typedef enum COMPASS_TEXT {
 } COMPASS_TEXT;
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
+static int16_t m_CompassNeedle = 0;
+static int16_t m_CompassSpeed = 0;
 
 static void Option_Compass_InitText(void);
 
@@ -148,4 +150,19 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
 void Option_Compass_Shutdown(void)
 {
     Option_Compass_ShutdownText();
+}
+
+void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)
+{
+    if (g_LaraItem == NULL) {
+        return;
+    }
+    int16_t delta = -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
+    m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
+    m_CompassNeedle += m_CompassSpeed;
+}
+
+int16_t Option_Compass_GetNeedleAngle(void)
+{
+    return m_CompassNeedle;
 }

@@ -14,6 +14,7 @@
 #include "game/music.h"
 #include "game/objects/common.h"
 #include "game/option.h"
+#include "game/option/option_compass.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -48,8 +49,6 @@ static bool m_PassportModeReady;
 static int32_t m_StartLevel;
 static bool m_StartDemo;
 static TEXTSTRING *m_VersionText = NULL;
-static int16_t m_CompassNeedle = 0;
-static int16_t m_CompassSpeed = 0;
 static int32_t m_StatsCounter;
 static CAMERA_INFO m_OldCamera;
 static GAME_OBJECT_ID m_InvChosen;
@@ -357,16 +356,11 @@ static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item)
 
 static bool Inv_AnimateItem(INVENTORY_ITEM *inv_item)
 {
-    if (inv_item->object_number == O_MAP_OPTION) {
-        int16_t delta = -inv_item->y_rot - g_LaraItem->rot.y - m_CompassNeedle;
-        m_CompassSpeed = m_CompassSpeed * 19 / 20 + delta / 50;
-        m_CompassNeedle += m_CompassSpeed;
-    }
-
     if (inv_item->current_frame == inv_item->goal_frame) {
         Inv_SelectMeshes(inv_item);
         return false;
     }
+
     inv_item->current_frame += inv_item->anim_direction;
     if (inv_item->current_frame >= inv_item->frames_total) {
         inv_item->current_frame = 0;
@@ -533,7 +527,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
     FRAME_INFO *frame2;
     const int32_t frac = InvItem_GetFrames(inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_number == O_MAP_OPTION) {
-        const int16_t extra_rotation[1] = { m_CompassNeedle };
+        const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
         int32_t *const bone = &g_AnimBones[obj->bone_index];
         bone[0] |= BEB_ROT_Y;
         Object_DrawInterpolatedObject(
@@ -705,6 +699,16 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
         && !m_PassportModeReady) {
         g_Input = (INPUT_STATE) { 0 };
         g_InputDB = (INPUT_STATE) { 0, .menu_confirm = 1 };
+    }
+
+    if (!(g_InvMode == INV_TITLE_MODE || Output_FadeIsAnimating()
+          || motion->status == RNG_OPENING)) {
+        for (int i = 0; i < ring->number_of_objects; i++) {
+            INVENTORY_ITEM *inv_item = ring->list[i];
+            if (inv_item->object_number == O_MAP_OPTION) {
+                Option_Compass_UpdateNeedle(inv_item);
+            }
+        }
     }
 
     switch (motion->status) {
@@ -1086,7 +1090,6 @@ static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes)
     if (g_Config.enable_timer_in_inventory) {
         Stats_UpdateTimer();
     }
-
     for (int32_t i = 0; i < nframes; i++) {
         GAMEFLOW_COMMAND result = Phase_Inventory_ControlFrame();
         if (result.command != GF_PHASE_CONTINUE) {
