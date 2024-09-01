@@ -264,8 +264,7 @@ void Shell_Main(void)
 
         default:
             Shell_ExitSystemFmt(
-                "MAIN: Unknown action=%x param=%d", command.action,
-                command.param);
+                "MAIN: Unknown action %x %d", command.action, command.param);
             return;
         }
     }
