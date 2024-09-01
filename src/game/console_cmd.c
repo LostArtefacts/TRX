@@ -649,14 +649,14 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
 static COMMAND_RESULT Console_Cmd_StartDemo(const char *args)
 {
     g_GameInfo.override_gf_command =
-        (GAMEFLOW_COMMAND) { .command = GF_START_DEMO };
+        (GAMEFLOW_COMMAND) { .action = GF_START_DEMO };
     return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_ExitToTitle(const char *args)
 {
     g_GameInfo.override_gf_command =
-        (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
+        (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
     return CR_SUCCESS;
 }
 
@@ -679,7 +679,7 @@ static COMMAND_RESULT Console_Cmd_LoadGame(const char *args)
     }
 
     g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
-        .command = GF_START_SAVED_GAME,
+        .action = GF_START_SAVED_GAME,
         .param = slot_idx,
     };
     Console_Log(GS(OSD_LOAD_GAME), slot_num);
@@ -753,7 +753,7 @@ static COMMAND_RESULT Console_Cmd_StartLevel(const char *const args)
     }
 
     g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
-        .command = GF_SELECT_GAME,
+        .action = GF_SELECT_GAME,
         .param = level_to_load,
     };
     Console_Log(

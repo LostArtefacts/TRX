@@ -958,7 +958,7 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_LEVEL_DEMO_PC = 11,
 } GAMEFLOW_LEVEL_TYPE;
 
-typedef enum GAMEFLOW_OPTION {
+typedef enum {
     GF_PHASE_BREAK,
     GF_PHASE_CONTINUE,
     GF_START_GAME,
@@ -973,10 +973,10 @@ typedef enum GAMEFLOW_OPTION {
     GF_SELECT_GAME,
     GF_START_GYM,
     GF_STORY_SO_FAR,
-} GAMEFLOW_OPTION;
+} GAMEFLOW_ACTION;
 
 typedef struct GAMEFLOW_COMMAND {
-    GAMEFLOW_OPTION command;
+    GAMEFLOW_ACTION action;
     int32_t param;
 } GAMEFLOW_COMMAND;
 
