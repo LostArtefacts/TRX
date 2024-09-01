@@ -655,17 +655,17 @@ GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
 {
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
 
-    GAMEFLOW_COMMAND flow = {
+    GAMEFLOW_COMMAND command = {
         .command = GF_START_GAME,
         .param = g_GameFlow.first_level_num,
     };
 
     while (1) {
-        flow = GameFlow_StorySoFar(flow.param, savegame_info->level_num);
+        command = GameFlow_StorySoFar(command.param, savegame_info->level_num);
 
-        if ((g_GameFlow.levels[flow.param].level_type == GFL_NORMAL
-             || g_GameFlow.levels[flow.param].level_type == GFL_BONUS)
-            && flow.param >= savegame_info->level_num) {
+        if ((g_GameFlow.levels[command.param].level_type == GFL_NORMAL
+             || g_GameFlow.levels[command.param].level_type == GFL_BONUS)
+            && command.param >= savegame_info->level_num) {
             break;
         }
     }

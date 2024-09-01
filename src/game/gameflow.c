@@ -1074,7 +1074,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
     g_GameInfo.remove_medipacks = false;
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
-    GAMEFLOW_COMMAND ret = { .command = GF_EXIT_TO_TITLE };
+    GAMEFLOW_COMMAND command = { .command = GF_EXIT_TO_TITLE };
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
@@ -1114,17 +1114,17 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 Lara_RevertToPistolsIfNeeded();
             }
             Phase_Set(PHASE_GAME, NULL);
-            ret = Phase_Run();
-            if (ret.command != GF_PHASE_CONTINUE) {
-                return ret;
+            command = Phase_Run();
+            if (command.command != GF_PHASE_CONTINUE) {
+                return command;
             }
             break;
 
         case GFS_STOP_GAME:
-            ret = Game_Stop();
-            if (ret.command != GF_PHASE_CONTINUE
-                && ret.command != GF_LEVEL_COMPLETE) {
-                return ret;
+            command = Game_Stop();
+            if (command.command != GF_PHASE_CONTINUE
+                && command.command != GF_LEVEL_COMPLETE) {
+                return command;
             }
             if (level_type == GFL_SAVED) {
                 if (g_GameFlow.levels[level_num].level_type == GFL_BONUS) {
@@ -1146,7 +1146,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
-                ret = Phase_Run();
+                command = Phase_Run();
             }
             break;
 
@@ -1161,7 +1161,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 .level_num = (int32_t)(intptr_t)seq->data,
             };
             Phase_Set(PHASE_STATS, &phase_args);
-            ret = Phase_Run();
+            command = Phase_Run();
             break;
         }
 
@@ -1176,7 +1176,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                         level_type == GFL_BONUS ? GFL_BONUS : GFL_NORMAL,
                 };
                 Phase_Set(PHASE_STATS, &phase_args);
-                ret = Phase_Run();
+                command = Phase_Run();
             }
             break;
 
@@ -1201,7 +1201,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 .display_time = data->display_time,
             };
             Phase_Set(PHASE_PICTURE, &phase_arg);
-            ret = Phase_Run();
+            command = Phase_Run();
             break;
 
         case GFS_EXIT_TO_TITLE:
@@ -1311,13 +1311,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_END:
-            return ret;
+            return command;
         }
 
         seq++;
     }
 
-    return ret;
+    return command;
 }
 
 GAMEFLOW_COMMAND
@@ -1326,7 +1326,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
     LOG_INFO("%d", level_num);
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
-    GAMEFLOW_COMMAND ret = { .command = GF_EXIT_TO_TITLE };
+    GAMEFLOW_COMMAND command = { .command = GF_EXIT_TO_TITLE };
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
@@ -1361,7 +1361,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         }
 
         case GFS_LOOP_CINE:
-            ret = Phase_Run();
+            command = Phase_Run();
             break;
 
         case GFS_PLAY_FMV:
@@ -1422,11 +1422,11 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         }
 
         case GFS_END:
-            return ret;
+            return command;
         }
 
         seq++;
     }
 
-    return ret;
+    return command;
 }
