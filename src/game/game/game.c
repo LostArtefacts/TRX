@@ -238,9 +238,6 @@ GAMEFLOW_COMMAND Game_Stop(void)
             .param = g_GameFlow.first_level_num,
         };
     } else {
-        return (GAMEFLOW_COMMAND) {
-            .command = GF_EXIT_TO_TITLE,
-            .param = 0,
-        };
+        return (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
     }
 }

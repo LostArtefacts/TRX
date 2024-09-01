@@ -179,10 +179,7 @@ void Shell_Main(void)
 
     Shell_Init(gameflow_path);
 
-    GAMEFLOW_COMMAND flow = {
-        .command = GF_EXIT_TO_TITLE,
-        .param = 0,
-    };
+    GAMEFLOW_COMMAND flow = { .command = GF_EXIT_TO_TITLE };
     bool intro_played = false;
 
     g_GameInfo.current_save_slot = -1;
@@ -204,10 +201,7 @@ void Shell_Main(void)
             int16_t level_num = Savegame_GetLevelNumber(flow.param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
-                flow = (GAMEFLOW_COMMAND) {
-                    .command = GF_EXIT_TO_TITLE,
-                    .param = 0,
-                };
+                flow = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
             } else {
                 g_GameInfo.current_save_slot = flow.param;
                 flow = GameFlow_InterpretSequence(level_num, GFL_SAVED);
@@ -240,10 +234,7 @@ void Shell_Main(void)
             break;
 
         case GF_LEVEL_COMPLETE:
-            flow = (GAMEFLOW_COMMAND) {
-                .command = GF_EXIT_TO_TITLE,
-                .param = 0,
-            };
+            flow = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
             break;
 
         case GF_EXIT_TO_TITLE:
@@ -256,10 +247,7 @@ void Shell_Main(void)
 
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
-                flow = (GAMEFLOW_COMMAND) {
-                    .command = GF_EXIT_GAME,
-                    .param = 0,
-                };
+                flow = (GAMEFLOW_COMMAND) { .command = GF_EXIT_GAME };
                 break;
             }
 

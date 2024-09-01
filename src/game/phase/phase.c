@@ -34,20 +34,15 @@ static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
 {
     if (g_GameInfo.override_gf_command.command != GF_PHASE_CONTINUE) {
         const GAMEFLOW_COMMAND override = g_GameInfo.override_gf_command;
-        g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
-            .command = GF_PHASE_CONTINUE,
-            .param = 0,
-        };
+        g_GameInfo.override_gf_command =
+            (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
         return override;
     }
 
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
-    return (GAMEFLOW_COMMAND) {
-        .command = GF_PHASE_CONTINUE,
-        .param = 0,
-    };
+    return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
 }
 
 static void Phase_Draw(void)
@@ -139,10 +134,7 @@ static int32_t Phase_Wait(void)
 GAMEFLOW_COMMAND Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_COMMAND ret = {
-        .command = GF_PHASE_CONTINUE,
-        .param = 0,
-    };
+    GAMEFLOW_COMMAND ret = { .command = GF_PHASE_CONTINUE };
     m_Running = true;
     LOG_DEBUG("phase start, phase=%d", m_Phase);
 

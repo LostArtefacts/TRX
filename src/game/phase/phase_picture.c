@@ -68,18 +68,12 @@ static GAMEFLOW_COMMAND Phase_Picture_Control(int32_t nframes)
         Output_FadeToBlack(true);
         if (g_InputDB.any || !Output_FadeIsAnimating()) {
             Output_FadeResetToBlack();
-            return (GAMEFLOW_COMMAND) {
-                .command = GF_PHASE_BREAK,
-                .param = 0,
-            };
+            return (GAMEFLOW_COMMAND) { .command = GF_PHASE_BREAK };
         }
         break;
     }
 
-    return (GAMEFLOW_COMMAND) {
-        .command = GF_PHASE_CONTINUE,
-        .param = 0,
-    };
+    return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
 }
 
 static void Phase_Picture_Draw(void)

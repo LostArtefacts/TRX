@@ -670,8 +670,5 @@ GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
         }
     }
 
-    return (GAMEFLOW_COMMAND) {
-        .command = GF_EXIT_TO_TITLE,
-        .param = 0,
-    };
+    return (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
 }

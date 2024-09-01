@@ -303,18 +303,12 @@ static GAMEFLOW_COMMAND Phase_Stats_Control(int32_t nframes)
         if (g_InputDB.menu_confirm || g_InputDB.menu_back
             || !Output_FadeIsAnimating()) {
             Output_FadeResetToBlack();
-            return (GAMEFLOW_COMMAND) {
-                .command = GF_PHASE_BREAK,
-                .param = 0,
-            };
+            return (GAMEFLOW_COMMAND) { .command = GF_PHASE_BREAK };
         }
         break;
     }
 
-    return (GAMEFLOW_COMMAND) {
-        .command = GF_PHASE_CONTINUE,
-        .param = 0,
-    };
+    return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
 }
 
 static void Phase_Stats_Draw(void)
