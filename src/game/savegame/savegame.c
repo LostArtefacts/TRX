@@ -656,7 +656,7 @@ GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
 
     GAMEFLOW_COMMAND command = {
-        .command = GF_START_GAME,
+        .action = GF_START_GAME,
         .param = g_GameFlow.first_level_num,
     };
 
@@ -670,5 +670,5 @@ GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
         }
     }
 
-    return (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
+    return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
 }

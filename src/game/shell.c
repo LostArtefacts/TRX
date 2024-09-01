@@ -179,15 +179,15 @@ void Shell_Main(void)
 
     Shell_Init(gameflow_path);
 
-    GAMEFLOW_COMMAND command = { .command = GF_EXIT_TO_TITLE };
+    GAMEFLOW_COMMAND command = { .action = GF_EXIT_TO_TITLE };
     bool intro_played = false;
 
     g_GameInfo.current_save_slot = -1;
     bool loop_continue = true;
     while (loop_continue) {
-        LOG_INFO("command=%d param=%d", command.command, command.param);
+        LOG_INFO("action=%d param=%d", command.action, command.param);
 
-        switch (command.command) {
+        switch (command.action) {
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
             if (g_GameFlow.levels[command.param].level_type == GFL_BONUS) {
@@ -201,7 +201,7 @@ void Shell_Main(void)
             int16_t level_num = Savegame_GetLevelNumber(command.param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
-                command = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
+                command = (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
             } else {
                 g_GameInfo.current_save_slot = command.param;
                 command = GameFlow_InterpretSequence(level_num, GFL_SAVED);
@@ -234,7 +234,7 @@ void Shell_Main(void)
             break;
 
         case GF_LEVEL_COMPLETE:
-            command = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
+            command = (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
             break;
 
         case GF_EXIT_TO_TITLE:
@@ -247,7 +247,7 @@ void Shell_Main(void)
 
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
-                command = (GAMEFLOW_COMMAND) { .command = GF_EXIT_GAME };
+                command = (GAMEFLOW_COMMAND) { .action = GF_EXIT_GAME };
                 break;
             }
 
@@ -264,7 +264,8 @@ void Shell_Main(void)
 
         default:
             Shell_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", command.command, command.param);
+                "MAIN: Unknown action=%x param=%d", command.action,
+                command.param);
             return;
         }
     }

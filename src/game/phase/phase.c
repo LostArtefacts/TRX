@@ -32,17 +32,17 @@ static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
 static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
 {
-    if (g_GameInfo.override_gf_command.command != GF_PHASE_CONTINUE) {
+    if (g_GameInfo.override_gf_command.action != GF_PHASE_CONTINUE) {
         const GAMEFLOW_COMMAND override = g_GameInfo.override_gf_command;
         g_GameInfo.override_gf_command =
-            (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
+            (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
         return override;
     }
 
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
-    return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
 }
 
 static void Phase_Draw(void)
@@ -134,7 +134,7 @@ static int32_t Phase_Wait(void)
 GAMEFLOW_COMMAND Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_COMMAND command = { .command = GF_PHASE_CONTINUE };
+    GAMEFLOW_COMMAND command = { .action = GF_PHASE_CONTINUE };
     m_Running = true;
     LOG_DEBUG("phase start, phase=%d", m_Phase);
 
@@ -148,7 +148,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
-            if (command.command != GF_PHASE_CONTINUE) {
+            if (command.action != GF_PHASE_CONTINUE) {
                 Phase_Draw();
                 break;
             }
@@ -157,7 +157,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             continue;
         }
 
-        if (command.command != GF_PHASE_CONTINUE) {
+        if (command.action != GF_PHASE_CONTINUE) {
             Phase_Draw();
             break;
         }
@@ -173,14 +173,13 @@ GAMEFLOW_COMMAND Phase_Run(void)
         nframes = Phase_Wait();
     }
 
-    if (command.command == GF_PHASE_BREAK) {
-        command.command = GF_PHASE_CONTINUE;
+    if (command.action == GF_PHASE_BREAK) {
+        command.action = GF_PHASE_CONTINUE;
     }
 
     m_Running = false;
     Phase_Set(PHASE_NULL, NULL);
 
-    LOG_DEBUG(
-        "phase end, command=%d, param=%d", command.command, command.param);
+    LOG_DEBUG("phase end, action=%d, param=%d", command.action, command.param);
     return command;
 }
