@@ -179,62 +179,62 @@ void Shell_Main(void)
 
     Shell_Init(gameflow_path);
 
-    GAMEFLOW_COMMAND flow = { .command = GF_EXIT_TO_TITLE };
+    GAMEFLOW_COMMAND command = { .command = GF_EXIT_TO_TITLE };
     bool intro_played = false;
 
     g_GameInfo.current_save_slot = -1;
     bool loop_continue = true;
     while (loop_continue) {
-        LOG_INFO("command=%d param=%d", flow.command, flow.param);
+        LOG_INFO("command=%d param=%d", command.command, command.param);
 
-        switch (flow.command) {
+        switch (command.command) {
         case GF_START_GAME: {
             GAMEFLOW_LEVEL_TYPE level_type = GFL_NORMAL;
-            if (g_GameFlow.levels[flow.param].level_type == GFL_BONUS) {
+            if (g_GameFlow.levels[command.param].level_type == GFL_BONUS) {
                 level_type = GFL_BONUS;
             }
-            flow = GameFlow_InterpretSequence(flow.param, level_type);
+            command = GameFlow_InterpretSequence(command.param, level_type);
             break;
         }
 
         case GF_START_SAVED_GAME: {
-            int16_t level_num = Savegame_GetLevelNumber(flow.param);
+            int16_t level_num = Savegame_GetLevelNumber(command.param);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
-                flow = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
+                command = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
             } else {
-                g_GameInfo.current_save_slot = flow.param;
-                flow = GameFlow_InterpretSequence(level_num, GFL_SAVED);
+                g_GameInfo.current_save_slot = command.param;
+                command = GameFlow_InterpretSequence(level_num, GFL_SAVED);
             }
             break;
         }
 
         case GF_RESTART_GAME: {
-            flow = GameFlow_InterpretSequence(flow.param, GFL_RESTART);
+            command = GameFlow_InterpretSequence(command.param, GFL_RESTART);
             break;
         }
 
         case GF_SELECT_GAME: {
-            flow = GameFlow_InterpretSequence(flow.param, GFL_SELECT);
+            command = GameFlow_InterpretSequence(command.param, GFL_SELECT);
             break;
         }
 
         case GF_STORY_SO_FAR: {
-            flow = Savegame_PlayAvailableStory(flow.param);
+            command = Savegame_PlayAvailableStory(command.param);
             break;
         }
 
         case GF_START_CINE:
-            flow = GameFlow_InterpretSequence(flow.param, GFL_CUTSCENE);
+            command = GameFlow_InterpretSequence(command.param, GFL_CUTSCENE);
             break;
 
         case GF_START_DEMO:
             Phase_Set(PHASE_DEMO, NULL);
-            flow = Phase_Run();
+            command = Phase_Run();
             break;
 
         case GF_LEVEL_COMPLETE:
-            flow = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
+            command = (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
             break;
 
         case GF_EXIT_TO_TITLE:
@@ -247,11 +247,11 @@ void Shell_Main(void)
 
             Savegame_InitCurrentInfo();
             if (!Level_Initialise(g_GameFlow.title_level_num)) {
-                flow = (GAMEFLOW_COMMAND) { .command = GF_EXIT_GAME };
+                command = (GAMEFLOW_COMMAND) { .command = GF_EXIT_GAME };
                 break;
             }
 
-            flow = Game_MainMenu();
+            command = Game_MainMenu();
             break;
 
         case GF_EXIT_GAME:
@@ -259,12 +259,12 @@ void Shell_Main(void)
             break;
 
         case GF_START_GYM:
-            flow = GameFlow_InterpretSequence(flow.param, GFL_GYM);
+            command = GameFlow_InterpretSequence(command.param, GFL_GYM);
             break;
 
         default:
             Shell_ExitSystemFmt(
-                "MAIN: Unknown request %x %d", flow.command, flow.param);
+                "MAIN: Unknown request %x %d", command.command, command.param);
             return;
         }
     }

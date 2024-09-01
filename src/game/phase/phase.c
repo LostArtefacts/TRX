@@ -134,12 +134,12 @@ static int32_t Phase_Wait(void)
 GAMEFLOW_COMMAND Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_COMMAND ret = { .command = GF_PHASE_CONTINUE };
+    GAMEFLOW_COMMAND command = { .command = GF_PHASE_CONTINUE };
     m_Running = true;
     LOG_DEBUG("phase start, phase=%d", m_Phase);
 
     while (1) {
-        ret = Phase_Control(nframes);
+        command = Phase_Control(nframes);
 
         if (m_PhaseToSet != PHASE_NULL) {
             Interpolation_SetRate(1.0);
@@ -148,7 +148,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
-            if (ret.command != GF_PHASE_CONTINUE) {
+            if (command.command != GF_PHASE_CONTINUE) {
                 Phase_Draw();
                 break;
             }
@@ -157,7 +157,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             continue;
         }
 
-        if (ret.command != GF_PHASE_CONTINUE) {
+        if (command.command != GF_PHASE_CONTINUE) {
             Phase_Draw();
             break;
         }
@@ -173,13 +173,14 @@ GAMEFLOW_COMMAND Phase_Run(void)
         nframes = Phase_Wait();
     }
 
-    if (ret.command == GF_PHASE_BREAK) {
-        ret.command = GF_PHASE_CONTINUE;
+    if (command.command == GF_PHASE_BREAK) {
+        command.command = GF_PHASE_CONTINUE;
     }
 
     m_Running = false;
     Phase_Set(PHASE_NULL, NULL);
 
-    LOG_DEBUG("phase end, command=%d, param=%d", ret.command, ret.param);
-    return ret;
+    LOG_DEBUG(
+        "phase end, command=%d, param=%d", command.command, command.param);
+    return command;
 }
