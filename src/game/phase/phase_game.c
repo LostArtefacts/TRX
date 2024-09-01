@@ -67,7 +67,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
             if (g_OverlayFlag == 2) {
                 g_OverlayFlag = 1;
                 Inv_Display(INV_DEATH_MODE);
-                return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+                return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
             } else {
                 g_OverlayFlag = 2;
             }
@@ -96,13 +96,13 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
                 }
 
                 g_OverlayFlag = 1;
-                return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+                return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
             }
         }
 
         if (!g_Lara.death_timer && g_InputDB.pause) {
             Phase_Set(PHASE_PAUSE, NULL);
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
         } else {
             Item_Control();
             Effect_Control();
@@ -123,7 +123,7 @@ static GAMEFLOW_COMMAND Phase_Game_Control(int32_t nframes)
         g_GameInfo.ask_for_save = false;
     }
 
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static void Phase_Game_Draw(void)

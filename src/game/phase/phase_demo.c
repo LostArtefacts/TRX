@@ -230,12 +230,12 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Lara_Cheat_Control();
         if (g_LevelComplete) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
         }
 
         if (!Phase_Demo_ProcessInput()) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
         }
         Game_ProcessInput();
 
@@ -256,12 +256,12 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Input_Update();
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
         }
     }
 
     return (GAMEFLOW_COMMAND) {
-        .action = GF_PHASE_CONTINUE,
+        .action = GF_CONTINUE_SEQUENCE,
     };
 }
 
@@ -275,7 +275,7 @@ static GAMEFLOW_COMMAND Phase_Demo_FadeOut(void)
         Output_FadeResetToBlack();
         return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)

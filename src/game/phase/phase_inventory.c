@@ -254,7 +254,7 @@ static GAMEFLOW_COMMAND Inv_Close(GAME_OBJECT_ID inv_chosen)
             Music_Unpause();
             Sound_UnpauseAll();
             Phase_Set(PHASE_GAME, 0);
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 
         case PASSPORT_MODE_RESTART:
             return (GAMEFLOW_COMMAND) {
@@ -310,7 +310,7 @@ static GAMEFLOW_COMMAND Inv_Close(GAME_OBJECT_ID inv_chosen)
         Music_Unpause();
         Sound_UnpauseAll();
         Phase_Set(PHASE_GAME, 0);
-        return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+        return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
     }
 }
 
@@ -621,7 +621,7 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
 
     if (motion->status == RNG_OPENING) {
         if (g_InvMode == INV_TITLE_MODE && Output_FadeIsAnimating()) {
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
         }
 
         Clock_ResetTimer(&m_DemoTimer);
@@ -638,7 +638,7 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
         }
 
         if (Output_FadeIsAnimating()) {
-            return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
         }
 
         return Inv_Close(m_InvChosen);
@@ -669,7 +669,7 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
             || (ring->type == RT_OPTION && g_InvMainObjects));
 
     if (ring->rotating) {
-        return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+        return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
     }
 
     if ((g_InvMode == INV_SAVE_MODE || g_InvMode == INV_SAVE_CRYSTAL_MODE
@@ -1056,7 +1056,7 @@ static GAMEFLOW_COMMAND Phase_Inventory_ControlFrame(void)
         Inv_Ring_RemoveAllText();
     }
 
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes)
@@ -1067,12 +1067,12 @@ static GAMEFLOW_COMMAND Phase_Inventory_Control(int32_t nframes)
     }
     for (int32_t i = 0; i < nframes; i++) {
         GAMEFLOW_COMMAND result = Phase_Inventory_ControlFrame();
-        if (result.action != GF_PHASE_CONTINUE) {
+        if (result.action != GF_CONTINUE_SEQUENCE) {
             return result;
         }
     }
 
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static void Phase_Inventory_End(void)
