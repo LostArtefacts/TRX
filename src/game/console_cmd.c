@@ -648,19 +648,15 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
 
 static COMMAND_RESULT Console_Cmd_StartDemo(const char *args)
 {
-    g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
-        .command = GF_START_DEMO,
-        .param = 0,
-    };
+    g_GameInfo.override_gf_command =
+        (GAMEFLOW_COMMAND) { .command = GF_START_DEMO };
     return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_ExitToTitle(const char *args)
 {
-    g_GameInfo.override_gf_command = (GAMEFLOW_COMMAND) {
-        .command = GF_EXIT_TO_TITLE,
-        .param = 0,
-    };
+    g_GameInfo.override_gf_command =
+        (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
     return CR_SUCCESS;
 }
 

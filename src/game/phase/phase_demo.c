@@ -230,18 +230,12 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Lara_Cheat_Control();
         if (g_LevelComplete) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) {
-                .command = GF_PHASE_CONTINUE,
-                .param = 0,
-            };
+            return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
         }
 
         if (!Phase_Demo_ProcessInput()) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) {
-                .command = GF_PHASE_CONTINUE,
-                .param = 0,
-            };
+            return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
         }
         Game_ProcessInput();
 
@@ -262,16 +256,12 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Input_Update();
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) {
-                .command = GF_PHASE_CONTINUE,
-                .param = 0,
-            };
+            return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
         }
     }
 
     return (GAMEFLOW_COMMAND) {
         .command = GF_PHASE_CONTINUE,
-        .param = 0,
     };
 }
 
@@ -283,25 +273,16 @@ static GAMEFLOW_COMMAND Phase_Demo_FadeOut(void)
     if (g_InputDB.menu_confirm || g_InputDB.menu_back
         || !Output_FadeIsAnimating()) {
         Output_FadeResetToBlack();
-        return (GAMEFLOW_COMMAND) {
-            .command = GF_EXIT_TO_TITLE,
-            .param = 0,
-        };
+        return (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
     }
-    return (GAMEFLOW_COMMAND) {
-        .command = GF_PHASE_CONTINUE,
-        .param = 0,
-    };
+    return (GAMEFLOW_COMMAND) { .command = GF_PHASE_CONTINUE };
 }
 
 static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)
 {
     switch (m_State) {
     case STATE_INVALID:
-        return (GAMEFLOW_COMMAND) {
-            .command = GF_EXIT_TO_TITLE,
-            .param = 0,
-        };
+        return (GAMEFLOW_COMMAND) { .command = GF_EXIT_TO_TITLE };
 
     case STATE_RUN:
         return Phase_Demo_Run(nframes);
@@ -311,10 +292,7 @@ static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)
     }
 
     assert(false);
-    return (GAMEFLOW_COMMAND) {
-        .command = GF_PHASE_BREAK,
-        .param = 0,
-    };
+    return (GAMEFLOW_COMMAND) { .command = GF_PHASE_BREAK };
 }
 
 static void Phase_Demo_Draw(void)

@@ -51,7 +51,7 @@ LARA_INFO g_Lara = { 0 };
 ITEM_INFO *g_LaraItem = NULL;
 CAMERA_INFO g_Camera = { 0 };
 GAME_INFO g_GameInfo = {
-    .override_gf_command = { .command = GF_PHASE_CONTINUE, .param = 0 }, 0
+    .override_gf_command = { .command = GF_PHASE_CONTINUE }, 0
 };
 int32_t g_SavedGamesCount = 0;
 int32_t g_SaveCounter = 0;
