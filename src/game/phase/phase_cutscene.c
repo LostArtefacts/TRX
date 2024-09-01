@@ -130,7 +130,7 @@ static GAMEFLOW_COMMAND Phase_Cutscene_Control(int32_t nframes)
         g_CineFrame++;
     }
 
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static void Phase_Cutscene_Draw(void)

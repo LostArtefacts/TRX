@@ -73,7 +73,7 @@ static GAMEFLOW_COMMAND Phase_Picture_Control(int32_t nframes)
         break;
     }
 
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static void Phase_Picture_Draw(void)

@@ -960,7 +960,7 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
 
 typedef enum {
     GF_PHASE_BREAK,
-    GF_PHASE_CONTINUE,
+    GF_CONTINUE_SEQUENCE,
     GF_START_GAME,
     GF_START_CINE,
     GF_START_FMV,

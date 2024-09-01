@@ -178,7 +178,7 @@ static GAMEFLOW_COMMAND Phase_Pause_Control(int32_t nframes)
     }
     }
 
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_CONTINUE };
+    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
 }
 
 static void Phase_Pause_Draw(void)
