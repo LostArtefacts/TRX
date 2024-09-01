@@ -4,6 +4,21 @@
 
 #include <stdint.h>
 
+// Status returned upon every logical frame by the control routine.
+// - Set .end = false to keep the phase loop spinning.
+// - Set .end = true to end the current phase.
+//
+// To continue executing current game sequence, .command.action member should
+// be set to GF_CONTINUE_SEQUENCE. To break out of the current sequence and
+// switch to a different game flow action, .command.action should be set to
+// the action to run.
+//
+// It does not make sense to return both .end = false and .command.
+typedef struct {
+    bool end;
+    GAMEFLOW_COMMAND command;
+} PHASE_CONTROL;
+
 typedef enum PHASE {
     PHASE_NULL,
     PHASE_GAME,
@@ -18,7 +33,7 @@ typedef enum PHASE {
 typedef struct PHASER {
     void (*start)(void *arg);
     void (*end)();
-    GAMEFLOW_COMMAND (*control)(int32_t nframes);
+    PHASE_CONTROL (*control)(int32_t nframes);
     void (*draw)(void);
     int32_t (*wait)(void);
 } PHASER;

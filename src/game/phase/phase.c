@@ -25,24 +25,24 @@ static bool m_Running = false;
 static PHASE m_PhaseToSet = PHASE_NULL;
 static void *m_PhaseToSetArg = NULL;
 
-static GAMEFLOW_COMMAND Phase_Control(int32_t nframes);
+static PHASE_CONTROL Phase_Control(int32_t nframes);
 static void Phase_Draw(void);
 static int32_t Phase_Wait(void);
 static void Phase_SetUnconditionally(const PHASE phase, void *arg);
 
-static GAMEFLOW_COMMAND Phase_Control(int32_t nframes)
+static PHASE_CONTROL Phase_Control(int32_t nframes)
 {
     if (g_GameInfo.override_gf_command.action != GF_CONTINUE_SEQUENCE) {
         const GAMEFLOW_COMMAND override = g_GameInfo.override_gf_command;
         g_GameInfo.override_gf_command =
             (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
-        return override;
+        return (PHASE_CONTROL) { .end = true, .command = override };
     }
 
     if (m_Phaser && m_Phaser->control) {
         return m_Phaser->control(nframes);
     }
-    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
+    return (PHASE_CONTROL) { .end = false };
 }
 
 static void Phase_Draw(void)
@@ -134,12 +134,13 @@ static int32_t Phase_Wait(void)
 GAMEFLOW_COMMAND Phase_Run(void)
 {
     int32_t nframes = Clock_SyncTicks();
-    GAMEFLOW_COMMAND command = { .action = GF_CONTINUE_SEQUENCE };
+    PHASE_CONTROL control = { .end = false };
+
     m_Running = true;
     LOG_DEBUG("phase start, phase=%d", m_Phase);
 
     while (1) {
-        command = Phase_Control(nframes);
+        control = Phase_Control(nframes);
 
         if (m_PhaseToSet != PHASE_NULL) {
             Interpolation_SetRate(1.0);
@@ -148,7 +149,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
-            if (command.action != GF_CONTINUE_SEQUENCE) {
+            if (control.end) {
                 Phase_Draw();
                 break;
             }
@@ -157,7 +158,7 @@ GAMEFLOW_COMMAND Phase_Run(void)
             continue;
         }
 
-        if (command.action != GF_CONTINUE_SEQUENCE) {
+        if (control.end) {
             Phase_Draw();
             break;
         }
@@ -173,13 +174,11 @@ GAMEFLOW_COMMAND Phase_Run(void)
         nframes = Phase_Wait();
     }
 
-    if (command.action == GF_PHASE_BREAK) {
-        command.action = GF_CONTINUE_SEQUENCE;
-    }
-
     m_Running = false;
     Phase_Set(PHASE_NULL, NULL);
 
-    LOG_DEBUG("phase end, action=%d, param=%d", command.action, command.param);
-    return command;
+    LOG_DEBUG(
+        "phase end, action=%d, param=%d", control.command.action,
+        control.command.param);
+    return control.command;
 }

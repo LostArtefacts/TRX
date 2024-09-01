@@ -56,9 +56,9 @@ static int32_t Phase_Demo_ChooseLevel(void);
 
 static void Phase_Demo_Start(void *arg);
 static void Phase_Demo_End(void);
-static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes);
-static GAMEFLOW_COMMAND Phase_Demo_FadeOut(void);
-static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes);
+static PHASE_CONTROL Phase_Demo_Run(int32_t nframes);
+static PHASE_CONTROL Phase_Demo_FadeOut(void);
+static PHASE_CONTROL Phase_Demo_Control(int32_t nframes);
 static void Phase_Demo_Draw(void);
 
 static bool Phase_Demo_ProcessInput(void)
@@ -221,7 +221,7 @@ static void Phase_Demo_End(void)
     g_Config.fix_bear_ai = m_oldFixBearAI;
 }
 
-static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
+static PHASE_CONTROL Phase_Demo_Run(int32_t nframes)
 {
     Interpolation_Remember();
     CLAMPG(nframes, MAX_FRAMES);
@@ -230,12 +230,12 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Lara_Cheat_Control();
         if (g_LevelComplete) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
+            goto end;
         }
 
         if (!Phase_Demo_ProcessInput()) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
+            goto end;
         }
         Game_ProcessInput();
 
@@ -256,16 +256,15 @@ static GAMEFLOW_COMMAND Phase_Demo_Run(int32_t nframes)
         Input_Update();
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
-            return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
+            goto end;
         }
     }
 
-    return (GAMEFLOW_COMMAND) {
-        .action = GF_CONTINUE_SEQUENCE,
-    };
+end:
+    return (PHASE_CONTROL) { .end = false };
 }
 
-static GAMEFLOW_COMMAND Phase_Demo_FadeOut(void)
+static PHASE_CONTROL Phase_Demo_FadeOut(void)
 {
     Text_Flash(m_DemoModeText, 0, 0);
     Input_Update();
@@ -273,16 +272,22 @@ static GAMEFLOW_COMMAND Phase_Demo_FadeOut(void)
     if (g_InputDB.menu_confirm || g_InputDB.menu_back
         || !Output_FadeIsAnimating()) {
         Output_FadeResetToBlack();
-        return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        return (PHASE_CONTROL) {
+            .end = true,
+            .command = { .action = GF_EXIT_TO_TITLE },
+        };
     }
-    return (GAMEFLOW_COMMAND) { .action = GF_CONTINUE_SEQUENCE };
+    return (PHASE_CONTROL) { .end = false };
 }
 
-static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)
+static PHASE_CONTROL Phase_Demo_Control(int32_t nframes)
 {
     switch (m_State) {
     case STATE_INVALID:
-        return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        return (PHASE_CONTROL) {
+            .end = true,
+            .command = { .action = GF_EXIT_TO_TITLE },
+        };
 
     case STATE_RUN:
         return Phase_Demo_Run(nframes);
@@ -292,7 +297,10 @@ static GAMEFLOW_COMMAND Phase_Demo_Control(int32_t nframes)
     }
 
     assert(false);
-    return (GAMEFLOW_COMMAND) { .action = GF_PHASE_BREAK };
+    return (PHASE_CONTROL) {
+        .end = true,
+        .command = { .action = GF_CONTINUE_SEQUENCE },
+    };
 }
 
 static void Phase_Demo_Draw(void)

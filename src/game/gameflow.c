@@ -1075,6 +1075,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     GAMEFLOW_COMMAND command = { .action = GF_EXIT_TO_TITLE };
+
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
@@ -1327,6 +1328,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     GAMEFLOW_COMMAND command = { .action = GF_EXIT_TO_TITLE };
+
     while (seq->type != GFS_END) {
         LOG_INFO("seq %d %d", seq->type, seq->data);
 
