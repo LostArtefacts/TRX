@@ -670,14 +670,15 @@ static COMMAND_RESULT Console_Cmd_ExitGame(const char *args)
 
 static COMMAND_RESULT Console_Cmd_LoadGame(const char *args)
 {
-    int32_t slot_num = -1;
-    if (sscanf(args, "%d", &slot_num) != 1) {
+    int32_t slot_num;
+    if (!String_ParseInteger(args, &slot_num)) {
         return CR_BAD_INVOCATION;
     }
+
     const int32_t slot_idx = slot_num - 1; // convert 1-indexing to 0-indexing
 
     if (slot_idx < 0 || slot_idx >= g_Config.maximum_save_slots) {
-        Console_Log(GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT));
+        Console_Log(GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT), slot_num);
         return CR_FAILURE;
     }
 
@@ -696,14 +697,14 @@ static COMMAND_RESULT Console_Cmd_LoadGame(const char *args)
 
 static COMMAND_RESULT Console_Cmd_SaveGame(const char *args)
 {
-    int32_t slot_num = -1;
-    if (sscanf(args, "%d", &slot_num) != 1) {
+    int32_t slot_num;
+    if (!String_ParseInteger(args, &slot_num)) {
         return CR_BAD_INVOCATION;
     }
     const int32_t slot_idx = slot_num - 1; // convert 1-indexing to 0-indexing
 
     if (slot_idx < 0 || slot_idx >= g_Config.maximum_save_slots) {
-        Console_Log(GS(OSD_SAVE_GAME_FAIL_INVALID_SLOT));
+        Console_Log(GS(OSD_SAVE_GAME_FAIL_INVALID_SLOT), slot_num);
         return CR_BAD_INVOCATION;
     }
 
@@ -800,8 +801,8 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "wireframe", .proc = Console_Cmd_Wireframe },
     { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     { .prefix = "give", .proc = Console_Cmd_GiveItem },
-    { .prefix = "set", .proc = Console_Cmd_Set },
     { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
+    { .prefix = "set", .proc = Console_Cmd_Set },
     { .prefix = "flip", .proc = Console_Cmd_FlipMap },
     { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },
     { .prefix = "kill", .proc = Console_Cmd_Kill },
