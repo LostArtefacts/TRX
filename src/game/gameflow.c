@@ -317,6 +317,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = Memory_DupStr(tmp_s);
             break;
         }
+
         case GFS_LOADING_SCREEN:
         case GFS_DISPLAY_PICTURE: {
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
@@ -345,6 +346,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = data;
             break;
         }
+
         case GFS_LEVEL_STATS: {
             int tmp =
                 json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
@@ -357,6 +359,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = (void *)(intptr_t)tmp;
             break;
         }
+
         case GFS_TOTAL_STATS: {
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
@@ -374,6 +377,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = data;
             break;
         }
+
         case GFS_EXIT_TO_TITLE:
             break;
 
@@ -390,6 +394,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = (void *)(intptr_t)tmp;
             break;
         }
+
         case GFS_SET_CAM_X:
         case GFS_SET_CAM_Y:
         case GFS_SET_CAM_Z:
@@ -405,6 +410,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = (void *)(intptr_t)tmp;
             break;
         }
+
         case GFS_FLIP_MAP:
         case GFS_REMOVE_GUNS:
         case GFS_REMOVE_SCIONS:
@@ -431,6 +437,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = give_item_data;
             break;
         }
+
         case GFS_PLAY_SYNCED_AUDIO: {
             int tmp =
                 json_object_get_int(jseq_obj, "audio_id", JSON_INVALID_NUMBER);
@@ -443,6 +450,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = (void *)(intptr_t)tmp;
             break;
         }
+
         case GFS_MESH_SWAP: {
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
@@ -477,6 +485,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = swap_data;
             break;
         }
+
         case GFS_SETUP_BACON_LARA: {
             int tmp = json_object_get_int(
                 jseq_obj, "anchor_room", JSON_INVALID_NUMBER);
@@ -495,6 +504,7 @@ static bool GameFlow_LoadLevelSequence(
             seq->data = (void *)(intptr_t)tmp;
             break;
         }
+
         default:
             if (GameFlow_IsLegacySequence(type_str)) {
                 seq->type = GFS_LEGACY;
@@ -1148,6 +1158,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_LOOP_CINE:
             if (level_type != GFL_SAVED) {
                 command = Phase_Run();
+                if (command.action != GF_CONTINUE_SEQUENCE
+                    && command.action != GF_LEVEL_COMPLETE) {
+                    return command;
+                }
             }
             break;
 
@@ -1163,6 +1177,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             };
             Phase_Set(PHASE_STATS, &phase_args);
             command = Phase_Run();
+            if (command.action != GF_CONTINUE_SEQUENCE) {
+                return command;
+            }
             break;
         }
 
@@ -1178,6 +1195,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 };
                 Phase_Set(PHASE_STATS, &phase_args);
                 command = Phase_Run();
+                if (command.action != GF_CONTINUE_SEQUENCE) {
+                    return command;
+                }
             }
             break;
 
@@ -1203,6 +1223,9 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             };
             Phase_Set(PHASE_PICTURE, &phase_arg);
             command = Phase_Run();
+            if (command.action != GF_CONTINUE_SEQUENCE) {
+                return command;
+            }
             break;
 
         case GFS_EXIT_TO_TITLE:
@@ -1364,6 +1387,9 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
         case GFS_LOOP_CINE:
             command = Phase_Run();
+            if (command.action != GF_CONTINUE_SEQUENCE) {
+                return command;
+            }
             break;
 
         case GFS_PLAY_FMV:
