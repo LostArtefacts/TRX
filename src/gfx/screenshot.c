@@ -1,6 +1,7 @@
 #include "gfx/screenshot.h"
 
 #include "global/types.h"
+#include "gfx/gl/utils.h"
 
 #include <libtrx/engine/image.h>
 #include <libtrx/memory.h>
@@ -41,6 +42,7 @@ void GFX_Screenshot_CaptureToBuffer(
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
+    GFX_GL_CheckError();
 
     GLint x = viewport[0];
     GLint y = viewport[1];
@@ -54,10 +56,14 @@ void GFX_Screenshot_CaptureToBuffer(
     GLint pitch = *out_width * depth;
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    GFX_GL_CheckError();
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    GFX_GL_CheckError();
 
     glReadBuffer(GL_BACK);
+    GFX_GL_CheckError();
     glReadPixels(x, y, *out_width, *out_height, format, type, out_buffer);
+    GFX_GL_CheckError();
 
     if (vflip) {
         uint8_t *scanline = Memory_Alloc(pitch);
