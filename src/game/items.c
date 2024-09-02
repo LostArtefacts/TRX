@@ -73,31 +73,9 @@ void Item_Control(void)
 void Item_Kill(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
 
-    int16_t linknum = g_NextItemActive;
-    if (linknum == item_num) {
-        g_NextItemActive = item->next_active;
-    } else {
-        for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_active) {
-            if (g_Items[linknum].next_active == item_num) {
-                g_Items[linknum].next_active = item->next_active;
-                break;
-            }
-        }
-    }
-
-    linknum = r->item_number;
-    if (linknum == item_num) {
-        r->item_number = item->next_item;
-    } else {
-        for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_item) {
-            if (g_Items[linknum].next_item == item_num) {
-                g_Items[linknum].next_item = item->next_item;
-                break;
-            }
-        }
-    }
+    Item_RemoveActive(item_num);
+    Item_RemoveDrawn(item_num);
 
     if (item == g_Lara.target) {
         g_Lara.target = NULL;
@@ -187,41 +165,45 @@ void Item_Initialise(int16_t item_num)
 
 void Item_RemoveActive(int16_t item_num)
 {
-    if (!g_Items[item_num].active) {
-        Shell_ExitSystem("Item already deactive");
-    }
-
-    g_Items[item_num].active = 0;
-
-    int16_t linknum = g_NextItemActive;
-    if (linknum == item_num) {
-        g_NextItemActive = g_Items[item_num].next_active;
+    ITEM_INFO *const item = &g_Items[item_num];
+    if (!item->active) {
         return;
     }
 
-    for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_active) {
-        if (g_Items[linknum].next_active == item_num) {
-            g_Items[linknum].next_active = g_Items[item_num].next_active;
-            break;
+    item->active = 0;
+
+    int16_t link_num = g_NextItemActive;
+    if (link_num == item_num) {
+        g_NextItemActive = item->next_active;
+        return;
+    }
+
+    while (link_num != NO_ITEM) {
+        if (g_Items[link_num].next_active == item_num) {
+            g_Items[link_num].next_active = item->next_active;
+            return;
         }
+        link_num = g_Items[link_num].next_active;
     }
 }
 
 void Item_RemoveDrawn(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    ITEM_INFO *const item = &g_Items[item_num];
+    ROOM_INFO *const r = &g_RoomInfo[item->room_number];
 
-    int16_t linknum = r->item_number;
-    if (linknum == item_num) {
+    int16_t link_num = r->item_number;
+    if (link_num == item_num) {
         r->item_number = item->next_item;
-    } else {
-        for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_item) {
-            if (g_Items[linknum].next_item == item_num) {
-                g_Items[linknum].next_item = item->next_item;
-                break;
-            }
+        return;
+    }
+
+    while (link_num != NO_ITEM) {
+        if (g_Items[link_num].next_item == item_num) {
+            g_Items[link_num].next_item = item->next_item;
+            return;
         }
+        link_num = g_Items[link_num].next_item;
     }
 }
 
