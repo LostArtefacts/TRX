@@ -67,7 +67,7 @@ static const ITEM_NAME m_ItemNames[] = {
     { O_WOLF, "^wolf$" },
     { O_BEAR, "^bear$" },
     { O_BAT, "^bat$" },
-    { O_CROCODILE, "^crocodile^" },
+    { O_CROCODILE, "^crocodile$" },
     { O_ALLIGATOR, "^alligator$" },
     { O_LION, "^lion$" },
     { O_LIONESS, "^lion(ess)?$" },
