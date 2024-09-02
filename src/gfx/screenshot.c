@@ -1,7 +1,7 @@
 #include "gfx/screenshot.h"
 
-#include "global/types.h"
 #include "gfx/gl/utils.h"
+#include "global/types.h"
 
 #include <libtrx/engine/image.h>
 #include <libtrx/memory.h>
