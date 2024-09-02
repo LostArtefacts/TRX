@@ -53,6 +53,7 @@ static COMMAND_RESULT Console_Cmd_LoadGame(const char *args);
 static COMMAND_RESULT Console_Cmd_SaveGame(const char *args);
 static COMMAND_RESULT Console_Cmd_StartDemo(const char *args);
 static COMMAND_RESULT Console_Cmd_ExitToTitle(const char *args);
+static COMMAND_RESULT Console_Cmd_ExitGame(const char *args);
 static COMMAND_RESULT Console_Cmd_EndLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_StartLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_Abortion(const char *args);
@@ -660,6 +661,13 @@ static COMMAND_RESULT Console_Cmd_ExitToTitle(const char *args)
     return CR_SUCCESS;
 }
 
+static COMMAND_RESULT Console_Cmd_ExitGame(const char *args)
+{
+    g_GameInfo.override_gf_command =
+        (GAMEFLOW_COMMAND) { .action = GF_EXIT_GAME };
+    return CR_SUCCESS;
+}
+
 static COMMAND_RESULT Console_Cmd_LoadGame(const char *args)
 {
     int32_t slot_num = -1;
@@ -804,6 +812,7 @@ CONSOLE_COMMAND g_ConsoleCommands[] = {
     { .prefix = "save", .proc = Console_Cmd_SaveGame },
     { .prefix = "demo", .proc = Console_Cmd_StartDemo },
     { .prefix = "title", .proc = Console_Cmd_ExitToTitle },
+    { .prefix = "exit", .proc = Console_Cmd_ExitGame },
     { .prefix = "abortion", .proc = Console_Cmd_Abortion },
     { .prefix = "natlastinks", .proc = Console_Cmd_Abortion },
     { .prefix = NULL, .proc = NULL },

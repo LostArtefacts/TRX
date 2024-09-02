@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- added `/exit` command (#1462)
 - fixed reopening the compass not resetting its needle (#1472, regression from 4.0)
 - fixed holstering pistols hiding the gun meshes 1 frame too early (#1449, regression from 0.6)
 - fixed Lara's sliding animation sometimes being interrupted by a stumble (#1452, regression from 4.3)

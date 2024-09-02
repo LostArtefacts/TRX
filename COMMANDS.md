@@ -70,6 +70,9 @@ Currently supported commands:
 - `/title`  
   Exits the game to main screen.
 
+- `/exit`  
+  Closes the game.
+
 - `/speed`  
 - `/speed {num}`  
   Retrieves or sets current game speed.
