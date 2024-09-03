@@ -254,6 +254,7 @@ static PHASE_CONTROL Phase_Demo_Run(int32_t nframes)
         // Discard demo input; check for debounced real keypresses
         g_Input = m_OldInput;
         Input_Update();
+        Shell_ProcessInput();
         if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
             goto end;
