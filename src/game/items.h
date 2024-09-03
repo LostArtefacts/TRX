@@ -38,7 +38,6 @@ bool Item_MovePosition(
     int32_t velocity);
 void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll);
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
-bool Item_Teleport(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 int32_t Item_GetDistance(const ITEM_INFO *item, const XYZ_32 *target);
 
 bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index);

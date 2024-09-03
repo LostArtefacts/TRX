@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "game/anim.h"
-#include "game/camera.h"
 #include "game/carrier.h"
 #include "game/interpolation.h"
 #include "game/room.h"
@@ -246,32 +245,6 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
     item->room_number = room_num;
     item->next_item = r->item_number;
     r->item_number = item_num;
-}
-
-bool Item_Teleport(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
-{
-    int16_t room_num = Room_GetIndexFromPos(x, y, z);
-    if (room_num == NO_ROOM) {
-        return false;
-    }
-    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
-    const int16_t height = Room_GetHeight(sector, x, y, z);
-    if (height != NO_HEIGHT) {
-        item->pos.x = x;
-        item->pos.y = y;
-        item->pos.z = z;
-        item->floor = height;
-        if (item->room_number != room_num) {
-            const int16_t item_num = item - g_Items;
-            Item_NewRoom(item_num, room_num);
-        }
-
-        if (item->object_number == O_LARA) {
-            Camera_ResetPosition();
-        }
-        return true;
-    }
-    return false;
 }
 
 void Item_UpdateRoom(ITEM_INFO *item, int32_t height)

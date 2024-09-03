@@ -49,3 +49,14 @@ int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio)
 
     return result;
 }
+
+int32_t XYZ_32_GetDistance(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
+{
+    // clang-format off
+    return Math_Sqrt(
+        SQUARE(pos1->x - pos2->x) +
+        SQUARE(pos1->y - pos2->y) +
+        SQUARE(pos1->z - pos2->z)
+    );
+    // clang-format on
+}
