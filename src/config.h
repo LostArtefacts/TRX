@@ -117,6 +117,7 @@ typedef struct {
         bool enable_fps_counter;
         float anisotropy_filter;
         int32_t turbo_speed;
+        bool pretty_pixels;
     } rendering;
 
     struct {

@@ -14,6 +14,8 @@
 - fixed console commands causing improper ring shutdown with selected inventory item (#1460, regression from 3.0)
 - fixed console input immediately ending demo (#1480, regression from 4.1)
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
+- improved appearance of textures around edges when bilinear filter is off (#1483)
+  Since this removes the seams on pushblocks, this was made optional.
 - improved level load times
 - improved logs module names readability
 - improved crash debug information on Windows

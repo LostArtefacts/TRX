@@ -63,6 +63,14 @@ static int32_t S_Output_VisibleZClip(
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
 
+static inline float S_Output_GetUV(const uint16_t uv)
+{
+    return g_Config.rendering.pretty_pixels
+            && g_Config.rendering.texture_filter == GFX_TF_NN
+        ? uv / 256.0f
+        : ((uv & 0xFF00) + 127) / 256.0f;
+}
+
 static void S_Output_ReleaseTextures(void)
 {
     if (!m_Renderer3D) {
@@ -962,10 +970,10 @@ void S_Output_DrawTexturedTriangle(
             vertices[i].z = src_vbuf[i]->zv * 0.0001f;
 
             vertices[i].w = 65536.0f / src_vbuf[i]->zv;
-            vertices[i].s = (((src_uv[i]->u & 0xFF00) + 127) / 256.0f)
-                * (vertices[i].w / 256.0f);
-            vertices[i].t = (((src_uv[i]->v & 0xFF00) + 127) / 256.0f)
-                * (vertices[i].w / 256.0f);
+            vertices[i].s =
+                S_Output_GetUV(src_uv[i]->u) * (vertices[i].w / 256.0f);
+            vertices[i].t =
+                S_Output_GetUV(src_uv[i]->v) * (vertices[i].w / 256.0f);
 
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
@@ -990,8 +998,8 @@ void S_Output_DrawTexturedTriangle(
             points[i].xs = src_vbuf[i]->xs;
             points[i].ys = src_vbuf[i]->ys;
             points[i].g = src_vbuf[i]->g;
-            points[i].u = (((src_uv[i]->u & 0xFF00) + 127) / 256.0f);
-            points[i].v = (((src_uv[i]->v & 0xFF00) + 127) / 256.0f);
+            points[i].u = S_Output_GetUV(src_uv[i]->u);
+            points[i].v = S_Output_GetUV(src_uv[i]->v);
         }
 
         vertex_count = S_Output_ZedClipper(vertex_count, points, vertices);
@@ -1068,10 +1076,8 @@ void S_Output_DrawTexturedQuad(
         vertices[i].z = src_vbuf[i]->zv * 0.0001f;
 
         vertices[i].w = 65536.0f / src_vbuf[i]->zv;
-        vertices[i].s = (((src_uv[i]->u & 0xFF00) + 127) / 256.0f)
-            * (vertices[i].w / 256.0f);
-        vertices[i].t = (((src_uv[i]->v & 0xFF00) + 127) / 256.0f)
-            * (vertices[i].w / 256.0f);
+        vertices[i].s = S_Output_GetUV(src_uv[i]->u) * (vertices[i].w / 256.0f);
+        vertices[i].t = S_Output_GetUV(src_uv[i]->v) * (vertices[i].w / 256.0f);
 
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;

@@ -49,9 +49,10 @@ typedef enum GRAPHICS_OPTION_NAME {
     OPTION_RENDER_MODE,
     OPTION_RESOLUTION,
     OPTION_PERSPECTIVE,
+    OPTION_PRETTY_PIXELS,
     OPTION_NUMBER_OF,
     OPTION_MIN = OPTION_FPS,
-    OPTION_MAX = OPTION_PERSPECTIVE,
+    OPTION_MAX = OPTION_PRETTY_PIXELS,
 } GRAPHICS_OPTION_NAME;
 
 typedef struct GRAPHICS_OPTION_ROW {
@@ -83,6 +84,7 @@ static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
     { OPTION_RENDER_MODE, GS_DETAIL_RENDER_MODE, GS_DETAIL_STRING_FMT },
     { OPTION_RESOLUTION, GS_DETAIL_RESOLUTION, GS_DETAIL_RESOLUTION_FMT },
     { OPTION_PERSPECTIVE, GS_DETAIL_PERSPECTIVE, GS_MISC_ON },
+    { OPTION_PRETTY_PIXELS, GS_DETAIL_PRETTY_PIXELS, GS_MISC_ON },
     // end
     { OPTION_NUMBER_OF, 0, 0 },
 };
@@ -110,13 +112,13 @@ static int16_t Option_Graphics_PlaceColumns(bool create);
 
 static void Option_Graphics_InitMenu(void)
 {
-    m_GraphicsMenu.first_option = &m_GfxOptionRows[OPTION_FPS];
-    m_GraphicsMenu.last_option = &m_GfxOptionRows[OPTION_PERSPECTIVE];
-    m_GraphicsMenu.cur_option = &m_GfxOptionRows[OPTION_FPS];
+    m_GraphicsMenu.first_option = &m_GfxOptionRows[OPTION_MIN];
+    m_GraphicsMenu.last_option = &m_GfxOptionRows[OPTION_MAX];
+    m_GraphicsMenu.cur_option = &m_GfxOptionRows[OPTION_MIN];
     m_GraphicsMenu.row_num = 0;
     m_GraphicsMenu.num_vis_options = 0;
-    m_GraphicsMenu.first_visible = &m_GfxOptionRows[OPTION_FPS];
-    m_GraphicsMenu.last_visible = &m_GfxOptionRows[OPTION_FPS];
+    m_GraphicsMenu.first_visible = &m_GfxOptionRows[OPTION_MIN];
+    m_GraphicsMenu.last_visible = &m_GfxOptionRows[OPTION_MIN];
 }
 
 static void Option_Graphics_UpdateMenuVisible(void)
@@ -132,9 +134,9 @@ static void Option_Graphics_UpdateMenuVisible(void)
         visible_lines = 16;
     }
     m_GraphicsMenu.num_vis_options = MIN(OPTION_NUMBER_OF, visible_lines);
-    m_GraphicsMenu.first_visible = &m_GfxOptionRows[OPTION_FPS];
+    m_GraphicsMenu.first_visible = &m_GfxOptionRows[OPTION_MIN];
     m_GraphicsMenu.last_visible =
-        &m_GfxOptionRows[OPTION_FPS] + m_GraphicsMenu.num_vis_options - 1;
+        &m_GfxOptionRows[OPTION_MIN] + m_GraphicsMenu.num_vis_options - 1;
 }
 
 static void Option_Graphics_Reinitialize(GRAPHICS_OPTION_NAME starting_option)
@@ -296,6 +298,10 @@ static void Option_Graphics_UpdateArrows(
         m_HideArrowLeft = !g_Config.rendering.enable_perspective_filter;
         m_HideArrowRight = g_Config.rendering.enable_perspective_filter;
         break;
+    case OPTION_PRETTY_PIXELS:
+        m_HideArrowLeft = !g_Config.rendering.pretty_pixels;
+        m_HideArrowRight = g_Config.rendering.pretty_pixels;
+        break;
 
     case OPTION_NUMBER_OF:
     default:
@@ -435,6 +441,12 @@ static void Option_Graphics_ChangeTextOption(
         break;
     }
 
+    case OPTION_PRETTY_PIXELS: {
+        bool is_enabled = g_Config.rendering.pretty_pixels;
+        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
+        break;
+    }
+
     case OPTION_NUMBER_OF:
     default:
         break;
@@ -538,6 +550,13 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             }
             break;
 
+        case OPTION_PRETTY_PIXELS:
+            if (!g_Config.rendering.pretty_pixels) {
+                g_Config.rendering.pretty_pixels = true;
+                reset = OPTION_PRETTY_PIXELS;
+            }
+            break;
+
         case OPTION_NUMBER_OF:
         default:
             break;
@@ -615,6 +634,13 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.enable_perspective_filter) {
                 g_Config.rendering.enable_perspective_filter = false;
                 reset = OPTION_PERSPECTIVE;
+            }
+            break;
+
+        case OPTION_PRETTY_PIXELS:
+            if (g_Config.rendering.pretty_pixels) {
+                g_Config.rendering.pretty_pixels = false;
+                reset = OPTION_PRETTY_PIXELS;
             }
             break;
 
