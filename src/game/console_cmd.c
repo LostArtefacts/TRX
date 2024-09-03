@@ -597,7 +597,7 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
                 break;
             }
 
-            struct ITEM_INFO *item = &g_Items[best_item_num];
+            ITEM_INFO *const item = &g_Items[best_item_num];
             const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
             found |= Lara_Cheat_KillEnemy(best_item_num);
             if (distance >= WALL_L) {

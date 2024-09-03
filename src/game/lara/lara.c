@@ -711,7 +711,7 @@ bool Lara_MovePosition(ITEM_INFO *item, XYZ_32 *vec)
 
 void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
 {
-    struct ITEM_INFO *lara_item = g_LaraItem;
+    ITEM_INFO *const lara_item = g_LaraItem;
     int32_t x = lara_item->pos.x - item->pos.x;
     int32_t z = lara_item->pos.z - item->pos.z;
     const int32_t c = Math_Cos(item->rot.y);

@@ -8,6 +8,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/lot.h"
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -353,7 +354,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
 
 bool Lara_Cheat_KillEnemy(const int16_t item_num)
 {
-    struct ITEM_INFO *item = &g_Items[item_num];
+    ITEM_INFO *const item = &g_Items[item_num];
     if (!Object_IsObjectType(item->object_number, g_EnemyObjects)
         || item->hit_points <= 0) {
         return false;
@@ -362,6 +363,8 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     Effect_ExplodingDeath(item_num, -1, 0);
     Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
     Item_Kill(item_num);
+    LOT_DisableBaddieAI(item_num);
+    item->flags |= IF_ONESHOT;
     Carrier_TestItemDrops(item_num);
     return true;
 }

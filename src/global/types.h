@@ -1280,7 +1280,7 @@ typedef struct CARRIED_ITEM {
     struct CARRIED_ITEM *next_item;
 } CARRIED_ITEM;
 
-typedef struct ITEM_INFO {
+typedef struct {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
