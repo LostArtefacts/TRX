@@ -170,37 +170,38 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
         GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
 
         const ITEM_INFO *best_item = NULL;
-        for (int i = 0; i < match_count; i++) {
-            const GAME_OBJECT_ID obj_id = matching_objs[i];
-            const bool is_pickup = Object_IsObjectType(obj_id, g_PickupObjects);
+        int32_t best_distance = INT32_MAX;
 
-            bool matched = false;
-            int32_t best_distance = INT32_MAX;
-            for (int16_t item_num = 0; item_num < Item_GetTotalCount();
-                 item_num++) {
-                const ITEM_INFO *const item = &g_Items[item_num];
-                if (item->object_number != obj_id
-                    || (item->flags & IF_KILLED_ITEM)
-                    || (is_pickup
-                        && (item->status == IS_INVISIBLE
-                            || item->status == IS_DEACTIVATED))) {
-                    continue;
-                }
-
-                const int32_t distance =
-                    Item_GetDistance(item, &g_LaraItem->pos);
-                if (distance >= best_distance) {
-                    continue;
-                }
-
-                best_distance = distance;
-                best_item = item;
-                matched = true;
+        for (int16_t item_num = 0; item_num < Item_GetTotalCount();
+             item_num++) {
+            const ITEM_INFO *const item = &g_Items[item_num];
+            const bool is_pickup =
+                Object_IsObjectType(item->object_number, g_PickupObjects);
+            if (is_pickup
+                && (item->status == IS_INVISIBLE
+                    || item->status == IS_DEACTIVATED)) {
+                continue;
             }
 
-            if (matched) {
-                // abort for the first matching item
-                break;
+            if (item->flags & IF_KILLED_ITEM) {
+                continue;
+            }
+
+            bool is_matched = false;
+            for (int32_t i = 0; i < match_count; i++) {
+                if (matching_objs[i] == item->object_number) {
+                    is_matched = true;
+                    break;
+                }
+            }
+            if (!is_matched) {
+                continue;
+            }
+
+            const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
+            if (distance < best_distance) {
+                best_distance = distance;
+                best_item = item;
             }
         }
 
