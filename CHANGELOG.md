@@ -10,6 +10,7 @@
 - fixed `/flip` console command misreporting an already enabled flipmap as off (regression from 4.0)
 - fixed `/kill` console command not fully killing enemies (#1482, regression from 3.0)
 - fixed `/tp` console command not always picking the closest item (#1486, regression from 4.1)
+- fixed `/tp` console command reporting teleport fails as success (#1484, regression from 4.1)
 - fixed console commands causing improper ring shutdown with selected inventory item (#1460, regression from 3.0)
 - fixed console input immediately ending demo (#1480, regression from 4.1)
 - improved level load times

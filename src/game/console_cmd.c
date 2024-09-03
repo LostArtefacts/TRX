@@ -206,10 +206,13 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
         }
 
         if (best_item != NULL) {
-            Item_Teleport(
-                g_LaraItem, best_item->pos.x, best_item->pos.y,
-                best_item->pos.z);
-            Console_Log(GS(OSD_POS_SET_ITEM), args);
+            if (Item_Teleport(
+                    g_LaraItem, best_item->pos.x, best_item->pos.y,
+                    best_item->pos.z)) {
+                Console_Log(GS(OSD_POS_SET_ITEM), args);
+            } else {
+                Console_Log(GS(OSD_POS_SET_ITEM_FAIL), args);
+            }
             return CR_SUCCESS;
         } else {
             Console_Log(GS(OSD_POS_SET_ITEM_FAIL), args);
