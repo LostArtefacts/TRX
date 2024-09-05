@@ -1,43 +1,10 @@
 {
-  "Categories": {
-    "controls": "Controles",
-    "gameplay_modifications": "Modificaciones de jugabilidad",
-    "gameplay_fixes": "Correcciones de jugabilidad",
-    "gameplay_options": "Opciones de jugabilidad",
-    "graphics": "Gráficos",
-    "sound": "Audio",
-    "ui": "Interfaz"
-  },
   "Controls": {
-    "checkbox_enabled": "Habilitado",
-    "command_about": "_Acerca de",
-    "command_close": "_Cerrar",
-    "command_exit": "Salir",
-    "command_github": "_GitHub",
-    "command_launch_game": "_Iniciar juego",
-    "command_launch_ub": "Abrir As_untos Pendientes",
-    "command_open": "_Abrir",
-    "command_reload": "_Recargar",
-    "command_restore": "_Restaurar los valores predeterminados",
-    "command_save": "_Guardar",
-    "command_save_as": "Guardar _como...",
+    "window_title_main": "Herramienta de configuración TR1X",
+    "command_launch_gold": "Abrir As_untos Pendientes",
     "file_dialog_filter": "Archivos de configuración de TR1X",
-    "label_about_details": "Visita la página de TR1X GitHub para obtener más información.",
-    "label_no_file": "Ningún archivo seleccionado",
-    "label_saved": "Guardado",
-    "label_unsaved": "No guardado",
-    "link_github": "Ir a GitHub",
-    "menu_file": "_Archivo",
-    "menu_help": "_Ayuda",
-    "menu_tools": "_Herramientas",
-    "msgbox_unsaved_changes": "¿Deseas guardar los cambios que has realizado?",
-    "msgbox_unsaved_changes_reload": "¿Seguro que deseas recargar y perder los cambios realizados?",
-    "spinner_decrease": "Reducir valor",
-    "spinner_increase": "Aumentar valor",
-    "spinner_msg_comparison_failed": "El valor de entrada debe estar entre {0} y {1}",
-    "spinner_msg_invalid_number": "La cadena de entrada no es un número válido",
     "window_title_about": "Acerca de la herramienta de configuración de TR1X",
-    "window_title_main": "Herramienta de configuración TR1X"
+    "label_about_details": "Visita la página de TR1X GitHub para obtener más información."
   },
   "Enums": {
     "airbar_mode": {
@@ -97,7 +64,7 @@
       "full_no_ambient": "Completo pero sin ambiente",
       "quiet_no_ambient": "Tranquilo pero sin ambientet",
       "none": "Ninguno"
-      }
+    }
   },
   "Properties": {
     "airbar_color": {

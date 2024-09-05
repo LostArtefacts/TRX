@@ -1,17 +1,13 @@
-﻿using System.Globalization;
-using System.Windows;
-using System.Windows.Markup;
+﻿using System.Windows;
+using TRX_ConfigToolLib;
 
 namespace TR1X_ConfigTool;
 
 public partial class App : Application
 {
-    static App()
+    public App()
     {
-        FrameworkElement.LanguageProperty.OverrideMetadata
-        (
-            typeof(FrameworkElement),
-            new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.Name))
-        );
+        Current.MainWindow = new TRXConfigWindow();
+        Current.MainWindow.Show();
     }
 }
