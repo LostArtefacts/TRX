@@ -2,12 +2,18 @@
 set -x
 set -e
 
-cd /app/tools/config/
-echo $HOME
-
 export DOTNET_CLI_HOME="/tmp/DOTNET_CLI_HOME"
-
+echo $HOME
 shopt -s globstar
+
+# Build the common lib DLL
+cd /app/subprojects/libtrx/tools/config/
+rm -rf **/bin **/obj
+dotnet restore -p:EnableWindowsTargeting=true
+dotnet publish -c Release -p:EnableWindowsTargeting=true
+
+# Build the main executable
+cd /app/tools/config/
 rm -rf **/bin **/obj **/out/*
 dotnet restore
 dotnet publish -c Release -o out

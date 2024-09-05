@@ -28,6 +28,7 @@ Release/
 .vs/
 *.vcxproj
 *.filters
+.dotnet/
 
 # libtrx artefacts
 subprojects/packagecache/
