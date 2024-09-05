@@ -30,19 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Lang\en-GB.json" />
-    <None Remove="Resources\Lang\es.json" />
-    <None Remove="Resources\Lang\fr.json" />
-    <None Remove="Resources\Lang\it.json" />
-    <EmbeddedResource Include="Resources\Lang\en-GB.json" />
-    <EmbeddedResource Include="Resources\Lang\es.json" />
-    <EmbeddedResource Include="Resources\Lang\fr.json" />
-    <EmbeddedResource Include="Resources\Lang\it.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\arrow-down.png" />
-    <None Remove="Resources\arrow-up.png" />
     <None Remove="Resources\Graphics\graphic1.jpg" />
     <None Remove="Resources\Graphics\graphic2.jpg" />
     <None Remove="Resources\Graphics\graphic3.jpg" />
@@ -50,23 +37,18 @@
     <None Remove="Resources\Graphics\graphic5.jpg" />
     <None Remove="Resources\Graphics\graphic6.jpg" />
     <None Remove="Resources\Graphics\graphic7.jpg" />
+    <None Remove="Resources\const.json" />
     <None Remove="Resources\icon.ico" />
     <None Remove="Resources\Lang\en.json" />
+    <None Remove="Resources\Lang\en-GB.json" />
+    <None Remove="Resources\Lang\es.json" />
+    <None Remove="Resources\Lang\fr.json" />
+    <None Remove="Resources\Lang\it.json" />
     <None Remove="Resources\specification.json" />
     <None Remove="Resources\TR1X.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Page Remove="Resources\styles.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\arrow-down.png" />
-    <Resource Include="Resources\arrow-up.png" />
     <Resource Include="Resources\Graphics\graphic1.jpg" />
     <Resource Include="Resources\Graphics\graphic2.jpg" />
     <Resource Include="Resources\Graphics\graphic3.jpg" />
@@ -75,11 +57,17 @@
     <Resource Include="Resources\Graphics\graphic6.jpg" />
     <Resource Include="Resources\Graphics\graphic7.jpg" />
     <Resource Include="Resources\icon.ico" />
-    <EmbeddedResource Include="Resources\Lang\en.json" />
-    <EmbeddedResource Include="Resources\specification.json" />
-    <Resource Include="Resources\styles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
     <Resource Include="Resources\TR1X.png" />
+    <EmbeddedResource Include="Resources\const.json" />
+    <EmbeddedResource Include="Resources\Lang\en.json" />
+    <EmbeddedResource Include="Resources\Lang\en-GB.json" />
+    <EmbeddedResource Include="Resources\Lang\es.json" />
+    <EmbeddedResource Include="Resources\Lang\fr.json" />
+    <EmbeddedResource Include="Resources\Lang\it.json" />
+    <EmbeddedResource Include="Resources\specification.json" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Reference Include="TRX_ConfigToolLib">
+      <HintPath>..\..\..\subprojects\libtrx\tools\config\TRX_ConfigToolLib\bin\Release\publish\TRX_ConfigToolLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

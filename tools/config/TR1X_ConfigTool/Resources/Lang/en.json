@@ -1,34 +1,10 @@
 {
   "Controls": {
     "window_title_main": "TR1X Config Tool",
-    "menu_file": "_File",
-    "command_open": "_Open",
-    "command_reload": "_Reload",
-    "command_save": "_Save",
-    "command_save_as": "Save _As...",
-    "command_launch_game": "_Launch Game",
-    "command_launch_ub": "Launch _Unfinished Business",
-    "command_exit": "E_xit",
-    "menu_tools": "_Tools",
-    "command_restore": "_Restore Defaults",
-    "menu_help": "_Help",
-    "command_github": "_GitHub",
-    "command_about": "_About",
+    "command_launch_gold": "Launch _Unfinished Business",
     "file_dialog_filter": "TR1X Config Files",
-    "checkbox_enabled": "Enabled",
-    "spinner_msg_invalid_number": "The input string is not a valid number",
-    "spinner_msg_comparison_failed": "The input value must be between {0} and {1}",
-    "spinner_increase": "Increase value",
-    "spinner_decrease": "Decrease value",
-    "label_no_file": "No file selected",
-    "label_saved": "Saved",
-    "label_unsaved": "Unsaved",
-    "command_close": "_Close",
-    "msgbox_unsaved_changes": "Do you want to save the changes you have made?",
-    "msgbox_unsaved_changes_reload": "Are you sure you want to reload and lose the changes you have made?",
     "window_title_about": "About TR1X Config Tool",
-    "label_about_details": "Visit the TR1X GitHub page for further information.",
-    "link_github": "Go to GitHub"
+    "label_about_details": "Visit the TR1X GitHub page for further information."
   },
   "Enums": {
     "airbar_mode": {
@@ -89,15 +65,6 @@
     "quiet_no_ambient": "Quiet but no ambient",
     "none": "None"
     }
-  },
-  "Categories": {
-    "controls": "Controls",
-    "gameplay_fixes": "Gameplay fixes",
-    "gameplay_modifications": "Gameplay modifications",
-    "gameplay_options": "Gameplay options",
-    "graphics": "Graphics",
-    "sound": "Sound",
-    "ui": "UI"
   },
   "Properties": {
     "enable_tr3_sidesteps": {
