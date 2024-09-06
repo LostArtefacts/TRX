@@ -164,12 +164,12 @@ void LOT_CreateZone(ITEM_INFO *item)
     item->box_num = r->sectors[z_sector + x_sector * r->z_size].box;
 
     int16_t zone_num = zone[item->box_num];
-    int16_t flip_number = flip[item->box_num];
+    int16_t flip_num = flip[item->box_num];
 
     creature->LOT.zone_count = 0;
     BOX_NODE *node = creature->LOT.node;
     for (int i = 0; i < g_NumberBoxes; i++) {
-        if (zone[i] == zone_num || flip[i] == flip_number) {
+        if (zone[i] == zone_num || flip[i] == flip_num) {
             node->box_num = i;
             node++;
             creature->LOT.zone_count++;

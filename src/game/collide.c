@@ -336,7 +336,7 @@ bool Collide_CollideStaticObjects(
         MESH_INFO *mesh = r->mesh;
 
         for (int j = 0; j < r->num_meshes; j++, mesh++) {
-            STATIC_INFO *sinfo = &g_StaticObjects[mesh->static_number];
+            STATIC_INFO *sinfo = &g_StaticObjects[mesh->static_num];
             if (sinfo->flags & 1) {
                 continue;
             }

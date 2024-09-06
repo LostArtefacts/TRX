@@ -1232,7 +1232,7 @@ typedef struct MESH_INFO {
         PHD_ANGLE y;
     } rot;
     uint16_t shade;
-    uint16_t static_number;
+    uint16_t static_num;
 } MESH_INFO;
 
 typedef struct ROOM_INFO {
@@ -1271,7 +1271,7 @@ typedef enum DROP_STATUS {
 
 typedef struct CARRIED_ITEM {
     GAME_OBJECT_ID object_id;
-    int16_t spawn_number;
+    int16_t spawn_num;
     XYZ_32 pos;
     XYZ_16 rot;
     int16_t room_num;

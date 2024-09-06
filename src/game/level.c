@@ -245,7 +245,7 @@ static void Level_LoadRooms(VFILE *file)
                 mesh->pos.z = VFile_ReadS32(file);
                 mesh->rot.y = VFile_ReadS16(file);
                 mesh->shade = VFile_ReadU16(file);
-                mesh->static_number = VFile_ReadU16(file);
+                mesh->static_num = VFile_ReadU16(file);
             }
         }
 

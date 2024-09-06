@@ -68,7 +68,7 @@ void Carrier_InitialiseLevel(int32_t level_num)
         CARRIED_ITEM *drop = item->carried_item;
         for (int i = 0; i < data->count; i++) {
             drop->object_id = data->object_ids[i];
-            drop->spawn_number = NO_ITEM;
+            drop->spawn_num = NO_ITEM;
             drop->room_num = NO_ROOM;
             drop->fall_speed = 0;
 
@@ -137,7 +137,7 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
     // This allows us to save drops as still being carried to allow accurate
     // placement again in Carrier_TestItemDrops on load.
     if (item->status == DS_DROPPED) {
-        ITEM_INFO *pickup = &g_Items[item->spawn_number];
+        ITEM_INFO *pickup = &g_Items[item->spawn_num];
         return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_CARRIED;
     } else if (item->status == DS_FALLING) {
         return DS_CARRIED;
@@ -170,17 +170,17 @@ void Carrier_TestItemDrops(int16_t item_num)
             object_id = Object_GetCognate(object_id, g_GunAmmoObjectMap);
         }
 
-        item->spawn_number = Item_Spawn(carrier, object_id);
+        item->spawn_num = Item_Spawn(carrier, object_id);
         item->status = DS_FALLING;
         m_AnimatingCount++;
 
         if (item->room_num != NO_ROOM) {
             // Handle reloading a save with a falling or landed item.
-            ITEM_INFO *pickup = &g_Items[item->spawn_number];
+            ITEM_INFO *pickup = &g_Items[item->spawn_num];
             pickup->pos = item->pos;
             pickup->fall_speed = item->fall_speed;
             if (pickup->room_num != item->room_num) {
-                Item_NewRoom(item->spawn_number, item->room_num);
+                Item_NewRoom(item->spawn_num, item->room_num);
             }
         }
 
@@ -238,7 +238,7 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         return;
     }
 
-    ITEM_INFO *const pickup = &g_Items[item->spawn_number];
+    ITEM_INFO *const pickup = &g_Items[item->spawn_num];
     int16_t room_num = pickup->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
@@ -265,7 +265,7 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
     }
 
     if (room_num != pickup->room_num) {
-        Item_NewRoom(item->spawn_number, room_num);
+        Item_NewRoom(item->spawn_num, room_num);
     }
 
     // Track animating status in the carrier for saving/loading.
