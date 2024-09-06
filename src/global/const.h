@@ -1,5 +1,6 @@
 #pragma once
 
+#include <libtrx/game/const.h>
 #include <libtrx/utils.h>
 
 #define PHD_ONE 0x10000
@@ -120,7 +121,6 @@
 #define COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 #define MAX_ELEVATION (85 * PHD_DEGREE) // = 15470
 #define DEFAULT_RADIUS 10
-#define DONT_TARGET (-16384)
 #define UNIT_SHADOW 256
 #define NO_HEIGHT (-32512)
 #define MAX_HEIGHT 32000

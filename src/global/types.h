@@ -2,6 +2,9 @@
 
 #include "global/const.h"
 
+#include <libtrx/game/items.h>
+#include <libtrx/game/math.h>
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -22,203 +25,6 @@ typedef enum CAMERA_TYPE {
     CAM_CINEMATIC = 4,
     CAM_HEAVY = 5,
 } CAMERA_TYPE;
-
-typedef enum GAME_OBJECT_ID {
-    NO_OBJECT = -1,
-    O_LARA = 0,
-    O_PISTOL_ANIM = 1,
-    O_SHOTGUN_ANIM = 2,
-    O_MAGNUM_ANIM = 3,
-    O_UZI_ANIM = 4,
-    O_LARA_EXTRA = 5,
-    O_BACON_LARA = 6,
-    O_WOLF = 7,
-    O_BEAR = 8,
-    O_BAT = 9,
-    O_CROCODILE = 10,
-    O_ALLIGATOR = 11,
-    O_LION = 12,
-    O_LIONESS = 13,
-    O_PUMA = 14,
-    O_APE = 15,
-    O_RAT = 16,
-    O_VOLE = 17,
-    O_TREX = 18,
-    O_RAPTOR = 19,
-    O_WARRIOR1 = 20, // flying mutant
-    O_WARRIOR2 = 21,
-    O_WARRIOR3 = 22,
-    O_CENTAUR = 23,
-    O_MUMMY = 24,
-    O_DINO_WARRIOR = 25,
-    O_FISH = 26,
-    O_LARSON = 27,
-    O_PIERRE = 28,
-    O_SKATEBOARD = 29,
-    O_SKATEKID = 30,
-    O_COWBOY = 31,
-    O_BALDY = 32,
-    O_NATLA = 33,
-    O_TORSO = 34, // a.k.a. Abortion, Adam or Evil Natla
-    O_FALLING_BLOCK = 35,
-    O_PENDULUM = 36,
-    O_SPIKES = 37,
-    O_ROLLING_BALL = 38,
-    O_DARTS = 39,
-    O_DART_EMITTER = 40,
-    O_DRAW_BRIDGE = 41,
-    O_TEETH_TRAP = 42,
-    O_DAMOCLES_SWORD = 43,
-    O_THORS_HANDLE = 44,
-    O_THORS_HEAD = 45,
-    O_LIGHTNING_EMITTER = 46,
-    O_MOVING_BAR = 47,
-    O_MOVABLE_BLOCK = 48,
-    O_MOVABLE_BLOCK2 = 49,
-    O_MOVABLE_BLOCK3 = 50,
-    O_MOVABLE_BLOCK4 = 51,
-    O_SLIDING_PILLAR = 52,
-    O_FALLING_CEILING1 = 53,
-    O_FALLING_CEILING2 = 54,
-    O_SWITCH_TYPE1 = 55,
-    O_SWITCH_TYPE2 = 56,
-    O_DOOR_TYPE1 = 57,
-    O_DOOR_TYPE2 = 58,
-    O_DOOR_TYPE3 = 59,
-    O_DOOR_TYPE4 = 60,
-    O_DOOR_TYPE5 = 61,
-    O_DOOR_TYPE6 = 62,
-    O_DOOR_TYPE7 = 63,
-    O_DOOR_TYPE8 = 64,
-    O_TRAPDOOR = 65,
-    O_TRAPDOOR2 = 66,
-    O_BIGTRAPDOOR = 67,
-    O_BRIDGE_FLAT = 68,
-    O_BRIDGE_TILT1 = 69,
-    O_BRIDGE_TILT2 = 70,
-    O_PASSPORT_OPTION = 71,
-    O_MAP_OPTION = 72,
-    O_PHOTO_OPTION = 73,
-    O_COG_1 = 74,
-    O_COG_2 = 75,
-    O_COG_3 = 76,
-    O_PLAYER_1 = 77,
-    O_PLAYER_2 = 78,
-    O_PLAYER_3 = 79,
-    O_PLAYER_4 = 80,
-    O_PASSPORT_CLOSED = 81,
-    O_MAP_CLOSED = 82,
-    O_SAVEGAME_ITEM = 83,
-    O_PISTOL_ITEM = 84,
-    O_SHOTGUN_ITEM = 85,
-    O_MAGNUM_ITEM = 86,
-    O_UZI_ITEM = 87,
-    O_PISTOL_AMMO_ITEM = 88,
-    O_SG_AMMO_ITEM = 89,
-    O_MAG_AMMO_ITEM = 90,
-    O_UZI_AMMO_ITEM = 91,
-    O_EXPLOSIVE_ITEM = 92,
-    O_MEDI_ITEM = 93,
-    O_BIGMEDI_ITEM = 94,
-    O_DETAIL_OPTION = 95,
-    O_SOUND_OPTION = 96,
-    O_CONTROL_OPTION = 97,
-    O_GAMMA_OPTION = 98,
-    O_PISTOL_OPTION = 99,
-    O_SHOTGUN_OPTION = 100,
-    O_MAGNUM_OPTION = 101,
-    O_UZI_OPTION = 102,
-    O_PISTOL_AMMO_OPTION = 103,
-    O_SG_AMMO_OPTION = 104,
-    O_MAG_AMMO_OPTION = 105,
-    O_UZI_AMMO_OPTION = 106,
-    O_EXPLOSIVE_OPTION = 107,
-    O_MEDI_OPTION = 108,
-    O_BIGMEDI_OPTION = 109,
-    O_PUZZLE_ITEM1 = 110,
-    O_PUZZLE_ITEM2 = 111,
-    O_PUZZLE_ITEM3 = 112,
-    O_PUZZLE_ITEM4 = 113,
-    O_PUZZLE_OPTION1 = 114,
-    O_PUZZLE_OPTION2 = 115,
-    O_PUZZLE_OPTION3 = 116,
-    O_PUZZLE_OPTION4 = 117,
-    O_PUZZLE_HOLE1 = 118,
-    O_PUZZLE_HOLE2 = 119,
-    O_PUZZLE_HOLE3 = 120,
-    O_PUZZLE_HOLE4 = 121,
-    O_PUZZLE_DONE1 = 122,
-    O_PUZZLE_DONE2 = 123,
-    O_PUZZLE_DONE3 = 124,
-    O_PUZZLE_DONE4 = 125,
-    O_LEADBAR_ITEM = 126,
-    O_LEADBAR_OPTION = 127,
-    O_MIDAS_TOUCH = 128,
-    O_KEY_ITEM1 = 129,
-    O_KEY_ITEM2 = 130,
-    O_KEY_ITEM3 = 131,
-    O_KEY_ITEM4 = 132,
-    O_KEY_OPTION1 = 133,
-    O_KEY_OPTION2 = 134,
-    O_KEY_OPTION3 = 135,
-    O_KEY_OPTION4 = 136,
-    O_KEY_HOLE1 = 137,
-    O_KEY_HOLE2 = 138,
-    O_KEY_HOLE3 = 139,
-    O_KEY_HOLE4 = 140,
-    O_PICKUP_ITEM1 = 141,
-    O_PICKUP_ITEM2 = 142,
-    O_SCION_ITEM = 143,
-    O_SCION_ITEM2 = 144,
-    O_SCION_ITEM3 = 145,
-    O_SCION_ITEM4 = 146,
-    O_SCION_HOLDER = 147,
-    O_PICKUP_OPTION1 = 148,
-    O_PICKUP_OPTION2 = 149,
-    O_SCION_OPTION = 150,
-    O_EXPLOSION1 = 151,
-    O_EXPLOSION2 = 152,
-    O_SPLASH1 = 153,
-    O_SPLASH2 = 154,
-    O_BUBBLES1 = 155,
-    O_BUBBLES2 = 156,
-    O_BUBBLE_EMITTER = 157,
-    O_BLOOD1 = 158,
-    O_BLOOD2 = 159,
-    O_DART_EFFECT = 160,
-    O_STATUE = 161,
-    O_PORTACABIN = 162,
-    O_PODS = 163,
-    O_RICOCHET1 = 164,
-    O_TWINKLE = 165,
-    O_GUN_FLASH = 166,
-    O_DUST = 167,
-    O_BODY_PART = 168,
-    O_CAMERA_TARGET = 169,
-    O_WATERFALL = 170,
-    O_MISSILE1 = 171,
-    O_MISSILE2 = 172,
-    O_MISSILE3 = 173,
-    O_MISSILE4 = 174,
-    O_MISSILE5 = 175,
-    O_LAVA = 176,
-    O_LAVA_EMITTER = 177,
-    O_FLAME = 178,
-    O_FLAME_EMITTER = 179,
-    O_LAVA_WEDGE = 180,
-    O_BIG_POD = 181,
-    O_BOAT = 182,
-    O_EARTHQUAKE = 183,
-    O_SKYBOX = 184,
-    O_TEMP6 = 185,
-    O_TEMP7 = 186,
-    O_TEMP8 = 187,
-    O_TEMP9 = 188,
-    O_TEMP10 = 189,
-    O_HAIR = O_TEMP10,
-    O_ALPHABET = 190,
-    O_NUMBER_OF = 191,
-} GAME_OBJECT_ID;
 
 typedef enum GAME_STATIC_ID {
     STATIC_PLANT0 = 0,
@@ -1080,18 +886,6 @@ typedef struct RGBA_8888 {
     uint8_t a;
 } RGBA_8888;
 
-typedef struct XYZ_16 {
-    int16_t x;
-    int16_t y;
-    int16_t z;
-} XYZ_16;
-
-typedef struct XYZ_32 {
-    int32_t x;
-    int32_t y;
-    int32_t z;
-} XYZ_32;
-
 typedef struct MATRIX {
     int32_t _00;
     int32_t _01;
@@ -1261,64 +1055,6 @@ typedef struct ROOM_INFO {
     int16_t flipped_room;
     uint16_t flags;
 } ROOM_INFO;
-
-typedef enum DROP_STATUS {
-    DS_CARRIED = 0,
-    DS_FALLING = 1,
-    DS_DROPPED = 2,
-    DS_COLLECTED = 3,
-} DROP_STATUS;
-
-typedef struct CARRIED_ITEM {
-    GAME_OBJECT_ID object_id;
-    int16_t spawn_num;
-    XYZ_32 pos;
-    XYZ_16 rot;
-    int16_t room_num;
-    int16_t fall_speed;
-    DROP_STATUS status;
-    struct CARRIED_ITEM *next_item;
-} CARRIED_ITEM;
-
-typedef struct {
-    int32_t floor;
-    uint32_t touch_bits;
-    uint32_t mesh_bits;
-    GAME_OBJECT_ID object_id;
-    int16_t current_anim_state;
-    int16_t goal_anim_state;
-    int16_t required_anim_state;
-    int16_t anim_num;
-    int16_t frame_num;
-    int16_t room_num;
-    int16_t next_item;
-    int16_t next_active;
-    int16_t speed;
-    int16_t fall_speed;
-    int16_t hit_points;
-    int16_t box_num;
-    int16_t timer;
-    int16_t flags;
-    int16_t shade;
-    void *data;
-    void *priv;
-    CARRIED_ITEM *carried_item;
-    XYZ_32 pos;
-    XYZ_16 rot;
-    uint16_t active : 1;
-    uint16_t status : 2;
-    uint16_t gravity : 1;
-    uint16_t hit_status : 1;
-    uint16_t collidable : 1;
-    uint16_t looked_at : 1;
-
-    struct {
-        struct {
-            XYZ_32 pos;
-            XYZ_16 rot;
-        } result, prev;
-    } interp;
-} ITEM_INFO;
 
 typedef struct CINE_CAMERA {
     int16_t tx;

@@ -2,20 +2,21 @@ project(
   'TR1X',
   'c',
   default_options: [
-    'c_std=c11',
+    'c_std=c2x',
     'warning_level=2',
   ],
 )
 
-trx = subproject('libtrx')
+trx = subproject('libtrx', default_options: {'tr_version': '1'})
 c_compiler = meson.get_compiler('c')
 
 build_opts = [
   '-Wno-unused',
   '-DMESON_BUILD',
+  '-DTR_VERSION=1',
   '-fno-omit-frame-pointer',
   '-ffile-prefix-map=../../src/=',
-]
+] + trx.get_variable('defines')
 
 add_project_arguments(build_opts, language: 'c')
 
