@@ -16,7 +16,7 @@
 
 void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
 {
-    int16_t ani = g_Lara.left_arm.frame_number;
+    int16_t ani = g_Lara.left_arm.frame_num;
     ani++;
 
     if (!Anim_TestAbsFrameRange(ani, LF_SG_DRAW_START, LF_SG_RECOIL_START)) {
@@ -28,13 +28,13 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
         Gun_Rifle_Ready(weapon_type);
         ani = LF_SG_AIM_START;
     }
-    g_Lara.left_arm.frame_number = ani;
-    g_Lara.right_arm.frame_number = ani;
+    g_Lara.left_arm.frame_num = ani;
+    g_Lara.right_arm.frame_num = ani;
 }
 
 void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
 {
-    int16_t ani = ani = g_Lara.left_arm.frame_number;
+    int16_t ani = ani = g_Lara.left_arm.frame_num;
 
     if (Anim_TestAbsFrameEqual(ani, LF_SG_AIM_START)) {
         ani = LF_SG_UNDRAW_START;
@@ -78,8 +78,8 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
     g_Lara.head_rot.y = 0;
     g_Lara.torso_rot.x += g_Lara.torso_rot.x / -2;
     g_Lara.torso_rot.y += g_Lara.torso_rot.y / -2;
-    g_Lara.right_arm.frame_number = ani;
-    g_Lara.left_arm.frame_number = ani;
+    g_Lara.right_arm.frame_num = ani;
+    g_Lara.left_arm.frame_num = ani;
 }
 
 void Gun_Rifle_DrawMeshes(const LARA_GUN_TYPE weapon_type)
@@ -142,7 +142,7 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
 {
-    int16_t ani = g_Lara.left_arm.frame_number;
+    int16_t ani = g_Lara.left_arm.frame_num;
     if (g_Lara.left_arm.lock) {
         if (Anim_TestAbsFrameRange(ani, LF_SG_AIM_START, LF_SG_AIM_END)) {
             ani++;
@@ -235,8 +235,8 @@ void Gun_Rifle_Animate(const LARA_GUN_TYPE weapon_type)
             }
         }
     }
-    g_Lara.right_arm.frame_number = ani;
-    g_Lara.left_arm.frame_number = ani;
+    g_Lara.right_arm.frame_num = ani;
+    g_Lara.left_arm.frame_num = ani;
 }
 
 void Gun_Rifle_Fire(const LARA_GUN_TYPE weapon_type)

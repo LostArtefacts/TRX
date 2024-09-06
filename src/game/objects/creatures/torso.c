@@ -161,7 +161,7 @@ void Torso_Control(int16_t item_num)
 
         case TORSO_TURN_L:
             if (!torso->flags) {
-                torso->flags = item->frame_number;
+                torso->flags = item->frame_num;
             } else if (
                 Item_TestAnimEqual(item, TORSO_TURN_L_ANIM)
                 && Item_TestFrameRange(
@@ -176,7 +176,7 @@ void Torso_Control(int16_t item_num)
 
         case TORSO_TURN_R:
             if (!torso->flags) {
-                torso->flags = item->frame_number;
+                torso->flags = item->frame_num;
             } else if (
                 Item_TestAnimEqual(item, TORSO_TURN_R_ANIM)
                 && Item_TestFrameRange(

@@ -316,8 +316,7 @@ void Object_DrawSpriteItem(ITEM_INFO *item)
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z,
-        g_Objects[item->object_id].mesh_index - item->frame_number,
-        item->shade);
+        g_Objects[item->object_id].mesh_index - item->frame_num, item->shade);
 }
 
 void Object_DrawPickupItem(ITEM_INFO *item)
@@ -330,7 +329,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     // Convert item to menu display item.
     int16_t item_num_option = Inv_GetItemOption(item->object_id);
     // Save the frame number.
-    int16_t old_frame_number = item->frame_number;
+    int16_t old_frame_num = item->frame_num;
     // Modify item to be the anim for inv item and animation 0.
     Item_SwitchToObjAnim(item, 0, 0, item_num_option);
 
@@ -339,7 +338,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     const FRAME_INFO *frame = g_Anims[item->anim_number].frame_ptr;
 
     // Restore the old frame number in case we need to get the sprite again.
-    item->frame_number = old_frame_number;
+    item->frame_num = old_frame_num;
 
     // Fall back to normal sprite rendering if not found.
     if (object->nmeshes < 0) {
@@ -367,7 +366,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         // First get the sprite that was to be used,
 
         int16_t spr_num =
-            g_Objects[item->object_id].mesh_index - item->frame_number;
+            g_Objects[item->object_id].mesh_index - item->frame_num;
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[spr_num];
 
         // and get the animation bounding box, which is not the mesh one.

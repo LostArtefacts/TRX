@@ -60,7 +60,7 @@ void Dart_Control(int16_t item_num)
             fx->pos.z = old_z;
             fx->speed = 0;
             fx->counter = 6;
-            fx->frame_number = -3 * Random_GetControl() / 0x8000;
+            fx->frame_num = -3 * Random_GetControl() / 0x8000;
             fx->object_id = O_RICOCHET1;
         }
     }
@@ -78,8 +78,8 @@ void DartEffect_Control(int16_t fx_num)
     fx->counter++;
     if (fx->counter >= 3) {
         fx->counter = 0;
-        fx->frame_number--;
-        if (fx->frame_number <= g_Objects[fx->object_id].nmeshes) {
+        fx->frame_num--;
+        if (fx->frame_num <= g_Objects[fx->object_id].nmeshes) {
             Effect_Kill(fx_num);
         }
     }
@@ -145,7 +145,7 @@ void DartEmitter_Control(int16_t item_num)
                 fx->pos = dart->pos;
                 fx->rot = dart->rot;
                 fx->speed = 0;
-                fx->frame_number = 0;
+                fx->frame_num = 0;
                 fx->counter = 0;
                 fx->object_id = O_DART_EFFECT;
                 Sound_Effect(SFX_DARTS, &fx->pos, SPM_NORMAL);

@@ -44,13 +44,13 @@ void Missile_Control(int16_t fx_num)
     if (fx->pos.y >= height || fx->pos.y <= ceiling) {
         if (fx->object_id == O_MISSILE2) {
             fx->object_id = O_RICOCHET1;
-            fx->frame_number = -Random_GetControl() / 11000;
+            fx->frame_num = -Random_GetControl() / 11000;
             fx->speed = 0;
             fx->counter = 6;
             Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
         } else {
             fx->object_id = O_EXPLOSION1;
-            fx->frame_number = 0;
+            fx->frame_num = 0;
             fx->speed = 0;
             fx->counter = 0;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
@@ -91,7 +91,7 @@ void Missile_Control(int16_t fx_num)
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
     }
 
-    fx->frame_number = 0;
+    fx->frame_num = 0;
     fx->rot.y = g_LaraItem->rot.y;
     fx->speed = g_LaraItem->speed;
     fx->counter = 0;

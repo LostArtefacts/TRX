@@ -130,8 +130,7 @@ void Effect_Draw(const int16_t fxnum)
     if (object->nmeshes < 0) {
         Output_DrawSprite(
             fx->interp.result.pos.x, fx->interp.result.pos.y,
-            fx->interp.result.pos.z, object->mesh_index - fx->frame_number,
-            4096);
+            fx->interp.result.pos.z, object->mesh_index - fx->frame_num, 4096);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs(
@@ -149,7 +148,7 @@ void Effect_Draw(const int16_t fxnum)
                 Output_CalculateLight(
                     fx->interp.result.pos.x, fx->interp.result.pos.y,
                     fx->interp.result.pos.z, fx->room_number);
-                Output_DrawPolygons(g_Meshes[fx->frame_number], -1);
+                Output_DrawPolygons(g_Meshes[fx->frame_num], -1);
             }
         }
         Matrix_Pop();

@@ -329,12 +329,12 @@ void NatlaGun_Control(int16_t fx_num)
     FX_INFO *fx = &g_Effects[fx_num];
     OBJECT_INFO *object = &g_Objects[fx->object_id];
 
-    fx->frame_number--;
-    if (fx->frame_number <= object->nmeshes) {
+    fx->frame_num--;
+    if (fx->frame_num <= object->nmeshes) {
         Effect_Kill(fx_num);
     }
 
-    if (fx->frame_number == -1) {
+    if (fx->frame_num == -1) {
         return;
     }
 
@@ -358,7 +358,7 @@ void NatlaGun_Control(int16_t fx_num)
         newfx->rot.y = fx->rot.y;
         newfx->room_number = room_num;
         newfx->speed = fx->speed;
-        newfx->frame_number = 0;
+        newfx->frame_num = 0;
         newfx->object_id = O_MISSILE1;
     }
 }

@@ -297,7 +297,7 @@ void Alligator_Control(int16_t item_num)
         break;
 
     case ALLIGATOR_ATTACK:
-        if (item->frame_number
+        if (item->frame_num
             == (g_Config.fix_alligator_ai
                     ? ALLIGATOR_BITE_AF
                     : g_Anims[item->anim_number].frame_base)) {

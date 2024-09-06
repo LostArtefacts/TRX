@@ -16,8 +16,8 @@ void Splash_Setup(OBJECT_INFO *obj)
 void Splash_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
-    fx->frame_number--;
-    if (fx->frame_number <= g_Objects[fx->object_id].nmeshes) {
+    fx->frame_num--;
+    if (fx->frame_num <= g_Objects[fx->object_id].nmeshes) {
         Effect_Kill(fx_num);
         return;
     }
@@ -44,7 +44,7 @@ void Splash_Spawn(ITEM_INFO *item)
             fx->pos.z = item->pos.z;
             fx->rot.y = PHD_180 + 2 * Random_GetDraw();
             fx->object_id = O_SPLASH1;
-            fx->frame_number = 0;
+            fx->frame_num = 0;
             fx->speed = Random_GetDraw() / 256;
         }
     }

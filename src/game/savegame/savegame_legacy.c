@@ -150,7 +150,7 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
             Savegame_Legacy_Read(
                 &tmp_item.required_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.anim_number, sizeof(int16_t));
-            Savegame_Legacy_Read(&tmp_item.frame_number, sizeof(int16_t));
+            Savegame_Legacy_Read(&tmp_item.frame_num, sizeof(int16_t));
         }
         if (obj->save_hitpoints) {
             Savegame_Legacy_Read(&tmp_item.hit_points, sizeof(int16_t));
@@ -277,7 +277,7 @@ static void Savegame_Legacy_WriteArm(LARA_ARM *arm)
     const int32_t frame_base =
         level_info->anim_frame_offsets[arm->frame_base - g_AnimFrames];
     Savegame_Legacy_Write(&frame_base, sizeof(int32_t));
-    Savegame_Legacy_Write(&arm->frame_number, sizeof(int16_t));
+    Savegame_Legacy_Write(&arm->frame_num, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->lock, sizeof(int16_t));
     Savegame_Legacy_Write(&arm->rot.y, sizeof(PHD_ANGLE));
     Savegame_Legacy_Write(&arm->rot.x, sizeof(PHD_ANGLE));
@@ -378,7 +378,7 @@ static void Savegame_Legacy_ReadArm(LARA_ARM *arm)
     // frame_base is superfluous
     Savegame_Legacy_Skip(sizeof(int32_t));
 
-    Savegame_Legacy_Read(&arm->frame_number, sizeof(int16_t));
+    Savegame_Legacy_Read(&arm->frame_num, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->lock, sizeof(int16_t));
     Savegame_Legacy_Read(&arm->rot.y, sizeof(PHD_ANGLE));
     Savegame_Legacy_Read(&arm->rot.x, sizeof(PHD_ANGLE));
@@ -590,7 +590,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&item->required_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&item->anim_number, sizeof(int16_t));
-            Savegame_Legacy_Read(&item->frame_number, sizeof(int16_t));
+            Savegame_Legacy_Read(&item->frame_num, sizeof(int16_t));
         }
 
         if (obj->save_hitpoints) {
@@ -765,7 +765,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Write(&item->goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Write(&item->required_anim_state, sizeof(int16_t));
             Savegame_Legacy_Write(&item->anim_number, sizeof(int16_t));
-            Savegame_Legacy_Write(&item->frame_number, sizeof(int16_t));
+            Savegame_Legacy_Write(&item->frame_num, sizeof(int16_t));
         }
 
         if (obj->save_hitpoints) {

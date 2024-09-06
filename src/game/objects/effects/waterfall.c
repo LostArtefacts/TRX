@@ -40,7 +40,7 @@ void Waterfall_Control(int16_t item_num)
                 + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
             fx->pos.y = item->pos.y;
             fx->speed = 0;
-            fx->frame_number = 0;
+            fx->frame_num = 0;
             fx->object_id = O_SPLASH1;
         }
     }

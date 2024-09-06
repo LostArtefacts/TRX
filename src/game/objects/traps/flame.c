@@ -27,9 +27,9 @@ void Flame_Control(int16_t fx_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
 
-    fx->frame_number--;
-    if (fx->frame_number <= g_Objects[O_FLAME].nmeshes) {
-        fx->frame_number = 0;
+    fx->frame_num--;
+    if (fx->frame_num <= g_Objects[O_FLAME].nmeshes) {
+        fx->frame_num = 0;
     }
 
     if (fx->counter < 0) {
@@ -87,7 +87,7 @@ void Flame_Control(int16_t fx_num)
             fx_num = Effect_Create(g_LaraItem->room_number);
             if (fx_num != NO_ITEM) {
                 fx = &g_Effects[fx_num];
-                fx->frame_number = 0;
+                fx->frame_num = 0;
                 fx->object_id = O_FLAME;
                 fx->counter = -1;
             }
@@ -113,7 +113,7 @@ void FlameEmitter_Control(int16_t item_num)
                 fx->pos.x = item->pos.x;
                 fx->pos.y = item->pos.y;
                 fx->pos.z = item->pos.z;
-                fx->frame_number = 0;
+                fx->frame_num = 0;
                 fx->object_id = O_FLAME;
                 fx->counter = 0;
             }

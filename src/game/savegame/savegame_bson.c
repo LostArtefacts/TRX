@@ -538,8 +538,8 @@ static bool Savegame_BSON_LoadItems(
                 item_obj, "required_anim", item->required_anim_state);
             item->anim_number =
                 json_object_get_int(item_obj, "anim_num", item->anim_number);
-            item->frame_number =
-                json_object_get_int(item_obj, "frame_num", item->frame_number);
+            item->frame_num =
+                json_object_get_int(item_obj, "frame_num", item->frame_num);
         }
 
         if (obj->save_hitpoints) {
@@ -672,7 +672,7 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             json_object_get_int(fx_obj, "object_number", 0);
         int16_t speed = json_object_get_int(fx_obj, "speed", 0);
         int16_t fall_speed = json_object_get_int(fx_obj, "fall_speed", 0);
-        int16_t frame_number = json_object_get_int(fx_obj, "frame_number", 0);
+        int16_t frame_num = json_object_get_int(fx_obj, "frame_number", 0);
         int16_t counter = json_object_get_int(fx_obj, "counter", 0);
         int16_t shade = json_object_get_int(fx_obj, "shade", 0);
 
@@ -685,7 +685,7 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             fx->object_id = object_id;
             fx->speed = speed;
             fx->fall_speed = fall_speed;
-            fx->frame_number = frame_number;
+            fx->frame_num = frame_num;
             fx->counter = counter;
             fx->shade = shade;
         }
@@ -702,8 +702,7 @@ static bool Savegame_BSON_LoadArm(struct json_object_s *arm_obj, LARA_ARM *arm)
         return false;
     }
 
-    arm->frame_number =
-        json_object_get_int(arm_obj, "frame_num", arm->frame_number);
+    arm->frame_num = json_object_get_int(arm_obj, "frame_num", arm->frame_num);
     arm->lock = json_object_get_int(arm_obj, "lock", arm->lock);
     arm->rot.x = json_object_get_int(arm_obj, "x_rot", arm->rot.x);
     arm->rot.y = json_object_get_int(arm_obj, "y_rot", arm->rot.y);
@@ -1068,7 +1067,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             json_object_append_int(
                 item_obj, "required_anim", item->required_anim_state);
             json_object_append_int(item_obj, "anim_num", item->anim_number);
-            json_object_append_int(item_obj, "frame_num", item->frame_number);
+            json_object_append_int(item_obj, "frame_num", item->frame_num);
         }
 
         if (obj->save_hitpoints) {
@@ -1152,7 +1151,7 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
         json_object_append_int(fx_obj, "object_number", fx->object_id);
         json_object_append_int(fx_obj, "speed", fx->speed);
         json_object_append_int(fx_obj, "fall_speed", fx->fall_speed);
-        json_object_append_int(fx_obj, "frame_number", fx->frame_number);
+        json_object_append_int(fx_obj, "frame_number", fx->frame_num);
         json_object_append_int(fx_obj, "counter", fx->counter);
         json_object_append_int(fx_obj, "shade", fx->shade);
         json_array_append_object(fx_arr, fx_obj);
@@ -1165,7 +1164,7 @@ static struct json_object_s *Savegame_BSON_DumpArm(LARA_ARM *arm)
 {
     assert(arm);
     struct json_object_s *arm_obj = json_object_new();
-    json_object_append_int(arm_obj, "frame_num", arm->frame_number);
+    json_object_append_int(arm_obj, "frame_num", arm->frame_num);
     json_object_append_int(arm_obj, "lock", arm->lock);
     json_object_append_int(arm_obj, "x_rot", arm->rot.x);
     json_object_append_int(arm_obj, "y_rot", arm->rot.y);

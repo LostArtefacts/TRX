@@ -565,9 +565,9 @@ void Item_SwitchToObjAnim(
 {
     item->anim_number = g_Objects[object_id].anim_index + anim_index;
     if (frame < 0) {
-        item->frame_number = g_Anims[item->anim_number].frame_end + frame + 1;
+        item->frame_num = g_Anims[item->anim_number].frame_end + frame + 1;
     } else {
-        item->frame_number = g_Anims[item->anim_number].frame_base + frame;
+        item->frame_num = g_Anims[item->anim_number].frame_base + frame;
     }
 }
 
@@ -578,7 +578,7 @@ void Item_Animate(ITEM_INFO *item)
 
     ANIM_STRUCT *anim = &g_Anims[item->anim_number];
 
-    item->frame_number++;
+    item->frame_num++;
 
     if (anim->number_changes > 0) {
         if (Item_GetAnimChange(item, anim)) {
@@ -591,7 +591,7 @@ void Item_Animate(ITEM_INFO *item)
         }
     }
 
-    if (item->frame_number > anim->frame_end) {
+    if (item->frame_num > anim->frame_end) {
         if (anim->number_commands > 0) {
             int16_t *command = &g_AnimCommands[anim->command_index];
             for (int i = 0; i < anim->number_commands; i++) {
@@ -621,7 +621,7 @@ void Item_Animate(ITEM_INFO *item)
         }
 
         item->anim_number = anim->jump_anim_num;
-        item->frame_number = anim->jump_frame_num;
+        item->frame_num = anim->jump_frame_num;
 
         anim = &g_Anims[item->anim_number];
         item->current_anim_state = anim->current_anim_state;
@@ -650,7 +650,7 @@ void Item_Animate(ITEM_INFO *item)
                 break;
 
             case AC_EFFECT:
-                if (item->frame_number == command[0]) {
+                if (item->frame_num == command[0]) {
                     g_EffectRoutines[command[1]](item);
                 }
                 command += 2;
@@ -662,8 +662,7 @@ void Item_Animate(ITEM_INFO *item)
     if (!item->gravity_status) {
         int32_t speed = anim->velocity;
         if (anim->acceleration) {
-            speed +=
-                anim->acceleration * (item->frame_number - anim->frame_base);
+            speed += anim->acceleration * (item->frame_num - anim->frame_base);
         }
         item->speed = speed >> 16;
     } else {
@@ -693,7 +692,7 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
                         range->end_frame
                             - g_Anims[item->anim_number].frame_base)) {
                     item->anim_number = range->link_anim_num;
-                    item->frame_number = range->link_frame_num;
+                    item->frame_num = range->link_frame_num;
                     return true;
                 }
             }
@@ -705,7 +704,7 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
 
 void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags)
 {
-    if (item->frame_number != command[0]) {
+    if (item->frame_num != command[0]) {
         return;
     }
 
@@ -786,7 +785,7 @@ int32_t Item_GetFrames(
 {
     const ANIM_STRUCT *anim = &g_Anims[item->anim_number];
 
-    const int32_t cur_frame_num = item->frame_number - anim->frame_base;
+    const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
     const int32_t key_frame_span = anim->interpolation;
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
@@ -846,12 +845,12 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
 bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
 {
     return Anim_TestAbsFrameEqual(
-        item->frame_number, g_Anims[item->anim_number].frame_base + frame);
+        item->frame_num, g_Anims[item->anim_number].frame_base + frame);
 }
 
 bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
 {
     return Anim_TestAbsFrameRange(
-        item->frame_number, g_Anims[item->anim_number].frame_base + start,
+        item->frame_num, g_Anims[item->anim_number].frame_base + start,
         g_Anims[item->anim_number].frame_base + end);
 }

@@ -679,7 +679,7 @@ void Lara_State_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-    int frm = item->frame_number - g_Anims[item->anim_number].frame_base;
+    int frm = item->frame_num - g_Anims[item->anim_number].frame_base;
     switch (frm) {
     case 5:
         g_Lara.mesh_effects |= (1 << LM_FOOT_L);

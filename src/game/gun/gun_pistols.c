@@ -13,7 +13,7 @@
 
 void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
 {
-    int16_t ani = g_Lara.left_arm.frame_number;
+    int16_t ani = g_Lara.left_arm.frame_num;
     ani++;
 
     if (!Anim_TestAbsFrameRange(ani, LF_G_UNDRAW_START, LF_G_DRAW_END)) {
@@ -26,13 +26,13 @@ void Gun_Pistols_Draw(const LARA_GUN_TYPE weapon_type)
         ani = LF_G_AIM_START;
     }
 
-    g_Lara.left_arm.frame_number = ani;
-    g_Lara.right_arm.frame_number = ani;
+    g_Lara.left_arm.frame_num = ani;
+    g_Lara.right_arm.frame_num = ani;
 }
 
 void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
 {
-    int16_t anil = g_Lara.left_arm.frame_number;
+    int16_t anil = g_Lara.left_arm.frame_num;
     if (Anim_TestAbsFrameRange(anil, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anil = LF_G_AIM_END;
     } else if (Anim_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
@@ -50,9 +50,9 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     } else if (Anim_TestAbsFrameRange(anil, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anil--;
     }
-    g_Lara.left_arm.frame_number = anil;
+    g_Lara.left_arm.frame_num = anil;
 
-    int16_t anir = g_Lara.right_arm.frame_number;
+    int16_t anir = g_Lara.right_arm.frame_num;
     if (Anim_TestAbsFrameRange(anir, LF_G_RECOIL_START, LF_G_RECOIL_END)) {
         anir = LF_G_AIM_END;
     } else if (Anim_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
@@ -70,14 +70,14 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     } else if (Anim_TestAbsFrameRange(anir, LF_G_UNDRAW_BEND, LF_G_DRAW_END)) {
         anir--;
     }
-    g_Lara.right_arm.frame_number = anir;
+    g_Lara.right_arm.frame_num = anir;
 
     if (Anim_TestAbsFrameEqual(anil, LF_G_UNDRAW_START)
         && Anim_TestAbsFrameEqual(anir, LF_G_UNDRAW_START)) {
         g_Lara.left_arm.lock = 0;
         g_Lara.right_arm.lock = 0;
-        g_Lara.left_arm.frame_number = LF_G_AIM_START;
-        g_Lara.right_arm.frame_number = LF_G_AIM_START;
+        g_Lara.left_arm.frame_num = LF_G_AIM_START;
+        g_Lara.right_arm.frame_num = LF_G_AIM_START;
         g_Lara.gun_status = LGS_ARMLESS;
         g_Lara.target = NULL;
     }
@@ -178,7 +178,7 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
     PHD_ANGLE angles[2];
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
 
-    int16_t anir = g_Lara.right_arm.frame_number;
+    int16_t anir = g_Lara.right_arm.frame_num;
     if (g_Lara.right_arm.lock || (g_Input.action && !g_Lara.target)) {
         if (Anim_TestAbsFrameRange(anir, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
             anir++;
@@ -206,9 +206,9 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
     } else if (Anim_TestAbsFrameRange(anir, LF_G_AIM_BEND, LF_G_AIM_END)) {
         anir--;
     }
-    g_Lara.right_arm.frame_number = anir;
+    g_Lara.right_arm.frame_num = anir;
 
-    int16_t anil = g_Lara.left_arm.frame_number;
+    int16_t anil = g_Lara.left_arm.frame_num;
     if (g_Lara.left_arm.lock || (g_Input.action && !g_Lara.target)) {
         if (Anim_TestAbsFrameRange(anil, LF_G_AIM_START, LF_G_AIM_EXTEND)) {
             anil++;
@@ -236,5 +236,5 @@ void Gun_Pistols_Animate(const LARA_GUN_TYPE weapon_type)
     } else if (Anim_TestAbsFrameRange(anil, LF_G_AIM_BEND, LF_G_AIM_END)) {
         anil--;
     }
-    g_Lara.left_arm.frame_number = anil;
+    g_Lara.left_arm.frame_num = anil;
 }

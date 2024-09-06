@@ -48,7 +48,7 @@ int32_t Effect_ExplodingDeath(
                 fx->fall_speed = -Random_GetControl() >> 8;
             }
             fx->counter = damage;
-            fx->frame_number = object->mesh_index;
+            fx->frame_num = object->mesh_index;
             fx->object_id = O_BODY_PART;
         }
         item->mesh_bits -= bit;
@@ -101,7 +101,7 @@ int32_t Effect_ExplodingDeath(
                 }
                 fx->counter = damage;
                 fx->object_id = O_BODY_PART;
-                fx->frame_number = object->mesh_index + i;
+                fx->frame_num = object->mesh_index + i;
             }
             item->mesh_bits -= bit;
         }

@@ -52,8 +52,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
     // after.
     int16_t old_anim =
         item->anim_number - g_Objects[item->object_id].anim_index;
-    int16_t old_frame =
-        item->frame_number - g_Anims[item->anim_number].frame_base;
+    int16_t old_frame = item->frame_num - g_Anims[item->anim_number].frame_base;
 
     Item_SwitchToAnim(item, 0, 0);
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);

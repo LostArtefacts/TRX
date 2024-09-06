@@ -72,7 +72,7 @@ void Wolf_Setup(OBJECT_INFO *obj)
 
 void Wolf_Initialise(int16_t item_num)
 {
-    g_Items[item_num].frame_number = WOLF_SLEEP_FRAME;
+    g_Items[item_num].frame_num = WOLF_SLEEP_FRAME;
     Creature_Initialise(item_num);
 }
 

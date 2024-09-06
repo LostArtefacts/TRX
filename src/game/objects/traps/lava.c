@@ -60,7 +60,7 @@ void Lava_Burn(ITEM_INFO *const item)
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->object_id = O_FLAME;
-            fx->frame_number =
+            fx->frame_num =
                 (g_Objects[O_FLAME].nmeshes * Random_GetControl()) / 0x7FFF;
             fx->counter = -1 - Random_GetControl() * 24 / 0x7FFF;
         }
@@ -115,7 +115,7 @@ void LavaEmitter_Control(int16_t item_num)
         fx->rot.y = (Random_GetControl() - 0x4000) * 2;
         fx->speed = Random_GetControl() >> 10;
         fx->fall_speed = -Random_GetControl() / 200;
-        fx->frame_number = -4 * Random_GetControl() / 0x7FFF;
+        fx->frame_num = -4 * Random_GetControl() / 0x7FFF;
         fx->object_id = O_LAVA;
         Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
     }

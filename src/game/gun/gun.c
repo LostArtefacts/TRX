@@ -59,8 +59,8 @@ void Gun_Control(void)
         case LGT_UZIS:
             if (g_Lara.gun_status == LGS_ARMLESS) {
                 g_Lara.gun_status = LGS_DRAW;
-                g_Lara.right_arm.frame_number = LF_G_AIM_START;
-                g_Lara.left_arm.frame_number = LF_G_AIM_START;
+                g_Lara.right_arm.frame_num = LF_G_AIM_START;
+                g_Lara.left_arm.frame_num = LF_G_AIM_START;
             } else if (g_Lara.gun_status == LGS_READY) {
                 g_Lara.gun_status = LGS_UNDRAW;
             }
@@ -69,8 +69,8 @@ void Gun_Control(void)
         case LGT_SHOTGUN:
             if (g_Lara.gun_status == LGS_ARMLESS) {
                 g_Lara.gun_status = LGS_DRAW;
-                g_Lara.left_arm.frame_number = LF_SG_AIM_START;
-                g_Lara.right_arm.frame_number = LF_SG_AIM_START;
+                g_Lara.left_arm.frame_num = LF_SG_AIM_START;
+                g_Lara.right_arm.frame_num = LF_SG_AIM_START;
             } else if (g_Lara.gun_status == LGS_READY) {
                 g_Lara.gun_status = LGS_UNDRAW;
             }
@@ -182,13 +182,13 @@ void Gun_InitialiseNewWeapon(void)
     g_Lara.left_arm.rot.z = 0;
     g_Lara.left_arm.lock = 0;
     g_Lara.left_arm.flash_gun = 0;
-    g_Lara.left_arm.frame_number = LF_G_AIM_START;
+    g_Lara.left_arm.frame_num = LF_G_AIM_START;
     g_Lara.right_arm.rot.x = 0;
     g_Lara.right_arm.rot.y = 0;
     g_Lara.right_arm.rot.z = 0;
     g_Lara.right_arm.lock = 0;
     g_Lara.right_arm.flash_gun = 0;
-    g_Lara.right_arm.frame_number = LF_G_AIM_START;
+    g_Lara.right_arm.frame_num = LF_G_AIM_START;
     g_Lara.target = NULL;
 
     const GAME_OBJECT_ID anim_type = Gun_GetLaraAnim(g_Lara.gun_type);

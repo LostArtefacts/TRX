@@ -225,14 +225,14 @@ void Lara_Animate(ITEM_INFO *item)
     int16_t *command;
     ANIM_STRUCT *anim;
 
-    item->frame_number++;
+    item->frame_num++;
     anim = &g_Anims[item->anim_number];
     if (anim->number_changes > 0 && Item_GetAnimChange(item, anim)) {
         anim = &g_Anims[item->anim_number];
         item->current_anim_state = anim->current_anim_state;
     }
 
-    if (item->frame_number > anim->frame_end) {
+    if (item->frame_num > anim->frame_end) {
         if (anim->number_commands > 0) {
             command = &g_AnimCommands[anim->command_index];
             for (int i = 0; i < anim->number_commands; i++) {
@@ -266,7 +266,7 @@ void Lara_Animate(ITEM_INFO *item)
         }
 
         item->anim_number = anim->jump_anim_num;
-        item->frame_number = anim->jump_frame_num;
+        item->frame_num = anim->jump_frame_num;
 
         anim = &g_Anims[anim->jump_anim_num];
         item->current_anim_state = anim->current_anim_state;
@@ -290,7 +290,7 @@ void Lara_Animate(ITEM_INFO *item)
                 break;
 
             case AC_EFFECT:
-                if (item->frame_number == command[0]) {
+                if (item->frame_num == command[0]) {
                     g_EffectRoutines[command[1]](item);
                 }
                 command += 2;
@@ -301,7 +301,7 @@ void Lara_Animate(ITEM_INFO *item)
 
     if (item->gravity_status) {
         int32_t speed = anim->velocity
-            + anim->acceleration * (item->frame_number - anim->frame_base - 1);
+            + anim->acceleration * (item->frame_num - anim->frame_base - 1);
         item->speed -= (int16_t)(speed >> 16);
         speed += anim->acceleration;
         item->speed += (int16_t)(speed >> 16);
@@ -311,8 +311,7 @@ void Lara_Animate(ITEM_INFO *item)
     } else {
         int32_t speed = anim->velocity;
         if (anim->acceleration) {
-            speed +=
-                anim->acceleration * (item->frame_number - anim->frame_base);
+            speed += anim->acceleration * (item->frame_num - anim->frame_base);
         }
         item->speed = (int16_t)(speed >> 16);
     }

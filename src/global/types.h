@@ -1289,7 +1289,7 @@ typedef struct {
     int16_t goal_anim_state;
     int16_t required_anim_state;
     int16_t anim_number;
-    int16_t frame_number;
+    int16_t frame_num;
     int16_t room_number;
     int16_t next_item;
     int16_t next_active;
@@ -1350,7 +1350,7 @@ typedef struct FRAME_INFO {
 
 typedef struct LARA_ARM {
     FRAME_INFO *frame_base;
-    int16_t frame_number;
+    int16_t frame_num;
     int16_t lock;
     XYZ_16 rot;
     uint16_t flash_gun;
@@ -1400,7 +1400,7 @@ typedef struct FX_INFO {
     int16_t next_free;
     int16_t speed;
     int16_t fall_speed;
-    int16_t frame_number;
+    int16_t frame_num;
     int16_t counter;
     int16_t shade;
 

@@ -43,7 +43,7 @@ void BodyPart_Control(int16_t fx_num)
     if (fx->pos.y >= height) {
         if (fx->counter) {
             fx->speed = 0;
-            fx->frame_number = 0;
+            fx->frame_num = 0;
             fx->counter = 0;
             fx->object_id = O_EXPLOSION1;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
@@ -58,7 +58,7 @@ void BodyPart_Control(int16_t fx_num)
 
         if (fx->counter) {
             fx->speed = 0;
-            fx->frame_number = 0;
+            fx->frame_num = 0;
             fx->counter = 0;
             fx->object_id = O_EXPLOSION1;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
