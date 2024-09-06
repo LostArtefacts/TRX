@@ -210,7 +210,7 @@ static void Savegame_Legacy_WriteLara(LARA_INFO *lara)
 {
     int32_t tmp32 = 0;
 
-    Savegame_Legacy_Write(&lara->item_number, sizeof(int16_t));
+    Savegame_Legacy_Write(&lara->item_num, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->gun_status, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->gun_type, sizeof(int16_t));
     Savegame_Legacy_Write(&lara->request_gun_type, sizeof(int16_t));
@@ -317,7 +317,7 @@ static void Savegame_Legacy_ReadLara(LARA_INFO *lara)
 {
     int32_t tmp32 = 0;
 
-    Savegame_Legacy_Read(&lara->item_number, sizeof(int16_t));
+    Savegame_Legacy_Read(&lara->item_num, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->gun_status, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->gun_type, sizeof(int16_t));
     Savegame_Legacy_Read(&lara->request_gun_type, sizeof(int16_t));

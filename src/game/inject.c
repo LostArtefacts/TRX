@@ -1292,8 +1292,8 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
         return;
     }
 
-    int16_t item_number = Item_Create();
-    ITEM_INFO *item = &g_Items[item_number];
+    int16_t item_num = Item_Create();
+    ITEM_INFO *item = &g_Items[item_num];
 
     item->object_id = File_ReadS16(fp);
     item->room_num = File_ReadS16(fp);

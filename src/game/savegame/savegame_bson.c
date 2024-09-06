@@ -764,8 +764,8 @@ static bool Savegame_BSON_LoadLara(
         return false;
     }
 
-    lara->item_number =
-        json_object_get_int(lara_obj, "item_number", lara->item_number);
+    lara->item_num =
+        json_object_get_int(lara_obj, "item_number", lara->item_num);
     lara->gun_status =
         json_object_get_int(lara_obj, "gun_status", lara->gun_status);
     lara->gun_type = json_object_get_int(lara_obj, "gun_type", lara->gun_type);
@@ -1207,7 +1207,7 @@ static struct json_object_s *Savegame_BSON_DumpLara(LARA_INFO *lara)
 {
     assert(lara);
     struct json_object_s *lara_obj = json_object_new();
-    json_object_append_int(lara_obj, "item_number", lara->item_number);
+    json_object_append_int(lara_obj, "item_number", lara->item_num);
     json_object_append_int(lara_obj, "gun_status", lara->gun_status);
     json_object_append_int(lara_obj, "gun_type", lara->gun_type);
     json_object_append_int(

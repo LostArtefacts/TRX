@@ -830,7 +830,7 @@ static COMMAND_RESULT Console_Cmd_Abortion(const char *args)
         return CR_UNAVAILABLE;
     }
 
-    Effect_ExplodingDeath(g_Lara.item_number, -1, 0);
+    Effect_ExplodingDeath(g_Lara.item_num, -1, 0);
     Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
     Sound_Effect(SFX_LARA_FALL, &g_LaraItem->pos, SPM_NORMAL);
     g_LaraItem->hit_points = 0;

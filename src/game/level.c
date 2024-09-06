@@ -261,7 +261,7 @@ static void Level_LoadRooms(VFILE *file)
         current_room_info->top = Viewport_GetMaxY();
         current_room_info->bottom = 0;
         current_room_info->right = 0;
-        current_room_info->item_number = NO_ITEM;
+        current_room_info->item_num = NO_ITEM;
         current_room_info->fx_number = NO_ITEM;
     }
 
@@ -1086,7 +1086,7 @@ bool Level_Initialise(int32_t level_num)
 
     Level_Load(level_num);
 
-    if (g_Lara.item_number != NO_ITEM) {
+    if (g_Lara.item_num != NO_ITEM) {
         Lara_Initialise(level_num);
     }
 

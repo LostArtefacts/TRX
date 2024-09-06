@@ -97,8 +97,8 @@ void RollingBall_Control(int16_t item_num)
         if (item->room_num != data->room_num) {
             Item_RemoveDrawn(item_num);
             ROOM_INFO *r = &g_RoomInfo[data->room_num];
-            item->next_item = r->item_number;
-            r->item_number = item_num;
+            item->next_item = r->item_num;
+            r->item_num = item_num;
             item->room_num = data->room_num;
         }
         item->current_anim_state = TRAP_SET;
@@ -152,7 +152,7 @@ void RollingBall_Collision(
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
             if (lara_item->room_num != item->room_num) {
-                Item_NewRoom(g_Lara.item_number, item->room_num);
+                Item_NewRoom(g_Lara.item_num, item->room_num);
             }
 
             lara_item->rot.x = 0;

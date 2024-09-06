@@ -133,7 +133,7 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     for (int i = 0; i < numroom; i++) {
-        int16_t item_num = g_RoomInfo[roomies[i]].item_number;
+        int16_t item_num = g_RoomInfo[roomies[i]].item_num;
         while (item_num != NO_ITEM) {
             ITEM_INFO *item = &g_Items[item_num];
             if (item->collidable && item->status != IS_INVISIBLE) {

@@ -414,12 +414,12 @@ void Lara_UseItem(GAME_OBJECT_ID object_id)
     case O_SCION_ITEM3:
     case O_SCION_ITEM4:
     case O_SCION_OPTION: {
-        int16_t receptacle_item_number = Object_FindReceptacle(object_id);
-        if (receptacle_item_number == NO_OBJECT) {
+        int16_t receptacle_item_num = Object_FindReceptacle(object_id);
+        if (receptacle_item_num == NO_OBJECT) {
             Sound_Effect(SFX_LARA_NO, NULL, SPM_NORMAL);
             return;
         }
-        g_Lara.interact_target.item_num = receptacle_item_number;
+        g_Lara.interact_target.item_num = receptacle_item_num;
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
         Inv_RemoveItem(object_id);
@@ -438,7 +438,7 @@ void Lara_ControlExtra(int16_t item_num)
 
 void Lara_InitialiseLoad(int16_t item_num)
 {
-    g_Lara.item_number = item_num;
+    g_Lara.item_num = item_num;
     if (item_num == NO_ITEM) {
         g_LaraItem = NULL;
     } else {

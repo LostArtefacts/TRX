@@ -125,7 +125,7 @@ static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 
 static void Room_AddFlipItems(ROOM_INFO *r)
 {
-    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+    for (int16_t item_num = r->item_num; item_num != NO_ITEM;
          item_num = g_Items[item_num].next_item) {
         ITEM_INFO *item = &g_Items[item_num];
 
@@ -149,7 +149,7 @@ static void Room_AddFlipItems(ROOM_INFO *r)
 
 static void Room_RemoveFlipItems(ROOM_INFO *r)
 {
-    for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+    for (int16_t item_num = r->item_num; item_num != NO_ITEM;
          item_num = g_Items[item_num].next_item) {
         ITEM_INFO *item = &g_Items[item_num];
 
@@ -607,7 +607,7 @@ void Room_FlipMap(void)
         flipped->flipped_room = -1;
 
         // XXX: is this really necessary given the assignments above?
-        r->item_number = flipped->item_number;
+        r->item_num = flipped->item_num;
         r->fx_number = flipped->fx_number;
 
         Room_AddFlipItems(r);

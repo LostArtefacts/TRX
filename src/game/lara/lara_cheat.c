@@ -113,7 +113,7 @@ void Lara_Cheat_Control(void)
                 g_Lara.uzis.ammo = 5000;
                 Sound_Effect(SFX_LARA_HOLSTER, NULL, SPM_ALWAYS);
             } else if (as == LS_SWAN_DIVE) {
-                Effect_ExplodingDeath(g_Lara.item_number, -1, 0);
+                Effect_ExplodingDeath(g_Lara.item_num, -1, 0);
                 Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
                 g_LaraItem->hit_points = 0;
                 g_LaraItem->flags |= IS_INVISIBLE;

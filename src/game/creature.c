@@ -346,7 +346,7 @@ bool Creature_CheckBaddieOverlap(int16_t item_num)
     int32_t z = item->pos.z;
     int32_t radius = SQUARE(g_Objects[item->object_id].radius);
 
-    int16_t link = g_RoomInfo[item->room_num].item_number;
+    int16_t link = g_RoomInfo[item->room_num].item_num;
     do {
         item = &g_Items[link];
 

@@ -1256,7 +1256,7 @@ typedef struct ROOM_INFO {
     int16_t top;
     int16_t bottom;
     int16_t bound_active;
-    int16_t item_number;
+    int16_t item_num;
     int16_t fx_number;
     int16_t flipped_room;
     uint16_t flags;
@@ -1413,7 +1413,7 @@ typedef struct FX_INFO {
 } FX_INFO;
 
 typedef struct LARA_INFO {
-    int16_t item_number;
+    int16_t item_num;
     int16_t gun_status;
     LARA_GUN_TYPE gun_type;
     LARA_GUN_TYPE request_gun_type;

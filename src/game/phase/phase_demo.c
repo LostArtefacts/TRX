@@ -187,7 +187,7 @@ static void Phase_Demo_Start(void *arg)
     int16_t room_num = *m_DemoPtr++;
 
     if (item->room_num != room_num) {
-        Item_NewRoom(g_Lara.item_number, room_num);
+        Item_NewRoom(g_Lara.item_num, room_num);
     }
 
     const SECTOR_INFO *const sector =

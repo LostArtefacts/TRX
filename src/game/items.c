@@ -144,8 +144,8 @@ void Item_Initialise(int16_t item_num)
     }
 
     ROOM_INFO *const r = &g_RoomInfo[item->room_num];
-    item->next_item = r->item_number;
-    r->item_number = item_num;
+    item->next_item = r->item_num;
+    r->item_num = item_num;
     const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     const SECTOR_INFO *const sector =
@@ -191,9 +191,9 @@ void Item_RemoveDrawn(int16_t item_num)
     ITEM_INFO *const item = &g_Items[item_num];
     ROOM_INFO *const r = &g_RoomInfo[item->room_num];
 
-    int16_t link_num = r->item_number;
+    int16_t link_num = r->item_num;
     if (link_num == item_num) {
-        r->item_number = item->next_item;
+        r->item_num = item->next_item;
         return;
     }
 
@@ -229,9 +229,9 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
     ITEM_INFO *item = &g_Items[item_num];
     ROOM_INFO *r = &g_RoomInfo[item->room_num];
 
-    int16_t linknum = r->item_number;
+    int16_t linknum = r->item_num;
     if (linknum == item_num) {
-        r->item_number = item->next_item;
+        r->item_num = item->next_item;
     } else {
         for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_item) {
             if (g_Items[linknum].next_item == item_num) {
@@ -243,8 +243,8 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
 
     r = &g_RoomInfo[room_num];
     item->room_num = room_num;
-    item->next_item = r->item_number;
-    r->item_number = item_num;
+    item->next_item = r->item_num;
+    r->item_num = item_num;
 }
 
 void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
@@ -256,7 +256,7 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
     item->floor = Room_GetHeight(sector, x, y, z);
     if (item->room_num != room_num) {
-        Item_NewRoom(g_Lara.item_number, room_num);
+        Item_NewRoom(g_Lara.item_num, room_num);
     }
 }
 
@@ -304,7 +304,7 @@ int32_t Item_GlobalReplace(
     int32_t changed = 0;
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM_INFO *r = &g_RoomInfo[i];
-        for (int16_t item_num = r->item_number; item_num != NO_ITEM;
+        for (int16_t item_num = r->item_num; item_num != NO_ITEM;
              item_num = g_Items[item_num].next_item) {
             if (g_Items[item_num].object_id == src_object_id) {
                 g_Items[item_num].object_id = dst_object_id;

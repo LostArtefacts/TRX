@@ -294,7 +294,7 @@ void Room_DrawSingleRoom(int16_t room_num)
 
     Output_DrawRoom(r->data);
 
-    for (int i = r->item_number; i != NO_ITEM; i = g_Items[i].next_item) {
+    for (int i = r->item_num; i != NO_ITEM; i = g_Items[i].next_item) {
         ITEM_INFO *item = &g_Items[i];
         if (item->status != IS_INVISIBLE) {
             g_Objects[item->object_id].draw_routine(item);
