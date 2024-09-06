@@ -158,7 +158,7 @@ void Gun_TargetInfo(WEAPON_INFO *winfo)
     src.x = g_LaraItem->pos.x;
     src.y = g_LaraItem->pos.y - 650;
     src.z = g_LaraItem->pos.z;
-    src.room_number = g_LaraItem->room_number;
+    src.room_num = g_LaraItem->room_num;
     Gun_FindTargetPoint(g_Lara.target, &target);
 
     int16_t ang[2];
@@ -216,7 +216,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     src.x = g_LaraItem->pos.x;
     src.y = g_LaraItem->pos.y - 650;
     src.z = g_LaraItem->pos.z;
-    src.room_number = g_LaraItem->room_number;
+    src.room_num = g_LaraItem->room_num;
 
     ITEM_INFO *item = NULL;
     for (int16_t item_num = g_NextItemActive; item_num != NO_ITEM;
@@ -346,7 +346,7 @@ void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
     target->x = item->pos.x + ((c * x + s * z) >> W2V_SHIFT);
     target->y = item->pos.y + y;
     target->z = item->pos.z + ((c * z - s * x) >> W2V_SHIFT);
-    target->room_number = item->room_number;
+    target->room_num = item->room_num;
 }
 
 void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
@@ -465,7 +465,7 @@ int32_t Gun_FireWeapon(
     }
 
     GAME_VECTOR vsrc;
-    vsrc.room_number = src->room_number;
+    vsrc.room_num = src->room_num;
     vsrc.pos = view_pos;
 
     GAME_VECTOR vdest;
@@ -504,12 +504,12 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
         pos.x = hitpos->x;
         pos.y = hitpos->y;
         pos.z = hitpos->z;
-        pos.room_number = item->room_number;
+        pos.room_num = item->room_num;
         Ricochet_Spawn(&pos);
     } else {
         Effect_Blood(
             hitpos->x, hitpos->y, hitpos->z, item->speed, item->rot.y,
-            item->room_number);
+            item->room_num);
     }
 
     if (item->hit_points > 0) {

@@ -1274,7 +1274,7 @@ typedef struct CARRIED_ITEM {
     int16_t spawn_number;
     XYZ_32 pos;
     XYZ_16 rot;
-    int16_t room_number;
+    int16_t room_num;
     int16_t fall_speed;
     DROP_STATUS status;
     struct CARRIED_ITEM *next_item;
@@ -1290,7 +1290,7 @@ typedef struct {
     int16_t required_anim_state;
     int16_t anim_num;
     int16_t frame_num;
-    int16_t room_number;
+    int16_t room_num;
     int16_t next_item;
     int16_t next_active;
     int16_t speed;
@@ -1393,7 +1393,7 @@ typedef struct LOT_INFO {
 typedef struct FX_INFO {
     XYZ_32 pos;
     XYZ_16 rot;
-    int16_t room_number;
+    int16_t room_num;
     GAME_OBJECT_ID object_id;
     int16_t next_draw;
     int16_t next_active;
@@ -1733,7 +1733,7 @@ typedef struct GAME_VECTOR {
         };
         XYZ_32 pos;
     };
-    int16_t room_number;
+    int16_t room_num;
 } GAME_VECTOR;
 
 typedef struct OBJECT_VECTOR {

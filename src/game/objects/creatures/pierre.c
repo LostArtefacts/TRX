@@ -231,7 +231,7 @@ void Pierre_Control(int16_t item_num)
         start.x = g_Camera.pos.x;
         start.y = g_Camera.pos.y;
         start.z = g_Camera.pos.z;
-        start.room_number = g_Camera.pos.room_number;
+        start.room_num = g_Camera.pos.room_num;
 
         if (LOS_Check(&start, &target)) {
             pierre->flags = 1;
@@ -244,7 +244,7 @@ void Pierre_Control(int16_t item_num)
     }
 
     int16_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
     if (wh != NO_HEIGHT) {
         item->hit_points = DONT_TARGET;
         LOT_DisableBaddieAI(item_num);

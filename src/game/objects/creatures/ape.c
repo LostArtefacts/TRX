@@ -59,7 +59,7 @@ static bool Ape_Vault(int16_t item_num, int16_t angle)
     int32_t x = item->pos.x >> WALL_SHIFT;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z >> WALL_SHIFT;
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
 
     if (ape->flags & APE_TURN_L_FLAG) {
         item->rot.y -= PHD_90;
@@ -103,7 +103,7 @@ static bool Ape_Vault(int16_t item_num, int16_t angle)
     item->floor = y;
     item->pos.y = y;
 
-    if (item->room_number != room_num) {
+    if (item->room_num != room_num) {
         Item_NewRoom(item_num, room_num);
     }
 

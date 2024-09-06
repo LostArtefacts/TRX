@@ -524,7 +524,7 @@ static bool Savegame_BSON_LoadItems(
                 json_object_get_int(item_obj, "fall_speed", item->fall_speed);
 
             int16_t room_num = json_object_get_int(item_obj, "room_num", -1);
-            if (room_num != -1 && item->room_number != room_num) {
+            if (room_num != -1 && item->room_num != room_num) {
                 Item_NewRoom(i, room_num);
             }
         }
@@ -620,8 +620,8 @@ static bool Savegame_BSON_LoadItems(
                     carried_item_obj, "z", carried_item->pos.z);
                 carried_item->rot.y = json_object_get_int(
                     carried_item_obj, "y_rot", carried_item->rot.y);
-                carried_item->room_number = json_object_get_int(
-                    carried_item_obj, "room_num", carried_item->room_number);
+                carried_item->room_num = json_object_get_int(
+                    carried_item_obj, "room_num", carried_item->room_num);
                 carried_item->fall_speed = json_object_get_int(
                     carried_item_obj, "fall_speed", carried_item->fall_speed);
                 carried_item->status = json_object_get_int(
@@ -1054,7 +1054,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             json_object_append_int(item_obj, "x_rot", item->rot.x);
             json_object_append_int(item_obj, "y_rot", item->rot.y);
             json_object_append_int(item_obj, "z_rot", item->rot.z);
-            json_object_append_int(item_obj, "room_num", item->room_number);
+            json_object_append_int(item_obj, "room_num", item->room_num);
             json_object_append_int(item_obj, "speed", item->speed);
             json_object_append_int(item_obj, "fall_speed", item->fall_speed);
         }
@@ -1114,8 +1114,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             json_object_append_int(drop_obj, "y", drop_item->pos.y);
             json_object_append_int(drop_obj, "z", drop_item->pos.z);
             json_object_append_int(drop_obj, "y_rot", drop_item->rot.y);
-            json_object_append_int(
-                drop_obj, "room_num", drop_item->room_number);
+            json_object_append_int(drop_obj, "room_num", drop_item->room_num);
             json_object_append_int(
                 drop_obj, "fall_speed", drop_item->fall_speed);
 
@@ -1147,7 +1146,7 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);
-        json_object_append_int(fx_obj, "room_number", fx->room_number);
+        json_object_append_int(fx_obj, "room_number", fx->room_num);
         json_object_append_int(fx_obj, "object_number", fx->object_id);
         json_object_append_int(fx_obj, "speed", fx->speed);
         json_object_append_int(fx_obj, "fall_speed", fx->fall_speed);

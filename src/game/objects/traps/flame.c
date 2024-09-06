@@ -51,15 +51,15 @@ void Flame_Control(int16_t fx_num)
 
         int32_t y = Room_GetWaterHeight(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,
-            g_LaraItem->room_number);
+            g_LaraItem->room_num);
 
         if (y != NO_HEIGHT && fx->pos.y > y) {
             fx->counter = 0;
             Sound_StopEffect(SFX_FIRE, NULL);
             Effect_Kill(fx_num);
         } else {
-            if (fx->room_number != g_LaraItem->room_number) {
-                Effect_NewRoom(fx_num, g_LaraItem->room_number);
+            if (fx->room_num != g_LaraItem->room_num) {
+                Effect_NewRoom(fx_num, g_LaraItem->room_num);
             }
             Sound_Effect(SFX_FIRE, &fx->pos, SPM_NORMAL);
             Lara_TakeDamage(FLAME_ONFIRE_DAMAGE, true);
@@ -84,7 +84,7 @@ void Flame_Control(int16_t fx_num)
         if (distance < SQUARE(300)) {
             fx->counter = 100;
 
-            fx_num = Effect_Create(g_LaraItem->room_number);
+            fx_num = Effect_Create(g_LaraItem->room_num);
             if (fx_num != NO_ITEM) {
                 fx = &g_Effects[fx_num];
                 fx->frame_num = 0;
@@ -107,7 +107,7 @@ void FlameEmitter_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
         if (!item->data) {
-            int16_t fx_num = Effect_Create(item->room_number);
+            int16_t fx_num = Effect_Create(item->room_num);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos.x = item->pos.x;

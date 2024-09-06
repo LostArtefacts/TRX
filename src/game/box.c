@@ -424,9 +424,9 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM_INFO *item, LOT_INFO *LOT)
 
 bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,
-    int16_t room_number, LOT_INFO *LOT)
+    int16_t room_num, LOT_INFO *LOT)
 {
-    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_number);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
     if (sector->box == NO_BOX) {
         return true;
     }

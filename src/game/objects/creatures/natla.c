@@ -341,7 +341,7 @@ void NatlaGun_Control(int16_t fx_num)
     int32_t z = fx->pos.z + ((fx->speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT);
     int32_t x = fx->pos.x + ((fx->speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT);
     int32_t y = fx->pos.y;
-    int16_t room_num = fx->room_number;
+    int16_t room_num = fx->room_num;
     const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
 
     if (y >= Room_GetHeight(sector, x, y, z)
@@ -356,7 +356,7 @@ void NatlaGun_Control(int16_t fx_num)
         newfx->pos.y = y;
         newfx->pos.z = z;
         newfx->rot.y = fx->rot.y;
-        newfx->room_number = room_num;
+        newfx->room_num = room_num;
         newfx->speed = fx->speed;
         newfx->frame_num = 0;
         newfx->object_id = O_MISSILE1;

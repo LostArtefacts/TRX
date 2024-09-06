@@ -23,7 +23,7 @@ bool Lava_TestFloor(const ITEM_INFO *const item)
     }
 
     // OG fix: check if floor index has lava
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
     return sector->is_death_sector;
@@ -39,7 +39,7 @@ void Lava_Burn(ITEM_INFO *const item)
         return;
     }
 
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
     const int16_t height =
@@ -56,7 +56,7 @@ void Lava_Burn(ITEM_INFO *const item)
     }
 
     for (int i = 0; i < 10; i++) {
-        const int16_t fx_num = Effect_Create(item->room_number);
+        const int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->object_id = O_FLAME;
@@ -80,7 +80,7 @@ void Lava_Control(int16_t fx_num)
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
-    int16_t room_num = fx->room_number;
+    int16_t room_num = fx->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     if (fx->pos.y >= Room_GetHeight(sector, fx->pos.x, fx->pos.y, fx->pos.z)
@@ -90,7 +90,7 @@ void Lava_Control(int16_t fx_num)
     } else if (Lara_IsNearItem(&fx->pos, 200)) {
         Lara_TakeDamage(LAVA_EMBER_DAMAGE, true);
         Effect_Kill(fx_num);
-    } else if (room_num != fx->room_number) {
+    } else if (room_num != fx->room_num) {
         Effect_NewRoom(fx_num, room_num);
     }
 }
@@ -106,7 +106,7 @@ void LavaEmitter_Setup(OBJECT_INFO *obj)
 void LavaEmitter_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    int16_t fx_num = Effect_Create(item->room_number);
+    int16_t fx_num = Effect_Create(item->room_num);
     if (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = item->pos.x;
@@ -134,9 +134,9 @@ void LavaWedge_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (room_num != item->room_number) {
+    if (room_num != item->room_num) {
         Item_NewRoom(item_num, room_num);
     }
 

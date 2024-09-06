@@ -212,7 +212,7 @@ void Torso_Control(int16_t item_num)
                     g_LaraItem, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
                 g_LaraItem->current_anim_state = LS_SPECIAL;
                 g_LaraItem->goal_anim_state = LS_SPECIAL;
-                g_LaraItem->room_number = item->room_number;
+                g_LaraItem->room_num = item->room_num;
                 g_LaraItem->pos.x = item->pos.x;
                 g_LaraItem->pos.y = item->pos.y;
                 g_LaraItem->pos.z = item->pos.z;

@@ -26,7 +26,7 @@ static bool Door_LaraDoorCollision(const SECTOR_INFO *const sector)
         return false;
     }
 
-    int16_t room_num = g_LaraItem->room_number;
+    int16_t room_num = g_LaraItem->room_num;
     const SECTOR_INFO *const lara_sector = Room_GetSector(
         g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
     return lara_sector == sector;
@@ -115,7 +115,7 @@ void Door_Initialise(int16_t item_num)
     int16_t room_num;
     int16_t box_num;
 
-    r = &g_RoomInfo[item->room_number];
+    r = &g_RoomInfo[item->room_num];
     z_sector = ((item->pos.z - r->z) >> WALL_SHIFT) + dx;
     x_sector = ((item->pos.x - r->x) >> WALL_SHIFT) + dy;
     door->d1.sector = &r->sectors[z_sector + x_sector * r->z_size];

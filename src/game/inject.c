@@ -1248,7 +1248,7 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     // Move any items in the room to match.
     for (int32_t i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        if (item->room_number != room_num) {
+        if (item->room_num != room_num) {
             continue;
         }
 
@@ -1296,7 +1296,7 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     ITEM_INFO *item = &g_Items[item_number];
 
     item->object_id = File_ReadS16(fp);
-    item->room_number = File_ReadS16(fp);
+    item->room_num = File_ReadS16(fp);
     item->pos.x = File_ReadS32(fp);
     item->pos.y = File_ReadS32(fp);
     item->pos.z = File_ReadS32(fp);
@@ -1730,7 +1730,7 @@ static void Inject_ItemPositions(INJECTION *injection)
             item->pos.x = x;
             item->pos.y = y;
             item->pos.z = z;
-            item->room_number = room_num;
+            item->room_num = room_num;
         }
     }
 }

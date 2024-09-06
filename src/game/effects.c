@@ -50,7 +50,7 @@ int16_t Effect_Create(int16_t room_num)
     m_NextFxFree = fx->next_free;
 
     ROOM_INFO *r = &g_RoomInfo[room_num];
-    fx->room_number = room_num;
+    fx->room_num = room_num;
     fx->next_draw = r->fx_number;
     r->fx_number = fx_num;
 
@@ -77,7 +77,7 @@ void Effect_Kill(int16_t fx_num)
         }
     }
 
-    ROOM_INFO *r = &g_RoomInfo[fx->room_number];
+    ROOM_INFO *r = &g_RoomInfo[fx->room_num];
     if (r->fx_number == fx_num) {
         r->fx_number = fx->next_draw;
     } else {
@@ -99,7 +99,7 @@ void Effect_Kill(int16_t fx_num)
 void Effect_NewRoom(int16_t fx_num, int16_t room_num)
 {
     FX_INFO *fx = &g_Effects[fx_num];
-    ROOM_INFO *r = &g_RoomInfo[fx->room_number];
+    ROOM_INFO *r = &g_RoomInfo[fx->room_num];
 
     int16_t linknum = r->fx_number;
     if (linknum == fx_num) {
@@ -114,7 +114,7 @@ void Effect_NewRoom(int16_t fx_num, int16_t room_num)
     }
 
     r = &g_RoomInfo[room_num];
-    fx->room_number = room_num;
+    fx->room_num = room_num;
     fx->next_draw = r->fx_number;
     r->fx_number = fx_num;
 }
@@ -147,7 +147,7 @@ void Effect_Draw(const int16_t fxnum)
             } else {
                 Output_CalculateLight(
                     fx->interp.result.pos.x, fx->interp.result.pos.y,
-                    fx->interp.result.pos.z, fx->room_number);
+                    fx->interp.result.pos.z, fx->room_num);
                 Output_DrawPolygons(g_Meshes[fx->frame_num], -1);
             }
         }

@@ -76,7 +76,7 @@ void Interpolation_Commit(void)
 {
     const double ratio = Interpolation_GetRate();
 
-    if (g_Camera.pos.room_number != NO_ROOM) {
+    if (g_Camera.pos.room_num != NO_ROOM) {
         INTERPOLATE(&g_Camera, shift, ratio, 128);
         INTERPOLATE(&g_Camera, pos.x, ratio, 512);
         INTERPOLATE(&g_Camera, pos.y, ratio, 512);
@@ -85,7 +85,7 @@ void Interpolation_Commit(void)
         INTERPOLATE(&g_Camera, target.y, ratio, 512);
         INTERPOLATE(&g_Camera, target.z, ratio, 512);
 
-        g_Camera.interp.room_num = g_Camera.pos.room_number;
+        g_Camera.interp.room_num = g_Camera.pos.room_num;
         Room_GetSector(
             g_Camera.interp.result.pos.x,
             g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
@@ -166,7 +166,7 @@ void Interpolation_Commit(void)
 
 void Interpolation_Remember(void)
 {
-    if (g_Camera.pos.room_number != NO_ROOM) {
+    if (g_Camera.pos.room_num != NO_ROOM) {
         REMEMBER(&g_Camera, shift);
         REMEMBER(&g_Camera, pos.x);
         REMEMBER(&g_Camera, pos.y);

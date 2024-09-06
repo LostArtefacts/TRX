@@ -32,10 +32,10 @@ int32_t Effect_ExplodingDeath(
 
     int32_t bit = 1;
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
-        int16_t fx_num = Effect_Create(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
-            fx->room_number = item->room_number;
+            fx->room_num = item->room_num;
             fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
             fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
             fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
@@ -84,10 +84,10 @@ int32_t Effect_ExplodingDeath(
 
         bit <<= 1;
         if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
-            int16_t fx_num = Effect_Create(item->room_number);
+            int16_t fx_num = Effect_Create(item->room_num);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
-                fx->room_number = item->room_number;
+                fx->room_num = item->room_num;
                 fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
                 fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
                 fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;

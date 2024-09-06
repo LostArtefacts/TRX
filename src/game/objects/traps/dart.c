@@ -35,24 +35,24 @@ void Dart_Control(int16_t item_num)
         Lara_TakeDamage(DART_DAMAGE, true);
         Effect_Blood(
             item->pos.x, item->pos.y, item->pos.z, g_LaraItem->speed,
-            g_LaraItem->rot.y, g_LaraItem->room_number);
+            g_LaraItem->rot.y, g_LaraItem->room_num);
     }
 
     int32_t old_x = item->pos.x;
     int32_t old_z = item->pos.z;
     Item_Animate(item);
 
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (item->room_number != room_num) {
+    if (item->room_num != room_num) {
         Item_NewRoom(item_num, room_num);
     }
 
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     if (item->pos.y >= item->floor) {
         Item_Kill(item_num);
-        int16_t fx_num = Effect_Create(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = old_x;
@@ -111,7 +111,7 @@ void DartEmitter_Control(int16_t item_num)
         if (dart_item_num != NO_ITEM) {
             ITEM_INFO *dart = &g_Items[dart_item_num];
             dart->object_id = O_DARTS;
-            dart->room_number = item->room_number;
+            dart->room_num = item->room_num;
             dart->shade = -1;
             dart->rot.y = item->rot.y;
             dart->pos.y = item->pos.y - WALL_L / 2;
@@ -139,7 +139,7 @@ void DartEmitter_Control(int16_t item_num)
             Item_AddActive(dart_item_num);
             dart->status = IS_ACTIVE;
 
-            int16_t fx_num = Effect_Create(dart->room_number);
+            int16_t fx_num = Effect_Create(dart->room_num);
             if (fx_num != NO_ITEM) {
                 FX_INFO *fx = &g_Effects[fx_num];
                 fx->pos = dart->pos;

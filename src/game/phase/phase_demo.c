@@ -186,7 +186,7 @@ static void Phase_Demo_Start(void *arg)
     item->rot.z = *m_DemoPtr++;
     int16_t room_num = *m_DemoPtr++;
 
-    if (item->room_number != room_num) {
+    if (item->room_num != room_num) {
         Item_NewRoom(g_Lara.item_number, room_num);
     }
 

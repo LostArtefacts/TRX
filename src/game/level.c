@@ -749,7 +749,7 @@ static void Level_LoadItems(VFILE *file)
         for (int i = 0; i < m_LevelInfo.item_count; i++) {
             ITEM_INFO *item = &g_Items[i];
             item->object_id = VFile_ReadS16(file);
-            item->room_number = VFile_ReadS16(file);
+            item->room_num = VFile_ReadS16(file);
             item->pos.x = VFile_ReadS32(file);
             item->pos.y = VFile_ReadS32(file);
             item->pos.z = VFile_ReadS32(file);

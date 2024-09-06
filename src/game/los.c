@@ -25,7 +25,7 @@ static int32_t LOS_CheckX(
     int32_t dy = ((target->y - start->y) << WALL_SHIFT) / dx;
     int32_t dz = ((target->z - start->z) << WALL_SHIFT) / dx;
 
-    int16_t room_num = start->room_number;
+    int16_t room_num = start->room_num;
     int16_t last_room;
 
     if (dx < 0) {
@@ -40,7 +40,7 @@ static int32_t LOS_CheckX(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = room_num;
+                target->room_num = room_num;
                 return -1;
             }
 
@@ -52,7 +52,7 @@ static int32_t LOS_CheckX(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = last_room;
+                target->room_num = last_room;
                 return 0;
             }
 
@@ -72,7 +72,7 @@ static int32_t LOS_CheckX(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = room_num;
+                target->room_num = room_num;
                 return -1;
             }
 
@@ -84,7 +84,7 @@ static int32_t LOS_CheckX(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = last_room;
+                target->room_num = last_room;
                 return 0;
             }
 
@@ -94,7 +94,7 @@ static int32_t LOS_CheckX(
         }
     }
 
-    target->room_number = room_num;
+    target->room_num = room_num;
     return 1;
 }
 
@@ -111,7 +111,7 @@ static int32_t LOS_CheckZ(
     int32_t dx = ((target->x - start->x) << WALL_SHIFT) / dz;
     int32_t dy = ((target->y - start->y) << WALL_SHIFT) / dz;
 
-    int16_t room_num = start->room_number;
+    int16_t room_num = start->room_num;
     int16_t last_room;
 
     if (dz < 0) {
@@ -126,7 +126,7 @@ static int32_t LOS_CheckZ(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = room_num;
+                target->room_num = room_num;
                 return -1;
             }
 
@@ -138,7 +138,7 @@ static int32_t LOS_CheckZ(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = last_room;
+                target->room_num = last_room;
                 return 0;
             }
 
@@ -158,7 +158,7 @@ static int32_t LOS_CheckZ(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = room_num;
+                target->room_num = room_num;
                 return -1;
             }
 
@@ -170,7 +170,7 @@ static int32_t LOS_CheckZ(
                 target->x = x;
                 target->y = y;
                 target->z = z;
-                target->room_number = last_room;
+                target->room_num = last_room;
                 return 0;
             }
 
@@ -180,7 +180,7 @@ static int32_t LOS_CheckZ(
         }
     }
 
-    target->room_number = room_num;
+    target->room_num = room_num;
     return 1;
 }
 
@@ -231,7 +231,7 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
     }
 
     const SECTOR_INFO *const sector =
-        Room_GetSector(target->x, target->y, target->z, &target->room_number);
+        Room_GetSector(target->x, target->y, target->z, &target->room_num);
 
     return LOS_ClipTarget(start, target, sector) && los1 == 1 && los2 == 1;
 }

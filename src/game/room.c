@@ -540,7 +540,7 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
 
     int16_t portal_room;
     SECTOR_INFO *sector;
-    const ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    const ROOM_INFO *r = &g_RoomInfo[item->room_num];
 
     do {
         int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
@@ -737,7 +737,7 @@ void Room_PopulateSectorData(
 void Room_TestTriggers(const ITEM_INFO *const item)
 {
     const bool is_heavy = item->object_id != O_LARA;
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
 

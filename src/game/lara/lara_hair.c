@@ -73,7 +73,7 @@ void Lara_Hair_Control(void)
     int32_t distance;
     FRAME_INFO *frame;
     int16_t *objptr;
-    int16_t room_number;
+    int16_t room_num;
     FRAME_INFO *frmptr[2];
     int16_t **mesh_base;
     XYZ_32 pos;
@@ -322,25 +322,24 @@ void Lara_Hair_Control(void)
         }
     } else {
         if (in_cutscene) {
-            room_number = Lara_Hair_GetRoom(pos.x, pos.y, pos.z);
+            room_num = Lara_Hair_GetRoom(pos.x, pos.y, pos.z);
             water_level = NO_HEIGHT;
         } else {
-            room_number = g_LaraItem->room_number;
+            room_num = g_LaraItem->room_num;
             x = g_LaraItem->pos.x
                 + (frame->bounds.min.x + frame->bounds.max.x) / 2;
             y = g_LaraItem->pos.y
                 + (frame->bounds.min.y + frame->bounds.max.y) / 2;
             z = g_LaraItem->pos.z
                 + (frame->bounds.min.z + frame->bounds.max.z) / 2;
-            water_level = Room_GetWaterHeight(x, y, z, room_number);
+            water_level = Room_GetWaterHeight(x, y, z, room_num);
         }
 
         for (i = 1; i < HAIR_SEGMENTS + 1; i++, bone += 4) {
             m_HVel[0] = m_Hair[i].pos;
 
             sector = Room_GetSector(
-                m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z,
-                &room_number);
+                m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z, &room_num);
             height = Room_GetHeight(
                 sector, m_Hair[i].pos.x, m_Hair[i].pos.y, m_Hair[i].pos.z);
 
@@ -458,7 +457,7 @@ static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z)
     if (room_num != NO_ROOM) {
         return room_num;
     }
-    return g_LaraItem->room_number;
+    return g_LaraItem->room_num;
 }
 
 int32_t Lara_Hair_GetSegmentCount(void)

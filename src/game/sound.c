@@ -271,7 +271,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
 
     if (flags != SPM_ALWAYS
         && (flags & SPM_UNDERWATER)
-            != (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER)) {
+            != (g_RoomInfo[g_Camera.pos.room_num].flags & RF_UNDERWATER)) {
         return false;
     }
 

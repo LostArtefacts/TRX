@@ -580,7 +580,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->speed, sizeof(int16_t));
             Savegame_Legacy_Read(&item->fall_speed, sizeof(int16_t));
 
-            if (item->room_number != tmp16) {
+            if (item->room_num != tmp16) {
                 Item_NewRoom(i, tmp16);
             }
         }
@@ -755,7 +755,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Write(&item->rot.x, sizeof(int16_t));
             Savegame_Legacy_Write(&item->rot.y, sizeof(int16_t));
             Savegame_Legacy_Write(&item->rot.z, sizeof(int16_t));
-            Savegame_Legacy_Write(&item->room_number, sizeof(int16_t));
+            Savegame_Legacy_Write(&item->room_num, sizeof(int16_t));
             Savegame_Legacy_Write(&item->speed, sizeof(int16_t));
             Savegame_Legacy_Write(&item->fall_speed, sizeof(int16_t));
         }

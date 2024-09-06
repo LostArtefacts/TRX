@@ -311,7 +311,7 @@ void Collide_GetCollisionInfo(
 }
 
 bool Collide_CollideStaticObjects(
-    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
     int32_t height)
 {
     XYZ_32 shifter;
@@ -328,7 +328,7 @@ bool Collide_CollideStaticObjects(
     shifter.y = 0;
     shifter.z = 0;
 
-    Room_GetNearByRooms(x, y, z, coll->radius + 50, height + 50, room_number);
+    Room_GetNearByRooms(x, y, z, coll->radius + 50, height + 50, room_num);
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         int16_t room_num = g_RoomsToDraw[i];

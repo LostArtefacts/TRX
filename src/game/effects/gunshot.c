@@ -19,7 +19,7 @@ int16_t Effect_GunShot(
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;
-        fx->room_number = room_num;
+        fx->room_num = room_num;
         fx->rot.x = 0;
         fx->rot.y = y_rot;
         fx->rot.z = 0;
@@ -44,7 +44,7 @@ int16_t Effect_GunShotHit(
         g_LaraItem, &pos, (Random_GetControl() * 25) / 0x7FFF);
     Effect_Blood(
         pos.x, pos.y, pos.z, g_LaraItem->speed, g_LaraItem->rot.y,
-        g_LaraItem->room_number);
+        g_LaraItem->room_num);
     Sound_Effect(SFX_LARA_BULLETHIT, &g_LaraItem->pos, SPM_NORMAL);
     return Effect_GunShot(x, y, z, speed, y_rot, room_num);
 }
@@ -59,7 +59,7 @@ int16_t Effect_GunShotMiss(
     pos.y = g_LaraItem->floor;
     pos.z = g_LaraItem->pos.z
         + ((Random_GetDraw() - 0x4000) * (WALL_L / 2)) / 0x7FFF;
-    pos.room_number = g_LaraItem->room_number;
+    pos.room_num = g_LaraItem->room_num;
     Ricochet_Spawn(&pos);
     return Effect_GunShot(x, y, z, speed, y_rot, room_num);
 }

@@ -52,7 +52,7 @@ void CutscenePlayer1_Initialise(int16_t item_num)
     Item_AddActive(item_num);
 
     ITEM_INFO *item = &g_Items[item_num];
-    g_Camera.pos.room_number = item->room_number;
+    g_Camera.pos.room_num = item->room_num;
     g_CinePosition.pos.x = item->pos.x;
     g_CinePosition.pos.y = item->pos.y;
     g_CinePosition.pos.z = item->pos.z;

@@ -49,13 +49,13 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         zone = g_GroundZone2[g_FlipStatus];
     }
 
-    const ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    const ROOM_INFO *r = &g_RoomInfo[item->room_num];
     int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     item->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
     info->zone_number = zone[item->box_number];
 
-    r = &g_RoomInfo[g_LaraItem->room_number];
+    r = &g_RoomInfo[g_LaraItem->room_num];
     z_sector = (g_LaraItem->pos.z - r->z) >> WALL_SHIFT;
     x_sector = (g_LaraItem->pos.x - r->x) >> WALL_SHIFT;
     g_LaraItem->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
@@ -337,8 +337,7 @@ int16_t Creature_Effect(
         .z = bite->z,
     };
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
-    return spawn(
-        pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_number);
+    return spawn(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
 }
 
 bool Creature_CheckBaddieOverlap(int16_t item_num)
@@ -350,7 +349,7 @@ bool Creature_CheckBaddieOverlap(int16_t item_num)
     int32_t z = item->pos.z;
     int32_t radius = SQUARE(g_Objects[item->object_id].radius);
 
-    int16_t link = g_RoomInfo[item->room_number].item_number;
+    int16_t link = g_RoomInfo[item->room_num].item_number;
     do {
         item = &g_Items[link];
 
@@ -432,7 +431,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     int32_t y = item->pos.y + bounds->min.y;
 
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
     int32_t height = g_Boxes[sector->box].height;
@@ -653,7 +652,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         item->rot.x = 0;
     }
 
-    if (item->room_number != room_num) {
+    if (item->room_num != room_num) {
         Item_NewRoom(item_num, room_num);
     }
 
@@ -670,7 +669,7 @@ bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info)
     start.x = item->pos.x;
     start.y = item->pos.y - STEP_L * 3;
     start.z = item->pos.z;
-    start.room_number = item->room_number;
+    start.room_num = item->room_num;
 
     GAME_VECTOR target;
     target.x = g_LaraItem->pos.x;
@@ -719,7 +718,7 @@ bool Creature_EnsureHabitat(
     // return whether or not a type conversion has taken place.
     ITEM_INFO *item = &g_Items[item_num];
     *wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
 
     return item->object_id == info->land.id
         ? Creature_SwitchToWater(item_num, wh, info)
@@ -780,14 +779,14 @@ static bool Creature_SwitchToLand(
         item->current_anim_state = info->land.death_state;
         item->goal_anim_state = item->current_anim_state;
 
-        int16_t room_num = item->room_number;
+        int16_t room_num = item->room_num;
         const SECTOR_INFO *const sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         item->floor =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         item->pos.y = item->floor;
 
-        if (item->room_number != room_num) {
+        if (item->room_num != room_num) {
             Item_NewRoom(item_num, room_num);
         }
     }

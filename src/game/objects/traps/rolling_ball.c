@@ -36,7 +36,7 @@ void RollingBall_Initialise(int16_t item_num)
     data->x = item->pos.x;
     data->y = item->pos.y;
     data->z = item->pos.z;
-    data->room_number = item->room_number;
+    data->room_num = item->room_num;
 }
 
 void RollingBall_Control(int16_t item_num)
@@ -56,10 +56,10 @@ void RollingBall_Control(int16_t item_num)
         int32_t oldz = item->pos.z;
         Item_Animate(item);
 
-        int16_t room_num = item->room_number;
+        int16_t room_num = item->room_num;
         const SECTOR_INFO *sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        if (item->room_number != room_num) {
+        if (item->room_num != room_num) {
             Item_NewRoom(item_num, room_num);
         }
 
@@ -94,12 +94,12 @@ void RollingBall_Control(int16_t item_num)
         item->pos.x = data->x;
         item->pos.y = data->y;
         item->pos.z = data->z;
-        if (item->room_number != data->room_number) {
+        if (item->room_num != data->room_num) {
             Item_RemoveDrawn(item_num);
-            ROOM_INFO *r = &g_RoomInfo[data->room_number];
+            ROOM_INFO *r = &g_RoomInfo[data->room_num];
             item->next_item = r->item_number;
             r->item_number = item_num;
-            item->room_number = data->room_number;
+            item->room_num = data->room_num;
         }
         item->current_anim_state = TRAP_SET;
         item->goal_anim_state = TRAP_SET;
@@ -146,13 +146,13 @@ void RollingBall_Collision(
         x = item->pos.x + (x << WALL_SHIFT) / 2 / d;
         z = item->pos.z + (z << WALL_SHIFT) / 2 / d;
         y = item->pos.y - WALL_L / 2 + (y << WALL_SHIFT) / 2 / d;
-        Effect_Blood(x, y, z, item->speed, item->rot.y, item->room_number);
+        Effect_Blood(x, y, z, item->speed, item->rot.y, item->room_num);
     } else {
         lara_item->hit_status = 1;
         if (lara_item->hit_points > 0) {
             lara_item->hit_points = -1;
-            if (lara_item->room_number != item->room_number) {
-                Item_NewRoom(g_Lara.item_number, item->room_number);
+            if (lara_item->room_num != item->room_num) {
+                Item_NewRoom(g_Lara.item_number, item->room_num);
             }
 
             lara_item->rot.x = 0;
@@ -171,7 +171,7 @@ void RollingBall_Collision(
                 z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
                 y = lara_item->pos.y - Random_GetControl() / 64;
                 d = item->rot.y + (Random_GetControl() - 0x4000) / 8;
-                Effect_Blood(x, y, z, item->speed * 2, d, item->room_number);
+                Effect_Blood(x, y, z, item->speed * 2, d, item->room_num);
             }
         }
     }

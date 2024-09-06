@@ -158,7 +158,7 @@ void LOT_CreateZone(ITEM_INFO *item)
         flip = g_GroundZone2[1];
     }
 
-    const ROOM_INFO *const r = &g_RoomInfo[item->room_number];
+    const ROOM_INFO *const r = &g_RoomInfo[item->room_num];
     const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     item->box_number = r->sectors[z_sector + x_sector * r->z_size].box;

@@ -29,8 +29,8 @@ void Splash_Control(int16_t fx_num)
 void Splash_Spawn(ITEM_INFO *item)
 {
     int16_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
-    int16_t room_num = item->room_number;
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
     Sound_Effect(SFX_LARA_SPLASH, &item->pos, SPM_NORMAL);

@@ -603,7 +603,7 @@ void Output_CalculateObjectLighting(
 
     Matrix_Pop();
 
-    Output_CalculateLight(offset.x, offset.y, offset.z, item->room_number);
+    Output_CalculateLight(offset.x, offset.y, offset.z, item->room_num);
 }
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)

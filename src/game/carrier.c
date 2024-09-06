@@ -69,7 +69,7 @@ void Carrier_InitialiseLevel(int32_t level_num)
         for (int i = 0; i < data->count; i++) {
             drop->object_id = data->object_ids[i];
             drop->spawn_number = NO_ITEM;
-            drop->room_number = NO_ROOM;
+            drop->room_num = NO_ROOM;
             drop->fall_speed = 0;
 
             if (Object_IsObjectType(drop->object_id, g_PickupObjects)) {
@@ -174,13 +174,13 @@ void Carrier_TestItemDrops(int16_t item_num)
         item->status = DS_FALLING;
         m_AnimatingCount++;
 
-        if (item->room_number != NO_ROOM) {
+        if (item->room_num != NO_ROOM) {
             // Handle reloading a save with a falling or landed item.
             ITEM_INFO *pickup = &g_Items[item->spawn_number];
             pickup->pos = item->pos;
             pickup->fall_speed = item->fall_speed;
-            if (pickup->room_number != item->room_number) {
-                Item_NewRoom(item->spawn_number, item->room_number);
+            if (pickup->room_num != item->room_num) {
+                Item_NewRoom(item->spawn_number, item->room_num);
             }
         }
 
@@ -239,12 +239,12 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
     }
 
     ITEM_INFO *const pickup = &g_Items[item->spawn_number];
-    int16_t room_num = pickup->room_number;
+    int16_t room_num = pickup->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
     const int16_t height =
         Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
-    const bool in_water = g_RoomInfo[pickup->room_number].flags & RF_UNDERWATER;
+    const bool in_water = g_RoomInfo[pickup->room_num].flags & RF_UNDERWATER;
 
     if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
         item->status = DS_DROPPED;
@@ -264,13 +264,13 @@ static void Carrier_AnimateDrop(CARRIED_ITEM *item)
         }
     }
 
-    if (room_num != pickup->room_number) {
+    if (room_num != pickup->room_num) {
         Item_NewRoom(item->spawn_number, room_num);
     }
 
     // Track animating status in the carrier for saving/loading.
     item->pos = pickup->pos;
     item->rot = pickup->rot;
-    item->room_number = pickup->room_number;
+    item->room_num = pickup->room_num;
     item->fall_speed = pickup->fall_speed;
 }

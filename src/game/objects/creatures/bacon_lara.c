@@ -68,12 +68,12 @@ void BaconLara_Control(int16_t item_num)
         int32_t y = g_LaraItem->pos.y;
         int32_t z = 2 * m_AnchorZ - g_LaraItem->pos.z;
 
-        int16_t room_num = item->room_number;
+        int16_t room_num = item->room_num;
         const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
         const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
-        room_num = g_LaraItem->room_number;
+        room_num = g_LaraItem->room_num;
         sector = Room_GetSector(
             g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
         int32_t lh = Room_GetHeight(
@@ -90,7 +90,7 @@ void BaconLara_Control(int16_t item_num)
         item->rot.x = g_LaraItem->rot.x;
         item->rot.y = g_LaraItem->rot.y - PHD_180;
         item->rot.z = g_LaraItem->rot.z;
-        Item_NewRoom(item_num, g_LaraItem->room_number);
+        Item_NewRoom(item_num, g_LaraItem->room_num);
 
         if (h >= lh + WALL_L && !g_LaraItem->gravity_status) {
             item->current_anim_state = LS_FAST_FALL;
@@ -111,7 +111,7 @@ void BaconLara_Control(int16_t item_num)
         int32_t y = item->pos.y;
         int32_t z = item->pos.z;
 
-        int16_t room_num = item->room_number;
+        int16_t room_num = item->room_num;
         const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
         const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;

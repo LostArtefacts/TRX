@@ -121,7 +121,7 @@ void Scion_Control3(int16_t item_num)
     }
 
     if (counter % 10 == 0) {
-        int16_t fx_num = Effect_Create(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x + (Random_GetControl() - 0x4000) / 32;

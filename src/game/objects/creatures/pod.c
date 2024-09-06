@@ -67,7 +67,7 @@ void Pod_Initialise(int16_t item_num)
             break;
         }
 
-        bug->room_number = item->room_number;
+        bug->room_num = item->room_num;
         bug->pos.x = item->pos.x;
         bug->pos.y = item->pos.y;
         bug->pos.z = item->pos.z;

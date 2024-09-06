@@ -102,7 +102,7 @@ static void Bridge_FixEmbeddedPosition(int16_t item_num)
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z;
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     const int16_t bridge_height = ABS(bounds->max.y) - ABS(bounds->min.y);

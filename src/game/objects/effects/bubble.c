@@ -21,7 +21,7 @@ void Bubble_Control(int16_t fx_num)
     int32_t y = fx->pos.y - fx->speed;
     int32_t z = fx->pos.z + ((Math_Cos(fx->rot.x) * 8) >> W2V_SHIFT);
 
-    int16_t room_num = fx->room_number;
+    int16_t room_num = fx->room_num;
     const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
     if (!sector || !(g_RoomInfo[room_num].flags & RF_UNDERWATER)) {
         Effect_Kill(fx_num);
@@ -34,7 +34,7 @@ void Bubble_Control(int16_t fx_num)
         return;
     }
 
-    if (fx->room_number != room_num) {
+    if (fx->room_num != room_num) {
         Effect_NewRoom(fx_num, room_num);
     }
     fx->pos.x = x;

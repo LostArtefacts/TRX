@@ -143,7 +143,7 @@ void Item_Initialise(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    ROOM_INFO *const r = &g_RoomInfo[item->room_number];
+    ROOM_INFO *const r = &g_RoomInfo[item->room_num];
     item->next_item = r->item_number;
     r->item_number = item_num;
     const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
@@ -189,7 +189,7 @@ void Item_RemoveActive(int16_t item_num)
 void Item_RemoveDrawn(int16_t item_num)
 {
     ITEM_INFO *const item = &g_Items[item_num];
-    ROOM_INFO *const r = &g_RoomInfo[item->room_number];
+    ROOM_INFO *const r = &g_RoomInfo[item->room_num];
 
     int16_t link_num = r->item_number;
     if (link_num == item_num) {
@@ -227,7 +227,7 @@ void Item_AddActive(int16_t item_num)
 void Item_NewRoom(int16_t item_num, int16_t room_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    ROOM_INFO *r = &g_RoomInfo[item->room_number];
+    ROOM_INFO *r = &g_RoomInfo[item->room_num];
 
     int16_t linknum = r->item_number;
     if (linknum == item_num) {
@@ -242,7 +242,7 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
     }
 
     r = &g_RoomInfo[room_num];
-    item->room_number = room_num;
+    item->room_num = room_num;
     item->next_item = r->item_number;
     r->item_number = item_num;
 }
@@ -252,17 +252,17 @@ void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
     int32_t x = item->pos.x;
     int32_t y = item->pos.y + height;
     int32_t z = item->pos.z;
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
     item->floor = Room_GetHeight(sector, x, y, z);
-    if (item->room_number != room_num) {
+    if (item->room_num != room_num) {
         Item_NewRoom(g_Lara.item_number, room_num);
     }
 }
 
 int16_t Item_GetHeight(ITEM_INFO *item)
 {
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     const int32_t height =
@@ -274,7 +274,7 @@ int16_t Item_GetHeight(ITEM_INFO *item)
 int16_t Item_GetWaterHeight(ITEM_INFO *item)
 {
     int16_t height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
     if (height != NO_HEIGHT) {
         height -= item->pos.y;
     }
@@ -288,7 +288,7 @@ int16_t Item_Spawn(const ITEM_INFO *const item, const GAME_OBJECT_ID object_id)
     if (spawn_num != NO_ITEM) {
         ITEM_INFO *spawn = &g_Items[spawn_num];
         spawn->object_id = object_id;
-        spawn->room_number = item->room_number;
+        spawn->room_num = item->room_num;
         spawn->pos = item->pos;
         spawn->rot = item->rot;
         Item_Initialise(spawn_num);
@@ -644,7 +644,7 @@ void Item_Animate(ITEM_INFO *item)
 
             case AC_SOUND_FX:
                 Item_PlayAnimSFX(
-                    item, command, g_RoomInfo[item->room_number].flags);
+                    item, command, g_RoomInfo[item->room_num].flags);
                 command += 2;
                 break;
 

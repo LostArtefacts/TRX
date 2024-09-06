@@ -628,7 +628,7 @@ void Lara_Col_UpJump(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_number, 870);
+        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num, 870);
 
     if (Lara_TestHangJumpUp(item, coll)) {
         return;
@@ -943,7 +943,7 @@ void Lara_Col_UWDeath(ITEM_INFO *item, COLL_INFO *coll)
     g_Lara.air = -1;
     g_Lara.gun_status = LGS_HANDS_BUSY;
     int16_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
     if (wh != NO_HEIGHT && wh < item->pos.y - 100) {
         item->pos.y -= 5;
     }

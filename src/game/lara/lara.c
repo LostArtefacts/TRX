@@ -36,7 +36,7 @@ void Lara_Control(void)
     COLL_INFO coll = { 0 };
 
     ITEM_INFO *item = g_LaraItem;
-    const ROOM_INFO *const room = &g_RoomInfo[item->room_number];
+    const ROOM_INFO *const room = &g_RoomInfo[item->room_num];
     const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
 
     if (g_Lara.interact_target.is_moving
@@ -94,7 +94,7 @@ void Lara_Control(void)
         Splash_Spawn(item);
     } else if (g_Lara.water_status == LWS_UNDERWATER && !room_submerged) {
         const int16_t water_height = Room_GetWaterHeight(
-            item->pos.x, item->pos.y, item->pos.z, item->room_number);
+            item->pos.x, item->pos.y, item->pos.z, item->room_num);
         if (water_height != NO_HEIGHT
             && ABS(water_height - item->pos.y) < STEP_L) {
             g_Lara.water_status = LWS_SURFACE;
@@ -483,7 +483,7 @@ void Lara_Initialise(int32_t level_num)
     g_Lara.interact_target.item_num = NO_OBJECT;
     g_Lara.interact_target.move_count = 0;
 
-    if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
+    if (g_RoomInfo[g_LaraItem->room_num].flags & RF_UNDERWATER) {
         g_Lara.water_status = LWS_UNDERWATER;
         g_LaraItem->fall_speed = 0;
         g_LaraItem->goal_anim_state = LS_TREAD;
@@ -780,7 +780,7 @@ void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
             lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
         Collide_GetCollisionInfo(
             coll, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-            lara_item->room_number, LARA_HEIGHT);
+            lara_item->room_num, LARA_HEIGHT);
         coll->facing = old_facing;
 
         if (coll->coll_type != COLL_NONE) {

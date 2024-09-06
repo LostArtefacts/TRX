@@ -352,8 +352,8 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     // This is mostly true, but for example the 4 items in the Obelisk of
     // Khamoon the 4 items are sitting on top of a static mesh which is not
     // floor.
-    const SECTOR_INFO *const sector = Room_GetSector(
-        item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &item->room_num);
     const int16_t floor_height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
@@ -427,7 +427,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         item->interp.result.rot.z);
 
     Output_CalculateLight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_number);
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
 
     frame = object->frame_base;
     int32_t clip = Output_GetObjectBounds(&frame->bounds);

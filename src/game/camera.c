@@ -60,25 +60,24 @@ static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
     int32_t y = pos->y;
     int32_t z = pos->z;
 
-    const SECTOR_INFO *const sector =
-        Room_GetSector(x, y, z, &pos->room_number);
+    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &pos->room_num);
 
     const BOX_INFO *const box = &g_Boxes[sector->box];
     if (z < box->left + clamp
-        && Camera_BadPosition(x, y, z - clamp, pos->room_number)) {
+        && Camera_BadPosition(x, y, z - clamp, pos->room_num)) {
         pos->z = box->left + clamp;
     } else if (
         z > box->right - clamp
-        && Camera_BadPosition(x, y, z + clamp, pos->room_number)) {
+        && Camera_BadPosition(x, y, z + clamp, pos->room_num)) {
         pos->z = box->right - clamp;
     }
 
     if (x < box->top + clamp
-        && Camera_BadPosition(x - clamp, y, z, pos->room_number)) {
+        && Camera_BadPosition(x - clamp, y, z, pos->room_num)) {
         pos->x = box->top + clamp;
     } else if (
         x > box->bottom - clamp
-        && Camera_BadPosition(x + clamp, y, z, pos->room_number)) {
+        && Camera_BadPosition(x + clamp, y, z, pos->room_num)) {
         pos->x = box->bottom - clamp;
     }
 
@@ -107,14 +106,14 @@ static void Camera_SmartShift(
 {
     LOS_Check(&g_Camera.target, ideal);
 
-    const ROOM_INFO *r = &g_RoomInfo[g_Camera.target.room_number];
+    const ROOM_INFO *r = &g_RoomInfo[g_Camera.target.room_num];
     int32_t z_sector = (g_Camera.target.z - r->z) >> WALL_SHIFT;
     int32_t x_sector = (g_Camera.target.x - r->x) >> WALL_SHIFT;
 
     const int16_t item_box = r->sectors[z_sector + x_sector * r->z_size].box;
     BOX_INFO *box = &g_Boxes[item_box];
 
-    r = &g_RoomInfo[ideal->room_number];
+    r = &g_RoomInfo[ideal->room_num];
     z_sector = (ideal->z - r->z) >> WALL_SHIFT;
     x_sector = (ideal->x - r->x) >> WALL_SHIFT;
 
@@ -132,7 +131,7 @@ static void Camera_SmartShift(
 
     int32_t test = (ideal->z - WALL_L) | (WALL_L - 1);
     bool bad_left =
-        Camera_BadPosition(ideal->x, ideal->y, test, ideal->room_number);
+        Camera_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
     if (!bad_left) {
         camera_box = r->sectors[z_sector - 1 + x_sector * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].left < left) {
@@ -142,7 +141,7 @@ static void Camera_SmartShift(
 
     test = (ideal->z + WALL_L) & (~(WALL_L - 1));
     bool bad_right =
-        Camera_BadPosition(ideal->x, ideal->y, test, ideal->room_number);
+        Camera_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
     if (!bad_right) {
         camera_box = r->sectors[z_sector + 1 + x_sector * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].right > right) {
@@ -152,7 +151,7 @@ static void Camera_SmartShift(
 
     test = (ideal->x - WALL_L) | (WALL_L - 1);
     bool bad_top =
-        Camera_BadPosition(test, ideal->y, ideal->z, ideal->room_number);
+        Camera_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
     if (!bad_top) {
         camera_box = r->sectors[z_sector + (x_sector - 1) * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].top < top) {
@@ -162,7 +161,7 @@ static void Camera_SmartShift(
 
     test = (ideal->x + WALL_L) & (~(WALL_L - 1));
     bool bad_bottom =
-        Camera_BadPosition(test, ideal->y, ideal->z, ideal->room_number);
+        Camera_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
     if (!bad_bottom) {
         camera_box = r->sectors[z_sector + (x_sector + 1) * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].bottom > bottom) {
@@ -227,7 +226,7 @@ static void Camera_SmartShift(
     }
 
     if (!noclip) {
-        Room_GetSector(ideal->x, ideal->y, ideal->z, &ideal->room_number);
+        Room_GetSector(ideal->x, ideal->y, ideal->z, &ideal->room_num);
     }
 }
 
@@ -301,13 +300,12 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
     g_Camera.pos.x += (ideal->x - g_Camera.pos.x) / speed;
     g_Camera.pos.z += (ideal->z - g_Camera.pos.z) / speed;
     g_Camera.pos.y += (ideal->y - g_Camera.pos.y) / speed;
-    g_Camera.pos.room_number = ideal->room_number;
+    g_Camera.pos.room_num = ideal->room_num;
 
     g_ChunkyFlag = false;
 
     const SECTOR_INFO *sector = Room_GetSector(
-        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
-        &g_Camera.pos.room_number);
+        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
     int32_t height =
         Room_GetHeight(sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
         - GROUND_SHIFT;
@@ -316,7 +314,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
         LOS_Check(&g_Camera.target, &g_Camera.pos);
         sector = Room_GetSector(
             g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
-            &g_Camera.pos.room_number);
+            &g_Camera.pos.room_num);
         height = Room_GetHeight(
                      sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
             - GROUND_SHIFT;
@@ -445,7 +443,7 @@ static void Camera_AdjustMusicVolume(const bool underwater)
 
 void Camera_Reset(void)
 {
-    g_Camera.pos.room_number = NO_ROOM;
+    g_Camera.pos.room_num = NO_ROOM;
 }
 
 void Camera_ResetPosition(void)
@@ -456,12 +454,12 @@ void Camera_ResetPosition(void)
     g_Camera.target.x = g_LaraItem->pos.x;
     g_Camera.target.y = g_Camera.shift;
     g_Camera.target.z = g_LaraItem->pos.z;
-    g_Camera.target.room_number = g_LaraItem->room_number;
+    g_Camera.target.room_num = g_LaraItem->room_num;
 
     g_Camera.pos.x = g_Camera.target.x;
     g_Camera.pos.y = g_Camera.target.y;
     g_Camera.pos.z = g_Camera.target.z - 100;
-    g_Camera.pos.room_number = g_Camera.target.room_number;
+    g_Camera.pos.room_num = g_Camera.target.room_num;
 
     g_Camera.target_distance = WALL_L * 3 / 2;
     g_Camera.item = NULL;
@@ -503,7 +501,7 @@ void Camera_Chase(ITEM_INFO *item)
     PHD_ANGLE angle = item->rot.y + g_Camera.target_angle;
     ideal.x = g_Camera.target.x - (distance * Math_Sin(angle) >> W2V_SHIFT);
     ideal.z = g_Camera.target.z - (distance * Math_Cos(angle) >> W2V_SHIFT);
-    ideal.room_number = g_Camera.pos.room_number;
+    ideal.room_num = g_Camera.pos.room_num;
 
     Camera_SmartShift(&ideal, Camera_Shift);
 
@@ -544,7 +542,7 @@ void Camera_Combat(ITEM_INFO *item)
            >> W2V_SHIFT);
     ideal.z = g_Camera.target.z
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
-    ideal.room_number = g_Camera.pos.room_number;
+    ideal.room_num = g_Camera.pos.room_num;
 
     Camera_SmartShift(&ideal, Camera_Shift);
     Camera_Move(&ideal, g_Camera.speed);
@@ -578,7 +576,7 @@ void Camera_Look(ITEM_INFO *item)
 
     if (Camera_BadPosition(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
-            g_Camera.target.room_number)) {
+            g_Camera.target.room_num)) {
         g_Camera.target.x = item->pos.x;
         g_Camera.target.z = item->pos.z;
     }
@@ -592,7 +590,7 @@ void Camera_Look(ITEM_INFO *item)
            >> W2V_SHIFT);
     ideal.z = g_Camera.target.z
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
-    ideal.room_number = g_Camera.pos.room_number;
+    ideal.room_num = g_Camera.pos.room_num;
 
     Camera_SmartShift(&ideal, Camera_Clip);
 
@@ -611,7 +609,7 @@ void Camera_Fixed(void)
     ideal.x = fixed->x;
     ideal.y = fixed->y;
     ideal.z = fixed->z;
-    ideal.room_number = fixed->data;
+    ideal.room_num = fixed->data;
 
     g_Camera.fixed_camera = 1;
 
@@ -694,7 +692,7 @@ void Camera_Update(void)
 
     if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
         y -= STEP_L;
-        g_Camera.target.room_number = item->room_number;
+        g_Camera.target.room_num = item->room_num;
 
         if (g_Camera.fixed_camera) {
             g_Camera.target.y = y;
@@ -722,7 +720,7 @@ void Camera_Update(void)
             g_Camera.target.x += Math_Sin(item->rot.y) * shift >> W2V_SHIFT;
         }
 
-        g_Camera.target.room_number = item->room_number;
+        g_Camera.target.room_num = item->room_num;
 
         if (g_Camera.fixed_camera != fixed_camera) {
             g_Camera.target.y = y;
@@ -735,7 +733,7 @@ void Camera_Update(void)
 
         const SECTOR_INFO *const sector = Room_GetSector(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
-            &g_Camera.target.room_number);
+            &g_Camera.target.room_num);
         if (g_Camera.target.y > Room_GetHeight(
                 sector, g_Camera.target.x, g_Camera.target.y,
                 g_Camera.target.z)) {
@@ -779,11 +777,11 @@ void Camera_Update(void)
 
 static void Camera_EnsureEnvironment(void)
 {
-    if (g_Camera.pos.room_number == NO_ROOM) {
+    if (g_Camera.pos.room_num == NO_ROOM) {
         return;
     }
 
-    if (g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER) {
+    if (g_RoomInfo[g_Camera.pos.room_num].flags & RF_UNDERWATER) {
         Camera_AdjustMusicVolume(true);
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
         g_Camera.underwater = true;

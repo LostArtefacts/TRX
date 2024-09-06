@@ -88,7 +88,7 @@ static void Savegame_LoadPostprocess(void)
         OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         if (obj->save_position && obj->shadow_size) {
-            int16_t room_num = item->room_number;
+            int16_t room_num = item->room_num;
             const SECTOR_INFO *const sector = Room_GetSector(
                 item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->floor =

@@ -26,7 +26,7 @@ void Twinkle_Control(int16_t fx_num)
 
 void Twinkle_Spawn(GAME_VECTOR *pos)
 {
-    int16_t fx_num = Effect_Create(pos->room_number);
+    int16_t fx_num = Effect_Create(pos->room_num);
     if (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
         fx->pos.x = pos->x;
@@ -44,7 +44,7 @@ void Twinkle_SparkleItem(ITEM_INFO *item, int mesh_mask)
     GAME_VECTOR effect_pos;
 
     int32_t num = Collide_GetSpheres(item, slist, 1);
-    effect_pos.room_number = item->room_number;
+    effect_pos.room_num = item->room_num;
     for (int i = 0; i < num; i++) {
         if (mesh_mask & (1 << i)) {
             SPHERE *sptr = &slist[i];

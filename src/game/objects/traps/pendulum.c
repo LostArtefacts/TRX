@@ -42,11 +42,11 @@ void Pendulum_Control(int16_t item_num)
         int32_t z = g_LaraItem->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = g_LaraItem->pos.y - Random_GetControl() / 44;
         int32_t d = g_LaraItem->rot.y + (Random_GetControl() - 0x4000) / 8;
-        Effect_Blood(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_number);
+        Effect_Blood(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_num);
     }
 
-    const SECTOR_INFO *const sector = Room_GetSector(
-        item->pos.x, item->pos.y, item->pos.z, &item->room_number);
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &item->room_num);
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
     Item_Animate(item);

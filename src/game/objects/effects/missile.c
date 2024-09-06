@@ -33,7 +33,7 @@ void Missile_Control(int16_t fx_num)
     fx->pos.z += (speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT;
     fx->pos.x += (speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT;
 
-    int16_t room_num = fx->room_number;
+    int16_t room_num = fx->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     const int32_t height =
@@ -68,7 +68,7 @@ void Missile_Control(int16_t fx_num)
         return;
     }
 
-    if (room_num != fx->room_number) {
+    if (room_num != fx->room_num) {
         Effect_NewRoom(fx_num, room_num);
     }
 

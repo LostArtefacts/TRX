@@ -95,7 +95,7 @@ static COMMAND_RESULT Console_Cmd_Pos(const char *const args)
     }
 
     Console_Log(
-        GS(OSD_POS_GET), g_LaraItem->room_number,
+        GS(OSD_POS_GET), g_LaraItem->room_num,
         g_LaraItem->pos.x / (float)WALL_L, g_LaraItem->pos.y / (float)WALL_L,
         g_LaraItem->pos.z / (float)WALL_L,
         g_LaraItem->rot.x * 360.0f / (float)PHD_ONE,

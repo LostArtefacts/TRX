@@ -40,7 +40,7 @@ void Statue_Initialise(int16_t item_num)
 
     ITEM_INFO *centaur = &g_Items[centaur_item_num];
     centaur->object_id = O_CENTAUR;
-    centaur->room_number = item->room_number;
+    centaur->room_num = item->room_num;
     centaur->pos.x = item->pos.x;
     centaur->pos.y = item->pos.y;
     centaur->pos.z = item->pos.z;

@@ -13,7 +13,7 @@ void FX_Bubbles(ITEM_INFO *item)
 {
     // XXX: until we get Robolara, it makes sense for her to breathe underwater
     if (g_Lara.water_status == LWS_CHEAT
-        && !(g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER)) {
+        && !(g_RoomInfo[g_LaraItem->room_num].flags & RF_UNDERWATER)) {
         return;
     }
 
@@ -32,7 +32,7 @@ void FX_Bubbles(ITEM_INFO *item)
     Collide_GetJointAbsPosition(item, &offset, LM_HEAD);
 
     for (int i = 0; i < count; i++) {
-        int16_t fx_num = Effect_Create(item->room_number);
+        int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
             FX_INFO *fx = &g_Effects[fx_num];
             fx->pos.x = offset.x;

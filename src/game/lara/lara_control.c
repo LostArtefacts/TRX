@@ -34,7 +34,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
     XYZ_32 target;
 
     ITEM_INFO *const item = g_LaraItem;
-    const ROOM_INFO *const r = &g_RoomInfo[item->room_number];
+    const ROOM_INFO *const r = &g_RoomInfo[item->room_num];
     const SECTOR_INFO *const sector =
         &r->sectors
              [((item->pos.z - r->z) >> WALL_SHIFT)
@@ -78,7 +78,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
         item->pos.z - coll->old.z, item->pos.x - coll->old.x);
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
-        item->room_number, UW_HEIGHT);
+        item->room_num, UW_HEIGHT);
 
     if (coll->coll_type == COLL_FRONT) {
         if (item->rot.x > 35 * PHD_DEGREE) {
@@ -120,9 +120,9 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     int16_t numroom = 0;
     int16_t roomies[MAX_BADDIE_COLLISION];
 
-    roomies[numroom++] = lara_item->room_number;
+    roomies[numroom++] = lara_item->room_num;
 
-    DOOR_INFOS *door = g_RoomInfo[lara_item->room_number].doors;
+    DOOR_INFOS *door = g_RoomInfo[lara_item->room_num].doors;
     if (door) {
         for (int i = 0; i < door->count; i++) {
             if (numroom >= MAX_BADDIE_COLLISION) {

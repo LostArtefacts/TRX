@@ -27,7 +27,7 @@ void BodyPart_Control(int16_t fx_num)
     fx->fall_speed += GRAVITY;
     fx->pos.y += fx->fall_speed;
 
-    int16_t room_num = fx->room_number;
+    int16_t room_num = fx->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
 
@@ -70,7 +70,7 @@ void BodyPart_Control(int16_t fx_num)
         }
     }
 
-    if (room_num != fx->room_number) {
+    if (room_num != fx->room_num) {
         Effect_NewRoom(fx_num, room_num);
     }
 }

@@ -10,7 +10,7 @@ void Collide_GetCollisionInfo(
     int32_t objheight);
 
 bool Collide_CollideStaticObjects(
-    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_number,
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
     int32_t height);
 
 int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *slist, int32_t world_space);

@@ -211,7 +211,7 @@ void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
     }
 
     if (g_Objects[O_LARA].loaded) {
-        if (g_RoomInfo[g_LaraItem->room_number].flags & RF_UNDERWATER) {
+        if (g_RoomInfo[g_LaraItem->room_num].flags & RF_UNDERWATER) {
             Output_SetupBelowWater(g_Camera.underwater);
         } else {
             Output_SetupAboveWater(g_Camera.underwater);
@@ -273,7 +273,7 @@ static void Room_DrawSkybox(void)
 void Room_DrawSingleRoom(int16_t room_num)
 {
     bool camera_underwater =
-        g_RoomInfo[g_Camera.pos.room_number].flags & RF_UNDERWATER;
+        g_RoomInfo[g_Camera.pos.room_num].flags & RF_UNDERWATER;
 
     ROOM_INFO *r = &g_RoomInfo[room_num];
     if (r->flags & RF_UNDERWATER) {

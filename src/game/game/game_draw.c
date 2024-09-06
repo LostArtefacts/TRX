@@ -19,8 +19,7 @@ void Game_DrawScene(bool draw_overlay)
     Camera_Apply();
 
     if (g_Objects[O_LARA].loaded) {
-        Room_DrawAllRooms(
-            g_Camera.interp.room_num, g_Camera.target.room_number);
+        Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
         if (draw_overlay) {
             Overlay_DrawGameInfo();
         } else {

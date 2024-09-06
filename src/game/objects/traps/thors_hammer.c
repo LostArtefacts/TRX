@@ -40,7 +40,7 @@ void ThorsHandle_Initialise(int16_t item_num)
     int16_t head_item_num = Item_Create();
     ITEM_INFO *head_item = &g_Items[head_item_num];
     head_item->object_id = O_THORS_HEAD;
-    head_item->room_number = hand_item->room_number;
+    head_item->room_num = hand_item->room_num;
     head_item->pos = hand_item->pos;
     head_item->rot = hand_item->rot;
     head_item->shade = hand_item->shade;

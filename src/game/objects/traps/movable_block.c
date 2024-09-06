@@ -77,7 +77,7 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
 
 static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height)
 {
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
@@ -103,7 +103,7 @@ static bool MovableBlock_TestPush(
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z;
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
 
     switch (quadrant) {
     case DIR_NORTH:
@@ -168,7 +168,7 @@ static bool MovableBlock_TestPull(
     int32_t y = item->pos.y;
     int32_t z = item->pos.z + z_add;
 
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
@@ -188,7 +188,7 @@ static bool MovableBlock_TestPull(
 
     x += x_add;
     z += z_add;
-    room_num = item->room_number;
+    room_num = item->room_num;
     sector = Room_GetSector(x, y, z, &room_num);
 
     if (Room_GetHeight(sector, x, y, z) != y) {
@@ -203,7 +203,7 @@ static bool MovableBlock_TestPull(
     x = g_LaraItem->pos.x + x_add;
     y = g_LaraItem->pos.y;
     z = g_LaraItem->pos.z + z_add;
-    room_num = g_LaraItem->room_number;
+    room_num = g_LaraItem->room_num;
     sector = Room_GetSector(x, y, z, &room_num);
     coll.radius = LARA_RAD;
     coll.quadrant = (quadrant + 2) & 3;
@@ -247,7 +247,7 @@ void MovableBlock_Control(int16_t item_num)
 
     Item_Animate(item);
 
-    int16_t room_num = item->room_number;
+    int16_t room_num = item->room_num;
     const SECTOR_INFO *sector = Room_GetSector(
         item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
     const int32_t height = Room_GetHeight(
@@ -268,7 +268,7 @@ void MovableBlock_Control(int16_t item_num)
         Item_RemoveActive(item_num);
     }
 
-    if (item->room_number != room_num) {
+    if (item->room_num != room_num) {
         Item_NewRoom(item_num, room_num);
     }
 
