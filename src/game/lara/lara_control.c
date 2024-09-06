@@ -39,7 +39,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
         &r->sectors
              [((item->pos.z - r->z) >> WALL_SHIFT)
               + ((item->pos.x - r->x) >> WALL_SHIFT) * r->z_size];
-    item->box_number = sector->box;
+    item->box_num = sector->box;
 
     if (Box_CalculateTarget(&target, item, &g_Lara.LOT) == TARGET_NONE) {
         return;

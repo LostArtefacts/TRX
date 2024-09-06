@@ -736,8 +736,8 @@ static bool Savegame_BSON_LoadLOT(struct json_object_s *lot_obj, LOT_INFO *lot)
 
     lot->head = json_object_get_int(lot_obj, "head", lot->head);
     lot->tail = json_object_get_int(lot_obj, "tail", lot->tail);
-    lot->search_number =
-        json_object_get_int(lot_obj, "search_num", lot->search_number);
+    lot->search_num =
+        json_object_get_int(lot_obj, "search_num", lot->search_num);
     lot->block_mask =
         json_object_get_int(lot_obj, "block_mask", lot->block_mask);
     lot->step = json_object_get_int(lot_obj, "step", lot->step);
@@ -1189,7 +1189,7 @@ static struct json_object_s *Savegame_BSON_DumpLOT(LOT_INFO *lot)
     // json_object_append_int(lot_obj, "node", lot->node);
     json_object_append_int(lot_obj, "head", lot->head);
     json_object_append_int(lot_obj, "tail", lot->tail);
-    json_object_append_int(lot_obj, "search_num", lot->search_number);
+    json_object_append_int(lot_obj, "search_num", lot->search_num);
     json_object_append_int(lot_obj, "block_mask", lot->block_mask);
     json_object_append_int(lot_obj, "step", lot->step);
     json_object_append_int(lot_obj, "drop", lot->drop);

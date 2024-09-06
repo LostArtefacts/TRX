@@ -161,16 +161,16 @@ void LOT_CreateZone(ITEM_INFO *item)
     const ROOM_INFO *const r = &g_RoomInfo[item->room_num];
     const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
-    item->box_number = r->sectors[z_sector + x_sector * r->z_size].box;
+    item->box_num = r->sectors[z_sector + x_sector * r->z_size].box;
 
-    int16_t zone_number = zone[item->box_number];
-    int16_t flip_number = flip[item->box_number];
+    int16_t zone_num = zone[item->box_num];
+    int16_t flip_number = flip[item->box_num];
 
     creature->LOT.zone_count = 0;
     BOX_NODE *node = creature->LOT.node;
     for (int i = 0; i < g_NumberBoxes; i++) {
-        if (zone[i] == zone_number || flip[i] == flip_number) {
-            node->box_number = i;
+        if (zone[i] == zone_num || flip[i] == flip_number) {
+            node->box_num = i;
             node++;
             creature->LOT.zone_count++;
         }
@@ -186,7 +186,7 @@ void LOT_InitialiseLOT(LOT_INFO *LOT)
 
 void LOT_ClearLOT(LOT_INFO *LOT)
 {
-    LOT->search_number = 0;
+    LOT->search_num = 0;
     LOT->head = NO_BOX;
     LOT->tail = NO_BOX;
     LOT->target_box = NO_BOX;
@@ -194,7 +194,7 @@ void LOT_ClearLOT(LOT_INFO *LOT)
 
     for (int i = 0; i < g_NumberBoxes; i++) {
         BOX_NODE *node = &LOT->node[i];
-        node->search_number = 0;
+        node->search_num = 0;
         node->exit_box = NO_BOX;
         node->next_expansion = NO_BOX;
     }

@@ -1296,7 +1296,7 @@ typedef struct {
     int16_t speed;
     int16_t fall_speed;
     int16_t hit_points;
-    int16_t box_number;
+    int16_t box_num;
     int16_t timer;
     int16_t flags;
     int16_t shade;
@@ -1370,16 +1370,16 @@ typedef struct AMMO_INFO {
 
 typedef struct BOX_NODE {
     int16_t exit_box;
-    uint16_t search_number;
+    uint16_t search_num;
     int16_t next_expansion;
-    int16_t box_number;
+    int16_t box_num;
 } BOX_NODE;
 
 typedef struct LOT_INFO {
     BOX_NODE *node;
     int16_t head;
     int16_t tail;
-    uint16_t search_number;
+    uint16_t search_num;
     uint16_t block_mask;
     int16_t step;
     int16_t drop;
@@ -1850,7 +1850,7 @@ typedef struct BITE_INFO {
 } BITE_INFO;
 
 typedef struct AI_INFO {
-    int16_t zone_number;
+    int16_t zone_num;
     int16_t enemy_zone;
     int32_t distance;
     int32_t ahead;

@@ -292,7 +292,7 @@ static void Savegame_Legacy_WriteLOT(LOT_INFO *lot)
 
     Savegame_Legacy_Write(&lot->head, sizeof(int16_t));
     Savegame_Legacy_Write(&lot->tail, sizeof(int16_t));
-    Savegame_Legacy_Write(&lot->search_number, sizeof(uint16_t));
+    Savegame_Legacy_Write(&lot->search_num, sizeof(uint16_t));
     Savegame_Legacy_Write(&lot->block_mask, sizeof(uint16_t));
     Savegame_Legacy_Write(&lot->step, sizeof(int16_t));
     Savegame_Legacy_Write(&lot->drop, sizeof(int16_t));
@@ -392,7 +392,7 @@ static void Savegame_Legacy_ReadLOT(LOT_INFO *lot)
 
     Savegame_Legacy_Read(&lot->head, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->tail, sizeof(int16_t));
-    Savegame_Legacy_Read(&lot->search_number, sizeof(uint16_t));
+    Savegame_Legacy_Read(&lot->search_num, sizeof(uint16_t));
     Savegame_Legacy_Read(&lot->block_mask, sizeof(uint16_t));
     Savegame_Legacy_Read(&lot->step, sizeof(int16_t));
     Savegame_Legacy_Read(&lot->drop, sizeof(int16_t));

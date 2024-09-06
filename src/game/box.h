@@ -7,10 +7,10 @@
 
 bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion);
 bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion);
-void Box_TargetBox(LOT_INFO *LOT, int16_t box_number);
-bool Box_StalkBox(ITEM_INFO *item, int16_t box_number);
-bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number);
-bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number);
+void Box_TargetBox(LOT_INFO *LOT, int16_t box_num);
+bool Box_StalkBox(ITEM_INFO *item, int16_t box_num);
+bool Box_EscapeBox(ITEM_INFO *item, int16_t box_num);
+bool Box_ValidBox(ITEM_INFO *item, int16_t zone_num, int16_t box_num);
 TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM_INFO *item, LOT_INFO *LOT);
 bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int16_t box_height, int16_t next_height,

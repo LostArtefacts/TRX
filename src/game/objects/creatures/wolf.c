@@ -114,8 +114,7 @@ void Wolf_Control(int16_t item_num)
         switch (item->current_anim_state) {
         case WOLF_SLEEP:
             head = 0;
-            if (wolf->mood == MOOD_ESCAPE
-                || info.zone_number == info.enemy_zone) {
+            if (wolf->mood == MOOD_ESCAPE || info.zone_num == info.enemy_zone) {
                 item->required_anim_state = WOLF_CROUCH;
                 item->goal_anim_state = WOLF_STOP;
             } else if (Random_GetControl() < WOLF_WAKE_CHANCE) {

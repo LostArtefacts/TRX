@@ -185,7 +185,7 @@ void Ape_Control(int16_t item_num)
                 item->goal_anim_state = APE_ATTACK1;
             } else if (
                 !(ape->flags & APE_ATTACK_FLAG)
-                && info.zone_number == info.enemy_zone && info.ahead) {
+                && info.zone_num == info.enemy_zone && info.ahead) {
                 int16_t random = Random_GetControl() >> 5;
                 if (random < APE_JUMP_CHANCE) {
                     item->goal_anim_state = APE_JUMP;

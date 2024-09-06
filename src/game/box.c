@@ -30,52 +30,51 @@ bool Box_SearchLOT(LOT_INFO *LOT, int32_t expansion)
         int done = 0;
         int index = box->overlap_index & OVERLAP_INDEX;
         do {
-            int16_t box_number = g_Overlap[index++];
-            if (box_number & END_BIT) {
+            int16_t box_num = g_Overlap[index++];
+            if (box_num & END_BIT) {
                 done = 1;
-                box_number &= BOX_NUMBER;
+                box_num &= BOX_NUMBER;
             }
 
-            if (search_zone != zone[box_number]) {
+            if (search_zone != zone[box_num]) {
                 continue;
             }
 
-            int change = g_Boxes[box_number].height - box->height;
+            int change = g_Boxes[box_num].height - box->height;
             if (change > LOT->step || change < LOT->drop) {
                 continue;
             }
 
-            BOX_NODE *expand = &LOT->node[box_number];
-            if ((node->search_number & SEARCH_NUMBER)
-                < (expand->search_number & SEARCH_NUMBER)) {
+            BOX_NODE *expand = &LOT->node[box_num];
+            if ((node->search_num & SEARCH_NUMBER)
+                < (expand->search_num & SEARCH_NUMBER)) {
                 continue;
             }
 
-            if (node->search_number & BLOCKED_SEARCH) {
-                if ((node->search_number & SEARCH_NUMBER)
-                    == (expand->search_number & SEARCH_NUMBER)) {
+            if (node->search_num & BLOCKED_SEARCH) {
+                if ((node->search_num & SEARCH_NUMBER)
+                    == (expand->search_num & SEARCH_NUMBER)) {
                     continue;
                 }
-                expand->search_number = node->search_number;
+                expand->search_num = node->search_num;
             } else {
-                if ((node->search_number & SEARCH_NUMBER)
-                        == (expand->search_number & SEARCH_NUMBER)
-                    && !(expand->search_number & BLOCKED_SEARCH)) {
+                if ((node->search_num & SEARCH_NUMBER)
+                        == (expand->search_num & SEARCH_NUMBER)
+                    && !(expand->search_num & BLOCKED_SEARCH)) {
                     continue;
                 }
 
-                if (g_Boxes[box_number].overlap_index & LOT->block_mask) {
-                    expand->search_number =
-                        node->search_number | BLOCKED_SEARCH;
+                if (g_Boxes[box_num].overlap_index & LOT->block_mask) {
+                    expand->search_num = node->search_num | BLOCKED_SEARCH;
                 } else {
-                    expand->search_number = node->search_number;
+                    expand->search_num = node->search_num;
                     expand->exit_box = LOT->head;
                 }
             }
 
-            if (expand->next_expansion == NO_BOX && box_number != LOT->tail) {
-                LOT->node[LOT->tail].next_expansion = box_number;
-                LOT->tail = box_number;
+            if (expand->next_expansion == NO_BOX && box_num != LOT->tail) {
+                LOT->node[LOT->tail].next_expansion = box_num;
+                LOT->tail = box_num;
             }
         } while (!done);
 
@@ -102,24 +101,24 @@ bool Box_UpdateLOT(LOT_INFO *LOT, int32_t expansion)
             LOT->head = LOT->target_box;
         }
 
-        expand->search_number = ++LOT->search_number;
+        expand->search_num = ++LOT->search_num;
         expand->exit_box = NO_BOX;
     }
 
     return Box_SearchLOT(LOT, expansion);
 }
 
-void Box_TargetBox(LOT_INFO *LOT, int16_t box_number)
+void Box_TargetBox(LOT_INFO *LOT, int16_t box_num)
 {
-    box_number &= BOX_NUMBER;
+    box_num &= BOX_NUMBER;
 
-    BOX_INFO *box = &g_Boxes[box_number];
+    BOX_INFO *box = &g_Boxes[box_num];
 
     LOT->target.z = box->left + WALL_L / 2
         + (Random_GetControl() * (box->right - box->left - WALL_L) >> 15);
     LOT->target.x = box->top + WALL_L / 2
         + (Random_GetControl() * (box->bottom - box->top - WALL_L) >> 15);
-    LOT->required_box = box_number;
+    LOT->required_box = box_num;
 
     if (LOT->fly) {
         LOT->target.y = box->height - STEP_L * 3 / 2;
@@ -128,9 +127,9 @@ void Box_TargetBox(LOT_INFO *LOT, int16_t box_number)
     }
 }
 
-bool Box_StalkBox(ITEM_INFO *item, int16_t box_number)
+bool Box_StalkBox(ITEM_INFO *item, int16_t box_num)
 {
-    BOX_INFO *box = &g_Boxes[box_number];
+    BOX_INFO *box = &g_Boxes[box_num];
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
 
@@ -157,9 +156,9 @@ bool Box_StalkBox(ITEM_INFO *item, int16_t box_number)
     return true;
 }
 
-bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number)
+bool Box_EscapeBox(ITEM_INFO *item, int16_t box_num)
 {
-    BOX_INFO *box = &g_Boxes[box_number];
+    BOX_INFO *box = &g_Boxes[box_num];
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
 
@@ -176,7 +175,7 @@ bool Box_EscapeBox(ITEM_INFO *item, int16_t box_number)
     return true;
 }
 
-bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
+bool Box_ValidBox(ITEM_INFO *item, int16_t zone_num, int16_t box_num)
 {
     CREATURE_INFO *creature = item->data;
 
@@ -189,11 +188,11 @@ bool Box_ValidBox(ITEM_INFO *item, int16_t zone_number, int16_t box_number)
         zone = g_GroundZone2[g_FlipStatus];
     }
 
-    if (zone[box_number] != zone_number) {
+    if (zone[box_num] != zone_num) {
         return false;
     }
 
-    BOX_INFO *box = &g_Boxes[box_number];
+    BOX_INFO *box = &g_Boxes[box_num];
     if (box->overlap_index & creature->LOT.block_mask) {
         return false;
     }
@@ -219,15 +218,15 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM_INFO *item, LOT_INFO *LOT)
     target->y = item->pos.y;
     target->z = item->pos.z;
 
-    int32_t box_number = item->box_number;
-    if (box_number == NO_BOX) {
+    int32_t box_num = item->box_num;
+    if (box_num == NO_BOX) {
         return TARGET_NONE;
     }
 
     BOX_INFO *box;
     int32_t prime_free = ALL_CLIP;
     do {
-        box = &g_Boxes[box_number];
+        box = &g_Boxes[box_num];
 
         if (LOT->fly) {
             if (target->y > box->height - WALL_L) {
@@ -359,7 +358,7 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM_INFO *item, LOT_INFO *LOT)
             }
         }
 
-        if (box_number == LOT->target_box) {
+        if (box_num == LOT->target_box) {
             if (prime_free & (CLIP_LEFT | CLIP_RIGHT)) {
                 target->z = LOT->target.z;
             } else if (!(prime_free & SECONDARY_CLIP)) {
@@ -384,12 +383,12 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM_INFO *item, LOT_INFO *LOT)
             return TARGET_PRIMARY;
         }
 
-        box_number = LOT->node[box_number].exit_box;
-        if (box_number != NO_BOX
-            && (g_Boxes[box_number].overlap_index & LOT->block_mask)) {
+        box_num = LOT->node[box_num].exit_box;
+        if (box_num != NO_BOX
+            && (g_Boxes[box_num].overlap_index & LOT->block_mask)) {
             break;
         }
-    } while (box_number != NO_BOX);
+    } while (box_num != NO_BOX);
 
     if (prime_free & (CLIP_LEFT | CLIP_RIGHT)) {
         target->z = box->left + WALL_L / 2
