@@ -65,6 +65,7 @@ static void Level_LoadCinematic(VFILE *file);
 static void Level_LoadDemo(VFILE *file);
 static void Level_LoadSamples(VFILE *file);
 static void Level_CompleteSetup(int32_t level_num);
+static void Level_MarkWaterEdgeVertices(void);
 static size_t Level_CalculateMaxVertices(void);
 
 static void Level_LoadFromFile(
@@ -898,6 +899,8 @@ static void Level_CompleteSetup(int32_t level_num)
 
     Inject_AllInjections(&m_LevelInfo);
 
+    Level_MarkWaterEdgeVertices();
+
     // Must be called post-injection to allow for floor data changes.
     Stats_ObserveRoomsLoad();
 
@@ -950,6 +953,30 @@ static void Level_CompleteSetup(int32_t level_num)
 
     Memory_FreePointer(&sample_pointers);
     Memory_FreePointer(&sample_sizes);
+
+    Benchmark_End(benchmark, NULL);
+}
+
+static void Level_MarkWaterEdgeVertices(void)
+{
+    if (!g_Config.fix_texture_issues) {
+        return;
+    }
+
+    BENCHMARK *const benchmark = Benchmark_Start();
+    for (int32_t i = 0; i < g_RoomCount; i++) {
+        const ROOM_INFO *const room = &g_RoomInfo[i];
+        const int32_t y_test =
+            (room->flags & RF_UNDERWATER) ? room->max_ceiling : room->min_floor;
+        int16_t *data = room->data;
+        const int16_t num_vertices = *data++;
+        for (int32_t j = 0; j < num_vertices; j++) {
+            if (data[1] == y_test) {
+                data[3] |= NO_VERT_MOVE;
+            }
+            data += 4;
+        }
+    }
 
     Benchmark_End(benchmark, NULL);
 }

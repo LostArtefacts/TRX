@@ -1447,6 +1447,7 @@ static void Inject_AlterRoomVertex(INJECTION *injection)
     *(data_ptr + 2) += y_change;
     *(data_ptr + 3) += z_change;
     *(data_ptr + 4) += shade_change;
+    CLAMPG(*(data_ptr + 4), MAX_LIGHTING);
 }
 
 static void Inject_RotateRoomFace(INJECTION *injection)
