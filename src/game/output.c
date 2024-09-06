@@ -342,7 +342,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
         m_VBuf[i].zv = zv;
-        m_VBuf[i].g = obj_ptr[3];
+        m_VBuf[i].g = obj_ptr[3] & MAX_LIGHTING;
 
         if (zv < Output_GetNearZ()) {
             m_VBuf[i].clip = 0x8000;
@@ -350,21 +350,21 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             int16_t clip_flags = 0;
             int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
-                m_VBuf[i].g = 0x1FFF;
+                m_VBuf[i].g = MAX_LIGHTING;
                 if (!m_IsSkyboxEnabled) {
                     clip_flags |= 16;
                 }
             } else if (depth) {
                 m_VBuf[i].g += Output_CalcFogShade(depth);
                 if (!m_IsWaterEffect) {
-                    CLAMPG(m_VBuf[i].g, 0x1FFF);
+                    CLAMPG(m_VBuf[i].g, MAX_LIGHTING);
                 }
             }
 
             double persp = g_PhdPersp / zv;
             double xs = Viewport_GetCenterX() + xv * persp;
             double ys = Viewport_GetCenterY() + yv * persp;
-            if (m_IsWibbleEffect) {
+            if (m_IsWibbleEffect && !(obj_ptr[3] & NO_VERT_MOVE)) {
                 xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & 0x1F];
                 ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & 0x1F];
             }

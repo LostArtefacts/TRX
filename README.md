@@ -600,6 +600,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - **Temple of the Cat**: incorrect textures in rooms 50, 70, 71, 76, 78, 87 and 96, and a missing texture in 75
     - **Atlantean Stronghold**: incorrect textures in rooms 2, 6, 7 and 75, and missing textures in rooms 5, 13, 19, 63 and 74
     - **The Hive**: incorrect textures in room 8, 13 and 18
+- improved vertex movement when looking through water portals
 
 #### Audio
 - added music during the credits

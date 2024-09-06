@@ -130,6 +130,8 @@
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE 2
 #define MAX_SHADE 0x300
+#define MAX_LIGHTING 0x1FFF
+#define NO_VERT_MOVE 0x2000
 #define MAX_EXPANSION 5
 #define NO_BOX (-1)
 #define BOX_NUMBER 0x7FFF
