@@ -110,7 +110,7 @@ void Item_Initialise(int16_t item_num)
     OBJECT_INFO *object = &g_Objects[item->object_id];
 
     Item_SwitchToAnim(item, 0, 0);
-    item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
+    item->current_anim_state = g_Anims[item->anim_num].current_anim_state;
     item->goal_anim_state = item->current_anim_state;
     item->required_anim_state = 0;
     item->rot.x = 0;
@@ -550,8 +550,7 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 
 bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index)
 {
-    return item->anim_number
-        == g_Objects[item->object_id].anim_index + anim_index;
+    return item->anim_num == g_Objects[item->object_id].anim_index + anim_index;
 }
 
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame)
@@ -563,11 +562,11 @@ void Item_SwitchToObjAnim(
     ITEM_INFO *item, int16_t anim_index, int16_t frame,
     GAME_OBJECT_ID object_id)
 {
-    item->anim_number = g_Objects[object_id].anim_index + anim_index;
+    item->anim_num = g_Objects[object_id].anim_index + anim_index;
     if (frame < 0) {
-        item->frame_num = g_Anims[item->anim_number].frame_end + frame + 1;
+        item->frame_num = g_Anims[item->anim_num].frame_end + frame + 1;
     } else {
-        item->frame_num = g_Anims[item->anim_number].frame_base + frame;
+        item->frame_num = g_Anims[item->anim_num].frame_base + frame;
     }
 }
 
@@ -576,13 +575,13 @@ void Item_Animate(ITEM_INFO *item)
     item->touch_bits = 0;
     item->hit_status = 0;
 
-    ANIM_STRUCT *anim = &g_Anims[item->anim_number];
+    ANIM_STRUCT *anim = &g_Anims[item->anim_num];
 
     item->frame_num++;
 
     if (anim->number_changes > 0) {
         if (Item_GetAnimChange(item, anim)) {
-            anim = &g_Anims[item->anim_number];
+            anim = &g_Anims[item->anim_num];
             item->current_anim_state = anim->current_anim_state;
 
             if (item->required_anim_state == item->current_anim_state) {
@@ -620,10 +619,10 @@ void Item_Animate(ITEM_INFO *item)
             }
         }
 
-        item->anim_number = anim->jump_anim_num;
+        item->anim_num = anim->jump_anim_num;
         item->frame_num = anim->jump_frame_num;
 
-        anim = &g_Anims[item->anim_number];
+        anim = &g_Anims[item->anim_num];
         item->current_anim_state = anim->current_anim_state;
         item->goal_anim_state = item->current_anim_state;
         if (item->required_anim_state == item->current_anim_state) {
@@ -687,11 +686,10 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
             for (int j = 0; j < change->number_ranges; j++, range++) {
                 if (Item_TestFrameRange(
                         item,
-                        range->start_frame
-                            - g_Anims[item->anim_number].frame_base,
+                        range->start_frame - g_Anims[item->anim_num].frame_base,
                         range->end_frame
-                            - g_Anims[item->anim_number].frame_base)) {
-                    item->anim_number = range->link_anim_num;
+                            - g_Anims[item->anim_num].frame_base)) {
+                    item->anim_num = range->link_anim_num;
                     item->frame_num = range->link_frame_num;
                     return true;
                 }
@@ -783,7 +781,7 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item)
 int32_t Item_GetFrames(
     const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate)
 {
-    const ANIM_STRUCT *anim = &g_Anims[item->anim_number];
+    const ANIM_STRUCT *anim = &g_Anims[item->anim_num];
 
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
@@ -845,12 +843,12 @@ void Item_TakeDamage(ITEM_INFO *item, int16_t damage, bool hit_status)
 bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
 {
     return Anim_TestAbsFrameEqual(
-        item->frame_num, g_Anims[item->anim_number].frame_base + frame);
+        item->frame_num, g_Anims[item->anim_num].frame_base + frame);
 }
 
 bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
 {
     return Anim_TestAbsFrameRange(
-        item->frame_num, g_Anims[item->anim_number].frame_base + start,
-        g_Anims[item->anim_number].frame_base + end);
+        item->frame_num, g_Anims[item->anim_num].frame_base + start,
+        g_Anims[item->anim_num].frame_base + end);
 }

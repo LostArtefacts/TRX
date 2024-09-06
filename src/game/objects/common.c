@@ -335,7 +335,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 
     OBJECT_INFO *object = &g_Objects[item_num_option];
 
-    const FRAME_INFO *frame = g_Anims[item->anim_number].frame_ptr;
+    const FRAME_INFO *frame = g_Anims[item->anim_num].frame_ptr;
 
     // Restore the old frame number in case we need to get the sprite again.
     item->frame_num = old_frame_num;

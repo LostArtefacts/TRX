@@ -536,8 +536,8 @@ static bool Savegame_BSON_LoadItems(
                 item_obj, "goal_anim", item->goal_anim_state);
             item->required_anim_state = json_object_get_int(
                 item_obj, "required_anim", item->required_anim_state);
-            item->anim_number =
-                json_object_get_int(item_obj, "anim_num", item->anim_number);
+            item->anim_num =
+                json_object_get_int(item_obj, "anim_num", item->anim_num);
             item->frame_num =
                 json_object_get_int(item_obj, "frame_num", item->frame_num);
         }
@@ -1066,7 +1066,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                 item_obj, "goal_anim", item->goal_anim_state);
             json_object_append_int(
                 item_obj, "required_anim", item->required_anim_state);
-            json_object_append_int(item_obj, "anim_num", item->anim_number);
+            json_object_append_int(item_obj, "anim_num", item->anim_num);
             json_object_append_int(item_obj, "frame_num", item->frame_num);
         }
 

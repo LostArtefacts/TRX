@@ -226,9 +226,9 @@ void Lara_Animate(ITEM_INFO *item)
     ANIM_STRUCT *anim;
 
     item->frame_num++;
-    anim = &g_Anims[item->anim_number];
+    anim = &g_Anims[item->anim_num];
     if (anim->number_changes > 0 && Item_GetAnimChange(item, anim)) {
-        anim = &g_Anims[item->anim_number];
+        anim = &g_Anims[item->anim_num];
         item->current_anim_state = anim->current_anim_state;
     }
 
@@ -265,7 +265,7 @@ void Lara_Animate(ITEM_INFO *item)
             }
         }
 
-        item->anim_number = anim->jump_anim_num;
+        item->anim_num = anim->jump_anim_num;
         item->frame_num = anim->jump_frame_num;
 
         anim = &g_Anims[anim->jump_anim_num];

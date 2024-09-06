@@ -123,8 +123,7 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Config.enable_tr2_jumping) {
-        int16_t anim =
-            item->anim_number - g_Objects[item->object_id].anim_index;
+        int16_t anim = item->anim_num - g_Objects[item->object_id].anim_index;
         if (anim == LA_RUN_START) {
             m_JumpPermitted = false;
         } else if (
@@ -679,7 +678,7 @@ void Lara_State_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
-    int frm = item->frame_num - g_Anims[item->anim_number].frame_base;
+    int frm = item->frame_num - g_Anims[item->anim_num].frame_base;
     switch (frm) {
     case 5:
         g_Lara.mesh_effects |= (1 << LM_FOOT_L);

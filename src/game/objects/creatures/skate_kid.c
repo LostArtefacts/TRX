@@ -172,9 +172,9 @@ void SkateKid_Draw(ITEM_INFO *item)
     Object_DrawAnimatingItem(item);
 
     int16_t relative_anim =
-        item->anim_number - g_Objects[item->object_id].anim_index;
+        item->anim_num - g_Objects[item->object_id].anim_index;
     int16_t relative_frame =
-        item->frame_num - g_Anims[item->anim_number].frame_base;
+        item->frame_num - g_Anims[item->anim_num].frame_base;
     item->object_id = O_SKATEBOARD;
     Item_SwitchToAnim(item, relative_anim, relative_frame);
     Object_DrawAnimatingItem(item);

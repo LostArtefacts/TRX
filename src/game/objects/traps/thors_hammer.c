@@ -72,7 +72,7 @@ void ThorsHandle_Control(int16_t item_num)
         break;
 
     case THS_ACTIVE: {
-        int32_t frm = item->frame_num - g_Anims[item->anim_number].frame_base;
+        int32_t frm = item->frame_num - g_Anims[item->anim_num].frame_base;
         if (frm > 30) {
             int32_t x = item->pos.x;
             int32_t z = item->pos.z;
@@ -146,9 +146,9 @@ void ThorsHandle_Control(int16_t item_num)
 
     ITEM_INFO *head_item = item->data;
     int16_t relative_anim =
-        item->anim_number - g_Objects[item->object_id].anim_index;
+        item->anim_num - g_Objects[item->object_id].anim_index;
     int16_t relative_frame =
-        item->frame_num - g_Anims[item->anim_number].frame_base;
+        item->frame_num - g_Anims[item->anim_num].frame_base;
     Item_SwitchToAnim(head_item, relative_anim, relative_frame);
     head_item->current_anim_state = item->current_anim_state;
 }

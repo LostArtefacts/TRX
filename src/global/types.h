@@ -1288,7 +1288,7 @@ typedef struct {
     int16_t current_anim_state;
     int16_t goal_anim_state;
     int16_t required_anim_state;
-    int16_t anim_number;
+    int16_t anim_num;
     int16_t frame_num;
     int16_t room_number;
     int16_t next_item;

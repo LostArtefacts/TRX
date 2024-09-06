@@ -149,7 +149,7 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
             Savegame_Legacy_Read(&tmp_item.goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(
                 &tmp_item.required_anim_state, sizeof(int16_t));
-            Savegame_Legacy_Read(&tmp_item.anim_number, sizeof(int16_t));
+            Savegame_Legacy_Read(&tmp_item.anim_num, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.frame_num, sizeof(int16_t));
         }
         if (obj->save_hitpoints) {
@@ -589,7 +589,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->current_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&item->goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&item->required_anim_state, sizeof(int16_t));
-            Savegame_Legacy_Read(&item->anim_number, sizeof(int16_t));
+            Savegame_Legacy_Read(&item->anim_num, sizeof(int16_t));
             Savegame_Legacy_Read(&item->frame_num, sizeof(int16_t));
         }
 
@@ -764,7 +764,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Write(&item->current_anim_state, sizeof(int16_t));
             Savegame_Legacy_Write(&item->goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Write(&item->required_anim_state, sizeof(int16_t));
-            Savegame_Legacy_Write(&item->anim_number, sizeof(int16_t));
+            Savegame_Legacy_Write(&item->anim_num, sizeof(int16_t));
             Savegame_Legacy_Write(&item->frame_num, sizeof(int16_t));
         }
 
