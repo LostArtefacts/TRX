@@ -262,7 +262,7 @@ static void Level_LoadRooms(VFILE *file)
         current_room_info->bottom = 0;
         current_room_info->right = 0;
         current_room_info->item_num = NO_ITEM;
-        current_room_info->fx_number = NO_ITEM;
+        current_room_info->fx_num = NO_ITEM;
     }
 
     const int32_t fd_length = VFile_ReadS32(file);

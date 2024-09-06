@@ -608,7 +608,7 @@ void Room_FlipMap(void)
 
         // XXX: is this really necessary given the assignments above?
         r->item_num = flipped->item_num;
-        r->fx_number = flipped->fx_number;
+        r->fx_num = flipped->fx_num;
 
         Room_AddFlipItems(r);
     }

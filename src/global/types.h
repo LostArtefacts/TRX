@@ -1257,7 +1257,7 @@ typedef struct ROOM_INFO {
     int16_t bottom;
     int16_t bound_active;
     int16_t item_num;
-    int16_t fx_number;
+    int16_t fx_num;
     int16_t flipped_room;
     uint16_t flags;
 } ROOM_INFO;
