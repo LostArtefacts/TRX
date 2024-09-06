@@ -74,11 +74,10 @@ static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
     // to make sure the legacy savegame reader doesn't try to reach out for
     // information that's not there.
     return (
-        obj->save_flags && item->object_number != O_LAVA_EMITTER
-        && item->object_number != O_FLAME_EMITTER
-        && item->object_number != O_WATERFALL
-        && item->object_number != O_SCION_ITEM
-        && item->object_number != O_DART_EMITTER);
+        obj->save_flags && item->object_id != O_LAVA_EMITTER
+        && item->object_id != O_FLAME_EMITTER && item->object_id != O_WATERFALL
+        && item->object_id != O_SCION_ITEM
+        && item->object_id != O_DART_EMITTER);
 }
 
 static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
@@ -130,7 +129,7 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         ITEM_INFO tmp_item;
 
@@ -568,7 +567,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         if (obj->save_position) {
             Savegame_Legacy_Read(&item->pos.x, sizeof(int32_t));
@@ -598,7 +597,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Read(&item->hit_points, sizeof(int16_t));
         }
 
-        if ((item->object_number != O_BACON_LARA || !skip_reading_bacon_lara)
+        if ((item->object_id != O_BACON_LARA || !skip_reading_bacon_lara)
             && Savegame_Legacy_ItemHasSaveFlags(obj, item)) {
             Savegame_Legacy_Read(&item->flags, sizeof(int16_t));
             Savegame_Legacy_Read(&item->timer, sizeof(int16_t));
@@ -747,7 +746,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         if (obj->save_position) {
             Savegame_Legacy_Write(&item->pos.x, sizeof(int32_t));

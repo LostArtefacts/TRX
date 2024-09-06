@@ -85,7 +85,7 @@ static void Savegame_LoadPostprocess(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         if (obj->save_position && obj->shadow_size) {
             int16_t room_num = item->room_number;
@@ -101,7 +101,7 @@ static void Savegame_LoadPostprocess(void)
             if (obj->collision == PuzzleHole_Collision
                 && (item->status == IS_DEACTIVATED
                     || item->status == IS_ACTIVE)) {
-                item->object_number += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
+                item->object_id += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
             }
 
             if (obj->control == Pod_Control && item->status == IS_DEACTIVATED) {
@@ -130,20 +130,20 @@ static void Savegame_LoadPostprocess(void)
             Room_AlterFloorHeight(item, -WALL_L * 2);
         }
 
-        if (item->object_number == O_PIERRE && item->hit_points <= 0
+        if (item->object_id == O_PIERRE && item->hit_points <= 0
             && (item->flags & IF_ONESHOT)) {
             g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_COWBOY && item->hit_points <= 0) {
+        if (item->object_id == O_COWBOY && item->hit_points <= 0) {
             g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_BALDY && item->hit_points <= 0) {
+        if (item->object_id == O_BALDY && item->hit_points <= 0) {
             g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
 
-        if (item->object_number == O_LARSON && item->hit_points <= 0) {
+        if (item->object_id == O_LARSON && item->hit_points <= 0) {
             g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
         }
     }
@@ -183,7 +183,7 @@ void Savegame_ProcessItemsBeforeLoad(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         if (obj->control == MovableBlock_Control && item->status != IS_INVISIBLE
             && item->pos.y >= Item_GetHeight(item)) {
@@ -199,7 +199,7 @@ void Savegame_ProcessItemsBeforeSave(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
         if (obj->control == SaveCrystal_Control && item->data) {
             // need to reset the crystal status

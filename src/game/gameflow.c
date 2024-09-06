@@ -34,13 +34,13 @@ typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
 } GAMEFLOW_DISPLAY_PICTURE_DATA;
 
 typedef struct GAMEFLOW_MESH_SWAP_DATA {
-    GAME_OBJECT_ID object1_num;
-    GAME_OBJECT_ID object2_num;
+    GAME_OBJECT_ID object1_id;
+    GAME_OBJECT_ID object2_id;
     int32_t mesh_num;
 } GAMEFLOW_MESH_SWAP_DATA;
 
 typedef struct GAMEFLOW_GIVE_ITEM_DATA {
-    GAME_OBJECT_ID object_num;
+    GAME_OBJECT_ID object_id;
     int quantity;
 } GAMEFLOW_GIVE_ITEM_DATA;
 
@@ -422,9 +422,9 @@ static bool GameFlow_LoadLevelSequence(
             GAMEFLOW_GIVE_ITEM_DATA *give_item_data =
                 Memory_Alloc(sizeof(GAMEFLOW_GIVE_ITEM_DATA));
 
-            give_item_data->object_num =
+            give_item_data->object_id =
                 json_object_get_int(jseq_obj, "object_id", JSON_INVALID_NUMBER);
-            if (give_item_data->object_num == JSON_INVALID_NUMBER) {
+            if (give_item_data->object_id == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'object_id' must be a number",
                     level_num, type_str);
@@ -455,18 +455,18 @@ static bool GameFlow_LoadLevelSequence(
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
 
-            swap_data->object1_num = json_object_get_int(
+            swap_data->object1_id = json_object_get_int(
                 jseq_obj, "object1_id", JSON_INVALID_NUMBER);
-            if (swap_data->object1_num == JSON_INVALID_NUMBER) {
+            if (swap_data->object1_id == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'object1_id' must be a number",
                     level_num, type_str);
                 return false;
             }
 
-            swap_data->object2_num = json_object_get_int(
+            swap_data->object2_id = json_object_get_int(
                 jseq_obj, "object2_id", JSON_INVALID_NUMBER);
-            if (swap_data->object2_num == JSON_INVALID_NUMBER) {
+            if (swap_data->object2_id == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'object2_id' must be a number",
                     level_num, type_str);
@@ -1273,7 +1273,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
                 const GAMEFLOW_GIVE_ITEM_DATA *give_item_data =
                     (const GAMEFLOW_GIVE_ITEM_DATA *)seq->data;
                 Inv_AddItemNTimes(
-                    give_item_data->object_num, give_item_data->quantity);
+                    give_item_data->object_id, give_item_data->quantity);
             }
             break;
 
@@ -1308,15 +1308,15 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             int16_t *temp;
 
             temp = g_Meshes
-                [g_Objects[swap_data->object1_num].mesh_index
+                [g_Objects[swap_data->object1_id].mesh_index
                  + swap_data->mesh_num];
             g_Meshes
-                [g_Objects[swap_data->object1_num].mesh_index
+                [g_Objects[swap_data->object1_id].mesh_index
                  + swap_data->mesh_num] = g_Meshes
-                    [g_Objects[swap_data->object2_num].mesh_index
+                    [g_Objects[swap_data->object2_id].mesh_index
                      + swap_data->mesh_num];
             g_Meshes
-                [g_Objects[swap_data->object2_num].mesh_index
+                [g_Objects[swap_data->object2_id].mesh_index
                  + swap_data->mesh_num] = temp;
             break;
         }
@@ -1436,15 +1436,15 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
         case GFS_MESH_SWAP: {
             GAMEFLOW_MESH_SWAP_DATA *swap_data = seq->data;
             int16_t *temp = g_Meshes
-                [g_Objects[swap_data->object1_num].mesh_index
+                [g_Objects[swap_data->object1_id].mesh_index
                  + swap_data->mesh_num];
             g_Meshes
-                [g_Objects[swap_data->object1_num].mesh_index
+                [g_Objects[swap_data->object1_id].mesh_index
                  + swap_data->mesh_num] = g_Meshes
-                    [g_Objects[swap_data->object2_num].mesh_index
+                    [g_Objects[swap_data->object2_id].mesh_index
                      + swap_data->mesh_num];
             g_Meshes
-                [g_Objects[swap_data->object2_num].mesh_index
+                [g_Objects[swap_data->object2_id].mesh_index
                  + swap_data->mesh_num] = temp;
             break;
         }

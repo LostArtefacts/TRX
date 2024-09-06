@@ -130,7 +130,7 @@ void Scion_Control3(int16_t item_num)
             fx->pos.z = item->pos.z + (Random_GetControl() - 0x4000) / 32;
             fx->speed = 0;
             fx->frame_number = 0;
-            fx->object_number = O_EXPLOSION1;
+            fx->object_id = O_EXPLOSION1;
             fx->counter = 0;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
             g_Camera.bounce = -200;
@@ -146,7 +146,7 @@ void Scion_Control3(int16_t item_num)
 void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
     int16_t rotx = item->rot.x;
     int16_t roty = item->rot.y;
     int16_t rotz = item->rot.z;
@@ -160,8 +160,8 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
     if (lara_item->current_anim_state == LS_PICKUP) {
         if (Item_TestFrameEqual(lara_item, LF_PICKUPSCION)) {
-            Overlay_AddPickup(item->object_number);
-            Inv_AddItem(item->object_number);
+            Overlay_AddPickup(item->object_id);
+            Inv_AddItem(item->object_id);
             item->status = IS_INVISIBLE;
             Item_RemoveDrawn(item_num);
             g_GameInfo.current[g_CurrentLevel].stats.pickup_count++;
@@ -192,7 +192,7 @@ cleanup:
 void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
     int16_t rotx = item->rot.x;
     int16_t roty = item->rot.y;
     int16_t rotz = item->rot.z;

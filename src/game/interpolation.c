@@ -108,7 +108,7 @@ void Interpolation_Commit(void)
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM_INFO *const item = &g_Items[i];
         if ((item->flags & IF_KILLED_ITEM) || item->status == IS_NOT_ACTIVE
-            || item->object_number == O_BAT) {
+            || item->object_id == O_BAT) {
             COMMIT(item, pos.x);
             COMMIT(item, pos.y);
             COMMIT(item, pos.z);
@@ -118,7 +118,7 @@ void Interpolation_Commit(void)
             continue;
         }
 
-        const int32_t max_xz = item->object_number == O_DARTS ? 200 : 128;
+        const int32_t max_xz = item->object_id == O_DARTS ? 200 : 128;
         const int32_t max_y = MAX(128, item->fall_speed * 2);
         INTERPOLATE(item, pos.x, ratio, max_xz);
         INTERPOLATE(item, pos.y, ratio, max_y);

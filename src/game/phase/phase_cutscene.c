@@ -43,7 +43,7 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num)
 
     int16_t lara_item_num = NO_ITEM;
     for (int i = 0; i < g_LevelItemCount; i++) {
-        if (g_Items[i].object_number == lara_type) {
+        if (g_Items[i].object_id == lara_type) {
             lara_item_num = i;
             break;
         }

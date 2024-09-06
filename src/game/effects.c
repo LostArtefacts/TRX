@@ -31,7 +31,7 @@ void Effect_Control(void)
     int16_t fx_num = g_NextFxActive;
     while (fx_num != NO_ITEM) {
         FX_INFO *fx = &g_Effects[fx_num];
-        OBJECT_INFO *obj = &g_Objects[fx->object_number];
+        OBJECT_INFO *obj = &g_Objects[fx->object_id];
         if (obj->control) {
             obj->control(fx_num);
         }
@@ -122,7 +122,7 @@ void Effect_NewRoom(int16_t fx_num, int16_t room_num)
 void Effect_Draw(const int16_t fxnum)
 {
     const FX_INFO *const fx = &g_Effects[fxnum];
-    const OBJECT_INFO *const object = &g_Objects[fx->object_number];
+    const OBJECT_INFO *const object = &g_Objects[fx->object_id];
     if (!object->loaded) {
         return;
     }

@@ -55,7 +55,7 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
         ITEM_INFO *const item = &g_Items[item_num];
-        if (!Object_IsObjectType(item->object_number, g_DoorObjects)) {
+        if (!Object_IsObjectType(item->object_id, g_DoorObjects)) {
             continue;
         }
 
@@ -284,7 +284,7 @@ void MovableBlock_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     if (item->current_anim_state == MBS_STILL) {
         item->priv = (void *)false;

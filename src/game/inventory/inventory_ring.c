@@ -163,17 +163,16 @@ void Inv_Ring_RemoveAllText(void)
 
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 {
-    if (!g_InvItemText[IT_NAME]
-        && inv_item->object_number != O_PASSPORT_OPTION) {
+    if (!g_InvItemText[IT_NAME] && inv_item->object_id != O_PASSPORT_OPTION) {
         g_InvItemText[IT_NAME] = Text_Create(0, -16, inv_item->string);
         Text_AlignBottom(g_InvItemText[IT_NAME], 1);
         Text_CentreH(g_InvItemText[IT_NAME], 1);
     }
 
     char temp_text[64];
-    int32_t qty = Inv_RequestItem(inv_item->object_number);
+    int32_t qty = Inv_RequestItem(inv_item->object_id);
 
-    switch (inv_item->object_number) {
+    switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
         if (!g_InvItemText[IT_QTY] && !(g_GameInfo.bonus_flag & GBF_NGPLUS)) {
             sprintf(
@@ -282,8 +281,8 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    if (inv_item->object_number == O_MEDI_OPTION
-        || inv_item->object_number == O_BIGMEDI_OPTION) {
+    if (inv_item->object_id == O_MEDI_OPTION
+        || inv_item->object_id == O_BIGMEDI_OPTION) {
         if (g_Config.healthbar_location == BL_TOP_LEFT) {
             Text_Hide(m_InvUpArrow1, true);
         } else if (g_Config.healthbar_location == BL_TOP_RIGHT) {
@@ -313,8 +312,8 @@ void Inv_Ring_ResetItem(INVENTORY_ITEM *const inv_item)
     inv_item->y_rot = 0;
     inv_item->ytrans = 0;
     inv_item->ztrans = 0;
-    if (inv_item->object_number == O_PASSPORT_OPTION) {
-        inv_item->object_number = O_PASSPORT_CLOSED;
+    if (inv_item->object_id == O_PASSPORT_OPTION) {
+        inv_item->object_id = O_PASSPORT_CLOSED;
     }
 }
 

@@ -58,7 +58,7 @@ void PuzzleHole_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     if (lara_item->current_anim_state == LS_USE_PUZZLE) {
         if (!Lara_TestPosition(item, obj->bounds())) {
@@ -66,21 +66,21 @@ void PuzzleHole_Collision(
         }
 
         if (Item_TestFrameEqual(lara_item, LF_USEPUZZLE)) {
-            switch (item->object_number) {
+            switch (item->object_id) {
             case O_PUZZLE_HOLE1:
-                item->object_number = O_PUZZLE_DONE1;
+                item->object_id = O_PUZZLE_DONE1;
                 break;
 
             case O_PUZZLE_HOLE2:
-                item->object_number = O_PUZZLE_DONE2;
+                item->object_id = O_PUZZLE_DONE2;
                 break;
 
             case O_PUZZLE_HOLE3:
-                item->object_number = O_PUZZLE_DONE3;
+                item->object_id = O_PUZZLE_DONE3;
                 break;
 
             case O_PUZZLE_HOLE4:
-                item->object_number = O_PUZZLE_DONE4;
+                item->object_id = O_PUZZLE_DONE4;
                 break;
 
             default:

@@ -319,8 +319,8 @@ bool Lara_Cheat_OpenNearestDoor(void)
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
         ITEM_INFO *const item = &g_Items[item_num];
-        if (!Object_IsObjectType(item->object_number, g_DoorObjects)
-            && !Object_IsObjectType(item->object_number, g_TrapdoorObjects)) {
+        if (!Object_IsObjectType(item->object_id, g_DoorObjects)
+            && !Object_IsObjectType(item->object_id, g_TrapdoorObjects)) {
             continue;
         }
 
@@ -358,7 +358,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
 bool Lara_Cheat_KillEnemy(const int16_t item_num)
 {
     ITEM_INFO *const item = &g_Items[item_num];
-    if (!Object_IsObjectType(item->object_number, g_EnemyObjects)
+    if (!Object_IsObjectType(item->object_id, g_EnemyObjects)
         || item->hit_points <= 0) {
         return false;
     }

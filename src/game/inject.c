@@ -503,18 +503,17 @@ static void Inject_TextureData(
     }
 
     for (int32_t i = 0; i < inj_info->sprite_count; i++) {
-        GAME_OBJECT_ID object_num;
-        object_num = File_ReadS32(fp);
+        const GAME_OBJECT_ID object_id = File_ReadS32(fp);
         const int16_t num_meshes = File_ReadS16(fp);
         const int16_t mesh_index = File_ReadS16(fp);
 
-        if (object_num < O_NUMBER_OF) {
-            OBJECT_INFO *object = &g_Objects[object_num];
+        if (object_id < O_NUMBER_OF) {
+            OBJECT_INFO *object = &g_Objects[object_id];
             object->nmeshes = num_meshes;
             object->mesh_index = mesh_index + level_info->sprite_info_count;
             object->loaded = 1;
-        } else if (object_num - O_NUMBER_OF < STATIC_NUMBER_OF) {
-            STATIC_INFO *object = &g_StaticObjects[object_num - O_NUMBER_OF];
+        } else if (object_id - O_NUMBER_OF < STATIC_NUMBER_OF) {
+            STATIC_INFO *object = &g_StaticObjects[object_id - O_NUMBER_OF];
             object->nmeshes = num_meshes;
             object->mesh_number = mesh_index + level_info->sprite_info_count;
             object->loaded = true;
@@ -717,8 +716,8 @@ static void Inject_ObjectData(
     // TODO: consider refactoring once we have more injection
     // use cases.
     for (int32_t i = 0; i < inj_info->object_count; i++) {
-        const int32_t object_num = File_ReadS32(fp);
-        OBJECT_INFO *object = &g_Objects[object_num];
+        const GAME_OBJECT_ID object_id = File_ReadS32(fp);
+        OBJECT_INFO *object = &g_Objects[object_id];
 
         const int16_t num_meshes = File_ReadS16(fp);
         const int16_t mesh_index = File_ReadS16(fp);
@@ -1296,7 +1295,7 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     int16_t item_number = Item_Create();
     ITEM_INFO *item = &g_Items[item_number];
 
-    item->object_number = File_ReadS16(fp);
+    item->object_id = File_ReadS16(fp);
     item->room_number = File_ReadS16(fp);
     item->pos.x = File_ReadS32(fp);
     item->pos.y = File_ReadS32(fp);

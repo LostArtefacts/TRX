@@ -10,4 +10,4 @@
 GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count);
 
 const char *Object_GetCanonicalName(
-    const GAME_OBJECT_ID obj_id, const char *user_input);
+    const GAME_OBJECT_ID object_id, const char *user_input);

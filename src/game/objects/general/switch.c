@@ -94,7 +94,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     if (!g_Input.action || item->status != IS_NOT_ACTIVE
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
@@ -188,7 +188,7 @@ void Switch_CollisionControlled(
 void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     if (!g_Input.action || item->status != IS_NOT_ACTIVE
         || g_Lara.water_status != LWS_UNDERWATER) {

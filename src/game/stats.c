@@ -54,7 +54,7 @@ int16_t m_KillableObjs[] = {
 static void Stats_TraverseFloor(void);
 static void Stats_CheckTriggers(
     ROOM_INFO *r, int room_num, int z_sector, int x_sector);
-static bool Stats_IsObjectKillable(int32_t obj_num);
+static bool Stats_IsObjectKillable(GAME_OBJECT_ID object_id);
 static void Stats_IncludeKillableItem(int16_t item_num);
 
 static void Stats_TraverseFloor(void)
@@ -105,33 +105,32 @@ static void Stats_CheckTriggers(
             const ITEM_INFO *const item = &g_Items[item_num];
 
             // Add Pierre pickup and kills if oneshot
-            if (item->object_number == O_PIERRE && sector->trigger->one_shot) {
+            if (item->object_id == O_PIERRE && sector->trigger->one_shot) {
                 Stats_IncludeKillableItem(item_num);
             }
 
             // Check for only valid pods
-            if ((item->object_number == O_PODS
-                 || item->object_number == O_BIG_POD)
+            if ((item->object_id == O_PODS || item->object_id == O_BIG_POD)
                 && item->data != NULL) {
                 const int16_t bug_item_num = *(int16_t *)item->data;
                 const ITEM_INFO *const bug_item = &g_Items[bug_item_num];
-                if (g_Objects[bug_item->object_number].loaded) {
+                if (g_Objects[bug_item->object_id].loaded) {
                     Stats_IncludeKillableItem(item_num);
                 }
             }
 
             // Add killable if object triggered
-            if (Stats_IsObjectKillable(item->object_number)) {
+            if (Stats_IsObjectKillable(item->object_id)) {
                 Stats_IncludeKillableItem(item_num);
             }
         }
     }
 }
 
-static bool Stats_IsObjectKillable(int32_t obj_num)
+static bool Stats_IsObjectKillable(const GAME_OBJECT_ID object_id)
 {
     for (int i = 0; m_KillableObjs[i] != NO_ITEM; i++) {
-        if (m_KillableObjs[i] == obj_num) {
+        if (m_KillableObjs[i] == object_id) {
             return true;
         }
     }
@@ -214,15 +213,14 @@ void Stats_CalculateStats(void)
         for (int i = 0; i < m_CachedItemCount; i++) {
             ITEM_INFO *item = &g_Items[i];
 
-            if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
+            if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
                 LOG_ERROR(
-                    "Bad Object number (%d) on Item %d", item->object_number,
-                    i);
+                    "Bad Object number (%d) on Item %d", item->object_id, i);
                 continue;
             }
 
             for (int j = 0; m_PickupObjs[j] != NO_ITEM; j++) {
-                if (item->object_number == m_PickupObjs[j]) {
+                if (item->object_id == m_PickupObjs[j]) {
                     m_LevelPickups++;
                 }
             }

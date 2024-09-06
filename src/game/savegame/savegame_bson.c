@@ -90,7 +90,7 @@ static struct json_array_s *SaveGame_BSON_DumpMusicTrackFlags(void);
 
 static void SaveGame_BSON_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order);
 static bool Savegame_BSON_IsValidItemObject(
-    int16_t saved_obj_num, int16_t current_obj_num);
+    GAME_OBJECT_ID saved_object_id, GAME_OBJECT_ID current_object_id);
 
 static void SaveGame_BSON_SaveRaw(
     MYFILE *fp, struct json_value_s *root, int32_t version)
@@ -138,33 +138,34 @@ static void SaveGame_BSON_GetFXOrder(SAVEGAME_BSON_FX_ORDER *order)
 }
 
 static bool Savegame_BSON_IsValidItemObject(
-    int16_t saved_obj_num, int16_t initial_obj_num)
+    const GAME_OBJECT_ID saved_object_id,
+    const GAME_OBJECT_ID initial_object_id)
 {
-    if (saved_obj_num == initial_obj_num) {
+    if (saved_object_id == initial_object_id) {
         return true;
     }
 
     // clang-format off
-    switch (saved_obj_num) {
+    switch (saved_object_id) {
         // used keyholes
-        case O_PUZZLE_DONE1: return initial_obj_num == O_PUZZLE_HOLE1;
-        case O_PUZZLE_DONE2: return initial_obj_num == O_PUZZLE_HOLE2;
-        case O_PUZZLE_DONE3: return initial_obj_num == O_PUZZLE_HOLE3;
-        case O_PUZZLE_DONE4: return initial_obj_num == O_PUZZLE_HOLE4;
+        case O_PUZZLE_DONE1: return initial_object_id == O_PUZZLE_HOLE1;
+        case O_PUZZLE_DONE2: return initial_object_id == O_PUZZLE_HOLE2;
+        case O_PUZZLE_DONE3: return initial_object_id == O_PUZZLE_HOLE3;
+        case O_PUZZLE_DONE4: return initial_object_id == O_PUZZLE_HOLE4;
         // pickups
-        case O_PISTOL_AMMO_ITEM: return initial_obj_num == O_PISTOL_ANIM;
-        case O_SG_AMMO_ITEM: return initial_obj_num == O_SHOTGUN_ITEM;
-        case O_MAG_AMMO_ITEM: return initial_obj_num == O_MAGNUM_ITEM;
-        case O_UZI_AMMO_ITEM: return initial_obj_num == O_UZI_ITEM;
+        case O_PISTOL_AMMO_ITEM: return initial_object_id == O_PISTOL_ANIM;
+        case O_SG_AMMO_ITEM: return initial_object_id == O_SHOTGUN_ITEM;
+        case O_MAG_AMMO_ITEM: return initial_object_id == O_MAGNUM_ITEM;
+        case O_UZI_AMMO_ITEM: return initial_object_id == O_UZI_ITEM;
         // dual-state animals
-        case O_ALLIGATOR: return initial_obj_num == O_CROCODILE;
-        case O_CROCODILE: return initial_obj_num == O_ALLIGATOR;
-        case O_RAT: return initial_obj_num == O_VOLE;
-        case O_VOLE: return initial_obj_num == O_RAT;
+        case O_ALLIGATOR: return initial_object_id == O_CROCODILE;
+        case O_CROCODILE: return initial_object_id == O_ALLIGATOR;
+        case O_RAT: return initial_object_id == O_VOLE;
+        case O_VOLE: return initial_object_id == O_RAT;
+        // default
+        default: return false;
     }
     // clang-format on
-
-    return false;
 }
 
 static struct json_value_s *Savegame_BSON_ParseFromBuffer(
@@ -500,13 +501,14 @@ static bool Savegame_BSON_LoadItems(
         }
 
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
-        int obj_num = json_object_get_int(item_obj, "obj_num", -1);
-        if (!Savegame_BSON_IsValidItemObject(obj_num, item->object_number)) {
+        const GAME_OBJECT_ID object_id =
+            json_object_get_int(item_obj, "obj_num", -1);
+        if (!Savegame_BSON_IsValidItemObject(object_id, item->object_id)) {
             LOG_ERROR(
-                "Malformed save: expected object %d, got %d",
-                item->object_number, obj_num);
+                "Malformed save: expected object %d, got %d", item->object_id,
+                object_id);
             return false;
         }
 
@@ -586,7 +588,7 @@ static bool Savegame_BSON_LoadItems(
             }
 
             if (header_version >= VERSION_3
-                && item->object_number == O_FLAME_EMITTER
+                && item->object_id == O_FLAME_EMITTER
                 && g_Config.enable_enhanced_saves) {
                 int32_t fx_num = json_object_get_int(item_obj, "fx_num", -1);
                 if (fx_num != -1) {
@@ -666,7 +668,7 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
         int32_t y = json_object_get_int(fx_obj, "y", 0);
         int32_t z = json_object_get_int(fx_obj, "z", 0);
         int16_t room_num = json_object_get_int(fx_obj, "room_number", 0);
-        GAME_OBJECT_ID object_number =
+        GAME_OBJECT_ID object_id =
             json_object_get_int(fx_obj, "object_number", 0);
         int16_t speed = json_object_get_int(fx_obj, "speed", 0);
         int16_t fall_speed = json_object_get_int(fx_obj, "fall_speed", 0);
@@ -680,7 +682,7 @@ static bool SaveGame_BSON_LoadFx(struct json_array_s *fx_arr)
             fx->pos.x = x;
             fx->pos.y = y;
             fx->pos.z = z;
-            fx->object_number = object_number;
+            fx->object_id = object_id;
             fx->speed = speed;
             fx->fall_speed = fall_speed;
             fx->frame_number = frame_number;
@@ -1042,9 +1044,9 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
     for (int i = 0; i < g_LevelItemCount; i++) {
         struct json_object_s *item_obj = json_object_new();
         ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
 
-        json_object_append_int(item_obj, "obj_num", item->object_number);
+        json_object_append_int(item_obj, "obj_num", item->object_id);
 
         if (obj->save_position) {
             json_object_append_int(item_obj, "x", item->pos.x);
@@ -1096,7 +1098,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                     item_obj, "creature_mood", creature->mood);
             }
 
-            if (item->object_number == O_FLAME_EMITTER && item->data) {
+            if (item->object_id == O_FLAME_EMITTER && item->data) {
                 int32_t fx_num = (int32_t)(intptr_t)item->data - 1;
                 fx_num = fx_order.id_map[fx_num];
                 json_object_append_int(item_obj, "fx_num", fx_num);
@@ -1147,7 +1149,7 @@ static struct json_array_s *SaveGame_BSON_DumpFx(void)
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);
         json_object_append_int(fx_obj, "room_number", fx->room_number);
-        json_object_append_int(fx_obj, "object_number", fx->object_number);
+        json_object_append_int(fx_obj, "object_number", fx->object_id);
         json_object_append_int(fx_obj, "speed", fx->speed);
         json_object_append_int(fx_obj, "fall_speed", fx->fall_speed);
         json_object_append_int(fx_obj, "frame_number", fx->frame_number);

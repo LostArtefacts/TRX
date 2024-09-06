@@ -41,7 +41,7 @@ void Waterfall_Control(int16_t item_num)
             fx->pos.y = item->pos.y;
             fx->speed = 0;
             fx->frame_number = 0;
-            fx->object_number = O_SPLASH1;
+            fx->object_id = O_SPLASH1;
         }
     }
 }

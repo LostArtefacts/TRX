@@ -297,7 +297,7 @@ void Room_DrawSingleRoom(int16_t room_num)
     for (int i = r->item_number; i != NO_ITEM; i = g_Items[i].next_item) {
         ITEM_INFO *item = &g_Items[i];
         if (item->status != IS_INVISIBLE) {
-            g_Objects[item->object_number].draw_routine(item);
+            g_Objects[item->object_id].draw_routine(item);
         }
     }
 

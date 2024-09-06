@@ -88,7 +88,7 @@ void Flame_Control(int16_t fx_num)
             if (fx_num != NO_ITEM) {
                 fx = &g_Effects[fx_num];
                 fx->frame_number = 0;
-                fx->object_number = O_FLAME;
+                fx->object_id = O_FLAME;
                 fx->counter = -1;
             }
         }
@@ -114,7 +114,7 @@ void FlameEmitter_Control(int16_t item_num)
                 fx->pos.y = item->pos.y;
                 fx->pos.z = item->pos.z;
                 fx->frame_number = 0;
-                fx->object_number = O_FLAME;
+                fx->object_id = O_FLAME;
                 fx->counter = 0;
             }
             item->data = (void *)(intptr_t)(fx_num + 1);

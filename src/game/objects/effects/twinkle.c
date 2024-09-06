@@ -18,7 +18,7 @@ void Twinkle_Control(int16_t fx_num)
     if (fx->counter == 1) {
         fx->counter = 0;
         fx->frame_number--;
-        if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
+        if (fx->frame_number <= g_Objects[fx->object_id].nmeshes) {
             Effect_Kill(fx_num);
         }
     }
@@ -33,7 +33,7 @@ void Twinkle_Spawn(GAME_VECTOR *pos)
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;
         fx->counter = 0;
-        fx->object_number = O_TWINKLE;
+        fx->object_id = O_TWINKLE;
         fx->frame_number = 0;
     }
 }

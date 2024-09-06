@@ -255,8 +255,8 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id)
         Object_GetCognate(object_id, m_KeyItemToReceptacleMap);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
         ITEM_INFO *item = &g_Items[item_num];
-        if (item->object_number == receptacle_to_check) {
-            const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+        if (item->object_id == receptacle_to_check) {
+            const OBJECT_INFO *const obj = &g_Objects[item->object_id];
             if (Lara_TestPosition(item, obj->bounds())) {
                 return item_num;
             }
@@ -316,7 +316,7 @@ void Object_DrawSpriteItem(ITEM_INFO *item)
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z,
-        g_Objects[item->object_number].mesh_index - item->frame_number,
+        g_Objects[item->object_id].mesh_index - item->frame_number,
         item->shade);
 }
 
@@ -328,7 +328,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     }
 
     // Convert item to menu display item.
-    int16_t item_num_option = Inv_GetItemOption(item->object_number);
+    int16_t item_num_option = Inv_GetItemOption(item->object_id);
     // Save the frame number.
     int16_t old_frame_number = item->frame_number;
     // Modify item to be the anim for inv item and animation 0.
@@ -367,7 +367,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         // First get the sprite that was to be used,
 
         int16_t spr_num =
-            g_Objects[item->object_number].mesh_index - item->frame_number;
+            g_Objects[item->object_id].mesh_index - item->frame_number;
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[spr_num];
 
         // and get the animation bounding box, which is not the mesh one.
@@ -591,7 +591,7 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
     FRAME_INFO *frmptr[2];
     int32_t rate;
     int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
 
     if (object->shadow_size) {
         Output_DrawShadow(object->shadow_size, &frmptr[0]->bounds, item);
@@ -609,8 +609,8 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
     const int16_t *extra_rotation = item->data ? item->data : NULL;
 
     Object_DrawInterpolatedObject(
-        &g_Objects[item->object_number], item->mesh_bits, extra_rotation,
-        frmptr[0], frmptr[1], frac, rate);
+        &g_Objects[item->object_id], item->mesh_bits, extra_rotation, frmptr[0],
+        frmptr[1], frac, rate);
     Matrix_Pop();
 }
 

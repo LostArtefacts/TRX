@@ -37,7 +37,7 @@ typedef enum DISPLAY_PICKUP_PHASE {
 } DISPLAY_PICKUP_PHASE;
 
 typedef struct DISPLAY_PICKUP_INFO {
-    int16_t obj_num;
+    GAME_OBJECT_ID object_id;
     double duration;
     int32_t grid_x;
     int32_t grid_y;
@@ -377,7 +377,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     Output_RotateLight(0, 0);
     Output_SetupAboveWater(false);
 
-    OBJECT_INFO *obj = &g_Objects[Inv_GetItemOption(pu->obj_num)];
+    OBJECT_INFO *obj = &g_Objects[Inv_GetItemOption(pu->object_id)];
     const FRAME_INFO *const frame = g_Anims[obj->anim_index].frame_ptr;
 
     Matrix_Push();
@@ -485,7 +485,7 @@ static void Overlay_DrawPickupsSprites(void)
         const int32_t y =
             Viewport_GetHeight() - sprite_height - sprite_height * pu->grid_y;
         const int32_t scale = Screen_GetRenderScaleGLRage(12288);
-        const int16_t sprite_num = g_Objects[pu->obj_num].mesh_index;
+        const int16_t sprite_num = g_Objects[pu->object_id].mesh_index;
         Output_DrawUISprite(x, y, scale, sprite_num, 4096);
     }
 }
@@ -562,7 +562,7 @@ static void Overlay_BarDrawEnemy(void)
     }
 
     m_EnemyBar.value = g_Lara.target->hit_points;
-    m_EnemyBar.max_value = g_Objects[g_Lara.target->object_number].hit_points
+    m_EnemyBar.max_value = g_Objects[g_Lara.target->object_id].hit_points
         * ((g_GameInfo.bonus_flag & GBF_NGPLUS) ? 2 : 1);
     CLAMP(m_EnemyBar.value, 0, m_EnemyBar.max_value);
 
@@ -778,7 +778,7 @@ void Overlay_DrawFPSInfo(void)
     }
 }
 
-void Overlay_AddPickup(int16_t object_num)
+void Overlay_AddPickup(const GAME_OBJECT_ID object_id)
 {
     int32_t grid_x = -1;
     int32_t grid_y = -1;
@@ -805,7 +805,7 @@ void Overlay_AddPickup(int16_t object_num)
 
     for (int i = 0; i < MAX_PICKUPS; i++) {
         if (m_Pickups[i].phase == DPP_DEAD) {
-            m_Pickups[i].obj_num = object_num;
+            m_Pickups[i].object_id = object_id;
             m_Pickups[i].duration = 0;
             m_Pickups[i].grid_x = grid_x;
             m_Pickups[i].grid_y = grid_y;

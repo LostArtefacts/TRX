@@ -38,7 +38,7 @@ void Lara_Draw(ITEM_INFO *item)
         }
     }
 
-    object = &g_Objects[item->object_number];
+    object = &g_Objects[item->object_id];
     if (g_Lara.hit_direction >= 0) {
         switch (g_Lara.hit_direction) {
         default:
@@ -333,7 +333,7 @@ void Lara_Draw_I(
 {
     MATRIX saved_matrix;
 
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
     saved_matrix = *g_MatrixPtr;

@@ -12,7 +12,7 @@ int32_t Effect_ExplodingDeath(
     int16_t item_num, int32_t mesh_bits, int16_t damage)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
 
     const FRAME_INFO *const frame = Item_GetBestFrame(item);
 
@@ -40,7 +40,7 @@ int32_t Effect_ExplodingDeath(
             fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
             fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
             fx->rot.y = (Random_GetControl() - 0x4000) * 2;
-            if (item->object_number == O_TORSO) {
+            if (item->object_id == O_TORSO) {
                 fx->speed = Random_GetControl() >> 7;
                 fx->fall_speed = -Random_GetControl() >> 7;
             } else {
@@ -49,7 +49,7 @@ int32_t Effect_ExplodingDeath(
             }
             fx->counter = damage;
             fx->frame_number = object->mesh_index;
-            fx->object_number = O_BODY_PART;
+            fx->object_id = O_BODY_PART;
         }
         item->mesh_bits -= bit;
     }
@@ -92,7 +92,7 @@ int32_t Effect_ExplodingDeath(
                 fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
                 fx->pos.z = (g_MatrixPtr->_23 >> W2V_SHIFT) + item->pos.z;
                 fx->rot.y = (Random_GetControl() - 0x4000) * 2;
-                if (item->object_number == O_TORSO) {
+                if (item->object_id == O_TORSO) {
                     fx->speed = Random_GetControl() >> 7;
                     fx->fall_speed = -Random_GetControl() >> 7;
                 } else {
@@ -100,7 +100,7 @@ int32_t Effect_ExplodingDeath(
                     fx->fall_speed = -Random_GetControl() >> 8;
                 }
                 fx->counter = damage;
-                fx->object_number = O_BODY_PART;
+                fx->object_id = O_BODY_PART;
                 fx->frame_number = object->mesh_index + i;
             }
             item->mesh_bits -= bit;

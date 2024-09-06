@@ -504,7 +504,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
     int16_t **meshpp = &g_Meshes[object->mesh_index];
     int32_t *bone = &g_AnimBones[object->bone_index];
 
@@ -596,7 +596,7 @@ int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
 
 void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint)
 {
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
 
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);

@@ -130,7 +130,7 @@ void Lion_Control(int16_t item_num)
         if (item->current_anim_state != LION_DEATH) {
             item->current_anim_state = LION_DEATH;
             int16_t anim_index =
-                item->object_number == O_PUMA ? PUMA_DIE_ANIM : LION_DIE_ANIM;
+                item->object_id == O_PUMA ? PUMA_DIE_ANIM : LION_DIE_ANIM;
             Item_SwitchToAnim(
                 item, anim_index + (int16_t)(Random_GetControl() / 0x4000), 0);
         }

@@ -28,7 +28,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID object_id)
 
     for (int i = 0; i < g_InvMainObjects; i++) {
         INVENTORY_ITEM *inv_item = g_InvMainList[i];
-        if (inv_item->object_number == inv_object_id) {
+        if (inv_item->object_id == inv_object_id) {
             g_InvMainQtys[i]++;
             return true;
         }
@@ -36,7 +36,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID object_id)
 
     for (int i = 0; i < g_InvKeysObjects; i++) {
         INVENTORY_ITEM *inv_item = g_InvKeysList[i];
-        if (inv_item->object_number == inv_object_id) {
+        if (inv_item->object_id == inv_object_id) {
             g_InvKeysQtys[i]++;
             return true;
         }
@@ -245,13 +245,13 @@ int32_t Inv_RequestItem(const GAME_OBJECT_ID object_id)
     const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
 
     for (int i = 0; i < g_InvMainObjects; i++) {
-        if (g_InvMainList[i]->object_number == inv_object_id) {
+        if (g_InvMainList[i]->object_id == inv_object_id) {
             return g_InvMainQtys[i];
         }
     }
 
     for (int i = 0; i < g_InvKeysObjects; i++) {
-        if (g_InvKeysList[i]->object_number == inv_object_id) {
+        if (g_InvKeysList[i]->object_id == inv_object_id) {
             return g_InvKeysQtys[i];
         }
     }
@@ -273,7 +273,7 @@ bool Inv_RemoveItem(const GAME_OBJECT_ID object_id)
     const GAME_OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
 
     for (int i = 0; i < g_InvMainObjects; i++) {
-        if (g_InvMainList[i]->object_number == inv_object_id) {
+        if (g_InvMainList[i]->object_id == inv_object_id) {
             g_InvMainQtys[i]--;
             if (g_InvMainQtys[i] > 0) {
                 return true;
@@ -287,7 +287,7 @@ bool Inv_RemoveItem(const GAME_OBJECT_ID object_id)
     }
 
     for (int i = 0; i < g_InvKeysObjects; i++) {
-        if (g_InvKeysList[i]->object_number == inv_object_id) {
+        if (g_InvKeysList[i]->object_id == inv_object_id) {
             g_InvKeysQtys[i]--;
             if (g_InvKeysQtys[i] > 0) {
                 return true;
@@ -302,7 +302,7 @@ bool Inv_RemoveItem(const GAME_OBJECT_ID object_id)
     }
 
     for (int i = 0; i < g_InvOptionObjects; i++) {
-        if (g_InvOptionList[i]->object_number == inv_object_id) {
+        if (g_InvOptionList[i]->object_id == inv_object_id) {
             g_InvOptionObjects--;
             for (int j = i; j < g_InvOptionObjects; j++) {
                 g_InvOptionList[j] = g_InvOptionList[j + 1];

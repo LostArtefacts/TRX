@@ -218,7 +218,7 @@ void Vole_Control(int16_t item_num)
         int32_t wh = Room_GetWaterHeight(
             item->pos.x, item->pos.y, item->pos.z, item->room_number);
         if (wh == NO_HEIGHT) {
-            item->object_number = O_RAT;
+            item->object_id = O_RAT;
             item->current_anim_state = RAT_DEATH;
             item->goal_anim_state = RAT_DEATH;
             Item_SwitchToAnim(item, RAT_DIE_ANIM, -1);

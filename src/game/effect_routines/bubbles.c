@@ -38,7 +38,7 @@ void FX_Bubbles(ITEM_INFO *item)
             fx->pos.x = offset.x;
             fx->pos.y = offset.y;
             fx->pos.z = offset.z;
-            fx->object_number = O_BUBBLES1;
+            fx->object_id = O_BUBBLES1;
             fx->frame_number = -((Random_GetDraw() * 3) / 0x8000);
             fx->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
         }

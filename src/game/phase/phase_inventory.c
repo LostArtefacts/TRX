@@ -132,7 +132,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     }
 
     INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
-    switch (inv_item->object_number) {
+    switch (inv_item->object_id) {
     case O_MEDI_OPTION:
     case O_BIGMEDI_OPTION:
         Overlay_BarDrawHealth();
@@ -352,7 +352,7 @@ static PHASE_CONTROL Inv_Close(GAME_OBJECT_ID inv_chosen)
 
 static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item)
 {
-    if (inv_item->object_number == O_PASSPORT_OPTION) {
+    if (inv_item->object_id == O_PASSPORT_OPTION) {
         if (inv_item->current_frame <= 14) {
             inv_item->drawn_meshes = PASS_MESH | PINFRONT | PPAGE1;
         } else if (inv_item->current_frame < 19) {
@@ -366,7 +366,7 @@ static void Inv_SelectMeshes(INVENTORY_ITEM *inv_item)
         } else if (inv_item->current_frame == 29) {
             inv_item->drawn_meshes = PASS_MESH;
         }
-    } else if (inv_item->object_number == O_MAP_OPTION) {
+    } else if (inv_item->object_id == O_MAP_OPTION) {
         if (inv_item->current_frame && inv_item->current_frame < 18) {
             inv_item->drawn_meshes = -1;
         } else {
@@ -400,7 +400,7 @@ static int32_t InvItem_GetFrames(
 {
     const RING_INFO *const ring = &m_Ring;
     const IMOTION_INFO *const motion = &m_Motion;
-    const OBJECT_INFO *const obj = &g_Objects[inv_item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[inv_item->object_id];
     const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
     if (inv_item != cur_inv_item
         || (motion->status != RNG_SELECTED
@@ -493,7 +493,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
     Matrix_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
     Matrix_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
-    OBJECT_INFO *obj = &g_Objects[inv_item->object_number];
+    OBJECT_INFO *obj = &g_Objects[inv_item->object_id];
     if (obj->nmeshes < 0) {
         Output_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
         return;
@@ -549,7 +549,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
     FRAME_INFO *frame1;
     FRAME_INFO *frame2;
     const int32_t frac = InvItem_GetFrames(inv_item, &frame1, &frame2, &rate);
-    if (inv_item->object_number == O_MAP_OPTION) {
+    if (inv_item->object_id == O_MAP_OPTION) {
         const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
         int32_t *const bone = &g_AnimBones[obj->bone_index];
         bone[0] |= BEB_ROT_Y;
@@ -719,7 +719,7 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
           || motion->status == RNG_OPENING)) {
         for (int i = 0; i < ring->number_of_objects; i++) {
             INVENTORY_ITEM *inv_item = ring->list[i];
-            if (inv_item->object_number == O_MAP_OPTION) {
+            if (inv_item->object_id == O_MAP_OPTION) {
                 Option_Compass_UpdateNeedle(inv_item);
             }
         }
@@ -796,7 +796,7 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
 
-            switch (inv_item->object_number) {
+            switch (inv_item->object_id) {
             case O_MAP_OPTION:
                 Sound_Effect(SFX_MENU_COMPASS, NULL, SPM_ALWAYS);
                 break;
@@ -966,8 +966,8 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
 
     case RNG_SELECTED: {
         INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
-        if (inv_item->object_number == O_PASSPORT_CLOSED) {
-            inv_item->object_number = O_PASSPORT_OPTION;
+        if (inv_item->object_id == O_PASSPORT_CLOSED) {
+            inv_item->object_id = O_PASSPORT_OPTION;
         }
 
         bool busy = false;
@@ -995,7 +995,7 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
 
             if (g_InputDB.menu_confirm) {
                 inv_item->sprlist = NULL;
-                m_InvChosen = inv_item->object_number;
+                m_InvChosen = inv_item->object_id;
                 if (ring->type == RT_MAIN) {
                     g_InvMainCurrent = ring->current_object;
                 } else {
@@ -1003,10 +1003,10 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
                 }
 
                 if (g_InvMode == INV_TITLE_MODE
-                    && ((inv_item->object_number == O_DETAIL_OPTION)
-                        || inv_item->object_number == O_SOUND_OPTION
-                        || inv_item->object_number == O_CONTROL_OPTION
-                        || inv_item->object_number == O_GAMMA_OPTION)) {
+                    && ((inv_item->object_id == O_DETAIL_OPTION)
+                        || inv_item->object_id == O_SOUND_OPTION
+                        || inv_item->object_id == O_CONTROL_OPTION
+                        || inv_item->object_id == O_GAMMA_OPTION)) {
                     Inv_Ring_MotionSetup(
                         ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 } else {
@@ -1032,8 +1032,8 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
     case RNG_CLOSING_ITEM: {
         INVENTORY_ITEM *inv_item = ring->list[ring->current_object];
         if (!Inv_AnimateItem(inv_item)) {
-            if (inv_item->object_number == O_PASSPORT_OPTION) {
-                inv_item->object_number = O_PASSPORT_CLOSED;
+            if (inv_item->object_id == O_PASSPORT_OPTION) {
+                inv_item->object_id = O_PASSPORT_CLOSED;
                 inv_item->current_frame = 0;
             }
             motion->count = SELECTING_FRAMES;

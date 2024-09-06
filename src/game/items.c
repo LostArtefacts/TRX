@@ -59,7 +59,7 @@ void Item_Control(void)
     int16_t item_num = g_NextItemActive;
     while (item_num != NO_ITEM) {
         ITEM_INFO *item = &g_Items[item_num];
-        OBJECT_INFO *obj = &g_Objects[item->object_number];
+        OBJECT_INFO *obj = &g_Objects[item->object_id];
         if (obj->control) {
             obj->control(item_num);
         }
@@ -107,7 +107,7 @@ int16_t Item_Create(void)
 void Item_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
 
     Item_SwitchToAnim(item, 0, 0);
     item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
@@ -210,7 +210,7 @@ void Item_AddActive(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (!g_Objects[item->object_number].control) {
+    if (!g_Objects[item->object_id].control) {
         item->status = IS_NOT_ACTIVE;
         return;
     }
@@ -282,12 +282,12 @@ int16_t Item_GetWaterHeight(ITEM_INFO *item)
     return height;
 }
 
-int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
+int16_t Item_Spawn(const ITEM_INFO *const item, const GAME_OBJECT_ID object_id)
 {
     int16_t spawn_num = Item_Create();
     if (spawn_num != NO_ITEM) {
         ITEM_INFO *spawn = &g_Items[spawn_num];
-        spawn->object_number = object_num;
+        spawn->object_id = object_id;
         spawn->room_number = item->room_number;
         spawn->pos = item->pos;
         spawn->rot = item->rot;
@@ -298,15 +298,16 @@ int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num)
     return spawn_num;
 }
 
-int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num)
+int32_t Item_GlobalReplace(
+    const GAME_OBJECT_ID src_object_id, const GAME_OBJECT_ID dst_object_id)
 {
     int32_t changed = 0;
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM_INFO *r = &g_RoomInfo[i];
         for (int16_t item_num = r->item_number; item_num != NO_ITEM;
              item_num = g_Items[item_num].next_item) {
-            if (g_Items[item_num].object_number == src_object_num) {
-                g_Items[item_num].object_number = dst_object_num;
+            if (g_Items[item_num].object_id == src_object_id) {
+                g_Items[item_num].object_id = dst_object_id;
                 changed++;
             }
         }
@@ -550,19 +551,19 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
 bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index)
 {
     return item->anim_number
-        == g_Objects[item->object_number].anim_index + anim_index;
+        == g_Objects[item->object_id].anim_index + anim_index;
 }
 
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame)
 {
-    Item_SwitchToObjAnim(item, anim_index, frame, item->object_number);
+    Item_SwitchToObjAnim(item, anim_index, frame, item->object_id);
 }
 
 void Item_SwitchToObjAnim(
     ITEM_INFO *item, int16_t anim_index, int16_t frame,
-    GAME_OBJECT_ID object_number)
+    GAME_OBJECT_ID object_id)
 {
-    item->anim_number = g_Objects[object_number].anim_index + anim_index;
+    item->anim_number = g_Objects[object_id].anim_index + anim_index;
     if (frame < 0) {
         item->frame_number = g_Anims[item->anim_number].frame_end + frame + 1;
     } else {
@@ -808,10 +809,8 @@ int32_t Item_GetFrames(
     }
 
     // interpolated
-    if ((item != g_LaraItem && !item->active)
-        || (item->object_number == O_STATUE)
-        || (item->object_number == O_ROLLING_BALL
-            && item->status != IS_ACTIVE)) {
+    if ((item != g_LaraItem && !item->active) || (item->object_id == O_STATUE)
+        || (item->object_id == O_ROLLING_BALL && item->status != IS_ACTIVE)) {
         *rate = denominator;
         return numerator;
     }

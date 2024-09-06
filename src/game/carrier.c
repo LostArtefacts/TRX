@@ -56,10 +56,10 @@ void Carrier_InitialiseLevel(int32_t level_num)
             continue;
         }
 
-        if (!Object_IsObjectType(item->object_number, g_EnemyObjects)) {
+        if (!Object_IsObjectType(item->object_id, g_EnemyObjects)) {
             LOG_WARNING(
                 "Item %d of type %d cannot carry items", data->enemy_num,
-                item->object_number);
+                item->object_id);
             continue;
         }
 
@@ -101,12 +101,12 @@ static ITEM_INFO *Carrier_GetCarrier(int16_t item_num)
     // Allow carried items to be allocated to holder objects (pods/statues),
     // but then have those items dropped by the actual creatures within.
     ITEM_INFO *item = &g_Items[item_num];
-    if (Object_IsObjectType(item->object_number, g_PlaceholderObjects)) {
+    if (Object_IsObjectType(item->object_id, g_PlaceholderObjects)) {
         int16_t child_item_num = *(int16_t *)item->data;
         item = &g_Items[child_item_num];
     }
 
-    if (!g_Objects[item->object_number].loaded) {
+    if (!g_Objects[item->object_id].loaded) {
         return NULL;
     }
 
@@ -151,8 +151,7 @@ void Carrier_TestItemDrops(int16_t item_num)
     ITEM_INFO *carrier = &g_Items[item_num];
     CARRIED_ITEM *item = carrier->carried_item;
     if (carrier->hit_points > 0 || !item
-        || (carrier->object_number == O_PIERRE
-            && !(carrier->flags & IF_ONESHOT))) {
+        || (carrier->object_id == O_PIERRE && !(carrier->flags & IF_ONESHOT))) {
         return;
     }
 
@@ -199,8 +198,7 @@ void Carrier_TestLegacyDrops(int16_t item_num)
     // the OG enemy will still spawn items if Lara hasn't yet collected
     // them by using a test cognate in each case. Ensure also that
     // collected items do not re-spawn now or in future saves.
-    GAME_OBJECT_ID test_id =
-        Object_GetCognate(carrier->object_number, m_LegacyMap);
+    GAME_OBJECT_ID test_id = Object_GetCognate(carrier->object_id, m_LegacyMap);
     if (test_id == NO_OBJECT) {
         return;
     }

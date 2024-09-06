@@ -48,7 +48,7 @@ void LightningEmitter_Initialise(int16_t item_num)
     LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_TRAP_DATA);
     g_Items[item_num].data = l;
 
-    if (g_Objects[g_Items[item_num].object_number].nmeshes > 1) {
+    if (g_Objects[g_Items[item_num].object_id].nmeshes > 1) {
         g_Items[item_num].mesh_bits = 1;
         l->no_target = false;
     } else {

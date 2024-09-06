@@ -51,7 +51,7 @@ static void Bat_FixEmbeddedPosition(int16_t item_num)
     // one to properly measure them. Save it so it can be restored
     // after.
     int16_t old_anim =
-        item->anim_number - g_Objects[item->object_number].anim_index;
+        item->anim_number - g_Objects[item->object_id].anim_index;
     int16_t old_frame =
         item->frame_number - g_Anims[item->anim_number].frame_base;
 

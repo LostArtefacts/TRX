@@ -19,6 +19,6 @@ void Overlay_HideGameInfo(void);
 void Overlay_DrawGameInfo(void);
 void Overlay_DrawFPSInfo(void);
 
-void Overlay_AddPickup(int16_t object_num);
+void Overlay_AddPickup(GAME_OBJECT_ID object_id);
 
 void Overlay_MakeAmmoString(char *string);

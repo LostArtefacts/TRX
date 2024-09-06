@@ -484,8 +484,8 @@ static void Level_LoadObjects(VFILE *file)
     m_LevelInfo.object_count = VFile_ReadS32(file);
     LOG_INFO("%d objects", m_LevelInfo.object_count);
     for (int i = 0; i < m_LevelInfo.object_count; i++) {
-        const int32_t object_num = VFile_ReadS32(file);
-        OBJECT_INFO *object = &g_Objects[object_num];
+        const GAME_OBJECT_ID object_id = VFile_ReadS32(file);
+        OBJECT_INFO *object = &g_Objects[object_id];
 
         object->nmeshes = VFile_ReadS16(file);
         object->mesh_index = VFile_ReadS16(file);
@@ -580,18 +580,17 @@ static void Level_LoadSprites(VFILE *file)
 
     m_LevelInfo.sprite_count = VFile_ReadS32(file);
     for (int i = 0; i < m_LevelInfo.sprite_count; i++) {
-        GAME_OBJECT_ID object_num;
-        object_num = VFile_ReadS32(file);
+        const GAME_OBJECT_ID object_id = VFile_ReadS32(file);
         const int16_t num_meshes = VFile_ReadS16(file);
         const int16_t mesh_index = VFile_ReadS16(file);
 
-        if (object_num < O_NUMBER_OF) {
-            OBJECT_INFO *object = &g_Objects[object_num];
+        if (object_id < O_NUMBER_OF) {
+            OBJECT_INFO *object = &g_Objects[object_id];
             object->nmeshes = num_meshes;
             object->mesh_index = mesh_index;
             object->loaded = 1;
-        } else if (object_num - O_NUMBER_OF < STATIC_NUMBER_OF) {
-            STATIC_INFO *object = &g_StaticObjects[object_num - O_NUMBER_OF];
+        } else if (object_id - O_NUMBER_OF < STATIC_NUMBER_OF) {
+            STATIC_INFO *object = &g_StaticObjects[object_id - O_NUMBER_OF];
             object->nmeshes = num_meshes;
             object->mesh_number = mesh_index;
             object->loaded = true;
@@ -749,7 +748,7 @@ static void Level_LoadItems(VFILE *file)
 
         for (int i = 0; i < m_LevelInfo.item_count; i++) {
             ITEM_INFO *item = &g_Items[i];
-            item->object_number = VFile_ReadS16(file);
+            item->object_id = VFile_ReadS16(file);
             item->room_number = VFile_ReadS16(file);
             item->pos.x = VFile_ReadS32(file);
             item->pos.y = VFile_ReadS32(file);
@@ -758,10 +757,10 @@ static void Level_LoadItems(VFILE *file)
             item->shade = VFile_ReadS16(file);
             item->flags = VFile_ReadU16(file);
 
-            if (item->object_number < 0 || item->object_number >= O_NUMBER_OF) {
+            if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
                 Shell_ExitSystemFmt(
                     "Level_LoadItems(): Bad Object number (%d) on Item %d",
-                    item->object_number, i);
+                    item->object_id, i);
             }
         }
     }

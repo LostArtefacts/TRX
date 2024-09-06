@@ -44,7 +44,7 @@ void MidasTouch_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     DIRECTION quadrant = (uint16_t)(lara_item->rot.y + PHD_45) / PHD_90;
     switch (quadrant) {

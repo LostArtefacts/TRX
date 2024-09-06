@@ -11,13 +11,13 @@
 #include <string.h>
 
 typedef struct {
-    const GAME_OBJECT_ID obj_id;
+    const GAME_OBJECT_ID object_id;
     const char *regex;
 } ITEM_NAME;
 
 typedef struct {
     int32_t match_length;
-    GAME_OBJECT_ID obj_id;
+    GAME_OBJECT_ID object_id;
 } MATCH;
 
 static const INVENTORY_ITEM *const m_InvItems[] = {
@@ -222,13 +222,13 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
     VECTOR *matches = Vector_Create(sizeof(MATCH));
 
     // Store matches from hardcoded strings
-    for (const ITEM_NAME *desc = m_ItemNames; desc->obj_id != NO_OBJECT;
+    for (const ITEM_NAME *desc = m_ItemNames; desc->object_id != NO_OBJECT;
          desc++) {
         const int32_t match_length = String_Match(name, desc->regex);
         if (match_length > 0) {
             MATCH match = {
                 .match_length = match_length,
-                .obj_id = desc->obj_id,
+                .object_id = desc->object_id,
             };
             Vector_Add(matches, &match);
         }
@@ -241,8 +241,8 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
         if (String_CaseSubstring(item->string, name)) {
             MATCH match = {
                 .match_length = strlen(name),
-                .obj_id = Object_GetCognateInverse(
-                    item->object_number, g_ItemToInvObjectMap),
+                .object_id = Object_GetCognateInverse(
+                    item->object_id, g_ItemToInvObjectMap),
             };
             Vector_Add(matches, &match);
         }
@@ -264,16 +264,17 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
 
     int32_t unique_count = 0;
     for (int32_t i = 0; i < matches->count; i++) {
-        const GAME_OBJECT_ID obj_id = ((MATCH *)Vector_Get(matches, i))->obj_id;
+        const GAME_OBJECT_ID object_id =
+            ((MATCH *)Vector_Get(matches, i))->object_id;
         bool is_unique = true;
         for (int32_t j = 0; j < unique_count; j++) {
-            if (obj_id == unique_ids[j]) {
+            if (object_id == unique_ids[j]) {
                 is_unique = false;
                 break;
             }
         }
         if (is_unique) {
-            unique_ids[unique_count++] = obj_id;
+            unique_ids[unique_count++] = object_id;
         }
     }
 
@@ -291,14 +292,14 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
 }
 
 const char *Object_GetCanonicalName(
-    const GAME_OBJECT_ID obj_id, const char *user_input)
+    const GAME_OBJECT_ID object_id, const char *user_input)
 {
     for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
          item_ptr++) {
         const INVENTORY_ITEM *item = *item_ptr;
         if (item->string != NULL
-            && Inv_GetItemOption(item->object_number)
-                == Inv_GetItemOption(obj_id)) {
+            && Inv_GetItemOption(item->object_id)
+                == Inv_GetItemOption(object_id)) {
             return item->string;
         }
     }

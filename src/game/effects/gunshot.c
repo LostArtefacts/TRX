@@ -25,7 +25,7 @@ int16_t Effect_GunShot(
         fx->rot.z = 0;
         fx->counter = 3;
         fx->frame_number = 0;
-        fx->object_number = O_GUN_FLASH;
+        fx->object_id = O_GUN_FLASH;
         fx->shade = 4096;
     }
     return fx_num;

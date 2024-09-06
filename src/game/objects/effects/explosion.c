@@ -15,7 +15,7 @@ void Explosion_Control(int16_t fx_num)
     if (fx->counter == 2) {
         fx->counter = 0;
         fx->frame_number--;
-        if (fx->frame_number <= g_Objects[fx->object_number].nmeshes) {
+        if (fx->frame_number <= g_Objects[fx->object_id].nmeshes) {
             Effect_Kill(fx_num);
         }
     }

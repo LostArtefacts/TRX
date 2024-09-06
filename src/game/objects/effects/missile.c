@@ -42,14 +42,14 @@ void Missile_Control(int16_t fx_num)
         Room_GetCeiling(sector, fx->pos.x, fx->pos.y, fx->pos.z);
 
     if (fx->pos.y >= height || fx->pos.y <= ceiling) {
-        if (fx->object_number == O_MISSILE2) {
-            fx->object_number = O_RICOCHET1;
+        if (fx->object_id == O_MISSILE2) {
+            fx->object_id = O_RICOCHET1;
             fx->frame_number = -Random_GetControl() / 11000;
             fx->speed = 0;
             fx->counter = 6;
             Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
         } else {
-            fx->object_number = O_EXPLOSION1;
+            fx->object_id = O_EXPLOSION1;
             fx->frame_number = 0;
             fx->speed = 0;
             fx->counter = 0;
@@ -76,13 +76,13 @@ void Missile_Control(int16_t fx_num)
         return;
     }
 
-    if (fx->object_number == O_MISSILE2) {
+    if (fx->object_id == O_MISSILE2) {
         Lara_TakeDamage(SHARD_DAMAGE, true);
-        fx->object_number = O_BLOOD1;
+        fx->object_id = O_BLOOD1;
         Sound_Effect(SFX_LARA_BULLETHIT, &fx->pos, SPM_NORMAL);
     } else {
         Lara_TakeDamage(ROCKET_DAMAGE, true);
-        fx->object_number = O_EXPLOSION1;
+        fx->object_id = O_EXPLOSION1;
         if (g_LaraItem->hit_points > 0) {
             Sound_Effect(SFX_LARA_INJURY, &g_LaraItem->pos, SPM_NORMAL);
             g_Lara.spaz_effect = fx;

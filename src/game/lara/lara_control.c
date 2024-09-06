@@ -137,7 +137,7 @@ static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
         while (item_num != NO_ITEM) {
             ITEM_INFO *item = &g_Items[item_num];
             if (item->collidable && item->status != IS_INVISIBLE) {
-                OBJECT_INFO *object = &g_Objects[item->object_number];
+                OBJECT_INFO *object = &g_Objects[item->object_id];
                 if (object->collision) {
                     int32_t x = lara_item->pos.x - item->pos.x;
                     int32_t y = lara_item->pos.y - item->pos.y;

@@ -13,7 +13,7 @@ static CONTROL_MODE m_ControlMode = CM_PICK;
 
 void Option_Shutdown(INVENTORY_ITEM *inv_item)
 {
-    switch (inv_item->object_number) {
+    switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport_Shutdown();
         break;
@@ -45,7 +45,7 @@ void Option_Shutdown(INVENTORY_ITEM *inv_item)
 
 void Option_DoInventory(INVENTORY_ITEM *inv_item)
 {
-    switch (inv_item->object_number) {
+    switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport(inv_item);
         break;

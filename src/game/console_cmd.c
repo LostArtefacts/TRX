@@ -182,7 +182,7 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
              item_num++) {
             const ITEM_INFO *const item = &g_Items[item_num];
             const bool is_pickup =
-                Object_IsObjectType(item->object_number, g_PickupObjects);
+                Object_IsObjectType(item->object_id, g_PickupObjects);
             if (is_pickup
                 && (item->status == IS_INVISIBLE
                     || item->status == IS_DEACTIVATED)) {
@@ -195,7 +195,7 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
 
             bool is_matched = false;
             for (int32_t i = 0; i < match_count; i++) {
-                if (matching_objs[i] == item->object_number) {
+                if (matching_objs[i] == item->object_id) {
                     is_matched = true;
                     break;
                 }
@@ -556,12 +556,13 @@ static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
     int32_t match_count = 0;
     GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
     for (int32_t i = 0; i < match_count; i++) {
-        const GAME_OBJECT_ID obj_id = matching_objs[i];
-        if (Object_IsObjectType(obj_id, g_PickupObjects)) {
-            if (g_Objects[obj_id].loaded) {
-                Inv_AddItemNTimes(obj_id, num);
+        const GAME_OBJECT_ID object_id = matching_objs[i];
+        if (Object_IsObjectType(object_id, g_PickupObjects)) {
+            if (g_Objects[object_id].loaded) {
+                Inv_AddItemNTimes(object_id, num);
                 Console_Log(
-                    GS(OSD_GIVE_ITEM), Object_GetCanonicalName(obj_id, args));
+                    GS(OSD_GIVE_ITEM),
+                    Object_GetCanonicalName(object_id, args));
                 found = true;
             }
         }
@@ -665,12 +666,12 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
         bool matched = false;
         int32_t num = 0;
         for (int32_t i = 0; i < match_count; i++) {
-            const GAME_OBJECT_ID obj_id = matching_objs[i];
-            if (Object_IsObjectType(obj_id, g_EnemyObjects)) {
+            const GAME_OBJECT_ID object_id = matching_objs[i];
+            if (Object_IsObjectType(object_id, g_EnemyObjects)) {
                 matched = true;
                 for (int16_t item_num = 0; item_num < Item_GetTotalCount();
                      item_num++) {
-                    if (g_Items[item_num].object_number == obj_id
+                    if (g_Items[item_num].object_id == object_id
                         && Lara_Cheat_KillEnemy(item_num)) {
                         num++;
                     }

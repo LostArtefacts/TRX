@@ -38,7 +38,7 @@ void KeyHole_Setup(OBJECT_INFO *obj)
 void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_number];
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.item_num == item_num) {

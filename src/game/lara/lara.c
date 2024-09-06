@@ -329,10 +329,10 @@ void Lara_AnimateUntil(ITEM_INFO *lara_item, int32_t goal)
     } while (lara_item->current_anim_state != goal);
 }
 
-void Lara_UseItem(GAME_OBJECT_ID object_num)
+void Lara_UseItem(GAME_OBJECT_ID object_id)
 {
-    LOG_INFO("%d", object_num);
-    switch (object_num) {
+    LOG_INFO("%d", object_id);
+    switch (object_id) {
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
         g_Lara.request_gun_type = LGT_PISTOLS;
@@ -415,7 +415,7 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
     case O_SCION_ITEM3:
     case O_SCION_ITEM4:
     case O_SCION_OPTION: {
-        int16_t receptacle_item_number = Object_FindReceptacle(object_num);
+        int16_t receptacle_item_number = Object_FindReceptacle(object_id);
         if (receptacle_item_number == NO_OBJECT) {
             Sound_Effect(SFX_LARA_NO, NULL, SPM_NORMAL);
             return;
@@ -423,7 +423,7 @@ void Lara_UseItem(GAME_OBJECT_ID object_num)
         g_Lara.interact_target.item_num = receptacle_item_number;
         g_Lara.interact_target.is_moving = true;
         g_Lara.interact_target.move_count = 0;
-        Inv_RemoveItem(object_num);
+        Inv_RemoveItem(object_id);
         break;
     }
 
@@ -670,7 +670,7 @@ int16_t Lara_GetNearestEnemy(void)
     while (item_num != NO_ITEM) {
         ITEM_INFO *item = &g_Items[item_num];
 
-        if (Object_IsObjectType(item->object_number, g_EnemyObjects)) {
+        if (Object_IsObjectType(item->object_id, g_EnemyObjects)) {
             const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
             if (best_item_num == NO_ITEM || distance < best_distance) {
                 best_item_num = item_num;

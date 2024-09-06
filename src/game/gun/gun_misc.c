@@ -499,7 +499,7 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
     }
     Item_TakeDamage(item, damage, true);
 
-    if (g_Config.fix_texture_issues && item->object_number == O_SCION_ITEM3) {
+    if (g_Config.fix_texture_issues && item->object_id == O_SCION_ITEM3) {
         GAME_VECTOR pos;
         pos.x = hitpos->x;
         pos.y = hitpos->y;
@@ -513,7 +513,7 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
     }
 
     if (item->hit_points > 0) {
-        switch (item->object_number) {
+        switch (item->object_id) {
         case O_WOLF:
             Sound_Effect(SFX_WOLF_HURT, &item->pos, SPM_NORMAL);
             break;

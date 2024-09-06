@@ -39,7 +39,7 @@ void ThorsHandle_Initialise(int16_t item_num)
     ITEM_INFO *hand_item = &g_Items[item_num];
     int16_t head_item_num = Item_Create();
     ITEM_INFO *head_item = &g_Items[head_item_num];
-    head_item->object_number = O_THORS_HEAD;
+    head_item->object_id = O_THORS_HEAD;
     head_item->room_number = hand_item->room_number;
     head_item->pos = hand_item->pos;
     head_item->rot = hand_item->rot;
@@ -147,7 +147,7 @@ void ThorsHandle_Control(int16_t item_num)
 
     ITEM_INFO *head_item = item->data;
     int16_t relative_anim =
-        item->anim_number - g_Objects[item->object_number].anim_index;
+        item->anim_number - g_Objects[item->object_id].anim_index;
     int16_t relative_frame =
         item->frame_number - g_Anims[item->anim_number].frame_base;
     Item_SwitchToAnim(head_item, relative_anim, relative_frame);

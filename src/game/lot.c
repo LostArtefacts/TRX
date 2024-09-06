@@ -104,7 +104,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
     creature->LOT.block_mask = BLOCKED;
     creature->LOT.fly = 0;
 
-    switch (item->object_number) {
+    switch (item->object_id) {
     case O_BAT:
     case O_ALLIGATOR:
     case O_FISH:

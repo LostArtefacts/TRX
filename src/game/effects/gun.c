@@ -44,7 +44,7 @@ int16_t Effect_ShardGun(
         fx->rot.x = 0;
         fx->rot.y = y_rot;
         fx->rot.z = 0;
-        fx->object_number = O_MISSILE2;
+        fx->object_id = O_MISSILE2;
         fx->frame_number = 0;
         fx->speed = SHARD_SPEED;
         fx->shade = 3584;
@@ -67,7 +67,7 @@ int16_t Effect_RocketGun(
         fx->rot.x = 0;
         fx->rot.y = y_rot;
         fx->rot.z = 0;
-        fx->object_number = O_MISSILE3;
+        fx->object_id = O_MISSILE3;
         fx->frame_number = 0;
         fx->speed = ROCKET_SPEED;
         fx->shade = 4096;

@@ -21,8 +21,9 @@ void Item_NewRoom(int16_t item_num, int16_t room_num);
 void Item_UpdateRoom(ITEM_INFO *item, int32_t height);
 int16_t Item_GetHeight(ITEM_INFO *item);
 int16_t Item_GetWaterHeight(ITEM_INFO *item);
-int16_t Item_Spawn(ITEM_INFO *item, int16_t object_num);
-int32_t Item_GlobalReplace(int32_t src_object_num, int32_t dst_object_num);
+int16_t Item_Spawn(const ITEM_INFO *item, GAME_OBJECT_ID object_id);
+int32_t Item_GlobalReplace(
+    GAME_OBJECT_ID src_object_id, GAME_OBJECT_ID dst_object_id);
 
 bool Item_IsNearItem(
     const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance);
@@ -44,7 +45,7 @@ bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index);
 void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame);
 void Item_SwitchToObjAnim(
     ITEM_INFO *item, int16_t anim_index, int16_t frame,
-    GAME_OBJECT_ID object_number);
+    GAME_OBJECT_ID object_id);
 void Item_Animate(ITEM_INFO *item);
 bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim);
 void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags);

@@ -129,7 +129,7 @@ static void Room_AddFlipItems(ROOM_INFO *r)
          item_num = g_Items[item_num].next_item) {
         ITEM_INFO *item = &g_Items[item_num];
 
-        switch (item->object_number) {
+        switch (item->object_id) {
         case O_MOVABLE_BLOCK:
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
@@ -153,7 +153,7 @@ static void Room_RemoveFlipItems(ROOM_INFO *r)
          item_num = g_Items[item_num].next_item) {
         ITEM_INFO *item = &g_Items[item_num];
 
-        switch (item->object_number) {
+        switch (item->object_id) {
         case O_MOVABLE_BLOCK:
         case O_MOVABLE_BLOCK2:
         case O_MOVABLE_BLOCK3:
@@ -349,7 +349,7 @@ int16_t Room_GetCeiling(
 
         const ITEM_INFO *const item =
             &g_Items[(int16_t)(intptr_t)cmd->parameter];
-        const OBJECT_INFO *const object = &g_Objects[item->object_number];
+        const OBJECT_INFO *const object = &g_Objects[item->object_id];
         if (object->ceiling_height_func) {
             height = object->ceiling_height_func(item, x, y, z, height);
         }
@@ -378,7 +378,7 @@ int16_t Room_GetHeight(
 
         const ITEM_INFO *const item =
             &g_Items[(int16_t)(intptr_t)cmd->parameter];
-        const OBJECT_INFO *const object = &g_Objects[item->object_number];
+        const OBJECT_INFO *const object = &g_Objects[item->object_id];
         if (object->floor_height_func) {
             height = object->floor_height_func(item, x, y, z, height);
         }
@@ -736,7 +736,7 @@ void Room_PopulateSectorData(
 
 void Room_TestTriggers(const ITEM_INFO *const item)
 {
-    const bool is_heavy = item->object_number != O_LARA;
+    const bool is_heavy = item->object_id != O_LARA;
     int16_t room_num = item->room_number;
     const SECTOR_INFO *const sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
@@ -843,7 +843,7 @@ void Room_TestTriggers(const ITEM_INFO *const item)
             }
 
             if (!item->active) {
-                if (g_Objects[item->object_number].intelligent) {
+                if (g_Objects[item->object_id].intelligent) {
                     if (item->status == IS_NOT_ACTIVE) {
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
@@ -1028,7 +1028,7 @@ bool Room_IsOnWalkable(
 
         const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
         const ITEM_INFO *const item = &g_Items[item_num];
-        const OBJECT_INFO *const object = &g_Objects[item->object_number];
+        const OBJECT_INFO *const object = &g_Objects[item->object_id];
         if (object->floor_height_func) {
             height = object->floor_height_func(item, x, y, z, height);
             object_found = true;

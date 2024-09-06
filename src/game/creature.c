@@ -70,7 +70,7 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         info->enemy_zone |= BLOCKED;
     }
 
-    OBJECT_INFO *object = &g_Objects[item->object_number];
+    OBJECT_INFO *object = &g_Objects[item->object_id];
     int32_t z = g_LaraItem->pos.z
         - ((Math_Cos(item->rot.y) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.z;
@@ -185,7 +185,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
 
     switch (creature->mood) {
     case MOOD_ATTACK:
-        if (Random_GetControl() < g_Objects[item->object_number].smartness) {
+        if (Random_GetControl() < g_Objects[item->object_id].smartness) {
             LOT->target.x = g_LaraItem->pos.x;
             LOT->target.y = g_LaraItem->pos.y;
             LOT->target.z = g_LaraItem->pos.z;
@@ -348,7 +348,7 @@ bool Creature_CheckBaddieOverlap(int16_t item_num)
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z;
-    int32_t radius = SQUARE(g_Objects[item->object_number].radius);
+    int32_t radius = SQUARE(g_Objects[item->object_id].radius);
 
     int16_t link = g_RoomInfo[item->room_number].item_number;
     do {
@@ -485,7 +485,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     shift_x = 0;
     shift_z = 0;
 
-    int32_t radius = g_Objects[item->object_number].radius;
+    int32_t radius = g_Objects[item->object_id].radius;
 
     if (pos_z < radius) {
         if (Box_BadFloor(
@@ -612,8 +612,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             int32_t ceiling =
                 Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
 
-            int32_t min_y =
-                item->object_number == O_ALLIGATOR ? 0 : bounds->min.y;
+            int32_t min_y = item->object_id == O_ALLIGATOR ? 0 : bounds->min.y;
             if (item->pos.y + min_y + dy < ceiling) {
                 if (item->pos.y + min_y < ceiling) {
                     item->pos.x = old.x;
@@ -722,7 +721,7 @@ bool Creature_EnsureHabitat(
     *wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_number);
 
-    return item->object_number == info->land.id
+    return item->object_id == info->land.id
         ? Creature_SwitchToWater(item_num, wh, info)
         : Creature_SwitchToLand(item_num, wh, info);
 }
@@ -730,7 +729,7 @@ bool Creature_EnsureHabitat(
 bool Creature_IsBoss(const int16_t item_num)
 {
     const ITEM_INFO *const item = &g_Items[item_num];
-    return Object_IsObjectType(item->object_number, g_BossObjects);
+    return Object_IsObjectType(item->object_id, g_BossObjects);
 }
 
 static bool Creature_SwitchToWater(
@@ -749,7 +748,7 @@ static bool Creature_SwitchToWater(
 
     // The land creature is alive and the room has been flooded. Switch to the
     // water creature.
-    item->object_number = info->water.id;
+    item->object_id = info->water.id;
     Item_SwitchToAnim(item, info->water.active_anim, 0);
     item->current_anim_state = g_Anims[item->anim_number].current_anim_state;
     item->goal_anim_state = item->current_anim_state;
@@ -768,7 +767,7 @@ static bool Creature_SwitchToLand(
     ITEM_INFO *item = &g_Items[item_num];
 
     // Switch to the land creature regardless of death state.
-    item->object_number = info->land.id;
+    item->object_id = info->land.id;
     item->rot.x = 0;
 
     if (item->hit_points > 0) {

@@ -51,19 +51,19 @@ void Pod_Initialise(int16_t item_num)
 
         switch ((item->flags & IF_CODE_BITS) >> 9) {
         case 1:
-            bug->object_number = O_WARRIOR2;
+            bug->object_id = O_WARRIOR2;
             break;
         case 2:
-            bug->object_number = O_CENTAUR;
+            bug->object_id = O_CENTAUR;
             break;
         case 4:
-            bug->object_number = O_TORSO;
+            bug->object_id = O_TORSO;
             break;
         case 8:
-            bug->object_number = O_WARRIOR3;
+            bug->object_id = O_WARRIOR3;
             break;
         default:
-            bug->object_number = O_WARRIOR1;
+            bug->object_id = O_WARRIOR1;
             break;
         }
 
@@ -96,7 +96,7 @@ void Pod_Control(int16_t item_num)
 
         if (item->flags & IF_ONESHOT) {
             explode = 1;
-        } else if (item->object_number == O_BIG_POD) {
+        } else if (item->object_id == O_BIG_POD) {
             explode = 1;
         } else {
             int32_t x = g_LaraItem->pos.x - item->pos.x;
@@ -116,7 +116,7 @@ void Pod_Control(int16_t item_num)
 
             int16_t bug_item_num = *(int16_t *)item->data;
             ITEM_INFO *bug = &g_Items[bug_item_num];
-            if (g_Objects[bug->object_number].loaded) {
+            if (g_Objects[bug->object_id].loaded) {
                 bug->touch_bits = 0;
                 Item_AddActive(bug_item_num);
                 if (LOT_EnableBaddieAI(bug_item_num, 0)) {

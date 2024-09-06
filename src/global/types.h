@@ -1284,7 +1284,7 @@ typedef struct {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
-    GAME_OBJECT_ID object_number;
+    GAME_OBJECT_ID object_id;
     int16_t current_anim_state;
     int16_t goal_anim_state;
     int16_t required_anim_state;
@@ -1394,7 +1394,7 @@ typedef struct FX_INFO {
     XYZ_32 pos;
     XYZ_16 rot;
     int16_t room_number;
-    GAME_OBJECT_ID object_number;
+    GAME_OBJECT_ID object_id;
     int16_t next_draw;
     int16_t next_active;
     int16_t next_free;
@@ -1929,7 +1929,7 @@ typedef struct INVENTORY_SPRITE {
 
 typedef struct INVENTORY_ITEM {
     const char *string;
-    GAME_OBJECT_ID object_number;
+    GAME_OBJECT_ID object_id;
     int16_t frames_total;
     int16_t current_frame;
     int16_t goal_frame;
