@@ -70,7 +70,7 @@ void MidasTouch_Collision(
         g_Lara.interact_target.item_num = NO_OBJECT;
     }
 
-    if (!lara_item->gravity_status && lara_item->current_anim_state == LS_STOP
+    if (!lara_item->gravity && lara_item->current_anim_state == LS_STOP
         && lara_item->pos.x > item->pos.x - MIDAS_RANGE_H
         && lara_item->pos.x < item->pos.x + MIDAS_RANGE_H
         && lara_item->pos.y > item->pos.y - MIDAS_RANGE_V
@@ -81,7 +81,7 @@ void MidasTouch_Collision(
         lara_item->goal_anim_state = LS_DIE_MIDAS;
         Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_DIE_GOLD, 0, O_LARA_EXTRA);
         lara_item->hit_points = -1;
-        lara_item->gravity_status = 0;
+        lara_item->gravity = 0;
         g_Lara.air = -1;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         g_Lara.gun_type = LGT_UNARMED;
@@ -104,8 +104,7 @@ void MidasTouch_Collision(
     }
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity_status
-        || lara_item->current_anim_state != LS_STOP) {
+        || lara_item->gravity || lara_item->current_anim_state != LS_STOP) {
         return;
     }
 

@@ -28,7 +28,7 @@ void Spikes_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     int32_t num = Random_GetControl() / 24576;
-    if (lara_item->gravity_status) {
+    if (lara_item->gravity) {
         if (lara_item->fall_speed > 0) {
             lara_item->hit_points = -1;
             num = 20;
@@ -51,6 +51,6 @@ void Spikes_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         lara_item->goal_anim_state = LS_DEATH;
         Item_SwitchToAnim(lara_item, LA_SPIKE_DEATH, 0);
         lara_item->pos.y = item->pos.y;
-        lara_item->gravity_status = 0;
+        lara_item->gravity = 0;
     }
 }

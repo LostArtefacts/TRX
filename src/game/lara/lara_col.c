@@ -87,7 +87,7 @@ static void Lara_Col_Jumper(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = LS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
     }
 }
@@ -95,7 +95,7 @@ static void Lara_Col_Jumper(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_Walk(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -163,7 +163,7 @@ void Lara_Col_Walk(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_Run(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (g_Config.fix_qwop_glitch) {
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
     }
 
@@ -229,7 +229,7 @@ void Lara_Col_Run(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_Stop(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -250,7 +250,7 @@ void Lara_Col_Stop(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
-        item->gravity_status = 1;
+        item->gravity = 1;
         item->fall_speed = 0;
         return;
     }
@@ -282,7 +282,7 @@ void Lara_Col_ForwardJump(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = LS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
         item->speed = 0;
 
@@ -300,7 +300,7 @@ void Lara_Col_Pose(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_FastBack(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - PHD_180;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -317,7 +317,7 @@ void Lara_Col_FastBack(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_FALL_BACK;
         item->goal_anim_state = LS_FALL_BACK;
         Item_SwitchToAnim(item, LA_FALL_BACK, 0);
-        item->gravity_status = 1;
+        item->gravity = 1;
         item->fall_speed = 0;
         return;
     }
@@ -332,7 +332,7 @@ void Lara_Col_FastBack(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_TurnR(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -345,7 +345,7 @@ void Lara_Col_TurnR(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
-        item->gravity_status = 1;
+        item->gravity = 1;
         item->fall_speed = 0;
         return;
     }
@@ -379,7 +379,7 @@ void Lara_Col_Death(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_FastFall(ITEM_INFO *item, COLL_INFO *coll)
 {
-    item->gravity_status = 1;
+    item->gravity = 1;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = BAD_JUMP_CEILING;
@@ -396,7 +396,7 @@ void Lara_Col_FastFall(ITEM_INFO *item, COLL_INFO *coll)
         }
         Sound_StopEffect(SFX_LARA_FALL, NULL);
         item->pos.y += coll->mid_floor;
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
     }
 }
@@ -417,7 +417,7 @@ void Lara_Col_Hang(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_Reach(ITEM_INFO *item, COLL_INFO *coll)
 {
-    item->gravity_status = 1;
+    item->gravity = 1;
     g_Lara.move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = 0;
@@ -436,7 +436,7 @@ void Lara_Col_Reach(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = LS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
     }
 }
@@ -460,7 +460,7 @@ void Lara_Col_Land(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_Compress(ITEM_INFO *item, COLL_INFO *coll)
 {
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = NO_BAD_NEG;
@@ -471,7 +471,7 @@ void Lara_Col_Compress(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_STOP, 0);
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
         item->speed = 0;
         item->pos.x = coll->old.x;
@@ -483,7 +483,7 @@ void Lara_Col_Compress(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_Back(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - PHD_180;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEPUP_HEIGHT;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -533,7 +533,7 @@ void Lara_Col_FastTurn(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_StepRight(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y + PHD_90;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = STEP_L / 2;
     coll->bad_neg = -STEP_L / 2;
@@ -564,7 +564,7 @@ void Lara_Col_StepRight(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_StepLeft(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - PHD_90;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = 128;
     coll->bad_neg = -128;
@@ -658,7 +658,7 @@ void Lara_Col_UpJump(ITEM_INFO *item, COLL_INFO *coll)
         item->goal_anim_state = LS_STOP;
     }
     item->pos.y += coll->mid_floor;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
 }
 
@@ -679,7 +679,7 @@ void Lara_Col_FallBack(ITEM_INFO *item, COLL_INFO *coll)
             item->goal_anim_state = LS_STOP;
         }
         item->pos.y += coll->mid_floor;
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
     }
 }
@@ -762,7 +762,7 @@ void Lara_Col_UsePuzzle(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_Roll(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -782,7 +782,7 @@ void Lara_Col_Roll(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
-        item->gravity_status = 1;
+        item->gravity = 1;
         item->fall_speed = 0;
         return;
     }
@@ -794,7 +794,7 @@ void Lara_Col_Roll(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_Roll2(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - PHD_180;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->fall_speed = 0;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -814,7 +814,7 @@ void Lara_Col_Roll2(ITEM_INFO *item, COLL_INFO *coll)
         item->current_anim_state = LS_FALL_BACK;
         item->goal_anim_state = LS_FALL_BACK;
         Item_SwitchToAnim(item, LA_FALL_BACK, 0);
-        item->gravity_status = 1;
+        item->gravity = 1;
         item->fall_speed = 0;
         return;
     }
@@ -849,7 +849,7 @@ void Lara_Col_SwanDive(ITEM_INFO *item, COLL_INFO *coll)
 
     if (item->fall_speed > 0 && coll->mid_floor <= 0) {
         item->goal_anim_state = LS_STOP;
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
         item->pos.y += coll->mid_floor;
     }
@@ -871,7 +871,7 @@ void Lara_Col_FastDive(ITEM_INFO *item, COLL_INFO *coll)
         } else {
             item->goal_anim_state = LS_STOP;
         }
-        item->gravity_status = 0;
+        item->gravity = 0;
         item->fall_speed = 0;
         item->pos.y += coll->mid_floor;
     }

@@ -97,7 +97,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
     if (!g_Input.action || item->status != IS_NOT_ACTIVE
-        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity_status) {
+        || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity) {
         return;
     }
 
@@ -135,8 +135,7 @@ void Switch_CollisionControlled(
     ITEM_INFO *item = &g_Items[item_num];
 
     if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
-         && !lara_item->gravity_status
-         && lara_item->current_anim_state == LS_STOP
+         && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
          && item->status == IS_NOT_ACTIVE)
         || (g_Lara.interact_target.is_moving
             && g_Lara.interact_target.item_num == item_num)) {

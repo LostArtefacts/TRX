@@ -101,11 +101,11 @@ void Bat_Control(int16_t item_num)
     PHD_ANGLE angle = 0;
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {
-            item->gravity_status = 1;
+            item->gravity = 1;
             item->goal_anim_state = BAT_FALL;
             item->speed = 0;
         } else {
-            item->gravity_status = 0;
+            item->gravity = 0;
             item->fall_speed = 0;
             item->goal_anim_state = BAT_DEATH;
             item->pos.y = item->floor;

@@ -92,13 +92,13 @@ void BaconLara_Control(int16_t item_num)
         item->rot.z = g_LaraItem->rot.z;
         Item_NewRoom(item_num, g_LaraItem->room_num);
 
-        if (h >= lh + WALL_L && !g_LaraItem->gravity_status) {
+        if (h >= lh + WALL_L && !g_LaraItem->gravity) {
             item->current_anim_state = LS_FAST_FALL;
             item->goal_anim_state = LS_FAST_FALL;
             Item_SwitchToAnim(item, LA_FAST_FALL, BLF_FASTFALL);
             item->speed = 0;
             item->fall_speed = 0;
-            item->gravity_status = 1;
+            item->gravity = 1;
             item->data = (void *)-1;
             item->pos.y += 50;
         }
@@ -121,7 +121,7 @@ void BaconLara_Control(int16_t item_num)
             item->floor = h;
             item->pos.y = h;
             Room_TestTriggers(item);
-            item->gravity_status = 0;
+            item->gravity = 0;
             item->fall_speed = 0;
             item->goal_anim_state = LS_DEATH;
             item->required_anim_state = LS_DEATH;

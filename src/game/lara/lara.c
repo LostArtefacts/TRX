@@ -67,7 +67,7 @@ void Lara_Control(void)
         g_Lara.water_status = LWS_UNDERWATER;
         g_Lara.air = LARA_MAX_AIR;
         item->pos.y += 100;
-        item->gravity_status = 0;
+        item->gravity = 0;
         Item_UpdateRoom(item, 0);
         Sound_StopEffect(SFX_LARA_FALL, NULL);
         if (item->current_anim_state == LS_SWAN_DIVE) {
@@ -120,7 +120,7 @@ void Lara_Control(void)
             Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
             item->speed = item->fall_speed / 4;
             item->fall_speed = 0;
-            item->gravity_status = 1;
+            item->gravity = 1;
             item->rot.x = 0;
             item->rot.z = 0;
             g_Lara.head_rot.x = 0;
@@ -136,7 +136,7 @@ void Lara_Control(void)
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
         item->speed = item->fall_speed / 4;
         item->fall_speed = 0;
-        item->gravity_status = 1;
+        item->gravity = 1;
         item->rot.x = 0;
         item->rot.z = 0;
         g_Lara.head_rot.x = 0;
@@ -246,7 +246,7 @@ void Lara_Animate(ITEM_INFO *item)
                     item->fall_speed = command[0];
                     item->speed = command[1];
                     command += 2;
-                    item->gravity_status = 1;
+                    item->gravity = 1;
                     if (g_Lara.calc_fall_speed) {
                         item->fall_speed = g_Lara.calc_fall_speed;
                         g_Lara.calc_fall_speed = 0;
@@ -299,7 +299,7 @@ void Lara_Animate(ITEM_INFO *item)
         }
     }
 
-    if (item->gravity_status) {
+    if (item->gravity) {
         int32_t speed = anim->velocity
             + anim->acceleration * (item->frame_num - anim->frame_base - 1);
         item->speed -= (int16_t)(speed >> 16);

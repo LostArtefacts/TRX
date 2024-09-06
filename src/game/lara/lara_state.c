@@ -132,7 +132,7 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
         }
     }
 
-    if (g_Input.jump && m_JumpPermitted && !item->gravity_status) {
+    if (g_Input.jump && m_JumpPermitted && !item->gravity) {
         item->goal_anim_state = LS_JUMP_FORWARD;
     } else if (g_Input.forward) {
         item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
@@ -674,7 +674,7 @@ void Lara_State_UseMidas(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_State_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
 {
-    item->gravity_status = 0;
+    item->gravity = 0;
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 

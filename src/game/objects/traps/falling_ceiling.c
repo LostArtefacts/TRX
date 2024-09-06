@@ -22,7 +22,7 @@ void FallingCeiling_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
-        item->gravity_status = 1;
+        item->gravity = 1;
     } else if (item->current_anim_state == TRAP_ACTIVATE && item->touch_bits) {
         Lara_TakeDamage(FALLING_CEILING_DAMAGE, true);
     }
@@ -35,6 +35,6 @@ void FallingCeiling_Control(int16_t item_num)
         item->goal_anim_state = TRAP_WORKING;
         item->pos.y = item->floor;
         item->fall_speed = 0;
-        item->gravity_status = 0;
+        item->gravity = 0;
     }
 }

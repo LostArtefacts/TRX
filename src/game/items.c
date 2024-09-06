@@ -119,7 +119,7 @@ void Item_Initialise(int16_t item_num)
     item->fall_speed = 0;
     item->status = IS_NOT_ACTIVE;
     item->active = 0;
-    item->gravity_status = 0;
+    item->gravity = 0;
     item->hit_status = 0;
     item->looked_at = 0;
     item->collidable = 1;
@@ -603,7 +603,7 @@ void Item_Animate(ITEM_INFO *item)
                 case AC_JUMP_VELOCITY:
                     item->fall_speed = command[0];
                     item->speed = command[1];
-                    item->gravity_status = 1;
+                    item->gravity = 1;
                     command += 2;
                     break;
 
@@ -658,7 +658,7 @@ void Item_Animate(ITEM_INFO *item)
         }
     }
 
-    if (!item->gravity_status) {
+    if (!item->gravity) {
         int32_t speed = anim->velocity;
         if (anim->acceleration) {
             speed += anim->acceleration * (item->frame_num - anim->frame_base);

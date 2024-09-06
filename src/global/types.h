@@ -1307,7 +1307,7 @@ typedef struct {
     XYZ_16 rot;
     uint16_t active : 1;
     uint16_t status : 2;
-    uint16_t gravity_status : 1;
+    uint16_t gravity : 1;
     uint16_t hit_status : 1;
     uint16_t collidable : 1;
     uint16_t looked_at : 1;

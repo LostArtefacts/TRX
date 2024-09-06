@@ -62,7 +62,7 @@ void SaveCrystal_Collision(
     Object_Collision(item_num, lara_item, coll);
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity_status) {
+        || lara_item->gravity) {
         return;
     }
 

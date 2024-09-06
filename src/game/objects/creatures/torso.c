@@ -115,7 +115,7 @@ void Torso_Control(int16_t item_num)
         switch (item->current_anim_state) {
         case TORSO_SET:
             item->goal_anim_state = TORSO_FALL;
-            item->gravity_status = 1;
+            item->gravity = 1;
             break;
 
         case TORSO_STOP:
@@ -219,7 +219,7 @@ void Torso_Control(int16_t item_num)
                 g_LaraItem->rot.x = 0;
                 g_LaraItem->rot.y = item->rot.y;
                 g_LaraItem->rot.z = 0;
-                g_LaraItem->gravity_status = 0;
+                g_LaraItem->gravity = 0;
                 g_LaraItem->hit_points = -1;
                 g_Lara.air = -1;
                 g_Lara.gun_status = LGS_HANDS_BUSY;
@@ -244,7 +244,7 @@ void Torso_Control(int16_t item_num)
 
         if (item->pos.y > item->floor) {
             item->goal_anim_state = TORSO_STOP;
-            item->gravity_status = 0;
+            item->gravity = 0;
             item->pos.y = item->floor;
             g_Camera.bounce = 500;
         }

@@ -37,7 +37,7 @@ void DamoclesSword_Initialise(int16_t item_num)
 void DamoclesSword_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (item->gravity_status) {
+    if (item->gravity) {
         item->rot.y += item->required_anim_state;
         item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
         item->pos.y += item->fall_speed;
@@ -47,7 +47,7 @@ void DamoclesSword_Control(int16_t item_num)
         if (item->pos.y > item->floor) {
             Sound_Effect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
             item->pos.y = item->floor + 10;
-            item->gravity_status = 0;
+            item->gravity = 0;
             item->status = IS_DEACTIVATED;
             Item_RemoveActive(item_num);
         }
@@ -61,7 +61,7 @@ void DamoclesSword_Control(int16_t item_num)
             && y < WALL_L * 3) {
             item->current_anim_state = x / 32;
             item->goal_anim_state = z / 32;
-            item->gravity_status = 1;
+            item->gravity = 1;
         }
     }
 }
@@ -76,7 +76,7 @@ void DamoclesSword_Collision(
     if (coll->enable_baddie_push) {
         Lara_Push(item, coll, false, true);
     }
-    if (item->gravity_status) {
+    if (item->gravity) {
         lara_item->hit_points -= DAMOCLES_SWORD_DAMAGE;
         int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;

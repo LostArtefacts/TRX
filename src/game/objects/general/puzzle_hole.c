@@ -105,7 +105,7 @@ void PuzzleHole_Collision(
     }
 
     if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity_status) {
+        || lara_item->gravity) {
         return;
     }
 

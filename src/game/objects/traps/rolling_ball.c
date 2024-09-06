@@ -44,8 +44,8 @@ void RollingBall_Control(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE) {
         if (item->pos.y < item->floor) {
-            if (!item->gravity_status) {
-                item->gravity_status = 1;
+            if (!item->gravity) {
+                item->gravity = 1;
                 item->fall_speed = -10;
             }
         } else if (item->current_anim_state == TRAP_SET) {
@@ -69,7 +69,7 @@ void RollingBall_Control(int16_t item_num)
         Room_TestTriggers(item);
 
         if (item->pos.y >= item->floor - STEP_L) {
-            item->gravity_status = 0;
+            item->gravity = 0;
             item->fall_speed = 0;
             item->pos.y = item->floor;
         }
@@ -131,7 +131,7 @@ void RollingBall_Collision(
     }
 
     int32_t x, y, z, d;
-    if (lara_item->gravity_status) {
+    if (lara_item->gravity) {
         if (coll->enable_baddie_push) {
             Lara_Push(item, coll, coll->enable_spaz, true);
         }

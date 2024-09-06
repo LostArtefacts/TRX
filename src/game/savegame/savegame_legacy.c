@@ -611,7 +611,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
                 }
                 item->status = (item->flags & 6) >> 1;
                 if (item->flags & 8) {
-                    item->gravity_status = 1;
+                    item->gravity = 1;
                 }
                 if (!(item->flags & 16)) {
                     item->collidable = 0;
@@ -774,7 +774,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
         if (Savegame_Legacy_ItemHasSaveFlags(obj, item)) {
             uint16_t flags = item->flags + item->active + (item->status << 1)
-                + (item->gravity_status << 3) + (item->collidable << 4);
+                + (item->gravity << 3) + (item->collidable << 4);
             if (obj->intelligent && item->data) {
                 flags |= SAVE_CREATURE;
             }

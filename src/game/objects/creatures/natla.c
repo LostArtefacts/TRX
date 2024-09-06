@@ -115,10 +115,10 @@ void Natla_Control(int16_t item_num)
         switch (item->current_anim_state) {
         case NATLA_FALL:
             if (item->pos.y < item->floor) {
-                item->gravity_status = 1;
+                item->gravity = 1;
                 item->speed = 0;
             } else {
-                item->gravity_status = 0;
+                item->gravity = 0;
                 item->goal_anim_state = NATLA_SEMIDEATH;
                 item->pos.y = item->floor;
                 timer = 0;

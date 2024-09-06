@@ -254,15 +254,15 @@ void MovableBlock_Control(int16_t item_num)
         sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
     if (item->pos.y < height) {
-        item->gravity_status = 1;
-    } else if (item->gravity_status) {
-        item->gravity_status = 0;
+        item->gravity = 1;
+    } else if (item->gravity) {
+        item->gravity = 0;
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
         FX_DinoStomp(item);
         Sound_Effect(SFX_T_REX_FOOTSTOMP, &item->pos, SPM_NORMAL);
     } else if (
-        item->pos.y >= height && !item->gravity_status
+        item->pos.y >= height && !item->gravity
         && !(bool)(intptr_t)item->priv) {
         item->status = IS_NOT_ACTIVE;
         Item_RemoveActive(item_num);
@@ -290,8 +290,8 @@ void MovableBlock_Collision(
         item->priv = (void *)false;
     }
 
-    if (!g_Input.action || item->status == IS_ACTIVE
-        || lara_item->gravity_status || lara_item->pos.y != item->pos.y) {
+    if (!g_Input.action || item->status == IS_ACTIVE || lara_item->gravity
+        || lara_item->pos.y != item->pos.y) {
         return;
     }
 

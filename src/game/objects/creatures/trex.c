@@ -191,7 +191,7 @@ void TRex_LaraDeath(ITEM_INFO *item)
     g_LaraItem->rot.x = 0;
     g_LaraItem->rot.y = item->rot.y;
     g_LaraItem->rot.z = 0;
-    g_LaraItem->gravity_status = 0;
+    g_LaraItem->gravity = 0;
     g_LaraItem->current_anim_state = LS_SPECIAL;
     g_LaraItem->goal_anim_state = LS_SPECIAL;
     Item_SwitchToObjAnim(g_LaraItem, EXTRA_ANIM_TREX_DEATH, 0, O_LARA_EXTRA);

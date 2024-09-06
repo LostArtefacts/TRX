@@ -168,8 +168,7 @@ void Scion_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         }
     } else if (
         g_Input.action && g_Lara.gun_status == LGS_ARMLESS
-        && !lara_item->gravity_status
-        && lara_item->current_anim_state == LS_STOP) {
+        && !lara_item->gravity && lara_item->current_anim_state == LS_STOP) {
         Lara_AlignPosition(item, &m_Scion_Position);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;
@@ -205,8 +204,7 @@ void Scion_Collision4(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     if (g_Input.action && g_Lara.gun_status == LGS_ARMLESS
-        && !lara_item->gravity_status
-        && lara_item->current_anim_state == LS_STOP) {
+        && !lara_item->gravity && lara_item->current_anim_state == LS_STOP) {
         Lara_AlignPosition(item, &m_Scion_Position4);
         lara_item->current_anim_state = LS_PICKUP;
         lara_item->goal_anim_state = LS_PICKUP;

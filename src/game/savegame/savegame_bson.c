@@ -561,8 +561,8 @@ static bool Savegame_BSON_LoadItems(
                 }
                 item->status =
                     json_object_get_int(item_obj, "status", item->status);
-                item->gravity_status = json_object_get_bool(
-                    item_obj, "gravity", item->gravity_status);
+                item->gravity =
+                    json_object_get_bool(item_obj, "gravity", item->gravity);
                 item->collidable = json_object_get_bool(
                     item_obj, "collidable", item->collidable);
             }
@@ -1078,7 +1078,7 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
             json_object_append_int(item_obj, "flags", item->flags);
             json_object_append_int(item_obj, "status", item->status);
             json_object_append_bool(item_obj, "active", item->active);
-            json_object_append_bool(item_obj, "gravity", item->gravity_status);
+            json_object_append_bool(item_obj, "gravity", item->gravity);
             json_object_append_bool(item_obj, "collidable", item->collidable);
             json_object_append_bool(
                 item_obj, "intelligent", obj->intelligent && item->data);
