@@ -517,7 +517,7 @@ static void Level_LoadStaticObjects(VFILE *file)
         const int32_t tmp = VFile_ReadS32(file);
         STATIC_INFO *object = &g_StaticObjects[tmp];
 
-        object->mesh_number = VFile_ReadS16(file);
+        object->mesh_num = VFile_ReadS16(file);
         object->p.min.x = VFile_ReadS16(file);
         object->p.max.x = VFile_ReadS16(file);
         object->p.min.y = VFile_ReadS16(file);
@@ -592,7 +592,7 @@ static void Level_LoadSprites(VFILE *file)
         } else if (object_id - O_NUMBER_OF < STATIC_NUMBER_OF) {
             STATIC_INFO *object = &g_StaticObjects[object_id - O_NUMBER_OF];
             object->nmeshes = num_meshes;
-            object->mesh_number = mesh_index;
+            object->mesh_num = mesh_index;
             object->loaded = true;
         }
     }
@@ -977,7 +977,7 @@ static size_t Level_CalculateMaxVertices(void)
         }
 
         max_vertices =
-            MAX(max_vertices, *(g_Meshes[static_info->mesh_number] + 5));
+            MAX(max_vertices, *(g_Meshes[static_info->mesh_num] + 5));
     }
 
     for (int32_t i = 0; i < g_RoomCount; i++) {

@@ -1718,7 +1718,7 @@ typedef struct SHADOW_INFO {
 typedef struct STATIC_INFO {
     bool loaded;
     int16_t nmeshes;
-    int16_t mesh_number;
+    int16_t mesh_num;
     int16_t flags;
     BOUNDS_16 p;
     BOUNDS_16 c;
