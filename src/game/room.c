@@ -40,6 +40,8 @@ static int16_t Room_GetCeilingTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z);
 static SECTOR_INFO *Room_GetSkySector(
     const SECTOR_INFO *sector, int32_t x, int32_t z);
+static void Room_TestSectorTrigger(
+    const ITEM_INFO *item, const SECTOR_INFO *sector);
 
 static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
@@ -736,11 +738,34 @@ void Room_PopulateSectorData(
 
 void Room_TestTriggers(const ITEM_INFO *const item)
 {
-    const bool is_heavy = item->object_id != O_LARA;
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR_INFO *sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
 
+    Room_TestSectorTrigger(item, sector);
+    if (item->object_id != O_TORSO) {
+        return;
+    }
+
+    for (int32_t dx = -1; dx < 2; dx++) {
+        for (int32_t dz = -1; dz < 2; dz++) {
+            if (!dx && !dz) {
+                continue;
+            }
+
+            room_num = item->room_num;
+            sector = Room_GetSector(
+                item->pos.x + dx * WALL_L, MAX_HEIGHT,
+                item->pos.z + dz * WALL_L, &room_num);
+            Room_TestSectorTrigger(item, sector);
+        }
+    }
+}
+
+static void Room_TestSectorTrigger(
+    const ITEM_INFO *const item, const SECTOR_INFO *const sector)
+{
+    const bool is_heavy = item->object_id != O_LARA;
     if (!is_heavy && sector->is_death_sector && Lava_TestFloor(item)) {
         Lava_Burn(g_LaraItem);
     }
