@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define ENV_MAP_TEXTURE (-1)
+
 bool S_Output_Init(void);
 void S_Output_Shutdown(void);
 
@@ -27,7 +29,7 @@ void S_Output_SetPalette(RGB_888 palette[256]);
 RGB_888 S_Output_GetPaletteColor(uint8_t idx);
 
 void S_Output_DownloadTextures(int32_t pages);
-void S_Output_SelectTexture(int tex_num);
+void S_Output_SelectTexture(int32_t texture_num);
 void S_Output_DownloadBackdropSurface(const IMAGE *image);
 void S_Output_DrawBackdropSurface(void);
 
@@ -37,7 +39,7 @@ void S_Output_DrawTexturedTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype);
 void S_Output_DrawTexturedQuad(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, int16_t tpage,
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype);
 void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);

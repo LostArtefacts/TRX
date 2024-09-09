@@ -118,6 +118,7 @@ typedef struct {
         float anisotropy_filter;
         int32_t turbo_speed;
         bool pretty_pixels;
+        bool enable_reflections;
     } rendering;
 
     struct {

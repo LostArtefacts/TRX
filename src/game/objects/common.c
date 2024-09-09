@@ -632,3 +632,65 @@ void Object_DrawUnclippedItem(ITEM_INFO *item)
     g_PhdRight = right;
     g_PhdBottom = bottom;
 }
+
+void Object_SetMeshReflective(
+    const GAME_OBJECT_ID object_id, const int32_t mesh_idx, const bool enabled)
+{
+    const OBJECT_INFO *const object = &g_Objects[object_id];
+    if (!object->loaded) {
+        return;
+    }
+    int16_t *obj_ptr = g_Meshes[object->mesh_index + mesh_idx];
+
+    TOGGLE_REFLECTION_ENABLED(obj_ptr[3], enabled);
+
+    obj_ptr += 5;
+    int32_t vertex_count = *obj_ptr++;
+    obj_ptr += vertex_count * 3;
+    vertex_count = *obj_ptr++;
+    if (vertex_count > 0) {
+        obj_ptr += vertex_count * 3;
+    } else {
+        obj_ptr += vertex_count;
+    }
+
+    // textured quads
+    int32_t num = *obj_ptr++;
+    for (int32_t i = 0; i < num; i++) {
+        // skip vertices
+        obj_ptr += 4;
+        TOGGLE_REFLECTION_ENABLED(*obj_ptr++, enabled);
+    }
+
+    // textured triangles
+    num = *obj_ptr++;
+    for (int32_t i = 0; i < num; i++) {
+        // skip vertices
+        obj_ptr += 3;
+        TOGGLE_REFLECTION_ENABLED(*obj_ptr++, enabled);
+    }
+
+    // color quads
+    num = *obj_ptr++;
+    for (int32_t i = 0; i < num; i++) {
+        // skip vertices
+        obj_ptr += 4;
+        TOGGLE_REFLECTION_ENABLED(*obj_ptr++, enabled);
+    }
+
+    // color triangles
+    num = *obj_ptr++;
+    for (int32_t i = 0; i < num; i++) {
+        // skip vertices
+        obj_ptr += 3;
+        TOGGLE_REFLECTION_ENABLED(*obj_ptr++, enabled);
+    }
+}
+
+void Object_SetReflective(const GAME_OBJECT_ID object_id, const bool enabled)
+{
+    const OBJECT_INFO *const object = &g_Objects[object_id];
+    for (int32_t i = 0; i < object->nmeshes; i++) {
+        Object_SetMeshReflective(object_id, i, enabled);
+    }
+}

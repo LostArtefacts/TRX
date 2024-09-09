@@ -209,15 +209,6 @@ void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         Room_DrawSingleRoom(g_RoomsToDraw[i]);
     }
-
-    if (g_Objects[O_LARA].loaded) {
-        if (g_RoomInfo[g_LaraItem->room_num].flags & RF_UNDERWATER) {
-            Output_SetupBelowWater(g_Camera.underwater);
-        } else {
-            Output_SetupAboveWater(g_Camera.underwater);
-        }
-        Lara_Draw(g_LaraItem);
-    }
 }
 
 static void Room_PrepareToDraw(int16_t room_num)

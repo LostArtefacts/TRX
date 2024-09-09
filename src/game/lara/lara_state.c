@@ -5,6 +5,7 @@
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/lara/lara_look.h"
+#include "game/objects/common.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -678,6 +679,8 @@ void Lara_State_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
     coll->enable_spaz = 0;
     coll->enable_baddie_push = 0;
 
+    Object_SetReflective(O_LARA_EXTRA, true);
+
     int frm = item->frame_num - g_Anims[item->anim_num].frame_base;
     switch (frm) {
     case 5:
@@ -745,6 +748,7 @@ void Lara_State_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
         break;
 
     case 225:
+        Object_SetReflective(O_HAIR, true);
         g_Lara.mesh_effects |= (1 << LM_HEAD);
         Lara_SwapSingleMesh(LM_HEAD, O_LARA_EXTRA);
         break;

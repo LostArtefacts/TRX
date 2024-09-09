@@ -36,6 +36,7 @@ void SaveCrystal_Setup(OBJECT_INFO *obj)
         obj->save_flags = 1;
     }
     obj->bounds = SaveCrystal_Bounds;
+    Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 
 void SaveCrystal_Initialise(int16_t item_num)

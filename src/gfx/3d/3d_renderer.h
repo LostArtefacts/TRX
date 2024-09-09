@@ -9,6 +9,7 @@
 
 #define GFX_MAX_TEXTURES 128
 #define GFX_NO_TEXTURE (-1)
+#define GFX_ENV_MAP_TEXTURE (-2)
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -19,6 +20,7 @@ typedef struct GFX_3D_Renderer {
     GFX_3D_VertexStream vertex_stream;
 
     GFX_GL_Texture *textures[GFX_MAX_TEXTURES];
+    GFX_GL_Texture *env_map_texture;
     int selected_texture_num;
 
     // shader variable locations
@@ -35,9 +37,15 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer);
 void GFX_3D_Renderer_RenderEnd(GFX_3D_Renderer *renderer);
 void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer);
 
-int GFX_3D_Renderer_TextureReg(
+int GFX_3D_Renderer_RegisterTexturePage(
     GFX_3D_Renderer *renderer, const void *data, int width, int height);
-bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num);
+bool GFX_3D_Renderer_UnregisterTexturePage(
+    GFX_3D_Renderer *renderer, int texture_num);
+
+int GFX_3D_Renderer_RegisterEnvironmentMap(GFX_3D_Renderer *renderer);
+bool GFX_3D_Renderer_UnregisterEnvironmentMap(
+    GFX_3D_Renderer *renderer, int texture_num);
+void GFX_3D_Renderer_FillEnvironmentMap(GFX_3D_Renderer *renderer);
 
 void GFX_3D_Renderer_SelectTexture(GFX_3D_Renderer *renderer, int texture_num);
 void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer);

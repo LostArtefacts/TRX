@@ -25,6 +25,7 @@
 #include <stddef.h>
 
 #define MAX_LIGHTNINGS 64
+#define PHD_IONE (PHD_ONE / 4)
 
 typedef struct {
     struct {
@@ -37,6 +38,8 @@ static bool m_IsSkyboxEnabled = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
+static bool m_IsTintEffect = false;
+static RGB_F m_TintColor = { 0 };
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
@@ -52,6 +55,7 @@ static int32_t m_ShadeTable[WIBBLE_SIZE] = { 0 };
 static int32_t m_RandTable[WIBBLE_SIZE] = { 0 };
 
 static PHD_VBUF *m_VBuf = NULL;
+static PHD_UV *m_EnvMapUV = NULL;
 static int32_t m_DrawDistFade = 0;
 static int32_t m_DrawDistMax = 0;
 static RGB_F m_WaterColor = { 0 };
@@ -79,6 +83,7 @@ static const int16_t *Output_DrawRoomSprites(
     const int16_t *obj_ptr, int32_t vertex_count);
 static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr);
 static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr);
+static const int16_t *Output_CalcVerticeEnvMap(const int16_t *obj_ptr);
 static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr);
 static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
 static int32_t Output_CalcFogShade(int32_t depth);
@@ -89,14 +94,14 @@ static const int16_t *Output_DrawObjectG3(
 {
     S_Output_DisableTextureMode();
 
-    for (int i = 0; i < number; i++) {
-        PHD_VBUF *vns[3] = {
+    for (int32_t i = 0; i < number; i++) {
+        PHD_VBUF *const vns[3] = {
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
         };
-        uint8_t color_idx = *obj_ptr++;
-        RGB_888 color = Output_GetPaletteColor(color_idx);
+        const int16_t color_idx = DISABLE_REFLECTION_BIT(*obj_ptr++);
+        const RGB_888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
     }
 
@@ -108,15 +113,16 @@ static const int16_t *Output_DrawObjectG4(
 {
     S_Output_DisableTextureMode();
 
-    for (int i = 0; i < number; i++) {
-        PHD_VBUF *vns[4] = {
+    for (int32_t i = 0; i < number; i++) {
+        PHD_VBUF *const vns[4] = {
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
         };
-        uint8_t color_idx = *obj_ptr++;
-        RGB_888 color = Output_GetPaletteColor(color_idx);
+        const int16_t color_idx = DISABLE_REFLECTION_BIT(*obj_ptr++);
+
+        const RGB_888 color = Output_GetPaletteColor(color_idx);
         S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
         S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
     }
@@ -129,13 +135,14 @@ static const int16_t *Output_DrawObjectGT3(
 {
     S_Output_EnableTextureMode();
 
-    for (int i = 0; i < number; i++) {
-        PHD_VBUF *vns[3] = {
+    for (int32_t i = 0; i < number; i++) {
+        PHD_VBUF *const vns[3] = {
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
         };
-        PHD_TEXTURE *tex = &g_PhdTextureInfo[*obj_ptr++];
+        const int16_t texture_num = DISABLE_REFLECTION_BIT(*obj_ptr++);
+        PHD_TEXTURE *const tex = &g_PhdTextureInfo[texture_num];
 
         S_Output_DrawTexturedTriangle(
             vns[0], vns[1], vns[2], tex->tpage, &tex->uv[0], &tex->uv[1],
@@ -150,18 +157,69 @@ static const int16_t *Output_DrawObjectGT4(
 {
     S_Output_EnableTextureMode();
 
-    for (int i = 0; i < number; i++) {
-        PHD_VBUF *vns[4] = {
+    for (int32_t i = 0; i < number; i++) {
+        PHD_VBUF *const vns[4] = {
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
             &m_VBuf[*obj_ptr++],
         };
-        PHD_TEXTURE *tex = &g_PhdTextureInfo[*obj_ptr++];
+        const int16_t texture_num = DISABLE_REFLECTION_BIT(*obj_ptr++);
+        PHD_TEXTURE *const tex = &g_PhdTextureInfo[texture_num];
 
         S_Output_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tpage, &tex->uv[0],
             &tex->uv[1], &tex->uv[2], &tex->uv[3], tex->drawtype);
+    }
+
+    return obj_ptr;
+}
+
+static const int16_t *Output_DrawObjectEnvMap(
+    const int16_t *obj_ptr, const int32_t poly_count,
+    const int32_t vertex_count, const bool textured)
+{
+    if (textured) {
+        S_Output_EnableTextureMode();
+    } else {
+        S_Output_DisableTextureMode();
+    }
+
+    PHD_VBUF *vns[4];
+    PHD_UV uv[4];
+
+    for (int32_t i = 0; i < poly_count; i++) {
+        for (int32_t j = 0; j < vertex_count; j++) {
+            const int16_t vertex_num = *obj_ptr++;
+            vns[j] = &m_VBuf[vertex_num];
+            uv[j] = m_EnvMapUV[vertex_num];
+        }
+
+        const int16_t color_or_texture_num = *obj_ptr++;
+        if (!IS_REFLECTION_ENABLED(color_or_texture_num)) {
+            continue;
+        }
+
+        if (!textured) {
+            const RGB_888 pixel =
+                S_Output_GetPaletteColor(color_or_texture_num & ~0x8000);
+            m_TintColor.r = pixel.r / 255.0f;
+            m_TintColor.g = pixel.g / 255.0f;
+            m_TintColor.b = pixel.b / 255.0f;
+            m_IsTintEffect = true;
+        }
+
+        if (vertex_count == 3) {
+            S_Output_DrawTexturedTriangle(
+                vns[0], vns[1], vns[2], ENV_MAP_TEXTURE, &uv[0], &uv[1], &uv[2],
+                0);
+        } else if (vertex_count == 4) {
+            S_Output_DrawTexturedQuad(
+                vns[0], vns[1], vns[2], vns[3], ENV_MAP_TEXTURE, &uv[0], &uv[1],
+                &uv[2], &uv[3], 0);
+        }
+
+        m_IsTintEffect = false;
     }
 
     return obj_ptr;
@@ -307,6 +365,51 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
+static const int16_t *Output_CalcVerticeEnvMap(const int16_t *obj_ptr)
+{
+    const int32_t vtx_count = *obj_ptr++;
+    if (vtx_count <= 0) {
+        return NULL;
+    }
+
+    for (int32_t i = 0; i < vtx_count; ++i) {
+        // make sure that reflection will be drawn after normal poly
+        m_VBuf[i].zv -= (double)(W2V_SCALE / 2);
+
+        // set lighting that depends only from fog distance
+        m_VBuf[i].g = 0x1000;
+
+        const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
+        m_VBuf[i].g += Output_CalcFogShade(depth);
+
+        // reflection can be darker but not brighter
+        CLAMP(m_VBuf[i].g, 0x1000, 0x1FFF);
+
+        // rotate normal vectors for X/Y, no translation
+
+        // clang-format off
+        int32_t x = (
+            g_MatrixPtr->_00 * obj_ptr[0] +
+            g_MatrixPtr->_01 * obj_ptr[1] +
+            g_MatrixPtr->_02 * obj_ptr[2]
+        ) >> W2V_SHIFT;
+
+        int32_t y = (
+            g_MatrixPtr->_10 * obj_ptr[0] +
+            g_MatrixPtr->_11 * obj_ptr[1] +
+            g_MatrixPtr->_12 * obj_ptr[2]
+        ) >> W2V_SHIFT;
+        // clang-format on
+
+        CLAMP(x, -PHD_ONE, PHD_IONE);
+        CLAMP(y, -PHD_ONE, PHD_IONE);
+        m_EnvMapUV[i].u = PHD_ONE / PHD_IONE * (x + PHD_IONE) / 2;
+        m_EnvMapUV[i].v = PHD_ONE - PHD_ONE / PHD_IONE * (y + PHD_IONE) / 2;
+        obj_ptr += 3;
+    }
+    return obj_ptr;
+}
+
 static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
@@ -439,6 +542,7 @@ void Output_Shutdown(void)
 void Output_ReserveVertexBuffer(const size_t size)
 {
     m_VBuf = GameBuf_Alloc(size * sizeof(PHD_VBUF), GBUF_VERTEX_BUFFER);
+    m_EnvMapUV = GameBuf_Alloc(size * sizeof(PHD_UV), GBUF_VERTEX_BUFFER);
 }
 
 void Output_SetWindowSize(int width, int height)
@@ -608,14 +712,30 @@ void Output_CalculateObjectLighting(
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
 {
+    const bool has_reflections = IS_REFLECTION_ENABLED(obj_ptr[3]);
     obj_ptr += 4;
+
     obj_ptr = Output_CalcObjectVertices(obj_ptr);
-    if (obj_ptr) {
-        obj_ptr = Output_CalcVerticeLight(obj_ptr);
-        obj_ptr = Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
-        obj_ptr = Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
-        obj_ptr = Output_DrawObjectG4(obj_ptr + 1, *obj_ptr);
-        obj_ptr = Output_DrawObjectG3(obj_ptr + 1, *obj_ptr);
+    if (obj_ptr == NULL) {
+        return;
+    }
+
+    const int16_t *obj_ptr_old = obj_ptr;
+    obj_ptr = Output_CalcVerticeLight(obj_ptr);
+    obj_ptr = Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = Output_DrawObjectG4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = Output_DrawObjectG3(obj_ptr + 1, *obj_ptr);
+
+    if (has_reflections && g_Config.rendering.enable_reflections) {
+        obj_ptr = obj_ptr_old;
+        obj_ptr = Output_CalcVerticeEnvMap(obj_ptr);
+        if (obj_ptr != NULL) {
+            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 4, true);
+            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 3, true);
+            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 4, false);
+            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 3, false);
+        }
     }
 }
 
@@ -1179,12 +1299,18 @@ bool Output_FadeIsAnimating(void)
         || m_BackdropCurAlpha != m_BackdropDstAlpha;
 }
 
-void Output_ApplyWaterEffect(float *r, float *g, float *b)
+void Output_ApplyTint(float *r, float *g, float *b)
 {
     if (m_IsShadeEffect) {
         *r *= m_WaterColor.r;
         *g *= m_WaterColor.g;
         *b *= m_WaterColor.b;
+    }
+
+    if (m_IsTintEffect) {
+        *r *= m_TintColor.r;
+        *g *= m_TintColor.g;
+        *b *= m_TintColor.b;
     }
 }
 

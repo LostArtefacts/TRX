@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/items.h"
+#include "game/output.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/types.h"
@@ -514,7 +515,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     ptr->x = x + (g_MatrixPtr->_03 >> W2V_SHIFT);
     ptr->y = y + (g_MatrixPtr->_13 >> W2V_SHIFT);
     ptr->z = z + (g_MatrixPtr->_23 >> W2V_SHIFT);
-    ptr->r = objptr[3];
+    ptr->r = DISABLE_REFLECTION_BIT(objptr[3]);
     ptr++;
     Matrix_Pop();
 
@@ -547,7 +548,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
         ptr->x = x + (g_MatrixPtr->_03 >> W2V_SHIFT);
         ptr->y = y + (g_MatrixPtr->_13 >> W2V_SHIFT);
         ptr->z = z + (g_MatrixPtr->_23 >> W2V_SHIFT);
-        ptr->r = objptr[3];
+        ptr->r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop();
 
         ptr++;

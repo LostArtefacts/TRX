@@ -50,9 +50,10 @@ typedef enum GRAPHICS_OPTION_NAME {
     OPTION_RESOLUTION,
     OPTION_PERSPECTIVE,
     OPTION_PRETTY_PIXELS,
+    OPTION_REFLECTIONS,
     OPTION_NUMBER_OF,
     OPTION_MIN = OPTION_FPS,
-    OPTION_MAX = OPTION_PRETTY_PIXELS,
+    OPTION_MAX = OPTION_REFLECTIONS,
 } GRAPHICS_OPTION_NAME;
 
 typedef struct GRAPHICS_OPTION_ROW {
@@ -85,6 +86,7 @@ static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
     { OPTION_RESOLUTION, GS_DETAIL_RESOLUTION, GS_DETAIL_RESOLUTION_FMT },
     { OPTION_PERSPECTIVE, GS_DETAIL_PERSPECTIVE, GS_MISC_ON },
     { OPTION_PRETTY_PIXELS, GS_DETAIL_PRETTY_PIXELS, GS_MISC_ON },
+    { OPTION_REFLECTIONS, GS_DETAIL_REFLECTIONS, GS_MISC_ON },
     // end
     { OPTION_NUMBER_OF, 0, 0 },
 };
@@ -302,6 +304,10 @@ static void Option_Graphics_UpdateArrows(
         m_HideArrowLeft = !g_Config.rendering.pretty_pixels;
         m_HideArrowRight = g_Config.rendering.pretty_pixels;
         break;
+    case OPTION_REFLECTIONS:
+        m_HideArrowLeft = !g_Config.rendering.enable_reflections;
+        m_HideArrowRight = g_Config.rendering.enable_reflections;
+        break;
 
     case OPTION_NUMBER_OF:
     default:
@@ -447,6 +453,12 @@ static void Option_Graphics_ChangeTextOption(
         break;
     }
 
+    case OPTION_REFLECTIONS: {
+        bool is_enabled = g_Config.rendering.enable_reflections;
+        Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
+        break;
+    }
+
     case OPTION_NUMBER_OF:
     default:
         break;
@@ -557,6 +569,13 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             }
             break;
 
+        case OPTION_REFLECTIONS:
+            if (!g_Config.rendering.enable_reflections) {
+                g_Config.rendering.enable_reflections = true;
+                reset = OPTION_REFLECTIONS;
+            }
+            break;
+
         case OPTION_NUMBER_OF:
         default:
             break;
@@ -641,6 +660,13 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.pretty_pixels) {
                 g_Config.rendering.pretty_pixels = false;
                 reset = OPTION_PRETTY_PIXELS;
+            }
+            break;
+
+        case OPTION_REFLECTIONS:
+            if (g_Config.rendering.enable_reflections) {
+                g_Config.rendering.enable_reflections = false;
+                reset = OPTION_REFLECTIONS;
             }
             break;
 

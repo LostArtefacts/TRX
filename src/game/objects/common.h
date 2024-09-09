@@ -43,3 +43,6 @@ void Object_DrawSpriteItem(ITEM_INFO *item);
 void Object_DrawPickupItem(ITEM_INFO *item);
 void Object_DrawAnimatingItem(ITEM_INFO *item);
 void Object_DrawUnclippedItem(ITEM_INFO *item);
+void Object_SetMeshReflective(
+    GAME_OBJECT_ID object_id, int32_t mesh_idx, bool enabled);
+void Object_SetReflective(GAME_OBJECT_ID object_id, bool enabled);
