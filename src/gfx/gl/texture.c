@@ -3,6 +3,7 @@
 #include "gfx/gl/utils.h"
 
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 
 #include <assert.h>
 
@@ -15,7 +16,7 @@ GFX_GL_Texture *GFX_GL_Texture_Create(GLenum target)
 
 void GFX_GL_Texture_Free(GFX_GL_Texture *texture)
 {
-    if (texture) {
+    if (texture != NULL) {
         GFX_GL_Texture_Close(texture);
         Memory_FreePointer(&texture);
     }
@@ -23,7 +24,7 @@ void GFX_GL_Texture_Free(GFX_GL_Texture *texture)
 
 void GFX_GL_Texture_Init(GFX_GL_Texture *texture, GLenum target)
 {
-    assert(texture);
+    assert(texture != NULL);
     texture->target = target;
     glGenTextures(1, &texture->id);
     GFX_GL_CheckError();
@@ -31,14 +32,14 @@ void GFX_GL_Texture_Init(GFX_GL_Texture *texture, GLenum target)
 
 void GFX_GL_Texture_Close(GFX_GL_Texture *texture)
 {
-    assert(texture);
+    assert(texture != NULL);
     glDeleteTextures(1, &texture->id);
     GFX_GL_CheckError();
 }
 
 void GFX_GL_Texture_Bind(GFX_GL_Texture *texture)
 {
-    assert(texture);
+    assert(texture != NULL);
     glBindTexture(texture->target, texture->id);
     GFX_GL_CheckError();
 }
@@ -47,7 +48,7 @@ void GFX_GL_Texture_Load(
     GFX_GL_Texture *texture, const void *data, int width, int height,
     GLint internal_format, GLint format)
 {
-    assert(texture);
+    assert(texture != NULL);
 
     GFX_GL_Texture_Bind(texture);
 
@@ -57,5 +58,30 @@ void GFX_GL_Texture_Load(
     GFX_GL_CheckError();
 
     glGenerateMipmap(GL_TEXTURE_2D);
+    GFX_GL_CheckError();
+}
+
+void GFX_GL_Texture_LoadFromBackBuffer(GFX_GL_Texture *const texture)
+{
+    assert(texture != NULL);
+
+    GFX_GL_Texture_Bind(texture);
+
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    GFX_GL_CheckError();
+
+    const GLint vp_x = viewport[0];
+    const GLint vp_y = viewport[1];
+    const GLint vp_w = viewport[2];
+    const GLint vp_h = viewport[3];
+
+    const int32_t side = MIN(vp_w, vp_h);
+    const int32_t x = vp_x + (vp_w - side) / 2;
+    const int32_t y = vp_y + (vp_h - side) / 2;
+    const int32_t w = side;
+    const int32_t h = side;
+
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
     GFX_GL_CheckError();
 }

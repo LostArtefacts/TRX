@@ -31,6 +31,7 @@
     }
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
+static int m_EnvMapTexture = GFX_NO_TEXTURE;
 static RGB_888 m_ColorPalette[256];
 
 static GFX_2D_Renderer *m_Renderer2D = NULL;
@@ -78,9 +79,13 @@ static void S_Output_ReleaseTextures(void)
     }
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureMap[i] != GFX_NO_TEXTURE) {
-            GFX_3D_Renderer_TextureUnreg(m_Renderer3D, m_TextureMap[i]);
+            GFX_3D_Renderer_UnregisterTexturePage(
+                m_Renderer3D, m_TextureMap[i]);
             m_TextureMap[i] = GFX_NO_TEXTURE;
         }
+    }
+    if (m_EnvMapTexture != GFX_NO_TEXTURE) {
+        GFX_3D_Renderer_UnregisterEnvironmentMap(m_Renderer3D, m_EnvMapTexture);
     }
 }
 
@@ -104,6 +109,11 @@ static void S_Output_ReleaseSurfaces(void)
         GFX_2D_Surface_Free(m_PictureSurface);
         m_PictureSurface = NULL;
     }
+}
+
+void Output_FillEnvironmentMap(void)
+{
+    GFX_3D_Renderer_FillEnvironmentMap(m_Renderer3D);
 }
 
 static void S_Output_FlipPrimaryBuffer(void)
@@ -371,7 +381,7 @@ static int32_t S_Output_ZedClipper(
 
             v->r = v->g = v->b =
                 (8192.0f - (pts0->g + (pts1->g - pts0->g) * clip)) * multiplier;
-            Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
+            Output_ApplyTint(&v->r, &v->g, &v->b);
 
             v++;
         }
@@ -386,7 +396,7 @@ static int32_t S_Output_ZedClipper(
             v->t = pts0->v * v->w / 256.0f;
 
             v->r = v->g = v->b = (8192.0f - pts0->g) * multiplier;
-            Output_ApplyWaterEffect(&v->r, &v->g, &v->b);
+            Output_ApplyTint(&v->r, &v->g, &v->b);
 
             v++;
         }
@@ -494,19 +504,24 @@ void S_Output_DownloadBackdropSurface(const IMAGE *const image)
     m_PictureSurface = GFX_2D_Surface_CreateFromImage(image);
 }
 
-void S_Output_SelectTexture(int tex_num)
+void S_Output_SelectTexture(const int32_t texture_num)
 {
-    if (tex_num == m_SelectedTexture) {
+    if (texture_num == m_SelectedTexture) {
         return;
     }
 
-    if (m_TextureMap[tex_num] == GFX_NO_TEXTURE) {
-        LOG_ERROR("ERROR: Attempt to select unloaded texture");
-        return;
+    if (texture_num == ENV_MAP_TEXTURE) {
+        GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
+    } else {
+        if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
+            LOG_ERROR("ERROR: Attempt to select unloaded texture");
+            return;
+        }
+
+        GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
     }
 
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[tex_num]);
-    m_SelectedTexture = tex_num;
+    m_SelectedTexture = texture_num;
 }
 
 void S_Output_DrawSprite(
@@ -818,7 +833,6 @@ void S_Output_ApplyRenderSettings(void)
         GFX_2D_SurfaceDesc surface_desc = { 0 };
         m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
     }
-
     S_Output_ClearSurface(m_PrimarySurface);
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
@@ -887,7 +901,7 @@ void S_Output_DrawFlatTriangle(
         vertices[i].g = color.g * light;
         vertices[i].b = color.b * light;
 
-        Output_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
     if ((vn1->clip | vn2->clip | vn3->clip) >= 0) {
@@ -978,8 +992,7 @@ void S_Output_DrawTexturedTriangle(
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
 
-            Output_ApplyWaterEffect(
-                &vertices[i].r, &vertices[i].g, &vertices[i].b);
+            Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
         }
 
         if (vn1->clip || vn2->clip || vn3->clip) {
@@ -1014,7 +1027,7 @@ void S_Output_DrawTexturedTriangle(
         return;
     }
 
-    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
+    if (tpage == ENV_MAP_TEXTURE || m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
         S_Output_DrawTriangleFan(vertices, vertex_count);
@@ -1025,7 +1038,7 @@ void S_Output_DrawTexturedTriangle(
 }
 
 void S_Output_DrawTexturedQuad(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, uint16_t tpage,
+    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, int16_t tpage,
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
 {
     int vertex_count = 4;
@@ -1082,10 +1095,10 @@ void S_Output_DrawTexturedQuad(
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;
 
-        Output_ApplyWaterEffect(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
-    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
+    if (tpage == ENV_MAP_TEXTURE || m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
     } else {
@@ -1122,12 +1135,14 @@ void S_Output_DownloadTextures(int32_t pages)
         result = GFX_2D_Surface_Unlock(m_TextureSurfaces[i]);
         S_Output_CheckError(result);
 
-        m_TextureMap[i] = GFX_3D_Renderer_TextureReg(
+        m_TextureMap[i] = GFX_3D_Renderer_RegisterTexturePage(
             m_Renderer3D, surface_desc.pixels, surface_desc.width,
             surface_desc.height);
     }
 
     m_SelectedTexture = -1;
+
+    m_EnvMapTexture = GFX_3D_Renderer_RegisterEnvironmentMap(m_Renderer3D);
 }
 
 bool S_Output_MakeScreenshot(const char *path)

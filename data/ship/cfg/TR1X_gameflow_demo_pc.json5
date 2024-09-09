@@ -107,6 +107,7 @@
         "DETAIL_FPS": "FPS",
         "DETAIL_PERSPECTIVE": "Perspective",
         "DETAIL_PRETTY_PIXELS": "Pretty pixels",
+        "DETAIL_REFLECTIONS": "Reflections",
         "DETAIL_BILINEAR": "Bilinear",
         "DETAIL_TEXTURE_FILTER": "Texture filter",
         "DETAIL_FBO_FILTER": "FBO filter",

@@ -1,7 +1,9 @@
 #include "game/game.h"
 
+#include "config.h"
 #include "game/camera.h"
 #include "game/interpolation.h"
+#include "game/lara/lara_draw.h"
 #include "game/lara/lara_hair.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -20,11 +22,25 @@ void Game_DrawScene(bool draw_overlay)
 
     if (g_Objects[O_LARA].loaded) {
         Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
+
+        if (g_Config.rendering.enable_reflections) {
+            Output_FillEnvironmentMap();
+        }
+
+        if (g_RoomInfo[g_LaraItem->room_num].flags & RF_UNDERWATER) {
+            Output_SetupBelowWater(g_Camera.underwater);
+        } else {
+            Output_SetupAboveWater(g_Camera.underwater);
+        }
+
+        Lara_Draw(g_LaraItem);
+
         if (draw_overlay) {
             Overlay_DrawGameInfo();
         } else {
             Overlay_HideGameInfo();
         }
+
     } else {
         // cinematic scene
         for (int i = 0; i < g_RoomsToDrawCount; i++) {

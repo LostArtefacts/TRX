@@ -16,15 +16,22 @@ static void GFX_3D_Renderer_SelectTextureImpl(
     GFX_3D_Renderer *renderer, int texture_num)
 {
     assert(renderer);
-    if (texture_num == GFX_NO_TEXTURE) {
+
+    GFX_GL_Texture *texture = NULL;
+    if (texture_num == GFX_ENV_MAP_TEXTURE) {
+        texture = renderer->env_map_texture;
+    } else if (texture_num != GFX_NO_TEXTURE) {
+        assert(texture_num >= 0);
+        assert(texture_num < GFX_MAX_TEXTURES);
+        texture = renderer->textures[texture_num];
+    }
+
+    if (texture == NULL) {
         glBindTexture(GL_TEXTURE_2D, 0);
+        GFX_GL_CheckError();
         return;
     }
 
-    assert(texture_num >= 0);
-    assert(texture_num < GFX_MAX_TEXTURES);
-
-    GFX_GL_Texture *texture = renderer->textures[texture_num];
     GFX_GL_Texture_Bind(texture);
 }
 
@@ -147,7 +154,59 @@ void GFX_3D_Renderer_ClearDepth(GFX_3D_Renderer *renderer)
     GFX_GL_CheckError();
 }
 
-int GFX_3D_Renderer_TextureReg(
+int GFX_3D_Renderer_RegisterEnvironmentMap(GFX_3D_Renderer *const renderer)
+{
+    assert(renderer != NULL);
+    assert(renderer->env_map_texture == NULL);
+
+    GFX_GL_Texture *texture = GFX_GL_Texture_Create(GL_TEXTURE_2D);
+    renderer->env_map_texture = texture;
+
+    GFX_3D_Renderer_RestoreTexture(renderer);
+    GFX_GL_CheckError();
+    return GFX_ENV_MAP_TEXTURE;
+}
+
+bool GFX_3D_Renderer_UnregisterEnvironmentMap(
+    GFX_3D_Renderer *const renderer, const int texture_num)
+{
+    assert(renderer != NULL);
+
+    GFX_GL_Texture *const texture = renderer->env_map_texture;
+    if (texture == NULL) {
+        LOG_ERROR("No environment map registered");
+        return false;
+    }
+
+    if (texture_num != GFX_ENV_MAP_TEXTURE) {
+        LOG_ERROR("Invalid environment map texture ID");
+        return false;
+    }
+
+    // unbind texture if currently bound
+    if (renderer->selected_texture_num == texture_num) {
+        GFX_3D_Renderer_SelectTextureImpl(renderer, GFX_NO_TEXTURE);
+        renderer->selected_texture_num = GFX_NO_TEXTURE;
+    }
+
+    GFX_GL_Texture_Free(texture);
+    renderer->env_map_texture = NULL;
+    return true;
+}
+
+void GFX_3D_Renderer_FillEnvironmentMap(GFX_3D_Renderer *const renderer)
+{
+    assert(renderer != NULL);
+
+    GFX_GL_Texture *const env_map = renderer->env_map_texture;
+    if (env_map != NULL) {
+        GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
+        GFX_GL_Texture_LoadFromBackBuffer(env_map);
+        GFX_3D_Renderer_RestoreTexture(renderer);
+    }
+}
+
+int GFX_3D_Renderer_RegisterTexturePage(
     GFX_3D_Renderer *renderer, const void *data, int width, int height)
 {
     assert(renderer);
@@ -170,7 +229,8 @@ int GFX_3D_Renderer_TextureReg(
     return texture_num;
 }
 
-bool GFX_3D_Renderer_TextureUnreg(GFX_3D_Renderer *renderer, int texture_num)
+bool GFX_3D_Renderer_UnregisterTexturePage(
+    GFX_3D_Renderer *renderer, int texture_num)
 {
     assert(renderer);
     assert(texture_num >= 0);

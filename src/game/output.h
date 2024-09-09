@@ -5,6 +5,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// TODO: remove these macros
+#define IS_REFLECTION_ENABLED(target) ((uint16_t)(target) & 0x8000)
+#define DISABLE_REFLECTION_BIT(target) ((uint16_t)(target) & ~0x8000)
+#define TOGGLE_REFLECTION_ENABLED(target, enabled)                             \
+    if (enabled) {                                                             \
+        target |= 0x8000;                                                      \
+    } else {                                                                   \
+        target &= ~0x8000;                                                     \
+    }
+
 bool Output_Init(void);
 void Output_Shutdown(void);
 void Output_ReserveVertexBuffer(size_t size);
@@ -105,8 +115,9 @@ void Output_AnimateTextures(void);
 void Output_AnimateFades(void);
 void Output_RotateLight(int16_t pitch, int16_t yaw);
 
-void Output_ApplyWaterEffect(float *r, float *g, float *b);
+void Output_ApplyTint(float *r, float *g, float *b);
 
+void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
 
 int Output_GetObjectBounds(const BOUNDS_16 *bounds);

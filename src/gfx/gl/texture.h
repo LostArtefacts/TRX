@@ -16,3 +16,4 @@ void GFX_GL_Texture_Bind(GFX_GL_Texture *texture);
 void GFX_GL_Texture_Load(
     GFX_GL_Texture *texture, const void *data, int width, int height,
     GLint internal_format, GLint format);
+void GFX_GL_Texture_LoadFromBackBuffer(GFX_GL_Texture *texture);

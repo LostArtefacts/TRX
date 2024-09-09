@@ -147,7 +147,7 @@ void Lara_Hair_Control(void)
         sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[0].r = objptr[3];
+        sphere[0].r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop_I();
 
         // torso
@@ -165,7 +165,7 @@ void Lara_Hair_Control(void)
         sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[1].r = objptr[3];
+        sphere[1].r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop_I();
 
         // right arm
@@ -180,7 +180,7 @@ void Lara_Hair_Control(void)
         sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[3].r = (int32_t)objptr[3] * 3 / 2;
+        sphere[3].r = (int32_t)DISABLE_REFLECTION_BIT(objptr[3]) * 3 / 2;
         Matrix_Pop_I();
 
         // left arm
@@ -195,7 +195,7 @@ void Lara_Hair_Control(void)
         sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[4].r = (int32_t)objptr[3] * 3 / 2;
+        sphere[4].r = (int32_t)DISABLE_REFLECTION_BIT(objptr[3]) * 3 / 2;
         Matrix_Pop_I();
 
         // head
@@ -213,7 +213,7 @@ void Lara_Hair_Control(void)
         sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[2].r = objptr[3];
+        sphere[2].r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop_I();
 
         Matrix_TranslateRel_I(HAIR_OFFSET_X, HAIR_OFFSET_Y, HAIR_OFFSET_Z);
@@ -231,7 +231,7 @@ void Lara_Hair_Control(void)
         sphere[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[0].r = objptr[3];
+        sphere[0].r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop();
 
         // torso
@@ -247,7 +247,7 @@ void Lara_Hair_Control(void)
         sphere[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[1].r = objptr[3];
+        sphere[1].r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop();
 
         // right arm
@@ -260,7 +260,7 @@ void Lara_Hair_Control(void)
         sphere[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[3].r = (int32_t)objptr[3] * 3 / 2;
+        sphere[3].r = (int32_t)DISABLE_REFLECTION_BIT(objptr[3]) * 3 / 2;
         Matrix_Pop();
 
         // left arm
@@ -273,7 +273,7 @@ void Lara_Hair_Control(void)
         sphere[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[4].r = (int32_t)objptr[3] * 3 / 2;
+        sphere[4].r = (int32_t)DISABLE_REFLECTION_BIT(objptr[3]) * 3 / 2;
         Matrix_Pop();
 
         // head
@@ -289,7 +289,7 @@ void Lara_Hair_Control(void)
         sphere[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
         sphere[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
         sphere[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
-        sphere[2].r = objptr[3];
+        sphere[2].r = DISABLE_REFLECTION_BIT(objptr[3]);
         Matrix_Pop();
 
         Matrix_TranslateRel(HAIR_OFFSET_X, HAIR_OFFSET_Y, HAIR_OFFSET_Z);
