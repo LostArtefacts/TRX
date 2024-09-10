@@ -9,6 +9,7 @@
 #include "global/vars.h"
 #include "items.h"
 
+#include <libtrx/benchmark.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -170,12 +171,16 @@ void Inject_Init(
         return;
     }
 
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     m_Injections = Memory_Alloc(sizeof(INJECTION) * num_injections);
     m_Aggregate = aggregate;
 
     for (int32_t i = 0; i < num_injections; i++) {
         Inject_LoadFromFile(&m_Injections[i], filenames[i]);
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
@@ -375,6 +380,8 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         return;
     }
 
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     uint8_t palette_map[256];
     uint8_t *source_pages =
         Memory_Alloc(m_Aggregate->texture_page_count * PAGE_SIZE);
@@ -438,11 +445,15 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         Memory_FreePointer(&source_pages);
         Memory_FreePointer(&data);
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_LoadTexturePages(
     INJECTION *injection, uint8_t *palette_map, uint8_t *page_ptr)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -468,11 +479,15 @@ static void Inject_LoadTexturePages(
     for (int32_t i = 0; i < pixel_count; i++, page_ptr++) {
         *page_ptr = palette_map[*page_ptr];
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_TextureData(
     INJECTION *injection, LEVEL_INFO *level_info, int32_t page_base)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -521,10 +536,14 @@ static void Inject_TextureData(
         level_info->sprite_info_count -= num_meshes;
         level_info->sprite_count++;
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -542,10 +561,14 @@ static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info)
         g_Meshes[level_info->mesh_ptr_count + i] =
             &g_MeshBase[mesh_base + mesh_indices[i] / 2];
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -647,6 +670,8 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         g_AnimRanges[level_info->anim_range_count++].link_anim_num +=
             level_info->anim_count;
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_AnimRangeEdits(INJECTION *injection)
@@ -654,6 +679,8 @@ static void Inject_AnimRangeEdits(INJECTION *injection)
     if (injection->version < INJ_VERSION_3) {
         return;
     }
+
+    BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
@@ -705,11 +732,15 @@ static void Inject_AnimRangeEdits(INJECTION *injection)
             range->end_frame = high_frame;
         }
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_ObjectData(
     INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -757,10 +788,14 @@ static void Inject_ObjectData(
                 object, palette_map, level_info->texture_count);
         }
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -790,6 +825,8 @@ static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 
         level_info->sample_info_count++;
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_AlignTextureReferences(
@@ -866,6 +903,8 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
         return;
     }
 
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     MESH_EDIT *mesh_edits =
         Memory_Alloc(sizeof(MESH_EDIT) * inj_info->mesh_edit_count);
 
@@ -922,6 +961,7 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
     }
 
     Memory_FreePointer(&mesh_edits);
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint8_t *palette_map)
@@ -1078,6 +1118,8 @@ static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit)
 static void Inject_TextureOverwrites(
     INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -1104,10 +1146,14 @@ static void Inject_TextureOverwrites(
 
         Memory_FreePointer(&source_img);
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -1157,6 +1203,8 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             }
         }
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_TriggerParameterChange(
@@ -1339,6 +1387,8 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
         return;
     }
 
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -1370,6 +1420,8 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
             break;
         }
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_TextureRoomFace(INJECTION *injection)
@@ -1648,6 +1700,8 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
         return;
     }
 
+    BENCHMARK *const benchmark = Benchmark_Start();
+
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
 
@@ -1694,6 +1748,8 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
             door->vertex[j].z += z_change;
         }
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 static void Inject_ItemPositions(INJECTION *injection)
@@ -1701,6 +1757,8 @@ static void Inject_ItemPositions(INJECTION *injection)
     if (injection->version < INJ_VERSION_4) {
         return;
     }
+
+    BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
     MYFILE *fp = injection->fp;
@@ -1734,6 +1792,8 @@ static void Inject_ItemPositions(INJECTION *injection)
             item->room_num = room_num;
         }
     }
+
+    Benchmark_End(benchmark, NULL);
 }
 
 void Inject_Cleanup(void)
@@ -1741,6 +1801,8 @@ void Inject_Cleanup(void)
     if (!m_NumInjections) {
         return;
     }
+
+    BENCHMARK *const benchmark = Benchmark_Start();
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
         INJECTION *injection = &m_Injections[i];
@@ -1756,4 +1818,5 @@ void Inject_Cleanup(void)
     }
 
     Memory_FreePointer(&m_Injections);
+    Benchmark_End(benchmark, NULL);
 }
