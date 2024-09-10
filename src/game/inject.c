@@ -10,10 +10,10 @@
 #include "items.h"
 
 #include <libtrx/benchmark.h>
-#include <libtrx/filesystem.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
+#include <libtrx/virtual_file.h>
 
 #include <assert.h>
 #include <stdbool.h>
@@ -49,7 +49,7 @@ typedef enum INJECTION_TYPE {
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
-    MYFILE *fp;
+    VFILE *fp;
     INJECTION_VERSION version;
     INJECTION_TYPE type;
     INJECTION_INFO *info;
@@ -188,20 +188,20 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     injection->relevant = false;
     injection->info = NULL;
 
-    MYFILE *fp = File_Open(filename, FILE_OPEN_READ);
+    VFILE *const fp = VFile_CreateFromPath(filename);
     injection->fp = fp;
     if (!fp) {
         LOG_WARNING("Could not open %s", filename);
         return;
     }
 
-    const uint32_t magic = File_ReadU32(fp);
+    const uint32_t magic = VFile_ReadU32(fp);
     if (magic != INJECTION_MAGIC) {
         LOG_WARNING("Invalid injection magic in %s", filename);
         return;
     }
 
-    injection->version = File_ReadS32(fp);
+    injection->version = VFile_ReadS32(fp);
     if (injection->version < INJ_VERSION_1
         || injection->version > INJECTION_CURRENT_VERSION) {
         LOG_WARNING(
@@ -209,7 +209,7 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         return;
     }
 
-    injection->type = File_ReadS32(fp);
+    injection->type = VFile_ReadS32(fp);
 
     switch (injection->type) {
     case INJ_GENERAL:
@@ -255,101 +255,101 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     injection->info = Memory_Alloc(sizeof(INJECTION_INFO));
     INJECTION_INFO *info = injection->info;
 
-    info->texture_page_count = File_ReadS32(fp);
-    info->texture_count = File_ReadS32(fp);
-    info->sprite_info_count = File_ReadS32(fp);
-    info->sprite_count = File_ReadS32(fp);
-    info->mesh_count = File_ReadS32(fp);
-    info->mesh_ptr_count = File_ReadS32(fp);
-    info->anim_change_count = File_ReadS32(fp);
-    info->anim_range_count = File_ReadS32(fp);
-    info->anim_cmd_count = File_ReadS32(fp);
-    info->anim_bone_count = File_ReadS32(fp);
-    info->anim_frame_data_count = File_ReadS32(fp);
-    info->anim_count = File_ReadS32(fp);
-    info->object_count = File_ReadS32(fp);
-    info->sfx_count = File_ReadS32(fp);
-    info->sfx_data_size = File_ReadS32(fp);
-    info->sample_count = File_ReadS32(fp);
-    info->mesh_edit_count = File_ReadS32(fp);
-    info->texture_overwrite_count = File_ReadS32(fp);
-    info->floor_edit_count = File_ReadS32(fp);
+    info->texture_page_count = VFile_ReadS32(fp);
+    info->texture_count = VFile_ReadS32(fp);
+    info->sprite_info_count = VFile_ReadS32(fp);
+    info->sprite_count = VFile_ReadS32(fp);
+    info->mesh_count = VFile_ReadS32(fp);
+    info->mesh_ptr_count = VFile_ReadS32(fp);
+    info->anim_change_count = VFile_ReadS32(fp);
+    info->anim_range_count = VFile_ReadS32(fp);
+    info->anim_cmd_count = VFile_ReadS32(fp);
+    info->anim_bone_count = VFile_ReadS32(fp);
+    info->anim_frame_data_count = VFile_ReadS32(fp);
+    info->anim_count = VFile_ReadS32(fp);
+    info->object_count = VFile_ReadS32(fp);
+    info->sfx_count = VFile_ReadS32(fp);
+    info->sfx_data_size = VFile_ReadS32(fp);
+    info->sample_count = VFile_ReadS32(fp);
+    info->mesh_edit_count = VFile_ReadS32(fp);
+    info->texture_overwrite_count = VFile_ReadS32(fp);
+    info->floor_edit_count = VFile_ReadS32(fp);
 
     if (injection->version < INJ_VERSION_8) {
         // Legacy value that stored the total injected floor data length.
-        File_Skip(fp, sizeof(int32_t));
+        VFile_Skip(fp, sizeof(int32_t));
     }
 
     if (injection->version > INJ_VERSION_1) {
         // room_mesh_count is a summary of the change in mesh size,
         // while room_mesh_edit_count indicates how many edits to
         // read and interpret (not all edits incur a size change).
-        info->room_mesh_count = File_ReadU32(fp);
+        info->room_mesh_count = VFile_ReadU32(fp);
         info->room_meshes =
             Memory_Alloc(sizeof(INJECTION_ROOM_MESH) * info->room_mesh_count);
         for (int32_t i = 0; i < info->room_mesh_count; i++) {
             INJECTION_ROOM_MESH *mesh = &info->room_meshes[i];
-            mesh->room_index = File_ReadS16(fp);
-            mesh->extra_size = File_ReadU32(fp);
+            mesh->room_index = VFile_ReadS16(fp);
+            mesh->extra_size = VFile_ReadU32(fp);
         }
 
-        info->room_mesh_edit_count = File_ReadU32(fp);
-        info->room_door_edit_count = File_ReadU32(fp);
+        info->room_mesh_edit_count = VFile_ReadU32(fp);
+        info->room_door_edit_count = VFile_ReadU32(fp);
     } else {
         info->room_meshes = NULL;
     }
 
     if (injection->version > INJ_VERSION_2) {
-        info->anim_range_edit_count = File_ReadS32(fp);
+        info->anim_range_edit_count = VFile_ReadS32(fp);
     } else {
         info->anim_range_edit_count = 0;
     }
 
     if (injection->version > INJ_VERSION_3) {
-        info->item_position_count = File_ReadS32(fp);
+        info->item_position_count = VFile_ReadS32(fp);
     } else {
         info->item_position_count = 0;
     }
 
     // Get detailed frame counts
     {
-        const size_t prev_pos = File_Pos(fp);
+        const size_t prev_pos = VFile_GetPos(fp);
 
         // texture pages
-        File_Skip(fp, 256 * 3);
-        File_Skip(fp, info->texture_page_count * PAGE_SIZE);
+        VFile_Skip(fp, 256 * 3);
+        VFile_Skip(fp, info->texture_page_count * PAGE_SIZE);
 
         // textures
-        File_Skip(fp, info->texture_count * 20);
+        VFile_Skip(fp, info->texture_count * 20);
 
         // sprites
-        File_Skip(fp, info->sprite_info_count * 16);
-        File_Skip(fp, info->sprite_count * 8);
+        VFile_Skip(fp, info->sprite_info_count * 16);
+        VFile_Skip(fp, info->sprite_count * 8);
 
         // meshes
-        File_Skip(fp, info->mesh_count * 2);
-        File_Skip(fp, info->mesh_ptr_count * 4);
+        VFile_Skip(fp, info->mesh_count * 2);
+        VFile_Skip(fp, info->mesh_ptr_count * 4);
 
-        File_Skip(fp, info->anim_change_count * 6);
-        File_Skip(fp, info->anim_range_count * 8);
-        File_Skip(fp, info->anim_cmd_count * 2);
-        File_Skip(fp, info->anim_bone_count * 4);
+        VFile_Skip(fp, info->anim_change_count * 6);
+        VFile_Skip(fp, info->anim_range_count * 8);
+        VFile_Skip(fp, info->anim_cmd_count * 2);
+        VFile_Skip(fp, info->anim_bone_count * 4);
 
         info->anim_frame_count = 0;
         info->anim_frame_mesh_rot_count = 0;
-        const size_t frame_data_start = File_Pos(fp);
+        const size_t frame_data_start = VFile_GetPos(fp);
         const size_t frame_data_end =
             frame_data_start + info->anim_frame_data_count * sizeof(int16_t);
-        while (File_Pos(fp) < frame_data_end) {
-            File_Skip(fp, 9 * sizeof(int16_t));
-            const int16_t num_meshes = File_ReadS16(fp);
-            File_Skip(fp, num_meshes * sizeof(int32_t));
+        while (VFile_GetPos(fp) < frame_data_end) {
+            VFile_Skip(fp, 9 * sizeof(int16_t));
+            const int16_t num_meshes = VFile_ReadS16(fp);
+            VFile_Skip(fp, num_meshes * sizeof(int32_t));
             info->anim_frame_count++;
             info->anim_frame_mesh_rot_count += num_meshes;
         }
-        assert(File_Pos(fp) == frame_data_end);
+        assert(VFile_GetPos(fp) == frame_data_end);
 
-        File_Seek(fp, prev_pos, FILE_SEEK_SET);
+        VFile_SetPos(fp, prev_pos);
     }
 
     m_Aggregate->texture_page_count += info->texture_page_count;
@@ -455,14 +455,14 @@ static void Inject_LoadTexturePages(
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     palette_map[0] = 0;
     RGB_888 source_palette[256];
     for (int32_t i = 0; i < 256; i++) {
-        source_palette[i].r = File_ReadU8(fp);
-        source_palette[i].g = File_ReadU8(fp);
-        source_palette[i].b = File_ReadU8(fp);
+        source_palette[i].r = VFile_ReadU8(fp);
+        source_palette[i].g = VFile_ReadU8(fp);
+        source_palette[i].b = VFile_ReadU8(fp);
     }
     for (int32_t i = 1; i < 256; i++) {
         source_palette[i].r *= 4;
@@ -474,9 +474,9 @@ static void Inject_LoadTexturePages(
 
     // Read in each page for this injection and realign the pixels
     // to the level's palette.
-    File_ReadItems(fp, page_ptr, PAGE_SIZE, inj_info->texture_page_count);
-    int32_t pixel_count = PAGE_SIZE * inj_info->texture_page_count;
-    for (int32_t i = 0; i < pixel_count; i++, page_ptr++) {
+    const size_t pixel_count = PAGE_SIZE * inj_info->texture_page_count;
+    VFile_Read(fp, page_ptr, pixel_count);
+    for (size_t i = 0; i < pixel_count; i++, page_ptr++) {
         *page_ptr = palette_map[*page_ptr];
     }
 
@@ -489,16 +489,16 @@ static void Inject_TextureData(
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     // Read the tex_infos and align them to the end of the page list.
     for (int32_t i = 0; i < inj_info->texture_count; i++) {
         PHD_TEXTURE *texture = &g_PhdTextureInfo[level_info->texture_count + i];
-        texture->drawtype = File_ReadU16(fp);
-        texture->tpage = File_ReadU16(fp);
+        texture->drawtype = VFile_ReadU16(fp);
+        texture->tpage = VFile_ReadU16(fp);
         for (int32_t j = 0; j < 4; j++) {
-            texture->uv[j].u = File_ReadU16(fp);
-            texture->uv[j].v = File_ReadU16(fp);
+            texture->uv[j].u = VFile_ReadU16(fp);
+            texture->uv[j].v = VFile_ReadU16(fp);
         }
         g_PhdTextureInfo[level_info->texture_count + i].tpage += page_base;
     }
@@ -506,21 +506,21 @@ static void Inject_TextureData(
     for (int32_t i = 0; i < inj_info->sprite_info_count; i++) {
         PHD_SPRITE *sprite =
             &g_PhdSpriteInfo[level_info->sprite_info_count + i];
-        sprite->tpage = File_ReadU16(fp);
-        sprite->offset = File_ReadU16(fp);
-        sprite->width = File_ReadU16(fp);
-        sprite->height = File_ReadU16(fp);
-        sprite->x1 = File_ReadS16(fp);
-        sprite->y1 = File_ReadS16(fp);
-        sprite->x2 = File_ReadS16(fp);
-        sprite->y2 = File_ReadS16(fp);
+        sprite->tpage = VFile_ReadU16(fp);
+        sprite->offset = VFile_ReadU16(fp);
+        sprite->width = VFile_ReadU16(fp);
+        sprite->height = VFile_ReadU16(fp);
+        sprite->x1 = VFile_ReadS16(fp);
+        sprite->y1 = VFile_ReadS16(fp);
+        sprite->x2 = VFile_ReadS16(fp);
+        sprite->y2 = VFile_ReadS16(fp);
         g_PhdSpriteInfo[level_info->sprite_info_count + i].tpage += page_base;
     }
 
     for (int32_t i = 0; i < inj_info->sprite_count; i++) {
-        const GAME_OBJECT_ID object_id = File_ReadS32(fp);
-        const int16_t num_meshes = File_ReadS16(fp);
-        const int16_t mesh_index = File_ReadS16(fp);
+        const GAME_OBJECT_ID object_id = VFile_ReadS32(fp);
+        const int16_t num_meshes = VFile_ReadS16(fp);
+        const int16_t mesh_index = VFile_ReadS16(fp);
 
         if (object_id < O_NUMBER_OF) {
             OBJECT_INFO *object = &g_Objects[object_id];
@@ -545,17 +545,16 @@ static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     int32_t mesh_base = level_info->mesh_count;
-    File_ReadItems(
-        fp, g_MeshBase + mesh_base, sizeof(int16_t), inj_info->mesh_count);
+    VFile_Read(
+        fp, g_MeshBase + mesh_base, sizeof(int16_t) * inj_info->mesh_count);
     level_info->mesh_count += inj_info->mesh_count;
 
     uint32_t *mesh_indices = GameBuf_Alloc(
         sizeof(uint32_t) * inj_info->mesh_ptr_count, GBUF_MESH_POINTERS);
-    File_ReadItems(
-        fp, mesh_indices, sizeof(uint32_t), inj_info->mesh_ptr_count);
+    VFile_Read(fp, mesh_indices, sizeof(uint32_t) * inj_info->mesh_ptr_count);
 
     for (int32_t i = 0; i < inj_info->mesh_ptr_count; i++) {
         g_Meshes[level_info->mesh_ptr_count + i] =
@@ -570,73 +569,73 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->anim_change_count; i++) {
         ANIM_CHANGE_STRUCT *anim_change =
             &g_AnimChanges[level_info->anim_change_count + i];
-        anim_change->goal_anim_state = File_ReadS16(fp);
-        anim_change->number_ranges = File_ReadS16(fp);
-        anim_change->range_index = File_ReadS16(fp);
+        anim_change->goal_anim_state = VFile_ReadS16(fp);
+        anim_change->number_ranges = VFile_ReadS16(fp);
+        anim_change->range_index = VFile_ReadS16(fp);
     }
     for (int32_t i = 0; i < inj_info->anim_range_count; i++) {
         ANIM_RANGE_STRUCT *anim_range =
             &g_AnimRanges[level_info->anim_range_count + i];
-        anim_range->start_frame = File_ReadS16(fp);
-        anim_range->end_frame = File_ReadS16(fp);
-        anim_range->link_anim_num = File_ReadS16(fp);
-        anim_range->link_frame_num = File_ReadS16(fp);
+        anim_range->start_frame = VFile_ReadS16(fp);
+        anim_range->end_frame = VFile_ReadS16(fp);
+        anim_range->link_anim_num = VFile_ReadS16(fp);
+        anim_range->link_frame_num = VFile_ReadS16(fp);
     }
-    File_ReadItems(
-        fp, g_AnimCommands + level_info->anim_command_count, sizeof(int16_t),
-        inj_info->anim_cmd_count);
-    File_ReadItems(
-        fp, g_AnimBones + level_info->anim_bone_count, sizeof(int32_t),
-        inj_info->anim_bone_count);
-    const size_t frame_data_start = File_Pos(fp);
-    File_Skip(fp, inj_info->anim_frame_data_count * sizeof(int16_t));
-    const size_t frame_data_end = File_Pos(fp);
+    VFile_Read(
+        fp, g_AnimCommands + level_info->anim_command_count,
+        sizeof(int16_t) * inj_info->anim_cmd_count);
+    VFile_Read(
+        fp, g_AnimBones + level_info->anim_bone_count,
+        sizeof(int32_t) * inj_info->anim_bone_count);
+    const size_t frame_data_start = VFile_GetPos(fp);
+    VFile_Skip(fp, inj_info->anim_frame_data_count * sizeof(int16_t));
+    const size_t frame_data_end = VFile_GetPos(fp);
 
-    File_Seek(fp, frame_data_start, FILE_SEEK_SET);
+    VFile_SetPos(fp, frame_data_start);
     int32_t *mesh_rots =
         &g_AnimFrameMeshRots[level_info->anim_frame_mesh_rot_count];
     for (int32_t i = 0; i < inj_info->anim_frame_count; i++) {
         level_info->anim_frame_offsets[level_info->anim_frame_count + i] =
-            File_Pos(fp) - frame_data_start;
+            VFile_GetPos(fp) - frame_data_start;
         FRAME_INFO *const frame =
             &g_AnimFrames[level_info->anim_frame_count + i];
-        frame->bounds.min.x = File_ReadS16(fp);
-        frame->bounds.max.x = File_ReadS16(fp);
-        frame->bounds.min.y = File_ReadS16(fp);
-        frame->bounds.max.y = File_ReadS16(fp);
-        frame->bounds.min.z = File_ReadS16(fp);
-        frame->bounds.max.z = File_ReadS16(fp);
-        frame->offset.x = File_ReadS16(fp);
-        frame->offset.y = File_ReadS16(fp);
-        frame->offset.z = File_ReadS16(fp);
-        frame->nmeshes = File_ReadS16(fp);
+        frame->bounds.min.x = VFile_ReadS16(fp);
+        frame->bounds.max.x = VFile_ReadS16(fp);
+        frame->bounds.min.y = VFile_ReadS16(fp);
+        frame->bounds.max.y = VFile_ReadS16(fp);
+        frame->bounds.min.z = VFile_ReadS16(fp);
+        frame->bounds.max.z = VFile_ReadS16(fp);
+        frame->offset.x = VFile_ReadS16(fp);
+        frame->offset.y = VFile_ReadS16(fp);
+        frame->offset.z = VFile_ReadS16(fp);
+        frame->nmeshes = VFile_ReadS16(fp);
         frame->mesh_rots = mesh_rots;
-        File_ReadItems(fp, mesh_rots, sizeof(int32_t), frame->nmeshes);
+        VFile_Read(fp, mesh_rots, sizeof(int32_t) * frame->nmeshes);
         mesh_rots += frame->nmeshes;
     }
-    assert(File_Pos(fp) == frame_data_end);
+    assert(VFile_GetPos(fp) == frame_data_end);
 
     for (int32_t i = 0; i < inj_info->anim_count; i++) {
         ANIM_STRUCT *anim = &g_Anims[level_info->anim_count + i];
 
-        anim->frame_ofs = File_ReadU32(fp);
-        anim->interpolation = File_ReadS16(fp);
-        anim->current_anim_state = File_ReadS16(fp);
-        anim->velocity = File_ReadS32(fp);
-        anim->acceleration = File_ReadS32(fp);
-        anim->frame_base = File_ReadS16(fp);
-        anim->frame_end = File_ReadS16(fp);
-        anim->jump_anim_num = File_ReadS16(fp);
-        anim->jump_frame_num = File_ReadS16(fp);
-        anim->number_changes = File_ReadS16(fp);
-        anim->change_index = File_ReadS16(fp);
-        anim->number_commands = File_ReadS16(fp);
-        anim->command_index = File_ReadS16(fp);
+        anim->frame_ofs = VFile_ReadU32(fp);
+        anim->interpolation = VFile_ReadS16(fp);
+        anim->current_anim_state = VFile_ReadS16(fp);
+        anim->velocity = VFile_ReadS32(fp);
+        anim->acceleration = VFile_ReadS32(fp);
+        anim->frame_base = VFile_ReadS16(fp);
+        anim->frame_end = VFile_ReadS16(fp);
+        anim->jump_anim_num = VFile_ReadS16(fp);
+        anim->jump_frame_num = VFile_ReadS16(fp);
+        anim->number_changes = VFile_ReadS16(fp);
+        anim->change_index = VFile_ReadS16(fp);
+        anim->number_commands = VFile_ReadS16(fp);
+        anim->command_index = VFile_ReadS16(fp);
 
         // Re-align to the level.
         anim->jump_anim_num += level_info->anim_count;
@@ -683,32 +682,32 @@ static void Inject_AnimRangeEdits(INJECTION *injection)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->anim_range_edit_count; i++) {
-        const GAME_OBJECT_ID object_id = File_ReadS32(fp);
-        const int16_t anim_index = File_ReadS16(fp);
-        const int32_t edit_count = File_ReadS32(fp);
+        const GAME_OBJECT_ID object_id = VFile_ReadS32(fp);
+        const int16_t anim_index = VFile_ReadS16(fp);
+        const int32_t edit_count = VFile_ReadS32(fp);
 
         if (object_id < 0 || object_id >= O_NUMBER_OF) {
             LOG_WARNING("Object %d is not recognised", object_id);
-            File_Skip(fp, edit_count * sizeof(int16_t) * 4);
+            VFile_Skip(fp, edit_count * sizeof(int16_t) * 4);
             continue;
         }
 
         OBJECT_INFO *object = &g_Objects[object_id];
         if (!object->loaded) {
             LOG_WARNING("Object %d is not loaded", object_id);
-            File_Skip(fp, edit_count * sizeof(int16_t) * 4);
+            VFile_Skip(fp, edit_count * sizeof(int16_t) * 4);
             continue;
         }
 
         ANIM_STRUCT *anim = &g_Anims[object->anim_index + anim_index];
         for (int32_t j = 0; j < edit_count; j++) {
-            const int16_t change_index = File_ReadS16(fp);
-            const int16_t range_index = File_ReadS16(fp);
-            const int16_t low_frame = File_ReadS16(fp);
-            const int16_t high_frame = File_ReadS16(fp);
+            const int16_t change_index = VFile_ReadS16(fp);
+            const int16_t range_index = VFile_ReadS16(fp);
+            const int16_t low_frame = VFile_ReadS16(fp);
+            const int16_t high_frame = VFile_ReadS16(fp);
 
             if (change_index >= anim->number_changes) {
                 LOG_WARNING(
@@ -742,17 +741,17 @@ static void Inject_ObjectData(
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     // TODO: consider refactoring once we have more injection
     // use cases.
     for (int32_t i = 0; i < inj_info->object_count; i++) {
-        const GAME_OBJECT_ID object_id = File_ReadS32(fp);
+        const GAME_OBJECT_ID object_id = VFile_ReadS32(fp);
         OBJECT_INFO *object = &g_Objects[object_id];
 
-        const int16_t num_meshes = File_ReadS16(fp);
-        const int16_t mesh_index = File_ReadS16(fp);
-        const int32_t bone_index = File_ReadS32(fp);
+        const int16_t num_meshes = VFile_ReadS16(fp);
+        const int16_t mesh_index = VFile_ReadS16(fp);
+        const int32_t bone_index = VFile_ReadS32(fp);
 
         // When mesh data has been omitted from the injection, this indicates
         // that we wish to retain what's already defined so to avoid duplicate
@@ -763,8 +762,8 @@ static void Inject_ObjectData(
             object->bone_index = bone_index + level_info->anim_bone_count;
         }
 
-        const int32_t frame_offset = File_ReadS32(fp);
-        object->anim_index = File_ReadS16(fp);
+        const int32_t frame_offset = VFile_ReadS32(fp);
+        object->anim_index = VFile_ReadS16(fp);
         object->anim_index += level_info->anim_count;
         object->loaded = 1;
 
@@ -797,25 +796,25 @@ static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->sfx_count; i++) {
-        const int16_t sfx_id = File_ReadS16(fp);
+        const int16_t sfx_id = VFile_ReadS16(fp);
         g_SampleLUT[sfx_id] = level_info->sample_info_count;
 
         SAMPLE_INFO *sample_info =
             &g_SampleInfos[level_info->sample_info_count];
-        sample_info->volume = File_ReadS16(fp);
-        sample_info->randomness = File_ReadS16(fp);
-        sample_info->flags = File_ReadS16(fp);
+        sample_info->volume = VFile_ReadS16(fp);
+        sample_info->randomness = VFile_ReadS16(fp);
+        sample_info->flags = VFile_ReadS16(fp);
         sample_info->number = level_info->sample_count;
 
         int16_t num_samples = (sample_info->flags >> 2) & 15;
         for (int32_t j = 0; j < num_samples; j++) {
-            const int32_t sample_length = File_ReadS32(fp);
-            File_ReadItems(
+            const int32_t sample_length = VFile_ReadS32(fp);
+            VFile_Read(
                 fp, level_info->sample_data + level_info->sample_data_size,
-                sizeof(char), sample_length);
+                sizeof(char) * sample_length);
 
             level_info->sample_offsets[level_info->sample_count] =
                 level_info->sample_data_size;
@@ -897,7 +896,7 @@ static uint8_t Inject_RemapRGB(RGB_888 rgb)
 static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
 {
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     if (!inj_info->mesh_edit_count) {
         return;
@@ -910,43 +909,43 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
 
     for (int32_t i = 0; i < inj_info->mesh_edit_count; i++) {
         MESH_EDIT *mesh_edit = &mesh_edits[i];
-        mesh_edit->object_id = File_ReadS32(fp);
-        mesh_edit->mesh_index = File_ReadS16(fp);
+        mesh_edit->object_id = VFile_ReadS32(fp);
+        mesh_edit->mesh_index = VFile_ReadS16(fp);
 
         if (injection->version >= INJ_VERSION_6) {
-            mesh_edit->centre_shift.x = File_ReadS16(fp);
-            mesh_edit->centre_shift.y = File_ReadS16(fp);
-            mesh_edit->centre_shift.z = File_ReadS16(fp);
-            mesh_edit->radius_shift = File_ReadS32(fp);
+            mesh_edit->centre_shift.x = VFile_ReadS16(fp);
+            mesh_edit->centre_shift.y = VFile_ReadS16(fp);
+            mesh_edit->centre_shift.z = VFile_ReadS16(fp);
+            mesh_edit->radius_shift = VFile_ReadS32(fp);
         }
 
-        mesh_edit->face_edit_count = File_ReadS32(fp);
+        mesh_edit->face_edit_count = VFile_ReadS32(fp);
         mesh_edit->face_edits =
             Memory_Alloc(sizeof(FACE_EDIT) * mesh_edit->face_edit_count);
         for (int32_t j = 0; j < mesh_edit->face_edit_count; j++) {
             FACE_EDIT *face_edit = &mesh_edit->face_edits[j];
-            face_edit->object_id = File_ReadS32(fp);
-            face_edit->source_identifier = File_ReadS16(fp);
-            face_edit->face_type = File_ReadS32(fp);
-            face_edit->face_index = File_ReadS16(fp);
+            face_edit->object_id = VFile_ReadS32(fp);
+            face_edit->source_identifier = VFile_ReadS16(fp);
+            face_edit->face_type = VFile_ReadS32(fp);
+            face_edit->face_index = VFile_ReadS16(fp);
 
-            face_edit->target_count = File_ReadS32(fp);
+            face_edit->target_count = VFile_ReadS32(fp);
             face_edit->targets =
                 Memory_Alloc(sizeof(int16_t) * face_edit->target_count);
-            File_ReadItems(
-                fp, face_edit->targets, sizeof(int16_t),
-                face_edit->target_count);
+            VFile_Read(
+                fp, face_edit->targets,
+                sizeof(int16_t) * face_edit->target_count);
         }
 
-        mesh_edit->vertex_edit_count = File_ReadS32(fp);
+        mesh_edit->vertex_edit_count = VFile_ReadS32(fp);
         mesh_edit->vertex_edits =
             Memory_Alloc(sizeof(VERTEX_EDIT) * mesh_edit->vertex_edit_count);
         for (int32_t i = 0; i < mesh_edit->vertex_edit_count; i++) {
             VERTEX_EDIT *vertex_edit = &mesh_edit->vertex_edits[i];
-            vertex_edit->vertex_index = File_ReadS16(fp);
-            vertex_edit->x_change = File_ReadS16(fp);
-            vertex_edit->y_change = File_ReadS16(fp);
-            vertex_edit->z_change = File_ReadS16(fp);
+            vertex_edit->vertex_index = VFile_ReadS16(fp);
+            vertex_edit->x_change = VFile_ReadS16(fp);
+            vertex_edit->y_change = VFile_ReadS16(fp);
+            vertex_edit->z_change = VFile_ReadS16(fp);
         }
 
         Inject_ApplyMeshEdit(mesh_edit, palette_map);
@@ -1121,17 +1120,17 @@ static void Inject_TextureOverwrites(
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->texture_overwrite_count; i++) {
-        const uint16_t target_page = File_ReadU16(fp);
-        const uint8_t target_x = File_ReadU8(fp);
-        const uint8_t target_y = File_ReadU8(fp);
-        const uint16_t source_width = File_ReadU16(fp);
-        const uint16_t source_height = File_ReadU16(fp);
+        const uint16_t target_page = VFile_ReadU16(fp);
+        const uint8_t target_x = VFile_ReadU8(fp);
+        const uint8_t target_y = VFile_ReadU8(fp);
+        const uint16_t source_width = VFile_ReadU16(fp);
+        const uint16_t source_height = VFile_ReadU16(fp);
 
         uint8_t *source_img = Memory_Alloc(source_width * source_height);
-        File_ReadData(fp, source_img, source_width * source_height);
+        VFile_Read(fp, source_img, source_width * source_height);
 
         // Copy the source image pixels directly into the target page.
         uint8_t *page = level_info->texture_page_ptrs + target_page * PAGE_SIZE;
@@ -1155,13 +1154,13 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->floor_edit_count; i++) {
-        const int16_t room = File_ReadS16(fp);
-        const uint16_t x = File_ReadU16(fp);
-        const uint16_t z = File_ReadU16(fp);
-        const int32_t fd_edit_count = File_ReadS32(fp);
+        const int16_t room = VFile_ReadS16(fp);
+        const uint16_t x = VFile_ReadU16(fp);
+        const uint16_t z = VFile_ReadU16(fp);
+        const int32_t fd_edit_count = VFile_ReadS32(fp);
 
         // Verify that the given room and coordinates are accurate.
         // Individual FD functions must check that sector is actually set.
@@ -1180,7 +1179,7 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
         }
 
         for (int32_t j = 0; j < fd_edit_count; j++) {
-            const FLOOR_EDIT_TYPE edit_type = File_ReadS32(fp);
+            const FLOOR_EDIT_TYPE edit_type = VFile_ReadS32(fp);
             switch (edit_type) {
             case FET_TRIGGER_PARAM:
                 Inject_TriggerParameterChange(injection, sector);
@@ -1210,11 +1209,11 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
 static void Inject_TriggerParameterChange(
     INJECTION *injection, SECTOR_INFO *sector)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const uint8_t cmd_type = File_ReadU8(fp);
-    const int16_t old_param = File_ReadS16(fp);
-    const int16_t new_param = File_ReadS16(fp);
+    const uint8_t cmd_type = VFile_ReadU8(fp);
+    const int16_t old_param = VFile_ReadS16(fp);
+    const int16_t new_param = VFile_ReadS16(fp);
 
     if (sector == NULL || sector->trigger == NULL) {
         return;
@@ -1262,12 +1261,12 @@ static void Inject_SetMusicOneShot(SECTOR_INFO *sector)
 static void Inject_InsertFloorData(
     INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int32_t data_length = File_ReadS32(fp);
+    const int32_t data_length = VFile_ReadS32(fp);
 
     int16_t data[data_length];
-    File_ReadItems(fp, data, sizeof(int16_t), data_length);
+    VFile_Read(fp, data, sizeof(int16_t) * data_length);
 
     if (sector == NULL) {
         return;
@@ -1281,11 +1280,11 @@ static void Inject_InsertFloorData(
 
 static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const uint32_t x_shift = ROUND_TO_SECTOR(File_ReadU32(fp));
-    const uint32_t z_shift = ROUND_TO_SECTOR(File_ReadU32(fp));
-    const int32_t y_shift = ROUND_TO_CLICK(File_ReadS32(fp));
+    const uint32_t x_shift = ROUND_TO_SECTOR(VFile_ReadU32(fp));
+    const uint32_t z_shift = ROUND_TO_SECTOR(VFile_ReadU32(fp));
+    const int32_t y_shift = ROUND_TO_CLICK(VFile_ReadS32(fp));
 
     ROOM_INFO *room = &g_RoomInfo[room_num];
     room->x += x_shift;
@@ -1331,10 +1330,10 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
 
 static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     if (g_LevelItemCount == MAX_ITEMS) {
-        File_Skip(
+        VFile_Skip(
             fp, sizeof(int16_t) * 4 + sizeof(int32_t) * 3 + sizeof(uint16_t));
         LOG_WARNING("Cannot add more than %d items", MAX_ITEMS);
         return;
@@ -1343,14 +1342,14 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     int16_t item_num = Item_Create();
     ITEM_INFO *item = &g_Items[item_num];
 
-    item->object_id = File_ReadS16(fp);
-    item->room_num = File_ReadS16(fp);
-    item->pos.x = File_ReadS32(fp);
-    item->pos.y = File_ReadS32(fp);
-    item->pos.z = File_ReadS32(fp);
-    item->rot.y = File_ReadS16(fp);
-    item->shade = File_ReadS16(fp);
-    item->flags = File_ReadU16(fp);
+    item->object_id = VFile_ReadS16(fp);
+    item->room_num = VFile_ReadS16(fp);
+    item->pos.x = VFile_ReadS32(fp);
+    item->pos.y = VFile_ReadS32(fp);
+    item->pos.z = VFile_ReadS32(fp);
+    item->rot.y = VFile_ReadS16(fp);
+    item->shade = VFile_ReadS16(fp);
+    item->flags = VFile_ReadU16(fp);
 
     level_info->item_count++;
     g_LevelItemCount++;
@@ -1390,11 +1389,11 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     ROOM_MESH_EDIT_TYPE edit_type;
     for (int32_t i = 0; i < inj_info->room_mesh_edit_count; i++) {
-        edit_type = File_ReadS32(fp);
+        edit_type = VFile_ReadS32(fp);
 
         switch (edit_type) {
         case RMET_TEXTURE_FACE:
@@ -1426,14 +1425,14 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
 
 static void Inject_TextureRoomFace(INJECTION *injection)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int16_t target_room = File_ReadS16(fp);
-    const FACE_TYPE target_face_type = File_ReadS32(fp);
-    const int16_t target_face = File_ReadS16(fp);
-    const int16_t source_room = File_ReadS16(fp);
-    const FACE_TYPE source_face_type = File_ReadS32(fp);
-    const int16_t source_face = File_ReadS16(fp);
+    const int16_t target_room = VFile_ReadS16(fp);
+    const FACE_TYPE target_face_type = VFile_ReadS32(fp);
+    const int16_t target_face = VFile_ReadS16(fp);
+    const int16_t source_room = VFile_ReadS16(fp);
+    const FACE_TYPE source_face_type = VFile_ReadS32(fp);
+    const int16_t source_face = VFile_ReadS16(fp);
 
     int16_t *source_texture =
         Inject_GetRoomTexture(source_room, source_face_type, source_face);
@@ -1446,16 +1445,16 @@ static void Inject_TextureRoomFace(INJECTION *injection)
 
 static void Inject_MoveRoomFace(INJECTION *injection)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int16_t target_room = File_ReadS16(fp);
-    const FACE_TYPE face_type = File_ReadS32(fp);
-    const int16_t target_face = File_ReadS16(fp);
-    const int32_t vertex_count = File_ReadS32(fp);
+    const int16_t target_room = VFile_ReadS16(fp);
+    const FACE_TYPE face_type = VFile_ReadS32(fp);
+    const int16_t target_face = VFile_ReadS16(fp);
+    const int32_t vertex_count = VFile_ReadS32(fp);
 
     for (int32_t j = 0; j < vertex_count; j++) {
-        const int16_t vertex_index = File_ReadS16(fp);
-        const int16_t new_vertex = File_ReadS16(fp);
+        const int16_t vertex_index = VFile_ReadS16(fp);
+        const int16_t new_vertex = VFile_ReadS16(fp);
 
         int16_t *target =
             Inject_GetRoomFace(target_room, face_type, target_face);
@@ -1468,17 +1467,17 @@ static void Inject_MoveRoomFace(INJECTION *injection)
 
 static void Inject_AlterRoomVertex(INJECTION *injection)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int16_t target_room = File_ReadS16(fp);
-    File_Skip(fp, sizeof(int32_t));
-    const int16_t target_vertex = File_ReadS16(fp);
-    const int16_t x_change = File_ReadS16(fp);
-    const int16_t y_change = File_ReadS16(fp);
-    const int16_t z_change = File_ReadS16(fp);
+    const int16_t target_room = VFile_ReadS16(fp);
+    VFile_Skip(fp, sizeof(int32_t));
+    const int16_t target_vertex = VFile_ReadS16(fp);
+    const int16_t x_change = VFile_ReadS16(fp);
+    const int16_t y_change = VFile_ReadS16(fp);
+    const int16_t z_change = VFile_ReadS16(fp);
     int16_t shade_change = 0;
     if (injection->version >= INJ_VERSION_7) {
-        shade_change = File_ReadS16(fp);
+        shade_change = VFile_ReadS16(fp);
     }
 
     if (target_room < 0 || target_room >= g_RoomCount) {
@@ -1504,12 +1503,12 @@ static void Inject_AlterRoomVertex(INJECTION *injection)
 
 static void Inject_RotateRoomFace(INJECTION *injection)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int16_t target_room = File_ReadS16(fp);
-    const FACE_TYPE face_type = File_ReadS32(fp);
-    const int16_t target_face = File_ReadS16(fp);
-    const uint8_t num_rotations = File_ReadU8(fp);
+    const int16_t target_room = VFile_ReadS16(fp);
+    const FACE_TYPE face_type = VFile_ReadS32(fp);
+    const int16_t target_face = VFile_ReadS16(fp);
+    const uint8_t num_rotations = VFile_ReadU8(fp);
 
     int16_t *target = Inject_GetRoomFace(target_room, face_type, target_face);
     if (!target) {
@@ -1533,17 +1532,17 @@ static void Inject_RotateRoomFace(INJECTION *injection)
 
 static void Inject_AddRoomFace(INJECTION *injection)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int16_t target_room = File_ReadS16(fp);
-    const FACE_TYPE face_type = File_ReadS32(fp);
-    const int16_t source_room = File_ReadS16(fp);
-    const int16_t source_face = File_ReadS16(fp);
+    const int16_t target_room = VFile_ReadS16(fp);
+    const FACE_TYPE face_type = VFile_ReadS32(fp);
+    const int16_t source_room = VFile_ReadS16(fp);
+    const int16_t source_face = VFile_ReadS16(fp);
 
     int32_t num_vertices = face_type == FT_TEXTURED_QUAD ? 4 : 3;
     int16_t vertices[num_vertices];
     for (int32_t i = 0; i < num_vertices; i++) {
-        vertices[i] = File_ReadS16(fp);
+        vertices[i] = VFile_ReadS16(fp);
     }
 
     if (target_room < 0 || target_room >= g_RoomCount) {
@@ -1605,14 +1604,14 @@ static void Inject_AddRoomFace(INJECTION *injection)
 
 static void Inject_AddRoomVertex(INJECTION *injection)
 {
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
-    const int16_t target_room = File_ReadS16(fp);
-    File_Skip(fp, sizeof(int32_t));
-    const int16_t x = File_ReadS16(fp);
-    const int16_t y = File_ReadS16(fp);
-    const int16_t z = File_ReadS16(fp);
-    const int16_t lighting = File_ReadS16(fp);
+    const int16_t target_room = VFile_ReadS16(fp);
+    VFile_Skip(fp, sizeof(int32_t));
+    const int16_t x = VFile_ReadS16(fp);
+    const int16_t y = VFile_ReadS16(fp);
+    const int16_t z = VFile_ReadS16(fp);
+    const int16_t lighting = VFile_ReadS16(fp);
 
     ROOM_INFO *r = &g_RoomInfo[target_room];
     int32_t data_index = 0;
@@ -1703,18 +1702,18 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->room_door_edit_count; i++) {
-        const int16_t base_room = File_ReadS16(fp);
-        const int16_t link_room = File_ReadS16(fp);
+        const int16_t base_room = VFile_ReadS16(fp);
+        const int16_t link_room = VFile_ReadS16(fp);
         int16_t door_index = -1;
         if (injection->version >= INJ_VERSION_4) {
-            door_index = File_ReadS16(fp);
+            door_index = VFile_ReadS16(fp);
         }
 
         if (base_room < 0 || base_room >= g_RoomCount) {
-            File_Skip(fp, sizeof(int16_t) * 12);
+            VFile_Skip(fp, sizeof(int16_t) * 12);
             LOG_WARNING("Room index %d is invalid", base_room);
             continue;
         }
@@ -1731,7 +1730,7 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
         }
 
         if (!door) {
-            File_Skip(fp, sizeof(int16_t) * 12);
+            VFile_Skip(fp, sizeof(int16_t) * 12);
             LOG_WARNING(
                 "Room index %d has no matching door to %d", base_room,
                 link_room);
@@ -1739,9 +1738,9 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
         }
 
         for (int32_t j = 0; j < 4; j++) {
-            const int16_t x_change = File_ReadS16(fp);
-            const int16_t y_change = File_ReadS16(fp);
-            const int16_t z_change = File_ReadS16(fp);
+            const int16_t x_change = VFile_ReadS16(fp);
+            const int16_t y_change = VFile_ReadS16(fp);
+            const int16_t z_change = VFile_ReadS16(fp);
 
             door->vertex[j].x += x_change;
             door->vertex[j].y += y_change;
@@ -1761,21 +1760,21 @@ static void Inject_ItemPositions(INJECTION *injection)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     INJECTION_INFO *inj_info = injection->info;
-    MYFILE *fp = injection->fp;
+    VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->item_position_count; i++) {
-        const int16_t item_num = File_ReadS16(fp);
-        const int16_t y_rot = File_ReadS16(fp);
+        const int16_t item_num = VFile_ReadS16(fp);
+        const int16_t y_rot = VFile_ReadS16(fp);
 
         int32_t x;
         int32_t y;
         int32_t z;
         int16_t room_num;
         if (injection->version > INJ_VERSION_4) {
-            x = File_ReadS32(fp);
-            y = File_ReadS32(fp);
-            z = File_ReadS32(fp);
-            room_num = File_ReadS16(fp);
+            x = VFile_ReadS32(fp);
+            y = VFile_ReadS32(fp);
+            z = VFile_ReadS32(fp);
+            room_num = VFile_ReadS16(fp);
         }
 
         if (item_num < 0 || item_num >= g_LevelItemCount) {
@@ -1807,7 +1806,7 @@ void Inject_Cleanup(void)
     for (int32_t i = 0; i < m_NumInjections; i++) {
         INJECTION *injection = &m_Injections[i];
         if (injection->fp) {
-            File_Close(injection->fp);
+            VFile_Close(injection->fp);
         }
         if (injection->info) {
             if (injection->info->room_meshes) {

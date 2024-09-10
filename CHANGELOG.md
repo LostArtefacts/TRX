@@ -18,7 +18,7 @@
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
 - improved appearance of textures around edges when bilinear filter is off (#1483)
   Since this removes the seams on pushblocks, this was made optional.
-- improved level load times
+- improved level load times (#1456, #1457)
 - improved logs module names readability
 - improved crash debug information on Windows
 - improved vertex movement when looking through water portals (#1493)
