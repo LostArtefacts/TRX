@@ -13,10 +13,10 @@
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/creatures/pierre.h"
+#include "game/objects/setup.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room.h"
-#include "game/setup.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -905,7 +905,7 @@ static void Level_CompleteSetup(int32_t level_num)
     Stats_ObserveRoomsLoad();
 
     // Must be called after all g_Anims, g_Meshes etc initialised.
-    Setup_AllObjects();
+    Object_SetupAllObjects();
 
     // Must be called after Setup_AllObjects using the cached item
     // count, as individual setups may increment g_LevelItemCount.
