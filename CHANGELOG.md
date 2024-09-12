@@ -17,6 +17,7 @@
 - fixed console input immediately ending demo (#1480, regression from 4.1)
 - fixed a potential softlock when killing the Torso boss in Great Pyramid (#1236)
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
+- changed the door cheat to also target drawbridges
 - improved appearance of textures around edges when bilinear filter is off (#1483)
   Since this removes the seams on pushblocks, this was made optional.
 - improved level load times (#1456, #1457)
