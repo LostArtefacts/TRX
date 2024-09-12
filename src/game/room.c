@@ -3,14 +3,13 @@
 #include "game/camera.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
+#include "game/lara/lara_misc.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/common.h"
-#include "game/objects/general/bridge.h"
 #include "game/objects/general/keyhole.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/switch.h"
-#include "game/objects/traps/lava.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -42,6 +41,7 @@ static SECTOR_INFO *Room_GetSkySector(
     const SECTOR_INFO *sector, int32_t x, int32_t z);
 static void Room_TestSectorTrigger(
     const ITEM_INFO *item, const SECTOR_INFO *sector);
+static bool Room_TestLava(const ITEM_INFO *const item);
 
 static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
@@ -762,12 +762,27 @@ void Room_TestTriggers(const ITEM_INFO *const item)
     }
 }
 
+static bool Room_TestLava(const ITEM_INFO *const item)
+{
+    if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT
+        || (g_Lara.water_status == LWS_ABOVE_WATER
+            && item->pos.y != item->floor)) {
+        return false;
+    }
+
+    // OG fix: check if floor index has lava
+    int16_t room_num = item->room_num;
+    const SECTOR_INFO *const sector =
+        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    return sector->is_death_sector;
+}
+
 static void Room_TestSectorTrigger(
     const ITEM_INFO *const item, const SECTOR_INFO *const sector)
 {
     const bool is_heavy = item->object_id != O_LARA;
-    if (!is_heavy && sector->is_death_sector && Lava_TestFloor(item)) {
-        Lava_Burn(g_LaraItem);
+    if (!is_heavy && sector->is_death_sector && Room_TestLava(item)) {
+        Lara_CatchFire();
     }
 
     const TRIGGER *const trigger = sector->trigger;

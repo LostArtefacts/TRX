@@ -2,9 +2,11 @@
 
 #include "config.h"
 #include "game/collide.h"
+#include "game/effects.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara.h"
+#include "game/random.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -738,5 +740,40 @@ void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll)
     if (coll->mid_floor < 0) {
         item->pos.y += coll->mid_floor;
         item->rot.x += UW_WALLDEFLECT;
+    }
+}
+
+void Lara_CatchFire(void)
+{
+    if (g_Lara.water_status == LWS_CHEAT || g_LaraItem->hit_points < 0) {
+        return;
+    }
+
+    int16_t room_num = g_LaraItem->room_num;
+    const SECTOR_INFO *const sector = Room_GetSector(
+        g_LaraItem->pos.x, MAX_HEIGHT, g_LaraItem->pos.z, &room_num);
+    const int16_t height = Room_GetHeight(
+        sector, g_LaraItem->pos.x, MAX_HEIGHT, g_LaraItem->pos.z);
+
+    if (g_LaraItem->floor != height) {
+        return;
+    }
+
+    g_LaraItem->hit_points = -1;
+    g_LaraItem->hit_status = 1;
+
+    if (g_Lara.water_status != LWS_ABOVE_WATER) {
+        return;
+    }
+
+    for (int32_t i = 0; i < 10; i++) {
+        const int16_t fx_num = Effect_Create(g_LaraItem->room_num);
+        if (fx_num != NO_ITEM) {
+            FX_INFO *const fx = &g_Effects[fx_num];
+            fx->object_id = O_FLAME;
+            fx->frame_num =
+                (g_Objects[O_FLAME].nmeshes * Random_GetControl()) / 0x7FFF;
+            fx->counter = -1 - Random_GetControl() * 24 / 0x7FFF;
+        }
     }
 }

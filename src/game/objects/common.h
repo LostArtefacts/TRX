@@ -4,9 +4,6 @@
 
 #include "global/types.h"
 
-#include <stdbool.h>
-#include <stdint.h>
-
 typedef struct GAME_OBJECT_PAIR {
     const GAME_OBJECT_ID key_id;
     const GAME_OBJECT_ID value_id;

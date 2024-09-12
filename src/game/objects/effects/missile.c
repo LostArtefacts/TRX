@@ -12,8 +12,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define SHARD_DAMAGE 30
 #define ROCKET_DAMAGE 100
 #define ROCKET_RANGE_BASE WALL_L

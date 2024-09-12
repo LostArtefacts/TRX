@@ -14,8 +14,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define ROLLINGBALL_DAMAGE_AIR 100
 
 void RollingBall_Setup(OBJECT_INFO *obj)

@@ -30,33 +30,47 @@
 #include "game/objects/effects/blood.h"
 #include "game/objects/effects/body_part.h"
 #include "game/objects/effects/bubble.h"
-#include "game/objects/effects/earthquake.h"
+#include "game/objects/effects/dart_effect.h"
+#include "game/objects/effects/ember.h"
 #include "game/objects/effects/explosion.h"
+#include "game/objects/effects/flame.h"
 #include "game/objects/effects/gunshot.h"
 #include "game/objects/effects/missile.h"
+#include "game/objects/effects/natla_gun.h"
 #include "game/objects/effects/ricochet.h"
 #include "game/objects/effects/splash.h"
 #include "game/objects/effects/twinkle.h"
-#include "game/objects/effects/waterfall.h"
 #include "game/objects/general/boat.h"
-#include "game/objects/general/bridge.h"
+#include "game/objects/general/bridge_flat.h"
+#include "game/objects/general/bridge_tilt1.h"
+#include "game/objects/general/bridge_tilt2.h"
 #include "game/objects/general/cabin.h"
+#include "game/objects/general/camera_target.h"
 #include "game/objects/general/cog.h"
 #include "game/objects/general/door.h"
+#include "game/objects/general/drawbridge.h"
+#include "game/objects/general/earthquake.h"
 #include "game/objects/general/keyhole.h"
-#include "game/objects/general/misc.h"
+#include "game/objects/general/moving_bar.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
 #include "game/objects/general/save_crystal.h"
-#include "game/objects/general/scion.h"
+#include "game/objects/general/scion1.h"
+#include "game/objects/general/scion2.h"
+#include "game/objects/general/scion3.h"
+#include "game/objects/general/scion4.h"
+#include "game/objects/general/scion_holder.h"
 #include "game/objects/general/switch.h"
 #include "game/objects/general/trapdoor.h"
+#include "game/objects/general/waterfall.h"
 #include "game/objects/traps/damocles_sword.h"
 #include "game/objects/traps/dart.h"
+#include "game/objects/traps/dart_emitter.h"
+#include "game/objects/traps/ember_emitter.h"
 #include "game/objects/traps/falling_block.h"
 #include "game/objects/traps/falling_ceiling.h"
-#include "game/objects/traps/flame.h"
-#include "game/objects/traps/lava.h"
+#include "game/objects/traps/flame_emitter.h"
+#include "game/objects/traps/lava_wedge.h"
 #include "game/objects/traps/lightning_emitter.h"
 #include "game/objects/traps/midas_touch.h"
 #include "game/objects/traps/movable_block.h"
@@ -65,7 +79,8 @@
 #include "game/objects/traps/sliding_pillar.h"
 #include "game/objects/traps/spikes.h"
 #include "game/objects/traps/teeth_trap.h"
-#include "game/objects/traps/thors_hammer.h"
+#include "game/objects/traps/thors_hammer_handle.h"
+#include "game/objects/traps/thors_hammer_head.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -112,7 +127,7 @@ void Setup_Creatures(void)
     Torso_Setup(&g_Objects[O_TORSO]);
     Natla_Setup(&g_Objects[O_NATLA]);
     Pod_Setup(&g_Objects[O_PODS]);
-    Pod_SetupBig(&g_Objects[O_BIG_POD]);
+    Pod_Setup(&g_Objects[O_BIG_POD]);
     Statue_Setup(&g_Objects[O_STATUE]);
 }
 
@@ -132,26 +147,26 @@ void Setup_Traps(void)
     MovableBlock_Setup(&g_Objects[O_MOVABLE_BLOCK4]);
     SlidingPillar_Setup(&g_Objects[O_SLIDING_PILLAR]);
     LightningEmitter_Setup(&g_Objects[O_LIGHTNING_EMITTER]);
-    ThorsHandle_Setup(&g_Objects[O_THORS_HANDLE]);
-    ThorsHead_Setup(&g_Objects[O_THORS_HEAD]);
+    ThorsHammerHandle_Setup(&g_Objects[O_THORS_HANDLE]);
+    ThorsHammerHead_Setup(&g_Objects[O_THORS_HEAD]);
     MidasTouch_Setup(&g_Objects[O_MIDAS_TOUCH]);
     DartEmitter_Setup(&g_Objects[O_DART_EMITTER]);
     Dart_Setup(&g_Objects[O_DARTS]);
     DartEffect_Setup(&g_Objects[O_DART_EFFECT]);
     FlameEmitter_Setup(&g_Objects[O_FLAME_EMITTER]);
     Flame_Setup(&g_Objects[O_FLAME]);
-    LavaEmitter_Setup(&g_Objects[O_LAVA_EMITTER]);
-    Lava_Setup(&g_Objects[O_LAVA]);
+    EmberEmitter_Setup(&g_Objects[O_EMBER_EMITTER]);
+    Ember_Setup(&g_Objects[O_EMBER]);
     LavaWedge_Setup(&g_Objects[O_LAVA_WEDGE]);
 }
 
 void Setup_MiscObjects(void)
 {
     CameraTarget_Setup(&g_Objects[O_CAMERA_TARGET]);
-    Bridge_SetupFlat(&g_Objects[O_BRIDGE_FLAT]);
-    Bridge_SetupTilt1(&g_Objects[O_BRIDGE_TILT1]);
-    Bridge_SetupTilt2(&g_Objects[O_BRIDGE_TILT2]);
-    Bridge_SetupDrawBridge(&g_Objects[O_DRAW_BRIDGE]);
+    BridgeFlat_Setup(&g_Objects[O_BRIDGE_FLAT]);
+    BridgeTilt1_Setup(&g_Objects[O_BRIDGE_TILT1]);
+    BridgeTilt2_Setup(&g_Objects[O_BRIDGE_TILT2]);
+    Drawbridge_Setup(&g_Objects[O_DRAW_BRIDGE]);
     Switch_Setup(&g_Objects[O_SWITCH_TYPE1]);
     Switch_SetupUW(&g_Objects[O_SWITCH_TYPE2]);
     Door_Setup(&g_Objects[O_DOOR_TYPE1]);
@@ -191,13 +206,13 @@ void Setup_MiscObjects(void)
     Pickup_Setup(&g_Objects[O_MEDI_ITEM]);
     Pickup_Setup(&g_Objects[O_BIGMEDI_ITEM]);
 
-    Scion_Setup1(&g_Objects[O_SCION_ITEM]);
-    Scion_Setup2(&g_Objects[O_SCION_ITEM2]);
-    Scion_Setup3(&g_Objects[O_SCION_ITEM3]);
-    Scion_Setup4(&g_Objects[O_SCION_ITEM4]);
-    Scion_SetupHolder(&g_Objects[O_SCION_HOLDER]);
+    Scion1_Setup(&g_Objects[O_SCION_ITEM]);
+    Scion2_Setup(&g_Objects[O_SCION_ITEM2]);
+    Scion3_Setup(&g_Objects[O_SCION_ITEM3]);
+    Scion4_Setup(&g_Objects[O_SCION_ITEM4]);
+    ScionHolder_Setup(&g_Objects[O_SCION_HOLDER]);
 
-    LeadBar_Setup(&g_Objects[O_LEADBAR_ITEM]);
+    Pickup_Setup(&g_Objects[O_LEADBAR_ITEM]);
     SaveCrystal_Setup(&g_Objects[O_SAVEGAME_ITEM]);
     KeyHole_Setup(&g_Objects[O_KEY_HOLE1]);
     KeyHole_Setup(&g_Objects[O_KEY_HOLE2]);
@@ -217,10 +232,10 @@ void Setup_MiscObjects(void)
     Boat_Setup(&g_Objects[O_BOAT]);
     Earthquake_Setup(&g_Objects[O_EARTHQUAKE]);
 
-    CutscenePlayer1_Setup(&g_Objects[O_PLAYER_1]);
-    CutscenePlayer2_Setup(&g_Objects[O_PLAYER_2]);
-    CutscenePlayer3_Setup(&g_Objects[O_PLAYER_3]);
-    CutscenePlayer4_Setup(&g_Objects[O_PLAYER_4]);
+    CutscenePlayer_Setup(&g_Objects[O_PLAYER_1]);
+    CutscenePlayer_Setup(&g_Objects[O_PLAYER_2]);
+    CutscenePlayer_Setup(&g_Objects[O_PLAYER_3]);
+    CutscenePlayer_Setup(&g_Objects[O_PLAYER_4]);
 
     Blood_Setup(&g_Objects[O_BLOOD1]);
     Bubble_Setup(&g_Objects[O_BUBBLES1]);

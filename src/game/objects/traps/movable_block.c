@@ -13,8 +13,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define LF_PPREADY 19
 
 typedef enum {

@@ -11,8 +11,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define WOLF_SLEEP_FRAME 96
 #define WOLF_BITE_DAMAGE 100
 #define WOLF_POUNCE_DAMAGE 50

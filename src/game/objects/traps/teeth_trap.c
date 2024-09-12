@@ -6,8 +6,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 
-#include <stdbool.h>
-
 #define TEETH_TRAP_DAMAGE 400
 
 typedef enum {

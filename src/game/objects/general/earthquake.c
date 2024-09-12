@@ -1,4 +1,4 @@
-#include "game/objects/effects/earthquake.h"
+#include "game/objects/general/earthquake.h"
 
 #include "game/items.h"
 #include "game/objects/common.h"

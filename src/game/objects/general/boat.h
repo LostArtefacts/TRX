@@ -2,8 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
 typedef enum {
     BOAT_EMPTY = 0,
     BOAT_SET = 1,

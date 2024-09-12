@@ -11,8 +11,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define LION_BITE_DAMAGE 250
 #define LION_POUNCE_DAMAGE 150
 #define LION_TOUCH 0x380066
@@ -47,25 +45,30 @@ typedef enum {
 
 static BITE_INFO m_LionBite = { -2, -10, 132, 21 };
 
-void Lion_SetupLion(OBJECT_INFO *obj)
+static void Lion_SetupCommon(OBJECT_INFO *const obj)
 {
-    if (!obj->loaded) {
-        return;
-    }
     obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
     obj->collision = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = LION_HITPOINTS;
     obj->pivot_length = 400;
-    obj->radius = LION_RADIUS;
-    obj->smartness = LION_SMARTNESS;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
     g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
+}
+
+void Lion_SetupLion(OBJECT_INFO *obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    Lion_SetupCommon(obj);
+    obj->hit_points = LION_HITPOINTS;
+    obj->radius = LION_RADIUS;
+    obj->smartness = LION_SMARTNESS;
 }
 
 void Lion_SetupLioness(OBJECT_INFO *obj)
@@ -73,20 +76,10 @@ void Lion_SetupLioness(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Lion_Control;
-    obj->collision = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
+    Lion_SetupCommon(obj);
     obj->hit_points = LIONESS_HITPOINTS;
-    obj->pivot_length = 400;
     obj->radius = LIONESS_RADIUS;
     obj->smartness = LIONESS_SMARTNESS;
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
 void Lion_SetupPuma(OBJECT_INFO *obj)
@@ -94,20 +87,10 @@ void Lion_SetupPuma(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Lion_Control;
-    obj->collision = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
+    Lion_SetupCommon(obj);
     obj->hit_points = PUMA_HITPOINTS;
-    obj->pivot_length = 400;
     obj->radius = PUMA_RADIUS;
     obj->smartness = PUMA_SMARTNESS;
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
 }
 
 void Lion_Control(int16_t item_num)

@@ -1,4 +1,4 @@
-#include "game/objects/effects/waterfall.h"
+#include "game/objects/general/waterfall.h"
 
 #include "game/effects.h"
 #include "game/items.h"

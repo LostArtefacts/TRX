@@ -2,8 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
 void PuzzleHole_Setup(OBJECT_INFO *obj);
 void PuzzleHole_SetupDone(OBJECT_INFO *obj);
 void PuzzleHole_Collision(

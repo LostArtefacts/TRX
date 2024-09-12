@@ -12,8 +12,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define EXTRA_ANIM_TREX_DEATH 1
 #define TREX_ATTACK_RANGE SQUARE(WALL_L * 4) // = 16777216
 #define TREX_BITE_DAMAGE 10000

@@ -3,8 +3,6 @@
 #include "game/items.h"
 #include "global/const.h"
 
-#include <stdbool.h>
-
 static bool TrapDoor_StandingOn(const ITEM_INFO *item, int32_t x, int32_t z);
 
 static bool TrapDoor_StandingOn(const ITEM_INFO *item, int32_t x, int32_t z)

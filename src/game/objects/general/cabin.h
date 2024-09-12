@@ -2,8 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
-
 typedef enum {
     CABIN_START = 0,
     CABIN_DROP1 = 1,

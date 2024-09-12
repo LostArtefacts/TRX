@@ -10,8 +10,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define COWBOY_SHOT_DAMAGE 70
 #define COWBOY_WALK_TURN (PHD_DEGREE * 3) // = 546
 #define COWBOY_RUN_TURN (PHD_DEGREE * 6) // = 1092

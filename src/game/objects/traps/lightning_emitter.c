@@ -14,8 +14,6 @@
 #include "global/vars.h"
 #include "math/matrix.h"
 
-#include <stdbool.h>
-
 #define LIGHTNING_DAMAGE 400
 #define LIGHTNING_STEPS 8
 #define LIGHTNING_RND ((64 << W2V_SHIFT) / 0x8000) // = 32

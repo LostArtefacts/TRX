@@ -2,9 +2,6 @@
 
 #include "global/types.h"
 
-#include <stdbool.h>
-#include <stdint.h>
-
 extern XYZ_32 g_KeyHolePosition;
 
 void KeyHole_Setup(OBJECT_INFO *obj);

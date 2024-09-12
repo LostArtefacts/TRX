@@ -14,8 +14,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define EXTRA_ANIM_TORSO_SLAM 0
 #define TORSO_TURN_L_ANIM 8
 #define TORSO_DIE_ANIM 13

@@ -9,9 +9,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-#include <stdbool.h>
-#include <stddef.h>
-
 #define BLF_FASTFALL 1
 
 static int32_t m_AnchorX = -1;

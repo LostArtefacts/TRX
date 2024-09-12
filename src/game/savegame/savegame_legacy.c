@@ -74,7 +74,7 @@ static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
     // to make sure the legacy savegame reader doesn't try to reach out for
     // information that's not there.
     return (
-        obj->save_flags && item->object_id != O_LAVA_EMITTER
+        obj->save_flags && item->object_id != O_EMBER_EMITTER
         && item->object_id != O_FLAME_EMITTER && item->object_id != O_WATERFALL
         && item->object_id != O_SCION_ITEM
         && item->object_id != O_DART_EMITTER);

@@ -15,8 +15,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define FLYER_CHARGE_DAMAGE 100
 #define FLYER_LUNGE_DAMAGE 150
 #define FLYER_PUNCH_DAMAGE 200

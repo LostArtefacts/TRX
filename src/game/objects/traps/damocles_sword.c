@@ -10,8 +10,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100
 

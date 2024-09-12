@@ -15,8 +15,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define CENTAUR_PART_DAMAGE 100
 #define CENTAUR_REAR_DAMAGE 200
 #define CENTAUR_TOUCH 0x30199

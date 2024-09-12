@@ -12,8 +12,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define BAT_ATTACK_DAMAGE 2
 #define BAT_TURN (20 * PHD_DEGREE) // = 3640
 #define BAT_HITPOINTS 1

@@ -12,8 +12,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define PIERRE_POSE_CHANCE 0x60 // = 96
 #define PIERRE_SHOT_DAMAGE 50
 #define PIERRE_WALK_TURN (PHD_DEGREE * 3) // = 546

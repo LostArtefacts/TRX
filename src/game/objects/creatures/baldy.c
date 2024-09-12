@@ -8,8 +8,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define BALDY_SHOT_DAMAGE 150
 #define BALDY_WALK_TURN (PHD_DEGREE * 3) // = 546
 #define BALDY_RUN_TURN (PHD_DEGREE * 6) // = 1092

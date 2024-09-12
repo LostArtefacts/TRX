@@ -11,8 +11,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define RAPTOR_ATTACK_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
 #define RAPTOR_BITE_DAMAGE 100
 #define RAPTOR_CHARGE_DAMAGE 100

@@ -13,8 +13,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define CROCODILE_BITE_DAMAGE 100
 #define CROCODILE_BITE_RANGE SQUARE(435) // = 189225
 #define CROCODILE_DIE_ANIM 11

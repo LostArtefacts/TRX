@@ -1,0 +1,60 @@
+#include "game/objects/general/bridge_flat.h"
+
+#include "config.h"
+#include "game/objects/general/bridge_common.h"
+
+static void BridgeFlat_Initialise(int16_t item_num);
+static int16_t BridgeFlat_GetFloorHeight(
+    const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t BridgeFlat_GetCeilingHeight(
+    const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
+
+static void BridgeFlat_Initialise(const int16_t item_num)
+{
+    Bridge_FixEmbeddedPosition(item_num);
+}
+
+static int16_t BridgeFlat_GetFloorHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
+        return height;
+    }
+
+    if (y > item->pos.y) {
+        return height;
+    }
+
+    if (g_Config.fix_bridge_collision && item->pos.y >= height) {
+        return height;
+    }
+
+    return item->pos.y;
+}
+
+static int16_t BridgeFlat_GetCeilingHeight(
+    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (g_Config.fix_bridge_collision && !Bridge_IsSameSector(x, z, item)) {
+        return height;
+    }
+
+    if (y <= item->pos.y) {
+        return height;
+    }
+
+    if (g_Config.fix_bridge_collision && item->pos.y <= height) {
+        return height;
+    }
+
+    return item->pos.y + STEP_L;
+}
+
+void BridgeFlat_Setup(OBJECT_INFO *const obj)
+{
+    obj->initialise = BridgeFlat_Initialise;
+    obj->floor_height_func = BridgeFlat_GetFloorHeight;
+    obj->ceiling_height_func = BridgeFlat_GetCeilingHeight;
+}

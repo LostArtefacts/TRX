@@ -1,13 +1,10 @@
-#include "game/objects/traps/thors_hammer.h"
+#include "game/objects/traps/thors_hammer_handle.h"
 
 #include "game/items.h"
 #include "game/lara.h"
 #include "game/objects/common.h"
 #include "game/room.h"
-#include "global/const.h"
 #include "global/vars.h"
-
-#include <stdbool.h>
 
 typedef enum {
     THS_SET = 0,
@@ -16,25 +13,17 @@ typedef enum {
     THS_DONE = 3,
 } THOR_HAMMER_STATE;
 
-void ThorsHandle_Setup(OBJECT_INFO *obj)
+void ThorsHammerHandle_Setup(OBJECT_INFO *obj)
 {
-    obj->initialise = ThorsHandle_Initialise;
-    obj->control = ThorsHandle_Control;
+    obj->initialise = ThorsHammerHandle_Initialise;
+    obj->control = ThorsHammerHandle_Control;
     obj->draw_routine = Object_DrawUnclippedItem;
-    obj->collision = ThorsHandle_Collision;
+    obj->collision = ThorsHammerHandle_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void ThorsHead_Setup(OBJECT_INFO *obj)
-{
-    obj->collision = ThorsHead_Collision;
-    obj->draw_routine = Object_DrawUnclippedItem;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
-
-void ThorsHandle_Initialise(int16_t item_num)
+void ThorsHammerHandle_Initialise(int16_t item_num)
 {
     ITEM_INFO *hand_item = &g_Items[item_num];
     int16_t head_item_num = Item_Create();
@@ -49,7 +38,7 @@ void ThorsHandle_Initialise(int16_t item_num)
     g_LevelItemCount++;
 }
 
-void ThorsHandle_Control(int16_t item_num)
+void ThorsHammerHandle_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
@@ -153,7 +142,7 @@ void ThorsHandle_Control(int16_t item_num)
     head_item->current_anim_state = item->current_anim_state;
 }
 
-void ThorsHandle_Collision(
+void ThorsHammerHandle_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
@@ -161,18 +150,6 @@ void ThorsHandle_Collision(
         return;
     }
     if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, false, true);
-    }
-}
-
-void ThorsHead_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
-{
-    ITEM_INFO *item = &g_Items[item_num];
-    if (!Lara_TestBoundsCollide(item, coll->radius)) {
-        return;
-    }
-    if (coll->enable_baddie_push && item->current_anim_state != THS_ACTIVE) {
         Lara_Push(item, coll, false, true);
     }
 }

@@ -13,8 +13,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define RAT_BITE_DAMAGE 20
 #define RAT_CHARGE_DAMAGE 20
 #define RAT_TOUCH 0x300018F

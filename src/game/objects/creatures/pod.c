@@ -29,18 +29,6 @@ void Pod_Setup(OBJECT_INFO *obj)
     obj->save_flags = 1;
 }
 
-void Pod_SetupBig(OBJECT_INFO *obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise = Pod_Initialise;
-    obj->control = Pod_Control;
-    obj->collision = Object_Collision;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-}
-
 void Pod_Initialise(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];

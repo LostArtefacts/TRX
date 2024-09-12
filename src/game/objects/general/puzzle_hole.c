@@ -8,8 +8,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-#include <stdbool.h>
-
 #define LF_USEPUZZLE 80
 
 static XYZ_32 m_PuzzleHolePosition = { .x = 0,

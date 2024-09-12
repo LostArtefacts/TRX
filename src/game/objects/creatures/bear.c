@@ -13,8 +13,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define BEAR_CHARGE_DAMAGE 3
 #define BEAR_SLAM_DAMAGE 200
 #define BEAR_ATTACK_DAMAGE 200

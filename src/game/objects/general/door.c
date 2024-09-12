@@ -11,9 +11,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-#include <stddef.h>
-
 static bool Door_LaraDoorCollision(const SECTOR_INFO *sector);
 static void Door_Check(DOORPOS_DATA *d);
 static void Door_Open(DOORPOS_DATA *d);

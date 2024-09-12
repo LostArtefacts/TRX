@@ -8,8 +8,6 @@
 #include "global/vars.h"
 #include "math/math.h"
 
-#include <stdbool.h>
-
 void BodyPart_Setup(OBJECT_INFO *obj)
 {
     obj->control = BodyPart_Control;

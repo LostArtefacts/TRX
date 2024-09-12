@@ -4,8 +4,6 @@
 #include "game/lara.h"
 #include "game/objects/common.h"
 
-#include <stdbool.h>
-
 #define FALLING_CEILING_DAMAGE 300
 
 void FallingCeiling_Setup(OBJECT_INFO *obj)

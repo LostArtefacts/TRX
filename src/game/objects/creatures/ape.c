@@ -11,8 +11,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define APE_ATTACK_DAMAGE 200
 #define APE_TOUCH 0xFF00
 #define APE_DIE_ANIM 7

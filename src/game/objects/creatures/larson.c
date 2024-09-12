@@ -9,8 +9,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define LARSON_POSE_CHANCE 0x60 // = 96
 #define LARSON_SHOT_DAMAGE 50
 #define LARSON_WALK_TURN (PHD_DEGREE * 3) // = 546

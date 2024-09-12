@@ -23,3 +23,4 @@ bool Lara_LandedBad(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_SwimCollision(ITEM_INFO *item, COLL_INFO *coll);
 void Lara_SurfaceCollision(ITEM_INFO *item, COLL_INFO *coll);
 bool Lara_TestWaterClimbOut(ITEM_INFO *item, COLL_INFO *coll);
+void Lara_CatchFire(void);

@@ -9,8 +9,6 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-#include <stdbool.h>
-
 #define PENDULUM_DAMAGE 100
 
 void Pendulum_Setup(OBJECT_INFO *obj)

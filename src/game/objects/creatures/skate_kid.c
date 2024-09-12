@@ -11,8 +11,6 @@
 
 #include <libtrx/utils.h>
 
-#include <stdbool.h>
-
 #define SKATE_KID_STOP_SHOT_DAMAGE 50
 #define SKATE_KID_SKATE_SHOT_DAMAGE 40
 #define SKATE_KID_STOP_RANGE SQUARE(WALL_L * 4) // = 16777216
