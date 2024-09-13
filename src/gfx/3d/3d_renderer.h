@@ -14,6 +14,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+typedef enum {
+    GFX_BlendMode_Off,
+    GFX_BlendMode_Normal,
+    GFX_BlendMode_Multiply,
+} GFX_BlendMode;
+
 typedef struct GFX_3D_Renderer {
     GFX_GL_Program program;
     GFX_GL_Sampler sampler;
@@ -63,7 +69,7 @@ void GFX_3D_Renderer_SetTextureFilter(
     GFX_3D_Renderer *renderer, GFX_TEXTURE_FILTER filter);
 void GFX_3D_Renderer_SetDepthTestEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);
-void GFX_3D_Renderer_SetBlendingEnabled(
-    GFX_3D_Renderer *renderer, bool is_enabled);
+void GFX_3D_Renderer_SetBlendingMode(
+    GFX_3D_Renderer *renderer, GFX_BlendMode blend_mode);
 void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_Renderer *renderer, bool is_enabled);

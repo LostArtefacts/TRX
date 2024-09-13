@@ -7,8 +7,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ENV_MAP_TEXTURE (-1)
-
 bool S_Output_Init(void);
 void S_Output_Shutdown(void);
 
@@ -35,6 +33,13 @@ void S_Output_DrawBackdropSurface(void);
 
 void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB_888 color);
+void S_Output_DrawEnvMapTriangle(
+    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3,
+    const PHD_UV *uv1, const PHD_UV *uv2, const PHD_UV *uv3);
+void S_Output_DrawEnvMapQuad(
+    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3,
+    const PHD_VBUF *vn4, const PHD_UV *uv1, const PHD_UV *uv2,
+    const PHD_UV *uv3, const PHD_UV *uv4);
 void S_Output_DrawTexturedTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype);
