@@ -1,4 +1,4 @@
 #!/usr/bin/env python3
 from libtrx.cli.additional_lint import run_script
 
-run_script(ignored_extensions=[".patch", ".bin"])
+run_script(ignored_patterns=["*.patch", "*.bin", "gl_core_3_3.h"])

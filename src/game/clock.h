@@ -39,8 +39,7 @@ bool Clock_CheckElapsedMilliseconds(CLOCK_TIMER *timer, int32_t wait);
 
 // The same as Clock_CheckElapsedMilliseconds, except does not scale the result
 // by the turbo cheat multiplier.
-bool Clock_CheckElapsedRawMilliseconds(
-    CLOCK_TIMER *const timer, const int32_t how_often);
+bool Clock_CheckElapsedRawMilliseconds(CLOCK_TIMER *timer, int32_t how_often);
 
 void Clock_GetDateTime(char *date_time);
 
