@@ -38,8 +38,6 @@ static bool m_IsSkyboxEnabled = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
-static bool m_IsTintEffect = false;
-static RGB_F m_TintColor = { 0 };
 static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
@@ -179,20 +177,14 @@ static const int16_t *Output_DrawObjectEnvMap(
     const int16_t *obj_ptr, const int32_t poly_count,
     const int32_t vertex_count, const bool textured)
 {
-    if (textured) {
-        S_Output_EnableTextureMode();
-    } else {
-        S_Output_DisableTextureMode();
-    }
-
-    PHD_VBUF *vns[4];
-    PHD_UV uv[4];
+    const PHD_VBUF *vns[4];
+    const PHD_UV *uv[4];
 
     for (int32_t i = 0; i < poly_count; i++) {
         for (int32_t j = 0; j < vertex_count; j++) {
             const int16_t vertex_num = *obj_ptr++;
             vns[j] = &m_VBuf[vertex_num];
-            uv[j] = m_EnvMapUV[vertex_num];
+            uv[j] = &m_EnvMapUV[vertex_num];
         }
 
         const int16_t color_or_texture_num = *obj_ptr++;
@@ -200,26 +192,13 @@ static const int16_t *Output_DrawObjectEnvMap(
             continue;
         }
 
-        if (!textured) {
-            const RGB_888 pixel =
-                S_Output_GetPaletteColor(color_or_texture_num & ~0x8000);
-            m_TintColor.r = pixel.r / 255.0f;
-            m_TintColor.g = pixel.g / 255.0f;
-            m_TintColor.b = pixel.b / 255.0f;
-            m_IsTintEffect = true;
-        }
-
         if (vertex_count == 3) {
-            S_Output_DrawTexturedTriangle(
-                vns[0], vns[1], vns[2], ENV_MAP_TEXTURE, &uv[0], &uv[1], &uv[2],
-                0);
+            S_Output_DrawEnvMapTriangle(
+                vns[0], vns[1], vns[2], uv[0], uv[1], uv[2]);
         } else if (vertex_count == 4) {
-            S_Output_DrawTexturedQuad(
-                vns[0], vns[1], vns[2], vns[3], ENV_MAP_TEXTURE, &uv[0], &uv[1],
-                &uv[2], &uv[3], 0);
+            S_Output_DrawEnvMapQuad(
+                vns[0], vns[1], vns[2], vns[3], uv[0], uv[1], uv[2], uv[3]);
         }
-
-        m_IsTintEffect = false;
     }
 
     return obj_ptr;
@@ -1305,12 +1284,6 @@ void Output_ApplyTint(float *r, float *g, float *b)
         *r *= m_WaterColor.r;
         *g *= m_WaterColor.g;
         *b *= m_WaterColor.b;
-    }
-
-    if (m_IsTintEffect) {
-        *r *= m_TintColor.r;
-        *g *= m_TintColor.g;
-        *b *= m_TintColor.b;
     }
 }
 

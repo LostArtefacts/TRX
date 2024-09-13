@@ -60,7 +60,7 @@ static void S_Output_DrawTriangleStrip(
 static int32_t S_Output_ClipVertices(
     GFX_3D_Vertex *vertices, int vertex_count, size_t vertices_capacity);
 static int32_t S_Output_VisibleZClip(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3);
+    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3);
 static int32_t S_Output_ZedClipper(
     int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
 
@@ -333,7 +333,8 @@ static int32_t S_Output_ClipVertices(
 }
 
 static int32_t S_Output_VisibleZClip(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3)
+    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
+    const PHD_VBUF *const vn3)
 {
     double v1x = vn1->xv;
     double v1y = vn1->yv;
@@ -510,16 +511,12 @@ void S_Output_SelectTexture(const int32_t texture_num)
         return;
     }
 
-    if (texture_num == ENV_MAP_TEXTURE) {
-        GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    } else {
-        if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
-            LOG_ERROR("ERROR: Attempt to select unloaded texture");
-            return;
-        }
-
-        GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
+    if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
+        LOG_ERROR("ERROR: Attempt to select unloaded texture");
+        return;
     }
+
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
 
     m_SelectedTexture = texture_num;
 }
@@ -636,9 +633,9 @@ void S_Output_Draw2DLine(
 
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
     S_Output_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
     GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
@@ -682,9 +679,9 @@ void S_Output_Draw2DQuad(
     vertices[3].a = bl.a;
 
     S_Output_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
     S_Output_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
 }
 
 void S_Output_DrawLightningSegment(
@@ -696,7 +693,7 @@ void S_Output_DrawLightningSegment(
 
     S_Output_DisableTextureMode();
 
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
     vertices[0].x = x1;
     vertices[0].y = y1;
     vertices[0].z = z1 * 0.0001f;
@@ -773,7 +770,7 @@ void S_Output_DrawLightningSegment(
     if (vertex_count) {
         S_Output_DrawTriangleFan(vertices, vertex_count);
     }
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
 }
 
 void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
@@ -804,9 +801,9 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 
     S_Output_DisableTextureMode();
 
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, true);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
     S_Output_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingEnabled(m_Renderer3D, false);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
 }
 
 void S_Output_ApplyRenderSettings(void)
@@ -949,6 +946,146 @@ void S_Output_DrawFlatTriangle(
     S_Output_DrawTriangleFan(vertices, vertex_count);
 }
 
+void S_Output_DrawEnvMapTriangle(
+    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
+    const PHD_VBUF *const vn3, const PHD_UV *const uv1, const PHD_UV *const uv2,
+    const PHD_UV *const uv3)
+{
+    int vertex_count = 3;
+    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+
+    const float multiplier = g_Config.brightness / 16.0f;
+
+    const PHD_VBUF *const src_vbuf[3] = { vn1, vn2, vn3 };
+    const PHD_UV *const src_uv[3] = { uv1, uv2, uv3 };
+
+    if (vn3->clip & vn2->clip & vn1->clip) {
+        return;
+    }
+
+    if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0) {
+        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
+            return;
+        }
+
+        for (int32_t i = 0; i < vertex_count; i++) {
+            vertices[i].x = src_vbuf[i]->xs;
+            vertices[i].y = src_vbuf[i]->ys;
+            vertices[i].z = src_vbuf[i]->zv * 0.0001f;
+
+            vertices[i].w = 65536.0f / src_vbuf[i]->zv;
+            vertices[i].s =
+                S_Output_GetUV(src_uv[i]->u) * (vertices[i].w / 256.0f);
+            vertices[i].t =
+                S_Output_GetUV(src_uv[i]->v) * (vertices[i].w / 256.0f);
+
+            vertices[i].r = vertices[i].g = vertices[i].b =
+                (8192.0f - src_vbuf[i]->g) * multiplier;
+
+            Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        }
+
+        if (vn1->clip || vn2->clip || vn3->clip) {
+            vertex_count = S_Output_ClipVertices(
+                vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
+        }
+    } else {
+        if (!S_Output_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        POINT_INFO points[3];
+        for (int i = 0; i < vertex_count; i++) {
+            points[i].xv = src_vbuf[i]->xv;
+            points[i].yv = src_vbuf[i]->yv;
+            points[i].zv = src_vbuf[i]->zv;
+            points[i].xs = src_vbuf[i]->xs;
+            points[i].ys = src_vbuf[i]->ys;
+            points[i].g = src_vbuf[i]->g;
+            points[i].u = S_Output_GetUV(src_uv[i]->u);
+            points[i].v = S_Output_GetUV(src_uv[i]->v);
+        }
+
+        vertex_count = S_Output_ZedClipper(vertex_count, points, vertices);
+        if (!vertex_count) {
+            return;
+        }
+        vertex_count = S_Output_ClipVertices(
+            vertices, vertex_count, sizeof(vertices) / sizeof(vertices[0]));
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    S_Output_EnableTextureMode();
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Multiply);
+    S_Output_DrawTriangleFan(vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    m_SelectedTexture = -1;
+}
+
+void S_Output_DrawEnvMapQuad(
+    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
+    const PHD_VBUF *const vn3, const PHD_VBUF *const vn4,
+    const PHD_UV *const uv1, const PHD_UV *const uv2, const PHD_UV *const uv3,
+    const PHD_UV *const uv4)
+{
+    int vertex_count = 4;
+    GFX_3D_Vertex vertices[vertex_count];
+
+    if (vn4->clip | vn3->clip | vn2->clip | vn1->clip) {
+        if ((vn4->clip & vn3->clip & vn2->clip & vn1->clip)) {
+            return;
+        }
+
+        if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
+            && vn4->clip >= 0) {
+            if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
+                return;
+            }
+        } else if (!S_Output_VisibleZClip(vn1, vn2, vn3)) {
+            return;
+        }
+
+        S_Output_DrawEnvMapTriangle(vn1, vn2, vn3, uv1, uv2, uv3);
+        S_Output_DrawEnvMapTriangle(vn3, vn4, vn1, uv3, uv4, uv1);
+        return;
+    }
+
+    if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
+        return;
+    }
+
+    float multiplier = g_Config.brightness / 16.0f;
+
+    const PHD_VBUF *const src_vbuf[4] = { vn2, vn1, vn3, vn4 };
+    const PHD_UV *const src_uv[4] = { uv2, uv1, uv3, uv4 };
+
+    for (int i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = src_vbuf[i]->zv * 0.0001f;
+
+        vertices[i].w = 65536.0f / src_vbuf[i]->zv;
+        vertices[i].s = S_Output_GetUV(src_uv[i]->u) * (vertices[i].w / 256.0f);
+        vertices[i].t = S_Output_GetUV(src_uv[i]->v) * (vertices[i].w / 256.0f);
+
+        vertices[i].r = vertices[i].g = vertices[i].b =
+            (8192.0f - src_vbuf[i]->g) * multiplier;
+
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+    }
+
+    S_Output_EnableTextureMode();
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Multiply);
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    m_SelectedTexture = -1;
+}
+
 void S_Output_DrawTexturedTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage, PHD_UV *uv1,
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype)
@@ -1027,7 +1164,7 @@ void S_Output_DrawTexturedTriangle(
         return;
     }
 
-    if (tpage == ENV_MAP_TEXTURE || m_TextureMap[tpage] != GFX_NO_TEXTURE) {
+    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
         S_Output_DrawTriangleFan(vertices, vertex_count);
@@ -1098,7 +1235,7 @@ void S_Output_DrawTexturedQuad(
         Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
     }
 
-    if (tpage == ENV_MAP_TEXTURE || m_TextureMap[tpage] != GFX_NO_TEXTURE) {
+    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
         S_Output_EnableTextureMode();
         S_Output_SelectTexture(tpage);
     } else {

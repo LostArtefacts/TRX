@@ -328,15 +328,22 @@ void GFX_3D_Renderer_SetDepthTestEnabled(
     }
 }
 
-void GFX_3D_Renderer_SetBlendingEnabled(
-    GFX_3D_Renderer *renderer, bool is_enabled)
+void GFX_3D_Renderer_SetBlendingMode(
+    GFX_3D_Renderer *const renderer, const GFX_BlendMode blend_mode)
 {
-    assert(renderer);
+    assert(renderer != NULL);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
-    if (is_enabled) {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    } else {
+
+    switch (blend_mode) {
+    case GFX_BlendMode_Off:
         glBlendFunc(GL_ONE, GL_ZERO);
+        break;
+    case GFX_BlendMode_Normal:
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        break;
+    case GFX_BlendMode_Multiply:
+        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+        break;
     }
 }
 
