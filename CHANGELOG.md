@@ -16,6 +16,7 @@
 - fixed console commands causing improper ring shutdown with selected inventory item (#1460, regression from 3.0)
 - fixed console input immediately ending demo (#1480, regression from 4.1)
 - fixed a potential softlock when killing the Torso boss in Great Pyramid (#1236)
+- fixed Bacon Lara re-spawning after saving and loading (#1500, regression from 0.7)
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
 - improved appearance of textures around edges when bilinear filter is off (#1483)
   Since this removes the seams on pushblocks, this was made optional.

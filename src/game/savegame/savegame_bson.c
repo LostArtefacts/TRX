@@ -595,6 +595,13 @@ static bool Savegame_BSON_LoadItems(
                     item->data = (void *)(intptr_t)(fx_num + 1);
                 }
             }
+
+            if (header_version >= VERSION_5
+                && item->object_id == O_BACON_LARA) {
+                const int32_t status =
+                    json_object_get_int(item_obj, "bl_status", 0);
+                item->data = (void *)(intptr_t)status;
+            }
         }
 
         struct json_array_s *carried_items =
@@ -1101,6 +1108,11 @@ static struct json_array_s *Savegame_BSON_DumpItems(void)
                 int32_t fx_num = (int32_t)(intptr_t)item->data - 1;
                 fx_num = fx_order.id_map[fx_num];
                 json_object_append_int(item_obj, "fx_num", fx_num);
+            }
+
+            if (item->object_id == O_BACON_LARA && item->data) {
+                const int32_t status = (int32_t)(intptr_t)item->data;
+                json_object_append_int(item_obj, "bl_status", status);
             }
         }
 
