@@ -15,7 +15,7 @@ int16_t Effect_Blood(
         fx->pos.y = y;
         fx->pos.z = z;
         fx->rot.y = direction;
-        fx->object_id = O_BLOOD1;
+        fx->object_id = O_BLOOD_1;
         fx->frame_num = 0;
         fx->counter = 0;
         fx->speed = speed;

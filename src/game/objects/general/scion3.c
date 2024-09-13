@@ -9,9 +9,9 @@
 
 void Scion3_Setup(OBJECT_INFO *obj)
 {
-    g_Objects[O_SCION_ITEM3].control = Scion3_Control;
-    g_Objects[O_SCION_ITEM3].hit_points = 5;
-    g_Objects[O_SCION_ITEM3].save_flags = 1;
+    obj->control = Scion3_Control;
+    obj->hit_points = 5;
+    obj->save_flags = 1;
 }
 
 void Scion3_Control(int16_t item_num)
@@ -42,7 +42,7 @@ void Scion3_Control(int16_t item_num)
             fx->pos.z = item->pos.z + (Random_GetControl() - 0x4000) / 32;
             fx->speed = 0;
             fx->frame_num = 0;
-            fx->object_id = O_EXPLOSION1;
+            fx->object_id = O_EXPLOSION_1;
             fx->counter = 0;
             Sound_Effect(SFX_ATLANTEAN_EXPLODE, &fx->pos, SPM_NORMAL);
             g_Camera.bounce = -200;

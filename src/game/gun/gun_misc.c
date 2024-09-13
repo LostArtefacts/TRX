@@ -499,7 +499,7 @@ void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
     }
     Item_TakeDamage(item, damage, true);
 
-    if (g_Config.fix_texture_issues && item->object_id == O_SCION_ITEM3) {
+    if (g_Config.fix_texture_issues && item->object_id == O_SCION_ITEM_3) {
         GAME_VECTOR pos;
         pos.x = hitpos->x;
         pos.y = hitpos->y;

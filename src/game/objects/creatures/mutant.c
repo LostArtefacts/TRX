@@ -87,7 +87,7 @@ void Mutant_Setup2(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    *obj = g_Objects[O_WARRIOR1];
+    *obj = g_Objects[O_WARRIOR_1];
     obj->initialise = Mutant_Initialise2;
     obj->smartness = WARRIOR2_SMARTNESS;
 }
@@ -97,7 +97,7 @@ void Mutant_Setup3(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    *obj = g_Objects[O_WARRIOR1];
+    *obj = g_Objects[O_WARRIOR_1];
     obj->initialise = Mutant_Initialise2;
 }
 
@@ -135,7 +135,7 @@ void Mutant_FlyerControl(int16_t item_num)
 
         int32_t shoot1 = 0;
         int32_t shoot2 = 0;
-        if (item->object_id != O_WARRIOR3
+        if (item->object_id != O_WARRIOR_3
             && Creature_CanTargetEnemy(item, &info)
             && (info.zone_num != info.enemy_zone
                 || info.distance > FLYER_ATTACK_RANGE)) {
@@ -146,7 +146,7 @@ void Mutant_FlyerControl(int16_t item_num)
             }
         }
 
-        if (item->object_id == O_WARRIOR1) {
+        if (item->object_id == O_WARRIOR_1) {
             if (item->current_anim_state == FLYER_FLY) {
                 if ((flyer->flags & FLYER_FLYMODE) && flyer->mood != MOOD_ESCAPE
                     && info.zone_num == info.enemy_zone) {

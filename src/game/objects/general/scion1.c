@@ -33,10 +33,10 @@ static const OBJECT_BOUNDS *Scion1_Bounds(void)
 
 void Scion1_Setup(OBJECT_INFO *obj)
 {
-    g_Objects[O_SCION_ITEM].draw_routine = Object_DrawPickupItem;
-    g_Objects[O_SCION_ITEM].collision = Scion1_Collision;
-    g_Objects[O_SCION_ITEM].save_flags = 1;
-    g_Objects[O_SCION_ITEM].bounds = Scion1_Bounds;
+    obj->draw_routine = Object_DrawPickupItem;
+    obj->collision = Scion1_Collision;
+    obj->save_flags = 1;
+    obj->bounds = Scion1_Bounds;
 }
 
 void Scion1_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)

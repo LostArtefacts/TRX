@@ -32,18 +32,22 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     O_VOLE,
     O_TREX,
     O_RAPTOR,
-    O_WARRIOR1,
-    O_WARRIOR2,
-    O_WARRIOR3,
+    O_WARRIOR_1,
+    O_WARRIOR_2,
+    O_WARRIOR_3,
     O_CENTAUR,
     O_MUMMY,
+    O_TORSO,
+    O_DINO_WARRIOR,
+    O_FISH,
     O_LARSON,
     O_PIERRE,
     O_SKATEKID,
     O_COWBOY,
     O_BALDY,
     O_NATLA,
-    O_TORSO,
+    O_SCION_ITEM_3,
+    O_STATUE,
     NO_OBJECT,
     // clang-format on
 };
@@ -83,18 +87,20 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     O_UZI_AMMO_ITEM,
     O_MEDI_ITEM,
     O_BIGMEDI_ITEM,
-    O_PUZZLE_ITEM1,
-    O_PUZZLE_ITEM2,
-    O_PUZZLE_ITEM3,
-    O_PUZZLE_ITEM4,
-    O_KEY_ITEM1,
-    O_KEY_ITEM2,
-    O_KEY_ITEM3,
-    O_KEY_ITEM4,
-    O_PICKUP_ITEM1,
-    O_PICKUP_ITEM2,
+    O_EXPLOSIVE_ITEM,
+    O_PUZZLE_ITEM_1,
+    O_PUZZLE_ITEM_2,
+    O_PUZZLE_ITEM_3,
+    O_PUZZLE_ITEM_4,
+    O_KEY_ITEM_1,
+    O_KEY_ITEM_2,
+    O_KEY_ITEM_3,
+    O_KEY_ITEM_4,
+    O_PICKUP_ITEM_1,
+    O_PICKUP_ITEM_2,
     O_LEADBAR_ITEM,
-    O_SCION_ITEM2,
+    O_SCION_ITEM_1,
+    O_SCION_ITEM_2,
     NO_OBJECT,
     // clang-format on
 };
@@ -111,24 +117,24 @@ const GAME_OBJECT_ID g_GunObjects[] = {
 
 const GAME_OBJECT_ID g_DoorObjects[] = {
     // clang-format off
-    O_DOOR_TYPE1,
-    O_DOOR_TYPE2,
-    O_DOOR_TYPE3,
-    O_DOOR_TYPE4,
-    O_DOOR_TYPE5,
-    O_DOOR_TYPE6,
-    O_DOOR_TYPE7,
-    O_DOOR_TYPE8,
+    O_DOOR_TYPE_1,
+    O_DOOR_TYPE_2,
+    O_DOOR_TYPE_3,
+    O_DOOR_TYPE_4,
+    O_DOOR_TYPE_5,
+    O_DOOR_TYPE_6,
+    O_DOOR_TYPE_7,
+    O_DOOR_TYPE_8,
     NO_OBJECT,
     // clang-format on
 };
 
 const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format off
-    O_TRAPDOOR,
-    O_TRAPDOOR2,
+    O_TRAPDOOR_1,
+    O_TRAPDOOR_2,
     O_BIGTRAPDOOR,
-    O_DRAW_BRIDGE,
+    O_DRAWBRIDGE,
     NO_OBJECT,
     // clang-format on
 };
@@ -145,17 +151,17 @@ const GAME_OBJECT_ID g_InvObjects[] = {
     O_EXPLOSIVE_OPTION,
     O_MEDI_OPTION,
     O_BIGMEDI_OPTION,
-    O_PUZZLE_OPTION1,
-    O_PUZZLE_OPTION2,
-    O_PUZZLE_OPTION3,
-    O_PUZZLE_OPTION4,
+    O_PUZZLE_OPTION_1,
+    O_PUZZLE_OPTION_2,
+    O_PUZZLE_OPTION_3,
+    O_PUZZLE_OPTION_4,
     O_LEADBAR_OPTION,
-    O_KEY_OPTION1,
-    O_KEY_OPTION2,
-    O_KEY_OPTION3,
-    O_KEY_OPTION4,
-    O_PICKUP_OPTION1,
-    O_PICKUP_OPTION2,
+    O_KEY_OPTION_1,
+    O_KEY_OPTION_2,
+    O_KEY_OPTION_3,
+    O_KEY_OPTION_4,
+    O_PICKUP_OPTION_1,
+    O_PICKUP_OPTION_2,
     O_SCION_OPTION,
     O_DETAIL_OPTION,
     O_SOUND_OPTION,
@@ -180,14 +186,14 @@ const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
 
 static const GAME_OBJECT_PAIR m_KeyItemToReceptacleMap[] = {
     // clang-format off
-    { O_KEY_OPTION1, O_KEY_HOLE1 },
-    { O_KEY_OPTION2, O_KEY_HOLE2 },
-    { O_KEY_OPTION3, O_KEY_HOLE3 },
-    { O_KEY_OPTION4, O_KEY_HOLE4 },
-    { O_PUZZLE_OPTION1, O_PUZZLE_HOLE1 },
-    { O_PUZZLE_OPTION2, O_PUZZLE_HOLE2 },
-    { O_PUZZLE_OPTION3, O_PUZZLE_HOLE3 },
-    { O_PUZZLE_OPTION4, O_PUZZLE_HOLE4 },
+    { O_KEY_OPTION_1, O_KEY_HOLE_1 },
+    { O_KEY_OPTION_2, O_KEY_HOLE_2 },
+    { O_KEY_OPTION_3, O_KEY_HOLE_3 },
+    { O_KEY_OPTION_4, O_KEY_HOLE_4 },
+    { O_PUZZLE_OPTION_1, O_PUZZLE_HOLE_1 },
+    { O_PUZZLE_OPTION_2, O_PUZZLE_HOLE_2 },
+    { O_PUZZLE_OPTION_3, O_PUZZLE_HOLE_3 },
+    { O_PUZZLE_OPTION_4, O_PUZZLE_HOLE_4 },
     { O_LEADBAR_OPTION, O_MIDAS_TOUCH },
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
@@ -205,19 +211,19 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     { O_EXPLOSIVE_ITEM, O_EXPLOSIVE_OPTION },
     { O_MEDI_ITEM, O_MEDI_OPTION },
     { O_BIGMEDI_ITEM, O_BIGMEDI_OPTION },
-    { O_PUZZLE_ITEM1, O_PUZZLE_OPTION1 },
-    { O_PUZZLE_ITEM2, O_PUZZLE_OPTION2 },
-    { O_PUZZLE_ITEM3, O_PUZZLE_OPTION3 },
-    { O_PUZZLE_ITEM4, O_PUZZLE_OPTION4 },
+    { O_PUZZLE_ITEM_1, O_PUZZLE_OPTION_1 },
+    { O_PUZZLE_ITEM_2, O_PUZZLE_OPTION_2 },
+    { O_PUZZLE_ITEM_3, O_PUZZLE_OPTION_3 },
+    { O_PUZZLE_ITEM_4, O_PUZZLE_OPTION_4 },
     { O_LEADBAR_ITEM, O_LEADBAR_OPTION },
-    { O_KEY_ITEM1, O_KEY_OPTION1 },
-    { O_KEY_ITEM2, O_KEY_OPTION2 },
-    { O_KEY_ITEM3, O_KEY_OPTION3 },
-    { O_KEY_ITEM4, O_KEY_OPTION4 },
-    { O_PICKUP_ITEM1, O_PICKUP_OPTION1 },
-    { O_PICKUP_ITEM2, O_PICKUP_OPTION2 },
-    { O_SCION_ITEM, O_SCION_OPTION },
-    { O_SCION_ITEM2, O_SCION_OPTION },
+    { O_KEY_ITEM_1, O_KEY_OPTION_1 },
+    { O_KEY_ITEM_2, O_KEY_OPTION_2 },
+    { O_KEY_ITEM_3, O_KEY_OPTION_3 },
+    { O_KEY_ITEM_4, O_KEY_OPTION_4 },
+    { O_PICKUP_ITEM_1, O_PICKUP_OPTION_1 },
+    { O_PICKUP_ITEM_2, O_PICKUP_OPTION_2 },
+    { O_SCION_ITEM_1, O_SCION_OPTION },
+    { O_SCION_ITEM_2, O_SCION_OPTION },
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
 };
@@ -385,8 +391,8 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         case O_UZI_AMMO_OPTION:
         case O_EXPLOSIVE_OPTION:
         case O_LEADBAR_OPTION:
-        case O_PICKUP_OPTION1:
-        case O_PICKUP_OPTION2:
+        case O_PICKUP_OPTION_1:
+        case O_PICKUP_OPTION_2:
         case O_SCION_OPTION:
             // Ignore the sprite and just position based upon the anim.
             offset = item->pos.y + (min_y - anim_y) / 2;
@@ -394,14 +400,14 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         case O_MEDI_OPTION:
         case O_BIGMEDI_OPTION:
         case O_SG_AMMO_OPTION:
-        case O_PUZZLE_OPTION1:
-        case O_PUZZLE_OPTION2:
-        case O_PUZZLE_OPTION3:
-        case O_PUZZLE_OPTION4:
-        case O_KEY_OPTION1:
-        case O_KEY_OPTION2:
-        case O_KEY_OPTION3:
-        case O_KEY_OPTION4: {
+        case O_PUZZLE_OPTION_1:
+        case O_PUZZLE_OPTION_2:
+        case O_PUZZLE_OPTION_3:
+        case O_PUZZLE_OPTION_4:
+        case O_KEY_OPTION_1:
+        case O_KEY_OPTION_2:
+        case O_KEY_OPTION_3:
+        case O_KEY_OPTION_4: {
             // Take the difference from the bottom of the sprite and the bottom
             // of the animation and divide it by 8.
             // 8 was chosen because in testing it positioned objects correctly.

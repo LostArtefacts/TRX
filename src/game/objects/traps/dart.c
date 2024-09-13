@@ -52,7 +52,7 @@ void Dart_Control(int16_t item_num)
             fx->speed = 0;
             fx->counter = 6;
             fx->frame_num = -3 * Random_GetControl() / 0x8000;
-            fx->object_id = O_RICOCHET1;
+            fx->object_id = O_RICOCHET_1;
         }
     }
 }

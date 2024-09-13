@@ -256,17 +256,17 @@ void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
         }
         break;
 
-    case O_KEY_OPTION1:
-    case O_KEY_OPTION2:
-    case O_KEY_OPTION3:
-    case O_KEY_OPTION4:
+    case O_KEY_OPTION_1:
+    case O_KEY_OPTION_2:
+    case O_KEY_OPTION_3:
+    case O_KEY_OPTION_4:
     case O_LEADBAR_OPTION:
-    case O_PICKUP_OPTION1:
-    case O_PICKUP_OPTION2:
-    case O_PUZZLE_OPTION1:
-    case O_PUZZLE_OPTION2:
-    case O_PUZZLE_OPTION3:
-    case O_PUZZLE_OPTION4:
+    case O_PICKUP_OPTION_1:
+    case O_PICKUP_OPTION_2:
+    case O_PUZZLE_OPTION_1:
+    case O_PUZZLE_OPTION_2:
+    case O_PUZZLE_OPTION_3:
+    case O_PUZZLE_OPTION_4:
     case O_SCION_OPTION:
         if (!g_InvItemText[IT_QTY] && qty > 1) {
             sprintf(temp_text, "%d", qty);

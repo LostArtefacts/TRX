@@ -132,10 +132,10 @@ static void Room_AddFlipItems(ROOM_INFO *r)
         ITEM_INFO *item = &g_Items[item_num];
 
         switch (item->object_id) {
-        case O_MOVABLE_BLOCK:
-        case O_MOVABLE_BLOCK2:
-        case O_MOVABLE_BLOCK3:
-        case O_MOVABLE_BLOCK4:
+        case O_MOVABLE_BLOCK_1:
+        case O_MOVABLE_BLOCK_2:
+        case O_MOVABLE_BLOCK_3:
+        case O_MOVABLE_BLOCK_4:
             Room_AlterFloorHeight(item, -WALL_L);
             break;
 
@@ -156,10 +156,10 @@ static void Room_RemoveFlipItems(ROOM_INFO *r)
         ITEM_INFO *item = &g_Items[item_num];
 
         switch (item->object_id) {
-        case O_MOVABLE_BLOCK:
-        case O_MOVABLE_BLOCK2:
-        case O_MOVABLE_BLOCK3:
-        case O_MOVABLE_BLOCK4:
+        case O_MOVABLE_BLOCK_1:
+        case O_MOVABLE_BLOCK_2:
+        case O_MOVABLE_BLOCK_3:
+        case O_MOVABLE_BLOCK_4:
             Room_AlterFloorHeight(item, WALL_L);
             break;
 

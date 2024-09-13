@@ -148,10 +148,10 @@ static bool Savegame_BSON_IsValidItemObject(
     // clang-format off
     switch (saved_object_id) {
         // used keyholes
-        case O_PUZZLE_DONE1: return initial_object_id == O_PUZZLE_HOLE1;
-        case O_PUZZLE_DONE2: return initial_object_id == O_PUZZLE_HOLE2;
-        case O_PUZZLE_DONE3: return initial_object_id == O_PUZZLE_HOLE3;
-        case O_PUZZLE_DONE4: return initial_object_id == O_PUZZLE_HOLE4;
+        case O_PUZZLE_DONE_1: return initial_object_id == O_PUZZLE_HOLE_1;
+        case O_PUZZLE_DONE_2: return initial_object_id == O_PUZZLE_HOLE_2;
+        case O_PUZZLE_DONE_3: return initial_object_id == O_PUZZLE_HOLE_3;
+        case O_PUZZLE_DONE_4: return initial_object_id == O_PUZZLE_HOLE_4;
         // pickups
         case O_PISTOL_AMMO_ITEM: return initial_object_id == O_PISTOL_ANIM;
         case O_SG_AMMO_ITEM: return initial_object_id == O_SHOTGUN_ITEM;
@@ -407,21 +407,21 @@ static bool Savegame_BSON_LoadInventory(struct json_object_s *inv_obj)
     }
     Lara_InitialiseInventory(g_CurrentLevel);
     Inv_AddItemNTimes(
-        O_PICKUP_ITEM1, json_object_get_int(inv_obj, "pickup1", 0));
+        O_PICKUP_ITEM_1, json_object_get_int(inv_obj, "pickup1", 0));
     Inv_AddItemNTimes(
-        O_PICKUP_ITEM2, json_object_get_int(inv_obj, "pickup2", 0));
+        O_PICKUP_ITEM_2, json_object_get_int(inv_obj, "pickup2", 0));
     Inv_AddItemNTimes(
-        O_PUZZLE_ITEM1, json_object_get_int(inv_obj, "puzzle1", 0));
+        O_PUZZLE_ITEM_1, json_object_get_int(inv_obj, "puzzle1", 0));
     Inv_AddItemNTimes(
-        O_PUZZLE_ITEM2, json_object_get_int(inv_obj, "puzzle2", 0));
+        O_PUZZLE_ITEM_2, json_object_get_int(inv_obj, "puzzle2", 0));
     Inv_AddItemNTimes(
-        O_PUZZLE_ITEM3, json_object_get_int(inv_obj, "puzzle3", 0));
+        O_PUZZLE_ITEM_3, json_object_get_int(inv_obj, "puzzle3", 0));
     Inv_AddItemNTimes(
-        O_PUZZLE_ITEM4, json_object_get_int(inv_obj, "puzzle4", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM1, json_object_get_int(inv_obj, "key1", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM2, json_object_get_int(inv_obj, "key2", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM3, json_object_get_int(inv_obj, "key3", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM4, json_object_get_int(inv_obj, "key4", 0));
+        O_PUZZLE_ITEM_4, json_object_get_int(inv_obj, "puzzle4", 0));
+    Inv_AddItemNTimes(O_KEY_ITEM_1, json_object_get_int(inv_obj, "key1", 0));
+    Inv_AddItemNTimes(O_KEY_ITEM_2, json_object_get_int(inv_obj, "key2", 0));
+    Inv_AddItemNTimes(O_KEY_ITEM_3, json_object_get_int(inv_obj, "key3", 0));
+    Inv_AddItemNTimes(O_KEY_ITEM_4, json_object_get_int(inv_obj, "key4", 0));
     Inv_AddItemNTimes(
         O_LEADBAR_ITEM, json_object_get_int(inv_obj, "leadbar", 0));
     return true;
@@ -995,16 +995,22 @@ static struct json_object_s *Savegame_BSON_DumpMisc(GAME_INFO *game_info)
 static struct json_object_s *Savegame_BSON_DumpInventory(void)
 {
     struct json_object_s *inv_obj = json_object_new();
-    json_object_append_int(inv_obj, "pickup1", Inv_RequestItem(O_PICKUP_ITEM1));
-    json_object_append_int(inv_obj, "pickup2", Inv_RequestItem(O_PICKUP_ITEM2));
-    json_object_append_int(inv_obj, "puzzle1", Inv_RequestItem(O_PUZZLE_ITEM1));
-    json_object_append_int(inv_obj, "puzzle2", Inv_RequestItem(O_PUZZLE_ITEM2));
-    json_object_append_int(inv_obj, "puzzle3", Inv_RequestItem(O_PUZZLE_ITEM3));
-    json_object_append_int(inv_obj, "puzzle4", Inv_RequestItem(O_PUZZLE_ITEM4));
-    json_object_append_int(inv_obj, "key1", Inv_RequestItem(O_KEY_ITEM1));
-    json_object_append_int(inv_obj, "key2", Inv_RequestItem(O_KEY_ITEM2));
-    json_object_append_int(inv_obj, "key3", Inv_RequestItem(O_KEY_ITEM3));
-    json_object_append_int(inv_obj, "key4", Inv_RequestItem(O_KEY_ITEM4));
+    json_object_append_int(
+        inv_obj, "pickup1", Inv_RequestItem(O_PICKUP_ITEM_1));
+    json_object_append_int(
+        inv_obj, "pickup2", Inv_RequestItem(O_PICKUP_ITEM_2));
+    json_object_append_int(
+        inv_obj, "puzzle1", Inv_RequestItem(O_PUZZLE_ITEM_1));
+    json_object_append_int(
+        inv_obj, "puzzle2", Inv_RequestItem(O_PUZZLE_ITEM_2));
+    json_object_append_int(
+        inv_obj, "puzzle3", Inv_RequestItem(O_PUZZLE_ITEM_3));
+    json_object_append_int(
+        inv_obj, "puzzle4", Inv_RequestItem(O_PUZZLE_ITEM_4));
+    json_object_append_int(inv_obj, "key1", Inv_RequestItem(O_KEY_ITEM_1));
+    json_object_append_int(inv_obj, "key2", Inv_RequestItem(O_KEY_ITEM_2));
+    json_object_append_int(inv_obj, "key3", Inv_RequestItem(O_KEY_ITEM_3));
+    json_object_append_int(inv_obj, "key4", Inv_RequestItem(O_KEY_ITEM_4));
     json_object_append_int(inv_obj, "leadbar", Inv_RequestItem(O_LEADBAR_ITEM));
     return inv_obj;
 }

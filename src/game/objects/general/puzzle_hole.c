@@ -65,20 +65,20 @@ void PuzzleHole_Collision(
 
         if (Item_TestFrameEqual(lara_item, LF_USEPUZZLE)) {
             switch (item->object_id) {
-            case O_PUZZLE_HOLE1:
-                item->object_id = O_PUZZLE_DONE1;
+            case O_PUZZLE_HOLE_1:
+                item->object_id = O_PUZZLE_DONE_1;
                 break;
 
-            case O_PUZZLE_HOLE2:
-                item->object_id = O_PUZZLE_DONE2;
+            case O_PUZZLE_HOLE_2:
+                item->object_id = O_PUZZLE_DONE_2;
                 break;
 
-            case O_PUZZLE_HOLE3:
-                item->object_id = O_PUZZLE_DONE3;
+            case O_PUZZLE_HOLE_3:
+                item->object_id = O_PUZZLE_DONE_3;
                 break;
 
-            case O_PUZZLE_HOLE4:
-                item->object_id = O_PUZZLE_DONE4;
+            case O_PUZZLE_HOLE_4:
+                item->object_id = O_PUZZLE_DONE_4;
                 break;
 
             default:

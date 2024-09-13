@@ -45,6 +45,6 @@ void NatlaGun_Control(int16_t fx_num)
         newfx->room_num = room_num;
         newfx->speed = fx->speed;
         newfx->frame_num = 0;
-        newfx->object_id = O_MISSILE1;
+        newfx->object_id = O_MISSILE_1;
     }
 }

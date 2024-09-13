@@ -391,28 +391,28 @@ void Lara_UseItem(GAME_OBJECT_ID object_id)
         Sound_Effect(SFX_MENU_MEDI, NULL, SPM_ALWAYS);
         break;
 
-    case O_KEY_ITEM1:
-    case O_KEY_OPTION1:
-    case O_KEY_ITEM2:
-    case O_KEY_OPTION2:
-    case O_KEY_ITEM3:
-    case O_KEY_OPTION3:
-    case O_KEY_ITEM4:
-    case O_KEY_OPTION4:
-    case O_PUZZLE_ITEM1:
-    case O_PUZZLE_OPTION1:
-    case O_PUZZLE_ITEM2:
-    case O_PUZZLE_OPTION2:
-    case O_PUZZLE_ITEM3:
-    case O_PUZZLE_OPTION3:
-    case O_PUZZLE_ITEM4:
-    case O_PUZZLE_OPTION4:
+    case O_KEY_ITEM_1:
+    case O_KEY_OPTION_1:
+    case O_KEY_ITEM_2:
+    case O_KEY_OPTION_2:
+    case O_KEY_ITEM_3:
+    case O_KEY_OPTION_3:
+    case O_KEY_ITEM_4:
+    case O_KEY_OPTION_4:
+    case O_PUZZLE_ITEM_1:
+    case O_PUZZLE_OPTION_1:
+    case O_PUZZLE_ITEM_2:
+    case O_PUZZLE_OPTION_2:
+    case O_PUZZLE_ITEM_3:
+    case O_PUZZLE_OPTION_3:
+    case O_PUZZLE_ITEM_4:
+    case O_PUZZLE_OPTION_4:
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
-    case O_SCION_ITEM:
-    case O_SCION_ITEM2:
-    case O_SCION_ITEM3:
-    case O_SCION_ITEM4:
+    case O_SCION_ITEM_1:
+    case O_SCION_ITEM_2:
+    case O_SCION_ITEM_3:
+    case O_SCION_ITEM_4:
     case O_SCION_OPTION: {
         int16_t receptacle_item_num = Object_FindReceptacle(object_id);
         if (receptacle_item_num == NO_OBJECT) {
@@ -581,7 +581,7 @@ void Lara_InitialiseInventory(int32_t level_num)
     }
 
     for (int i = 0; i < resume->num_scions; i++) {
-        Inv_AddItem(O_SCION_ITEM);
+        Inv_AddItem(O_SCION_ITEM_1);
     }
 
     for (int i = 0; i < resume->num_medis; i++) {

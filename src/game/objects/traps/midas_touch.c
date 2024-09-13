@@ -63,8 +63,8 @@ void MidasTouch_Collision(
     if (lara_item->current_anim_state == LS_USE_MIDAS
         && g_Lara.interact_target.item_num == item_num
         && Item_TestFrameEqual(lara_item, LF_PICKUP_GOLD_BAR)) {
-        Overlay_AddPickup(O_PUZZLE_ITEM1);
-        Inv_AddItem(O_PUZZLE_ITEM1);
+        Overlay_AddPickup(O_PUZZLE_ITEM_1);
+        Inv_AddItem(O_PUZZLE_ITEM_1);
         g_Lara.interact_target.item_num = NO_OBJECT;
     }
 

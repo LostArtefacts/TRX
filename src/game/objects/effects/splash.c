@@ -43,7 +43,7 @@ void Splash_Spawn(ITEM_INFO *item)
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;
             fx->rot.y = PHD_180 + 2 * Random_GetDraw();
-            fx->object_id = O_SPLASH1;
+            fx->object_id = O_SPLASH_1;
             fx->frame_num = 0;
             fx->speed = Random_GetDraw() / 256;
         }

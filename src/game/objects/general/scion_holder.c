@@ -6,10 +6,10 @@
 
 void ScionHolder_Setup(OBJECT_INFO *obj)
 {
-    g_Objects[O_SCION_HOLDER].control = ScionHolder_Control;
-    g_Objects[O_SCION_HOLDER].collision = Object_Collision;
-    g_Objects[O_SCION_HOLDER].save_anim = 1;
-    g_Objects[O_SCION_HOLDER].save_flags = 1;
+    obj->control = ScionHolder_Control;
+    obj->collision = Object_Collision;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
 }
 
 void ScionHolder_Control(int16_t item_num)

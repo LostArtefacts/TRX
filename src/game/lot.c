@@ -114,7 +114,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
         break;
 
     case O_TREX:
-    case O_WARRIOR1:
+    case O_WARRIOR_1:
     case O_CENTAUR:
         creature->LOT.block_mask = BLOCKABLE;
         break;

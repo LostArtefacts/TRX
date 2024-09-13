@@ -173,7 +173,7 @@ INVENTORY_ITEM g_InvItemLeadBar = {
 
 INVENTORY_ITEM g_InvItemPickup1 = {
     .string = "Pickup",
-    .object_id = O_PICKUP_OPTION1,
+    .object_id = O_PICKUP_OPTION_1,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -197,7 +197,7 @@ INVENTORY_ITEM g_InvItemPickup1 = {
 
 INVENTORY_ITEM g_InvItemPickup2 = {
     .string = "Pickup",
-    .object_id = O_PICKUP_OPTION2,
+    .object_id = O_PICKUP_OPTION_2,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -245,7 +245,7 @@ INVENTORY_ITEM g_InvItemScion = {
 
 INVENTORY_ITEM g_InvItemPuzzle1 = {
     .string = "Puzzle",
-    .object_id = O_PUZZLE_OPTION1,
+    .object_id = O_PUZZLE_OPTION_1,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -269,7 +269,7 @@ INVENTORY_ITEM g_InvItemPuzzle1 = {
 
 INVENTORY_ITEM g_InvItemPuzzle2 = {
     .string = "Puzzle",
-    .object_id = O_PUZZLE_OPTION2,
+    .object_id = O_PUZZLE_OPTION_2,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -293,7 +293,7 @@ INVENTORY_ITEM g_InvItemPuzzle2 = {
 
 INVENTORY_ITEM g_InvItemPuzzle3 = {
     .string = "Puzzle",
-    .object_id = O_PUZZLE_OPTION3,
+    .object_id = O_PUZZLE_OPTION_3,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -317,7 +317,7 @@ INVENTORY_ITEM g_InvItemPuzzle3 = {
 
 INVENTORY_ITEM g_InvItemPuzzle4 = {
     .string = "Puzzle",
-    .object_id = O_PUZZLE_OPTION4,
+    .object_id = O_PUZZLE_OPTION_4,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -341,7 +341,7 @@ INVENTORY_ITEM g_InvItemPuzzle4 = {
 
 INVENTORY_ITEM g_InvItemKey1 = {
     .string = "Key",
-    .object_id = O_KEY_OPTION1,
+    .object_id = O_KEY_OPTION_1,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -365,7 +365,7 @@ INVENTORY_ITEM g_InvItemKey1 = {
 
 INVENTORY_ITEM g_InvItemKey2 = {
     .string = "Key",
-    .object_id = O_KEY_OPTION2,
+    .object_id = O_KEY_OPTION_2,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -389,7 +389,7 @@ INVENTORY_ITEM g_InvItemKey2 = {
 
 INVENTORY_ITEM g_InvItemKey3 = {
     .string = "Key",
-    .object_id = O_KEY_OPTION3,
+    .object_id = O_KEY_OPTION_3,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,
@@ -413,7 +413,7 @@ INVENTORY_ITEM g_InvItemKey3 = {
 
 INVENTORY_ITEM g_InvItemKey4 = {
     .string = "Key",
-    .object_id = O_KEY_OPTION4,
+    .object_id = O_KEY_OPTION_4,
     .frames_total = 1,
     .current_frame = 0,
     .goal_frame = 0,

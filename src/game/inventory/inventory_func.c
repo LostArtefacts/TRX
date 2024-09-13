@@ -118,23 +118,23 @@ bool Inv_AddItem(const GAME_OBJECT_ID object_id)
         Inv_InsertItem(&g_InvItemBigMedi);
         return true;
 
-    case O_PUZZLE_ITEM1:
-    case O_PUZZLE_OPTION1:
+    case O_PUZZLE_ITEM_1:
+    case O_PUZZLE_OPTION_1:
         Inv_InsertItem(&g_InvItemPuzzle1);
         return true;
 
-    case O_PUZZLE_ITEM2:
-    case O_PUZZLE_OPTION2:
+    case O_PUZZLE_ITEM_2:
+    case O_PUZZLE_OPTION_2:
         Inv_InsertItem(&g_InvItemPuzzle2);
         return true;
 
-    case O_PUZZLE_ITEM3:
-    case O_PUZZLE_OPTION3:
+    case O_PUZZLE_ITEM_3:
+    case O_PUZZLE_OPTION_3:
         Inv_InsertItem(&g_InvItemPuzzle3);
         return true;
 
-    case O_PUZZLE_ITEM4:
-    case O_PUZZLE_OPTION4:
+    case O_PUZZLE_ITEM_4:
+    case O_PUZZLE_OPTION_4:
         Inv_InsertItem(&g_InvItemPuzzle4);
         return true;
 
@@ -143,38 +143,38 @@ bool Inv_AddItem(const GAME_OBJECT_ID object_id)
         Inv_InsertItem(&g_InvItemLeadBar);
         return true;
 
-    case O_KEY_ITEM1:
-    case O_KEY_OPTION1:
+    case O_KEY_ITEM_1:
+    case O_KEY_OPTION_1:
         Inv_InsertItem(&g_InvItemKey1);
         return true;
 
-    case O_KEY_ITEM2:
-    case O_KEY_OPTION2:
+    case O_KEY_ITEM_2:
+    case O_KEY_OPTION_2:
         Inv_InsertItem(&g_InvItemKey2);
         return true;
 
-    case O_KEY_ITEM3:
-    case O_KEY_OPTION3:
+    case O_KEY_ITEM_3:
+    case O_KEY_OPTION_3:
         Inv_InsertItem(&g_InvItemKey3);
         return true;
 
-    case O_KEY_ITEM4:
-    case O_KEY_OPTION4:
+    case O_KEY_ITEM_4:
+    case O_KEY_OPTION_4:
         Inv_InsertItem(&g_InvItemKey4);
         return true;
 
-    case O_PICKUP_ITEM1:
-    case O_PICKUP_OPTION1:
+    case O_PICKUP_ITEM_1:
+    case O_PICKUP_OPTION_1:
         Inv_InsertItem(&g_InvItemPickup1);
         return true;
 
-    case O_PICKUP_ITEM2:
-    case O_PICKUP_OPTION2:
+    case O_PICKUP_ITEM_2:
+    case O_PICKUP_OPTION_2:
         Inv_InsertItem(&g_InvItemPickup2);
         return true;
 
-    case O_SCION_ITEM:
-    case O_SCION_ITEM2:
+    case O_SCION_ITEM_1:
+    case O_SCION_ITEM_2:
     case O_SCION_OPTION:
         Inv_InsertItem(&g_InvItemScion);
         return true;

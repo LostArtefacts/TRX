@@ -76,7 +76,7 @@ static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
     return (
         obj->save_flags && item->object_id != O_EMBER_EMITTER
         && item->object_id != O_FLAME_EMITTER && item->object_id != O_WATERFALL
-        && item->object_id != O_SCION_ITEM
+        && item->object_id != O_SCION_ITEM_1
         && item->object_id != O_DART_EMITTER);
 }
 
@@ -537,16 +537,16 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     Lara_InitialiseInventory(g_CurrentLevel);
     SAVEGAME_LEGACY_ITEM_STATS item_stats = { 0 };
     Savegame_Legacy_Read(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
-    Inv_AddItemNTimes(O_PICKUP_ITEM1, item_stats.num_pickup1);
-    Inv_AddItemNTimes(O_PICKUP_ITEM2, item_stats.num_pickup2);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM1, item_stats.num_puzzle1);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM2, item_stats.num_puzzle2);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM3, item_stats.num_puzzle3);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM4, item_stats.num_puzzle4);
-    Inv_AddItemNTimes(O_KEY_ITEM1, item_stats.num_key1);
-    Inv_AddItemNTimes(O_KEY_ITEM2, item_stats.num_key2);
-    Inv_AddItemNTimes(O_KEY_ITEM3, item_stats.num_key3);
-    Inv_AddItemNTimes(O_KEY_ITEM4, item_stats.num_key4);
+    Inv_AddItemNTimes(O_PICKUP_ITEM_1, item_stats.num_pickup1);
+    Inv_AddItemNTimes(O_PICKUP_ITEM_2, item_stats.num_pickup2);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, item_stats.num_puzzle1);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, item_stats.num_puzzle2);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, item_stats.num_puzzle3);
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, item_stats.num_puzzle4);
+    Inv_AddItemNTimes(O_KEY_ITEM_1, item_stats.num_key1);
+    Inv_AddItemNTimes(O_KEY_ITEM_2, item_stats.num_key2);
+    Inv_AddItemNTimes(O_KEY_ITEM_3, item_stats.num_key3);
+    Inv_AddItemNTimes(O_KEY_ITEM_4, item_stats.num_key4);
     Inv_AddItemNTimes(O_LEADBAR_ITEM, item_stats.num_leadbar);
 
     Savegame_Legacy_Read(&tmp32, sizeof(int32_t));
@@ -716,16 +716,16 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_Legacy_Write(&game_info->bonus_flag, sizeof(uint8_t));
 
     SAVEGAME_LEGACY_ITEM_STATS item_stats = {
-        .num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM1),
-        .num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM2),
-        .num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM1),
-        .num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM2),
-        .num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM3),
-        .num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM4),
-        .num_key1 = Inv_RequestItem(O_KEY_ITEM1),
-        .num_key2 = Inv_RequestItem(O_KEY_ITEM2),
-        .num_key3 = Inv_RequestItem(O_KEY_ITEM3),
-        .num_key4 = Inv_RequestItem(O_KEY_ITEM4),
+        .num_pickup1 = Inv_RequestItem(O_PICKUP_ITEM_1),
+        .num_pickup2 = Inv_RequestItem(O_PICKUP_ITEM_2),
+        .num_puzzle1 = Inv_RequestItem(O_PUZZLE_ITEM_1),
+        .num_puzzle2 = Inv_RequestItem(O_PUZZLE_ITEM_2),
+        .num_puzzle3 = Inv_RequestItem(O_PUZZLE_ITEM_3),
+        .num_puzzle4 = Inv_RequestItem(O_PUZZLE_ITEM_4),
+        .num_key1 = Inv_RequestItem(O_KEY_ITEM_1),
+        .num_key2 = Inv_RequestItem(O_KEY_ITEM_2),
+        .num_key3 = Inv_RequestItem(O_KEY_ITEM_3),
+        .num_key4 = Inv_RequestItem(O_KEY_ITEM_4),
         .num_leadbar = Inv_RequestItem(O_LEADBAR_ITEM),
         0
     };

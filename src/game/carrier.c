@@ -26,8 +26,8 @@ static ITEM_INFO *Carrier_GetCarrier(int16_t item_num);
 static void Carrier_AnimateDrop(CARRIED_ITEM *item);
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
-    { O_PIERRE, O_SCION_ITEM2 }, { O_COWBOY, O_MAGNUM_ITEM },
-    { O_SKATEKID, O_UZI_ITEM },  { O_BALDY, O_SHOTGUN_ITEM },
+    { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUM_ITEM },
+    { O_SKATEKID, O_UZI_ITEM },   { O_BALDY, O_SHOTGUN_ITEM },
     { NO_OBJECT, NO_OBJECT },
 };
 

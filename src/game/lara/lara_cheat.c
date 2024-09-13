@@ -203,16 +203,16 @@ bool Lara_Cheat_GiveAllKeys(void)
         return false;
     }
 
-    Inv_AddItem(O_PUZZLE_ITEM1);
-    Inv_AddItem(O_PUZZLE_ITEM2);
-    Inv_AddItem(O_PUZZLE_ITEM3);
-    Inv_AddItem(O_PUZZLE_ITEM4);
-    Inv_AddItem(O_KEY_ITEM1);
-    Inv_AddItem(O_KEY_ITEM2);
-    Inv_AddItem(O_KEY_ITEM3);
-    Inv_AddItem(O_KEY_ITEM4);
-    Inv_AddItem(O_PICKUP_ITEM1);
-    Inv_AddItem(O_PICKUP_ITEM2);
+    Inv_AddItem(O_PUZZLE_ITEM_1);
+    Inv_AddItem(O_PUZZLE_ITEM_2);
+    Inv_AddItem(O_PUZZLE_ITEM_3);
+    Inv_AddItem(O_PUZZLE_ITEM_4);
+    Inv_AddItem(O_KEY_ITEM_1);
+    Inv_AddItem(O_KEY_ITEM_2);
+    Inv_AddItem(O_KEY_ITEM_3);
+    Inv_AddItem(O_KEY_ITEM_4);
+    Inv_AddItem(O_PICKUP_ITEM_1);
+    Inv_AddItem(O_PICKUP_ITEM_2);
 
     Sound_Effect(SFX_LARA_KEY, NULL, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
@@ -270,35 +270,35 @@ bool Lara_Cheat_GiveAllItems(void)
         }
     }
 
-    if (!Inv_RequestItem(O_KEY_ITEM1)) {
-        Inv_AddItem(O_KEY_ITEM1);
+    if (!Inv_RequestItem(O_KEY_ITEM_1)) {
+        Inv_AddItem(O_KEY_ITEM_1);
     }
-    if (!Inv_RequestItem(O_KEY_ITEM2)) {
-        Inv_AddItem(O_KEY_ITEM2);
+    if (!Inv_RequestItem(O_KEY_ITEM_2)) {
+        Inv_AddItem(O_KEY_ITEM_2);
     }
-    if (!Inv_RequestItem(O_KEY_ITEM3)) {
-        Inv_AddItem(O_KEY_ITEM3);
+    if (!Inv_RequestItem(O_KEY_ITEM_3)) {
+        Inv_AddItem(O_KEY_ITEM_3);
     }
-    if (!Inv_RequestItem(O_KEY_ITEM4)) {
-        Inv_AddItem(O_KEY_ITEM4);
+    if (!Inv_RequestItem(O_KEY_ITEM_4)) {
+        Inv_AddItem(O_KEY_ITEM_4);
     }
-    if (!Inv_RequestItem(O_PUZZLE_ITEM1)) {
-        Inv_AddItem(O_PUZZLE_ITEM1);
+    if (!Inv_RequestItem(O_PUZZLE_ITEM_1)) {
+        Inv_AddItem(O_PUZZLE_ITEM_1);
     }
-    if (!Inv_RequestItem(O_PUZZLE_ITEM2)) {
-        Inv_AddItem(O_PUZZLE_ITEM2);
+    if (!Inv_RequestItem(O_PUZZLE_ITEM_2)) {
+        Inv_AddItem(O_PUZZLE_ITEM_2);
     }
-    if (!Inv_RequestItem(O_PUZZLE_ITEM3)) {
-        Inv_AddItem(O_PUZZLE_ITEM3);
+    if (!Inv_RequestItem(O_PUZZLE_ITEM_3)) {
+        Inv_AddItem(O_PUZZLE_ITEM_3);
     }
-    if (!Inv_RequestItem(O_PUZZLE_ITEM4)) {
-        Inv_AddItem(O_PUZZLE_ITEM4);
+    if (!Inv_RequestItem(O_PUZZLE_ITEM_4)) {
+        Inv_AddItem(O_PUZZLE_ITEM_4);
     }
-    if (!Inv_RequestItem(O_PICKUP_ITEM1)) {
-        Inv_AddItem(O_PICKUP_ITEM1);
+    if (!Inv_RequestItem(O_PICKUP_ITEM_1)) {
+        Inv_AddItem(O_PICKUP_ITEM_1);
     }
-    if (!Inv_RequestItem(O_PICKUP_ITEM2)) {
-        Inv_AddItem(O_PICKUP_ITEM2);
+    if (!Inv_RequestItem(O_PICKUP_ITEM_2)) {
+        Inv_AddItem(O_PICKUP_ITEM_2);
     }
 
     Sound_Effect(SFX_LARA_HOLSTER, &g_LaraItem->pos, SPM_NORMAL);

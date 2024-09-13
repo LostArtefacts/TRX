@@ -9,6 +9,7 @@
 - fixed cameras with glide values sometimes moving in the wrong direction (#1451, regression from 4.3)
 - fixed `/give` console command giving duplicate items under some circumstances (#1463, regression from 3.0)
 - fixed `/give` console command confusing logging around mismatched items (#1463, regression from 3.0)
+- fixed `/give` console command unable to give Scion in Tomb of Qualopec and Sanctuary (regression from 3.0)
 - fixed `/flip` console command misreporting an already enabled flipmap as off (regression from 4.0)
 - fixed `/kill` console command not fully killing enemies (#1482, regression from 3.0)
 - fixed `/tp` console command not always picking the closest item (#1486, regression from 4.1)

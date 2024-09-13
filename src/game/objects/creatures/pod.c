@@ -39,7 +39,7 @@ void Pod_Initialise(int16_t item_num)
 
         switch ((item->flags & IF_CODE_BITS) >> 9) {
         case 1:
-            bug->object_id = O_WARRIOR2;
+            bug->object_id = O_WARRIOR_2;
             break;
         case 2:
             bug->object_id = O_CENTAUR;
@@ -48,10 +48,10 @@ void Pod_Initialise(int16_t item_num)
             bug->object_id = O_TORSO;
             break;
         case 8:
-            bug->object_id = O_WARRIOR3;
+            bug->object_id = O_WARRIOR_3;
             break;
         default:
-            bug->object_id = O_WARRIOR1;
+            bug->object_id = O_WARRIOR_1;
             break;
         }
 

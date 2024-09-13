@@ -5,6 +5,7 @@
 #include "game/gamebuf.h"
 #include "game/gameflow.h"
 #include "game/items.h"
+#include "game/objects/common.h"
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -31,30 +32,9 @@ static struct {
     int32_t start_timer;
 } m_StatsTimer = { 0 };
 
-int16_t m_PickupObjs[] = {
-    O_PICKUP_ITEM1,  O_PICKUP_ITEM2,  O_KEY_ITEM1,        O_KEY_ITEM2,
-    O_KEY_ITEM3,     O_KEY_ITEM4,     O_PUZZLE_ITEM1,     O_PUZZLE_ITEM2,
-    O_PUZZLE_ITEM3,  O_PUZZLE_ITEM4,  O_PISTOL_ITEM,      O_SHOTGUN_ITEM,
-    O_MAGNUM_ITEM,   O_UZI_ITEM,      O_PISTOL_AMMO_ITEM, O_SG_AMMO_ITEM,
-    O_MAG_AMMO_ITEM, O_UZI_AMMO_ITEM, O_EXPLOSIVE_ITEM,   O_MEDI_ITEM,
-    O_BIGMEDI_ITEM,  O_SCION_ITEM,    O_SCION_ITEM2,      O_LEADBAR_ITEM,
-    NO_ITEM
-};
-
-// Pierre and pods have special trigger check
-int16_t m_KillableObjs[] = {
-    O_WOLF,     O_BEAR,        O_BAT,      O_CROCODILE, O_ALLIGATOR,
-    O_LION,     O_LIONESS,     O_PUMA,     O_APE,       O_RAT,
-    O_VOLE,     O_TREX,        O_RAPTOR,   O_WARRIOR1,  O_WARRIOR2,
-    O_WARRIOR3, O_CENTAUR,     O_MUMMY,    O_TORSO,     O_DINO_WARRIOR,
-    O_FISH,     O_LARSON,      O_SKATEKID, O_COWBOY,    O_BALDY,
-    O_NATLA,    O_SCION_ITEM3, O_STATUE,   NO_ITEM
-};
-
 static void Stats_TraverseFloor(void);
 static void Stats_CheckTriggers(
     ROOM_INFO *r, int room_num, int z_sector, int x_sector);
-static bool Stats_IsObjectKillable(GAME_OBJECT_ID object_id);
 static void Stats_IncludeKillableItem(int16_t item_num);
 
 static void Stats_TraverseFloor(void)
@@ -104,37 +84,32 @@ static void Stats_CheckTriggers(
 
             const ITEM_INFO *const item = &g_Items[item_num];
 
-            // Add Pierre pickup and kills if oneshot
-            if (item->object_id == O_PIERRE && sector->trigger->one_shot) {
-                Stats_IncludeKillableItem(item_num);
-            }
-
-            // Check for only valid pods
-            if ((item->object_id == O_PODS || item->object_id == O_BIG_POD)
-                && item->data != NULL) {
-                const int16_t bug_item_num = *(int16_t *)item->data;
-                const ITEM_INFO *const bug_item = &g_Items[bug_item_num];
-                if (g_Objects[bug_item->object_id].loaded) {
+            if (item->object_id == O_PIERRE) {
+                // Add Pierre pickup and kills if oneshot
+                if (sector->trigger->one_shot) {
                     Stats_IncludeKillableItem(item_num);
                 }
+                continue;
+            }
+
+            if (item->object_id == O_PODS || item->object_id == O_BIG_POD) {
+                // Check for only valid pods
+                if (item->data != NULL) {
+                    const int16_t bug_item_num = *(int16_t *)item->data;
+                    const ITEM_INFO *const bug_item = &g_Items[bug_item_num];
+                    if (g_Objects[bug_item->object_id].loaded) {
+                        Stats_IncludeKillableItem(item_num);
+                    }
+                }
+                continue;
             }
 
             // Add killable if object triggered
-            if (Stats_IsObjectKillable(item->object_id)) {
+            if (Object_IsObjectType(item->object_id, g_EnemyObjects)) {
                 Stats_IncludeKillableItem(item_num);
             }
         }
     }
-}
-
-static bool Stats_IsObjectKillable(const GAME_OBJECT_ID object_id)
-{
-    for (int i = 0; m_KillableObjs[i] != NO_ITEM; i++) {
-        if (m_KillableObjs[i] == object_id) {
-            return true;
-        }
-    }
-    return false;
 }
 
 static void Stats_IncludeKillableItem(int16_t item_num)
@@ -219,10 +194,8 @@ void Stats_CalculateStats(void)
                 continue;
             }
 
-            for (int j = 0; m_PickupObjs[j] != NO_ITEM; j++) {
-                if (item->object_id == m_PickupObjs[j]) {
-                    m_LevelPickups++;
-                }
+            if (Object_IsObjectType(item->object_id, g_PickupObjects)) {
+                m_LevelPickups++;
             }
         }
     }

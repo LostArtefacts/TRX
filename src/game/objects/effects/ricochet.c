@@ -28,7 +28,7 @@ void Ricochet_Spawn(GAME_VECTOR *pos)
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;
         fx->counter = 4;
-        fx->object_id = O_RICOCHET1;
+        fx->object_id = O_RICOCHET_1;
         fx->frame_num = -3 * Random_GetDraw() / 0x8000;
         Sound_Effect(SFX_LARA_RICOCHET, &fx->pos, SPM_NORMAL);
     }

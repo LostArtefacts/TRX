@@ -29,10 +29,10 @@ static const OBJECT_BOUNDS *Scion4_Bounds(void)
 
 void Scion4_Setup(OBJECT_INFO *obj)
 {
-    g_Objects[O_SCION_ITEM4].control = Scion4_Control;
-    g_Objects[O_SCION_ITEM4].collision = Scion4_Collision;
-    g_Objects[O_SCION_ITEM4].save_flags = 1;
-    g_Objects[O_SCION_ITEM4].bounds = Scion4_Bounds;
+    obj->control = Scion4_Control;
+    obj->collision = Scion4_Collision;
+    obj->save_flags = 1;
+    obj->bounds = Scion4_Bounds;
 }
 
 void Scion4_Control(int16_t item_num)

@@ -101,7 +101,7 @@ static void Savegame_LoadPostprocess(void)
             if (obj->collision == PuzzleHole_Collision
                 && (item->status == IS_DEACTIVATED
                     || item->status == IS_ACTIVE)) {
-                item->object_id += O_PUZZLE_DONE1 - O_PUZZLE_HOLE1;
+                item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
             }
 
             if (obj->control == Pod_Control && item->status == IS_DEACTIVATED) {
@@ -379,7 +379,7 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
 
     current->num_medis = Inv_RequestItem(O_MEDI_ITEM);
     current->num_big_medis = Inv_RequestItem(O_BIGMEDI_ITEM);
-    current->num_scions = Inv_RequestItem(O_SCION_ITEM);
+    current->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
 
     current->equipped_gun_type = g_Lara.gun_type;
     current->holsters_gun_type = g_Lara.holsters_gun_type;
