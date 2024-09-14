@@ -184,9 +184,10 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
         for (int16_t item_num = 0; item_num < Item_GetTotalCount();
              item_num++) {
             const ITEM_INFO *const item = &g_Items[item_num];
-            const bool is_pickup =
-                Object_IsObjectType(item->object_id, g_PickupObjects);
-            if (is_pickup
+            const bool is_consumable =
+                Object_IsObjectType(item->object_id, g_PickupObjects)
+                || item->object_id == O_SAVEGAME_ITEM;
+            if (is_consumable
                 && (item->status == IS_INVISIBLE
                     || item->status == IS_DEACTIVATED)) {
                 continue;
