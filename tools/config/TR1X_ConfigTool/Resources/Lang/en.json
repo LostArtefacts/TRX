@@ -311,6 +311,10 @@
       "Title": "3D pickups",
       "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."
     },
+    "enable_ps1_crystals": {
+      "Title": "Enable PS1 save crystals",
+      "Description": "Save crystals will be drawn with a purple tint, more similar to the PS1 type."
+    },
     "enable_round_shadow": {
       "Title": "Rounded shadows",
       "Description": "Enables round shadows instead of the default octagonal ones."

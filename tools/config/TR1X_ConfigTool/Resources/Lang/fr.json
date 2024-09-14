@@ -311,6 +311,10 @@
       "Title": "Collectibles 3D",
       "Description": "Active les collectibles en 3D au lieu des objets en 2D."
     },
+    "enable_ps1_crystals": {
+      "Title": "Activer les cristaux de sauvegarde PS1",
+      "Description": "Les cristaux de sauvegarde seront dessinés avec une teinte violette, plus similaire au type PS1."
+    },
     "enable_round_shadow": {
       "Title": "Ombres rondes",
       "Description": "Active les ombres rondes au lieu d'ombres octagonales."

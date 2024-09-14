@@ -1427,6 +1427,14 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>purple_crystal.bin</code>
+    </td>
+    <td>
+      Injects a replacement savegame crystal model to match the PS1 style.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>scion_collision.bin</code>
     </td>
     <td>

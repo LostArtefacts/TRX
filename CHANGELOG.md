@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added `/exit` command (#1462)
 - added reflections to Midas Hand death animation and savegame crystals (#154)
+- added an option to use PS1 tinted savegame crystals (#1506)
 - changed the target change functionality from the look key to a new, standalone key (default `z` on keyboard, `left analog click` on controller) (#1503)
 - fixed `/play`, `/load`, `/demo` and similar commands not working in stats, credits, cinematics and fmvs (#1477)
 - fixed console commands being able to interfere with demos, cutscenes and the title screen (#1489, regression from 3.0)

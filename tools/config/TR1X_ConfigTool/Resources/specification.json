@@ -407,6 +407,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_ps1_crystals",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_round_shadow",
           "DataType": "Bool",
           "DefaultValue": true
