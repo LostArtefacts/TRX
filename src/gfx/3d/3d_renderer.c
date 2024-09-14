@@ -1,6 +1,5 @@
 #include "gfx/3d/3d_renderer.h"
 
-#include "config.h"
 #include "gfx/context.h"
 #include "gfx/gl/utils.h"
 
@@ -51,8 +50,7 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     GFX_GL_Sampler_Init(&renderer->sampler);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
     GFX_GL_Sampler_Parameterf(
-        &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-        g_Config.rendering.anisotropy_filter);
+        &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, 0);
     GFX_GL_Sampler_Parameteri(
         &renderer->sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     GFX_GL_Sampler_Parameteri(
@@ -311,6 +309,12 @@ void GFX_3D_Renderer_SetPrimType(
     assert(renderer);
     GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
     GFX_3D_VertexStream_SetPrimType(&renderer->vertex_stream, value);
+}
+
+void GFX_3D_Renderer_SetAnisotropyFilter(GFX_3D_Renderer *renderer, float value)
+{
+    GFX_GL_Sampler_Parameterf(
+        &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, value);
 }
 
 void GFX_3D_Renderer_SetTextureFilter(

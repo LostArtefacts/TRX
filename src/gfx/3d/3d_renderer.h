@@ -68,6 +68,8 @@ void GFX_3D_Renderer_RenderPrimList(
 
 void GFX_3D_Renderer_SetWireframeMode(
     GFX_3D_Renderer *renderer, bool enable, int32_t line_width);
+void GFX_3D_Renderer_SetAnisotropyFilter(
+    GFX_3D_Renderer *renderer, float value);
 void GFX_3D_Renderer_SetPrimType(
     GFX_3D_Renderer *renderer, GFX_3D_PrimType value);
 void GFX_3D_Renderer_SetTextureFilter(
