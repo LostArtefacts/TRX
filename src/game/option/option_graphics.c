@@ -506,6 +506,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.fbo_filter != GFX_TF_LAST) {
                 g_Config.rendering.fbo_filter++;
                 reset = OPTION_FBO_FILTER;
+                Output_ApplyRenderSettings();
             }
             break;
 
@@ -600,6 +601,7 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.fbo_filter != GFX_TF_FIRST) {
                 g_Config.rendering.fbo_filter--;
                 reset = OPTION_FBO_FILTER;
+                Output_ApplyRenderSettings();
             }
             break;
 

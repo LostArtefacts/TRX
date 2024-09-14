@@ -1,6 +1,5 @@
 #include "gfx/renderers/fbo_renderer.h"
 
-#include "config.h"
 #include "gfx/common.h"
 #include "gfx/context.h"
 #include "gfx/gl/buffer.h"
@@ -22,6 +21,8 @@
 #include <stdint.h>
 
 typedef struct {
+    const GFX_CONFIG *config;
+
     GLuint fbo;
     GLuint rbo;
 
@@ -33,7 +34,8 @@ typedef struct {
 } GFX_Renderer_FBO_Context;
 
 static void GFX_Renderer_FBO_SwapBuffers(GFX_Renderer *renderer);
-static void GFX_Renderer_FBO_Init(GFX_Renderer *renderer);
+static void GFX_Renderer_FBO_Init(
+    GFX_Renderer *renderer, const GFX_CONFIG *config);
 static void GFX_Renderer_FBO_Shutdown(GFX_Renderer *renderer);
 static void GFX_Renderer_FBO_Reset(GFX_Renderer *renderer);
 
@@ -62,7 +64,8 @@ static void GFX_Renderer_FBO_SwapBuffers(GFX_Renderer *renderer)
     GFX_Context_SwitchToDisplayViewport();
 }
 
-static void GFX_Renderer_FBO_Init(GFX_Renderer *renderer)
+static void GFX_Renderer_FBO_Init(
+    GFX_Renderer *const renderer, const GFX_CONFIG *const config)
 {
     LOG_INFO("");
 
@@ -71,6 +74,8 @@ static void GFX_Renderer_FBO_Init(GFX_Renderer *renderer)
         sizeof(GFX_Renderer_FBO_Context));
     GFX_Renderer_FBO_Context *priv = renderer->priv;
     assert(priv != NULL);
+
+    priv->config = config;
 
     int32_t fbo_width = GFX_Context_GetDisplayWidth();
     int32_t fbo_height = GFX_Context_GetDisplayHeight();
@@ -167,8 +172,11 @@ static void GFX_Renderer_FBO_Shutdown(GFX_Renderer *renderer)
 
 static void GFX_Renderer_FBO_Reset(GFX_Renderer *renderer)
 {
+    GFX_Renderer_FBO_Context *const priv = renderer->priv;
+    const GFX_CONFIG *const config = priv->config;
+
     renderer->shutdown(renderer);
-    renderer->init(renderer);
+    renderer->init(renderer, config);
 }
 
 static void GFX_Renderer_FBO_Render(GFX_Renderer *renderer)
@@ -177,7 +185,7 @@ static void GFX_Renderer_FBO_Render(GFX_Renderer *renderer)
     GFX_Renderer_FBO_Context *priv = renderer->priv;
     assert(priv != NULL);
 
-    const GLuint filter = g_Config.rendering.fbo_filter == GFX_TF_BILINEAR
+    const GLuint filter = priv->config->display_filter == GFX_TF_BILINEAR
         ? GL_LINEAR
         : GL_NEAREST;
 

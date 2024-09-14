@@ -13,6 +13,7 @@ typedef struct GFX_CONTEXT GFX_CONTEXT;
 void GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);
 
+void GFX_Context_SetDisplayFilter(GFX_TEXTURE_FILTER filter);
 void GFX_Context_SetVSync(bool vsync);
 void GFX_Context_SetWindowSize(int32_t width, int32_t height);
 void GFX_Context_SetDisplaySize(int32_t width, int32_t height);

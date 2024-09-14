@@ -18,6 +18,7 @@ typedef struct GFX_CONTEXT {
     SDL_GLContext context;
     SDL_Window *window_handle;
 
+    GFX_CONFIG config;
     GFX_RENDER_MODE render_mode;
     int32_t display_width;
     int32_t display_height;
@@ -186,6 +187,11 @@ void GFX_Context_Detach(void)
     m_Context.window_handle = NULL;
 }
 
+void GFX_Context_SetDisplayFilter(const GFX_TEXTURE_FILTER filter)
+{
+    m_Context.config.display_filter = filter;
+}
+
 void GFX_Context_SetVSync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync);
@@ -239,7 +245,7 @@ void GFX_Context_SetRenderingMode(GFX_RENDER_MODE target_mode)
         break;
     }
     if (m_Context.renderer != NULL && m_Context.renderer->init != NULL) {
-        m_Context.renderer->init(m_Context.renderer);
+        m_Context.renderer->init(m_Context.renderer, &m_Context.config);
     }
     m_Context.render_mode = target_mode;
 }

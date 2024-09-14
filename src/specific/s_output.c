@@ -823,6 +823,7 @@ void S_Output_ApplyRenderSettings(void)
     m_SurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
+    GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
     GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
     GFX_3D_Renderer_SetWireframeMode(
