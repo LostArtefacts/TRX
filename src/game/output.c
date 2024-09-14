@@ -411,16 +411,30 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
     int32_t vertex_count = *obj_ptr++;
 
     for (int i = 0; i < vertex_count; i++) {
-        double xv = g_MatrixPtr->_00 * obj_ptr[0]
-            + g_MatrixPtr->_01 * obj_ptr[1] + g_MatrixPtr->_02 * obj_ptr[2]
-            + g_MatrixPtr->_03;
-        double yv = g_MatrixPtr->_10 * obj_ptr[0]
-            + g_MatrixPtr->_11 * obj_ptr[1] + g_MatrixPtr->_12 * obj_ptr[2]
-            + g_MatrixPtr->_13;
-        int32_t zv_int = g_MatrixPtr->_20 * obj_ptr[0]
-            + g_MatrixPtr->_21 * obj_ptr[1] + g_MatrixPtr->_22 * obj_ptr[2]
-            + g_MatrixPtr->_23;
-        double zv = zv_int;
+        PHD_VBUF *const vbuf = &m_VBuf[i];
+
+        // clang-format off
+        const double xv = (
+            g_MatrixPtr->_00 * obj_ptr[0] +
+            g_MatrixPtr->_01 * obj_ptr[1] +
+            g_MatrixPtr->_02 * obj_ptr[2] +
+            g_MatrixPtr->_03
+        );
+        const double yv = (
+            g_MatrixPtr->_10 * obj_ptr[0] +
+            g_MatrixPtr->_11 * obj_ptr[1] +
+            g_MatrixPtr->_12 * obj_ptr[2] +
+            g_MatrixPtr->_13
+        );
+        const int32_t zv_int = (
+            g_MatrixPtr->_20 * obj_ptr[0] +
+            g_MatrixPtr->_21 * obj_ptr[1] +
+            g_MatrixPtr->_22 * obj_ptr[2] +
+            g_MatrixPtr->_23
+        );
+        const double zv = zv_int;
+        // clang-format on
+
         m_VBuf[i].xv = xv;
         m_VBuf[i].yv = yv;
         m_VBuf[i].zv = zv;
@@ -430,7 +444,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
             m_VBuf[i].clip = 0x8000;
         } else {
             int16_t clip_flags = 0;
-            int32_t depth = zv_int >> W2V_SHIFT;
+            const int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
                 m_VBuf[i].g = MAX_LIGHTING;
                 if (!m_IsSkyboxEnabled) {
@@ -443,7 +457,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                 }
             }
 
-            double persp = g_PhdPersp / zv;
+            const double persp = g_PhdPersp / (double)zv;
             double xs = Viewport_GetCenterX() + xv * persp;
             double ys = Viewport_GetCenterY() + yv * persp;
             if (m_IsWibbleEffect && !(obj_ptr[3] & NO_VERT_MOVE)) {

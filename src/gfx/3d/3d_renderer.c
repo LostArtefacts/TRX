@@ -50,6 +50,10 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     GFX_GL_Sampler_Parameterf(
         &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         g_Config.rendering.anisotropy_filter);
+    GFX_GL_Sampler_Parameteri(
+        &renderer->sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    GFX_GL_Sampler_Parameteri(
+        &renderer->sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     GFX_GL_Program_Init(&renderer->program);
     GFX_GL_Program_AttachShader(
