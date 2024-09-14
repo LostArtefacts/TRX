@@ -19,32 +19,8 @@ static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static bool m_BtnConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
-static int32_t m_HoldLook = 0;
 
-static void Input_CheckChangeTarget(INPUT_STATE *input);
 static INPUT_STATE Input_GetDebounced(INPUT_STATE input);
-
-static void Input_CheckChangeTarget(INPUT_STATE *input)
-{
-    if (g_Lara.gun_status != LGS_READY) {
-        return;
-    }
-
-    const int32_t frame = Clock_GetLogicalFrame();
-    if (input->look) {
-        if (m_HoldLook == 0 || frame - m_HoldLook < LOOK_HOLD_TIME) {
-            input->look = 0;
-            if (m_HoldLook == 0) {
-                m_HoldLook = frame;
-            }
-        }
-    } else {
-        if (m_HoldLook > 0 && frame - m_HoldLook < LOOK_HOLD_TIME) {
-            input->change_target = 1;
-        }
-        m_HoldLook = 0;
-    }
-}
 
 static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
 {
@@ -173,8 +149,8 @@ void Input_Update(void)
         }
     }
 
-    if (g_Config.enable_target_change) {
-        Input_CheckChangeTarget(&g_Input);
+    if (!g_Config.enable_target_change || g_Lara.gun_status != LGS_READY) {
+        g_Input.change_target = 0;
     }
 
     g_InputDB = Input_GetDebounced(g_Input);

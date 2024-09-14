@@ -63,6 +63,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
+        SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
     },
 
     // custom user controls
@@ -101,6 +102,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
+        SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
     },
 
     {
@@ -138,6 +140,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
+        SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
     },
 
     {
@@ -175,6 +178,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F2,         // INPUT_ROLE_FPS
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
+        SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
     }
     // clang-format on
 };
@@ -217,6 +221,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
         },
 
         {
@@ -254,6 +259,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
         },
 
         {
@@ -291,6 +297,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
         },
 
         {
@@ -328,6 +335,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_FPS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
         }
         // clang-format on
     };
@@ -863,6 +871,7 @@ static INPUT_STATE S_Input_GetControllerState(
         state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
         state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
         state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
+        state.change_target          |= S_Input_GetBindState(INPUT_ROLE_CHANGE_TARGET, cntlr_layout_num);
         state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
         state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
         state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
@@ -946,6 +955,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.camera_left               = S_Input_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
     linput.camera_right              = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
     linput.camera_reset              = S_Input_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
+    linput.change_target             = S_Input_Key(INPUT_ROLE_CHANGE_TARGET, layout_num);
 
     linput.item_cheat                = S_Input_Key(INPUT_ROLE_ITEM_CHEAT, layout_num);
     linput.fly_cheat                 = S_Input_Key(INPUT_ROLE_FLY_CHEAT, layout_num);
