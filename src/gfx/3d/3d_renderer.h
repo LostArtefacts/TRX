@@ -2,6 +2,7 @@
 
 #include "gfx/3d/vertex_stream.h"
 #include "gfx/common.h"
+#include "gfx/config.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
@@ -21,6 +22,8 @@ typedef enum {
 } GFX_BlendMode;
 
 typedef struct GFX_3D_Renderer {
+    const GFX_CONFIG *config;
+
     GFX_GL_Program program;
     GFX_GL_Sampler sampler;
     GFX_3D_VertexStream vertex_stream;
@@ -34,12 +37,9 @@ typedef struct GFX_3D_Renderer {
     GLint loc_mat_model_view;
     GLint loc_texturing_enabled;
     GLint loc_smoothing_enabled;
-
-    int32_t line_width;
-    bool enable_wireframe;
 } GFX_3D_Renderer;
 
-void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer);
+void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer, const GFX_CONFIG *config);
 void GFX_3D_Renderer_Close(GFX_3D_Renderer *renderer);
 
 void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer);
@@ -66,8 +66,6 @@ void GFX_3D_Renderer_RenderPrimFan(
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 
-void GFX_3D_Renderer_SetWireframeMode(
-    GFX_3D_Renderer *renderer, bool enable, int32_t line_width);
 void GFX_3D_Renderer_SetAnisotropyFilter(
     GFX_3D_Renderer *renderer, float value);
 void GFX_3D_Renderer_SetPrimType(

@@ -112,6 +112,8 @@ void GFX_Context_Attach(void *window_handle)
 
     LOG_INFO("Attaching to window %p", window_handle);
 
+    m_Context.config.line_width = 1;
+    m_Context.config.enable_wireframe = false;
     m_Context.render_mode = -1;
     SDL_GetWindowSize(
         window_handle, &m_Context.window_width, &m_Context.window_height);
@@ -162,7 +164,7 @@ void GFX_Context_Attach(void *window_handle)
     SDL_GL_SetSwapInterval(1);
 
     GFX_2D_Renderer_Init(&m_Context.renderer_2d);
-    GFX_3D_Renderer_Init(&m_Context.renderer_3d);
+    GFX_3D_Renderer_Init(&m_Context.renderer_3d, &m_Context.config);
 }
 
 void GFX_Context_Detach(void)
@@ -190,6 +192,16 @@ void GFX_Context_Detach(void)
 void GFX_Context_SetDisplayFilter(const GFX_TEXTURE_FILTER filter)
 {
     m_Context.config.display_filter = filter;
+}
+
+void GFX_Context_SetWireframeMode(const bool enable)
+{
+    m_Context.config.enable_wireframe = enable;
+}
+
+void GFX_Context_SetLineWidth(const int32_t line_width)
+{
+    m_Context.config.line_width = line_width;
 }
 
 void GFX_Context_SetVSync(bool vsync)
@@ -267,7 +279,7 @@ int32_t GFX_Context_GetDisplayHeight(void)
 
 void GFX_Context_Clear(void)
 {
-    if (m_Context.renderer_3d.enable_wireframe) {
+    if (m_Context.config.enable_wireframe) {
         glClearColor(1.0, 1.0, 1.0, 0.0);
     } else {
         glClearColor(0.0, 0.0, 0.0, 0.0);

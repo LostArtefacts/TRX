@@ -826,9 +826,8 @@ void S_Output_ApplyRenderSettings(void)
     GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
     GFX_Context_SetDisplaySize(m_SurfaceWidth, m_SurfaceHeight);
     GFX_Context_SetRenderingMode(g_Config.rendering.render_mode);
-    GFX_3D_Renderer_SetWireframeMode(
-        m_Renderer3D, g_Config.rendering.enable_wireframe,
-        g_Config.rendering.wireframe_width);
+    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
     GFX_3D_Renderer_SetAnisotropyFilter(
         m_Renderer3D, g_Config.rendering.anisotropy_filter);
 
