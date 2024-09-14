@@ -40,6 +40,9 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
     LOG_INFO("");
     assert(renderer);
 
+    renderer->line_width = 1;
+    renderer->enable_wireframe = false;
+
     renderer->selected_texture_num = GFX_NO_TEXTURE;
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         renderer->textures[i] = NULL;
@@ -89,7 +92,6 @@ void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer)
 
     GFX_3D_VertexStream_Init(&renderer->vertex_stream);
 
-    glLineWidth(g_Config.rendering.wireframe_width);
     GFX_GL_CheckError();
 }
 
@@ -108,9 +110,9 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_Renderer *renderer)
     assert(renderer);
     glEnable(GL_BLEND);
 
+    glLineWidth(renderer->line_width);
     glPolygonMode(
-        GL_FRONT_AND_BACK,
-        g_Config.rendering.enable_wireframe ? GL_LINE : GL_FILL);
+        GL_FRONT_AND_BACK, renderer->enable_wireframe ? GL_LINE : GL_FILL);
     GFX_GL_CheckError();
 
     GFX_GL_Program_Bind(&renderer->program);
@@ -294,6 +296,13 @@ void GFX_3D_Renderer_RestoreTexture(GFX_3D_Renderer *renderer)
 {
     assert(renderer);
     GFX_3D_Renderer_SelectTextureImpl(renderer, renderer->selected_texture_num);
+}
+
+void GFX_3D_Renderer_SetWireframeMode(
+    GFX_3D_Renderer *renderer, bool enable, int32_t line_width)
+{
+    renderer->enable_wireframe = enable;
+    renderer->line_width = line_width;
 }
 
 void GFX_3D_Renderer_SetPrimType(

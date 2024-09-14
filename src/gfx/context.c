@@ -1,6 +1,5 @@
 #include "gfx/context.h"
 
-#include "config.h"
 #include "game/shell.h"
 #include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
@@ -262,7 +261,7 @@ int32_t GFX_Context_GetDisplayHeight(void)
 
 void GFX_Context_Clear(void)
 {
-    if (g_Config.rendering.enable_wireframe) {
+    if (m_Context.renderer_3d.enable_wireframe) {
         glClearColor(1.0, 1.0, 1.0, 0.0);
     } else {
         glClearColor(0.0, 0.0, 0.0, 0.0);

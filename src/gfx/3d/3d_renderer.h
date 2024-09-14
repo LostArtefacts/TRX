@@ -34,6 +34,9 @@ typedef struct GFX_3D_Renderer {
     GLint loc_mat_model_view;
     GLint loc_texturing_enabled;
     GLint loc_smoothing_enabled;
+
+    int32_t line_width;
+    bool enable_wireframe;
 } GFX_3D_Renderer;
 
 void GFX_3D_Renderer_Init(GFX_3D_Renderer *renderer);
@@ -63,6 +66,8 @@ void GFX_3D_Renderer_RenderPrimFan(
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 
+void GFX_3D_Renderer_SetWireframeMode(
+    GFX_3D_Renderer *renderer, bool enable, int32_t line_width);
 void GFX_3D_Renderer_SetPrimType(
     GFX_3D_Renderer *renderer, GFX_3D_PrimType value);
 void GFX_3D_Renderer_SetTextureFilter(

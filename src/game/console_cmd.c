@@ -471,6 +471,10 @@ static COMMAND_RESULT Console_Cmd_Set(const char *const args)
         }
     }
 
+    if (result == CR_SUCCESS) {
+        Output_ApplyRenderSettings();
+    }
+
 cleanup:
     Memory_FreePointer(&key);
     return result;
@@ -498,6 +502,7 @@ static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args)
 
     g_Config.rendering.enable_wireframe = enable;
     Config_Write();
+    Output_ApplyRenderSettings();
     Console_Log(enable ? GS(OSD_WIREFRAME_ON) : GS(OSD_WIREFRAME_OFF));
     return CR_SUCCESS;
 }
