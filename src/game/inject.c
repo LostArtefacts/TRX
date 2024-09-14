@@ -434,13 +434,13 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         data->level_page_count = level_info->texture_page_count;
         data->source_page_count = source_page_count;
         data->source_pages = source_pages;
-        data->level_pages = level_info->texture_page_ptrs;
+        data->level_pages = level_info->texture_rgb_page_ptrs;
         data->object_count = level_info->texture_count;
         data->sprite_count = level_info->sprite_info_count;
 
         if (Packer_Pack(data)) {
             level_info->texture_page_count += Packer_GetAddedPageCount();
-            level_info->texture_page_ptrs = data->level_pages;
+            level_info->texture_rgb_page_ptrs = data->level_pages;
         }
 
         Memory_FreePointer(&source_pages);
@@ -1147,7 +1147,7 @@ static void Inject_TextureOverwrites(
 
         // Copy the source image pixels directly into the target page.
         RGBA_8888 *page =
-            level_info->texture_page_ptrs + target_page * PAGE_SIZE;
+            level_info->texture_rgb_page_ptrs + target_page * PAGE_SIZE;
         for (int32_t y = 0; y < source_height; y++) {
             for (int32_t x = 0; x < source_width; x++) {
                 const uint8_t pal_idx = source_img[y * source_width + x];
