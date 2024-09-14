@@ -541,7 +541,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed not being able to close level stats with Escape
 - fixed Lara jumping forever when alt+tabbing out of the game
 - stopped the default controls from functioning when the user unbound them
-- added the option to change weapon targets by tapping the look key like in TR4+
+- added the option to change weapon targets by tapping the new target change key
 - added three targeting lock options:
   - full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1)
   - semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies
