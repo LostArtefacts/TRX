@@ -52,6 +52,8 @@ void GFX_GL_Texture_Load(
 
     GFX_GL_Texture_Bind(texture);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(
         GL_TEXTURE_2D, 0, internal_format, width, height, 0, format,
         GL_UNSIGNED_BYTE, data);
