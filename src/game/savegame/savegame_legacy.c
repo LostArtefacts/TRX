@@ -46,6 +46,7 @@ static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
 
 static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item);
+static bool Savegame_Legacy_ItemHasSaveAnim(const ITEM_INFO *item);
 static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer);
 
 static void Savegame_Legacy_Reset(char *buffer);
@@ -78,6 +79,12 @@ static bool Savegame_Legacy_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
         && item->object_id != O_FLAME_EMITTER && item->object_id != O_WATERFALL
         && item->object_id != O_SCION_ITEM_1
         && item->object_id != O_DART_EMITTER);
+}
+
+static bool Savegame_Legacy_ItemHasSaveAnim(const ITEM_INFO *const item)
+{
+    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    return obj->save_anim && item->object_id != O_BACON_LARA;
 }
 
 static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
@@ -144,7 +151,7 @@ static bool Savegame_Legacy_NeedsBaconLaraFix(char *buffer)
             Savegame_Legacy_Read(&tmp_item.speed, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.fall_speed, sizeof(int16_t));
         }
-        if (obj->save_anim) {
+        if (Savegame_Legacy_ItemHasSaveAnim(item)) {
             Savegame_Legacy_Read(&tmp_item.current_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&tmp_item.goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(
@@ -585,7 +592,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             }
         }
 
-        if (obj->save_anim) {
+        if (Savegame_Legacy_ItemHasSaveAnim(item)) {
             Savegame_Legacy_Read(&item->current_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&item->goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Read(&item->required_anim_state, sizeof(int16_t));
@@ -760,7 +767,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             Savegame_Legacy_Write(&item->fall_speed, sizeof(int16_t));
         }
 
-        if (obj->save_anim) {
+        if (Savegame_Legacy_ItemHasSaveAnim(item)) {
             Savegame_Legacy_Write(&item->current_anim_state, sizeof(int16_t));
             Savegame_Legacy_Write(&item->goal_anim_state, sizeof(int16_t));
             Savegame_Legacy_Write(&item->required_anim_state, sizeof(int16_t));

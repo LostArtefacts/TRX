@@ -25,6 +25,7 @@ void BaconLara_Setup(OBJECT_INFO *obj)
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
+    obj->save_anim = 1;
 }
 
 void BaconLara_Initialise(int16_t item_num)
