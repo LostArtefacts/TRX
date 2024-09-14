@@ -133,10 +133,10 @@ static void Level_LoadTexturePages(VFILE *file)
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.texture_page_count = VFile_ReadS32(file);
     LOG_INFO("%d texture pages", m_LevelInfo.texture_page_count);
-    m_LevelInfo.texture_page_ptrs =
+    m_LevelInfo.texture_old_page_ptrs =
         Memory_Alloc(m_LevelInfo.texture_page_count * PAGE_SIZE);
     VFile_Read(
-        file, m_LevelInfo.texture_page_ptrs,
+        file, m_LevelInfo.texture_old_page_ptrs,
         PAGE_SIZE * m_LevelInfo.texture_page_count);
     Benchmark_End(benchmark, NULL);
 }
@@ -897,6 +897,30 @@ static void Level_CompleteSetup(int32_t level_num)
     Room_ParseFloorData(m_LevelInfo.floor_data);
     Memory_FreePointer(&m_LevelInfo.floor_data);
 
+    // Expand paletted texture data to RGB
+    m_LevelInfo.texture_page_ptrs = Memory_Alloc(
+        m_LevelInfo.texture_page_count * PAGE_SIZE * sizeof(RGBA_8888));
+    RGBA_8888 *output = m_LevelInfo.texture_page_ptrs;
+    const uint8_t *input = m_LevelInfo.texture_old_page_ptrs;
+    for (int i = 0; i < m_LevelInfo.texture_page_count; i++) {
+        for (int32_t j = 0; j < PAGE_SIZE; j++) {
+            const uint8_t index = *input++;
+            if (index == 0) {
+                output->r = 0;
+                output->g = 0;
+                output->b = 0;
+                output->a = 0;
+            } else {
+                RGB_888 pix = Output_GetPaletteColor(index);
+                output->r = pix.r;
+                output->g = pix.g;
+                output->b = pix.b;
+                output->a = 255;
+            }
+            output++;
+        }
+    }
+
     Inject_AllInjections(&m_LevelInfo);
 
     Level_MarkWaterEdgeVertices();
@@ -921,12 +945,8 @@ static void Level_CompleteSetup(int32_t level_num)
     Output_ReserveVertexBuffer(max_vertices);
 
     // Move the prepared texture pages into g_TexturePagePtrs.
-    uint8_t *base = GameBuf_Alloc(
-        m_LevelInfo.texture_page_count * PAGE_SIZE, GBUF_TEXTURE_PAGES);
     for (int i = 0; i < m_LevelInfo.texture_page_count; i++) {
-        g_TexturePagePtrs[i] = base;
-        memcpy(base, m_LevelInfo.texture_page_ptrs + i * PAGE_SIZE, PAGE_SIZE);
-        base += PAGE_SIZE;
+        g_TexturePagePtrs[i] = &m_LevelInfo.texture_page_ptrs[i * PAGE_SIZE];
     }
     Output_DownloadTextures(m_LevelInfo.texture_page_count);
 
@@ -1021,7 +1041,7 @@ void Level_Load(int level_num)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     // clean previous level data
-    Memory_FreePointer(&m_LevelInfo.texture_page_ptrs);
+    Memory_FreePointer(&m_LevelInfo.texture_old_page_ptrs);
     Memory_FreePointer(&m_LevelInfo.anim_frame_offsets);
     Memory_FreePointer(&m_LevelInfo.sample_offsets);
     Memory_FreePointer(&m_InjectionInfo);

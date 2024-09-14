@@ -217,7 +217,7 @@ int GFX_3D_Renderer_RegisterTexturePage(
     assert(renderer);
     assert(data);
     GFX_GL_Texture *texture = GFX_GL_Texture_Create(GL_TEXTURE_2D);
-    GFX_GL_Texture_Load(texture, data, width, height, GL_RGBA, GL_BGRA);
+    GFX_GL_Texture_Load(texture, data, width, height, GL_RGBA, GL_RGBA);
 
     int texture_num = GFX_NO_TEXTURE;
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {

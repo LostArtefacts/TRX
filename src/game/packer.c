@@ -9,6 +9,7 @@
 #include <libtrx/utils.h>
 
 #include <stddef.h>
+#include <string.h>
 
 typedef enum RECTANGLE_COMPARISON {
     RC_EQUALS = 0,
@@ -42,7 +43,7 @@ typedef struct TEX_CONTAINER {
 typedef struct TEX_PAGE {
     int32_t index;
     int32_t free_space;
-    uint8_t data[PAGE_SIZE];
+    RGBA_8888 data[PAGE_SIZE];
 } TEX_PAGE;
 
 static void Packer_AllocateNewPage(void);
@@ -153,7 +154,10 @@ static void Packer_FillVirtualData(TEX_PAGE *page, RECTANGLE *bounds)
     int x_end = bounds->x + bounds->w;
     for (int y = bounds->y; y < y_end; y++) {
         for (int x = bounds->x; x < x_end; x++) {
-            page->data[y * PAGE_WIDTH + x] = 1;
+            page->data[y * PAGE_WIDTH + x].r = 1;
+            page->data[y * PAGE_WIDTH + x].g = 1;
+            page->data[y * PAGE_WIDTH + x].b = 1;
+            page->data[y * PAGE_WIDTH + x].a = 255;
         }
     }
 
@@ -281,18 +285,15 @@ static void Packer_AllocateNewPage(void)
     TEX_PAGE *page = &m_VirtualPages[m_UsedPageCount];
     page->index = m_StartPage + m_UsedPageCount;
     page->free_space = PAGE_SIZE;
-    for (int i = 0; i < PAGE_SIZE; i++) {
-        page->data[i] = 0;
-    }
+    memset(page->data, 0, PAGE_SIZE * sizeof(RGBA_8888));
 
     if (m_UsedPageCount > 0) {
         int new_count = m_Data->level_page_count + m_UsedPageCount;
-        m_Data->level_pages =
-            Memory_Realloc(m_Data->level_pages, PAGE_SIZE * new_count);
-        uint8_t *level_page = m_Data->level_pages + (new_count - 1) * PAGE_SIZE;
-        for (int i = 0; i < PAGE_SIZE; i++) {
-            *(level_page + i) = 0;
-        }
+        m_Data->level_pages = Memory_Realloc(
+            m_Data->level_pages, PAGE_SIZE * new_count * sizeof(RGBA_8888));
+        RGBA_8888 *level_page =
+            m_Data->level_pages + (new_count - 1) * PAGE_SIZE;
+        memset(level_page, 0, PAGE_SIZE * sizeof(RGBA_8888));
     }
 
     m_UsedPageCount++;
@@ -306,7 +307,10 @@ static bool Packer_PackContainerAt(
 
     for (int y = y_pos; y < y_end; y++) {
         for (int x = x_pos; x < x_end; x++) {
-            if (page->data[y * PAGE_WIDTH + x]) {
+            if (page->data[y * PAGE_WIDTH + x].r
+                || page->data[y * PAGE_WIDTH + x].g
+                || page->data[y * PAGE_WIDTH + x].b
+                || page->data[y * PAGE_WIDTH + x].a) {
                 return false;
             }
         }
@@ -317,8 +321,9 @@ static bool Packer_PackContainerAt(
     // data to avoid anything else taking this position.
     int source_page_index =
         container->tex_infos->tpage - m_Data->level_page_count;
-    uint8_t *source_page = m_Data->source_pages + source_page_index * PAGE_SIZE;
-    uint8_t *level_page = m_Data->level_pages + page->index * PAGE_SIZE;
+    RGBA_8888 *source_page =
+        m_Data->source_pages + source_page_index * PAGE_SIZE;
+    RGBA_8888 *level_page = m_Data->level_pages + page->index * PAGE_SIZE;
 
     int old_pixel, new_pixel;
     for (int y = 0; y < container->bounds->h; y++) {
@@ -326,7 +331,10 @@ static bool Packer_PackContainerAt(
             old_pixel = (container->bounds->y + y) * PAGE_WIDTH
                 + container->bounds->x + x;
             new_pixel = (y_pos + y) * PAGE_WIDTH + x_pos + x;
-            page->data[new_pixel] = 1;
+            page->data[new_pixel].r = 1;
+            page->data[new_pixel].g = 1;
+            page->data[new_pixel].b = 1;
+            page->data[new_pixel].a = 255;
             level_page[new_pixel] = source_page[old_pixel];
         }
     }

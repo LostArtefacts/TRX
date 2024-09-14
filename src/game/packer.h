@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global/types.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -8,8 +10,8 @@ typedef struct PACKER_DATA {
     int32_t source_page_count;
     int32_t object_count;
     int32_t sprite_count;
-    uint8_t *source_pages;
-    uint8_t *level_pages;
+    RGBA_8888 *source_pages;
+    RGBA_8888 *level_pages;
 } PACKER_DATA;
 
 // Attempts to pack the provided source pages into the level pages. Packing

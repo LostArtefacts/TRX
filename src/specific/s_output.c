@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 #define CLIP_VERTCOUNT_SCALE 4
 #define VBUF_VISIBLE(a, b, c)                                                  \
@@ -1262,16 +1263,11 @@ void S_Output_DownloadTextures(int32_t pages)
         bool result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
         S_Output_CheckError(result);
 
-        uint32_t *output_ptr = surface_desc.pixels;
-        uint8_t *input_ptr = g_TexturePagePtrs[i];
-        for (int j = 0; j < surface_desc.width * surface_desc.height; j++) {
-            uint8_t pal_idx = *input_ptr++;
-            // first color in the palette is chroma key, make it transparent
-            uint8_t alpha = pal_idx == 0 ? 0 : 0xFF;
-            RGB_888 pix = S_Output_GetPaletteColor(pal_idx);
-            *output_ptr++ =
-                pix.b | (pix.g << 8) | (pix.r << 16) | (alpha << 24);
-        }
+        RGBA_8888 *output_ptr = surface_desc.pixels;
+        RGBA_8888 *input_ptr = g_TexturePagePtrs[i];
+        memcpy(
+            output_ptr, input_ptr,
+            surface_desc.width * surface_desc.height * sizeof(RGBA_8888));
 
         result = GFX_2D_Surface_Unlock(m_TextureSurfaces[i]);
         S_Output_CheckError(result);

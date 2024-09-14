@@ -118,7 +118,7 @@ static void Inject_AlignTextureReferences(
     OBJECT_INFO *object, uint8_t *palette_map, int32_t page_base);
 
 static void Inject_LoadTexturePages(
-    INJECTION *injection, uint8_t *palette_map, uint8_t *page_ptr);
+    INJECTION *injection, uint8_t *palette_map, RGBA_8888 *page_ptr);
 static void Inject_TextureData(
     INJECTION *injection, LEVEL_INFO *level_info, int32_t page_base);
 static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info);
@@ -383,8 +383,8 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
     BENCHMARK *const benchmark = Benchmark_Start();
 
     uint8_t palette_map[256];
-    uint8_t *source_pages =
-        Memory_Alloc(m_Aggregate->texture_page_count * PAGE_SIZE);
+    RGBA_8888 *source_pages = Memory_Alloc(
+        m_Aggregate->texture_page_count * PAGE_SIZE * sizeof(RGBA_8888));
     int32_t source_page_count = 0;
     int32_t tpage_base = level_info->texture_page_count;
 
@@ -450,7 +450,7 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
 }
 
 static void Inject_LoadTexturePages(
-    INJECTION *injection, uint8_t *palette_map, uint8_t *page_ptr)
+    INJECTION *injection, uint8_t *palette_map, RGBA_8888 *page_ptr)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -475,10 +475,23 @@ static void Inject_LoadTexturePages(
     // Read in each page for this injection and realign the pixels
     // to the level's palette.
     const size_t pixel_count = PAGE_SIZE * inj_info->texture_page_count;
-    VFile_Read(fp, page_ptr, pixel_count);
-    for (size_t i = 0; i < pixel_count; i++, page_ptr++) {
-        *page_ptr = palette_map[*page_ptr];
+    uint8_t *indices = Memory_Alloc(pixel_count);
+    VFile_Read(fp, indices, pixel_count);
+    uint8_t *input = indices;
+    RGBA_8888 *output = page_ptr;
+    for (size_t i = 0; i < pixel_count; i++) {
+        const uint8_t index = *input++;
+        if (index == 0) {
+            output->a = 0;
+        } else {
+            output->r = source_palette[index].r;
+            output->g = source_palette[index].g;
+            output->b = source_palette[index].b;
+            output->a = 255;
+        }
+        output++;
     }
+    Memory_FreePointer(&indices);
 
     Benchmark_End(benchmark, NULL);
 }
@@ -1133,13 +1146,23 @@ static void Inject_TextureOverwrites(
         VFile_Read(fp, source_img, source_width * source_height);
 
         // Copy the source image pixels directly into the target page.
-        uint8_t *page = level_info->texture_page_ptrs + target_page * PAGE_SIZE;
+        RGBA_8888 *page =
+            level_info->texture_page_ptrs + target_page * PAGE_SIZE;
         for (int32_t y = 0; y < source_height; y++) {
             for (int32_t x = 0; x < source_width; x++) {
                 const int32_t pal_idx = source_img[y * source_width + x];
                 const int32_t target_pixel =
                     (y + target_y) * PAGE_WIDTH + x + target_x;
-                *(page + target_pixel) = palette_map[pal_idx];
+                if (pal_idx == 0) {
+                    (*(page + target_pixel)).a = 0;
+                } else {
+                    const RGB_888 pix =
+                        Output_GetPaletteColor(palette_map[pal_idx]);
+                    (*(page + target_pixel)).r = pix.r;
+                    (*(page + target_pixel)).g = pix.g;
+                    (*(page + target_pixel)).b = pix.b;
+                    (*(page + target_pixel)).a = 255;
+                }
             }
         }
 
