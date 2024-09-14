@@ -781,21 +781,22 @@ static void Level_LoadPalette(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
-    RGB_888 palette[256];
+    m_LevelInfo.palette_size = 256;
+    m_LevelInfo.palette =
+        Memory_Alloc(sizeof(RGB_888) * m_LevelInfo.palette_size);
     for (int32_t i = 0; i < 256; i++) {
-        palette[i].r = VFile_ReadU8(file);
-        palette[i].g = VFile_ReadU8(file);
-        palette[i].b = VFile_ReadU8(file);
+        m_LevelInfo.palette[i].r = VFile_ReadU8(file);
+        m_LevelInfo.palette[i].g = VFile_ReadU8(file);
+        m_LevelInfo.palette[i].b = VFile_ReadU8(file);
     }
-    palette[0].r = 0;
-    palette[0].g = 0;
-    palette[0].b = 0;
+    m_LevelInfo.palette[0].r = 0;
+    m_LevelInfo.palette[0].g = 0;
+    m_LevelInfo.palette[0].b = 0;
     for (int i = 1; i < 256; i++) {
-        palette[i].r *= 4;
-        palette[i].g *= 4;
-        palette[i].b *= 4;
+        m_LevelInfo.palette[i].r *= 4;
+        m_LevelInfo.palette[i].g *= 4;
+        m_LevelInfo.palette[i].b *= 4;
     }
-    Output_SetPalette(palette);
     Benchmark_End(benchmark, NULL);
 }
 
@@ -902,7 +903,7 @@ static void Level_CompleteSetup(int32_t level_num)
         m_LevelInfo.texture_page_count * PAGE_SIZE * sizeof(RGBA_8888));
     RGBA_8888 *output = m_LevelInfo.texture_page_ptrs;
     const uint8_t *input = m_LevelInfo.texture_old_page_ptrs;
-    for (int i = 0; i < m_LevelInfo.texture_page_count; i++) {
+    for (int32_t i = 0; i < m_LevelInfo.texture_page_count; i++) {
         for (int32_t j = 0; j < PAGE_SIZE; j++) {
             const uint8_t index = *input++;
             if (index == 0) {
@@ -911,7 +912,7 @@ static void Level_CompleteSetup(int32_t level_num)
                 output->b = 0;
                 output->a = 0;
             } else {
-                RGB_888 pix = Output_GetPaletteColor(index);
+                RGB_888 pix = m_LevelInfo.palette[index];
                 output->r = pix.r;
                 output->g = pix.g;
                 output->b = pix.b;
@@ -949,6 +950,7 @@ static void Level_CompleteSetup(int32_t level_num)
         g_TexturePagePtrs[i] = &m_LevelInfo.texture_page_ptrs[i * PAGE_SIZE];
     }
     Output_DownloadTextures(m_LevelInfo.texture_page_count);
+    Output_SetPalette(m_LevelInfo.palette, m_LevelInfo.palette_size);
 
     // Initialise the sound effects.
     size_t *sample_sizes =

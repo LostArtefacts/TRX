@@ -113,29 +113,30 @@ static INJECTION_INFO *m_Aggregate = NULL;
 
 static void Inject_LoadFromFile(INJECTION *injection, const char *filename);
 
-static uint8_t Inject_RemapRGB(RGB_888 rgb);
+static uint16_t Inject_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb);
 static void Inject_AlignTextureReferences(
-    OBJECT_INFO *object, uint8_t *palette_map, int32_t page_base);
+    OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base);
 
 static void Inject_LoadTexturePages(
-    INJECTION *injection, uint8_t *palette_map, RGBA_8888 *page_ptr);
+    INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map,
+    RGBA_8888 *page_ptr);
 static void Inject_TextureData(
     INJECTION *injection, LEVEL_INFO *level_info, int32_t page_base);
 static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_AnimRangeEdits(INJECTION *injection);
 static void Inject_ObjectData(
-    INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map);
+    INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map);
 static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info);
 
 static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit);
 
 static void Inject_ApplyFaceEdit(
     FACE_EDIT *face_edit, int16_t *data_ptr, int16_t texture);
-static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint8_t *palette_map);
-static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map);
+static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map);
+static void Inject_MeshEdits(INJECTION *injection, uint16_t *palette_map);
 static void Inject_TextureOverwrites(
-    INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map);
+    INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map);
 
 static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info);
 static void Inject_TriggerParameterChange(
@@ -382,7 +383,7 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
 
     BENCHMARK *const benchmark = Benchmark_Start();
 
-    uint8_t palette_map[256];
+    uint16_t palette_map[256];
     RGBA_8888 *source_pages = Memory_Alloc(
         m_Aggregate->texture_page_count * PAGE_SIZE * sizeof(RGBA_8888));
     int32_t source_page_count = 0;
@@ -395,7 +396,7 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
         }
 
         Inject_LoadTexturePages(
-            injection, palette_map,
+            injection, level_info, palette_map,
             source_pages + (source_page_count * PAGE_SIZE));
 
         Inject_TextureData(injection, level_info, tpage_base);
@@ -450,7 +451,8 @@ void Inject_AllInjections(LEVEL_INFO *level_info)
 }
 
 static void Inject_LoadTexturePages(
-    INJECTION *injection, uint8_t *palette_map, RGBA_8888 *page_ptr)
+    INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map,
+    RGBA_8888 *page_ptr)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -468,8 +470,9 @@ static void Inject_LoadTexturePages(
         source_palette[i].r *= 4;
         source_palette[i].g *= 4;
         source_palette[i].b *= 4;
-
-        palette_map[i] = Inject_RemapRGB(source_palette[i]);
+    }
+    for (int32_t i = 0; i < 256; i++) {
+        palette_map[i] = Inject_RemapRGB(level_info, source_palette[i]);
     }
 
     // Read in each page for this injection and realign the pixels
@@ -749,7 +752,7 @@ static void Inject_AnimRangeEdits(INJECTION *injection)
 }
 
 static void Inject_ObjectData(
-    INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map)
+    INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -842,7 +845,7 @@ static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 }
 
 static void Inject_AlignTextureReferences(
-    OBJECT_INFO *object, uint8_t *palette_map, int32_t page_base)
+    OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base)
 {
     int16_t **mesh = &g_Meshes[object->mesh_index];
     for (int32_t i = 0; i < object->nmeshes; i++) {
@@ -885,28 +888,25 @@ static void Inject_AlignTextureReferences(
     }
 }
 
-static uint8_t Inject_RemapRGB(RGB_888 rgb)
+static uint16_t Inject_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb)
 {
-    // Find the index of the nearest match to the given RGB
-    int32_t best_match = 0x7fffffff;
-    int32_t test_match;
-    int32_t best_index = 0;
-    for (int32_t i = 1; i < 256; i++) {
-        const RGB_888 test_rgb = Output_GetPaletteColor(i);
-        const int32_t r = rgb.r - test_rgb.r;
-        const int32_t g = rgb.g - test_rgb.g;
-        const int32_t b = rgb.b - test_rgb.b;
-        test_match = SQUARE(r) + SQUARE(g) + SQUARE(b);
-
-        if (test_match < best_match) {
-            best_match = test_match;
-            best_index = i;
+    // Find the index of the exact match to the given RGB
+    for (int32_t i = 0; i < level_info->palette_size; i++) {
+        const RGB_888 test_rgb = level_info->palette[i];
+        if (rgb.r == test_rgb.r && rgb.g == test_rgb.g && rgb.b == test_rgb.b) {
+            return i;
         }
     }
-    return best_index;
+
+    // Match not found - expand the game palette
+    level_info->palette_size++;
+    level_info->palette = Memory_Realloc(
+        level_info->palette, level_info->palette_size * sizeof(RGB_888));
+    level_info->palette[level_info->palette_size - 1] = rgb;
+    return level_info->palette_size - 1;
 }
 
-static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
+static void Inject_MeshEdits(INJECTION *injection, uint16_t *palette_map)
 {
     INJECTION_INFO *inj_info = injection->info;
     VFILE *const fp = injection->fp;
@@ -976,7 +976,7 @@ static void Inject_MeshEdits(INJECTION *injection, uint8_t *palette_map)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint8_t *palette_map)
+static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
 {
     OBJECT_INFO object = g_Objects[mesh_edit->object_id];
     if (!object.loaded) {
@@ -1128,7 +1128,7 @@ static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit)
 }
 
 static void Inject_TextureOverwrites(
-    INJECTION *injection, LEVEL_INFO *level_info, uint8_t *palette_map)
+    INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -1150,14 +1150,14 @@ static void Inject_TextureOverwrites(
             level_info->texture_page_ptrs + target_page * PAGE_SIZE;
         for (int32_t y = 0; y < source_height; y++) {
             for (int32_t x = 0; x < source_width; x++) {
-                const int32_t pal_idx = source_img[y * source_width + x];
+                const uint8_t pal_idx = source_img[y * source_width + x];
                 const int32_t target_pixel =
                     (y + target_y) * PAGE_WIDTH + x + target_x;
                 if (pal_idx == 0) {
                     (*(page + target_pixel)).a = 0;
                 } else {
                     const RGB_888 pix =
-                        Output_GetPaletteColor(palette_map[pal_idx]);
+                        level_info->palette[palette_map[pal_idx]];
                     (*(page + target_pixel)).r = pix.r;
                     (*(page + target_pixel)).g = pix.g;
                     (*(page + target_pixel)).b = pix.b;

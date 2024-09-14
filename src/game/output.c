@@ -42,6 +42,7 @@ static int m_OverlayCurAlpha = 0;
 static int m_OverlayDstAlpha = 0;
 static int m_BackdropCurAlpha = 0;
 static int m_BackdropDstAlpha = 0;
+static RGB_888 *m_ColorPalette = NULL;
 
 static int32_t m_WibbleOffset = 0;
 static double m_WibbleOffsetDbl = 0.0;
@@ -530,6 +531,7 @@ void Output_Shutdown(void)
 {
     S_Output_Shutdown();
     Memory_FreePointer(&m_BackdropImagePath);
+    Memory_FreePointer(&m_ColorPalette);
 }
 
 void Output_ReserveVertexBuffer(const size_t size)
@@ -560,16 +562,6 @@ RGBA_8888 Output_RGB2RGBA(const RGB_888 color)
 {
     RGBA_8888 ret = { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
     return ret;
-}
-
-void Output_SetPalette(RGB_888 palette[256])
-{
-    S_Output_SetPalette(palette);
-}
-
-RGB_888 Output_GetPaletteColor(uint8_t idx)
-{
-    return S_Output_GetPaletteColor(idx);
 }
 
 void Output_DrawBlack(void)
@@ -1397,4 +1389,19 @@ int Output_GetObjectBounds(const BOUNDS_16 *const bounds)
     }
 
     return 1; // fully on screen
+}
+
+void Output_SetPalette(const RGB_888 *palette, const size_t palette_size)
+{
+    m_ColorPalette =
+        Memory_Realloc(m_ColorPalette, sizeof(RGB_888) * palette_size);
+    memcpy(m_ColorPalette, palette, sizeof(RGB_888) * palette_size);
+}
+
+RGB_888 Output_GetPaletteColor(uint16_t idx)
+{
+    if (m_ColorPalette == NULL) {
+        return (RGB_888) { 0 };
+    }
+    return m_ColorPalette[idx];
 }

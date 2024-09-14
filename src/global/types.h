@@ -1852,6 +1852,8 @@ typedef struct LEVEL_INFO {
     int32_t *sample_offsets;
     int32_t sample_data_size;
     char *sample_data;
+    RGB_888 *palette;
+    int32_t palette_size;
 } LEVEL_INFO;
 
 typedef enum TRISTATE_BOOL {

@@ -23,9 +23,6 @@ void S_Output_ClearDepthBuffer(void);
 void S_Output_SetWindowSize(int width, int height);
 void S_Output_ApplyRenderSettings(void);
 
-void S_Output_SetPalette(RGB_888 palette[256]);
-RGB_888 S_Output_GetPaletteColor(uint8_t idx);
-
 void S_Output_DownloadTextures(int32_t pages);
 void S_Output_SelectTexture(int32_t texture_num);
 void S_Output_DownloadBackdropSurface(const IMAGE *image);

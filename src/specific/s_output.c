@@ -33,11 +33,9 @@
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static int m_EnvMapTexture = GFX_NO_TEXTURE;
-static RGB_888 m_ColorPalette[256];
 
 static GFX_2D_Renderer *m_Renderer2D = NULL;
 static GFX_3D_Renderer *m_Renderer3D = NULL;
-static bool m_IsPaletteActive = false;
 static bool m_IsTextureMode = false;
 static int32_t m_SelectedTexture = -1;
 
@@ -453,19 +451,6 @@ void S_Output_RenderBegin(void)
 void S_Output_RenderEnd(void)
 {
     GFX_3D_Renderer_RenderEnd(m_Renderer3D);
-}
-
-void S_Output_SetPalette(RGB_888 palette[256])
-{
-    for (int i = 0; i < 256; i++) {
-        m_ColorPalette[i] = palette[i];
-    }
-    m_IsPaletteActive = true;
-}
-
-RGB_888 S_Output_GetPaletteColor(uint8_t idx)
-{
-    return m_ColorPalette[idx];
 }
 
 void S_Output_FlipScreen(void)
