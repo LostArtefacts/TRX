@@ -21,6 +21,7 @@
 - fixed a potential softlock when killing the Torso boss in Great Pyramid (#1236)
 - fixed Bacon Lara re-spawning after saving and loading (#1500, regression from 0.7)
 - fixed config JSON not sanitizing some numeric values (#1515)
+- fixed potential crashes in custom levels if hybrid creature objects are not present in the level (#1444)
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
 - changed the door cheat to also target drawbridges
 - improved appearance of textures around edges when bilinear filter is off (#1483)

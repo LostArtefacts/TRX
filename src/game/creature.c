@@ -15,14 +15,18 @@
 #include "global/vars.h"
 #include "math/math.h"
 
+#include <libtrx/log.h>
+
 #include <stddef.h>
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
 static bool Creature_SwitchToWater(
-    int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+    int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
 static bool Creature_SwitchToLand(
-    int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
+    int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
+static bool Creature_TestSwitchOrKill(
+    int16_t item_num, GAME_OBJECT_ID target_id);
 
 void Creature_Initialise(int16_t item_num)
 {
@@ -709,11 +713,11 @@ bool Creature_ShootAtLara(
 }
 
 bool Creature_EnsureHabitat(
-    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+    const int16_t item_num, int32_t *const wh, const HYBRID_INFO *const info)
 {
     // Test the environment for a hybrid creature. Record the water height and
     // return whether or not a type conversion has taken place.
-    ITEM_INFO *item = &g_Items[item_num];
+    const ITEM_INFO *const item = &g_Items[item_num];
     *wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
 
@@ -729,13 +733,14 @@ bool Creature_IsBoss(const int16_t item_num)
 }
 
 static bool Creature_SwitchToWater(
-    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+    const int16_t item_num, const int32_t *const wh,
+    const HYBRID_INFO *const info)
 {
     if (*wh == NO_HEIGHT) {
         return false;
     }
 
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM_INFO *const item = &g_Items[item_num];
 
     if (item->hit_points <= 0) {
         // Dead land creatures should remain in their pose permanently.
@@ -744,6 +749,10 @@ static bool Creature_SwitchToWater(
 
     // The land creature is alive and the room has been flooded. Switch to the
     // water creature.
+    if (!Creature_TestSwitchOrKill(item_num, info->water.id)) {
+        return false;
+    }
+
     item->object_id = info->water.id;
     Item_SwitchToAnim(item, info->water.active_anim, 0);
     item->current_anim_state = g_Anims[item->anim_num].current_anim_state;
@@ -754,13 +763,18 @@ static bool Creature_SwitchToWater(
 }
 
 static bool Creature_SwitchToLand(
-    int16_t item_num, int32_t *wh, const HYBRID_INFO *info)
+    const int16_t item_num, const int32_t *const wh,
+    const HYBRID_INFO *const info)
 {
     if (*wh != NO_HEIGHT) {
         return false;
     }
 
-    ITEM_INFO *item = &g_Items[item_num];
+    if (!Creature_TestSwitchOrKill(item_num, info->land.id)) {
+        return false;
+    }
+
+    ITEM_INFO *const item = &g_Items[item_num];
 
     // Switch to the land creature regardless of death state.
     item->object_id = info->land.id;
@@ -789,4 +803,18 @@ static bool Creature_SwitchToLand(
     }
 
     return true;
+}
+
+static bool Creature_TestSwitchOrKill(
+    const int16_t item_num, const GAME_OBJECT_ID target_id)
+{
+    if (g_Objects[target_id].loaded) {
+        return true;
+    }
+
+    LOG_WARNING(
+        "Object %d is not loaded; item %d cannot be converted.", target_id,
+        item_num);
+    Item_Kill(item_num);
+    return false;
 }
