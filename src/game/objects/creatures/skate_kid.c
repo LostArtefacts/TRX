@@ -9,6 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/log.h>
 #include <libtrx/utils.h>
 
 #define SKATE_KID_STOP_SHOT_DAMAGE 50
@@ -57,6 +58,12 @@ void SkateKid_Setup(OBJECT_INFO *obj)
     obj->save_anim = 1;
     obj->save_flags = 1;
     g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
+
+    if (!g_Objects[O_SKATEBOARD].loaded) {
+        LOG_WARNING(
+            "Skateboard object (%d) is not loaded and so will not be drawn.",
+            O_SKATEBOARD);
+    }
 }
 
 void SkateKid_Initialise(int16_t item_num)
@@ -168,6 +175,9 @@ void SkateKid_Control(int16_t item_num)
 void SkateKid_Draw(ITEM_INFO *item)
 {
     Object_DrawAnimatingItem(item);
+    if (!g_Objects[O_SKATEBOARD].loaded) {
+        return;
+    }
 
     int16_t relative_anim =
         item->anim_num - g_Objects[item->object_id].anim_index;
