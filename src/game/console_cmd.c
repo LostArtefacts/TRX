@@ -34,6 +34,9 @@
 
 static const char *Console_Cmd_Set_Resolve(const char *option_name);
 static bool Console_Cmd_Set_SameKey(const char *key1, const char *key2);
+static bool Console_Cmd_GetCurrentValue(
+    const char *key, char *target, size_t target_size);
+static bool Console_Cmd_SetCurrentValue(const char *key, const char *new_value);
 static bool Console_Cmd_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
 static COMMAND_RESULT Console_Cmd_Pos(const char *const args);
@@ -357,6 +360,117 @@ static bool Console_Cmd_Set_SameKey(const char *key1, const char *key2)
     return true;
 }
 
+static bool Console_Cmd_GetCurrentValue(
+    const char *const key, char *target, const size_t target_size)
+{
+    const CONFIG_OPTION *found_option = NULL;
+    for (const CONFIG_OPTION *option = g_ConfigOptionMap; option->name != NULL;
+         option++) {
+        if (!Console_Cmd_Set_SameKey(option->name, key)) {
+            continue;
+        }
+        found_option = option;
+        break;
+    }
+
+    if (found_option == NULL) {
+        return false;
+    }
+
+    assert(found_option->target != NULL);
+    switch (found_option->type) {
+    case COT_BOOL:
+        snprintf(
+            target, target_size, "%s",
+            *(bool *)found_option->target ? GS(MISC_ON) : GS(MISC_OFF));
+        break;
+    case COT_INT32:
+        snprintf(target, target_size, "%d", *(int32_t *)found_option->target);
+        break;
+    case COT_FLOAT:
+        snprintf(target, target_size, "%.2f", *(float *)found_option->target);
+        break;
+    case COT_DOUBLE:
+        snprintf(target, target_size, "%.2f", *(double *)found_option->target);
+        break;
+    case COT_ENUM:
+        for (const ENUM_STRING_MAP *enum_map = found_option->param;
+             enum_map->text != NULL; enum_map++) {
+            if (enum_map->value == *(int32_t *)found_option->target) {
+                strncpy(target, enum_map->text, target_size);
+            }
+        }
+        break;
+    }
+    return true;
+}
+
+static bool Console_Cmd_SetCurrentValue(
+    const char *const key, const char *const new_value)
+{
+    const CONFIG_OPTION *found_option = NULL;
+
+    for (const CONFIG_OPTION *option = g_ConfigOptionMap; option->name != NULL;
+         option++) {
+        if (!Console_Cmd_Set_SameKey(option->name, key)) {
+            continue;
+        }
+        found_option = option;
+        break;
+    }
+
+    switch (found_option->type) {
+    case COT_BOOL:
+        if (String_Match(new_value, "on|true|1")) {
+            *(bool *)found_option->target = true;
+            return true;
+        } else if (String_Match(new_value, "off|false|0")) {
+            *(bool *)found_option->target = false;
+            return true;
+        }
+        break;
+
+    case COT_INT32: {
+        int32_t new_value_typed;
+        if (sscanf(new_value, "%d", &new_value_typed) == 1) {
+            *(int32_t *)found_option->target = new_value_typed;
+            return true;
+        }
+        break;
+    }
+
+    case COT_FLOAT: {
+        float new_value_typed;
+        if (sscanf(new_value, "%f", &new_value_typed) == 1) {
+            *(float *)found_option->target = new_value_typed;
+            return true;
+        }
+        break;
+    }
+
+    case COT_DOUBLE: {
+        double new_value_typed;
+        if (sscanf(new_value, "%lf", &new_value_typed) == 1) {
+            *(double *)found_option->target = new_value_typed;
+            return true;
+        }
+        break;
+    }
+
+    case COT_ENUM:
+        for (const ENUM_STRING_MAP *enum_map = found_option->param;
+             enum_map->text != NULL; enum_map++) {
+            if (String_Equivalent(enum_map->text, new_value)) {
+                *(int32_t *)found_option->target = enum_map->value;
+                return true;
+            }
+        }
+        break;
+    }
+
+    return false;
+}
+
 static COMMAND_RESULT Console_Cmd_Set(const char *const args)
 {
     COMMAND_RESULT result = CR_BAD_INVOCATION;
@@ -370,109 +484,22 @@ static COMMAND_RESULT Console_Cmd_Set(const char *const args)
     }
 
     if (new_value != NULL) {
-        for (const CONFIG_OPTION *option = g_ConfigOptionMap;
-             option->name != NULL; option++) {
-            if (!Console_Cmd_Set_SameKey(option->name, key)) {
-                continue;
-            }
+        if (Console_Cmd_SetCurrentValue(key, new_value)) {
+            Config_Sanitize();
+            Config_Write();
+            Output_ApplyRenderSettings();
 
-            switch (option->type) {
-            case COT_BOOL:
-                if (String_Match(new_value, "on|true|1")) {
-                    *(bool *)option->target = true;
-                    result = CR_SUCCESS;
-                } else if (String_Match(new_value, "off|false|0")) {
-                    *(bool *)option->target = false;
-                    result = CR_SUCCESS;
-                }
-                break;
-
-            case COT_INT32: {
-                int32_t new_value_typed;
-                if (sscanf(new_value, "%d", &new_value_typed) == 1) {
-                    *(int32_t *)option->target = new_value_typed;
-                    result = CR_SUCCESS;
-                }
-                break;
-            }
-
-            case COT_FLOAT: {
-                float new_value_typed;
-                if (sscanf(new_value, "%f", &new_value_typed) == 1) {
-                    *(float *)option->target = new_value_typed;
-                    result = CR_SUCCESS;
-                }
-                break;
-            }
-
-            case COT_DOUBLE: {
-                double new_value_typed;
-                if (sscanf(new_value, "%lf", &new_value_typed) == 1) {
-                    *(double *)option->target = new_value_typed;
-                    result = CR_SUCCESS;
-                }
-                break;
-            }
-
-            case COT_ENUM:
-                for (const ENUM_STRING_MAP *enum_map = option->param;
-                     enum_map->text != NULL; enum_map++) {
-                    if (String_Equivalent(enum_map->text, new_value)) {
-                        *(int32_t *)option->target = enum_map->value;
-                        result = CR_SUCCESS;
-                        break;
-                    }
-                }
-                break;
-            }
-
-            if (result == CR_SUCCESS) {
-                Console_Log(GS(OSD_CONFIG_OPTION_SET), key, new_value);
-                Config_Write();
-            }
-            break;
+            char final_value[128];
+            assert(Console_Cmd_GetCurrentValue(key, final_value, 128));
+            Console_Log(GS(OSD_CONFIG_OPTION_SET), key, final_value);
+            result = CR_SUCCESS;
         }
     } else {
-        for (const CONFIG_OPTION *option = g_ConfigOptionMap;
-             option->name != NULL; option++) {
-            if (!Console_Cmd_Set_SameKey(option->name, key)) {
-                continue;
-            }
-
-            char cur_value[128] = "";
-            assert(option->target != NULL);
-            switch (option->type) {
-            case COT_BOOL:
-                sprintf(
-                    cur_value, "%s",
-                    *(bool *)option->target ? GS(MISC_ON) : GS(MISC_OFF));
-                break;
-            case COT_INT32:
-                sprintf(cur_value, "%d", *(int32_t *)option->target);
-                break;
-            case COT_FLOAT:
-                sprintf(cur_value, "%.2f", *(float *)option->target);
-                break;
-            case COT_DOUBLE:
-                sprintf(cur_value, "%.2f", *(double *)option->target);
-                break;
-            case COT_ENUM:
-                for (const ENUM_STRING_MAP *enum_map = option->param;
-                     enum_map->text != NULL; enum_map++) {
-                    if (enum_map->value == *(int32_t *)option->target) {
-                        strcpy(cur_value, enum_map->text);
-                    }
-                }
-                break;
-            }
+        char cur_value[128];
+        if (Console_Cmd_GetCurrentValue(key, cur_value, 128)) {
             Console_Log(GS(OSD_CONFIG_OPTION_GET), key, cur_value);
             result = CR_SUCCESS;
-            break;
         }
-    }
-
-    if (result == CR_SUCCESS) {
-        Output_ApplyRenderSettings();
     }
 
 cleanup:

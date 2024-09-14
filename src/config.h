@@ -141,3 +141,4 @@ extern CONFIG g_Config;
 
 bool Config_Read(void);
 bool Config_Write(void);
+void Config_Sanitize(void);

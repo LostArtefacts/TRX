@@ -13,9 +13,6 @@
 #include <stdio.h>
 #include <time.h>
 
-#define CLOCK_TURBO_SPEED_MIN -2
-#define CLOCK_TURBO_SPEED_MAX 2
-
 static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit);
 static bool Clock_CheckElapsedUnit(
     CLOCK_TIMER *const timer, const double how_often, const double unit,

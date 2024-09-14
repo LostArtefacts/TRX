@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define CLOCK_TURBO_SPEED_MIN -2
+#define CLOCK_TURBO_SPEED_MAX 2
+
 typedef struct {
     double prev_counter;
     int32_t prev_fps;

@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "config_map.h"
+#include "game/clock.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/requester.h"
@@ -257,20 +258,7 @@ static void Config_Load(struct json_object_s *root_obj)
 
     Config_LoadLegacyOptions(root_obj);
 
-    CLAMP(g_Config.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
-    CLAMP(g_Config.fov_value, 30, 255);
-    CLAMP(g_Config.camera_speed, 1, 10);
-    CLAMP(g_Config.music_volume, 0, 10);
-    CLAMP(g_Config.sound_volume, 0, 10);
-    CLAMP(g_Config.input.layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
-    CLAMP(g_Config.input.cntlr_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
-    CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
-    CLAMP(g_Config.ui.text_scale, MIN_TEXT_SCALE, MAX_TEXT_SCALE);
-    CLAMP(g_Config.ui.bar_scale, MIN_BAR_SCALE, MAX_BAR_SCALE);
-
-    if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
-        g_Config.rendering.fps = 30;
-    }
+    Config_Sanitize();
 }
 
 static void Config_Dump(struct json_object_s *root_obj)
@@ -303,4 +291,27 @@ bool Config_Read(void)
 bool Config_Write(void)
 {
     return ConfigFile_Write(m_ConfigPath, &Config_Dump);
+}
+
+void Config_Sanitize(void)
+{
+    CLAMP(g_Config.start_lara_hitpoints, 1, LARA_MAX_HITPOINTS);
+    CLAMP(g_Config.fov_value, 30, 255);
+    CLAMP(g_Config.camera_speed, 1, 10);
+    CLAMP(g_Config.music_volume, 0, 10);
+    CLAMP(g_Config.sound_volume, 0, 10);
+    CLAMP(g_Config.input.layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
+    CLAMP(g_Config.input.cntlr_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
+    CLAMP(g_Config.brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+    CLAMP(g_Config.ui.text_scale, MIN_TEXT_SCALE, MAX_TEXT_SCALE);
+    CLAMP(g_Config.ui.bar_scale, MIN_BAR_SCALE, MAX_BAR_SCALE);
+    CLAMP(
+        g_Config.rendering.turbo_speed, CLOCK_TURBO_SPEED_MIN,
+        CLOCK_TURBO_SPEED_MAX);
+    CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
+    CLAMP(g_Config.rendering.wireframe_width, 1.0, 100.0);
+
+    if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
+        g_Config.rendering.fps = 30;
+    }
 }
