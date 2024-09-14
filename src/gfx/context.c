@@ -204,6 +204,13 @@ void GFX_Context_SetLineWidth(const int32_t line_width)
     m_Context.config.line_width = line_width;
 }
 
+void GFX_Context_SetAnisotropyFilter(float value)
+{
+    GFX_GL_Sampler_Bind(&m_Context.renderer_3d.sampler, 0);
+    GFX_GL_Sampler_Parameterf(
+        &m_Context.renderer_3d.sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, value);
+}
+
 void GFX_Context_SetVSync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync);

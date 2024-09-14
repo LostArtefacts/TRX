@@ -16,6 +16,7 @@ void GFX_Context_Detach(void);
 void GFX_Context_SetDisplayFilter(GFX_TEXTURE_FILTER filter);
 void GFX_Context_SetWireframeMode(bool enable);
 void GFX_Context_SetLineWidth(int32_t line_width);
+void GFX_Context_SetAnisotropyFilter(float value);
 void GFX_Context_SetVSync(bool vsync);
 void GFX_Context_SetWindowSize(int32_t width, int32_t height);
 void GFX_Context_SetDisplaySize(int32_t width, int32_t height);

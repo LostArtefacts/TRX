@@ -305,12 +305,6 @@ void GFX_3D_Renderer_SetPrimType(
     GFX_3D_VertexStream_SetPrimType(&renderer->vertex_stream, value);
 }
 
-void GFX_3D_Renderer_SetAnisotropyFilter(GFX_3D_Renderer *renderer, float value)
-{
-    GFX_GL_Sampler_Parameterf(
-        &renderer->sampler, GL_TEXTURE_MAX_ANISOTROPY_EXT, value);
-}
-
 void GFX_3D_Renderer_SetTextureFilter(
     GFX_3D_Renderer *renderer, GFX_TEXTURE_FILTER filter)
 {

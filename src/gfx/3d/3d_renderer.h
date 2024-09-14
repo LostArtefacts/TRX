@@ -66,8 +66,6 @@ void GFX_3D_Renderer_RenderPrimFan(
 void GFX_3D_Renderer_RenderPrimList(
     GFX_3D_Renderer *renderer, GFX_3D_Vertex *vertices, int count);
 
-void GFX_3D_Renderer_SetAnisotropyFilter(
-    GFX_3D_Renderer *renderer, float value);
 void GFX_3D_Renderer_SetPrimType(
     GFX_3D_Renderer *renderer, GFX_3D_PrimType value);
 void GFX_3D_Renderer_SetTextureFilter(
