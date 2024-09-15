@@ -5,14 +5,10 @@
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
-#include "gfx/2d/2d_renderer.h"
-#include "gfx/2d/2d_surface.h"
-#include "gfx/3d/3d_renderer.h"
-#include "gfx/3d/vertex_stream.h"
-#include "gfx/context.h"
 #include "global/vars.h"
 #include "specific/s_shell.h"
 
+#include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
 
 #include <assert.h>
