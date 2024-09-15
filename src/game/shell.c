@@ -18,7 +18,6 @@
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "gfx/common.h"
 #include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_shell.h"

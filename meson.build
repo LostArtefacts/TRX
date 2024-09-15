@@ -7,7 +7,16 @@ project(
   ],
 )
 
-trx = subproject('libtrx', default_options: {'tr_version': '1'})
+if host_machine.system() == 'darwin'
+  gfx_gl_default_backend = 'GFX_GL_33C'
+else
+  gfx_gl_default_backend = 'GFX_GL_21'
+endif
+
+trx = subproject('libtrx', default_options: {
+  'tr_version': '1',
+  'gfx_gl_default_backend': gfx_gl_default_backend,
+})
 c_compiler = meson.get_compiler('c')
 
 build_opts = [
@@ -264,21 +273,6 @@ sources = [
   'src/game/stats.c',
   'src/game/text.c',
   'src/game/viewport.c',
-  'src/gfx/2d/2d_renderer.c',
-  'src/gfx/2d/2d_surface.c',
-  'src/gfx/3d/3d_renderer.c',
-  'src/gfx/3d/vertex_stream.c',
-  'src/gfx/context.c',
-  'src/gfx/gl/buffer.c',
-  'src/gfx/gl/gl_core_3_3.c',
-  'src/gfx/gl/program.c',
-  'src/gfx/gl/sampler.c',
-  'src/gfx/gl/texture.c',
-  'src/gfx/gl/utils.c',
-  'src/gfx/gl/vertex_array.c',
-  'src/gfx/renderers/fbo_renderer.c',
-  'src/gfx/renderers/legacy_renderer.c',
-  'src/gfx/screenshot.c',
   'src/global/enum_str.c',
   'src/global/vars.c',
   'src/math/math.c',
@@ -304,18 +298,6 @@ dependencies = [
   dep_swscale,
   dep_zlib,
 ]
-
-gfx_options = configuration_data()
-
-if host_machine.system() == 'darwin'
-  gfx_options.set('GFX_GL_DEFAULT_BACKEND', 'GFX_GL_33C')
-else
-  gfx_options.set('GFX_GL_DEFAULT_BACKEND', 'GFX_GL_21')
-endif
-
-configure_file(
-  output: 'gfx_options.h',
-  configuration: gfx_options)
 
 executable(
   'TR1X',

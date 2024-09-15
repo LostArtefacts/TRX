@@ -27,15 +27,13 @@
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "gfx/2d/2d_renderer.h"
-#include "gfx/2d/2d_surface.h"
-#include "gfx/context.h"
 #include "global/types.h"
 #include "specific/s_output.h"
 #include "specific/s_shell.h"
 
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 

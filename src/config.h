@@ -1,8 +1,8 @@
 #pragma once
 
-#include "gfx/common.h"
-#include "gfx/context.h"
 #include "global/types.h"
+
+#include <libtrx/gfx/common.h>
 
 #include <stdbool.h>
 #include <stdint.h>

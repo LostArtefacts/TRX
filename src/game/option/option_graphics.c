@@ -6,10 +6,9 @@
 #include "game/output.h"
 #include "game/screen.h"
 #include "game/text.h"
-#include "gfx/common.h"
-#include "gfx/context.h"
 #include "global/const.h"
 
+#include <libtrx/gfx/context.h>
 #include <libtrx/utils.h>
 
 #include <stdbool.h>
