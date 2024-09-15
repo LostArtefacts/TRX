@@ -311,6 +311,10 @@
       "Title": "Oggetti 3D",
       "Description": "Sostituisce gli oggetti 2D con i rispettivi modelli 3D."
     },
+    "enable_ps1_crystals": {
+      "Title": "Abilita i cristalli di salvataggio PS1",
+      "Description": "I cristalli di salvataggio verranno disegnati con una tinta viola, più simile al tipo PS1."
+    },
     "enable_round_shadow": {
       "Title": "Ombre rotonde",
       "Description": "Abilita le ombre rotonde invece di quelle ottagonali predefinite."

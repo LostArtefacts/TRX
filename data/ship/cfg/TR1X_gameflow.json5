@@ -18,6 +18,7 @@
         "data/injections/braid.bin",
         "data/injections/lara_animations.bin",
         "data/injections/lara_jumping.bin",
+        "data/injections/purple_crystal.bin",
         "data/injections/uzi_sfx.bin",
     ],
     "convert_dropped_guns": false,

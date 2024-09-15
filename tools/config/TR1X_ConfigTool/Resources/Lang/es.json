@@ -119,6 +119,10 @@
       "Title": "Recogidas en 3D",
       "Description": "Permite que los modelos en 3D se representen en lugar de los sprites para los objetos a recoger."
     },
+    "enable_ps1_crystals": {
+      "Title": "Habilitar cristales guardados de PS1",
+      "Description": "Los cristales guardados se dibujarán con un tinte púrpura, más similar al tipo PS1."
+    },
     "enable_skybox": {
       "Title": "Cielo",
       "Description": "Habilita el cielo en niveles soportados."

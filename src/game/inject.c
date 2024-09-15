@@ -46,6 +46,7 @@ typedef enum INJECTION_TYPE {
     INJ_PS1_ENEMY = 8,
     INJ_DISABLE_ANIM_SPRITE = 9,
     INJ_SKYBOX = 10,
+    INJ_PS1_CRYSTAL = 11,
 } INJECTION_TYPE;
 
 typedef struct INJECTION {
@@ -243,6 +244,10 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
         break;
     case INJ_SKYBOX:
         injection->relevant = g_Config.enable_skybox;
+        break;
+    case INJ_PS1_CRYSTAL:
+        injection->relevant =
+            g_Config.enable_save_crystals && g_Config.enable_ps1_crystals;
         break;
     default:
         LOG_WARNING("%s is of unknown type %d", filename, injection->type);
