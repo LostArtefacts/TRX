@@ -18,8 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-// IWYU pragma: no_include <libavcodec/defs.h>
-
 #include "specific/s_fmv.h"
 
 #include "config.h"

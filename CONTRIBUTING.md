@@ -71,9 +71,7 @@ will be always considered supplementary.
 
 This project uses [pre-commit](https://pre-commit.com/) to make sure the code
 is formatted the right way. This tool has additional external dependencies:
-`clang-format` for automatic code formatting and `include-what-you-use` to
-remove unused `#include`s.
-To install pre-commit:
+`clang-format` for automatic code formatting. To install pre-commit:
 
 ```
 python3 -m pip install --user pre-commit
@@ -83,7 +81,7 @@ pre-commit install
 To install required external dependencies on Ubuntu:
 
 ```
-apt-get install -y iwyu clang-format-18
+apt-get install -y clang-format-18
 ```
 
 After this, each time you make a commit a hook should trigger to automatically

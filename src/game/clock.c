@@ -1,4 +1,3 @@
-// IWYU pragma: no_include <bits/types/struct_tm.h>
 #include "game/clock.h"
 
 #include "config.h"
