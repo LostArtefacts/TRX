@@ -38,12 +38,6 @@ endif
 
 null_dep = dependency('', required: false)
 
-if host_machine.system() == 'windows'
-  dep_opengl = c_compiler.find_library('opengl32')
-else
-  dep_opengl = dependency('GL')
-endif
-
 dep_trx = trx.get_variable('dep_trx')
 dep_avcodec = dependency('libavcodec', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
@@ -292,7 +286,6 @@ dependencies = [
   dep_avformat,
   dep_avutil,
   dep_mathlibrary,
-  dep_opengl,
   dep_sdl2,
   dep_swresample,
   dep_swscale,
