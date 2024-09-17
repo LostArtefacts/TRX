@@ -156,6 +156,7 @@ void Shell_Shutdown(void)
 
 void Shell_Main(void)
 {
+    GameString_Init();
     Config_Read();
 
     const char *gameflow_path = m_TR1XGameflowPath;
@@ -269,6 +270,7 @@ void Shell_Main(void)
     }
 
     Config_Write();
+    GameString_Shutdown();
 }
 
 void Shell_ExitSystem(const char *message)

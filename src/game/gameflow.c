@@ -243,13 +243,14 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
 
     struct json_object_element_s *strings_elem = strings_obj->start;
     while (strings_elem) {
-        const GAME_STRING_ID key =
-            GameString_IDFromEnum(strings_elem->name->string);
+        const char *const key = strings_elem->name->string;
         struct json_string_s *value = json_value_as_string(strings_elem->value);
-        if (!value || !value->string || key < 0 || key >= GS_NUMBER_OF) {
-            LOG_ERROR("invalid string key %s", strings_elem->name->string);
+        if (!GameString_IsKnown(key)) {
+            LOG_ERROR("invalid game string key: %s", key);
+        } else if (!value || value->string == NULL) {
+            LOG_ERROR("invalid game string value: %s", key);
         } else {
-            GameString_Set(key, value->string);
+            GameString_Define(key, value->string);
         }
         strings_elem = strings_elem->next;
     }

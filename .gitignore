@@ -34,3 +34,5 @@ Release/
 subprojects/packagecache/
 subprojects/dwarfstack-*/
 subprojects/dwarfstack.wrap
+subprojects/uthash-*/
+subprojects/uthash.wrap
