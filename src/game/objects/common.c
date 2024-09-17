@@ -228,6 +228,11 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     // clang-format on
 };
 
+OBJECT_INFO *Object_GetObject(GAME_OBJECT_ID object_id)
+{
+    return &g_Objects[object_id];
+}
+
 GAME_OBJECT_ID Object_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
 {

@@ -1,28 +1,35 @@
 #!/usr/bin/env python3
 import json
 import re
+from pathlib import Path
 
-from tr1x.paths import TR1X_DATA_DIR, TR1X_SRC_DIR
+from tr1x.paths import LIBTRX_INCLUDE_DIR, TR1X_DATA_DIR, TR1X_SRC_DIR
 
 SHIP_DIR = TR1X_DATA_DIR / "ship"
-GAME_STRING_DEF_PATH = TR1X_SRC_DIR / "game/game_string.def"
+GAME_STRING_DEF_PATHS = [
+    TR1X_SRC_DIR / "game/game_string.def",
+    LIBTRX_INCLUDE_DIR / "game/game_string.def",
+]
 
 
-def get_default_string_map() -> dict[str, str]:
+def get_default_strings_map(paths: list[Path]) -> dict[str, str]:
     result: dict[str, str] = {}
-    for line in GAME_STRING_DEF_PATH.read_text().splitlines():
-        if match := re.match(r'^GS_DEFINE\((\w+),\s*"([^"]+)"\)$', line.strip()):
-            result[match.group(1)] = match.group(2)
+    for path in paths:
+        for line in path.read_text().splitlines():
+            if match := re.match(
+                r'^GS_DEFINE\((\w+),\s*"([^"]+)"\)$', line.strip()
+            ):
+                result[match.group(1)] = match.group(2)
     return result
 
 
-def postprocess_gameflow(gameflow: str, string_map: dict[str, str]) -> str:
+def postprocess_gameflow(gameflow: str, strings_map: dict[str, str]) -> str:
     gameflow = re.sub(
         r'^(    "strings": {)[^}]*(})',
         '    "strings": {\n'
         + "\n".join(
             f"        {json.dumps(key)}: {json.dumps(value)},"
-            for key, value in string_map.items()
+            for key, value in sorted(strings_map.items(), key=lambda kv: kv[0])
         )
         + "\n    }",
         gameflow,
@@ -32,12 +39,12 @@ def postprocess_gameflow(gameflow: str, string_map: dict[str, str]) -> str:
 
 
 def main() -> None:
-    string_map = get_default_string_map()
-    assert string_map
+    strings_map = get_default_strings_map(GAME_STRING_DEF_PATHS)
+    assert strings_map
 
     for gameflow_path in SHIP_DIR.rglob("*gameflow*.json*"):
         old_gameflow = gameflow_path.read_text()
-        new_gameflow = postprocess_gameflow(old_gameflow, string_map)
+        new_gameflow = postprocess_gameflow(old_gameflow, strings_map)
         if new_gameflow != old_gameflow:
             gameflow_path.write_text(new_gameflow)
 

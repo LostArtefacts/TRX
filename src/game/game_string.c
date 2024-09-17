@@ -5,6 +5,8 @@
 void GameString_Init(void)
 {
 #include "game_string.def"
+
+#include <libtrx/game/game_string.def>
 }
 
 void GameString_Shutdown(void)

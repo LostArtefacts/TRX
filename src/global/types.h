@@ -2,8 +2,10 @@
 
 #include "global/const.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/items.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/objects/common.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -579,13 +581,6 @@ typedef enum HEIGHT_TYPE {
     HT_BIG_SLOPE = 2,
 } HEIGHT_TYPE;
 
-typedef enum DIRECTION {
-    DIR_NORTH = 0,
-    DIR_EAST = 1,
-    DIR_SOUTH = 2,
-    DIR_WEST = 3,
-} DIRECTION;
-
 typedef enum ANIM_COMMAND {
     AC_NULL = 0,
     AC_MOVE_ORIGIN = 1,
@@ -1072,18 +1067,6 @@ typedef struct CINE_POSITION {
     XYZ_16 rot;
 } CINE_POSITION;
 
-typedef struct BOUNDS_16 {
-    XYZ_16 min;
-    XYZ_16 max;
-} BOUNDS_16;
-
-typedef struct FRAME_INFO {
-    BOUNDS_16 bounds;
-    XYZ_16 offset;
-    int16_t nmeshes;
-    int32_t *mesh_rots;
-} FRAME_INFO;
-
 typedef struct LARA_ARM {
     FRAME_INFO *frame_base;
     int16_t frame_num;
@@ -1372,74 +1355,6 @@ typedef struct TEXTSTRING {
     char *string;
     struct BAR_INFO progress_bar;
 } TEXTSTRING;
-
-typedef struct COLL_INFO {
-    int32_t mid_floor;
-    int32_t mid_ceiling;
-    int32_t mid_type;
-    int32_t front_floor;
-    int32_t front_ceiling;
-    int32_t front_type;
-    int32_t left_floor;
-    int32_t left_ceiling;
-    int32_t left_type;
-    int32_t right_floor;
-    int32_t right_ceiling;
-    int32_t right_type;
-    int32_t radius;
-    int32_t bad_pos;
-    int32_t bad_neg;
-    int32_t bad_ceiling;
-    XYZ_32 shift;
-    XYZ_32 old;
-    int16_t facing;
-    DIRECTION quadrant;
-    int16_t coll_type;
-    int8_t tilt_x;
-    int8_t tilt_z;
-    int8_t hit_by_baddie;
-    int8_t hit_static;
-    uint16_t slopes_are_walls : 1;
-    uint16_t slopes_are_pits : 1;
-    uint16_t lava_is_pit : 1;
-    uint16_t enable_baddie_push : 1;
-    uint16_t enable_spaz : 1;
-} COLL_INFO;
-
-typedef struct OBJECT_BOUNDS {
-    struct {
-        XYZ_16 min;
-        XYZ_16 max;
-    } shift, rot;
-} OBJECT_BOUNDS;
-
-typedef struct OBJECT_INFO {
-    int16_t nmeshes;
-    int16_t mesh_index;
-    int32_t bone_index;
-    FRAME_INFO *frame_base;
-    void (*initialise)(int16_t item_num);
-    void (*control)(int16_t item_num);
-    int16_t (*floor_height_func)(
-        const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
-    int16_t (*ceiling_height_func)(
-        const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
-    void (*draw_routine)(ITEM_INFO *item);
-    void (*collision)(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-    const OBJECT_BOUNDS *(*bounds)(void);
-    int16_t anim_index;
-    int16_t hit_points;
-    int16_t pivot_length;
-    int16_t radius;
-    int16_t smartness;
-    int16_t shadow_size;
-    uint16_t loaded : 1;
-    uint16_t intelligent : 1;
-    uint16_t save_position : 1;
-    uint16_t save_hitpoints : 1;
-    uint16_t save_flags : 1;
-    uint16_t save_anim : 1;
-} OBJECT_INFO;
 
 typedef struct SHADOW_INFO {
     int16_t poly_count;

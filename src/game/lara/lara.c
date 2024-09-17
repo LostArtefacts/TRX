@@ -31,6 +31,11 @@
 #define LARA_MOVE_SPEED 16
 #define LARA_UW_DAMAGE 5
 
+ITEM_INFO *Lara_GetItem(void)
+{
+    return g_LaraItem;
+}
+
 void Lara_Control(void)
 {
     COLL_INFO coll = { 0 };
