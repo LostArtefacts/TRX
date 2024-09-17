@@ -241,3 +241,18 @@ GAMEFLOW_COMMAND Game_Stop(void)
         return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
 }
+
+bool Game_IsPlayable(void)
+{
+    if (g_GameInfo.current_level_type == GFL_TITLE
+        || g_GameInfo.current_level_type == GFL_DEMO
+        || g_GameInfo.current_level_type == GFL_CUTSCENE) {
+        return false;
+    }
+
+    if (!g_Objects[O_LARA].loaded) {
+        return false;
+    }
+
+    return true;
+}

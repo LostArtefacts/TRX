@@ -13,3 +13,5 @@ void Game_ProcessInput(void);
 void Game_DrawScene(bool draw_overlay);
 
 GAMEFLOW_COMMAND Game_MainMenu(void);
+
+bool Game_IsPlayable(void);
