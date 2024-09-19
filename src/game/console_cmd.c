@@ -36,14 +36,14 @@
 
 static bool Console_Cmd_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
+static COMMAND_RESULT Console_Cmd_VSync(const char *const args);
+static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args);
+static COMMAND_RESULT Console_Cmd_Braid(const char *const args);
+static COMMAND_RESULT Console_Cmd_Cheats(const char *const args);
 static COMMAND_RESULT Console_Cmd_Teleport(const char *const args);
 static COMMAND_RESULT Console_Cmd_Heal(const char *const args);
 static COMMAND_RESULT Console_Cmd_Fly(const char *const args);
 static COMMAND_RESULT Console_Cmd_Speed(const char *const args);
-static COMMAND_RESULT Console_Cmd_VSync(const char *const args);
-static COMMAND_RESULT Console_Cmd_Braid(const char *const args);
-static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args);
-static COMMAND_RESULT Console_Cmd_Cheats(const char *const args);
 static COMMAND_RESULT Console_Cmd_GiveItem(const char *args);
 static COMMAND_RESULT Console_Cmd_FlipMap(const char *args);
 static COMMAND_RESULT Console_Cmd_Kill(const char *args);
@@ -63,28 +63,36 @@ static inline bool Console_Cmd_IsFloatRound(const float num)
 
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args)
 {
-    if (String_Equivalent(args, "60")) {
-        g_Config.rendering.fps = 60;
-        Config_Write();
-        Config_ApplyChanges();
-        Console_Log(GS(OSD_FPS_SET), g_Config.rendering.fps);
-        return CR_SUCCESS;
-    }
+    return Console_Cmd_Config_Helper(
+        Console_Cmd_Config_GetOptionFromTarget(&g_Config.rendering.fps), args);
+}
 
-    if (String_Equivalent(args, "30")) {
-        g_Config.rendering.fps = 30;
-        Config_Write();
-        Config_ApplyChanges();
-        Console_Log(GS(OSD_FPS_SET), g_Config.rendering.fps);
-        return CR_SUCCESS;
-    }
+static COMMAND_RESULT Console_Cmd_VSync(const char *const args)
+{
+    return Console_Cmd_Config_Helper(
+        Console_Cmd_Config_GetOptionFromTarget(
+            &g_Config.rendering.enable_vsync),
+        args);
+}
 
-    if (String_Equivalent(args, "")) {
-        Console_Log(GS(OSD_FPS_GET), g_Config.rendering.fps);
-        return CR_SUCCESS;
-    }
+static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args)
+{
+    return Console_Cmd_Config_Helper(
+        Console_Cmd_Config_GetOptionFromTarget(
+            &g_Config.rendering.enable_wireframe),
+        args);
+}
 
-    return CR_BAD_INVOCATION;
+static COMMAND_RESULT Console_Cmd_Braid(const char *const args)
+{
+    return Console_Cmd_Config_Helper(
+        Console_Cmd_Config_GetOptionFromTarget(&g_Config.enable_braid), args);
+}
+
+static COMMAND_RESULT Console_Cmd_Cheats(const char *const args)
+{
+    return Console_Cmd_Config_Helper(
+        Console_Cmd_Config_GetOptionFromTarget(&g_Config.enable_cheats), args);
 }
 
 static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
@@ -264,62 +272,6 @@ static COMMAND_RESULT Console_Cmd_Speed(const char *const args)
     }
 
     return CR_BAD_INVOCATION;
-}
-
-static COMMAND_RESULT Console_Cmd_VSync(const char *const args)
-{
-    bool enable;
-    if (!String_ParseBool(args, &enable)) {
-        return CR_BAD_INVOCATION;
-    }
-
-    g_Config.rendering.enable_vsync = enable;
-    Config_Write();
-    Config_ApplyChanges();
-    Console_Log(enable ? GS(OSD_VSYNC_ON) : GS(OSD_VSYNC_OFF));
-    return CR_SUCCESS;
-}
-
-static COMMAND_RESULT Console_Cmd_Braid(const char *const args)
-{
-    bool enable;
-    if (!String_ParseBool(args, &enable)) {
-        return CR_BAD_INVOCATION;
-    }
-
-    g_Config.enable_braid = enable;
-    Config_Write();
-    Config_ApplyChanges();
-    Console_Log(enable ? GS(OSD_BRAID_ON) : GS(OSD_BRAID_OFF));
-    return CR_SUCCESS;
-}
-
-static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args)
-{
-    bool enable;
-    if (!String_ParseBool(args, &enable)) {
-        return CR_BAD_INVOCATION;
-    }
-
-    g_Config.rendering.enable_wireframe = enable;
-    Config_Write();
-    Config_ApplyChanges();
-    Console_Log(enable ? GS(OSD_WIREFRAME_ON) : GS(OSD_WIREFRAME_OFF));
-    return CR_SUCCESS;
-}
-
-static COMMAND_RESULT Console_Cmd_Cheats(const char *const args)
-{
-    bool enable;
-    if (!String_ParseBool(args, &enable)) {
-        return CR_BAD_INVOCATION;
-    }
-
-    g_Config.enable_cheats = enable;
-    Config_Write();
-    Config_ApplyChanges();
-    Console_Log(enable ? GS(OSD_CHEATS_ON) : GS(OSD_CHEATS_OFF));
-    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
@@ -647,14 +599,14 @@ static COMMAND_RESULT Console_Cmd_Abortion(const char *args)
 
 CONSOLE_COMMAND *g_ConsoleCommands[] = {
     &(CONSOLE_COMMAND) { .prefix = "fps", .proc = Console_Cmd_Fps },
+    &(CONSOLE_COMMAND) { .prefix = "vsync", .proc = Console_Cmd_VSync },
+    &(CONSOLE_COMMAND) { .prefix = "wireframe", .proc = Console_Cmd_Wireframe },
+    &(CONSOLE_COMMAND) { .prefix = "braid", .proc = Console_Cmd_Braid },
+    &(CONSOLE_COMMAND) { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     &(CONSOLE_COMMAND) { .prefix = "tp", .proc = Console_Cmd_Teleport },
     &(CONSOLE_COMMAND) { .prefix = "heal", .proc = Console_Cmd_Heal },
     &(CONSOLE_COMMAND) { .prefix = "fly", .proc = Console_Cmd_Fly },
     &(CONSOLE_COMMAND) { .prefix = "speed", .proc = Console_Cmd_Speed },
-    &(CONSOLE_COMMAND) { .prefix = "vsync", .proc = Console_Cmd_VSync },
-    &(CONSOLE_COMMAND) { .prefix = "braid", .proc = Console_Cmd_Braid },
-    &(CONSOLE_COMMAND) { .prefix = "wireframe", .proc = Console_Cmd_Wireframe },
-    &(CONSOLE_COMMAND) { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     &(CONSOLE_COMMAND) { .prefix = "give", .proc = Console_Cmd_GiveItem },
     &(CONSOLE_COMMAND) { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
     &(CONSOLE_COMMAND) { .prefix = "flip", .proc = Console_Cmd_FlipMap },

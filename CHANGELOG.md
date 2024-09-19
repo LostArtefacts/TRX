@@ -27,6 +27,8 @@
 - fixed config JSON not sanitizing some numeric values (#1515)
 - fixed potential crashes in custom levels if hybrid creature objects are not present in the level (#1444)
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
+- changed `/set` console command output to always use fully-qualified option names
+- changed `/fps`, `/vsync`, `/wireframe`, `/braid` and `/cheats` console commands output to be in line with `/set` console command output
 - changed the door cheat to also target drawbridges
 - improved appearance of textures around edges when bilinear filter is off (#1483)
   Since this removes the seams on pushblocks, this was made optional.
