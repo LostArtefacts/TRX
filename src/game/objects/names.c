@@ -216,7 +216,9 @@ static const ITEM_NAME m_ItemNames[] = {
     { NO_OBJECT, "" },
 };
 
-GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
+GAME_OBJECT_ID *Object_IdsFromName(
+    const char *const name, int32_t *const out_match_count,
+    bool (*const filter)(GAME_OBJECT_ID))
 {
     // first, calculate the number of matches to allocate
     VECTOR *matches = Vector_Create(sizeof(MATCH));
@@ -224,6 +226,9 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
     // Store matches from hardcoded strings
     for (const ITEM_NAME *desc = m_ItemNames; desc->object_id != NO_OBJECT;
          desc++) {
+        if (filter != NULL && !filter(desc->object_id)) {
+            continue;
+        }
         const int32_t match_length = String_Match(name, desc->regex);
         if (match_length > 0) {
             MATCH match = {
@@ -237,20 +242,25 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
     // Store matches from customizable inventory strings
     for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
          item_ptr++) {
-        const INVENTORY_ITEM *item = *item_ptr;
+        const INVENTORY_ITEM *const item = *item_ptr;
+        const GAME_OBJECT_ID object_id =
+            Object_GetCognateInverse(item->object_id, g_ItemToInvObjectMap);
+        if (filter != NULL && !filter(object_id)) {
+            continue;
+        }
+
         if (String_CaseSubstring(item->string, name)) {
             MATCH match = {
                 .match_length = strlen(name),
-                .object_id = Object_GetCognateInverse(
-                    item->object_id, g_ItemToInvObjectMap),
+                .object_id = object_id,
             };
             Vector_Add(matches, &match);
         }
     }
 
     // sort by match length so that best-matching results appear first
-    for (int i = 0; i < matches->count; i++) {
-        for (int j = i + 1; j < matches->count; j++) {
+    for (int32_t i = 0; i < matches->count; i++) {
+        for (int32_t j = i + 1; j < matches->count; j++) {
             if (((MATCH *)Vector_Get(matches, i))->match_length
                 < ((MATCH *)Vector_Get(matches, j))->match_length) {
                 Vector_Swap(matches, i, j);
@@ -291,7 +301,7 @@ GAME_OBJECT_ID *Object_IdsFromName(const char *name, int32_t *out_match_count)
     return unique_ids;
 }
 
-const char *Object_GetCanonicalName(
+const char *Object_GetName(
     const GAME_OBJECT_ID object_id, const char *user_input)
 {
     for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;

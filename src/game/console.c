@@ -13,6 +13,7 @@
 
 #include <libtrx/game/console/common.h>
 #include <libtrx/log.h>
+#include <libtrx/strings.h>
 
 #include <SDL2/SDL_keycode.h>
 #include <assert.h>
@@ -82,16 +83,17 @@ static COMMAND_RESULT M_Eval(const char *const cmdline)
             break;
         }
 
-        if (strstr(cmdline, cur_cmd->prefix) != cmdline) {
+        char regex[strlen(cur_cmd->prefix) + 13];
+        sprintf(regex, "^(%s)(\\s+.*)?$", cur_cmd->prefix);
+        if (!String_Match(cmdline, regex)) {
             continue;
         }
 
-        if (cmdline[strlen(cur_cmd->prefix)] == ' ') {
-            args = cmdline + strlen(cur_cmd->prefix) + 1;
-        } else if (cmdline[strlen(cur_cmd->prefix)] == '\0') {
-            args = "";
+        args = strstr(cmdline, " ");
+        if (args != NULL) {
+            args++;
         } else {
-            continue;
+            args = "";
         }
 
         matching_cmd = cur_cmd;

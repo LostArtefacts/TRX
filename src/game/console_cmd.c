@@ -22,6 +22,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/console/commands/config.h>
+#include <libtrx/game/console/commands/give_item.h>
 #include <libtrx/game/console/commands/heal.h>
 #include <libtrx/game/console/commands/pos.h>
 #include <libtrx/game/console/commands/set_health.h>
@@ -35,6 +36,7 @@
 #include <stdio.h>
 #include <string.h>
 
+static bool M_CanTargetObject_Enemy(GAME_OBJECT_ID object_id);
 static bool M_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
 static COMMAND_RESULT Console_Cmd_VSync(const char *const args);
@@ -44,7 +46,6 @@ static COMMAND_RESULT Console_Cmd_Cheats(const char *const args);
 static COMMAND_RESULT Console_Cmd_Teleport(const char *const args);
 static COMMAND_RESULT Console_Cmd_Fly(const char *const args);
 static COMMAND_RESULT Console_Cmd_Speed(const char *const args);
-static COMMAND_RESULT Console_Cmd_GiveItem(const char *args);
 static COMMAND_RESULT Console_Cmd_FlipMap(const char *args);
 static COMMAND_RESULT Console_Cmd_Kill(const char *args);
 static COMMAND_RESULT Console_Cmd_LoadGame(const char *args);
@@ -55,6 +56,11 @@ static COMMAND_RESULT Console_Cmd_ExitGame(const char *args);
 static COMMAND_RESULT Console_Cmd_EndLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_StartLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_Abortion(const char *args);
+
+static bool M_CanTargetObject_Enemy(const GAME_OBJECT_ID object_id)
+{
+    return Object_IsObjectType(object_id, g_EnemyObjects);
+}
 
 static inline bool M_IsFloatRound(const float num)
 {
@@ -164,7 +170,8 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
     // Nearest item of this name
     if (!String_Equivalent(args, "")) {
         int32_t match_count = 0;
-        GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
+        GAME_OBJECT_ID *matching_objs =
+            Object_IdsFromName(args, &match_count, NULL);
 
         const ITEM_INFO *best_item = NULL;
         int32_t best_distance = INT32_MAX;
@@ -252,68 +259,6 @@ static COMMAND_RESULT Console_Cmd_Speed(const char *const args)
     return CR_BAD_INVOCATION;
 }
 
-static COMMAND_RESULT Console_Cmd_GiveItem(const char *args)
-{
-    if (g_GameInfo.current_level_type == GFL_TITLE
-        || g_GameInfo.current_level_type == GFL_DEMO
-        || g_GameInfo.current_level_type == GFL_CUTSCENE) {
-        return CR_UNAVAILABLE;
-    }
-
-    if (g_LaraItem == NULL) {
-        return CR_UNAVAILABLE;
-    }
-
-    if (String_Equivalent(args, "keys")) {
-        return Lara_Cheat_GiveAllKeys() ? CR_SUCCESS : CR_FAILURE;
-    }
-
-    if (String_Equivalent(args, "guns")) {
-        return Lara_Cheat_GiveAllGuns() ? CR_SUCCESS : CR_FAILURE;
-    }
-
-    if (String_Equivalent(args, "all")) {
-        return Lara_Cheat_GiveAllItems() ? CR_SUCCESS : CR_FAILURE;
-    }
-
-    int32_t num = 1;
-    if (sscanf(args, "%d ", &num) == 1) {
-        args = strstr(args, " ");
-        if (!args) {
-            return CR_BAD_INVOCATION;
-        }
-        args++;
-    }
-
-    if (String_Equivalent(args, "")) {
-        return CR_BAD_INVOCATION;
-    }
-
-    bool found = false;
-    int32_t match_count = 0;
-    GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
-    for (int32_t i = 0; i < match_count; i++) {
-        const GAME_OBJECT_ID object_id = matching_objs[i];
-        if (Object_IsObjectType(object_id, g_PickupObjects)) {
-            if (g_Objects[object_id].loaded) {
-                Inv_AddItemNTimes(object_id, num);
-                Console_Log(
-                    GS(OSD_GIVE_ITEM),
-                    Object_GetCanonicalName(object_id, args));
-                found = true;
-            }
-        }
-    }
-    Memory_FreePointer(&matching_objs);
-
-    if (!found) {
-        Console_Log(GS(OSD_INVALID_ITEM), args);
-        return CR_FAILURE;
-    }
-
-    return CR_SUCCESS;
-}
-
 static COMMAND_RESULT Console_Cmd_FlipMap(const char *args)
 {
     if (g_GameInfo.current_level_type == GFL_TITLE
@@ -399,25 +344,22 @@ static COMMAND_RESULT Console_Cmd_Kill(const char *args)
     // kill a single enemy type
     {
         int32_t match_count = 0;
-        GAME_OBJECT_ID *matching_objs = Object_IdsFromName(args, &match_count);
-        bool matched = false;
+        GAME_OBJECT_ID *matching_objs =
+            Object_IdsFromName(args, &match_count, M_CanTargetObject_Enemy);
         int32_t num = 0;
         for (int32_t i = 0; i < match_count; i++) {
             const GAME_OBJECT_ID object_id = matching_objs[i];
-            if (Object_IsObjectType(object_id, g_EnemyObjects)) {
-                matched = true;
-                for (int16_t item_num = 0; item_num < Item_GetTotalCount();
-                     item_num++) {
-                    if (g_Items[item_num].object_id == object_id
-                        && Lara_Cheat_KillEnemy(item_num)) {
-                        num++;
-                    }
+            for (int16_t item_num = 0; item_num < Item_GetTotalCount();
+                 item_num++) {
+                if (g_Items[item_num].object_id == object_id
+                    && Lara_Cheat_KillEnemy(item_num)) {
+                    num++;
                 }
             }
         }
         Memory_FreePointer(&matching_objs);
 
-        if (!matched) {
+        if (!match_count) {
             return CR_BAD_INVOCATION;
         }
         if (num == 0) {
@@ -584,8 +526,6 @@ CONSOLE_COMMAND *g_ConsoleCommands[] = {
     &(CONSOLE_COMMAND) { .prefix = "tp", .proc = Console_Cmd_Teleport },
     &(CONSOLE_COMMAND) { .prefix = "fly", .proc = Console_Cmd_Fly },
     &(CONSOLE_COMMAND) { .prefix = "speed", .proc = Console_Cmd_Speed },
-    &(CONSOLE_COMMAND) { .prefix = "give", .proc = Console_Cmd_GiveItem },
-    &(CONSOLE_COMMAND) { .prefix = "gimme", .proc = Console_Cmd_GiveItem },
     &(CONSOLE_COMMAND) { .prefix = "flip", .proc = Console_Cmd_FlipMap },
     &(CONSOLE_COMMAND) { .prefix = "flipmap", .proc = Console_Cmd_FlipMap },
     &(CONSOLE_COMMAND) { .prefix = "kill", .proc = Console_Cmd_Kill },
@@ -604,5 +544,6 @@ CONSOLE_COMMAND *g_ConsoleCommands[] = {
     &g_Console_Cmd_Heal,
     &g_Console_Cmd_SetHealth,
     &g_Console_Cmd_Config,
+    &g_Console_Cmd_GiveItem,
     NULL,
 };

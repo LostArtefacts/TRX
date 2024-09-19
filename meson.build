@@ -95,6 +95,7 @@ sources = [
   'src/config.c',
   'src/config_map.c',
   'src/game/anim.c',
+  'src/game/backpack.c',
   'src/game/box.c',
   'src/game/camera.c',
   'src/game/carrier.c',
