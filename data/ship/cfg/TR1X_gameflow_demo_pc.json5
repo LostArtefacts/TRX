@@ -196,6 +196,7 @@
         "OSD_COMPLETE_LEVEL": "Level complete!",
         "OSD_CONFIG_OPTION_GET": "%s is currently set to %s",
         "OSD_CONFIG_OPTION_SET": "%s changed to %s",
+        "OSD_CONFIG_OPTION_UNKNOWN_OPTION": "Unknown option: %s",
         "OSD_CURRENT_HEALTH_GET": "Current Lara's health: %d",
         "OSD_CURRENT_HEALTH_SET": "Lara's health set to %d",
         "OSD_DOOR_CLOSE": "Close Sesame!",
