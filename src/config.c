@@ -4,6 +4,7 @@
 #include "game/clock.h"
 #include "game/input.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/requester.h"
 #include "game/sound.h"
 #include "global/const.h"
@@ -314,4 +315,14 @@ void Config_Sanitize(void)
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;
     }
+}
+
+void Config_ApplyChanges(void)
+{
+    Output_ApplyRenderSettings();
+}
+
+const CONFIG_OPTION *Config_GetOptionMap(void)
+{
+    return g_ConfigOptionMap;
 }
