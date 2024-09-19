@@ -22,6 +22,7 @@
 #include "global/vars.h"
 
 #include <libtrx/game/console/commands/config.h>
+#include <libtrx/game/console/commands/heal.h>
 #include <libtrx/game/console/commands/pos.h>
 #include <libtrx/game/console/commands/set_health.h>
 #include <libtrx/game/console/common.h>
@@ -41,7 +42,6 @@ static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args);
 static COMMAND_RESULT Console_Cmd_Braid(const char *const args);
 static COMMAND_RESULT Console_Cmd_Cheats(const char *const args);
 static COMMAND_RESULT Console_Cmd_Teleport(const char *const args);
-static COMMAND_RESULT Console_Cmd_Heal(const char *const args);
 static COMMAND_RESULT Console_Cmd_Fly(const char *const args);
 static COMMAND_RESULT Console_Cmd_Speed(const char *const args);
 static COMMAND_RESULT Console_Cmd_GiveItem(const char *args);
@@ -218,28 +218,6 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
     }
 
     return CR_BAD_INVOCATION;
-}
-
-static COMMAND_RESULT Console_Cmd_Heal(const char *const args)
-{
-    if (g_GameInfo.current_level_type == GFL_TITLE
-        || g_GameInfo.current_level_type == GFL_DEMO
-        || g_GameInfo.current_level_type == GFL_CUTSCENE) {
-        return CR_UNAVAILABLE;
-    }
-
-    if (!g_Objects[O_LARA].loaded) {
-        return CR_UNAVAILABLE;
-    }
-
-    if (g_LaraItem->hit_points == LARA_MAX_HITPOINTS) {
-        Console_Log(GS(OSD_HEAL_ALREADY_FULL_HP));
-        return CR_SUCCESS;
-    }
-
-    g_LaraItem->hit_points = LARA_MAX_HITPOINTS;
-    Console_Log(GS(OSD_HEAL_SUCCESS));
-    return CR_SUCCESS;
 }
 
 static COMMAND_RESULT Console_Cmd_Fly(const char *const args)
@@ -604,7 +582,6 @@ CONSOLE_COMMAND *g_ConsoleCommands[] = {
     &(CONSOLE_COMMAND) { .prefix = "braid", .proc = Console_Cmd_Braid },
     &(CONSOLE_COMMAND) { .prefix = "cheats", .proc = Console_Cmd_Cheats },
     &(CONSOLE_COMMAND) { .prefix = "tp", .proc = Console_Cmd_Teleport },
-    &(CONSOLE_COMMAND) { .prefix = "heal", .proc = Console_Cmd_Heal },
     &(CONSOLE_COMMAND) { .prefix = "fly", .proc = Console_Cmd_Fly },
     &(CONSOLE_COMMAND) { .prefix = "speed", .proc = Console_Cmd_Speed },
     &(CONSOLE_COMMAND) { .prefix = "give", .proc = Console_Cmd_GiveItem },
@@ -624,6 +601,7 @@ CONSOLE_COMMAND *g_ConsoleCommands[] = {
     &(CONSOLE_COMMAND) { .prefix = "natlastinks",
                          .proc = Console_Cmd_Abortion },
     &g_Console_Cmd_Pos,
+    &g_Console_Cmd_Heal,
     &g_Console_Cmd_SetHealth,
     &g_Console_Cmd_Config,
     NULL,

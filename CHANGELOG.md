@@ -26,6 +26,7 @@
 - fixed Bacon Lara re-spawning after saving and loading (#1500, regression from 0.7)
 - fixed config JSON not sanitizing some numeric values (#1515)
 - fixed potential crashes in custom levels if hybrid creature objects are not present in the level (#1444)
+- changed `/heal` console command to also extinguish Lara
 - changed `/tp` console command to look for the closest place to teleport to when targeting items (#1484)
 - changed `/set` console command output to always use fully-qualified option names
 - changed `/fps`, `/vsync`, `/wireframe`, `/braid` and `/cheats` console commands output to be in line with `/set` console command output
