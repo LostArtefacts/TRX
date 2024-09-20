@@ -817,3 +817,13 @@ static bool M_TestSwitchOrKill(
     Item_Kill(item_num);
     return false;
 }
+
+bool Creature_IsEnemy(const ITEM_INFO *const item)
+{
+    return Object_IsObjectType(item->object_id, g_EnemyObjects);
+}
+
+bool Creature_IsAlly(const ITEM_INFO *const item)
+{
+    return Object_IsObjectType(item->object_id, g_AllyObjects);
+}

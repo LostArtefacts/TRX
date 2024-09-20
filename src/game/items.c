@@ -838,3 +838,8 @@ bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
         item->frame_num, g_Anims[item->anim_num].frame_base + start,
         g_Anims[item->anim_num].frame_base + end);
 }
+
+ITEM_INFO *Item_Get(const int16_t item_num)
+{
+    return &g_Items[item_num];
+}

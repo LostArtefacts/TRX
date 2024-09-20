@@ -9,7 +9,6 @@
 #include "game/console/cmd/flipmap.h"
 #include "game/console/cmd/fly.h"
 #include "game/console/cmd/fps.h"
-#include "game/console/cmd/kill.h"
 #include "game/console/cmd/load_game.h"
 #include "game/console/cmd/play_demo.h"
 #include "game/console/cmd/play_level.h"
@@ -22,6 +21,7 @@
 #include <libtrx/game/console/cmd/config.h>
 #include <libtrx/game/console/cmd/give_item.h>
 #include <libtrx/game/console/cmd/heal.h>
+#include <libtrx/game/console/cmd/kill.h>
 #include <libtrx/game/console/cmd/pos.h>
 #include <libtrx/game/console/cmd/set_health.h>
 
