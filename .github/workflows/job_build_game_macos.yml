@@ -218,6 +218,10 @@ jobs:
             ${{ env.FFMPEG_INSTALL_TMP_X86_64 }}
             ${{ env.FFMPEG_INSTALL_TMP_UNIVERSAL }}
 
+      - name: Setup CA
+        run: |
+          sudo port -N install apple-pki-bundle curl-ca-bundle
+
       - name: Build arm64 and create app bundle
         run: |
           BUILD_DIR=build-arm64
