@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/console.h"
+#include "game/console/common.h"
 #include "game/gamebuf.h"
 #include "game/overlay.h"
 #include "game/phase/phase.h"

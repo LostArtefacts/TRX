@@ -1,7 +1,8 @@
-#include "game/console.h"
+#include "game/console/common.h"
 
 #include "config.h"
 #include "game/clock.h"
+#include "game/console/setup.h"
 #include "game/game_string.h"
 #include "game/input.h"
 #include "game/output.h"
@@ -53,8 +54,6 @@ static const char m_ValidPromptChars[] =
 static void M_UpdatePromptTextstring(void);
 static void M_UpdateCaretTextstring(void);
 static COMMAND_RESULT M_Eval(const char *const cmdline);
-
-extern CONSOLE_COMMAND *g_ConsoleCommands[];
 
 static void M_UpdatePromptTextstring(void)
 {

@@ -1,7 +1,7 @@
 #include "game/clock.h"
 
 #include "config.h"
-#include "game/console.h"
+#include "game/console/common.h"
 #include "game/game_string.h"
 #include "global/const.h"
 

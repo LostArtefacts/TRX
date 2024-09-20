@@ -1,7 +1,7 @@
 #include "specific/s_shell.h"
 
 #include "config.h"
-#include "game/console.h"
+#include "game/console/common.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"

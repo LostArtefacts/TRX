@@ -2,7 +2,7 @@
 
 #include "game/camera.h"
 #include "game/carrier.h"
-#include "game/console.h"
+#include "game/console/common.h"
 #include "game/effects/exploding_death.h"
 #include "game/game_string.h"
 #include "game/gameflow.h"

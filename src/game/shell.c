@@ -2,7 +2,7 @@
 
 #include "config.h"
 #include "game/clock.h"
-#include "game/console.h"
+#include "game/console/common.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_string.h"
