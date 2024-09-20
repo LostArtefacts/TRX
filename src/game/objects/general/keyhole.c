@@ -21,21 +21,12 @@ static const OBJECT_BOUNDS m_KeyHoleBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *KeyHole_Bounds(void);
+static void M_Collision(
+    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+;
+static const OBJECT_BOUNDS *M_Bounds(void);
 
-static const OBJECT_BOUNDS *KeyHole_Bounds(void)
-{
-    return &m_KeyHoleBounds;
-}
-
-void KeyHole_Setup(OBJECT_INFO *obj)
-{
-    obj->collision = KeyHole_Collision;
-    obj->save_flags = 1;
-    obj->bounds = KeyHole_Bounds;
-}
-
-void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+static void M_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
     const OBJECT_INFO *const obj = &g_Objects[item->object_id];
@@ -66,6 +57,18 @@ void KeyHole_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 
     Inv_Display(INV_KEYS_MODE);
+}
+
+static const OBJECT_BOUNDS *M_Bounds(void)
+{
+    return &m_KeyHoleBounds;
+}
+
+void KeyHole_Setup(OBJECT_INFO *obj)
+{
+    obj->collision = M_Collision;
+    obj->save_flags = 1;
+    obj->bounds = M_Bounds;
 }
 
 bool KeyHole_Trigger(int16_t item_num)

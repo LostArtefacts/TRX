@@ -30,11 +30,11 @@ static RESOLUTION m_Resolutions[] = {
     // clang-format on
 };
 
-static void Screen_ApplyResolution(void);
-static int32_t Screen_GetRenderScaleBase(
+static void M_ApplyResolution(void);
+static int32_t M_GetRenderScaleBase(
     int32_t unit, int32_t base_width, int32_t base_height, double factor);
 
-static void Screen_ApplyResolution(void)
+static void M_ApplyResolution(void)
 {
     int32_t width = Screen_GetResWidth();
     int32_t height = Screen_GetResHeight();
@@ -46,7 +46,7 @@ static void Screen_ApplyResolution(void)
     Viewport_SetFOV(Viewport_GetUserFOV());
 }
 
-static int32_t Screen_GetRenderScaleBase(
+static int32_t M_GetRenderScaleBase(
     int32_t unit, int32_t base_width, int32_t base_height, double factor)
 {
     int32_t scale_x = Screen_GetResWidth() > base_width
@@ -99,7 +99,7 @@ void Screen_Init(void)
         m_ResolutionIdx = 0;
     }
 
-    Screen_ApplyResolution();
+    M_ApplyResolution();
 }
 
 int32_t Screen_GetResWidth(void)
@@ -126,12 +126,11 @@ int32_t Screen_GetResHeightDownscaled(RENDER_SCALE_REF ref)
 int32_t Screen_GetRenderScale(int32_t unit, RENDER_SCALE_REF ref)
 {
     if (ref == RSR_TEXT) {
-        return Screen_GetRenderScaleBase(
-            unit, 640, 480, g_Config.ui.text_scale);
+        return M_GetRenderScaleBase(unit, 640, 480, g_Config.ui.text_scale);
     } else if (ref == RSR_BAR) {
-        return Screen_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
+        return M_GetRenderScaleBase(unit, 640, 480, g_Config.ui.bar_scale);
     } else {
-        return Screen_GetRenderScaleBase(unit, 640, 480, 0);
+        return M_GetRenderScaleBase(unit, 640, 480, 0);
     }
 }
 
@@ -164,7 +163,7 @@ bool Screen_SetPrevRes(void)
 {
     if (m_ResolutionIdx - 1 >= 0) {
         m_ResolutionIdx--;
-        Screen_ApplyResolution();
+        M_ApplyResolution();
         return true;
     }
     return false;
@@ -174,7 +173,7 @@ bool Screen_SetNextRes(void)
 {
     if (m_ResolutionIdx + 1 < m_ResolutionsCount) {
         m_ResolutionIdx++;
-        Screen_ApplyResolution();
+        M_ApplyResolution();
         return true;
     }
     return false;

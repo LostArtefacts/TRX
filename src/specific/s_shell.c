@@ -39,13 +39,13 @@ static int m_ArgCount = 0;
 static char **m_ArgStrings = NULL;
 static SDL_Window *m_Window = NULL;
 
-static void S_Shell_SeedRandom(void);
-static void S_Shell_SetWindowPos(int32_t x, int32_t y, bool update);
-static void S_Shell_SetWindowSize(int32_t width, int32_t height, bool update);
-static void S_Shell_SetWindowMaximized(bool is_enabled, bool update);
-static void S_Shell_SetFullscreen(bool is_enabled, bool update);
+static void M_SeedRandom(void);
+static void M_SetWindowPos(int32_t x, int32_t y, bool update);
+static void M_SetWindowSize(int32_t width, int32_t height, bool update);
+static void M_SetWindowMaximized(bool is_enabled, bool update);
+static void M_SetFullscreen(bool is_enabled, bool update);
 
-static void S_Shell_SeedRandom(void)
+static void M_SeedRandom(void)
 {
     time_t lt = time(0);
     struct tm *tptr = localtime(&lt);
@@ -53,7 +53,7 @@ static void S_Shell_SeedRandom(void)
     Random_SeedDraw(tptr->tm_sec + 43 * tptr->tm_min + 3477 * tptr->tm_hour);
 }
 
-static void S_Shell_SetWindowPos(int32_t x, int32_t y, bool update)
+static void M_SetWindowPos(int32_t x, int32_t y, bool update)
 {
     if (x <= 0 || y <= 0) {
         return;
@@ -71,7 +71,7 @@ static void S_Shell_SetWindowPos(int32_t x, int32_t y, bool update)
     }
 }
 
-static void S_Shell_SetWindowSize(int32_t width, int32_t height, bool update)
+static void M_SetWindowSize(int32_t width, int32_t height, bool update)
 {
     if (width <= 0 || height <= 0) {
         return;
@@ -91,7 +91,7 @@ static void S_Shell_SetWindowSize(int32_t width, int32_t height, bool update)
     }
 }
 
-static void S_Shell_SetWindowMaximized(bool is_enabled, bool update)
+static void M_SetWindowMaximized(bool is_enabled, bool update)
 {
     g_Config.rendering.enable_maximized = is_enabled;
 
@@ -100,7 +100,7 @@ static void S_Shell_SetWindowMaximized(bool is_enabled, bool update)
     }
 }
 
-static void S_Shell_SetFullscreen(bool is_enabled, bool update)
+static void M_SetFullscreen(bool is_enabled, bool update)
 {
     g_Config.rendering.enable_fullscreen = is_enabled;
 
@@ -113,7 +113,7 @@ static void S_Shell_SetFullscreen(bool is_enabled, bool update)
 
 void S_Shell_ToggleFullscreen(void)
 {
-    S_Shell_SetFullscreen(!g_Config.rendering.enable_fullscreen, true);
+    M_SetFullscreen(!g_Config.rendering.enable_fullscreen, true);
 
     // save the updated config, but ensure it was loaded first
     if (g_Config.loaded) {
@@ -135,9 +135,9 @@ void S_Shell_HandleWindowResize(void)
     SDL_GetWindowPosition(m_Window, &x, &y);
     LOG_INFO("%dx%d+%d,%d (maximized: %d)", width, height, x, y, is_maximized);
 
-    S_Shell_SetWindowMaximized(is_maximized, false);
-    S_Shell_SetWindowPos(x, y, false);
-    S_Shell_SetWindowSize(width, height, false);
+    M_SetWindowMaximized(is_maximized, false);
+    M_SetWindowPos(x, y, false);
+    M_SetWindowSize(width, height, false);
 
     // save the updated config, but ensure it was loaded first
     if (g_Config.loaded) {
@@ -147,15 +147,15 @@ void S_Shell_HandleWindowResize(void)
 
 void S_Shell_Init(void)
 {
-    S_Shell_SeedRandom();
+    M_SeedRandom();
 
-    S_Shell_SetFullscreen(g_Config.rendering.enable_fullscreen, true);
-    S_Shell_SetWindowPos(
+    M_SetFullscreen(g_Config.rendering.enable_fullscreen, true);
+    M_SetWindowPos(
         g_Config.rendering.window_x, g_Config.rendering.window_y, true);
-    S_Shell_SetWindowSize(
+    M_SetWindowSize(
         g_Config.rendering.window_width, g_Config.rendering.window_height,
         true);
-    S_Shell_SetWindowMaximized(g_Config.rendering.enable_maximized, true);
+    M_SetWindowMaximized(g_Config.rendering.enable_maximized, true);
 }
 
 void S_Shell_ShowFatalError(const char *message)

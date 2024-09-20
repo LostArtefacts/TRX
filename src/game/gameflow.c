@@ -46,17 +46,16 @@ typedef struct GAMEFLOW_GIVE_ITEM_DATA {
 
 GAMEFLOW g_GameFlow = { 0 };
 
-static int32_t GameFlow_StringToEnumType(
+static int32_t M_StringToEnumType(
     const char *const str, const STRING_TO_ENUM_TYPE *map);
-static TRISTATE_BOOL GameFlow_ReadTristateBool(
+static TRISTATE_BOOL M_ReadTristateBool(
     struct json_object_s *obj, const char *key);
-static bool GameFlow_LoadScriptMeta(struct json_object_s *obj);
-static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj);
-static bool GameFlow_IsLegacySequence(const char *type_str);
-static bool GameFlow_LoadLevelSequence(
-    struct json_object_s *obj, int32_t level_num);
-static bool GameFlow_LoadScriptLevels(struct json_object_s *obj);
-static bool GameFlow_LoadFromFileImpl(const char *file_name);
+static bool M_LoadScriptMeta(struct json_object_s *obj);
+static bool M_LoadScriptGameStrings(struct json_object_s *obj);
+static bool M_IsLegacySequence(const char *type_str);
+static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num);
+static bool M_LoadScriptLevels(struct json_object_s *obj);
+static bool M_LoadFromFileImpl(const char *file_name);
 
 static const STRING_TO_ENUM_TYPE m_GameflowLevelTypeEnumMap[] = {
     { "title", GFL_TITLE },
@@ -100,7 +99,7 @@ static const STRING_TO_ENUM_TYPE m_GameflowSeqTypeEnumMap[] = {
     { NULL, -1 },
 };
 
-static int32_t GameFlow_StringToEnumType(
+static int32_t M_StringToEnumType(
     const char *const str, const STRING_TO_ENUM_TYPE *map)
 {
     while (map->str) {
@@ -112,7 +111,7 @@ static int32_t GameFlow_StringToEnumType(
     return map->val;
 }
 
-static TRISTATE_BOOL GameFlow_ReadTristateBool(
+static TRISTATE_BOOL M_ReadTristateBool(
     struct json_object_s *obj, const char *key)
 {
     struct json_value_s *value = json_object_get_value(obj, key);
@@ -124,7 +123,7 @@ static TRISTATE_BOOL GameFlow_ReadTristateBool(
     return TB_UNSPECIFIED;
 }
 
-static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
+static bool M_LoadScriptMeta(struct json_object_s *obj)
 {
     const char *tmp_s;
     int tmp_i;
@@ -162,15 +161,14 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     }
     g_GameFlow.demo_delay = tmp_d;
 
-    g_GameFlow.force_game_modes =
-        GameFlow_ReadTristateBool(obj, "force_game_modes");
+    g_GameFlow.force_game_modes = M_ReadTristateBool(obj, "force_game_modes");
     if (json_object_get_bool(obj, "force_disable_game_modes", false)) {
         // backwards compatibility
         g_GameFlow.force_game_modes = TB_OFF;
     }
 
     g_GameFlow.force_save_crystals =
-        GameFlow_ReadTristateBool(obj, "force_save_crystals");
+        M_ReadTristateBool(obj, "force_save_crystals");
     if (json_object_get_bool(obj, "force_enable_save_crystals", false)) {
         // backwards compatibility
         g_GameFlow.force_save_crystals = TB_ON;
@@ -233,7 +231,7 @@ static bool GameFlow_LoadScriptMeta(struct json_object_s *obj)
     return true;
 }
 
-static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
+static bool M_LoadScriptGameStrings(struct json_object_s *obj)
 {
     struct json_object_s *strings_obj = json_object_get_object(obj, "strings");
     if (!strings_obj) {
@@ -258,14 +256,13 @@ static bool GameFlow_LoadScriptGameStrings(struct json_object_s *obj)
     return true;
 }
 
-static bool GameFlow_IsLegacySequence(const char *type_str)
+static bool M_IsLegacySequence(const char *type_str)
 {
     return !strcmp(type_str, "fix_pyramid_secret")
         || !strcmp(type_str, "stop_cine");
 }
 
-static bool GameFlow_LoadLevelSequence(
-    struct json_object_s *obj, int32_t level_num)
+static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 {
     struct json_array_s *jseq_arr = json_object_get_array(obj, "sequence");
     if (!jseq_arr) {
@@ -294,8 +291,7 @@ static bool GameFlow_LoadLevelSequence(
             return false;
         }
 
-        seq->type =
-            GameFlow_StringToEnumType(type_str, m_GameflowSeqTypeEnumMap);
+        seq->type = M_StringToEnumType(type_str, m_GameflowSeqTypeEnumMap);
 
         switch (seq->type) {
         case GFS_START_GAME:
@@ -507,7 +503,7 @@ static bool GameFlow_LoadLevelSequence(
         }
 
         default:
-            if (GameFlow_IsLegacySequence(type_str)) {
+            if (M_IsLegacySequence(type_str)) {
                 seq->type = GFS_LEGACY;
                 LOG_WARNING(
                     "level %d, sequence %s: legacy type ignored", level_num,
@@ -531,7 +527,7 @@ static bool GameFlow_LoadLevelSequence(
     return true;
 }
 
-static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
+static bool M_LoadScriptLevels(struct json_object_s *obj)
 {
     struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
     if (!jlvl_arr) {
@@ -593,8 +589,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
 
-        cur->level_type =
-            GameFlow_StringToEnumType(tmp_s, m_GameflowLevelTypeEnumMap);
+        cur->level_type = M_StringToEnumType(tmp_s, m_GameflowLevelTypeEnumMap);
 
         switch (cur->level_type) {
         case GFL_TITLE:
@@ -866,7 +861,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
             cur->item_drops.count = 0;
         }
 
-        if (!GameFlow_LoadLevelSequence(jlvl_obj, level_num)) {
+        if (!M_LoadLevelSequence(jlvl_obj, level_num)) {
             return false;
         }
 
@@ -886,7 +881,7 @@ static bool GameFlow_LoadScriptLevels(struct json_object_s *obj)
     return true;
 }
 
-static bool GameFlow_LoadFromFileImpl(const char *file_name)
+static bool M_LoadFromFileImpl(const char *file_name)
 {
     GameFlow_Shutdown();
     bool result = false;
@@ -913,9 +908,9 @@ static bool GameFlow_LoadFromFileImpl(const char *file_name)
     struct json_object_s *root_obj = json_value_as_object(root);
 
     result = true;
-    result &= GameFlow_LoadScriptMeta(root_obj);
-    result &= GameFlow_LoadScriptGameStrings(root_obj);
-    result &= GameFlow_LoadScriptLevels(root_obj);
+    result &= M_LoadScriptMeta(root_obj);
+    result &= M_LoadScriptGameStrings(root_obj);
+    result &= M_LoadScriptLevels(root_obj);
 
 cleanup:
     if (root) {
@@ -1021,7 +1016,7 @@ void GameFlow_Shutdown(void)
 
 bool GameFlow_LoadFromFile(const char *file_name)
 {
-    bool result = GameFlow_LoadFromFileImpl(file_name);
+    bool result = M_LoadFromFileImpl(file_name);
 
     g_InvItemMedi.string = GS(INV_ITEM_MEDI),
     g_InvItemBigMedi.string = GS(INV_ITEM_BIG_MEDI),

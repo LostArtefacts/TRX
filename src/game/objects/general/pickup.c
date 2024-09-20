@@ -50,12 +50,10 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
-static void PickUp_GetItem(
-    int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item);
-static void PickUp_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item);
+static void M_GetItem(int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item);
+static void M_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item);
 
-static void PickUp_GetItem(
-    int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
+static void M_GetItem(int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
 {
     Overlay_AddPickup(item->object_id);
     Inv_AddItem(item->object_id);
@@ -65,14 +63,14 @@ static void PickUp_GetItem(
     g_Lara.interact_target.is_moving = false;
 }
 
-static void PickUp_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item)
+static void M_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item)
 {
     int16_t pickup_num = g_RoomInfo[item->room_num].item_num;
     while (pickup_num != NO_ITEM) {
         ITEM_INFO *check_item = &g_Items[pickup_num];
         if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
             && g_Objects[check_item->object_id].collision == Pickup_Collision) {
-            PickUp_GetItem(pickup_num, check_item, lara_item);
+            M_GetItem(pickup_num, check_item, lara_item);
         }
         pickup_num = check_item->next_item;
     }
@@ -122,7 +120,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             if (!Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
                 goto cleanup;
             }
-            PickUp_GetAllAtLaraPos(item, lara_item);
+            M_GetAllAtLaraPos(item, lara_item);
             goto cleanup;
         }
 
@@ -145,7 +143,7 @@ void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
             if (!Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
                 goto cleanup;
             }
-            PickUp_GetAllAtLaraPos(item, lara_item);
+            M_GetAllAtLaraPos(item, lara_item);
             goto cleanup;
         }
 
@@ -218,7 +216,7 @@ void Pickup_CollisionControlled(
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP) {
             if (Item_TestFrameEqual(lara_item, LF_PICKUP_ERASE)) {
-                PickUp_GetAllAtLaraPos(item, lara_item);
+                M_GetAllAtLaraPos(item, lara_item);
             }
         }
     } else if (g_Lara.water_status == LWS_UNDERWATER) {
@@ -251,7 +249,7 @@ void Pickup_CollisionControlled(
             g_Lara.interact_target.item_num == item_num
             && lara_item->current_anim_state == LS_PICKUP
             && Item_TestFrameEqual(lara_item, LF_PICKUP_UW)) {
-            PickUp_GetAllAtLaraPos(item, lara_item);
+            M_GetAllAtLaraPos(item, lara_item);
             g_Lara.gun_status = LGS_ARMLESS;
         }
     }

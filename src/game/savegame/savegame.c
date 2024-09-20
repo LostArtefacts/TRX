@@ -73,15 +73,15 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
     { 0 },
 };
 
-static void Savegame_LoadPreprocess(void);
-static void Savegame_LoadPostprocess(void);
+static void M_LoadPreprocess(void);
+static void M_LoadPostprocess(void);
 
-static void Savegame_LoadPreprocess(void)
+static void M_LoadPreprocess(void)
 {
     Savegame_InitCurrentInfo();
 }
 
-static void Savegame_LoadPostprocess(void)
+static void M_LoadPostprocess(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
         ITEM_INFO *item = &g_Items[i];
@@ -402,7 +402,7 @@ bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     assert(savegame_info->format);
 
-    Savegame_LoadPreprocess();
+    M_LoadPreprocess();
 
     bool ret = false;
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
@@ -419,7 +419,7 @@ bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
     }
 
     if (ret) {
-        Savegame_LoadPostprocess();
+        M_LoadPostprocess();
     }
 
     g_GameInfo.save_initial_version = m_SavegameInfo[slot_num].initial_version;

@@ -38,45 +38,44 @@
 static LEVEL_INFO m_LevelInfo = { 0 };
 static INJECTION_INFO *m_InjectionInfo = NULL;
 
-static void Level_LoadFromFile(
+static void M_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo);
-static void Level_LoadTexturePages(VFILE *file);
-static void Level_LoadRooms(VFILE *file);
-static void Level_LoadMeshBase(VFILE *file);
-static void Level_LoadMeshes(VFILE *file);
-static void Level_LoadAnims(VFILE *file);
-static void Level_LoadAnimChanges(VFILE *file);
-static void Level_LoadAnimRanges(VFILE *file);
-static void Level_LoadAnimCommands(VFILE *file);
-static void Level_LoadAnimBones(VFILE *file);
-static void Level_LoadAnimFrames(VFILE *file);
-static void Level_LoadObjects(VFILE *file);
-static void Level_LoadStaticObjects(VFILE *file);
-static void Level_LoadTextures(VFILE *file);
-static void Level_LoadSprites(VFILE *file);
-static void Level_LoadCameras(VFILE *file);
-static void Level_LoadSoundEffects(VFILE *file);
-static void Level_LoadBoxes(VFILE *file);
-static void Level_LoadAnimatedTextures(VFILE *file);
-static void Level_LoadItems(VFILE *file);
-static void Level_LoadDepthQ(VFILE *file);
-static void Level_LoadPalette(VFILE *file);
-static void Level_LoadCinematic(VFILE *file);
-static void Level_LoadDemo(VFILE *file);
-static void Level_LoadSamples(VFILE *file);
-static void Level_CompleteSetup(int32_t level_num);
-static void Level_MarkWaterEdgeVertices(void);
-static size_t Level_CalculateMaxVertices(void);
+static void M_LoadTexturePages(VFILE *file);
+static void M_LoadRooms(VFILE *file);
+static void M_LoadMeshBase(VFILE *file);
+static void M_LoadMeshes(VFILE *file);
+static void M_LoadAnims(VFILE *file);
+static void M_LoadAnimChanges(VFILE *file);
+static void M_LoadAnimRanges(VFILE *file);
+static void M_LoadAnimCommands(VFILE *file);
+static void M_LoadAnimBones(VFILE *file);
+static void M_LoadAnimFrames(VFILE *file);
+static void M_LoadObjects(VFILE *file);
+static void M_LoadStaticObjects(VFILE *file);
+static void M_LoadTextures(VFILE *file);
+static void M_LoadSprites(VFILE *file);
+static void M_LoadCameras(VFILE *file);
+static void M_LoadSoundEffects(VFILE *file);
+static void M_LoadBoxes(VFILE *file);
+static void M_LoadAnimatedTextures(VFILE *file);
+static void M_LoadItems(VFILE *file);
+static void M_LoadDepthQ(VFILE *file);
+static void M_LoadPalette(VFILE *file);
+static void M_LoadCinematic(VFILE *file);
+static void M_LoadDemo(VFILE *file);
+static void M_LoadSamples(VFILE *file);
+static void M_CompleteSetup(int32_t level_num);
+static void M_MarkWaterEdgeVertices(void);
+static size_t M_CalculateMaxVertices(void);
 
-static void Level_LoadFromFile(
+static void M_LoadFromFile(
     const char *filename, int32_t level_num, bool is_demo)
 {
     GameBuf_Reset();
 
     VFILE *file = VFile_CreateFromPath(filename);
     if (!file) {
-        Shell_ExitSystemFmt(
-            "Level_LoadFromFile(): Could not open %s", filename);
+        Shell_ExitSystemFmt("M_LoadFromFile(): Could not open %s", filename);
     }
 
     const int32_t version = VFile_ReadS32(file);
@@ -86,49 +85,49 @@ static void Level_LoadFromFile(
             level_num, filename, version, 32);
     }
 
-    Level_LoadTexturePages(file);
+    M_LoadTexturePages(file);
 
     const int32_t file_level_num = VFile_ReadS32(file);
     LOG_INFO("file level num: %d", file_level_num);
 
-    Level_LoadRooms(file);
-    Level_LoadMeshBase(file);
-    Level_LoadMeshes(file);
-    Level_LoadAnims(file);
-    Level_LoadAnimChanges(file);
-    Level_LoadAnimRanges(file);
-    Level_LoadAnimCommands(file);
-    Level_LoadAnimBones(file);
-    Level_LoadAnimFrames(file);
-    Level_LoadObjects(file);
-    Level_LoadStaticObjects(file);
-    Level_LoadTextures(file);
-    Level_LoadSprites(file);
+    M_LoadRooms(file);
+    M_LoadMeshBase(file);
+    M_LoadMeshes(file);
+    M_LoadAnims(file);
+    M_LoadAnimChanges(file);
+    M_LoadAnimRanges(file);
+    M_LoadAnimCommands(file);
+    M_LoadAnimBones(file);
+    M_LoadAnimFrames(file);
+    M_LoadObjects(file);
+    M_LoadStaticObjects(file);
+    M_LoadTextures(file);
+    M_LoadSprites(file);
 
     if (is_demo) {
-        Level_LoadPalette(file);
+        M_LoadPalette(file);
     }
 
-    Level_LoadCameras(file);
-    Level_LoadSoundEffects(file);
-    Level_LoadBoxes(file);
-    Level_LoadAnimatedTextures(file);
-    Level_LoadItems(file);
+    M_LoadCameras(file);
+    M_LoadSoundEffects(file);
+    M_LoadBoxes(file);
+    M_LoadAnimatedTextures(file);
+    M_LoadItems(file);
     Stats_ObserveItemsLoad();
-    Level_LoadDepthQ(file);
+    M_LoadDepthQ(file);
 
     if (!is_demo) {
-        Level_LoadPalette(file);
+        M_LoadPalette(file);
     }
 
-    Level_LoadCinematic(file);
-    Level_LoadDemo(file);
-    Level_LoadSamples(file);
+    M_LoadCinematic(file);
+    M_LoadDemo(file);
+    M_LoadSamples(file);
 
     VFile_Close(file);
 }
 
-static void Level_LoadTexturePages(VFILE *file)
+static void M_LoadTexturePages(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.texture_page_count = VFile_ReadS32(file);
@@ -141,7 +140,7 @@ static void Level_LoadTexturePages(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadRooms(VFILE *file)
+static void M_LoadRooms(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_RoomCount = VFile_ReadU16(file);
@@ -272,7 +271,7 @@ static void Level_LoadRooms(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadMeshBase(VFILE *const file)
+static void M_LoadMeshBase(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.mesh_count = VFile_ReadS32(file);
@@ -285,7 +284,7 @@ static void Level_LoadMeshBase(VFILE *const file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadMeshes(VFILE *const file)
+static void M_LoadMeshes(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.mesh_ptr_count = VFile_ReadS32(file);
@@ -304,7 +303,7 @@ static void Level_LoadMeshes(VFILE *const file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnims(VFILE *file)
+static void M_LoadAnims(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_count = VFile_ReadS32(file);
@@ -333,7 +332,7 @@ static void Level_LoadAnims(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimChanges(VFILE *file)
+static void M_LoadAnimChanges(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_change_count = VFile_ReadS32(file);
@@ -352,7 +351,7 @@ static void Level_LoadAnimChanges(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimRanges(VFILE *file)
+static void M_LoadAnimRanges(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_range_count = VFile_ReadS32(file);
@@ -372,7 +371,7 @@ static void Level_LoadAnimRanges(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimCommands(VFILE *file)
+static void M_LoadAnimCommands(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_command_count = VFile_ReadS32(file);
@@ -387,7 +386,7 @@ static void Level_LoadAnimCommands(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimBones(VFILE *file)
+static void M_LoadAnimBones(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_bone_count = VFile_ReadS32(file);
@@ -401,7 +400,7 @@ static void Level_LoadAnimBones(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimFrames(VFILE *file)
+static void M_LoadAnimFrames(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_frame_data_count = VFile_ReadS32(file);
@@ -479,7 +478,7 @@ static void Level_LoadAnimFrames(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadObjects(VFILE *file)
+static void M_LoadObjects(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.object_count = VFile_ReadS32(file);
@@ -509,7 +508,7 @@ static void Level_LoadObjects(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadStaticObjects(VFILE *file)
+static void M_LoadStaticObjects(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.static_count = VFile_ReadS32(file);
@@ -538,7 +537,7 @@ static void Level_LoadStaticObjects(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadTextures(VFILE *file)
+static void M_LoadTextures(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.texture_count = VFile_ReadS32(file);
@@ -559,7 +558,7 @@ static void Level_LoadTextures(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadSprites(VFILE *file)
+static void M_LoadSprites(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.sprite_info_count = VFile_ReadS32(file);
@@ -601,7 +600,7 @@ static void Level_LoadSprites(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadCameras(VFILE *file)
+static void M_LoadCameras(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumberCameras = VFile_ReadS32(file);
@@ -625,7 +624,7 @@ static void Level_LoadCameras(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadSoundEffects(VFILE *file)
+static void M_LoadSoundEffects(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumberSoundEffects = VFile_ReadS32(file);
@@ -649,7 +648,7 @@ static void Level_LoadSoundEffects(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadBoxes(VFILE *file)
+static void M_LoadBoxes(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumberBoxes = VFile_ReadS32(file);
@@ -686,7 +685,7 @@ static void Level_LoadBoxes(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadAnimatedTextures(VFILE *file)
+static void M_LoadAnimatedTextures(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.anim_texture_range_count = VFile_ReadS32(file);
@@ -730,7 +729,7 @@ cleanup: {
 }
 }
 
-static void Level_LoadItems(VFILE *file)
+static void M_LoadItems(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     m_LevelInfo.item_count = VFile_ReadS32(file);
@@ -739,8 +738,7 @@ static void Level_LoadItems(VFILE *file)
 
     if (m_LevelInfo.item_count) {
         if (m_LevelInfo.item_count > MAX_ITEMS) {
-            Shell_ExitSystem(
-                "Level_LoadItems(): Too Many g_Items being Loaded!!");
+            Shell_ExitSystem("M_LoadItems(): Too Many g_Items being Loaded!!");
         }
 
         g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
@@ -760,7 +758,7 @@ static void Level_LoadItems(VFILE *file)
 
             if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
                 Shell_ExitSystemFmt(
-                    "Level_LoadItems(): Bad Object number (%d) on Item %d",
+                    "M_LoadItems(): Bad Object number (%d) on Item %d",
                     item->object_id, i);
             }
         }
@@ -769,7 +767,7 @@ static void Level_LoadItems(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadDepthQ(VFILE *file)
+static void M_LoadDepthQ(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
@@ -777,7 +775,7 @@ static void Level_LoadDepthQ(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadPalette(VFILE *file)
+static void M_LoadPalette(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_INFO("");
@@ -800,7 +798,7 @@ static void Level_LoadPalette(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadCinematic(VFILE *file)
+static void M_LoadCinematic(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_NumCineFrames = VFile_ReadS16(file);
@@ -825,7 +823,7 @@ static void Level_LoadCinematic(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadDemo(VFILE *file)
+static void M_LoadDemo(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     g_DemoData =
@@ -839,7 +837,7 @@ static void Level_LoadDemo(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_LoadSamples(VFILE *file)
+static void M_LoadSamples(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     VFile_Read(file, g_SampleLUT, sizeof(int16_t) * MAX_SAMPLES);
@@ -890,7 +888,7 @@ static void Level_LoadSamples(VFILE *file)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_CompleteSetup(int32_t level_num)
+static void M_CompleteSetup(int32_t level_num)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -924,7 +922,7 @@ static void Level_CompleteSetup(int32_t level_num)
 
     Inject_AllInjections(&m_LevelInfo);
 
-    Level_MarkWaterEdgeVertices();
+    M_MarkWaterEdgeVertices();
 
     // Must be called post-injection to allow for floor data changes.
     Stats_ObserveRoomsLoad();
@@ -941,7 +939,7 @@ static void Level_CompleteSetup(int32_t level_num)
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level_num);
 
-    const size_t max_vertices = Level_CalculateMaxVertices();
+    const size_t max_vertices = M_CalculateMaxVertices();
     LOG_INFO("Maximum vertices: %d", max_vertices);
     Output_ReserveVertexBuffer(max_vertices);
 
@@ -985,7 +983,7 @@ static void Level_CompleteSetup(int32_t level_num)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Level_MarkWaterEdgeVertices(void)
+static void M_MarkWaterEdgeVertices(void)
 {
     if (!g_Config.fix_texture_issues) {
         return;
@@ -1009,7 +1007,7 @@ static void Level_MarkWaterEdgeVertices(void)
     Benchmark_End(benchmark, NULL);
 }
 
-static size_t Level_CalculateMaxVertices(void)
+static size_t M_CalculateMaxVertices(void)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     size_t max_vertices = 0;
@@ -1064,9 +1062,8 @@ void Level_Load(int level_num)
         (g_GameFlow.levels[level_num].level_type == GFL_TITLE_DEMO_PC)
         | (g_GameFlow.levels[level_num].level_type == GFL_LEVEL_DEMO_PC);
 
-    Level_LoadFromFile(
-        g_GameFlow.levels[level_num].level_file, level_num, is_demo);
-    Level_CompleteSetup(level_num);
+    M_LoadFromFile(g_GameFlow.levels[level_num].level_file, level_num, is_demo);
+    M_CompleteSetup(level_num);
 
     Inject_Cleanup();
 

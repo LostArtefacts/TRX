@@ -188,21 +188,17 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { COL_END, NULL, false },
 };
 
-static void Option_Control_InitMenu(void);
-static void Option_Control_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static void Option_Control_UpdateText(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static void Option_Control_ShutdownText(void);
-static void Option_Control_FlashConflicts(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static INPUT_LAYOUT Option_Control_ChangeLayout(CONTROL_MODE mode);
-static void Option_Control_CheckResetKeys(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static void Option_Control_CheckUnbindKey(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static void Option_Control_ProgressBar(TEXTSTRING *txt, int32_t timer);
+static void M_InitMenu(void);
+static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void M_ShutdownText(void);
+static void M_FlashConflicts(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static INPUT_LAYOUT M_ChangeLayout(CONTROL_MODE mode);
+static void M_CheckResetKeys(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void M_CheckUnbindKey(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void M_ProgressBar(TEXTSTRING *txt, int32_t timer);
 
-static void Option_Control_InitMenu(void)
+static void M_InitMenu(void)
 {
     int32_t visible_lines = 0;
     if (Screen_GetResHeightDownscaled(RSR_TEXT) <= 240) {
@@ -233,9 +229,9 @@ static void Option_Control_InitMenu(void)
         MIN(m_ControlMenu.num_options, m_ControlMenu.vis_options);
 }
 
-static void Option_Control_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
-    Option_Control_InitMenu();
+    M_InitMenu();
 
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, TOP_Y - BORDER, " ");
     Text_CentreH(m_Text[TEXT_TITLE_BORDER], true);
@@ -341,12 +337,11 @@ static void Option_Control_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
         Text_Hide(m_Text[TEXT_UNBIND], true);
     }
 
-    Option_Control_UpdateText(mode, layout_num);
-    Option_Control_FlashConflicts(mode, layout_num);
+    M_UpdateText(mode, layout_num);
+    M_FlashConflicts(mode, layout_num);
 }
 
-static void Option_Control_UpdateText(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
     if (layout_num == INPUT_LAYOUT_DEFAULT) {
         Text_Hide(m_Text[TEXT_RESET], true);
@@ -466,7 +461,7 @@ static void Option_Control_UpdateText(
     }
 }
 
-static void Option_Control_ShutdownText(void)
+static void M_ShutdownText(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
@@ -496,8 +491,7 @@ static void Option_Control_ShutdownText(void)
     m_UnbindKeyDelay = 0;
 }
 
-static void Option_Control_FlashConflicts(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_FlashConflicts(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -514,7 +508,7 @@ static void Option_Control_FlashConflicts(
     }
 }
 
-static INPUT_LAYOUT Option_Control_ChangeLayout(CONTROL_MODE mode)
+static INPUT_LAYOUT M_ChangeLayout(CONTROL_MODE mode)
 {
     INPUT_LAYOUT layout_num = INPUT_LAYOUT_DEFAULT;
     if (mode == CM_KEYBOARD) {
@@ -534,13 +528,13 @@ static INPUT_LAYOUT Option_Control_ChangeLayout(CONTROL_MODE mode)
     }
 
     Input_CheckConflicts(mode, layout_num);
-    Option_Control_UpdateText(mode, layout_num);
-    Option_Control_FlashConflicts(mode, layout_num);
+    M_UpdateText(mode, layout_num);
+    M_FlashConflicts(mode, layout_num);
     Config_Write();
     return layout_num;
 }
 
-static void Option_Control_ProgressBar(TEXTSTRING *txt, int32_t timer)
+static void M_ProgressBar(TEXTSTRING *txt, int32_t timer)
 {
     int32_t width = Text_GetWidth(txt);
     int32_t height = TEXT_HEIGHT;
@@ -566,8 +560,7 @@ static void Option_Control_ProgressBar(TEXTSTRING *txt, int32_t timer)
         txt, width, height, x, y, percent, g_Config.ui.menu_style);
 }
 
-static void Option_Control_CheckResetKeys(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_CheckResetKeys(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
     const int32_t frame = Clock_GetLogicalFrame();
 
@@ -584,8 +577,8 @@ static void Option_Control_CheckResetKeys(
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
                 Input_ResetLayout(mode, layout_num);
                 Input_CheckConflicts(mode, layout_num);
-                Option_Control_UpdateText(mode, layout_num);
-                Option_Control_FlashConflicts(mode, layout_num);
+                M_UpdateText(mode, layout_num);
+                M_FlashConflicts(mode, layout_num);
                 Config_Write();
                 m_ResetKeyMode = KM_CHANGEKEYUP;
                 m_ResetTimer = 0;
@@ -604,11 +597,10 @@ static void Option_Control_CheckResetKeys(
 
     int32_t progress = m_ResetTimer > 0 ? frame - m_ResetTimer : 0;
     CLAMP(progress, 0, LOGIC_FPS * BUTTON_HOLD_TIME);
-    Option_Control_ProgressBar(m_Text[TEXT_RESET], progress);
+    M_ProgressBar(m_Text[TEXT_RESET], progress);
 }
 
-static void Option_Control_CheckUnbindKey(
-    CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_CheckUnbindKey(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 {
     const int32_t frame = Clock_GetLogicalFrame();
 
@@ -631,8 +623,8 @@ static void Option_Control_CheckUnbindKey(
                         layout_num, m_ControlMenu.cur_role, UNBIND_ENUM);
                 }
                 Input_CheckConflicts(mode, layout_num);
-                Option_Control_UpdateText(mode, layout_num);
-                Option_Control_FlashConflicts(mode, layout_num);
+                M_UpdateText(mode, layout_num);
+                M_FlashConflicts(mode, layout_num);
                 Config_Write();
                 m_UnbindKeyMode = KM_CHANGEKEYUP;
                 m_UnbindTimer = 0;
@@ -651,7 +643,7 @@ static void Option_Control_CheckUnbindKey(
 
     int32_t progress = m_UnbindTimer > 0 ? frame - m_UnbindTimer : 0;
     CLAMP(progress, 0, LOGIC_FPS * BUTTON_HOLD_TIME);
-    Option_Control_ProgressBar(m_Text[TEXT_UNBIND], progress);
+    M_ProgressBar(m_Text[TEXT_UNBIND], progress);
 }
 
 CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
@@ -665,7 +657,7 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
     if (!m_Text[TEXT_TITLE]) {
         m_KeyMode = KM_BROWSE;
-        Option_Control_InitText(mode, layout_num);
+        M_InitText(mode, layout_num);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
@@ -676,12 +668,12 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
     case KM_BROWSE:
         if (layout_num > INPUT_LAYOUT_DEFAULT) {
             if (m_UnbindKeyMode == KM_INACTIVE) {
-                Option_Control_CheckResetKeys(mode, layout_num);
+                M_CheckResetKeys(mode, layout_num);
             }
 
             if (m_ResetKeyMode == KM_INACTIVE
                 && m_ControlMenu.cur_row->can_unbind) {
-                Option_Control_CheckUnbindKey(mode, layout_num);
+                M_CheckUnbindKey(mode, layout_num);
             }
         }
 
@@ -691,7 +683,7 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
         if (g_InputDB.menu_back
             || (g_InputDB.menu_confirm && m_ControlMenu.cur_role == KC_TITLE)) {
-            Option_Control_ShutdownText();
+            M_ShutdownText();
             m_KeyMode = KM_INACTIVE;
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
@@ -700,7 +692,7 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
         if ((g_InputDB.menu_left || g_InputDB.menu_right)
             && m_ControlMenu.cur_role == KC_TITLE) {
-            layout_num = Option_Control_ChangeLayout(mode);
+            layout_num = M_ChangeLayout(mode);
         }
 
         if (g_InputDB.menu_confirm) {
@@ -734,8 +726,8 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
                 m_ControlMenu.cur_row--;
                 m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
-            Option_Control_UpdateText(mode, layout_num);
-            Option_Control_FlashConflicts(mode, layout_num);
+            M_UpdateText(mode, layout_num);
+            M_FlashConflicts(mode, layout_num);
         } else if (g_InputDB.menu_down) {
             if (m_ControlMenu.cur_role == KC_TITLE) {
                 m_ControlMenu.row_num++;
@@ -758,30 +750,30 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
                 m_ControlMenu.cur_row++;
                 m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
-            Option_Control_UpdateText(mode, layout_num);
-            Option_Control_FlashConflicts(mode, layout_num);
+            M_UpdateText(mode, layout_num);
+            M_FlashConflicts(mode, layout_num);
         }
         break;
 
     case KM_BROWSEKEYUP:
         if (!g_Input.any) {
-            Option_Control_UpdateText(mode, layout_num);
+            M_UpdateText(mode, layout_num);
             m_KeyMode = KM_CHANGE;
         }
         break;
 
     case KM_CHANGE:
         if (Input_ReadAndAssignKey(mode, layout_num, m_ControlMenu.cur_role)) {
-            Option_Control_UpdateText(mode, layout_num);
+            M_UpdateText(mode, layout_num);
             m_KeyMode = KM_CHANGEKEYUP;
-            Option_Control_FlashConflicts(mode, layout_num);
+            M_FlashConflicts(mode, layout_num);
             Config_Write();
         }
         break;
 
     case KM_CHANGEKEYUP:
         if (!g_Input.any) {
-            Option_Control_UpdateText(mode, layout_num);
+            M_UpdateText(mode, layout_num);
             m_KeyMode = KM_BROWSE;
         }
         break;
@@ -797,5 +789,5 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
 void Option_Control_Shutdown(void)
 {
-    Option_Control_ShutdownText();
+    M_ShutdownText();
 }

@@ -22,8 +22,8 @@
 
 static int16_t m_AnimatingCount = 0;
 
-static ITEM_INFO *Carrier_GetCarrier(int16_t item_num);
-static void Carrier_AnimateDrop(CARRIED_ITEM *item);
+static ITEM_INFO *M_GetCarrier(int16_t item_num);
+static void M_AnimateDrop(CARRIED_ITEM *item);
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUM_ITEM },
@@ -40,7 +40,7 @@ void Carrier_InitialiseLevel(int32_t level_num)
     for (int i = 0; i < level.item_drops.count; i++) {
         GAMEFLOW_DROP_ITEM_DATA *data = &level.item_drops.data[i];
 
-        ITEM_INFO *item = Carrier_GetCarrier(data->enemy_num);
+        ITEM_INFO *item = M_GetCarrier(data->enemy_num);
         if (!item) {
             LOG_WARNING("%d does not refer to a loaded item", data->enemy_num);
             continue;
@@ -92,7 +92,7 @@ void Carrier_InitialiseLevel(int32_t level_num)
     }
 }
 
-static ITEM_INFO *Carrier_GetCarrier(int16_t item_num)
+static ITEM_INFO *M_GetCarrier(int16_t item_num)
 {
     if (item_num < 0 || item_num >= g_LevelItemCount) {
         return NULL;
@@ -115,7 +115,7 @@ static ITEM_INFO *Carrier_GetCarrier(int16_t item_num)
 
 int32_t Carrier_GetItemCount(int16_t item_num)
 {
-    ITEM_INFO *carrier = Carrier_GetCarrier(item_num);
+    ITEM_INFO *carrier = M_GetCarrier(item_num);
     if (!carrier) {
         return 0;
     }
@@ -226,13 +226,13 @@ void Carrier_AnimateDrops(void)
         ITEM_INFO *carrier = &g_Items[i];
         CARRIED_ITEM *item = carrier->carried_item;
         while (item) {
-            Carrier_AnimateDrop(item);
+            M_AnimateDrop(item);
             item = item->next_item;
         }
     }
 }
 
-static void Carrier_AnimateDrop(CARRIED_ITEM *item)
+static void M_AnimateDrop(CARRIED_ITEM *item)
 {
     if (item->status != DS_FALLING) {
         return;

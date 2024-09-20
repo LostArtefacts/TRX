@@ -50,23 +50,23 @@ static REQUEST_INFO m_PauseRequester = {
     .items = NULL,
 };
 
-static void Phase_Pause_RemoveText(void);
-static void Phase_Pause_UpdateText(void);
-static int32_t Phase_Pause_DisplayRequester(
+static void M_RemoveText(void);
+static void M_UpdateText(void);
+static int32_t M_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
-static void Phase_Pause_Start(void *arg);
-static void Phase_Pause_End(void);
-static PHASE_CONTROL Phase_Pause_Control(int32_t nframes);
-static void Phase_Pause_Draw(void);
+static void M_Start(void *arg);
+static void M_End(void);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
 
-static void Phase_Pause_RemoveText(void)
+static void M_RemoveText(void)
 {
     Text_Remove(m_PausedText);
     m_PausedText = NULL;
 }
 
-static void Phase_Pause_UpdateText(void)
+static void M_UpdateText(void)
 {
     if (m_PausedText == NULL) {
         m_PausedText = Text_Create(0, -24, GS(PAUSE_PAUSED));
@@ -75,7 +75,7 @@ static void Phase_Pause_UpdateText(void)
     }
 }
 
-static int32_t Phase_Pause_DisplayRequester(
+static int32_t M_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested)
 {
@@ -108,7 +108,7 @@ static int32_t Phase_Pause_DisplayRequester(
     return select;
 }
 
-static void Phase_Pause_Start(void *arg)
+static void M_Start(void *arg)
 {
     g_OldInputDB = g_Input;
 
@@ -124,17 +124,17 @@ static void Phase_Pause_Start(void *arg)
     m_PauseState = STATE_DEFAULT;
 }
 
-static void Phase_Pause_End(void)
+static void M_End(void)
 {
     Output_FadeToTransparent(true);
 
-    Phase_Pause_RemoveText();
+    M_RemoveText();
     Requester_Shutdown(&m_PauseRequester);
 }
 
-static PHASE_CONTROL Phase_Pause_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
-    Phase_Pause_UpdateText();
+    M_UpdateText();
 
     Input_Update();
     Shell_ProcessInput();
@@ -152,7 +152,7 @@ static PHASE_CONTROL Phase_Pause_Control(int32_t nframes)
         break;
 
     case STATE_ASK: {
-        int32_t choice = Phase_Pause_DisplayRequester(
+        int32_t choice = M_DisplayRequester(
             GS(PAUSE_EXIT_TO_TITLE), GS(PAUSE_CONTINUE), GS(PAUSE_QUIT), 1);
         if (choice == 1) {
             Music_Unpause();
@@ -165,7 +165,7 @@ static PHASE_CONTROL Phase_Pause_Control(int32_t nframes)
     }
 
     case STATE_CONFIRM: {
-        int32_t choice = Phase_Pause_DisplayRequester(
+        int32_t choice = M_DisplayRequester(
             GS(PAUSE_ARE_YOU_SURE), GS(PAUSE_YES), GS(PAUSE_NO), 1);
         if (choice == 1) {
             return (PHASE_CONTROL) {
@@ -184,7 +184,7 @@ static PHASE_CONTROL Phase_Pause_Control(int32_t nframes)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static void Phase_Pause_Draw(void)
+static void M_Draw(void)
 {
     Interpolation_Disable();
     Game_DrawScene(false);
@@ -194,9 +194,9 @@ static void Phase_Pause_Draw(void)
 }
 
 PHASER g_PausePhaser = {
-    .start = Phase_Pause_Start,
-    .end = Phase_Pause_End,
-    .control = Phase_Pause_Control,
-    .draw = Phase_Pause_Draw,
+    .start = M_Start,
+    .end = M_End,
+    .control = M_Control,
+    .draw = M_Draw,
     .wait = NULL,
 };

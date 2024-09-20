@@ -24,9 +24,9 @@ static const OBJECT_BOUNDS m_Scion1_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *Scion1_Bounds(void);
+static const OBJECT_BOUNDS *M_Bounds(void);
 
-static const OBJECT_BOUNDS *Scion1_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Scion1_Bounds;
 }
@@ -36,7 +36,7 @@ void Scion1_Setup(OBJECT_INFO *obj)
     obj->draw_routine = Object_DrawPickupItem;
     obj->collision = Scion1_Collision;
     obj->save_flags = 1;
-    obj->bounds = Scion1_Bounds;
+    obj->bounds = M_Bounds;
 }
 
 void Scion1_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)

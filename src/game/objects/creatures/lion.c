@@ -45,7 +45,7 @@ typedef enum {
 
 static BITE_INFO m_LionBite = { -2, -10, 132, 21 };
 
-static void Lion_SetupCommon(OBJECT_INFO *const obj)
+static void M_SetupBase(OBJECT_INFO *const obj)
 {
     obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
@@ -65,7 +65,7 @@ void Lion_SetupLion(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    Lion_SetupCommon(obj);
+    M_SetupBase(obj);
     obj->hit_points = LION_HITPOINTS;
     obj->radius = LION_RADIUS;
     obj->smartness = LION_SMARTNESS;
@@ -76,7 +76,7 @@ void Lion_SetupLioness(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    Lion_SetupCommon(obj);
+    M_SetupBase(obj);
     obj->hit_points = LIONESS_HITPOINTS;
     obj->radius = LIONESS_RADIUS;
     obj->smartness = LIONESS_SMARTNESS;
@@ -87,7 +87,7 @@ void Lion_SetupPuma(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    Lion_SetupCommon(obj);
+    M_SetupBase(obj);
     obj->hit_points = PUMA_HITPOINTS;
     obj->radius = PUMA_RADIUS;
     obj->smartness = PUMA_SMARTNESS;

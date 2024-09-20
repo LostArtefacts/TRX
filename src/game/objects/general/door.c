@@ -11,12 +11,12 @@
 
 #include <libtrx/utils.h>
 
-static bool Door_LaraDoorCollision(const SECTOR_INFO *sector);
-static void Door_Check(DOORPOS_DATA *d);
-static void Door_Open(DOORPOS_DATA *d);
-static void Door_Shut(DOORPOS_DATA *d);
+static bool M_LaraDoorCollision(const SECTOR_INFO *sector);
+static void M_Check(DOORPOS_DATA *d);
+static void M_Open(DOORPOS_DATA *d);
+static void M_Shut(DOORPOS_DATA *d);
 
-static bool Door_LaraDoorCollision(const SECTOR_INFO *const sector)
+static bool M_LaraDoorCollision(const SECTOR_INFO *const sector)
 {
     // Check if Lara is on the same tile as the invisible block.
     if (g_LaraItem == NULL) {
@@ -29,18 +29,18 @@ static bool Door_LaraDoorCollision(const SECTOR_INFO *const sector)
     return lara_sector == sector;
 }
 
-static void Door_Check(DOORPOS_DATA *const d)
+static void M_Check(DOORPOS_DATA *const d)
 {
     // Forcefully remove the invisible block if Lara happens to occupy the same
     // tile. This ensures that Lara doesn't void if a timed door happens to
     // close right on her, or the player loads the game while standing on a
     // closed door's block tile.
-    if (Door_LaraDoorCollision(d->sector)) {
-        Door_Open(d);
+    if (M_LaraDoorCollision(d->sector)) {
+        M_Open(d);
     }
 }
 
-static void Door_Shut(DOORPOS_DATA *const d)
+static void M_Shut(DOORPOS_DATA *const d)
 {
     // Change the level geometry so that the door tile is impassable.
     SECTOR_INFO *const sector = d->sector;
@@ -61,7 +61,7 @@ static void Door_Shut(DOORPOS_DATA *const d)
     }
 }
 
-static void Door_Open(DOORPOS_DATA *const d)
+static void M_Open(DOORPOS_DATA *const d)
 {
     // Restore the level geometry so that the door tile is passable.
     SECTOR_INFO *const sector = d->sector;
@@ -155,8 +155,8 @@ void Door_Initialise(int16_t item_num)
     }
 
     room_num = door->d1.sector->portal_room.wall;
-    Door_Shut(&door->d1);
-    Door_Shut(&door->d1flip);
+    M_Shut(&door->d1);
+    M_Shut(&door->d1flip);
 
     if (room_num == NO_ROOM) {
         door->d2.sector = NULL;
@@ -206,8 +206,8 @@ void Door_Initialise(int16_t item_num)
         door->d2flip.sector = NULL;
     }
 
-    Door_Shut(&door->d2);
-    Door_Shut(&door->d2flip);
+    M_Shut(&door->d2);
+    M_Shut(&door->d2flip);
 }
 
 void Door_Control(int16_t item_num)
@@ -219,26 +219,26 @@ void Door_Control(int16_t item_num)
         if (item->current_anim_state == DOOR_CLOSED) {
             item->goal_anim_state = DOOR_OPEN;
         } else {
-            Door_Open(&door->d1);
-            Door_Open(&door->d2);
-            Door_Open(&door->d1flip);
-            Door_Open(&door->d2flip);
+            M_Open(&door->d1);
+            M_Open(&door->d2);
+            M_Open(&door->d1flip);
+            M_Open(&door->d2flip);
         }
     } else {
         if (item->current_anim_state == DOOR_OPEN) {
             item->goal_anim_state = DOOR_CLOSED;
         } else {
-            Door_Shut(&door->d1);
-            Door_Shut(&door->d2);
-            Door_Shut(&door->d1flip);
-            Door_Shut(&door->d2flip);
+            M_Shut(&door->d1);
+            M_Shut(&door->d2);
+            M_Shut(&door->d1flip);
+            M_Shut(&door->d2flip);
         }
     }
 
-    Door_Check(&door->d1);
-    Door_Check(&door->d2);
-    Door_Check(&door->d1flip);
-    Door_Check(&door->d2flip);
+    M_Check(&door->d1);
+    M_Check(&door->d2);
+    M_Check(&door->d1flip);
+    M_Check(&door->d2flip);
     Item_Animate(item);
 }
 

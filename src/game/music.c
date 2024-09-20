@@ -21,13 +21,13 @@ static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 
-static void Music_SyncVolume(const int32_t audio_stream_id);
-static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track);
-static void Music_StopActiveStream(void);
-static void Music_StreamFinished(int stream_id, void *user_data);
-static char *Music_GetTrackFileName(MUSIC_TRACK_ID track);
+static void M_SyncVolume(const int32_t audio_stream_id);
+static bool M_IsBrokenTrack(MUSIC_TRACK_ID track);
+static void M_StopActiveStream(void);
+static void M_StreamFinished(int stream_id, void *user_data);
+static char *M_GetTrackFileName(MUSIC_TRACK_ID track);
 
-static void Music_SyncVolume(const int32_t audio_stream_id)
+static void M_SyncVolume(const int32_t audio_stream_id)
 {
     if (audio_stream_id < 0) {
         return;
@@ -36,18 +36,18 @@ static void Music_SyncVolume(const int32_t audio_stream_id)
     Audio_Stream_SetVolume(audio_stream_id, m_Muted ? 0 : multiplier);
 }
 
-static bool Music_IsBrokenTrack(MUSIC_TRACK_ID track)
+static bool M_IsBrokenTrack(MUSIC_TRACK_ID track)
 {
     return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
 }
 
-static void Music_StopActiveStream(void)
+static void M_StopActiveStream(void)
 {
     if (m_AudioStreamID < 0) {
         return;
     }
 
-    // We are only interested in calling Music_StreamFinished if a stream
+    // We are only interested in calling M_StreamFinished if a stream
     // finished by itself. In cases where we end the streams early by hand,
     // we clear the finish callback in order to avoid resuming the BGM playback
     // just after we stop it.
@@ -55,14 +55,14 @@ static void Music_StopActiveStream(void)
     Audio_Stream_Close(m_AudioStreamID);
 }
 
-static char *Music_GetTrackFileName(MUSIC_TRACK_ID track)
+static char *M_GetTrackFileName(MUSIC_TRACK_ID track)
 {
     char file_path[64];
     sprintf(file_path, "music/track%02d.flac", track);
     return File_GuessExtension(file_path, m_Extensions);
 }
 
-static void Music_StreamFinished(int stream_id, void *user_data)
+static void M_StreamFinished(int stream_id, void *user_data)
 {
     // When a stream finishes, play the remembered background BGM.
 
@@ -88,7 +88,7 @@ void Music_Shutdown(void)
 bool Music_Play(MUSIC_TRACK_ID track)
 {
     if (track == m_TrackCurrent || track == m_TrackLastPlayed
-        || Music_IsBrokenTrack(track)) {
+        || M_IsBrokenTrack(track)) {
         return false;
     }
 
@@ -102,9 +102,9 @@ bool Music_Play(MUSIC_TRACK_ID track)
             SFX_BALDY_SPEECH + track - MX_BALDY_SPEECH, NULL, SPM_ALWAYS);
     }
 
-    Music_StopActiveStream();
+    M_StopActiveStream();
 
-    char *file_path = Music_GetTrackFileName(track);
+    char *file_path = M_GetTrackFileName(track);
     m_AudioStreamID = Audio_Stream_CreateFromFile(file_path);
     Memory_FreePointer(&file_path);
 
@@ -118,8 +118,8 @@ bool Music_Play(MUSIC_TRACK_ID track)
         m_TrackLastPlayed = track;
     }
 
-    Music_SyncVolume(m_AudioStreamID);
-    Audio_Stream_SetFinishCallback(m_AudioStreamID, Music_StreamFinished, NULL);
+    M_SyncVolume(m_AudioStreamID);
+    Audio_Stream_SetFinishCallback(m_AudioStreamID, M_StreamFinished, NULL);
 
     return true;
 }
@@ -127,7 +127,7 @@ bool Music_Play(MUSIC_TRACK_ID track)
 bool Music_PlayLooped(MUSIC_TRACK_ID track)
 {
     if (track == m_TrackCurrent || track == m_TrackLastPlayed
-        || Music_IsBrokenTrack(track)) {
+        || M_IsBrokenTrack(track)) {
         return false;
     }
 
@@ -136,9 +136,9 @@ bool Music_PlayLooped(MUSIC_TRACK_ID track)
         return false;
     }
 
-    Music_StopActiveStream();
+    M_StopActiveStream();
 
-    char *file_path = Music_GetTrackFileName(track);
+    char *file_path = M_GetTrackFileName(track);
     m_AudioStreamID = Audio_Stream_CreateFromFile(file_path);
     Memory_FreePointer(&file_path);
 
@@ -147,8 +147,8 @@ bool Music_PlayLooped(MUSIC_TRACK_ID track)
         return false;
     }
 
-    Music_SyncVolume(m_AudioStreamID);
-    Audio_Stream_SetFinishCallback(m_AudioStreamID, Music_StreamFinished, NULL);
+    M_SyncVolume(m_AudioStreamID);
+    Audio_Stream_SetFinishCallback(m_AudioStreamID, M_StreamFinished, NULL);
     Audio_Stream_SetIsLooped(m_AudioStreamID, true);
 
     m_TrackLooped = track;
@@ -161,16 +161,16 @@ void Music_Stop(void)
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLastPlayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
-    Music_StopActiveStream();
+    M_StopActiveStream();
 }
 
 void Music_StopTrack(MUSIC_TRACK_ID track)
 {
-    if (track != m_TrackCurrent || Music_IsBrokenTrack(track)) {
+    if (track != m_TrackCurrent || M_IsBrokenTrack(track)) {
         return;
     }
 
-    Music_StopActiveStream();
+    M_StopActiveStream();
     m_TrackCurrent = MX_INACTIVE;
 
     if (m_TrackLooped >= 0) {
@@ -181,13 +181,13 @@ void Music_StopTrack(MUSIC_TRACK_ID track)
 void Music_Mute(void)
 {
     m_Muted = true;
-    Music_SyncVolume(m_AudioStreamID);
+    M_SyncVolume(m_AudioStreamID);
 }
 
 void Music_Unmute(void)
 {
     m_Muted = false;
-    Music_SyncVolume(m_AudioStreamID);
+    M_SyncVolume(m_AudioStreamID);
 }
 
 int16_t Music_GetVolume(void)
@@ -199,7 +199,7 @@ void Music_SetVolume(int16_t volume)
 {
     if (volume != m_Volume) {
         m_Volume = volume;
-        Music_SyncVolume(m_AudioStreamID);
+        M_SyncVolume(m_AudioStreamID);
     }
 }
 

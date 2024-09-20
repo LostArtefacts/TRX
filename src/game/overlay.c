@@ -120,25 +120,26 @@ static BAR_INFO m_HealthBar = { 0 };
 static BAR_INFO m_AirBar = { 0 };
 static BAR_INFO m_EnemyBar = { 0 };
 
-static void Overlay_BarSetupHealth(void);
-static void Overlay_BarSetupAir(void);
-static void Overlay_BarSetupEnemy(void);
-static void Overlay_BarBlink(BAR_INFO *bar_info);
-static int32_t Overlay_BarGetPercent(BAR_INFO *bar_info);
-static void Overlay_BarGetLocation(
+static void M_BarSetupHealth(void);
+static void M_BarSetupAir(void);
+static void M_BarSetupEnemy(void);
+static void M_BarBlink(BAR_INFO *bar_info);
+static int32_t M_BarGetPercent(BAR_INFO *bar_info);
+static void M_BarGetLocation(
     BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x,
     int32_t *y);
-static float Overlay_Ease(int32_t cur_frame, int32_t max_frames);
-static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu);
-static void Overlay_DrawPickups3D(void);
-static void Overlay_DrawPickupsSprites(void);
-static void Overlay_BarDrawAir(void);
-static void Overlay_BarDrawEnemy(void);
-static void Overlay_ResetBarLocations(void);
-static void Overlay_RemoveAmmoText(void);
-static void Overlay_DrawAmmoInfo(void);
+static float M_Ease(int32_t cur_frame, int32_t max_frames);
+static void M_DrawPickup3D(DISPLAY_PICKUP_INFO *pu);
+static void M_DrawPickups3D(void);
+static void M_DrawPickupsSprites(void);
+static void M_BarDrawAir(void);
+static void M_BarDrawEnemy(void);
+static void M_ResetBarLocations(void);
+static void M_RemoveAmmoText(void);
+static void M_DrawAmmoInfo(void);
+static void M_DrawPickups(void);
 
-static void Overlay_BarSetupHealth(void)
+static void M_BarSetupHealth(void)
 {
     m_HealthBar.type = BT_LARA_HEALTH;
     m_HealthBar.value = 0;
@@ -151,7 +152,7 @@ static void Overlay_BarSetupHealth(void)
     m_HealthBar.location = g_Config.healthbar_location;
 }
 
-static void Overlay_BarSetupAir(void)
+static void M_BarSetupAir(void)
 {
     m_AirBar.type = BT_LARA_MAX_AIR;
     m_AirBar.value = LARA_MAX_AIR;
@@ -164,7 +165,7 @@ static void Overlay_BarSetupAir(void)
     m_AirBar.location = g_Config.airbar_location;
 }
 
-static void Overlay_BarSetupEnemy(void)
+static void M_BarSetupEnemy(void)
 {
     m_EnemyBar.type = BT_ENEMY_HEALTH;
     m_EnemyBar.value = 0;
@@ -177,12 +178,12 @@ static void Overlay_BarSetupEnemy(void)
     m_EnemyBar.location = g_Config.enemy_healthbar_location;
 }
 
-static int32_t Overlay_BarGetPercent(BAR_INFO *bar_info)
+static int32_t M_BarGetPercent(BAR_INFO *bar_info)
 {
     return bar_info->value * 100 / bar_info->max_value;
 }
 
-static void Overlay_BarBlink(BAR_INFO *bar_info)
+static void M_BarBlink(BAR_INFO *bar_info)
 {
     if (bar_info->show_mode == BSM_PS1 || bar_info->type == BT_ENEMY_HEALTH
         || bar_info->type == BT_PROGRESS) {
@@ -190,7 +191,7 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
         return;
     }
 
-    const int32_t percent = Overlay_BarGetPercent(bar_info);
+    const int32_t percent = M_BarGetPercent(bar_info);
     if (percent > BLINK_THRESHOLD) {
         bar_info->blink = false;
         return;
@@ -201,7 +202,7 @@ static void Overlay_BarBlink(BAR_INFO *bar_info)
     }
 }
 
-static void Overlay_BarGetLocation(
+static void M_BarGetLocation(
     BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x, int32_t *y)
 {
     const int32_t screen_margin_h = 25;
@@ -258,7 +259,7 @@ void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
 
     int32_t x = 0;
     int32_t y = 0;
-    Overlay_BarGetLocation(bar_info, &width, &height, &x, &y);
+    M_BarGetLocation(bar_info, &width, &height, &x, &y);
 
     int32_t padding = Screen_GetRenderScale(2, scale_ref);
     int32_t border = Screen_GetRenderScale(2, scale_ref);
@@ -275,10 +276,10 @@ void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
     // background
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, rgb_bgnd);
 
-    int32_t percent = Overlay_BarGetPercent(bar_info);
+    int32_t percent = M_BarGetPercent(bar_info);
 
     // Check if bar should flash or not
-    Overlay_BarBlink(bar_info);
+    M_BarBlink(bar_info);
 
     if (percent && !bar_info->blink) {
         width = width * percent / 100;
@@ -307,7 +308,7 @@ void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
     }
 }
 
-static float Overlay_Ease(int32_t cur_frame, int32_t max_frames)
+static float M_Ease(int32_t cur_frame, int32_t max_frames)
 {
     float ratio = cur_frame / (float)max_frames;
     if (ratio < 0.5f) {
@@ -317,7 +318,7 @@ static float Overlay_Ease(int32_t cur_frame, int32_t max_frames)
     return 1.0f - 2.0f * new_ratio * new_ratio;
 }
 
-static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
+static void M_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
 {
     int32_t screen_width = Screen_GetResWidth();
     int32_t screen_height = Screen_GetResHeight();
@@ -342,10 +343,10 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     float ease = 1.0f;
     switch (pu->phase) {
     case DPP_EASE_IN:
-        ease = Overlay_Ease(pu->duration, MAX_PICKUP_DURATION_EASE_IN);
+        ease = M_Ease(pu->duration, MAX_PICKUP_DURATION_EASE_IN);
         break;
     case DPP_EASE_OUT:
-        ease = Overlay_Ease(
+        ease = M_Ease(
             MAX_PICKUP_DURATION_EASE_OUT - pu->duration,
             MAX_PICKUP_DURATION_EASE_OUT);
         break;
@@ -418,7 +419,7 @@ static void Overlay_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     Viewport_SetFOV(old_fov);
 }
 
-static void Overlay_DrawPickups3D(void)
+static void M_DrawPickups3D(void)
 {
     const double ticks = Clock_GetElapsedLogicalFrames(&m_PickupsTimer);
 
@@ -456,11 +457,11 @@ static void Overlay_DrawPickups3D(void)
 
         pu->rot_y += 4 * PHD_DEGREE * ticks;
 
-        Overlay_DrawPickup3D(pu);
+        M_DrawPickup3D(pu);
     }
 }
 
-static void Overlay_DrawPickupsSprites(void)
+static void M_DrawPickupsSprites(void)
 {
     const double ticks = Clock_GetElapsedLogicalFrames(&m_PickupsTimer);
 
@@ -490,16 +491,16 @@ static void Overlay_DrawPickupsSprites(void)
     }
 }
 
-static void Overlay_DrawPickups(void)
+static void M_DrawPickups(void)
 {
     if (g_Config.enable_3d_pickups) {
-        Overlay_DrawPickups3D();
+        M_DrawPickups3D();
     } else {
-        Overlay_DrawPickupsSprites();
+        M_DrawPickupsSprites();
     }
 }
 
-static void Overlay_BarDrawAir(void)
+static void M_BarDrawAir(void)
 {
     m_AirBar.value = g_Lara.air;
     CLAMP(m_AirBar.value, 0, m_AirBar.max_value);
@@ -533,7 +534,7 @@ static void Overlay_BarDrawAir(void)
     Overlay_BarDraw(&m_AirBar, RSR_BAR);
 }
 
-static void Overlay_BarDrawEnemy(void)
+static void M_BarDrawEnemy(void)
 {
     if (!g_Lara.target) {
         return;
@@ -569,14 +570,14 @@ static void Overlay_BarDrawEnemy(void)
     Overlay_BarDraw(&m_EnemyBar, RSR_BAR);
 }
 
-static void Overlay_ResetBarLocations(void)
+static void M_ResetBarLocations(void)
 {
     for (int i = 0; i < 6; i++) {
         m_BarOffsetY[i] = 0;
     }
 }
 
-static void Overlay_RemoveAmmoText(void)
+static void M_RemoveAmmoText(void)
 {
     if (m_AmmoText) {
         Text_Remove(m_AmmoText);
@@ -584,7 +585,7 @@ static void Overlay_RemoveAmmoText(void)
     }
 }
 
-static void Overlay_DrawAmmoInfo(void)
+static void M_DrawAmmoInfo(void)
 {
     const double scale = 1.5;
     const int32_t text_height = 17 * scale;
@@ -598,7 +599,7 @@ static void Overlay_DrawAmmoInfo(void)
 
     if (g_Lara.gun_status != LGS_READY
         || (g_GameInfo.bonus_flag & GBF_NGPLUS)) {
-        Overlay_RemoveAmmoText();
+        M_RemoveAmmoText();
         return;
     }
 
@@ -650,9 +651,9 @@ void Overlay_Init(void)
         m_Pickups[i].phase = DPP_DEAD;
     }
 
-    Overlay_BarSetupHealth();
-    Overlay_BarSetupAir();
-    Overlay_BarSetupEnemy();
+    M_BarSetupHealth();
+    M_BarSetupAir();
+    M_BarSetupEnemy();
 }
 
 void Overlay_BarSetHealthTimer(int16_t timer)
@@ -707,18 +708,18 @@ void Overlay_BarDrawHealth(void)
 
 void Overlay_HideGameInfo(void)
 {
-    Overlay_ResetBarLocations();
-    Overlay_RemoveAmmoText();
+    M_ResetBarLocations();
+    M_RemoveAmmoText();
 }
 
 void Overlay_DrawGameInfo(void)
 {
-    Overlay_ResetBarLocations();
+    M_ResetBarLocations();
     Overlay_BarDrawHealth();
-    Overlay_BarDrawAir();
-    Overlay_BarDrawEnemy();
-    Overlay_DrawPickups();
-    Overlay_DrawAmmoInfo();
+    M_BarDrawAir();
+    M_BarDrawEnemy();
+    M_DrawPickups();
+    M_DrawAmmoInfo();
 }
 
 void Overlay_DrawFPSInfo(void)

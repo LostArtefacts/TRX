@@ -48,9 +48,9 @@ typedef enum {
 
 static BITE_INFO m_ApeBite = { 0, -19, 75, 15 };
 
-static bool Ape_Vault(int16_t item_num, int16_t angle);
+static bool M_Vault(int16_t item_num, int16_t angle);
 
-static bool Ape_Vault(int16_t item_num, int16_t angle)
+static bool M_Vault(int16_t item_num, int16_t angle)
 {
     ITEM_INFO *item = &g_Items[item_num];
     CREATURE_INFO *ape = item->data;
@@ -256,7 +256,7 @@ void Ape_Control(int16_t item_num)
 
     if (item->current_anim_state == APE_VAULT) {
         Creature_Animate(item_num, angle, 0);
-    } else if (Ape_Vault(item_num, angle)) {
+    } else if (M_Vault(item_num, angle)) {
         ape->maximum_turn = 0;
         item->current_anim_state = APE_VAULT;
         Item_SwitchToAnim(item, APE_VAULT_ANIM, 0);

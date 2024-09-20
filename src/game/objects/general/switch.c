@@ -41,10 +41,10 @@ static const OBJECT_BOUNDS m_Switch_BoundsUW = {
     },
 };
 
-static const OBJECT_BOUNDS *Switch_Bounds(void);
-static const OBJECT_BOUNDS *Switch_BoundsUW(void);
+static const OBJECT_BOUNDS *M_Bounds(void);
+static const OBJECT_BOUNDS *M_BoundsUW(void);
 
-static const OBJECT_BOUNDS *Switch_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     if (g_Config.walk_to_items) {
         return &m_Switch_BoundsControlled;
@@ -52,7 +52,7 @@ static const OBJECT_BOUNDS *Switch_Bounds(void)
     return &m_Switch_Bounds;
 }
 
-static const OBJECT_BOUNDS *Switch_BoundsUW(void)
+static const OBJECT_BOUNDS *M_BoundsUW(void)
 {
     return &m_Switch_BoundsUW;
 }
@@ -63,7 +63,7 @@ void Switch_Setup(OBJECT_INFO *obj)
     obj->collision = Switch_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = Switch_Bounds;
+    obj->bounds = M_Bounds;
 }
 
 void Switch_SetupUW(OBJECT_INFO *obj)
@@ -72,7 +72,7 @@ void Switch_SetupUW(OBJECT_INFO *obj)
     obj->collision = Switch_CollisionUW;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = Switch_BoundsUW;
+    obj->bounds = M_BoundsUW;
 }
 
 void Switch_Control(int16_t item_num)

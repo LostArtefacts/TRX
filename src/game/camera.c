@@ -25,36 +25,34 @@ static double m_ManualCameraMultiplier[11] = {
     1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
 };
 
-static bool Camera_BadPosition(
-    int32_t x, int32_t y, int32_t z, int16_t room_num);
-static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
-static void Camera_SmartShift(
+static bool M_BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
+static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
+static void M_SmartShift(
     GAME_VECTOR *ideal,
     void (*shift)(
         int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
         int32_t left, int32_t top, int32_t right, int32_t bottom));
-static void Camera_Clip(
+static void M_Clip(
     int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
     int32_t top, int32_t right, int32_t bottom);
-static void Camera_Shift(
+static void M_Shift(
     int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
     int32_t top, int32_t right, int32_t bottom);
-static void Camera_Move(GAME_VECTOR *ideal, int32_t speed);
-static void Camera_LoadCutsceneFrame(void);
-static void Camera_OffsetAdditionalAngle(int16_t delta);
-static void Camera_OffsetAdditionalElevation(int16_t delta);
-static void Camera_AdjustMusicVolume(bool underwater);
-static void Camera_EnsureEnvironment(void);
+static void M_Move(GAME_VECTOR *ideal, int32_t speed);
+static void M_LoadCutsceneFrame(void);
+static void M_OffsetAdditionalAngle(int16_t delta);
+static void M_OffsetAdditionalElevation(int16_t delta);
+static void M_AdjustMusicVolume(bool underwater);
+static void M_EnsureEnvironment(void);
 
-static bool Camera_BadPosition(
-    int32_t x, int32_t y, int32_t z, int16_t room_num)
+static bool M_BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
     const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
     return y >= Room_GetHeight(sector, x, y, z)
         || y <= Room_GetCeiling(sector, x, y, z);
 }
 
-static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
+static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
 {
     int32_t x = pos->x;
     int32_t y = pos->y;
@@ -64,20 +62,19 @@ static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
 
     const BOX_INFO *const box = &g_Boxes[sector->box];
     if (z < box->left + clamp
-        && Camera_BadPosition(x, y, z - clamp, pos->room_num)) {
+        && M_BadPosition(x, y, z - clamp, pos->room_num)) {
         pos->z = box->left + clamp;
     } else if (
         z > box->right - clamp
-        && Camera_BadPosition(x, y, z + clamp, pos->room_num)) {
+        && M_BadPosition(x, y, z + clamp, pos->room_num)) {
         pos->z = box->right - clamp;
     }
 
-    if (x < box->top + clamp
-        && Camera_BadPosition(x - clamp, y, z, pos->room_num)) {
+    if (x < box->top + clamp && M_BadPosition(x - clamp, y, z, pos->room_num)) {
         pos->x = box->top + clamp;
     } else if (
         x > box->bottom - clamp
-        && Camera_BadPosition(x + clamp, y, z, pos->room_num)) {
+        && M_BadPosition(x + clamp, y, z, pos->room_num)) {
         pos->x = box->bottom - clamp;
     }
 
@@ -98,7 +95,7 @@ static int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
     }
 }
 
-static void Camera_SmartShift(
+static void M_SmartShift(
     GAME_VECTOR *ideal,
     void (*shift)(
         int32_t *x, int32_t *y, int32_t target_x, int32_t target_y,
@@ -130,8 +127,7 @@ static void Camera_SmartShift(
     int32_t bottom = box->bottom;
 
     int32_t test = (ideal->z - WALL_L) | (WALL_L - 1);
-    bool bad_left =
-        Camera_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
+    bool bad_left = M_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
     if (!bad_left) {
         camera_box = r->sectors[z_sector - 1 + x_sector * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].left < left) {
@@ -140,8 +136,7 @@ static void Camera_SmartShift(
     }
 
     test = (ideal->z + WALL_L) & (~(WALL_L - 1));
-    bool bad_right =
-        Camera_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
+    bool bad_right = M_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
     if (!bad_right) {
         camera_box = r->sectors[z_sector + 1 + x_sector * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].right > right) {
@@ -150,8 +145,7 @@ static void Camera_SmartShift(
     }
 
     test = (ideal->x - WALL_L) | (WALL_L - 1);
-    bool bad_top =
-        Camera_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
+    bool bad_top = M_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
     if (!bad_top) {
         camera_box = r->sectors[z_sector + (x_sector - 1) * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].top < top) {
@@ -160,8 +154,7 @@ static void Camera_SmartShift(
     }
 
     test = (ideal->x + WALL_L) & (~(WALL_L - 1));
-    bool bad_bottom =
-        Camera_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
+    bool bad_bottom = M_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
     if (!bad_bottom) {
         camera_box = r->sectors[z_sector + (x_sector + 1) * r->z_size].box;
         if (camera_box != NO_ITEM && g_Boxes[camera_box].bottom > bottom) {
@@ -230,7 +223,7 @@ static void Camera_SmartShift(
     }
 }
 
-static void Camera_Clip(
+static void M_Clip(
     int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
     int32_t top, int32_t right, int32_t bottom)
 {
@@ -246,7 +239,7 @@ static void Camera_Clip(
     }
 }
 
-static void Camera_Shift(
+static void M_Shift(
     int32_t *x, int32_t *y, int32_t target_x, int32_t target_y, int32_t left,
     int32_t top, int32_t right, int32_t bottom)
 {
@@ -295,7 +288,7 @@ static void Camera_Shift(
     }
 }
 
-static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
+static void M_Move(GAME_VECTOR *ideal, int32_t speed)
 {
     g_Camera.pos.x += (ideal->x - g_Camera.pos.x) / speed;
     g_Camera.pos.z += (ideal->z - g_Camera.pos.z) / speed;
@@ -357,7 +350,7 @@ static void Camera_Move(GAME_VECTOR *ideal, int32_t speed)
     }
 }
 
-static void Camera_LoadCutsceneFrame(void)
+static void M_LoadCutsceneFrame(void)
 {
     g_CineFrame++;
     if (g_CineFrame >= g_NumCineFrames) {
@@ -385,12 +378,12 @@ static void Camera_LoadCutsceneFrame(void)
     Viewport_SetFOV(ref->fov);
 }
 
-static void Camera_OffsetAdditionalAngle(int16_t delta)
+static void M_OffsetAdditionalAngle(int16_t delta)
 {
     g_Camera.additional_angle += delta;
 }
 
-static void Camera_OffsetAdditionalElevation(int16_t delta)
+static void M_OffsetAdditionalElevation(int16_t delta)
 {
     // don't let this value wrap, so clamp it.
     if (delta > 0) {
@@ -408,7 +401,7 @@ static void Camera_OffsetAdditionalElevation(int16_t delta)
     }
 }
 
-static void Camera_AdjustMusicVolume(const bool underwater)
+static void M_AdjustMusicVolume(const bool underwater)
 {
     const bool is_ambient =
         Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
@@ -503,12 +496,12 @@ void Camera_Chase(ITEM_INFO *item)
     ideal.z = g_Camera.target.z - (distance * Math_Cos(angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    Camera_SmartShift(&ideal, Camera_Shift);
+    M_SmartShift(&ideal, M_Shift);
 
     if (g_Camera.fixed_camera) {
-        Camera_Move(&ideal, g_Camera.speed);
+        M_Move(&ideal, g_Camera.speed);
     } else {
-        Camera_Move(&ideal, CHASE_SPEED);
+        M_Move(&ideal, CHASE_SPEED);
     }
 }
 
@@ -544,8 +537,8 @@ void Camera_Combat(ITEM_INFO *item)
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    Camera_SmartShift(&ideal, Camera_Shift);
-    Camera_Move(&ideal, g_Camera.speed);
+    M_SmartShift(&ideal, M_Shift);
+    M_Move(&ideal, g_Camera.speed);
 }
 
 void Camera_Look(ITEM_INFO *item)
@@ -574,14 +567,14 @@ void Camera_Look(ITEM_INFO *item)
     g_Camera.target.z += g_Camera.shift * Math_Cos(item->rot.y) >> W2V_SHIFT;
     g_Camera.target.x += g_Camera.shift * Math_Sin(item->rot.y) >> W2V_SHIFT;
 
-    if (Camera_BadPosition(
+    if (M_BadPosition(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
             g_Camera.target.room_num)) {
         g_Camera.target.x = item->pos.x;
         g_Camera.target.z = item->pos.z;
     }
 
-    g_Camera.target.y += Camera_ShiftClamp(&g_Camera.target, STEP_L + 50);
+    g_Camera.target.y += M_ShiftClamp(&g_Camera.target, STEP_L + 50);
 
     ideal.x = g_Camera.target.x
         - (distance * Math_Sin(g_Camera.target_angle) >> W2V_SHIFT);
@@ -592,12 +585,12 @@ void Camera_Look(ITEM_INFO *item)
         - (distance * Math_Cos(g_Camera.target_angle) >> W2V_SHIFT);
     ideal.room_num = g_Camera.pos.room_num;
 
-    Camera_SmartShift(&ideal, Camera_Clip);
+    M_SmartShift(&ideal, M_Clip);
 
     g_Camera.target.z = old.z + (g_Camera.target.z - old.z) / g_Camera.speed;
     g_Camera.target.x = old.x + (g_Camera.target.x - old.x) / g_Camera.speed;
 
-    Camera_Move(&ideal, g_Camera.speed);
+    M_Move(&ideal, g_Camera.speed);
 }
 
 void Camera_Fixed(void)
@@ -613,7 +606,7 @@ void Camera_Fixed(void)
 
     g_Camera.fixed_camera = 1;
 
-    Camera_Move(&ideal, g_Camera.speed);
+    M_Move(&ideal, g_Camera.speed);
 
     if (g_Camera.timer) {
         g_Camera.timer--;
@@ -626,7 +619,7 @@ void Camera_Fixed(void)
 void Camera_Update(void)
 {
     if (g_Camera.type == CAM_CINEMATIC) {
-        Camera_LoadCutsceneFrame();
+        M_LoadCutsceneFrame();
         return;
     }
 
@@ -775,18 +768,18 @@ void Camera_Update(void)
     g_ChunkyFlag = false;
 }
 
-static void Camera_EnsureEnvironment(void)
+static void M_EnsureEnvironment(void)
 {
     if (g_Camera.pos.room_num == NO_ROOM) {
         return;
     }
 
     if (g_RoomInfo[g_Camera.pos.room_num].flags & RF_UNDERWATER) {
-        Camera_AdjustMusicVolume(true);
+        M_AdjustMusicVolume(true);
         Sound_Effect(SFX_UNDERWATER, NULL, SPM_ALWAYS);
         g_Camera.underwater = true;
     } else {
-        Camera_AdjustMusicVolume(false);
+        M_AdjustMusicVolume(false);
         if (g_Camera.underwater) {
             Sound_StopEffect(SFX_UNDERWATER, NULL);
             g_Camera.underwater = false;
@@ -863,14 +856,14 @@ void Camera_MoveManual(void)
         * (double)m_ManualCameraMultiplier[g_Config.camera_speed];
 
     if (g_Input.camera_left) {
-        Camera_OffsetAdditionalAngle(camera_delta);
+        M_OffsetAdditionalAngle(camera_delta);
     } else if (g_Input.camera_right) {
-        Camera_OffsetAdditionalAngle(-camera_delta);
+        M_OffsetAdditionalAngle(-camera_delta);
     }
     if (g_Input.camera_up) {
-        Camera_OffsetAdditionalElevation(-camera_delta);
+        M_OffsetAdditionalElevation(-camera_delta);
     } else if (g_Input.camera_down) {
-        Camera_OffsetAdditionalElevation(camera_delta);
+        M_OffsetAdditionalElevation(camera_delta);
     }
     if (g_Input.camera_reset) {
         Camera_OffsetReset();
@@ -879,7 +872,7 @@ void Camera_MoveManual(void)
 
 void Camera_Apply(void)
 {
-    Camera_EnsureEnvironment();
+    M_EnsureEnvironment();
     Matrix_LookAt(
         g_Camera.interp.result.pos.x,
         g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,

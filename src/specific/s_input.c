@@ -345,19 +345,17 @@ static SDL_GameController *m_Controller = NULL;
 static const char *m_ControllerName = NULL;
 static SDL_GameControllerType m_ControllerType = SDL_CONTROLLER_TYPE_UNKNOWN;
 
-static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode);
-static const char *S_Input_GetButtonName(SDL_GameControllerButton button);
-static const char *S_Input_GetAxisName(
-    SDL_GameControllerAxis axis, int16_t axis_dir);
-static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
-static bool S_Input_JoyBtn(SDL_GameControllerButton button);
-static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis);
-static bool S_Input_GetBindState(
-    INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num);
-static INPUT_STATE S_Input_GetControllerState(
+static const char *M_GetScancodeName(INPUT_SCANCODE scancode);
+static const char *M_GetButtonName(SDL_GameControllerButton button);
+static const char *M_GetAxisName(SDL_GameControllerAxis axis, int16_t axis_dir);
+static bool M_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num);
+static bool M_JoyBtn(SDL_GameControllerButton button);
+static int16_t M_JoyAxis(SDL_GameControllerAxis axis);
+static bool M_GetBindState(INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num);
+static INPUT_STATE M_GetControllerState(
     INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num);
 
-static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
+static const char *M_GetScancodeName(INPUT_SCANCODE scancode)
 {
     // clang-format off
     switch (scancode) {
@@ -599,7 +597,7 @@ static const char *S_Input_GetScancodeName(INPUT_SCANCODE scancode)
     return "????";
 }
 
-static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
+static const char *M_GetButtonName(SDL_GameControllerButton button)
 {
     // clang-format off
     switch (m_ControllerType) {
@@ -724,8 +722,7 @@ static const char *S_Input_GetButtonName(SDL_GameControllerButton button)
     return "????";
 }
 
-static const char *S_Input_GetAxisName(
-    SDL_GameControllerAxis axis, int16_t axis_dir)
+static const char *M_GetAxisName(SDL_GameControllerAxis axis, int16_t axis_dir)
 {
     // clang-format off
     switch (m_ControllerType) {
@@ -778,7 +775,7 @@ static const char *S_Input_GetAxisName(
     return "????";
 }
 
-static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
+static bool M_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
 {
     INPUT_SCANCODE scancode = m_Layout[layout_num][role];
     if (KEY_DOWN(scancode)) {
@@ -805,12 +802,12 @@ static bool S_Input_Key(INPUT_ROLE role, INPUT_LAYOUT layout_num)
     return false;
 }
 
-static bool S_Input_JoyBtn(SDL_GameControllerButton button)
+static bool M_JoyBtn(SDL_GameControllerButton button)
 {
     return SDL_GameControllerGetButton(m_Controller, button);
 }
 
-static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
+static int16_t M_JoyAxis(SDL_GameControllerAxis axis)
 {
     Sint16 value = SDL_GameControllerGetAxis(m_Controller, axis);
     if (value < -SDL_JOYSTICK_AXIS_MAX / 2) {
@@ -822,59 +819,59 @@ static int16_t S_Input_JoyAxis(SDL_GameControllerAxis axis)
     return 0;
 }
 
-static bool S_Input_GetBindState(INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num)
+static bool M_GetBindState(INPUT_ROLE role, INPUT_LAYOUT cntlr_layout_num)
 {
     CONTROLLER_MAP assigned = m_ControllerLayout[cntlr_layout_num][role];
 
     if (assigned.type == BT_BUTTON) {
-        return (S_Input_JoyBtn(assigned.bind.button));
+        return (M_JoyBtn(assigned.bind.button));
     } else {
-        return (S_Input_JoyAxis(assigned.bind.axis) == assigned.axis_dir);
+        return (M_JoyAxis(assigned.bind.axis) == assigned.axis_dir);
     }
 }
 
-static INPUT_STATE S_Input_GetControllerState(
+static INPUT_STATE M_GetControllerState(
     INPUT_STATE state, INPUT_LAYOUT cntlr_layout_num)
 {
     for (int role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         // clang-format off
-        state.forward                |= S_Input_GetBindState(INPUT_ROLE_UP, cntlr_layout_num);
-        state.back                   |= S_Input_GetBindState(INPUT_ROLE_DOWN, cntlr_layout_num);
-        state.left                   |= S_Input_GetBindState(INPUT_ROLE_LEFT, cntlr_layout_num);
-        state.right                  |= S_Input_GetBindState(INPUT_ROLE_RIGHT, cntlr_layout_num);
-        state.step_left              |= S_Input_GetBindState(INPUT_ROLE_STEP_L, cntlr_layout_num);
-        state.step_right             |= S_Input_GetBindState(INPUT_ROLE_STEP_R, cntlr_layout_num);
-        state.slow                   |= S_Input_GetBindState(INPUT_ROLE_SLOW, cntlr_layout_num);
-        state.jump                   |= S_Input_GetBindState(INPUT_ROLE_JUMP, cntlr_layout_num);
-        state.action                 |= S_Input_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
-        state.draw                   |= S_Input_GetBindState(INPUT_ROLE_DRAW, cntlr_layout_num);
-        state.look                   |= S_Input_GetBindState(INPUT_ROLE_LOOK, cntlr_layout_num);
-        state.roll                   |= S_Input_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
-        state.option                 |= S_Input_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
-        state.pause                  |= S_Input_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
-        state.camera_up              |= S_Input_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
-        state.camera_down            |= S_Input_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
-        state.camera_left            |= S_Input_GetBindState(INPUT_ROLE_CAMERA_LEFT, cntlr_layout_num);
-        state.camera_right           |= S_Input_GetBindState(INPUT_ROLE_CAMERA_RIGHT, cntlr_layout_num);
-        state.camera_reset           |= S_Input_GetBindState(INPUT_ROLE_CAMERA_RESET, cntlr_layout_num);
-        state.item_cheat             |= S_Input_GetBindState(INPUT_ROLE_ITEM_CHEAT, cntlr_layout_num);
-        state.fly_cheat              |= S_Input_GetBindState(INPUT_ROLE_FLY_CHEAT, cntlr_layout_num);
-        state.level_skip_cheat       |= S_Input_GetBindState(INPUT_ROLE_LEVEL_SKIP_CHEAT, cntlr_layout_num);
-        state.turbo_cheat            |= S_Input_GetBindState(INPUT_ROLE_TURBO_CHEAT, cntlr_layout_num);
-        state.equip_pistols          |= S_Input_GetBindState(INPUT_ROLE_EQUIP_PISTOLS, cntlr_layout_num);
-        state.equip_shotgun          |= S_Input_GetBindState(INPUT_ROLE_EQUIP_SHOTGUN, cntlr_layout_num);
-        state.equip_magnums          |= S_Input_GetBindState(INPUT_ROLE_EQUIP_MAGNUMS, cntlr_layout_num);
-        state.equip_uzis             |= S_Input_GetBindState(INPUT_ROLE_EQUIP_UZIS, cntlr_layout_num);
-        state.use_small_medi         |= S_Input_GetBindState(INPUT_ROLE_USE_SMALL_MEDI, cntlr_layout_num);
-        state.use_big_medi           |= S_Input_GetBindState(INPUT_ROLE_USE_BIG_MEDI, cntlr_layout_num);
-        state.save                   |= S_Input_GetBindState(INPUT_ROLE_SAVE, cntlr_layout_num);
-        state.load                   |= S_Input_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
-        state.toggle_fps_counter     |= S_Input_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
-        state.toggle_bilinear_filter |= S_Input_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
-        state.change_target          |= S_Input_GetBindState(INPUT_ROLE_CHANGE_TARGET, cntlr_layout_num);
-        state.menu_confirm           |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_A);
-        state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_B);
-        state.menu_back              |= S_Input_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
+        state.forward                |= M_GetBindState(INPUT_ROLE_UP, cntlr_layout_num);
+        state.back                   |= M_GetBindState(INPUT_ROLE_DOWN, cntlr_layout_num);
+        state.left                   |= M_GetBindState(INPUT_ROLE_LEFT, cntlr_layout_num);
+        state.right                  |= M_GetBindState(INPUT_ROLE_RIGHT, cntlr_layout_num);
+        state.step_left              |= M_GetBindState(INPUT_ROLE_STEP_L, cntlr_layout_num);
+        state.step_right             |= M_GetBindState(INPUT_ROLE_STEP_R, cntlr_layout_num);
+        state.slow                   |= M_GetBindState(INPUT_ROLE_SLOW, cntlr_layout_num);
+        state.jump                   |= M_GetBindState(INPUT_ROLE_JUMP, cntlr_layout_num);
+        state.action                 |= M_GetBindState(INPUT_ROLE_ACTION, cntlr_layout_num);
+        state.draw                   |= M_GetBindState(INPUT_ROLE_DRAW, cntlr_layout_num);
+        state.look                   |= M_GetBindState(INPUT_ROLE_LOOK, cntlr_layout_num);
+        state.roll                   |= M_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
+        state.option                 |= M_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
+        state.pause                  |= M_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
+        state.camera_up              |= M_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
+        state.camera_down            |= M_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
+        state.camera_left            |= M_GetBindState(INPUT_ROLE_CAMERA_LEFT, cntlr_layout_num);
+        state.camera_right           |= M_GetBindState(INPUT_ROLE_CAMERA_RIGHT, cntlr_layout_num);
+        state.camera_reset           |= M_GetBindState(INPUT_ROLE_CAMERA_RESET, cntlr_layout_num);
+        state.item_cheat             |= M_GetBindState(INPUT_ROLE_ITEM_CHEAT, cntlr_layout_num);
+        state.fly_cheat              |= M_GetBindState(INPUT_ROLE_FLY_CHEAT, cntlr_layout_num);
+        state.level_skip_cheat       |= M_GetBindState(INPUT_ROLE_LEVEL_SKIP_CHEAT, cntlr_layout_num);
+        state.turbo_cheat            |= M_GetBindState(INPUT_ROLE_TURBO_CHEAT, cntlr_layout_num);
+        state.equip_pistols          |= M_GetBindState(INPUT_ROLE_EQUIP_PISTOLS, cntlr_layout_num);
+        state.equip_shotgun          |= M_GetBindState(INPUT_ROLE_EQUIP_SHOTGUN, cntlr_layout_num);
+        state.equip_magnums          |= M_GetBindState(INPUT_ROLE_EQUIP_MAGNUMS, cntlr_layout_num);
+        state.equip_uzis             |= M_GetBindState(INPUT_ROLE_EQUIP_UZIS, cntlr_layout_num);
+        state.use_small_medi         |= M_GetBindState(INPUT_ROLE_USE_SMALL_MEDI, cntlr_layout_num);
+        state.use_big_medi           |= M_GetBindState(INPUT_ROLE_USE_BIG_MEDI, cntlr_layout_num);
+        state.save                   |= M_GetBindState(INPUT_ROLE_SAVE, cntlr_layout_num);
+        state.load                   |= M_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
+        state.toggle_fps_counter     |= M_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
+        state.toggle_bilinear_filter |= M_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
+        state.change_target          |= M_GetBindState(INPUT_ROLE_CHANGE_TARGET, cntlr_layout_num);
+        state.menu_confirm           |= M_JoyBtn(SDL_CONTROLLER_BUTTON_A);
+        state.menu_back              |= M_JoyBtn(SDL_CONTROLLER_BUTTON_B);
+        state.menu_back              |= M_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
         // clang-format on
     }
 
@@ -936,39 +933,39 @@ INPUT_STATE S_Input_GetCurrentState(
     INPUT_STATE linput = { 0 };
 
     // clang-format off
-    linput.forward                   = S_Input_Key(INPUT_ROLE_UP, layout_num);
-    linput.back                      = S_Input_Key(INPUT_ROLE_DOWN, layout_num);
-    linput.left                      = S_Input_Key(INPUT_ROLE_LEFT, layout_num);
-    linput.right                     = S_Input_Key(INPUT_ROLE_RIGHT, layout_num);
-    linput.step_left                 = S_Input_Key(INPUT_ROLE_STEP_L, layout_num);
-    linput.step_right                = S_Input_Key(INPUT_ROLE_STEP_R, layout_num);
-    linput.slow                      = S_Input_Key(INPUT_ROLE_SLOW, layout_num);
-    linput.jump                      = S_Input_Key(INPUT_ROLE_JUMP, layout_num);
-    linput.action                    = S_Input_Key(INPUT_ROLE_ACTION, layout_num);
-    linput.draw                      = S_Input_Key(INPUT_ROLE_DRAW, layout_num);
-    linput.look                      = S_Input_Key(INPUT_ROLE_LOOK, layout_num);
-    linput.roll                      = S_Input_Key(INPUT_ROLE_ROLL, layout_num);
-    linput.option                    = S_Input_Key(INPUT_ROLE_OPTION, layout_num);
-    linput.pause                     = S_Input_Key(INPUT_ROLE_PAUSE, layout_num);
-    linput.camera_up                 = S_Input_Key(INPUT_ROLE_CAMERA_UP, layout_num);
-    linput.camera_down               = S_Input_Key(INPUT_ROLE_CAMERA_DOWN, layout_num);
-    linput.camera_left               = S_Input_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
-    linput.camera_right              = S_Input_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
-    linput.camera_reset              = S_Input_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
-    linput.change_target             = S_Input_Key(INPUT_ROLE_CHANGE_TARGET, layout_num);
+    linput.forward                   = M_Key(INPUT_ROLE_UP, layout_num);
+    linput.back                      = M_Key(INPUT_ROLE_DOWN, layout_num);
+    linput.left                      = M_Key(INPUT_ROLE_LEFT, layout_num);
+    linput.right                     = M_Key(INPUT_ROLE_RIGHT, layout_num);
+    linput.step_left                 = M_Key(INPUT_ROLE_STEP_L, layout_num);
+    linput.step_right                = M_Key(INPUT_ROLE_STEP_R, layout_num);
+    linput.slow                      = M_Key(INPUT_ROLE_SLOW, layout_num);
+    linput.jump                      = M_Key(INPUT_ROLE_JUMP, layout_num);
+    linput.action                    = M_Key(INPUT_ROLE_ACTION, layout_num);
+    linput.draw                      = M_Key(INPUT_ROLE_DRAW, layout_num);
+    linput.look                      = M_Key(INPUT_ROLE_LOOK, layout_num);
+    linput.roll                      = M_Key(INPUT_ROLE_ROLL, layout_num);
+    linput.option                    = M_Key(INPUT_ROLE_OPTION, layout_num);
+    linput.pause                     = M_Key(INPUT_ROLE_PAUSE, layout_num);
+    linput.camera_up                 = M_Key(INPUT_ROLE_CAMERA_UP, layout_num);
+    linput.camera_down               = M_Key(INPUT_ROLE_CAMERA_DOWN, layout_num);
+    linput.camera_left               = M_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
+    linput.camera_right              = M_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
+    linput.camera_reset              = M_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
+    linput.change_target             = M_Key(INPUT_ROLE_CHANGE_TARGET, layout_num);
 
-    linput.item_cheat                = S_Input_Key(INPUT_ROLE_ITEM_CHEAT, layout_num);
-    linput.fly_cheat                 = S_Input_Key(INPUT_ROLE_FLY_CHEAT, layout_num);
-    linput.level_skip_cheat          = S_Input_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT, layout_num);
-    linput.turbo_cheat               = S_Input_Key(INPUT_ROLE_TURBO_CHEAT, layout_num);
+    linput.item_cheat                = M_Key(INPUT_ROLE_ITEM_CHEAT, layout_num);
+    linput.fly_cheat                 = M_Key(INPUT_ROLE_FLY_CHEAT, layout_num);
+    linput.level_skip_cheat          = M_Key(INPUT_ROLE_LEVEL_SKIP_CHEAT, layout_num);
+    linput.turbo_cheat               = M_Key(INPUT_ROLE_TURBO_CHEAT, layout_num);
     linput.health_cheat              = KEY_DOWN(SDL_SCANCODE_F11);
 
-    linput.equip_pistols             = S_Input_Key(INPUT_ROLE_EQUIP_PISTOLS, layout_num);
-    linput.equip_shotgun             = S_Input_Key(INPUT_ROLE_EQUIP_SHOTGUN, layout_num);
-    linput.equip_magnums             = S_Input_Key(INPUT_ROLE_EQUIP_MAGNUMS, layout_num);
-    linput.equip_uzis                = S_Input_Key(INPUT_ROLE_EQUIP_UZIS, layout_num);
-    linput.use_small_medi            = S_Input_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
-    linput.use_big_medi              = S_Input_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
+    linput.equip_pistols             = M_Key(INPUT_ROLE_EQUIP_PISTOLS, layout_num);
+    linput.equip_shotgun             = M_Key(INPUT_ROLE_EQUIP_SHOTGUN, layout_num);
+    linput.equip_magnums             = M_Key(INPUT_ROLE_EQUIP_MAGNUMS, layout_num);
+    linput.equip_uzis                = M_Key(INPUT_ROLE_EQUIP_UZIS, layout_num);
+    linput.use_small_medi            = M_Key(INPUT_ROLE_USE_SMALL_MEDI, layout_num);
+    linput.use_big_medi              = M_Key(INPUT_ROLE_USE_BIG_MEDI, layout_num);
 
     linput.menu_up                   = KEY_DOWN(SDL_SCANCODE_UP);
     linput.menu_down                 = KEY_DOWN(SDL_SCANCODE_DOWN);
@@ -978,16 +975,16 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.menu_confirm             |= linput.action; // we only do this for keyboard input
     linput.menu_back                 = KEY_DOWN(SDL_SCANCODE_ESCAPE);
 
-    linput.save                      = S_Input_Key(INPUT_ROLE_SAVE, layout_num);
-    linput.load                      = S_Input_Key(INPUT_ROLE_LOAD, layout_num);
+    linput.save                      = M_Key(INPUT_ROLE_SAVE, layout_num);
+    linput.load                      = M_Key(INPUT_ROLE_LOAD, layout_num);
 
-    linput.toggle_fps_counter        = S_Input_Key(INPUT_ROLE_FPS, layout_num);
-    linput.toggle_bilinear_filter    = S_Input_Key(INPUT_ROLE_BILINEAR, layout_num);
+    linput.toggle_fps_counter        = M_Key(INPUT_ROLE_FPS, layout_num);
+    linput.toggle_bilinear_filter    = M_Key(INPUT_ROLE_BILINEAR, layout_num);
     linput.toggle_perspective_filter = KEY_DOWN(SDL_SCANCODE_F4);
     // clang-format on
 
     if (m_Controller) {
-        linput = S_Input_GetControllerState(linput, cntlr_layout_num);
+        linput = M_GetControllerState(linput, cntlr_layout_num);
     }
 
     return linput;
@@ -1081,14 +1078,14 @@ bool S_Input_ReadAndAssignKey(
     } else {
         for (SDL_GameControllerButton button = 0;
              button < SDL_CONTROLLER_BUTTON_MAX; button++) {
-            if (S_Input_JoyBtn(button)) {
+            if (M_JoyBtn(button)) {
                 S_Input_AssignButton(layout_num, role, button);
                 return true;
             }
         }
         for (SDL_GameControllerAxis axis = 0; axis < SDL_CONTROLLER_AXIS_MAX;
              axis++) {
-            int16_t axis_dir = S_Input_JoyAxis(axis);
+            int16_t axis_dir = M_JoyAxis(axis);
             if (axis_dir != 0) {
                 S_Input_AssignAxis(layout_num, role, axis, axis_dir);
                 return true;
@@ -1102,13 +1099,13 @@ const char *S_Input_GetKeyName(
     CONTROL_MODE mode, INPUT_LAYOUT layout_num, INPUT_ROLE role)
 {
     if (mode == CM_KEYBOARD) {
-        return S_Input_GetScancodeName(m_Layout[layout_num][role]);
+        return M_GetScancodeName(m_Layout[layout_num][role]);
     } else {
         CONTROLLER_MAP check = m_ControllerLayout[layout_num][role];
         if (check.type == BT_BUTTON) {
-            return S_Input_GetButtonName(check.bind.button);
+            return M_GetButtonName(check.bind.button);
         } else {
-            return S_Input_GetAxisName(check.bind.axis, check.axis_dir);
+            return M_GetAxisName(check.bind.axis, check.axis_dir);
         }
     }
 }
@@ -1118,7 +1115,7 @@ const char *S_Input_GetButtonNameFromString(
 {
     SDL_GameControllerButton button =
         SDL_GameControllerGetButtonFromString(button_name);
-    return S_Input_GetButtonName(button);
+    return M_GetButtonName(button);
 }
 
 bool S_Input_CheckKeypress(const char *key_name)
@@ -1136,5 +1133,5 @@ bool S_Input_CheckButtonPress(const char *button_name)
     SDL_GameControllerButton button =
         SDL_GameControllerGetButtonFromString(button_name);
 
-    return S_Input_JoyBtn(button);
+    return M_JoyBtn(button);
 }

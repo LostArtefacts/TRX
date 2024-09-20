@@ -19,10 +19,10 @@ typedef enum PICK_TEXT {
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
-static void Option_ControlPick_InitText(void);
-static void Option_ControlPick_ShutdownText(void);
+static void M_InitText(void);
+static void M_ShutdownText(void);
 
-static void Option_ControlPick_InitText(void)
+static void M_InitText(void)
 {
     m_Text[TEXT_TITLE_BORDER] = Text_Create(0, -32, " ");
     Text_AddBackground(m_Text[TEXT_TITLE_BORDER], 180, 85, 0, 0, TS_BACKGROUND);
@@ -44,7 +44,7 @@ static void Option_ControlPick_InitText(void)
     }
 }
 
-static void Option_ControlPick_ShutdownText(void)
+static void M_ShutdownText(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
@@ -55,7 +55,7 @@ static void Option_ControlPick_ShutdownText(void)
 CONTROL_MODE Option_ControlPick(void)
 {
     if (!m_Text[TEXT_KEYBOARD]) {
-        Option_ControlPick_InitText();
+        M_InitText();
     }
 
     if (g_InputDB.menu_up && g_OptionSelected > TEXT_OPTION_MIN) {
@@ -79,7 +79,7 @@ CONTROL_MODE Option_ControlPick(void)
     switch (g_OptionSelected) {
     case TEXT_KEYBOARD:
         if (g_InputDB.menu_confirm) {
-            Option_ControlPick_ShutdownText();
+            M_ShutdownText();
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
             return CM_KEYBOARD;
@@ -88,7 +88,7 @@ CONTROL_MODE Option_ControlPick(void)
 
     case TEXT_CONTROLLER:
         if (g_InputDB.menu_confirm) {
-            Option_ControlPick_ShutdownText();
+            M_ShutdownText();
             g_Input = (INPUT_STATE) { 0 };
             g_InputDB = (INPUT_STATE) { 0 };
             return CM_CONTROLLER;
@@ -97,7 +97,7 @@ CONTROL_MODE Option_ControlPick(void)
     }
 
     if (g_InputDB.menu_back) {
-        Option_ControlPick_ShutdownText();
+        M_ShutdownText();
     }
 
     return CM_PICK;
@@ -105,5 +105,5 @@ CONTROL_MODE Option_ControlPick(void)
 
 void Option_ControlPick_Shutdown(void)
 {
-    Option_ControlPick_ShutdownText();
+    M_ShutdownText();
 }

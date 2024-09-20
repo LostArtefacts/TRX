@@ -7,12 +7,12 @@
 
 #include <stdint.h>
 
-static int32_t LOS_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
-static int32_t LOS_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
-static bool LOS_ClipTarget(
+static int32_t M_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
+static int32_t M_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
+static bool M_ClipTarget(
     const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR_INFO *sector);
 
-static int32_t LOS_CheckX(
+static int32_t M_CheckX(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     const SECTOR_INFO *sector;
@@ -98,7 +98,7 @@ static int32_t LOS_CheckX(
     return 1;
 }
 
-static int32_t LOS_CheckZ(
+static int32_t M_CheckZ(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     const SECTOR_INFO *sector;
@@ -184,7 +184,7 @@ static int32_t LOS_CheckZ(
     return 1;
 }
 
-static bool LOS_ClipTarget(
+static bool M_ClipTarget(
     const GAME_VECTOR *const start, GAME_VECTOR *const target,
     const SECTOR_INFO *const sector)
 {
@@ -219,11 +219,11 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
     int32_t los2;
 
     if (ABS(target->z - start->z) > ABS(target->x - start->x)) {
-        los1 = LOS_CheckX(start, target);
-        los2 = LOS_CheckZ(start, target);
+        los1 = M_CheckX(start, target);
+        los2 = M_CheckZ(start, target);
     } else {
-        los1 = LOS_CheckZ(start, target);
-        los2 = LOS_CheckX(start, target);
+        los1 = M_CheckZ(start, target);
+        los2 = M_CheckX(start, target);
     }
 
     if (!los2) {
@@ -233,5 +233,5 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
     const SECTOR_INFO *const sector =
         Room_GetSector(target->x, target->y, target->z, &target->room_num);
 
-    return LOS_ClipTarget(start, target, sector) && los1 == 1 && los2 == 1;
+    return M_ClipTarget(start, target, sector) && los1 == 1 && los2 == 1;
 }

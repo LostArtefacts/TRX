@@ -300,14 +300,14 @@ static const struct TextureFormatEntry {
     { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
 };
 
-static int S_FMV_GetAudioVolume(void)
+static int M_GetAudioVolume(void)
 {
     const float volume_dbl =
         g_Config.sound_volume / (float)Sound_GetMaxVolume();
     return volume_dbl * SDL_MIX_MAXVOLUME;
 }
 
-static int S_FMV_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
+static int M_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
 {
     MyAVPacketList pkt1;
 
@@ -332,7 +332,7 @@ static int S_FMV_PacketQueuePutPrivate(PacketQueue *q, AVPacket *pkt)
     return 0;
 }
 
-static int S_FMV_PacketQueuePut(PacketQueue *q, AVPacket *pkt)
+static int M_PacketQueuePut(PacketQueue *q, AVPacket *pkt)
 {
     AVPacket *pkt1;
     int ret;
@@ -345,7 +345,7 @@ static int S_FMV_PacketQueuePut(PacketQueue *q, AVPacket *pkt)
     av_packet_move_ref(pkt1, pkt);
 
     SDL_LockMutex(q->mutex);
-    ret = S_FMV_PacketQueuePutPrivate(q, pkt1);
+    ret = M_PacketQueuePutPrivate(q, pkt1);
     SDL_UnlockMutex(q->mutex);
 
     if (ret < 0) {
@@ -355,14 +355,14 @@ static int S_FMV_PacketQueuePut(PacketQueue *q, AVPacket *pkt)
     return ret;
 }
 
-static int S_FMV_PacketQueuePutNullPacket(
+static int M_PacketQueuePutNullPacket(
     PacketQueue *q, AVPacket *pkt, int stream_index)
 {
     pkt->stream_index = stream_index;
-    return S_FMV_PacketQueuePut(q, pkt);
+    return M_PacketQueuePut(q, pkt);
 }
 
-static int S_FMV_PacketQueueInit(PacketQueue *q)
+static int M_PacketQueueInit(PacketQueue *q)
 {
     memset(q, 0, sizeof(PacketQueue));
     q->pkt_list = av_fifo_alloc(sizeof(MyAVPacketList));
@@ -386,7 +386,7 @@ static int S_FMV_PacketQueueInit(PacketQueue *q)
     return 0;
 }
 
-static void S_FMV_PacketQueueFlush(PacketQueue *q)
+static void M_PacketQueueFlush(PacketQueue *q)
 {
     MyAVPacketList pkt1;
 
@@ -402,15 +402,15 @@ static void S_FMV_PacketQueueFlush(PacketQueue *q)
     SDL_UnlockMutex(q->mutex);
 }
 
-static void S_FMV_PacketQueueDestroy(PacketQueue *q)
+static void M_PacketQueueDestroy(PacketQueue *q)
 {
-    S_FMV_PacketQueueFlush(q);
+    M_PacketQueueFlush(q);
     av_fifo_freep(&q->pkt_list);
     SDL_DestroyMutex(q->mutex);
     SDL_DestroyCond(q->cond);
 }
 
-static void S_FMV_PacketQueueAbort(PacketQueue *q)
+static void M_PacketQueueAbort(PacketQueue *q)
 {
     SDL_LockMutex(q->mutex);
     q->abort_request = true;
@@ -418,7 +418,7 @@ static void S_FMV_PacketQueueAbort(PacketQueue *q)
     SDL_UnlockMutex(q->mutex);
 }
 
-static void S_FMV_PacketQueueStart(PacketQueue *q)
+static void M_PacketQueueStart(PacketQueue *q)
 {
     SDL_LockMutex(q->mutex);
     q->abort_request = false;
@@ -426,7 +426,7 @@ static void S_FMV_PacketQueueStart(PacketQueue *q)
     SDL_UnlockMutex(q->mutex);
 }
 
-static int S_FMV_PacketQueueGet(
+static int M_PacketQueueGet(
     PacketQueue *q, AVPacket *pkt, int block, int *serial)
 {
     MyAVPacketList pkt1;
@@ -463,7 +463,7 @@ static int S_FMV_PacketQueueGet(
     return ret;
 }
 
-static int S_FMV_DecoderInit(
+static int M_DecoderInit(
     Decoder *d, AVCodecContext *avctx, PacketQueue *queue,
     SDL_cond *empty_queue_cond)
 {
@@ -480,7 +480,7 @@ static int S_FMV_DecoderInit(
     return 0;
 }
 
-static int S_FMV_DecoderDecodeFrame(Decoder *d, AVFrame *frame, AVSubtitle *sub)
+static int M_DecoderDecodeFrame(Decoder *d, AVFrame *frame, AVSubtitle *sub)
 {
     int ret = AVERROR(EAGAIN);
 
@@ -540,8 +540,7 @@ static int S_FMV_DecoderDecodeFrame(Decoder *d, AVFrame *frame, AVSubtitle *sub)
                 d->packet_pending = false;
             } else {
                 int old_serial = d->pkt_serial;
-                if (S_FMV_PacketQueueGet(d->queue, d->pkt, 1, &d->pkt_serial)
-                    < 0) {
+                if (M_PacketQueueGet(d->queue, d->pkt, 1, &d->pkt_serial) < 0) {
                     return -1;
                 }
                 if (old_serial != d->pkt_serial) {
@@ -582,19 +581,19 @@ static int S_FMV_DecoderDecodeFrame(Decoder *d, AVFrame *frame, AVSubtitle *sub)
     }
 }
 
-static void S_FMV_DecoderShutdown(Decoder *d)
+static void M_DecoderShutdown(Decoder *d)
 {
     av_packet_free(&d->pkt);
     avcodec_free_context(&d->avctx);
 }
 
-static void S_FMV_FrameQueueUnrefItem(Frame *vp)
+static void M_FrameQueueUnrefItem(Frame *vp)
 {
     av_frame_unref(vp->frame);
     avsubtitle_free(&vp->sub);
 }
 
-static int S_FMV_FrameQueueInit(
+static int M_FrameQueueInit(
     FrameQueue *f, PacketQueue *pktq, int max_size, int keep_last)
 {
     memset(f, 0, sizeof(FrameQueue));
@@ -617,40 +616,40 @@ static int S_FMV_FrameQueueInit(
     return 0;
 }
 
-static void S_FMV_FrameQueueShutdown(FrameQueue *f)
+static void M_FrameQueueShutdown(FrameQueue *f)
 {
     for (int i = 0; i < f->max_size; i++) {
         Frame *vp = &f->queue[i];
-        S_FMV_FrameQueueUnrefItem(vp);
+        M_FrameQueueUnrefItem(vp);
         av_frame_free(&vp->frame);
     }
     SDL_DestroyMutex(f->mutex);
     SDL_DestroyCond(f->cond);
 }
 
-static void S_FMV_FrameQueueSignal(FrameQueue *f)
+static void M_FrameQueueSignal(FrameQueue *f)
 {
     SDL_LockMutex(f->mutex);
     SDL_CondSignal(f->cond);
     SDL_UnlockMutex(f->mutex);
 }
 
-static Frame *S_FMV_FrameQueuePeek(FrameQueue *f)
+static Frame *M_FrameQueuePeek(FrameQueue *f)
 {
     return &f->queue[(f->rindex + f->rindex_shown) % f->max_size];
 }
 
-static Frame *S_FMV_FrameQueuePeekNext(FrameQueue *f)
+static Frame *M_FrameQueuePeekNext(FrameQueue *f)
 {
     return &f->queue[(f->rindex + f->rindex_shown + 1) % f->max_size];
 }
 
-static Frame *S_FMV_FrameQueuePeekLast(FrameQueue *f)
+static Frame *M_FrameQueuePeekLast(FrameQueue *f)
 {
     return &f->queue[f->rindex];
 }
 
-static Frame *S_FMV_FrameQueuePeekWritable(FrameQueue *f)
+static Frame *M_FrameQueuePeekWritable(FrameQueue *f)
 {
     SDL_LockMutex(f->mutex);
     while (f->size >= f->max_size && !f->pktq->abort_request) {
@@ -665,7 +664,7 @@ static Frame *S_FMV_FrameQueuePeekWritable(FrameQueue *f)
     return &f->queue[f->windex];
 }
 
-static Frame *S_FMV_FrameQueuePeekReadable(FrameQueue *f)
+static Frame *M_FrameQueuePeekReadable(FrameQueue *f)
 {
     SDL_LockMutex(f->mutex);
     while (f->size - f->rindex_shown <= 0 && !f->pktq->abort_request) {
@@ -680,7 +679,7 @@ static Frame *S_FMV_FrameQueuePeekReadable(FrameQueue *f)
     return &f->queue[(f->rindex + f->rindex_shown) % f->max_size];
 }
 
-static void S_FMV_FrameQueuePush(FrameQueue *f)
+static void M_FrameQueuePush(FrameQueue *f)
 {
     if (++f->windex == f->max_size) {
         f->windex = 0;
@@ -691,13 +690,13 @@ static void S_FMV_FrameQueuePush(FrameQueue *f)
     SDL_UnlockMutex(f->mutex);
 }
 
-static void S_FMV_FrameQueueNext(FrameQueue *f)
+static void M_FrameQueueNext(FrameQueue *f)
 {
     if (f->keep_last && !f->rindex_shown) {
         f->rindex_shown = 1;
         return;
     }
-    S_FMV_FrameQueueUnrefItem(&f->queue[f->rindex]);
+    M_FrameQueueUnrefItem(&f->queue[f->rindex]);
     if (++f->rindex == f->max_size) {
         f->rindex = 0;
     }
@@ -707,21 +706,21 @@ static void S_FMV_FrameQueueNext(FrameQueue *f)
     SDL_UnlockMutex(f->mutex);
 }
 
-static int S_FMV_FrameQueueNBRemaining(FrameQueue *f)
+static int M_FrameQueueNBRemaining(FrameQueue *f)
 {
     return f->size - f->rindex_shown;
 }
 
-static void S_FMV_DecoderAbort(Decoder *d, FrameQueue *fq)
+static void M_DecoderAbort(Decoder *d, FrameQueue *fq)
 {
-    S_FMV_PacketQueueAbort(d->queue);
-    S_FMV_FrameQueueSignal(fq);
+    M_PacketQueueAbort(d->queue);
+    M_FrameQueueSignal(fq);
     SDL_WaitThread(d->decoder_tid, NULL);
     d->decoder_tid = NULL;
-    S_FMV_PacketQueueFlush(d->queue);
+    M_PacketQueueFlush(d->queue);
 }
 
-static int S_FMV_ReallocPrimarySurface(
+static int M_ReallocPrimarySurface(
     VideoState *is, int frame_width, int frame_height, bool clear)
 {
     int surface_width = Screen_GetResWidth();
@@ -775,7 +774,7 @@ static int S_FMV_ReallocPrimarySurface(
     return 0;
 }
 
-static void S_FMV_CalculateDisplayRect(
+static void M_CalculateDisplayRect(
     SDL_Rect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height,
     int pic_width, int pic_height, AVRational pic_sar)
 {
@@ -802,10 +801,9 @@ static void S_FMV_CalculateDisplayRect(
     rect->h = FFMAX((int)height, 1);
 }
 
-static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
+static int M_UploadTexture(VideoState *is, AVFrame *frame)
 {
-    if (S_FMV_ReallocPrimarySurface(is, frame->width, frame->height, false)
-        < 0) {
+    if (M_ReallocPrimarySurface(is, frame->width, frame->height, false) < 0) {
         return -1;
     }
 
@@ -847,7 +845,7 @@ static int S_FMV_UploadTexture(VideoState *is, AVFrame *frame)
     return ret;
 }
 
-static void S_FMV_VideoImageDisplay(VideoState *is)
+static void M_VideoImageDisplay(VideoState *is)
 {
     S_Output_RenderBegin();
 
@@ -855,10 +853,10 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
     Frame *sp = NULL;
     SDL_Rect rect;
 
-    vp = S_FMV_FrameQueuePeekLast(&is->pictq);
+    vp = M_FrameQueuePeekLast(&is->pictq);
     if (is->subtitle_st) {
-        if (S_FMV_FrameQueueNBRemaining(&is->subpq) > 0) {
-            sp = S_FMV_FrameQueuePeek(&is->subpq);
+        if (M_FrameQueueNBRemaining(&is->subpq) > 0) {
+            sp = M_FrameQueuePeek(&is->subpq);
 
             if (vp->pts
                 >= sp->pts + ((float)sp->sub.start_display_time / 1000)) {
@@ -870,7 +868,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
                         sp->height = vp->height;
                     }
 #if ENABLE_SUBTITLES
-                    if (S_FMV_ReallocPrimarySurface(
+                    if (M_ReallocPrimarySurface(
                             SDL_PIXELFORMAT_ARGB8888, sp->width, sp->height,
                             SDL_BLENDMODE_BLEND, true)
                         < 0) {
@@ -918,11 +916,11 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
         }
     }
 
-    S_FMV_CalculateDisplayRect(
+    M_CalculateDisplayRect(
         &rect, 0, 0, is->width, is->height, vp->width, vp->height, vp->sar);
 
     if (!vp->uploaded) {
-        if (S_FMV_UploadTexture(is, vp->frame) < 0) {
+        if (M_UploadTexture(is, vp->frame) < 0) {
             return;
         }
         vp->uploaded = true;
@@ -933,7 +931,7 @@ static void S_FMV_VideoImageDisplay(VideoState *is)
     S_Output_FlipScreen();
 }
 
-static void S_FMV_StreamComponentClose(VideoState *is, int stream_index)
+static void M_StreamComponentClose(VideoState *is, int stream_index)
 {
     AVFormatContext *ic = is->ic;
     AVCodecParameters *codecpar;
@@ -945,9 +943,9 @@ static void S_FMV_StreamComponentClose(VideoState *is, int stream_index)
 
     switch (codecpar->codec_type) {
     case AVMEDIA_TYPE_AUDIO:
-        S_FMV_DecoderAbort(&is->auddec, &is->sampq);
+        M_DecoderAbort(&is->auddec, &is->sampq);
         SDL_CloseAudioDevice(m_AudioDevice);
-        S_FMV_DecoderShutdown(&is->auddec);
+        M_DecoderShutdown(&is->auddec);
         swr_free(&is->swr_ctx);
         av_freep(&is->audio_buf1);
         is->audio_buf1_size = 0;
@@ -955,12 +953,12 @@ static void S_FMV_StreamComponentClose(VideoState *is, int stream_index)
 
         break;
     case AVMEDIA_TYPE_VIDEO:
-        S_FMV_DecoderAbort(&is->viddec, &is->pictq);
-        S_FMV_DecoderShutdown(&is->viddec);
+        M_DecoderAbort(&is->viddec, &is->pictq);
+        M_DecoderShutdown(&is->viddec);
         break;
     case AVMEDIA_TYPE_SUBTITLE:
-        S_FMV_DecoderAbort(&is->subdec, &is->subpq);
-        S_FMV_DecoderShutdown(&is->subdec);
+        M_DecoderAbort(&is->subdec, &is->subpq);
+        M_DecoderShutdown(&is->subdec);
         break;
     default:
         break;
@@ -985,29 +983,29 @@ static void S_FMV_StreamComponentClose(VideoState *is, int stream_index)
     }
 }
 
-static void S_FMV_StreamClose(VideoState *is)
+static void M_StreamClose(VideoState *is)
 {
     SDL_WaitThread(is->read_tid, NULL);
 
     if (is->audio_stream >= 0) {
-        S_FMV_StreamComponentClose(is, is->audio_stream);
+        M_StreamComponentClose(is, is->audio_stream);
     }
     if (is->video_stream >= 0) {
-        S_FMV_StreamComponentClose(is, is->video_stream);
+        M_StreamComponentClose(is, is->video_stream);
     }
     if (is->subtitle_stream >= 0) {
-        S_FMV_StreamComponentClose(is, is->subtitle_stream);
+        M_StreamComponentClose(is, is->subtitle_stream);
     }
 
     avformat_close_input(&is->ic);
 
-    S_FMV_PacketQueueDestroy(&is->videoq);
-    S_FMV_PacketQueueDestroy(&is->audioq);
-    S_FMV_PacketQueueDestroy(&is->subtitleq);
+    M_PacketQueueDestroy(&is->videoq);
+    M_PacketQueueDestroy(&is->audioq);
+    M_PacketQueueDestroy(&is->subtitleq);
 
-    S_FMV_FrameQueueShutdown(&is->pictq);
-    S_FMV_FrameQueueShutdown(&is->sampq);
-    S_FMV_FrameQueueShutdown(&is->subpq);
+    M_FrameQueueShutdown(&is->pictq);
+    M_FrameQueueShutdown(&is->sampq);
+    M_FrameQueueShutdown(&is->subpq);
     SDL_DestroyCond(is->continue_read_thread);
     sws_freeContext(is->img_convert_ctx);
     sws_freeContext(is->sub_convert_ctx);
@@ -1018,14 +1016,14 @@ static void S_FMV_StreamClose(VideoState *is)
     av_free(is);
 }
 
-static void S_FMV_VideoDisplay(VideoState *is)
+static void M_VideoDisplay(VideoState *is)
 {
     if (is->video_st) {
-        S_FMV_VideoImageDisplay(is);
+        M_VideoImageDisplay(is);
     }
 }
 
-static double S_FMV_GetClock(Clock *c)
+static double M_GetClock(Clock *c)
 {
     if (*c->queue_serial != c->serial) {
         return NAN;
@@ -1039,7 +1037,7 @@ static double S_FMV_GetClock(Clock *c)
     }
 }
 
-static void S_FMV_SetClockAt(Clock *c, double pts, int serial, double time)
+static void M_SetClockAt(Clock *c, double pts, int serial, double time)
 {
     c->pts = pts;
     c->last_updated = time;
@@ -1047,31 +1045,31 @@ static void S_FMV_SetClockAt(Clock *c, double pts, int serial, double time)
     c->serial = serial;
 }
 
-static void S_FMV_SetClock(Clock *c, double pts, int serial)
+static void M_SetClock(Clock *c, double pts, int serial)
 {
     double time = av_gettime_relative() / 1000000.0;
-    S_FMV_SetClockAt(c, pts, serial, time);
+    M_SetClockAt(c, pts, serial, time);
 }
 
-static void S_FMV_InitClock(Clock *c, int *queue_serial)
+static void M_InitClock(Clock *c, int *queue_serial)
 {
     c->speed = 1.0;
     c->paused = false;
     c->queue_serial = queue_serial;
-    S_FMV_SetClock(c, NAN, -1);
+    M_SetClock(c, NAN, -1);
 }
 
-static void S_FMV_SyncClockToSlave(Clock *c, Clock *slave)
+static void M_SyncClockToSlave(Clock *c, Clock *slave)
 {
-    double clock = S_FMV_GetClock(c);
-    double slave_clock = S_FMV_GetClock(slave);
+    double clock = M_GetClock(c);
+    double slave_clock = M_GetClock(slave);
     if (!isnan(slave_clock)
         && (isnan(clock) || fabs(clock - slave_clock) > AV_NOSYNC_THRESHOLD)) {
-        S_FMV_SetClock(c, slave_clock, slave->serial);
+        M_SetClock(c, slave_clock, slave->serial);
     }
 }
 
-static int S_FMV_GetMasterSyncType(VideoState *is)
+static int M_GetMasterSyncType(VideoState *is)
 {
     if (is->av_sync_type == AV_SYNC_VIDEO_MASTER) {
         if (is->video_st) {
@@ -1090,26 +1088,26 @@ static int S_FMV_GetMasterSyncType(VideoState *is)
     }
 }
 
-static double S_FMV_GetMasterClock(VideoState *is)
+static double M_GetMasterClock(VideoState *is)
 {
-    switch (S_FMV_GetMasterSyncType(is)) {
+    switch (M_GetMasterSyncType(is)) {
     case AV_SYNC_VIDEO_MASTER:
-        return S_FMV_GetClock(&is->vidclk);
+        return M_GetClock(&is->vidclk);
 
     case AV_SYNC_AUDIO_MASTER:
-        return S_FMV_GetClock(&is->audclk);
+        return M_GetClock(&is->audclk);
 
     default:
-        return S_FMV_GetClock(&is->extclk);
+        return M_GetClock(&is->extclk);
     }
 }
 
-static double S_FMV_ComputeTargetDelay(double delay, VideoState *is)
+static double M_ComputeTargetDelay(double delay, VideoState *is)
 {
     double sync_threshold, diff = 0;
 
-    if (S_FMV_GetMasterSyncType(is) != AV_SYNC_VIDEO_MASTER) {
-        diff = S_FMV_GetClock(&is->vidclk) - S_FMV_GetMasterClock(is);
+    if (M_GetMasterSyncType(is) != AV_SYNC_VIDEO_MASTER) {
+        diff = M_GetClock(&is->vidclk) - M_GetMasterClock(is);
 
         sync_threshold =
             FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
@@ -1128,7 +1126,7 @@ static double S_FMV_ComputeTargetDelay(double delay, VideoState *is)
     return delay;
 }
 
-static double S_FMV_VPDuration(VideoState *is, Frame *vp, Frame *nextvp)
+static double M_VPDuration(VideoState *is, Frame *vp, Frame *nextvp)
 {
     if (vp->serial == nextvp->serial) {
         double duration = nextvp->pts - vp->pts;
@@ -1143,14 +1141,14 @@ static double S_FMV_VPDuration(VideoState *is, Frame *vp, Frame *nextvp)
     }
 }
 
-static void S_FMV_UpdateVideoPTS(
+static void M_UpdateVideoPTS(
     VideoState *is, double pts, int64_t pos, int serial)
 {
-    S_FMV_SetClock(&is->vidclk, pts, serial);
-    S_FMV_SyncClockToSlave(&is->extclk, &is->vidclk);
+    M_SetClock(&is->vidclk, pts, serial);
+    M_SyncClockToSlave(&is->extclk, &is->vidclk);
 }
 
-static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
+static void M_VideoRefresh(void *opaque, double *remaining_time)
 {
     VideoState *is = opaque;
     double time;
@@ -1159,15 +1157,15 @@ static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
 
     if (is->video_st) {
     retry:
-        if (S_FMV_FrameQueueNBRemaining(&is->pictq) != 0) {
+        if (M_FrameQueueNBRemaining(&is->pictq) != 0) {
             double last_duration, duration, delay;
             Frame *vp, *lastvp;
 
-            lastvp = S_FMV_FrameQueuePeekLast(&is->pictq);
-            vp = S_FMV_FrameQueuePeek(&is->pictq);
+            lastvp = M_FrameQueuePeekLast(&is->pictq);
+            vp = M_FrameQueuePeek(&is->pictq);
 
             if (vp->serial != is->videoq.serial) {
-                S_FMV_FrameQueueNext(&is->pictq);
+                M_FrameQueueNext(&is->pictq);
                 goto retry;
             }
 
@@ -1179,8 +1177,8 @@ static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
                 goto display;
             }
 
-            last_duration = S_FMV_VPDuration(is, lastvp, vp);
-            delay = S_FMV_ComputeTargetDelay(last_duration, is);
+            last_duration = M_VPDuration(is, lastvp, vp);
+            delay = M_ComputeTargetDelay(last_duration, is);
 
             time = av_gettime_relative() / 1000000.0;
             if (time < is->frame_timer + delay) {
@@ -1196,27 +1194,27 @@ static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
 
             SDL_LockMutex(is->pictq.mutex);
             if (!isnan(vp->pts)) {
-                S_FMV_UpdateVideoPTS(is, vp->pts, vp->pos, vp->serial);
+                M_UpdateVideoPTS(is, vp->pts, vp->pos, vp->serial);
             }
             SDL_UnlockMutex(is->pictq.mutex);
 
-            if (S_FMV_FrameQueueNBRemaining(&is->pictq) > 1) {
-                Frame *nextvp = S_FMV_FrameQueuePeekNext(&is->pictq);
-                duration = S_FMV_VPDuration(is, vp, nextvp);
-                if (S_FMV_GetMasterSyncType(is) != AV_SYNC_VIDEO_MASTER
+            if (M_FrameQueueNBRemaining(&is->pictq) > 1) {
+                Frame *nextvp = M_FrameQueuePeekNext(&is->pictq);
+                duration = M_VPDuration(is, vp, nextvp);
+                if (M_GetMasterSyncType(is) != AV_SYNC_VIDEO_MASTER
                     && time > is->frame_timer + duration) {
                     is->frame_drops_late++;
-                    S_FMV_FrameQueueNext(&is->pictq);
+                    M_FrameQueueNext(&is->pictq);
                     goto retry;
                 }
             }
 
             if (is->subtitle_st) {
-                while (S_FMV_FrameQueueNBRemaining(&is->subpq) > 0) {
-                    sp = S_FMV_FrameQueuePeek(&is->subpq);
+                while (M_FrameQueueNBRemaining(&is->subpq) > 0) {
+                    sp = M_FrameQueuePeek(&is->subpq);
 
-                    if (S_FMV_FrameQueueNBRemaining(&is->subpq) > 1) {
-                        sp2 = S_FMV_FrameQueuePeekNext(&is->subpq);
+                    if (M_FrameQueueNBRemaining(&is->subpq) > 1) {
+                        sp2 = M_FrameQueuePeekNext(&is->subpq);
                     } else {
                         sp2 = NULL;
                     }
@@ -1250,32 +1248,32 @@ static void S_FMV_VideoRefresh(void *opaque, double *remaining_time)
 #endif
                             }
                         }
-                        S_FMV_FrameQueueNext(&is->subpq);
+                        M_FrameQueueNext(&is->subpq);
                     } else {
                         break;
                     }
                 }
             }
 
-            S_FMV_FrameQueueNext(&is->pictq);
+            M_FrameQueueNext(&is->pictq);
             is->force_refresh = true;
         }
 
     display:
         if (is->force_refresh && is->pictq.rindex_shown) {
-            S_FMV_VideoDisplay(is);
+            M_VideoDisplay(is);
         }
     }
     is->force_refresh = false;
 }
 
-static int S_FMV_QueuePicture(
+static int M_QueuePicture(
     VideoState *is, AVFrame *src_frame, double pts, double duration,
     int64_t pos, int serial)
 {
     Frame *vp;
 
-    if (!(vp = S_FMV_FrameQueuePeekWritable(&is->pictq))) {
+    if (!(vp = M_FrameQueuePeekWritable(&is->pictq))) {
         return -1;
     }
 
@@ -1292,16 +1290,15 @@ static int S_FMV_QueuePicture(
     vp->serial = serial;
 
     av_frame_move_ref(vp->frame, src_frame);
-    S_FMV_FrameQueuePush(&is->pictq);
+    M_FrameQueuePush(&is->pictq);
     return 0;
 }
 
-static int S_FMV_GetVideoFrame(VideoState *is, AVFrame *frame)
+static int M_GetVideoFrame(VideoState *is, AVFrame *frame)
 {
     int got_picture;
 
-    if ((got_picture = S_FMV_DecoderDecodeFrame(&is->viddec, frame, NULL))
-        < 0) {
+    if ((got_picture = M_DecoderDecodeFrame(&is->viddec, frame, NULL)) < 0) {
         return -1;
     }
 
@@ -1315,9 +1312,9 @@ static int S_FMV_GetVideoFrame(VideoState *is, AVFrame *frame)
         frame->sample_aspect_ratio =
             av_guess_sample_aspect_ratio(is->ic, is->video_st, frame);
 
-        if (S_FMV_GetMasterSyncType(is) != AV_SYNC_VIDEO_MASTER) {
+        if (M_GetMasterSyncType(is) != AV_SYNC_VIDEO_MASTER) {
             if (frame->pts != AV_NOPTS_VALUE) {
-                double diff = dpts - S_FMV_GetMasterClock(is);
+                double diff = dpts - M_GetMasterClock(is);
                 if (!isnan(diff) && fabs(diff) < AV_NOSYNC_THRESHOLD && diff < 0
                     && is->viddec.pkt_serial == is->vidclk.serial
                     && is->videoq.nb_packets) {
@@ -1332,7 +1329,7 @@ static int S_FMV_GetVideoFrame(VideoState *is, AVFrame *frame)
     return got_picture;
 }
 
-static int S_FMV_AudioThread(void *arg)
+static int M_AudioThread(void *arg)
 {
     VideoState *is = arg;
     AVFrame *frame = av_frame_alloc();
@@ -1346,15 +1343,14 @@ static int S_FMV_AudioThread(void *arg)
     }
 
     do {
-        if ((got_frame = S_FMV_DecoderDecodeFrame(&is->auddec, frame, NULL))
-            < 0) {
+        if ((got_frame = M_DecoderDecodeFrame(&is->auddec, frame, NULL)) < 0) {
             goto the_end;
         }
 
         if (got_frame) {
             tb = (AVRational) { 1, frame->sample_rate };
 
-            if (!(af = S_FMV_FrameQueuePeekWritable(&is->sampq))) {
+            if (!(af = M_FrameQueuePeekWritable(&is->sampq))) {
                 goto the_end;
             }
 
@@ -1366,7 +1362,7 @@ static int S_FMV_AudioThread(void *arg)
                 av_q2d((AVRational) { frame->nb_samples, frame->sample_rate });
 
             av_frame_move_ref(af->frame, frame);
-            S_FMV_FrameQueuePush(&is->sampq);
+            M_FrameQueuePush(&is->sampq);
         }
     } while (ret >= 0 || ret == AVERROR(EAGAIN) || ret == AVERROR_EOF);
 the_end:
@@ -1374,10 +1370,10 @@ the_end:
     return ret;
 }
 
-static int S_FMV_DecoderStart(
+static int M_DecoderStart(
     Decoder *d, int (*fn)(void *), const char *thread_name, void *arg)
 {
-    S_FMV_PacketQueueStart(d->queue);
+    M_PacketQueueStart(d->queue);
     d->decoder_tid = SDL_CreateThread(fn, thread_name, arg);
     if (!d->decoder_tid) {
         LOG_ERROR("SDL_CreateThread(): %s", SDL_GetError());
@@ -1386,7 +1382,7 @@ static int S_FMV_DecoderStart(
     return 0;
 }
 
-static int S_FMV_VideoThread(void *arg)
+static int M_VideoThread(void *arg)
 {
     VideoState *is = arg;
     AVFrame *frame = av_frame_alloc();
@@ -1401,7 +1397,7 @@ static int S_FMV_VideoThread(void *arg)
     }
 
     while (1) {
-        ret = S_FMV_GetVideoFrame(is, frame);
+        ret = M_GetVideoFrame(is, frame);
         if (ret < 0) {
             goto the_end;
         }
@@ -1414,7 +1410,7 @@ static int S_FMV_VideoThread(void *arg)
                  ? av_q2d((AVRational) { frame_rate.den, frame_rate.num })
                  : 0);
         pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
-        ret = S_FMV_QueuePicture(
+        ret = M_QueuePicture(
             is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
         av_frame_unref(frame);
 
@@ -1427,7 +1423,7 @@ the_end:
     return 0;
 }
 
-static int S_FMV_SubtitleThread(void *arg)
+static int M_SubtitleThread(void *arg)
 {
     VideoState *is = arg;
     Frame *sp;
@@ -1435,12 +1431,11 @@ static int S_FMV_SubtitleThread(void *arg)
     double pts;
 
     while (1) {
-        if (!(sp = S_FMV_FrameQueuePeekWritable(&is->subpq))) {
+        if (!(sp = M_FrameQueuePeekWritable(&is->subpq))) {
             return 0;
         }
 
-        if ((got_subtitle =
-                 S_FMV_DecoderDecodeFrame(&is->subdec, NULL, &sp->sub))
+        if ((got_subtitle = M_DecoderDecodeFrame(&is->subdec, NULL, &sp->sub))
             < 0) {
             break;
         }
@@ -1457,7 +1452,7 @@ static int S_FMV_SubtitleThread(void *arg)
             sp->height = is->subdec.avctx->height;
             sp->uploaded = false;
 
-            S_FMV_FrameQueuePush(&is->subpq);
+            M_FrameQueuePush(&is->subpq);
         } else if (got_subtitle) {
             avsubtitle_free(&sp->sub);
         }
@@ -1466,15 +1461,15 @@ static int S_FMV_SubtitleThread(void *arg)
     return 0;
 }
 
-static int S_FMV_SynchronizeAudio(VideoState *is, int nb_samples)
+static int M_SynchronizeAudio(VideoState *is, int nb_samples)
 {
     int wanted_nb_samples = nb_samples;
 
-    if (S_FMV_GetMasterSyncType(is) != AV_SYNC_AUDIO_MASTER) {
+    if (M_GetMasterSyncType(is) != AV_SYNC_AUDIO_MASTER) {
         double diff, avg_diff;
         int min_nb_samples, max_nb_samples;
 
-        diff = S_FMV_GetClock(&is->audclk) - S_FMV_GetMasterClock(is);
+        diff = M_GetClock(&is->audclk) - M_GetMasterClock(is);
 
         if (!isnan(diff) && fabs(diff) < AV_NOSYNC_THRESHOLD) {
             is->audio_diff_cum =
@@ -1506,7 +1501,7 @@ static int S_FMV_SynchronizeAudio(VideoState *is, int nb_samples)
     return wanted_nb_samples;
 }
 
-static int S_FMV_AudioDecodeFrame(VideoState *is)
+static int M_AudioDecodeFrame(VideoState *is)
 {
     int data_size, resampled_data_size;
     av_unused double audio_clock0;
@@ -1518,10 +1513,10 @@ static int S_FMV_AudioDecodeFrame(VideoState *is)
     }
 
     do {
-        if (!(af = S_FMV_FrameQueuePeekReadable(&is->sampq))) {
+        if (!(af = M_FrameQueuePeekReadable(&is->sampq))) {
             return -1;
         }
-        S_FMV_FrameQueueNext(&is->sampq);
+        M_FrameQueueNext(&is->sampq);
     } while (af->serial != is->audioq.serial);
 
     data_size = av_samples_get_buffer_size(
@@ -1533,7 +1528,7 @@ static int S_FMV_AudioDecodeFrame(VideoState *is)
              == av_get_channel_layout_nb_channels(af->frame->channel_layout))
         ? (signed)af->frame->channel_layout
         : av_get_default_channel_layout(af->frame->channels);
-    wanted_nb_samples = S_FMV_SynchronizeAudio(is, af->frame->nb_samples);
+    wanted_nb_samples = M_SynchronizeAudio(is, af->frame->nb_samples);
 
     if (af->frame->format != is->audio_src.fmt
         || dec_channel_layout != is->audio_src.channel_layout
@@ -1620,7 +1615,7 @@ static int S_FMV_AudioDecodeFrame(VideoState *is)
     return resampled_data_size;
 }
 
-static void S_FMV_SDLAudioCallback(void *opaque, Uint8 *stream, int len)
+static void M_SDLAudioCallback(void *opaque, Uint8 *stream, int len)
 {
     VideoState *is = opaque;
     int audio_size, len1;
@@ -1629,7 +1624,7 @@ static void S_FMV_SDLAudioCallback(void *opaque, Uint8 *stream, int len)
 
     while (len > 0) {
         if (is->audio_buf_index >= (signed)is->audio_buf_size) {
-            audio_size = S_FMV_AudioDecodeFrame(is);
+            audio_size = M_AudioDecodeFrame(is);
             if (audio_size < 0) {
                 is->audio_buf = NULL;
                 is->audio_buf_size = SDL_AUDIO_MIN_BUFFER_SIZE
@@ -1660,17 +1655,17 @@ static void S_FMV_SDLAudioCallback(void *opaque, Uint8 *stream, int len)
     }
     is->audio_write_buf_size = is->audio_buf_size - is->audio_buf_index;
     if (!isnan(is->audio_clock)) {
-        S_FMV_SetClockAt(
+        M_SetClockAt(
             &is->audclk,
             is->audio_clock
                 - (double)(2 * is->audio_hw_buf_size + is->audio_write_buf_size)
                     / is->audio_tgt.bytes_per_sec,
             is->audio_clock_serial, m_AudioCallbackTime / 1000000.0);
-        S_FMV_SyncClockToSlave(&is->extclk, &is->audclk);
+        M_SyncClockToSlave(&is->extclk, &is->audclk);
     }
 }
 
-static int S_FMV_AudioOpen(
+static int M_AudioOpen(
     void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels,
     int wanted_sample_rate, struct AudioParams *audio_hw_params)
 {
@@ -1709,7 +1704,7 @@ static int S_FMV_AudioOpen(
     wanted_spec.samples = FFMAX(
         SDL_AUDIO_MIN_BUFFER_SIZE,
         2 << av_log2(wanted_spec.freq / SDL_AUDIO_MAX_CALLBACKS_PER_SEC));
-    wanted_spec.callback = S_FMV_SDLAudioCallback;
+    wanted_spec.callback = M_SDLAudioCallback;
     wanted_spec.userdata = opaque;
     while (
         !(m_AudioDevice = SDL_OpenAudioDevice(
@@ -1759,7 +1754,7 @@ static int S_FMV_AudioOpen(
     return spec.size;
 }
 
-static int S_FMV_StreamComponentOpen(VideoState *is, int stream_index)
+static int M_StreamComponentOpen(VideoState *is, int stream_index)
 {
     AVFormatContext *ic = is->ic;
     AVCodecContext *avctx = NULL;
@@ -1813,7 +1808,7 @@ static int S_FMV_StreamComponentOpen(VideoState *is, int stream_index)
         nb_channels = avctx->channels;
         channel_layout = avctx->channel_layout;
 
-        if ((ret = S_FMV_AudioOpen(
+        if ((ret = M_AudioOpen(
                  is, channel_layout, nb_channels, sample_rate, &is->audio_tgt))
             < 0) {
             goto fail;
@@ -1831,7 +1826,7 @@ static int S_FMV_StreamComponentOpen(VideoState *is, int stream_index)
         is->audio_stream = stream_index;
         is->audio_st = ic->streams[stream_index];
 
-        if ((ret = S_FMV_DecoderInit(
+        if ((ret = M_DecoderInit(
                  &is->auddec, avctx, &is->audioq, is->continue_read_thread))
             < 0) {
             goto fail;
@@ -1842,8 +1837,8 @@ static int S_FMV_StreamComponentOpen(VideoState *is, int stream_index)
             is->auddec.start_pts = is->audio_st->start_time;
             is->auddec.start_pts_tb = is->audio_st->time_base;
         }
-        if ((ret = S_FMV_DecoderStart(
-                 &is->auddec, S_FMV_AudioThread, "audio_decoder", is))
+        if ((ret = M_DecoderStart(
+                 &is->auddec, M_AudioThread, "audio_decoder", is))
             < 0) {
             goto out;
         }
@@ -1854,13 +1849,13 @@ static int S_FMV_StreamComponentOpen(VideoState *is, int stream_index)
         is->video_stream = stream_index;
         is->video_st = ic->streams[stream_index];
 
-        if ((ret = S_FMV_DecoderInit(
+        if ((ret = M_DecoderInit(
                  &is->viddec, avctx, &is->videoq, is->continue_read_thread))
             < 0) {
             goto fail;
         }
-        if ((ret = S_FMV_DecoderStart(
-                 &is->viddec, S_FMV_VideoThread, "video_decoder", is))
+        if ((ret = M_DecoderStart(
+                 &is->viddec, M_VideoThread, "video_decoder", is))
             < 0) {
             goto out;
         }
@@ -1871,13 +1866,13 @@ static int S_FMV_StreamComponentOpen(VideoState *is, int stream_index)
         is->subtitle_stream = stream_index;
         is->subtitle_st = ic->streams[stream_index];
 
-        if ((ret = S_FMV_DecoderInit(
+        if ((ret = M_DecoderInit(
                  &is->subdec, avctx, &is->subtitleq, is->continue_read_thread))
             < 0) {
             goto fail;
         }
-        if ((ret = S_FMV_DecoderStart(
-                 &is->subdec, S_FMV_SubtitleThread, "subtitle_decoder", is))
+        if ((ret = M_DecoderStart(
+                 &is->subdec, M_SubtitleThread, "subtitle_decoder", is))
             < 0) {
             goto out;
         }
@@ -1895,13 +1890,13 @@ out:
     return ret;
 }
 
-static int S_FMV_DecodeInterruptCB(void *ctx)
+static int M_DecodeInterruptCB(void *ctx)
 {
     VideoState *is = ctx;
     return is->abort_request;
 }
 
-static int S_FMV_StreamHasEnoughPackets(
+static int M_StreamHasEnoughPackets(
     AVStream *st, int stream_id, PacketQueue *queue)
 {
     return stream_id < 0 || queue->abort_request
@@ -1911,7 +1906,7 @@ static int S_FMV_StreamHasEnoughPackets(
                 || av_q2d(st->time_base) * queue->duration > 1.0));
 }
 
-static int S_FMV_ReadThread(void *arg)
+static int M_ReadThread(void *arg)
 {
     VideoState *is = arg;
     AVFormatContext *ic = NULL;
@@ -1943,7 +1938,7 @@ static int S_FMV_ReadThread(void *arg)
         ret = AVERROR(ENOMEM);
         goto fail;
     }
-    ic->interrupt_callback.callback = S_FMV_DecodeInterruptCB;
+    ic->interrupt_callback.callback = M_DecodeInterruptCB;
     ic->interrupt_callback.opaque = is;
     err = avformat_open_input(&ic, is->filename, NULL, NULL);
     if (err < 0) {
@@ -1992,16 +1987,16 @@ static int S_FMV_ReadThread(void *arg)
     }
 
     if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-        S_FMV_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_AUDIO]);
+        M_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_AUDIO]);
     }
 
     ret = -1;
     if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
-        ret = S_FMV_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_VIDEO]);
+        ret = M_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
     if (st_index[AVMEDIA_TYPE_SUBTITLE] >= 0) {
-        S_FMV_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_SUBTITLE]);
+        M_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_SUBTITLE]);
     }
 
     if (is->video_stream < 0 && is->audio_stream < 0) {
@@ -2029,20 +2024,19 @@ static int S_FMV_ReadThread(void *arg)
                     < 0) {
                     goto fail;
                 }
-                S_FMV_PacketQueuePut(&is->videoq, pkt);
-                S_FMV_PacketQueuePutNullPacket(
-                    &is->videoq, pkt, is->video_stream);
+                M_PacketQueuePut(&is->videoq, pkt);
+                M_PacketQueuePutNullPacket(&is->videoq, pkt, is->video_stream);
             }
             is->queue_attachments_req = false;
         }
 
         if (is->audioq.size + is->videoq.size + is->subtitleq.size
                 > MAX_QUEUE_SIZE
-            || (S_FMV_StreamHasEnoughPackets(
+            || (M_StreamHasEnoughPackets(
                     is->audio_st, is->audio_stream, &is->audioq)
-                && S_FMV_StreamHasEnoughPackets(
+                && M_StreamHasEnoughPackets(
                     is->video_st, is->video_stream, &is->videoq)
-                && S_FMV_StreamHasEnoughPackets(
+                && M_StreamHasEnoughPackets(
                     is->subtitle_st, is->subtitle_stream, &is->subtitleq))) {
             SDL_LockMutex(wait_mutex);
             SDL_CondWaitTimeout(is->continue_read_thread, wait_mutex, 10);
@@ -2052,10 +2046,10 @@ static int S_FMV_ReadThread(void *arg)
         if (!is->paused
             && (!is->audio_st
                 || (is->auddec.finished == is->audioq.serial
-                    && S_FMV_FrameQueueNBRemaining(&is->sampq) == 0))
+                    && M_FrameQueueNBRemaining(&is->sampq) == 0))
             && (!is->video_st
                 || (is->viddec.finished == is->videoq.serial
-                    && S_FMV_FrameQueueNBRemaining(&is->pictq) == 0))) {
+                    && M_FrameQueueNBRemaining(&is->pictq) == 0))) {
             ret = AVERROR_EOF;
             goto fail;
         }
@@ -2063,15 +2057,15 @@ static int S_FMV_ReadThread(void *arg)
         if (ret < 0) {
             if ((ret == AVERROR_EOF || avio_feof(ic->pb)) && !is->eof) {
                 if (is->video_stream >= 0) {
-                    S_FMV_PacketQueuePutNullPacket(
+                    M_PacketQueuePutNullPacket(
                         &is->videoq, pkt, is->video_stream);
                 }
                 if (is->audio_stream >= 0) {
-                    S_FMV_PacketQueuePutNullPacket(
+                    M_PacketQueuePutNullPacket(
                         &is->audioq, pkt, is->audio_stream);
                 }
                 if (is->subtitle_stream >= 0) {
-                    S_FMV_PacketQueuePutNullPacket(
+                    M_PacketQueuePutNullPacket(
                         &is->subtitleq, pkt, is->subtitle_stream);
                 }
                 is->eof = true;
@@ -2088,13 +2082,13 @@ static int S_FMV_ReadThread(void *arg)
         }
         pkt_ts = pkt->pts == AV_NOPTS_VALUE ? pkt->dts : pkt->pts;
         if (pkt->stream_index == is->audio_stream) {
-            S_FMV_PacketQueuePut(&is->audioq, pkt);
+            M_PacketQueuePut(&is->audioq, pkt);
         } else if (
             pkt->stream_index == is->video_stream
             && !(is->video_st->disposition & AV_DISPOSITION_ATTACHED_PIC)) {
-            S_FMV_PacketQueuePut(&is->videoq, pkt);
+            M_PacketQueuePut(&is->videoq, pkt);
         } else if (pkt->stream_index == is->subtitle_stream) {
-            S_FMV_PacketQueuePut(&is->subtitleq, pkt);
+            M_PacketQueuePut(&is->subtitleq, pkt);
         } else {
             av_packet_unref(pkt);
         }
@@ -2118,7 +2112,7 @@ fail:
     return 0;
 }
 
-static VideoState *S_FMV_StreamOpen(const char *filename)
+static VideoState *M_StreamOpen(const char *filename)
 {
     VideoState *is;
 
@@ -2139,24 +2133,20 @@ static VideoState *S_FMV_StreamOpen(const char *filename)
 
     SDL_GetWindowSize(m_Window, &is->width, &is->height);
 
-    if (S_FMV_FrameQueueInit(
-            &is->pictq, &is->videoq, VIDEO_PICTURE_QUEUE_SIZE, 1)
+    if (M_FrameQueueInit(&is->pictq, &is->videoq, VIDEO_PICTURE_QUEUE_SIZE, 1)
         < 0) {
         goto fail;
     }
-    if (S_FMV_FrameQueueInit(
-            &is->subpq, &is->subtitleq, SUBPICTURE_QUEUE_SIZE, 0)
+    if (M_FrameQueueInit(&is->subpq, &is->subtitleq, SUBPICTURE_QUEUE_SIZE, 0)
         < 0) {
         goto fail;
     }
-    if (S_FMV_FrameQueueInit(&is->sampq, &is->audioq, SAMPLE_QUEUE_SIZE, 1)
-        < 0) {
+    if (M_FrameQueueInit(&is->sampq, &is->audioq, SAMPLE_QUEUE_SIZE, 1) < 0) {
         goto fail;
     }
 
-    if (S_FMV_PacketQueueInit(&is->videoq) < 0
-        || S_FMV_PacketQueueInit(&is->audioq) < 0
-        || S_FMV_PacketQueueInit(&is->subtitleq) < 0)
+    if (M_PacketQueueInit(&is->videoq) < 0 || M_PacketQueueInit(&is->audioq) < 0
+        || M_PacketQueueInit(&is->subtitleq) < 0)
         goto fail;
 
     if (!(is->continue_read_thread = SDL_CreateCond())) {
@@ -2164,23 +2154,23 @@ static VideoState *S_FMV_StreamOpen(const char *filename)
         goto fail;
     }
 
-    S_FMV_InitClock(&is->vidclk, &is->videoq.serial);
-    S_FMV_InitClock(&is->audclk, &is->audioq.serial);
-    S_FMV_InitClock(&is->extclk, &is->extclk.serial);
+    M_InitClock(&is->vidclk, &is->videoq.serial);
+    M_InitClock(&is->audclk, &is->audioq.serial);
+    M_InitClock(&is->extclk, &is->extclk.serial);
     is->audio_clock_serial = -1;
-    is->audio_volume = S_FMV_GetAudioVolume();
+    is->audio_volume = M_GetAudioVolume();
     is->av_sync_type = AV_SYNC_AUDIO_MASTER;
-    is->read_tid = SDL_CreateThread(S_FMV_ReadThread, "read_thread", is);
+    is->read_tid = SDL_CreateThread(M_ReadThread, "read_thread", is);
     if (!is->read_tid) {
         LOG_ERROR("SDL_CreateThread(): %s", SDL_GetError());
     fail:
-        S_FMV_StreamClose(is);
+        M_StreamClose(is);
         return NULL;
     }
     return is;
 }
 
-static void S_FMV_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
+static void M_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
 {
     double remaining_time = 0.0;
     SDL_PumpEvents();
@@ -2201,18 +2191,18 @@ static void S_FMV_RefreshLoopWaitEvent(VideoState *is, SDL_Event *event)
         }
         remaining_time = REFRESH_RATE;
         if (!is->paused || is->force_refresh) {
-            S_FMV_VideoRefresh(is, &remaining_time);
+            M_VideoRefresh(is, &remaining_time);
         }
         SDL_PumpEvents();
     }
 }
 
-static void S_FMV_EventLoop(VideoState *is)
+static void M_EventLoop(VideoState *is)
 {
     SDL_Event event;
 
     while (!is->abort_request) {
-        S_FMV_RefreshLoopWaitEvent(is, &event);
+        M_RefreshLoopWaitEvent(is, &event);
 
         switch (event.type) {
         case SDL_QUIT:
@@ -2237,7 +2227,7 @@ static void S_FMV_EventLoop(VideoState *is)
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
-                is->audio_volume = S_FMV_GetAudioVolume();
+                is->audio_volume = M_GetAudioVolume();
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
@@ -2301,19 +2291,19 @@ bool S_FMV_Play(const char *file_path)
 
     m_Window = (SDL_Window *)S_Shell_GetWindowHandle();
 
-    is = S_FMV_StreamOpen(file_path);
+    is = M_StreamOpen(file_path);
     if (!is) {
         LOG_ERROR("Failed to initialize VideoState!");
         goto cleanup;
     }
 
-    S_FMV_EventLoop(is);
+    M_EventLoop(is);
 
     ret = true;
 
 cleanup:
     if (is) {
-        S_FMV_StreamClose(is);
+        M_StreamClose(is);
     }
 
     LOG_DEBUG("Finished playing FMV: %s", file_path);

@@ -25,12 +25,12 @@ static bool m_Running = false;
 static PHASE m_PhaseToSet = PHASE_NULL;
 static void *m_PhaseToSetArg = NULL;
 
-static PHASE_CONTROL Phase_Control(int32_t nframes);
-static void Phase_Draw(void);
-static int32_t Phase_Wait(void);
-static void Phase_SetUnconditionally(const PHASE phase, void *arg);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
+static int32_t M_Wait(void);
+static void M_SetUnconditionally(const PHASE phase, void *arg);
 
-static PHASE_CONTROL Phase_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
     if (g_GameInfo.override_gf_command.action != GF_CONTINUE_SEQUENCE) {
         const GAMEFLOW_COMMAND override = g_GameInfo.override_gf_command;
@@ -45,7 +45,7 @@ static PHASE_CONTROL Phase_Control(int32_t nframes)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static void Phase_Draw(void)
+static void M_Draw(void)
 {
     Output_BeginScene();
     if (m_Phaser && m_Phaser->draw) {
@@ -54,7 +54,7 @@ static void Phase_Draw(void)
     Output_EndScene();
 }
 
-static void Phase_SetUnconditionally(const PHASE phase, void *arg)
+static void M_SetUnconditionally(const PHASE phase, void *arg)
 {
     if (m_Phaser && m_Phaser->end) {
         m_Phaser->end();
@@ -119,10 +119,10 @@ void Phase_Set(const PHASE phase, void *arg)
         m_PhaseToSetArg = arg;
         return;
     }
-    Phase_SetUnconditionally(phase, arg);
+    M_SetUnconditionally(phase, arg);
 }
 
-static int32_t Phase_Wait(void)
+static int32_t M_Wait(void)
 {
     if (m_Phaser && m_Phaser->wait) {
         return m_Phaser->wait();
@@ -140,17 +140,17 @@ GAMEFLOW_COMMAND Phase_Run(void)
     LOG_DEBUG("phase start, phase=%d", m_Phase);
 
     while (1) {
-        control = Phase_Control(nframes);
+        control = M_Control(nframes);
 
         if (m_PhaseToSet != PHASE_NULL) {
             Interpolation_SetRate(1.0);
-            Phase_Draw();
+            M_Draw();
 
-            Phase_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
+            M_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
             m_PhaseToSet = PHASE_NULL;
             m_PhaseToSetArg = NULL;
             if (control.end) {
-                Phase_Draw();
+                M_Draw();
                 break;
             }
             nframes = 2;
@@ -159,19 +159,19 @@ GAMEFLOW_COMMAND Phase_Run(void)
         }
 
         if (control.end) {
-            Phase_Draw();
+            M_Draw();
             break;
         }
 
         if (Interpolation_IsEnabled()) {
             Interpolation_SetRate(0.5);
-            Phase_Draw();
-            Phase_Wait();
+            M_Draw();
+            M_Wait();
         }
 
         Interpolation_SetRate(1.0);
-        Phase_Draw();
-        nframes = Phase_Wait();
+        M_Draw();
+        nframes = M_Wait();
     }
 
     m_Running = false;

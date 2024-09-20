@@ -33,9 +33,9 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
     },
 };
 
-static const OBJECT_BOUNDS *PuzzleHole_Bounds(void);
+static const OBJECT_BOUNDS *M_Bounds(void);
 
-static const OBJECT_BOUNDS *PuzzleHole_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_PuzzleHoleBounds;
 }
@@ -44,7 +44,7 @@ void PuzzleHole_Setup(OBJECT_INFO *obj)
 {
     obj->collision = PuzzleHole_Collision;
     obj->save_flags = 1;
-    obj->bounds = PuzzleHole_Bounds;
+    obj->bounds = M_Bounds;
 }
 
 void PuzzleHole_SetupDone(OBJECT_INFO *obj)

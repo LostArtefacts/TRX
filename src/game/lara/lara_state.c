@@ -44,9 +44,9 @@ void (*g_LaraStateRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
 
 static bool m_JumpPermitted = true;
 
-static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
+static int16_t M_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist);
 
-static int16_t Lara_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
+static int16_t M_FloorFront(ITEM_INFO *item, PHD_ANGLE ang, int32_t dist)
 {
     int32_t x = item->pos.x + ((Math_Sin(ang) * dist) >> W2V_SHIFT);
     int32_t y = item->pos.y - LARA_HEIGHT;
@@ -366,23 +366,22 @@ void Lara_State_Land(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_State_Compress(ITEM_INFO *item, COLL_INFO *coll)
 {
     if (g_Input.forward
-        && Lara_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
+        && M_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
         item->goal_anim_state = LS_JUMP_FORWARD;
         g_Lara.move_angle = item->rot.y;
     } else if (
         g_Input.left
-        && Lara_FloorFront(item, item->rot.y - PHD_90, 256) >= -STEPUP_HEIGHT) {
+        && M_FloorFront(item, item->rot.y - PHD_90, 256) >= -STEPUP_HEIGHT) {
         item->goal_anim_state = LS_JUMP_LEFT;
         g_Lara.move_angle = item->rot.y - PHD_90;
     } else if (
         g_Input.right
-        && Lara_FloorFront(item, item->rot.y + PHD_90, 256) >= -STEPUP_HEIGHT) {
+        && M_FloorFront(item, item->rot.y + PHD_90, 256) >= -STEPUP_HEIGHT) {
         item->goal_anim_state = LS_JUMP_RIGHT;
         g_Lara.move_angle = item->rot.y + PHD_90;
     } else if (
         g_Input.back
-        && Lara_FloorFront(item, item->rot.y - PHD_180, 256)
-            >= -STEPUP_HEIGHT) {
+        && M_FloorFront(item, item->rot.y - PHD_180, 256) >= -STEPUP_HEIGHT) {
         item->goal_anim_state = LS_JUMP_BACK;
         g_Lara.move_angle = item->rot.y - PHD_180;
     }

@@ -20,9 +20,9 @@ static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *SaveCrystal_Bounds(void);
+static const OBJECT_BOUNDS *M_Bounds(void);
 
-static const OBJECT_BOUNDS *SaveCrystal_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_SaveCrystal_Bounds;
 }
@@ -35,7 +35,7 @@ void SaveCrystal_Setup(OBJECT_INFO *obj)
         obj->collision = SaveCrystal_Collision;
         obj->save_flags = 1;
     }
-    obj->bounds = SaveCrystal_Bounds;
+    obj->bounds = M_Bounds;
     Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 

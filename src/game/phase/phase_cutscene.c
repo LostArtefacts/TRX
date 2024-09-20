@@ -22,14 +22,14 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static void Phase_Cutscene_InitialiseHair(int32_t level_num);
+static void M_InitialiseHair(int32_t level_num);
 
-static void Phase_Cutscene_Start(void *arg);
-static void Phase_Cutscene_End(void);
-static PHASE_CONTROL Phase_Cutscene_Control(int32_t nframes);
-static void Phase_Cutscene_Draw(void);
+static void M_Start(void *arg);
+static void M_End(void);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
 
-static void Phase_Cutscene_InitialiseHair(int32_t level_num)
+static void M_InitialiseHair(int32_t level_num)
 {
     const GAME_OBJECT_ID lara_type = g_GameFlow.levels[level_num].lara_type;
     Lara_Hair_SetLaraType(lara_type);
@@ -62,7 +62,7 @@ static void Phase_Cutscene_InitialiseHair(int32_t level_num)
         g_LaraItem->required_anim_state = cut_anim->current_anim_state;
 }
 
-static void Phase_Cutscene_Start(void *arg)
+static void M_Start(void *arg)
 {
     Output_FadeReset();
 
@@ -71,7 +71,7 @@ static void Phase_Cutscene_Start(void *arg)
         return;
     }
 
-    Phase_Cutscene_InitialiseHair(data->level_num);
+    M_InitialiseHair(data->level_num);
 
     for (int16_t room_num = 0; room_num < g_RoomCount; room_num++) {
         if (g_RoomInfo[room_num].flipped_room >= 0) {
@@ -91,13 +91,13 @@ static void Phase_Cutscene_Start(void *arg)
     g_CineFrame = 0;
 }
 
-static void Phase_Cutscene_End(void)
+static void M_End(void)
 {
     Music_Stop();
     Sound_StopAllSamples();
 }
 
-static PHASE_CONTROL Phase_Cutscene_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
     Interpolation_Remember();
 
@@ -139,7 +139,7 @@ static PHASE_CONTROL Phase_Cutscene_Control(int32_t nframes)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static void Phase_Cutscene_Draw(void)
+static void M_Draw(void)
 {
     Game_DrawScene(true);
     Output_AnimateTextures();
@@ -147,9 +147,9 @@ static void Phase_Cutscene_Draw(void)
 }
 
 PHASER g_CutscenePhaser = {
-    .start = Phase_Cutscene_Start,
-    .end = Phase_Cutscene_End,
-    .control = Phase_Cutscene_Control,
-    .draw = Phase_Cutscene_Draw,
+    .start = M_Start,
+    .end = M_End,
+    .control = M_Control,
+    .draw = M_Draw,
     .wait = NULL,
 };

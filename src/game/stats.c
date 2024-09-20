@@ -32,12 +32,12 @@ static struct {
     int32_t start_timer;
 } m_StatsTimer = { 0 };
 
-static void Stats_TraverseFloor(void);
-static void Stats_CheckTriggers(
+static void M_TraverseFloor(void);
+static void M_CheckTriggers(
     ROOM_INFO *r, int room_num, int z_sector, int x_sector);
-static void Stats_IncludeKillableItem(int16_t item_num);
+static void M_IncludeKillableItem(int16_t item_num);
 
-static void Stats_TraverseFloor(void)
+static void M_TraverseFloor(void)
 {
     uint32_t secrets = 0;
 
@@ -45,13 +45,13 @@ static void Stats_TraverseFloor(void)
         ROOM_INFO *r = &g_RoomInfo[i];
         for (int z_sector = 0; z_sector < r->z_size; z_sector++) {
             for (int x_sector = 0; x_sector < r->x_size; x_sector++) {
-                Stats_CheckTriggers(r, i, z_sector, x_sector);
+                M_CheckTriggers(r, i, z_sector, x_sector);
             }
         }
     }
 }
 
-static void Stats_CheckTriggers(
+static void M_CheckTriggers(
     ROOM_INFO *r, int room_num, int z_sector, int x_sector)
 {
     if (z_sector == 0 || z_sector == r->z_size - 1) {
@@ -87,7 +87,7 @@ static void Stats_CheckTriggers(
             if (item->object_id == O_PIERRE) {
                 // Add Pierre pickup and kills if oneshot
                 if (sector->trigger->one_shot) {
-                    Stats_IncludeKillableItem(item_num);
+                    M_IncludeKillableItem(item_num);
                 }
                 continue;
             }
@@ -98,7 +98,7 @@ static void Stats_CheckTriggers(
                     const int16_t bug_item_num = *(int16_t *)item->data;
                     const ITEM_INFO *const bug_item = &g_Items[bug_item_num];
                     if (g_Objects[bug_item->object_id].loaded) {
-                        Stats_IncludeKillableItem(item_num);
+                        M_IncludeKillableItem(item_num);
                     }
                 }
                 continue;
@@ -106,13 +106,13 @@ static void Stats_CheckTriggers(
 
             // Add killable if object triggered
             if (Object_IsObjectType(item->object_id, g_EnemyObjects)) {
-                Stats_IncludeKillableItem(item_num);
+                M_IncludeKillableItem(item_num);
             }
         }
     }
 }
 
-static void Stats_IncludeKillableItem(int16_t item_num)
+static void M_IncludeKillableItem(int16_t item_num)
 {
     m_KillableItems[item_num] = true;
     m_LevelKillables += 1;
@@ -201,7 +201,7 @@ void Stats_CalculateStats(void)
     }
 
     // Check triggers for special pickups / killables
-    Stats_TraverseFloor();
+    M_TraverseFloor();
 
     m_LevelPickups -= g_GameFlow.levels[g_CurrentLevel].unobtainable.pickups;
     m_LevelKillables -= g_GameFlow.levels[g_CurrentLevel].unobtainable.kills;

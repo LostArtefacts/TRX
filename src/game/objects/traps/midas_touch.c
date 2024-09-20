@@ -26,7 +26,7 @@ static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *MidasTouch_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MidasTouch_Bounds;
 }
@@ -35,7 +35,7 @@ void MidasTouch_Setup(OBJECT_INFO *obj)
 {
     obj->collision = MidasTouch_Collision;
     obj->draw_routine = Object_DrawDummyItem;
-    obj->bounds = MidasTouch_Bounds;
+    obj->bounds = M_Bounds;
 }
 
 void MidasTouch_Collision(

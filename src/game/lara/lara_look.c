@@ -8,11 +8,11 @@
 
 #include <stdint.h>
 
-static void Lara_LookLeftRightBase(int16_t max_head_rot, int16_t head_turn);
-static void Lara_LookUpDownBase(
+static void M_LeftRightBase(int16_t max_head_rot, int16_t head_turn);
+static void M_UpDownBase(
     int16_t min_head_tilt, int16_t max_head_tilt, int16_t head_turn);
 
-static void Lara_LookLeftRightBase(int16_t max_head_rot, int16_t head_turn)
+static void M_LeftRightBase(int16_t max_head_rot, int16_t head_turn)
 {
     g_Camera.type = CAM_LOOK;
     if (g_Input.left) {
@@ -31,7 +31,7 @@ static void Lara_LookLeftRightBase(int16_t max_head_rot, int16_t head_turn)
     }
 }
 
-static void Lara_LookUpDownBase(
+static void M_UpDownBase(
     int16_t min_head_tilt, int16_t max_head_tilt, int16_t head_turn)
 {
     if (g_Config.enabled_inverted_look) {
@@ -59,23 +59,23 @@ static void Lara_LookUpDownBase(
 
 void Lara_LookLeftRight(void)
 {
-    Lara_LookLeftRightBase(MAX_HEAD_ROTATION, HEAD_TURN / 2);
+    M_LeftRightBase(MAX_HEAD_ROTATION, HEAD_TURN / 2);
 }
 
 void Lara_LookLeftRightSurf(void)
 {
-    Lara_LookLeftRightBase(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
+    M_LeftRightBase(MAX_HEAD_ROTATION_SURF, HEAD_TURN_SURF);
     g_Lara.torso_rot.y = g_Lara.head_rot.y / 2;
 }
 
 void Lara_LookUpDown(void)
 {
-    Lara_LookUpDownBase(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN / 2);
+    M_UpDownBase(MIN_HEAD_TILT_LOOK, MAX_HEAD_TILT_LOOK, HEAD_TURN / 2);
 }
 
 void Lara_LookUpDownSurf(void)
 {
-    Lara_LookUpDownBase(MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
+    M_UpDownBase(MIN_HEAD_TILT_SURF, MAX_HEAD_TILT_SURF, HEAD_TURN_SURF);
     g_Lara.torso_rot.x = 0;
 }
 

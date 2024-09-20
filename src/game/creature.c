@@ -21,12 +21,11 @@
 
 #define MAX_CREATURE_DISTANCE (WALL_L * 30)
 
-static bool Creature_SwitchToWater(
+static bool M_SwitchToWater(
     int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
-static bool Creature_SwitchToLand(
+static bool M_SwitchToLand(
     int16_t item_num, const int32_t *wh, const HYBRID_INFO *info);
-static bool Creature_TestSwitchOrKill(
-    int16_t item_num, GAME_OBJECT_ID target_id);
+static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
 
 void Creature_Initialise(int16_t item_num)
 {
@@ -722,8 +721,8 @@ bool Creature_EnsureHabitat(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
 
     return item->object_id == info->land.id
-        ? Creature_SwitchToWater(item_num, wh, info)
-        : Creature_SwitchToLand(item_num, wh, info);
+        ? M_SwitchToWater(item_num, wh, info)
+        : M_SwitchToLand(item_num, wh, info);
 }
 
 bool Creature_IsBoss(const int16_t item_num)
@@ -732,7 +731,7 @@ bool Creature_IsBoss(const int16_t item_num)
     return Object_IsObjectType(item->object_id, g_BossObjects);
 }
 
-static bool Creature_SwitchToWater(
+static bool M_SwitchToWater(
     const int16_t item_num, const int32_t *const wh,
     const HYBRID_INFO *const info)
 {
@@ -749,7 +748,7 @@ static bool Creature_SwitchToWater(
 
     // The land creature is alive and the room has been flooded. Switch to the
     // water creature.
-    if (!Creature_TestSwitchOrKill(item_num, info->water.id)) {
+    if (!M_TestSwitchOrKill(item_num, info->water.id)) {
         return false;
     }
 
@@ -762,7 +761,7 @@ static bool Creature_SwitchToWater(
     return true;
 }
 
-static bool Creature_SwitchToLand(
+static bool M_SwitchToLand(
     const int16_t item_num, const int32_t *const wh,
     const HYBRID_INFO *const info)
 {
@@ -770,7 +769,7 @@ static bool Creature_SwitchToLand(
         return false;
     }
 
-    if (!Creature_TestSwitchOrKill(item_num, info->land.id)) {
+    if (!M_TestSwitchOrKill(item_num, info->land.id)) {
         return false;
     }
 
@@ -805,7 +804,7 @@ static bool Creature_SwitchToLand(
     return true;
 }
 
-static bool Creature_TestSwitchOrKill(
+static bool M_TestSwitchOrKill(
     const int16_t item_num, const GAME_OBJECT_ID target_id)
 {
     if (g_Objects[target_id].loaded) {

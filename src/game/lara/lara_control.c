@@ -26,10 +26,10 @@
 
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
-static void Lara_WaterCurrent(COLL_INFO *coll);
-static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
+static void M_WaterCurrent(COLL_INFO *coll);
+static void M_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
 
-static void Lara_WaterCurrent(COLL_INFO *coll)
+static void M_WaterCurrent(COLL_INFO *coll)
 {
     XYZ_32 target;
 
@@ -109,7 +109,7 @@ static void Lara_WaterCurrent(COLL_INFO *coll)
     coll->old.z = item->pos.z;
 }
 
-static void Lara_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
+static void M_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     lara_item->hit_status = 0;
     g_Lara.hit_direction = -1;
@@ -235,7 +235,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     item->rot.y += g_Lara.turn_rate;
 
     Lara_Animate(item);
-    Lara_BaddieCollision(item, coll);
+    M_BaddieCollision(item, coll);
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     Gun_Control();
@@ -288,7 +288,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
-        Lara_WaterCurrent(coll);
+        M_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&g_Lara.LOT);
     }
@@ -300,7 +300,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     item->pos.z +=
         (Math_Cos(g_Lara.move_angle) * item->fall_speed) >> (W2V_SHIFT + 2);
 
-    Lara_BaddieCollision(item, coll);
+    M_BaddieCollision(item, coll);
 
     g_LaraCollisionRoutines[item->current_anim_state](item, coll);
     Item_UpdateRoom(item, 100);
@@ -360,7 +360,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
-        Lara_WaterCurrent(coll);
+        M_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&g_Lara.LOT);
     }
@@ -379,7 +379,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
         >> W2V_SHIFT;
 
     if (g_Lara.water_status != LWS_CHEAT) {
-        Lara_BaddieCollision(item, coll);
+        M_BaddieCollision(item, coll);
     }
 
     if (g_Lara.water_status == LWS_CHEAT) {

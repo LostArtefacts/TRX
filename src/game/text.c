@@ -91,15 +91,15 @@ typedef struct QUAD_INFO {
     int32_t h;
 } QUAD_INFO;
 
-static uint8_t Text_MapLetterToSpriteNum(char letter);
-static void Text_DrawTextBackground(
+static uint8_t M_MapLetterToSpriteNum(char letter);
+static void M_DrawTextBackground(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
     TEXT_STYLE text_style);
-static void Text_DrawTextOutline(
+static void M_DrawTextOutline(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
     TEXT_STYLE text_style);
 
-static void Text_DrawTextBackground(
+static void M_DrawTextBackground(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
     TEXT_STYLE text_style)
 {
@@ -137,7 +137,7 @@ static void Text_DrawTextBackground(
     }
 }
 
-static void Text_DrawTextOutline(
+static void M_DrawTextOutline(
     UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
     TEXT_STYLE text_style)
 {
@@ -168,7 +168,7 @@ static void Text_DrawTextOutline(
     }
 }
 
-static uint8_t Text_MapLetterToSpriteNum(char letter)
+static uint8_t M_MapLetterToSpriteNum(char letter)
 {
     if (letter >= 16) {
         return m_TextASCIIMap[letter - 32];
@@ -446,7 +446,7 @@ int32_t Text_GetWidth(TEXTSTRING *textstring)
             continue;
         }
 
-        uint8_t sprite_num = Text_MapLetterToSpriteNum(letter);
+        uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
         width += ((m_TextSpacing[sprite_num] + textstring->letter_spacing)
                   * textstring->scale.h)
             / PHD_ONE;
@@ -535,7 +535,7 @@ void Text_DrawText(TEXTSTRING *textstring)
             continue;
         }
 
-        uint8_t sprite_num = Text_MapLetterToSpriteNum(letter);
+        uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
         sx = Screen_GetRenderScale(x, RSR_TEXT);
         sy = Screen_GetRenderScale(y, RSR_TEXT);
         sh = Screen_GetRenderScale(textstring->scale.h, RSR_TEXT);
@@ -577,7 +577,7 @@ void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
         sv = Screen_GetRenderScale(bheight, RSR_TEXT);
 
-        Text_DrawTextBackground(
+        M_DrawTextBackground(
             g_Config.ui.menu_style, sx, sy, sh, sv,
             textstring->background.style);
     }
@@ -592,7 +592,7 @@ void Text_DrawText(TEXTSTRING *textstring)
         sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
         sv = Screen_GetRenderScale(bheight, RSR_TEXT);
 
-        Text_DrawTextOutline(
+        M_DrawTextOutline(
             g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);
     }
 }

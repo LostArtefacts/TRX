@@ -28,9 +28,10 @@ static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 
-static void Option_Compass_InitText(void);
+static void M_InitText(void);
+static void M_ShutdownText(void);
 
-static void Option_Compass_InitText(void)
+static void M_InitText(void)
 {
     char buf[100];
     const int top_y = -60;
@@ -106,7 +107,7 @@ static void Option_Compass_InitText(void)
     }
 }
 
-static void Option_Compass_ShutdownText(void)
+static void M_ShutdownText(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
@@ -121,7 +122,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
         char time_buf[100];
 
         if (!m_Text[0]) {
-            Option_Compass_InitText();
+            M_InitText();
         }
 
         int32_t seconds =
@@ -141,7 +142,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-        Option_Compass_ShutdownText();
+        M_ShutdownText();
         inv_item->goal_frame = inv_item->frames_total - 1;
         inv_item->anim_direction = 1;
     }
@@ -149,7 +150,7 @@ void Option_Compass(INVENTORY_ITEM *inv_item)
 
 void Option_Compass_Shutdown(void)
 {
-    Option_Compass_ShutdownText();
+    M_ShutdownText();
 }
 
 void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)

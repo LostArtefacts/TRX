@@ -25,9 +25,9 @@ typedef enum SOUND_TEXT {
 
 static TEXTSTRING *m_Text[TEXT_NUMBER_OF] = { 0 };
 
-static void Option_Sound_InitText(void);
+static void M_InitText(void);
 
-static void Option_Sound_InitText(void)
+static void M_InitText(void)
 {
     char buf[20];
 
@@ -67,7 +67,7 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
     char buf[20];
 
     if (!m_Text[TEXT_MUSIC_VOLUME]) {
-        Option_Sound_InitText();
+        M_InitText();
     }
 
     if (g_InputDB.menu_up && g_OptionSelected > TEXT_OPTION_MIN) {

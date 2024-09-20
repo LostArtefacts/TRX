@@ -27,20 +27,19 @@ CONFIG g_Config = { 0 };
 
 static const char *m_ConfigPath = "cfg/TR1X.json5";
 
-static void Config_LoadKeyboardLayout(
+static void M_LoadKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void Config_LoadControllerLayout(
+static void M_LoadControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void Config_LoadLegacyOptions(struct json_object_s *const parent_obj);
-static void Config_DumpKeyboardLayout(
+static void M_LoadLegacyOptions(struct json_object_s *const parent_obj);
+static void M_DumpKeyboardLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void Config_DumpControllerLayout(
+static void M_DumpControllerLayout(
     struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+static void M_Load(struct json_object_s *root_obj);
+static void M_Dump(struct json_object_s *root_obj);
 
-static void Config_Load(struct json_object_s *root_obj);
-static void Config_Dump(struct json_object_s *root_obj);
-
-static void Config_LoadKeyboardLayout(
+static void M_LoadKeyboardLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     char layout_name[20];
@@ -81,7 +80,7 @@ static void Config_LoadKeyboardLayout(
     }
 }
 
-static void Config_LoadControllerLayout(
+static void M_LoadControllerLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     char layout_name[20];
@@ -147,7 +146,7 @@ static void Config_LoadControllerLayout(
     }
 }
 
-static void Config_LoadLegacyOptions(struct json_object_s *const parent_obj)
+static void M_LoadLegacyOptions(struct json_object_s *const parent_obj)
 {
     // 0.10..4.0.3: enable_enemy_healthbar
     {
@@ -174,7 +173,7 @@ static void Config_LoadLegacyOptions(struct json_object_s *const parent_obj)
     }
 }
 
-static void Config_DumpKeyboardLayout(
+static void M_DumpKeyboardLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     struct json_array_s *const arr = json_array_new();
@@ -206,7 +205,7 @@ static void Config_DumpKeyboardLayout(
     }
 }
 
-static void Config_DumpControllerLayout(
+static void M_DumpControllerLayout(
     struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
 {
     struct json_array_s *const arr = json_array_new();
@@ -247,39 +246,39 @@ static void Config_DumpControllerLayout(
     }
 }
 
-static void Config_Load(struct json_object_s *root_obj)
+static void M_Load(struct json_object_s *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, g_ConfigOptionMap);
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        Config_LoadKeyboardLayout(root_obj, layout);
-        Config_LoadControllerLayout(root_obj, layout);
+        M_LoadKeyboardLayout(root_obj, layout);
+        M_LoadControllerLayout(root_obj, layout);
     }
 
-    Config_LoadLegacyOptions(root_obj);
+    M_LoadLegacyOptions(root_obj);
 
     Config_Sanitize();
 }
 
-static void Config_Dump(struct json_object_s *root_obj)
+static void M_Dump(struct json_object_s *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, g_ConfigOptionMap);
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        Config_DumpKeyboardLayout(root_obj, layout);
+        M_DumpKeyboardLayout(root_obj, layout);
     }
 
     for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
-        Config_DumpControllerLayout(root_obj, layout);
+        M_DumpControllerLayout(root_obj, layout);
     }
 }
 
 bool Config_Read(void)
 {
-    const bool result = ConfigFile_Read(m_ConfigPath, &Config_Load);
+    const bool result = ConfigFile_Read(m_ConfigPath, &M_Load);
     Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
     Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
     Music_SetVolume(g_Config.music_volume);
@@ -291,7 +290,7 @@ bool Config_Read(void)
 
 bool Config_Write(void)
 {
-    return ConfigFile_Write(m_ConfigPath, &Config_Dump);
+    return ConfigFile_Write(m_ConfigPath, &M_Dump);
 }
 
 void Config_Sanitize(void)

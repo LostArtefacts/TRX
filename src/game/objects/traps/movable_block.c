@@ -32,20 +32,20 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *MovableBlock_Bounds(void);
-static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
-static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height);
-static bool MovableBlock_TestPush(
+static const OBJECT_BOUNDS *M_Bounds(void);
+static bool M_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
+static bool M_TestDestination(ITEM_INFO *item, int32_t block_height);
+static bool M_TestPush(
     ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
-static bool MovableBlock_TestPull(
+static bool M_TestPull(
     ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
 
-static const OBJECT_BOUNDS *MovableBlock_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MovableBlock_Bounds;
 }
 
-static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
+static bool M_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     // OG fix: stop pushing blocks through doors
 
@@ -73,7 +73,7 @@ static bool MovableBlock_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
     return false;
 }
 
-static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height)
+static bool M_TestDestination(ITEM_INFO *item, int32_t block_height)
 {
     int16_t room_num = item->room_num;
     const SECTOR_INFO *const sector =
@@ -91,10 +91,10 @@ static bool MovableBlock_TestDestination(ITEM_INFO *item, int32_t block_height)
     return true;
 }
 
-static bool MovableBlock_TestPush(
+static bool M_TestPush(
     ITEM_INFO *item, int32_t block_height, DIRECTION quadrant)
 {
-    if (!MovableBlock_TestDestination(item, block_height)) {
+    if (!M_TestDestination(item, block_height)) {
         return false;
     }
 
@@ -138,10 +138,10 @@ static bool MovableBlock_TestPush(
     return true;
 }
 
-static bool MovableBlock_TestPull(
+static bool M_TestPull(
     ITEM_INFO *item, int32_t block_height, DIRECTION quadrant)
 {
-    if (!MovableBlock_TestDestination(item, block_height)) {
+    if (!M_TestDestination(item, block_height)) {
         return false;
     }
 
@@ -221,7 +221,7 @@ void MovableBlock_Setup(OBJECT_INFO *obj)
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = MovableBlock_Bounds;
+    obj->bounds = M_Bounds;
 }
 
 void MovableBlock_Initialise(int16_t item_num)
@@ -320,7 +320,7 @@ void MovableBlock_Collision(
         }
 
         // OG fix: stop pushing blocks through doors
-        if (MovableBlock_TestDoor(lara_item, coll)) {
+        if (M_TestDoor(lara_item, coll)) {
             return;
         }
 
@@ -361,13 +361,13 @@ void MovableBlock_Collision(
         }
 
         if (g_Input.forward) {
-            if (!MovableBlock_TestPush(item, WALL_L, quadrant)) {
+            if (!M_TestPush(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PUSH;
             lara_item->goal_anim_state = LS_PUSH_BLOCK;
         } else if (g_Input.back) {
-            if (!MovableBlock_TestPull(item, WALL_L, quadrant)) {
+            if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MBS_PULL;

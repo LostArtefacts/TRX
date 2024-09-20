@@ -3,9 +3,9 @@
 #include "game/items.h"
 #include "global/const.h"
 
-static bool TrapDoor_StandingOn(const ITEM_INFO *item, int32_t x, int32_t z);
+static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z);
 
-static bool TrapDoor_StandingOn(const ITEM_INFO *item, int32_t x, int32_t z)
+static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z)
 {
     int32_t tx = item->pos.x >> WALL_SHIFT;
     int32_t tz = item->pos.z >> WALL_SHIFT;
@@ -50,7 +50,7 @@ int16_t TrapDoor_GetFloorHeight(
     const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    if (!TrapDoor_StandingOn(item, x, z)) {
+    if (!M_IsItemOnTop(item, x, z)) {
         return height;
     }
 
@@ -66,7 +66,7 @@ int16_t TrapDoor_GetCeilingHeight(
     const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    if (!TrapDoor_StandingOn(item, x, z)) {
+    if (!M_IsItemOnTop(item, x, z)) {
         return height;
     }
 

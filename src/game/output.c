@@ -68,28 +68,26 @@ static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", NULL,
 };
 
-static void Output_DrawBlackOverlay(uint8_t alpha);
+static void M_DrawBlackOverlay(uint8_t alpha);
 
-static const int16_t *Output_DrawObjectG3(
-    const int16_t *obj_ptr, int32_t number);
-static const int16_t *Output_DrawObjectG4(
-    const int16_t *obj_ptr, int32_t number);
-static const int16_t *Output_DrawObjectGT3(
-    const int16_t *obj_ptr, int32_t number);
-static const int16_t *Output_DrawObjectGT4(
-    const int16_t *obj_ptr, int32_t number);
-static const int16_t *Output_DrawRoomSprites(
+static const int16_t *M_DrawObjectG3(const int16_t *obj_ptr, int32_t number);
+static const int16_t *M_DrawObjectG4(const int16_t *obj_ptr, int32_t number);
+static const int16_t *M_DrawObjectGT3(const int16_t *obj_ptr, int32_t number);
+static const int16_t *M_DrawObjectGT4(const int16_t *obj_ptr, int32_t number);
+static const int16_t *M_DrawObjectEnvMap(
+    const int16_t *obj_ptr, int32_t poly_count, int32_t vertex_count,
+    bool textured);
+static const int16_t *M_DrawRoomSprites(
     const int16_t *obj_ptr, int32_t vertex_count);
-static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr);
-static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr);
-static const int16_t *Output_CalcVerticeEnvMap(const int16_t *obj_ptr);
-static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr);
-static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr);
-static int32_t Output_CalcFogShade(int32_t depth);
-static void Output_CalcWibbleTable(void);
+static const int16_t *M_CalcObjectVertices(const int16_t *obj_ptr);
+static const int16_t *M_CalcVerticeLight(const int16_t *obj_ptr);
+static const int16_t *M_CalcVerticeEnvMap(const int16_t *obj_ptr);
+static const int16_t *M_CalcSkyboxLight(const int16_t *obj_ptr);
+static const int16_t *M_CalcRoomVertices(const int16_t *obj_ptr);
+static int32_t M_CalcFogShade(int32_t depth);
+static void M_CalcWibbleTable(void);
 
-static const int16_t *Output_DrawObjectG3(
-    const int16_t *obj_ptr, int32_t number)
+static const int16_t *M_DrawObjectG3(const int16_t *obj_ptr, int32_t number)
 {
     S_Output_DisableTextureMode();
 
@@ -107,8 +105,7 @@ static const int16_t *Output_DrawObjectG3(
     return obj_ptr;
 }
 
-static const int16_t *Output_DrawObjectG4(
-    const int16_t *obj_ptr, int32_t number)
+static const int16_t *M_DrawObjectG4(const int16_t *obj_ptr, int32_t number)
 {
     S_Output_DisableTextureMode();
 
@@ -129,8 +126,7 @@ static const int16_t *Output_DrawObjectG4(
     return obj_ptr;
 }
 
-static const int16_t *Output_DrawObjectGT3(
-    const int16_t *obj_ptr, int32_t number)
+static const int16_t *M_DrawObjectGT3(const int16_t *obj_ptr, int32_t number)
 {
     S_Output_EnableTextureMode();
 
@@ -151,8 +147,7 @@ static const int16_t *Output_DrawObjectGT3(
     return obj_ptr;
 }
 
-static const int16_t *Output_DrawObjectGT4(
-    const int16_t *obj_ptr, int32_t number)
+static const int16_t *M_DrawObjectGT4(const int16_t *obj_ptr, int32_t number)
 {
     S_Output_EnableTextureMode();
 
@@ -174,7 +169,7 @@ static const int16_t *Output_DrawObjectGT4(
     return obj_ptr;
 }
 
-static const int16_t *Output_DrawObjectEnvMap(
+static const int16_t *M_DrawObjectEnvMap(
     const int16_t *obj_ptr, const int32_t poly_count,
     const int32_t vertex_count, const bool textured)
 {
@@ -205,7 +200,7 @@ static const int16_t *Output_DrawObjectEnvMap(
     return obj_ptr;
 }
 
-static const int16_t *Output_DrawRoomSprites(
+static const int16_t *M_DrawRoomSprites(
     const int16_t *obj_ptr, int32_t vertex_count)
 {
     for (int i = 0; i < vertex_count; i++) {
@@ -238,7 +233,7 @@ static const int16_t *Output_DrawRoomSprites(
     return obj_ptr;
 }
 
-static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
+static const int16_t *M_CalcObjectVertices(const int16_t *obj_ptr)
 {
     int16_t total_clip = -1;
 
@@ -301,7 +296,7 @@ static const int16_t *Output_CalcObjectVertices(const int16_t *obj_ptr)
     return total_clip == 0 ? obj_ptr : NULL;
 }
 
-static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
+static const int16_t *M_CalcVerticeLight(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
@@ -345,7 +340,7 @@ static const int16_t *Output_CalcVerticeLight(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
-static const int16_t *Output_CalcVerticeEnvMap(const int16_t *obj_ptr)
+static const int16_t *M_CalcVerticeEnvMap(const int16_t *obj_ptr)
 {
     const int32_t vtx_count = *obj_ptr++;
     if (vtx_count <= 0) {
@@ -360,7 +355,7 @@ static const int16_t *Output_CalcVerticeEnvMap(const int16_t *obj_ptr)
         m_VBuf[i].g = 0x1000;
 
         const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-        m_VBuf[i].g += Output_CalcFogShade(depth);
+        m_VBuf[i].g += M_CalcFogShade(depth);
 
         // reflection can be darker but not brighter
         CLAMP(m_VBuf[i].g, 0x1000, 0x1FFF);
@@ -390,7 +385,7 @@ static const int16_t *Output_CalcVerticeEnvMap(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
-static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr)
+static const int16_t *M_CalcSkyboxLight(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
     if (vertex_count > 0) {
@@ -407,7 +402,7 @@ static const int16_t *Output_CalcSkyboxLight(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
-static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
+static const int16_t *M_CalcRoomVertices(const int16_t *obj_ptr)
 {
     int32_t vertex_count = *obj_ptr++;
 
@@ -452,7 +447,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
                     clip_flags |= 16;
                 }
             } else if (depth) {
-                m_VBuf[i].g += Output_CalcFogShade(depth);
+                m_VBuf[i].g += M_CalcFogShade(depth);
                 if (!m_IsWaterEffect) {
                     CLAMPG(m_VBuf[i].g, MAX_LIGHTING);
                 }
@@ -496,7 +491,7 @@ static const int16_t *Output_CalcRoomVertices(const int16_t *obj_ptr)
     return obj_ptr;
 }
 
-static int32_t Output_CalcFogShade(int32_t depth)
+static int32_t M_CalcFogShade(int32_t depth)
 {
     int32_t fog_begin = Output_GetDrawDistFade();
     int32_t fog_end = Output_GetDrawDistMax();
@@ -511,7 +506,7 @@ static int32_t Output_CalcFogShade(int32_t depth)
     return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
 }
 
-static void Output_CalcWibbleTable(void)
+static void M_CalcWibbleTable(void)
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * PHD_360) / WIBBLE_SIZE;
@@ -523,7 +518,7 @@ static void Output_CalcWibbleTable(void)
 
 bool Output_Init(void)
 {
-    Output_CalcWibbleTable();
+    M_CalcWibbleTable();
     return S_Output_Init();
 }
 
@@ -566,7 +561,7 @@ RGBA_8888 Output_RGB2RGBA(const RGB_888 color)
 
 void Output_DrawBlack(void)
 {
-    Output_DrawBlackOverlay(255);
+    M_DrawBlackOverlay(255);
 }
 
 void Output_FlushTranslucentObjects(void)
@@ -657,7 +652,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 
     int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
-    g_LsAdder += Output_CalcFogShade(distance);
+    g_LsAdder += M_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
 }
 
@@ -665,7 +660,7 @@ void Output_CalculateStaticLight(int16_t adder)
 {
     g_LsAdder = adder - 16 * 256;
     int32_t distance = g_MatrixPtr->_23 >> W2V_SHIFT;
-    g_LsAdder += Output_CalcFogShade(distance);
+    g_LsAdder += M_CalcFogShade(distance);
     CLAMPG(g_LsAdder, 0x1FFF);
 }
 
@@ -700,26 +695,26 @@ void Output_DrawPolygons(const int16_t *obj_ptr, int clip)
     const bool has_reflections = IS_REFLECTION_ENABLED(obj_ptr[3]);
     obj_ptr += 4;
 
-    obj_ptr = Output_CalcObjectVertices(obj_ptr);
+    obj_ptr = M_CalcObjectVertices(obj_ptr);
     if (obj_ptr == NULL) {
         return;
     }
 
     const int16_t *obj_ptr_old = obj_ptr;
-    obj_ptr = Output_CalcVerticeLight(obj_ptr);
-    obj_ptr = Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectG4(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectG3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_CalcVerticeLight(obj_ptr);
+    obj_ptr = M_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectG4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectG3(obj_ptr + 1, *obj_ptr);
 
     if (has_reflections && g_Config.rendering.enable_reflections) {
         obj_ptr = obj_ptr_old;
-        obj_ptr = Output_CalcVerticeEnvMap(obj_ptr);
+        obj_ptr = M_CalcVerticeEnvMap(obj_ptr);
         if (obj_ptr != NULL) {
-            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 4, true);
-            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 3, true);
-            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 4, false);
-            obj_ptr = Output_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 3, false);
+            obj_ptr = M_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 4, true);
+            obj_ptr = M_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 3, true);
+            obj_ptr = M_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 4, false);
+            obj_ptr = M_DrawObjectEnvMap(obj_ptr + 1, *obj_ptr, 3, false);
         }
     }
 }
@@ -749,26 +744,26 @@ void Output_DrawSkybox(const int16_t *obj_ptr)
     g_PhdRight = Viewport_GetMaxX();
     g_PhdBottom = Viewport_GetMaxY();
 
-    obj_ptr = Output_CalcObjectVertices(obj_ptr + 4);
+    obj_ptr = M_CalcObjectVertices(obj_ptr + 4);
     if (!obj_ptr) {
         return;
     }
 
     S_Output_DisableDepthTest();
-    obj_ptr = Output_CalcSkyboxLight(obj_ptr);
-    obj_ptr = Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectG4(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectG3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_CalcSkyboxLight(obj_ptr);
+    obj_ptr = M_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectG4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectG3(obj_ptr + 1, *obj_ptr);
     S_Output_EnableDepthTest();
 }
 
 void Output_DrawRoom(const int16_t *obj_ptr)
 {
-    obj_ptr = Output_CalcRoomVertices(obj_ptr);
-    obj_ptr = Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
-    obj_ptr = Output_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_CalcRoomVertices(obj_ptr);
+    obj_ptr = M_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
+    obj_ptr = M_DrawRoomSprites(obj_ptr + 1, *obj_ptr);
 }
 
 void Output_DrawShadow(
@@ -802,7 +797,7 @@ void Output_DrawShadow(
         item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
 
-    if (Output_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
+    if (M_CalcObjectVertices(&g_ShadowInfo.poly_count)) {
         int16_t clip_and = 1;
         int16_t clip_positive = 1;
         int16_t clip_or = 0;
@@ -909,7 +904,7 @@ void Output_DrawSprite(
     if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
         && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
-        shade += Output_CalcFogShade(depth);
+        shade += M_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
         S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
@@ -1030,7 +1025,7 @@ void Output_DrawSpriteRel(
     if (x2 >= Viewport_GetMinX() && y2 >= Viewport_GetMinY()
         && x1 <= Viewport_GetMaxX() && y1 <= Viewport_GetMaxY()) {
         int32_t depth = zv >> W2V_SHIFT;
-        shade += Output_CalcFogShade(depth);
+        shade += M_CalcFogShade(depth);
         CLAMPG(shade, 0x1FFF);
         S_Output_DrawSprite(x1, y1, x2, y2, zv, sprnum, shade);
     }
@@ -1204,7 +1199,7 @@ void Output_RotateLight(int16_t pitch, int16_t yaw)
         >> W2V_SHIFT;
 }
 
-static void Output_DrawBlackOverlay(uint8_t alpha)
+static void M_DrawBlackOverlay(uint8_t alpha)
 {
     int32_t sx = 0;
     int32_t sy = 0;
@@ -1220,12 +1215,12 @@ static void Output_DrawBlackOverlay(uint8_t alpha)
 
 void Output_DrawBackdropScreen(void)
 {
-    Output_DrawBlackOverlay(m_BackdropCurAlpha);
+    M_DrawBlackOverlay(m_BackdropCurAlpha);
 }
 
 void Output_DrawOverlayScreen(void)
 {
-    Output_DrawBlackOverlay(m_OverlayCurAlpha);
+    M_DrawBlackOverlay(m_OverlayCurAlpha);
 }
 
 void Output_FadeReset(void)

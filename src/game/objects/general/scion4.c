@@ -20,9 +20,9 @@ static const OBJECT_BOUNDS m_Scion4_Bounds = {
     },
 };
 
-static const OBJECT_BOUNDS *Scion4_Bounds(void);
+static const OBJECT_BOUNDS *M_Bounds(void);
 
-static const OBJECT_BOUNDS *Scion4_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Scion4_Bounds;
 }
@@ -32,7 +32,7 @@ void Scion4_Setup(OBJECT_INFO *obj)
     obj->control = Scion4_Control;
     obj->collision = Scion4_Collision;
     obj->save_flags = 1;
-    obj->bounds = Scion4_Bounds;
+    obj->bounds = M_Bounds;
 }
 
 void Scion4_Control(int16_t item_num)

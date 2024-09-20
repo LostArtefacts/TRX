@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static bool Console_Cmd_IsFloatRound(const float num);
+static bool M_IsFloatRound(const float num);
 static COMMAND_RESULT Console_Cmd_Fps(const char *const args);
 static COMMAND_RESULT Console_Cmd_VSync(const char *const args);
 static COMMAND_RESULT Console_Cmd_Wireframe(const char *const args);
@@ -56,7 +56,7 @@ static COMMAND_RESULT Console_Cmd_EndLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_StartLevel(const char *args);
 static COMMAND_RESULT Console_Cmd_Abortion(const char *args);
 
-static inline bool Console_Cmd_IsFloatRound(const float num)
+static inline bool M_IsFloatRound(const float num)
 {
     return (fabsf(num) - roundf(num)) < 0.0001f;
 }
@@ -111,10 +111,10 @@ static COMMAND_RESULT Console_Cmd_Teleport(const char *const args)
     {
         float x, y, z;
         if (sscanf(args, "%f %f %f", &x, &y, &z) == 3) {
-            if (Console_Cmd_IsFloatRound(x)) {
+            if (M_IsFloatRound(x)) {
                 x += 0.5f;
             }
-            if (Console_Cmd_IsFloatRound(z)) {
+            if (M_IsFloatRound(z)) {
                 z += 0.5f;
             }
 

@@ -34,13 +34,14 @@ static bool m_Total = false;
 static STATE m_State = STATE_DISPLAY;
 static TEXTSTRING *m_Texts[MAX_TEXTSTRINGS] = { 0 };
 
-static void Phase_Stats_CreateTexts(int32_t level_num);
-static void Phase_Stats_Start(void *arg);
-static void Phase_Stats_End(void);
-static PHASE_CONTROL Phase_Stats_Control(int32_t nframes);
-static void Phase_Stats_Draw(void);
+static void M_CreateTexts(int32_t level_num);
+static void M_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type);
+static void M_Start(void *arg);
+static void M_End(void);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
 
-static void Phase_Stats_CreateTexts(int32_t level_num)
+static void M_CreateTexts(int32_t level_num)
 {
     char buf[100];
     char time_str[100];
@@ -132,7 +133,7 @@ static void Phase_Stats_CreateTexts(int32_t level_num)
     y += row_height;
 }
 
-static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
+static void M_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
 {
     TOTAL_STATS stats;
     Stats_ComputeTotal(level_type, &stats);
@@ -235,7 +236,7 @@ static void Phase_Stats_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     cur_txt++;
 }
 
-static void Phase_Stats_Start(void *arg)
+static void M_Start(void *arg)
 {
     const PHASE_STATS_DATA *data = (const PHASE_STATS_DATA *)arg;
     if (data && data->total) {
@@ -255,18 +256,18 @@ static void Phase_Stats_Start(void *arg)
     m_Total = data && data->total;
 
     if (data && data->total) {
-        Phase_Stats_CreateTextsTotal(data->level_type);
+        M_CreateTextsTotal(data->level_type);
         Output_FadeReset();
         Output_FadeResetToBlack();
         Output_FadeToTransparent(true);
     } else {
-        Phase_Stats_CreateTexts(
+        M_CreateTexts(
             data && data->level_num != -1 ? data->level_num : g_CurrentLevel);
         Output_FadeToSemiBlack(true);
     }
 }
 
-static void Phase_Stats_End(void)
+static void M_End(void)
 {
     Music_Stop();
 
@@ -278,7 +279,7 @@ static void Phase_Stats_End(void)
     }
 }
 
-static PHASE_CONTROL Phase_Stats_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
     Input_Update();
     Shell_ProcessInput();
@@ -314,7 +315,7 @@ static PHASE_CONTROL Phase_Stats_Control(int32_t nframes)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static void Phase_Stats_Draw(void)
+static void M_Draw(void)
 {
     if (!m_Total) {
         Interpolation_Disable();
@@ -326,9 +327,9 @@ static void Phase_Stats_Draw(void)
 }
 
 PHASER g_StatsPhaser = {
-    .start = Phase_Stats_Start,
-    .end = Phase_Stats_End,
-    .control = Phase_Stats_Control,
-    .draw = Phase_Stats_Draw,
+    .start = M_Start,
+    .end = M_End,
+    .control = M_Control,
+    .draw = M_Draw,
     .wait = NULL,
 };

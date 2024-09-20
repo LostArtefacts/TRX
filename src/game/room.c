@@ -29,21 +29,21 @@ int32_t g_FlipEffect = -1;
 int32_t g_FlipStatus = 0;
 int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 
-static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
-static void Room_AddFlipItems(ROOM_INFO *r);
-static void Room_RemoveFlipItems(ROOM_INFO *r);
+static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
+static void M_AddFlipItems(ROOM_INFO *r);
+static void M_RemoveFlipItems(ROOM_INFO *r);
 
-static int16_t Room_GetFloorTiltHeight(
+static int16_t M_GetFloorTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z);
-static int16_t Room_GetCeilingTiltHeight(
+static int16_t M_GetCeilingTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z);
-static SECTOR_INFO *Room_GetSkySector(
+static SECTOR_INFO *M_GetSkySector(
     const SECTOR_INFO *sector, int32_t x, int32_t z);
-static void Room_TestSectorTrigger(
+static void M_TestSectorTrigger(
     const ITEM_INFO *item, const SECTOR_INFO *sector);
-static bool Room_TestLava(const ITEM_INFO *const item);
+static bool M_TestLava(const ITEM_INFO *const item);
 
-static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
+static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
     if (track == MX_UNUSED_0 && trigger->type == TT_ANTIPAD) {
         Music_Stop();
@@ -125,7 +125,7 @@ static void Room_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
 }
 
-static void Room_AddFlipItems(ROOM_INFO *r)
+static void M_AddFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_num; item_num != NO_ITEM;
          item_num = g_Items[item_num].next_item) {
@@ -149,7 +149,7 @@ static void Room_AddFlipItems(ROOM_INFO *r)
     }
 }
 
-static void Room_RemoveFlipItems(ROOM_INFO *r)
+static void M_RemoveFlipItems(ROOM_INFO *r)
 {
     for (int16_t item_num = r->item_num; item_num != NO_ITEM;
          item_num = g_Items[item_num].next_item) {
@@ -247,7 +247,7 @@ SECTOR_INFO *Room_GetPitSector(
     return (SECTOR_INFO *)sector;
 }
 
-static SECTOR_INFO *Room_GetSkySector(
+static SECTOR_INFO *M_GetSkySector(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z)
 {
     while (sector->portal_room.sky != NO_ROOM) {
@@ -335,8 +335,8 @@ int16_t Room_GetCeiling(
     int16_t type;
     int16_t trigger;
 
-    const SECTOR_INFO *const sky_sector = Room_GetSkySector(sector, x, z);
-    int16_t height = Room_GetCeilingTiltHeight(sky_sector, x, z);
+    const SECTOR_INFO *const sky_sector = M_GetSkySector(sector, x, z);
+    int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z);
 
     sector = Room_GetPitSector(sector, x, z);
     if (sector->trigger == NULL) {
@@ -366,7 +366,7 @@ int16_t Room_GetHeight(
     g_HeightType = HT_WALL;
     sector = Room_GetPitSector(sector, x, z);
 
-    int16_t height = Room_GetFloorTiltHeight(sector, x, z);
+    int16_t height = M_GetFloorTiltHeight(sector, x, z);
 
     if (sector->trigger == NULL) {
         return height;
@@ -389,7 +389,7 @@ int16_t Room_GetHeight(
     return height;
 }
 
-static int16_t Room_GetFloorTiltHeight(
+static int16_t M_GetFloorTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z)
 {
     int16_t height = sector->floor.height;
@@ -423,7 +423,7 @@ static int16_t Room_GetFloorTiltHeight(
     return height;
 }
 
-static int16_t Room_GetCeilingTiltHeight(
+static int16_t M_GetCeilingTiltHeight(
     const SECTOR_INFO *sector, const int32_t x, const int32_t z)
 {
     int16_t height = sector->ceiling.height;
@@ -566,7 +566,7 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
     } while (portal_room != NO_ROOM);
 
     const SECTOR_INFO *const sky_sector =
-        Room_GetSkySector(sector, item->pos.x, item->pos.z);
+        M_GetSkySector(sector, item->pos.x, item->pos.z);
     sector = Room_GetPitSector(sector, item->pos.x, item->pos.z);
 
     if (sector->floor.height != NO_HEIGHT) {
@@ -598,7 +598,7 @@ void Room_FlipMap(void)
             continue;
         }
 
-        Room_RemoveFlipItems(r);
+        M_RemoveFlipItems(r);
 
         ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
         ROOM_INFO temp = *r;
@@ -612,7 +612,7 @@ void Room_FlipMap(void)
         r->item_num = flipped->item_num;
         r->fx_num = flipped->fx_num;
 
-        Room_AddFlipItems(r);
+        M_AddFlipItems(r);
     }
 
     g_FlipStatus = !g_FlipStatus;
@@ -742,7 +742,7 @@ void Room_TestTriggers(const ITEM_INFO *const item)
     const SECTOR_INFO *sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
 
-    Room_TestSectorTrigger(item, sector);
+    M_TestSectorTrigger(item, sector);
     if (item->object_id != O_TORSO) {
         return;
     }
@@ -757,12 +757,12 @@ void Room_TestTriggers(const ITEM_INFO *const item)
             sector = Room_GetSector(
                 item->pos.x + dx * WALL_L, MAX_HEIGHT,
                 item->pos.z + dz * WALL_L, &room_num);
-            Room_TestSectorTrigger(item, sector);
+            M_TestSectorTrigger(item, sector);
         }
     }
 }
 
-static bool Room_TestLava(const ITEM_INFO *const item)
+static bool M_TestLava(const ITEM_INFO *const item)
 {
     if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT
         || (g_Lara.water_status == LWS_ABOVE_WATER
@@ -777,11 +777,11 @@ static bool Room_TestLava(const ITEM_INFO *const item)
     return sector->is_death_sector;
 }
 
-static void Room_TestSectorTrigger(
+static void M_TestSectorTrigger(
     const ITEM_INFO *const item, const SECTOR_INFO *const sector)
 {
     const bool is_heavy = item->object_id != O_LARA;
-    if (!is_heavy && sector->is_death_sector && Room_TestLava(item)) {
+    if (!is_heavy && sector->is_death_sector && M_TestLava(item)) {
         Lara_CatchFire();
     }
 
@@ -1019,7 +1019,7 @@ static void Room_TestSectorTrigger(
             break;
 
         case TO_CD:
-            Room_TriggerMusicTrack((int16_t)(intptr_t)cmd->parameter, trigger);
+            M_TriggerMusicTrack((int16_t)(intptr_t)cmd->parameter, trigger);
             break;
 
         case TO_SECRET: {

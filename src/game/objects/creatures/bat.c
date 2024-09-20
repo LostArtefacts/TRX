@@ -29,9 +29,9 @@ typedef enum {
 
 static BITE_INFO m_BatBite = { 0, 16, 45, 4 };
 
-static void Bat_FixEmbeddedPosition(int16_t item_num);
+static void M_FixEmbeddedPosition(int16_t item_num);
 
-static void Bat_FixEmbeddedPosition(int16_t item_num)
+static void M_FixEmbeddedPosition(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE) {
@@ -151,5 +151,5 @@ void Bat_Initialise(int16_t item_num)
     // Almost all of the bats in the OG levels are embedded in the ceiling.
     // This will move all bats up to the ceiling of their rooms and down
     // by the height of their hanging animation.
-    Bat_FixEmbeddedPosition(item_num);
+    M_FixEmbeddedPosition(item_num);
 }

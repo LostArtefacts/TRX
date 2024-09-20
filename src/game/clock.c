@@ -12,12 +12,12 @@
 #include <stdio.h>
 #include <time.h>
 
-static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit);
-static bool Clock_CheckElapsedUnit(
+static double M_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit);
+static bool M_CheckElapsedUnit(
     CLOCK_TIMER *const timer, const double how_often, const double unit,
     bool bypass_turbo_cheat);
 
-static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit)
+static double M_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit)
 {
     assert(timer != NULL);
     const double delta = Clock_GetHighPrecisionCounter() - timer->prev_counter;
@@ -27,7 +27,7 @@ static double Clock_GetElapsedUnit(CLOCK_TIMER *const timer, const double unit)
     return frames;
 }
 
-static bool Clock_CheckElapsedUnit(
+static bool M_CheckElapsedUnit(
     CLOCK_TIMER *const timer, const double how_often, const double unit,
     bool bypass_turbo_cheat)
 {
@@ -111,40 +111,39 @@ void Clock_ResetTimer(CLOCK_TIMER *const timer)
 
 double Clock_GetElapsedLogicalFrames(CLOCK_TIMER *const timer)
 {
-    return Clock_GetElapsedUnit(timer, LOGIC_FPS);
+    return M_GetElapsedUnit(timer, LOGIC_FPS);
 }
 
 double Clock_GetElapsedDrawFrames(CLOCK_TIMER *const timer)
 {
-    return Clock_GetElapsedUnit(timer, g_Config.rendering.fps);
+    return M_GetElapsedUnit(timer, g_Config.rendering.fps);
 }
 
 double Clock_GetElapsedMilliseconds(CLOCK_TIMER *const timer)
 {
-    return Clock_GetElapsedUnit(timer, 1000.0);
+    return M_GetElapsedUnit(timer, 1000.0);
 }
 
 bool Clock_CheckElapsedLogicalFrames(
     CLOCK_TIMER *const timer, const int32_t how_often)
 {
-    return Clock_CheckElapsedUnit(timer, how_often, LOGIC_FPS, false);
+    return M_CheckElapsedUnit(timer, how_often, LOGIC_FPS, false);
 }
 
 bool Clock_CheckElapsedDrawFrames(
     CLOCK_TIMER *const timer, const int32_t how_often)
 {
-    return Clock_CheckElapsedUnit(
-        timer, how_often, g_Config.rendering.fps, false);
+    return M_CheckElapsedUnit(timer, how_often, g_Config.rendering.fps, false);
 }
 
 bool Clock_CheckElapsedMilliseconds(
     CLOCK_TIMER *const timer, const int32_t how_often)
 {
-    return Clock_CheckElapsedUnit(timer, how_often, 1000, false);
+    return M_CheckElapsedUnit(timer, how_often, 1000, false);
 }
 
 bool Clock_CheckElapsedRawMilliseconds(
     CLOCK_TIMER *const timer, const int32_t how_often)
 {
-    return Clock_CheckElapsedUnit(timer, how_often, 1000, true);
+    return M_CheckElapsedUnit(timer, how_often, 1000, true);
 }

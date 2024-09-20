@@ -20,9 +20,9 @@ static bool m_BtnConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
 
-static INPUT_STATE Input_GetDebounced(INPUT_STATE input);
+static INPUT_STATE M_GetDebounced(INPUT_STATE input);
 
-static INPUT_STATE Input_GetDebounced(INPUT_STATE input)
+static INPUT_STATE M_GetDebounced(INPUT_STATE input)
 {
     INPUT_STATE result;
     result.any = input.any & ~g_OldInputDB.any;
@@ -153,7 +153,7 @@ void Input_Update(void)
         g_Input.change_target = 0;
     }
 
-    g_InputDB = Input_GetDebounced(g_Input);
+    g_InputDB = M_GetDebounced(g_Input);
 }
 
 bool Input_IsKeyConflicted(CONTROL_MODE mode, INPUT_ROLE role)

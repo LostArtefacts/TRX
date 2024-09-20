@@ -12,7 +12,7 @@ static char *m_GameMemoryPointer = NULL;
 static char *m_GameAllocMemPointer = NULL;
 static size_t m_GameAllocMemFree = 0;
 
-static const char *GameBuf_GetBufferName(GAME_BUFFER buffer)
+static const char *M_GetBufferName(GAME_BUFFER buffer)
 {
     // clang-format off
     switch (buffer) {
@@ -88,8 +88,8 @@ void *GameBuf_Alloc(int32_t alloc_size, GAME_BUFFER buffer)
 
     if (aligned_size > m_GameAllocMemFree) {
         Shell_ExitSystemFmt(
-            "GameBuf_Alloc(): OUT OF MEMORY %s %d",
-            GameBuf_GetBufferName(buffer), aligned_size);
+            "GameBuf_Alloc(): OUT OF MEMORY %s %d", M_GetBufferName(buffer),
+            aligned_size);
     }
 
     void *result = m_GameAllocMemPointer;

@@ -25,7 +25,26 @@ static GAME_OBJECT_ID m_LaraType = O_LARA;
 static HAIR_SEGMENT m_Hair[HAIR_SEGMENTS + 1] = { 0 };
 static XYZ_32 m_HVel[HAIR_SEGMENTS + 1] = { 0 };
 
-static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z);
+static int16_t M_GetRoom(int32_t x, int32_t y, int32_t z);
+
+static int16_t M_GetRoom(int32_t x, int32_t y, int32_t z)
+{
+    int16_t room_num = Room_GetIndexFromPos(x, y, z);
+    if (room_num != NO_ROOM) {
+        return room_num;
+    }
+    return g_LaraItem->room_num;
+}
+
+int32_t Lara_Hair_GetSegmentCount(void)
+{
+    return HAIR_SEGMENTS;
+}
+
+HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n)
+{
+    return &m_Hair[n];
+}
 
 bool Lara_Hair_IsActive(void)
 {
@@ -322,7 +341,7 @@ void Lara_Hair_Control(void)
         }
     } else {
         if (in_cutscene) {
-            room_num = Lara_Hair_GetRoom(pos.x, pos.y, pos.z);
+            room_num = M_GetRoom(pos.x, pos.y, pos.z);
             water_level = NO_HEIGHT;
         } else {
             room_num = g_LaraItem->room_num;
@@ -449,23 +468,4 @@ void Lara_Hair_Draw(void)
 
         Matrix_Pop();
     }
-}
-
-static int16_t Lara_Hair_GetRoom(int32_t x, int32_t y, int32_t z)
-{
-    int16_t room_num = Room_GetIndexFromPos(x, y, z);
-    if (room_num != NO_ROOM) {
-        return room_num;
-    }
-    return g_LaraItem->room_num;
-}
-
-int32_t Lara_Hair_GetSegmentCount(void)
-{
-    return HAIR_SEGMENTS;
-}
-
-HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n)
-{
-    return &m_Hair[n];
 }

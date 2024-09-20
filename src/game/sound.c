@@ -58,21 +58,25 @@ static int32_t m_AmbientLookupIdx = 0;
 static int m_DecibelLUT[DECIBEL_LUT_SIZE] = { 0 };
 static bool m_SoundIsActive = false;
 
-static SOUND_SLOT *Sound_GetSlot(
-    int32_t sfx_num, uint32_t loudness, const XYZ_32 *pos, int16_t mode);
-static void Sound_UpdateSlotParams(SOUND_SLOT *slot);
-static void Sound_ClearSlot(SOUND_SLOT *slot);
-static void Sound_ClearSlotHandles(SOUND_SLOT *slot);
-static void Sound_ResetAmbientLoudness(void);
+static int32_t M_ConvertVolumeToDecibel(int volume);
+static int32_t M_ConvertPanToDecibel(uint16_t pan);
+static float M_CalcPitch(int pitch);
 
-static int32_t Sound_ConvertVolumeToDecibel(int volume)
+static SOUND_SLOT *M_GetSlot(
+    int32_t sfx_num, uint32_t loudness, const XYZ_32 *pos, int16_t mode);
+static void M_UpdateSlotParams(SOUND_SLOT *slot);
+static void M_ClearSlot(SOUND_SLOT *slot);
+static void M_ClearSlotHandles(SOUND_SLOT *slot);
+static void M_ResetAmbientLoudness(void);
+
+static int32_t M_ConvertVolumeToDecibel(int volume)
 {
     return m_DecibelLUT
         [(volume & SOUND_MAX_VOLUME) * DECIBEL_LUT_SIZE
          / (SOUND_MAX_VOLUME + 1)];
 }
 
-static int32_t Sound_ConvertPanToDecibel(uint16_t pan)
+static int32_t M_ConvertPanToDecibel(uint16_t pan)
 {
     int32_t result = sin((pan / 32767.0) * M_PI) * (DECIBEL_LUT_SIZE / 2);
     if (result > 0) {
@@ -84,12 +88,12 @@ static int32_t Sound_ConvertPanToDecibel(uint16_t pan)
     }
 }
 
-static float Sound_CalcPitch(int pitch)
+static float M_CalcPitch(int pitch)
 {
     return pitch / 100.0f;
 }
 
-static SOUND_SLOT *Sound_GetSlot(
+static SOUND_SLOT *M_GetSlot(
     int32_t sfx_num, uint32_t loudness, const XYZ_32 *pos, int16_t mode)
 {
     switch (mode) {
@@ -126,7 +130,7 @@ static SOUND_SLOT *Sound_GetSlot(
     return NULL;
 }
 
-static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
+static void M_UpdateSlotParams(SOUND_SLOT *slot)
 {
     SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[slot->fxnum]];
 
@@ -162,7 +166,7 @@ static void Sound_UpdateSlotParams(SOUND_SLOT *slot)
     slot->pan = angle;
 }
 
-static void Sound_ClearSlot(SOUND_SLOT *slot)
+static void M_ClearSlot(SOUND_SLOT *slot)
 {
     slot->sound_id = AUDIO_NO_SOUND;
     slot->pos = NULL;
@@ -173,7 +177,7 @@ static void Sound_ClearSlot(SOUND_SLOT *slot)
     slot->fxnum = -1;
 }
 
-static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
+static void M_ClearSlotHandles(SOUND_SLOT *slot)
 {
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
         SOUND_SLOT *rslot = &m_SFXPlaying[i];
@@ -183,7 +187,7 @@ static void Sound_ClearSlotHandles(SOUND_SLOT *slot)
     }
 }
 
-static void Sound_ResetAmbientLoudness(void)
+static void M_ResetAmbientLoudness(void)
 {
     if (!m_SoundIsActive) {
         return;
@@ -229,36 +233,36 @@ void Sound_UpdateEffects(void)
             if (slot->loudness != (uint32_t)SOUND_NOT_AUDIBLE
                 && slot->sound_id != AUDIO_NO_SOUND) {
                 Audio_Sample_SetPan(
-                    slot->sound_id, Sound_ConvertPanToDecibel(slot->pan));
+                    slot->sound_id, M_ConvertPanToDecibel(slot->pan));
                 Audio_Sample_SetVolume(
                     slot->sound_id,
-                    Sound_ConvertVolumeToDecibel(
+                    M_ConvertVolumeToDecibel(
                         (m_MasterVolume * slot->volume) >> 6));
             } else {
                 if (slot->sound_id != AUDIO_NO_SOUND) {
                     Audio_Sample_Close(slot->sound_id);
                 }
-                Sound_ClearSlot(slot);
+                M_ClearSlot(slot);
             }
         } else if (Audio_Sample_IsPlaying(slot->sound_id)) {
             if (slot->pos != NULL) {
-                Sound_UpdateSlotParams(slot);
+                M_UpdateSlotParams(slot);
                 if (slot->volume > 0 && slot->sound_id != AUDIO_NO_SOUND) {
                     Audio_Sample_SetPan(
-                        slot->sound_id, Sound_ConvertPanToDecibel(slot->pan));
+                        slot->sound_id, M_ConvertPanToDecibel(slot->pan));
                     Audio_Sample_SetVolume(
                         slot->sound_id,
-                        Sound_ConvertVolumeToDecibel(
+                        M_ConvertVolumeToDecibel(
                             (m_MasterVolume * slot->volume) >> 6));
                 } else {
                     if (slot->sound_id != AUDIO_NO_SOUND) {
                         Audio_Sample_Close(slot->sound_id);
                     }
-                    Sound_ClearSlot(slot);
+                    M_ClearSlot(slot);
                 }
             }
         } else {
-            Sound_ClearSlot(slot);
+            M_ClearSlot(slot);
         }
     }
 }
@@ -344,7 +348,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
 
     switch (mode) {
     case SOUND_MODE_WAIT: {
-        SOUND_SLOT *fxslot = Sound_GetSlot(sfx_num, 0, pos, mode);
+        SOUND_SLOT *fxslot = M_GetSlot(sfx_num, 0, pos, mode);
         if (!fxslot) {
             return false;
         }
@@ -353,12 +357,12 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
             return true;
         }
         fxslot->sound_id = Audio_Sample_Play(
-            sfx_id, Sound_ConvertVolumeToDecibel(volume),
-            Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
+            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            M_ConvertPanToDecibel(pan), false);
         if (fxslot->sound_id == AUDIO_NO_SOUND) {
             return false;
         }
-        Sound_ClearSlotHandles(fxslot);
+        M_ClearSlotHandles(fxslot);
         fxslot->flags = SOUND_FLAG_USED;
         fxslot->fxnum = sfx_num;
         fxslot->pos = pos;
@@ -366,26 +370,26 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
     }
 
     case SOUND_MODE_RESTART: {
-        SOUND_SLOT *fxslot = Sound_GetSlot(sfx_num, 0, pos, mode);
+        SOUND_SLOT *fxslot = M_GetSlot(sfx_num, 0, pos, mode);
         if (!fxslot) {
             return false;
         }
         if (fxslot->flags & SOUND_FLAG_RESTARTED) {
             Audio_Sample_Close(fxslot->sound_id);
             fxslot->sound_id = Audio_Sample_Play(
-                sfx_id, Sound_ConvertVolumeToDecibel(volume),
-                Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
+                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+                M_ConvertPanToDecibel(pan), false);
 
-            Sound_ClearSlotHandles(fxslot);
+            M_ClearSlotHandles(fxslot);
             return true;
         }
         fxslot->sound_id = Audio_Sample_Play(
-            sfx_id, Sound_ConvertVolumeToDecibel(volume),
-            Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), false);
+            sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+            M_ConvertPanToDecibel(pan), false);
         if (fxslot->sound_id == AUDIO_NO_SOUND) {
             return false;
         }
-        Sound_ClearSlotHandles(fxslot);
+        M_ClearSlotHandles(fxslot);
         fxslot->flags = SOUND_FLAG_USED;
         fxslot->fxnum = sfx_num;
         fxslot->pos = pos;
@@ -394,7 +398,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
 
     case SOUND_MODE_AMBIENT: {
         uint32_t loudness = distance;
-        SOUND_SLOT *fxslot = Sound_GetSlot(sfx_num, loudness, pos, mode);
+        SOUND_SLOT *fxslot = M_GetSlot(sfx_num, loudness, pos, mode);
         if (!fxslot) {
             return false;
         }
@@ -413,13 +417,13 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
 
         if (volume > 0) {
             fxslot->sound_id = Audio_Sample_Play(
-                sfx_id, Sound_ConvertVolumeToDecibel(volume),
-                Sound_CalcPitch(pitch), Sound_ConvertPanToDecibel(pan), true);
+                sfx_id, M_ConvertVolumeToDecibel(volume), M_CalcPitch(pitch),
+                M_ConvertPanToDecibel(pan), true);
             if (fxslot->sound_id == AUDIO_NO_SOUND) {
-                Sound_ClearSlot(fxslot);
+                M_ClearSlot(fxslot);
                 return false;
             }
-            Sound_ClearSlotHandles(fxslot);
+            M_ClearSlotHandles(fxslot);
             fxslot->loudness = loudness;
             fxslot->fxnum = sfx_num;
             fxslot->pan = pan;
@@ -451,7 +455,7 @@ bool Sound_StopEffect(int32_t sfx_num, const XYZ_32 *pos)
                 || (pos && sfx_num >= 0 && slot->fxnum == sfx_num)
                 || (pos && sfx_num < 0)) {
                 Audio_Sample_Close(slot->sound_id);
-                Sound_ClearSlot(slot);
+                M_ClearSlot(slot);
                 return true;
             }
         }
@@ -468,7 +472,7 @@ void Sound_ResetEffects(void)
     m_MasterVolume = m_MasterVolumeDefault;
 
     for (int i = 0; i < MAX_PLAYING_FX; i++) {
-        Sound_ClearSlot(&m_SFXPlaying[i]);
+        M_ClearSlot(&m_SFXPlaying[i]);
     }
 
     Sound_StopAllSamples();
@@ -508,7 +512,7 @@ void Sound_StopAmbientSounds(void)
         SOUND_SLOT *slot = &m_SFXPlaying[i];
         if (Audio_Sample_IsPlaying(slot->sound_id)) {
             Audio_Sample_Close(slot->sound_id);
-            Sound_ClearSlot(slot);
+            M_ClearSlot(slot);
         }
     }
 }
@@ -558,7 +562,7 @@ int32_t Sound_GetMaxVolume(void)
 
 void Sound_ResetAmbient(void)
 {
-    Sound_ResetAmbientLoudness();
+    M_ResetAmbientLoudness();
 
     for (int i = 0; i < g_NumberSoundEffects; i++) {
         OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];

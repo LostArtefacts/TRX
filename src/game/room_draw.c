@@ -18,20 +18,20 @@
 static int32_t m_RoomNumStack[MAX_ROOMS_TO_DRAW] = { 0 };
 static int32_t m_RoomNumStackIdx = 0;
 
-static void Room_PrintDrawStack(void);
-static bool Room_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent);
-static void Room_GetBounds(int16_t room_num);
-static void Room_PrepareToDraw(int16_t room_num);
-static void Room_DrawSkybox(void);
+static void M_PrintDrawStack(void);
+static bool M_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent);
+static void M_GetBounds(int16_t room_num);
+static void M_PrepareToDraw(int16_t room_num);
+static void M_DrawSkybox(void);
 
-static void Room_PrintDrawStack(void)
+static void M_PrintDrawStack(void)
 {
     for (int i = 0; i < m_RoomNumStackIdx; i++) {
         LOG_ERROR("Room Number %d", m_RoomNumStack[i]);
     }
 }
 
-static bool Room_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent)
+static bool M_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent)
 {
     const int32_t x =
         door->normal.x * (parent->x + door->vertex[0].x - g_W2VMatrix._03);
@@ -172,11 +172,11 @@ static bool Room_SetBounds(const DOOR_INFO *door, const ROOM_INFO *parent)
     return true;
 }
 
-static void Room_GetBounds(int16_t room_num)
+static void M_GetBounds(int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];
     if (!Matrix_Push()) {
-        Room_PrintDrawStack();
+        M_PrintDrawStack();
         Shell_ExitSystem("Matrix stack overflow.");
     }
     m_RoomNumStack[m_RoomNumStackIdx++] = room_num;
@@ -184,8 +184,8 @@ static void Room_GetBounds(int16_t room_num)
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
             const DOOR_INFO *door = &r->doors->door[i];
-            if (Room_SetBounds(door, r)) {
-                Room_GetBounds(door->room_num);
+            if (M_SetBounds(door, r)) {
+                M_GetBounds(door->room_num);
             }
         }
     }
@@ -202,16 +202,16 @@ void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
 
     g_RoomsToDrawCount = 0;
 
-    Room_PrepareToDraw(base_room);
-    Room_PrepareToDraw(target_room);
-    Room_DrawSkybox();
+    M_PrepareToDraw(base_room);
+    M_PrepareToDraw(target_room);
+    M_DrawSkybox();
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         Room_DrawSingleRoom(g_RoomsToDraw[i]);
     }
 }
 
-static void Room_PrepareToDraw(int16_t room_num)
+static void M_PrepareToDraw(int16_t room_num)
 {
     ROOM_INFO *r = &g_RoomInfo[room_num];
     if (r->bound_active) {
@@ -233,15 +233,15 @@ static void Room_PrepareToDraw(int16_t room_num)
     if (r->doors) {
         for (int i = 0; i < r->doors->count; i++) {
             const DOOR_INFO *door = &r->doors->door[i];
-            if (Room_SetBounds(door, r)) {
-                Room_GetBounds(door->room_num);
+            if (M_SetBounds(door, r)) {
+                M_GetBounds(door->room_num);
             }
         }
     }
     Matrix_Pop();
 }
 
-static void Room_DrawSkybox(void)
+static void M_DrawSkybox(void)
 {
     if (!Output_IsSkyboxEnabled()) {
         return;

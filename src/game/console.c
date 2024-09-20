@@ -49,18 +49,18 @@ static const int32_t m_TextHeight = 15;
 static const char m_ValidPromptChars[] =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.- ";
 
-static void Console_UpdatePromptTextstring(void);
-static void Console_UpdateCaretTextstring(void);
-static COMMAND_RESULT Console_Eval(const char *const cmdline);
+static void M_UpdatePromptTextstring(void);
+static void M_UpdateCaretTextstring(void);
+static COMMAND_RESULT M_Eval(const char *const cmdline);
 
 extern CONSOLE_COMMAND *g_ConsoleCommands[];
 
-static void Console_UpdatePromptTextstring(void)
+static void M_UpdatePromptTextstring(void)
 {
     Text_ChangeText(m_Prompt.prompt_ts, m_Prompt.text);
 }
 
-static void Console_UpdateCaretTextstring(void)
+static void M_UpdateCaretTextstring(void)
 {
     const char old = m_Prompt.prompt_ts->string[m_Prompt.caret];
     m_Prompt.prompt_ts->string[m_Prompt.caret] = '\0';
@@ -69,7 +69,7 @@ static void Console_UpdateCaretTextstring(void)
     Text_SetPos(m_Prompt.caret_ts, MARGIN + width, -MARGIN);
 }
 
-static COMMAND_RESULT Console_Eval(const char *const cmdline)
+static COMMAND_RESULT M_Eval(const char *const cmdline)
 {
     LOG_INFO("executing command: %s", cmdline);
 
@@ -185,7 +185,7 @@ void Console_Confirm(void)
         return;
     }
 
-    Console_Eval(m_Prompt.text);
+    M_Eval(m_Prompt.text);
     Console_Close();
 }
 
@@ -208,25 +208,25 @@ void Console_HandleKeyDown(const SDL_Event event)
     case SDLK_LEFT:
         if (m_Prompt.caret > 0) {
             m_Prompt.caret--;
-            Console_UpdateCaretTextstring();
+            M_UpdateCaretTextstring();
         }
         break;
 
     case SDLK_RIGHT:
         if (m_Prompt.caret < strlen(m_Prompt.text)) {
             m_Prompt.caret++;
-            Console_UpdateCaretTextstring();
+            M_UpdateCaretTextstring();
         }
         break;
 
     case SDLK_HOME:
         m_Prompt.caret = 0;
-        Console_UpdateCaretTextstring();
+        M_UpdateCaretTextstring();
         break;
 
     case SDLK_END:
         m_Prompt.caret = strlen(m_Prompt.text);
-        Console_UpdateCaretTextstring();
+        M_UpdateCaretTextstring();
         break;
 
     case SDLK_BACKSPACE:
@@ -235,8 +235,8 @@ void Console_HandleKeyDown(const SDL_Event event)
                 m_Prompt.text[i - 1] = m_Prompt.text[i];
             }
             m_Prompt.caret--;
-            Console_UpdatePromptTextstring();
-            Console_UpdateCaretTextstring();
+            M_UpdatePromptTextstring();
+            M_UpdateCaretTextstring();
         }
         break;
     }
@@ -249,8 +249,8 @@ void Console_HandleTextEdit(const SDL_Event event)
     }
     strncpy(m_Prompt.text, event.text.text, MAX_PROMPT_LENGTH);
     m_Prompt.text[MAX_PROMPT_LENGTH - 1] = '\0';
-    Console_UpdatePromptTextstring();
-    Console_UpdateCaretTextstring();
+    M_UpdatePromptTextstring();
+    M_UpdateCaretTextstring();
 }
 
 void Console_HandleTextInput(const SDL_Event event)
@@ -280,8 +280,8 @@ void Console_HandleTextInput(const SDL_Event event)
 
     m_Prompt.caret += insert_length;
     m_Prompt.text[MAX_PROMPT_LENGTH - 1] = '\0';
-    Console_UpdatePromptTextstring();
-    Console_UpdateCaretTextstring();
+    M_UpdatePromptTextstring();
+    M_UpdateCaretTextstring();
 }
 
 void Console_Log(const char *fmt, ...)

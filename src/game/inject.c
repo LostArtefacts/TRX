@@ -112,80 +112,59 @@ static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = NULL;
 static INJECTION_INFO *m_Aggregate = NULL;
 
-static void Inject_LoadFromFile(INJECTION *injection, const char *filename);
+static void M_LoadFromFile(INJECTION *injection, const char *filename);
 
-static uint16_t Inject_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb);
-static void Inject_AlignTextureReferences(
+static uint16_t M_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb);
+static void M_AlignTextureReferences(
     OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base);
 
-static void Inject_LoadTexturePages(
+static void M_LoadTexturePages(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map,
     RGBA_8888 *page_ptr);
-static void Inject_TextureData(
+static void M_TextureData(
     INJECTION *injection, LEVEL_INFO *level_info, int32_t page_base);
-static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info);
-static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info);
-static void Inject_AnimRangeEdits(INJECTION *injection);
-static void Inject_ObjectData(
+static void M_MeshData(INJECTION *injection, LEVEL_INFO *level_info);
+static void M_AnimData(INJECTION *injection, LEVEL_INFO *level_info);
+static void M_AnimRangeEdits(INJECTION *injection);
+static void M_ObjectData(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map);
-static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info);
+static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info);
 
-static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit);
+static int16_t *M_GetMeshTexture(FACE_EDIT *face_edit);
 
-static void Inject_ApplyFaceEdit(
+static void M_ApplyFaceEdit(
     FACE_EDIT *face_edit, int16_t *data_ptr, int16_t texture);
-static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map);
-static void Inject_MeshEdits(INJECTION *injection, uint16_t *palette_map);
-static void Inject_TextureOverwrites(
+static void M_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map);
+static void M_MeshEdits(INJECTION *injection, uint16_t *palette_map);
+static void M_TextureOverwrites(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map);
 
-static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info);
-static void Inject_TriggerParameterChange(
-    INJECTION *injection, SECTOR_INFO *sector);
-static void Inject_SetMusicOneShot(SECTOR_INFO *sector);
-static void Inject_InsertFloorData(
+static void M_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info);
+static void M_TriggerParameterChange(INJECTION *injection, SECTOR_INFO *sector);
+static void M_SetMusicOneShot(SECTOR_INFO *sector);
+static void M_InsertFloorData(
     INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info);
-static void Inject_RoomShift(INJECTION *injection, int16_t room_num);
-static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info);
+static void M_RoomShift(INJECTION *injection, int16_t room_num);
+static void M_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info);
 
-static void Inject_RoomMeshEdits(INJECTION *injection);
-static void Inject_TextureRoomFace(INJECTION *injection);
-static void Inject_MoveRoomFace(INJECTION *injection);
-static void Inject_AlterRoomVertex(INJECTION *injection);
-static void Inject_RotateRoomFace(INJECTION *injection);
-static void Inject_AddRoomFace(INJECTION *injection);
-static void Inject_AddRoomVertex(INJECTION *injection);
+static void M_RoomMeshEdits(INJECTION *injection);
+static void M_TextureRoomFace(INJECTION *injection);
+static void M_MoveRoomFace(INJECTION *injection);
+static void M_AlterRoomVertex(INJECTION *injection);
+static void M_RotateRoomFace(INJECTION *injection);
+static void M_AddRoomFace(INJECTION *injection);
+static void M_AddRoomVertex(INJECTION *injection);
 
-static int16_t *Inject_GetRoomTexture(
+static int16_t *M_GetRoomTexture(
     int16_t room, FACE_TYPE face_type, int16_t face_index);
-static int16_t *Inject_GetRoomFace(
+static int16_t *M_GetRoomFace(
     int16_t room, FACE_TYPE face_type, int16_t face_index);
 
-static void Inject_RoomDoorEdits(INJECTION *injection);
+static void M_RoomDoorEdits(INJECTION *injection);
 
-static void Inject_ItemPositions(INJECTION *injection);
+static void M_ItemPositions(INJECTION *injection);
 
-void Inject_Init(
-    int32_t num_injections, char *filenames[], INJECTION_INFO *aggregate)
-{
-    m_NumInjections = num_injections;
-    if (!num_injections) {
-        return;
-    }
-
-    BENCHMARK *const benchmark = Benchmark_Start();
-
-    m_Injections = Memory_Alloc(sizeof(INJECTION) * num_injections);
-    m_Aggregate = aggregate;
-
-    for (int32_t i = 0; i < num_injections; i++) {
-        Inject_LoadFromFile(&m_Injections[i], filenames[i]);
-    }
-
-    Benchmark_End(benchmark, NULL);
-}
-
-static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
+static void M_LoadFromFile(INJECTION *injection, const char *filename)
 {
     injection->relevant = false;
     injection->info = NULL;
@@ -380,82 +359,7 @@ static void Inject_LoadFromFile(INJECTION *injection, const char *filename)
     LOG_INFO("%s queued for injection", filename);
 }
 
-void Inject_AllInjections(LEVEL_INFO *level_info)
-{
-    if (!m_Injections) {
-        return;
-    }
-
-    BENCHMARK *const benchmark = Benchmark_Start();
-
-    uint16_t palette_map[256];
-    RGBA_8888 *source_pages = Memory_Alloc(
-        m_Aggregate->texture_page_count * PAGE_SIZE * sizeof(RGBA_8888));
-    int32_t source_page_count = 0;
-    int32_t tpage_base = level_info->texture_page_count;
-
-    for (int32_t i = 0; i < m_NumInjections; i++) {
-        INJECTION *injection = &m_Injections[i];
-        if (!injection->relevant) {
-            continue;
-        }
-
-        Inject_LoadTexturePages(
-            injection, level_info, palette_map,
-            source_pages + (source_page_count * PAGE_SIZE));
-
-        Inject_TextureData(injection, level_info, tpage_base);
-        Inject_MeshData(injection, level_info);
-        Inject_AnimData(injection, level_info);
-        Inject_ObjectData(injection, level_info, palette_map);
-        Inject_SFXData(injection, level_info);
-
-        Inject_MeshEdits(injection, palette_map);
-        Inject_TextureOverwrites(injection, level_info, palette_map);
-        Inject_FloorDataEdits(injection, level_info);
-        Inject_RoomMeshEdits(injection);
-        Inject_RoomDoorEdits(injection);
-        Inject_AnimRangeEdits(injection);
-
-        Inject_ItemPositions(injection);
-
-        // Realign base indices for the next injection.
-        INJECTION_INFO *inj_info = injection->info;
-        level_info->anim_command_count += inj_info->anim_cmd_count;
-        level_info->anim_bone_count += inj_info->anim_bone_count;
-        level_info->anim_frame_data_count += inj_info->anim_frame_data_count;
-        level_info->anim_frame_count += inj_info->anim_frame_count;
-        level_info->anim_frame_mesh_rot_count +=
-            inj_info->anim_frame_mesh_rot_count;
-        level_info->anim_count += inj_info->anim_count;
-        level_info->mesh_ptr_count += inj_info->mesh_ptr_count;
-        level_info->texture_count += inj_info->texture_count;
-        source_page_count += inj_info->texture_page_count;
-        tpage_base += inj_info->texture_page_count;
-    }
-
-    if (source_page_count) {
-        PACKER_DATA *data = Memory_Alloc(sizeof(PACKER_DATA));
-        data->level_page_count = level_info->texture_page_count;
-        data->source_page_count = source_page_count;
-        data->source_pages = source_pages;
-        data->level_pages = level_info->texture_rgb_page_ptrs;
-        data->object_count = level_info->texture_count;
-        data->sprite_count = level_info->sprite_info_count;
-
-        if (Packer_Pack(data)) {
-            level_info->texture_page_count += Packer_GetAddedPageCount();
-            level_info->texture_rgb_page_ptrs = data->level_pages;
-        }
-
-        Memory_FreePointer(&source_pages);
-        Memory_FreePointer(&data);
-    }
-
-    Benchmark_End(benchmark, NULL);
-}
-
-static void Inject_LoadTexturePages(
+static void M_LoadTexturePages(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map,
     RGBA_8888 *page_ptr)
 {
@@ -477,7 +381,7 @@ static void Inject_LoadTexturePages(
         source_palette[i].b *= 4;
     }
     for (int32_t i = 0; i < 256; i++) {
-        palette_map[i] = Inject_RemapRGB(level_info, source_palette[i]);
+        palette_map[i] = M_RemapRGB(level_info, source_palette[i]);
     }
 
     // Read in each page for this injection and realign the pixels
@@ -504,7 +408,7 @@ static void Inject_LoadTexturePages(
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_TextureData(
+static void M_TextureData(
     INJECTION *injection, LEVEL_INFO *level_info, int32_t page_base)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -561,7 +465,7 @@ static void Inject_TextureData(
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info)
+static void M_MeshData(INJECTION *injection, LEVEL_INFO *level_info)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -585,7 +489,7 @@ static void Inject_MeshData(INJECTION *injection, LEVEL_INFO *level_info)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
+static void M_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -694,7 +598,7 @@ static void Inject_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_AnimRangeEdits(INJECTION *injection)
+static void M_AnimRangeEdits(INJECTION *injection)
 {
     if (injection->version < INJ_VERSION_3) {
         return;
@@ -756,7 +660,7 @@ static void Inject_AnimRangeEdits(INJECTION *injection)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_ObjectData(
+static void M_ObjectData(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -804,7 +708,7 @@ static void Inject_ObjectData(
         }
 
         if (num_meshes) {
-            Inject_AlignTextureReferences(
+            M_AlignTextureReferences(
                 object, palette_map, level_info->texture_count);
         }
     }
@@ -812,7 +716,7 @@ static void Inject_ObjectData(
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
+static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -849,7 +753,7 @@ static void Inject_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_AlignTextureReferences(
+static void M_AlignTextureReferences(
     OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base)
 {
     int16_t **mesh = &g_Meshes[object->mesh_index];
@@ -893,7 +797,7 @@ static void Inject_AlignTextureReferences(
     }
 }
 
-static uint16_t Inject_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb)
+static uint16_t M_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb)
 {
     // Find the index of the exact match to the given RGB
     for (int32_t i = 0; i < level_info->palette_size; i++) {
@@ -911,7 +815,7 @@ static uint16_t Inject_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb)
     return level_info->palette_size - 1;
 }
 
-static void Inject_MeshEdits(INJECTION *injection, uint16_t *palette_map)
+static void M_MeshEdits(INJECTION *injection, uint16_t *palette_map)
 {
     INJECTION_INFO *inj_info = injection->info;
     VFILE *const fp = injection->fp;
@@ -966,7 +870,7 @@ static void Inject_MeshEdits(INJECTION *injection, uint16_t *palette_map)
             vertex_edit->z_change = VFile_ReadS16(fp);
         }
 
-        Inject_ApplyMeshEdit(mesh_edit, palette_map);
+        M_ApplyMeshEdit(mesh_edit, palette_map);
 
         for (int32_t j = 0; j < mesh_edit->face_edit_count; j++) {
             FACE_EDIT *face_edit = &mesh_edit->face_edits[j];
@@ -981,7 +885,7 @@ static void Inject_MeshEdits(INJECTION *injection, uint16_t *palette_map)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
+static void M_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
 {
     OBJECT_INFO object = g_Objects[mesh_edit->object_id];
     if (!object.loaded) {
@@ -1027,7 +931,7 @@ static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
         if (face_edit->source_identifier < 0) {
             texture = palette_map[-face_edit->source_identifier];
         } else {
-            int16_t *tex_ptr = Inject_GetMeshTexture(face_edit);
+            int16_t *tex_ptr = M_GetMeshTexture(face_edit);
             if (!tex_ptr) {
                 continue;
             }
@@ -1038,30 +942,30 @@ static void Inject_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
 
         int32_t num_faces = *data_ptr++;
         if (face_edit->face_type == FT_TEXTURED_QUAD) {
-            Inject_ApplyFaceEdit(face_edit, data_ptr, texture);
+            M_ApplyFaceEdit(face_edit, data_ptr, texture);
         }
 
         data_ptr += 5 * num_faces;
         num_faces = *data_ptr++;
         if (face_edit->face_type == FT_TEXTURED_TRIANGLE) {
-            Inject_ApplyFaceEdit(face_edit, data_ptr, texture);
+            M_ApplyFaceEdit(face_edit, data_ptr, texture);
         }
 
         data_ptr += 4 * num_faces;
         num_faces = *data_ptr++;
         if (face_edit->face_type == FT_COLOURED_QUAD) {
-            Inject_ApplyFaceEdit(face_edit, data_ptr, texture);
+            M_ApplyFaceEdit(face_edit, data_ptr, texture);
         }
 
         data_ptr += 5 * num_faces;
         num_faces = *data_ptr++;
         if (face_edit->face_type == FT_COLOURED_TRIANGLE) {
-            Inject_ApplyFaceEdit(face_edit, data_ptr, texture);
+            M_ApplyFaceEdit(face_edit, data_ptr, texture);
         }
     }
 }
 
-static void Inject_ApplyFaceEdit(
+static void M_ApplyFaceEdit(
     FACE_EDIT *face_edit, int16_t *data_ptr, int16_t texture)
 {
     int32_t vertex_count;
@@ -1085,7 +989,7 @@ static void Inject_ApplyFaceEdit(
     }
 }
 
-static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit)
+static int16_t *M_GetMeshTexture(FACE_EDIT *face_edit)
 {
     OBJECT_INFO object = g_Objects[face_edit->object_id];
     if (!object.loaded) {
@@ -1132,7 +1036,7 @@ static int16_t *Inject_GetMeshTexture(FACE_EDIT *face_edit)
     return NULL;
 }
 
-static void Inject_TextureOverwrites(
+static void M_TextureOverwrites(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -1177,7 +1081,7 @@ static void Inject_TextureOverwrites(
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
+static void M_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -1210,19 +1114,19 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             const FLOOR_EDIT_TYPE edit_type = VFile_ReadS32(fp);
             switch (edit_type) {
             case FET_TRIGGER_PARAM:
-                Inject_TriggerParameterChange(injection, sector);
+                M_TriggerParameterChange(injection, sector);
                 break;
             case FET_MUSIC_ONESHOT:
-                Inject_SetMusicOneShot(sector);
+                M_SetMusicOneShot(sector);
                 break;
             case FET_FD_INSERT:
-                Inject_InsertFloorData(injection, sector, level_info);
+                M_InsertFloorData(injection, sector, level_info);
                 break;
             case FET_ROOM_SHIFT:
-                Inject_RoomShift(injection, room);
+                M_RoomShift(injection, room);
                 break;
             case FET_TRIGGER_ITEM:
-                Inject_TriggeredItem(injection, level_info);
+                M_TriggeredItem(injection, level_info);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
@@ -1234,8 +1138,7 @@ static void Inject_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_TriggerParameterChange(
-    INJECTION *injection, SECTOR_INFO *sector)
+static void M_TriggerParameterChange(INJECTION *injection, SECTOR_INFO *sector)
 {
     VFILE *const fp = injection->fp;
 
@@ -1272,7 +1175,7 @@ static void Inject_TriggerParameterChange(
     }
 }
 
-static void Inject_SetMusicOneShot(SECTOR_INFO *sector)
+static void M_SetMusicOneShot(SECTOR_INFO *sector)
 {
     if (sector == NULL || sector->trigger == NULL) {
         return;
@@ -1286,7 +1189,7 @@ static void Inject_SetMusicOneShot(SECTOR_INFO *sector)
     }
 }
 
-static void Inject_InsertFloorData(
+static void M_InsertFloorData(
     INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info)
 {
     VFILE *const fp = injection->fp;
@@ -1306,7 +1209,7 @@ static void Inject_InsertFloorData(
     Room_PopulateSectorData(sector, data, 0, NULL_FD_INDEX);
 }
 
-static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
+static void M_RoomShift(INJECTION *injection, int16_t room_num)
 {
     VFILE *const fp = injection->fp;
 
@@ -1356,7 +1259,7 @@ static void Inject_RoomShift(INJECTION *injection, int16_t room_num)
     }
 }
 
-static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
+static void M_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
 {
     VFILE *const fp = injection->fp;
 
@@ -1383,32 +1286,7 @@ static void Inject_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     g_LevelItemCount++;
 }
 
-uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index)
-{
-    uint32_t size = 0;
-    if (!m_Injections) {
-        return size;
-    }
-
-    for (int32_t i = 0; i < m_NumInjections; i++) {
-        INJECTION *injection = &m_Injections[i];
-        if (!injection->relevant || injection->version < INJ_VERSION_2) {
-            continue;
-        }
-
-        INJECTION_INFO *inj_info = injection->info;
-        for (int32_t j = 0; j < inj_info->room_mesh_count; j++) {
-            INJECTION_ROOM_MESH *mesh = &inj_info->room_meshes[j];
-            if (mesh->room_index == room_index) {
-                size += mesh->extra_size;
-            }
-        }
-    }
-
-    return size;
-}
-
-static void Inject_RoomMeshEdits(INJECTION *injection)
+static void M_RoomMeshEdits(INJECTION *injection)
 {
     if (injection->version < INJ_VERSION_2) {
         return;
@@ -1425,22 +1303,22 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
 
         switch (edit_type) {
         case RMET_TEXTURE_FACE:
-            Inject_TextureRoomFace(injection);
+            M_TextureRoomFace(injection);
             break;
         case RMET_MOVE_FACE:
-            Inject_MoveRoomFace(injection);
+            M_MoveRoomFace(injection);
             break;
         case RMET_ALTER_VERTEX:
-            Inject_AlterRoomVertex(injection);
+            M_AlterRoomVertex(injection);
             break;
         case RMET_ROTATE_FACE:
-            Inject_RotateRoomFace(injection);
+            M_RotateRoomFace(injection);
             break;
         case RMET_ADD_FACE:
-            Inject_AddRoomFace(injection);
+            M_AddRoomFace(injection);
             break;
         case RMET_ADD_VERTEX:
-            Inject_AddRoomVertex(injection);
+            M_AddRoomVertex(injection);
             break;
         default:
             LOG_WARNING("Unknown room mesh edit type: %d", edit_type);
@@ -1451,7 +1329,7 @@ static void Inject_RoomMeshEdits(INJECTION *injection)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_TextureRoomFace(INJECTION *injection)
+static void M_TextureRoomFace(INJECTION *injection)
 {
     VFILE *const fp = injection->fp;
 
@@ -1463,15 +1341,15 @@ static void Inject_TextureRoomFace(INJECTION *injection)
     const int16_t source_face = VFile_ReadS16(fp);
 
     int16_t *source_texture =
-        Inject_GetRoomTexture(source_room, source_face_type, source_face);
+        M_GetRoomTexture(source_room, source_face_type, source_face);
     int16_t *target_texture =
-        Inject_GetRoomTexture(target_room, target_face_type, target_face);
+        M_GetRoomTexture(target_room, target_face_type, target_face);
     if (source_texture && target_texture) {
         *target_texture = *source_texture;
     }
 }
 
-static void Inject_MoveRoomFace(INJECTION *injection)
+static void M_MoveRoomFace(INJECTION *injection)
 {
     VFILE *const fp = injection->fp;
 
@@ -1484,8 +1362,7 @@ static void Inject_MoveRoomFace(INJECTION *injection)
         const int16_t vertex_index = VFile_ReadS16(fp);
         const int16_t new_vertex = VFile_ReadS16(fp);
 
-        int16_t *target =
-            Inject_GetRoomFace(target_room, face_type, target_face);
+        int16_t *target = M_GetRoomFace(target_room, face_type, target_face);
         if (target) {
             target += vertex_index;
             *target = new_vertex;
@@ -1493,7 +1370,7 @@ static void Inject_MoveRoomFace(INJECTION *injection)
     }
 }
 
-static void Inject_AlterRoomVertex(INJECTION *injection)
+static void M_AlterRoomVertex(INJECTION *injection)
 {
     VFILE *const fp = injection->fp;
 
@@ -1529,7 +1406,7 @@ static void Inject_AlterRoomVertex(INJECTION *injection)
     CLAMPG(*(data_ptr + 4), MAX_LIGHTING);
 }
 
-static void Inject_RotateRoomFace(INJECTION *injection)
+static void M_RotateRoomFace(INJECTION *injection)
 {
     VFILE *const fp = injection->fp;
 
@@ -1538,7 +1415,7 @@ static void Inject_RotateRoomFace(INJECTION *injection)
     const int16_t target_face = VFile_ReadS16(fp);
     const uint8_t num_rotations = VFile_ReadU8(fp);
 
-    int16_t *target = Inject_GetRoomFace(target_room, face_type, target_face);
+    int16_t *target = M_GetRoomFace(target_room, face_type, target_face);
     if (!target) {
         return;
     }
@@ -1558,7 +1435,7 @@ static void Inject_RotateRoomFace(INJECTION *injection)
     }
 }
 
-static void Inject_AddRoomFace(INJECTION *injection)
+static void M_AddRoomFace(INJECTION *injection)
 {
     VFILE *const fp = injection->fp;
 
@@ -1579,7 +1456,7 @@ static void Inject_AddRoomFace(INJECTION *injection)
     }
 
     int16_t *source_texture =
-        Inject_GetRoomTexture(source_room, face_type, source_face);
+        M_GetRoomTexture(source_room, face_type, source_face);
     if (!source_texture) {
         return;
     }
@@ -1630,7 +1507,7 @@ static void Inject_AddRoomFace(INJECTION *injection)
     r->data[inject_pos] = *source_texture;
 }
 
-static void Inject_AddRoomVertex(INJECTION *injection)
+static void M_AddRoomVertex(INJECTION *injection)
 {
     VFILE *const fp = injection->fp;
 
@@ -1671,17 +1548,17 @@ static void Inject_AddRoomVertex(INJECTION *injection)
     r->data[inject_pos] = lighting;
 }
 
-static int16_t *Inject_GetRoomTexture(
+static int16_t *M_GetRoomTexture(
     int16_t room, FACE_TYPE face_type, int16_t face_index)
 {
-    int16_t *face = Inject_GetRoomFace(room, face_type, face_index);
+    int16_t *face = M_GetRoomFace(room, face_type, face_index);
     if (face) {
         face += face_type == FT_TEXTURED_QUAD ? 4 : 3;
     }
     return face;
 }
 
-static int16_t *Inject_GetRoomFace(
+static int16_t *M_GetRoomFace(
     int16_t room, FACE_TYPE face_type, int16_t face_index)
 {
     ROOM_INFO *r = NULL;
@@ -1721,7 +1598,7 @@ static int16_t *Inject_GetRoomFace(
     return NULL;
 }
 
-static void Inject_RoomDoorEdits(INJECTION *injection)
+static void M_RoomDoorEdits(INJECTION *injection)
 {
     if (injection->version < INJ_VERSION_2) {
         return;
@@ -1779,7 +1656,7 @@ static void Inject_RoomDoorEdits(INJECTION *injection)
     Benchmark_End(benchmark, NULL);
 }
 
-static void Inject_ItemPositions(INJECTION *injection)
+static void M_ItemPositions(INJECTION *injection)
 {
     if (injection->version < INJ_VERSION_4) {
         return;
@@ -1823,6 +1700,101 @@ static void Inject_ItemPositions(INJECTION *injection)
     Benchmark_End(benchmark, NULL);
 }
 
+void Inject_Init(
+    int32_t num_injections, char *filenames[], INJECTION_INFO *aggregate)
+{
+    m_NumInjections = num_injections;
+    if (!num_injections) {
+        return;
+    }
+
+    BENCHMARK *const benchmark = Benchmark_Start();
+
+    m_Injections = Memory_Alloc(sizeof(INJECTION) * num_injections);
+    m_Aggregate = aggregate;
+
+    for (int32_t i = 0; i < num_injections; i++) {
+        M_LoadFromFile(&m_Injections[i], filenames[i]);
+    }
+
+    Benchmark_End(benchmark, NULL);
+}
+
+void Inject_AllInjections(LEVEL_INFO *level_info)
+{
+    if (!m_Injections) {
+        return;
+    }
+
+    BENCHMARK *const benchmark = Benchmark_Start();
+
+    uint16_t palette_map[256];
+    RGBA_8888 *source_pages = Memory_Alloc(
+        m_Aggregate->texture_page_count * PAGE_SIZE * sizeof(RGBA_8888));
+    int32_t source_page_count = 0;
+    int32_t tpage_base = level_info->texture_page_count;
+
+    for (int32_t i = 0; i < m_NumInjections; i++) {
+        INJECTION *injection = &m_Injections[i];
+        if (!injection->relevant) {
+            continue;
+        }
+
+        M_LoadTexturePages(
+            injection, level_info, palette_map,
+            source_pages + (source_page_count * PAGE_SIZE));
+
+        M_TextureData(injection, level_info, tpage_base);
+        M_MeshData(injection, level_info);
+        M_AnimData(injection, level_info);
+        M_ObjectData(injection, level_info, palette_map);
+        M_SFXData(injection, level_info);
+
+        M_MeshEdits(injection, palette_map);
+        M_TextureOverwrites(injection, level_info, palette_map);
+        M_FloorDataEdits(injection, level_info);
+        M_RoomMeshEdits(injection);
+        M_RoomDoorEdits(injection);
+        M_AnimRangeEdits(injection);
+
+        M_ItemPositions(injection);
+
+        // Realign base indices for the next injection.
+        INJECTION_INFO *inj_info = injection->info;
+        level_info->anim_command_count += inj_info->anim_cmd_count;
+        level_info->anim_bone_count += inj_info->anim_bone_count;
+        level_info->anim_frame_data_count += inj_info->anim_frame_data_count;
+        level_info->anim_frame_count += inj_info->anim_frame_count;
+        level_info->anim_frame_mesh_rot_count +=
+            inj_info->anim_frame_mesh_rot_count;
+        level_info->anim_count += inj_info->anim_count;
+        level_info->mesh_ptr_count += inj_info->mesh_ptr_count;
+        level_info->texture_count += inj_info->texture_count;
+        source_page_count += inj_info->texture_page_count;
+        tpage_base += inj_info->texture_page_count;
+    }
+
+    if (source_page_count) {
+        PACKER_DATA *data = Memory_Alloc(sizeof(PACKER_DATA));
+        data->level_page_count = level_info->texture_page_count;
+        data->source_page_count = source_page_count;
+        data->source_pages = source_pages;
+        data->level_pages = level_info->texture_rgb_page_ptrs;
+        data->object_count = level_info->texture_count;
+        data->sprite_count = level_info->sprite_info_count;
+
+        if (Packer_Pack(data)) {
+            level_info->texture_page_count += Packer_GetAddedPageCount();
+            level_info->texture_rgb_page_ptrs = data->level_pages;
+        }
+
+        Memory_FreePointer(&source_pages);
+        Memory_FreePointer(&data);
+    }
+
+    Benchmark_End(benchmark, NULL);
+}
+
 void Inject_Cleanup(void)
 {
     if (!m_NumInjections) {
@@ -1846,4 +1818,29 @@ void Inject_Cleanup(void)
 
     Memory_FreePointer(&m_Injections);
     Benchmark_End(benchmark, NULL);
+}
+
+uint32_t Inject_GetExtraRoomMeshSize(int32_t room_index)
+{
+    uint32_t size = 0;
+    if (!m_Injections) {
+        return size;
+    }
+
+    for (int32_t i = 0; i < m_NumInjections; i++) {
+        INJECTION *injection = &m_Injections[i];
+        if (!injection->relevant || injection->version < INJ_VERSION_2) {
+            continue;
+        }
+
+        INJECTION_INFO *inj_info = injection->info;
+        for (int32_t j = 0; j < inj_info->room_mesh_count; j++) {
+            INJECTION_ROOM_MESH *mesh = &inj_info->room_meshes[j];
+            if (mesh->room_index == room_index) {
+                size += mesh->extra_size;
+            }
+        }
+    }
+
+    return size;
 }

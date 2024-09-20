@@ -57,10 +57,10 @@ void (*g_LaraCollisionRoutines[])(ITEM_INFO *item, COLL_INFO *coll) = {
     Lara_Col_Twist,       Lara_Col_UWRoll,
 };
 
-static void Lara_Col_Default(ITEM_INFO *item, COLL_INFO *coll);
-static void Lara_Col_Jumper(ITEM_INFO *item, COLL_INFO *coll);
+static void M_Default(ITEM_INFO *item, COLL_INFO *coll);
+static void M_Jumper(ITEM_INFO *item, COLL_INFO *coll);
 
-static void Lara_Col_Default(ITEM_INFO *item, COLL_INFO *coll)
+static void M_Default(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y;
     coll->bad_pos = STEPUP_HEIGHT;
@@ -71,7 +71,7 @@ static void Lara_Col_Default(ITEM_INFO *item, COLL_INFO *coll)
     Lara_GetCollisionInfo(item, coll);
 }
 
-static void Lara_Col_Jumper(ITEM_INFO *item, COLL_INFO *coll)
+static void M_Jumper(ITEM_INFO *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
@@ -522,7 +522,7 @@ void Lara_Col_Back(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_Null(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_FastTurn(ITEM_INFO *item, COLL_INFO *coll)
@@ -601,19 +601,19 @@ void Lara_Col_Slide(ITEM_INFO *item, COLL_INFO *coll)
 void Lara_Col_BackJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - PHD_180;
-    Lara_Col_Jumper(item, coll);
+    M_Jumper(item, coll);
 }
 
 void Lara_Col_RightJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y + PHD_90;
-    Lara_Col_Jumper(item, coll);
+    M_Jumper(item, coll);
 }
 
 void Lara_Col_LeftJump(ITEM_INFO *item, COLL_INFO *coll)
 {
     g_Lara.move_angle = item->rot.y - PHD_90;
-    Lara_Col_Jumper(item, coll);
+    M_Jumper(item, coll);
 }
 
 void Lara_Col_UpJump(ITEM_INFO *item, COLL_INFO *coll)
@@ -706,32 +706,32 @@ void Lara_Col_SlideBack(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_PushBlock(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_PullBlock(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_PPReady(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_Pickup(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_Controlled(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_Twist(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_UWRoll(ITEM_INFO *item, COLL_INFO *coll)
@@ -741,22 +741,22 @@ void Lara_Col_UWRoll(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_SwitchOn(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_SwitchOff(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_UseKey(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_UsePuzzle(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_Roll(ITEM_INFO *item, COLL_INFO *coll)
@@ -829,12 +829,12 @@ void Lara_Col_Special(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_UseMidas(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_DieMidas(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_SwanDive(ITEM_INFO *item, COLL_INFO *coll)
@@ -879,12 +879,12 @@ void Lara_Col_FastDive(ITEM_INFO *item, COLL_INFO *coll)
 
 void Lara_Col_Gymnast(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_WaterOut(ITEM_INFO *item, COLL_INFO *coll)
 {
-    Lara_Col_Default(item, coll);
+    M_Default(item, coll);
 }
 
 void Lara_Col_SurfSwim(ITEM_INFO *item, COLL_INFO *coll)

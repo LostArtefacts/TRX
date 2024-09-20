@@ -39,9 +39,9 @@ static const char m_TR1XGameflowPath[] = "cfg/TR1X_gameflow.json5";
 static const char m_TR1XGameflowGoldPath[] = "cfg/TR1X_gameflow_ub.json5";
 static const char m_TR1XGameflowDemoPath[] = "cfg/TR1X_gameflow_demo_pc.json5";
 
-static char *Shell_GetScreenshotName(void);
+static char *M_GetScreenshotName(void);
 
-static char *Shell_GetScreenshotName(void)
+static char *M_GetScreenshotName(void)
 {
     // Get level title of unknown length
     char level_title[100];
@@ -346,7 +346,7 @@ bool Shell_MakeScreenshot(void)
 {
     File_CreateDirectory(SCREENSHOTS_DIR);
 
-    char *filename = Shell_GetScreenshotName();
+    char *filename = M_GetScreenshotName();
 
     const char *ext;
     switch (g_Config.screenshot_format) {

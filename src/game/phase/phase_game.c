@@ -26,12 +26,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static void Phase_Game_Start(void *arg);
-static void Phase_Game_End(void);
-static PHASE_CONTROL Phase_Game_Control(int32_t nframes);
-static void Phase_Game_Draw(void);
+static void M_Start(void *arg);
+static void M_End(void);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
 
-static void Phase_Game_Start(void *arg)
+static void M_Start(void *arg)
 {
     Interpolation_Remember();
     Stats_StartTimer();
@@ -40,11 +40,11 @@ static void Phase_Game_Start(void *arg)
     }
 }
 
-static void Phase_Game_End(void)
+static void M_End(void)
 {
 }
 
-static PHASE_CONTROL Phase_Game_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
     Interpolation_Remember();
     Stats_UpdateTimer();
@@ -129,7 +129,7 @@ static PHASE_CONTROL Phase_Game_Control(int32_t nframes)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static void Phase_Game_Draw(void)
+static void M_Draw(void)
 {
     Game_DrawScene(true);
     Output_AnimateTextures();
@@ -138,9 +138,9 @@ static void Phase_Game_Draw(void)
 }
 
 PHASER g_GamePhaser = {
-    .start = Phase_Game_Start,
-    .end = Phase_Game_End,
-    .control = Phase_Game_Control,
-    .draw = Phase_Game_Draw,
+    .start = M_Start,
+    .end = M_End,
+    .control = M_Control,
+    .draw = M_Draw,
     .wait = NULL,
 };

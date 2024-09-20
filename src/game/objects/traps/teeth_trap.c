@@ -20,9 +20,9 @@ static BITE_INFO m_Teeth2B = { 71, 10, -1718, 1 };
 static BITE_INFO m_Teeth3A = { -23, -10, -1718, 0 };
 static BITE_INFO m_Teeth3B = { 71, -10, -1718, 1 };
 
-static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite);
+static void M_BiteEffect(ITEM_INFO *item, BITE_INFO *bite);
 
-static void TeethTrap_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
+static void M_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
 {
     XYZ_32 pos = {
         .x = bite->x,
@@ -48,12 +48,12 @@ void TeethTrap_Control(int16_t item_num)
         item->goal_anim_state = TT_NASTY;
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {
             Lara_TakeDamage(TEETH_TRAP_DAMAGE, true);
-            TeethTrap_BiteEffect(item, &m_Teeth1A);
-            TeethTrap_BiteEffect(item, &m_Teeth1B);
-            TeethTrap_BiteEffect(item, &m_Teeth2A);
-            TeethTrap_BiteEffect(item, &m_Teeth2B);
-            TeethTrap_BiteEffect(item, &m_Teeth3A);
-            TeethTrap_BiteEffect(item, &m_Teeth3B);
+            M_BiteEffect(item, &m_Teeth1A);
+            M_BiteEffect(item, &m_Teeth1B);
+            M_BiteEffect(item, &m_Teeth2A);
+            M_BiteEffect(item, &m_Teeth2B);
+            M_BiteEffect(item, &m_Teeth3A);
+            M_BiteEffect(item, &m_Teeth3B);
         }
     } else {
         item->goal_anim_state = TT_NICE;

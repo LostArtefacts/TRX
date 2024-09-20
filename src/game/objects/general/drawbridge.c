@@ -10,16 +10,16 @@ typedef enum {
     DRAWBRIDGE_OPEN,
 } DRAWBRIDGE_STATE;
 
-static bool Drawbridge_IsLaraOnTop(const ITEM_INFO *item, int32_t x, int32_t z);
-static int16_t Drawbridge_GetFloorHeight(
+static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z);
+static int16_t M_GetFloorHeight(
     const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static int16_t Drawbridge_GetCeilingHeight(
+static int16_t M_GetCeilingHeight(
     const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void Drawbridge_Collision(
+static void M_Collision(
     int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
-static void Drawbridge_Control(int16_t item_num);
+static void M_Control(int16_t item_num);
 
-static bool Drawbridge_IsLaraOnTop(const ITEM_INFO *item, int32_t x, int32_t z)
+static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z)
 {
     int32_t ix = item->pos.x >> WALL_SHIFT;
     int32_t iz = item->pos.z >> WALL_SHIFT;
@@ -42,13 +42,13 @@ static bool Drawbridge_IsLaraOnTop(const ITEM_INFO *item, int32_t x, int32_t z)
     return false;
 }
 
-static int16_t Drawbridge_GetFloorHeight(
+static int16_t M_GetFloorHeight(
     const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
         return height;
-    } else if (!Drawbridge_IsLaraOnTop(item, x, z)) {
+    } else if (!M_IsItemOnTop(item, x, z)) {
         return height;
     } else if (y > item->pos.y) {
         return height;
@@ -58,13 +58,13 @@ static int16_t Drawbridge_GetFloorHeight(
     return item->pos.y;
 }
 
-static int16_t Drawbridge_GetCeilingHeight(
+static int16_t M_GetCeilingHeight(
     const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
         return height;
-    } else if (!Drawbridge_IsLaraOnTop(item, x, z)) {
+    } else if (!M_IsItemOnTop(item, x, z)) {
         return height;
     } else if (y <= item->pos.y) {
         return height;
@@ -74,8 +74,7 @@ static int16_t Drawbridge_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-static void Drawbridge_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+static void M_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (item->current_anim_state == DOOR_CLOSED) {
@@ -83,7 +82,7 @@ static void Drawbridge_Collision(
     }
 }
 
-static void Drawbridge_Control(int16_t item_num)
+static void M_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
@@ -106,10 +105,10 @@ void Drawbridge_Setup(OBJECT_INFO *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->ceiling_height_func = Drawbridge_GetCeilingHeight;
-    obj->collision = Drawbridge_Collision;
-    obj->control = Drawbridge_Control;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->collision = M_Collision;
+    obj->control = M_Control;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->floor_height_func = Drawbridge_GetFloorHeight;
+    obj->floor_height_func = M_GetFloorHeight;
 }

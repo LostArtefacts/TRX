@@ -85,11 +85,11 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-static void Object_SetupCreatures(void);
-static void Object_SetupTraps(void);
-static void Object_SetupMiscObjects(void);
+static void M_SetupCreatures(void);
+static void M_SetupTraps(void);
+static void M_SetupMiscObjects(void);
 
-static void Object_SetupCreatures(void)
+static void M_SetupCreatures(void)
 {
     g_Objects[O_LARA].initialise = Lara_InitialiseLoad;
     g_Objects[O_LARA].draw_routine = Object_DrawDummyItem;
@@ -133,7 +133,7 @@ static void Object_SetupCreatures(void)
     Statue_Setup(&g_Objects[O_STATUE]);
 }
 
-static void Object_SetupTraps(void)
+static void M_SetupTraps(void)
 {
     FallingBlock_Setup(&g_Objects[O_FALLING_BLOCK]);
     Pendulum_Setup(&g_Objects[O_PENDULUM]);
@@ -162,7 +162,7 @@ static void Object_SetupTraps(void)
     LavaWedge_Setup(&g_Objects[O_LAVA_WEDGE]);
 }
 
-static void Object_SetupMiscObjects(void)
+static void M_SetupMiscObjects(void)
 {
     CameraTarget_Setup(&g_Objects[O_CAMERA_TARGET]);
     BridgeFlat_Setup(&g_Objects[O_BRIDGE_FLAT]);
@@ -274,9 +274,9 @@ void Object_SetupAllObjects(void)
         obj->hit_points = DONT_TARGET;
     }
 
-    Object_SetupCreatures();
-    Object_SetupTraps();
-    Object_SetupMiscObjects();
+    M_SetupCreatures();
+    M_SetupTraps();
+    M_SetupMiscObjects();
 
     Lara_Hair_Initialise();
 

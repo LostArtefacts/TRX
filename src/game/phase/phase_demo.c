@@ -51,17 +51,17 @@ static INPUT_STATE m_OldInput = { 0 };
 static int32_t m_DemoLevel = -1;
 static uint32_t *m_DemoPtr = NULL;
 
-static bool Phase_Demo_ProcessInput(void);
-static int32_t Phase_Demo_ChooseLevel(void);
+static bool M_ProcessInput(void);
+static int32_t M_ChooseLevel(void);
 
-static void Phase_Demo_Start(void *arg);
-static void Phase_Demo_End(void);
-static PHASE_CONTROL Phase_Demo_Run(int32_t nframes);
-static PHASE_CONTROL Phase_Demo_FadeOut(void);
-static PHASE_CONTROL Phase_Demo_Control(int32_t nframes);
-static void Phase_Demo_Draw(void);
+static void M_Start(void *arg);
+static void M_End(void);
+static PHASE_CONTROL M_Run(int32_t nframes);
+static PHASE_CONTROL M_FadeOut(void);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
 
-static bool Phase_Demo_ProcessInput(void)
+static bool M_ProcessInput(void)
 {
     if (m_DemoPtr >= &g_DemoData[DEMO_COUNT_MAX] || (int)*m_DemoPtr == -1) {
         return false;
@@ -93,7 +93,7 @@ static bool Phase_Demo_ProcessInput(void)
     return true;
 }
 
-static int32_t Phase_Demo_ChooseLevel(void)
+static int32_t M_ChooseLevel(void)
 {
     bool any_demos = false;
     for (int i = g_GameFlow.first_level_num; i < g_GameFlow.last_level_num;
@@ -116,9 +116,9 @@ static int32_t Phase_Demo_ChooseLevel(void)
     return level_num;
 }
 
-static void Phase_Demo_Start(void *arg)
+static void M_Start(void *arg)
 {
-    m_DemoLevel = Phase_Demo_ChooseLevel();
+    m_DemoLevel = M_ChooseLevel();
 
     if (m_DemoLevel == -1) {
         m_State = STATE_INVALID;
@@ -204,7 +204,7 @@ static void Phase_Demo_Start(void *arg)
     g_GameInfo.current_level_type = GFL_DEMO;
 }
 
-static void Phase_Demo_End(void)
+static void M_End(void)
 {
     if (m_DemoLevel == -1) {
         return;
@@ -221,7 +221,7 @@ static void Phase_Demo_End(void)
     g_Config.fix_bear_ai = m_oldFixBearAI;
 }
 
-static PHASE_CONTROL Phase_Demo_Run(int32_t nframes)
+static PHASE_CONTROL M_Run(int32_t nframes)
 {
     Interpolation_Remember();
     CLAMPG(nframes, MAX_FRAMES);
@@ -233,7 +233,7 @@ static PHASE_CONTROL Phase_Demo_Run(int32_t nframes)
             goto end;
         }
 
-        if (!Phase_Demo_ProcessInput()) {
+        if (!M_ProcessInput()) {
             m_State = STATE_FADE_OUT;
             goto end;
         }
@@ -265,7 +265,7 @@ end:
     return (PHASE_CONTROL) { .end = false };
 }
 
-static PHASE_CONTROL Phase_Demo_FadeOut(void)
+static PHASE_CONTROL M_FadeOut(void)
 {
     Text_Flash(m_DemoModeText, 0, 0);
     Input_Update();
@@ -281,7 +281,7 @@ static PHASE_CONTROL Phase_Demo_FadeOut(void)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static PHASE_CONTROL Phase_Demo_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
     switch (m_State) {
     case STATE_INVALID:
@@ -291,10 +291,10 @@ static PHASE_CONTROL Phase_Demo_Control(int32_t nframes)
         };
 
     case STATE_RUN:
-        return Phase_Demo_Run(nframes);
+        return M_Run(nframes);
 
     case STATE_FADE_OUT:
-        return Phase_Demo_FadeOut();
+        return M_FadeOut();
     }
 
     assert(false);
@@ -304,7 +304,7 @@ static PHASE_CONTROL Phase_Demo_Control(int32_t nframes)
     };
 }
 
-static void Phase_Demo_Draw(void)
+static void M_Draw(void)
 {
     if (m_State == STATE_FADE_OUT) {
         Interpolation_Disable();
@@ -320,9 +320,9 @@ static void Phase_Demo_Draw(void)
 }
 
 PHASER g_DemoPhaser = {
-    .start = Phase_Demo_Start,
-    .end = Phase_Demo_End,
-    .control = Phase_Demo_Control,
-    .draw = Phase_Demo_Draw,
+    .start = M_Start,
+    .end = M_End,
+    .control = M_Control,
+    .draw = M_Draw,
     .wait = NULL,
 };

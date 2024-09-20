@@ -70,11 +70,11 @@ static int32_t InvItem_GetFrames(
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item, int32_t frames);
 static bool Inv_CheckDemoTimer(const IMOTION_INFO *motion);
 
-static void Phase_Inventory_Start(void *arg);
-static void Phase_Inventory_End(void);
-static PHASE_CONTROL Phase_Inventory_ControlFrame(void);
-static PHASE_CONTROL Phase_Inventory_Control(int32_t nframes);
-static void Phase_Inventory_Draw(void);
+static void M_Start(void *arg);
+static void M_End(void);
+static PHASE_CONTROL M_ControlFrame(void);
+static PHASE_CONTROL M_Control(int32_t nframes);
+static void M_Draw(void);
 
 static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
 {
@@ -579,7 +579,7 @@ static bool Inv_CheckDemoTimer(const IMOTION_INFO *const motion)
                &m_DemoTimer, g_GameFlow.demo_delay * 1000.0);
 }
 
-static void Phase_Inventory_Start(void *arg)
+static void M_Start(void *arg)
 {
     Interpolation_Remember();
     if (g_Config.enable_timer_in_inventory) {
@@ -650,7 +650,7 @@ static void Phase_Inventory_Start(void *arg)
     }
 }
 
-static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
+static PHASE_CONTROL M_ControlFrame(void)
 {
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
@@ -1095,14 +1095,14 @@ static PHASE_CONTROL Phase_Inventory_ControlFrame(void)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static PHASE_CONTROL Phase_Inventory_Control(int32_t nframes)
+static PHASE_CONTROL M_Control(int32_t nframes)
 {
     Interpolation_Remember();
     if (g_Config.enable_timer_in_inventory) {
         Stats_UpdateTimer();
     }
     for (int32_t i = 0; i < nframes; i++) {
-        const PHASE_CONTROL result = Phase_Inventory_ControlFrame();
+        const PHASE_CONTROL result = M_ControlFrame();
         if (result.end) {
             return result;
         }
@@ -1111,7 +1111,7 @@ static PHASE_CONTROL Phase_Inventory_Control(int32_t nframes)
     return (PHASE_CONTROL) { .end = false };
 }
 
-static void Phase_Inventory_End(void)
+static void M_End(void)
 {
     INVENTORY_ITEM *const inv_item = m_Ring.list[m_Ring.current_object];
     if (inv_item != NULL) {
@@ -1128,7 +1128,7 @@ static void Phase_Inventory_End(void)
     }
 }
 
-static void Phase_Inventory_Draw(void)
+static void M_Draw(void)
 {
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
@@ -1138,9 +1138,9 @@ static void Phase_Inventory_Draw(void)
 }
 
 PHASER g_InventoryPhaser = {
-    .start = Phase_Inventory_Start,
-    .end = Phase_Inventory_End,
-    .control = Phase_Inventory_Control,
-    .draw = Phase_Inventory_Draw,
+    .start = M_Start,
+    .end = M_End,
+    .control = M_Control,
+    .draw = M_Draw,
     .wait = NULL,
 };

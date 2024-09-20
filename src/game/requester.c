@@ -16,11 +16,11 @@
 #define BOX_BORDER 2
 #define BOX_PADDING 10
 
-static void Requester_SetItem(
+static void M_SetItem(
     REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
     const char *const fmt, va_list va);
 
-static void Requester_SetItem(
+static void M_SetItem(
     REQUEST_INFO *req, const int32_t idx, const bool is_blocked,
     const char *const fmt, va_list va)
 {
@@ -228,7 +228,7 @@ void Requester_ChangeItem(
 
     va_list va;
     va_start(va, fmt);
-    Requester_SetItem(req, idx, is_blocked, fmt, va);
+    M_SetItem(req, idx, is_blocked, fmt, va);
     va_end(va);
 }
 
@@ -241,7 +241,7 @@ void Requester_AddItem(
 
     va_list va;
     va_start(va, fmt);
-    Requester_SetItem(req, req->items_used, is_blocked, fmt, va);
+    M_SetItem(req, req->items_used, is_blocked, fmt, va);
     va_end(va);
     req->items_used++;
 }
