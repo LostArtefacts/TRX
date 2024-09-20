@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+
+## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3-102-g458cd96...4.4) - 2024-09-20
 - added `/exit` command (#1462)
 - added reflections to Midas Hand death animation and savegame crystals (#154)
 - added an option to use PS1 tinted savegame crystals (#1506)
