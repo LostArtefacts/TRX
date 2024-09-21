@@ -20,7 +20,7 @@ void Lara_Draw(ITEM_INFO *item)
     int32_t bottom = g_PhdBottom;
     int32_t right = g_PhdRight;
 
-    if (g_LaraItem->flags & IS_INVISIBLE) {
+    if (g_LaraItem->flags & IF_INVISIBLE) {
         return;
     }
 

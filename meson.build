@@ -103,7 +103,6 @@ sources = [
   'src/game/collide.c',
   'src/game/console/cmd/braid.c',
   'src/game/console/cmd/cheats.c',
-  'src/game/console/cmd/die.c',
   'src/game/console/cmd/end_level.c',
   'src/game/console/cmd/exit_game.c',
   'src/game/console/cmd/exit_to_title.c',

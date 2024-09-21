@@ -116,7 +116,7 @@ void Lara_Cheat_Control(void)
                 Effect_ExplodingDeath(g_Lara.item_num, -1, 0);
                 Sound_Effect(SFX_EXPLOSION_CHEAT, &g_LaraItem->pos, SPM_NORMAL);
                 g_LaraItem->hit_points = 0;
-                g_LaraItem->flags |= IS_INVISIBLE;
+                g_LaraItem->flags |= IF_INVISIBLE;
             }
             cheat_mode = 0;
         }

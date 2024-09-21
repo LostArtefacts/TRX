@@ -170,7 +170,7 @@ void Lara_Control(void)
         // is resurrected with DOZY, she should no longer aim at the target.
         g_Lara.target = NULL;
 
-        if (g_LaraItem->flags & IS_INVISIBLE) {
+        if (g_LaraItem->flags & IF_INVISIBLE) {
             return;
         }
     }
