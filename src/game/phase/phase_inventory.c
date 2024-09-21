@@ -10,7 +10,7 @@
 #include "game/inventory.h"
 #include "game/inventory/inventory_ring.h"
 #include "game/inventory/inventory_vars.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/music.h"
 #include "game/objects/common.h"
 #include "game/option.h"

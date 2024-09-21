@@ -2,8 +2,8 @@
 
 #include "game/collide.h"
 #include "game/effects.h"
-#include "game/lara.h"
-#include "game/lara/lara_control.h"
+#include "game/lara/common.h"
+#include "game/lara/control.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"

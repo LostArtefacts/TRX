@@ -9,7 +9,7 @@
 #include "game/inject.h"
 #include "game/inventory/inventory_vars.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/creatures/pierre.h"

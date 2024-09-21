@@ -1,7 +1,7 @@
 #include "game/objects/traps/thors_hammer_head.h"
 
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/objects/common.h"
 
 typedef enum {

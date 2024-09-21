@@ -6,7 +6,7 @@
 #include "game/effects/exploding_death.h"
 #include "game/effects/gun.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/sound.h"

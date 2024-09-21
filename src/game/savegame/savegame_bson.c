@@ -6,7 +6,7 @@
 #include "game/gameflow.h"
 #include "game/inventory.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/room.h"

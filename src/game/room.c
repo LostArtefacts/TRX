@@ -3,7 +3,7 @@
 #include "game/camera.h"
 #include "game/gamebuf.h"
 #include "game/items.h"
-#include "game/lara/lara_misc.h"
+#include "game/lara/misc.h"
 #include "game/lot.h"
 #include "game/music.h"
 #include "game/objects/common.h"

@@ -3,7 +3,7 @@
 #include "config.h"
 #include "game/effects.h"
 #include "game/items.h"
-#include "game/lara/lara_hair.h"
+#include "game/lara/hair.h"
 #include "game/room.h"
 #include "global/const.h"
 #include "global/vars.h"

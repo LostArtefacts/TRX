@@ -1,10 +1,10 @@
-#include "game/lara/lara_state.h"
+#include "game/lara/state.h"
 
 #include "config.h"
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara.h"
-#include "game/lara/lara_look.h"
+#include "game/lara/common.h"
+#include "game/lara/look.h"
 #include "game/objects/common.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/room.h"

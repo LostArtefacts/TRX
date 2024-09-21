@@ -1,8 +1,8 @@
 #pragma once
 
-// Lara collision helpers.
-
 #include "global/types.h"
+
+#include <libtrx/game/lara/misc.h>
 
 #include <stdbool.h>
 

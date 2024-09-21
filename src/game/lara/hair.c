@@ -1,4 +1,4 @@
-#include "game/lara/lara_hair.h"
+#include "game/lara/hair.h"
 
 #include "config.h"
 #include "game/items.h"

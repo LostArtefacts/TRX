@@ -1,7 +1,7 @@
 #include "game/objects/traps/lava_wedge.h"
 
 #include "game/items.h"
-#include "game/lara/lara_misc.h"
+#include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "global/vars.h"

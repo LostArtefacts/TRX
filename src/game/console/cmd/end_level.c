@@ -1,6 +1,6 @@
 #include "game/console/cmd/end_level.h"
 
-#include "game/lara/lara_cheat.h"
+#include "game/lara/cheat.h"
 
 #include <libtrx/strings.h>
 

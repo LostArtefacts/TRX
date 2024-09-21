@@ -3,7 +3,7 @@
 #include "game/collide.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/random.h"
 
 #define SPIKE_DAMAGE 15

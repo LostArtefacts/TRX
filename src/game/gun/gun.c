@@ -4,7 +4,7 @@
 #include "game/gun/gun_rifle.h"
 #include "game/input.h"
 #include "game/inventory.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "global/const.h"

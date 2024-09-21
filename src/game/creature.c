@@ -6,7 +6,7 @@
 #include "game/effects.h"
 #include "game/effects/gunshot.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/objects/common.h"

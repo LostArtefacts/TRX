@@ -1,8 +1,8 @@
-#include "game/lara/lara_draw.h"
+#include "game/lara/draw.h"
 
 #include "game/gun.h"
 #include "game/items.h"
-#include "game/lara/lara_hair.h"
+#include "game/lara/hair.h"
 #include "game/output.h"
 #include "game/viewport.h"
 #include "global/vars.h"

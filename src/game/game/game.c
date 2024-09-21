@@ -7,7 +7,7 @@
 #include "game/input.h"
 #include "game/interpolation.h"
 #include "game/inventory.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"

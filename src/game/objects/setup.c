@@ -1,8 +1,8 @@
 #include "game/objects/setup.h"
 
 #include "config.h"
-#include "game/lara.h"
-#include "game/lara/lara_hair.h"
+#include "game/lara/common.h"
+#include "game/lara/hair.h"
 #include "game/objects/common.h"
 #include "game/objects/creatures/ape.h"
 #include "game/objects/creatures/bacon_lara.h"

@@ -2,7 +2,7 @@
 
 #include "game/input.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "global/vars.h"
 
 #define EXTRA_ANIM_HOLDER_SCION 0

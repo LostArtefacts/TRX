@@ -1,7 +1,7 @@
 #include "game/objects/effects/body_part.h"
 
 #include "game/effects.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/const.h"

@@ -4,7 +4,7 @@
 #include "game/creature.h"
 #include "game/effects/blood.h"
 #include "game/items.h"
-#include "game/lara.h"
+#include "game/lara/common.h"
 #include "game/lot.h"
 #include "game/random.h"
 #include "game/room.h"

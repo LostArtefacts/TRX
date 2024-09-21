@@ -2,7 +2,7 @@
 
 #include "game/game_string.h"
 #include "game/items.h"
-#include "game/lara/lara_cheat.h"
+#include "game/lara/cheat.h"
 #include "game/objects/common.h"
 #include "game/objects/names.h"
 #include "game/random.h"
