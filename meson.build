@@ -252,6 +252,7 @@ sources = [
   'src/game/objects/traps/teeth_trap.c',
   'src/game/objects/traps/thors_hammer_handle.c',
   'src/game/objects/traps/thors_hammer_head.c',
+  'src/game/objects/vars.c',
   'src/game/option/option.c',
   'src/game/option/option_compass.c',
   'src/game/option/option_control.c',

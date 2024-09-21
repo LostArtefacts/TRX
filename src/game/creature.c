@@ -10,6 +10,7 @@
 #include "game/los.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
+#include "game/objects/vars.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "global/vars.h"

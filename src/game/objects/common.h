@@ -9,18 +9,6 @@ typedef struct GAME_OBJECT_PAIR {
     const GAME_OBJECT_ID value_id;
 } GAME_OBJECT_PAIR;
 
-extern const GAME_OBJECT_ID g_EnemyObjects[];
-extern const GAME_OBJECT_ID g_AllyObjects[];
-extern const GAME_OBJECT_ID g_BossObjects[];
-extern const GAME_OBJECT_ID g_PlaceholderObjects[];
-extern const GAME_OBJECT_ID g_PickupObjects[];
-extern const GAME_OBJECT_ID g_GunObjects[];
-extern const GAME_OBJECT_ID g_DoorObjects[];
-extern const GAME_OBJECT_ID g_TrapdoorObjects[];
-extern const GAME_OBJECT_ID g_InvObjects[];
-extern const GAME_OBJECT_PAIR g_GunAmmoObjectMap[];
-extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];
-
 GAME_OBJECT_ID Object_GetCognate(
     GAME_OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
 GAME_OBJECT_ID Object_GetCognateInverse(

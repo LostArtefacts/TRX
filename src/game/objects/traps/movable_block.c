@@ -6,6 +6,7 @@
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
+#include "game/objects/vars.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/const.h"
