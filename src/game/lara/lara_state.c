@@ -124,7 +124,7 @@ void Lara_State_Run(ITEM_INFO *item, COLL_INFO *coll)
     }
 
     if (g_Config.enable_tr2_jumping) {
-        int16_t anim = item->anim_num - g_Objects[item->object_id].anim_index;
+        int16_t anim = item->anim_num - g_Objects[item->object_id].anim_idx;
         if (anim == LA_RUN_START) {
             m_JumpPermitted = false;
         } else if (

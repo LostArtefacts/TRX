@@ -151,7 +151,8 @@ void Carrier_TestItemDrops(int16_t item_num)
     ITEM_INFO *carrier = &g_Items[item_num];
     CARRIED_ITEM *item = carrier->carried_item;
     if (carrier->hit_points > 0 || !item
-        || (carrier->object_id == O_PIERRE && !(carrier->flags & IF_ONESHOT))) {
+        || (carrier->object_id == O_PIERRE
+            && !(carrier->flags & IF_ONE_SHOT))) {
         return;
     }
 

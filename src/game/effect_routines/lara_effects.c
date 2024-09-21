@@ -29,10 +29,10 @@ void FX_LaraDrawRightGun(ITEM_INFO *item)
     OBJECT_INFO *obj2 = &g_Objects[O_PISTOL_ANIM];
 
     SWAP(
-        g_Meshes[obj->mesh_index + LM_THIGH_R],
-        g_Meshes[obj2->mesh_index + LM_THIGH_R], tmp_mesh);
+        g_Meshes[obj->mesh_idx + LM_THIGH_R],
+        g_Meshes[obj2->mesh_idx + LM_THIGH_R], tmp_mesh);
 
     SWAP(
-        g_Meshes[obj->mesh_index + LM_HAND_R],
-        g_Meshes[obj2->mesh_index + LM_HAND_R], tmp_mesh);
+        g_Meshes[obj->mesh_idx + LM_HAND_R],
+        g_Meshes[obj2->mesh_idx + LM_HAND_R], tmp_mesh);
 }

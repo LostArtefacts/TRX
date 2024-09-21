@@ -49,7 +49,7 @@ void Larson_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 24] |= BEB_ROT_Y;
 }
 
 void Larson_Control(int16_t item_num)

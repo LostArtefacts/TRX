@@ -542,7 +542,7 @@ void Text_DrawText(TEXTSTRING *textstring)
         sv = Screen_GetRenderScale(textstring->scale.v, RSR_TEXT);
 
         Output_DrawScreenSprite2D(
-            sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_index + sprite_num,
+            sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_idx + sprite_num,
             16 << 8, 0, 0);
 
         if (letter == '(' || letter == ')' || letter == '$' || letter == '~') {

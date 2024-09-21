@@ -41,13 +41,12 @@ void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll);
 void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z);
 int32_t Item_GetDistance(const ITEM_INFO *item, const XYZ_32 *target);
 
-bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index);
-void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame);
+bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_idx);
+void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_idx, int16_t frame);
 void Item_SwitchToObjAnim(
-    ITEM_INFO *item, int16_t anim_index, int16_t frame,
-    GAME_OBJECT_ID object_id);
+    ITEM_INFO *item, int16_t anim_idx, int16_t frame, GAME_OBJECT_ID object_id);
 void Item_Animate(ITEM_INFO *item);
-bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim);
+bool Item_GetAnimChange(ITEM_INFO *item, ANIM *anim);
 void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags);
 
 bool Item_IsTriggerActive(ITEM_INFO *item);

@@ -261,6 +261,9 @@ void Collide_GetCollisionInfo(
             coll->shift.x = Room_FindGridShift(xpos + xfront, xpos);
             coll->shift.z = coll->old.z - zpos;
             break;
+
+        default:
+            break;
         }
 
         coll->coll_type = COLL_FRONT;
@@ -286,6 +289,9 @@ void Collide_GetCollisionInfo(
         case DIR_WEST:
             coll->shift.z = Room_FindGridShift(zpos + zleft, zpos + zfront);
             break;
+
+        default:
+            break;
         }
 
         coll->coll_type = COLL_LEFT;
@@ -303,6 +309,9 @@ void Collide_GetCollisionInfo(
         case DIR_EAST:
         case DIR_WEST:
             coll->shift.z = Room_FindGridShift(zpos + zright, zpos + zfront);
+            break;
+
+        default:
             break;
         }
 
@@ -463,6 +472,9 @@ bool Collide_CollideStaticObjects(
                     coll->coll_type = COLL_RIGHT;
                 }
                 break;
+
+            default:
+                break;
             }
 
             coll->hit_static = 1;
@@ -506,8 +518,8 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     Matrix_RotYXZpack(*packed_rotation++);
 
     OBJECT_INFO *object = &g_Objects[item->object_id];
-    int16_t **meshpp = &g_Meshes[object->mesh_index];
-    int32_t *bone = &g_AnimBones[object->bone_index];
+    int16_t **meshpp = &g_Meshes[object->mesh_idx];
+    int32_t *bone = &g_AnimBones[object->bone_idx];
 
     int16_t *objptr = *meshpp++;
     Matrix_Push();
@@ -608,7 +620,7 @@ void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint)
     int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
-    int32_t *bone = &g_AnimBones[object->bone_index];
+    int32_t *bone = &g_AnimBones[object->bone_idx];
 
     int16_t *extra_rotation = (int16_t *)item->data;
     for (int i = 0; i < joint; i++) {

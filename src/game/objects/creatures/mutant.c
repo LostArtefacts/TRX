@@ -78,8 +78,8 @@ void Mutant_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
-    g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 8] |= BEB_ROT_Y;
 }
 
 void Mutant_Setup2(OBJECT_INFO *obj)
@@ -126,9 +126,9 @@ void Mutant_FlyerControl(int16_t item_num)
             return;
         }
     } else {
-        flyer->LOT.step = STEP_L;
-        flyer->LOT.drop = -STEP_L;
-        flyer->LOT.fly = 0;
+        flyer->lot.step = STEP_L;
+        flyer->lot.drop = -STEP_L;
+        flyer->lot.fly = 0;
 
         AI_INFO info;
         Creature_AIInfo(item, &info);
@@ -157,9 +157,9 @@ void Mutant_FlyerControl(int16_t item_num)
                     Creature_Mood(item, &info, true);
                 }
 
-                flyer->LOT.step = WALL_L * 30;
-                flyer->LOT.drop = -WALL_L * 30;
-                flyer->LOT.fly = STEP_L / 8;
+                flyer->lot.step = WALL_L * 30;
+                flyer->lot.drop = -WALL_L * 30;
+                flyer->lot.fly = STEP_L / 8;
                 Creature_AIInfo(item, &info);
             } else if (
                 (info.zone_num != info.enemy_zone && !shoot1 && !shoot2

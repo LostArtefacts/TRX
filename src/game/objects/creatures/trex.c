@@ -58,8 +58,8 @@ void TRex_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 40] |= BEB_ROT_Y;
-    g_AnimBones[obj->bone_index + 44] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 40] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 44] |= BEB_ROT_Y;
 }
 
 void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)

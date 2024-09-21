@@ -58,7 +58,7 @@ void Raptor_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 84] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 84] |= BEB_ROT_Y;
 }
 
 void Raptor_Control(int16_t item_num)

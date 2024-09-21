@@ -542,7 +542,7 @@ static bool M_LoadItems(struct json_array_s *items_arr, uint16_t header_version)
             item->flags = json_object_get_int(item_obj, "flags", item->flags);
             item->timer = json_object_get_int(item_obj, "timer", item->timer);
 
-            if (item->flags & IF_KILLED_ITEM) {
+            if (item->flags & IF_KILLED) {
                 Item_Kill(i);
                 item->status = IS_DEACTIVATED;
             } else {
@@ -865,7 +865,7 @@ static bool M_LoadLara(struct json_object_s *lara_obj, LARA_INFO *lara)
         return false;
     }
 
-    if (!M_LoadLOT(json_object_get_object(lara_obj, "lot"), &lara->LOT)) {
+    if (!M_LoadLOT(json_object_get_object(lara_obj, "lot"), &lara->lot)) {
         return false;
     }
 
@@ -1256,7 +1256,7 @@ static struct json_object_s *M_DumpLara(LARA_INFO *lara)
     json_object_append_object(lara_obj, "magnums", M_DumpAmmo(&lara->magnums));
     json_object_append_object(lara_obj, "uzis", M_DumpAmmo(&lara->uzis));
     json_object_append_object(lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun));
-    json_object_append_object(lara_obj, "lot", M_DumpLOT(&lara->LOT));
+    json_object_append_object(lara_obj, "lot", M_DumpLOT(&lara->lot));
 
     return lara_obj;
 }

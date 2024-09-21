@@ -271,7 +271,7 @@ static void M_WriteLara(LARA_INFO *lara)
     M_Write(&lara->shotgun.ammo, sizeof(int32_t));
     M_Write(&lara->shotgun.hit, sizeof(int32_t));
     M_Write(&lara->shotgun.miss, sizeof(int32_t));
-    M_WriteLOT(&lara->LOT);
+    M_WriteLOT(&lara->lot);
 }
 
 static void M_WriteArm(LARA_ARM *arm)
@@ -373,7 +373,7 @@ static void M_ReadLara(LARA_INFO *lara)
     M_Read(&lara->shotgun.ammo, sizeof(int32_t));
     M_Read(&lara->shotgun.hit, sizeof(int32_t));
     M_Read(&lara->shotgun.miss, sizeof(int32_t));
-    M_ReadLOT(&lara->LOT);
+    M_ReadLOT(&lara->lot);
 }
 
 static void M_ReadArm(LARA_ARM *arm)
@@ -605,7 +605,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
             M_Read(&item->flags, sizeof(int16_t));
             M_Read(&item->timer, sizeof(int16_t));
 
-            if (item->flags & IF_KILLED_ITEM) {
+            if (item->flags & IF_KILLED) {
                 Item_Kill(i);
                 item->status = IS_DEACTIVATED;
             } else {

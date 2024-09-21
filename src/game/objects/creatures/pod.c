@@ -60,7 +60,7 @@ void Pod_Initialise(int16_t item_num)
         bug->pos.y = item->pos.y;
         bug->pos.z = item->pos.z;
         bug->rot.y = item->rot.y;
-        bug->flags = IF_NOT_VISIBLE;
+        bug->flags = IF_INVISIBLE;
         bug->shade = -1;
 
         Item_Initialise(bug_item_num);
@@ -82,7 +82,7 @@ void Pod_Control(int16_t item_num)
     if (item->goal_anim_state != POD_EXPLODE) {
         int32_t explode = 0;
 
-        if (item->flags & IF_ONESHOT) {
+        if (item->flags & IF_ONE_SHOT) {
             explode = 1;
         } else if (item->object_id == O_BIG_POD) {
             explode = 1;

@@ -82,7 +82,7 @@ typedef struct VERTEX_EDIT {
 
 typedef struct MESH_EDIT {
     GAME_OBJECT_ID object_id;
-    int16_t mesh_index;
+    int16_t mesh_idx;
     XYZ_16 centre_shift;
     int32_t radius_shift;
     int32_t face_edit_count;
@@ -445,17 +445,17 @@ static void M_TextureData(
     for (int32_t i = 0; i < inj_info->sprite_count; i++) {
         const GAME_OBJECT_ID object_id = VFile_ReadS32(fp);
         const int16_t num_meshes = VFile_ReadS16(fp);
-        const int16_t mesh_index = VFile_ReadS16(fp);
+        const int16_t mesh_idx = VFile_ReadS16(fp);
 
         if (object_id < O_NUMBER_OF) {
             OBJECT_INFO *object = &g_Objects[object_id];
             object->nmeshes = num_meshes;
-            object->mesh_index = mesh_index + level_info->sprite_info_count;
+            object->mesh_idx = mesh_idx + level_info->sprite_info_count;
             object->loaded = 1;
         } else if (object_id - O_NUMBER_OF < STATIC_NUMBER_OF) {
             STATIC_INFO *object = &g_StaticObjects[object_id - O_NUMBER_OF];
             object->nmeshes = num_meshes;
-            object->mesh_num = mesh_index + level_info->sprite_info_count;
+            object->mesh_num = mesh_idx + level_info->sprite_info_count;
             object->loaded = true;
         }
         level_info->sprite_info_count -= num_meshes;
@@ -497,14 +497,14 @@ static void M_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     VFILE *const fp = injection->fp;
 
     for (int32_t i = 0; i < inj_info->anim_change_count; i++) {
-        ANIM_CHANGE_STRUCT *anim_change =
+        ANIM_CHANGE *anim_change =
             &g_AnimChanges[level_info->anim_change_count + i];
         anim_change->goal_anim_state = VFile_ReadS16(fp);
-        anim_change->number_ranges = VFile_ReadS16(fp);
-        anim_change->range_index = VFile_ReadS16(fp);
+        anim_change->num_ranges = VFile_ReadS16(fp);
+        anim_change->range_idx = VFile_ReadS16(fp);
     }
     for (int32_t i = 0; i < inj_info->anim_range_count; i++) {
-        ANIM_RANGE_STRUCT *anim_range =
+        ANIM_RANGE *anim_range =
             &g_AnimRanges[level_info->anim_range_count + i];
         anim_range->start_frame = VFile_ReadS16(fp);
         anim_range->end_frame = VFile_ReadS16(fp);
@@ -546,7 +546,7 @@ static void M_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
     assert(VFile_GetPos(fp) == frame_data_end);
 
     for (int32_t i = 0; i < inj_info->anim_count; i++) {
-        ANIM_STRUCT *anim = &g_Anims[level_info->anim_count + i];
+        ANIM *anim = &g_Anims[level_info->anim_count + i];
 
         anim->frame_ofs = VFile_ReadU32(fp);
         anim->interpolation = VFile_ReadS16(fp);
@@ -557,10 +557,10 @@ static void M_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         anim->frame_end = VFile_ReadS16(fp);
         anim->jump_anim_num = VFile_ReadS16(fp);
         anim->jump_frame_num = VFile_ReadS16(fp);
-        anim->number_changes = VFile_ReadS16(fp);
-        anim->change_index = VFile_ReadS16(fp);
-        anim->number_commands = VFile_ReadS16(fp);
-        anim->command_index = VFile_ReadS16(fp);
+        anim->num_changes = VFile_ReadS16(fp);
+        anim->change_idx = VFile_ReadS16(fp);
+        anim->num_commands = VFile_ReadS16(fp);
+        anim->command_idx = VFile_ReadS16(fp);
 
         // Re-align to the level.
         anim->jump_anim_num += level_info->anim_count;
@@ -576,17 +576,17 @@ static void M_AnimData(INJECTION *injection, LEVEL_INFO *level_info)
         }
         anim->frame_ofs += level_info->anim_frame_data_count * 2;
         assert(found);
-        if (anim->number_changes) {
-            anim->change_index += level_info->anim_change_count;
+        if (anim->num_changes) {
+            anim->change_idx += level_info->anim_change_count;
         }
-        if (anim->number_commands) {
-            anim->command_index += level_info->anim_command_count;
+        if (anim->num_commands) {
+            anim->command_idx += level_info->anim_command_count;
         }
     }
 
     // Re-align to the level.
     for (int32_t i = 0; i < inj_info->anim_change_count; i++) {
-        g_AnimChanges[level_info->anim_change_count++].range_index +=
+        g_AnimChanges[level_info->anim_change_count++].range_idx +=
             level_info->anim_range_count;
     }
 
@@ -611,7 +611,7 @@ static void M_AnimRangeEdits(INJECTION *injection)
 
     for (int32_t i = 0; i < inj_info->anim_range_edit_count; i++) {
         const GAME_OBJECT_ID object_id = VFile_ReadS32(fp);
-        const int16_t anim_index = VFile_ReadS16(fp);
+        const int16_t anim_idx = VFile_ReadS16(fp);
         const int32_t edit_count = VFile_ReadS32(fp);
 
         if (object_id < 0 || object_id >= O_NUMBER_OF) {
@@ -627,30 +627,28 @@ static void M_AnimRangeEdits(INJECTION *injection)
             continue;
         }
 
-        ANIM_STRUCT *anim = &g_Anims[object->anim_index + anim_index];
+        ANIM *anim = &g_Anims[object->anim_idx + anim_idx];
         for (int32_t j = 0; j < edit_count; j++) {
-            const int16_t change_index = VFile_ReadS16(fp);
-            const int16_t range_index = VFile_ReadS16(fp);
+            const int16_t change_idx = VFile_ReadS16(fp);
+            const int16_t range_idx = VFile_ReadS16(fp);
             const int16_t low_frame = VFile_ReadS16(fp);
             const int16_t high_frame = VFile_ReadS16(fp);
 
-            if (change_index >= anim->number_changes) {
+            if (change_idx >= anim->num_changes) {
                 LOG_WARNING(
-                    "Change %d is invalid for animation %d", change_index,
-                    anim_index);
+                    "Change %d is invalid for animation %d", change_idx,
+                    anim_idx);
                 continue;
             }
-            ANIM_CHANGE_STRUCT *change =
-                &g_AnimChanges[anim->change_index + change_index];
+            ANIM_CHANGE *change = &g_AnimChanges[anim->change_idx + change_idx];
 
-            if (range_index >= change->number_ranges) {
+            if (range_idx >= change->num_ranges) {
                 LOG_WARNING(
                     "Range %d is invalid for change %d, animation %d",
-                    range_index, change_index, anim_index);
+                    range_idx, change_idx, anim_idx);
                 continue;
             }
-            ANIM_RANGE_STRUCT *range =
-                &g_AnimRanges[change->range_index + range_index];
+            ANIM_RANGE *range = &g_AnimRanges[change->range_idx + range_idx];
 
             range->start_frame = low_frame;
             range->end_frame = high_frame;
@@ -675,21 +673,21 @@ static void M_ObjectData(
         OBJECT_INFO *object = &g_Objects[object_id];
 
         const int16_t num_meshes = VFile_ReadS16(fp);
-        const int16_t mesh_index = VFile_ReadS16(fp);
-        const int32_t bone_index = VFile_ReadS32(fp);
+        const int16_t mesh_idx = VFile_ReadS16(fp);
+        const int32_t bone_idx = VFile_ReadS32(fp);
 
         // When mesh data has been omitted from the injection, this indicates
         // that we wish to retain what's already defined so to avoid duplicate
         // packing.
         if (!object->loaded || num_meshes) {
             object->nmeshes = num_meshes;
-            object->mesh_index = mesh_index + level_info->mesh_ptr_count;
-            object->bone_index = bone_index + level_info->anim_bone_count;
+            object->mesh_idx = mesh_idx + level_info->mesh_ptr_count;
+            object->bone_idx = bone_idx + level_info->anim_bone_count;
         }
 
         const int32_t frame_offset = VFile_ReadS32(fp);
-        object->anim_index = VFile_ReadS16(fp);
-        object->anim_index += level_info->anim_count;
+        object->anim_idx = VFile_ReadS16(fp);
+        object->anim_idx += level_info->anim_count;
         object->loaded = 1;
 
         if (inj_info->anim_frame_count > 0) {
@@ -756,7 +754,7 @@ static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 static void M_AlignTextureReferences(
     OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base)
 {
-    int16_t **mesh = &g_Meshes[object->mesh_index];
+    int16_t **mesh = &g_Meshes[object->mesh_idx];
     for (int32_t i = 0; i < object->nmeshes; i++) {
         int16_t *data_ptr = *mesh++;
         data_ptr += 5; // Skip centre and collision radius
@@ -832,7 +830,7 @@ static void M_MeshEdits(INJECTION *injection, uint16_t *palette_map)
     for (int32_t i = 0; i < inj_info->mesh_edit_count; i++) {
         MESH_EDIT *mesh_edit = &mesh_edits[i];
         mesh_edit->object_id = VFile_ReadS32(fp);
-        mesh_edit->mesh_index = VFile_ReadS16(fp);
+        mesh_edit->mesh_idx = VFile_ReadS16(fp);
 
         if (injection->version >= INJ_VERSION_6) {
             mesh_edit->centre_shift.x = VFile_ReadS16(fp);
@@ -892,8 +890,8 @@ static void M_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
         return;
     }
 
-    int16_t **mesh = &g_Meshes[object.mesh_index];
-    int16_t *data_ptr = *(mesh + mesh_edit->mesh_index);
+    int16_t **mesh = &g_Meshes[object.mesh_idx];
+    int16_t *data_ptr = *(mesh + mesh_edit->mesh_idx);
 
     *data_ptr++ += mesh_edit->centre_shift.x;
     *data_ptr++ += mesh_edit->centre_shift.y;
@@ -996,7 +994,7 @@ static int16_t *M_GetMeshTexture(FACE_EDIT *face_edit)
         return NULL;
     }
 
-    int16_t **mesh = &g_Meshes[object.mesh_index];
+    int16_t **mesh = &g_Meshes[object.mesh_idx];
     int16_t *data_ptr = *(mesh + face_edit->source_identifier);
     data_ptr += 5; // Skip centre and collision radius
 

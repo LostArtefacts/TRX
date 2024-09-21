@@ -48,7 +48,7 @@ static void M_FixEmbeddedPosition(int16_t item_num)
     // The bats animation and frame have to be changed to the hanging
     // one to properly measure them. Save it so it can be restored
     // after.
-    int16_t old_anim = item->anim_num - g_Objects[item->object_id].anim_index;
+    int16_t old_anim = item->anim_num - g_Objects[item->object_id].anim_idx;
     int16_t old_frame = item->frame_num - g_Anims[item->anim_num].frame_base;
 
     Item_SwitchToAnim(item, 0, 0);

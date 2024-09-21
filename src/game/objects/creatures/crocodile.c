@@ -81,7 +81,7 @@ void Croc_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 28] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 28] |= BEB_ROT_Y;
 }
 
 void Croc_Control(int16_t item_num)
@@ -189,9 +189,9 @@ void Croc_Control(int16_t item_num)
     // Test conversion to alligator and set relevant pathfinding values.
     int32_t wh;
     if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo) && croc) {
-        croc->LOT.step = WALL_L * 20;
-        croc->LOT.drop = -WALL_L * 20;
-        croc->LOT.fly = STEP_L / 16;
+        croc->lot.step = WALL_L * 20;
+        croc->lot.drop = -WALL_L * 20;
+        croc->lot.fly = STEP_L / 16;
     }
 
     if (croc) {
@@ -219,7 +219,7 @@ void Alligator_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 28] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 28] |= BEB_ROT_Y;
 }
 
 void Alligator_Control(int16_t item_num)
@@ -321,9 +321,9 @@ void Alligator_Control(int16_t item_num)
 
     // Test alive conversion to crocodile and set relevant pathfinding values.
     if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
-        gator->LOT.step = STEP_L;
-        gator->LOT.drop = -STEP_L;
-        gator->LOT.fly = 0;
+        gator->lot.step = STEP_L;
+        gator->lot.drop = -STEP_L;
+        gator->lot.fly = 0;
     } else if (item->pos.y < wh + STEP_L) {
         item->pos.y = wh + STEP_L;
     }

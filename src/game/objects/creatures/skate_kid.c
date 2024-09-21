@@ -57,7 +57,7 @@ void SkateKid_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx] |= BEB_ROT_Y;
 
     if (!g_Objects[O_SKATEBOARD].loaded) {
         LOG_WARNING(
@@ -180,7 +180,7 @@ void SkateKid_Draw(ITEM_INFO *item)
     }
 
     int16_t relative_anim =
-        item->anim_num - g_Objects[item->object_id].anim_index;
+        item->anim_num - g_Objects[item->object_id].anim_idx;
     int16_t relative_frame =
         item->frame_num - g_Anims[item->anim_num].frame_base;
     item->object_id = O_SKATEBOARD;

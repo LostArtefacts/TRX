@@ -2,8 +2,13 @@
 
 #include "global/const.h"
 
+#include <libtrx/game/anims.h>
 #include <libtrx/game/collision.h>
+#include <libtrx/game/creature.h>
+#include <libtrx/game/effects/types.h>
 #include <libtrx/game/items.h>
+#include <libtrx/game/lara/types.h>
+#include <libtrx/game/lot.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects/common.h>
 
@@ -350,207 +355,6 @@ typedef enum MUSIC_TRACK_ID {
     MX_NUMBER_OF,
 } MUSIC_TRACK_ID;
 
-typedef enum LARA_SHOTGUN_ANIMATION_FRAME {
-    LF_SG_AIM_START = 0,
-    LF_SG_AIM_BEND = 1,
-    LF_SG_AIM_END = 12,
-    LF_SG_DRAW_START = 13,
-    LF_SG_DRAW_SFX = 23,
-    LF_SG_RECOIL_START = 47,
-    LF_SG_RECOILING = 48,
-    LF_SG_RECOIL_SFX = 57,
-    LF_SG_RECOIL_UNDRAW_RESET = 59,
-    LF_SG_RECOIL_RESET_OG = 60,
-    LF_SG_RECOIL_RESET_FIX = 63,
-    LF_SG_RECOIL_END = 79,
-    LF_SG_UNDRAW_START = 80,
-    LF_SG_UNDRAW_SFX = 100,
-    LF_SG_UNDRAW_END = 113,
-    LF_SG_UNAIM_START = 114,
-    LF_SG_UNAIM_RAISE = 126,
-    LF_SG_UNAIM_END = 127,
-} LARA_SHOTGUN_ANIMATION_FRAME;
-
-typedef enum LARA_GUN_ANIMATION_FRAME {
-    LF_G_AIM_START = 0,
-    LF_G_AIM_BEND = 1,
-    LF_G_AIM_EXTEND = 3,
-    LF_G_AIM_END = 4,
-    LF_G_UNDRAW_START = 5,
-    LF_G_UNDRAW_BEND = 6,
-    LF_G_UNDRAW_END = 12,
-    LF_G_DRAW_START = 13,
-    LF_G_DRAW_END = 23,
-    LF_G_RECOIL_START = 24,
-    LF_G_RECOIL_END = 32,
-} LARA_GUN_ANIMATION_FRAME;
-
-typedef enum LARA_ANIMATION {
-    LA_RUN = 0,
-    LA_WALK_FORWARD = 1,
-    LA_RUN_START = 6,
-    LA_WALK_BACK = 40,
-    LA_VAULT_12 = 50,
-    LA_VAULT_34 = 42,
-    LA_FAST_FALL = 32,
-    LA_STOP = 11,
-    LA_FALL_DOWN = 34,
-    LA_STOP_LEFT = 2,
-    LA_STOP_RIGHT = 3,
-    LA_HIT_WALL_LEFT = 53,
-    LA_HIT_WALL_RIGHT = 54,
-    LA_RUN_STEP_UP_LEFT = 56,
-    LA_RUN_STEP_UP_RIGHT = 55,
-    LA_WALK_STEP_UP_LEFT = 57,
-    LA_WALK_STEP_UP_RIGHT = 58,
-    LA_WALK_STEP_DOWN_LEFT = 60,
-    LA_WALK_STEP_DOWN_RIGHT = 59,
-    LA_BACK_STEP_DOWN_LEFT = 61,
-    LA_BACK_STEP_DOWN_RIGHT = 62,
-    LA_WALL_SWITCH_DOWN = 63,
-    LA_WALL_SWITCH_UP = 64,
-    LA_SIDE_STEP_LEFT = 65,
-    LA_SIDE_STEP_RIGHT = 67,
-    LA_LAND_FAR = 24,
-    LA_GRAB_LEDGE = 96,
-    LA_SWIM_GLIDE = 87,
-    LA_FALL_BACK = 93,
-    LA_HANG = 96,
-    LA_STOP_HANG = 28,
-    LA_SLIDE = 70,
-    LA_SLIDE_BACK = 104,
-    LA_TREAD = 108,
-    LA_SURF_TREAD = 114,
-    LA_SURF_DIVE = 119,
-    LA_SURF_CLIMB = 111,
-    LA_JUMP_IN = 112,
-    LA_PUSHABLE_GRAB = 120,
-    LA_ROLL = 146,
-    LA_PICKUP_UW = 130,
-    LA_PICKUP = 135,
-    LA_ROLLING_BALL_DEATH = 139,
-    LA_SPIKE_DEATH = 149,
-    LA_GRAB_LEDGE_IN = 150,
-    LA_SPAZ_FORWARD = 125,
-    LA_SPAZ_BACK = 126,
-    LA_SPAZ_RIGHT = 127,
-    LA_SPAZ_LEFT = 128,
-} LARA_ANIMATION;
-
-typedef enum LARA_WATER_STATUS {
-    LWS_ABOVE_WATER = 0,
-    LWS_UNDERWATER = 1,
-    LWS_SURFACE = 2,
-    LWS_CHEAT = 3,
-} LARA_WATER_STATUS;
-
-typedef enum LARA_STATE {
-    LS_WALK = 0,
-    LS_RUN = 1,
-    LS_STOP = 2,
-    LS_JUMP_FORWARD = 3,
-    LS_POSE = 4,
-    LS_FAST_BACK = 5,
-    LS_TURN_R = 6,
-    LS_TURN_L = 7,
-    LS_DEATH = 8,
-    LS_FAST_FALL = 9,
-    LS_HANG = 10,
-    LS_REACH = 11,
-    LS_SPLAT = 12,
-    LS_TREAD = 13,
-    LS_LAND = 14,
-    LS_COMPRESS = 15,
-    LS_BACK = 16,
-    LS_SWIM = 17,
-    LS_GLIDE = 18,
-    LS_CLIMB_UP = 19,
-    LS_FAST_TURN = 20,
-    LS_STEP_RIGHT = 21,
-    LS_STEP_LEFT = 22,
-    LS_HIT = 23,
-    LS_SLIDE = 24,
-    LS_JUMP_BACK = 25,
-    LS_JUMP_RIGHT = 26,
-    LS_JUMP_LEFT = 27,
-    LS_JUMP_UP = 28,
-    LS_FALL_BACK = 29,
-    LS_HANG_LEFT = 30,
-    LS_HANG_RIGHT = 31,
-    LS_SLIDE_BACK = 32,
-    LS_SURF_TREAD = 33,
-    LS_SURF_SWIM = 34,
-    LS_DIVE = 35,
-    LS_PUSH_BLOCK = 36,
-    LS_PULL_BLOCK = 37,
-    LS_PP_READY = 38,
-    LS_PICKUP = 39,
-    LS_SWITCH_ON = 40,
-    LS_SWITCH_OFF = 41,
-    LS_USE_KEY = 42,
-    LS_USE_PUZZLE = 43,
-    LS_UW_DEATH = 44,
-    LS_ROLL = 45,
-    LS_SPECIAL = 46,
-    LS_SURF_BACK = 47,
-    LS_SURF_LEFT = 48,
-    LS_SURF_RIGHT = 49,
-    LS_USE_MIDAS = 50,
-    LS_DIE_MIDAS = 51,
-    LS_SWAN_DIVE = 52,
-    LS_FAST_DIVE = 53,
-    LS_GYMNAST = 54,
-    LS_WATER_OUT = 55,
-    LS_CONTROLLED = 56,
-    LS_TWIST = 57,
-    LS_UW_ROLL = 58,
-} LARA_STATE;
-
-typedef enum LARA_GUN_STATE {
-    LGS_ARMLESS = 0,
-    LGS_HANDS_BUSY = 1,
-    LGS_DRAW = 2,
-    LGS_UNDRAW = 3,
-    LGS_READY = 4,
-} LARA_GUN_STATE;
-
-typedef enum LARA_GUN_TYPE {
-    LGT_UNKNOWN = -1, // for legacy saves
-    LGT_UNARMED = 0,
-    LGT_PISTOLS = 1,
-    LGT_MAGNUMS = 2,
-    LGT_UZIS = 3,
-    LGT_SHOTGUN = 4,
-    NUM_WEAPONS = 5
-} LARA_GUN_TYPE;
-
-typedef enum LARA_MESH {
-    LM_HIPS = 0,
-    LM_THIGH_L = 1,
-    LM_CALF_L = 2,
-    LM_FOOT_L = 3,
-    LM_THIGH_R = 4,
-    LM_CALF_R = 5,
-    LM_FOOT_R = 6,
-    LM_TORSO = 7,
-    LM_UARM_R = 8,
-    LM_LARM_R = 9,
-    LM_HAND_R = 10,
-    LM_UARM_L = 11,
-    LM_LARM_L = 12,
-    LM_HAND_L = 13,
-    LM_HEAD = 14,
-    LM_FIRST = LM_HIPS,
-    LM_NUMBER_OF = 15,
-} LARA_MESH;
-
-typedef enum MOOD_TYPE {
-    MOOD_BORED = 0,
-    MOOD_ATTACK = 1,
-    MOOD_ESCAPE = 2,
-    MOOD_STALK = 3,
-} MOOD_TYPE;
-
 typedef enum TARGET_TYPE {
     TARGET_NONE = 0,
     TARGET_PRIMARY = 1,
@@ -644,14 +448,6 @@ typedef enum TRIGGER_OBJECT {
     TO_FLIPEFFECT = 9,
     TO_SECRET = 10,
 } TRIGGER_OBJECT;
-
-typedef enum ITEM_FLAG {
-    IF_ONESHOT = 0x0100,
-    IF_CODE_BITS = 0x3E00,
-    IF_REVERSE = 0x4000,
-    IF_NOT_VISIBLE = 0x0100,
-    IF_KILLED_ITEM = 0x8000,
-} ITEM_FLAG;
 
 typedef enum INV_MODE {
     INV_GAME_MODE = 0,
@@ -1067,117 +863,6 @@ typedef struct CINE_POSITION {
     XYZ_16 rot;
 } CINE_POSITION;
 
-typedef struct LARA_ARM {
-    FRAME_INFO *frame_base;
-    int16_t frame_num;
-    int16_t lock;
-    XYZ_16 rot;
-    uint16_t flash_gun;
-
-    struct {
-        struct {
-            XYZ_16 rot;
-        } result, prev;
-    } interp;
-} LARA_ARM;
-
-typedef struct AMMO_INFO {
-    int32_t ammo;
-    int32_t hit;
-    int32_t miss;
-} AMMO_INFO;
-
-typedef struct BOX_NODE {
-    int16_t exit_box;
-    uint16_t search_num;
-    int16_t next_expansion;
-    int16_t box_num;
-} BOX_NODE;
-
-typedef struct LOT_INFO {
-    BOX_NODE *node;
-    int16_t head;
-    int16_t tail;
-    uint16_t search_num;
-    uint16_t block_mask;
-    int16_t step;
-    int16_t drop;
-    int16_t fly;
-    int16_t zone_count;
-    int16_t target_box;
-    int16_t required_box;
-    XYZ_32 target;
-} LOT_INFO;
-
-typedef struct FX_INFO {
-    XYZ_32 pos;
-    XYZ_16 rot;
-    int16_t room_num;
-    GAME_OBJECT_ID object_id;
-    int16_t next_draw;
-    int16_t next_active;
-    int16_t next_free;
-    int16_t speed;
-    int16_t fall_speed;
-    int16_t frame_num;
-    int16_t counter;
-    int16_t shade;
-
-    struct {
-        struct {
-            XYZ_32 pos;
-            XYZ_16 rot;
-        } result, prev;
-    } interp;
-} FX_INFO;
-
-typedef struct LARA_INFO {
-    int16_t item_num;
-    int16_t gun_status;
-    LARA_GUN_TYPE gun_type;
-    LARA_GUN_TYPE request_gun_type;
-    LARA_GUN_TYPE holsters_gun_type;
-    LARA_GUN_TYPE back_gun_type;
-    int16_t calc_fall_speed;
-    int16_t water_status;
-    int16_t pose_count;
-    int16_t hit_frame;
-    int16_t hit_direction;
-    int16_t air;
-    int16_t dive_timer;
-    int16_t death_timer;
-    int16_t current_active;
-    int16_t spaz_effect_count;
-    FX_INFO *spaz_effect;
-    int32_t mesh_effects;
-    int16_t *mesh_ptrs[LM_NUMBER_OF];
-    ITEM_INFO *target;
-    PHD_ANGLE target_angles[2];
-    int16_t turn_rate;
-    int16_t move_angle;
-    XYZ_16 head_rot;
-    XYZ_16 torso_rot;
-    LARA_ARM left_arm;
-    LARA_ARM right_arm;
-    AMMO_INFO pistols;
-    AMMO_INFO magnums;
-    AMMO_INFO uzis;
-    AMMO_INFO shotgun;
-    LOT_INFO LOT;
-    struct {
-        int32_t item_num;
-        int32_t move_count;
-        bool is_moving;
-    } interact_target;
-
-    struct {
-        struct {
-            XYZ_16 head_rot;
-            XYZ_16 torso_rot;
-        } result, prev;
-    } interp;
-} LARA_INFO;
-
 typedef struct GAME_STATS {
     uint32_t timer;
     uint32_t death_count;
@@ -1235,17 +920,6 @@ typedef struct GAME_INFO {
     bool inv_ring_above;
     bool ask_for_save;
 } GAME_INFO;
-
-typedef struct CREATURE_INFO {
-    int16_t head_rotation;
-    int16_t neck_rotation;
-    int16_t maximum_turn;
-    uint16_t flags;
-    int16_t item_num;
-    MOOD_TYPE mood;
-    LOT_INFO LOT;
-    XYZ_32 target;
-} CREATURE_INFO;
 
 typedef enum {
     TS_HEADING = 0,
@@ -1435,36 +1109,6 @@ typedef struct CAMERA_INFO {
         int16_t room_num;
     } interp;
 } CAMERA_INFO;
-
-typedef struct ANIM_STRUCT {
-    FRAME_INFO *frame_ptr;
-    uint32_t frame_ofs;
-    int16_t interpolation;
-    int16_t current_anim_state;
-    int32_t velocity;
-    int32_t acceleration;
-    int16_t frame_base;
-    int16_t frame_end;
-    int16_t jump_anim_num;
-    int16_t jump_frame_num;
-    int16_t number_changes;
-    int16_t change_index;
-    int16_t number_commands;
-    int16_t command_index;
-} ANIM_STRUCT;
-
-typedef struct ANIM_CHANGE_STRUCT {
-    int16_t goal_anim_state;
-    int16_t number_ranges;
-    int16_t range_index;
-} ANIM_CHANGE_STRUCT;
-
-typedef struct ANIM_RANGE_STRUCT {
-    int16_t start_frame;
-    int16_t end_frame;
-    int16_t link_anim_num;
-    int16_t link_frame_num;
-} ANIM_RANGE_STRUCT;
 
 typedef struct DOOR_VBUF {
     int32_t xv;

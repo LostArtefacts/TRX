@@ -44,9 +44,9 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     }
 
     int16_t *zone;
-    if (creature->LOT.fly) {
+    if (creature->lot.fly) {
         zone = g_FlyZone[g_FlipStatus];
-    } else if (creature->LOT.step == STEP_L) {
+    } else if (creature->lot.step == STEP_L) {
         zone = g_GroundZone[g_FlipStatus];
     } else {
         zone = g_GroundZone2[g_FlipStatus];
@@ -64,11 +64,11 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
     g_LaraItem->box_num = r->sectors[z_sector + x_sector * r->z_size].box;
     info->enemy_zone = zone[g_LaraItem->box_num];
 
-    if (g_Boxes[g_LaraItem->box_num].overlap_index & creature->LOT.block_mask) {
+    if (g_Boxes[g_LaraItem->box_num].overlap_index & creature->lot.block_mask) {
         info->enemy_zone |= BLOCKED;
     } else if (
-        creature->LOT.node[item->box_num].search_num
-        == (creature->LOT.search_num | BLOCKED_SEARCH)) {
+        creature->lot.node[item->box_num].search_num
+        == (creature->lot.search_num | BLOCKED_SEARCH)) {
         info->enemy_zone |= BLOCKED;
     }
 
@@ -99,18 +99,18 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
         return;
     }
 
-    LOT_INFO *LOT = &creature->LOT;
-    if (LOT->node[item->box_num].search_num
-        == (LOT->search_num | BLOCKED_SEARCH)) {
-        LOT->required_box = NO_BOX;
+    LOT_INFO *lot = &creature->lot;
+    if (lot->node[item->box_num].search_num
+        == (lot->search_num | BLOCKED_SEARCH)) {
+        lot->required_box = NO_BOX;
     }
 
-    if (creature->mood != MOOD_ATTACK && LOT->required_box != NO_BOX
-        && !Box_ValidBox(item, info->zone_num, LOT->target_box)) {
+    if (creature->mood != MOOD_ATTACK && lot->required_box != NO_BOX
+        && !Box_ValidBox(item, info->zone_num, lot->target_box)) {
         if (info->zone_num == info->enemy_zone) {
             creature->mood = MOOD_BORED;
         }
-        LOT->required_box = NO_BOX;
+        lot->required_box = NO_BOX;
     }
 
     MOOD_TYPE mood = creature->mood;
@@ -161,7 +161,7 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
             } else if (info->zone_num == info->enemy_zone) {
                 if (info->distance < ATTACK_RANGE
                     || (creature->mood == MOOD_STALK
-                        && LOT->required_box == NO_BOX)) {
+                        && lot->required_box == NO_BOX)) {
                     creature->mood = MOOD_ATTACK;
                 } else {
                     creature->mood = MOOD_STALK;
@@ -180,50 +180,50 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
 
     if (mood != creature->mood) {
         if (mood == MOOD_ATTACK) {
-            Box_TargetBox(LOT, LOT->target_box);
+            Box_TargetBox(lot, lot->target_box);
         }
-        LOT->required_box = NO_BOX;
+        lot->required_box = NO_BOX;
     }
 
     switch (creature->mood) {
     case MOOD_ATTACK:
         if (Random_GetControl() < g_Objects[item->object_id].smartness) {
-            LOT->target.x = g_LaraItem->pos.x;
-            LOT->target.y = g_LaraItem->pos.y;
-            LOT->target.z = g_LaraItem->pos.z;
-            LOT->required_box = g_LaraItem->box_num;
-            if (LOT->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
+            lot->target.x = g_LaraItem->pos.x;
+            lot->target.y = g_LaraItem->pos.y;
+            lot->target.z = g_LaraItem->pos.z;
+            lot->required_box = g_LaraItem->box_num;
+            if (lot->fly && g_Lara.water_status == LWS_ABOVE_WATER) {
                 const FRAME_INFO *const frame = Item_GetBestFrame(g_LaraItem);
-                LOT->target.y += frame->bounds.min.y;
+                lot->target.y += frame->bounds.min.y;
             }
         }
         break;
 
     case MOOD_BORED: {
         int box_num =
-            LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF].box_num;
+            lot->node[Random_GetControl() * lot->zone_count / 0x7FFF].box_num;
         if (Box_ValidBox(item, info->zone_num, box_num)) {
             if (Box_StalkBox(item, box_num)) {
-                Box_TargetBox(LOT, box_num);
+                Box_TargetBox(lot, box_num);
                 creature->mood = MOOD_STALK;
-            } else if (LOT->required_box == NO_BOX) {
-                Box_TargetBox(LOT, box_num);
+            } else if (lot->required_box == NO_BOX) {
+                Box_TargetBox(lot, box_num);
             }
         }
         break;
     }
 
     case MOOD_STALK: {
-        if (LOT->required_box == NO_BOX
-            || !Box_StalkBox(item, LOT->required_box)) {
+        if (lot->required_box == NO_BOX
+            || !Box_StalkBox(item, lot->required_box)) {
             int box_num =
-                LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF]
+                lot->node[Random_GetControl() * lot->zone_count / 0x7FFF]
                     .box_num;
             if (Box_ValidBox(item, info->zone_num, box_num)) {
                 if (Box_StalkBox(item, box_num)) {
-                    Box_TargetBox(LOT, box_num);
-                } else if (LOT->required_box == NO_BOX) {
-                    Box_TargetBox(LOT, box_num);
+                    Box_TargetBox(lot, box_num);
+                } else if (lot->required_box == NO_BOX) {
+                    Box_TargetBox(lot, box_num);
                     if (info->zone_num != info->enemy_zone) {
                         creature->mood = MOOD_BORED;
                     }
@@ -235,15 +235,15 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
 
     case MOOD_ESCAPE: {
         int box_num =
-            LOT->node[Random_GetControl() * LOT->zone_count / 0x7FFF].box_num;
+            lot->node[Random_GetControl() * lot->zone_count / 0x7FFF].box_num;
         if (Box_ValidBox(item, info->zone_num, box_num)
-            && LOT->required_box == NO_BOX) {
+            && lot->required_box == NO_BOX) {
             if (Box_EscapeBox(item, box_num)) {
-                Box_TargetBox(LOT, box_num);
+                Box_TargetBox(lot, box_num);
             } else if (
                 info->zone_num == info->enemy_zone
                 && Box_StalkBox(item, box_num)) {
-                Box_TargetBox(LOT, box_num);
+                Box_TargetBox(lot, box_num);
                 creature->mood = MOOD_STALK;
             }
         }
@@ -251,11 +251,11 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
     }
     }
 
-    if (LOT->target_box == NO_BOX) {
-        Box_TargetBox(LOT, item->box_num);
+    if (lot->target_box == NO_BOX) {
+        Box_TargetBox(lot, item->box_num);
     }
 
-    Box_CalculateTarget(&creature->target, item, &creature->LOT);
+    Box_CalculateTarget(&creature->target, item, &creature->lot);
 }
 
 int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
@@ -399,7 +399,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     if (!creature) {
         return false;
     }
-    LOT_INFO *LOT = &creature->LOT;
+    LOT_INFO *lot = &creature->lot;
 
     XYZ_32 old = {
         .x = item->pos.x,
@@ -410,9 +410,9 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t box_height = g_Boxes[item->box_num].height;
 
     int16_t *zone;
-    if (LOT->fly) {
+    if (lot->fly) {
         zone = g_FlyZone[g_FlipStatus];
-    } else if (LOT->step == STEP_L) {
+    } else if (lot->step == STEP_L) {
         zone = g_GroundZone[g_FlipStatus];
     } else {
         zone = g_GroundZone2[g_FlipStatus];
@@ -435,7 +435,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     const SECTOR_INFO *sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
     int32_t height = g_Boxes[sector->box].height;
-    int16_t next_box = LOT->node[sector->box].exit_box;
+    int16_t next_box = lot->node[sector->box].exit_box;
     int32_t next_height;
     if (next_box != NO_BOX) {
         next_height = g_Boxes[next_box].height;
@@ -448,7 +448,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t shift_x;
     int32_t shift_z;
     if (sector->box == NO_BOX || zone[item->box_num] != zone[sector->box]
-        || box_height - height > LOT->step || box_height - height < LOT->drop) {
+        || box_height - height > lot->step || box_height - height < lot->drop) {
         pos_x = item->pos.x >> WALL_SHIFT;
 
         shift_x = old.x >> WALL_SHIFT;
@@ -468,7 +468,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
 
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
         height = g_Boxes[sector->box].height;
-        next_box = LOT->node[sector->box].exit_box;
+        next_box = lot->node[sector->box].exit_box;
         if (next_box != NO_BOX) {
             next_height = g_Boxes[next_box].height;
         } else {
@@ -488,19 +488,19 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
 
     if (pos_z < radius) {
         if (Box_BadFloor(
-                x, y, z - radius, height, next_height, room_num, LOT)) {
+                x, y, z - radius, height, next_height, room_num, lot)) {
             shift_z = radius - pos_z;
         }
 
         if (pos_x < radius) {
             if (Box_BadFloor(
-                    x - radius, y, z, height, next_height, room_num, LOT)) {
+                    x - radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = radius - pos_x;
             } else if (
                 !shift_z
                 && Box_BadFloor(
                     x - radius, y, z - radius, height, next_height, room_num,
-                    LOT)) {
+                    lot)) {
                 if (item->rot.y > -PHD_135 && item->rot.y < PHD_45) {
                     shift_z = radius - pos_z;
                 } else {
@@ -509,13 +509,13 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         } else if (pos_x > WALL_L - radius) {
             if (Box_BadFloor(
-                    x + radius, y, z, height, next_height, room_num, LOT)) {
+                    x + radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
                 !shift_z
                 && Box_BadFloor(
                     x + radius, y, z - radius, height, next_height, room_num,
-                    LOT)) {
+                    lot)) {
                 if (item->rot.y > -PHD_45 && item->rot.y < PHD_135) {
                     shift_z = radius - pos_z;
                 } else {
@@ -525,19 +525,19 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         }
     } else if (pos_z > WALL_L - radius) {
         if (Box_BadFloor(
-                x, y, z + radius, height, next_height, room_num, LOT)) {
+                x, y, z + radius, height, next_height, room_num, lot)) {
             shift_z = WALL_L - radius - pos_z;
         }
 
         if (pos_x < radius) {
             if (Box_BadFloor(
-                    x - radius, y, z, height, next_height, room_num, LOT)) {
+                    x - radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = radius - pos_x;
             } else if (
                 !shift_z
                 && Box_BadFloor(
                     x - radius, y, z + radius, height, next_height, room_num,
-                    LOT)) {
+                    lot)) {
                 if (item->rot.y > -PHD_45 && item->rot.y < PHD_135) {
                     shift_x = radius - pos_x;
                 } else {
@@ -546,13 +546,13 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             }
         } else if (pos_x > WALL_L - radius) {
             if (Box_BadFloor(
-                    x + radius, y, z, height, next_height, room_num, LOT)) {
+                    x + radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
                 !shift_z
                 && Box_BadFloor(
                     x + radius, y, z + radius, height, next_height, room_num,
-                    LOT)) {
+                    lot)) {
                 if (item->rot.y > -PHD_135 && item->rot.y < PHD_45) {
                     shift_x = WALL_L - radius - pos_x;
                 } else {
@@ -562,12 +562,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         }
     } else if (pos_x < radius) {
         if (Box_BadFloor(
-                x - radius, y, z, height, next_height, room_num, LOT)) {
+                x - radius, y, z, height, next_height, room_num, lot)) {
             shift_x = radius - pos_x;
         }
     } else if (pos_x > WALL_L - radius) {
         if (Box_BadFloor(
-                x + radius, y, z, height, next_height, room_num, LOT)) {
+                x + radius, y, z, height, next_height, room_num, lot)) {
             shift_x = WALL_L - radius - pos_x;
         }
     }
@@ -589,12 +589,12 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         return true;
     }
 
-    if (LOT->fly) {
+    if (lot->fly) {
         int32_t dy = creature->target.y - item->pos.y;
-        if (dy > LOT->fly) {
-            dy = LOT->fly;
-        } else if (dy < -LOT->fly) {
-            dy = -LOT->fly;
+        if (dy > lot->fly) {
+            dy = lot->fly;
+        } else if (dy < -lot->fly) {
+            dy = -lot->fly;
         }
 
         height = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
@@ -602,7 +602,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
             if (item->pos.y > height) {
                 item->pos.x = old.x;
                 item->pos.z = old.z;
-                dy = -LOT->fly;
+                dy = -lot->fly;
             } else {
                 dy = 0;
                 item->pos.y = height;
@@ -616,7 +616,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
                 if (item->pos.y + min_y < ceiling) {
                     item->pos.x = old.x;
                     item->pos.z = old.z;
-                    dy = LOT->fly;
+                    dy = lot->fly;
                 } else {
                     dy = 0;
                 }

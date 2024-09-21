@@ -20,7 +20,7 @@ void LOT_InitialiseArray(void)
     for (int i = 0; i < NUM_SLOTS; i++) {
         CREATURE_INFO *creature = &m_BaddieSlots[i];
         creature->item_num = NO_ITEM;
-        creature->LOT.node =
+        creature->lot.node =
             GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
     }
     m_SlotsUsed = 0;
@@ -99,43 +99,43 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
     creature->maximum_turn = PHD_DEGREE;
     creature->flags = 0;
 
-    creature->LOT.step = STEP_L;
-    creature->LOT.drop = -STEP_L;
-    creature->LOT.block_mask = BLOCKED;
-    creature->LOT.fly = 0;
+    creature->lot.step = STEP_L;
+    creature->lot.drop = -STEP_L;
+    creature->lot.block_mask = BLOCKED;
+    creature->lot.fly = 0;
 
     switch (item->object_id) {
     case O_BAT:
     case O_ALLIGATOR:
     case O_FISH:
-        creature->LOT.step = WALL_L * 20;
-        creature->LOT.drop = -WALL_L * 20;
-        creature->LOT.fly = STEP_L / 16;
+        creature->lot.step = WALL_L * 20;
+        creature->lot.drop = -WALL_L * 20;
+        creature->lot.fly = STEP_L / 16;
         break;
 
     case O_TREX:
     case O_WARRIOR_1:
     case O_CENTAUR:
-        creature->LOT.block_mask = BLOCKABLE;
+        creature->lot.block_mask = BLOCKABLE;
         break;
 
     case O_WOLF:
     case O_LION:
     case O_LIONESS:
     case O_PUMA:
-        creature->LOT.drop = -WALL_L;
+        creature->lot.drop = -WALL_L;
         break;
 
     case O_APE:
-        creature->LOT.step = STEP_L * 2;
-        creature->LOT.drop = -WALL_L;
+        creature->lot.step = STEP_L * 2;
+        creature->lot.drop = -WALL_L;
         break;
 
     default:
         break;
     }
 
-    LOT_ClearLOT(&creature->LOT);
+    LOT_ClearLOT(&creature->lot);
     LOT_CreateZone(item);
 
     m_SlotsUsed++;
@@ -147,10 +147,10 @@ void LOT_CreateZone(ITEM_INFO *item)
 
     int16_t *zone;
     int16_t *flip;
-    if (creature->LOT.fly) {
+    if (creature->lot.fly) {
         zone = g_FlyZone[0];
         flip = g_FlyZone[1];
-    } else if (creature->LOT.step == STEP_L) {
+    } else if (creature->lot.step == STEP_L) {
         zone = g_GroundZone[0];
         flip = g_GroundZone[1];
     } else {
@@ -166,13 +166,13 @@ void LOT_CreateZone(ITEM_INFO *item)
     int16_t zone_num = zone[item->box_num];
     int16_t flip_num = flip[item->box_num];
 
-    creature->LOT.zone_count = 0;
-    BOX_NODE *node = creature->LOT.node;
+    creature->lot.zone_count = 0;
+    BOX_NODE *node = creature->lot.node;
     for (int i = 0; i < g_NumberBoxes; i++) {
         if (zone[i] == zone_num || flip[i] == flip_num) {
             node->box_num = i;
             node++;
-            creature->LOT.zone_count++;
+            creature->lot.zone_count++;
         }
     }
 }

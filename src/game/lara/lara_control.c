@@ -41,7 +41,7 @@ static void M_WaterCurrent(COLL_INFO *coll)
               + ((item->pos.x - r->x) >> WALL_SHIFT) * r->z_size];
     item->box_num = sector->box;
 
-    if (Box_CalculateTarget(&target, item, &g_Lara.LOT) == TARGET_NONE) {
+    if (Box_CalculateTarget(&target, item, &g_Lara.lot) == TARGET_NONE) {
         return;
     }
 
@@ -290,7 +290,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         M_WaterCurrent(coll);
     } else {
-        LOT_ClearLOT(&g_Lara.LOT);
+        LOT_ClearLOT(&g_Lara.lot);
     }
 
     Lara_Animate(item);
@@ -362,7 +362,7 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
         M_WaterCurrent(coll);
     } else {
-        LOT_ClearLOT(&g_Lara.LOT);
+        LOT_ClearLOT(&g_Lara.lot);
     }
 
     Lara_Animate(item);

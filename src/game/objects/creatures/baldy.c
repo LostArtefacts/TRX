@@ -46,7 +46,7 @@ void Baldy_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx] |= BEB_ROT_Y;
 }
 
 void Baldy_Initialise(int16_t item_num)

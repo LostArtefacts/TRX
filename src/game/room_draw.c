@@ -254,9 +254,9 @@ static void M_DrawSkybox(void)
     g_MatrixPtr->_23 = 0;
 
     const OBJECT_INFO skybox = g_Objects[O_SKYBOX];
-    const FRAME_INFO *const frame = g_Anims[skybox.anim_index].frame_ptr;
+    const FRAME_INFO *const frame = g_Anims[skybox.anim_idx].frame_ptr;
     Matrix_RotYXZpack(frame->mesh_rots[0]);
-    Output_DrawSkybox(g_Meshes[skybox.mesh_index]);
+    Output_DrawSkybox(g_Meshes[skybox.mesh_idx]);
 
     Matrix_Pop();
 }

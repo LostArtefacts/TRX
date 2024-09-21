@@ -309,11 +309,10 @@ static void M_LoadAnims(VFILE *file)
     m_LevelInfo.anim_count = VFile_ReadS32(file);
     LOG_INFO("%d anims", m_LevelInfo.anim_count);
     g_Anims = GameBuf_Alloc(
-        sizeof(ANIM_STRUCT)
-            * (m_LevelInfo.anim_count + m_InjectionInfo->anim_count),
+        sizeof(ANIM) * (m_LevelInfo.anim_count + m_InjectionInfo->anim_count),
         GBUF_ANIMS);
     for (int i = 0; i < m_LevelInfo.anim_count; i++) {
-        ANIM_STRUCT *anim = g_Anims + i;
+        ANIM *anim = g_Anims + i;
 
         anim->frame_ofs = VFile_ReadU32(file);
         anim->interpolation = VFile_ReadS16(file);
@@ -324,10 +323,10 @@ static void M_LoadAnims(VFILE *file)
         anim->frame_end = VFile_ReadS16(file);
         anim->jump_anim_num = VFile_ReadS16(file);
         anim->jump_frame_num = VFile_ReadS16(file);
-        anim->number_changes = VFile_ReadS16(file);
-        anim->change_index = VFile_ReadS16(file);
-        anim->number_commands = VFile_ReadS16(file);
-        anim->command_index = VFile_ReadS16(file);
+        anim->num_changes = VFile_ReadS16(file);
+        anim->change_idx = VFile_ReadS16(file);
+        anim->num_commands = VFile_ReadS16(file);
+        anim->command_idx = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
@@ -338,15 +337,15 @@ static void M_LoadAnimChanges(VFILE *file)
     m_LevelInfo.anim_change_count = VFile_ReadS32(file);
     LOG_INFO("%d anim changes", m_LevelInfo.anim_change_count);
     g_AnimChanges = GameBuf_Alloc(
-        sizeof(ANIM_CHANGE_STRUCT)
+        sizeof(ANIM_CHANGE)
             * (m_LevelInfo.anim_change_count
                + m_InjectionInfo->anim_change_count),
         GBUF_ANIM_CHANGES);
     for (int32_t i = 0; i < m_LevelInfo.anim_change_count; i++) {
-        ANIM_CHANGE_STRUCT *anim_change = &g_AnimChanges[i];
+        ANIM_CHANGE *anim_change = &g_AnimChanges[i];
         anim_change->goal_anim_state = VFile_ReadS16(file);
-        anim_change->number_ranges = VFile_ReadS16(file);
-        anim_change->range_index = VFile_ReadS16(file);
+        anim_change->num_ranges = VFile_ReadS16(file);
+        anim_change->range_idx = VFile_ReadS16(file);
     }
     Benchmark_End(benchmark, NULL);
 }
@@ -357,12 +356,12 @@ static void M_LoadAnimRanges(VFILE *file)
     m_LevelInfo.anim_range_count = VFile_ReadS32(file);
     LOG_INFO("%d anim ranges", m_LevelInfo.anim_range_count);
     g_AnimRanges = GameBuf_Alloc(
-        sizeof(ANIM_RANGE_STRUCT)
+        sizeof(ANIM_RANGE)
             * (m_LevelInfo.anim_range_count
                + m_InjectionInfo->anim_range_count),
         GBUF_ANIM_RANGES);
     for (int32_t i = 0; i < m_LevelInfo.anim_range_count; i++) {
-        ANIM_RANGE_STRUCT *anim_range = &g_AnimRanges[i];
+        ANIM_RANGE *anim_range = &g_AnimRanges[i];
         anim_range->start_frame = VFile_ReadS16(file);
         anim_range->end_frame = VFile_ReadS16(file);
         anim_range->link_anim_num = VFile_ReadS16(file);
@@ -463,7 +462,7 @@ static void M_LoadAnimFrames(VFILE *file)
     Memory_FreePointer(&raw_data);
 
     for (int i = 0; i < m_LevelInfo.anim_count; i++) {
-        ANIM_STRUCT *anim = &g_Anims[i];
+        ANIM *anim = &g_Anims[i];
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
             if (m_LevelInfo.anim_frame_offsets[j] == (signed)anim->frame_ofs) {
@@ -488,11 +487,11 @@ static void M_LoadObjects(VFILE *file)
         OBJECT_INFO *object = &g_Objects[object_id];
 
         object->nmeshes = VFile_ReadS16(file);
-        object->mesh_index = VFile_ReadS16(file);
-        object->bone_index = VFile_ReadS32(file);
+        object->mesh_idx = VFile_ReadS16(file);
+        object->bone_idx = VFile_ReadS32(file);
 
         const int32_t frame_offset = VFile_ReadS32(file);
-        object->anim_index = VFile_ReadS16(file);
+        object->anim_idx = VFile_ReadS16(file);
 
         bool found = false;
         for (int j = 0; j < m_LevelInfo.anim_frame_count; j++) {
@@ -582,17 +581,17 @@ static void M_LoadSprites(VFILE *file)
     for (int i = 0; i < m_LevelInfo.sprite_count; i++) {
         const GAME_OBJECT_ID object_id = VFile_ReadS32(file);
         const int16_t num_meshes = VFile_ReadS16(file);
-        const int16_t mesh_index = VFile_ReadS16(file);
+        const int16_t mesh_idx = VFile_ReadS16(file);
 
         if (object_id < O_NUMBER_OF) {
             OBJECT_INFO *object = &g_Objects[object_id];
             object->nmeshes = num_meshes;
-            object->mesh_index = mesh_index;
+            object->mesh_idx = mesh_idx;
             object->loaded = 1;
         } else if (object_id - O_NUMBER_OF < STATIC_NUMBER_OF) {
             STATIC_INFO *object = &g_StaticObjects[object_id - O_NUMBER_OF];
             object->nmeshes = num_meshes;
-            object->mesh_num = mesh_index;
+            object->mesh_num = mesh_idx;
             object->loaded = true;
         }
     }
@@ -1019,7 +1018,7 @@ static size_t M_CalculateMaxVertices(void)
 
         for (int32_t j = 0; j < object_info->nmeshes; j++) {
             max_vertices =
-                MAX(max_vertices, *(g_Meshes[object_info->mesh_index + j] + 5));
+                MAX(max_vertices, *(g_Meshes[object_info->mesh_idx + j] + 5));
         }
     }
 

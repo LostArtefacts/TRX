@@ -111,7 +111,7 @@ static COMMAND_RESULT M_Entrypoint(const char *const args)
                 continue;
             }
 
-            if (item->flags & IF_KILLED_ITEM) {
+            if (item->flags & IF_KILLED) {
                 continue;
             }
 

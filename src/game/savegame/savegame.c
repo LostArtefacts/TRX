@@ -131,20 +131,20 @@ static void M_LoadPostprocess(void)
         }
 
         if (item->object_id == O_PIERRE && item->hit_points <= 0
-            && (item->flags & IF_ONESHOT)) {
-            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONESHOT;
+            && (item->flags & IF_ONE_SHOT)) {
+            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONE_SHOT;
         }
 
         if (item->object_id == O_COWBOY && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONE_SHOT;
         }
 
         if (item->object_id == O_BALDY && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONE_SHOT;
         }
 
         if (item->object_id == O_LARSON && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONESHOT;
+            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONE_SHOT;
         }
     }
 
@@ -152,7 +152,7 @@ static void M_LoadPostprocess(void)
         g_Config.profile.new_game_plus_unlock = true;
     }
 
-    LOT_ClearLOT(&g_Lara.LOT);
+    LOT_ClearLOT(&g_Lara.lot);
 }
 
 void Savegame_Init(void)

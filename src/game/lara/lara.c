@@ -31,6 +31,11 @@
 #define LARA_MOVE_SPEED 16
 #define LARA_UW_DAMAGE 5
 
+LARA_INFO *Lara_GetLaraInfo(void)
+{
+    return &g_Lara;
+}
+
 ITEM_INFO *Lara_GetItem(void)
 {
     return g_LaraItem;
@@ -222,25 +227,25 @@ void Lara_SwapMeshExtra(void)
 
 void Lara_SwapSingleMesh(const LARA_MESH mesh, const GAME_OBJECT_ID object_id)
 {
-    g_Lara.mesh_ptrs[mesh] = g_Meshes[g_Objects[object_id].mesh_index + mesh];
+    g_Lara.mesh_ptrs[mesh] = g_Meshes[g_Objects[object_id].mesh_idx + mesh];
 }
 
 void Lara_Animate(ITEM_INFO *item)
 {
     int16_t *command;
-    ANIM_STRUCT *anim;
+    ANIM *anim;
 
     item->frame_num++;
     anim = &g_Anims[item->anim_num];
-    if (anim->number_changes > 0 && Item_GetAnimChange(item, anim)) {
+    if (anim->num_changes > 0 && Item_GetAnimChange(item, anim)) {
         anim = &g_Anims[item->anim_num];
         item->current_anim_state = anim->current_anim_state;
     }
 
     if (item->frame_num > anim->frame_end) {
-        if (anim->number_commands > 0) {
-            command = &g_AnimCommands[anim->command_index];
-            for (int i = 0; i < anim->number_commands; i++) {
+        if (anim->num_commands > 0) {
+            command = &g_AnimCommands[anim->command_idx];
+            for (int i = 0; i < anim->num_commands; i++) {
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
                     Item_Translate(item, command[0], command[1], command[2]);
@@ -277,9 +282,9 @@ void Lara_Animate(ITEM_INFO *item)
         item->current_anim_state = anim->current_anim_state;
     }
 
-    if (anim->number_commands > 0) {
-        command = &g_AnimCommands[anim->command_index];
-        for (int i = 0; i < anim->number_commands; i++) {
+    if (anim->num_commands > 0) {
+        command = &g_AnimCommands[anim->command_idx];
+        for (int i = 0; i < anim->num_commands; i++) {
             switch (*command++) {
             case AC_MOVE_ORIGIN:
                 command += 3;
@@ -503,10 +508,10 @@ void Lara_Initialise(int32_t level_num)
 
     g_Lara.current_active = 0;
 
-    LOT_InitialiseLOT(&g_Lara.LOT);
-    g_Lara.LOT.step = WALL_L * 20;
-    g_Lara.LOT.drop = -WALL_L * 20;
-    g_Lara.LOT.fly = STEP_L;
+    LOT_InitialiseLOT(&g_Lara.lot);
+    g_Lara.lot.step = WALL_L * 20;
+    g_Lara.lot.drop = -WALL_L * 20;
+    g_Lara.lot.fly = STEP_L;
 
     Lara_InitialiseInventory(level_num);
 }

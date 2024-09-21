@@ -57,7 +57,7 @@ void Pierre_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 24] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 24] |= BEB_ROT_Y;
 }
 
 void Pierre_Control(int16_t item_num)
@@ -69,8 +69,8 @@ void Pierre_Control(int16_t item_num)
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
             ITEM_INFO *old_pierre = &g_Items[m_PierreItemNum];
-            if (old_pierre->flags & IF_ONESHOT) {
-                if (!(item->flags & IF_ONESHOT)) {
+            if (old_pierre->flags & IF_ONE_SHOT) {
+                if (!(item->flags & IF_ONE_SHOT)) {
                     Item_Kill(item_num);
                 }
             } else {
@@ -82,7 +82,7 @@ void Pierre_Control(int16_t item_num)
         if (m_PierreItemNum == NO_ITEM) {
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
-            if (item->flags & IF_ONESHOT) {
+            if (item->flags & IF_ONE_SHOT) {
                 Item_Kill(m_PierreItemNum);
             } else {
                 Item_Kill(item_num);
@@ -103,7 +103,7 @@ void Pierre_Control(int16_t item_num)
     int16_t tilt = 0;
 
     if (item->hit_points <= PIERRE_RUN_HITPOINTS
-        && !(item->flags & IF_ONESHOT)) {
+        && !(item->flags & IF_ONE_SHOT)) {
         item->hit_points = PIERRE_RUN_HITPOINTS;
         pierre->flags++;
     }

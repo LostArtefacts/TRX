@@ -336,7 +336,7 @@ void Object_DrawSpriteItem(ITEM_INFO *item)
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z,
-        g_Objects[item->object_id].mesh_index - item->frame_num, item->shade);
+        g_Objects[item->object_id].mesh_idx - item->frame_num, item->shade);
 }
 
 void Object_DrawPickupItem(ITEM_INFO *item)
@@ -385,8 +385,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         // No, now we need to move it a bit.
         // First get the sprite that was to be used,
 
-        int16_t spr_num =
-            g_Objects[item->object_id].mesh_index - item->frame_num;
+        int16_t spr_num = g_Objects[item->object_id].mesh_idx - item->frame_num;
         PHD_SPRITE *sprite = &g_PhdSpriteInfo[spr_num];
 
         // and get the animation bounding box, which is not the mesh one.
@@ -456,8 +455,8 @@ void Object_DrawPickupItem(ITEM_INFO *item)
         // of the code in DrawAnimatingItem starting with the line that
         // matches the following line.
         int32_t bit = 1;
-        int16_t **meshpp = &g_Meshes[object->mesh_index];
-        int32_t *bone = &g_AnimBones[object->bone_index];
+        int16_t **meshpp = &g_Meshes[object->mesh_idx];
+        int32_t *bone = &g_AnimBones[object->bone_idx];
 
         Matrix_TranslateRel(frame->offset.x, frame->offset.y, frame->offset.z);
 
@@ -509,8 +508,8 @@ void Object_DrawInterpolatedObject(
 
     Matrix_Push();
     int32_t mesh_num = 1;
-    int16_t **meshpp = &g_Meshes[object->mesh_index];
-    int32_t *bone = &g_AnimBones[object->bone_index];
+    int16_t **meshpp = &g_Meshes[object->mesh_idx];
+    int32_t *bone = &g_AnimBones[object->bone_idx];
 
     assert(rate);
     if (!frac) {
@@ -660,7 +659,7 @@ void Object_SetMeshReflective(
     if (!object->loaded) {
         return;
     }
-    int16_t *obj_ptr = g_Meshes[object->mesh_index + mesh_idx];
+    int16_t *obj_ptr = g_Meshes[object->mesh_idx + mesh_idx];
 
     TOGGLE_REFLECTION_ENABLED(obj_ptr[3], enabled);
 

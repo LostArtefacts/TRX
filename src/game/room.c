@@ -57,7 +57,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     // handle g_Lara gym routines
     switch (track) {
     case MX_GYM_HINT_03:
-        if ((g_MusicTrackFlags[track] & IF_ONESHOT)
+        if ((g_MusicTrackFlags[track] & IF_ONE_SHOT)
             && g_LaraItem->current_anim_state == LS_JUMP_UP) {
             track = MX_GYM_HINT_04;
         }
@@ -76,7 +76,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         break;
 
     case MX_GYM_HINT_17:
-        if ((g_MusicTrackFlags[track] & IF_ONESHOT)
+        if ((g_MusicTrackFlags[track] & IF_ONE_SHOT)
             && g_LaraItem->current_anim_state == LS_HANG) {
             track = MX_GYM_HINT_18;
         }
@@ -89,7 +89,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         break;
 
     case MX_GYM_HINT_25:
-        if (g_MusicTrackFlags[track] & IF_ONESHOT) {
+        if (g_MusicTrackFlags[track] & IF_ONE_SHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
             if (gym_completion_counter == LOGIC_FPS * 4) {
@@ -103,7 +103,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
     // end of g_Lara gym routines
 
-    if (g_MusicTrackFlags[track] & IF_ONESHOT) {
+    if (g_MusicTrackFlags[track] & IF_ONE_SHOT) {
         return;
     }
 
@@ -117,7 +117,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 
     if ((g_MusicTrackFlags[track] & IF_CODE_BITS) == IF_CODE_BITS) {
         if (trigger->one_shot) {
-            g_MusicTrackFlags[track] |= IF_ONESHOT;
+            g_MusicTrackFlags[track] |= IF_ONE_SHOT;
         }
         Music_Play(track);
     } else {
@@ -676,7 +676,7 @@ void Room_PopulateSectorData(
             const int16_t trig_setup = *data++;
             trigger->type = TRIG_TYPE(fd_entry);
             trigger->timer = trig_setup & 0xFF;
-            trigger->one_shot = trig_setup & IF_ONESHOT;
+            trigger->one_shot = trig_setup & IF_ONE_SHOT;
             trigger->mask = trig_setup & IF_CODE_BITS;
             trigger->item_index = NO_ITEM;
             trigger->command_count = 0;
@@ -721,7 +721,7 @@ void Room_PopulateSectorData(
                     command = *command_data++;
                     cam_data->timer = command & 0xFF;
                     cam_data->glide = (command & IF_CODE_BITS) >> 6;
-                    cam_data->one_shot = command & IF_ONESHOT;
+                    cam_data->one_shot = command & IF_ONE_SHOT;
                 } else {
                     cmd->parameter = (void *)(intptr_t)(command & VALUE_BITS);
                 }
@@ -857,7 +857,7 @@ static void M_TestSectorTrigger(
         case TO_OBJECT: {
             const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
             ITEM_INFO *const item = &g_Items[item_num];
-            if (item->flags & IF_ONESHOT) {
+            if (item->flags & IF_ONE_SHOT) {
                 break;
             }
 
@@ -879,7 +879,7 @@ static void M_TestSectorTrigger(
             }
 
             if (trigger->one_shot) {
-                item->flags |= IF_ONESHOT;
+                item->flags |= IF_ONE_SHOT;
             }
 
             if (!item->active) {
@@ -910,7 +910,7 @@ static void M_TestSectorTrigger(
         case TO_CAMERA: {
             const TRIGGER_CAMERA_DATA *const cam_data =
                 (TRIGGER_CAMERA_DATA *)cmd->parameter;
-            if (g_Camera.fixed[cam_data->camera_num].flags & IF_ONESHOT) {
+            if (g_Camera.fixed[cam_data->camera_num].flags & IF_ONE_SHOT) {
                 break;
             }
 
@@ -939,7 +939,7 @@ static void M_TestSectorTrigger(
             }
 
             if (cam_data->one_shot) {
-                g_Camera.fixed[g_Camera.number].flags |= IF_ONESHOT;
+                g_Camera.fixed[g_Camera.number].flags |= IF_ONE_SHOT;
             }
 
             g_Camera.speed = cam_data->glide + 1;
@@ -955,11 +955,11 @@ static void M_TestSectorTrigger(
             const OBJECT_VECTOR *const obvector =
                 &g_Camera.fixed[(int16_t)(intptr_t)cmd->parameter];
 
-            if (g_Lara.LOT.required_box != obvector->flags) {
-                g_Lara.LOT.target.x = obvector->x;
-                g_Lara.LOT.target.y = obvector->y;
-                g_Lara.LOT.target.z = obvector->z;
-                g_Lara.LOT.required_box = obvector->flags;
+            if (g_Lara.lot.required_box != obvector->flags) {
+                g_Lara.lot.target.x = obvector->x;
+                g_Lara.lot.target.y = obvector->y;
+                g_Lara.lot.target.z = obvector->z;
+                g_Lara.lot.required_box = obvector->flags;
             }
 
             g_Lara.current_active = obvector->data * 6;
@@ -968,7 +968,7 @@ static void M_TestSectorTrigger(
 
         case TO_FLIPMAP: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            if (g_FlipMapTable[flip_slot] & IF_ONESHOT) {
+            if (g_FlipMapTable[flip_slot] & IF_ONE_SHOT) {
                 break;
             }
 
@@ -980,7 +980,7 @@ static void M_TestSectorTrigger(
 
             if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS) {
                 if (trigger->one_shot) {
-                    g_FlipMapTable[flip_slot] |= IF_ONESHOT;
+                    g_FlipMapTable[flip_slot] |= IF_ONE_SHOT;
                 }
 
                 if (!g_FlipStatus) {

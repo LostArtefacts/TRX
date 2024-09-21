@@ -107,7 +107,7 @@ void Interpolation_Commit(void)
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM_INFO *const item = &g_Items[i];
-        if ((item->flags & IF_KILLED_ITEM) || item->status == IS_NOT_ACTIVE
+        if ((item->flags & IF_KILLED) || item->status == IS_NOT_ACTIVE
             || item->object_id == O_BAT) {
             COMMIT(item, pos.x);
             COMMIT(item, pos.y);

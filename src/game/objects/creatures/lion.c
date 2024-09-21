@@ -57,7 +57,7 @@ static void M_SetupBase(OBJECT_INFO *const obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 76] |= BEB_ROT_Y;
+    g_AnimBones[obj->bone_idx + 76] |= BEB_ROT_Y;
 }
 
 void Lion_SetupLion(OBJECT_INFO *obj)
@@ -112,10 +112,10 @@ void Lion_Control(int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != LION_DEATH) {
             item->current_anim_state = LION_DEATH;
-            int16_t anim_index =
+            int16_t anim_idx =
                 item->object_id == O_PUMA ? PUMA_DIE_ANIM : LION_DIE_ANIM;
             Item_SwitchToAnim(
-                item, anim_index + (int16_t)(Random_GetControl() / 0x4000), 0);
+                item, anim_idx + (int16_t)(Random_GetControl() / 0x4000), 0);
         }
     } else {
         AI_INFO info;

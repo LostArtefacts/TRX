@@ -60,7 +60,7 @@ void Natla_Setup(OBJECT_INFO *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    g_AnimBones[obj->bone_index + 8] |= BEB_ROT_Z | BEB_ROT_X;
+    g_AnimBones[obj->bone_idx + 8] |= BEB_ROT_Z | BEB_ROT_X;
 }
 
 void Natla_Control(int16_t item_num)
@@ -85,9 +85,9 @@ void Natla_Control(int16_t item_num)
     if (item->hit_points <= 0 && item->hit_points > DONT_TARGET) {
         item->goal_anim_state = NATLA_DEATH;
     } else if (item->hit_points <= NATLA_NEAR_DEATH) {
-        natla->LOT.step = STEP_L;
-        natla->LOT.drop = -STEP_L;
-        natla->LOT.fly = 0;
+        natla->lot.step = STEP_L;
+        natla->lot.drop = -STEP_L;
+        natla->lot.fly = 0;
 
         AI_INFO info;
         Creature_AIInfo(item, &info);
@@ -185,9 +185,9 @@ void Natla_Control(int16_t item_num)
             break;
         }
     } else {
-        natla->LOT.step = STEP_L;
-        natla->LOT.drop = -STEP_L;
-        natla->LOT.fly = 0;
+        natla->lot.step = STEP_L;
+        natla->lot.drop = -STEP_L;
+        natla->lot.fly = 0;
 
         AI_INFO info;
         Creature_AIInfo(item, &info);
@@ -203,9 +203,9 @@ void Natla_Control(int16_t item_num)
             if (!(natla->flags & NATLA_FLY_MODE)) {
                 Creature_Mood(item, &info, true);
             }
-            natla->LOT.step = WALL_L * 20;
-            natla->LOT.drop = -WALL_L * 20;
-            natla->LOT.fly = STEP_L / 8;
+            natla->lot.step = WALL_L * 20;
+            natla->lot.drop = -WALL_L * 20;
+            natla->lot.fly = STEP_L / 8;
             Creature_AIInfo(item, &info);
         } else if (!shoot) {
             natla->flags |= NATLA_FLY_MODE;

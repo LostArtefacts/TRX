@@ -367,7 +367,7 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     Sound_Effect(SFX_EXPLOSION_CHEAT, &item->pos, SPM_NORMAL);
     Item_Kill(item_num);
     LOT_DisableBaddieAI(item_num);
-    item->flags |= IF_ONESHOT;
+    item->flags |= IF_ONE_SHOT;
     Carrier_TestItemDrops(item_num);
     return true;
 }

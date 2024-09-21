@@ -58,6 +58,8 @@ void MidasTouch_Collision(
     case DIR_WEST:
         item->rot.y = -PHD_90;
         break;
+    default:
+        break;
     }
 
     if (lara_item->current_anim_state == LS_USE_MIDAS

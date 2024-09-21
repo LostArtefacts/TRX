@@ -44,7 +44,7 @@ void Statue_Initialise(int16_t item_num)
     centaur->pos.x = item->pos.x;
     centaur->pos.y = item->pos.y;
     centaur->pos.z = item->pos.z;
-    centaur->flags = IF_NOT_VISIBLE;
+    centaur->flags = IF_INVISIBLE;
     centaur->shade = -1;
 
     Item_Initialise(centaur_item_num);
@@ -63,7 +63,7 @@ void Statue_Initialise(int16_t item_num)
 void Statue_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
-    if (item->flags & IF_KILLED_ITEM) {
+    if (item->flags & IF_KILLED) {
         return;
     }
 

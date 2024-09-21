@@ -30,7 +30,7 @@ void BaconLara_Setup(OBJECT_INFO *obj)
 
 void BaconLara_Initialise(int16_t item_num)
 {
-    g_Objects[O_BACON_LARA].anim_index = g_Objects[O_LARA].anim_index;
+    g_Objects[O_BACON_LARA].anim_idx = g_Objects[O_LARA].anim_idx;
     g_Objects[O_BACON_LARA].frame_base = g_Objects[O_LARA].frame_base;
     g_Items[item_num].data = NULL;
 }
@@ -78,7 +78,7 @@ void BaconLara_Control(int16_t item_num)
             sector, g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z);
 
         int16_t relative_anim =
-            g_LaraItem->anim_num - g_Objects[g_LaraItem->object_id].anim_index;
+            g_LaraItem->anim_num - g_Objects[g_LaraItem->object_id].anim_idx;
         int16_t relative_frame =
             g_LaraItem->frame_num - g_Anims[g_LaraItem->anim_num].frame_base;
         Item_SwitchToObjAnim(item, relative_anim, relative_frame, O_LARA);

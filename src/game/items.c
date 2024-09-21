@@ -81,14 +81,14 @@ void Item_Kill(int16_t item_num)
     }
 
     item->hit_points = -1;
-    item->flags |= IF_KILLED_ITEM;
+    item->flags |= IF_KILLED;
     if (item_num >= g_LevelItemCount) {
         item->next_item = m_NextItemFree;
         m_NextItemFree = item_num;
     }
 
     while (m_MaxUsedItemCount > 0
-           && g_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED_ITEM) {
+           && g_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED) {
         m_MaxUsedItemCount--;
     }
 }
@@ -131,9 +131,9 @@ void Item_Initialise(int16_t item_num)
     item->priv = NULL;
     item->carried_item = NULL;
 
-    if (item->flags & IF_NOT_VISIBLE) {
+    if (item->flags & IF_INVISIBLE) {
         item->status = IS_INVISIBLE;
-        item->flags &= ~IF_NOT_VISIBLE;
+        item->flags &= ~IF_INVISIBLE;
     }
 
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
@@ -548,21 +548,20 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
-bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_index)
+bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_idx)
 {
-    return item->anim_num == g_Objects[item->object_id].anim_index + anim_index;
+    return item->anim_num == g_Objects[item->object_id].anim_idx + anim_idx;
 }
 
-void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_index, int16_t frame)
+void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_idx, int16_t frame)
 {
-    Item_SwitchToObjAnim(item, anim_index, frame, item->object_id);
+    Item_SwitchToObjAnim(item, anim_idx, frame, item->object_id);
 }
 
 void Item_SwitchToObjAnim(
-    ITEM_INFO *item, int16_t anim_index, int16_t frame,
-    GAME_OBJECT_ID object_id)
+    ITEM_INFO *item, int16_t anim_idx, int16_t frame, GAME_OBJECT_ID object_id)
 {
-    item->anim_num = g_Objects[object_id].anim_index + anim_index;
+    item->anim_num = g_Objects[object_id].anim_idx + anim_idx;
     if (frame < 0) {
         item->frame_num = g_Anims[item->anim_num].frame_end + frame + 1;
     } else {
@@ -575,11 +574,11 @@ void Item_Animate(ITEM_INFO *item)
     item->touch_bits = 0;
     item->hit_status = 0;
 
-    ANIM_STRUCT *anim = &g_Anims[item->anim_num];
+    ANIM *anim = &g_Anims[item->anim_num];
 
     item->frame_num++;
 
-    if (anim->number_changes > 0) {
+    if (anim->num_changes > 0) {
         if (Item_GetAnimChange(item, anim)) {
             anim = &g_Anims[item->anim_num];
             item->current_anim_state = anim->current_anim_state;
@@ -591,9 +590,9 @@ void Item_Animate(ITEM_INFO *item)
     }
 
     if (item->frame_num > anim->frame_end) {
-        if (anim->number_commands > 0) {
-            int16_t *command = &g_AnimCommands[anim->command_index];
-            for (int i = 0; i < anim->number_commands; i++) {
+        if (anim->num_commands > 0) {
+            int16_t *command = &g_AnimCommands[anim->command_idx];
+            for (int i = 0; i < anim->num_commands; i++) {
                 switch (*command++) {
                 case AC_MOVE_ORIGIN:
                     Item_Translate(item, command[0], command[1], command[2]);
@@ -630,9 +629,9 @@ void Item_Animate(ITEM_INFO *item)
         }
     }
 
-    if (anim->number_commands > 0) {
-        int16_t *command = &g_AnimCommands[anim->command_index];
-        for (int i = 0; i < anim->number_commands; i++) {
+    if (anim->num_commands > 0) {
+        int16_t *command = &g_AnimCommands[anim->command_idx];
+        for (int i = 0; i < anim->num_commands; i++) {
             switch (*command++) {
             case AC_MOVE_ORIGIN:
                 command += 3;
@@ -673,17 +672,17 @@ void Item_Animate(ITEM_INFO *item)
     item->pos.z += (Math_Cos(item->rot.y) * item->speed) >> W2V_SHIFT;
 }
 
-bool Item_GetAnimChange(ITEM_INFO *item, ANIM_STRUCT *anim)
+bool Item_GetAnimChange(ITEM_INFO *item, ANIM *anim)
 {
     if (item->current_anim_state == item->goal_anim_state) {
         return false;
     }
 
-    ANIM_CHANGE_STRUCT *change = &g_AnimChanges[anim->change_index];
-    for (int i = 0; i < anim->number_changes; i++, change++) {
+    ANIM_CHANGE *change = &g_AnimChanges[anim->change_idx];
+    for (int i = 0; i < anim->num_changes; i++, change++) {
         if (change->goal_anim_state == item->goal_anim_state) {
-            ANIM_RANGE_STRUCT *range = &g_AnimRanges[change->range_index];
-            for (int j = 0; j < change->number_ranges; j++, range++) {
+            ANIM_RANGE *range = &g_AnimRanges[change->range_idx];
+            for (int j = 0; j < change->num_ranges; j++, range++) {
                 if (Item_TestFrameRange(
                         item,
                         range->start_frame - g_Anims[item->anim_num].frame_base,
@@ -781,7 +780,7 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item)
 int32_t Item_GetFrames(
     const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate)
 {
-    const ANIM_STRUCT *anim = &g_Anims[item->anim_num];
+    const ANIM *anim = &g_Anims[item->anim_num];
 
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;

@@ -495,7 +495,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
 
     OBJECT_INFO *obj = &g_Objects[inv_item->object_id];
     if (obj->nmeshes < 0) {
-        Output_DrawSpriteRel(0, 0, 0, obj->mesh_index, 4096);
+        Output_DrawSpriteRel(0, 0, 0, obj->mesh_idx, 4096);
         return;
     }
 
@@ -518,8 +518,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
                     Output_DrawScreenSprite(
                         sx + spr->x, sy + spr->y, spr->z, spr->param1,
                         spr->param2,
-                        g_Objects[O_ALPHABET].mesh_index + spr->sprnum, 4096,
-                        0);
+                        g_Objects[O_ALPHABET].mesh_idx + spr->sprnum, 4096, 0);
                     break;
                 case SHAPE_LINE:
                     Output_DrawScreenLine(
@@ -551,7 +550,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
     const int32_t frac = InvItem_GetFrames(inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_id == O_MAP_OPTION) {
         const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
-        int32_t *const bone = &g_AnimBones[obj->bone_index];
+        int32_t *const bone = &g_AnimBones[obj->bone_idx];
         bone[0] |= BEB_ROT_Y;
         Object_DrawInterpolatedObject(
             obj, inv_item->drawn_meshes, extra_rotation, frame1, frame2, frac,

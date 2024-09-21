@@ -135,7 +135,7 @@ void ThorsHammerHandle_Control(int16_t item_num)
 
     ITEM_INFO *head_item = item->data;
     int16_t relative_anim =
-        item->anim_num - g_Objects[item->object_id].anim_index;
+        item->anim_num - g_Objects[item->object_id].anim_idx;
     int16_t relative_frame =
         item->frame_num - g_Anims[item->anim_num].frame_base;
     Item_SwitchToAnim(head_item, relative_anim, relative_frame);

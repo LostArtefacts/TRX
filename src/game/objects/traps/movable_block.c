@@ -116,6 +116,8 @@ static bool M_TestPush(
     case DIR_WEST:
         x -= WALL_L;
         break;
+    default:
+        break;
     }
 
     const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
@@ -159,6 +161,8 @@ static bool M_TestPull(
         break;
     case DIR_WEST:
         x_add = WALL_L;
+        break;
+    default:
         break;
     }
 
@@ -237,7 +241,7 @@ void MovableBlock_Control(int16_t item_num)
 {
     ITEM_INFO *item = &g_Items[item_num];
 
-    if (item->flags & IF_ONESHOT) {
+    if (item->flags & IF_ONE_SHOT) {
         Room_AlterFloorHeight(item, WALL_L);
         Item_Kill(item_num);
         return;
@@ -313,6 +317,8 @@ void MovableBlock_Collision(
         case DIR_WEST:
             item->rot.y = -PHD_90;
             break;
+        default:
+            break;
         }
 
         if (!Lara_TestPosition(item, obj->bounds())) {
@@ -340,6 +346,8 @@ void MovableBlock_Collision(
         case DIR_WEST:
             lara_item->pos.x &= -WALL_L;
             lara_item->pos.x += LARA_RAD;
+            break;
+        default:
             break;
         }
 

@@ -130,7 +130,7 @@ void Effect_Draw(const int16_t fxnum)
     if (object->nmeshes < 0) {
         Output_DrawSprite(
             fx->interp.result.pos.x, fx->interp.result.pos.y,
-            fx->interp.result.pos.z, object->mesh_index - fx->frame_num, 4096);
+            fx->interp.result.pos.z, object->mesh_idx - fx->frame_num, 4096);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs(
@@ -143,7 +143,7 @@ void Effect_Draw(const int16_t fxnum)
                 fx->interp.result.rot.z);
             if (object->nmeshes) {
                 Output_CalculateStaticLight(fx->shade);
-                Output_DrawPolygons(g_Meshes[object->mesh_index], -1);
+                Output_DrawPolygons(g_Meshes[object->mesh_idx], -1);
             } else {
                 Output_CalculateLight(
                     fx->interp.result.pos.x, fx->interp.result.pos.y,

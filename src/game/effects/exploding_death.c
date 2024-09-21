@@ -23,7 +23,7 @@ int32_t Effect_ExplodingDeath(
     int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
-    int32_t *bone = &g_AnimBones[object->bone_index];
+    int32_t *bone = &g_AnimBones[object->bone_idx];
 #if 0
     // XXX: present in OG, removed by GLrage on the grounds that it sometimes
     // crashes.
@@ -48,7 +48,7 @@ int32_t Effect_ExplodingDeath(
                 fx->fall_speed = -Random_GetControl() >> 8;
             }
             fx->counter = damage;
-            fx->frame_num = object->mesh_index;
+            fx->frame_num = object->mesh_idx;
             fx->object_id = O_BODY_PART;
         }
         item->mesh_bits -= bit;
@@ -101,7 +101,7 @@ int32_t Effect_ExplodingDeath(
                 }
                 fx->counter = damage;
                 fx->object_id = O_BODY_PART;
-                fx->frame_num = object->mesh_index + i;
+                fx->frame_num = object->mesh_idx + i;
             }
             item->mesh_bits -= bit;
         }
