@@ -108,7 +108,6 @@ sources = [
   'src/game/console/cmd/exit_game.c',
   'src/game/console/cmd/exit_to_title.c',
   'src/game/console/cmd/flipmap.c',
-  'src/game/console/cmd/fly.c',
   'src/game/console/cmd/fps.c',
   'src/game/console/cmd/load_game.c',
   'src/game/console/cmd/play_demo.c',
