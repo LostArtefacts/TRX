@@ -39,7 +39,7 @@ void BodyPart_Control(int16_t fx_num)
     const int32_t height =
         Room_GetHeight(sector, fx->pos.x, fx->pos.y, fx->pos.z);
     if (fx->pos.y >= height) {
-        if (fx->counter) {
+        if (fx->counter > 0) {
             fx->speed = 0;
             fx->frame_num = 0;
             fx->counter = 0;
@@ -51,10 +51,10 @@ void BodyPart_Control(int16_t fx_num)
         return;
     }
 
-    if (Lara_IsNearItem(&fx->pos, fx->counter * 2)) {
-        Lara_TakeDamage(fx->counter, true);
+    if (Lara_IsNearItem(&fx->pos, ABS(fx->counter) * 2)) {
+        Lara_TakeDamage(ABS(fx->counter), true);
 
-        if (fx->counter) {
+        if (fx->counter > 0) {
             fx->speed = 0;
             fx->frame_num = 0;
             fx->counter = 0;

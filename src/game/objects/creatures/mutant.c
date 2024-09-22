@@ -56,9 +56,15 @@ enum FLYER_ANIM {
     FLYER_FLY = 13,
 };
 
+static bool m_EnableExplosions = true;
 static BITE_INFO m_WarriorBite = { -27, 98, 0, 10 };
 static BITE_INFO m_WarriorRocket = { 51, 213, 0, 14 };
 static BITE_INFO m_WarriorShard = { -35, 269, 0, 9 };
+
+void Mutant_ToggleExplosions(bool enable)
+{
+    m_EnableExplosions = enable;
+}
 
 void Mutant_Setup(OBJECT_INFO *obj)
 {
@@ -117,7 +123,9 @@ void Mutant_FlyerControl(int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (Effect_ExplodingDeath(item_num, -1, FLYER_PART_DAMAGE)) {
+        if (Effect_ExplodingDeath(
+                item_num, -1,
+                m_EnableExplosions ? FLYER_SMARTNESS : -FLYER_PART_DAMAGE)) {
             Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
             LOT_DisableBaddieAI(item_num);
             Item_Kill(item_num);

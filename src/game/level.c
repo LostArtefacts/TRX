@@ -12,6 +12,7 @@
 #include "game/lara/common.h"
 #include "game/lot.h"
 #include "game/music.h"
+#include "game/objects/creatures/mutant.h"
 #include "game/objects/creatures/pierre.h"
 #include "game/objects/setup.h"
 #include "game/output.h"
@@ -918,6 +919,11 @@ static void M_CompleteSetup(int32_t level_num)
             output++;
         }
     }
+
+    // We inject explosions sprites and sounds, although in the original game,
+    // some levels lack them, resulting in no audio or visual effects when
+    // killing mutants. This is to maintain that feature.
+    Mutant_ToggleExplosions(g_Objects[O_EXPLOSION_1].loaded);
 
     Inject_AllInjections(&m_LevelInfo);
 

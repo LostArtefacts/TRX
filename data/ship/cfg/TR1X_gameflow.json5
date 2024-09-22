@@ -20,6 +20,7 @@
         "data/injections/lara_jumping.bin",
         "data/injections/purple_crystal.bin",
         "data/injections/uzi_sfx.bin",
+        "data/injections/explosion.bin",
     ],
     "convert_dropped_guns": false,
 
@@ -38,6 +39,7 @@
                 "data/injections/lara_animations.bin",
                 "data/injections/lara_jumping.bin",
                 "data/injections/uzi_sfx.bin",
+                "data/injections/explosion.bin",
             ],
             "sequence": [
                 {"type": "play_fmv", "fmv_path": "fmv/mansion.avi"},
