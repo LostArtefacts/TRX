@@ -24,7 +24,7 @@ void FallingBlock_Control(int16_t item_num)
         if (g_LaraItem->pos.y == item->pos.y - STEP_L * 2) {
             item->goal_anim_state = TRAP_ACTIVATE;
         } else {
-            item->status = IS_NOT_ACTIVE;
+            item->status = IS_INACTIVE;
             Item_RemoveActive(item_num);
             return;
         }

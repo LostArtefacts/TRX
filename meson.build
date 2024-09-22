@@ -108,7 +108,6 @@ sources = [
   'src/game/console/cmd/play_level.c',
   'src/game/console/cmd/save_game.c',
   'src/game/console/cmd/speed.c',
-  'src/game/console/cmd/teleport.c',
   'src/game/console/common.c',
   'src/game/console/setup.c',
   'src/game/creature.c',

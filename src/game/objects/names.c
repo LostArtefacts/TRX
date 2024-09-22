@@ -302,18 +302,20 @@ GAME_OBJECT_ID *Object_IdsFromName(
     return unique_ids;
 }
 
-const char *Object_GetName(
-    const GAME_OBJECT_ID object_id, const char *user_input)
+const char *Object_GetName(const GAME_OBJECT_ID object_id)
 {
     for (const INVENTORY_ITEM *const *item_ptr = m_InvItems; *item_ptr != NULL;
          item_ptr++) {
-        const INVENTORY_ITEM *item = *item_ptr;
-        if (item->string != NULL
-            && Inv_GetItemOption(item->object_id)
-                == Inv_GetItemOption(object_id)) {
+        const INVENTORY_ITEM *const item = *item_ptr;
+        if (item->string == NULL) {
+            continue;
+        }
+        const GAME_OBJECT_ID inv_obj_1 = Inv_GetItemOption(item->object_id);
+        const GAME_OBJECT_ID inv_obj_2 = Inv_GetItemOption(object_id);
+        if (inv_obj_1 == inv_obj_2 && inv_obj_1 != NO_OBJECT) {
             return item->string;
         }
     }
 
-    return user_input;
+    return NULL;
 }

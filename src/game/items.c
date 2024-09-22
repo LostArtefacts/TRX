@@ -117,7 +117,7 @@ void Item_Initialise(int16_t item_num)
     item->rot.z = 0;
     item->speed = 0;
     item->fall_speed = 0;
-    item->status = IS_NOT_ACTIVE;
+    item->status = IS_INACTIVE;
     item->active = 0;
     item->gravity = 0;
     item->hit_status = 0;
@@ -211,7 +211,7 @@ void Item_AddActive(int16_t item_num)
     ITEM_INFO *item = &g_Items[item_num];
 
     if (!g_Objects[item->object_id].control) {
-        item->status = IS_NOT_ACTIVE;
+        item->status = IS_INACTIVE;
         return;
     }
 
@@ -292,7 +292,7 @@ int16_t Item_Spawn(const ITEM_INFO *const item, const GAME_OBJECT_ID object_id)
         spawn->pos = item->pos;
         spawn->rot = item->rot;
         Item_Initialise(spawn_num);
-        spawn->status = IS_NOT_ACTIVE;
+        spawn->status = IS_INACTIVE;
         spawn->shade = 4096;
     }
     return spawn_num;

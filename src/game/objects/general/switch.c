@@ -96,7 +96,7 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     ITEM_INFO *item = &g_Items[item_num];
     const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
-    if (!g_Input.action || item->status != IS_NOT_ACTIVE
+    if (!g_Input.action || item->status != IS_INACTIVE
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity) {
         return;
     }
@@ -136,7 +136,7 @@ void Switch_CollisionControlled(
 
     if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
          && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
-         && item->status == IS_NOT_ACTIVE)
+         && item->status == IS_INACTIVE)
         || (g_Lara.interact_target.is_moving
             && g_Lara.interact_target.item_num == item_num)) {
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
@@ -189,7 +189,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     ITEM_INFO *item = &g_Items[item_num];
     const OBJECT_INFO *const obj = &g_Objects[item->object_id];
 
-    if (!g_Input.action || item->status != IS_NOT_ACTIVE
+    if (!g_Input.action || item->status != IS_INACTIVE
         || g_Lara.water_status != LWS_UNDERWATER) {
         return;
     }
@@ -237,7 +237,7 @@ bool Switch_Trigger(int16_t item_num, int16_t timer)
         item->status = IS_ACTIVE;
     } else {
         Item_RemoveActive(item_num);
-        item->status = IS_NOT_ACTIVE;
+        item->status = IS_INACTIVE;
     }
     return true;
 }

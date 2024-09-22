@@ -12,6 +12,7 @@
 #include <libtrx/game/lot.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/objects/common.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound/ids.h>
 
 #include <stdbool.h>
@@ -203,13 +204,6 @@ typedef enum BONE_EXTRA_BITS {
     BEB_ROT_Z = 1 << 4,
 } BONE_EXTRA_BITS;
 
-typedef enum ITEM_STATUS {
-    IS_NOT_ACTIVE = 0,
-    IS_ACTIVE = 1,
-    IS_DEACTIVATED = 2,
-    IS_INVISIBLE = 3,
-} ITEM_STATUS;
-
 typedef enum ROOM_FLAG {
     RF_UNDERWATER = 1,
 } ROOM_FLAG;
@@ -222,32 +216,6 @@ typedef enum FLOOR_TYPE {
     FT_TRIGGER = 4,
     FT_LAVA = 5,
 } FLOOR_TYPE;
-
-typedef enum TRIGGER_TYPE {
-    TT_TRIGGER = 0,
-    TT_PAD = 1,
-    TT_SWITCH = 2,
-    TT_KEY = 3,
-    TT_PICKUP = 4,
-    TT_HEAVY = 5,
-    TT_ANTIPAD = 6,
-    TT_COMBAT = 7,
-    TT_DUMMY = 8,
-} TRIGGER_TYPE;
-
-typedef enum TRIGGER_OBJECT {
-    TO_OBJECT = 0,
-    TO_CAMERA = 1,
-    TO_SINK = 2,
-    TO_FLIPMAP = 3,
-    TO_FLIPON = 4,
-    TO_FLIPOFF = 5,
-    TO_TARGET = 6,
-    TO_FINISH = 7,
-    TO_CD = 8,
-    TO_FLIPEFFECT = 9,
-    TO_SECRET = 10,
-} TRIGGER_OBJECT;
 
 typedef enum INV_MODE {
     INV_GAME_MODE = 0,
@@ -522,55 +490,6 @@ typedef struct TEXTURE_RANGE {
     struct TEXTURE_RANGE *next_range;
 } TEXTURE_RANGE;
 
-typedef struct DOOR_INFO {
-    int16_t room_num;
-    XYZ_16 normal;
-    XYZ_16 vertex[4];
-} DOOR_INFO;
-
-typedef struct DOOR_INFOS {
-    uint16_t count;
-    DOOR_INFO door[];
-} DOOR_INFOS;
-
-typedef struct TRIGGER_CMD {
-    TRIGGER_OBJECT type;
-    void *parameter;
-} TRIGGER_CMD;
-
-typedef struct TRIGGER_CAMERA_DATA {
-    int16_t camera_num;
-    uint8_t timer;
-    uint8_t glide;
-    bool one_shot;
-} TRIGGER_CAMERA_DATA;
-
-typedef struct TRIGGER {
-    TRIGGER_TYPE type;
-    int8_t timer;
-    int16_t mask;
-    bool one_shot;
-    int16_t item_index;
-    int32_t command_count;
-    TRIGGER_CMD *commands;
-} TRIGGER;
-
-typedef struct SECTOR_INFO {
-    uint16_t index;
-    int16_t box;
-    bool is_death_sector;
-    TRIGGER *trigger;
-    struct {
-        uint8_t pit;
-        uint8_t sky;
-        int16_t wall;
-    } portal_room;
-    struct {
-        int16_t height;
-        int16_t tilt;
-    } floor, ceiling;
-} SECTOR_INFO;
-
 typedef struct DOORPOS_DATA {
     SECTOR_INFO *sector;
     SECTOR_INFO old_sector;
@@ -583,48 +502,6 @@ typedef struct DOOR_DATA {
     DOORPOS_DATA d2;
     DOORPOS_DATA d2flip;
 } DOOR_DATA;
-
-typedef struct LIGHT_INFO {
-    XYZ_32 pos;
-    int16_t intensity;
-    int32_t falloff;
-} LIGHT_INFO;
-
-typedef struct MESH_INFO {
-    XYZ_32 pos;
-    struct {
-        PHD_ANGLE y;
-    } rot;
-    uint16_t shade;
-    uint16_t static_num;
-} MESH_INFO;
-
-typedef struct ROOM_INFO {
-    int16_t *data;
-    DOOR_INFOS *doors;
-    SECTOR_INFO *sectors;
-    LIGHT_INFO *light;
-    MESH_INFO *mesh;
-    int32_t x;
-    int32_t y;
-    int32_t z;
-    int32_t min_floor;
-    int32_t max_ceiling;
-    int16_t z_size;
-    int16_t x_size;
-    int16_t ambient;
-    int16_t num_lights;
-    int16_t num_meshes;
-    int16_t left;
-    int16_t right;
-    int16_t top;
-    int16_t bottom;
-    int16_t bound_active;
-    int16_t item_num;
-    int16_t fx_num;
-    int16_t flipped_room;
-    uint16_t flags;
-} ROOM_INFO;
 
 typedef struct CINE_CAMERA {
     int16_t tx;

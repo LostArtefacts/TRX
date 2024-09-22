@@ -48,7 +48,7 @@ void ThorsHammerHandle_Control(int16_t item_num)
             item->goal_anim_state = THS_TEASE;
         } else {
             Item_RemoveActive(item_num);
-            item->status = IS_NOT_ACTIVE;
+            item->status = IS_INACTIVE;
         }
         break;
 

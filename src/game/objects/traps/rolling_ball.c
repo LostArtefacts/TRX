@@ -87,7 +87,7 @@ void RollingBall_Control(int16_t item_num)
             item->touch_bits = 0;
         }
     } else if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
-        item->status = IS_NOT_ACTIVE;
+        item->status = IS_INACTIVE;
         GAME_VECTOR *data = item->data;
         item->pos.x = data->x;
         item->pos.y = data->y;

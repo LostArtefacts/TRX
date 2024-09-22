@@ -7,7 +7,6 @@
 #include "game/console/cmd/play_level.h"
 #include "game/console/cmd/save_game.h"
 #include "game/console/cmd/speed.h"
-#include "game/console/cmd/teleport.h"
 
 #include <libtrx/game/console/cmd/config.h>
 #include <libtrx/game/console/cmd/die.h>
@@ -21,6 +20,7 @@
 #include <libtrx/game/console/cmd/pos.h>
 #include <libtrx/game/console/cmd/set_health.h>
 #include <libtrx/game/console/cmd/sfx.h>
+#include <libtrx/game/console/cmd/teleport.h>
 
 #include <stddef.h>
 

@@ -51,7 +51,7 @@ static void M_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (item->status != IS_NOT_ACTIVE) {
+    if (item->status != IS_INACTIVE) {
         Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
         return;
     }

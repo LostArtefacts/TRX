@@ -267,7 +267,7 @@ void MovableBlock_Control(int16_t item_num)
     } else if (
         item->pos.y >= height && !item->gravity
         && !(bool)(intptr_t)item->priv) {
-        item->status = IS_NOT_ACTIVE;
+        item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
     }
 
@@ -276,7 +276,7 @@ void MovableBlock_Control(int16_t item_num)
     }
 
     if (item->status == IS_DEACTIVATED) {
-        item->status = IS_NOT_ACTIVE;
+        item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
         Room_AlterFloorHeight(item, -WALL_L);
         Room_TestTriggers(item);

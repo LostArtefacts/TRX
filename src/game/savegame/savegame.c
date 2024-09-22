@@ -120,7 +120,7 @@ static void M_LoadPostprocess(void)
         if (obj->control == MovableBlock_Control) {
             item->priv =
                 item->status == IS_ACTIVE ? (void *)true : (void *)false;
-            if (item->status == IS_NOT_ACTIVE) {
+            if (item->status == IS_INACTIVE) {
                 Room_AlterFloorHeight(item, -WALL_L);
             }
         }

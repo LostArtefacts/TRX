@@ -8,5 +8,4 @@
 GAME_OBJECT_ID *Object_IdsFromName(
     const char *name, int32_t *out_match_count, bool (*filter)(GAME_OBJECT_ID));
 
-const char *Object_GetName(
-    const GAME_OBJECT_ID object_id, const char *user_input);
+const char *Object_GetName(const GAME_OBJECT_ID object_id);

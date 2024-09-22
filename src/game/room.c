@@ -884,7 +884,7 @@ static void M_TestSectorTrigger(
 
             if (!item->active) {
                 if (g_Objects[item->object_id].intelligent) {
-                    if (item->status == IS_NOT_ACTIVE) {
+                    if (item->status == IS_INACTIVE) {
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
                         Item_AddActive(item_num);
@@ -1076,4 +1076,14 @@ bool Room_IsOnWalkable(
     }
 
     return object_found && room_height == height;
+}
+
+int32_t Room_GetTotalCount(void)
+{
+    return g_RoomCount;
+}
+
+ROOM_INFO *Room_Get(const int32_t room_num)
+{
+    return &g_RoomInfo[room_num];
 }

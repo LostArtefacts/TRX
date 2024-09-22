@@ -111,7 +111,7 @@ void PuzzleHole_Collision(
         return;
     }
 
-    if (item->status != IS_NOT_ACTIVE) {
+    if (item->status != IS_INACTIVE) {
         Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
         return;
     }
