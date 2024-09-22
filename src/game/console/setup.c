@@ -3,7 +3,6 @@
 #include "game/console/cmd/easy_config.h"
 #include "game/console/cmd/flipmap.h"
 #include "game/console/cmd/load_game.h"
-#include "game/console/cmd/play_demo.h"
 #include "game/console/cmd/play_level.h"
 #include "game/console/cmd/save_game.h"
 #include "game/console/cmd/speed.h"
@@ -17,6 +16,7 @@
 #include <libtrx/game/console/cmd/give_item.h>
 #include <libtrx/game/console/cmd/heal.h>
 #include <libtrx/game/console/cmd/kill.h>
+#include <libtrx/game/console/cmd/play_demo.h>
 #include <libtrx/game/console/cmd/pos.h>
 #include <libtrx/game/console/cmd/set_health.h>
 #include <libtrx/game/console/cmd/sfx.h>
