@@ -88,3 +88,7 @@ Currently supported commands:
 - `/set {option}`  
 - `/set {option} {value}`  
   Retrieves or assigns a new value to the given configuration option. Some options need a game re-launch to apply. The option names use `-` rather than `_`.
+
+- `/sfx`  
+- `/sfx {sound}`  
+  Plays a given sound sample.

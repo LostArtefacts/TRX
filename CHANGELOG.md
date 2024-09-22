@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
+- added `/sfx` command
 - fixed double "Fly mode enabled" message when using `/fly` console command (regression from 4.0)
 - changed the easter egg console command to pack more punch
 

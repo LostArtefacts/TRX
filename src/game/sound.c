@@ -33,7 +33,7 @@ typedef struct SOUND_SLOT {
     uint32_t loudness;
     int16_t volume;
     int16_t pan;
-    int16_t fxnum;
+    SOUND_EFFECT_ID fx_num;
     int16_t flags;
 } SOUND_SLOT;
 
@@ -102,7 +102,7 @@ static SOUND_SLOT *M_GetSlot(
         SOUND_SLOT *last_free_slot = NULL;
         for (int i = m_AmbientLookupIdx; i < MAX_PLAYING_FX; i++) {
             SOUND_SLOT *result = &m_SFXPlaying[i];
-            if ((result->flags & SOUND_FLAG_USED) && result->fxnum == sfx_num
+            if ((result->flags & SOUND_FLAG_USED) && result->fx_num == sfx_num
                 && result->pos == pos) {
                 result->flags |= SOUND_FLAG_RESTARTED;
                 return result;
@@ -132,7 +132,7 @@ static SOUND_SLOT *M_GetSlot(
 
 static void M_UpdateSlotParams(SOUND_SLOT *slot)
 {
-    SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[slot->fxnum]];
+    SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[slot->fx_num]];
 
     int32_t x = slot->pos->x - g_Camera.target.x;
     int32_t y = slot->pos->y - g_Camera.target.y;
@@ -174,7 +174,7 @@ static void M_ClearSlot(SOUND_SLOT *slot)
     slot->volume = 0;
     slot->pan = 0;
     slot->loudness = SOUND_NOT_AUDIBLE;
-    slot->fxnum = -1;
+    slot->fx_num = SFX_INVALID;
 }
 
 static void M_ClearSlotHandles(SOUND_SLOT *slot)
@@ -267,7 +267,9 @@ void Sound_UpdateEffects(void)
     }
 }
 
-bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
+bool Sound_Effect(
+    const SOUND_EFFECT_ID sfx_num, const XYZ_32 *const pos,
+    const uint32_t flags)
 {
     if (!m_SoundIsActive) {
         return false;
@@ -364,7 +366,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
         }
         M_ClearSlotHandles(fxslot);
         fxslot->flags = SOUND_FLAG_USED;
-        fxslot->fxnum = sfx_num;
+        fxslot->fx_num = sfx_num;
         fxslot->pos = pos;
         return true;
     }
@@ -391,7 +393,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
         }
         M_ClearSlotHandles(fxslot);
         fxslot->flags = SOUND_FLAG_USED;
-        fxslot->fxnum = sfx_num;
+        fxslot->fx_num = sfx_num;
         fxslot->pos = pos;
         return true;
     }
@@ -425,7 +427,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
             }
             M_ClearSlotHandles(fxslot);
             fxslot->loudness = loudness;
-            fxslot->fxnum = sfx_num;
+            fxslot->fx_num = sfx_num;
             fxslot->pan = pan;
             fxslot->volume = volume;
             fxslot->flags |= SOUND_FLAG_AMBIENT | SOUND_FLAG_USED;
@@ -441,7 +443,7 @@ bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags)
     return false;
 }
 
-bool Sound_StopEffect(int32_t sfx_num, const XYZ_32 *pos)
+bool Sound_StopEffect(const SOUND_EFFECT_ID sfx_num, const XYZ_32 *const pos)
 {
     if (!m_SoundIsActive) {
         return false;
@@ -451,8 +453,8 @@ bool Sound_StopEffect(int32_t sfx_num, const XYZ_32 *pos)
         SOUND_SLOT *slot = &m_SFXPlaying[i];
         if ((slot->flags & SOUND_FLAG_USED)
             && Audio_Sample_IsPlaying(slot->sound_id)) {
-            if ((!pos && slot->fxnum == sfx_num)
-                || (pos && sfx_num >= 0 && slot->fxnum == sfx_num)
+            if ((!pos && slot->fx_num == sfx_num)
+                || (pos && sfx_num >= 0 && slot->fx_num == sfx_num)
                 || (pos && sfx_num < 0)) {
                 Audio_Sample_Close(slot->sound_id);
                 M_ClearSlot(slot);
@@ -572,4 +574,10 @@ void Sound_ResetAmbient(void)
             Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
         }
     }
+}
+
+bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
+{
+    return sample_id >= 0 && sample_id < SFX_NUMBER_OF
+        && g_SampleLUT[sample_id] != -1;
 }

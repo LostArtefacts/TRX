@@ -24,20 +24,34 @@
 #include <libtrx/game/console/cmd/kill.h>
 #include <libtrx/game/console/cmd/pos.h>
 #include <libtrx/game/console/cmd/set_health.h>
+#include <libtrx/game/console/cmd/sfx.h>
 
 #include <stddef.h>
 
 CONSOLE_COMMAND *g_ConsoleCommands[] = {
-    &g_Console_Cmd_Braid,       &g_Console_Cmd_FPS,
-    &g_Console_Cmd_VSync,       &g_Console_Cmd_Wireframe,
-    &g_Console_Cmd_Cheats,      &g_Console_Cmd_Teleport,
-    &g_Console_Cmd_Fly,         &g_Console_Cmd_Speed,
-    &g_Console_Cmd_FlipMap,     &g_Console_Cmd_Kill,
-    &g_Console_Cmd_EndLevel,    &g_Console_Cmd_PlayLevel,
-    &g_Console_Cmd_LoadGame,    &g_Console_Cmd_SaveGame,
-    &g_Console_Cmd_PlayDemo,    &g_Console_Cmd_ExitGame,
-    &g_Console_Cmd_ExitToTitle, &g_Console_Cmd_Die,
-    &g_Console_Cmd_Pos,         &g_Console_Cmd_Heal,
-    &g_Console_Cmd_SetHealth,   &g_Console_Cmd_Config,
-    &g_Console_Cmd_GiveItem,    NULL,
+    &g_Console_Cmd_Braid,
+    &g_Console_Cmd_FPS,
+    &g_Console_Cmd_VSync,
+    &g_Console_Cmd_Wireframe,
+    &g_Console_Cmd_Cheats,
+    &g_Console_Cmd_Teleport,
+    &g_Console_Cmd_Fly,
+    &g_Console_Cmd_Speed,
+    &g_Console_Cmd_FlipMap,
+    &g_Console_Cmd_Kill,
+    &g_Console_Cmd_EndLevel,
+    &g_Console_Cmd_PlayLevel,
+    &g_Console_Cmd_LoadGame,
+    &g_Console_Cmd_SaveGame,
+    &g_Console_Cmd_PlayDemo,
+    &g_Console_Cmd_ExitGame,
+    &g_Console_Cmd_ExitToTitle,
+    &g_Console_Cmd_Die,
+    &g_Console_Cmd_Pos,
+    &g_Console_Cmd_Heal,
+    &g_Console_Cmd_SetHealth,
+    &g_Console_Cmd_Config,
+    &g_Console_Cmd_GiveItem,
+    &g_Console_Cmd_SFX,
+    NULL,
 };

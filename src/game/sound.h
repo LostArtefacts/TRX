@@ -8,8 +8,8 @@
 
 bool Sound_Init(void);
 void Sound_Shutdown(void);
-bool Sound_Effect(int32_t sfx_num, const XYZ_32 *pos, uint32_t flags);
-bool Sound_StopEffect(int32_t sfx_num, const XYZ_32 *pos);
+bool Sound_Effect(SOUND_EFFECT_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+bool Sound_StopEffect(SOUND_EFFECT_ID sfx_num, const XYZ_32 *pos);
 void Sound_UpdateEffects(void);
 void Sound_ResetEffects(void);
 void Sound_StopAmbientSounds(void);
@@ -22,4 +22,5 @@ int32_t Sound_GetMinVolume(void);
 int32_t Sound_GetMaxVolume(void);
 void Sound_LoadSamples(
     size_t num_samples, const char **sample_pointers, size_t *sizes);
+int32_t Sound_GetMaxSamples(void);
 void Sound_ResetAmbient(void);
