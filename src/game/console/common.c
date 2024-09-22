@@ -285,24 +285,19 @@ void Console_HandleTextInput(const SDL_Event event)
     M_UpdateCaretTextstring();
 }
 
-void Console_Log(const char *fmt, ...)
+void Console_LogImpl(const char *const text)
 {
-    va_list va;
-
-    va_start(va, fmt);
-    size_t text_length = vsnprintf(NULL, 0, fmt, va);
-    char *text = malloc(text_length + 1);
-    va_end(va);
-
-    va_start(va, fmt);
-    vsnprintf(text, text_length + 1, fmt, va);
-    va_end(va);
-
-    LOG_INFO("%s", text);
     int32_t dst_idx = -1;
-    for (int i = MAX_LOG_LINES - 1; i > 0; i--) {
+    for (int32_t i = MAX_LOG_LINES - 1; i > 0; i--) {
+        if (m_Logs[i].ts == NULL) {
+            continue;
+        }
         Text_ChangeText(m_Logs[i].ts, m_Logs[i - 1].ts->string);
         m_Logs[i].expire_at = m_Logs[i - 1].expire_at;
+    }
+
+    if (m_Logs[0].ts == NULL) {
+        return;
     }
 
     m_Logs[0].expire_at =
@@ -310,7 +305,7 @@ void Console_Log(const char *fmt, ...)
     Text_ChangeText(m_Logs[0].ts, text);
     int32_t y = -MARGIN - m_TextHeight * m_PromptScale;
 
-    for (int i = 0; i < MAX_LOG_LINES; i++) {
+    for (int32_t i = 0; i < MAX_LOG_LINES; i++) {
         const int32_t text_height = Text_GetHeight(m_Logs[i].ts);
         y -= text_height;
         y -= PADDING * m_LogScale / PHD_ONE;
@@ -318,7 +313,11 @@ void Console_Log(const char *fmt, ...)
     }
 
     m_AreAnyLogsOnScreen = true;
-    free(text);
+}
+
+int32_t Console_GetMaxLineLength(void)
+{
+    return TEXT_MAX_STRING_SIZE - 1;
 }
 
 void Console_ScrollLogs(void)

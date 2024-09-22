@@ -13,7 +13,6 @@
 #include <string.h>
 
 #define TEXT_BOX_OFFSET 2
-#define TEXT_MAX_STRING_SIZE 100
 #define TEXT_MAX_STRINGS 100
 #define TRIANGLE_SYM 93
 #define CIRCLE_SYM 94

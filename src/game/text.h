@@ -9,6 +9,7 @@
 #define TEXT_HEIGHT 11
 #define TEXT_Y_SPACING 3
 #define TEXT_OUTLINE_THICKNESS 2
+#define TEXT_MAX_STRING_SIZE 100
 
 RGBA_8888 Text_GetMenuColor(MENU_COLOR color);
 void Text_Init(void);
