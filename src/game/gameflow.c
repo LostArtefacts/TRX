@@ -1454,3 +1454,8 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
     return command;
 }
+
+void Gameflow_OverrideCommand(const GAMEFLOW_COMMAND command)
+{
+    g_GameInfo.override_gf_command = command;
+}

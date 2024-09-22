@@ -6,6 +6,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/creature.h>
 #include <libtrx/game/effects/types.h>
+#include <libtrx/game/gameflow/types.h>
 #include <libtrx/game/items.h>
 #include <libtrx/game/lara/types.h>
 #include <libtrx/game/lot.h>
@@ -353,27 +354,6 @@ typedef enum GAMEFLOW_LEVEL_TYPE {
     GFL_TITLE_DEMO_PC = 10,
     GFL_LEVEL_DEMO_PC = 11,
 } GAMEFLOW_LEVEL_TYPE;
-
-typedef enum {
-    GF_CONTINUE_SEQUENCE,
-    GF_START_GAME,
-    GF_START_CINE,
-    GF_START_FMV,
-    GF_START_DEMO,
-    GF_EXIT_TO_TITLE,
-    GF_LEVEL_COMPLETE,
-    GF_EXIT_GAME,
-    GF_START_SAVED_GAME,
-    GF_RESTART_GAME,
-    GF_SELECT_GAME,
-    GF_START_GYM,
-    GF_STORY_SO_FAR,
-} GAMEFLOW_ACTION;
-
-typedef struct GAMEFLOW_COMMAND {
-    GAMEFLOW_ACTION action;
-    int32_t param;
-} GAMEFLOW_COMMAND;
 
 typedef enum GAMEFLOW_SEQUENCE_TYPE {
     GFS_END = -1,
