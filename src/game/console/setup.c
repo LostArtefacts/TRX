@@ -1,19 +1,15 @@
 #include "game/console/setup.h"
 
-#include "game/console/cmd/braid.h"
-#include "game/console/cmd/cheats.h"
+#include "game/console/cmd/easy_config.h"
 #include "game/console/cmd/exit_game.h"
 #include "game/console/cmd/exit_to_title.h"
 #include "game/console/cmd/flipmap.h"
-#include "game/console/cmd/fps.h"
 #include "game/console/cmd/load_game.h"
 #include "game/console/cmd/play_demo.h"
 #include "game/console/cmd/play_level.h"
 #include "game/console/cmd/save_game.h"
 #include "game/console/cmd/speed.h"
 #include "game/console/cmd/teleport.h"
-#include "game/console/cmd/vsync.h"
-#include "game/console/cmd/wireframe.h"
 
 #include <libtrx/game/console/cmd/config.h>
 #include <libtrx/game/console/cmd/die.h>
@@ -29,11 +25,7 @@
 #include <stddef.h>
 
 CONSOLE_COMMAND *g_ConsoleCommands[] = {
-    &g_Console_Cmd_Braid,
-    &g_Console_Cmd_FPS,
-    &g_Console_Cmd_VSync,
-    &g_Console_Cmd_Wireframe,
-    &g_Console_Cmd_Cheats,
+    &g_Console_Cmd_EasyConfig,
     &g_Console_Cmd_Teleport,
     &g_Console_Cmd_Fly,
     &g_Console_Cmd_Speed,
