@@ -14,6 +14,7 @@
 
 #include <libtrx/game/console/common.h>
 #include <libtrx/log.h>
+#include <libtrx/memory.h>
 #include <libtrx/strings.h>
 
 #include <SDL2/SDL_keycode.h>

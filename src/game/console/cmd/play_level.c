@@ -6,24 +6,25 @@
 
 #include <libtrx/strings.h>
 
-static COMMAND_RESULT M_Entrypoint(const char *args);
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
-static COMMAND_RESULT M_Entrypoint(const char *const args)
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
-    if (String_Equivalent(args, "")) {
+    if (String_Equivalent(ctx->args, "")) {
         return CR_BAD_INVOCATION;
     }
 
     int32_t level_to_load = -1;
-    if (!String_ParseInteger(args, &level_to_load)) {
+    if (!String_ParseInteger(ctx->args, &level_to_load)) {
         for (int i = 0; i < g_GameFlow.level_count; i++) {
-            if (String_CaseSubstring(g_GameFlow.levels[i].level_title, args)
+            if (String_CaseSubstring(
+                    g_GameFlow.levels[i].level_title, ctx->args)
                 != NULL) {
                 level_to_load = i;
                 break;
             }
         }
-        if (level_to_load == -1 && String_Equivalent(args, "gym")) {
+        if (level_to_load == -1 && String_Equivalent(ctx->args, "gym")) {
             level_to_load = g_GameFlow.gym_level_num;
         }
         if (level_to_load == -1) {

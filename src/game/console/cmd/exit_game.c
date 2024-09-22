@@ -2,9 +2,9 @@
 
 #include "global/vars.h"
 
-static COMMAND_RESULT M_Entrypoint(const char *args);
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
-static COMMAND_RESULT M_Entrypoint(const char *args)
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     g_GameInfo.override_gf_command =
         (GAMEFLOW_COMMAND) { .action = GF_EXIT_GAME };

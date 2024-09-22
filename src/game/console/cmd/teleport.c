@@ -18,14 +18,14 @@
 
 static bool M_IsFloatRound(const float num);
 ;
-static COMMAND_RESULT M_Entrypoint(const char *const args);
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
 static inline bool M_IsFloatRound(const float num)
 {
     return (fabsf(num) - roundf(num)) < 0.0001f;
 }
 
-static COMMAND_RESULT M_Entrypoint(const char *const args)
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (g_GameInfo.current_level_type == GFL_TITLE
         || g_GameInfo.current_level_type == GFL_DEMO
@@ -40,7 +40,7 @@ static COMMAND_RESULT M_Entrypoint(const char *const args)
     // X Y Z
     {
         float x, y, z;
-        if (sscanf(args, "%f %f %f", &x, &y, &z) == 3) {
+        if (sscanf(ctx->args, "%f %f %f", &x, &y, &z) == 3) {
             if (M_IsFloatRound(x)) {
                 x += 0.5f;
             }
@@ -61,7 +61,7 @@ static COMMAND_RESULT M_Entrypoint(const char *const args)
     // Room number
     {
         int16_t room_num = NO_ROOM;
-        if (sscanf(args, "%hd", &room_num) == 1) {
+        if (sscanf(ctx->args, "%hd", &room_num) == 1) {
             if (room_num < 0 || room_num >= g_RoomCount) {
                 Console_Log(GS(OSD_INVALID_ROOM), room_num, g_RoomCount - 1);
                 return CR_SUCCESS;
@@ -92,10 +92,10 @@ static COMMAND_RESULT M_Entrypoint(const char *const args)
     }
 
     // Nearest item of this name
-    if (!String_Equivalent(args, "")) {
+    if (!String_Equivalent(ctx->args, "")) {
         int32_t match_count = 0;
         GAME_OBJECT_ID *matching_objs =
-            Object_IdsFromName(args, &match_count, NULL);
+            Object_IdsFromName(ctx->args, &match_count, NULL);
 
         const ITEM_INFO *best_item = NULL;
         int32_t best_distance = INT32_MAX;
@@ -137,13 +137,13 @@ static COMMAND_RESULT M_Entrypoint(const char *const args)
         if (best_item != NULL) {
             if (Lara_Cheat_Teleport(
                     best_item->pos.x, best_item->pos.y, best_item->pos.z)) {
-                Console_Log(GS(OSD_POS_SET_ITEM), args);
+                Console_Log(GS(OSD_POS_SET_ITEM), ctx->args);
             } else {
-                Console_Log(GS(OSD_POS_SET_ITEM_FAIL), args);
+                Console_Log(GS(OSD_POS_SET_ITEM_FAIL), ctx->args);
             }
             return CR_SUCCESS;
         } else {
-            Console_Log(GS(OSD_POS_SET_ITEM_FAIL), args);
+            Console_Log(GS(OSD_POS_SET_ITEM_FAIL), ctx->args);
             return CR_FAILURE;
         }
     }

@@ -8,16 +8,16 @@
 
 #include <libtrx/strings.h>
 
-static COMMAND_RESULT M_Entrypoint(const char *args);
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
-static COMMAND_RESULT M_Entrypoint(const char *args)
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (!Game_IsPlayable()) {
         return CR_UNAVAILABLE;
     }
 
     int32_t slot_num;
-    if (!String_ParseInteger(args, &slot_num)) {
+    if (!String_ParseInteger(ctx->args, &slot_num)) {
         return CR_BAD_INVOCATION;
     }
     const int32_t slot_idx = slot_num - 1; // convert 1-indexing to 0-indexing
