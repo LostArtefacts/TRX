@@ -1,7 +1,6 @@
 #include "game/console/setup.h"
 
 #include "game/console/cmd/easy_config.h"
-#include "game/console/cmd/exit_to_title.h"
 #include "game/console/cmd/flipmap.h"
 #include "game/console/cmd/load_game.h"
 #include "game/console/cmd/play_demo.h"
@@ -14,6 +13,7 @@
 #include <libtrx/game/console/cmd/die.h>
 #include <libtrx/game/console/cmd/end_level.h>
 #include <libtrx/game/console/cmd/exit_game.h>
+#include <libtrx/game/console/cmd/exit_to_title.h>
 #include <libtrx/game/console/cmd/fly.h>
 #include <libtrx/game/console/cmd/give_item.h>
 #include <libtrx/game/console/cmd/heal.h>
