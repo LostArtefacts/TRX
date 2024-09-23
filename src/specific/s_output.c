@@ -30,8 +30,8 @@
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static int m_EnvMapTexture = GFX_NO_TEXTURE;
 
-static GFX_2D_Renderer *m_Renderer2D = NULL;
-static GFX_3D_Renderer *m_Renderer3D = NULL;
+static GFX_2D_RENDERER *m_Renderer2D = NULL;
+static GFX_3D_RENDERER *m_Renderer3D = NULL;
 static bool m_IsTextureMode = false;
 static int32_t m_SelectedTexture = -1;
 
@@ -41,23 +41,23 @@ static float m_SurfaceMinX = 0.0f;
 static float m_SurfaceMinY = 0.0f;
 static float m_SurfaceMaxX = 0.0f;
 static float m_SurfaceMaxY = 0.0f;
-static GFX_2D_Surface *m_PrimarySurface = NULL;
-static GFX_2D_Surface *m_PictureSurface = NULL;
-static GFX_2D_Surface *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
+static GFX_2D_SURFACE *m_PrimarySurface = NULL;
+static GFX_2D_SURFACE *m_PictureSurface = NULL;
+static GFX_2D_SURFACE *m_TextureSurfaces[GFX_MAX_TEXTURES] = { NULL };
 
 static inline float M_GetUV(const uint16_t uv);
 static void M_ReleaseTextures(void);
 static void M_ReleaseSurfaces(void);
 static void M_FlipPrimaryBuffer(void);
-static void M_ClearSurface(GFX_2D_Surface *surface);
-static void M_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count);
-static void M_DrawTriangleStrip(GFX_3D_Vertex *vertices, int vertex_count);
+static void M_ClearSurface(GFX_2D_SURFACE *surface);
+static void M_DrawTriangleFan(GFX_3D_VERTEX *vertices, int vertex_count);
+static void M_DrawTriangleStrip(GFX_3D_VERTEX *vertices, int vertex_count);
 static int32_t M_ClipVertices(
-    GFX_3D_Vertex *vertices, int vertex_count, size_t vertices_capacity);
+    GFX_3D_VERTEX *vertices, int vertex_count, size_t vertices_capacity);
 static int32_t M_VisibleZClip(
     const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3);
 static int32_t M_ZedClipper(
-    int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices);
+    int32_t vertex_count, POINT_INFO *pts, GFX_3D_VERTEX *vertices);
 
 static inline float M_GetUV(const uint16_t uv)
 {
@@ -116,36 +116,36 @@ static void M_FlipPrimaryBuffer(void)
     GFX_Context_SwapBuffers();
 }
 
-static void M_ClearSurface(GFX_2D_Surface *surface)
+static void M_ClearSurface(GFX_2D_SURFACE *surface)
 {
     bool result = GFX_2D_Surface_Clear(surface);
     S_Output_CheckError(result);
 }
 
-static void M_DrawTriangleFan(GFX_3D_Vertex *vertices, int vertex_count)
+static void M_DrawTriangleFan(GFX_3D_VERTEX *vertices, int vertex_count)
 {
     GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
 }
 
-static void M_DrawTriangleStrip(GFX_3D_Vertex *vertices, int vertex_count)
+static void M_DrawTriangleStrip(GFX_3D_VERTEX *vertices, int vertex_count)
 {
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
 }
 
 static int32_t M_ClipVertices(
-    GFX_3D_Vertex *vertices, int vertex_count, size_t vertices_capacity)
+    GFX_3D_VERTEX *vertices, int vertex_count, size_t vertices_capacity)
 {
     float scale;
-    GFX_3D_Vertex buffer[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX buffer[vertex_count * CLIP_VERTCOUNT_SCALE];
     const size_t buffer_capacity = sizeof(buffer) / sizeof(buffer[0]);
 
-    GFX_3D_Vertex *l = &vertices[vertex_count - 1];
+    GFX_3D_VERTEX *l = &vertices[vertex_count - 1];
     int j = 0;
 
     for (int i = 0; i < vertex_count; i++) {
         assert(j < (int)buffer_capacity);
-        GFX_3D_Vertex *v1 = &buffer[j];
-        GFX_3D_Vertex *v2 = l;
+        GFX_3D_VERTEX *v1 = &buffer[j];
+        GFX_3D_VERTEX *v2 = l;
         l = &vertices[i];
 
         if (v2->x < m_SurfaceMinX) {
@@ -236,8 +236,8 @@ static int32_t M_ClipVertices(
 
     for (int i = 0; i < vertex_count; i++) {
         assert(j < (int)vertices_capacity);
-        GFX_3D_Vertex *v1 = &vertices[j];
-        GFX_3D_Vertex *v2 = l;
+        GFX_3D_VERTEX *v1 = &vertices[j];
+        GFX_3D_VERTEX *v2 = l;
         assert(i < (int)buffer_capacity);
         l = &buffer[i];
 
@@ -346,13 +346,13 @@ static int32_t M_VisibleZClip(
 }
 
 static int32_t M_ZedClipper(
-    int32_t vertex_count, POINT_INFO *pts, GFX_3D_Vertex *vertices)
+    int32_t vertex_count, POINT_INFO *pts, GFX_3D_VERTEX *vertices)
 {
     const float multiplier = g_Config.brightness / 16.0f;
     const float near_z = Output_GetNearZ();
     const float persp_o_near_z = g_PhdPersp / near_z;
 
-    GFX_3D_Vertex *v = &vertices[0];
+    GFX_3D_VERTEX *v = &vertices[0];
     POINT_INFO *pts0 = &pts[0];
     POINT_INFO *pts1 = &pts[vertex_count - 1];
     for (int i = 0; i < vertex_count; i++) {
@@ -512,7 +512,7 @@ void S_Output_DrawSprite(
     float t5;
     float vz;
     int vertex_count = 4;
-    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
 
     float multiplier = g_Config.brightness / 16.0f;
 
@@ -594,7 +594,7 @@ void S_Output_Draw2DLine(
     RGBA_8888 color2)
 {
     int vertex_count = 2;
-    GFX_3D_Vertex vertices[vertex_count];
+    GFX_3D_VERTEX vertices[vertex_count];
 
     vertices[0].x = x1;
     vertices[0].y = y1;
@@ -614,9 +614,9 @@ void S_Output_Draw2DLine(
 
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
     S_Output_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
@@ -625,7 +625,7 @@ void S_Output_Draw2DQuad(
     RGBA_8888 bl, RGBA_8888 br)
 {
     int vertex_count = 4;
-    GFX_3D_Vertex vertices[vertex_count];
+    GFX_3D_VERTEX vertices[vertex_count];
 
     vertices[0].x = x1;
     vertices[0].y = y1;
@@ -660,9 +660,9 @@ void S_Output_Draw2DQuad(
     vertices[3].a = bl.a;
 
     S_Output_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     M_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
 }
 
 void S_Output_DrawLightningSegment(
@@ -670,11 +670,11 @@ void S_Output_DrawLightningSegment(
     int thickness2)
 {
     int vertex_count = 4;
-    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
 
     S_Output_DisableTextureMode();
 
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     vertices[0].x = x1;
     vertices[0].y = y1;
     vertices[0].z = z1 * 0.0001f;
@@ -751,16 +751,16 @@ void S_Output_DrawLightningSegment(
     if (vertex_count) {
         M_DrawTriangleFan(vertices, vertex_count);
     }
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
 }
 
 void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 {
     // needs to be more than 8 cause clipping might return more polygons.
-    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
 
     for (int i = 0; i < vertex_count; i++) {
-        GFX_3D_Vertex *vertex = &vertices[i];
+        GFX_3D_VERTEX *vertex = &vertices[i];
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
         vertex->y = vbuf->ys;
@@ -782,9 +782,9 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 
     S_Output_DisableTextureMode();
 
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Normal);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     M_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
 }
 
 void S_Output_ApplyRenderSettings(void)
@@ -812,13 +812,13 @@ void S_Output_ApplyRenderSettings(void)
     GFX_Context_SetAnisotropyFilter(g_Config.rendering.anisotropy_filter);
 
     if (m_PrimarySurface == NULL) {
-        GFX_2D_SurfaceDesc surface_desc = { 0 };
+        GFX_2D_SURFACE_DESC surface_desc = { 0 };
         m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
     }
     M_ClearSurface(m_PrimarySurface);
 
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
-        GFX_2D_SurfaceDesc surface_desc = {
+        GFX_2D_SURFACE_DESC surface_desc = {
             .width = 256,
             .height = 256,
         };
@@ -862,7 +862,7 @@ void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGB_888 color)
 {
     int vertex_count = 3;
-    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
     PHD_VBUF *src_vbuf[3];
 
     src_vbuf[0] = vn1;
@@ -937,7 +937,7 @@ void S_Output_DrawEnvMapTriangle(
     const PHD_UV *const uv3)
 {
     int vertex_count = 3;
-    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
 
     const float multiplier = g_Config.brightness / 16.0f;
 
@@ -1003,9 +1003,9 @@ void S_Output_DrawEnvMapTriangle(
 
     S_Output_EnableTextureMode();
     GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Multiply);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
     M_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
     m_SelectedTexture = -1;
 }
 
@@ -1016,7 +1016,7 @@ void S_Output_DrawEnvMapQuad(
     const PHD_UV *const uv4)
 {
     int vertex_count = 4;
-    GFX_3D_Vertex vertices[vertex_count];
+    GFX_3D_VERTEX vertices[vertex_count];
 
     if (vn4->clip | vn3->clip | vn2->clip | vn1->clip) {
         if ((vn4->clip & vn3->clip & vn2->clip & vn1->clip)) {
@@ -1063,9 +1063,9 @@ void S_Output_DrawEnvMapQuad(
 
     S_Output_EnableTextureMode();
     GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Multiply);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BlendMode_Off);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
     m_SelectedTexture = -1;
 }
 
@@ -1074,7 +1074,7 @@ void S_Output_DrawTexturedTriangle(
     PHD_UV *uv2, PHD_UV *uv3, uint16_t textype)
 {
     int vertex_count = 3;
-    GFX_3D_Vertex vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
     POINT_INFO points[3];
     PHD_VBUF *src_vbuf[3];
     PHD_UV *src_uv[3];
@@ -1160,7 +1160,7 @@ void S_Output_DrawTexturedQuad(
     PHD_UV *uv1, PHD_UV *uv2, PHD_UV *uv3, PHD_UV *uv4, uint16_t textype)
 {
     int vertex_count = 4;
-    GFX_3D_Vertex vertices[vertex_count];
+    GFX_3D_VERTEX vertices[vertex_count];
     PHD_VBUF *src_vbuf[4];
     PHD_UV *src_uv[4];
 
@@ -1235,7 +1235,7 @@ void S_Output_DownloadTextures(int32_t pages)
     M_ReleaseTextures();
 
     for (int i = 0; i < pages; i++) {
-        GFX_2D_SurfaceDesc surface_desc = { 0 };
+        GFX_2D_SURFACE_DESC surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(m_TextureSurfaces[i], &surface_desc);
         S_Output_CheckError(result);
 
@@ -1325,7 +1325,7 @@ void S_Output_ScreenBox(
 
 #define SB_NUM_VERTS_DARK 12
 #define SB_NUM_VERTS_LIGHT 10
-    GFX_3D_Vertex screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+    GFX_3D_VERTEX screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
     S_Output_DisableTextureMode();
 
     // convert them to floats and apply the (+1) from the original line code
@@ -1440,7 +1440,7 @@ void S_Output_4ColourTextBox(
     //    7             5
     //   #               @
     //  6                 4
-    GFX_3D_Vertex screen_box_verticies[10];
+    GFX_3D_VERTEX screen_box_verticies[10];
     for (int i = 0; i < 10; ++i) {
         screen_box_verticies[i].z = 1.0f;
         screen_box_verticies[i].s = 0.0f;
@@ -1523,7 +1523,7 @@ void S_Output_2ToneColourTextBox(
     int32_t halfw = w / 2;
     int32_t halfh = h / 2;
 
-    GFX_3D_Vertex screen_box_verticies[18];
+    GFX_3D_VERTEX screen_box_verticies[18];
     for (int i = 0; i < 18; ++i) {
         screen_box_verticies[i].z = 1.0f;
         screen_box_verticies[i].s = 0.0f;

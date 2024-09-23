@@ -244,8 +244,8 @@ typedef struct {
     int target_surface_y;
     int target_surface_width;
     int target_surface_height;
-    GFX_2D_Renderer *renderer_2d;
-    GFX_2D_Surface *primary_surface;
+    GFX_2D_RENDERER *renderer_2d;
+    GFX_2D_SURFACE *primary_surface;
 
     int subtitle_stream;
     AVStream *subtitle_st;
@@ -727,7 +727,7 @@ static int M_ReallocPrimarySurface(
     }
 
     {
-        GFX_2D_SurfaceDesc surface_desc = {
+        GFX_2D_SURFACE_DESC surface_desc = {
             .width = is->surface_width,
             .height = is->surface_height,
         };
@@ -735,7 +735,7 @@ static int M_ReallocPrimarySurface(
     }
 
     if (clear) {
-        GFX_2D_SurfaceDesc surface_desc = { 0 };
+        GFX_2D_SURFACE_DESC surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
         if (!result) {
             return -1;
@@ -789,7 +789,7 @@ static int M_UploadTexture(VideoState *is, AVFrame *frame)
         SWS_BILINEAR, NULL, NULL, NULL);
 
     if (is->img_convert_ctx) {
-        GFX_2D_SurfaceDesc surface_desc = { 0 };
+        GFX_2D_SURFACE_DESC surface_desc = { 0 };
         bool result = GFX_2D_Surface_Lock(is->primary_surface, &surface_desc);
         if (result) {
             uint8_t *surf_planes[4];
