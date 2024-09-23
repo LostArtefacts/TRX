@@ -1,8 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added `/sfx` command
+- changed the easter egg console command to pack more punch
+- fixed ability to crash the game with extreme FOV values (regression from 0.9)
 - fixed double "Fly mode enabled" message when using `/fly` console command (regression from 4.0)
 - fixed crash in the `/set` console command (regression from 4.4)
-- changed the easter egg console command to pack more punch
 
 ## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3-102-g458cd96...4.4) - 2024-09-20
 - added `/exit` command (#1462)
