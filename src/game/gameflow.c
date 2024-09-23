@@ -48,13 +48,12 @@ GAMEFLOW g_GameFlow = { 0 };
 
 static int32_t M_StringToEnumType(
     const char *const str, const STRING_TO_ENUM_TYPE *map);
-static TRISTATE_BOOL M_ReadTristateBool(
-    struct json_object_s *obj, const char *key);
-static bool M_LoadScriptMeta(struct json_object_s *obj);
-static bool M_LoadScriptGameStrings(struct json_object_s *obj);
+static TRISTATE_BOOL M_ReadTristateBool(JSON_OBJECT *obj, const char *key);
+static bool M_LoadScriptMeta(JSON_OBJECT *obj);
+static bool M_LoadScriptGameStrings(JSON_OBJECT *obj);
 static bool M_IsLegacySequence(const char *type_str);
-static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num);
-static bool M_LoadScriptLevels(struct json_object_s *obj);
+static bool M_LoadLevelSequence(JSON_OBJECT *obj, int32_t level_num);
+static bool M_LoadScriptLevels(JSON_OBJECT *obj);
 static bool M_LoadFromFileImpl(const char *file_name);
 
 static const STRING_TO_ENUM_TYPE m_GameflowLevelTypeEnumMap[] = {
@@ -111,27 +110,25 @@ static int32_t M_StringToEnumType(
     return map->val;
 }
 
-static TRISTATE_BOOL M_ReadTristateBool(
-    struct json_object_s *obj, const char *key)
+static TRISTATE_BOOL M_ReadTristateBool(JSON_OBJECT *obj, const char *key)
 {
-    struct json_value_s *value = json_object_get_value(obj, key);
-    if (json_value_is_true(value)) {
+    JSON_VALUE *value = JSON_ObjectGetValue(obj, key);
+    if (JSON_ValueIsTrue(value)) {
         return TB_ON;
-    } else if (json_value_is_false(value)) {
+    } else if (JSON_ValueIsFalse(value)) {
         return TB_OFF;
     }
     return TB_UNSPECIFIED;
 }
 
-static bool M_LoadScriptMeta(struct json_object_s *obj)
+static bool M_LoadScriptMeta(JSON_OBJECT *obj)
 {
     const char *tmp_s;
     int tmp_i;
     double tmp_d;
-    struct json_array_s *tmp_arr;
+    JSON_ARRAY *tmp_arr;
 
-    tmp_s =
-        json_object_get_string(obj, "main_menu_picture", JSON_INVALID_STRING);
+    tmp_s = JSON_ObjectGetString(obj, "main_menu_picture", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
         LOG_ERROR("'main_menu_picture' must be a string");
         return false;
@@ -139,22 +136,21 @@ static bool M_LoadScriptMeta(struct json_object_s *obj)
     g_GameFlow.main_menu_background_path = Memory_DupStr(tmp_s);
 
     tmp_s =
-        json_object_get_string(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
+        JSON_ObjectGetString(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
         LOG_ERROR("'savegame_fmt_legacy' must be a string");
         return false;
     }
     g_GameFlow.savegame_fmt_legacy = Memory_DupStr(tmp_s);
 
-    tmp_s =
-        json_object_get_string(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
+    tmp_s = JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
         LOG_ERROR("'savegame_fmt_bson' must be a string");
         return false;
     }
     g_GameFlow.savegame_fmt_bson = Memory_DupStr(tmp_s);
 
-    tmp_d = json_object_get_double(obj, "demo_delay", -1.0);
+    tmp_d = JSON_ObjectGetDouble(obj, "demo_delay", -1.0);
     if (tmp_d < 0.0) {
         LOG_ERROR("'demo_delay' must be a positive number");
         return false;
@@ -162,33 +158,33 @@ static bool M_LoadScriptMeta(struct json_object_s *obj)
     g_GameFlow.demo_delay = tmp_d;
 
     g_GameFlow.force_game_modes = M_ReadTristateBool(obj, "force_game_modes");
-    if (json_object_get_bool(obj, "force_disable_game_modes", false)) {
+    if (JSON_ObjectGetBool(obj, "force_disable_game_modes", false)) {
         // backwards compatibility
         g_GameFlow.force_game_modes = TB_OFF;
     }
 
     g_GameFlow.force_save_crystals =
         M_ReadTristateBool(obj, "force_save_crystals");
-    if (json_object_get_bool(obj, "force_enable_save_crystals", false)) {
+    if (JSON_ObjectGetBool(obj, "force_enable_save_crystals", false)) {
         // backwards compatibility
         g_GameFlow.force_save_crystals = TB_ON;
     }
 
-    tmp_arr = json_object_get_array(obj, "water_color");
+    tmp_arr = JSON_ObjectGetArray(obj, "water_color");
     g_GameFlow.water_color.r = 0.6;
     g_GameFlow.water_color.g = 0.7;
     g_GameFlow.water_color.b = 1.0;
     if (tmp_arr) {
         g_GameFlow.water_color.r =
-            json_array_get_double(tmp_arr, 0, g_GameFlow.water_color.r);
+            JSON_ArrayGetDouble(tmp_arr, 0, g_GameFlow.water_color.r);
         g_GameFlow.water_color.g =
-            json_array_get_double(tmp_arr, 1, g_GameFlow.water_color.g);
+            JSON_ArrayGetDouble(tmp_arr, 1, g_GameFlow.water_color.g);
         g_GameFlow.water_color.b =
-            json_array_get_double(tmp_arr, 2, g_GameFlow.water_color.b);
+            JSON_ArrayGetDouble(tmp_arr, 2, g_GameFlow.water_color.b);
     }
 
-    if (json_object_get_value(obj, "draw_distance_fade")) {
-        double value = json_object_get_double(
+    if (JSON_ObjectGetValue(obj, "draw_distance_fade")) {
+        double value = JSON_ObjectGetDouble(
             obj, "draw_distance_fade", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
             LOG_ERROR("'draw_distance_fade' must be a number");
@@ -199,9 +195,9 @@ static bool M_LoadScriptMeta(struct json_object_s *obj)
         g_GameFlow.draw_distance_fade = 12.0f;
     }
 
-    if (json_object_get_value(obj, "draw_distance_max")) {
-        double value = json_object_get_double(
-            obj, "draw_distance_max", JSON_INVALID_NUMBER);
+    if (JSON_ObjectGetValue(obj, "draw_distance_max")) {
+        double value =
+            JSON_ObjectGetDouble(obj, "draw_distance_max", JSON_INVALID_NUMBER);
         if (value == JSON_INVALID_NUMBER) {
             LOG_ERROR("'draw_distance_max' must be a number");
             return false;
@@ -211,14 +207,14 @@ static bool M_LoadScriptMeta(struct json_object_s *obj)
         g_GameFlow.draw_distance_max = 20.0f;
     }
 
-    tmp_arr = json_object_get_array(obj, "injections");
+    tmp_arr = JSON_ObjectGetArray(obj, "injections");
     if (tmp_arr) {
         g_GameFlow.injections.length = tmp_arr->length;
         g_GameFlow.injections.data_paths =
             Memory_Alloc(sizeof(char *) * tmp_arr->length);
         for (size_t i = 0; i < tmp_arr->length; i++) {
-            struct json_value_s *value = json_array_get_value(tmp_arr, i);
-            struct json_string_s *str = json_value_as_string(value);
+            JSON_VALUE *value = JSON_ArrayGetValue(tmp_arr, i);
+            JSON_STRING *str = JSON_ValueAsString(value);
             g_GameFlow.injections.data_paths[i] = Memory_DupStr(str->string);
         }
     } else {
@@ -226,23 +222,23 @@ static bool M_LoadScriptMeta(struct json_object_s *obj)
     }
 
     g_GameFlow.convert_dropped_guns =
-        json_object_get_bool(obj, "convert_dropped_guns", false);
+        JSON_ObjectGetBool(obj, "convert_dropped_guns", false);
 
     return true;
 }
 
-static bool M_LoadScriptGameStrings(struct json_object_s *obj)
+static bool M_LoadScriptGameStrings(JSON_OBJECT *obj)
 {
-    struct json_object_s *strings_obj = json_object_get_object(obj, "strings");
+    JSON_OBJECT *strings_obj = JSON_ObjectGetObject(obj, "strings");
     if (!strings_obj) {
         LOG_ERROR("'strings' must be a dictionary");
         return false;
     }
 
-    struct json_object_element_s *strings_elem = strings_obj->start;
+    JSON_OBJECT_ELEMENT *strings_elem = strings_obj->start;
     while (strings_elem) {
         const char *const key = strings_elem->name->string;
-        struct json_string_s *value = json_value_as_string(strings_elem->value);
+        JSON_STRING *value = JSON_ValueAsString(strings_elem->value);
         if (!GameString_IsKnown(key)) {
             LOG_ERROR("invalid game string key: %s", key);
         } else if (!value || value->string == NULL) {
@@ -262,15 +258,15 @@ static bool M_IsLegacySequence(const char *type_str)
         || !strcmp(type_str, "stop_cine");
 }
 
-static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
+static bool M_LoadLevelSequence(JSON_OBJECT *obj, int32_t level_num)
 {
-    struct json_array_s *jseq_arr = json_object_get_array(obj, "sequence");
+    JSON_ARRAY *jseq_arr = JSON_ObjectGetArray(obj, "sequence");
     if (!jseq_arr) {
         LOG_ERROR("level %d: 'sequence' must be a list", level_num);
         return false;
     }
 
-    struct json_array_element_s *jseq_elem = jseq_arr->start;
+    JSON_ARRAY_ELEMENT *jseq_elem = jseq_arr->start;
 
     g_GameFlow.levels[level_num].sequence =
         Memory_Alloc(sizeof(GAMEFLOW_SEQUENCE) * (jseq_arr->length + 1));
@@ -278,14 +274,14 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
     GAMEFLOW_SEQUENCE *seq = g_GameFlow.levels[level_num].sequence;
     int32_t i = 0;
     while (jseq_elem) {
-        struct json_object_s *jseq_obj = json_value_as_object(jseq_elem->value);
+        JSON_OBJECT *jseq_obj = JSON_ValueAsObject(jseq_elem->value);
         if (!jseq_obj) {
             LOG_ERROR("level %d: 'sequence' elements must be dictionaries");
             return false;
         }
 
         const char *type_str =
-            json_object_get_string(jseq_obj, "type", JSON_INVALID_STRING);
+            JSON_ObjectGetString(jseq_obj, "type", JSON_INVALID_STRING);
         if (type_str == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: sequence 'type' must be a string", level_num);
             return false;
@@ -303,8 +299,8 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             break;
 
         case GFS_PLAY_FMV: {
-            const char *tmp_s = json_object_get_string(
-                jseq_obj, "fmv_path", JSON_INVALID_STRING);
+            const char *tmp_s =
+                JSON_ObjectGetString(jseq_obj, "fmv_path", JSON_INVALID_STRING);
             if (tmp_s == JSON_INVALID_STRING) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'fmv_path' must be a string",
@@ -320,7 +316,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
 
-            const char *tmp_s = json_object_get_string(
+            const char *tmp_s = JSON_ObjectGetString(
                 jseq_obj, "picture_path", JSON_INVALID_STRING);
             if (tmp_s == JSON_INVALID_STRING) {
                 LOG_ERROR(
@@ -330,8 +326,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             }
             data->path = Memory_DupStr(tmp_s);
 
-            double tmp_d =
-                json_object_get_double(jseq_obj, "display_time", -1.0);
+            double tmp_d = JSON_ObjectGetDouble(jseq_obj, "display_time", -1.0);
             if (tmp_d < 0.0) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'display_time' must be a positive "
@@ -346,7 +341,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 
         case GFS_LEVEL_STATS: {
             int tmp =
-                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
+                JSON_ObjectGetInt(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
@@ -361,7 +356,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             GAMEFLOW_DISPLAY_PICTURE_DATA *data =
                 Memory_Alloc(sizeof(GAMEFLOW_DISPLAY_PICTURE_DATA));
 
-            const char *tmp_s = json_object_get_string(
+            const char *tmp_s = JSON_ObjectGetString(
                 jseq_obj, "picture_path", JSON_INVALID_STRING);
             if (tmp_s == JSON_INVALID_STRING) {
                 LOG_ERROR(
@@ -381,7 +376,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         case GFS_EXIT_TO_LEVEL:
         case GFS_EXIT_TO_CINE: {
             int tmp =
-                json_object_get_int(jseq_obj, "level_id", JSON_INVALID_NUMBER);
+                JSON_ObjectGetInt(jseq_obj, "level_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'level_id' must be a number",
@@ -396,8 +391,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         case GFS_SET_CAM_Y:
         case GFS_SET_CAM_Z:
         case GFS_SET_CAM_ANGLE: {
-            int tmp =
-                json_object_get_int(jseq_obj, "value", JSON_INVALID_NUMBER);
+            int tmp = JSON_ObjectGetInt(jseq_obj, "value", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'value' must be a number",
@@ -420,7 +414,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 Memory_Alloc(sizeof(GAMEFLOW_GIVE_ITEM_DATA));
 
             give_item_data->object_id =
-                json_object_get_int(jseq_obj, "object_id", JSON_INVALID_NUMBER);
+                JSON_ObjectGetInt(jseq_obj, "object_id", JSON_INVALID_NUMBER);
             if (give_item_data->object_id == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'object_id' must be a number",
@@ -429,7 +423,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             }
 
             give_item_data->quantity =
-                json_object_get_int(jseq_obj, "quantity", 1);
+                JSON_ObjectGetInt(jseq_obj, "quantity", 1);
 
             seq->data = give_item_data;
             break;
@@ -437,7 +431,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
 
         case GFS_PLAY_SYNCED_AUDIO: {
             int tmp =
-                json_object_get_int(jseq_obj, "audio_id", JSON_INVALID_NUMBER);
+                JSON_ObjectGetInt(jseq_obj, "audio_id", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'audio_id' must be a number",
@@ -452,8 +446,8 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             GAMEFLOW_MESH_SWAP_DATA *swap_data =
                 Memory_Alloc(sizeof(GAMEFLOW_MESH_SWAP_DATA));
 
-            swap_data->object1_id = json_object_get_int(
-                jseq_obj, "object1_id", JSON_INVALID_NUMBER);
+            swap_data->object1_id =
+                JSON_ObjectGetInt(jseq_obj, "object1_id", JSON_INVALID_NUMBER);
             if (swap_data->object1_id == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'object1_id' must be a number",
@@ -461,8 +455,8 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
                 return false;
             }
 
-            swap_data->object2_id = json_object_get_int(
-                jseq_obj, "object2_id", JSON_INVALID_NUMBER);
+            swap_data->object2_id =
+                JSON_ObjectGetInt(jseq_obj, "object2_id", JSON_INVALID_NUMBER);
             if (swap_data->object2_id == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'object2_id' must be a number",
@@ -471,7 +465,7 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
             }
 
             swap_data->mesh_num =
-                json_object_get_int(jseq_obj, "mesh_id", JSON_INVALID_NUMBER);
+                JSON_ObjectGetInt(jseq_obj, "mesh_id", JSON_INVALID_NUMBER);
             if (swap_data->mesh_num == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'mesh_id' must be a number",
@@ -484,8 +478,8 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
         }
 
         case GFS_SETUP_BACON_LARA: {
-            int tmp = json_object_get_int(
-                jseq_obj, "anchor_room", JSON_INVALID_NUMBER);
+            int tmp =
+                JSON_ObjectGetInt(jseq_obj, "anchor_room", JSON_INVALID_NUMBER);
             if (tmp == JSON_INVALID_NUMBER) {
                 LOG_ERROR(
                     "level %d, sequence %s: 'anchor_room' must be a number",
@@ -527,9 +521,9 @@ static bool M_LoadLevelSequence(struct json_object_s *obj, int32_t level_num)
     return true;
 }
 
-static bool M_LoadScriptLevels(struct json_object_s *obj)
+static bool M_LoadScriptLevels(JSON_OBJECT *obj)
 {
-    struct json_array_s *jlvl_arr = json_object_get_array(obj, "levels");
+    JSON_ARRAY *jlvl_arr = JSON_ObjectGetArray(obj, "levels");
     if (!jlvl_arr) {
         LOG_ERROR("'levels' must be a list");
         return false;
@@ -540,7 +534,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
     g_GameFlow.levels = Memory_Alloc(sizeof(GAMEFLOW_LEVEL) * level_count);
     g_GameInfo.current = Memory_Alloc(sizeof(RESUME_INFO) * level_count);
 
-    struct json_array_element_s *jlvl_elem = jlvl_arr->start;
+    JSON_ARRAY_ELEMENT *jlvl_elem = jlvl_arr->start;
     int level_num = 0;
 
     g_GameFlow.has_demo = 0;
@@ -552,7 +546,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
 
     GAMEFLOW_LEVEL *cur = &g_GameFlow.levels[0];
     while (jlvl_elem) {
-        struct json_object_s *jlvl_obj = json_value_as_object(jlvl_elem->value);
+        JSON_OBJECT *jlvl_obj = JSON_ValueAsObject(jlvl_elem->value);
         if (!jlvl_obj) {
             LOG_ERROR("'levels' elements must be dictionaries");
             return false;
@@ -560,30 +554,30 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
 
         const char *tmp_s;
         int32_t tmp_i;
-        struct json_array_s *tmp_arr;
+        JSON_ARRAY *tmp_arr;
 
-        tmp_i = json_object_get_int(jlvl_obj, "music", JSON_INVALID_NUMBER);
+        tmp_i = JSON_ObjectGetInt(jlvl_obj, "music", JSON_INVALID_NUMBER);
         if (tmp_i == JSON_INVALID_NUMBER) {
             LOG_ERROR("level %d: 'music' must be a number", level_num);
             return false;
         }
         cur->music = tmp_i;
 
-        tmp_s = json_object_get_string(jlvl_obj, "file", JSON_INVALID_STRING);
+        tmp_s = JSON_ObjectGetString(jlvl_obj, "file", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'file' must be a string", level_num);
             return false;
         }
         cur->level_file = Memory_DupStr(tmp_s);
 
-        tmp_s = json_object_get_string(jlvl_obj, "title", JSON_INVALID_STRING);
+        tmp_s = JSON_ObjectGetString(jlvl_obj, "title", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'title' must be a string", level_num);
             return false;
         }
         cur->level_title = Memory_DupStr(tmp_s);
 
-        tmp_s = json_object_get_string(jlvl_obj, "type", JSON_INVALID_STRING);
+        tmp_s = JSON_ObjectGetString(jlvl_obj, "type", JSON_INVALID_STRING);
         if (tmp_s == JSON_INVALID_STRING) {
             LOG_ERROR("level %d: 'type' must be a string", level_num);
             return false;
@@ -629,7 +623,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
             return false;
         }
 
-        tmp_i = json_object_get_bool(jlvl_obj, "demo", JSON_INVALID_BOOL);
+        tmp_i = JSON_ObjectGetBool(jlvl_obj, "demo", JSON_INVALID_BOOL);
         if (tmp_i != JSON_INVALID_BOOL) {
             cur->demo = tmp_i;
             g_GameFlow.has_demo |= tmp_i;
@@ -638,7 +632,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
         }
 
         {
-            double value = json_object_get_double(
+            double value = JSON_ObjectGetDouble(
                 jlvl_obj, "draw_distance_fade", JSON_INVALID_NUMBER);
             if (value != JSON_INVALID_NUMBER) {
                 cur->draw_distance_fade.override = true;
@@ -649,7 +643,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
         }
 
         {
-            double value = json_object_get_double(
+            double value = JSON_ObjectGetDouble(
                 jlvl_obj, "draw_distance_max", JSON_INVALID_NUMBER);
             if (value != JSON_INVALID_NUMBER) {
                 cur->draw_distance_max.override = true;
@@ -659,35 +653,35 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
             }
         }
 
-        tmp_arr = json_object_get_array(jlvl_obj, "water_color");
+        tmp_arr = JSON_ObjectGetArray(jlvl_obj, "water_color");
         if (tmp_arr) {
             cur->water_color.override = true;
             cur->water_color.value.r =
-                json_array_get_double(tmp_arr, 0, g_GameFlow.water_color.r);
+                JSON_ArrayGetDouble(tmp_arr, 0, g_GameFlow.water_color.r);
             cur->water_color.value.g =
-                json_array_get_double(tmp_arr, 1, g_GameFlow.water_color.g);
+                JSON_ArrayGetDouble(tmp_arr, 1, g_GameFlow.water_color.g);
             cur->water_color.value.b =
-                json_array_get_double(tmp_arr, 2, g_GameFlow.water_color.b);
+                JSON_ArrayGetDouble(tmp_arr, 2, g_GameFlow.water_color.b);
         } else {
             cur->water_color.override = false;
         }
 
         cur->unobtainable.pickups =
-            json_object_get_int(jlvl_obj, "unobtainable_pickups", 0);
+            JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
 
         cur->unobtainable.kills =
-            json_object_get_int(jlvl_obj, "unobtainable_kills", 0);
+            JSON_ObjectGetInt(jlvl_obj, "unobtainable_kills", 0);
 
         cur->unobtainable.secrets =
-            json_object_get_int(jlvl_obj, "unobtainable_secrets", 0);
+            JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
 
-        struct json_object_s *jlbl_strings_obj =
-            json_object_get_object(jlvl_obj, "strings");
+        JSON_OBJECT *jlbl_strings_obj =
+            JSON_ObjectGetObject(jlvl_obj, "strings");
         if (!jlbl_strings_obj) {
             LOG_ERROR("level %d: 'strings' must be a dictionary", level_num);
             return false;
         } else {
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "pickup1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->pickup1 = Memory_DupStr(tmp_s);
@@ -695,7 +689,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->pickup1 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "pickup2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->pickup2 = Memory_DupStr(tmp_s);
@@ -703,7 +697,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->pickup2 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "key1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->key1 = Memory_DupStr(tmp_s);
@@ -711,7 +705,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->key1 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "key2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->key2 = Memory_DupStr(tmp_s);
@@ -719,7 +713,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->key2 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "key3", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->key3 = Memory_DupStr(tmp_s);
@@ -727,7 +721,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->key3 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "key4", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->key4 = Memory_DupStr(tmp_s);
@@ -735,7 +729,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->key4 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "puzzle1", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->puzzle1 = Memory_DupStr(tmp_s);
@@ -743,7 +737,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->puzzle1 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "puzzle2", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->puzzle2 = Memory_DupStr(tmp_s);
@@ -751,7 +745,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->puzzle2 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "puzzle3", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->puzzle3 = Memory_DupStr(tmp_s);
@@ -759,7 +753,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 cur->puzzle3 = NULL;
             }
 
-            tmp_s = json_object_get_string(
+            tmp_s = JSON_ObjectGetString(
                 jlbl_strings_obj, "puzzle4", JSON_INVALID_STRING);
             if (tmp_s != JSON_INVALID_STRING) {
                 cur->puzzle4 = Memory_DupStr(tmp_s);
@@ -768,8 +762,8 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
             }
         }
 
-        tmp_i = json_object_get_bool(jlvl_obj, "inherit_injections", 1);
-        tmp_arr = json_object_get_array(jlvl_obj, "injections");
+        tmp_i = JSON_ObjectGetBool(jlvl_obj, "inherit_injections", 1);
+        tmp_arr = JSON_ObjectGetArray(jlvl_obj, "injections");
         if (tmp_arr) {
             cur->injections.length = tmp_arr->length;
             if (tmp_i) {
@@ -788,8 +782,8 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
             }
 
             for (size_t i = 0; i < tmp_arr->length; i++) {
-                struct json_value_s *value = json_array_get_value(tmp_arr, i);
-                struct json_string_s *str = json_value_as_string(value);
+                JSON_VALUE *value = JSON_ArrayGetValue(tmp_arr, i);
+                JSON_STRING *str = JSON_ValueAsString(value);
                 cur->injections.data_paths[inj_base_index + i] =
                     Memory_DupStr(str->string);
             }
@@ -805,7 +799,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
             cur->injections.length = 0;
         }
 
-        tmp_i = json_object_get_int(jlvl_obj, "lara_type", (int32_t)O_LARA);
+        tmp_i = JSON_ObjectGetInt(jlvl_obj, "lara_type", (int32_t)O_LARA);
         if (tmp_i < 0 || tmp_i >= O_NUMBER_OF) {
             LOG_ERROR(
                 "level %d: 'lara_type' must be a valid game object id",
@@ -814,7 +808,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
         }
         cur->lara_type = (GAME_OBJECT_ID)tmp_i;
 
-        tmp_arr = json_object_get_array(jlvl_obj, "item_drops");
+        tmp_arr = JSON_ObjectGetArray(jlvl_obj, "item_drops");
         if (tmp_arr) {
             cur->item_drops.count = (signed)tmp_arr->length;
             cur->item_drops.data = Memory_Alloc(
@@ -822,10 +816,9 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
 
             for (int i = 0; i < cur->item_drops.count; i++) {
                 GAMEFLOW_DROP_ITEM_DATA *data = &cur->item_drops.data[i];
-                struct json_object_s *jlvl_data =
-                    json_array_get_object(tmp_arr, i);
+                JSON_OBJECT *jlvl_data = JSON_ArrayGetObject(tmp_arr, i);
 
-                data->enemy_num = json_object_get_int(
+                data->enemy_num = JSON_ObjectGetInt(
                     jlvl_data, "enemy_num", JSON_INVALID_NUMBER);
                 if (data->enemy_num == JSON_INVALID_NUMBER) {
                     LOG_ERROR(
@@ -834,8 +827,8 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                     return false;
                 }
 
-                struct json_array_s *object_arr =
-                    json_object_get_array(jlvl_data, "object_ids");
+                JSON_ARRAY *object_arr =
+                    JSON_ObjectGetArray(jlvl_data, "object_ids");
                 if (!object_arr) {
                     LOG_ERROR(
                         "level %d, item drop %d: 'object_ids' must be an array",
@@ -846,7 +839,7 @@ static bool M_LoadScriptLevels(struct json_object_s *obj)
                 data->count = (signed)object_arr->length;
                 data->object_ids = Memory_Alloc(sizeof(int16_t) * data->count);
                 for (int j = 0; j < data->count; j++) {
-                    int id = json_array_get_int(object_arr, j, -1);
+                    int id = JSON_ArrayGetInt(object_arr, j, -1);
                     if (id < 0 || id >= O_NUMBER_OF) {
                         LOG_ERROR(
                             "level %d, item drop %d, index %d: 'object_id' "
@@ -885,7 +878,7 @@ static bool M_LoadFromFileImpl(const char *file_name)
 {
     GameFlow_Shutdown();
     bool result = false;
-    struct json_value_s *root = NULL;
+    JSON_VALUE *root = NULL;
     char *script_data = NULL;
 
     if (!File_Load(file_name, &script_data, NULL)) {
@@ -893,19 +886,19 @@ static bool M_LoadFromFileImpl(const char *file_name)
         goto cleanup;
     }
 
-    struct json_parse_result_s parse_result;
-    root = json_parse_ex(
-        script_data, strlen(script_data), json_parse_flags_allow_json5, NULL,
+    JSON_PARSE_RESULT parse_result;
+    root = JSON_ParseEx(
+        script_data, strlen(script_data), JSON_PARSE_FLAGS_ALLOW_JSON5, NULL,
         NULL, &parse_result);
     if (!root) {
         LOG_ERROR(
             "failed to parse script file: %s in line %d, char %d",
-            json_get_error_description(parse_result.error),
+            JSON_GetErrorDescription(parse_result.error),
             parse_result.error_line_no, parse_result.error_row_no, script_data);
         goto cleanup;
     }
 
-    struct json_object_s *root_obj = json_value_as_object(root);
+    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
 
     result = true;
     result &= M_LoadScriptMeta(root_obj);
@@ -914,7 +907,7 @@ static bool M_LoadFromFileImpl(const char *file_name)
 
 cleanup:
     if (root) {
-        json_value_free(root);
+        JSON_ValueFree(root);
         root = NULL;
     }
 

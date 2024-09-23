@@ -27,53 +27,49 @@ CONFIG g_Config = { 0 };
 
 static const char *m_ConfigPath = "cfg/TR1X.json5";
 
-static void M_LoadKeyboardLayout(
-    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+static void M_LoadKeyboardLayout(JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
 static void M_LoadControllerLayout(
-    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void M_LoadLegacyOptions(struct json_object_s *const parent_obj);
-static void M_DumpKeyboardLayout(
-    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
+    JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
+static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj);
+static void M_DumpKeyboardLayout(JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
 static void M_DumpControllerLayout(
-    struct json_object_s *parent_obj, INPUT_LAYOUT layout);
-static void M_Load(struct json_object_s *root_obj);
-static void M_Dump(struct json_object_s *root_obj);
+    JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
+static void M_Load(JSON_OBJECT *root_obj);
+static void M_Dump(JSON_OBJECT *root_obj);
 
 static void M_LoadKeyboardLayout(
-    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+    JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
 {
     char layout_name[20];
     sprintf(layout_name, "layout_%d", layout);
-    struct json_array_s *const arr =
-        json_object_get_array(parent_obj, layout_name);
+    JSON_ARRAY *const arr = JSON_ObjectGetArray(parent_obj, layout_name);
     if (!arr) {
         return;
     }
 
-    const struct json_value_s *const first_value = json_array_get_value(arr, 0);
-    if (first_value != json_null && first_value->type == json_type_number) {
+    const JSON_VALUE *const first_value = JSON_ArrayGetValue(arr, 0);
+    if (first_value != NULL && first_value->type == JSON_TYPE_NUMBER) {
         // legacy config for versions <= 3.1.1
         for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
             INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
-            scancode = json_array_get_int(arr, role, scancode);
+            scancode = JSON_ArrayGetInt(arr, role, scancode);
             Input_AssignScancode(layout, role, scancode);
         }
     } else {
         // version 4.0+
         for (size_t i = 0; i < arr->length; i++) {
-            struct json_object_s *const bind_obj =
-                json_array_get_object(arr, i);
+            JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
             if (!bind_obj) {
                 continue;
             }
 
-            const INPUT_ROLE role = json_object_get_int(bind_obj, "role", -1);
+            const INPUT_ROLE role = JSON_ObjectGetInt(bind_obj, "role", -1);
             if (role == (INPUT_ROLE)-1) {
                 continue;
             }
 
             INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
-            scancode = json_object_get_int(bind_obj, "scancode", scancode);
+            scancode = JSON_ObjectGetInt(bind_obj, "scancode", scancode);
 
             Input_AssignScancode(layout, role, scancode);
         }
@@ -81,31 +77,30 @@ static void M_LoadKeyboardLayout(
 }
 
 static void M_LoadControllerLayout(
-    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+    JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
 {
     char layout_name[20];
     sprintf(layout_name, "cntlr_layout_%d", layout);
-    struct json_array_s *const arr =
-        json_object_get_array(parent_obj, layout_name);
+    JSON_ARRAY *const arr = JSON_ObjectGetArray(parent_obj, layout_name);
     if (!arr) {
         return;
     }
 
-    const struct json_value_s *const first_value = json_array_get_value(arr, 0);
-    if (first_value != json_null && first_value->type == json_type_number) {
+    const JSON_VALUE *const first_value = JSON_ArrayGetValue(arr, 0);
+    if (first_value != NULL && first_value->type == JSON_TYPE_NUMBER) {
         // legacy config for versions <= 3.1.1
         int i = 0;
         for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
             int16_t type = Input_GetAssignedButtonType(layout, role);
-            type = json_array_get_int(arr, i, type);
+            type = JSON_ArrayGetInt(arr, i, type);
             i++;
 
             int16_t bind = Input_GetAssignedBind(layout, role);
-            bind = json_array_get_int(arr, i, bind);
+            bind = JSON_ArrayGetInt(arr, i, bind);
             i++;
 
             int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
-            axis_dir = json_array_get_int(arr, i, axis_dir);
+            axis_dir = JSON_ArrayGetInt(arr, i, axis_dir);
             i++;
 
             if (type == BT_BUTTON) {
@@ -117,25 +112,24 @@ static void M_LoadControllerLayout(
     } else {
         // version 4.0+
         for (size_t i = 0; i < arr->length; i++) {
-            struct json_object_s *const bind_obj =
-                json_array_get_object(arr, i);
+            JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
             if (!bind_obj) {
                 continue;
             }
 
-            const INPUT_ROLE role = json_object_get_int(bind_obj, "role", -1);
+            const INPUT_ROLE role = JSON_ObjectGetInt(bind_obj, "role", -1);
             if (role == (INPUT_ROLE)-1) {
                 continue;
             }
 
             int16_t type = Input_GetAssignedButtonType(layout, role);
-            type = json_object_get_int(bind_obj, "button_type", type);
+            type = JSON_ObjectGetInt(bind_obj, "button_type", type);
 
             int16_t bind = Input_GetAssignedBind(layout, role);
-            bind = json_object_get_int(bind_obj, "bind", bind);
+            bind = JSON_ObjectGetInt(bind_obj, "bind", bind);
 
             int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
-            axis_dir = json_object_get_int(bind_obj, "axis_dir", axis_dir);
+            axis_dir = JSON_ObjectGetInt(bind_obj, "axis_dir", axis_dir);
 
             if (type == BT_BUTTON) {
                 Input_AssignButton(layout, role, bind);
@@ -146,15 +140,15 @@ static void M_LoadControllerLayout(
     }
 }
 
-static void M_LoadLegacyOptions(struct json_object_s *const parent_obj)
+static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 {
     // 0.10..4.0.3: enable_enemy_healthbar
     {
-        const struct json_value_s *const value =
-            json_object_get_value(parent_obj, "enable_enemy_healthbar");
-        if (json_value_is_true(value)) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_enemy_healthbar");
+        if (JSON_ValueIsTrue(value)) {
             g_Config.enemy_healthbar_show_mode = BSM_ALWAYS;
-        } else if (json_value_is_false(value)) {
+        } else if (JSON_ValueIsFalse(value)) {
             g_Config.enemy_healthbar_show_mode = BSM_NEVER;
         }
     }
@@ -174,9 +168,9 @@ static void M_LoadLegacyOptions(struct json_object_s *const parent_obj)
 }
 
 static void M_DumpKeyboardLayout(
-    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+    JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
 {
-    struct json_array_s *const arr = json_array_new();
+    JSON_ARRAY *const arr = JSON_ArrayNew();
 
     bool has_elements = false;
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -189,26 +183,26 @@ static void M_DumpKeyboardLayout(
             continue;
         }
 
-        struct json_object_s *const bind_obj = json_object_new();
-        json_object_append_int(bind_obj, "role", role);
-        json_object_append_int(bind_obj, "scancode", user_scancode);
-        json_array_append_object(arr, bind_obj);
+        JSON_OBJECT *const bind_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(bind_obj, "role", role);
+        JSON_ObjectAppendInt(bind_obj, "scancode", user_scancode);
+        JSON_ArrayAppendObject(arr, bind_obj);
         has_elements = true;
     }
 
     if (has_elements) {
         char layout_name[20];
         sprintf(layout_name, "layout_%d", layout);
-        json_object_append_array(parent_obj, layout_name, arr);
+        JSON_ObjectAppendArray(parent_obj, layout_name, arr);
     } else {
-        json_array_free(arr);
+        JSON_ArrayFree(arr);
     }
 }
 
 static void M_DumpControllerLayout(
-    struct json_object_s *const parent_obj, const INPUT_LAYOUT layout)
+    JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
 {
-    struct json_array_s *const arr = json_array_new();
+    JSON_ARRAY *const arr = JSON_ArrayNew();
 
     bool has_elements = false;
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -228,25 +222,25 @@ static void M_DumpControllerLayout(
             continue;
         }
 
-        struct json_object_s *const bind_obj = json_object_new();
-        json_object_append_int(bind_obj, "role", role);
-        json_object_append_int(bind_obj, "button_type", user_button_type);
-        json_object_append_int(bind_obj, "bind", user_bind);
-        json_object_append_int(bind_obj, "axis_dir", user_axis_dir);
-        json_array_append_object(arr, bind_obj);
+        JSON_OBJECT *const bind_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(bind_obj, "role", role);
+        JSON_ObjectAppendInt(bind_obj, "button_type", user_button_type);
+        JSON_ObjectAppendInt(bind_obj, "bind", user_bind);
+        JSON_ObjectAppendInt(bind_obj, "axis_dir", user_axis_dir);
+        JSON_ArrayAppendObject(arr, bind_obj);
         has_elements = true;
     }
 
     if (has_elements) {
         char layout_name[20];
         sprintf(layout_name, "cntlr_layout_%d", layout);
-        json_object_append_array(parent_obj, layout_name, arr);
+        JSON_ObjectAppendArray(parent_obj, layout_name, arr);
     } else {
-        json_array_free(arr);
+        JSON_ArrayFree(arr);
     }
 }
 
-static void M_Load(struct json_object_s *root_obj)
+static void M_Load(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, g_ConfigOptionMap);
 
@@ -261,7 +255,7 @@ static void M_Load(struct json_object_s *root_obj)
     Config_Sanitize();
 }
 
-static void M_Dump(struct json_object_s *root_obj)
+static void M_Dump(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, g_ConfigOptionMap);
 
