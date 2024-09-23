@@ -4,4 +4,4 @@
 
 // Normal pickup Scion.
 
-void Scion2_Setup(OBJECT_INFO *obj);
+void Scion2_Setup(OBJECT *obj);

@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef enum PICK_TEXT {
+typedef enum {
     TEXT_KEYBOARD = 0,
     TEXT_CONTROLLER = 1,
     TEXT_TITLE = 2,

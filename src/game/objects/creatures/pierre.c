@@ -36,11 +36,11 @@ typedef enum {
     PIERRE_SHOOT = 7,
 } PIERRE_ANIM;
 
-static BITE_INFO m_PierreGun1 = { 60, 200, 0, 11 };
-static BITE_INFO m_PierreGun2 = { -57, 200, 0, 14 };
+static BITE m_PierreGun1 = { 60, 200, 0, 11 };
+static BITE m_PierreGun2 = { -57, 200, 0, 14 };
 static int16_t m_PierreItemNum = NO_ITEM;
 
-void Pierre_Setup(OBJECT_INFO *obj)
+void Pierre_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -62,13 +62,13 @@ void Pierre_Setup(OBJECT_INFO *obj)
 
 void Pierre_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (g_Config.change_pierre_spawn) {
         if (m_PierreItemNum == NO_ITEM) {
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
-            ITEM_INFO *old_pierre = &g_Items[m_PierreItemNum];
+            ITEM *old_pierre = &g_Items[m_PierreItemNum];
             if (old_pierre->flags & IF_ONE_SHOT) {
                 if (!(item->flags & IF_ONE_SHOT)) {
                     Item_Kill(item_num);
@@ -97,7 +97,7 @@ void Pierre_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *pierre = item->data;
+    CREATURE *pierre = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

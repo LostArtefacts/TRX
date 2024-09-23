@@ -9,7 +9,7 @@
 // intentionally not implemented. To use more dynamic memory management, use
 // Memory_Alloc / Memory_Free.
 
-typedef enum GAME_BUFFER {
+typedef enum {
     GBUF_TEXTURE_PAGES,
     GBUF_MESH_POINTERS,
     GBUF_MESHES,
@@ -19,12 +19,12 @@ typedef enum GAME_BUFFER {
     GBUF_ANIM_COMMANDS,
     GBUF_ANIM_BONES,
     GBUF_ANIM_FRAMES,
-    GBUF_ROOM_INFOS,
+    GBUF_ROOMS,
     GBUF_ROOM_MESH,
     GBUF_ROOM_DOOR,
     GBUF_ROOM_SECTOR,
     GBUF_ROOM_LIGHTS,
-    GBUF_ROOM_STATIC_MESH_INFOS,
+    GBUF_ROOM_STATIC_MESHES,
     GBUF_FLOOR_DATA,
     GBUF_ITEMS,
     GBUF_CAMERAS,

@@ -23,7 +23,7 @@
 #define INJECTION_CURRENT_VERSION 8
 #define NULL_FD_INDEX ((uint16_t)(-1))
 
-typedef enum INJECTION_VERSION {
+typedef enum {
     INJ_VERSION_1 = 1,
     INJ_VERSION_2 = 2,
     INJ_VERSION_3 = 3,
@@ -34,7 +34,7 @@ typedef enum INJECTION_VERSION {
     INJ_VERSION_8 = 8,
 } INJECTION_VERSION;
 
-typedef enum INJECTION_TYPE {
+typedef enum {
     INJ_GENERAL = 0,
     INJ_BRAID = 1,
     INJ_TEXTURE_FIX = 2,
@@ -49,7 +49,7 @@ typedef enum INJECTION_TYPE {
     INJ_PS1_CRYSTAL = 11,
 } INJECTION_TYPE;
 
-typedef struct INJECTION {
+typedef struct {
     VFILE *fp;
     INJECTION_VERSION version;
     INJECTION_TYPE type;
@@ -57,14 +57,14 @@ typedef struct INJECTION {
     bool relevant;
 } INJECTION;
 
-typedef enum FACE_TYPE {
+typedef enum {
     FT_TEXTURED_QUAD = 0,
     FT_TEXTURED_TRIANGLE = 1,
     FT_COLOURED_QUAD = 2,
     FT_COLOURED_TRIANGLE = 3
 } FACE_TYPE;
 
-typedef struct FACE_EDIT {
+typedef struct {
     GAME_OBJECT_ID object_id;
     int16_t source_identifier;
     FACE_TYPE face_type;
@@ -73,14 +73,14 @@ typedef struct FACE_EDIT {
     int16_t *targets;
 } FACE_EDIT;
 
-typedef struct VERTEX_EDIT {
+typedef struct {
     int16_t vertex_index;
     int16_t x_change;
     int16_t y_change;
     int16_t z_change;
 } VERTEX_EDIT;
 
-typedef struct MESH_EDIT {
+typedef struct {
     GAME_OBJECT_ID object_id;
     int16_t mesh_idx;
     XYZ_16 centre_shift;
@@ -91,7 +91,7 @@ typedef struct MESH_EDIT {
     VERTEX_EDIT *vertex_edits;
 } MESH_EDIT;
 
-typedef enum FLOOR_EDIT_TYPE {
+typedef enum {
     FET_TRIGGER_PARAM = 0,
     FET_MUSIC_ONESHOT = 1,
     FET_FD_INSERT = 2,
@@ -99,7 +99,7 @@ typedef enum FLOOR_EDIT_TYPE {
     FET_TRIGGER_ITEM = 4,
 } FLOOR_EDIT_TYPE;
 
-typedef enum ROOM_MESH_EDIT_TYPE {
+typedef enum {
     RMET_TEXTURE_FACE = 0,
     RMET_MOVE_FACE = 1,
     RMET_ALTER_VERTEX = 2,
@@ -116,7 +116,7 @@ static void M_LoadFromFile(INJECTION *injection, const char *filename);
 
 static uint16_t M_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb);
 static void M_AlignTextureReferences(
-    OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base);
+    OBJECT *object, uint16_t *palette_map, int32_t page_base);
 
 static void M_LoadTexturePages(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map,
@@ -140,10 +140,10 @@ static void M_TextureOverwrites(
     INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map);
 
 static void M_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info);
-static void M_TriggerParameterChange(INJECTION *injection, SECTOR_INFO *sector);
-static void M_SetMusicOneShot(SECTOR_INFO *sector);
+static void M_TriggerParameterChange(INJECTION *injection, SECTOR *sector);
+static void M_SetMusicOneShot(SECTOR *sector);
 static void M_InsertFloorData(
-    INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info);
+    INJECTION *injection, SECTOR *sector, LEVEL_INFO *level_info);
 static void M_RoomShift(INJECTION *injection, int16_t room_num);
 static void M_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info);
 
@@ -448,7 +448,7 @@ static void M_TextureData(
         const int16_t mesh_idx = VFile_ReadS16(fp);
 
         if (object_id < O_NUMBER_OF) {
-            OBJECT_INFO *object = &g_Objects[object_id];
+            OBJECT *object = &g_Objects[object_id];
             object->nmeshes = num_meshes;
             object->mesh_idx = mesh_idx + level_info->sprite_info_count;
             object->loaded = 1;
@@ -620,7 +620,7 @@ static void M_AnimRangeEdits(INJECTION *injection)
             continue;
         }
 
-        OBJECT_INFO *object = &g_Objects[object_id];
+        OBJECT *object = &g_Objects[object_id];
         if (!object->loaded) {
             LOG_WARNING("Object %d is not loaded", object_id);
             VFile_Skip(fp, edit_count * sizeof(int16_t) * 4);
@@ -670,7 +670,7 @@ static void M_ObjectData(
     // use cases.
     for (int32_t i = 0; i < inj_info->object_count; i++) {
         const GAME_OBJECT_ID object_id = VFile_ReadS32(fp);
-        OBJECT_INFO *object = &g_Objects[object_id];
+        OBJECT *object = &g_Objects[object_id];
 
         const int16_t num_meshes = VFile_ReadS16(fp);
         const int16_t mesh_idx = VFile_ReadS16(fp);
@@ -752,7 +752,7 @@ static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 }
 
 static void M_AlignTextureReferences(
-    OBJECT_INFO *object, uint16_t *palette_map, int32_t page_base)
+    OBJECT *object, uint16_t *palette_map, int32_t page_base)
 {
     int16_t **mesh = &g_Meshes[object->mesh_idx];
     for (int32_t i = 0; i < object->nmeshes; i++) {
@@ -885,7 +885,7 @@ static void M_MeshEdits(INJECTION *injection, uint16_t *palette_map)
 
 static void M_ApplyMeshEdit(MESH_EDIT *mesh_edit, uint16_t *palette_map)
 {
-    OBJECT_INFO object = g_Objects[mesh_edit->object_id];
+    OBJECT object = g_Objects[mesh_edit->object_id];
     if (!object.loaded) {
         return;
     }
@@ -989,7 +989,7 @@ static void M_ApplyFaceEdit(
 
 static int16_t *M_GetMeshTexture(FACE_EDIT *face_edit)
 {
-    OBJECT_INFO object = g_Objects[face_edit->object_id];
+    OBJECT object = g_Objects[face_edit->object_id];
     if (!object.loaded) {
         return NULL;
     }
@@ -1094,8 +1094,8 @@ static void M_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
 
         // Verify that the given room and coordinates are accurate.
         // Individual FD functions must check that sector is actually set.
-        ROOM_INFO *r = NULL;
-        SECTOR_INFO *sector = NULL;
+        ROOM *r = NULL;
+        SECTOR *sector = NULL;
         if (room < 0 || room >= g_RoomCount) {
             LOG_WARNING("Room index %d is invalid", room);
         } else {
@@ -1136,7 +1136,7 @@ static void M_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
     Benchmark_End(benchmark, NULL);
 }
 
-static void M_TriggerParameterChange(INJECTION *injection, SECTOR_INFO *sector)
+static void M_TriggerParameterChange(INJECTION *injection, SECTOR *sector)
 {
     VFILE *const fp = injection->fp;
 
@@ -1173,7 +1173,7 @@ static void M_TriggerParameterChange(INJECTION *injection, SECTOR_INFO *sector)
     }
 }
 
-static void M_SetMusicOneShot(SECTOR_INFO *sector)
+static void M_SetMusicOneShot(SECTOR *sector)
 {
     if (sector == NULL || sector->trigger == NULL) {
         return;
@@ -1188,7 +1188,7 @@ static void M_SetMusicOneShot(SECTOR_INFO *sector)
 }
 
 static void M_InsertFloorData(
-    INJECTION *injection, SECTOR_INFO *sector, LEVEL_INFO *level_info)
+    INJECTION *injection, SECTOR *sector, LEVEL_INFO *level_info)
 {
     VFILE *const fp = injection->fp;
 
@@ -1215,7 +1215,7 @@ static void M_RoomShift(INJECTION *injection, int16_t room_num)
     const uint32_t z_shift = ROUND_TO_SECTOR(VFile_ReadU32(fp));
     const int32_t y_shift = ROUND_TO_CLICK(VFile_ReadS32(fp));
 
-    ROOM_INFO *room = &g_RoomInfo[room_num];
+    ROOM *room = &g_RoomInfo[room_num];
     room->x += x_shift;
     room->z += z_shift;
     room->min_floor += y_shift;
@@ -1223,7 +1223,7 @@ static void M_RoomShift(INJECTION *injection, int16_t room_num)
 
     // Move any items in the room to match.
     for (int32_t i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
+        ITEM *item = &g_Items[i];
         if (item->room_num != room_num) {
             continue;
         }
@@ -1239,7 +1239,7 @@ static void M_RoomShift(INJECTION *injection, int16_t room_num)
 
     // Update the sector floor and ceiling heights to match.
     for (int32_t i = 0; i < room->z_size * room->x_size; i++) {
-        SECTOR_INFO *const sector = &room->sectors[i];
+        SECTOR *const sector = &room->sectors[i];
         if (sector->floor.height == NO_HEIGHT
             || sector->ceiling.height == NO_HEIGHT) {
             continue;
@@ -1269,7 +1269,7 @@ static void M_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     }
 
     int16_t item_num = Item_Create();
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     item->object_id = VFile_ReadS16(fp);
     item->room_num = VFile_ReadS16(fp);
@@ -1388,7 +1388,7 @@ static void M_AlterRoomVertex(INJECTION *injection)
         return;
     }
 
-    const ROOM_INFO *const room = &g_RoomInfo[target_room];
+    const ROOM *const room = &g_RoomInfo[target_room];
     const int16_t vertex_count = *room->data;
     if (target_vertex < 0 || target_vertex >= vertex_count) {
         LOG_WARNING(
@@ -1459,7 +1459,7 @@ static void M_AddRoomFace(INJECTION *injection)
         return;
     }
 
-    ROOM_INFO *r = &g_RoomInfo[target_room];
+    ROOM *r = &g_RoomInfo[target_room];
     int32_t data_index = 0;
 
     int32_t vertex_count = r->data[data_index++];
@@ -1516,7 +1516,7 @@ static void M_AddRoomVertex(INJECTION *injection)
     const int16_t z = VFile_ReadS16(fp);
     const int16_t lighting = VFile_ReadS16(fp);
 
-    ROOM_INFO *r = &g_RoomInfo[target_room];
+    ROOM *r = &g_RoomInfo[target_room];
     int32_t data_index = 0;
 
     int32_t vertex_count = r->data[data_index];
@@ -1559,7 +1559,7 @@ static int16_t *M_GetRoomTexture(
 static int16_t *M_GetRoomFace(
     int16_t room, FACE_TYPE face_type, int16_t face_index)
 {
-    ROOM_INFO *r = NULL;
+    ROOM *r = NULL;
     if (room < 0 || room >= g_RoomCount) {
         LOG_WARNING("Room index %d is invalid", room);
         return NULL;
@@ -1621,21 +1621,21 @@ static void M_RoomDoorEdits(INJECTION *injection)
             continue;
         }
 
-        ROOM_INFO *r = &g_RoomInfo[base_room];
-        DOOR_INFO *door = NULL;
-        for (int32_t j = 0; j < r->doors->count; j++) {
-            DOOR_INFO d = r->doors->door[j];
+        ROOM *r = &g_RoomInfo[base_room];
+        PORTAL *portal = NULL;
+        for (int32_t j = 0; j < r->portals->count; j++) {
+            PORTAL d = r->portals->portal[j];
             if (d.room_num == link_room
                 && (j == door_index || door_index == -1)) {
-                door = &r->doors->door[j];
+                portal = &r->portals->portal[j];
                 break;
             }
         }
 
-        if (!door) {
+        if (portal == NULL) {
             VFile_Skip(fp, sizeof(int16_t) * 12);
             LOG_WARNING(
-                "Room index %d has no matching door to %d", base_room,
+                "Room index %d has no matching portal to %d", base_room,
                 link_room);
             continue;
         }
@@ -1645,9 +1645,9 @@ static void M_RoomDoorEdits(INJECTION *injection)
             const int16_t y_change = VFile_ReadS16(fp);
             const int16_t z_change = VFile_ReadS16(fp);
 
-            door->vertex[j].x += x_change;
-            door->vertex[j].y += y_change;
-            door->vertex[j].z += z_change;
+            portal->vertex[j].x += x_change;
+            portal->vertex[j].y += y_change;
+            portal->vertex[j].z += z_change;
         }
     }
 
@@ -1685,7 +1685,7 @@ static void M_ItemPositions(INJECTION *injection)
             continue;
         }
 
-        ITEM_INFO *item = &g_Items[item_num];
+        ITEM *item = &g_Items[item_num];
         item->rot.y = y_rot;
         if (injection->version > INJ_VERSION_4) {
             item->pos.x = x;

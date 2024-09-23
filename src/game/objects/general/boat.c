@@ -2,7 +2,7 @@
 
 #include "game/items.h"
 
-void Boat_Setup(OBJECT_INFO *obj)
+void Boat_Setup(OBJECT *obj)
 {
     obj->control = Boat_Control;
     obj->save_flags = 1;
@@ -12,7 +12,7 @@ void Boat_Setup(OBJECT_INFO *obj)
 
 void Boat_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     switch (item->current_anim_state) {
     case BOAT_SET:

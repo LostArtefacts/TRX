@@ -37,7 +37,7 @@ LARA_INFO *Lara_GetLaraInfo(void)
     return &g_Lara;
 }
 
-ITEM_INFO *Lara_GetItem(void)
+ITEM *Lara_GetItem(void)
 {
     return g_LaraItem;
 }
@@ -46,8 +46,8 @@ void Lara_Control(void)
 {
     COLL_INFO coll = { 0 };
 
-    ITEM_INFO *item = g_LaraItem;
-    const ROOM_INFO *const room = &g_RoomInfo[item->room_num];
+    ITEM *item = g_LaraItem;
+    const ROOM *const room = &g_RoomInfo[item->room_num];
     const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
 
     if (g_Lara.interact_target.is_moving
@@ -231,7 +231,7 @@ void Lara_SwapSingleMesh(const LARA_MESH mesh, const GAME_OBJECT_ID object_id)
     g_Lara.mesh_ptrs[mesh] = g_Meshes[g_Objects[object_id].mesh_idx + mesh];
 }
 
-void Lara_Animate(ITEM_INFO *item)
+void Lara_Animate(ITEM *item)
 {
     int16_t *command;
     ANIM *anim;
@@ -331,7 +331,7 @@ void Lara_Animate(ITEM_INFO *item)
     item->pos.z += (Math_Cos(g_Lara.move_angle) * item->speed) >> W2V_SHIFT;
 }
 
-void Lara_AnimateUntil(ITEM_INFO *lara_item, int32_t goal)
+void Lara_AnimateUntil(ITEM *lara_item, int32_t goal)
 {
     lara_item->goal_anim_state = goal;
     do {
@@ -678,7 +678,7 @@ int16_t Lara_GetNearestEnemy(void)
     int16_t best_item_num = NO_ITEM;
     int16_t item_num = g_NextItemActive;
     while (item_num != NO_ITEM) {
-        ITEM_INFO *item = &g_Items[item_num];
+        ITEM *item = &g_Items[item_num];
 
         if (Object_IsObjectType(item->object_id, g_EnemyObjects)) {
             const int32_t distance = Item_GetDistance(item, &g_LaraItem->pos);
@@ -694,22 +694,22 @@ int16_t Lara_GetNearestEnemy(void)
     return best_item_num;
 }
 
-bool Lara_TestBoundsCollide(ITEM_INFO *item, int32_t radius)
+bool Lara_TestBoundsCollide(ITEM *item, int32_t radius)
 {
     return Item_TestBoundsCollide(g_LaraItem, item, radius);
 }
 
-bool Lara_TestPosition(const ITEM_INFO *item, const OBJECT_BOUNDS *const bounds)
+bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *const bounds)
 {
     return Item_TestPosition(g_LaraItem, item, bounds);
 }
 
-void Lara_AlignPosition(ITEM_INFO *item, XYZ_32 *vec)
+void Lara_AlignPosition(ITEM *item, XYZ_32 *vec)
 {
     Item_AlignPosition(g_LaraItem, item, vec);
 }
 
-bool Lara_MovePosition(ITEM_INFO *item, XYZ_32 *vec)
+bool Lara_MovePosition(ITEM *item, XYZ_32 *vec)
 {
     int32_t velocity =
         g_Config.walk_to_items && g_Lara.water_status != LWS_UNDERWATER
@@ -719,9 +719,9 @@ bool Lara_MovePosition(ITEM_INFO *item, XYZ_32 *vec)
     return Item_MovePosition(g_LaraItem, item, vec, velocity);
 }
 
-void Lara_Push(ITEM_INFO *item, COLL_INFO *coll, bool spaz_on, bool big_push)
+void Lara_Push(ITEM *item, COLL_INFO *coll, bool spaz_on, bool big_push)
 {
-    ITEM_INFO *const lara_item = g_LaraItem;
+    ITEM *const lara_item = g_LaraItem;
     int32_t x = lara_item->pos.x - item->pos.x;
     int32_t z = lara_item->pos.z - item->pos.z;
     const int32_t c = Math_Cos(item->rot.y);

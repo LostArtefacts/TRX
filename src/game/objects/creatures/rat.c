@@ -46,7 +46,7 @@ typedef enum {
     VOLE_DEATH = 3,
 } VOLE_ANIM;
 
-static BITE_INFO m_RatBite = { 0, -11, 108, 3 };
+static BITE m_RatBite = { 0, -11, 108, 3 };
 
 static const HYBRID_INFO m_RatInfo = {
     .land.id = O_RAT,
@@ -57,7 +57,7 @@ static const HYBRID_INFO m_RatInfo = {
     .water.active_anim = VOLE_EMPTY,
 };
 
-void Rat_Setup(OBJECT_INFO *obj)
+void Rat_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -80,7 +80,7 @@ void Rat_Setup(OBJECT_INFO *obj)
 
 void Rat_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -89,7 +89,7 @@ void Rat_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *rat = item->data;
+    CREATURE *rat = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -167,7 +167,7 @@ void Rat_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void Vole_Setup(OBJECT_INFO *obj)
+void Vole_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -190,7 +190,7 @@ void Vole_Setup(OBJECT_INFO *obj)
 
 void Vole_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {

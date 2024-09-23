@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 
-void FX_Bubbles(ITEM_INFO *item)
+void FX_Bubbles(ITEM *item)
 {
     // XXX: until we get Robolara, it makes sense for her to breathe underwater
     if (g_Lara.water_status == LWS_CHEAT
@@ -34,7 +34,7 @@ void FX_Bubbles(ITEM_INFO *item)
     for (int i = 0; i < count; i++) {
         int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
+            FX *fx = &g_Effects[fx_num];
             fx->pos.x = offset.x;
             fx->pos.y = offset.y;
             fx->pos.z = offset.z;

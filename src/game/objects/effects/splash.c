@@ -8,14 +8,14 @@
 #include "global/vars.h"
 #include "math/math.h"
 
-void Splash_Setup(OBJECT_INFO *obj)
+void Splash_Setup(OBJECT *obj)
 {
     obj->control = Splash_Control;
 }
 
 void Splash_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
     fx->frame_num--;
     if (fx->frame_num <= g_Objects[fx->object_id].nmeshes) {
         Effect_Kill(fx_num);
@@ -26,7 +26,7 @@ void Splash_Control(int16_t fx_num)
     fx->pos.x += (Math_Sin(fx->rot.y) * fx->speed) >> W2V_SHIFT;
 }
 
-void Splash_Spawn(ITEM_INFO *item)
+void Splash_Spawn(ITEM *item)
 {
     int16_t wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
@@ -38,7 +38,7 @@ void Splash_Spawn(ITEM_INFO *item)
     for (int i = 0; i < 10; i++) {
         int16_t fx_num = Effect_Create(room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
+            FX *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x;
             fx->pos.y = wh;
             fx->pos.z = item->pos.z;

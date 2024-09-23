@@ -11,7 +11,7 @@
 
 #define WATERFALL_RANGE (WALL_L * 10) // = 10240
 
-void Waterfall_Setup(OBJECT_INFO *obj)
+void Waterfall_Setup(OBJECT *obj)
 {
     obj->control = Waterfall_Control;
     obj->draw_routine = Object_DrawDummyItem;
@@ -20,7 +20,7 @@ void Waterfall_Setup(OBJECT_INFO *obj)
 
 void Waterfall_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
         return;
     }
@@ -33,7 +33,7 @@ void Waterfall_Control(int16_t item_num)
         && ABS(y) <= WATERFALL_RANGE) {
         int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
+            FX *fx = &g_Effects[fx_num];
             fx->pos.x = item->pos.x
                 + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
             fx->pos.z = item->pos.z

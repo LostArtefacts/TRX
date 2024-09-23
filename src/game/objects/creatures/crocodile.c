@@ -52,7 +52,7 @@ typedef enum {
     ALLIGATOR_DEATH = 3,
 } ALLIGATOR_ANIM;
 
-static BITE_INFO m_CrocodileBite = { 5, -21, 467, 9 };
+static BITE m_CrocodileBite = { 5, -21, 467, 9 };
 
 static const HYBRID_INFO m_CrocodileInfo = {
     .land.id = O_CROCODILE,
@@ -63,7 +63,7 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .water.active_anim = ALLIGATOR_EMPTY,
 };
 
-void Croc_Setup(OBJECT_INFO *obj)
+void Croc_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -86,7 +86,7 @@ void Croc_Setup(OBJECT_INFO *obj)
 
 void Croc_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -95,7 +95,7 @@ void Croc_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *croc = item->data;
+    CREATURE *croc = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -201,7 +201,7 @@ void Croc_Control(int16_t item_num)
     }
 }
 
-void Alligator_Setup(OBJECT_INFO *obj)
+void Alligator_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -224,7 +224,7 @@ void Alligator_Setup(OBJECT_INFO *obj)
 
 void Alligator_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -233,8 +233,8 @@ void Alligator_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *gator = item->data;
-    const SECTOR_INFO *sector;
+    CREATURE *gator = item->data;
+    const SECTOR *sector;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t room_num;

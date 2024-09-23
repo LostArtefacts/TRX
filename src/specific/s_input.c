@@ -19,7 +19,7 @@ typedef union BIND_TYPE {
     SDL_GameControllerAxis axis;
 } BIND_TYPE;
 
-typedef struct CONTROLLER_MAP {
+typedef struct {
     BUTTON_TYPE type;
     BIND_TYPE bind;
     int16_t axis_dir;

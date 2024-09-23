@@ -6,7 +6,7 @@
 
 #include <stddef.h>
 
-void FX_ChainBlock(ITEM_INFO *item)
+void FX_ChainBlock(ITEM *item)
 {
     if (g_Config.fix_tihocan_secret_sound) {
         if (g_FlipTimer == 0) {

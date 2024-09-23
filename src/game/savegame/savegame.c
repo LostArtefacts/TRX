@@ -32,7 +32,7 @@
 
 #define SAVES_DIR "saves"
 
-typedef struct SAVEGAME_STRATEGY {
+typedef struct {
     bool allow_load;
     bool allow_save;
     SAVEGAME_FORMAT format;
@@ -84,12 +84,12 @@ static void M_LoadPreprocess(void)
 static void M_LoadPostprocess(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         if (obj->save_position && obj->shadow_size) {
             int16_t room_num = item->room_num;
-            const SECTOR_INFO *const sector = Room_GetSector(
+            const SECTOR *const sector = Room_GetSector(
                 item->pos.x, item->pos.y, item->pos.z, &room_num);
             item->floor =
                 Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
@@ -182,8 +182,8 @@ void Savegame_Shutdown(void)
 void Savegame_ProcessItemsBeforeLoad(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         if (obj->control == MovableBlock_Control && item->status != IS_INVISIBLE
             && item->pos.y >= Item_GetHeight(item)) {
@@ -198,8 +198,8 @@ void Savegame_ProcessItemsBeforeLoad(void)
 void Savegame_ProcessItemsBeforeSave(void)
 {
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         if (obj->control == SaveCrystal_Control && item->data) {
             // need to reset the crystal status

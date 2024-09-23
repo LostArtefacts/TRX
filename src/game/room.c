@@ -30,18 +30,16 @@ int32_t g_FlipStatus = 0;
 int32_t g_FlipMapTable[MAX_FLIP_MAPS] = { 0 };
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
-static void M_AddFlipItems(ROOM_INFO *r);
-static void M_RemoveFlipItems(ROOM_INFO *r);
+static void M_AddFlipItems(ROOM *r);
+static void M_RemoveFlipItems(ROOM *r);
 
 static int16_t M_GetFloorTiltHeight(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t z);
+    const SECTOR *sector, const int32_t x, const int32_t z);
 static int16_t M_GetCeilingTiltHeight(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t z);
-static SECTOR_INFO *M_GetSkySector(
-    const SECTOR_INFO *sector, int32_t x, int32_t z);
-static void M_TestSectorTrigger(
-    const ITEM_INFO *item, const SECTOR_INFO *sector);
-static bool M_TestLava(const ITEM_INFO *const item);
+    const SECTOR *sector, const int32_t x, const int32_t z);
+static SECTOR *M_GetSkySector(const SECTOR *sector, int32_t x, int32_t z);
+static void M_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
+static bool M_TestLava(const ITEM *const item);
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
 {
@@ -125,11 +123,11 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
 }
 
-static void M_AddFlipItems(ROOM_INFO *r)
+static void M_AddFlipItems(ROOM *r)
 {
     for (int16_t item_num = r->item_num; item_num != NO_ITEM;
          item_num = g_Items[item_num].next_item) {
-        ITEM_INFO *item = &g_Items[item_num];
+        ITEM *item = &g_Items[item_num];
 
         switch (item->object_id) {
         case O_MOVABLE_BLOCK_1:
@@ -149,11 +147,11 @@ static void M_AddFlipItems(ROOM_INFO *r)
     }
 }
 
-static void M_RemoveFlipItems(ROOM_INFO *r)
+static void M_RemoveFlipItems(ROOM *r)
 {
     for (int16_t item_num = r->item_num; item_num != NO_ITEM;
          item_num = g_Items[item_num].next_item) {
-        ITEM_INFO *item = &g_Items[item_num];
+        ITEM *item = &g_Items[item_num];
 
         switch (item->object_id) {
         case O_MOVABLE_BLOCK_1:
@@ -173,8 +171,7 @@ static void M_RemoveFlipItems(ROOM_INFO *r)
     }
 }
 
-int16_t Room_GetTiltType(
-    const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
 {
     sector = Room_GetPitSector(sector, x, z);
 
@@ -234,37 +231,37 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-SECTOR_INFO *Room_GetPitSector(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t z)
+SECTOR *Room_GetPitSector(
+    const SECTOR *sector, const int32_t x, const int32_t z)
 {
     while (sector->portal_room.pit != NO_ROOM) {
-        const ROOM_INFO *const r = &g_RoomInfo[sector->portal_room.pit];
+        const ROOM *const r = &g_RoomInfo[sector->portal_room.pit];
         const int32_t z_sector = (z - r->z) >> WALL_SHIFT;
         const int32_t x_sector = (x - r->x) >> WALL_SHIFT;
         sector = &r->sectors[z_sector + x_sector * r->z_size];
     }
 
-    return (SECTOR_INFO *)sector;
+    return (SECTOR *)sector;
 }
 
-static SECTOR_INFO *M_GetSkySector(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t z)
+static SECTOR *M_GetSkySector(
+    const SECTOR *sector, const int32_t x, const int32_t z)
 {
     while (sector->portal_room.sky != NO_ROOM) {
-        const ROOM_INFO *const r = &g_RoomInfo[sector->portal_room.sky];
+        const ROOM *const r = &g_RoomInfo[sector->portal_room.sky];
         const int32_t z_sector = (z - r->z) >> WALL_SHIFT;
         const int32_t x_sector = (x - r->x) >> WALL_SHIFT;
         sector = &r->sectors[z_sector + x_sector * r->z_size];
     }
 
-    return (SECTOR_INFO *)sector;
+    return (SECTOR *)sector;
 }
 
-SECTOR_INFO *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
+SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
 {
     int16_t portal_room;
-    SECTOR_INFO *sector;
-    const ROOM_INFO *r = &g_RoomInfo[*room_num];
+    SECTOR *sector;
+    const ROOM *r = &g_RoomInfo[*room_num];
     do {
         int32_t z_sector = (z - r->z) >> WALL_SHIFT;
         int32_t x_sector = (x - r->x) >> WALL_SHIFT;
@@ -328,14 +325,13 @@ SECTOR_INFO *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num)
     return sector;
 }
 
-int16_t Room_GetCeiling(
-    const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
 {
     int16_t *data;
     int16_t type;
     int16_t trigger;
 
-    const SECTOR_INFO *const sky_sector = M_GetSkySector(sector, x, z);
+    const SECTOR *const sky_sector = M_GetSkySector(sector, x, z);
     int16_t height = M_GetCeilingTiltHeight(sky_sector, x, z);
 
     sector = Room_GetPitSector(sector, x, z);
@@ -349,9 +345,8 @@ int16_t Room_GetCeiling(
             continue;
         }
 
-        const ITEM_INFO *const item =
-            &g_Items[(int16_t)(intptr_t)cmd->parameter];
-        const OBJECT_INFO *const object = &g_Objects[item->object_id];
+        const ITEM *const item = &g_Items[(int16_t)(intptr_t)cmd->parameter];
+        const OBJECT *const object = &g_Objects[item->object_id];
         if (object->ceiling_height_func) {
             height = object->ceiling_height_func(item, x, y, z, height);
         }
@@ -360,8 +355,7 @@ int16_t Room_GetCeiling(
     return height;
 }
 
-int16_t Room_GetHeight(
-    const SECTOR_INFO *sector, int32_t x, int32_t y, int32_t z)
+int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
 {
     g_HeightType = HT_WALL;
     sector = Room_GetPitSector(sector, x, z);
@@ -378,9 +372,8 @@ int16_t Room_GetHeight(
             continue;
         }
 
-        const ITEM_INFO *const item =
-            &g_Items[(int16_t)(intptr_t)cmd->parameter];
-        const OBJECT_INFO *const object = &g_Objects[item->object_id];
+        const ITEM *const item = &g_Items[(int16_t)(intptr_t)cmd->parameter];
+        const OBJECT *const object = &g_Objects[item->object_id];
         if (object->floor_height_func) {
             height = object->floor_height_func(item, x, y, z, height);
         }
@@ -390,7 +383,7 @@ int16_t Room_GetHeight(
 }
 
 static int16_t M_GetFloorTiltHeight(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t z)
+    const SECTOR *sector, const int32_t x, const int32_t z)
 {
     int16_t height = sector->floor.height;
     if (sector->floor.tilt == 0) {
@@ -424,7 +417,7 @@ static int16_t M_GetFloorTiltHeight(
 }
 
 static int16_t M_GetCeilingTiltHeight(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t z)
+    const SECTOR *sector, const int32_t x, const int32_t z)
 {
     int16_t height = sector->ceiling.height;
     if (sector->ceiling.tilt == 0) {
@@ -455,10 +448,10 @@ static int16_t M_GetCeilingTiltHeight(
 
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    const ROOM_INFO *r = &g_RoomInfo[room_num];
+    const ROOM *r = &g_RoomInfo[room_num];
 
     int16_t portal_room;
-    const SECTOR_INFO *sector;
+    const SECTOR *sector;
     int32_t z_sector, x_sector;
 
     do {
@@ -520,7 +513,7 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 int16_t Room_GetIndexFromPos(const int32_t x, const int32_t y, const int32_t z)
 {
     for (int i = 0; i < g_RoomCount; i++) {
-        const ROOM_INFO *const room = &g_RoomInfo[i];
+        const ROOM *const room = &g_RoomInfo[i];
         const int32_t x1 = room->x + WALL_L;
         const int32_t x2 = room->x + (room->x_size << WALL_SHIFT) - WALL_L;
         const int32_t y1 = room->max_ceiling;
@@ -534,15 +527,15 @@ int16_t Room_GetIndexFromPos(const int32_t x, const int32_t y, const int32_t z)
     return NO_ROOM;
 }
 
-void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
+void Room_AlterFloorHeight(ITEM *item, int32_t height)
 {
     if (!height) {
         return;
     }
 
     int16_t portal_room;
-    SECTOR_INFO *sector;
-    const ROOM_INFO *r = &g_RoomInfo[item->room_num];
+    SECTOR *sector;
+    const ROOM *r = &g_RoomInfo[item->room_num];
 
     do {
         int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
@@ -565,7 +558,7 @@ void Room_AlterFloorHeight(ITEM_INFO *item, int32_t height)
         }
     } while (portal_room != NO_ROOM);
 
-    const SECTOR_INFO *const sky_sector =
+    const SECTOR *const sky_sector =
         M_GetSkySector(sector, item->pos.x, item->pos.z);
     sector = Room_GetPitSector(sector, item->pos.x, item->pos.z);
 
@@ -593,15 +586,15 @@ void Room_FlipMap(void)
     Sound_StopAmbientSounds();
 
     for (int i = 0; i < g_RoomCount; i++) {
-        ROOM_INFO *r = &g_RoomInfo[i];
+        ROOM *r = &g_RoomInfo[i];
         if (r->flipped_room < 0) {
             continue;
         }
 
         M_RemoveFlipItems(r);
 
-        ROOM_INFO *flipped = &g_RoomInfo[r->flipped_room];
-        ROOM_INFO temp = *r;
+        ROOM *flipped = &g_RoomInfo[r->flipped_room];
+        ROOM temp = *r;
         *r = *flipped;
         *flipped = temp;
 
@@ -621,9 +614,9 @@ void Room_FlipMap(void)
 void Room_ParseFloorData(const int16_t *floor_data)
 {
     for (int32_t i = 0; i < g_RoomCount; i++) {
-        const ROOM_INFO *const room = &g_RoomInfo[i];
+        const ROOM *const room = &g_RoomInfo[i];
         for (int32_t j = 0; j < room->x_size * room->z_size; j++) {
-            SECTOR_INFO *const sector = &room->sectors[j];
+            SECTOR *const sector = &room->sectors[j];
             Room_PopulateSectorData(
                 &room->sectors[j], floor_data, sector->index, NULL_FD_INDEX);
         }
@@ -631,8 +624,8 @@ void Room_ParseFloorData(const int16_t *floor_data)
 }
 
 void Room_PopulateSectorData(
-    SECTOR_INFO *const sector, const int16_t *floor_data,
-    const uint16_t start_index, const uint16_t null_index)
+    SECTOR *const sector, const int16_t *floor_data, const uint16_t start_index,
+    const uint16_t null_index)
 {
     sector->floor.tilt = 0;
     sector->ceiling.tilt = 0;
@@ -736,10 +729,10 @@ void Room_PopulateSectorData(
     } while (!(fd_entry & END_BIT));
 }
 
-void Room_TestTriggers(const ITEM_INFO *const item)
+void Room_TestTriggers(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *sector =
+    const SECTOR *sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
 
     M_TestSectorTrigger(item, sector);
@@ -762,7 +755,7 @@ void Room_TestTriggers(const ITEM_INFO *const item)
     }
 }
 
-static bool M_TestLava(const ITEM_INFO *const item)
+static bool M_TestLava(const ITEM *const item)
 {
     if (item->hit_points < 0 || g_Lara.water_status == LWS_CHEAT
         || (g_Lara.water_status == LWS_ABOVE_WATER
@@ -772,13 +765,13 @@ static bool M_TestLava(const ITEM_INFO *const item)
 
     // OG fix: check if floor index has lava
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
     return sector->is_death_sector;
 }
 
 static void M_TestSectorTrigger(
-    const ITEM_INFO *const item, const SECTOR_INFO *const sector)
+    const ITEM *const item, const SECTOR *const sector)
 {
     const bool is_heavy = item->object_id != O_LARA;
     if (!is_heavy && sector->is_death_sector && M_TestLava(item)) {
@@ -797,7 +790,7 @@ static void M_TestSectorTrigger(
     bool switch_off = false;
     bool flip_map = false;
     int32_t new_effect = -1;
-    ITEM_INFO *camera_item = NULL;
+    ITEM *camera_item = NULL;
 
     if (is_heavy) {
         if (trigger->type != TT_HEAVY) {
@@ -856,7 +849,7 @@ static void M_TestSectorTrigger(
         switch (cmd->type) {
         case TO_OBJECT: {
             const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
-            ITEM_INFO *const item = &g_Items[item_num];
+            ITEM *const item = &g_Items[item_num];
             if (item->flags & IF_ONE_SHOT) {
                 break;
             }
@@ -1050,8 +1043,8 @@ static void M_TestSectorTrigger(
 }
 
 bool Room_IsOnWalkable(
-    const SECTOR_INFO *sector, const int32_t x, const int32_t y,
-    const int32_t z, const int32_t room_height)
+    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
+    const int32_t room_height)
 {
     sector = Room_GetPitSector(sector, x, z);
     if (sector->trigger == NULL) {
@@ -1067,8 +1060,8 @@ bool Room_IsOnWalkable(
         }
 
         const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
-        const ITEM_INFO *const item = &g_Items[item_num];
-        const OBJECT_INFO *const object = &g_Objects[item->object_id];
+        const ITEM *const item = &g_Items[item_num];
+        const OBJECT *const object = &g_Objects[item->object_id];
         if (object->floor_height_func) {
             height = object->floor_height_func(item, x, y, z, height);
             object_found = true;
@@ -1083,7 +1076,7 @@ int32_t Room_GetTotalCount(void)
     return g_RoomCount;
 }
 
-ROOM_INFO *Room_Get(const int32_t room_num)
+ROOM *Room_Get(const int32_t room_num)
 {
     return &g_RoomInfo[room_num];
 }

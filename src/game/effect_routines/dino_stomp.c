@@ -9,7 +9,7 @@
 
 #define MAX_BOUNCE 100
 
-void FX_DinoStomp(ITEM_INFO *item)
+void FX_DinoStomp(ITEM *item)
 {
     int32_t dx = item->pos.x - g_Camera.pos.x;
     int32_t dy = item->pos.y - g_Camera.pos.y;

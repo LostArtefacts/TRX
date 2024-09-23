@@ -32,7 +32,7 @@ static const GAME_OBJECT_PAIR m_KeyItemToReceptacleMap[] = {
     // clang-format on
 };
 
-OBJECT_INFO *Object_GetObject(GAME_OBJECT_ID object_id)
+OBJECT *Object_GetObject(GAME_OBJECT_ID object_id)
 {
     return &g_Objects[object_id];
 }
@@ -70,9 +70,9 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id)
     GAME_OBJECT_ID receptacle_to_check =
         Object_GetCognate(object_id, m_KeyItemToReceptacleMap);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
-        ITEM_INFO *item = &g_Items[item_num];
+        ITEM *item = &g_Items[item_num];
         if (item->object_id == receptacle_to_check) {
-            const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+            const OBJECT *const obj = &g_Objects[item->object_id];
             if (Lara_TestPosition(item, obj->bounds())) {
                 return item_num;
             }
@@ -93,9 +93,9 @@ bool Object_IsObjectType(
     return false;
 }
 
-void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Object_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
@@ -109,10 +109,9 @@ void Object_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void Object_CollisionTrap(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Object_CollisionTrap(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_ACTIVE) {
         if (Lara_TestBoundsCollide(item, coll->radius)) {
@@ -123,11 +122,11 @@ void Object_CollisionTrap(
     }
 }
 
-void Object_DrawDummyItem(ITEM_INFO *item)
+void Object_DrawDummyItem(ITEM *item)
 {
 }
 
-void Object_DrawSpriteItem(ITEM_INFO *item)
+void Object_DrawSpriteItem(ITEM *item)
 {
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
@@ -135,7 +134,7 @@ void Object_DrawSpriteItem(ITEM_INFO *item)
         g_Objects[item->object_id].mesh_idx - item->frame_num, item->shade);
 }
 
-void Object_DrawPickupItem(ITEM_INFO *item)
+void Object_DrawPickupItem(ITEM *item)
 {
     if (!g_Config.enable_3d_pickups) {
         Object_DrawSpriteItem(item);
@@ -149,7 +148,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     // Modify item to be the anim for inv item and animation 0.
     Item_SwitchToObjAnim(item, 0, 0, item_num_option);
 
-    OBJECT_INFO *object = &g_Objects[item_num_option];
+    OBJECT *object = &g_Objects[item_num_option];
 
     const FRAME_INFO *frame = g_Anims[item->anim_num].frame_ptr;
 
@@ -168,7 +167,7 @@ void Object_DrawPickupItem(ITEM_INFO *item)
     // This is mostly true, but for example the 4 items in the Obelisk of
     // Khamoon the 4 items are sitting on top of a static mesh which is not
     // floor.
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &item->room_num);
     const int16_t floor_height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
@@ -292,9 +291,9 @@ void Object_DrawPickupItem(ITEM_INFO *item)
 }
 
 void Object_DrawInterpolatedObject(
-    const OBJECT_INFO *const object, uint32_t meshes,
-    const int16_t *extra_rotation, const FRAME_INFO *const frame1,
-    const FRAME_INFO *const frame2, const int32_t frac, const int32_t rate)
+    const OBJECT *const object, uint32_t meshes, const int16_t *extra_rotation,
+    const FRAME_INFO *const frame1, const FRAME_INFO *const frame2,
+    const int32_t frac, const int32_t rate)
 {
     assert(frame1);
     int32_t clip = Output_GetObjectBounds(&frame1->bounds);
@@ -400,12 +399,12 @@ void Object_DrawInterpolatedObject(
     Matrix_Pop();
 }
 
-void Object_DrawAnimatingItem(ITEM_INFO *item)
+void Object_DrawAnimatingItem(ITEM *item)
 {
     FRAME_INFO *frmptr[2];
     int32_t rate;
     int32_t frac = Item_GetFrames(item, frmptr, &rate);
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    OBJECT *object = &g_Objects[item->object_id];
 
     if (object->shadow_size) {
         Output_DrawShadow(object->shadow_size, &frmptr[0]->bounds, item);
@@ -428,7 +427,7 @@ void Object_DrawAnimatingItem(ITEM_INFO *item)
     Matrix_Pop();
 }
 
-void Object_DrawUnclippedItem(ITEM_INFO *item)
+void Object_DrawUnclippedItem(ITEM *item)
 {
     int32_t left = g_PhdLeft;
     int32_t top = g_PhdTop;
@@ -451,7 +450,7 @@ void Object_DrawUnclippedItem(ITEM_INFO *item)
 void Object_SetMeshReflective(
     const GAME_OBJECT_ID object_id, const int32_t mesh_idx, const bool enabled)
 {
-    const OBJECT_INFO *const object = &g_Objects[object_id];
+    const OBJECT *const object = &g_Objects[object_id];
     if (!object->loaded) {
         return;
     }
@@ -504,7 +503,7 @@ void Object_SetMeshReflective(
 
 void Object_SetReflective(const GAME_OBJECT_ID object_id, const bool enabled)
 {
-    const OBJECT_INFO *const object = &g_Objects[object_id];
+    const OBJECT *const object = &g_Objects[object_id];
     for (int32_t i = 0; i < object->nmeshes; i++) {
         Object_SetMeshReflective(object_id, i, enabled);
     }

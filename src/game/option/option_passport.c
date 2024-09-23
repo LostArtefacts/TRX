@@ -21,7 +21,7 @@
 
 #define MAX_GAME_MODES 4
 
-typedef enum PASSPORT_TEXT {
+typedef enum {
     TEXT_PAGE_NAME = 0,
     TEXT_LEFT_ARROW = 1,
     TEXT_RIGHT_ARROW = 2,
@@ -30,7 +30,7 @@ typedef enum PASSPORT_TEXT {
     TEXT_NUMBER_OF = 5,
 } PASSPORT_TEXT;
 
-typedef struct PASSPORT_STATUS {
+typedef struct {
     PASSPORT_PAGE page;
     PASSPORT_MODE mode;
     bool page_available[PAGE_COUNT];

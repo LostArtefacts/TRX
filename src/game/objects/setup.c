@@ -256,7 +256,7 @@ static void M_SetupMiscObjects(void)
 void Object_SetupAllObjects(void)
 {
     for (int i = 0; i < O_NUMBER_OF; i++) {
-        OBJECT_INFO *obj = &g_Objects[i];
+        OBJECT *obj = &g_Objects[i];
         obj->intelligent = 0;
         obj->save_position = 0;
         obj->save_hitpoints = 0;

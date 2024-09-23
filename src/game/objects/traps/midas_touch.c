@@ -31,18 +31,17 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_MidasTouch_Bounds;
 }
 
-void MidasTouch_Setup(OBJECT_INFO *obj)
+void MidasTouch_Setup(OBJECT *obj)
 {
     obj->collision = MidasTouch_Collision;
     obj->draw_routine = Object_DrawDummyItem;
     obj->bounds = M_Bounds;
 }
 
-void MidasTouch_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void MidasTouch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     DIRECTION quadrant = (uint16_t)(lara_item->rot.y + PHD_45) / PHD_90;
     switch (quadrant) {

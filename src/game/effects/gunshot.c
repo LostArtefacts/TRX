@@ -15,7 +15,7 @@ int16_t Effect_GunShot(
 {
     int16_t fx_num = Effect_Create(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
+        FX *fx = &g_Effects[fx_num];
         fx->pos.x = x;
         fx->pos.y = y;
         fx->pos.z = z;

@@ -17,14 +17,14 @@
 #define ROCKET_RANGE_BASE WALL_L
 #define ROCKET_RANGE SQUARE(ROCKET_RANGE_BASE) // = 1048576
 
-void Missile_Setup(OBJECT_INFO *obj)
+void Missile_Setup(OBJECT *obj)
 {
     obj->control = Missile_Control;
 }
 
 void Missile_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
 
     int32_t speed = (fx->speed * Math_Cos(fx->rot.x)) >> W2V_SHIFT;
     fx->pos.y += (fx->speed * Math_Sin(-fx->rot.x)) >> W2V_SHIFT;
@@ -32,7 +32,7 @@ void Missile_Control(int16_t fx_num)
     fx->pos.x += (speed * Math_Sin(fx->rot.y)) >> W2V_SHIFT;
 
     int16_t room_num = fx->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
     const int32_t height =
         Room_GetHeight(sector, fx->pos.x, fx->pos.y, fx->pos.z);

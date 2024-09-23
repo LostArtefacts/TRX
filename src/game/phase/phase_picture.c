@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum STATE {
+typedef enum {
     STATE_FADE_IN,
     STATE_DISPLAY,
     STATE_FADE_OUT,

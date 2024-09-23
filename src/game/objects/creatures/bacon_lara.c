@@ -14,7 +14,7 @@
 static int32_t m_AnchorX = -1;
 static int32_t m_AnchorZ = -1;
 
-void BaconLara_Setup(OBJECT_INFO *obj)
+void BaconLara_Setup(OBJECT *obj)
 {
     obj->initialise = BaconLara_Initialise;
     obj->control = BaconLara_Control;
@@ -41,7 +41,7 @@ bool BaconLara_InitialiseAnchor(int32_t room_index)
         return false;
     }
 
-    ROOM_INFO *r = &g_RoomInfo[room_index];
+    ROOM *r = &g_RoomInfo[room_index];
     m_AnchorX = r->x + r->x_size * (WALL_L >> 1);
     m_AnchorZ = r->z + r->z_size * (WALL_L >> 1);
 
@@ -54,7 +54,7 @@ void BaconLara_Control(int16_t item_num)
         return;
     }
 
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->hit_points < LARA_MAX_HITPOINTS) {
         Lara_TakeDamage((LARA_MAX_HITPOINTS - item->hit_points) * 10, false);
@@ -67,7 +67,7 @@ void BaconLara_Control(int16_t item_num)
         int32_t z = 2 * m_AnchorZ - g_LaraItem->pos.z;
 
         int16_t room_num = item->room_num;
-        const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+        const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
         const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
@@ -110,7 +110,7 @@ void BaconLara_Control(int16_t item_num)
         int32_t z = item->pos.z;
 
         int16_t room_num = item->room_num;
-        const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+        const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
         const int32_t h = Room_GetHeight(sector, x, y, z);
         item->floor = h;
 
@@ -127,7 +127,7 @@ void BaconLara_Control(int16_t item_num)
     }
 }
 
-void BaconLara_Draw(ITEM_INFO *item)
+void BaconLara_Draw(ITEM *item)
 {
     if (item->current_anim_state == LS_DEATH) {
         Object_DrawAnimatingItem(item);

@@ -13,7 +13,7 @@ typedef enum {
     THS_DONE = 3,
 } THOR_HAMMER_STATE;
 
-void ThorsHammerHandle_Setup(OBJECT_INFO *obj)
+void ThorsHammerHandle_Setup(OBJECT *obj)
 {
     obj->initialise = ThorsHammerHandle_Initialise;
     obj->control = ThorsHammerHandle_Control;
@@ -25,9 +25,9 @@ void ThorsHammerHandle_Setup(OBJECT_INFO *obj)
 
 void ThorsHammerHandle_Initialise(int16_t item_num)
 {
-    ITEM_INFO *hand_item = &g_Items[item_num];
+    ITEM *hand_item = &g_Items[item_num];
     int16_t head_item_num = Item_Create();
-    ITEM_INFO *head_item = &g_Items[head_item_num];
+    ITEM *head_item = &g_Items[head_item_num];
     head_item->object_id = O_THORS_HEAD;
     head_item->room_num = hand_item->room_num;
     head_item->pos = hand_item->pos;
@@ -40,7 +40,7 @@ void ThorsHammerHandle_Initialise(int16_t item_num)
 
 void ThorsHammerHandle_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     switch (item->current_anim_state) {
     case THS_SET:
@@ -133,7 +133,7 @@ void ThorsHammerHandle_Control(int16_t item_num)
     }
     Item_Animate(item);
 
-    ITEM_INFO *head_item = item->data;
+    ITEM *head_item = item->data;
     int16_t relative_anim =
         item->anim_num - g_Objects[item->object_id].anim_idx;
     int16_t relative_frame =
@@ -143,9 +143,9 @@ void ThorsHammerHandle_Control(int16_t item_num)
 }
 
 void ThorsHammerHandle_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }

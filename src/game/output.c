@@ -604,7 +604,7 @@ void Output_ClearDepthBuffer(void)
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    ROOM_INFO *r = &g_RoomInfo[room_num];
+    ROOM *r = &g_RoomInfo[room_num];
 
     if (r->num_lights == 0) {
         g_LsAdder = r->ambient;
@@ -619,7 +619,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             .z = 0,
         };
         for (int i = 0; i < r->num_lights; i++) {
-            LIGHT_INFO *light = &r->light[i];
+            LIGHT *light = &r->light[i];
             XYZ_32 lc = {
                 .x = x - light->pos.x,
                 .y = y - light->pos.y,
@@ -665,7 +665,7 @@ void Output_CalculateStaticLight(int16_t adder)
 }
 
 void Output_CalculateObjectLighting(
-    const ITEM_INFO *const item, const BOUNDS_16 *const bounds)
+    const ITEM *const item, const BOUNDS_16 *const bounds)
 {
     if (item->shade >= 0) {
         Output_CalculateStaticLight(item->shade);
@@ -767,8 +767,7 @@ void Output_DrawRoom(const int16_t *obj_ptr)
 }
 
 void Output_DrawShadow(
-    const int16_t size, const BOUNDS_16 *const bounds,
-    const ITEM_INFO *const item)
+    const int16_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
 {
     g_ShadowInfo.vertex_count = g_Config.enable_round_shadow ? 32 : 8;
 

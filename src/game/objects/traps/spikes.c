@@ -8,14 +8,14 @@
 
 #define SPIKE_DAMAGE 15
 
-void Spikes_Setup(OBJECT_INFO *obj)
+void Spikes_Setup(OBJECT *obj)
 {
     obj->collision = Spikes_Collision;
 }
 
-void Spikes_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Spikes_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (lara_item->hit_points < 0) {
         return;
     }

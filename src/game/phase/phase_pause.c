@@ -23,7 +23,7 @@
 #define PAUSE_MAX_ITEMS 5
 #define PAUSE_NUM_ITEM_TEXTS 2
 
-typedef enum STATE {
+typedef enum {
     STATE_DEFAULT,
     STATE_ASK,
     STATE_CONFIRM,

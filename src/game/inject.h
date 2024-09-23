@@ -4,12 +4,12 @@
 
 #include <stdint.h>
 
-typedef struct INJECTION_ROOM_MESH {
+typedef struct {
     int16_t room_index;
     uint32_t extra_size;
 } INJECTION_ROOM_MESH;
 
-typedef struct INJECTION_INFO {
+typedef struct {
     int32_t texture_page_count;
     int32_t texture_count;
     int32_t sprite_info_count;

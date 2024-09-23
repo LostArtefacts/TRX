@@ -9,5 +9,5 @@ typedef enum {
     BOAT_STOP = 3,
 } BOAT_ANIM;
 
-void Boat_Setup(OBJECT_INFO *obj);
+void Boat_Setup(OBJECT *obj);
 void Boat_Control(int16_t item_num);

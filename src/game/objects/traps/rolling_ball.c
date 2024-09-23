@@ -16,7 +16,7 @@
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 
-void RollingBall_Setup(OBJECT_INFO *obj)
+void RollingBall_Setup(OBJECT *obj)
 {
     obj->initialise = RollingBall_Initialise;
     obj->control = RollingBall_Control;
@@ -28,7 +28,7 @@ void RollingBall_Setup(OBJECT_INFO *obj)
 
 void RollingBall_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     GAME_VECTOR *data = GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_TRAP_DATA);
     item->data = data;
     data->x = item->pos.x;
@@ -39,7 +39,7 @@ void RollingBall_Initialise(int16_t item_num)
 
 void RollingBall_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE) {
         if (item->pos.y < item->floor) {
             if (!item->gravity) {
@@ -55,7 +55,7 @@ void RollingBall_Control(int16_t item_num)
         Item_Animate(item);
 
         int16_t room_num = item->room_num;
-        const SECTOR_INFO *sector =
+        const SECTOR *sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (item->room_num != room_num) {
             Item_NewRoom(item_num, room_num);
@@ -94,7 +94,7 @@ void RollingBall_Control(int16_t item_num)
         item->pos.z = data->z;
         if (item->room_num != data->room_num) {
             Item_RemoveDrawn(item_num);
-            ROOM_INFO *r = &g_RoomInfo[data->room_num];
+            ROOM *r = &g_RoomInfo[data->room_num];
             item->next_item = r->item_num;
             r->item_num = item_num;
             item->room_num = data->room_num;
@@ -109,10 +109,9 @@ void RollingBall_Control(int16_t item_num)
     }
 }
 
-void RollingBall_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void RollingBall_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status != IS_ACTIVE) {
         if (item->status != IS_INVISIBLE) {

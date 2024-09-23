@@ -50,10 +50,10 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
-static void M_GetItem(int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item);
-static void M_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item);
+static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item);
+static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item);
 
-static void M_GetItem(int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
+static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item)
 {
     Overlay_AddPickup(item->object_id);
     Inv_AddItem(item->object_id);
@@ -63,11 +63,11 @@ static void M_GetItem(int16_t item_num, ITEM_INFO *item, ITEM_INFO *lara_item)
     g_Lara.interact_target.is_moving = false;
 }
 
-static void M_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item)
+static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item)
 {
     int16_t pickup_num = g_RoomInfo[item->room_num].item_num;
     while (pickup_num != NO_ITEM) {
-        ITEM_INFO *check_item = &g_Items[pickup_num];
+        ITEM *check_item = &g_Items[pickup_num];
         if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
             && g_Objects[check_item->object_id].collision == Pickup_Collision) {
             M_GetItem(pickup_num, check_item, lara_item);
@@ -76,7 +76,7 @@ static void M_GetAllAtLaraPos(ITEM_INFO *item, ITEM_INFO *lara_item)
     }
 }
 
-void Pickup_Setup(OBJECT_INFO *obj)
+void Pickup_Setup(OBJECT *obj)
 {
     obj->draw_routine = Object_DrawPickupItem;
     obj->collision = Pickup_Collision;
@@ -95,15 +95,15 @@ const OBJECT_BOUNDS *Pickup_Bounds(void)
     }
 }
 
-void Pickup_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     if (g_Config.walk_to_items) {
         Pickup_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
     int16_t rotx = item->rot.x;
     int16_t roty = item->rot.y;
     int16_t rotz = item->rot.z;
@@ -163,10 +163,10 @@ cleanup:
 }
 
 void Pickup_CollisionControlled(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     if (item->status == IS_INVISIBLE) {
         return;
@@ -260,7 +260,7 @@ void Pickup_CollisionControlled(
 
 bool Pickup_Trigger(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->status != IS_INVISIBLE) {
         return false;
     }

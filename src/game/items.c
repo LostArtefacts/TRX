@@ -32,7 +32,7 @@
         }                                                                      \
     } while (0)
 
-ITEM_INFO *g_Items = NULL;
+ITEM *g_Items = NULL;
 int16_t g_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 static BOUNDS_16 m_InterpolatedBounds = { 0 };
@@ -58,8 +58,8 @@ void Item_Control(void)
 {
     int16_t item_num = g_NextItemActive;
     while (item_num != NO_ITEM) {
-        ITEM_INFO *item = &g_Items[item_num];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[item_num];
+        OBJECT *obj = &g_Objects[item->object_id];
         if (obj->control) {
             obj->control(item_num);
         }
@@ -71,7 +71,7 @@ void Item_Control(void)
 
 void Item_Kill(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     Item_RemoveActive(item_num);
     Item_RemoveDrawn(item_num);
@@ -106,8 +106,8 @@ int16_t Item_Create(void)
 
 void Item_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    OBJECT *object = &g_Objects[item->object_id];
 
     Item_SwitchToAnim(item, 0, 0);
     item->current_anim_state = g_Anims[item->anim_num].current_anim_state;
@@ -143,13 +143,12 @@ void Item_Initialise(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    ROOM_INFO *const r = &g_RoomInfo[item->room_num];
+    ROOM *const r = &g_RoomInfo[item->room_num];
     item->next_item = r->item_num;
     r->item_num = item_num;
     const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
-    const SECTOR_INFO *const sector =
-        &r->sectors[z_sector + x_sector * r->z_size];
+    const SECTOR *const sector = &r->sectors[z_sector + x_sector * r->z_size];
     item->floor = sector->floor.height;
 
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
@@ -164,7 +163,7 @@ void Item_Initialise(int16_t item_num)
 
 void Item_RemoveActive(int16_t item_num)
 {
-    ITEM_INFO *const item = &g_Items[item_num];
+    ITEM *const item = &g_Items[item_num];
     if (!item->active) {
         return;
     }
@@ -188,8 +187,8 @@ void Item_RemoveActive(int16_t item_num)
 
 void Item_RemoveDrawn(int16_t item_num)
 {
-    ITEM_INFO *const item = &g_Items[item_num];
-    ROOM_INFO *const r = &g_RoomInfo[item->room_num];
+    ITEM *const item = &g_Items[item_num];
+    ROOM *const r = &g_RoomInfo[item->room_num];
 
     int16_t link_num = r->item_num;
     if (link_num == item_num) {
@@ -208,7 +207,7 @@ void Item_RemoveDrawn(int16_t item_num)
 
 void Item_AddActive(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (!g_Objects[item->object_id].control) {
         item->status = IS_INACTIVE;
@@ -226,8 +225,8 @@ void Item_AddActive(int16_t item_num)
 
 void Item_NewRoom(int16_t item_num, int16_t room_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    ROOM_INFO *r = &g_RoomInfo[item->room_num];
+    ITEM *item = &g_Items[item_num];
+    ROOM *r = &g_RoomInfo[item->room_num];
 
     int16_t linknum = r->item_num;
     if (linknum == item_num) {
@@ -247,23 +246,23 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
     r->item_num = item_num;
 }
 
-void Item_UpdateRoom(ITEM_INFO *item, int32_t height)
+void Item_UpdateRoom(ITEM *item, int32_t height)
 {
     int32_t x = item->pos.x;
     int32_t y = item->pos.y + height;
     int32_t z = item->pos.z;
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
     item->floor = Room_GetHeight(sector, x, y, z);
     if (item->room_num != room_num) {
         Item_NewRoom(g_Lara.item_num, room_num);
     }
 }
 
-int16_t Item_GetHeight(ITEM_INFO *item)
+int16_t Item_GetHeight(ITEM *item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     const int32_t height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
@@ -271,7 +270,7 @@ int16_t Item_GetHeight(ITEM_INFO *item)
     return height;
 }
 
-int16_t Item_GetWaterHeight(ITEM_INFO *item)
+int16_t Item_GetWaterHeight(ITEM *item)
 {
     int16_t height = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
@@ -282,11 +281,11 @@ int16_t Item_GetWaterHeight(ITEM_INFO *item)
     return height;
 }
 
-int16_t Item_Spawn(const ITEM_INFO *const item, const GAME_OBJECT_ID object_id)
+int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID object_id)
 {
     int16_t spawn_num = Item_Create();
     if (spawn_num != NO_ITEM) {
-        ITEM_INFO *spawn = &g_Items[spawn_num];
+        ITEM *spawn = &g_Items[spawn_num];
         spawn->object_id = object_id;
         spawn->room_num = item->room_num;
         spawn->pos = item->pos;
@@ -303,7 +302,7 @@ int32_t Item_GlobalReplace(
 {
     int32_t changed = 0;
     for (int i = 0; i < g_RoomCount; i++) {
-        ROOM_INFO *r = &g_RoomInfo[i];
+        ROOM *r = &g_RoomInfo[i];
         for (int16_t item_num = r->item_num; item_num != NO_ITEM;
              item_num = g_Items[item_num].next_item) {
             if (g_Items[item_num].object_id == src_object_id) {
@@ -315,7 +314,7 @@ int32_t Item_GlobalReplace(
     return changed;
 }
 
-bool Item_IsNearItem(const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance)
+bool Item_IsNearItem(const ITEM *item, const XYZ_32 *pos, int32_t distance)
 {
     int32_t x = pos->x - item->pos.x;
     int32_t y = pos->y - item->pos.y;
@@ -333,8 +332,7 @@ bool Item_IsNearItem(const ITEM_INFO *item, const XYZ_32 *pos, int32_t distance)
     return false;
 }
 
-int32_t Item_GetDistance(
-    const ITEM_INFO *const item, const XYZ_32 *const target)
+int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 *const target)
 {
     const int32_t x = (item->pos.x - target->x);
     const int32_t y = (item->pos.y - target->y);
@@ -348,8 +346,7 @@ bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range)
         && (SQUARE(x) + SQUARE(y) + SQUARE(z) < SQUARE(range));
 }
 
-bool Item_TestBoundsCollide(
-    ITEM_INFO *src_item, ITEM_INFO *dst_item, int32_t radius)
+bool Item_TestBoundsCollide(ITEM *src_item, ITEM *dst_item, int32_t radius)
 {
     const BOUNDS_16 *const src_bounds = &Item_GetBestFrame(src_item)->bounds;
     const BOUNDS_16 *const dst_bounds = &Item_GetBestFrame(dst_item)->bounds;
@@ -374,7 +371,7 @@ bool Item_TestBoundsCollide(
 }
 
 bool Item_TestPosition(
-    const ITEM_INFO *const src_item, const ITEM_INFO *const dst_item,
+    const ITEM *const src_item, const ITEM *const dst_item,
     const OBJECT_BOUNDS *const bounds)
 {
     const XYZ_16 rot = {
@@ -416,7 +413,7 @@ bool Item_TestPosition(
     return true;
 }
 
-void Item_AlignPosition(ITEM_INFO *src_item, ITEM_INFO *dst_item, XYZ_32 *vec)
+void Item_AlignPosition(ITEM *src_item, ITEM *dst_item, XYZ_32 *vec)
 {
     src_item->rot.x = dst_item->rot.x;
     src_item->rot.y = dst_item->rot.y;
@@ -438,8 +435,7 @@ void Item_AlignPosition(ITEM_INFO *src_item, ITEM_INFO *dst_item, XYZ_32 *vec)
 }
 
 bool Item_MovePosition(
-    ITEM_INFO *item, const ITEM_INFO *ref_item, const XYZ_32 *vec,
-    int32_t velocity)
+    ITEM *item, const ITEM *ref_item, const XYZ_32 *vec, int32_t velocity)
 {
     const XYZ_32 *ref_pos = &ref_item->pos;
 
@@ -529,7 +525,7 @@ bool Item_MovePosition(
     // clang-format on
 }
 
-void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
+void Item_ShiftCol(ITEM *item, COLL_INFO *coll)
 {
     item->pos.x += coll->shift.x;
     item->pos.y += coll->shift.y;
@@ -539,7 +535,7 @@ void Item_ShiftCol(ITEM_INFO *item, COLL_INFO *coll)
     coll->shift.z = 0;
 }
 
-void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
+void Item_Translate(ITEM *item, int32_t x, int32_t y, int32_t z)
 {
     int32_t c = Math_Cos(item->rot.y);
     int32_t s = Math_Sin(item->rot.y);
@@ -548,18 +544,18 @@ void Item_Translate(ITEM_INFO *item, int32_t x, int32_t y, int32_t z)
     item->pos.z += (c * z - s * x) >> W2V_SHIFT;
 }
 
-bool Item_TestAnimEqual(ITEM_INFO *item, int16_t anim_idx)
+bool Item_TestAnimEqual(ITEM *item, int16_t anim_idx)
 {
     return item->anim_num == g_Objects[item->object_id].anim_idx + anim_idx;
 }
 
-void Item_SwitchToAnim(ITEM_INFO *item, int16_t anim_idx, int16_t frame)
+void Item_SwitchToAnim(ITEM *item, int16_t anim_idx, int16_t frame)
 {
     Item_SwitchToObjAnim(item, anim_idx, frame, item->object_id);
 }
 
 void Item_SwitchToObjAnim(
-    ITEM_INFO *item, int16_t anim_idx, int16_t frame, GAME_OBJECT_ID object_id)
+    ITEM *item, int16_t anim_idx, int16_t frame, GAME_OBJECT_ID object_id)
 {
     item->anim_num = g_Objects[object_id].anim_idx + anim_idx;
     if (frame < 0) {
@@ -569,7 +565,7 @@ void Item_SwitchToObjAnim(
     }
 }
 
-void Item_Animate(ITEM_INFO *item)
+void Item_Animate(ITEM *item)
 {
     item->touch_bits = 0;
     item->hit_status = 0;
@@ -672,7 +668,7 @@ void Item_Animate(ITEM_INFO *item)
     item->pos.z += (Math_Cos(item->rot.y) * item->speed) >> W2V_SHIFT;
 }
 
-bool Item_GetAnimChange(ITEM_INFO *item, ANIM *anim)
+bool Item_GetAnimChange(ITEM *item, ANIM *anim)
 {
     if (item->current_anim_state == item->goal_anim_state) {
         return false;
@@ -699,7 +695,7 @@ bool Item_GetAnimChange(ITEM_INFO *item, ANIM *anim)
     return false;
 }
 
-void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags)
+void Item_PlayAnimSFX(ITEM *item, int16_t *command, uint16_t flags)
 {
     if (item->frame_num != command[0]) {
         return;
@@ -717,7 +713,7 @@ void Item_PlayAnimSFX(ITEM_INFO *item, int16_t *command, uint16_t flags)
     Sound_Effect(SFX_ID_BITS(command[1]), &item->pos, flags);
 }
 
-bool Item_IsTriggerActive(ITEM_INFO *item)
+bool Item_IsTriggerActive(ITEM *item)
 {
     bool ok = !(item->flags & IF_REVERSE);
 
@@ -742,7 +738,7 @@ bool Item_IsTriggerActive(ITEM_INFO *item)
     return ok;
 }
 
-FRAME_INFO *Item_GetBestFrame(const ITEM_INFO *item)
+FRAME_INFO *Item_GetBestFrame(const ITEM *item)
 {
     FRAME_INFO *frmptr[2];
     int32_t rate;
@@ -754,7 +750,7 @@ FRAME_INFO *Item_GetBestFrame(const ITEM_INFO *item)
     }
 }
 
-const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item)
+const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item)
 {
     int32_t rate;
     FRAME_INFO *frmptr[2];
@@ -777,8 +773,7 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM_INFO *item)
     return result;
 }
 
-int32_t Item_GetFrames(
-    const ITEM_INFO *item, FRAME_INFO *frmptr[], int32_t *rate)
+int32_t Item_GetFrames(const ITEM *item, FRAME_INFO *frmptr[], int32_t *rate)
 {
     const ANIM *anim = &g_Anims[item->anim_num];
 
@@ -825,20 +820,20 @@ int32_t Item_GetFrames(
     return final * 10;
 }
 
-bool Item_TestFrameEqual(ITEM_INFO *item, int16_t frame)
+bool Item_TestFrameEqual(ITEM *item, int16_t frame)
 {
     return Anim_TestAbsFrameEqual(
         item->frame_num, g_Anims[item->anim_num].frame_base + frame);
 }
 
-bool Item_TestFrameRange(ITEM_INFO *item, int16_t start, int16_t end)
+bool Item_TestFrameRange(ITEM *item, int16_t start, int16_t end)
 {
     return Anim_TestAbsFrameRange(
         item->frame_num, g_Anims[item->anim_num].frame_base + start,
         g_Anims[item->anim_num].frame_base + end);
 }
 
-ITEM_INFO *Item_Get(const int16_t item_num)
+ITEM *Item_Get(const int16_t item_num)
 {
     return &g_Items[item_num];
 }

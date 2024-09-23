@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void FX_DropSand(ITEM_INFO *item);
+void FX_DropSand(ITEM *item);

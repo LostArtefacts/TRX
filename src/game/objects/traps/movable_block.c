@@ -34,26 +34,24 @@ static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
-static bool M_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll);
-static bool M_TestDestination(ITEM_INFO *item, int32_t block_height);
-static bool M_TestPush(
-    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
-static bool M_TestPull(
-    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant);
+static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll);
+static bool M_TestDestination(ITEM *item, int32_t block_height);
+static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
+static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MovableBlock_Bounds;
 }
 
-static bool M_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
+static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
 {
     // OG fix: stop pushing blocks through doors
 
     const int32_t shift = 8; // constant shift to avoid overflow errors
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
-        ITEM_INFO *const item = &g_Items[item_num];
+        ITEM *const item = &g_Items[item_num];
         if (!Object_IsObjectType(item->object_id, g_DoorObjects)) {
             continue;
         }
@@ -74,10 +72,10 @@ static bool M_TestDoor(ITEM_INFO *lara_item, COLL_INFO *coll)
     return false;
 }
 
-static bool M_TestDestination(ITEM_INFO *item, int32_t block_height)
+static bool M_TestDestination(ITEM *item, int32_t block_height)
 {
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
         == NO_HEIGHT) {
@@ -92,8 +90,7 @@ static bool M_TestDestination(ITEM_INFO *item, int32_t block_height)
     return true;
 }
 
-static bool M_TestPush(
-    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant)
+static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
     if (!M_TestDestination(item, block_height)) {
         return false;
@@ -121,7 +118,7 @@ static bool M_TestPush(
         break;
     }
 
-    const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -141,8 +138,7 @@ static bool M_TestPush(
     return true;
 }
 
-static bool M_TestPull(
-    ITEM_INFO *item, int32_t block_height, DIRECTION quadrant)
+static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
 {
     if (!M_TestDestination(item, block_height)) {
         return false;
@@ -172,7 +168,7 @@ static bool M_TestPull(
     int32_t z = item->pos.z + z_add;
 
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
     COLL_INFO coll;
     coll.quadrant = quadrant;
     coll.radius = 500;
@@ -217,7 +213,7 @@ static bool M_TestPull(
     return true;
 }
 
-void MovableBlock_Setup(OBJECT_INFO *obj)
+void MovableBlock_Setup(OBJECT *obj)
 {
     obj->initialise = MovableBlock_Initialise;
     obj->control = MovableBlock_Control;
@@ -231,7 +227,7 @@ void MovableBlock_Setup(OBJECT_INFO *obj)
 
 void MovableBlock_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status != IS_INVISIBLE && item->pos.y >= Item_GetHeight(item)) {
         Room_AlterFloorHeight(item, -WALL_L);
@@ -240,7 +236,7 @@ void MovableBlock_Initialise(int16_t item_num)
 
 void MovableBlock_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->flags & IF_ONE_SHOT) {
         Room_AlterFloorHeight(item, WALL_L);
@@ -251,7 +247,7 @@ void MovableBlock_Control(int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *sector = Room_GetSector(
+    const SECTOR *sector = Room_GetSector(
         item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
     const int32_t height = Room_GetHeight(
         sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
@@ -283,11 +279,10 @@ void MovableBlock_Control(int16_t item_num)
     }
 }
 
-void MovableBlock_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     if (item->current_anim_state == MBS_STILL) {
         item->priv = (void *)false;
@@ -394,7 +389,7 @@ void MovableBlock_Collision(
     }
 }
 
-void MovableBlock_Draw(ITEM_INFO *item)
+void MovableBlock_Draw(ITEM *item)
 {
     if (item->status == IS_ACTIVE) {
         Object_DrawUnclippedItem(item);

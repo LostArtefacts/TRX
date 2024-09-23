@@ -2,7 +2,7 @@
 
 #include "game/room.h"
 
-void FX_FlipMap(ITEM_INFO *item)
+void FX_FlipMap(ITEM *item)
 {
     Room_FlipMap();
 }

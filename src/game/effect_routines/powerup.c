@@ -5,7 +5,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-void FX_PowerUp(ITEM_INFO *item)
+void FX_PowerUp(ITEM *item)
 {
     if (g_FlipTimer > LOGIC_FPS * 4) {
         g_FlipEffect = -1;

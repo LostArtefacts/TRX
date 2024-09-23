@@ -29,10 +29,10 @@ typedef enum {
     COWBOY_SHOOT = 6,
 } COWBOY_ANIM;
 
-static BITE_INFO m_CowboyGun1 = { 1, 200, 41, 5 };
-static BITE_INFO m_CowboyGun2 = { -2, 200, 40, 8 };
+static BITE m_CowboyGun1 = { 1, 200, 41, 5 };
+static BITE m_CowboyGun2 = { -2, 200, 40, 8 };
 
-void Cowboy_Setup(OBJECT_INFO *obj)
+void Cowboy_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -54,7 +54,7 @@ void Cowboy_Setup(OBJECT_INFO *obj)
 
 void Cowboy_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -63,7 +63,7 @@ void Cowboy_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *cowboy = item->data;
+    CREATURE *cowboy = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

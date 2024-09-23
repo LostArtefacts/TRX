@@ -16,7 +16,7 @@
 #define CENTAUR_REARING_ANIM 7
 #define CENTAUR_REARING_FRAME 36
 
-void Statue_Setup(OBJECT_INFO *obj)
+void Statue_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -30,7 +30,7 @@ void Statue_Setup(OBJECT_INFO *obj)
 
 void Statue_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     int16_t centaur_item_num = Item_Create();
     if (centaur_item_num == NO_ITEM) {
@@ -38,7 +38,7 @@ void Statue_Initialise(int16_t item_num)
         return;
     }
 
-    ITEM_INFO *centaur = &g_Items[centaur_item_num];
+    ITEM *centaur = &g_Items[centaur_item_num];
     centaur->object_id = O_CENTAUR;
     centaur->room_num = item->room_num;
     centaur->pos.x = item->pos.x;
@@ -62,7 +62,7 @@ void Statue_Initialise(int16_t item_num)
 
 void Statue_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->flags & IF_KILLED) {
         return;
     }
@@ -78,7 +78,7 @@ void Statue_Control(int16_t item_num)
         item->status = IS_DEACTIVATED;
 
         int16_t centaur_item_num = *(int16_t *)item->data;
-        ITEM_INFO *centaur = &g_Items[centaur_item_num];
+        ITEM *centaur = &g_Items[centaur_item_num];
         centaur->touch_bits = 0;
         Item_AddActive(centaur_item_num);
         LOT_EnableBaddieAI(centaur_item_num, 1);

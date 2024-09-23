@@ -83,7 +83,7 @@ static RGBA_8888 m_MenuColorMap[MC_NUMBER_OF] = {
     { 140, 112, 56, 255 }, // MC_GOLD_DARK
 };
 
-typedef struct QUAD_INFO {
+typedef struct {
     int32_t x;
     int32_t y;
     int32_t w;

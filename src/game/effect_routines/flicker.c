@@ -2,7 +2,7 @@
 
 #include "game/room.h"
 
-void FX_Flicker(ITEM_INFO *item)
+void FX_Flicker(ITEM *item)
 {
     if (g_FlipTimer > 125) {
         Room_FlipMap();

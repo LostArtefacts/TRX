@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef enum SOUND_TEXT {
+typedef enum {
     TEXT_MUSIC_VOLUME = 0,
     TEXT_SOUND_VOLUME = 1,
     TEXT_TITLE = 2,

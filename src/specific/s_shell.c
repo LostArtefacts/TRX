@@ -253,7 +253,7 @@ int main(int argc, char **argv)
 
 #ifdef _WIN32
     // Enable HiDPI mode in Windows to detect DPI scaling
-    typedef enum PROCESS_DPI_AWARENESS {
+    typedef enum {
         PROCESS_DPI_UNAWARE = 0,
         PROCESS_SYSTEM_DPI_AWARE = 1,
         PROCESS_PER_MONITOR_DPI_AWARE = 2

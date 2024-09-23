@@ -53,8 +53,7 @@ void Output_ClearDepthBuffer(void);
 
 void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);
-void Output_CalculateObjectLighting(
-    const ITEM_INFO *item, const BOUNDS_16 *bounds);
+void Output_CalculateObjectLighting(const ITEM *item, const BOUNDS_16 *bounds);
 
 void Output_DrawPolygons(const int16_t *obj_ptr, int clip);
 void Output_DrawPolygons_I(const int16_t *obj_ptr, int32_t clip);
@@ -64,8 +63,7 @@ bool Output_IsSkyboxEnabled(void);
 void Output_DrawSkybox(const int16_t *obj_ptr);
 
 void Output_DrawRoom(const int16_t *obj_ptr);
-void Output_DrawShadow(
-    int16_t size, const BOUNDS_16 *bounds, const ITEM_INFO *item);
+void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 void Output_DrawLightningSegment(
     int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
     int32_t width);

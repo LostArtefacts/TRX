@@ -26,7 +26,7 @@
 #define SAVEGAME_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
 
 #pragma pack(push, 1)
-typedef struct SAVEGAME_LEGACY_ITEM_STATS {
+typedef struct {
     uint8_t num_pickup1;
     uint8_t num_pickup2;
     uint8_t num_puzzle1;
@@ -45,8 +45,8 @@ typedef struct SAVEGAME_LEGACY_ITEM_STATS {
 static int m_SGBufPos = 0;
 static char *m_SGBufPtr = NULL;
 
-static bool M_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item);
-static bool M_ItemHasSaveAnim(const ITEM_INFO *item);
+static bool M_ItemHasSaveFlags(OBJECT *obj, ITEM *item);
+static bool M_ItemHasSaveAnim(const ITEM *item);
 static bool M_NeedsBaconLaraFix(char *buffer);
 
 static void M_Reset(char *buffer);
@@ -64,7 +64,7 @@ static void M_WriteArm(LARA_ARM *arm);
 static void M_WriteLara(LARA_INFO *lara);
 static void M_WriteLOT(LOT_INFO *lot);
 
-static bool M_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
+static bool M_ItemHasSaveFlags(OBJECT *obj, ITEM *item)
 {
     // TR1X savegame files are enhanced to store more information by having
     // changed the save_flags bit for certain item types. However, legacy
@@ -81,9 +81,9 @@ static bool M_ItemHasSaveFlags(OBJECT_INFO *obj, ITEM_INFO *item)
         && item->object_id != O_DART_EMITTER);
 }
 
-static bool M_ItemHasSaveAnim(const ITEM_INFO *const item)
+static bool M_ItemHasSaveAnim(const ITEM *const item)
 {
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    const OBJECT *const obj = &g_Objects[item->object_id];
     return obj->save_anim && item->object_id != O_BACON_LARA;
 }
 
@@ -135,10 +135,10 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     M_Skip(g_NumberCameras * sizeof(int16_t)); // cameras
 
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
-        ITEM_INFO tmp_item;
+        ITEM tmp_item;
 
         if (obj->save_position) {
             M_Read(&tmp_item.pos.x, sizeof(int32_t));
@@ -165,7 +165,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
             M_Read(&tmp_item.flags, sizeof(int16_t));
             M_Read(&tmp_item.timer, sizeof(int16_t));
             if (tmp_item.flags & SAVE_CREATURE) {
-                CREATURE_INFO tmp_creature;
+                CREATURE tmp_creature;
                 M_Read(&tmp_creature.head_rotation, sizeof(int16_t));
                 M_Read(&tmp_creature.neck_rotation, sizeof(int16_t));
                 M_Read(&tmp_creature.maximum_turn, sizeof(int16_t));
@@ -336,7 +336,7 @@ static void M_ReadLara(LARA_INFO *lara)
     M_Read(&lara->spaz_effect_count, sizeof(int16_t));
 
     lara->spaz_effect = NULL;
-    M_Skip(4); // pointer to FX_INFO
+    M_Skip(4); // pointer to FX
 
     M_Read(&lara->mesh_effects, sizeof(int32_t));
     for (int i = 0; i < LM_NUMBER_OF; i++) {
@@ -346,7 +346,7 @@ static void M_ReadLara(LARA_INFO *lara)
     }
 
     lara->target = NULL;
-    M_Skip(4); // pointer to ITEM_INFO
+    M_Skip(4); // pointer to ITEM
 
     M_Read(&lara->target_angles[0], sizeof(PHD_ANGLE));
     M_Read(&lara->target_angles[1], sizeof(PHD_ANGLE));
@@ -569,8 +569,8 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_ProcessItemsBeforeLoad();
 
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         if (obj->save_position) {
             M_Read(&item->pos.x, sizeof(int32_t));
@@ -623,7 +623,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
             if (item->flags & SAVE_CREATURE) {
                 LOT_EnableBaddieAI(i, 1);
-                CREATURE_INFO *creature = item->data;
+                CREATURE *creature = item->data;
                 if (creature) {
                     M_Read(&creature->head_rotation, sizeof(int16_t));
                     M_Read(&creature->neck_rotation, sizeof(int16_t));
@@ -744,8 +744,8 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     Savegame_ProcessItemsBeforeSave();
 
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         if (obj->save_position) {
             M_Write(&item->pos.x, sizeof(int32_t));
@@ -780,7 +780,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
             M_Write(&flags, sizeof(uint16_t));
             M_Write(&item->timer, sizeof(int16_t));
             if (flags & SAVE_CREATURE) {
-                CREATURE_INFO *creature = item->data;
+                CREATURE *creature = item->data;
                 M_Write(&creature->head_rotation, sizeof(int16_t));
                 M_Write(&creature->neck_rotation, sizeof(int16_t));
                 M_Write(&creature->maximum_turn, sizeof(int16_t));

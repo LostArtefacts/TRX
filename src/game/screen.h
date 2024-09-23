@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef enum RENDER_SCALE_REF {
+typedef enum {
     RSR_TEXT = 0,
     RSR_BAR = 1,
 } RENDER_SCALE_REF;

@@ -5,7 +5,7 @@
 
 #include <stddef.h>
 
-void FX_RaisingBlock(ITEM_INFO *item)
+void FX_RaisingBlock(ITEM *item)
 {
     Sound_Effect(SFX_RAISINGBLOCK_FX, NULL, SPM_NORMAL);
     g_FlipEffect = -1;

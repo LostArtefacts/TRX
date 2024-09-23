@@ -51,7 +51,7 @@ typedef enum {
     TORSO_KILL = 11,
 } TORSO_ANIM;
 
-void Torso_Setup(OBJECT_INFO *obj)
+void Torso_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -73,7 +73,7 @@ void Torso_Setup(OBJECT_INFO *obj)
 
 void Torso_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -82,7 +82,7 @@ void Torso_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *torso = item->data;
+    CREATURE *torso = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 

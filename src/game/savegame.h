@@ -15,7 +15,7 @@
 
 #define SAVEGAME_CURRENT_VERSION 5
 
-typedef enum SAVEGAME_VERSION {
+typedef enum {
     VERSION_LEGACY = -1,
     VERSION_0 = 0,
     VERSION_1 = 1,
@@ -25,12 +25,12 @@ typedef enum SAVEGAME_VERSION {
     VERSION_5 = 5,
 } SAVEGAME_VERSION;
 
-typedef enum SAVEGAME_FORMAT {
+typedef enum {
     SAVEGAME_FORMAT_LEGACY = 1,
     SAVEGAME_FORMAT_BSON = 2,
 } SAVEGAME_FORMAT;
 
-typedef struct SAVEGAME_INFO {
+typedef struct {
     SAVEGAME_FORMAT format;
     char *full_path;
     int32_t counter;

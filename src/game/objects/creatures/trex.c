@@ -39,7 +39,7 @@ typedef enum {
     TREX_KILL = 8,
 } TREX_ANIM;
 
-void TRex_Setup(OBJECT_INFO *obj)
+void TRex_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -62,7 +62,7 @@ void TRex_Setup(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_idx + 44] |= BEB_ROT_Y;
 }
 
-void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void TRex_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     if (g_Config.disable_trex_collision && g_Items[item_num].hit_points <= 0) {
         return;
@@ -73,7 +73,7 @@ void TRex_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 void TRex_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -82,7 +82,7 @@ void TRex_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *dino = item->data;
+    CREATURE *dino = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -176,7 +176,7 @@ void TRex_Control(int16_t item_num)
     item->collidable = 1;
 }
 
-void TRex_LaraDeath(ITEM_INFO *item)
+void TRex_LaraDeath(ITEM *item)
 {
     item->goal_anim_state = TREX_KILL;
     if (g_LaraItem->room_num != item->room_num) {

@@ -6,14 +6,14 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-void Twinkle_Setup(OBJECT_INFO *obj)
+void Twinkle_Setup(OBJECT *obj)
 {
     obj->control = Twinkle_Control;
 }
 
 void Twinkle_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
     fx->counter++;
     if (fx->counter == 1) {
         fx->counter = 0;
@@ -28,7 +28,7 @@ void Twinkle_Spawn(GAME_VECTOR *pos)
 {
     int16_t fx_num = Effect_Create(pos->room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
+        FX *fx = &g_Effects[fx_num];
         fx->pos.x = pos->x;
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;
@@ -38,7 +38,7 @@ void Twinkle_Spawn(GAME_VECTOR *pos)
     }
 }
 
-void Twinkle_SparkleItem(ITEM_INFO *item, int mesh_mask)
+void Twinkle_SparkleItem(ITEM *item, int mesh_mask)
 {
     SPHERE slist[34];
     GAME_VECTOR effect_pos;

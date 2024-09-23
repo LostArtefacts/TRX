@@ -41,9 +41,9 @@ typedef enum {
     NATLA_DEATH = 9,
 } NATLA_ANIM;
 
-static BITE_INFO m_NatlaGun = { 5, 220, 7, 4 };
+static BITE m_NatlaGun = { 5, 220, 7, 4 };
 
-void Natla_Setup(OBJECT_INFO *obj)
+void Natla_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -65,7 +65,7 @@ void Natla_Setup(OBJECT_INFO *obj)
 
 void Natla_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -74,7 +74,7 @@ void Natla_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *natla = item->data;
+    CREATURE *natla = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -130,7 +130,7 @@ void Natla_Control(int16_t item_num)
                 int16_t fx_num =
                     Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO *fx = &g_Effects[fx_num];
+                    FX *fx = &g_Effects[fx_num];
                     gun = fx->rot.x;
                     Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
@@ -144,7 +144,7 @@ void Natla_Control(int16_t item_num)
                 int16_t fx_num =
                     Creature_Effect(item, &m_NatlaGun, Effect_ShardGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO *fx = &g_Effects[fx_num];
+                    FX *fx = &g_Effects[fx_num];
                     gun = fx->rot.x;
                     Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
@@ -256,7 +256,7 @@ void Natla_Control(int16_t item_num)
                 int16_t fx_num =
                     Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO *fx = &g_Effects[fx_num];
+                    FX *fx = &g_Effects[fx_num];
                     gun = fx->rot.x;
                     Sound_Effect(SFX_ATLANTEAN_NEEDLE, &fx->pos, SPM_NORMAL);
                 }
@@ -279,17 +279,17 @@ void Natla_Control(int16_t item_num)
                 int16_t fx_num =
                     Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO *fx = &g_Effects[fx_num];
+                    FX *fx = &g_Effects[fx_num];
                     gun = fx->rot.x;
                 }
                 fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO *fx = &g_Effects[fx_num];
+                    FX *fx = &g_Effects[fx_num];
                     fx->rot.y += (Random_GetControl() - 0x4000) / 4;
                 }
                 fx_num = Creature_Effect(item, &m_NatlaGun, Effect_RocketGun);
                 if (fx_num != NO_ITEM) {
-                    FX_INFO *fx = &g_Effects[fx_num];
+                    FX *fx = &g_Effects[fx_num];
                     fx->rot.y += (Random_GetControl() - 0x4000) / 4;
                 }
                 item->required_anim_state = NATLA_STOP;

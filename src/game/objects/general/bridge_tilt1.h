@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void BridgeTilt1_Setup(OBJECT_INFO *obj);
+void BridgeTilt1_Setup(OBJECT *obj);

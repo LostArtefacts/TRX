@@ -38,9 +38,9 @@ typedef enum {
     RAPTOR_ATTACK3 = 8,
 } RAPTOR_ANIM;
 
-static BITE_INFO m_RaptorBite = { 0, 66, 318, 22 };
+static BITE m_RaptorBite = { 0, 66, 318, 22 };
 
-void Raptor_Setup(OBJECT_INFO *obj)
+void Raptor_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -63,7 +63,7 @@ void Raptor_Setup(OBJECT_INFO *obj)
 
 void Raptor_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -72,7 +72,7 @@ void Raptor_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *raptor = item->data;
+    CREATURE *raptor = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

@@ -5,7 +5,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-void FallingBlock_Setup(OBJECT_INFO *obj)
+void FallingBlock_Setup(OBJECT *obj)
 {
     obj->control = FallingBlock_Control;
     obj->floor_height_func = FallingBlock_GetFloorHeight;
@@ -17,7 +17,7 @@ void FallingBlock_Setup(OBJECT_INFO *obj)
 
 void FallingBlock_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     switch (item->current_anim_state) {
     case TRAP_SET:
@@ -48,7 +48,7 @@ void FallingBlock_Control(int16_t item_num)
     }
 
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_num != room_num) {
         Item_NewRoom(item_num, room_num);
@@ -66,7 +66,7 @@ void FallingBlock_Control(int16_t item_num)
 }
 
 int16_t FallingBlock_GetFloorHeight(
-    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (y <= item->pos.y - STEP_L * 2
@@ -79,7 +79,7 @@ int16_t FallingBlock_GetFloorHeight(
 }
 
 int16_t FallingBlock_GetCeilingHeight(
-    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (y > item->pos.y - STEP_L * 2

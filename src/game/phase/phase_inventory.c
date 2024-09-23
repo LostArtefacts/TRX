@@ -400,7 +400,7 @@ static int32_t InvItem_GetFrames(
 {
     const RING_INFO *const ring = &m_Ring;
     const IMOTION_INFO *const motion = &m_Motion;
-    const OBJECT_INFO *const obj = &g_Objects[inv_item->object_id];
+    const OBJECT *const obj = &g_Objects[inv_item->object_id];
     const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
     if (inv_item != cur_inv_item
         || (motion->status != RNG_SELECTED
@@ -493,7 +493,7 @@ static void Inv_DrawItem(INVENTORY_ITEM *const inv_item, const int32_t frames)
     Matrix_TranslateRel(0, inv_item->ytrans, inv_item->ztrans);
     Matrix_RotYXZ(inv_item->y_rot, inv_item->x_rot, 0);
 
-    OBJECT_INFO *obj = &g_Objects[inv_item->object_id];
+    OBJECT *obj = &g_Objects[inv_item->object_id];
     if (obj->nmeshes < 0) {
         Output_DrawSpriteRel(0, 0, 0, obj->mesh_idx, 4096);
         return;

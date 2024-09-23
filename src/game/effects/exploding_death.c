@@ -11,8 +11,8 @@
 int32_t Effect_ExplodingDeath(
     int16_t item_num, int32_t mesh_bits, int16_t damage)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    OBJECT *object = &g_Objects[item->object_id];
 
     const FRAME_INFO *const frame = Item_GetBestFrame(item);
 
@@ -34,7 +34,7 @@ int32_t Effect_ExplodingDeath(
     if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
         int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
+            FX *fx = &g_Effects[fx_num];
             fx->room_num = item->room_num;
             fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
             fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;
@@ -86,7 +86,7 @@ int32_t Effect_ExplodingDeath(
         if ((bit & mesh_bits) && (bit & item->mesh_bits)) {
             int16_t fx_num = Effect_Create(item->room_num);
             if (fx_num != NO_ITEM) {
-                FX_INFO *fx = &g_Effects[fx_num];
+                FX *fx = &g_Effects[fx_num];
                 fx->room_num = item->room_num;
                 fx->pos.x = (g_MatrixPtr->_03 >> W2V_SHIFT) + item->pos.x;
                 fx->pos.y = (g_MatrixPtr->_13 >> W2V_SHIFT) + item->pos.y;

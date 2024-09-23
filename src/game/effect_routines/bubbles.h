@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void FX_Bubbles(ITEM_INFO *item);
+void FX_Bubbles(ITEM *item);

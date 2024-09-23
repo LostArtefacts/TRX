@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct PACKER_DATA {
+typedef struct {
     int32_t level_page_count;
     int32_t source_page_count;
     int32_t object_count;

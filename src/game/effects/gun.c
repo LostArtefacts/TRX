@@ -12,9 +12,9 @@
 #define SHARD_SPEED 250
 #define ROCKET_SPEED 220
 
-static void M_ShootAtLara(FX_INFO *fx);
+static void M_ShootAtLara(FX *fx);
 
-void M_ShootAtLara(FX_INFO *fx)
+void M_ShootAtLara(FX *fx)
 {
     int32_t x = g_LaraItem->pos.x - fx->pos.x;
     int32_t y = g_LaraItem->pos.y - fx->pos.y;
@@ -36,7 +36,7 @@ int16_t Effect_ShardGun(
 {
     int16_t fx_num = Effect_Create(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
+        FX *fx = &g_Effects[fx_num];
         fx->room_num = room_num;
         fx->pos.x = x;
         fx->pos.y = y;
@@ -59,7 +59,7 @@ int16_t Effect_RocketGun(
 {
     int16_t fx_num = Effect_Create(room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
+        FX *fx = &g_Effects[fx_num];
         fx->room_num = room_num;
         fx->pos.x = x;
         fx->pos.y = y;

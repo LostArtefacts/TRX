@@ -6,7 +6,7 @@
 
 #define FALLING_CEILING_DAMAGE 300
 
-void FallingCeiling_Setup(OBJECT_INFO *obj)
+void FallingCeiling_Setup(OBJECT *obj)
 {
     obj->control = FallingCeiling_Control;
     obj->collision = Object_CollisionTrap;
@@ -17,7 +17,7 @@ void FallingCeiling_Setup(OBJECT_INFO *obj)
 
 void FallingCeiling_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
         item->gravity = 1;

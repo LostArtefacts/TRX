@@ -7,7 +7,7 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void EmberEmitter_Setup(OBJECT_INFO *obj)
+void EmberEmitter_Setup(OBJECT *obj)
 {
     obj->control = EmberEmitter_Control;
     obj->draw_routine = Object_DrawDummyItem;
@@ -17,10 +17,10 @@ void EmberEmitter_Setup(OBJECT_INFO *obj)
 
 void EmberEmitter_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     int16_t fx_num = Effect_Create(item->room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
+        FX *fx = &g_Effects[fx_num];
         fx->pos.x = item->pos.x;
         fx->pos.y = item->pos.y;
         fx->pos.z = item->pos.z;

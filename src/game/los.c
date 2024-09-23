@@ -10,12 +10,12 @@
 static int32_t M_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
 static int32_t M_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
 static bool M_ClipTarget(
-    const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR_INFO *sector);
+    const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR *sector);
 
 static int32_t M_CheckX(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
-    const SECTOR_INFO *sector;
+    const SECTOR *sector;
 
     int32_t dx = target->x - start->x;
     if (dx == 0) {
@@ -101,7 +101,7 @@ static int32_t M_CheckX(
 static int32_t M_CheckZ(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
-    const SECTOR_INFO *sector;
+    const SECTOR *sector;
 
     int32_t dz = target->z - start->z;
     if (dz == 0) {
@@ -186,7 +186,7 @@ static int32_t M_CheckZ(
 
 static bool M_ClipTarget(
     const GAME_VECTOR *const start, GAME_VECTOR *const target,
-    const SECTOR_INFO *const sector)
+    const SECTOR *const sector)
 {
     int32_t dx = target->x - start->x;
     int32_t dy = target->y - start->y;
@@ -230,7 +230,7 @@ bool LOS_Check(const GAME_VECTOR *const start, GAME_VECTOR *const target)
         return false;
     }
 
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(target->x, target->y, target->z, &target->room_num);
 
     return M_ClipTarget(start, target, sector) && los1 == 1 && los2 == 1;

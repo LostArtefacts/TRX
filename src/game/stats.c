@@ -20,7 +20,7 @@
 #define MAX_TEXTSTRINGS 10
 
 static int32_t m_CachedItemCount = 0;
-static SECTOR_INFO **m_CachedSectorArray = NULL;
+static SECTOR **m_CachedSectorArray = NULL;
 static int32_t m_LevelPickups = 0;
 static int32_t m_LevelKillables = 0;
 static int32_t m_LevelSecrets = 0;
@@ -34,8 +34,7 @@ static struct {
 } m_StatsTimer = { 0 };
 
 static void M_TraverseFloor(void);
-static void M_CheckTriggers(
-    ROOM_INFO *r, int room_num, int z_sector, int x_sector);
+static void M_CheckTriggers(ROOM *r, int room_num, int z_sector, int x_sector);
 static void M_IncludeKillableItem(int16_t item_num);
 
 static void M_TraverseFloor(void)
@@ -43,7 +42,7 @@ static void M_TraverseFloor(void)
     uint32_t secrets = 0;
 
     for (int i = 0; i < g_RoomCount; i++) {
-        ROOM_INFO *r = &g_RoomInfo[i];
+        ROOM *r = &g_RoomInfo[i];
         for (int z_sector = 0; z_sector < r->z_size; z_sector++) {
             for (int x_sector = 0; x_sector < r->x_size; x_sector++) {
                 M_CheckTriggers(r, i, z_sector, x_sector);
@@ -52,8 +51,7 @@ static void M_TraverseFloor(void)
     }
 }
 
-static void M_CheckTriggers(
-    ROOM_INFO *r, int room_num, int z_sector, int x_sector)
+static void M_CheckTriggers(ROOM *r, int room_num, int z_sector, int x_sector)
 {
     if (z_sector == 0 || z_sector == r->z_size - 1) {
         if (x_sector == 0 || x_sector == r->x_size - 1) {
@@ -61,7 +59,7 @@ static void M_CheckTriggers(
         }
     }
 
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         &m_CachedSectorArray[room_num][z_sector + x_sector * r->z_size];
 
     if (sector->trigger == NULL) {
@@ -83,7 +81,7 @@ static void M_CheckTriggers(
                 continue;
             }
 
-            const ITEM_INFO *const item = &g_Items[item_num];
+            const ITEM *const item = &g_Items[item_num];
 
             if (item->object_id == O_PIERRE) {
                 // Add Pierre pickup and kills if oneshot
@@ -97,7 +95,7 @@ static void M_CheckTriggers(
                 // Check for only valid pods
                 if (item->data != NULL) {
                     const int16_t bug_item_num = *(int16_t *)item->data;
-                    const ITEM_INFO *const bug_item = &g_Items[bug_item_num];
+                    const ITEM *const bug_item = &g_Items[bug_item_num];
                     if (g_Objects[bug_item->object_id].loaded) {
                         M_IncludeKillableItem(item_num);
                     }
@@ -154,16 +152,16 @@ void Stats_ComputeTotal(
 void Stats_ObserveRoomsLoad(void)
 {
     m_CachedSectorArray =
-        GameBuf_Alloc(g_RoomCount * sizeof(SECTOR_INFO *), GBUF_ROOM_SECTOR);
+        GameBuf_Alloc(g_RoomCount * sizeof(SECTOR *), GBUF_ROOM_SECTOR);
     for (int i = 0; i < g_RoomCount; i++) {
-        const ROOM_INFO *current_room_info = &g_RoomInfo[i];
+        const ROOM *current_room_info = &g_RoomInfo[i];
         const int32_t count =
             current_room_info->x_size * current_room_info->z_size;
         m_CachedSectorArray[i] =
-            GameBuf_Alloc(count * sizeof(SECTOR_INFO), GBUF_ROOM_SECTOR);
+            GameBuf_Alloc(count * sizeof(SECTOR), GBUF_ROOM_SECTOR);
         memcpy(
             m_CachedSectorArray[i], current_room_info->sectors,
-            count * sizeof(SECTOR_INFO));
+            count * sizeof(SECTOR));
     }
 }
 
@@ -187,7 +185,7 @@ void Stats_CalculateStats(void)
         }
 
         for (int i = 0; i < m_CachedItemCount; i++) {
-            ITEM_INFO *item = &g_Items[i];
+            ITEM *item = &g_Items[i];
 
             if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
                 LOG_ERROR(

@@ -11,7 +11,7 @@
 
 #define DART_DAMAGE 50
 
-void Dart_Setup(OBJECT_INFO *obj)
+void Dart_Setup(OBJECT *obj)
 {
     obj->collision = Object_Collision;
     obj->control = Dart_Control;
@@ -21,7 +21,7 @@ void Dart_Setup(OBJECT_INFO *obj)
 
 void Dart_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->touch_bits) {
         Lara_TakeDamage(DART_DAMAGE, true);
         Effect_Blood(
@@ -34,7 +34,7 @@ void Dart_Control(int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     if (item->room_num != room_num) {
         Item_NewRoom(item_num, room_num);
@@ -45,7 +45,7 @@ void Dart_Control(int16_t item_num)
         Item_Kill(item_num);
         int16_t fx_num = Effect_Create(item->room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
+            FX *fx = &g_Effects[fx_num];
             fx->pos.x = old_x;
             fx->pos.y = item->pos.y;
             fx->pos.z = old_z;

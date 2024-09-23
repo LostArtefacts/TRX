@@ -11,21 +11,21 @@
 #include <stddef.h>
 #include <string.h>
 
-typedef enum RECTANGLE_COMPARISON {
+typedef enum {
     RC_EQUALS = 0,
     RC_CONTAINS = 1,
     RC_COVERS = 2,
     RC_UNRELATED = 3
 } RECTANGLE_COMPARISON;
 
-typedef struct RECTANGLE {
+typedef struct {
     uint16_t x;
     uint16_t y;
     uint16_t w;
     uint16_t h;
 } RECTANGLE;
 
-typedef struct TEX_INFO {
+typedef struct {
     uint16_t index;
     uint16_t tpage;
     RECTANGLE *bounds;
@@ -34,13 +34,13 @@ typedef struct TEX_INFO {
         uint16_t new_y);
 } TEX_INFO;
 
-typedef struct TEX_CONTAINER {
+typedef struct {
     int32_t size;
     RECTANGLE *bounds;
     TEX_INFO *tex_infos;
 } TEX_CONTAINER;
 
-typedef struct TEX_PAGE {
+typedef struct {
     int32_t index;
     int32_t free_space;
     RGBA_8888 data[PAGE_SIZE];

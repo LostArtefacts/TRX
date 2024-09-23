@@ -175,7 +175,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         return false;
     }
 
-    const ROOM_INFO *const room = &g_RoomInfo[g_LaraItem->room_num];
+    const ROOM *const room = &g_RoomInfo[g_LaraItem->room_num];
     const bool room_submerged = (room->flags & RF_UNDERWATER) != 0;
     const int16_t water_height = Room_GetWaterHeight(
         g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z,
@@ -319,7 +319,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
     const int32_t shift = 8; // constant shift to avoid overflow errors
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
-        ITEM_INFO *const item = &g_Items[item_num];
+        ITEM *const item = &g_Items[item_num];
         if (!Object_IsObjectType(item->object_id, g_DoorObjects)
             && !Object_IsObjectType(item->object_id, g_TrapdoorObjects)) {
             continue;
@@ -358,7 +358,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
 
 bool Lara_Cheat_KillEnemy(const int16_t item_num)
 {
-    ITEM_INFO *const item = &g_Items[item_num];
+    ITEM *const item = &g_Items[item_num];
     if (!Object_IsObjectType(item->object_id, g_EnemyObjects)
         || item->hit_points <= 0) {
         return false;
@@ -380,7 +380,7 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
         return false;
     }
 
-    const SECTOR_INFO *sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
     int16_t height = Room_GetHeight(sector, x, y, z);
 
     if (height == NO_HEIGHT) {

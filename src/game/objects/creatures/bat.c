@@ -27,13 +27,13 @@ typedef enum {
     BAT_DEATH = 5,
 } BAT_ANIM;
 
-static BITE_INFO m_BatBite = { 0, 16, 45, 4 };
+static BITE m_BatBite = { 0, 16, 45, 4 };
 
 static void M_FixEmbeddedPosition(int16_t item_num);
 
 static void M_FixEmbeddedPosition(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE) {
         return;
     }
@@ -42,7 +42,7 @@ static void M_FixEmbeddedPosition(int16_t item_num)
     const int32_t y = item->pos.y;
     const int32_t z = item->pos.z;
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
     const int16_t ceiling = Room_GetCeiling(sector, x, y, z);
 
     // The bats animation and frame have to be changed to the hanging
@@ -65,7 +65,7 @@ static void M_FixEmbeddedPosition(int16_t item_num)
     }
 }
 
-void Bat_Setup(OBJECT_INFO *obj)
+void Bat_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -86,7 +86,7 @@ void Bat_Setup(OBJECT_INFO *obj)
 
 void Bat_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -95,7 +95,7 @@ void Bat_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *bat = item->data;
+    CREATURE *bat = item->data;
     PHD_ANGLE angle = 0;
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {

@@ -11,12 +11,12 @@
 
 #include <libtrx/utils.h>
 
-static bool M_LaraDoorCollision(const SECTOR_INFO *sector);
+static bool M_LaraDoorCollision(const SECTOR *sector);
 static void M_Check(DOORPOS_DATA *d);
 static void M_Open(DOORPOS_DATA *d);
 static void M_Shut(DOORPOS_DATA *d);
 
-static bool M_LaraDoorCollision(const SECTOR_INFO *const sector)
+static bool M_LaraDoorCollision(const SECTOR *const sector)
 {
     // Check if Lara is on the same tile as the invisible block.
     if (g_LaraItem == NULL) {
@@ -24,7 +24,7 @@ static bool M_LaraDoorCollision(const SECTOR_INFO *const sector)
     }
 
     int16_t room_num = g_LaraItem->room_num;
-    const SECTOR_INFO *const lara_sector = Room_GetSector(
+    const SECTOR *const lara_sector = Room_GetSector(
         g_LaraItem->pos.x, g_LaraItem->pos.y, g_LaraItem->pos.z, &room_num);
     return lara_sector == sector;
 }
@@ -43,7 +43,7 @@ static void M_Check(DOORPOS_DATA *const d)
 static void M_Shut(DOORPOS_DATA *const d)
 {
     // Change the level geometry so that the door tile is impassable.
-    SECTOR_INFO *const sector = d->sector;
+    SECTOR *const sector = d->sector;
     if (sector == NULL) {
         return;
     }
@@ -64,7 +64,7 @@ static void M_Shut(DOORPOS_DATA *const d)
 static void M_Open(DOORPOS_DATA *const d)
 {
     // Restore the level geometry so that the door tile is passable.
-    SECTOR_INFO *const sector = d->sector;
+    SECTOR *const sector = d->sector;
     if (!sector) {
         return;
     }
@@ -77,7 +77,7 @@ static void M_Open(DOORPOS_DATA *const d)
     }
 }
 
-void Door_Setup(OBJECT_INFO *obj)
+void Door_Setup(OBJECT *obj)
 {
     obj->initialise = Door_Initialise;
     obj->control = Door_Control;
@@ -89,7 +89,7 @@ void Door_Setup(OBJECT_INFO *obj)
 
 void Door_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     DOOR_DATA *door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_EXTRA_DOOR_STUFF);
     item->data = door;
 
@@ -105,8 +105,8 @@ void Door_Initialise(int16_t item_num)
         dy++;
     }
 
-    const ROOM_INFO *r;
-    const ROOM_INFO *b;
+    const ROOM *r;
+    const ROOM *b;
     int32_t z_sector;
     int32_t x_sector;
     int16_t room_num;
@@ -212,7 +212,7 @@ void Door_Initialise(int16_t item_num)
 
 void Door_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     DOOR_DATA *door = item->data;
 
     if (Item_IsTriggerActive(item)) {
@@ -242,9 +242,9 @@ void Door_Control(int16_t item_num)
     Item_Animate(item);
 }
 
-void Door_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Door_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;

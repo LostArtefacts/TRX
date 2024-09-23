@@ -4,7 +4,7 @@
 #include "game/objects/common.h"
 #include "global/vars.h"
 
-void DartEffect_Setup(OBJECT_INFO *obj)
+void DartEffect_Setup(OBJECT *obj)
 {
     obj->control = DartEffect_Control;
     obj->draw_routine = Object_DrawSpriteItem;
@@ -12,7 +12,7 @@ void DartEffect_Setup(OBJECT_INFO *obj)
 
 void DartEffect_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
     fx->counter++;
     if (fx->counter >= 3) {
         fx->counter = 0;

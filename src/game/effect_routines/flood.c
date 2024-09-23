@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-void FX_Flood(ITEM_INFO *item)
+void FX_Flood(ITEM *item)
 {
     if (g_FlipTimer > LOGIC_FPS * 4) {
         g_FlipEffect = -1;

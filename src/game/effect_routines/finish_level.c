@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-void FX_FinishLevel(ITEM_INFO *item)
+void FX_FinishLevel(ITEM *item)
 {
     g_LevelComplete = true;
 }

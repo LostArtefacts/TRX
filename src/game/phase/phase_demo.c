@@ -32,7 +32,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum STATE {
+typedef enum {
     STATE_RUN,
     STATE_FADE_OUT,
     STATE_INVALID,
@@ -177,7 +177,7 @@ static void M_Start(void *arg)
 
     m_DemoPtr = g_DemoData;
 
-    ITEM_INFO *item = g_LaraItem;
+    ITEM *item = g_LaraItem;
     item->pos.x = *m_DemoPtr++;
     item->pos.y = *m_DemoPtr++;
     item->pos.z = *m_DemoPtr++;
@@ -190,7 +190,7 @@ static void M_Start(void *arg)
         Item_NewRoom(g_Lara.item_num, room_num);
     }
 
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 

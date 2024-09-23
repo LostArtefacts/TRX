@@ -24,7 +24,7 @@
 
 #define MAX_TEXTSTRINGS 10
 
-typedef enum STATE {
+typedef enum {
     STATE_FADE_IN,
     STATE_DISPLAY,
     STATE_FADE_OUT,

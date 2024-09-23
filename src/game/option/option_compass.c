@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-typedef enum COMPASS_TEXT {
+typedef enum {
     TEXT_TITLE = 0,
     TEXT_TITLE_BORDER = 1,
     TEXT_TIME = 2,

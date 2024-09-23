@@ -35,7 +35,7 @@
 #define BUTTON_HOLD_TIME 2
 #define HOLD_DELAY_FRAMES 300 * LOGIC_FPS / 1000
 
-typedef enum KEYMODE {
+typedef enum {
     KM_INACTIVE = 0,
     KM_BROWSE = 1,
     KM_BROWSEKEYUP = 2,
@@ -43,7 +43,7 @@ typedef enum KEYMODE {
     KM_CHANGEKEYUP = 4,
 } KEYMODE;
 
-typedef enum CONTROL_TEXT {
+typedef enum {
     TEXT_TITLE = 0,
     TEXT_TITLE_BORDER = 1,
     TEXT_LEFT_ARROW = 2,
@@ -56,18 +56,18 @@ typedef enum CONTROL_TEXT {
     TEXT_NUMBER_OF = 9,
 } CONTROL_TEXT;
 
-typedef struct LAYOUT_NUM_GS_MAP {
+typedef struct {
     INPUT_LAYOUT layout_num;
     GAME_STRING_ID layout_string;
 } LAYOUT_NUM_GS_MAP;
 
-typedef struct TEXT_COLUMN_PLACEMENT {
+typedef struct {
     int role;
     GAME_STRING_ID game_string;
     bool can_unbind;
 } TEXT_COLUMN_PLACEMENT;
 
-typedef struct MENU {
+typedef struct {
     int32_t num_options;
     int32_t vis_options;
     const TEXT_COLUMN_PLACEMENT *top_row;

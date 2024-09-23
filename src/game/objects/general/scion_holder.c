@@ -4,7 +4,7 @@
 #include "game/objects/common.h"
 #include "global/vars.h"
 
-void ScionHolder_Setup(OBJECT_INFO *obj)
+void ScionHolder_Setup(OBJECT *obj)
 {
     obj->control = ScionHolder_Control;
     obj->collision = Object_Collision;

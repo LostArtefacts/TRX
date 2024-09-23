@@ -2,7 +2,7 @@
 
 #include "game/objects/common.h"
 
-void CameraTarget_Setup(OBJECT_INFO *obj)
+void CameraTarget_Setup(OBJECT *obj)
 {
     obj->draw_routine = Object_DrawDummyItem;
 }

@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 
-void Earthquake_Setup(OBJECT_INFO *obj)
+void Earthquake_Setup(OBJECT *obj)
 {
     obj->control = Earthquake_Control;
     obj->draw_routine = Object_DrawDummyItem;
@@ -17,7 +17,7 @@ void Earthquake_Setup(OBJECT_INFO *obj)
 
 void Earthquake_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
         if (Random_GetDraw() < 0x100) {
             g_Camera.bounce = -150;

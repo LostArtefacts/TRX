@@ -29,26 +29,26 @@
 #define MAX_PICKUPS 16
 #define BLINK_THRESHOLD 20
 
-typedef enum DISPLAY_PICKUP_PHASE {
+typedef enum {
     DPP_EASE_IN,
     DPP_DISPLAY,
     DPP_EASE_OUT,
     DPP_DEAD,
 } DISPLAY_PICKUP_PHASE;
 
-typedef struct DISPLAY_PICKUP_INFO {
+typedef struct {
     GAME_OBJECT_ID object_id;
     double duration;
     int32_t grid_x;
     int32_t grid_y;
     int32_t rot_y;
     DISPLAY_PICKUP_PHASE phase;
-} DISPLAY_PICKUP_INFO;
+} DISPLAY_PICKUP;
 
 static TEXTSTRING *m_AmmoText = NULL;
 static TEXTSTRING *m_FPSText = NULL;
 static int16_t m_BarOffsetY[6] = { 0 };
-static DISPLAY_PICKUP_INFO m_Pickups[MAX_PICKUPS] = { 0 };
+static DISPLAY_PICKUP m_Pickups[MAX_PICKUPS] = { 0 };
 static CLOCK_TIMER m_PickupsTimer = { 0 };
 static CLOCK_TIMER m_BlinkTimer = { 0 };
 static CLOCK_TIMER m_FPSTimer = { 0 };
@@ -129,7 +129,7 @@ static void M_BarGetLocation(
     BAR_INFO *bar_info, int32_t *width, int32_t *height, int32_t *x,
     int32_t *y);
 static float M_Ease(int32_t cur_frame, int32_t max_frames);
-static void M_DrawPickup3D(DISPLAY_PICKUP_INFO *pu);
+static void M_DrawPickup3D(DISPLAY_PICKUP *pu);
 static void M_DrawPickups3D(void);
 static void M_DrawPickupsSprites(void);
 static void M_BarDrawAir(void);
@@ -318,7 +318,7 @@ static float M_Ease(int32_t cur_frame, int32_t max_frames)
     return 1.0f - 2.0f * new_ratio * new_ratio;
 }
 
-static void M_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
+static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
 {
     int32_t screen_width = Screen_GetResWidth();
     int32_t screen_height = Screen_GetResHeight();
@@ -378,7 +378,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP_INFO *pu)
     Output_RotateLight(0, 0);
     Output_SetupAboveWater(false);
 
-    OBJECT_INFO *obj = &g_Objects[Inv_GetItemOption(pu->object_id)];
+    OBJECT *obj = &g_Objects[Inv_GetItemOption(pu->object_id)];
     const FRAME_INFO *const frame = g_Anims[obj->anim_idx].frame_ptr;
 
     Matrix_Push();
@@ -424,7 +424,7 @@ static void M_DrawPickups3D(void)
     const double ticks = Clock_GetElapsedLogicalFrames(&m_PickupsTimer);
 
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        DISPLAY_PICKUP_INFO *const pu = &m_Pickups[i];
+        DISPLAY_PICKUP *const pu = &m_Pickups[i];
 
         switch (pu->phase) {
         case DPP_DEAD:
@@ -470,7 +470,7 @@ static void M_DrawPickupsSprites(void)
     const int32_t sprite_width = sprite_height * 4 / 3;
 
     for (int i = 0; i < MAX_PICKUPS; i++) {
-        DISPLAY_PICKUP_INFO *const pu = &m_Pickups[i];
+        DISPLAY_PICKUP *const pu = &m_Pickups[i];
         if (pu->phase == DPP_DEAD) {
             continue;
         }

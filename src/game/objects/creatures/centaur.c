@@ -36,10 +36,10 @@ typedef enum {
     CENTAUR_WARNING = 6,
 } CENTAUR_ANIM;
 
-static BITE_INFO m_CentaurRocket = { 11, 415, 41, 13 };
-static BITE_INFO m_CentaurRear = { 50, 30, 0, 5 };
+static BITE m_CentaurRocket = { 11, 415, 41, 13 };
+static BITE m_CentaurRear = { 50, 30, 0, 5 };
 
-void Centaur_Setup(OBJECT_INFO *obj)
+void Centaur_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -62,7 +62,7 @@ void Centaur_Setup(OBJECT_INFO *obj)
 
 void Centaur_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -71,7 +71,7 @@ void Centaur_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *centaur = item->data;
+    CREATURE *centaur = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 

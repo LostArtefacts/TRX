@@ -13,16 +13,16 @@ typedef enum {
     TT_NASTY = 1,
 } TEETH_TRAP_STATE;
 
-static BITE_INFO m_Teeth1A = { -23, 0, -1718, 0 };
-static BITE_INFO m_Teeth1B = { 71, 0, -1718, 1 };
-static BITE_INFO m_Teeth2A = { -23, 10, -1718, 0 };
-static BITE_INFO m_Teeth2B = { 71, 10, -1718, 1 };
-static BITE_INFO m_Teeth3A = { -23, -10, -1718, 0 };
-static BITE_INFO m_Teeth3B = { 71, -10, -1718, 1 };
+static BITE m_Teeth1A = { -23, 0, -1718, 0 };
+static BITE m_Teeth1B = { 71, 0, -1718, 1 };
+static BITE m_Teeth2A = { -23, 10, -1718, 0 };
+static BITE m_Teeth2B = { 71, 10, -1718, 1 };
+static BITE m_Teeth3A = { -23, -10, -1718, 0 };
+static BITE m_Teeth3B = { 71, -10, -1718, 1 };
 
-static void M_BiteEffect(ITEM_INFO *item, BITE_INFO *bite);
+static void M_BiteEffect(ITEM *item, BITE *bite);
 
-static void M_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
+static void M_BiteEffect(ITEM *item, BITE *bite)
 {
     XYZ_32 pos = {
         .x = bite->x,
@@ -33,7 +33,7 @@ static void M_BiteEffect(ITEM_INFO *item, BITE_INFO *bite)
     Effect_Blood(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
 }
 
-void TeethTrap_Setup(OBJECT_INFO *obj)
+void TeethTrap_Setup(OBJECT *obj)
 {
     obj->control = TeethTrap_Control;
     obj->collision = Object_CollisionTrap;
@@ -43,7 +43,7 @@ void TeethTrap_Setup(OBJECT_INFO *obj)
 
 void TeethTrap_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = TT_NASTY;
         if (item->touch_bits && item->current_anim_state == TT_NASTY) {

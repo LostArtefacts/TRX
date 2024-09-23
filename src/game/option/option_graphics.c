@@ -26,7 +26,7 @@
 #define RIGHT_ARROW_OFFSET_MIN 35
 #define RIGHT_ARROW_OFFSET_MAX 85
 
-typedef enum GRAPHICS_TEXT {
+typedef enum {
     TEXT_TITLE,
     TEXT_TITLE_BORDER,
     TEXT_LEFT_ARROW,
@@ -37,7 +37,7 @@ typedef enum GRAPHICS_TEXT {
     TEXT_NUMBER_OF,
 } GRAPHICS_TEXT;
 
-typedef enum GRAPHICS_OPTION_NAME {
+typedef enum {
     OPTION_FPS,
     OPTION_TEXTURE_FILTER,
     OPTION_FBO_FILTER,
@@ -55,13 +55,13 @@ typedef enum GRAPHICS_OPTION_NAME {
     OPTION_MAX = OPTION_REFLECTIONS,
 } GRAPHICS_OPTION_NAME;
 
-typedef struct GRAPHICS_OPTION_ROW {
+typedef struct {
     GRAPHICS_OPTION_NAME option_name;
     GAME_STRING_ID option_string;
     GAME_STRING_ID value_string;
 } GRAPHICS_OPTION_ROW;
 
-typedef struct GRAPHICS_MENU {
+typedef struct {
     const GRAPHICS_OPTION_ROW *first_option;
     const GRAPHICS_OPTION_ROW *last_option;
     const GRAPHICS_OPTION_ROW *cur_option;

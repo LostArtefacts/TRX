@@ -27,7 +27,7 @@ void Collide_GetCollisionInfo(
     int32_t z = zpos;
     int32_t ytop = y - 160;
 
-    const SECTOR_INFO *sector = Room_GetSector(x, ytop, z, &room_num);
+    const SECTOR *sector = Room_GetSector(x, ytop, z, &room_num);
     int32_t height = Room_GetHeight(sector, x, ytop, z);
     int32_t room_height = height;
     if (height != NO_HEIGHT) {
@@ -342,8 +342,8 @@ bool Collide_CollideStaticObjects(
 
     for (int i = 0; i < g_RoomsToDrawCount; i++) {
         int16_t room_num = g_RoomsToDraw[i];
-        ROOM_INFO *r = &g_RoomInfo[room_num];
-        MESH_INFO *mesh = r->mesh;
+        ROOM *r = &g_RoomInfo[room_num];
+        MESH *mesh = r->mesh;
 
         for (int j = 0; j < r->num_meshes; j++, mesh++) {
             STATIC_INFO *sinfo = &g_StaticObjects[mesh->static_num];
@@ -485,7 +485,7 @@ bool Collide_CollideStaticObjects(
     return false;
 }
 
-int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
+int32_t Collide_GetSpheres(ITEM *item, SPHERE *ptr, int32_t world_space)
 {
     static int16_t null_rotation[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -517,7 +517,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     int32_t *packed_rotation = frame->mesh_rots;
     Matrix_RotYXZpack(*packed_rotation++);
 
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    OBJECT *object = &g_Objects[item->object_id];
     int16_t **meshpp = &g_Meshes[object->mesh_idx];
     int32_t *bone = &g_AnimBones[object->bone_idx];
 
@@ -571,7 +571,7 @@ int32_t Collide_GetSpheres(ITEM_INFO *item, SPHERE *ptr, int32_t world_space)
     return object->nmeshes;
 }
 
-int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
+int32_t Collide_TestCollision(ITEM *item, ITEM *lara_item)
 {
     SPHERE slist_baddie[34];
     SPHERE slist_lara[34];
@@ -607,9 +607,9 @@ int32_t Collide_TestCollision(ITEM_INFO *item, ITEM_INFO *lara_item)
     return flags;
 }
 
-void Collide_GetJointAbsPosition(ITEM_INFO *item, XYZ_32 *vec, int32_t joint)
+void Collide_GetJointAbsPosition(ITEM *item, XYZ_32 *vec, int32_t joint)
 {
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    OBJECT *object = &g_Objects[item->object_id];
 
     Matrix_PushUnit();
     Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);

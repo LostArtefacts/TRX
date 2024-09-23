@@ -4,7 +4,7 @@
 #include "game/objects/common.h"
 #include "game/room.h"
 
-void Cabin_Setup(OBJECT_INFO *obj)
+void Cabin_Setup(OBJECT *obj)
 {
     obj->control = Cabin_Control;
     obj->draw_routine = Object_DrawUnclippedItem;
@@ -15,7 +15,7 @@ void Cabin_Setup(OBJECT_INFO *obj)
 
 void Cabin_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
         switch (item->current_anim_state) {

@@ -5,18 +5,18 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct GAMEFLOW_SEQUENCE {
+typedef struct {
     GAMEFLOW_SEQUENCE_TYPE type;
     void *data;
 } GAMEFLOW_SEQUENCE;
 
-typedef struct GAMEFLOW_DROP_ITEM_DATA {
+typedef struct {
     int32_t enemy_num;
     int32_t count;
     int16_t *object_ids;
 } GAMEFLOW_DROP_ITEM_DATA;
 
-typedef struct GAMEFLOW_LEVEL {
+typedef struct {
     GAMEFLOW_LEVEL_TYPE level_type;
     int16_t music;
     char *level_title;
@@ -61,7 +61,7 @@ typedef struct GAMEFLOW_LEVEL {
     GAME_OBJECT_ID lara_type;
 } GAMEFLOW_LEVEL;
 
-typedef struct GAMEFLOW {
+typedef struct {
     char *main_menu_background_path;
     int32_t gym_level_num;
     int32_t first_level_num;

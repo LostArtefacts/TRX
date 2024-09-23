@@ -30,16 +30,16 @@ static bool M_TestSwitchOrKill(int16_t item_num, GAME_OBJECT_ID target_id);
 
 void Creature_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     item->rot.y += (PHD_ANGLE)((Random_GetControl() - PHD_90) >> 1);
     item->collidable = 1;
     item->data = NULL;
 }
 
-void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
+void Creature_AIInfo(ITEM *item, AI_INFO *info)
 {
-    CREATURE_INFO *creature = item->data;
+    CREATURE *creature = item->data;
     if (!creature) {
         return;
     }
@@ -53,7 +53,7 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         zone = g_GroundZone2[g_FlipStatus];
     }
 
-    const ROOM_INFO *r = &g_RoomInfo[item->room_num];
+    const ROOM *r = &g_RoomInfo[item->room_num];
     int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     item->box_num = r->sectors[z_sector + x_sector * r->z_size].box;
@@ -73,7 +73,7 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         info->enemy_zone |= BLOCKED;
     }
 
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    OBJECT *object = &g_Objects[item->object_id];
     int32_t z = g_LaraItem->pos.z
         - ((Math_Cos(item->rot.y) * object->pivot_length) >> W2V_SHIFT)
         - item->pos.z;
@@ -93,9 +93,9 @@ void Creature_AIInfo(ITEM_INFO *item, AI_INFO *info)
         && (g_LaraItem->pos.y < item->pos.y + STEP_L);
 }
 
-void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
+void Creature_Mood(ITEM *item, AI_INFO *info, bool violent)
 {
-    CREATURE_INFO *creature = item->data;
+    CREATURE *creature = item->data;
     if (!creature) {
         return;
     }
@@ -259,9 +259,9 @@ void Creature_Mood(ITEM_INFO *item, AI_INFO *info, bool violent)
     Box_CalculateTarget(&creature->target, item, &creature->lot);
 }
 
-int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
+int16_t Creature_Turn(ITEM *item, int16_t maximum_turn)
 {
-    CREATURE_INFO *creature = item->data;
+    CREATURE *creature = item->data;
     if (!creature) {
         return 0;
     }
@@ -292,7 +292,7 @@ int16_t Creature_Turn(ITEM_INFO *item, int16_t maximum_turn)
     return angle;
 }
 
-void Creature_Tilt(ITEM_INFO *item, int16_t angle)
+void Creature_Tilt(ITEM *item, int16_t angle)
 {
     angle = angle * 4 - item->rot.z;
     if (angle < -MAX_TILT) {
@@ -303,9 +303,9 @@ void Creature_Tilt(ITEM_INFO *item, int16_t angle)
     item->rot.z += angle;
 }
 
-void Creature_Head(ITEM_INFO *item, int16_t required)
+void Creature_Head(ITEM *item, int16_t required)
 {
-    CREATURE_INFO *creature = item->data;
+    CREATURE *creature = item->data;
     if (!creature) {
         return;
     }
@@ -327,7 +327,7 @@ void Creature_Head(ITEM_INFO *item, int16_t required)
 }
 
 int16_t Creature_Effect(
-    ITEM_INFO *item, BITE_INFO *bite,
+    ITEM *item, BITE *bite,
     int16_t (*spawn)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num))
@@ -343,7 +343,7 @@ int16_t Creature_Effect(
 
 bool Creature_CheckBaddieOverlap(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
@@ -373,9 +373,9 @@ bool Creature_CheckBaddieOverlap(int16_t item_num)
     return false;
 }
 
-void Creature_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
@@ -395,8 +395,8 @@ void Creature_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    CREATURE_INFO *creature = item->data;
+    ITEM *item = &g_Items[item_num];
+    CREATURE *creature = item->data;
     if (!creature) {
         return false;
     }
@@ -433,7 +433,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int32_t y = item->pos.y + bounds->min.y;
 
     int16_t room_num = item->room_num;
-    const SECTOR_INFO *sector =
+    const SECTOR *sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
     int32_t height = g_Boxes[sector->box].height;
     int16_t next_box = lot->node[sector->box].exit_box;
@@ -660,7 +660,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     return true;
 }
 
-bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info)
+bool Creature_CanTargetEnemy(ITEM *item, AI_INFO *info)
 {
     if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
         return false;
@@ -681,7 +681,7 @@ bool Creature_CanTargetEnemy(ITEM_INFO *item, AI_INFO *info)
 }
 
 bool Creature_ShootAtLara(
-    ITEM_INFO *item, int32_t distance, BITE_INFO *gun, int16_t extra_rotation,
+    ITEM *item, int32_t distance, BITE *gun, int16_t extra_rotation,
     int16_t damage)
 {
     bool hit;
@@ -717,7 +717,7 @@ bool Creature_EnsureHabitat(
 {
     // Test the environment for a hybrid creature. Record the water height and
     // return whether or not a type conversion has taken place.
-    const ITEM_INFO *const item = &g_Items[item_num];
+    const ITEM *const item = &g_Items[item_num];
     *wh = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
 
@@ -728,7 +728,7 @@ bool Creature_EnsureHabitat(
 
 bool Creature_IsBoss(const int16_t item_num)
 {
-    const ITEM_INFO *const item = &g_Items[item_num];
+    const ITEM *const item = &g_Items[item_num];
     return Object_IsObjectType(item->object_id, g_BossObjects);
 }
 
@@ -740,7 +740,7 @@ static bool M_SwitchToWater(
         return false;
     }
 
-    ITEM_INFO *const item = &g_Items[item_num];
+    ITEM *const item = &g_Items[item_num];
 
     if (item->hit_points <= 0) {
         // Dead land creatures should remain in their pose permanently.
@@ -774,7 +774,7 @@ static bool M_SwitchToLand(
         return false;
     }
 
-    ITEM_INFO *const item = &g_Items[item_num];
+    ITEM *const item = &g_Items[item_num];
 
     // Switch to the land creature regardless of death state.
     item->object_id = info->land.id;
@@ -791,7 +791,7 @@ static bool M_SwitchToLand(
         item->goal_anim_state = item->current_anim_state;
 
         int16_t room_num = item->room_num;
-        const SECTOR_INFO *const sector =
+        const SECTOR *const sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         item->floor =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
@@ -819,12 +819,12 @@ static bool M_TestSwitchOrKill(
     return false;
 }
 
-bool Creature_IsEnemy(const ITEM_INFO *const item)
+bool Creature_IsEnemy(const ITEM *const item)
 {
     return Object_IsObjectType(item->object_id, g_EnemyObjects);
 }
 
-bool Creature_IsAlly(const ITEM_INFO *const item)
+bool Creature_IsAlly(const ITEM *const item)
 {
     return Object_IsObjectType(item->object_id, g_AllyObjects);
 }

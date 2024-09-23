@@ -147,10 +147,9 @@ static void M_LoadRooms(VFILE *file)
     g_RoomCount = VFile_ReadU16(file);
     LOG_INFO("%d rooms", g_RoomCount);
 
-    g_RoomInfo =
-        GameBuf_Alloc(sizeof(ROOM_INFO) * g_RoomCount, GBUF_ROOM_INFOS);
+    g_RoomInfo = GameBuf_Alloc(sizeof(ROOM) * g_RoomCount, GBUF_ROOMS);
     int i = 0;
-    for (ROOM_INFO *current_room_info = g_RoomInfo; i < g_RoomCount;
+    for (ROOM *current_room_info = g_RoomInfo; i < g_RoomCount;
          i++, current_room_info++) {
         // Room position
         current_room_info->x = VFile_ReadS32(file);
@@ -172,22 +171,21 @@ static void M_LoadRooms(VFILE *file)
         // Doors
         const uint16_t num_doors = VFile_ReadS16(file);
         if (!num_doors) {
-            current_room_info->doors = NULL;
+            current_room_info->portals = NULL;
         } else {
-            current_room_info->doors = GameBuf_Alloc(
-                sizeof(uint16_t) + sizeof(DOOR_INFO) * num_doors,
-                GBUF_ROOM_DOOR);
-            current_room_info->doors->count = num_doors;
+            current_room_info->portals = GameBuf_Alloc(
+                sizeof(uint16_t) + sizeof(PORTAL) * num_doors, GBUF_ROOM_DOOR);
+            current_room_info->portals->count = num_doors;
             for (int32_t j = 0; j < num_doors; j++) {
-                DOOR_INFO *door = &current_room_info->doors->door[j];
-                door->room_num = VFile_ReadS16(file);
-                door->normal.x = VFile_ReadS16(file);
-                door->normal.y = VFile_ReadS16(file);
-                door->normal.z = VFile_ReadS16(file);
+                PORTAL *const portal = &current_room_info->portals->portal[j];
+                portal->room_num = VFile_ReadS16(file);
+                portal->normal.x = VFile_ReadS16(file);
+                portal->normal.y = VFile_ReadS16(file);
+                portal->normal.z = VFile_ReadS16(file);
                 for (int32_t k = 0; k < 4; k++) {
-                    door->vertex[k].x = VFile_ReadS16(file);
-                    door->vertex[k].y = VFile_ReadS16(file);
-                    door->vertex[k].z = VFile_ReadS16(file);
+                    portal->vertex[k].x = VFile_ReadS16(file);
+                    portal->vertex[k].y = VFile_ReadS16(file);
+                    portal->vertex[k].z = VFile_ReadS16(file);
                 }
             }
         }
@@ -198,9 +196,9 @@ static void M_LoadRooms(VFILE *file)
         const int32_t sector_count =
             current_room_info->x_size * current_room_info->z_size;
         current_room_info->sectors =
-            GameBuf_Alloc(sizeof(SECTOR_INFO) * sector_count, GBUF_ROOM_SECTOR);
+            GameBuf_Alloc(sizeof(SECTOR) * sector_count, GBUF_ROOM_SECTOR);
         for (int32_t j = 0; j < sector_count; j++) {
-            SECTOR_INFO *const sector = &current_room_info->sectors[j];
+            SECTOR *const sector = &current_room_info->sectors[j];
             sector->index = VFile_ReadU16(file);
             sector->box = VFile_ReadS16(file);
             sector->portal_room.pit = VFile_ReadU8(file);
@@ -219,10 +217,10 @@ static void M_LoadRooms(VFILE *file)
             current_room_info->light = NULL;
         } else {
             current_room_info->light = GameBuf_Alloc(
-                sizeof(LIGHT_INFO) * current_room_info->num_lights,
+                sizeof(LIGHT) * current_room_info->num_lights,
                 GBUF_ROOM_LIGHTS);
             for (int32_t j = 0; j < current_room_info->num_lights; j++) {
-                LIGHT_INFO *light = &current_room_info->light[j];
+                LIGHT *light = &current_room_info->light[j];
                 light->pos.x = VFile_ReadS32(file);
                 light->pos.y = VFile_ReadS32(file);
                 light->pos.z = VFile_ReadS32(file);
@@ -237,10 +235,10 @@ static void M_LoadRooms(VFILE *file)
             current_room_info->mesh = NULL;
         } else {
             current_room_info->mesh = GameBuf_Alloc(
-                sizeof(MESH_INFO) * current_room_info->num_meshes,
-                GBUF_ROOM_STATIC_MESH_INFOS);
+                sizeof(MESH) * current_room_info->num_meshes,
+                GBUF_ROOM_STATIC_MESHES);
             for (int32_t j = 0; j < current_room_info->num_meshes; j++) {
-                MESH_INFO *mesh = &current_room_info->mesh[j];
+                MESH *mesh = &current_room_info->mesh[j];
                 mesh->pos.x = VFile_ReadS32(file);
                 mesh->pos.y = VFile_ReadS32(file);
                 mesh->pos.z = VFile_ReadS32(file);
@@ -485,7 +483,7 @@ static void M_LoadObjects(VFILE *file)
     LOG_INFO("%d objects", m_LevelInfo.object_count);
     for (int i = 0; i < m_LevelInfo.object_count; i++) {
         const GAME_OBJECT_ID object_id = VFile_ReadS32(file);
-        OBJECT_INFO *object = &g_Objects[object_id];
+        OBJECT *object = &g_Objects[object_id];
 
         object->nmeshes = VFile_ReadS16(file);
         object->mesh_idx = VFile_ReadS16(file);
@@ -585,7 +583,7 @@ static void M_LoadSprites(VFILE *file)
         const int16_t mesh_idx = VFile_ReadS16(file);
 
         if (object_id < O_NUMBER_OF) {
-            OBJECT_INFO *object = &g_Objects[object_id];
+            OBJECT *object = &g_Objects[object_id];
             object->nmeshes = num_meshes;
             object->mesh_idx = mesh_idx;
             object->loaded = 1;
@@ -741,12 +739,12 @@ static void M_LoadItems(VFILE *file)
             Shell_ExitSystem("M_LoadItems(): Too Many g_Items being Loaded!!");
         }
 
-        g_Items = GameBuf_Alloc(sizeof(ITEM_INFO) * MAX_ITEMS, GBUF_ITEMS);
+        g_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
         g_LevelItemCount = m_LevelInfo.item_count;
         Item_InitialiseArray(MAX_ITEMS);
 
         for (int i = 0; i < m_LevelInfo.item_count; i++) {
-            ITEM_INFO *item = &g_Items[i];
+            ITEM *item = &g_Items[i];
             item->object_id = VFile_ReadS16(file);
             item->room_num = VFile_ReadS16(file);
             item->pos.x = VFile_ReadS32(file);
@@ -996,7 +994,7 @@ static void M_MarkWaterEdgeVertices(void)
 
     BENCHMARK *const benchmark = Benchmark_Start();
     for (int32_t i = 0; i < g_RoomCount; i++) {
-        const ROOM_INFO *const room = &g_RoomInfo[i];
+        const ROOM *const room = &g_RoomInfo[i];
         const int32_t y_test =
             (room->flags & RF_UNDERWATER) ? room->max_ceiling : room->min_floor;
         int16_t *data = room->data;
@@ -1017,7 +1015,7 @@ static size_t M_CalculateMaxVertices(void)
     BENCHMARK *const benchmark = Benchmark_Start();
     size_t max_vertices = 0;
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        const OBJECT_INFO *object_info = &g_Objects[i];
+        const OBJECT *object_info = &g_Objects[i];
         if (!object_info->loaded) {
             continue;
         }
@@ -1148,7 +1146,7 @@ bool Level_Initialise(int32_t level_num)
         Lara_Initialise(level_num);
     }
 
-    g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX_INFO), GBUF_EFFECTS);
+    g_Effects = GameBuf_Alloc(NUM_EFFECTS * sizeof(FX), GBUF_EFFECTS);
     Effect_InitialiseArray();
     LOT_InitialiseArray();
 

@@ -5,7 +5,7 @@
 
 #include <stddef.h>
 
-void FX_Stairs2Slope(ITEM_INFO *item)
+void FX_Stairs2Slope(ITEM *item)
 {
     if (g_FlipTimer == 5) {
         Sound_Effect(SFX_STAIRS2SLOPE_FX, NULL, SPM_NORMAL);

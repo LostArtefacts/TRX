@@ -23,23 +23,23 @@
 
 #include <string.h>
 
-typedef struct STRING_TO_ENUM_TYPE {
+typedef struct {
     const char *str;
     const int32_t val;
 } STRING_TO_ENUM_TYPE;
 
-typedef struct GAMEFLOW_DISPLAY_PICTURE_DATA {
+typedef struct {
     char *path;
     double display_time;
 } GAMEFLOW_DISPLAY_PICTURE_DATA;
 
-typedef struct GAMEFLOW_MESH_SWAP_DATA {
+typedef struct {
     GAME_OBJECT_ID object1_id;
     GAME_OBJECT_ID object2_id;
     int32_t mesh_num;
 } GAMEFLOW_MESH_SWAP_DATA;
 
-typedef struct GAMEFLOW_GIVE_ITEM_DATA {
+typedef struct {
     GAME_OBJECT_ID object_id;
     int quantity;
 } GAMEFLOW_GIVE_ITEM_DATA;

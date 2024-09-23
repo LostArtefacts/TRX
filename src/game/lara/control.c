@@ -27,15 +27,15 @@
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 static void M_WaterCurrent(COLL_INFO *coll);
-static void M_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll);
+static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);
 
 static void M_WaterCurrent(COLL_INFO *coll)
 {
     XYZ_32 target;
 
-    ITEM_INFO *const item = g_LaraItem;
-    const ROOM_INFO *const r = &g_RoomInfo[item->room_num];
-    const SECTOR_INFO *const sector =
+    ITEM *const item = g_LaraItem;
+    const ROOM *const r = &g_RoomInfo[item->room_num];
+    const SECTOR *const sector =
         &r->sectors
              [((item->pos.z - r->z) >> WALL_SHIFT)
               + ((item->pos.x - r->x) >> WALL_SHIFT) * r->z_size];
@@ -109,7 +109,7 @@ static void M_WaterCurrent(COLL_INFO *coll)
     coll->old.z = item->pos.z;
 }
 
-static void M_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
+static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
 {
     lara_item->hit_status = 0;
     g_Lara.hit_direction = -1;
@@ -122,22 +122,22 @@ static void M_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
 
     roomies[numroom++] = lara_item->room_num;
 
-    DOOR_INFOS *door = g_RoomInfo[lara_item->room_num].doors;
-    if (door) {
-        for (int i = 0; i < door->count; i++) {
+    PORTALS *portals = g_RoomInfo[lara_item->room_num].portals;
+    if (portals != NULL) {
+        for (int i = 0; i < portals->count; i++) {
             if (numroom >= MAX_BADDIE_COLLISION) {
                 break;
             }
-            roomies[numroom++] = door->door[i].room_num;
+            roomies[numroom++] = portals->portal[i].room_num;
         }
     }
 
     for (int i = 0; i < numroom; i++) {
         int16_t item_num = g_RoomInfo[roomies[i]].item_num;
         while (item_num != NO_ITEM) {
-            ITEM_INFO *item = &g_Items[item_num];
+            ITEM *item = &g_Items[item_num];
             if (item->collidable && item->status != IS_INVISIBLE) {
-                OBJECT_INFO *object = &g_Objects[item->object_id];
+                OBJECT *object = &g_Objects[item->object_id];
                 if (object->collision) {
                     int32_t x = lara_item->pos.x - item->pos.x;
                     int32_t y = lara_item->pos.y - item->pos.y;
@@ -175,7 +175,7 @@ static void M_BaddieCollision(ITEM_INFO *lara_item, COLL_INFO *coll)
     }
 }
 
-void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
+void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
 {
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
@@ -242,7 +242,7 @@ void Lara_HandleAboveWater(ITEM_INFO *item, COLL_INFO *coll)
     Room_TestTriggers(item);
 }
 
-void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
+void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
 {
     g_Camera.target_elevation = -22 * PHD_DEGREE;
 
@@ -308,7 +308,7 @@ void Lara_HandleSurface(ITEM_INFO *item, COLL_INFO *coll)
     Room_TestTriggers(item);
 }
 
-void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
+void Lara_HandleUnderwater(ITEM *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -UW_HEIGHT;

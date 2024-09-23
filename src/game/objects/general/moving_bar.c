@@ -3,7 +3,7 @@
 #include "game/objects/common.h"
 #include "game/objects/general/cog.h"
 
-void MovingBar_Setup(OBJECT_INFO *obj)
+void MovingBar_Setup(OBJECT *obj)
 {
     obj->control = Cog_Control;
     obj->collision = Object_Collision;

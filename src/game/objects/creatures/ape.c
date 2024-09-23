@@ -46,14 +46,14 @@ typedef enum {
     APE_VAULT = 11,
 } APE_ANIM;
 
-static BITE_INFO m_ApeBite = { 0, -19, 75, 15 };
+static BITE m_ApeBite = { 0, -19, 75, 15 };
 
 static bool M_Vault(int16_t item_num, int16_t angle);
 
 static bool M_Vault(int16_t item_num, int16_t angle)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    CREATURE_INFO *ape = item->data;
+    ITEM *item = &g_Items[item_num];
+    CREATURE *ape = item->data;
     int32_t x = item->pos.x >> WALL_SHIFT;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z >> WALL_SHIFT;
@@ -108,7 +108,7 @@ static bool M_Vault(int16_t item_num, int16_t angle)
     return true;
 }
 
-void Ape_Setup(OBJECT_INFO *obj)
+void Ape_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -131,7 +131,7 @@ void Ape_Setup(OBJECT_INFO *obj)
 
 void Ape_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -140,7 +140,7 @@ void Ape_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *ape = item->data;
+    CREATURE *ape = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 

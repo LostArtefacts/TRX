@@ -2,7 +2,7 @@
 
 #include "global/const.h"
 
-void FX_Turn180(ITEM_INFO *item)
+void FX_Turn180(ITEM *item)
 {
     item->rot.y += PHD_180;
     item->rot.x *= -1;

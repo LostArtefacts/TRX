@@ -8,9 +8,9 @@
 #include "global/vars.h"
 #include "math/matrix.h"
 
-void Lara_Draw(ITEM_INFO *item)
+void Lara_Draw(ITEM *item)
 {
-    OBJECT_INFO *object;
+    OBJECT *object;
     FRAME_INFO *frame;
     FRAME_INFO *frmptr[2];
     MATRIX saved_matrix;
@@ -326,12 +326,12 @@ end:
 }
 
 void Lara_Draw_I(
-    ITEM_INFO *item, FRAME_INFO *frame1, FRAME_INFO *frame2, int32_t frac,
+    ITEM *item, FRAME_INFO *frame1, FRAME_INFO *frame2, int32_t frac,
     int32_t rate)
 {
     MATRIX saved_matrix;
 
-    OBJECT_INFO *object = &g_Objects[item->object_id];
+    OBJECT *object = &g_Objects[item->object_id];
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
     saved_matrix = *g_MatrixPtr;

@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void FX_Explosion(ITEM_INFO *item);
+void FX_Explosion(ITEM *item);

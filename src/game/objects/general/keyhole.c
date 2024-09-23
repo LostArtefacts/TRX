@@ -21,15 +21,14 @@ static const OBJECT_BOUNDS m_KeyHoleBounds = {
     },
 };
 
-static void M_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 ;
 static const OBJECT_BOUNDS *M_Bounds(void);
 
-static void M_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     if (g_Lara.interact_target.is_moving
         && g_Lara.interact_target.item_num == item_num) {
@@ -64,7 +63,7 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_KeyHoleBounds;
 }
 
-void KeyHole_Setup(OBJECT_INFO *obj)
+void KeyHole_Setup(OBJECT *obj)
 {
     obj->collision = M_Collision;
     obj->save_flags = 1;
@@ -73,7 +72,7 @@ void KeyHole_Setup(OBJECT_INFO *obj)
 
 bool KeyHole_Trigger(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->status == IS_ACTIVE && g_Lara.gun_status != LGS_HANDS_BUSY) {
         item->status = IS_DEACTIVATED;
         return true;

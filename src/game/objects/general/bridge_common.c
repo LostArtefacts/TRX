@@ -9,7 +9,7 @@
 
 #include <libtrx/utils.h>
 
-bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item)
+bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM *item)
 {
     int32_t sector_x = x / WALL_L;
     int32_t sector_z = z / WALL_L;
@@ -20,7 +20,7 @@ bool Bridge_IsSameSector(int32_t x, int32_t z, const ITEM_INFO *item)
 }
 
 int32_t Bridge_GetOffset(
-    const ITEM_INFO *const item, int32_t x, int32_t y, int32_t z)
+    const ITEM *const item, int32_t x, int32_t y, int32_t z)
 {
     // Set the offset to the max value of 1023 if Lara is outside of the
     // bridge x/z position depending on its angle. This makes sure
@@ -69,7 +69,7 @@ void Bridge_FixEmbeddedPosition(int16_t item_num)
     // Some bridges at floor level are embedded into the floor.
     // This checks if bridges are below a room's floor level
     // and moves them up.
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
@@ -79,7 +79,7 @@ void Bridge_FixEmbeddedPosition(int16_t item_num)
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     const int16_t bridge_height = ABS(bounds->max.y) - ABS(bounds->min.y);
 
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(x, y - bridge_height, z, &room_num);
     const int16_t floor_height = Room_GetHeight(sector, x, y, z);
 

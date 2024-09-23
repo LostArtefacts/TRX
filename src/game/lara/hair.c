@@ -87,7 +87,7 @@ void Lara_Hair_Control(void)
     }
 
     bool in_cutscene;
-    OBJECT_INFO *object;
+    OBJECT *object;
     int32_t *bone;
     int32_t distance;
     FRAME_INFO *frame;
@@ -96,7 +96,7 @@ void Lara_Hair_Control(void)
     FRAME_INFO *frmptr[2];
     int16_t **mesh_base;
     XYZ_32 pos;
-    const SECTOR_INFO *sector;
+    const SECTOR *sector;
     int32_t i;
     int32_t water_level;
     int32_t height;
@@ -382,6 +382,7 @@ void Lara_Hair_Control(void)
 
             case LWS_UNDERWATER:
             case LWS_SURFACE:
+            case LWS_CHEAT:
                 if (m_Hair[i].pos.y < water_level) {
                     m_Hair[i].pos.y = water_level;
                 } else if (m_Hair[i].pos.y > height) {
@@ -448,7 +449,7 @@ void Lara_Hair_Draw(void)
         return;
     }
 
-    OBJECT_INFO *object = &g_Objects[O_HAIR];
+    OBJECT *object = &g_Objects[O_HAIR];
     int16_t mesh_idx = object->mesh_idx;
     if ((g_Lara.mesh_effects & (1 << LM_HEAD))
         && object->nmeshes >= HAIR_SEGMENTS * 2) {

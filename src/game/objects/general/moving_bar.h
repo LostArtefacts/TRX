@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void MovingBar_Setup(OBJECT_INFO *obj);
+void MovingBar_Setup(OBJECT *obj);

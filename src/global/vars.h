@@ -34,10 +34,10 @@ extern int32_t g_Sound_MasterVolume;
 
 extern int32_t g_FPSCounter;
 
-extern void (*g_EffectRoutines[])(ITEM_INFO *item);
+extern void (*g_EffectRoutines[])(ITEM *item);
 
 extern LARA_INFO g_Lara;
-extern ITEM_INFO *g_LaraItem;
+extern ITEM *g_LaraItem;
 extern CAMERA_INFO g_Camera;
 extern GAME_INFO g_GameInfo;
 extern int32_t g_SavedGamesCount;
@@ -49,10 +49,10 @@ extern bool g_ChunkyFlag;
 extern int32_t g_OverlayFlag;
 extern int32_t g_HeightType;
 
-extern ROOM_INFO *g_RoomInfo;
+extern ROOM *g_RoomInfo;
 extern int16_t *g_MeshBase;
 extern int16_t **g_Meshes;
-extern OBJECT_INFO g_Objects[O_NUMBER_OF];
+extern OBJECT g_Objects[O_NUMBER_OF];
 extern STATIC_INFO g_StaticObjects[STATIC_NUMBER_OF];
 extern RGBA_8888 *g_TexturePagePtrs[MAX_TEXTPAGES];
 extern int16_t g_RoomCount;

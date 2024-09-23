@@ -2,4 +2,4 @@
 
 #include "global/types.h"
 
-void Drawbridge_Setup(OBJECT_INFO *obj);
+void Drawbridge_Setup(OBJECT *obj);

@@ -106,7 +106,7 @@ void Interpolation_Commit(void)
     INTERPOLATE_ROT(&g_Lara, head_rot.z, ratio, PHD_45);
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
-        ITEM_INFO *const item = &g_Items[i];
+        ITEM *const item = &g_Items[i];
         if ((item->flags & IF_KILLED) || item->status == IS_INACTIVE
             || item->object_id == O_BAT) {
             COMMIT(item, pos.x);
@@ -140,7 +140,7 @@ void Interpolation_Commit(void)
 
     int16_t fx_num = g_NextFxActive;
     while (fx_num != NO_ITEM) {
-        FX_INFO *const fx = &g_Effects[fx_num];
+        FX *const fx = &g_Effects[fx_num];
         INTERPOLATE(fx, pos.x, ratio, 128);
         INTERPOLATE(fx, pos.y, ratio, MAX(128, fx->fall_speed * 2));
         INTERPOLATE(fx, pos.z, ratio, 128);
@@ -190,7 +190,7 @@ void Interpolation_Remember(void)
     REMEMBER(&g_Lara, head_rot.z);
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
-        ITEM_INFO *const item = &g_Items[i];
+        ITEM *const item = &g_Items[i];
         REMEMBER(item, pos.x);
         REMEMBER(item, pos.y);
         REMEMBER(item, pos.z);
@@ -210,7 +210,7 @@ void Interpolation_Remember(void)
 
     int16_t fx_num = g_NextFxActive;
     while (fx_num != NO_ITEM) {
-        FX_INFO *const fx = &g_Effects[fx_num];
+        FX *const fx = &g_Effects[fx_num];
         REMEMBER(fx, pos.x);
         REMEMBER(fx, pos.y);
         REMEMBER(fx, pos.z);
@@ -233,7 +233,7 @@ void Interpolation_Remember(void)
     }
 }
 
-void Interpolation_RememberItem(ITEM_INFO *item)
+void Interpolation_RememberItem(ITEM *item)
 {
     item->interp.prev.pos = item->pos;
     item->interp.prev.rot = item->rot;

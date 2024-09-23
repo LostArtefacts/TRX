@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-void FX_LaraNormal(ITEM_INFO *item)
+void FX_LaraNormal(ITEM *item)
 {
     item->current_anim_state = LS_STOP;
     item->goal_anim_state = LS_STOP;
@@ -17,16 +17,16 @@ void FX_LaraNormal(ITEM_INFO *item)
     Viewport_SetFOV(Viewport_GetUserFOV());
 }
 
-void FX_LaraHandsFree(ITEM_INFO *item)
+void FX_LaraHandsFree(ITEM *item)
 {
     g_Lara.gun_status = LGS_ARMLESS;
 }
 
-void FX_LaraDrawRightGun(ITEM_INFO *item)
+void FX_LaraDrawRightGun(ITEM *item)
 {
     int16_t *tmp_mesh;
-    OBJECT_INFO *obj = &g_Objects[item->object_id];
-    OBJECT_INFO *obj2 = &g_Objects[O_PISTOL_ANIM];
+    OBJECT *obj = &g_Objects[item->object_id];
+    OBJECT *obj2 = &g_Objects[O_PISTOL_ANIM];
 
     SWAP(
         g_Meshes[obj->mesh_idx + LM_THIGH_R],

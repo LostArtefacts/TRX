@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-extern FX_INFO *g_Effects;
+extern FX *g_Effects;
 extern int16_t g_NextFxActive;
 
 void Effect_InitialiseArray(void);

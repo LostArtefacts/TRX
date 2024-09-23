@@ -30,9 +30,9 @@ typedef enum {
     LARSON_SHOOT = 7,
 } LARSON_ANIM;
 
-static BITE_INFO m_LarsonGun = { -60, 170, 0, 14 };
+static BITE m_LarsonGun = { -60, 170, 0, 14 };
 
-void Larson_Setup(OBJECT_INFO *obj)
+void Larson_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -54,7 +54,7 @@ void Larson_Setup(OBJECT_INFO *obj)
 
 void Larson_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -63,7 +63,7 @@ void Larson_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *person = item->data;
+    CREATURE *person = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

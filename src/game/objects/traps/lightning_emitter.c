@@ -19,7 +19,7 @@
 #define LIGHTNING_RND ((64 << W2V_SHIFT) / 0x8000) // = 32
 #define LIGHTNING_SHOOTS 2
 
-typedef struct LIGHTNING {
+typedef struct {
     bool active;
     int32_t count;
     bool zapped;
@@ -32,7 +32,7 @@ typedef struct LIGHTNING {
     XYZ_32 shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
 
-void LightningEmitter_Setup(OBJECT_INFO *obj)
+void LightningEmitter_Setup(OBJECT *obj)
 {
     obj->initialise = LightningEmitter_Initialise;
     obj->control = LightningEmitter_Control;
@@ -60,7 +60,7 @@ void LightningEmitter_Initialise(int16_t item_num)
 
 void LightningEmitter_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     LIGHTNING *l = item->data;
 
     if (!Item_IsTriggerActive(item)) {
@@ -109,7 +109,7 @@ void LightningEmitter_Control(int16_t item_num)
 
             l->zapped = true;
         } else if (l->no_target) {
-            const SECTOR_INFO *const sector = Room_GetSector(
+            const SECTOR *const sector = Room_GetSector(
                 item->pos.x, item->pos.y, item->pos.z, &item->room_num);
             const int32_t h =
                 Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
@@ -148,7 +148,7 @@ void LightningEmitter_Control(int16_t item_num)
 }
 
 void LightningEmitter_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     LIGHTNING *l = g_Items[item_num].data;
     if (!l->zapped) {
@@ -162,7 +162,7 @@ void LightningEmitter_Collision(
     }
 }
 
-void LightningEmitter_Draw(ITEM_INFO *item)
+void LightningEmitter_Draw(ITEM *item)
 {
     FRAME_INFO *frmptr[2];
     int32_t rate;

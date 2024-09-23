@@ -40,23 +40,22 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_PuzzleHoleBounds;
 }
 
-void PuzzleHole_Setup(OBJECT_INFO *obj)
+void PuzzleHole_Setup(OBJECT *obj)
 {
     obj->collision = PuzzleHole_Collision;
     obj->save_flags = 1;
     obj->bounds = M_Bounds;
 }
 
-void PuzzleHole_SetupDone(OBJECT_INFO *obj)
+void PuzzleHole_SetupDone(OBJECT *obj)
 {
     obj->save_flags = 1;
 }
 
-void PuzzleHole_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     if (lara_item->current_anim_state == LS_USE_PUZZLE) {
         if (!Lara_TestPosition(item, obj->bounds())) {

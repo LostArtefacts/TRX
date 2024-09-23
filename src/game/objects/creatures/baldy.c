@@ -27,9 +27,9 @@ typedef enum {
     BALDY_SHOOT = 6,
 } BALDY_ANIM;
 
-static BITE_INFO m_BaldyGun = { -20, 440, 20, 9 };
+static BITE m_BaldyGun = { -20, 440, 20, 9 };
 
-void Baldy_Setup(OBJECT_INFO *obj)
+void Baldy_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -57,7 +57,7 @@ void Baldy_Initialise(int16_t item_num)
 
 void Baldy_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -66,7 +66,7 @@ void Baldy_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *baldy = item->data;
+    CREATURE *baldy = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

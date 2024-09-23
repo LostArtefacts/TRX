@@ -103,12 +103,12 @@
         FFMAX(VIDEO_PICTURE_QUEUE_SIZE, SUBPICTURE_QUEUE_SIZE))
 #define FF_QUIT_EVENT (SDL_USEREVENT + 2)
 
-typedef struct MyAVPacketList {
+typedef struct {
     AVPacket *pkt;
     int serial;
 } MyAVPacketList;
 
-typedef struct PacketQueue {
+typedef struct {
     AVFifoBuffer *pkt_list;
     int nb_packets;
     int size;
@@ -119,7 +119,7 @@ typedef struct PacketQueue {
     SDL_cond *cond;
 } PacketQueue;
 
-typedef struct AudioParams {
+typedef struct {
     int freq;
     int channels;
     int64_t channel_layout;
@@ -128,7 +128,7 @@ typedef struct AudioParams {
     int bytes_per_sec;
 } AudioParams;
 
-typedef struct Clock {
+typedef struct {
     double pts;
     double pts_drift;
     double last_updated;
@@ -138,7 +138,7 @@ typedef struct Clock {
     int *queue_serial;
 } Clock;
 
-typedef struct Frame {
+typedef struct {
     AVFrame *frame;
     AVSubtitle sub;
     int serial;
@@ -153,7 +153,7 @@ typedef struct Frame {
     int flip_v;
 } Frame;
 
-typedef struct FrameQueue {
+typedef struct {
     Frame queue[FRAME_QUEUE_SIZE];
     int rindex;
     int windex;
@@ -172,7 +172,7 @@ enum {
     AV_SYNC_EXTERNAL_CLOCK,
 };
 
-typedef struct Decoder {
+typedef struct {
     AVPacket *pkt;
     PacketQueue *queue;
     AVCodecContext *avctx;
@@ -187,7 +187,7 @@ typedef struct Decoder {
     SDL_Thread *decoder_tid;
 } Decoder;
 
-typedef struct VideoState {
+typedef struct {
     SDL_Thread *read_tid;
     AVInputFormat *iformat;
     bool abort_request;
@@ -230,8 +230,8 @@ typedef struct VideoState {
     int audio_buf_index;
     int audio_write_buf_size;
     int audio_volume;
-    struct AudioParams audio_src;
-    struct AudioParams audio_tgt;
+    AudioParams audio_src;
+    AudioParams audio_tgt;
     struct SwrContext *swr_ctx;
     int frame_drops_early;
     int frame_drops_late;
@@ -273,32 +273,6 @@ static int64_t m_AudioCallbackTime;
 static SDL_Window *m_Window;
 static SDL_RendererInfo m_RendererInfo = { 0 };
 static SDL_AudioDeviceID m_AudioDevice;
-
-static const struct TextureFormatEntry {
-    enum AVPixelFormat format;
-    int texture_fmt;
-} sdl_texture_format_map[] = {
-    { AV_PIX_FMT_RGB8, SDL_PIXELFORMAT_RGB332 },
-    { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_RGB444 },
-    { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_RGB555 },
-    { AV_PIX_FMT_BGR555, SDL_PIXELFORMAT_BGR555 },
-    { AV_PIX_FMT_RGB565, SDL_PIXELFORMAT_RGB565 },
-    { AV_PIX_FMT_BGR565, SDL_PIXELFORMAT_BGR565 },
-    { AV_PIX_FMT_RGB24, SDL_PIXELFORMAT_RGB24 },
-    { AV_PIX_FMT_BGR24, SDL_PIXELFORMAT_BGR24 },
-    { AV_PIX_FMT_0RGB32, SDL_PIXELFORMAT_RGB888 },
-    { AV_PIX_FMT_0BGR32, SDL_PIXELFORMAT_BGR888 },
-    { AV_PIX_FMT_NE(RGB0, 0BGR), SDL_PIXELFORMAT_RGBX8888 },
-    { AV_PIX_FMT_NE(BGR0, 0RGB), SDL_PIXELFORMAT_BGRX8888 },
-    { AV_PIX_FMT_RGB32, SDL_PIXELFORMAT_ARGB8888 },
-    { AV_PIX_FMT_RGB32_1, SDL_PIXELFORMAT_RGBA8888 },
-    { AV_PIX_FMT_BGR32, SDL_PIXELFORMAT_ABGR8888 },
-    { AV_PIX_FMT_BGR32_1, SDL_PIXELFORMAT_BGRA8888 },
-    { AV_PIX_FMT_YUV420P, SDL_PIXELFORMAT_IYUV },
-    { AV_PIX_FMT_YUYV422, SDL_PIXELFORMAT_YUY2 },
-    { AV_PIX_FMT_UYVY422, SDL_PIXELFORMAT_UYVY },
-    { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
-};
 
 static int M_GetAudioVolume(void)
 {
@@ -1667,7 +1641,7 @@ static void M_SDLAudioCallback(void *opaque, Uint8 *stream, int len)
 
 static int M_AudioOpen(
     void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels,
-    int wanted_sample_rate, struct AudioParams *audio_hw_params)
+    int wanted_sample_rate, AudioParams *audio_hw_params)
 {
     SDL_AudioSpec wanted_spec, spec;
     const char *env;

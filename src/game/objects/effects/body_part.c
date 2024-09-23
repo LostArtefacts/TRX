@@ -8,7 +8,7 @@
 #include "global/vars.h"
 #include "math/math.h"
 
-void BodyPart_Setup(OBJECT_INFO *obj)
+void BodyPart_Setup(OBJECT *obj)
 {
     obj->control = BodyPart_Control;
     obj->nmeshes = 0;
@@ -17,7 +17,7 @@ void BodyPart_Setup(OBJECT_INFO *obj)
 
 void BodyPart_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
     fx->rot.x += 5 * PHD_DEGREE;
     fx->rot.z += 10 * PHD_DEGREE;
     fx->pos.z += (fx->speed * Math_Cos(fx->rot.y)) >> W2V_SHIFT;
@@ -26,7 +26,7 @@ void BodyPart_Control(int16_t fx_num)
     fx->pos.y += fx->fall_speed;
 
     int16_t room_num = fx->room_num;
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(fx->pos.x, fx->pos.y, fx->pos.z, &room_num);
 
     const int32_t ceiling =

@@ -8,7 +8,7 @@
 
 #define LAVA_WEDGE_SPEED 25
 
-void LavaWedge_Setup(OBJECT_INFO *obj)
+void LavaWedge_Setup(OBJECT *obj)
 {
     obj->control = LavaWedge_Control;
     obj->collision = Object_Collision;
@@ -19,7 +19,7 @@ void LavaWedge_Setup(OBJECT_INFO *obj)
 
 void LavaWedge_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -50,7 +50,7 @@ void LavaWedge_Control(int16_t item_num)
             break;
         }
 
-        const SECTOR_INFO *const sector =
+        const SECTOR *const sector =
             Room_GetSector(x, item->pos.y, z, &room_num);
         if (Room_GetHeight(sector, x, item->pos.y, z) != item->pos.y) {
             item->status = IS_DEACTIVATED;

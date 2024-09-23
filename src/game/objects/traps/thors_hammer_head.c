@@ -11,7 +11,7 @@ typedef enum {
     THS_DONE = 3,
 } THOR_HAMMER_STATE;
 
-void ThorsHammerHead_Setup(OBJECT_INFO *obj)
+void ThorsHammerHead_Setup(OBJECT *obj)
 {
     obj->collision = ThorsHammerHead_Collision;
     obj->draw_routine = Object_DrawUnclippedItem;
@@ -20,9 +20,9 @@ void ThorsHammerHead_Setup(OBJECT_INFO *obj)
 }
 
 void ThorsHammerHead_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }

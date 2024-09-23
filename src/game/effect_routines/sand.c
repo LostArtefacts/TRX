@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-void FX_DropSand(ITEM_INFO *item)
+void FX_DropSand(ITEM *item)
 {
     if (g_FlipTimer > LOGIC_FPS * 4) {
         g_FlipEffect = -1;

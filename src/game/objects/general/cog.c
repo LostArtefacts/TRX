@@ -3,7 +3,7 @@
 #include "game/items.h"
 #include "game/room.h"
 
-void Cog_Setup(OBJECT_INFO *obj)
+void Cog_Setup(OBJECT *obj)
 {
     obj->control = Cog_Control;
     obj->save_flags = 1;
@@ -11,7 +11,7 @@ void Cog_Setup(OBJECT_INFO *obj)
 
 void Cog_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = DOOR_OPEN;
     } else {

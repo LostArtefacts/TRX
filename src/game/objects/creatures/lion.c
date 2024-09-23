@@ -43,9 +43,9 @@ typedef enum {
     LION_ATTACK2 = 7,
 } LION_ANIM;
 
-static BITE_INFO m_LionBite = { -2, -10, 132, 21 };
+static BITE m_LionBite = { -2, -10, 132, 21 };
 
-static void M_SetupBase(OBJECT_INFO *const obj)
+static void M_SetupBase(OBJECT *const obj)
 {
     obj->initialise = Creature_Initialise;
     obj->control = Lion_Control;
@@ -60,7 +60,7 @@ static void M_SetupBase(OBJECT_INFO *const obj)
     g_AnimBones[obj->bone_idx + 76] |= BEB_ROT_Y;
 }
 
-void Lion_SetupLion(OBJECT_INFO *obj)
+void Lion_SetupLion(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -71,7 +71,7 @@ void Lion_SetupLion(OBJECT_INFO *obj)
     obj->smartness = LION_SMARTNESS;
 }
 
-void Lion_SetupLioness(OBJECT_INFO *obj)
+void Lion_SetupLioness(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -82,7 +82,7 @@ void Lion_SetupLioness(OBJECT_INFO *obj)
     obj->smartness = LIONESS_SMARTNESS;
 }
 
-void Lion_SetupPuma(OBJECT_INFO *obj)
+void Lion_SetupPuma(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -95,7 +95,7 @@ void Lion_SetupPuma(OBJECT_INFO *obj)
 
 void Lion_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -104,7 +104,7 @@ void Lion_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *lion = item->data;
+    CREATURE *lion = item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

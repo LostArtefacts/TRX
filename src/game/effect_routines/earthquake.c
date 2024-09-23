@@ -6,7 +6,7 @@
 
 #include <stddef.h>
 
-void FX_Earthquake(ITEM_INFO *item)
+void FX_Earthquake(ITEM *item)
 {
     if (g_FlipTimer == 0) {
         Sound_Effect(SFX_EXPLOSION, NULL, SPM_NORMAL);

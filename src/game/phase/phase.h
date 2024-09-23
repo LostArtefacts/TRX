@@ -19,7 +19,7 @@ typedef struct {
     GAMEFLOW_COMMAND command;
 } PHASE_CONTROL;
 
-typedef enum PHASE {
+typedef enum {
     PHASE_NULL,
     PHASE_GAME,
     PHASE_DEMO,
@@ -30,7 +30,7 @@ typedef enum PHASE {
     PHASE_INVENTORY,
 } PHASE;
 
-typedef struct PHASER {
+typedef struct {
     void (*start)(void *arg);
     void (*end)();
     PHASE_CONTROL (*control)(int32_t nframes);

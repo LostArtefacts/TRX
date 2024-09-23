@@ -39,7 +39,7 @@
 
 #define WARRIOR2_SMARTNESS 0x2000
 
-enum FLYER_ANIM {
+typedef enum {
     FLYER_EMPTY = 0,
     FLYER_STOP = 1,
     FLYER_WALK = 2,
@@ -54,19 +54,19 @@ enum FLYER_ANIM {
     FLYER_SHOOT = 11,
     FLYER_MUMMY = 12,
     FLYER_FLY = 13,
-};
+} FLYER_ANIM;
 
 static bool m_EnableExplosions = true;
-static BITE_INFO m_WarriorBite = { -27, 98, 0, 10 };
-static BITE_INFO m_WarriorRocket = { 51, 213, 0, 14 };
-static BITE_INFO m_WarriorShard = { -35, 269, 0, 9 };
+static BITE m_WarriorBite = { -27, 98, 0, 10 };
+static BITE m_WarriorRocket = { 51, 213, 0, 14 };
+static BITE m_WarriorShard = { -35, 269, 0, 9 };
 
 void Mutant_ToggleExplosions(bool enable)
 {
     m_EnableExplosions = enable;
 }
 
-void Mutant_Setup(OBJECT_INFO *obj)
+void Mutant_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -88,7 +88,7 @@ void Mutant_Setup(OBJECT_INFO *obj)
     g_AnimBones[obj->bone_idx + 8] |= BEB_ROT_Y;
 }
 
-void Mutant_Setup2(OBJECT_INFO *obj)
+void Mutant_Setup2(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -98,7 +98,7 @@ void Mutant_Setup2(OBJECT_INFO *obj)
     obj->smartness = WARRIOR2_SMARTNESS;
 }
 
-void Mutant_Setup3(OBJECT_INFO *obj)
+void Mutant_Setup3(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -109,7 +109,7 @@ void Mutant_Setup3(OBJECT_INFO *obj)
 
 void Mutant_FlyerControl(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -118,7 +118,7 @@ void Mutant_FlyerControl(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *flyer = item->data;
+    CREATURE *flyer = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 

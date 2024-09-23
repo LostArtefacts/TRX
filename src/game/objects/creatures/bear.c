@@ -45,9 +45,9 @@ typedef enum {
     BEAR_DEATH = 9,
 } BEAR_ANIM;
 
-static BITE_INFO m_BearHeadBite = { 0, 96, 335, 14 };
+static BITE m_BearHeadBite = { 0, 96, 335, 14 };
 
-void Bear_Setup(OBJECT_INFO *obj)
+void Bear_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -74,7 +74,7 @@ void Bear_Setup(OBJECT_INFO *obj)
 
 void Bear_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -83,7 +83,7 @@ void Bear_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *bear = (CREATURE_INFO *)item->data;
+    CREATURE *bear = (CREATURE *)item->data;
     int16_t head = 0;
     PHD_ANGLE angle = 0;
 

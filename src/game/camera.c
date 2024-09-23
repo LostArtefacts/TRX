@@ -47,7 +47,7 @@ static void M_EnsureEnvironment(void);
 
 static bool M_BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num)
 {
-    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
     return y >= Room_GetHeight(sector, x, y, z)
         || y <= Room_GetCeiling(sector, x, y, z);
 }
@@ -58,7 +58,7 @@ static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
     int32_t y = pos->y;
     int32_t z = pos->z;
 
-    const SECTOR_INFO *const sector = Room_GetSector(x, y, z, &pos->room_num);
+    const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
 
     const BOX_INFO *const box = &g_Boxes[sector->box];
     if (z < box->left + clamp
@@ -103,7 +103,7 @@ static void M_SmartShift(
 {
     LOS_Check(&g_Camera.target, ideal);
 
-    const ROOM_INFO *r = &g_RoomInfo[g_Camera.target.room_num];
+    const ROOM *r = &g_RoomInfo[g_Camera.target.room_num];
     int32_t z_sector = (g_Camera.target.z - r->z) >> WALL_SHIFT;
     int32_t x_sector = (g_Camera.target.x - r->x) >> WALL_SHIFT;
 
@@ -297,7 +297,7 @@ static void M_Move(GAME_VECTOR *ideal, int32_t speed)
 
     g_ChunkyFlag = false;
 
-    const SECTOR_INFO *sector = Room_GetSector(
+    const SECTOR *sector = Room_GetSector(
         g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
     int32_t height =
         Room_GetHeight(sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
@@ -471,7 +471,7 @@ void Camera_Initialise(void)
     Camera_Update();
 }
 
-void Camera_Chase(ITEM_INFO *item)
+void Camera_Chase(ITEM *item)
 {
     GAME_VECTOR ideal;
 
@@ -505,7 +505,7 @@ void Camera_Chase(ITEM_INFO *item)
     }
 }
 
-void Camera_Combat(ITEM_INFO *item)
+void Camera_Combat(ITEM *item)
 {
     GAME_VECTOR ideal;
 
@@ -541,7 +541,7 @@ void Camera_Combat(ITEM_INFO *item)
     M_Move(&ideal, g_Camera.speed);
 }
 
-void Camera_Look(ITEM_INFO *item)
+void Camera_Look(ITEM *item)
 {
     GAME_VECTOR old;
     GAME_VECTOR ideal;
@@ -629,7 +629,7 @@ void Camera_Update(void)
 
     int32_t fixed_camera = g_Camera.item
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
-    ITEM_INFO *item = fixed_camera ? g_Camera.item : g_LaraItem;
+    ITEM *item = fixed_camera ? g_Camera.item : g_LaraItem;
 
     const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
 
@@ -724,7 +724,7 @@ void Camera_Update(void)
             g_Camera.fixed_camera = 0;
         }
 
-        const SECTOR_INFO *const sector = Room_GetSector(
+        const SECTOR *const sector = Room_GetSector(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
             &g_Camera.target.room_num);
         if (g_Camera.target.y > Room_GetHeight(

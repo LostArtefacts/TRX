@@ -5,14 +5,14 @@
 #include "game/sound.h"
 #include "global/const.h"
 
-void Ricochet_Setup(OBJECT_INFO *obj)
+void Ricochet_Setup(OBJECT *obj)
 {
     obj->control = Ricochet_Control;
 }
 
 void Ricochet_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
     fx->counter--;
     if (!fx->counter) {
         Effect_Kill(fx_num);
@@ -23,7 +23,7 @@ void Ricochet_Spawn(GAME_VECTOR *pos)
 {
     int16_t fx_num = Effect_Create(pos->room_num);
     if (fx_num != NO_ITEM) {
-        FX_INFO *fx = &g_Effects[fx_num];
+        FX *fx = &g_Effects[fx_num];
         fx->pos.x = pos->x;
         fx->pos.y = pos->y;
         fx->pos.z = pos->z;

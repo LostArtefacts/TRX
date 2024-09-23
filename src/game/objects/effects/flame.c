@@ -11,14 +11,14 @@
 #define FLAME_ONFIRE_DAMAGE 5
 #define FLAME_TOONEAR_DAMAGE 3
 
-void Flame_Setup(OBJECT_INFO *obj)
+void Flame_Setup(OBJECT *obj)
 {
     obj->control = Flame_Control;
 }
 
 void Flame_Control(int16_t fx_num)
 {
-    FX_INFO *fx = &g_Effects[fx_num];
+    FX *fx = &g_Effects[fx_num];
 
     fx->frame_num--;
     if (fx->frame_num <= g_Objects[O_FLAME].nmeshes) {

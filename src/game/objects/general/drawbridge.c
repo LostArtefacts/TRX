@@ -10,16 +10,15 @@ typedef enum {
     DRAWBRIDGE_OPEN,
 } DRAWBRIDGE_STATE;
 
-static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z);
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 static int16_t M_GetFloorHeight(
-    const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
-    const ITEM_INFO *item, int32_t x, int32_t y, int32_t z, int16_t height);
-static void M_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll);
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Control(int16_t item_num);
 
-static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z)
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 {
     int32_t ix = item->pos.x >> WALL_SHIFT;
     int32_t iz = item->pos.z >> WALL_SHIFT;
@@ -43,7 +42,7 @@ static bool M_IsItemOnTop(const ITEM_INFO *item, int32_t x, int32_t z)
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
@@ -59,7 +58,7 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM_INFO *item, const int32_t x, const int32_t y, const int32_t z,
+    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (item->current_anim_state != DOOR_OPEN) {
@@ -74,9 +73,9 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-static void M_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->current_anim_state == DOOR_CLOSED) {
         Door_Collision(item_num, lara_item, coll);
     }
@@ -84,7 +83,7 @@ static void M_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 static void M_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = DRAWBRIDGE_OPEN;
     } else {
@@ -100,7 +99,7 @@ static void M_Control(int16_t item_num)
     }
 }
 
-void Drawbridge_Setup(OBJECT_INFO *obj)
+void Drawbridge_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;

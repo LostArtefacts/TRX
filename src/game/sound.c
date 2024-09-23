@@ -27,7 +27,7 @@
 #define SOUND_MAX_PITCH_CHANGE 10
 #define SOUND_NOT_AUDIBLE -1
 
-typedef struct SOUND_SLOT {
+typedef struct {
     int sound_id;
     const XYZ_32 *pos;
     uint32_t loudness;
@@ -37,13 +37,13 @@ typedef struct SOUND_SLOT {
     int16_t flags;
 } SOUND_SLOT;
 
-typedef enum SOUND_MODE {
+typedef enum {
     SOUND_MODE_WAIT = 0,
     SOUND_MODE_RESTART = 1,
     SOUND_MODE_AMBIENT = 2,
 } SOUND_MODE;
 
-typedef enum SOUND_FLAG {
+typedef enum {
     SOUND_FLAG_UNUSED = 0,
     SOUND_FLAG_USED = 1 << 0,
     SOUND_FLAG_AMBIENT = 1 << 1,

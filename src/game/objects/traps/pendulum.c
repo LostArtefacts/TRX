@@ -11,7 +11,7 @@
 
 #define PENDULUM_DAMAGE 100
 
-void Pendulum_Setup(OBJECT_INFO *obj)
+void Pendulum_Setup(OBJECT *obj)
 {
     obj->control = Pendulum_Control;
     obj->collision = Object_CollisionTrap;
@@ -22,7 +22,7 @@ void Pendulum_Setup(OBJECT_INFO *obj)
 
 void Pendulum_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == TRAP_SET) {
@@ -43,7 +43,7 @@ void Pendulum_Control(int16_t item_num)
         Effect_Blood(x, y, z, g_LaraItem->speed, d, g_LaraItem->room_num);
     }
 
-    const SECTOR_INFO *const sector =
+    const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &item->room_num);
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 

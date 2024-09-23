@@ -13,7 +13,7 @@
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100
 
-void DamoclesSword_Setup(OBJECT_INFO *obj)
+void DamoclesSword_Setup(OBJECT *obj)
 {
     obj->initialise = DamoclesSword_Initialise;
     obj->control = DamoclesSword_Control;
@@ -26,7 +26,7 @@ void DamoclesSword_Setup(OBJECT_INFO *obj)
 
 void DamoclesSword_Initialise(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     item->rot.y = Random_GetControl();
     item->required_anim_state = (Random_GetControl() - 0x4000) / 16;
     item->fall_speed = 50;
@@ -34,7 +34,7 @@ void DamoclesSword_Initialise(int16_t item_num)
 
 void DamoclesSword_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->gravity) {
         item->rot.y += item->required_anim_state;
         item->fall_speed += item->fall_speed < FASTFALL_SPEED ? GRAVITY : 1;
@@ -64,10 +64,9 @@ void DamoclesSword_Control(int16_t item_num)
     }
 }
 
-void DamoclesSword_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void DamoclesSword_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }

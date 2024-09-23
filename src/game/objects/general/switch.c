@@ -57,7 +57,7 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
     return &m_Switch_BoundsUW;
 }
 
-void Switch_Setup(OBJECT_INFO *obj)
+void Switch_Setup(OBJECT *obj)
 {
     obj->control = Switch_Control;
     obj->collision = Switch_Collision;
@@ -66,7 +66,7 @@ void Switch_Setup(OBJECT_INFO *obj)
     obj->bounds = M_Bounds;
 }
 
-void Switch_SetupUW(OBJECT_INFO *obj)
+void Switch_SetupUW(OBJECT *obj)
 {
     obj->control = Switch_Control;
     obj->collision = Switch_CollisionUW;
@@ -77,7 +77,7 @@ void Switch_SetupUW(OBJECT_INFO *obj)
 
 void Switch_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     item->flags |= IF_CODE_BITS;
     if (!Item_IsTriggerActive(item)) {
         item->goal_anim_state = SWITCH_STATE_ON;
@@ -86,15 +86,15 @@ void Switch_Control(int16_t item_num)
     Item_Animate(item);
 }
 
-void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     if (g_Config.walk_to_items) {
         Switch_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     if (!g_Input.action || item->status != IS_INACTIVE
         || g_Lara.gun_status != LGS_ARMLESS || lara_item->gravity) {
@@ -130,9 +130,9 @@ void Switch_Collision(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 }
 
 void Switch_CollisionControlled(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
          && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
@@ -184,10 +184,10 @@ void Switch_CollisionControlled(
     }
 }
 
-void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     if (!g_Input.action || item->status != IS_INACTIVE
         || g_Lara.water_status != LWS_UNDERWATER) {
@@ -225,7 +225,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
 
 bool Switch_Trigger(int16_t item_num, int16_t timer)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     if (item->status != IS_DEACTIVATED) {
         return false;
     }

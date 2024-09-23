@@ -29,7 +29,7 @@
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
 #pragma pack(push, 1)
-typedef struct SAVEGAME_BSON_HEADER {
+typedef struct {
     uint32_t magic;
     int16_t initial_version;
     uint16_t version;
@@ -38,7 +38,7 @@ typedef struct SAVEGAME_BSON_HEADER {
 } SAVEGAME_BSON_HEADER;
 #pragma pack(pop)
 
-typedef struct SAVEGAME_BSON_FX_ORDER {
+typedef struct {
     int16_t count;
     int16_t id_map[NUM_EFFECTS];
 } SAVEGAME_BSON_FX_ORDER;
@@ -491,8 +491,8 @@ static bool M_LoadItems(struct json_array_s *items_arr, uint16_t header_version)
             return false;
         }
 
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         const GAME_OBJECT_ID object_id =
             json_object_get_int(item_obj, "obj_num", -1);
@@ -561,7 +561,7 @@ static bool M_LoadItems(struct json_array_s *items_arr, uint16_t header_version)
             if (json_object_get_bool(
                     item_obj, "intelligent", obj->intelligent)) {
                 LOT_EnableBaddieAI(i, 1);
-                CREATURE_INFO *creature = item->data;
+                CREATURE *creature = item->data;
                 if (creature) {
                     creature->head_rotation = json_object_get_int(
                         item_obj, "head_rot", creature->head_rotation);
@@ -676,7 +676,7 @@ static bool M_LoadFx(struct json_array_s *fx_arr)
 
         int16_t fx_num = Effect_Create(room_num);
         if (fx_num != NO_ITEM) {
-            FX_INFO *fx = &g_Effects[fx_num];
+            FX *fx = &g_Effects[fx_num];
             fx->pos.x = x;
             fx->pos.y = y;
             fx->pos.z = z;
@@ -1040,8 +1040,8 @@ static struct json_array_s *M_DumpItems(void)
     struct json_array_s *items_arr = json_array_new();
     for (int i = 0; i < g_LevelItemCount; i++) {
         struct json_object_s *item_obj = json_object_new();
-        ITEM_INFO *item = &g_Items[i];
-        OBJECT_INFO *obj = &g_Objects[item->object_id];
+        ITEM *item = &g_Items[i];
+        OBJECT *obj = &g_Objects[item->object_id];
 
         json_object_append_int(item_obj, "obj_num", item->object_id);
 
@@ -1082,7 +1082,7 @@ static struct json_array_s *M_DumpItems(void)
                 item_obj, "intelligent", obj->intelligent && item->data);
             json_object_append_int(item_obj, "timer", item->timer);
             if (obj->intelligent && item->data) {
-                CREATURE_INFO *creature = item->data;
+                CREATURE *creature = item->data;
                 json_object_append_int(
                     item_obj, "head_rot", creature->head_rotation);
                 json_object_append_int(
@@ -1145,7 +1145,7 @@ static struct json_array_s *M_DumpFx(void)
     for (int16_t linknum = g_NextFxActive; linknum != NO_ITEM;
          linknum = g_Effects[linknum].next_active) {
         struct json_object_s *fx_obj = json_object_new();
-        FX_INFO *fx = &g_Effects[linknum];
+        FX *fx = &g_Effects[linknum];
         json_object_append_int(fx_obj, "x", fx->pos.x);
         json_object_append_int(fx_obj, "y", fx->pos.y);
         json_object_append_int(fx_obj, "z", fx->pos.z);

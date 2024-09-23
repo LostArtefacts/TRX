@@ -9,7 +9,7 @@ typedef enum {
     DART_EMITTER_FIRE = 1,
 } DART_EMITTER_STATE;
 
-void DartEmitter_Setup(OBJECT_INFO *obj)
+void DartEmitter_Setup(OBJECT *obj)
 {
     obj->control = DartEmitter_Control;
     obj->save_flags = 1;
@@ -17,7 +17,7 @@ void DartEmitter_Setup(OBJECT_INFO *obj)
 
 void DartEmitter_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DART_EMITTER_IDLE) {
@@ -33,7 +33,7 @@ void DartEmitter_Control(int16_t item_num)
         && Item_TestFrameEqual(item, 0)) {
         int16_t dart_item_num = Item_Create();
         if (dart_item_num != NO_ITEM) {
-            ITEM_INFO *dart = &g_Items[dart_item_num];
+            ITEM *dart = &g_Items[dart_item_num];
             dart->object_id = O_DARTS;
             dart->room_num = item->room_num;
             dart->shade = -1;
@@ -65,7 +65,7 @@ void DartEmitter_Control(int16_t item_num)
 
             int16_t fx_num = Effect_Create(dart->room_num);
             if (fx_num != NO_ITEM) {
-                FX_INFO *fx = &g_Effects[fx_num];
+                FX *fx = &g_Effects[fx_num];
                 fx->pos = dart->pos;
                 fx->rot = dart->rot;
                 fx->speed = 0;

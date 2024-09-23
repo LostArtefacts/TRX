@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct PHASE_STATS_DATA {
+typedef struct {
     int32_t level_num;
     const char *background_path;
     bool total;

@@ -6,7 +6,7 @@
 
 #include <stddef.h>
 
-void FX_Explosion(ITEM_INFO *item)
+void FX_Explosion(ITEM *item)
 {
     Sound_Effect(SFX_EXPLOSION_FX, NULL, SPM_NORMAL);
     g_Camera.bounce = -75;

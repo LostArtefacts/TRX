@@ -13,4 +13,4 @@ void Interpolation_SetRate(double rate);
 
 void Interpolation_Commit(void);
 void Interpolation_Remember(void);
-void Interpolation_RememberItem(ITEM_INFO *item);
+void Interpolation_RememberItem(ITEM *item);

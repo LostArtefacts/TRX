@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct HAIR_SEGMENT {
+typedef struct {
     XYZ_32 pos;
     XYZ_16 rot;
     struct {

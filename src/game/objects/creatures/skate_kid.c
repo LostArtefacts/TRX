@@ -36,10 +36,10 @@ typedef enum {
     SKATE_KID_DEATH = 5,
 } SKATE_KID_ANIM;
 
-static BITE_INFO m_KidGun1 = { 0, 150, 34, 7 };
-static BITE_INFO m_KidGun2 = { 0, 150, 37, 4 };
+static BITE m_KidGun1 = { 0, 150, 34, 7 };
+static BITE m_KidGun2 = { 0, 150, 37, 4 };
 
-void SkateKid_Setup(OBJECT_INFO *obj)
+void SkateKid_Setup(OBJECT *obj)
 {
     if (!obj->loaded) {
         return;
@@ -74,7 +74,7 @@ void SkateKid_Initialise(int16_t item_num)
 
 void SkateKid_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -83,7 +83,7 @@ void SkateKid_Control(int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE_INFO *kid = item->data;
+    CREATURE *kid = item->data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -172,7 +172,7 @@ void SkateKid_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void SkateKid_Draw(ITEM_INFO *item)
+void SkateKid_Draw(ITEM *item)
 {
     Object_DrawAnimatingItem(item);
     if (!g_Objects[O_SKATEBOARD].loaded) {

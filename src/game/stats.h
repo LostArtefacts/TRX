@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct TOTAL_STATS {
+typedef struct {
     uint32_t timer;
     uint32_t death_count;
     uint32_t player_kill_count;

@@ -11,14 +11,14 @@
 #include <stddef.h>
 
 static int32_t m_SlotsUsed = 0;
-static CREATURE_INFO *m_BaddieSlots = NULL;
+static CREATURE *m_BaddieSlots = NULL;
 
 void LOT_InitialiseArray(void)
 {
     m_BaddieSlots =
-        GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE_INFO), GBUF_CREATURE_INFO);
+        GameBuf_Alloc(NUM_SLOTS * sizeof(CREATURE), GBUF_CREATURE_INFO);
     for (int i = 0; i < NUM_SLOTS; i++) {
-        CREATURE_INFO *creature = &m_BaddieSlots[i];
+        CREATURE *creature = &m_BaddieSlots[i];
         creature->item_num = NO_ITEM;
         creature->lot.node =
             GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
@@ -28,8 +28,8 @@ void LOT_InitialiseArray(void)
 
 void LOT_DisableBaddieAI(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    CREATURE_INFO *creature = item->data;
+    ITEM *item = &g_Items[item_num];
+    CREATURE *creature = item->data;
     item->data = NULL;
     if (creature) {
         creature->item_num = NO_ITEM;
@@ -45,7 +45,7 @@ bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 
     if (m_SlotsUsed < NUM_SLOTS) {
         for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
-            CREATURE_INFO *creature = &m_BaddieSlots[slot];
+            CREATURE *creature = &m_BaddieSlots[slot];
             if (creature->item_num == NO_ITEM) {
                 LOT_InitialiseSlot(item_num, slot);
                 return true;
@@ -56,7 +56,7 @@ bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 
     int32_t worst_dist = 0;
     if (!always) {
-        ITEM_INFO *item = &g_Items[item_num];
+        ITEM *item = &g_Items[item_num];
         int32_t x = (item->pos.x - g_Camera.pos.x) >> 8;
         int32_t y = (item->pos.y - g_Camera.pos.y) >> 8;
         int32_t z = (item->pos.z - g_Camera.pos.z) >> 8;
@@ -65,8 +65,8 @@ bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 
     int32_t worst_slot = -1;
     for (int32_t slot = 0; slot < NUM_SLOTS; slot++) {
-        CREATURE_INFO *creature = &m_BaddieSlots[slot];
-        ITEM_INFO *item = &g_Items[creature->item_num];
+        CREATURE *creature = &m_BaddieSlots[slot];
+        ITEM *item = &g_Items[creature->item_num];
         int32_t x = (item->pos.x - g_Camera.pos.x) >> 8;
         int32_t y = (item->pos.y - g_Camera.pos.y) >> 8;
         int32_t z = (item->pos.z - g_Camera.pos.z) >> 8;
@@ -89,8 +89,8 @@ bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
 
 void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
 {
-    CREATURE_INFO *creature = &m_BaddieSlots[slot];
-    ITEM_INFO *item = &g_Items[item_num];
+    CREATURE *creature = &m_BaddieSlots[slot];
+    ITEM *item = &g_Items[item_num];
     item->data = creature;
     creature->item_num = item_num;
     creature->mood = MOOD_BORED;
@@ -141,9 +141,9 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
     m_SlotsUsed++;
 }
 
-void LOT_CreateZone(ITEM_INFO *item)
+void LOT_CreateZone(ITEM *item)
 {
-    CREATURE_INFO *creature = item->data;
+    CREATURE *creature = item->data;
 
     int16_t *zone;
     int16_t *flip;
@@ -158,7 +158,7 @@ void LOT_CreateZone(ITEM_INFO *item)
         flip = g_GroundZone2[1];
     }
 
-    const ROOM_INFO *const r = &g_RoomInfo[item->room_num];
+    const ROOM *const r = &g_RoomInfo[item->room_num];
     const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
     const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
     item->box_num = r->sectors[z_sector + x_sector * r->z_size].box;

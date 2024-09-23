@@ -2,7 +2,7 @@
 
 #include "game/phase/phase.h"
 
-typedef struct PHASE_PICTURE_DATA {
+typedef struct {
     const char *path;
     double display_time;
 } PHASE_PICTURE_DATA;

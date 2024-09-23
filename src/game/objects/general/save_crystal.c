@@ -27,7 +27,7 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_SaveCrystal_Bounds;
 }
 
-void SaveCrystal_Setup(OBJECT_INFO *obj)
+void SaveCrystal_Setup(OBJECT *obj)
 {
     obj->initialise = SaveCrystal_Initialise;
     if (g_Config.enable_save_crystals) {
@@ -50,15 +50,14 @@ void SaveCrystal_Initialise(int16_t item_num)
 
 void SaveCrystal_Control(int16_t item_num)
 {
-    ITEM_INFO *item = &g_Items[item_num];
+    ITEM *item = &g_Items[item_num];
     Item_Animate(item);
 }
 
-void SaveCrystal_Collision(
-    int16_t item_num, ITEM_INFO *lara_item, COLL_INFO *coll)
+void SaveCrystal_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
-    ITEM_INFO *item = &g_Items[item_num];
-    const OBJECT_INFO *const obj = &g_Objects[item->object_id];
+    ITEM *item = &g_Items[item_num];
+    const OBJECT *const obj = &g_Objects[item->object_id];
 
     Object_Collision(item_num, lara_item, coll);
 

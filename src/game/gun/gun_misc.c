@@ -51,8 +51,8 @@
 #define SHOTGUN_RARM_XMIN (-65 * PHD_DEGREE)
 #define SHOTGUN_RARM_XMAX (+65 * PHD_DEGREE)
 
-static ITEM_INFO *m_TargetList[NUM_SLOTS];
-static ITEM_INFO *m_LastTargetList[NUM_SLOTS];
+static ITEM *m_TargetList[NUM_SLOTS];
+static ITEM *m_LastTargetList[NUM_SLOTS];
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     // null
@@ -206,7 +206,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
         g_Lara.target = NULL;
     }
 
-    ITEM_INFO *best_target = NULL;
+    ITEM *best_target = NULL;
     int16_t best_yrot = 0x7FFF;
     int16_t num_targets = 0;
 
@@ -218,7 +218,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     src.z = g_LaraItem->pos.z;
     src.room_num = g_LaraItem->room_num;
 
-    ITEM_INFO *item = NULL;
+    ITEM *item = NULL;
     for (int16_t item_num = g_NextItemActive; item_num != NO_ITEM;
          item_num = item->next_active) {
         item = &g_Items[item_num];
@@ -335,7 +335,7 @@ void Gun_ChangeTarget(WEAPON_INFO *winfo)
     Gun_TargetInfo(winfo);
 }
 
-void Gun_FindTargetPoint(ITEM_INFO *item, GAME_VECTOR *target)
+void Gun_FindTargetPoint(ITEM *item, GAME_VECTOR *target)
 {
     const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
     const int32_t x = (bounds->min.x + bounds->max.x) / 2;
@@ -388,7 +388,7 @@ void Gun_AimWeapon(WEAPON_INFO *winfo, LARA_ARM *arm)
 }
 
 int32_t Gun_FireWeapon(
-    int32_t weapon_type, ITEM_INFO *target, ITEM_INFO *src, PHD_ANGLE *angles)
+    int32_t weapon_type, ITEM *target, ITEM *src, PHD_ANGLE *angles)
 {
     WEAPON_INFO *winfo = &g_Weapons[weapon_type];
 
@@ -489,7 +489,7 @@ int32_t Gun_FireWeapon(
     return -1;
 }
 
-void Gun_HitTarget(ITEM_INFO *item, GAME_VECTOR *hitpos, int16_t damage)
+void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
         g_GameInfo.current[g_CurrentLevel].stats.kill_count++;
