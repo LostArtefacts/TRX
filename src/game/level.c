@@ -149,35 +149,33 @@ static void M_LoadRooms(VFILE *file)
 
     g_RoomInfo = GameBuf_Alloc(sizeof(ROOM) * g_RoomCount, GBUF_ROOMS);
     int i = 0;
-    for (ROOM *current_room_info = g_RoomInfo; i < g_RoomCount;
-         i++, current_room_info++) {
+    for (ROOM *r = g_RoomInfo; i < g_RoomCount; i++, r++) {
         // Room position
-        current_room_info->x = VFile_ReadS32(file);
-        current_room_info->y = 0;
-        current_room_info->z = VFile_ReadS32(file);
+        r->pos.x = VFile_ReadS32(file);
+        r->pos.y = 0;
+        r->pos.z = VFile_ReadS32(file);
 
         // Room floor/ceiling
-        current_room_info->min_floor = VFile_ReadS32(file);
-        current_room_info->max_ceiling = VFile_ReadS32(file);
+        r->min_floor = VFile_ReadS32(file);
+        r->max_ceiling = VFile_ReadS32(file);
 
         // Room mesh
         const uint32_t num_meshes = VFile_ReadS32(file);
         const uint32_t inj_mesh_size = Inject_GetExtraRoomMeshSize(i);
-        current_room_info->data = GameBuf_Alloc(
+        r->data = GameBuf_Alloc(
             sizeof(uint16_t) * (num_meshes + inj_mesh_size), GBUF_ROOM_MESH);
-        VFile_Read(
-            file, current_room_info->data, sizeof(uint16_t) * num_meshes);
+        VFile_Read(file, r->data, sizeof(uint16_t) * num_meshes);
 
         // Doors
         const uint16_t num_doors = VFile_ReadS16(file);
         if (!num_doors) {
-            current_room_info->portals = NULL;
+            r->portals = NULL;
         } else {
-            current_room_info->portals = GameBuf_Alloc(
+            r->portals = GameBuf_Alloc(
                 sizeof(uint16_t) + sizeof(PORTAL) * num_doors, GBUF_ROOM_DOOR);
-            current_room_info->portals->count = num_doors;
+            r->portals->count = num_doors;
             for (int32_t j = 0; j < num_doors; j++) {
-                PORTAL *const portal = &current_room_info->portals->portal[j];
+                PORTAL *const portal = &r->portals->portal[j];
                 portal->room_num = VFile_ReadS16(file);
                 portal->normal.x = VFile_ReadS16(file);
                 portal->normal.y = VFile_ReadS16(file);
@@ -191,15 +189,14 @@ static void M_LoadRooms(VFILE *file)
         }
 
         // Room floor
-        current_room_info->z_size = VFile_ReadS16(file);
-        current_room_info->x_size = VFile_ReadS16(file);
-        const int32_t sector_count =
-            current_room_info->x_size * current_room_info->z_size;
-        current_room_info->sectors =
+        r->size.z = VFile_ReadS16(file);
+        r->size.x = VFile_ReadS16(file);
+        const int32_t sector_count = r->size.x * r->size.z;
+        r->sectors =
             GameBuf_Alloc(sizeof(SECTOR) * sector_count, GBUF_ROOM_SECTOR);
         for (int32_t j = 0; j < sector_count; j++) {
-            SECTOR *const sector = &current_room_info->sectors[j];
-            sector->index = VFile_ReadU16(file);
+            SECTOR *const sector = &r->sectors[j];
+            sector->idx = VFile_ReadU16(file);
             sector->box = VFile_ReadS16(file);
             sector->portal_room.pit = VFile_ReadU8(file);
             const int8_t floor_clicks = VFile_ReadS8(file);
@@ -211,16 +208,15 @@ static void M_LoadRooms(VFILE *file)
         }
 
         // Room lights
-        current_room_info->ambient = VFile_ReadS16(file);
-        current_room_info->num_lights = VFile_ReadS16(file);
-        if (!current_room_info->num_lights) {
-            current_room_info->light = NULL;
+        r->ambient = VFile_ReadS16(file);
+        r->num_lights = VFile_ReadS16(file);
+        if (!r->num_lights) {
+            r->lights = NULL;
         } else {
-            current_room_info->light = GameBuf_Alloc(
-                sizeof(LIGHT) * current_room_info->num_lights,
-                GBUF_ROOM_LIGHTS);
-            for (int32_t j = 0; j < current_room_info->num_lights; j++) {
-                LIGHT *light = &current_room_info->light[j];
+            r->lights =
+                GameBuf_Alloc(sizeof(LIGHT) * r->num_lights, GBUF_ROOM_LIGHTS);
+            for (int32_t j = 0; j < r->num_lights; j++) {
+                LIGHT *light = &r->lights[j];
                 light->pos.x = VFile_ReadS32(file);
                 light->pos.y = VFile_ReadS32(file);
                 light->pos.z = VFile_ReadS32(file);
@@ -230,15 +226,14 @@ static void M_LoadRooms(VFILE *file)
         }
 
         // Static mesh infos
-        current_room_info->num_meshes = VFile_ReadS16(file);
-        if (!current_room_info->num_meshes) {
-            current_room_info->mesh = NULL;
+        r->num_meshes = VFile_ReadS16(file);
+        if (!r->num_meshes) {
+            r->meshes = NULL;
         } else {
-            current_room_info->mesh = GameBuf_Alloc(
-                sizeof(MESH) * current_room_info->num_meshes,
-                GBUF_ROOM_STATIC_MESHES);
-            for (int32_t j = 0; j < current_room_info->num_meshes; j++) {
-                MESH *mesh = &current_room_info->mesh[j];
+            r->meshes = GameBuf_Alloc(
+                sizeof(MESH) * r->num_meshes, GBUF_ROOM_STATIC_MESHES);
+            for (int32_t j = 0; j < r->num_meshes; j++) {
+                MESH *mesh = &r->meshes[j];
                 mesh->pos.x = VFile_ReadS32(file);
                 mesh->pos.y = VFile_ReadS32(file);
                 mesh->pos.z = VFile_ReadS32(file);
@@ -249,19 +244,19 @@ static void M_LoadRooms(VFILE *file)
         }
 
         // Flipped (alternative) room
-        current_room_info->flipped_room = VFile_ReadS16(file);
+        r->flipped_room = VFile_ReadS16(file);
 
         // Room flags
-        current_room_info->flags = VFile_ReadU16(file);
+        r->flags = VFile_ReadU16(file);
 
         // Initialise some variables
-        current_room_info->bound_active = 0;
-        current_room_info->left = Viewport_GetMaxX();
-        current_room_info->top = Viewport_GetMaxY();
-        current_room_info->bottom = 0;
-        current_room_info->right = 0;
-        current_room_info->item_num = NO_ITEM;
-        current_room_info->fx_num = NO_ITEM;
+        r->bound_active = 0;
+        r->bound_left = Viewport_GetMaxX();
+        r->bound_top = Viewport_GetMaxY();
+        r->bound_bottom = 0;
+        r->bound_right = 0;
+        r->item_num = NO_ITEM;
+        r->fx_num = NO_ITEM;
     }
 
     const int32_t fd_length = VFile_ReadS32(file);

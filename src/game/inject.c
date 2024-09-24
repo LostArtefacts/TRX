@@ -1100,11 +1100,11 @@ static void M_FloorDataEdits(INJECTION *injection, LEVEL_INFO *level_info)
             LOG_WARNING("Room index %d is invalid", room);
         } else {
             r = &g_RoomInfo[room];
-            if (x >= r->x_size || z >= r->z_size) {
+            if (x >= r->size.x || z >= r->size.z) {
                 LOG_WARNING(
                     "Sector [%d,%d] is invalid for room %d", x, z, room);
             } else {
-                sector = &r->sectors[r->z_size * x + z];
+                sector = &r->sectors[r->size.z * x + z];
             }
         }
 
@@ -1216,8 +1216,8 @@ static void M_RoomShift(INJECTION *injection, int16_t room_num)
     const int32_t y_shift = ROUND_TO_CLICK(VFile_ReadS32(fp));
 
     ROOM *room = &g_RoomInfo[room_num];
-    room->x += x_shift;
-    room->z += z_shift;
+    room->pos.x += x_shift;
+    room->pos.z += z_shift;
     room->min_floor += y_shift;
     room->max_ceiling += y_shift;
 
@@ -1238,7 +1238,7 @@ static void M_RoomShift(INJECTION *injection, int16_t room_num)
     }
 
     // Update the sector floor and ceiling heights to match.
-    for (int32_t i = 0; i < room->z_size * room->x_size; i++) {
+    for (int32_t i = 0; i < room->size.z * room->size.x; i++) {
         SECTOR *const sector = &room->sectors[i];
         if (sector->floor.height == NO_HEIGHT
             || sector->ceiling.height == NO_HEIGHT) {

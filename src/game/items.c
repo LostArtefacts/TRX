@@ -146,9 +146,9 @@ void Item_Initialise(int16_t item_num)
     ROOM *const r = &g_RoomInfo[item->room_num];
     item->next_item = r->item_num;
     r->item_num = item_num;
-    const int32_t z_sector = (item->pos.z - r->z) >> WALL_SHIFT;
-    const int32_t x_sector = (item->pos.x - r->x) >> WALL_SHIFT;
-    const SECTOR *const sector = &r->sectors[z_sector + x_sector * r->z_size];
+    const int32_t z_sector = (item->pos.z - r->pos.z) >> WALL_SHIFT;
+    const int32_t x_sector = (item->pos.x - r->pos.x) >> WALL_SHIFT;
+    const SECTOR *const sector = &r->sectors[z_sector + x_sector * r->size.z];
     item->floor = sector->floor.height;
 
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {

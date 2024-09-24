@@ -33,21 +33,21 @@ static void M_PrintDrawStack(void)
 
 static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
 {
-    const int32_t x =
-        portal->normal.x * (parent->x + portal->vertex[0].x - g_W2VMatrix._03);
-    const int32_t y =
-        portal->normal.y * (parent->y + portal->vertex[0].y - g_W2VMatrix._13);
-    const int32_t z =
-        portal->normal.z * (parent->z + portal->vertex[0].z - g_W2VMatrix._23);
+    const int32_t x = portal->normal.x
+        * (parent->pos.x + portal->vertex[0].x - g_W2VMatrix._03);
+    const int32_t y = portal->normal.y
+        * (parent->pos.y + portal->vertex[0].y - g_W2VMatrix._13);
+    const int32_t z = portal->normal.z
+        * (parent->pos.z + portal->vertex[0].z - g_W2VMatrix._23);
     if (x + y + z >= 0) {
         return false;
     }
 
     DOOR_VBUF door_vbuf[4];
-    int32_t left = parent->right;
-    int32_t right = parent->left;
-    int32_t top = parent->bottom;
-    int32_t bottom = parent->top;
+    int32_t left = parent->bound_right;
+    int32_t right = parent->bound_left;
+    int32_t top = parent->bound_bottom;
+    int32_t bottom = parent->bound_top;
 
     int32_t z_toofar = 0;
     int32_t z_behind = 0;
@@ -132,17 +132,17 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
         }
     }
 
-    if (left < parent->left) {
-        left = parent->left;
+    if (left < parent->bound_left) {
+        left = parent->bound_left;
     }
-    if (right > parent->right) {
-        right = parent->right;
+    if (right > parent->bound_right) {
+        right = parent->bound_right;
     }
-    if (top < parent->top) {
-        top = parent->top;
+    if (top < parent->bound_top) {
+        top = parent->bound_top;
     }
-    if (bottom > parent->bottom) {
-        bottom = parent->bottom;
+    if (bottom > parent->bound_bottom) {
+        bottom = parent->bound_bottom;
     }
 
     if (left >= right || top >= bottom) {
@@ -150,17 +150,17 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
     }
 
     ROOM *r = &g_RoomInfo[portal->room_num];
-    if (left < r->left) {
-        r->left = left;
+    if (left < r->bound_left) {
+        r->bound_left = left;
     }
-    if (top < r->top) {
-        r->top = top;
+    if (top < r->bound_top) {
+        r->bound_top = top;
     }
-    if (right > r->right) {
-        r->right = right;
+    if (right > r->bound_right) {
+        r->bound_right = right;
     }
-    if (bottom > r->bottom) {
-        r->bottom = bottom;
+    if (bottom > r->bound_bottom) {
+        r->bound_bottom = bottom;
     }
 
     if (!r->bound_active) {
@@ -180,7 +180,7 @@ static void M_GetBounds(int16_t room_num)
         Shell_ExitSystem("Matrix stack overflow.");
     }
     m_RoomNumStack[m_RoomNumStackIdx++] = room_num;
-    Matrix_TranslateAbs(r->x, r->y, r->z);
+    Matrix_TranslateAbs(r->pos.x, r->pos.y, r->pos.z);
     if (r->portals != NULL) {
         for (int i = 0; i < r->portals->count; i++) {
             const PORTAL *portal = &r->portals->portal[i];
@@ -218,10 +218,10 @@ static void M_PrepareToDraw(int16_t room_num)
         return;
     }
 
-    r->left = g_PhdLeft;
-    r->top = g_PhdTop;
-    r->right = g_PhdRight;
-    r->bottom = g_PhdBottom;
+    r->bound_left = g_PhdLeft;
+    r->bound_top = g_PhdTop;
+    r->bound_right = g_PhdRight;
+    r->bound_bottom = g_PhdBottom;
     r->bound_active = 1;
 
     if (g_RoomsToDrawCount + 1 < MAX_ROOMS_TO_DRAW) {
@@ -229,7 +229,7 @@ static void M_PrepareToDraw(int16_t room_num)
     }
 
     Matrix_Push();
-    Matrix_TranslateAbs(r->x, r->y, r->z);
+    Matrix_TranslateAbs(r->pos.x, r->pos.y, r->pos.z);
     if (r->portals != NULL) {
         for (int i = 0; i < r->portals->count; i++) {
             const PORTAL *portal = &r->portals->portal[i];
@@ -276,12 +276,12 @@ void Room_DrawSingleRoom(int16_t room_num)
     r->bound_active = 0;
 
     Matrix_Push();
-    Matrix_TranslateAbs(r->x, r->y, r->z);
+    Matrix_TranslateAbs(r->pos.x, r->pos.y, r->pos.z);
 
-    g_PhdLeft = r->left;
-    g_PhdRight = r->right;
-    g_PhdTop = r->top;
-    g_PhdBottom = r->bottom;
+    g_PhdLeft = r->bound_left;
+    g_PhdRight = r->bound_right;
+    g_PhdTop = r->bound_top;
+    g_PhdBottom = r->bound_bottom;
 
     Output_DrawRoom(r->data);
 
@@ -293,7 +293,7 @@ void Room_DrawSingleRoom(int16_t room_num)
     }
 
     for (int i = 0; i < r->num_meshes; i++) {
-        MESH *mesh = &r->mesh[i];
+        MESH *mesh = &r->meshes[i];
         if (g_StaticObjects[mesh->static_num].flags & 2) {
             Matrix_Push();
             Matrix_TranslateAbs(mesh->pos.x, mesh->pos.y, mesh->pos.z);
@@ -315,8 +315,8 @@ void Room_DrawSingleRoom(int16_t room_num)
 
     Matrix_Pop();
 
-    r->left = Viewport_GetMaxX();
-    r->bottom = 0;
-    r->right = 0;
-    r->top = Viewport_GetMaxY();
+    r->bound_left = Viewport_GetMaxX();
+    r->bound_bottom = 0;
+    r->bound_right = 0;
+    r->bound_top = Viewport_GetMaxY();
 }

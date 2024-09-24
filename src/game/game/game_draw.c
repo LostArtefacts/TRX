@@ -46,10 +46,10 @@ void Game_DrawScene(bool draw_overlay)
         for (int i = 0; i < g_RoomsToDrawCount; i++) {
             int16_t room_num = g_RoomsToDraw[i];
             ROOM *r = &g_RoomInfo[room_num];
-            r->top = 0;
-            r->left = 0;
-            r->right = Viewport_GetMaxX();
-            r->bottom = Viewport_GetMaxY();
+            r->bound_top = 0;
+            r->bound_left = 0;
+            r->bound_right = Viewport_GetMaxX();
+            r->bound_bottom = Viewport_GetMaxY();
             Room_DrawSingleRoom(room_num);
         }
 

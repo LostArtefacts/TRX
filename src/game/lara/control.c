@@ -37,8 +37,8 @@ static void M_WaterCurrent(COLL_INFO *coll)
     const ROOM *const r = &g_RoomInfo[item->room_num];
     const SECTOR *const sector =
         &r->sectors
-             [((item->pos.z - r->z) >> WALL_SHIFT)
-              + ((item->pos.x - r->x) >> WALL_SHIFT) * r->z_size];
+             [((item->pos.z - r->pos.z) >> WALL_SHIFT)
+              + ((item->pos.x - r->pos.x) >> WALL_SHIFT) * r->size.z];
     item->box_num = sector->box;
 
     if (Box_CalculateTarget(&target, item, &g_Lara.lot) == TARGET_NONE) {

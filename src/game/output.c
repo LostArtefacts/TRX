@@ -619,7 +619,7 @@ void Output_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num)
             .z = 0,
         };
         for (int i = 0; i < r->num_lights; i++) {
-            LIGHT *light = &r->light[i];
+            LIGHT *light = &r->lights[i];
             XYZ_32 lc = {
                 .x = x - light->pos.x,
                 .y = y - light->pos.y,

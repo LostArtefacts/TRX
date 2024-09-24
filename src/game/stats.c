@@ -43,8 +43,8 @@ static void M_TraverseFloor(void)
 
     for (int i = 0; i < g_RoomCount; i++) {
         ROOM *r = &g_RoomInfo[i];
-        for (int z_sector = 0; z_sector < r->z_size; z_sector++) {
-            for (int x_sector = 0; x_sector < r->x_size; x_sector++) {
+        for (int z_sector = 0; z_sector < r->size.z; z_sector++) {
+            for (int x_sector = 0; x_sector < r->size.x; x_sector++) {
                 M_CheckTriggers(r, i, z_sector, x_sector);
             }
         }
@@ -53,14 +53,14 @@ static void M_TraverseFloor(void)
 
 static void M_CheckTriggers(ROOM *r, int room_num, int z_sector, int x_sector)
 {
-    if (z_sector == 0 || z_sector == r->z_size - 1) {
-        if (x_sector == 0 || x_sector == r->x_size - 1) {
+    if (z_sector == 0 || z_sector == r->size.z - 1) {
+        if (x_sector == 0 || x_sector == r->size.x - 1) {
             return;
         }
     }
 
     const SECTOR *const sector =
-        &m_CachedSectorArray[room_num][z_sector + x_sector * r->z_size];
+        &m_CachedSectorArray[room_num][z_sector + x_sector * r->size.z];
 
     if (sector->trigger == NULL) {
         return;
@@ -156,7 +156,7 @@ void Stats_ObserveRoomsLoad(void)
     for (int i = 0; i < g_RoomCount; i++) {
         const ROOM *current_room_info = &g_RoomInfo[i];
         const int32_t count =
-            current_room_info->x_size * current_room_info->z_size;
+            current_room_info->size.x * current_room_info->size.z;
         m_CachedSectorArray[i] =
             GameBuf_Alloc(count * sizeof(SECTOR), GBUF_ROOM_SECTOR);
         memcpy(
