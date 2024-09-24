@@ -77,3 +77,6 @@ bool Input_CheckButtonPress(const char *button_name);
 
 // Reset a given layout to the default.
 void Input_ResetLayout(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+
+void Input_EnterListenMode(void);
+void Input_ExitListenMode(void);

@@ -952,6 +952,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.camera_left               = M_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
     linput.camera_right              = M_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
     linput.camera_reset              = M_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
+    linput.enter_console             = M_Key(INPUT_ROLE_ENTER_CONSOLE, layout_num);
     linput.change_target             = M_Key(INPUT_ROLE_CHANGE_TARGET, layout_num);
 
     linput.item_cheat                = M_Key(INPUT_ROLE_ITEM_CHEAT, layout_num);

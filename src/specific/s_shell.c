@@ -10,6 +10,7 @@
 #include "game/sound.h"
 
 #include <libtrx/filesystem.h>
+#include <libtrx/game/ui/common.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
@@ -219,15 +220,15 @@ void S_Shell_SpinMessageLoop(void)
             break;
 
         case SDL_KEYDOWN:
-            Console_HandleKeyDown(event);
+            UI_HandleKeyDown(event.key.keysym.sym);
             break;
 
         case SDL_TEXTEDITING:
-            Console_HandleTextEdit(event);
+            UI_HandleTextEdit(event.text.text);
             break;
 
         case SDL_TEXTINPUT:
-            Console_HandleTextInput(event);
+            UI_HandleTextEdit(event.text.text);
             break;
 
         case SDL_CONTROLLERDEVICEADDED:

@@ -19,10 +19,12 @@
 
 #include <libtrx/engine/image.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/console/common.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
 #include <stddef.h>
+#include <string.h>
 
 #define MAX_LIGHTNINGS 64
 #define PHD_IONE (PHD_ONE / 4)

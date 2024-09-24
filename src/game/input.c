@@ -19,6 +19,7 @@ static bool m_KeyConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static bool m_BtnConflict[INPUT_ROLE_NUMBER_OF] = { false };
 static int32_t m_HoldBack = 0;
 static int32_t m_HoldForward = 0;
+static bool m_ListenMode = false;
 
 static INPUT_STATE M_GetDebounced(INPUT_STATE input);
 
@@ -154,6 +155,11 @@ void Input_Update(void)
     }
 
     g_InputDB = M_GetDebounced(g_Input);
+
+    if (m_ListenMode) {
+        g_Input.any = 0;
+        g_InputDB.any = 0;
+    }
 }
 
 bool Input_IsKeyConflicted(CONTROL_MODE mode, INPUT_ROLE role)
@@ -255,4 +261,17 @@ void Input_ResetLayout(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     } else {
         S_Input_ResetControllerToDefault(layout_num);
     }
+}
+
+void Input_EnterListenMode(void)
+{
+    m_ListenMode = true;
+}
+
+void Input_ExitListenMode(void)
+{
+    m_ListenMode = false;
+    Input_Update();
+    g_OldInputDB.any = g_Input.any;
+    g_InputDB = M_GetDebounced(g_Input);
 }

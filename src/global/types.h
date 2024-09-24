@@ -652,6 +652,7 @@ typedef struct {
             uint32_t hide : 1;
             uint32_t progress_bar : 1;
             uint32_t multiline : 1;
+            uint32_t manual_draw : 1;
         };
     } flags;
     struct {
@@ -979,6 +980,7 @@ typedef union INPUT_STATE {
         uint64_t menu_right : 1;
         uint64_t menu_confirm : 1;
         uint64_t menu_back : 1;
+        uint64_t enter_console : 1;
         uint64_t change_target : 1;
     };
 } INPUT_STATE;

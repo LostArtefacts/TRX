@@ -471,7 +471,7 @@ void Text_Draw(void)
     m_FlashFrames = Clock_GetFrameAdvance();
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *textstring = &m_TextstringTable[i];
-        if (textstring->flags.active) {
+        if (textstring->flags.active && !textstring->flags.manual_draw) {
             Text_DrawText(textstring);
         }
     }

@@ -23,6 +23,7 @@
 #include "specific/s_shell.h"
 
 #include <libtrx/filesystem.h>
+#include <libtrx/game/ui/common.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
@@ -114,6 +115,7 @@ static char *M_GetScreenshotName(void)
 
 void Shell_Init(const char *gameflow_path)
 {
+    UI_Init();
     S_Shell_Init();
 
     if (!Output_Init()) {
@@ -151,6 +153,7 @@ void Shell_Shutdown(void)
     Music_Shutdown();
     Savegame_Shutdown();
     Console_Shutdown();
+    UI_Shutdown();
     Log_Shutdown();
 }
 
@@ -291,12 +294,8 @@ void Shell_ExitSystemFmt(const char *fmt, ...)
 
 void Shell_ProcessInput(void)
 {
-    if (Console_IsOpened()) {
-        if (g_InputDB.menu_back) {
-            Console_Close();
-        } else if (g_InputDB.menu_confirm) {
-            Console_Confirm();
-        }
+    if (g_InputDB.enter_console) {
+        Console_Open();
         g_Input.any = 0;
         g_InputDB.any = 0;
     }

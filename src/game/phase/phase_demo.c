@@ -269,6 +269,7 @@ static PHASE_CONTROL M_FadeOut(void)
 {
     Text_Flash(m_DemoModeText, 0, 0);
     Input_Update();
+    Shell_ProcessInput();
     Output_FadeToBlack(true);
     if (g_InputDB.menu_confirm || g_InputDB.menu_back
         || !Output_FadeIsAnimating()) {
