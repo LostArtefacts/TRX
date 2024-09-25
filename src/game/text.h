@@ -33,7 +33,7 @@ void Text_CentreV(TEXTSTRING *textstring, bool enable);
 void Text_AlignRight(TEXTSTRING *textstring, bool enable);
 void Text_AlignBottom(TEXTSTRING *textstring, bool enable);
 void Text_SetMultiline(TEXTSTRING *textstring, bool enable);
-int32_t Text_GetWidth(TEXTSTRING *textstring);
+int32_t Text_GetWidth(const TEXTSTRING *textstring);
 int32_t Text_GetHeight(TEXTSTRING *textstring);
 void Text_Remove(TEXTSTRING *textstring);
 void Text_Draw(void);

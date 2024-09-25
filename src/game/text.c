@@ -416,43 +416,42 @@ void Text_SetMultiline(TEXTSTRING *textstring, bool enable)
 int32_t Text_GetHeight(TEXTSTRING *textstring)
 {
     int32_t height = TEXT_HEIGHT + 5;
-    char *ptr = textstring->string;
-    if (!*ptr) {
+    if (textstring->string[0] == '\0') {
         return 0;
     }
-    for (char letter = *ptr; *ptr; letter = *ptr++) {
-        if (textstring->flags.multiline && *ptr == '\n') {
+    for (const char *ptr = textstring->string; *ptr != '\0'; *ptr++) {
+        const char letter = *ptr;
+        if (textstring->flags.multiline && letter == '\n') {
             height += TEXT_HEIGHT + TEXT_Y_SPACING;
         }
     }
     return height * textstring->scale.v / PHD_ONE;
 }
 
-int32_t Text_GetWidth(TEXTSTRING *textstring)
+int32_t Text_GetWidth(const TEXTSTRING *const textstring)
 {
-    if (!textstring) {
+    if (textstring == NULL) {
         return 0;
     }
-    int width = 0;
-    char *ptr = textstring->string;
-    for (char letter = *ptr; *ptr; letter = *ptr++) {
+
+    int32_t width = 0;
+    for (const char *ptr = textstring->string; *ptr != '\0'; *ptr++) {
+        const char letter = *ptr;
         if (letter == 0x7F || (letter > 10 && letter < 32)) {
             continue;
         }
 
         if (letter == 32) {
-            width += textstring->word_spacing * textstring->scale.h / PHD_ONE;
+            width += textstring->word_spacing;
             continue;
         }
 
         uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
-        width += ((m_TextSpacing[sprite_num] + textstring->letter_spacing)
-                  * textstring->scale.h)
-            / PHD_ONE;
+        width += m_TextSpacing[sprite_num] + textstring->letter_spacing;
     }
     width -= textstring->letter_spacing;
     width &= 0xFFFE;
-    return width;
+    return width * textstring->scale.h / PHD_ONE;
 }
 
 void Text_Remove(TEXTSTRING *textstring)
