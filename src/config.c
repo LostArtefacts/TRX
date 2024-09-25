@@ -14,8 +14,9 @@
 
 #include <libtrx/config/config_file.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/console/common.h>
+#include <libtrx/game/ui/events.h>
 #include <libtrx/json.h>
-#include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
@@ -284,6 +285,13 @@ bool Config_Read(void)
 
 bool Config_Write(void)
 {
+    const UI_EVENT event = {
+        .name = "config_change",
+        .sender = NULL,
+        .data = NULL,
+    };
+    UI_Events_Fire(&event);
+
     return ConfigFile_Write(m_ConfigPath, &M_Dump);
 }
 

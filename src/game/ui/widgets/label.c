@@ -22,7 +22,7 @@ static int32_t M_GetWidth(const UI_LABEL *const self)
     if (self->width != UI_LABEL_AUTO_SIZE) {
         return self->width;
     }
-    return Text_GetWidth(self->text);
+    return Text_GetWidth(self->text) * PHD_ONE / self->text->scale.h;
 }
 
 static int32_t M_GetHeight(const UI_LABEL *const self)
@@ -30,7 +30,7 @@ static int32_t M_GetHeight(const UI_LABEL *const self)
     if (self->height != UI_LABEL_AUTO_SIZE) {
         return self->height;
     }
-    return Text_GetHeight(self->text);
+    return Text_GetHeight(self->text) * PHD_ONE / self->text->scale.v;
 }
 
 static void M_SetPosition(
@@ -83,6 +83,14 @@ const char *UI_Label_GetText(UI_WIDGET *const widget)
 {
     UI_LABEL *const self = (UI_LABEL *)widget;
     return self->text->string;
+}
+
+void UI_Label_SetSize(
+    UI_WIDGET *const widget, const int32_t width, const int32_t height)
+{
+    UI_LABEL *const self = (UI_LABEL *)widget;
+    self->width = width;
+    self->height = height;
 }
 
 void UI_Label_AddFrame(UI_WIDGET *const widget)

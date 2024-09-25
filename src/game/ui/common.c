@@ -1,6 +1,18 @@
+#include "config.h"
+
 #include <libtrx/game/ui/common.h>
 
 #include <SDL2/SDL.h>
+
+int32_t UI_GetCanvasWidth(void)
+{
+    return 640 / g_Config.ui.text_scale;
+}
+
+int32_t UI_GetCanvasHeight(void)
+{
+    return 480 / g_Config.ui.text_scale;
+}
 
 UI_INPUT UI_TranslateInput(uint32_t system_keycode)
 {
