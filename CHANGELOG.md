@@ -7,6 +7,7 @@
 - fixed double "Fly mode enabled" message when using `/fly` console command (regression from 4.0)
 - fixed crash in the `/set` console command (regression from 4.4)
 - fixed toggling fullscreen not always saving (regression from 4.4)
+- fixed main menu music volume when exiting while underwater with certain music settings (#1540, regression from 4.4)
 
 ## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3-102-g458cd96...4.4) - 2024-09-20
 - added `/exit` command (#1462)

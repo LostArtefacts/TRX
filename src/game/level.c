@@ -1149,6 +1149,7 @@ bool Level_Initialise(int32_t level_num)
     Overlay_BarSetHealthTimer(100);
 
     Music_Stop();
+    Music_SetVolume(g_Config.music_volume);
     Sound_ResetEffects();
 
     Viewport_SetFOV(Viewport_GetUserFOV());
