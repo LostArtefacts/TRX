@@ -273,5 +273,5 @@ void Input_ExitListenMode(void)
     m_ListenMode = false;
     Input_Update();
     g_OldInputDB.any = g_Input.any;
-    g_InputDB = M_GetDebounced(g_Input);
+    g_InputDB.any = g_Input.any;
 }

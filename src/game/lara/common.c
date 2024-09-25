@@ -56,11 +56,11 @@ void Lara_Control(void)
         g_Lara.gun_status = LGS_ARMLESS;
     }
 
-    if (g_Input.level_skip_cheat) {
+    if (g_InputDB.level_skip_cheat) {
         Lara_Cheat_EndLevel();
     }
 
-    if (g_Input.health_cheat) {
+    if (g_InputDB.health_cheat) {
         item->hit_points +=
             (g_Input.slow ? -2 : 2) * LARA_MAX_HITPOINTS / 100; // change by 2%
         CLAMP(item->hit_points, 0, LARA_MAX_HITPOINTS);
@@ -70,7 +70,7 @@ void Lara_Control(void)
         Lara_Cheat_GiveAllItems();
     }
 
-    if (g_Lara.water_status != LWS_CHEAT && g_Input.fly_cheat) {
+    if (g_Lara.water_status != LWS_CHEAT && g_InputDB.fly_cheat) {
         Lara_Cheat_EnterFlyMode();
     }
 
