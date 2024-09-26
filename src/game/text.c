@@ -415,10 +415,7 @@ void Text_SetMultiline(TEXTSTRING *textstring, bool enable)
 
 int32_t Text_GetHeight(TEXTSTRING *textstring)
 {
-    int32_t height = TEXT_HEIGHT + 5;
-    if (textstring->string[0] == '\0') {
-        return 0;
-    }
+    int32_t height = TEXT_HEIGHT;
     for (const char *ptr = textstring->string; *ptr != '\0'; *ptr++) {
         const char letter = *ptr;
         if (textstring->flags.multiline && letter == '\n') {
