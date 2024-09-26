@@ -12,7 +12,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
-#include <libtrx/config/config_file.h>
+#include <libtrx/config/file.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/console/common.h>
 #include <libtrx/game/ui/events.h>
@@ -35,8 +35,6 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj);
 static void M_DumpKeyboardLayout(JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
 static void M_DumpControllerLayout(
     JSON_OBJECT *parent_obj, INPUT_LAYOUT layout);
-static void M_Load(JSON_OBJECT *root_obj);
-static void M_Dump(JSON_OBJECT *root_obj);
 
 static void M_LoadKeyboardLayout(
     JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
@@ -241,7 +239,12 @@ static void M_DumpControllerLayout(
     }
 }
 
-static void M_Load(JSON_OBJECT *root_obj)
+const char *Config_GetPath(void)
+{
+    return m_ConfigPath;
+}
+
+void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, g_ConfigOptionMap);
 
@@ -252,11 +255,9 @@ static void M_Load(JSON_OBJECT *root_obj)
     }
 
     M_LoadLegacyOptions(root_obj);
-
-    Config_Sanitize();
 }
 
-static void M_Dump(JSON_OBJECT *root_obj)
+void Config_DumpToJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, g_ConfigOptionMap);
 
@@ -269,30 +270,6 @@ static void M_Dump(JSON_OBJECT *root_obj)
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         M_DumpControllerLayout(root_obj, layout);
     }
-}
-
-bool Config_Read(void)
-{
-    const bool result = ConfigFile_Read(m_ConfigPath, &M_Load);
-    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
-    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
-    Music_SetVolume(g_Config.music_volume);
-    Sound_SetMasterVolume(g_Config.sound_volume);
-    Requester_Shutdown(&g_SavegameRequester);
-    Requester_Init(&g_SavegameRequester, g_Config.maximum_save_slots);
-    return result;
-}
-
-bool Config_Write(void)
-{
-    const EVENT event = {
-        .name = "canvas_resize",
-        .sender = NULL,
-        .data = NULL,
-    };
-    UI_Events_Fire(&event);
-
-    return ConfigFile_Write(m_ConfigPath, &M_Dump);
 }
 
 void Config_Sanitize(void)
@@ -320,6 +297,12 @@ void Config_Sanitize(void)
 
 void Config_ApplyChanges(void)
 {
+    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
+    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
+    Music_SetVolume(g_Config.music_volume);
+    Sound_SetMasterVolume(g_Config.sound_volume);
+    Requester_Shutdown(&g_SavegameRequester);
+    Requester_Init(&g_SavegameRequester, g_Config.maximum_save_slots);
     Output_ApplyRenderSettings();
 }
 

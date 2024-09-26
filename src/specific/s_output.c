@@ -789,6 +789,10 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
 
 void S_Output_ApplyRenderSettings(void)
 {
+    if (m_Renderer3D == NULL) {
+        return;
+    }
+
     if (m_PictureSurface != NULL
         && (Screen_GetResWidth() != m_SurfaceWidth
             || Screen_GetResHeight() != m_SurfaceHeight)) {
@@ -855,6 +859,7 @@ void S_Output_Shutdown(void)
     M_ReleaseTextures();
     M_ReleaseSurfaces();
     GFX_Context_Detach();
+    m_Renderer2D = NULL;
     m_Renderer3D = NULL;
 }
 

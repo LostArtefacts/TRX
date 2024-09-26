@@ -3,7 +3,7 @@
 #include "config.h"
 
 // import order guard
-#include <libtrx/config/config_map.h>
+#include <libtrx/config/map.h>
 // import order guard
 
 #include "global/enum_str.h"
