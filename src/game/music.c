@@ -131,11 +131,6 @@ bool Music_PlayLooped(MUSIC_TRACK_ID track)
         return false;
     }
 
-    if (g_CurrentLevel == g_GameFlow.title_level_num
-        && !g_Config.enable_music_in_menu) {
-        return false;
-    }
-
     M_StopActiveStream();
 
     char *file_path = M_GetTrackFileName(track);
