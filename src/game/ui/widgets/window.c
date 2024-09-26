@@ -40,7 +40,7 @@ static void M_SetPosition(
     self->root->set_position(
         self->root, x + self->border.left, y + self->border.top);
 
-    Text_SetPos(self->text, x, y);
+    Text_SetPos(self->text, x, y + TEXT_HEIGHT);
 
     const int32_t w = M_GetWidth(self);
     const int32_t h = M_GetHeight(self);

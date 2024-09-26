@@ -36,7 +36,7 @@ static int32_t M_GetHeight(const UI_LABEL *const self)
 static void M_SetPosition(
     UI_LABEL *const self, const int32_t x, const int32_t y)
 {
-    Text_SetPos(self->text, x, y);
+    Text_SetPos(self->text, x, y + TEXT_HEIGHT);
 }
 
 static void M_Draw(UI_LABEL *const self)
