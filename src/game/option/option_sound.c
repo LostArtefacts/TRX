@@ -96,24 +96,24 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
     case TEXT_MUSIC_VOLUME:
         if (g_Input.menu_left && g_Config.music_volume > Music_GetMinVolume()) {
             g_Config.music_volume--;
+            Config_Write();
             g_IDelay = true;
             g_IDCount = 5;
             Music_SetVolume(g_Config.music_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
-            Config_Write();
         } else if (
             g_Input.menu_right
             && g_Config.music_volume < Music_GetMaxVolume()) {
             g_Config.music_volume++;
+            Config_Write();
             g_IDelay = true;
             g_IDCount = 5;
             Music_SetVolume(g_Config.music_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "| %2d", g_Config.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
-            Config_Write();
         }
 
         if (g_Config.music_volume == Music_GetMinVolume()) {
@@ -130,24 +130,24 @@ void Option_Sound(INVENTORY_ITEM *inv_item)
     case TEXT_SOUND_VOLUME:
         if (g_Input.menu_left && g_Config.sound_volume > Sound_GetMinVolume()) {
             g_Config.sound_volume--;
+            Config_Write();
             g_IDelay = true;
             g_IDCount = 5;
             Sound_SetMasterVolume(g_Config.sound_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
-            Config_Write();
         } else if (
             g_Input.menu_right
             && g_Config.sound_volume < Sound_GetMaxVolume()) {
             g_Config.sound_volume++;
+            Config_Write();
             g_IDelay = true;
             g_IDCount = 5;
             Sound_SetMasterVolume(g_Config.sound_volume);
             Sound_Effect(SFX_MENU_PASSPORT, NULL, SPM_ALWAYS);
             sprintf(buf, "} %2d", g_Config.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
-            Config_Write();
         }
 
         if (g_Config.sound_volume == Sound_GetMinVolume()) {

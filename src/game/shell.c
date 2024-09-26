@@ -154,12 +154,14 @@ void Shell_Shutdown(void)
     Savegame_Shutdown();
     Console_Shutdown();
     UI_Shutdown();
+    Config_Shutdown();
     Log_Shutdown();
 }
 
 void Shell_Main(void)
 {
     GameString_Init();
+    Config_Init();
     Config_Read();
 
     const char *gameflow_path = m_TR1XGameflowPath;

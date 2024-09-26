@@ -61,8 +61,8 @@ void Clock_SetTurboSpeed(int32_t value)
 {
     CLAMP(value, CLOCK_TURBO_SPEED_MIN, CLOCK_TURBO_SPEED_MAX);
     g_Config.rendering.turbo_speed = value;
-    Console_Log(GS(OSD_SPEED_SET), value);
     Config_Write();
+    Console_Log(GS(OSD_SPEED_SET), value);
 }
 
 double Clock_GetSpeedMultiplier(void)

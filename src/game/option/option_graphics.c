@@ -509,7 +509,6 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.fbo_filter != GFX_TF_LAST) {
                 g_Config.rendering.fbo_filter++;
                 reset = OPTION_FBO_FILTER;
-                Output_ApplyRenderSettings();
             }
             break;
 
@@ -546,7 +545,6 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             } else {
                 g_Config.rendering.render_mode = GFX_RM_LEGACY;
             }
-            Output_ApplyRenderSettings();
             reset = OPTION_RENDER_MODE;
             break;
 
@@ -604,7 +602,6 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             if (g_Config.rendering.fbo_filter != GFX_TF_FIRST) {
                 g_Config.rendering.fbo_filter--;
                 reset = OPTION_FBO_FILTER;
-                Output_ApplyRenderSettings();
             }
             break;
 
@@ -641,7 +638,6 @@ void Option_Graphics(INVENTORY_ITEM *inv_item)
             } else {
                 g_Config.rendering.render_mode = GFX_RM_LEGACY;
             }
-            Output_ApplyRenderSettings();
             reset = OPTION_RENDER_MODE;
             break;
 
