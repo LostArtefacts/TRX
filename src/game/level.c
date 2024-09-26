@@ -1152,11 +1152,13 @@ bool Level_Initialise(int32_t level_num)
     Music_SetVolume(g_Config.music_volume);
     Sound_ResetEffects();
 
-    Viewport_SetFOV(Viewport_GetUserFOV());
-
-    if (g_GameFlow.levels[level_num].music) {
+    const bool disable_music = level_num == g_GameFlow.title_level_num
+        && !g_Config.enable_music_in_menu;
+    if (g_GameFlow.levels[level_num].music && !disable_music) {
         Music_PlayLooped(g_GameFlow.levels[level_num].music);
     }
+
+    Viewport_SetFOV(Viewport_GetUserFOV());
 
     g_InvItemPuzzle1.string = g_GameFlow.levels[level_num].puzzle1;
     g_InvItemPuzzle2.string = g_GameFlow.levels[level_num].puzzle2;
