@@ -14,13 +14,16 @@
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
+#include "global/enum_str.h"
 #include "global/vars.h"
 
 #include <libtrx/filesystem.h>
+#include <libtrx/game/objects/names.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
+#include <assert.h>
 #include <string.h>
 
 typedef struct {
@@ -55,6 +58,9 @@ static bool M_IsLegacySequence(const char *type_str);
 static bool M_LoadLevelSequence(JSON_OBJECT *obj, int32_t level_num);
 static bool M_LoadScriptLevels(JSON_OBJECT *obj);
 static bool M_LoadFromFileImpl(const char *file_name);
+static void M_StringTableShutdown(GAMEFLOW_STRING_ENTRY *dest);
+static bool M_LoadObjectNames(
+    JSON_OBJECT *root_obj, GAMEFLOW_STRING_ENTRY **dest);
 
 static const STRING_TO_ENUM_TYPE m_GameflowLevelTypeEnumMap[] = {
     { "title", GFL_TITLE },
@@ -521,6 +527,83 @@ static bool M_LoadLevelSequence(JSON_OBJECT *obj, int32_t level_num)
     return true;
 }
 
+static void M_StringTableShutdown(GAMEFLOW_STRING_ENTRY *const dest)
+{
+    if (dest == NULL) {
+        return;
+    }
+    GAMEFLOW_STRING_ENTRY *cur = dest;
+    while (cur->key != NULL) {
+        Memory_FreePointer(&cur->key);
+        Memory_FreePointer(&cur->value);
+        cur++;
+    }
+    Memory_Free(dest);
+}
+
+static bool M_LoadObjectNames(
+    JSON_OBJECT *const root_obj, GAMEFLOW_STRING_ENTRY **dest)
+{
+    JSON_OBJECT *strings_obj = JSON_ObjectGetObject(root_obj, "strings");
+    if (strings_obj == NULL) {
+        LOG_ERROR("'strings' must be a dictionary");
+        return false;
+    }
+
+    struct {
+        char *json_key;
+        char *target_string;
+    } legacy_string_defs[] = {
+        { "puzzle1", "O_PUZZLE_ITEM_1" },
+        { "puzzle1", "O_PUZZLE_OPTION_1" },
+        { "puzzle2", "O_PUZZLE_ITEM_2" },
+        { "puzzle2", "O_PUZZLE_OPTION_2" },
+        { "puzzle3", "O_PUZZLE_ITEM_3" },
+        { "puzzle3", "O_PUZZLE_OPTION_3" },
+        { "puzzle4", "O_PUZZLE_ITEM_4" },
+        { "puzzle4", "O_PUZZLE_OPTION_4" },
+        { "key1", "O_KEY_ITEM_1" },
+        { "key1", "O_KEY_OPTION_1" },
+        { "key2", "O_KEY_ITEM_2" },
+        { "key2", "O_KEY_OPTION_2" },
+        { "key3", "O_KEY_ITEM_3" },
+        { "key3", "O_KEY_OPTION_3" },
+        { "key4", "O_KEY_ITEM_4" },
+        { "key4", "O_KEY_OPTION_4" },
+        { "pickup1", "O_PICKUP_ITEM_1" },
+        { "pickup1", "O_PICKUP_OPTION_1" },
+        { "pickup2", "O_PICKUP_ITEM_2" },
+        { "pickup2", "O_PICKUP_OPTION_2" },
+        { NULL, NULL },
+    };
+
+    // count allocation size
+    int32_t count = 0;
+    for (int32_t i = 0; legacy_string_defs[i].json_key != NULL; i++) {
+        if (JSON_ObjectGetString(
+                strings_obj, legacy_string_defs[i].json_key,
+                JSON_INVALID_STRING)
+            != JSON_INVALID_STRING) {
+            count++;
+        }
+    }
+
+    *dest = Memory_Alloc(sizeof(GAMEFLOW_STRING_ENTRY) * (count + 1));
+
+    GAMEFLOW_STRING_ENTRY *cur = *dest;
+    for (int32_t i = 0; legacy_string_defs[i].json_key != NULL; i++) {
+        const char *value = JSON_ObjectGetString(
+            strings_obj, legacy_string_defs[i].json_key, JSON_INVALID_STRING);
+        if (value != JSON_INVALID_STRING) {
+            cur->key = Memory_DupStr(legacy_string_defs[i].target_string);
+            cur->value = Memory_DupStr(value);
+            cur++;
+        }
+    }
+
+    return true;
+}
+
 static bool M_LoadScriptLevels(JSON_OBJECT *obj)
 {
     JSON_ARRAY *jlvl_arr = JSON_ObjectGetArray(obj, "levels");
@@ -675,92 +758,7 @@ static bool M_LoadScriptLevels(JSON_OBJECT *obj)
         cur->unobtainable.secrets =
             JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
 
-        JSON_OBJECT *jlbl_strings_obj =
-            JSON_ObjectGetObject(jlvl_obj, "strings");
-        if (!jlbl_strings_obj) {
-            LOG_ERROR("level %d: 'strings' must be a dictionary", level_num);
-            return false;
-        } else {
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "pickup1", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->pickup1 = Memory_DupStr(tmp_s);
-            } else {
-                cur->pickup1 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "pickup2", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->pickup2 = Memory_DupStr(tmp_s);
-            } else {
-                cur->pickup2 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "key1", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->key1 = Memory_DupStr(tmp_s);
-            } else {
-                cur->key1 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "key2", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->key2 = Memory_DupStr(tmp_s);
-            } else {
-                cur->key2 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "key3", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->key3 = Memory_DupStr(tmp_s);
-            } else {
-                cur->key3 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "key4", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->key4 = Memory_DupStr(tmp_s);
-            } else {
-                cur->key4 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "puzzle1", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle1 = Memory_DupStr(tmp_s);
-            } else {
-                cur->puzzle1 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "puzzle2", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle2 = Memory_DupStr(tmp_s);
-            } else {
-                cur->puzzle2 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "puzzle3", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle3 = Memory_DupStr(tmp_s);
-            } else {
-                cur->puzzle3 = NULL;
-            }
-
-            tmp_s = JSON_ObjectGetString(
-                jlbl_strings_obj, "puzzle4", JSON_INVALID_STRING);
-            if (tmp_s != JSON_INVALID_STRING) {
-                cur->puzzle4 = Memory_DupStr(tmp_s);
-            } else {
-                cur->puzzle4 = NULL;
-            }
-        }
+        M_LoadObjectNames(jlvl_obj, &cur->object_strings);
 
         tmp_i = JSON_ObjectGetBool(jlvl_obj, "inherit_injections", 1);
         tmp_arr = JSON_ObjectGetArray(jlvl_obj, "injections");
@@ -929,18 +927,7 @@ void GameFlow_Shutdown(void)
 
     if (g_GameFlow.levels) {
         for (int i = 0; i < g_GameFlow.level_count; i++) {
-            Memory_FreePointer(&g_GameFlow.levels[i].level_title);
-            Memory_FreePointer(&g_GameFlow.levels[i].level_file);
-            Memory_FreePointer(&g_GameFlow.levels[i].key1);
-            Memory_FreePointer(&g_GameFlow.levels[i].key2);
-            Memory_FreePointer(&g_GameFlow.levels[i].key3);
-            Memory_FreePointer(&g_GameFlow.levels[i].key4);
-            Memory_FreePointer(&g_GameFlow.levels[i].pickup1);
-            Memory_FreePointer(&g_GameFlow.levels[i].pickup2);
-            Memory_FreePointer(&g_GameFlow.levels[i].puzzle1);
-            Memory_FreePointer(&g_GameFlow.levels[i].puzzle2);
-            Memory_FreePointer(&g_GameFlow.levels[i].puzzle3);
-            Memory_FreePointer(&g_GameFlow.levels[i].puzzle4);
+            M_StringTableShutdown(g_GameFlow.levels[i].object_strings);
 
             for (int j = 0; j < g_GameFlow.levels[i].injections.length; j++) {
                 Memory_FreePointer(
@@ -1010,42 +997,6 @@ void GameFlow_Shutdown(void)
 bool GameFlow_LoadFromFile(const char *file_name)
 {
     bool result = M_LoadFromFileImpl(file_name);
-
-    g_InvItemMedi.string = GS(INV_ITEM_MEDI),
-    g_InvItemBigMedi.string = GS(INV_ITEM_BIG_MEDI),
-
-    g_InvItemPuzzle1.string = GS(INV_ITEM_PUZZLE1),
-    g_InvItemPuzzle2.string = GS(INV_ITEM_PUZZLE2),
-    g_InvItemPuzzle3.string = GS(INV_ITEM_PUZZLE3),
-    g_InvItemPuzzle4.string = GS(INV_ITEM_PUZZLE4),
-
-    g_InvItemKey1.string = GS(INV_ITEM_KEY1),
-    g_InvItemKey2.string = GS(INV_ITEM_KEY2),
-    g_InvItemKey3.string = GS(INV_ITEM_KEY3),
-    g_InvItemKey4.string = GS(INV_ITEM_KEY4),
-
-    g_InvItemPickup1.string = GS(INV_ITEM_PICKUP1),
-    g_InvItemPickup2.string = GS(INV_ITEM_PICKUP2),
-    g_InvItemLeadBar.string = GS(INV_ITEM_LEADBAR),
-    g_InvItemScion.string = GS(INV_ITEM_SCION),
-
-    g_InvItemPistols.string = GS(INV_ITEM_PISTOLS),
-    g_InvItemShotgun.string = GS(INV_ITEM_SHOTGUN),
-    g_InvItemMagnum.string = GS(INV_ITEM_MAGNUM),
-    g_InvItemUzi.string = GS(INV_ITEM_UZI),
-    g_InvItemGrenade.string = GS(INV_ITEM_GRENADE),
-
-    g_InvItemPistolAmmo.string = GS(INV_ITEM_PISTOL_AMMO),
-    g_InvItemShotgunAmmo.string = GS(INV_ITEM_SHOTGUN_AMMO),
-    g_InvItemMagnumAmmo.string = GS(INV_ITEM_MAGNUM_AMMO),
-    g_InvItemUziAmmo.string = GS(INV_ITEM_UZI_AMMO),
-
-    g_InvItemCompass.string = GS(INV_ITEM_COMPASS),
-    g_InvItemGame.string = GS(INV_ITEM_GAME);
-    g_InvItemDetails.string = GS(INV_ITEM_DETAILS);
-    g_InvItemSound.string = GS(INV_ITEM_SOUND);
-    g_InvItemControls.string = GS(INV_ITEM_CONTROLS);
-    g_InvItemLarasHome.string = GS(INV_ITEM_LARAS_HOME);
 
     if (g_GameFlow.force_save_crystals == TB_ON) {
         g_Config.enable_save_crystals = true;
@@ -1451,4 +1402,93 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 void Gameflow_OverrideCommand(const GAMEFLOW_COMMAND command)
 {
     g_GameInfo.override_gf_command = command;
+}
+
+void GameFlow_LoadStrings(int32_t level_num)
+{
+    Object_ResetNames();
+
+    struct {
+        GAME_OBJECT_ID object_id;
+        const char *name;
+    } game_string_defs[] = {
+        // clang-format off
+        { O_PISTOL_ITEM,        GS(INV_ITEM_PISTOLS) },
+        { O_PISTOL_OPTION,      GS(INV_ITEM_PISTOLS) },
+        { O_SHOTGUN_ITEM,       GS(INV_ITEM_SHOTGUN) },
+        { O_SHOTGUN_OPTION,     GS(INV_ITEM_SHOTGUN) },
+        { O_MAGNUM_ITEM,        GS(INV_ITEM_MAGNUM) },
+        { O_MAGNUM_OPTION,      GS(INV_ITEM_MAGNUM) },
+        { O_UZI_ITEM,           GS(INV_ITEM_UZI) },
+        { O_UZI_OPTION,         GS(INV_ITEM_UZI) },
+        { O_PISTOL_AMMO_ITEM,   GS(INV_ITEM_PISTOL_AMMO) },
+        { O_PISTOL_AMMO_OPTION, GS(INV_ITEM_PISTOL_AMMO) },
+        { O_SG_AMMO_ITEM,       GS(INV_ITEM_SHOTGUN_AMMO) },
+        { O_SG_AMMO_OPTION,     GS(INV_ITEM_SHOTGUN_AMMO) },
+        { O_MAG_AMMO_ITEM,      GS(INV_ITEM_MAGNUM_AMMO) },
+        { O_MAG_AMMO_OPTION,    GS(INV_ITEM_MAGNUM_AMMO) },
+        { O_UZI_AMMO_ITEM,      GS(INV_ITEM_UZI_AMMO) },
+        { O_UZI_AMMO_OPTION,    GS(INV_ITEM_UZI_AMMO) },
+        { O_EXPLOSIVE_ITEM,     GS(INV_ITEM_GRENADE) },
+        { O_EXPLOSIVE_OPTION,   GS(INV_ITEM_GRENADE) },
+        { O_MEDI_ITEM,          GS(INV_ITEM_MEDI) },
+        { O_MEDI_OPTION,        GS(INV_ITEM_MEDI) },
+        { O_BIGMEDI_ITEM,       GS(INV_ITEM_BIG_MEDI) },
+        { O_BIGMEDI_OPTION,     GS(INV_ITEM_BIG_MEDI) },
+        { O_PUZZLE_ITEM_1,      GS(INV_ITEM_PUZZLE1) },
+        { O_PUZZLE_OPTION_1,    GS(INV_ITEM_PUZZLE1) },
+        { O_PUZZLE_ITEM_2,      GS(INV_ITEM_PUZZLE2) },
+        { O_PUZZLE_OPTION_2,    GS(INV_ITEM_PUZZLE2) },
+        { O_PUZZLE_ITEM_3,      GS(INV_ITEM_PUZZLE3) },
+        { O_PUZZLE_OPTION_3,    GS(INV_ITEM_PUZZLE3) },
+        { O_PUZZLE_ITEM_4,      GS(INV_ITEM_PUZZLE4) },
+        { O_PUZZLE_OPTION_4,    GS(INV_ITEM_PUZZLE4) },
+        { O_KEY_ITEM_1,         GS(INV_ITEM_KEY1) },
+        { O_KEY_OPTION_1,       GS(INV_ITEM_KEY1) },
+        { O_KEY_ITEM_2,         GS(INV_ITEM_KEY2) },
+        { O_KEY_OPTION_2,       GS(INV_ITEM_KEY2) },
+        { O_KEY_ITEM_3,         GS(INV_ITEM_KEY3) },
+        { O_KEY_OPTION_3,       GS(INV_ITEM_KEY3) },
+        { O_KEY_ITEM_4,         GS(INV_ITEM_KEY4) },
+        { O_KEY_OPTION_4,       GS(INV_ITEM_KEY4) },
+        { O_PICKUP_ITEM_1,      GS(INV_ITEM_PICKUP1) },
+        { O_PICKUP_OPTION_1,    GS(INV_ITEM_PICKUP1) },
+        { O_PICKUP_ITEM_2,      GS(INV_ITEM_PICKUP2) },
+        { O_PICKUP_OPTION_2,    GS(INV_ITEM_PICKUP2) },
+        { O_SCION_ITEM_1,       GS(INV_ITEM_SCION) },
+        { O_SCION_ITEM_2,       GS(INV_ITEM_SCION) },
+        { O_SCION_ITEM_3,       GS(INV_ITEM_SCION) },
+        { O_SCION_ITEM_4,       GS(INV_ITEM_SCION) },
+        { O_SCION_OPTION,       GS(INV_ITEM_SCION) },
+        { O_MAP_OPTION,         GS(INV_ITEM_COMPASS) },
+        { O_PASSPORT_OPTION,    GS(INV_ITEM_GAME) },
+        { O_PASSPORT_CLOSED,    GS(INV_ITEM_GAME) },
+        { O_DETAIL_OPTION,      GS(INV_ITEM_DETAILS) },
+        { O_SOUND_OPTION,       GS(INV_ITEM_SOUND) },
+        { O_CONTROL_OPTION,     GS(INV_ITEM_CONTROLS) },
+        { O_PHOTO_OPTION,       GS(INV_ITEM_LARAS_HOME) },
+        { NO_OBJECT,            NULL },
+        // clang-format on
+    };
+
+    for (int32_t i = 0; game_string_defs[i].object_id != NO_OBJECT; i++) {
+        const char *const new_name = game_string_defs[i].name;
+        if (new_name != NULL) {
+            Object_SetName(game_string_defs[i].object_id, new_name);
+        }
+    }
+
+    if (level_num >= 0) {
+        assert(level_num < g_GameFlow.level_count);
+        const GAMEFLOW_LEVEL *const level = &g_GameFlow.levels[level_num];
+        const GAMEFLOW_STRING_ENTRY *entry = level->object_strings;
+        while (entry != NULL && entry->key != NULL) {
+            const GAME_OBJECT_ID object_id =
+                ENUM_STRING_GET(GAME_OBJECT_ID, entry->key, NO_OBJECT);
+            if (object_id != NO_OBJECT) {
+                Object_SetName(object_id, entry->value);
+            }
+            entry++;
+        }
+    }
 }

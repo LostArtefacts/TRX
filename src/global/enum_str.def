@@ -60,3 +60,18 @@ DECLARE_ENUM_STRING_MAP(
     { "quiet_no_ambient", UMM_QUIET_NO_AMBIENT },
     { "none", UMM_NONE },
 );
+
+// TODO: this is garbage
+#ifdef ENUM_STR_IMPL
+#define OBJ_NAME_DEFINE(id, str)                                               \
+    {                                                                          \
+        #id,                                                             \
+        id,                                                                    \
+    },
+ENUM_STRING_MAP ENUM_STRING_MAP(GAME_OBJECT_ID)[] = {
+#include <libtrx/game/objects/names.def>
+    { NULL, -1 }
+};
+#else
+extern ENUM_STRING_MAP ENUM_STRING_MAP(GAME_OBJECT_ID)[];
+#endif

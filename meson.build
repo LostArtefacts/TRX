@@ -227,7 +227,6 @@ sources = [
   'src/game/objects/general/switch.c',
   'src/game/objects/general/trapdoor.c',
   'src/game/objects/general/waterfall.c',
-  'src/game/objects/names.c',
   'src/game/objects/setup.c',
   'src/game/objects/traps/damocles_sword.c',
   'src/game/objects/traps/dart.c',
