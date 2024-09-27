@@ -14,9 +14,9 @@
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
-#include "global/enum_str.h"
 #include "global/vars.h"
 
+#include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/objects/names.h>
 #include <libtrx/json.h>
@@ -1484,7 +1484,7 @@ void GameFlow_LoadStrings(int32_t level_num)
         const GAMEFLOW_STRING_ENTRY *entry = level->object_strings;
         while (entry != NULL && entry->key != NULL) {
             const GAME_OBJECT_ID object_id =
-                ENUM_STRING_GET(GAME_OBJECT_ID, entry->key, NO_OBJECT);
+                ENUM_MAP_GET(GAME_OBJECT_ID, entry->key, NO_OBJECT);
             if (object_id != NO_OBJECT) {
                 Object_SetName(object_id, entry->value);
             }

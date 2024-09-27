@@ -22,6 +22,7 @@
 #include "global/vars.h"
 #include "specific/s_shell.h"
 
+#include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/log.h>
@@ -161,6 +162,7 @@ void Shell_Shutdown(void)
 void Shell_Main(void)
 {
     GameString_Init();
+    EnumMap_Init();
     Config_Init();
     Config_Read();
 
@@ -275,6 +277,7 @@ void Shell_Main(void)
     }
 
     Config_Write();
+    EnumMap_Shutdown();
     GameString_Shutdown();
 }
 

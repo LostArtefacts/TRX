@@ -278,7 +278,7 @@ sources = [
   'src/game/stats.c',
   'src/game/text.c',
   'src/game/viewport.c',
-  'src/global/enum_str.c',
+  'src/global/enum_map.c',
   'src/global/vars.c',
   'src/math/math.c',
   'src/math/math_misc.c',

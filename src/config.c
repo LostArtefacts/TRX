@@ -8,11 +8,11 @@
 #include "game/requester.h"
 #include "game/sound.h"
 #include "global/const.h"
-#include "global/enum_str.h"
 #include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/config/file.h>
+#include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/console/common.h>
 #include <libtrx/game/ui/events.h>
@@ -156,13 +156,13 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     {
         g_Config.healthbar_show_mode = ConfigFile_ReadEnum(
             parent_obj, "healthbar_showing_mode", g_Config.healthbar_show_mode,
-            ENUM_STRING_MAP(BAR_SHOW_MODE));
+            ENUM_MAP_NAME(BAR_SHOW_MODE));
         g_Config.airbar_show_mode = ConfigFile_ReadEnum(
             parent_obj, "airbar_showing_mode", g_Config.airbar_show_mode,
-            ENUM_STRING_MAP(BAR_SHOW_MODE));
+            ENUM_MAP_NAME(BAR_SHOW_MODE));
         g_Config.enemy_healthbar_show_mode = ConfigFile_ReadEnum(
             parent_obj, "enemy_healthbar_showing_mode",
-            g_Config.enemy_healthbar_show_mode, ENUM_STRING_MAP(BAR_SHOW_MODE));
+            g_Config.enemy_healthbar_show_mode, ENUM_MAP_NAME(BAR_SHOW_MODE));
     }
 }
 
