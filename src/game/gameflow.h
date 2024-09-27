@@ -6,6 +6,11 @@
 #include <stdint.h>
 
 typedef struct {
+    const char *key;
+    const char *value;
+} GAMEFLOW_STRING_ENTRY;
+
+typedef struct {
     GAMEFLOW_SEQUENCE_TYPE type;
     void *data;
 } GAMEFLOW_SEQUENCE;
@@ -21,16 +26,7 @@ typedef struct {
     int16_t music;
     char *level_title;
     char *level_file;
-    char *key1;
-    char *key2;
-    char *key3;
-    char *key4;
-    char *pickup1;
-    char *pickup2;
-    char *puzzle1;
-    char *puzzle2;
-    char *puzzle3;
-    char *puzzle4;
+    GAMEFLOW_STRING_ENTRY *object_strings;
     int8_t demo;
     GAMEFLOW_SEQUENCE *sequence;
     struct {
@@ -93,3 +89,5 @@ GAMEFLOW_COMMAND
 GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level);
 bool GameFlow_LoadFromFile(const char *file_name);
 void GameFlow_Shutdown(void);
+
+void GameFlow_LoadStrings(int32_t level_num);

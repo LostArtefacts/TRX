@@ -76,7 +76,6 @@ INVENTORY_ITEM *g_InvOptionList[] = {
 };
 
 INVENTORY_ITEM g_InvItemCompass = {
-    .string = "Compass",
     .object_id = O_MAP_OPTION,
     .frames_total = 25,
     .current_frame = 0,
@@ -100,7 +99,6 @@ INVENTORY_ITEM g_InvItemCompass = {
 };
 
 INVENTORY_ITEM g_InvItemMedi = {
-    .string = "Small Medi Pack",
     .object_id = O_MEDI_OPTION,
     .frames_total = 26,
     .current_frame = 0,
@@ -124,7 +122,6 @@ INVENTORY_ITEM g_InvItemMedi = {
 };
 
 INVENTORY_ITEM g_InvItemBigMedi = {
-    .string = "Large Medi Pack",
     .object_id = O_BIGMEDI_OPTION,
     .frames_total = 20,
     .current_frame = 0,
@@ -148,7 +145,6 @@ INVENTORY_ITEM g_InvItemBigMedi = {
 };
 
 INVENTORY_ITEM g_InvItemLeadBar = {
-    .string = "Lead Bar",
     .object_id = O_LEADBAR_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -172,7 +168,6 @@ INVENTORY_ITEM g_InvItemLeadBar = {
 };
 
 INVENTORY_ITEM g_InvItemPickup1 = {
-    .string = "Pickup",
     .object_id = O_PICKUP_OPTION_1,
     .frames_total = 1,
     .current_frame = 0,
@@ -196,7 +191,6 @@ INVENTORY_ITEM g_InvItemPickup1 = {
 };
 
 INVENTORY_ITEM g_InvItemPickup2 = {
-    .string = "Pickup",
     .object_id = O_PICKUP_OPTION_2,
     .frames_total = 1,
     .current_frame = 0,
@@ -220,7 +214,6 @@ INVENTORY_ITEM g_InvItemPickup2 = {
 };
 
 INVENTORY_ITEM g_InvItemScion = {
-    .string = "Scion",
     .object_id = O_SCION_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -244,7 +237,6 @@ INVENTORY_ITEM g_InvItemScion = {
 };
 
 INVENTORY_ITEM g_InvItemPuzzle1 = {
-    .string = "Puzzle",
     .object_id = O_PUZZLE_OPTION_1,
     .frames_total = 1,
     .current_frame = 0,
@@ -268,7 +260,6 @@ INVENTORY_ITEM g_InvItemPuzzle1 = {
 };
 
 INVENTORY_ITEM g_InvItemPuzzle2 = {
-    .string = "Puzzle",
     .object_id = O_PUZZLE_OPTION_2,
     .frames_total = 1,
     .current_frame = 0,
@@ -292,7 +283,6 @@ INVENTORY_ITEM g_InvItemPuzzle2 = {
 };
 
 INVENTORY_ITEM g_InvItemPuzzle3 = {
-    .string = "Puzzle",
     .object_id = O_PUZZLE_OPTION_3,
     .frames_total = 1,
     .current_frame = 0,
@@ -316,7 +306,6 @@ INVENTORY_ITEM g_InvItemPuzzle3 = {
 };
 
 INVENTORY_ITEM g_InvItemPuzzle4 = {
-    .string = "Puzzle",
     .object_id = O_PUZZLE_OPTION_4,
     .frames_total = 1,
     .current_frame = 0,
@@ -340,7 +329,6 @@ INVENTORY_ITEM g_InvItemPuzzle4 = {
 };
 
 INVENTORY_ITEM g_InvItemKey1 = {
-    .string = "Key",
     .object_id = O_KEY_OPTION_1,
     .frames_total = 1,
     .current_frame = 0,
@@ -364,7 +352,6 @@ INVENTORY_ITEM g_InvItemKey1 = {
 };
 
 INVENTORY_ITEM g_InvItemKey2 = {
-    .string = "Key",
     .object_id = O_KEY_OPTION_2,
     .frames_total = 1,
     .current_frame = 0,
@@ -388,7 +375,6 @@ INVENTORY_ITEM g_InvItemKey2 = {
 };
 
 INVENTORY_ITEM g_InvItemKey3 = {
-    .string = "Key",
     .object_id = O_KEY_OPTION_3,
     .frames_total = 1,
     .current_frame = 0,
@@ -412,7 +398,6 @@ INVENTORY_ITEM g_InvItemKey3 = {
 };
 
 INVENTORY_ITEM g_InvItemKey4 = {
-    .string = "Key",
     .object_id = O_KEY_OPTION_4,
     .frames_total = 1,
     .current_frame = 0,
@@ -436,7 +421,6 @@ INVENTORY_ITEM g_InvItemKey4 = {
 };
 
 INVENTORY_ITEM g_InvItemPistols = {
-    .string = "Pistols",
     .object_id = O_PISTOL_OPTION,
     .frames_total = 12,
     .current_frame = 0,
@@ -460,7 +444,6 @@ INVENTORY_ITEM g_InvItemPistols = {
 };
 
 INVENTORY_ITEM g_InvItemShotgun = {
-    .string = "Shotgun",
     .object_id = O_SHOTGUN_OPTION,
     .frames_total = 13,
     .current_frame = 0,
@@ -484,7 +467,6 @@ INVENTORY_ITEM g_InvItemShotgun = {
 };
 
 INVENTORY_ITEM g_InvItemMagnum = {
-    .string = "Magnums",
     .object_id = O_MAGNUM_OPTION,
     .frames_total = 12,
     .current_frame = 0,
@@ -508,7 +490,6 @@ INVENTORY_ITEM g_InvItemMagnum = {
 };
 
 INVENTORY_ITEM g_InvItemUzi = {
-    .string = "Uzis",
     .object_id = O_UZI_OPTION,
     .frames_total = 13,
     .current_frame = 0,
@@ -532,7 +513,6 @@ INVENTORY_ITEM g_InvItemUzi = {
 };
 
 INVENTORY_ITEM g_InvItemGrenade = {
-    .string = "Grenade",
     .object_id = O_EXPLOSIVE_OPTION,
     .frames_total = 15,
     .current_frame = 0,
@@ -556,7 +536,6 @@ INVENTORY_ITEM g_InvItemGrenade = {
 };
 
 INVENTORY_ITEM g_InvItemPistolAmmo = {
-    .string = "Pistol Clips",
     .object_id = O_PISTOL_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -580,7 +559,6 @@ INVENTORY_ITEM g_InvItemPistolAmmo = {
 };
 
 INVENTORY_ITEM g_InvItemShotgunAmmo = {
-    .string = "Shotgun Shells",
     .object_id = O_SG_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -604,7 +582,6 @@ INVENTORY_ITEM g_InvItemShotgunAmmo = {
 };
 
 INVENTORY_ITEM g_InvItemMagnumAmmo = {
-    .string = "Magnum Clips",
     .object_id = O_MAG_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -628,7 +605,6 @@ INVENTORY_ITEM g_InvItemMagnumAmmo = {
 };
 
 INVENTORY_ITEM g_InvItemUziAmmo = {
-    .string = "Uzi Clips",
     .object_id = O_UZI_AMMO_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -652,7 +628,6 @@ INVENTORY_ITEM g_InvItemUziAmmo = {
 };
 
 INVENTORY_ITEM g_InvItemGame = {
-    .string = "Game",
     .object_id = O_PASSPORT_CLOSED,
     .frames_total = 30,
     .current_frame = 0,
@@ -676,7 +651,6 @@ INVENTORY_ITEM g_InvItemGame = {
 };
 
 INVENTORY_ITEM g_InvItemDetails = {
-    .string = "Detail Levels",
     .object_id = O_DETAIL_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -700,7 +674,6 @@ INVENTORY_ITEM g_InvItemDetails = {
 };
 
 INVENTORY_ITEM g_InvItemSound = {
-    .string = "Sound",
     .object_id = O_SOUND_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -724,7 +697,6 @@ INVENTORY_ITEM g_InvItemSound = {
 };
 
 INVENTORY_ITEM g_InvItemControls = {
-    .string = "Controls",
     .object_id = O_CONTROL_OPTION,
     .frames_total = 1,
     .current_frame = 0,
@@ -748,7 +720,6 @@ INVENTORY_ITEM g_InvItemControls = {
 };
 
 INVENTORY_ITEM g_InvItemLarasHome = {
-    .string = "Lara's Home",
     .object_id = O_PHOTO_OPTION,
     .frames_total = 1,
     .current_frame = 0,

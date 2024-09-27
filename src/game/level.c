@@ -1136,6 +1136,7 @@ bool Level_Initialise(int32_t level_num)
             : NULL);
 
     Level_Load(level_num);
+    GameFlow_LoadStrings(level_num);
 
     if (g_Lara.item_num != NO_ITEM) {
         Lara_Initialise(level_num);
@@ -1159,17 +1160,6 @@ bool Level_Initialise(int32_t level_num)
     }
 
     Viewport_SetFOV(Viewport_GetUserFOV());
-
-    g_InvItemPuzzle1.string = g_GameFlow.levels[level_num].puzzle1;
-    g_InvItemPuzzle2.string = g_GameFlow.levels[level_num].puzzle2;
-    g_InvItemPuzzle3.string = g_GameFlow.levels[level_num].puzzle3;
-    g_InvItemPuzzle4.string = g_GameFlow.levels[level_num].puzzle4;
-    g_InvItemKey1.string = g_GameFlow.levels[level_num].key1;
-    g_InvItemKey2.string = g_GameFlow.levels[level_num].key2;
-    g_InvItemKey3.string = g_GameFlow.levels[level_num].key3;
-    g_InvItemKey4.string = g_GameFlow.levels[level_num].key4;
-    g_InvItemPickup1.string = g_GameFlow.levels[level_num].pickup1;
-    g_InvItemPickup2.string = g_GameFlow.levels[level_num].pickup2;
 
     g_Camera.underwater = false;
     Benchmark_End(benchmark, NULL);

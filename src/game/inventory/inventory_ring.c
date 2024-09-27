@@ -12,6 +12,8 @@
 #include "global/vars.h"
 #include "math/math_misc.h"
 
+#include <libtrx/game/objects/names.h>
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -163,8 +165,10 @@ void Inv_Ring_RemoveAllText(void)
 
 void Inv_Ring_Active(INVENTORY_ITEM *inv_item)
 {
-    if (!g_InvItemText[IT_NAME] && inv_item->object_id != O_PASSPORT_OPTION) {
-        g_InvItemText[IT_NAME] = Text_Create(0, -16, inv_item->string);
+    if (g_InvItemText[IT_NAME] == NULL
+        && inv_item->object_id != O_PASSPORT_OPTION) {
+        g_InvItemText[IT_NAME] =
+            Text_Create(0, -16, Object_GetName(inv_item->object_id));
         Text_AlignBottom(g_InvItemText[IT_NAME], 1);
         Text_CentreH(g_InvItemText[IT_NAME], 1);
     }

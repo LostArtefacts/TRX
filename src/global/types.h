@@ -880,7 +880,6 @@ typedef struct {
 } INVENTORY_SPRITE;
 
 typedef struct {
-    const char *string;
     GAME_OBJECT_ID object_id;
     int16_t frames_total;
     int16_t current_frame;
