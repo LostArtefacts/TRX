@@ -359,8 +359,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
 bool Lara_Cheat_KillEnemy(const int16_t item_num)
 {
     ITEM *const item = &g_Items[item_num];
-    if (!Object_IsObjectType(item->object_id, g_EnemyObjects)
-        || item->hit_points <= 0) {
+    if (item->hit_points == DONT_TARGET) {
         return false;
     }
 
