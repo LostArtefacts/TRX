@@ -6,7 +6,6 @@
 #include <libtrx/config/map.h>
 // import order guard
 
-#include "global/enum_str.h"
 #include "global/types.h"
 
 const CONFIG_OPTION g_ConfigOptionMap[] = {
