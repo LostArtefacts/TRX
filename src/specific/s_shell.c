@@ -219,9 +219,21 @@ void S_Shell_SpinMessageLoop(void)
             }
             break;
 
-        case SDL_KEYDOWN:
-            UI_HandleKeyDown(event.key.keysym.sym);
+        case SDL_KEYDOWN: {
+            // NOTE: This normally would get handled by Input_Update,
+            // but by the time Input_Update gets ran, we may already have lost
+            // some keypresses if the player types really fast, so we need to
+            // react sooner.
+            const INPUT_SCANCODE open_console_scancode =
+                Input_GetAssignedScancode(
+                    g_Config.input.layout, INPUT_ROLE_ENTER_CONSOLE);
+            if (event.key.keysym.scancode == open_console_scancode) {
+                Console_Open();
+            } else {
+                UI_HandleKeyDown(event.key.keysym.sym);
+            }
             break;
+        }
 
         case SDL_TEXTEDITING:
             UI_HandleTextEdit(event.text.text);
