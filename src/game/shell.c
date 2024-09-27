@@ -299,12 +299,6 @@ void Shell_ExitSystemFmt(const char *fmt, ...)
 
 void Shell_ProcessInput(void)
 {
-    if (g_InputDB.enter_console) {
-        Console_Open();
-        g_Input.any = 0;
-        g_InputDB.any = 0;
-    }
-
     if (g_InputDB.toggle_bilinear_filter) {
         g_Config.rendering.texture_filter =
             (g_Config.rendering.texture_filter + 1) % GFX_TF_NUMBER_OF;
