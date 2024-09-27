@@ -103,5 +103,9 @@ void Viewport_SetFOV(int16_t fov)
 
     int16_t c = Math_Cos(fov / 2);
     int16_t s = Math_Sin(fov / 2);
-    g_PhdPersp = ((Screen_GetResWidth() / 2) * c) / s;
+    g_PhdPersp = Screen_GetResWidth() / 2;
+    if (s != 0) {
+        g_PhdPersp *= c;
+        g_PhdPersp /= s;
+    }
 }

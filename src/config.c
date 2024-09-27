@@ -7,6 +7,7 @@
 #include "game/output.h"
 #include "game/requester.h"
 #include "game/sound.h"
+#include "game/viewport.h"
 #include "global/const.h"
 #include "global/enum_str.h"
 #include "global/types.h"
@@ -306,6 +307,7 @@ void Config_ApplyChanges(void)
     Requester_Shutdown(&g_SavegameRequester);
     Requester_Init(&g_SavegameRequester, g_Config.maximum_save_slots);
     Output_ApplyRenderSettings();
+    Viewport_SetFOV(Viewport_GetUserFOV());
 }
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
