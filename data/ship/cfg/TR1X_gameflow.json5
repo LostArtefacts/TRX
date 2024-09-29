@@ -108,6 +108,7 @@
             "type": "normal",
             "music": 57,
             "injections": [
+                "data/injections/braid_valley.bin",
                 "data/injections/valley_itemrots.bin",
                 "data/injections/valley_skybox.bin",
                 "data/injections/valley_textures.bin",

@@ -11,6 +11,7 @@
 - fixed main menu music volume when exiting while underwater with certain music settings (#1540, regression from 4.4)
 - fixed `/kill` command unable to target a special object
 - fixed really fast typing in console sometimes losing the first input (regression from 4.4)
+- fixed Lara's head not matching the braid if in use when she is killed by the T-rex (#1549)
 - improved object name matching in console commands to work like TR2X
 
 ## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3-102-g458cd96...4.4) - 2024-09-20
