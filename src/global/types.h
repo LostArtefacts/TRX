@@ -309,21 +309,6 @@ typedef enum {
 } SLIDING_PILLAR_STATE;
 
 typedef enum {
-    GFL_TITLE = 0,
-    GFL_NORMAL = 1,
-    GFL_SAVED = 2,
-    GFL_DEMO = 3,
-    GFL_CUTSCENE = 4,
-    GFL_GYM = 5,
-    GFL_CURRENT = 6, // legacy level type for reading TombATI's savegames
-    GFL_RESTART = 7,
-    GFL_SELECT = 8,
-    GFL_BONUS = 9,
-    GFL_TITLE_DEMO_PC = 10,
-    GFL_LEVEL_DEMO_PC = 11,
-} GAMEFLOW_LEVEL_TYPE;
-
-typedef enum {
     GFS_END = -1,
     GFS_START_GAME,
     GFS_LOOP_GAME,

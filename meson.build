@@ -104,7 +104,6 @@ sources = [
   'src/game/console/cmd/easy_config.c',
   'src/game/console/cmd/flipmap.c',
   'src/game/console/cmd/load_game.c',
-  'src/game/console/cmd/play_level.c',
   'src/game/console/cmd/save_game.c',
   'src/game/console/cmd/speed.c',
   'src/game/console/common.c',

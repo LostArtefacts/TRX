@@ -1399,6 +1399,26 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
     return command;
 }
 
+int32_t Gameflow_GetLevelCount(void)
+{
+    return g_GameFlow.level_count;
+}
+
+const char *Gameflow_GetLevelFileName(int32_t level_num)
+{
+    return g_GameFlow.levels[level_num].level_file;
+}
+
+const char *Gameflow_GetLevelTitle(int32_t level_num)
+{
+    return g_GameFlow.levels[level_num].level_title;
+}
+
+int32_t Gameflow_GetGymLevelNumber(void)
+{
+    return g_GameFlow.gym_level_num;
+}
+
 void Gameflow_OverrideCommand(const GAMEFLOW_COMMAND command)
 {
     g_GameInfo.override_gf_command = command;
