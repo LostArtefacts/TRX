@@ -50,6 +50,7 @@ Currently supported commands:
   Enables or disables the wireframe mode. Enter the debugging realm!
 
 - `/endlevel`  
+  `/nextlevel`  
   Ends the current level. Ideal for speedruns.
 
 - `/level {num}`  

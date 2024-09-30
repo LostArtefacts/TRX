@@ -1,5 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TR1X/compare/stable...develop) - ××××-××-××
 - added `/sfx` command
+- added `/nextlevel` alias to `/endlevel` console command
+- added `/quit` alias to `/exit` console command
 - changed the easter egg console command to pack more punch
 - fixed console caret position off by a couple of pixels (regression from 3.0)
 - fixed holding a key when closing the console registering as a game input (regression from 3.0)
