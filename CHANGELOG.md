@@ -15,6 +15,7 @@
 - fixed really fast typing in console sometimes losing the first input (regression from 4.4)
 - fixed Lara's head not matching the braid if in use when she is killed by the T-rex (#1549)
 - fixed `/endlevel` displaying a success message in the title screen
+- fixed Story So Far feature looping cutscenes forever (#1551, regression from 4.4)
 - improved object name matching in console commands to work like TR2X
 
 ## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3-102-g458cd96...4.4) - 2024-09-20

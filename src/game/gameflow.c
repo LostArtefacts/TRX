@@ -1327,7 +1327,8 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
 
         case GFS_LOOP_CINE:
             command = Phase_Run();
-            if (command.action != GF_CONTINUE_SEQUENCE) {
+            if (command.action != GF_CONTINUE_SEQUENCE
+                && command.action != GF_LEVEL_COMPLETE) {
                 return command;
             }
             break;
