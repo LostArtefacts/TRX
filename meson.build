@@ -102,7 +102,6 @@ sources = [
   'src/game/clock.c',
   'src/game/collide.c',
   'src/game/console/cmd/easy_config.c',
-  'src/game/console/cmd/flipmap.c',
   'src/game/console/cmd/speed.c',
   'src/game/console/common.c',
   'src/game/console/setup.c',

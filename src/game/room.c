@@ -581,6 +581,11 @@ void Room_AlterFloorHeight(ITEM *item, int32_t height)
     }
 }
 
+bool Room_GetFlipStatus(void)
+{
+    return g_FlipStatus;
+}
+
 void Room_FlipMap(void)
 {
     Sound_StopAmbientSounds();

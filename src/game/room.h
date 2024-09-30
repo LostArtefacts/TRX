@@ -3,6 +3,8 @@
 #include "global/const.h"
 #include "global/types.h"
 
+#include <libtrx/game/rooms.h>
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -30,6 +32,5 @@ void Room_PopulateSectorData(
     SECTOR *sector, const int16_t *floor_data, uint16_t start_index,
     uint16_t null_index);
 void Room_TestTriggers(const ITEM *item);
-void Room_FlipMap(void);
 bool Room_IsOnWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
