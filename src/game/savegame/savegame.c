@@ -650,25 +650,3 @@ bool Savegame_RestartAvailable(int32_t slot_num)
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     return savegame_info->features.restart;
 }
-
-GAMEFLOW_COMMAND Savegame_PlayAvailableStory(int32_t slot_num)
-{
-    SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-
-    GAMEFLOW_COMMAND command = {
-        .action = GF_START_GAME,
-        .param = g_GameFlow.first_level_num,
-    };
-
-    while (1) {
-        command = GameFlow_StorySoFar(command.param, savegame_info->level_num);
-
-        if ((g_GameFlow.levels[command.param].level_type == GFL_NORMAL
-             || g_GameFlow.levels[command.param].level_type == GFL_BONUS)
-            && command.param >= savegame_info->level_num) {
-            break;
-        }
-    }
-
-    return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
-}

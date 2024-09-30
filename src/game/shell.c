@@ -227,7 +227,7 @@ void Shell_Main(void)
         }
 
         case GF_STORY_SO_FAR: {
-            command = Savegame_PlayAvailableStory(command.param);
+            command = GameFlow_PlayAvailableStory(command.param);
             break;
         }
 

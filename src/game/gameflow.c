@@ -14,6 +14,7 @@
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "game/room.h"
+#include "game/savegame.h"
 #include "global/vars.h"
 
 #include <libtrx/enum_map.h>
@@ -1512,4 +1513,25 @@ void GameFlow_LoadStrings(int32_t level_num)
             entry++;
         }
     }
+}
+
+GAMEFLOW_COMMAND GameFlow_PlayAvailableStory(int32_t slot_num)
+{
+    GAMEFLOW_COMMAND command = {
+        .action = GF_START_GAME,
+        .param = g_GameFlow.first_level_num,
+    };
+
+    const int32_t savegame_level = Savegame_GetLevelNumber(slot_num);
+    while (1) {
+        command = GameFlow_StorySoFar(command.param, savegame_level);
+
+        if ((g_GameFlow.levels[command.param].level_type == GFL_NORMAL
+             || g_GameFlow.levels[command.param].level_type == GFL_BONUS)
+            && command.param >= savegame_level) {
+            break;
+        }
+    }
+
+    return (GAMEFLOW_COMMAND) { .action = GF_EXIT_TO_TITLE };
 }
