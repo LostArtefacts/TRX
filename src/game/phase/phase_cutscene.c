@@ -70,6 +70,7 @@ static void M_Start(void *arg)
     if (!Level_Initialise(data->level_num)) {
         return;
     }
+    g_GameInfo.current_level_type = GFL_CUTSCENE;
 
     M_InitialiseHair(data->level_num);
 

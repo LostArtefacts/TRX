@@ -171,6 +171,7 @@ static void M_Start(void *arg)
     if (!Level_Initialise(m_DemoLevel)) {
         Shell_ExitSystem("Unable to initialize level");
     }
+    g_GameInfo.current_level_type = GFL_DEMO;
 
     g_OverlayFlag = 1;
     Camera_Initialise();
@@ -201,7 +202,6 @@ static void M_Start(void *arg)
     // really is needed, not at all times.
     // https://github.com/LostArtefacts/TR1X/issues/36
     g_Lara.request_gun_type = LGT_UNARMED;
-    g_GameInfo.current_level_type = GFL_DEMO;
 }
 
 static void M_End(void)

@@ -242,6 +242,11 @@ GAMEFLOW_COMMAND Game_Stop(void)
     }
 }
 
+GAMEFLOW_LEVEL_TYPE Game_GetCurrentLevelType(void)
+{
+    return g_GameInfo.current_level_type;
+}
+
 bool Game_IsPlayable(void)
 {
     if (g_GameInfo.current_level_type == GFL_TITLE

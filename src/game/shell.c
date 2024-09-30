@@ -257,6 +257,7 @@ void Shell_Main(void)
                 command = (GAMEFLOW_COMMAND) { .action = GF_EXIT_GAME };
                 break;
             }
+            g_GameInfo.current_level_type = GFL_TITLE;
 
             command = Game_MainMenu();
             break;
