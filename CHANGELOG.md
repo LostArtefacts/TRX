@@ -3,6 +3,7 @@
 - added `/nextlevel` alias to `/endlevel` console command
 - added `/quit` alias to `/exit` console command
 - changed the easter egg console command to pack more punch
+- changed `/set` console command to do fuzzy matching (LostArtefacts/libtrx#38)
 - fixed console caret position off by a couple of pixels (regression from 3.0)
 - fixed holding a key when closing the console registering as a game input (regression from 3.0)
 - fixed ability to crash the game with extreme FOV values (regression from 0.9)

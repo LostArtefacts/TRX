@@ -260,6 +260,8 @@
         "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
         "MISC_OFF": "Off",
         "MISC_ON": "On",
+        "OSD_AMBIGUOUS_INPUT_2": "Ambiguous input: %s and %s",
+        "OSD_AMBIGUOUS_INPUT_3": "Ambiguous input: %s, %s, ...",
         "OSD_COMMAND_BAD_INVOCATION": "Invalid invocation: %s",
         "OSD_COMMAND_UNAVAILABLE": "This command is not currently available",
         "OSD_COMPLETE_LEVEL": "Level complete!",
