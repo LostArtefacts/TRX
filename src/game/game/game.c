@@ -73,7 +73,7 @@ bool Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         if (!Level_Initialise(level_num)) {
             return false;
         }
-        if (!Savegame_Load(g_GameInfo.current_save_slot, &g_GameInfo)) {
+        if (!Savegame_Load(g_GameInfo.current_save_slot)) {
             LOG_ERROR("Failed to load save file!");
             return false;
         }

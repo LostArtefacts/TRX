@@ -267,7 +267,7 @@ static PHASE_CONTROL Inv_Close(GAME_OBJECT_ID inv_chosen)
             };
 
         case PASSPORT_MODE_SAVE_GAME:
-            Savegame_Save(g_GameInfo.current_save_slot, &g_GameInfo);
+            Savegame_Save(g_GameInfo.current_save_slot);
             Music_Unpause();
             Sound_UnpauseAll();
             Phase_Set(PHASE_GAME, 0);

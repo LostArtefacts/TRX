@@ -132,6 +132,7 @@ void Shell_Init(const char *gameflow_path)
     Input_Init();
     FMV_Init();
     Console_Init();
+    Savegame_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");

@@ -73,8 +73,25 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
     { 0 },
 };
 
+static void M_Clear(void);
 static void M_LoadPreprocess(void);
 static void M_LoadPostprocess(void);
+
+static void M_Clear(void)
+{
+    if (m_SavegameInfo == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
+        SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
+        savegame_info->format = 0;
+        savegame_info->counter = -1;
+        savegame_info->level_num = -1;
+        Memory_FreePointer(&savegame_info->full_path);
+        Memory_FreePointer(&savegame_info->level_title);
+    }
+}
 
 static void M_LoadPreprocess(void)
 {
@@ -163,19 +180,7 @@ void Savegame_Init(void)
 
 void Savegame_Shutdown(void)
 {
-    if (!m_SavegameInfo) {
-        return;
-    }
-
-    for (int i = 0; i < g_Config.maximum_save_slots; i++) {
-        SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-        savegame_info->format = 0;
-        savegame_info->counter = -1;
-        savegame_info->level_num = -1;
-        Memory_FreePointer(&savegame_info->full_path);
-        Memory_FreePointer(&savegame_info->level_title);
-    }
-
+    M_Clear();
     Memory_FreePointer(&m_SavegameInfo);
 }
 
@@ -391,14 +396,24 @@ void Savegame_PersistGameToCurrentInfo(int level_num)
     }
 }
 
-int32_t Savegame_GetLevelNumber(int32_t slot_num)
+int32_t Savegame_GetLevelNumber(const int32_t slot_num)
 {
     return m_SavegameInfo[slot_num].level_num;
 }
 
-bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
+int32_t Savegame_GetSlotCount(void)
 {
-    assert(game_info);
+    return g_Config.maximum_save_slots;
+}
+
+bool Savegame_IsSlotFree(const int32_t slot_num)
+{
+    return m_SavegameInfo[slot_num].level_num == -1;
+}
+
+bool Savegame_Load(const int32_t slot_num)
+{
+    GAME_INFO *const game_info = &g_GameInfo;
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     assert(savegame_info->format);
 
@@ -427,9 +442,9 @@ bool Savegame_Load(int32_t slot_num, GAME_INFO *game_info)
     return ret;
 }
 
-bool Savegame_Save(int32_t slot_num, GAME_INFO *game_info)
+bool Savegame_Save(const int32_t slot_num)
 {
-    assert(game_info);
+    GAME_INFO *const game_info = &g_GameInfo;
     bool ret = true;
 
     File_CreateDirectory(SAVES_DIR);
@@ -533,15 +548,13 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
 
 void Savegame_ScanSavedGames(void)
 {
-    Savegame_Shutdown();
-    Savegame_Init();
+    M_Clear();
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
     for (int i = 0; i < g_Config.maximum_save_slots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-
         const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
         while (strategy->format) {
             if (!savegame_info->format && strategy->allow_load) {
