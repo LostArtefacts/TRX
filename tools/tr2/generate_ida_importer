@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Converts progress.txt to an IDC script usable with IDA Free, that propagates
+the IDA database with typing information, function declarations and variable
+declarations.
+"""
+import argparse
+import json
+import re
+import tempfile
+from pathlib import Path
+
+import regex
+
+from shared.ida_progress import (
+    FUNC_PTR_RE,
+    FUNC_RE,
+    VAR_RE,
+    Symbol,
+    parse_progress_file,
+)
+from shared.paths import TR2_PROGRESS_FILE
+
+
+def generate_types(types: list[str], file) -> None:
+    for definition in types:
+        # strip comments
+        definition = " ".join(
+            re.sub(r"//.*", "", line.strip())
+            for line in definition.splitlines()
+        )
+
+        # merge consecutive whitespace
+        definition = re.sub(r"\s\s+", " ", definition)
+
+        # convert: typedef struct { … } FOO;
+        # to:      typedef struct FOO { … } FOO;
+        # for readability purposes.
+        if match := re.search(
+            r"(?P<prefix>typedef\s+(?:struct|enum)(?:\s+__\S+)?\s*)(?P<body>{.*})(?P<suffix>\s+(?P<name>\S+);)",
+            definition,
+            flags=re.M | re.DOTALL,
+        ):
+            definition = (
+                match.group("prefix")
+                + match.group("name")
+                + " "
+                + match.group("body")
+                + match.group("suffix")
+            )
+
+        print(f"parse_decls({json.dumps(definition)}, 0);", file=file)
+
+
+def import_symbol(symbol: Symbol, file) -> None:
+    known = not re.match(r"(\s+|^)(dword|sub)_", symbol.signature)
+
+    if known:
+        # extract the symbol name
+        signature = symbol.signature
+        # strip comments
+        signature = re.sub(r"\s*//.*", "", signature)
+        # strip assignments
+        signature = re.sub(r"\s*=[^;]*", "", signature)
+        # map the name
+        if match := FUNC_RE.match(signature):
+            name = match.group("func_name")
+        elif match := FUNC_PTR_RE.match(signature):
+            name = match.group("func_name")
+        elif match := VAR_RE.match(signature):
+            name = match.group("var_name")
+        else:
+            name = None
+
+        print(
+            f"apply_type(0x{symbol.offset:x}, parse_decl({json.dumps(symbol.signature)}, 0));",
+            file=file,
+        )
+        if name:
+            print(
+                f"set_name(0x{symbol.offset:x}, {json.dumps(name)});",
+                file=file,
+            )
+
+        if "+" in symbol.flags:
+            color = 0xA0FFA0
+        elif "x" in symbol.flags:
+            color = 0xA0A0A0
+        elif known:
+            color = 0xA0FFFF
+        else:
+            color = 0xEEEEEE
+
+        print(
+            f"set_color(0x{symbol.offset:x}, CIC_FUNC, 0x{color:x});",
+            file=file,
+        )
+
+
+def generate_symbols(symbols: list[Symbol], file) -> None:
+    error_count = 0
+    for symbol in symbols:
+        import_symbol(symbol, file=file)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--output", type=Path, default=Path("Tomb2.idc"))
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    progress_file = parse_progress_file(TR2_PROGRESS_FILE)
+
+    output = Path(args.output)
+    with output.open("w") as file:
+        print("#define CIC_FUNC 2", file=file)
+        print("static main() {", file=file)
+        generate_types(progress_file.types, file=file)
+        generate_symbols(progress_file.functions, file=file)
+        generate_symbols(progress_file.variables, file=file)
+        print("}", file=file)
+
+
+if __name__ == "__main__":
+    main()

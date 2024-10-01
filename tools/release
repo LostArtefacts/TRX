@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from libtrx.cli.release import run_script
+from shared.cli.release import run_script
 from tr1x.paths import TR1X_REPO_DIR
 
 run_script(

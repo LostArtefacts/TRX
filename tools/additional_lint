@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from libtrx.cli.additional_lint import run_script
-from tr1x.paths import TR1X_REPO_DIR
+from shared.cli.additional_lint import run_script
+from shared.paths import SRC_DIR
 
-run_script(root_dir=TR1X_REPO_DIR, ignored_patterns=["*.patch", "*.bin"])
+run_script(root_dir=SRC_DIR, ignored_patterns=["*.patch", "*.bin", "gl_core_3_3.h"])

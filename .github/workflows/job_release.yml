@@ -3,6 +3,10 @@ name: Create a new release
 on:
   workflow_call:
     inputs:
+      game_version:
+        type: string
+        description: "Game version to build"
+        required: true
       draft:
         type: boolean
         description: "Draft"
@@ -48,9 +52,9 @@ jobs:
       - name: "Generate changelog"
         run: |
           hash=$(git log -1 --pretty=format:%H)
-          tag=$(just output-current-version)
+          tag=$(just output-current-version ${{ inputs.game_version }})
           echo -e "**Commit: $hash**  \n**Tag: $tag**\n\n### Changes\n" > _changes.txt
-          just output-current-changelog >> _changes.txt
+          just output-current-changelog ${{ inputs.game_version }} >> _changes.txt
 
       - name: "Get information on the latest pre-release"
         if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}

@@ -1,0 +1,706 @@
+#!/usr/bin/env python3
+import re
+from collections.abc import Callable, Iterable
+from dataclasses import dataclass
+from decimal import Decimal
+from enum import StrEnum, auto
+from itertools import groupby
+from pathlib import Path
+from typing import Any
+
+from shared.ida_progress import Symbol, SymbolStatus, parse_progress_file
+from shared.paths import TR2_PROGRESS_FILE, TR2_PROGRESS_SVG
+
+DOCUMENT_MARGIN = Decimal(2)
+GRID_MAX_SQUARES = 50
+GRID_SQUARE_SIZE = Decimal(12)
+GRID_SQUARE_MARGIN = Decimal(3)
+PROGRESS_BAR_SIZE = Decimal(6)
+LEGEND_SQUARE_SIZE = GRID_SQUARE_SIZE
+LEGEND_SQUARE_MARGIN = GRID_SQUARE_MARGIN
+LEGEND_ROW_PADDING = Decimal(3)
+LEGEND_MARGIN = Decimal(15)
+TEXT_SIZE = Decimal(15)
+TEXT_MARGIN = Decimal(5)
+SECTION_MARGIN = GRID_SQUARE_SIZE + LEGEND_MARGIN
+GRID_WIDTH = (
+    GRID_MAX_SQUARES * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
+    - GRID_SQUARE_MARGIN
+)
+ZERO = Decimal(0)
+EPSILON = Decimal("0.1")
+
+
+class SumMode(StrEnum):
+    BYTES = auto()
+    COUNT = auto()
+
+
+@dataclass
+class MyFraction:
+    """Fraction that doesn't normalize (eg 8/12 doesn't become 2/3)"""
+
+    numerator: int
+    denominator: int
+
+
+def format_decimal(source: Decimal) -> str:
+    return str(source.quantize(Decimal("1.11"))).replace(".00", "")
+
+
+def format_percent(source: MyFraction) -> str:
+    return format_decimal(fraction_to_decimal(source) * 100) + "%"
+
+
+def fraction_to_decimal(source: MyFraction) -> Decimal:
+    return Decimal(source.numerator) / Decimal(source.denominator)
+
+
+@dataclass
+class Box:
+    x1: Decimal
+    y1: Decimal
+    x2: Decimal
+    y2: Decimal
+
+    @property
+    def dx(self) -> Decimal:
+        return self.x2 - self.x1
+
+    @property
+    def dy(self) -> Decimal:
+        return self.y2 - self.y1
+
+
+@dataclass
+class SquarifyResult(Box):
+    item: Any
+
+
+class Squarify:
+    def __init__(
+        self,
+        items: Iterable[Any],
+        key: Callable[[Any], Decimal],
+        box: Box,
+        normalize: bool = True,
+    ) -> None:
+        self.key: Callable[[Any], Decimal] = key
+
+        if normalize:
+            total_size = sum(map(key, items))
+            total_area = box.dx * box.dy
+
+            def normalized_key(item: Any) -> Decimal:
+                return key(item) * total_area / total_size
+
+            self.key = normalized_key
+
+        self.items = list(sorted(items, key=self.key, reverse=True))
+        self.box = box
+
+    def layoutrow(self, items: Iterable[Any]) -> Iterable[SquarifyResult]:
+        covered_area = sum(self.key(item) for item in items)
+        dx = covered_area / self.box.dy
+        y = self.box.y1
+        for item in items:
+            yield SquarifyResult(
+                item=item,
+                x1=self.box.x1,
+                y1=y,
+                x2=self.box.x1 + dx,
+                y2=y + self.key(item) / dx,
+            )
+            y += self.key(item) / dx
+
+    def layoutcol(self, items: Iterable[Any]) -> Iterable[SquarifyResult]:
+        covered_area = sum(self.key(item) for item in items)
+        dy = covered_area / self.box.dx
+        x = self.box.x1
+        for item in items:
+            yield SquarifyResult(
+                item=item,
+                x1=x,
+                y1=self.box.y1,
+                x2=x + self.key(item) / dy,
+                y2=self.box.y1 + dy,
+            )
+            x += self.key(item) / dy
+
+    def layout(self, items: Iterable[Any]) -> Iterable[SquarifyResult]:
+        yield from (
+            self.layoutrow(items)
+            if self.box.dx >= self.box.dy
+            else self.layoutcol(items)
+        )
+
+    def leftoverrow(self, items: Iterable[Any]) -> Box:
+        covered_area = sum(self.key(item) for item in items)
+        dx = covered_area / self.box.dy
+        return Box(
+            x1=self.box.x1 + dx,
+            y1=self.box.y1,
+            x2=self.box.x1 + self.box.dx,
+            y2=self.box.y1 + self.box.dy,
+        )
+
+    def leftovercol(self, items: Iterable[Any]) -> Box:
+        covered_area = sum(self.key(item) for item in items)
+        dy = covered_area / self.box.dx
+        return Box(
+            x1=self.box.x1,
+            y1=self.box.y1 + dy,
+            x2=self.box.x1 + self.box.dx,
+            y2=self.box.y1 + self.box.dy,
+        )
+
+    def leftover(self, items: Iterable[Any]) -> Box:
+        return (
+            self.leftoverrow(items)
+            if self.box.dx >= self.box.dy
+            else self.leftovercol(items)
+        )
+
+    def worst_ratio(self, items: Iterable[Any]) -> Decimal:
+        return max(
+            max(result.dx / result.dy, result.dy / result.dx)
+            for result in self.layout(items)
+        )
+
+    def run(self, items: list[Any] | None = None) -> Iterable[SquarifyResult]:
+        if not items:
+            items = self.items
+
+        if len(items) == 0:
+            return
+
+        if len(items) == 1:
+            yield from self.layout(items)
+            return
+
+        i = 1
+        while i < len(items) and self.worst_ratio(
+            items[:i]
+        ) >= self.worst_ratio(items[: i + 1]):
+            i += 1
+        current = items[:i]
+        remaining = items[i:]
+
+        leftover_box = self.leftover(current)
+        yield from self.layout(current)
+        yield from Squarify(
+            remaining, key=self.key, box=leftover_box, normalize=False
+        ).run()
+
+
+def squarify(
+    items: list[Any], key: Callable[[Any], Decimal], box: Box
+) -> Iterable[SquarifyResult]:
+    yield from Squarify(items, key, box).run()
+
+
+def collect_functions() -> Iterable[Symbol]:
+    in_functions = False
+    for line in TR2_PROGRESS_FILE.open():
+        line = line.strip()
+        if line == "# FUNCTIONS":
+            in_functions = True
+        elif re.match("^# [A-Z]*$", line):
+            in_functions = False
+        if not in_functions:
+            continue
+
+        if line.startswith("#") or not line:
+            continue
+        offset, size, flags, func_signature = re.split(
+            r"\s+", line, maxsplit=3
+        )
+        if not offset.replace("-", ""):
+            continue
+        yield Symbol(
+            signature=func_signature,
+            offset=int(offset, 16),
+            size=int(size, 16),
+            flags=flags,
+        )
+
+
+class Shape:
+    box: Box = ...
+
+    def render(self) -> str:
+        raise NotImplementedError("not implemented")
+
+
+class Container(Shape):
+    def __init__(self):
+        self.children: list[Shape] = []
+
+    def __post_init__(self) -> None:
+        self.box = get_common_bbox(self.children)
+
+    def render(self) -> str:
+        return "\n".join(child.render() for child in self.children)
+
+
+def get_common_bbox(shapes: list[Shape]) -> Box:
+    return Box(
+        x1=min(shape.box.x1 for shape in shapes),
+        y1=min(shape.box.y1 for shape in shapes),
+        x2=max(shape.box.x2 for shape in shapes),
+        y2=max(shape.box.y2 for shape in shapes),
+    )
+
+
+@dataclass
+class Rectangle(Shape):
+    x: Decimal
+    y: Decimal
+    class_name: str
+    dx: Decimal
+    dy: Decimal
+    title: str | None = None
+
+    def __post_init__(self) -> None:
+        self.box = Box(
+            x1=self.x,
+            y1=self.y,
+            x2=self.x + self.dx,
+            y2=self.y + self.dy,
+        )
+
+    def render(self) -> str:
+        return (
+            f"<rect "
+            f'width="{format_decimal(max(self.dx, EPSILON))}" '
+            f'height="{format_decimal(max(self.dy, EPSILON))}" '
+            f'x="{format_decimal(self.x)}" '
+            f'y="{format_decimal(self.y)}" '
+            f'class="{self.class_name}"'
+            + (f"><title>{self.title}</title></rect>" if self.title else "/>")
+        )
+
+
+class Square(Rectangle):
+    def __init__(
+        self,
+        x: Decimal,
+        y: Decimal,
+        class_name: str,
+        size: Decimal = GRID_SQUARE_SIZE,
+        title: str | None = None,
+    ) -> None:
+        super().__init__(
+            x=x, y=y, class_name=class_name, dx=size, dy=size, title=title
+        )
+
+
+@dataclass
+class Text(Shape):
+    x: Decimal
+    y: Decimal
+    text: str
+    class_name: str | None = None
+    size: Decimal = TEXT_SIZE
+
+    def __post_init__(self) -> None:
+        self.style = ""
+        if self.size != TEXT_SIZE:
+            self.style = f"font-size: {self.size}px; "
+        self.box = Box(x1=self.x, y1=self.y, x2=self.x, y2=self.y + self.size)
+
+    def render(self) -> str:
+        return (
+            "<text "
+            + (f'class="{self.class_name}" ' if self.class_name else "")
+            + (f'style="{self.style}" ' if self.style else "")
+            + f'x="{format_decimal(self.x)}" '
+            f'y="{format_decimal(self.y + self.size/2)}">'
+            f"{self.text}"
+            f"</text>"
+        )
+
+
+class LegendText(Container):
+    def __init__(self, class_name: str, text: str) -> None:
+        super().__init__()
+        text_shape = Text(
+            x=LEGEND_SQUARE_SIZE + TEXT_MARGIN,
+            y=ZERO,
+            text=text,
+        )
+
+        square_shape = Square(
+            x=ZERO,
+            y=(text_shape.size - LEGEND_SQUARE_SIZE) / 2,
+            class_name=class_name,
+            size=LEGEND_SQUARE_SIZE,
+        )
+
+        self.children.extend([text_shape, square_shape])
+
+        self.__post_init__()
+
+
+@dataclass
+class TranslateShape(Container):
+    def __init__(
+        self, children: list[Shape], x: Decimal = ZERO, y: Decimal = ZERO
+    ) -> None:
+        self.children = children
+        self.x = x
+        self.y = y
+
+        super().__post_init__()
+
+        self.box.x1 += self.x
+        self.box.x2 += self.x
+        self.box.y1 += self.y
+        self.box.y2 += self.y
+
+    def render(self) -> str:
+        return (
+            f'<g transform="translate({format_decimal(self.x)} {format_decimal(self.y)})">\n'
+            f"{super().render()}\n"
+            "</g>"
+        )
+
+
+@dataclass
+class LegendSection(Container):
+    def __init__(self, all_functions: list[Symbol]) -> None:
+        super().__init__()
+
+        functions_status_map = get_functions_status_map(all_functions)
+
+        self.title = Text(x=ZERO, y=0, text="Legend:")
+        self.children.append(self.title)
+
+        captions = {
+            SymbolStatus.DECOMPILED: "Function fully decompiled",
+            SymbolStatus.UNUSED: "Function not used by the game",
+            SymbolStatus.KNOWN: "Function not yet decompiled, but with a known signature",
+            SymbolStatus.TODO: "Function not yet decompiled, with an unknown signature",
+        }
+
+        y = self.title.size + TEXT_MARGIN
+        for status in SymbolStatus:
+            caption = captions[status]
+            functions = functions_status_map[status]
+            legend_text = TranslateShape(
+                [LegendText(class_name=status.value, text=caption)], y=y
+            )
+            self.children.append(legend_text)
+            y = legend_text.box.y2 + LEGEND_ROW_PADDING
+
+        self.__post_init__()
+
+
+class FunctionGrid(Container):
+    def __init__(self, all_functions: list[Symbol]) -> None:
+        super().__init__()
+        for i, function in enumerate(all_functions):
+            x = (i % GRID_MAX_SQUARES) * (
+                GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN
+            )
+            y = (i // GRID_MAX_SQUARES) * (
+                GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN
+            )
+            self.children.append(
+                Square(
+                    x=x,
+                    y=y,
+                    class_name=function.status.value,
+                    title=function.signature,
+                )
+            )
+
+        self.__post_init__()
+
+
+class FunctionTreeGrid(Container):
+    def __init__(self, all_functions: list[Symbol]) -> None:
+        super().__init__()
+        box = Box(
+            x1=ZERO,
+            y1=ZERO,
+            x2=GRID_WIDTH + GRID_SQUARE_MARGIN,
+            y2=(
+                (
+                    (len(all_functions) + GRID_MAX_SQUARES - 1)
+                    // GRID_MAX_SQUARES
+                )
+                * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
+            )
+            + GRID_SQUARE_MARGIN,
+        )
+
+        for result in squarify(
+            all_functions, key=lambda function: Decimal(function.size), box=box
+        ):
+            result.x2 = max(ZERO, result.x2 - GRID_SQUARE_MARGIN)
+            result.y2 = max(ZERO, result.y2 - GRID_SQUARE_MARGIN)
+
+            self.children.append(
+                Rectangle(
+                    x=result.x1,
+                    y=result.y1,
+                    dx=result.dx,
+                    dy=result.dy,
+                    class_name=result.item.status.value,
+                    title=result.item.signature,
+                )
+            )
+
+        self.__post_init__()
+
+
+def get_function_done_percentage(
+    chosen_functions: list[Symbol],
+    all_functions: list[Symbol],
+    mode: SumMode,
+) -> MyFraction:
+    match mode:
+        case SumMode.COUNT:
+            return MyFraction(len(chosen_functions), len(all_functions))
+        case SumMode.BYTES:
+            return MyFraction(
+                sum(function.size for function in chosen_functions),
+                sum(function.size for function in all_functions),
+            )
+        case _:
+            assert False
+
+
+class ProgressBar(Container):
+    def __init__(self, all_functions: list[Symbol], mode: SumMode) -> None:
+        super().__init__()
+        lx2 = ZERO
+
+        def sorter(function):
+            return list(SymbolStatus).index(function.status)
+
+        for status_value, group in groupby(
+            sorted(all_functions, key=sorter), sorter
+        ):
+            chosen_functions = list(group)
+            if not chosen_functions:
+                continue
+
+            status = chosen_functions[0].status
+            fraction = get_function_done_percentage(
+                chosen_functions, all_functions, mode=mode
+            )
+            ratio = fraction_to_decimal(fraction)
+            lx1 = lx2
+            lx2 += ratio * GRID_WIDTH
+            self.children.append(
+                Rectangle(
+                    x=lx1,
+                    y=ZERO,
+                    dx=lx2 - lx1,
+                    dy=PROGRESS_BAR_SIZE,
+                    class_name=status,
+                )
+            )
+
+        self.__post_init__()
+
+
+def get_functions_status_map(
+    all_functions: list[Symbol],
+) -> dict[SymbolStatus, list[Symbol]]:
+    functions_status_map: dict[SymbolStatus, list[Symbol]] = {
+        status: [] for status in SymbolStatus
+    }
+    for function in all_functions:
+        functions_status_map[function.status].append(function)
+    return functions_status_map
+
+
+def get_progress_parts(
+    all_functions: list[Symbol],
+) -> dict[SymbolStatus, tuple[list[Symbol], dict[SumMode, MyFraction]]]:
+    functions_status_map = get_functions_status_map(all_functions)
+
+    return {
+        status: (
+            functions_status_map[status],
+            {
+                mode: get_function_done_percentage(
+                    functions_status_map[status], all_functions, mode=mode
+                )
+                for mode in SumMode
+            },
+        )
+        for status in SymbolStatus
+    }
+
+
+class GridSection(Container):
+    def __init__(
+        self, header: str, all_functions: list[Symbol], mode: SumMode
+    ) -> None:
+        super().__init__()
+        header_shape = Text(x=ZERO, y=ZERO, text=header)
+
+        y = header_shape.size + TEXT_MARGIN
+        x2 = GRID_WIDTH
+
+        progress_bar = TranslateShape(
+            [ProgressBar(all_functions, mode=mode)], y=y
+        )
+
+        y = progress_bar.box.y2 + TEXT_MARGIN
+
+        if mode == SumMode.COUNT:
+            grid = TranslateShape([FunctionGrid(all_functions)], y=y)
+        else:
+            grid = TranslateShape([FunctionTreeGrid(all_functions)], y=y)
+
+        progress_parts = get_progress_parts(all_functions)
+
+        progress_text = Text(
+            x=GRID_WIDTH,
+            y=Decimal(3),
+            size=Decimal(12),
+            class_name=SymbolStatus.TODO.value,
+            text=(
+                '<tspan text-anchor="end">'
+                + " · ".join(
+                    f'<tspan class="{status.value}">'
+                    + f"{format_percent(progress_parts[status][1][mode])}"
+                    + (
+                        f" ({progress_parts[status][1][mode].numerator})"
+                        if mode == SumMode.COUNT
+                        else ""
+                    )
+                    + "</tspan>"
+                    for status in SymbolStatus
+                )
+                + "</tspan>"
+            ),
+        )
+
+        self.children.extend(
+            [
+                header_shape,
+                progress_text,
+                progress_bar,
+                grid,
+            ]
+        )
+
+        self.__post_init__()
+
+
+class ProgressSVG(Container):
+    def __init__(self, all_functions: list[Symbol]) -> None:
+        super().__init__()
+
+        y = ZERO
+
+        section1 = GridSection(
+            header="Tomb2.exe progress according to the physical function order:",
+            all_functions=all_functions,
+            mode=SumMode.COUNT,
+        )
+
+        section2 = GridSection(
+            header="Tomb2.exe progress according to the function sizes:",
+            all_functions=all_functions,
+            mode=SumMode.BYTES,
+        )
+
+        legend = LegendSection(all_functions)
+
+        section1_wrap = TranslateShape(
+            [section1], y=legend.box.y2 + SECTION_MARGIN
+        )
+        section2_wrap = TranslateShape(
+            [section2], y=section1_wrap.box.y2 + SECTION_MARGIN
+        )
+        legend_wrap = TranslateShape([legend])
+
+        self.children.extend(
+            [
+                legend_wrap,
+                section1_wrap,
+                section2_wrap,
+            ]
+        )
+
+        super().__post_init__()
+
+    def render(self) -> str:
+        x1 = -DOCUMENT_MARGIN
+        y1 = -DOCUMENT_MARGIN
+        x2 = self.box.dx + DOCUMENT_MARGIN * 2
+        y2 = self.box.dy + DOCUMENT_MARGIN * 2
+        return (
+            f"""<svg version="1.1"
+    viewBox="{format_decimal(x1)} {format_decimal(y1)} {format_decimal(x2)} {format_decimal(y2)}"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .todo {{
+            --bg: rgba(255, 255, 255, 0.25);
+            --fg: rgba(100, 100, 100, 0.5);
+        }}
+        .known {{
+            --bg: rgba(255, 255, 0, 0.25);
+            --fg: rgba(250, 150, 0, 0.85);
+        }}
+        .decompiled {{
+            --bg: rgba(0, 255, 0, 0.5);
+            --fg: rgba(0, 150, 0, 0.85);
+        }}
+        .unused {{
+            --bg: rgba(255, 0, 0, 0.05);
+            --fg: rgba(250, 0, 0, 0.5);
+        }}
+        rect {{
+            fill: var(--bg);
+            stroke: var(--fg);
+            stroke-width: 0.5;
+        }}
+        rect.unused {{
+            fill: url("#unused-cross");
+        }}
+        text {{
+            alignment-baseline: central;
+            font-family: sans-serif;
+            font-size: {TEXT_SIZE}px;
+            fill: var(--fg, black);
+            stroke: none;
+        }}
+        @media (prefers-color-scheme: dark) {{
+          text {{
+            fill: var(--fg, white);
+          }}
+        }}
+        tspan {{
+            alignment-baseline: central;
+            fill: var(--fg, inherit);
+        }}
+    </style>
+    <defs>
+        <pattern id='unused-cross' x='0' y='0' width='100%' height='100%' viewBox='0 0 12 12' preserveAspectRatio='none'>
+            <path d='M0,0L12,12M0,12L12,0' stroke-width='0.5' stroke='red'/>
+        </pattern>
+    </defs>
+"""
+            + super().render()
+            + "\n</svg>"
+        )
+
+
+def main() -> None:
+    progress_file = parse_progress_file(TR2_PROGRESS_FILE)
+
+    with TR2_PROGRESS_SVG.open("w") as handle:
+        svg = ProgressSVG(progress_file.functions)
+        print(svg.render(), file=handle)
+
+
+if __name__ == "__main__":
+    main()

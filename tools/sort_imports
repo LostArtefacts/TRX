@@ -1,29 +1,81 @@
 #!/usr/bin/env python3
-from libtrx.cli.sort_imports import run_script
-from tr1x.paths import TR1X_REPO_DIR, TR1X_SRC_DIR
+import argparse
 
-run_script(
-    root_dir=TR1X_SRC_DIR,
-    include_dirs=[
-        TR1X_SRC_DIR,
-        TR1X_REPO_DIR / "build/linux",
-        TR1X_REPO_DIR / "build/windows",
-    ],
-    system_include_dirs=[TR1X_REPO_DIR / "subprojects/libtrx/include"],
-    own_include_map={
-        "game/game/game.c": "game/game.h",
-        "game/game/game_cutscene.c": "game/game.h",
-        "game/game/game_demo.c": "game/game.h",
-        "game/game/game_draw.c": "game/game.h",
-        "game/game/game_pause.c": "game/game.h",
-        "game/gun/gun.c": "game/gun.h",
-        "game/inventry.c": "game/inv.h",
-        "game/invfunc.c": "game/inv.h",
-        "game/invvars.c": "game/inv.h",
-        "game/lara/lara.c": "game/lara.h",
-        "game/option/option.c": "game/option.h",
-        "game/savegame/savegame.c": "game/savegame.h",
-    },
-    fix_map={"libavcodec/version_major.h": "libavcodec/version.h"},
-    forced_order=[],
-)
+from shared.import_sorter import sort_imports
+from shared.paths import SHARED_SRC_DIR, SRC_DIR, TR1_SRC_DIR, TR2_SRC_DIR
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", type=Path, nargs="*")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    if args.path:
+        paths = [path.absolute() for path in args.path]
+    else:
+        paths = [
+            path
+            for path in find_versioned_files(root_dir)
+            if path.suffix in [".c", ".h"]
+        ]
+
+    sort_imports(
+        paths=[path for path in paths if path.is_relative_to(TR1_SRC_DIR)],
+        root_dir=TR1_SRC_DIR,
+        system_include_dirs=[SRC_DIR],
+        own_include_map={
+            "game/game/game.c": "game/game.h",
+            "game/game/game_cutscene.c": "game/game.h",
+            "game/game/game_demo.c": "game/game.h",
+            "game/game/game_draw.c": "game/game.h",
+            "game/game/game_pause.c": "game/game.h",
+            "game/gun/gun.c": "game/gun.h",
+            "game/inventry.c": "game/inv.h",
+            "game/invfunc.c": "game/inv.h",
+            "game/invvars.c": "game/inv.h",
+            "game/lara/lara.c": "game/lara.h",
+            "game/option/option.c": "game/option.h",
+            "game/savegame/savegame.c": "game/savegame.h",
+        },
+        fix_map={"libavcodec/version_major.h": "libavcodec/version.h"},
+        forced_order=[],
+    )
+
+    sort_imports(
+        paths=[path for path in paths if path.is_relative_to(TR2_SRC_DIR)],
+        root_dir=TR2_SRC_DIR,
+        system_include_dirs=[SRC_DIR],
+        own_include_map={
+            "game/music/music_main.c": "game/music.h",
+        },
+        fix_map={},
+        forced_order=["<ddrawi.h>", "<d3dhal.h>"],
+    )
+
+    sort_imports(
+        paths=[path for path in paths if path.is_relative_to(SHARED_SRC_DIR)],
+        root_dir=SHARED_SRC_DIR,
+        system_include_dirs=[],
+        own_include_map={
+            "json/bson_write.c": "bson.h",
+            "json/bson_parse.c": "bson.h",
+            "json/json_base.c": "json.h",
+            "json/json_write.c": "json.h",
+            "json/json_parse.c": "json.h",
+            "log_unknown.c": "log.h",
+            "log_linux.c": "log.h",
+            "log_windows.c": "log.h",
+            "engine/audio.c": "audio.h",
+            "engine/audio_sample.c": "audio.h",
+            "engine/audio_stream.c": "audio.h",
+        },
+        fix_map={},
+        forced_order=[
+            "<windows.h>",
+            "<dbghelp.h>",
+            "<tlhelp32.h>",
+        ],
+    )
