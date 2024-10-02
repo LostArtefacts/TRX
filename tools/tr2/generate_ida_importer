@@ -10,14 +10,15 @@ import tempfile
 from pathlib import Path
 
 import regex
-from tr2x.ida_progress import (
+
+from shared.ida_progress import (
     FUNC_PTR_RE,
     FUNC_RE,
     VAR_RE,
     Symbol,
     parse_progress_file,
 )
-from tr2x.paths import TR2X_PROGRESS_FILE
+from shared.paths import TR2Paths
 
 
 def generate_types(types: list[str], file) -> None:
@@ -109,7 +110,7 @@ def parse_args() -> argparse.Namespace:
 
 def main():
     args = parse_args()
-    progress_file = parse_progress_file(TR2X_PROGRESS_FILE)
+    progress_file = parse_progress_file(TR2Paths.progress_file)
 
     output = Path(args.output)
     with output.open("w") as file:

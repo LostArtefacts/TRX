@@ -31,8 +31,10 @@ Release/
 .dotnet/
 
 # libtrx artefacts
-subprojects/packagecache/
-subprojects/dwarfstack-*/
-subprojects/dwarfstack.wrap
-subprojects/uthash-*/
-subprojects/uthash.wrap
+**/subprojects/packagecache/
+**/subprojects/dwarfstack-*/
+**/subprojects/uthash-*/
+src/tr1/subprojects/dwarfstack.wrap
+src/tr1/subprojects/uthash.wrap
+src/tr2/subprojects/dwarfstack.wrap
+src/tr2/subprojects/uthash.wrap

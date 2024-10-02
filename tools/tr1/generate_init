@@ -2,7 +2,7 @@
 import argparse
 from pathlib import Path
 
-from libtrx.versioning import generate_version
+from shared.versioning import generate_version
 
 TEMPLATE = """
 const char *g_TR1XVersion = "TR1X {version}";
@@ -16,7 +16,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def get_init_c() -> str:
-    return TEMPLATE.format(version=generate_version())
+    return TEMPLATE.format(version=generate_version(1))
 
 
 def update_init_c(output_path: Path) -> None:
@@ -30,7 +30,7 @@ def main() -> None:
     if args.output:
         update_init_c(output_path=args.output)
     else:
-        print(args.outptu)
+        print(get_init_c(), end="")
 
 
 if __name__ == "__main__":

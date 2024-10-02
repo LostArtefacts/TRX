@@ -1,7 +1,7 @@
 {
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
-    // Refer to https://github.com/LostArtefacts/TR1X/blob/stable/GAMEFLOW.md
+    // Refer to https://github.com/LostArtefacts/TRX/blob/stable/docs/tr1/GAMEFLOW.md
     // for usage.
 
     "main_menu_picture": "data/images/title_ub.webp",

@@ -3,22 +3,27 @@ import argparse
 from pathlib import Path
 
 import pyjson5
-from tr1x.paths import TR1X_TOOLS_DIR
-
-CONFIG_TOOL_SPEC_PATH = (
-    TR1X_TOOLS_DIR / "config/TR1X_ConfigTool/Resources/specification.json"
-)
+from shared.paths import PROJECT_PATHS
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Compares a given TR1X.json5 file with the default specifications "
+            "Compares a given configuration file with the default specifications "
             "of the config tool to find changes in the default values"
         )
     )
     parser.add_argument(
-        "path", type=Path, help="path to the freshly written TR1X.json5"
+        "-v",
+        "--version",
+        type=int,
+        help="game version to check the configuration file for",
+        required=True,
+    )
+    parser.add_argument(
+        "path",
+        type=Path,
+        help="path to the freshly written configuration file",
     )
     return parser.parse_args()
 
@@ -26,7 +31,11 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     game_config = pyjson5.loads(args.path.read_text())
-    tool_spec = pyjson5.loads(CONFIG_TOOL_SPEC_PATH.read_text())
+    tool_spec_path = (
+        PROJECT_PATHS[args.version].tools_dir
+        / "config/TR1X_ConfigTool/Resources/specification.json"
+    )
+    tool_spec = pyjson5.loads(tool_spec_path.read_text())
 
     spec_map = {
         option["Field"]: option["DefaultValue"]

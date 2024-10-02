@@ -1,0 +1,44 @@
+name: Build TR1X and the installer
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build release assets
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - platform: linux
+            just_target: tr1-package-linux
+          - platform: win
+            just_target: tr1-package-win-all
+          - platform: win-installer
+            just_target: tr1-package-win-installer
+
+    steps:
+      - name: Install dependencies
+        uses: taiki-e/install-action@just
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          fetch-depth: 0
+
+      - id: vars
+        name: Prepare variables
+        run: echo "version=$(just output-current-version 1)" >> $GITHUB_OUTPUT
+
+      - name: Package asset (${{ matrix.platform }})
+        run: just ${{ matrix.just_target }}
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TR1X-${{ steps.vars.outputs.version }}-${{ matrix.platform }}
+          path: |
+            *.zip
+            *.exe

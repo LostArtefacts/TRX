@@ -1,0 +1,58 @@
+name: Publish a new TR1X release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branch: stable
+    tags:
+      - "tr1-*"
+
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: "Draft"
+        required: true
+        type: boolean
+        default: false
+      prerelease:
+        description: "Prerelease"
+        required: true
+        type: boolean
+        default: false
+      tag_name:
+        description: "Tag name"
+        required: false
+        type: string
+        default: github.ref_name
+
+jobs:
+  package_multiplatform:
+    name: Build release assets
+    if: vars.RELEASE_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_tr1.yml
+    secrets: inherit
+
+  package_mac:
+    name: "Build release assets (mac)"
+    if: |
+      vars.RELEASE_ENABLE == 'true' &&
+      vars.MACOS_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_tr1_macos.yml
+    with:
+      let_mac_fail: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
+    secrets: inherit
+
+  publish_release:
+    if: vars.RELEASE_ENABLE == 'true'
+    name: Create a GitHub release
+    needs:
+      - package_multiplatform
+      - package_mac
+    with:
+      draft: ${{ inputs.draft || false }}
+      prerelease: ${{ inputs.draft || false }}
+      tag_name: ${{ inputs.tag_name || github.ref_name }}
+      changelog_game_version: 1
+    uses: ./.github/workflows/job_release.yml

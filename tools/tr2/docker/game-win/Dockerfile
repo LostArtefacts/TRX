@@ -125,4 +125,4 @@ RUN apt-get install -y \
         ninja
 
 ENV PYTHONPATH=/app/tools/
-ENTRYPOINT ["/app/tools/docker/game-win/entrypoint.sh"]
+ENTRYPOINT ["/app/tools/tr2/docker/game-win/entrypoint.sh"]

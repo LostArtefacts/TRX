@@ -1,5 +1,73 @@
 #!/usr/bin/env python3
-from libtrx.cli.additional_lint import run_script
-from tr1x.paths import TR1X_REPO_DIR
+import argparse
+import sys
+from collections.abc import Iterable
+from fnmatch import fnmatch
+from pathlib import Path
 
-run_script(root_dir=TR1X_REPO_DIR, ignored_patterns=["*.patch", "*.bin"])
+from shared.files import find_versioned_files, is_binary_file
+from shared.linting import LintContext, lint_bulk_files, lint_file
+from shared.paths import SRC_DIR
+
+IGNORED_PATTERNS = ["*.patch", "*.bin", "gl_core_3_3.h"]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", type=Path, nargs="*")
+    parser.add_argument("-D", "--debug", action="store_true")
+    return parser.parse_args()
+
+
+def filter_files(
+    files: Iterable[Path], ignored_patterns: list[str] | None, debug: bool
+) -> Iterable[Path]:
+    for path in files:
+        if is_binary_file(path):
+            if debug:
+                print(f"{path} is a binary file, ignoring", file=sys.stderr)
+            continue
+        if ignored_patterns and any(
+            fnmatch(path.name, pattern) for pattern in ignored_patterns
+        ):
+            if debug:
+                print(
+                    f"{path} has a prohibited extension, ignoring",
+                    file=sys.stderr,
+                )
+            continue
+        yield path
+
+
+def main(root_dir: Path, ignored_patterns: list[str] | None = None) -> None:
+    args = parse_args()
+
+    context = LintContext(
+        root_dir=SRC_DIR,
+        versioned_files=find_versioned_files(root_dir=SRC_DIR),
+    )
+    if args.path:
+        files = args.path
+    else:
+        files = context.versioned_files
+    files = list(
+        filter_files(
+            files, ignored_patterns=IGNORED_PATTERNS, debug=args.debug
+        )
+    )
+
+    exit_code = 0
+    for file in files:
+        if args.debug:
+            print(f"Checking {file}...", file=sys.stderr)
+        for lint_warning in lint_file(context, file):
+            print(str(lint_warning), file=sys.stderr)
+            exit_code = 1
+
+    if args.debug:
+        print(f"Checking files in bulk {file}...", file=sys.stderr)
+    for lint_warning in lint_bulk_files(context, files):
+        print(str(lint_warning), file=sys.stderr)
+        exit_code = 1
+
+    exit(exit_code)

@@ -1414,6 +1414,14 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>explosion.bin</code>
+    </td>
+    <td>
+      Injects explosion sprites for certain console commands.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>lara_animations.bin</code>
     </td>
     <td>

@@ -3,6 +3,10 @@ name: Create a new release
 on:
   workflow_call:
     inputs:
+      changelog_game_version:
+        type: string
+        description: "Game version to build the changelog from"
+        required: true
       draft:
         type: boolean
         description: "Draft"
@@ -13,11 +17,6 @@ on:
         description: "Prerelease"
         required: true
         default: false
-      release_name:
-        type: string
-        description: "Release name"
-        required: true
-        default: "Release ${{ github.ref_name }}"
       tag_name:
         type: string
         description: "Tag name"
@@ -39,18 +38,20 @@ jobs:
           submodules: 'true'
           fetch-depth: 0
 
+      - name: "Prepare release data"
+        id: prepare_release_data
+        run: |
+          echo -n "release_name=" >> $GITHUB_OUTPUT
+          just output-release-name ${{ inputs.changelog_game_version }} >> $GITHUB_OUTPUT
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          just output-current-changelog ${{ inputs.changelog_game_version }} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: "Download built game assets"
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
           merge-multiple: true
-
-      - name: "Generate changelog"
-        run: |
-          hash=$(git log -1 --pretty=format:%H)
-          tag=$(just output-current-version)
-          echo -e "**Commit: $hash**  \n**Tag: $tag**\n\n### Changes\n" > _changes.txt
-          just output-current-changelog >> _changes.txt
 
       - name: "Get information on the latest pre-release"
         if: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
@@ -77,9 +78,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: ${{ inputs.release_name }}
           tag_name: ${{ inputs.tag_name }}
-          body_path: _changes.txt
+          name: ${{ steps.prepare_release_data.outputs.release_name }}
+          body: ${{ steps.prepare_release_data.outputs.changelog }}
           draft: ${{ inputs.draft == true || inputs.draft == 'true' }}
           prerelease: ${{ inputs.prerelease == true || inputs.prerelease == 'true' }}
           fail_on_unmatched_files: true

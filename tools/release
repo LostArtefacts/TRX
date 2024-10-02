@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+import argparse
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from shared.changelog import update_changelog_to_new_version
+from shared.git import Git
+from shared.paths import PROJECT_PATHS
+
+
+@dataclass
+class Options:
+    stable_branch: str = "stable"
+    develop_branch: str = "develop"
+
+
+class BaseCommand:
+    name: str = NotImplemented
+    help: str = NotImplemented
+
+    def __init__(self, git: Git) -> None:
+        self.git = git
+
+    def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("game_version", choices=[1, 2], type=int)
+        parser.add_argument("version")
+
+    def run(self, args: argparse.Namespace, options: Options) -> None:
+        raise NotImplementedError("not implemented")
+
+
+class CommitCommand(BaseCommand):
+    name = "commit"
+    help = "Create and tag a commit with the release information"
+
+    def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
+        super().decorate_parser(parser)
+        parser.add_argument(
+            "-d",
+            "--dry-run",
+            action="store_true",
+            help="only output the changelog to stdout, do not commit anything",
+        )
+
+    def run(self, args: argparse.Namespace, options: Options) -> None:
+        # self.git.checkout_branch("develop")
+        old_tag = self.git.get_branch_version("origin/stable")
+        new_tag = f"tr{args.game_version}-{args.version}"
+
+        changelog_path = PROJECT_PATHS[args.game_version].changelog_path
+        old_changelog = changelog_path.read_text()
+        new_changelog = update_changelog_to_new_version(
+            old_changelog,
+            old_tag=old_tag,
+            new_tag=new_tag,
+            new_version_name=args.version,
+            stable_branch=options.stable_branch,
+            develop_branch=options.develop_branch,
+        )
+        if old_changelog == new_changelog:
+            return
+
+        if args.dry_run:
+            print(new_changelog, end="")
+            return
+
+        changelog_path.write_text(new_changelog)
+        self.git.add(changelog_path)
+        self.git.commit(f"docs/tr{args.game_version}: release {args.version}")
+        self.git.delete_tag(new_tag)
+        self.git.create_tag(new_tag)
+
+
+class BranchCommand(BaseCommand):
+    name = "branch"
+    help = "Merge branch to the specified tag"
+
+    def run(self, args: argparse.Namespace, options: Options) -> None:
+        new_tag = f"tr{args.game_version}-{args.version}"
+        self.git.checkout_branch("stable")
+        self.git.reset(new_tag, hard=True)
+        self.git.checkout_branch("develop")
+
+
+class PushCommand(BaseCommand):
+    name = "push"
+    help = (
+        "Push the develop and stable branches, and the version tag to GitHub"
+    )
+
+    def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
+        super().decorate_parser(parser)
+        parser.add_argument(
+            "-f",
+            "--force",
+            action="store_true",
+            help="force push all targets",
+        )
+
+    def run(self, args: argparse.Namespace, options: Options) -> None:
+        new_tag = f"tr{args.game_version}-{args.version}"
+        self.git.push(
+            "origin",
+            ["develop", "stable", new_tag],
+            force=args.force,
+            force_with_lease=not args.force,
+        )
+
+
+def parse_args(commands: list[BaseCommand]) -> None:
+    parser = argparse.ArgumentParser(
+        description="Argument parser with subcommands"
+    )
+    subparsers = parser.add_subparsers(title="subcommands", dest="subcommand")
+    for command in commands:
+        subparser = subparsers.add_parser(command.name, help=command.help)
+        command.decorate_parser(subparser)
+        subparser.set_defaults(command=command)
+
+    result = parser.parse_args()
+    if not hasattr(result, "command"):
+        parser.error("missing command")
+    return result
+
+
+def main() -> None:
+    git = Git()
+    commands = [
+        command_cls(git=git) for command_cls in BaseCommand.__subclasses__()
+    ]
+    options = Options()
+    args = parse_args(commands)
+    args.command.run(args, options)
+
+
+if __name__ == "__main__":
+    main()
