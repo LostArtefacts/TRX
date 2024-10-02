@@ -1,0 +1,15 @@
+{
+  "Controls": {
+    "window_title_main": "TR2X Config Tool",
+    "command_launch_gold": "Launch Golden Mask",
+    "file_dialog_filter": "TR2X Config Files",
+    "window_title_about": "About TR2X Config Tool",
+    "label_about_details": "Visit the TR2X GitHub page for further information."
+  },
+  "Properties": {
+    "fix_m16_accuracy": {
+      "Title": "Fix M16 accuracy",
+      "Description": "Fixes the accuracy of the M16 while Lara is running."
+    }
+  }
+}

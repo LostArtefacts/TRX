@@ -1,0 +1,57 @@
+{
+  "CategorisedProperties": [
+    {
+      "ID": "controls",
+      "Image": "Graphics/graphic1.jpg",
+      "Properties": [
+
+      ]
+    },
+    {
+      "ID": "gameplay_fixes",
+      "Image": "Graphics/graphic2.jpg",
+      "Properties": [
+        {
+          "Field": "fix_m16_accuracy",
+          "DataType": "Bool",
+          "DefaultValue": true
+        }
+      ]
+    },
+    {
+      "ID": "gameplay_modifications",
+      "Image": "Graphics/graphic3.jpg",
+      "Properties": [
+
+      ]
+    },
+    {
+      "ID": "gameplay_options",
+      "Image": "Graphics/graphic4.jpg",
+      "Properties": [
+
+      ]
+    },
+    {
+      "ID": "graphics",
+      "Image": "Graphics/graphic5.jpg",
+      "Properties": [
+
+      ]
+    },
+    {
+      "ID": "sound",
+      "Image": "Graphics/graphic6.jpg",
+      "Properties": [
+
+      ]
+    },
+    {
+      "ID": "ui",
+      "Image": "Graphics/graphic7.jpg",
+      "Properties": [
+
+      ]
+    }
+  ]
+}

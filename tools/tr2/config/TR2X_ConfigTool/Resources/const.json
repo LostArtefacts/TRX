@@ -1,0 +1,7 @@
+{
+  "AppImage": "TR2X.png",
+  "ConfigPath": "cfg\\TR2X.json5",
+  "ExecutableName": "TR2X.exe",
+  "GoldSupported": false,
+  "GitHubURL": "https://github.com/LostArtefacts/TR2X"
+}
