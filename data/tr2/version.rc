@@ -1,0 +1,22 @@
+1 VERSIONINFO
+FILEVERSION     0,0,0,0
+PRODUCTVERSION  0,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "rr-"
+      VALUE "FileDescription", "Tomb Raider II: Community Edition"
+      VALUE "FileVersion", "{version}"
+      VALUE "InternalName", "TR2X"
+      VALUE "OriginalFilename", "TR2X.exe"
+      VALUE "ProductName", "Tomb Raider II: Community Edition"
+      VALUE "ProductVersion", "{version}"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
