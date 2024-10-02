@@ -232,7 +232,7 @@ jobs:
       - name: Build x86-64
         run: |
           BUILD_DIR=build-x86-64
-          BUILD_OPTIONS="--prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/mac/x86-64_cross_file.txt"
+          BUILD_OPTIONS="--prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/tr1/mac/x86-64_cross_file.txt"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson compile -C $BUILD_DIR
 
@@ -245,7 +245,7 @@ jobs:
           mv $BUNDLE_EXEC_DIR/TR1X_universal $BUNDLE_EXEC_DIR/TR1X
 
           # Update dynamic library links in the fused executable.
-          ./tools/mac/bundle_dylibs --links-only
+          ./tools/tr1/mac/bundle_dylibs --links-only
 
       - name: Sign app bundle
         run: |
@@ -262,7 +262,7 @@ jobs:
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
-          tools/mac/create_installer
+          tools/tr1/mac/create_installer
           xattr -cr TR1X-Installer.dmg
           /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v TR1X-Installer.dmg
           xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" TR1X-Installer.dmg
