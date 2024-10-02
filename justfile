@@ -41,10 +41,10 @@ _docker_run *args:
         {{args}}
 
 
-image-linux force="1":         (_docker_build "tools/docker/game-linux/Dockerfile" "rrdash/tr1x-linux" force)
-image-win force="1":           (_docker_build "tools/docker/game-win/Dockerfile" "rrdash/tr1x" force)
-image-win-config force="1":    (_docker_build "tools/docker/config/Dockerfile" "rrdash/tr1x-config" force)
-image-win-installer force="1": (_docker_build "tools/docker/installer/Dockerfile" "rrdash/tr1x-installer" force)
+image-linux force="1":         (_docker_build "tools/tr1/docker/game-linux/Dockerfile" "rrdash/tr1x-linux" force)
+image-win force="1":           (_docker_build "tools/tr1/docker/game-win/Dockerfile" "rrdash/tr1x" force)
+image-win-config force="1":    (_docker_build "tools/tr1/docker/config/Dockerfile" "rrdash/tr1x-config" force)
+image-win-installer force="1": (_docker_build "tools/tr1/docker/installer/Dockerfile" "rrdash/tr1x-installer" force)
 
 push-image-linux:              (image-linux "0") (_docker_push "rrdash/tr1x-linux")
 push-image-win:                (image-win "0") (_docker_push "rrdash/tr1x")
@@ -57,11 +57,11 @@ build-win-installer:           (image-win-installer "0") (_docker_run "rrdash/tr
 package-linux:                 (build-linux "release") (_docker_run "rrdash/tr1x-linux" "package")
 package-win:                   (build-win "release") (_docker_run "rrdash/tr1x" "package")
 package-win-all:               (build-win "release") (build-win-config) (_docker_run "rrdash/tr1x" "package")
-package-win-installer:         (build-win "release") (build-win-config) (_docker_run "rrdash/tr1x" "package" "-o" "tools/installer/Installer/Resources/release.zip") (build-win-installer)
+package-win-installer:         (build-win "release") (build-win-config) (_docker_run "rrdash/tr1x" "package" "-o" "tools/tr1/installer/Installer/Resources/release.zip") (build-win-installer)
     #!/bin/sh
-    git checkout "tools/installer/Installer/Resources/release.zip"
+    git checkout "tools/tr1/installer/Installer/Resources/release.zip"
     exe_name=TR1X-$(tools/get_version)-Installer.exe
-    cp tools/installer/out/TR1X_Installer.exe "${exe_name}"
+    cp tools/tr1/installer/out/TR1X_Installer.exe "${exe_name}"
     echo "Created ${exe_name}"
 
 output-current-version:

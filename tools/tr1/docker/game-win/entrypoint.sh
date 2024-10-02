@@ -8,13 +8,13 @@ run_script(
     build_root=Path("/app/build/win/"),
     compile_args=[
         "--cross",
-        "/app/tools/docker/game-win/meson_linux_mingw32.txt",
+        "/app/tools/tr1/docker/game-win/meson_linux_mingw32.txt",
     ],
     release_zip_filename="TR1X-{version}-Windows.zip",
     release_zip_files=[
         (Path("/app/build/win/TR1X.exe"), "TR1X.exe"),
         (
-            Path("/app/tools/config/out/TR1X_ConfigTool.exe"),
+            Path("/app/tools/tr1/config/out/TR1X_ConfigTool.exe"),
             "TR1X_ConfigTool.exe",
         ),
     ],

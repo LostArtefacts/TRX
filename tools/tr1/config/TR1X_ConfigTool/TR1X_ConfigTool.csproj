@@ -67,7 +67,7 @@
     <EmbeddedResource Include="Resources\specification.json" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Reference Include="TRX_ConfigToolLib">
-      <HintPath>..\..\..\subprojects\libtrx\tools\config\TRX_ConfigToolLib\bin\Release\publish\TRX_ConfigToolLib.dll</HintPath>
+      <HintPath>..\..\..\..\subprojects\libtrx\tools\config\TRX_ConfigToolLib\bin\Release\publish\TRX_ConfigToolLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

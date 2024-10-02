@@ -2,7 +2,7 @@
 set -x
 set -e
 
-cd /app/tools/installer/
+cd /app/tools/tr1/installer/
 
 export DOTNET_CLI_HOME="/tmp/DOTNET_CLI_HOME"
 
