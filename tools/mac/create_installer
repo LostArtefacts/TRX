@@ -24,7 +24,7 @@ def create_dmg(app_name: str, dmg_name: str, app_bundle_path: Path) -> None:
             "--volname",
             f"{APP_NAME} Installer",
             "--volicon",
-            "data/mac/icon.icns",
+            "data/tr1/mac/icon.icns",
             "--window-pos",
             "200",
             "120",
