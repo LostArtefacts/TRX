@@ -6,7 +6,7 @@ Initial build:
 
 - Compile the project (described in the next section)
 - Copy all executable files from `build/` to your game directory
-- Copy the contents of `data/ship/` to your game directory
+- Copy the contents of `data/tr1/ship/` to your game directory
 
 Subsequent builds:
 

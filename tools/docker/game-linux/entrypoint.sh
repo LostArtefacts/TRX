@@ -4,7 +4,7 @@ from pathlib import Path
 from libtrx.cli.game_docker_entrypoint import run_script
 
 run_script(
-    ship_dir=Path("/app/data/ship/"),
+    ship_dir=Path("/app/data/tr1/ship/"),
     build_root=Path("/app/build/linux/"),
     compile_args=[],
     release_zip_filename="TR1X-{version}-Linux.zip",
