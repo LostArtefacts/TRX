@@ -1,0 +1,37 @@
+{
+  "Controls": {
+    "menu_file": "_File",
+    "command_open": "_Apri",
+    "command_reload": "_Ricarica",
+    "command_save": "_Salva",
+    "command_save_as": "Salva con nome...",
+    "command_launch_game": "_Lancia il gioco",
+    "command_exit": "_Esci",
+    "menu_tools": "_Strumenti",
+    "command_restore": "_Ripristina Predefiniti",
+    "menu_help": "_Aiuto",
+    "command_github": "_GitHub",
+    "command_about": "_Informazioni su",
+    "checkbox_enabled": "Abilitato",
+    "spinner_msg_invalid_number": "Il valore immesso non è un numero valido",
+    "spinner_msg_comparison_failed": "Il valore immesso deve essere compreso tra {0} e {1}",
+    "spinner_increase": "Aumenta il valore",
+    "spinner_decrease": "Diminuisci il valore",
+    "label_no_file": "Nessun file selezionato",
+    "label_saved": "Salvato",
+    "label_unsaved": "Non salvato",
+    "command_close": "_Chiudi",
+    "msgbox_unsaved_changes": "Vuoi salvare le modifiche apportate?",
+    "msgbox_unsaved_changes_reload": "Sei sicuro di voler ricaricare e perdere le modifiche apportate?",
+    "link_github": "Visita il sito GitHub"
+  },
+  "Categories": {
+    "controls": "Controlli",
+    "gameplay_fixes": "Correzioni del gioco",
+    "gameplay_modifications": "Modifiche al gioco",
+    "gameplay_options": "Opzioni di gioco",
+    "graphics": "Grafica",
+    "sound": "Suono",
+    "ui": "Interfaccia utente"
+  }
+}

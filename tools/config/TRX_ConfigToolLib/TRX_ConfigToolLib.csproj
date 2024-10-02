@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Resources\arrow-down.png" />
+    <None Remove="Resources\arrow-up.png" />
+    <None Remove="Resources\const.json" />
+    <None Remove="Resources\Lang\en.json" />
+    <None Remove="Resources\Lang\es.json" />
+    <None Remove="Resources\Lang\fr.json" />
+    <None Remove="Resources\Lang\it.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\const.json" />
+    <EmbeddedResource Include="Resources\Lang\en.json" />
+    <EmbeddedResource Include="Resources\Lang\es.json" />
+    <EmbeddedResource Include="Resources\Lang\fr.json" />
+    <EmbeddedResource Include="Resources\Lang\it.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\arrow-down.png" />
+    <Resource Include="Resources\arrow-up.png" />
+    <Resource Include="Resources\styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
+</Project>
