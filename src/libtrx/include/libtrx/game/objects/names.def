@@ -1,0 +1,5 @@
+#if TR_VERSION == 1
+#include "names_tr1.def"
+#elif TR_VERSION == 2
+#include "names_tr2.def"
+#endif
