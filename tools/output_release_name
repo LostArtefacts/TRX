@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import argparse
+
+from shared.versioning import generate_version
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("game_version", choices=["1", "2", "all"])
+    return parser.parse_args()
+
+
+def get_release_name(game_version: str) -> str:
+    match str(game_version):
+        case "1":
+            return f"TR1X {generate_version(1)}"
+        case "2":
+            return f"TR2X {generate_version(2)}"
+        case "all":
+            return "Development snapshot"
+    return "Unknown release name"
+
+
+def main() -> None:
+    args = parse_args()
+    print(get_release_name(args.game_version))
+
+
+if __name__ == "__main__":
+    main()

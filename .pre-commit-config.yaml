@@ -8,12 +8,6 @@ repos:
     language: system
     files: \.[ch](pp)?$
 
-  - id: update-gameflow
-    name: Update game flow files
-    entry: tools/update_gameflow
-    language: python
-    stages: [commit]
-
   - id: additional-lint
     name: Run additional linters
     entry: tools/additional_lint
@@ -25,3 +19,9 @@ repos:
     entry: tools/sort_imports
     language: system
     files: \.[ch](pp)?$
+
+  - id: update-gameflow
+    name: Update game flow files
+    entry: tools/update_gameflow
+    language: python
+    stages: [commit]

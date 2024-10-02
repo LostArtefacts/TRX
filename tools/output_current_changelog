@@ -1,5 +1,43 @@
 #!/usr/bin/env python3
-from libtrx.changelog import get_current_version_changelog
-from tr1x.paths import TR1X_REPO_DIR
+import argparse
 
-print(get_current_version_changelog(TR1X_REPO_DIR / "CHANGELOG.md"))
+from shared.git import Git
+from shared.versioning import generate_version
+from shared.changelog import get_current_version_changelog
+from shared.paths import PROJECT_PATHS
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("version", choices=['1', '2', 'all'])
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+
+    commit_hash = Git().get_current_commit_hash()
+
+    if args.version == 'all':
+        print(f"**Commit: {commit_hash}**  ")
+        print()
+        for version, project_paths in PROJECT_PATHS.items():
+            commit_tag = generate_version(version)
+            print(f'### TR{version}X changes')
+            print()
+            print(f'**Tag: {commit_tag}**')
+            print()
+            print(get_current_version_changelog(project_paths.changelog_path))
+            print()
+    else:
+        project_paths = PROJECT_PATHS.get(int(args.version))
+        commit_tag = generate_version(int(args.version))
+        print(f"**Commit: {commit_hash}**  ")
+        print(f"**Tag: {commit_tag}**")
+        print()
+        print("### Changes")
+        print(get_current_version_changelog(project_paths.changelog_path))
+
+
+if __name__ == "__main__":
+    main()

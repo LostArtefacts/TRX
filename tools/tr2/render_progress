@@ -8,8 +8,8 @@ from itertools import groupby
 from pathlib import Path
 from typing import Any
 
-from tr2x.ida_progress import Symbol, SymbolStatus, parse_progress_file
-from tr2x.paths import TR2X_PROGRESS_FILE
+from shared.ida_progress import Symbol, SymbolStatus, parse_progress_file
+from shared.paths import TR2Paths
 
 DOCUMENT_MARGIN = Decimal(2)
 GRID_MAX_SQUARES = 50
@@ -23,9 +23,6 @@ LEGEND_MARGIN = Decimal(15)
 TEXT_SIZE = Decimal(15)
 TEXT_MARGIN = Decimal(5)
 SECTION_MARGIN = GRID_SQUARE_SIZE + LEGEND_MARGIN
-DOCS_DIR = Path(__file__).parent.parent / "docs"
-PROGRESS_TXT_FILE = DOCS_DIR / "progress.txt"
-PROGRESS_SVG_FILE = DOCS_DIR / "progress.svg"
 GRID_WIDTH = (
     GRID_MAX_SQUARES * (GRID_SQUARE_SIZE + GRID_SQUARE_MARGIN)
     - GRID_SQUARE_MARGIN
@@ -204,7 +201,7 @@ def squarify(
 
 def collect_functions() -> Iterable[Symbol]:
     in_functions = False
-    for line in PROGRESS_TXT_FILE.open():
+    for line in TR2Paths.progress_file.open():
         line = line.strip()
         if line == "# FUNCTIONS":
             in_functions = True
@@ -698,9 +695,9 @@ class ProgressSVG(Container):
 
 
 def main() -> None:
-    progress_file = parse_progress_file(TR2X_PROGRESS_FILE)
+    progress_file = parse_progress_file(TR2Paths.progress_file)
 
-    with PROGRESS_SVG_FILE.open("w") as handle:
+    with TR2Paths.progress_svg.open("w") as handle:
         svg = ProgressSVG(progress_file.functions)
         print(svg.render(), file=handle)
 

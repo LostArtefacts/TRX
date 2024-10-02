@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+import json
+import re
+from pathlib import Path
+
+from shared.paths import SHARED_INCLUDE_DIR, TR1Paths, TR2Paths
+
+GAME_STRING_DEF_PATHS = [
+    TR1Paths.src_dir / "game/game_string.def",
+    SHARED_INCLUDE_DIR / "game/game_string.def",
+]
+
+
+def get_strings_map(paths: list[Path]) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for path in paths:
+        for line in path.read_text().splitlines():
+            if match := re.match(
+                r'^\w+DEFINE\((\w+),\s*"([^"]+)"\)$', line.strip()
+            ):
+                result[match.group(1)] = match.group(2)
+    return result
+
+
+def process_tr1() -> None:
+    strings_map = get_strings_map(GAME_STRING_DEF_PATHS)
+    assert strings_map
+
+    def postprocess_gameflow(
+        gameflow: str, strings_map: dict[str, str]
+    ) -> str:
+        gameflow = re.sub(
+            r'^(    "strings": {)[^}]*(})',
+            '    "strings": {\n'
+            + "\n".join(
+                f"        {json.dumps(key)}: {json.dumps(value)},"
+                for key, value in sorted(
+                    strings_map.items(), key=lambda kv: kv[0]
+                )
+            )
+            + "\n    }",
+            gameflow,
+            flags=re.M | re.DOTALL,
+        )
+        return gameflow
+
+    for gameflow_path in TR1Paths.shipped_data_dir.rglob("*gameflow*.json*"):
+        old_gameflow = gameflow_path.read_text()
+        new_gameflow = postprocess_gameflow(old_gameflow, strings_map)
+        if new_gameflow != old_gameflow:
+            gameflow_path.write_text(new_gameflow)
+
+
+def process_tr2() -> None:
+    GAME_STRING_DEF_PATHS = [
+        TR2Paths.src_dir / "game/game_string.def",
+        SHARED_INCLUDE_DIR / "game/game_string.def",
+    ]
+    OBJECT_STRINGS_DEF_PATH = SHARED_INCLUDE_DIR / "game/objects/names_tr2.def"
+
+    def postprocess_gameflow(
+        gameflow: str,
+        object_strings_map: dict[str, str],
+        game_strings_map: dict[str, str],
+    ) -> str:
+        gameflow = re.sub(
+            r'^(    "object_strings": {)[^}]*(})',
+            '    "object_strings": {\n'
+            + "\n".join(
+                f"        {json.dumps(key)}: {json.dumps(value)},"
+                for key, value in object_strings_map.items()
+            )
+            + "\n    }",
+            gameflow,
+            flags=re.M | re.DOTALL,
+        )
+
+        gameflow = re.sub(
+            r'^(    "game_strings": {)[^}]*(})',
+            '    "game_strings": {\n'
+            + "\n".join(
+                f"        {json.dumps(key)}: {json.dumps(value)},"
+                for key, value in sorted(
+                    game_strings_map.items(), key=lambda kv: kv[0]
+                )
+            )
+            + "\n    }",
+            gameflow,
+            flags=re.M | re.DOTALL,
+        )
+        return gameflow
+
+    object_strings_map = get_strings_map([OBJECT_STRINGS_DEF_PATH])
+    game_strings_map = get_strings_map(GAME_STRING_DEF_PATHS)
+    assert object_strings_map
+    assert game_strings_map
+
+    for gameflow_path in TR2Paths.shipped_data_dir.rglob("*gameflow*.json*"):
+        old_gameflow = gameflow_path.read_text()
+        new_gameflow = postprocess_gameflow(
+            old_gameflow, object_strings_map, game_strings_map
+        )
+        if new_gameflow != old_gameflow:
+            gameflow_path.write_text(new_gameflow)
+
+
+def main() -> None:
+    process_tr1()
+    process_tr2()
+
+
+if __name__ == "__main__":
+    main()

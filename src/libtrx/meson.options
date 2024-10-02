@@ -1,0 +1,20 @@
+option(
+  'staticdeps',
+  type: 'boolean',
+  value: true,
+  description: 'Try to build against static dependencies. default: true'
+)
+
+option(
+  'tr_version',
+  type: 'integer',
+  min: 1,
+  max: 2,
+  description: 'Which engine version to compile for'
+)
+
+option(
+  'gfx_gl_default_backend',
+  type: 'string',
+  description: 'Which OpenGL version to target'
+)

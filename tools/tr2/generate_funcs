@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-from pathlib import Path
 import re
+from pathlib import Path
 
-from tr2x.ida_progress import FUNC_PTR_RE, VAR_RE, Symbol, parse_progress_file
-from tr2x.paths import TR2X_PROGRESS_FILE, TR2X_SRC_DIR
+from shared.ida_progress import (
+    FUNC_PTR_RE,
+    VAR_RE,
+    Symbol,
+    parse_progress_file,
+)
+from shared.paths import TR2Paths
 
-FUNCS_H_FILE = TR2X_SRC_DIR / "global/funcs.h"
-VARS_H_FILE = TR2X_SRC_DIR / "global/vars_decomp.h"
-TYPES_H_FILE = TR2X_SRC_DIR / "global/types.h"
+FUNCS_H_FILE = TR2Paths.src_dir / "global/funcs.h"
+VARS_H_FILE = TR2Paths.src_dir / "global/vars_decomp.h"
+TYPES_H_FILE = TR2Paths.src_dir / "global/types.h"
 
 
 COMMON_HEADER = [
@@ -145,7 +150,13 @@ def make_types_h(types: list[str]) -> None:
         "\n".join(
             [
                 *header,
-                "\n\n".join([definition.strip() for definition in types if '// decompiled' not in definition.strip()]),
+                "\n\n".join(
+                    [
+                        definition.strip()
+                        for definition in types
+                        if "// decompiled" not in definition.strip()
+                    ]
+                ),
                 *footer,
             ]
         )
@@ -154,7 +165,7 @@ def make_types_h(types: list[str]) -> None:
 
 
 def main() -> None:
-    progress_file = parse_progress_file(TR2X_PROGRESS_FILE)
+    progress_file = parse_progress_file(TR2Paths.progress_file)
 
     make_funcs_h(progress_file.functions)
     make_vars_h(progress_file.variables)

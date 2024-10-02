@@ -9,31 +9,38 @@ on:
     - develop
 
 jobs:
-  package_multiplatform:
-    name: Build prerelease assets
+  package_tr1_multiplatform:
+    name: Build TR1
     if: vars.PRERELEASE_ENABLE == 'true'
-    uses: ./.github/workflows/job_build_game.yml
+    uses: ./.github/workflows/job_build_tr1.yml
     secrets: inherit
 
-  package_mac:
-    name: "Build prerelease assets (mac)"
+  package_tr1_mac:
+    name: Build TR1
     if: |
       vars.PRERELEASE_ENABLE == 'true' &&
       vars.MACOS_ENABLE == 'true'
-    uses: ./.github/workflows/job_build_game_macos.yml
+    uses: ./.github/workflows/job_build_tr1_macos.yml
     with:
       let_mac_fail: true
+    secrets: inherit
+
+  package_tr2_multiplatform:
+    name: Build TR2
+    if: vars.PRERELEASE_ENABLE == 'true'
+    uses: ./.github/workflows/job_build_tr2.yml
     secrets: inherit
 
   publish_prerelease:
     if: vars.PRERELEASE_ENABLE == 'true'
     name: Create a prerelease
     needs:
-      - package_multiplatform
-      - package_mac
+      - package_tr1_multiplatform
+      - package_tr1_mac
+      - package_tr2_multiplatform
     with:
-      release_name: 'Development snapshot'
       draft: false
       prerelease: true
       tag_name: 'latest'
+      changelog_game_version: 'all'
     uses: ./.github/workflows/job_release.yml

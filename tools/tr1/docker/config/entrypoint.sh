@@ -7,7 +7,7 @@ echo $HOME
 shopt -s globstar
 
 # Build the common lib DLL
-cd /app/subprojects/libtrx/tools/config/
+cd /app/tools/config/
 rm -rf **/bin **/obj
 dotnet restore -p:EnableWindowsTargeting=true
 dotnet publish -c Release -p:EnableWindowsTargeting=true
