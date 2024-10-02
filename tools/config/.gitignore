@@ -1,0 +1,15 @@
+*.suo
+*.o
+*.obj
+*.pdb
+*.lib
+*.exp
+[Dd]ebug/
+[Rr]elease/
+[Oo]bj/
+*.user
+*.ipch
+.vs/
+*.vcxproj
+*.filters
+*.pubxml
