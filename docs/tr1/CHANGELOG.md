@@ -19,7 +19,7 @@
 - fixed Story So Far feature looping cutscenes forever (#1551, regression from 4.4)
 - improved object name matching in console commands to work like TR2X
 
-## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3-102-g458cd96...4.4) - 2024-09-20
+## [4.4](https://github.com/LostArtefacts/TR1X/compare/4.3...4.4) - 2024-09-20
 - added `/exit` command (#1462)
 - added reflections to Midas Hand death animation and savegame crystals (#154)
 - added an option to use PS1 tinted savegame crystals (#1506)
