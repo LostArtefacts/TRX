@@ -200,7 +200,7 @@ static void M_Start(void *arg)
 
     // LaraGun() expects request_gun_type to be set only when it
     // really is needed, not at all times.
-    // https://github.com/LostArtefacts/TR1X/issues/36
+    // https://github.com/LostArtefacts/TRX/issues/36
     g_Lara.request_gun_type = LGT_UNARMED;
 }
 
