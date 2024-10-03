@@ -2,9 +2,17 @@
 
 ## Build workflow
 
+Initial build:
+
 - Compile the project (described in the next section)
-- Copy all .dll and .exe files from `build/` to your game directory
+- Copy all executable files from `build/` to your game directory
 - Copy the contents of `data/ship/` to your game directory
+
+Subsequent builds:
+
+- Compile the project
+- Copy all executable files from `build/` to your game directory
+  (we recommend making a script file to do this)
 
 
 
@@ -15,8 +23,9 @@
 - **With Docker**:
 
     Make sure to install Docker and [just](https://github.com/casey/just), then
-    run `just`. The binaries should appear in the `build/` directory.
-    To see list of possible build targets, run `just -l`.
+    run `just`. The binaries should appear in the `build/` subdirectory
+    relevant to the chosen project and platform. To see list of possible build
+    targets, run `just -l`.
 
 - **Without Docker**:
 
@@ -54,6 +63,7 @@ even refuse to compile.
 ### Top values
 
 - Compatibility with the original game's look and feel
+- Player choice whether to enable any impactful changes
 - Maintainability
 - Automation where possible
 - Documentation (git history and GitHub issues are great for this purpose)
@@ -75,95 +85,89 @@ To install required external dependencies on Ubuntu:
 apt-get install -y clang-format-18
 ```
 
-After this, each time you make a commit a hook should trigger to automatically
-format your changes. Additionally, in order to trigger this process manually,
-you can run `just lint-format`. This doesn't include the slowest checks that
-would hinder productivity – to run the full process, you can run `just lint`.
-If for any reason you can't install the above software on your machine, our CI
-pipeline will still show what needs to be changed in case of mistakes.
+After this, each commit should trigger a hook to automatically format changes.
+To manually initiate this process, run `just lint-format`. This excludes the
+slower checks that could affect productivity – for the full process, run `just
+lint`. If installing the above software isn't possible, the CI pipeline will
+indicate necessary changes in case of mistakes.
 
 
 ### Coding convention
 
-While the existing source code does not conform to the rules because it uses
-the original Core Design's naming, new code should adhere to the following
-guidelines:
-
 - Variables are `lower_snake_case`
 - Global variables are `g_PascalCase`
-- Module variables are `m_PascalCase`
-- Function names are `Module_PascalCase`
+- Module variables are `m_PascalCase` and static
+- Global function names are `Module_PascalCase`
+- Module functions are `M_PascalCase` and static
 - Macros are `UPPER_SNAKE_CASE`
 - Struct names are `UPPER_SNAKE_CASE`
 - Struct members are `lower_snake_case`
 - Enum names are `UPPER_SNAKE_CASE`
 - Enum members are `UPPER_SNAKE_CASE`
 
-Try to avoid global variables, if possible declare them as `static` in the
-module you're using them. Changes to original game functionality most often
-should be configurable.
+It's recommended to minimize the use of global variables. Instead, consider
+declaring them as `static` within the module they're used.
 
 Other things:
 
-- We use clang-format to automatically format the code
-- We do not omit `{` and `}`
-- We use K&R brace style
-- We condense `if` expressions into one, so:
-    ```
+- We use clang-format to automatically format the code.
+- We do not omit `{` and `}`.
+- We use K&R brace style.
+- We condense consecutive `if` expressions into one.
+
+    Recommended:
+
+    ```c
     if (a && b) {
     }
     ```
 
-    and not:
+    Not recommended:
 
-    ```
+    ```c
     if (a) {
         if (b) {
         }
     }
     ```
 
-    If the expressions are extraordinarily complex, we refactor these into
-    smaller conditions or functions.
+    When expressions become extraordinarily complex, consider refactoring them
+    into smaller conditions or functions.
 
 
 ### Submitting changes
 
-We commit via pull requests and avoid committing directly to `develop`, which
-is a protected branch. Each pull request gets peer-reviewed and should have at
-least one approval from the code developer team before merging. We never merge
-until all discussions are marked as resolved and generally try to test things
-before merging. When a remark on the code review is trivial and the PR author
-has pushed a fix for it, it should be resolved by the pull request author.
-Otherwise we don't mark the discussions as resolved and give a chance for the
-reviewer to reply. Once all change requests are addressed, we should re-request
-a review from the interested parties.
+We commit via pull requests rather than directly to the protected `develop`
+branch. Each pull request undergoes a peer review and requires at least one
+approval from the development team before merging. We ensure that all
+discussions are resolved and aim to test changes prior to merging. When a code
+review comment is minor and the author has addressed it, they should mark it as
+resolved. Otherwise, we leave discussions open to allow reviewers to respond.
+After addressing all change requests, it's considerate to re-request a review
+from the relevant parties.
 
 
 ### Changelog
 
-We keep a changelog in `CHANGELOG.md`. Anything other than an internal change
-or refactor needs an entry there. Furthermore, new features and OG bugfixes
-should be documented in README as well.
+We maintain a changelog for each project in the `CHANGELOG.md` files, recording
+any changes except internal modifications or refactors. New features and
+original bug fixes should also be documented in the `README.md`. If a change
+affects gameflow behavior, be sure to update the `GAMEFLOW.md` accordingly.
+Likewise, changes to the console commands should update `COMMANDS.md`.
 
 
 ### Commit scope
 
-Either you can make a lot of throwaway commits such as 'test' 'continue
-testing' 'fix 1' 'fix 2' 'fix of the fix' and then squash your pull request as
-a whole, or you can craft a nice history with proper commit messages and then
-merge-rebase. The first case is mostly acceptable for isolated features, but in
-general we prefer the latter approach. As a principle, refactors should made in
-separate commits. Code review changes are best made incrementally and then
-squashed prior to merging, for easing the review process.
+When merging, we use rebasing for a clean commit history. For that reason,
+each significant change should have an isolated commit. It's okay to force-push
+pull requests.
 
 
 ### Commit messages
 
-**The most important thing to remember:** bug fixes and feature implementations
-should always include the phrase `Resolves #123`. If there's no ticket and the
-pull request you're making contains player-facing changes, a ticket needs
-to be created first – no exceptions.
+**Bug fixes and feature implementations should include the phrase `Resolves
+#123`.** For player-facing changes without an existing ticket, a ticket needs
+to be created first.
 
 Anything else is just for consistency and general neatness. Our commit messages
 aim to respect the 50/72 rule and have the following form:
@@ -206,18 +210,22 @@ va_copy(). After rewriting properly the Log_Message() function, the
 segmentation fault is gone. Tested on both Linux and Windows builds.
 ```
 
-- This has no ticket number, but it was an internal change improving support
-  for a platform unsupported at that time, which made it acceptable.
+> [!NOTE]
+> This has no ticket number, but it was an internal change improving support
+> for a platform unsupported at that time, which made it acceptable.
 
 Bad:
+
 ```
 ui: implemented the ability to switch resolutions from the ui
 ```
+
 - the subject doesn't use imperative mood
 - the subject is too long
-- missing ticket number
+- it's missing a ticket number
 
 Bad:
+
 ```
 dart: added dart emitters to the savegame (#779)
 
@@ -230,9 +238,9 @@ Resolves #774.
 - it duplicates the subject in the message body
 - the subject doesn't use imperative mood
 
-When merging via squash, it's OK to have GitHub append the pull request number,
-but pay special attention to the body field which often gets filled with
-garbage.
+When using squash to merge, it is acceptable for GitHub to append the pull
+request number, but it's important to carefully review the body field, as it
+often includes unwanted content.
 
 
 ### Branching model
@@ -248,22 +256,30 @@ released ahead of unpublished work in `develop` are merged directly to
 
 ### Tooling
 
-We try to code all of our internal tools in a reasonably recent version of
-Python. Avoid bash, shell and other similar languages.
+Internal tools are typically coded in a reasonably recent version of Python,
+while avoiding the use of bash, shell, and similar languages.
 
 
 ### Releasing a new version
 
 New version releases happen automatically whenever a new tag is pushed to the
 `stable` branch with the help of GitHub actions. In general this is accompanied
-with a special commit `docs: release X.Y.Z` that assigns unreleased changes to
-a specific version. See git history for details.
+with a special commit `docs: release X.Y.Z` that also adjusts the changelog.
+See git history for details.
 
 
 
 ## Glossary
 
-- OG: original game
-- UK Box: the version released on discs in the UK
-- Multipatch: the version released on Steam
-- PS: PlayStation version of the game
+- OG: original game (for TR1 this is most often TombATI)
+- PS: the PlayStation version of the game
+- UK Box: a variant of Tomb Raider II released on physical discs in the UK
+- Multipatch: a variant of Tomb Raider II released on Steam
+- Vole: a rat that swims
+- Pod: a mutant egg (including the big egg)
+- Cabin: the room with the pistols from Natla's Mines
+- Statue: centaur statues from the entrance of Tihocan's Tomb
+- Bacon Lara: the doppelgänger Lara in the Atlantis level
+- Torso/Adam: the big boss mutant from The Great Pyramid level
+- Tomb1Main: the previous name of this TR1X project
+- T1M: short hand of Tomb1Main
