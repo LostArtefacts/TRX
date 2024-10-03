@@ -2,7 +2,7 @@ CWD := `pwd`
 HOST_USER_UID := `id -u`
 HOST_USER_GID := `id -g`
 
-default: (tr1-build-win "debug")
+default: (tr1-build-win "debug") (tr2-build-win "debug")
 
 _docker_push tag:
     docker push {{tag}}
