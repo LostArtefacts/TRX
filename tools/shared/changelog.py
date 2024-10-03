@@ -26,14 +26,12 @@ def update_changelog_to_new_version(
 ) -> str:
     if f"[{new_version_name}]" in changelog:
         return changelog
-    changelog = re.sub("Unreleased", new_version_name, changelog, count=1)
-    changelog = re.sub(stable_branch, old_tag, changelog, count=1)
-    changelog = re.sub(develop_branch, new_tag, changelog, count=1)
-    changelog = re.sub(
-        "××××-××-××", datetime.now().strftime("%Y-%m-%d"), changelog
-    )
+    today = datetime.now().strftime('%Y-%m-%d')
+    repo_url = 'https://github.com/LostArtefacts/TRX'
+    changelog = re.sub(r'^## \[Unreleased\].*\n*', '', changelog, flags=re.M)
     changelog = (
-        f"## [Unreleased](https://github.com/LostArtefacts/TRX/compare/{stable_branch or new_tag}...{develop_branch}) - ××××-××-××\n\n"
+        f"## [Unreleased]({repo_url}/compare/{new_tag}...{develop_branch}) - ××××-××-××\n\n"
+        f"## [{new_version_name}]({repo_url}/compare/{old_tag}...{new_tag}) - {today}\n"
         + changelog
     )
     return changelog
