@@ -320,6 +320,18 @@ void GFX_3D_Renderer_SetTextureFilter(
         filter == GFX_TF_BILINEAR);
 }
 
+void GFX_3D_Renderer_SetDepthWritesEnabled(
+    GFX_3D_RENDERER *const renderer, const bool is_enabled)
+{
+    assert(renderer);
+    GFX_3D_VertexStream_RenderPending(&renderer->vertex_stream);
+    if (is_enabled) {
+        glDepthMask(GL_TRUE);
+    } else {
+        glDepthMask(GL_FALSE);
+    }
+}
+
 void GFX_3D_Renderer_SetDepthTestEnabled(
     GFX_3D_RENDERER *renderer, bool is_enabled)
 {

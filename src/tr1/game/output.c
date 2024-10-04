@@ -86,6 +86,7 @@ static const int16_t *M_CalcVerticeLight(const int16_t *obj_ptr);
 static const int16_t *M_CalcVerticeEnvMap(const int16_t *obj_ptr);
 static const int16_t *M_CalcSkyboxLight(const int16_t *obj_ptr);
 static const int16_t *M_CalcRoomVertices(const int16_t *obj_ptr);
+static const int16_t *M_CalcRoomVerticesWibble(const int16_t *obj_ptr);
 static int32_t M_CalcFogShade(int32_t depth);
 static void M_CalcWibbleTable(void);
 
@@ -406,9 +407,9 @@ static const int16_t *M_CalcSkyboxLight(const int16_t *obj_ptr)
 
 static const int16_t *M_CalcRoomVertices(const int16_t *obj_ptr)
 {
-    int32_t vertex_count = *obj_ptr++;
+    const int32_t vertex_count = *obj_ptr++;
 
-    for (int i = 0; i < vertex_count; i++) {
+    for (int32_t i = 0; i < vertex_count; i++) {
         PHD_VBUF *const vbuf = &m_VBuf[i];
 
         // clang-format off
@@ -433,35 +434,31 @@ static const int16_t *M_CalcRoomVertices(const int16_t *obj_ptr)
         const double zv = zv_int;
         // clang-format on
 
-        m_VBuf[i].xv = xv;
-        m_VBuf[i].yv = yv;
-        m_VBuf[i].zv = zv;
-        m_VBuf[i].g = obj_ptr[3] & MAX_LIGHTING;
+        vbuf->xv = xv;
+        vbuf->yv = yv;
+        vbuf->zv = zv;
+        vbuf->g = obj_ptr[3] & MAX_LIGHTING;
 
         if (zv < Output_GetNearZ()) {
-            m_VBuf[i].clip = 0x8000;
+            vbuf->clip = 0x8000;
         } else {
             int16_t clip_flags = 0;
             const int32_t depth = zv_int >> W2V_SHIFT;
             if (depth > Output_GetDrawDistMax()) {
-                m_VBuf[i].g = MAX_LIGHTING;
+                vbuf->g = MAX_LIGHTING;
                 if (!m_IsSkyboxEnabled) {
                     clip_flags |= 16;
                 }
             } else if (depth) {
-                m_VBuf[i].g += M_CalcFogShade(depth);
+                vbuf->g += M_CalcFogShade(depth);
                 if (!m_IsWaterEffect) {
-                    CLAMPG(m_VBuf[i].g, MAX_LIGHTING);
+                    CLAMPG(vbuf->g, MAX_LIGHTING);
                 }
             }
 
             const double persp = g_PhdPersp / (double)zv;
-            double xs = Viewport_GetCenterX() + xv * persp;
-            double ys = Viewport_GetCenterY() + yv * persp;
-            if (m_IsWibbleEffect && !(obj_ptr[3] & NO_VERT_MOVE)) {
-                xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & 0x1F];
-                ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & 0x1F];
-            }
+            const double xs = Viewport_GetCenterX() + xv * persp;
+            const double ys = Viewport_GetCenterY() + yv * persp;
 
             if (xs < g_PhdLeft) {
                 clip_flags |= 1;
@@ -476,17 +473,55 @@ static const int16_t *M_CalcRoomVertices(const int16_t *obj_ptr)
             }
 
             if (m_IsWaterEffect) {
-                m_VBuf[i].g += m_ShadeTable[(
+                vbuf->g += m_ShadeTable[(
                     ((uint8_t)m_WibbleOffset
                      + (uint8_t)m_RandTable[(vertex_count - i) % WIBBLE_SIZE])
                     % WIBBLE_SIZE)];
-                CLAMP(m_VBuf[i].g, 0, 0x1FFF);
+                CLAMP(vbuf->g, 0, 0x1FFF);
             }
 
-            m_VBuf[i].xs = xs;
-            m_VBuf[i].ys = ys;
-            m_VBuf[i].clip = clip_flags;
+            vbuf->xs = xs;
+            vbuf->ys = ys;
+            vbuf->clip = clip_flags;
         }
+        obj_ptr += 4;
+    }
+
+    return obj_ptr;
+}
+
+static const int16_t *M_CalcRoomVerticesWibble(const int16_t *obj_ptr)
+{
+    const int32_t vertex_count = *obj_ptr++;
+
+    for (int32_t i = 0; i < vertex_count; i++) {
+        PHD_VBUF *const vbuf = &m_VBuf[i];
+        if (obj_ptr[3] & NO_VERT_MOVE) {
+            obj_ptr += 4;
+            continue;
+        }
+
+        double xs = vbuf->xs;
+        double ys = vbuf->ys;
+        xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & (WIBBLE_SIZE - 1)];
+        ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & (WIBBLE_SIZE - 1)];
+
+        int16_t clip_flags = vbuf->clip & ~15;
+        if (xs < g_PhdLeft) {
+            clip_flags |= 1;
+        } else if (xs > g_PhdRight) {
+            clip_flags |= 2;
+        }
+
+        if (ys < g_PhdTop) {
+            clip_flags |= 4;
+        } else if (ys > g_PhdBottom) {
+            clip_flags |= 8;
+        }
+
+        vbuf->xs = xs;
+        vbuf->ys = ys;
+        vbuf->clip = clip_flags;
         obj_ptr += 4;
     }
 
@@ -762,7 +797,18 @@ void Output_DrawSkybox(const int16_t *obj_ptr)
 
 void Output_DrawRoom(const int16_t *obj_ptr)
 {
+    const int16_t *const old_obj_ptr = obj_ptr;
+
     obj_ptr = M_CalcRoomVertices(obj_ptr);
+
+    if (m_IsWibbleEffect) {
+        S_Output_DisableDepthWrites();
+        obj_ptr = M_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
+        obj_ptr = M_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
+        S_Output_EnableDepthWrites();
+        obj_ptr = M_CalcRoomVerticesWibble(old_obj_ptr);
+    }
+
     obj_ptr = M_DrawObjectGT4(obj_ptr + 1, *obj_ptr);
     obj_ptr = M_DrawObjectGT3(obj_ptr + 1, *obj_ptr);
     obj_ptr = M_DrawRoomSprites(obj_ptr + 1, *obj_ptr);

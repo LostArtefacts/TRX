@@ -19,6 +19,7 @@
 - fixed `/endlevel` displaying a success message in the title screen
 - fixed Story So Far feature looping cutscenes forever (#1551, regression from 4.4)
 - improved object name matching in console commands to work like TR2X
+- improved vertex movement when looking through water portals even more (#1493)
 
 ## [4.4](https://github.com/LostArtefacts/TRX/compare/tr1-4.3...tr1-4.4) - 2024-09-20
 - added `/exit` command (#1462)

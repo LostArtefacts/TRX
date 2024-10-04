@@ -12,6 +12,8 @@ void S_Output_Shutdown(void);
 
 void S_Output_EnableTextureMode(void);
 void S_Output_DisableTextureMode(void);
+void S_Output_EnableDepthWrites(void);
+void S_Output_DisableDepthWrites(void);
 void S_Output_EnableDepthTest(void);
 void S_Output_DisableDepthTest(void);
 

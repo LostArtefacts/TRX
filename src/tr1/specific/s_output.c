@@ -424,6 +424,16 @@ void S_Output_DisableTextureMode(void)
     GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
 }
 
+void S_Output_EnableDepthWrites(void)
+{
+    GFX_3D_Renderer_SetDepthWritesEnabled(m_Renderer3D, true);
+}
+
+void S_Output_DisableDepthWrites(void)
+{
+    GFX_3D_Renderer_SetDepthWritesEnabled(m_Renderer3D, false);
+}
+
 void S_Output_EnableDepthTest(void)
 {
     GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, true);

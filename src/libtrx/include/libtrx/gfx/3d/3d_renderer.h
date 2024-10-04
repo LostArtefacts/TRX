@@ -70,6 +70,8 @@ void GFX_3D_Renderer_SetPrimType(
     GFX_3D_RENDERER *renderer, GFX_3D_PRIM_TYPE value);
 void GFX_3D_Renderer_SetTextureFilter(
     GFX_3D_RENDERER *renderer, GFX_TEXTURE_FILTER filter);
+void GFX_3D_Renderer_SetDepthWritesEnabled(
+    GFX_3D_RENDERER *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetDepthTestEnabled(
     GFX_3D_RENDERER *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetBlendingMode(
