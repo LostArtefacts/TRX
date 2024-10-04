@@ -324,10 +324,10 @@ int32_t __cdecl Requester_Display(
 
     // TODO: WTF!?
     if (!strncmp(
-            req->item_texts1[req->selected - req->line_offset]->text,
+            req->item_texts1[req->selected - req->line_offset]->content,
             g_GF_PCStrings[GF_S_PC_EMPTY_SLOT], 12)
         && !strcmp(
-            g_PasswordText1->text,
+            g_PasswordText1->content,
             g_GF_GameStrings[GF_S_GAME_PASSPORT_LOAD_GAME])) {
         g_Input = 0;
         return 0;

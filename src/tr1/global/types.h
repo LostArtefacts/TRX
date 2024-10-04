@@ -668,7 +668,7 @@ typedef struct {
     struct {
         TEXT_STYLE style;
     } outline;
-    char *string;
+    char *content;
     BAR_INFO progress_bar;
 } TEXTSTRING;
 

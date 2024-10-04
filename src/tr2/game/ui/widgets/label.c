@@ -76,7 +76,7 @@ void UI_Label_ChangeText(UI_WIDGET *const widget, const char *const text)
 const char *UI_Label_GetText(UI_WIDGET *const widget)
 {
     UI_LABEL *const self = (UI_LABEL *)widget;
-    return self->text->text;
+    return self->text->content;
 }
 
 void UI_Label_SetSize(
