@@ -32,6 +32,11 @@ typedef struct __PACKING {
     XYZ_16 max;
 } BOUNDS_16;
 
+typedef struct __PACKING {
+    XYZ_32 min;
+    XYZ_32 max;
+} BOUNDS_32;
+
 #elif TR_VERSION == 2
 typedef struct __PACKING {
     int16_t min_x;

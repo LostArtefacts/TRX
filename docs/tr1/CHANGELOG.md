@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/stable...develop) - ××××-××-××
+- added a photo mode feature (#1669)
 - added `/sfx` command
 - added `/nextlevel` alias to `/endlevel` console command
 - added `/quit` alias to `/exit` console command
