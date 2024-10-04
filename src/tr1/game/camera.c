@@ -875,9 +875,9 @@ void Camera_MoveManual(void)
     } else if (g_Input.camera_right) {
         M_OffsetAdditionalAngle(-camera_delta);
     }
-    if (g_Input.camera_up) {
+    if (g_Input.camera_forward) {
         M_OffsetAdditionalElevation(-camera_delta);
-    } else if (g_Input.camera_down) {
+    } else if (g_Input.camera_back) {
         M_OffsetAdditionalElevation(camera_delta);
     }
     if (g_Input.camera_reset) {
