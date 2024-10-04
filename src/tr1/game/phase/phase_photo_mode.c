@@ -1,5 +1,6 @@
 #include "game/phase/phase_photo_mode.h"
 
+#include "config.h"
 #include "game/camera.h"
 #include "game/game.h"
 #include "game/input.h"
@@ -8,9 +9,11 @@
 #include "game/overlay.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/ui/widgets/photo_mode.h"
 #include "game/viewport.h"
 
 #include <libtrx/game/console/common.h>
+#include <libtrx/game/game_string.h>
 
 #include <stdio.h>
 
@@ -23,10 +26,12 @@ typedef enum {
     PS_COOLDOWN,
 } PHOTO_STATUS;
 
+static bool m_OldUIState;
 static int32_t m_OldFOV;
 static int32_t m_CurrentFOV;
 
 static PHOTO_STATUS m_Status = PS_NONE;
+static UI_WIDGET *m_PhotoMode = NULL;
 
 static void M_Start(void *arg);
 static void M_End(void);
@@ -38,18 +43,35 @@ static void M_Start(void *arg)
 {
     m_Status = PS_NONE;
     g_OldInputDB = g_Input;
+    m_OldUIState = g_Config.ui.enable_ui;
     m_OldFOV = Viewport_GetFOV();
     m_CurrentFOV = m_OldFOV / PHD_DEGREE;
 
     Overlay_HideGameInfo();
     Music_Pause();
     Sound_PauseAll();
+
+    m_PhotoMode = UI_PhotoMode_Create();
+    if (!g_Config.ui.enable_ui) {
+        Console_Log(
+            GS(OSD_PHOTO_MODE_LAUNCHED),
+            Input_GetKeyName(
+                CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_TOGGLE_UI));
+    }
 }
 
 static void M_End(void)
 {
     g_Input = g_OldInputDB;
     Viewport_SetFOV(m_OldFOV);
+
+    if (m_OldUIState != g_Config.ui.enable_ui) {
+        g_Config.ui.enable_ui ^= true;
+        Config_Write();
+    }
+
+    m_PhotoMode->free(m_PhotoMode);
+    m_PhotoMode = NULL;
 
     Music_Unpause();
     Sound_UnpauseAll();
@@ -73,6 +95,7 @@ static PHASE_CONTROL M_Control(int32_t nframes)
     } else if (g_InputDB.action) {
         m_Status = PS_ACTIVE;
     } else {
+        m_PhotoMode->control(m_PhotoMode);
         M_AdjustFOV();
         Camera_Update();
     }
@@ -111,6 +134,10 @@ static void M_Draw(void)
     Interpolation_Disable();
     Game_DrawScene(false);
     Interpolation_Enable();
+
+    if (m_Status == PS_NONE) {
+        m_PhotoMode->draw(m_PhotoMode);
+    }
 }
 
 PHASER g_PhotoModePhaser = {
