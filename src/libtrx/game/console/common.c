@@ -15,38 +15,6 @@
 static bool m_IsOpened = false;
 static UI_WIDGET *m_Console;
 
-static void M_LogMultiline(const char *text);
-static void M_Log(const char *text);
-
-static void M_LogMultiline(const char *const text)
-{
-    assert(text != NULL);
-    char *wrapped_text = String_WordWrap(text, Console_GetMaxLineLength());
-
-    const char *start = wrapped_text;
-    while (true) {
-        const char *newline = strchr(start, '\n');
-        if (newline == NULL) {
-            break;
-        }
-        char temp[newline - start + 1];
-        strncpy(temp, start, newline - start);
-        temp[newline - start] = '\0';
-        M_Log(temp);
-        start = newline + 1;
-    }
-    if (*start != '\0') {
-        M_Log(start);
-    }
-    Memory_FreePointer(&wrapped_text);
-}
-
-static void M_Log(const char *text)
-{
-    assert(text != NULL);
-    UI_Console_HandleLog(m_Console, text);
-}
-
 void Console_Init(void)
 {
     m_Console = UI_Console_Create();
@@ -113,7 +81,7 @@ void Console_Log(const char *fmt, ...)
     va_end(va);
 
     LOG_INFO("%s", text);
-    M_LogMultiline(text);
+    UI_Console_HandleLog(m_Console, text);
     Memory_FreePointer(&text);
 }
 

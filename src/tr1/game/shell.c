@@ -148,6 +148,7 @@ void Shell_Init(const char *gameflow_path)
 void Shell_Shutdown(void)
 {
     GameFlow_Shutdown();
+    Text_Shutdown();
     GameBuf_Shutdown();
     Output_Shutdown();
     Input_Shutdown();

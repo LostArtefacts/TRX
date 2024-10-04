@@ -7,13 +7,13 @@
 #include "global/funcs.h"
 #include "global/vars.h"
 
+#include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
 #include <assert.h>
 #include <string.h>
 
-#define MAX_TEXTSTRINGS 128
-#define TEXT_Y_SPACING 3
+#define TEXT_MAX_STRINGS 128
 #define CHAR_SECRET_1 0x7Fu
 #define CHAR_SECRET_2 0x80u
 #define CHAR_SECRET_3 0x81u
@@ -26,18 +26,23 @@
 
 // TODO: replace textstring == NULL checks with assertions
 
-static TEXTSTRING m_TextStrings[MAX_TEXTSTRINGS];
+static TEXTSTRING m_TextStrings[TEXT_MAX_STRINGS] = { 0 };
 
 void __cdecl Text_Init(void)
 {
     Overlay_DisplayModeInfo(NULL);
-    for (int32_t i = 0; i < MAX_TEXTSTRINGS; i++) {
+    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
+        TEXTSTRING *const text = &m_TextStrings[i];
         m_TextStrings[i].flags.all = 0;
     }
 }
 
 void Text_Shutdown(void)
 {
+    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
+        TEXTSTRING *const text = &m_TextStrings[i];
+        Memory_FreePointer(&text->content);
+    }
 }
 
 TEXTSTRING *__cdecl Text_Create(
@@ -49,7 +54,7 @@ TEXTSTRING *__cdecl Text_Create(
     }
 
     int32_t free_idx = -1;
-    for (int32_t i = 0; i < MAX_TEXTSTRINGS; i++) {
+    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *const text = &m_TextStrings[i];
         if (!text->flags.active) {
             free_idx = i;
@@ -62,7 +67,7 @@ TEXTSTRING *__cdecl Text_Create(
     }
 
     TEXTSTRING *const text = &m_TextStrings[free_idx];
-    text->content = g_TextstringBuffers[free_idx];
+    text->content = Memory_DupStr(content);
     text->scale.h = PHD_ONE;
     text->scale.v = PHD_ONE;
     text->pos.x = (x * Text_GetScaleH(PHD_ONE)) / PHD_ONE;
@@ -83,9 +88,6 @@ TEXTSTRING *__cdecl Text_Create(
     text->flags.all = 0;
     text->flags.active = 1;
 
-    strncpy(text->content, content, TEXT_MAX_STRING_SIZE);
-    text->content[TEXT_MAX_STRING_SIZE - 1] = '\0';
-
     return text;
 }
 
@@ -96,8 +98,8 @@ void __cdecl Text_ChangeText(TEXTSTRING *const text, const char *const content)
     }
     assert(content != NULL);
     if (text->flags.active) {
-        strncpy(text->content, content, TEXT_MAX_STRING_SIZE);
-        text->content[TEXT_MAX_STRING_SIZE - 1] = '\0';
+        Memory_FreePointer(&text->content);
+        text->content = Memory_DupStr(content);
     }
 }
 
@@ -295,7 +297,7 @@ int32_t Text_GetHeight(const TEXTSTRING *const text)
     char *content = text->content;
     for (char letter = *content; letter != '\0'; letter = *content++) {
         if (text->flags.multiline && letter == '\n') {
-            height += TEXT_HEIGHT + TEXT_Y_SPACING;
+            height += TEXT_HEIGHT;
         }
     }
     return height * Text_GetScaleV(text->scale.v) / PHD_ONE;
@@ -305,7 +307,7 @@ void __cdecl Text_Draw(void)
 {
     // TODO: move me outta here!
     Console_Draw();
-    for (int32_t i = 0; i < MAX_TEXTSTRINGS; i++) {
+    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
         TEXTSTRING *const text = &m_TextStrings[i];
         if (text->flags.active) {
             Text_DrawText(text);
@@ -391,7 +393,7 @@ void __cdecl Text_DrawText(TEXTSTRING *const text)
         }
 
         if (text->flags.multiline && c == '\n') {
-            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * text->scale.v / PHD_ONE;
+            y += TEXT_HEIGHT * Text_GetScaleV(text->scale.v) / PHD_ONE;
             x = start_x;
             continue;
         }
@@ -483,4 +485,9 @@ uint32_t __cdecl Text_GetScaleV(const uint32_t value)
     const int32_t render_height = GetRenderHeight();
     const int32_t render_scale = MAX(render_height, 480) * PHD_ONE / 480;
     return (value / PHD_HALF) * (render_scale / PHD_HALF);
+}
+
+int32_t Text_GetMaxLineLength(void)
+{
+    return 640 / (TEXT_HEIGHT * 0.75);
 }

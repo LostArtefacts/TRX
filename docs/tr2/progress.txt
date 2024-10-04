@@ -4416,8 +4416,8 @@ typedef enum {
 0x0051BDAC  -       MCIDEVICEID g_MciDeviceID;
 0x0051BDB0  -       int32_t g_CD_LoopTrack;
 0x0051C820  +       TEXTSTRING g_TextstringTable[64]; // MAX_TEXTSTRINGS
-0x0051D6A0  -       int16_t g_TextstringCount = 0;
-0x0051D6C0  -       char g_TextstringBuffers[64][64];
+0x0051D6A0  +       int16_t g_TextstringCount = 0;
+0x0051D6C0  +       char g_TextstringBuffers[64][64];
 0x0051E6C4  -       int32_t g_SoundIsActive;
 0x0051E9E0  -       SAVEGAME_INFO g_SaveGame;
 0x005206E0  -       LARA_INFO g_Lara;
