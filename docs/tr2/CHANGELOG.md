@@ -7,6 +7,7 @@
 - fixed using console in cutscenes immediately exiting the game (regression from 0.3)
 - fixed Lara remaining tilted when teleporting off a vehicle while on a slope (LostArtefacts/TR2X#275, regression from 0.3)
 - fixed `/endlevel` displaying a success message in the title screen
+- fixed very loud music volume set by default (#1614)
 - improved vertex movement when looking through water portals (#1493)
 
 ## [0.3](https://github.com/LostArtefacts/TR2X/compare/0.2...0.3) - 2024-09-20
