@@ -27,8 +27,8 @@
 
 static int32_t m_FlashFrames = 0;
 static CLOCK_TIMER m_FlashTimer = { 0 };
-static int16_t m_TextstringCount = 0;
-static TEXTSTRING m_TextstringTable[TEXT_MAX_STRINGS] = { 0 };
+static int16_t m_TextCount = 0;
+static TEXTSTRING m_Table[TEXT_MAX_STRINGS] = { 0 };
 static char m_TextstringBuffers[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE] = { 0 };
 
 static int8_t m_TextSpacing[110] = {
@@ -99,8 +99,8 @@ static void M_DrawTextOutline(
     TEXT_STYLE text_style);
 
 static void M_DrawTextBackground(
-    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
-    TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy, int32_t w,
+    int32_t h, const TEXT_STYLE text_style)
 {
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenFBox(sx, sy, w, h);
@@ -137,8 +137,8 @@ static void M_DrawTextBackground(
 }
 
 static void M_DrawTextOutline(
-    UI_STYLE ui_style, int32_t sx, int32_t sy, int32_t w, int32_t h,
-    TEXT_STYLE text_style)
+    const UI_STYLE ui_style, const int32_t sx, const int32_t sy, int32_t w,
+    int32_t h, const TEXT_STYLE text_style)
 {
     if (ui_style == UI_STYLE_PC) {
         Output_DrawScreenBox(
@@ -204,261 +204,268 @@ RGBA_8888 Text_GetMenuColor(MENU_COLOR color)
 void Text_Init(void)
 {
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        m_TextstringTable[i].flags.all = 0;
+        TEXTSTRING *const text = &m_Table[i];
+        text->flags.all = 0;
     }
-    m_TextstringCount = 0;
+    m_TextCount = 0;
 }
 
-TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *string)
+TEXTSTRING *Text_Create(
+    const int16_t x, const int16_t y, const char *const content)
 {
-    if (m_TextstringCount == TEXT_MAX_STRINGS) {
+    if (m_TextCount == TEXT_MAX_STRINGS) {
         return NULL;
     }
 
-    TEXTSTRING *result = &m_TextstringTable[0];
+    TEXTSTRING *text = &m_Table[0];
     int n;
     for (n = 0; n < TEXT_MAX_STRINGS; n++) {
-        if (!result->flags.active) {
+        if (!text->flags.active) {
             break;
         }
-        result++;
+        text++;
     }
     if (n >= TEXT_MAX_STRINGS) {
         return NULL;
     }
 
-    if (!string) {
+    if (content == NULL) {
         return NULL;
     }
 
-    result->string = m_TextstringBuffers[n];
-    result->pos.x = x;
-    result->pos.y = y;
-    result->letter_spacing = 1;
-    result->word_spacing = 6;
-    result->scale.h = PHD_ONE;
-    result->scale.v = PHD_ONE;
+    text->content = m_TextstringBuffers[n];
+    text->pos.x = x;
+    text->pos.y = y;
+    text->letter_spacing = 1;
+    text->word_spacing = 6;
+    text->scale.h = PHD_ONE;
+    text->scale.v = PHD_ONE;
 
-    result->flags.all = 0;
-    result->flags.active = 1;
+    text->flags.all = 0;
+    text->flags.active = 1;
 
-    result->bgnd_size.x = 0;
-    result->bgnd_size.y = 0;
-    result->bgnd_off.x = 0;
-    result->bgnd_off.y = 0;
+    text->bgnd_size.x = 0;
+    text->bgnd_size.y = 0;
+    text->bgnd_off.x = 0;
+    text->bgnd_off.y = 0;
 
-    Text_ChangeText(result, string);
+    Text_ChangeText(text, content);
 
-    m_TextstringCount++;
+    m_TextCount++;
 
-    return result;
+    return text;
 }
 
-void Text_ChangeText(TEXTSTRING *textstring, const char *string)
+void Text_ChangeText(TEXTSTRING *const text, const char *const content)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    if (!textstring->flags.active) {
+    if (!text->flags.active) {
         return;
     }
-    size_t length = strlen(string) + 1;
-    strncpy(textstring->string, string, TEXT_MAX_STRING_SIZE - 1);
+    size_t length = strlen(content) + 1;
+    strncpy(text->content, content, TEXT_MAX_STRING_SIZE - 1);
     if (length >= TEXT_MAX_STRING_SIZE) {
-        textstring->string[TEXT_MAX_STRING_SIZE - 1] = '\0';
+        text->content[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
 }
 
-void Text_SetPos(TEXTSTRING *textstring, int16_t x, int16_t y)
+void Text_SetPos(TEXTSTRING *const text, int16_t x, int16_t y)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->pos.x = x;
-    textstring->pos.y = y;
+    text->pos.x = x;
+    text->pos.y = y;
 }
 
-void Text_SetScale(TEXTSTRING *textstring, int32_t scale_h, int32_t scale_v)
+void Text_SetScale(
+    TEXTSTRING *const text, const int32_t scale_h, const int32_t scale_v)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->scale.h = scale_h;
-    textstring->scale.v = scale_v;
+    text->scale.h = scale_h;
+    text->scale.v = scale_v;
 }
 
-void Text_Flash(TEXTSTRING *textstring, bool enable, int16_t rate)
+void Text_Flash(TEXTSTRING *const text, const bool enable, const int16_t rate)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
     if (enable) {
-        textstring->flags.flash = 1;
-        textstring->flash.rate = rate;
-        textstring->flash.count = rate;
+        text->flags.flash = 1;
+        text->flash.rate = rate;
+        text->flash.count = rate;
     } else {
-        textstring->flags.flash = 0;
+        text->flags.flash = 0;
     }
 }
 
-void Text_Hide(TEXTSTRING *textstring, bool enable)
+void Text_Hide(TEXTSTRING *const text, const bool enable)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.hide = enable;
+    text->flags.hide = enable;
 }
 
 void Text_AddBackground(
-    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
-    TEXT_STYLE style)
+    TEXTSTRING *const text, const int16_t w, const int16_t h, const int16_t x,
+    const int16_t y, const TEXT_STYLE style)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.background = 1;
-    textstring->bgnd_size.x = w;
-    textstring->bgnd_size.y = h;
-    textstring->bgnd_off.x = x;
-    textstring->bgnd_off.y = y;
-    textstring->background.style = style;
+    text->flags.background = 1;
+    text->bgnd_size.x = w;
+    text->bgnd_size.y = h;
+    text->bgnd_off.x = x;
+    text->bgnd_off.y = y;
+    text->background.style = style;
 }
 
-void Text_RemoveBackground(TEXTSTRING *textstring)
+void Text_RemoveBackground(TEXTSTRING *const text)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.background = 0;
+    text->flags.background = 0;
 }
 
-void Text_AddOutline(TEXTSTRING *textstring, bool enable, TEXT_STYLE style)
+void Text_AddOutline(
+    TEXTSTRING *const text, const bool enable, const TEXT_STYLE style)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.outline = 1;
-    textstring->outline.style = style;
+    text->flags.outline = 1;
+    text->outline.style = style;
 }
 
-void Text_RemoveOutline(TEXTSTRING *textstring)
+void Text_RemoveOutline(TEXTSTRING *const text)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.outline = 0;
+    text->flags.outline = 0;
 }
 
 void Text_AddProgressBar(
-    TEXTSTRING *textstring, int16_t w, int16_t h, int16_t x, int16_t y,
-    int32_t value, UI_STYLE style)
+    TEXTSTRING *const text, const int16_t w, const int16_t h, const int16_t x,
+    const int16_t y, const int32_t value, const UI_STYLE style)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.progress_bar = true;
-    textstring->progress_bar.custom_width = w;
-    textstring->progress_bar.custom_height = h;
-    textstring->progress_bar.custom_x = x;
-    textstring->progress_bar.custom_y = y;
-    textstring->progress_bar.blink = false;
-    textstring->progress_bar.location = BL_CUSTOM;
-    textstring->progress_bar.max_value = 100;
-    textstring->progress_bar.type = BT_PROGRESS;
-    textstring->progress_bar.value = value;
+    text->flags.progress_bar = true;
+    text->progress_bar.custom_width = w;
+    text->progress_bar.custom_height = h;
+    text->progress_bar.custom_x = x;
+    text->progress_bar.custom_y = y;
+    text->progress_bar.blink = false;
+    text->progress_bar.location = BL_CUSTOM;
+    text->progress_bar.max_value = 100;
+    text->progress_bar.type = BT_PROGRESS;
+    text->progress_bar.value = value;
     if (style == UI_STYLE_PC) {
-        textstring->progress_bar.color = BC_GOLD;
+        text->progress_bar.color = BC_GOLD;
     } else {
-        textstring->progress_bar.color = BC_PURPLE;
+        text->progress_bar.color = BC_PURPLE;
     }
 }
 
-void Text_CentreH(TEXTSTRING *textstring, bool enable)
+void Text_CentreH(TEXTSTRING *const text, const bool enable)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.centre_h = enable;
+    text->flags.centre_h = enable;
 }
 
-void Text_CentreV(TEXTSTRING *textstring, bool enable)
+void Text_CentreV(TEXTSTRING *const text, const bool enable)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.centre_v = enable;
+    text->flags.centre_v = enable;
 }
 
-void Text_AlignRight(TEXTSTRING *textstring, bool enable)
+void Text_AlignRight(TEXTSTRING *const text, const bool enable)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.right = enable;
+    text->flags.right = enable;
 }
 
-void Text_AlignBottom(TEXTSTRING *textstring, bool enable)
+void Text_AlignBottom(TEXTSTRING *const text, const bool enable)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.bottom = enable;
+    text->flags.bottom = enable;
 }
 
-void Text_SetMultiline(TEXTSTRING *textstring, bool enable)
+void Text_SetMultiline(TEXTSTRING *const text, const bool enable)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    textstring->flags.multiline = enable;
+    text->flags.multiline = enable;
 }
 
-int32_t Text_GetHeight(TEXTSTRING *textstring)
+int32_t Text_GetHeight(const TEXTSTRING *const text)
 {
+    if (text == NULL) {
+        return 0;
+    }
     int32_t height = TEXT_HEIGHT;
-    for (const char *ptr = textstring->string; *ptr != '\0'; *ptr++) {
-        const char letter = *ptr;
-        if (textstring->flags.multiline && letter == '\n') {
+    char *content = text->content;
+    for (char letter = *content; letter != '\0'; letter = *content++) {
+        if (text->flags.multiline && letter == '\n') {
             height += TEXT_HEIGHT + TEXT_Y_SPACING;
         }
     }
-    return height * textstring->scale.v / PHD_ONE;
+    return height * text->scale.v / PHD_ONE;
 }
 
-int32_t Text_GetWidth(const TEXTSTRING *const textstring)
+int32_t Text_GetWidth(const TEXTSTRING *const text)
 {
-    if (textstring == NULL) {
+    if (text == NULL) {
         return 0;
     }
 
     int32_t width = 0;
-    for (const char *ptr = textstring->string; *ptr != '\0'; *ptr++) {
-        const char letter = *ptr;
+    for (const char *content = text->content; *content != '\0'; *content++) {
+        const char letter = *content;
         if (letter == 0x7F || (letter > 10 && letter < 32)) {
             continue;
         }
 
         if (letter == 32) {
-            width += textstring->word_spacing;
+            width += text->word_spacing;
             continue;
         }
 
         uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
-        width += m_TextSpacing[sprite_num] + textstring->letter_spacing;
+        width += m_TextSpacing[sprite_num] + text->letter_spacing;
     }
-    width -= textstring->letter_spacing;
+    width -= text->letter_spacing;
     width &= 0xFFFE;
-    return width * textstring->scale.h / PHD_ONE;
+    return width * text->scale.h / PHD_ONE;
 }
 
-void Text_Remove(TEXTSTRING *textstring)
+void Text_Remove(TEXTSTRING *const text)
 {
-    if (!textstring) {
+    if (text == NULL) {
         return;
     }
-    if (textstring->flags.active) {
-        textstring->flags.active = 0;
-        m_TextstringCount--;
+    if (text->flags.active) {
+        text->flags.active = 0;
+        m_TextCount--;
     }
 }
 
@@ -466,75 +473,74 @@ void Text_Draw(void)
 {
     m_FlashFrames = Clock_GetFrameAdvance();
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *textstring = &m_TextstringTable[i];
-        if (textstring->flags.active && !textstring->flags.manual_draw) {
-            Text_DrawText(textstring);
+        TEXTSTRING *const text = &m_Table[i];
+        if (text->flags.active && !text->flags.manual_draw) {
+            Text_DrawText(text);
         }
     }
 }
 
-void Text_DrawText(TEXTSTRING *textstring)
+void Text_DrawText(TEXTSTRING *const text)
 {
     int sx, sy, sh, sv;
 
-    if (textstring->flags.hide) {
+    if (text->flags.hide) {
         return;
     }
 
-    if (textstring->flags.flash) {
-        textstring->flash.count -= m_FlashFrames;
-        if (textstring->flash.count <= -textstring->flash.rate) {
-            textstring->flash.count = textstring->flash.rate;
-        } else if (textstring->flash.count < 0) {
+    if (text->flags.flash) {
+        text->flash.count -= m_FlashFrames;
+        if (text->flash.count <= -text->flash.rate) {
+            text->flash.count = text->flash.rate;
+        } else if (text->flash.count < 0) {
             return;
         }
     }
 
-    char *string = textstring->string;
-    int32_t x = textstring->pos.x;
-    int32_t y = textstring->pos.y;
-    int32_t text_width = Text_GetWidth(textstring);
+    char *content = text->content;
+    int32_t x = text->pos.x;
+    int32_t y = text->pos.y;
+    int32_t text_width = Text_GetWidth(text);
 
-    if (textstring->flags.centre_h) {
+    if (text->flags.centre_h) {
         x += (Screen_GetResWidthDownscaled(RSR_TEXT) - text_width) / 2;
-    } else if (textstring->flags.right) {
+    } else if (text->flags.right) {
         x += Screen_GetResWidthDownscaled(RSR_TEXT) - text_width;
     }
 
-    if (textstring->flags.centre_v) {
+    if (text->flags.centre_v) {
         y += Screen_GetResHeightDownscaled(RSR_TEXT) / 2;
-    } else if (textstring->flags.bottom) {
+    } else if (text->flags.bottom) {
         y += Screen_GetResHeightDownscaled(RSR_TEXT);
     }
 
-    int32_t bxpos = textstring->bgnd_off.x + x - TEXT_BOX_OFFSET;
-    int32_t bypos =
-        textstring->bgnd_off.y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
+    int32_t bxpos = text->bgnd_off.x + x - TEXT_BOX_OFFSET;
+    int32_t bypos = text->bgnd_off.y + y - TEXT_BOX_OFFSET * 2 - TEXT_HEIGHT;
 
     int32_t start_x = x;
 
     int32_t letter = '\0';
-    while (*string) {
-        letter = *string++;
+    while (*content) {
+        letter = *content++;
         if (letter > 15 && letter < 32) {
             continue;
         }
 
-        if (textstring->flags.multiline && letter == '\n') {
-            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * textstring->scale.h / PHD_ONE;
+        if (text->flags.multiline && letter == '\n') {
+            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * text->scale.h / PHD_ONE;
             x = start_x;
             continue;
         }
         if (letter == ' ') {
-            x += (textstring->word_spacing * textstring->scale.h) / PHD_ONE;
+            x += (text->word_spacing * text->scale.h) / PHD_ONE;
             continue;
         }
 
         uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
         sx = Screen_GetRenderScale(x, RSR_TEXT);
         sy = Screen_GetRenderScale(y, RSR_TEXT);
-        sh = Screen_GetRenderScale(textstring->scale.h, RSR_TEXT);
-        sv = Screen_GetRenderScale(textstring->scale.v, RSR_TEXT);
+        sh = Screen_GetRenderScale(text->scale.h, RSR_TEXT);
+        sv = Screen_GetRenderScale(text->scale.v, RSR_TEXT);
 
         Output_DrawScreenSprite2D(
             sx, sy, 0, sh, sv, g_Objects[O_ALPHABET].mesh_idx + sprite_num,
@@ -544,50 +550,49 @@ void Text_DrawText(TEXTSTRING *textstring)
             continue;
         }
 
-        x += (((int32_t)textstring->letter_spacing + m_TextSpacing[sprite_num])
-              * textstring->scale.h)
+        x += (((int32_t)text->letter_spacing + m_TextSpacing[sprite_num])
+              * text->scale.h)
             / PHD_ONE;
     }
 
     int32_t bwidth = 0;
     int32_t bheight = 0;
-    if (textstring->flags.background || textstring->flags.outline) {
-        if (textstring->bgnd_size.x) {
+    if (text->flags.background || text->flags.outline) {
+        if (text->bgnd_size.x) {
             bxpos += text_width / 2;
-            bxpos -= textstring->bgnd_size.x / 2;
-            bwidth = textstring->bgnd_size.x + TEXT_BOX_OFFSET * 2;
+            bxpos -= text->bgnd_size.x / 2;
+            bwidth = text->bgnd_size.x + TEXT_BOX_OFFSET * 2;
         } else {
             bwidth = text_width + TEXT_BOX_OFFSET * 2;
         }
-        if (textstring->bgnd_size.y) {
-            bheight = textstring->bgnd_size.y;
+        if (text->bgnd_size.y) {
+            bheight = text->bgnd_size.y;
         } else {
             bheight = TEXT_HEIGHT + 7;
         }
     }
 
-    if (textstring->flags.background) {
+    if (text->flags.background) {
         sx = Screen_GetRenderScale(bxpos, RSR_TEXT);
         sy = Screen_GetRenderScale(bypos, RSR_TEXT);
         sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
         sv = Screen_GetRenderScale(bheight, RSR_TEXT);
 
         M_DrawTextBackground(
-            g_Config.ui.menu_style, sx, sy, sh, sv,
-            textstring->background.style);
+            g_Config.ui.menu_style, sx, sy, sh, sv, text->background.style);
     }
 
-    if (textstring->flags.progress_bar && textstring->progress_bar.value) {
-        Overlay_BarDraw(&textstring->progress_bar, RSR_TEXT);
+    if (text->flags.progress_bar && text->progress_bar.value) {
+        Overlay_BarDraw(&text->progress_bar, RSR_TEXT);
     }
 
-    if (textstring->flags.outline) {
+    if (text->flags.outline) {
         sx = Screen_GetRenderScale(bxpos, RSR_TEXT);
         sy = Screen_GetRenderScale(bypos, RSR_TEXT);
         sh = Screen_GetRenderScale(bwidth, RSR_TEXT);
         sv = Screen_GetRenderScale(bheight, RSR_TEXT);
 
         M_DrawTextOutline(
-            g_Config.ui.menu_style, sx, sy, sh, sv, textstring->outline.style);
+            g_Config.ui.menu_style, sx, sy, sh, sv, text->outline.style);
     }
 }

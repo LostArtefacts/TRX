@@ -312,7 +312,7 @@ typedef struct __unaligned {
         int32_t h;
         int32_t v;
     } scale;
-    char *text;
+    char *content;
 } TEXTSTRING;
 
 typedef struct __unaligned {

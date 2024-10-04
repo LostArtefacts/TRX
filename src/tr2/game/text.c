@@ -41,16 +41,17 @@ void Text_Shutdown(void)
 }
 
 TEXTSTRING *__cdecl Text_Create(
-    const int32_t x, const int32_t y, const int32_t z, const char *const text)
+    const int32_t x, const int32_t y, const int32_t z,
+    const char *const content)
 {
-    if (text == NULL) {
+    if (content == NULL) {
         return NULL;
     }
 
     int32_t free_idx = -1;
     for (int32_t i = 0; i < MAX_TEXTSTRINGS; i++) {
-        TEXTSTRING *const string = &m_TextStrings[i];
-        if (!string->flags.active) {
+        TEXTSTRING *const text = &m_TextStrings[i];
+        if (!text->flags.active) {
             free_idx = i;
             break;
         }
@@ -60,194 +61,194 @@ TEXTSTRING *__cdecl Text_Create(
         return NULL;
     }
 
-    TEXTSTRING *result = &m_TextStrings[free_idx];
-    result->text = g_TextstringBuffers[free_idx];
-    result->scale.h = PHD_ONE;
-    result->scale.v = PHD_ONE;
-    result->pos.x = (x * Text_GetScaleH(PHD_ONE)) / PHD_ONE;
-    result->pos.y = (y * Text_GetScaleV(PHD_ONE)) / PHD_ONE;
-    result->pos.z = z;
+    TEXTSTRING *const text = &m_TextStrings[free_idx];
+    text->content = g_TextstringBuffers[free_idx];
+    text->scale.h = PHD_ONE;
+    text->scale.v = PHD_ONE;
+    text->pos.x = (x * Text_GetScaleH(PHD_ONE)) / PHD_ONE;
+    text->pos.y = (y * Text_GetScaleV(PHD_ONE)) / PHD_ONE;
+    text->pos.z = z;
 
-    result->letter_spacing = 1;
-    result->word_spacing = 6;
+    text->letter_spacing = 1;
+    text->word_spacing = 6;
 
-    result->text_flags = 0;
-    result->outl_flags = 0;
-    result->bgnd_flags = 0;
-    result->bgnd_size.x = 0;
-    result->bgnd_size.y = 0;
-    result->bgnd_off.x = 0;
-    result->bgnd_off.y = 0;
-    result->bgnd_off.z = 0;
-    result->flags.all = 0;
-    result->flags.active = 1;
+    text->text_flags = 0;
+    text->outl_flags = 0;
+    text->bgnd_flags = 0;
+    text->bgnd_size.x = 0;
+    text->bgnd_size.y = 0;
+    text->bgnd_off.x = 0;
+    text->bgnd_off.y = 0;
+    text->bgnd_off.z = 0;
+    text->flags.all = 0;
+    text->flags.active = 1;
 
-    strncpy(result->text, text, TEXT_MAX_STRING_SIZE);
-    result->text[TEXT_MAX_STRING_SIZE - 1] = '\0';
+    strncpy(text->content, content, TEXT_MAX_STRING_SIZE);
+    text->content[TEXT_MAX_STRING_SIZE - 1] = '\0';
 
-    return result;
+    return text;
 }
 
-void __cdecl Text_ChangeText(TEXTSTRING *const string, const char *const text)
+void __cdecl Text_ChangeText(TEXTSTRING *const text, const char *const content)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    assert(text);
-    if (string->flags.active) {
-        strncpy(string->text, text, TEXT_MAX_STRING_SIZE);
-        string->text[TEXT_MAX_STRING_SIZE - 1] = '\0';
+    assert(content != NULL);
+    if (text->flags.active) {
+        strncpy(text->content, content, TEXT_MAX_STRING_SIZE);
+        text->content[TEXT_MAX_STRING_SIZE - 1] = '\0';
     }
 }
 
-void __cdecl Text_SetPos(TEXTSTRING *const string, int16_t x, int16_t y)
+void __cdecl Text_SetPos(TEXTSTRING *const text, int16_t x, int16_t y)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->pos.x = (x * Text_GetScaleH(PHD_ONE)) / PHD_ONE;
-    string->pos.y = (y * Text_GetScaleV(PHD_ONE)) / PHD_ONE;
+    text->pos.x = (x * Text_GetScaleH(PHD_ONE)) / PHD_ONE;
+    text->pos.y = (y * Text_GetScaleV(PHD_ONE)) / PHD_ONE;
 }
 
 void __cdecl Text_SetScale(
-    TEXTSTRING *const string, const int32_t scale_h, const int32_t scale_v)
+    TEXTSTRING *const text, const int32_t scale_h, const int32_t scale_v)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->scale.h = scale_h;
-    string->scale.v = scale_v;
+    text->scale.h = scale_h;
+    text->scale.v = scale_v;
 }
 
 void __cdecl Text_Flash(
-    TEXTSTRING *const string, const int16_t enable, const int16_t rate)
+    TEXTSTRING *const text, const int16_t enable, const int16_t rate)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
     if (enable) {
-        string->flags.flash = 1;
-        string->flash.rate = rate;
-        string->flash.count = rate;
+        text->flags.flash = 1;
+        text->flash.rate = rate;
+        text->flash.count = rate;
     } else {
-        string->flags.flash = 0;
+        text->flags.flash = 0;
     }
 }
 
 void __cdecl Text_AddBackground(
-    TEXTSTRING *const string, const int16_t x_size, const int16_t y_size,
+    TEXTSTRING *const text, const int16_t x_size, const int16_t y_size,
     const int16_t x_off, const int16_t y_off, const int16_t z_off,
     const INV_COLOR color, const uint16_t *const gour_ptr, const uint16_t flags)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    uint32_t scale_h = Text_GetScaleH(string->scale.h);
-    uint32_t scale_v = Text_GetScaleV(string->scale.v);
-    string->flags.background = 1;
-    string->bgnd_size.x = (scale_h * x_size) / PHD_ONE;
-    string->bgnd_size.y = (scale_v * y_size) / PHD_ONE;
-    string->bgnd_off.x = (scale_h * x_off) / PHD_ONE;
-    string->bgnd_off.y = (scale_v * y_off) / PHD_ONE;
-    string->bgnd_off.z = z_off;
-    string->bgnd_color = color;
-    string->bgnd_gour = gour_ptr;
-    string->bgnd_flags = flags;
+    uint32_t scale_h = Text_GetScaleH(text->scale.h);
+    uint32_t scale_v = Text_GetScaleV(text->scale.v);
+    text->flags.background = 1;
+    text->bgnd_size.x = (scale_h * x_size) / PHD_ONE;
+    text->bgnd_size.y = (scale_v * y_size) / PHD_ONE;
+    text->bgnd_off.x = (scale_h * x_off) / PHD_ONE;
+    text->bgnd_off.y = (scale_v * y_off) / PHD_ONE;
+    text->bgnd_off.z = z_off;
+    text->bgnd_color = color;
+    text->bgnd_gour = gour_ptr;
+    text->bgnd_flags = flags;
 }
 
-void __cdecl Text_RemoveBackground(TEXTSTRING *const string)
+void __cdecl Text_RemoveBackground(TEXTSTRING *const text)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.background = 0;
+    text->flags.background = 0;
 }
 
 void __cdecl Text_AddOutline(
-    TEXTSTRING *const string, const int16_t enable, const INV_COLOR color,
+    TEXTSTRING *const text, const int16_t enable, const INV_COLOR color,
     const uint16_t *const gour_ptr, const uint16_t flags)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.outline = 1;
-    string->outl_gour = gour_ptr;
-    string->outl_color = color;
-    string->outl_flags = flags;
+    text->flags.outline = 1;
+    text->outl_gour = gour_ptr;
+    text->outl_color = color;
+    text->outl_flags = flags;
 }
 
-void __cdecl Text_RemoveOutline(TEXTSTRING *const string)
+void __cdecl Text_RemoveOutline(TEXTSTRING *const text)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.outline = 0;
+    text->flags.outline = 0;
 }
 
-void __cdecl Text_CentreH(TEXTSTRING *const string, const int16_t enable)
+void __cdecl Text_CentreH(TEXTSTRING *const text, const int16_t enable)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.centre_h = enable;
+    text->flags.centre_h = enable;
 }
 
-void __cdecl Text_CentreV(TEXTSTRING *const string, const int16_t enable)
+void __cdecl Text_CentreV(TEXTSTRING *const text, const int16_t enable)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.centre_v = enable;
+    text->flags.centre_v = enable;
 }
 
-void __cdecl Text_AlignRight(TEXTSTRING *const string, const int16_t enable)
+void __cdecl Text_AlignRight(TEXTSTRING *const text, const int16_t enable)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.right = enable;
+    text->flags.right = enable;
 }
 
-void __cdecl Text_AlignBottom(TEXTSTRING *const string, const int16_t enable)
+void __cdecl Text_AlignBottom(TEXTSTRING *const text, const int16_t enable)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.bottom = enable;
+    text->flags.bottom = enable;
 }
 
-void __cdecl Text_SetMultiline(TEXTSTRING *string, bool enable)
+void __cdecl Text_SetMultiline(TEXTSTRING *text, bool enable)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return;
     }
-    string->flags.multiline = enable;
+    text->flags.multiline = enable;
 }
 
-int32_t __cdecl Text_Remove(TEXTSTRING *const string)
+int32_t __cdecl Text_Remove(TEXTSTRING *const text)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return false;
     }
-    if (!string->flags.active) {
+    if (!text->flags.active) {
         return false;
     }
-    string->flags.active = false;
+    text->flags.active = false;
     return true;
 }
 
-int32_t __cdecl Text_GetWidth(TEXTSTRING *const string)
+int32_t __cdecl Text_GetWidth(TEXTSTRING *const text)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return 0;
     }
 
-    const uint32_t scale_h = Text_GetScaleH(string->scale.h);
-    const char *str = string->text;
+    const uint32_t scale_h = Text_GetScaleH(text->scale.h);
+    const char *content = text->content;
     int32_t width = 0;
 
     while (1) {
-        uint8_t c = *str++;
+        uint8_t c = *content++;
         if (!c) {
             break;
         }
@@ -258,7 +259,7 @@ int32_t __cdecl Text_GetWidth(TEXTSTRING *const string)
 
         int32_t spacing;
         if (IS_CHAR_SPACE(c)) {
-            spacing = string->word_spacing;
+            spacing = text->word_spacing;
         } else if (IS_CHAR_SECRET(c)) {
             spacing = 16;
         } else {
@@ -274,7 +275,7 @@ int32_t __cdecl Text_GetWidth(TEXTSTRING *const string)
                 spacing = 12;
             } else {
                 // TODO: OG bug - wrong letter spacing calculation
-                spacing = g_TextSpacing[sprite_num] + string->letter_spacing;
+                spacing = g_TextSpacing[sprite_num] + text->letter_spacing;
             }
         }
 
@@ -282,22 +283,22 @@ int32_t __cdecl Text_GetWidth(TEXTSTRING *const string)
     }
 
     // TODO: OG bug - wrong letter spacing calculation; pointless ~1
-    return ((int16_t)width - string->letter_spacing) & ~1;
+    return ((int16_t)width - text->letter_spacing) & ~1;
 }
 
-int32_t Text_GetHeight(const TEXTSTRING *const string)
+int32_t Text_GetHeight(const TEXTSTRING *const text)
 {
-    if (string == NULL) {
+    if (text == NULL) {
         return 0;
     }
     int32_t height = TEXT_HEIGHT;
-    char *ptr = string->text;
-    for (char letter = *ptr; *ptr; letter = *ptr++) {
-        if (string->flags.multiline && *ptr == '\n') {
+    char *content = text->content;
+    for (char letter = *content; letter != '\0'; letter = *content++) {
+        if (text->flags.multiline && letter == '\n') {
             height += TEXT_HEIGHT + TEXT_Y_SPACING;
         }
     }
-    return height * Text_GetScaleV(string->scale.v) / PHD_ONE;
+    return height * Text_GetScaleV(text->scale.v) / PHD_ONE;
 }
 
 void __cdecl Text_Draw(void)
@@ -305,9 +306,9 @@ void __cdecl Text_Draw(void)
     // TODO: move me outta here!
     Console_Draw();
     for (int32_t i = 0; i < MAX_TEXTSTRINGS; i++) {
-        TEXTSTRING *const string = &m_TextStrings[i];
-        if (string->flags.active) {
-            Text_DrawText(string);
+        TEXTSTRING *const text = &m_TextStrings[i];
+        if (text->flags.active) {
+            Text_DrawText(text);
         }
     }
 }
@@ -344,53 +345,53 @@ void __cdecl Text_DrawBorder(
     Output_DrawScreenSprite2D(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
 }
 
-void __cdecl Text_DrawText(TEXTSTRING *const string)
+void __cdecl Text_DrawText(TEXTSTRING *const text)
 {
     int32_t box_w = 0;
     int32_t box_h = 0;
-    const int32_t scale_h = Text_GetScaleH(string->scale.h);
-    const int32_t scale_v = Text_GetScaleV(string->scale.v);
+    const int32_t scale_h = Text_GetScaleH(text->scale.h);
+    const int32_t scale_v = Text_GetScaleV(text->scale.v);
 
-    if (string->flags.flash) {
-        string->flash.count -= g_Camera.num_frames;
-        if (string->flash.count <= -string->flash.rate) {
-            string->flash.count = string->flash.rate;
-        } else if (string->flash.count < 0) {
+    if (text->flags.flash) {
+        text->flash.count -= g_Camera.num_frames;
+        if (text->flash.count <= -text->flash.rate) {
+            text->flash.count = text->flash.rate;
+        } else if (text->flash.count < 0) {
             return;
         }
     }
 
-    int32_t x = string->pos.x;
-    int32_t y = string->pos.y;
-    int32_t z = string->pos.z;
-    int32_t text_width = Text_GetWidth(string);
+    int32_t x = text->pos.x;
+    int32_t y = text->pos.y;
+    int32_t z = text->pos.z;
+    int32_t text_width = Text_GetWidth(text);
 
-    if (string->flags.centre_h) {
+    if (text->flags.centre_h) {
         x += (GetRenderWidth() - text_width) / 2;
-    } else if (string->flags.right) {
+    } else if (text->flags.right) {
         x += GetRenderWidth() - text_width;
     }
 
-    if (string->flags.centre_v) {
+    if (text->flags.centre_v) {
         y += GetRenderHeight() / 2;
-    } else if (string->flags.bottom) {
+    } else if (text->flags.bottom) {
         y += GetRenderHeight();
     }
 
-    int32_t box_x = x + string->bgnd_off.x - ((2 * scale_h) / PHD_ONE);
-    int32_t box_y = y + string->bgnd_off.y - ((4 * scale_v) / PHD_ONE)
+    int32_t box_x = x + text->bgnd_off.x - ((2 * scale_h) / PHD_ONE);
+    int32_t box_y = y + text->bgnd_off.y - ((4 * scale_v) / PHD_ONE)
         - ((11 * scale_v) / PHD_ONE);
     const int32_t start_x = x;
 
-    const char *str = string->text;
+    const char *content = text->content;
     while (1) {
-        const uint8_t c = *str++;
+        const uint8_t c = *content++;
         if (!c) {
             break;
         }
 
-        if (string->flags.multiline && c == '\n') {
-            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * string->scale.v / PHD_ONE;
+        if (text->flags.multiline && c == '\n') {
+            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * text->scale.v / PHD_ONE;
             x = start_x;
             continue;
         }
@@ -400,7 +401,7 @@ void __cdecl Text_DrawText(TEXTSTRING *const string)
         }
 
         if (IS_CHAR_SPACE(c)) {
-            const int32_t spacing = string->word_spacing;
+            const int32_t spacing = text->word_spacing;
             x += spacing * scale_h / PHD_ONE;
         } else if (IS_CHAR_SECRET(c)) {
             Output_DrawPickup(
@@ -428,7 +429,7 @@ void __cdecl Text_DrawText(TEXTSTRING *const string)
                 Output_DrawScreenSprite2D(
                     x, y, z, scale_h, scale_v,
                     g_Objects[O_ALPHABET].mesh_idx + sprite_num, 4096,
-                    string->text_flags);
+                    text->text_flags);
             }
 
             if (IS_CHAR_DIACRITIC(c)) {
@@ -440,32 +441,32 @@ void __cdecl Text_DrawText(TEXTSTRING *const string)
                 x += (12 - x_off) * scale_h / PHD_ONE;
             } else {
                 const int32_t spacing =
-                    g_TextSpacing[sprite_num] + string->letter_spacing;
+                    g_TextSpacing[sprite_num] + text->letter_spacing;
                 x += spacing * scale_h / PHD_ONE;
             }
         }
     }
 
-    if (string->flags.outline || string->flags.background) {
-        if (string->bgnd_size.x) {
-            box_x += (text_width - string->bgnd_size.x) / 2;
-            box_w = string->bgnd_size.x + 4;
+    if (text->flags.outline || text->flags.background) {
+        if (text->bgnd_size.x) {
+            box_x += (text_width - text->bgnd_size.x) / 2;
+            box_w = text->bgnd_size.x + 4;
         } else {
             box_w = text_width + 4;
         }
 
-        box_h = string->bgnd_size.y ? string->bgnd_size.y
-                                    : ((16 * scale_v) / PHD_ONE);
+        box_h =
+            text->bgnd_size.y ? text->bgnd_size.y : ((16 * scale_v) / PHD_ONE);
     }
 
-    if (string->flags.background) {
+    if (text->flags.background) {
         S_DrawScreenFBox(
-            box_x, box_y, string->bgnd_off.z + z + 2, box_w, box_h,
-            string->bgnd_color, (const GOURAUD_FILL *)string->bgnd_gour,
-            string->bgnd_flags);
+            box_x, box_y, text->bgnd_off.z + z + 2, box_w, box_h,
+            text->bgnd_color, (const GOURAUD_FILL *)text->bgnd_gour,
+            text->bgnd_flags);
     }
 
-    if (string->flags.outline) {
+    if (text->flags.outline) {
         Text_DrawBorder(box_x, box_y, z, box_w, box_h);
     }
 }
