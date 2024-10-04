@@ -29,6 +29,9 @@ EVENT_MANAGER *EventManager_Create(void)
 
 void EventManager_Free(EVENT_MANAGER *const manager)
 {
+    if (manager == NULL) {
+        return;
+    }
     Vector_Free(manager->listeners);
     Memory_Free(manager);
 }
