@@ -146,7 +146,7 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
     }
 
     if (Lara_Cheat_Teleport(
-            best_item->pos.x, best_item->pos.y - STEP_L, best_item->pos.z)) {
+            best_item->pos.x, best_item->pos.y, best_item->pos.z)) {
         Console_Log(GS(OSD_POS_SET_ITEM), obj_name);
     } else {
         Console_Log(GS(OSD_POS_SET_ITEM_FAIL), obj_name);

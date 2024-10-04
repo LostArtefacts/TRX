@@ -17,6 +17,8 @@
 #define MAKE_Q_ID(g) ((g >> 16) & 0xFF)
 #define MAKE_ZSORT(z) ((uint32_t)(z))
 
+static bool m_DiscardTransparent = false;
+
 static D3DCOLOR M_ShadeLight(uint32_t shade);
 static D3DCOLOR M_ShadeColor(
     uint32_t red, uint32_t green, uint32_t blue, uint8_t alpha);
@@ -38,6 +40,8 @@ static inline void M_ClipG(
 static inline void M_ClipGUV(
     VERTEX_INFO *const buf, const VERTEX_INFO *const vtx1,
     const VERTEX_INFO *const vtx2, const float clip);
+
+static const int16_t *M_CalcRoomVerticesWibble(const int16_t *obj_ptr);
 
 static D3DCOLOR M_ShadeColor(
     uint32_t red, uint32_t green, uint32_t blue, uint8_t alpha)
@@ -297,6 +301,47 @@ static inline void M_ClipGUV(
     buf->v = vtx2->v + (vtx1->v - vtx2->v) * clip;
 }
 
+static const int16_t *M_CalcRoomVerticesWibble(const int16_t *obj_ptr)
+{
+    const int32_t vtx_count = *obj_ptr++;
+
+    for (int32_t i = 0; i < vtx_count; i++) {
+        PHD_VBUF *const vbuf = &g_PhdVBuf[i];
+        if (obj_ptr[4] < 0) {
+            obj_ptr += 6;
+            continue;
+        }
+
+        double xs = vbuf->xs;
+        double ys = vbuf->ys;
+        xs += g_WibbleTable
+            [(((g_WibbleOffset + (int)ys) % WIBBLE_SIZE) + WIBBLE_SIZE)
+             % WIBBLE_SIZE];
+        ys += g_WibbleTable
+            [(((g_WibbleOffset + (int)xs) % WIBBLE_SIZE) + WIBBLE_SIZE)
+             % WIBBLE_SIZE];
+
+        int16_t clip_flags = vbuf->clip & ~15;
+        if (xs < g_FltWinLeft) {
+            clip_flags |= 1;
+        } else if (xs > g_FltWinRight) {
+            clip_flags |= 2;
+        }
+
+        if (ys < g_FltWinTop) {
+            clip_flags |= 4;
+        } else if (ys > g_FltWinBottom) {
+            clip_flags |= 8;
+        }
+        vbuf->xs = xs;
+        vbuf->ys = ys;
+        vbuf->clip = clip_flags;
+        obj_ptr += 6;
+    }
+
+    return obj_ptr;
+}
+
 void __cdecl Output_Init(
     int16_t x, int16_t y, int32_t width, int32_t height, int32_t near_z,
     int32_t far_z, int16_t view_angle, int32_t screen_width,
@@ -416,9 +461,27 @@ void __cdecl Output_InsertRoom(const int16_t *obj_ptr, int32_t is_outside)
     g_FltWinBottom = (g_PhdWinBottom + g_PhdWinMinY + 1);
     g_FltWinCenterX = (g_PhdWinMinX + g_PhdWinCenterX);
     g_FltWinCenterY = (g_PhdWinMinY + g_PhdWinCenterY);
+
+    const int16_t *const old_obj_ptr = obj_ptr;
     obj_ptr = Output_CalcRoomVertices(obj_ptr, is_outside ? 0 : 16);
+
+    if (g_IsWibbleEffect) {
+        if (g_SavedAppSettings.render_mode == RM_HARDWARE) {
+            HWR_EnableZBuffer(false, true);
+        }
+        m_DiscardTransparent = true;
+        obj_ptr = g_Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr, ST_MAX_Z);
+        obj_ptr = g_Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr, ST_MAX_Z);
+        m_DiscardTransparent = false;
+        obj_ptr = M_CalcRoomVerticesWibble(old_obj_ptr);
+        if (g_SavedAppSettings.render_mode == RM_HARDWARE) {
+            HWR_EnableZBuffer(true, true);
+        }
+    }
+
     obj_ptr = g_Output_DrawObjectGT4(obj_ptr + 1, *obj_ptr, ST_MAX_Z);
     obj_ptr = g_Output_DrawObjectGT3(obj_ptr + 1, *obj_ptr, ST_MAX_Z);
+
     Output_InsertRoomSprite(obj_ptr + 1, *obj_ptr);
 }
 
@@ -434,7 +497,7 @@ void __cdecl Output_InsertSkybox(const int16_t *obj_ptr)
     obj_ptr = Output_CalcObjectVertices(obj_ptr + 4);
     if (obj_ptr) {
         if (g_SavedAppSettings.render_mode == RM_HARDWARE) {
-            HWR_EnableZBuffer(0, 0);
+            HWR_EnableZBuffer(false, false);
         }
 
         obj_ptr = Output_CalcSkyboxLight(obj_ptr);
@@ -444,7 +507,7 @@ void __cdecl Output_InsertSkybox(const int16_t *obj_ptr)
         obj_ptr = g_Output_DrawObjectG3(obj_ptr + 1, *obj_ptr, ST_FAR_Z);
 
         if (g_SavedAppSettings.render_mode == RM_HARDWARE) {
-            HWR_EnableZBuffer(1, 1);
+            HWR_EnableZBuffer(true, true);
         }
     }
 }
@@ -601,7 +664,7 @@ const int16_t *__cdecl Output_CalcRoomVertices(
 {
     const double base_z =
         g_ZBufferSurface ? 0.0 : (g_MidSort << (W2V_SHIFT + 8));
-    int32_t vtx_count = *obj_ptr++;
+    const int32_t vtx_count = *obj_ptr++;
 
     for (int32_t i = 0; i < vtx_count; i++) {
         PHD_VBUF *const vbuf = &g_PhdVBuf[i];
@@ -663,13 +726,6 @@ const int16_t *__cdecl Output_CalcRoomVertices(
 
             double xs = xv * persp + g_FltWinCenterX;
             double ys = yv * persp + g_FltWinCenterY;
-
-            if (g_IsWibbleEffect && obj_ptr[4] >= 0) {
-                xs +=
-                    g_WibbleTable[(g_WibbleOffset + (uint8_t)ys) % WIBBLE_SIZE];
-                ys +=
-                    g_WibbleTable[(g_WibbleOffset + (uint8_t)xs) % WIBBLE_SIZE];
-            }
 
             if (xs < g_FltWinLeft) {
                 clip_flags |= 1;
@@ -2054,6 +2110,10 @@ const int16_t *__cdecl Output_InsertObjectGT3(
         const PHD_UV *const uv = texture->uv;
         int32_t num_points = 3;
 
+        if (texture->draw_type != DRAW_OPAQUE && m_DiscardTransparent) {
+            continue;
+        }
+
         const int8_t clip_or = vtx[0]->clip | vtx[1]->clip | vtx[2]->clip;
         const int8_t clip_and = vtx[0]->clip & vtx[1]->clip & vtx[2]->clip;
 
@@ -2390,6 +2450,10 @@ const int16_t *__cdecl Output_InsertObjectGT4(
         const PHD_TEXTURE *const texture = &g_PhdTextureInfo[texture_idx];
         const PHD_UV *const uv = texture->uv;
         int32_t num_points = 4;
+
+        if (texture->draw_type != DRAW_OPAQUE && m_DiscardTransparent) {
+            continue;
+        }
 
         const int8_t clip_or =
             vtx[0]->clip | vtx[1]->clip | vtx[2]->clip | vtx[3]->clip;
@@ -2974,6 +3038,10 @@ const int16_t *__cdecl Output_InsertObjectGT3_ZBuffered(
         const PHD_TEXTURE *const texture = &g_PhdTextureInfo[*obj_ptr++];
         const PHD_UV *const uv = texture->uv;
 
+        if (texture->draw_type != DRAW_OPAQUE && m_DiscardTransparent) {
+            continue;
+        }
+
         if (texture->draw_type != DRAW_OPAQUE) {
             Output_InsertGT3_Sorted(
                 vtx[0], vtx[1], vtx[2], texture, &uv[0], &uv[1], &uv[2],
@@ -2999,6 +3067,10 @@ const int16_t *__cdecl Output_InsertObjectGT4_ZBuffered(
         };
         const PHD_TEXTURE *const texture = &g_PhdTextureInfo[*obj_ptr++];
         const PHD_UV *const uv = texture->uv;
+
+        if (texture->draw_type != DRAW_OPAQUE && m_DiscardTransparent) {
+            continue;
+        }
 
         if (texture->draw_type != DRAW_OPAQUE) {
             Output_InsertGT4_Sorted(
@@ -3529,6 +3601,10 @@ const int16_t *__cdecl Output_InsertObjectGT3_Sorted(
         const PHD_TEXTURE *const texture = &g_PhdTextureInfo[texture_idx];
         const PHD_UV *const uv = texture->uv;
 
+        if (texture->draw_type != DRAW_OPAQUE && m_DiscardTransparent) {
+            continue;
+        }
+
         Output_InsertGT3_Sorted(
             vtx[0], vtx[1], vtx[2], texture, &uv[0], &uv[1], &uv[2], sort_type);
     }
@@ -3553,6 +3629,10 @@ const int16_t *__cdecl Output_InsertObjectGT4_Sorted(
         };
         const int16_t texture_idx = *obj_ptr++;
         const PHD_TEXTURE *const texture = &g_PhdTextureInfo[texture_idx];
+
+        if (texture->draw_type != DRAW_OPAQUE && m_DiscardTransparent) {
+            continue;
+        }
 
         Output_InsertGT4_Sorted(
             vtx[0], vtx[1], vtx[2], vtx[3], texture, sort_type);
