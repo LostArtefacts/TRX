@@ -969,6 +969,7 @@ typedef union INPUT_STATE {
         uint64_t enter_console : 1;
         uint64_t change_target : 1;
         uint64_t toggle_ui : 1;
+        uint64_t toggle_photo_mode : 1;
     };
 } INPUT_STATE;
 
@@ -1011,7 +1012,8 @@ typedef enum {
     INPUT_ROLE_TOGGLE_UI = 35,
     INPUT_ROLE_CAMERA_UP = 36,
     INPUT_ROLE_CAMERA_DOWN = 37,
-    INPUT_ROLE_NUMBER_OF = 38,
+    INPUT_ROLE_TOGGLE_PHOTO_MODE = 38,
+    INPUT_ROLE_NUMBER_OF = 39,
 } INPUT_ROLE;
 
 typedef enum {
