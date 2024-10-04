@@ -3010,7 +3010,7 @@ void __cdecl S_LoadSettings(void)
 
     {
         DWORD tmp;
-        GetRegistryDwordValue("MusicVolume", &tmp, 165);
+        GetRegistryDwordValue("MusicVolume", &tmp, 7);
         g_OptionMusicVolume = tmp;
     }
 
