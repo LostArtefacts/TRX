@@ -35,6 +35,7 @@ void GFX_3D_VertexStream_Init(GFX_3D_VERTEX_STREAM *vertex_stream)
     vertex_stream->pending_vertices.data = NULL;
     vertex_stream->pending_vertices.count = 0;
     vertex_stream->pending_vertices.capacity = 0;
+    vertex_stream->rendered_count = 0;
 
     GFX_GL_Buffer_Init(&vertex_stream->buffer, GL_ARRAY_BUFFER);
     GFX_GL_Buffer_Bind(&vertex_stream->buffer);
@@ -156,5 +157,6 @@ void GFX_3D_VertexStream_RenderPending(GFX_3D_VERTEX_STREAM *vertex_stream)
         vertex_stream->pending_vertices.count);
     GFX_GL_CheckError();
 
+    vertex_stream->rendered_count += vertex_stream->pending_vertices.count;
     vertex_stream->pending_vertices.count = 0;
 }

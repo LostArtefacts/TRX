@@ -111,6 +111,8 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *renderer)
         renderer->config->enable_wireframe ? GL_LINE : GL_FILL);
     GFX_GL_CheckError();
 
+    renderer->vertex_stream.rendered_count = 0;
+
     GFX_GL_Program_Bind(&renderer->program);
     GFX_3D_VertexStream_Bind(&renderer->vertex_stream);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
