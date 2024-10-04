@@ -944,6 +944,8 @@ typedef union INPUT_STATE {
         uint64_t level_skip_cheat : 1;
         uint64_t turbo_cheat : 1;
         uint64_t health_cheat : 1;
+        uint64_t camera_up : 1;
+        uint64_t camera_down : 1;
         uint64_t camera_forward : 1;
         uint64_t camera_back : 1;
         uint64_t camera_left : 1;
@@ -1007,7 +1009,9 @@ typedef enum {
     INPUT_ROLE_ENTER_CONSOLE = 33,
     INPUT_ROLE_CHANGE_TARGET = 34,
     INPUT_ROLE_TOGGLE_UI = 35,
-    INPUT_ROLE_NUMBER_OF = 36,
+    INPUT_ROLE_CAMERA_UP = 36,
+    INPUT_ROLE_CAMERA_DOWN = 37,
+    INPUT_ROLE_NUMBER_OF = 38,
 } INPUT_ROLE;
 
 typedef enum {
