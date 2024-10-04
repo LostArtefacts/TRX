@@ -114,6 +114,7 @@ sources = [
   'game/effect_routines/earthquake.c',
   'game/ui/common.c',
   'game/ui/widgets/label.c',
+  'game/ui/widgets/photo_mode.c',
   'game/ui/widgets/prompt.c',
   'game/ui/widgets/window.c',
   'game/effect_routines/explosion.c',

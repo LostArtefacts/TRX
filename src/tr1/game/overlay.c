@@ -741,7 +741,8 @@ void Overlay_DrawGameInfo(void)
 
 void Overlay_DrawFPSInfo(void)
 {
-    if (g_Config.rendering.enable_fps_counter && g_Config.ui.enable_ui) {
+    if (g_Config.rendering.enable_fps_counter && g_Config.ui.enable_ui
+        && Phase_Get() != PHASE_PHOTO_MODE) {
         const int32_t text_offset_x = 3;
         const int32_t text_height = 17;
         const int32_t text_inv_offset_y = 3;
