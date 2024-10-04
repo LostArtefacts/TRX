@@ -67,6 +67,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
         SDL_SCANCODE_Q,          // INPUT_ROLE_CAMERA_UP
         SDL_SCANCODE_E,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_F1,         // INPUT_ROLE_TOGGLE_PHOTO_MODE
     },
 
     // custom user controls
@@ -109,6 +110,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
         SDL_SCANCODE_Q,          // INPUT_ROLE_CAMERA_UP
         SDL_SCANCODE_E,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_F1,         // INPUT_ROLE_TOGGLE_PHOTO_MODE
     },
 
     {
@@ -150,6 +152,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
         SDL_SCANCODE_Q,          // INPUT_ROLE_CAMERA_UP
         SDL_SCANCODE_E,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_F1,         // INPUT_ROLE_TOGGLE_PHOTO_MODE
     },
 
     {
@@ -191,6 +194,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
         SDL_SCANCODE_Q,          // INPUT_ROLE_CAMERA_UP
         SDL_SCANCODE_E,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_F1,         // INPUT_ROLE_TOGGLE_PHOTO_MODE
     }
     // clang-format on
 };
@@ -237,6 +241,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, -1 },           // INPUT_ROLE_CAMERA_UP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, 1 },            // INPUT_ROLE_CAMERA_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_PHOTO_MODE
         },
 
         {
@@ -278,6 +283,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, -1 },           // INPUT_ROLE_CAMERA_UP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, 1 },            // INPUT_ROLE_CAMERA_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_PHOTO_MODE
         },
 
         {
@@ -319,6 +325,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, -1 },           // INPUT_ROLE_CAMERA_UP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, 1 },            // INPUT_ROLE_CAMERA_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_PHOTO_MODE
         },
 
         {
@@ -360,6 +367,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, -1 },           // INPUT_ROLE_CAMERA_UP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_LEFTY}, 1 },            // INPUT_ROLE_CAMERA_DOWN
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_PHOTO_MODE
         }
         // clang-format on
     };
@@ -873,6 +881,7 @@ static INPUT_STATE M_GetControllerState(
         state.roll                   |= M_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
         state.option                 |= M_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
         state.pause                  |= M_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
+        state.toggle_photo_mode      |= M_GetBindState(INPUT_ROLE_TOGGLE_PHOTO_MODE, cntlr_layout_num);
         state.camera_up              |= M_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
         state.camera_down            |= M_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
         state.camera_forward         |= M_GetBindState(INPUT_ROLE_CAMERA_FORWARD, cntlr_layout_num);
@@ -974,6 +983,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.roll                      = M_Key(INPUT_ROLE_ROLL, layout_num);
     linput.option                    = M_Key(INPUT_ROLE_OPTION, layout_num);
     linput.pause                     = M_Key(INPUT_ROLE_PAUSE, layout_num);
+    linput.toggle_photo_mode         = M_Key(INPUT_ROLE_TOGGLE_PHOTO_MODE, layout_num);
     linput.camera_up                 = M_Key(INPUT_ROLE_CAMERA_UP, layout_num);
     linput.camera_down               = M_Key(INPUT_ROLE_CAMERA_DOWN, layout_num);
     linput.camera_forward            = M_Key(INPUT_ROLE_CAMERA_FORWARD, layout_num);
