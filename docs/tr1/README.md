@@ -372,6 +372,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added fade effects to displayed images
 - added an option to use PS1 loading screens
 - added a wireframe mode
+- added an option to toggle in-game UI, such as healthbars and ammo text
 - improved support for windowed mode
 
 #### Gameplay

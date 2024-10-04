@@ -124,6 +124,7 @@ typedef struct {
     } rendering;
 
     struct {
+        bool enable_ui;
         double text_scale;
         double bar_scale;
         UI_STYLE menu_style;

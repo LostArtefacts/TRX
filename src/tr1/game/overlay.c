@@ -251,6 +251,10 @@ static void M_BarGetLocation(
 
 void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
 {
+    if (!g_Config.ui.enable_ui) {
+        return;
+    }
+
     const RGBA_8888 rgb_bgnd = { 0, 0, 0, 255 };
     const RGBA_8888 rgb_border = { 53, 53, 53, 255 };
 
@@ -320,6 +324,10 @@ static float M_Ease(int32_t cur_frame, int32_t max_frames)
 
 static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
 {
+    if (!g_Config.ui.enable_ui) {
+        return;
+    }
+
     int32_t screen_width = Screen_GetResWidth();
     int32_t screen_height = Screen_GetResHeight();
     int32_t pickup_width = screen_width / 8;
@@ -481,6 +489,10 @@ static void M_DrawPickupsSprites(void)
             continue;
         }
 
+        if (!g_Config.ui.enable_ui) {
+            return;
+        }
+
         const int32_t x =
             Viewport_GetWidth() - sprite_height - sprite_width * pu->grid_x;
         const int32_t y =
@@ -587,6 +599,11 @@ static void M_RemoveAmmoText(void)
 
 static void M_DrawAmmoInfo(void)
 {
+    if (!g_Config.ui.enable_ui) {
+        M_RemoveAmmoText();
+        return;
+    }
+
     const double scale = 1.5;
     const int32_t text_height = 17 * scale;
     const int32_t text_offset_x = 3;
@@ -724,7 +741,7 @@ void Overlay_DrawGameInfo(void)
 
 void Overlay_DrawFPSInfo(void)
 {
-    if (g_Config.rendering.enable_fps_counter) {
+    if (g_Config.rendering.enable_fps_counter && g_Config.ui.enable_ui) {
         const int32_t text_offset_x = 3;
         const int32_t text_height = 17;
         const int32_t text_inv_offset_y = 3;

@@ -135,7 +135,9 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
     switch (inv_item->object_id) {
     case O_MEDI_OPTION:
     case O_BIGMEDI_OPTION:
-        Overlay_BarDrawHealth();
+        if (g_Config.ui.enable_ui) {
+            Overlay_BarDrawHealth();
+        }
         break;
 
     default:

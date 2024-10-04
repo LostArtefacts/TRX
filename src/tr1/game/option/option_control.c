@@ -144,6 +144,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementNormal[] = {
     { INPUT_ROLE_FPS, GS_ID(KEYMAP_FPS), true },
     { INPUT_ROLE_BILINEAR, GS_ID(KEYMAP_BILINEAR), true },
     { INPUT_ROLE_ENTER_CONSOLE, GS_ID(KEYMAP_ENTER_CONSOLE), true },
+    { INPUT_ROLE_TOGGLE_UI, GS_ID(KEYMAP_TOGGLE_UI), true },
     // end
     { COL_END, NULL, false },
 };
@@ -184,6 +185,7 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
     { INPUT_ROLE_LEVEL_SKIP_CHEAT, GS_ID(KEYMAP_LEVEL_SKIP_CHEAT), true },
     { INPUT_ROLE_TURBO_CHEAT, GS_ID(KEYMAP_TURBO_CHEAT), true },
     { INPUT_ROLE_ENTER_CONSOLE, GS_ID(KEYMAP_ENTER_CONSOLE), true },
+    { INPUT_ROLE_TOGGLE_UI, GS_ID(KEYMAP_TOGGLE_UI), true },
     // end
     { COL_END, NULL, false },
 };
