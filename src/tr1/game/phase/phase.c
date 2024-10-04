@@ -8,6 +8,7 @@
 #include "game/phase/phase_game.h"
 #include "game/phase/phase_inventory.h"
 #include "game/phase/phase_pause.h"
+#include "game/phase/phase_photo_mode.h"
 #include "game/phase/phase_picture.h"
 #include "game/phase/phase_stats.h"
 #include "global/types.h"
@@ -92,6 +93,10 @@ static void M_SetUnconditionally(const PHASE phase, void *arg)
 
     case PHASE_INVENTORY:
         m_Phaser = &g_InventoryPhaser;
+        break;
+
+    case PHASE_PHOTO_MODE:
+        m_Phaser = &g_PhotoModePhaser;
         break;
     }
 

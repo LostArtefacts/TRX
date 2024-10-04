@@ -106,6 +106,9 @@ static PHASE_CONTROL M_Control(int32_t nframes)
         if (!g_Lara.death_timer && g_InputDB.pause) {
             Phase_Set(PHASE_PAUSE, NULL);
             return (PHASE_CONTROL) { .end = false };
+        } else if (g_InputDB.toggle_photo_mode) {
+            Phase_Set(PHASE_PHOTO_MODE, NULL);
+            return (PHASE_CONTROL) { .end = false };
         } else {
             Item_Control();
             Effect_Control();

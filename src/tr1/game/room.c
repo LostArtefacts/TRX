@@ -527,6 +527,30 @@ int16_t Room_GetIndexFromPos(const int32_t x, const int32_t y, const int32_t z)
     return NO_ROOM;
 }
 
+BOUNDS_32 Room_GetWorldBounds(void)
+{
+    BOUNDS_32 bounds = {
+        .min.x = 0x7FFFFFFF,
+        .min.z = 0x7FFFFFFF,
+        .max.x = 0,
+        .max.z = 0,
+        .min.y = MAX_HEIGHT,
+        .max.y = -MAX_HEIGHT,
+    };
+
+    for (int32_t i = 0; i < g_RoomCount; i++) {
+        const ROOM *const room = &g_RoomInfo[i];
+        bounds.min.x = MIN(bounds.min.x, room->pos.x);
+        bounds.max.x = MAX(bounds.max.x, room->pos.x + room->size.x * WALL_L);
+        bounds.min.z = MIN(bounds.min.z, room->pos.z);
+        bounds.max.z = MAX(bounds.max.z, room->pos.z + room->size.z * WALL_L);
+        bounds.min.y = MIN(bounds.min.y, room->max_ceiling);
+        bounds.max.y = MAX(bounds.max.y, room->min_floor);
+    }
+
+    return bounds;
+}
+
 void Room_AlterFloorHeight(ITEM *item, int32_t height)
 {
     if (!height) {

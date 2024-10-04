@@ -28,6 +28,7 @@ typedef enum {
     PHASE_PICTURE,
     PHASE_STATS,
     PHASE_INVENTORY,
+    PHASE_PHOTO_MODE,
 } PHASE;
 
 typedef struct {
