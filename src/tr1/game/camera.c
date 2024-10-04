@@ -25,6 +25,11 @@ static double m_ManualCameraMultiplier[11] = {
     1.0, .5, .625, .75, .875, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0,
 };
 
+static void M_Chase(ITEM *item);
+static void M_Combat(ITEM *item);
+static void M_Look(ITEM *item);
+static void M_Fixed(void);
+static void M_OffsetReset(void);
 static bool M_BadPosition(int32_t x, int32_t y, int32_t z, int16_t room_num);
 static int32_t M_ShiftClamp(GAME_VECTOR *pos, int32_t clamp);
 static void M_SmartShift(
@@ -471,7 +476,7 @@ void Camera_Initialise(void)
     Camera_Update();
 }
 
-void Camera_Chase(ITEM *item)
+static void M_Chase(ITEM *item)
 {
     GAME_VECTOR ideal;
 
@@ -505,7 +510,7 @@ void Camera_Chase(ITEM *item)
     }
 }
 
-void Camera_Combat(ITEM *item)
+static void M_Combat(ITEM *item)
 {
     GAME_VECTOR ideal;
 
@@ -541,7 +546,7 @@ void Camera_Combat(ITEM *item)
     M_Move(&ideal, g_Camera.speed);
 }
 
-void Camera_Look(ITEM *item)
+static void M_Look(ITEM *item)
 {
     GAME_VECTOR old;
     GAME_VECTOR ideal;
@@ -593,7 +598,7 @@ void Camera_Look(ITEM *item)
     M_Move(&ideal, g_Camera.speed);
 }
 
-void Camera_Fixed(void)
+static void M_Fixed(void)
 {
     GAME_VECTOR ideal;
     OBJECT_VECTOR *fixed;
@@ -699,9 +704,9 @@ void Camera_Update(void)
         g_Camera.fixed_camera = 0;
 
         if (g_Camera.type == CAM_LOOK) {
-            Camera_Look(item);
+            M_Look(item);
         } else {
-            Camera_Combat(item);
+            M_Combat(item);
         }
     } else {
         g_Camera.target.x = item->pos.x;
@@ -734,9 +739,9 @@ void Camera_Update(void)
         }
 
         if (g_Camera.type == CAM_CHASE || g_Camera.flags == CHASE_OBJECT) {
-            Camera_Chase(item);
+            M_Chase(item);
         } else {
-            Camera_Fixed();
+            M_Fixed();
         }
     }
 
@@ -787,7 +792,7 @@ static void M_EnsureEnvironment(void)
     }
 }
 
-void Camera_OffsetReset(void)
+static void M_OffsetReset(void)
 {
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
@@ -866,7 +871,7 @@ void Camera_MoveManual(void)
         M_OffsetAdditionalElevation(camera_delta);
     }
     if (g_Input.camera_reset) {
-        Camera_OffsetReset();
+        M_OffsetReset();
     }
 }
 
