@@ -47,8 +47,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         SDL_SCANCODE_TAB,        // INPUT_ROLE_TURBO_CHEAT,
         SDL_SCANCODE_P,          // INPUT_ROLE_PAUSE,
-        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_UP
-        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_FORWARD
+        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
         SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
@@ -87,8 +87,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         SDL_SCANCODE_TAB,        // INPUT_ROLE_TURBO_CHEAT,
         SDL_SCANCODE_P,          // INPUT_ROLE_PAUSE,
-        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_UP
-        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_FORWARD
+        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
         SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
@@ -126,8 +126,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         SDL_SCANCODE_TAB,        // INPUT_ROLE_TURBO_CHEAT,
         SDL_SCANCODE_P,          // INPUT_ROLE_PAUSE,
-        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_UP
-        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_FORWARD
+        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
         SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
@@ -165,8 +165,8 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_L,          // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         SDL_SCANCODE_TAB,        // INPUT_ROLE_TURBO_CHEAT,
         SDL_SCANCODE_P,          // INPUT_ROLE_PAUSE,
-        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_UP
-        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_DOWN
+        SDL_SCANCODE_W,          // INPUT_ROLE_CAMERA_FORWARD
+        SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
         SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
@@ -209,8 +209,8 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_FORWARD
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
@@ -248,8 +248,8 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_FORWARD
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
@@ -287,8 +287,8 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_FORWARD
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
@@ -326,8 +326,8 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_LEVEL_SKIP_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TURBO_CHEAT,
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_START}, 0 },          // INPUT_ROLE_PAUSE,
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_UP
-        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_DOWN
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, -1 },          // INPUT_ROLE_CAMERA_FORWARD
+        { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
@@ -857,8 +857,8 @@ static INPUT_STATE M_GetControllerState(
         state.roll                   |= M_GetBindState(INPUT_ROLE_ROLL, cntlr_layout_num);
         state.option                 |= M_GetBindState(INPUT_ROLE_OPTION, cntlr_layout_num);
         state.pause                  |= M_GetBindState(INPUT_ROLE_PAUSE, cntlr_layout_num);
-        state.camera_up              |= M_GetBindState(INPUT_ROLE_CAMERA_UP, cntlr_layout_num);
-        state.camera_down            |= M_GetBindState(INPUT_ROLE_CAMERA_DOWN, cntlr_layout_num);
+        state.camera_forward         |= M_GetBindState(INPUT_ROLE_CAMERA_FORWARD, cntlr_layout_num);
+        state.camera_back            |= M_GetBindState(INPUT_ROLE_CAMERA_BACK, cntlr_layout_num);
         state.camera_left            |= M_GetBindState(INPUT_ROLE_CAMERA_LEFT, cntlr_layout_num);
         state.camera_right           |= M_GetBindState(INPUT_ROLE_CAMERA_RIGHT, cntlr_layout_num);
         state.camera_reset           |= M_GetBindState(INPUT_ROLE_CAMERA_RESET, cntlr_layout_num);
@@ -956,8 +956,8 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.roll                      = M_Key(INPUT_ROLE_ROLL, layout_num);
     linput.option                    = M_Key(INPUT_ROLE_OPTION, layout_num);
     linput.pause                     = M_Key(INPUT_ROLE_PAUSE, layout_num);
-    linput.camera_up                 = M_Key(INPUT_ROLE_CAMERA_UP, layout_num);
-    linput.camera_down               = M_Key(INPUT_ROLE_CAMERA_DOWN, layout_num);
+    linput.camera_forward            = M_Key(INPUT_ROLE_CAMERA_FORWARD, layout_num);
+    linput.camera_back               = M_Key(INPUT_ROLE_CAMERA_BACK, layout_num);
     linput.camera_left               = M_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
     linput.camera_right              = M_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
     linput.camera_reset              = M_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
