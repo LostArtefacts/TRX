@@ -64,6 +64,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
         SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
+        SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
     },
 
     // custom user controls
@@ -103,6 +104,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
         SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
+        SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
     },
 
     {
@@ -141,6 +143,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
         SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
+        SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
     },
 
     {
@@ -179,6 +182,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_F3,         // INPUT_ROLE_BILINEAR
         SDL_SCANCODE_SLASH,      // INPUT_ROLE_ENTER_CONSOLE
         SDL_SCANCODE_Z,          // INPUT_ROLE_CHANGE_TARGET
+        SDL_SCANCODE_H,          // INPUT_ROLE_TOGGLE_UI
     }
     // clang-format on
 };
@@ -222,6 +226,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         },
 
         {
@@ -260,6 +265,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         },
 
         {
@@ -298,6 +304,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         },
 
         {
@@ -336,6 +343,7 @@ static CONTROLLER_MAP
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_BILINEAR
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_ENTER_CONSOLE
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_LEFTSTICK}, 0 },      // INPUT_ROLE_CHANGE_TARGET
+        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_TOGGLE_UI
         }
         // clang-format on
     };
@@ -868,6 +876,7 @@ static INPUT_STATE M_GetControllerState(
         state.load                   |= M_GetBindState(INPUT_ROLE_LOAD, cntlr_layout_num);
         state.toggle_fps_counter     |= M_GetBindState(INPUT_ROLE_FPS, cntlr_layout_num);
         state.toggle_bilinear_filter |= M_GetBindState(INPUT_ROLE_BILINEAR, cntlr_layout_num);
+        state.toggle_ui              |= M_GetBindState(INPUT_ROLE_TOGGLE_UI, cntlr_layout_num);
         state.change_target          |= M_GetBindState(INPUT_ROLE_CHANGE_TARGET, cntlr_layout_num);
         state.menu_confirm           |= M_JoyBtn(SDL_CONTROLLER_BUTTON_A);
         state.menu_back              |= M_JoyBtn(SDL_CONTROLLER_BUTTON_B);
@@ -982,6 +991,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.toggle_fps_counter        = M_Key(INPUT_ROLE_FPS, layout_num);
     linput.toggle_bilinear_filter    = M_Key(INPUT_ROLE_BILINEAR, layout_num);
     linput.toggle_perspective_filter = KEY_DOWN(SDL_SCANCODE_F4);
+    linput.toggle_ui                 = M_Key(INPUT_ROLE_TOGGLE_UI, layout_num);
     // clang-format on
 
     if (m_Controller) {
