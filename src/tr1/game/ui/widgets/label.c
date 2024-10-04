@@ -30,13 +30,13 @@ static int32_t M_GetHeight(const UI_LABEL *const self)
     if (self->height != UI_LABEL_AUTO_SIZE) {
         return self->height;
     }
-    return Text_GetHeight(self->text) * PHD_ONE / self->text->scale.v;
+    return Text_GetHeight(self->text);
 }
 
 static void M_SetPosition(
     UI_LABEL *const self, const int32_t x, const int32_t y)
 {
-    Text_SetPos(self->text, x, y + TEXT_HEIGHT);
+    Text_SetPos(self->text, x, y + TEXT_HEIGHT_FIXED);
 }
 
 static void M_Draw(UI_LABEL *const self)
@@ -68,6 +68,7 @@ UI_WIDGET *UI_Label_Create(
     self->has_frame = false;
 
     self->text = Text_Create(0, 0, text);
+    Text_SetMultiline(self->text, true);
     self->text->flags.manual_draw = 1;
 
     return (UI_WIDGET *)self;

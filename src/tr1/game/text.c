@@ -9,8 +9,11 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <libtrx/memory.h>
 
 #define TEXT_BOX_OFFSET 2
 #define TEXT_MAX_STRINGS 100
@@ -29,7 +32,6 @@ static int32_t m_FlashFrames = 0;
 static CLOCK_TIMER m_FlashTimer = { 0 };
 static int16_t m_TextCount = 0;
 static TEXTSTRING m_Table[TEXT_MAX_STRINGS] = { 0 };
-static char m_TextstringBuffers[TEXT_MAX_STRINGS][TEXT_MAX_STRING_SIZE] = { 0 };
 
 static int8_t m_TextSpacing[110] = {
     14 /*A*/,  11 /*B*/, 11 /*C*/, 11 /*D*/, 11 /*E*/, 11 /*F*/, 11 /*G*/,
@@ -210,8 +212,15 @@ void Text_Init(void)
     m_TextCount = 0;
 }
 
-TEXTSTRING *Text_Create(
-    const int16_t x, const int16_t y, const char *const content)
+void Text_Shutdown(void)
+{
+    for (int32_t i = 0; i < TEXT_MAX_STRINGS; i++) {
+        TEXTSTRING *const text = &m_Table[i];
+        Memory_FreePointer(&text->content);
+    }
+}
+
+TEXTSTRING *Text_Create(int16_t x, int16_t y, const char *const content)
 {
     if (m_TextCount == TEXT_MAX_STRINGS) {
         return NULL;
@@ -233,7 +242,7 @@ TEXTSTRING *Text_Create(
         return NULL;
     }
 
-    text->content = m_TextstringBuffers[n];
+    text->content = Memory_DupStr(content);
     text->pos.x = x;
     text->pos.y = y;
     text->letter_spacing = 1;
@@ -249,8 +258,6 @@ TEXTSTRING *Text_Create(
     text->bgnd_off.x = 0;
     text->bgnd_off.y = 0;
 
-    Text_ChangeText(text, content);
-
     m_TextCount++;
 
     return text;
@@ -261,17 +268,14 @@ void Text_ChangeText(TEXTSTRING *const text, const char *const content)
     if (text == NULL) {
         return;
     }
-    if (!text->flags.active) {
-        return;
-    }
-    size_t length = strlen(content) + 1;
-    strncpy(text->content, content, TEXT_MAX_STRING_SIZE - 1);
-    if (length >= TEXT_MAX_STRING_SIZE) {
-        text->content[TEXT_MAX_STRING_SIZE - 1] = '\0';
+    assert(content != NULL);
+    if (text->flags.active) {
+        Memory_FreePointer(&text->content);
+        text->content = Memory_DupStr(content);
     }
 }
 
-void Text_SetPos(TEXTSTRING *const text, int16_t x, int16_t y)
+void Text_SetPos(TEXTSTRING *const text, const int16_t x, const int16_t y)
 {
     if (text == NULL) {
         return;
@@ -422,14 +426,14 @@ int32_t Text_GetHeight(const TEXTSTRING *const text)
     if (text == NULL) {
         return 0;
     }
-    int32_t height = TEXT_HEIGHT;
+    int32_t height = TEXT_HEIGHT_FIXED * text->scale.v / PHD_ONE;
     char *content = text->content;
     for (char letter = *content; letter != '\0'; letter = *content++) {
         if (text->flags.multiline && letter == '\n') {
-            height += TEXT_HEIGHT + TEXT_Y_SPACING;
+            height += TEXT_HEIGHT_FIXED * text->scale.v / PHD_ONE;
         }
     }
-    return height * text->scale.v / PHD_ONE;
+    return height;
 }
 
 int32_t Text_GetWidth(const TEXTSTRING *const text)
@@ -439,8 +443,8 @@ int32_t Text_GetWidth(const TEXTSTRING *const text)
     }
 
     int32_t width = 0;
-    for (const char *content = text->content; *content != '\0'; *content++) {
-        const char letter = *content;
+    for (const char *ptr = text->content; *ptr != '\0'; *ptr++) {
+        const char letter = *ptr;
         if (letter == 0x7F || (letter > 10 && letter < 32)) {
             continue;
         }
@@ -473,14 +477,14 @@ void Text_Draw(void)
 {
     m_FlashFrames = Clock_GetFrameAdvance();
     for (int i = 0; i < TEXT_MAX_STRINGS; i++) {
-        TEXTSTRING *const text = &m_Table[i];
+        TEXTSTRING *text = &m_Table[i];
         if (text->flags.active && !text->flags.manual_draw) {
             Text_DrawText(text);
         }
     }
 }
 
-void Text_DrawText(TEXTSTRING *const text)
+void Text_DrawText(TEXTSTRING *text)
 {
     int sx, sy, sh, sv;
 
@@ -498,18 +502,18 @@ void Text_DrawText(TEXTSTRING *const text)
     }
 
     char *content = text->content;
-    int32_t x = text->pos.x;
-    int32_t y = text->pos.y;
+    double x = text->pos.x;
+    double y = text->pos.y;
     int32_t text_width = Text_GetWidth(text);
 
     if (text->flags.centre_h) {
         x += (Screen_GetResWidthDownscaled(RSR_TEXT) - text_width) / 2;
     } else if (text->flags.right) {
-        x += Screen_GetResWidthDownscaled(RSR_TEXT) - text_width;
+        x += (Screen_GetResWidthDownscaled(RSR_TEXT) - text_width);
     }
 
     if (text->flags.centre_v) {
-        y += Screen_GetResHeightDownscaled(RSR_TEXT) / 2;
+        y += Screen_GetResHeightDownscaled(RSR_TEXT) / 2.0;
     } else if (text->flags.bottom) {
         y += Screen_GetResHeightDownscaled(RSR_TEXT);
     }
@@ -527,16 +531,16 @@ void Text_DrawText(TEXTSTRING *const text)
         }
 
         if (text->flags.multiline && letter == '\n') {
-            y += (TEXT_HEIGHT + TEXT_Y_SPACING) * text->scale.h / PHD_ONE;
+            y += TEXT_HEIGHT_FIXED * text->scale.v / PHD_ONE;
             x = start_x;
             continue;
         }
         if (letter == ' ') {
-            x += (text->word_spacing * text->scale.h) / PHD_ONE;
+            x += text->word_spacing * text->scale.h / PHD_ONE;
             continue;
         }
 
-        uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
+        const uint8_t sprite_num = M_MapLetterToSpriteNum(letter);
         sx = Screen_GetRenderScale(x, RSR_TEXT);
         sy = Screen_GetRenderScale(y, RSR_TEXT);
         sh = Screen_GetRenderScale(text->scale.h, RSR_TEXT);
@@ -550,9 +554,8 @@ void Text_DrawText(TEXTSTRING *const text)
             continue;
         }
 
-        x += (((int32_t)text->letter_spacing + m_TextSpacing[sprite_num])
-              * text->scale.h)
-            / PHD_ONE;
+        x += ((int32_t)text->letter_spacing + m_TextSpacing[sprite_num])
+            * text->scale.h / PHD_ONE;
     }
 
     int32_t bwidth = 0;
@@ -595,4 +598,9 @@ void Text_DrawText(TEXTSTRING *const text)
         M_DrawTextOutline(
             g_Config.ui.menu_style, sx, sy, sh, sv, text->outline.style);
     }
+}
+
+int32_t Text_GetMaxLineLength(void)
+{
+    return Screen_GetResWidthDownscaled(RSR_TEXT) / (TEXT_HEIGHT * 0.75);
 }

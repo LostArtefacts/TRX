@@ -3,13 +3,13 @@
 #include "global/types.h"
 
 #define TEXT_HEIGHT 15
-#define TEXT_MAX_STRING_SIZE 64
+#define TEXT_MAX_STRING_SIZE 100
 
 void __cdecl Text_Init(void);
 void Text_Shutdown(void);
 
 TEXTSTRING *__cdecl Text_Create(
-    int32_t x, int32_t y, int32_t z, const char *content);
+    int32_t x, int32_t y, int32_t z, const char *text);
 void __cdecl Text_ChangeText(TEXTSTRING *text, const char *content);
 void __cdecl Text_SetPos(TEXTSTRING *text, int16_t x, int16_t y);
 void __cdecl Text_SetScale(TEXTSTRING *text, int32_t scale_h, int32_t scale_v);

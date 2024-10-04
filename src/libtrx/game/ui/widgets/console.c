@@ -9,12 +9,13 @@
 #include "game/ui/widgets/spacer.h"
 #include "game/ui/widgets/stack.h"
 #include "memory.h"
+#include "strings.h"
 #include "utils.h"
+#include "game/text.h"
 
 #include <string.h>
 
 #define WINDOW_MARGIN 5
-#define LOG_HEIGHT 16
 #define LOG_MARGIN 10
 #define MAX_LOG_LINES 20
 #define LOG_SCALE 0.8
@@ -137,7 +138,7 @@ UI_WIDGET *UI_Console_Create(void)
 
     for (int32_t i = MAX_LOG_LINES - 1; i >= 0; i--) {
         self->logs[i].label =
-            UI_Label_Create("", UI_LABEL_AUTO_SIZE, LOG_HEIGHT * LOG_SCALE);
+            UI_Label_Create("", UI_LABEL_AUTO_SIZE, UI_LABEL_AUTO_SIZE);
         UI_Label_SetScale(self->logs[i].label, LOG_SCALE);
         UI_Stack_AddChild(self->container, self->logs[i].label);
     }
@@ -193,7 +194,10 @@ void UI_Console_HandleLog(UI_WIDGET *const widget, const char *const text)
 
     self->logs[0].expire_at =
         Clock_GetHighPrecisionCounter() + 1000 * strlen(text) * DELAY_PER_CHAR;
-    UI_Label_ChangeText(self->logs[0].label, text);
+
+    char *wrapped = String_WordWrap(text, Text_GetMaxLineLength());
+    UI_Label_ChangeText(self->logs[0].label, wrapped);
+    Memory_FreePointer(&wrapped);
 
     UI_Stack_DoLayout(self->container);
     M_UpdateLogCount(self);

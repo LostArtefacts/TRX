@@ -6,11 +6,6 @@
 #include "game/text.h"
 #include "game/viewport.h"
 
-int32_t Console_GetMaxLineLength(void)
-{
-    return TEXT_MAX_STRING_SIZE - 1;
-}
-
 extern CONSOLE_COMMAND **Console_GetCommands(void)
 {
     return g_ConsoleCommands;
