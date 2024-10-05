@@ -19,6 +19,7 @@
 - fixed Lara's head not matching the braid if in use when she is killed by the T-rex (#1549)
 - fixed `/endlevel` displaying a success message in the title screen
 - fixed Story So Far feature looping cutscenes forever (#1551, regression from 4.4)
+- fixed a rare crash related to the camera that could affect custom levels (#1671)
 - improved object name matching in console commands to work like TR2X
 - improved vertex movement when looking through water portals even more (#1493)
 - improved console commands targeting creatures and pickups (#1667)
