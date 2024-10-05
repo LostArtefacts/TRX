@@ -1,10 +1,10 @@
 <div align="center">
 <h1>TRX – Tomb Raider I & II: Community Edition</h1>
 
-<a href="https://github.com/rr-/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
+<a href="https://github.com/LostArtefacts/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
     <img src="data/download_tr1x.svg"/>
 </a>
-<a href="https://github.com/rr-/TRX/releases?q=tr2x+prerelease%3Afalse&expanded=true">
+<a href="https://github.com/LostArtefacts/TRX/releases?q=tr2x+prerelease%3Afalse&expanded=true">
     <img src="data/download_tr2x.svg"/>
 </a>
 </div>
@@ -72,7 +72,7 @@ Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and
 ### Download
 Download the latest release:
 
-<a href="https://github.com/rr-/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
+<a href="https://github.com/LostArtefacts/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
     <img src="data/download_tr1x.svg"/>
 </a>
 
@@ -92,7 +92,7 @@ TR2X serves as a sequel to TR1X, currently focusing on the decompilation of Tomb
 ### Download
 Download the latest release:
 
-<a href="https://github.com/rr-/TRX/releases?q=tr2x+prerelease%3Afalse&expanded=true">
+<a href="https://github.com/LostArtefacts/TRX/releases?q=tr2x+prerelease%3Afalse&expanded=true">
     <img src="data/download_tr2x.svg"/>
 </a>
 
