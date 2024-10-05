@@ -90,7 +90,7 @@ static PHASE_CONTROL M_Control(int32_t nframes)
     Input_Update();
     Shell_ProcessInput();
 
-    if (g_InputDB.toggle_photo_mode || g_InputDB.menu_back) {
+    if (g_InputDB.toggle_photo_mode || g_InputDB.option) {
         Phase_Set(PHASE_GAME, NULL);
     } else if (g_InputDB.action) {
         m_Status = PS_ACTIVE;
