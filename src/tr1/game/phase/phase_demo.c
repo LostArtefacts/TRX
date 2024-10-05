@@ -47,7 +47,6 @@ static TARGET_LOCK_MODE m_OldTargetMode;
 static RESUME_INFO m_OldResumeInfo;
 static TEXTSTRING *m_DemoModeText = NULL;
 static STATE m_State = STATE_RUN;
-static INPUT_STATE m_OldInput = { 0 };
 
 static int32_t m_DemoLevel = -1;
 static uint32_t *m_DemoPtr = NULL;
@@ -68,26 +67,54 @@ static bool M_ProcessInput(void)
         return false;
     }
 
+    union {
+        uint32_t any;
+        struct {
+            // clang-format off
+            uint32_t forward:      1;
+            uint32_t back:         1;
+            uint32_t left:         1;
+            uint32_t right:        1;
+            uint32_t jump:         1;
+            uint32_t draw:         1;
+            uint32_t action:       1;
+            uint32_t slow:         1;
+            uint32_t option:       1;
+            uint32_t look:         1;
+            uint32_t step_left:    1;
+            uint32_t step_right:   1;
+            uint32_t roll:         1;
+            uint32_t _pad:         7;
+            uint32_t menu_confirm: 1;
+            uint32_t menu_back:    1;
+            uint32_t save:         1;
+            uint32_t load:         1;
+            // clang-format on
+        };
+    } demo_input = { .any = *m_DemoPtr };
+
     // Translate demo inputs (that use TombATI key values) to TR1X inputs.
     g_Input = (INPUT_STATE) {
         0,
-        .forward = (bool)(*m_DemoPtr & (1 << 0)),
-        .back = (bool)(*m_DemoPtr & (1 << 1)),
-        .left = (bool)(*m_DemoPtr & (1 << 2)),
-        .right = (bool)(*m_DemoPtr & (1 << 3)),
-        .jump = (bool)(*m_DemoPtr & (1 << 4)),
-        .draw = (bool)(*m_DemoPtr & (1 << 5)),
-        .action = (bool)(*m_DemoPtr & (1 << 6)),
-        .slow = (bool)(*m_DemoPtr & (1 << 7)),
-        .option = (bool)(*m_DemoPtr & (1 << 8)),
-        .look = (bool)(*m_DemoPtr & (1 << 9)),
-        .step_left = (bool)(*m_DemoPtr & (1 << 10)),
-        .step_right = (bool)(*m_DemoPtr & (1 << 11)),
-        .roll = (bool)(*m_DemoPtr & (1 << 12)),
-        .menu_confirm = (bool)(*m_DemoPtr & (1 << 20)),
-        .menu_back = (bool)(*m_DemoPtr & (1 << 21)),
-        .save = (bool)(*m_DemoPtr & (1 << 22)),
-        .load = (bool)(*m_DemoPtr & (1 << 23)),
+        // clang-format off
+        .forward      = demo_input.forward,
+        .back         = demo_input.back,
+        .left         = demo_input.left,
+        .right        = demo_input.right,
+        .jump         = demo_input.jump,
+        .draw         = demo_input.draw,
+        .action       = demo_input.action,
+        .slow         = demo_input.slow,
+        .option       = demo_input.option,
+        .look         = demo_input.look,
+        .step_left    = demo_input.step_left,
+        .step_right   = demo_input.step_right,
+        .roll         = demo_input.roll,
+        .menu_confirm = demo_input.menu_confirm,
+        .menu_back    = demo_input.menu_back,
+        .save         = demo_input.save,
+        .load         = demo_input.load,
+        // clang-format on
     };
 
     m_DemoPtr++;
@@ -132,7 +159,6 @@ static void M_Start(const void *const args)
     // keys pressed. In that case, it should only be stopped if the user
     // presses some other key.
     Input_Update();
-    m_OldInput = g_Input;
 
     Interpolation_Remember();
     Output_FadeReset();
@@ -253,7 +279,6 @@ static PHASE_CONTROL M_Run(int32_t nframes)
         Overlay_BarHealthTimerTick();
 
         // Discard demo input; check for debounced real keypresses
-        g_Input = m_OldInput;
         Input_Update();
         Shell_ProcessInput();
         if (g_InputDB.any) {
