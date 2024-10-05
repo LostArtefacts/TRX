@@ -31,14 +31,27 @@ typedef enum {
     PHASE_PHOTO_MODE,
 } PHASE;
 
+typedef void (*PHASER_START)(const void *args);
+typedef void (*PHASER_END)(void);
+typedef PHASE_CONTROL (*PHASER_CONTROL)(int32_t nframes);
+typedef void (*PHASER_DRAW)(void);
+typedef int32_t (*PHASER_WAIT)(void);
+
 typedef struct {
-    void (*start)(void *arg);
-    void (*end)();
-    PHASE_CONTROL (*control)(int32_t nframes);
-    void (*draw)(void);
-    int32_t (*wait)(void);
+    PHASER_START start;
+    PHASER_END end;
+    PHASER_CONTROL control;
+    PHASER_DRAW draw;
+    PHASER_WAIT wait;
 } PHASER;
 
 PHASE Phase_Get(void);
-void Phase_Set(PHASE phase, void *arg);
-GAMEFLOW_COMMAND Phase_Run();
+
+// Sets the next phase to run.
+// args are passed to the subsequent PHASER->start callback.
+// Note that they must be allocated on the heap and will be
+// immediately freed by the phaser module upon completing the start
+// routine.
+void Phase_Set(PHASE phase, const void *args);
+
+GAMEFLOW_COMMAND Phase_Run(void);

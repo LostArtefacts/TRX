@@ -15,6 +15,7 @@
 #include "global/vars.h"
 
 #include <libtrx/log.h>
+#include <libtrx/memory.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -24,12 +25,12 @@ static PHASER *m_Phaser = NULL;
 
 static bool m_Running = false;
 static PHASE m_PhaseToSet = PHASE_NULL;
-static void *m_PhaseToSetArg = NULL;
+static const void *m_PhaseToSetArgs = NULL;
 
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
 static int32_t M_Wait(void);
-static void M_SetUnconditionally(const PHASE phase, void *arg);
+static void M_SetUnconditionally(const PHASE phase, const void *args);
 
 static PHASE_CONTROL M_Control(int32_t nframes)
 {
@@ -55,7 +56,7 @@ static void M_Draw(void)
     Output_EndScene();
 }
 
-static void M_SetUnconditionally(const PHASE phase, void *arg)
+static void M_SetUnconditionally(const PHASE phase, const void *args)
 {
     if (m_Phaser && m_Phaser->end) {
         m_Phaser->end();
@@ -100,8 +101,9 @@ static void M_SetUnconditionally(const PHASE phase, void *arg)
         break;
     }
 
-    if (m_Phaser && m_Phaser->start) {
-        m_Phaser->start(arg);
+    if (m_Phaser && m_Phaser->start != NULL) {
+        m_Phaser->start(args);
+        Memory_FreePointer(&args);
     }
 
     // set it at the end, so that the start callbacks can retrieve the old phase
@@ -115,16 +117,16 @@ PHASE Phase_Get(void)
     return m_Phase;
 }
 
-void Phase_Set(const PHASE phase, void *arg)
+void Phase_Set(const PHASE phase, const void *const args)
 {
     // changing the phase in the middle of rendering is asking for trouble,
     // so instead we schedule to run the change on the next iteration
     if (m_Running) {
         m_PhaseToSet = phase;
-        m_PhaseToSetArg = arg;
+        m_PhaseToSetArgs = args;
         return;
     }
-    M_SetUnconditionally(phase, arg);
+    M_SetUnconditionally(phase, args);
 }
 
 static int32_t M_Wait(void)
@@ -151,9 +153,9 @@ GAMEFLOW_COMMAND Phase_Run(void)
             Interpolation_SetRate(1.0);
             M_Draw();
 
-            M_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArg);
+            M_SetUnconditionally(m_PhaseToSet, m_PhaseToSetArgs);
             m_PhaseToSet = PHASE_NULL;
-            m_PhaseToSetArg = NULL;
+            m_PhaseToSetArgs = NULL;
             if (control.end) {
                 M_Draw();
                 break;

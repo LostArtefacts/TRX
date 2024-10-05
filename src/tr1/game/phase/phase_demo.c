@@ -25,6 +25,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
 #include <assert.h>
@@ -54,7 +55,7 @@ static uint32_t *m_DemoPtr = NULL;
 static bool M_ProcessInput(void);
 static int32_t M_ChooseLevel(void);
 
-static void M_Start(void *arg);
+static void M_Start(const void *args);
 static void M_End(void);
 static PHASE_CONTROL M_Run(int32_t nframes);
 static PHASE_CONTROL M_FadeOut(void);
@@ -116,7 +117,7 @@ static int32_t M_ChooseLevel(void)
     return level_num;
 }
 
-static void M_Start(void *arg)
+static void M_Start(const void *const args)
 {
     m_DemoLevel = M_ChooseLevel();
 
@@ -321,7 +322,7 @@ static void M_Draw(void)
 }
 
 PHASER g_DemoPhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

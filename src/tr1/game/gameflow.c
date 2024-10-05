@@ -1089,10 +1089,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
 
         case GFS_START_CINE:
             if (level_type != GFL_SAVED) {
-                PHASE_CUTSCENE_DATA phase_args = {
-                    .level_num = (int32_t)(intptr_t)seq->data,
-                };
-                Phase_Set(PHASE_CUTSCENE, &phase_args);
+                PHASE_CUTSCENE_ARGS *const args =
+                    Memory_Alloc(sizeof(PHASE_CUTSCENE_ARGS));
+                args->level_num = (int32_t)(intptr_t)seq->data;
+                Phase_Set(PHASE_CUTSCENE, args);
             }
             break;
 
@@ -1113,10 +1113,10 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             break;
 
         case GFS_LEVEL_STATS: {
-            PHASE_STATS_DATA phase_args = {
-                .level_num = (int32_t)(intptr_t)seq->data,
-            };
-            Phase_Set(PHASE_STATS, &phase_args);
+            PHASE_STATS_ARGS *const args =
+                Memory_Alloc(sizeof(PHASE_STATS_ARGS));
+            args->level_num = (int32_t)(intptr_t)seq->data;
+            Phase_Set(PHASE_STATS, args);
             command = Phase_Run();
             if (command.action != GF_CONTINUE_SEQUENCE) {
                 return command;
@@ -1127,14 +1127,13 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
         case GFS_TOTAL_STATS:
             if (g_Config.enable_total_stats && level_type != GFL_SAVED) {
                 const GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-                PHASE_STATS_DATA phase_args = {
-                    .level_num = level_num,
-                    .background_path = data->path,
-                    .total = true,
-                    .level_type =
-                        level_type == GFL_BONUS ? GFL_BONUS : GFL_NORMAL,
-                };
-                Phase_Set(PHASE_STATS, &phase_args);
+                PHASE_STATS_ARGS *const args =
+                    Memory_Alloc(sizeof(PHASE_STATS_ARGS));
+                args->level_num = level_num;
+                args->background_path = data->path, args->total = true,
+                args->level_type =
+                    level_type == GFL_BONUS ? GFL_BONUS : GFL_NORMAL;
+                Phase_Set(PHASE_STATS, args);
                 command = Phase_Run();
                 if (command.action != GF_CONTINUE_SEQUENCE) {
                     return command;
@@ -1158,11 +1157,11 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             }
 
             GAMEFLOW_DISPLAY_PICTURE_DATA *data = seq->data;
-            PHASE_PICTURE_DATA phase_arg = {
-                .path = data->path,
-                .display_time = data->display_time,
-            };
-            Phase_Set(PHASE_PICTURE, &phase_arg);
+            PHASE_PICTURE_ARGS *const args =
+                Memory_Alloc(sizeof(PHASE_PICTURE_ARGS));
+            args->path = data->path;
+            args->display_time = data->display_time;
+            Phase_Set(PHASE_PICTURE, args);
             command = Phase_Run();
             if (command.action != GF_CONTINUE_SEQUENCE) {
                 return command;
@@ -1319,10 +1318,10 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             break;
 
         case GFS_START_CINE: {
-            PHASE_CUTSCENE_DATA phase_args = {
-                .level_num = (int32_t)(intptr_t)seq->data,
-            };
-            Phase_Set(PHASE_CUTSCENE, &phase_args);
+            PHASE_CUTSCENE_ARGS *const args =
+                Memory_Alloc(sizeof(PHASE_CUTSCENE_ARGS));
+            args->level_num = (int32_t)(intptr_t)seq->data;
+            Phase_Set(PHASE_CUTSCENE, args);
             break;
         }
 

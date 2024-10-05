@@ -55,7 +55,7 @@ static void M_UpdateText(void);
 static int32_t M_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
-static void M_Start(void *arg);
+static void M_Start(const void *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
@@ -108,7 +108,7 @@ static int32_t M_DisplayRequester(
     return select;
 }
 
-static void M_Start(void *arg)
+static void M_Start(const void *const args)
 {
     g_OldInputDB = g_Input;
 

@@ -33,13 +33,13 @@ static int32_t m_CurrentFOV;
 static PHOTO_STATUS m_Status = PS_NONE;
 static UI_WIDGET *m_PhotoMode = NULL;
 
-static void M_Start(void *arg);
+static void M_Start(const void *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
 static void M_AdjustFOV(void);
 
-static void M_Start(void *arg)
+static void M_Start(const void *const args)
 {
     m_Status = PS_NONE;
     g_OldInputDB = g_Input;

@@ -36,7 +36,7 @@ static TEXTSTRING *m_Texts[MAX_TEXTSTRINGS] = { 0 };
 
 static void M_CreateTexts(int32_t level_num);
 static void M_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type);
-static void M_Start(void *arg);
+static void M_Start(const PHASE_STATS_ARGS *arg);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
@@ -236,12 +236,11 @@ static void M_CreateTextsTotal(GAMEFLOW_LEVEL_TYPE level_type)
     cur_txt++;
 }
 
-static void M_Start(void *arg)
+static void M_Start(const PHASE_STATS_ARGS *const args)
 {
-    const PHASE_STATS_DATA *data = (const PHASE_STATS_DATA *)arg;
-    if (data && data->total) {
-        assert(data->level_type);
-        Output_LoadBackdropImage(data->background_path);
+    if (args != NULL && args->total) {
+        assert(args->level_type);
+        Output_LoadBackdropImage(args->background_path);
     } else {
         Output_LoadBackdropImage(NULL);
     }
@@ -253,16 +252,17 @@ static void M_Start(void *arg)
     }
 
     m_State = STATE_FADE_IN;
-    m_Total = data && data->total;
+    m_Total = args != NULL && args->total;
 
-    if (data && data->total) {
-        M_CreateTextsTotal(data->level_type);
+    if (args != NULL && args->total) {
+        M_CreateTextsTotal(args->level_type);
         Output_FadeReset();
         Output_FadeResetToBlack();
         Output_FadeToTransparent(true);
     } else {
         M_CreateTexts(
-            data && data->level_num != -1 ? data->level_num : g_CurrentLevel);
+            args != NULL && args->level_num != -1 ? args->level_num
+                                                  : g_CurrentLevel);
         Output_FadeToSemiBlack(true);
     }
 }
@@ -327,7 +327,7 @@ static void M_Draw(void)
 }
 
 PHASER g_StatsPhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

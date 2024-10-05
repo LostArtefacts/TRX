@@ -6,6 +6,6 @@
 
 typedef struct {
     int32_t level_num;
-} PHASE_CUTSCENE_DATA;
+} PHASE_CUTSCENE_ARGS;
 
 extern PHASER g_CutscenePhaser;

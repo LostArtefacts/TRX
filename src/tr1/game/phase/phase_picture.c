@@ -20,18 +20,17 @@ static STATE m_State = STATE_FADE_IN;
 static double m_DisplayTime = 0.0;
 static CLOCK_TIMER m_DisplayTimer = { 0 };
 
-static void M_Start(void *arg);
+static void M_Start(const PHASE_PICTURE_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
 
-static void M_Start(void *arg)
+static void M_Start(const PHASE_PICTURE_ARGS *const args)
 {
-    const PHASE_PICTURE_DATA *data = (const PHASE_PICTURE_DATA *)arg;
     m_State = STATE_FADE_IN;
-    m_DisplayTime = data->display_time;
+    m_DisplayTime = args->display_time;
     Clock_ResetTimer(&m_DisplayTimer);
-    Output_LoadBackdropImage(data->path);
+    Output_LoadBackdropImage(args->path);
     Output_FadeResetToBlack();
     Output_FadeToTransparent(true);
 }
@@ -84,7 +83,7 @@ static void M_Draw(void)
 }
 
 PHASER g_PicturePhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

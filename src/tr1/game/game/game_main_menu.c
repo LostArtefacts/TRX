@@ -1,10 +1,14 @@
 #include "game/phase/phase.h"
+#include "game/phase/phase_inventory.h"
 #include "global/types.h"
 
-#include <stdint.h>
+#include <libtrx/memory.h>
 
 GAMEFLOW_COMMAND Game_MainMenu(void)
 {
-    Phase_Set(PHASE_INVENTORY, (void *)(intptr_t)INV_TITLE_MODE);
+    PHASE_INVENTORY_ARGS *const args =
+        Memory_Alloc(sizeof(PHASE_INVENTORY_ARGS));
+    args->mode = INV_TITLE_MODE;
+    Phase_Set(PHASE_INVENTORY, args);
     return Phase_Run();
 }

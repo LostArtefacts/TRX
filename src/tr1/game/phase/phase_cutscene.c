@@ -18,13 +18,15 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/memory.h>
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 static void M_InitialiseHair(int32_t level_num);
 
-static void M_Start(void *arg);
+static void M_Start(const PHASE_CUTSCENE_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
@@ -62,17 +64,16 @@ static void M_InitialiseHair(int32_t level_num)
         g_LaraItem->required_anim_state = cut_anim->current_anim_state;
 }
 
-static void M_Start(void *arg)
+static void M_Start(const PHASE_CUTSCENE_ARGS *const args)
 {
     Output_FadeReset();
 
-    const PHASE_CUTSCENE_DATA *data = (const PHASE_CUTSCENE_DATA *)arg;
-    if (!Level_Initialise(data->level_num)) {
+    if (!Level_Initialise(args->level_num)) {
         return;
     }
     g_GameInfo.current_level_type = GFL_CUTSCENE;
 
-    M_InitialiseHair(data->level_num);
+    M_InitialiseHair(args->level_num);
 
     for (int16_t room_num = 0; room_num < g_RoomCount; room_num++) {
         if (g_RoomInfo[room_num].flipped_room >= 0) {
@@ -148,7 +149,7 @@ static void M_Draw(void)
 }
 
 PHASER g_CutscenePhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

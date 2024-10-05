@@ -11,6 +11,6 @@ typedef struct {
     const char *background_path;
     bool total;
     GAMEFLOW_LEVEL_TYPE level_type;
-} PHASE_STATS_DATA;
+} PHASE_STATS_ARGS;
 
 extern PHASER g_StatsPhaser;

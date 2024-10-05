@@ -70,7 +70,7 @@ static int32_t InvItem_GetFrames(
 static void Inv_DrawItem(INVENTORY_ITEM *inv_item, int32_t frames);
 static bool Inv_CheckDemoTimer(const IMOTION_INFO *motion);
 
-static void M_Start(void *arg);
+static void M_Start(const PHASE_INVENTORY_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_ControlFrame(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
@@ -272,7 +272,7 @@ static PHASE_CONTROL Inv_Close(GAME_OBJECT_ID inv_chosen)
             Savegame_Save(g_GameInfo.current_save_slot);
             Music_Unpause();
             Sound_UnpauseAll();
-            Phase_Set(PHASE_GAME, 0);
+            Phase_Set(PHASE_GAME, NULL);
             return (PHASE_CONTROL) { .end = false };
 
         case PASSPORT_MODE_RESTART:
@@ -346,7 +346,7 @@ static PHASE_CONTROL Inv_Close(GAME_OBJECT_ID inv_chosen)
     } else {
         Music_Unpause();
         Sound_UnpauseAll();
-        Phase_Set(PHASE_GAME, 0);
+        Phase_Set(PHASE_GAME, NULL);
         return (PHASE_CONTROL) { .end = false };
     }
 }
@@ -579,14 +579,12 @@ static bool Inv_CheckDemoTimer(const IMOTION_INFO *const motion)
                &m_DemoTimer, g_GameFlow.demo_delay * 1000.0);
 }
 
-static void M_Start(void *arg)
+static void M_Start(const PHASE_INVENTORY_ARGS *const args)
 {
     Interpolation_Remember();
     if (g_Config.enable_timer_in_inventory) {
         Stats_StartTimer();
     }
-
-    INV_MODE inv_mode = (INV_MODE)arg;
 
     RING_INFO *ring = &m_Ring;
     IMOTION_INFO *motion = &m_Motion;
@@ -594,7 +592,7 @@ static void M_Start(void *arg)
     memset(motion, 0, sizeof(IMOTION_INFO));
     memset(ring, 0, sizeof(RING_INFO));
 
-    g_InvMode = inv_mode;
+    g_InvMode = args->mode;
 
     m_PassportModeReady = false;
     m_StartLevel = -1;
@@ -1138,7 +1136,7 @@ static void M_Draw(void)
 }
 
 PHASER g_InventoryPhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

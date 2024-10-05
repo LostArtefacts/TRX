@@ -20,18 +20,19 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-static void M_Start(void *arg);
+static void M_Start(const void *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
 
-static void M_Start(void *arg)
+static void M_Start(const void *const args)
 {
     Interpolation_Remember();
     Stats_StartTimer();

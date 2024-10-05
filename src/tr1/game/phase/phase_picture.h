@@ -5,6 +5,6 @@
 typedef struct {
     const char *path;
     double display_time;
-} PHASE_PICTURE_DATA;
+} PHASE_PICTURE_ARGS;
 
 extern PHASER g_PicturePhaser;
