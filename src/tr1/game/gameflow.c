@@ -1199,7 +1199,7 @@ GameFlow_InterpretSequence(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type)
             g_CinePosition.pos.z = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_ANGLE:
-            g_Camera.target_angle = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.rot = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_FLIP_MAP:
             Room_FlipMap();
@@ -1365,7 +1365,7 @@ GameFlow_StorySoFar(int32_t level_num, int32_t savegame_level)
             g_CinePosition.pos.z = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_SET_CAM_ANGLE:
-            g_Camera.target_angle = (int32_t)(intptr_t)seq->data;
+            g_CinePosition.rot = (int32_t)(intptr_t)seq->data;
             break;
         case GFS_FLIP_MAP:
             Room_FlipMap();

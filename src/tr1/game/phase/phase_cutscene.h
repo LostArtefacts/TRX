@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 typedef struct {
+    bool resume_existing;
     int32_t level_num;
 } PHASE_CUTSCENE_ARGS;
 

@@ -501,7 +501,7 @@ typedef struct {
 
 typedef struct {
     XYZ_32 pos;
-    XYZ_16 rot;
+    int16_t rot;
 } CINE_POSITION;
 
 typedef struct {

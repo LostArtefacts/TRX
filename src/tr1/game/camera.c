@@ -65,6 +65,7 @@ static void M_LoadCutsceneFrame(void);
 
 static void M_UpdatePhotoMode(void);
 static void M_ExitPhotoMode(void);
+static void M_ResetPhotoMode(void);
 
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
@@ -239,25 +240,7 @@ static void M_LoadCutsceneFrame(void)
         g_CineFrame = g_NumCineFrames - 1;
     }
 
-    const CINE_CAMERA *const ref = &g_CineCamera[g_CineFrame];
-
-    const int32_t c = Math_Cos(g_CinePosition.rot.y);
-    const int32_t s = Math_Sin(g_CinePosition.rot.y);
-
-    g_Camera.target.x =
-        g_CinePosition.pos.x + ((c * ref->tx + s * ref->tz) >> W2V_SHIFT);
-    g_Camera.target.y = g_CinePosition.pos.y + ref->ty;
-    g_Camera.target.z =
-        g_CinePosition.pos.z + ((c * ref->tz - s * ref->tx) >> W2V_SHIFT);
-    g_Camera.pos.x =
-        g_CinePosition.pos.x + ((s * ref->cz + c * ref->cx) >> W2V_SHIFT);
-    g_Camera.pos.y = g_CinePosition.pos.y + ref->cy;
-    g_Camera.pos.z =
-        g_CinePosition.pos.z + ((c * ref->cz - s * ref->cx) >> W2V_SHIFT);
-    g_Camera.roll = ref->roll;
-    g_Camera.shift = 0;
-
-    Viewport_SetFOV(ref->fov);
+    Camera_UpdateCutscene();
 }
 
 static void M_UpdatePhotoMode(void)
@@ -265,6 +248,11 @@ static void M_UpdatePhotoMode(void)
     if (!m_PhotoMode) {
         m_OldCamera = g_Camera;
         m_PhotoMode = true;
+        m_WorldBounds = Room_GetWorldBounds();
+        g_Camera.pos.room_num = Room_GetIndexFromPos(
+            g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
+        g_Camera.target.room_num = Room_GetIndexFromPos(
+            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z);
     }
 
     const bool axis_shift_input = g_Input.camera_up || g_Input.camera_down;
@@ -446,6 +434,11 @@ static void M_UpdatePhotoMode(void)
 static void M_ExitPhotoMode(void)
 {
     g_Camera = m_OldCamera;
+    M_ResetPhotoMode();
+}
+
+static void M_ResetPhotoMode(void)
+{
     m_Roll = 0;
     m_PhotoMode = false;
 }
@@ -854,14 +847,14 @@ static void M_Shift(
 void Camera_Initialise(void)
 {
     m_WorldBounds = Room_GetWorldBounds();
-    m_PhotoMode = false;
-    m_Roll = 0;
+    M_ResetPhotoMode();
     Camera_ResetPosition();
     Camera_Update();
 }
 
 void Camera_Reset(void)
 {
+    M_ResetPhotoMode();
     g_Camera.pos.room_num = NO_ROOM;
 }
 
@@ -1054,15 +1047,15 @@ void Camera_UpdateCutscene(void)
 {
     const CINE_CAMERA *const ref = &g_CineCamera[g_CineFrame];
 
-    const int32_t c = Math_Cos(g_Camera.target_angle);
-    const int32_t s = Math_Sin(g_Camera.target_angle);
+    const int32_t c = Math_Cos(g_CinePosition.rot);
+    const int32_t s = Math_Sin(g_CinePosition.rot);
     const XYZ_32 *const pos = &g_CinePosition.pos;
-    g_Camera.target.x = pos->x + ((ref->tx * c + ref->tz * s) >> W2V_SHIFT);
+    g_Camera.target.x = pos->x + ((c * ref->tx + s * ref->tz) >> W2V_SHIFT);
     g_Camera.target.y = pos->y + ref->ty;
-    g_Camera.target.z = pos->z + ((ref->tz * c - ref->tx * s) >> W2V_SHIFT);
-    g_Camera.pos.x = pos->x + ((ref->cz * s + ref->cx * c) >> W2V_SHIFT);
+    g_Camera.target.z = pos->z + ((c * ref->tz - s * ref->tx) >> W2V_SHIFT);
+    g_Camera.pos.x = pos->x + ((s * ref->cz + c * ref->cx) >> W2V_SHIFT);
     g_Camera.pos.y = pos->y + ref->cy;
-    g_Camera.pos.z = pos->z + ((ref->cz * c - ref->cx * s) >> W2V_SHIFT);
+    g_Camera.pos.z = pos->z + ((c * ref->cz - s * ref->cx) >> W2V_SHIFT);
     g_Camera.roll = ref->roll;
     g_Camera.shift = 0;
 
