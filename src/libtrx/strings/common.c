@@ -95,9 +95,9 @@ bool String_Match(const char *const subject, const char *const pattern)
 
     pcre2_match_data *const match_data =
         pcre2_match_data_create(ovec_size, NULL);
+    const int flags = 0;
     const int rc = pcre2_match(
-        re, usubject, PCRE2_ZERO_TERMINATED, 0,
-        PCRE2_ANCHORED | PCRE2_ENDANCHORED, match_data, NULL);
+        re, usubject, PCRE2_ZERO_TERMINATED, 0, flags, match_data, NULL);
     pcre2_match_data_free(match_data);
     pcre2_code_free(re);
 
@@ -111,14 +111,14 @@ bool String_IsEmpty(const char *const value)
 
 bool String_ParseBool(const char *const value, bool *const target)
 {
-    if (String_Match(value, "0|false|off")) {
+    if (String_Match(value, "^(0|false|off)$")) {
         if (target != NULL) {
             *target = false;
         }
         return true;
     }
 
-    if (String_Match(value, "1|true|on")) {
+    if (String_Match(value, "^(1|true|on)$")) {
         if (target != NULL) {
             *target = true;
         }

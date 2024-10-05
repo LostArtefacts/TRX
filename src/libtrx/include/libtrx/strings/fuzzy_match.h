@@ -13,6 +13,7 @@ typedef struct {
 
 typedef struct {
     bool is_full;
+    bool is_word;
     int32_t score;
 } STRING_FUZZY_SCORE;
 

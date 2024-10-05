@@ -25,11 +25,27 @@ static COMMAND_RESULT M_TeleportToObject(const char *user_input);
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
+static bool M_ObjectCanBePickedUp(const GAME_OBJECT_ID object_id)
+{
+    if (!Object_IsObjectType(object_id, g_PickupObjects)) {
+        return true;
+    }
+    for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
+        const ITEM *const item = Item_Get(item_num);
+        if (item->object_id == object_id && item->status != IS_INVISIBLE) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static bool M_CanTargetObject(const GAME_OBJECT_ID object_id)
 {
     return !Object_IsObjectType(object_id, g_NullObjects)
         && !Object_IsObjectType(object_id, g_AnimObjects)
-        && !Object_IsObjectType(object_id, g_InvObjects);
+        && !Object_IsObjectType(object_id, g_InvObjects)
+        && Object_GetObject(object_id)->loaded
+        && M_ObjectCanBePickedUp(object_id);
 }
 
 static inline bool M_IsFloatRound(const float num)

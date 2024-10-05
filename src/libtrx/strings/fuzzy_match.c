@@ -14,6 +14,7 @@
 static STRING_FUZZY_SCORE M_GetScore(
     const char *user_input, const char *reference, int32_t weight);
 static void M_DiscardNonFullMatches(VECTOR *matches);
+static void M_DiscardNonWordMatches(VECTOR *matches);
 static void M_SortMatches(VECTOR *matches);
 static void M_DiscardDuplicateMatches(VECTOR *matches);
 
@@ -32,6 +33,7 @@ static STRING_FUZZY_SCORE M_GetScore(
 
     // Assume a partial match
     bool is_full = false;
+    bool is_word = false;
     int32_t score = letter_score + percent_score;
     if (String_Match(reference, full_regex)) {
         // Got a full match
@@ -39,6 +41,7 @@ static STRING_FUZZY_SCORE M_GetScore(
         score += FULL_MATCH_SCORE_BONUS;
     } else if (String_Match(reference, word_regex)) {
         // Got a word match
+        is_word = true;
         score += WORD_MATCH_SCORE_BONUS;
     } else if (String_CaseSubstring(reference, user_input) == NULL) {
         // No match.
@@ -50,6 +53,7 @@ static STRING_FUZZY_SCORE M_GetScore(
 
     return (STRING_FUZZY_SCORE) {
         .is_full = is_full,
+        .is_word = is_word,
         .score = score * weight,
     };
 }
@@ -67,6 +71,25 @@ static void M_DiscardNonFullMatches(VECTOR *const matches)
         for (int32_t i = matches->count - 1; i >= 0; i--) {
             const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
             if (!match->score.is_full) {
+                Vector_RemoveAt(matches, i);
+            }
+        }
+    }
+}
+
+static void M_DiscardNonWordMatches(VECTOR *const matches)
+{
+    bool has_word_match = false;
+    for (int32_t i = 0; i < matches->count; i++) {
+        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
+        if (match->score.is_word) {
+            has_word_match = true;
+        }
+    }
+    if (has_word_match) {
+        for (int32_t i = matches->count - 1; i >= 0; i--) {
+            const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
+            if (!match->score.is_word) {
                 Vector_RemoveAt(matches, i);
             }
         }
@@ -129,6 +152,7 @@ VECTOR *String_FuzzyMatch(const char *user_input, const VECTOR *const source)
     }
 
     M_DiscardNonFullMatches(matches);
+    M_DiscardNonWordMatches(matches);
     M_DiscardDuplicateMatches(matches);
     M_SortMatches(matches);
 

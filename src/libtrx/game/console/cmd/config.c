@@ -110,10 +110,10 @@ static bool M_SetCurrentValue(
     assert(option->target != NULL);
     switch (option->type) {
     case COT_BOOL:
-        if (String_Match(new_value, "on|true|1")) {
+        if (String_Match(new_value, "^(on|true|1)$")) {
             *(bool *)option->target = true;
             return true;
-        } else if (String_Match(new_value, "off|false|0")) {
+        } else if (String_Match(new_value, "^(off|false|0)$")) {
             *(bool *)option->target = false;
             return true;
         }

@@ -9,6 +9,7 @@
 - fixed `/endlevel` displaying a success message in the title screen
 - fixed very loud music volume set by default (#1614)
 - improved vertex movement when looking through water portals (#1493)
+- improved console commands targeting creatures and pickups (#1667)
 
 ## [0.3](https://github.com/LostArtefacts/TR2X/compare/0.2...0.3) - 2024-09-20
 - added new console commands:
