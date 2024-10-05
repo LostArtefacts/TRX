@@ -782,14 +782,21 @@ static void M_Clip(
     const int32_t target_y, const int32_t left, const int32_t top,
     const int32_t right, const int32_t bottom)
 {
+    const int32_t x_diff = *x - target_x;
+    const int32_t y_diff = *y - target_y;
+
     if ((right > left) != (target_x < left)) {
-        *y = target_y + (*y - target_y) * (left - target_x) / (*x - target_x);
+        if (x_diff) {
+            *y = target_y + (left - target_x) * y_diff / x_diff;
+        }
         *x = left;
     }
 
     if ((bottom > top && target_y > top && *y < top)
         || (bottom < top && target_y < top && (*y) > top)) {
-        *x = target_x + (*x - target_x) * (top - target_y) / (*y - target_y);
+        if (y_diff) {
+            *x = target_x + (top - target_y) * x_diff / y_diff;
+        }
         *y = top;
     }
 }
