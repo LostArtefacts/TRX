@@ -463,7 +463,8 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/backpack_cut.bin",
-                "data/injections/braid_cut1.bin"
+                "data/injections/braid_cut1.bin",
+                "data/injections/photo.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -488,7 +489,8 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/backpack_cut.bin",
-                "data/injections/braid_cut2_cut4.bin"
+                "data/injections/braid_cut2_cut4.bin",
+                "data/injections/photo.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -514,6 +516,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut3_textures.bin",
+                "data/injections/photo.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},
@@ -540,6 +543,7 @@
                 "data/injections/backpack_cut.bin",
                 "data/injections/braid_cut2_cut4.bin",
                 "data/injections/cut4_textures.bin",
+                "data/injections/photo.bin",
             ],
             "sequence": [
                 {"type": "start_cine"},

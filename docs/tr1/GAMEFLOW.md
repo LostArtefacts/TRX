@@ -1414,14 +1414,6 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
-      <code>explosion.bin</code>
-    </td>
-    <td>
-      Injects explosion sprites for certain console commands.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
       <code>lara_animations.bin</code>
     </td>
     <td>
@@ -1436,6 +1428,23 @@ provided with the game achieves.
     <td>
       Injects animation change/dispatch edits for Lara to cater for responsive
       jumping, if that option is enabled.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>explosion.bin</code>
+    </td>
+    <td>
+      Injects explosion sprites for certain console commands.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>photo.bin</code>
+    </td>
+    <td>
+      Injects camera shutter sound effect for the photo mode, needed only for
+      the cutscene levels.
     </td>
   </tr>
   <tr valign="top">
