@@ -73,6 +73,7 @@ static void M_Start(const PHASE_CUTSCENE_ARGS *const args)
 
     // The cutscene is already playing and it's to be resumed.
     if (args->resume_existing) {
+        Music_SeekTimestamp(g_CineFrame / (double)LOGIC_FPS);
         return;
     }
 
