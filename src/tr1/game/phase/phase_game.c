@@ -12,6 +12,7 @@
 #include "game/lara/hair.h"
 #include "game/output.h"
 #include "game/overlay.h"
+#include "game/phase/phase_photo_mode.h"
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/stats.h"
@@ -108,7 +109,11 @@ static PHASE_CONTROL M_Control(int32_t nframes)
             Phase_Set(PHASE_PAUSE, NULL);
             return (PHASE_CONTROL) { .end = false };
         } else if (g_InputDB.toggle_photo_mode) {
-            Phase_Set(PHASE_PHOTO_MODE, NULL);
+            PHASE_PHOTO_MODE_ARGS *const args =
+                Memory_Alloc(sizeof(PHASE_PHOTO_MODE_ARGS));
+            args->phase_to_return_to = PHASE_GAME;
+            args->phase_arg = NULL;
+            Phase_Set(PHASE_PHOTO_MODE, args);
             return (PHASE_CONTROL) { .end = false };
         } else {
             Item_Control();

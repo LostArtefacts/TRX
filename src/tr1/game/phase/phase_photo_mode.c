@@ -15,6 +15,7 @@
 #include <libtrx/game/console/common.h>
 #include <libtrx/game/game_string.h>
 
+#include <assert.h>
 #include <stdio.h>
 
 #define MIN_PHOTO_FOV 10
@@ -29,18 +30,22 @@ typedef enum {
 static bool m_OldUIState;
 static int32_t m_OldFOV;
 static int32_t m_CurrentFOV;
+static PHASE_PHOTO_MODE_ARGS m_Args;
 
 static PHOTO_STATUS m_Status = PS_NONE;
 static UI_WIDGET *m_PhotoMode = NULL;
 
-static void M_Start(const void *args);
+static void M_Start(const PHASE_PHOTO_MODE_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
 static void M_AdjustFOV(void);
 
-static void M_Start(const void *const args)
+static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
 {
+    assert(args != NULL);
+    m_Args = *args;
+
     m_Status = PS_NONE;
     g_OldInputDB = g_Input;
     m_OldUIState = g_Config.ui.enable_ui;
@@ -91,7 +96,8 @@ static PHASE_CONTROL M_Control(int32_t nframes)
     Shell_ProcessInput();
 
     if (g_InputDB.toggle_photo_mode || g_InputDB.option) {
-        Phase_Set(PHASE_GAME, NULL);
+        Phase_Set(m_Args.phase_to_return_to, m_Args.phase_arg);
+        return (PHASE_CONTROL) { .end = false };
     } else if (g_InputDB.action) {
         m_Status = PS_ACTIVE;
     } else {
@@ -141,7 +147,7 @@ static void M_Draw(void)
 }
 
 PHASER g_PhotoModePhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

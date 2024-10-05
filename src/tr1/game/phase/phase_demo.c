@@ -16,6 +16,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/phase/phase.h"
+#include "game/phase/phase_photo_mode.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -39,11 +40,13 @@ typedef enum {
     STATE_INVALID,
 } STATE;
 
-static bool m_OldEnhancedLook;
-static bool m_OldTR2Jumping;
-static bool m_OldTR2Swimming;
-static bool m_oldFixBearAI;
-static TARGET_LOCK_MODE m_OldTargetMode;
+static struct {
+    bool enable_enhanced_look;
+    bool enable_tr2_jumping;
+    bool enable_tr2_swimming;
+    bool fix_bear_ai;
+    TARGET_LOCK_MODE target_mode;
+} m_OldConfig;
 static RESUME_INFO m_OldResumeInfo;
 static TEXTSTRING *m_DemoModeText = NULL;
 static STATE m_State = STATE_RUN;
@@ -53,8 +56,12 @@ static uint32_t *m_DemoPtr = NULL;
 
 static bool M_ProcessInput(void);
 static int32_t M_ChooseLevel(void);
+static void M_PrepareConfig(void);
+static void M_RestoreConfig(void);
+static void M_PrepareResumeInfo(void);
+static void M_RestoreResumeInfo(void);
 
-static void M_Start(const void *args);
+static void M_Start(const PHASE_DEMO_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Run(int32_t nframes);
 static PHASE_CONTROL M_FadeOut(void);
@@ -144,10 +151,65 @@ static int32_t M_ChooseLevel(void)
     return level_num;
 }
 
-static void M_Start(const void *const args)
+static void M_PrepareConfig(void)
 {
-    m_DemoLevel = M_ChooseLevel();
+    // Changing certains settings affects negatively the original game demo
+    // data, so temporarily turn off all relevant enhancements.
+    m_OldConfig.enable_enhanced_look = g_Config.enable_enhanced_look;
+    m_OldConfig.enable_tr2_jumping = g_Config.enable_tr2_jumping;
+    m_OldConfig.enable_tr2_swimming = g_Config.enable_tr2_swimming;
+    m_OldConfig.target_mode = g_Config.target_mode;
+    m_OldConfig.fix_bear_ai = g_Config.fix_bear_ai;
+    g_Config.enable_enhanced_look = false;
+    g_Config.enable_tr2_jumping = false;
+    g_Config.enable_tr2_swimming = false;
+    g_Config.target_mode = TLM_FULL;
+    g_Config.fix_bear_ai = false;
+}
 
+static void M_RestoreConfig(void)
+{
+    g_Config.target_mode = m_OldConfig.target_mode;
+    g_Config.enable_enhanced_look = m_OldConfig.enable_enhanced_look;
+    g_Config.enable_tr2_jumping = m_OldConfig.enable_tr2_jumping;
+    g_Config.enable_tr2_swimming = m_OldConfig.enable_tr2_swimming;
+    g_Config.fix_bear_ai = m_OldConfig.fix_bear_ai;
+}
+
+static void M_PrepareResumeInfo(void)
+{
+    RESUME_INFO *resume_info = &g_GameInfo.current[m_DemoLevel];
+    m_OldResumeInfo = *resume_info;
+    resume_info->flags.available = 1;
+    resume_info->flags.got_pistols = 1;
+    resume_info->pistol_ammo = 1000;
+    resume_info->gun_status = LGS_ARMLESS;
+    resume_info->equipped_gun_type = LGT_PISTOLS;
+    resume_info->holsters_gun_type = LGT_PISTOLS;
+    resume_info->back_gun_type = LGT_UNARMED;
+    resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
+}
+
+static void M_RestoreResumeInfo(void)
+{
+    g_GameInfo.current[m_DemoLevel] = m_OldResumeInfo;
+}
+
+static void M_Start(const PHASE_DEMO_ARGS *const args)
+{
+    m_DemoModeText = Text_Create(0, -16, GS(MISC_DEMO_MODE));
+    Text_Flash(m_DemoModeText, 1, 20);
+    Text_AlignBottom(m_DemoModeText, 1);
+    Text_CentreH(m_DemoModeText, 1);
+
+    if (args != NULL && args->resume_existing) {
+        // The demo is already playing and it's to be resumed.
+        M_PrepareConfig();
+        M_PrepareResumeInfo();
+        return;
+    }
+
+    m_DemoLevel = M_ChooseLevel();
     if (m_DemoLevel == -1) {
         m_State = STATE_INVALID;
         return;
@@ -163,37 +225,11 @@ static void M_Start(const void *const args)
     Interpolation_Remember();
     Output_FadeReset();
 
-    RESUME_INFO *resume_info = &g_GameInfo.current[m_DemoLevel];
-    m_OldResumeInfo = *resume_info;
-    resume_info->flags.available = 1;
-    resume_info->flags.got_pistols = 1;
-    resume_info->pistol_ammo = 1000;
-    resume_info->gun_status = LGS_ARMLESS;
-    resume_info->equipped_gun_type = LGT_PISTOLS;
-    resume_info->holsters_gun_type = LGT_PISTOLS;
-    resume_info->back_gun_type = LGT_UNARMED;
-    resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
+    M_PrepareConfig();
+    M_PrepareResumeInfo();
 
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
-
-    // changing the controls affects negatively the original game demo data,
-    // so temporarily turn off all the TR1X enhancements
-    m_OldEnhancedLook = g_Config.enable_enhanced_look;
-    m_OldTR2Jumping = g_Config.enable_tr2_jumping;
-    m_OldTR2Swimming = g_Config.enable_tr2_swimming;
-    m_OldTargetMode = g_Config.target_mode;
-    m_oldFixBearAI = g_Config.fix_bear_ai;
-    g_Config.enable_enhanced_look = false;
-    g_Config.enable_tr2_jumping = false;
-    g_Config.enable_tr2_swimming = false;
-    g_Config.target_mode = TLM_FULL;
-    g_Config.fix_bear_ai = false;
-
-    m_DemoModeText = Text_Create(0, -16, GS(MISC_DEMO_MODE));
-    Text_Flash(m_DemoModeText, 1, 20);
-    Text_AlignBottom(m_DemoModeText, 1);
-    Text_CentreH(m_DemoModeText, 1);
 
     if (!Level_Initialise(m_DemoLevel)) {
         Shell_ExitSystem("Unable to initialize level");
@@ -237,15 +273,10 @@ static void M_End(void)
         return;
     }
 
+    M_RestoreConfig();
+    M_RestoreResumeInfo();
+
     Text_Remove(m_DemoModeText);
-
-    g_GameInfo.current[m_DemoLevel] = m_OldResumeInfo;
-
-    g_Config.target_mode = m_OldTargetMode;
-    g_Config.enable_enhanced_look = m_OldEnhancedLook;
-    g_Config.enable_tr2_jumping = m_OldTR2Jumping;
-    g_Config.enable_tr2_swimming = m_OldTR2Swimming;
-    g_Config.fix_bear_ai = m_oldFixBearAI;
 }
 
 static PHASE_CONTROL M_Run(int32_t nframes)
@@ -281,7 +312,18 @@ static PHASE_CONTROL M_Run(int32_t nframes)
         // Discard demo input; check for debounced real keypresses
         Input_Update();
         Shell_ProcessInput();
-        if (g_InputDB.any) {
+        if (g_InputDB.toggle_photo_mode) {
+            PHASE_DEMO_ARGS *const demo_args =
+                Memory_Alloc(sizeof(PHASE_DEMO_ARGS));
+            demo_args->resume_existing = true;
+
+            PHASE_PHOTO_MODE_ARGS *const args =
+                Memory_Alloc(sizeof(PHASE_PHOTO_MODE_ARGS));
+            args->phase_to_return_to = PHASE_DEMO;
+            args->phase_arg = demo_args;
+            Phase_Set(PHASE_PHOTO_MODE, args);
+            return (PHASE_CONTROL) { .end = false };
+        } else if (g_InputDB.any) {
             m_State = STATE_FADE_OUT;
             goto end;
         }
