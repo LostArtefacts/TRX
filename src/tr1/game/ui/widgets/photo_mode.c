@@ -77,12 +77,12 @@ static void M_Free(UI_PHOTO_MODE *const self)
         self->right_labels[i]->free(self->right_labels[i]);
     }
     self->spacer->free(self->spacer);
-    self->spacer->free(self->title);
-    self->spacer->free(self->outer_stack);
-    self->spacer->free(self->inner_stack);
-    self->spacer->free(self->left_stack);
-    self->spacer->free(self->right_stack);
-    self->spacer->free(self->window);
+    self->title->free(self->title);
+    self->outer_stack->free(self->outer_stack);
+    self->inner_stack->free(self->inner_stack);
+    self->left_stack->free(self->left_stack);
+    self->right_stack->free(self->right_stack);
+    self->window->free(self->window);
     Memory_Free(self->left_labels);
     Memory_Free(self->right_labels);
     Memory_Free(self);
