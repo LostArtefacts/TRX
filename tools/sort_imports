@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from pathlib import Path
 import argparse
 
 from shared.import_sorter import sort_imports
@@ -23,7 +24,9 @@ def main() -> None:
         ]
 
     sort_imports(
-        paths=[path for path in paths if path.is_relative_to(TR1Paths.src_dir)],
+        paths=[
+            path for path in paths if path.is_relative_to(TR1Paths.src_dir)
+        ],
         root_dir=TR1Paths.src_dir,
         system_include_dirs=[SRC_DIR],
         own_include_map={
@@ -45,7 +48,9 @@ def main() -> None:
     )
 
     sort_imports(
-        paths=[path for path in paths if path.is_relative_to(TR2Paths.src_dir)],
+        paths=[
+            path for path in paths if path.is_relative_to(TR2Paths.src_dir)
+        ],
         root_dir=TR2Paths.src_dir,
         system_include_dirs=[SRC_DIR],
         own_include_map={
@@ -68,9 +73,9 @@ def main() -> None:
             "log_unknown.c": "log.h",
             "log_linux.c": "log.h",
             "log_windows.c": "log.h",
-            "engine/audio.c": "audio.h",
-            "engine/audio_sample.c": "audio.h",
-            "engine/audio_stream.c": "audio.h",
+            "engine/audio.c": "audio_internal.h",
+            "engine/audio_sample.c": "audio_internal.h",
+            "engine/audio_stream.c": "audio_internal.h",
         },
         fix_map={},
         forced_order=[
@@ -79,3 +84,7 @@ def main() -> None:
             "<tlhelp32.h>",
         ],
     )
+
+
+if __name__ == "__main__":
+    main()

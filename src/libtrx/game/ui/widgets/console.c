@@ -2,6 +2,7 @@
 
 #include "game/clock.h"
 #include "game/console/common.h"
+#include "game/text.h"
 #include "game/ui/common.h"
 #include "game/ui/events.h"
 #include "game/ui/widgets/label.h"
@@ -11,7 +12,6 @@
 #include "memory.h"
 #include "strings.h"
 #include "utils.h"
-#include "game/text.h"
 
 #include <string.h>
 

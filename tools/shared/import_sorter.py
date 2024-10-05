@@ -16,7 +16,7 @@ def custom_sort(source: list[str], forced_order: list[str]) -> list[str]:
     return sorted(source, key=key_func)
 
 
-def sort_imports(
+def sort_imports_single_file(
     path: Path,
     root_dir: Path,
     own_include_map: dict[str, str],
@@ -87,7 +87,7 @@ def sort_imports(
     forced_order: list[str],
 ) -> None:
     for path in paths:
-        sort_imports(
+        sort_imports_single_file(
             path,
             root_dir=root_dir,
             own_include_map=own_include_map,

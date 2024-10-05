@@ -9,11 +9,11 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/memory.h>
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
-#include <libtrx/memory.h>
 
 #define TEXT_BOX_OFFSET 2
 #define TEXT_MAX_STRINGS 100
