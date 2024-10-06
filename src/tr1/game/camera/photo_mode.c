@@ -3,12 +3,15 @@
 #include "game/camera/common.h"
 #include "game/input.h"
 #include "game/room.h"
+#include "game/viewport.h"
 #include "global/vars.h"
 #include "math/math.h"
 #include "math/math_misc.h"
 
 #include <libtrx/utils.h>
 
+#define MIN_PHOTO_FOV 10
+#define MAX_PHOTO_FOV 150
 #define PHOTO_ROT_SHIFT (PHD_DEGREE * 4)
 #define PHOTO_MAX_PITCH_ROLL (PHD_90 - PHD_DEGREE)
 #define PHOTO_MAX_SPEED 100
@@ -30,6 +33,8 @@
     } while (false)
 
 static int32_t m_PhotoSpeed = 0;
+static int32_t m_OldFOV;
+static int32_t m_CurrentFOV;
 static CAMERA_INFO m_OldCamera = { 0 };
 static BOUNDS_32 m_WorldBounds = { 0 };
 
@@ -43,11 +48,14 @@ static void M_UpdateCameraRooms(void);
 static bool M_HandleShiftInputs(void);
 static bool M_HandleRotationInputs(void);
 static bool M_HandleTargetRotationInputs(void);
+static bool M_HandleFOVInputs();
 static void M_UpdatePhotoMode(void);
 
 static void M_ResetCamera(void)
 {
     g_Camera = m_OldCamera;
+    Viewport_SetFOV(m_OldFOV);
+    m_CurrentFOV = m_OldFOV / PHD_DEGREE;
 }
 
 static int32_t M_GetShiftSpeed(const int32_t val)
@@ -221,8 +229,31 @@ static bool M_HandleTargetRotationInputs(void)
     return result;
 }
 
+static bool M_HandleFOVInputs(void)
+{
+    if (g_InputDB.toggle_ui) {
+        // This needs to be re-applied as Config_Write() will have reset it.
+        Viewport_SetFOV(m_CurrentFOV * PHD_DEGREE);
+    }
+
+    if (!g_Input.draw) {
+        return false;
+    }
+
+    if (g_Input.slow) {
+        m_CurrentFOV--;
+    } else {
+        m_CurrentFOV++;
+    }
+    CLAMP(m_CurrentFOV, MIN_PHOTO_FOV, MAX_PHOTO_FOV);
+    Viewport_SetFOV(m_CurrentFOV * PHD_DEGREE);
+    return true;
+}
+
 void Camera_EnterPhotoMode(void)
 {
+    m_OldFOV = Viewport_GetFOV();
+    m_CurrentFOV = m_OldFOV / PHD_DEGREE;
     m_OldCamera = g_Camera;
     g_Camera.type = CAM_PHOTO_MODE;
     m_WorldBounds = Room_GetWorldBounds();
@@ -231,6 +262,7 @@ void Camera_EnterPhotoMode(void)
 
 void Camera_ExitPhotoMode(void)
 {
+    Viewport_SetFOV(m_OldFOV);
     M_ResetCamera();
 }
 
@@ -257,6 +289,8 @@ void Camera_UpdatePhotoMode(void)
         M_ResetCamera();
         g_Camera.type = CAM_PHOTO_MODE;
     }
+
+    M_HandleFOVInputs();
 
     bool changed = false;
     changed |= M_HandleShiftInputs();

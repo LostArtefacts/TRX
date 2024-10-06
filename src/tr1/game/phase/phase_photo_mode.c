@@ -10,16 +10,12 @@
 #include "game/shell.h"
 #include "game/sound.h"
 #include "game/ui/widgets/photo_mode.h"
-#include "game/viewport.h"
 
 #include <libtrx/game/console/common.h>
 #include <libtrx/game/game_string.h>
 
 #include <assert.h>
 #include <stdio.h>
-
-#define MIN_PHOTO_FOV 10
-#define MAX_PHOTO_FOV 150
 
 typedef enum {
     PS_NONE,
@@ -28,8 +24,6 @@ typedef enum {
 } PHOTO_STATUS;
 
 static bool m_OldUIState;
-static int32_t m_OldFOV;
-static int32_t m_CurrentFOV;
 static PHASE_PHOTO_MODE_ARGS m_Args;
 
 static PHOTO_STATUS m_Status = PS_NONE;
@@ -39,7 +33,6 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
-static void M_AdjustFOV(void);
 
 static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
 {
@@ -50,8 +43,6 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
     g_OldInputDB = g_Input;
     m_OldUIState = g_Config.ui.enable_ui;
     Camera_EnterPhotoMode();
-    m_OldFOV = Viewport_GetFOV();
-    m_CurrentFOV = m_OldFOV / PHD_DEGREE;
 
     Overlay_HideGameInfo();
     Music_Pause();
@@ -71,7 +62,6 @@ static void M_End(void)
     Camera_ExitPhotoMode();
 
     g_Input = g_OldInputDB;
-    Viewport_SetFOV(m_OldFOV);
 
     if (m_OldUIState != g_Config.ui.enable_ui) {
         g_Config.ui.enable_ui ^= true;
@@ -105,37 +95,10 @@ static PHASE_CONTROL M_Control(int32_t nframes)
         m_Status = PS_ACTIVE;
     } else {
         m_PhotoMode->control(m_PhotoMode);
-        M_AdjustFOV();
         Camera_Update();
     }
 
     return (PHASE_CONTROL) { .end = false };
-}
-
-static void M_AdjustFOV(void)
-{
-    if (g_InputDB.look) {
-        Viewport_SetFOV(m_OldFOV);
-        m_CurrentFOV = m_OldFOV / PHD_DEGREE;
-        return;
-    }
-
-    if (g_InputDB.toggle_ui) {
-        // This needs to be re-applied as Config_Write() will have reset it.
-        Viewport_SetFOV(m_CurrentFOV * PHD_DEGREE);
-    }
-
-    if (!g_Input.draw) {
-        return;
-    }
-
-    if (g_Input.slow) {
-        m_CurrentFOV--;
-    } else {
-        m_CurrentFOV++;
-    }
-    CLAMP(m_CurrentFOV, MIN_PHOTO_FOV, MAX_PHOTO_FOV);
-    Viewport_SetFOV(m_CurrentFOV * PHD_DEGREE);
 }
 
 static void M_Draw(void)
