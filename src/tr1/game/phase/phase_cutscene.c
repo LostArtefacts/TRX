@@ -107,8 +107,6 @@ static void M_Start(const PHASE_CUTSCENE_ARGS *const args)
 static void M_End(void)
 {
     if (m_ExitingToPhotoMode) {
-        // Need to ensure we always exit the photo mode.
-        Camera_Reset();
         return;
     }
 

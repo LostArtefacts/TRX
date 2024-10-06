@@ -49,6 +49,7 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
     m_Status = PS_NONE;
     g_OldInputDB = g_Input;
     m_OldUIState = g_Config.ui.enable_ui;
+    Camera_EnterPhotoMode();
     m_OldFOV = Viewport_GetFOV();
     m_CurrentFOV = m_OldFOV / PHD_DEGREE;
 
@@ -67,6 +68,8 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
 
 static void M_End(void)
 {
+    Camera_ExitPhotoMode();
+
     g_Input = g_OldInputDB;
     Viewport_SetFOV(m_OldFOV);
 

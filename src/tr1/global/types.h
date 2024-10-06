@@ -34,6 +34,7 @@ typedef enum {
     CAM_COMBAT = 3,
     CAM_CINEMATIC = 4,
     CAM_HEAVY = 5,
+    CAM_PHOTO_MODE = 6,
 } CAMERA_TYPE;
 
 typedef enum {
