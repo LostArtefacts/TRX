@@ -374,6 +374,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     int16_t old_fov = Viewport_GetFOV();
     Viewport_SetFOV(PICKUPS_FOV * PHD_DEGREE);
     Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
+    Output_ApplyFOV();
 
     Matrix_PushUnit();
     Matrix_TranslateSet(

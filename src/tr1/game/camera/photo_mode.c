@@ -2,6 +2,7 @@
 
 #include "game/camera/common.h"
 #include "game/input.h"
+#include "game/output.h"
 #include "game/room.h"
 #include "game/viewport.h"
 #include "global/vars.h"
@@ -231,11 +232,6 @@ static bool M_HandleTargetRotationInputs(void)
 
 static bool M_HandleFOVInputs(void)
 {
-    if (g_InputDB.toggle_ui) {
-        // This needs to be re-applied as Config_Write() will have reset it.
-        Viewport_SetFOV(m_CurrentFOV * PHD_DEGREE);
-    }
-
     if (!g_Input.draw) {
         return false;
     }
@@ -247,6 +243,7 @@ static bool M_HandleFOVInputs(void)
     }
     CLAMP(m_CurrentFOV, MIN_PHOTO_FOV, MAX_PHOTO_FOV);
     Viewport_SetFOV(m_CurrentFOV * PHD_DEGREE);
+    Output_ApplyFOV();
     return true;
 }
 

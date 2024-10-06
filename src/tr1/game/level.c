@@ -1159,7 +1159,7 @@ bool Level_Initialise(int32_t level_num)
         Music_PlayLooped(g_GameFlow.levels[level_num].music);
     }
 
-    Viewport_SetFOV(Viewport_GetUserFOV());
+    Viewport_SetFOV(-1);
 
     g_Camera.underwater = false;
     Benchmark_End(benchmark, NULL);

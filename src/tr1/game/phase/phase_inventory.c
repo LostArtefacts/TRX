@@ -101,6 +101,7 @@ static void Inv_Draw(RING_INFO *ring, IMOTION_INFO *motion)
 
     int16_t old_fov = Viewport_GetFOV();
     Viewport_SetFOV(PASSPORT_FOV * PHD_DEGREE);
+    Output_ApplyFOV();
 
     Output_SetupAboveWater(false);
 

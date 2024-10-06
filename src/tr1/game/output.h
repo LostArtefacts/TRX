@@ -113,6 +113,7 @@ void Output_AnimateTextures(void);
 void Output_AnimateFades(void);
 void Output_RotateLight(int16_t pitch, int16_t yaw);
 
+void Output_ApplyFOV(void);
 void Output_ApplyTint(float *r, float *g, float *b);
 
 void Output_FillEnvironmentMap(void);

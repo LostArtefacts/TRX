@@ -23,6 +23,7 @@
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
 
+#include <math.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -616,6 +617,8 @@ void Output_FlushTranslucentObjects(void)
 
 void Output_BeginScene(void)
 {
+    Output_ApplyFOV();
+
     S_Output_RenderBegin();
     m_LightningCount = 0;
 }
@@ -1324,6 +1327,32 @@ bool Output_FadeIsAnimating(void)
     }
     return m_OverlayCurAlpha != m_OverlayDstAlpha
         || m_BackdropCurAlpha != m_BackdropDstAlpha;
+}
+
+void Output_ApplyFOV(void)
+{
+    int32_t fov = Viewport_GetFOV();
+
+    // In places that use GAME_FOV, it can be safely changed to user's choice.
+    // But for cinematics, the FOV value chosen by devs needs to stay
+    // unchanged, otherwise the game renders the low camera in the Lost Valley
+    // cutscene wrong.
+    if (g_Config.fov_vertical) {
+        double aspect_ratio =
+            Screen_GetResWidth() / (double)Screen_GetResHeight();
+        double fov_rad_h = fov * M_PI / (180 * PHD_DEGREE);
+        double fov_rad_v = 2 * atan(aspect_ratio * tan(fov_rad_h / 2));
+        fov = round((fov_rad_v / M_PI) * (180 * PHD_DEGREE));
+    }
+
+    int16_t c = Math_Cos(fov / 2);
+    int16_t s = Math_Sin(fov / 2);
+
+    g_PhdPersp = Screen_GetResWidth() / 2;
+    if (s != 0) {
+        g_PhdPersp *= c;
+        g_PhdPersp /= s;
+    }
 }
 
 void Output_ApplyTint(float *r, float *g, float *b)

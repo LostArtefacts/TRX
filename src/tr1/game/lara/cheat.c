@@ -164,7 +164,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     g_Lara.mesh_effects = 0;
     Lara_InitialiseMeshes(g_CurrentLevel);
     g_Camera.type = CAM_CHASE;
-    Viewport_SetFOV(Viewport_GetUserFOV());
+    Viewport_SetFOV(-1);
     Console_Log(GS(OSD_FLY_MODE_ON));
     return true;
 }

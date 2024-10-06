@@ -14,7 +14,7 @@ void FX_LaraNormal(ITEM *item)
     item->goal_anim_state = LS_STOP;
     Item_SwitchToAnim(item, LA_STOP, 0);
     g_Camera.type = CAM_CHASE;
-    Viewport_SetFOV(Viewport_GetUserFOV());
+    Viewport_SetFOV(-1);
 }
 
 void FX_LaraHandsFree(ITEM *item)

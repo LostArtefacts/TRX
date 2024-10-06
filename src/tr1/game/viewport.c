@@ -6,8 +6,6 @@
 #include "global/vars.h"
 #include "math/math.h"
 
-#include <math.h>
-
 static int32_t m_MinX = 0;
 static int32_t m_MinY = 0;
 static int32_t m_CenterX = 0;
@@ -77,7 +75,7 @@ int32_t Viewport_GetHeight(void)
 
 int16_t Viewport_GetFOV(void)
 {
-    return m_CurrentFOV;
+    return m_CurrentFOV == -1 ? Viewport_GetUserFOV() : m_CurrentFOV;
 }
 
 int16_t Viewport_GetUserFOV(void)
@@ -88,24 +86,4 @@ int16_t Viewport_GetUserFOV(void)
 void Viewport_SetFOV(int16_t fov)
 {
     m_CurrentFOV = fov;
-
-    // In places that use GAME_FOV, it can be safely changed to user's choice.
-    // But for cinematics, the FOV value chosen by devs needs to stay
-    // unchanged, otherwise the game renders the low camera in the Lost Valley
-    // cutscene wrong.
-    if (g_Config.fov_vertical) {
-        double aspect_ratio =
-            Screen_GetResWidth() / (double)Screen_GetResHeight();
-        double fov_rad_h = fov * M_PI / (180 * PHD_DEGREE);
-        double fov_rad_v = 2 * atan(aspect_ratio * tan(fov_rad_h / 2));
-        fov = round((fov_rad_v / M_PI) * (180 * PHD_DEGREE));
-    }
-
-    int16_t c = Math_Cos(fov / 2);
-    int16_t s = Math_Sin(fov / 2);
-    g_PhdPersp = Screen_GetResWidth() / 2;
-    if (s != 0) {
-        g_PhdPersp *= c;
-        g_PhdPersp /= s;
-    }
 }
