@@ -1669,15 +1669,12 @@ static void M_ItemPositions(INJECTION *injection)
         const int16_t item_num = VFile_ReadS16(fp);
         const int16_t y_rot = VFile_ReadS16(fp);
 
-        int32_t x;
-        int32_t y;
-        int32_t z;
-        int16_t room_num;
+        GAME_VECTOR pos = { 0 };
         if (injection->version > INJ_VERSION_4) {
-            x = VFile_ReadS32(fp);
-            y = VFile_ReadS32(fp);
-            z = VFile_ReadS32(fp);
-            room_num = VFile_ReadS16(fp);
+            pos.x = VFile_ReadS32(fp);
+            pos.y = VFile_ReadS32(fp);
+            pos.z = VFile_ReadS32(fp);
+            pos.room_num = VFile_ReadS16(fp);
         }
 
         if (item_num < 0 || item_num >= g_LevelItemCount) {
@@ -1688,10 +1685,10 @@ static void M_ItemPositions(INJECTION *injection)
         ITEM *item = &g_Items[item_num];
         item->rot.y = y_rot;
         if (injection->version > INJ_VERSION_4) {
-            item->pos.x = x;
-            item->pos.y = y;
-            item->pos.z = z;
-            item->room_num = room_num;
+            item->pos.x = pos.x;
+            item->pos.y = pos.y;
+            item->pos.z = pos.z;
+            item->room_num = pos.room_num;
         }
     }
 
