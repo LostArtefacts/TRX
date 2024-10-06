@@ -60,16 +60,21 @@ static void M_Look(const ITEM *item);
 static void M_Fixed(void);
 static void M_LoadCutsceneFrame(void);
 
+static void M_PhotoModeInit(void);
+static void M_PhotoModeResetCamera(void);
+static void M_PhotoModeReset(void);
 static int32_t M_PhotoModeShiftSpeed(int32_t val);
 static int32_t M_PhotoModeRotSpeed(void);
 static void M_PhotoModeShiftCamera(
     int16_t angle, int16_t elevation, int32_t dy);
 static void M_PhotoModeRotateCamera(int16_t angle, int16_t elevation);
 static void M_PhotoModeRotateTarget(int16_t angle);
+static void M_PhotoModeClampCameraPos(void);
+static void M_PhotoModeUpdateCameraRooms(void);
+static bool M_PhotoModeHandleShiftInputs(void);
+static bool M_PhotoModeHandleRotationInputs(void);
+static bool M_PhotoModeHandleTargetRotationInputs(void);
 static void M_UpdatePhotoMode(void);
-static void M_ExitPhotoMode(void);
-static void M_ResetPhotoMode(void);
-
 static void M_OffsetAdditionalAngle(int16_t delta);
 static void M_OffsetAdditionalElevation(int16_t delta);
 static void M_OffsetReset(void);
@@ -246,6 +251,26 @@ static void M_LoadCutsceneFrame(void)
     Camera_UpdateCutscene();
 }
 
+static void M_PhotoModeInit(void)
+{
+    m_OldCamera = g_Camera;
+    m_WorldBounds = Room_GetWorldBounds();
+    M_PhotoModeUpdateCameraRooms();
+    m_PhotoMode = true;
+}
+
+static void M_PhotoModeResetCamera(void)
+{
+    g_Camera = m_OldCamera;
+    M_PhotoModeReset();
+}
+
+static void M_PhotoModeReset(void)
+{
+    m_Roll = 0;
+    m_PhotoMode = false;
+}
+
 static int32_t M_PhotoModeShiftSpeed(const int32_t val)
 {
     return val * m_PhotoSpeed / (float)PHOTO_MAX_SPEED;
@@ -301,110 +326,22 @@ static void M_PhotoModeRotateTarget(const int16_t angle)
     g_Camera.pos.z = g_Camera.target.z + shift.z;
 }
 
-static void M_UpdatePhotoMode(void)
+static void M_PhotoModeClampCameraPos(void)
 {
-    if (!m_PhotoMode) {
-        m_OldCamera = g_Camera;
-        m_PhotoMode = true;
-        m_WorldBounds = Room_GetWorldBounds();
-        g_Camera.pos.room_num = Room_GetIndexFromPos(
-            g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
-        g_Camera.target.room_num = Room_GetIndexFromPos(
-            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z);
-    }
-
-    const bool shift_input = g_Input.camera_forward || g_Input.camera_back
-        || g_Input.camera_left || g_Input.camera_right || g_Input.camera_up
-        || g_Input.camera_down;
-    const bool rot_input =
-        g_Input.left || g_Input.right || g_Input.forward || g_Input.back;
-    const bool rot_target_input = g_InputDB.roll;
-    const bool roll_input = g_Input.step_left || g_Input.step_right;
-
-    const int32_t rot_amount = M_PhotoModeRotSpeed();
-
-    PHD_ANGLE angles[2];
-    Math_GetVectorAngles(
-        g_Camera.target.x - g_Camera.pos.x, g_Camera.target.y - g_Camera.pos.y,
-        g_Camera.target.z - g_Camera.pos.z, angles);
-    g_Camera.target_angle = angles[0];
-    g_Camera.target_elevation = angles[1];
-    g_Camera.target_distance = DEFAULT_DISTANCE;
-    g_Camera.target_square = SQUARE(g_Camera.target_distance);
-
-    if (g_InputDB.look) {
-        g_Camera = m_OldCamera;
-        m_PhotoSpeed = 0;
-        m_Roll = 0;
-    } else if (shift_input || rot_input || roll_input) {
-        m_PhotoSpeed++;
-        CLAMPG(m_PhotoSpeed, PHOTO_MAX_SPEED);
-    } else {
-        m_PhotoSpeed = 0;
-    }
-
-    if (g_Input.step_left) {
-        m_Roll -= rot_amount;
-    } else if (g_Input.step_right) {
-        m_Roll += rot_amount;
-    }
-    CLAMP(m_Roll, -PHOTO_MAX_PITCH_ROLL, PHOTO_MAX_PITCH_ROLL);
-
-    if (!shift_input && !rot_input && !rot_target_input) {
-        return;
-    }
-
-    if (g_Input.camera_left) {
-        M_PhotoModeShiftCamera(g_Camera.target_angle - PHD_90, 0, 0);
-    } else if (g_Input.camera_right) {
-        M_PhotoModeShiftCamera(g_Camera.target_angle + PHD_90, 0, 0);
-    }
-    if (g_Input.camera_forward) {
-        M_PhotoModeShiftCamera(
-            g_Camera.target_angle, g_Camera.target_elevation, -1);
-    } else if (g_Input.camera_back) {
-        M_PhotoModeShiftCamera(
-            g_Camera.target_angle + PHD_180, g_Camera.target_elevation, 1);
-    }
-    if (g_Input.camera_up) {
-        M_PhotoModeShiftCamera(
-            g_Camera.target_angle, g_Camera.target_elevation + PHD_90, -1);
-    } else if (g_Input.camera_down) {
-        M_PhotoModeShiftCamera(
-            g_Camera.target_angle, g_Camera.target_elevation - PHD_90, -1);
-    }
-
-    if (g_Input.forward) {
-        M_PhotoModeRotateCamera(
-            g_Camera.target_angle, g_Camera.target_elevation - rot_amount);
-    } else if (g_Input.back) {
-        M_PhotoModeRotateCamera(
-            g_Camera.target_angle, g_Camera.target_elevation + rot_amount);
-    }
-
-    if (g_Input.left) {
-        M_PhotoModeRotateCamera(
-            g_Camera.target_angle - rot_amount, g_Camera.target_elevation);
-    } else if (g_Input.right) {
-        M_PhotoModeRotateCamera(
-            g_Camera.target_angle + rot_amount, g_Camera.target_elevation);
-    }
-
-    if (g_InputDB.roll) {
-        M_PhotoModeRotateTarget(g_Camera.target_angle - PHD_90);
-    }
-
     // While the camera is free, we want to clamp to within overall world bounds
     // to help counteract getting lost in the void.
-    const GAME_VECTOR cam_pos = g_Camera.pos;
+    const GAME_VECTOR prev_cam_pos = g_Camera.pos;
     CLAMP(g_Camera.pos.x, m_WorldBounds.min.x, m_WorldBounds.max.x);
     CLAMP(g_Camera.pos.y, m_WorldBounds.min.y, m_WorldBounds.max.y);
     CLAMP(g_Camera.pos.z, m_WorldBounds.min.z, m_WorldBounds.max.z);
 
-    g_Camera.target.x += (g_Camera.pos.x - cam_pos.x);
-    g_Camera.target.y += (g_Camera.pos.y - cam_pos.y);
-    g_Camera.target.z += (g_Camera.pos.z - cam_pos.z);
+    g_Camera.target.x += (g_Camera.pos.x - prev_cam_pos.x);
+    g_Camera.target.y += (g_Camera.pos.y - prev_cam_pos.y);
+    g_Camera.target.z += (g_Camera.pos.z - prev_cam_pos.z);
+}
 
+static void M_PhotoModeUpdateCameraRooms(void)
+{
     const int16_t pos_room_num =
         Room_GetIndexFromPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
     const int16_t tar_room_num = Room_GetIndexFromPos(
@@ -424,16 +361,132 @@ static void M_UpdatePhotoMode(void)
     }
 }
 
-static void M_ExitPhotoMode(void)
+static bool M_PhotoModeHandleShiftInputs(void)
 {
-    g_Camera = m_OldCamera;
-    M_ResetPhotoMode();
+    bool result = false;
+
+    if (g_Input.camera_left) {
+        M_PhotoModeShiftCamera(g_Camera.target_angle - PHD_90, 0, 0);
+        result = true;
+    } else if (g_Input.camera_right) {
+        M_PhotoModeShiftCamera(g_Camera.target_angle + PHD_90, 0, 0);
+        result = true;
+    }
+
+    if (g_Input.camera_forward) {
+        M_PhotoModeShiftCamera(
+            g_Camera.target_angle, g_Camera.target_elevation, -1);
+        result = true;
+    } else if (g_Input.camera_back) {
+        M_PhotoModeShiftCamera(
+            g_Camera.target_angle + PHD_180, g_Camera.target_elevation, 1);
+        result = true;
+    }
+
+    if (g_Input.camera_up) {
+        M_PhotoModeShiftCamera(
+            g_Camera.target_angle, g_Camera.target_elevation + PHD_90, -1);
+        result = true;
+    } else if (g_Input.camera_down) {
+        M_PhotoModeShiftCamera(
+            g_Camera.target_angle, g_Camera.target_elevation - PHD_90, -1);
+        result = true;
+    }
+
+    return result;
 }
 
-static void M_ResetPhotoMode(void)
+static bool M_PhotoModeHandleRotationInputs(void)
 {
-    m_Roll = 0;
-    m_PhotoMode = false;
+    bool result = false;
+    const int32_t rot_amount = M_PhotoModeRotSpeed();
+
+    if (g_Input.forward) {
+        M_PhotoModeRotateCamera(
+            g_Camera.target_angle, g_Camera.target_elevation - rot_amount);
+        result = true;
+    } else if (g_Input.back) {
+        M_PhotoModeRotateCamera(
+            g_Camera.target_angle, g_Camera.target_elevation + rot_amount);
+        result = true;
+    }
+
+    if (g_Input.left) {
+        M_PhotoModeRotateCamera(
+            g_Camera.target_angle - rot_amount, g_Camera.target_elevation);
+        result = true;
+    } else if (g_Input.right) {
+        M_PhotoModeRotateCamera(
+            g_Camera.target_angle + rot_amount, g_Camera.target_elevation);
+        result = true;
+    }
+
+    if (g_Input.step_left) {
+        m_Roll -= rot_amount;
+        result = true;
+    } else if (g_Input.step_right) {
+        m_Roll += rot_amount;
+        result = true;
+    }
+    CLAMP(m_Roll, -PHOTO_MAX_PITCH_ROLL, PHOTO_MAX_PITCH_ROLL);
+
+    return result;
+}
+
+static bool M_PhotoModeHandleTargetRotationInputs(void)
+{
+    bool result = false;
+    if (g_InputDB.roll) {
+        M_PhotoModeRotateTarget(g_Camera.target_angle - PHD_90);
+        result = true;
+    }
+    return result;
+}
+
+static void M_UpdatePhotoMode(void)
+{
+    if (!m_PhotoMode) {
+        M_PhotoModeInit();
+    }
+
+    const bool shift_input = g_Input.camera_forward || g_Input.camera_back
+        || g_Input.camera_left || g_Input.camera_right || g_Input.camera_up
+        || g_Input.camera_down;
+    const bool rot_input =
+        g_Input.left || g_Input.right || g_Input.forward || g_Input.back;
+    const bool rot_target_input = g_InputDB.roll;
+    const bool roll_input = g_Input.step_left || g_Input.step_right;
+
+    PHD_ANGLE angles[2];
+    Math_GetVectorAngles(
+        g_Camera.target.x - g_Camera.pos.x, g_Camera.target.y - g_Camera.pos.y,
+        g_Camera.target.z - g_Camera.pos.z, angles);
+    g_Camera.target_angle = angles[0];
+    g_Camera.target_elevation = angles[1];
+    g_Camera.target_distance = DEFAULT_DISTANCE;
+    g_Camera.target_square = SQUARE(g_Camera.target_distance);
+
+    if (g_InputDB.look) {
+        M_PhotoModeResetCamera();
+    }
+
+    bool changed = false;
+    changed |= M_PhotoModeHandleShiftInputs();
+    changed |= M_PhotoModeHandleRotationInputs();
+
+    if (changed) {
+        m_PhotoSpeed++;
+        CLAMPG(m_PhotoSpeed, PHOTO_MAX_SPEED);
+    } else {
+        m_PhotoSpeed = 0;
+    }
+
+    changed |= M_PhotoModeHandleTargetRotationInputs();
+
+    if (changed) {
+        M_PhotoModeClampCameraPos();
+        M_PhotoModeUpdateCameraRooms();
+    }
 }
 
 static void M_OffsetAdditionalAngle(const int16_t delta)
@@ -840,14 +893,14 @@ static void M_Shift(
 void Camera_Initialise(void)
 {
     m_WorldBounds = Room_GetWorldBounds();
-    M_ResetPhotoMode();
+    M_PhotoModeReset();
     Camera_ResetPosition();
     Camera_Update();
 }
 
 void Camera_Reset(void)
 {
-    M_ResetPhotoMode();
+    M_PhotoModeReset();
     g_Camera.pos.room_num = NO_ROOM;
 }
 
@@ -883,7 +936,7 @@ void Camera_Update(void)
         M_UpdatePhotoMode();
         return;
     } else if (m_PhotoMode) {
-        M_ExitPhotoMode();
+        M_PhotoModeResetCamera();
     }
 
     if (g_Camera.type == CAM_CINEMATIC) {
