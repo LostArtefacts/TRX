@@ -339,8 +339,8 @@ void Shell_ProcessInput(void)
     }
 
     if (g_InputDB.toggle_ui) {
-        g_Config.ui.enable_ui ^= true;
-        Console_Log(g_Config.ui.enable_ui ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
+        g_Config.ui.enable_game_ui ^= true;
+        Console_Log(g_Config.ui.enable_game_ui ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
         Config_Write();
     }
 

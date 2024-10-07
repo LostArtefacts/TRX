@@ -60,7 +60,7 @@ static void M_Control(UI_PHOTO_MODE *const self)
         self->window->control(self->window);
     }
 
-    self->shown = g_Config.ui.enable_ui;
+    self->shown = g_Config.ui.enable_game_ui;
 }
 
 static void M_Draw(UI_PHOTO_MODE *const self)
