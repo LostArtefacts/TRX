@@ -88,6 +88,7 @@ sources = [
   'game/console/cmd/sfx.c',
   'game/console/cmd/teleport.c',
   'game/console/common.c',
+  'game/console/history.c',
   'game/game_string.c',
   'game/items.c',
   'game/objects/names.c',

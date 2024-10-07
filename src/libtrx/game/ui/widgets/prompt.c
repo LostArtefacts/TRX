@@ -213,6 +213,7 @@ static void M_HandleKeyDown(const EVENT *const event, void *const user_data)
     case UI_KEY_BACK:   M_DeleteCharBack(self); break;
     case UI_KEY_RETURN: M_Confirm(self); break;
     case UI_KEY_ESCAPE: M_Cancel(self); break;
+    default:            break;
     }
     // clang-format on
 }
@@ -304,4 +305,13 @@ void UI_Prompt_Clear(UI_WIDGET *const widget)
 {
     UI_PROMPT *const self = (UI_PROMPT *)widget;
     M_Clear(self);
+}
+
+void UI_Prompt_ChangeText(UI_WIDGET *widget, const char *new_text)
+{
+    UI_PROMPT *const self = (UI_PROMPT *)widget;
+    Memory_FreePointer(&self->current_text);
+    self->current_text = Memory_DupStr(new_text);
+    self->caret_pos = strlen(new_text);
+    M_UpdateCaretLabel(self);
 }

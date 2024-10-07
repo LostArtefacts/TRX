@@ -2,6 +2,7 @@
 
 #include "game/clock.h"
 #include "game/console/common.h"
+#include "game/console/history.h"
 #include "game/text.h"
 #include "game/ui/common.h"
 #include "game/ui/events.h"
@@ -16,8 +17,9 @@
 #include <string.h>
 
 #define WINDOW_MARGIN 5
-#define LOG_MARGIN 10
 #define MAX_LOG_LINES 20
+#define MAX_LISTENERS 4
+#define LOG_MARGIN 10
 #define LOG_SCALE 0.8
 #define DELAY_PER_CHAR 0.2
 
@@ -28,17 +30,17 @@ typedef struct {
     UI_WIDGET *spacer;
     char *log_lines;
     int32_t logs_on_screen;
+    int32_t history_idx;
 
-    int32_t listener1;
-    int32_t listener2;
-    int32_t listener3;
-
+    int32_t listeners[MAX_LISTENERS];
     struct {
         double expire_at;
         UI_WIDGET *label;
     } logs[MAX_LOG_LINES];
 } UI_CONSOLE;
 
+static void M_MoveHistoryUp(UI_CONSOLE *self);
+static void M_MoveHistoryDown(UI_CONSOLE *self);
 static void M_HandlePromptCancel(const EVENT *event, void *data);
 static void M_HandlePromptConfirm(const EVENT *event, void *data);
 static void M_HandleCanvasResize(const EVENT *event, void *data);
@@ -51,6 +53,30 @@ static void M_Control(UI_CONSOLE *self);
 static void M_Draw(UI_CONSOLE *self);
 static void M_Free(UI_CONSOLE *self);
 
+static void M_MoveHistoryUp(UI_CONSOLE *const self)
+{
+    self->history_idx--;
+    CLAMP(self->history_idx, 0, Console_History_GetLength());
+    const char *const new_prompt = Console_History_Get(self->history_idx);
+    if (new_prompt == NULL) {
+        UI_Prompt_ChangeText(self->prompt, "");
+    } else {
+        UI_Prompt_ChangeText(self->prompt, new_prompt);
+    }
+}
+
+static void M_MoveHistoryDown(UI_CONSOLE *const self)
+{
+    self->history_idx++;
+    CLAMP(self->history_idx, 0, Console_History_GetLength());
+    const char *const new_prompt = Console_History_Get(self->history_idx);
+    if (new_prompt == NULL) {
+        UI_Prompt_ChangeText(self->prompt, "");
+    } else {
+        UI_Prompt_ChangeText(self->prompt, new_prompt);
+    }
+}
+
 static void M_HandlePromptCancel(const EVENT *const event, void *const data)
 {
     Console_Close();
@@ -58,15 +84,37 @@ static void M_HandlePromptCancel(const EVENT *const event, void *const data)
 
 static void M_HandlePromptConfirm(const EVENT *const event, void *const data)
 {
+    UI_CONSOLE *const self = (UI_CONSOLE *)data;
     const char *text = event->data;
+    Console_History_Append(text);
     Console_Eval(text);
     Console_Close();
+
+    self->history_idx = Console_History_GetLength();
 }
 
 static void M_HandleCanvasResize(const EVENT *event, void *data)
 {
     UI_CONSOLE *const self = (UI_CONSOLE *)data;
     UI_Stack_SetSize(self->container, M_GetWidth(self), M_GetHeight(self));
+}
+
+static void M_HandleKeyDown(const EVENT *const event, void *const user_data)
+{
+    if (!Console_IsOpened()) {
+        return;
+    }
+
+    UI_CONSOLE *const self = user_data;
+    const UI_INPUT key = (UI_INPUT)(uintptr_t)event->data;
+
+    // clang-format off
+    switch (key) {
+    case UI_KEY_UP:   M_MoveHistoryUp(self); break;
+    case UI_KEY_DOWN: M_MoveHistoryDown(self); break;
+    default:          break;
+    }
+    // clang-format on
 }
 
 static void M_UpdateLogCount(UI_CONSOLE *const self)
@@ -114,9 +162,9 @@ static void M_Free(UI_CONSOLE *const self)
     self->spacer->free(self->spacer);
     self->prompt->free(self->prompt);
     self->container->free(self->container);
-    UI_Events_Unsubscribe(self->listener1);
-    UI_Events_Unsubscribe(self->listener2);
-    UI_Events_Unsubscribe(self->listener3);
+    for (int32_t i = 0; i < MAX_LISTENERS; i++) {
+        UI_Events_Unsubscribe(self->listeners[i]);
+    }
     Memory_Free(self);
 }
 
@@ -151,12 +199,15 @@ UI_WIDGET *UI_Console_Create(void)
 
     M_SetPosition(self, WINDOW_MARGIN, WINDOW_MARGIN);
 
-    self->listener1 = UI_Events_Subscribe(
-        "confirm", self->prompt, M_HandlePromptConfirm, NULL);
-    self->listener2 =
+    int32_t i = 0;
+    self->listeners[i++] = UI_Events_Subscribe(
+        "confirm", self->prompt, M_HandlePromptConfirm, self);
+    self->listeners[i++] =
         UI_Events_Subscribe("cancel", self->prompt, M_HandlePromptCancel, NULL);
-    self->listener3 =
+    self->listeners[i++] =
         UI_Events_Subscribe("canvas_resize", NULL, M_HandleCanvasResize, self);
+    self->listeners[i++] =
+        UI_Events_Subscribe("key_down", NULL, M_HandleKeyDown, self);
 
     return (UI_WIDGET *)self;
 }
@@ -165,6 +216,7 @@ void UI_Console_HandleOpen(UI_WIDGET *const widget)
 {
     UI_CONSOLE *const self = (UI_CONSOLE *)widget;
     UI_Prompt_SetFocus(self->prompt, true);
+    self->history_idx = Console_History_GetLength();
 }
 
 void UI_Console_HandleClose(UI_WIDGET *const widget)

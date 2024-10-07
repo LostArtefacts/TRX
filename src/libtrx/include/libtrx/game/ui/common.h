@@ -3,6 +3,8 @@
 #include "./events.h"
 
 typedef enum {
+    UI_KEY_UP,
+    UI_KEY_DOWN,
     UI_KEY_LEFT,
     UI_KEY_RIGHT,
     UI_KEY_HOME,

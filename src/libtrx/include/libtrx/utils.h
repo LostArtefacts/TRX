@@ -36,3 +36,9 @@
 
 #define MKTAG(a, b, c, d)                                                      \
     ((a) | ((b) << 8) | ((c) << 16) | ((unsigned)(d) << 24))
+
+#if TR_VERSION == 1
+    #define PROJECT_NAME "TR1X"
+#elif TR_VERSION == 2
+    #define PROJECT_NAME "TR2X"
+#endif

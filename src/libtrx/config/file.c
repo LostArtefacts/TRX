@@ -1,6 +1,7 @@
 #include "config/file.h"
 
 #include "filesystem.h"
+#include "game/console/history.h"
 #include "log.h"
 #include "memory.h"
 

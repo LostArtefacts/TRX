@@ -18,6 +18,8 @@ UI_INPUT UI_TranslateInput(uint32_t system_keycode)
 {
     // clang-format off
     switch (system_keycode) {
+    case SDLK_UP:     return UI_KEY_UP;
+    case SDLK_DOWN:   return UI_KEY_DOWN;
     case SDLK_LEFT:   return UI_KEY_LEFT;
     case SDLK_RIGHT:  return UI_KEY_RIGHT;
     case SDLK_HOME:   return UI_KEY_HOME;

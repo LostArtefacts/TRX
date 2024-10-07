@@ -2,6 +2,7 @@
 - added `/sfx` command
 - added `/nextlevel` alias to `/endlevel` console command
 - added `/quit` alias to `/exit` console command
+- added the ability to cycle through console prompt history (#1571)
 - changed `/set` console command to do fuzzy matching (LostArtefacts/libtrx#38)
 - fixed crash in the `/set` console command (regression from 0.3)
 - fixed using console in cutscenes immediately exiting the game (regression from 0.3)

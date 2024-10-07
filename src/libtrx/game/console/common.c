@@ -1,5 +1,6 @@
 #include "game/console/common.h"
 
+#include "./internal.h"
 #include "game/console/extern.h"
 #include "game/game_string.h"
 #include "game/ui/widgets/console.h"
@@ -18,6 +19,7 @@ static UI_WIDGET *m_Console;
 void Console_Init(void)
 {
     m_Console = UI_Console_Create();
+    Console_History_Init();
 }
 
 void Console_Shutdown(void)
@@ -26,6 +28,8 @@ void Console_Shutdown(void)
         m_Console->free(m_Console);
         m_Console = NULL;
     }
+
+    Console_History_Shutdown();
 
     m_IsOpened = false;
 }
