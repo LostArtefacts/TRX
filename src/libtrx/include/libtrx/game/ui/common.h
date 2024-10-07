@@ -14,6 +14,7 @@ typedef enum {
 
 void UI_Init(void);
 void UI_Shutdown(void);
+void UI_ToggleState(bool *config_setting);
 
 void UI_HandleKeyDown(uint32_t key);
 void UI_HandleKeyUp(uint32_t key);

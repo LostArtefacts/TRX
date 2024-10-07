@@ -1,6 +1,8 @@
 #include "game/ui/common.h"
 
-#include "vector.h"
+#include "config.h"
+#include "game/console/common.h"
+#include "game/game_string.h"
 
 void UI_Init(void)
 {
@@ -10,6 +12,13 @@ void UI_Init(void)
 void UI_Shutdown(void)
 {
     UI_Events_Shutdown();
+}
+
+void UI_ToggleState(bool *const config_setting)
+{
+    *config_setting ^= true;
+    Config_Write();
+    Console_Log(*config_setting ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
 }
 
 void UI_HandleKeyDown(const uint32_t key)

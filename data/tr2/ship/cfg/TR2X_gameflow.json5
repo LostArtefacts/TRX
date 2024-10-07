@@ -405,6 +405,8 @@
         "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
         "OSD_SOUND_AVAILABLE_SAMPLES": "Available sounds: %s",
         "OSD_SOUND_PLAYING_SAMPLE": "Playing sound %d",
+        "OSD_UI_OFF": "UI disabled",
+        "OSD_UI_ON": "UI enabled",
         "OSD_UNKNOWN_COMMAND": "Unknown command: %s",
     },
 }
