@@ -116,47 +116,50 @@ static char *M_GetScreenshotName(void)
 
 void Shell_Init(const char *gameflow_path)
 {
+    Text_Init();
     UI_Init();
+
+    Clock_Init();
+    Sound_Init();
+    Music_Init();
+    Input_Init();
+
+    Config_Read();
+
+    S_Shell_CreateWindow();
     S_Shell_Init();
 
     if (!Output_Init()) {
         Shell_ExitSystem("Could not initialise video system");
         return;
     }
-
-    GameBuf_Init();
-    Text_Init();
-    Clock_Init();
-    Sound_Init();
-    Music_Init();
-    Input_Init();
     FMV_Init();
-    Console_Init();
-    Savegame_Init();
+    Screen_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
         Shell_ExitSystem("MAIN: unable to load script file");
         return;
     }
-
+    Savegame_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
-
-    Screen_Init();
+    GameBuf_Init();
+    Console_Init();
 }
 
 void Shell_Shutdown(void)
 {
-    GameFlow_Shutdown();
-    Text_Shutdown();
+    Console_Shutdown();
     GameBuf_Shutdown();
+    Savegame_Shutdown();
+    GameFlow_Shutdown();
+
     Output_Shutdown();
     Input_Shutdown();
-    Sound_Shutdown();
     Music_Shutdown();
-    Savegame_Shutdown();
-    Console_Shutdown();
+    Sound_Shutdown();
     UI_Shutdown();
+    Text_Shutdown();
     Config_Shutdown();
     Log_Shutdown();
 }
@@ -166,7 +169,6 @@ void Shell_Main(void)
     GameString_Init();
     EnumMap_Init();
     Config_Init();
-    Config_Read();
 
     const char *gameflow_path = m_TR1XGameflowPath;
 

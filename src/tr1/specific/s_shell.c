@@ -311,6 +311,14 @@ int main(int argc, char **argv)
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    Shell_Main();
+
+    S_Shell_TerminateGame(0);
+    return 0;
+}
+
+void S_Shell_CreateWindow(void)
+{
     m_Window = SDL_CreateWindow(
         "TR1X", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720,
         SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE
@@ -318,15 +326,10 @@ int main(int argc, char **argv)
 
     if (!m_Window) {
         S_Shell_ShowFatalError("System Error: cannot create window");
-        return 1;
+        return;
     }
 
     S_Shell_HandleWindowResize();
-
-    Shell_Main();
-
-    S_Shell_TerminateGame(0);
-    return 0;
 }
 
 bool S_Shell_GetCommandLine(int *arg_count, char ***args)
