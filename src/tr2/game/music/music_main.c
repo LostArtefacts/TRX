@@ -16,7 +16,6 @@
 static MUSIC_TRACK_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_TRACK_ID m_TrackLooped = MX_INACTIVE;
 
-static bool m_Initialized = false;
 static float m_MusicVolume = 0.0f;
 static int32_t m_AudioStreamID = -1;
 static const MUSIC_BACKEND *m_Backend = NULL;
@@ -62,11 +61,6 @@ bool __cdecl Music_Init(void)
 {
     bool result = false;
 
-    // TODO: remove this guard once Music_Init can be called in a proper place
-    if (m_Initialized) {
-        return true;
-    }
-
     m_Backend = M_FindBackend();
     if (m_Backend == NULL) {
         LOG_ERROR("No music backend is available");
@@ -80,7 +74,6 @@ bool __cdecl Music_Init(void)
 finish:
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
-    m_Initialized = true;
     return result;
 }
 
