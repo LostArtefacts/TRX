@@ -282,7 +282,7 @@ void Camera_UpdatePhotoMode(void)
     g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
     g_Camera.target_square = SQUARE(g_Camera.target_distance);
 
-    if (g_InputDB.look) {
+    if (g_InputDB.camera_reset) {
         M_ResetCamera();
         g_Camera.type = CAM_PHOTO_MODE;
     }

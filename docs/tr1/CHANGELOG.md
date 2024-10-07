@@ -24,6 +24,7 @@
 - improved object name matching in console commands to work like TR2X
 - improved vertex movement when looking through water portals even more (#1493)
 - improved console commands targeting creatures and pickups (#1667)
+- removed dedicated camera reset button in favor of pressing the look button (#1658)
 
 ## [4.4](https://github.com/LostArtefacts/TRX/compare/tr1-4.3...tr1-4.4) - 2024-09-20
 - added `/exit` command (#1462)

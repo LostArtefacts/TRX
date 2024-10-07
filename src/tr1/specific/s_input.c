@@ -51,7 +51,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
-        SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
+        0,                       // padding
         SDL_SCANCODE_1,          // INPUT_ROLE_EQUIP_PISTOLS
         SDL_SCANCODE_2,          // INPUT_ROLE_EQUIP_SHOTGUN
         SDL_SCANCODE_3,          // INPUT_ROLE_EQUIP_MAGNUMS
@@ -94,7 +94,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
-        SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
+        0,                       // padding
         SDL_SCANCODE_1,          // INPUT_ROLE_EQUIP_PISTOLS
         SDL_SCANCODE_2,          // INPUT_ROLE_EQUIP_SHOTGUN
         SDL_SCANCODE_3,          // INPUT_ROLE_EQUIP_MAGNUMS
@@ -136,7 +136,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
-        SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
+        0,                       // padding
         SDL_SCANCODE_1,          // INPUT_ROLE_EQUIP_PISTOLS
         SDL_SCANCODE_2,          // INPUT_ROLE_EQUIP_SHOTGUN
         SDL_SCANCODE_3,          // INPUT_ROLE_EQUIP_MAGNUMS
@@ -178,7 +178,7 @@ static INPUT_SCANCODE m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {
         SDL_SCANCODE_S,          // INPUT_ROLE_CAMERA_BACK
         SDL_SCANCODE_A,          // INPUT_ROLE_CAMERA_LEFT
         SDL_SCANCODE_D,          // INPUT_ROLE_CAMERA_RIGHT
-        SDL_SCANCODE_EQUALS,     // INPUT_ROLE_CAMERA_RESET
+        0,                       // padding
         SDL_SCANCODE_1,          // INPUT_ROLE_EQUIP_PISTOLS
         SDL_SCANCODE_2,          // INPUT_ROLE_EQUIP_SHOTGUN
         SDL_SCANCODE_3,          // INPUT_ROLE_EQUIP_MAGNUMS
@@ -225,7 +225,7 @@ static CONTROLLER_MAP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+        { 0,         {0}, 0 },                                    // padding
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
@@ -267,7 +267,7 @@ static CONTROLLER_MAP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+        { 0,         {0}, 0 },                                    // padding
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
@@ -309,7 +309,7 @@ static CONTROLLER_MAP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+        { 0,         {0}, 0 },                                    // padding
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
@@ -351,7 +351,7 @@ static CONTROLLER_MAP
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTY}, 1 },           // INPUT_ROLE_CAMERA_BACK
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, -1 },          // INPUT_ROLE_CAMERA_LEFT
         { BT_AXIS,   {SDL_CONTROLLER_AXIS_RIGHTX}, 1 },           // INPUT_ROLE_CAMERA_RIGHT
-        { BT_BUTTON, {SDL_CONTROLLER_BUTTON_RIGHTSTICK}, 0 },     // INPUT_ROLE_CAMERA_RESET
+        { 0,         {0}, 0 },                                    // padding
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_PISTOLS
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_SHOTGUN
         { BT_BUTTON, {SDL_CONTROLLER_BUTTON_INVALID}, 0 },        // INPUT_ROLE_EQUIP_MAGNUMS
@@ -888,7 +888,6 @@ static INPUT_STATE M_GetControllerState(
         state.camera_back            |= M_GetBindState(INPUT_ROLE_CAMERA_BACK, cntlr_layout_num);
         state.camera_left            |= M_GetBindState(INPUT_ROLE_CAMERA_LEFT, cntlr_layout_num);
         state.camera_right           |= M_GetBindState(INPUT_ROLE_CAMERA_RIGHT, cntlr_layout_num);
-        state.camera_reset           |= M_GetBindState(INPUT_ROLE_CAMERA_RESET, cntlr_layout_num);
         state.item_cheat             |= M_GetBindState(INPUT_ROLE_ITEM_CHEAT, cntlr_layout_num);
         state.fly_cheat              |= M_GetBindState(INPUT_ROLE_FLY_CHEAT, cntlr_layout_num);
         state.level_skip_cheat       |= M_GetBindState(INPUT_ROLE_LEVEL_SKIP_CHEAT, cntlr_layout_num);
@@ -990,7 +989,7 @@ INPUT_STATE S_Input_GetCurrentState(
     linput.camera_back               = M_Key(INPUT_ROLE_CAMERA_BACK, layout_num);
     linput.camera_left               = M_Key(INPUT_ROLE_CAMERA_LEFT, layout_num);
     linput.camera_right              = M_Key(INPUT_ROLE_CAMERA_RIGHT, layout_num);
-    linput.camera_reset              = M_Key(INPUT_ROLE_CAMERA_RESET, layout_num);
+    linput.camera_reset              = linput.look;
     linput.enter_console             = M_Key(INPUT_ROLE_ENTER_CONSOLE, layout_num);
     linput.change_target             = M_Key(INPUT_ROLE_CHANGE_TARGET, layout_num);
 

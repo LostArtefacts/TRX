@@ -667,7 +667,6 @@
         "KEYMAP_CAMERA_DOWN": "Camera Down",
         "KEYMAP_CAMERA_FORWARD": "Camera Forward",
         "KEYMAP_CAMERA_LEFT": "Camera Left",
-        "KEYMAP_CAMERA_RESET": "Reset Camera",
         "KEYMAP_CAMERA_RIGHT": "Camera Right",
         "KEYMAP_CAMERA_UP": "Camera Up",
         "KEYMAP_CHANGE_TARGET": "Change Target",
