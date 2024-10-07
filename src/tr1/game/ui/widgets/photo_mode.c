@@ -123,17 +123,23 @@ UI_WIDGET *UI_PhotoMode_Create(void)
     sprintf(
         move_role, "%s%s%s%s%s%s: ",
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_CAMERA_UP),
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_CAMERA_UP),
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_CAMERA_DOWN),
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_CAMERA_DOWN),
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_CAMERA_FORWARD),
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_CAMERA_FORWARD),
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_CAMERA_BACK),
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_CAMERA_BACK),
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_CAMERA_LEFT),
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_CAMERA_LEFT),
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_CAMERA_RIGHT));
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_CAMERA_RIGHT));
 
     const char *const rot_role = "\200 \203 \202 \201 : ";
 
@@ -153,7 +159,8 @@ UI_WIDGET *UI_PhotoMode_Create(void)
     sprintf(
         help_role, "%s: ",
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_TOGGLE_UI));
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_TOGGLE_UI));
 
     char action_role[100];
     sprintf(action_role, "%s: ", GS(KEYMAP_ACTION));
@@ -162,9 +169,10 @@ UI_WIDGET *UI_PhotoMode_Create(void)
     sprintf(
         exit_role, "%s/%s: ",
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_TOGGLE_PHOTO_MODE),
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+            INPUT_ROLE_TOGGLE_PHOTO_MODE),
         Input_GetKeyName(
-            CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_OPTION));
+            INPUT_BACKEND_KEYBOARD, g_Config.input.layout, INPUT_ROLE_OPTION));
 
     const char *const inputs[] = {
         move_role,  rot_role,  z_roll_role, roll_role, fov_role,

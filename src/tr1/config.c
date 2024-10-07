@@ -7,23 +7,12 @@
 #include "game/output.h"
 #include "game/requester.h"
 #include "game/sound.h"
-#include "game/viewport.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
 
 #include <libtrx/config/file.h>
-#include <libtrx/enum_map.h>
-#include <libtrx/filesystem.h>
-#include <libtrx/game/console/common.h>
-#include <libtrx/game/ui/events.h>
-#include <libtrx/json.h>
-#include <libtrx/memory.h>
-#include <libtrx/utils.h>
+#include <libtrx/log.h>
 
-#include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 
 CONFIG g_Config = { 0 };
 
@@ -43,36 +32,19 @@ static void M_LoadKeyboardLayout(
     char layout_name[20];
     sprintf(layout_name, "layout_%d", layout);
     JSON_ARRAY *const arr = JSON_ObjectGetArray(parent_obj, layout_name);
-    if (!arr) {
+    if (arr == NULL) {
         return;
     }
 
-    const JSON_VALUE *const first_value = JSON_ArrayGetValue(arr, 0);
-    if (first_value != NULL && first_value->type == JSON_TYPE_NUMBER) {
-        // legacy config for versions <= 3.1.1
-        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
-            scancode = JSON_ArrayGetInt(arr, role, scancode);
-            Input_AssignScancode(layout, role, scancode);
+    for (size_t i = 0; i < arr->length; i++) {
+        JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
+        if (bind_obj == NULL) {
+            // this can happen on TR1X <= 3.1.1, which is no longer supported
+            LOG_WARNING("unsupported keyboard layout config");
+            continue;
         }
-    } else {
-        // version 4.0+
-        for (size_t i = 0; i < arr->length; i++) {
-            JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
-            if (!bind_obj) {
-                continue;
-            }
 
-            const INPUT_ROLE role = JSON_ObjectGetInt(bind_obj, "role", -1);
-            if (role == (INPUT_ROLE)-1) {
-                continue;
-            }
-
-            INPUT_SCANCODE scancode = Input_GetAssignedScancode(layout, role);
-            scancode = JSON_ObjectGetInt(bind_obj, "scancode", scancode);
-
-            Input_AssignScancode(layout, role, scancode);
-        }
+        Input_AssignFromJSONObject(INPUT_BACKEND_KEYBOARD, layout, bind_obj);
     }
 }
 
@@ -82,61 +54,19 @@ static void M_LoadControllerLayout(
     char layout_name[20];
     sprintf(layout_name, "cntlr_layout_%d", layout);
     JSON_ARRAY *const arr = JSON_ObjectGetArray(parent_obj, layout_name);
-    if (!arr) {
+    if (arr == NULL) {
         return;
     }
 
-    const JSON_VALUE *const first_value = JSON_ArrayGetValue(arr, 0);
-    if (first_value != NULL && first_value->type == JSON_TYPE_NUMBER) {
-        // legacy config for versions <= 3.1.1
-        int i = 0;
-        for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-            int16_t type = Input_GetAssignedButtonType(layout, role);
-            type = JSON_ArrayGetInt(arr, i, type);
-            i++;
-
-            int16_t bind = Input_GetAssignedBind(layout, role);
-            bind = JSON_ArrayGetInt(arr, i, bind);
-            i++;
-
-            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
-            axis_dir = JSON_ArrayGetInt(arr, i, axis_dir);
-            i++;
-
-            if (type == BT_BUTTON) {
-                Input_AssignButton(layout, role, bind);
-            } else {
-                Input_AssignAxis(layout, role, bind, axis_dir);
-            }
+    for (size_t i = 0; i < arr->length; i++) {
+        JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
+        if (bind_obj == NULL) {
+            // this can happen on TR1X <= 3.1.1, which is no longer supported
+            LOG_WARNING("unsupported controller layout config");
+            continue;
         }
-    } else {
-        // version 4.0+
-        for (size_t i = 0; i < arr->length; i++) {
-            JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
-            if (!bind_obj) {
-                continue;
-            }
 
-            const INPUT_ROLE role = JSON_ObjectGetInt(bind_obj, "role", -1);
-            if (role == (INPUT_ROLE)-1) {
-                continue;
-            }
-
-            int16_t type = Input_GetAssignedButtonType(layout, role);
-            type = JSON_ObjectGetInt(bind_obj, "button_type", type);
-
-            int16_t bind = Input_GetAssignedBind(layout, role);
-            bind = JSON_ObjectGetInt(bind_obj, "bind", bind);
-
-            int16_t axis_dir = Input_GetAssignedAxisDir(layout, role);
-            axis_dir = JSON_ObjectGetInt(bind_obj, "axis_dir", axis_dir);
-
-            if (type == BT_BUTTON) {
-                Input_AssignButton(layout, role, bind);
-            } else {
-                Input_AssignAxis(layout, role, bind, axis_dir);
-            }
-        }
+        Input_AssignFromJSONObject(INPUT_BACKEND_CONTROLLER, layout, bind_obj);
     }
 }
 
@@ -174,20 +104,14 @@ static void M_DumpKeyboardLayout(
 
     bool has_elements = false;
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        const INPUT_SCANCODE default_scancode =
-            Input_GetAssignedScancode(INPUT_LAYOUT_DEFAULT, role);
-        const INPUT_SCANCODE user_scancode =
-            Input_GetAssignedScancode(layout, role);
-
-        if (user_scancode == default_scancode) {
-            continue;
-        }
-
         JSON_OBJECT *const bind_obj = JSON_ObjectNew();
-        JSON_ObjectAppendInt(bind_obj, "role", role);
-        JSON_ObjectAppendInt(bind_obj, "scancode", user_scancode);
-        JSON_ArrayAppendObject(arr, bind_obj);
-        has_elements = true;
+        if (Input_AssignToJSONObject(
+                INPUT_BACKEND_KEYBOARD, layout, bind_obj, role)) {
+            has_elements = true;
+            JSON_ArrayAppendObject(arr, bind_obj);
+        } else {
+            JSON_ObjectFree(bind_obj);
+        }
     }
 
     if (has_elements) {
@@ -206,29 +130,14 @@ static void M_DumpControllerLayout(
 
     bool has_elements = false;
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        const int16_t default_button_type =
-            Input_GetAssignedButtonType(INPUT_LAYOUT_DEFAULT, role);
-        const int16_t default_axis_dir =
-            Input_GetAssignedAxisDir(INPUT_LAYOUT_DEFAULT, role);
-        const int16_t default_bind =
-            Input_GetAssignedBind(INPUT_LAYOUT_DEFAULT, role);
-        const int16_t user_button_type =
-            Input_GetAssignedButtonType(layout, role);
-        const int16_t user_axis_dir = Input_GetAssignedAxisDir(layout, role);
-        const int16_t user_bind = Input_GetAssignedBind(layout, role);
-
-        if (user_button_type == default_button_type
-            && user_axis_dir == default_axis_dir && user_bind == default_bind) {
-            continue;
-        }
-
         JSON_OBJECT *const bind_obj = JSON_ObjectNew();
-        JSON_ObjectAppendInt(bind_obj, "role", role);
-        JSON_ObjectAppendInt(bind_obj, "button_type", user_button_type);
-        JSON_ObjectAppendInt(bind_obj, "bind", user_bind);
-        JSON_ObjectAppendInt(bind_obj, "axis_dir", user_axis_dir);
-        JSON_ArrayAppendObject(arr, bind_obj);
-        has_elements = true;
+        if (Input_AssignToJSONObject(
+                INPUT_BACKEND_CONTROLLER, layout, bind_obj, role)) {
+            has_elements = true;
+            JSON_ArrayAppendObject(arr, bind_obj);
+        } else {
+            JSON_ObjectFree(bind_obj);
+        }
     }
 
     if (has_elements) {
@@ -300,8 +209,6 @@ void Config_Sanitize(void)
 
 void Config_ApplyChanges(void)
 {
-    Input_CheckConflicts(CM_KEYBOARD, g_Config.input.layout);
-    Input_CheckConflicts(CM_CONTROLLER, g_Config.input.cntlr_layout);
     Music_SetVolume(g_Config.music_volume);
     Sound_SetMasterVolume(g_Config.sound_volume);
     Requester_Shutdown(&g_SavegameRequester);

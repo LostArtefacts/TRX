@@ -224,10 +224,10 @@ void S_Shell_SpinMessageLoop(void)
             // but by the time Input_Update gets ran, we may already have lost
             // some keypresses if the player types really fast, so we need to
             // react sooner.
-            const INPUT_SCANCODE open_console_scancode =
-                Input_GetAssignedScancode(
-                    g_Config.input.layout, INPUT_ROLE_ENTER_CONSOLE);
-            if (event.key.keysym.scancode == open_console_scancode) {
+            if (!Console_IsOpened()
+                && Input_IsPressed(
+                    INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+                    INPUT_ROLE_ENTER_CONSOLE)) {
                 Console_Open();
             } else {
                 UI_HandleKeyDown(event.key.keysym.sym);

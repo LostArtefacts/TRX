@@ -1,37 +1,20 @@
 #include "game/option/option_control.h"
 
-#include "config.h"
 #include "game/clock.h"
 #include "game/game_string.h"
-#include "game/input.h"
 #include "game/screen.h"
 #include "game/sound.h"
 #include "game/text.h"
-#include "global/const.h"
-#include "global/types.h"
 
-#include <libtrx/utils.h>
-
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 
 #define TOP_Y -60
 #define BORDER 4
-#define HEADER_HEIGHT 25
 #define ROW_HEIGHT 17
 #define BOX_PADDING 10
 
 #define KC_TITLE -1
 #define COL_END -1
-#define COLOR_STEPS 5
-#define RESET_ALL_KEY "R"
-#define RESET_ALL_BUTTON "rightshoulder"
-#define UNBIND_KEY "Backspace"
-#define UNBIND_BUTTON "x"
-#define UNBIND_SCANCODE 0
-#define UNBIND_ENUM -1
 #define BUTTON_HOLD_TIME 2
 #define HOLD_DELAY_FRAMES 300 * LOGIC_FPS / 1000
 
@@ -57,9 +40,9 @@ typedef enum {
 } CONTROL_TEXT;
 
 typedef struct {
-    INPUT_LAYOUT layout_num;
+    INPUT_LAYOUT layout;
     GAME_STRING_ID layout_string;
-} LAYOUT_NUM_GS_MAP;
+} LAYOUT_GS_MAP;
 
 typedef struct {
     int role;
@@ -105,7 +88,7 @@ static MENU m_ControlMenu = {
     .prev_row_num = KC_TITLE,
 };
 
-static const LAYOUT_NUM_GS_MAP m_LayoutMap[] = {
+static const LAYOUT_GS_MAP m_LayoutMap[] = {
     { INPUT_LAYOUT_DEFAULT, GS_ID(CONTROL_DEFAULT_KEYS) },
     { INPUT_LAYOUT_CUSTOM_1, GS_ID(CONTROL_CUSTOM_1) },
     { INPUT_LAYOUT_CUSTOM_2, GS_ID(CONTROL_CUSTOM_2) },
@@ -195,13 +178,13 @@ static const TEXT_COLUMN_PLACEMENT CtrlTextPlacementCheats[] = {
 };
 
 static void M_InitMenu(void);
-static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout);
+static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout);
 static void M_ShutdownText(void);
-static void M_FlashConflicts(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static INPUT_LAYOUT M_ChangeLayout(CONTROL_MODE mode);
-static void M_CheckResetKeys(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
-static void M_CheckUnbindKey(CONTROL_MODE mode, INPUT_LAYOUT layout_num);
+static void M_FlashConflicts(INPUT_BACKEND backend, INPUT_LAYOUT layout);
+static INPUT_LAYOUT M_ChangeLayout(INPUT_BACKEND backend);
+static void M_CheckResetKeys(INPUT_BACKEND backend, INPUT_LAYOUT layout);
+static void M_CheckUnbindKey(INPUT_BACKEND backend, INPUT_LAYOUT layout);
 static void M_ProgressBar(TEXTSTRING *txt, int32_t timer);
 
 static void M_InitMenu(void)
@@ -235,7 +218,7 @@ static void M_InitMenu(void)
         MIN(m_ControlMenu.num_options, m_ControlMenu.vis_options);
 }
 
-static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
     M_InitMenu();
 
@@ -259,7 +242,7 @@ static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
         Text_CentreV(m_ControlMenu.role_texts[i], true);
 
         m_ControlMenu.key_texts[i] = Text_Create(
-            x_names, y, Input_GetKeyName(mode, layout_num, col->role));
+            x_names, y, Input_GetKeyName(backend, layout, col->role));
         Text_CentreV(m_ControlMenu.key_texts[i], true);
         Text_AlignRight(m_ControlMenu.key_texts[i], true);
 
@@ -269,7 +252,7 @@ static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
 
     m_Text[TEXT_TITLE] = Text_Create(
         0, TOP_Y - BORDER / 2,
-        GameString_Get(m_LayoutMap[layout_num].layout_string));
+        GameString_Get(m_LayoutMap[layout].layout_string));
     Text_CentreH(m_Text[TEXT_TITLE], true);
     Text_CentreV(m_Text[TEXT_TITLE], true);
     Text_AddBackground(m_Text[TEXT_TITLE], 0, 0, 0, 0, TS_REQUESTED);
@@ -315,17 +298,12 @@ static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     Text_AddBackground(
         m_Text[TEXT_RESET_BORDER], box_width, ROW_HEIGHT, 0, 0, TS_BACKGROUND);
 
-    if (mode == CM_KEYBOARD) {
-        sprintf(m_ResetGS, GS(CONTROL_RESET_DEFAULTS_KEY), RESET_ALL_KEY);
-        sprintf(m_UnbindGS, GS(CONTROL_UNBIND_KEY), UNBIND_KEY);
-    } else {
-        sprintf(
-            m_ResetGS, GS(CONTROL_RESET_DEFAULTS_BTN),
-            Input_GetButtonName(g_Config.input.cntlr_layout, RESET_ALL_BUTTON));
-        sprintf(
-            m_UnbindGS, GS(CONTROL_UNBIND_BTN),
-            Input_GetButtonName(g_Config.input.cntlr_layout, UNBIND_BUTTON));
-    }
+    sprintf(
+        m_ResetGS, GS(CONTROL_RESET_DEFAULTS),
+        Input_GetKeyName(backend, layout, INPUT_ROLE_RESET_BINDINGS));
+    sprintf(
+        m_UnbindGS, GS(CONTROL_UNBIND),
+        Input_GetKeyName(backend, layout, INPUT_ROLE_UNBIND_KEY));
 
     m_Text[TEXT_RESET] =
         Text_Create(x_roles, y + BOX_PADDING + BORDER, m_ResetGS);
@@ -338,18 +316,18 @@ static void M_InitText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     Text_AlignRight(m_Text[TEXT_UNBIND], true);
     Text_SetScale(m_Text[TEXT_UNBIND], PHD_ONE * .8, PHD_ONE * .8);
 
-    if (layout_num == INPUT_LAYOUT_DEFAULT) {
+    if (layout == INPUT_LAYOUT_DEFAULT) {
         Text_Hide(m_Text[TEXT_RESET], true);
         Text_Hide(m_Text[TEXT_UNBIND], true);
     }
 
-    M_UpdateText(mode, layout_num);
-    M_FlashConflicts(mode, layout_num);
+    M_UpdateText(backend, layout);
+    M_FlashConflicts(backend, layout);
 }
 
-static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
-    if (layout_num == INPUT_LAYOUT_DEFAULT) {
+    if (layout == INPUT_LAYOUT_DEFAULT) {
         Text_Hide(m_Text[TEXT_RESET], true);
         Text_Hide(m_Text[TEXT_RESET_BORDER], true);
         Text_Hide(m_Text[TEXT_UNBIND], true);
@@ -365,26 +343,19 @@ static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
         }
     }
 
-    if (mode == CM_KEYBOARD) {
-        sprintf(m_ResetGS, GS(CONTROL_RESET_DEFAULTS_KEY), RESET_ALL_KEY);
-        Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
-        sprintf(m_UnbindGS, GS(CONTROL_UNBIND_KEY), UNBIND_KEY);
-        Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
-    } else {
-        sprintf(
-            m_ResetGS, GS(CONTROL_RESET_DEFAULTS_BTN),
-            Input_GetButtonName(layout_num, RESET_ALL_BUTTON));
-        Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
-        sprintf(
-            m_UnbindGS, GS(CONTROL_UNBIND_BTN),
-            Input_GetButtonName(layout_num, UNBIND_BUTTON));
-        Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
-    }
+    sprintf(
+        m_ResetGS, GS(CONTROL_RESET_DEFAULTS),
+        Input_GetKeyName(backend, layout, INPUT_ROLE_RESET_BINDINGS));
+    Text_ChangeText(m_Text[TEXT_RESET], m_ResetGS);
+    sprintf(
+        m_UnbindGS, GS(CONTROL_UNBIND),
+        Input_GetKeyName(backend, layout, INPUT_ROLE_UNBIND_KEY));
+    Text_ChangeText(m_Text[TEXT_UNBIND], m_UnbindGS);
 
     if (m_ControlMenu.cur_role == KC_TITLE) {
         Text_ChangeText(
             m_Text[TEXT_TITLE],
-            GameString_Get(m_LayoutMap[layout_num].layout_string));
+            GameString_Get(m_LayoutMap[layout].layout_string));
 
         int32_t title_w = Text_GetWidth(m_Text[TEXT_TITLE]);
         Text_SetPos(
@@ -409,7 +380,7 @@ static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
             m_ControlMenu.role_texts[i], GameString_Get(col->game_string));
         Text_ChangeText(
             m_ControlMenu.key_texts[i],
-            Input_GetKeyName(mode, layout_num, col->role));
+            Input_GetKeyName(backend, layout, col->role));
         col++;
     }
 
@@ -453,7 +424,7 @@ static void M_UpdateText(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     case KM_CHANGEKEYUP:
         Text_ChangeText(
             m_ControlMenu.key_texts[m_ControlMenu.row_num],
-            Input_GetKeyName(mode, layout_num, m_ControlMenu.cur_role));
+            Input_GetKeyName(backend, layout, m_ControlMenu.cur_role));
         Text_RemoveBackground(
             m_ControlMenu.key_texts[m_ControlMenu.prev_row_num]);
         Text_RemoveOutline(m_ControlMenu.key_texts[m_ControlMenu.prev_row_num]);
@@ -497,7 +468,7 @@ static void M_ShutdownText(void)
     m_UnbindKeyDelay = 0;
 }
 
-static void M_FlashConflicts(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_FlashConflicts(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
         ? CtrlTextPlacementCheats
@@ -507,37 +478,36 @@ static void M_FlashConflicts(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     for (int i = 0; i < m_ControlMenu.vis_options; i++) {
         Text_Flash(
             m_ControlMenu.key_texts[i],
-            layout_num != INPUT_LAYOUT_DEFAULT
-                && Input_IsKeyConflicted(mode, col->role),
+            layout != INPUT_LAYOUT_DEFAULT
+                && Input_IsKeyConflicted(backend, layout, col->role),
             20);
         col++;
     }
 }
 
-static INPUT_LAYOUT M_ChangeLayout(CONTROL_MODE mode)
+static INPUT_LAYOUT M_ChangeLayout(INPUT_BACKEND backend)
 {
-    INPUT_LAYOUT layout_num = INPUT_LAYOUT_DEFAULT;
-    if (mode == CM_KEYBOARD) {
+    INPUT_LAYOUT layout = INPUT_LAYOUT_DEFAULT;
+    if (backend == INPUT_BACKEND_KEYBOARD) {
         g_Config.input.layout += g_InputDB.menu_left ? -1 : 0;
         g_Config.input.layout += g_InputDB.menu_right ? 1 : 0;
         g_Config.input.layout += INPUT_LAYOUT_NUMBER_OF;
         g_Config.input.layout %= INPUT_LAYOUT_NUMBER_OF;
-        layout_num = g_Config.input.layout;
+        layout = g_Config.input.layout;
     }
 
-    if (mode == CM_CONTROLLER) {
+    if (backend == INPUT_BACKEND_CONTROLLER) {
         g_Config.input.cntlr_layout += g_InputDB.menu_left ? -1 : 0;
         g_Config.input.cntlr_layout += g_InputDB.menu_right ? 1 : 0;
         g_Config.input.cntlr_layout += INPUT_LAYOUT_NUMBER_OF;
         g_Config.input.cntlr_layout %= INPUT_LAYOUT_NUMBER_OF;
-        layout_num = g_Config.input.cntlr_layout;
+        layout = g_Config.input.cntlr_layout;
     }
 
-    Input_CheckConflicts(mode, layout_num);
-    M_UpdateText(mode, layout_num);
-    M_FlashConflicts(mode, layout_num);
+    M_UpdateText(backend, layout);
+    M_FlashConflicts(backend, layout);
     Config_Write();
-    return layout_num;
+    return layout;
 }
 
 static void M_ProgressBar(TEXTSTRING *txt, int32_t timer)
@@ -566,12 +536,11 @@ static void M_ProgressBar(TEXTSTRING *txt, int32_t timer)
         txt, width, height, x, y, percent, g_Config.ui.menu_style);
 }
 
-static void M_CheckResetKeys(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_CheckResetKeys(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
     const int32_t frame = Clock_GetLogicalFrame();
 
-    if ((Input_CheckKeypress(RESET_ALL_KEY)
-         || Input_CheckButtonPress(RESET_ALL_BUTTON))
+    if (Input_IsPressed(backend, layout, INPUT_ROLE_RESET_BINDINGS)
         && m_ResetKeyMode != KM_CHANGEKEYUP) {
         if (m_ResetKeyDelay == 0) {
             m_ResetKeyDelay = frame;
@@ -581,18 +550,16 @@ static void M_CheckResetKeys(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
                 m_ResetTimer = frame;
             } else if (frame - m_ResetTimer >= LOGIC_FPS * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
-                Input_ResetLayout(mode, layout_num);
-                Input_CheckConflicts(mode, layout_num);
-                M_UpdateText(mode, layout_num);
-                M_FlashConflicts(mode, layout_num);
+                Input_ResetLayout(backend, layout);
+                M_UpdateText(backend, layout);
+                M_FlashConflicts(backend, layout);
                 Config_Write();
                 m_ResetKeyMode = KM_CHANGEKEYUP;
                 m_ResetTimer = 0;
             }
         }
     } else if (m_ResetKeyMode == KM_CHANGEKEYUP) {
-        if (!Input_CheckKeypress(RESET_ALL_KEY)
-            && !Input_CheckButtonPress(RESET_ALL_BUTTON)) {
+        if (!Input_IsPressed(backend, layout, INPUT_ROLE_RESET_BINDINGS)) {
             m_ResetKeyMode = KM_INACTIVE;
         }
     } else {
@@ -606,12 +573,11 @@ static void M_CheckResetKeys(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     M_ProgressBar(m_Text[TEXT_RESET], progress);
 }
 
-static void M_CheckUnbindKey(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
+static void M_CheckUnbindKey(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
     const int32_t frame = Clock_GetLogicalFrame();
 
-    if ((Input_CheckKeypress(UNBIND_KEY)
-         || Input_CheckButtonPress(UNBIND_BUTTON))
+    if (Input_IsPressed(backend, layout, INPUT_ROLE_UNBIND_KEY)
         && m_UnbindKeyMode != KM_CHANGEKEYUP) {
         if (m_UnbindKeyDelay == 0) {
             m_UnbindKeyDelay = frame;
@@ -621,24 +587,16 @@ static void M_CheckUnbindKey(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
                 m_UnbindTimer = frame;
             } else if (frame - m_UnbindTimer >= LOGIC_FPS * BUTTON_HOLD_TIME) {
                 Sound_Effect(SFX_MENU_GAMEBOY, NULL, SPM_NORMAL);
-                if (mode == CM_KEYBOARD) {
-                    Input_AssignScancode(
-                        layout_num, m_ControlMenu.cur_role, UNBIND_SCANCODE);
-                } else {
-                    Input_AssignButton(
-                        layout_num, m_ControlMenu.cur_role, UNBIND_ENUM);
-                }
-                Input_CheckConflicts(mode, layout_num);
-                M_UpdateText(mode, layout_num);
-                M_FlashConflicts(mode, layout_num);
+                Input_UnassignRole(backend, layout, m_ControlMenu.cur_role);
+                M_UpdateText(backend, layout);
+                M_FlashConflicts(backend, layout);
                 Config_Write();
                 m_UnbindKeyMode = KM_CHANGEKEYUP;
                 m_UnbindTimer = 0;
             }
         }
     } else if (m_UnbindKeyMode == KM_CHANGEKEYUP) {
-        if (!Input_CheckKeypress(UNBIND_KEY)
-            && !Input_CheckButtonPress(UNBIND_BUTTON)) {
+        if (!Input_IsPressed(backend, layout, INPUT_ROLE_UNBIND_KEY)) {
             m_UnbindKeyMode = KM_INACTIVE;
         }
     } else {
@@ -652,18 +610,18 @@ static void M_CheckUnbindKey(CONTROL_MODE mode, INPUT_LAYOUT layout_num)
     M_ProgressBar(m_Text[TEXT_UNBIND], progress);
 }
 
-CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
+CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, INPUT_BACKEND backend)
 {
-    INPUT_LAYOUT layout_num = INPUT_LAYOUT_DEFAULT;
-    if (mode == CM_KEYBOARD) {
-        layout_num = g_Config.input.layout;
+    INPUT_LAYOUT layout = INPUT_LAYOUT_DEFAULT;
+    if (backend == INPUT_BACKEND_KEYBOARD) {
+        layout = g_Config.input.layout;
     } else {
-        layout_num = g_Config.input.cntlr_layout;
+        layout = g_Config.input.cntlr_layout;
     }
 
     if (!m_Text[TEXT_TITLE]) {
         m_KeyMode = KM_BROWSE;
-        M_InitText(mode, layout_num);
+        M_InitText(backend, layout);
     }
 
     const TEXT_COLUMN_PLACEMENT *cols = g_Config.enable_cheats
@@ -672,14 +630,14 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
     switch (m_KeyMode) {
     case KM_BROWSE:
-        if (layout_num > INPUT_LAYOUT_DEFAULT) {
+        if (layout > INPUT_LAYOUT_DEFAULT) {
             if (m_UnbindKeyMode == KM_INACTIVE) {
-                M_CheckResetKeys(mode, layout_num);
+                M_CheckResetKeys(backend, layout);
             }
 
             if (m_ResetKeyMode == KM_INACTIVE
                 && m_ControlMenu.cur_row->can_unbind) {
-                M_CheckUnbindKey(mode, layout_num);
+                M_CheckUnbindKey(backend, layout);
             }
         }
 
@@ -698,11 +656,11 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
         if ((g_InputDB.menu_left || g_InputDB.menu_right)
             && m_ControlMenu.cur_role == KC_TITLE) {
-            layout_num = M_ChangeLayout(mode);
+            layout = M_ChangeLayout(backend);
         }
 
         if (g_InputDB.menu_confirm) {
-            if (layout_num > INPUT_LAYOUT_DEFAULT) {
+            if (layout > INPUT_LAYOUT_DEFAULT) {
                 m_KeyMode = KM_BROWSEKEYUP;
             }
         } else if (g_InputDB.menu_up) {
@@ -732,8 +690,8 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
                 m_ControlMenu.cur_row--;
                 m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
-            M_UpdateText(mode, layout_num);
-            M_FlashConflicts(mode, layout_num);
+            M_UpdateText(backend, layout);
+            M_FlashConflicts(backend, layout);
         } else if (g_InputDB.menu_down) {
             if (m_ControlMenu.cur_role == KC_TITLE) {
                 m_ControlMenu.row_num++;
@@ -756,30 +714,30 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
                 m_ControlMenu.cur_row++;
                 m_ControlMenu.cur_role = m_ControlMenu.cur_row->role;
             }
-            M_UpdateText(mode, layout_num);
-            M_FlashConflicts(mode, layout_num);
+            M_UpdateText(backend, layout);
+            M_FlashConflicts(backend, layout);
         }
         break;
 
     case KM_BROWSEKEYUP:
         if (!g_Input.any) {
-            M_UpdateText(mode, layout_num);
+            M_UpdateText(backend, layout);
             m_KeyMode = KM_CHANGE;
         }
         break;
 
     case KM_CHANGE:
-        if (Input_ReadAndAssignKey(mode, layout_num, m_ControlMenu.cur_role)) {
-            M_UpdateText(mode, layout_num);
+        if (Input_ReadAndAssignRole(backend, layout, m_ControlMenu.cur_role)) {
+            M_UpdateText(backend, layout);
             m_KeyMode = KM_CHANGEKEYUP;
-            M_FlashConflicts(mode, layout_num);
+            M_FlashConflicts(backend, layout);
             Config_Write();
         }
         break;
 
     case KM_CHANGEKEYUP:
         if (!g_Input.any) {
-            M_UpdateText(mode, layout_num);
+            M_UpdateText(backend, layout);
             m_KeyMode = KM_BROWSE;
         }
         break;
@@ -790,7 +748,7 @@ CONTROL_MODE Option_Control(INVENTORY_ITEM *inv_item, CONTROL_MODE mode)
 
     m_ControlMenu.prev_row_num = m_ControlMenu.row_num;
 
-    return mode;
+    return backend == INPUT_BACKEND_KEYBOARD ? CM_KEYBOARD : CM_CONTROLLER;
 }
 
 void Option_Control_Shutdown(void)

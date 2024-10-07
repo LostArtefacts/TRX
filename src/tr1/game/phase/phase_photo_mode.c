@@ -52,7 +52,8 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
         Console_Log(
             GS(OSD_PHOTO_MODE_LAUNCHED),
             Input_GetKeyName(
-                CM_KEYBOARD, g_Config.input.layout, INPUT_ROLE_TOGGLE_UI));
+                INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
+                INPUT_ROLE_TOGGLE_UI));
     }
 }
 

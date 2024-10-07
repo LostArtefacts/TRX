@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global/types.h"
+#include "game/option/option_control.h"
 
 CONTROL_MODE Option_ControlPick(void);
 void Option_ControlPick_Shutdown(void);

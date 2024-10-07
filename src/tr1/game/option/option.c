@@ -63,10 +63,16 @@ void Option_DoInventory(INVENTORY_ITEM *inv_item)
         break;
 
     case O_CONTROL_OPTION:
-        if (m_ControlMode == CM_PICK) {
+        switch (m_ControlMode) {
+        case CM_PICK:
             m_ControlMode = Option_ControlPick();
-        } else {
-            m_ControlMode = Option_Control(inv_item, m_ControlMode);
+            break;
+        case CM_KEYBOARD:
+            m_ControlMode = Option_Control(inv_item, INPUT_BACKEND_KEYBOARD);
+            break;
+        case CM_CONTROLLER:
+            m_ControlMode = Option_Control(inv_item, INPUT_BACKEND_CONTROLLER);
+            break;
         }
         break;
 
