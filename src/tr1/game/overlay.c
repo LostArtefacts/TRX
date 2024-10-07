@@ -251,7 +251,7 @@ static void M_BarGetLocation(
 
 void Overlay_BarDraw(BAR_INFO *bar_info, RENDER_SCALE_REF scale_ref)
 {
-    if (!g_Config.ui.enable_ui) {
+    if (!g_Config.ui.enable_game_ui) {
         return;
     }
 
@@ -324,7 +324,7 @@ static float M_Ease(int32_t cur_frame, int32_t max_frames)
 
 static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
 {
-    if (!g_Config.ui.enable_ui) {
+    if (!g_Config.ui.enable_game_ui) {
         return;
     }
 
@@ -490,7 +490,7 @@ static void M_DrawPickupsSprites(void)
             continue;
         }
 
-        if (!g_Config.ui.enable_ui) {
+        if (!g_Config.ui.enable_game_ui) {
             return;
         }
 
@@ -600,7 +600,7 @@ static void M_RemoveAmmoText(void)
 
 static void M_DrawAmmoInfo(void)
 {
-    if (!g_Config.ui.enable_ui) {
+    if (!g_Config.ui.enable_game_ui) {
         M_RemoveAmmoText();
         return;
     }
@@ -742,7 +742,7 @@ void Overlay_DrawGameInfo(void)
 
 void Overlay_DrawFPSInfo(void)
 {
-    if (g_Config.rendering.enable_fps_counter && g_Config.ui.enable_ui
+    if (g_Config.rendering.enable_fps_counter && g_Config.ui.enable_game_ui
         && Phase_Get() != PHASE_PHOTO_MODE) {
         const int32_t text_offset_x = 3;
         const int32_t text_height = 17;

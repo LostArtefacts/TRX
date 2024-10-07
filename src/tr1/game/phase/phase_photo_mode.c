@@ -41,7 +41,7 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
 
     m_Status = PS_NONE;
     g_OldInputDB = g_Input;
-    m_OldUIState = g_Config.ui.enable_ui;
+    m_OldUIState = g_Config.ui.enable_game_ui;
     Camera_EnterPhotoMode();
 
     Overlay_HideGameInfo();
@@ -49,7 +49,7 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
     Sound_PauseAll();
 
     m_PhotoMode = UI_PhotoMode_Create();
-    if (!g_Config.ui.enable_ui) {
+    if (!g_Config.ui.enable_game_ui) {
         Console_Log(
             GS(OSD_PHOTO_MODE_LAUNCHED),
             Input_GetKeyName(
@@ -63,8 +63,8 @@ static void M_End(void)
 
     g_Input = g_OldInputDB;
 
-    if (m_OldUIState != g_Config.ui.enable_ui) {
-        g_Config.ui.enable_ui ^= true;
+    if (m_OldUIState != g_Config.ui.enable_game_ui) {
+        g_Config.ui.enable_game_ui ^= true;
         Config_Write();
     }
 
