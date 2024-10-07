@@ -21,6 +21,7 @@ static int32_t m_AudioStreamID = -1;
 static const MUSIC_BACKEND *m_Backend = NULL;
 
 static const MUSIC_BACKEND *M_FindBackend(void);
+static void M_StopActiveStream(void);
 static void M_StreamFinished(int32_t stream_id, void *user_data);
 
 static const MUSIC_BACKEND *M_FindBackend(void)
@@ -44,6 +45,20 @@ static const MUSIC_BACKEND *M_FindBackend(void)
         backend_ptr++;
     }
     return NULL;
+}
+
+static void M_StopActiveStream(void)
+{
+    if (m_AudioStreamID < 0) {
+        return;
+    }
+
+    // We are only interested in calling M_StreamFinished if a stream
+    // finished by itself. In cases where we end the streams early by hand,
+    // we clear the finish callback in order to avoid resuming the BGM playback
+    // just after we stop it.
+    Audio_Stream_SetFinishCallback(m_AudioStreamID, NULL, NULL);
+    Audio_Stream_Close(m_AudioStreamID);
 }
 
 static void M_StreamFinished(const int32_t stream_id, void *const user_data)
@@ -97,10 +112,8 @@ void __cdecl Music_Play(int16_t track_id, bool is_looped)
         return;
     }
 
-    // TODO: this should be called in shell instead, once per game launch
-    Music_Init();
+    M_StopActiveStream();
 
-    Audio_Stream_Close(m_AudioStreamID);
     if (g_OptionMusicVolume == 0) {
         LOG_DEBUG("Not playing track %d because the game is silent", track_id);
         goto finish;
@@ -142,7 +155,7 @@ void __cdecl Music_Stop(void)
     }
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
-    Audio_Stream_Close(m_AudioStreamID);
+    M_StopActiveStream();
 }
 
 bool __cdecl Music_PlaySynced(int16_t track_id)
