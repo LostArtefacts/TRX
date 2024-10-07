@@ -338,12 +338,6 @@ void Shell_ProcessInput(void)
         Config_Write();
     }
 
-    if (g_InputDB.toggle_ui) {
-        g_Config.ui.enable_game_ui ^= true;
-        Console_Log(g_Config.ui.enable_game_ui ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
-        Config_Write();
-    }
-
     if (g_InputDB.turbo_cheat) {
         Clock_CycleTurboSpeed(!g_Input.slow);
     }

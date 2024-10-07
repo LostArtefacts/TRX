@@ -17,6 +17,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/game/ui/common.h>
 #include <libtrx/log.h>
 
 #define FRAME_BUFFER(key)                                                      \
@@ -57,6 +58,10 @@ void Game_ProcessInput(void)
         } else if (g_Input.toggle_fps_counter) {
             FRAME_BUFFER(toggle_fps_counter);
         }
+    }
+
+    if (g_InputDB.toggle_ui) {
+        UI_ToggleState(&g_Config.ui.enable_game_ui);
     }
 }
 
