@@ -13,6 +13,7 @@
 
 #include <libtrx/game/console/common.h>
 #include <libtrx/game/game_string.h>
+#include <libtrx/game/ui/common.h>
 
 #include <assert.h>
 #include <stdio.h>
@@ -23,7 +24,6 @@ typedef enum {
     PS_COOLDOWN,
 } PHOTO_STATUS;
 
-static bool m_OldUIState;
 static PHASE_PHOTO_MODE_ARGS m_Args;
 
 static PHOTO_STATUS m_Status = PS_NONE;
@@ -41,7 +41,6 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
 
     m_Status = PS_NONE;
     g_OldInputDB = g_Input;
-    m_OldUIState = g_Config.ui.enable_game_ui;
     Camera_EnterPhotoMode();
 
     Overlay_HideGameInfo();
@@ -49,7 +48,7 @@ static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
     Sound_PauseAll();
 
     m_PhotoMode = UI_PhotoMode_Create();
-    if (!g_Config.ui.enable_game_ui) {
+    if (!g_Config.ui.enable_photo_mode_ui) {
         Console_Log(
             GS(OSD_PHOTO_MODE_LAUNCHED),
             Input_GetKeyName(
@@ -62,11 +61,6 @@ static void M_End(void)
     Camera_ExitPhotoMode();
 
     g_Input = g_OldInputDB;
-
-    if (m_OldUIState != g_Config.ui.enable_game_ui) {
-        g_Config.ui.enable_game_ui ^= true;
-        Config_Write();
-    }
 
     m_PhotoMode->free(m_PhotoMode);
     m_PhotoMode = NULL;
@@ -87,6 +81,10 @@ static PHASE_CONTROL M_Control(int32_t nframes)
 
     Input_Update();
     Shell_ProcessInput();
+
+    if (g_InputDB.toggle_ui) {
+        UI_ToggleState(&g_Config.ui.enable_photo_mode_ui);
+    }
 
     if (g_InputDB.toggle_photo_mode || g_InputDB.option) {
         Phase_Set(m_Args.phase_to_return_to, m_Args.phase_arg);
