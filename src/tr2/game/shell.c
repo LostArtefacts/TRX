@@ -35,6 +35,7 @@ BOOL __cdecl Shell_Main(void)
     Text_Init();
     UI_Init();
     Console_Init();
+    Music_Init();
 
     Config_Read();
     if (!S_InitialiseSystem()) {

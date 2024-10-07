@@ -34,11 +34,6 @@ int32_t __cdecl Game_Control(int32_t nframes, const bool demo_mode)
     }
 
     while (m_FrameCount > 0) {
-        // TODO: move me outta here
-        if (g_CD_TrackID > 0) {
-            Music_Init();
-        }
-
         if (!g_GameFlow.cheat_mode_check_disabled) {
             CheckCheatMode();
         }

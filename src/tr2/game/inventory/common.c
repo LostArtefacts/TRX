@@ -247,9 +247,6 @@ int32_t __cdecl Inv_Display(int32_t inventory_mode)
             return GFD_OVERRIDE;
         }
 
-        if (inventory_mode == INV_TITLE_MODE && g_CD_TrackID > 0) {
-            Music_Init();
-        }
         Inv_Ring_CalcAdders(&ring, 24);
         Input_Update();
 
