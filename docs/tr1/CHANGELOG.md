@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/stable...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5...develop) - ××××-××-××
+
+## [4.5](https://github.com/LostArtefacts/TRX/compare/tr1-4.4...tr1-4.5) - 2024-10-08
 - added a photo mode feature (#1669)
 - added `/sfx` command
 - added `/nextlevel` alias to `/endlevel` console command
