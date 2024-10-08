@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/stable...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.5...develop) - ××××-××-××
+
+## [0.5](https://github.com/LostArtefacts/TRX/compare/afaf12a...tr2-0.5) - 2024-10-08
 - added `/sfx` command
 - added `/nextlevel` alias to `/endlevel` console command
 - added `/quit` alias to `/exit` console command
