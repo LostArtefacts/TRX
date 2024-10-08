@@ -673,7 +673,14 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
         break;
     }
 
-    Item_SwitchToAnim(item, LA_SURF_CLIMB, 0);
+    LARA_ANIMATION animation;
+    if (hdif < -STEP_L / 2) {
+        animation = LA_SURF_CLIMB_HIGH;
+    } else {
+        animation = LA_SURF_CLIMB_MEDIUM;
+    }
+
+    Item_SwitchToAnim(item, animation, 0);
     item->current_anim_state = LS_WATER_OUT;
     item->goal_anim_state = LS_STOP;
     item->rot.x = 0;
