@@ -45,7 +45,7 @@ class CommitCommand(BaseCommand):
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
         # self.git.checkout_branch("develop")
-        old_tag = self.git.get_branch_version("origin/stable")
+        old_tag = self.git.get_branch_version(pattern=f"tr{args.game_version}-*", branch="origin/stable", abbrev=0)
         new_tag = f"tr{args.game_version}-{args.version}"
 
         changelog_path = PROJECT_PATHS[args.game_version].changelog_path

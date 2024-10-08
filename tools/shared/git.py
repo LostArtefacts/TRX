@@ -52,7 +52,10 @@ class Git:
         ).stdout.strip()
 
     def get_branch_version(
-        self, pattern: str | None = None, branch: str | None = None
+        self,
+        pattern: str | None = None,
+        branch: str | None = None,
+        abbrev: int = 7,
     ) -> str:
         return self.grab_output(
             [
@@ -60,7 +63,7 @@ class Git:
                 "describe",
                 *([branch] if branch else ["--dirty"]),
                 "--always",
-                "--abbrev=7",
+                f"--abbrev={abbrev}",
                 "--tags",
                 "--exclude",
                 "latest",
