@@ -62,7 +62,8 @@ static bool M_LoadFx(JSON_ARRAY *fx_arr);
 static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm);
 static bool M_LoadAmmo(JSON_OBJECT *ammo_obj, AMMO_INFO *ammo);
 static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot);
-static bool M_LoadLara(JSON_OBJECT *lara_obj, LARA_INFO *lara);
+static bool M_LoadLara(
+    JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version);
 static bool M_LoadCurrentMusic(JSON_OBJECT *music_obj);
 static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr);
 static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *game_info);
@@ -733,7 +734,8 @@ static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot)
     return true;
 }
 
-static bool M_LoadLara(JSON_OBJECT *lara_obj, LARA_INFO *lara)
+static bool M_LoadLara(
+    JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version)
 {
     assert(lara);
     if (!lara_obj) {
@@ -844,6 +846,18 @@ static bool M_LoadLara(JSON_OBJECT *lara_obj, LARA_INFO *lara)
 
     if (!M_LoadLOT(JSON_ObjectGetObject(lara_obj, "lot"), &lara->lot)) {
         return false;
+    }
+
+    if (header_version >= VERSION_6) {
+        lara->interact_target.item_num = JSON_ObjectGetInt(
+            lara_obj, "interact_target.item_num",
+            lara->interact_target.item_num);
+        lara->interact_target.move_count = JSON_ObjectGetInt(
+            lara_obj, "interact_target.move_count",
+            lara->interact_target.move_count);
+        lara->interact_target.is_moving = JSON_ObjectGetBool(
+            lara_obj, "interact_target.is_moving",
+            lara->interact_target.is_moving);
     }
 
     return true;
@@ -1219,6 +1233,14 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendObject(lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun));
     JSON_ObjectAppendObject(lara_obj, "lot", M_DumpLOT(&lara->lot));
 
+    JSON_ObjectAppendInt(
+        lara_obj, "interact_target.item_num", lara->interact_target.item_num);
+    JSON_ObjectAppendInt(
+        lara_obj, "interact_target.move_count",
+        lara->interact_target.move_count);
+    JSON_ObjectAppendBool(
+        lara_obj, "interact_target.is_moving", lara->interact_target.is_moving);
+
     return lara_obj;
 }
 
@@ -1349,7 +1371,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         }
     }
 
-    if (!M_LoadLara(JSON_ObjectGetObject(root_obj, "lara"), &g_Lara)) {
+    if (!M_LoadLara(
+            JSON_ObjectGetObject(root_obj, "lara"), &g_Lara, header.version)) {
         goto cleanup;
     }
 
