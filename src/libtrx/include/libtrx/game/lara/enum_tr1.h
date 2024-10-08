@@ -77,7 +77,7 @@ typedef enum {
     LA_TREAD                = 108,
     LA_SURF_TREAD           = 114,
     LA_SURF_DIVE            = 119,
-    LA_SURF_CLIMB           = 111,
+    LA_SURF_CLIMB_HIGH      = 111,
     LA_JUMP_IN              = 112,
     LA_PUSHABLE_GRAB        = 120,
     LA_ROLL                 = 146,
@@ -90,6 +90,7 @@ typedef enum {
     LA_SPAZ_BACK            = 126,
     LA_SPAZ_RIGHT           = 127,
     LA_SPAZ_LEFT            = 128,
+    LA_SURF_CLIMB_MEDIUM    = 169,
 } LARA_ANIMATION;
 
 // clang-format off

@@ -5,6 +5,7 @@
 - added `/quit` alias to `/exit` console command
 - added an option to toggle the in-game UI, such as healthbars and ammo text (#1656)
 - added the ability to cycle through console prompt history (#1571)
+- added Lara's exit-water-to-medium-height animation from TR2+ (#1538)
 - changed the easter egg console command to pack more punch
 - changed `/set` console command to do fuzzy matching (LostArtefacts/libtrx#38)
 - fixed console caret position off by a couple of pixels (regression from 3.0)
