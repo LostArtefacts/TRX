@@ -28,6 +28,7 @@
 #include <stddef.h>
 
 #define LARA_MOVE_TIMEOUT 90
+#define LARA_PUSH_TIMEOUT 15
 #define LARA_MOVE_ANIM_VELOCITY 12
 #define LARA_MOVE_SPEED 16
 #define LARA_UW_DAMAGE 5
@@ -802,6 +803,12 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool spaz_on, bool big_push)
             coll->old.y = lara_item->pos.y;
             coll->old.z = lara_item->pos.z;
             Item_UpdateRoom(item, -10);
+        }
+
+        if (g_Lara.interact_target.is_moving
+            && g_Lara.interact_target.move_count > LARA_PUSH_TIMEOUT) {
+            g_Lara.interact_target.is_moving = false;
+            g_Lara.gun_status = LGS_ARMLESS;
         }
     }
 }

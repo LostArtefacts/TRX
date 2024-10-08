@@ -22,6 +22,7 @@
 - fixed Story So Far feature looping cutscenes forever (#1551, regression from 4.4)
 - fixed a rare crash related to the camera that could affect custom levels (#1671)
 - fixed a bug when saving and loading when picking up an item or using a switch with animated interactions enabled (#1546)
+- fixed a bug where Lara was stuck for a long time in an animated interactions if pushed (#1687)
 - improved object name matching in console commands to work like TR2X
 - improved vertex movement when looking through water portals even more (#1493)
 - improved console commands targeting creatures and pickups (#1667)
