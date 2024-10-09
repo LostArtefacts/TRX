@@ -3074,7 +3074,7 @@ typedef enum {
 0x00417AC0  0x02ED  +       void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00417DB0  0x00D9  +R      void __cdecl Dragon_Bones(int16_t item_num);
 0x00417E90  0x0519  +       void __cdecl Dragon_Control(int16_t back_num);
-0x004183E0  0x0114  -R      void __cdecl InitialiseBartoli(int16_t item_num);
+0x004183E0  0x0114  +       void __cdecl Bartoli_Initialise(int16_t item_num);
 0x00418500  0x0193  -R      void __cdecl BartoliControl(int16_t item_num);
 0x004186A0  0x0287  -R      void __cdecl DinoControl(int16_t item_num);
 

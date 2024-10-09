@@ -132,6 +132,7 @@ dll_sources = [
   'game/music/music_backend_files.c',
   'game/music/music_main.c',
   'game/objects/common.c',
+  'game/objects/creatures/bartoli.c',
   'game/objects/creatures/bird.c',
   'game/objects/creatures/diver.c',
   'game/objects/creatures/dragon.c',

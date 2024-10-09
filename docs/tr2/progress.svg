@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.32% (759)</tspan> · <tspan class="known">35.22% (429)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.40% (760)</tspan> · <tspan class="known">35.14% (428)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="465.50" height="6" x="0" y="0" class="decompiled"/>
-<rect width="263.11" height="6" x="465.50" y="0" class="known"/>
+<rect width="466.11" height="6" x="0" y="0" class="decompiled"/>
+<rect width="262.49" height="6" x="466.11" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -279,7 +279,7 @@
 <rect width="12" height="12" x="0" y="60" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="15" y="60" class="decompiled"><title>void __cdecl Dragon_Bones(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="60" class="decompiled"><title>void __cdecl Dragon_Control(int16_t back_num);</title></rect>
-<rect width="12" height="12" x="45" y="60" class="known"><title>void __cdecl InitialiseBartoli(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="45" y="60" class="decompiled"><title>void __cdecl Bartoli_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="60" y="60" class="known"><title>void __cdecl BartoliControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="75" y="60" class="known"><title>void __cdecl DinoControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="90" y="60" class="decompiled"><title>int32_t __cdecl Game_DrawCinematic(void);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.15%</tspan> · <tspan class="known">33.52%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.24%</tspan> · <tspan class="known">33.44%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="494.18" height="6" x="0" y="0" class="decompiled"/>
-<rect width="250.38" height="6" x="494.18" y="0" class="known"/>
+<rect width="494.78" height="6" x="0" y="0" class="decompiled"/>
+<rect width="249.78" height="6" x="494.78" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1637,7 +1637,7 @@
 <rect width="12.25" height="12.13" x="465.10" y="169.76" class="known"><title>void __cdecl JellyControl(int16_t item_num);</title></rect>
 <rect width="12.25" height="12.13" x="465.10" y="184.89" class="known"><title>void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags);</title></rect>
 <rect width="12.25" height="12.08" x="465.10" y="200.02" class="known"><title>void __cdecl ControlCeilingSpikes(int16_t item_num);</title></rect>
-<rect width="12.25" height="12.02" x="465.10" y="215.09" class="known"><title>void __cdecl InitialiseBartoli(int16_t item_num);</title></rect>
+<rect width="12.25" height="12.02" x="465.10" y="215.09" class="decompiled"><title>void __cdecl Bartoli_Initialise(int16_t item_num);</title></rect>
 <rect width="12.25" height="12.02" x="465.10" y="230.12" class="known"><title>int32_t __cdecl S_SaveGame(const void *save_data, uint32_t save_size, int32_t slot_num);</title></rect>
 <rect width="12.25" height="11.97" x="465.10" y="245.14" class="decompiled"><title>int32_t __cdecl GameStats(int32_t level_num);</title></rect>
 <rect width="12.25" height="11.91" x="465.10" y="260.11" class="decompiled"><title>int32_t __cdecl Game_Cutscene_Start(int32_t level_num);</title></rect>
