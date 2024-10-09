@@ -2,11 +2,14 @@
 
 #include "game/effects.h"
 #include "game/items.h"
+#include "game/math.h"
 #include "game/matrix.h"
 #include "game/random.h"
 #include "global/funcs.h"
 #include "global/types.h"
 #include "global/vars.h"
+
+#define BARTOLI_LIGHT_RANGE (5 * WALL_L) // = 5120
 
 int32_t __cdecl Effect_ExplodingDeath(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
@@ -140,4 +143,34 @@ int16_t __cdecl Effect_MissileFlame(
     }
 
     return fx_num;
+}
+
+void __cdecl Effect_CreateBartoliLight(const int16_t item_num)
+{
+    const ITEM *const item = &g_Items[item_num];
+
+    const int16_t fx_num = Effect_Create(item->room_num);
+    if (fx_num != NO_ITEM) {
+        FX *const fx = &g_Effects[fx_num];
+        fx->object_id = O_TWINKLE;
+
+        fx->rot.y = 2 * Random_GetDraw();
+        fx->pos.x = item->pos.x
+            + ((BARTOLI_LIGHT_RANGE * Math_Sin(fx->rot.y)) >> W2V_SHIFT);
+        fx->pos.z = item->pos.z
+            + ((BARTOLI_LIGHT_RANGE * Math_Cos(fx->rot.y)) >> W2V_SHIFT);
+        fx->pos.y = (Random_GetDraw() >> 2) + item->pos.y - WALL_L;
+        fx->room_num = item->room_num;
+        fx->counter = item_num;
+        fx->frame_num = 0;
+    }
+
+    // clang-format off
+    AddDynamicLight(
+        item->pos.x,
+        item->pos.y,
+        item->pos.z,
+        ((4 * Random_GetDraw()) >> 15) + 12,
+        ((4 * Random_GetDraw()) >> 15) + 10);
+    // clang-format on
 }

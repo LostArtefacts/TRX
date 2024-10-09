@@ -223,7 +223,7 @@ void __cdecl Dragon_Control(const int16_t item_num)
             dragon_front_item->current_anim_state = DRAGON_ANIM_DEATH;
             creature->flags = 0;
         } else if (creature->flags >= 0) {
-            CreateBartoliLight(dragon_front_item_num);
+            Effect_CreateBartoliLight(dragon_front_item_num);
             creature->flags++;
             if (creature->flags == DRAGON_LIVE_TIME) {
                 dragon_front_item->goal_anim_state = DRAGON_ANIM_STOP;

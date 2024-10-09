@@ -11,7 +11,6 @@
 #define Dog_Control ((void __cdecl (*)(int16_t item_num))0x00417160)
 #define Tiger_Control ((void __cdecl (*)(int16_t item_num))0x00417510)
 #define ControlTwinkle ((void __cdecl (*)(int16_t fx_num))0x004177B0)
-#define CreateBartoliLight ((void __cdecl (*)(int16_t item_num))0x00417930)
 #define DinoControl ((void __cdecl (*)(int16_t item_num))0x004186A0)
 #define Object_DrawSpriteItem ((void __cdecl (*)(ITEM *item))0x004199E0)
 #define Object_DrawAnimatingItem ((void __cdecl (*)(ITEM *item))0x00419A70)

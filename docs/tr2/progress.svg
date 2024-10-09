@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.48% (761)</tspan> · <tspan class="known">35.06% (427)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.56% (762)</tspan> · <tspan class="known">34.98% (426)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="466.72" height="6" x="0" y="0" class="decompiled"/>
-<rect width="261.88" height="6" x="466.72" y="0" class="known"/>
+<rect width="467.33" height="6" x="0" y="0" class="decompiled"/>
+<rect width="261.27" height="6" x="467.33" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -274,7 +274,7 @@
 <rect width="12" height="12" x="675" y="45" class="known"><title>void __cdecl Dog_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="690" y="45" class="known"><title>void __cdecl Tiger_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="705" y="45" class="known"><title>void __cdecl ControlTwinkle(int16_t fx_num);</title></rect>
-<rect width="12" height="12" x="720" y="45" class="known"><title>void __cdecl CreateBartoliLight(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="720" y="45" class="decompiled"><title>void __cdecl Effect_CreateBartoliLight(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="735" y="45" class="decompiled"><title>int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
 <rect width="12" height="12" x="0" y="60" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="15" y="60" class="decompiled"><title>void __cdecl Dragon_Bones(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.35%</tspan> · <tspan class="known">33.32%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.42%</tspan> · <tspan class="known">33.26%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="495.66" height="6" x="0" y="0" class="decompiled"/>
-<rect width="248.90" height="6" x="495.66" y="0" class="known"/>
+<rect width="496.14" height="6" x="0" y="0" class="decompiled"/>
+<rect width="248.42" height="6" x="496.14" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1721,7 +1721,7 @@
 <rect width="10.23" height="10.74" x="723.60" y="122.81" class="decompiled"><title>void __cdecl S_LoadSettings(void);</title></rect>
 <rect width="10.17" height="10.74" x="736.83" y="122.81" class="decompiled"><title>int32_t __cdecl LOS_ClipTarget(const GAME_VECTOR *start, GAME_VECTOR *target, const SECTOR *sector);</title></rect>
 <rect width="10.18" height="10.73" x="508.46" y="136.56" class="decompiled"><title>void __cdecl Room_TriggerMusicTrackImpl(int16_t value, int16_t flags, int16_t type);</title></rect>
-<rect width="10.18" height="10.67" x="508.46" y="150.29" class="known"><title>void __cdecl CreateBartoliLight(int16_t item_num);</title></rect>
+<rect width="10.18" height="10.67" x="508.46" y="150.29" class="decompiled"><title>void __cdecl Effect_CreateBartoliLight(int16_t item_num);</title></rect>
 <rect width="10.18" height="10.67" x="508.46" y="163.96" class="decompiled"><title>void __cdecl Dragon_Bones(int16_t item_num);</title></rect>
 <rect width="10.18" height="10.67" x="508.46" y="177.63" class="known"><title>void __cdecl MiniCopterControl(int16_t item_num);</title></rect>
 <rect width="10.18" height="10.54" x="508.46" y="191.29" class="decompiled"><title>void __cdecl Camera_Clip(int32_t *x, int32_t *y, int32_t *h, int32_t target_x, int32_t target_y, int32_t target_h, int32_t left, int32_t top, int32_t right, int32_t bottom);</title></rect>
