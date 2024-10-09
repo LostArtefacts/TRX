@@ -2,6 +2,8 @@
 
 #include "game/input.h"
 #include "game/items.h"
+#include "game/lara/control.h"
+#include "game/lara/misc.h"
 #include "global/vars.h"
 
 typedef enum {
@@ -111,6 +113,49 @@ void __cdecl Switch_Collision(
     }
     g_Lara.gun_status = LGS_HANDS_BUSY;
 
+    item->status = IS_ACTIVE;
+    Item_AddActive(item_num);
+    Item_Animate(item);
+}
+
+void __cdecl Switch_CollisionUW(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = &g_Items[item_num];
+
+    if (!(g_Input & IN_ACTION) || item->status != IS_INACTIVE
+        || g_Lara.water_status != LWS_UNDERWATER
+        || g_Lara.gun_status != LGS_ARMLESS
+        || lara_item->current_anim_state != LS_TREAD) {
+        return;
+    }
+
+    if (!Item_TestPosition(g_SwitchBoundsUW, item, lara_item)) {
+        return;
+    }
+
+    if (item->current_anim_state != SWITCH_STATE_OFF
+        && item->current_anim_state != SWITCH_STATE_ON) {
+        return;
+    }
+
+    if (!Lara_MovePosition(&g_SwitchUWPosition, item, lara_item)) {
+        return;
+    }
+
+    lara_item->fall_speed = 0;
+    lara_item->goal_anim_state = LS_SWITCH_ON;
+    do {
+        Lara_Animate(lara_item);
+    } while (lara_item->current_anim_state != LS_SWITCH_ON);
+    lara_item->goal_anim_state = LS_TREAD;
+    g_Lara.gun_status = LGS_HANDS_BUSY;
+
+    if (item->current_anim_state == SWITCH_STATE_ON) {
+        item->goal_anim_state = SWITCH_STATE_OFF;
+    } else {
+        item->goal_anim_state = SWITCH_STATE_ON;
+    }
     item->status = IS_ACTIVE;
     Item_AddActive(item_num);
     Item_Animate(item);

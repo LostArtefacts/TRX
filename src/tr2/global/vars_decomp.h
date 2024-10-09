@@ -83,6 +83,8 @@
 #define g_SmallSwitchPosition (*(XYZ_32*)0x00466070)
 #define g_PushSwitchPosition (*(XYZ_32*)0x00466080)
 #define g_AirlockPosition (*(XYZ_32*)0x00466090)
+#define g_SwitchBoundsUW (*(int16_t(*)[])0x004660A0)
+#define g_SwitchUWPosition (*(XYZ_32*)0x004660B8)
 #define g_TextSpacing (*(int8_t(*)[80])0x00466290)
 #define g_TextASCIIMap (*(int8_t(*)[])0x004662E0)
 #define g_BGND_PaletteIndex (*(int32_t*)0x00466400) // = -1

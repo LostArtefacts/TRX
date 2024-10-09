@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.73% (764)</tspan> · <tspan class="known">34.81% (424)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.81% (765)</tspan> · <tspan class="known">34.73% (423)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="468.56" height="6" x="0" y="0" class="decompiled"/>
-<rect width="260.04" height="6" x="468.56" y="0" class="known"/>
+<rect width="469.17" height="6" x="0" y="0" class="decompiled"/>
+<rect width="259.43" height="6" x="469.17" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -748,7 +748,7 @@
 <rect width="12" height="12" x="285" y="195" class="known"><title>void __cdecl WinstonControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="195" class="known"><title>void __cdecl PickUpCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="315" y="195" class="decompiled"><title>void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="330" y="195" class="known"><title>void __cdecl SwitchCollision2(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="330" y="195" class="decompiled"><title>void __cdecl Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="195" class="known"><title>void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="360" y="195" class="known"><title>void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="375" y="195" class="known"><title>void __cdecl PuzzleHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.68%</tspan> · <tspan class="known">32.99%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.76%</tspan> · <tspan class="known">32.92%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="498.12" height="6" x="0" y="0" class="decompiled"/>
-<rect width="246.44" height="6" x="498.12" y="0" class="known"/>
+<rect width="498.67" height="6" x="0" y="0" class="decompiled"/>
+<rect width="245.89" height="6" x="498.67" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1667,7 +1667,7 @@
 <rect width="11.53" height="11.51" x="720.99" y="108.31" class="known"><title>void __cdecl IcicleControl(int16_t item_num);</title></rect>
 <rect width="11.48" height="11.51" x="735.52" y="108.31" class="decompiled"><title>void __cdecl Overlay_DrawPickups(bool pickup_state);</title></rect>
 <rect width="11.45" height="11.47" x="480.35" y="122.81" class="decompiled"><title>void __cdecl Matrix_InterpolateArm(void);</title></rect>
-<rect width="11.45" height="11.47" x="480.35" y="137.29" class="known"><title>void __cdecl SwitchCollision2(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="11.45" height="11.47" x="480.35" y="137.29" class="decompiled"><title>void __cdecl Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="11.45" height="11.42" x="480.35" y="151.76" class="decompiled"><title>void __cdecl Lara_Col_Back(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="11.45" height="11.36" x="480.35" y="166.18" class="decompiled"><title>void __cdecl Lara_InitialiseMeshes(int32_t level_num);</title></rect>
 <rect width="11.45" height="11.36" x="480.35" y="180.54" class="known"><title>BOOL __cdecl DecompPCX(const uint8_t *pcx, size_t pcx_size, LPBYTE pic, RGB_888 *pal);</title></rect>
