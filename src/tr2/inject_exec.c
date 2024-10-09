@@ -952,6 +952,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x004139C0, Object_Collision_Trap);
     INJECT(enable, 0x00416DB0, Diver_Control);
     INJECT(enable, 0x00417AC0, Dragon_Collision);
+    INJECT(enable, 0x00417DB0, Dragon_Bones);
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);

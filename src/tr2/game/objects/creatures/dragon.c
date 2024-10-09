@@ -139,3 +139,40 @@ void __cdecl Dragon_Collision(
         M_PushLaraAway(lara_item, item, shift);
     }
 }
+
+void __cdecl Dragon_Bones(const int16_t item_num)
+{
+    const int16_t bone_front_item_num = Item_Create();
+    const int16_t bone_back_item_num = Item_Create();
+
+    if (bone_back_item_num == NO_ITEM || bone_front_item_num == NO_ITEM) {
+        return;
+    }
+
+    const ITEM *const dragon_item = &g_Items[item_num];
+
+    ITEM *const bone_back = &g_Items[bone_back_item_num];
+    bone_back->object_id = O_DRAGON_BONES_3;
+    bone_back->pos.x = dragon_item->pos.x;
+    bone_back->pos.y = dragon_item->pos.y;
+    bone_back->pos.z = dragon_item->pos.z;
+    bone_back->rot.x = 0;
+    bone_back->rot.y = dragon_item->rot.y;
+    bone_back->rot.z = 0;
+    bone_back->room_num = dragon_item->room_num;
+    bone_back->shade_1 = -1;
+    Item_Initialise(bone_back_item_num);
+
+    ITEM *const bone_front = &g_Items[bone_front_item_num];
+    bone_front->object_id = O_DRAGON_BONES_2;
+    bone_front->pos.x = dragon_item->pos.x;
+    bone_front->pos.y = dragon_item->pos.y;
+    bone_front->pos.z = dragon_item->pos.z;
+    bone_front->rot.x = 0;
+    bone_front->rot.y = dragon_item->rot.y;
+    bone_front->rot.z = 0;
+    bone_front->room_num = dragon_item->room_num;
+    bone_front->shade_1 = -1;
+    Item_Initialise(bone_front_item_num);
+    bone_front->mesh_bits = ~0xC00000u;
+}
