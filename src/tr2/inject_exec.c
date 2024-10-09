@@ -956,6 +956,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00417DB0, Dragon_Bones);
     INJECT(enable, 0x00417E90, Dragon_Control);
     INJECT(enable, 0x004183E0, Bartoli_Initialise);
+    INJECT(enable, 0x00418500, Bartoli_Control);
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);

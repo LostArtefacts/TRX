@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.40% (760)</tspan> · <tspan class="known">35.14% (428)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.48% (761)</tspan> · <tspan class="known">35.06% (427)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="466.11" height="6" x="0" y="0" class="decompiled"/>
-<rect width="262.49" height="6" x="466.11" y="0" class="known"/>
+<rect width="466.72" height="6" x="0" y="0" class="decompiled"/>
+<rect width="261.88" height="6" x="466.72" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -280,7 +280,7 @@
 <rect width="12" height="12" x="15" y="60" class="decompiled"><title>void __cdecl Dragon_Bones(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="60" class="decompiled"><title>void __cdecl Dragon_Control(int16_t back_num);</title></rect>
 <rect width="12" height="12" x="45" y="60" class="decompiled"><title>void __cdecl Bartoli_Initialise(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="60" y="60" class="known"><title>void __cdecl BartoliControl(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="60" y="60" class="decompiled"><title>void __cdecl Bartoli_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="75" y="60" class="known"><title>void __cdecl DinoControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="90" y="60" class="decompiled"><title>int32_t __cdecl Game_DrawCinematic(void);</title></rect>
 <rect width="12" height="12" x="105" y="60" class="decompiled"><title>int32_t __cdecl Game_Draw(void);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.24%</tspan> · <tspan class="known">33.44%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.35%</tspan> · <tspan class="known">33.32%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="494.78" height="6" x="0" y="0" class="decompiled"/>
-<rect width="249.78" height="6" x="494.78" y="0" class="known"/>
+<rect width="495.66" height="6" x="0" y="0" class="decompiled"/>
+<rect width="248.90" height="6" x="495.66" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1535,7 +1535,7 @@
 <rect width="15.75" height="14.93" x="582.68" y="41.46" class="decompiled"><title>void __cdecl Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="15.75" height="14.93" x="601.43" y="41.46" class="decompiled"><title>void __cdecl Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="15.70" height="14.93" x="620.18" y="41.46" class="decompiled"><title>void __cdecl Gun_TargetInfo(const WEAPON_INFO *winfo);</title></rect>
-<rect width="15.66" height="14.93" x="638.89" y="41.46" class="known"><title>void __cdecl BartoliControl(int16_t item_num);</title></rect>
+<rect width="15.66" height="14.93" x="638.89" y="41.46" class="decompiled"><title>void __cdecl Bartoli_Control(int16_t item_num);</title></rect>
 <rect width="15.61" height="14.93" x="657.55" y="41.46" class="decompiled"><title>int32_t __cdecl Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);</title></rect>
 <rect width="15.56" height="14.93" x="676.16" y="41.46" class="decompiled"><title>void __cdecl Lara_Col_Walk(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="15.52" height="14.93" x="694.72" y="41.46" class="known"><title>void __cdecl PropellerControl(int16_t item_num);</title></rect>
