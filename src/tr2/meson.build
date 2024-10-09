@@ -134,6 +134,7 @@ dll_sources = [
   'game/objects/common.c',
   'game/objects/creatures/bird.c',
   'game/objects/creatures/diver.c',
+  'game/objects/creatures/dragon.c',
   'game/objects/effects/ember.c',
   'game/objects/effects/flame.c',
   'game/objects/general/body_part.c',
