@@ -107,7 +107,7 @@ void __cdecl Bartoli_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->timer != 0) {
+    if (item->timer == 0) {
         if (M_CheckLaraProximity(item)) {
             item->timer = 1;
         }

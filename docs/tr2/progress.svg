@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.56% (762)</tspan> · <tspan class="known">34.98% (426)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.64% (763)</tspan> · <tspan class="known">34.89% (425)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="467.33" height="6" x="0" y="0" class="decompiled"/>
-<rect width="261.27" height="6" x="467.33" y="0" class="known"/>
+<rect width="467.95" height="6" x="0" y="0" class="decompiled"/>
+<rect width="260.65" height="6" x="467.95" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -273,7 +273,7 @@
 <rect width="12" height="12" x="660" y="45" class="decompiled"><title>void __cdecl Diver_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="675" y="45" class="known"><title>void __cdecl Dog_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="690" y="45" class="known"><title>void __cdecl Tiger_Control(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="705" y="45" class="known"><title>void __cdecl ControlTwinkle(int16_t fx_num);</title></rect>
+<rect width="12" height="12" x="705" y="45" class="decompiled"><title>void __cdecl Twinkle_Control(int16_t fx_num);</title></rect>
 <rect width="12" height="12" x="720" y="45" class="decompiled"><title>void __cdecl Effect_CreateBartoliLight(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="735" y="45" class="decompiled"><title>int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
 <rect width="12" height="12" x="0" y="60" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.42%</tspan> · <tspan class="known">33.26%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.53%</tspan> · <tspan class="known">33.14%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="496.14" height="6" x="0" y="0" class="decompiled"/>
-<rect width="248.42" height="6" x="496.14" y="0" class="known"/>
+<rect width="496.97" height="6" x="0" y="0" class="decompiled"/>
+<rect width="247.58" height="6" x="496.97" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1548,7 +1548,7 @@
 <rect width="14.87" height="15.16" x="430.74" y="132.21" class="decompiled"><title>int32_t __cdecl Lara_MovePosition(XYZ_32 *vec, ITEM *item, ITEM *lara_item);</title></rect>
 <rect width="14.87" height="15.16" x="430.74" y="150.36" class="decompiled"><title>void __cdecl Gun_Rifle_FireHarpoon(void);</title></rect>
 <rect width="14.87" height="14.79" x="430.74" y="168.52" class="decompiled"><title>void __cdecl Output_InsertFlatRect_Sorted(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx);</title></rect>
-<rect width="14.87" height="14.79" x="430.74" y="186.31" class="known"><title>void __cdecl ControlTwinkle(int16_t fx_num);</title></rect>
+<rect width="14.87" height="14.79" x="430.74" y="186.31" class="decompiled"><title>void __cdecl Twinkle_Control(int16_t fx_num);</title></rect>
 <rect width="14.87" height="14.65" x="430.74" y="204.09" class="decompiled"><title>void __cdecl S_Audio_Sample_Init2(HWND hwnd);</title></rect>
 <rect width="14.87" height="14.65" x="430.74" y="221.74" class="known"><title>void __cdecl SE_GraphicsDlgInit(HWND hwndDlg);</title></rect>
 <rect width="14.87" height="14.60" x="430.74" y="239.38" class="known"><title>void __cdecl SpinningBlade(int16_t item_num);</title></rect>
