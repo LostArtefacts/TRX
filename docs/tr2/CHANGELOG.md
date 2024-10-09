@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.5...develop) - ××××-××-××
+- fixed `/give` not working with weapons (regression from 0.5)
 
 ## [0.5](https://github.com/LostArtefacts/TRX/compare/afaf12a...tr2-0.5) - 2024-10-08
 - added `/sfx` command

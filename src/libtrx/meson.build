@@ -91,6 +91,7 @@ sources = [
   'game/console/history.c',
   'game/game_string.c',
   'game/items.c',
+  'game/objects/common.c',
   'game/objects/names.c',
   'game/ui/common.c',
   'game/ui/events.c',

@@ -18,8 +18,12 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
 static bool M_CanTargetObjectPickup(const GAME_OBJECT_ID object_id)
 {
-    return Object_IsObjectType(object_id, g_PickupObjects)
-        && Object_GetObject(object_id)->loaded;
+    if (!Object_IsObjectType(object_id, g_PickupObjects)) {
+        return false;
+    }
+    const GAME_OBJECT_ID inv_object_id =
+        Object_GetCognate(object_id, g_ItemToInvObjectMap);
+    return Object_GetObject(inv_object_id)->loaded;
 }
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
@@ -60,15 +64,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         Object_IdsFromName(args, &match_count, M_CanTargetObjectPickup);
     for (int32_t i = 0; i < match_count; i++) {
         const GAME_OBJECT_ID object_id = matching_objs[i];
-        if (Object_GetObject(object_id)->loaded) {
-            const char *obj_name = Object_GetName(object_id);
-            if (obj_name == NULL) {
-                obj_name = args;
-            }
-            Backpack_AddItemNTimes(object_id, num);
-            Console_Log(GS(OSD_GIVE_ITEM), obj_name);
-            found = true;
+        const char *obj_name = Object_GetName(object_id);
+        if (obj_name == NULL) {
+            obj_name = args;
         }
+        Backpack_AddItemNTimes(object_id, num);
+        Console_Log(GS(OSD_GIVE_ITEM), obj_name);
+        found = true;
     }
     Memory_FreePointer(&matching_objs);
 

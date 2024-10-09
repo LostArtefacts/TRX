@@ -1,6 +1,6 @@
 #include "game/objects/vars.h"
 
-#include "global/const.h"
+#include <libtrx/game/objects/ids.h>
 
 const GAME_OBJECT_ID g_EnemyObjects[] = {
     // clang-format off
