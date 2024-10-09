@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.23% (758)</tspan> · <tspan class="known">35.30% (430)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.32% (759)</tspan> · <tspan class="known">35.22% (429)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="464.88" height="6" x="0" y="0" class="decompiled"/>
-<rect width="263.72" height="6" x="464.88" y="0" class="known"/>
+<rect width="465.50" height="6" x="0" y="0" class="decompiled"/>
+<rect width="263.11" height="6" x="465.50" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -278,7 +278,7 @@
 <rect width="12" height="12" x="735" y="45" class="decompiled"><title>int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
 <rect width="12" height="12" x="0" y="60" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="15" y="60" class="decompiled"><title>void __cdecl Dragon_Bones(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="30" y="60" class="known"><title>void __cdecl DragonControl(int16_t back_num);</title></rect>
+<rect width="12" height="12" x="30" y="60" class="decompiled"><title>void __cdecl Dragon_Control(int16_t back_num);</title></rect>
 <rect width="12" height="12" x="45" y="60" class="known"><title>void __cdecl InitialiseBartoli(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="60" y="60" class="known"><title>void __cdecl BartoliControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="75" y="60" class="known"><title>void __cdecl DinoControl(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.77%</tspan> · <tspan class="known">33.90%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.15%</tspan> · <tspan class="known">33.52%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="491.32" height="6" x="0" y="0" class="decompiled"/>
-<rect width="253.24" height="6" x="491.32" y="0" class="known"/>
+<rect width="494.18" height="6" x="0" y="0" class="decompiled"/>
+<rect width="250.38" height="6" x="494.18" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1339,7 +1339,7 @@
 <rect width="31.68" height="30.65" x="142.39" y="218.34" class="decompiled"><title>BOOL __cdecl Level_LoadObjects(HANDLE handle);</title></rect>
 <rect width="31.68" height="29.07" x="142.39" y="251.99" class="known"><title>void __cdecl Cult3Control(int16_t item_num);</title></rect>
 <rect width="31.68" height="28.66" x="142.39" y="284.06" class="known"><title>void __cdecl CreateSaveGameInfo(void);</title></rect>
-<rect width="31.68" height="28.23" x="142.39" y="315.73" class="known"><title>void __cdecl DragonControl(int16_t back_num);</title></rect>
+<rect width="31.68" height="28.23" x="142.39" y="315.73" class="decompiled"><title>void __cdecl Dragon_Control(int16_t back_num);</title></rect>
 <rect width="31.68" height="28.04" x="142.39" y="346.96" class="decompiled"><title>int32_t __cdecl Output_XYGUVClipper(int32_t vtx_count, VERTEX_INFO *vtx);</title></rect>
 <rect width="28.60" height="29.99" x="177.07" y="0" class="decompiled"><title>void __cdecl Gun_Control(void);</title></rect>
 <rect width="28.60" height="29.70" x="177.07" y="32.99" class="decompiled"><title>int32_t __cdecl Boat_Dynamics(int16_t boat_num);</title></rect>
