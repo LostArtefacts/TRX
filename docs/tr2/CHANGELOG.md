@@ -14,6 +14,9 @@
 - improved vertex movement when looking through water portals (#1493)
 - improved console commands targeting creatures and pickups (#1667)
 
+## [0.4]
+Version 0.4 was skipped because of a major repository merge with TR1X into TRX.
+
 ## [0.3](https://github.com/LostArtefacts/TR2X/compare/0.2...0.3) - 2024-09-20
 - added new console commands:
     - `/endlevel`
