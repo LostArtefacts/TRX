@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-from pathlib import Path
 import argparse
+from pathlib import Path
 
+from shared.files import find_versioned_files, is_binary_file
 from shared.import_sorter import sort_imports
 from shared.paths import SHARED_SRC_DIR, SRC_DIR, TR1Paths, TR2Paths
 
@@ -19,7 +20,7 @@ def main() -> None:
     else:
         paths = [
             path
-            for path in find_versioned_files(root_dir)
+            for path in find_versioned_files(SRC_DIR)
             if path.suffix in [".c", ".h"]
         ]
 
