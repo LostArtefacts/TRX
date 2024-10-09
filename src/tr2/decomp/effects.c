@@ -107,3 +107,37 @@ int32_t __cdecl Effect_ExplodingDeath(
 
     return !(item->mesh_bits & (INT32_MAX >> (31 - object->mesh_count)));
 }
+
+int16_t __cdecl Effect_MissileFlame(
+    const int32_t x, const int32_t y, const int32_t z, int16_t speed,
+    const int16_t y_rot, const int16_t room_num)
+{
+    const int16_t fx_num = Effect_Create(room_num);
+    if (fx_num == NO_ITEM) {
+        return fx_num;
+    }
+
+    FX *const fx = &g_Effects[fx_num];
+    fx->pos.x = x;
+    fx->pos.y = y;
+    fx->pos.z = z;
+    fx->rot.x = 0;
+    fx->rot.y = y_rot;
+    fx->rot.z = 0;
+    fx->room_num = room_num;
+    fx->speed = 200;
+    fx->frame_num =
+        ((g_Objects[O_MISSILE_FLAME].mesh_count + 1) * Random_GetDraw()) >> 15;
+    fx->object_id = O_MISSILE_FLAME;
+    fx->shade = 14 * 256;
+
+    ShootAtLara(fx);
+
+    if (g_Objects[O_DRAGON_FRONT].loaded) {
+        fx->counter = 0x4000;
+    } else {
+        fx->counter = 20;
+    }
+
+    return fx_num;
+}

@@ -12,7 +12,6 @@
 #define Tiger_Control ((void __cdecl (*)(int16_t item_num))0x00417510)
 #define ControlTwinkle ((void __cdecl (*)(int16_t fx_num))0x004177B0)
 #define CreateBartoliLight ((void __cdecl (*)(int16_t item_num))0x00417930)
-#define DragonFire ((int16_t __cdecl (*)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num))0x00417A10)
 #define DragonBones ((void __cdecl (*)(int16_t item_num))0x00417DB0)
 #define DragonControl ((void __cdecl (*)(int16_t back_num))0x00417E90)
 #define InitialiseBartoli ((void __cdecl (*)(int16_t item_num))0x004183E0)
