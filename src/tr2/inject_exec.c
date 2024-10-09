@@ -230,6 +230,7 @@ static void M_DecompStats(const bool enable)
 static void M_DecompEffects(const bool enable)
 {
     INJECT(enable, 0x00433360, Effect_ExplodingDeath);
+    INJECT(enable, 0x00417A10, Effect_MissileFlame);
 }
 
 static void M_HWR(bool enable)

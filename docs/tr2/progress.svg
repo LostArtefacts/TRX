@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.07% (756)</tspan> · <tspan class="known">35.47% (432)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.15% (757)</tspan> · <tspan class="known">35.39% (431)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="463.66" height="6" x="0" y="0" class="decompiled"/>
-<rect width="264.95" height="6" x="463.66" y="0" class="known"/>
+<rect width="464.27" height="6" x="0" y="0" class="decompiled"/>
+<rect width="264.33" height="6" x="464.27" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -275,7 +275,7 @@
 <rect width="12" height="12" x="690" y="45" class="known"><title>void __cdecl Tiger_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="705" y="45" class="known"><title>void __cdecl ControlTwinkle(int16_t fx_num);</title></rect>
 <rect width="12" height="12" x="720" y="45" class="known"><title>void __cdecl CreateBartoliLight(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="735" y="45" class="known"><title>int16_t __cdecl DragonFire(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
+<rect width="12" height="12" x="735" y="45" class="decompiled"><title>int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
 <rect width="12" height="12" x="0" y="60" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="15" y="60" class="known"><title>void __cdecl DragonBones(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="60" class="known"><title>void __cdecl DragonControl(int16_t back_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.66%</tspan> · <tspan class="known">34.01%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.71%</tspan> · <tspan class="known">33.96%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="490.47" height="6" x="0" y="0" class="decompiled"/>
-<rect width="254.09" height="6" x="490.47" y="0" class="known"/>
+<rect width="490.85" height="6" x="0" y="0" class="decompiled"/>
+<rect width="253.71" height="6" x="490.85" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1807,7 +1807,7 @@
 <rect width="8.82" height="9.08" x="691.16" y="161.72" class="known"><title>void __cdecl SpiderLeap(int16_t item_num, int16_t angle);</title></rect>
 <rect width="8.75" height="9.08" x="702.99" y="161.72" class="decompiled"><title>bool __cdecl Matrix_TranslateRel(int32_t x, int32_t y, int32_t z);</title></rect>
 <rect width="8.75" height="9.08" x="714.74" y="161.72" class="decompiled"><title>int32_t __cdecl Item_GetAnimChange(ITEM *item, const ANIM *anim);</title></rect>
-<rect width="8.75" height="9.08" x="726.49" y="161.72" class="known"><title>int16_t __cdecl DragonFire(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
+<rect width="8.75" height="9.08" x="726.49" y="161.72" class="decompiled"><title>int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
 <rect width="8.75" height="9.08" x="738.25" y="161.72" class="decompiled"><title>void __cdecl Overlay_DrawHealthBar(bool flash_state);</title></rect>
 <rect width="8.66" height="9.17" x="534.18" y="173.80" class="decompiled"><title>void __cdecl Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="8.66" height="9.17" x="534.18" y="185.97" class="known"><title>void __cdecl S_CopyScreenToBuffer(void);</title></rect>
