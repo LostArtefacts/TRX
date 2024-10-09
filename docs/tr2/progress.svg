@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.64% (763)</tspan> · <tspan class="known">34.89% (425)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.73% (764)</tspan> · <tspan class="known">34.81% (424)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="467.95" height="6" x="0" y="0" class="decompiled"/>
-<rect width="260.65" height="6" x="467.95" y="0" class="known"/>
+<rect width="468.56" height="6" x="0" y="0" class="decompiled"/>
+<rect width="260.04" height="6" x="468.56" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -747,7 +747,7 @@
 <rect width="12" height="12" x="270" y="195" class="known"><title>void __cdecl Bandit2Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="285" y="195" class="known"><title>void __cdecl WinstonControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="195" class="known"><title>void __cdecl PickUpCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="315" y="195" class="known"><title>void __cdecl SwitchCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="315" y="195" class="decompiled"><title>void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="330" y="195" class="known"><title>void __cdecl SwitchCollision2(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="195" class="known"><title>void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="360" y="195" class="known"><title>void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.53%</tspan> · <tspan class="known">33.14%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.68%</tspan> · <tspan class="known">32.99%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="496.97" height="6" x="0" y="0" class="decompiled"/>
-<rect width="247.58" height="6" x="496.97" y="0" class="known"/>
+<rect width="498.12" height="6" x="0" y="0" class="decompiled"/>
+<rect width="246.44" height="6" x="498.12" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1476,7 +1476,7 @@
 <rect width="17.36" height="18.85" x="390.95" y="43.59" class="decompiled"><title>void __cdecl Room_DrawSingleRoomObjects(int16_t room_num);</title></rect>
 <rect width="17.36" height="18.48" x="390.95" y="65.44" class="decompiled"><title>void __cdecl FinalLevelCounter_Control(int16_t item_num);</title></rect>
 <rect width="17.36" height="18.40" x="390.95" y="86.93" class="decompiled"><title>void __cdecl Lara_Col_ClimbStance(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="17.36" height="18.28" x="390.95" y="108.33" class="known"><title>void __cdecl SwitchCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="17.36" height="18.28" x="390.95" y="108.33" class="decompiled"><title>void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="17.36" height="18.12" x="390.95" y="129.61" class="known"><title>void __cdecl SpiderControl(int16_t item_num);</title></rect>
 <rect width="17.36" height="18.12" x="390.95" y="150.73" class="known"><title>void __cdecl S_LightRoom(ROOM *room);</title></rect>
 <rect width="17.36" height="18.04" x="390.95" y="171.84" class="decompiled"><title>bool __cdecl ApplySettings(APP_SETTINGS *new_settings);</title></rect>

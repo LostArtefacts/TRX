@@ -14,7 +14,6 @@
 #define g_CineTickRate (*(int32_t*)0x004640B8) // = 0x8000
 #define g_CD_TrackID (*(int16_t*)0x004640BC) // = -1
 #define g_FlipEffect (*(int32_t*)0x004640C4) // = -1
-#define g_DragonMouth (*(BITE*)0x00464150)
 #define g_BoxLines (*(int32_t(*)[12][2])0x00464180)
 #define g_AssaultBestTime (*(int32_t*)0x004641F0) // = -1
 #define g_EffectRoutines (*((void(__cdecl  *(*)[32])(ITEM *item))0x004641F8))
@@ -80,6 +79,10 @@
 #define g_LaraControlRoutines (*((void(__cdecl  *(*)[71])(ITEM *item, COLL_INFO *coll))0x00465CD0))
 #define g_ExtraControlRoutines (*((void(__cdecl  *(*)[11])(ITEM *item, COLL_INFO *coll))0x00465DF0))
 #define g_LaraCollisionRoutines (*((void(__cdecl  *(*)[71])(ITEM *item, COLL_INFO *coll))0x00465E20))
+#define g_SwitchBounds (*(int16_t(*)[])0x00466058)
+#define g_SmallSwitchPosition (*(XYZ_32*)0x00466070)
+#define g_PushSwitchPosition (*(XYZ_32*)0x00466080)
+#define g_AirlockPosition (*(XYZ_32*)0x00466090)
 #define g_TextSpacing (*(int8_t(*)[80])0x00466290)
 #define g_TextASCIIMap (*(int8_t(*)[])0x004662E0)
 #define g_BGND_PaletteIndex (*(int32_t*)0x00466400) // = -1

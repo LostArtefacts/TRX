@@ -1747,8 +1747,8 @@ typedef enum { // decompiled
     LA_WALK_DOWN_RIGHT                       = 60,
     LA_WALK_DOWN_BACK_LEFT                   = 61,
     LA_WALK_DOWN_BACK_RIGHT                  = 62,
-    LA_WALLSWITCH_DOWN                       = 63,
-    LA_WALLSWITCH_UP                         = 64,
+    LA_WALL_SWITCH_DOWN                      = 63,
+    LA_WALL_SWITCH_UP                        = 64,
     LA_SIDESTEP_LEFT                         = 65,
     LA_SIDESTEP_LEFT_END                     = 66,
     LA_SIDESTEP_RIGHT                        = 67,
@@ -3594,7 +3594,7 @@ typedef enum {
 
 # game/pickup.c
 0x00437E70  0x0480  -R      void __cdecl PickUpCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x004382F0  0x020A  -R      void __cdecl SwitchCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+0x004382F0  0x020A  +       void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438500  0x00FC  -R      void __cdecl SwitchCollision2(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438600  0x023B  -R      void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438840  0x0223  -R      void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -4693,4 +4693,8 @@ typedef enum {
 0x00464590  -       const uint16_t g_Requester_SelectionGour2[];
 0x004645A8  -       const uint16_t g_Requester_UnselectionGour1[];
 0x005216E0  -       uint16_t g_InvColors[17]; // INV_COLOR_NUMBER_OF
-0x00464150  -       BITE g_DragonMouth;
+0x00464150  +       BITE g_DragonMouth;
+0x00466058  -       int16_t g_SwitchBounds[];
+0x00466070  -       XYZ_32 g_SmallSwitchPosition;
+0x00466080  -       XYZ_32 g_PushSwitchPosition;
+0x00466090  -       XYZ_32 g_AirlockPosition;
