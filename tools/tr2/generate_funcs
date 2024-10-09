@@ -2,12 +2,7 @@
 import re
 from pathlib import Path
 
-from shared.ida_progress import (
-    FUNC_PTR_RE,
-    VAR_RE,
-    Symbol,
-    parse_progress_file,
-)
+from shared.ida_progress import Symbol, parse_progress_file
 from shared.paths import TR2Paths
 
 FUNCS_H_FILE = TR2Paths.src_dir / "global/funcs.h"
@@ -21,6 +16,28 @@ COMMON_HEADER = [
     "#pragma once",
     "",
 ]
+
+FUNC_PTR_RE = re.compile(
+    r"^"
+    r"(?P<ret_type>.+?)\s*"
+    r"\("
+    r"\s*\*(?P<call_type>.*?\s)\s*(?P<func_name>\w+)"
+    r"(?P<array_def>\[[^\]]*?\]+)?"
+    r"\)\s*"
+    r"\((?P<args>.+)\)"
+    r";?$"
+)
+
+VAR_RE = re.compile(
+    r"^"
+    r"(?P<ret_type>.+?)\s*"
+    r"(?P<var_name>\b\w+)\s*"
+    r"(?P<array_def>(?:\[[^\]]*?\])*)"
+    r"(\s*=\s*(?P<value_def>.*?))?"
+    r";?"
+    r"(\s*\/\/\s*(?P<comment>.*))?"
+    r"$"
+)
 
 
 def update_file(path: Path, new_content: str) -> None:

@@ -8,7 +8,7 @@
 // clang-format off
 #define g_IID_IDirectDrawSurface3 (*(GUID*)0x00463150)
 #define g_PerspectiveDistance (*(uint32_t*)0x00464060) // = 0x3000000
-#define g_PolyDrawRoutines (*((void(__cdecl  *(*)[9])(const int16_t *))0x00464068))
+#define g_PolyDrawRoutines (*((void(__cdecl  *(*)[9])(const int16_t *obj_ptr))0x00464068))
 #define g_RhwFactor (*(float*)0x0046408C) // = 335544320.0f
 #define g_CineTrackID (*(int32_t*)0x004640B0) // = 1
 #define g_CineTickRate (*(int32_t*)0x004640B8) // = 0x8000
@@ -140,21 +140,21 @@
 #define g_Output_InsertSprite (*(void(__cdecl **)(int32_t z, int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t sprite_idx, int16_t shade))0x004B2A20)
 #define g_FltNearZ (*(float*)0x004B2A24)
 #define g_MatrixPtr (*(MATRIX **)0x004B2A28)
-#define g_Output_DrawObjectGT3 (*(const int16_t *(__cdecl **)(const int16_t*, int32_t, SORT_TYPE))0x004B2A2C)
-#define g_Output_DrawObjectGT4 (*(const int16_t *(__cdecl **)(const int16_t*, int32_t, SORT_TYPE))0x004B2A30)
+#define g_Output_DrawObjectGT3 (*(const int16_t *(__cdecl **)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type))0x004B2A2C)
+#define g_Output_DrawObjectGT4 (*(const int16_t *(__cdecl **)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type))0x004B2A30)
 #define g_RandomTable (*(int32_t(*)[32])0x004B2A38)
 #define g_FltPersp (*(float*)0x004B2AB8)
 #define g_W2VMatrix (*(MATRIX*)0x004B2AC0)
 #define g_Info3DPtr (*(int16_t **)0x004B2AF0)
 #define g_PhdWinWidth (*(int32_t*)0x004B2AF4)
-#define g_Output_InsertLine (*(void(__cdecl **)(int32_t, int32_t, int32_t, int32_t, int32_t, uint8_t))0x004B2AF8)
+#define g_Output_InsertLine (*(void(__cdecl **)(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t z, uint8_t color_idx))0x004B2AF8)
 #define g_PhdTextureInfo (*(PHD_TEXTURE(*)[0x800])0x004B2B00)
 #define g_TextureInfo (*(PHD_TEXTURE(*)[])0x004B2B00)
 #define g_PhdViewDistance (*(int32_t*)0x004BCB00)
 #define g_LsPitch (*(int16_t*)0x004BCB04)
-#define g_Output_DrawObjectG4 (*(const int16_t *(__cdecl **)(const int16_t*,int32_t, SORT_TYPE))0x004BCB08)
+#define g_Output_DrawObjectG4 (*(const int16_t *(__cdecl **)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type))0x004BCB08)
 #define g_ShadesTable (*(int16_t(*)[32])0x004BCB10)
-#define g_Output_DrawObjectG3 (*(const int16_t *(__cdecl **)(const int16_t*,int32_t, SORT_TYPE))0x004BCB50)
+#define g_Output_DrawObjectG3 (*(const int16_t *(__cdecl **)(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type))0x004BCB50)
 #define g_MatrixStack (*(MATRIX(*)[])0x004BCB58)
 #define g_DepthQTable (*(DEPTHQ_ENTRY(*)[32])0x004BD2D8)
 #define g_DepthQIndex (*(uint8_t(*)[256])0x004BF2D8)
