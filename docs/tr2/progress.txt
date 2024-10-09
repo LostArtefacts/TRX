@@ -964,7 +964,7 @@ typedef struct __unaligned { // decompiled
     int16_t head_rotation;
     int16_t neck_rotation;
     int16_t maximum_turn;
-    uint16_t flags;
+    int16_t flags;
     int16_t item_num;
     MOOD_TYPE mood;
     LOT_INFO lot;
@@ -3073,7 +3073,7 @@ typedef enum {
 0x00417A10  0x00AB  +R      int16_t __cdecl Effect_MissileFlame(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);
 0x00417AC0  0x02ED  +       void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00417DB0  0x00D9  +R      void __cdecl Dragon_Bones(int16_t item_num);
-0x00417E90  0x0519  -R      void __cdecl DragonControl(int16_t back_num);
+0x00417E90  0x0519  +       void __cdecl Dragon_Control(int16_t back_num);
 0x004183E0  0x0114  -R      void __cdecl InitialiseBartoli(int16_t item_num);
 0x00418500  0x0193  -R      void __cdecl BartoliControl(int16_t item_num);
 0x004186A0  0x0287  -R      void __cdecl DinoControl(int16_t item_num);
@@ -4693,3 +4693,4 @@ typedef enum {
 0x00464590  -       const uint16_t g_Requester_SelectionGour2[];
 0x004645A8  -       const uint16_t g_Requester_UnselectionGour1[];
 0x005216E0  -       uint16_t g_InvColors[17]; // INV_COLOR_NUMBER_OF
+0x00464150  -       BITE g_DragonMouth;

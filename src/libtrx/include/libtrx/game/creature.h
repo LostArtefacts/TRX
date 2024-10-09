@@ -17,7 +17,7 @@ typedef struct __PACKING {
     int16_t head_rotation;
     int16_t neck_rotation;
     int16_t maximum_turn;
-    uint16_t flags;
+    int16_t flags;
     int16_t item_num;
     MOOD_TYPE mood;
     LOT_INFO lot;
