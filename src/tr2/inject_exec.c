@@ -39,6 +39,7 @@
 #include "game/objects/common.h"
 #include "game/objects/creatures/bird.h"
 #include "game/objects/creatures/diver.h"
+#include "game/objects/creatures/dragon.h"
 #include "game/objects/effects/ember.h"
 #include "game/objects/effects/flame.h"
 #include "game/objects/general/body_part.h"
@@ -949,6 +950,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00413940, Door_Collision);
     INJECT(enable, 0x004139C0, Object_Collision_Trap);
     INJECT(enable, 0x00416DB0, Diver_Control);
+    INJECT(enable, 0x00417AC0, Dragon_Collision);
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);

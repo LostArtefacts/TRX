@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">61.99% (755)</tspan> · <tspan class="known">35.55% (433)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.07% (756)</tspan> · <tspan class="known">35.47% (432)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="463.04" height="6" x="0" y="0" class="decompiled"/>
-<rect width="265.56" height="6" x="463.04" y="0" class="known"/>
+<rect width="463.66" height="6" x="0" y="0" class="decompiled"/>
+<rect width="264.95" height="6" x="463.66" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -276,7 +276,7 @@
 <rect width="12" height="12" x="705" y="45" class="known"><title>void __cdecl ControlTwinkle(int16_t fx_num);</title></rect>
 <rect width="12" height="12" x="720" y="45" class="known"><title>void __cdecl CreateBartoliLight(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="735" y="45" class="known"><title>int16_t __cdecl DragonFire(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num);</title></rect>
-<rect width="12" height="12" x="0" y="60" class="known"><title>void __cdecl DragonCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="0" y="60" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="15" y="60" class="known"><title>void __cdecl DragonBones(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="60" class="known"><title>void __cdecl DragonControl(int16_t back_num);</title></rect>
 <rect width="12" height="12" x="45" y="60" class="known"><title>void __cdecl InitialiseBartoli(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.44%</tspan> · <tspan class="known">34.23%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.66%</tspan> · <tspan class="known">34.01%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="488.84" height="6" x="0" y="0" class="decompiled"/>
-<rect width="255.72" height="6" x="488.84" y="0" class="known"/>
+<rect width="490.47" height="6" x="0" y="0" class="decompiled"/>
+<rect width="254.09" height="6" x="490.47" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1412,7 +1412,7 @@
 <rect width="21.61" height="22.84" x="320.05" y="52.39" class="decompiled"><title>int32_t __cdecl LOS_CheckSmashable(const GAME_VECTOR *start, GAME_VECTOR *target);</title></rect>
 <rect width="21.61" height="22.81" x="320.05" y="78.23" class="decompiled"><title>void __fastcall Output_GTMapA(int32_t y0, int32_t y1, uint8_t *tex_page); // actually, __watcall, which is esoteric and rarely supported</title></rect>
 <rect width="21.61" height="22.57" x="320.05" y="104.04" class="known"><title>void __cdecl S_CalculateLight(int32_t x, int32_t y, int32_t z, int16_t room_num);</title></rect>
-<rect width="21.61" height="22.27" x="320.05" y="129.61" class="known"><title>void __cdecl DragonCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="21.61" height="22.27" x="320.05" y="129.61" class="decompiled"><title>void __cdecl Dragon_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="21.61" height="22.23" x="320.05" y="154.88" class="decompiled"><title>int32_t __cdecl LOS_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);</title></rect>
 <rect width="21.61" height="22.20" x="320.05" y="180.11" class="decompiled"><title>int32_t __cdecl LOS_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);</title></rect>
 <rect width="21.61" height="22.07" x="320.05" y="205.31" class="decompiled"><title>int32_t __cdecl Lara_TestVault(ITEM *item, COLL_INFO *coll);</title></rect>
