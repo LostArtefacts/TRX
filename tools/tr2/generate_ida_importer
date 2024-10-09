@@ -10,14 +10,7 @@ import tempfile
 from pathlib import Path
 
 import regex
-
-from shared.ida_progress import (
-    FUNC_PTR_RE,
-    FUNC_RE,
-    VAR_RE,
-    Symbol,
-    parse_progress_file,
-)
+from shared.ida_progress import Symbol, parse_progress_file
 from shared.paths import TR2Paths
 
 
@@ -55,29 +48,15 @@ def import_symbol(symbol: Symbol, file) -> None:
     known = not re.match(r"(\s+|^)(dword|sub)_", symbol.signature)
 
     if known:
-        # extract the symbol name
         signature = symbol.signature
-        # strip comments
-        signature = re.sub(r"\s*//.*", "", signature)
-        # strip assignments
-        signature = re.sub(r"\s*=[^;]*", "", signature)
-        # map the name
-        if match := FUNC_RE.match(signature):
-            name = match.group("func_name")
-        elif match := FUNC_PTR_RE.match(signature):
-            name = match.group("func_name")
-        elif match := VAR_RE.match(signature):
-            name = match.group("var_name")
-        else:
-            name = None
 
         print(
             f"apply_type(0x{symbol.offset:x}, parse_decl({json.dumps(symbol.signature)}, 0));",
             file=file,
         )
-        if name:
+        if symbol.name:
             print(
-                f"set_name(0x{symbol.offset:x}, {json.dumps(name)});",
+                f"set_name(0x{symbol.offset:x}, {json.dumps(symbol.name)});",
                 file=file,
             )
 

@@ -4,36 +4,74 @@ from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
 
-FUNC_RE = re.compile(
-    r"^"
-    r"(?P<ret_type>[^()]+?)\s*"
-    r"\s*(?P<call_type>.*?\s)\s*(?P<func_name>\w+)"
-    r"\s*"
-    r"\((?P<args>.+)\)"
-    r";?$"
+from parsimonious.exceptions import ParseError
+from parsimonious.grammar import Grammar
+from parsimonious.nodes import NodeVisitor
+
+# Define a simple grammar for C declarations
+grammar = Grammar(
+    r"""
+    output = decl ";" (_ ~"//.*")?
+    decl = function_decl / var_decl / function_pointer_decl
+    function_decl = type _ function_name _ parameters
+    var_decl = type _ var_name array_subscript (_ "=" _ ~"[^;]*")?
+    function_pointer_decl = type _ ("(*" _ qualifier _ function_name _ array_subscript _ ")") _ parameters
+
+    var_name = identifier
+    function_name = identifier
+    parameters = ("(" _ "void" _ ")") / ("(" _ (parameter_list?) _ ")")
+    parameter_list = parameter _ ("," _ parameter _)*
+    parameter = function_decl / var_decl
+    qualifier = ~"const|__cdecl|__stdcall|__thiscall|__fastcall"
+    array_subscript = (_ "[" number? "]")*
+
+    type = (qualifier _)? ~r"[a-zA-Z_][a-zA-Z0-9_]*" _ (qualifier _)? "*"* (qualifier _)?
+
+    number = ~"0[0xX][0-9a-fA-F]+" / ~"[0-9]+"
+    identifier = ~r"[a-zA-Z_][a-zA-Z0-9_]*"
+    _ = ~r"\s*"
+    """
 )
 
-FUNC_PTR_RE = re.compile(
-    r"^"
-    r"(?P<ret_type>.+?)\s*"
-    r"\("
-    r"\s*\*(?P<call_type>.*?\s)\s*(?P<func_name>\w+)"
-    r"(?P<array_def>\[[^\]]*?\]+)?"
-    r"\)\s*"
-    r"\((?P<args>.+)\)"
-    r";?$"
-)
 
-VAR_RE = re.compile(
-    r"^"
-    r"(?P<ret_type>.+?)\s*"
-    r"(?P<var_name>\b\w+)\s*"
-    r"(?P<array_def>(?:\[[^\]]*?\])*)"
-    r"(\s*=\s*(?P<value_def>.*?))?"
-    r";?"
-    r"(\s*\/\/\s*(?P<comment>.*))?"
-    r"$"
-)
+class DeclarationVisitor(NodeVisitor):
+    def visit_output(self, node, visited_children):
+        return visited_children[0]
+
+    def visit_decl(self, node, visited_children):
+        return visited_children[0]
+
+    def visit_function_decl(self, node, visited_children):
+        return visited_children[2]
+
+    def visit_function_pointer_decl(self, node, visited_children):
+        return visited_children[2][4]
+
+    def visit_identifier(self, node, visited_children):
+        return node.text
+
+    def visit_var_decl(self, node, visited_children):
+        return visited_children[2]
+
+    def visit_function_name(self, node, visited_children):
+        return node
+
+    def visit_var_name(self, node, visited_children):
+        return node
+
+    def generic_visit(self, node, visited_children):
+        return visited_children or node
+
+
+def extract_symbol_name(c_declaration: str) -> str | None:
+    result: str | None
+    try:
+        visitor = DeclarationVisitor()
+        tree = grammar.parse(c_declaration)
+        result = visitor.visit(tree)
+    except ParseError:
+        result = None
+    return result
 
 
 class SymbolStatus(StrEnum):
@@ -55,6 +93,10 @@ class Symbol:
     signature: str
     size: int | None = None
     flags: str = ""
+
+    @property
+    def name(self) -> str:
+        return extract_symbol_name(self.signature)
 
     @property
     def offset_str(self) -> str:
