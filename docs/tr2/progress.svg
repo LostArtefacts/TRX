@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.89% (766)</tspan> · <tspan class="known">34.65% (422)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.97% (767)</tspan> · <tspan class="known">34.56% (421)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="469.79" height="6" x="0" y="0" class="decompiled"/>
-<rect width="258.81" height="6" x="469.79" y="0" class="known"/>
+<rect width="470.40" height="6" x="0" y="0" class="decompiled"/>
+<rect width="258.20" height="6" x="470.40" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -753,7 +753,7 @@
 <rect width="12" height="12" x="360" y="195" class="known"><title>void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="375" y="195" class="known"><title>void __cdecl PuzzleHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="390" y="195" class="decompiled"><title>void __cdecl Switch_Control(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="405" y="195" class="known"><title>int32_t __cdecl SwitchTrigger(int16_t item_num, int16_t timer);</title></rect>
+<rect width="12" height="12" x="405" y="195" class="decompiled"><title>int32_t __cdecl Switch_Trigger(int16_t item_num, int16_t timer);</title></rect>
 <rect width="12" height="12" x="420" y="195" class="known"><title>int32_t __cdecl KeyTrigger(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="435" y="195" class="known"><title>int32_t __cdecl PickupTrigger(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="450" y="195" class="known"><title>void __cdecl SecretControl(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.77%</tspan> · <tspan class="known">32.90%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.83%</tspan> · <tspan class="known">32.85%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="498.79" height="6" x="0" y="0" class="decompiled"/>
-<rect width="245.77" height="6" x="498.79" y="0" class="known"/>
+<rect width="499.21" height="6" x="0" y="0" class="decompiled"/>
+<rect width="245.35" height="6" x="499.21" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1770,7 +1770,7 @@
 <rect width="9.54" height="9.57" x="521.63" y="290.31" class="decompiled"><title>int32_t __cdecl Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="9.54" height="9.57" x="521.63" y="302.88" class="known"><title>void __cdecl SE_SoundDlgInit(HWND hwndDlg);</title></rect>
 <rect width="9.54" height="9.51" x="521.63" y="315.46" class="known"><title>void __cdecl ControlGongBonger(int16_t item_num);</title></rect>
-<rect width="9.54" height="9.51" x="521.63" y="327.97" class="known"><title>int32_t __cdecl SwitchTrigger(int16_t item_num, int16_t timer);</title></rect>
+<rect width="9.54" height="9.51" x="521.63" y="327.97" class="decompiled"><title>int32_t __cdecl Switch_Trigger(int16_t item_num, int16_t timer);</title></rect>
 <rect width="9.54" height="9.51" x="521.63" y="340.47" class="known"><title>void __cdecl TeethTrap(int16_t item_num);</title></rect>
 <rect width="9.54" height="9.51" x="521.63" y="352.98" class="decompiled"><title>HRESULT __stdcall Enum3DDevicesCallback(GUID *lpGuid, LPTSTR lpDeviceDescription, LPTSTR lpDeviceName, LPD3DDEVICEDESC lpD3DHWDeviceDesc, LPD3DDEVICEDESC lpD3DHELDeviceDesc, LPVOID lpContext);</title></rect>
 <rect width="9.54" height="9.51" x="521.63" y="365.49" class="known"><title>void __cdecl SE_ControlsDlgInit(HWND hwndDlg);</title></rect>

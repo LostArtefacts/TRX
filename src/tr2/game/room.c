@@ -7,6 +7,7 @@
 #include "game/lot.h"
 #include "game/math.h"
 #include "game/music.h"
+#include "game/objects/general/switch.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/funcs.h"
@@ -415,7 +416,7 @@ void __cdecl Room_TestTriggers(const int16_t *fd, bool heavy)
 
         case TT_SWITCH: {
             const int16_t value = TRIGGER_VALUE(*fd++);
-            if (!SwitchTrigger(value, timer)) {
+            if (!Switch_Trigger(value, timer)) {
                 return;
             }
             switch_off = g_Items[value].current_anim_state == LS_RUN;
