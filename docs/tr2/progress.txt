@@ -3599,7 +3599,7 @@ typedef enum {
 0x00438600  0x023B  -R      void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438840  0x0223  -R      void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438A80  0x0294  -R      void __cdecl PuzzleHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x00438D40  0x0039  -R      void __cdecl SwitchControl(int16_t item_num);
+0x00438D40  0x0039  +       void __cdecl Switch_Control(int16_t item_num);
 0x00438D80  0x00BD  -R      int32_t __cdecl SwitchTrigger(int16_t item_num, int16_t timer);
 0x00438E40  0x003D  -R      int32_t __cdecl KeyTrigger(int16_t item_num);
 0x00438E80  0x0033  -R      int32_t __cdecl PickupTrigger(int16_t item_num);

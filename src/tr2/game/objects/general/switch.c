@@ -160,3 +160,14 @@ void __cdecl Switch_CollisionUW(
     Item_AddActive(item_num);
     Item_Animate(item);
 }
+
+void __cdecl Switch_Control(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->flags |= IF_CODE_BITS;
+    if (!Item_IsTriggerActive(item)) {
+        item->goal_anim_state = SWITCH_STATE_ON;
+        item->timer = 0;
+    }
+    Item_Animate(item);
+}

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.81% (765)</tspan> · <tspan class="known">34.73% (423)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">62.89% (766)</tspan> · <tspan class="known">34.65% (422)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="469.17" height="6" x="0" y="0" class="decompiled"/>
-<rect width="259.43" height="6" x="469.17" y="0" class="known"/>
+<rect width="469.79" height="6" x="0" y="0" class="decompiled"/>
+<rect width="258.81" height="6" x="469.79" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -752,7 +752,7 @@
 <rect width="12" height="12" x="345" y="195" class="known"><title>void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="360" y="195" class="known"><title>void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="375" y="195" class="known"><title>void __cdecl PuzzleHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="390" y="195" class="known"><title>void __cdecl SwitchControl(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="390" y="195" class="decompiled"><title>void __cdecl Switch_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="405" y="195" class="known"><title>int32_t __cdecl SwitchTrigger(int16_t item_num, int16_t timer);</title></rect>
 <rect width="12" height="12" x="420" y="195" class="known"><title>int32_t __cdecl KeyTrigger(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="435" y="195" class="known"><title>int32_t __cdecl PickupTrigger(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.76%</tspan> · <tspan class="known">32.92%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.77%</tspan> · <tspan class="known">32.90%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="498.67" height="6" x="0" y="0" class="decompiled"/>
-<rect width="245.89" height="6" x="498.67" y="0" class="known"/>
+<rect width="498.79" height="6" x="0" y="0" class="decompiled"/>
+<rect width="245.77" height="6" x="498.79" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2206,7 +2206,7 @@
 <rect width="3.77" height="3.99" x="655.65" y="283.23" class="decompiled"><title>void __cdecl Requester_SetSize(REQUEST_INFO *req, int32_t maxlines, int32_t ypos);</title></rect>
 <rect width="3.77" height="3.99" x="662.43" y="283.23" class="decompiled"><title>int16_t __cdecl Item_Create(void);</title></rect>
 <rect width="3.77" height="3.99" x="669.20" y="283.23" class="decompiled"><title>void __cdecl Lara_State_SwitchOn(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="3.77" height="3.99" x="675.97" y="283.23" class="known"><title>void __cdecl SwitchControl(int16_t item_num);</title></rect>
+<rect width="3.77" height="3.99" x="675.97" y="283.23" class="decompiled"><title>void __cdecl Switch_Control(int16_t item_num);</title></rect>
 <rect width="3.77" height="3.99" x="682.75" y="283.23" class="decompiled"><title>uint32_t __cdecl Text_GetScaleV(uint32_t value);</title></rect>
 <rect width="3.77" height="3.99" x="689.52" y="283.23" class="unused"><title>sub_447170</title></rect>
 <rect width="3.77" height="3.99" x="696.29" y="283.23" class="known"><title>void __cdecl TempVideoRemove(void);</title></rect>

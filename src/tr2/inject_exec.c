@@ -965,6 +965,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x004382F0, Switch_Collision);
     INJECT(enable, 0x00438500, Switch_CollisionUW);
+    INJECT(enable, 0x00438D40, Switch_Control);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);
