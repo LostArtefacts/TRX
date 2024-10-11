@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.05% (768)</tspan> · <tspan class="known">34.48% (420)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.14% (769)</tspan> · <tspan class="known">34.40% (419)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="471.01" height="6" x="0" y="0" class="decompiled"/>
-<rect width="257.59" height="6" x="471.01" y="0" class="known"/>
+<rect width="471.63" height="6" x="0" y="0" class="decompiled"/>
+<rect width="256.97" height="6" x="471.63" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -754,7 +754,7 @@
 <rect width="12" height="12" x="375" y="195" class="known"><title>void __cdecl PuzzleHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="390" y="195" class="decompiled"><title>void __cdecl Switch_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="405" y="195" class="decompiled"><title>int32_t __cdecl Switch_Trigger(int16_t item_num, int16_t timer);</title></rect>
-<rect width="12" height="12" x="420" y="195" class="known"><title>int32_t __cdecl KeyTrigger(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="420" y="195" class="decompiled"><title>int32_t __cdecl Keyhole_Trigger(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="435" y="195" class="known"><title>int32_t __cdecl PickupTrigger(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="450" y="195" class="known"><title>void __cdecl SecretControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="465" y="195" class="known"><title>void __cdecl MouseControl(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.99%</tspan> · <tspan class="known">32.69%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.01%</tspan> · <tspan class="known">32.67%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="500.40" height="6" x="0" y="0" class="decompiled"/>
-<rect width="244.16" height="6" x="500.40" y="0" class="known"/>
+<rect width="500.53" height="6" x="0" y="0" class="decompiled"/>
+<rect width="244.02" height="6" x="500.53" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2178,7 +2178,7 @@
 <rect width="4.42" height="3.93" x="648.46" y="276.30" class="known"><title>int32_t __stdcall SE_PropSheetCallback(HWND hwndDlg, UINT uMsg, LPARAM lParam);</title></rect>
 <rect width="4.42" height="3.93" x="655.89" y="276.30" class="known"><title>HWR_TEXTURE_HANDLE __cdecl GetTexturePageHandle(int32_t page_idx);</title></rect>
 <rect width="4.30" height="3.93" x="663.31" y="276.30" class="decompiled"><title>void __cdecl Matrix_RotYXZsuperpack_I(const int16_t **pprot1, const int16_t **pprot2, int32_t skip);</title></rect>
-<rect width="4.30" height="3.93" x="670.61" y="276.30" class="known"><title>int32_t __cdecl KeyTrigger(int16_t item_num);</title></rect>
+<rect width="4.30" height="3.93" x="670.61" y="276.30" class="decompiled"><title>int32_t __cdecl Keyhole_Trigger(int16_t item_num);</title></rect>
 <rect width="4.30" height="3.93" x="677.92" y="276.30" class="decompiled"><title>HRESULT __cdecl WinVidBufferLock(LPDDS surface, LPDDSDESC desc, DWORD flags);</title></rect>
 <rect width="4.30" height="3.93" x="685.22" y="276.30" class="known"><title>int32_t __cdecl SE_SoundTestExecute(void);</title></rect>
 <rect width="4.18" height="3.93" x="692.53" y="276.30" class="decompiled"><title>void __cdecl Output_DrawPolyGTMap(const int16_t *obj_ptr);</title></rect>

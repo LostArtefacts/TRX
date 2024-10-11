@@ -964,6 +964,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x00438840, Keyhole_Collision);
+    INJECT(enable, 0x00438E40, Keyhole_Trigger);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);
