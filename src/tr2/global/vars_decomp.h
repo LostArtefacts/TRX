@@ -85,6 +85,8 @@
 #define g_AirlockPosition (*(XYZ_32*)0x00466090)
 #define g_SwitchBoundsUW (*(int16_t(*)[])0x004660A0)
 #define g_SwitchUWPosition (*(XYZ_32*)0x004660B8)
+#define g_KeyholeBounds (*(int16_t(*)[])0x004660C8)
+#define g_KeyholePosition (*(XYZ_32*)0x004660E0)
 #define g_TextSpacing (*(int8_t(*)[80])0x00466290)
 #define g_TextASCIIMap (*(int8_t(*)[])0x004662E0)
 #define g_BGND_PaletteIndex (*(int32_t*)0x00466400) // = -1
@@ -236,6 +238,7 @@
 #define g_LevelItemCount (*(int32_t*)0x004D7C38)
 #define g_HealthBarTimer (*(int32_t*)0x004D7C3C)
 #define g_SlotsUsed (*(int32_t*)0x004D7C50)
+#define g_PickupPosition (*(XYZ_32*)0x004D7C58)
 #define g_NumCameras (*(int32_t*)0x004D7C74)
 #define g_SoundTrackIds (*(int32_t(*)[128])0x004D7C80)
 #define g_BGND_PictureIsReady (*(bool*)0x004D7E88)

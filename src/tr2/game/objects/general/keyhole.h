@@ -2,7 +2,5 @@
 
 #include "global/types.h"
 
-#include <libtrx/game/objects/common.h>
-
-void __cdecl Object_Collision(
+void __cdecl Keyhole_Collision(
     int16_t item_num, ITEM *lara_item, COLL_INFO *coll);

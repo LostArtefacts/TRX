@@ -5,6 +5,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara/common.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/room.h"
 #include "game/viewport.h"
@@ -17,21 +18,6 @@
 #include <assert.h>
 #include <stddef.h>
 
-static const GAME_OBJECT_PAIR m_KeyItemToReceptacleMap[] = {
-    // clang-format off
-    { O_KEY_OPTION_1, O_KEY_HOLE_1 },
-    { O_KEY_OPTION_2, O_KEY_HOLE_2 },
-    { O_KEY_OPTION_3, O_KEY_HOLE_3 },
-    { O_KEY_OPTION_4, O_KEY_HOLE_4 },
-    { O_PUZZLE_OPTION_1, O_PUZZLE_HOLE_1 },
-    { O_PUZZLE_OPTION_2, O_PUZZLE_HOLE_2 },
-    { O_PUZZLE_OPTION_3, O_PUZZLE_HOLE_3 },
-    { O_PUZZLE_OPTION_4, O_PUZZLE_HOLE_4 },
-    { O_LEADBAR_OPTION, O_MIDAS_TOUCH },
-    { NO_OBJECT, NO_OBJECT },
-    // clang-format on
-};
-
 OBJECT *Object_GetObject(GAME_OBJECT_ID object_id)
 {
     return &g_Objects[object_id];
@@ -40,7 +26,7 @@ OBJECT *Object_GetObject(GAME_OBJECT_ID object_id)
 int16_t Object_FindReceptacle(GAME_OBJECT_ID object_id)
 {
     GAME_OBJECT_ID receptacle_to_check =
-        Object_GetCognate(object_id, m_KeyItemToReceptacleMap);
+        Object_GetCognate(object_id, g_KeyItemToReceptacleMap);
     for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
         ITEM *item = &g_Items[item_num];
         if (item->object_id == receptacle_to_check) {

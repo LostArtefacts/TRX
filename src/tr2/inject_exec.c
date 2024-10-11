@@ -47,7 +47,7 @@
 #include "game/objects/general/body_part.h"
 #include "game/objects/general/door.h"
 #include "game/objects/general/final_level_counter.h"
-#include "game/objects/general/switch.h"
+#include "game/objects/general/keyhole.h"
 #include "game/objects/traps/ember_emitter.h"
 #include "game/objects/traps/flame_emitter.h"
 #include "game/objects/vehicles/boat.h"
@@ -963,10 +963,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00418500, Bartoli_Control);
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
-    INJECT(enable, 0x004382F0, Switch_Collision);
-    INJECT(enable, 0x00438500, Switch_CollisionUW);
-    INJECT(enable, 0x00438D40, Switch_Control);
-    INJECT(enable, 0x00438D80, Switch_Trigger);
+    INJECT(enable, 0x00438840, Keyhole_Collision);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);

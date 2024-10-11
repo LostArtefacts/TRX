@@ -93,6 +93,7 @@ sources = [
   'game/items.c',
   'game/objects/common.c',
   'game/objects/names.c',
+  'game/objects/vars.c',
   'game/ui/common.c',
   'game/ui/events.c',
   'game/ui/widgets/console.c',

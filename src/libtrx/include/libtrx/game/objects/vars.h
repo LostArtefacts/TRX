@@ -11,3 +11,4 @@ extern const GAME_OBJECT_ID g_NullObjects[];
 extern const GAME_OBJECT_ID g_InvObjects[];
 
 extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];
+extern const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[];

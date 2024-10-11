@@ -3597,7 +3597,7 @@ typedef enum {
 0x004382F0  0x020A  +       void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438500  0x00FC  +       void __cdecl Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438600  0x023B  -R      void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x00438840  0x0223  -R      void __cdecl KeyHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+0x00438840  0x0223  +       void __cdecl Keyhole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438A80  0x0294  -R      void __cdecl PuzzleHoleCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00438D40  0x0039  +       void __cdecl Switch_Control(int16_t item_num);
 0x00438D80  0x00BD  +       int32_t __cdecl Switch_Trigger(int16_t item_num, int16_t timer);
@@ -4696,7 +4696,10 @@ typedef enum {
 0x00464150  +       BITE g_DragonMouth;
 0x00466058  -       int16_t g_SwitchBounds[];
 0x004660A0  -       int16_t g_SwitchBoundsUW[];
+0x004660C8  -       int16_t g_KeyholeBounds[];
 0x00466070  -       XYZ_32 g_SmallSwitchPosition;
 0x00466080  -       XYZ_32 g_PushSwitchPosition;
 0x00466090  -       XYZ_32 g_AirlockPosition;
 0x004660B8  -       XYZ_32 g_SwitchUWPosition;
+0x004660E0  -       XYZ_32 g_KeyholePosition;
+0x004D7C58  -       XYZ_32 g_PickupPosition;
