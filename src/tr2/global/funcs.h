@@ -163,7 +163,6 @@
 #define WinstonControl ((void __cdecl (*)(int16_t item_num))0x00437CF0)
 #define PickUpCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x00437E70)
 #define DetonatorCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x00438600)
-#define KeyHoleCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x00438840)
 #define PuzzleHoleCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x00438A80)
 #define KeyTrigger ((int32_t __cdecl (*)(int16_t item_num))0x00438E40)
 #define PickupTrigger ((int32_t __cdecl (*)(int16_t item_num))0x00438E80)
