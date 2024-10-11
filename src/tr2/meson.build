@@ -143,6 +143,7 @@ dll_sources = [
   'game/objects/general/door.c',
   'game/objects/general/final_level_counter.c',
   'game/objects/general/keyhole.c',
+  'game/objects/general/puzzle_hole.c',
   'game/objects/general/switch.c',
   'game/objects/traps/ember_emitter.c',
   'game/objects/traps/flame_emitter.c',

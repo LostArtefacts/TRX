@@ -48,6 +48,7 @@
 #include "game/objects/general/door.h"
 #include "game/objects/general/final_level_counter.h"
 #include "game/objects/general/keyhole.h"
+#include "game/objects/general/puzzle_hole.h"
 #include "game/objects/general/switch.h"
 #include "game/objects/traps/ember_emitter.h"
 #include "game/objects/traps/flame_emitter.h"
@@ -969,6 +970,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00438D40, Switch_Control);
     INJECT(enable, 0x00438D80, Switch_Trigger);
     INJECT(enable, 0x00438840, Keyhole_Collision);
+    INJECT(enable, 0x00438A80, PuzzleHole_Collision);
     INJECT(enable, 0x00438E40, Keyhole_Trigger);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);

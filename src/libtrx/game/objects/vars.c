@@ -16,3 +16,13 @@ const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[] = {
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
 };
+
+const GAME_OBJECT_PAIR g_ReceptacleToReceptacleDoneMap[] = {
+    // clang-format off
+    { O_PUZZLE_HOLE_1, O_PUZZLE_DONE_1 },
+    { O_PUZZLE_HOLE_2, O_PUZZLE_DONE_2 },
+    { O_PUZZLE_HOLE_3, O_PUZZLE_DONE_3 },
+    { O_PUZZLE_HOLE_4, O_PUZZLE_DONE_4 },
+    { NO_OBJECT, NO_OBJECT },
+    // clang-format on
+};
