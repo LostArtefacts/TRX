@@ -87,6 +87,8 @@
 #define g_SwitchUWPosition (*(XYZ_32*)0x004660B8)
 #define g_KeyholeBounds (*(int16_t(*)[])0x004660C8)
 #define g_KeyholePosition (*(XYZ_32*)0x004660E0)
+#define g_PuzzleHoleBounds (*(int16_t(*)[])0x004660F0)
+#define g_PuzzleHolePosition (*(XYZ_32*)0x00466108)
 #define g_TextSpacing (*(int8_t(*)[80])0x00466290)
 #define g_TextASCIIMap (*(int8_t(*)[])0x004662E0)
 #define g_BGND_PaletteIndex (*(int32_t*)0x00466400) // = -1
