@@ -85,3 +85,13 @@ void __cdecl Keyhole_Collision(
         M_Refuse(lara_item);
     }
 }
+
+int32_t __cdecl Keyhole_Trigger(const int16_t item_num)
+{
+    ITEM *const item = &g_Items[item_num];
+    if (item->status != IS_ACTIVE || g_Lara.gun_status == LGS_HANDS_BUSY) {
+        return false;
+    }
+    item->status = IS_DEACTIVATED;
+    return true;
+}
