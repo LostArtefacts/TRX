@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5.1...develop) - ××××-××-××
+
+## [4.5.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.5...tr1-4.5.1) - 2024-10-14
 - fixed mac builds missing embedded resources (#1710, regression from 4.5)
 
 ## [4.5](https://github.com/LostArtefacts/TRX/compare/tr1-4.4...tr1-4.5) - 2024-10-08
