@@ -184,3 +184,14 @@ void __cdecl Pickup_Collision(
         M_DoUnderwater(item_num, lara_item);
     }
 }
+
+int32_t Pickup_Trigger(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status != IS_INVISIBLE) {
+        return false;
+    }
+
+    item->status = IS_DEACTIVATED;
+    return true;
+}

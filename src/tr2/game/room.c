@@ -8,6 +8,7 @@
 #include "game/math.h"
 #include "game/music.h"
 #include "game/objects/general/keyhole.h"
+#include "game/objects/general/pickup.h"
 #include "game/objects/general/switch.h"
 #include "game/shell.h"
 #include "global/const.h"
@@ -434,7 +435,7 @@ void __cdecl Room_TestTriggers(const int16_t *fd, bool heavy)
 
         case TT_PICKUP: {
             const int16_t value = TRIGGER_VALUE(*fd++);
-            if (!PickupTrigger(value)) {
+            if (!Pickup_Trigger(value)) {
                 return;
             }
             break;

@@ -3602,7 +3602,7 @@ typedef enum {
 0x00438D40  0x0039  +       void __cdecl Switch_Control(int16_t item_num);
 0x00438D80  0x00BD  +       int32_t __cdecl Switch_Trigger(int16_t item_num, int16_t timer);
 0x00438E40  0x003D  +       int32_t __cdecl Keyhole_Trigger(int16_t item_num);
-0x00438E80  0x0033  -R      int32_t __cdecl PickupTrigger(int16_t item_num);
+0x00438E80  0x0033  +       int32_t __cdecl Pickup_Trigger(int16_t item_num);
 0x00438EC0  0x0023  -R      void __cdecl SecretControl(int16_t item_num);
 
 # game/rat.c

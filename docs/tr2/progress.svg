@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.30% (771)</tspan> · <tspan class="known">34.24% (417)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.38% (772)</tspan> · <tspan class="known">34.15% (416)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="472.85" height="6" x="0" y="0" class="decompiled"/>
-<rect width="255.75" height="6" x="472.85" y="0" class="known"/>
+<rect width="473.47" height="6" x="0" y="0" class="decompiled"/>
+<rect width="255.13" height="6" x="473.47" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -755,7 +755,7 @@
 <rect width="12" height="12" x="390" y="195" class="decompiled"><title>void __cdecl Switch_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="405" y="195" class="decompiled"><title>int32_t __cdecl Switch_Trigger(int16_t item_num, int16_t timer);</title></rect>
 <rect width="12" height="12" x="420" y="195" class="decompiled"><title>int32_t __cdecl Keyhole_Trigger(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="435" y="195" class="known"><title>int32_t __cdecl PickupTrigger(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="435" y="195" class="decompiled"><title>int32_t __cdecl Pickup_Trigger(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="450" y="195" class="known"><title>void __cdecl SecretControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="465" y="195" class="known"><title>void __cdecl MouseControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="480" y="195" class="known"><title>void __cdecl InitialiseStartInfo(void);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.54%</tspan> · <tspan class="known">32.14%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.55%</tspan> · <tspan class="known">32.12%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="504.50" height="6" x="0" y="0" class="decompiled"/>
-<rect width="240.06" height="6" x="504.50" y="0" class="known"/>
+<rect width="504.61" height="6" x="0" y="0" class="decompiled"/>
+<rect width="239.95" height="6" x="504.61" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2265,7 +2265,7 @@
 <rect width="3.73" height="3.29" x="716.36" y="296.78" class="decompiled"><title>void __cdecl Lara_Col_HangLeft(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.73" height="3.29" x="723.09" y="296.78" class="decompiled"><title>void __cdecl Lara_Col_HangRight(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.73" height="3.29" x="729.82" y="296.78" class="decompiled"><title>void __cdecl Gun_Rifle_DrawMeshes(LARA_GUN_TYPE weapon_type);</title></rect>
-<rect width="3.73" height="3.29" x="736.55" y="296.78" class="known"><title>int32_t __cdecl PickupTrigger(int16_t item_num);</title></rect>
+<rect width="3.73" height="3.29" x="736.55" y="296.78" class="decompiled"><title>int32_t __cdecl Pickup_Trigger(int16_t item_num);</title></rect>
 <rect width="3.73" height="3.29" x="743.27" y="296.78" class="decompiled"><title>void __cdecl DDrawRelease(void);</title></rect>
 <rect width="3.62" height="3.39" x="668.88" y="303.07" class="decompiled"><title>void __cdecl Matrix_PushUnit(void);</title></rect>
 <rect width="3.62" height="3.26" x="668.88" y="309.46" class="decompiled"><title>const int16_t *__cdecl Output_CalcSkyboxLight(const int16_t *obj_ptr);</title></rect>
