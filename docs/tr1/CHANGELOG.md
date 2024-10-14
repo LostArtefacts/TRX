@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5...develop) - ××××-××-××
+- fixed mac builds missing embedded resources (#1710, regression from 4.5)
 
 ## [4.5](https://github.com/LostArtefacts/TRX/compare/tr1-4.4...tr1-4.5) - 2024-10-08
 - added a photo mode feature (#1669)
