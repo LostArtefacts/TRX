@@ -19,10 +19,10 @@ static void M_MarkDone(ITEM *puzzle_hole_item);
 
 static void M_Refuse(const ITEM *const lara_item)
 {
-    if (lara_item->pos.x != g_PickupPosition.x
-        || lara_item->pos.y != g_PickupPosition.y
-        || lara_item->pos.z != g_PickupPosition.z) {
-        g_PickupPosition = lara_item->pos;
+    if (lara_item->pos.x != g_InteractPosition.x
+        || lara_item->pos.y != g_InteractPosition.y
+        || lara_item->pos.z != g_InteractPosition.z) {
+        g_InteractPosition = lara_item->pos;
         Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
     }
 }
@@ -40,7 +40,7 @@ static void M_Consume(
     lara_item->goal_anim_state = LS_STOP;
     g_Lara.gun_status = LGS_HANDS_BUSY;
     puzzle_hole_item->status = IS_ACTIVE;
-    g_PickupPosition = lara_item->pos;
+    g_InteractPosition = lara_item->pos;
 }
 
 static void M_MarkDone(ITEM *const puzzle_hole_item)
@@ -90,7 +90,7 @@ void __cdecl PuzzleHole_Collision(
         }
     }
     if (g_Inv_Chosen != NO_OBJECT) {
-        g_PickupPosition.y = lara_item->pos.y - 1;
+        g_InteractPosition.y = lara_item->pos.y - 1;
     }
 
     const GAME_OBJECT_ID puzzle_object_id =

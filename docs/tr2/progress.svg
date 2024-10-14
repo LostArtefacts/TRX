@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.22% (770)</tspan> · <tspan class="known">34.32% (418)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.30% (771)</tspan> · <tspan class="known">34.24% (417)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="472.24" height="6" x="0" y="0" class="decompiled"/>
-<rect width="256.36" height="6" x="472.24" y="0" class="known"/>
+<rect width="472.85" height="6" x="0" y="0" class="decompiled"/>
+<rect width="255.75" height="6" x="472.85" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -746,7 +746,7 @@
 <rect width="12" height="12" x="255" y="195" class="known"><title>void __cdecl BanditControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="270" y="195" class="known"><title>void __cdecl Bandit2Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="285" y="195" class="known"><title>void __cdecl WinstonControl(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="300" y="195" class="known"><title>void __cdecl PickUpCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="300" y="195" class="decompiled"><title>void __cdecl Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="315" y="195" class="decompiled"><title>void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="330" y="195" class="decompiled"><title>void __cdecl Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="195" class="known"><title>void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.20%</tspan> · <tspan class="known">32.47%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.54%</tspan> · <tspan class="known">32.14%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="501.98" height="6" x="0" y="0" class="decompiled"/>
-<rect width="242.58" height="6" x="501.98" y="0" class="known"/>
+<rect width="504.50" height="6" x="0" y="0" class="decompiled"/>
+<rect width="240.06" height="6" x="504.50" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1352,7 +1352,7 @@
 <rect width="28.60" height="28.04" x="177.07" y="255.32" class="known"><title>int32_t __cdecl SkidooDynamics(ITEM *skidoo);</title></rect>
 <rect width="28.60" height="28.02" x="177.07" y="286.36" class="decompiled"><title>void __cdecl Option_Sound(INVENTORY_ITEM *item);</title></rect>
 <rect width="28.60" height="27.36" x="177.07" y="317.38" class="decompiled"><title>void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags);</title></rect>
-<rect width="28.60" height="27.26" x="177.07" y="347.74" class="known"><title>void __cdecl PickUpCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="28.60" height="27.26" x="177.07" y="347.74" class="decompiled"><title>void __cdecl Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="27.61" height="28.13" x="208.67" y="0" class="decompiled"><title>int32_t __cdecl GF_InterpretSequence(int16_t *ptr, GAMEFLOW_LEVEL_TYPE type, int32_t seq_type);</title></rect>
 <rect width="27.61" height="27.18" x="208.67" y="31.13" class="decompiled"><title>TARGET_TYPE __cdecl Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot);</title></rect>
 <rect width="27.61" height="26.61" x="208.67" y="61.31" class="decompiled"><title>void __cdecl Output_InsertGT4_ZBuffered(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_VBUF *vtx3, const PHD_TEXTURE *texture);</title></rect>

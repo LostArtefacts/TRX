@@ -16,14 +16,14 @@ static void M_Refuse(const ITEM *lara_item);
 
 static void M_Refuse(const ITEM *const lara_item)
 {
-    if (lara_item->pos.x == g_PickupPosition.x
-        && lara_item->pos.y == g_PickupPosition.y
-        && lara_item->pos.z == g_PickupPosition.z) {
+    if (lara_item->pos.x == g_InteractPosition.x
+        && lara_item->pos.y == g_InteractPosition.y
+        && lara_item->pos.z == g_InteractPosition.z) {
         return;
     }
 
     Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_NORMAL);
-    g_PickupPosition = lara_item->pos;
+    g_InteractPosition = lara_item->pos;
 }
 
 static void M_Consume(
@@ -39,7 +39,7 @@ static void M_Consume(
     lara_item->goal_anim_state = LS_STOP;
     g_Lara.gun_status = LGS_HANDS_BUSY;
     keyhole_item->status = IS_ACTIVE;
-    g_PickupPosition = lara_item->pos;
+    g_InteractPosition = lara_item->pos;
 }
 
 void __cdecl Keyhole_Collision(
@@ -71,7 +71,7 @@ void __cdecl Keyhole_Collision(
         }
     }
     if (g_Inv_Chosen != NO_OBJECT) {
-        g_PickupPosition.y = lara_item->pos.y - 1;
+        g_InteractPosition.y = lara_item->pos.y - 1;
     }
 
     const GAME_OBJECT_ID key_object_id =
