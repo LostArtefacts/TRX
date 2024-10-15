@@ -114,7 +114,6 @@
 #define MiniCopterControl ((void __cdecl (*)(int16_t item_num))0x00434610)
 #define InitialiseDyingMonk ((void __cdecl (*)(int16_t item_num))0x004346F0)
 #define DyingMonk ((void __cdecl (*)(int16_t item_num))0x00434770)
-#define ControlGongBonger ((void __cdecl (*)(int16_t item_num))0x00434800)
 #define DeathSlideCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x004348C0)
 #define ControlDeathSlide ((void __cdecl (*)(int16_t item_num))0x00434980)
 #define BigBowlControl ((void __cdecl (*)(int16_t item_num))0x00434C10)

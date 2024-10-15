@@ -3541,7 +3541,7 @@ typedef enum {
 0x00434610  0x00D9  -R      void __cdecl MiniCopterControl(int16_t item_num);
 0x004346F0  0x007C  -R      void __cdecl InitialiseDyingMonk(int16_t item_num);
 0x00434770  0x0087  -R      void __cdecl DyingMonk(int16_t item_num);
-0x00434800  0x00BD  -R      void __cdecl ControlGongBonger(int16_t item_num);
+0x00434800  0x00BD  +       void __cdecl GongBonger_Control(int16_t item_num);
 0x004348C0  0x00BF  -R      void __cdecl DeathSlideCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00434980  0x028F  -R      void __cdecl ControlDeathSlide(int16_t item_num);
 0x00434C10  0x00E3  -R      void __cdecl BigBowlControl(int16_t item_num);

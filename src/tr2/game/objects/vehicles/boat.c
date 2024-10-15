@@ -642,8 +642,8 @@ void __cdecl Boat_Control(const int16_t item_num)
     const int32_t ceiling =
         Room_GetCeiling(sector, boat->pos.x, boat->pos.y, boat->pos.z);
     if (g_Lara.skidoo == item_num) {
-        Room_TestTriggers(g_TriggerIndex, 0);
-        Room_TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, false);
+        Room_TestTriggers(g_TriggerIndex, true);
     }
 
     const int32_t water_height =

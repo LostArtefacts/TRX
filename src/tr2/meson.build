@@ -143,6 +143,7 @@ dll_sources = [
   'game/objects/general/detonator.c',
   'game/objects/general/door.c',
   'game/objects/general/final_level_counter.c',
+  'game/objects/general/gong_bonger.c',
   'game/objects/general/keyhole.c',
   'game/objects/general/pickup.c',
   'game/objects/general/puzzle_hole.c',

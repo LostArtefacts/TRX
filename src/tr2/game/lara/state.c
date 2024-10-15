@@ -775,7 +775,7 @@ void __cdecl Lara_State_Extra_PullDagger(ITEM *item, COLL_INFO *coll)
         const SECTOR *sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        Room_TestTriggers(g_TriggerIndex, 1);
+        Room_TestTriggers(g_TriggerIndex, true);
     }
 }
 
@@ -785,7 +785,7 @@ void __cdecl Lara_State_Extra_StartAnim(ITEM *item, COLL_INFO *coll)
     const SECTOR *sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    Room_TestTriggers(g_TriggerIndex, 0);
+    Room_TestTriggers(g_TriggerIndex, false);
 }
 
 void __cdecl Lara_State_Extra_StartHouse(ITEM *item, COLL_INFO *coll)

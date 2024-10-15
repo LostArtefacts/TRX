@@ -804,7 +804,7 @@ int32_t __cdecl Lara_LandedBad(ITEM *item, COLL_INFO *coll)
     item->pos.y = height;
     item->floor = height;
 
-    Room_TestTriggers(g_TriggerIndex, 0);
+    Room_TestTriggers(g_TriggerIndex, false);
     int32_t land_speed = item->fall_speed - DAMAGE_START;
     item->pos.y = y;
     if (land_speed <= 0) {

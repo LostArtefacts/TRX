@@ -48,6 +48,7 @@
 #include "game/objects/general/detonator.h"
 #include "game/objects/general/door.h"
 #include "game/objects/general/final_level_counter.h"
+#include "game/objects/general/gong_bonger.h"
 #include "game/objects/general/keyhole.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
@@ -967,6 +968,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00418500, Bartoli_Control);
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
+    INJECT(enable, 0x00434800, GongBonger_Control);
     INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);
