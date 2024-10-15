@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.63% (775)</tspan> · <tspan class="known">33.91% (413)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.71% (776)</tspan> · <tspan class="known">33.83% (412)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="475.31" height="6" x="0" y="0" class="decompiled"/>
-<rect width="253.29" height="6" x="475.31" y="0" class="known"/>
+<rect width="475.92" height="6" x="0" y="0" class="decompiled"/>
+<rect width="252.68" height="6" x="475.92" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -291,8 +291,8 @@
 <rect width="12" height="12" x="180" y="60" class="decompiled"><title>void __cdecl Room_DrawSingleRoomGeometry(int16_t room_num);</title></rect>
 <rect width="12" height="12" x="195" y="60" class="decompiled"><title>void __cdecl Room_DrawSingleRoomObjects(int16_t room_num);</title></rect>
 <rect width="12" height="12" x="210" y="60" class="decompiled"><title>void __cdecl Effect_Draw(int16_t fx_num);</title></rect>
-<rect width="12" height="12" x="225" y="60" class="known"><title>void __cdecl Object_DrawSpriteItem(ITEM *item);</title></rect>
-<rect width="12" height="12" x="240" y="60" class="known"><title>void __cdecl Object_DrawAnimatingItem(ITEM *item);</title></rect>
+<rect width="12" height="12" x="225" y="60" class="known"><title>void __cdecl Object_DrawSpriteItem(const ITEM *item);</title></rect>
+<rect width="12" height="12" x="240" y="60" class="known"><title>void __cdecl Object_DrawAnimatingItem(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="255" y="60" class="decompiled"><title>void __cdecl Lara_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="270" y="60" class="decompiled"><title>void __cdecl Lara_Draw_I(const ITEM *item, const FRAME_INFO *frame1, const FRAME_INFO *frame2, int32_t frac, int32_t rate);</title></rect>
 <rect width="12" height="12" x="285" y="60" class="decompiled"><title>void __cdecl Matrix_InitInterpolate(int32_t frac, int32_t rate);</title></rect>
@@ -769,10 +769,10 @@
 <rect width="12" height="12" x="600" y="195" class="decompiled"><title>int32_t __cdecl Level_Initialise(int32_t level_num, int32_t level_type);</title></rect>
 <rect width="12" height="12" x="615" y="195" class="known"><title>void __cdecl InitialiseGameFlags(void);</title></rect>
 <rect width="12" height="12" x="630" y="195" class="known"><title>void __cdecl InitialiseLevelFlags(void);</title></rect>
-<rect width="12" height="12" x="645" y="195" class="known"><title>void __cdecl BaddyObjects(void);</title></rect>
-<rect width="12" height="12" x="660" y="195" class="known"><title>void __cdecl TrapObjects(void);</title></rect>
-<rect width="12" height="12" x="675" y="195" class="known"><title>void __cdecl ObjectObjects(void);</title></rect>
-<rect width="12" height="12" x="690" y="195" class="known"><title>void __cdecl InitialiseObjects(void);</title></rect>
+<rect width="12" height="12" x="645" y="195" class="known"><title>void __cdecl Object_SetupBaddyObjects(void);</title></rect>
+<rect width="12" height="12" x="660" y="195" class="known"><title>void __cdecl Object_SetupTrapObjects(void);</title></rect>
+<rect width="12" height="12" x="675" y="195" class="known"><title>void __cdecl Object_SetupGeneralObjects(void);</title></rect>
+<rect width="12" height="12" x="690" y="195" class="decompiled"><title>void __cdecl Object_SetupAllObjects(void);</title></rect>
 <rect width="12" height="12" x="705" y="195" class="known"><title>void __cdecl GetCarriedItems(void);</title></rect>
 <rect width="12" height="12" x="720" y="195" class="known"><title>void __cdecl JellyControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="735" y="195" class="known"><title>void __cdecl BaracuddaControl(int16_t item_num);</title></rect>
@@ -1298,20 +1298,20 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.82%</tspan> · <tspan class="known">31.86%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.85%</tspan> · <tspan class="known">31.83%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="506.58" height="6" x="0" y="0" class="decompiled"/>
-<rect width="237.98" height="6" x="506.58" y="0" class="known"/>
+<rect width="506.81" height="6" x="0" y="0" class="decompiled"/>
+<rect width="237.75" height="6" x="506.81" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
 <rect width="58" height="69.33" x="0" y="0" class="decompiled"><title>void __cdecl Output_WGTMapPersp32FP(int32_t y1, int32_t y2, uint8_t *tex_page);</title></rect>
 <rect width="58" height="58.37" x="0" y="72.33" class="decompiled"><title>int32_t __cdecl Inv_Display(int32_t inventory_mode);</title></rect>
-<rect width="58" height="53.54" x="0" y="133.70" class="known"><title>void __cdecl BaddyObjects(void);</title></rect>
+<rect width="58" height="53.54" x="0" y="133.70" class="known"><title>void __cdecl Object_SetupBaddyObjects(void);</title></rect>
 <rect width="58" height="51.94" x="0" y="190.24" class="decompiled"><title>void __cdecl Output_GTMapPersp32FP(int32_t y1, int32_t y2, uint8_t *tex_page);</title></rect>
 <rect width="58" height="42.31" x="0" y="245.18" class="decompiled"><title>void __cdecl Lara_Draw(const ITEM *item);</title></rect>
 <rect width="58" height="41.67" x="0" y="290.49" class="decompiled"><title>void __cdecl GF_ModifyInventory(int32_t level, int32_t type);</title></rect>
-<rect width="58" height="39.83" x="0" y="335.17" class="known"><title>void __cdecl ObjectObjects(void);</title></rect>
+<rect width="58" height="39.83" x="0" y="335.17" class="known"><title>void __cdecl Object_SetupGeneralObjects(void);</title></rect>
 <rect width="40.17" height="54.95" x="61" y="0" class="decompiled"><title>void __cdecl Lara_Draw_I(const ITEM *item, const FRAME_INFO *frame1, const FRAME_INFO *frame2, int32_t frac, int32_t rate);</title></rect>
 <rect width="40.17" height="49.99" x="61" y="57.95" class="decompiled"><title>bool __cdecl Input_Update(void);</title></rect>
 <rect width="40.17" height="47.99" x="61" y="110.94" class="decompiled"><title>const int16_t *__cdecl Output_InsertObjectGT4(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type);</title></rect>
@@ -1332,7 +1332,7 @@
 <rect width="35.22" height="31.93" x="104.17" y="343.07" class="decompiled"><title>void __cdecl Option_Passport(INVENTORY_ITEM *item);</title></rect>
 <rect width="31.68" height="35.34" x="142.39" y="0" class="decompiled"><title>void __cdecl Output_InsertGT3_ZBuffered(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_TEXTURE *texture, const PHD_UV *uv0, const PHD_UV *uv1, const PHD_UV *uv2);</title></rect>
 <rect width="31.68" height="34.77" x="142.39" y="38.34" class="decompiled"><title>void __cdecl Boat_Control(int16_t item_num);</title></rect>
-<rect width="31.68" height="33.69" x="142.39" y="76.11" class="known"><title>void __cdecl TrapObjects(void);</title></rect>
+<rect width="31.68" height="33.69" x="142.39" y="76.11" class="known"><title>void __cdecl Object_SetupTrapObjects(void);</title></rect>
 <rect width="31.68" height="33.31" x="142.39" y="112.80" class="known"><title>void __cdecl YetiControl(int16_t item_num);</title></rect>
 <rect width="31.68" height="32.16" x="142.39" y="149.10" class="known"><title>void __cdecl Worker3Control(int16_t item_num);</title></rect>
 <rect width="31.68" height="31.08" x="142.39" y="184.26" class="known"><title>void __cdecl XianLordControl(int16_t item_num);</title></rect>
@@ -1387,7 +1387,7 @@
 <rect width="24.49" height="24.23" x="267.09" y="137.73" class="decompiled"><title>int32_t __cdecl Effect_ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage);</title></rect>
 <rect width="24.49" height="24.02" x="267.09" y="164.97" class="decompiled"><title>void __cdecl Room_SetBounds(const int16_t *objptr, int32_t room_num, ROOM *parent);</title></rect>
 <rect width="24.49" height="23.99" x="267.09" y="191.99" class="decompiled"><title>void __cdecl Gun_Rifle_Animate(LARA_GUN_TYPE weapon_type);</title></rect>
-<rect width="24.49" height="23.81" x="267.09" y="218.98" class="known"><title>void __cdecl Object_DrawAnimatingItem(ITEM *item);</title></rect>
+<rect width="24.49" height="23.81" x="267.09" y="218.98" class="known"><title>void __cdecl Object_DrawAnimatingItem(const ITEM *item);</title></rect>
 <rect width="24.49" height="23.69" x="267.09" y="245.79" class="decompiled"><title>void __cdecl WinVidStart(void);</title></rect>
 <rect width="24.49" height="23.63" x="267.09" y="272.48" class="decompiled"><title>void __cdecl Camera_Move(const GAME_VECTOR *target, int32_t speed);</title></rect>
 <rect width="24.49" height="23.45" x="267.09" y="299.11" class="decompiled"><title>void __cdecl Lara_InitialiseInventory(int32_t level_num);</title></rect>
@@ -1920,7 +1920,7 @@
 <rect width="7.84" height="7.19" x="632.98" y="196.57" class="decompiled"><title>bool __cdecl Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);</title></rect>
 <rect width="7.76" height="7.19" x="643.82" y="196.57" class="decompiled"><title>void __cdecl Lara_State_Back(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.76" height="7.19" x="654.58" y="196.57" class="decompiled"><title>bool __cdecl Music_PlaySynced(int32_t track_id);</title></rect>
-<rect width="7.67" height="7.19" x="665.33" y="196.57" class="known"><title>void __cdecl Object_DrawSpriteItem(ITEM *item);</title></rect>
+<rect width="7.67" height="7.19" x="665.33" y="196.57" class="known"><title>void __cdecl Object_DrawSpriteItem(const ITEM *item);</title></rect>
 <rect width="7.67" height="7.19" x="676.01" y="196.57" class="decompiled"><title>void __cdecl Lara_Col_Fallback(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.59" height="7.19" x="686.68" y="196.57" class="known"><title>void __cdecl ControlBlood1(int16_t fx_num);</title></rect>
 <rect width="7.59" height="7.19" x="697.28" y="196.57" class="decompiled"><title>void __cdecl Requester_Init(REQUEST_INFO *req);</title></rect>
@@ -2004,7 +2004,7 @@
 <rect width="6.36" height="6.22" x="675.18" y="226.42" class="decompiled"><title>void __cdecl Sound_UpdateEffects(void);</title></rect>
 <rect width="6.36" height="6.22" x="684.55" y="226.42" class="known"><title>void __cdecl ControlClockChimes(int16_t item_num);</title></rect>
 <rect width="6.36" height="6.22" x="693.91" y="226.42" class="decompiled"><title>void __cdecl Lara_Col_Death(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="6.36" height="6.22" x="703.27" y="226.42" class="known"><title>void __cdecl InitialiseObjects(void);</title></rect>
+<rect width="6.36" height="6.22" x="703.27" y="226.42" class="decompiled"><title>void __cdecl Object_SetupAllObjects(void);</title></rect>
 <rect width="6.36" height="6.22" x="712.64" y="226.42" class="unused"><title>sub_4470F0</title></rect>
 <rect width="6.36" height="6.22" x="722" y="226.42" class="unused"><title>sub_447AC0</title></rect>
 <rect width="6.36" height="6.22" x="731.36" y="226.42" class="known"><title>void __cdecl SE_ControlsDlgUpdate(HWND hwndDlg);</title></rect>

@@ -3088,8 +3088,8 @@ typedef enum {
 0x004195B0  0x00B4  +       void __cdecl Room_DrawSingleRoomGeometry(int16_t room_num);
 0x00419670  0x0218  +       void __cdecl Room_DrawSingleRoomObjects(int16_t room_num);
 0x00419890  0x0147  +       void __cdecl Effect_Draw(int16_t fx_num);
-0x004199E0  0x0083  -       void __cdecl Object_DrawSpriteItem(ITEM *item);
-0x00419A70  0x0378  -       void __cdecl Object_DrawAnimatingItem(ITEM *item);
+0x004199E0  0x0083  -       void __cdecl Object_DrawSpriteItem(const ITEM *item);
+0x00419A70  0x0378  -       void __cdecl Object_DrawAnimatingItem(const ITEM *item);
 0x00419DF0  0x0D02  +       void __cdecl Lara_Draw(const ITEM *item);
 0x0041AB20  0x0BC6  +       void __cdecl Lara_Draw_I(const ITEM *item, const FRAME_INFO *frame1, const FRAME_INFO *frame2, int32_t frac, int32_t rate);
 0x0041B710  0x0034  +       void __cdecl Matrix_InitInterpolate(int32_t frac, int32_t rate);
@@ -3622,10 +3622,10 @@ typedef enum {
 0x0043A280  0x015F  +       int32_t __cdecl Level_Initialise(int32_t level_num, int32_t level_type);
 0x0043A3E0  0x0061  -R      void __cdecl InitialiseGameFlags(void);
 0x0043A450  0x0027  -R      void __cdecl InitialiseLevelFlags(void);
-0x0043A480  0x103B  -R      void __cdecl BaddyObjects(void);
-0x0043B4C0  0x05FD  -R      void __cdecl TrapObjects(void);
-0x0043BAC0  0x0C4C  -R      void __cdecl ObjectObjects(void);
-0x0043C710  0x0068  -R      void __cdecl InitialiseObjects(void);
+0x0043A480  0x103B  -       void __cdecl Object_SetupBaddyObjects(void);
+0x0043B4C0  0x05FD  -       void __cdecl Object_SetupTrapObjects(void);
+0x0043BAC0  0x0C4C  -       void __cdecl Object_SetupGeneralObjects(void);
+0x0043C710  0x0068  +       void __cdecl Object_SetupAllObjects(void);
 0x0043C780  0x00CE  -R      void __cdecl GetCarriedItems(void);
 
 # game/shark.c

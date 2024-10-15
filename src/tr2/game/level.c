@@ -2,6 +2,7 @@
 
 #include "game/hwr.h"
 #include "game/items.h"
+#include "game/objects/setup.h"
 #include "game/shell.h"
 #include "global/const.h"
 #include "global/funcs.h"
@@ -894,7 +895,8 @@ bool __cdecl Level_Load(const char *const file_name, const int32_t level_num)
     Memory_FreePointer(&frame_pointers);
 
     M_LoadObjects(file);
-    InitialiseObjects();
+    Object_SetupAllObjects();
+
     M_LoadStaticObjects(file);
     M_LoadTextures(file);
 
