@@ -31,7 +31,7 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
-static ITEM *M_GetCarrier(int16_t item_num)
+static ITEM *M_GetCarrier(const int16_t item_num)
 {
     if (item_num < 0 || item_num >= g_LevelItemCount) {
         return NULL;
@@ -52,7 +52,7 @@ static ITEM *M_GetCarrier(int16_t item_num)
     return item;
 }
 
-static void M_AnimateDrop(CARRIED_ITEM *item)
+static void M_AnimateDrop(CARRIED_ITEM *const item)
 {
     if (item->status != DS_FALLING) {
         return;
@@ -95,16 +95,16 @@ static void M_AnimateDrop(CARRIED_ITEM *item)
     item->fall_speed = pickup->fall_speed;
 }
 
-void Carrier_InitialiseLevel(int32_t level_num)
+void Carrier_InitialiseLevel(const int32_t level_num)
 {
     m_AnimatingCount = 0;
 
     int32_t total_item_count = g_LevelItemCount;
-    GAMEFLOW_LEVEL level = g_GameFlow.levels[level_num];
+    const GAMEFLOW_LEVEL level = g_GameFlow.levels[level_num];
     for (int i = 0; i < level.item_drops.count; i++) {
-        GAMEFLOW_DROP_ITEM_DATA *data = &level.item_drops.data[i];
+        const GAMEFLOW_DROP_ITEM_DATA *const data = &level.item_drops.data[i];
 
-        ITEM *item = M_GetCarrier(data->enemy_num);
+        ITEM *const item = M_GetCarrier(data->enemy_num);
         if (!item) {
             LOG_WARNING("%d does not refer to a loaded item", data->enemy_num);
             continue;
@@ -156,14 +156,14 @@ void Carrier_InitialiseLevel(int32_t level_num)
     }
 }
 
-int32_t Carrier_GetItemCount(int16_t item_num)
+int32_t Carrier_GetItemCount(const int16_t item_num)
 {
-    ITEM *carrier = M_GetCarrier(item_num);
+    const ITEM *const carrier = M_GetCarrier(item_num);
     if (!carrier) {
         return 0;
     }
 
-    CARRIED_ITEM *item = carrier->carried_item;
+    const CARRIED_ITEM *item = carrier->carried_item;
     int32_t count = 0;
     while (item) {
         if (item->object_id != NO_OBJECT) {
@@ -180,7 +180,7 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
     // This allows us to save drops as still being carried to allow accurate
     // placement again in Carrier_TestItemDrops on load.
     if (item->status == DS_DROPPED) {
-        ITEM *pickup = &g_Items[item->spawn_num];
+        const ITEM *const pickup = &g_Items[item->spawn_num];
         return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_CARRIED;
     } else if (item->status == DS_FALLING) {
         return DS_CARRIED;
@@ -191,7 +191,7 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
 
 void Carrier_TestItemDrops(int16_t item_num)
 {
-    ITEM *carrier = &g_Items[item_num];
+    const ITEM *const carrier = &g_Items[item_num];
     CARRIED_ITEM *item = carrier->carried_item;
     if (carrier->hit_points > 0 || !item
         || (carrier->object_id == O_PIERRE
@@ -220,7 +220,7 @@ void Carrier_TestItemDrops(int16_t item_num)
 
         if (item->room_num != NO_ROOM) {
             // Handle reloading a save with a falling or landed item.
-            ITEM *pickup = &g_Items[item->spawn_num];
+            ITEM *const pickup = &g_Items[item->spawn_num];
             pickup->pos = item->pos;
             pickup->fall_speed = item->fall_speed;
             if (pickup->room_num != item->room_num) {
@@ -231,9 +231,9 @@ void Carrier_TestItemDrops(int16_t item_num)
     } while ((item = item->next_item));
 }
 
-void Carrier_TestLegacyDrops(int16_t item_num)
+void Carrier_TestLegacyDrops(const int16_t item_num)
 {
-    ITEM *carrier = &g_Items[item_num];
+    const ITEM *const carrier = &g_Items[item_num];
     if (carrier->hit_points > 0) {
         return;
     }
@@ -242,7 +242,8 @@ void Carrier_TestLegacyDrops(int16_t item_num)
     // the OG enemy will still spawn items if Lara hasn't yet collected
     // them by using a test cognate in each case. Ensure also that
     // collected items do not re-spawn now or in future saves.
-    GAME_OBJECT_ID test_id = Object_GetCognate(carrier->object_id, m_LegacyMap);
+    const GAME_OBJECT_ID test_id =
+        Object_GetCognate(carrier->object_id, m_LegacyMap);
     if (test_id == NO_OBJECT) {
         return;
     }
@@ -267,7 +268,7 @@ void Carrier_AnimateDrops(void)
 
     // Make items that spawn in mid-air or water gracefully fall to the floor.
     for (int i = 0; i < g_LevelItemCount; i++) {
-        ITEM *carrier = &g_Items[i];
+        const ITEM *const carrier = &g_Items[i];
         CARRIED_ITEM *item = carrier->carried_item;
         while (item) {
             M_AnimateDrop(item);
