@@ -9,8 +9,10 @@
 #include "global/const.h"
 #include "global/types.h"
 #include "global/vars.h"
+#include "math/math_misc.h"
 
 #include <libtrx/log.h>
+#include <libtrx/vector.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -24,6 +26,8 @@ static int16_t m_AnimatingCount = 0;
 
 static ITEM *M_GetCarrier(int16_t item_num);
 static void M_AnimateDrop(CARRIED_ITEM *item);
+static void M_InitialiseDataDrops(void);
+static void M_InitialiseGameflowDrops(int32_t level_num);
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUM_ITEM },
@@ -96,10 +100,60 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
     item->fall_speed = pickup->fall_speed;
 }
 
-void Carrier_InitialiseLevel(const int32_t level_num)
+static void M_InitialiseDataDrops(void)
 {
-    m_AnimatingCount = 0;
+    VECTOR *const pickups = Vector_Create(sizeof(int16_t));
 
+    for (int32_t i = 0; i < g_LevelItemCount; i++) {
+        ITEM *const carrier = M_GetCarrier(i);
+        if (carrier == NULL
+            || !Object_IsObjectType(carrier->object_id, g_EnemyObjects)) {
+            continue;
+        }
+
+        const ROOM *const room = Room_Get(carrier->room_num);
+        int16_t pickup_num = room->item_num;
+        do {
+            ITEM *const pickup = Item_Get(pickup_num);
+            if (Object_IsObjectType(pickup->object_id, g_PickupObjects)
+                && XYZ_32_AreEquivalent(&pickup->pos, &carrier->pos)) {
+                Vector_Add(pickups, (void *)&pickup_num);
+                Item_RemoveDrawn(pickup_num);
+                pickup->room_num = NO_ROOM;
+            }
+
+            pickup_num = pickup->next_item;
+        } while (pickup_num != NO_ITEM);
+
+        if (pickups->count == 0) {
+            continue;
+        }
+
+        carrier->carried_item =
+            GameBuf_Alloc(sizeof(CARRIED_ITEM) * pickups->count, GBUF_ITEMS);
+        CARRIED_ITEM *drop = carrier->carried_item;
+        for (int32_t j = 0; j < pickups->count; j++) {
+            drop->spawn_num = *(const int16_t *)Vector_Get(pickups, j);
+            drop->room_num = NO_ROOM;
+            drop->fall_speed = 0;
+            drop->status = DS_CARRIED;
+
+            if (j < pickups->count - 1) {
+                drop->next_item = drop + 1;
+                drop++;
+            } else {
+                drop->next_item = NULL;
+            }
+        }
+
+        Vector_Clear(pickups);
+    }
+
+    Vector_Free(pickups);
+}
+
+static void M_InitialiseGameflowDrops(const int32_t level_num)
+{
     int32_t total_item_count = g_LevelItemCount;
     const GAMEFLOW_LEVEL level = g_GameFlow.levels[level_num];
     for (int32_t i = 0; i < level.item_drops.count; i++) {
@@ -157,6 +211,16 @@ void Carrier_InitialiseLevel(const int32_t level_num)
     }
 }
 
+void Carrier_InitialiseLevel(const int32_t level_num)
+{
+    m_AnimatingCount = 0;
+    if (g_GameFlow.enable_tr2_item_drops) {
+        M_InitialiseDataDrops();
+    } else {
+        M_InitialiseGameflowDrops(level_num);
+    }
+}
+
 int32_t Carrier_GetItemCount(const int16_t item_num)
 {
     const ITEM *const carrier = M_GetCarrier(item_num);
@@ -174,6 +238,14 @@ int32_t Carrier_GetItemCount(const int16_t item_num)
     }
 
     return count;
+}
+
+bool Carrier_IsItemCarried(const int16_t item_num)
+{
+    // This only applies to TR2-style drops; gameflow drop item numbers are not
+    // assigned until they are dropped, so this would always logically be false.
+    const ITEM *item = Item_Get(item_num);
+    return item->room_num == NO_ROOM;
 }
 
 DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
@@ -194,7 +266,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
 {
     const ITEM *const carrier = Item_Get(item_num);
     CARRIED_ITEM *item = carrier->carried_item;
-    if (carrier->hit_points > 0 || !item
+    if (carrier->hit_points > 0 || item == NULL
         || (carrier->object_id == O_PIERRE
             && !(carrier->flags & IF_ONE_SHOT))) {
         return;
@@ -215,7 +287,18 @@ void Carrier_TestItemDrops(const int16_t item_num)
             object_id = Object_GetCognate(object_id, g_GunAmmoObjectMap);
         }
 
-        item->spawn_num = Item_Spawn(carrier, object_id);
+        if (item->spawn_num == NO_ITEM) {
+            // This is a gameflow-defined drop, so a spawn number is required.
+            item->spawn_num = Item_Spawn(carrier, object_id);
+        } else {
+            // TR2-style item drops will already have a spawn number.
+            Item_NewRoom(item->spawn_num, carrier->room_num);
+            ITEM *const pickup = Item_Get(item->spawn_num);
+            pickup->pos = carrier->pos;
+            pickup->rot = carrier->rot;
+            pickup->status = IS_INACTIVE;
+        }
+
         item->status = DS_FALLING;
         m_AnimatingCount++;
 

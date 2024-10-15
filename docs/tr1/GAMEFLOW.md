@@ -111,6 +111,19 @@ various pieces of global behaviour.
   </tr>
   <tr valign="top">
     <td>
+      <a name="enable-tr2-item-drops"></a>
+      <code>enable_tr2_item_drops</code>
+    </td>
+    <td>Boolean</td>
+    <td>No</td>
+    <td>
+      Forces enemies who are placed in the same position as pickup items to
+      carry those items and drop them when killed, similar to TR2+. See
+      <a href="#item-drops">Item drops</a> for full details.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>force_game_modes</code>
     </td>
     <td>Optional Boolean</td>
@@ -997,10 +1010,15 @@ to allow the _majority_ of enemy types to carry and drop items. Note that this
 also means by default that the original enemies who did drop items will not do
 so unless the gameflow has been configured as such.
 
-Item drops are defined in the `item_drops` section of a level's definition by
-creating objects with the following parameter structure. You can define at most
-one entry per enemy, but that definition can have as many drop items as
-necessary (within the engine's overall item limit).
+Item drops can be defined in two ways. If `enable_tr2_item_drops` is `true`,
+then custom level builders can add items directly to the level file, setting
+their position to be the same as the enemies who should drop them.
+
+For the original levels, `enable_tr2_item_drops` is `false`. Item drops are
+instead defined in the `item_drops` section of a level's definition by creating
+objects with the following parameter structure. You can define at most one entry
+per enemy, but that definition can have as many drop items as necessary (within
+the engine's overall item limit).
 
 <details>
 <summary>Show example setup</summary>

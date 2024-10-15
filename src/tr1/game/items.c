@@ -228,14 +228,16 @@ void Item_NewRoom(int16_t item_num, int16_t room_num)
     ITEM *item = &g_Items[item_num];
     ROOM *r = &g_RoomInfo[item->room_num];
 
-    int16_t linknum = r->item_num;
-    if (linknum == item_num) {
-        r->item_num = item->next_item;
-    } else {
-        for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_item) {
-            if (g_Items[linknum].next_item == item_num) {
-                g_Items[linknum].next_item = item->next_item;
-                break;
+    if (item->room_num != NO_ROOM) {
+        int16_t linknum = r->item_num;
+        if (linknum == item_num) {
+            r->item_num = item->next_item;
+        } else {
+            for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_item) {
+                if (g_Items[linknum].next_item == item_num) {
+                    g_Items[linknum].next_item = item->next_item;
+                    break;
+                }
             }
         }
     }

@@ -78,6 +78,7 @@ typedef struct {
         int length;
         char **data_paths;
     } injections;
+    bool enable_tr2_item_drops;
     bool convert_dropped_guns;
 } GAMEFLOW;
 

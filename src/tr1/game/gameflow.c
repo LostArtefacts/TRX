@@ -228,6 +228,8 @@ static bool M_LoadScriptMeta(JSON_OBJECT *obj)
         g_GameFlow.injections.length = 0;
     }
 
+    g_GameFlow.enable_tr2_item_drops =
+        JSON_ObjectGetBool(obj, "enable_tr2_item_drops", false);
     g_GameFlow.convert_dropped_guns =
         JSON_ObjectGetBool(obj, "convert_dropped_guns", false);
 
@@ -808,7 +810,13 @@ static bool M_LoadScriptLevels(JSON_OBJECT *obj)
         cur->lara_type = (GAME_OBJECT_ID)tmp_i;
 
         tmp_arr = JSON_ObjectGetArray(jlvl_obj, "item_drops");
-        if (tmp_arr) {
+        cur->item_drops.count = 0;
+        if (tmp_arr && g_GameFlow.enable_tr2_item_drops) {
+            LOG_WARNING(
+                "TR2 item drops are enabled: gameflow-defined drops for level "
+                "%d will be ignored",
+                level_num);
+        } else if (tmp_arr) {
             cur->item_drops.count = (signed)tmp_arr->length;
             cur->item_drops.data = Memory_Alloc(
                 sizeof(GAMEFLOW_DROP_ITEM_DATA) * (signed)tmp_arr->length);
@@ -849,8 +857,6 @@ static bool M_LoadScriptLevels(JSON_OBJECT *obj)
                     data->object_ids[j] = (int16_t)id;
                 }
             }
-        } else {
-            cur->item_drops.count = 0;
         }
 
         if (!M_LoadLevelSequence(jlvl_obj, level_num)) {
