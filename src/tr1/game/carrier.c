@@ -41,7 +41,7 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     // but then have those items dropped by the actual creatures within.
     ITEM *item = Item_Get(item_num);
     if (Object_IsObjectType(item->object_id, g_PlaceholderObjects)) {
-        int16_t child_item_num = *(int16_t *)item->data;
+        const int16_t child_item_num = *(int16_t *)item->data;
         item = Item_Get(child_item_num);
     }
 
