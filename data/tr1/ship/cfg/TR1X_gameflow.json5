@@ -374,6 +374,7 @@
                 "data/injections/kold_textures.bin",
                 "data/injections/mines_fd.bin",
                 "data/injections/mines_itemrots.bin",
+                "data/injections/mines_pushblocks.bin",
                 "data/injections/mines_textures.bin",
                 "data/injections/skateboardkid_textures.bin"
             ],

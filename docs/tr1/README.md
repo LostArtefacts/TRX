@@ -557,6 +557,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed underwater ambient sound effect not playing
 - fixed sound effects playing rapidly in sound menu if input held down
 - fixed sounds stopping instead of pausing when using the inventory or pausing
+- fixed missing pushblock SFX in Natla's Mines
 - fixed the following music triggers:
     - **Caves**: converted track 9 in room 34 to one shot
     - **Tomb of Qualopec**: converted track 17 in room 25 to one shot

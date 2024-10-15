@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5.1...develop) - ××××-××-××
+- fixed missing pushblock SFX in Natla's Mines (#1714)
 
 ## [4.5.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.5...tr1-4.5.1) - 2024-10-14
 - fixed mac builds missing embedded resources (#1710, regression from 4.5)
