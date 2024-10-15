@@ -1440,6 +1440,15 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>mines_pushblocks.bin</code>
+    </td>
+    <td>
+      Injects animation command data for pushblock types 2, 3 and 4 to restore
+      the missing scraping SFX when pulling these blocks.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <code>photo.bin</code>
     </td>
     <td>
