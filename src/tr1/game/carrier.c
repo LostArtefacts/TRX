@@ -102,7 +102,7 @@ void Carrier_InitialiseLevel(const int32_t level_num)
 
     int32_t total_item_count = g_LevelItemCount;
     const GAMEFLOW_LEVEL level = g_GameFlow.levels[level_num];
-    for (int i = 0; i < level.item_drops.count; i++) {
+    for (int32_t i = 0; i < level.item_drops.count; i++) {
         const GAMEFLOW_DROP_ITEM_DATA *const data = &level.item_drops.data[i];
 
         ITEM *const item = M_GetCarrier(data->enemy_num);
@@ -131,7 +131,7 @@ void Carrier_InitialiseLevel(const int32_t level_num)
         item->carried_item =
             GameBuf_Alloc(sizeof(CARRIED_ITEM) * data->count, GBUF_ITEMS);
         CARRIED_ITEM *drop = item->carried_item;
-        for (int i = 0; i < data->count; i++) {
+        for (int32_t i = 0; i < data->count; i++) {
             drop->object_id = data->object_ids[i];
             drop->spawn_num = NO_ITEM;
             drop->room_num = NO_ROOM;
@@ -268,7 +268,7 @@ void Carrier_AnimateDrops(void)
     }
 
     // Make items that spawn in mid-air or water gracefully fall to the floor.
-    for (int i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < g_LevelItemCount; i++) {
         const ITEM *const carrier = Item_Get(i);
         CARRIED_ITEM *item = carrier->carried_item;
         while (item) {
