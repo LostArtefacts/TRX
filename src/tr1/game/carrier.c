@@ -31,6 +31,70 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
+static ITEM *M_GetCarrier(int16_t item_num)
+{
+    if (item_num < 0 || item_num >= g_LevelItemCount) {
+        return NULL;
+    }
+
+    // Allow carried items to be allocated to holder objects (pods/statues),
+    // but then have those items dropped by the actual creatures within.
+    ITEM *item = &g_Items[item_num];
+    if (Object_IsObjectType(item->object_id, g_PlaceholderObjects)) {
+        int16_t child_item_num = *(int16_t *)item->data;
+        item = &g_Items[child_item_num];
+    }
+
+    if (!g_Objects[item->object_id].loaded) {
+        return NULL;
+    }
+
+    return item;
+}
+
+static void M_AnimateDrop(CARRIED_ITEM *item)
+{
+    if (item->status != DS_FALLING) {
+        return;
+    }
+
+    ITEM *const pickup = &g_Items[item->spawn_num];
+    int16_t room_num = pickup->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
+    const int16_t height =
+        Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
+    const bool in_water = g_RoomInfo[pickup->room_num].flags & RF_UNDERWATER;
+
+    if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
+        item->status = DS_DROPPED;
+        pickup->pos.y = height;
+        pickup->fall_speed = 0;
+        m_AnimatingCount--;
+    } else {
+        pickup->fall_speed += (!in_water && pickup->fall_speed < FASTFALL_SPEED)
+            ? DROP_FAST_RATE
+            : DROP_SLOW_RATE;
+        pickup->pos.y += pickup->fall_speed;
+        pickup->rot.y += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
+
+        if (sector->portal_room.pit != NO_ROOM
+            && pickup->pos.y > sector->floor.height) {
+            room_num = sector->portal_room.pit;
+        }
+    }
+
+    if (room_num != pickup->room_num) {
+        Item_NewRoom(item->spawn_num, room_num);
+    }
+
+    // Track animating status in the carrier for saving/loading.
+    item->pos = pickup->pos;
+    item->rot = pickup->rot;
+    item->room_num = pickup->room_num;
+    item->fall_speed = pickup->fall_speed;
+}
+
 void Carrier_InitialiseLevel(int32_t level_num)
 {
     m_AnimatingCount = 0;
@@ -90,27 +154,6 @@ void Carrier_InitialiseLevel(int32_t level_num)
             }
         }
     }
-}
-
-static ITEM *M_GetCarrier(int16_t item_num)
-{
-    if (item_num < 0 || item_num >= g_LevelItemCount) {
-        return NULL;
-    }
-
-    // Allow carried items to be allocated to holder objects (pods/statues),
-    // but then have those items dropped by the actual creatures within.
-    ITEM *item = &g_Items[item_num];
-    if (Object_IsObjectType(item->object_id, g_PlaceholderObjects)) {
-        int16_t child_item_num = *(int16_t *)item->data;
-        item = &g_Items[child_item_num];
-    }
-
-    if (!g_Objects[item->object_id].loaded) {
-        return NULL;
-    }
-
-    return item;
 }
 
 int32_t Carrier_GetItemCount(int16_t item_num)
@@ -231,47 +274,4 @@ void Carrier_AnimateDrops(void)
             item = item->next_item;
         }
     }
-}
-
-static void M_AnimateDrop(CARRIED_ITEM *item)
-{
-    if (item->status != DS_FALLING) {
-        return;
-    }
-
-    ITEM *const pickup = &g_Items[item->spawn_num];
-    int16_t room_num = pickup->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
-    const int16_t height =
-        Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
-    const bool in_water = g_RoomInfo[pickup->room_num].flags & RF_UNDERWATER;
-
-    if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
-        item->status = DS_DROPPED;
-        pickup->pos.y = height;
-        pickup->fall_speed = 0;
-        m_AnimatingCount--;
-    } else {
-        pickup->fall_speed += (!in_water && pickup->fall_speed < FASTFALL_SPEED)
-            ? DROP_FAST_RATE
-            : DROP_SLOW_RATE;
-        pickup->pos.y += pickup->fall_speed;
-        pickup->rot.y += in_water ? DROP_SLOW_TURN : DROP_FAST_TURN;
-
-        if (sector->portal_room.pit != NO_ROOM
-            && pickup->pos.y > sector->floor.height) {
-            room_num = sector->portal_room.pit;
-        }
-    }
-
-    if (room_num != pickup->room_num) {
-        Item_NewRoom(item->spawn_num, room_num);
-    }
-
-    // Track animating status in the carrier for saving/loading.
-    item->pos = pickup->pos;
-    item->rot = pickup->rot;
-    item->room_num = pickup->room_num;
-    item->fall_speed = pickup->fall_speed;
 }
