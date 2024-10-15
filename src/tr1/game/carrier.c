@@ -39,13 +39,14 @@ static ITEM *M_GetCarrier(const int16_t item_num)
 
     // Allow carried items to be allocated to holder objects (pods/statues),
     // but then have those items dropped by the actual creatures within.
-    ITEM *item = &g_Items[item_num];
+    ITEM *item = Item_Get(item_num);
     if (Object_IsObjectType(item->object_id, g_PlaceholderObjects)) {
         int16_t child_item_num = *(int16_t *)item->data;
-        item = &g_Items[child_item_num];
+        item = Item_Get(child_item_num);
     }
 
-    if (!g_Objects[item->object_id].loaded) {
+    const OBJECT *object = Object_GetObject(item->object_id);
+    if (!object->loaded) {
         return NULL;
     }
 
@@ -58,7 +59,7 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
         return;
     }
 
-    ITEM *const pickup = &g_Items[item->spawn_num];
+    ITEM *const pickup = Item_Get(item->spawn_num);
     int16_t room_num = pickup->room_num;
     const SECTOR *const sector =
         Room_GetSector(pickup->pos.x, pickup->pos.y, pickup->pos.z, &room_num);
@@ -180,7 +181,7 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
     // This allows us to save drops as still being carried to allow accurate
     // placement again in Carrier_TestItemDrops on load.
     if (item->status == DS_DROPPED) {
-        const ITEM *const pickup = &g_Items[item->spawn_num];
+        const ITEM *const pickup = Item_Get(item->spawn_num);
         return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_CARRIED;
     } else if (item->status == DS_FALLING) {
         return DS_CARRIED;
@@ -189,9 +190,9 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
     return item->status;
 }
 
-void Carrier_TestItemDrops(int16_t item_num)
+void Carrier_TestItemDrops(const int16_t item_num)
 {
-    const ITEM *const carrier = &g_Items[item_num];
+    const ITEM *const carrier = Item_Get(item_num);
     CARRIED_ITEM *item = carrier->carried_item;
     if (carrier->hit_points > 0 || !item
         || (carrier->object_id == O_PIERRE
@@ -220,7 +221,7 @@ void Carrier_TestItemDrops(int16_t item_num)
 
         if (item->room_num != NO_ROOM) {
             // Handle reloading a save with a falling or landed item.
-            ITEM *const pickup = &g_Items[item->spawn_num];
+            ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = item->pos;
             pickup->fall_speed = item->fall_speed;
             if (pickup->room_num != item->room_num) {
@@ -233,7 +234,7 @@ void Carrier_TestItemDrops(int16_t item_num)
 
 void Carrier_TestLegacyDrops(const int16_t item_num)
 {
-    const ITEM *const carrier = &g_Items[item_num];
+    const ITEM *const carrier = Item_Get(item_num);
     if (carrier->hit_points > 0) {
         return;
     }
@@ -268,7 +269,7 @@ void Carrier_AnimateDrops(void)
 
     // Make items that spawn in mid-air or water gracefully fall to the floor.
     for (int i = 0; i < g_LevelItemCount; i++) {
-        const ITEM *const carrier = &g_Items[i];
+        const ITEM *const carrier = Item_Get(i);
         CARRIED_ITEM *item = carrier->carried_item;
         while (item) {
             M_AnimateDrop(item);
