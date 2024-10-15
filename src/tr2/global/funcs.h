@@ -160,7 +160,6 @@
 #define BanditControl ((void __cdecl (*)(int16_t item_num))0x00437570)
 #define Bandit2Control ((void __cdecl (*)(int16_t item_num))0x004378B0)
 #define WinstonControl ((void __cdecl (*)(int16_t item_num))0x00437CF0)
-#define DetonatorCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x00438600)
 #define SecretControl ((void __cdecl (*)(int16_t item_num))0x00438EC0)
 #define MouseControl ((void __cdecl (*)(int16_t item_num))0x00438EF0)
 #define InitialiseStartInfo ((void __cdecl (*)(void))0x004390E0)

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.46% (773)</tspan> · <tspan class="known">34.07% (415)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.55% (774)</tspan> · <tspan class="known">33.99% (414)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="474.08" height="6" x="0" y="0" class="decompiled"/>
-<rect width="254.52" height="6" x="474.08" y="0" class="known"/>
+<rect width="474.69" height="6" x="0" y="0" class="decompiled"/>
+<rect width="253.91" height="6" x="474.69" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -749,7 +749,7 @@
 <rect width="12" height="12" x="300" y="195" class="decompiled"><title>void __cdecl Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="315" y="195" class="decompiled"><title>void __cdecl Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="330" y="195" class="decompiled"><title>void __cdecl Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="345" y="195" class="known"><title>void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="345" y="195" class="decompiled"><title>void __cdecl Detonator_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="360" y="195" class="decompiled"><title>void __cdecl Keyhole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="375" y="195" class="decompiled"><title>void __cdecl PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="390" y="195" class="decompiled"><title>void __cdecl Switch_Control(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.59%</tspan> · <tspan class="known">32.08%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.76%</tspan> · <tspan class="known">31.91%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="504.92" height="6" x="0" y="0" class="decompiled"/>
-<rect width="239.64" height="6" x="504.92" y="0" class="known"/>
+<rect width="506.17" height="6" x="0" y="0" class="decompiled"/>
+<rect width="238.39" height="6" x="506.17" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1453,7 +1453,7 @@
 <rect width="19.35" height="18.58" x="368.60" y="271.29" class="decompiled"><title>void __cdecl Camera_LoadCutsceneFrame(void);</title></rect>
 <rect width="19.35" height="18.47" x="368.60" y="292.87" class="decompiled"><title>void __cdecl Creature_AIInfo(ITEM *item, AI_INFO *info);</title></rect>
 <rect width="19.35" height="18.28" x="368.60" y="314.34" class="decompiled"><title>int32_t __cdecl Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);</title></rect>
-<rect width="19.35" height="18.21" x="368.60" y="335.62" class="known"><title>void __cdecl DetonatorCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="19.35" height="18.21" x="368.60" y="335.62" class="decompiled"><title>void __cdecl Detonator_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="19.35" height="18.17" x="368.60" y="356.83" class="decompiled"><title>void __cdecl GameApplySettings(APP_SETTINGS *new_settings);</title></rect>
 <rect width="18.80" height="18.70" x="390.95" y="0" class="known"><title>LRESULT __stdcall SE_SetupWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);</title></rect>
 <rect width="18.77" height="18.70" x="412.75" y="0" class="known"><title>void __cdecl MovableBlockCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>

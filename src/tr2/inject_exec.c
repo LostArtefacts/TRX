@@ -971,6 +971,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);
     INJECT(enable, 0x00438500, Switch_CollisionUW);
+    INJECT(enable, 0x00438600, Detonator_Collision);
     INJECT(enable, 0x00438840, Keyhole_Collision);
     INJECT(enable, 0x00438A80, PuzzleHole_Collision);
     INJECT(enable, 0x00438D40, Switch_Control);
