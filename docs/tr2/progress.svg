@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.38% (772)</tspan> · <tspan class="known">34.15% (416)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.46% (773)</tspan> · <tspan class="known">34.07% (415)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="473.47" height="6" x="0" y="0" class="decompiled"/>
-<rect width="255.13" height="6" x="473.47" y="0" class="known"/>
+<rect width="474.08" height="6" x="0" y="0" class="decompiled"/>
+<rect width="254.52" height="6" x="474.08" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -729,7 +729,7 @@
 <rect width="12" height="12" x="0" y="195" class="known"><title>void __cdecl BridgeTilt2Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="15" y="195" class="known"><title>void __cdecl CopterControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="195" class="known"><title>void __cdecl GeneralControl(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="45" y="195" class="known"><title>void __cdecl DetonatorControl(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="45" y="195" class="decompiled"><title>void __cdecl Detonator_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="60" y="195" class="decompiled"><title>bool __cdecl Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);</title></rect>
 <rect width="12" height="12" x="75" y="195" class="known"><title>void __cdecl ControlGlow(int16_t fx_num);</title></rect>
 <rect width="12" height="12" x="90" y="195" class="known"><title>void __cdecl ControlGunShot(int16_t fx_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.55%</tspan> · <tspan class="known">32.12%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.59%</tspan> · <tspan class="known">32.08%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="504.61" height="6" x="0" y="0" class="decompiled"/>
-<rect width="239.95" height="6" x="504.61" y="0" class="known"/>
+<rect width="504.92" height="6" x="0" y="0" class="decompiled"/>
+<rect width="239.64" height="6" x="504.92" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1888,7 +1888,7 @@
 <rect width="7.76" height="8.03" x="643.97" y="185.54" class="decompiled"><title>void __cdecl CutscenePlayer1_Initialise(int16_t item_num);</title></rect>
 <rect width="7.76" height="8.03" x="654.73" y="185.54" class="known"><title>void __cdecl FloodFX(ITEM *item);</title></rect>
 <rect width="7.69" height="8.03" x="665.49" y="185.54" class="decompiled"><title>void __cdecl HWR_LoadTexturePages(int32_t pages_count, void *pages_buf, RGB_888 *palette);</title></rect>
-<rect width="7.61" height="8.03" x="676.18" y="185.54" class="known"><title>void __cdecl DetonatorControl(int16_t item_num);</title></rect>
+<rect width="7.61" height="8.03" x="676.18" y="185.54" class="decompiled"><title>void __cdecl Detonator_Control(int16_t item_num);</title></rect>
 <rect width="7.54" height="8.03" x="686.79" y="185.54" class="decompiled"><title>const int16_t *__cdecl Output_InsertObjectGT4_Sorted(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type);</title></rect>
 <rect width="7.54" height="8.03" x="697.32" y="185.54" class="decompiled"><title>int32_t __cdecl Lara_IsNearItem(PHD_3DPOS *pos, int32_t distance);</title></rect>
 <rect width="7.54" height="8.03" x="707.86" y="185.54" class="known"><title>void __cdecl ControlSnowSprite(int16_t fx_num);</title></rect>

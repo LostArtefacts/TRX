@@ -145,7 +145,6 @@
 #define BridgeTilt2Ceiling ((void __cdecl (*)(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height))0x00435B40)
 #define CopterControl ((void __cdecl (*)(int16_t item_num))0x00435B80)
 #define GeneralControl ((void __cdecl (*)(int16_t item_num))0x00435C90)
-#define DetonatorControl ((void __cdecl (*)(int16_t item_num))0x00435D70)
 #define ControlGlow ((void __cdecl (*)(int16_t fx_num))0x00435E90)
 #define ControlGunShot ((void __cdecl (*)(int16_t fx_num))0x00435ED0)
 #define GunShot ((int16_t __cdecl (*)(int32_t x, int32_t y, int32_t z, int16_t speed, PHD_ANGLE yrot, int16_t room_num))0x00435F20)

@@ -3572,7 +3572,7 @@ typedef enum {
 0x00435B40  0x0034  -R      void __cdecl BridgeTilt2Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435B80  0x010C  -R      void __cdecl CopterControl(int16_t item_num);
 0x00435C90  0x00D2  -R      void __cdecl GeneralControl(int16_t item_num);
-0x00435D70  0x008D  -R      void __cdecl DetonatorControl(int16_t item_num);
+0x00435D70  0x008D  +       void __cdecl Detonator_Control(int16_t item_num);
 
 # game/people.c
 0x00435E00  0x0085  +       bool __cdecl Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
