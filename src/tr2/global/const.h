@@ -227,3 +227,5 @@
 
 #define LOW_LIGHT 5120
 #define HIGH_LIGHT 4096
+
+#define UNIT_SHADOW 256

@@ -981,6 +981,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00438D80, Switch_Trigger);
     INJECT(enable, 0x00438E40, Keyhole_Trigger);
     INJECT(enable, 0x00438E80, Pickup_Trigger);
+    INJECT(enable, 0x0043A480, Object_SetupBaddyObjects);
     INJECT(enable, 0x0043C710, Object_SetupAllObjects);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);

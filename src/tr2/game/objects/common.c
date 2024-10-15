@@ -10,6 +10,10 @@ OBJECT *Object_GetObject(GAME_OBJECT_ID object_id)
     return &g_Objects[object_id];
 }
 
+void Object_DrawDummyItem(const ITEM *const item)
+{
+}
+
 void __cdecl Object_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {

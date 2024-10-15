@@ -62,6 +62,20 @@ static bool M_CheckLaraProximity(const ITEM *const origin_item)
     return dx < BARTOLI_RANGE && dz < BARTOLI_RANGE;
 }
 
+void Bartoli_Setup(void)
+{
+    OBJECT *const obj = Object_GetObject(O_BARTOLI);
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->initialise = Bartoli_Initialise;
+    obj->control = Bartoli_Control;
+
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
 void __cdecl Bartoli_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);

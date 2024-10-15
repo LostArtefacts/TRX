@@ -6,6 +6,12 @@
 #include "global/funcs.h"
 #include "global/vars.h"
 
+#define DIVER_SWIM_TURN (3 * PHD_DEGREE) // = 546
+#define DIVER_FRONT_ARC PHD_45
+#define DIVER_DIE_ANIM 16
+#define DIVER_HITPOINTS 20
+#define DIVER_RADIUS (WALL_L / 3) // = 341
+
 static BITE m_DiverBite = { .pos = { .x = 17, .y = 164, .z = 44, }, .mesh_num = 18 };
 
 typedef enum {
@@ -21,9 +27,31 @@ typedef enum {
     DIVER_ANIM_DEATH = 9,
 } DIVER_ANIM;
 
-#define DIVER_SWIM_TURN (3 * PHD_DEGREE) // = 546
-#define DIVER_FRONT_ARC PHD_45
-#define DIVER_DIE_ANIM 16
+void Diver_Setup(void)
+{
+    OBJECT *const obj = &g_Objects[O_DIVER];
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control = Diver_Control;
+    obj->collision = Creature_Collision;
+
+    obj->hit_points = DIVER_HITPOINTS;
+    obj->radius = DIVER_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 50;
+
+    obj->intelligent = 1;
+    obj->water_creature = 1;
+    obj->save_anim = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+
+    g_AnimBones[obj->bone_idx + 40] |= BF_ROT_Y;
+    g_AnimBones[obj->bone_idx + 56] |= BF_ROT_Z;
+}
 
 void __cdecl Diver_Control(int16_t item_num)
 {

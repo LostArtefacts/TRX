@@ -8,6 +8,17 @@
 
 #include <libtrx/utils.h>
 
+#define BIRD_DAMAGE 20
+#define BIRD_RADIUS (WALL_L / 5) // = 204
+#define BIRD_ATTACK_RANGE SQUARE(WALL_L / 2) // = 262144
+#define BIRD_TURN (PHD_DEGREE * 3) // = 546
+#define BIRD_START_ANIM 5
+#define BIRD_DIE_ANIM 8
+#define EAGLE_HITPOINTS 20
+#define CROW_HITPOINTS 15
+#define CROW_START_ANIM 14
+#define CROW_DIE_ANIM 1
+
 typedef enum {
     BIRD_ANIM_EMPTY = 0,
     BIRD_ANIM_FLY = 1,
@@ -28,13 +39,51 @@ static const BITE m_CrowBite = {
     .mesh_num = 14,
 };
 
-#define BIRD_DAMAGE 20
-#define BIRD_ATTACK_RANGE SQUARE(WALL_L / 2) // = 262144
-#define BIRD_TURN (PHD_DEGREE * 3) // = 546
-#define BIRD_START_ANIM 5
-#define BIRD_DIE_ANIM 8
-#define CROW_START_ANIM 14
-#define CROW_DIE_ANIM 1
+void Bird_SetupEagle(void)
+{
+    OBJECT *const obj = &g_Objects[O_EAGLE];
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->initialise = Bird_Initialise;
+    obj->control = Bird_Control;
+    obj->collision = Creature_Collision;
+
+    obj->hit_points = EAGLE_HITPOINTS;
+    obj->radius = BIRD_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+
+    obj->intelligent = 1;
+    obj->save_anim = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+}
+
+void Bird_SetupCrow(void)
+{
+    OBJECT *const obj = &g_Objects[O_CROW];
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->initialise = Bird_Initialise;
+    obj->control = Bird_Control;
+    obj->collision = Creature_Collision;
+
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = CROW_HITPOINTS;
+    obj->radius = BIRD_RADIUS;
+    obj->pivot_length = 0;
+
+    obj->intelligent = 1;
+    obj->save_anim = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+}
 
 void __cdecl Bird_Initialise(const int16_t item_num)
 {

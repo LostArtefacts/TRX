@@ -7,10 +7,14 @@
 #include "game/lara/misc.h"
 #include "game/lot.h"
 #include "game/math.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"
+#include "global/const.h"
 #include "global/funcs.h"
 #include "global/vars.h"
+
+#include <assert.h>
 
 #define DRAGON_CLOSE 900
 #define DRAGON_FAR 2300
@@ -27,6 +31,8 @@
 #define DRAGON_TOUCH_L 0x7F000000
 #define DRAGON_TOUCH_R 0x000000FE
 #define DRAGON_LIVE_TIME 330
+#define DRAGON_HITPOINTS 300
+#define DRAGON_RADIUS (WALL_L / 3) // = 341
 
 typedef enum {
     // clang-format off
@@ -109,6 +115,47 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     g_CinePos.rot = lara_item->rot;
 
     M_MarkDragonDead(dragon_back_item);
+}
+
+void Dragon_SetupFront(void)
+{
+    OBJECT *const obj = &g_Objects[O_DRAGON_FRONT];
+    if (!obj->loaded) {
+        return;
+    }
+
+    assert(g_Objects[O_DRAGON_BACK].loaded);
+    obj->control = Dragon_Control;
+    obj->collision = Dragon_Collision;
+
+    obj->hit_points = DRAGON_HITPOINTS;
+    obj->radius = DRAGON_RADIUS;
+    obj->pivot_length = 300;
+
+    obj->intelligent = 1;
+    obj->save_anim = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+
+    g_AnimBones[obj->bone_idx + 40] |= BF_ROT_Z;
+}
+
+void Dragon_SetupBack(void)
+{
+    OBJECT *const obj = &g_Objects[O_DRAGON_BACK];
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control = Dragon_Control;
+    obj->collision = Dragon_Collision;
+
+    obj->radius = DRAGON_RADIUS;
+
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
 }
 
 void __cdecl Dragon_Collision(
@@ -413,5 +460,4 @@ void __cdecl Dragon_Control(const int16_t item_num)
     if (dragon_back_item->room_num != dragon_front_item->room_num) {
         Item_NewRoom(dragon_back_item_num, dragon_front_item->room_num);
     }
-    return;
 }
