@@ -114,7 +114,6 @@
 #define MiniCopterControl ((void __cdecl (*)(int16_t item_num))0x00434610)
 #define InitialiseDyingMonk ((void __cdecl (*)(int16_t item_num))0x004346F0)
 #define DyingMonk ((void __cdecl (*)(int16_t item_num))0x00434770)
-#define Zipline_Control ((void __cdecl (*)(int16_t item_num))0x00434980)
 #define BigBowlControl ((void __cdecl (*)(int16_t item_num))0x00434C10)
 #define BellControl ((void __cdecl (*)(int16_t item_num))0x00434D00)
 #define InitialiseWindow ((void __cdecl (*)(int16_t item_num))0x00434D80)
