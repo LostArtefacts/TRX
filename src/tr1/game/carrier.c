@@ -25,6 +25,7 @@
 static int16_t m_AnimatingCount = 0;
 
 static ITEM *M_GetCarrier(int16_t item_num);
+static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *carrier);
 static void M_AnimateDrop(CARRIED_ITEM *item);
 static void M_InitialiseDataDrops(void);
 static void M_InitialiseGameflowDrops(int32_t level_num);
@@ -55,6 +56,19 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     }
 
     return item;
+}
+
+static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *const carrier)
+{
+    if (carrier->hit_points > 0 && carrier->object_id != O_MUMMY) {
+        return NULL;
+    }
+
+    if (carrier->object_id == O_PIERRE && !(carrier->flags & IF_ONE_SHOT)) {
+        return NULL;
+    }
+
+    return carrier->carried_item;
 }
 
 static void M_AnimateDrop(CARRIED_ITEM *const item)
@@ -265,10 +279,8 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
 void Carrier_TestItemDrops(const int16_t item_num)
 {
     const ITEM *const carrier = Item_Get(item_num);
-    CARRIED_ITEM *item = carrier->carried_item;
-    if (carrier->hit_points > 0 || item == NULL
-        || (carrier->object_id == O_PIERRE
-            && !(carrier->flags & IF_ONE_SHOT))) {
+    CARRIED_ITEM *item = M_GetFirstDropItem(carrier);
+    if (item == NULL) {
         return;
     }
 
