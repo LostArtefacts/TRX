@@ -23,6 +23,7 @@
         "data/injections/uzi_sfx.bin",
         "data/injections/explosion.bin",
     ],
+    "enable_tr2_item_drops": false,
     "convert_dropped_guns": false,
 
     "levels": [

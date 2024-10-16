@@ -60,3 +60,8 @@ int32_t XYZ_32_GetDistance(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
     );
     // clang-format on
 }
+
+bool XYZ_32_AreEquivalent(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
+{
+    return pos1->x == pos2->x && pos1->y == pos2->y && pos1->z == pos2->z;
+}
