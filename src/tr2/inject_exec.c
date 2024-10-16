@@ -53,6 +53,7 @@
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
 #include "game/objects/general/switch.h"
+#include "game/objects/general/zipline.h"
 #include "game/objects/setup.h"
 #include "game/objects/traps/ember_emitter.h"
 #include "game/objects/traps/flame_emitter.h"
@@ -776,7 +777,7 @@ static void M_Lara_State(const bool enable)
     INJECT(enable, 0x004285C0, Lara_State_FastDive);
     INJECT(enable, 0x00428620, Lara_State_WaterOut);
     INJECT(enable, 0x00428640, Lara_State_Wade);
-    INJECT(enable, 0x00428710, Lara_State_DeathSlide);
+    INJECT(enable, 0x00428710, Lara_State_Zipline);
     INJECT(enable, 0x004287B0, Lara_State_Extra_Breath);
     INJECT(enable, 0x00428800, Lara_State_Extra_YetiKill);
     INJECT(enable, 0x00428850, Lara_State_Extra_SharkKill);
@@ -970,6 +971,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x004336F0, BodyPart_Control);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x00434800, GongBonger_Control);
+    INJECT(enable, 0x004348C0, Zipline_Collision);
     INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);

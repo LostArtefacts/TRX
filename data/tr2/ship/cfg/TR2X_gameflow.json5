@@ -185,7 +185,7 @@
         "O_LARA_SWAP": "Lara Mesh Swap",
         "O_TEXT_BOX": "UI Frame",
         "O_ROLLING_BALL_3": "Boulder 3",
-        "O_DEATH_SLIDE": "Zipline Handle",
+        "O_ZIPLINE_HANDLE": "Zipline Handle",
         "O_SWITCH_TYPE_BUTTON": "Switch Button",
         "O_SWITCH_TYPE_NORMAL": "Lever/Switch",
         "O_SWITCH_TYPE_UW": "Underwater Lever/Switch",

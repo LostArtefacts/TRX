@@ -45,7 +45,7 @@ void __cdecl Lara_State_SwanDive(ITEM *item, COLL_INFO *coll);
 void __cdecl Lara_State_FastDive(ITEM *item, COLL_INFO *coll);
 void __cdecl Lara_State_WaterOut(ITEM *item, COLL_INFO *coll);
 void __cdecl Lara_State_Wade(ITEM *item, COLL_INFO *coll);
-void __cdecl Lara_State_DeathSlide(ITEM *item, COLL_INFO *coll);
+void __cdecl Lara_State_Zipline(ITEM *item, COLL_INFO *coll);
 void __cdecl Lara_State_Extra_Breath(ITEM *item, COLL_INFO *coll);
 void __cdecl Lara_State_Extra_YetiKill(ITEM *item, COLL_INFO *coll);
 void __cdecl Lara_State_Extra_SharkKill(ITEM *item, COLL_INFO *coll);

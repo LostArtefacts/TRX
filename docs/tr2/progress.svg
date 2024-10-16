@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.79% (777)</tspan> · <tspan class="known">33.74% (411)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.88% (778)</tspan> · <tspan class="known">33.66% (410)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="476.53" height="6" x="0" y="0" class="decompiled"/>
-<rect width="252.07" height="6" x="476.53" y="0" class="known"/>
+<rect width="477.15" height="6" x="0" y="0" class="decompiled"/>
+<rect width="251.45" height="6" x="477.15" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -508,7 +508,7 @@
 <rect width="12" height="12" x="435" y="120" class="decompiled"><title>void __cdecl Lara_State_FastDive(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="450" y="120" class="decompiled"><title>void __cdecl Lara_State_WaterOut(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="465" y="120" class="decompiled"><title>void __cdecl Lara_State_Wade(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="480" y="120" class="decompiled"><title>void __cdecl Lara_State_DeathSlide(ITEM *item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="480" y="120" class="decompiled"><title>void __cdecl Lara_State_Zipline(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="495" y="120" class="decompiled"><title>void __cdecl Lara_State_Extra_Breath(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="510" y="120" class="decompiled"><title>void __cdecl Lara_State_Extra_YetiKill(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="525" y="120" class="decompiled"><title>void __cdecl Lara_State_Extra_SharkKill(ITEM *item, COLL_INFO *coll);</title></rect>
@@ -699,8 +699,8 @@
 <rect width="12" height="12" x="300" y="180" class="known"><title>void __cdecl InitialiseDyingMonk(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="315" y="180" class="known"><title>void __cdecl DyingMonk(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="330" y="180" class="decompiled"><title>void __cdecl GongBonger_Control(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="345" y="180" class="known"><title>void __cdecl DeathSlideCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="360" y="180" class="known"><title>void __cdecl ControlDeathSlide(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="345" y="180" class="decompiled"><title>void __cdecl Zipline_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="360" y="180" class="known"><title>void __cdecl Zipline_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="375" y="180" class="known"><title>void __cdecl BigBowlControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="390" y="180" class="known"><title>void __cdecl BellControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="405" y="180" class="known"><title>void __cdecl InitialiseWindow(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.06%</tspan> · <tspan class="known">30.61%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.12%</tspan> · <tspan class="known">30.56%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="515.90" height="6" x="0" y="0" class="decompiled"/>
-<rect width="228.66" height="6" x="515.90" y="0" class="known"/>
+<rect width="516.31" height="6" x="0" y="0" class="decompiled"/>
+<rect width="228.25" height="6" x="516.31" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1432,7 +1432,7 @@
 <rect width="20.95" height="21.16" x="344.65" y="173.42" class="known"><title>void __cdecl SkidooAnimation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
 <rect width="20.95" height="20.85" x="344.65" y="197.58" class="decompiled"><title>void __cdecl Room_DrawAllRooms(int16_t current_room);</title></rect>
 <rect width="20.95" height="19.88" x="344.65" y="221.43" class="decompiled"><title>void __cdecl PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="20.95" height="19.70" x="344.65" y="244.30" class="known"><title>void __cdecl ControlDeathSlide(int16_t item_num);</title></rect>
+<rect width="20.95" height="19.70" x="344.65" y="244.30" class="known"><title>void __cdecl Zipline_Control(int16_t item_num);</title></rect>
 <rect width="20.95" height="19.43" x="344.65" y="267.01" class="known"><title>void __cdecl TRex_Control(int16_t item_num);</title></rect>
 <rect width="20.95" height="19.32" x="344.65" y="289.44" class="decompiled"><title>int32_t __cdecl Output_XGenXGUVPerspFP(const int16_t *obj_ptr);</title></rect>
 <rect width="20.95" height="19.11" x="344.65" y="311.76" class="known"><title>void __cdecl Tiger_Control(int16_t item_num);</title></rect>
@@ -1765,7 +1765,7 @@
 <rect width="9.54" height="9.71" x="521.63" y="226.97" class="decompiled"><title>void __cdecl Requester_ChangeItem(REQUEST_INFO *req, int32_t item, const char *text1, uint32_t flags1, const char *text2, uint32_t flags2);</title></rect>
 <rect width="9.54" height="9.71" x="521.63" y="239.68" class="decompiled"><title>void __cdecl Option_Compass(INVENTORY_ITEM *item);</title></rect>
 <rect width="9.54" height="9.71" x="521.63" y="252.39" class="known"><title>void __cdecl AnimateTextures(int32_t ticks);</title></rect>
-<rect width="9.54" height="9.64" x="521.63" y="265.09" class="known"><title>void __cdecl DeathSlideCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="9.54" height="9.64" x="521.63" y="265.09" class="decompiled"><title>void __cdecl Zipline_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="9.54" height="9.57" x="521.63" y="277.73" class="decompiled"><title>void __cdecl Lara_Col_StepRight(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="9.54" height="9.57" x="521.63" y="290.31" class="decompiled"><title>int32_t __cdecl Lara_TestClimbStance(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="9.54" height="9.57" x="521.63" y="302.88" class="known"><title>void __cdecl SE_SoundDlgInit(HWND hwndDlg);</title></rect>
@@ -1861,7 +1861,7 @@
 <rect width="8.17" height="8.15" x="545.84" y="344.56" class="decompiled"><title>void __cdecl Lara_Control_Cutscene(int16_t item_num);</title></rect>
 <rect width="8.17" height="8.15" x="545.84" y="355.71" class="decompiled"><title>void __cdecl Room_RemoveFlipItems(ROOM *r);</title></rect>
 <rect width="8.17" height="8.15" x="545.84" y="366.85" class="known"><title>void __cdecl floor_shake_effect(ITEM *item);</title></rect>
-<rect width="7.88" height="8.45" x="557.01" y="185.54" class="decompiled"><title>void __cdecl Lara_State_DeathSlide(ITEM *item, COLL_INFO *coll);</title></rect>
+<rect width="7.88" height="8.45" x="557.01" y="185.54" class="decompiled"><title>void __cdecl Lara_State_Zipline(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.88" height="8.45" x="557.01" y="196.99" class="decompiled"><title>void __cdecl Lara_Col_Compress( ITEM *item, COLL_INFO *coll );</title></rect>
 <rect width="7.88" height="8.45" x="557.01" y="208.44" class="decompiled"><title>void __cdecl Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int32_t damage);</title></rect>
 <rect width="7.88" height="8.45" x="557.01" y="219.88" class="known"><title>void __cdecl WindowControl(int16_t item_num);</title></rect>

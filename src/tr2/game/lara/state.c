@@ -671,9 +671,9 @@ void __cdecl Lara_State_Wade(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void __cdecl Lara_State_DeathSlide(ITEM *item, COLL_INFO *coll)
+void __cdecl Lara_State_Zipline(ITEM *item, COLL_INFO *coll)
 {
-    g_Camera.target_angle = CAM_DEATH_SLIDE_ANGLE;
+    g_Camera.target_angle = CAM_ZIPLINE_ANGLE;
 
     int16_t room_num = item->room_num;
     const SECTOR *sector =

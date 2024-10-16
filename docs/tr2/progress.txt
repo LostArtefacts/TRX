@@ -1514,9 +1514,9 @@ typedef enum {
     SFX_WARRIOR_GROWL2 = 268,
     SFX_SMALL_SWITCH = 269,
     SFX_CHAIN_PULLEY = 278,
-    SFX_DEATH_SLIDE_GRAB = 279,
-    SFX_DEATH_SLIDE_GO = 280,
-    SFX_DEATH_SLIDE_STOP = 281,
+    SFX_ZIPLINE_GRAB = 279,
+    SFX_ZIPLINE_GO = 280,
+    SFX_ZIPLINE_STOP = 281,
     SFX_BODY_SLUMP = 282,
     SFX_BOWL_TIPPING = 283,
     SFX_BOWL_POUR = 284,
@@ -1989,7 +1989,7 @@ typedef enum { // decompiled
     LS_FLARE_PICKUP = 67,
     LS_TWIST        = 68,
     LS_KICK         = 69,
-    LS_DEATH_SLIDE  = 70,
+    LS_ZIPLINE      = 70,
     LS_DUCK         = 71,
     LS_DUCK_ROLL    = 72,
     LS_DASH         = 73,
@@ -2145,7 +2145,7 @@ typedef enum { // decompiled
     O_LARA_SWAP             = 99,
     O_TEXT_BOX              = 100,
     O_ROLLING_BALL_3        = 101,
-    O_DEATH_SLIDE           = 102,
+    O_ZIPLINE_HANDLE        = 102,
     O_SWITCH_TYPE_BUTTON    = 103,
     O_SWITCH_TYPE_NORMAL    = 104,
     O_SWITCH_TYPE_UW        = 105,
@@ -3327,7 +3327,7 @@ typedef enum {
 0x004285C0  0x0054  +       void __cdecl Lara_State_FastDive(ITEM *item, COLL_INFO *coll);
 0x00428620  0x0015  +       void __cdecl Lara_State_WaterOut(ITEM *item, COLL_INFO *coll);
 0x00428640  0x00CA  +       void __cdecl Lara_State_Wade(ITEM *item, COLL_INFO *coll);
-0x00428710  0x0096  +       void __cdecl Lara_State_DeathSlide(ITEM *item, COLL_INFO *coll);
+0x00428710  0x0096  +       void __cdecl Lara_State_Zipline(ITEM *item, COLL_INFO *coll);
 0x004287B0  0x004C  +       void __cdecl Lara_State_Extra_Breath(ITEM *item, COLL_INFO *coll);
 0x00428800  0x0047  +       void __cdecl Lara_State_Extra_YetiKill(ITEM *item, COLL_INFO *coll);
 0x00428850  0x0091  +       void __cdecl Lara_State_Extra_SharkKill(ITEM *item, COLL_INFO *coll);
@@ -3542,8 +3542,8 @@ typedef enum {
 0x004346F0  0x007C  -R      void __cdecl InitialiseDyingMonk(int16_t item_num);
 0x00434770  0x0087  -R      void __cdecl DyingMonk(int16_t item_num);
 0x00434800  0x00BD  +       void __cdecl GongBonger_Control(int16_t item_num);
-0x004348C0  0x00BF  -R      void __cdecl DeathSlideCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x00434980  0x028F  -R      void __cdecl ControlDeathSlide(int16_t item_num);
+0x004348C0  0x00BF  +       void __cdecl Zipline_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+0x00434980  0x028F  -R      void __cdecl Zipline_Control(int16_t item_num);
 0x00434C10  0x00E3  -R      void __cdecl BigBowlControl(int16_t item_num);
 0x00434D00  0x007E  -R      void __cdecl BellControl(int16_t item_num);
 0x00434D80  0x0075  -R      void __cdecl InitialiseWindow(int16_t item_num);
@@ -4694,6 +4694,7 @@ typedef enum {
 0x004645A8  -       const uint16_t g_Requester_UnselectionGour1[];
 0x005216E0  -       uint16_t g_InvColors[17]; // INV_COLOR_NUMBER_OF
 0x00464150  +       BITE g_DragonMouth;
+0x00465F58  -       int16_t g_ZiplineHandleBounds[];
 0x00465FF0  -       int16_t g_PickupBounds[];
 0x00466018  -       int16_t g_GongBounds[];
 0x00466030  -       int16_t g_PickupBoundsUW[];
@@ -4701,6 +4702,7 @@ typedef enum {
 0x004660A0  -       int16_t g_SwitchBoundsUW[];
 0x004660C8  -       int16_t g_KeyholeBounds[];
 0x004660F0  -       int16_t g_PuzzleHoleBounds[];
+0x00465F70  -       XYZ_32 g_ZiplineHandlePosition;
 0x00466008  -       XYZ_32 g_PickupPosition;
 0x00466048  -       XYZ_32 g_PickupPositionUW;
 0x00466070  -       XYZ_32 g_SmallSwitchPosition;

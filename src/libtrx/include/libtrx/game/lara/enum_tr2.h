@@ -311,7 +311,7 @@ typedef enum {
     LS_FLARE_PICKUP = 67,
     LS_TWIST        = 68,
     LS_KICK         = 69,
-    LS_DEATH_SLIDE  = 70,
+    LS_ZIPLINE      = 70,
     LS_DUCK         = 71,
     LS_DUCK_ROLL    = 72,
     LS_DASH         = 73,
