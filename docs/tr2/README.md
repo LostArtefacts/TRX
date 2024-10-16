@@ -32,6 +32,7 @@ decompilation process. We recognize that there is much work to be done.
 #### Visuals
 
 - fixed TGA screenshots crashing the game
+- fixed the camera being cut off after using the gong hammer in Ice Palace
 
 #### Audio
 

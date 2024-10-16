@@ -700,7 +700,9 @@ void __cdecl Lara_State_Extra_Breath(ITEM *item, COLL_INFO *coll)
     item->current_anim_state = LS_STOP;
     g_Lara.extra_anim = 0;
     g_Lara.gun_status = LGS_ARMLESS;
-    g_Camera.type = CAM_CHASE;
+    if (g_Camera.type != CAM_HEAVY) {
+        g_Camera.type = CAM_CHASE;
+    }
     Output_AlterFOV(GAME_FOV * PHD_DEGREE);
 }
 
