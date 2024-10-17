@@ -79,6 +79,7 @@
 #define g_LaraControlRoutines (*((void(__cdecl  *(*)[71])(ITEM *item, COLL_INFO *coll))0x00465CD0))
 #define g_ExtraControlRoutines (*((void(__cdecl  *(*)[11])(ITEM *item, COLL_INFO *coll))0x00465DF0))
 #define g_LaraCollisionRoutines (*((void(__cdecl  *(*)[71])(ITEM *item, COLL_INFO *coll))0x00465E20))
+#define g_MovableBlockBounds (*(int16_t(*)[])0x00465F40)
 #define g_ZiplineHandleBounds (*(int16_t(*)[])0x00465F58)
 #define g_ZiplineHandlePosition (*(XYZ_32*)0x00465F70)
 #define g_PickupBounds (*(int16_t(*)[])0x00465FF0)
