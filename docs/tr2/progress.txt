@@ -3523,14 +3523,14 @@ typedef enum {
 0x004336F0  0x0200  -R      void __cdecl BodyPart_Control(int16_t fx_num);
 
 # game/moveblock.c
-0x004338F0  0x002C  -R      void __cdecl InitialiseMovingBlock(int16_t item_num);
-0x00433920  0x0148  -R      void __cdecl MovableBlock(int16_t item_num);
-0x00433A70  0x0239  -R      void __cdecl MovableBlockCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x00433CD0  0x004E  -R      int32_t __cdecl TestBlockMovable(ITEM *item, int32_t block_height);
-0x00433D20  0x0137  -R      int32_t __cdecl TestBlockPush(ITEM *item, int32_t block_height, uint16_t quadrant);
-0x00433E70  0x0225  -R      int32_t __cdecl TestBlockPull(ITEM *item, int32_t block_height, uint16_t quadrant);
+0x004338F0  0x002C  -       void __cdecl MovableBlock_Initialise(int16_t item_num);
+0x00433920  0x0148  -       void __cdecl MovableBlock_Control(int16_t item_num);
+0x00433A70  0x0239  +       void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+0x00433CD0  0x004E  -       int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);
+0x00433D20  0x0137  -       int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);
+0x00433E70  0x0225  -       int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);
 0x004340B0  0x00BB  +       void __cdecl Room_AlterFloorHeight(ITEM *item, int32_t height);
-0x00434170  0x0022  -R      void __cdecl DrawMovableBlock(const ITEM *item);
+0x00434170  0x0022  -       void __cdecl MovableBlock_Draw(const ITEM *item);
 0x004341A0  0x006B  -       void __cdecl Object_DrawUnclippedItem(const ITEM *item);
 
 # game/objects.c
@@ -4694,6 +4694,7 @@ typedef enum {
 0x004645A8  -       const uint16_t g_Requester_UnselectionGour1[];
 0x005216E0  -       uint16_t g_InvColors[17]; // INV_COLOR_NUMBER_OF
 0x00464150  +       BITE g_DragonMouth;
+0x00465F40  -       int16_t g_MovableBlockBounds[];
 0x00465F58  -       int16_t g_ZiplineHandleBounds[];
 0x00465FF0  -       int16_t g_PickupBounds[];
 0x00466018  -       int16_t g_GongBounds[];
