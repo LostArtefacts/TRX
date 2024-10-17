@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.12% (781)</tspan> · <tspan class="known">33.42% (407)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.20% (782)</tspan> · <tspan class="known">33.33% (406)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="478.99" height="6" x="0" y="0" class="decompiled"/>
-<rect width="249.61" height="6" x="478.99" y="0" class="known"/>
+<rect width="479.60" height="6" x="0" y="0" class="decompiled"/>
+<rect width="249" height="6" x="479.60" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -683,7 +683,7 @@
 <rect width="12" height="12" x="60" y="180" class="decompiled"><title>int32_t __cdecl Effect_ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage);</title></rect>
 <rect width="12" height="12" x="75" y="180" class="known"><title>void __cdecl BodyPart_Control(int16_t fx_num);</title></rect>
 <rect width="12" height="12" x="90" y="180" class="decompiled"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="105" y="180" class="known"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="105" y="180" class="decompiled"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="120" y="180" class="decompiled"><title>void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="135" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
 <rect width="12" height="12" x="150" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.49%</tspan> · <tspan class="known">30.18%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.59%</tspan> · <tspan class="known">30.09%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="519.09" height="6" x="0" y="0" class="decompiled"/>
-<rect width="225.47" height="6" x="519.09" y="0" class="known"/>
+<rect width="519.80" height="6" x="0" y="0" class="decompiled"/>
+<rect width="224.76" height="6" x="519.80" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1587,7 +1587,7 @@
 <rect width="13.66" height="13.49" x="585.87" y="76.23" class="known"><title>void __cdecl Gun_DrawFlash(LARA_GUN_TYPE weapon_type, int32_t clip);</title></rect>
 <rect width="13.56" height="13.49" x="602.53" y="76.23" class="known"><title>INT_PTR __stdcall SE_SoundDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);</title></rect>
 <rect width="13.51" height="13.49" x="619.09" y="76.23" class="decompiled"><title>void __cdecl Lara_State_Stop(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="13.51" height="13.49" x="635.60" y="76.23" class="known"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
+<rect width="13.51" height="13.49" x="635.60" y="76.23" class="decompiled"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
 <rect width="13.46" height="13.49" x="652.10" y="76.23" class="decompiled"><title>void __cdecl Effect_Draw(int16_t fx_num);</title></rect>
 <rect width="13.41" height="13.49" x="668.56" y="76.23" class="decompiled"><title>int32_t __cdecl Output_XGenXG(const int16_t *obj_ptr);</title></rect>
 <rect width="13.36" height="13.49" x="684.97" y="76.23" class="decompiled"><title>void __cdecl Overlay_DrawAssaultTimer(void);</title></rect>

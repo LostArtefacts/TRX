@@ -5,6 +5,7 @@
 #include "game/lara/control.h"
 #include "game/math.h"
 #include "game/room.h"
+#include "game/sound.h"
 #include "global/funcs.h"
 #include "global/utils.h"
 #include "global/vars.h"
@@ -22,6 +23,51 @@ void __cdecl MovableBlock_Initialise(const int16_t item_num)
     ITEM *item = &g_Items[item_num];
     if (item->status != IS_INVISIBLE) {
         Room_AlterFloorHeight(&g_Items[item_num], -WALL_L);
+    }
+}
+
+void __cdecl MovableBlock_Control(const int16_t item_num)
+{
+    ITEM *const item = &g_Items[item_num];
+
+    if (item->flags & IF_ONE_SHOT) {
+        Room_AlterFloorHeight(item, WALL_L);
+        Item_Kill(item_num);
+        return;
+    }
+
+    Item_Animate(item);
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+
+    if (item->pos.y < height) {
+        item->gravity = 1;
+    } else if (item->gravity) {
+        item->gravity = 0;
+        item->pos.y = height;
+        item->status = IS_DEACTIVATED;
+        floor_shake_effect(item);
+        Sound_Effect(SFX_ENEMY_GRUNT, &item->pos, SPM_ALWAYS);
+    }
+
+    if (item->room_num != room_num) {
+        Item_NewRoom(item_num, room_num);
+    }
+
+    if (item->status == IS_DEACTIVATED) {
+        item->status = IS_INACTIVE;
+        Item_RemoveActive(item_num);
+        Room_AlterFloorHeight(item, -WALL_L);
+
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        Room_TestTriggers(g_TriggerIndex, true);
     }
 }
 
