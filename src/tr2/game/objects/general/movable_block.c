@@ -87,6 +87,84 @@ int32_t __cdecl MovableBlock_TestPush(
     return true;
 }
 
+int32_t __cdecl MovableBlock_TestPull(
+    const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
+{
+    if (!MovableBlock_TestDestination(item, block_height)) {
+        return false;
+    }
+
+    int32_t x_add = 0;
+    int32_t z_add = 0;
+    switch (quadrant) {
+    case DIR_NORTH:
+        z_add = -WALL_L;
+        break;
+    case DIR_EAST:
+        x_add = -WALL_L;
+        break;
+    case DIR_SOUTH:
+        z_add = WALL_L;
+        break;
+    case DIR_WEST:
+        x_add = WALL_L;
+        break;
+    default:
+        break;
+    }
+
+    int32_t x = item->pos.x + x_add;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z + z_add;
+    int16_t room_num = item->room_num;
+
+    COLL_INFO coll = {
+        .quadrant = quadrant,
+        .radius = 500,
+        0,
+    };
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+        return false;
+    }
+
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+    if ((sector->floor << 8) != y) {
+        return false;
+    }
+
+    const int32_t y_min = y - block_height;
+    sector = Room_GetSector(x, y_min, z, &room_num);
+    if ((sector->ceiling << 8) > y_min) {
+        return false;
+    }
+
+    x += x_add;
+    z += z_add;
+    room_num = item->room_num;
+    sector = Room_GetSector(x, y, z, &room_num);
+    if ((sector->floor << 8) != y) {
+        return false;
+    }
+
+    sector = Room_GetSector(x, y - LARA_HEIGHT, z, &room_num);
+    if ((sector->ceiling << 8) > y - LARA_HEIGHT) {
+        return false;
+    }
+
+    x = g_LaraItem->pos.x + x_add;
+    z = g_LaraItem->pos.z + z_add;
+    y = g_LaraItem->pos.y;
+    room_num = g_LaraItem->room_num;
+    Room_GetSector(x, y, z, &room_num);
+    coll.quadrant = (quadrant + 2) & 3;
+    coll.radius = LARA_RADIUS;
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
+        return false;
+    }
+
+    return true;
+}
+
 void __cdecl MovableBlock_Initialise(const int16_t item_num)
 {
     ITEM *item = &g_Items[item_num];
