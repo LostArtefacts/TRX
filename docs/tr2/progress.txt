@@ -3526,7 +3526,7 @@ typedef enum {
 0x004338F0  0x002C  +       void __cdecl MovableBlock_Initialise(int16_t item_num);
 0x00433920  0x0148  +       void __cdecl MovableBlock_Control(int16_t item_num);
 0x00433A70  0x0239  +       void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x00433CD0  0x004E  -       int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);
+0x00433CD0  0x004E  +       int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);
 0x00433D20  0x0137  -       int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);
 0x00433E70  0x0225  -       int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);
 0x004340B0  0x00BB  +       void __cdecl Room_AlterFloorHeight(ITEM *item, int32_t height);

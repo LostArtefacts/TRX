@@ -18,6 +18,17 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
+int32_t __cdecl MovableBlock_TestDestination(
+    const ITEM *const item, const int32_t block_height)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+
+    const int16_t floor = sector->floor << 8;
+    return floor == NO_HEIGHT || (floor == item->pos.y - block_height);
+}
+
 void __cdecl MovableBlock_Initialise(const int16_t item_num)
 {
     ITEM *item = &g_Items[item_num];

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.20% (782)</tspan> · <tspan class="known">33.33% (406)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.29% (783)</tspan> · <tspan class="known">33.25% (405)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="479.60" height="6" x="0" y="0" class="decompiled"/>
-<rect width="249" height="6" x="479.60" y="0" class="known"/>
+<rect width="480.21" height="6" x="0" y="0" class="decompiled"/>
+<rect width="248.39" height="6" x="480.21" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -685,7 +685,7 @@
 <rect width="12" height="12" x="90" y="180" class="decompiled"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="105" y="180" class="decompiled"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="120" y="180" class="decompiled"><title>void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="135" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
+<rect width="12" height="12" x="135" y="180" class="decompiled"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
 <rect width="12" height="12" x="150" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="12" height="12" x="165" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="12" height="12" x="180" y="180" class="decompiled"><title>void __cdecl Room_AlterFloorHeight(ITEM *item, int32_t height);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.59%</tspan> · <tspan class="known">30.09%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.61%</tspan> · <tspan class="known">30.06%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="519.80" height="6" x="0" y="0" class="decompiled"/>
-<rect width="224.76" height="6" x="519.80" y="0" class="known"/>
+<rect width="519.97" height="6" x="0" y="0" class="decompiled"/>
+<rect width="224.58" height="6" x="519.97" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2102,7 +2102,7 @@
 <rect width="4.97" height="5.12" x="625.01" y="353.64" class="decompiled"><title>void __cdecl Creature_Neck(ITEM *item, int16_t required);</title></rect>
 <rect width="4.97" height="5.12" x="625.01" y="361.76" class="decompiled"><title>int16_t __cdecl Room_GetDoor(const SECTOR *sector);</title></rect>
 <rect width="4.97" height="5.12" x="625.01" y="369.88" class="decompiled"><title>void __cdecl Gun_Pistols_DrawMeshes(LARA_GUN_TYPE weapon_type);</title></rect>
-<rect width="4.93" height="5.16" x="632.98" y="253.38" class="known"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
+<rect width="4.93" height="5.16" x="632.98" y="253.38" class="decompiled"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
 <rect width="4.93" height="5.16" x="640.91" y="253.38" class="known"><title>void __cdecl ControlGunShot(int16_t fx_num);</title></rect>
 <rect width="4.93" height="5.16" x="648.84" y="253.38" class="known"><title>JOYSTICK_NODE *__cdecl GetJoystick(GUID *lpGuid);</title></rect>
 <rect width="4.93" height="5.16" x="656.77" y="253.38" class="known"><title>bool __cdecl OpenGameRegistryKey(LPCTSTR key);</title></rect>
