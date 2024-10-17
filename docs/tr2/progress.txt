@@ -3523,7 +3523,7 @@ typedef enum {
 0x004336F0  0x0200  -R      void __cdecl BodyPart_Control(int16_t fx_num);
 
 # game/moveblock.c
-0x004338F0  0x002C  -       void __cdecl MovableBlock_Initialise(int16_t item_num);
+0x004338F0  0x002C  +       void __cdecl MovableBlock_Initialise(int16_t item_num);
 0x00433920  0x0148  -       void __cdecl MovableBlock_Control(int16_t item_num);
 0x00433A70  0x0239  +       void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00433CD0  0x004E  -       int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);

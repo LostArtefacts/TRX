@@ -17,6 +17,14 @@ typedef enum {
     MBS_PULL = 3,
 } MOVABLE_BLOCK_STATE;
 
+void __cdecl MovableBlock_Initialise(const int16_t item_num)
+{
+    ITEM *item = &g_Items[item_num];
+    if (item->status != IS_INVISIBLE) {
+        Room_AlterFloorHeight(&g_Items[item_num], -WALL_L);
+    }
+}
+
 void __cdecl MovableBlock_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {

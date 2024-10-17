@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.04% (780)</tspan> · <tspan class="known">33.50% (408)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.12% (781)</tspan> · <tspan class="known">33.42% (407)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="478.37" height="6" x="0" y="0" class="decompiled"/>
-<rect width="250.23" height="6" x="478.37" y="0" class="known"/>
+<rect width="478.99" height="6" x="0" y="0" class="decompiled"/>
+<rect width="249.61" height="6" x="478.99" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -682,7 +682,7 @@
 <rect width="12" height="12" x="45" y="180" class="known"><title>void __cdecl ShootAtLara(FX *fx);</title></rect>
 <rect width="12" height="12" x="60" y="180" class="decompiled"><title>int32_t __cdecl Effect_ExplodingDeath(int16_t item_num, int32_t mesh_bits, int16_t damage);</title></rect>
 <rect width="12" height="12" x="75" y="180" class="known"><title>void __cdecl BodyPart_Control(int16_t fx_num);</title></rect>
-<rect width="12" height="12" x="90" y="180" class="known"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="90" y="180" class="decompiled"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="105" y="180" class="known"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="120" y="180" class="decompiled"><title>void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="135" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.48%</tspan> · <tspan class="known">30.20%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.49%</tspan> · <tspan class="known">30.18%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="518.99" height="6" x="0" y="0" class="decompiled"/>
-<rect width="225.57" height="6" x="518.99" y="0" class="known"/>
+<rect width="519.09" height="6" x="0" y="0" class="decompiled"/>
+<rect width="225.47" height="6" x="519.09" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2310,7 +2310,7 @@
 <rect width="3.17" height="2.92" x="713" y="309.52" class="decompiled"><title>void __cdecl Inv_Ring_CalcAdders(RING_INFO *ring, int16_t rotation_duration);</title></rect>
 <rect width="3.17" height="2.92" x="719.17" y="309.52" class="decompiled"><title>void __cdecl Inv_Ring_MotionSetup(RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames);</title></rect>
 <rect width="3.17" height="2.92" x="725.33" y="309.52" class="decompiled"><title>void __cdecl Lara_State_Fallback(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="3.17" height="2.92" x="731.50" y="309.52" class="known"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
+<rect width="3.17" height="2.92" x="731.50" y="309.52" class="decompiled"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
 <rect width="3.17" height="2.92" x="737.67" y="309.52" class="known"><title>void __cdecl DrawBridgeCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="3.17" height="2.92" x="743.83" y="309.52" class="decompiled"><title>void __cdecl Text_Init(void);</title></rect>
 <rect width="2.72" height="3.39" x="681.74" y="315.45" class="decompiled"><title>void __cdecl S_Audio_Sample_AdjustTrackVolumeAndPan(int32_t track_id, int32_t volume, int32_t pan);</title></rect>

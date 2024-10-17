@@ -100,7 +100,6 @@
 #define ControlMissile ((void __cdecl (*)(int16_t fx_num))0x00432FE0)
 #define ShootAtLara ((void __cdecl (*)(FX *fx))0x004332B0)
 #define BodyPart_Control ((void __cdecl (*)(int16_t fx_num))0x004336F0)
-#define MovableBlock_Initialise ((void __cdecl (*)(int16_t item_num))0x004338F0)
 #define MovableBlock_Control ((void __cdecl (*)(int16_t item_num))0x00433920)
 #define MovableBlock_TestDestination ((int32_t __cdecl (*)(ITEM *item, int32_t block_height))0x00433CD0)
 #define MovableBlock_TestPush ((int32_t __cdecl (*)(ITEM *item, int32_t block_height, uint16_t quadrant))0x00433D20)
