@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.45% (785)</tspan> · <tspan class="known">33.09% (403)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.53% (786)</tspan> · <tspan class="known">33% (402)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="481.44" height="6" x="0" y="0" class="decompiled"/>
-<rect width="247.16" height="6" x="481.44" y="0" class="known"/>
+<rect width="482.05" height="6" x="0" y="0" class="decompiled"/>
+<rect width="246.55" height="6" x="482.05" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -689,7 +689,7 @@
 <rect width="12" height="12" x="150" y="180" class="decompiled"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="12" height="12" x="165" y="180" class="decompiled"><title>int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="12" height="12" x="180" y="180" class="decompiled"><title>void __cdecl Room_AlterFloorHeight(ITEM *item, int32_t height);</title></rect>
-<rect width="12" height="12" x="195" y="180" class="known"><title>void __cdecl MovableBlock_Draw(const ITEM *item);</title></rect>
+<rect width="12" height="12" x="195" y="180" class="decompiled"><title>void __cdecl MovableBlock_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="210" y="180" class="known"><title>void __cdecl Object_DrawUnclippedItem(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="225" y="180" class="known"><title>void __cdecl EarthQuake(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="240" y="180" class="known"><title>void __cdecl ControlCutShotgun(int16_t item_num);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.86%</tspan> · <tspan class="known">29.81%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.87%</tspan> · <tspan class="known">29.80%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="521.86" height="6" x="0" y="0" class="decompiled"/>
-<rect width="222.70" height="6" x="521.86" y="0" class="known"/>
+<rect width="521.93" height="6" x="0" y="0" class="decompiled"/>
+<rect width="222.63" height="6" x="521.93" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2369,7 +2369,7 @@
 <rect width="2.57" height="2.21" x="698.40" y="337.48" class="known"><title>void __cdecl FreePalette(int32_t palette_idx);</title></rect>
 <rect width="2.57" height="2.07" x="698.40" y="342.69" class="decompiled"><title>void __cdecl Matrix_Pop_I(void);</title></rect>
 <rect width="2.57" height="2.07" x="698.40" y="347.76" class="decompiled"><title>void __cdecl Inv_Ring_MotionRotation(RING_INFO *ring, int16_t rotation, int16_t target);</title></rect>
-<rect width="2.57" height="2.07" x="698.40" y="352.82" class="known"><title>void __cdecl MovableBlock_Draw(const ITEM *item);</title></rect>
+<rect width="2.57" height="2.07" x="698.40" y="352.82" class="decompiled"><title>void __cdecl MovableBlock_Draw(const ITEM *item);</title></rect>
 <rect width="2.57" height="2.07" x="698.40" y="357.89" class="decompiled"><title>void __cdecl WinVidFreeWindow(void);</title></rect>
 <rect width="2.57" height="2.07" x="698.40" y="362.95" class="decompiled"><title>bool __cdecl DInputCreate(void);</title></rect>
 <rect width="2.57" height="2.07" x="698.40" y="368.02" class="decompiled"><title>bool __cdecl HWR_Init(void);</title></rect>

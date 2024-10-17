@@ -3530,7 +3530,7 @@ typedef enum {
 0x00433D20  0x0137  +       int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);
 0x00433E70  0x0225  +       int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);
 0x004340B0  0x00BB  +       void __cdecl Room_AlterFloorHeight(ITEM *item, int32_t height);
-0x00434170  0x0022  -       void __cdecl MovableBlock_Draw(const ITEM *item);
+0x00434170  0x0022  +       void __cdecl MovableBlock_Draw(const ITEM *item);
 0x004341A0  0x006B  -       void __cdecl Object_DrawUnclippedItem(const ITEM *item);
 
 # game/objects.c

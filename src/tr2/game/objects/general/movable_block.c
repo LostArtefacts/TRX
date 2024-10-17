@@ -319,3 +319,12 @@ void __cdecl MovableBlock_Collision(
         Lara_Animate(lara_item);
     }
 }
+
+void __cdecl MovableBlock_Draw(const ITEM *const item)
+{
+    if (item->status == IS_ACTIVE) {
+        Object_DrawUnclippedItem(item);
+    } else {
+        Object_DrawAnimatingItem(item);
+    }
+}
