@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.29% (783)</tspan> · <tspan class="known">33.25% (405)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.37% (784)</tspan> · <tspan class="known">33.17% (404)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="480.21" height="6" x="0" y="0" class="decompiled"/>
-<rect width="248.39" height="6" x="480.21" y="0" class="known"/>
+<rect width="480.83" height="6" x="0" y="0" class="decompiled"/>
+<rect width="247.77" height="6" x="480.83" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -686,7 +686,7 @@
 <rect width="12" height="12" x="105" y="180" class="decompiled"><title>void __cdecl MovableBlock_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="120" y="180" class="decompiled"><title>void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="135" y="180" class="decompiled"><title>int32_t __cdecl MovableBlock_TestDestination(ITEM *item, int32_t block_height);</title></rect>
-<rect width="12" height="12" x="150" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
+<rect width="12" height="12" x="150" y="180" class="decompiled"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="12" height="12" x="165" y="180" class="known"><title>int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="12" height="12" x="180" y="180" class="decompiled"><title>void __cdecl Room_AlterFloorHeight(ITEM *item, int32_t height);</title></rect>
 <rect width="12" height="12" x="195" y="180" class="known"><title>void __cdecl MovableBlock_Draw(const ITEM *item);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.61%</tspan> · <tspan class="known">30.06%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.70%</tspan> · <tspan class="known">29.97%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="519.97" height="6" x="0" y="0" class="decompiled"/>
-<rect width="224.58" height="6" x="519.97" y="0" class="known"/>
+<rect width="520.65" height="6" x="0" y="0" class="decompiled"/>
+<rect width="223.90" height="6" x="520.65" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1608,7 +1608,7 @@
 <rect width="13.48" height="12.71" x="448.61" y="268.42" class="decompiled"><title>void __cdecl Camera_UpdateCutscene(void);</title></rect>
 <rect width="13.48" height="12.71" x="448.61" y="284.13" class="known"><title>void __cdecl ControlSpikeWall(int16_t item_num);</title></rect>
 <rect width="13.48" height="12.66" x="448.61" y="299.84" class="decompiled"><title>int32_t __cdecl Item_TestPosition(int16_t *bounds, ITEM *src_item, ITEM *dst_item);</title></rect>
-<rect width="13.48" height="12.66" x="448.61" y="315.51" class="known"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
+<rect width="13.48" height="12.66" x="448.61" y="315.51" class="decompiled"><title>int32_t __cdecl MovableBlock_TestPush(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
 <rect width="13.48" height="12.66" x="448.61" y="331.17" class="known"><title>void __cdecl CopyBitmapPalette(RGB_888 *src_pal, BYTE *src_bitmap, int32_t bitmap_size, RGB_888 *dest_pal);</title></rect>
 <rect width="13.48" height="12.61" x="448.61" y="346.83" class="decompiled"><title>void __cdecl Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="13.48" height="12.56" x="448.61" y="362.44" class="decompiled"><title>BOOL __cdecl Level_LoadSprites(HANDLE handle);</title></rect>

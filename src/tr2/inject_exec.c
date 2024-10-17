@@ -974,6 +974,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00433920, MovableBlock_Control);
     INJECT(enable, 0x00433A70, MovableBlock_Collision);
     INJECT(enable, 0x00433CD0, MovableBlock_TestDestination);
+    INJECT(enable, 0x00433D20, MovableBlock_TestPush);
     INJECT(enable, 0x00434400, FinalLevelCounter_Control);
     INJECT(enable, 0x00434800, GongBonger_Control);
     INJECT(enable, 0x004348C0, Zipline_Collision);

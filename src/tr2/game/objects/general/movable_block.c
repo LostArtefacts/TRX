@@ -1,5 +1,6 @@
 #include "game/objects/general/movable_block.h"
 
+#include "game/collide.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -27,6 +28,63 @@ int32_t __cdecl MovableBlock_TestDestination(
 
     const int16_t floor = sector->floor << 8;
     return floor == NO_HEIGHT || (floor == item->pos.y - block_height);
+}
+
+int32_t __cdecl MovableBlock_TestPush(
+    const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
+{
+    if (!MovableBlock_TestDestination(item, block_height)) {
+        return false;
+    }
+
+    int32_t x = item->pos.x;
+    int32_t y = item->pos.y;
+    int32_t z = item->pos.z;
+    int16_t room_num = item->room_num;
+
+    switch (quadrant) {
+    case DIR_NORTH:
+        z += WALL_L;
+        break;
+    case DIR_EAST:
+        x += WALL_L;
+        break;
+    case DIR_SOUTH:
+        z -= WALL_L;
+        break;
+    case DIR_WEST:
+        x -= WALL_L;
+        break;
+    default:
+        break;
+    }
+
+    COLL_INFO coll = {
+        .quadrant = quadrant,
+        .radius = 500,
+        0,
+    };
+    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+        return false;
+    }
+
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+    if ((sector->floor << 8) != y) {
+        return false;
+    }
+
+    Room_GetHeight(sector, x, y, z);
+    if (g_HeightType != HT_WALL) {
+        return false;
+    }
+
+    const int32_t y_max = y - block_height + 100;
+    sector = Room_GetSector(x, y_max, z, &room_num);
+    if (Room_GetCeiling(sector, x, y_max, z) > y_max) {
+        return false;
+    }
+
+    return true;
 }
 
 void __cdecl MovableBlock_Initialise(const int16_t item_num)
