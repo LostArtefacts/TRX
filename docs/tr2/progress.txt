@@ -3925,9 +3925,9 @@ typedef enum {
 0x0044B520  0x00C4  -R      BOOL __cdecl S_ReloadLevelGraphics(BOOL reload_palettes, BOOL reload_tex_pages);
 0x0044B5F0  0x00C6  +       BOOL __cdecl GF_ReadStringTable(DWORD count, char **string_table, char **string_buf, LPDWORD buf_size, HANDLE handle);
 0x0044B6C0  0x06D1  +       BOOL __cdecl GF_LoadFromFile(const char *file_name);
-0x0044BDA0  0x006B  -R      bool __cdecl PlayFMV(const char *file_name);
+0x0044BDA0  0x006B  +R      bool __cdecl PlayFMV(const char *file_name);
 0x0044BE10  0x02E0  +R      void __cdecl WinPlayFMV(const char *file_name, bool is_playback);
-0x0044C0F0  0x0048  -R      void __cdecl WinStopFMV(bool is_playback);
+0x0044C0F0  0x0048  +R      void __cdecl WinStopFMV(bool is_playback);
 0x0044C140  0x0088  -R      bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);
 0x0044C1D0  0x0023  -R      uint16_t __cdecl S_COLOR(int32_t red, int32_t green, int32_t blue);
 0x0044C200  0x0035  -R      void __cdecl S_DrawScreenLine(int32_t x, int32_t y, int32_t z, int32_t x_len, int32_t y_len, BYTE color_idx, D3DCOLOR *gour, uint16_t flags);
@@ -4186,7 +4186,7 @@ typedef enum {
 0x00458D6C  0x0006  *       int __cdecl Player_InitMovie(LPVOID, DWORD, DWORD, LPCTSTR, DWORD);
 0x00458D72  0x0006  *       int __cdecl Player_PassInDirectDrawObject(LPDIRECTDRAW3);
 0x00458D78  0x0006  *       int __cdecl Player_ReturnPlaybackMode(BOOL);
-0x00458D7E  0x0006  *       int __cdecl Player_ShutDownSoundSystem();
+0x00458D7E  0x0006  *       int __cdecl Player_ShutDownSoundSystem(void);
 0x00458D84  0x0006  *       int __cdecl Player_ShutDownMovie(LPVOID);
 0x00458D8A  0x0006  *       int __cdecl Player_ShutDownVideo(LPVOID);
 0x00458D90  0x0006  *       int __cdecl Player_ShutDownSound(LPVOID);

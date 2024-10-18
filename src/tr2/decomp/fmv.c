@@ -1,8 +1,29 @@
 #include "decomp/fmv.h"
 
+#include "decomp/decomp.h"
 #include "game/input.h"
+#include "game/music.h"
 #include "global/funcs.h"
 #include "global/vars.h"
+
+bool __cdecl PlayFMV(const char *const file_name)
+{
+    g_IsFMVPlaying = true;
+    Music_Stop();
+    ShowCursor(false);
+    RenderFinish(true);
+    const char *full_path = GetFullPath(file_name);
+    WinPlayFMV(full_path, true);
+    WinStopFMV(true);
+
+    g_IsFMVPlaying = false;
+    if (!g_IsGameToExit) {
+        FmvBackToGame();
+    }
+
+    ShowCursor(true);
+    return g_IsGameToExit;
+}
 
 void __cdecl WinPlayFMV(const char *const file_name, const bool is_playback)
 {
@@ -91,5 +112,17 @@ void __cdecl WinPlayFMV(const char *const file_name, const bool is_playback)
         if ((g_Input & IN_OPTION) != 0) {
             break;
         }
+    }
+}
+
+void __cdecl WinStopFMV(const bool is_playback)
+{
+    Player_StopTimer(g_MovieContext);
+    Player_ShutDownSound(&g_FmvSoundContext);
+    Player_ShutDownVideo(&g_FmvContext);
+    Player_ShutDownMovie(&g_MovieContext);
+    Player_ShutDownSoundSystem();
+    if (is_playback) {
+        Player_ReturnPlaybackMode(is_playback);
     }
 }

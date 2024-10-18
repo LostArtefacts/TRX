@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.34% (788)</tspan> · <tspan class="known">34.24% (426)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.50% (790)</tspan> · <tspan class="known">34.08% (424)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="473.18" height="6" x="0" y="0" class="decompiled"/>
-<rect width="255.81" height="6" x="473.18" y="0" class="known"/>
+<rect width="474.38" height="6" x="0" y="0" class="decompiled"/>
+<rect width="254.60" height="6" x="474.38" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1055,9 +1055,9 @@
 <rect width="12" height="12" x="390" y="285" class="known"><title>BOOL __cdecl S_ReloadLevelGraphics(BOOL reload_palettes, BOOL reload_tex_pages);</title></rect>
 <rect width="12" height="12" x="405" y="285" class="decompiled"><title>BOOL __cdecl GF_ReadStringTable(DWORD count, char **string_table, char **string_buf, LPDWORD buf_size, HANDLE handle);</title></rect>
 <rect width="12" height="12" x="420" y="285" class="decompiled"><title>BOOL __cdecl GF_LoadFromFile(const char *file_name);</title></rect>
-<rect width="12" height="12" x="435" y="285" class="known"><title>bool __cdecl PlayFMV(const char *file_name);</title></rect>
+<rect width="12" height="12" x="435" y="285" class="decompiled"><title>bool __cdecl PlayFMV(const char *file_name);</title></rect>
 <rect width="12" height="12" x="450" y="285" class="decompiled"><title>void __cdecl WinPlayFMV(const char *file_name, bool is_playback);</title></rect>
-<rect width="12" height="12" x="465" y="285" class="known"><title>void __cdecl WinStopFMV(bool is_playback);</title></rect>
+<rect width="12" height="12" x="465" y="285" class="decompiled"><title>void __cdecl WinStopFMV(bool is_playback);</title></rect>
 <rect width="12" height="12" x="480" y="285" class="known"><title>bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="12" height="12" x="495" y="285" class="known"><title>uint16_t __cdecl S_COLOR(int32_t red, int32_t green, int32_t blue);</title></rect>
 <rect width="12" height="12" x="510" y="285" class="known"><title>void __cdecl S_DrawScreenLine(int32_t x, int32_t y, int32_t z, int32_t x_len, int32_t y_len, BYTE color_idx, D3DCOLOR *gour, uint16_t flags);</title></rect>
@@ -1315,7 +1315,7 @@
 <rect width="12" height="12" x="540" y="360" class="known"><title>int __cdecl Player_InitMovie(LPVOID, DWORD, DWORD, LPCTSTR, DWORD);</title></rect>
 <rect width="12" height="12" x="555" y="360" class="known"><title>int __cdecl Player_PassInDirectDrawObject(LPDIRECTDRAW3);</title></rect>
 <rect width="12" height="12" x="570" y="360" class="known"><title>int __cdecl Player_ReturnPlaybackMode(BOOL);</title></rect>
-<rect width="12" height="12" x="585" y="360" class="known"><title>int __cdecl Player_ShutDownSoundSystem();</title></rect>
+<rect width="12" height="12" x="585" y="360" class="known"><title>int __cdecl Player_ShutDownSoundSystem(void);</title></rect>
 <rect width="12" height="12" x="600" y="360" class="known"><title>int __cdecl Player_ShutDownMovie(LPVOID);</title></rect>
 <rect width="12" height="12" x="615" y="360" class="known"><title>int __cdecl Player_ShutDownVideo(LPVOID);</title></rect>
 <rect width="12" height="12" x="630" y="360" class="known"><title>int __cdecl Player_ShutDownSound(LPVOID);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.08%</tspan> · <tspan class="known">29.59%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.13%</tspan> · <tspan class="known">29.54%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="523.49" height="6" x="0" y="0" class="decompiled"/>
-<rect width="221.07" height="6" x="523.49" y="0" class="known"/>
+<rect width="523.88" height="6" x="0" y="0" class="decompiled"/>
+<rect width="220.68" height="6" x="523.88" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2021,7 +2021,7 @@
 <rect width="6.65" height="6.20" x="588.61" y="368.80" class="decompiled"><title>void __cdecl Output_SetFarZ(int32_t far_z);</title></rect>
 <rect width="6.66" height="6.19" x="598.27" y="226.03" class="decompiled"><title>void __cdecl Lara_State_Swim(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="6.66" height="6.19" x="607.92" y="226.03" class="known"><title>void __cdecl Object_DrawUnclippedItem(const ITEM *item);</title></rect>
-<rect width="6.66" height="6.19" x="617.58" y="226.03" class="known"><title>bool __cdecl PlayFMV(const char *file_name);</title></rect>
+<rect width="6.66" height="6.19" x="617.58" y="226.03" class="decompiled"><title>bool __cdecl PlayFMV(const char *file_name);</title></rect>
 <rect width="6.57" height="6.19" x="627.24" y="226.03" class="decompiled"><title>void __cdecl Direct3DRelease(void);</title></rect>
 <rect width="6.57" height="6.19" x="636.81" y="226.03" class="decompiled"><title>void __cdecl GameWindowCalculateSizeFromClientByZero(int32_t *width, int32_t *height);</title></rect>
 <rect width="6.57" height="6.19" x="646.38" y="226.03" class="decompiled"><title>bool __cdecl WinVidRegisterGameWindowClass(void);</title></rect>
@@ -2159,7 +2159,7 @@
 <rect width="4.80" height="4.66" x="632.45" y="362.69" class="decompiled"><title>DISPLAY_ADAPTER_NODE *__cdecl WinVidGetDisplayAdapter(GUID *lpGuid);</title></rect>
 <rect width="4.80" height="4.66" x="632.45" y="370.34" class="decompiled"><title>DISPLAY_MODE *__thiscall InsertDisplayModeInListHead(DISPLAY_MODE_LIST *modeList);</title></rect>
 <rect width="5.01" height="4.46" x="640.25" y="261.02" class="decompiled"><title>const SOUND_ADAPTER_NODE *__cdecl S_Audio_Sample_GetAdapter(GUID *guid);</title></rect>
-<rect width="5.01" height="4.46" x="648.26" y="261.02" class="known"><title>void __cdecl WinStopFMV(bool is_playback);</title></rect>
+<rect width="5.01" height="4.46" x="648.26" y="261.02" class="decompiled"><title>void __cdecl WinStopFMV(bool is_playback);</title></rect>
 <rect width="5.01" height="4.46" x="656.27" y="261.02" class="decompiled"><title>int32_t __fastcall Math_Atan(int32_t x, int32_t y);</title></rect>
 <rect width="4.89" height="4.46" x="664.27" y="261.02" class="decompiled"><title>int32_t __cdecl Creature_Activate(int16_t item_num);</title></rect>
 <rect width="4.89" height="4.46" x="672.17" y="261.02" class="decompiled"><title>void __cdecl Matrix_TranslateRel_ID(int32_t x, int32_t y, int32_t z, int32_t x2, int32_t y2, int32_t z2);</title></rect>
@@ -2553,7 +2553,7 @@
 <rect width="0.10" height="0.10" x="739.89" y="373.03" class="known"><title>int __cdecl Player_InitMovie(LPVOID, DWORD, DWORD, LPCTSTR, DWORD);</title></rect>
 <rect width="0.10" height="0.10" x="739.89" y="375.52" class="known"><title>int __cdecl Player_PassInDirectDrawObject(LPDIRECTDRAW3);</title></rect>
 <rect width="0.10" height="0.10" x="741.90" y="368.07" class="known"><title>int __cdecl Player_ReturnPlaybackMode(BOOL);</title></rect>
-<rect width="0.10" height="0.10" x="743.92" y="368.07" class="known"><title>int __cdecl Player_ShutDownSoundSystem();</title></rect>
+<rect width="0.10" height="0.10" x="743.92" y="368.07" class="known"><title>int __cdecl Player_ShutDownSoundSystem(void);</title></rect>
 <rect width="0.10" height="0.10" x="745.95" y="368.07" class="known"><title>int __cdecl Player_ShutDownMovie(LPVOID);</title></rect>
 <rect width="0.10" height="0.10" x="747.97" y="368.07" class="known"><title>int __cdecl Player_ShutDownVideo(LPVOID);</title></rect>
 <rect width="0.10" height="0.10" x="741.90" y="370.53" class="known"><title>int __cdecl Player_ShutDownSound(LPVOID);</title></rect>
