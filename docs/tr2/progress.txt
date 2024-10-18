@@ -3926,7 +3926,7 @@ typedef enum {
 0x0044B5F0  0x00C6  +       BOOL __cdecl GF_ReadStringTable(DWORD count, char **string_table, char **string_buf, LPDWORD buf_size, HANDLE handle);
 0x0044B6C0  0x06D1  +       BOOL __cdecl GF_LoadFromFile(const char *file_name);
 0x0044BDA0  0x006B  -R      bool __cdecl PlayFMV(const char *file_name);
-0x0044BE10  0x02E0  -R      void __cdecl WinPlayFMV(const char *file_name, bool is_playback);
+0x0044BE10  0x02E0  +R      void __cdecl WinPlayFMV(const char *file_name, bool is_playback);
 0x0044C0F0  0x0048  -R      void __cdecl WinStopFMV(bool is_playback);
 0x0044C140  0x0088  -R      bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);
 0x0044C1D0  0x0023  -R      uint16_t __cdecl S_COLOR(int32_t red, int32_t green, int32_t blue);
@@ -4165,6 +4165,32 @@ typedef enum {
 0x00457C79  0x001A  +       int32_t __fastcall Math_SinImpl(int16_t angle);
 0x00457C93  0x002C  +       uint32_t  __fastcall Math_Sqrt(uint32_t n);
 
+0x00458D00  0x0006  *       int __cdecl Player_PlayFrame(LPVOID, LPVOID, LPVOID, DWORD, LPCRECT, DWORD, DWORD, DWORD);
+0x00458D06  0x0006  *       int __cdecl Movie_GetTotalFrames(LPVOID);
+0x00458D0C  0x0006  *       int __cdecl Movie_GetCurrentFrame(LPVOID);
+0x00458D12  0x0006  *       int __cdecl Player_StartTimer(LPVOID);
+0x00458D18  0x0006  *       int __cdecl Player_InitMoviePlayback(LPVOID, LPVOID, LPVOID);
+0x00458D1E  0x0006  *       int __cdecl Movie_SetSyncAdjust(LPVOID, LPVOID, DWORD);
+0x00458D24  0x0006  *       int __cdecl Player_InitSound(LPVOID, DWORD, DWORD, BOOL, DWORD, DWORD, DWORD, DWORD, DWORD);
+0x00458D2A  0x0006  *       int __cdecl Movie_GetSoundChannels(LPVOID);
+0x00458D30  0x0006  *       int __cdecl Movie_GetSoundRate(LPVOID);
+0x00458D36  0x0006  *       int __cdecl Movie_GetSoundPrecision(LPVOID);
+0x00458D3C  0x0006  *       int __cdecl Player_GetDSErrorCode(void);
+0x00458D42  0x0006  *       int __cdecl Player_InitSoundSystem(HWND);
+0x00458D48  0x0006  *       int __cdecl Player_BlankScreen(DWORD, DWORD, DWORD, DWORD);
+0x00458D4E  0x0006  *       int __cdecl Player_InitPlaybackMode(HWND, LPVOID, DWORD, DWORD);
+0x00458D54  0x0006  *       int __cdecl Player_InitVideo(LPVOID, LPVOID, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD);
+0x00458D5A  0x0006  *       int __cdecl Movie_GetXSize(LPVOID);
+0x00458D60  0x0006  *       int __cdecl Movie_GetYSize(LPVOID);
+0x00458D66  0x0006  *       int __cdecl Movie_GetFormat(LPVOID);
+0x00458D6C  0x0006  *       int __cdecl Player_InitMovie(LPVOID, DWORD, DWORD, LPCTSTR, DWORD);
+0x00458D72  0x0006  *       int __cdecl Player_PassInDirectDrawObject(LPDIRECTDRAW3);
+0x00458D78  0x0006  *       int __cdecl Player_ReturnPlaybackMode(BOOL);
+0x00458D7E  0x0006  *       int __cdecl Player_ShutDownSoundSystem();
+0x00458D84  0x0006  *       int __cdecl Player_ShutDownMovie(LPVOID);
+0x00458D8A  0x0006  *       int __cdecl Player_ShutDownVideo(LPVOID);
+0x00458D90  0x0006  *       int __cdecl Player_ShutDownSound(LPVOID);
+0x00458D96  0x0006  *       int __cdecl Player_StopTimer(LPVOID);
 
 
 # VARIABLES
@@ -4714,3 +4740,6 @@ typedef enum {
 0x00466108  -       XYZ_32 g_PuzzleHolePosition;
 0x004D7C58  -       XYZ_32 g_InteractPosition;
 0x004D7C68  -       XYZ_32 g_DetonatorPosition;
+0x004D9EB0  -       void *g_MovieContext;
+0x004D9EB4  -       void *g_FmvContext;
+0x004D9EB8  -       void *g_FmvSoundContext;

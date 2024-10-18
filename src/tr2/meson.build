@@ -85,6 +85,7 @@ dll_sources = [
   'config.c',
   'config_map.c',
   'decomp/decomp.c',
+  'decomp/fmv.c',
   'decomp/effects.c',
   'decomp/stats.c',
   'game/background.c',

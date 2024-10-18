@@ -2,6 +2,7 @@
 
 #include "decomp/decomp.h"
 #include "decomp/effects.h"
+#include "decomp/fmv.h"
 #include "decomp/stats.h"
 #include "game/background.h"
 #include "game/box.h"
@@ -75,6 +76,7 @@
 #include "specific/s_input.h"
 
 static void M_DecompGeneral(const bool enable);
+static void M_DecompFMV(const bool enable);
 static void M_DecompStats(const bool enable);
 static void M_DecompEffects(const bool enable);
 static void M_HWR(bool enable);
@@ -227,6 +229,11 @@ static void M_DecompGeneral(const bool enable)
     INJECT(enable, 0x00455140, S_LoadSettings);
     INJECT(enable, 0x004550C0, S_SaveSettings);
     INJECT(enable, 0x0044C3F0, S_Wait);
+}
+
+static void M_DecompFMV(const bool enable)
+{
+    INJECT(enable, 0x0044BE10, WinPlayFMV);
 }
 
 static void M_DecompStats(const bool enable)
@@ -1046,6 +1053,7 @@ static void M_S_FlaggedString(const bool enable)
 void Inject_Exec(void)
 {
     M_DecompGeneral(true);
+    M_DecompFMV(true);
     M_DecompStats(true);
     M_DecompEffects(true);
     M_HWR(true);
