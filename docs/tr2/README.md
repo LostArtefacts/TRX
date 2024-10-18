@@ -37,6 +37,7 @@ decompilation process. We recognize that there is much work to be done.
 #### Audio
 
 - fixed music not playing with certain game versions
+- fixed the audio not being in sync when Lara strikes the gong in Ice Palace
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
