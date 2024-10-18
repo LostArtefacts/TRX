@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.5...develop) - ××××-××-××
 - fixed `/give` not working with weapons (regression from 0.5)
 - fixed the camera being cut off after using the gong hammer in Ice Palace (#1580)
+- fixed the audio not being in sync when Lara strikes the gong in Ice Palace (#1725)
 - improved switch object names
     - Switch Type 1 renamed to "Airlock Switch"
     - Switch Type 2 renamed to "Small Switch"
