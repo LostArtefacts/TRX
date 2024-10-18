@@ -6,22 +6,49 @@
 #include "global/funcs.h"
 #include "global/vars.h"
 
-bool __cdecl PlayFMV(const char *const file_name)
+static void M_Begin(void);
+static void M_Play(const char *file_name);
+static void M_End(void);
+
+static void M_Begin(void)
 {
     g_IsFMVPlaying = true;
     Music_Stop();
     ShowCursor(false);
     RenderFinish(true);
-    const char *full_path = GetFullPath(file_name);
+}
+
+static void M_Play(const char *const file_name)
+{
+    const char *const full_path = GetFullPath(file_name);
     WinPlayFMV(full_path, true);
     WinStopFMV(true);
+}
 
+static void M_End(void)
+{
     g_IsFMVPlaying = false;
     if (!g_IsGameToExit) {
         FmvBackToGame();
     }
-
     ShowCursor(true);
+}
+
+bool __cdecl PlayFMV(const char *const file_name)
+{
+    M_Begin();
+    M_Play(file_name);
+    M_End();
+    return g_IsGameToExit;
+}
+
+bool __cdecl IntroFMV(
+    const char *const file_name_1, const char *const file_name_2)
+{
+    M_Begin();
+    M_Play(file_name_1);
+    M_Play(file_name_2);
+    M_End();
     return g_IsGameToExit;
 }
 

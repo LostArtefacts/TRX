@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.50% (790)</tspan> · <tspan class="known">34.08% (424)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.59% (791)</tspan> · <tspan class="known">34% (423)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="474.38" height="6" x="0" y="0" class="decompiled"/>
-<rect width="254.60" height="6" x="474.38" y="0" class="known"/>
+<rect width="474.98" height="6" x="0" y="0" class="decompiled"/>
+<rect width="254" height="6" x="474.98" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1058,7 +1058,7 @@
 <rect width="12" height="12" x="435" y="285" class="decompiled"><title>bool __cdecl PlayFMV(const char *file_name);</title></rect>
 <rect width="12" height="12" x="450" y="285" class="decompiled"><title>void __cdecl WinPlayFMV(const char *file_name, bool is_playback);</title></rect>
 <rect width="12" height="12" x="465" y="285" class="decompiled"><title>void __cdecl WinStopFMV(bool is_playback);</title></rect>
-<rect width="12" height="12" x="480" y="285" class="known"><title>bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
+<rect width="12" height="12" x="480" y="285" class="decompiled"><title>bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="12" height="12" x="495" y="285" class="known"><title>uint16_t __cdecl S_COLOR(int32_t red, int32_t green, int32_t blue);</title></rect>
 <rect width="12" height="12" x="510" y="285" class="known"><title>void __cdecl S_DrawScreenLine(int32_t x, int32_t y, int32_t z, int32_t x_len, int32_t y_len, BYTE color_idx, D3DCOLOR *gour, uint16_t flags);</title></rect>
 <rect width="12" height="12" x="525" y="285" class="known"><title>void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.13%</tspan> · <tspan class="known">29.54%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.17%</tspan> · <tspan class="known">29.50%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="523.88" height="6" x="0" y="0" class="decompiled"/>
-<rect width="220.68" height="6" x="523.88" y="0" class="known"/>
+<rect width="524.18" height="6" x="0" y="0" class="decompiled"/>
+<rect width="220.38" height="6" x="524.18" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1934,7 +1934,7 @@
 <rect width="7.64" height="7.68" x="567.57" y="303.85" class="decompiled"><title>void __cdecl Lara_State_TurnLeft(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.64" height="7.68" x="567.57" y="314.53" class="known"><title>void __cdecl S_OutputPolyList(void);</title></rect>
 <rect width="7.64" height="7.60" x="567.57" y="325.22" class="decompiled"><title>bool __cdecl WinVidGoFullScreen(DISPLAY_MODE *disp_mode);</title></rect>
-<rect width="7.64" height="7.60" x="567.57" y="335.82" class="known"><title>bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
+<rect width="7.64" height="7.60" x="567.57" y="335.82" class="decompiled"><title>bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="7.64" height="7.53" x="567.57" y="346.42" class="known"><title>void __cdecl DyingMonk(int16_t item_num);</title></rect>
 <rect width="7.64" height="7.53" x="567.57" y="356.95" class="decompiled"><title>bool __cdecl HideDDrawGameWindow(void);</title></rect>
 <rect width="7.64" height="7.53" x="567.57" y="367.47" class="known"><title>int32_t __cdecl CreateTexturePalette(const RGB_888 *pal);</title></rect>

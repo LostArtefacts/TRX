@@ -3928,7 +3928,7 @@ typedef enum {
 0x0044BDA0  0x006B  +R      bool __cdecl PlayFMV(const char *file_name);
 0x0044BE10  0x02E0  +R      void __cdecl WinPlayFMV(const char *file_name, bool is_playback);
 0x0044C0F0  0x0048  +R      void __cdecl WinStopFMV(bool is_playback);
-0x0044C140  0x0088  -R      bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);
+0x0044C140  0x0088  +R      bool __cdecl IntroFMV(const char *file_name1, const char *file_name2);
 0x0044C1D0  0x0023  -R      uint16_t __cdecl S_COLOR(int32_t red, int32_t green, int32_t blue);
 0x0044C200  0x0035  -R      void __cdecl S_DrawScreenLine(int32_t x, int32_t y, int32_t z, int32_t x_len, int32_t y_len, BYTE color_idx, D3DCOLOR *gour, uint16_t flags);
 0x0044C240  0x0116  -R      void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags);
