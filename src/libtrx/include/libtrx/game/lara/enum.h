@@ -6,9 +6,7 @@ typedef enum {
     LWS_UNDERWATER   = 1,
     LWS_SURFACE      = 2,
     LWS_CHEAT        = 3,
-#if TR_VERSION == 2
     LWS_WADE         = 4,
-#endif
 } LARA_WATER_STATE;
 // clang-format on
 

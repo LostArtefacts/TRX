@@ -110,7 +110,8 @@ void Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (g_Lara.water_status == LWS_ABOVE_WATER) {
+    if (g_Lara.water_status == LWS_ABOVE_WATER
+        || g_Lara.water_status == LWS_WADE) {
         item->rot.x = 0;
         if (!Lara_TestPosition(item, obj->bounds())) {
             goto cleanup;
@@ -179,7 +180,8 @@ void Pickup_CollisionControlled(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
-    if (g_Lara.water_status == LWS_ABOVE_WATER) {
+    if (g_Lara.water_status == LWS_ABOVE_WATER
+        || g_Lara.water_status == LWS_WADE) {
         if ((g_Input.action && g_Lara.gun_status == LGS_ARMLESS
              && !lara_item->gravity && lara_item->current_anim_state == LS_STOP
              && !g_Lara.interact_target.is_moving)

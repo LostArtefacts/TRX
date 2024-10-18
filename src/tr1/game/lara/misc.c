@@ -11,6 +11,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 #include "math/math.h"
+#include "math/math_misc.h"
 
 #include <libtrx/utils.h>
 
@@ -162,7 +163,7 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
 bool Lara_Fallen(ITEM *item, COLL_INFO *coll)
 {
-    if (coll->mid_floor <= STEPUP_HEIGHT) {
+    if (coll->mid_floor <= STEPUP_HEIGHT || g_Lara.water_status == LWS_WADE) {
         return false;
     }
     item->current_anim_state = LS_JUMP_FORWARD;
@@ -586,22 +587,21 @@ void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll)
 
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
-        item->room_num, SURF_HEIGHT);
+        item->room_num, SURF_HEIGHT + 100);
 
     Item_ShiftCol(item, coll);
 
-    if ((coll->coll_type
-         & (COLL_FRONT | COLL_LEFT | COLL_RIGHT | COLL_TOP | COLL_TOPFRONT
-            | COLL_CLAMP))
-        || coll->mid_floor < 0) {
+    if (coll->coll_type == COLL_LEFT) {
+        item->rot.y += 5 * PHD_DEGREE;
+    } else if (coll->coll_type == COLL_RIGHT) {
+        item->rot.y -= 5 * PHD_DEGREE;
+    } else if (
+        coll->coll_type != COLL_NONE
+        || (coll->mid_floor < 0 && coll->mid_type == HT_BIG_SLOPE)) {
         item->fall_speed = 0;
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
         item->pos.z = coll->old.z;
-    } else if (coll->coll_type == COLL_LEFT) {
-        item->rot.y += 5 * PHD_DEGREE;
-    } else if (coll->coll_type == COLL_RIGHT) {
-        item->rot.y -= 5 * PHD_DEGREE;
     }
 
     int16_t wh = Room_GetWaterHeight(
@@ -616,7 +616,133 @@ void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    Lara_TestWaterClimbOut(item, coll);
+    Lara_TestWaterStepOut(item, coll);
+}
+
+int32_t Lara_GetWaterDepth(
+    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+{
+    const ROOM *r = Room_Get(room_num);
+    const SECTOR *sector;
+
+    while (true) {
+        int32_t z_sector = (z - r->pos.z) >> WALL_SHIFT;
+        int32_t x_sector = (x - r->pos.x) >> WALL_SHIFT;
+
+        if (z_sector <= 0) {
+            z_sector = 0;
+            if (x_sector < 1) {
+                x_sector = 1;
+            } else if (x_sector > r->size.x - 2) {
+                x_sector = r->size.x - 2;
+            }
+        } else if (z_sector >= r->size.z - 1) {
+            z_sector = r->size.z - 1;
+            if (x_sector < 1) {
+                x_sector = 1;
+            } else if (x_sector > r->size.x - 2) {
+                x_sector = r->size.x - 2;
+            }
+        } else if (x_sector < 0) {
+            x_sector = 0;
+        } else if (x_sector >= r->size.x) {
+            x_sector = r->size.x - 1;
+        }
+
+        sector = &r->sectors[z_sector + x_sector * r->size.z];
+        if (sector->portal_room.wall == NO_ROOM) {
+            break;
+        }
+        room_num = sector->portal_room.wall;
+        r = Room_Get(room_num);
+    }
+
+    if (r->flags & RF_UNDERWATER) {
+        while (sector->portal_room.sky != NO_ROOM) {
+            r = Room_Get(sector->portal_room.sky);
+            if (!(r->flags & RF_UNDERWATER)) {
+                const int32_t water_height = sector->ceiling.height;
+                sector = Room_GetSector(x, y, z, &room_num);
+                return Room_GetHeight(sector, x, y, z) - water_height;
+            }
+            const int32_t z_sector = (z - r->pos.z) >> WALL_SHIFT;
+            const int32_t x_sector = (x - r->pos.x) >> WALL_SHIFT;
+            sector = &r->sectors[z_sector + x_sector * r->size.z];
+        }
+        return 0x7FFF;
+    }
+
+    while (sector->portal_room.pit != NO_ROOM) {
+        r = Room_Get(sector->portal_room.pit);
+        if (r->flags & RF_UNDERWATER) {
+            const int32_t water_height = sector->floor.height;
+            sector = Room_GetSector(x, y, z, &room_num);
+            return Room_GetHeight(sector, x, y, z) - water_height;
+        }
+        const int32_t z_sector = (z - r->pos.z) >> WALL_SHIFT;
+        const int32_t x_sector = (x - r->pos.x) >> WALL_SHIFT;
+        sector = &r->sectors[z_sector + x_sector * r->size.z];
+    }
+    return NO_HEIGHT;
+}
+
+void Lara_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
+{
+    int16_t room_num = item->room_num;
+
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t water_depth =
+        Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
+
+    if (water_depth == NO_HEIGHT) {
+        item->pos = coll->old;
+        item->fall_speed = 0;
+    } else if (water_depth <= STEP_L * 2) {
+        Item_SwitchToAnim(item, LA_UNDERWATER_TO_STAND, 0);
+        item->current_anim_state = LS_WATER_OUT;
+        item->goal_anim_state = LS_STOP;
+        item->rot.x = 0;
+        item->rot.z = 0;
+        item->gravity = 0;
+        item->speed = 0;
+        item->fall_speed = 0;
+        g_Lara.water_status = LWS_WADE;
+        item->pos.y =
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    }
+}
+
+bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
+{
+    if (coll->coll_type == COLL_FRONT || coll->mid_type == HT_BIG_SLOPE
+        || coll->mid_floor >= 0) {
+        return false;
+    }
+
+    if (coll->mid_floor < -STEP_L / 2) {
+        item->current_anim_state = LS_WATER_OUT;
+        item->goal_anim_state = LS_STOP;
+        Item_SwitchToAnim(item, LA_SURF_TO_WADE, 0);
+    } else if (item->goal_anim_state == LS_SURF_LEFT) {
+        item->goal_anim_state = LS_STEP_LEFT;
+    } else if (item->goal_anim_state == LS_SURF_RIGHT) {
+        item->goal_anim_state = LS_STEP_RIGHT;
+    } else {
+        item->current_anim_state = LS_WADE;
+        item->goal_anim_state = LS_WADE;
+        Item_SwitchToAnim(item, LA_WADE, 0);
+    }
+
+    item->pos.y += coll->front_floor + SURF_HEIGHT - 5;
+    Item_UpdateRoom(item, -LARA_HEIGHT / 2);
+    item->gravity = 0;
+    item->rot.x = 0;
+    item->rot.z = 0;
+    item->speed = 0;
+    item->fall_speed = 0;
+    g_Lara.water_status = LWS_WADE;
+    return true;
 }
 
 bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
@@ -634,57 +760,50 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
         return false;
     }
 
-    const int32_t hdif = coll->front_floor + 700;
-    if (hdif < -512 || hdif > 100) {
+    const int32_t hdif = coll->front_floor + SURF_HEIGHT;
+    if (hdif <= -STEP_L * 2 || hdif > SURF_HEIGHT - STEPUP_HEIGHT) {
         return false;
     }
 
-    PHD_ANGLE angle = item->rot.y;
-    if (angle >= -HANG_ANGLE && angle <= HANG_ANGLE) {
-        angle = 0;
-    } else if (angle >= PHD_90 - HANG_ANGLE && angle <= PHD_90 + HANG_ANGLE) {
-        angle = PHD_90;
-    } else if (
-        angle >= (PHD_180 - 1) - HANG_ANGLE
-        || angle <= -(PHD_180 - 1) + HANG_ANGLE) {
-        angle = -PHD_180;
-    } else if (angle >= -PHD_90 - HANG_ANGLE && angle <= -PHD_90 + HANG_ANGLE) {
-        angle = -PHD_90;
-    }
-    if (angle & (PHD_90 - 1)) {
+    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, HANG_ANGLE);
+    if (dir == DIR_UNKNOWN) {
         return false;
     }
 
     item->pos.y += hdif - 5;
     Item_UpdateRoom(item, -LARA_HEIGHT / 2);
 
-    switch (angle) {
-    case 0:
+    switch (dir) {
+    case DIR_NORTH:
         item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RAD;
         break;
-    case PHD_90:
+    case DIR_WEST:
         item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RAD;
         break;
-    case -PHD_180:
+    case DIR_SOUTH:
         item->pos.z = (item->pos.z & -WALL_L) - LARA_RAD;
         break;
-    case -PHD_90:
+    case DIR_EAST:
         item->pos.x = (item->pos.x & -WALL_L) - LARA_RAD;
         break;
+    case DIR_UNKNOWN:
+        return false;
     }
 
     LARA_ANIMATION animation;
     if (hdif < -STEP_L / 2) {
         animation = LA_SURF_CLIMB_HIGH;
-    } else {
+    } else if (hdif < STEP_L / 2) {
         animation = LA_SURF_CLIMB_MEDIUM;
+    } else {
+        animation = LA_SURF_TO_WADE_LOW;
     }
 
     Item_SwitchToAnim(item, animation, 0);
     item->current_anim_state = LS_WATER_OUT;
     item->goal_anim_state = LS_STOP;
     item->rot.x = 0;
-    item->rot.y = angle;
+    item->rot.y = Math_DirectionToAngle(dir);
     item->rot.z = 0;
     item->gravity = 0;
     item->fall_speed = 0;
@@ -696,15 +815,24 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
 
 void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
 {
-    if (item->rot.x >= -PHD_90 && item->rot.x <= PHD_90) {
-        g_Lara.move_angle = coll->facing = item->rot.y;
+    if (item->rot.x < -PHD_90 || item->rot.x > PHD_90) {
+        g_Lara.move_angle = item->rot.y + PHD_180;
     } else {
-        g_Lara.move_angle = coll->facing = item->rot.y - PHD_180;
+        g_Lara.move_angle = item->rot.y;
     }
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + UW_HEIGHT / 2, item->pos.z,
-        item->room_num, UW_HEIGHT);
 
+    coll->facing = g_Lara.move_angle;
+
+    int32_t height = (LARA_HEIGHT * Math_Sin(item->rot.x)) >> W2V_SHIFT;
+    if (height < 0) {
+        height = -height;
+    }
+    CLAMPL(height, 200);
+
+    coll->bad_neg = -height;
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
+        item->room_num, height);
     Item_ShiftCol(item, coll);
 
     switch (coll->coll_type) {
@@ -739,14 +867,18 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
         break;
 
     case COLL_CLAMP:
+        item->pos = coll->old;
         item->fall_speed = 0;
         return;
-        break;
     }
 
     if (coll->mid_floor < 0) {
         item->pos.y += coll->mid_floor;
         item->rot.x += UW_WALLDEFLECT;
+    }
+
+    if (g_Lara.water_status != LWS_CHEAT) {
+        Lara_TestWaterDepth(item, coll);
     }
 }
 

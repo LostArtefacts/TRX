@@ -21,6 +21,7 @@ typedef enum {
     SFX_BEAR_SNARL            = 14,
     SFX_LARA_WET_FEET         = 15,
     SFX_BEAR_HURT             = 16,
+    SFX_LARA_WADE             = 17,
     SFX_BEAR_DEATH            = 18,
     SFX_WOLF_JUMP             = 19,
     SFX_WOLF_HURT             = 20,

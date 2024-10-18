@@ -368,6 +368,7 @@ void Lara_Hair_Control(void)
 
             switch (g_Lara.water_status) {
             case LWS_ABOVE_WATER:
+            case LWS_WADE:
                 m_Hair[i].pos.y += 10;
                 if (water_level != NO_HEIGHT && m_Hair[i].pos.y > water_level)
                     m_Hair[i].pos.y = water_level;

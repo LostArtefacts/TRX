@@ -44,6 +44,7 @@ typedef struct __PACKING {
     int16_t dive_timer;
     int16_t death_timer;
     int16_t current_active;
+    int32_t water_surface_dist;
     int16_t spaz_effect_count;
     FX *spaz_effect;
     int32_t mesh_effects;

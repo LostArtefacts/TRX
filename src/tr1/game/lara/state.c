@@ -39,7 +39,7 @@ void (*g_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
     Lara_State_SurfLeft,    Lara_State_SurfRight, Lara_State_UseMidas,
     Lara_State_DieMidas,    Lara_State_SwanDive,  Lara_State_FastDive,
     Lara_State_Gymnast,     Lara_State_WaterOut,  Lara_State_Controlled,
-    Lara_State_Twist,       Lara_State_UWRoll,
+    Lara_State_Twist,       Lara_State_UWRoll,    Lara_State_Wade,
 };
 
 static bool m_JumpPermitted = true;
@@ -80,9 +80,13 @@ void Lara_State_Walk(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.forward) {
-        item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
-        if (g_Config.enable_tr2_jumping && !g_Input.slow) {
-            m_JumpPermitted = true;
+        if (g_Lara.water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else {
+            item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+            if (g_Config.enable_tr2_jumping && !g_Input.slow) {
+                m_JumpPermitted = true;
+            }
         }
     } else {
         item->goal_anim_state = LS_STOP;
@@ -136,7 +140,11 @@ void Lara_State_Run(ITEM *item, COLL_INFO *coll)
     if (g_Input.jump && m_JumpPermitted && !item->gravity) {
         item->goal_anim_state = LS_JUMP_FORWARD;
     } else if (g_Input.forward) {
-        item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        if (g_Lara.water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else {
+            item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        }
     } else {
         item->goal_anim_state = LS_STOP;
     }
@@ -153,7 +161,7 @@ void Lara_State_Stop(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (g_Input.roll) {
+    if (g_Input.roll && g_Lara.water_status != LWS_WADE) {
         item->current_anim_state = LS_ROLL;
         item->goal_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_ROLL, LF_ROLL);
@@ -184,7 +192,21 @@ void Lara_State_Stop(ITEM *item, COLL_INFO *coll)
         item->goal_anim_state = LS_TURN_R;
     }
 
-    if (g_Input.jump) {
+    if (g_Lara.water_status == LWS_WADE) {
+        if (g_Input.jump) {
+            item->goal_anim_state = LS_COMPRESS;
+        }
+
+        if (g_Input.forward) {
+            if (g_Input.slow) {
+                Lara_State_Wade(item, coll);
+            } else {
+                Lara_State_Walk(item, coll);
+            }
+        } else if (g_Input.back) {
+            Lara_State_Back(item, coll);
+        }
+    } else if (g_Input.jump) {
         item->goal_anim_state = LS_COMPRESS;
     } else if (g_Input.forward) {
         if (g_Input.slow) {
@@ -280,7 +302,11 @@ void Lara_State_TurnR(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.forward) {
-        item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        if (g_Lara.water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else {
+            item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        }
     } else if (!g_Input.right) {
         item->goal_anim_state = LS_STOP;
     }
@@ -310,7 +336,11 @@ void Lara_State_TurnL(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.forward) {
-        item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        if (g_Lara.water_status == LWS_WADE) {
+            item->goal_anim_state = LS_WADE;
+        } else {
+            item->goal_anim_state = g_Input.slow ? LS_WALK : LS_RUN;
+        }
     } else if (!g_Input.left) {
         item->goal_anim_state = LS_STOP;
     }
@@ -365,25 +395,30 @@ void Lara_State_Land(ITEM *item, COLL_INFO *coll)
 
 void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
 {
-    if (g_Input.forward
-        && M_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
-        item->goal_anim_state = LS_JUMP_FORWARD;
-        g_Lara.move_angle = item->rot.y;
-    } else if (
-        g_Input.left
-        && M_FloorFront(item, item->rot.y - PHD_90, 256) >= -STEPUP_HEIGHT) {
-        item->goal_anim_state = LS_JUMP_LEFT;
-        g_Lara.move_angle = item->rot.y - PHD_90;
-    } else if (
-        g_Input.right
-        && M_FloorFront(item, item->rot.y + PHD_90, 256) >= -STEPUP_HEIGHT) {
-        item->goal_anim_state = LS_JUMP_RIGHT;
-        g_Lara.move_angle = item->rot.y + PHD_90;
-    } else if (
-        g_Input.back
-        && M_FloorFront(item, item->rot.y - PHD_180, 256) >= -STEPUP_HEIGHT) {
-        item->goal_anim_state = LS_JUMP_BACK;
-        g_Lara.move_angle = item->rot.y - PHD_180;
+    if (g_Lara.water_status != LWS_WADE) {
+        if (g_Input.forward
+            && M_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            g_Lara.move_angle = item->rot.y;
+        } else if (
+            g_Input.left
+            && M_FloorFront(item, item->rot.y - PHD_90, 256)
+                >= -STEPUP_HEIGHT) {
+            item->goal_anim_state = LS_JUMP_LEFT;
+            g_Lara.move_angle = item->rot.y - PHD_90;
+        } else if (
+            g_Input.right
+            && M_FloorFront(item, item->rot.y + PHD_90, 256)
+                >= -STEPUP_HEIGHT) {
+            item->goal_anim_state = LS_JUMP_RIGHT;
+            g_Lara.move_angle = item->rot.y + PHD_90;
+        } else if (
+            g_Input.back
+            && M_FloorFront(item, item->rot.y - PHD_180, 256)
+                >= -STEPUP_HEIGHT) {
+            item->goal_anim_state = LS_JUMP_BACK;
+            g_Lara.move_angle = item->rot.y - PHD_180;
+        }
     }
 
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
@@ -398,7 +433,10 @@ void Lara_State_Back(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->goal_anim_state = g_Input.back && g_Input.slow ? LS_BACK : LS_STOP;
+    item->goal_anim_state =
+        g_Input.back && (g_Input.slow || g_Lara.water_status == LWS_WADE)
+        ? LS_BACK
+        : LS_STOP;
 
     if (g_Input.left) {
         g_Lara.turn_rate -= LARA_TURN_RATE;
@@ -1176,5 +1214,36 @@ void Lara_State_UWDeath(ITEM *item, COLL_INFO *coll)
         item->rot.x += 2 * PHD_DEGREE;
     } else {
         item->rot.x -= 2 * PHD_DEGREE;
+    }
+}
+
+void Lara_State_Wade(ITEM *item, COLL_INFO *coll)
+{
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS_STOP;
+        return;
+    }
+
+    g_Camera.target_elevation = CAM_WADE_ELEVATION;
+    if (g_Input.left) {
+        g_Lara.turn_rate -= LARA_TURN_RATE;
+        CLAMPL(g_Lara.turn_rate, -LARA_FAST_TURN);
+        item->rot.z -= LARA_LEAN_RATE;
+        CLAMPL(item->rot.z, -LARA_LEAN_MAX);
+    } else if (g_Input.right) {
+        g_Lara.turn_rate += LARA_TURN_RATE;
+        CLAMPG(g_Lara.turn_rate, LARA_FAST_TURN);
+        item->rot.z += LARA_LEAN_RATE;
+        CLAMPG(item->rot.z, LARA_LEAN_MAX);
+    }
+
+    if (g_Input.forward) {
+        if (g_Lara.water_status != LWS_ABOVE_WATER) {
+            item->goal_anim_state = LS_WADE;
+        } else {
+            item->goal_anim_state = LS_RUN;
+        }
+    } else {
+        item->goal_anim_state = LS_STOP;
     }
 }
