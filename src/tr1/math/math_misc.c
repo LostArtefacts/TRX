@@ -30,6 +30,36 @@ int32_t Math_AngleInCone(int32_t angle1, int32_t angle2, int32_t cone)
     return ABS(diff) < cone;
 }
 
+DIRECTION Math_GetDirectionCone(const int16_t angle, const int16_t cone)
+{
+    if (angle >= -cone && angle <= cone) {
+        return DIR_NORTH;
+    } else if (angle >= PHD_90 - cone && angle <= PHD_90 + cone) {
+        return DIR_WEST;
+    } else if (angle >= PHD_180 - cone || angle <= -PHD_180 + cone) {
+        return DIR_SOUTH;
+    } else if (angle >= -PHD_90 - cone && angle <= -PHD_90 + cone) {
+        return DIR_EAST;
+    }
+    return DIR_UNKNOWN;
+}
+
+int16_t Math_DirectionToAngle(const DIRECTION dir)
+{
+    switch (dir) {
+    case DIR_NORTH:
+        return 0;
+    case DIR_WEST:
+        return PHD_90;
+    case DIR_SOUTH:
+        return PHD_180;
+    case DIR_EAST:
+        return -PHD_90;
+    default:
+        return 0;
+    }
+}
+
 int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio)
 {
     int32_t diff = angle2 - angle1;

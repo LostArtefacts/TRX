@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5.1...develop) - ××××-××-××
+- added support for wading, similar to TR2+ (#1537)
 - fixed missing pushblock SFX in Natla's Mines (#1714)
 - improved enemy item drops by supporting the TR2+ approach of having drops defined in level data (#1713)
 

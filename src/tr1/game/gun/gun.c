@@ -1,5 +1,6 @@
 #include "game/gun.h"
 
+#include "game/gun/gun_misc.h"
 #include "game/gun/gun_pistols.h"
 #include "game/gun/gun_rifle.h"
 #include "game/input.h"
@@ -27,7 +28,11 @@ void Gun_Control(void)
     bool draw = false;
     if (g_LaraItem->hit_points <= 0) {
         g_Lara.gun_status = LGS_ARMLESS;
-    } else if (g_Lara.water_status == LWS_ABOVE_WATER) {
+    } else if (
+        g_Lara.water_status == LWS_ABOVE_WATER
+        || (g_Lara.water_status == LWS_WADE
+            && g_Lara.water_surface_dist
+                > -g_Weapons[g_Lara.gun_type].gun_height)) {
         if (g_Lara.request_gun_type != LGT_UNARMED
             && (g_Lara.request_gun_type != g_Lara.gun_type
                 || g_Lara.gun_status == LGS_ARMLESS)) {
@@ -49,7 +54,10 @@ void Gun_Control(void)
             g_Lara.request_gun_type = LGT_UNARMED;
         }
     } else if (g_Lara.gun_status == LGS_READY) {
-        draw = true;
+        draw = g_Lara.water_status != LWS_ABOVE_WATER
+            && (g_Lara.water_status != LWS_WADE
+                || g_Lara.water_surface_dist
+                    < -g_Weapons[g_Lara.gun_type].gun_height);
     }
 
     if (draw && g_Lara.gun_type != LGT_UNARMED) {

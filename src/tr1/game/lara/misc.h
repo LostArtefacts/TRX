@@ -22,5 +22,8 @@ bool Lara_TestSlide(ITEM *item, COLL_INFO *coll);
 bool Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 void Lara_SwimCollision(ITEM *item, COLL_INFO *coll);
 void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll);
+int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
+void Lara_TestWaterDepth(ITEM *item, const COLL_INFO *coll);
+bool Lara_TestWaterStepOut(ITEM *item, const COLL_INFO *coll);
 bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll);
 void Lara_CatchFire(void);

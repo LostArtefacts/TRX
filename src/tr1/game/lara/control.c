@@ -180,6 +180,9 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
     coll->old.x = item->pos.x;
     coll->old.y = item->pos.y;
     coll->old.z = item->pos.z;
+    coll->old_anim_state = item->current_anim_state;
+    coll->old_anim_num = item->anim_num;
+    coll->old_frame_num = item->frame_num;
     coll->radius = LARA_RAD;
 
     coll->lava_is_pit = 0;
@@ -244,7 +247,7 @@ void Lara_HandleAboveWater(ITEM *item, COLL_INFO *coll)
 
 void Lara_HandleSurface(ITEM *item, COLL_INFO *coll)
 {
-    g_Camera.target_elevation = -22 * PHD_DEGREE;
+    g_Camera.target_elevation = CAM_WADE_ELEVATION;
 
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -100;

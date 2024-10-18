@@ -22,6 +22,9 @@ typedef struct __PACKING {
     int32_t bad_ceiling;
     XYZ_32 shift;
     XYZ_32 old;
+    int16_t old_anim_state;
+    int16_t old_anim_num;
+    int16_t old_frame_num;
     int16_t facing;
     DIRECTION quadrant;
     int16_t coll_type;

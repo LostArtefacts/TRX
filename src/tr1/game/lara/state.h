@@ -65,3 +65,4 @@ void Lara_State_Gymnast(ITEM *item, COLL_INFO *coll);
 void Lara_State_WaterOut(ITEM *item, COLL_INFO *coll);
 void Lara_State_Twist(ITEM *item, COLL_INFO *coll);
 void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll);
+void Lara_State_Wade(ITEM *item, COLL_INFO *coll);

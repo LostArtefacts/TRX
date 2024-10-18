@@ -73,13 +73,18 @@ typedef enum {
     LA_HANG                 = 96,
     LA_STOP_HANG            = 28,
     LA_SLIDE                = 70,
+    LA_STAND_IDLE           = 103,
     LA_SLIDE_BACK           = 104,
     LA_TREAD                = 108,
     LA_SURF_TREAD           = 114,
+    LA_SURF_SWIM_FORWARD    = 116,
     LA_SURF_DIVE            = 119,
     LA_SURF_CLIMB_HIGH      = 111,
     LA_JUMP_IN              = 112,
     LA_PUSHABLE_GRAB        = 120,
+    LA_SURF_SWIM_BACK       = 140,
+    LA_SURF_SWIM_LEFT       = 143,
+    LA_SURF_SWIM_RIGHT      = 144,
     LA_ROLL                 = 146,
     LA_PICKUP_UW            = 130,
     LA_PICKUP               = 135,
@@ -91,6 +96,10 @@ typedef enum {
     LA_SPAZ_RIGHT           = 127,
     LA_SPAZ_LEFT            = 128,
     LA_SURF_CLIMB_MEDIUM    = 169,
+    LA_WADE                 = 170,
+    LA_SURF_TO_WADE         = 178,
+    LA_SURF_TO_WADE_LOW     = 179,
+    LA_UNDERWATER_TO_STAND  = 180,
 } LARA_ANIMATION;
 
 // clang-format off
@@ -154,6 +163,7 @@ typedef enum {
     LS_CONTROLLED   = 56,
     LS_TWIST        = 57,
     LS_UW_ROLL      = 58,
+    LS_WADE         = 59,
 } LARA_STATE;
 // clang-format on
 
