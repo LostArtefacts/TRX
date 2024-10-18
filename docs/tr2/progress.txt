@@ -3935,7 +3935,7 @@ typedef enum {
 0x0044C360  0x002E  -R      void __cdecl S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_FILL *gour, uint16_t flags);
 0x0044C390  0x000F  -R      void __cdecl S_FinishInventory(void);
 0x0044C3A0  0x0043  *R      void __cdecl S_FadeToBlack(void);
-0x0044C3F0  0x0057  *R      void __cdecl S_Wait(int32_t timeout, BOOL input_check);
+0x0044C3F0  0x0057  +R      void __cdecl S_Wait(int32_t timeout, BOOL input_check);
 0x0044C450  0x000E  -R      bool __cdecl S_PlayFMV(const char *file_name);
 0x0044C460  0x0013  -R      bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);
 0x0044C480  0x0144  +       int16_t __cdecl Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);

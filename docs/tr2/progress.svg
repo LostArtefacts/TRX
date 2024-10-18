@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.53% (786)</tspan> · <tspan class="known">33% (402)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">64.61% (787)</tspan> · <tspan class="known">32.92% (401)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.46% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="482.05" height="6" x="0" y="0" class="decompiled"/>
-<rect width="246.55" height="6" x="482.05" y="0" class="known"/>
+<rect width="482.67" height="6" x="0" y="0" class="decompiled"/>
+<rect width="245.93" height="6" x="482.67" y="0" class="known"/>
 <rect width="18.40" height="6" x="728.60" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1065,7 +1065,7 @@
 <rect width="12" height="12" x="540" y="285" class="known"><title>void __cdecl S_DrawScreenFBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_FILL *gour, uint16_t flags);</title></rect>
 <rect width="12" height="12" x="555" y="285" class="known"><title>void __cdecl S_FinishInventory(void);</title></rect>
 <rect width="12" height="12" x="570" y="285" class="known"><title>void __cdecl S_FadeToBlack(void);</title></rect>
-<rect width="12" height="12" x="585" y="285" class="known"><title>void __cdecl S_Wait(int32_t timeout, BOOL input_check);</title></rect>
+<rect width="12" height="12" x="585" y="285" class="decompiled"><title>void __cdecl S_Wait(int32_t timeout, BOOL input_check);</title></rect>
 <rect width="12" height="12" x="600" y="285" class="known"><title>bool __cdecl S_PlayFMV(const char *file_name);</title></rect>
 <rect width="12" height="12" x="615" y="285" class="known"><title>bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="12" height="12" x="630" y="285" class="decompiled"><title>int16_t __cdecl Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);</title></rect>
@@ -1298,10 +1298,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.87%</tspan> · <tspan class="known">29.80%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.90%</tspan> · <tspan class="known">29.78%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="521.93" height="6" x="0" y="0" class="decompiled"/>
-<rect width="222.63" height="6" x="521.93" y="0" class="known"/>
+<rect width="522.12" height="6" x="0" y="0" class="decompiled"/>
+<rect width="222.44" height="6" x="522.12" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2068,7 +2068,7 @@
 <rect width="5.33" height="5.77" x="692.16" y="244.61" class="decompiled"><title>void __cdecl Lara_State_PickupFlare(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="5.33" height="5.77" x="700.49" y="244.61" class="known"><title>DWORD __cdecl Sync(void);</title></rect>
 <rect width="5.24" height="5.77" x="708.82" y="244.61" class="decompiled"><title>void __cdecl Lara_State_FastBack(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="5.24" height="5.77" x="717.06" y="244.61" class="known"><title>void __cdecl S_Wait(int32_t timeout, BOOL input_check);</title></rect>
+<rect width="5.24" height="5.77" x="717.06" y="244.61" class="decompiled"><title>void __cdecl S_Wait(int32_t timeout, BOOL input_check);</title></rect>
 <rect width="5.24" height="5.77" x="725.29" y="244.61" class="known"><title>int32_t __cdecl SE_GraphicsTest(void);</title></rect>
 <rect width="5.24" height="5.77" x="733.53" y="244.61" class="known"><title>int32_t __cdecl SE_SoundTest(void);</title></rect>
 <rect width="5.24" height="5.77" x="741.76" y="244.61" class="known"><title>void __thiscall SE_ChangeBitmapPalette(BITMAP_RESOURCE *bmpRsrc, HWND hWnd);</title></rect>

@@ -3056,3 +3056,34 @@ void __cdecl S_SaveSettings(void)
         sizeof(uint16_t) * INPUT_ROLE_NUMBER_OF);
     CloseGameRegistryKey();
 }
+
+void __cdecl S_Wait(int32_t frames, const BOOL input_check)
+{
+    if (input_check) {
+        while (frames > 0) {
+            if (g_Input != 0) {
+                break;
+            }
+            Input_Update();
+
+            int32_t passed;
+            do {
+                passed = Sync();
+            } while (!passed);
+            frames -= passed;
+        }
+    }
+
+    while (frames > 0) {
+        Input_Update();
+        if (input_check && g_Input != 0) {
+            break;
+        }
+
+        int32_t passed;
+        do {
+            passed = Sync();
+        } while (!passed);
+        frames -= passed;
+    }
+}

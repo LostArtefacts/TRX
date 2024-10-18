@@ -134,3 +134,4 @@ int32_t __cdecl Misc_Move3DPosTo3DPos(
 int32_t __cdecl LevelCompleteSequence(void);
 void __cdecl S_LoadSettings(void);
 void __cdecl S_SaveSettings(void);
+void __cdecl S_Wait(int32_t frames, BOOL input_check);
