@@ -163,3 +163,9 @@ bool __cdecl S_PlayFMV(const char *const file_name)
 {
     return PlayFMV(file_name);
 }
+
+bool __cdecl S_IntroFMV(
+    const char *const file_name_1, const char *const file_name_2)
+{
+    return IntroFMV(file_name_1, file_name_2);
+}

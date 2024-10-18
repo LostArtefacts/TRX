@@ -238,6 +238,7 @@ static void M_DecompFMV(const bool enable)
     INJECT(enable, 0x0044BE10, WinPlayFMV);
     INJECT(enable, 0x0044C0F0, WinStopFMV);
     INJECT(enable, 0x0044C450, S_PlayFMV);
+    INJECT(enable, 0x0044C460, S_IntroFMV);
 }
 
 static void M_DecompStats(const bool enable)

@@ -262,7 +262,6 @@
 #define S_DrawScreenFBox ((void __cdecl (*)(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_FILL *gour, uint16_t flags))0x0044C360)
 #define S_FinishInventory ((void __cdecl (*)(void))0x0044C390)
 #define S_FadeToBlack ((void __cdecl (*)(void))0x0044C3A0)
-#define S_IntroFMV ((bool __cdecl (*)(const char *file_name1, const char *file_name2))0x0044C460)
 #define GetValidLevelsList ((void __cdecl (*)(REQUEST_INFO *req))0x0044C9D0)
 #define GetSavedGamesList ((void __cdecl (*)(REQUEST_INFO *req))0x0044CA20)
 #define DisplayCredits ((void __cdecl (*)(void))0x0044CA70)

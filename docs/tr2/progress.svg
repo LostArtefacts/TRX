@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.67% (792)</tspan> · <tspan class="known">33.92% (422)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.75% (793)</tspan> · <tspan class="known">33.84% (421)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="475.58" height="6" x="0" y="0" class="decompiled"/>
-<rect width="253.40" height="6" x="475.58" y="0" class="known"/>
+<rect width="476.18" height="6" x="0" y="0" class="decompiled"/>
+<rect width="252.80" height="6" x="476.18" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1067,7 +1067,7 @@
 <rect width="12" height="12" x="570" y="285" class="known"><title>void __cdecl S_FadeToBlack(void);</title></rect>
 <rect width="12" height="12" x="585" y="285" class="decompiled"><title>void __cdecl S_Wait(int32_t timeout, BOOL input_check);</title></rect>
 <rect width="12" height="12" x="600" y="285" class="decompiled"><title>bool __cdecl S_PlayFMV(const char *file_name);</title></rect>
-<rect width="12" height="12" x="615" y="285" class="known"><title>bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
+<rect width="12" height="12" x="615" y="285" class="decompiled"><title>bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="12" height="12" x="630" y="285" class="decompiled"><title>int16_t __cdecl Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);</title></rect>
 <rect width="12" height="12" x="645" y="285" class="decompiled"><title>int32_t __cdecl Game_Loop(bool demo_mode);</title></rect>
 <rect width="12" height="12" x="660" y="285" class="decompiled"><title>int32_t __cdecl LevelCompleteSequence(void);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.18%</tspan> · <tspan class="known">29.50%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.18%</tspan> · <tspan class="known">29.49%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="524.21" height="6" x="0" y="0" class="decompiled"/>
-<rect width="220.35" height="6" x="524.21" y="0" class="known"/>
+<rect width="524.25" height="6" x="0" y="0" class="decompiled"/>
+<rect width="220.31" height="6" x="524.25" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2486,7 +2486,7 @@
 <rect width="1.16" height="0.79" x="725.28" y="349.61" class="decompiled"><title>void __cdecl Lara_Col_Swim(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="1.16" height="0.79" x="729.43" y="349.61" class="decompiled"><title>void __thiscall S_FlaggedString_Delete(STRING_FLAGGED *string);</title></rect>
 <rect width="1.16" height="0.79" x="733.59" y="349.61" class="decompiled"><title>void __cdecl WinVidFinish(void);</title></rect>
-<rect width="1.16" height="0.79" x="737.75" y="349.61" class="known"><title>bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
+<rect width="1.16" height="0.79" x="737.75" y="349.61" class="decompiled"><title>bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="1.16" height="0.79" x="741.90" y="349.61" class="known"><title>LONG __cdecl DeleteRegistryValue(LPCTSTR lpValueName);</title></rect>
 <rect width="0.94" height="0.79" x="746.06" y="349.61" class="unused"><title>sub_4449A0</title></rect>
 <rect width="0.58" height="1.18" x="725.28" y="353.40" class="decompiled"><title>DISPLAY_MODE *__thiscall InsertDisplayMode(DISPLAY_MODE_LIST *modeList, DISPLAY_MODE_NODE *before);</title></rect>
