@@ -158,3 +158,8 @@ void __cdecl WinStopFMV(const bool is_playback)
         Player_ReturnPlaybackMode(is_playback);
     }
 }
+
+bool __cdecl S_PlayFMV(const char *const file_name)
+{
+    return PlayFMV(file_name);
+}

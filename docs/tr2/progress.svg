@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.59% (791)</tspan> · <tspan class="known">34% (423)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">63.67% (792)</tspan> · <tspan class="known">33.92% (422)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="474.98" height="6" x="0" y="0" class="decompiled"/>
-<rect width="254" height="6" x="474.98" y="0" class="known"/>
+<rect width="475.58" height="6" x="0" y="0" class="decompiled"/>
+<rect width="253.40" height="6" x="475.58" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1066,7 +1066,7 @@
 <rect width="12" height="12" x="555" y="285" class="known"><title>void __cdecl S_FinishInventory(void);</title></rect>
 <rect width="12" height="12" x="570" y="285" class="known"><title>void __cdecl S_FadeToBlack(void);</title></rect>
 <rect width="12" height="12" x="585" y="285" class="decompiled"><title>void __cdecl S_Wait(int32_t timeout, BOOL input_check);</title></rect>
-<rect width="12" height="12" x="600" y="285" class="known"><title>bool __cdecl S_PlayFMV(const char *file_name);</title></rect>
+<rect width="12" height="12" x="600" y="285" class="decompiled"><title>bool __cdecl S_PlayFMV(const char *file_name);</title></rect>
 <rect width="12" height="12" x="615" y="285" class="known"><title>bool __cdecl S_IntroFMV(const char *file_name1, const char *file_name2);</title></rect>
 <rect width="12" height="12" x="630" y="285" class="decompiled"><title>int16_t __cdecl Game_Start(int32_t level_num, GAMEFLOW_LEVEL_TYPE level_type);</title></rect>
 <rect width="12" height="12" x="645" y="285" class="decompiled"><title>int32_t __cdecl Game_Loop(bool demo_mode);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.17%</tspan> · <tspan class="known">29.50%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.18%</tspan> · <tspan class="known">29.50%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="524.18" height="6" x="0" y="0" class="decompiled"/>
-<rect width="220.38" height="6" x="524.18" y="0" class="known"/>
+<rect width="524.21" height="6" x="0" y="0" class="decompiled"/>
+<rect width="220.35" height="6" x="524.21" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2503,7 +2503,7 @@
 <rect width="0.30" height="0.77" x="746.70" y="353.40" class="known"><title>void __cdecl WinInFinish(void);</title></rect>
 <rect width="0.35" height="0.72" x="728.85" y="357.17" class="known"><title>void __cdecl S_FinishInventory(void);</title></rect>
 <rect width="0.35" height="0.72" x="728.85" y="360.89" class="known"><title>bool __cdecl IsNewRegistryKeyCreated(void);</title></rect>
-<rect width="0.35" height="0.47" x="728.85" y="364.61" class="known"><title>bool __cdecl S_PlayFMV(const char *file_name);</title></rect>
+<rect width="0.35" height="0.47" x="728.85" y="364.61" class="decompiled"><title>bool __cdecl S_PlayFMV(const char *file_name);</title></rect>
 <rect width="0.35" height="0.47" x="728.85" y="368.08" class="known"><title>void __cdecl SE_AdvancedDlgInit(HWND hwndDlg);</title></rect>
 <rect width="0.35" height="0.22" x="728.85" y="371.55" class="decompiled"><title>void __thiscall DisplayModeListInit(DISPLAY_MODE_LIST *pList);</title></rect>
 <rect width="0.35" height="0.22" x="728.85" y="374.78" class="known"><title>void __cdecl ScreenDump(void);</title></rect>

@@ -1,6 +1,7 @@
 #include "game/gameflow.h"
 
 #include "decomp/decomp.h"
+#include "decomp/fmv.h"
 #include "decomp/stats.h"
 #include "game/demo.h"
 #include "game/game.h"
