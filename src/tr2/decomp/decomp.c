@@ -2000,11 +2000,6 @@ bool __cdecl ApplySettings(const APP_SETTINGS *const new_settings)
     return true;
 }
 
-void __cdecl FmvBackToGame(void)
-{
-    RenderStart(true);
-}
-
 void __cdecl GameApplySettings(APP_SETTINGS *const new_settings)
 {
     bool need_init_render_state = false;

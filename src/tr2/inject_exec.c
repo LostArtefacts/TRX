@@ -181,7 +181,6 @@ static void M_DecompGeneral(const bool enable)
     INJECT(enable, 0x00448E50, RenderStart);
     INJECT(enable, 0x00449200, RenderFinish);
     INJECT(enable, 0x004492F0, ApplySettings);
-    INJECT(enable, 0x00449500, FmvBackToGame);
     INJECT(enable, 0x00449610, GameApplySettings);
     INJECT(enable, 0x00449850, UpdateGameResolution);
     INJECT(enable, 0x004498C0, DecodeErrorMessage);
@@ -234,6 +233,7 @@ static void M_DecompGeneral(const bool enable)
 static void M_DecompFMV(const bool enable)
 {
     INJECT(enable, 0x0044BDA0, PlayFMV);
+    INJECT(enable, 0x00449500, FmvBackToGame);
     INJECT(enable, 0x0044BE10, WinPlayFMV);
     INJECT(enable, 0x0044C0F0, WinStopFMV);
 }

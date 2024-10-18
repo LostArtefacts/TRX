@@ -25,6 +25,11 @@ bool __cdecl PlayFMV(const char *const file_name)
     return g_IsGameToExit;
 }
 
+void __cdecl FmvBackToGame(void)
+{
+    RenderStart(true);
+}
+
 void __cdecl WinPlayFMV(const char *const file_name, const bool is_playback)
 {
     const RECT rect = {
