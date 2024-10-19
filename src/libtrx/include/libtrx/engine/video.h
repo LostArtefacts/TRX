@@ -17,6 +17,7 @@ VIDEO *Video_Open(const char *path);
 void Video_SetVolume(VIDEO *video, double volume);
 void Video_SetSurfaceSize(VIDEO *video, int32_t width, int32_t height);
 void Video_SetSurfacePixelFormat(VIDEO *video, enum AVPixelFormat pixel_format);
+void Video_SetSurfaceStride(VIDEO *video, int32_t stride);
 void Video_SetSurfaceAllocatorFunc(
     VIDEO *video, VIDEO_SURFACE_ALLOCATOR_FUNC func, void *user_data);
 void Video_SetSurfaceDeallocatorFunc(

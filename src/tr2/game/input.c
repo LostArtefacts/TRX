@@ -57,7 +57,7 @@ bool Input_Update(void)
         return result;
     }
 
-    if (g_InputDB & IN_CONSOLE) {
+    if (!g_IsFMVPlaying && (g_InputDB & IN_CONSOLE)) {
         Console_Open();
         g_Input = 0;
         g_InputDB = 0;

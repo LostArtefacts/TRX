@@ -546,7 +546,7 @@ int32_t __cdecl WinGameStart(void)
 {
     // try {
     WinVidStart();
-    RenderStart(1);
+    RenderStart(true);
     WinInStart();
     // } catch (int32_t error) {
     //     return error;
@@ -558,7 +558,7 @@ void __cdecl Shell_Shutdown(void)
 {
     Console_Shutdown();
     WinInFinish();
-    RenderFinish(1);
+    RenderFinish(true);
     WinVidFinish();
     WinVidHideGameWindow();
     if (g_ErrorMessage[0]) {

@@ -12,3 +12,5 @@ void __cdecl Sound_Effect(
 void __cdecl Sound_StopEffect(SOUND_EFFECT_ID sample_id);
 void __cdecl Sound_StopAllSamples(void);
 void __cdecl Sound_EndScene(void);
+int32_t Sound_GetMinVolume(void);
+int32_t Sound_GetMaxVolume(void);

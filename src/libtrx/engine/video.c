@@ -239,6 +239,7 @@ typedef struct {
 
     void *primary_surface;
     enum AVPixelFormat primary_surface_pixel_format;
+    int32_t primary_surface_stride;
 
     VIDEO_SURFACE_ALLOCATOR_FUNC surface_allocator_func;
     void *surface_allocator_func_user_data;
@@ -723,12 +724,14 @@ static int M_UploadTexture(M_STATE *is, AVFrame *frame)
             is->primary_surface, is->surface_lock_func_user_data);
 
         if (pixels != NULL) {
-            uint8_t *surf_planes[4];
-            int surf_linesize[4];
-            av_image_fill_arrays(
-                surf_planes, surf_linesize, pixels,
-                is->primary_surface_pixel_format, is->surface_width,
-                is->surface_height, 1);
+            uint8_t *surf_planes[4] = { pixels, NULL, NULL, NULL };
+            int surf_linesize[4] = { 0, 0, 0, 0 };
+            if (is->primary_surface_stride > 0) {
+                surf_linesize[0] = is->primary_surface_stride;
+            } else {
+                surf_linesize[0] = av_image_get_linesize(
+                    is->primary_surface_pixel_format, is->surface_width, 0);
+            }
 
             surf_planes[0] += is->target_surface_y * surf_linesize[0];
             surf_planes[0] += av_image_get_linesize(
@@ -1948,6 +1951,17 @@ void Video_SetSurfacePixelFormat(VIDEO *video, enum AVPixelFormat pixel_format)
     }
 
     is->primary_surface_pixel_format = pixel_format;
+    M_ReallocPrimarySurface(is, is->surface_width, is->surface_height, false);
+}
+
+void Video_SetSurfaceStride(VIDEO *video, const int32_t stride)
+{
+    M_STATE *const is = video->priv;
+    if (is->primary_surface_stride == stride) {
+        return;
+    }
+
+    is->primary_surface_stride = stride;
     M_ReallocPrimarySurface(is, is->surface_width, is->surface_height, false);
 }
 

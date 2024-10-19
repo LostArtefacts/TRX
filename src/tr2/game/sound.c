@@ -400,3 +400,13 @@ bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
     return sample_id >= 0 && sample_id < SFX_NUMBER_OF
         && g_SampleLUT[sample_id] != -1;
 }
+
+int32_t Sound_GetMinVolume(void)
+{
+    return 0;
+}
+
+int32_t Sound_GetMaxVolume(void)
+{
+    return 10;
+}

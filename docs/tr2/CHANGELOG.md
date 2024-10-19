@@ -1,13 +1,15 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.5...develop) - ××××-××-××
-- fixed `/give` not working with weapons (regression from 0.5)
-- fixed the camera being cut off after using the gong hammer in Ice Palace (#1580)
-- fixed the audio not being in sync when Lara strikes the gong in Ice Palace (#1725)
+- improved FMV mode appearance - removed black scanlines (#1729)
+- improved FMV mode behavior - stopped switching screen resolutions (#1729)
 - improved switch object names
     - Switch Type 1 renamed to "Airlock Switch"
     - Switch Type 2 renamed to "Small Switch"
     - Switch Type 3 renamed to "Switch Button"
     - Switch Type 4 renamed to "Lever/Switch"
     - Switch Type 5 renamed to "Underwater Lever/Switch"
+- fixed `/give` not working with weapons (regression from 0.5)
+- fixed the camera being cut off after using the gong hammer in Ice Palace (#1580)
+- fixed the audio not being in sync when Lara strikes the gong in Ice Palace (#1725)
 
 ## [0.5](https://github.com/LostArtefacts/TRX/compare/afaf12a...tr2-0.5) - 2024-10-08
 - added `/sfx` command
