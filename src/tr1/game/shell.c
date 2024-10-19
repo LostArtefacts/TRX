@@ -133,7 +133,6 @@ void Shell_Init(const char *gameflow_path)
         Shell_ExitSystem("Could not initialise video system");
         return;
     }
-    FMV_Init();
     Screen_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {

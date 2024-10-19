@@ -65,6 +65,7 @@ sources = [
   'engine/audio_sample.c',
   'engine/audio_stream.c',
   'engine/image.c',
+  'engine/video.c',
   'enum_map.c',
   'event_manager.c',
   'filesystem.c',

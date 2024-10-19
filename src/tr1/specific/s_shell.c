@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "game/console/common.h"
+#include "game/fmv.h"
 #include "game/input.h"
 #include "game/music.h"
 #include "game/output.h"
@@ -203,11 +204,13 @@ void S_Shell_SpinMessageLoop(void)
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
             case SDL_WINDOWEVENT_FOCUS_GAINED:
+                FMV_Unmute();
                 Music_Unmute();
                 Sound_SetMasterVolume(g_Config.sound_volume);
                 break;
 
             case SDL_WINDOWEVENT_FOCUS_LOST:
+                FMV_Mute();
                 Music_Mute();
                 Sound_SetMasterVolume(0);
                 break;
@@ -224,7 +227,7 @@ void S_Shell_SpinMessageLoop(void)
             // but by the time Input_Update gets ran, we may already have lost
             // some keypresses if the player types really fast, so we need to
             // react sooner.
-            if (!Console_IsOpened()
+            if (!FMV_IsPlaying() && !Console_IsOpened()
                 && Input_IsPressed(
                     INPUT_BACKEND_KEYBOARD, g_Config.input.layout,
                     INPUT_ROLE_ENTER_CONSOLE)) {

@@ -288,7 +288,6 @@ sources = [
   'math/math_misc.c',
   'math/matrix.c',
   'specific/s_clock.c',
-  'specific/s_fmv.c',
   'specific/s_output.c',
   'specific/s_shell.c',
   resources,
