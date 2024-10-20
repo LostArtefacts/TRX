@@ -2632,6 +2632,16 @@ typedef struct __unaligned {
 } BOAT_INFO;
 
 typedef struct __unaligned {
+    int16_t track_mesh;
+    int32_t skidoo_turn;
+    int32_t left_fallspeed;
+    int32_t right_fallspeed;
+    int16_t momentum_angle;
+    int16_t extra_rotation;
+    int32_t pitch;
+} SKIDOO_INFO;
+
+typedef struct __unaligned {
     struct {
         XYZ_16 min;
         XYZ_16 max;
@@ -3634,7 +3644,7 @@ typedef enum {
 0x0043CBA0  0x027C  -R      void __cdecl Shark_Control(int16_t item_num);
 
 # game/skidoo.c
-0x0043CE30  0x0040  -R      void __cdecl Skidoo_Initialise(int16_t item_num);
+0x0043CE30  0x0040  +R      void __cdecl Skidoo_Initialise(int16_t item_num);
 0x0043CE70  0x00E1  +R      int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);
 0x0043CF60  0x00F8  -R      void __cdecl Skidoo_Collision(int16_t item_num, ITEM *litem, COLL_INFO *coll);
 0x0043D060  0x01F9  -R      void __cdecl Skidoo_BaddieCollision(ITEM *skidoo);

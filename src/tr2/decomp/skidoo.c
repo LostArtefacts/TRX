@@ -12,6 +12,23 @@ typedef enum {
     SKIDOO_GET_ON_RIGHT = 2,
 } SKIDOO_GET_ON_SIDE;
 
+void __cdecl Skidoo_Initialise(const int16_t item_num)
+{
+    ITEM *const item = &g_Items[item_num];
+
+    SKIDOO_INFO *const skidoo_data =
+        game_malloc(sizeof(SKIDOO_INFO), GBUF_SKIDOO_STUFF);
+    skidoo_data->skidoo_turn = 0;
+    skidoo_data->right_fallspeed = 0;
+    skidoo_data->left_fallspeed = 0;
+    skidoo_data->extra_rotation = 0;
+    skidoo_data->momentum_angle = item->rot.y;
+    skidoo_data->track_mesh = 0;
+    skidoo_data->pitch = 0;
+
+    item->data = skidoo_data;
+}
+
 int32_t __cdecl Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
 {
     if (!(g_Input & IN_ACTION) || g_Lara.gun_status != LGS_ARMLESS

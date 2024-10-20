@@ -1575,6 +1575,16 @@ typedef struct __unaligned {
 } BOAT_INFO;
 
 typedef struct __unaligned {
+    int16_t track_mesh;
+    int32_t skidoo_turn;
+    int32_t left_fallspeed;
+    int32_t right_fallspeed;
+    int16_t momentum_angle;
+    int16_t extra_rotation;
+    int32_t pitch;
+} SKIDOO_INFO;
+
+typedef struct __unaligned {
     struct {
         XYZ_16 min;
         XYZ_16 max;

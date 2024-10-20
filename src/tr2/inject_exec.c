@@ -244,6 +244,7 @@ static void M_DecompFMV(const bool enable)
 
 static void M_DecompSkidoo(const bool enable)
 {
+    INJECT(enable, 0x0043CE30, Skidoo_Initialise);
     INJECT(enable, 0x0043CE70, Skidoo_CheckGetOn);
 }
 

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.92% (820)</tspan> · <tspan class="known">31.67% (394)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66% (821)</tspan> · <tspan class="known">31.59% (393)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="492.40" height="6" x="0" y="0" class="decompiled"/>
-<rect width="236.59" height="6" x="492.40" y="0" class="known"/>
+<rect width="493" height="6" x="0" y="0" class="decompiled"/>
+<rect width="235.99" height="6" x="493" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -777,7 +777,7 @@
 <rect width="12" height="12" x="720" y="195" class="known"><title>void __cdecl Jelly_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="735" y="195" class="known"><title>void __cdecl Baracudda_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="0" y="210" class="known"><title>void __cdecl Shark_Control(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="15" y="210" class="known"><title>void __cdecl Skidoo_Initialise(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="15" y="210" class="decompiled"><title>void __cdecl Skidoo_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="45" y="210" class="known"><title>void __cdecl Skidoo_Collision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="60" y="210" class="known"><title>void __cdecl Skidoo_BaddieCollision(ITEM *skidoo);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.29%</tspan> · <tspan class="known">29.38%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.31%</tspan> · <tspan class="known">29.36%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="525.08" height="6" x="0" y="0" class="decompiled"/>
-<rect width="219.48" height="6" x="525.08" y="0" class="known"/>
+<rect width="525.22" height="6" x="0" y="0" class="decompiled"/>
+<rect width="219.34" height="6" x="525.22" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2191,7 +2191,7 @@
 <rect width="4.37" height="4.20" x="655.34" y="268.48" class="known"><title>void __cdecl lara_normal_effect(ITEM *item);</title></rect>
 <rect width="4.37" height="4.20" x="662.71" y="268.48" class="decompiled"><title>void __cdecl Inv_Ring_Light(RING_INFO *ring);</title></rect>
 <rect width="4.37" height="4.20" x="670.08" y="268.48" class="decompiled"><title>void __cdecl Lara_State_FastFall(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="4.37" height="4.20" x="677.45" y="268.48" class="known"><title>void __cdecl Skidoo_Initialise(int16_t item_num);</title></rect>
+<rect width="4.37" height="4.20" x="677.45" y="268.48" class="decompiled"><title>void __cdecl Skidoo_Initialise(int16_t item_num);</title></rect>
 <rect width="4.37" height="4.20" x="684.82" y="268.48" class="decompiled"><title>bool __cdecl WinVidInit(void);</title></rect>
 <rect width="4.37" height="4.20" x="692.19" y="268.48" class="decompiled"><title>void __cdecl Option_Controls_DefaultConflict(void);</title></rect>
 <rect width="4.37" height="4.20" x="699.56" y="268.48" class="known"><title>void __cdecl UpdateTicks(void);</title></rect>
