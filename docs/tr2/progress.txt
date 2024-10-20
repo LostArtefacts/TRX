@@ -2940,7 +2940,7 @@ typedef enum {
 
 # game/boat.c
 0x0040CB30  0x003C  +       void __cdecl Boat_Initialise(int16_t item_num);
-0x0040CB70  0x0170  +       int32_t __cdecl Boat_CheckGeton(int16_t item_num, COLL_INFO *coll);
+0x0040CB70  0x0170  +       int32_t __cdecl Boat_CheckGetOn(int16_t item_num, COLL_INFO *coll);
 0x0040CCE0  0x015E  +       void __cdecl Boat_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x0040CE40  0x00F8  +       int32_t __cdecl Boat_TestWaterHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);
 0x0040CF40  0x01C1  +       void __cdecl Boat_DoShift(int32_t boat_num);
@@ -3634,27 +3634,27 @@ typedef enum {
 0x0043CBA0  0x027C  -R      void __cdecl Shark_Control(int16_t item_num);
 
 # game/skidoo.c
-0x0043CE30  0x0040  -R      void __cdecl InitialiseSkidoo(int16_t item_num);
-0x0043CE70  0x00E1  -R      int32_t __cdecl SkidooCheckGeton(int16_t item_num, COLL_INFO *coll);
-0x0043CF60  0x00F8  -R      void __cdecl SkidooCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);
-0x0043D060  0x01F9  -R      void __cdecl SkidooBaddieCollision(ITEM *skidoo);
-0x0043D260  0x00B2  -R      int32_t __cdecl TestHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);
+0x0043CE30  0x0040  -R      void __cdecl Skidoo_Initialise(int16_t item_num);
+0x0043CE70  0x00E1  +R      int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);
+0x0043CF60  0x00F8  -R      void __cdecl Skidoo_Collision(int16_t item_num, ITEM *litem, COLL_INFO *coll);
+0x0043D060  0x01F9  -R      void __cdecl Skidoo_BaddieCollision(ITEM *skidoo);
+0x0043D260  0x00B2  -R      int32_t __cdecl Skidoo_TestHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);
 0x0043D320  0x027C  -R      int32_t __cdecl DoShift(ITEM *skidoo, XYZ_32 *pos, XYZ_32 *old);
 0x0043D5A0  0x0054  -R      int32_t __cdecl DoDynamics(int32_t height, int32_t fall_speed, int32_t *y);
 0x0043D600  0x0090  -R      int32_t __cdecl GetCollisionAnim(ITEM *skidoo, XYZ_32 *moved);
-0x0043D690  0x0140  -R      void __cdecl DoSnowEffect(ITEM *skidoo);
-0x0043D7D0  0x049E  -R      int32_t __cdecl SkidooDynamics(ITEM *skidoo);
-0x0043DC70  0x01B6  -R      int32_t __cdecl SkidooUserControl(ITEM *skidoo, int32_t height, int32_t *pitch);
-0x0043DE30  0x0106  -R      int32_t __cdecl SkidooCheckGetOffOK(int32_t direction);
-0x0043DF40  0x02B9  -R      void __cdecl SkidooAnimation(ITEM *skidoo, int32_t collide, int32_t dead);
-0x0043E220  0x007C  -R      void __cdecl SkidooExplode(ITEM *skidoo);
-0x0043E2A0  0x0233  -R      int32_t __cdecl SkidooCheckGetOff(void);
-0x0043E4E0  0x011B  -R      void __cdecl SkidooGuns(void);
-0x0043E600  0x0440  -R      int32_t __cdecl SkidooControl(void);
-0x0043EA60  0x02D5  -R      void __cdecl SkidooArmed_Draw(const ITEM *item);
+0x0043D690  0x0140  -R      void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);
+0x0043D7D0  0x049E  -R      int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);
+0x0043DC70  0x01B6  -R      int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);
+0x0043DE30  0x0106  -R      int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);
+0x0043DF40  0x02B9  -R      void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);
+0x0043E220  0x007C  -R      void __cdecl Skidoo_Explode(ITEM *skidoo);
+0x0043E2A0  0x0233  -R      int32_t __cdecl Skidoo_CheckGetOff(void);
+0x0043E4E0  0x011B  -R      void __cdecl Skidoo_Guns(void);
+0x0043E600  0x0440  -R      int32_t __cdecl Skidoo_Control(void);
+0x0043EA60  0x02D5  -R      void __cdecl Skidoo_Armed_Draw(const ITEM *item);
 0x0043ED40  0x007F  -R      void __cdecl SkidooDriver_Initialise(int16_t item_num);
 0x0043EDD0  0x03E2  -       void __cdecl SkidooDriver_Control(int16_t rider_num);
-0x0043F1D0  0x0119  -R      void __cdecl SkidmanPush(ITEM *item, ITEM *lara_item, int32_t radius);
+0x0043F1D0  0x0119  -R      void __cdecl SkidooDriver_Push(ITEM *item, ITEM *lara_item, int32_t radius);
 0x0043F2F0  0x0081  -       void __cdecl SkidooDriver_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 # game/sound.c

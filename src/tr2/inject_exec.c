@@ -3,6 +3,7 @@
 #include "decomp/decomp.h"
 #include "decomp/effects.h"
 #include "decomp/fmv.h"
+#include "decomp/skidoo.h"
 #include "decomp/stats.h"
 #include "game/background.h"
 #include "game/box.h"
@@ -77,6 +78,7 @@
 
 static void M_DecompGeneral(const bool enable);
 static void M_DecompFMV(const bool enable);
+static void M_DecompSkidoo(const bool enable);
 static void M_DecompStats(const bool enable);
 static void M_DecompEffects(const bool enable);
 static void M_HWR(bool enable);
@@ -238,6 +240,11 @@ static void M_DecompFMV(const bool enable)
     INJECT(enable, 0x0044C0F0, WinStopFMV);
     INJECT(enable, 0x0044C450, S_PlayFMV);
     INJECT(enable, 0x0044C460, S_IntroFMV);
+}
+
+static void M_DecompSkidoo(const bool enable)
+{
+    INJECT(enable, 0x0043CE70, Skidoo_CheckGetOn);
 }
 
 static void M_DecompStats(const bool enable)
@@ -960,7 +967,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x0040C880, Bird_Initialise);
     INJECT(enable, 0x0040C910, Bird_Control);
     INJECT(enable, 0x0040CB30, Boat_Initialise);
-    INJECT(enable, 0x0040CB70, Boat_CheckGeton);
+    INJECT(enable, 0x0040CB70, Boat_CheckGetOn);
     INJECT(enable, 0x0040CCE0, Boat_Collision);
     INJECT(enable, 0x0040CE40, Boat_TestWaterHeight);
     INJECT(enable, 0x0040CF40, Boat_DoShift);
@@ -1058,6 +1065,7 @@ void Inject_Exec(void)
 {
     M_DecompGeneral(true);
     M_DecompFMV(true);
+    M_DecompSkidoo(true);
     M_DecompStats(true);
     M_DecompEffects(true);
     M_HWR(true);

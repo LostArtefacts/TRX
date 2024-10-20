@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.84% (819)</tspan> · <tspan class="known">31.75% (395)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">65.92% (820)</tspan> · <tspan class="known">31.67% (394)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="491.80" height="6" x="0" y="0" class="decompiled"/>
-<rect width="237.19" height="6" x="491.80" y="0" class="known"/>
+<rect width="492.40" height="6" x="0" y="0" class="decompiled"/>
+<rect width="236.59" height="6" x="492.40" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -163,7 +163,7 @@
 <rect width="12" height="12" x="510" y="15" class="decompiled"><title>void __cdecl Bird_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="525" y="15" class="decompiled"><title>void __cdecl Bird_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="540" y="15" class="decompiled"><title>void __cdecl Boat_Initialise(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="555" y="15" class="decompiled"><title>int32_t __cdecl Boat_CheckGeton(int16_t item_num, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="555" y="15" class="decompiled"><title>int32_t __cdecl Boat_CheckGetOn(int16_t item_num, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="570" y="15" class="decompiled"><title>void __cdecl Boat_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="585" y="15" class="decompiled"><title>int32_t __cdecl Boat_TestWaterHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);</title></rect>
 <rect width="12" height="12" x="600" y="15" class="decompiled"><title>void __cdecl Boat_DoShift(int32_t boat_num);</title></rect>
@@ -777,27 +777,27 @@
 <rect width="12" height="12" x="720" y="195" class="known"><title>void __cdecl Jelly_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="735" y="195" class="known"><title>void __cdecl Baracudda_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="0" y="210" class="known"><title>void __cdecl Shark_Control(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="15" y="210" class="known"><title>void __cdecl InitialiseSkidoo(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="30" y="210" class="known"><title>int32_t __cdecl SkidooCheckGeton(int16_t item_num, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="45" y="210" class="known"><title>void __cdecl SkidooCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
-<rect width="12" height="12" x="60" y="210" class="known"><title>void __cdecl SkidooBaddieCollision(ITEM *skidoo);</title></rect>
-<rect width="12" height="12" x="75" y="210" class="known"><title>int32_t __cdecl TestHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);</title></rect>
+<rect width="12" height="12" x="15" y="210" class="known"><title>void __cdecl Skidoo_Initialise(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="30" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="45" y="210" class="known"><title>void __cdecl Skidoo_Collision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="60" y="210" class="known"><title>void __cdecl Skidoo_BaddieCollision(ITEM *skidoo);</title></rect>
+<rect width="12" height="12" x="75" y="210" class="known"><title>int32_t __cdecl Skidoo_TestHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);</title></rect>
 <rect width="12" height="12" x="90" y="210" class="known"><title>int32_t __cdecl DoShift(ITEM *skidoo, XYZ_32 *pos, XYZ_32 *old);</title></rect>
 <rect width="12" height="12" x="105" y="210" class="known"><title>int32_t __cdecl DoDynamics(int32_t height, int32_t fall_speed, int32_t *y);</title></rect>
 <rect width="12" height="12" x="120" y="210" class="known"><title>int32_t __cdecl GetCollisionAnim(ITEM *skidoo, XYZ_32 *moved);</title></rect>
-<rect width="12" height="12" x="135" y="210" class="known"><title>void __cdecl DoSnowEffect(ITEM *skidoo);</title></rect>
-<rect width="12" height="12" x="150" y="210" class="known"><title>int32_t __cdecl SkidooDynamics(ITEM *skidoo);</title></rect>
-<rect width="12" height="12" x="165" y="210" class="known"><title>int32_t __cdecl SkidooUserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
-<rect width="12" height="12" x="180" y="210" class="known"><title>int32_t __cdecl SkidooCheckGetOffOK(int32_t direction);</title></rect>
-<rect width="12" height="12" x="195" y="210" class="known"><title>void __cdecl SkidooAnimation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
-<rect width="12" height="12" x="210" y="210" class="known"><title>void __cdecl SkidooExplode(ITEM *skidoo);</title></rect>
-<rect width="12" height="12" x="225" y="210" class="known"><title>int32_t __cdecl SkidooCheckGetOff(void);</title></rect>
-<rect width="12" height="12" x="240" y="210" class="known"><title>void __cdecl SkidooGuns(void);</title></rect>
-<rect width="12" height="12" x="255" y="210" class="known"><title>int32_t __cdecl SkidooControl(void);</title></rect>
-<rect width="12" height="12" x="270" y="210" class="known"><title>void __cdecl SkidooArmed_Draw(const ITEM *item);</title></rect>
+<rect width="12" height="12" x="135" y="210" class="known"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
+<rect width="12" height="12" x="150" y="210" class="known"><title>int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);</title></rect>
+<rect width="12" height="12" x="165" y="210" class="known"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
+<rect width="12" height="12" x="180" y="210" class="known"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
+<rect width="12" height="12" x="195" y="210" class="known"><title>void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
+<rect width="12" height="12" x="210" y="210" class="known"><title>void __cdecl Skidoo_Explode(ITEM *skidoo);</title></rect>
+<rect width="12" height="12" x="225" y="210" class="known"><title>int32_t __cdecl Skidoo_CheckGetOff(void);</title></rect>
+<rect width="12" height="12" x="240" y="210" class="known"><title>void __cdecl Skidoo_Guns(void);</title></rect>
+<rect width="12" height="12" x="255" y="210" class="known"><title>int32_t __cdecl Skidoo_Control(void);</title></rect>
+<rect width="12" height="12" x="270" y="210" class="known"><title>void __cdecl Skidoo_Armed_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="285" y="210" class="known"><title>void __cdecl SkidooDriver_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="210" class="known"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
-<rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidmanPush(ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
+<rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidooDriver_Push(ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
 <rect width="12" height="12" x="330" y="210" class="known"><title>void __cdecl SkidooDriver_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="210" class="known"><title>int32_t __cdecl Music_GetRealTrack(int32_t track);</title></rect>
 <rect width="12" height="12" x="360" y="210" class="decompiled"><title>void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.23%</tspan> · <tspan class="known">29.45%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.29%</tspan> · <tspan class="known">29.38%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="524.59" height="6" x="0" y="0" class="decompiled"/>
-<rect width="219.97" height="6" x="524.59" y="0" class="known"/>
+<rect width="525.08" height="6" x="0" y="0" class="decompiled"/>
+<rect width="219.48" height="6" x="525.08" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1375,14 +1375,14 @@
 <rect width="28.59" height="28.20" x="176.99" y="161.92" class="decompiled"><title>void __cdecl Output_InsertTrans8(const PHD_VBUF *vbuf, int16_t shade);</title></rect>
 <rect width="28.59" height="28.12" x="176.99" y="193.12" class="known"><title>void __cdecl Monk_Control(int16_t item_num);</title></rect>
 <rect width="28.59" height="28.07" x="176.99" y="224.25" class="decompiled"><title>LRESULT __stdcall WinVidGameWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);</title></rect>
-<rect width="28.59" height="28.04" x="176.99" y="255.32" class="known"><title>int32_t __cdecl SkidooDynamics(ITEM *skidoo);</title></rect>
+<rect width="28.59" height="28.04" x="176.99" y="255.32" class="known"><title>int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);</title></rect>
 <rect width="28.59" height="28.02" x="176.99" y="286.36" class="decompiled"><title>void __cdecl Option_Sound(INVENTORY_ITEM *item);</title></rect>
 <rect width="28.59" height="27.36" x="176.99" y="317.38" class="decompiled"><title>void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags);</title></rect>
 <rect width="28.59" height="27.26" x="176.99" y="347.74" class="decompiled"><title>void __cdecl Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="27.60" height="28.13" x="208.58" y="0" class="decompiled"><title>int32_t __cdecl GF_InterpretSequence(int16_t *ptr, GAMEFLOW_LEVEL_TYPE type, int32_t seq_type);</title></rect>
 <rect width="27.60" height="27.18" x="208.58" y="31.13" class="decompiled"><title>TARGET_TYPE __cdecl Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot);</title></rect>
 <rect width="27.60" height="26.61" x="208.58" y="61.31" class="decompiled"><title>void __cdecl Output_InsertGT4_ZBuffered(const PHD_VBUF *vtx0, const PHD_VBUF *vtx1, const PHD_VBUF *vtx2, const PHD_VBUF *vtx3, const PHD_TEXTURE *texture);</title></rect>
-<rect width="27.60" height="26.50" x="208.58" y="90.91" class="known"><title>int32_t __cdecl SkidooControl(void);</title></rect>
+<rect width="27.60" height="26.50" x="208.58" y="90.91" class="known"><title>int32_t __cdecl Skidoo_Control(void);</title></rect>
 <rect width="27.60" height="26.47" x="208.58" y="120.41" class="decompiled"><title>void __cdecl Creature_Mood(ITEM *item, AI_INFO *info, int32_t violent);</title></rect>
 <rect width="27.60" height="26.36" x="208.58" y="149.89" class="decompiled"><title>const int16_t *__cdecl Output_InsertObjectG4_Sorted(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type);</title></rect>
 <rect width="27.60" height="25.90" x="208.58" y="179.25" class="known"><title>void __cdecl Worker2_Control(int16_t item_num);</title></rect>
@@ -1446,7 +1446,7 @@
 <rect width="21.59" height="21.76" x="319.90" y="255.20" class="known"><title>bool __cdecl SE_ShowSetupDialog(HWND hParent, bool isDefault);</title></rect>
 <rect width="21.59" height="21.63" x="319.90" y="279.97" class="decompiled"><title>void __cdecl Option_Detail(INVENTORY_ITEM *item);</title></rect>
 <rect width="21.59" height="21.56" x="319.90" y="304.59" class="known"><title>int32_t __cdecl Collide_GetSpheres(const ITEM *item, SPHERE *spheres, bool world_space);</title></rect>
-<rect width="21.59" height="21.46" x="319.90" y="329.15" class="known"><title>void __cdecl SkidooArmed_Draw(const ITEM *item);</title></rect>
+<rect width="21.59" height="21.46" x="319.90" y="329.15" class="known"><title>void __cdecl Skidoo_Armed_Draw(const ITEM *item);</title></rect>
 <rect width="21.59" height="21.39" x="319.90" y="353.61" class="decompiled"><title>const int16_t *__cdecl Output_InsertObjectG3_ZBuffered(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type);</title></rect>
 <rect width="20.94" height="21.96" x="344.49" y="0" class="decompiled"><title>int32_t __cdecl Output_XYClipper(int32_t vtx_count, VERTEX_INFO *vtx);</title></rect>
 <rect width="20.94" height="21.96" x="344.49" y="24.96" class="known"><title>void __cdecl ControlMissile(int16_t fx_num);</title></rect>
@@ -1455,7 +1455,7 @@
 <rect width="20.94" height="21.75" x="344.49" y="99.73" class="known"><title>void __cdecl GiantYeti_Control(int16_t item_num);</title></rect>
 <rect width="20.94" height="21.65" x="344.49" y="124.47" class="decompiled"><title>void __cdecl Output_DrawSprite(uint32_t flags, int32_t x, int32_t y, int32_t z, int16_t sprite_idx, int16_t shade, int16_t scale);</title></rect>
 <rect width="20.94" height="21.30" x="344.49" y="149.12" class="decompiled"><title>void __cdecl Lara_Initialise(int32_t type);</title></rect>
-<rect width="20.94" height="21.16" x="344.49" y="173.42" class="known"><title>void __cdecl SkidooAnimation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
+<rect width="20.94" height="21.16" x="344.49" y="173.42" class="known"><title>void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
 <rect width="20.94" height="20.85" x="344.49" y="197.58" class="decompiled"><title>void __cdecl Room_DrawAllRooms(int16_t current_room);</title></rect>
 <rect width="20.94" height="19.88" x="344.49" y="221.43" class="decompiled"><title>void __cdecl PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="20.94" height="19.70" x="344.49" y="244.30" class="decompiled"><title>void __cdecl Zipline_Control(int16_t item_num);</title></rect>
@@ -1485,7 +1485,7 @@
 <rect width="18.78" height="18.68" x="412.58" y="0" class="decompiled"><title>void __cdecl MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="18.62" height="18.68" x="434.36" y="0" class="decompiled"><title>int32_t __cdecl Lara_TestClimbUpPos(ITEM *item, int32_t front, int32_t right, int32_t *shift, int32_t *ledge);</title></rect>
 <rect width="18.59" height="18.68" x="455.98" y="0" class="known"><title>void __cdecl SE_OptionsDlgUpdate(HWND hwndDlg);</title></rect>
-<rect width="18.55" height="18.68" x="477.57" y="0" class="known"><title>int32_t __cdecl SkidooCheckGetOff(void);</title></rect>
+<rect width="18.55" height="18.68" x="477.57" y="0" class="known"><title>int32_t __cdecl Skidoo_CheckGetOff(void);</title></rect>
 <rect width="18.55" height="18.68" x="499.12" y="0" class="known"><title>void __cdecl DisplayCredits(void);</title></rect>
 <rect width="18.01" height="18.68" x="520.67" y="0" class="decompiled"><title>void __cdecl Gun_Pistols_Undraw(LARA_GUN_TYPE weapon_type);</title></rect>
 <rect width="18.01" height="18.68" x="541.68" y="0" class="decompiled"><title>int32_t __cdecl MovableBlock_TestPull(ITEM *item, int32_t block_height, uint16_t quadrant);</title></rect>
@@ -1509,7 +1509,7 @@
 <rect width="17.35" height="17.91" x="390.77" y="192.87" class="known"><title>void __cdecl CreateStartInfo(int32_t level_num);</title></rect>
 <rect width="17.35" height="17.87" x="390.77" y="213.78" class="decompiled"><title>void __cdecl Bird_Control(int16_t item_num);</title></rect>
 <rect width="17.35" height="17.87" x="390.77" y="234.66" class="known"><title>void __cdecl BodyPart_Control(int16_t fx_num);</title></rect>
-<rect width="17.35" height="17.59" x="390.77" y="255.53" class="known"><title>void __cdecl SkidooBaddieCollision(ITEM *skidoo);</title></rect>
+<rect width="17.35" height="17.59" x="390.77" y="255.53" class="known"><title>void __cdecl Skidoo_BaddieCollision(ITEM *skidoo);</title></rect>
 <rect width="17.35" height="17.47" x="390.77" y="276.12" class="known"><title>void __cdecl S_DrawAirBar(int32_t percent);</title></rect>
 <rect width="17.35" height="17.43" x="390.77" y="296.58" class="decompiled"><title>void __cdecl Screenshot(LPDDS screen);</title></rect>
 <rect width="17.35" height="17.38" x="390.77" y="317.01" class="known"><title>void __cdecl MineControl(int16_t mine_num);</title></rect>
@@ -1541,7 +1541,7 @@
 <rect width="16.42" height="16.05" x="411.12" y="157.20" class="decompiled"><title>BOOL __stdcall EnumDisplayAdaptersCallback(GUID *lpGUID, LPTSTR lpDriverDescription, LPTSTR lpDriverName, LPVOID lpContext);</title></rect>
 <rect width="16.42" height="15.80" x="411.12" y="176.26" class="decompiled"><title>void __cdecl BGND_Make640x480(uint8_t *bitmap, RGB_888 *palette);</title></rect>
 <rect width="16.42" height="15.80" x="411.12" y="195.06" class="decompiled"><title>void __cdecl D3DDeviceCreate(LPDDS lpBackBuffer);</title></rect>
-<rect width="16.42" height="15.71" x="411.12" y="213.86" class="known"><title>int32_t __cdecl SkidooUserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
+<rect width="16.42" height="15.71" x="411.12" y="213.86" class="known"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
 <rect width="16.42" height="15.58" x="411.12" y="232.57" class="decompiled"><title>void __cdecl Item_Initialise(int16_t item_num);</title></rect>
 <rect width="16.42" height="15.46" x="411.12" y="251.15" class="decompiled"><title>int32_t __cdecl Demo_Start(int32_t level_num);</title></rect>
 <rect width="16.42" height="15.46" x="411.12" y="269.61" class="decompiled"><title>bool __cdecl LOT_EnableBaddieAI(int16_t item_num, bool always);</title></rect>
@@ -1584,7 +1584,7 @@
 <rect width="14.86" height="14.28" x="430.54" y="309.17" class="decompiled"><title>void __cdecl Boat_DoWakeEffect(ITEM *boat);</title></rect>
 <rect width="14.86" height="14.28" x="430.54" y="326.44" class="known"><title>bool __cdecl TexturePageInit(TEXPAGE_DESC *page);</title></rect>
 <rect width="14.86" height="14.19" x="430.54" y="343.72" class="known"><title>void __cdecl Winston_Control(int16_t item_num);</title></rect>
-<rect width="14.86" height="14.09" x="430.54" y="360.91" class="decompiled"><title>int32_t __cdecl Boat_CheckGeton(int16_t item_num, COLL_INFO *coll);</title></rect>
+<rect width="14.86" height="14.09" x="430.54" y="360.91" class="decompiled"><title>int32_t __cdecl Boat_CheckGetOn(int16_t item_num, COLL_INFO *coll);</title></rect>
 <rect width="15.11" height="13.82" x="448.40" y="59.33" class="decompiled"><title>void __cdecl Creature_Kill(ITEM *item, int32_t kill_anim, int32_t kill_state, int32_t lara_kill_state);</title></rect>
 <rect width="15.11" height="13.82" x="466.51" y="59.33" class="decompiled"><title>int32_t __cdecl Game_Cutscene_Control(int32_t nframes);</title></rect>
 <rect width="15.06" height="13.82" x="484.61" y="59.33" class="decompiled"><title>int32_t __cdecl Misc_Move3DPosTo3DPos(PHD_3DPOS *src_pos, const PHD_3DPOS *dest_pos, int32_t velocity, PHD_ANGLE ang_add);</title></rect>
@@ -1621,7 +1621,7 @@
 <rect width="13.27" height="13.47" x="717.61" y="76.15" class="decompiled"><title>void __cdecl Lara_State_Run(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="13.12" height="13.47" x="733.88" y="76.15" class="decompiled"><title>int32_t __cdecl Output_ZedClipper(int32_t vtx_count, POINT_INFO *pts, VERTEX_INFO *vtx);</title></rect>
 <rect width="13.47" height="13.12" x="448.40" y="92.62" class="decompiled"><title>void __cdecl Output_DrawClippedPoly_Textured(int32_t vtx_count);</title></rect>
-<rect width="13.47" height="13.12" x="448.40" y="108.74" class="known"><title>void __cdecl DoSnowEffect(ITEM *skidoo);</title></rect>
+<rect width="13.47" height="13.12" x="448.40" y="108.74" class="known"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
 <rect width="13.47" height="13.07" x="448.40" y="124.86" class="decompiled"><title>void __cdecl Lara_UseItem(GAME_OBJECT_ID object_id);</title></rect>
 <rect width="13.47" height="13.02" x="448.40" y="140.93" class="decompiled"><title>void __cdecl Inv_Ring_DoMotions(RING_INFO *ring);</title></rect>
 <rect width="13.47" height="13.02" x="448.40" y="156.95" class="known"><title>void __cdecl DartEmitterControl(int16_t item_num);</title></rect>
@@ -1656,10 +1656,10 @@
 <rect width="12.25" height="12.56" x="704.53" y="92.62" class="decompiled"><title>void __cdecl Item_Kill(int16_t item_num);</title></rect>
 <rect width="12.14" height="12.56" x="719.78" y="92.62" class="decompiled"><title>void __cdecl Gun_InitialiseNewWeapon(void);</title></rect>
 <rect width="12.09" height="12.56" x="734.91" y="92.62" class="decompiled"><title>void __cdecl Lara_Col_UpJump(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="12.24" height="12.41" x="464.87" y="108.19" class="known"><title>void __cdecl SkidooGuns(void);</title></rect>
+<rect width="12.24" height="12.41" x="464.87" y="108.19" class="known"><title>void __cdecl Skidoo_Guns(void);</title></rect>
 <rect width="12.24" height="12.41" x="464.87" y="123.60" class="known"><title>void __cdecl SE_SoundDlgUpdate(HWND hwndDlg);</title></rect>
 <rect width="12.24" height="12.36" x="464.87" y="139.01" class="known"><title>HRESULT __stdcall EnumTextureFormatsCallback(LPDDSDESC lpDdsd, LPVOID lpContext);</title></rect>
-<rect width="12.24" height="12.30" x="464.87" y="154.36" class="known"><title>void __cdecl SkidmanPush(ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
+<rect width="12.24" height="12.30" x="464.87" y="154.36" class="known"><title>void __cdecl SkidooDriver_Push(ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
 <rect width="12.24" height="12.14" x="464.87" y="169.66" class="known"><title>void __cdecl Jelly_Control(int16_t item_num);</title></rect>
 <rect width="12.24" height="12.14" x="464.87" y="184.80" class="known"><title>void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags);</title></rect>
 <rect width="12.24" height="12.08" x="464.87" y="199.94" class="known"><title>void __cdecl ControlCeilingSpikes(int16_t item_num);</title></rect>
@@ -1682,7 +1682,7 @@
 <rect width="11.49" height="12.06" x="480.11" y="184.39" class="decompiled"><title>int32_t __cdecl Text_GetWidth(TEXTSTRING *string);</title></rect>
 <rect width="11.49" height="12" x="480.11" y="199.44" class="known"><title>int32_t __cdecl Diver_GetWaterSurface(int32_t x, int32_t y, int32_t z, int16_t room_num);</title></rect>
 <rect width="11.49" height="12" x="480.11" y="214.44" class="decompiled"><title>void __cdecl LOT_InitialiseSlot(int16_t item_num, int32_t slot);</title></rect>
-<rect width="11.49" height="12" x="480.11" y="229.44" class="known"><title>int32_t __cdecl SkidooCheckGetOffOK(int32_t direction);</title></rect>
+<rect width="11.49" height="12" x="480.11" y="229.44" class="known"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
 <rect width="11.49" height="12" x="480.11" y="244.44" class="known"><title>INT_PTR __stdcall SE_ControlsDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);</title></rect>
 <rect width="11.49" height="11.94" x="480.11" y="259.44" class="decompiled"><title>TEXTSTRING *__cdecl Text_Create(int32_t x, int32_t y, int32_t z, const char *text);</title></rect>
 <rect width="11.49" height="11.94" x="480.11" y="274.38" class="known"><title>void __cdecl FallingBlock(int16_t item_num);</title></rect>
@@ -1700,7 +1700,7 @@
 <rect width="11.26" height="11.43" x="566.74" y="108.19" class="decompiled"><title>int32_t __cdecl Boat_TestWaterHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);</title></rect>
 <rect width="11.26" height="11.43" x="581" y="108.19" class="decompiled"><title>int32_t __cdecl Creature_CheckBaddieOverlap(int16_t item_num);</title></rect>
 <rect width="11.26" height="11.43" x="595.25" y="108.19" class="known"><title>void __cdecl Flare_DrawInAir(ITEM *item);</title></rect>
-<rect width="11.26" height="11.43" x="609.51" y="108.19" class="known"><title>void __cdecl SkidooCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
+<rect width="11.26" height="11.43" x="609.51" y="108.19" class="known"><title>void __cdecl Skidoo_Collision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
 <rect width="11.20" height="11.43" x="623.77" y="108.19" class="decompiled"><title>void __cdecl Output_DrawPoly_Gouraud(int32_t vtx_count, int32_t red, int32_t green, int32_t blue);</title></rect>
 <rect width="11.08" height="11.43" x="637.96" y="108.19" class="decompiled"><title>int32_t __cdecl Lara_TestHangOnClimbWall(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="11.08" height="11.43" x="652.05" y="108.19" class="decompiled"><title>void __cdecl Gun_Rifle_Control(LARA_GUN_TYPE weapon_type);</title></rect>
@@ -1733,7 +1733,7 @@
 <rect width="10.66" height="10.72" x="535.63" y="122.62" class="decompiled"><title>bool __cdecl WinVidSpinMessageLoop(bool needWait);</title></rect>
 <rect width="10.66" height="10.72" x="549.29" y="122.62" class="decompiled"><title>BOOL __stdcall S_Audio_Sample_DSoundEnumCallback(LPGUID guid, LPCTSTR description, LPCTSTR module, LPVOID context);</title></rect>
 <rect width="10.60" height="10.72" x="562.95" y="122.62" class="decompiled"><title>int32_t __cdecl Lara_TestWall(ITEM *item, int32_t front, int32_t right, int32_t down);</title></rect>
-<rect width="10.60" height="10.72" x="576.56" y="122.62" class="known"><title>int32_t __cdecl SkidooCheckGeton(int16_t item_num, COLL_INFO *coll);</title></rect>
+<rect width="10.60" height="10.72" x="576.56" y="122.62" class="decompiled"><title>int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);</title></rect>
 <rect width="10.54" height="10.72" x="590.16" y="122.62" class="known"><title>void __cdecl FallingCeiling(int16_t item_num);</title></rect>
 <rect width="10.54" height="10.72" x="603.70" y="122.62" class="known"><title>BOOL __cdecl SelectDrive(void);</title></rect>
 <rect width="10.42" height="10.72" x="617.24" y="122.62" class="known"><title>void __cdecl ControlHotLiquid(int16_t fx_num);</title></rect>
@@ -1819,7 +1819,7 @@
 <rect width="9.35" height="9.03" x="737.65" y="149.44" class="decompiled"><title>void __cdecl Lara_Col_FastBack(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="9.32" height="9.06" x="533.93" y="161.47" class="decompiled"><title>void __cdecl Lara_Col_Roll2(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="9.25" height="9.06" x="546.24" y="161.47" class="known"><title>void __cdecl AssaultFinished(ITEM *item);</title></rect>
-<rect width="9.25" height="9.06" x="558.49" y="161.47" class="known"><title>int32_t __cdecl TestHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);</title></rect>
+<rect width="9.25" height="9.06" x="558.49" y="161.47" class="known"><title>int32_t __cdecl Skidoo_TestHeight(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos);</title></rect>
 <rect width="9.18" height="9.06" x="570.74" y="161.47" class="decompiled"><title>int32_t __cdecl Lara_TestHangSwingIn(ITEM *item, PHD_ANGLE angle);</title></rect>
 <rect width="9.18" height="9.06" x="582.92" y="161.47" class="known"><title>int32_t __cdecl OnDrawBridge(ITEM *item, int32_t x, int32_t y);</title></rect>
 <rect width="9.18" height="9.06" x="595.10" y="161.47" class="known"><title>void __cdecl S_AnimateTextures(int32_t ticks);</title></rect>
@@ -1974,7 +1974,7 @@
 <rect width="7.26" height="7.03" x="588.61" y="206.42" class="decompiled"><title>void __cdecl Lara_State_StepLeft(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.26" height="7.03" x="598.87" y="206.42" class="decompiled"><title>void __cdecl Gun_Pistols_Draw(LARA_GUN_TYPE weapon_type);</title></rect>
 <rect width="7.26" height="7.03" x="609.13" y="206.42" class="known"><title>void __cdecl InitialiseDyingMonk(int16_t item_num);</title></rect>
-<rect width="7.26" height="7.03" x="619.39" y="206.42" class="known"><title>void __cdecl SkidooExplode(ITEM *skidoo);</title></rect>
+<rect width="7.26" height="7.03" x="619.39" y="206.42" class="known"><title>void __cdecl Skidoo_Explode(ITEM *skidoo);</title></rect>
 <rect width="7.26" height="7.03" x="629.64" y="206.42" class="decompiled"><title>int32_t __cdecl WinGameStart(void);</title></rect>
 <rect width="7.17" height="7.03" x="639.90" y="206.42" class="decompiled"><title>void __cdecl Gun_Rifle_FireM16(bool running);</title></rect>
 <rect width="7.09" height="7.03" x="650.07" y="206.42" class="decompiled"><title>void __cdecl Matrix_TranslateAbs(int32_t x, int32_t y, int32_t z);</title></rect>
@@ -2191,7 +2191,7 @@
 <rect width="4.37" height="4.20" x="655.34" y="268.48" class="known"><title>void __cdecl lara_normal_effect(ITEM *item);</title></rect>
 <rect width="4.37" height="4.20" x="662.71" y="268.48" class="decompiled"><title>void __cdecl Inv_Ring_Light(RING_INFO *ring);</title></rect>
 <rect width="4.37" height="4.20" x="670.08" y="268.48" class="decompiled"><title>void __cdecl Lara_State_FastFall(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="4.37" height="4.20" x="677.45" y="268.48" class="known"><title>void __cdecl InitialiseSkidoo(int16_t item_num);</title></rect>
+<rect width="4.37" height="4.20" x="677.45" y="268.48" class="known"><title>void __cdecl Skidoo_Initialise(int16_t item_num);</title></rect>
 <rect width="4.37" height="4.20" x="684.82" y="268.48" class="decompiled"><title>bool __cdecl WinVidInit(void);</title></rect>
 <rect width="4.37" height="4.20" x="692.19" y="268.48" class="decompiled"><title>void __cdecl Option_Controls_DefaultConflict(void);</title></rect>
 <rect width="4.37" height="4.20" x="699.56" y="268.48" class="known"><title>void __cdecl UpdateTicks(void);</title></rect>

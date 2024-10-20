@@ -17,10 +17,10 @@
 
 #define BOAT_FALL_ANIM 15
 #define BOAT_DEATH_ANIM 18
-#define BOAT_GETON_LW_ANIM 0
-#define BOAT_GETON_RW_ANIM 8
-#define BOAT_GETON_J_ANIM 6
-#define BOAT_GETON_START 1
+#define BOAT_GET_ON_LW_ANIM 0
+#define BOAT_GET_ON_RW_ANIM 8
+#define BOAT_GET_ON_J_ANIM 6
+#define BOAT_GET_ON_START 1
 
 #define BOAT_RADIUS 500
 #define BOAT_SIDE 300
@@ -44,7 +44,7 @@
 #define GONDOLA_SINK_SPEED 50
 
 typedef enum {
-    BOAT_GETON = 0,
+    BOAT_GET_ON = 0,
     BOAT_STILL = 1,
     BOAT_MOVING = 2,
     BOAT_JUMP_R = 3,
@@ -77,7 +77,7 @@ void __cdecl Boat_Initialise(const int16_t item_num)
     boat->data = boat_data;
 }
 
-int32_t __cdecl Boat_CheckGeton(
+int32_t __cdecl Boat_CheckGetOn(
     const int16_t item_num, const COLL_INFO *const coll)
 {
     if (g_Lara.gun_status != LGS_ARMLESS) {
@@ -95,7 +95,7 @@ int32_t __cdecl Boat_CheckGeton(
         return 0;
     }
 
-    int32_t geton = 0;
+    int32_t get_on = 0;
     const int16_t rot = boat->rot.y - lara->rot.y;
 
     if (g_Lara.water_status == LWS_SURFACE || g_Lara.water_status == LWS_WADE) {
@@ -104,27 +104,27 @@ int32_t __cdecl Boat_CheckGeton(
         }
 
         if (rot > PHD_45 && rot < PHD_135) {
-            geton = 1;
+            get_on = 1;
         } else if (rot > -PHD_135 && rot < -PHD_45) {
-            geton = 2;
+            get_on = 2;
         }
     } else if (g_Lara.water_status == LWS_ABOVE_WATER) {
         int16_t fall_speed = lara->fall_speed;
         if (fall_speed > 0) {
             if (rot > -PHD_135 && rot < PHD_135 && lara->pos.y > boat->pos.y) {
-                geton = 3;
+                get_on = 3;
             }
         } else if (!fall_speed && rot > -PHD_135 && rot < PHD_135) {
             if (lara->pos.x == boat->pos.x && lara->pos.y == boat->pos.y
                 && lara->pos.z == boat->pos.z) {
-                geton = 4;
+                get_on = 4;
             } else {
-                geton = 3;
+                get_on = 3;
             }
         }
     }
 
-    if (!geton) {
+    if (!get_on) {
         return 0;
     }
 
@@ -136,7 +136,7 @@ int32_t __cdecl Boat_CheckGeton(
         return 0;
     }
 
-    return geton;
+    return get_on;
 }
 
 void __cdecl Boat_Collision(
@@ -146,8 +146,8 @@ void __cdecl Boat_Collision(
         return;
     }
 
-    const int32_t geton = Boat_CheckGeton(item_num, coll);
-    if (!geton) {
+    const int32_t get_on = Boat_CheckGetOn(item_num, coll);
+    if (!get_on) {
         coll->enable_baddie_push = 1;
         Object_Collision(item_num, lara, coll);
         return;
@@ -155,18 +155,18 @@ void __cdecl Boat_Collision(
 
     g_Lara.skidoo = item_num;
 
-    switch (geton) {
+    switch (get_on) {
     case 1:
-        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GETON_RW_ANIM;
+        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GET_ON_RW_ANIM;
         break;
     case 2:
-        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GETON_LW_ANIM;
+        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GET_ON_LW_ANIM;
         break;
     case 3:
-        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GETON_J_ANIM;
+        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GET_ON_J_ANIM;
         break;
     default:
-        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GETON_START;
+        lara->anim_num = g_Objects[O_LARA_BOAT].anim_idx + BOAT_GET_ON_START;
         break;
     }
 
@@ -652,7 +652,7 @@ void __cdecl Boat_Control(const int16_t item_num)
 
     if (g_Lara.skidoo == item_num && lara->hit_points > 0) {
         switch (lara->current_anim_state) {
-        case BOAT_GETON:
+        case BOAT_GET_ON:
         case BOAT_JUMP_R:
         case BOAT_JUMP_L:
             break;
