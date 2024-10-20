@@ -43,5 +43,6 @@ void SkidooDriver_Setup(void)
     obj->hit_points = 1;
 
     obj->save_position = 1;
+    obj->save_anim = 1;
     obj->save_flags = 1;
 }
