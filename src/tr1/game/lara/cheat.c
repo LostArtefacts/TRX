@@ -142,7 +142,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     }
 
     if (g_Lara.water_status != LWS_UNDERWATER || g_LaraItem->hit_points <= 0) {
-        g_LaraItem->pos.y -= 0x80;
+        g_LaraItem->pos.y -= STEP_L;
         g_LaraItem->current_anim_state = LS_SWIM;
         g_LaraItem->goal_anim_state = LS_SWIM;
         Item_SwitchToAnim(g_LaraItem, LA_SWIM_GLIDE, 0);
