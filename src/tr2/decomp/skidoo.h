@@ -7,3 +7,5 @@ int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);
 void __cdecl Skidoo_Collision(
     int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 void __cdecl Skidoo_BaddieCollision(const ITEM *skidoo);
+int32_t __cdecl Skidoo_TestHeight(
+    const ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *out_pos);

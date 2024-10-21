@@ -3,6 +3,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
+#include "game/math.h"
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "global/funcs.h"
@@ -199,4 +200,21 @@ void __cdecl Skidoo_BaddieCollision(const ITEM *const skidoo)
             item_num = item->next_item;
         }
     }
+}
+
+int32_t __cdecl Skidoo_TestHeight(
+    const ITEM *const item, const int32_t z_off, const int32_t x_off,
+    XYZ_32 *const out_pos)
+{
+    const int32_t sx = Math_Sin(item->rot.x);
+    const int32_t sz = Math_Sin(item->rot.z);
+    const int32_t cy = Math_Cos(item->rot.y);
+    const int32_t sy = Math_Sin(item->rot.y);
+    out_pos->x = item->pos.x + ((x_off * cy + z_off * sy) >> W2V_SHIFT);
+    out_pos->y = item->pos.y + ((x_off * sz - z_off * sx) >> W2V_SHIFT);
+    out_pos->z = item->pos.z + ((z_off * cy - x_off * sy) >> W2V_SHIFT);
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(out_pos->x, out_pos->y, out_pos->z, &room_num);
+    return Room_GetHeight(sector, out_pos->x, out_pos->y, out_pos->z);
 }
