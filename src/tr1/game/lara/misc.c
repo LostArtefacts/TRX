@@ -585,9 +585,13 @@ void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll)
 {
     coll->facing = g_Lara.move_angle;
 
+    int32_t obj_height = SURF_HEIGHT;
+    if (g_Config.enable_wading) {
+        obj_height += 100;
+    }
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + SURF_HEIGHT, item->pos.z,
-        item->room_num, SURF_HEIGHT + 100);
+        item->room_num, obj_height);
 
     Item_ShiftCol(item, coll);
 
@@ -616,7 +620,11 @@ void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    Lara_TestWaterStepOut(item, coll);
+    if (g_Config.enable_wading) {
+        Lara_TestWaterStepOut(item, coll);
+    } else {
+        Lara_TestWaterClimbOut(item, coll);
+    }
 }
 
 int32_t Lara_GetWaterDepth(
@@ -823,13 +831,18 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
 
     coll->facing = g_Lara.move_angle;
 
-    int32_t height = (LARA_HEIGHT * Math_Sin(item->rot.x)) >> W2V_SHIFT;
-    if (height < 0) {
-        height = -height;
+    int32_t height;
+    if (g_Config.enable_wading) {
+        height = (LARA_HEIGHT * Math_Sin(item->rot.x)) >> W2V_SHIFT;
+        if (height < 0) {
+            height = -height;
+        }
+        CLAMPL(height, 200);
+        coll->bad_neg = -height;
+    } else {
+        height = UW_HEIGHT;
     }
-    CLAMPL(height, 200);
 
-    coll->bad_neg = -height;
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
         item->room_num, height);
@@ -877,7 +890,7 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
         item->rot.x += UW_WALLDEFLECT;
     }
 
-    if (g_Lara.water_status != LWS_CHEAT) {
+    if (g_Config.enable_wading && g_Lara.water_status != LWS_CHEAT) {
         Lara_TestWaterDepth(item, coll);
     }
 }
