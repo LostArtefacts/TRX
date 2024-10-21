@@ -17,3 +17,4 @@ int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);
 void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);
 void __cdecl Skidoo_Explode(const ITEM *skidoo);
 int32_t __cdecl Skidoo_CheckGetOff(void);
+void __cdecl Skidoo_Guns(void);

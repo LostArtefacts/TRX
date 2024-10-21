@@ -1,6 +1,8 @@
 #include "decomp/skidoo.h"
 
+#include "game/creature.h"
 #include "game/effects.h"
+#include "game/gun/gun_misc.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -79,6 +81,15 @@ typedef enum {
 #define SKIDOO_MAX_MOMENTUM_TURN (PHD_DEGREE * 150) // = 27300
 
 #define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
+
+static BITE m_LeftGun = {
+    .pos = { .x = 219, .y = -71, .z = SKIDOO_FRONT },
+    .mesh_num = 0,
+};
+static BITE m_RightGun = {
+    .pos = { .x = -235, .y = -71, .z = SKIDOO_FRONT },
+    .mesh_num = 0,
+};
 
 static bool M_IsNearby(const ITEM *item_1, const ITEM *item_2);
 static bool M_CheckBaddieCollision(ITEM *item, const ITEM *skidoo);
@@ -741,4 +752,37 @@ int32_t __cdecl Skidoo_CheckGetOff(void)
     }
 
     return true;
+}
+
+void __cdecl Skidoo_Guns(void)
+{
+    WEAPON_INFO *const winfo = &g_Weapons[LGT_SKIDOO];
+    Gun_GetNewTarget(winfo);
+    Gun_AimWeapon(winfo, &g_Lara.right_arm);
+
+    if (!(g_Input & IN_ACTION)) {
+        return;
+    }
+
+    int16_t angles[2];
+    angles[0] = g_Lara.right_arm.rot.y + g_LaraItem->rot.y;
+    angles[1] = g_Lara.right_arm.rot.x;
+
+    if (!Gun_FireWeapon(LGT_SKIDOO, g_Lara.target, g_LaraItem, angles)) {
+        return;
+    }
+
+    g_Lara.right_arm.flash_gun = winfo->flash_time;
+    Sound_Effect(winfo->sample_num, &g_LaraItem->pos, SPM_NORMAL);
+
+    const int32_t cy = Math_Cos(g_LaraItem->rot.y);
+    const int32_t sy = Math_Sin(g_LaraItem->rot.y);
+    const int32_t x = g_LaraItem->pos.x + (sy >> 4);
+    const int32_t z = g_LaraItem->pos.z + (cy >> 4);
+    const int32_t y = g_LaraItem->pos.y - 512;
+    AddDynamicLight(x, y, z, 12, 11);
+
+    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+    Creature_Effect(skidoo, &m_LeftGun, GunShot);
+    Creature_Effect(skidoo, &m_RightGun, GunShot);
 }

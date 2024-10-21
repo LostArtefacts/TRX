@@ -256,6 +256,7 @@ static void M_DecompSkidoo(const bool enable)
     INJECT(enable, 0x0043DF40, Skidoo_Animation);
     INJECT(enable, 0x0043E220, Skidoo_Explode);
     INJECT(enable, 0x0043E2A0, Skidoo_CheckGetOff);
+    INJECT(enable, 0x0043E4E0, Skidoo_Guns);
 }
 
 static void M_DecompStats(const bool enable)

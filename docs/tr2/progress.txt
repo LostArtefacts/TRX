@@ -3671,7 +3671,7 @@ typedef enum {
 0x0043DF40  0x02B9  +R      void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);
 0x0043E220  0x007C  +R      void __cdecl Skidoo_Explode(const ITEM *skidoo);
 0x0043E2A0  0x0233  +R      int32_t __cdecl Skidoo_CheckGetOff(void);
-0x0043E4E0  0x011B  -R      void __cdecl Skidoo_Guns(void);
+0x0043E4E0  0x011B  +R      void __cdecl Skidoo_Guns(void);
 0x0043E600  0x0440  -R      int32_t __cdecl Skidoo_Control(void);
 0x0043EA60  0x02D5  -R      void __cdecl Skidoo_Armed_Draw(const ITEM *item);
 0x0043ED40  0x007F  -R      void __cdecl SkidooDriver_Initialise(int16_t item_num);
@@ -4742,6 +4742,8 @@ typedef enum {
 0x004645A8  -       const uint16_t g_Requester_UnselectionGour1[];
 0x005216E0  -       uint16_t g_InvColors[17]; // INV_COLOR_NUMBER_OF
 0x00464150  +       BITE g_DragonMouth;
+0x00466230  +       BITE g_SkidooLeftGun;
+0x00466240  +       BITE g_SkidooRightGun;
 0x00465F40  -       int16_t g_MovableBlockBounds[];
 0x00465F58  -       int16_t g_ZiplineHandleBounds[];
 0x00465FF0  -       int16_t g_PickupBounds[];
