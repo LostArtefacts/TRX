@@ -168,7 +168,6 @@
 #define Jelly_Control ((void __cdecl (*)(int16_t item_num))0x0043C850)
 #define Baracudda_Control ((void __cdecl (*)(int16_t item_num))0x0043C970)
 #define Shark_Control ((void __cdecl (*)(int16_t item_num))0x0043CBA0)
-#define Skidoo_Collision ((void __cdecl (*)(int16_t item_num, ITEM *litem, COLL_INFO *coll))0x0043CF60)
 #define Skidoo_BaddieCollision ((void __cdecl (*)(ITEM *skidoo))0x0043D060)
 #define Skidoo_TestHeight ((int32_t __cdecl (*)(ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *pos))0x0043D260)
 #define DoShift ((int32_t __cdecl (*)(ITEM *skidoo, XYZ_32 *pos, XYZ_32 *old))0x0043D320)
