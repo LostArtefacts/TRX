@@ -171,7 +171,6 @@
 #define DoShift ((int32_t __cdecl (*)(ITEM *skidoo, XYZ_32 *pos, XYZ_32 *old))0x0043D320)
 #define DoDynamics ((int32_t __cdecl (*)(int32_t height, int32_t fall_speed, int32_t *y))0x0043D5A0)
 #define GetCollisionAnim ((int32_t __cdecl (*)(ITEM *skidoo, XYZ_32 *moved))0x0043D600)
-#define Skidoo_CheckGetOffOK ((int32_t __cdecl (*)(int32_t direction))0x0043DE30)
 #define Skidoo_Animation ((void __cdecl (*)(ITEM *skidoo, int32_t collide, int32_t dead))0x0043DF40)
 #define Skidoo_Explode ((void __cdecl (*)(ITEM *skidoo))0x0043E220)
 #define Skidoo_CheckGetOff ((int32_t __cdecl (*)(void))0x0043E2A0)

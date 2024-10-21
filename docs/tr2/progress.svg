@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.48% (827)</tspan> · <tspan class="known">31.11% (387)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.56% (828)</tspan> · <tspan class="known">31.03% (386)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="496.60" height="6" x="0" y="0" class="decompiled"/>
-<rect width="232.39" height="6" x="496.60" y="0" class="known"/>
+<rect width="497.20" height="6" x="0" y="0" class="decompiled"/>
+<rect width="231.79" height="6" x="497.20" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -788,7 +788,7 @@
 <rect width="12" height="12" x="135" y="210" class="decompiled"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
 <rect width="12" height="12" x="150" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);</title></rect>
 <rect width="12" height="12" x="165" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
-<rect width="12" height="12" x="180" y="210" class="known"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
+<rect width="12" height="12" x="180" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
 <rect width="12" height="12" x="195" y="210" class="known"><title>void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
 <rect width="12" height="12" x="210" y="210" class="known"><title>void __cdecl Skidoo_Explode(ITEM *skidoo);</title></rect>
 <rect width="12" height="12" x="225" y="210" class="known"><title>int32_t __cdecl Skidoo_CheckGetOff(void);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">71.15%</tspan> · <tspan class="known">28.52%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">71.23%</tspan> · <tspan class="known">28.45%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="531.50" height="6" x="0" y="0" class="decompiled"/>
-<rect width="213.06" height="6" x="531.50" y="0" class="known"/>
+<rect width="532.07" height="6" x="0" y="0" class="decompiled"/>
+<rect width="212.49" height="6" x="532.07" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1682,7 +1682,7 @@
 <rect width="11.49" height="12.06" x="480.11" y="184.39" class="decompiled"><title>int32_t __cdecl Text_GetWidth(TEXTSTRING *string);</title></rect>
 <rect width="11.49" height="12" x="480.11" y="199.44" class="known"><title>int32_t __cdecl Diver_GetWaterSurface(int32_t x, int32_t y, int32_t z, int16_t room_num);</title></rect>
 <rect width="11.49" height="12" x="480.11" y="214.44" class="decompiled"><title>void __cdecl LOT_InitialiseSlot(int16_t item_num, int32_t slot);</title></rect>
-<rect width="11.49" height="12" x="480.11" y="229.44" class="known"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
+<rect width="11.49" height="12" x="480.11" y="229.44" class="decompiled"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
 <rect width="11.49" height="12" x="480.11" y="244.44" class="known"><title>INT_PTR __stdcall SE_ControlsDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);</title></rect>
 <rect width="11.49" height="11.94" x="480.11" y="259.44" class="decompiled"><title>TEXTSTRING *__cdecl Text_Create(int32_t x, int32_t y, int32_t z, const char *text);</title></rect>
 <rect width="11.49" height="11.94" x="480.11" y="274.38" class="known"><title>void __cdecl FallingBlock(int16_t item_num);</title></rect>

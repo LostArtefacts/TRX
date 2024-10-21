@@ -49,6 +49,7 @@ typedef enum {
 #define SKIDOO_SIDE 260
 #define SKIDOO_FRONT 550
 #define SKIDOO_SNOW 500
+#define SKIDOO_GET_OFF_DIST 330
 
 #define SKIDOO_MIN_SPEED 15
 #define SKIDOO_MAX_SPEED 100
@@ -505,4 +506,44 @@ int32_t __cdecl Skidoo_UserControl(
     }
 
     return drive;
+}
+
+int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction)
+{
+    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+
+    int16_t rot;
+    if (direction == LARA_STATE_SKIDOO_GET_OFF_L) {
+        rot = skidoo->rot.y + PHD_90;
+    } else {
+        rot = skidoo->rot.y - PHD_90;
+    }
+
+    const int32_t c = Math_Cos(rot);
+    const int32_t s = Math_Sin(rot);
+    const int32_t x = skidoo->pos.x - ((SKIDOO_GET_OFF_DIST * s) >> W2V_SHIFT);
+    const int32_t z = skidoo->pos.z - ((SKIDOO_GET_OFF_DIST * c) >> W2V_SHIFT);
+    const int32_t y = skidoo->pos.y;
+
+    int16_t room_num = skidoo->room_num;
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    const int32_t height = Room_GetHeight(sector, x, y, z);
+
+    if (g_HeightType == HT_BIG_SLOPE || height == NO_HEIGHT) {
+        return false;
+    }
+
+    if (ABS(height - skidoo->pos.y) > WALL_L / 2) {
+        return false;
+    }
+
+    const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
+    if (ceiling - skidoo->pos.y > -LARA_HEIGHT) {
+        return false;
+    }
+    if (height - ceiling < LARA_HEIGHT) {
+        return false;
+    }
+
+    return true;
 }
