@@ -19,3 +19,4 @@ void __cdecl Skidoo_Explode(const ITEM *skidoo);
 int32_t __cdecl Skidoo_CheckGetOff(void);
 void __cdecl Skidoo_Guns(void);
 int32_t __cdecl Skidoo_Control(void);
+void __cdecl Skidoo_Draw(const ITEM *item);

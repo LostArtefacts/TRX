@@ -8,8 +8,10 @@
 #include "game/lara/control.h"
 #include "game/lara/look.h"
 #include "game/math.h"
+#include "game/matrix.h"
 #include "game/music.h"
 #include "game/objects/common.h"
+#include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -937,4 +939,104 @@ int32_t __cdecl Skidoo_Control(void)
     }
 
     return Skidoo_CheckGetOff();
+}
+
+void __cdecl Skidoo_Draw(const ITEM *const item)
+{
+    int32_t track_mesh = 0;
+    const SKIDOO_INFO *const skidoo_data = item->data;
+    if (skidoo_data != NULL) {
+        track_mesh = skidoo_data->track_mesh;
+    }
+
+    OBJECT *obj = &g_Objects[item->object_id];
+    if ((track_mesh & SKIDOO_GUN_MESH) != 0) {
+        obj = &g_Objects[O_SKIDOO_ARMED];
+    }
+
+    int16_t *track_mesh_ptr = NULL;
+    if ((track_mesh & 3) == 1) {
+        track_mesh_ptr = g_Meshes[g_Objects[O_SKIDOO_TRACK].mesh_idx + 1];
+    } else if ((track_mesh & 3) == 2) {
+        track_mesh_ptr = g_Meshes[g_Objects[O_SKIDOO_TRACK].mesh_idx + 7];
+    }
+    int16_t **mesh_ptrs = &g_Meshes[obj->mesh_idx];
+
+    int16_t *old_track_mesh_ptr = mesh_ptrs[1];
+    if (track_mesh_ptr != NULL) {
+        mesh_ptrs[1] = track_mesh_ptr;
+    }
+
+    // TODO: merge common code parts down below with Object_DrawAnimatingItem.
+
+    FRAME_INFO *frames[2];
+    int32_t rate;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+
+    Matrix_Push();
+    Matrix_TranslateAbs(item->pos.x, item->pos.y, item->pos.z);
+    Matrix_RotYXZ(item->rot.y, item->rot.x, item->rot.z);
+
+    const int32_t clip = S_GetObjectBounds(&frames[0]->bounds);
+    if (!clip) {
+        Matrix_Pop();
+        return;
+    }
+
+    Output_CalculateObjectLighting(item, frames[0]);
+
+    int32_t *bone = &g_AnimBones[obj->bone_idx];
+    if (frac) {
+        const int16_t *mesh_rots_1 = frames[0]->mesh_rots;
+        const int16_t *mesh_rots_2 = frames[1]->mesh_rots;
+
+        Matrix_InitInterpolate(frac, rate);
+        Matrix_TranslateRel_ID(
+            frames[0]->offset.x, frames[0]->offset.y, frames[0]->offset.z,
+            frames[1]->offset.x, frames[1]->offset.y, frames[1]->offset.z);
+        Matrix_RotYXZsuperpack_I(&mesh_rots_1, &mesh_rots_2, 0);
+
+        Output_InsertPolygons_I(mesh_ptrs[0], clip);
+        for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
+            const int32_t bone_flags = bone[0];
+            if (bone_flags & BF_MATRIX_POP) {
+                Matrix_Pop_I();
+            }
+            if (bone_flags & BF_MATRIX_PUSH) {
+                Matrix_Push_I();
+            }
+
+            Matrix_TranslateRel_I(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZsuperpack_I(&mesh_rots_1, &mesh_rots_2, 0);
+            bone += 4;
+
+            Output_InsertPolygons_I(mesh_ptrs[mesh_idx], clip);
+        }
+    } else {
+        const int16_t *mesh_rots = frames[0]->mesh_rots;
+        Matrix_TranslateRel(
+            frames[0]->offset.x, frames[0]->offset.y, frames[0]->offset.z);
+        Matrix_RotYXZsuperpack(&mesh_rots, 0);
+
+        Output_InsertPolygons(mesh_ptrs[0], clip);
+        for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
+            const int32_t bone_flags = bone[0];
+            if (bone_flags & BF_MATRIX_POP) {
+                Matrix_Pop();
+            }
+            if (bone_flags & BF_MATRIX_PUSH) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel(bone[1], bone[2], bone[3]);
+            Matrix_RotYXZsuperpack(&mesh_rots, 0);
+            bone += 4;
+
+            Output_InsertPolygons(mesh_ptrs[mesh_idx], clip);
+        }
+    }
+
+    Matrix_Pop();
+
+    mesh_ptrs[1] = old_track_mesh_ptr;
 }

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.96% (833)</tspan> · <tspan class="known">30.63% (381)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.04% (834)</tspan> · <tspan class="known">30.55% (380)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="500.20" height="6" x="0" y="0" class="decompiled"/>
-<rect width="228.78" height="6" x="500.20" y="0" class="known"/>
+<rect width="500.80" height="6" x="0" y="0" class="decompiled"/>
+<rect width="228.18" height="6" x="500.80" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -794,7 +794,7 @@
 <rect width="12" height="12" x="225" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_CheckGetOff(void);</title></rect>
 <rect width="12" height="12" x="240" y="210" class="decompiled"><title>void __cdecl Skidoo_Guns(void);</title></rect>
 <rect width="12" height="12" x="255" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_Control(void);</title></rect>
-<rect width="12" height="12" x="270" y="210" class="known"><title>void __cdecl Skidoo_Armed_Draw(const ITEM *item);</title></rect>
+<rect width="12" height="12" x="270" y="210" class="decompiled"><title>void __cdecl Skidoo_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="285" y="210" class="known"><title>void __cdecl SkidooDriver_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="210" class="known"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
 <rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidooDriver_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.03%</tspan> · <tspan class="known">27.64%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.25%</tspan> · <tspan class="known">27.43%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="538.10" height="6" x="0" y="0" class="decompiled"/>
-<rect width="206.46" height="6" x="538.10" y="0" class="known"/>
+<rect width="539.68" height="6" x="0" y="0" class="decompiled"/>
+<rect width="204.88" height="6" x="539.68" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1446,7 +1446,7 @@
 <rect width="21.59" height="21.76" x="319.90" y="255.20" class="known"><title>bool __cdecl SE_ShowSetupDialog(HWND hParent, bool isDefault);</title></rect>
 <rect width="21.59" height="21.63" x="319.90" y="279.97" class="decompiled"><title>void __cdecl Option_Detail(INVENTORY_ITEM *item);</title></rect>
 <rect width="21.59" height="21.56" x="319.90" y="304.59" class="known"><title>int32_t __cdecl Collide_GetSpheres(const ITEM *item, SPHERE *spheres, bool world_space);</title></rect>
-<rect width="21.59" height="21.46" x="319.90" y="329.15" class="known"><title>void __cdecl Skidoo_Armed_Draw(const ITEM *item);</title></rect>
+<rect width="21.59" height="21.46" x="319.90" y="329.15" class="decompiled"><title>void __cdecl Skidoo_Draw(const ITEM *item);</title></rect>
 <rect width="21.59" height="21.39" x="319.90" y="353.61" class="decompiled"><title>const int16_t *__cdecl Output_InsertObjectG3_ZBuffered(const int16_t *obj_ptr, int32_t num, SORT_TYPE sort_type);</title></rect>
 <rect width="20.94" height="21.96" x="344.49" y="0" class="decompiled"><title>int32_t __cdecl Output_XYClipper(int32_t vtx_count, VERTEX_INFO *vtx);</title></rect>
 <rect width="20.94" height="21.96" x="344.49" y="24.96" class="known"><title>void __cdecl ControlMissile(int16_t fx_num);</title></rect>

@@ -512,7 +512,8 @@ void __cdecl Lara_Draw_I(
             Matrix_RotX_I(-16380);
             Matrix_RotY_I(2 * Random_GetDraw());
             S_CalculateStaticLight(2048);
-            Output_InsertPolygons_I(g_Meshes[g_Objects[235].mesh_idx], clip);
+            Output_InsertPolygons_I(
+                g_Meshes[g_Objects[O_FLARE_FIRE].mesh_idx], clip);
         }
         Matrix_Pop();
         break;
