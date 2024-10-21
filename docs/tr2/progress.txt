@@ -3669,7 +3669,7 @@ typedef enum {
 0x0043DC70  0x01B6  +R      int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);
 0x0043DE30  0x0106  +R      int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);
 0x0043DF40  0x02B9  +R      void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);
-0x0043E220  0x007C  -R      void __cdecl Skidoo_Explode(ITEM *skidoo);
+0x0043E220  0x007C  +R      void __cdecl Skidoo_Explode(ITEM *skidoo);
 0x0043E2A0  0x0233  -R      int32_t __cdecl Skidoo_CheckGetOff(void);
 0x0043E4E0  0x011B  -R      void __cdecl Skidoo_Guns(void);
 0x0043E600  0x0440  -R      int32_t __cdecl Skidoo_Control(void);

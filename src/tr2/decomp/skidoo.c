@@ -664,3 +664,22 @@ void __cdecl Skidoo_Animation(
         break;
     }
 }
+
+void __cdecl Skidoo_Explode(ITEM *const skidoo)
+{
+    const int16_t fx_num = Effect_Create(skidoo->room_num);
+    if (fx_num != NO_ITEM) {
+        FX *const fx = &g_Effects[fx_num];
+        fx->pos.x = skidoo->pos.x;
+        fx->pos.y = skidoo->pos.y;
+        fx->pos.z = skidoo->pos.z;
+        fx->speed = 0;
+        fx->frame_num = 0;
+        fx->counter = 0;
+        fx->object_id = O_EXPLOSION;
+    }
+
+    Effect_ExplodingDeath(g_Lara.skidoo, -4, 0);
+    Sound_Effect(SFX_EXPLOSION1, NULL, SPM_NORMAL);
+    g_Lara.skidoo = NO_ITEM;
+}
