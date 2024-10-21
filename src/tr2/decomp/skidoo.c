@@ -1,13 +1,17 @@
 #include "decomp/skidoo.h"
 
+#include "game/effects.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/math.h"
 #include "game/objects/common.h"
+#include "game/random.h"
 #include "game/room.h"
 #include "global/funcs.h"
 #include "global/vars.h"
+
+#include <libtrx/utils.h>
 
 typedef enum {
     SKIDOO_GET_ON_NONE = 0,
@@ -41,6 +45,8 @@ typedef enum {
 } LARA_ANIM_SKIDOO;
 
 #define SKIDOO_RADIUS 500
+#define SKIDOO_SIDE 260
+#define SKIDOO_SNOW 500
 #define M_TARGET_DIST (WALL_L * 2) // = 2048
 
 static bool M_IsNearby(const ITEM *item_1, const ITEM *item_2);
@@ -217,4 +223,36 @@ int32_t __cdecl Skidoo_TestHeight(
     const SECTOR *const sector =
         Room_GetSector(out_pos->x, out_pos->y, out_pos->z, &room_num);
     return Room_GetHeight(sector, out_pos->x, out_pos->y, out_pos->z);
+}
+
+void __cdecl Skidoo_DoSnowEffect(ITEM *const skidoo)
+{
+    const int16_t fx_num = Effect_Create(skidoo->room_num);
+    if (fx_num == NO_ITEM) {
+        return;
+    }
+
+    const int32_t sx = Math_Sin(skidoo->rot.x);
+    const int32_t sy = Math_Sin(skidoo->rot.y);
+    const int32_t cy = Math_Cos(skidoo->rot.y);
+    const int32_t x = (SKIDOO_SIDE * (Random_GetDraw() - 0x4000)) >> 14;
+    FX *const fx = &g_Effects[fx_num];
+    fx->pos.x = skidoo->pos.x - ((sy * SKIDOO_SNOW + cy * x) >> W2V_SHIFT);
+    fx->pos.y = skidoo->pos.y + ((sx * SKIDOO_SNOW) >> W2V_SHIFT);
+    fx->pos.z = skidoo->pos.z - ((cy * SKIDOO_SNOW - sy * x) >> W2V_SHIFT);
+    fx->room_num = skidoo->room_num;
+    fx->object_id = O_SNOW_SPRITE;
+    fx->frame_num = 0;
+    fx->speed = 0;
+    if (skidoo->speed < 64) {
+        fx->fall_speed = (Random_GetDraw() * ABS(skidoo->speed)) >> 15;
+    } else {
+        fx->fall_speed = 0;
+    }
+
+    g_MatrixPtr->_23 = 0;
+
+    S_CalculateLight(fx->pos.x, fx->pos.y, fx->pos.z, fx->room_num);
+    fx->shade = g_LsAdder - 512;
+    CLAMPL(fx->shade, 0);
 }

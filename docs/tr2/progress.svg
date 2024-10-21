@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.24% (824)</tspan> · <tspan class="known">31.35% (390)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.32% (825)</tspan> · <tspan class="known">31.27% (389)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="494.80" height="6" x="0" y="0" class="decompiled"/>
-<rect width="234.19" height="6" x="494.80" y="0" class="known"/>
+<rect width="495.40" height="6" x="0" y="0" class="decompiled"/>
+<rect width="233.59" height="6" x="495.40" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -785,7 +785,7 @@
 <rect width="12" height="12" x="90" y="210" class="known"><title>int32_t __cdecl DoShift(ITEM *skidoo, XYZ_32 *pos, XYZ_32 *old);</title></rect>
 <rect width="12" height="12" x="105" y="210" class="known"><title>int32_t __cdecl DoDynamics(int32_t height, int32_t fall_speed, int32_t *y);</title></rect>
 <rect width="12" height="12" x="120" y="210" class="known"><title>int32_t __cdecl GetCollisionAnim(ITEM *skidoo, XYZ_32 *moved);</title></rect>
-<rect width="12" height="12" x="135" y="210" class="known"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
+<rect width="12" height="12" x="135" y="210" class="decompiled"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
 <rect width="12" height="12" x="150" y="210" class="known"><title>int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);</title></rect>
 <rect width="12" height="12" x="165" y="210" class="known"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
 <rect width="12" height="12" x="180" y="210" class="known"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.58%</tspan> · <tspan class="known">29.09%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">70.68%</tspan> · <tspan class="known">29%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="527.26" height="6" x="0" y="0" class="decompiled"/>
-<rect width="217.30" height="6" x="527.26" y="0" class="known"/>
+<rect width="527.96" height="6" x="0" y="0" class="decompiled"/>
+<rect width="216.60" height="6" x="527.96" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1621,7 +1621,7 @@
 <rect width="13.27" height="13.47" x="717.61" y="76.15" class="decompiled"><title>void __cdecl Lara_State_Run(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="13.12" height="13.47" x="733.88" y="76.15" class="decompiled"><title>int32_t __cdecl Output_ZedClipper(int32_t vtx_count, POINT_INFO *pts, VERTEX_INFO *vtx);</title></rect>
 <rect width="13.47" height="13.12" x="448.40" y="92.62" class="decompiled"><title>void __cdecl Output_DrawClippedPoly_Textured(int32_t vtx_count);</title></rect>
-<rect width="13.47" height="13.12" x="448.40" y="108.74" class="known"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
+<rect width="13.47" height="13.12" x="448.40" y="108.74" class="decompiled"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
 <rect width="13.47" height="13.07" x="448.40" y="124.86" class="decompiled"><title>void __cdecl Lara_UseItem(GAME_OBJECT_ID object_id);</title></rect>
 <rect width="13.47" height="13.02" x="448.40" y="140.93" class="decompiled"><title>void __cdecl Inv_Ring_DoMotions(RING_INFO *ring);</title></rect>
 <rect width="13.47" height="13.02" x="448.40" y="156.95" class="known"><title>void __cdecl DartEmitterControl(int16_t item_num);</title></rect>

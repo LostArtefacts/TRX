@@ -9,3 +9,4 @@ void __cdecl Skidoo_Collision(
 void __cdecl Skidoo_BaddieCollision(const ITEM *skidoo);
 int32_t __cdecl Skidoo_TestHeight(
     const ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *out_pos);
+void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);

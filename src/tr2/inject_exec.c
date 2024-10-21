@@ -249,6 +249,7 @@ static void M_DecompSkidoo(const bool enable)
     INJECT(enable, 0x0043CF60, Skidoo_Collision);
     INJECT(enable, 0x0043D060, Skidoo_BaddieCollision);
     INJECT(enable, 0x0043D260, Skidoo_TestHeight);
+    INJECT(enable, 0x0043D690, Skidoo_DoSnowEffect);
 }
 
 static void M_DecompStats(const bool enable)
