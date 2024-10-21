@@ -251,6 +251,7 @@ static void M_DecompSkidoo(const bool enable)
     INJECT(enable, 0x0043D260, Skidoo_TestHeight);
     INJECT(enable, 0x0043D690, Skidoo_DoSnowEffect);
     INJECT(enable, 0x0043D7D0, Skidoo_Dynamics);
+    INJECT(enable, 0x0043DC70, Skidoo_UserControl);
 }
 
 static void M_DecompStats(const bool enable)

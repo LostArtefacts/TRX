@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.40% (826)</tspan> · <tspan class="known">31.19% (388)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">66.48% (827)</tspan> · <tspan class="known">31.11% (387)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="496" height="6" x="0" y="0" class="decompiled"/>
-<rect width="232.99" height="6" x="496" y="0" class="known"/>
+<rect width="496.60" height="6" x="0" y="0" class="decompiled"/>
+<rect width="232.39" height="6" x="496.60" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -787,7 +787,7 @@
 <rect width="12" height="12" x="120" y="210" class="known"><title>int32_t __cdecl GetCollisionAnim(ITEM *skidoo, XYZ_32 *moved);</title></rect>
 <rect width="12" height="12" x="135" y="210" class="decompiled"><title>void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);</title></rect>
 <rect width="12" height="12" x="150" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);</title></rect>
-<rect width="12" height="12" x="165" y="210" class="known"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
+<rect width="12" height="12" x="165" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
 <rect width="12" height="12" x="180" y="210" class="known"><title>int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);</title></rect>
 <rect width="12" height="12" x="195" y="210" class="known"><title>void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);</title></rect>
 <rect width="12" height="12" x="210" y="210" class="known"><title>void __cdecl Skidoo_Explode(ITEM *skidoo);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">71.02%</tspan> · <tspan class="known">28.65%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">71.15%</tspan> · <tspan class="known">28.52%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="530.54" height="6" x="0" y="0" class="decompiled"/>
-<rect width="214.02" height="6" x="530.54" y="0" class="known"/>
+<rect width="531.50" height="6" x="0" y="0" class="decompiled"/>
+<rect width="213.06" height="6" x="531.50" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1541,7 +1541,7 @@
 <rect width="16.42" height="16.05" x="411.12" y="157.20" class="decompiled"><title>BOOL __stdcall EnumDisplayAdaptersCallback(GUID *lpGUID, LPTSTR lpDriverDescription, LPTSTR lpDriverName, LPVOID lpContext);</title></rect>
 <rect width="16.42" height="15.80" x="411.12" y="176.26" class="decompiled"><title>void __cdecl BGND_Make640x480(uint8_t *bitmap, RGB_888 *palette);</title></rect>
 <rect width="16.42" height="15.80" x="411.12" y="195.06" class="decompiled"><title>void __cdecl D3DDeviceCreate(LPDDS lpBackBuffer);</title></rect>
-<rect width="16.42" height="15.71" x="411.12" y="213.86" class="known"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
+<rect width="16.42" height="15.71" x="411.12" y="213.86" class="decompiled"><title>int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);</title></rect>
 <rect width="16.42" height="15.58" x="411.12" y="232.57" class="decompiled"><title>void __cdecl Item_Initialise(int16_t item_num);</title></rect>
 <rect width="16.42" height="15.46" x="411.12" y="251.15" class="decompiled"><title>int32_t __cdecl Demo_Start(int32_t level_num);</title></rect>
 <rect width="16.42" height="15.46" x="411.12" y="269.61" class="decompiled"><title>bool __cdecl LOT_EnableBaddieAI(int16_t item_num, bool always);</title></rect>

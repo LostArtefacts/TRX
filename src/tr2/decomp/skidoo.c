@@ -4,6 +4,7 @@
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
+#include "game/lara/look.h"
 #include "game/math.h"
 #include "game/objects/common.h"
 #include "game/random.h"
@@ -49,13 +50,22 @@ typedef enum {
 #define SKIDOO_FRONT 550
 #define SKIDOO_SNOW 500
 
+#define SKIDOO_MIN_SPEED 15
 #define SKIDOO_MAX_SPEED 100
+#define SKIDOO_SLOW_SPEED 50
+#define SKIDOO_FAST_SPEED 150
 #define SKIDOO_ACCELERATION 10
+#define SKIDOO_SLOWDOWN 2
+
 #define SKIDOO_SLIP 100
 #define SKIDOO_SLIP_SIDE 50
 
 #define SKIDOO_MAX_BACK -30
+#define SKIDOO_BRAKE 5
+#define SKIDOO_REVERSE (-5)
 #define SKIDOO_UNDO_TURN (PHD_DEGREE * 2) // = 364
+#define SKIDOO_TURN (PHD_DEGREE / 2 + SKIDOO_UNDO_TURN) // = 455
+#define SKIDOO_MAX_TURN (PHD_DEGREE * 6) // = 1092
 #define SKIDOO_MOMENTUM_TURN (PHD_DEGREE * 3) // = 546
 #define SKIDOO_MAX_MOMENTUM_TURN (PHD_DEGREE * 150) // = 27300
 
@@ -420,4 +430,79 @@ int32_t __cdecl Skidoo_Dynamics(ITEM *const skidoo)
     }
 
     return collide;
+}
+
+int32_t __cdecl Skidoo_UserControl(
+    ITEM *const skidoo, const int32_t height, int32_t *const out_pitch)
+{
+    SKIDOO_INFO *const skidoo_data = skidoo->data;
+
+    bool drive = false;
+
+    if (skidoo->pos.y >= height - STEP_L) {
+        *out_pitch = skidoo->speed + (height - skidoo->pos.y);
+
+        if (skidoo->speed == 0 && (g_Input & IN_LOOK)) {
+            Lara_LookUpDown();
+        }
+
+        if (((g_Input & IN_LEFT) && !(g_Input & IN_BACK))
+            || ((g_Input & IN_RIGHT) && (g_Input & IN_BACK))) {
+            skidoo_data->skidoo_turn -= SKIDOO_TURN;
+            CLAMPL(skidoo_data->skidoo_turn, -SKIDOO_MAX_TURN);
+        }
+
+        if (((g_Input & IN_RIGHT) && !(g_Input & IN_BACK))
+            || ((g_Input & IN_LEFT) && (g_Input & IN_BACK))) {
+            skidoo_data->skidoo_turn += SKIDOO_TURN;
+            CLAMPG(skidoo_data->skidoo_turn, SKIDOO_MAX_TURN);
+        }
+
+        if (g_Input & IN_BACK) {
+            if (skidoo->speed > 0) {
+                skidoo->speed -= SKIDOO_BRAKE;
+            } else {
+                if (skidoo->speed > SKIDOO_MAX_BACK) {
+                    skidoo->speed += SKIDOO_REVERSE;
+                }
+                drive = true;
+            }
+        } else if (g_Input & IN_FORWARD) {
+            int32_t max_speed;
+            if ((g_Input & IN_ACTION) && !(skidoo_data->track_mesh & 4)) {
+                max_speed = SKIDOO_FAST_SPEED;
+            } else if (g_Input & IN_SLOW) {
+                max_speed = SKIDOO_SLOW_SPEED;
+            } else {
+                max_speed = SKIDOO_MAX_SPEED;
+            }
+
+            if (skidoo->speed < max_speed) {
+                skidoo->speed +=
+                    SKIDOO_ACCELERATION * skidoo->speed / (2 * max_speed)
+                    + SKIDOO_ACCELERATION / 2;
+            } else if (skidoo->speed > max_speed + SKIDOO_SLOWDOWN) {
+                skidoo->speed -= SKIDOO_SLOWDOWN;
+            }
+
+            drive = true;
+        } else if (
+            skidoo->speed >= 0 && skidoo->speed < SKIDOO_MIN_SPEED
+            && (g_Input & (IN_LEFT | IN_RIGHT))) {
+            skidoo->speed = SKIDOO_MIN_SPEED;
+            drive = true;
+        } else if (skidoo->speed > SKIDOO_SLOWDOWN) {
+            skidoo->speed -= SKIDOO_SLOWDOWN;
+            if ((Random_GetDraw() & 0x7F) < skidoo->speed) {
+                drive = true;
+            }
+        } else {
+            skidoo->speed = 0;
+        }
+    } else if (g_Input & (IN_FORWARD | IN_BACK)) {
+        drive = true;
+        *out_pitch = skidoo_data->pitch + 50;
+    }
+
+    return drive;
 }

@@ -11,3 +11,5 @@ int32_t __cdecl Skidoo_TestHeight(
     const ITEM *item, int32_t z_off, int32_t x_off, XYZ_32 *out_pos);
 void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);
 int32_t __cdecl Skidoo_Dynamics(ITEM *const skidoo);
+int32_t __cdecl Skidoo_UserControl(
+    ITEM *skidoo, int32_t height, int32_t *out_pitch);
