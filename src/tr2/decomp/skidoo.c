@@ -46,8 +46,20 @@ typedef enum {
 
 #define SKIDOO_RADIUS 500
 #define SKIDOO_SIDE 260
+#define SKIDOO_FRONT 550
 #define SKIDOO_SNOW 500
-#define M_TARGET_DIST (WALL_L * 2) // = 2048
+
+#define SKIDOO_MAX_SPEED 100
+#define SKIDOO_ACCELERATION 10
+#define SKIDOO_SLIP 100
+#define SKIDOO_SLIP_SIDE 50
+
+#define SKIDOO_MAX_BACK -30
+#define SKIDOO_UNDO_TURN (PHD_DEGREE * 2) // = 364
+#define SKIDOO_MOMENTUM_TURN (PHD_DEGREE * 3) // = 546
+#define SKIDOO_MAX_MOMENTUM_TURN (PHD_DEGREE * 150) // = 27300
+
+#define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
 
 static bool M_IsNearby(const ITEM *item_1, const ITEM *item_2);
 static bool M_CheckBaddieCollision(ITEM *item, const ITEM *skidoo);
@@ -57,8 +69,9 @@ static bool M_IsNearby(const ITEM *const item_1, const ITEM *const item_2)
     const int32_t dx = item_1->pos.x - item_2->pos.x;
     const int32_t dy = item_1->pos.y - item_2->pos.y;
     const int32_t dz = item_1->pos.z - item_2->pos.z;
-    return dx > -M_TARGET_DIST && dx < M_TARGET_DIST && dy > -M_TARGET_DIST
-        && dy < M_TARGET_DIST && dz > -M_TARGET_DIST && dz < M_TARGET_DIST;
+    return dx > -SKIDOO_TARGET_DIST && dx < SKIDOO_TARGET_DIST
+        && dy > -SKIDOO_TARGET_DIST && dy < SKIDOO_TARGET_DIST
+        && dz > -SKIDOO_TARGET_DIST && dz < SKIDOO_TARGET_DIST;
 }
 
 static bool M_CheckBaddieCollision(ITEM *const item, const ITEM *const skidoo)
@@ -255,4 +268,156 @@ void __cdecl Skidoo_DoSnowEffect(ITEM *const skidoo)
     S_CalculateLight(fx->pos.x, fx->pos.y, fx->pos.z, fx->room_num);
     fx->shade = g_LsAdder - 512;
     CLAMPL(fx->shade, 0);
+}
+
+int32_t __cdecl Skidoo_Dynamics(ITEM *const skidoo)
+{
+    SKIDOO_INFO *const skidoo_data = skidoo->data;
+
+    XYZ_32 fl_old;
+    XYZ_32 bl_old;
+    XYZ_32 br_old;
+    XYZ_32 fr_old;
+    int32_t hfl_old =
+        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl_old);
+    int32_t hfr_old =
+        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr_old);
+    int32_t hbl_old =
+        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, -SKIDOO_SIDE, &bl_old);
+    int32_t hbr_old =
+        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, SKIDOO_SIDE, &br_old);
+
+    XYZ_32 old = {
+        .z = skidoo->pos.z,
+        .x = skidoo->pos.x,
+        .y = skidoo->pos.y,
+    };
+
+    CLAMPG(bl_old.y, hbl_old);
+    CLAMPG(br_old.y, hbr_old);
+    CLAMPG(fl_old.y, hfl_old);
+    CLAMPG(fr_old.y, hfr_old);
+
+    if (skidoo->pos.y <= skidoo->floor - STEP_L) {
+        skidoo->rot.y += skidoo_data->extra_rotation + skidoo_data->skidoo_turn;
+    } else {
+        if (skidoo_data->skidoo_turn < -SKIDOO_UNDO_TURN) {
+            skidoo_data->skidoo_turn += SKIDOO_UNDO_TURN;
+        } else if (skidoo_data->skidoo_turn > SKIDOO_UNDO_TURN) {
+            skidoo_data->skidoo_turn -= SKIDOO_UNDO_TURN;
+        } else {
+            skidoo_data->skidoo_turn = 0;
+        }
+        skidoo->rot.y += skidoo_data->skidoo_turn + skidoo_data->extra_rotation;
+
+        int16_t rot = skidoo->rot.y - skidoo_data->momentum_angle;
+        if (rot < -SKIDOO_MOMENTUM_TURN) {
+            if (rot < -SKIDOO_MAX_MOMENTUM_TURN) {
+                rot = -SKIDOO_MAX_MOMENTUM_TURN;
+                skidoo_data->momentum_angle = skidoo->rot.y - rot;
+            } else {
+                skidoo_data->momentum_angle -= SKIDOO_MOMENTUM_TURN;
+            }
+        } else if (rot > SKIDOO_MOMENTUM_TURN) {
+            if (rot > SKIDOO_MAX_MOMENTUM_TURN) {
+                rot = SKIDOO_MAX_MOMENTUM_TURN;
+                skidoo_data->momentum_angle = skidoo->rot.y - rot;
+            } else {
+                skidoo_data->momentum_angle += SKIDOO_MOMENTUM_TURN;
+            }
+        } else {
+            skidoo_data->momentum_angle = skidoo->rot.y;
+        }
+    }
+
+    skidoo->pos.z +=
+        (skidoo->speed * Math_Cos(skidoo_data->momentum_angle)) >> W2V_SHIFT;
+    skidoo->pos.x +=
+        (skidoo->speed * Math_Sin(skidoo_data->momentum_angle)) >> W2V_SHIFT;
+
+    int32_t slip;
+    slip = (SKIDOO_SLIP * Math_Sin(skidoo->rot.x)) >> W2V_SHIFT;
+    if (ABS(slip) > SKIDOO_SLIP / 2) {
+        skidoo->pos.z -= (slip * Math_Cos(skidoo->rot.y)) >> W2V_SHIFT;
+        skidoo->pos.x -= (slip * Math_Sin(skidoo->rot.y)) >> W2V_SHIFT;
+    }
+
+    slip = (SKIDOO_SLIP_SIDE * Math_Sin(skidoo->rot.z)) >> W2V_SHIFT;
+    if (ABS(slip) > SKIDOO_SLIP_SIDE / 2) {
+        skidoo->pos.z -= (slip * Math_Sin(skidoo->rot.y)) >> W2V_SHIFT;
+        skidoo->pos.x += (slip * Math_Cos(skidoo->rot.y)) >> W2V_SHIFT;
+    }
+
+    XYZ_32 moved = {
+        .x = skidoo->pos.x,
+        .z = skidoo->pos.z,
+    };
+    if (!(skidoo->flags & IF_ONE_SHOT)) {
+        Skidoo_BaddieCollision(skidoo);
+    }
+
+    int32_t rot = 0;
+
+    XYZ_32 br;
+    XYZ_32 fl;
+    XYZ_32 bl;
+    XYZ_32 fr;
+    const int32_t hbl =
+        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, -SKIDOO_SIDE, &bl);
+    if (hbl < bl_old.y - STEP_L) {
+        rot = DoShift(skidoo, &bl, &bl_old);
+    }
+    const int32_t hbr =
+        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, SKIDOO_SIDE, &br);
+    if (hbr < br_old.y - STEP_L) {
+        rot += DoShift(skidoo, &br, &br_old);
+    }
+    const int32_t hfl =
+        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl);
+    if (hfl < fl_old.y - STEP_L) {
+        rot += DoShift(skidoo, &fl, &fl_old);
+    }
+    const int32_t hfr =
+        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr);
+    if (hfr < fr_old.y - STEP_L) {
+        rot += DoShift(skidoo, &fr, &fr_old);
+    }
+
+    int16_t room_num = skidoo->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(skidoo->pos.x, skidoo->pos.y, skidoo->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, skidoo->pos.x, skidoo->pos.y, skidoo->pos.z);
+    if (height < skidoo->pos.y - STEP_L) {
+        DoShift(skidoo, &skidoo->pos, &old);
+    }
+
+    skidoo_data->extra_rotation = rot;
+
+    int32_t collide = GetCollisionAnim(skidoo, &moved);
+    if (collide != 0) {
+        const int32_t c = Math_Cos(skidoo_data->momentum_angle);
+        const int32_t s = Math_Sin(skidoo_data->momentum_angle);
+        const int32_t dx = skidoo->pos.x - old.x;
+        const int32_t dz = skidoo->pos.z - old.z;
+        const int32_t new_speed = (s * dx + c * dz) >> W2V_SHIFT;
+
+        if (skidoo == Item_Get(g_Lara.skidoo)
+            && skidoo->speed > SKIDOO_MAX_SPEED + SKIDOO_ACCELERATION
+            && new_speed < skidoo->speed - SKIDOO_ACCELERATION) {
+            Lara_TakeDamage((skidoo->speed - new_speed) / 2, true);
+        }
+
+        if (skidoo->speed > 0 && new_speed < skidoo->speed) {
+            skidoo->speed = new_speed < 0 ? 0 : new_speed;
+        } else if (skidoo->speed < 0 && new_speed > skidoo->speed) {
+            skidoo->speed = new_speed > 0 ? 0 : new_speed;
+        }
+
+        if (skidoo->speed < SKIDOO_MAX_BACK) {
+            skidoo->speed = SKIDOO_MAX_BACK;
+        }
+    }
+
+    return collide;
 }

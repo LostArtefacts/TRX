@@ -3665,7 +3665,7 @@ typedef enum {
 0x0043D5A0  0x0054  -R      int32_t __cdecl DoDynamics(int32_t height, int32_t fall_speed, int32_t *y);
 0x0043D600  0x0090  -R      int32_t __cdecl GetCollisionAnim(ITEM *skidoo, XYZ_32 *moved);
 0x0043D690  0x0140  +R      void __cdecl Skidoo_DoSnowEffect(ITEM *skidoo);
-0x0043D7D0  0x049E  -R      int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);
+0x0043D7D0  0x049E  +R      int32_t __cdecl Skidoo_Dynamics(ITEM *skidoo);
 0x0043DC70  0x01B6  -R      int32_t __cdecl Skidoo_UserControl(ITEM *skidoo, int32_t height, int32_t *pitch);
 0x0043DE30  0x0106  -R      int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);
 0x0043DF40  0x02B9  -R      void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);
