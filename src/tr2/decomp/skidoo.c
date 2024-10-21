@@ -665,7 +665,7 @@ void __cdecl Skidoo_Animation(
     }
 }
 
-void __cdecl Skidoo_Explode(ITEM *const skidoo)
+void __cdecl Skidoo_Explode(const ITEM *const skidoo)
 {
     const int16_t fx_num = Effect_Create(skidoo->room_num);
     if (fx_num != NO_ITEM) {
@@ -682,4 +682,63 @@ void __cdecl Skidoo_Explode(ITEM *const skidoo)
     Effect_ExplodingDeath(g_Lara.skidoo, -4, 0);
     Sound_Effect(SFX_EXPLOSION1, NULL, SPM_NORMAL);
     g_Lara.skidoo = NO_ITEM;
+}
+
+int32_t __cdecl Skidoo_CheckGetOff(void)
+{
+    ITEM *const skidoo = &g_Items[g_Lara.skidoo];
+
+    if ((g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_R
+         || g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_L)
+        && g_LaraItem->frame_num == g_Anims[g_LaraItem->anim_num].frame_end) {
+        if (g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_L) {
+            g_LaraItem->rot.y += PHD_90;
+        } else {
+            g_LaraItem->rot.y -= PHD_90;
+        }
+        g_LaraItem->anim_num = LA_STAND_STILL;
+        g_LaraItem->frame_num = g_Anims[LA_STAND_STILL].frame_base;
+        g_LaraItem->goal_anim_state = LS_STOP;
+        g_LaraItem->current_anim_state = LS_STOP;
+        g_LaraItem->pos.x -=
+            (SKIDOO_GET_OFF_DIST * Math_Sin(g_LaraItem->rot.y)) >> W2V_SHIFT;
+        g_LaraItem->pos.z -=
+            (SKIDOO_GET_OFF_DIST * Math_Cos(g_LaraItem->rot.y)) >> W2V_SHIFT;
+        g_LaraItem->rot.x = 0;
+        g_LaraItem->rot.z = 0;
+        g_Lara.skidoo = NO_ITEM;
+        g_Lara.gun_status = LGS_ARMLESS;
+        return true;
+    }
+
+    if (g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_LET_GO
+        && (skidoo->pos.y == skidoo->floor
+            || g_LaraItem->frame_num
+                == g_Anims[g_LaraItem->anim_num].frame_end)) {
+        g_LaraItem->anim_num = LA_FREEFALL;
+        g_LaraItem->frame_num = g_Anims[g_LaraItem->anim_num].frame_base;
+        g_LaraItem->current_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
+        if (skidoo->pos.y == skidoo->floor) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_STILL;
+            g_LaraItem->fall_speed = DAMAGE_START + DAMAGE_LENGTH;
+            g_LaraItem->speed = 0;
+            Skidoo_Explode(skidoo);
+        } else {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
+            g_LaraItem->pos.y -= 200;
+            g_LaraItem->fall_speed = skidoo->fall_speed;
+            g_LaraItem->speed = skidoo->speed;
+            Sound_Effect(SFX_LARA_FALL, &g_LaraItem->pos, SPM_NORMAL);
+        }
+        g_LaraItem->rot.x = 0;
+        g_LaraItem->rot.z = 0;
+        g_LaraItem->gravity = 1;
+        g_Lara.gun_status = LGS_ARMLESS;
+        g_Lara.move_angle = skidoo->rot.y;
+        skidoo->flags |= IF_ONE_SHOT;
+        skidoo->collidable = 0;
+        return false;
+    }
+
+    return true;
 }
