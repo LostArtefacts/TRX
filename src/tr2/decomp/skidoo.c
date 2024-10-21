@@ -6,9 +6,11 @@
 #include "game/lara/control.h"
 #include "game/lara/look.h"
 #include "game/math.h"
+#include "game/music.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
+#include "game/sound.h"
 #include "global/funcs.h"
 #include "global/vars.h"
 
@@ -31,8 +33,8 @@ typedef enum {
     LARA_STATE_SKIDOO_GET_ON_L  = 6,
     LARA_STATE_SKIDOO_GET_OFF_L = 7,
     LARA_STATE_SKIDOO_STILL     = 8,
-    LARA_STATE_SKIDOO_GET_OFF   = 9,
-    LARA_STATE_SKIDOO_LETGO     = 10,
+    LARA_STATE_SKIDOO_GET_OFF_R = 9,
+    LARA_STATE_SKIDOO_LET_GO    = 10,
     LARA_STATE_SKIDOO_DEATH     = 11,
     LARA_STATE_SKIDOO_FALLOFF   = 12,
     // clang-format on
@@ -41,6 +43,12 @@ typedef enum {
 typedef enum {
     // clang-format off
     LA_SKIDOO_GET_ON_L = 1,
+    LA_SKIDOO_FALL = 8,
+    LA_SKIDOO_HIT_LEFT = 11,
+    LA_SKIDOO_HIT_RIGHT = 12,
+    LA_SKIDOO_HIT_FRONT = 13,
+    LA_SKIDOO_HIT_BACK = 14,
+    LA_SKIDOO_DEAD = 15,
     LA_SKIDOO_GET_ON_R = 18,
     // clang-format on
 } LARA_ANIM_SKIDOO;
@@ -546,4 +554,113 @@ int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction)
     }
 
     return true;
+}
+
+void __cdecl Skidoo_Animation(
+    ITEM *const skidoo, const int32_t collide, const int32_t dead)
+{
+    const SKIDOO_INFO *const skidoo_data = skidoo->data;
+
+    if (skidoo->pos.y != skidoo->floor && skidoo->fall_speed > 0
+        && g_LaraItem->current_anim_state != 4 && !dead) {
+        g_LaraItem->anim_num =
+            g_Objects[O_LARA_SKIDOO].anim_idx + LA_SKIDOO_FALL;
+        g_LaraItem->frame_num = g_Anims[g_LaraItem->anim_num].frame_base;
+        g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_FALL;
+        g_LaraItem->current_anim_state = LARA_STATE_SKIDOO_FALL;
+        return;
+    }
+
+    if (collide != 0 && !dead
+        && g_LaraItem->current_anim_state != LARA_STATE_SKIDOO_FALL) {
+        if (g_LaraItem->current_anim_state != LARA_STATE_SKIDOO_HIT) {
+            if (collide == LA_SKIDOO_HIT_FRONT) {
+                Sound_Effect(SFX_CLATTER_2, &skidoo->pos, SPM_NORMAL);
+            } else {
+                Sound_Effect(SFX_CLATTER_1, &skidoo->pos, SPM_NORMAL);
+            }
+            g_LaraItem->anim_num = g_Objects[O_LARA_SKIDOO].anim_idx + collide;
+            g_LaraItem->frame_num = g_Anims[g_LaraItem->anim_num].frame_base;
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_HIT;
+            g_LaraItem->current_anim_state = LARA_STATE_SKIDOO_HIT;
+        }
+        return;
+    }
+
+    switch (g_LaraItem->current_anim_state) {
+    case LARA_STATE_SKIDOO_SIT:
+        if (skidoo->speed == 0) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_STILL;
+        }
+        if (dead) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_FALLOFF;
+        } else if (g_Input & IN_LEFT) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_LEFT;
+        } else if (g_Input & IN_RIGHT) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_RIGHT;
+        }
+        break;
+
+    case LARA_STATE_SKIDOO_LEFT:
+        if (!(g_Input & IN_LEFT)) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+        }
+        break;
+
+    case LARA_STATE_SKIDOO_RIGHT:
+        if (!(g_Input & IN_RIGHT)) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+        }
+        break;
+
+    case LARA_STATE_SKIDOO_FALL:
+        if (skidoo->fall_speed <= 0 || skidoo_data->left_fallspeed <= 0
+            || skidoo_data->right_fallspeed <= 0) {
+            Sound_Effect(SFX_CLATTER_3, &skidoo->pos, SPM_NORMAL);
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+        } else if (skidoo->fall_speed > DAMAGE_START + DAMAGE_LENGTH) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_LET_GO;
+        }
+        break;
+
+    case LARA_STATE_SKIDOO_STILL: {
+        const int32_t music_track =
+            (skidoo_data->track_mesh & 4) ? MX_BATTLE_THEME : MX_SKIDOO_THEME;
+        if (!(g_MusicTrackFlags[music_track] & IF_ONE_SHOT)) {
+            Music_Play(music_track, false);
+            g_LaraItem = g_LaraItem;
+            g_MusicTrackFlags[music_track] |= IF_ONE_SHOT;
+        }
+
+        if (dead) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_DEATH;
+            return;
+        }
+
+        g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_STILL;
+
+        if (g_Input & IN_JUMP) {
+            if ((g_Input & IN_RIGHT)
+                && Skidoo_CheckGetOffOK(LARA_STATE_SKIDOO_GET_OFF_R)) {
+                g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
+                skidoo->speed = 0;
+            } else if (
+                (g_Input & IN_LEFT)
+                && Skidoo_CheckGetOffOK(LARA_STATE_SKIDOO_GET_OFF_L)) {
+                g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_GET_OFF_L;
+                skidoo->speed = 0;
+            }
+        } else if (g_Input & IN_LEFT) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_LEFT;
+        } else if (g_Input & IN_RIGHT) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_RIGHT;
+        } else if (g_Input & (IN_BACK | IN_FORWARD)) {
+            g_LaraItem->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
 }

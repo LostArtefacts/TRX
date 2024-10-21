@@ -14,3 +14,4 @@ int32_t __cdecl Skidoo_Dynamics(ITEM *const skidoo);
 int32_t __cdecl Skidoo_UserControl(
     ITEM *skidoo, int32_t height, int32_t *out_pitch);
 int32_t __cdecl Skidoo_CheckGetOffOK(int32_t direction);
+void __cdecl Skidoo_Animation(ITEM *skidoo, int32_t collide, int32_t dead);
