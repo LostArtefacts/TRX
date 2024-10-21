@@ -85,12 +85,13 @@ void Lara_Control(void)
 
     switch (g_Lara.water_status) {
     case LWS_ABOVE_WATER: {
-        if (water_height_diff == NO_HEIGHT
-            || water_height_diff < LARA_WADE_DEPTH) {
+        if (g_Config.enable_wading
+            && (water_height_diff == NO_HEIGHT
+                || water_height_diff < LARA_WADE_DEPTH)) {
             break;
         }
 
-        if (water_depth <= LARA_SWIM_DEPTH - STEP_L) {
+        if (g_Config.enable_wading && water_depth <= LARA_SWIM_DEPTH - STEP_L) {
             if (water_height_diff > LARA_WADE_DEPTH) {
                 g_Lara.water_status = LWS_WADE;
                 if (!item->gravity) {
@@ -176,7 +177,14 @@ void Lara_Control(void)
             break;
         }
 
-        if (water_height_diff <= LARA_WADE_DEPTH) {
+        if (g_Config.enable_wading && water_height_diff > LARA_WADE_DEPTH) {
+            g_Lara.water_status = LWS_WADE;
+            Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
+            item->current_anim_state = LS_STOP;
+            item->goal_anim_state = LS_WADE;
+            Item_Animate(item);
+            item->fall_speed = 0;
+        } else {
             g_Lara.water_status = LWS_ABOVE_WATER;
             g_Lara.gun_status = LGS_ARMLESS;
             item->current_anim_state = LS_JUMP_FORWARD;
@@ -191,13 +199,6 @@ void Lara_Control(void)
             g_Lara.head_rot.y = 0;
             g_Lara.torso_rot.x = 0;
             g_Lara.torso_rot.y = 0;
-        } else {
-            g_Lara.water_status = LWS_WADE;
-            Item_SwitchToAnim(item, LA_STAND_IDLE, 0);
-            item->current_anim_state = LS_STOP;
-            item->goal_anim_state = LS_WADE;
-            Item_Animate(item);
-            item->fall_speed = 0;
         }
         break;
     }

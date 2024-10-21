@@ -95,6 +95,10 @@
       "Title": "Natation fluide",
       "Description": "Donne au taux de rotation sous l'eau de Lara une courbe d'accélération pour un mouvement plus fluide, similaire à TR2+."
     },
+    "enable_wading": {
+      "Title": "Patauger",
+      "Description": "Permet à Lara de patauger dans les eaux peu profondes, comme avec TR2+, plutôt que de rester coincée à la surface de l'eau."
+    },
     "enable_target_change": {
       "Title": "Changement de cible",
       "Description": "Permet de changer de cible en visant avec une arme. Appuyez sur la touche Regarder tout en visant pour changer de cible comme dans TR4+."

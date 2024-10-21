@@ -223,6 +223,10 @@
       "Title": "Nadar suave",
       "Description": "Le da al giro bajo el agua de Lara una curva de aceleración para un movimiento más suave, similar a TR2+."
     },
+    "enable_wading": {
+      "Title": "Vadeando",
+      "Description": "Le permite a Lara caminar en aguas poco profundas, similar a TR2+, en lugar de quedarse atrapada en la superficie del agua."
+    },
     "enable_target_change": {
       "Title": "Cambio de objetivo",
       "Description": "Permite cambiar de objetivo como en TR4+ mientras apuntas con armas. Presiona mirar mientras apuntas para cambiar de objetivo."

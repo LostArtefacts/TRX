@@ -941,7 +941,9 @@ void Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll)
     coll->bad_neg = -STEPUP_HEIGHT;
     g_Lara.move_angle = item->rot.y;
     Lara_SurfaceCollision(item, coll);
-    Lara_TestWaterClimbOut(item, coll);
+    if (g_Config.enable_wading) {
+        Lara_TestWaterClimbOut(item, coll);
+    }
 }
 
 void Lara_Col_SurfTread(ITEM *item, COLL_INFO *coll)

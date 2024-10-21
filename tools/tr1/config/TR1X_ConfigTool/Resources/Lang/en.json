@@ -95,6 +95,10 @@
       "Title": "Smooth swimming",
       "Description": "Gives Lara's underwater turn rate an acceleration curve for smoother movement, similar to TR2+."
     },
+    "enable_wading": {
+      "Title": "Wading",
+      "Description": "Allows Lara to wade through shallow water, similar to TR2+, rather than becoming stuck on the water surface."
+    },
     "enable_target_change": {
       "Title": "Target change",
       "Description": "Enables TR4+ target changing while aiming weapons. Press look while aiming to change targets."

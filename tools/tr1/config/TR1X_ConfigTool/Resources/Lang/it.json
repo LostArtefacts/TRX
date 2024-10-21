@@ -95,6 +95,10 @@
       "Title": "Nuoto liscio",
       "Description": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, simile a TR2+."
     },
+    "enable_wading": {
+      "Title": "Guadare",
+      "Description": "Permette a Lara di guadare acque poco profonde, simile a TR2+, invece di rimanere bloccata sulla superficie dell'acqua."
+    },
     "enable_target_change": {
       "Title": "Cambio bersaglio",
       "Description": "Abilita il cambio di bersaglio in stile TR4+ mentre si punta l'arma. Premi Guarda mentre miri per cambiare bersaglio."
