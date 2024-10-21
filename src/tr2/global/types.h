@@ -795,6 +795,18 @@ typedef enum {
 } GAMEMODE;
 
 typedef enum {
+    TRAP_SET      = 0,
+    TRAP_ACTIVATE = 1,
+    TRAP_WORKING  = 2,
+    TRAP_FINISHED = 3,
+} TRAP_ANIM;
+
+typedef enum {
+    DOOR_CLOSED = 0,
+    DOOR_OPEN   = 1,
+} DOOR_ANIM;
+
+typedef enum {
     GFD_START_GAME       = 0x0000,
     GFD_START_SAVED_GAME = 0x0100,
     GFD_START_CINE       = 0x0200,
