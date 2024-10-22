@@ -21,7 +21,7 @@
 #include <stddef.h>
 
 static bool m_Muted = false;
-static bool m_IsPlaying = true;
+static bool m_IsPlaying = false;
 static const char *m_Extensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", NULL,
 };
