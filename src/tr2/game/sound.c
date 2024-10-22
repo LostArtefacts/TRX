@@ -36,8 +36,6 @@ typedef enum {
     // clang-format on
 } SAMPLE_FLAG;
 
-#define SOUND_DEFAULT_PITCH 0x10000
-
 #define SOUND_RANGE 10
 #define SOUND_RADIUS (SOUND_RANGE * WALL_L) // = 0x2800 = 10240
 #define SOUND_RADIUS_SQRD SQUARE(SOUND_RADIUS) // = 0x6400000

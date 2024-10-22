@@ -60,6 +60,7 @@ typedef enum {
 #define SKIDOO_FRONT 550
 #define SKIDOO_SNOW 500
 #define SKIDOO_GET_OFF_DIST 330
+#define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
 
 #define SKIDOO_MIN_SPEED 15
 #define SKIDOO_MAX_SPEED 100
@@ -80,7 +81,7 @@ typedef enum {
 #define SKIDOO_MOMENTUM_TURN (PHD_DEGREE * 3) // = 546
 #define SKIDOO_MAX_MOMENTUM_TURN (PHD_DEGREE * 150) // = 27300
 
-#define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
+#define SKIDOO_GUN_MESH 4
 
 static BITE m_LeftGun = {
     .pos = { .x = 219, .y = -71, .z = SKIDOO_FRONT },
@@ -92,6 +93,7 @@ static BITE m_RightGun = {
 };
 
 static bool M_IsNearby(const ITEM *item_1, const ITEM *item_2);
+static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data);
 static bool M_CheckBaddieCollision(ITEM *item, const ITEM *skidoo);
 
 static bool M_IsNearby(const ITEM *const item_1, const ITEM *const item_2)
@@ -102,6 +104,11 @@ static bool M_IsNearby(const ITEM *const item_1, const ITEM *const item_2)
     return dx > -SKIDOO_TARGET_DIST && dx < SKIDOO_TARGET_DIST
         && dy > -SKIDOO_TARGET_DIST && dy < SKIDOO_TARGET_DIST
         && dz > -SKIDOO_TARGET_DIST && dz < SKIDOO_TARGET_DIST;
+}
+
+static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
+{
+    return skidoo_data->track_mesh & SKIDOO_GUN_MESH;
 }
 
 static bool M_CheckBaddieCollision(ITEM *const item, const ITEM *const skidoo)
@@ -489,7 +496,7 @@ int32_t __cdecl Skidoo_UserControl(
             }
         } else if (g_Input & IN_FORWARD) {
             int32_t max_speed;
-            if ((g_Input & IN_ACTION) && !(skidoo_data->track_mesh & 4)) {
+            if ((g_Input & IN_ACTION) && !M_IsArmed(skidoo_data)) {
                 max_speed = SKIDOO_FAST_SPEED;
             } else if (g_Input & IN_SLOW) {
                 max_speed = SKIDOO_SLOW_SPEED;
@@ -573,7 +580,7 @@ void __cdecl Skidoo_Animation(
     const SKIDOO_INFO *const skidoo_data = skidoo->data;
 
     if (skidoo->pos.y != skidoo->floor && skidoo->fall_speed > 0
-        && g_LaraItem->current_anim_state != 4 && !dead) {
+        && g_LaraItem->current_anim_state != LARA_STATE_SKIDOO_FALL && !dead) {
         g_LaraItem->anim_num =
             g_Objects[O_LARA_SKIDOO].anim_idx + LA_SKIDOO_FALL;
         g_LaraItem->frame_num = g_Anims[g_LaraItem->anim_num].frame_base;
@@ -636,7 +643,7 @@ void __cdecl Skidoo_Animation(
 
     case LARA_STATE_SKIDOO_STILL: {
         const int32_t music_track =
-            (skidoo_data->track_mesh & 4) ? MX_BATTLE_THEME : MX_SKIDOO_THEME;
+            M_IsArmed(skidoo_data) ? MX_BATTLE_THEME : MX_SKIDOO_THEME;
         if (!(g_MusicTrackFlags[music_track] & IF_ONE_SHOT)) {
             Music_Play(music_track, false);
             g_LaraItem = g_LaraItem;
@@ -690,7 +697,7 @@ void __cdecl Skidoo_Explode(const ITEM *const skidoo)
         fx->object_id = O_EXPLOSION;
     }
 
-    Effect_ExplodingDeath(g_Lara.skidoo, -4, 0);
+    Effect_ExplodingDeath(g_Lara.skidoo, ~(SKIDOO_GUN_MESH - 1), 0);
     Sound_Effect(SFX_EXPLOSION1, NULL, SPM_NORMAL);
     g_Lara.skidoo = NO_ITEM;
 }
@@ -785,4 +792,149 @@ void __cdecl Skidoo_Guns(void)
     ITEM *const skidoo = Item_Get(g_Lara.skidoo);
     Creature_Effect(skidoo, &m_LeftGun, GunShot);
     Creature_Effect(skidoo, &m_RightGun, GunShot);
+}
+
+int32_t __cdecl Skidoo_Control(void)
+{
+    ITEM *const skidoo = Item_Get(g_Lara.skidoo);
+    SKIDOO_INFO *const skidoo_data = skidoo->data;
+    int32_t collide = Skidoo_Dynamics(skidoo);
+
+    XYZ_32 fl;
+    XYZ_32 fr;
+    const int32_t hfl =
+        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl);
+    const int32_t hfr =
+        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr);
+
+    int16_t room_num = skidoo->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(skidoo->pos.x, skidoo->pos.y, skidoo->pos.z, &room_num);
+    int32_t height =
+        Room_GetHeight(sector, skidoo->pos.x, skidoo->pos.y, skidoo->pos.z);
+    Room_TestTriggers(g_TriggerIndex, false);
+
+    bool dead = false;
+    if (g_LaraItem->hit_points <= 0) {
+        dead = true;
+        g_Input &= ~IN_BACK;
+        g_Input &= ~IN_FORWARD;
+        g_Input &= ~IN_LEFT;
+        g_Input &= ~IN_RIGHT;
+    } else if (g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_LET_GO) {
+        dead = true;
+        collide = 0;
+    }
+
+    int32_t drive;
+    int32_t pitch;
+    if (skidoo->flags & IF_ONE_SHOT) {
+        drive = 0;
+        collide = 0;
+    } else {
+        switch (g_LaraItem->current_anim_state) {
+        case LARA_STATE_SKIDOO_GET_ON:
+        case LARA_STATE_SKIDOO_GET_OFF_L:
+        case LARA_STATE_SKIDOO_GET_OFF_R:
+        case LARA_STATE_SKIDOO_LET_GO:
+            drive = -1;
+            collide = 0;
+            break;
+
+        default:
+            drive = Skidoo_UserControl(skidoo, height, &pitch);
+            break;
+        }
+    }
+
+    const int32_t old_track_mesh = skidoo_data->track_mesh;
+    if (drive > 0) {
+        skidoo_data->track_mesh = (skidoo_data->track_mesh & 3) == 1 ? 2 : 1;
+        skidoo_data->pitch += (pitch - skidoo_data->pitch) >> 2;
+
+        const int32_t pitch_delta =
+            (SKIDOO_MAX_SPEED - skidoo_data->pitch) * 100;
+        const int32_t pitch = (SOUND_DEFAULT_PITCH - pitch_delta) << 8;
+
+        Sound_Effect(SFX_SKIDOO_MOVING, &skidoo->pos, SPM_PITCH | pitch);
+    } else {
+        skidoo_data->track_mesh = 0;
+        if (!drive) {
+            Sound_Effect(SFX_SKIDOO_IDLE, &skidoo->pos, SPM_NORMAL);
+        }
+        skidoo_data->pitch = 0;
+    }
+    skidoo_data->track_mesh |= old_track_mesh & SKIDOO_GUN_MESH;
+
+    skidoo->floor = height;
+
+    skidoo_data->left_fallspeed =
+        DoDynamics(hfl, skidoo_data->left_fallspeed, &fl.y);
+    skidoo_data->right_fallspeed =
+        DoDynamics(hfr, skidoo_data->right_fallspeed, &fr.y);
+    skidoo->fall_speed = DoDynamics(height, skidoo->fall_speed, &skidoo->pos.y);
+
+    height = (fr.y + fl.y) / 2;
+    const int16_t x_rot = Math_Atan(SKIDOO_FRONT, skidoo->pos.y - height);
+    const int16_t z_rot = Math_Atan(SKIDOO_SIDE, height - fl.y);
+    skidoo->rot.x += (x_rot - skidoo->rot.x) >> 1;
+    skidoo->rot.z += (z_rot - skidoo->rot.z) >> 1;
+
+    if (skidoo->flags & IF_ONE_SHOT) {
+        if (room_num != skidoo->room_num) {
+            Item_NewRoom(g_Lara.skidoo, room_num);
+        }
+        if (skidoo->pos.y == skidoo->floor) {
+            Skidoo_Explode(skidoo);
+        }
+        return 0;
+    }
+
+    Skidoo_Animation(skidoo, collide, dead);
+    if (room_num != skidoo->room_num) {
+        Item_NewRoom(g_Lara.skidoo, room_num);
+        Item_NewRoom(g_Lara.item_num, room_num);
+    }
+
+    if (g_LaraItem->current_anim_state == LARA_STATE_SKIDOO_FALLOFF) {
+        g_LaraItem->rot.x = 0;
+        g_LaraItem->rot.z = 0;
+    } else {
+        g_LaraItem->pos.x = skidoo->pos.x;
+        g_LaraItem->pos.y = skidoo->pos.y;
+        g_LaraItem->pos.z = skidoo->pos.z;
+        g_LaraItem->rot.y = skidoo->rot.y;
+        if (drive >= 0) {
+            g_LaraItem->rot.x = skidoo->rot.x;
+            g_LaraItem->rot.z = skidoo->rot.z;
+        } else {
+            g_LaraItem->rot.x = 0;
+            g_LaraItem->rot.z = 0;
+        }
+    }
+
+    Item_Animate(g_LaraItem);
+    if (!dead && drive >= 0 && M_IsArmed(skidoo_data)) {
+        Skidoo_Guns();
+    }
+
+    if (dead) {
+        skidoo->anim_num = g_Objects[O_SKIDOO_FAST].anim_idx + LA_SKIDOO_DEAD;
+        skidoo->frame_num = g_Anims[skidoo->anim_num].frame_base;
+    } else {
+        skidoo->anim_num = g_Objects[O_SKIDOO_FAST].anim_idx
+            + g_LaraItem->anim_num - g_Objects[O_LARA_SKIDOO].anim_idx;
+        skidoo->frame_num = g_LaraItem->frame_num
+            + g_Anims[skidoo->anim_num].frame_base
+            - g_Anims[g_LaraItem->anim_num].frame_base;
+    }
+
+    if (skidoo->speed != 0 && skidoo->floor == skidoo->pos.y) {
+        Skidoo_DoSnowEffect(skidoo);
+        if (skidoo->speed < SKIDOO_SLOW_SPEED) {
+            Skidoo_DoSnowEffect(skidoo);
+        }
+    }
+
+    return Skidoo_CheckGetOff();
 }

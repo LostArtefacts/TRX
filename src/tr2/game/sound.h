@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#define SOUND_DEFAULT_PITCH 0x10000
+
 void __cdecl Sound_Init(void);
 void __cdecl Sound_Shutdown(void);
 
