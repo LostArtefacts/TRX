@@ -1,6 +1,8 @@
 #include "game/objects/vehicles/skidoo_armed.h"
 
 #include "game/items.h"
+#include "game/lara/control.h"
+#include "game/lara/misc.h"
 #include "game/math.h"
 #include "game/objects/creatures/skidoo_driver.h"
 #include "global/funcs.h"
@@ -69,4 +71,27 @@ void __cdecl SkidooArmed_Push(
 
     lara_item->pos.x = item->pos.x + ((rz * sy + rx * cy) >> W2V_SHIFT);
     lara_item->pos.z = item->pos.z + ((rz * cy - rx * sy) >> W2V_SHIFT);
+}
+
+void __cdecl SkidooArmed_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+
+    if (!Collide_TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        Lara_Push(
+            item, lara_item, coll, item->speed > 0 ? coll->enable_spaz : false,
+            false);
+    }
+
+    if (g_Lara.skidoo == NO_ITEM && item->speed > 0) {
+        Lara_TakeDamage(100, true);
+    }
 }

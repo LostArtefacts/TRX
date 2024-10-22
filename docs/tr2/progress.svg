@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.28% (837)</tspan> · <tspan class="known">30.31% (377)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.36% (838)</tspan> · <tspan class="known">30.23% (376)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="502.60" height="6" x="0" y="0" class="decompiled"/>
-<rect width="226.38" height="6" x="502.60" y="0" class="known"/>
+<rect width="503.20" height="6" x="0" y="0" class="decompiled"/>
+<rect width="225.78" height="6" x="503.20" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -798,7 +798,7 @@
 <rect width="12" height="12" x="285" y="210" class="decompiled"><title>void __cdecl SkidooDriver_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="210" class="decompiled"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
 <rect width="12" height="12" x="315" y="210" class="decompiled"><title>void __cdecl SkidooArmed_Push(const ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
-<rect width="12" height="12" x="330" y="210" class="known"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="330" y="210" class="decompiled"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="210" class="known"><title>int32_t __cdecl Music_GetRealTrack(int32_t track);</title></rect>
 <rect width="12" height="12" x="360" y="210" class="decompiled"><title>void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags);</title></rect>
 <rect width="12" height="12" x="375" y="210" class="decompiled"><title>void __cdecl Sound_StopEffect(int32_t sample_id);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.66%</tspan> · <tspan class="known">27.02%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.69%</tspan> · <tspan class="known">26.98%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="542.75" height="6" x="0" y="0" class="decompiled"/>
-<rect width="201.81" height="6" x="542.75" y="0" class="known"/>
+<rect width="543.03" height="6" x="0" y="0" class="decompiled"/>
+<rect width="201.53" height="6" x="543.03" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1956,7 +1956,7 @@
 <rect width="7.53" height="7.16" x="739.47" y="196.26" class="decompiled"><title>int32_t __cdecl AddAssaultTime(uint32_t time);</title></rect>
 <rect width="7.40" height="7.29" x="578.21" y="206.42" class="decompiled"><title>void __cdecl Lara_Col_Stop(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.40" height="7.29" x="578.21" y="216.71" class="decompiled"><title>void __cdecl Lara_Col_Roll(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="7.40" height="7.29" x="578.21" y="227" class="known"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="7.40" height="7.29" x="578.21" y="227" class="decompiled"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="7.40" height="7.13" x="578.21" y="237.29" class="decompiled"><title>int32_t __cdecl Room_FindByPos(int32_t x, int32_t y, int32_t z);</title></rect>
 <rect width="7.40" height="7.13" x="578.21" y="247.42" class="known"><title>void __cdecl ControlExplosion1(int16_t fx_num);</title></rect>
 <rect width="7.40" height="7.13" x="578.21" y="257.55" class="decompiled"><title>int32_t __cdecl Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);</title></rect>
