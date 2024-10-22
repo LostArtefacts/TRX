@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.20% (836)</tspan> · <tspan class="known">30.39% (378)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.28% (837)</tspan> · <tspan class="known">30.31% (377)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="502" height="6" x="0" y="0" class="decompiled"/>
-<rect width="226.98" height="6" x="502" y="0" class="known"/>
+<rect width="502.60" height="6" x="0" y="0" class="decompiled"/>
+<rect width="226.38" height="6" x="502.60" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -797,7 +797,7 @@
 <rect width="12" height="12" x="270" y="210" class="decompiled"><title>void __cdecl Skidoo_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="285" y="210" class="decompiled"><title>void __cdecl SkidooDriver_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="210" class="decompiled"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
-<rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidooArmed_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
+<rect width="12" height="12" x="315" y="210" class="decompiled"><title>void __cdecl SkidooArmed_Push(const ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
 <rect width="12" height="12" x="330" y="210" class="known"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="210" class="known"><title>int32_t __cdecl Music_GetRealTrack(int32_t track);</title></rect>
 <rect width="12" height="12" x="360" y="210" class="decompiled"><title>void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.57%</tspan> · <tspan class="known">27.10%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.66%</tspan> · <tspan class="known">27.02%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="542.13" height="6" x="0" y="0" class="decompiled"/>
-<rect width="202.43" height="6" x="542.13" y="0" class="known"/>
+<rect width="542.75" height="6" x="0" y="0" class="decompiled"/>
+<rect width="201.81" height="6" x="542.75" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1659,7 +1659,7 @@
 <rect width="12.24" height="12.41" x="464.87" y="108.19" class="decompiled"><title>void __cdecl Skidoo_Guns(void);</title></rect>
 <rect width="12.24" height="12.41" x="464.87" y="123.60" class="known"><title>void __cdecl SE_SoundDlgUpdate(HWND hwndDlg);</title></rect>
 <rect width="12.24" height="12.36" x="464.87" y="139.01" class="known"><title>HRESULT __stdcall EnumTextureFormatsCallback(LPDDSDESC lpDdsd, LPVOID lpContext);</title></rect>
-<rect width="12.24" height="12.30" x="464.87" y="154.36" class="known"><title>void __cdecl SkidooArmed_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
+<rect width="12.24" height="12.30" x="464.87" y="154.36" class="decompiled"><title>void __cdecl SkidooArmed_Push(const ITEM *item, ITEM *lara_item, int32_t radius);</title></rect>
 <rect width="12.24" height="12.14" x="464.87" y="169.66" class="known"><title>void __cdecl Jelly_Control(int16_t item_num);</title></rect>
 <rect width="12.24" height="12.14" x="464.87" y="184.80" class="known"><title>void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags);</title></rect>
 <rect width="12.24" height="12.08" x="464.87" y="199.94" class="known"><title>void __cdecl ControlCeilingSpikes(int16_t item_num);</title></rect>

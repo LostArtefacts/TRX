@@ -62,6 +62,7 @@
 #include "game/objects/traps/ember_emitter.h"
 #include "game/objects/traps/flame_emitter.h"
 #include "game/objects/vehicles/boat.h"
+#include "game/objects/vehicles/skidoo_armed.h"
 #include "game/option/option.h"
 #include "game/output.h"
 #include "game/overlay.h"
@@ -1030,6 +1031,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x0043C710, Object_SetupAllObjects);
     INJECT(enable, 0x0043ED40, SkidooDriver_Initialise);
     INJECT(enable, 0x0043EDD0, SkidooDriver_Control);
+    INJECT(enable, 0x0043F1D0, SkidooArmed_Push);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);

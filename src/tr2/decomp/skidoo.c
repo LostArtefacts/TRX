@@ -11,6 +11,7 @@
 #include "game/matrix.h"
 #include "game/music.h"
 #include "game/objects/common.h"
+#include "game/objects/vehicles/skidoo_armed.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -90,7 +91,7 @@ BITE g_Skidoo_RightGun = {
 
 static bool M_IsNearby(const ITEM *item_1, const ITEM *item_2);
 static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data);
-static bool M_CheckBaddieCollision(ITEM *item, const ITEM *skidoo);
+static bool M_CheckBaddieCollision(ITEM *item, ITEM *skidoo);
 
 static bool M_IsNearby(const ITEM *const item_1, const ITEM *const item_2)
 {
@@ -107,7 +108,7 @@ static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
     return skidoo_data->track_mesh & SKIDOO_GUN_MESH;
 }
 
-static bool M_CheckBaddieCollision(ITEM *const item, const ITEM *const skidoo)
+static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
 {
     if (!item->collidable || item->status == IS_INVISIBLE || item == g_LaraItem
         || item == skidoo) {
@@ -237,7 +238,7 @@ void __cdecl Skidoo_Collision(
     item->hit_points = 1;
 }
 
-void __cdecl Skidoo_BaddieCollision(const ITEM *const skidoo)
+void __cdecl Skidoo_BaddieCollision(ITEM *const skidoo)
 {
     int16_t roomies[12];
     const int32_t roomies_count =
