@@ -1029,6 +1029,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x0043A480, Object_SetupBaddyObjects);
     INJECT(enable, 0x0043C710, Object_SetupAllObjects);
     INJECT(enable, 0x0043ED40, SkidooDriver_Initialise);
+    INJECT(enable, 0x0043EDD0, SkidooDriver_Control);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);

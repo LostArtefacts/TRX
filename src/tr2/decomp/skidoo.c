@@ -20,6 +20,27 @@
 
 #include <libtrx/utils.h>
 
+#define SKIDOO_RADIUS 500
+#define SKIDOO_SIDE 260
+#define SKIDOO_FRONT 550
+#define SKIDOO_SNOW 500
+#define SKIDOO_GET_OFF_DIST 330
+#define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
+
+#define SKIDOO_ACCELERATION 10
+#define SKIDOO_SLOWDOWN 2
+
+#define SKIDOO_SLIP 100
+#define SKIDOO_SLIP_SIDE 50
+
+#define SKIDOO_MAX_BACK -30
+#define SKIDOO_BRAKE 5
+#define SKIDOO_REVERSE (-5)
+#define SKIDOO_UNDO_TURN (PHD_DEGREE * 2) // = 364
+#define SKIDOO_TURN (PHD_DEGREE / 2 + SKIDOO_UNDO_TURN) // = 455
+#define SKIDOO_MOMENTUM_TURN (PHD_DEGREE * 3) // = 546
+#define SKIDOO_MAX_MOMENTUM_TURN (PHD_DEGREE * 150) // = 27300
+
 typedef enum {
     SKIDOO_GET_ON_NONE = 0,
     SKIDOO_GET_ON_LEFT = 1,
@@ -57,39 +78,12 @@ typedef enum {
     // clang-format on
 } LARA_ANIM_SKIDOO;
 
-#define SKIDOO_RADIUS 500
-#define SKIDOO_SIDE 260
-#define SKIDOO_FRONT 550
-#define SKIDOO_SNOW 500
-#define SKIDOO_GET_OFF_DIST 330
-#define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
-
-#define SKIDOO_MIN_SPEED 15
-#define SKIDOO_MAX_SPEED 100
-#define SKIDOO_SLOW_SPEED 50
-#define SKIDOO_FAST_SPEED 150
-#define SKIDOO_ACCELERATION 10
-#define SKIDOO_SLOWDOWN 2
-
-#define SKIDOO_SLIP 100
-#define SKIDOO_SLIP_SIDE 50
-
-#define SKIDOO_MAX_BACK -30
-#define SKIDOO_BRAKE 5
-#define SKIDOO_REVERSE (-5)
-#define SKIDOO_UNDO_TURN (PHD_DEGREE * 2) // = 364
-#define SKIDOO_TURN (PHD_DEGREE / 2 + SKIDOO_UNDO_TURN) // = 455
-#define SKIDOO_MAX_TURN (PHD_DEGREE * 6) // = 1092
-#define SKIDOO_MOMENTUM_TURN (PHD_DEGREE * 3) // = 546
-#define SKIDOO_MAX_MOMENTUM_TURN (PHD_DEGREE * 150) // = 27300
-
-#define SKIDOO_GUN_MESH 4
-
-static BITE m_LeftGun = {
+BITE g_Skidoo_LeftGun = {
     .pos = { .x = 219, .y = -71, .z = SKIDOO_FRONT },
     .mesh_num = 0,
 };
-static BITE m_RightGun = {
+
+BITE g_Skidoo_RightGun = {
     .pos = { .x = -235, .y = -71, .z = SKIDOO_FRONT },
     .mesh_num = 0,
 };
@@ -792,8 +786,8 @@ void __cdecl Skidoo_Guns(void)
     AddDynamicLight(x, y, z, 12, 11);
 
     ITEM *const skidoo = Item_Get(g_Lara.skidoo);
-    Creature_Effect(skidoo, &m_LeftGun, GunShot);
-    Creature_Effect(skidoo, &m_RightGun, GunShot);
+    Creature_Effect(skidoo, &g_Skidoo_LeftGun, GunShot);
+    Creature_Effect(skidoo, &g_Skidoo_RightGun, GunShot);
 }
 
 int32_t __cdecl Skidoo_Control(void)

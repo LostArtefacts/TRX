@@ -1,6 +1,18 @@
 #pragma once
 
+#include "global/const.h"
 #include "global/types.h"
+
+#define SKIDOO_MIN_SPEED 15
+#define SKIDOO_MAX_SPEED 100
+#define SKIDOO_SLOW_SPEED 50
+#define SKIDOO_FAST_SPEED 150
+
+#define SKIDOO_MAX_TURN (PHD_DEGREE * 6) // = 1092
+#define SKIDOO_GUN_MESH 4
+
+extern BITE g_Skidoo_LeftGun;
+extern BITE g_Skidoo_RightGun;
 
 void __cdecl Skidoo_Initialise(int16_t item_num);
 int32_t __cdecl Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.12% (835)</tspan> · <tspan class="known">30.47% (379)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.20% (836)</tspan> · <tspan class="known">30.39% (378)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="501.40" height="6" x="0" y="0" class="decompiled"/>
-<rect width="227.58" height="6" x="501.40" y="0" class="known"/>
+<rect width="502" height="6" x="0" y="0" class="decompiled"/>
+<rect width="226.98" height="6" x="502" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -796,7 +796,7 @@
 <rect width="12" height="12" x="255" y="210" class="decompiled"><title>int32_t __cdecl Skidoo_Control(void);</title></rect>
 <rect width="12" height="12" x="270" y="210" class="decompiled"><title>void __cdecl Skidoo_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="285" y="210" class="decompiled"><title>void __cdecl SkidooDriver_Initialise(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="300" y="210" class="known"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
+<rect width="12" height="12" x="300" y="210" class="decompiled"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
 <rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidooArmed_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
 <rect width="12" height="12" x="330" y="210" class="known"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="210" class="known"><title>int32_t __cdecl Music_GetRealTrack(int32_t track);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.28%</tspan> · <tspan class="known">27.39%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.57%</tspan> · <tspan class="known">27.10%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="539.96" height="6" x="0" y="0" class="decompiled"/>
-<rect width="204.60" height="6" x="539.96" y="0" class="known"/>
+<rect width="542.13" height="6" x="0" y="0" class="decompiled"/>
+<rect width="202.43" height="6" x="542.13" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1394,7 +1394,7 @@
 <rect width="27.60" height="24.79" x="208.58" y="350.21" class="known"><title>void __cdecl Cultist1_Control(int16_t item_num);</title></rect>
 <rect width="24.79" height="27.49" x="239.18" y="0" class="known"><title>void __cdecl Rocket_Control(int16_t item_num);</title></rect>
 <rect width="24.79" height="27.31" x="239.18" y="30.49" class="known"><title>void __cdecl XianKnight_Draw(const ITEM *item);</title></rect>
-<rect width="24.79" height="26.68" x="239.18" y="60.80" class="known"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
+<rect width="24.79" height="26.68" x="239.18" y="60.80" class="decompiled"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
 <rect width="24.79" height="26.50" x="239.18" y="90.48" class="known"><title>void __cdecl InitialiseDoor(int16_t item_num);</title></rect>
 <rect width="24.79" height="26.20" x="239.18" y="119.98" class="decompiled"><title>int32_t __cdecl Collide_CollideStaticObjects(COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num, int32_t height);</title></rect>
 <rect width="24.79" height="26.20" x="239.18" y="149.18" class="decompiled"><title>void __cdecl Room_Clip(ROOM *r);</title></rect>
