@@ -47,6 +47,7 @@ jobs:
         with:
           submodules: 'true'
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Extend PATH for MacPorts
         run: |

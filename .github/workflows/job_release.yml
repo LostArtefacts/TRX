@@ -37,6 +37,7 @@ jobs:
         with:
           submodules: 'true'
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: "Prepare release data"
         id: prepare_release_data
