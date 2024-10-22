@@ -2107,7 +2107,7 @@ typedef enum { // decompiled
     O_BANDIT_2              = 49,
     O_BANDIT_2B             = 50,
     O_SKIDOO_ARMED          = 51,
-    O_SKIDMAN               = 52,
+    O_SKIDOO_DRIVER         = 52,
     O_MONK_1                = 53,
     O_MONK_2                = 54,
     O_FALLING_BLOCK_1       = 55,
@@ -3676,8 +3676,8 @@ typedef enum {
 0x0043EA60  0x02D5  +R      void __cdecl Skidoo_Draw(const ITEM *item);
 0x0043ED40  0x007F  -R      void __cdecl SkidooDriver_Initialise(int16_t item_num);
 0x0043EDD0  0x03E2  -       void __cdecl SkidooDriver_Control(int16_t rider_num);
-0x0043F1D0  0x0119  -R      void __cdecl SkidooDriver_Push(ITEM *item, const ITEM *lara_item, int32_t radius);
-0x0043F2F0  0x0081  -       void __cdecl SkidooDriver_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+0x0043F1D0  0x0119  -R      void __cdecl SkidooArmed_Push(ITEM *item, const ITEM *lara_item, int32_t radius);
+0x0043F2F0  0x0081  -       void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 # game/sound.c
 0x0043F380  0x0031  *       int32_t __cdecl Music_GetRealTrack(int32_t track);

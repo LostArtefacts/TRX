@@ -27,6 +27,7 @@
 #include "game/objects/creatures/xian_knight.h"
 #include "game/objects/creatures/xian_spearman.h"
 #include "game/objects/creatures/yeti.h"
+#include "game/objects/vehicles/skidoo_armed.h"
 #include "global/funcs.h"
 #include "global/types.h"
 #include "global/vars.h"
@@ -86,7 +87,6 @@ void __cdecl Object_SetupBaddyObjects(void)
     Monk2_Setup();
     Bird_SetupEagle();
     Bird_SetupCrow();
-    SkidooArmed_Setup();
     SkidooDriver_Setup();
     Bartoli_Setup();
     Dragon_SetupFront();
@@ -101,6 +101,9 @@ void __cdecl Object_SetupBaddyObjects(void)
     GiantYeti_Setup();
     TRex_Setup();
     Winston_Setup();
+
+    // TODO: move this to Object_SetupGeneralObjects
+    SkidooArmed_Setup();
 }
 
 void __cdecl Object_SetupAllObjects(void)

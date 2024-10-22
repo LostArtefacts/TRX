@@ -797,8 +797,8 @@
 <rect width="12" height="12" x="270" y="210" class="decompiled"><title>void __cdecl Skidoo_Draw(const ITEM *item);</title></rect>
 <rect width="12" height="12" x="285" y="210" class="known"><title>void __cdecl SkidooDriver_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="300" y="210" class="known"><title>void __cdecl SkidooDriver_Control(int16_t rider_num);</title></rect>
-<rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidooDriver_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
-<rect width="12" height="12" x="330" y="210" class="known"><title>void __cdecl SkidooDriver_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="315" y="210" class="known"><title>void __cdecl SkidooArmed_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
+<rect width="12" height="12" x="330" y="210" class="known"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="210" class="known"><title>int32_t __cdecl Music_GetRealTrack(int32_t track);</title></rect>
 <rect width="12" height="12" x="360" y="210" class="decompiled"><title>void __cdecl Sound_Effect(int32_t sample_id, const XYZ_32 *pos, uint32_t flags);</title></rect>
 <rect width="12" height="12" x="375" y="210" class="decompiled"><title>void __cdecl Sound_StopEffect(int32_t sample_id);</title></rect>
@@ -1659,7 +1659,7 @@
 <rect width="12.24" height="12.41" x="464.87" y="108.19" class="decompiled"><title>void __cdecl Skidoo_Guns(void);</title></rect>
 <rect width="12.24" height="12.41" x="464.87" y="123.60" class="known"><title>void __cdecl SE_SoundDlgUpdate(HWND hwndDlg);</title></rect>
 <rect width="12.24" height="12.36" x="464.87" y="139.01" class="known"><title>HRESULT __stdcall EnumTextureFormatsCallback(LPDDSDESC lpDdsd, LPVOID lpContext);</title></rect>
-<rect width="12.24" height="12.30" x="464.87" y="154.36" class="known"><title>void __cdecl SkidooDriver_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
+<rect width="12.24" height="12.30" x="464.87" y="154.36" class="known"><title>void __cdecl SkidooArmed_Push(ITEM *item, const ITEM *lara_item, int32_t radius);</title></rect>
 <rect width="12.24" height="12.14" x="464.87" y="169.66" class="known"><title>void __cdecl Jelly_Control(int16_t item_num);</title></rect>
 <rect width="12.24" height="12.14" x="464.87" y="184.80" class="known"><title>void __cdecl S_DrawScreenBox(int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height, BYTE color_idx, const GOURAUD_OUTLINE *gour, uint16_t flags);</title></rect>
 <rect width="12.24" height="12.08" x="464.87" y="199.94" class="known"><title>void __cdecl ControlCeilingSpikes(int16_t item_num);</title></rect>
@@ -1956,7 +1956,7 @@
 <rect width="7.53" height="7.16" x="739.47" y="196.26" class="decompiled"><title>int32_t __cdecl AddAssaultTime(uint32_t time);</title></rect>
 <rect width="7.40" height="7.29" x="578.21" y="206.42" class="decompiled"><title>void __cdecl Lara_Col_Stop(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="7.40" height="7.29" x="578.21" y="216.71" class="decompiled"><title>void __cdecl Lara_Col_Roll(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="7.40" height="7.29" x="578.21" y="227" class="known"><title>void __cdecl SkidooDriver_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="7.40" height="7.29" x="578.21" y="227" class="known"><title>void __cdecl SkidooArmed_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="7.40" height="7.13" x="578.21" y="237.29" class="decompiled"><title>int32_t __cdecl Room_FindByPos(int32_t x, int32_t y, int32_t z);</title></rect>
 <rect width="7.40" height="7.13" x="578.21" y="247.42" class="known"><title>void __cdecl ControlExplosion1(int16_t fx_num);</title></rect>
 <rect width="7.40" height="7.13" x="578.21" y="257.55" class="decompiled"><title>int32_t __cdecl Lara_DeflectEdge(ITEM *item, COLL_INFO *coll);</title></rect>

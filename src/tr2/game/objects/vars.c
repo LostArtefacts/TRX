@@ -38,7 +38,7 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     O_BANDIT_1,
     O_BANDIT_2,
     O_BANDIT_2B,
-    O_SKIDMAN,
+    O_SKIDOO_DRIVER,
     O_DINO,
     NO_OBJECT,
     // clang-format on

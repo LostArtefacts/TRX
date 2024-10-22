@@ -336,7 +336,7 @@ void __cdecl Creature_Die(const int16_t item_num, const bool explode)
         return;
     }
 
-    if (item->object_id == O_SKIDMAN) {
+    if (item->object_id == O_SKIDOO_DRIVER) {
         if (explode) {
             Effect_ExplodingDeath(item_num, -1, 0);
         }

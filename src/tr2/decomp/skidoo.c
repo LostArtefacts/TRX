@@ -135,7 +135,7 @@ static bool M_CheckBaddieCollision(ITEM *const item, const ITEM *const skidoo)
     }
 
     if (item->object_id == O_SKIDOO_ARMED) {
-        SkidooDriver_Push(item, skidoo, SKIDOO_RADIUS);
+        SkidooArmed_Push(item, skidoo, SKIDOO_RADIUS);
     } else if (is_availanche) {
         if (item->current_anim_state == TRAP_ACTIVATE) {
             Lara_TakeDamage(100, true);

@@ -1,4 +1,5 @@
 #pragma once
 
-void SkidooArmed_Setup(void);
+#define SKIDOO_DRIVER_HITPOINTS 100
+
 void SkidooDriver_Setup(void);
