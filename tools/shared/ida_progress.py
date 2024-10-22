@@ -21,7 +21,7 @@ grammar = Grammar(
     function_name = identifier
     parameters = ("(" _ "void" _ ")") / ("(" _ (parameter_list?) _ ")")
     parameter_list = parameter _ ("," _ parameter _)*
-    parameter = function_decl / var_decl
+    parameter = decl / type
     qualifier = ~"const|__cdecl|__stdcall|__thiscall|__fastcall"
     array_subscript = (_ "[" number? "]")*
 
