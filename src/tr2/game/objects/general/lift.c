@@ -152,3 +152,15 @@ void __cdecl Lift_Floor(
         *out_height = floor;
     }
 }
+
+void __cdecl Lift_Ceiling(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    int32_t *const out_height)
+{
+    int32_t floor;
+    int32_t height;
+    Lift_FloorCeiling(item, x, y, z, &floor, &height);
+    if (height > *out_height) {
+        *out_height = height;
+    }
+}

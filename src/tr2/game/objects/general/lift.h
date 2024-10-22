@@ -14,3 +14,5 @@ void __cdecl Lift_FloorCeiling(
     int32_t *out_ceiling);
 void __cdecl Lift_Floor(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+void __cdecl Lift_Ceiling(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);

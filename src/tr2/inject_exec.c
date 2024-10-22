@@ -1021,6 +1021,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00435740, Lift_Control);
     INJECT(enable, 0x00435820, Lift_FloorCeiling);
     INJECT(enable, 0x004359A0, Lift_Floor);
+    INJECT(enable, 0x004359E0, Lift_Ceiling);
     INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);
