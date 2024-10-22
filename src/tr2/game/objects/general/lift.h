@@ -8,3 +8,4 @@ typedef struct __PACKING {
 } LIFT_INFO;
 
 void __cdecl Lift_Initialise(int16_t item_num);
+void __cdecl Lift_Control(int16_t item_num);

@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.44% (839)</tspan> · <tspan class="known">30.14% (375)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.52% (840)</tspan> · <tspan class="known">30.06% (374)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="503.80" height="6" x="0" y="0" class="decompiled"/>
-<rect width="225.18" height="6" x="503.80" y="0" class="known"/>
+<rect width="504.41" height="6" x="0" y="0" class="decompiled"/>
+<rect width="224.58" height="6" x="504.41" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -716,7 +716,7 @@
 <rect width="12" height="12" x="555" y="180" class="known"><title>void __cdecl DrawBridgeCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="570" y="180" class="known"><title>void __cdecl DrawBridgeCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="585" y="180" class="decompiled"><title>void __cdecl Lift_Initialise(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="600" y="180" class="known"><title>void __cdecl Lift_Control(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="600" y="180" class="decompiled"><title>void __cdecl Lift_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="615" y="180" class="known"><title>void __cdecl Lift_FloorCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);</title></rect>
 <rect width="12" height="12" x="630" y="180" class="known"><title>void __cdecl Lift_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="645" y="180" class="known"><title>void __cdecl Lift_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.71%</tspan> · <tspan class="known">26.96%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.77%</tspan> · <tspan class="known">26.90%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="543.14" height="6" x="0" y="0" class="decompiled"/>
-<rect width="201.42" height="6" x="543.14" y="0" class="known"/>
+<rect width="543.61" height="6" x="0" y="0" class="decompiled"/>
+<rect width="200.95" height="6" x="543.61" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1755,7 +1755,7 @@
 <rect width="10.16" height="10.55" x="508.24" y="218.24" class="known"><title>bool __cdecl SE_GraphicsTestStart(void);</title></rect>
 <rect width="10.16" height="10.43" x="508.24" y="231.80" class="decompiled"><title>int16_t __cdecl Creature_Turn(ITEM *item, int16_t maximum_turn);</title></rect>
 <rect width="10.16" height="10.43" x="508.24" y="245.23" class="decompiled"><title>void __cdecl WinVidSetDisplayAdapter(DISPLAY_ADAPTER *disp_adapter);</title></rect>
-<rect width="10.16" height="10.37" x="508.24" y="258.65" class="known"><title>void __cdecl Lift_Control(int16_t item_num);</title></rect>
+<rect width="10.16" height="10.37" x="508.24" y="258.65" class="decompiled"><title>void __cdecl Lift_Control(int16_t item_num);</title></rect>
 <rect width="10.16" height="10.30" x="508.24" y="272.02" class="decompiled"><title>void __cdecl Output_InsertTransQuad(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z);</title></rect>
 <rect width="10.16" height="10.30" x="508.24" y="285.32" class="decompiled"><title>void __cdecl Lara_State_ForwardJump(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="10.16" height="10.30" x="508.24" y="298.63" class="known"><title>void __cdecl Flare_DoInHand(int32_t flare_age);</title></rect>
