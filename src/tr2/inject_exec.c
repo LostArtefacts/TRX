@@ -43,6 +43,7 @@
 #include "game/objects/creatures/bird.h"
 #include "game/objects/creatures/diver.h"
 #include "game/objects/creatures/dragon.h"
+#include "game/objects/creatures/skidoo_driver.h"
 #include "game/objects/effects/ember.h"
 #include "game/objects/effects/flame.h"
 #include "game/objects/effects/twinkle.h"
@@ -1027,6 +1028,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00438E80, Pickup_Trigger);
     INJECT(enable, 0x0043A480, Object_SetupBaddyObjects);
     INJECT(enable, 0x0043C710, Object_SetupAllObjects);
+    INJECT(enable, 0x0043ED40, SkidooDriver_Initialise);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);
