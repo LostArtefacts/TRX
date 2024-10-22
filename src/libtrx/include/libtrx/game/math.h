@@ -8,6 +8,16 @@
 
 typedef struct __PACKING {
     int32_t x;
+    int32_t z;
+} XZ_32;
+
+typedef struct __PACKING {
+    int16_t x;
+    int16_t z;
+} XZ_16;
+
+typedef struct __PACKING {
+    int32_t x;
     int32_t y;
     int32_t z;
 } XYZ_32;
