@@ -22,8 +22,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define MAX_BADDIE_COLLISION 12
-
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 static void M_WaterCurrent(COLL_INFO *coll);
@@ -117,22 +115,11 @@ static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
         return;
     }
 
-    int16_t numroom = 0;
-    int16_t roomies[MAX_BADDIE_COLLISION];
+    int16_t roomies[12];
+    const int32_t roomies_count =
+        Room_GetAdjoiningRooms(lara_item->room_num, roomies, 12);
 
-    roomies[numroom++] = lara_item->room_num;
-
-    PORTALS *portals = g_RoomInfo[lara_item->room_num].portals;
-    if (portals != NULL) {
-        for (int i = 0; i < portals->count; i++) {
-            if (numroom >= MAX_BADDIE_COLLISION) {
-                break;
-            }
-            roomies[numroom++] = portals->portal[i].room_num;
-        }
-    }
-
-    for (int i = 0; i < numroom; i++) {
+    for (int32_t i = 0; i < roomies_count; i++) {
         int16_t item_num = g_RoomInfo[roomies[i]].item_num;
         while (item_num != NO_ITEM) {
             ITEM *item = &g_Items[item_num];
