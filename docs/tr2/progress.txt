@@ -2653,6 +2653,11 @@ typedef struct __unaligned {
     int32_t pitch;
 } SKIDOO_INFO;
 
+typedef struct __unaligned { // decompiled
+    int32_t start_height;
+    int32_t wait_time;
+} LIFT_INFO;
+
 typedef struct __unaligned {
     struct {
         XYZ_16 min;
@@ -3580,11 +3585,11 @@ typedef enum {
 0x00435650  0x0036  -R      void __cdecl DrawBridgeFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435690  0x003B  -R      void __cdecl DrawBridgeCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x004356D0  0x002C  -R      void __cdecl DrawBridgeCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-0x00435700  0x0035  -R      void __cdecl InitialiseLift(int16_t item_num);
-0x00435740  0x00D4  -R      void __cdecl LiftControl(int16_t item_num);
-0x00435820  0x0179  -R      void __cdecl LiftFloorCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);
-0x004359A0  0x0035  -R      void __cdecl LiftFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x004359E0  0x0035  -R      void __cdecl LiftCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x00435700  0x0035  +       void __cdecl Lift_Initialise(int16_t item_num);
+0x00435740  0x00D4  -       void __cdecl Lift_Control(int16_t item_num);
+0x00435820  0x0179  -       void __cdecl Lift_FloorCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);
+0x004359A0  0x0035  -       void __cdecl Lift_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x004359E0  0x0035  -       void __cdecl Lift_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435A20  0x0016  -R      void __cdecl BridgeFlatFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435A40  0x001B  -R      void __cdecl BridgeFlatCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435A60  0x003B  -R      int32_t __cdecl GetOffset(ITEM *item, int32_t x, int32_t z);
