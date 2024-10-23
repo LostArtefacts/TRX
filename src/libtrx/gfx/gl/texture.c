@@ -27,18 +27,23 @@ void GFX_GL_Texture_Init(GFX_GL_TEXTURE *texture, GLenum target)
     texture->target = target;
     glGenTextures(1, &texture->id);
     GFX_GL_CheckError();
+    texture->initialized = true;
 }
 
 void GFX_GL_Texture_Close(GFX_GL_TEXTURE *texture)
 {
     assert(texture != NULL);
-    glDeleteTextures(1, &texture->id);
-    GFX_GL_CheckError();
+    if (texture->initialized) {
+        glDeleteTextures(1, &texture->id);
+        GFX_GL_CheckError();
+    }
+    texture->initialized = false;
 }
 
 void GFX_GL_Texture_Bind(GFX_GL_TEXTURE *texture)
 {
     assert(texture != NULL);
+    assert(texture->initialized);
     glBindTexture(texture->target, texture->id);
     GFX_GL_CheckError();
 }
@@ -48,6 +53,7 @@ void GFX_GL_Texture_Load(
     GLint internal_format, GLint format)
 {
     assert(texture != NULL);
+    assert(texture->initialized);
 
     GFX_GL_Texture_Bind(texture);
 
@@ -65,6 +71,7 @@ void GFX_GL_Texture_Load(
 void GFX_GL_Texture_LoadFromBackBuffer(GFX_GL_TEXTURE *const texture)
 {
     assert(texture != NULL);
+    assert(texture->initialized);
 
     GFX_GL_Texture_Bind(texture);
 
