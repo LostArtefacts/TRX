@@ -24,7 +24,7 @@
     "enemy_healthbar_mode": {
       "never": "Mai",
       "always": "Sempre",
-      "boss-only": "Solo i boss"
+      "boss-only": "Solo per i boss"
     },
     "menu_style": {
       "pc": "PC",
@@ -60,10 +60,10 @@
     },
     "underwater_music": {
       "full": "Completa",
-      "quiet": "Tranquilla",
-      "full_no_ambient": "Completo ma senza ambiente",
-      "quiet_no_ambient": "Tranquilla ma senza ambiente",
-      "none": "Nessuna"
+      "quiet": "Attenuata",
+      "full_no_ambient": "Completa ma senza suoni ambientali",
+      "quiet_no_ambient": "Attenuata ma senza suoni ambientali",
+      "none": "Assente"
       }
   },
   "Properties": {
@@ -76,23 +76,23 @@
       "Description": "Permette a Lara di guardarsi intorno mentre corre, salta, si appende, ecc. - in stile TR2."
     },
     "enable_jump_twists": {
-      "Title": "Giro a mezz’aria",
-      "Description": "Abilita i salti mortali e le capriole in stile TR2+, ovvero premendo Rotola durante le animazioni del salto e del tuffo a cigno."
+      "Title": "Capriole a mezz’aria",
+      "Description": "Abilita i salti mortali e le capriole a mezz'aria in stile TR2+, ovvero premendo Rotola durante le animazioni del salto e del tuffo ad angelo."
     },
     "enable_swing_cancel": {
       "Title": "Annulla oscillazione",
-      "Description": "Consente di annullare l'animazione di oscillazione di Lara sulle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente, in modo simile a TR2+."
+      "Description": "Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente, in modo simile a TR2+."
     },
     "enable_tr2_jumping": {
       "Title": "Salti reattivi",
       "Description": "Permette a Lara di saltare in qualsiasi momento mentre corre, in modo simile a TR2+."
     },
     "enable_uw_roll": {
-      "Title": "Rotolare sott'acqua",
-      "Description": "Permette a Lara di rotolare sott'acqua, in modo simile a TR2+."
+      "Title": "Capriola sott'acqua",
+      "Description": "Permette a Lara di fare capriole sott'acqua, in modo simile a TR2+."
     },
     "enable_tr2_swimming": {
-      "Title": "Nuoto liscio",
+      "Title": "Nuoto regolare",
       "Description": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, simile a TR2+."
     },
     "enable_wading": {
@@ -105,7 +105,7 @@
     },
     "target_mode": {
       "Title": "Modalità di aggancio del bersaglio",
-      "Description": "Modifica il comportamento con cui le armi agganciano i bersagli.\n- Completo: mantieni sempre il bersaglio agganciato anche se il nemico si allontana dalla vista o muore (TR1).\n- Parziale: mantieni il bersaglio agganciato anche se il nemico si allontana dalla vista, ma lo perdi se muore.\n- Nessuno: perdi il bersaglio agganciato se il nemico si allontana dalla vista o muore (TR4+)."
+      "Description": "Modifica il comportamento con cui le armi agganciano i bersagli.\n- Completo: mantieni sempre il bersaglio agganciato anche se il nemico esce dal campo visivo o muore (TR1).\n- Parziale: mantieni il bersaglio agganciato anche se il nemico esce dal campo visivo, ma lo perdi se muore.\n- Nessuno: perdi il bersaglio agganciato se il nemico esce dal campo visivo o muore (TR4+)."
     },
     "enable_lean_jumping": {
       "Title": "Salti inclinati",
@@ -113,7 +113,7 @@
     },
     "enable_numeric_keys": {
       "Title": "Tasti numerici per uso rapido degli oggetti",
-      "Description": "Abilita i tasti di scelta rapida numerici come scorciatoia per equipaggiare armi o usare kit medici.\n- 1: Equipaggia pistole\n- 2: Equipaggia fucile\n- 3: Equipaggia magnum\n- 4: Equipaggia Uzi\n- 8: Usa kit medico piccolo\n- 9: Usa kit medico grande"
+      "Description": "Abilita i tasti numerici di scelta rapida per equipaggiare armi o usare kit medici.\n- 1: Equipaggia pistole\n- 2: Equipaggia fucile\n- 3: Equipaggia magnum\n- 4: Equipaggia Uzi\n- 8: Usa kit medico piccolo\n- 9: Usa kit medico grande"
     },
     "enabled_inverted_look": {
       "Title": "Visuale invertita",
@@ -125,55 +125,55 @@
     },
     "fix_alligator_ai": {
       "Title": "Correggi IA degli alligatori",
-      "Description": "Risolve il problema con gli alligatori che non infliggevano danni se Lara rimaneva ferma nell'acqua."
+      "Description": "Risolve il problema degli alligatori che non infliggono danni se Lara rimane ferma nell'acqua."
     },
     "fix_bear_ai": {
       "Title": "Correggi IA degli orsi",
-      "Description": "Risolve il problema in cui gli attacchi con la zampa degli orsi mancavano Lara."
+      "Description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara."
     },
     "fix_descending_glitch": {
       "Title": "Correggi le cadute da pavimenti fragili",
-      "Description": "Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili facevano sì che Lara scendesse immediatamente sul pavimento sottostante."
+      "Description": "Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara scenda immediatamente sul pavimento sottostante."
     },
     "fix_bridge_collision": {
       "Title": "Correggi la collisione dei ponti",
-      "Description": "Risolve il problema per cui Lara non era in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendenze o vicino al suolo."
+      "Description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendenze o vicino al suolo."
     },
     "fix_floor_data_issues": {
       "Title": "Correggi i dati dei livelli",
-      "Description": "Risolve i problemi dei livelli originali relativi ai dati/eventi, inclusi i seguenti.\n- Il pipistrello dormiente nel Colosseo.\n- Il segreto nella Grande Piramide che non viene registrato."
+      "Description": "Risolve i problemi dei livelli originali relativi a dati/attivazioni, inclusi i seguenti.\n- Il pipistrello dormiente nel Colosseo.\n- Il segreto nella Grande Piramide che non viene registrato."
     },
     "fix_texture_issues": {
       "Title": "Correggi i problemi delle texture",
-      "Description": "Risolve i problemi riguardanti texture mancanti o errate."
+      "Description": "Risolve i problemi riguardanti texture mancanti o errate nei livelli originali."
     },
     "fix_animated_sprites": {
       "Title": "Correggi le animazioni degli sprite",
-      "Description": "Risolve i problemi originali nella Cisterna e nella Tomba di Tihocan per cui gli sprite delle piante nelle aree acquatiche non si animavano."
+      "Description": "Risolve i problemi preesistenti nella Cisterna e nella Tomba di Tihocan per cui gli sprite delle piante nelle aree acquatiche non si animano."
     },
     "fix_item_rots": {
       "Title": "Correggi l'orientamento degli oggetti",
-      "Description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D."
+      "Description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D nei livelli originali."
     },
     "fix_qwop_glitch": {
       "Title": "Correggi il glitch QWOP",
-      "Description": "Risolve il problema di Lara che saltava a volte a piccoli passi provocando una strana animazione di corsa, nota come stato QWOP."
+      "Description": "Risolve il problema per cui a volte Lara, saltando da piccoli gradini, provoca una strana animazione di corsa nota come stato QWOP."
     },
     "fix_tihocan_secret_sound": {
       "Title": "Correggi il suono dei segreti nella Tomba di Tihocan",
-      "Description": "Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave d'oro nella Tomba di Tihocan."
+      "Description": "Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave dorata nella Tomba di Tihocan."
     },
     "fix_wall_jump_glitch": {
       "Title": "Correggi il glitch del salto sulle pareti",
-      "Description": "Risolve il problema di Lara che saltava attraverso le pareti e saliva su determinati pendii."
+      "Description": "Risolve il problema per cui Lara salta attraverso oggetti e si teletrasporta in cima a determinati pendii."
     },
     "enable_cheats": {
       "Title": "Trucchi",
-      "Description": "Abilita vari trucchi:\n- F11: tieni premuto per curare Lara.\n- F11 + tasto CAMMINA: tieni premuto per ferire Lara.\n- L: termina immediatamente il livello.\n- I: dai a Lara tutte le armi; massima quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (fa nuotare Lara a mezz'aria).\n     - tasto CAMMINA: disabilita il trucco DOZY.\n     - tasto ESTRA ARMA: apre la porta più vicina (potrebbe non funzionare su alcune)."
+      "Description": "Abilita vari trucchi:\n- F11: tieni premuto per curare Lara.\n- F11 + tasto CAMMINA: tieni premuto per ferire Lara.\n- L: termina immediatamente il livello.\n- I: dai a Lara tutte le armi; gran quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n     - tasto CAMMINA: disabilita DOZY.\n     - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi)."
     },
     "enable_console": {
       "Title": "Console",
-      "Description": "Abilita la console di sviluppo."
+      "Description": "Abilita la console per sviluppatori."
     },
     "start_lara_hitpoints": {
       "Title": "Salute iniziale di Lara",
@@ -185,11 +185,11 @@
     },
     "disable_healing_between_levels": {
       "Title": "Non guarire alla fine dei livelli",
-      "Description": "Lara non guarisce tra la fine di un livello e il caricamento di uno nuovo (per le sfide)."
+      "Description": "Lara non guarisce tra la fine di un livello e il caricamento del prossimo (per le sfide)."
     },
     "disable_shotgun": {
       "Title": "Rimuovi i fucili",
-      "Description": "Rimuove tutti i fucili e le cartucce per fucili dal gioco."
+      "Description": "Rimuove tutti i fucili e le cartucce per fucile dal gioco."
     },
     "disable_magnums": {
       "Title": "Rimuovi le magnum",
@@ -204,8 +204,8 @@
       "Description": "Permette di salvare all'inizio di ogni livello o utilizzando i cristalli. I livelli hanno un numero limitato di cristalli di salvataggio che possono essere utilizzati una sola volta, come nella versione PS1.\nLa modifica di questa opzione richiederà il riavvio del livello."
     },
     "walk_to_items": {
-      "Title": "Interazioni con animazione di avvicinamento",
-      "Description": "Fa in modo che Lara si avvicini agli oggetti e agli interruttori quando questi sono nelle vicinanze, invece di teletrasportarsi su di loro."
+      "Title": "Interazioni animate",
+      "Description": "Fa in modo che Lara si avvicini agli oggetti, alle leve e agli interruttori quando questi sono nelle vicinanze, invece di teletrasportarsi."
     },
     "enable_deaths_counter": {
       "Title": "Conta il numero di morti",
@@ -221,7 +221,7 @@
     },
     "enable_detailed_stats": {
       "Title": "Mostra il numero totale di uccisioni e oggetti",
-      "Description": "Consente di mostrare il numero massimo di uccisioni e di oggetti di ogni livello. Ciò include oggetti non ottenibili."
+      "Description": "Consente di mostrare il numero massimo di uccisioni e oggetti raccoglibili di ogni livello."
     },
     "enable_cine": {
       "Title": "Abilita le scene di intermezzo",
@@ -233,7 +233,7 @@
     },
     "enable_fmv": {
       "Title": "Abilita gli FMV",
-      "Description": "Abilita la riproduzione di file video preregistrati utilizzati in alcune scene di intermezzo."
+      "Description": "Abilita la riproduzione dei filmati."
     },
     "enable_eidos_logo": {
       "Title": "Abilita il logo EIDOS",
@@ -241,15 +241,15 @@
     },
     "enable_loading_screens": {
       "Title": "Abilita le schermate di caricamento",
-      "Description": "Abilita le schermate di caricamento in stile PS1 prima di ogni livello."
+      "Description": "Abilita le schermate di caricamento prima di ogni livello, in stile PS1."
     },
     "enable_buffering": {
       "Title": "Abilita buffering",
-      "Description": "Abilita il buffering dei Tasti Funzione (1 fotogramma) e dell'inventario (2 fotogrammi) per ottenere un controllo preciso dei movimenti di Lara."
+      "Description": "Abilita il buffering tramite Tasti Funzione (1 fotogramma) e inventario (2 fotogrammi) per ottenere un controllo preciso dei movimenti di Lara."
     },
     "disable_trex_collision": {
-      "Title": "Rimuovi la collisione con il T-Rex morto",
-      "Description": "Rimuove tutte le collisioni con il T-Rex dopo la sua dipartita. Questo aiuta quando il corpo del T-Rex blocca il passaggio."
+      "Title": "Rimuovi la collisione dal T-Rex morto",
+      "Description": "Rimuove tutte le collisioni con il T-Rex dopo la sua dipartita. Utile quando il corpo del T-Rex blocca il passaggio."
     },
     "fix_shotgun_targeting": {
       "Title": "Mira con il fucile migliorata",
@@ -265,11 +265,11 @@
     },
     "enable_enhanced_saves": {
       "Title": "Salva informazioni aggiuntive sul gioco",
-      "Description": "Migliora il sistema di salvataggio in modo che gli effetti grafici, la nebbia a cascata, gli emettitori di fiamme e altro vengano salvati invece di scomparire durante il caricamento della partita."
+      "Description": "Migliora il sistema di salvataggio in modo che effetti grafici, particellari delle cascate, emettitori di fiamme e altro vengano salvati invece di scomparire dopo il caricamento della partita."
     },
     "change_pierre_spawn": {
       "Title": "Cambia il comportamento di generazione di Pierre",
-      "Description": "Fa in modo che un Pierre appena generato (in fuga) sostituisca un altro Pierre (in fuga) già esistente."
+      "Description": "Fa in modo che, alla sua generazione, un Pierre (sfuggente) sostituisca un altro Pierre (sfuggente) già esistente."
     },
     "restore_ps1_enemies": {
       "Title": "Ripristina i nemici PS1",
@@ -277,11 +277,11 @@
     },
     "enable_game_modes": {
       "Title": "Abilita le modalità di gioco",
-      "Description": "Consente di selezionare nuove modalità di gioco dal menu passaporto.\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese."
+      "Description": "Consente di selezionare diverse modalità di gioco dal menu passaporto.\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese."
     },
     "enable_timer_in_inventory": {
-      "Title": "Conta tempo di gioco anche nell'inventario",
-      "Description": "Fa in modo che il cronometro di gioco funzioni anche nel menu dell'inventario"
+      "Title": "Conta tempo di gioco nell'inventario",
+      "Description": "Fa in modo che il tempo di gioco scorra anche nel menu dell'inventario"
     },
     "anisotropy_filter": {
       "Title": "Filtro anisotropico",
@@ -297,11 +297,11 @@
     },
     "resolution_width": {
       "Title": "Larghezza risoluzione",
-      "Description": "Sostituisce la risoluzione del gioco. Lasciare a 0 o valori negativi per individuare automaticamente in base alle dimensioni dello schermo.\nNota: questi valori sovrascrivono solo l'ultima posizione nel menu delle risoluzioni del gioco che normalmente è la risoluzione dello schermo, quindi affinché funzioni, assicurati di aver selezionato l'ultima risoluzione disponibile."
+      "Description": "Sovrascrive la risoluzione del gioco. Lasciare a 0 o valori negativi per individuare automaticamente in base alle dimensioni dello schermo.\nNota: questi valori sovrascrivono solo l'ultima posizione nel menu delle risoluzioni del gioco che normalmente è la risoluzione dello schermo, quindi affinché funzioni, assicurati di aver selezionato l'ultima risoluzione disponibile."
     },
     "resolution_height": {
       "Title": "Altezza risoluzione",
-      "Description": "Sostituisce la risoluzione del gioco. Osserva le note dell'opzione 'Larghezza risoluzione'."
+      "Description": "Sovrascrive la risoluzione del gioco. Vedi le note dell'opzione 'Larghezza risoluzione'."
     },
     "enable_skybox": {
       "Title": "Cielo",
@@ -313,23 +313,23 @@
     },
     "enable_3d_pickups": {
       "Title": "Oggetti 3D",
-      "Description": "Sostituisce gli oggetti 2D con i rispettivi modelli 3D."
+      "Description": "Sostituisce gli sprite 2D con i rispettivi modelli 3D per gli oggetti raccoglibili."
     },
     "enable_ps1_crystals": {
       "Title": "Abilita i cristalli di salvataggio PS1",
-      "Description": "I cristalli di salvataggio verranno disegnati con una tinta viola, più simile al tipo PS1."
+      "Description": "I cristalli di salvataggio verranno resi viola, più simili a quelli PS1."
     },
     "enable_round_shadow": {
-      "Title": "Ombre rotonde",
-      "Description": "Abilita le ombre rotonde invece di quelle ottagonali predefinite."
+      "Title": "Ombre arrotondate",
+      "Description": "Abilita le ombre arrotondate invece di quelle ottagonali predefinite."
     },
     "enable_shotgun_flash": {
       "Title": "Lampo dello sparo del fucile",
-      "Description": "Mostra il lampo dello sparo quando Lara fa fuoco con il fucile, come per le altre armi."
+      "Description": "Mostra il lampo dello sparo facendo fuoco con il fucile, come per le altre armi."
     },
     "screenshot_format": {
-      "Title": "Formato istantanea dello schermo",
-      "Description": "Formato del file da utilizzare per le istantanee dello schermo."
+      "Title": "Formato screenshot",
+      "Description": "Formato del file da utilizzare per gli screenshot."
     },
     "load_current_music": {
       "Title": "Carica la traccia musicale",
@@ -337,7 +337,7 @@
     },
     "load_music_triggers": {
       "Title": "Ricorda la musica riprodotta",
-      "Description": "Contrassegna le tracce musicali riprodotte nel file di salvataggio, in modo che le tracce legate ad eventi non vengano rieseguite dopo il caricamento della partita."
+      "Description": "Registra le tracce musicali intese per attivarsi una singola volta nel file di salvataggio, impedendo che vengano riprodotte di nuovo dopo il caricamento della partita."
     },
     "enable_music_in_menu": {
       "Title": "Abilita la musica del menu principale",
@@ -353,23 +353,23 @@
     },
     "fix_secrets_killing_music": {
       "Title": "Non interrompere la musica con la scoperta di un segreto",
-      "Description": "Risolve il problema in cui il suono riprodotto dalla scoperta di un segreto interrompeva la traccia musicale attiva."
+      "Description": "Risolve il problema per cui il suono riprodotto dalla scoperta di un segreto interrompe la traccia musicale attiva."
     },
     "fix_speeches_killing_music": {
       "Title": "Non interrompere la musica quando i nemici parlano",
-      "Description": "Risolve il problema per cui i nemici interrompevano la traccia musicale attiva quando parlavano."
+      "Description": "Risolve il problema per cui i nemici interrompono la traccia musicale attiva quando parlano."
     },
     "enable_ps_uzi_sfx": {
       "Title": "Abilita gli effetti sonori PS per le Uzi",
-      "Description": "Modifica gli effetti sonori delle Uzi per adattarli a quelli della versione PlayStation."
+      "Description": "Sostituisce gli effetti sonori delle Uzi con quelli della versione PlayStation."
     },
     "underwater_music_mode": {
-      "Title": "Underwater music behavior",
-      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica viene riprodotta normalmente sott'acqua (TR1).\n- Tranquilla: la musica viene riprodotta a metà volume sott'acqua.\n- Completo ma senza ambiente: la musica suona normalmente mentre sei sott'acqua, eccetto la musica ambientale che è silenziata.\n- Tranquilla ma senza ambiente: la musica suona a metà volume mentre sei sott'acqua, eccetto la musica ambientale che è silenziata.\n- Nessuna: nessuna musica viene riprodotta sott'acqua."
+      "Title": "Comportamento della musica sott'acqua",
+      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica è riprodotta normalmente sott'acqua (TR1).\n- Attenuata: la musica è riprodotta a metà volume sott'acqua.\n- Completa ma senza suoni ambientali: la musica è riprodotta normalmente sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Attenuataa ma senza suoni ambientali: la musica è riprodotta a metà volume sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Assente: nessuna musica viene riprodotta sott'acqua."
     },
     "menu_style": {
-      "Title": "Stile del menù",
-      "Description": "Modifica la modalità di visualizzazione dei menu.\n - PC: Lo stile dell'interfaccia utente corrisponde alla versione PC.\n - PS1: Lo stile dell'interfaccia utente corrisponde alla versione PS1."
+      "Title": "Stile del menu",
+      "Description": "Modifica la grafica dei menu.\n - PC: Lo stile dell'interfaccia utente corrisponde alla versione PC.\n - PS1: Lo stile dell'interfaccia utente corrisponde alla versione PS1."
     },
     "healthbar_show_mode": {
       "Title": "Comportamento della barra della salute",
@@ -409,11 +409,11 @@
     },
     "enable_smooth_bars": {
       "Title": "Barre sfumate",
-      "Description": "Fa in modo che la barra della salute e la barra dell'ossigeno utilizzino transizioni di colore uniformi."
+      "Description": "Fa in modo che la barra della salute e la barra dell'ossigeno transizionino armonicamente di colore."
     },
     "enable_fade_effects": {
-      "Title": "Effetti dello sfondo",
-      "Description": "Fa in modo che l'inventario e la schermata di pausa utilizzino transizioni sfumate per lo sfondo semitrasparente, simile alla PS1."
+      "Title": "Effetti di dissolvenza",
+      "Description": "Fa in modo che l'inventario e la schermata di pausa utilizzino transizioni in dissolvenza per lo sfondo semitrasparente, simile alla PS1."
     }
   }
 }
