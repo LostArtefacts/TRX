@@ -54,10 +54,10 @@ tr1-build-win target='debug':      (tr1-image-win "0")           (_docker_run "-
 tr1-build-win-config:              (tr1-image-win-config "0")    (_docker_run "rrdash/tr1x-config")
 tr1-build-win-installer:           (tr1-image-win-installer "0") (_docker_run "rrdash/tr1x-installer")
 
-tr1-package-linux:                 (tr1-build-linux "release") (_docker_run "rrdash/tr1x-linux" "package")
-tr1-package-win:                   (tr1-build-win "release") (_docker_run "rrdash/tr1x" "package")
-tr1-package-win-all:               (tr1-build-win "release") (tr1-build-win-config) (_docker_run "rrdash/tr1x" "package")
-tr1-package-win-installer:         (tr1-build-win "release") (tr1-build-win-config) (_docker_run "rrdash/tr1x" "package" "-o" "tools/tr1/installer/Installer/Resources/release.zip") (tr1-build-win-installer)
+tr1-package-linux target='release': (tr1-build-linux target) (_docker_run "rrdash/tr1x-linux" "package")
+tr1-package-win target='release': (tr1-build-win target) (_docker_run "rrdash/tr1x" "package")
+tr1-package-win-all target='release': (tr1-build-win target) (tr1-build-win-config) (_docker_run "rrdash/tr1x" "package")
+tr1-package-win-installer target='release': (tr1-build-win target) (tr1-build-win-config) (_docker_run "rrdash/tr1x" "package" "-o" "tools/tr1/installer/Installer/Resources/release.zip") (tr1-build-win-installer)
     #!/bin/sh
     git checkout "tools/tr1/installer/Installer/Resources/release.zip"
     exe_name=TR1X-$(tools/get_version 1)-Installer.exe

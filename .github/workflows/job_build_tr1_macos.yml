@@ -3,6 +3,10 @@ name: Build TR1X and the installer (macOS)
 on:
   workflow_call:
     inputs:
+      target:
+        type: string
+        description: "Target to build for"
+        required: true
       let_mac_fail:
         type: boolean
         description: "Do not require Mac builds to pass"
@@ -226,14 +230,14 @@ jobs:
       - name: Build arm64 and create app bundle
         run: |
           BUILD_DIR=build-arm64
-          BUILD_OPTIONS="src/tr1 --prefix=/tmp/TR1X.app --bindir=Contents/MacOS"
+          BUILD_OPTIONS="src/tr1 --prefix=/tmp/TR1X.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }}"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson install -C $BUILD_DIR
 
       - name: Build x86-64
         run: |
           BUILD_DIR=build-x86-64
-          BUILD_OPTIONS="src/tr1 --prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/tr1/mac/x86-64_cross_file.txt"
+          BUILD_OPTIONS="src/tr1 --prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/tr1/mac/x86-64_cross_file.txt --buildtype ${{ inputs.target }}"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson compile -C $BUILD_DIR
 

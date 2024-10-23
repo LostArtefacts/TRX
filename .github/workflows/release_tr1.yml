@@ -32,6 +32,8 @@ jobs:
     name: Build release assets
     if: vars.RELEASE_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr1.yml
+    with:
+      target: "release"
     secrets: inherit
 
   package_mac:
@@ -41,6 +43,7 @@ jobs:
       vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr1_macos.yml
     with:
+      target: "release"
       let_mac_fail: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     secrets: inherit
 

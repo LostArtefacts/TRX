@@ -32,6 +32,8 @@ jobs:
     name: Build release assets
     if: vars.RELEASE_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr2.yml
+    with:
+      target: "release"
     secrets: inherit
 
   publish_release:

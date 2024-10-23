@@ -2,7 +2,11 @@ name: Build TR1X and the installer
 
 on:
   workflow_call:
-  workflow_dispatch:
+    inputs:
+      target:
+        type: string
+        description: "Target to build for"
+        required: true
 
 jobs:
   build:
@@ -12,11 +16,11 @@ jobs:
       matrix:
         include:
           - platform: linux
-            just_target: tr1-package-linux
+            just_target: tr1-package-linux ${{ inputs.target }}
           - platform: win
-            just_target: tr1-package-win-all
+            just_target: tr1-package-win-all ${{ inputs.target }}
           - platform: win-installer
-            just_target: tr1-package-win-installer
+            just_target: tr1-package-win-installer ${{ inputs.target }}
 
     steps:
       - name: Install dependencies
