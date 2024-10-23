@@ -163,6 +163,7 @@ dll_sources = [
   'game/objects/effects/flame.c',
   'game/objects/effects/twinkle.c',
   'game/objects/general/body_part.c',
+  'game/objects/general/bridge_common.c',
   'game/objects/general/bridge_flat.c',
   'game/objects/general/bridge_tilt_1.c',
   'game/objects/general/bridge_tilt_2.c',
