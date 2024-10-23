@@ -121,7 +121,6 @@
 #define DrawBridgeFloor ((void __cdecl (*)(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height))0x00435650)
 #define DrawBridgeCeiling ((void __cdecl (*)(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height))0x00435690)
 #define DrawBridgeCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x004356D0)
-#define BridgeFlat_Ceiling ((void __cdecl (*)(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height))0x00435A40)
 #define Bridge_GetOffset ((int32_t __cdecl (*)(ITEM *item, int32_t x, int32_t z))0x00435A60)
 #define BridgeTilt1_Floor ((void __cdecl (*)(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height))0x00435AA0)
 #define BridgeTilt1_Ceiling ((void __cdecl (*)(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height))0x00435AD0)
