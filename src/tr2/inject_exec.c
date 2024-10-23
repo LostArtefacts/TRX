@@ -50,6 +50,7 @@
 #include "game/objects/general/body_part.h"
 #include "game/objects/general/bridge_flat.h"
 #include "game/objects/general/bridge_tilt_1.h"
+#include "game/objects/general/bridge_tilt_2.h"
 #include "game/objects/general/detonator.h"
 #include "game/objects/general/door.h"
 #include "game/objects/general/final_level_counter.h"
@@ -1029,6 +1030,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00435AA0, BridgeTilt1_Floor);
     INJECT(enable, 0x00435AD0, BridgeTilt1_Ceiling);
     INJECT(enable, 0x00435D70, Detonator_Control);
+    INJECT(enable, 0x00435B10, BridgeTilt2_Floor);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);
     INJECT(enable, 0x00438500, Switch_CollisionUW);
