@@ -3,7 +3,7 @@
 #include "global/funcs.h"
 
 void __cdecl BridgeTilt1_Floor(
-    ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     int32_t *const out_height)
 {
     const int32_t offset_height =
@@ -17,7 +17,7 @@ void __cdecl BridgeTilt1_Floor(
 }
 
 void __cdecl BridgeTilt1_Ceiling(
-    ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     int32_t *const out_height)
 {
     const int32_t offset_height =

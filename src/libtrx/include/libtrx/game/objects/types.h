@@ -50,9 +50,9 @@ typedef struct __PACKING {
     void (*initialise)(int16_t item_num);
     void (*control)(int16_t item_num);
     void (*floor)(
-        const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+        const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
     void (*ceiling)(
-        const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+        const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
     void (*draw_routine)(const ITEM *item);
     void (*collision)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 

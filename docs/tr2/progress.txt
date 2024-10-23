@@ -1129,10 +1129,10 @@ typedef struct __unaligned { // decompiled
     void (*control)(int16_t item_num);
     void (*floor)(
         const ITEM *item, int32_t x, int32_t y, int32_t z,
-        int32_t *height);
+        int32_t *out_height);
     void (*ceiling)(
         const ITEM *item, int32_t x, int32_t y, int32_t z,
-        int32_t *height);
+        int32_t *out_height);
     void (*draw_routine)(const ITEM *item);
     void (*collision)(int16_t
         item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -3582,21 +3582,21 @@ typedef enum {
 0x004350E0  0x03DC  -R      void __cdecl InitialiseDoor(int16_t item_num);
 0x004354C0  0x00C8  -R      void __cdecl DoorControl(int16_t item_num);
 0x00435590  0x00B1  -R      int32_t __cdecl OnDrawBridge(ITEM *item, int32_t x, int32_t y);
-0x00435650  0x0036  -R      void __cdecl DrawBridgeFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435690  0x003B  -R      void __cdecl DrawBridgeCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x00435650  0x0036  -R      void __cdecl DrawBridgeFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435690  0x003B  -R      void __cdecl DrawBridgeCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
 0x004356D0  0x002C  -R      void __cdecl DrawBridgeCollision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00435700  0x0035  +       void __cdecl Lift_Initialise(int16_t item_num);
 0x00435740  0x00D4  +       void __cdecl Lift_Control(int16_t item_num);
-0x00435820  0x0179  +       void __cdecl Lift_FloorCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);
-0x004359A0  0x0035  +       void __cdecl Lift_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x004359E0  0x0035  +       void __cdecl Lift_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435A20  0x0016  +       void __cdecl BridgeFlat_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435A40  0x001B  +       void __cdecl BridgeFlat_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435A60  0x003B  -       int32_t __cdecl Bridge_GetOffset(ITEM *item, int32_t x, int32_t z);
-0x00435AA0  0x0030  +       void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435AD0  0x0035  +       void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435B10  0x002F  +       void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435B40  0x0034  +       void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x00435820  0x0179  +       void __cdecl Lift_FloorCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);
+0x004359A0  0x0035  +       void __cdecl Lift_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x004359E0  0x0035  +       void __cdecl Lift_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435A20  0x0016  +       void __cdecl BridgeFlat_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435A40  0x001B  +       void __cdecl BridgeFlat_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435A60  0x003B  -       int32_t __cdecl Bridge_GetOffset(const ITEM *item, int32_t x, int32_t z);
+0x00435AA0  0x0030  +       void __cdecl BridgeTilt1_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435AD0  0x0035  +       void __cdecl BridgeTilt1_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435B10  0x002F  +       void __cdecl BridgeTilt2_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435B40  0x0034  +       void __cdecl BridgeTilt2_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
 0x00435B80  0x010C  -R      void __cdecl CopterControl(int16_t item_num);
 0x00435C90  0x00D2  -R      void __cdecl GeneralControl(int16_t item_num);
 0x00435D70  0x008D  +       void __cdecl Detonator_Control(int16_t item_num);
@@ -3744,13 +3744,13 @@ typedef enum {
 0x00441EC0  0x024A  -R      void __cdecl RollingBallCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);
 0x00442110  0x0155  -R      void __cdecl SpikeCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);
 0x00442270  0x004F  -R      void __cdecl TrapDoorControl(int16_t item_num);
-0x004422C0  0x003A  -R      void __cdecl TrapDoorFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00442300  0x003F  -R      void __cdecl TrapDoorCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x004422C0  0x003A  -R      void __cdecl TrapDoorFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00442300  0x003F  -R      void __cdecl TrapDoorCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
 0x00442340  0x00A3  -R      int32_t __cdecl OnTrapDoor(ITEM *item, int32_t x, int32_t z);
 0x004423F0  0x010A  -R      void __cdecl Pendulum(int16_t item_num);
 0x00442500  0x0105  -R      void __cdecl FallingBlock(int16_t item_num);
-0x00442610  0x003E  -R      void __cdecl FallingBlockFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00442650  0x0044  -R      void __cdecl FallingBlockCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x00442610  0x003E  -R      void __cdecl FallingBlockFloor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00442650  0x0044  -R      void __cdecl FallingBlockCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
 0x004426A0  0x00BD  -R      void __cdecl TeethTrap(int16_t item_num);
 0x00442760  0x00E0  -R      void __cdecl FallingCeiling(int16_t item_num);
 0x00442840  0x013E  -R      void __cdecl DartEmitterControl(int16_t item_num);
