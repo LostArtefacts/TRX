@@ -13,6 +13,8 @@ jobs:
     name: Build TR1
     if: vars.PRERELEASE_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr1.yml
+    with:
+      target: 'debug'
     secrets: inherit
 
   package_tr1_mac:
@@ -22,6 +24,7 @@ jobs:
       vars.MACOS_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr1_macos.yml
     with:
+      target: 'debug'
       let_mac_fail: true
     secrets: inherit
 
@@ -29,6 +32,8 @@ jobs:
     name: Build TR2
     if: vars.PRERELEASE_ENABLE == 'true'
     uses: ./.github/workflows/job_build_tr2.yml
+    with:
+      target: 'debug'
     secrets: inherit
 
   publish_prerelease:

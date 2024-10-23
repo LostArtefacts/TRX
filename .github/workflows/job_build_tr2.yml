@@ -2,7 +2,11 @@ name: Build TR2X
 
 on:
   workflow_call:
-  workflow_dispatch:
+    inputs:
+      target:
+        type: string
+        description: "Target to build for"
+        required: true
 
 jobs:
   build:
@@ -12,7 +16,7 @@ jobs:
       matrix:
         include:
           - platform: win
-            just_target: tr2-package-win-all
+            just_target: tr2-package-win-all ${{ inputs.target }}
 
     steps:
       - name: Install dependencies
