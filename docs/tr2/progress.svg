@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.01% (846)</tspan> · <tspan class="known">29.58% (368)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.09% (847)</tspan> · <tspan class="known">29.50% (367)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="508.01" height="6" x="0" y="0" class="decompiled"/>
-<rect width="220.98" height="6" x="508.01" y="0" class="known"/>
+<rect width="508.61" height="6" x="0" y="0" class="decompiled"/>
+<rect width="220.38" height="6" x="508.61" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -724,7 +724,7 @@
 <rect width="12" height="12" x="675" y="180" class="decompiled"><title>void __cdecl BridgeFlat_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="690" y="180" class="known"><title>int32_t __cdecl Bridge_GetOffset(ITEM *item, int32_t x, int32_t z);</title></rect>
 <rect width="12" height="12" x="705" y="180" class="decompiled"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="720" y="180" class="known"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="720" y="180" class="decompiled"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="735" y="180" class="known"><title>void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="0" y="195" class="known"><title>void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="15" y="195" class="known"><title>void __cdecl CopterControl(int16_t item_num);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.94%</tspan> · <tspan class="known">26.73%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.96%</tspan> · <tspan class="known">26.72%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="544.88" height="6" x="0" y="0" class="decompiled"/>
-<rect width="199.68" height="6" x="544.88" y="0" class="known"/>
+<rect width="544.99" height="6" x="0" y="0" class="decompiled"/>
+<rect width="199.57" height="6" x="544.99" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2272,7 +2272,7 @@
 <rect width="3.43" height="3.84" x="661.67" y="296.01" class="decompiled"><title>void __cdecl Lift_Initialise(int16_t item_num);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="302.86" class="decompiled"><title>void __cdecl Lift_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="309.70" class="decompiled"><title>void __cdecl Lift_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="3.43" height="3.84" x="661.67" y="316.54" class="known"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="3.43" height="3.84" x="661.67" y="316.54" class="decompiled"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="323.38" class="known"><title>void __cdecl ReadSG(void *pointer, int32_t size);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="330.23" class="decompiled"><title>void __cdecl WinVidSetGameWindowSize(int32_t width, int32_t height);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="337.07" class="decompiled"><title>void __thiscall S_FlaggedString_InitAdapter(DISPLAY_ADAPTER *adapter);</title></rect>
