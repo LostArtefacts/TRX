@@ -53,6 +53,7 @@
 #include "game/objects/general/final_level_counter.h"
 #include "game/objects/general/gong_bonger.h"
 #include "game/objects/general/keyhole.h"
+#include "game/objects/general/lift.h"
 #include "game/objects/general/movable_block.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
@@ -1016,6 +1017,11 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00434800, GongBonger_Control);
     INJECT(enable, 0x004348C0, Zipline_Collision);
     INJECT(enable, 0x00434980, Zipline_Control);
+    INJECT(enable, 0x00435700, Lift_Initialise);
+    INJECT(enable, 0x00435740, Lift_Control);
+    INJECT(enable, 0x00435820, Lift_FloorCeiling);
+    INJECT(enable, 0x004359A0, Lift_Floor);
+    INJECT(enable, 0x004359E0, Lift_Ceiling);
     INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);
