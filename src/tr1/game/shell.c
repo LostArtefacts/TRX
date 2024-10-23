@@ -287,8 +287,8 @@ void Shell_Main(void)
 
 void Shell_ExitSystem(const char *message)
 {
-    Shell_Shutdown();
     S_Shell_ShowFatalError(message);
+    Shell_Shutdown();
 }
 
 void Shell_ExitSystemFmt(const char *fmt, ...)
