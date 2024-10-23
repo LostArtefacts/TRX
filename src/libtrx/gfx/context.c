@@ -128,12 +128,13 @@ void GFX_Context_Attach(void *window_handle)
 
     m_Context.context = SDL_GL_CreateContext(m_Context.window_handle);
 
-    if (!m_Context.context) {
-        Shell_ExitSystem("Can't create OpenGL context");
+    if (m_Context.context == NULL) {
+        Shell_ExitSystemFmt("Can't create OpenGL context: %s", SDL_GetError());
     }
 
     if (SDL_GL_MakeCurrent(m_Context.window_handle, m_Context.context)) {
-        Shell_ExitSystem("Can't activate OpenGL context");
+        Shell_ExitSystemFmt(
+            "Can't activate OpenGL context: %s", SDL_GetError());
     }
 
     LOG_INFO("OpenGL vendor string:   %s", glGetString(GL_VENDOR));

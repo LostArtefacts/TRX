@@ -136,7 +136,7 @@ void Shell_Init(const char *gameflow_path)
     Screen_Init();
 
     if (!GameFlow_LoadFromFile(gameflow_path)) {
-        Shell_ExitSystem("MAIN: unable to load script file");
+        Shell_ExitSystemFmt("Unable to load gameflow file: %s", gameflow_path);
         return;
     }
     Savegame_Init();
