@@ -1029,8 +1029,9 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00435A40, BridgeFlat_Ceiling);
     INJECT(enable, 0x00435AA0, BridgeTilt1_Floor);
     INJECT(enable, 0x00435AD0, BridgeTilt1_Ceiling);
-    INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00435B10, BridgeTilt2_Floor);
+    INJECT(enable, 0x00435B40, BridgeTilt2_Ceiling);
+    INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);
     INJECT(enable, 0x00438500, Switch_CollisionUW);
