@@ -1,6 +1,6 @@
 #include "game/objects/general/bridge_tilt_1.h"
 
-#include "global/funcs.h"
+#include "game/objects/general/bridge_common.h"
 
 void __cdecl BridgeTilt1_Floor(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,

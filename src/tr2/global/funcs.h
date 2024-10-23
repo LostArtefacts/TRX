@@ -121,7 +121,6 @@
 #define DrawBridgeFloor ((void __cdecl (*)(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height))0x00435650)
 #define DrawBridgeCeiling ((void __cdecl (*)(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height))0x00435690)
 #define DrawBridgeCollision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x004356D0)
-#define Bridge_GetOffset ((int32_t __cdecl (*)(const ITEM *item, int32_t x, int32_t z))0x00435A60)
 #define CopterControl ((void __cdecl (*)(int16_t item_num))0x00435B80)
 #define GeneralControl ((void __cdecl (*)(int16_t item_num))0x00435C90)
 #define ControlGlow ((void __cdecl (*)(int16_t fx_num))0x00435E90)

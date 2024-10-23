@@ -48,6 +48,7 @@
 #include "game/objects/effects/flame.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/objects/general/body_part.h"
+#include "game/objects/general/bridge_common.h"
 #include "game/objects/general/bridge_flat.h"
 #include "game/objects/general/bridge_tilt_1.h"
 #include "game/objects/general/bridge_tilt_2.h"
@@ -1027,6 +1028,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x004359E0, Lift_Ceiling);
     INJECT(enable, 0x00435A20, BridgeFlat_Floor);
     INJECT(enable, 0x00435A40, BridgeFlat_Ceiling);
+    INJECT(enable, 0x00435A60, Bridge_GetOffset);
     INJECT(enable, 0x00435AA0, BridgeTilt1_Floor);
     INJECT(enable, 0x00435AD0, BridgeTilt1_Ceiling);
     INJECT(enable, 0x00435B10, BridgeTilt2_Floor);
