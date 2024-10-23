@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 typedef struct {
+    bool initialized;
     GLuint id;
 } GFX_GL_PROGRAM;
 
