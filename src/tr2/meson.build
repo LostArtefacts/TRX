@@ -163,6 +163,7 @@ dll_sources = [
   'game/objects/effects/flame.c',
   'game/objects/effects/twinkle.c',
   'game/objects/general/body_part.c',
+  'game/objects/general/bridge_flat.c',
   'game/objects/general/detonator.c',
   'game/objects/general/door.c',
   'game/objects/general/final_level_counter.c',
