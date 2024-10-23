@@ -3596,7 +3596,7 @@ typedef enum {
 0x00435AA0  0x0030  +       void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435AD0  0x0035  +       void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435B10  0x002F  +       void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
-0x00435B40  0x0034  -       void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x00435B40  0x0034  +       void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435B80  0x010C  -R      void __cdecl CopterControl(int16_t item_num);
 0x00435C90  0x00D2  -R      void __cdecl GeneralControl(int16_t item_num);
 0x00435D70  0x008D  +       void __cdecl Detonator_Control(int16_t item_num);
