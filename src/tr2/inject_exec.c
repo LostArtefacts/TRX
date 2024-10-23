@@ -48,6 +48,7 @@
 #include "game/objects/effects/flame.h"
 #include "game/objects/effects/twinkle.h"
 #include "game/objects/general/body_part.h"
+#include "game/objects/general/bridge_flat.h"
 #include "game/objects/general/detonator.h"
 #include "game/objects/general/door.h"
 #include "game/objects/general/final_level_counter.h"
@@ -1022,6 +1023,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00435820, Lift_FloorCeiling);
     INJECT(enable, 0x004359A0, Lift_Floor);
     INJECT(enable, 0x004359E0, Lift_Ceiling);
+    INJECT(enable, 0x00435A20, BridgeFlat_Floor);
     INJECT(enable, 0x00435D70, Detonator_Control);
     INJECT(enable, 0x00437E70, Pickup_Collision);
     INJECT(enable, 0x004382F0, Switch_Collision);

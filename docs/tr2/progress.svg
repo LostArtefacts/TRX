@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.77% (843)</tspan> · <tspan class="known">29.82% (371)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.85% (844)</tspan> · <tspan class="known">29.74% (370)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="506.21" height="6" x="0" y="0" class="decompiled"/>
-<rect width="222.78" height="6" x="506.21" y="0" class="known"/>
+<rect width="506.81" height="6" x="0" y="0" class="decompiled"/>
+<rect width="222.18" height="6" x="506.81" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -720,13 +720,13 @@
 <rect width="12" height="12" x="615" y="180" class="decompiled"><title>void __cdecl Lift_FloorCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);</title></rect>
 <rect width="12" height="12" x="630" y="180" class="decompiled"><title>void __cdecl Lift_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="645" y="180" class="decompiled"><title>void __cdecl Lift_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="660" y="180" class="known"><title>void __cdecl BridgeFlatFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="675" y="180" class="known"><title>void __cdecl BridgeFlatCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="690" y="180" class="known"><title>int32_t __cdecl GetOffset(ITEM *item, int32_t x, int32_t z);</title></rect>
-<rect width="12" height="12" x="705" y="180" class="known"><title>void __cdecl BridgeTilt1Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="720" y="180" class="known"><title>void __cdecl BridgeTilt1Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="735" y="180" class="known"><title>void __cdecl BridgeTilt2Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="12" height="12" x="0" y="195" class="known"><title>void __cdecl BridgeTilt2Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="660" y="180" class="decompiled"><title>void __cdecl BridgeFlat_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="675" y="180" class="known"><title>void __cdecl BridgeFlat_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="690" y="180" class="known"><title>int32_t __cdecl Bridge_GetOffset(ITEM *item, int32_t x, int32_t z);</title></rect>
+<rect width="12" height="12" x="705" y="180" class="known"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="720" y="180" class="known"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="735" y="180" class="known"><title>void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="0" y="195" class="known"><title>void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="15" y="195" class="known"><title>void __cdecl CopterControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="30" y="195" class="known"><title>void __cdecl GeneralControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="45" y="195" class="decompiled"><title>void __cdecl Detonator_Control(int16_t item_num);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.91%</tspan> · <tspan class="known">26.76%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.92%</tspan> · <tspan class="known">26.75%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="544.66" height="6" x="0" y="0" class="decompiled"/>
-<rect width="199.90" height="6" x="544.66" y="0" class="known"/>
+<rect width="544.71" height="6" x="0" y="0" class="decompiled"/>
+<rect width="199.85" height="6" x="544.71" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2219,7 +2219,7 @@
 <rect width="4.14" height="3.86" x="647.85" y="289.54" class="decompiled"><title>int32_t __cdecl Gun_CheckForHoldingState(int32_t state);</title></rect>
 <rect width="4.14" height="3.86" x="647.85" y="296.40" class="decompiled"><title>GAME_OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type);</title></rect>
 <rect width="4.14" height="3.86" x="647.85" y="303.26" class="known"><title>void __cdecl DrawBridgeCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="4.14" height="3.86" x="647.85" y="310.12" class="known"><title>int32_t __cdecl GetOffset(ITEM *item, int32_t x, int32_t z);</title></rect>
+<rect width="4.14" height="3.86" x="647.85" y="310.12" class="known"><title>int32_t __cdecl Bridge_GetOffset(ITEM *item, int32_t x, int32_t z);</title></rect>
 <rect width="4.14" height="3.86" x="647.85" y="316.98" class="known"><title>void __cdecl ControlGlow(int16_t fx_num);</title></rect>
 <rect width="4.14" height="3.86" x="647.85" y="323.83" class="decompiled"><title>void __cdecl WaitPrimaryBufferFlip(void);</title></rect>
 <rect width="4.14" height="3.86" x="647.85" y="330.69" class="decompiled"><title>void __cdecl S_RemoveCtrlText(void);</title></rect>
@@ -2272,7 +2272,7 @@
 <rect width="3.43" height="3.84" x="661.67" y="296.01" class="decompiled"><title>void __cdecl Lift_Initialise(int16_t item_num);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="302.86" class="decompiled"><title>void __cdecl Lift_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="309.70" class="decompiled"><title>void __cdecl Lift_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
-<rect width="3.43" height="3.84" x="661.67" y="316.54" class="known"><title>void __cdecl BridgeTilt1Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="3.43" height="3.84" x="661.67" y="316.54" class="known"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="323.38" class="known"><title>void __cdecl ReadSG(void *pointer, int32_t size);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="330.23" class="decompiled"><title>void __cdecl WinVidSetGameWindowSize(int32_t width, int32_t height);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="337.07" class="decompiled"><title>void __thiscall S_FlaggedString_InitAdapter(DISPLAY_ADAPTER *adapter);</title></rect>
@@ -2281,7 +2281,7 @@
 <rect width="3.43" height="3.84" x="661.67" y="357.60" class="decompiled"><title>void __cdecl HWR_GetPageHandles(void);</title></rect>
 <rect width="3.43" height="3.84" x="661.67" y="364.44" class="known"><title>bool __cdecl ReloadTextures(bool reset);</title></rect>
 <rect width="3.43" height="3.71" x="661.67" y="371.29" class="decompiled"><title>void __cdecl Matrix_InitInterpolate(int32_t frac, int32_t rate);</title></rect>
-<rect width="3.40" height="3.75" x="668.09" y="296.01" class="known"><title>void __cdecl BridgeTilt2Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="3.40" height="3.75" x="668.09" y="296.01" class="known"><title>void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.40" height="3.75" x="674.49" y="296.01" class="known"><title>void __cdecl TempVideoAdjust(int32_t hires, double sizer);</title></rect>
 <rect width="3.40" height="3.75" x="680.88" y="296.01" class="known"><title>void __cdecl game_free(size_t free_size);</title></rect>
 <rect width="3.27" height="3.75" x="687.28" y="296.01" class="decompiled"><title>void __cdecl Output_SortPolyList(void);</title></rect>
@@ -2313,7 +2313,7 @@
 <rect width="3.36" height="3.26" x="674.66" y="328.06" class="decompiled"><title>void __cdecl Lara_State_PushBlock(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="334.32" class="decompiled"><title>void __cdecl Lara_State_Pickup(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="340.57" class="decompiled"><title>void __cdecl Lara_State_UseKey(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="3.36" height="3.26" x="674.66" y="346.83" class="known"><title>void __cdecl BridgeTilt1Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="3.36" height="3.26" x="674.66" y="346.83" class="known"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="353.09" class="decompiled"><title>bool __cdecl BGND_Init(void);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="359.35" class="known"><title>void __cdecl CleanupTextures(void);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="365.61" class="known"><title>BOOL __cdecl OpenRegistryKey(LPCTSTR lpSubKey);</title></rect>
@@ -2322,7 +2322,7 @@
 <rect width="3.32" height="3.17" x="687.35" y="302.76" class="decompiled"><title>void __cdecl Inv_Ring_RotateLeft(RING_INFO *ring);</title></rect>
 <rect width="3.32" height="3.17" x="693.67" y="302.76" class="decompiled"><title>void __cdecl Inv_Ring_RotateRight(RING_INFO *ring);</title></rect>
 <rect width="3.32" height="3.17" x="699.98" y="302.76" class="decompiled"><title>void __cdecl Lara_State_SwanDive(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="3.32" height="3.17" x="706.30" y="302.76" class="known"><title>void __cdecl BridgeTilt2Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="3.32" height="3.17" x="706.30" y="302.76" class="known"><title>void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.32" height="3.17" x="712.62" y="302.76" class="unused"><title>sub_4471C0</title></rect>
 <rect width="3.32" height="3.17" x="718.94" y="302.76" class="unused"><title>sub_447B90</title></rect>
 <rect width="3.32" height="3.17" x="725.26" y="302.76" class="decompiled"><title>void __cdecl S_Audio_Sample_CloseTrack(int32_t track_id);</title></rect>
@@ -2438,7 +2438,7 @@
 <rect width="1.96" height="1.52" x="708.01" y="364.44" class="decompiled"><title>void __cdecl Inv_RemoveAllItems(void);</title></rect>
 <rect width="1.96" height="1.52" x="708.01" y="368.96" class="decompiled"><title>void __cdecl Requester_Item_CenterAlign(REQUEST_INFO *req, TEXTSTRING *txt);</title></rect>
 <rect width="1.96" height="1.52" x="708.01" y="373.48" class="decompiled"><title>void __cdecl Lara_ControlExtra(int16_t item_num);</title></rect>
-<rect width="1.81" height="1.66" x="712.97" y="336.33" class="known"><title>void __cdecl BridgeFlatCeiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="1.81" height="1.66" x="712.97" y="336.33" class="known"><title>void __cdecl BridgeFlat_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="1.81" height="1.66" x="717.77" y="336.33" class="decompiled"><title>int32_t __fastcall Math_Sin(int16_t angle);</title></rect>
 <rect width="1.63" height="1.66" x="722.58" y="336.33" class="decompiled"><title>bool __cdecl EnumerateDisplayAdapters(DISPLAY_ADAPTER_LIST *displayAdapterList);</title></rect>
 <rect width="1.63" height="1.66" x="727.21" y="336.33" class="decompiled"><title>void __cdecl DInputRelease(void);</title></rect>
@@ -2465,7 +2465,7 @@
 <rect width="1.28" height="1.46" x="721.55" y="345.15" class="decompiled"><title>void __cdecl S_Audio_Sample_OutCloseTrack(int32_t track_id);</title></rect>
 <rect width="1.09" height="1.46" x="725.82" y="345.15" class="known"><title>void __cdecl turn180_effect(ITEM *item);</title></rect>
 <rect width="1.09" height="1.46" x="729.92" y="345.15" class="known"><title>void __cdecl invisibility_off(ITEM *item);</title></rect>
-<rect width="1.09" height="1.46" x="734.01" y="345.15" class="known"><title>void __cdecl BridgeFlatFloor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="1.09" height="1.46" x="734.01" y="345.15" class="decompiled"><title>void __cdecl BridgeFlat_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="1.09" height="1.46" x="738.10" y="345.15" class="decompiled"><title>void __cdecl HWR_BeginScene(void);</title></rect>
 <rect width="0.91" height="1.46" x="742.19" y="345.15" class="decompiled"><title>void __cdecl Overlay_InitialisePickUpDisplay(void);</title></rect>
 <rect width="0.91" height="1.46" x="746.09" y="345.15" class="decompiled"><title>void __cdecl Lara_State_WaterOut(ITEM *item, COLL_INFO *coll);</title></rect>
