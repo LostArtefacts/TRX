@@ -23,4 +23,5 @@ void Eel_Setup(void)
     obj->water_creature = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
+    obj->save_flags = 1;
 }
