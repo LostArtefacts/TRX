@@ -25,4 +25,5 @@ void Winston_Setup(void)
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_anim = 1;
+    obj->save_flags = 1;
 }
