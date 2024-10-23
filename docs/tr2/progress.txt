@@ -3593,7 +3593,7 @@ typedef enum {
 0x00435A20  0x0016  +       void __cdecl BridgeFlat_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435A40  0x001B  +       void __cdecl BridgeFlat_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435A60  0x003B  -       int32_t __cdecl Bridge_GetOffset(ITEM *item, int32_t x, int32_t z);
-0x00435AA0  0x0030  -       void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
+0x00435AA0  0x0030  +       void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435AD0  0x0035  -       void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435B10  0x002F  -       void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);
 0x00435B40  0x0034  -       void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);

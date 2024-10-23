@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">67.93% (845)</tspan> · <tspan class="known">29.66% (369)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.01% (846)</tspan> · <tspan class="known">29.58% (368)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="507.41" height="6" x="0" y="0" class="decompiled"/>
-<rect width="221.58" height="6" x="507.41" y="0" class="known"/>
+<rect width="508.01" height="6" x="0" y="0" class="decompiled"/>
+<rect width="220.98" height="6" x="508.01" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -723,7 +723,7 @@
 <rect width="12" height="12" x="660" y="180" class="decompiled"><title>void __cdecl BridgeFlat_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="675" y="180" class="decompiled"><title>void __cdecl BridgeFlat_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="690" y="180" class="known"><title>int32_t __cdecl Bridge_GetOffset(ITEM *item, int32_t x, int32_t z);</title></rect>
-<rect width="12" height="12" x="705" y="180" class="known"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="12" height="12" x="705" y="180" class="decompiled"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="720" y="180" class="known"><title>void __cdecl BridgeTilt1_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="735" y="180" class="known"><title>void __cdecl BridgeTilt2_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="12" height="12" x="0" y="195" class="known"><title>void __cdecl BridgeTilt2_Ceiling(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.93%</tspan> · <tspan class="known">26.75%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">72.94%</tspan> · <tspan class="known">26.73%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="544.77" height="6" x="0" y="0" class="decompiled"/>
-<rect width="199.79" height="6" x="544.77" y="0" class="known"/>
+<rect width="544.88" height="6" x="0" y="0" class="decompiled"/>
+<rect width="199.68" height="6" x="544.88" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2313,7 +2313,7 @@
 <rect width="3.36" height="3.26" x="674.66" y="328.06" class="decompiled"><title>void __cdecl Lara_State_PushBlock(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="334.32" class="decompiled"><title>void __cdecl Lara_State_Pickup(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="340.57" class="decompiled"><title>void __cdecl Lara_State_UseKey(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="3.36" height="3.26" x="674.66" y="346.83" class="known"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
+<rect width="3.36" height="3.26" x="674.66" y="346.83" class="decompiled"><title>void __cdecl BridgeTilt1_Floor(ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *height);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="353.09" class="decompiled"><title>bool __cdecl BGND_Init(void);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="359.35" class="known"><title>void __cdecl CleanupTextures(void);</title></rect>
 <rect width="3.36" height="3.26" x="674.66" y="365.61" class="known"><title>BOOL __cdecl OpenRegistryKey(LPCTSTR lpSubKey);</title></rect>
