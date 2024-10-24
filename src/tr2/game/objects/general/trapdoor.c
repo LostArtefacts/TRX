@@ -1,5 +1,12 @@
 #include "game/objects/general/trapdoor.h"
 
+#include "game/items.h"
+
+typedef enum {
+    TRAPDOOR_STATE_CLOSED,
+    TRAPDOOR_STATE_OPEN,
+} TRAPDOOR_STATE;
+
 int32_t __cdecl Trapdoor_IsItemOnTop(
     const ITEM *const item, const int32_t x, const int32_t z)
 {
@@ -30,4 +37,19 @@ int32_t __cdecl Trapdoor_IsItemOnTop(
     }
 
     return false;
+}
+
+void __cdecl Trapdoor_Control(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (Item_IsTriggerActive(item)) {
+        if (item->current_anim_state == TRAPDOOR_STATE_CLOSED) {
+            item->goal_anim_state = TRAPDOOR_STATE_OPEN;
+        }
+    } else {
+        if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
+            item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
+        }
+    }
+    Item_Animate(item);
 }

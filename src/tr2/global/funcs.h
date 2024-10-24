@@ -175,7 +175,6 @@
 #define RollingBallControl ((void __cdecl (*)(int16_t item_num))0x00441B70)
 #define RollingBallCollision ((void __cdecl (*)(int16_t item_num, ITEM *litem, COLL_INFO *coll))0x00441EC0)
 #define SpikeCollision ((void __cdecl (*)(int16_t item_num, ITEM *litem, COLL_INFO *coll))0x00442110)
-#define Trapdoor_Control ((void __cdecl (*)(int16_t item_num))0x00442270)
 #define Trapdoor_Floor ((void __cdecl (*)(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height))0x004422C0)
 #define Trapdoor_Ceiling ((void __cdecl (*)(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height))0x00442300)
 #define Pendulum ((void __cdecl (*)(int16_t item_num))0x004423F0)
