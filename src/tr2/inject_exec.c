@@ -1061,6 +1061,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x0043F1D0, SkidooArmed_Push);
     INJECT(enable, 0x0043F2F0, SkidooArmed_Collision);
     INJECT(enable, 0x00442270, Trapdoor_Control);
+    INJECT(enable, 0x004422C0, Trapdoor_Floor);
     INJECT(enable, 0x00442340, Trapdoor_IsItemOnTop);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
