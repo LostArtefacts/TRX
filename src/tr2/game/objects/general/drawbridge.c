@@ -50,3 +50,17 @@ void __cdecl Drawbridge_Floor(
     }
     *out_height = item->pos.y;
 }
+
+void __cdecl Drawbridge_Ceiling(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    int32_t *const out_height)
+{
+    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
+        return;
+    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
+        return;
+    } else if (item->pos.y >= y) {
+        return;
+    }
+    *out_height = item->pos.y + STEP_L;
+}
