@@ -111,6 +111,7 @@ const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     O_TRAPDOOR_TYPE_1,
     O_TRAPDOOR_TYPE_2,
     O_TRAPDOOR_TYPE_3,
+    O_DRAWBRIDGE,
     NO_OBJECT,
     // clang-format on
 };
