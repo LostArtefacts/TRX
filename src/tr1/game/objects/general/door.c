@@ -23,6 +23,20 @@ static void M_Check(DOORPOS_DATA *d);
 static void M_Open(DOORPOS_DATA *d);
 static void M_Shut(DOORPOS_DATA *d);
 
+static SECTOR *M_GetRoomRelSector(
+    const ROOM *r, const ITEM *item, int32_t sector_dx, int32_t sector_dz);
+
+static SECTOR *M_GetRoomRelSector(
+    const ROOM *const r, const ITEM *item, const int32_t sector_dx,
+    const int32_t sector_dz)
+{
+    const XZ_32 sector = {
+        .x = ((item->pos.x - r->pos.x) >> WALL_SHIFT) + sector_dx,
+        .z = ((item->pos.z - r->pos.z) >> WALL_SHIFT) + sector_dz,
+    };
+    return &r->sectors[sector.x * r->size.z + sector.z];
+}
+
 static bool M_LaraDoorCollision(const SECTOR *const sector)
 {
     // Check if Lara is on the same tile as the invisible block.
@@ -101,36 +115,30 @@ void Door_Initialise(int16_t item_num)
     item->data = door;
 
     int32_t dx = 0;
-    int32_t dy = 0;
+    int32_t dz = 0;
     if (item->rot.y == 0) {
-        dx--;
+        dz--;
     } else if (item->rot.y == -PHD_180) {
-        dx++;
+        dz++;
     } else if (item->rot.y == PHD_90) {
-        dy--;
+        dx--;
     } else {
-        dy++;
+        dx++;
     }
 
     const ROOM *r;
     const ROOM *b;
-    int32_t z_sector;
-    int32_t x_sector;
     int16_t room_num;
     int16_t box_num;
 
     r = &g_RoomInfo[item->room_num];
-    z_sector = ((item->pos.z - r->pos.z) >> WALL_SHIFT) + dx;
-    x_sector = ((item->pos.x - r->pos.x) >> WALL_SHIFT) + dy;
-    door->d1.sector = &r->sectors[z_sector + x_sector * r->size.z];
+    door->d1.sector = M_GetRoomRelSector(r, item, dx, dz);
     room_num = door->d1.sector->portal_room.wall;
     if (room_num == NO_ROOM) {
         box_num = door->d1.sector->box;
     } else {
         b = &g_RoomInfo[room_num];
-        z_sector = ((item->pos.z - b->pos.z) >> WALL_SHIFT) + dx;
-        x_sector = ((item->pos.x - b->pos.x) >> WALL_SHIFT) + dy;
-        box_num = b->sectors[z_sector + x_sector * b->size.z].box;
+        box_num = M_GetRoomRelSector(b, item, dx, dz)->box;
     }
     if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
         box_num = NO_BOX;
@@ -140,17 +148,13 @@ void Door_Initialise(int16_t item_num)
 
     if (r->flipped_room != -1) {
         r = &g_RoomInfo[r->flipped_room];
-        z_sector = ((item->pos.z - r->pos.z) >> WALL_SHIFT) + dx;
-        x_sector = ((item->pos.x - r->pos.x) >> WALL_SHIFT) + dy;
-        door->d1flip.sector = &r->sectors[z_sector + x_sector * r->size.z];
+        door->d1flip.sector = M_GetRoomRelSector(r, item, dx, dz);
         room_num = door->d1flip.sector->portal_room.wall;
         if (room_num == NO_ROOM) {
             box_num = door->d1flip.sector->box;
         } else {
             b = &g_RoomInfo[room_num];
-            z_sector = ((item->pos.z - b->pos.z) >> WALL_SHIFT) + dx;
-            x_sector = ((item->pos.x - b->pos.x) >> WALL_SHIFT) + dy;
-            box_num = b->sectors[z_sector + x_sector * b->size.z].box;
+            box_num = M_GetRoomRelSector(b, item, dx, dz)->box;
         }
         if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
             box_num = NO_BOX;
@@ -172,17 +176,13 @@ void Door_Initialise(int16_t item_num)
     }
 
     r = &g_RoomInfo[room_num];
-    z_sector = (item->pos.z - r->pos.z) >> WALL_SHIFT;
-    x_sector = (item->pos.x - r->pos.x) >> WALL_SHIFT;
-    door->d2.sector = &r->sectors[z_sector + x_sector * r->size.z];
+    door->d2.sector = M_GetRoomRelSector(r, item, 0, 0);
     room_num = door->d2.sector->portal_room.wall;
     if (room_num == NO_ROOM) {
         box_num = door->d2.sector->box;
     } else {
         b = &g_RoomInfo[room_num];
-        z_sector = (item->pos.z - b->pos.z) >> WALL_SHIFT;
-        x_sector = (item->pos.x - b->pos.x) >> WALL_SHIFT;
-        box_num = b->sectors[z_sector + x_sector * b->size.z].box;
+        box_num = M_GetRoomRelSector(b, item, 0, 0)->box;
     }
     if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
         box_num = NO_BOX;
@@ -192,17 +192,13 @@ void Door_Initialise(int16_t item_num)
 
     if (r->flipped_room != -1) {
         r = &g_RoomInfo[r->flipped_room];
-        z_sector = (item->pos.z - r->pos.z) >> WALL_SHIFT;
-        x_sector = (item->pos.x - r->pos.x) >> WALL_SHIFT;
-        door->d2flip.sector = &r->sectors[z_sector + x_sector * r->size.z];
+        door->d2flip.sector = M_GetRoomRelSector(r, item, 0, 0);
         room_num = door->d2flip.sector->portal_room.wall;
         if (room_num == NO_ROOM) {
             box_num = door->d2flip.sector->box;
         } else {
             b = &g_RoomInfo[room_num];
-            z_sector = (item->pos.z - b->pos.z) >> WALL_SHIFT;
-            x_sector = (item->pos.x - b->pos.x) >> WALL_SHIFT;
-            box_num = b->sectors[z_sector + x_sector * b->size.z].box;
+            box_num = M_GetRoomRelSector(b, item, 0, 0)->box;
         }
         if (!(g_Boxes[box_num].overlap_index & BLOCKABLE)) {
             box_num = NO_BOX;
