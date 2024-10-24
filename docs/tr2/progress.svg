@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.89% (857)</tspan> · <tspan class="known">28.70% (357)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.97% (858)</tspan> · <tspan class="known">28.62% (356)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="514.61" height="6" x="0" y="0" class="decompiled"/>
-<rect width="214.37" height="6" x="514.61" y="0" class="known"/>
+<rect width="515.21" height="6" x="0" y="0" class="decompiled"/>
+<rect width="213.77" height="6" x="515.21" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -710,7 +710,7 @@
 <rect width="12" height="12" x="465" y="180" class="decompiled"><title>void __cdecl Door_Shut(DOORPOS_DATA *d);</title></rect>
 <rect width="12" height="12" x="480" y="180" class="decompiled"><title>void __cdecl Door_Open(DOORPOS_DATA *d);</title></rect>
 <rect width="12" height="12" x="495" y="180" class="decompiled"><title>void __cdecl Door_Initialise(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="510" y="180" class="known"><title>void __cdecl Door_Control(int16_t item_num);</title></rect>
+<rect width="12" height="12" x="510" y="180" class="decompiled"><title>void __cdecl Door_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="525" y="180" class="decompiled"><title>int32_t __cdecl Drawbridge_IsItemOnTop(const ITEM *item, int32_t x, int32_t y);</title></rect>
 <rect width="12" height="12" x="540" y="180" class="decompiled"><title>void __cdecl Drawbridge_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
 <rect width="12" height="12" x="555" y="180" class="decompiled"><title>void __cdecl Drawbridge_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.42%</tspan> · <tspan class="known">26.25%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.48%</tspan> · <tspan class="known">26.19%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="548.48" height="6" x="0" y="0" class="decompiled"/>
-<rect width="196.08" height="6" x="548.48" y="0" class="known"/>
+<rect width="548.92" height="6" x="0" y="0" class="decompiled"/>
+<rect width="195.64" height="6" x="548.92" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -1772,7 +1772,7 @@
 <rect width="9.80" height="10.10" x="586.22" y="136.34" class="decompiled"><title>void __cdecl Lara_State_Wade(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="9.74" height="10.10" x="599.02" y="136.34" class="known"><title>void __cdecl DInputKeyboardCreate(void);</title></rect>
 <rect width="9.67" height="10.10" x="611.75" y="136.34" class="decompiled"><title>void __cdecl Room_GetNearbyRooms(int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);</title></rect>
-<rect width="9.67" height="10.10" x="624.42" y="136.34" class="known"><title>void __cdecl Door_Control(int16_t item_num);</title></rect>
+<rect width="9.67" height="10.10" x="624.42" y="136.34" class="decompiled"><title>void __cdecl Door_Control(int16_t item_num);</title></rect>
 <rect width="9.67" height="10.10" x="637.09" y="136.34" class="known"><title>BYTE __cdecl FindNearestPaletteEntry(RGB_888 *palette, int32_t red, int32_t green, int32_t blue, bool ignore_sys_palette);</title></rect>
 <rect width="9.61" height="10.10" x="649.77" y="136.34" class="decompiled"><title>void __cdecl Output_RotateLight(int16_t pitch, int16_t yaw);</title></rect>
 <rect width="9.61" height="10.10" x="662.38" y="136.34" class="known"><title>bool __cdecl SE_SoundTestStart(void);</title></rect>

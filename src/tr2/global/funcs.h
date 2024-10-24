@@ -113,7 +113,6 @@
 #define SmashWindow ((void __cdecl (*)(int16_t item_num))0x00434E00)
 #define WindowControl ((void __cdecl (*)(int16_t item_num))0x00434ED0)
 #define SmashIceControl ((void __cdecl (*)(int16_t item_num))0x00434F70)
-#define Door_Control ((void __cdecl (*)(int16_t item_num))0x004354C0)
 #define CopterControl ((void __cdecl (*)(int16_t item_num))0x00435B80)
 #define GeneralControl ((void __cdecl (*)(int16_t item_num))0x00435C90)
 #define ControlGlow ((void __cdecl (*)(int16_t fx_num))0x00435E90)

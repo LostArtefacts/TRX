@@ -145,6 +145,34 @@ void __cdecl Door_Initialise(const int16_t item_num)
     Item_NewRoom(item_num, room_num);
 }
 
+void __cdecl Door_Control(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    DOOR_DATA *const data = item->data;
+
+    if (Item_IsTriggerActive(item)) {
+        if (item->current_anim_state == DOOR_STATE_CLOSED) {
+            item->goal_anim_state = DOOR_STATE_OPEN;
+        } else {
+            Door_Open(&data->d1);
+            Door_Open(&data->d2);
+            Door_Open(&data->d1flip);
+            Door_Open(&data->d2flip);
+        }
+    } else {
+        if (item->current_anim_state == DOOR_STATE_OPEN) {
+            item->goal_anim_state = DOOR_STATE_CLOSED;
+        } else {
+            Door_Shut(&data->d1);
+            Door_Shut(&data->d2);
+            Door_Shut(&data->d1flip);
+            Door_Shut(&data->d2flip);
+        }
+    }
+
+    Item_Animate(item);
+}
+
 void __cdecl Door_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
