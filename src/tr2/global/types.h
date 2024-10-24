@@ -709,7 +709,7 @@ typedef enum {
 
 typedef struct __unaligned {
     SECTOR *sector;
-    SECTOR data;
+    SECTOR old_sector;
     int16_t block;
 } DOORPOS_DATA;
 

@@ -26,6 +26,20 @@ void __cdecl Door_Shut(DOORPOS_DATA *const d)
     }
 }
 
+void __cdecl Door_Open(DOORPOS_DATA *const d)
+{
+    if (d->sector == NULL) {
+        return;
+    }
+
+    *d->sector = d->old_sector;
+
+    const int16_t box_num = d->block;
+    if (box_num != NO_BOX) {
+        g_Boxes[box_num].overlap_index &= ~BOX_BLOCKED;
+    }
+}
+
 void __cdecl Door_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
