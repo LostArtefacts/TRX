@@ -7,7 +7,6 @@
 #include "game/music.h"
 #include "game/output.h"
 #include "game/overlay.h"
-#include "game/phase/phase_photo_mode.h"
 #include "game/requester.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -32,7 +31,7 @@ typedef enum {
 
 static STATE m_PauseState = STATE_DEFAULT;
 static bool m_IsTextReady = false;
-static PHASE_PHOTO_MODE_ARGS m_Args;
+static PHASE_PAUSE_ARGS m_Args;
 static TEXTSTRING *m_PausedText = NULL;
 
 static REQUEST_INFO m_PauseRequester = {
@@ -56,7 +55,7 @@ static void M_UpdateText(void);
 static int32_t M_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
-static void M_Start(const PHASE_PHOTO_MODE_ARGS *args);
+static void M_Start(const PHASE_PAUSE_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
@@ -109,7 +108,7 @@ static int32_t M_DisplayRequester(
     return select;
 }
 
-static void M_Start(const PHASE_PHOTO_MODE_ARGS *const args)
+static void M_Start(const PHASE_PAUSE_ARGS *const args)
 {
     if (args != NULL) {
         m_Args = *args;
