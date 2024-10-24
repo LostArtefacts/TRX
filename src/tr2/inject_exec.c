@@ -1024,6 +1024,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00434980, Zipline_Control);
     INJECT(enable, 0x00435050, Door_Shut);
     INJECT(enable, 0x004350A0, Door_Open);
+    INJECT(enable, 0x004350E0, Door_Initialise);
     INJECT(enable, 0x00435590, Drawbridge_IsItemOnTop);
     INJECT(enable, 0x00435650, Drawbridge_Floor);
     INJECT(enable, 0x00435690, Drawbridge_Ceiling);
