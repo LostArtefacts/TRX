@@ -286,11 +286,6 @@ typedef enum {
 } SHAPE;
 
 typedef enum {
-    DOOR_CLOSED = 0,
-    DOOR_OPEN = 1,
-} DOOR_ANIM;
-
-typedef enum {
     TRAP_SET = 0,
     TRAP_ACTIVATE = 1,
     TRAP_WORKING = 2,
@@ -475,13 +470,6 @@ typedef struct {
     SECTOR old_sector;
     int16_t block;
 } DOORPOS_DATA;
-
-typedef struct {
-    DOORPOS_DATA d1;
-    DOORPOS_DATA d1flip;
-    DOORPOS_DATA d2;
-    DOORPOS_DATA d2flip;
-} DOOR_DATA;
 
 typedef struct {
     int16_t tx;

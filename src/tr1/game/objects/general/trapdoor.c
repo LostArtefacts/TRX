@@ -3,6 +3,11 @@
 #include "game/items.h"
 #include "global/const.h"
 
+typedef enum {
+    TRAPDOOR_STATE_CLOSED,
+    TRAPDOOR_STATE_OPEN,
+} TRAPDOOR_STATE;
+
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
 
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
@@ -37,11 +42,11 @@ void TrapDoor_Control(int16_t item_num)
 {
     ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == DOOR_CLOSED) {
-            item->goal_anim_state = DOOR_OPEN;
+        if (item->current_anim_state == TRAPDOOR_STATE_CLOSED) {
+            item->goal_anim_state = TRAPDOOR_STATE_OPEN;
         }
-    } else if (item->current_anim_state == DOOR_OPEN) {
-        item->goal_anim_state = DOOR_CLOSED;
+    } else if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
+        item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
     }
     Item_Animate(item);
 }
@@ -54,7 +59,7 @@ int16_t TrapDoor_GetFloorHeight(
         return height;
     }
 
-    if (item->current_anim_state == DOOR_OPEN || y > item->pos.y
+    if (item->current_anim_state == TRAPDOOR_STATE_OPEN || y > item->pos.y
         || item->pos.y >= height) {
         return height;
     }
@@ -70,7 +75,7 @@ int16_t TrapDoor_GetCeilingHeight(
         return height;
     }
 
-    if (item->current_anim_state == DOOR_OPEN || y <= item->pos.y
+    if (item->current_anim_state == TRAPDOOR_STATE_OPEN || y <= item->pos.y
         || item->pos.y <= height) {
         return height;
     }

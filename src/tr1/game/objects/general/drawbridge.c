@@ -6,8 +6,8 @@
 #include "game/room.h"
 
 typedef enum {
-    DRAWBRIDGE_CLOSED,
-    DRAWBRIDGE_OPEN,
+    DRAWBRIDGE_STATE_CLOSED = DOOR_STATE_CLOSED,
+    DRAWBRIDGE_STATE_OPEN = DOOR_STATE_OPEN,
 } DRAWBRIDGE_STATE;
 
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
@@ -45,7 +45,7 @@ static int16_t M_GetFloorHeight(
     const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    if (item->current_anim_state != DOOR_OPEN) {
+    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
     } else if (!M_IsItemOnTop(item, x, z)) {
         return height;
@@ -61,7 +61,7 @@ static int16_t M_GetCeilingHeight(
     const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    if (item->current_anim_state != DOOR_OPEN) {
+    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
     } else if (!M_IsItemOnTop(item, x, z)) {
         return height;
@@ -76,7 +76,7 @@ static int16_t M_GetCeilingHeight(
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     ITEM *item = &g_Items[item_num];
-    if (item->current_anim_state == DOOR_CLOSED) {
+    if (item->current_anim_state == DRAWBRIDGE_STATE_CLOSED) {
         Door_Collision(item_num, lara_item, coll);
     }
 }
@@ -85,9 +85,9 @@ static void M_Control(int16_t item_num)
 {
     ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
-        item->goal_anim_state = DRAWBRIDGE_OPEN;
+        item->goal_anim_state = DRAWBRIDGE_STATE_OPEN;
     } else {
-        item->goal_anim_state = DRAWBRIDGE_CLOSED;
+        item->goal_anim_state = DRAWBRIDGE_STATE_CLOSED;
     }
 
     Item_Animate(item);

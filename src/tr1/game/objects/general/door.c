@@ -11,6 +11,13 @@
 
 #include <libtrx/utils.h>
 
+typedef struct {
+    DOORPOS_DATA d1;
+    DOORPOS_DATA d1flip;
+    DOORPOS_DATA d2;
+    DOORPOS_DATA d2flip;
+} DOOR_DATA;
+
 static bool M_LaraDoorCollision(const SECTOR *sector);
 static void M_Check(DOORPOS_DATA *d);
 static void M_Open(DOORPOS_DATA *d);
@@ -216,8 +223,8 @@ void Door_Control(int16_t item_num)
     DOOR_DATA *door = item->data;
 
     if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == DOOR_CLOSED) {
-            item->goal_anim_state = DOOR_OPEN;
+        if (item->current_anim_state == DOOR_STATE_CLOSED) {
+            item->goal_anim_state = DOOR_STATE_OPEN;
         } else {
             M_Open(&door->d1);
             M_Open(&door->d2);
@@ -225,8 +232,8 @@ void Door_Control(int16_t item_num)
             M_Open(&door->d2flip);
         }
     } else {
-        if (item->current_anim_state == DOOR_OPEN) {
-            item->goal_anim_state = DOOR_CLOSED;
+        if (item->current_anim_state == DOOR_STATE_OPEN) {
+            item->goal_anim_state = DOOR_STATE_CLOSED;
         } else {
             M_Shut(&door->d1);
             M_Shut(&door->d2);
