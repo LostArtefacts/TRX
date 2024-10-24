@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.13% (860)</tspan> · <tspan class="known">28.46% (354)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">69.21% (861)</tspan> · <tspan class="known">28.38% (353)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="516.41" height="6" x="0" y="0" class="decompiled"/>
-<rect width="212.57" height="6" x="516.41" y="0" class="known"/>
+<rect width="517.02" height="6" x="0" y="0" class="decompiled"/>
+<rect width="211.97" height="6" x="517.02" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -850,7 +850,7 @@
 <rect width="12" height="12" x="315" y="225" class="known"><title>void __cdecl RollingBallCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="330" y="225" class="known"><title>void __cdecl SpikeCollision(int16_t item_num, ITEM *litem, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="345" y="225" class="decompiled"><title>void __cdecl Trapdoor_Control(int16_t item_num);</title></rect>
-<rect width="12" height="12" x="360" y="225" class="known"><title>void __cdecl Trapdoor_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
+<rect width="12" height="12" x="360" y="225" class="decompiled"><title>void __cdecl Trapdoor_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
 <rect width="12" height="12" x="375" y="225" class="known"><title>void __cdecl Trapdoor_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
 <rect width="12" height="12" x="390" y="225" class="decompiled"><title>int32_t __cdecl Trapdoor_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);</title></rect>
 <rect width="12" height="12" x="405" y="225" class="known"><title>void __cdecl Pendulum(int16_t item_num);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.55%</tspan> · <tspan class="known">26.12%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.57%</tspan> · <tspan class="known">26.10%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="549.45" height="6" x="0" y="0" class="decompiled"/>
-<rect width="195.11" height="6" x="549.45" y="0" class="known"/>
+<rect width="549.57" height="6" x="0" y="0" class="decompiled"/>
+<rect width="194.99" height="6" x="549.57" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2226,7 +2226,7 @@
 <rect width="4.14" height="3.86" x="647.85" y="337.55" class="known"><title>void __cdecl TexturePageReleaseVidMemSurface(TEXPAGE_DESC *page);</title></rect>
 <rect width="4.14" height="3.74" x="647.85" y="344.41" class="decompiled"><title>void __cdecl Gun_Pistols_UndrawMeshLeft(LARA_GUN_TYPE weapon_type);</title></rect>
 <rect width="4.14" height="3.74" x="647.85" y="351.15" class="decompiled"><title>void __cdecl Gun_Pistols_UndrawMeshRight(LARA_GUN_TYPE weapon_type);</title></rect>
-<rect width="4.14" height="3.74" x="647.85" y="357.89" class="known"><title>void __cdecl Trapdoor_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
+<rect width="4.14" height="3.74" x="647.85" y="357.89" class="decompiled"><title>void __cdecl Trapdoor_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
 <rect width="4.14" height="3.74" x="647.85" y="364.63" class="decompiled"><title>void __cdecl WinVidHideGameWindow(void);</title></rect>
 <rect width="4.14" height="3.63" x="647.85" y="371.37" class="decompiled"><title>void __cdecl Output_InitPolyList(void);</title></rect>
 <rect width="3.82" height="3.93" x="654.99" y="282.57" class="decompiled"><title>void __cdecl Requester_SetSize(REQUEST_INFO *req, int32_t maxlines, int32_t ypos);</title></rect>
