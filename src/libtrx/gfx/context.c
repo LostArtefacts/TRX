@@ -102,6 +102,11 @@ void GFX_Context_SwitchToDisplayViewport(void)
 void GFX_Context_SetupEnvironment(void)
 {
     switch (GFX_GL_DEFAULT_BACKEND) {
+    case GFX_GL_21:
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        break;
+
     case GFX_GL_33C:
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
