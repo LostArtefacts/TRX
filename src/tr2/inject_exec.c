@@ -1023,6 +1023,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x004348C0, Zipline_Collision);
     INJECT(enable, 0x00434980, Zipline_Control);
     INJECT(enable, 0x00435590, Drawbridge_IsItemOnTop);
+    INJECT(enable, 0x00435650, Drawbridge_Floor);
     INJECT(enable, 0x00435700, Lift_Initialise);
     INJECT(enable, 0x00435740, Lift_Control);
     INJECT(enable, 0x00435820, Lift_FloorCeiling);
