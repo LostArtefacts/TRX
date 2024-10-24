@@ -169,6 +169,7 @@ dll_sources = [
   'game/objects/general/bridge_tilt_2.c',
   'game/objects/general/detonator.c',
   'game/objects/general/door.c',
+  'game/objects/general/drawbridge.c',
   'game/objects/general/final_level_counter.c',
   'game/objects/general/gong_bonger.c',
   'game/objects/general/keyhole.c',
