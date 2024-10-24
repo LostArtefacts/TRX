@@ -10,6 +10,7 @@
 - fixed `/give` not working with weapons (regression from 0.5)
 - fixed the camera being cut off after using the gong hammer in Ice Palace (#1580)
 - fixed the audio not being in sync when Lara strikes the gong in Ice Palace (#1725)
+- fixed door cheat not working with drawbridges (#1748)
 
 ## [0.5](https://github.com/LostArtefacts/TRX/compare/afaf12a...tr2-0.5) - 2024-10-08
 - added `/sfx` command
