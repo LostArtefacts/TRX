@@ -54,6 +54,7 @@
 #include "game/objects/general/bridge_tilt_2.h"
 #include "game/objects/general/detonator.h"
 #include "game/objects/general/door.h"
+#include "game/objects/general/drawbridge.h"
 #include "game/objects/general/final_level_counter.h"
 #include "game/objects/general/gong_bonger.h"
 #include "game/objects/general/keyhole.h"
@@ -1021,6 +1022,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x00434800, GongBonger_Control);
     INJECT(enable, 0x004348C0, Zipline_Collision);
     INJECT(enable, 0x00434980, Zipline_Control);
+    INJECT(enable, 0x00435590, Drawbridge_IsItemOnTop);
     INJECT(enable, 0x00435700, Lift_Initialise);
     INJECT(enable, 0x00435740, Lift_Control);
     INJECT(enable, 0x00435820, Lift_FloorCeiling);
