@@ -35,7 +35,6 @@ void __cdecl Object_Collision(
 void __cdecl Object_Collision_Trap(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-
     ITEM *const item = &g_Items[item_num];
 
     if (item->status == IS_ACTIVE) {
