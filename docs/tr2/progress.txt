@@ -1061,9 +1061,9 @@ typedef enum {
 } TRAP_ANIM;
 
 typedef enum {
-    DOOR_CLOSED = 0,
-    DOOR_OPEN   = 1,
-} DOOR_ANIM;
+    DOOR_STATE_CLOSED = 0,
+    DOOR_STATE_OPEN   = 1,
+} DOOR_STATE;
 
 typedef enum {
     GFD_START_GAME       = 0x0000,
@@ -3582,7 +3582,7 @@ typedef enum {
 0x004350E0  0x03DC  -R      void __cdecl InitialiseDoor(int16_t item_num);
 0x004354C0  0x00C8  -R      void __cdecl DoorControl(int16_t item_num);
 0x00435590  0x00B1  +       int32_t __cdecl Drawbridge_IsItemOnTop(const ITEM *item, int32_t x, int32_t y);
-0x00435650  0x0036  -       void __cdecl Drawbridge_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
+0x00435650  0x0036  +       void __cdecl Drawbridge_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
 0x00435690  0x003B  -       void __cdecl Drawbridge_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
 0x004356D0  0x002C  -       void __cdecl Drawbridge_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 0x00435700  0x0035  +       void __cdecl Lift_Initialise(int16_t item_num);

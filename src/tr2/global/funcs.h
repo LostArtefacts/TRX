@@ -117,7 +117,6 @@
 #define OpenThatDoor ((void __cdecl (*)(DOORPOS_DATA *d))0x004350A0)
 #define InitialiseDoor ((void __cdecl (*)(int16_t item_num))0x004350E0)
 #define DoorControl ((void __cdecl (*)(int16_t item_num))0x004354C0)
-#define Drawbridge_Floor ((void __cdecl (*)(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height))0x00435650)
 #define Drawbridge_Ceiling ((void __cdecl (*)(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height))0x00435690)
 #define Drawbridge_Collision ((void __cdecl (*)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll))0x004356D0)
 #define CopterControl ((void __cdecl (*)(int16_t item_num))0x00435B80)

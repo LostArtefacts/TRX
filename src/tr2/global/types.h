@@ -802,9 +802,9 @@ typedef enum {
 } TRAP_ANIM;
 
 typedef enum {
-    DOOR_CLOSED = 0,
-    DOOR_OPEN   = 1,
-} DOOR_ANIM;
+    DOOR_STATE_CLOSED = 0,
+    DOOR_STATE_OPEN   = 1,
+} DOOR_STATE;
 
 typedef enum {
     GFD_START_GAME       = 0x0000,
