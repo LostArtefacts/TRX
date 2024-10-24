@@ -178,6 +178,7 @@ dll_sources = [
   'game/objects/general/pickup.c',
   'game/objects/general/puzzle_hole.c',
   'game/objects/general/switch.c',
+  'game/objects/general/trapdoor.c',
   'game/objects/general/zipline.c',
   'game/objects/setup.c',
   'game/objects/traps/ember_emitter.c',

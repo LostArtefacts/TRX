@@ -63,6 +63,7 @@
 #include "game/objects/general/pickup.h"
 #include "game/objects/general/puzzle_hole.h"
 #include "game/objects/general/switch.h"
+#include "game/objects/general/trapdoor.h"
 #include "game/objects/general/zipline.h"
 #include "game/objects/setup.h"
 #include "game/objects/traps/ember_emitter.h"
@@ -1059,6 +1060,7 @@ static void M_Objects(const bool enable)
     INJECT(enable, 0x0043EDD0, SkidooDriver_Control);
     INJECT(enable, 0x0043F1D0, SkidooArmed_Push);
     INJECT(enable, 0x0043F2F0, SkidooArmed_Collision);
+    INJECT(enable, 0x00442340, Trapdoor_IsItemOnTop);
     INJECT(enable, 0x00442B30, FlameEmitter_Control);
     INJECT(enable, 0x00442BC0, Flame_Control);
     INJECT(enable, 0x00442E70, EmberEmitter_Control);
