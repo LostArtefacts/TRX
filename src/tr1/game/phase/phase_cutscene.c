@@ -165,6 +165,19 @@ static PHASE_CONTROL M_Control(int32_t nframes)
             Phase_Set(PHASE_PHOTO_MODE, args);
             m_ExitingToPhotoMode = true;
             return (PHASE_CONTROL) { .end = false };
+        } else if (g_InputDB.pause) {
+            PHASE_CUTSCENE_ARGS *const cutscene_args =
+                Memory_Alloc(sizeof(PHASE_CUTSCENE_ARGS));
+            cutscene_args->resume_existing = true;
+            cutscene_args->level_num = g_CurrentLevel;
+
+            PHASE_PHOTO_MODE_ARGS *const args =
+                Memory_Alloc(sizeof(PHASE_PHOTO_MODE_ARGS));
+            args->phase_to_return_to = PHASE_CUTSCENE;
+            args->phase_arg = cutscene_args;
+            Phase_Set(PHASE_PAUSE, args);
+            m_ExitingToPhotoMode = true;
+            return (PHASE_CONTROL) { .end = false };
         }
     }
 
