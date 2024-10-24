@@ -3,6 +3,11 @@
 #include "game/items.h"
 #include "game/room.h"
 
+typedef enum {
+    COG_STATE_INACTIVE = 0,
+    COG_STATE_ACTIVE = 1,
+} COG_STATE;
+
 void Cog_Setup(OBJECT *obj)
 {
     obj->control = Cog_Control;
@@ -13,9 +18,9 @@ void Cog_Control(int16_t item_num)
 {
     ITEM *item = &g_Items[item_num];
     if (Item_IsTriggerActive(item)) {
-        item->goal_anim_state = DOOR_OPEN;
+        item->goal_anim_state = COG_STATE_ACTIVE;
     } else {
-        item->goal_anim_state = DOOR_CLOSED;
+        item->goal_anim_state = COG_STATE_INACTIVE;
     }
 
     Item_Animate(item);
