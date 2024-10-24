@@ -31,7 +31,7 @@ typedef enum {
 
 static STATE m_PauseState = STATE_DEFAULT;
 static bool m_IsTextReady = false;
-
+static PHASE_PAUSE_ARGS m_Args;
 static TEXTSTRING *m_PausedText = NULL;
 
 static REQUEST_INFO m_PauseRequester = {
@@ -55,7 +55,7 @@ static void M_UpdateText(void);
 static int32_t M_DisplayRequester(
     const char *header, const char *option1, const char *option2,
     int16_t requested);
-static void M_Start(const void *args);
+static void M_Start(const PHASE_PAUSE_ARGS *args);
 static void M_End(void);
 static PHASE_CONTROL M_Control(int32_t nframes);
 static void M_Draw(void);
@@ -108,8 +108,15 @@ static int32_t M_DisplayRequester(
     return select;
 }
 
-static void M_Start(const void *const args)
+static void M_Start(const PHASE_PAUSE_ARGS *const args)
 {
+    if (args != NULL) {
+        m_Args = *args;
+    } else {
+        m_Args.phase_to_return_to = PHASE_GAME;
+        m_Args.phase_arg = NULL;
+    }
+
     g_OldInputDB = g_Input;
 
     Overlay_HideGameInfo();
@@ -145,7 +152,7 @@ static PHASE_CONTROL M_Control(int32_t nframes)
         if (g_InputDB.pause) {
             Music_Unpause();
             Sound_UnpauseAll();
-            Phase_Set(PHASE_GAME, NULL);
+            Phase_Set(m_Args.phase_to_return_to, m_Args.phase_arg);
         } else if (g_InputDB.option) {
             m_PauseState = STATE_ASK;
         }
@@ -157,7 +164,7 @@ static PHASE_CONTROL M_Control(int32_t nframes)
         if (choice == 1) {
             Music_Unpause();
             Sound_UnpauseAll();
-            Phase_Set(PHASE_GAME, NULL);
+            Phase_Set(m_Args.phase_to_return_to, m_Args.phase_arg);
         } else if (choice == 2) {
             m_PauseState = STATE_CONFIRM;
         }
@@ -175,7 +182,7 @@ static PHASE_CONTROL M_Control(int32_t nframes)
         } else if (choice == 2) {
             Music_Unpause();
             Sound_UnpauseAll();
-            Phase_Set(PHASE_GAME, NULL);
+            Phase_Set(m_Args.phase_to_return_to, m_Args.phase_arg);
         }
         break;
     }
@@ -194,7 +201,7 @@ static void M_Draw(void)
 }
 
 PHASER g_PausePhaser = {
-    .start = M_Start,
+    .start = (PHASER_START)M_Start,
     .end = M_End,
     .control = M_Control,
     .draw = M_Draw,

@@ -12,6 +12,7 @@
 #include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
+#include "game/phase/phase_pause.h"
 #include "game/phase/phase_photo_mode.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -25,7 +26,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-static bool m_ExitingToPhotoMode = false;
+static bool m_PauseCutscene = false;
 
 static void M_InitialiseHair(int32_t level_num);
 
@@ -69,7 +70,7 @@ static void M_InitialiseHair(int32_t level_num)
 
 static void M_Start(const PHASE_CUTSCENE_ARGS *const args)
 {
-    m_ExitingToPhotoMode = false;
+    m_PauseCutscene = false;
 
     // The cutscene is already playing and it's to be resumed.
     if (args->resume_existing) {
@@ -106,7 +107,7 @@ static void M_Start(const PHASE_CUTSCENE_ARGS *const args)
 
 static void M_End(void)
 {
-    if (m_ExitingToPhotoMode) {
+    if (m_PauseCutscene) {
         return;
     }
 
@@ -152,18 +153,27 @@ static PHASE_CONTROL M_Control(int32_t nframes)
 
         g_CineFrame++;
 
-        if (g_InputDB.toggle_photo_mode) {
+        if (g_InputDB.toggle_photo_mode || g_InputDB.pause) {
             PHASE_CUTSCENE_ARGS *const cutscene_args =
                 Memory_Alloc(sizeof(PHASE_CUTSCENE_ARGS));
             cutscene_args->resume_existing = true;
             cutscene_args->level_num = g_CurrentLevel;
 
-            PHASE_PHOTO_MODE_ARGS *const args =
-                Memory_Alloc(sizeof(PHASE_PHOTO_MODE_ARGS));
-            args->phase_to_return_to = PHASE_CUTSCENE;
-            args->phase_arg = cutscene_args;
-            Phase_Set(PHASE_PHOTO_MODE, args);
-            m_ExitingToPhotoMode = true;
+            if (g_InputDB.toggle_photo_mode) {
+                PHASE_PHOTO_MODE_ARGS *const args =
+                    Memory_Alloc(sizeof(PHASE_PHOTO_MODE_ARGS));
+                args->phase_to_return_to = PHASE_CUTSCENE;
+                args->phase_arg = cutscene_args;
+                Phase_Set(PHASE_PHOTO_MODE, args);
+            } else if (g_InputDB.pause) {
+                PHASE_PAUSE_ARGS *const args =
+                    Memory_Alloc(sizeof(PHASE_PAUSE_ARGS));
+                args->phase_to_return_to = PHASE_CUTSCENE;
+                args->phase_arg = cutscene_args;
+                Phase_Set(PHASE_PAUSE, args);
+            }
+
+            m_PauseCutscene = true;
             return (PHASE_CONTROL) { .end = false };
         }
     }

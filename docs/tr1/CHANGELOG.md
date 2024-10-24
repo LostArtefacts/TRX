@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.5.1...develop) - ××××-××-××
 - added support for wading, similar to TR2+ (#1537)
+- added the ability to pause during cutscenes (#1673)
 - fixed missing pushblock SFX in Natla's Mines (#1714)
 - fixed crash reports not working in certain circumstances (#1738)
 - fixed missing trapdoor triggers in City of Khamoon (#1744)
