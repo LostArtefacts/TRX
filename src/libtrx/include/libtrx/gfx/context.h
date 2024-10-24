@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+void GFX_Context_SetupEnvironment(void);
 void GFX_Context_Attach(void *window_handle);
 void GFX_Context_Detach(void);
 

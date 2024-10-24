@@ -12,6 +12,7 @@
 
 #include <libtrx/filesystem.h>
 #include <libtrx/game/ui/common.h>
+#include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
@@ -322,6 +323,8 @@ int main(int argc, char **argv)
 
 void S_Shell_CreateWindow(void)
 {
+    GFX_Context_SetupEnvironment();
+
     m_Window = SDL_CreateWindow(
         "TR1X", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720,
         SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE
