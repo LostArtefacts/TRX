@@ -99,6 +99,18 @@ void GFX_Context_SwitchToDisplayViewport(void)
     GFX_GL_CheckError();
 }
 
+void GFX_Context_SetupEnvironment(void)
+{
+    switch (GFX_GL_DEFAULT_BACKEND) {
+    case GFX_GL_33C:
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(
+            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        break;
+    }
+}
+
 void GFX_Context_Attach(void *window_handle)
 {
     const char *shading_ver;
@@ -118,13 +130,6 @@ void GFX_Context_Attach(void *window_handle)
     m_Context.display_height = m_Context.window_height;
 
     m_Context.window_handle = window_handle;
-
-    if (GFX_GL_DEFAULT_BACKEND == GFX_GL_33C) {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-        SDL_GL_SetAttribute(
-            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    }
 
     m_Context.context = SDL_GL_CreateContext(m_Context.window_handle);
 
