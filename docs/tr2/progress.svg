@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.73% (855)</tspan> · <tspan class="known">28.86% (359)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.81% (856)</tspan> · <tspan class="known">28.78% (358)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="513.41" height="6" x="0" y="0" class="decompiled"/>
-<rect width="215.57" height="6" x="513.41" y="0" class="known"/>
+<rect width="514.01" height="6" x="0" y="0" class="decompiled"/>
+<rect width="214.97" height="6" x="514.01" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -708,7 +708,7 @@
 <rect width="12" height="12" x="435" y="180" class="known"><title>void __cdecl WindowControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="450" y="180" class="known"><title>void __cdecl SmashIceControl(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="465" y="180" class="decompiled"><title>void __cdecl Door_Shut(DOORPOS_DATA *d);</title></rect>
-<rect width="12" height="12" x="480" y="180" class="known"><title>void __cdecl Door_Open(DOORPOS_DATA *d);</title></rect>
+<rect width="12" height="12" x="480" y="180" class="decompiled"><title>void __cdecl Door_Open(DOORPOS_DATA *d);</title></rect>
 <rect width="12" height="12" x="495" y="180" class="known"><title>void __cdecl Door_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="510" y="180" class="known"><title>void __cdecl Door_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="525" y="180" class="decompiled"><title>int32_t __cdecl Drawbridge_IsItemOnTop(const ITEM *item, int32_t x, int32_t y);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.12%</tspan> · <tspan class="known">26.55%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.14%</tspan> · <tspan class="known">26.54%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="546.21" height="6" x="0" y="0" class="decompiled"/>
-<rect width="198.35" height="6" x="546.21" y="0" class="known"/>
+<rect width="546.32" height="6" x="0" y="0" class="decompiled"/>
+<rect width="198.24" height="6" x="546.32" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2298,7 +2298,7 @@
 <rect width="3.57" height="3.31" x="668.09" y="309.07" class="decompiled"><title>void __cdecl Inv_RingActive(void);</title></rect>
 <rect width="3.57" height="3.31" x="668.09" y="315.38" class="decompiled"><title>void __cdecl Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.57" height="3.31" x="668.09" y="321.70" class="decompiled"><title>void __cdecl Lara_Col_SurfSwim(ITEM *item, COLL_INFO *coll);</title></rect>
-<rect width="3.57" height="3.31" x="668.09" y="328.01" class="known"><title>void __cdecl Door_Open(DOORPOS_DATA *d);</title></rect>
+<rect width="3.57" height="3.31" x="668.09" y="328.01" class="decompiled"><title>void __cdecl Door_Open(DOORPOS_DATA *d);</title></rect>
 <rect width="3.57" height="3.31" x="668.09" y="334.32" class="decompiled"><title>void __cdecl BGND_GetPageHandles(void);</title></rect>
 <rect width="3.57" height="3.31" x="668.09" y="340.63" class="decompiled"><title>void __thiscall DisplayModeListDelete(DISPLAY_MODE_LIST *pList);</title></rect>
 <rect width="3.57" height="3.31" x="668.09" y="346.94" class="known"><title>void __cdecl FreeTexturePage(int32_t page_idx);</title></rect>

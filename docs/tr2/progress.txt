@@ -923,7 +923,7 @@ typedef enum {
 
 typedef struct __unaligned {
     SECTOR *sector;
-    SECTOR data;
+    SECTOR old_sector;
     int16_t block;
 } DOORPOS_DATA;
 
@@ -3578,7 +3578,7 @@ typedef enum {
 0x00434ED0  0x0096  -R      void __cdecl WindowControl(int16_t item_num);
 0x00434F70  0x00DC  -R      void __cdecl SmashIceControl(int16_t item_num);
 0x00435050  0x0042  +       void __cdecl Door_Shut(DOORPOS_DATA *d);
-0x004350A0  0x0032  -       void __cdecl Door_Open(DOORPOS_DATA *d);
+0x004350A0  0x0032  +       void __cdecl Door_Open(DOORPOS_DATA *d);
 0x004350E0  0x03DC  -       void __cdecl Door_Initialise(int16_t item_num);
 0x004354C0  0x00C8  -       void __cdecl Door_Control(int16_t item_num);
 0x00435590  0x00B1  +       int32_t __cdecl Drawbridge_IsItemOnTop(const ITEM *item, int32_t x, int32_t y);
