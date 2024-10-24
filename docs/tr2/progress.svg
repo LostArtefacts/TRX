@@ -69,10 +69,10 @@
 </g>
 <g transform="translate(0 116)">
 <text x="0" y="7.50">Tomb2.exe progress according to the physical function order:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.57% (853)</tspan> · <tspan class="known">29.02% (361)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">68.65% (854)</tspan> · <tspan class="known">28.94% (360)</tspan> · <tspan class="todo">0% (0)</tspan> · <tspan class="unused">2.41% (30)</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="512.21" height="6" x="0" y="0" class="decompiled"/>
-<rect width="216.77" height="6" x="512.21" y="0" class="known"/>
+<rect width="512.81" height="6" x="0" y="0" class="decompiled"/>
+<rect width="216.17" height="6" x="512.81" y="0" class="known"/>
 <rect width="18.01" height="6" x="728.99" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -714,7 +714,7 @@
 <rect width="12" height="12" x="525" y="180" class="decompiled"><title>int32_t __cdecl Drawbridge_IsItemOnTop(const ITEM *item, int32_t x, int32_t y);</title></rect>
 <rect width="12" height="12" x="540" y="180" class="decompiled"><title>void __cdecl Drawbridge_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
 <rect width="12" height="12" x="555" y="180" class="decompiled"><title>void __cdecl Drawbridge_Ceiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);</title></rect>
-<rect width="12" height="12" x="570" y="180" class="known"><title>void __cdecl Drawbridge_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="12" height="12" x="570" y="180" class="decompiled"><title>void __cdecl Drawbridge_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="12" height="12" x="585" y="180" class="decompiled"><title>void __cdecl Lift_Initialise(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="600" y="180" class="decompiled"><title>void __cdecl Lift_Control(int16_t item_num);</title></rect>
 <rect width="12" height="12" x="615" y="180" class="decompiled"><title>void __cdecl Lift_FloorCeiling(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *floor, int32_t *ceiling);</title></rect>
@@ -1324,10 +1324,10 @@
 </g>
 <g transform="translate(0 546)">
 <text x="0" y="7.50">Tomb2.exe progress according to the function sizes:</text>
-<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.09%</tspan> · <tspan class="known">26.58%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
+<text class="todo" style="font-size: 12px; " x="747" y="9"><tspan text-anchor="end"><tspan class="decompiled">73.10%</tspan> · <tspan class="known">26.57%</tspan> · <tspan class="todo">0%</tspan> · <tspan class="unused">0.33%</tspan></tspan></text>
 <g transform="translate(0 20)">
-<rect width="545.97" height="6" x="0" y="0" class="decompiled"/>
-<rect width="198.59" height="6" x="545.97" y="0" class="known"/>
+<rect width="546.07" height="6" x="0" y="0" class="decompiled"/>
+<rect width="198.49" height="6" x="546.07" y="0" class="known"/>
 <rect width="2.44" height="6" x="744.56" y="0" class="unused"/>
 </g>
 <g transform="translate(0 31)">
@@ -2337,7 +2337,7 @@
 <rect width="3.24" height="2.85" x="712.53" y="308.93" class="decompiled"><title>void __cdecl Inv_Ring_MotionSetup(RING_INFO *ring, int16_t status, int16_t status_target, int16_t frames);</title></rect>
 <rect width="3.24" height="2.85" x="718.78" y="308.93" class="decompiled"><title>void __cdecl Lara_State_Fallback(ITEM *item, COLL_INFO *coll);</title></rect>
 <rect width="3.24" height="2.85" x="725.02" y="308.93" class="decompiled"><title>void __cdecl MovableBlock_Initialise(int16_t item_num);</title></rect>
-<rect width="3.24" height="2.85" x="731.27" y="308.93" class="known"><title>void __cdecl Drawbridge_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
+<rect width="3.24" height="2.85" x="731.27" y="308.93" class="decompiled"><title>void __cdecl Drawbridge_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);</title></rect>
 <rect width="3.24" height="2.85" x="737.51" y="308.93" class="decompiled"><title>void __cdecl Text_Init(void);</title></rect>
 <rect width="3.24" height="2.85" x="743.76" y="308.93" class="decompiled"><title>void __cdecl S_Audio_Sample_AdjustTrackVolumeAndPan(int32_t track_id, int32_t volume, int32_t pan);</title></rect>
 <rect width="3.18" height="2.91" x="681.03" y="314.78" class="known"><title>LPTSTR __cdecl UT_FindArg(LPCTSTR str);</title></rect>

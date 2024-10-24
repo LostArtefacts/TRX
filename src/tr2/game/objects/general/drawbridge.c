@@ -1,8 +1,10 @@
 #include "game/objects/general/drawbridge.h"
 
+#include "game/objects/general/door.h"
+
 typedef enum {
-    DRAWBRIDGE_STATE_CLOSED = 0,
-    DRAWBRIDGE_STATE_OPEN = 1,
+    DRAWBRIDGE_STATE_CLOSED = DOOR_STATE_CLOSED,
+    DRAWBRIDGE_STATE_OPEN = DOOR_STATE_OPEN,
 } DRAWBRIDGE_STATE;
 
 int32_t __cdecl Drawbridge_IsItemOnTop(
@@ -63,4 +65,13 @@ void __cdecl Drawbridge_Ceiling(
         return;
     }
     *out_height = item->pos.y + STEP_L;
+}
+
+void __cdecl Drawbridge_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    const ITEM *const item = Item_Get(item_num);
+    if (item->current_anim_state == DRAWBRIDGE_STATE_CLOSED) {
+        Door_Collision(item_num, lara_item, coll);
+    }
 }
