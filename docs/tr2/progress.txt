@@ -928,6 +928,13 @@ typedef struct __unaligned {
 } DOORPOS_DATA;
 
 typedef struct __unaligned { // decompiled
+    DOORPOS_DATA d1;
+    DOORPOS_DATA d1flip;
+    DOORPOS_DATA d2;
+    DOORPOS_DATA d2flip;
+} DOOR_DATA;
+
+typedef struct __unaligned { // decompiled
     int16_t *data;
     PORTALS *portals;
     SECTOR *sectors;
@@ -3579,7 +3586,7 @@ typedef enum {
 0x00434F70  0x00DC  -R      void __cdecl SmashIceControl(int16_t item_num);
 0x00435050  0x0042  +       void __cdecl Door_Shut(DOORPOS_DATA *d);
 0x004350A0  0x0032  +       void __cdecl Door_Open(DOORPOS_DATA *d);
-0x004350E0  0x03DC  -       void __cdecl Door_Initialise(int16_t item_num);
+0x004350E0  0x03DC  +       void __cdecl Door_Initialise(int16_t item_num);
 0x004354C0  0x00C8  -       void __cdecl Door_Control(int16_t item_num);
 0x00435590  0x00B1  +       int32_t __cdecl Drawbridge_IsItemOnTop(const ITEM *item, int32_t x, int32_t y);
 0x00435650  0x0036  +       void __cdecl Drawbridge_Floor(const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
