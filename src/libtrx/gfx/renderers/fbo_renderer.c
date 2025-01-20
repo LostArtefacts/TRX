@@ -244,9 +244,18 @@ static void M_Unbind(const GFX_RENDERER *renderer)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+static void M_GetScale(
+    const GFX_RENDERER *renderer, float *const out_scale_x,
+    float *const out_scale_y)
+{
+    *out_scale_x = 1.0f;
+    *out_scale_y = 1.0f;
+}
+
 GFX_RENDERER g_GFX_Renderer_FBO = {
     .swap_buffers = &M_SwapBuffers,
     .init = &M_Init,
     .shutdown = &M_Shutdown,
     .reset = &M_Reset,
+    .get_scale = &M_GetScale,
 };

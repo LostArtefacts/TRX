@@ -17,4 +17,5 @@ typedef enum {
     GFX_GL_INVALID_BACKEND,
     GFX_GL_21,
     GFX_GL_33C,
+    GFX_GL_43C,
 } GFX_GL_BACKEND;

@@ -117,8 +117,6 @@ typedef struct {
     float xv;
     float yv;
     float zv;
-    float xs;
-    float ys;
     int16_t clip;
     int16_t g;
     union {
@@ -127,6 +125,8 @@ typedef struct {
         };
         float tex_coord[4];
     };
+    XYZ_16 world_pos;
+    uint8_t flags;
 } PHD_VBUF;
 
 typedef struct {

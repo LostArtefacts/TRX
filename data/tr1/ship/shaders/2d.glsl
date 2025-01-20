@@ -1,13 +1,8 @@
 #ifdef VERTEX
 // Vertex shader
 
-#ifdef OGL33C
-    out vec2 vertTexCoords;
-    out vec2 vertCoords;
-#else
-    varying vec2 vertTexCoords;
-    varying vec2 vertCoords;
-#endif
+OUT vec2 vertTexCoords;
+OUT vec2 vertCoords;
 
 layout(location = 0) in vec2 inPosition;
 layout(location = 1) in vec2 inTexCoords;
@@ -33,22 +28,8 @@ uniform bool tintEnabled;
 uniform vec3 tintColor;
 uniform int effect;
 
-#ifdef OGL33C
-    #define OUTCOLOR outColor
-    #define TEXTURE2D texture
-    #define TEXTURE1D texture
-
-    in vec2 vertTexCoords;
-    in vec2 vertCoords;
-    out vec4 outColor;
-#else
-    #define OUTCOLOR gl_FragColor
-    #define TEXTURE2D texture2D
-    #define TEXTURE1D texture1D
-
-    varying vec2 vertTexCoords;
-    varying vec2 vertCoords;
-#endif
+IN vec2 vertTexCoords;
+IN vec2 vertCoords;
 
 void main(void) {
     vec2 uv = vertTexCoords;

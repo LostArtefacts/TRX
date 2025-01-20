@@ -7,7 +7,6 @@
 typedef struct {
     bool initialized;
     GLuint id;
-    int32_t uniform_updates;
 } GFX_GL_PROGRAM;
 
 bool GFX_GL_Program_Init(GFX_GL_PROGRAM *program);
@@ -30,6 +29,8 @@ void GFX_GL_Program_Uniform4f(
     GLfloat v3);
 void GFX_GL_Program_Uniform1i(GFX_GL_PROGRAM *program, GLint loc, GLint v0);
 void GFX_GL_Program_Uniform1f(GFX_GL_PROGRAM *program, GLint loc, GLfloat v0);
+void GFX_GL_Program_Uniform2f(
+    GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1);
 void GFX_GL_Program_UniformMatrix4fv(
     GFX_GL_PROGRAM *program, GLint loc, GLsizei count, GLboolean transpose,
     const GLfloat *value);

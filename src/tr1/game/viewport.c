@@ -7,6 +7,8 @@
 #include <libtrx/config.h>
 #include <libtrx/game/math.h>
 
+#include <GL/glew.h>
+
 static int32_t m_MinX = 0;
 static int32_t m_MinY = 0;
 static int32_t m_CenterX = 0;
@@ -32,6 +34,9 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
     g_PhdTop = Viewport_GetMinY();
     g_PhdRight = Viewport_GetMaxX();
     g_PhdBottom = Viewport_GetMaxY();
+
+    glViewport(
+        m_MinX, Screen_GetResHeight() - (m_MinY + m_Height), m_Width, m_Height);
 }
 
 int32_t Viewport_GetMinX(void)

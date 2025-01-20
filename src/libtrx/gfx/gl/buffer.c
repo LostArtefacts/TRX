@@ -35,7 +35,7 @@ void GFX_GL_Buffer_Data(
 {
     ASSERT(buf != nullptr);
     ASSERT(buf->initialized);
-    glBufferData(buf->target, size, data, usage);
+    GFX_TRACK_DATA(glBufferData, buf->target, size, data, usage);
     GFX_GL_CheckError();
 }
 
@@ -44,7 +44,7 @@ void GFX_GL_Buffer_SubData(
 {
     ASSERT(buf != nullptr);
     ASSERT(buf->initialized);
-    glBufferSubData(buf->target, offset, size, data);
+    GFX_TRACK_SUBDATA(glBufferSubData, buf->target, offset, size, data);
     GFX_GL_CheckError();
 }
 

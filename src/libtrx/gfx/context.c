@@ -328,3 +328,21 @@ GFX_CONFIG *GFX_Context_GetConfig(void)
 {
     return &m_Context.config;
 }
+
+void GFX_Context_EnableScissor(
+    const GLfloat x, const GLfloat y, const GLfloat w, const GLfloat h)
+{
+    float scale_x;
+    float scale_y;
+    m_Context.renderer->get_scale(m_Context.renderer, &scale_x, &scale_y);
+
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(
+        x * scale_x, (GFX_Context_GetDisplayHeight() - y) * scale_y,
+        w * scale_x, h * scale_y);
+}
+
+void GFX_Context_DisableScissor(void)
+{
+    glDisable(GL_SCISSOR_TEST);
+}

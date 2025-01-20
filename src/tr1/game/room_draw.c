@@ -5,6 +5,7 @@
 #include "game/items.h"
 #include "game/lara/draw.h"
 #include "game/output.h"
+#include "game/output/sprites.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -54,13 +55,13 @@ static bool M_SetBounds(const PORTAL *portal, const ROOM *parent)
 
     const MATRIX *mptr = g_MatrixPtr;
     for (int i = 0; i < 4; i++) {
-        int32_t xv = mptr->_00 * portal->vertex[i].x
+        double xv = mptr->_00 * portal->vertex[i].x
             + mptr->_01 * portal->vertex[i].y + mptr->_02 * portal->vertex[i].z
             + mptr->_03;
-        int32_t yv = mptr->_10 * portal->vertex[i].x
+        double yv = mptr->_10 * portal->vertex[i].x
             + mptr->_11 * portal->vertex[i].y + mptr->_12 * portal->vertex[i].z
             + mptr->_13;
-        int32_t zv = mptr->_20 * portal->vertex[i].x
+        double zv = mptr->_20 * portal->vertex[i].x
             + mptr->_21 * portal->vertex[i].y + mptr->_22 * portal->vertex[i].z
             + mptr->_23;
         door_vbuf[i].xv = xv;
@@ -280,7 +281,14 @@ void Room_DrawSingleRoom(int16_t room_num)
     g_PhdBottom = room->bound_bottom;
 
     Output_LightRoom(room);
-    Output_DrawRoom(&room->mesh);
+    Output_EnableScissor(
+        room->bound_left, room->bound_bottom,
+        room->bound_right - room->bound_left,
+        room->bound_bottom - room->bound_top);
+    Output_DrawRoomMesh(&room->mesh);
+    Output_Sprites_UploadModelMatrix();
+    Output_Sprites_RenderRoomSprites(room);
+    Output_DisableScissor();
 
     int16_t item_num = room->item_num;
     while (item_num != NO_ITEM) {
@@ -320,9 +328,10 @@ void Room_DrawSingleRoom(int16_t room_num)
     }
     if (g_Config.rendering.enable_debug_portals) {
         Output_DrawRoomPortals(room);
+        Output_DrawRoomBinding(room);
     }
-    Matrix_Pop();
 
+    Matrix_Pop();
     room->bound_left = Viewport_GetMaxX();
     room->bound_bottom = 0;
     room->bound_right = 0;

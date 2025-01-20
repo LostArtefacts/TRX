@@ -36,13 +36,9 @@ static int32_t M_GetRenderScaleBase(
 
 static void M_ApplyResolution(void)
 {
-    int32_t width = Screen_GetResWidth();
-    int32_t height = Screen_GetResHeight();
-    Viewport_Init(0, 0, width, height);
-
     Output_ApplyRenderSettings();
-
     Matrix_ResetStack();
+    Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
     Viewport_SetFOV(-1);
 }
 

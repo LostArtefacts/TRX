@@ -44,3 +44,17 @@ void GFX_GL_VertexArray_Attribute(
         index, size, type, normalized, stride, (void *)(intptr_t)offset);
     GFX_GL_CheckError();
 }
+
+void GFX_GL_VertexArray_IAttribute(
+    GFX_GL_VERTEX_ARRAY *array, GLuint index, GLint size, GLenum type,
+    GLsizei stride, GLsizei offset)
+{
+    ASSERT(array != nullptr);
+    ASSERT(array->initialized);
+    glEnableVertexAttribArray(index);
+    GFX_GL_CheckError();
+
+    glVertexAttribIPointer(
+        index, size, type, stride, (const void *)(intptr_t)offset);
+    GFX_GL_CheckError();
+}

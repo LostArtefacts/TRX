@@ -64,6 +64,8 @@ void GFX_3D_Renderer_SetBlendingMode(
     GFX_3D_RENDERER *renderer, GFX_BLEND_MODE blend_mode);
 void GFX_3D_Renderer_SetTexturingEnabled(
     GFX_3D_RENDERER *renderer, bool is_enabled);
+void GFX_3D_Renderer_SetCullFaceEnabled(
+    GFX_3D_RENDERER *renderer, bool is_enabled);
 void GFX_3D_Renderer_SetAnisotropyFilter(
     GFX_3D_RENDERER *renderer, float value);
 void GFX_3D_Renderer_SetAlphaPointDiscard(
@@ -71,3 +73,14 @@ void GFX_3D_Renderer_SetAlphaPointDiscard(
 void GFX_3D_Renderer_SetAlphaThreshold(GFX_3D_RENDERER *renderer, float value);
 void GFX_3D_Renderer_SetBrightnessMultiplier(
     GFX_3D_RENDERER *renderer, float value);
+void GFX_3D_Renderer_SetViewPos(
+    GFX_3D_RENDERER *renderer, float x, float y, float z);
+
+void GFX_3D_Renderer_SetWibbleOffset(GFX_3D_RENDERER *renderer, float offset);
+void GFX_3D_Renderer_SetModelView(
+    GFX_3D_RENDERER *renderer, const GLfloat matrix[4][4]);
+void GFX_3D_Renderer_SetProjection(
+    GFX_3D_RENDERER *renderer, const GLfloat matrix[4][4]);
+void GFX_3D_Renderer_SetIdentityMatrix(GFX_3D_RENDERER *renderer);
+GLuint GFX_3D_Renderer_GetTextureBinding(
+    GFX_3D_RENDERER *renderer, int32_t texture_num);

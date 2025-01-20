@@ -3,6 +3,7 @@
 #include "global/types.h"
 
 #include <libtrx/game/output.h>
+#include <libtrx/gfx/context.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -37,8 +38,9 @@ void Output_SetSkyboxEnabled(bool enabled);
 bool Output_IsSkyboxEnabled(void);
 void Output_DrawSkybox(const OBJECT_MESH *mesh);
 
-void Output_DrawRoom(const ROOM_MESH *mesh);
+void Output_DrawRoomMesh(const ROOM_MESH *mesh);
 void Output_DrawRoomPortals(const ROOM *room);
+void Output_DrawRoomBinding(const ROOM *room);
 void Output_DrawRoomTriggers(const ROOM *room);
 void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 void Output_DrawLightningSegment(
@@ -55,9 +57,13 @@ void Output_DrawScreenTranslucentQuad(
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br);
+void Output_DrawScreenLine(
+    int32_t x0, int32_t y0, int32_t x1, int32_t y1, RGBA_8888 color);
+void Output_DrawScreenFrame(
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color);
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
-    RGBA_8888 colLight, int32_t thickness);
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color_dark,
+    RGBA_8888 color_light, int32_t thickness);
 void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br, int32_t thickness);
@@ -85,3 +91,11 @@ void Output_ApplyTint(float *r, float *g, float *b);
 
 void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
+
+void Output_EnableScissor(float x, float y, float w, float h);
+void Output_DisableScissor(void);
+
+int32_t Output_GetWibbleOffset(void);
+void Output_GetModelMatrix(GLfloat output[][4]);
+void Output_GetProjectionMatrix(GLfloat output[][4]);
+GLuint Output_GetTexturePageBinding(int32_t page);

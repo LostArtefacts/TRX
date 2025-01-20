@@ -245,6 +245,8 @@ sources = [
   'game/option/option_passport.c',
   'game/option/option_sound.c',
   'game/output.c',
+  'game/output/sprites.c',
+  'game/output/textures.c',
   'game/overlay.c',
   'game/requester.c',
   'game/room.c',

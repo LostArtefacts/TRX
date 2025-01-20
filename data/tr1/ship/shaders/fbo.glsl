@@ -3,11 +3,7 @@
 
 layout(location = 0) in vec2 inPosition;
 
-#ifdef OGL33C
-    out vec2 vertTexCoords;
-#else
-    varying vec2 vertTexCoords;
-#endif
+OUT vec2 vertTexCoords;
 
 void main(void) {
     vertTexCoords = inPosition;
@@ -19,20 +15,9 @@ void main(void) {
 
 uniform sampler2D tex0;
 
-#ifdef OGL33C
-    #define OUTCOLOR outColor
-    #define TEXTURE texture
-
-    in vec2 vertTexCoords;
-    out vec4 OUTCOLOR;
-#else
-    #define OUTCOLOR gl_FragColor
-    #define TEXTURE texture2D
-
-    varying vec2 vertTexCoords;
-#endif
+IN vec2 vertTexCoords;
 
 void main(void) {
-    OUTCOLOR = TEXTURE(tex0, vertTexCoords);
+    OUTCOLOR = TEXTURE2D(tex0, vertTexCoords);
 }
 #endif // VERTEX

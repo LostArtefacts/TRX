@@ -12,13 +12,6 @@ void main(void) {
 
 uniform float opacity;
 
-#ifdef OGL33C
-    #define OUTCOLOR outColor
-    out vec4 outColor;
-#else
-    #define OUTCOLOR gl_FragColor
-#endif
-
 void main(void) {
     OUTCOLOR = vec4(0, 0, 0, opacity);
 }

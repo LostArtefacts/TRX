@@ -21,6 +21,7 @@ typedef struct {
     };
     float w;
     float r, g, b, a;
+    uint8_t flags;
 } GFX_3D_VERTEX;
 #pragma pack(pop)
 

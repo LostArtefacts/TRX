@@ -10,6 +10,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/gfx/fade/fade_renderer.h>
+#include <libtrx/gfx/gl/track.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -88,6 +89,13 @@ static void M_SetGLBackend(const GFX_GL_BACKEND backend)
             SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
         break;
 
+    case GFX_GL_43C:
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(
+            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        break;
+
     case GFX_GL_INVALID_BACKEND:
         ASSERT_FAIL();
         break;
@@ -99,6 +107,7 @@ void Render_Init(void)
     // TODO Move to libtrx later and combine with S_Shell_CreateWindow.
     const GFX_GL_BACKEND backends_to_try[] = {
         // clang-format off
+        GFX_GL_43C,
         GFX_GL_33C,
         GFX_GL_21,
         GFX_GL_INVALID_BACKEND, // guard
@@ -202,6 +211,7 @@ void Render_SetupDisplay(
 void Render_BeginScene(void)
 {
     GFX_Context_Clear();
+    GFX_Track_Reset();
     RENDERER *const r = M_GetRenderer();
     r->BeginScene(r);
     M_ResetPolyList();

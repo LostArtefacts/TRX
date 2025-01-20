@@ -9,22 +9,12 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/gfx/gl/track.h>
 #include <libtrx/log.h>
 
 #include <string.h>
 
-#define CLIP_VERTCOUNT_SCALE 4
 #define MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
-#define VBUF_VISIBLE(a, b, c)                                                  \
-    (((a).ys - (b).ys) * ((c).xs - (b).xs)                                     \
-     >= ((c).ys - (b).ys) * ((a).xs - (b).xs))
-
-#define S_Output_CheckError(result)                                            \
-    {                                                                          \
-        if (!result) {                                                         \
-            Shell_ExitSystem("Fatal 2D renderer error!");                      \
-        }                                                                      \
-    }
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static int m_EnvMapTexture = GFX_NO_TEXTURE;
@@ -51,10 +41,6 @@ static void M_FlipPrimaryBuffer(void);
 static void M_ClearSurface(GFX_2D_SURFACE *surface);
 static void M_DrawTriangleFan(GFX_3D_VERTEX *vertices, int vertex_count);
 static void M_DrawTriangleStrip(GFX_3D_VERTEX *vertices, int vertex_count);
-static int32_t M_VisibleZClip(
-    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3);
-static int32_t M_ZedClipper(
-    int32_t vertex_count, const PHD_VBUF *vns[], GFX_3D_VERTEX *vertices);
 
 static inline float M_GetUV(const uint16_t uv)
 {
@@ -128,93 +114,6 @@ static void M_DrawTriangleStrip(GFX_3D_VERTEX *vertices, int vertex_count)
     GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
 }
 
-static int32_t M_VisibleZClip(
-    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
-    const PHD_VBUF *const vn3)
-{
-    double v1x = vn1->xv;
-    double v1y = vn1->yv;
-    double v1z = vn1->zv;
-    double v2x = vn2->xv;
-    double v2y = vn2->yv;
-    double v2z = vn2->zv;
-    double v3x = vn3->xv;
-    double v3y = vn3->yv;
-    double v3z = vn3->zv;
-    double a = v3y * v1x - v1y * v3x;
-    double b = v3x * v1z - v1x * v3z;
-    double c = v3z * v1y - v1z * v3y;
-    return a * v2z + b * v2y + c * v2x < 0.0;
-}
-
-static int32_t M_ZedClipper(
-    const int32_t vertex_count, const PHD_VBUF *vns[],
-    GFX_3D_VERTEX *const vertices)
-{
-    const float multiplier = g_Config.visuals.brightness / 16.0f;
-    const float near_z = Output_GetNearZ();
-    const float persp_o_near_z = (double)g_PhdPersp / near_z;
-
-    GFX_3D_VERTEX *v = &vertices[0];
-    int32_t current = 0;
-    int32_t prev = vertex_count - 1;
-    for (int32_t i = 0; i < vertex_count; i++) {
-        const PHD_VBUF *vn0 = vns[current];
-        const PHD_VBUF *vn1 = vns[prev];
-        const int32_t diff0 = near_z - vn0->zv;
-        const int32_t diff1 = near_z - vn1->zv;
-        if ((diff0 | diff1) >= 0) {
-            goto loop_end;
-        }
-
-        if ((diff0 ^ diff1) < 0) {
-            const double clip = diff0 / (vn1->zv - vn0->zv);
-            v->x = (vn0->xv + (vn1->xv - vn0->xv) * clip) * persp_o_near_z
-                + Viewport_GetCenterX();
-            v->y = (vn0->yv + (vn1->yv - vn0->yv) * clip) * persp_o_near_z
-                + Viewport_GetCenterY();
-            v->z = MAP_DEPTH(vn0->zv + (vn1->zv - vn0->zv) * clip);
-
-            v->w = 1.0f / near_z;
-            v->s = M_GetUV(vn0->u) + (M_GetUV(vn1->u) - M_GetUV(vn0->u)) * clip;
-            v->t = M_GetUV(vn0->v) + (M_GetUV(vn1->v) - M_GetUV(vn0->v)) * clip;
-            v->tex_coord[2] = vn0->tex_coord[2]
-                + (vn1->tex_coord[2] - vn0->tex_coord[2]) * clip;
-            v->tex_coord[3] = vn0->tex_coord[3]
-                + (vn1->tex_coord[3] - vn0->tex_coord[3]) * clip;
-
-            v->r = v->g = v->b =
-                (8192.0f - (vn0->g + (vn1->g - vn0->g) * clip)) * multiplier;
-            Output_ApplyTint(&v->r, &v->g, &v->b);
-
-            v++;
-        }
-
-        if (diff0 < 0) {
-            v->x = vn0->xs;
-            v->y = vn0->ys;
-            v->z = MAP_DEPTH(vn0->zv);
-
-            v->w = 1.0f / vn0->zv;
-            v->s = M_GetUV(vn0->u);
-            v->t = M_GetUV(vn0->v);
-            v->tex_coord[2] = vn0->tex_coord[2];
-            v->tex_coord[3] = vn0->tex_coord[3];
-
-            v->r = v->g = v->b = (8192.0f - vn0->g) * multiplier;
-            Output_ApplyTint(&v->r, &v->g, &v->b);
-
-            v++;
-        }
-
-    loop_end:
-        prev = current++;
-    }
-
-    const int32_t count = v - vertices;
-    return count < 3 ? 0 : count;
-}
-
 void S_Output_EnableTextureMode(void)
 {
     if (m_IsTextureMode) {
@@ -260,11 +159,24 @@ void S_Output_DisableDepthTest(void)
     GFX_3D_Renderer_SetDepthTestEnabled(m_Renderer3D, false);
 }
 
+void S_Output_EnableCullFace(void)
+{
+    GFX_3D_Renderer_SetCullFaceEnabled(m_Renderer3D, true);
+}
+
+void S_Output_DisableCullFace(void)
+{
+    GFX_3D_Renderer_SetCullFaceEnabled(m_Renderer3D, false);
+}
+
 void S_Output_RenderBegin(void)
 {
     GFX_Context_Clear();
+    GFX_Track_Reset();
     S_Output_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
+    GFX_3D_Renderer_SetViewPos(
+        m_Renderer3D, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
     GFX_3D_Renderer_SetTextureFilter(
         m_Renderer3D, g_Config.rendering.texture_filter);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
@@ -333,12 +245,12 @@ void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade)
 {
     int vertex_count = 4;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count];
 
     float multiplier = g_Config.visuals.brightness / 16.0f;
 
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
-    float vshade = (8192.0f - shade) * multiplier;
+    float vshade = (MAX_LIGHTING - shade) * multiplier;
     if (vshade >= 256.0f) {
         vshade = 255.0f;
     }
@@ -361,6 +273,7 @@ void S_Output_DrawSprite(
     vertices[0].r = vshade;
     vertices[0].g = vshade;
     vertices[0].b = vshade;
+    vertices[0].flags = 0;
 
     vertices[1].x = x2;
     vertices[1].y = y1;
@@ -373,6 +286,7 @@ void S_Output_DrawSprite(
     vertices[1].r = vshade;
     vertices[1].g = vshade;
     vertices[1].b = vshade;
+    vertices[1].flags = 0;
 
     vertices[2].x = x2;
     vertices[2].y = y2;
@@ -385,6 +299,7 @@ void S_Output_DrawSprite(
     vertices[2].r = vshade;
     vertices[2].g = vshade;
     vertices[2].b = vshade;
+    vertices[2].flags = 0;
 
     vertices[3].x = x1;
     vertices[3].y = y2;
@@ -397,6 +312,7 @@ void S_Output_DrawSprite(
     vertices[3].r = vshade;
     vertices[3].g = vshade;
     vertices[3].b = vshade;
+    vertices[3].flags = 0;
 
     if (!vertex_count) {
         return;
@@ -412,40 +328,30 @@ void S_Output_DrawSprite(
     }
 }
 
-void S_Output_Draw3DLine(
-    const PHD_VBUF *const vn0, const PHD_VBUF *const vn1, const RGBA_8888 color)
+void S_Output_Draw2DLine(
+    const XYZ_32 pos1, const XYZ_32 pos2, const RGBA_8888 color1,
+    const RGBA_8888 color2)
 {
-    int32_t vertex_count = 2;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    const PHD_VBUF *const src_vbuf[2] = { vn0, vn1 };
+    int vertex_count = 2;
+    GFX_3D_VERTEX vertices[vertex_count];
 
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-        vertices[i].r = color.r;
-        vertices[i].g = color.g;
-        vertices[i].b = color.b;
-        vertices[i].a = color.a;
-    }
+    vertices[0].x = pos1.x;
+    vertices[0].y = pos1.y;
+    vertices[0].z = pos1.z;
+    vertices[0].r = color1.r;
+    vertices[0].g = color1.g;
+    vertices[0].b = color1.b;
+    vertices[0].a = color1.a;
+    vertices[0].flags = 0;
 
-    if ((vn0->clip | vn1->clip) < 0) {
-        vertex_count =
-            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].r = color.r;
-            vertices[i].g = color.g;
-            vertices[i].b = color.b;
-            vertices[i].a = color.a;
-        }
-    }
-
-    if (!vertex_count) {
-        return;
-    }
+    vertices[1].x = pos2.x;
+    vertices[1].y = pos2.y;
+    vertices[1].z = pos2.z;
+    vertices[1].r = color2.r;
+    vertices[1].g = color2.g;
+    vertices[1].b = color2.b;
+    vertices[1].a = color2.a;
+    vertices[1].flags = 0;
 
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
     S_Output_DisableTextureMode();
@@ -469,6 +375,7 @@ void S_Output_Draw2DQuad(
     vertices[0].g = tl.g;
     vertices[0].b = tl.b;
     vertices[0].a = tl.a;
+    vertices[0].flags = 0;
 
     vertices[1].x = x2;
     vertices[1].y = y1;
@@ -477,6 +384,7 @@ void S_Output_Draw2DQuad(
     vertices[1].g = tr.g;
     vertices[1].b = tr.b;
     vertices[1].a = tr.a;
+    vertices[1].flags = 0;
 
     vertices[2].x = x2;
     vertices[2].y = y2;
@@ -485,6 +393,7 @@ void S_Output_Draw2DQuad(
     vertices[2].g = br.g;
     vertices[2].b = br.b;
     vertices[2].a = br.a;
+    vertices[2].flags = 0;
 
     vertices[3].x = x1;
     vertices[3].y = y2;
@@ -493,11 +402,14 @@ void S_Output_Draw2DQuad(
     vertices[3].g = bl.g;
     vertices[3].b = bl.b;
     vertices[3].a = bl.a;
+    vertices[3].flags = 0;
 
     S_Output_DisableTextureMode();
+    S_Output_DisableCullFace();
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     M_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+    S_Output_EnableCullFace();
 }
 
 void S_Output_DrawLightningSegment(
@@ -505,7 +417,7 @@ void S_Output_DrawLightningSegment(
     int thickness2)
 {
     int vertex_count = 4;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count];
 
     S_Output_DisableTextureMode();
 
@@ -517,6 +429,7 @@ void S_Output_DrawLightningSegment(
     vertices[0].r = 0.0f;
     vertices[0].b = 255.0f;
     vertices[0].a = 128.0f;
+    vertices[0].flags = 0;
 
     vertices[1].x = thickness1 / 2 + x1;
     vertices[1].y = vertices[0].y;
@@ -525,6 +438,7 @@ void S_Output_DrawLightningSegment(
     vertices[1].g = 255.0f;
     vertices[1].r = 255.0f;
     vertices[1].a = 128.0f;
+    vertices[1].flags = 0;
 
     vertices[2].x = thickness2 / 2 + x2;
     vertices[2].y = y2;
@@ -533,6 +447,7 @@ void S_Output_DrawLightningSegment(
     vertices[2].g = 255.0f;
     vertices[2].r = 255.0f;
     vertices[2].a = 128.0f;
+    vertices[2].flags = 0;
 
     vertices[3].x = x2;
     vertices[3].y = vertices[2].y;
@@ -541,6 +456,7 @@ void S_Output_DrawLightningSegment(
     vertices[3].r = 0.0f;
     vertices[3].b = 255.0f;
     vertices[3].a = 128.0f;
+    vertices[3].flags = 0;
 
     M_DrawTriangleFan(vertices, vertex_count);
 
@@ -552,6 +468,7 @@ void S_Output_DrawLightningSegment(
     vertices[0].g = 255.0f;
     vertices[0].r = 255.0f;
     vertices[0].a = 128.0f;
+    vertices[0].flags = 0;
 
     vertices[1].x = thickness1 + x1;
     vertices[1].y = vertices[0].y;
@@ -560,6 +477,7 @@ void S_Output_DrawLightningSegment(
     vertices[1].r = 0.0f;
     vertices[1].b = 255.0f;
     vertices[1].a = 128.0f;
+    vertices[1].flags = 0;
 
     vertices[2].x = (thickness2 + x2);
     vertices[2].y = y2;
@@ -568,6 +486,7 @@ void S_Output_DrawLightningSegment(
     vertices[2].r = 0.0f;
     vertices[2].b = 255.0f;
     vertices[2].a = 128.0f;
+    vertices[2].flags = 0;
 
     vertices[3].x = (thickness2 / 2 + x2);
     vertices[3].y = vertices[2].y;
@@ -576,36 +495,37 @@ void S_Output_DrawLightningSegment(
     vertices[3].g = 255.0f;
     vertices[3].r = 255.0f;
     vertices[3].a = 128.0f;
+    vertices[3].flags = 0;
 
     M_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
 }
 
-void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
+void S_Output_DrawShadow(const int32_t vertex_count, const PHD_VBUF *src_vbuf)
 {
-    // needs to be more than 8 cause clipping might return more polygons.
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    GFX_3D_VERTEX vertices[vertex_count];
 
     for (int32_t i = 0; i < vertex_count; i++) {
         GFX_3D_VERTEX *vertex = &vertices[i];
-        PHD_VBUF *vbuf = &vbufs[i];
-        vertex->x = vbuf->xs;
-        vertex->y = vbuf->ys;
-        vertex->z = MAP_DEPTH(vbuf->zv - (12 << W2V_SHIFT));
+        const PHD_VBUF *vbuf = &src_vbuf[i];
+        vertex->x = vbuf->world_pos.x;
+        vertex->y = vbuf->world_pos.y;
+        vertex->z = vbuf->world_pos.z;
         vertex->b = 0.0f;
         vertex->g = 0.0f;
         vertex->r = 0.0f;
         vertex->a = 128.0f;
-    }
-
-    if (vertex_count == 0) {
-        return;
+        vertex->flags = 1;
     }
 
     S_Output_DisableTextureMode();
 
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(-0.5, 0.0);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     M_DrawTriangleFan(vertices, vertex_count);
+    S_Output_Flush();
+    glDisable(GL_POLYGON_OFFSET_FILL);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
 }
 
@@ -684,310 +604,6 @@ void S_Output_Shutdown(void)
     GFX_Context_Detach();
 }
 
-void S_Output_DrawFlatTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGBA_8888 color)
-{
-    int vertex_count = 3;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    PHD_VBUF *src_vbuf[3];
-
-    src_vbuf[0] = vn1;
-    src_vbuf[1] = vn2;
-    src_vbuf[2] = vn3;
-
-    if (vn3->clip & vn2->clip & vn1->clip) {
-        return;
-    }
-
-    float multiplier = g_Config.visuals.brightness / (16.0f * 255.0f);
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-        const float light = (8192.0f - src_vbuf[i]->g) * multiplier;
-        vertices[i].r = color.r * light;
-        vertices[i].g = color.g * light;
-        vertices[i].b = color.b * light;
-        vertices[i].a = color.a;
-
-        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-    }
-
-    if ((vn1->clip | vn2->clip | vn3->clip) >= 0) {
-        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-            return;
-        }
-    } else {
-        if (!M_VisibleZClip(vn1, vn2, vn3)) {
-            return;
-        }
-
-        vertex_count =
-            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].r *= color.r / 255.0f;
-            vertices[i].g *= color.g / 255.0f;
-            vertices[i].b *= color.b / 255.0f;
-            vertices[i].a = color.a;
-        }
-    }
-
-    if (!vertex_count) {
-        return;
-    }
-
-    M_DrawTriangleFan(vertices, vertex_count);
-}
-
-void S_Output_DrawEnvMapTriangle(
-    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
-    const PHD_VBUF *const vn3)
-{
-    int vertex_count = 3;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-
-    const float multiplier = g_Config.visuals.brightness / 16.0f;
-    const PHD_VBUF *const src_vbuf[3] = { vn1, vn2, vn3 };
-
-    if (vn3->clip & vn2->clip & vn1->clip) {
-        return;
-    }
-
-    if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0) {
-        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-            return;
-        }
-
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].x = src_vbuf[i]->xs;
-            vertices[i].y = src_vbuf[i]->ys;
-            vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-            vertices[i].w = 1.0f / src_vbuf[i]->zv;
-            vertices[i].s = M_GetUV(src_vbuf[i]->u);
-            vertices[i].t = M_GetUV(src_vbuf[i]->v);
-            vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-            vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-            vertices[i].r = vertices[i].g = vertices[i].b =
-                (8192.0f - src_vbuf[i]->g) * multiplier;
-
-            Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-        }
-    } else {
-        if (!M_VisibleZClip(vn1, vn2, vn3)) {
-            return;
-        }
-
-        vertex_count =
-            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-    }
-
-    if (!vertex_count) {
-        return;
-    }
-
-    S_Output_EnableTextureMode();
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
-    M_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-    m_SelectedTexture = -1;
-}
-
-void S_Output_DrawEnvMapQuad(
-    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
-    const PHD_VBUF *const vn3, const PHD_VBUF *const vn4)
-{
-    int vertex_count = 4;
-    GFX_3D_VERTEX vertices[vertex_count];
-
-    if (vn4->clip | vn3->clip | vn2->clip | vn1->clip) {
-        if ((vn4->clip & vn3->clip & vn2->clip & vn1->clip)) {
-            return;
-        }
-
-        if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
-            && vn4->clip >= 0) {
-            if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-                return;
-            }
-        } else if (!M_VisibleZClip(vn1, vn2, vn3)) {
-            return;
-        }
-
-        S_Output_DrawEnvMapTriangle(vn1, vn2, vn3);
-        S_Output_DrawEnvMapTriangle(vn3, vn4, vn1);
-        return;
-    }
-
-    if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-        return;
-    }
-
-    float multiplier = g_Config.visuals.brightness / 16.0f;
-
-    const PHD_VBUF *const src_vbuf[4] = { vn2, vn1, vn3, vn4 };
-
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-        vertices[i].w = 1.0f / src_vbuf[i]->zv;
-        vertices[i].s = M_GetUV(src_vbuf[i]->u);
-        vertices[i].t = M_GetUV(src_vbuf[i]->v);
-        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-        vertices[i].r = vertices[i].g = vertices[i].b =
-            (8192.0f - src_vbuf[i]->g) * multiplier;
-
-        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-    }
-
-    S_Output_EnableTextureMode();
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
-    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-    m_SelectedTexture = -1;
-}
-
-void S_Output_DrawTexturedTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage,
-    uint16_t textype)
-{
-    int vertex_count = 3;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    PHD_VBUF *src_vbuf[3];
-
-    float multiplier = g_Config.visuals.brightness / 16.0f;
-
-    src_vbuf[0] = vn1;
-    src_vbuf[1] = vn2;
-    src_vbuf[2] = vn3;
-
-    if (vn3->clip & vn2->clip & vn1->clip) {
-        return;
-    }
-
-    if (src_vbuf[0]->clip >= 0 && src_vbuf[1]->clip >= 0
-        && src_vbuf[2]->clip >= 0) {
-        if (!VBUF_VISIBLE(*src_vbuf[0], *src_vbuf[1], *src_vbuf[2])) {
-            return;
-        }
-
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].x = src_vbuf[i]->xs;
-            vertices[i].y = src_vbuf[i]->ys;
-            vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-            vertices[i].w = 1.0f / src_vbuf[i]->zv;
-            vertices[i].s = M_GetUV(src_vbuf[i]->u);
-            vertices[i].t = M_GetUV(src_vbuf[i]->v);
-            vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-            vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-            vertices[i].r = vertices[i].g = vertices[i].b =
-                (8192.0f - src_vbuf[i]->g) * multiplier;
-
-            Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-        }
-    } else {
-        if (!M_VisibleZClip(src_vbuf[0], src_vbuf[1], src_vbuf[2])) {
-            return;
-        }
-
-        vertex_count =
-            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-    }
-
-    if (!vertex_count) {
-        return;
-    }
-
-    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
-        S_Output_EnableTextureMode();
-        S_Output_SelectTexture(tpage);
-        M_DrawTriangleFan(vertices, vertex_count);
-    } else {
-        S_Output_DisableTextureMode();
-        M_DrawTriangleFan(vertices, vertex_count);
-    }
-}
-
-void S_Output_DrawTexturedQuad(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, int16_t tpage,
-    uint16_t textype)
-{
-    int vertex_count = 4;
-    GFX_3D_VERTEX vertices[vertex_count];
-    PHD_VBUF *src_vbuf[4] = { vn1, vn2, vn3, vn4 };
-
-    if (src_vbuf[3]->clip | src_vbuf[2]->clip | src_vbuf[1]->clip
-        | src_vbuf[0]->clip) {
-        if ((src_vbuf[3]->clip & src_vbuf[2]->clip & src_vbuf[1]->clip
-             & src_vbuf[0]->clip)) {
-            return;
-        }
-
-        if (src_vbuf[0]->clip >= 0 && src_vbuf[1]->clip >= 0
-            && src_vbuf[2]->clip >= 0 && src_vbuf[3]->clip >= 0) {
-            if (!VBUF_VISIBLE(*src_vbuf[0], *src_vbuf[1], *src_vbuf[2])) {
-                return;
-            }
-        } else if (!M_VisibleZClip(src_vbuf[0], src_vbuf[1], src_vbuf[2])) {
-            return;
-        }
-
-        S_Output_DrawTexturedTriangle(vn1, vn2, vn3, tpage, textype);
-        S_Output_DrawTexturedTriangle(vn3, vn4, vn1, tpage, textype);
-        return;
-    }
-
-    if (!VBUF_VISIBLE(*src_vbuf[0], *src_vbuf[1], *src_vbuf[2])) {
-        return;
-    }
-
-    float multiplier = g_Config.visuals.brightness / 16.0f;
-
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-        vertices[i].w = 1.0f / src_vbuf[i]->zv;
-        vertices[i].s = M_GetUV(src_vbuf[i]->u);
-        vertices[i].t = M_GetUV(src_vbuf[i]->v);
-        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-        vertices[i].r = vertices[i].g = vertices[i].b =
-            (8192.0f - src_vbuf[i]->g) * multiplier;
-
-        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-    }
-
-    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
-        S_Output_EnableTextureMode();
-        S_Output_SelectTexture(tpage);
-    } else {
-        S_Output_DisableTextureMode();
-    }
-
-    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
-}
-
 void S_Output_DownloadTextures(int32_t pages)
 {
     if (pages > GFX_MAX_TEXTURES) {
@@ -1021,169 +637,62 @@ void S_Output_DownloadTextures(int32_t pages)
     m_EnvMapTexture = GFX_3D_Renderer_RegisterEnvironmentMap(m_Renderer3D);
 }
 
-void S_Output_ScreenBox(
+void S_Output_2ColourBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
     RGBA_8888 col_light, float thickness)
 {
-    // this draws the dark then light two tone border
-    // 2 is the sx+1,sy+1
-    //                       7  6
-    //
-    //     2        |      4
-    //
-    //       3      |      5
-    //
-    //     ~ ~               ~  ~
-    //
-    //     0 1
-    // 11           |        9
-    //
-    // 10           |          8
-    // this is the vertex structure for the dark part
-    // while any machine we would be rendering this on will
-    // handle degenerate triangles, the current render doesn't
-    // actually reander a strip and instead pulls out each
-    // triangle into a triangle buffer. So the 4-5-6 triangle is valid
-    // but will be over drawn by the light box so is not seen.
-    // thus we form triangles
-    // 0,1,2
-    // 1,2,3
-    // 2,3,4
-    // 3,4,5
-    // 4,5,6
-    // 5,6,7
-    // 6,7,8
-    // 7,8,9
-    // 8,9,10
-    // 9,10,11
-    // the light box is then just a simple 4 sided box
-    // we share some vertexs so the square is formed as follows
-    //  13          |        7
-    //
-    //     2        |      4
-    //
-    //  ~  ~               ~ ~
-    //
-    //
-    //     12       |      14
-    //
-    // 11           |        9
-    // however as we are not index we have to duplicate the vertex data
-    // so the above numbers do not match the array below.
-    // we from the triangles
-    // 11,12,13
-    // 12,13,2
-    // 13,2,7
-    // 2,7,4
-    // 7,4,9
-    // 4,9,14
-    // 9,14,11
-    // 14,11,12
+#define SET_VERTEX(i, color, x_, y_)                                           \
+    screen_box_verticies[(i)].x = (x_);                                        \
+    screen_box_verticies[(i)].y = (y_);                                        \
+    screen_box_verticies[i].z = 1.0f;                                          \
+    screen_box_verticies[i].s = 0.0f;                                          \
+    screen_box_verticies[i].t = 0.0f;                                          \
+    screen_box_verticies[i].w = 0.0f;                                          \
+    screen_box_verticies[i].r = (color).r;                                     \
+    screen_box_verticies[i].g = (color).g;                                     \
+    screen_box_verticies[i].b = (color).b;                                     \
+    screen_box_verticies[i].a = (color).a;                                     \
+    screen_box_verticies[i].flags = 0;
 
-#define SB_NUM_VERTS_DARK 12
-#define SB_NUM_VERTS_LIGHT 10
-    GFX_3D_VERTEX screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
-    S_Output_DisableTextureMode();
+    GFX_3D_VERTEX screen_box_verticies[22];
 
-    // convert them to floats and apply the (+1) from the original line code
-    float sxf = (float)sx + thickness;
-    float syf = (float)sy + thickness;
-    float hf = (float)h;
-    float wf = (float)w;
+    const float sxf = (float)sx + thickness;
+    const float syf = (float)sy + thickness;
+    const float hf = (float)h;
+    const float wf = (float)w;
 
     // Top Left Dark set
-    screen_box_verticies[0].x = sxf;
-    screen_box_verticies[0].y = syf + hf - thickness;
-
-    screen_box_verticies[1].x = sxf + thickness;
-    screen_box_verticies[1].y = screen_box_verticies[0].y;
-
-    screen_box_verticies[2].x = sxf;
-    screen_box_verticies[2].y = syf;
-
-    screen_box_verticies[3].x = sxf + thickness;
-    screen_box_verticies[3].y = syf + thickness;
-
-    screen_box_verticies[4].x = sxf + wf - thickness;
-    screen_box_verticies[4].y = screen_box_verticies[2].y;
-
-    screen_box_verticies[5].x = screen_box_verticies[4].x;
-    screen_box_verticies[5].y = screen_box_verticies[3].y;
+    SET_VERTEX(0, col_dark, sxf, syf + hf - thickness);
+    SET_VERTEX(1, col_dark, sxf + thickness, syf + hf - thickness);
+    SET_VERTEX(2, col_dark, sxf, syf);
+    SET_VERTEX(3, col_dark, sxf + thickness, syf + thickness);
+    SET_VERTEX(4, col_dark, sxf + wf - thickness, syf);
+    SET_VERTEX(5, col_dark, sxf + wf - thickness, syf + thickness);
 
     // Bottom Right Dark set
-    screen_box_verticies[6].x = sxf + wf + thickness;
-    screen_box_verticies[6].y = syf - thickness;
+    SET_VERTEX(6, col_dark, sxf + wf + thickness, syf - thickness);
+    SET_VERTEX(7, col_dark, sxf + wf, syf - thickness);
+    SET_VERTEX(8, col_dark, sxf + wf + thickness, syf + hf + thickness);
+    SET_VERTEX(9, col_dark, sxf + wf, syf + hf);
+    SET_VERTEX(10, col_dark, sxf - thickness, syf + hf + thickness);
+    SET_VERTEX(11, col_dark, sxf - thickness, syf + hf);
 
-    screen_box_verticies[7].x = sxf + wf;
-    screen_box_verticies[7].y = screen_box_verticies[6].y;
+    // Light box
+    SET_VERTEX(12, col_light, sxf - thickness, syf + hf);
+    SET_VERTEX(13, col_light, sxf, syf + hf - thickness);
+    SET_VERTEX(14, col_light, sxf - thickness, syf - thickness);
+    SET_VERTEX(15, col_light, sxf, syf);
+    SET_VERTEX(16, col_light, sxf + wf, syf - thickness);
+    SET_VERTEX(17, col_light, sxf + wf - thickness, syf);
+    SET_VERTEX(18, col_light, sxf + wf, syf + hf);
+    SET_VERTEX(19, col_light, sxf + wf - thickness, syf + hf - thickness);
+    SET_VERTEX(20, col_light, sxf - thickness, syf + hf);
+    SET_VERTEX(21, col_light, sxf, syf + hf - thickness);
 
-    screen_box_verticies[8].x = screen_box_verticies[6].x;
-    screen_box_verticies[8].y = syf + hf + thickness;
-
-    screen_box_verticies[9].x = screen_box_verticies[7].x;
-    screen_box_verticies[9].y = syf + hf;
-
-    screen_box_verticies[10].x = sxf - thickness;
-    screen_box_verticies[10].y = screen_box_verticies[8].y;
-
-    screen_box_verticies[11].x = screen_box_verticies[10].x;
-    screen_box_verticies[11].y = screen_box_verticies[9].y;
-
-    // light box
-    screen_box_verticies[12].x = screen_box_verticies[11].x;
-    screen_box_verticies[12].y = screen_box_verticies[11].y;
-
-    screen_box_verticies[13].x = screen_box_verticies[12].x + thickness;
-    screen_box_verticies[13].y = screen_box_verticies[11].y - thickness;
-
-    screen_box_verticies[14].x = sxf - thickness;
-    screen_box_verticies[14].y = syf - thickness;
-
-    screen_box_verticies[15].x = screen_box_verticies[2].x;
-    screen_box_verticies[15].y = screen_box_verticies[2].y;
-
-    screen_box_verticies[16].x = screen_box_verticies[7].x;
-    screen_box_verticies[16].y = screen_box_verticies[7].y;
-
-    screen_box_verticies[17].x = screen_box_verticies[4].x;
-    screen_box_verticies[17].y = screen_box_verticies[4].y;
-
-    screen_box_verticies[18].x = screen_box_verticies[9].x;
-    screen_box_verticies[18].y = screen_box_verticies[9].y;
-
-    screen_box_verticies[19].x = screen_box_verticies[9].x - thickness;
-    screen_box_verticies[19].y = screen_box_verticies[9].y - thickness;
-
-    screen_box_verticies[20].x = screen_box_verticies[12].x;
-    screen_box_verticies[20].y = screen_box_verticies[12].y;
-
-    screen_box_verticies[21].x = screen_box_verticies[13].x;
-    screen_box_verticies[21].y = screen_box_verticies[13].y;
-
-    int i = 0;
-    for (; i < SB_NUM_VERTS_DARK; ++i) {
-        screen_box_verticies[i].z = 1.0f; // the lines were z 0 but that makes
-        screen_box_verticies[i].s = 0.0f; // them show over text, so I use Z 1
-        screen_box_verticies[i].t = 0.0f; // here to make the line behind text
-        screen_box_verticies[i].w = 0.0f; // as per dos original
-        screen_box_verticies[i].r = col_dark.r;
-        screen_box_verticies[i].g = col_dark.g;
-        screen_box_verticies[i].b = col_dark.b;
-        screen_box_verticies[i].a = col_dark.a;
-    }
-    for (; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; ++i) {
-        screen_box_verticies[i].z = 1.0f;
-        screen_box_verticies[i].s = 0.0f;
-        screen_box_verticies[i].t = 0.0f;
-        screen_box_verticies[i].w = 0.0f;
-        screen_box_verticies[i].r = col_light.r;
-        screen_box_verticies[i].g = col_light.g;
-        screen_box_verticies[i].b = col_light.b;
-        screen_box_verticies[i].a = col_light.a;
-    }
-
-    M_DrawTriangleStrip(
-        screen_box_verticies, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
+    S_Output_DisableTextureMode();
+    S_Output_DisableCullFace();
+    M_DrawTriangleStrip(screen_box_verticies, 22);
+    S_Output_EnableCullFace();
 }
 
 void S_Output_4ColourTextBox(
@@ -1198,13 +707,13 @@ void S_Output_4ColourTextBox(
     //   #               @
     //  6                 4
     GFX_3D_VERTEX screen_box_verticies[10];
-    for (int i = 0; i < 10; ++i) {
-        screen_box_verticies[i].z = 1.0f;
+    for (int i = 0; i < 10; i++) {
+        screen_box_verticies[i].z = -1.0f;
         screen_box_verticies[i].s = 0.0f;
         screen_box_verticies[i].t = 0.0f;
         screen_box_verticies[i].w = 0.0f;
+        screen_box_verticies[i].flags = 0;
     }
-    S_Output_DisableTextureMode();
     screen_box_verticies[0].x = sx - thickness;
     screen_box_verticies[0].y = sy - thickness;
 
@@ -1260,7 +769,10 @@ void S_Output_4ColourTextBox(
     screen_box_verticies[8].b = screen_box_verticies[9].b = tl.b;
     screen_box_verticies[8].a = screen_box_verticies[9].a = tl.a;
 
+    S_Output_DisableTextureMode();
+    S_Output_DisableCullFace();
     M_DrawTriangleStrip(screen_box_verticies, 10);
+    S_Output_EnableCullFace();
 }
 
 void S_Output_2ToneColourTextBox(
@@ -1281,13 +793,14 @@ void S_Output_2ToneColourTextBox(
     int32_t halfh = h / 2;
 
     GFX_3D_VERTEX screen_box_verticies[18];
-    for (int i = 0; i < 18; ++i) {
+    for (int i = 0; i < 18; i++) {
         screen_box_verticies[i].z = 1.0f;
         screen_box_verticies[i].s = 0.0f;
         screen_box_verticies[i].t = 0.0f;
         screen_box_verticies[i].w = 0.0f;
+        screen_box_verticies[i].flags = 0;
     }
-    S_Output_DisableTextureMode();
+
     screen_box_verticies[0].x = sx - thickness;
     screen_box_verticies[0].y = sy - thickness;
 
@@ -1387,5 +900,117 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[16].b = screen_box_verticies[17].b = edge.b;
     screen_box_verticies[16].a = screen_box_verticies[17].a = edge.a;
 
+    S_Output_DisableTextureMode();
+    S_Output_DisableCullFace();
     M_DrawTriangleStrip(screen_box_verticies, 18);
+    S_Output_EnableCullFace();
+}
+
+void S_Output_DrawFlat(
+    const int32_t vertex_count, const PHD_VBUF *src_vbuf[],
+    const RGBA_8888 color)
+{
+    GFX_3D_VERTEX vertices[vertex_count];
+    const float multiplier = g_Config.visuals.brightness / (16.0f * 255.0f);
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->world_pos.x;
+        vertices[i].y = src_vbuf[i]->world_pos.y;
+        vertices[i].z = src_vbuf[i]->world_pos.z;
+        const float light = (MAX_LIGHTING - src_vbuf[i]->g) * multiplier;
+        vertices[i].r = color.r * light;
+        vertices[i].g = color.g * light;
+        vertices[i].b = color.b * light;
+        vertices[i].a = color.a;
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        vertices[i].flags = src_vbuf[i]->flags;
+    }
+    S_Output_DisableTextureMode();
+    M_DrawTriangleFan(vertices, vertex_count);
+}
+
+void S_Output_DrawTextured(
+    const int32_t vertex_count, const PHD_VBUF *src_vbuf[],
+    const int16_t tex_page)
+{
+    GFX_3D_VERTEX vertices[vertex_count];
+    const float multiplier = g_Config.visuals.brightness / 16.0f;
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->world_pos.x;
+        vertices[i].y = src_vbuf[i]->world_pos.y;
+        vertices[i].z = src_vbuf[i]->world_pos.z;
+        vertices[i].w = 1.0f;
+        vertices[i].s = M_GetUV(src_vbuf[i]->u);
+        vertices[i].t = M_GetUV(src_vbuf[i]->v);
+        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
+        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
+        vertices[i].r = vertices[i].g = vertices[i].b =
+            (MAX_LIGHTING - src_vbuf[i]->g) * multiplier;
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        vertices[i].flags = src_vbuf[i]->flags;
+    }
+    if (m_TextureMap[tex_page] != GFX_NO_TEXTURE) {
+        S_Output_EnableTextureMode();
+        S_Output_SelectTexture(tex_page);
+    } else {
+        S_Output_DisableTextureMode();
+    }
+    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
+}
+
+void S_Output_DrawEnvMap(const int32_t vertex_count, const PHD_VBUF *src_vbuf[])
+{
+    GFX_3D_VERTEX vertices[vertex_count];
+    const float multiplier = g_Config.visuals.brightness / 16.0f;
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->world_pos.x;
+        vertices[i].y = src_vbuf[i]->world_pos.y;
+        vertices[i].z = src_vbuf[i]->world_pos.z;
+        vertices[i].w = 1.0f;
+        vertices[i].s = M_GetUV(src_vbuf[i]->u);
+        vertices[i].t = M_GetUV(src_vbuf[i]->v);
+        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
+        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
+        vertices[i].r = vertices[i].g = vertices[i].b =
+            (MAX_LIGHTING - src_vbuf[i]->g) * multiplier;
+        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
+        vertices[i].flags = src_vbuf[i]->flags;
+    }
+    S_Output_EnableTextureMode();
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
+    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+    m_SelectedTexture = -1;
+}
+
+void S_Output_UploadModelMatrix(void)
+{
+    GLfloat model_view[4][4];
+    Output_GetModelMatrix(model_view);
+    S_Output_Flush();
+    GFX_3D_Renderer_SetModelView(m_Renderer3D, model_view);
+}
+
+void S_Output_UploadProjectionMatrix(void)
+{
+    GLfloat projection[4][4];
+    Output_GetProjectionMatrix(projection);
+    S_Output_Flush();
+    GFX_3D_Renderer_SetProjection(m_Renderer3D, projection);
+}
+
+void S_Output_ResetMatrix(void)
+{
+    S_Output_Flush();
+    GFX_3D_Renderer_SetIdentityMatrix(m_Renderer3D);
+}
+
+void S_Output_SetWibbleEffect(const bool enabled, const float offset)
+{
+    GFX_3D_Renderer_SetWibbleOffset(m_Renderer3D, enabled ? offset : -1.0f);
+}
+
+GLuint Output_GetTexturePageBinding(const int32_t page)
+{
+    return GFX_3D_Renderer_GetTextureBinding(m_Renderer3D, m_TextureMap[page]);
 }

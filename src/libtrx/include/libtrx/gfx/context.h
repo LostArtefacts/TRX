@@ -37,3 +37,5 @@ const char *GFX_Context_GetScheduledScreenshotPath(void);
 void GFX_Context_ClearScheduledScreenshotPath(void);
 
 GFX_CONFIG *GFX_Context_GetConfig(void);
+void GFX_Context_EnableScissor(GLfloat x, GLfloat y, GLfloat w, GLfloat h);
+void GFX_Context_DisableScissor(void);

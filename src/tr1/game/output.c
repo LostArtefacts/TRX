@@ -1,6 +1,7 @@
 #include "game/output.h"
 
 #include "game/clock.h"
+#include "game/output/sprites.h"
 #include "game/overlay.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -57,7 +58,6 @@ static int32_t m_AnimatedTexturesOffset = 0;
 static CLOCK_TIMER m_WibbleTimer = { .type = CLOCK_TIMER_SIM };
 static CLOCK_TIMER m_AnimatedTexturesTimer = { .type = CLOCK_TIMER_SIM };
 static CLOCK_TIMER m_FadeTimer = { .type = CLOCK_TIMER_SIM };
-static int32_t m_WibbleTable[WIBBLE_SIZE] = {};
 static int32_t m_ShadeTable[WIBBLE_SIZE] = {};
 static int32_t m_RandTable[WIBBLE_SIZE] = {};
 
@@ -84,34 +84,25 @@ static void M_DrawTexturedFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawObjectFace3EnvMap(const FACE3 *faces, int32_t count);
 static void M_DrawObjectFace4EnvMap(const FACE4 *faces, int32_t count);
 static void M_DrawRoomSprites(const ROOM_MESH *mesh);
-static uint16_t M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
-static void M_CalcVertexWibble(PHD_VBUF *vbuf);
-static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
+static void M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
+static void M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
 static void M_CalcVerticeLight(const OBJECT_MESH *mesh);
 static bool M_CalcVerticeEnvMap(const OBJECT_MESH *mesh);
 static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
 static void M_CalcRoomVertices(const ROOM_MESH *mesh);
-static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
 static void M_CalcWibbleTable(void);
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 {
-    bool wireframe_state = GFX_Context_GetWireframeMode();
-    GFX_Context_SetWireframeMode(true);
-
-    RGBA_8888 color = { .r = 255, .g = 255, .b = 255, .a = 128 };
-    if (wireframe_state) {
-        color = (RGBA_8888) { .r = 0, .g = 0, .b = 0, .a = 128 };
-    }
-
-    S_Output_DisableTextureMode();
-    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+    const bool wireframe_state = GFX_Context_GetWireframeMode();
+    const RGBA_8888 color = wireframe_state
+        ? (RGBA_8888) { .r = 0, .g = 0, .b = 0, .a = 128 }
+        : (RGBA_8888) { .r = 255, .g = 255, .b = 255, .a = 128 };
 
     // More subdivisions means smoother spheres.
     const int32_t subdivisions = 12;
-    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
+    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)] = {};
     int32_t index = 0;
-
     for (int32_t i = 0; i <= subdivisions; i++) {
         const float theta = (M_PI * i) / subdivisions; // Latitude angle
         const float sin_theta = sinf(theta);
@@ -135,21 +126,24 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
         }
     }
 
+    GFX_Context_SetWireframeMode(true);
+    S_Output_DisableTextureMode();
+    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
     for (int32_t i = 0; i < subdivisions; i++) {
         for (int32_t j = 0; j < subdivisions; j++) {
             const int32_t index_0 = i * (subdivisions + 1) + j;
             const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
             const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
             const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
-            S_Output_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_1], &vertices[index_2],
-                color);
-            S_Output_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_2], &vertices[index_3],
-                color);
+            const PHD_VBUF *vns[] = {
+                &vertices[index_0],
+                &vertices[index_1],
+                &vertices[index_2],
+                &vertices[index_3],
+            };
+            S_Output_DrawFlat(4, vns, color);
         }
     }
-
     S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
     GFX_Context_SetWireframeMode(wireframe_state);
 }
@@ -160,7 +154,7 @@ static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
 
     for (int32_t i = 0; i < count; i++) {
         const FACE3 *const face = &faces[i];
-        PHD_VBUF *const vns[3] = {
+        const PHD_VBUF *vns[3] = {
             &m_VBuf[face->vertices[0]],
             &m_VBuf[face->vertices[1]],
             &m_VBuf[face->vertices[2]],
@@ -168,7 +162,7 @@ static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
 
         const RGBA_8888 color =
             Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
-        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
+        S_Output_DrawFlat(3, vns, color);
     }
 }
 
@@ -178,7 +172,7 @@ static void M_DrawFlatFace4s(const FACE4 *const faces, const int32_t count)
 
     for (int32_t i = 0; i < count; i++) {
         const FACE4 *const face = &faces[i];
-        PHD_VBUF *const vns[4] = {
+        const PHD_VBUF *vns[4] = {
             &m_VBuf[face->vertices[0]],
             &m_VBuf[face->vertices[1]],
             &m_VBuf[face->vertices[2]],
@@ -187,15 +181,13 @@ static void M_DrawFlatFace4s(const FACE4 *const faces, const int32_t count)
 
         const RGBA_8888 color =
             Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
-        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-        S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
+        S_Output_DrawFlat(4, vns, color);
     }
 }
 
 static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
 {
     S_Output_EnableTextureMode();
-
     for (int32_t i = 0; i < count; i++) {
         const FACE3 *const face = &faces[i];
         PHD_VBUF *const vns[3] = {
@@ -212,18 +204,16 @@ static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
             vns[j]->w = 1.0f;
         }
 
-        S_Output_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tex_page, tex->draw_type);
+        S_Output_DrawTextured(3, (const PHD_VBUF **)vns, tex->tex_page);
     }
 }
 
 static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
 {
     S_Output_EnableTextureMode();
-
     for (int32_t i = 0; i < count; i++) {
         const FACE4 *const face = &faces[i];
-        PHD_VBUF *const vns[4] = {
+        PHD_VBUF *vns[4] = {
             &m_VBuf[face->vertices[0]],
             &m_VBuf[face->vertices[1]],
             &m_VBuf[face->vertices[2]],
@@ -243,8 +233,7 @@ static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
             }
         }
 
-        S_Output_DrawTexturedQuad(
-            vns[0], vns[1], vns[2], vns[3], tex->tex_page, tex->draw_type);
+        S_Output_DrawTextured(4, (const PHD_VBUF **)vns, tex->tex_page);
     }
 }
 
@@ -265,7 +254,7 @@ static void M_DrawObjectFace3EnvMap(
         }
 
         if (face->enable_reflections) {
-            S_Output_DrawEnvMapTriangle(vns[0], vns[1], vns[2]);
+            S_Output_DrawEnvMap(3, (const PHD_VBUF **)vns);
         }
     }
 }
@@ -288,127 +277,29 @@ static void M_DrawObjectFace4EnvMap(
         }
 
         if (face->enable_reflections) {
-            S_Output_DrawEnvMapQuad(vns[0], vns[1], vns[2], vns[3]);
+            S_Output_DrawEnvMap(4, (const PHD_VBUF **)vns);
         }
     }
 }
 
 static void M_DrawRoomSprites(const ROOM_MESH *const mesh)
 {
-    for (int i = 0; i < mesh->num_sprites; i++) {
-        const ROOM_SPRITE *room_sprite = &mesh->sprites[i];
-        const PHD_VBUF *const vbuf = &m_VBuf[room_sprite->vertex];
-        if (vbuf->clip < 0) {
-            continue;
-        }
-
-        const int32_t zv = vbuf->zv;
-        const SPRITE_TEXTURE *const sprite =
-            Output_GetSpriteTexture(room_sprite->texture);
-        const int32_t zp = (zv / g_PhdPersp);
-        const int32_t x0 =
-            Viewport_GetCenterX() + (vbuf->xv + (sprite->x0 << W2V_SHIFT)) / zp;
-        const int32_t y0 =
-            Viewport_GetCenterY() + (vbuf->yv + (sprite->y0 << W2V_SHIFT)) / zp;
-        const int32_t x1 =
-            Viewport_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
-        const int32_t y1 =
-            Viewport_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
-        if (x1 >= g_PhdLeft && y1 >= g_PhdTop && x0 < g_PhdRight
-            && y0 < g_PhdBottom) {
-            S_Output_DrawSprite(
-                x0, y0, x1, y1, zv, room_sprite->texture, vbuf->g);
-        }
-    }
 }
 
-static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
+static void M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
 {
-    // clang-format off
-    double xv =
-        g_MatrixPtr->_00 * pos.x +
-        g_MatrixPtr->_01 * pos.y +
-        g_MatrixPtr->_02 * pos.z +
-        g_MatrixPtr->_03;
-    double yv =
-        g_MatrixPtr->_10 * pos.x +
-        g_MatrixPtr->_11 * pos.y +
-        g_MatrixPtr->_12 * pos.z +
-        g_MatrixPtr->_13;
-    double zv =
-        g_MatrixPtr->_20 * pos.x +
-        g_MatrixPtr->_21 * pos.y +
-        g_MatrixPtr->_22 * pos.z +
-        g_MatrixPtr->_23;
-    // clang-format on
-
-    vbuf->xv = xv;
-    vbuf->yv = yv;
-    vbuf->zv = zv;
-
-    uint16_t clip_flags;
-    if (zv < Output_GetNearZ()) {
-        clip_flags = 0x8000;
-    } else {
-        clip_flags = 0;
-
-        double persp = g_PhdPersp / zv;
-        double xs = Viewport_GetCenterX() + xv * persp;
-        double ys = Viewport_GetCenterY() + yv * persp;
-
-        if (xs < g_PhdLeft) {
-            clip_flags |= 1;
-        } else if (xs > g_PhdRight) {
-            clip_flags |= 2;
-        }
-
-        if (ys < g_PhdTop) {
-            clip_flags |= 4;
-        } else if (ys > g_PhdBottom) {
-            clip_flags |= 8;
-        }
-
-        vbuf->xs = xs;
-        vbuf->ys = ys;
-    }
-    vbuf->clip = clip_flags;
-    return clip_flags;
+    vbuf->zv = g_MatrixPtr->_20 * pos.x + g_MatrixPtr->_21 * pos.y
+        + g_MatrixPtr->_22 * pos.z + g_MatrixPtr->_23;
+    vbuf->world_pos = pos;
+    vbuf->flags = 0;
 }
 
-static void M_CalcVertexWibble(PHD_VBUF *const vbuf)
-{
-    double xs = vbuf->xs;
-    double ys = vbuf->ys;
-    xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & (WIBBLE_SIZE - 1)];
-    ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & (WIBBLE_SIZE - 1)];
-
-    int16_t clip_flags = vbuf->clip & ~15;
-    if (xs < g_PhdLeft) {
-        clip_flags |= 1;
-    } else if (xs > g_PhdRight) {
-        clip_flags |= 2;
-    }
-
-    if (ys < g_PhdTop) {
-        clip_flags |= 4;
-    } else if (ys > g_PhdBottom) {
-        clip_flags |= 8;
-    }
-
-    vbuf->xs = xs;
-    vbuf->ys = ys;
-    vbuf->clip = clip_flags;
-}
-
-static bool M_CalcObjectVertices(
+static void M_CalcObjectVertices(
     const XYZ_16 *const vertices, const int16_t count)
 {
-    uint16_t total_clip = 0xFFFF;
-    for (int i = 0; i < count; i++) {
-        total_clip &= M_CalcVertex(&m_VBuf[i], vertices[i]);
+    for (int32_t i = 0; i < count; i++) {
+        M_CalcVertex(&m_VBuf[i], vertices[i]);
     }
-
-    return total_clip == 0;
 }
 
 static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
@@ -545,16 +436,12 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh)
                 % WIBBLE_SIZE)];
             CLAMP(vbuf->g, 0, 0x1FFF);
         }
-    }
-}
 
-static void M_CalcRoomVerticesWibble(const ROOM_MESH *const mesh)
-{
-    for (int32_t i = 0; i < mesh->num_vertices; i++) {
-        if (mesh->vertices[i].flags & NO_VERT_MOVE) {
-            continue;
+        if (vertex->flags & NO_VERT_MOVE) {
+            vbuf->flags = 1;
+        } else {
+            vbuf->flags = 0;
         }
-        M_CalcVertexWibble(&m_VBuf[i]);
     }
 }
 
@@ -562,7 +449,6 @@ static void M_CalcWibbleTable(void)
 {
     for (int i = 0; i < WIBBLE_SIZE; i++) {
         PHD_ANGLE angle = (i * DEG_360) / WIBBLE_SIZE;
-        m_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
         m_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
         m_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
     }
@@ -571,11 +457,13 @@ static void M_CalcWibbleTable(void)
 bool Output_Init(void)
 {
     M_CalcWibbleTable();
+    Output_Sprites_Init();
     return S_Output_Init();
 }
 
 void Output_Shutdown(void)
 {
+    Output_Sprites_Shutdown();
     S_Output_Shutdown();
     Memory_FreePointer(&m_BackdropImagePath);
 }
@@ -599,9 +487,39 @@ void Output_ApplyRenderSettings(void)
     }
 }
 
+static int M_CompareFace3s(const void *a, const void *b)
+{
+    const FACE3 *const face_a = a;
+    const FACE3 *const face_b = b;
+    return face_a->texture_idx - face_b->texture_idx;
+}
+
+static int M_CompareFace4s(const void *a, const void *b)
+{
+    const FACE4 *const face_a = a;
+    const FACE4 *const face_b = b;
+    return face_a->texture_idx - face_b->texture_idx;
+}
+
 void Output_DownloadTextures(void)
 {
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        ROOM *const room = Room_Get(i);
+        qsort(
+            room->mesh.face3s, room->mesh.num_face3s, sizeof(FACE3),
+            M_CompareFace3s);
+    }
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        ROOM *const room = Room_Get(i);
+        qsort(
+            room->mesh.face4s, room->mesh.num_face4s, sizeof(FACE4),
+            M_CompareFace4s);
+    }
+
     S_Output_DownloadTextures(Output_GetTexturePageCount());
+
+    Output_Textures_UploadLevel();
+    Output_Sprites_UploadLevel();
 }
 
 void Output_DrawBlack(void)
@@ -627,6 +545,9 @@ void Output_BeginScene(void)
     Output_ApplyFOV();
     Text_DrawReset();
 
+    Output_Sprites_UploadProjectionMatrix();
+    Output_Sprites_UploadUniforms();
+
     S_Output_RenderBegin();
     m_LightningCount = 0;
 }
@@ -650,10 +571,10 @@ void Output_ClearDepthBuffer(void)
 
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
 {
-    if (!M_CalcObjectVertices(mesh->vertices, mesh->num_vertices)) {
-        return;
-    }
+    M_CalcObjectVertices(mesh->vertices, mesh->num_vertices);
 
+    S_Output_UploadModelMatrix();
+    S_Output_UploadProjectionMatrix();
     M_CalcVerticeLight(mesh);
     M_DrawTexturedFace4s(mesh->tex_face4s, mesh->num_tex_face4s);
     M_DrawTexturedFace3s(mesh->tex_face3s, mesh->num_tex_face3s);
@@ -680,6 +601,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
             },
             mesh->radius);
     }
+    S_Output_ResetMatrix();
 }
 
 void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
@@ -707,10 +629,10 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     g_PhdRight = Viewport_GetMaxX();
     g_PhdBottom = Viewport_GetMaxY();
 
-    if (!M_CalcObjectVertices(mesh->vertices, mesh->num_vertices)) {
-        return;
-    }
+    M_CalcObjectVertices(mesh->vertices, mesh->num_vertices);
 
+    S_Output_UploadModelMatrix();
+    S_Output_UploadProjectionMatrix();
     S_Output_DisableDepthTest();
     M_CalcSkyboxLight(mesh);
     M_DrawTexturedFace4s(mesh->tex_face4s, mesh->num_tex_face4s);
@@ -718,27 +640,56 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     M_DrawFlatFace4s(mesh->flat_face4s, mesh->num_flat_face4s);
     M_DrawFlatFace3s(mesh->flat_face3s, mesh->num_flat_face3s);
     S_Output_EnableDepthTest();
+    S_Output_ResetMatrix();
 }
 
-void Output_DrawRoom(const ROOM_MESH *const mesh)
+void Output_DrawRoomMesh(const ROOM_MESH *const mesh)
 {
+    S_Output_UploadModelMatrix();
+    S_Output_UploadProjectionMatrix();
     M_CalcRoomVertices(mesh);
-
     if (m_IsWibbleEffect) {
+        S_Output_SetWibbleEffect(false, m_WibbleOffset);
         S_Output_DisableDepthWrites();
         M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
         M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
         S_Output_EnableDepthWrites();
-        M_CalcRoomVerticesWibble(mesh);
+        S_Output_SetWibbleEffect(m_IsWibbleEffect, m_WibbleOffset);
     }
-
     M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
     M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
-    M_DrawRoomSprites(mesh);
+    S_Output_ResetMatrix();
+}
+
+void Output_Draw3DLine(
+    const XYZ_32 pos1, const XYZ_32 pos2, const RGBA_8888 color)
+{
+    S_Output_Draw2DLine(pos1, pos2, color, color);
+}
+
+void Output_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
+{
+    Output_Draw3DLine(vert[0], vert[1], color);
+    Output_Draw3DLine(vert[1], vert[2], color);
+    Output_Draw3DLine(vert[2], vert[3], color);
+    Output_Draw3DLine(vert[3], vert[0], color);
+}
+
+void Output_DrawRoomBinding(const ROOM *const room)
+{
+    S_Output_ResetMatrix();
+    S_Output_DisableDepthTest();
+    const RGBA_8888 color = { 255, 0, 0, 255 };
+    Output_DrawScreenFrame(
+        room->bound_left, room->bound_top, room->bound_right - room->bound_left,
+        room->bound_bottom - room->bound_top, color);
+    S_Output_EnableDepthTest();
 }
 
 void Output_DrawRoomPortals(const ROOM *const room)
 {
+    S_Output_UploadModelMatrix();
+    S_Output_UploadProjectionMatrix();
     S_Output_DisableDepthTest();
     const RGBA_8888 portal_color = { 0, 0, 255, 255 };
     for (int32_t i = 0; i < room->portals->count; i++) {
@@ -756,22 +707,14 @@ void Output_DrawRoomPortals(const ROOM *const room)
 
 void Output_DrawRoomTriggers(const ROOM *const room)
 {
-#define DRAW_TRI(a, b, c, color)                                               \
-    do {                                                                       \
-        S_Output_DrawFlatTriangle(a, b, c, color);                             \
-        S_Output_DrawFlatTriangle(c, b, a, color);                             \
-    } while (0)
-#define DRAW_QUAD(a, b, c, d, color)                                           \
-    do {                                                                       \
-        DRAW_TRI(a, b, d, color);                                              \
-        DRAW_TRI(b, c, d, color);                                              \
-    } while (0)
-
     const RGBA_8888 color = { .r = 255, .g = 0, .b = 255, .a = 128 };
     const XZ_16 offsets[4] = { { 0, 0 }, { 0, 1 }, { 1, 1 }, { 1, 0 } };
+    PHD_VBUF *vns[4] = { &m_VBuf[0], &m_VBuf[1], &m_VBuf[2], &m_VBuf[3] };
 
     m_IsWaterEffect = false;
     m_IsShadeEffect = false;
+    S_Output_UploadModelMatrix();
+    S_Output_UploadProjectionMatrix();
     S_Output_DisableTextureMode();
     S_Output_DisableDepthWrites();
     S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
@@ -781,7 +724,6 @@ void Output_DrawRoomTriggers(const ROOM *const room)
             if (sector->trigger == nullptr) {
                 continue;
             }
-            PHD_VBUF vns[4];
             for (int32_t i = 0; i < 4; i++) {
                 XYZ_16 vertex_pos = {
                     .x = (x + offsets[i].x) * WALL_L,
@@ -801,21 +743,16 @@ void Output_DrawRoomTriggers(const ROOM *const room)
                         sector, world_pos.x, world_pos.y, world_pos.z)
                     + (m_IsWaterEffect ? -16 : -2);
 
-                M_CalcVertex(&vns[i], vertex_pos);
-                vns[i].g = HIGH_LIGHT;
-                vns[i].zv -=
-                    (double)((1 << W2V_SHIFT) / 2); // reduce z fighting
+                M_CalcVertex(vns[i], vertex_pos);
+                vns[i]->g = HIGH_LIGHT;
             }
 
-            DRAW_QUAD(&vns[0], &vns[1], &vns[2], &vns[3], color);
+            S_Output_DrawFlat(4, (const PHD_VBUF **)vns, color);
         }
     }
 
     S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
     S_Output_EnableDepthWrites();
-
-#undef DRAW_TRI
-#undef DRAW_QUAD
 }
 
 void Output_DrawShadow(
@@ -851,28 +788,17 @@ void Output_DrawShadow(
         item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
 
-    if (M_CalcObjectVertices(shadow.vertices, shadow.vertex_count)) {
-        int16_t clip_and = 1;
-        int16_t clip_positive = 1;
-        int16_t clip_or = 0;
-        for (int32_t i = 0; i < shadow.vertex_count; i++) {
-            clip_and &= m_VBuf[i].clip;
-            clip_positive &= m_VBuf[i].clip >= 0;
-            clip_or |= m_VBuf[i].clip;
-        }
-        PHD_VBUF *vn1 = &m_VBuf[0];
-        PHD_VBUF *vn2 = &m_VBuf[g_Config.visuals.enable_round_shadow ? 4 : 1];
-        PHD_VBUF *vn3 = &m_VBuf[g_Config.visuals.enable_round_shadow ? 8 : 2];
-
-        int32_t c1 = (vn3->xs - vn2->xs) * (vn1->ys - vn2->ys);
-        int32_t c2 = (vn1->xs - vn2->xs) * (vn3->ys - vn2->ys);
-        bool visible = (int32_t)(c1 - c2) >= 0;
-
-        if (!clip_and && clip_positive && visible) {
-            S_Output_DrawShadow(
-                &m_VBuf[0], clip_or ? 1 : 0, shadow.vertex_count);
-        }
+    for (int32_t i = 0; i < shadow.vertex_count; i++) {
+        int32_t angle = (DEG_180 + i * DEG_360) / shadow.vertex_count;
+        m_VBuf[i].world_pos.x = x_mid + (x_add * 2) * Math_Sin(angle) / DEG_90;
+        m_VBuf[i].world_pos.z = z_mid + (z_add * 2) * Math_Cos(angle) / DEG_90;
+        m_VBuf[i].world_pos.y = 0;
     }
+
+    S_Output_UploadModelMatrix();
+    S_Output_UploadProjectionMatrix();
+    S_Output_DrawShadow(shadow.vertex_count, &m_VBuf[0]);
+    S_Output_ResetMatrix();
 
     Matrix_Pop();
 }
@@ -943,6 +869,10 @@ int32_t Output_GetFarZ(void)
 void Output_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
 {
+#if 0
+    // TODO
+    Output_Sprites_RenderSprite((XYZ_32) { x, y, z }, sprnum, shade);
+#else
     x -= g_W2VMatrix._03;
     y -= g_W2VMatrix._13;
     z -= g_W2VMatrix._23;
@@ -987,6 +917,7 @@ void Output_DrawSprite(
         CLAMPG(shade, 0x1FFF);
         S_Output_DrawSprite(x0, y0, x1, y1, zv, sprnum, shade);
     }
+#endif
 }
 
 void Output_DrawScreenFlatQuad(
@@ -1002,33 +933,31 @@ void Output_DrawScreenGradientQuad(
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
-void Output_Draw3DLine(
-    const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
+void Output_DrawScreenLine(
+    const int32_t x0, const int32_t y0, const int32_t x1, const int32_t y1,
+    const RGBA_8888 color)
 {
-    PHD_VBUF vbuf[2];
-    uint16_t total_clip = 0xFFFF;
-    total_clip &= M_CalcVertex(
-        &vbuf[0], (XYZ_16) { .x = pos_0.x, .y = pos_0.y, .z = pos_0.z });
-    total_clip &= M_CalcVertex(
-        &vbuf[1], (XYZ_16) { .x = pos_1.x, .y = pos_1.y, .z = pos_1.z });
-    S_Output_Draw3DLine(&vbuf[0], &vbuf[1], color);
+    S_Output_Draw2DLine(
+        (XYZ_32) { x0, y0, 0 }, (XYZ_32) { x1, y1, 0 }, color, color);
 }
 
-void Output_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
+void Output_DrawScreenFrame(
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 color)
 {
-    Output_Draw3DLine(vert[0], vert[1], color);
-    Output_Draw3DLine(vert[1], vert[2], color);
-    Output_Draw3DLine(vert[2], vert[3], color);
-    Output_Draw3DLine(vert[3], vert[0], color);
+    Output_DrawScreenLine(sx, sy, sx, sy + h, color);
+    Output_DrawScreenLine(sx, sy, sx + w, sy, color);
+    Output_DrawScreenLine(sx + w, sy, sx + w, sy + h, color);
+    Output_DrawScreenLine(sx, sy + h, sx + w, sy + h, color);
 }
 
 void Output_DrawScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
-    RGBA_8888 colLight, int32_t thickness)
+    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 color_dark,
+    RGBA_8888 color_light, int32_t thickness)
 {
     float scale = Viewport_GetHeight() / 480.0;
-    S_Output_ScreenBox(
-        sx - scale, sy - scale, w, h, colDark, colLight,
+    S_Output_2ColourBox(
+        sx - scale, sy - scale, w, h, color_dark, color_light,
         thickness * scale / 2.0f);
 }
 
@@ -1188,6 +1117,7 @@ void Output_SetupBelowWater(bool underwater)
     m_IsWaterEffect = true;
     m_IsWibbleEffect = !underwater;
     m_IsShadeEffect = true;
+    S_Output_SetWibbleEffect(m_IsWibbleEffect, m_WibbleOffset);
 }
 
 void Output_SetupAboveWater(bool underwater)
@@ -1195,11 +1125,13 @@ void Output_SetupAboveWater(bool underwater)
     m_IsWaterEffect = false;
     m_IsWibbleEffect = underwater;
     m_IsShadeEffect = underwater;
+    S_Output_SetWibbleEffect(m_IsWibbleEffect, m_WibbleOffset);
 }
 
 void Output_AnimateTextures(const int32_t num_frames)
 {
     m_WibbleOffset = (m_WibbleOffset + num_frames) % WIBBLE_SIZE;
+    S_Output_SetWibbleEffect(m_IsWibbleEffect, m_WibbleOffset);
     m_AnimatedTexturesOffset += num_frames;
     while (m_AnimatedTexturesOffset > 5) {
         Output_CycleAnimatedTextures();
@@ -1412,4 +1344,84 @@ void Output_LightRoomVertices(const ROOM *room)
 {
     // TODO: remove
     ASSERT_FAIL();
+}
+
+void Output_EnableScissor(
+    const float x, const float y, const float w, const float h)
+{
+    const int32_t border = 2; // to deal with precision issues
+    GFX_Context_EnableScissor(
+        x - border, y + border, w + border * 2, h + border * 2);
+}
+
+void Output_DisableScissor(void)
+{
+    GFX_Context_DisableScissor();
+}
+
+int32_t Output_GetWibbleOffset(void)
+{
+    if (!m_IsWibbleEffect) {
+        return -1;
+    }
+    return m_WibbleOffset;
+}
+
+void Output_GetModelMatrix(GLfloat output[][4])
+{
+#define S(x) (x / (GLfloat)(1 << W2V_SHIFT))
+    const MATRIX *const m = g_MatrixPtr;
+    output[0][0] = S(m->_00);
+    output[0][1] = S(m->_01);
+    output[0][2] = S(m->_02);
+    output[0][3] = S(m->_03);
+
+    output[1][0] = S(m->_10);
+    output[1][1] = S(m->_11);
+    output[1][2] = S(m->_12);
+    output[1][3] = S(m->_13);
+
+    output[2][0] = -S(m->_20);
+    output[2][1] = -S(m->_21);
+    output[2][2] = -S(m->_22);
+    output[2][3] = -S(m->_23);
+
+    output[3][0] = 0.0f;
+    output[3][1] = 0.0f;
+    output[3][2] = 0.0f;
+    output[3][3] = 1.0f;
+}
+
+void Output_GetProjectionMatrix(GLfloat output[][4])
+{
+#define S(x) (x / (GLfloat)(1 << W2V_SHIFT))
+    const float left = 0.0f;
+    const float top = 0.0f;
+    const float right = Viewport_GetWidth();
+    const float bottom = Viewport_GetHeight();
+    const float near = S(Output_GetNearZ());
+    const float far = S(Output_GetFarZ());
+    const float aspect = (float)right / (float)bottom;
+    const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
+    const float f = 1.0f / tan(fov / 2.0f);
+
+    output[0][0] = f / aspect;
+    output[0][1] = 0.0f;
+    output[0][2] = 0.0f;
+    output[0][3] = 0.0f;
+
+    output[1][0] = 0.0f;
+    output[1][1] = -f;
+    output[1][2] = 0.0f;
+    output[1][3] = 0.0f;
+
+    output[2][0] = 0.0f;
+    output[2][1] = 0.0f;
+    output[2][2] = -(far + near) / (far - near);
+    output[2][3] = -(2.0f * far * near) / (far - near);
+
+    output[3][0] = 0.0f;
+    output[3][1] = 0.0f;
+    output[3][2] = -1.0f;
+    output[3][3] = 0.0f;
 }

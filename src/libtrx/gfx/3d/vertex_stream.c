@@ -64,6 +64,9 @@ void GFX_3D_VertexStream_Init(GFX_3D_VERTEX_STREAM *const vertex_stream)
     GFX_GL_VertexArray_Attribute(
         &vertex_stream->vtc_format, 3, 4, GL_FLOAT, GL_FALSE,
         sizeof(GFX_3D_VERTEX), offsetof(GFX_3D_VERTEX, r));
+    GFX_GL_VertexArray_IAttribute(
+        &vertex_stream->vtc_format, 4, 1, GL_UNSIGNED_BYTE,
+        sizeof(GFX_3D_VERTEX), offsetof(GFX_3D_VERTEX, flags));
 
     GFX_GL_CheckError();
 }

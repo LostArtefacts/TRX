@@ -17,6 +17,8 @@ void S_Output_EnableDepthWrites(void);
 void S_Output_DisableDepthWrites(void);
 void S_Output_EnableDepthTest(void);
 void S_Output_DisableDepthTest(void);
+void S_Output_EnableCullFace(void);
+void S_Output_DisableCullFace(void);
 
 void S_Output_RenderBegin(void);
 void S_Output_RenderEnd(void);
@@ -32,32 +34,21 @@ void S_Output_SelectTexture(int32_t texture_num);
 void S_Output_DownloadBackdropSurface(const IMAGE *image);
 void S_Output_DrawBackdropSurface(void);
 
-void S_Output_DrawFlatTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGBA_8888 color);
-void S_Output_DrawEnvMapTriangle(
-    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3);
-void S_Output_DrawEnvMapQuad(
-    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3,
-    const PHD_VBUF *vn4);
-void S_Output_DrawTexturedTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage,
-    uint16_t textype);
-void S_Output_DrawTexturedQuad(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, int16_t tpage,
-    uint16_t textype);
-void S_Output_Draw3DLine(
-    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const RGBA_8888 color);
 void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);
+void S_Output_DrawSprite3D(
+    XYZ_32 pos, const SPRITE_TEXTURE *sprite, int16_t shade);
+void S_Output_Draw2DLine(
+    XYZ_32 pos1, XYZ_32 pos2, RGBA_8888 color1, RGBA_8888 color2);
 void S_Output_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br);
-void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count);
+void S_Output_DrawShadow(int32_t vertex_count, const PHD_VBUF *src_vbuf);
 void S_Output_DrawLightningSegment(
     int x1, int y1, int z1, int thickness1, int x2, int y2, int z2,
     int thickness2);
 
-void S_Output_ScreenBox(
+void S_Output_2ColourBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
     RGBA_8888 col_light, float thickness);
 void S_Output_4ColourTextBox(
@@ -66,3 +57,13 @@ void S_Output_4ColourTextBox(
 void S_Output_2ToneColourTextBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
     RGBA_8888 centre, float thickness);
+
+void S_Output_UploadModelMatrix(void);
+void S_Output_UploadProjectionMatrix(void);
+void S_Output_ResetMatrix(void);
+void S_Output_DrawFlat(
+    int32_t vertex_count, const PHD_VBUF *src_vbuf[], RGBA_8888 color);
+void S_Output_DrawTextured(
+    int32_t vertex_count, const PHD_VBUF *src_vbuf[], int16_t tex_page);
+void S_Output_DrawEnvMap(int32_t vertex_count, const PHD_VBUF *src_vbuf[]);
+void S_Output_SetWibbleEffect(bool enabled, float offset);
