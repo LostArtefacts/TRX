@@ -2,4 +2,7 @@
     #include "text_tr1.def"
 #elif TR_VERSION == 2
     #include "text_tr2.def"
+    GLYPH_DEFINE("\\{secret 1}", GLYPH_SECRET, 16, 0)
+    GLYPH_DEFINE("\\{secret 2}", GLYPH_SECRET, 16, 1)
+    GLYPH_DEFINE("\\{secret 3}", GLYPH_SECRET, 16, 2)
 #endif

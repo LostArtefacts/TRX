@@ -19,6 +19,10 @@
     "demo_delay": 30,
     "secret_track": 47,
 
+    "injections": [
+        "data/injections/font.bin",
+    ],
+
     "levels": [
         {
             "path": "PLACEHOLDER",
