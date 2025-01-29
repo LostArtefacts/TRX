@@ -31,6 +31,10 @@
         ],
     },
 
+    "injections": [
+        "data/injections/font.bin",
+    ],
+
     "levels": [
         // 0. Lara's Home
         {

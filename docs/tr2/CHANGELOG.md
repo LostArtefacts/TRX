@@ -1,10 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...develop) - ××××-××-××
-- added Italian localization to the config tool
 - added support for 60 FPS rendering
+- added support for more accented characters (#2356)
 - added a `/cheats` console command
 - added a `/wireframe` console command (#2500)
 - added a `/fps` console command
 - added support for `-l`/`--level` argument to play a single level
+- added Italian localization to the config tool
 - changed injections to a new file format with a smaller footprint, improved applicability tests and similar feature support as TR1 (#1967)
 - fixed smashed windows blocking enemy pathing after loading a save (#2535)
 - fixed several instances of the camera going out of bounds (#1034)

@@ -367,6 +367,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 
 #### UI
 - added proper UI and bar scaling
+- added support for more accented characters
 - added enemy health bars
 - added PS1 style UI
 - added fade effects to displayed images

@@ -30,6 +30,12 @@ game with new enhancements and features.
 
 ## Improvements over original game
 
+#### UI
+- added support for more accented characters
+- added fade effects to displayed images
+- added a wireframe mode
+- improved support for windowed mode
+
 #### Gameplay
 - added an option to fix M16 accuracy while running
 - added optional rendering of pickups in the UI as 3D meshes
