@@ -3,6 +3,7 @@
 #include "game/gun/gun_misc.h"
 #include "game/items.h"
 #include "game/lara/hair.h"
+#include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "global/vars.h"
@@ -98,11 +99,7 @@ void Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
     Matrix_TranslateRel32(bone[6].pos);
-    // TODO: this is ugly
-    if (g_Lara.weapon_item != NO_ITEM && g_Lara.gun_type == LGT_M16
-        && (g_Items[g_Lara.weapon_item].current_anim_state == 0
-            || g_Items[g_Lara.weapon_item].current_anim_state == 2
-            || g_Items[g_Lara.weapon_item].current_anim_state == 4)) {
+    if (Lara_IsM16Active()) {
         mesh_rots =
             g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num].mesh_rots;
     }
@@ -337,11 +334,7 @@ void Lara_Draw_I(
     Matrix_Pop_I();
 
     Matrix_TranslateRel32_I(bone[6].pos);
-    // TODO: this is ugly
-    if (g_Lara.weapon_item != -1 && g_Lara.gun_type == 5
-        && ((g_Items[g_Lara.weapon_item].current_anim_state) == 0
-            || g_Items[g_Lara.weapon_item].current_anim_state == 2
-            || g_Items[g_Lara.weapon_item].current_anim_state == 4)) {
+    if (Lara_IsM16Active()) {
         mesh_rots_2 =
             g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num].mesh_rots;
         mesh_rots_1 = mesh_rots_2;

@@ -1,6 +1,7 @@
 #include "game/lara/hair.h"
 
 #include "game/items.h"
+#include "game/lara/misc.h"
 #include "game/output.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -46,11 +47,7 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 
     const ANIM_BONE *bone = Object_GetBone(Object_Get(O_LARA), 0);
     Matrix_TranslateRel32(bone[LM_TORSO - 1].pos);
-    // TODO: this is ugly
-    if (g_Lara.weapon_item != NO_ITEM && g_Lara.gun_type == LGT_M16
-        && (g_Items[g_Lara.weapon_item].current_anim_state == 0
-            || g_Items[g_Lara.weapon_item].current_anim_state == 2
-            || g_Items[g_Lara.weapon_item].current_anim_state == 4)) {
+    if (Lara_IsM16Active()) {
         mesh_rots =
             g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num].mesh_rots;
     }
@@ -127,11 +124,7 @@ static void M_CalculateSpheres_I(
 
     const ANIM_BONE *bone = Object_GetBone(Object_Get(O_LARA), 0);
     Matrix_TranslateRel32_I(bone[LM_TORSO - 1].pos);
-    // TODO: this is ugly
-    if (g_Lara.weapon_item != NO_ITEM && g_Lara.gun_type == LGT_M16
-        && (g_Items[g_Lara.weapon_item].current_anim_state == 0
-            || g_Items[g_Lara.weapon_item].current_anim_state == 2
-            || g_Items[g_Lara.weapon_item].current_anim_state == 4)) {
+    if (Lara_IsM16Active()) {
         mesh_rots_1 =
             g_Lara.right_arm.frame_base[g_Lara.right_arm.frame_num].mesh_rots;
         mesh_rots_2 = mesh_rots_1;
