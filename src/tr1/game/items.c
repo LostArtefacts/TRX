@@ -28,14 +28,12 @@
     } while (0)
 
 ITEM *g_Items = nullptr;
-int16_t g_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 static BOUNDS_16 m_InterpolatedBounds = {};
 static int16_t m_MaxUsedItemCount = 0;
 
 void Item_InitialiseArray(int32_t num_items)
 {
-    g_NextItemActive = NO_ITEM;
     m_NextItemFree = Item_GetLevelCount();
     m_MaxUsedItemCount = Item_GetLevelCount();
     for (int32_t i = m_NextItemFree; i < num_items - 1; i++) {
@@ -51,7 +49,7 @@ int32_t Item_GetTotalCount(void)
 
 void Item_Control(void)
 {
-    int16_t item_num = g_NextItemActive;
+    int16_t item_num = Item_GetNextActive();
     while (item_num != NO_ITEM) {
         ITEM *item = &g_Items[item_num];
         const OBJECT *const obj = Object_Get(item->object_id);
@@ -165,9 +163,9 @@ void Item_RemoveActive(int16_t item_num)
 
     item->active = 0;
 
-    int16_t link_num = g_NextItemActive;
+    int16_t link_num = Item_GetNextActive();
     if (link_num == item_num) {
-        g_NextItemActive = item->next_active;
+        Item_SetNextActive(item->next_active);
         return;
     }
 
@@ -214,8 +212,8 @@ void Item_AddActive(int16_t item_num)
     }
 
     item->active = 1;
-    item->next_active = g_NextItemActive;
-    g_NextItemActive = item_num;
+    item->next_active = Item_GetNextActive();
+    Item_SetNextActive(item_num);
 }
 
 void Item_NewRoom(int16_t item_num, int16_t room_num)

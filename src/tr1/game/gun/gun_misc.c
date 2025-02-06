@@ -215,7 +215,7 @@ void Gun_GetNewTarget(WEAPON_INFO *winfo)
     src.z = g_LaraItem->pos.z;
     src.room_num = g_LaraItem->room_num;
 
-    int16_t item_num = g_NextItemActive;
+    int16_t item_num = Item_GetNextActive();
     while (item_num != NO_ITEM) {
         ITEM *const item = Item_Get(item_num);
         item_num = item->next_active;

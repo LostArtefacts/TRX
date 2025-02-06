@@ -56,8 +56,6 @@ void Item_InitialiseArray(const int32_t num_items)
 {
     ASSERT(num_items > 0);
     m_NextItemFree = Item_GetLevelCount();
-    g_PrevItemActive = NO_ITEM;
-    g_NextItemActive = NO_ITEM;
     m_MaxUsedItemCount = Item_GetLevelCount();
     for (int32_t i = m_NextItemFree; i < num_items - 1; i++) {
         ITEM *const item = &g_Items[i];
@@ -69,7 +67,7 @@ void Item_InitialiseArray(const int32_t num_items)
 
 void Item_Control(void)
 {
-    int16_t item_num = g_NextItemActive;
+    int16_t item_num = Item_GetNextActive();
     while (item_num != NO_ITEM) {
         const ITEM *const item = Item_Get(item_num);
         const int16_t next = item->next_active;
@@ -192,9 +190,9 @@ void Item_RemoveActive(const int16_t item_num)
 
     item->active = 0;
 
-    int16_t link_num = g_NextItemActive;
+    int16_t link_num = Item_GetNextActive();
     if (link_num == item_num) {
-        g_NextItemActive = item->next_active;
+        Item_SetNextActive(item->next_active);
         return;
     }
 
@@ -243,8 +241,8 @@ void Item_AddActive(const int16_t item_num)
     }
 
     item->active = 1;
-    item->next_active = g_NextItemActive;
-    g_NextItemActive = item_num;
+    item->next_active = Item_GetNextActive();
+    Item_SetNextActive(item_num);
 }
 
 void Item_NewRoom(const int16_t item_num, const int16_t room_num)
@@ -299,14 +297,14 @@ void Item_ClearKilled(void)
 {
     // Remove corpses and other killed items. Part of OG performance
     // improvements, generously used in Opera House and Barkhang Monastery
-    int16_t link_num = g_PrevItemActive;
+    int16_t link_num = Item_GetPrevActive();
     while (link_num != NO_ITEM) {
         ITEM *const item = &g_Items[link_num];
         Item_Kill(link_num);
         link_num = item->next_active;
         item->next_active = NO_ITEM;
     }
-    g_PrevItemActive = NO_ITEM;
+    Item_SetPrevActive(NO_ITEM);
 }
 
 bool Item_IsSmashable(const ITEM *item)

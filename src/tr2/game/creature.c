@@ -362,8 +362,8 @@ void Creature_Die(const int16_t item_num, const bool explode)
     item->flags |= IF_ONE_SHOT;
 
     if (item->killed) {
-        item->next_active = g_PrevItemActive;
-        g_PrevItemActive = item_num;
+        item->next_active = Item_GetPrevActive();
+        Item_SetPrevActive(item_num);
     }
 
     if (obj->intelligent) {

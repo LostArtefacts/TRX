@@ -243,8 +243,8 @@ static void M_ReadItems(void)
                 item->data = nullptr;
                 if (item->killed && item->hit_points <= 0
                     && !(item->flags & IF_KILLED)) {
-                    item->next_active = g_PrevItemActive;
-                    g_PrevItemActive = item_num;
+                    item->next_active = Item_GetPrevActive();
+                    Item_SetPrevActive(item_num);
                 }
             }
 

@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 extern ITEM *g_Items;
-extern int16_t g_NextItemActive;
 
 void Item_InitialiseArray(int32_t num_items);
 void Item_Control(void);

@@ -72,8 +72,6 @@ int32_t g_LevelComplete;
 SAVEGAME_INFO g_SaveGame = {};
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
-int16_t g_NextItemActive;
-int16_t g_PrevItemActive;
 int32_t g_SoundEffectCount;
 int32_t g_FlipStatus;
 ITEM *g_Items = nullptr;
