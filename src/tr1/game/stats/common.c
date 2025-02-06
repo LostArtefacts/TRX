@@ -161,7 +161,7 @@ void Stats_ObserveRoomsLoad(void)
 
 void Stats_ObserveItemsLoad(void)
 {
-    m_CachedItemCount = g_LevelItemCount;
+    m_CachedItemCount = Item_GetLevelCount();
 }
 
 void Stats_CalculateStats(void)

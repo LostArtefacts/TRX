@@ -36,9 +36,9 @@ static int16_t m_MaxUsedItemCount = 0;
 void Item_InitialiseArray(int32_t num_items)
 {
     g_NextItemActive = NO_ITEM;
-    m_NextItemFree = g_LevelItemCount;
-    m_MaxUsedItemCount = g_LevelItemCount;
-    for (int i = g_LevelItemCount; i < num_items - 1; i++) {
+    m_NextItemFree = Item_GetLevelCount();
+    m_MaxUsedItemCount = Item_GetLevelCount();
+    for (int32_t i = m_NextItemFree; i < num_items - 1; i++) {
         g_Items[i].next_item = i + 1;
     }
     g_Items[num_items - 1].next_item = NO_ITEM;
@@ -77,7 +77,7 @@ void Item_Kill(int16_t item_num)
 
     item->hit_points = -1;
     item->flags |= IF_KILLED;
-    if (item_num >= g_LevelItemCount) {
+    if (item_num >= Item_GetLevelCount()) {
         item->next_item = m_NextItemFree;
         m_NextItemFree = item_num;
     }

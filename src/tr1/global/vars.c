@@ -26,7 +26,6 @@ bool g_LevelComplete = false;
 int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;
 
-int32_t g_LevelItemCount = 0;
 int32_t g_NumberBoxes = 0;
 BOX_INFO *g_Boxes = nullptr;
 uint16_t *g_Overlap = nullptr;

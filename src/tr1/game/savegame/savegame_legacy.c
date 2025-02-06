@@ -144,7 +144,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     M_Skip(MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
     M_Skip(Camera_GetFixedObjectCount() * sizeof(int16_t)); // cameras
 
-    for (int i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
@@ -587,7 +587,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     Savegame_ProcessItemsBeforeLoad();
 
-    for (int i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
@@ -769,7 +769,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
     Savegame_ProcessItemsBeforeSave();
 
-    for (int i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 

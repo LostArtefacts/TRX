@@ -465,8 +465,8 @@ static void M_LoadItems(VFILE *file)
             Shell_ExitSystem("Too many items");
         }
 
+        Item_InitialiseItems(m_LevelInfo.item_count);
         g_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
-        g_LevelItemCount = m_LevelInfo.item_count;
         Item_InitialiseArray(MAX_ITEMS);
 
         for (int i = 0; i < m_LevelInfo.item_count; i++) {
@@ -576,9 +576,10 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     // Must be called after all animations, meshes etc are initialised.
     Object_SetupAllObjects();
 
-    // Must be called after Setup_AllObjects using the cached item
-    // count, as individual setups may increment g_LevelItemCount.
-    for (int i = 0; i < m_LevelInfo.item_count; i++) {
+    // Must be called after Setup_AllObjects using the cached item count, as
+    // individual setups may increment the level item count.
+    const int32_t item_count = Item_GetLevelCount();
+    for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }
 

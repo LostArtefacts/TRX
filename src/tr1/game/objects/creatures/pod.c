@@ -32,7 +32,7 @@ void Pod_Initialise(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    int16_t bug_item_num = Item_Create();
+    const int16_t bug_item_num = Item_CreateLevelItem();
     if (bug_item_num != NO_ITEM) {
         ITEM *const bug = Item_Get(bug_item_num);
 
@@ -66,8 +66,6 @@ void Pod_Initialise(int16_t item_num)
 
         item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
         *(int16_t *)item->data = bug_item_num;
-
-        g_LevelItemCount++;
     }
 
     item->flags = 0;

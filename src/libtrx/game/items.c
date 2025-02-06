@@ -9,9 +9,31 @@
 #include "game/sound/common.h"
 #include "utils.h"
 
+static int32_t m_LevelItemCount = 0;
+
+void Item_InitialiseItems(const int32_t num_items)
+{
+    m_LevelItemCount = num_items;
+    // TODO: alloc here and merge Item_InitialiseArray
+}
+
+int32_t Item_GetLevelCount(void)
+{
+    return m_LevelItemCount;
+}
+
 int16_t Item_GetIndex(const ITEM *const item)
 {
     return item - Item_Get(0);
+}
+
+int16_t Item_CreateLevelItem(void)
+{
+    const int16_t item_num = Item_Create();
+    if (item_num != NO_ITEM) {
+        m_LevelItemCount++;
+    }
+    return item_num;
 }
 
 void Item_TakeDamage(

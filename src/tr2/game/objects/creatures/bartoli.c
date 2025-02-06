@@ -83,8 +83,8 @@ void Bartoli_Initialise(const int16_t item_num)
     item->pos.x -= 2 * STEP_L;
     item->pos.z -= 2 * STEP_L;
 
-    const int16_t item_dragon_back_num = Item_Create();
-    const int16_t item_dragon_front_num = Item_Create();
+    const int16_t item_dragon_back_num = Item_CreateLevelItem();
+    const int16_t item_dragon_front_num = Item_CreateLevelItem();
     ASSERT(item_dragon_back_num != NO_ITEM);
     ASSERT(item_dragon_front_num != NO_ITEM);
 
@@ -113,8 +113,6 @@ void Bartoli_Initialise(const int16_t item_num)
     item_dragon_back->data = (void *)(intptr_t)item_dragon_front_num;
 
     item->data = (void *)(intptr_t)item_dragon_back_num;
-
-    g_LevelItemCount += 2;
 }
 
 void Bartoli_Control(const int16_t item_num)

@@ -66,7 +66,6 @@ extern bool g_IsAssaultTimerActive;
 extern bool g_IsMonkAngry;
 extern uint16_t g_SoundOptionLine;
 extern ASSAULT_STATS g_Assault;
-extern int32_t g_LevelItemCount;
 extern int32_t g_HealthBarTimer;
 extern int32_t g_LevelComplete;
 extern SAVEGAME_INFO g_SaveGame;

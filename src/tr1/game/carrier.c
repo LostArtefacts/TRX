@@ -35,7 +35,7 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
 
 static ITEM *M_GetCarrier(const int16_t item_num)
 {
-    if (item_num < 0 || item_num >= g_LevelItemCount) {
+    if (item_num < 0 || item_num >= Item_GetLevelCount()) {
         return nullptr;
     }
 
@@ -119,7 +119,7 @@ static void M_InitialiseDataDrops(void)
 {
     VECTOR *const pickups = Vector_Create(sizeof(int16_t));
 
-    for (int32_t i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const carrier = M_GetCarrier(i);
         if (carrier == nullptr
             || !Object_IsType(carrier->object_id, g_EnemyObjects)) {
@@ -169,7 +169,7 @@ static void M_InitialiseDataDrops(void)
 
 static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
 {
-    int32_t total_item_count = g_LevelItemCount;
+    int32_t total_item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < level->item_drops.count; i++) {
         const GF_DROP_ITEM_DATA *const data = &level->item_drops.data[i];
 
@@ -363,7 +363,7 @@ void Carrier_AnimateDrops(void)
     }
 
     // Make items that spawn in mid-air or water gracefully fall to the floor.
-    for (int32_t i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const carrier = Item_Get(i);
         CARRIED_ITEM *item = carrier->carried_item;
         while (item) {

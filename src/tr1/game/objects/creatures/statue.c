@@ -31,7 +31,7 @@ void Statue_Initialise(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    int16_t centaur_item_num = Item_Create();
+    const int16_t centaur_item_num = Item_CreateLevelItem();
     ASSERT(centaur_item_num != NO_ITEM);
 
     ITEM *const centaur = Item_Get(centaur_item_num);
@@ -52,8 +52,6 @@ void Statue_Initialise(int16_t item_num)
 
     item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
     *(int16_t *)item->data = centaur_item_num;
-
-    g_LevelItemCount++;
 }
 
 void Statue_Control(int16_t item_num)

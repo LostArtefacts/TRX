@@ -67,7 +67,6 @@ bool g_IsAssaultTimerActive;
 bool g_IsMonkAngry;
 uint16_t g_SoundOptionLine;
 ASSAULT_STATS g_Assault;
-int32_t g_LevelItemCount;
 int32_t g_HealthBarTimer;
 int32_t g_LevelComplete;
 SAVEGAME_INFO g_SaveGame = {};

@@ -224,7 +224,7 @@ void InitialiseLevelFlags(void)
 
 void GetCarriedItems(void)
 {
-    for (int32_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
         if (!Object_Get(item->object_id)->intelligent) {
             continue;
@@ -388,7 +388,7 @@ void InitialiseFinalLevel(void)
     g_FinalBossCount = 0;
     g_FinalLevelCount = 0;
 
-    for (int32_t item_num = 0; item_num < g_LevelItemCount; item_num++) {
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
 
         switch (item->object_id) {

@@ -168,7 +168,7 @@ static void M_LoadItems(VFILE *const file)
     const int32_t num_items = VFile_ReadS32(file);
     LOG_DEBUG("items: %d", num_items);
     if (!num_items) {
-        g_LevelItemCount = 0;
+        Item_InitialiseItems(0);
         goto finish;
     }
 
@@ -178,8 +178,7 @@ static void M_LoadItems(VFILE *const file)
     }
 
     g_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
-    g_LevelItemCount = num_items;
-
+    Item_InitialiseItems(num_items);
     Item_InitialiseArray(MAX_ITEMS);
 
     for (int32_t i = 0; i < num_items; i++) {
@@ -457,9 +456,9 @@ static void M_CompleteSetup(void)
     Level_LoadAnimFrames(&m_LevelInfo);
     Level_LoadAnimCommands();
 
-    // Must be called after Setup_AllObjects using the cached item
-    // count, as individual setups may increment g_LevelItemCount.
-    const int32_t item_count = g_LevelItemCount;
+    // Must be called after Setup_AllObjects using the cached item count, as
+    // individual setups may increment the level item count.
+    const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }

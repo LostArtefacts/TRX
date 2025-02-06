@@ -8,10 +8,8 @@ extern ITEM *g_Items;
 extern int16_t g_NextItemActive;
 
 void Item_InitialiseArray(int32_t num_items);
-int32_t Item_GetTotalCount(void);
 void Item_Control(void);
 void Item_Kill(int16_t item_num);
-int16_t Item_Create(void);
 void Item_Initialise(int16_t item_num);
 void Item_RemoveActive(int16_t item_num);
 void Item_RemoveDrawn(int16_t item_num);

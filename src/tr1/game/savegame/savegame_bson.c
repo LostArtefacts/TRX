@@ -469,14 +469,15 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
         return false;
     }
 
-    if ((signed)items_arr->length != g_LevelItemCount) {
+    const int32_t item_count = Item_GetLevelCount();
+    if ((signed)items_arr->length != item_count) {
         LOG_ERROR(
-            "Malformed save: expected %d items, got %d", g_LevelItemCount,
+            "Malformed save: expected %d items, got %d", item_count,
             items_arr->length);
         return false;
     }
 
-    for (int i = 0; i < (signed)items_arr->length; i++) {
+    for (int32_t i = 0; i < item_count; i++) {
         JSON_OBJECT *item_obj = JSON_ArrayGetObject(items_arr, i);
         if (!item_obj) {
             LOG_ERROR("Malformed save: invalid item data");
@@ -1038,7 +1039,7 @@ static JSON_ARRAY *M_DumpItems(void)
     M_GetFXOrder(&fx_order);
 
     JSON_ARRAY *items_arr = JSON_ArrayNew();
-    for (int i = 0; i < g_LevelItemCount; i++) {
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         JSON_OBJECT *item_obj = JSON_ObjectNew();
         const ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);

@@ -55,10 +55,10 @@ static OBJECT_BOUNDS M_ConvertBounds(const int16_t *const bounds_in)
 void Item_InitialiseArray(const int32_t num_items)
 {
     ASSERT(num_items > 0);
-    m_NextItemFree = g_LevelItemCount;
+    m_NextItemFree = Item_GetLevelCount();
     g_PrevItemActive = NO_ITEM;
     g_NextItemActive = NO_ITEM;
-    m_MaxUsedItemCount = g_LevelItemCount;
+    m_MaxUsedItemCount = Item_GetLevelCount();
     for (int32_t i = m_NextItemFree; i < num_items - 1; i++) {
         ITEM *const item = &g_Items[i];
         item->active = 0;
@@ -107,7 +107,7 @@ void Item_Kill(const int16_t item_num)
         g_Lara.target = nullptr;
     }
 
-    if (item_num < g_LevelItemCount) {
+    if (item_num < Item_GetLevelCount()) {
         item->flags |= IF_KILLED;
     } else {
         item->next_item = m_NextItemFree;

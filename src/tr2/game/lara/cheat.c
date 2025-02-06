@@ -212,7 +212,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
 
     const int32_t shift = 8; // constant shift to avoid overflow errors
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
-    for (int item_num = 0; item_num < g_LevelItemCount; item_num++) {
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
         if (!Object_IsType(item->object_id, g_DoorObjects)
             && !Object_IsType(item->object_id, g_TrapdoorObjects)) {

@@ -28,7 +28,7 @@ void ThorsHammerHandle_Setup(OBJECT *obj)
 void ThorsHammerHandle_Initialise(int16_t item_num)
 {
     ITEM *const hand_item = Item_Get(item_num);
-    int16_t head_item_num = Item_Create();
+    const int16_t head_item_num = Item_CreateLevelItem();
     ASSERT(head_item_num != NO_ITEM);
     ITEM *const head_item = Item_Get(head_item_num);
     head_item->object_id = O_THORS_HEAD;
@@ -38,7 +38,6 @@ void ThorsHammerHandle_Initialise(int16_t item_num)
     head_item->shade.value_1 = hand_item->shade.value_1;
     Item_Initialise(head_item_num);
     hand_item->data = head_item;
-    g_LevelItemCount++;
 }
 
 void ThorsHammerHandle_Control(int16_t item_num)
