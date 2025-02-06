@@ -4,6 +4,7 @@
 #include "./types.h"
 
 ITEM *Item_Get(int16_t num);
+int16_t Item_GetIndex(const ITEM *item);
 ITEM *Item_Find(GAME_OBJECT_ID obj_id);
 int32_t Item_GetTotalCount(void);
 int32_t Item_GetDistance(const ITEM *item, const XYZ_32 *target);

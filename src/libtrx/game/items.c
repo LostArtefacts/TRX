@@ -9,6 +9,11 @@
 #include "game/sound/common.h"
 #include "utils.h"
 
+int16_t Item_GetIndex(const ITEM *const item)
+{
+    return item - Item_Get(0);
+}
+
 void Item_TakeDamage(
     ITEM *const item, const int16_t damage, const bool hit_status)
 {

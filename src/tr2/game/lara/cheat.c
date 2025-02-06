@@ -373,7 +373,7 @@ bool Lara_Cheat_Teleport(int32_t x, int32_t y, int32_t z)
     g_LaraItem->floor = height;
 
     if (g_LaraItem->room_num != room_num) {
-        const int16_t item_num = g_LaraItem - Item_Get(0);
+        const int16_t item_num = Item_GetIndex(g_LaraItem);
         Item_NewRoom(item_num, room_num);
     }
 

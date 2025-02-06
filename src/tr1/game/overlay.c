@@ -569,7 +569,7 @@ static void M_BarDrawEnemy(void)
         break;
 
     case BSM_BOSS_ONLY:
-        m_EnemyBar.show = Creature_IsBoss(g_Lara.target - Item_Get(0));
+        m_EnemyBar.show = Creature_IsBoss(Item_GetIndex(g_Lara.target));
         break;
     }
 
