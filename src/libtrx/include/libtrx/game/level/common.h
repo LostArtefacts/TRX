@@ -30,6 +30,7 @@ void Level_ReadLightMap(VFILE *file);
 void Level_ReadCinematicFrames(VFILE *file);
 void Level_ReadCamerasAndSinks(VFILE *file);
 void Level_ReadItems(VFILE *file);
+void Level_ReadDemoData(VFILE *file);
 
 void Level_LoadTexturePages(LEVEL_INFO *info);
 void Level_LoadPalettes(LEVEL_INFO *info);

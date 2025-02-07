@@ -21,7 +21,6 @@ ITEM *g_LaraItem = nullptr;
 GAME_INFO g_GameInfo = {};
 int32_t g_SavedGamesCount = 0;
 int32_t g_SaveCounter = 0;
-uint32_t *g_DemoData = nullptr;
 bool g_LevelComplete = false;
 int32_t g_OverlayFlag = 0;
 int32_t g_HeightType = 0;

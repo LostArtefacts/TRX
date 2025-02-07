@@ -30,7 +30,6 @@ extern ITEM *g_LaraItem;
 extern GAME_INFO g_GameInfo;
 extern int32_t g_SavedGamesCount;
 extern int32_t g_SaveCounter;
-extern uint32_t *g_DemoData;
 extern bool g_LevelComplete;
 extern int32_t g_OverlayFlag;
 extern int32_t g_HeightType;

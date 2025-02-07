@@ -5,6 +5,7 @@
 #include "game/anims.h"
 #include "game/camera.h"
 #include "game/const.h"
+#include "game/demo.h"
 #include "game/effects/const.h"
 #include "game/game_buf.h"
 #include "game/inject.h"
@@ -791,6 +792,19 @@ void Level_ReadItems(VFILE *const file)
     }
 
 finish:
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_ReadDemoData(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const uint16_t size = VFile_ReadU16(file);
+    LOG_INFO("demo buffer size: %d", size);
+    Demo_InitialiseData(size);
+    if (size != 0) {
+        uint32_t *const data = Demo_GetData();
+        VFile_Read(file, data, size);
+    }
     Benchmark_End(benchmark, nullptr);
 }
 

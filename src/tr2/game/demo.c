@@ -24,7 +24,7 @@
 #include <libtrx/log.h>
 
 typedef struct {
-    uint32_t *demo_ptr;
+    const uint32_t *demo_ptr;
     const GF_LEVEL *level;
     TEXTSTRING *text;
 
@@ -55,7 +55,7 @@ static void M_RestoreConfig(M_PRIV *const p)
 bool Demo_GetInput(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->demo_ptr == &g_DemoData[0]) {
+    if (p->demo_ptr == Demo_GetData()) {
         m_OldDemoInputDB = (INPUT_STATE) {};
     }
 
@@ -125,7 +125,7 @@ bool Demo_Start(const int32_t level_num)
     ASSERT(p->level != nullptr);
     ASSERT(GF_GetCurrentLevel() == p->level);
 
-    p->demo_ptr = g_DemoData;
+    p->demo_ptr = Demo_GetData();
 
     ITEM *const lara_item = Lara_GetItem();
     lara_item->pos.x = *p->demo_ptr++;

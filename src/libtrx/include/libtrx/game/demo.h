@@ -2,6 +2,9 @@
 
 #include "./game_flow/types.h"
 
+void Demo_InitialiseData(uint16_t data_length);
+uint32_t *Demo_GetData(void);
+
 extern bool Demo_Start(int32_t level_num);
 extern void Demo_End(void);
 extern void Demo_Pause(void);

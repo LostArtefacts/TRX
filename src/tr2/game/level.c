@@ -47,7 +47,6 @@ static void M_LoadSprites(VFILE *file);
 static void M_LoadSoundEffects(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
-static void M_LoadDemo(VFILE *file);
 static void M_LoadSamples(VFILE *file);
 static void M_CompleteSetup(void);
 
@@ -245,22 +244,6 @@ static void M_LoadAnimatedTextures(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-static void M_LoadDemo(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    const uint16_t size = VFile_ReadU16(file);
-    LOG_DEBUG("demo buffer size: %d", size);
-    if (size != 0) {
-        g_DemoData =
-            GameBuf_Alloc((size + 1) * sizeof(uint32_t), GBUF_DEMO_BUFFER);
-        VFile_Read(file, g_DemoData, size);
-        g_DemoData[size] = -1;
-    } else {
-        g_DemoData = nullptr;
-    }
-    Benchmark_End(benchmark, nullptr);
-}
-
 static void M_LoadSamples(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -394,7 +377,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
     Level_ReadLightMap(file);
     Level_ReadCinematicFrames(file);
-    M_LoadDemo(file);
+    Level_ReadDemoData(file);
     M_LoadSamples(file);
 
     VFile_Close(file);

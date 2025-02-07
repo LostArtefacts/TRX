@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libtrx/game/game_flow/types.h>
+#include <libtrx/game/demo.h>
 
 bool Demo_Start(int32_t level_num);
 void Demo_End(void);

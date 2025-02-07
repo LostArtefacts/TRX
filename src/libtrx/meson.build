@@ -114,6 +114,7 @@ sources = [
   'game/console/common.c',
   'game/console/history.c',
   'game/console/registry.c',
+  'game/demo/common.c',
   'game/fader.c',
   'game/game.c',
   'game/game_buf.c',

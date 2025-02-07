@@ -36,7 +36,7 @@
     PROCESS_CONFIG(gameplay.fix_bear_ai, false);
 
 typedef struct {
-    uint32_t *demo_ptr;
+    const uint32_t *demo_ptr;
     const GF_LEVEL *level;
     CONFIG old_config;
     TEXTSTRING *text;
@@ -141,14 +141,15 @@ bool Demo_Start(const int32_t level_num)
 
     Interpolation_Remember();
 
-    if (g_DemoData == nullptr) {
+    const uint32_t *const data = Demo_GetData();
+    if (data == nullptr) {
         LOG_ERROR("Level '%s' has no demo data", p->level->path);
         return false;
     }
 
     g_OverlayFlag = 1;
     Camera_Initialise();
-    p->demo_ptr = g_DemoData;
+    p->demo_ptr = data;
 
     ITEM *const lara_item = Lara_GetItem();
     lara_item->pos.x = *p->demo_ptr++;

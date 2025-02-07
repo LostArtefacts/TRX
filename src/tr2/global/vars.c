@@ -87,7 +87,6 @@ int32_t g_HeightType;
 int32_t g_FlipMaps[MAX_FLIP_MAPS];
 bool g_CameraUnderwater;
 int32_t g_BoxCount;
-uint32_t *g_DemoData = nullptr;
 char g_LevelFileName[256];
 uint16_t g_MusicTrackFlags[64];
 
