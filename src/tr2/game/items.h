@@ -3,7 +3,6 @@
 #include "global/types.h"
 
 void Item_Control(void);
-void Item_Initialise(int16_t item_num);
 void Item_ClearKilled(void);
 void Item_ShiftCol(ITEM *item, COLL_INFO *coll);
 void Item_UpdateRoom(ITEM *item, int32_t height);

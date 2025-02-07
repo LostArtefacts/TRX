@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 void Item_Control(void);
-void Item_Initialise(int16_t item_num);
 void Item_UpdateRoom(ITEM *item, int32_t height);
 int16_t Item_GetHeight(ITEM *item);
 int16_t Item_GetWaterHeight(ITEM *item);

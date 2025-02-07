@@ -1,5 +1,3 @@
-#include "game/objects/setup.h"
-
 #include "game/lara/common.h"
 #include "game/lara/hair.h"
 #include "game/objects/common.h"

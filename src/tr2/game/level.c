@@ -11,7 +11,6 @@
 #include "game/lara/control.h"
 #include "game/lot.h"
 #include "game/music.h"
-#include "game/objects/setup.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/random.h"
@@ -382,8 +381,6 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     M_LoadAnimFrames(file);
 
     Level_ReadObjects(file);
-    Object_SetupAllObjects();
-
     Level_ReadStaticObjects(file);
     M_LoadTextures(file);
 
@@ -412,13 +409,7 @@ static void M_CompleteSetup(void)
 
     Level_LoadAnimFrames(&m_LevelInfo);
     Level_LoadAnimCommands();
-
-    // Must be called after Setup_AllObjects using the cached item count, as
-    // individual setups may increment the level item count.
-    const int32_t item_count = Item_GetLevelCount();
-    for (int32_t i = 0; i < item_count; i++) {
-        Item_Initialise(i);
-    }
+    Level_LoadObjectsAndItems();
 
     Level_LoadTexturePages(&m_LevelInfo);
     Level_LoadPalettes(&m_LevelInfo);

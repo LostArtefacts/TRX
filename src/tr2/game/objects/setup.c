@@ -1,5 +1,3 @@
-#include "game/objects/setup.h"
-
 #include "game/lara/control.h"
 #include "game/lara/hair.h"
 #include "game/objects/common.h"
@@ -121,6 +119,9 @@
 
 static void M_SetupLara(void);
 static void M_SetupLaraExtra(void);
+static void M_SetupBaddyObjects(void);
+static void M_SetupTrapObjects(void);
+static void M_SetupGeneralObjects(void);
 
 static void M_SetupLara(void)
 {
@@ -143,7 +144,7 @@ static void M_SetupLaraExtra(void)
     obj->control = Lara_ControlExtra;
 }
 
-void Object_SetupBaddyObjects(void)
+static void M_SetupBaddyObjects(void)
 {
     M_SetupLara();
     M_SetupLaraExtra();
@@ -188,7 +189,7 @@ void Object_SetupBaddyObjects(void)
     Winston_Setup();
 }
 
-void Object_SetupTrapObjects(void)
+static void M_SetupTrapObjects(void)
 {
     Blade_Setup();
     DartEmitter_Setup();
@@ -223,7 +224,7 @@ void Object_SetupTrapObjects(void)
     TeethTrap_Setup();
 }
 
-void Object_SetupGeneralObjects(void)
+static void M_SetupGeneralObjects(void)
 {
     Boat_Setup();
     SkidooArmed_Setup();
@@ -396,9 +397,9 @@ void Object_SetupAllObjects(void)
         obj->intelligent = 0;
     }
 
-    Object_SetupBaddyObjects();
-    Object_SetupTrapObjects();
-    Object_SetupGeneralObjects();
+    M_SetupBaddyObjects();
+    M_SetupTrapObjects();
+    M_SetupGeneralObjects();
 
     Lara_Hair_Initialise();
 }

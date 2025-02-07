@@ -14,7 +14,6 @@
 #include "game/music.h"
 #include "game/objects/creatures/mutant.h"
 #include "game/objects/creatures/pierre.h"
-#include "game/objects/setup.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/random.h"
@@ -535,15 +534,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     // Must be called post-injection to allow for floor data changes.
     Stats_ObserveRoomsLoad();
 
-    // Must be called after all animations, meshes etc are initialised.
-    Object_SetupAllObjects();
-
-    // Must be called after Setup_AllObjects using the cached item count, as
-    // individual setups may increment the level item count.
-    const int32_t item_count = Item_GetLevelCount();
-    for (int32_t i = 0; i < item_count; i++) {
-        Item_Initialise(i);
-    }
+    Level_LoadObjectsAndItems();
 
     Lara_State_Initialise();
 

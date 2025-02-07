@@ -9,6 +9,7 @@
 #include "game/game_buf.h"
 #include "game/inject.h"
 #include "game/objects/common.h"
+#include "game/objects/setup.h"
 #include "game/output.h"
 #include "game/rooms.h"
 #include "game/shell.h"
@@ -821,4 +822,17 @@ void Level_LoadPalettes(LEVEL_INFO *const info)
         info->palette.size, info->palette.data_24, info->palette.data_32);
     Memory_FreePointer(&info->palette.data_24);
     Memory_FreePointer(&info->palette.data_32);
+}
+
+void Level_LoadObjectsAndItems(void)
+{
+    // Object and item setup/initialisation must take place after injections
+    // have been processed. A cached item count must be used as individual
+    // initialisations may increment the total item count.
+    Object_SetupAllObjects();
+
+    const int32_t item_count = Item_GetLevelCount();
+    for (int32_t i = 0; i < item_count; i++) {
+        Item_Initialise(i);
+    }
 }

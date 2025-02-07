@@ -33,3 +33,4 @@ void Level_ReadItems(VFILE *file);
 
 void Level_LoadTexturePages(LEVEL_INFO *info);
 void Level_LoadPalettes(LEVEL_INFO *info);
+void Level_LoadObjectsAndItems(void);

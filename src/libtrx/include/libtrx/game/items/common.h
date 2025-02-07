@@ -15,6 +15,7 @@ void Item_SetPrevActive(int16_t item_num);
 int32_t Item_GetDistance(const ITEM *item, const XYZ_32 *target);
 void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);
 
+void Item_Initialise(int16_t item_num);
 int16_t Item_Create(void);
 int16_t Item_CreateLevelItem(void);
 void Item_Kill(int16_t item_num);
