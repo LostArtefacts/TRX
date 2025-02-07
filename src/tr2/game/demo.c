@@ -105,7 +105,7 @@ bool Demo_GetInput(void)
         .step_left    = demo_input.step_left,
         .step_right   = demo_input.step_right,
         .roll         = demo_input.roll,
-        .use_flare        = demo_input.use_flare,
+        .use_flare    = demo_input.use_flare,
         .menu_confirm = demo_input.menu_confirm,
         .menu_back    = demo_input.menu_back,
         .save         = demo_input.save,
@@ -125,7 +125,13 @@ bool Demo_Start(const int32_t level_num)
     ASSERT(p->level != nullptr);
     ASSERT(GF_GetCurrentLevel() == p->level);
 
-    p->demo_ptr = Demo_GetData();
+    const uint32_t *const data = Demo_GetData();
+    if (data == nullptr) {
+        LOG_ERROR("Level '%s' has no demo data", p->level->path);
+        return false;
+    }
+
+    p->demo_ptr = data;
 
     ITEM *const lara_item = Lara_GetItem();
     lara_item->pos.x = *p->demo_ptr++;
