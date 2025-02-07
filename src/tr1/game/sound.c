@@ -556,8 +556,9 @@ void Sound_ResetAmbient(void)
 {
     M_ResetAmbientLoudness();
 
-    for (int i = 0; i < g_NumberSoundEffects; i++) {
-        OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
+    // TODO: move to TRX
+    for (int i = 0; i < Sound_GetSourceCount(); i++) {
+        OBJECT_VECTOR *sound = Sound_GetSource(i);
         if (g_FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
             Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
         } else if (!g_FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {

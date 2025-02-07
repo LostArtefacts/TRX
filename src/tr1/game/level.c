@@ -63,7 +63,6 @@ static void M_LoadAnimBones(VFILE *file);
 static void M_LoadAnimFrames(VFILE *file);
 static void M_LoadTextures(VFILE *file);
 static void M_LoadSprites(VFILE *file);
-static void M_LoadSoundEffects(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
 static void M_LoadSamples(VFILE *file);
@@ -230,7 +229,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     }
 
     Level_ReadCamerasAndSinks(file);
-    M_LoadSoundEffects(file);
+    Level_ReadSoundSources(file);
     M_LoadBoxes(file);
     M_LoadAnimatedTextures(file);
     Level_ReadItems(file);
@@ -372,29 +371,6 @@ static void M_LoadSprites(VFILE *file)
     Output_InitialiseSpriteTextures(
         num_textures + m_InjectionInfo->sprite_info_count);
     Level_ReadSpriteTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadSoundEffects(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    g_NumberSoundEffects = VFile_ReadS32(file);
-    LOG_INFO("%d sound effects", g_NumberSoundEffects);
-    if (g_NumberSoundEffects != 0) {
-        g_SoundEffectsTable = GameBuf_Alloc(
-            sizeof(OBJECT_VECTOR) * g_NumberSoundEffects, GBUF_SOUND_FX);
-        if (!g_SoundEffectsTable) {
-            Shell_ExitSystem("Error allocating the sound effects table.");
-        }
-        for (int32_t i = 0; i < g_NumberSoundEffects; i++) {
-            OBJECT_VECTOR *sound = &g_SoundEffectsTable[i];
-            sound->x = VFile_ReadS32(file);
-            sound->y = VFile_ReadS32(file);
-            sound->z = VFile_ReadS32(file);
-            sound->data = VFile_ReadS16(file);
-            sound->flags = VFile_ReadS16(file);
-        }
-    }
     Benchmark_End(benchmark, nullptr);
 }
 

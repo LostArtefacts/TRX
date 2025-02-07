@@ -158,31 +158,6 @@ static void M_LoadSprites(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-static void M_LoadSoundEffects(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-
-    g_SoundEffectCount = VFile_ReadS32(file);
-    LOG_DEBUG("sound effects: %d", g_SoundEffectCount);
-    if (!g_SoundEffectCount) {
-        goto finish;
-    }
-
-    g_SoundEffects = GameBuf_Alloc(
-        sizeof(OBJECT_VECTOR) * g_SoundEffectCount, GBUF_SOUND_FX);
-    for (int32_t i = 0; i < g_SoundEffectCount; i++) {
-        OBJECT_VECTOR *const effect = &g_SoundEffects[i];
-        effect->x = VFile_ReadS32(file);
-        effect->y = VFile_ReadS32(file);
-        effect->z = VFile_ReadS32(file);
-        effect->data = VFile_ReadS16(file);
-        effect->flags = VFile_ReadS16(file);
-    }
-
-finish:
-    Benchmark_End(benchmark, nullptr);
-}
-
 static void M_LoadBoxes(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -370,7 +345,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     M_LoadSprites(file);
     Level_ReadSpriteSequences(file);
     Level_ReadCamerasAndSinks(file);
-    M_LoadSoundEffects(file);
+    Level_ReadSoundSources(file);
     M_LoadBoxes(file);
     M_LoadAnimatedTextures(file);
     Level_ReadItems(file);

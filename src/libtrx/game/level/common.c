@@ -14,6 +14,7 @@
 #include "game/output.h"
 #include "game/rooms.h"
 #include "game/shell.h"
+#include "game/sound.h"
 #include "game/viewport.h"
 #include "log.h"
 #include "memory.h"
@@ -805,6 +806,22 @@ void Level_ReadDemoData(VFILE *const file)
         uint32_t *const data = Demo_GetData();
         VFile_Read(file, data, size);
     }
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_ReadSoundSources(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_sources = VFile_ReadS32(file);
+    LOG_DEBUG("sound sources: %d", num_sources);
+    Sound_InitialiseSources(num_sources);
+    for (int32_t i = 0; i < num_sources; i++) {
+        OBJECT_VECTOR *const source = Sound_GetSource(i);
+        M_ReadPosition(&source->pos, file);
+        source->data = VFile_ReadS16(file);
+        source->flags = VFile_ReadS16(file);
+    }
+
     Benchmark_End(benchmark, nullptr);
 }
 

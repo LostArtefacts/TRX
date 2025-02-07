@@ -40,8 +40,6 @@ extern uint16_t *g_Overlap;
 extern int16_t *g_GroundZone[2];
 extern int16_t *g_GroundZone2[2];
 extern int16_t *g_FlyZone[2];
-extern int32_t g_NumberSoundEffects;
-extern OBJECT_VECTOR *g_SoundEffectsTable;
 
 extern REQUEST_INFO g_SavegameRequester;
 
