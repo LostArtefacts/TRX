@@ -45,7 +45,6 @@ static void M_LoadAnimBones(VFILE *file);
 static void M_LoadAnimFrames(VFILE *file);
 static void M_LoadTextures(VFILE *file);
 static void M_LoadSprites(VFILE *file);
-static void M_LoadItems(VFILE *file);
 static void M_LoadSoundEffects(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
@@ -158,45 +157,6 @@ static void M_LoadSprites(VFILE *const file)
     LOG_DEBUG("sprite textures: %d", num_textures);
     Output_InitialiseSpriteTextures(num_textures);
     Level_ReadSpriteTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadItems(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-
-    const int32_t num_items = VFile_ReadS32(file);
-    LOG_DEBUG("items: %d", num_items);
-    if (!num_items) {
-        Item_InitialiseItems(0);
-        goto finish;
-    }
-
-    if (num_items > MAX_ITEMS) {
-        Shell_ExitSystem("Too many items");
-        goto finish;
-    }
-
-    Item_InitialiseItems(num_items);
-    for (int32_t i = 0; i < num_items; i++) {
-        ITEM *const item = Item_Get(i);
-        item->object_id = VFile_ReadS16(file);
-        item->room_num = VFile_ReadS16(file);
-        item->pos.x = VFile_ReadS32(file);
-        item->pos.y = VFile_ReadS32(file);
-        item->pos.z = VFile_ReadS32(file);
-        item->rot.y = VFile_ReadS16(file);
-        item->shade.value_1 = VFile_ReadS16(file);
-        item->shade.value_2 = VFile_ReadS16(file);
-        item->flags = VFile_ReadS16(file);
-        if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
-            Shell_ExitSystemFmt(
-                "Bad object number (%d) on item %d", item->object_id, i);
-            goto finish;
-        }
-    }
-
-finish:
     Benchmark_End(benchmark, nullptr);
 }
 
@@ -433,7 +393,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     M_LoadSoundEffects(file);
     M_LoadBoxes(file);
     M_LoadAnimatedTextures(file);
-    M_LoadItems(file);
+    Level_ReadItems(file);
 
     Level_ReadLightMap(file);
     Level_ReadCinematicFrames(file);

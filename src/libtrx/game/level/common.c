@@ -763,6 +763,36 @@ void Level_ReadCamerasAndSinks(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
+void Level_ReadItems(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_items = VFile_ReadS32(file);
+    LOG_INFO("items: %d", num_items);
+    if (num_items > MAX_ITEMS) {
+        Shell_ExitSystem("Too many items");
+        goto finish;
+    }
+
+    Item_InitialiseItems(num_items);
+    for (int32_t i = 0; i < num_items; i++) {
+        ITEM *const item = Item_Get(i);
+        item->object_id = VFile_ReadS16(file);
+        item->room_num = VFile_ReadS16(file);
+        M_ReadPosition(&item->pos, file);
+        item->rot.y = VFile_ReadS16(file);
+        M_ReadShade(&item->shade, file);
+        item->flags = VFile_ReadS16(file);
+        if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
+            Shell_ExitSystemFmt(
+                "Bad object number (%d) on item %d", item->object_id, i);
+            goto finish;
+        }
+    }
+
+finish:
+    Benchmark_End(benchmark, nullptr);
+}
+
 void Level_LoadTexturePages(LEVEL_INFO *const info)
 {
     const int32_t num_pages = info->textures.page_count;

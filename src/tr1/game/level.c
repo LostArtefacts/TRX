@@ -67,7 +67,6 @@ static void M_LoadSprites(VFILE *file);
 static void M_LoadSoundEffects(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
-static void M_LoadItems(VFILE *file);
 static void M_LoadDemo(VFILE *file);
 static void M_LoadSamples(VFILE *file);
 static void M_CompleteSetup(const GF_LEVEL *level);
@@ -236,7 +235,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     M_LoadSoundEffects(file);
     M_LoadBoxes(file);
     M_LoadAnimatedTextures(file);
-    M_LoadItems(file);
+    Level_ReadItems(file);
     Stats_ObserveItemsLoad();
     Level_ReadLightMap(file);
 
@@ -450,40 +449,6 @@ static void M_LoadAnimatedTextures(VFILE *const file)
     Level_ReadAnimatedTextureRanges(num_ranges, file);
 
     VFile_SetPos(file, end_position);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadItems(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    m_LevelInfo.item_count = VFile_ReadS32(file);
-
-    LOG_INFO("%d items", m_LevelInfo.item_count);
-
-    if (m_LevelInfo.item_count) {
-        if (m_LevelInfo.item_count > MAX_ITEMS) {
-            Shell_ExitSystem("Too many items");
-        }
-
-        Item_InitialiseItems(m_LevelInfo.item_count);
-        for (int i = 0; i < m_LevelInfo.item_count; i++) {
-            ITEM *const item = Item_Get(i);
-            item->object_id = VFile_ReadS16(file);
-            item->room_num = VFile_ReadS16(file);
-            item->pos.x = VFile_ReadS32(file);
-            item->pos.y = VFile_ReadS32(file);
-            item->pos.z = VFile_ReadS32(file);
-            item->rot.y = VFile_ReadS16(file);
-            item->shade.value_1 = VFile_ReadS16(file);
-            item->flags = VFile_ReadU16(file);
-
-            if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
-                Shell_ExitSystemFmt(
-                    "Bad object number (%d) on item %d", item->object_id, i);
-            }
-        }
-    }
-
     Benchmark_End(benchmark, nullptr);
 }
 
