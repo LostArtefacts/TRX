@@ -1132,8 +1132,6 @@ static void M_TriggeredItem(INJECTION *injection, LEVEL_INFO *level_info)
     item->rot.y = VFile_ReadS16(fp);
     item->shade.value_1 = VFile_ReadS16(fp);
     item->flags = VFile_ReadU16(fp);
-
-    level_info->item_count++; // TODO: remove?
 }
 
 static void M_RoomMeshEdits(const INJECTION *const injection)

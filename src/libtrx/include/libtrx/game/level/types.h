@@ -38,5 +38,4 @@ typedef struct {
     } samples;
 
     int32_t mesh_ptr_count;
-    int32_t item_count;
 } LEVEL_INFO;
