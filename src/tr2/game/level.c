@@ -177,10 +177,7 @@ static void M_LoadItems(VFILE *const file)
         goto finish;
     }
 
-    g_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
     Item_InitialiseItems(num_items);
-    Item_InitialiseArray(MAX_ITEMS);
-
     for (int32_t i = 0; i < num_items; i++) {
         ITEM *const item = Item_Get(i);
         item->object_id = VFile_ReadS16(file);

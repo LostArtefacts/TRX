@@ -27,31 +27,13 @@
         }                                                                      \
     } while (0)
 
-ITEM *g_Items = nullptr;
-static int16_t m_NextItemFree = NO_ITEM;
 static BOUNDS_16 m_InterpolatedBounds = {};
-static int16_t m_MaxUsedItemCount = 0;
-
-void Item_InitialiseArray(int32_t num_items)
-{
-    m_NextItemFree = Item_GetLevelCount();
-    m_MaxUsedItemCount = Item_GetLevelCount();
-    for (int32_t i = m_NextItemFree; i < num_items - 1; i++) {
-        g_Items[i].next_item = i + 1;
-    }
-    g_Items[num_items - 1].next_item = NO_ITEM;
-}
-
-int32_t Item_GetTotalCount(void)
-{
-    return m_MaxUsedItemCount;
-}
 
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextActive();
     while (item_num != NO_ITEM) {
-        ITEM *item = &g_Items[item_num];
+        ITEM *item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->control) {
             obj->control(item_num);
@@ -62,44 +44,9 @@ void Item_Control(void)
     Carrier_AnimateDrops();
 }
 
-void Item_Kill(int16_t item_num)
-{
-    ITEM *item = &g_Items[item_num];
-
-    Item_RemoveActive(item_num);
-    Item_RemoveDrawn(item_num);
-
-    if (item == g_Lara.target) {
-        g_Lara.target = nullptr;
-    }
-
-    item->hit_points = -1;
-    item->flags |= IF_KILLED;
-    if (item_num >= Item_GetLevelCount()) {
-        item->next_item = m_NextItemFree;
-        m_NextItemFree = item_num;
-    }
-
-    while (m_MaxUsedItemCount > 0
-           && g_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED) {
-        m_MaxUsedItemCount--;
-    }
-}
-
-int16_t Item_Create(void)
-{
-    int16_t item_num = m_NextItemFree;
-    if (item_num != NO_ITEM) {
-        g_Items[item_num].flags = 0;
-        m_NextItemFree = g_Items[item_num].next_item;
-    }
-    m_MaxUsedItemCount = MAX(m_MaxUsedItemCount, item_num + 1);
-    return item_num;
-}
-
 void Item_Initialise(int16_t item_num)
 {
-    ITEM *item = &g_Items[item_num];
+    ITEM *item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Item_SwitchToAnim(item, 0, 0);
@@ -154,93 +101,6 @@ void Item_Initialise(int16_t item_num)
     Interpolation_RememberItem(item);
 }
 
-void Item_RemoveActive(int16_t item_num)
-{
-    ITEM *const item = &g_Items[item_num];
-    if (!item->active) {
-        return;
-    }
-
-    item->active = 0;
-
-    int16_t link_num = Item_GetNextActive();
-    if (link_num == item_num) {
-        Item_SetNextActive(item->next_active);
-        return;
-    }
-
-    while (link_num != NO_ITEM) {
-        if (g_Items[link_num].next_active == item_num) {
-            g_Items[link_num].next_active = item->next_active;
-            return;
-        }
-        link_num = g_Items[link_num].next_active;
-    }
-}
-
-void Item_RemoveDrawn(int16_t item_num)
-{
-    ITEM *const item = &g_Items[item_num];
-    ROOM *const room = Room_Get(item->room_num);
-
-    int16_t link_num = room->item_num;
-    if (link_num == item_num) {
-        room->item_num = item->next_item;
-        return;
-    }
-
-    while (link_num != NO_ITEM) {
-        if (g_Items[link_num].next_item == item_num) {
-            g_Items[link_num].next_item = item->next_item;
-            return;
-        }
-        link_num = g_Items[link_num].next_item;
-    }
-}
-
-void Item_AddActive(int16_t item_num)
-{
-    ITEM *item = &g_Items[item_num];
-
-    if (Object_Get(item->object_id)->control == nullptr) {
-        item->status = IS_INACTIVE;
-        return;
-    }
-
-    if (item->active) {
-        return;
-    }
-
-    item->active = 1;
-    item->next_active = Item_GetNextActive();
-    Item_SetNextActive(item_num);
-}
-
-void Item_NewRoom(int16_t item_num, int16_t room_num)
-{
-    ITEM *item = &g_Items[item_num];
-    ROOM *room = Room_Get(item->room_num);
-
-    if (item->room_num != NO_ROOM) {
-        int16_t linknum = room->item_num;
-        if (linknum == item_num) {
-            room->item_num = item->next_item;
-        } else {
-            for (; linknum != NO_ITEM; linknum = g_Items[linknum].next_item) {
-                if (g_Items[linknum].next_item == item_num) {
-                    g_Items[linknum].next_item = item->next_item;
-                    break;
-                }
-            }
-        }
-    }
-
-    room = Room_Get(room_num);
-    item->room_num = room_num;
-    item->next_item = room->item_num;
-    room->item_num = item_num;
-}
-
 void Item_UpdateRoom(ITEM *item, int32_t height)
 {
     int32_t x = item->pos.x;
@@ -278,9 +138,9 @@ int16_t Item_GetWaterHeight(ITEM *item)
 
 int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
 {
-    int16_t spawn_num = Item_Create();
+    const int16_t spawn_num = Item_Create();
     if (spawn_num != NO_ITEM) {
-        ITEM *spawn = &g_Items[spawn_num];
+        ITEM *const spawn = Item_Get(spawn_num);
         spawn->object_id = obj_id;
         spawn->room_num = item->room_num;
         spawn->pos = item->pos;
@@ -290,23 +150,6 @@ int16_t Item_Spawn(const ITEM *const item, const GAME_OBJECT_ID obj_id)
         spawn->shade.value_1 = HIGH_LIGHT;
     }
     return spawn_num;
-}
-
-int32_t Item_GlobalReplace(
-    const GAME_OBJECT_ID src_obj_id, const GAME_OBJECT_ID dst_obj_id)
-{
-    int32_t changed = 0;
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        for (int16_t item_num = room->item_num; item_num != NO_ITEM;
-             item_num = g_Items[item_num].next_item) {
-            if (g_Items[item_num].object_id == src_obj_id) {
-                g_Items[item_num].object_id = dst_obj_id;
-                changed++;
-            }
-        }
-    }
-    return changed;
 }
 
 bool Item_IsNearItem(const ITEM *item, const XYZ_32 *pos, int32_t distance)
@@ -644,14 +487,6 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
 
     *rate = 10;
     return final * 10;
-}
-
-ITEM *Item_Get(const int16_t item_num)
-{
-    if (item_num == NO_ITEM) {
-        return nullptr;
-    }
-    return &g_Items[item_num];
 }
 
 int32_t Item_Explode(int16_t item_num, int32_t mesh_bits, int16_t damage)

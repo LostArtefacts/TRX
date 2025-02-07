@@ -466,9 +466,6 @@ static void M_LoadItems(VFILE *file)
         }
 
         Item_InitialiseItems(m_LevelInfo.item_count);
-        g_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
-        Item_InitialiseArray(MAX_ITEMS);
-
         for (int i = 0; i < m_LevelInfo.item_count; i++) {
             ITEM *const item = Item_Get(i);
             item->object_id = VFile_ReadS16(file);

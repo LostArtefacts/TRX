@@ -73,7 +73,6 @@ extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern int32_t g_SoundEffectCount;
 extern int32_t g_FlipStatus;
-extern ITEM *g_Items;
 extern BOX_INFO *g_Boxes;
 extern int16_t *g_FlyZone[2];
 extern int16_t *g_GroundZone[][2];

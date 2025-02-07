@@ -11,13 +11,19 @@ int32_t Item_GetLevelCount(void);
 int32_t Item_GetTotalCount(void);
 int16_t Item_GetNextActive(void);
 int16_t Item_GetPrevActive(void);
-void Item_SetNextActive(int16_t item_num);
 void Item_SetPrevActive(int16_t item_num);
 int32_t Item_GetDistance(const ITEM *item, const XYZ_32 *target);
 void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);
 
 int16_t Item_Create(void);
 int16_t Item_CreateLevelItem(void);
+void Item_Kill(int16_t item_num);
+void Item_RemoveActive(int16_t item_num);
+void Item_RemoveDrawn(int16_t item_num);
+void Item_AddActive(int16_t item_num);
+void Item_NewRoom(int16_t item_num, int16_t room_num);
+int32_t Item_GlobalReplace(
+    GAME_OBJECT_ID src_obj_id, GAME_OBJECT_ID dst_obj_id);
 
 // Mesh_bits: which meshes to affect.
 // Damage:

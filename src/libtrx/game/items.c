@@ -1,6 +1,7 @@
 #include "game/items.h"
 
 #include "game/const.h"
+#include "game/game_buf.h"
 #include "game/item_actions.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
@@ -10,20 +11,45 @@
 #include "utils.h"
 
 static int32_t m_LevelItemCount = 0;
+static int16_t m_MaxUsedItemCount = 0;
+static ITEM *m_Items = nullptr;
 static int16_t m_NextItemActive = NO_ITEM;
 static int16_t m_PrevItemActive = NO_ITEM;
+static int16_t m_NextItemFree = NO_ITEM;
 
 void Item_InitialiseItems(const int32_t num_items)
 {
+    m_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
     m_LevelItemCount = num_items;
-    // TODO: alloc here and merge Item_InitialiseArray
+    m_MaxUsedItemCount = num_items;
+    m_NextItemFree = num_items;
     m_NextItemActive = NO_ITEM;
     m_PrevItemActive = NO_ITEM;
+
+    for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
+        ITEM *const item = &m_Items[i];
+        item->active = 0;
+        item->next_item = i + 1;
+    }
+    m_Items[MAX_ITEMS - 1].next_item = NO_ITEM;
+}
+
+ITEM *Item_Get(const int16_t item_num)
+{
+    if (item_num == NO_ITEM) {
+        return nullptr;
+    }
+    return &m_Items[item_num];
 }
 
 int32_t Item_GetLevelCount(void)
 {
     return m_LevelItemCount;
+}
+
+int32_t Item_GetTotalCount(void)
+{
+    return m_MaxUsedItemCount;
 }
 
 int16_t Item_GetIndex(const ITEM *const item)
@@ -41,14 +67,20 @@ int16_t Item_GetPrevActive(void)
     return m_PrevItemActive;
 }
 
-void Item_SetNextActive(const int16_t item_num)
-{
-    m_NextItemActive = item_num;
-}
-
 void Item_SetPrevActive(const int16_t item_num)
 {
     m_PrevItemActive = item_num;
+}
+
+int16_t Item_Create(void)
+{
+    const int16_t item_num = m_NextItemFree;
+    if (item_num != NO_ITEM) {
+        m_Items[item_num].flags = 0;
+        m_NextItemFree = m_Items[item_num].next_item;
+    }
+    m_MaxUsedItemCount = MAX(m_MaxUsedItemCount, item_num + 1);
+    return item_num;
 }
 
 int16_t Item_CreateLevelItem(void)
@@ -58,6 +90,148 @@ int16_t Item_CreateLevelItem(void)
         m_LevelItemCount++;
     }
     return item_num;
+}
+
+void Item_Kill(const int16_t item_num)
+{
+    Item_RemoveActive(item_num);
+    Item_RemoveDrawn(item_num);
+
+    ITEM *const item = &m_Items[item_num];
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item == lara->target) {
+        lara->target = nullptr;
+    }
+
+#if TR_VERSION == 1
+    item->hit_points = -1;
+    item->flags |= IF_KILLED;
+#else
+    if (item_num < m_LevelItemCount) {
+        item->flags |= IF_KILLED;
+    }
+#endif
+    if (item_num >= m_LevelItemCount) {
+        item->next_item = m_NextItemFree;
+        m_NextItemFree = item_num;
+    }
+
+    while (m_MaxUsedItemCount > 0
+           && m_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED) {
+        m_MaxUsedItemCount--;
+    }
+}
+
+void Item_RemoveActive(const int16_t item_num)
+{
+    ITEM *const item = &m_Items[item_num];
+    if (!item->active) {
+        return;
+    }
+
+    item->active = 0;
+
+    int16_t link_num = m_NextItemActive;
+    if (link_num == item_num) {
+        m_NextItemActive = item->next_active;
+        return;
+    }
+
+    while (link_num != NO_ITEM) {
+        if (m_Items[link_num].next_active == item_num) {
+            m_Items[link_num].next_active = item->next_active;
+            return;
+        }
+        link_num = m_Items[link_num].next_active;
+    }
+}
+
+void Item_RemoveDrawn(const int16_t item_num)
+{
+    const ITEM *const item = &m_Items[item_num];
+    if (item->room_num == NO_ROOM) {
+        return;
+    }
+
+    ROOM *const room = Room_Get(item->room_num);
+    int16_t link_num = room->item_num;
+    if (link_num == item_num) {
+        room->item_num = item->next_item;
+        return;
+    }
+
+    while (link_num != NO_ITEM) {
+        if (m_Items[link_num].next_item == item_num) {
+            m_Items[link_num].next_item = item->next_item;
+            return;
+        }
+        link_num = m_Items[link_num].next_item;
+    }
+}
+
+void Item_AddActive(const int16_t item_num)
+{
+    ITEM *const item = &m_Items[item_num];
+    if (Object_Get(item->object_id)->control == nullptr) {
+        item->status = IS_INACTIVE;
+        return;
+    }
+
+    if (item->active) {
+        return;
+    }
+
+    item->active = 1;
+    item->next_active = m_NextItemActive;
+    m_NextItemActive = item_num;
+}
+
+void Item_NewRoom(const int16_t item_num, const int16_t room_num)
+{
+    ITEM *const item = &m_Items[item_num];
+    ROOM *room = nullptr;
+
+    if (item->room_num != NO_ROOM) {
+        room = Room_Get(item->room_num);
+
+        int16_t link_num = room->item_num;
+        if (link_num == item_num) {
+            room->item_num = item->next_item;
+        } else {
+            while (link_num != NO_ITEM) {
+                if (m_Items[link_num].next_item == item_num) {
+                    m_Items[link_num].next_item = item->next_item;
+                    break;
+                }
+                link_num = m_Items[link_num].next_item;
+            }
+        }
+    }
+
+    room = Room_Get(room_num);
+    item->room_num = room_num;
+    item->next_item = room->item_num;
+    room->item_num = item_num;
+}
+
+int32_t Item_GlobalReplace(
+    const GAME_OBJECT_ID src_obj_id, const GAME_OBJECT_ID dst_obj_id)
+{
+    int32_t changed = 0;
+
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        int16_t item_num = Room_Get(i)->item_num;
+        while (item_num != NO_ITEM) {
+            ITEM *const item = &m_Items[item_num];
+            if (item->object_id == src_obj_id) {
+                item->object_id = dst_obj_id;
+                changed++;
+            }
+            item_num = item->next_item;
+        }
+    }
+
+    return changed;
 }
 
 void Item_TakeDamage(

@@ -74,7 +74,6 @@ LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 int32_t g_SoundEffectCount;
 int32_t g_FlipStatus;
-ITEM *g_Items = nullptr;
 BOX_INFO *g_Boxes = nullptr;
 int16_t *g_FlyZone[2] = {};
 int16_t *g_GroundZone[4][2] = {};

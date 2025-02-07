@@ -31,7 +31,6 @@
 #define MAX_FLIP_MAPS 10
 #define MAX_VERTICES 0x2000
 #define MAX_BOUND_ROOMS 128
-#define MAX_ITEMS 256
 #define MAX_EFFECTS 100
 #define MAX_LEVELS 24
 #define MAX_LEVEL_NAME_SIZE 50 // TODO: get rid of this limit

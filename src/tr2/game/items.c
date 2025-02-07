@@ -14,8 +14,6 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
-static int16_t m_NextItemFree;
-static int16_t m_MaxUsedItemCount = 0;
 static BOUNDS_16 m_InterpolatedBounds = {};
 
 static OBJECT_BOUNDS M_ConvertBounds(const int16_t *bounds_in);
@@ -52,19 +50,6 @@ static OBJECT_BOUNDS M_ConvertBounds(const int16_t *const bounds_in)
     };
 }
 
-void Item_InitialiseArray(const int32_t num_items)
-{
-    ASSERT(num_items > 0);
-    m_NextItemFree = Item_GetLevelCount();
-    m_MaxUsedItemCount = Item_GetLevelCount();
-    for (int32_t i = m_NextItemFree; i < num_items - 1; i++) {
-        ITEM *const item = &g_Items[i];
-        item->active = 0;
-        item->next_item = i + 1;
-    }
-    g_Items[num_items - 1].next_item = NO_ITEM;
-}
-
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextActive();
@@ -79,48 +64,9 @@ void Item_Control(void)
     }
 }
 
-int32_t Item_GetTotalCount(void)
-{
-    return m_MaxUsedItemCount;
-}
-
-int16_t Item_Create(void)
-{
-    const int16_t item_num = m_NextItemFree;
-    if (item_num != NO_ITEM) {
-        g_Items[item_num].flags = 0;
-        m_NextItemFree = g_Items[item_num].next_item;
-    }
-    m_MaxUsedItemCount = MAX(m_MaxUsedItemCount, item_num + 1);
-    return item_num;
-}
-
-void Item_Kill(const int16_t item_num)
-{
-    Item_RemoveActive(item_num);
-    Item_RemoveDrawn(item_num);
-
-    ITEM *const item = &g_Items[item_num];
-    if (item == g_Lara.target) {
-        g_Lara.target = nullptr;
-    }
-
-    if (item_num < Item_GetLevelCount()) {
-        item->flags |= IF_KILLED;
-    } else {
-        item->next_item = m_NextItemFree;
-        m_NextItemFree = item_num;
-    }
-
-    while (m_MaxUsedItemCount > 0
-           && g_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED) {
-        m_MaxUsedItemCount--;
-    }
-}
-
 void Item_Initialise(const int16_t item_num)
 {
-    ITEM *const item = &g_Items[item_num];
+    ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Item_SwitchToAnim(item, 0, 0);
@@ -181,125 +127,13 @@ void Item_Initialise(const int16_t item_num)
     }
 }
 
-void Item_RemoveActive(const int16_t item_num)
-{
-    ITEM *const item = &g_Items[item_num];
-    if (!item->active) {
-        return;
-    }
-
-    item->active = 0;
-
-    int16_t link_num = Item_GetNextActive();
-    if (link_num == item_num) {
-        Item_SetNextActive(item->next_active);
-        return;
-    }
-
-    while (link_num != NO_ITEM) {
-        if (g_Items[link_num].next_active == item_num) {
-            g_Items[link_num].next_active = item->next_active;
-            return;
-        }
-        link_num = g_Items[link_num].next_active;
-    }
-}
-
-void Item_RemoveDrawn(const int16_t item_num)
-{
-    const ITEM *const item = &g_Items[item_num];
-    if (item->room_num == NO_ROOM) {
-        return;
-    }
-
-    ROOM *const room = Room_Get(item->room_num);
-    int16_t link_num = room->item_num;
-    if (link_num == item_num) {
-        room->item_num = item->next_item;
-        return;
-    }
-
-    while (link_num != NO_ITEM) {
-        if (g_Items[link_num].next_item == item_num) {
-            g_Items[link_num].next_item = item->next_item;
-            return;
-        }
-        link_num = g_Items[link_num].next_item;
-    }
-}
-
-void Item_AddActive(const int16_t item_num)
-{
-    ITEM *const item = &g_Items[item_num];
-    if (Object_Get(item->object_id)->control == nullptr) {
-        item->status = IS_INACTIVE;
-        return;
-    }
-
-    if (item->active) {
-        return;
-    }
-
-    item->active = 1;
-    item->next_active = Item_GetNextActive();
-    Item_SetNextActive(item_num);
-}
-
-void Item_NewRoom(const int16_t item_num, const int16_t room_num)
-{
-    ITEM *const item = &g_Items[item_num];
-    ROOM *room = nullptr;
-
-    if (item->room_num != NO_ROOM) {
-        room = Room_Get(item->room_num);
-
-        int16_t link_num = room->item_num;
-        if (link_num == item_num) {
-            room->item_num = item->next_item;
-        } else {
-            while (link_num != NO_ITEM) {
-                if (g_Items[link_num].next_item == item_num) {
-                    g_Items[link_num].next_item = item->next_item;
-                    break;
-                }
-                link_num = g_Items[link_num].next_item;
-            }
-        }
-    }
-
-    item->room_num = room_num;
-    room = Room_Get(room_num);
-    item->next_item = room->item_num;
-    room->item_num = item_num;
-}
-
-int32_t Item_GlobalReplace(
-    const GAME_OBJECT_ID src_obj_id, const GAME_OBJECT_ID dst_obj_id)
-{
-    int32_t changed = 0;
-
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        int16_t j = Room_Get(i)->item_num;
-        while (j != NO_ITEM) {
-            ITEM *const item = &g_Items[j];
-            if (item->object_id == src_obj_id) {
-                item->object_id = dst_obj_id;
-                changed++;
-            }
-            j = item->next_item;
-        }
-    }
-
-    return changed;
-}
-
 void Item_ClearKilled(void)
 {
     // Remove corpses and other killed items. Part of OG performance
     // improvements, generously used in Opera House and Barkhang Monastery
     int16_t link_num = Item_GetPrevActive();
     while (link_num != NO_ITEM) {
-        ITEM *const item = &g_Items[link_num];
+        ITEM *const item = Item_Get(link_num);
         Item_Kill(link_num);
         link_num = item->next_active;
         item->next_active = NO_ITEM;
@@ -560,18 +394,10 @@ int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 *const target)
     return XYZ_32_GetDistance(&item->pos, target);
 }
 
-ITEM *Item_Get(const int16_t item_num)
-{
-    if (item_num == NO_ITEM) {
-        return nullptr;
-    }
-    return &g_Items[item_num];
-}
-
 int32_t Item_Explode(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {
-    ITEM *const item = &g_Items[item_num];
+    ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Output_CalculateLight(item->pos, item->room_num);
