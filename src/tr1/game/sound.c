@@ -17,8 +17,6 @@
 #define MAX_PLAYING_FX AUDIO_MAX_ACTIVE_SAMPLES
 #define MAX_AMBIENT_FX 8
 #define DECIBEL_LUT_SIZE 512
-#define SOUND_FLIPFLAG 0x40
-#define SOUND_UNFLIPFLAG 0x80
 #define SOUND_RANGE 8
 #define SOUND_RANGE_MULT_CONSTANT 4
 #define SOUND_RADIUS (SOUND_RANGE * WALL_L)
@@ -555,16 +553,7 @@ int32_t Sound_GetMaxVolume(void)
 void Sound_ResetAmbient(void)
 {
     M_ResetAmbientLoudness();
-
-    // TODO: move to TRX
-    for (int i = 0; i < Sound_GetSourceCount(); i++) {
-        OBJECT_VECTOR *sound = Sound_GetSource(i);
-        if (g_FlipStatus && (sound->flags & SOUND_FLIPFLAG)) {
-            Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
-        } else if (!g_FlipStatus && (sound->flags & SOUND_UNFLIPFLAG)) {
-            Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
-        }
-    }
+    Sound_ResetSources();
 }
 
 bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)

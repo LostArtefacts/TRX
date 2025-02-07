@@ -263,11 +263,6 @@ typedef struct {
 } SOUND_SLOT;
 */
 
-typedef enum {
-    SF_FLIP = 0x40,
-    SF_UNFLIP = 0x80,
-} SOUND_FLAG;
-
 typedef struct {
     int32_t boat_turn;
     int32_t left_fallspeed;

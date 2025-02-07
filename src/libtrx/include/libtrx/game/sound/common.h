@@ -9,6 +9,7 @@ void Sound_InitialiseSources(int32_t num_sources);
 int32_t Sound_GetSourceCount(void);
 OBJECT_VECTOR *Sound_GetSource(int32_t source_idx);
 
+void Sound_ResetSources(void);
 void Sound_PauseAll(void);
 void Sound_UnpauseAll(void);
 

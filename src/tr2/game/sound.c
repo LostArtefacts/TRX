@@ -158,13 +158,7 @@ void Sound_SetMasterVolume(int32_t volume)
 
 void Sound_UpdateEffects(void)
 {
-    for (int32_t i = 0; i < Sound_GetSourceCount(); i++) {
-        OBJECT_VECTOR *const sound = Sound_GetSource(i);
-        if ((g_FlipStatus && (sound->flags & SF_FLIP))
-            || (!g_FlipStatus && (sound->flags & SF_UNFLIP))) {
-            Sound_Effect(sound->data, &sound->pos, SPM_NORMAL);
-        }
-    }
+    Sound_ResetSources();
 }
 
 bool Sound_Effect(
