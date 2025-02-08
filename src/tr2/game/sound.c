@@ -24,7 +24,7 @@ typedef enum {
 typedef struct {
     int32_t volume;
     int32_t pan;
-    int32_t sample_num;
+    SOUND_EFFECT_ID effect_num;
     int32_t pitch;
     int32_t handle;
 } SOUND_SLOT;
@@ -111,7 +111,7 @@ static void M_ClearAllSlots(void)
 
 static void M_ClearSlot(SOUND_SLOT *const slot)
 {
-    slot->sample_num = -1;
+    slot->effect_num = SFX_INVALID;
     slot->handle = AUDIO_NO_SOUND;
 }
 
@@ -171,14 +171,12 @@ bool Sound_Effect(
         return false;
     }
 
-    int16_t *const sample_lut = Sound_GetSampleLUT();
-    const int32_t sample_num = sample_lut[sample_id];
-    if (sample_num == -1) {
+    SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
+    if (info == nullptr) {
         return false;
     }
 
-    SAMPLE_INFO *const s = &g_SampleInfos[sample_num];
-    if (s->randomness && (Random_GetDraw() > s->randomness)) {
+    if (info->randomness && (Random_GetDraw() > info->randomness)) {
         return false;
     }
 
@@ -200,13 +198,13 @@ bool Sound_Effect(
         } else {
             distance = Math_Sqrt(distance) - SOUND_MAXVOL_RADIUS;
         }
-        if (!(s->flags & SF_NO_PAN)) {
+        if (!(info->flags & SF_NO_PAN)) {
             pan = (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
         }
     }
 
-    int32_t volume = s->volume;
-    if (s->flags & SF_VOLUME_WIBBLE) {
+    int32_t volume = info->volume;
+    if (info->flags & SF_VOLUME_WIBBLE) {
         volume -= Random_GetDraw() * SOUND_MAX_VOLUME_CHANGE >> 15;
     }
     const int32_t attenuation =
@@ -219,20 +217,20 @@ bool Sound_Effect(
 
     int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
                                              : SOUND_DEFAULT_PITCH;
-    if (s->flags & SF_PITCH_WIBBLE) {
+    if (info->flags & SF_PITCH_WIBBLE) {
         pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - SOUND_MAX_PITCH_CHANGE;
     }
 
-    if (s->number < 0) {
+    if (info->number < 0) {
         return false;
     }
 
-    const SOUND_MODE mode = s->flags & SOUND_MODE_MASK;
-    const int32_t num_samples = (s->flags >> 2) & 0xF;
+    const SOUND_MODE mode = info->flags & SOUND_MODE_MASK;
+    const int32_t num_samples = (info->flags >> 2) & 0xF;
     const int32_t track_id = num_samples == 1
-        ? s->number
-        : s->number + (int32_t)((num_samples * Random_GetDraw()) / 0x8000);
+        ? info->number
+        : info->number + (int32_t)((num_samples * Random_GetDraw()) / 0x8000);
 
     switch (mode) {
     case SOUND_MODE_NORMAL:
@@ -241,7 +239,7 @@ bool Sound_Effect(
     case SOUND_MODE_WAIT:
         for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
             SOUND_SLOT *const slot = &m_SoundSlots[i];
-            if (slot->sample_num == sample_num) {
+            if (slot->effect_num == sample_id) {
                 if (Audio_Sample_IsPlaying(i)) {
                     return true;
                 }
@@ -253,7 +251,7 @@ bool Sound_Effect(
     case SOUND_MODE_RESTART:
         for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
             SOUND_SLOT *const slot = &m_SoundSlots[i];
-            if (slot->sample_num == sample_num) {
+            if (slot->effect_num == sample_id) {
                 M_CloseSlot(slot);
                 break;
             }
@@ -263,7 +261,7 @@ bool Sound_Effect(
     case SOUND_MODE_LOOPED:
         for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
             SOUND_SLOT *const slot = &m_SoundSlots[i];
-            if (slot->sample_num == sample_num) {
+            if (slot->effect_num == sample_id) {
                 if (volume > slot->volume) {
                     slot->volume = volume;
                     slot->pan = pan;
@@ -283,7 +281,7 @@ bool Sound_Effect(
         int32_t min_slot = -1;
         for (int32_t i = 1; i < SOUND_MAX_SLOTS; i++) {
             SOUND_SLOT *const slot = &m_SoundSlots[i];
-            if (slot->sample_num >= 0 && slot->volume < min_volume) {
+            if (slot->effect_num >= 0 && slot->volume < min_volume) {
                 min_volume = slot->volume;
                 min_slot = i;
             }
@@ -297,14 +295,14 @@ bool Sound_Effect(
     }
 
     if (handle == AUDIO_NO_SOUND) {
-        s->number = -1;
+        info->number = -1;
         return false;
     }
 
     int32_t free_slot = -1;
     for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
         SOUND_SLOT *const slot = &m_SoundSlots[i];
-        if (slot->sample_num < 0) {
+        if (slot->effect_num < 0) {
             free_slot = i;
             break;
         }
@@ -315,7 +313,7 @@ bool Sound_Effect(
         slot->volume = volume;
         slot->pan = pan;
         slot->pitch = pitch;
-        slot->sample_num = sample_num;
+        slot->effect_num = sample_id;
         slot->handle = handle;
     }
     return true;
@@ -323,14 +321,9 @@ bool Sound_Effect(
 
 void Sound_StopEffect(const SOUND_EFFECT_ID sample_id)
 {
-    const int16_t *const sample_lut = Sound_GetSampleLUT();
-    const int32_t sample_num = sample_lut[sample_id];
-    const int32_t num_samples = (g_SampleInfos[sample_num].flags >> 2) & 0xF;
-
     for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
         SOUND_SLOT *const slot = &m_SoundSlots[i];
-        if (slot->sample_num >= sample_num
-            && slot->sample_num < sample_num + num_samples) {
+        if (slot->effect_num == sample_id) {
             M_CloseSlot(slot);
         }
     }
@@ -346,12 +339,12 @@ void Sound_EndScene(void)
 {
     for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
         SOUND_SLOT *const slot = &m_SoundSlots[i];
-        SAMPLE_INFO *const s = &g_SampleInfos[slot->sample_num];
-        if (slot->sample_num < 0) {
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(slot->effect_num);
+        if (info == nullptr) {
             continue;
         }
 
-        if ((s->flags & SOUND_MODE_MASK) == SOUND_MODE_LOOPED) {
+        if ((info->flags & SOUND_MODE_MASK) == SOUND_MODE_LOOPED) {
             if (slot->volume == 0) {
                 M_CloseSlot(slot);
             } else {

@@ -632,8 +632,7 @@ static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
         const int16_t sfx_id = VFile_ReadS16(fp);
         sample_lut[sfx_id] = level_info->samples.info_count;
 
-        SAMPLE_INFO *sample_info =
-            &g_SampleInfos[level_info->samples.info_count];
+        SAMPLE_INFO *const sample_info = Sound_GetSampleInfo(sfx_id);
         sample_info->volume = VFile_ReadS16(fp);
         sample_info->randomness = VFile_ReadS16(fp);
         sample_info->flags = VFile_ReadS16(fp);

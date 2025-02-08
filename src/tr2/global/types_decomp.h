@@ -248,22 +248,6 @@ typedef enum {
 } HEIGHT_TYPE;
 
 typedef struct {
-    int16_t number;
-    int16_t volume;
-    int16_t randomness;
-    int16_t flags;
-} SAMPLE_INFO;
-
-/*
-typedef struct {
-    int32_t volume;
-    int32_t pan;
-    int32_t sample_num;
-    int32_t pitch;
-} SOUND_SLOT;
-*/
-
-typedef struct {
     int32_t boat_turn;
     int32_t left_fallspeed;
     int32_t right_fallspeed;

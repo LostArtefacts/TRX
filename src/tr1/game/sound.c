@@ -130,8 +130,7 @@ static SOUND_SLOT *M_GetSlot(
 
 static void M_UpdateSlotParams(SOUND_SLOT *slot)
 {
-    const int16_t *const sample_lut = Sound_GetSampleLUT();
-    SAMPLE_INFO *s = &g_SampleInfos[sample_lut[slot->effect_num]];
+    const SAMPLE_INFO *const info = Sound_GetSampleInfo(slot->effect_num);
 
     int32_t x = slot->pos->x - g_Camera.target.x;
     int32_t y = slot->pos->y - g_Camera.target.y;
@@ -144,7 +143,7 @@ static void M_UpdateSlotParams(SOUND_SLOT *slot)
 
     uint32_t distance = SQUARE(x) + SQUARE(y) + SQUARE(z);
     int32_t volume =
-        s->volume - Math_Sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
+        info->volume - Math_Sqrt(distance) * SOUND_RANGE_MULT_CONSTANT;
     if (volume < 0) {
         slot->volume = 0;
         return;
@@ -154,7 +153,7 @@ static void M_UpdateSlotParams(SOUND_SLOT *slot)
 
     slot->volume = volume;
 
-    if (!distance || (s->flags & SAMPLE_FLAG_NO_PAN)) {
+    if (!distance || (info->flags & SAMPLE_FLAG_NO_PAN)) {
         slot->pan = 0;
         return;
     }
@@ -280,18 +279,17 @@ bool Sound_Effect(
         return false;
     }
 
-    const int16_t *const sample_lut = Sound_GetSampleLUT();
-    if (sample_lut[sfx_num] < 0) {
+    const SAMPLE_INFO *const info = Sound_GetSampleInfo(sfx_num);
+    if (info == nullptr) {
         return false;
     }
 
-    SAMPLE_INFO *s = &g_SampleInfos[sample_lut[sfx_num]];
-    if (s->randomness && Random_GetDraw() > (int32_t)s->randomness) {
+    if (info->randomness && Random_GetDraw() > (int32_t)info->randomness) {
         return false;
     }
 
     int32_t pan = 0x7FFF;
-    int32_t mode = s->flags & 3;
+    int32_t mode = info->flags & 3;
     uint32_t distance;
     if (pos) {
         int32_t x = pos->x - g_Camera.target.x;
@@ -311,12 +309,12 @@ bool Sound_Effect(
     }
     distance = Math_Sqrt(distance);
 
-    int32_t volume = s->volume - distance * SOUND_RANGE_MULT_CONSTANT;
-    if (s->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
+    int32_t volume = info->volume - distance * SOUND_RANGE_MULT_CONSTANT;
+    if (info->flags & SAMPLE_FLAG_VOLUME_WIBBLE) {
         volume -= Random_GetDraw() * SOUND_MAX_VOLUME_CHANGE >> 15;
     }
 
-    if (s->flags & SAMPLE_FLAG_NO_PAN) {
+    if (info->flags & SAMPLE_FLAG_NO_PAN) {
         pan = 0;
     }
 
@@ -333,13 +331,13 @@ bool Sound_Effect(
 
     int32_t pitch = 100;
     if (g_Config.audio.enable_pitched_sounds
-        && (s->flags & SAMPLE_FLAG_PITCH_WIBBLE)) {
+        && (info->flags & SAMPLE_FLAG_PITCH_WIBBLE)) {
         pitch += ((Random_GetDraw() * SOUND_MAX_PITCH_CHANGE) / 0x4000)
             - SOUND_MAX_PITCH_CHANGE;
     }
 
-    int32_t vars = (s->flags >> 2) & 15;
-    int32_t sfx_id = s->number;
+    int32_t vars = (info->flags >> 2) & 15;
+    int32_t sfx_id = info->number;
     if (vars != 1) {
         sfx_id += (Random_GetDraw() * vars) / 0x8000;
     }
@@ -481,19 +479,18 @@ void Sound_ResetEffects(void)
 
     m_AmbientLookupIdx = 0;
 
-    const int16_t *const sample_lut = Sound_GetSampleLUT();
     for (int32_t i = 0; i < SFX_NUMBER_OF; i++) {
-        if (sample_lut[i] < 0) {
+        const SAMPLE_INFO *const info = Sound_GetSampleInfo(i);
+        if (info == nullptr) {
             continue;
         }
-        SAMPLE_INFO *s = &g_SampleInfos[sample_lut[i]];
-        if (s->volume < 0) {
+        if (info->volume < 0) {
             Shell_ExitSystemFmt(
                 "sample info for effect %d has incorrect volume(%d)", i,
-                s->volume);
+                info->volume);
         }
 
-        int32_t mode = s->flags & 3;
+        const int32_t mode = info->flags & 3;
         if (mode == SOUND_MODE_AMBIENT) {
             if (m_AmbientLookupIdx >= MAX_AMBIENT_FX) {
                 Shell_ExitSystem(

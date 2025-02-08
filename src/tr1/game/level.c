@@ -438,11 +438,9 @@ static void M_LoadSamples(VFILE *file)
         Shell_ExitSystem("No Sample Infos");
     }
 
-    g_SampleInfos = GameBuf_Alloc(
-        sizeof(SAMPLE_INFO) * (num_sample_infos + m_InjectionInfo->sfx_count),
-        GBUF_SAMPLE_INFOS);
+    Sound_InitialiseSampleInfos(num_sample_infos + m_InjectionInfo->sfx_count);
     for (int32_t i = 0; i < num_sample_infos; i++) {
-        SAMPLE_INFO *sample_info = &g_SampleInfos[i];
+        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
         sample_info->number = VFile_ReadS16(file);
         sample_info->volume = VFile_ReadS16(file);
         sample_info->randomness = VFile_ReadS16(file);

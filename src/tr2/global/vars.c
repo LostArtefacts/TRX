@@ -79,7 +79,6 @@ int16_t *g_GroundZone[4][2] = {};
 uint16_t *g_Overlap = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
-SAMPLE_INFO *g_SampleInfos = nullptr;
 int32_t g_HeightType;
 int32_t g_FlipMaps[MAX_FLIP_MAPS];
 bool g_CameraUnderwater;
