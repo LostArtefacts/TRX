@@ -349,21 +349,22 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TO_FLIPMAP: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
             flip_available = true;
 
-            if (g_FlipMaps[flip_slot] & IF_ONE_SHOT) {
+            if (slot_flags & IF_ONE_SHOT) {
                 break;
             }
 
             if (trigger->type == TT_SWITCH) {
-                g_FlipMaps[flip_slot] ^= trigger->mask;
+                slot_flags ^= trigger->mask;
             } else {
-                g_FlipMaps[flip_slot] |= trigger->mask;
+                slot_flags |= trigger->mask;
             }
 
-            if ((g_FlipMaps[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS) {
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS) {
                 if (trigger->one_shot) {
-                    g_FlipMaps[flip_slot] |= IF_ONE_SHOT;
+                    slot_flags |= IF_ONE_SHOT;
                 }
 
                 if (!flip_status) {
@@ -372,15 +373,17 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             } else if (flip_status) {
                 flip_map = true;
             }
+
+            Room_SetFlipSlotFlags(flip_slot, slot_flags);
             break;
         }
 
         case TO_FLIPON: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
             flip_available = true;
 
-            if ((g_FlipMaps[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && !flip_status) {
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && !flip_status) {
                 flip_map = true;
             }
             break;
@@ -388,10 +391,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TO_FLIPOFF: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
+            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
             flip_available = true;
 
-            if ((g_FlipMaps[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && flip_status) {
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && flip_status) {
                 flip_map = true;
             }
             break;

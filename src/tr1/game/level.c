@@ -597,10 +597,6 @@ bool Level_Initialise(const GF_LEVEL *const level)
 
     Overlay_HideGameInfo();
 
-    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMapTable[i] = 0;
-    }
-
     Music_ResetTrackFlags();
 
     /* Clear Object Loaded flags */

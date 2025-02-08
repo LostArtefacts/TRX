@@ -937,7 +937,7 @@ void CreateSaveGameInfo(void)
 
     M_WriteS32(Room_GetFlipStatus());
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        uint8_t tflag = g_FlipMaps[i] >> 8;
+        uint8_t tflag = Room_GetFlipSlotFlags(i) >> 8;
         M_WriteU8(tflag);
     }
 
@@ -990,7 +990,7 @@ void ExtractSaveGameInfo(void)
     }
 
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMaps[i] = M_ReadS8() << 8;
+        Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
     }
 
     for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {

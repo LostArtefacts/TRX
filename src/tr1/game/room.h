@@ -7,8 +7,6 @@
 
 #include <stdint.h>
 
-extern int32_t g_FlipMapTable[MAX_FLIP_MAPS];
-
 int16_t Room_GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 int32_t Room_FindGridShift(int32_t src, int32_t dst);
 void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);

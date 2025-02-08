@@ -577,7 +577,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
         M_Read(&tmp8, sizeof(int8_t));
-        g_FlipMapTable[i] = tmp8 << 8;
+        Room_SetFlipSlotFlags(i, tmp8 << 8);
     }
 
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
@@ -763,7 +763,7 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     int32_t flip_status = Room_GetFlipStatus();
     M_Write(&flip_status, sizeof(int32_t));
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
-        int8_t flag = g_FlipMapTable[i] >> 8;
+        int8_t flag = Room_GetFlipSlotFlags(i) >> 8;
         M_Write(&flag, sizeof(int8_t));
     }
 

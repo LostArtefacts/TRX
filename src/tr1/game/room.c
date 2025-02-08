@@ -19,8 +19,6 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/utils.h>
 
-int32_t g_FlipMapTable[MAX_FLIP_MAPS] = {};
-
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
 static void M_AddFlipItems(const ROOM *room);
 static void M_RemoveFlipItems(const ROOM *room);
@@ -799,19 +797,20 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TO_FLIPMAP: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            if (g_FlipMapTable[flip_slot] & IF_ONE_SHOT) {
+            int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            if (slot_flags & IF_ONE_SHOT) {
                 break;
             }
 
             if (trigger->type == TT_SWITCH) {
-                g_FlipMapTable[flip_slot] ^= trigger->mask;
+                slot_flags ^= trigger->mask;
             } else if (trigger->mask) {
-                g_FlipMapTable[flip_slot] |= trigger->mask;
+                slot_flags |= trigger->mask;
             }
 
-            if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS) {
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS) {
                 if (trigger->one_shot) {
-                    g_FlipMapTable[flip_slot] |= IF_ONE_SHOT;
+                    slot_flags |= IF_ONE_SHOT;
                 }
 
                 if (!flip_status) {
@@ -820,13 +819,15 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             } else if (flip_status) {
                 flip_map = true;
             }
+
+            Room_SetFlipSlotFlags(flip_slot, slot_flags);
             break;
         }
 
         case TO_FLIPON: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && !flip_status) {
+            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && !flip_status) {
                 flip_map = true;
             }
             break;
@@ -834,8 +835,8 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TO_FLIPOFF: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && flip_status) {
+            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && flip_status) {
                 flip_map = true;
             }
             break;

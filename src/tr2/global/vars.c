@@ -76,7 +76,6 @@ uint16_t *g_Overlap = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
 int32_t g_HeightType;
-int32_t g_FlipMaps[MAX_FLIP_MAPS];
 bool g_CameraUnderwater;
 int32_t g_BoxCount;
 char g_LevelFileName[256];

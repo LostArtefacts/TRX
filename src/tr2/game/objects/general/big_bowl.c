@@ -42,7 +42,7 @@ void BigBowl_Control(const int16_t item_num)
         item->timer++;
         if (item->timer == 5 * FRAMES_PER_SECOND && !Room_GetFlipStatus()) {
             // TODO: poorly hardcoded flimap number
-            g_FlipMaps[4] = IF_CODE_BITS | IF_ONE_SHOT;
+            Room_SetFlipSlotFlags(4, IF_CODE_BITS | IF_ONE_SHOT);
             Room_FlipMap();
         }
     }

@@ -76,7 +76,6 @@ extern int16_t *g_GroundZone[][2];
 extern uint16_t *g_Overlap;
 extern CREATURE *g_BaddieSlots;
 extern int32_t g_HeightType;
-extern int32_t g_FlipMaps[MAX_FLIP_MAPS];
 extern bool g_CameraUnderwater;
 extern int32_t g_BoxCount;
 extern char g_LevelFileName[256];

@@ -29,6 +29,7 @@ static ROOM *m_Rooms = nullptr;
 static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
+static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
@@ -139,6 +140,9 @@ void Room_InitialiseFlipStatus(void)
     m_FlipStatus = false;
     m_FlipEffect = -1;
     m_FlipTimer = 0;
+    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
+        m_FlipSlotFlags[i] = 0;
+    }
 }
 
 bool Room_GetFlipStatus(void)
@@ -169,6 +173,16 @@ int32_t Room_GetFlipTimer(void)
 void Room_SetFlipTimer(const int32_t flip_timer)
 {
     m_FlipTimer = flip_timer;
+}
+
+int32_t Room_GetFlipSlotFlags(const int32_t slot_idx)
+{
+    return m_FlipSlotFlags[slot_idx];
+}
+
+void Room_SetFlipSlotFlags(const int32_t slot_idx, const int32_t flags)
+{
+    m_FlipSlotFlags[slot_idx] = flags;
 }
 
 void Room_ParseFloorData(const int16_t *floor_data)
