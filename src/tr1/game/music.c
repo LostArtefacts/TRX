@@ -107,14 +107,18 @@ bool Music_Play(const MUSIC_TRACK_ID track_id, const MUSIC_PLAY_MODE mode)
         return false;
     }
 
-    if (g_Config.audio.fix_secrets_killing_music && track_id == MX_SECRET) {
+    if (g_Config.audio.fix_secrets_killing_music && track_id == MX_SECRET
+        && Sound_IsAvailable(SFX_SECRET)) {
         return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
     }
 
     if (g_Config.audio.fix_speeches_killing_music && track_id >= MX_BALDY_SPEECH
         && track_id <= MX_SKATEKID_SPEECH) {
-        return Sound_Effect(
-            SFX_BALDY_SPEECH + track_id - MX_BALDY_SPEECH, nullptr, SPM_ALWAYS);
+        const SOUND_EFFECT_ID speech_id =
+            SFX_BALDY_SPEECH + track_id - MX_BALDY_SPEECH;
+        if (Sound_IsAvailable(speech_id)) {
+            return Sound_Effect(speech_id, nullptr, SPM_ALWAYS);
+        }
     }
 
     M_StopActiveStream();
