@@ -24,6 +24,7 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/music.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -886,7 +887,9 @@ void CreateSaveGameInfo(void)
         M_WriteU8(tflag);
     }
 
-    M_Write(g_MusicTrackFlags, MAX_CD_TRACKS * sizeof(uint16_t));
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+        M_WriteU16(Music_GetTrackFlags(i));
+    }
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
         const OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
         M_WriteS16(object->flags);
@@ -936,8 +939,8 @@ void ExtractSaveGameInfo(void)
         g_FlipMaps[i] = M_ReadS8() << 8;
     }
 
-    for (int32_t i = 0; i < MAX_CD_TRACKS; i++) {
-        g_MusicTrackFlags[i] = M_ReadU16();
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+        Music_SetTrackFlags(i, M_ReadU16());
     }
 
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {

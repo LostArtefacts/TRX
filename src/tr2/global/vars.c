@@ -2,8 +2,6 @@
 
 #include "game/spawn.h"
 
-#include <libtrx/game/sound/ids.h>
-
 #ifndef MESON_BUILD
 const char *g_TRXVersion = "TR2X (non-Docker build)";
 #endif
@@ -84,7 +82,6 @@ int32_t g_FlipMaps[MAX_FLIP_MAPS];
 bool g_CameraUnderwater;
 int32_t g_BoxCount;
 char g_LevelFileName[256];
-uint16_t g_MusicTrackFlags[64];
 
 WEAPON_INFO g_Weapons[] = {
     {},

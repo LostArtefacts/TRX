@@ -25,6 +25,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 
 #include <stdint.h>
@@ -151,19 +152,23 @@ static void M_LoadPostprocess(void)
 
         if (item->object_id == O_PIERRE && item->hit_points <= 0
             && (item->flags & IF_ONE_SHOT)) {
-            g_MusicTrackFlags[MX_PIERRE_SPEECH] |= IF_ONE_SHOT;
+            const uint16_t flags = Music_GetTrackFlags(MX_PIERRE_SPEECH);
+            Music_SetTrackFlags(MX_PIERRE_SPEECH, flags | IF_ONE_SHOT);
         }
 
         if (item->object_id == O_COWBOY && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_COWBOY_SPEECH] |= IF_ONE_SHOT;
+            const uint16_t flags = Music_GetTrackFlags(MX_COWBOY_SPEECH);
+            Music_SetTrackFlags(MX_COWBOY_SPEECH, flags | IF_ONE_SHOT);
         }
 
         if (item->object_id == O_BALDY && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONE_SHOT;
+            const uint16_t flags = Music_GetTrackFlags(MX_BALDY_SPEECH);
+            Music_SetTrackFlags(MX_BALDY_SPEECH, flags | IF_ONE_SHOT);
         }
 
         if (item->object_id == O_LARSON && item->hit_points <= 0) {
-            g_MusicTrackFlags[MX_BALDY_SPEECH] |= IF_ONE_SHOT;
+            const uint16_t flags = Music_GetTrackFlags(MX_LARSON_SPEECH);
+            Music_SetTrackFlags(MX_LARSON_SPEECH, flags | IF_ONE_SHOT);
         }
     }
 

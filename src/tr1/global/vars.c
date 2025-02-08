@@ -2,8 +2,6 @@
 
 int32_t g_FPSCounter = 0;
 
-uint16_t g_MusicTrackFlags[MAX_CD_TRACKS] = {};
-
 int32_t g_OptionSelected = 0;
 
 int32_t g_PhdPersp = 0;

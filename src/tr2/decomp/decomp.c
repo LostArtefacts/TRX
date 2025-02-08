@@ -192,9 +192,7 @@ void GetValidLevelsList(REQUEST_INFO *const req)
 
 void InitialiseGameFlags(void)
 {
-    for (int32_t i = 0; i < MAX_CD_TRACKS; i++) {
-        g_MusicTrackFlags[i] = 0;
-    }
+    Music_ResetTrackFlags();
     for (GAME_OBJECT_ID obj_id = 0; obj_id < O_NUMBER_OF; obj_id++) {
         Object_Get(obj_id)->loaded = 0;
     }

@@ -42,14 +42,15 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         return;
     }
 
-    if (track <= MX_UNUSED_1 || track >= MAX_CD_TRACKS) {
+    if (track <= MX_UNUSED_1 || track >= MAX_MUSIC_TRACKS) {
         return;
     }
 
     // handle g_Lara gym routines
+    uint16_t flags = Music_GetTrackFlags(track);
     switch (track) {
     case MX_GYM_HINT_03:
-        if ((g_MusicTrackFlags[track] & IF_ONE_SHOT)
+        if ((flags & IF_ONE_SHOT)
             && g_LaraItem->current_anim_state == LS_JUMP_UP) {
             track = MX_GYM_HINT_04;
         }
@@ -68,7 +69,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         break;
 
     case MX_GYM_HINT_17:
-        if ((g_MusicTrackFlags[track] & IF_ONE_SHOT)
+        if ((flags & IF_ONE_SHOT)
             && g_LaraItem->current_anim_state == LS_HANG) {
             track = MX_GYM_HINT_18;
         }
@@ -81,7 +82,7 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
         break;
 
     case MX_GYM_HINT_25:
-        if (g_MusicTrackFlags[track] & IF_ONE_SHOT) {
+        if (flags & IF_ONE_SHOT) {
             static int16_t gym_completion_counter = 0;
             gym_completion_counter++;
             if (gym_completion_counter == LOGIC_FPS * 4) {
@@ -95,26 +96,28 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
     // end of g_Lara gym routines
 
-    if (g_MusicTrackFlags[track] & IF_ONE_SHOT) {
+    if (flags & IF_ONE_SHOT) {
         return;
     }
 
     if (trigger->type == TT_SWITCH) {
-        g_MusicTrackFlags[track] ^= trigger->mask;
+        flags ^= trigger->mask;
     } else if (trigger->type == TT_ANTIPAD) {
-        g_MusicTrackFlags[track] &= -1 - trigger->mask;
+        flags &= -1 - trigger->mask;
     } else if (trigger->mask) {
-        g_MusicTrackFlags[track] |= trigger->mask;
+        flags |= trigger->mask;
     }
 
-    if ((g_MusicTrackFlags[track] & IF_CODE_BITS) == IF_CODE_BITS) {
+    if ((flags & IF_CODE_BITS) == IF_CODE_BITS) {
         if (trigger->one_shot) {
-            g_MusicTrackFlags[track] |= IF_ONE_SHOT;
+            flags |= IF_ONE_SHOT;
         }
         Music_Play(track, MPM_TRACKED);
     } else {
         Music_StopTrack(track);
     }
+
+    Music_SetTrackFlags(track, flags);
 }
 
 static void M_AddFlipItems(const ROOM *const room)

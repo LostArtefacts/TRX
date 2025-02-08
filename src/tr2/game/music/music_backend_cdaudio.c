@@ -3,6 +3,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/engine/audio.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/music/const.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
@@ -40,7 +41,7 @@ static bool M_Parse(BACKEND_DATA *const data)
         return false;
     }
 
-    data->tracks = Memory_Alloc(sizeof(CDAUDIO_TRACK) * MAX_CD_TRACKS);
+    data->tracks = Memory_Alloc(sizeof(CDAUDIO_TRACK) * MAX_MUSIC_TRACKS);
 
     size_t offset = 0;
     while (offset < track_content_size) {
@@ -57,7 +58,7 @@ static bool M_Parse(BACKEND_DATA *const data)
             &track_content[offset], "%" PRIu64 " %" PRIu64 " %" PRIu64,
             &track_num, &from, &to);
 
-        if (result == 3 && track_num > 0 && track_num <= MAX_CD_TRACKS) {
+        if (result == 3 && track_num > 0 && track_num <= MAX_MUSIC_TRACKS) {
             int32_t track_idx = track_num - 1;
             data->tracks[track_idx].active = true;
             data->tracks[track_idx].from = from;
@@ -75,14 +76,14 @@ parse_end:
     Memory_Free(track_content);
 
     // reindex wrong track boundaries
-    for (int32_t i = 0; i < MAX_CD_TRACKS; i++) {
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
         if (!data->tracks[i].active) {
             continue;
         }
 
-        if (i < MAX_CD_TRACKS - 1
+        if (i < MAX_MUSIC_TRACKS - 1
             && data->tracks[i].from >= data->tracks[i].to) {
-            for (int32_t j = i + 1; j < MAX_CD_TRACKS; j++) {
+            for (int32_t j = i + 1; j < MAX_MUSIC_TRACKS; j++) {
                 if (data->tracks[j].active) {
                     data->tracks[i].to = data->tracks[j].from;
                     break;
@@ -139,7 +140,7 @@ static int32_t M_Play(
 
     const int32_t track_idx = track_id - 1;
     const CDAUDIO_TRACK *track = &data->tracks[track_idx];
-    if (track_idx < 0 || track_idx >= MAX_CD_TRACKS) {
+    if (track_idx < 0 || track_idx >= MAX_MUSIC_TRACKS) {
         LOG_ERROR("Invalid track: %d", track_id);
         return -1;
     }

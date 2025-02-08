@@ -918,15 +918,15 @@ static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr)
         return true;
     }
 
-    if ((signed)music_track_arr->length != MAX_CD_TRACKS) {
+    if ((signed)music_track_arr->length != MAX_MUSIC_TRACKS) {
         LOG_WARNING(
             "Malformed save: expected %d music track flags, got %d",
-            MAX_CD_TRACKS, music_track_arr->length);
+            MAX_MUSIC_TRACKS, music_track_arr->length);
         return true;
     }
 
-    for (int i = 0; i < (signed)music_track_arr->length; i++) {
-        g_MusicTrackFlags[i] = JSON_ArrayGetInt(music_track_arr, i, 0);
+    for (int32_t i = 0; i < (signed)music_track_arr->length; i++) {
+        Music_SetTrackFlags(i, JSON_ArrayGetInt(music_track_arr, i, 0));
     }
 
     return true;
@@ -1281,8 +1281,8 @@ static JSON_OBJECT *M_DumpCurrentMusic(void)
 static JSON_ARRAY *M_DumpMusicTrackFlags(void)
 {
     JSON_ARRAY *music_track_arr = JSON_ArrayNew();
-    for (int i = 0; i < MAX_CD_TRACKS; i++) {
-        JSON_ArrayAppendInt(music_track_arr, g_MusicTrackFlags[i]);
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+        JSON_ArrayAppendInt(music_track_arr, Music_GetTrackFlags(i));
     }
     return music_track_arr;
 }

@@ -603,9 +603,7 @@ bool Level_Initialise(const GF_LEVEL *const level)
         g_FlipMapTable[i] = 0;
     }
 
-    for (int32_t i = 0; i < MAX_CD_TRACKS; i++) {
-        g_MusicTrackFlags[i] = 0;
-    }
+    Music_ResetTrackFlags();
 
     /* Clear Object Loaded flags */
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {

@@ -100,39 +100,42 @@ static void M_TriggerMusicTrack(
         return;
     }
 
+    uint16_t flags = Music_GetTrackFlags(track);
     if (trigger->type != TT_SWITCH) {
         const int32_t code = trigger->mask;
-        if (g_MusicTrackFlags[track] & code) {
+        if ((flags & code) != 0) {
             return;
         }
         if (trigger->one_shot) {
-            g_MusicTrackFlags[track] |= code;
+            flags |= code;
         }
     }
 
     if (trigger->timer == 0) {
         Music_Play(track, MPM_TRACKED);
-        return;
+        goto finish;
     }
 
     if (track != Music_GetDelayedTrack()) {
         Music_Play(track, MPM_DELAYED);
-        g_MusicTrackFlags[track] = (g_MusicTrackFlags[track] & 0xFF00)
-            | ((FRAMES_PER_SECOND * trigger->timer) & 0xFF);
-        return;
+        flags =
+            (flags & 0xFF00) | ((FRAMES_PER_SECOND * trigger->timer) & 0xFF);
+        goto finish;
     }
 
-    int32_t timer = g_MusicTrackFlags[track] & 0xFF;
+    int32_t timer = flags & 0xFF;
     if (timer == 0) {
-        return;
+        goto finish;
     }
 
     timer--;
     if (timer == 0) {
         Music_Play(track, MPM_TRACKED);
     }
-    g_MusicTrackFlags[track] =
-        (g_MusicTrackFlags[track] & 0xFF00) | (timer & 0xFF);
+    flags = (flags & 0xFF00) | (timer & 0xFF);
+
+finish:
+    Music_SetTrackFlags(track, flags);
 }
 
 static bool M_TestLava(const ITEM *const item)

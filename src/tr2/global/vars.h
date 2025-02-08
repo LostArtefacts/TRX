@@ -82,7 +82,6 @@ extern int32_t g_FlipMaps[MAX_FLIP_MAPS];
 extern bool g_CameraUnderwater;
 extern int32_t g_BoxCount;
 extern char g_LevelFileName[256];
-extern uint16_t g_MusicTrackFlags[64];
 extern WEAPON_INFO g_Weapons[];
 extern int16_t g_FinalBossActive;
 extern int16_t g_FinalLevelCount;
