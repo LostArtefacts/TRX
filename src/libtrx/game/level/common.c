@@ -841,10 +841,6 @@ void Level_ReadSamples(
     const int32_t num_sample_infos = VFile_ReadS32(file);
     info->samples.info_count = num_sample_infos;
     LOG_INFO("sample infos: %d", num_sample_infos);
-    if (num_sample_infos == 0) {
-        goto finish;
-    }
-
     Sound_InitialiseSampleInfos(num_sample_infos + extra_sfx_count);
     for (int32_t i = 0; i < num_sample_infos; i++) {
         SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
@@ -858,9 +854,6 @@ void Level_ReadSamples(
     const int32_t data_size = VFile_ReadS32(file);
     info->samples.data_size = data_size;
     LOG_INFO("%d sample data size", data_size);
-    if (data_size == 0) {
-        Shell_ExitSystem("No Sample Data");
-    }
 
     info->samples.data =
         GameBuf_Alloc(data_size + extra_data_size, GBUF_SAMPLES);
@@ -870,9 +863,6 @@ void Level_ReadSamples(
     const int32_t num_offsets = VFile_ReadS32(file);
     LOG_INFO("samples: %d", num_offsets);
     info->samples.offset_count = num_offsets;
-    if (num_offsets == 0) {
-        goto finish;
-    }
 
     info->samples.offsets =
         Memory_Alloc(sizeof(int32_t) * (num_offsets + extra_offset_count));

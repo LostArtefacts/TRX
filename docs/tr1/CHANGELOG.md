@@ -34,6 +34,7 @@
 - fixed the teleporting command sometimes putting Lara in invalid flipmap rooms (#2370)
 - fixed teleporting to an item on a ledge sometimes pushing Lara to the room below (#2372)
 - fixed secret and enemy speech not playing if the sound effects are missing from the level file (#2458)
+- fixed being unable to load a level that contains no sound effect data (#2460)
 - fixed input controller remaps not being saved across game relaunches (#2422, regression from 4.6)
 - fixed the upside-down camera fix to no longer limit Lara's vision (#2276, regression from 4.2)
 - fixed being unable to load some old custom levels that contain certain (invalid) floor data (#2114, regression from 4.3)
