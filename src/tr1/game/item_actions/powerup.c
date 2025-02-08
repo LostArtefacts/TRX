@@ -8,7 +8,7 @@
 void ItemAction_PowerUp(ITEM *item)
 {
     if (g_FlipTimer > LOGIC_FPS * 4) {
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     } else {
         const XYZ_32 pos = {
             .x = g_Camera.target.x,

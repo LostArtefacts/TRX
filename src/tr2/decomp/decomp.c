@@ -203,7 +203,6 @@ void InitialiseGameFlags(void)
 
     g_SunsetTimer = 0;
     g_LevelComplete = false;
-    g_FlipEffect = -1;
     g_DetonateAllMines = false;
     g_IsMonkAngry = false;
 }

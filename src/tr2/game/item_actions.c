@@ -149,13 +149,13 @@ void M_LaraNormal(ITEM *const item)
 void M_Boiler(ITEM *const item)
 {
     Sound_Effect(SFX_UNKNOWN_1, nullptr, SPM_NORMAL);
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_Flood(ITEM *const item)
 {
     if (g_FlipTimer > 4 * FRAMES_PER_SECOND) {
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
         g_FlipTimer++;
         return;
     }
@@ -180,7 +180,7 @@ void M_Rubble(ITEM *const item)
 {
     Sound_Effect(SFX_MASSIVE_CRASH, nullptr, SPM_NORMAL);
     g_Camera.bounce = -350;
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_Chandelier(ITEM *const item)
@@ -188,7 +188,7 @@ void M_Chandelier(ITEM *const item)
     Sound_Effect(SFX_CHAIN_PULLEY, nullptr, SPM_NORMAL);
     g_FlipTimer++;
     if (g_FlipTimer > FRAMES_PER_SECOND) {
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     }
 }
 
@@ -196,31 +196,31 @@ void M_Explosion(ITEM *const item)
 {
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     g_Camera.bounce = -75;
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_Piston(ITEM *const item)
 {
     Sound_Effect(SFX_PULLEY_CRANE, nullptr, SPM_NORMAL);
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_Curtain(ITEM *const item)
 {
     Sound_Effect(SFX_CURTAIN, nullptr, SPM_NORMAL);
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_Statue(ITEM *const item)
 {
     Sound_Effect(SFX_STONE_DOOR_SLIDE, nullptr, SPM_NORMAL);
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_SetChange(ITEM *const item)
 {
     Sound_Effect(SFX_STAGE_BACKDROP, nullptr, SPM_NORMAL);
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_FlipMap(ITEM *const item)
@@ -301,7 +301,7 @@ void M_AssaultStart(ITEM *const item)
     g_SaveGame.current_stats.timer = 0;
     g_IsAssaultTimerActive = true;
     g_IsAssaultTimerDisplay = true;
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
     Stats_StartTimer();
 }
 
@@ -309,14 +309,14 @@ void M_AssaultStop(ITEM *const item)
 {
     g_IsAssaultTimerActive = false;
     g_IsAssaultTimerDisplay = true;
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_AssaultReset(ITEM *const item)
 {
     g_IsAssaultTimerActive = false;
     g_IsAssaultTimerDisplay = false;
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void M_AssaultFinished(ITEM *const item)
@@ -352,7 +352,7 @@ void M_AssaultFinished(ITEM *const item)
         g_IsAssaultTimerActive = false;
     }
 
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }
 
 void ItemAction_Run(int16_t action_id, ITEM *item)
@@ -364,7 +364,8 @@ void ItemAction_Run(int16_t action_id, ITEM *item)
 
 void ItemAction_RunActive(void)
 {
-    if (g_FlipEffect != -1) {
-        ItemAction_Run(g_FlipEffect, nullptr);
+    const int32_t flip_effect = Room_GetFlipEffect();
+    if (flip_effect != -1) {
+        ItemAction_Run(flip_effect, nullptr);
     }
 }

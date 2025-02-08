@@ -594,7 +594,6 @@ bool Level_Initialise(const GF_LEVEL *const level)
         Game_SetCurrentLevel((GF_LEVEL *)level);
     }
     GF_SetCurrentLevel((GF_LEVEL *)level);
-    g_FlipEffect = -1;
 
     Overlay_HideGameInfo();
 

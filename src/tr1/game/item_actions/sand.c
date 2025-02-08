@@ -8,7 +8,7 @@
 void ItemAction_DropSand(ITEM *item)
 {
     if (g_FlipTimer > LOGIC_FPS * 4) {
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     } else {
         if (!g_FlipTimer) {
             Sound_Effect(SFX_TRAPDOOR_OPEN, nullptr, SPM_NORMAL);

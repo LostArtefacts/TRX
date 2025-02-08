@@ -7,7 +7,7 @@ void ItemAction_Stairs2Slope(ITEM *item)
 {
     if (g_FlipTimer == 5) {
         Sound_Effect(SFX_STAIRS_2_SLOPE_FX, nullptr, SPM_NORMAL);
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     }
     g_FlipTimer++;
 }

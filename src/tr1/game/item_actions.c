@@ -48,7 +48,8 @@ void ItemAction_Run(int16_t action_id, ITEM *item)
 
 void ItemAction_RunActive(void)
 {
-    if (g_FlipEffect != -1) {
-        ItemAction_Run(g_FlipEffect, nullptr);
+    const int32_t flip_effect = Room_GetFlipEffect();
+    if (flip_effect != -1) {
+        ItemAction_Run(flip_effect, nullptr);
     }
 }

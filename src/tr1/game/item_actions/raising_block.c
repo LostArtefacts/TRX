@@ -6,5 +6,5 @@
 void ItemAction_RaisingBlock(ITEM *item)
 {
     Sound_Effect(SFX_RAISINGBLOCK_FX, nullptr, SPM_NORMAL);
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }

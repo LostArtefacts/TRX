@@ -11,6 +11,8 @@ void Room_InitialiseFlipStatus(void);
 extern void Room_FlipMap(void);
 bool Room_GetFlipStatus(void);
 void Room_ToggleFlipStatus(void); // TODO: eliminate
+int32_t Room_GetFlipEffect(void);
+void Room_SetFlipEffect(int32_t flip_effect);
 
 int32_t Room_GetAdjoiningRooms(
     int16_t init_room_num, int16_t out_room_nums[], int32_t max_room_num_count);

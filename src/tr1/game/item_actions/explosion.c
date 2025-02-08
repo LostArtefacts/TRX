@@ -8,5 +8,5 @@ void ItemAction_Explosion(ITEM *item)
 {
     Sound_Effect(SFX_EXPLOSION_FX, nullptr, SPM_NORMAL);
     g_Camera.bounce = -75;
-    g_FlipEffect = -1;
+    Room_SetFlipEffect(-1);
 }

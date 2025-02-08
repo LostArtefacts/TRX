@@ -19,6 +19,6 @@ void ItemAction_Earthquake(ITEM *item)
 
     g_FlipTimer++;
     if (g_FlipTimer == 105) {
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     }
 }

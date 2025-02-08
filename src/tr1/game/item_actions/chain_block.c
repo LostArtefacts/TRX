@@ -22,6 +22,6 @@ void ItemAction_ChainBlock(ITEM *item)
     g_FlipTimer++;
     if (g_FlipTimer == 55) {
         Sound_Effect(SFX_LARA_SPLASH, nullptr, SPM_NORMAL);
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     }
 }

@@ -961,7 +961,7 @@ void CreateSaveGameInfo(void)
         M_WriteS16(weapon_item->goal_anim_state);
     }
 
-    M_WriteS32(g_FlipEffect);
+    M_WriteS32(Room_GetFlipEffect());
     M_WriteS32(g_FlipTimer);
     M_WriteS32(g_IsMonkAngry);
 
@@ -1023,7 +1023,7 @@ void ExtractSaveGameInfo(void)
         Lara_CatchFire();
     }
 
-    g_FlipEffect = M_ReadS32();
+    Room_SetFlipEffect(M_ReadS32());
     g_FlipTimer = M_ReadS32();
     g_IsMonkAngry = M_ReadS32();
 

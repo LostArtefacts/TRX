@@ -11,7 +11,7 @@
 void ItemAction_Flood(ITEM *item)
 {
     if (g_FlipTimer > LOGIC_FPS * 4) {
-        g_FlipEffect = -1;
+        Room_SetFlipEffect(-1);
     } else {
         const int32_t timer = g_FlipTimer < LOGIC_FPS ? LOGIC_FPS - g_FlipTimer
                                                       : g_FlipTimer - LOGIC_FPS;
