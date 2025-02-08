@@ -154,9 +154,10 @@ void M_Boiler(ITEM *const item)
 
 void M_Flood(ITEM *const item)
 {
-    if (g_FlipTimer > 4 * FRAMES_PER_SECOND) {
+    int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > 4 * FRAMES_PER_SECOND) {
         Room_SetFlipEffect(-1);
-        g_FlipTimer++;
+        Room_SetFlipTimer(++flip_timer);
         return;
     }
 
@@ -166,14 +167,14 @@ void M_Flood(ITEM *const item)
         .z = g_LaraItem->pos.z,
     };
 
-    if (g_FlipTimer >= FRAMES_PER_SECOND) {
-        pos.y += 100 * (g_FlipTimer - FRAMES_PER_SECOND);
+    if (flip_timer >= FRAMES_PER_SECOND) {
+        pos.y += 100 * (flip_timer - FRAMES_PER_SECOND);
     } else {
-        pos.y += 100 * (FRAMES_PER_SECOND - g_FlipTimer);
+        pos.y += 100 * (FRAMES_PER_SECOND - flip_timer);
     }
 
     Sound_Effect(SFX_WATERFALL_LOOP, &pos, SPM_NORMAL);
-    g_FlipTimer++;
+    Room_SetFlipTimer(++flip_timer);
 }
 
 void M_Rubble(ITEM *const item)
@@ -185,9 +186,10 @@ void M_Rubble(ITEM *const item)
 
 void M_Chandelier(ITEM *const item)
 {
+    int32_t flip_timer = Room_GetFlipTimer();
     Sound_Effect(SFX_CHAIN_PULLEY, nullptr, SPM_NORMAL);
-    g_FlipTimer++;
-    if (g_FlipTimer > FRAMES_PER_SECOND) {
+    Room_SetFlipTimer(++flip_timer);
+    if (flip_timer > FRAMES_PER_SECOND) {
         Room_SetFlipEffect(-1);
     }
 }

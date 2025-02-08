@@ -7,15 +7,16 @@
 
 void ItemAction_PowerUp(ITEM *item)
 {
-    if (g_FlipTimer > LOGIC_FPS * 4) {
+    int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > LOGIC_FPS * 4) {
         Room_SetFlipEffect(-1);
     } else {
         const XYZ_32 pos = {
             .x = g_Camera.target.x,
-            .y = g_Camera.target.y + g_FlipTimer * 100,
+            .y = g_Camera.target.y + flip_timer * 100,
             .z = g_Camera.target.z,
         };
         Sound_Effect(SFX_POWERUP_FX, &pos, SPM_NORMAL);
     }
-    g_FlipTimer++;
+    Room_SetFlipTimer(++flip_timer);
 }

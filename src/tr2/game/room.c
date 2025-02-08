@@ -435,7 +435,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     if (new_effect != -1 && (flip_map || !flip_available)) {
         Room_SetFlipEffect(new_effect);
-        g_FlipTimer = 0;
+        Room_SetFlipTimer(0);
     }
 }
 

@@ -19,7 +19,6 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/utils.h>
 
-int32_t g_FlipTimer = 0;
 int32_t g_FlipMapTable[MAX_FLIP_MAPS] = {};
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
@@ -878,7 +877,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         Room_FlipMap();
         if (new_effect != -1) {
             Room_SetFlipEffect(new_effect);
-            g_FlipTimer = 0;
+            Room_SetFlipTimer(0);
         }
     }
 }

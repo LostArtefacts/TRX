@@ -666,9 +666,11 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     M_ReadLara(&g_Lara);
     int32_t flip_effect;
+    int32_t flip_timer;
     M_Read(&flip_effect, sizeof(int32_t));
-    M_Read(&g_FlipTimer, sizeof(int32_t));
+    M_Read(&flip_timer, sizeof(int32_t));
     Room_SetFlipEffect(flip_effect);
+    Room_SetFlipTimer(flip_timer);
     Memory_FreePointer(&buffer);
     return true;
 }
@@ -822,8 +824,9 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
     M_WriteLara(&g_Lara);
 
     int32_t flip_effect = Room_GetFlipEffect();
+    int32_t flip_timer = Room_GetFlipTimer();
     M_Write(&flip_effect, sizeof(int32_t));
-    M_Write(&g_FlipTimer, sizeof(int32_t));
+    M_Write(&flip_timer, sizeof(int32_t));
 
     File_WriteData(fp, buffer, m_SGBufPos);
     Memory_FreePointer(&buffer);

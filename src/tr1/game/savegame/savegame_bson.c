@@ -422,7 +422,7 @@ static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj)
     }
 
     Room_SetFlipEffect(JSON_ObjectGetInt(flipmap_obj, "effect", 0));
-    g_FlipTimer = JSON_ObjectGetInt(flipmap_obj, "timer", 0);
+    Room_SetFlipTimer(JSON_ObjectGetInt(flipmap_obj, "timer", 0));
 
     JSON_ARRAY *flipmap_arr = JSON_ObjectGetArray(flipmap_obj, "table");
     if (!flipmap_arr) {
@@ -1012,7 +1012,7 @@ static JSON_OBJECT *M_DumpFlipmaps(void)
     JSON_OBJECT *flipmap_obj = JSON_ObjectNew();
     JSON_ObjectAppendBool(flipmap_obj, "status", Room_GetFlipStatus());
     JSON_ObjectAppendInt(flipmap_obj, "effect", Room_GetFlipEffect());
-    JSON_ObjectAppendInt(flipmap_obj, "timer", g_FlipTimer);
+    JSON_ObjectAppendInt(flipmap_obj, "timer", Room_GetFlipTimer());
     JSON_ARRAY *flipmap_arr = JSON_ArrayNew();
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
         JSON_ArrayAppendInt(flipmap_arr, g_FlipMapTable[i] >> 8);

@@ -7,7 +7,6 @@
 
 #include <stdint.h>
 
-extern int32_t g_FlipTimer;
 extern int32_t g_FlipMapTable[MAX_FLIP_MAPS];
 
 int16_t Room_GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z);

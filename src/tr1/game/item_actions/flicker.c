@@ -4,13 +4,14 @@
 
 void ItemAction_Flicker(ITEM *item)
 {
-    if (g_FlipTimer > 125) {
+    int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > 125) {
         Room_FlipMap();
         Room_SetFlipEffect(-1);
     } else if (
-        g_FlipTimer == 90 || g_FlipTimer == 92 || g_FlipTimer == 105
-        || g_FlipTimer == 107) {
+        flip_timer == 90 || flip_timer == 92 || flip_timer == 105
+        || flip_timer == 107) {
         Room_FlipMap();
     }
-    g_FlipTimer++;
+    Room_SetFlipTimer(++flip_timer);
 }

@@ -962,7 +962,7 @@ void CreateSaveGameInfo(void)
     }
 
     M_WriteS32(Room_GetFlipEffect());
-    M_WriteS32(g_FlipTimer);
+    M_WriteS32(Room_GetFlipTimer());
     M_WriteS32(g_IsMonkAngry);
 
     M_WriteFlares();
@@ -1024,7 +1024,7 @@ void ExtractSaveGameInfo(void)
     }
 
     Room_SetFlipEffect(M_ReadS32());
-    g_FlipTimer = M_ReadS32();
+    Room_SetFlipTimer(M_ReadS32());
     g_IsMonkAngry = M_ReadS32();
 
     M_ReadFlares();

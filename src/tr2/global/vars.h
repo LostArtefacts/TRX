@@ -59,7 +59,6 @@ extern int32_t g_WibbleOffset;
 extern bool g_IsWibbleEffect;
 extern bool g_IsWaterEffect;
 extern bool g_IsShadeEffect;
-extern int32_t g_FlipTimer;
 extern bool g_IsDemoLoaded;
 extern bool g_IsAssaultTimerDisplay;
 extern bool g_IsAssaultTimerActive;

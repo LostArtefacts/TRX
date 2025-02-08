@@ -10,11 +10,12 @@
 
 void ItemAction_Flood(ITEM *item)
 {
-    if (g_FlipTimer > LOGIC_FPS * 4) {
+    int32_t flip_timer = Room_GetFlipTimer();
+    if (flip_timer > LOGIC_FPS * 4) {
         Room_SetFlipEffect(-1);
     } else {
-        const int32_t timer = g_FlipTimer < LOGIC_FPS ? LOGIC_FPS - g_FlipTimer
-                                                      : g_FlipTimer - LOGIC_FPS;
+        const int32_t timer = flip_timer < LOGIC_FPS ? LOGIC_FPS - flip_timer
+                                                     : flip_timer - LOGIC_FPS;
         const XYZ_32 pos = {
             .x = g_LaraItem->pos.x,
             .y = g_Camera.target.y + timer * 100,
@@ -23,5 +24,5 @@ void ItemAction_Flood(ITEM *item)
         Sound_Effect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
     }
 
-    g_FlipTimer++;
+    Room_SetFlipTimer(++flip_timer);
 }
