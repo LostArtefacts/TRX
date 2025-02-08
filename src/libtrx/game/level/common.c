@@ -827,6 +827,61 @@ void Level_ReadSoundSources(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
+// TODO: replace extra vars with values from injection interface
+void Level_ReadSamples(
+    LEVEL_INFO *const info, const int32_t extra_sfx_count,
+    const int32_t extra_data_size, const int32_t extra_offset_count,
+    VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+
+    int16_t *const sample_lut = Sound_GetSampleLUT();
+    VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
+
+    const int32_t num_sample_infos = VFile_ReadS32(file);
+    info->samples.info_count = num_sample_infos;
+    LOG_INFO("sample infos: %d", num_sample_infos);
+    if (num_sample_infos == 0) {
+        goto finish;
+    }
+
+    Sound_InitialiseSampleInfos(num_sample_infos + extra_sfx_count);
+    for (int32_t i = 0; i < num_sample_infos; i++) {
+        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
+        sample_info->number = VFile_ReadS16(file);
+        sample_info->volume = VFile_ReadS16(file);
+        sample_info->randomness = VFile_ReadS16(file);
+        sample_info->flags = VFile_ReadS16(file);
+    }
+
+#if TR_VERSION == 1
+    const int32_t data_size = VFile_ReadS32(file);
+    info->samples.data_size = data_size;
+    LOG_INFO("%d sample data size", data_size);
+    if (data_size == 0) {
+        Shell_ExitSystem("No Sample Data");
+    }
+
+    info->samples.data =
+        GameBuf_Alloc(data_size + extra_data_size, GBUF_SAMPLES);
+    VFile_Read(file, info->samples.data, sizeof(char) * data_size);
+#endif
+
+    const int32_t num_offsets = VFile_ReadS32(file);
+    LOG_INFO("samples: %d", num_offsets);
+    info->samples.offset_count = num_offsets;
+    if (num_offsets == 0) {
+        goto finish;
+    }
+
+    info->samples.offsets =
+        Memory_Alloc(sizeof(int32_t) * (num_offsets + extra_offset_count));
+    VFile_Read(file, info->samples.offsets, sizeof(int32_t) * num_offsets);
+
+finish:
+    Benchmark_End(benchmark, nullptr);
+}
+
 void Level_LoadTexturePages(LEVEL_INFO *const info)
 {
     const int32_t num_pages = info->textures.page_count;

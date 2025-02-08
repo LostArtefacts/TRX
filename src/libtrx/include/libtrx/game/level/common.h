@@ -32,6 +32,9 @@ void Level_ReadCamerasAndSinks(VFILE *file);
 void Level_ReadItems(VFILE *file);
 void Level_ReadDemoData(VFILE *file);
 void Level_ReadSoundSources(VFILE *file);
+void Level_ReadSamples(
+    LEVEL_INFO *info, int32_t extra_sfx_count, int32_t extra_data_size,
+    int32_t extra_offset_count, VFILE *file);
 
 void Level_LoadTexturePages(LEVEL_INFO *info);
 void Level_LoadPalettes(LEVEL_INFO *info);

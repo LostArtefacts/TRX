@@ -47,7 +47,6 @@ static void M_LoadSprites(VFILE *file);
 static void M_LoadSoundEffects(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
-static void M_LoadSamples(VFILE *file);
 static void M_InitialiseSoundEffects(void);
 static void M_CompleteSetup(void);
 
@@ -220,43 +219,6 @@ static void M_LoadAnimatedTextures(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-static void M_LoadSamples(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-
-    int16_t *const sample_lut = Sound_GetSampleLUT();
-    VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
-    const int32_t num_sample_infos = VFile_ReadS32(file);
-    m_LevelInfo.samples.info_count = num_sample_infos;
-    LOG_DEBUG("sample infos: %d", num_sample_infos);
-    if (num_sample_infos == 0) {
-        goto finish;
-    }
-
-    Sound_InitialiseSampleInfos(num_sample_infos);
-    for (int32_t i = 0; i < num_sample_infos; i++) {
-        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
-        sample_info->number = VFile_ReadS16(file);
-        sample_info->volume = VFile_ReadS16(file);
-        sample_info->randomness = VFile_ReadS16(file);
-        sample_info->flags = VFile_ReadS16(file);
-    }
-
-    const int32_t num_offsets = VFile_ReadS32(file);
-    LOG_DEBUG("samples: %d", num_offsets);
-    m_LevelInfo.samples.offset_count = num_offsets;
-    if (num_offsets == 0) {
-        goto finish;
-    }
-
-    m_LevelInfo.samples.offsets = Memory_Alloc(sizeof(int32_t) * num_offsets);
-    VFile_Read(
-        file, m_LevelInfo.samples.offsets, sizeof(int32_t) * num_offsets);
-
-finish:
-    Benchmark_End(benchmark, nullptr);
-}
-
 static void M_InitialiseSoundEffects(void)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -362,7 +324,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadLightMap(file);
     Level_ReadCinematicFrames(file);
     Level_ReadDemoData(file);
-    M_LoadSamples(file);
+    Level_ReadSamples(&m_LevelInfo, 0, 0, 0, file);
 
     VFile_Close(file);
     Benchmark_End(benchmark, nullptr);

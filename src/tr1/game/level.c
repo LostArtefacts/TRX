@@ -65,7 +65,6 @@ static void M_LoadTextures(VFILE *file);
 static void M_LoadSprites(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
-static void M_LoadSamples(VFILE *file);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
 static size_t M_CalculateMaxVertices(void);
@@ -242,7 +241,9 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
     Level_ReadCinematicFrames(file);
     Level_ReadDemoData(file);
-    M_LoadSamples(file);
+    Level_ReadSamples(
+        &m_LevelInfo, m_InjectionInfo->sfx_count,
+        m_InjectionInfo->sfx_data_size, m_InjectionInfo->sample_count, file);
 
     VFile_SetPos(file, 4);
     Level_ReadTexturePages(
@@ -423,53 +424,6 @@ static void M_LoadAnimatedTextures(VFILE *const file)
     Level_ReadAnimatedTextureRanges(num_ranges, file);
 
     VFile_SetPos(file, end_position);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadSamples(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    int16_t *const sample_lut = Sound_GetSampleLUT();
-    VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
-    const int32_t num_sample_infos = VFile_ReadS32(file);
-    m_LevelInfo.samples.info_count = num_sample_infos;
-    LOG_INFO("%d sample infos", num_sample_infos);
-    if (num_sample_infos == 0) {
-        Shell_ExitSystem("No Sample Infos");
-    }
-
-    Sound_InitialiseSampleInfos(num_sample_infos + m_InjectionInfo->sfx_count);
-    for (int32_t i = 0; i < num_sample_infos; i++) {
-        SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
-        sample_info->number = VFile_ReadS16(file);
-        sample_info->volume = VFile_ReadS16(file);
-        sample_info->randomness = VFile_ReadS16(file);
-        sample_info->flags = VFile_ReadS16(file);
-    }
-
-    const int32_t data_size = VFile_ReadS32(file);
-    m_LevelInfo.samples.data_size = data_size;
-    LOG_INFO("%d sample data size", data_size);
-    if (data_size == 0) {
-        Shell_ExitSystem("No Sample Data");
-    }
-
-    m_LevelInfo.samples.data =
-        GameBuf_Alloc(data_size + m_InjectionInfo->sfx_data_size, GBUF_SAMPLES);
-    VFile_Read(file, m_LevelInfo.samples.data, sizeof(char) * data_size);
-
-    const int32_t num_offsets = VFile_ReadS32(file);
-    m_LevelInfo.samples.offset_count = num_offsets;
-    LOG_INFO("%d samples", num_offsets);
-    if (num_offsets == 0) {
-        Shell_ExitSystem("No Samples");
-    }
-
-    m_LevelInfo.samples.offsets = Memory_Alloc(
-        sizeof(int32_t) * (num_offsets + m_InjectionInfo->sample_count));
-    VFile_Read(
-        file, m_LevelInfo.samples.offsets, sizeof(int32_t) * num_offsets);
-
     Benchmark_End(benchmark, nullptr);
 }
 
