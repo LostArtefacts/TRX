@@ -13,7 +13,6 @@ static COMMAND_TO_OPTION_MAP m_CommandToOptionMap[] = {
     { "cheats", &g_Config.gameplay.enable_cheats },
     { "vsync", &g_Config.rendering.enable_vsync },
     { "wireframe", &g_Config.rendering.enable_wireframe },
-    { "debug", &g_Config.rendering.enable_debug },
     { "fps", &g_Config.rendering.fps },
     { nullptr, nullptr },
 };
@@ -35,4 +34,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_FAILURE;
 }
 
-REGISTER_CONSOLE_COMMAND("braid|cheats|vsync|wireframe|debug|fps", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("braid|cheats|vsync|wireframe|fps", M_Entrypoint)

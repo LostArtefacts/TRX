@@ -315,8 +315,11 @@ void Room_DrawSingleRoom(int16_t room_num)
         Effect_Draw(i);
     }
 
-    if (g_Config.rendering.enable_debug) {
+    if (g_Config.rendering.enable_debug_triggers) {
         Output_DrawRoomTriggers(room);
+    }
+    if (g_Config.rendering.enable_debug_portals) {
+        Output_DrawRoomPortals(room);
     }
     Matrix_Pop();
 

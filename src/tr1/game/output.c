@@ -657,6 +657,23 @@ void Output_DrawRoom(const ROOM_MESH *const mesh)
     M_DrawRoomSprites(mesh);
 }
 
+void Output_DrawRoomPortals(const ROOM *const room)
+{
+    S_Output_DisableDepthTest();
+    const RGBA_8888 portal_color = { 0, 0, 255, 255 };
+    for (int32_t i = 0; i < room->portals->count; i++) {
+        const PORTAL *const portal = &room->portals->portal[i];
+        const XYZ_32 vertices[4] = {
+            { portal->vertex[0].x, portal->vertex[0].y, portal->vertex[0].z },
+            { portal->vertex[1].x, portal->vertex[1].y, portal->vertex[1].z },
+            { portal->vertex[2].x, portal->vertex[2].y, portal->vertex[2].z },
+            { portal->vertex[3].x, portal->vertex[3].y, portal->vertex[3].z },
+        };
+        Output_Draw3DFrame(vertices, portal_color);
+    }
+    S_Output_EnableDepthTest();
+}
+
 void Output_DrawRoomTriggers(const ROOM *const room)
 {
 #define DRAW_TRI(a, b, c, color)                                               \
@@ -904,6 +921,26 @@ void Output_DrawScreenLine(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col)
 {
     S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
+}
+
+void Output_Draw3DLine(
+    const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
+{
+    PHD_VBUF vbuf[2];
+    uint16_t total_clip = 0xFFFF;
+    total_clip &= M_CalcVertex(
+        &vbuf[0], (XYZ_16) { .x = pos_0.x, .y = pos_0.y, .z = pos_0.z });
+    total_clip &= M_CalcVertex(
+        &vbuf[1], (XYZ_16) { .x = pos_1.x, .y = pos_1.y, .z = pos_1.z });
+    S_Output_Draw3DLine(&vbuf[0], &vbuf[1], color);
+}
+
+void Output_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
+{
+    Output_Draw3DLine(vert[0], vert[1], color);
+    Output_Draw3DLine(vert[1], vert[2], color);
+    Output_Draw3DLine(vert[2], vert[3], color);
+    Output_Draw3DLine(vert[3], vert[0], color);
 }
 
 void Output_DrawScreenBox(

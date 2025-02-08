@@ -433,6 +433,49 @@ void S_Output_Draw2DLine(
     GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
+void S_Output_Draw3DLine(
+    const PHD_VBUF *const vn0, const PHD_VBUF *const vn1, const RGBA_8888 color)
+{
+    int32_t vertex_count = 2;
+    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
+    const PHD_VBUF *const src_vbuf[2] = { vn0, vn1 };
+
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].x = src_vbuf[i]->xs;
+        vertices[i].y = src_vbuf[i]->ys;
+        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
+        vertices[i].r = color.r;
+        vertices[i].g = color.g;
+        vertices[i].b = color.b;
+        vertices[i].a = color.a;
+    }
+
+    if ((vn0->clip | vn1->clip) < 0) {
+        vertex_count =
+            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
+        if (vertex_count == 0) {
+            return;
+        }
+        for (int32_t i = 0; i < vertex_count; i++) {
+            vertices[i].r = color.r;
+            vertices[i].g = color.g;
+            vertices[i].b = color.b;
+            vertices[i].a = color.a;
+        }
+    }
+
+    if (!vertex_count) {
+        return;
+    }
+
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
+    S_Output_DisableTextureMode();
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
+    GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
+    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
+    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
+}
+
 void S_Output_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br)
