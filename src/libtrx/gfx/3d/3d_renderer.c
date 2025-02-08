@@ -190,6 +190,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
     ASSERT(renderer != nullptr);
 
     renderer->vertex_stream.rendered_count = 0;
+    renderer->vertex_stream.transferred = 0;
 
     GFX_GL_Program_Bind(&renderer->program);
     GFX_3D_VertexStream_Bind(&renderer->vertex_stream);

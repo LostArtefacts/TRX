@@ -37,6 +37,7 @@ void GFX_3D_VertexStream_Init(GFX_3D_VERTEX_STREAM *const vertex_stream)
     vertex_stream->buffer_size =
         M_PREALLOC_VERTEX_COUNT * sizeof(GFX_3D_VERTEX);
     vertex_stream->rendered_count = 0;
+    vertex_stream->transferred = 0;
     vertex_stream->pending_vertices.count = 0;
     vertex_stream->pending_vertices.capacity = M_PREALLOC_VERTEX_COUNT;
     vertex_stream->pending_vertices.data = Memory_Alloc(
@@ -161,11 +162,13 @@ void GFX_3D_VertexStream_RenderPending(
         GFX_GL_Buffer_Data(
             &vertex_stream->buffer, buffer_size, nullptr, GL_STREAM_DRAW);
         vertex_stream->buffer_size = buffer_size;
+        vertex_stream->transferred += buffer_size;
     }
 
     GFX_GL_Buffer_SubData(
         &vertex_stream->buffer, 0, buffer_size,
         vertex_stream->pending_vertices.data);
+    vertex_stream->transferred += buffer_size;
 
     glDrawArrays(
         GL_PRIM_MODES[vertex_stream->prim_type], 0,
