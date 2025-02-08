@@ -32,6 +32,7 @@ static void M_ReadFace3(FACE3 *face, VFILE *file);
 static void M_ReadRoomMesh(int32_t room_num, VFILE *file);
 static void M_ReadObjectMesh(OBJECT_MESH *mesh, VFILE *file);
 static void M_ReadBounds16(BOUNDS_16 *bounds, VFILE *file);
+static void M_ReadObjectVector(OBJECT_VECTOR *obj, VFILE *file);
 
 static RGBA_8888 M_ARGB1555To8888(const uint16_t argb1555)
 {
@@ -244,6 +245,13 @@ static void M_ReadBounds16(BOUNDS_16 *const bounds, VFILE *const file)
     bounds->max.y = VFile_ReadS16(file);
     bounds->min.z = VFile_ReadS16(file);
     bounds->max.z = VFile_ReadS16(file);
+}
+
+static void M_ReadObjectVector(OBJECT_VECTOR *const obj, VFILE *const file)
+{
+    M_ReadPosition(&obj->pos, file);
+    obj->data = VFile_ReadS16(file);
+    obj->flags = VFile_ReadS16(file);
 }
 
 void Level_ReadPalettes(LEVEL_INFO *const info, VFILE *const file)
@@ -757,10 +765,7 @@ void Level_ReadCamerasAndSinks(VFILE *const file)
     LOG_DEBUG("fixed cameras/sinks: %d", num_objects);
     Camera_InitialiseFixedObjects(num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
-        OBJECT_VECTOR *const obj = Camera_GetFixedObject(i);
-        M_ReadPosition(&obj->pos, file);
-        obj->data = VFile_ReadS16(file);
-        obj->flags = VFile_ReadS16(file);
+        M_ReadObjectVector(Camera_GetFixedObject(i), file);
     }
 
     Benchmark_End(benchmark, nullptr);
@@ -813,13 +818,10 @@ void Level_ReadSoundSources(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     const int32_t num_sources = VFile_ReadS32(file);
-    LOG_DEBUG("sound sources: %d", num_sources);
+    LOG_INFO("sound sources: %d", num_sources);
     Sound_InitialiseSources(num_sources);
     for (int32_t i = 0; i < num_sources; i++) {
-        OBJECT_VECTOR *const source = Sound_GetSource(i);
-        M_ReadPosition(&source->pos, file);
-        source->data = VFile_ReadS16(file);
-        source->flags = VFile_ReadS16(file);
+        M_ReadObjectVector(Sound_GetSource(i), file);
     }
 
     Benchmark_End(benchmark, nullptr);
