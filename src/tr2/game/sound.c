@@ -171,12 +171,9 @@ bool Sound_Effect(
         return false;
     }
 
-    const int32_t sample_num = g_SampleLUT[sample_id];
+    int16_t *const sample_lut = Sound_GetSampleLUT();
+    const int32_t sample_num = sample_lut[sample_id];
     if (sample_num == -1) {
-        g_SampleLUT[sample_id] = -2;
-        return false;
-    }
-    if (sample_num == -2) {
         return false;
     }
 
@@ -326,7 +323,8 @@ bool Sound_Effect(
 
 void Sound_StopEffect(const SOUND_EFFECT_ID sample_id)
 {
-    const int32_t sample_num = g_SampleLUT[sample_id];
+    const int16_t *const sample_lut = Sound_GetSampleLUT();
+    const int32_t sample_num = sample_lut[sample_id];
     const int32_t num_samples = (g_SampleInfos[sample_num].flags >> 2) & 0xF;
 
     for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
@@ -368,8 +366,9 @@ void Sound_EndScene(void)
 
 bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
 {
+    const int16_t *const sample_lut = Sound_GetSampleLUT();
     return sample_id >= 0 && sample_id < SFX_NUMBER_OF
-        && g_SampleLUT[sample_id] != -1;
+        && sample_lut[sample_id] != -1;
 }
 
 int32_t Sound_GetMinVolume(void)

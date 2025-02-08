@@ -11,6 +11,7 @@ typedef enum {
 
 static int32_t m_SourceCount = 0;
 static OBJECT_VECTOR *m_Sources = nullptr;
+static int16_t m_SampleLUT[SFX_NUMBER_OF];
 
 void Sound_InitialiseSources(const int32_t num_sources)
 {
@@ -32,6 +33,11 @@ OBJECT_VECTOR *Sound_GetSource(const int32_t source_idx)
         return nullptr;
     }
     return &m_Sources[source_idx];
+}
+
+int16_t *Sound_GetSampleLUT(void)
+{
+    return m_SampleLUT;
 }
 
 void Sound_ResetSources(void)

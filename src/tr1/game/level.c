@@ -161,7 +161,7 @@ static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
     TRY_OR_FAIL_ARR_U16(16); // cinematic frames
     TRY_OR_FAIL_ARR_U16(1); // demo data
 
-    TRY_OR_FAIL(VFile_TrySkip(file, 2 * MAX_SAMPLES)); // sample lut
+    TRY_OR_FAIL(VFile_TrySkip(file, 2 * SFX_NUMBER_OF)); // sample lut
     TRY_OR_FAIL_ARR_S32(8); // sample infos
     TRY_OR_FAIL_ARR_S32(1); // sample data
     TRY_OR_FAIL_ARR_S32(4); // samples
@@ -429,7 +429,8 @@ static void M_LoadAnimatedTextures(VFILE *const file)
 static void M_LoadSamples(VFILE *file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    VFile_Read(file, g_SampleLUT, sizeof(int16_t) * MAX_SAMPLES);
+    int16_t *const sample_lut = Sound_GetSampleLUT();
+    VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
     const int32_t num_sample_infos = VFile_ReadS32(file);
     m_LevelInfo.samples.info_count = num_sample_infos;
     LOG_INFO("%d sample infos", num_sample_infos);

@@ -2,7 +2,6 @@
 
 int32_t g_FPSCounter = 0;
 
-int16_t g_SampleLUT[MAX_SAMPLES] = {};
 SAMPLE_INFO *g_SampleInfos = nullptr;
 uint16_t g_MusicTrackFlags[MAX_CD_TRACKS] = {};
 

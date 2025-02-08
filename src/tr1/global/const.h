@@ -6,7 +6,6 @@
 #define PHD_ONE 0x10000
 
 #define MAX_REQLINES 18
-#define MAX_SAMPLES 256
 #define NUM_SLOTS 32
 #define MAX_FRAMES 10
 #define MAX_CD_TRACKS 64

@@ -227,7 +227,8 @@ static void M_LoadSamples(VFILE *const file)
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
 
-    VFile_Read(file, g_SampleLUT, sizeof(int16_t) * SFX_NUMBER_OF);
+    int16_t *const sample_lut = Sound_GetSampleLUT();
+    VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
     const int32_t num_sample_infos = VFile_ReadS32(file);
     LOG_DEBUG("sample infos: %d", num_sample_infos);
     if (num_sample_infos == 0) {

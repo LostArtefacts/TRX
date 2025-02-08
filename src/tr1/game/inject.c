@@ -3,6 +3,7 @@
 #include "game/camera.h"
 #include "game/output.h"
 #include "game/room.h"
+#include "game/sound.h"
 #include "global/const.h"
 #include "global/vars.h"
 #include "items.h"
@@ -626,9 +627,10 @@ static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
     INJECTION_INFO *inj_info = injection->info;
     VFILE *const fp = injection->fp;
 
+    int16_t *const sample_lut = Sound_GetSampleLUT();
     for (int32_t i = 0; i < inj_info->sfx_count; i++) {
         const int16_t sfx_id = VFile_ReadS16(fp);
-        g_SampleLUT[sfx_id] = level_info->samples.info_count;
+        sample_lut[sfx_id] = level_info->samples.info_count;
 
         SAMPLE_INFO *sample_info =
             &g_SampleInfos[level_info->samples.info_count];

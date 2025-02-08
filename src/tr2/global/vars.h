@@ -77,7 +77,6 @@ extern int16_t *g_FlyZone[2];
 extern int16_t *g_GroundZone[][2];
 extern uint16_t *g_Overlap;
 extern CREATURE *g_BaddieSlots;
-extern int16_t g_SampleLUT[];
 extern SAMPLE_INFO *g_SampleInfos;
 extern int32_t g_HeightType;
 extern int32_t g_FlipMaps[MAX_FLIP_MAPS];

@@ -130,7 +130,8 @@ static SOUND_SLOT *M_GetSlot(
 
 static void M_UpdateSlotParams(SOUND_SLOT *slot)
 {
-    SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[slot->effect_num]];
+    const int16_t *const sample_lut = Sound_GetSampleLUT();
+    SAMPLE_INFO *s = &g_SampleInfos[sample_lut[slot->effect_num]];
 
     int32_t x = slot->pos->x - g_Camera.target.x;
     int32_t y = slot->pos->y - g_Camera.target.y;
@@ -279,11 +280,12 @@ bool Sound_Effect(
         return false;
     }
 
-    if (g_SampleLUT[sfx_num] < 0) {
+    const int16_t *const sample_lut = Sound_GetSampleLUT();
+    if (sample_lut[sfx_num] < 0) {
         return false;
     }
 
-    SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[sfx_num]];
+    SAMPLE_INFO *s = &g_SampleInfos[sample_lut[sfx_num]];
     if (s->randomness && Random_GetDraw() > (int32_t)s->randomness) {
         return false;
     }
@@ -479,11 +481,12 @@ void Sound_ResetEffects(void)
 
     m_AmbientLookupIdx = 0;
 
-    for (int i = 0; i < MAX_SAMPLES; i++) {
-        if (g_SampleLUT[i] < 0) {
+    const int16_t *const sample_lut = Sound_GetSampleLUT();
+    for (int32_t i = 0; i < SFX_NUMBER_OF; i++) {
+        if (sample_lut[i] < 0) {
             continue;
         }
-        SAMPLE_INFO *s = &g_SampleInfos[g_SampleLUT[i]];
+        SAMPLE_INFO *s = &g_SampleInfos[sample_lut[i]];
         if (s->volume < 0) {
             Shell_ExitSystemFmt(
                 "sample info for effect %d has incorrect volume(%d)", i,
@@ -558,6 +561,7 @@ void Sound_ResetAmbient(void)
 
 bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
 {
+    const int16_t *const sample_lut = Sound_GetSampleLUT();
     return sample_id >= 0 && sample_id < SFX_NUMBER_OF
-        && g_SampleLUT[sample_id] != -1;
+        && sample_lut[sample_id] != -1;
 }

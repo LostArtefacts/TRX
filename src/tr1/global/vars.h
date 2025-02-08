@@ -18,7 +18,6 @@ extern float g_FltResZBuf;
 
 extern int32_t g_OptionSelected;
 
-extern int16_t g_SampleLUT[MAX_SAMPLES];
 extern SAMPLE_INFO *g_SampleInfos;
 extern uint16_t g_MusicTrackFlags[MAX_CD_TRACKS];
 extern int32_t g_Sound_MasterVolume;
