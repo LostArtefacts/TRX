@@ -23,10 +23,14 @@ typedef enum {
 } M_UNIFORM;
 
 typedef struct {
-    GLfloat x;
-    GLfloat y;
-    GLfloat u;
-    GLfloat v;
+    struct {
+        GLfloat x;
+        GLfloat y;
+    } pos;
+    struct {
+        GLfloat u;
+        GLfloat v;
+    } uv;
 } M_VERTEX;
 
 struct GFX_2D_RENDERER {
@@ -57,12 +61,12 @@ struct GFX_2D_RENDERER {
 } M_PRIV;
 
 static const M_VERTEX m_Vertices[] = {
-    { .x = 0.0, .y = 0.0, .u = 0.0, .v = 0.0 },
-    { .x = 1.0, .y = 0.0, .u = 1.0, .v = 0.0 },
-    { .x = 0.0, .y = 1.0, .u = 0.0, .v = 1.0 },
-    { .x = 0.0, .y = 1.0, .u = 0.0, .v = 1.0 },
-    { .x = 1.0, .y = 0.0, .u = 1.0, .v = 0.0 },
-    { .x = 1.0, .y = 1.0, .u = 1.0, .v = 1.0 },
+    { .pos = { .x = 0.0, .y = 0.0 }, .uv = { .u = 0.0, .v = 0.0 } },
+    { .pos = { .x = 1.0, .y = 0.0 }, .uv = { .u = 1.0, .v = 0.0 } },
+    { .pos = { .x = 0.0, .y = 1.0 }, .uv = { .u = 0.0, .v = 1.0 } },
+    { .pos = { .x = 0.0, .y = 1.0 }, .uv = { .u = 0.0, .v = 1.0 } },
+    { .pos = { .x = 1.0, .y = 0.0 }, .uv = { .u = 1.0, .v = 0.0 } },
+    { .pos = { .x = 1.0, .y = 1.0 }, .uv = { .u = 1.0, .v = 1.0 } },
 };
 
 static void M_UploadVertices(GFX_2D_RENDERER *const r)
@@ -82,10 +86,10 @@ static void M_UploadVertices(GFX_2D_RENDERER *const r)
                 float xOffset = 1.0f / (float)r->repeat.x;
                 float yOffset = 1.0f / (float)r->repeat.y;
 
-                ptr->x = m_Vertices[i].x * xOffset + xFactor;
-                ptr->y = m_Vertices[i].y * yOffset + yFactor;
-                ptr->u = r->desc.uv[mapping[i]].u;
-                ptr->v = r->desc.uv[mapping[i]].v;
+                ptr->pos.x = m_Vertices[i].pos.x * xOffset + xFactor;
+                ptr->pos.y = m_Vertices[i].pos.y * yOffset + yFactor;
+                ptr->uv.u = r->desc.uv[mapping[i]].u;
+                ptr->uv.v = r->desc.uv[mapping[i]].v;
 
                 ptr++;
             }
@@ -123,9 +127,11 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     GFX_GL_VertexArray_Init(&r->vertex_format);
     GFX_GL_VertexArray_Bind(&r->vertex_format);
     GFX_GL_VertexArray_Attribute(
-        &r->vertex_format, 0, 2, GL_FLOAT, GL_FALSE, 16, 0);
+        &r->vertex_format, 0, 2, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        offsetof(M_VERTEX, pos));
     GFX_GL_VertexArray_Attribute(
-        &r->vertex_format, 1, 2, GL_FLOAT, GL_FALSE, 16, 8);
+        &r->vertex_format, 1, 2, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        offsetof(M_VERTEX, uv));
     GFX_GL_CheckError();
 
     GFX_GL_Texture_Init(&r->surface_texture, GL_TEXTURE_2D);
