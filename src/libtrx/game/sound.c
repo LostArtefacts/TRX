@@ -81,3 +81,9 @@ void Sound_UnpauseAll(void)
 {
     Audio_Sample_UnpauseAll();
 }
+
+bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
+{
+    return sample_id >= 0 && sample_id < SFX_NUMBER_OF
+        && m_SampleLUT[sample_id] != -1;
+}

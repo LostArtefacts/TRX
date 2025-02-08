@@ -555,10 +555,3 @@ void Sound_ResetAmbient(void)
     M_ResetAmbientLoudness();
     Sound_ResetSources();
 }
-
-bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
-{
-    const int16_t *const sample_lut = Sound_GetSampleLUT();
-    return sample_id >= 0 && sample_id < SFX_NUMBER_OF
-        && sample_lut[sample_id] != -1;
-}

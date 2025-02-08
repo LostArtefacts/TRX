@@ -357,13 +357,6 @@ void Sound_EndScene(void)
     }
 }
 
-bool Sound_IsAvailable(const SOUND_EFFECT_ID sample_id)
-{
-    const int16_t *const sample_lut = Sound_GetSampleLUT();
-    return sample_id >= 0 && sample_id < SFX_NUMBER_OF
-        && sample_lut[sample_id] != -1;
-}
-
 int32_t Sound_GetMinVolume(void)
 {
     return 0;
