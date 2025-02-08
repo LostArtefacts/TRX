@@ -48,6 +48,7 @@ static void M_LoadSoundEffects(VFILE *file);
 static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
 static void M_LoadSamples(VFILE *file);
+static void M_InitialiseSoundEffects(void);
 static void M_CompleteSetup(void);
 
 static void M_LoadObjectMeshes(VFILE *const file)
@@ -222,14 +223,11 @@ static void M_LoadAnimatedTextures(VFILE *const file)
 static void M_LoadSamples(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    int32_t *sample_offsets = nullptr;
-
-    Audio_Sample_CloseAll();
-    Audio_Sample_UnloadAll();
 
     int16_t *const sample_lut = Sound_GetSampleLUT();
     VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
     const int32_t num_sample_infos = VFile_ReadS32(file);
+    m_LevelInfo.samples.info_count = num_sample_infos;
     LOG_DEBUG("sample infos: %d", num_sample_infos);
     if (num_sample_infos == 0) {
         goto finish;
@@ -244,15 +242,24 @@ static void M_LoadSamples(VFILE *const file)
         sample_info->flags = VFile_ReadS16(file);
     }
 
-    const int32_t num_samples = VFile_ReadS32(file);
-    LOG_DEBUG("samples: %d", num_samples);
-    if (!num_samples) {
+    const int32_t num_offsets = VFile_ReadS32(file);
+    LOG_DEBUG("samples: %d", num_offsets);
+    m_LevelInfo.samples.offset_count = num_offsets;
+    if (num_offsets == 0) {
         goto finish;
     }
 
-    sample_offsets = Memory_Alloc(sizeof(int32_t) * num_samples);
-    VFile_Read(file, sample_offsets, sizeof(int32_t) * num_samples);
+    m_LevelInfo.samples.offsets = Memory_Alloc(sizeof(int32_t) * num_offsets);
+    VFile_Read(
+        file, m_LevelInfo.samples.offsets, sizeof(int32_t) * num_offsets);
 
+finish:
+    Benchmark_End(benchmark, nullptr);
+}
+
+static void M_InitialiseSoundEffects(void)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
     const char *const file_name = "data\\main.sfx";
     const char *full_path = File_GetFullPath(file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
@@ -266,7 +273,7 @@ static void M_LoadSamples(VFILE *const file)
 
     // TODO: refactor these WAVE/RIFF shenanigans
     int32_t sample_id = 0;
-    for (int32_t i = 0; sample_id < num_samples; i++) {
+    for (int32_t i = 0; sample_id < m_LevelInfo.samples.offset_count; i++) {
         char header[0x2C];
         File_ReadData(fp, header, 0x2C);
         if (*(int32_t *)(header + 0) != 0x46464952
@@ -278,7 +285,7 @@ static void M_LoadSamples(VFILE *const file)
         const int32_t data_size = *(int32_t *)(header + 0x28);
         const int32_t aligned_size = (data_size + 1) & ~1;
 
-        if (sample_offsets[sample_id] != i) {
+        if (m_LevelInfo.samples.offsets[sample_id] != i) {
             File_Seek(fp, aligned_size, FILE_SEEK_CUR);
             continue;
         }
@@ -298,10 +305,12 @@ static void M_LoadSamples(VFILE *const file)
 
         sample_id++;
     }
-    File_Close(fp);
 
 finish:
-    Memory_FreePointer(&sample_offsets);
+    if (fp != nullptr) {
+        File_Close(fp);
+    }
+    Memory_FreePointer(&m_LevelInfo.samples.offsets);
     Benchmark_End(benchmark, nullptr);
 }
 
@@ -376,12 +385,17 @@ static void M_CompleteSetup(void)
     Render_Reset(
         RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
 
+    M_InitialiseSoundEffects();
+
     Benchmark_End(benchmark, nullptr);
 }
 
 bool Level_Load(const GF_LEVEL *const level)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
+
+    Audio_Sample_CloseAll();
+    Audio_Sample_UnloadAll();
 
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         Object_Get(i)->loaded = false;
