@@ -70,7 +70,6 @@ int32_t g_LevelComplete;
 SAVEGAME_INFO g_SaveGame = {};
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
-int32_t g_FlipStatus;
 BOX_INFO *g_Boxes = nullptr;
 int16_t *g_FlyZone[2] = {};
 int16_t *g_GroundZone[4][2] = {};

@@ -21,7 +21,6 @@
 
 int32_t g_FlipTimer = 0;
 int32_t g_FlipEffect = -1;
-int32_t g_FlipStatus = 0;
 int32_t g_FlipMapTable[MAX_FLIP_MAPS] = {};
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
@@ -539,11 +538,7 @@ void Room_AlterFloorHeight(ITEM *item, int32_t height)
     }
 }
 
-bool Room_GetFlipStatus(void)
-{
-    return g_FlipStatus;
-}
-
+// TODO: move
 void Room_FlipMap(void)
 {
     Sound_StopAmbientSounds();
@@ -573,7 +568,7 @@ void Room_FlipMap(void)
         M_AddFlipItems(room);
     }
 
-    g_FlipStatus = !g_FlipStatus;
+    Room_ToggleFlipStatus();
 }
 
 void Room_TestTriggers(const ITEM *const item)
@@ -637,6 +632,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     bool flip_map = false;
     int32_t new_effect = -1;
     ITEM *camera_item = nullptr;
+    const bool flip_status = Room_GetFlipStatus();
 
     if (is_heavy) {
         if (trigger->type != TT_HEAVY) {
@@ -820,10 +816,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                     g_FlipMapTable[flip_slot] |= IF_ONE_SHOT;
                 }
 
-                if (!g_FlipStatus) {
+                if (!flip_status) {
                     flip_map = true;
                 }
-            } else if (g_FlipStatus) {
+            } else if (flip_status) {
                 flip_map = true;
             }
             break;
@@ -832,7 +828,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_FLIPON: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && !g_FlipStatus) {
+                && !flip_status) {
                 flip_map = true;
             }
             break;
@@ -841,7 +837,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_FLIPOFF: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             if ((g_FlipMapTable[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && g_FlipStatus) {
+                && flip_status) {
                 flip_map = true;
             }
             break;

@@ -26,6 +26,7 @@
 
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
+static bool m_FlipStatus = false;
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
@@ -132,6 +133,18 @@ void Room_InitialiseFlipStatus(void)
             flipped_room->flip_status = RFS_FLIPPED;
         }
     }
+
+    m_FlipStatus = false;
+}
+
+bool Room_GetFlipStatus(void)
+{
+    return m_FlipStatus;
+}
+
+void Room_ToggleFlipStatus(void)
+{
+    m_FlipStatus = !m_FlipStatus;
 }
 
 void Room_ParseFloorData(const int16_t *floor_data)

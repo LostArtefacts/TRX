@@ -935,7 +935,7 @@ void CreateSaveGameInfo(void)
     M_Reset();
     memset(g_SaveGame.buffer, 0, MAX_SG_BUFFER_SIZE);
 
-    M_WriteS32(g_FlipStatus);
+    M_WriteS32(Room_GetFlipStatus());
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         uint8_t tflag = g_FlipMaps[i] >> 8;
         M_WriteU8(tflag);

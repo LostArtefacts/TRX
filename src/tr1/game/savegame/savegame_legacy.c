@@ -756,7 +756,8 @@ void Savegame_Legacy_SaveToFile(MYFILE *fp, GAME_INFO *game_info)
 
     M_Write(&item_stats, sizeof(item_stats));
 
-    M_Write(&g_FlipStatus, sizeof(int32_t));
+    int32_t flip_status = Room_GetFlipStatus();
+    M_Write(&flip_status, sizeof(int32_t));
     for (int i = 0; i < MAX_FLIP_MAPS; i++) {
         int8_t flag = g_FlipMapTable[i] >> 8;
         M_Write(&flag, sizeof(int8_t));

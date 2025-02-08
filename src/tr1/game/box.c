@@ -9,13 +9,14 @@
 
 bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
 {
+    const bool flip_status = Room_GetFlipStatus();
     int16_t *zone;
     if (lot->fly) {
-        zone = g_FlyZone[g_FlipStatus];
+        zone = g_FlyZone[flip_status];
     } else if (lot->step == STEP_L) {
-        zone = g_GroundZone[g_FlipStatus];
+        zone = g_GroundZone[flip_status];
     } else {
-        zone = g_GroundZone2[g_FlipStatus];
+        zone = g_GroundZone2[flip_status];
     }
 
     int16_t search_zone = zone[lot->head];
@@ -179,13 +180,14 @@ bool Box_ValidBox(ITEM *item, int16_t zone_num, int16_t box_num)
 {
     CREATURE *creature = item->data;
 
+    const bool flip_status = Room_GetFlipStatus();
     int16_t *zone;
     if (creature->lot.fly) {
-        zone = g_FlyZone[g_FlipStatus];
+        zone = g_FlyZone[flip_status];
     } else if (creature->lot.step == STEP_L) {
-        zone = g_GroundZone[g_FlipStatus];
+        zone = g_GroundZone[flip_status];
     } else {
-        zone = g_GroundZone2[g_FlipStatus];
+        zone = g_GroundZone2[flip_status];
     }
 
     if (zone[box_num] != zone_num) {

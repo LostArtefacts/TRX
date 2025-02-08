@@ -179,6 +179,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     bool flip_map = false;
     bool flip_available = false;
     int32_t new_effect = -1;
+    const bool flip_status = Room_GetFlipStatus();
 
     if (is_heavy) {
         if (trigger->type != TT_HEAVY) {
@@ -367,10 +368,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                     g_FlipMaps[flip_slot] |= IF_ONE_SHOT;
                 }
 
-                if (!g_FlipStatus) {
+                if (!flip_status) {
                     flip_map = true;
                 }
-            } else if (g_FlipStatus) {
+            } else if (flip_status) {
                 flip_map = true;
             }
             break;
@@ -381,7 +382,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             flip_available = true;
 
             if ((g_FlipMaps[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && !g_FlipStatus) {
+                && !flip_status) {
                 flip_map = true;
             }
             break;
@@ -392,7 +393,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             flip_available = true;
 
             if ((g_FlipMaps[flip_slot] & IF_CODE_BITS) == IF_CODE_BITS
-                && g_FlipStatus) {
+                && flip_status) {
                 flip_map = true;
             }
             break;
@@ -742,11 +743,6 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
     }
 }
 
-bool Room_GetFlipStatus(void)
-{
-    return g_FlipStatus;
-}
-
 void Room_FlipMap(void)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {
@@ -774,7 +770,7 @@ void Room_FlipMap(void)
         Room_AddFlipItems(room);
     }
 
-    g_FlipStatus = !g_FlipStatus;
+    Room_ToggleFlipStatus();
 }
 
 void Room_RemoveFlipItems(const ROOM *const room)

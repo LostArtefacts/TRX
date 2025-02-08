@@ -71,7 +71,6 @@ extern int32_t g_LevelComplete;
 extern SAVEGAME_INFO g_SaveGame;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
-extern int32_t g_FlipStatus;
 extern BOX_INFO *g_Boxes;
 extern int16_t *g_FlyZone[2];
 extern int16_t *g_GroundZone[][2];

@@ -598,7 +598,6 @@ bool Level_Initialise(const GF_LEVEL *const level)
 
     Overlay_HideGameInfo();
 
-    g_FlipStatus = 0;
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         g_FlipMapTable[i] = 0;
     }

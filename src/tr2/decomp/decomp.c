@@ -197,7 +197,6 @@ void InitialiseGameFlags(void)
         Object_Get(obj_id)->loaded = 0;
     }
 
-    g_FlipStatus = false;
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         g_FlipMaps[i] = 0;
     }

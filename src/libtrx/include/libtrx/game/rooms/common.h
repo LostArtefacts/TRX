@@ -9,7 +9,8 @@ ROOM *Room_Get(int32_t room_num);
 
 void Room_InitialiseFlipStatus(void);
 extern void Room_FlipMap(void);
-extern bool Room_GetFlipStatus(void);
+bool Room_GetFlipStatus(void);
+void Room_ToggleFlipStatus(void); // TODO: eliminate
 
 int32_t Room_GetAdjoiningRooms(
     int16_t init_room_num, int16_t out_room_nums[], int32_t max_room_num_count);

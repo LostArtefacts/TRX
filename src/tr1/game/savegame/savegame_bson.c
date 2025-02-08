@@ -1010,7 +1010,7 @@ static JSON_OBJECT *M_DumpInventory(void)
 static JSON_OBJECT *M_DumpFlipmaps(void)
 {
     JSON_OBJECT *flipmap_obj = JSON_ObjectNew();
-    JSON_ObjectAppendBool(flipmap_obj, "status", g_FlipStatus);
+    JSON_ObjectAppendBool(flipmap_obj, "status", Room_GetFlipStatus());
     JSON_ObjectAppendInt(flipmap_obj, "effect", g_FlipEffect);
     JSON_ObjectAppendInt(flipmap_obj, "timer", g_FlipTimer);
     JSON_ARRAY *flipmap_arr = JSON_ArrayNew();

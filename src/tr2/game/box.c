@@ -26,11 +26,12 @@
 
 int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 {
+    const bool flip_status = Room_GetFlipStatus();
     int16_t *zone;
     if (lot->fly) {
-        zone = g_FlyZone[g_FlipStatus];
+        zone = g_FlyZone[flip_status];
     } else {
-        zone = g_GroundZone[BOX_ZONE(lot->step)][g_FlipStatus];
+        zone = g_GroundZone[BOX_ZONE(lot->step)][flip_status];
     }
 
     const int16_t search_zone = zone[lot->head];
@@ -198,11 +199,12 @@ int32_t Box_ValidBox(
     const ITEM *const item, const int16_t zone_num, const int16_t box_num)
 {
     const CREATURE *const creature = item->data;
+    const bool flip_status = Room_GetFlipStatus();
     int16_t *zone;
     if (creature->lot.fly) {
-        zone = g_FlyZone[g_FlipStatus];
+        zone = g_FlyZone[flip_status];
     } else {
-        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][g_FlipStatus];
+        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][flip_status];
     }
 
     if (zone[box_num] != zone_num) {
