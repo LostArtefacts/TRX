@@ -370,21 +370,18 @@ void Shell_Main(void)
 
         switch (gf_cmd.action) {
         case GF_START_GAME:
-        case GF_SELECT_GAME:
-            if (g_GameFlow.single_level >= 0) {
-                const GF_LEVEL *const level =
-                    GF_GetLevel(GFLT_MAIN, g_GameFlow.single_level);
-                if (level != nullptr) {
-                    gf_cmd = GF_DoLevelSequence(level, GFSC_NORMAL);
-                }
-            } else {
-                const GF_LEVEL *const level =
-                    GF_GetLevel(GFLT_MAIN, gf_cmd.param);
-                if (level != nullptr) {
-                    gf_cmd = GF_DoLevelSequence(level, GFSC_NORMAL);
-                }
+        case GF_SELECT_GAME: {
+            const int32_t level_num = g_GameFlow.single_level >= 0
+                ? g_GameFlow.single_level
+                : gf_cmd.param;
+            const GF_SEQUENCE_CONTEXT seq_ctx =
+                gf_cmd.action == GF_SELECT_GAME ? GFSC_SELECT : GFSC_NORMAL;
+            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
+            if (level != nullptr) {
+                gf_cmd = GF_DoLevelSequence(level, seq_ctx);
             }
             break;
+        }
 
         case GF_START_SAVED_GAME: {
             S_LoadGame(gf_cmd.param);

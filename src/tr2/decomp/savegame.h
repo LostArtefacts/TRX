@@ -14,6 +14,8 @@ void Savegame_InitCurrentInfo(void);
 
 void Savegame_ResetCurrentInfo(const GF_LEVEL *level);
 START_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *level);
+void Savegame_CarryCurrentInfoToNextLevel(
+    const GF_LEVEL *src_level, const GF_LEVEL *dst_level);
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
 void CreateSaveGameInfo(void);

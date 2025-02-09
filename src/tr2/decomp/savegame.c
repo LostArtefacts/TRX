@@ -701,6 +701,17 @@ void Savegame_InitCurrentInfo(void)
     g_SaveGame.bonus_flag = 0;
 }
 
+void Savegame_CarryCurrentInfoToNextLevel(
+    const GF_LEVEL *const src_level, const GF_LEVEL *const dst_level)
+{
+    LOG_INFO(
+        "Copying resume info from level #%d to level #%d", src_level->num,
+        dst_level->num);
+    START_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
+    START_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
+    memcpy(dst_resume, src_resume, sizeof(START_INFO));
+}
+
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 {
     START_INFO *start = Savegame_GetCurrentInfo(level);
@@ -779,6 +790,33 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 
         start->flares = -1;
         start->gun_type = LGT_GRENADE;
+    }
+
+    if (g_GF_RemoveWeapons) {
+        start->has_pistols = 0;
+        start->has_magnums = 0;
+        start->has_uzis = 0;
+        start->has_shotgun = 0;
+        start->has_m16 = 0;
+        start->has_grenade = 0;
+        start->has_harpoon = 0;
+        start->gun_type = LGT_UNARMED;
+        start->gun_status = LGS_ARMLESS;
+        g_GF_RemoveWeapons = false;
+    }
+
+    if (g_GF_RemoveAmmo) {
+        start->m16_ammo = 0;
+        start->grenade_ammo = 0;
+        start->harpoon_ammo = 0;
+        start->shotgun_ammo = 0;
+        start->uzi_ammo = 0;
+        start->magnum_ammo = 0;
+        start->pistol_ammo = 0;
+        start->flares = 0;
+        start->large_medipacks = 0;
+        start->small_medipacks = 0;
+        g_GF_RemoveAmmo = false;
     }
 }
 

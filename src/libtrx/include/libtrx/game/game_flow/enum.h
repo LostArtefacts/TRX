@@ -30,8 +30,8 @@ typedef enum {
     GFSC_SAVED,
 #if TR_VERSION == 1
     GFSC_RESTART,
-    GFSC_SELECT,
 #endif
+    GFSC_SELECT,
     GFSC_STORY,
 } GF_SEQUENCE_CONTEXT;
 

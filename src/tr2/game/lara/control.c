@@ -859,33 +859,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
     START_INFO *const start = Savegame_GetCurrentInfo(level);
     if (start != nullptr) {
-        if (g_GF_RemoveWeapons) {
-            start->has_pistols = 0;
-            start->has_magnums = 0;
-            start->has_uzis = 0;
-            start->has_shotgun = 0;
-            start->has_m16 = 0;
-            start->has_grenade = 0;
-            start->has_harpoon = 0;
-            start->gun_type = LGT_UNARMED;
-            start->gun_status = LGS_ARMLESS;
-            g_GF_RemoveWeapons = false;
-        }
-
-        if (g_GF_RemoveAmmo) {
-            start->m16_ammo = 0;
-            start->grenade_ammo = 0;
-            start->harpoon_ammo = 0;
-            start->shotgun_ammo = 0;
-            start->uzi_ammo = 0;
-            start->magnum_ammo = 0;
-            start->pistol_ammo = 0;
-            start->flares = 0;
-            start->large_medipacks = 0;
-            start->small_medipacks = 0;
-            g_GF_RemoveAmmo = false;
-        }
-
         g_Lara.pistol_ammo.ammo = 1000;
         if (start->has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);

@@ -52,6 +52,25 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     case GFSC_SAVED:
         break;
 
+    case GFSC_SELECT: {
+        // console /play level feature
+        Savegame_InitCurrentInfo();
+        const GF_LEVEL *tmp_level = GF_GetFirstLevel();
+        while (tmp_level != nullptr && tmp_level <= level) {
+            Savegame_ApplyLogicToCurrentInfo(tmp_level);
+            if (tmp_level == level) {
+                break;
+            }
+            const GF_LEVEL *const next_level = GF_GetLevelAfter(tmp_level);
+            if (next_level != nullptr) {
+                Savegame_CarryCurrentInfoToNextLevel(tmp_level, next_level);
+            }
+            tmp_level = next_level;
+        }
+        InitialiseLevelFlags();
+        break;
+    }
+
     default:
         Savegame_ApplyLogicToCurrentInfo(level);
         InitialiseLevelFlags();
@@ -241,10 +260,16 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     const GF_SEQUENCE_EVENT *const event, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     // Update sequence context if necessary
-    if (event->type == GFS_LOOP_GAME && seq_ctx == GFSC_SAVED) {
-        return GFSC_NORMAL;
+    if (event->type != GFS_LOOP_GAME) {
+        return seq_ctx;
     }
-    return seq_ctx;
+    switch (seq_ctx) {
+    case GFSC_SAVED:
+    case GFSC_SELECT:
+        return GFSC_NORMAL;
+    default:
+        return seq_ctx;
+    }
 }
 
 bool GF_ShouldSkipSequenceEvent(
