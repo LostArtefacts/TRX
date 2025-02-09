@@ -17,6 +17,7 @@
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
+#include <libtrx/vector.h>
 #include <libtrx/virtual_file.h>
 
 #define INJECTION_MAGIC MKTAG('T', '1', 'M', 'J')
@@ -120,7 +121,8 @@ static void M_LoadFromFile(INJECTION *injection, const char *filename);
 
 static uint16_t M_RemapRGB(LEVEL_INFO *level_info, RGB_888 rgb);
 static void M_AlignTextureReferences(
-    const OBJECT *obj, const uint16_t *palette_map, int32_t tex_info_base);
+    const OBJECT *obj, VECTOR *processed_meshes, const uint16_t *palette_map,
+    int32_t tex_info_base);
 
 static void M_LoadTexturePages(
     const INJECTION *injection, LEVEL_INFO *level_info, uint16_t *palette_map);
@@ -582,12 +584,15 @@ static void M_ObjectData(
     const INJECTION *const injection, const LEVEL_INFO *const level_info,
     const uint16_t *palette_map)
 {
+    if (injection->info->object_count == 0) {
+        return;
+    }
+
     BENCHMARK *const benchmark = Benchmark_Start();
 
-    INJECTION_INFO *inj_info = injection->info;
     VFILE *const fp = injection->fp;
-
-    for (int32_t i = 0; i < inj_info->object_count; i++) {
+    VECTOR *const processed_meshes = Vector_Create(sizeof(OBJECT_MESH *));
+    for (int32_t i = 0; i < injection->info->object_count; i++) {
         const GAME_OBJECT_ID obj_id = VFile_ReadS32(fp);
         OBJECT *const obj = Object_Get(obj_id);
 
@@ -613,10 +618,12 @@ static void M_ObjectData(
 
         if (num_meshes != 0) {
             M_AlignTextureReferences(
-                obj, palette_map, level_info->textures.object_count);
+                obj, processed_meshes, palette_map,
+                level_info->textures.object_count);
         }
     }
 
+    Vector_Free(processed_meshes);
     Benchmark_End(benchmark, nullptr);
 }
 
@@ -658,11 +665,16 @@ static void M_SFXData(INJECTION *injection, LEVEL_INFO *level_info)
 }
 
 static void M_AlignTextureReferences(
-    const OBJECT *const obj, const uint16_t *const palette_map,
-    const int32_t tex_info_base)
+    const OBJECT *const obj, VECTOR *const processed_meshes,
+    const uint16_t *const palette_map, const int32_t tex_info_base)
 {
     for (int32_t i = 0; i < obj->mesh_count; i++) {
         OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + i);
+        if (Vector_Contains(processed_meshes, (void *)mesh)) {
+            continue;
+        }
+        Vector_Add(processed_meshes, (void *)mesh);
+
         for (int32_t j = 0; j < mesh->num_tex_face4s; j++) {
             mesh->tex_face4s[j].texture_idx += tex_info_base;
         }
