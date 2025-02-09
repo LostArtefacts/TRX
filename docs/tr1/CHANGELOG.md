@@ -63,6 +63,7 @@
 - fixed Lara not being able to jump if responsive jumping is disabled via the console in-level in certain scenarios (#2444, regression from 4.6)
 - fixed Lara being unable to climb or use guns after using an underwater lever and then entering the wading state (#2416, regression from 4.6)
 - fixed Eidos logo briefly flashing prior to the initial fade-in effect (#1388, regression from 4.1)
+- fixed Lara's meshes being incorrectly swapped in various scenarios using the fly cheat (#2461, regression from 4.7)
 - improved pause screen compatibility with PS1 (#2248)
 - improved level loading times with respect to injection processing
 - improved wireframe mode appearance around screen edges
