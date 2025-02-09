@@ -353,6 +353,7 @@ void Shell_Main(void)
     GF_Init();
     GF_Load(m_CurrentGameFlowPath);
     GameStringTable_LoadFromFile(m_CurrentGameStringsPath);
+    GameStringTable_Apply(nullptr);
 
     Savegame_Init();
     Savegame_InitCurrentInfo();

@@ -28,7 +28,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
             .value = (void *)(intptr_t)i,
             .weight = 1,
         };
-        Vector_Add(source, &source_item);
+        if (source_item.key != nullptr) {
+            Vector_Add(source, &source_item);
+        }
     }
 
     const GF_LEVEL *const gym_level = GF_GetGymLevel();

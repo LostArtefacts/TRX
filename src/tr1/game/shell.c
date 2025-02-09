@@ -128,6 +128,7 @@ void Shell_Init(
     GF_Init();
     GF_Load(game_flow_path);
     GameStringTable_LoadFromFile(game_strings_path);
+    GameStringTable_Apply(nullptr);
 
     Savegame_Init();
     Savegame_ScanSavedGames();
