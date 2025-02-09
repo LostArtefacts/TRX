@@ -582,7 +582,7 @@ static void M_Restart(INVENTORY_ITEM *inv_item)
 {
     M_ChangePageTextContent(GS(PASSPORT_RESTART_LEVEL));
 
-    if (Savegame_RestartAvailable(g_GameInfo.select_save_slot)) {
+    if (Savegame_RestartAvailable(Savegame_GetBoundSlot())) {
         if (g_InputDB.menu_confirm) {
             g_GameInfo.passport_selection = PASSPORT_MODE_RESTART;
         }
