@@ -8,6 +8,10 @@
 
 static int8_t m_SecretInvItems[O_NUMBER_OF] = {};
 static int8_t m_Add2InvItems[O_NUMBER_OF] = {};
+static bool m_RemoveWeapons = false;
+static bool m_RemoveAmmo = false;
+static bool m_RemoveFlares = false;
+static bool m_RemoveMedipacks = false;
 
 static void M_ModifyInventory_GunOrAmmo(
     START_INFO *start, GF_INV_TYPE type, LARA_GUN_TYPE gun_type);
@@ -90,24 +94,43 @@ static void M_ModifyInventory_Item(
     }
 }
 
-void GF_InventoryModifier_Reset(void)
+void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
 {
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         m_SecretInvItems[i] = 0;
         m_Add2InvItems[i] = 0;
     }
-}
+    m_RemoveWeapons = false;
+    m_RemoveAmmo = false;
+    m_RemoveFlares = false;
+    m_RemoveMedipacks = false;
 
-void GF_InventoryModifier_Add(
-    const GAME_OBJECT_ID obj_id, const GF_INV_TYPE type, const int32_t qty)
-{
-    if (obj_id < 0 || obj_id >= O_NUMBER_OF) {
+    if (level == nullptr) {
         return;
     }
-    if (type == GF_INV_SECRET) {
-        m_SecretInvItems[obj_id] += qty;
-    } else if (type == GF_INV_REGULAR) {
-        m_Add2InvItems[obj_id] += qty;
+    for (int32_t i = 0; i < level->sequence.length; i++) {
+        const GF_SEQUENCE_EVENT *const event = &level->sequence.events[i];
+        if (event->type == GFS_ADD_ITEM
+            || event->type == GFS_ADD_SECRET_REWARD) {
+            const GF_ADD_ITEM_DATA *const data =
+                (const GF_ADD_ITEM_DATA *)event->data;
+            if (data->object_id < 0 || data->object_id >= O_NUMBER_OF) {
+                continue;
+            }
+            if (data->inv_type == GF_INV_SECRET) {
+                m_SecretInvItems[data->object_id] += data->quantity;
+            } else if (data->inv_type == GF_INV_REGULAR) {
+                m_Add2InvItems[data->object_id] += data->quantity;
+            }
+        } else if (event->type == GFS_REMOVE_WEAPONS) {
+            m_RemoveWeapons = true;
+        } else if (event->type == GFS_REMOVE_AMMO) {
+            m_RemoveAmmo = true;
+        } else if (event->type == GFS_REMOVE_FLARES) {
+            m_RemoveFlares = true;
+        } else if (event->type == GFS_REMOVE_MEDIPACKS) {
+            m_RemoveMedipacks = true;
+        }
     }
 }
 
@@ -119,6 +142,39 @@ void GF_InventoryModifier_Apply(
     if (!start->has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
         start->has_pistols = 1;
         Inv_AddItem(O_PISTOL_ITEM);
+    }
+
+    if (m_RemoveWeapons) {
+        start->has_pistols = 0;
+        start->has_magnums = 0;
+        start->has_uzis = 0;
+        start->has_shotgun = 0;
+        start->has_m16 = 0;
+        start->has_grenade = 0;
+        start->has_harpoon = 0;
+        start->gun_type = LGT_UNARMED;
+        start->gun_status = LGS_ARMLESS;
+    }
+
+    if (m_RemoveAmmo) {
+        start->m16_ammo = 0;
+        start->grenade_ammo = 0;
+        start->harpoon_ammo = 0;
+        start->shotgun_ammo = 0;
+        start->uzi_ammo = 0;
+        start->magnum_ammo = 0;
+        start->pistol_ammo = 0;
+    }
+
+    if (m_RemoveFlares) {
+        start->flares = 0;
+        m_RemoveFlares = false;
+    }
+
+    if (m_RemoveMedipacks) {
+        start->large_medipacks = 0;
+        start->small_medipacks = 0;
+        m_RemoveMedipacks = false;
     }
 
     M_ModifyInventory_GunOrAmmo(start, type, LGT_MAGNUMS);
@@ -141,12 +197,4 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_KEY_ITEM_2);
     M_ModifyInventory_Item(type, O_KEY_ITEM_3);
     M_ModifyInventory_Item(type, O_KEY_ITEM_4);
-
-    for (int32_t i = 0; i < O_NUMBER_OF; i++) {
-        if (type == GF_INV_SECRET) {
-            m_SecretInvItems[i] = 0;
-        } else if (type == GF_INV_REGULAR) {
-            m_Add2InvItems[i] = 0;
-        }
-    }
 }

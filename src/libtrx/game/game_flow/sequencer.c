@@ -35,8 +35,7 @@ static GF_COMMAND M_RunEvent(
         return gf_cmd;
     }
 
-    gf_cmd = GF_GetSequenceEventHandler(event->type)(
-        level, event, seq_ctx, seq_ctx_arg);
+    gf_cmd = event_handler(level, event, seq_ctx, seq_ctx_arg);
     LOG_DEBUG(
         "event type=%s(%d) data=0x%x finished, result: action=%s, "
         "param=%d",

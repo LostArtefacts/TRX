@@ -22,6 +22,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem);
 static DECLARE_GF_EVENT_HANDLER(M_HandleAddSecretReward);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo);
+static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveFlares);
+static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets);
 
@@ -37,6 +39,8 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_ADD_SECRET_REWARD] = M_HandleAddSecretReward,
     [GFS_REMOVE_WEAPONS]    = M_HandleRemoveWeapons,
     [GFS_REMOVE_AMMO]       = M_HandleRemoveAmmo,
+    [GFS_REMOVE_FLARES]     = M_HandleRemoveFlares,
+    [GFS_REMOVE_MEDIPACKS]  = M_HandleRemoveMedipacks,
     [GFS_SET_START_ANIM]    = M_HandleSetStartAnim,
     [GFS_SET_NUM_SECRETS]   = M_HandleSetNumSecrets,
     // clang-format on
@@ -58,6 +62,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         const GF_LEVEL *tmp_level = GF_GetFirstLevel();
         while (tmp_level != nullptr && tmp_level <= level) {
             Savegame_ApplyLogicToCurrentInfo(tmp_level);
+            GF_InventoryModifier_Scan(tmp_level);
+            GF_InventoryModifier_Apply(tmp_level, GF_INV_REGULAR);
             if (tmp_level == level) {
                 break;
             }
@@ -73,6 +79,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     default:
         Savegame_ApplyLogicToCurrentInfo(level);
+        if (level->type == GFL_NORMAL) {
+            GF_InventoryModifier_Scan(level);
+            GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+        }
         InitialiseLevelFlags();
         break;
     }
@@ -107,6 +117,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     default:
         if (level->type == GFL_NORMAL) {
+            GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }
         break;
@@ -193,37 +204,38 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem)
 {
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY) {
-        const GF_ADD_ITEM_DATA *const data =
-            (const GF_ADD_ITEM_DATA *)event->data;
-        GF_InventoryModifier_Add(
-            data->object_id, data->inv_type, data->quantity);
-    }
-    return gf_cmd;
+    // handled in GF_InventoryModifier_Apply
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleAddSecretReward)
 {
-    return M_HandleAddItem(level, event, seq_ctx, seq_ctx_arg);
+    // handled in GF_InventoryModifier_Apply
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons)
 {
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED) {
-        g_GF_RemoveWeapons = true;
-    }
-    return gf_cmd;
+    // handled in GF_InventoryModifier_Apply
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo)
 {
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY && seq_ctx != GFSC_SAVED) {
-        g_GF_RemoveAmmo = true;
-    }
-    return gf_cmd;
+    // handled in GF_InventoryModifier_Apply
+    return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveFlares)
+{
+    // handled in GF_InventoryModifier_Apply
+    return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks)
+{
+    // handled in GF_InventoryModifier_Apply
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
@@ -253,7 +265,6 @@ void GF_PreSequenceHook(void)
     g_GF_RemoveWeapons = false;
     g_GF_NumSecrets = 3;
     Camera_GetCineData()->position.target_angle = DEG_90;
-    GF_InventoryModifier_Reset();
 }
 
 GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(

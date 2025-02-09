@@ -340,6 +340,8 @@
                 {"type": "set_lara_start_anim", "anim": 9},
                 {"type": "remove_weapons"},
                 {"type": "remove_ammo"},
+                {"type": "remove_flares"},
+                {"type": "remove_medipacks"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 52},
                 {"type": "display_picture", "path": "data/credit01.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},

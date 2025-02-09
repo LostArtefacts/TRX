@@ -854,7 +854,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
 void Lara_InitialiseInventory(const GF_LEVEL *const level)
 {
     Inv_RemoveAllItems();
-
     Inv_AddItem(O_COMPASS_ITEM);
 
     START_INFO *const start = Savegame_GetCurrentInfo(level);
