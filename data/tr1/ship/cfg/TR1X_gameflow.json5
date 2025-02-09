@@ -355,7 +355,7 @@
                 {"type": "display_picture", "path": "data/images/credits_2.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "path": "data/images/credits_3.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "total_stats", "background_path": "data/images/install.webp"},
-                {"type": "exit_to_title"},
+                {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/pyramid_fd.bin",
