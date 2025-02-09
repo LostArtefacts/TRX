@@ -287,7 +287,6 @@ int32_t g_GF_LaraStartAnim;
 int32_t g_GF_ScriptVersion;
 
 int32_t g_SavedGames;
-TEXTSTRING *g_PasswordText1 = nullptr;
 char g_ValidLevelStrings1[MAX_LEVELS][50];
 char g_ValidLevelStrings2[MAX_LEVELS][50];
 uint32_t g_RequesterFlags1[MAX_REQUESTER_ITEMS];

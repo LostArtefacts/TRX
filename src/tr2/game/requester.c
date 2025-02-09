@@ -321,16 +321,9 @@ int32_t Requester_Display(
         return 0;
     }
 
-    // TODO: WTF!?
-    if (!strcmp(
-            req->item_texts1[req->selected - req->line_offset]->content,
-            GS(MISC_EMPTY_SLOT))
-        && !strcmp(g_PasswordText1->content, GS(PASSPORT_LOAD_GAME))) {
-        g_Input = (INPUT_STATE) {};
-        return 0;
+    if (destroy) {
+        Requester_Shutdown(req);
     }
-
-    Requester_Shutdown(req);
     return req->selected + 1;
 }
 

@@ -1060,7 +1060,7 @@ bool S_FrontEndCheck(void)
         if (!File_Exists(file_name)) {
             Requester_AddItem(
                 &g_LoadGameRequester, GS(MISC_EMPTY_SLOT), 0, 0, 0);
-            g_SavedLevels[i] = 0;
+            g_SavedLevels[i] = false;
         } else {
             MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
             char level_title[80];
@@ -1079,7 +1079,7 @@ bool S_FrontEndCheck(void)
                 g_SaveCounter = save_num;
                 g_LoadGameRequester.selected = i;
             }
-            g_SavedLevels[i] = 1;
+            g_SavedLevels[i] = true;
             g_SavedGames++;
         }
     }
@@ -1132,7 +1132,7 @@ int32_t S_SaveGame(const int32_t slot_num)
 
     m_ReqFlags1[slot_num] = g_RequesterFlags1[slot_num];
     m_ReqFlags2[slot_num] = g_RequesterFlags2[slot_num];
-    g_SavedLevels[slot_num] = 1;
+    g_SavedLevels[slot_num] = true;
     g_SaveCounter++;
     g_SavedGames++;
 
