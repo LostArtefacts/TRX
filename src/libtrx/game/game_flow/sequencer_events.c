@@ -99,11 +99,10 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
     if (seq_ctx != GFSC_NORMAL) {
         return gf_cmd;
     }
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .background_type =
             (TR_VERSION == 1 || Game_IsInGym()) ? BK_TRANSPARENT : BK_OBJECT,
-        .level_num = current_level->num,
+        .level_num = -1,
         .show_final_stats = false,
         .use_bare_style = TR_VERSION == 1,
     });
@@ -128,6 +127,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats)
         .background_path = event->data,
         .show_final_stats = true,
         .use_bare_style = false,
+        .level_num = -1,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);

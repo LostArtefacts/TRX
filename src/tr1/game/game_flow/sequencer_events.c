@@ -210,9 +210,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     if (current_level == GF_GetLastLevel()) {
         g_Config.profile.new_game_plus_unlock = true;
         Config_Write();
-        g_GameInfo.bonus_level_unlock =
-            Stats_CheckAllSecretsCollected(GFL_NORMAL);
     }
+    g_GameInfo.bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
 
     // play specific level
     if (g_GameInfo.select_level_num != -1) {
