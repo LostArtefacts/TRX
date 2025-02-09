@@ -94,7 +94,7 @@ void Option_Sound_Control(INVENTORY_ITEM *inv_item)
 
     switch (g_OptionSelected) {
     case TEXT_MUSIC_VOLUME:
-        if (g_Input.menu_left
+        if (g_InputDB.menu_left
             && g_Config.audio.music_volume > Music_GetMinVolume()) {
             g_Config.audio.music_volume--;
             Config_Write();
@@ -103,7 +103,7 @@ void Option_Sound_Control(INVENTORY_ITEM *inv_item)
             sprintf(buf, "\\{icon music} %2d", g_Config.audio.music_volume);
             Text_ChangeText(m_Text[TEXT_MUSIC_VOLUME], buf);
         } else if (
-            g_Input.menu_right
+            g_InputDB.menu_right
             && g_Config.audio.music_volume < Music_GetMaxVolume()) {
             g_Config.audio.music_volume++;
             Config_Write();
@@ -123,7 +123,7 @@ void Option_Sound_Control(INVENTORY_ITEM *inv_item)
         break;
 
     case TEXT_SOUND_VOLUME:
-        if (g_Input.menu_left
+        if (g_InputDB.menu_left
             && g_Config.audio.sound_volume > Sound_GetMinVolume()) {
             g_Config.audio.sound_volume--;
             Config_Write();
@@ -132,7 +132,7 @@ void Option_Sound_Control(INVENTORY_ITEM *inv_item)
             sprintf(buf, "\\{icon sound} %2d", g_Config.audio.sound_volume);
             Text_ChangeText(m_Text[TEXT_SOUND_VOLUME], buf);
         } else if (
-            g_Input.menu_right
+            g_InputDB.menu_right
             && g_Config.audio.sound_volume < Sound_GetMaxVolume()) {
             g_Config.audio.sound_volume++;
             Config_Write();
