@@ -109,7 +109,8 @@ static void M_CheckTriggers(
             }
 
             // Add killable if object triggered
-            if (Object_IsType(item->object_id, g_EnemyObjects)) {
+            if (Object_IsType(item->object_id, g_EnemyObjects)
+                || item->object_id == O_SCION_ITEM_3) {
                 M_IncludeKillableItem(item_num);
             }
         }
