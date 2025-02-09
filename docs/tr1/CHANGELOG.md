@@ -44,6 +44,7 @@
 - fixed wrong underwater caustics speed with the turbo cheat (#2231)
 - fixed 1-frame UI flicker on pause screen exit confirmation
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames (#2413)
+- fixed missing ricochet sprites in the gym (#2462)
 - fixed being able to use keys and puzzle items in keyholes/slots that have already been used (#2256, regression from 4.0)
 - fixed textures animating during demo fade-outs (#2217, regression from 4.0)
 - fixed waterfall mist not animating during demo (#2218, regression from 3.0)
