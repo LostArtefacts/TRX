@@ -53,7 +53,7 @@ RUN apt-get install -y \
     zlib1g-dev
 RUN git clone \
     --depth 1 \
-    --branch "n4.4.1" \
+    --branch "n7.1" \
     https://github.com/FFmpeg/FFmpeg
 COPY ./tools/ffmpeg_flags.txt /tmp/ffmpeg_flags.txt
 RUN cd FFmpeg \

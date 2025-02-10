@@ -77,6 +77,9 @@ static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
     AVStream *video_stream = nullptr;
     for (unsigned int i = 0; i < ctx->format_ctx->nb_streams; i++) {
         AVStream *current_stream = ctx->format_ctx->streams[i];
+        if (current_stream->codecpar == nullptr) {
+            continue;
+        }
         if (current_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             video_stream = current_stream;
             break;
@@ -165,9 +168,7 @@ static void M_Free(IMAGE_READER_CONTEXT *const ctx)
     }
 
     if (ctx->codec_ctx != nullptr) {
-        avcodec_close(ctx->codec_ctx);
-        av_free(ctx->codec_ctx);
-        ctx->codec_ctx = nullptr;
+        avcodec_free_context(&ctx->codec_ctx);
     }
 
     if (ctx->format_ctx != nullptr) {
@@ -490,9 +491,7 @@ cleanup:
     }
 
     if (codec) {
-        avcodec_close(codec_ctx);
-        av_free(codec_ctx);
-        codec_ctx = nullptr;
+        avcodec_free_context(&codec_ctx);
     }
 
     if (frame) {

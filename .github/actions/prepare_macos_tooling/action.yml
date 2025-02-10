@@ -78,7 +78,7 @@ runs:
         # Install to separate staging paths for all architectures in
         # preparation for fusing universal libraries in a follow-up step.
         cd "$RUNNER_TEMP"
-        git clone --depth 1 --branch "n4.4.1" https://github.com/FFmpeg/FFmpeg
+        git clone --depth 1 --branch "n7.1" https://github.com/FFmpeg/FFmpeg
         cd FFmpeg
 
         # Common FFmpeg configure options

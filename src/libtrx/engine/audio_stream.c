@@ -52,12 +52,11 @@ typedef struct {
     } av;
 
     struct {
-        int32_t src_format;
-        int32_t src_channels;
-        int32_t src_sample_rate;
-        int32_t dst_format;
-        int32_t dst_channels;
-        int32_t dst_sample_rate;
+        struct {
+            int32_t format;
+            AVChannelLayout ch_layout;
+            int32_t sample_rate;
+        } src, dst;
         SwrContext *ctx;
     } swr;
 
@@ -147,17 +146,18 @@ static bool M_EnqueueFrame(AUDIO_STREAM_SOUND *stream)
     int32_t error_code;
 
     if (!stream->swr.ctx) {
-        stream->swr.src_sample_rate = stream->av.codec_ctx->sample_rate;
-        stream->swr.src_channels = stream->av.codec_ctx->channels;
-        stream->swr.src_format = stream->av.codec_ctx->sample_fmt;
-        stream->swr.dst_sample_rate = AUDIO_WORKING_RATE;
-        stream->swr.dst_channels = AUDIO_WORKING_CHANNELS;
-        stream->swr.dst_format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
-        stream->swr.ctx = swr_alloc_set_opts(
-            stream->swr.ctx, Audio_GetAVChannelLayout(stream->swr.dst_channels),
-            stream->swr.dst_format, stream->swr.dst_sample_rate,
-            Audio_GetAVChannelLayout(stream->swr.src_channels),
-            stream->swr.src_format, stream->swr.src_sample_rate, 0, 0);
+        stream->swr.src.sample_rate = stream->av.codec_ctx->sample_rate;
+        stream->swr.src.ch_layout = stream->av.codec_ctx->ch_layout;
+        stream->swr.src.format = stream->av.codec_ctx->sample_fmt;
+        stream->swr.dst.sample_rate = AUDIO_WORKING_RATE;
+        av_channel_layout_default(
+            &stream->swr.dst.ch_layout, AUDIO_WORKING_CHANNELS);
+        stream->swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
+        swr_alloc_set_opts2(
+            &stream->swr.ctx, &stream->swr.dst.ch_layout,
+            stream->swr.dst.format, stream->swr.dst.sample_rate,
+            &stream->swr.src.ch_layout, stream->swr.src.format,
+            stream->swr.src.sample_rate, 0, 0);
         if (!stream->swr.ctx) {
             av_packet_unref(stream->av.packet);
             error_code = AVERROR(ENOMEM);
@@ -189,8 +189,8 @@ static bool M_EnqueueFrame(AUDIO_STREAM_SOUND *stream)
         const int32_t out_samples =
             swr_get_out_samples(stream->swr.ctx, stream->av.frame->nb_samples);
         av_samples_alloc(
-            &out_buffer, nullptr, stream->swr.dst_channels, out_samples,
-            stream->swr.dst_format, 1);
+            &out_buffer, nullptr, stream->swr.dst.ch_layout.nb_channels,
+            out_samples, stream->swr.dst.format, 1);
         int32_t resampled_size = swr_convert(
             stream->swr.ctx, &out_buffer, out_samples,
             (const uint8_t **)stream->av.frame->data,
@@ -199,8 +199,8 @@ static bool M_EnqueueFrame(AUDIO_STREAM_SOUND *stream)
         size_t out_pos = 0;
         while (resampled_size > 0) {
             const size_t out_buffer_size = av_samples_get_buffer_size(
-                nullptr, stream->swr.dst_channels, resampled_size,
-                stream->swr.dst_format, 1);
+                nullptr, stream->swr.dst.ch_layout.nb_channels, resampled_size,
+                stream->swr.dst.format, 1);
 
             if (out_pos + out_buffer_size > m_DecodeBufferCapacity) {
                 m_DecodeBufferCapacity = out_pos + out_buffer_size;
@@ -322,8 +322,8 @@ static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
 
     M_DecodeFrame(stream);
 
-    int32_t sdl_sample_rate = stream->av.codec_ctx->sample_rate;
-    int32_t sdl_channels = stream->av.codec_ctx->channels;
+    const int32_t sdl_sample_rate = stream->av.codec_ctx->sample_rate;
+    const int32_t sdl_channels = stream->av.codec_ctx->ch_layout.nb_channels;
 
     stream->is_read_done = false;
     stream->is_used = true;
@@ -474,14 +474,12 @@ bool Audio_Stream_Close(int32_t sound_id)
     AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
 
     if (stream->av.codec_ctx) {
-        avcodec_close(stream->av.codec_ctx);
-
         // XXX: potential libav bug - avcodec_close should free this info
         if (stream->av.codec_ctx->extradata != nullptr) {
             av_freep(&stream->av.codec_ctx->extradata);
         }
 
-        av_free(stream->av.codec_ctx);
+        avcodec_free_context(&stream->av.codec_ctx);
         stream->av.codec_ctx = nullptr;
     }
 
@@ -613,13 +611,15 @@ void Audio_Stream_Mix(float *dst_buffer, size_t len)
             const float *src_ptr = &m_MixBuffer[0];
             float *dst_ptr = dst_buffer;
 
-            if (stream->av.codec_ctx->channels == AUDIO_WORKING_CHANNELS) {
+            const int32_t channels =
+                stream->av.codec_ctx->ch_layout.nb_channels;
+            if (channels == AUDIO_WORKING_CHANNELS) {
                 for (int32_t s = 0; s < samples_gotten; s++) {
                     for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
                         *dst_ptr++ += *src_ptr++ * stream->volume;
                     }
                 }
-            } else if (stream->av.codec_ctx->channels == 1) {
+            } else if (channels == 1) {
                 for (int32_t s = 0; s < samples_gotten; s++) {
                     for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
                         *dst_ptr++ += *src_ptr * stream->volume;
@@ -630,11 +630,10 @@ void Audio_Stream_Mix(float *dst_buffer, size_t len)
                 for (int32_t s = 0; s < samples_gotten; s++) {
                     // downmix to mono
                     float src_sample = 0.0f;
-                    for (int32_t i = 0; i < stream->av.codec_ctx->channels;
-                         i++) {
+                    for (int32_t i = 0; i < channels; i++) {
                         src_sample += *src_ptr++;
                     }
-                    src_sample /= (float)stream->av.codec_ctx->channels;
+                    src_sample /= (float)channels;
                     for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
                         *dst_ptr++ += src_sample * stream->volume;
                     }

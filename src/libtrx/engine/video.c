@@ -90,7 +90,7 @@ typedef struct {
 } M_PACKET_LIST;
 
 typedef struct {
-    AVFifoBuffer *pkt_list;
+    AVFifo *pkt_list;
     int nb_packets;
     int size;
     int64_t duration;
@@ -103,7 +103,7 @@ typedef struct {
 typedef struct {
     int freq;
     int channels;
-    int64_t channel_layout;
+    AVChannelLayout ch_layout;
     enum AVSampleFormat fmt;
     int frame_size;
     int bytes_per_sec;
@@ -130,6 +130,10 @@ typedef struct {
     int format;
     AVRational sar;
 } M_FRAME;
+
+typedef struct {
+    int64_t pkt_pos;
+} M_FRAME_DATA;
 
 typedef struct {
     M_FRAME queue[FRAME_QUEUE_SIZE];
@@ -223,6 +227,7 @@ typedef struct {
     int target_surface_height;
 
     double frame_timer;
+    double frame_last_returned_time;
     int video_stream;
     AVStream *video_st;
     M_PACKET_QUEUE videoq;
@@ -277,16 +282,13 @@ static int M_PacketQueuePutPrivate(M_PACKET_QUEUE *q, AVPacket *pkt)
         return -1;
     }
 
-    if (av_fifo_space(q->pkt_list) < (signed)sizeof(pkt1)) {
-        if (av_fifo_grow(q->pkt_list, sizeof(pkt1)) < 0) {
-            return -1;
-        }
-    }
-
     pkt1.pkt = pkt;
     pkt1.serial = q->serial;
 
-    av_fifo_generic_write(q->pkt_list, &pkt1, sizeof(pkt1), nullptr);
+    int32_t ret = av_fifo_write(q->pkt_list, &pkt1, 1);
+    if (ret < 0) {
+        return ret;
+    }
     q->nb_packets++;
     q->size += pkt1.pkt->size + sizeof(pkt1);
     q->duration += pkt1.pkt->duration;
@@ -327,8 +329,9 @@ static int M_PacketQueuePutNullPacket(
 static int M_PacketQueueInit(M_PACKET_QUEUE *q)
 {
     memset(q, 0, sizeof(M_PACKET_QUEUE));
-    q->pkt_list = av_fifo_alloc(sizeof(M_PACKET_LIST));
-    if (!q->pkt_list) {
+    q->pkt_list =
+        av_fifo_alloc2(1, sizeof(M_PACKET_LIST), AV_FIFO_FLAG_AUTO_GROW);
+    if (q->pkt_list == nullptr) {
         return AVERROR(ENOMEM);
     }
 
@@ -353,8 +356,7 @@ static void M_PacketQueueFlush(M_PACKET_QUEUE *q)
     M_PACKET_LIST pkt1;
 
     SDL_LockMutex(q->mutex);
-    while (av_fifo_size(q->pkt_list) >= (signed)sizeof(pkt1)) {
-        av_fifo_generic_read(q->pkt_list, &pkt1, sizeof(pkt1), nullptr);
+    while (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0) {
         av_packet_free(&pkt1.pkt);
     }
     q->nb_packets = 0;
@@ -367,7 +369,7 @@ static void M_PacketQueueFlush(M_PACKET_QUEUE *q)
 static void M_PacketQueueDestroy(M_PACKET_QUEUE *q)
 {
     M_PacketQueueFlush(q);
-    av_fifo_freep(&q->pkt_list);
+    av_fifo_freep2(&q->pkt_list);
     SDL_DestroyMutex(q->mutex);
     SDL_DestroyCond(q->cond);
 }
@@ -402,8 +404,7 @@ static int M_PacketQueueGet(
             break;
         }
 
-        if (av_fifo_size(q->pkt_list) >= (signed)sizeof(pkt1)) {
-            av_fifo_generic_read(q->pkt_list, &pkt1, sizeof(pkt1), nullptr);
+        if (av_fifo_read(q->pkt_list, &pkt1, 1) >= 0) {
             q->nb_packets--;
             q->size -= pkt1.pkt->size + sizeof(pkt1);
             q->duration -= pkt1.pkt->duration;
@@ -516,6 +517,15 @@ static int M_DecoderDecodeFrame(M_DECODER *d, AVFrame *frame)
                 break;
             }
             av_packet_unref(d->pkt);
+        }
+
+        if (d->pkt->buf && !d->pkt->opaque_ref) {
+            d->pkt->opaque_ref = av_buffer_allocz(sizeof(M_FRAME_DATA));
+            if (!d->pkt->opaque_ref) {
+                return AVERROR(ENOMEM);
+            }
+            M_FRAME_DATA *fd = (M_FRAME_DATA *)d->pkt->opaque_ref->data;
+            fd->pkt_pos = d->pkt->pos;
         }
 
         if (avcodec_send_packet(d->avctx, d->pkt) == AVERROR(EAGAIN)) {
@@ -1109,37 +1119,52 @@ static int M_AudioThread(void *arg)
     M_STATE *is = arg;
     AVFrame *frame = av_frame_alloc();
     M_FRAME *af;
+    int last_serial = -1;
     int got_frame = 0;
     AVRational tb;
     int ret = 0;
 
-    if (!frame) {
+    if (frame == nullptr) {
         return AVERROR(ENOMEM);
     }
 
     do {
-        if ((got_frame = M_DecoderDecodeFrame(&is->auddec, frame)) < 0) {
+        got_frame = M_DecoderDecodeFrame(&is->auddec, frame);
+        if (got_frame < 0) {
             goto the_end;
         }
 
         if (got_frame) {
             tb = (AVRational) { 1, frame->sample_rate };
 
-            if (!(af = M_FrameQueuePeekWritable(&is->sampq))) {
+            M_FRAME_DATA *fd = frame->opaque_ref
+                ? (M_FRAME_DATA *)frame->opaque_ref->data
+                : nullptr;
+            af = M_FrameQueuePeekWritable(&is->sampq);
+            if (af == nullptr) {
                 goto the_end;
             }
 
             af->pts =
                 (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
-            af->pos = frame->pkt_pos;
+            af->pos = fd ? fd->pkt_pos : -1;
             af->serial = is->auddec.pkt_serial;
             af->duration =
                 av_q2d((AVRational) { frame->nb_samples, frame->sample_rate });
 
             av_frame_move_ref(af->frame, frame);
             M_FrameQueuePush(&is->sampq);
+
+            if (is->audioq.serial != is->auddec.pkt_serial) {
+                break;
+            }
+
+            if (ret == AVERROR_EOF) {
+                is->auddec.finished = is->auddec.pkt_serial;
+            }
         }
     } while (ret >= 0 || ret == AVERROR(EAGAIN) || ret == AVERROR_EOF);
+
 the_end:
     av_frame_free(&frame);
     return ret;
@@ -1180,17 +1205,23 @@ static int M_VideoThread(void *arg)
             continue;
         }
 
+        is->frame_last_returned_time = av_gettime_relative() / 1000000.0;
+
+        M_FRAME_DATA *fd = frame->opaque_ref
+            ? (M_FRAME_DATA *)frame->opaque_ref->data
+            : nullptr;
+
         duration =
             (frame_rate.num && frame_rate.den
                  ? av_q2d((AVRational) { frame_rate.den, frame_rate.num })
                  : 0);
         pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
         ret = M_QueuePicture(
-            is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
+            is, frame, pts, duration, fd ? fd->pkt_pos : -1,
+            is->viddec.pkt_serial);
         av_frame_unref(frame);
-
-        if (ret < 0) {
-            goto the_end;
+        if (is->videoq.serial != is->viddec.pkt_serial) {
+            break;
         }
     }
 the_end:
@@ -1240,6 +1271,7 @@ static int M_SynchronizeAudio(M_STATE *is, int nb_samples)
 
 static int M_AudioDecodeFrame(M_STATE *is)
 {
+
     int data_size, resampled_data_size;
     av_unused double audio_clock0;
     int wanted_nb_samples;
@@ -1250,6 +1282,15 @@ static int M_AudioDecodeFrame(M_STATE *is)
     }
 
     do {
+#if defined(_WIN32)
+        while (M_FrameQueueNBRemaining(&is->sampq) == 0) {
+            if ((av_gettime_relative() - m_AudioCallbackTime) > 1000000LL
+                    * is->audio_hw_buf_size / is->audio_tgt.bytes_per_sec / 2) {
+                return -1;
+            }
+            av_usleep(1000);
+        }
+#endif
         if (!(af = M_FrameQueuePeekReadable(&is->sampq))) {
             return -1;
         }
@@ -1257,39 +1298,39 @@ static int M_AudioDecodeFrame(M_STATE *is)
     } while (af->serial != is->audioq.serial);
 
     data_size = av_samples_get_buffer_size(
-        nullptr, af->frame->channels, af->frame->nb_samples, af->frame->format,
-        1);
+        nullptr, af->frame->ch_layout.nb_channels, af->frame->nb_samples,
+        af->frame->format, 1);
 
-    int64_t dec_channel_layout =
-        (af->frame->channel_layout
-         && af->frame->channels
-             == av_get_channel_layout_nb_channels(af->frame->channel_layout))
-        ? (signed)af->frame->channel_layout
-        : av_get_default_channel_layout(af->frame->channels);
     wanted_nb_samples = M_SynchronizeAudio(is, af->frame->nb_samples);
 
     if (af->frame->format != is->audio_src.fmt
-        || dec_channel_layout != is->audio_src.channel_layout
+        || av_channel_layout_compare(
+            &af->frame->ch_layout, &is->audio_src.ch_layout)
         || af->frame->sample_rate != is->audio_src.freq
         || (wanted_nb_samples != af->frame->nb_samples && !is->swr_ctx)) {
+        int ret;
         swr_free(&is->swr_ctx);
-        is->swr_ctx = swr_alloc_set_opts(
-            nullptr, is->audio_tgt.channel_layout, is->audio_tgt.fmt,
-            is->audio_tgt.freq, dec_channel_layout, af->frame->format,
+        ret = swr_alloc_set_opts2(
+            &is->swr_ctx, &is->audio_tgt.ch_layout, is->audio_tgt.fmt,
+            is->audio_tgt.freq, &af->frame->ch_layout, af->frame->format,
             af->frame->sample_rate, 0, nullptr);
-        if (!is->swr_ctx || swr_init(is->swr_ctx) < 0) {
+        if (ret < 0 || swr_init(is->swr_ctx) < 0) {
             LOG_ERROR(
                 "Cannot create sample rate converter for conversion of %d Hz "
                 "%s %d channels to %d Hz %s %d channels!",
                 af->frame->sample_rate,
-                av_get_sample_fmt_name(af->frame->format), af->frame->channels,
-                is->audio_tgt.freq, av_get_sample_fmt_name(is->audio_tgt.fmt),
-                is->audio_tgt.channels);
+                av_get_sample_fmt_name(af->frame->format),
+                af->frame->ch_layout.nb_channels, is->audio_tgt.freq,
+                av_get_sample_fmt_name(is->audio_tgt.fmt),
+                is->audio_tgt.ch_layout.nb_channels);
             swr_free(&is->swr_ctx);
             return -1;
         }
-        is->audio_src.channel_layout = dec_channel_layout;
-        is->audio_src.channels = af->frame->channels;
+        if (av_channel_layout_copy(
+                &is->audio_src.ch_layout, &af->frame->ch_layout)
+            < 0) {
+            return -1;
+        }
         is->audio_src.freq = af->frame->sample_rate;
         is->audio_src.fmt = af->frame->format;
     }
@@ -1301,7 +1342,8 @@ static int M_AudioDecodeFrame(M_STATE *is)
                 / af->frame->sample_rate
             + 256;
         int out_size = av_samples_get_buffer_size(
-            nullptr, is->audio_tgt.channels, out_count, is->audio_tgt.fmt, 0);
+            nullptr, is->audio_tgt.ch_layout.nb_channels, out_count,
+            is->audio_tgt.fmt, 0);
         int len2;
         if (out_size < 0) {
             LOG_ERROR("av_samples_get_buffer_size() failed");
@@ -1330,12 +1372,13 @@ static int M_AudioDecodeFrame(M_STATE *is)
             return -1;
         }
         if (len2 == out_count) {
+            LOG_ERROR("audio buffer is probably too small");
             if (swr_init(is->swr_ctx) < 0) {
                 swr_free(&is->swr_ctx);
             }
         }
         is->audio_buf = is->audio_buf1;
-        resampled_data_size = len2 * is->audio_tgt.channels
+        resampled_data_size = len2 * is->audio_tgt.ch_layout.nb_channels
             * av_get_bytes_per_sample(is->audio_tgt.fmt);
     } else {
         is->audio_buf = af->frame->data[0];
@@ -1404,29 +1447,27 @@ static void M_SDLAudioCallback(void *opaque, Uint8 *stream, int len)
 }
 
 static int M_AudioOpen(
-    M_STATE *is, int64_t wanted_channel_layout, int wanted_nb_channels,
-    int wanted_sample_rate, M_AUDIO_PARAMS *audio_hw_params)
+    M_STATE *is, AVChannelLayout *wanted_channel_layout, int wanted_sample_rate,
+    M_AUDIO_PARAMS *audio_hw_params)
 {
     SDL_AudioSpec wanted_spec, spec;
+    const char *env;
     static const int next_nb_channels[] = { 0, 0, 1, 6, 2, 6, 4, 6 };
     static const int next_sample_rates[] = { 0, 44100, 48000, 96000, 192000 };
     int next_sample_rate_idx = FF_ARRAY_ELEMS(next_sample_rates) - 1;
+    int wanted_nb_channels = wanted_channel_layout->nb_channels;
 
-    const char *const env = SDL_getenv("SDL_AUDIO_CHANNELS");
+    env = SDL_getenv("SDL_AUDIO_CHANNELS");
     if (env) {
         wanted_nb_channels = atoi(env);
-        wanted_channel_layout =
-            av_get_default_channel_layout(wanted_nb_channels);
+        av_channel_layout_uninit(wanted_channel_layout);
+        av_channel_layout_default(wanted_channel_layout, wanted_nb_channels);
     }
-    if (!wanted_channel_layout
-        || wanted_nb_channels
-            != av_get_channel_layout_nb_channels(wanted_channel_layout)) {
-        wanted_channel_layout =
-            av_get_default_channel_layout(wanted_nb_channels);
-        wanted_channel_layout &= ~AV_CH_LAYOUT_STEREO_DOWNMIX;
+    if (wanted_channel_layout->order != AV_CHANNEL_ORDER_NATIVE) {
+        av_channel_layout_uninit(wanted_channel_layout);
+        av_channel_layout_default(wanted_channel_layout, wanted_nb_channels);
     }
-    wanted_nb_channels =
-        av_get_channel_layout_nb_channels(wanted_channel_layout);
+    wanted_nb_channels = wanted_channel_layout->nb_channels;
     wanted_spec.channels = wanted_nb_channels;
     wanted_spec.freq = wanted_sample_rate;
     if (wanted_spec.freq <= 0 || wanted_spec.channels <= 0) {
@@ -1448,6 +1489,9 @@ static int M_AudioOpen(
               nullptr, 0, &wanted_spec, &spec,
               SDL_AUDIO_ALLOW_FREQUENCY_CHANGE
                   | SDL_AUDIO_ALLOW_CHANNELS_CHANGE))) {
+        LOG_WARNING(
+            "SDL_OpenAudio (%d channels, %d Hz): %s", wanted_spec.channels,
+            wanted_spec.freq, SDL_GetError());
         wanted_spec.channels = next_nb_channels[FFMIN(7, wanted_spec.channels)];
         if (!wanted_spec.channels) {
             wanted_spec.freq = next_sample_rates[next_sample_rate_idx--];
@@ -1457,16 +1501,16 @@ static int M_AudioOpen(
                 return -1;
             }
         }
-        wanted_channel_layout =
-            av_get_default_channel_layout(wanted_spec.channels);
+        av_channel_layout_default(wanted_channel_layout, wanted_spec.channels);
     }
     if (spec.format != AUDIO_S16SYS) {
         LOG_ERROR("SDL advised audio format %d is not supported!", spec.format);
         return -1;
     }
     if (spec.channels != wanted_spec.channels) {
-        wanted_channel_layout = av_get_default_channel_layout(spec.channels);
-        if (!wanted_channel_layout) {
+        av_channel_layout_uninit(wanted_channel_layout);
+        av_channel_layout_default(wanted_channel_layout, spec.channels);
+        if (wanted_channel_layout->order != AV_CHANNEL_ORDER_NATIVE) {
             LOG_ERROR(
                 "SDL advised channel count %d is not supported!",
                 spec.channels);
@@ -1476,12 +1520,15 @@ static int M_AudioOpen(
 
     audio_hw_params->fmt = AV_SAMPLE_FMT_S16;
     audio_hw_params->freq = spec.freq;
-    audio_hw_params->channel_layout = wanted_channel_layout;
-    audio_hw_params->channels = spec.channels;
+    if (av_channel_layout_copy(
+            &audio_hw_params->ch_layout, wanted_channel_layout)
+        < 0)
+        return -1;
     audio_hw_params->frame_size = av_samples_get_buffer_size(
-        nullptr, audio_hw_params->channels, 1, audio_hw_params->fmt, 1);
+        nullptr, audio_hw_params->ch_layout.nb_channels, 1,
+        audio_hw_params->fmt, 1);
     audio_hw_params->bytes_per_sec = av_samples_get_buffer_size(
-        nullptr, audio_hw_params->channels, audio_hw_params->freq,
+        nullptr, audio_hw_params->ch_layout.nb_channels, audio_hw_params->freq,
         audio_hw_params->fmt, 1);
     if (audio_hw_params->bytes_per_sec <= 0
         || audio_hw_params->frame_size <= 0) {
@@ -1501,7 +1548,7 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
     const AVDictionaryEntry *t = nullptr;
     int sample_rate;
     int nb_channels;
-    int64_t channel_layout;
+    AVChannelLayout ch_layout;
     int ret = 0;
 
     if (stream_index < 0 || stream_index >= (signed)ic->nb_streams) {
@@ -1542,11 +1589,9 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
     switch (avctx->codec_type) {
     case AVMEDIA_TYPE_AUDIO:
         sample_rate = avctx->sample_rate;
-        nb_channels = avctx->channels;
-        channel_layout = avctx->channel_layout;
+        ch_layout = avctx->ch_layout;
 
-        if ((ret = M_AudioOpen(
-                 is, channel_layout, nb_channels, sample_rate, &is->audio_tgt))
+        if ((ret = M_AudioOpen(is, &ch_layout, sample_rate, &is->audio_tgt))
             < 0) {
             goto fail;
         }
@@ -1568,9 +1613,7 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
             < 0) {
             goto fail;
         }
-        if ((is->ic->iformat->flags
-             & (AVFMT_NOBINSEARCH | AVFMT_NOGENSEARCH | AVFMT_NO_BYTE_SEEK))
-            && !is->ic->iformat->read_seek) {
+        if (is->ic->iformat->flags & AVFMT_NOTIMESTAMPS) {
             is->auddec.start_pts = is->audio_st->start_time;
             is->auddec.start_pts_tb = is->audio_st->time_base;
         }
@@ -1606,8 +1649,9 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
 
 fail:
     avcodec_free_context(&avctx);
-
 out:
+    av_channel_layout_uninit(&ch_layout);
+
     return ret;
 }
 

@@ -171,12 +171,11 @@ static bool M_Convert(const int32_t sample_id)
     };
 
     struct {
-        int32_t src_format;
-        int32_t src_channels;
-        int32_t src_sample_rate;
-        int32_t dst_format;
-        int32_t dst_channels;
-        int32_t dst_sample_rate;
+        struct {
+            int32_t format;
+            AVChannelLayout ch_layout;
+            int32_t sample_rate;
+        } src, dst;
         SwrContext *ctx;
     } swr = {};
 
@@ -279,17 +278,18 @@ static bool M_Convert(const int32_t sample_id)
             goto cleanup;
         }
 
-        if (!swr.ctx) {
-            swr.src_sample_rate = av.codec_ctx->sample_rate;
-            swr.src_channels = av.codec_ctx->channels;
-            swr.src_format = av.codec_ctx->sample_fmt;
-            swr.dst_sample_rate = AUDIO_WORKING_RATE;
-            swr.dst_channels = 1;
-            swr.dst_format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
-            swr.ctx = swr_alloc_set_opts(
-                swr.ctx, swr.dst_channels, swr.dst_format, swr.dst_sample_rate,
-                swr.src_channels, swr.src_format, swr.src_sample_rate, 0, 0);
-            if (!swr.ctx) {
+        if (swr.ctx == nullptr) {
+            swr.src.sample_rate = av.codec_ctx->sample_rate;
+            swr.src.ch_layout = av.codec_ctx->ch_layout;
+            swr.src.format = av.codec_ctx->sample_fmt;
+            swr.dst.sample_rate = AUDIO_WORKING_RATE;
+            av_channel_layout_default(&swr.dst.ch_layout, 1);
+            swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
+            swr_alloc_set_opts2(
+                &swr.ctx, &swr.dst.ch_layout, swr.dst.format,
+                swr.dst.sample_rate, &swr.src.ch_layout, swr.src.format,
+                swr.src.sample_rate, 0, 0);
+            if (swr.ctx == nullptr) {
                 av_packet_unref(av.packet);
                 error_code = AVERROR(ENOMEM);
                 goto cleanup;
@@ -319,15 +319,15 @@ static bool M_Convert(const int32_t sample_id)
             const int32_t out_samples =
                 swr_get_out_samples(swr.ctx, av.frame->nb_samples);
             av_samples_alloc(
-                &out_buffer, nullptr, swr.dst_channels, out_samples,
-                swr.dst_format, 1);
+                &out_buffer, nullptr, swr.dst.ch_layout.nb_channels,
+                out_samples, swr.dst.format, 1);
             int32_t resampled_size = swr_convert(
                 swr.ctx, &out_buffer, out_samples,
                 (const uint8_t **)av.frame->data, av.frame->nb_samples);
             while (resampled_size > 0) {
                 int32_t out_buffer_size = av_samples_get_buffer_size(
-                    nullptr, swr.dst_channels, resampled_size, swr.dst_format,
-                    1);
+                    nullptr, swr.dst.ch_layout.nb_channels, resampled_size,
+                    swr.dst.format, 1);
 
                 if (out_buffer_size > 0) {
                     working_buffer = Memory_Realloc(
@@ -351,10 +351,10 @@ static bool M_Convert(const int32_t sample_id)
         av_packet_unref(av.packet);
     }
 
-    int32_t sample_format_bytes = av_get_bytes_per_sample(swr.dst_format);
-    sample->num_samples =
-        working_buffer_size / sample_format_bytes / swr.dst_channels;
-    sample->channels = swr.src_channels;
+    int32_t sample_format_bytes = av_get_bytes_per_sample(swr.dst.format);
+    sample->num_samples = working_buffer_size / sample_format_bytes
+        / swr.dst.ch_layout.nb_channels;
+    sample->channels = swr.src.ch_layout.nb_channels;
     sample->sample_data = working_buffer;
     result = true;
 
@@ -396,8 +396,7 @@ cleanup:
     }
 
     if (av.codec_ctx) {
-        avcodec_close(av.codec_ctx);
-        av_freep(&av.codec_ctx);
+        avcodec_free_context(&av.codec_ctx);
     }
 
     if (av.format_ctx) {

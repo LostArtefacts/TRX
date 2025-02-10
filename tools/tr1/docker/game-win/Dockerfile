@@ -54,7 +54,7 @@ RUN apt-get install -y \
     nasm
 RUN git clone \
     --depth 1 \
-    --branch "n4.4.1" \
+    --branch "n7.1" \
     https://github.com/FFmpeg/FFmpeg
 COPY --from=zlib /ext/ /usr/i686-w64-mingw32/
 COPY ./tools/ffmpeg_flags.txt /tmp/ffmpeg_flags.txt
@@ -65,6 +65,8 @@ RUN cd FFmpeg \
         --cross-prefix=i686-w64-mingw32- \
         --prefix=/ext/ \
         --cc=i686-w64-mingw32-gcc \
+        --cxx=i686-w64-mingw32-g++ \
+        --host-cc=i686-w64-mingw32-gcc \
         --strip=i686-w64-mingw32-strip \
         --pkg-config=i686-w64-mingw32-pkg-config \
         --enable-static \
