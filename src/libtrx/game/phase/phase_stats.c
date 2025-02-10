@@ -99,6 +99,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    Output_UnloadBackground();
     if (p->ui != nullptr) {
         p->ui->free(p->ui);
     }
