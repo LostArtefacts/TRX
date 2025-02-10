@@ -8,6 +8,7 @@
 #include "game/level.h"
 #include "game/music.h"
 #include "game/phase.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
@@ -73,7 +74,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             }
             tmp_level = next_level;
         }
-        InitialiseLevelFlags();
+        Stats_Reset();
         break;
     }
 
@@ -82,8 +83,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         if (level->type == GFL_NORMAL) {
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
+            Stats_Reset();
         }
-        InitialiseLevelFlags();
         break;
     }
 

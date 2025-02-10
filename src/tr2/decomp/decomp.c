@@ -209,17 +209,6 @@ void InitialiseGameFlags(void)
     g_IsMonkAngry = false;
 }
 
-void InitialiseLevelFlags(void)
-{
-    g_SaveGame.current_stats.timer = 0;
-    g_SaveGame.current_stats.kills = 0;
-    g_SaveGame.current_stats.distance = 0;
-    g_SaveGame.current_stats.ammo_hits = 0;
-    g_SaveGame.current_stats.ammo_used = 0;
-    g_SaveGame.current_stats.medipacks = 0;
-    g_SaveGame.current_stats.secret_flags = 0;
-}
-
 void GetCarriedItems(void)
 {
     for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {

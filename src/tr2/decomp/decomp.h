@@ -23,7 +23,6 @@ void IncreaseScreenSize(void);
 void S_UnloadLevelFile(void);
 void GetValidLevelsList(REQUEST_INFO *req);
 void InitialiseGameFlags(void);
-void InitialiseLevelFlags(void);
 void GetCarriedItems(void);
 int32_t DoShift(ITEM *vehicle, const XYZ_32 *pos, const XYZ_32 *old);
 int32_t DoDynamics(int32_t height, int32_t fall_speed, int32_t *out_y);

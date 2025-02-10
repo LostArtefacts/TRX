@@ -62,3 +62,14 @@ FINAL_STATS Stats_ComputeFinalStats(void)
 
     return result;
 }
+
+void Stats_Reset(void)
+{
+    g_SaveGame.current_stats.timer = 0;
+    g_SaveGame.current_stats.kills = 0;
+    g_SaveGame.current_stats.distance = 0;
+    g_SaveGame.current_stats.ammo_hits = 0;
+    g_SaveGame.current_stats.ammo_used = 0;
+    g_SaveGame.current_stats.medipacks = 0;
+    g_SaveGame.current_stats.secret_flags = 0;
+}
