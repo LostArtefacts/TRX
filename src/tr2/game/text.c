@@ -122,10 +122,20 @@ void Text_DrawText(TEXTSTRING *const text)
         }
 
         if ((*glyph_ptr)->role == GLYPH_SECRET) {
-            Output_DrawPickup(
-                x + 10, y, 7144,
-                Object_Get(O_SECRET_1 + (*glyph_ptr)->mesh_idx)->mesh_idx,
-                4096);
+            const int16_t sprite_idx =
+                Object_Get(O_SECRET_1 + (*glyph_ptr)->mesh_idx)->mesh_idx;
+            const SPRITE_TEXTURE *const sprite =
+                Output_GetSpriteTexture(sprite_idx);
+            const float sprite_scale_h =
+                text->scale.h / (sprite->x1 - sprite->x0);
+            const float sprite_scale_v =
+                text->scale.v / (sprite->y1 - sprite->y0);
+            const float sprite_scale = MIN(sprite_scale_h, sprite_scale_v);
+            Output_DrawScreenSprite2D(
+                x + M_Scale(10), y, z,
+                M_Scale((*glyph_ptr)->width * sprite_scale),
+                M_Scale((*glyph_ptr)->width * sprite_scale), sprite_idx, 4096,
+                0);
             x += (*glyph_ptr)->width * scale_h / TEXT_BASE_SCALE;
             glyph_ptr++;
             continue;
