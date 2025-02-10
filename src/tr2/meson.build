@@ -89,7 +89,6 @@ sources = [
   'decomp/flares.c',
   'decomp/savegame.c',
   'decomp/skidoo.c',
-  'decomp/stats.c',
   'game/box.c',
   'game/camera.c',
   'game/clock.c',

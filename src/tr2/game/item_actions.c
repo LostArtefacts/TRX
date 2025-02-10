@@ -1,6 +1,5 @@
 #include "game/item_actions.h"
 
-#include "decomp/stats.h"
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/lara/hair.h"
@@ -323,7 +322,7 @@ void M_AssaultReset(ITEM *const item)
 void M_AssaultFinished(ITEM *const item)
 {
     if (g_IsAssaultTimerActive) {
-        AddAssaultTime(g_SaveGame.current_stats.timer);
+        Stats_StoreAssaultTime(g_SaveGame.current_stats.timer);
 
         if ((int32_t)g_AssaultBestTime < 0) {
             if (g_SaveGame.current_stats.timer < 100 * FRAMES_PER_SECOND) {
