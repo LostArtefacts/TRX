@@ -167,7 +167,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
         g_SaveGame.current_level = next_level->num;
     }
     if (next_level == nullptr) {
-        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        return (GF_COMMAND) { .action = GF_NOOP };
     }
     return (GF_COMMAND) {
         .action = GF_START_GAME,

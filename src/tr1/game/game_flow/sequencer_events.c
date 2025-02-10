@@ -226,9 +226,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
         };
     }
 
-    // missing level
     if (next_level == nullptr) {
-        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        return (GF_COMMAND) { .action = GF_NOOP };
     }
 
     // carry info to the next level

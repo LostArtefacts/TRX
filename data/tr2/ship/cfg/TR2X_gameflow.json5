@@ -344,6 +344,7 @@
                 {"type": "remove_medipacks"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 52},
+                {"type": "level_complete"},
                 {"type": "display_picture", "path": "data/credit01.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "path": "data/credit02.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "path": "data/credit03.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
@@ -353,7 +354,6 @@
                 {"type": "display_picture", "path": "data/credit07.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "display_picture", "path": "data/credit08.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
                 {"type": "total_stats", "background_path": "data/end.pcx"},
-                {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/house_itemrots.bin",

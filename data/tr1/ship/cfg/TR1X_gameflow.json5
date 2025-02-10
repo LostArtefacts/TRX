@@ -350,12 +350,12 @@
                 {"type": "level_stats"},
                 {"type": "play_fmv", "fmv_id": 10},
                 {"type": "play_music", "music_track": 19},
+                {"type": "level_complete"},
                 {"type": "display_picture", "path": "data/images/end.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "path": "data/images/credits_1.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "path": "data/images/credits_2.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "path": "data/images/credits_3.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "total_stats", "background_path": "data/images/install.webp"},
-                {"type": "level_complete"},
             ],
             "injections": [
                 "data/injections/pyramid_fd.bin",

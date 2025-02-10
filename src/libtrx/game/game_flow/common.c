@@ -7,11 +7,20 @@
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GF_COMMAND m_OverrideCommand = { .action = GF_NOOP };
 
+static bool M_SkipLevel(const GF_LEVEL *level);
 static void M_FreeSequence(GF_SEQUENCE *sequence);
 static void M_FreeInjections(INJECTION_DATA *injections);
 static void M_FreeLevel(GF_LEVEL *level);
 static void M_FreeLevelTable(GF_LEVEL_TABLE *level_table);
 static void M_FreeFMVs(GAME_FLOW *gf);
+
+static bool M_SkipLevel(const GF_LEVEL *const level)
+{
+#if TR_VERSION == 1
+    return level->type == GFL_DUMMY || level->type == GFL_CURRENT;
+#endif
+    return false;
+}
 
 static void M_FreeSequence(GF_SEQUENCE *const sequence)
 {
@@ -171,11 +180,9 @@ const GF_LEVEL *GF_GetLastLevel(void)
         if (level->type == GFL_GYM) {
             continue;
         }
-#if TR_VERSION == 1
-        if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
+        if (M_SkipLevel(level)) {
             continue;
         }
-#endif
         result = level;
     }
     return result;
@@ -200,9 +207,13 @@ const GF_LEVEL *GF_GetLevelAfter(const GF_LEVEL *const level)
         GF_GetLevelTableType(level->type);
     const GF_LEVEL_TABLE *const level_table =
         GF_GetLevelTable(level_table_type);
-    return level->num + 1 < level_table->count
-        ? &level_table->levels[level->num + 1]
-        : nullptr;
+    for (int32_t i = level->num + 1; i < level_table->count; i++) {
+        const GF_LEVEL *const next_level = &level_table->levels[i];
+        if (!M_SkipLevel(next_level)) {
+            return next_level;
+        }
+    }
+    return nullptr;
 }
 
 const GF_LEVEL *GF_GetLevelBefore(const GF_LEVEL *const level)
@@ -211,7 +222,13 @@ const GF_LEVEL *GF_GetLevelBefore(const GF_LEVEL *const level)
         GF_GetLevelTableType(level->type);
     const GF_LEVEL_TABLE *const level_table =
         GF_GetLevelTable(level_table_type);
-    return level->num - 1 >= 0 ? &level_table->levels[level->num - 1] : nullptr;
+    for (int32_t i = level->num - 1; i >= 0; i--) {
+        const GF_LEVEL *const prev_level = &level_table->levels[i];
+        if (!M_SkipLevel(prev_level)) {
+            return prev_level;
+        }
+    }
+    return nullptr;
 }
 
 void GF_SetCurrentLevel(const GF_LEVEL *const level)
