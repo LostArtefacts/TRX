@@ -6,6 +6,8 @@
 #include "log.h"
 #include "utils.h"
 
+#include <math.h>
+
 #if TR_VERSION > 1
 typedef enum {
     RPM_ALL = 0,

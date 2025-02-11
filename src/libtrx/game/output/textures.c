@@ -6,6 +6,8 @@
 #include "game/shell.h"
 #include "utils.h"
 
+#include <string.h>
+
 static int32_t m_TexturePageCount = 0;
 static uint8_t *m_TexturePages8 = nullptr;
 static RGBA_8888 *m_TexturePages32 = nullptr;

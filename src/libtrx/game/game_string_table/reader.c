@@ -7,6 +7,8 @@
 #include "log.h"
 #include "memory.h"
 
+#include <string.h>
+
 static void M_LoadTableFromJSON(JSON_OBJECT *root_obj, GS_TABLE *out_table);
 static void M_LoadLevelsFromJSON(
     JSON_OBJECT *obj, GS_FILE *gs_file, const char *key,

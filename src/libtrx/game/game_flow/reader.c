@@ -12,6 +12,8 @@
 #include "log.h"
 #include "memory.h"
 
+#include <string.h>
+
 #define DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(name)                              \
     int32_t name(                                                              \
         JSON_OBJECT *event_obj, GF_SEQUENCE_EVENT *event, void *extra_data,    \

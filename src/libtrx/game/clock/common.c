@@ -7,6 +7,7 @@
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <time.h>
 
 static Uint64 m_LastCounter = 0;

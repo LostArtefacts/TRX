@@ -9,6 +9,7 @@
 #endif
 
 #include <libavcodec/version.h>
+#include <stdio.h>
 
 static bool m_IsExiting = false;
 

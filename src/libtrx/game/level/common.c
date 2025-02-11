@@ -21,6 +21,8 @@
 #include "utils.h"
 #include "vector.h"
 
+#include <string.h>
+
 static int16_t *m_AnimCommands = nullptr;
 
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);

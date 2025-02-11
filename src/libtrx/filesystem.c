@@ -8,6 +8,8 @@
 
 #include <SDL2/SDL_filesystem.h>
 #include <dirent.h>
+#include <stdio.h>
+#include <string.h>
 
 #if defined(_WIN32)
     #include <direct.h>
