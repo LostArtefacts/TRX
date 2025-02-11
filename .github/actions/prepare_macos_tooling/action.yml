@@ -78,8 +78,8 @@ runs:
         # Install to separate staging paths for all architectures in
         # preparation for fusing universal libraries in a follow-up step.
         cd "$RUNNER_TEMP"
-        git clone --depth 1 --branch "n7.1" https://github.com/FFmpeg/FFmpeg
-        cd FFmpeg
+        git clone --depth 1 --branch "n7.1" https://github.com/FFmpeg/FFmpeg ffmpeg-arm64
+        cd ffmpeg-arm64
 
         # Common FFmpeg configure options
         FFMPEG_CONFIG_OPTIONS=" \
@@ -98,9 +98,9 @@ runs:
         make -j$(sysctl -n hw.ncpu)
         sudo make install
 
-        # Reset build directory.
-        make clean
-
+        cd "$RUNNER_TEMP"
+        git clone --depth 1 --branch "n7.1" https://github.com/FFmpeg/FFmpeg ffmpeg-x86-64
+        cd ffmpeg-x86-64
         # Configure for x86-64.
         ./configure \
           --arch=x86_64 \
