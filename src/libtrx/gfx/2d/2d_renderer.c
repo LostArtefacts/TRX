@@ -2,12 +2,12 @@
 
 #include "debug.h"
 #include "gfx/context.h"
-#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
 #include "memory.h"
 #include "utils.h"
 
+#include <GL/glew.h>
 #include <string.h>
 
 typedef enum {

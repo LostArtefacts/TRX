@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../../log.h"
-#include "../gl/gl_core_3_3.h"
+
+#include <GL/glew.h>
 
 #define GFX_GL_CheckError()                                                    \
     {                                                                          \

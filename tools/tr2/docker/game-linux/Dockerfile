@@ -99,6 +99,28 @@ RUN cd SDL \
 
 
 
+# GLEW
+FROM base AS glew
+RUN git clone https://github.com/nigels-com/glew.git
+RUN apt-get install -y \
+    build-essential \
+    libxmu-dev \
+    libxi-dev \
+    libgl-dev \
+    python3
+RUN cd glew/auto \
+    && PYTHON=python3 make
+RUN mkdir -p /ext/lib \
+    && export \
+        GLEW_NO_GLU=-DGLEW_NO_GLU \
+        GLEW_DEST=/ext \
+    && cd glew \
+    && make \
+    && make install
+RUN sed -i "s/Cflags: .*/\\0 -DGLEW_STATIC /" /ext/lib/pkgconfig/glew.pc
+
+
+
 # TR2X
 FROM base
 
@@ -134,6 +156,7 @@ COPY --from=libav /ext/ /ext/
 COPY --from=sdl /ext/ /ext/
 COPY --from=backtrace /ext/ /ext/
 COPY --from=pcre2 /ext/ /ext/
+COPY --from=glew /ext/ /ext/
 
 ENV PYTHONPATH=/app/tools/
 ENTRYPOINT ["/app/tools/tr2/docker/game-linux/entrypoint.sh"]

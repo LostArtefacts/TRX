@@ -27,6 +27,7 @@ build_opts = [
   '-Wno-gnu-empty-initializer',
   '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
+  '-DGLEW_NO_GLU',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   # end of common options

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../engine/image.h"
-#include "../gl/gl_core_3_3.h"
 
+#include <GL/glew.h>
 #include <stdint.h>
 
 typedef struct {

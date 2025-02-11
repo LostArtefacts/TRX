@@ -2,9 +2,10 @@
 
 #include "debug.h"
 #include "gfx/context.h"
-#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "memory.h"
+
+#include <GL/glew.h>
 
 struct GFX_FADE_RENDERER {
     GFX_GL_VERTEX_ARRAY surface_format;

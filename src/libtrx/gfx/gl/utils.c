@@ -1,6 +1,6 @@
 #include "gfx/gl/utils.h"
 
-#include "gfx/gl/gl_core_3_3.h"
+#include <GL/glew.h>
 
 const char *GFX_GL_GetErrorString(GLenum err)
 {

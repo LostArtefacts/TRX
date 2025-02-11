@@ -2,11 +2,12 @@
 
 #include "../common.h"
 #include "../config.h"
-#include "../gl/gl_core_3_3.h"
 #include "../gl/program.h"
 #include "../gl/sampler.h"
 #include "../gl/texture.h"
 #include "vertex_stream.h"
+
+#include <GL/glew.h>
 
 #define GFX_MAX_TEXTURES 128
 #define GFX_NO_TEXTURE (-1)

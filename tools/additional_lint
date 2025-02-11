@@ -9,7 +9,7 @@ from shared.files import find_versioned_files, is_binary_file
 from shared.linting import LintContext, lint_repo, lint_bulk_files, lint_file
 from shared.paths import REPO_DIR
 
-IGNORED_PATTERNS = ["*.patch", "*.bin", "gl_core_3_3.h"]
+IGNORED_PATTERNS = ["*.patch", "*.bin"]
 
 
 def parse_args() -> argparse.Namespace:

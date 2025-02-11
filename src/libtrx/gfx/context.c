@@ -1,7 +1,6 @@
 #include "gfx/context.h"
 
 #include "game/shell.h"
-#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "gfx/renderers/fbo_renderer.h"
 #include "gfx/renderers/legacy_renderer.h"
@@ -9,6 +8,7 @@
 #include "log.h"
 #include "memory.h"
 
+#include <GL/glew.h>
 #include <SDL2/SDL_video.h>
 #include <string.h>
 
@@ -130,6 +130,16 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
     if (SDL_GL_MakeCurrent(m_Context.window_handle, m_Context.context)) {
         Shell_ExitSystemFmt(
             "Can't activate OpenGL context: %s", SDL_GetError());
+    }
+
+    // Instruct GLEW to load non-Core Profile extensions with OpenGL 2.1,
+    // as we rely on `GL_ARB_explicit_attrib_location` and
+    // `GL_EXT_gpu_shader4`.
+    if (m_Context.config.backend == GFX_GL_21) {
+        glewExperimental = GL_TRUE; // Global state
+    }
+    if (glewInit() != GLEW_OK) {
+        Shell_ExitSystem("Can't initialize GLEW for OpenGL extension loading");
     }
 
     LOG_INFO("OpenGL vendor string:   %s", glGetString(GL_VENDOR));

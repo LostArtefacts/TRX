@@ -23,6 +23,7 @@ build_opts = [
   '-Wno-gnu-empty-initializer',
   '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
+  '-DGLEW_NO_GLU',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   # end of common options
@@ -46,6 +47,7 @@ dep_avcodec = dependency('libavcodec', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
 dep_avutil = dependency('libavutil', static: staticdeps)
 dep_sdl2 = dependency('SDL2', static: staticdeps)
+dep_glew = dependency('glew', static: staticdeps)
 dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
 dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
 dep_swscale = dependency('libswscale', static: staticdeps)
@@ -183,7 +185,6 @@ sources = [
   'gfx/context.c',
   'gfx/fade/fade_renderer.c',
   'gfx/gl/buffer.c',
-  'gfx/gl/gl_core_3_3.c',
   'gfx/gl/program.c',
   'gfx/gl/sampler.c',
   'gfx/gl/texture.c',
@@ -211,6 +212,7 @@ dependencies = [
   dep_avformat,
   dep_avutil,
   dep_sdl2,
+  dep_glew,
   dep_pcre2,
   dep_backtrace,
   dep_swresample,

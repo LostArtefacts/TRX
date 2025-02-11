@@ -35,6 +35,7 @@ RUN cd pcre2 \
     && make install
 
 
+
 # zlib
 FROM mingw AS zlib
 RUN git clone https://github.com/madler/zlib --branch=v1.3.1
@@ -46,6 +47,7 @@ RUN cd zlib \
         LIBRARY_PATH=/ext/lib \
         PREFIX=i686-w64-mingw32- \
         -j 4 install
+
 
 
 # libav
@@ -127,18 +129,35 @@ RUN cp -rL uthash-2.3.0/* /ext/
 
 
 
+# GLEW
+FROM mingw as glew
+RUN git clone https://github.com/nigels-com/glew.git
+RUN apt-get install -y \
+    build-essential \
+    libxmu-dev \
+    libxi-dev \
+    libgl-dev \
+    python3
+RUN cd glew/auto \
+    && PYTHON=python3 make
+RUN mkdir -p /ext/lib \
+    && export \
+        SYSTEM=linux-mingw32 \
+        GLEW_NO_GLU=-DGLEW_NO_GLU \
+        GLEW_DEST=/ext \
+    && cd glew \
+    && make \
+    && make install
+RUN sed -i "s/Cflags: .*/\\0 -DGLEW_STATIC/" /ext/lib/pkgconfig/glew.pc
+
+
+
 # TR1X
 FROM mingw
 
 # set the build dir - actual files are mounted with a Docker volume
 RUN mkdir /app
 WORKDIR /app
-
-COPY --from=pcre2 /ext/ /ext/
-COPY --from=zlib /ext/ /ext/
-COPY --from=libav /ext/ /ext/
-COPY --from=sdl /ext/ /ext/
-COPY --from=uthash /ext/ /ext/
 
 # system dependencies
 # configure pkgconfig manually
@@ -152,6 +171,13 @@ RUN apt-get install -y \
         pyjson5 \
         meson \
         ninja
+
+COPY --from=pcre2 /ext/ /ext/
+COPY --from=zlib /ext/ /ext/
+COPY --from=libav /ext/ /ext/
+COPY --from=sdl /ext/ /ext/
+COPY --from=uthash /ext/ /ext/
+COPY --from=glew /ext/ /ext/
 
 ENV PKG_CONFIG_LIBDIR=/ext/lib/
 ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/

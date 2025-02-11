@@ -27,6 +27,7 @@ build_opts = [
   '-Wno-gnu-empty-initializer',
   '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
+  '-DGLEW_NO_GLU',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   # end of common options
@@ -51,6 +52,7 @@ dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : fa
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
 dep_sdl2 = dependency('SDL2', static: staticdeps)
+dep_glew = dependency('glew', static: staticdeps)
 dep_zlib = null_dep
 
 if not staticdeps
@@ -279,6 +281,7 @@ dependencies = [
   dep_avutil,
   dep_mathlibrary,
   dep_sdl2,
+  dep_glew,
   dep_swresample,
   dep_swscale,
   dep_zlib,

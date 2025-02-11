@@ -4,7 +4,6 @@
 #include "gfx/common.h"
 #include "gfx/context.h"
 #include "gfx/gl/buffer.h"
-#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/program.h"
 #include "gfx/gl/sampler.h"
 #include "gfx/gl/texture.h"
@@ -14,6 +13,7 @@
 #include "log.h"
 #include "memory.h"
 
+#include <GL/glew.h>
 #include <SDL2/SDL_video.h>
 #include <stdint.h>
 

@@ -1,9 +1,10 @@
 #include "gfx/3d/vertex_stream.h"
 
-#include "gfx/gl/gl_core_3_3.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
 #include "memory.h"
+
+#include <GL/glew.h>
 
 #define M_PREALLOC_VERTEX_COUNT 8000
 

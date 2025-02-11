@@ -61,6 +61,11 @@ runs:
       shell: bash
       run: sudo port -N install pcre2 +universal
 
+    - name: "Build dependency: GLEW (universal)"
+      if: steps.restore-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: sudo port -N install glew +universal
+
     - name: "Build dependency: libsdl2 (universal)"
       if: steps.restore-cache.outputs.cache-hit != 'true'
       shell: bash

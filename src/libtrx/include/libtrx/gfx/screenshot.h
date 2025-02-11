@@ -1,7 +1,6 @@
 #pragma once
 
-#include "gl/gl_core_3_3.h"
-
+#include <GL/glew.h>
 #include <stdint.h>
 
 bool GFX_Screenshot_CaptureToFile(const char *path);
