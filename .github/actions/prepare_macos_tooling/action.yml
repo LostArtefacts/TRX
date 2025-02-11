@@ -34,11 +34,11 @@ runs:
       shell: bash
       run: |
         # Install Python first to avoid multiple Python in the dep tree later on.
-        sudo port -N install python312 py312-pip
-        sudo port select --set python python312
-        sudo port select --set python3 python312
-        sudo port select --set pip pip312
-        sudo port select --set pip3 pip312
+        sudo port -N install python313 py313-pip
+        sudo port select --set python python313
+        sudo port select --set python3 python313
+        sudo port select --set pip pip313
+        sudo port select --set pip3 pip313
 
         # Install Clang to get better C23 support.
         sudo port -N install clang-16
