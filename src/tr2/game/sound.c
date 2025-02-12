@@ -13,6 +13,8 @@
 
 #include <math.h>
 
+#define MAX_VOLUME 0x8000
+
 typedef enum {
     SOUND_MODE_NORMAL = 0,
     SOUND_MODE_WAIT = 1,
@@ -172,7 +174,7 @@ bool Sound_Effect(
     }
 
     SAMPLE_INFO *const info = Sound_GetSampleInfo(sample_id);
-    if (info == nullptr) {
+    if (info == nullptr || info->number < 0) {
         return false;
     }
 
@@ -222,10 +224,6 @@ bool Sound_Effect(
             - SOUND_MAX_PITCH_CHANGE;
     }
 
-    if (info->number < 0) {
-        return false;
-    }
-
     const SOUND_MODE mode = info->flags & SOUND_MODE_MASK;
     const int32_t num_samples = (info->flags >> 2) & 0xF;
     const int32_t track_id = num_samples == 1
@@ -240,7 +238,7 @@ bool Sound_Effect(
         for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
             SOUND_SLOT *const slot = &m_SoundSlots[i];
             if (slot->effect_num == sample_id) {
-                if (Audio_Sample_IsPlaying(i)) {
+                if (Audio_Sample_IsPlaying(slot->handle)) {
                     return true;
                 }
                 M_ClearSlot(slot);
@@ -273,32 +271,6 @@ bool Sound_Effect(
         break;
     }
 
-    const bool is_looped = mode == SOUND_MODE_LOOPED;
-    int32_t handle = M_Play(track_id, volume, pitch, pan, is_looped);
-
-    if (handle == AUDIO_NO_SOUND) {
-        int32_t min_volume = 0x8000;
-        int32_t min_slot = -1;
-        for (int32_t i = 1; i < SOUND_MAX_SLOTS; i++) {
-            SOUND_SLOT *const slot = &m_SoundSlots[i];
-            if (slot->effect_num >= 0 && slot->volume < min_volume) {
-                min_volume = slot->volume;
-                min_slot = i;
-            }
-        }
-
-        if (min_slot >= 0 && volume >= min_volume) {
-            SOUND_SLOT *const slot = &m_SoundSlots[min_slot];
-            M_CloseSlot(slot);
-            handle = M_Play(track_id, volume, pitch, pan, is_looped);
-        }
-    }
-
-    if (handle == AUDIO_NO_SOUND) {
-        info->number = -1;
-        return false;
-    }
-
     int32_t free_slot = -1;
     for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
         SOUND_SLOT *const slot = &m_SoundSlots[i];
@@ -308,14 +280,36 @@ bool Sound_Effect(
         }
     }
 
-    if (free_slot != -1) {
-        SOUND_SLOT *const slot = &m_SoundSlots[free_slot];
+    if (free_slot == -1) {
+        // No slot found - try to find the most silent track, and use this one
+        int32_t min_volume = MAX_VOLUME;
+        for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {
+            SOUND_SLOT *const slot = &m_SoundSlots[i];
+            if (slot->effect_num >= 0 && slot->volume < min_volume) {
+                min_volume = slot->volume;
+                free_slot = i;
+            }
+        }
+
+        if (free_slot == -1) {
+            // No slot found - give up
+            return false;
+        }
+    }
+
+    SOUND_SLOT *const slot = &m_SoundSlots[free_slot];
+    M_CloseSlot(slot);
+
+    const bool is_looped = mode == SOUND_MODE_LOOPED;
+    const int32_t handle = M_Play(track_id, volume, pitch, pan, is_looped);
+    if (handle != AUDIO_NO_SOUND) {
         slot->volume = volume;
         slot->pan = pan;
         slot->pitch = pitch;
         slot->effect_num = sample_id;
         slot->handle = handle;
     }
+
     return true;
 }
 
