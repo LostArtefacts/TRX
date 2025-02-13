@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.1...develop) - ××××-××-××
+- improved memory usage by shedding ca. 100-110 MB on average
 
 ## [4.8.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.8...tr1-4.8.1) - 2025-02-14
 - fixed loading non-Caves saves triggering a new save prompt when save crystals are enabled (#2498, regression from 4.8)

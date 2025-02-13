@@ -2,12 +2,13 @@
 
 #include <stddef.h>
 
-// Internal game memory manager. It allocates its internal buffer once per
-// level launch. All subsequent "allocation" requests operate with pointer
-// arithmetic. This makes it fast and convenient to request more memory as we
-// go, but it makes freeing memory really inconvenient which is why it is
-// intentionally not implemented. To use more dynamic memory management, use
-// Memory_Alloc / Memory_Free.
+// Internal game memory manager using an arena allocator. Memory is allocated
+// in discrete chunks, with each allocation request served via pointer
+// arithmetic within the active chunk. When a request exceeds the current
+// chunk's capacity, a new chunk is allocated to continue servicing
+// allocations. This design offers very fast allocation speeds, but individual
+// blocks cannot be freed – only the entire arena can be reset when needed. For
+// more granular memory management, use Memory_Alloc / Memory_Free.
 
 typedef enum {
     // clang-format off
@@ -51,7 +52,7 @@ typedef enum {
     // clang-format on
 } GAME_BUFFER;
 
-void GameBuf_Init(size_t cap);
+void GameBuf_Init(void);
 void GameBuf_Shutdown(void);
 void GameBuf_Reset(void);
 

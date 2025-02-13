@@ -33,8 +33,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define GAMEBUF_MEM_CAP 0x8000000
-
 static Uint64 m_UpdateDebounce = 0;
 static const char *m_CurrentGameFlowPath = "cfg/TR2X_gameflow.json5";
 static const char *m_CurrentGameStringsPath = "cfg/TR2X_strings.json5";
@@ -359,7 +357,7 @@ void Shell_Main(void)
     Savegame_InitCurrentInfo();
     S_FrontEndCheck();
 
-    GameBuf_Init(GAMEBUF_MEM_CAP);
+    GameBuf_Init();
 
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
     bool loop_continue = !Shell_IsExiting();

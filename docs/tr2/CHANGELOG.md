@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.9...develop) - ××××-××-××
+- improved memory usage by shedding ca. 100-110 MB on average
 
 ## [0.9](https://github.com/LostArtefacts/TRX/compare/tr2-0.8...tr2-0.9) - 2025-02-14
 - added Linux builds and toolchain (#1598)

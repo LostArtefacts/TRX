@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define GAMEBUF_MEM_CAP 0x8000000
 #define TIMESTAMP_SIZE 20
 
 typedef enum {
@@ -133,7 +132,7 @@ void Shell_Init(
     Savegame_Init();
     Savegame_ScanSavedGames();
     Savegame_HighlightNewestSlot();
-    GameBuf_Init(GAMEBUF_MEM_CAP);
+    GameBuf_Init();
     Console_Init();
 }
 
