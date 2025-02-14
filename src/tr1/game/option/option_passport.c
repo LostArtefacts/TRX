@@ -32,6 +32,7 @@ typedef enum {
 } PASSPORT_TEXT;
 
 typedef enum {
+    PAGE_UNDETERMINED = -1,
     PAGE_1 = 0,
     PAGE_2 = 1,
     PAGE_3 = 2,
@@ -46,9 +47,11 @@ typedef struct {
 static struct {
     PASSPORT_MODE mode;
     M_PAGE pages[PAGE_COUNT];
-    M_PAGE_NUMBER page;
+    M_PAGE_NUMBER current_page;
+    M_PAGE_NUMBER active_page;
 } m_State = {
-    .page = PAGE_1,
+    .current_page = PAGE_1,
+    .active_page = -1,
     .mode = PASSPORT_MODE_BROWSE,
     .pages = {
         { .role = PASSPORT_MODE_UNAVAILABLE, .available = false },
@@ -110,7 +113,7 @@ REQUEST_INFO g_SavegameRequester = {
 
 static void M_InitRequesters(void);
 static void M_InitText(void);
-static void M_ShutdownText(void);
+static void M_RemoveAllText(void);
 static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_ChangePageTextContent(const char *text);
 static void M_SetPage(int32_t page, PASSPORT_MODE role, bool available);
@@ -162,25 +165,24 @@ static void M_InitText(void)
     }
 }
 
-static void M_ShutdownText(void)
+static void M_RemoveAllText(void)
 {
     for (int i = 0; i < TEXT_NUMBER_OF; i++) {
         Text_Remove(m_Text[i]);
         m_Text[i] = nullptr;
     }
-    m_IsTextInit = false;
 }
 
 static void M_Close(INVENTORY_ITEM *inv_item)
 {
-    if (m_State.page == PAGE_3) {
+    M_RemoveAllText();
+    if (m_State.current_page == PAGE_3) {
         inv_item->anim_direction = 1;
         inv_item->goal_frame = inv_item->frames_total - 1;
     } else {
         inv_item->anim_direction = -1;
         inv_item->goal_frame = 0;
     }
-    M_ShutdownText();
 }
 
 static void M_ChangePageTextContent(const char *const content)
@@ -276,6 +278,14 @@ static void M_DeterminePages(void)
         M_SetPage(PAGE_2, PASSPORT_MODE_NEW_GAME, true);
         M_SetPage(PAGE_3, PASSPORT_MODE_EXIT_TITLE, true);
         break;
+    }
+
+    // select first available page
+    for (int32_t i = 0; i < 3; i++) {
+        if (m_State.pages[i].available) {
+            m_State.active_page = i;
+            break;
+        }
     }
 }
 
@@ -419,7 +429,7 @@ static void M_LoadGame(void)
 
     if (m_State.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
-            M_InitSaveRequester(m_State.page);
+            M_InitSaveRequester(m_State.active_page);
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
             m_State.mode = PASSPORT_MODE_LOAD_GAME;
@@ -473,7 +483,7 @@ static void M_SelectLevel(void)
     if (g_InputDB.menu_left) {
         Text_Hide(m_Text[TEXT_LEVEL_ARROW_LEFT], true);
         Requester_ClearTextstrings(&m_SelectLevelRequester);
-        M_InitSaveRequester(m_State.page);
+        M_InitSaveRequester(m_State.active_page);
         m_State.mode = PASSPORT_MODE_LOAD_GAME;
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
@@ -507,7 +517,7 @@ static void M_SaveGame(void)
 
     if (m_State.mode == PASSPORT_MODE_BROWSE) {
         if (g_InputDB.menu_confirm) {
-            M_InitSaveRequester(m_State.page);
+            M_InitSaveRequester(m_State.active_page);
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
             m_State.mode = PASSPORT_MODE_SAVE_GAME;
@@ -589,39 +599,21 @@ static void M_Restart(INVENTORY_ITEM *inv_item)
 
 static void M_FlipRight(INVENTORY_ITEM *inv_item)
 {
-    g_Input = (INPUT_STATE) {};
-    g_InputDB = (INPUT_STATE) {};
-
-    while (m_State.page < PAGE_3) {
-        m_State.page++;
-        if (m_State.pages[m_State.page].available) {
-            inv_item->anim_direction = 1;
-            inv_item->goal_frame = inv_item->open_frame + 5 * m_State.page;
-            Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
-            break;
-        }
-    }
+    inv_item->anim_direction = 1;
+    inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
+    Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
 }
 
 static void M_FlipLeft(INVENTORY_ITEM *inv_item)
 {
-    g_Input = (INPUT_STATE) {};
-    g_InputDB = (INPUT_STATE) {};
-
-    while (m_State.page > PAGE_1) {
-        m_State.page--;
-        if (m_State.pages[m_State.page].available) {
-            inv_item->anim_direction = -1;
-            inv_item->goal_frame = inv_item->open_frame + 5 * m_State.page;
-            Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
-            break;
-        }
-    }
+    inv_item->anim_direction = -1;
+    inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
+    Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
 }
 
 void Option_Passport_Control(INVENTORY_ITEM *inv_item)
 {
-    if (!m_IsTextInit) {
+    if (m_State.active_page == -1) {
         M_InitRequesters();
         InvRing_RemoveAllText();
         M_InitText();
@@ -629,22 +621,20 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
         M_DeterminePages();
     }
 
-    m_State.page = (inv_item->goal_frame - inv_item->open_frame) / 5;
-    if (!m_State.pages[m_State.page].available) {
-        M_FlipRight(inv_item);
-        return;
-    }
+    const int32_t frame = inv_item->goal_frame - inv_item->open_frame;
+    const int32_t page = frame;
+    m_State.current_page = frame / 5;
 
     if (m_State.mode == PASSPORT_MODE_BROWSE) {
-        if (m_State.page > PAGE_1
-            && m_State.pages[m_State.page - 1].available) {
+        if (m_State.active_page > PAGE_1
+            && m_State.pages[m_State.active_page - 1].available) {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
         } else {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
         }
 
-        if (m_State.page < PAGE_3
-            && m_State.pages[m_State.page + 1].available) {
+        if (m_State.active_page < PAGE_3
+            && m_State.pages[m_State.active_page + 1].available) {
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
         } else {
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
@@ -654,7 +644,7 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
         Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
     }
 
-    switch (m_State.pages[m_State.page].role) {
+    switch (m_State.pages[m_State.active_page].role) {
     case PASSPORT_MODE_LOAD_GAME:
         M_LoadGame();
         break;
@@ -693,12 +683,26 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
         break;
     }
 
-    if (g_InputDB.menu_right || !m_State.pages[m_State.page].available) {
+    if (m_State.current_page < m_State.active_page) {
         M_FlipRight(inv_item);
+    } else if (m_State.current_page > m_State.active_page) {
+        M_FlipLeft(inv_item);
     }
 
     if (g_InputDB.menu_left) {
-        M_FlipLeft(inv_item);
+        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
+    } else if (g_InputDB.menu_right) {
+        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
     }
 
     if (g_InputDB.menu_back) {
@@ -707,17 +711,20 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
             g_InputDB = (INPUT_STATE) {};
         } else {
             M_Close(inv_item);
+            m_State.active_page = -1;
         }
     }
 
     if (g_InputDB.menu_confirm) {
         M_Close(inv_item);
+        m_State.active_page = -1;
     }
 }
 
 void Option_Passport_Shutdown(void)
 {
-    M_ShutdownText();
+    M_RemoveAllText();
+    m_State.active_page = -1;
     Requester_Shutdown(&m_SelectLevelRequester);
     Requester_Shutdown(&m_NewGameRequester);
     Requester_ClearTextstrings(&g_SavegameRequester);
