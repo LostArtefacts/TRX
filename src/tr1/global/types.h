@@ -118,13 +118,6 @@ typedef enum {
 } GAME_BONUS_FLAG;
 
 typedef enum {
-    PAGE_1 = 0,
-    PAGE_2 = 1,
-    PAGE_3 = 2,
-    PAGE_COUNT = 3,
-} PASSPORT_PAGE;
-
-typedef enum {
     PASSPORT_MODE_BROWSE = 0,
     PASSPORT_MODE_LOAD_GAME = 1,
     PASSPORT_MODE_SELECT_LEVEL = 2,
