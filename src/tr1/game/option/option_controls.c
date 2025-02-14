@@ -621,8 +621,12 @@ static void M_CheckUnbindKey(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 }
 
 CONTROL_MODE Option_Controls_Control(
-    INVENTORY_ITEM *inv_item, INPUT_BACKEND backend)
+    INVENTORY_ITEM *inv_item, const bool is_busy, INPUT_BACKEND backend)
 {
+    if (is_busy) {
+        return CM_PICK;
+    }
+
     INPUT_LAYOUT layout = INPUT_LAYOUT_DEFAULT;
     if (backend == INPUT_BACKEND_KEYBOARD) {
         layout = g_Config.input.keyboard_layout;

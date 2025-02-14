@@ -618,9 +618,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
         }
 
-        if (!busy) {
-            Option_Control(inv_item);
+        Option_Control(inv_item, busy);
 
+        if (!busy) {
             if (g_InputDB.menu_back) {
                 inv_item->sprite_list = nullptr;
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);

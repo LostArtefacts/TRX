@@ -11,6 +11,6 @@ typedef enum {
 } CONTROL_MODE;
 
 CONTROL_MODE Option_Controls_Control(
-    INVENTORY_ITEM *inv_item, INPUT_BACKEND backend);
+    INVENTORY_ITEM *inv_item, bool is_busy, INPUT_BACKEND backend);
 void Option_Controls_Draw(INVENTORY_ITEM *inv_item, INPUT_BACKEND backend);
 void Option_Control_Shutdown(void);

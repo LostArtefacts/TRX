@@ -76,6 +76,10 @@
       "Title": "Passi laterali migliorati",
       "Description": "Abilita i controlli dei passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare."
     },
+    "enable_responsive_passport": {
+      "Title": "Abilita un passaporto più reattivo",
+      "Description": "Disabilita il blocco dell'input utente quando il passaporto sfoglia le pagine, programmando invece i cambi di pagina."
+    },
     "enable_enhanced_look": {
       "Title": "Muovi la visuale mentre corri",
       "Description": "Permette a Lara di guardarsi intorno mentre corre, salta, si appende, ecc. - in stile TR2."

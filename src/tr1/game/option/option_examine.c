@@ -28,8 +28,12 @@ bool Option_Examine_IsActive(void)
     return m_PaginatorUI != nullptr;
 }
 
-void Option_Examine_Control(const GAME_OBJECT_ID obj_id)
+void Option_Examine_Control(const GAME_OBJECT_ID obj_id, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     if (m_PaginatorUI == nullptr) {
         m_PaginatorUI = UI_Paginator_Create(
             Object_GetName(obj_id), Object_GetDescription(obj_id), MAX_LINES);

@@ -26,6 +26,11 @@
           "Field": "enable_tr3_sidesteps",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "enable_responsive_passport",
+          "DataType": "Bool",
+          "DefaultValue": true
         }
       ]
     },

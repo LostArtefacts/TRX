@@ -31,8 +31,12 @@ static void M_Shutdown(void)
     }
 }
 
-void Option_Compass_Control(INVENTORY_ITEM *const item)
+void Option_Compass_Control(INVENTORY_ITEM *const item, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     char buffer[32];
     const int32_t sec = g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
     sprintf(buffer, "%02d:%02d:%02d", sec / 3600, sec / 60 % 60, sec % 60);

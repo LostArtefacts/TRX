@@ -75,6 +75,11 @@
           "DefaultValue": true
         },
         {
+          "Field": "enable_responsive_passport",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "enable_enhanced_look",
           "DataType": "Bool",
           "DefaultValue": true

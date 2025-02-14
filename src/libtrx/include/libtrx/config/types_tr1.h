@@ -71,6 +71,7 @@ typedef struct {
         int32_t controller_layout;
         bool enable_numeric_keys;
         bool enable_tr3_sidesteps;
+        bool enable_responsive_passport;
         bool enable_buffering;
     } input;
 

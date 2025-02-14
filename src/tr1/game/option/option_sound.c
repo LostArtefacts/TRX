@@ -62,8 +62,12 @@ static void M_InitText(void)
     }
 }
 
-void Option_Sound_Control(INVENTORY_ITEM *inv_item)
+void Option_Sound_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     char buf[20];
 
     if (!m_Text[TEXT_MUSIC_VOLUME]) {

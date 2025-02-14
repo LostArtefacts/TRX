@@ -76,6 +76,10 @@
       "Title": "Pas de côtés améliorés",
       "Description": "Permet d'activer les pas de côtés par combinaison de touche, disponible que à partir de TR3. (Shift + touches directionelle). Les touches par défaut fonctionnent toujours."
     },
+    "enable_responsive_passport": {
+      "Title": "Activer un passeport plus réactif",
+      "Description": "Désactive le blocage de l'entrée utilisateur lorsque le passeport tourne les pages, planifiant les tournements de page à la place."
+    },
     "enable_enhanced_look": {
       "Title": "Observer en mouvement",
       "Description": "Permet à Lara de regarder autour d'elle, lorsqu'elle court, saute, se suspend, etc. - Similaire à TR2."

@@ -131,6 +131,8 @@ static void M_NewGame(void);
 static void M_Restart(INVENTORY_ITEM *inv_item);
 static void M_FlipRight(INVENTORY_ITEM *inv_item);
 static void M_FlipLeft(INVENTORY_ITEM *inv_item);
+static void M_ShowPage(INVENTORY_ITEM *inv_item);
+static void M_HandleFlipInputs(void);
 
 void M_InitRequesters(void)
 {
@@ -656,7 +658,26 @@ static void M_ShowPage(INVENTORY_ITEM *const inv_item)
     }
 }
 
-void Option_Passport_Control(INVENTORY_ITEM *inv_item)
+static void M_HandleFlipInputs(void)
+{
+    if (g_InputDB.menu_left) {
+        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
+    } else if (g_InputDB.menu_right) {
+        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
+    }
+}
+
+void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 {
     if (m_State.active_page == -1) {
         M_InitRequesters();
@@ -664,6 +685,13 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
         M_InitText();
         m_IsTextInit = true;
         M_DeterminePages();
+    }
+
+    if (!is_busy || g_Config.input.enable_responsive_passport) {
+        M_HandleFlipInputs();
+    }
+    if (is_busy) {
+        return;
     }
 
     const int32_t frame = inv_item->goal_frame - inv_item->open_frame;
@@ -708,20 +736,6 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
     } else if (g_InputDB.menu_confirm) {
         M_Close(inv_item);
         m_State.active_page = -1;
-    } else if (g_InputDB.menu_left) {
-        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
-            if (m_State.pages[page].available) {
-                m_State.active_page = page;
-                break;
-            }
-        }
-    } else if (g_InputDB.menu_right) {
-        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
-            if (m_State.pages[page].available) {
-                m_State.active_page = page;
-                break;
-            }
-        }
     }
 }
 

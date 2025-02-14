@@ -58,8 +58,12 @@ void Option_Sound_Shutdown(void)
     M_ShutdownText();
 }
 
-void Option_Sound_Control(INVENTORY_ITEM *const item)
+void Option_Sound_Control(INVENTORY_ITEM *const item, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     char text[32];
 
     if (m_SoundText[0] == nullptr) {

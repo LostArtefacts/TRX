@@ -11,6 +11,7 @@
 #include "game/text.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 
 typedef enum {
@@ -43,6 +44,7 @@ static void M_FlipLeft(INVENTORY_ITEM *inv_item);
 static void M_FlipRight(INVENTORY_ITEM *inv_item);
 static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_ShowPage(const INVENTORY_ITEM *inv_item);
+static void M_HandleFlipInputs(void);
 
 static void M_SetPage(
     const int32_t page, const M_PAGE_ROLE role, const bool available)
@@ -147,7 +149,7 @@ static void M_FlipLeft(INVENTORY_ITEM *const inv_item)
 {
     M_RemoveAllText();
     inv_item->anim_direction = -1;
-    inv_item->goal_frame -= 5;
+    inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
 }
 
@@ -155,7 +157,7 @@ static void M_FlipRight(INVENTORY_ITEM *const inv_item)
 {
     M_RemoveAllText();
     inv_item->anim_direction = 1;
-    inv_item->goal_frame += 5;
+    inv_item->goal_frame = inv_item->open_frame + 5 * m_State.active_page;
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
 }
 
@@ -255,18 +257,43 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
     }
 }
 
-void Option_Passport_Control(INVENTORY_ITEM *const item)
+static void M_HandleFlipInputs(void)
 {
-    InvRing_RemoveAllText();
+    if (g_InputDB.menu_left) {
+        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
+    } else if (g_InputDB.menu_right) {
+        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
+    }
+}
 
+void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
+{
     if (m_State.active_page == -1) {
         M_DeterminePages();
     }
 
+    if (!is_busy || g_Config.input.enable_responsive_passport) {
+        M_HandleFlipInputs();
+    }
+    if (is_busy) {
+        return;
+    }
+
+    InvRing_RemoveAllText();
+
     const int32_t frame = item->goal_frame - item->open_frame;
     const int32_t page = frame % 5 == 0 ? frame / 5 : -1;
     const bool is_flipping = page == -1;
-
     if (is_flipping) {
         return;
     }
@@ -291,20 +318,6 @@ void Option_Passport_Control(INVENTORY_ITEM *const item)
         } else {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
-        }
-    } else if (g_InputDB.menu_left) {
-        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
-            if (m_State.pages[page].available) {
-                m_State.active_page = page;
-                break;
-            }
-        }
-    } else if (g_InputDB.menu_right) {
-        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
-            if (m_State.pages[page].available) {
-                m_State.active_page = page;
-                break;
-            }
         }
     }
 }

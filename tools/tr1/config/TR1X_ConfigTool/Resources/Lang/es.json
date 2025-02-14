@@ -320,6 +320,10 @@
       "Title": "Pasos laterales mejorados",
       "Description": "Habilita los pasos laterales al estilo TR3+, por ejemplo, shift + flechas direccionales. Los botones dedicados de pasos laterales seguirán funcionando."
     },
+    "enable_responsive_passport": {
+      "Title": "Habilitar un pasaporte más responsivo",
+      "Description": "Desactiva el bloqueo de la entrada del usuario cuando el pasaporte pasa páginas, programando los giros de página."
+    },
     "enemy_healthbar_color": {
       "Title": "Color de la barra de salud del enemigo",
       "Description": "Color de la barra de salud del enemigo."

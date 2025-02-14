@@ -69,8 +69,12 @@ void Option_Controls_Shutdown(void)
     M_Shutdown();
 }
 
-void Option_Controls_Control(INVENTORY_ITEM *const item)
+void Option_Controls_Control(INVENTORY_ITEM *const item, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     if (m_Dialog == nullptr) {
         M_Init();
     }

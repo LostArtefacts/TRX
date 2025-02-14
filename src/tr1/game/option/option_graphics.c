@@ -471,8 +471,12 @@ static void M_ChangeTextOption(
     }
 }
 
-void Option_Graphics_Control(INVENTORY_ITEM *inv_item)
+void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     if (!m_IsTextInit) {
         M_InitText();
         m_IsTextInit = true;

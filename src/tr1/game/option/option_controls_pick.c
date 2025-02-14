@@ -54,8 +54,12 @@ static void M_ShutdownText(void)
     }
 }
 
-CONTROL_MODE Option_ControlsPick_Control(void)
+CONTROL_MODE Option_ControlsPick_Control(const bool is_busy)
 {
+    if (is_busy) {
+        return CM_PICK;
+    }
+
     if (!m_Text[TEXT_KEYBOARD]) {
         M_InitText();
     }

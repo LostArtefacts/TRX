@@ -65,6 +65,10 @@
       "Title": "Enhanced sidesteps",
       "Description": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work."
     },
+    "enable_responsive_passport": {
+      "Title": "Enable more responsive passport",
+      "Description": "Disables blocking user input when passport flips pages, scheduling the page flips instead."
+    },
     "enable_enhanced_look": {
       "Title": "Look while running",
       "Description": "Allows Lara to look while running, jumping, hanging, etc. - similar to TR2 style."

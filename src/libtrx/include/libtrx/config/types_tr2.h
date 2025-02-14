@@ -39,6 +39,7 @@ typedef struct {
         int32_t keyboard_layout;
         int32_t controller_layout;
         bool enable_tr3_sidesteps;
+        bool enable_responsive_passport;
     } input;
 
     struct {

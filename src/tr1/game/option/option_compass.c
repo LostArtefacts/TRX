@@ -37,8 +37,12 @@ static void M_Shutdown(void)
     }
 }
 
-void Option_Compass_Control(INVENTORY_ITEM *const inv_item)
+void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
+    if (is_busy) {
+        return;
+    }
+
     if (g_Config.gameplay.enable_compass_stats) {
         char buf[100];
         char time_buf[100];
