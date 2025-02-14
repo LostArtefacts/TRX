@@ -169,7 +169,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     g_GameInfo.ask_for_save = g_Config.gameplay.enable_save_crystals
-        && (level->type == GFL_NORMAL || level->type == GFL_BONUS)
+        && seq_ctx == GFSC_NORMAL
+        && GF_GetLevelTableType(level->type) == GFLT_MAIN
         && level != GF_GetFirstLevel() && level != GF_GetGymLevel();
 
     if (gf_cmd.action != GF_NOOP) {
