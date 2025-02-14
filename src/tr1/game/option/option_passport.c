@@ -32,18 +32,24 @@ typedef enum {
 } PASSPORT_TEXT;
 
 typedef struct {
+    bool available;
+    PASSPORT_MODE role;
+} M_PAGE;
+
+typedef struct {
     PASSPORT_PAGE page;
     PASSPORT_MODE mode;
-    bool page_available[PAGE_COUNT];
-    PASSPORT_MODE page_role[PAGE_COUNT];
+    M_PAGE pages[PAGE_COUNT];
 } PASSPORT_STATUS;
 
 static PASSPORT_STATUS m_PassportStatus = {
     .page = PAGE_1,
     .mode = PASSPORT_MODE_BROWSE,
-    .page_available = { false, true, true },
-    .page_role = { PASSPORT_MODE_UNAVAILABLE, PASSPORT_MODE_NEW_GAME,
-                   PASSPORT_MODE_EXIT_TITLE },
+    .pages = {
+        { .role = PASSPORT_MODE_UNAVAILABLE, .available = false },
+        { .role = PASSPORT_MODE_NEW_GAME, .available = true },
+        { .role = PASSPORT_MODE_EXIT_TITLE, .available = true },
+    },
 };
 
 static bool m_IsTextInit = false;
@@ -102,6 +108,7 @@ static void M_InitText(void);
 static void M_ShutdownText(void);
 static void M_Close(INVENTORY_ITEM *inv_item);
 static void M_ChangePageTextContent(const char *text);
+static void M_SetPage(int32_t page, PASSPORT_MODE role, bool available);
 static void M_DeterminePages(void);
 static void M_InitSaveRequester(int16_t page_num);
 static void M_RestoreSaveRequester(void);
@@ -180,34 +187,35 @@ static void M_ChangePageTextContent(const char *const content)
     Text_SetPos(m_Text[TEXT_RIGHT_ARROW], x_pos, -15);
 }
 
+static void M_SetPage(
+    const int32_t page, const PASSPORT_MODE role, const bool available)
+{
+    m_PassportStatus.pages[page].role = role;
+    m_PassportStatus.pages[page].available = available;
+}
+
 static void M_DeterminePages(void)
 {
+    const bool has_saves = g_SavedGamesCount > 0 && Savegame_GetSlotCount() > 0;
+
     switch (g_InvMode) {
     case INV_TITLE_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
-        m_PassportStatus.page_available[PAGE_1] =
-            g_SavedGamesCount > 0 && Savegame_GetSlotCount() > 0;
-        m_PassportStatus.page_available[PAGE_2] = true;
-        m_PassportStatus.page_available[PAGE_3] = true;
-        m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_GAME;
+        M_SetPage(PAGE_1, PASSPORT_MODE_LOAD_GAME, has_saves);
+        M_SetPage(PAGE_2, PASSPORT_MODE_NEW_GAME, true);
+        M_SetPage(PAGE_3, PASSPORT_MODE_EXIT_GAME, true);
         break;
 
     case INV_GAME_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
-        m_PassportStatus.page_available[PAGE_1] =
-            g_SavedGamesCount > 0 && Savegame_GetSlotCount() > 0;
-        m_PassportStatus.page_available[PAGE_2] = true;
-        m_PassportStatus.page_available[PAGE_3] = true;
-        m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        M_SetPage(PAGE_1, PASSPORT_MODE_LOAD_GAME, has_saves);
+        M_SetPage(PAGE_2, PASSPORT_MODE_SAVE_GAME, true);
+        M_SetPage(PAGE_3, PASSPORT_MODE_EXIT_TITLE, true);
         if (Game_GetCurrentLevel() == GF_GetGymLevel()
             || Savegame_GetSlotCount() <= 0) {
-            m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
+            m_PassportStatus.pages[PAGE_2].role = PASSPORT_MODE_NEW_GAME;
         } else if (g_Config.gameplay.enable_save_crystals) {
-            m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
+            m_PassportStatus.pages[PAGE_2].role = PASSPORT_MODE_RESTART;
         }
         break;
 
@@ -215,12 +223,9 @@ static void M_DeterminePages(void)
         m_PassportStatus.mode = Savegame_GetSlotCount() > 0
             ? PASSPORT_MODE_LOAD_GAME
             : PASSPORT_MODE_RESTART;
-        m_PassportStatus.page_available[PAGE_1] = true;
-        m_PassportStatus.page_available[PAGE_2] = false;
-        m_PassportStatus.page_available[PAGE_3] = false;
-        m_PassportStatus.page_role[PAGE_1] = m_PassportStatus.mode;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_UNAVAILABLE;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
+        M_SetPage(PAGE_1, m_PassportStatus.mode, true);
+        M_SetPage(PAGE_2, PASSPORT_MODE_UNAVAILABLE, false);
+        M_SetPage(PAGE_3, PASSPORT_MODE_UNAVAILABLE, false);
         if (m_PassportStatus.mode == PASSPORT_MODE_RESTART) {
             M_InitNewGameRequester();
         } else {
@@ -230,56 +235,42 @@ static void M_DeterminePages(void)
 
     case INV_SAVE_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
-        m_PassportStatus.page_available[PAGE_1] = false;
-        m_PassportStatus.page_available[PAGE_2] = true;
-        m_PassportStatus.page_available[PAGE_3] = false;
-        m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_UNAVAILABLE;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
+        M_SetPage(PAGE_1, PASSPORT_MODE_UNAVAILABLE, false);
+        M_SetPage(PAGE_2, PASSPORT_MODE_SAVE_GAME, true);
+        M_SetPage(PAGE_3, PASSPORT_MODE_UNAVAILABLE, false);
         if (Game_GetCurrentLevel() == GF_GetGymLevel()
             || Savegame_GetSlotCount() <= 0) {
             m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
-            m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
+            m_PassportStatus.pages[PAGE_2].role = PASSPORT_MODE_NEW_GAME;
         } else if (g_Config.gameplay.enable_save_crystals) {
             m_PassportStatus.mode = PASSPORT_MODE_RESTART;
-            m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
-            m_PassportStatus.page_available[PAGE_3] = true;
-            m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+            m_PassportStatus.pages[PAGE_2].role = PASSPORT_MODE_RESTART;
+            m_PassportStatus.pages[PAGE_3].role = PASSPORT_MODE_EXIT_TITLE;
+            m_PassportStatus.pages[PAGE_3].available = true;
         }
         M_InitSaveRequester(PAGE_2);
         break;
 
     case INV_SAVE_CRYSTAL_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_SAVE_GAME;
-        m_PassportStatus.page_available[PAGE_1] = false;
-        m_PassportStatus.page_available[PAGE_2] = true;
-        m_PassportStatus.page_available[PAGE_3] = false;
-        m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_UNAVAILABLE;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_SAVE_GAME;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_UNAVAILABLE;
+        M_SetPage(PAGE_1, PASSPORT_MODE_UNAVAILABLE, false);
+        M_SetPage(PAGE_2, PASSPORT_MODE_SAVE_GAME, true);
+        M_SetPage(PAGE_3, PASSPORT_MODE_UNAVAILABLE, false);
         M_InitSaveRequester(PAGE_2);
         break;
 
     case INV_DEATH_MODE:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
-        m_PassportStatus.page_available[PAGE_1] =
-            g_SavedGamesCount > 0 && Savegame_GetSlotCount() > 0;
-        m_PassportStatus.page_available[PAGE_2] = true;
-        m_PassportStatus.page_available[PAGE_3] = true;
-        m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_RESTART;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        M_SetPage(PAGE_1, PASSPORT_MODE_LOAD_GAME, has_saves);
+        M_SetPage(PAGE_2, PASSPORT_MODE_RESTART, true);
+        M_SetPage(PAGE_3, PASSPORT_MODE_EXIT_TITLE, true);
         break;
 
     default:
         m_PassportStatus.mode = PASSPORT_MODE_BROWSE;
-        m_PassportStatus.page_available[PAGE_1] =
-            g_SavedGamesCount > 0 && Savegame_GetSlotCount() > 0;
-        m_PassportStatus.page_available[PAGE_2] = true;
-        m_PassportStatus.page_available[PAGE_3] = true;
-        m_PassportStatus.page_role[PAGE_1] = PASSPORT_MODE_LOAD_GAME;
-        m_PassportStatus.page_role[PAGE_2] = PASSPORT_MODE_NEW_GAME;
-        m_PassportStatus.page_role[PAGE_3] = PASSPORT_MODE_EXIT_TITLE;
+        M_SetPage(PAGE_1, PASSPORT_MODE_LOAD_GAME, has_saves);
+        M_SetPage(PAGE_2, PASSPORT_MODE_NEW_GAME, true);
+        M_SetPage(PAGE_3, PASSPORT_MODE_EXIT_TITLE, true);
         break;
     }
 }
@@ -599,7 +590,7 @@ static void M_FlipRight(INVENTORY_ITEM *inv_item)
 
     while (m_PassportStatus.page < PAGE_3) {
         m_PassportStatus.page++;
-        if (m_PassportStatus.page_available[m_PassportStatus.page]) {
+        if (m_PassportStatus.pages[m_PassportStatus.page].available) {
             inv_item->anim_direction = 1;
             inv_item->goal_frame =
                 inv_item->open_frame + 5 * m_PassportStatus.page;
@@ -616,7 +607,7 @@ static void M_FlipLeft(INVENTORY_ITEM *inv_item)
 
     while (m_PassportStatus.page > PAGE_1) {
         m_PassportStatus.page--;
-        if (m_PassportStatus.page_available[m_PassportStatus.page]) {
+        if (m_PassportStatus.pages[m_PassportStatus.page].available) {
             inv_item->anim_direction = -1;
             inv_item->goal_frame =
                 inv_item->open_frame + 5 * m_PassportStatus.page;
@@ -637,21 +628,21 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
     }
 
     m_PassportStatus.page = (inv_item->goal_frame - inv_item->open_frame) / 5;
-    if (!m_PassportStatus.page_available[m_PassportStatus.page]) {
+    if (!m_PassportStatus.pages[m_PassportStatus.page].available) {
         M_FlipRight(inv_item);
         return;
     }
 
     if (m_PassportStatus.mode == PASSPORT_MODE_BROWSE) {
         if (m_PassportStatus.page > PAGE_1
-            && m_PassportStatus.page_available[m_PassportStatus.page - 1]) {
+            && m_PassportStatus.pages[m_PassportStatus.page - 1].available) {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
         } else {
             Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
         }
 
         if (m_PassportStatus.page < PAGE_3
-            && m_PassportStatus.page_available[m_PassportStatus.page + 1]) {
+            && m_PassportStatus.pages[m_PassportStatus.page + 1].available) {
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
         } else {
             Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
@@ -661,7 +652,7 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
         Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
     }
 
-    switch (m_PassportStatus.page_role[m_PassportStatus.page]) {
+    switch (m_PassportStatus.pages[m_PassportStatus.page].role) {
     case PASSPORT_MODE_LOAD_GAME:
         M_LoadGame();
         break;
@@ -701,7 +692,7 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item)
     }
 
     if (g_InputDB.menu_right
-        || !m_PassportStatus.page_available[m_PassportStatus.page]) {
+        || !m_PassportStatus.pages[m_PassportStatus.page].available) {
         M_FlipRight(inv_item);
     }
 
