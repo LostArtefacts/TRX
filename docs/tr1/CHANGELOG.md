@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.1...develop) - ××××-××-××
+- changed default FPS value to 60 (#2501)
 - improved memory usage by shedding ca. 100-110 MB on average
 
 ## [4.8.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.8...tr1-4.8.1) - 2025-02-14
