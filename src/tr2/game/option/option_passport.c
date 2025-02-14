@@ -253,22 +253,6 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
         }
         break;
     }
-
-    if (g_InputDB.menu_left) {
-        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
-            if (m_State.pages[page].available) {
-                m_State.active_page = page;
-                break;
-            }
-        }
-    } else if (g_InputDB.menu_right) {
-        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
-            if (m_State.pages[page].available) {
-                m_State.active_page = page;
-                break;
-            }
-        }
-    }
 }
 
 void Option_Passport_Control(INVENTORY_ITEM *const item)
@@ -292,21 +276,35 @@ void Option_Passport_Control(INVENTORY_ITEM *const item)
         M_FlipRight(item);
     } else if (m_State.current_page > m_State.active_page) {
         M_FlipLeft(item);
+    }
+
+    M_ShowPage(item);
+    if (g_InputDB.menu_confirm) {
+        g_Inv_ExtraData[0] = m_State.active_page;
+        g_Inv_ExtraData[1] = m_State.selection;
+        m_State.active_page = -1;
+        M_Close(item);
     } else if (g_InputDB.menu_back) {
-        if (g_Inv_Mode == INV_DEATH_MODE) {
+        if (g_Inv_Mode != INV_DEATH_MODE) {
+            M_Close(item);
+            m_State.active_page = -1;
+        } else {
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
-        } else {
-            M_Close(item);
-            m_State.active_page = -1;
         }
-    } else {
-        M_ShowPage(item);
-        if (g_InputDB.menu_confirm) {
-            g_Inv_ExtraData[0] = m_State.active_page;
-            g_Inv_ExtraData[1] = m_State.selection;
-            m_State.active_page = -1;
-            M_Close(item);
+    } else if (g_InputDB.menu_left) {
+        for (int32_t page = m_State.active_page - 1; page >= 0; page--) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
+        }
+    } else if (g_InputDB.menu_right) {
+        for (int32_t page = m_State.active_page + 1; page < 3; page++) {
+            if (m_State.pages[page].available) {
+                m_State.active_page = page;
+                break;
+            }
         }
     }
 }
