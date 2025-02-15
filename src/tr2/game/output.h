@@ -40,7 +40,7 @@ void Output_DrawSprite(
 void Output_DrawPickup(
     int32_t sx, int32_t sy, int32_t scale, int16_t sprite_idx, int16_t shade);
 
-void Output_DrawScreenSprite2D(
+void Output_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
     int16_t sprite_idx, int16_t shade, uint16_t flags);
 

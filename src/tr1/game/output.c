@@ -973,7 +973,7 @@ void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
 }
 
-void Output_DrawScreenSprite2D(
+void Output_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
 {

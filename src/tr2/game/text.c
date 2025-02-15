@@ -29,22 +29,22 @@ void Text_DrawBorder(
     const int32_t scale_h = TEXT_BASE_SCALE;
     const int32_t scale_v = TEXT_BASE_SCALE;
 
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x0, y0, z, scale_h, scale_v, mesh_idx + 0, 0x1000, 0);
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x1, y0, z, scale_h, scale_v, mesh_idx + 1, 0x1000, 0);
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x1, y1, z, scale_h, scale_v, mesh_idx + 2, 0x1000, 0);
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x0, y1, z, scale_h, scale_v, mesh_idx + 3, 0x1000, 0);
 
     int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
     int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
 
-    Output_DrawScreenSprite2D(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
-    Output_DrawScreenSprite2D(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
-    Output_DrawScreenSprite2D(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
-    Output_DrawScreenSprite2D(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
+    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
 }
 
 void Text_DrawText(TEXTSTRING *const text)
@@ -131,7 +131,7 @@ void Text_DrawText(TEXTSTRING *const text)
             const float sprite_scale_v =
                 text->scale.v / (sprite->y1 - sprite->y0);
             const float sprite_scale = MIN(sprite_scale_h, sprite_scale_v);
-            Output_DrawScreenSprite2D(
+            Output_DrawScreenSprite(
                 x + M_Scale(10), y, z,
                 M_Scale((*glyph_ptr)->width * sprite_scale),
                 M_Scale((*glyph_ptr)->width * sprite_scale), sprite_idx, 4096,
@@ -142,7 +142,7 @@ void Text_DrawText(TEXTSTRING *const text)
         }
 
         if (x >= 0 && x < g_PhdWinWidth && y >= 0 && y < g_PhdWinHeight) {
-            Output_DrawScreenSprite2D(
+            Output_DrawScreenSprite(
                 x, y, z, scale_h, scale_v,
                 obj->mesh_idx + (*glyph_ptr)->mesh_idx, 4096, 0);
         }

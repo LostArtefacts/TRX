@@ -606,7 +606,7 @@ void Output_DrawPickup(
     }
 }
 
-void Output_DrawScreenSprite2D(
+void Output_DrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
     const int32_t scale_v, const int16_t sprite_idx, const int16_t shade,
     const uint16_t flags)
