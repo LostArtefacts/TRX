@@ -85,55 +85,6 @@ static void M_DrawItem(
         return;
     }
 
-    if (inv_item->sprite_list) {
-        int32_t zv = g_MatrixPtr->_23;
-        int32_t zp = zv / g_PhdPersp;
-        int32_t sx = Viewport_GetCenterX() + g_MatrixPtr->_03 / zp;
-        int32_t sy = Viewport_GetCenterY() + g_MatrixPtr->_13 / zp;
-
-        INVENTORY_SPRITE **sprite_list = inv_item->sprite_list;
-        INVENTORY_SPRITE *sprite;
-        while ((sprite = *sprite_list++)) {
-            if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
-                break;
-            }
-
-            while (sprite->shape) {
-                switch (sprite->shape) {
-                case SHAPE_SPRITE:
-                    Output_DrawScreenSprite(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->pos.z,
-                        sprite->param1, sprite->param2,
-                        Object_Get(O_ALPHABET)->mesh_idx + sprite->sprite_num,
-                        4096, 0);
-                    break;
-                case SHAPE_LINE:
-                    Output_DrawScreenLine(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->param1,
-                        sprite->param2,
-                        Output_RGB2RGBA(Output_GetPaletteColor8(
-                            (uint8_t)sprite->sprite_num)));
-                    break;
-                case SHAPE_BOX: {
-                    double scale = Viewport_GetHeight() / 480.0;
-                    Output_DrawScreenBox(
-                        sx + sprite->pos.x - scale, sy + sprite->pos.y - scale,
-                        sprite->param1, sprite->param2,
-                        Text_GetMenuColor(MC_GOLD_DARK),
-                        Text_GetMenuColor(MC_GOLD_LIGHT),
-                        TEXT_OUTLINE_THICKNESS * scale);
-                } break;
-                case SHAPE_FBOX:
-                    Output_DrawScreenFBox(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->param1,
-                        sprite->param2);
-                    break;
-                }
-                sprite++;
-            }
-        }
-    }
-
     int32_t rate;
     ANIM_FRAME *frame1;
     ANIM_FRAME *frame2;

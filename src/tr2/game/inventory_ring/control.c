@@ -622,7 +622,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (!busy) {
             if (g_InputDB.menu_back) {
-                inv_item->sprite_list = nullptr;
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
@@ -636,7 +635,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
 
             if (g_InputDB.menu_confirm) {
-                inv_item->sprite_list = nullptr;
                 g_Inv_Chosen = inv_item->object_id;
                 if (ring->type != RT_MAIN) {
                     g_InvRing_Source[RT_OPTION].current = ring->current_object;

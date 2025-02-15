@@ -43,7 +43,6 @@ typedef struct {
     uint32_t meshes_sel;
     uint32_t meshes_drawn;
     int16_t inv_pos;
-    INVENTORY_SPRITE **sprite_list;
 #if TR_VERSION == 1
     INVENTORY_ITEM_ACTION action;
 #endif

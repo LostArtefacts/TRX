@@ -52,58 +52,6 @@ static void M_DrawItem(
         return;
     }
 
-    if (inv_item->sprite_list != nullptr) {
-        const int32_t zv = g_MatrixPtr->_23;
-        const int32_t zp = zv / g_PhdPersp;
-        const int32_t sx = g_PhdWinCenterX + g_MatrixPtr->_03 / zp;
-        const int32_t sy = g_PhdWinCenterY + g_MatrixPtr->_13 / zp;
-
-        INVENTORY_SPRITE **sprite_list = inv_item->sprite_list;
-        INVENTORY_SPRITE *sprite;
-        while ((sprite = *sprite_list++)) {
-            if (zv < g_PhdNearZ || zv > g_PhdFarZ) {
-                break;
-            }
-
-            while (sprite->shape) {
-                switch (sprite->shape) {
-                case SHAPE_SPRITE:
-                    Output_DrawScreenSprite(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->pos.z,
-                        sprite->param1, sprite->param2,
-                        Object_Get(O_ALPHABET)->mesh_idx + sprite->sprite_num,
-                        4096, 0);
-                    break;
-
-                case SHAPE_LINE:
-                    Output_DrawScreenLine(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->pos.z,
-                        sprite->param1, sprite->param2, sprite->sprite_num,
-                        nullptr, 0);
-                    break;
-
-                case SHAPE_BOX:
-                    Output_DrawScreenBox(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->pos.z,
-                        sprite->param1, sprite->param2, sprite->sprite_num,
-                        nullptr, 0);
-                    break;
-
-                case SHAPE_FBOX:
-                    Output_DrawScreenFBox(
-                        sx + sprite->pos.x, sy + sprite->pos.y, sprite->pos.z,
-                        sprite->param1, sprite->param2, sprite->sprite_num,
-                        nullptr, 0);
-                    break;
-
-                default:
-                    break;
-                }
-                sprite++;
-            }
-        }
-    }
-
     ANIM_FRAME *frame_ptr = &obj->frame_base[inv_item->current_frame];
 
     Matrix_Push();
