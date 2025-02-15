@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.1...develop) - ××××-××-××
 - changed default FPS value to 60 (#2501)
 - fixed story so far not skipping over levels (#2506, regression from 4.8)
+- fixed resolving paths (especially to music files) on case-sensitive filesystems (#1934, #2504)
 - improved memory usage by shedding ca. 100-110 MB on average
 
 ## [4.8.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.8...tr1-4.8.1) - 2025-02-14

@@ -205,22 +205,31 @@ char *File_GetParentDirectory(const char *path)
 
 char *File_GuessExtension(const char *path, const char **extensions)
 {
-    if (!File_Exists(path)) {
-        const char *dot = strrchr(path, '.');
-        if (dot) {
-            for (const char **ext = &extensions[0]; *ext; ext++) {
-                size_t out_size = dot - path + strlen(*ext) + 1;
-                char *out = Memory_Alloc(out_size);
-                strncpy(out, path, dot - path);
-                out[dot - path] = '\0';
-                strcat(out, *ext);
-                if (File_Exists(out)) {
-                    return out;
-                }
-                Memory_FreePointer(&out);
-            }
-        }
+    if (File_Exists(path)) {
+        goto fallback;
     }
+
+    const char *dot = strrchr(path, '.');
+    if (dot == nullptr) {
+        goto fallback;
+    }
+
+    for (const char **ext = &extensions[0]; *ext; ext++) {
+        size_t out_size = dot - path + strlen(*ext) + 1;
+        char *out = Memory_Alloc(out_size);
+        strncpy(out, path, dot - path);
+        out[dot - path] = '\0';
+        strcat(out, *ext);
+
+        char *full_path = File_GetFullPath(out);
+        Memory_FreePointer(&out);
+        if (M_ExistsRaw(full_path)) {
+            return full_path;
+        }
+        Memory_FreePointer(&full_path);
+    }
+
+fallback:
     return Memory_DupStr(path);
 }
 

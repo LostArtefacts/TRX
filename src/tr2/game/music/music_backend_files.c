@@ -26,7 +26,7 @@ static char *M_GetTrackFileName(const char *base_dir, int32_t track)
     char file_path[64];
     sprintf(file_path, "%s/track%02d.flac", base_dir, track);
     char *result = File_GuessExtension(file_path, m_ExtensionsToTry);
-    if (!File_Exists(file_path)) {
+    if (!File_Exists(result)) {
         Memory_FreePointer(&result);
         sprintf(file_path, "%s/%d.flac", base_dir, track);
         result = File_GuessExtension(file_path, m_ExtensionsToTry);
