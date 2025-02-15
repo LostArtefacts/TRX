@@ -41,9 +41,10 @@
 
 static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
-static char *m_BufCopy = nullptr;
 static uint32_t m_ReqFlags1[MAX_REQUESTER_ITEMS];
 static uint32_t m_ReqFlags2[MAX_REQUESTER_ITEMS];
+
+static void M_Reset(void);
 
 static void M_Read(void *ptr, size_t size);
 #undef SPECIAL_READ_WRITE
@@ -72,9 +73,18 @@ static void M_WriteLaraArm(const LARA_ARM *arm);
 static void M_WriteAmmoInfo(const AMMO_INFO *ammo_info);
 static void M_WriteFlares(void);
 
-static void M_Read(void *ptr, const size_t size)
+static void M_Reset(void)
 {
-    ReadSG(ptr, size);
+    m_BufPos = 0;
+    m_BufPtr = g_SaveGame.buffer;
+}
+
+static void M_Read(void *const ptr, const size_t size)
+{
+    ASSERT(m_BufPos + size <= MAX_SG_BUFFER_SIZE);
+    m_BufPos += size;
+    memcpy(ptr, m_BufPtr, size);
+    m_BufPtr += size;
 }
 
 #undef SPECIAL_READ_WRITE
@@ -82,7 +92,7 @@ static void M_Read(void *ptr, const size_t size)
     static type M_Read##name(void)                                             \
     {                                                                          \
         type result;                                                           \
-        ReadSG(&result, sizeof(type));                                         \
+        M_Read(&result, sizeof(type));                                         \
         return result;                                                         \
     }
 SPECIAL_READ_WRITES
@@ -425,7 +435,13 @@ static void M_ReadFlares(void)
 
 static void M_Write(const void *ptr, const size_t size)
 {
-    WriteSG(ptr, size);
+    m_BufPos += size;
+    if (m_BufPos >= MAX_SG_BUFFER_SIZE) {
+        Shell_ExitSystem("Savegame is too big to fit in buffer");
+    }
+
+    memcpy(m_BufPtr, ptr, size);
+    m_BufPtr += size;
 }
 
 static void M_WriteStartInfo(MYFILE *const fp, const START_INFO *const start)
@@ -916,7 +932,7 @@ void CreateSaveGameInfo(void)
     g_SaveGame.num_key[2] = Inv_RequestItem(O_KEY_ITEM_3);
     g_SaveGame.num_key[3] = Inv_RequestItem(O_KEY_ITEM_4);
 
-    ResetSG();
+    M_Reset();
     memset(g_SaveGame.buffer, 0, MAX_SG_BUFFER_SIZE);
 
     M_WriteS32(g_FlipStatus);
@@ -967,7 +983,7 @@ void ExtractSaveGameInfo(void)
     Inv_AddItemNTimes(O_KEY_ITEM_3, g_SaveGame.num_key[2]);
     Inv_AddItemNTimes(O_KEY_ITEM_4, g_SaveGame.num_key[3]);
 
-    ResetSG();
+    M_Reset();
 
     if (M_ReadS32()) {
         Room_FlipMap();
@@ -1007,35 +1023,11 @@ void ExtractSaveGameInfo(void)
         Lara_CatchFire();
     }
 
-    ReadSG(&g_FlipEffect, sizeof(int32_t));
-    ReadSG(&g_FlipTimer, sizeof(int32_t));
-    ReadSG(&g_IsMonkAngry, sizeof(int32_t));
+    g_FlipEffect = M_ReadS32();
+    g_FlipTimer = M_ReadS32();
+    g_IsMonkAngry = M_ReadS32();
 
     M_ReadFlares();
-}
-
-void ResetSG(void)
-{
-    m_BufPos = 0;
-    m_BufPtr = g_SaveGame.buffer;
-}
-
-void WriteSG(const void *const pointer, const size_t size)
-{
-    m_BufPos += size;
-    if (m_BufPos >= MAX_SG_BUFFER_SIZE) {
-        Shell_ExitSystem("Savegame is too big to fit in buffer");
-    }
-
-    memcpy(m_BufPtr, pointer, size);
-    m_BufPtr += size;
-}
-
-void ReadSG(void *const pointer, const size_t size)
-{
-    m_BufPos += size;
-    memcpy(pointer, m_BufPtr, size);
-    m_BufPtr += size;
 }
 
 void GetSavedGamesList(REQUEST_INFO *const req)
