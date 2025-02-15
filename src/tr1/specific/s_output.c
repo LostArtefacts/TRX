@@ -402,37 +402,6 @@ void S_Output_DrawSprite(
     }
 }
 
-void S_Output_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 color1,
-    RGBA_8888 color2)
-{
-    int vertex_count = 2;
-    GFX_3D_VERTEX vertices[vertex_count];
-
-    vertices[0].x = x1;
-    vertices[0].y = y1;
-    vertices[0].z = 0.0f;
-    vertices[0].r = color1.r;
-    vertices[0].g = color1.g;
-    vertices[0].b = color1.b;
-    vertices[0].a = color1.a;
-
-    vertices[1].x = x2;
-    vertices[1].y = y2;
-    vertices[1].z = 0.0f;
-    vertices[1].r = color2.r;
-    vertices[1].g = color2.g;
-    vertices[1].b = color2.b;
-    vertices[1].a = color2.a;
-
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
-    S_Output_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
-    GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
-}
-
 void S_Output_Draw3DLine(
     const PHD_VBUF *const vn0, const PHD_VBUF *const vn1, const RGBA_8888 color)
 {

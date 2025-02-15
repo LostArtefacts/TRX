@@ -623,23 +623,6 @@ void Output_DrawScreenSprite2D(
     }
 }
 
-void Output_DrawScreenSprite(
-    const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
-    const int32_t scale_v, const int16_t sprite_idx, const int16_t shade,
-    const uint16_t flags)
-{
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
-    ASSERT(sprite != nullptr);
-    const int32_t x0 = sx + (((sprite->x0 / 8) * scale_h) / PHD_ONE);
-    const int32_t x1 = sx + (((sprite->x1 / 8) * scale_h) / PHD_ONE);
-    const int32_t y0 = sy + (((sprite->y0 / 8) * scale_v) / PHD_ONE);
-    const int32_t y1 = sy + (((sprite->y1 / 8) * scale_v) / PHD_ONE);
-    const int32_t z = sz * 8;
-    if (x1 >= 0 && y1 >= 0 && x0 < g_PhdWinWidth && y0 < g_PhdWinHeight) {
-        Render_InsertSprite(z, x0, y0, x1, y1, sprite_idx, shade);
-    }
-}
-
 bool Output_MakeScreenshot(const char *const path)
 {
     LOG_INFO("Taking screenshot");

@@ -49,9 +49,6 @@ void S_Output_Draw3DLine(
     const PHD_VBUF *vn1, const PHD_VBUF *vn2, const RGBA_8888 color);
 void S_Output_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int y2, int z, int sprnum, int shade);
-void S_Output_Draw2DLine(
-    int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 color1,
-    RGBA_8888 color2);
 void S_Output_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br);

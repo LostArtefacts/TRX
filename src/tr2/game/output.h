@@ -44,12 +44,6 @@ void Output_DrawScreenSprite2D(
     int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
     int16_t sprite_idx, int16_t shade, uint16_t flags);
 
-void Output_DrawScreenSprite(
-    int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
-    int16_t sprite_idx, int16_t shade, uint16_t flags);
-
-void Output_DrawScaledSpriteC(const int16_t *obj_ptr);
-
 void Output_ClearDepthBuffer(void);
 
 bool Output_MakeScreenshot(const char *path);

@@ -917,12 +917,6 @@ void Output_DrawScreenGradientQuad(
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
-void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col)
-{
-    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
-}
-
 void Output_Draw3DLine(
     const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
 {
@@ -953,13 +947,6 @@ void Output_DrawScreenBox(
         thickness * scale / 2.0f);
 }
 
-void Output_DrawGradientScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col1,
-    RGBA_8888 col2)
-{
-    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col1, col2);
-}
-
 void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br, int32_t thickness)
@@ -984,22 +971,6 @@ void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 {
     RGBA_8888 color = { 0, 0, 0, 128 };
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, color, color, color, color);
-}
-
-void Output_DrawScreenSprite(
-    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
-    int16_t sprnum, int16_t shade, uint16_t flags)
-{
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
-    const int32_t x0 = sx + (scale_h * (sprite->x0 >> 3) / PHD_ONE);
-    const int32_t x1 = sx + (scale_h * (sprite->x1 >> 3) / PHD_ONE);
-    const int32_t y0 = sy + (scale_v * (sprite->y0 >> 3) / PHD_ONE);
-    const int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
-    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth()
-        && y0 < Viewport_GetHeight()) {
-        S_Output_DrawSprite(
-            x0, y0, x1, y1, Output_GetNearZ() + 8 * z, sprnum, shade);
-    }
 }
 
 void Output_DrawScreenSprite2D(
