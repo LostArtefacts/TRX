@@ -60,6 +60,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         const int32_t savegame_level_num = (int32_t)(intptr_t)seq_ctx_arg;
         if (savegame_level_num == level->num) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        } else {
+            return (GF_COMMAND) { .action = GF_NOOP };
         }
         break;
 
