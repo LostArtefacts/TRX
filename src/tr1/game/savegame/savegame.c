@@ -70,7 +70,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .fill_info = Savegame_Legacy_FillInfo,
         .load_from_file = Savegame_Legacy_LoadFromFile,
         .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
-        .save_to_file = Savegame_Legacy_SaveToFile,
+        .save_to_file = nullptr,
         .update_death_counters = Savegame_Legacy_UpdateDeathCounters,
     },
     { 0 },
@@ -527,7 +527,7 @@ bool Savegame_Save(const int32_t slot_num)
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
-        if (strategy->allow_save) {
+        if (strategy->allow_save && strategy->save_to_file != nullptr) {
             char *filename = strategy->get_save_filename(slot_num);
             char *full_path =
                 Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
