@@ -25,10 +25,6 @@ int32_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 
 void Room_TestTriggers(const ITEM *item);
 void Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
-void Room_AlterFloorHeight(const ITEM *item, int32_t height);
-void Room_FlipMap(void);
-void Room_RemoveFlipItems(const ROOM *room);
-void Room_AddFlipItems(const ROOM *room);
 
 // TODO: eliminate
 int16_t Room_Legacy_GetDoor(const SECTOR *sector);

@@ -4,8 +4,10 @@
 #include "game/const.h"
 #include "game/game_buf.h"
 #include "game/items.h"
+#include "game/objects/common.h"
 #include "game/rooms/const.h"
 #include "game/rooms/enum.h"
+#include "game/sound/common.h"
 #include "utils.h"
 
 #define FD_NULL_INDEX 0
@@ -33,6 +35,8 @@ static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
+static void M_AddFlipItems(const ROOM *room);
+static void M_RemoveFlipItems(const ROOM *room);
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -103,6 +107,69 @@ static const int16_t *M_ReadTrigger(
     return data;
 }
 
+static void M_AddFlipItems(const ROOM *const room)
+{
+    int16_t item_num = room->item_num;
+    while (item_num != NO_ITEM) {
+        const ITEM *const item = Item_Get(item_num);
+
+        switch (item->object_id) {
+        case O_MOVABLE_BLOCK_1:
+        case O_MOVABLE_BLOCK_2:
+        case O_MOVABLE_BLOCK_3:
+        case O_MOVABLE_BLOCK_4:
+            Room_AlterFloorHeight(item, -WALL_L);
+            break;
+#if TR_VERSION == 1
+        case O_SLIDING_PILLAR:
+            Room_AlterFloorHeight(item, -WALL_L * 2);
+            break;
+#endif
+        default:
+            break;
+        }
+
+        item_num = item->next_item;
+    }
+}
+
+static void M_RemoveFlipItems(const ROOM *const room)
+{
+    int16_t item_num = room->item_num;
+    while (item_num != NO_ITEM) {
+        ITEM *const item = Item_Get(item_num);
+
+        switch (item->object_id) {
+        case O_MOVABLE_BLOCK_1:
+        case O_MOVABLE_BLOCK_2:
+        case O_MOVABLE_BLOCK_3:
+        case O_MOVABLE_BLOCK_4:
+            Room_AlterFloorHeight(item, WALL_L);
+            break;
+#if TR_VERSION == 1
+        case O_SLIDING_PILLAR:
+            Room_AlterFloorHeight(item, WALL_L * 2);
+            break;
+#endif
+        default:
+            break;
+        }
+
+#if TR_VERSION == 2
+        // TR2 does not have land/water objects like crocodile/alligator in TR1,
+        // so avoid instances of floating water creatures in drained rooms.
+        if (item->flags & IF_ONE_SHOT
+            && Object_Get(item->object_id)->intelligent
+            && item->hit_points <= 0) {
+            Item_RemoveDrawn(item_num);
+            item->flags |= IF_KILLED;
+        }
+#endif
+
+        item_num = item->next_item;
+    }
+}
+
 void Room_InitialiseRooms(const int32_t num_rooms)
 {
     m_RoomCount = num_rooms;
@@ -145,14 +212,40 @@ void Room_InitialiseFlipStatus(void)
     }
 }
 
+void Room_FlipMap(void)
+{
+    Sound_StopAmbientSounds();
+
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        ROOM *const room = Room_Get(i);
+        if (room->flipped_room < 0) {
+            continue;
+        }
+
+        M_RemoveFlipItems(room);
+
+        ROOM *const flipped = Room_Get(room->flipped_room);
+        const ROOM temp = *room;
+        *room = *flipped;
+        *flipped = temp;
+
+        room->flipped_room = flipped->flipped_room;
+        flipped->flipped_room = -1;
+        room->flip_status = RFS_UNFLIPPED;
+        flipped->flip_status = RFS_FLIPPED;
+
+        room->item_num = flipped->item_num;
+        room->effect_num = flipped->effect_num;
+
+        M_AddFlipItems(room);
+    }
+
+    m_FlipStatus = !m_FlipStatus;
+}
+
 bool Room_GetFlipStatus(void)
 {
     return m_FlipStatus;
-}
-
-void Room_ToggleFlipStatus(void)
-{
-    m_FlipStatus = !m_FlipStatus;
 }
 
 int32_t Room_GetFlipEffect(void)

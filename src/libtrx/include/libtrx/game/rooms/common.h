@@ -8,15 +8,16 @@ int32_t Room_GetCount(void);
 ROOM *Room_Get(int32_t room_num);
 
 void Room_InitialiseFlipStatus(void);
-extern void Room_FlipMap(void);
+void Room_FlipMap(void);
 bool Room_GetFlipStatus(void);
-void Room_ToggleFlipStatus(void); // TODO: eliminate
 int32_t Room_GetFlipEffect(void);
 void Room_SetFlipEffect(int32_t flip_effect);
 int32_t Room_GetFlipTimer(void);
 void Room_SetFlipTimer(int32_t flip_timer);
 int32_t Room_GetFlipSlotFlags(int32_t slot_idx);
 void Room_SetFlipSlotFlags(int32_t slot_idx, int32_t flags);
+
+extern void Room_AlterFloorHeight(const ITEM *item, int32_t height);
 
 int32_t Room_GetAdjoiningRooms(
     int16_t init_room_num, int16_t out_room_nums[], int32_t max_room_num_count);

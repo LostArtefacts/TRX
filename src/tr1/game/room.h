@@ -18,8 +18,6 @@ int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
-void Room_AlterFloorHeight(ITEM *item, int32_t height);
-
 void Room_TestTriggers(const ITEM *item);
 void Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
 bool Room_IsOnWalkable(

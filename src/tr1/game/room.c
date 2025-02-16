@@ -20,8 +20,6 @@
 #include <libtrx/utils.h>
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
-static void M_AddFlipItems(const ROOM *room);
-static void M_RemoveFlipItems(const ROOM *room);
 
 static int16_t M_GetFloorTiltHeight(
     const SECTOR *sector, const int32_t x, const int32_t z);
@@ -113,58 +111,6 @@ static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger)
     }
 
     Music_SetTrackFlags(track, flags);
-}
-
-static void M_AddFlipItems(const ROOM *const room)
-{
-    int16_t item_num = room->item_num;
-    while (item_num != NO_ITEM) {
-        ITEM *const item = Item_Get(item_num);
-
-        switch (item->object_id) {
-        case O_MOVABLE_BLOCK_1:
-        case O_MOVABLE_BLOCK_2:
-        case O_MOVABLE_BLOCK_3:
-        case O_MOVABLE_BLOCK_4:
-            Room_AlterFloorHeight(item, -WALL_L);
-            break;
-
-        case O_SLIDING_PILLAR:
-            Room_AlterFloorHeight(item, -WALL_L * 2);
-            break;
-
-        default:
-            break;
-        }
-
-        item_num = item->next_item;
-    }
-}
-
-static void M_RemoveFlipItems(const ROOM *const room)
-{
-    int16_t item_num = room->item_num;
-    while (item_num != NO_ITEM) {
-        ITEM *const item = Item_Get(item_num);
-
-        switch (item->object_id) {
-        case O_MOVABLE_BLOCK_1:
-        case O_MOVABLE_BLOCK_2:
-        case O_MOVABLE_BLOCK_3:
-        case O_MOVABLE_BLOCK_4:
-            Room_AlterFloorHeight(item, WALL_L);
-            break;
-
-        case O_SLIDING_PILLAR:
-            Room_AlterFloorHeight(item, WALL_L * 2);
-            break;
-
-        default:
-            break;
-        }
-
-        item_num = item->next_item;
-    }
 }
 
 int16_t Room_GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
@@ -480,7 +426,7 @@ int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num)
     }
 }
 
-void Room_AlterFloorHeight(ITEM *item, int32_t height)
+void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
 {
     if (!height) {
         return;
@@ -532,39 +478,6 @@ void Room_AlterFloorHeight(ITEM *item, int32_t height)
             g_Boxes[sector->box].overlap_index &= ~BLOCKED;
         }
     }
-}
-
-// TODO: move
-void Room_FlipMap(void)
-{
-    Sound_StopAmbientSounds();
-
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        ROOM *const room = Room_Get(i);
-        if (room->flipped_room < 0) {
-            continue;
-        }
-
-        M_RemoveFlipItems(room);
-
-        ROOM *const flipped = Room_Get(room->flipped_room);
-        const ROOM temp = *room;
-        *room = *flipped;
-        *flipped = temp;
-
-        room->flipped_room = flipped->flipped_room;
-        flipped->flipped_room = -1;
-        room->flip_status = RFS_UNFLIPPED;
-        flipped->flip_status = RFS_FLIPPED;
-
-        // XXX: is this really necessary given the assignments above?
-        room->item_num = flipped->item_num;
-        room->effect_num = flipped->effect_num;
-
-        M_AddFlipItems(room);
-    }
-
-    Room_ToggleFlipStatus();
 }
 
 void Room_TestTriggers(const ITEM *const item)
