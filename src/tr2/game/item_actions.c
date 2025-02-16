@@ -154,10 +154,10 @@ void M_Boiler(ITEM *const item)
 
 void M_Flood(ITEM *const item)
 {
-    int32_t flip_timer = Room_GetFlipTimer();
+    const int32_t flip_timer = Room_GetFlipTimer();
     if (flip_timer > 4 * FRAMES_PER_SECOND) {
         Room_SetFlipEffect(-1);
-        Room_SetFlipTimer(++flip_timer);
+        Room_IncrementFlipTimer(1);
         return;
     }
 
@@ -174,7 +174,7 @@ void M_Flood(ITEM *const item)
     }
 
     Sound_Effect(SFX_WATERFALL_LOOP, &pos, SPM_NORMAL);
-    Room_SetFlipTimer(++flip_timer);
+    Room_IncrementFlipTimer(1);
 }
 
 void M_Rubble(ITEM *const item)
@@ -186,12 +186,12 @@ void M_Rubble(ITEM *const item)
 
 void M_Chandelier(ITEM *const item)
 {
-    int32_t flip_timer = Room_GetFlipTimer();
+    const int32_t flip_timer = Room_GetFlipTimer();
     Sound_Effect(SFX_CHAIN_PULLEY, nullptr, SPM_NORMAL);
-    Room_SetFlipTimer(++flip_timer);
-    if (flip_timer > FRAMES_PER_SECOND) {
+    if (flip_timer >= FRAMES_PER_SECOND) {
         Room_SetFlipEffect(-1);
     }
+    Room_IncrementFlipTimer(1);
 }
 
 void M_Explosion(ITEM *const item)

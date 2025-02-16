@@ -7,7 +7,7 @@
 
 void ItemAction_PowerUp(ITEM *item)
 {
-    int32_t flip_timer = Room_GetFlipTimer();
+    const int32_t flip_timer = Room_GetFlipTimer();
     if (flip_timer > LOGIC_FPS * 4) {
         Room_SetFlipEffect(-1);
     } else {
@@ -18,5 +18,5 @@ void ItemAction_PowerUp(ITEM *item)
         };
         Sound_Effect(SFX_POWERUP_FX, &pos, SPM_NORMAL);
     }
-    Room_SetFlipTimer(++flip_timer);
+    Room_IncrementFlipTimer(1);
 }

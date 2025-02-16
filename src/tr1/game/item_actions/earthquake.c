@@ -6,7 +6,7 @@
 
 void ItemAction_Earthquake(ITEM *item)
 {
-    int32_t flip_timer = Room_GetFlipTimer();
+    const int32_t flip_timer = Room_GetFlipTimer();
     if (flip_timer == 0) {
         Sound_Effect(SFX_EXPLOSION, nullptr, SPM_NORMAL);
         g_Camera.bounce = -250;
@@ -18,8 +18,8 @@ void ItemAction_Earthquake(ITEM *item)
         Sound_Effect(SFX_T_REX_FOOTSTOMP, nullptr, SPM_NORMAL);
     }
 
-    Room_SetFlipTimer(++flip_timer);
-    if (flip_timer == 105) {
+    if (flip_timer == 104) {
         Room_SetFlipEffect(-1);
     }
+    Room_IncrementFlipTimer(1);
 }

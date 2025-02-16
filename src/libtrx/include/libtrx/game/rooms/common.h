@@ -14,6 +14,7 @@ int32_t Room_GetFlipEffect(void);
 void Room_SetFlipEffect(int32_t flip_effect);
 int32_t Room_GetFlipTimer(void);
 void Room_SetFlipTimer(int32_t flip_timer);
+void Room_IncrementFlipTimer(int32_t num_frames);
 int32_t Room_GetFlipSlotFlags(int32_t slot_idx);
 void Room_SetFlipSlotFlags(int32_t slot_idx, int32_t flags);
 

@@ -268,6 +268,11 @@ void Room_SetFlipTimer(const int32_t flip_timer)
     m_FlipTimer = flip_timer;
 }
 
+void Room_IncrementFlipTimer(const int32_t num_frames)
+{
+    m_FlipTimer += num_frames;
+}
+
 int32_t Room_GetFlipSlotFlags(const int32_t slot_idx)
 {
     return m_FlipSlotFlags[slot_idx];

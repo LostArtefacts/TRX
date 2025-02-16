@@ -10,7 +10,7 @@
 
 void ItemAction_Flood(ITEM *item)
 {
-    int32_t flip_timer = Room_GetFlipTimer();
+    const int32_t flip_timer = Room_GetFlipTimer();
     if (flip_timer > LOGIC_FPS * 4) {
         Room_SetFlipEffect(-1);
     } else {
@@ -24,5 +24,5 @@ void ItemAction_Flood(ITEM *item)
         Sound_Effect(SFX_WATERFALL_BIG, &pos, SPM_NORMAL);
     }
 
-    Room_SetFlipTimer(++flip_timer);
+    Room_IncrementFlipTimer(1);
 }
