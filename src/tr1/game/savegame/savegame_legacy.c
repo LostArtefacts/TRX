@@ -45,7 +45,7 @@ typedef struct {
 } SAVEGAME_LEGACY_ITEM_STATS;
 #pragma pack(pop)
 
-static int m_SGBufPos = 0;
+static int32_t m_SGBufPos = 0;
 static char *m_SGBufPtr = nullptr;
 
 static bool M_ItemHasSaveFlags(const OBJECT *obj, ITEM *item);
@@ -54,9 +54,30 @@ static bool M_ItemHasHitPoints(const ITEM *item);
 static bool M_NeedsBaconLaraFix(char *buffer);
 
 static void M_Reset(char *buffer);
-static void M_Skip(int size);
+static void M_Skip(size_t size);
 
-static void M_Read(void *pointer, int size);
+static void M_Read(void *pointer, size_t size);
+
+#define SPECIAL_READ(name, type)                                               \
+    static type M_Read##name(void)                                             \
+    {                                                                          \
+        type result;                                                           \
+        M_Read(&result, sizeof(type));                                         \
+        return result;                                                         \
+    }
+
+#define SPECIAL_READS                                                          \
+    SPECIAL_READ(S8, int8_t)                                                   \
+    SPECIAL_READ(S16, int16_t)                                                 \
+    SPECIAL_READ(S32, int32_t)                                                 \
+    SPECIAL_READ(U8, uint8_t)                                                  \
+    SPECIAL_READ(U16, uint16_t)                                                \
+    SPECIAL_READ(U32, uint32_t)
+
+SPECIAL_READS
+#undef SPECIAL_READ
+#undef SPECIAL_READS
+
 static void M_ReadArm(LARA_ARM *arm);
 static void M_ReadLara(LARA_INFO *lara);
 static void M_ReadLOT(LOT_INFO *lot);
@@ -116,7 +137,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     M_Reset(buffer);
     M_Skip(SAVEGAME_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
-    for (int i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
+    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
         M_Skip(sizeof(uint16_t)); // pistol ammo
         M_Skip(sizeof(uint16_t)); // magnum ammo
         M_Skip(sizeof(uint16_t)); // uzi ammo
@@ -195,21 +216,21 @@ static void M_Reset(char *buffer)
     m_SGBufPtr = buffer;
 }
 
-static void M_Skip(int size)
+static void M_Skip(const size_t size)
 {
     m_SGBufPtr += size;
     m_SGBufPos += size; // missing from OG
 }
 
-static void M_Read(void *pointer, int size)
+static void M_Read(void *const ptr, const size_t size)
 {
+    ASSERT(m_SGBufPos + size <= SAVEGAME_LEGACY_MAX_BUFFER_SIZE);
     m_SGBufPos += size;
-    char *data = (char *)pointer;
-    for (int i = 0; i < size; i++)
-        *data++ = *m_SGBufPtr++;
+    memcpy(ptr, m_SGBufPtr, size);
+    m_SGBufPtr += size;
 }
 
-static void M_ReadLara(LARA_INFO *lara)
+static void M_ReadLara(LARA_INFO *const lara)
 {
     int32_t tmp32 = 0;
 
@@ -232,7 +253,7 @@ static void M_ReadLara(LARA_INFO *lara)
     M_Skip(4); // pointer to EFFECT
 
     M_Read(&lara->mesh_effects, sizeof(int32_t));
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
         M_Read(&tmp32, sizeof(int32_t));
         OBJECT_MESH *const mesh = Object_FindMesh(tmp32 / 2);
         if (mesh != nullptr) {
@@ -271,7 +292,7 @@ static void M_ReadLara(LARA_INFO *lara)
     M_ReadLOT(&lara->lot);
 }
 
-static void M_ReadArm(LARA_ARM *arm)
+static void M_ReadArm(LARA_ARM *const arm)
 {
     // frame_base is superfluous
     M_Skip(sizeof(int32_t));
@@ -284,7 +305,7 @@ static void M_ReadArm(LARA_ARM *arm)
     M_Read(&arm->flash_gun, sizeof(int16_t));
 }
 
-static void M_ReadLOT(LOT_INFO *lot)
+static void M_ReadLOT(LOT_INFO *const lot)
 {
     M_Skip(4); // pointer to BOX_NODE
 
@@ -315,11 +336,11 @@ static void M_SetCurrentPosition(const int32_t level_num)
     }
 }
 
-static void M_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
+static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
 {
     ASSERT(game_info->current != nullptr);
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int i = 0; i < level_table->count; i++) {
+    for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
         RESUME_INFO *current = Savegame_GetCurrentInfo(level);
         M_Read(&current->pistol_ammo, sizeof(uint16_t));
@@ -367,16 +388,16 @@ static void M_ReadResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     game_info->death_count = -1;
 }
 
-char *Savegame_Legacy_GetSaveFileName(int32_t slot)
+char *Savegame_Legacy_GetSaveFileName(const int32_t slot)
 {
-    size_t out_size =
+    const size_t out_size =
         snprintf(nullptr, 0, g_GameFlow.savegame_fmt_legacy, slot) + 1;
     char *out = Memory_Alloc(out_size);
     snprintf(out, out_size, g_GameFlow.savegame_fmt_legacy, slot);
     return out;
 }
 
-bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
+bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     File_Seek(fp, 0, SEEK_SET);
 
@@ -388,7 +409,7 @@ bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     counter = File_ReadS32(fp);
     info->counter = counter;
 
-    for (int i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
+    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
         File_Skip(fp, sizeof(uint16_t)); // pistol ammo
         File_Skip(fp, sizeof(uint16_t)); // magnum ammo
         File_Skip(fp, sizeof(uint16_t)); // uzi ammo
@@ -414,7 +435,7 @@ bool Savegame_Legacy_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
     return true;
 }
 
-bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
+bool Savegame_Legacy_LoadFromFile(MYFILE *const fp, GAME_INFO *const game_info)
 {
     ASSERT(game_info != nullptr);
 
@@ -459,7 +480,7 @@ bool Savegame_Legacy_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
         Room_FlipMap();
     }
 
-    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
+    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         M_Read(&tmp8, sizeof(int8_t));
         Room_SetFlipSlotFlags(i, tmp8 << 8);
     }
