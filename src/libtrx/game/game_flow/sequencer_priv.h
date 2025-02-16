@@ -1,6 +1,6 @@
 #pragma once
 
-extern void GF_PreSequenceHook(void);
+extern void GF_PreSequenceHook(GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg);
 extern GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     const GF_SEQUENCE_EVENT *event, GF_SEQUENCE_CONTEXT seq_ctx);
 extern bool GF_ShouldSkipSequenceEvent(

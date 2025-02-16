@@ -346,12 +346,16 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-void GF_PreSequenceHook(void)
+void GF_PreSequenceHook(
+    const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     g_GameInfo.remove_guns = false;
     g_GameInfo.remove_scions = false;
     g_GameInfo.remove_ammo = false;
     g_GameInfo.remove_medipacks = false;
+    if (seq_ctx == GFSC_SAVED) {
+        g_GameInfo.bonus_flag = false;
+    }
 }
 
 GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(

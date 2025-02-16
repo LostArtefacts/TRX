@@ -74,7 +74,7 @@ GF_COMMAND GF_InterpretSequence(
         "running sequence for level=%d type=%d seq_ctx=%d", level->num,
         level->type, seq_ctx);
 
-    GF_PreSequenceHook();
+    GF_PreSequenceHook(seq_ctx, seq_ctx_arg);
 
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
 

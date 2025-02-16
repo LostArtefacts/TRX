@@ -2,6 +2,7 @@
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)
 - fixed passport text disappearing too quickly (#2512, regression from 4.8.2)
 - fixed inability to navigate to Select Level menu (#2518, regression from 4.8.2)
+- fixed NG+ flag causing problems with loading non-NG+ savegames (#2515, regression from 2.8)
 
 ## [4.8.2](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.1...tr1-4.8.2) - 2025-02-15
 - changed default FPS value to 60 (#2501)

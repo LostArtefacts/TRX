@@ -257,7 +257,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets)
     return gf_cmd;
 }
 
-void GF_PreSequenceHook(void)
+void GF_PreSequenceHook(
+    const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     g_GF_NoFloor = 0;
     g_GF_SunsetEnabled = false;
@@ -265,6 +266,9 @@ void GF_PreSequenceHook(void)
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
     g_GF_NumSecrets = 3;
+    if (seq_ctx == GFSC_SAVED) {
+        g_SaveGame.bonus_flag = true;
+    }
     Camera_GetCineData()->position.target_angle = DEG_90;
 }
 
