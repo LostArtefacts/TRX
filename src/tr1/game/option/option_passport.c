@@ -115,6 +115,7 @@ static void M_InitRequesters(void);
 static void M_InitText(void);
 static void M_RemoveAllText(void);
 static void M_Close(INVENTORY_ITEM *inv_item);
+static void M_SyncArrowsVisibility(void);
 static void M_ChangePageTextContent(const char *text);
 static void M_SetPage(int32_t page, PASSPORT_MODE role, bool available);
 static void M_DeterminePages(void);
@@ -190,8 +191,28 @@ static void M_Close(INVENTORY_ITEM *inv_item)
     }
 }
 
+static void M_SyncArrowsVisibility(void)
+{
+    if (m_State.mode != PASSPORT_MODE_BROWSE) {
+        Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
+        Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
+    } else {
+        bool has_pages_to_left = false;
+        bool has_pages_to_right = false;
+        for (int32_t page = PAGE_1; page < PAGE_COUNT; page++) {
+            has_pages_to_left |=
+                (page < m_State.active_page) && m_State.pages[page].available;
+            has_pages_to_right |=
+                (page > m_State.active_page) && m_State.pages[page].available;
+        }
+        Text_Hide(m_Text[TEXT_LEFT_ARROW], !has_pages_to_left);
+        Text_Hide(m_Text[TEXT_RIGHT_ARROW], !has_pages_to_right);
+    }
+}
+
 static void M_ChangePageTextContent(const char *const content)
 {
+    InvRing_RemoveAllText();
     Text_ChangeText(m_Text[TEXT_PAGE_NAME], content);
     const int32_t width = Text_GetWidth(m_Text[TEXT_PAGE_NAME]);
     const int32_t x_pos = MAX(width, MIN_NAME_WIDTH) / 2 + NAME_SPACER;
@@ -681,7 +702,6 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
 {
     if (m_State.active_page == -1) {
         M_InitRequesters();
-        InvRing_RemoveAllText();
         M_InitText();
         m_IsTextInit = true;
         M_DeterminePages();
@@ -695,47 +715,34 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     }
 
     const int32_t frame = inv_item->goal_frame - inv_item->open_frame;
-    const int32_t page = frame;
-    m_State.current_page = frame / 5;
-
-    if (m_State.mode == PASSPORT_MODE_BROWSE) {
-        if (m_State.active_page > PAGE_1
-            && m_State.pages[m_State.active_page - 1].available) {
-            Text_Hide(m_Text[TEXT_LEFT_ARROW], false);
-        } else {
-            Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-        }
-
-        if (m_State.active_page < PAGE_3
-            && m_State.pages[m_State.active_page + 1].available) {
-            Text_Hide(m_Text[TEXT_RIGHT_ARROW], false);
-        } else {
-            Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
-        }
-    } else {
-        Text_Hide(m_Text[TEXT_LEFT_ARROW], true);
-        Text_Hide(m_Text[TEXT_RIGHT_ARROW], true);
+    const int32_t page = frame % 5 == 0 ? frame / 5 : -1;
+    const bool is_flipping = page == -1;
+    if (is_flipping) {
+        return;
     }
+
+    m_State.current_page = page;
 
     if (m_State.current_page < m_State.active_page) {
         M_FlipRight(inv_item);
     } else if (m_State.current_page > m_State.active_page) {
         M_FlipLeft(inv_item);
-    }
-
-    M_ShowPage(inv_item);
-    if (g_InputDB.menu_back) {
-        if (g_InvMode != INV_DEATH_MODE
-            && m_State.mode == PASSPORT_MODE_BROWSE) {
+    } else {
+        M_SyncArrowsVisibility();
+        M_ShowPage(inv_item);
+        if (g_InputDB.menu_back) {
+            if (g_InvMode != INV_DEATH_MODE
+                && m_State.mode == PASSPORT_MODE_BROWSE) {
+                M_Close(inv_item);
+                m_State.active_page = -1;
+            } else {
+                g_Input = (INPUT_STATE) {};
+                g_InputDB = (INPUT_STATE) {};
+            }
+        } else if (g_InputDB.menu_confirm) {
             M_Close(inv_item);
             m_State.active_page = -1;
-        } else {
-            g_Input = (INPUT_STATE) {};
-            g_InputDB = (INPUT_STATE) {};
         }
-    } else if (g_InputDB.menu_confirm) {
-        M_Close(inv_item);
-        m_State.active_page = -1;
     }
 }
 

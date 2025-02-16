@@ -303,21 +303,21 @@ void Option_Passport_Control(INVENTORY_ITEM *const item, const bool is_busy)
         M_FlipRight(item);
     } else if (m_State.current_page > m_State.active_page) {
         M_FlipLeft(item);
-    }
-
-    M_ShowPage(item);
-    if (g_InputDB.menu_confirm) {
-        g_Inv_ExtraData[0] = m_State.active_page;
-        g_Inv_ExtraData[1] = m_State.selection;
-        m_State.active_page = -1;
-        M_Close(item);
-    } else if (g_InputDB.menu_back) {
-        if (g_Inv_Mode != INV_DEATH_MODE) {
-            M_Close(item);
+    } else {
+        M_ShowPage(item);
+        if (g_InputDB.menu_confirm) {
+            g_Inv_ExtraData[0] = m_State.active_page;
+            g_Inv_ExtraData[1] = m_State.selection;
             m_State.active_page = -1;
-        } else {
-            g_Input = (INPUT_STATE) {};
-            g_InputDB = (INPUT_STATE) {};
+            M_Close(item);
+        } else if (g_InputDB.menu_back) {
+            if (g_Inv_Mode != INV_DEATH_MODE) {
+                M_Close(item);
+                m_State.active_page = -1;
+            } else {
+                g_Input = (INPUT_STATE) {};
+                g_InputDB = (INPUT_STATE) {};
+            }
         }
     }
 }
