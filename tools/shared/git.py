@@ -16,6 +16,13 @@ class Git:
             ["git", "reset", "develop", *(["--hard"] if hard else [])]
         )
 
+    def merge_reset(self, target: str, text: str) -> None:
+        self.check_output(
+            ["git", "merge", target, "--strategy=ours", "--no-commit"]
+        )
+        self.check_output(["git", "read-tree", "-u", "--reset", target])
+        self.check_output(["git", "commit", "-m", text])
+
     def delete_tag(self, tag_name: str) -> None:
         self.grab_output(["git", "tag", "-d", tag_name])
 
