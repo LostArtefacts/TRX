@@ -707,10 +707,10 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
         M_DeterminePages();
     }
 
-    if (!is_busy || g_Config.input.enable_responsive_passport) {
-        M_HandleFlipInputs();
-    }
     if (is_busy) {
+        if (g_Config.input.enable_responsive_passport) {
+            M_HandleFlipInputs();
+        }
         return;
     }
 
@@ -730,7 +730,10 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
     } else {
         M_SyncArrowsVisibility();
         M_ShowPage(inv_item);
-        if (g_InputDB.menu_back) {
+        if (g_InputDB.menu_confirm) {
+            M_Close(inv_item);
+            m_State.active_page = -1;
+        } else if (g_InputDB.menu_back) {
             if (g_InvMode != INV_DEATH_MODE
                 && m_State.mode == PASSPORT_MODE_BROWSE) {
                 M_Close(inv_item);
@@ -739,9 +742,8 @@ void Option_Passport_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             }
-        } else if (g_InputDB.menu_confirm) {
-            M_Close(inv_item);
-            m_State.active_page = -1;
+        } else {
+            M_HandleFlipInputs();
         }
     }
 }
