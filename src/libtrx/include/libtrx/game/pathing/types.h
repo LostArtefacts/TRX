@@ -3,6 +3,23 @@
 #include "../math.h"
 
 typedef struct {
+    // TODO: unify
+#if TR_VERSION == 1
+    int32_t left;
+    int32_t right;
+    int32_t top;
+    int32_t bottom;
+#else
+    uint8_t left;
+    uint8_t right;
+    uint8_t top;
+    uint8_t bottom;
+#endif
+    int16_t height;
+    int16_t overlap_index;
+} BOX_INFO;
+
+typedef struct {
     int16_t exit_box;
     uint16_t search_num;
     int16_t next_expansion;

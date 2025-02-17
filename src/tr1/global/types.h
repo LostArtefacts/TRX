@@ -266,15 +266,6 @@ typedef struct {
 } AI_INFO;
 
 typedef struct {
-    int32_t left;
-    int32_t right;
-    int32_t top;
-    int32_t bottom;
-    int16_t height;
-    int16_t overlap_index;
-} BOX_INFO;
-
-typedef struct {
     bool is_blocked;
     char *content_text;
     TEXTSTRING *content;

@@ -69,7 +69,6 @@ int32_t g_LevelComplete;
 SAVEGAME_INFO g_SaveGame = {};
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
-BOX_INFO *g_Boxes = nullptr;
 int16_t *g_FlyZone[2] = {};
 int16_t *g_GroundZone[4][2] = {};
 uint16_t *g_Overlap = nullptr;
@@ -77,7 +76,6 @@ CREATURE *g_BaddieSlots = nullptr;
 
 int32_t g_HeightType;
 bool g_CameraUnderwater;
-int32_t g_BoxCount;
 char g_LevelFileName[256];
 
 WEAPON_INFO g_Weapons[] = {

@@ -211,15 +211,6 @@ typedef struct {
     int16_t block;
 } DOORPOS_DATA;
 
-typedef struct {
-    uint8_t left;
-    uint8_t right;
-    uint8_t top;
-    uint8_t bottom;
-    int16_t height;
-    int16_t overlap_index;
-} BOX_INFO;
-
 typedef enum {
     TRAP_SET      = 0,
     TRAP_ACTIVATE = 1,

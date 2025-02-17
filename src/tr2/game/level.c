@@ -161,9 +161,9 @@ static void M_LoadSprites(VFILE *const file)
 static void M_LoadBoxes(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
-    g_BoxCount = VFile_ReadS32(file);
-    g_Boxes = GameBuf_Alloc(sizeof(BOX_INFO) * g_BoxCount, GBUF_BOXES);
-    for (int32_t i = 0; i < g_BoxCount; i++) {
+    const int32_t num_boxes = VFile_ReadS32(file);
+    Box_InitialiseBoxes(num_boxes);
+    for (int32_t i = 0; i < num_boxes; i++) {
         BOX_INFO *const box = &g_Boxes[i];
         box->left = VFile_ReadU8(file);
         box->right = VFile_ReadU8(file);
@@ -186,18 +186,18 @@ static void M_LoadBoxes(VFILE *const file)
                     && !Object_Get(O_WORKER_3)->loaded);
 
             if (skip) {
-                VFile_Skip(file, sizeof(int16_t) * g_BoxCount);
+                VFile_Skip(file, sizeof(int16_t) * num_boxes);
                 continue;
             }
 
             g_GroundZone[j][i] =
-                GameBuf_Alloc(sizeof(int16_t) * g_BoxCount, GBUF_GROUND_ZONE);
-            VFile_Read(file, g_GroundZone[j][i], sizeof(int16_t) * g_BoxCount);
+                GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_GROUND_ZONE);
+            VFile_Read(file, g_GroundZone[j][i], sizeof(int16_t) * num_boxes);
         }
 
         g_FlyZone[i] =
-            GameBuf_Alloc(sizeof(int16_t) * g_BoxCount, GBUF_FLY_ZONE);
-        VFile_Read(file, g_FlyZone[i], sizeof(int16_t) * g_BoxCount);
+            GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_FLY_ZONE);
+        VFile_Read(file, g_FlyZone[i], sizeof(int16_t) * num_boxes);
     }
 
     Benchmark_End(benchmark, nullptr);

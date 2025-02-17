@@ -151,6 +151,7 @@ sources = [
   'game/output/common.c',
   'game/output/textures.c',
   'game/packer.c',
+  'game/pathing/box.c',
   'game/phase/executor.c',
   'game/phase/phase_cutscene.c',
   'game/phase/phase_demo.c',
