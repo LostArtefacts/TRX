@@ -1,5 +1,3 @@
-#include "game/objects/creatures/ape.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -49,6 +47,8 @@ typedef enum {
 static BITE m_ApeBite = { 0, -19, 75, 15 };
 
 static bool M_Vault(int16_t item_num, int16_t angle);
+static void M_Setup(OBJECT *obj);
+static void M_Control(const int16_t item_num);
 
 static bool M_Vault(int16_t item_num, int16_t angle)
 {
@@ -108,13 +108,13 @@ static bool M_Vault(int16_t item_num, int16_t angle)
     return true;
 }
 
-void Ape_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Ape_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = APE_HITPOINTS;
@@ -130,7 +130,7 @@ void Ape_Setup(OBJECT *obj)
     Object_GetBone(obj, 13)->rot_y = true;
 }
 
-void Ape_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -263,3 +263,5 @@ void Ape_Control(int16_t item_num)
         Item_SwitchToAnim(item, APE_VAULT_ANIM, 0);
     }
 }
+
+REGISTER_OBJECT(O_APE, M_Setup)

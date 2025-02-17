@@ -1,5 +1,3 @@
-#include "game/objects/traps/dart_emitter.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/sound.h"
@@ -9,13 +7,16 @@ typedef enum {
     DART_EMITTER_STATE_FIRE = 1,
 } DART_EMITTER_STATE;
 
-void DartEmitter_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = DartEmitter_Control;
+    obj->control_func = M_Control;
     obj->save_flags = 1;
 }
 
-void DartEmitter_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -78,3 +79,5 @@ void DartEmitter_Control(int16_t item_num)
     }
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_DART_EMITTER, M_Setup)

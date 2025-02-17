@@ -1,5 +1,3 @@
-#include "game/objects/effects/missile.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -17,12 +15,15 @@
 #define ROCKET_RANGE_BASE WALL_L
 #define ROCKET_RANGE SQUARE(ROCKET_RANGE_BASE) // = 1048576
 
-void Missile_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Missile_Control;
+    obj->control_func = M_Control;
 }
 
-void Missile_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
 
@@ -94,3 +95,6 @@ void Missile_Control(int16_t effect_num)
     effect->speed = g_LaraItem->speed;
     effect->counter = 0;
 }
+
+REGISTER_OBJECT(O_MISSILE_2, M_Setup)
+REGISTER_OBJECT(O_MISSILE_3, M_Setup)

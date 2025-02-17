@@ -1,5 +1,3 @@
-#include "game/objects/general/waterfall.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/objects/common.h"
@@ -11,14 +9,17 @@
 
 #define WATERFALL_RANGE (WALL_L * 10) // = 10240
 
-void Waterfall_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Waterfall_Control;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 
-void Waterfall_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
@@ -45,3 +46,5 @@ void Waterfall_Control(int16_t item_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_WATERFALL, M_Setup)

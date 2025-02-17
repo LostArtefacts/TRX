@@ -1,20 +1,20 @@
-#include "game/objects/general/earthquake.h"
-
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"
-#include "global/vars.h"
 
-void Earthquake_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Earthquake_Control;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 
-void Earthquake_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
@@ -27,3 +27,5 @@ void Earthquake_Control(int16_t item_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_EARTHQUAKE, M_Setup)

@@ -1,4 +1,4 @@
-#include "game/objects/general/scion3.h"
+// The Great Pyramid shootable Scion.
 
 #include "game/camera.h"
 #include "game/effects.h"
@@ -8,15 +8,18 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void Scion3_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Scion3_Control;
+    obj->control_func = M_Control;
     obj->hit_points = 5;
     obj->save_flags = 1;
     obj->save_hitpoints = 1;
 }
 
-void Scion3_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     static int32_t counter = 0;
     ITEM *const item = Item_Get(item_num);
@@ -56,3 +59,5 @@ void Scion3_Control(int16_t item_num)
         Item_Kill(item_num);
     }
 }
+
+REGISTER_OBJECT(O_SCION_ITEM_3, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/traps/midas_touch.h"
-
 #include "game/camera.h"
 #include "game/game_flow.h"
 #include "game/input.h"
@@ -28,6 +26,11 @@ static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     },
 };
 
+static const OBJECT_BOUNDS *M_Bounds(void);
+static bool M_IsUsable(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_MidasTouch_Bounds;
@@ -38,15 +41,16 @@ static bool M_IsUsable(const int16_t item_num)
     return g_LaraItem->current_anim_state != LS_USE_MIDAS;
 }
 
-void MidasTouch_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->collision_func = MidasTouch_Collision;
+    obj->collision_func = M_Collision;
     obj->draw_func = Object_DrawDummyItem;
     obj->bounds_func = M_Bounds;
     obj->is_usable_func = M_IsUsable;
 }
 
-void MidasTouch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -116,3 +120,5 @@ void MidasTouch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 
     GF_ShowInventoryKeys(item->object_id);
 }
+
+REGISTER_OBJECT(O_MIDAS_TOUCH, M_Setup)

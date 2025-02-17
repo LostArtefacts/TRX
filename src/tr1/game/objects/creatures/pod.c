@@ -1,5 +1,3 @@
-#include "game/objects/creatures/pod.h"
-
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
@@ -16,19 +14,23 @@ typedef enum {
     POD_STATE_EXPLODE = 1,
 } POD_STATE;
 
-void Pod_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise_func = Pod_Initialise;
-    obj->control_func = Pod_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void Pod_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -72,7 +74,7 @@ void Pod_Initialise(int16_t item_num)
     item->mesh_bits = 0xFF0001FF;
 }
 
-void Pod_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -116,3 +118,6 @@ void Pod_Control(int16_t item_num)
 
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_PODS, M_Setup)
+REGISTER_OBJECT(O_BIG_POD, M_Setup)

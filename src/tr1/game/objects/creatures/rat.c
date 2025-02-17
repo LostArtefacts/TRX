@@ -1,5 +1,3 @@
-#include "game/objects/creatures/rat.h"
-
 #include "game/carrier.h"
 #include "game/creature.h"
 #include "game/items.h"
@@ -48,6 +46,12 @@ typedef enum {
 
 static BITE m_RatBite = { 0, -11, 108, 3 };
 
+static void M_SetupBase(OBJECT *obj);
+static void M_SetupRat(OBJECT *obj);
+static void M_SetupVole(OBJECT *obj);
+static void M_ControlRat(int16_t item_num);
+static void M_ControlVole(int16_t item_num);
+
 static const HYBRID_INFO m_RatInfo = {
     .land.id = O_RAT,
     .land.active_anim = RAT_STATE_EMPTY,
@@ -57,13 +61,9 @@ static const HYBRID_INFO m_RatInfo = {
     .water.active_anim = VOLE_STATE_EMPTY,
 };
 
-void Rat_Setup(OBJECT *obj)
+static void M_SetupBase(OBJECT *const obj)
 {
-    if (!obj->loaded) {
-        return;
-    }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Rat_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = RAT_HITPOINTS;
@@ -75,11 +75,28 @@ void Rat_Setup(OBJECT *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-
     Object_GetBone(obj, 1)->rot_y = true;
 }
 
-void Rat_Control(int16_t item_num)
+static void M_SetupRat(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlRat;
+}
+
+static void M_SetupVole(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlVole;
+}
+
+static void M_ControlRat(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -168,29 +185,7 @@ void Rat_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void Vole_Setup(OBJECT *obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = Vole_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = RAT_HITPOINTS;
-    obj->pivot_length = 200;
-    obj->radius = RAT_RADIUS;
-    obj->smartness = RAT_SMARTNESS;
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-
-    Object_GetBone(obj, 1)->rot_y = true;
-}
-
-void Vole_Control(int16_t item_num)
+static void M_ControlVole(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -275,3 +270,6 @@ void Vole_Control(int16_t item_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_RAT, M_SetupRat)
+REGISTER_OBJECT(O_VOLE, M_SetupVole)

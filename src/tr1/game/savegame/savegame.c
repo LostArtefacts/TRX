@@ -6,13 +6,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/creatures/pod.h"
-#include "game/objects/general/pickup.h"
-#include "game/objects/general/puzzle_hole.h"
-#include "game/objects/general/save_crystal.h"
-#include "game/objects/general/scion1.h"
-#include "game/objects/traps/movable_block.h"
-#include "game/objects/traps/sliding_pillar.h"
+#include "game/objects/vars.h"
 #include "game/requester.h"
 #include "game/room.h"
 #include "game/savegame/savegame_bson.h"
@@ -118,27 +112,28 @@ static void M_LoadPostprocess(void)
         if (obj->save_flags) {
             item->flags &= 0xFF00;
 
-            if (obj->collision_func == PuzzleHole_Collision
+            if ((item->object_id >= O_PUZZLE_HOLE_1
+                 && item->object_id <= O_PUZZLE_HOLE_4)
                 && (item->status == IS_DEACTIVATED
                     || item->status == IS_ACTIVE)) {
                 item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
             }
 
-            if (obj->control_func == Pod_Control
+            if ((item->object_id == O_PODS || item->object_id == O_BIG_POD)
                 && item->status == IS_DEACTIVATED) {
                 item->mesh_bits = 0x1FF;
                 item->collidable = 0;
             }
 
-            if ((obj->collision_func == Pickup_Collision
-                 || obj->collision_func == SaveCrystal_Collision
-                 || obj->collision_func == Scion1_Collision)
+            if ((Object_IsType(item->object_id, g_PickupObjects)
+                 || item->object_id == O_SAVEGAME_ITEM)
                 && item->status == IS_DEACTIVATED) {
                 Item_RemoveDrawn(i);
             }
         }
 
-        if (obj->control_func == MovableBlock_Control) {
+        if (item->object_id >= O_MOVABLE_BLOCK_1
+            && item->object_id <= O_MOVABLE_BLOCK_4) {
             item->priv =
                 item->status == IS_ACTIVE ? (void *)true : (void *)false;
             if (item->status == IS_INACTIVE) {
@@ -146,7 +141,7 @@ static void M_LoadPostprocess(void)
             }
         }
 
-        if (obj->control_func == SlidingPillar_Control
+        if (item->object_id == O_SLIDING_PILLAR
             && item->current_anim_state != SPS_MOVING) {
             Room_AlterFloorHeight(item, -WALL_L * 2);
         }
@@ -246,12 +241,13 @@ void Savegame_ProcessItemsBeforeLoad(void)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (obj->control_func == MovableBlock_Control
+        if ((item->object_id >= O_MOVABLE_BLOCK_1
+             && item->object_id <= O_MOVABLE_BLOCK_4)
             && item->status != IS_INVISIBLE
             && item->pos.y >= Item_GetHeight(item)) {
             Room_AlterFloorHeight(item, WALL_L);
         }
-        if (obj->control_func == SlidingPillar_Control) {
+        if (item->object_id == O_SLIDING_PILLAR) {
             Room_AlterFloorHeight(item, WALL_L * 2);
         }
     }
@@ -261,9 +257,7 @@ void Savegame_ProcessItemsBeforeSave(void)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (obj->control_func == SaveCrystal_Control && item->data) {
+        if (item->object_id == O_SAVEGAME_ITEM && item->data != nullptr) {
             // need to reset the crystal status
             item->status = IS_DEACTIVATED;
             item->data = nullptr;

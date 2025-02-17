@@ -1,4 +1,5 @@
-#include "game/objects/general/scion1.h"
+// Tomb of Qualopec and Sanctuary Scion pickup.
+// Triggers O_LARA_EXTRA pedestal pickup animation.
 
 #include "game/camera.h"
 #include "game/game.h"
@@ -29,21 +30,24 @@ static const OBJECT_BOUNDS m_Scion1_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Scion1_Bounds;
 }
 
-void Scion1_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     obj->draw_func = Object_DrawPickupItem;
-    obj->collision_func = Scion1_Collision;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
 }
 
-void Scion1_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -83,3 +87,5 @@ cleanup:
     item->rot.y = roty;
     item->rot.z = rotz;
 }
+
+REGISTER_OBJECT(O_SCION_ITEM_1, M_Setup)

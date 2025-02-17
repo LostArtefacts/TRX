@@ -7,12 +7,15 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-void Twinkle_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Twinkle_Control;
+    obj->control_func = M_Control;
 }
 
-void Twinkle_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
     effect->counter++;
@@ -25,7 +28,7 @@ void Twinkle_Control(int16_t effect_num)
     }
 }
 
-void Twinkle_SparkleItem(ITEM *item, int mesh_mask)
+void Twinkle_SparkleItem(ITEM *const item, uint32_t mesh_mask)
 {
     SPHERE slist[34];
     GAME_VECTOR effect_pos;
@@ -45,3 +48,5 @@ void Twinkle_SparkleItem(ITEM *item, int mesh_mask)
         }
     }
 }
+
+REGISTER_OBJECT(O_TWINKLE, M_Setup)

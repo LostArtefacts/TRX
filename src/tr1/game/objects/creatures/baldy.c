@@ -1,5 +1,3 @@
-#include "game/objects/creatures/baldy.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -29,13 +27,17 @@ typedef enum {
 
 static BITE m_BaldyGun = { -20, 440, 20, 9 };
 
-void Baldy_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise_func = Baldy_Initialise;
-    obj->control_func = Baldy_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BALDY_HITPOINTS;
@@ -50,13 +52,13 @@ void Baldy_Setup(OBJECT *obj)
     Object_GetBone(obj, 0)->rot_y = true;
 }
 
-void Baldy_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     Item_Get(item_num)->current_anim_state = BALDY_STATE_RUN;
 }
 
-void Baldy_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -159,3 +161,5 @@ void Baldy_Control(int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_BALDY, M_Setup)

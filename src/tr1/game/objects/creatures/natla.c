@@ -1,5 +1,3 @@
-#include "game/objects/creatures/natla.h"
-
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/items.h"
@@ -44,14 +42,17 @@ typedef enum {
 
 static BITE m_NatlaGun = { 5, 220, 7, 4 };
 
-void Natla_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->collision_func = Creature_Collision;
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Natla_Control;
+    obj->control_func = M_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = NATLA_HITPOINTS;
     obj->radius = NATLA_RADIUS;
@@ -66,7 +67,7 @@ void Natla_Setup(OBJECT *obj)
     Object_GetBone(obj, 2)->rot_z = true;
 }
 
-void Natla_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -323,3 +324,5 @@ void Natla_Control(int16_t item_num)
 
     item->priv = (void *)(intptr_t)facing;
 }
+
+REGISTER_OBJECT(O_NATLA, M_Setup)

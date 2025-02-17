@@ -1,25 +1,27 @@
-#include "game/objects/traps/sliding_pillar.h"
-
 #include "game/items.h"
 #include "game/room.h"
 #include "global/const.h"
 
-void SlidingPillar_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = SlidingPillar_Initialise;
-    obj->control_func = SlidingPillar_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void SlidingPillar_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Room_AlterFloorHeight(item, -WALL_L * 2);
 }
 
-void SlidingPillar_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
@@ -49,3 +51,5 @@ void SlidingPillar_Control(int16_t item_num)
         item->pos.z += WALL_L / 2;
     }
 }
+
+REGISTER_OBJECT(O_SLIDING_PILLAR, M_Setup)

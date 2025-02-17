@@ -1,5 +1,3 @@
-#include "game/objects/creatures/crocodile.h"
-
 #include "game/carrier.h"
 #include "game/creature.h"
 #include "game/items.h"
@@ -54,6 +52,11 @@ typedef enum {
 
 static BITE m_CrocodileBite = { 5, -21, 467, 9 };
 
+static void M_SetupCrocodile(OBJECT *obj);
+static void M_SetupAlligator(OBJECT *obj);
+static void M_ControlCrocodile(int16_t item_num);
+static void M_ControlAlligator(int16_t item_num);
+
 static const HYBRID_INFO m_CrocodileInfo = {
     .land.id = O_CROCODILE,
     .land.active_anim = CROCODILE_STATE_EMPTY,
@@ -63,29 +66,45 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .water.active_anim = ALLIGATOR_STATE_EMPTY,
 };
 
-void Croc_Setup(OBJECT *obj)
+static void M_SetupBase(OBJECT *const obj)
 {
-    if (!obj->loaded) {
-        return;
-    }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Croc_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = CROCODILE_HITPOINTS;
     obj->pivot_length = 600;
-    obj->radius = CROCODILE_RADIUS;
-    obj->smartness = CROCODILE_SMARTNESS;
     obj->intelligent = 1;
     obj->save_position = 1;
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-
     Object_GetBone(obj, 7)->rot_y = true;
 }
 
-void Croc_Control(int16_t item_num)
+static void M_SetupCrocodile(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlCrocodile;
+    obj->hit_points = CROCODILE_HITPOINTS;
+    obj->radius = CROCODILE_RADIUS;
+    obj->smartness = CROCODILE_SMARTNESS;
+}
+
+static void M_SetupAlligator(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
+    obj->control_func = M_ControlAlligator;
+    obj->hit_points = ALLIGATOR_HITPOINTS;
+    obj->radius = ALLIGATOR_RADIUS;
+    obj->smartness = ALLIGATOR_SMARTNESS;
+}
+
+static void M_ControlCrocodile(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -202,29 +221,7 @@ void Croc_Control(int16_t item_num)
     }
 }
 
-void Alligator_Setup(OBJECT *obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = Alligator_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = ALLIGATOR_HITPOINTS;
-    obj->pivot_length = 600;
-    obj->radius = ALLIGATOR_RADIUS;
-    obj->smartness = ALLIGATOR_SMARTNESS;
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-
-    Object_GetBone(obj, 7)->rot_y = true;
-}
-
-void Alligator_Control(int16_t item_num)
+static void M_ControlAlligator(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -332,3 +329,6 @@ void Alligator_Control(int16_t item_num)
 
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_ALLIGATOR, M_SetupAlligator)
+REGISTER_OBJECT(O_CROCODILE, M_SetupCrocodile)

@@ -1,8 +1,6 @@
 #include "game/objects/general/bridge_common.h"
 
 #include "game/items.h"
-#include "game/objects/general/cog.h"
-#include "game/objects/general/door.h"
 #include "game/room.h"
 #include "global/const.h"
 

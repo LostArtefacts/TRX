@@ -41,13 +41,16 @@ static BITE m_PierreGun1 = { 60, 200, 0, 11 };
 static BITE m_PierreGun2 = { -57, 200, 0, 14 };
 static int16_t m_PierreItemNum = NO_ITEM;
 
-void Pierre_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Pierre_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PIERRE_HITPOINTS;
@@ -62,7 +65,7 @@ void Pierre_Setup(OBJECT *obj)
     Object_GetBone(obj, 6)->rot_y = true;
 }
 
-void Pierre_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -257,3 +260,5 @@ void Pierre_Reset(void)
 {
     m_PierreItemNum = NO_ITEM;
 }
+
+REGISTER_OBJECT(O_PIERRE, M_Setup)

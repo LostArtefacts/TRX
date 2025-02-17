@@ -1,5 +1,3 @@
-#include "game/objects/creatures/wolf.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -47,13 +45,17 @@ typedef enum {
 
 static BITE m_WolfJawBite = { 0, -14, 174, 6 };
 
-void Wolf_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise_func = Wolf_Initialise;
-    obj->control_func = Wolf_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = WOLF_HITPOINTS;
@@ -69,13 +71,13 @@ void Wolf_Setup(OBJECT *obj)
     Object_GetBone(obj, 2)->rot_y = true;
 }
 
-void Wolf_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Item_Get(item_num)->frame_num = WOLF_SLEEP_FRAME;
     Creature_Initialise(item_num);
 }
 
-void Wolf_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -227,3 +229,5 @@ void Wolf_Control(int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, tilt);
 }
+
+REGISTER_OBJECT(O_WOLF, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/creatures/skate_kid.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -39,14 +37,19 @@ typedef enum {
 static BITE m_KidGun1 = { 0, 150, 34, 7 };
 static BITE m_KidGun2 = { 0, 150, 37, 4 };
 
-void SkateKid_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Draw(const ITEM *item);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise_func = SkateKid_Initialise;
-    obj->control_func = SkateKid_Control;
-    obj->draw_func = SkateKid_Draw;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = SKATE_KID_HITPOINTS;
@@ -67,13 +70,13 @@ void SkateKid_Setup(OBJECT *obj)
     }
 }
 
-void SkateKid_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     Item_Get(item_num)->current_anim_state = SKATE_KID_STATE_SKATE;
 }
 
-void SkateKid_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -173,7 +176,7 @@ void SkateKid_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void SkateKid_Draw(const ITEM *const item)
+static void M_Draw(const ITEM *const item)
 {
     Object_DrawAnimatingItem(item);
     if (!Object_Get(O_SKATEBOARD)->loaded) {
@@ -189,3 +192,5 @@ void SkateKid_Draw(const ITEM *const item)
     ((ITEM *)item)->object_id = O_SKATEKID;
     Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
 }
+
+REGISTER_OBJECT(O_SKATEKID, M_Setup)

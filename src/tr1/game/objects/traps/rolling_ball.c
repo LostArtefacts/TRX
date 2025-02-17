@@ -1,5 +1,3 @@
-#include "game/objects/traps/rolling_ball.h"
-
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/items.h"
@@ -17,17 +15,22 @@
 
 #define ROLLINGBALL_DAMAGE_AIR 100
 
-void RollingBall_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = RollingBall_Initialise;
-    obj->control_func = RollingBall_Control;
-    obj->collision_func = RollingBall_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void RollingBall_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     GAME_VECTOR *data = GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_ITEM_DATA);
@@ -38,7 +41,7 @@ void RollingBall_Initialise(int16_t item_num)
     data->room_num = item->room_num;
 }
 
-void RollingBall_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status == IS_ACTIVE) {
@@ -110,7 +113,8 @@ void RollingBall_Control(int16_t item_num)
     }
 }
 
-void RollingBall_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -174,3 +178,5 @@ void RollingBall_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         }
     }
 }
+
+REGISTER_OBJECT(O_ROLLING_BALL, M_Setup)

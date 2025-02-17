@@ -1,5 +1,3 @@
-#include "game/objects/traps/ember_emitter.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/objects/common.h"
@@ -7,15 +5,18 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-void EmberEmitter_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = EmberEmitter_Control;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawDummyItem;
     obj->collision_func = Object_Collision;
     obj->save_flags = 1;
 }
 
-void EmberEmitter_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     int16_t effect_num = Effect_Create(item->room_num);
@@ -32,3 +33,5 @@ void EmberEmitter_Control(int16_t item_num)
         Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
     }
 }
+
+REGISTER_OBJECT(O_EMBER_EMITTER, M_Setup)

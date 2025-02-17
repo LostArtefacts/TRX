@@ -1,19 +1,13 @@
-#include "game/objects/general/bridge_flat.h"
-
 #include "game/objects/general/bridge_common.h"
 
 #include <libtrx/config.h>
 
-static void M_Initialise(int16_t item_num);
 static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-
-static void M_Initialise(const int16_t item_num)
-{
-    Bridge_FixEmbeddedPosition(item_num);
-}
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
 
 static int16_t M_GetFloorHeight(
     const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
@@ -55,9 +49,16 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-void BridgeFlat_Setup(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
 }
+
+static void M_Initialise(const int16_t item_num)
+{
+    Bridge_FixEmbeddedPosition(item_num);
+}
+
+REGISTER_OBJECT(O_BRIDGE_FLAT, M_Setup)

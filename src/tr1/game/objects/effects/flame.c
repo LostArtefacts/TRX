@@ -1,5 +1,3 @@
-#include "game/objects/effects/flame.h"
-
 #include "game/collide.h"
 #include "game/effects.h"
 #include "game/lara/common.h"
@@ -8,15 +6,18 @@
 #include "game/sound.h"
 #include "global/vars.h"
 
-#define FLAME_ONFIRE_DAMAGE 5
-#define FLAME_TOONEAR_DAMAGE 3
+#define FLAME_ON_FIRE_DAMAGE 5
+#define FLAME_TOO_NEAR_DAMAGE 3
 
-void Flame_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Flame_Control;
+    obj->control_func = M_Control;
 }
 
-void Flame_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
 
@@ -57,7 +58,7 @@ void Flame_Control(int16_t effect_num)
                 Effect_NewRoom(effect_num, g_LaraItem->room_num);
             }
             Sound_Effect(SFX_FIRE, &effect->pos, SPM_NORMAL);
-            Lara_TakeDamage(FLAME_ONFIRE_DAMAGE, true);
+            Lara_TakeDamage(FLAME_ON_FIRE_DAMAGE, true);
         }
         return;
     }
@@ -74,14 +75,14 @@ void Flame_Control(int16_t effect_num)
         int32_t z = g_LaraItem->pos.z - effect->pos.z;
         int32_t distance = SQUARE(x) + SQUARE(z);
 
-        Lara_TakeDamage(FLAME_TOONEAR_DAMAGE, true);
+        Lara_TakeDamage(FLAME_TOO_NEAR_DAMAGE, true);
 
         if (distance < SQUARE(300)) {
             effect->counter = 100;
 
-            effect_num = Effect_Create(g_LaraItem->room_num);
-            if (effect_num != NO_EFFECT) {
-                effect = Effect_Get(effect_num);
+            const int16_t new_effect_num = Effect_Create(g_LaraItem->room_num);
+            if (new_effect_num != NO_EFFECT) {
+                effect = Effect_Get(new_effect_num);
                 effect->frame_num = 0;
                 effect->object_id = O_FLAME;
                 effect->counter = -1;
@@ -89,3 +90,5 @@ void Flame_Control(int16_t effect_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_FLAME, M_Setup)

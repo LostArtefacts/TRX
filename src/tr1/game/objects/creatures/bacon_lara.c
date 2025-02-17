@@ -14,11 +14,16 @@
 static int32_t m_AnchorX = -1;
 static int32_t m_AnchorZ = -1;
 
-void BaconLara_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Draw(const ITEM *item);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = BaconLara_Initialise;
-    obj->control_func = BaconLara_Control;
-    obj->draw_func = BaconLara_Draw;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
     obj->collision_func = Creature_Collision;
     obj->hit_points = LARA_MAX_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
@@ -28,7 +33,7 @@ void BaconLara_Setup(OBJECT *obj)
     obj->save_anim = 1;
 }
 
-void BaconLara_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     const OBJECT *const lara_obj = Object_Get(O_LARA);
     OBJECT *const bacon_obj = Object_Get(O_BACON_LARA);
@@ -37,20 +42,7 @@ void BaconLara_Initialise(int16_t item_num)
     Item_Get(item_num)->data = nullptr;
 }
 
-bool BaconLara_InitialiseAnchor(const int32_t room_index)
-{
-    if (room_index >= Room_GetCount()) {
-        return false;
-    }
-
-    const ROOM *const room = Room_Get(room_index);
-    m_AnchorX = room->pos.x + room->size.x * (WALL_L >> 1);
-    m_AnchorZ = room->pos.z + room->size.z * (WALL_L >> 1);
-
-    return true;
-}
-
-void BaconLara_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (m_AnchorX == -1) {
         return;
@@ -127,7 +119,7 @@ void BaconLara_Control(int16_t item_num)
     }
 }
 
-void BaconLara_Draw(const ITEM *item)
+static void M_Draw(const ITEM *const item)
 {
     if (item->current_anim_state == LS_DEATH) {
         Object_DrawAnimatingItem(item);
@@ -147,3 +139,16 @@ void BaconLara_Draw(const ITEM *item)
         Lara_SetMesh(mesh, old_mesh_ptrs[mesh]);
     }
 }
+
+bool BaconLara_InitialiseAnchor(const int32_t room_index)
+{
+    if (room_index >= Room_GetCount()) {
+        return false;
+    }
+    const ROOM *const room = Room_Get(room_index);
+    m_AnchorX = room->pos.x + room->size.x * (WALL_L >> 1);
+    m_AnchorZ = room->pos.z + room->size.z * (WALL_L >> 1);
+    return true;
+}
+
+REGISTER_OBJECT(O_BACON_LARA, M_Setup)

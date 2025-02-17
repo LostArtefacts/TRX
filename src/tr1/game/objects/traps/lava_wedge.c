@@ -1,5 +1,3 @@
-#include "game/objects/traps/lava_wedge.h"
-
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/lara/misc.h"
@@ -9,16 +7,19 @@
 
 #define LAVA_WEDGE_SPEED 25
 
-void LavaWedge_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = LavaWedge_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void LavaWedge_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -74,3 +75,5 @@ void LavaWedge_Control(int16_t item_num)
         g_Camera.target_distance = WALL_L * 3;
     }
 }
+
+REGISTER_OBJECT(O_LAVA_WEDGE, M_Setup)

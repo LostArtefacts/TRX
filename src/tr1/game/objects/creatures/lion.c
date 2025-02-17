@@ -1,5 +1,3 @@
-#include "game/objects/creatures/lion.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -45,10 +43,16 @@ typedef enum {
 
 static BITE m_LionBite = { -2, -10, 132, 21 };
 
+static void M_SetupBase(OBJECT *obj);
+static void M_SetupLion(OBJECT *obj);
+static void M_SetupLioness(OBJECT *obj);
+static void M_SetupPuma(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
 static void M_SetupBase(OBJECT *const obj)
 {
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Lion_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 400;
@@ -61,7 +65,7 @@ static void M_SetupBase(OBJECT *const obj)
     Object_GetBone(obj, 19)->rot_y = true;
 }
 
-void Lion_SetupLion(OBJECT *obj)
+static void M_SetupLion(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
@@ -72,7 +76,7 @@ void Lion_SetupLion(OBJECT *obj)
     obj->smartness = LION_SMARTNESS;
 }
 
-void Lion_SetupLioness(OBJECT *obj)
+static void M_SetupLioness(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
@@ -83,7 +87,7 @@ void Lion_SetupLioness(OBJECT *obj)
     obj->smartness = LIONESS_SMARTNESS;
 }
 
-void Lion_SetupPuma(OBJECT *obj)
+static void M_SetupPuma(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
@@ -94,7 +98,7 @@ void Lion_SetupPuma(OBJECT *obj)
     obj->smartness = PUMA_SMARTNESS;
 }
 
-void Lion_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -195,3 +199,7 @@ void Lion_Control(int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, tilt);
 }
+
+REGISTER_OBJECT(O_LION, M_SetupLion)
+REGISTER_OBJECT(O_LIONESS, M_SetupLioness)
+REGISTER_OBJECT(O_PUMA, M_SetupPuma)

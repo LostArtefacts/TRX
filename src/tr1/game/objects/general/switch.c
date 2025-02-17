@@ -9,6 +9,12 @@
 
 #include <libtrx/config.h>
 
+typedef enum {
+    SWITCH_STATE_OFF = 0,
+    SWITCH_STATE_ON = 1,
+    SWITCH_STATE_LINK = 2,
+} SWITCH_STATE;
+
 static const OBJECT_BOUNDS m_Switch_Bounds = {
     .shift = {
         .min = { .x = -200, .y = +0, .z = +WALL_L / 2 - 200, },
@@ -44,6 +50,13 @@ static const OBJECT_BOUNDS m_Switch_BoundsUW = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static const OBJECT_BOUNDS *M_BoundsUW(void);
+static void M_Setup(OBJECT *obj);
+static void M_SetupUW(OBJECT *obj);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_CollisionControlled(
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
@@ -58,25 +71,25 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
     return &m_Switch_BoundsUW;
 }
 
-void Switch_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Switch_Control;
-    obj->collision_func = Switch_Collision;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
 }
 
-void Switch_SetupUW(OBJECT *obj)
+static void M_SetupUW(OBJECT *const obj)
 {
-    obj->control_func = Switch_Control;
-    obj->collision_func = Switch_CollisionUW;
+    obj->control_func = M_Control;
+    obj->collision_func = M_CollisionUW;
     obj->save_anim = 1;
     obj->save_flags = 1;
     obj->bounds_func = M_BoundsUW;
 }
 
-void Switch_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->flags |= IF_CODE_BITS;
@@ -87,10 +100,11 @@ void Switch_Control(int16_t item_num)
     Item_Animate(item);
 }
 
-void Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.enable_walk_to_items) {
-        Switch_CollisionControlled(item_num, lara_item, coll);
+        M_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
@@ -130,8 +144,8 @@ void Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 }
 
-void Switch_CollisionControlled(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_CollisionControlled(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -186,7 +200,8 @@ void Switch_CollisionControlled(
     }
 }
 
-void Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_CollisionUW(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -243,3 +258,6 @@ bool Switch_Trigger(int16_t item_num, int16_t timer)
     }
     return true;
 }
+
+REGISTER_OBJECT(O_SWITCH_TYPE_1, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_2, M_Setup)

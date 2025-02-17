@@ -1,5 +1,3 @@
-#include "game/objects/creatures/larson.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -32,13 +30,16 @@ typedef enum {
 
 static BITE m_LarsonGun = { -60, 170, 0, 14 };
 
-void Larson_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Larson_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = LARSON_HITPOINTS;
@@ -53,7 +54,7 @@ void Larson_Setup(OBJECT *obj)
     Object_GetBone(obj, 6)->rot_y = true;
 }
 
-void Larson_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -173,3 +174,5 @@ void Larson_Control(int16_t item_num)
 
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_LARSON, M_Setup)

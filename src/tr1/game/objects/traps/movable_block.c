@@ -1,5 +1,3 @@
-#include "game/objects/traps/movable_block.h"
-
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/game_flow.h"
@@ -44,6 +42,11 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Draw(const ITEM *item);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
@@ -264,19 +267,19 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
     }
 }
 
-void MovableBlock_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = MovableBlock_Initialise;
-    obj->control_func = MovableBlock_Control;
-    obj->draw_func = MovableBlock_Draw;
-    obj->collision_func = MovableBlock_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = M_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
 }
 
-void MovableBlock_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -285,7 +288,7 @@ void MovableBlock_Initialise(int16_t item_num)
     }
 }
 
-void MovableBlock_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -330,7 +333,8 @@ void MovableBlock_Control(int16_t item_num)
     }
 }
 
-void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -445,7 +449,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 }
 
-void MovableBlock_Draw(const ITEM *const item)
+static void M_Draw(const ITEM *const item)
 {
     if (item->status == IS_ACTIVE) {
         Object_DrawUnclippedItem(item);
@@ -453,3 +457,8 @@ void MovableBlock_Draw(const ITEM *const item)
         Object_DrawAnimatingItem(item);
     }
 }
+
+REGISTER_OBJECT(O_MOVABLE_BLOCK_1, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_2, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_3, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_4, M_Setup)

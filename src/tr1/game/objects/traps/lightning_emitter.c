@@ -1,5 +1,3 @@
-#include "game/objects/traps/lightning_emitter.h"
-
 #include "game/collide.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -33,16 +31,22 @@ typedef struct {
     XYZ_32 shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
 
-void LightningEmitter_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Draw(const ITEM *item);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = LightningEmitter_Initialise;
-    obj->control_func = LightningEmitter_Control;
-    obj->draw_func = LightningEmitter_Draw;
-    obj->collision_func = LightningEmitter_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
 }
 
-void LightningEmitter_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_ITEM_DATA);
     ITEM *const item = Item_Get(item_num);
@@ -60,7 +64,7 @@ void LightningEmitter_Initialise(int16_t item_num)
     l->zapped = false;
 }
 
-void LightningEmitter_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     LIGHTNING *l = item->data;
@@ -149,8 +153,8 @@ void LightningEmitter_Control(int16_t item_num)
     Sound_Effect(SFX_THUNDER, &item->pos, SPM_NORMAL);
 }
 
-void LightningEmitter_Collision(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     const LIGHTNING *const l = Item_Get(item_num)->data;
     if (!l->zapped) {
@@ -164,7 +168,7 @@ void LightningEmitter_Collision(
     }
 }
 
-void LightningEmitter_Draw(const ITEM *const item)
+static void M_Draw(const ITEM *const item)
 {
     ANIM_FRAME *frmptr[2];
     int32_t rate;
@@ -296,3 +300,5 @@ void LightningEmitter_Draw(const ITEM *const item)
 
     Matrix_Pop();
 }
+
+REGISTER_OBJECT(O_LIGHTNING_EMITTER, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/general/pickup.h"
-
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/gun.h"
@@ -67,6 +65,11 @@ static void M_Control(int16_t item_num);
 static void M_SpawnPickupAid(const ITEM *item);
 static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item);
 static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item);
+static void M_Setup(OBJECT *obj);
+static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_CollisionControlled(
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_Initialise(int16_t item_num)
 {
@@ -154,24 +157,24 @@ static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item)
         ITEM *const check_item = Item_Get(pickup_num);
         if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
             && Object_Get(check_item->object_id)->collision_func
-                == Pickup_Collision) {
+                == M_Collision) {
             M_GetItem(pickup_num, check_item, lara_item);
         }
         pickup_num = check_item->next_item;
     }
 }
 
-void Pickup_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     obj->draw_func = Object_DrawPickupItem;
-    obj->collision_func = Pickup_Collision;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
-    obj->bounds_func = Pickup_Bounds;
+    obj->bounds_func = M_Bounds;
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
 }
 
-const OBJECT_BOUNDS *Pickup_Bounds(void)
+static const OBJECT_BOUNDS *M_Bounds(void)
 {
     if (g_Lara.water_status == LWS_UNDERWATER) {
         return &m_PickUpBoundsUW;
@@ -182,10 +185,11 @@ const OBJECT_BOUNDS *Pickup_Bounds(void)
     }
 }
 
-void Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.enable_walk_to_items) {
-        Pickup_CollisionControlled(item_num, lara_item, coll);
+        M_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
@@ -250,8 +254,8 @@ cleanup:
     item->rot.z = rotz;
 }
 
-void Pickup_CollisionControlled(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_CollisionControlled(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -356,3 +360,27 @@ bool Pickup_Trigger(int16_t item_num)
     item->status = IS_DEACTIVATED;
     return true;
 }
+
+REGISTER_OBJECT(O_PICKUP_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_PICKUP_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_3, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_4, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_3, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_4, M_Setup)
+REGISTER_OBJECT(O_PISTOL_ITEM, M_Setup)
+REGISTER_OBJECT(O_SHOTGUN_ITEM, M_Setup)
+REGISTER_OBJECT(O_MAGNUM_ITEM, M_Setup)
+REGISTER_OBJECT(O_UZI_ITEM, M_Setup)
+REGISTER_OBJECT(O_PISTOL_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_SG_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_MAG_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_UZI_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_EXPLOSIVE_ITEM, M_Setup)
+REGISTER_OBJECT(O_MEDI_ITEM, M_Setup)
+REGISTER_OBJECT(O_BIGMEDI_ITEM, M_Setup)
+REGISTER_OBJECT(O_LEADBAR_ITEM, M_Setup)
+REGISTER_OBJECT(O_SCION_ITEM_2, M_Setup)

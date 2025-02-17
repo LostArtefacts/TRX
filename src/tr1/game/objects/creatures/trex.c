@@ -1,5 +1,3 @@
-#include "game/objects/creatures/trex.h"
-
 #include "game/camera.h"
 #include "game/creature.h"
 #include "game/items.h"
@@ -40,15 +38,20 @@ typedef enum {
     TREX_STATE_KILL = 8,
 } TREX_STATE;
 
-void TRex_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Control(int16_t item_num);
+static void M_KillLara(ITEM *item);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = TRex_Control;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = TRex_Collision;
+    obj->collision_func = M_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = TREX_HITPOINTS;
     obj->pivot_length = 2000;
@@ -64,7 +67,8 @@ void TRex_Setup(OBJECT *obj)
     Object_GetBone(obj, 11)->rot_y = true;
 }
 
-void TRex_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (g_Config.gameplay.disable_trex_collision
         && Item_Get(item_num)->hit_points <= 0) {
@@ -74,7 +78,7 @@ void TRex_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     Creature_Collision(item_num, lara_item, coll);
 }
 
-void TRex_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -166,7 +170,7 @@ void TRex_Control(int16_t item_num)
             if (item->touch_bits & TREX_TOUCH) {
                 Lara_TakeDamage(TREX_BITE_DAMAGE, true);
                 item->goal_anim_state = TREX_STATE_KILL;
-                TRex_LaraDeath(item);
+                M_KillLara(item);
             }
             item->required_anim_state = TREX_STATE_WALK;
             break;
@@ -179,7 +183,7 @@ void TRex_Control(int16_t item_num)
     item->collidable = 1;
 }
 
-void TRex_LaraDeath(ITEM *item)
+static void M_KillLara(ITEM *const item)
 {
     item->goal_anim_state = TREX_STATE_KILL;
     if (g_LaraItem->room_num != item->room_num) {
@@ -207,3 +211,5 @@ void TRex_LaraDeath(ITEM *item)
     g_Camera.target_angle = 170 * DEG_1;
     g_Camera.target_elevation = -25 * DEG_1;
 }
+
+REGISTER_OBJECT(O_TREX, M_Setup)

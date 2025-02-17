@@ -43,13 +43,14 @@ typedef struct {
 } OBJECT_BOUNDS;
 #endif
 
-typedef struct {
+typedef struct OBJECT {
     int16_t mesh_count;
     int16_t mesh_idx;
     int32_t bone_idx;
     uint32_t frame_ofs;
     ANIM_FRAME *frame_base;
 
+    void (*setup_func)(struct OBJECT *obj);
     void (*initialise_func)(int16_t item_num);
     void (*control_func)(int16_t item_num);
     void (*draw_func)(const ITEM *item);

@@ -1,5 +1,3 @@
-#include "game/objects/creatures/statue.h"
-
 #include "game/items.h"
 #include "game/lot.h"
 #include "game/objects/common.h"
@@ -15,19 +13,23 @@
 #define CENTAUR_REARING_ANIM 7
 #define CENTAUR_REARING_FRAME 36
 
-void Statue_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise_func = Statue_Initialise;
-    obj->control_func = Statue_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void Statue_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -54,7 +56,7 @@ void Statue_Initialise(int16_t item_num)
     *(int16_t *)item->data = centaur_item_num;
 }
 
-void Statue_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->flags & IF_KILLED) {
@@ -81,3 +83,5 @@ void Statue_Control(int16_t item_num)
         Sound_Effect(SFX_ATLANTEAN_EXPLODE, &centaur->pos, SPM_NORMAL);
     }
 }
+
+REGISTER_OBJECT(O_STATUE, M_Setup)

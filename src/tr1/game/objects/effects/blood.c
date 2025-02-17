@@ -1,17 +1,17 @@
-#include "game/objects/effects/blood.h"
-
 #include "game/effects.h"
-#include "global/const.h"
-#include "global/vars.h"
+#include "game/objects/common.h"
 
 #include <libtrx/game/math.h>
 
-void Blood_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Blood_Control;
+    obj->control_func = M_Control;
 }
 
-void Blood_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
     effect->pos.x += (Math_Sin(effect->rot.y) * effect->speed) >> W2V_SHIFT;
@@ -25,3 +25,5 @@ void Blood_Control(int16_t effect_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_BLOOD_1, M_Setup)

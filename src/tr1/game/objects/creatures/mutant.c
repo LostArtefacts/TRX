@@ -59,18 +59,19 @@ static BITE m_WarriorBite = { -27, 98, 0, 10 };
 static BITE m_WarriorRocket = { 51, 213, 0, 14 };
 static BITE m_WarriorShard = { -35, 269, 0, 9 };
 
-void Mutant_ToggleExplosions(bool enable)
-{
-    m_EnableExplosions = enable;
-}
+static void M_Setup(OBJECT *obj);
+static void M_Setup2(OBJECT *obj);
+static void M_Setup3(OBJECT *obj);
+static void M_Initialise2(int16_t item_num);
+static void M_Control(int16_t item_num);
 
-void Mutant_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Mutant_FlyerControl;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = FLYER_HITPOINTS;
@@ -82,31 +83,38 @@ void Mutant_Setup(OBJECT *obj)
     obj->save_hitpoints = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-
     Object_GetBone(obj, 0)->rot_y = true;
     Object_GetBone(obj, 2)->rot_y = true;
 }
 
-void Mutant_Setup2(OBJECT *obj)
+static void M_Setup2(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     *obj = *Object_Get(O_WARRIOR_1);
-    obj->initialise_func = Mutant_Initialise2;
+    obj->setup_func = M_Setup2;
+    obj->initialise_func = M_Initialise2;
     obj->smartness = WARRIOR2_SMARTNESS;
 }
 
-void Mutant_Setup3(OBJECT *obj)
+static void M_Setup3(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     *obj = *Object_Get(O_WARRIOR_1);
-    obj->initialise_func = Mutant_Initialise2;
+    obj->setup_func = M_Setup3;
+    obj->initialise_func = M_Initialise2;
 }
 
-void Mutant_FlyerControl(int16_t item_num)
+static void M_Initialise2(const int16_t item_num)
+{
+    Creature_Initialise(item_num);
+    Item_Get(item_num)->mesh_bits = 0xFFE07FFF;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -359,8 +367,11 @@ void Mutant_FlyerControl(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void Mutant_Initialise2(int16_t item_num)
+void Mutant_ToggleExplosions(bool enable)
 {
-    Creature_Initialise(item_num);
-    Item_Get(item_num)->mesh_bits = 0xFFE07FFF;
+    m_EnableExplosions = enable;
 }
+
+REGISTER_OBJECT(O_WARRIOR_1, M_Setup)
+REGISTER_OBJECT(O_WARRIOR_2, M_Setup2)
+REGISTER_OBJECT(O_WARRIOR_3, M_Setup3)

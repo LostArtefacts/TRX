@@ -1,5 +1,3 @@
-#include "game/objects/creatures/centaur.h"
-
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/items.h"
@@ -37,13 +35,16 @@ typedef enum {
 static BITE m_CentaurRocket = { 11, 415, 41, 13 };
 static BITE m_CentaurRear = { 50, 30, 0, 5 };
 
-void Centaur_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Centaur_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CENTAUR_HITPOINTS;
@@ -60,7 +61,7 @@ void Centaur_Setup(OBJECT *obj)
     Object_GetBone(obj, 10)->rot_y = true;
 }
 
-void Centaur_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -161,3 +162,5 @@ void Centaur_Control(int16_t item_num)
         item->status = IS_DEACTIVATED;
     }
 }
+
+REGISTER_OBJECT(O_CENTAUR, M_Setup)

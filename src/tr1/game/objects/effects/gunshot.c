@@ -1,17 +1,19 @@
-#include "game/objects/effects/gunshot.h"
-
 #include "game/effects.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/output.h>
 
-void GunShot_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = GunShot_Control;
+    obj->control_func = M_Control;
 }
 
-void GunShot_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
     effect->counter--;
@@ -24,3 +26,5 @@ void GunShot_Control(int16_t effect_num)
         Output_AddDynamicLight(effect->pos, 12, 11);
     }
 }
+
+REGISTER_OBJECT(O_GUN_FLASH, M_Setup)

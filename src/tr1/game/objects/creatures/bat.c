@@ -1,5 +1,3 @@
-#include "game/objects/creatures/bat.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -30,6 +28,9 @@ typedef enum {
 static BITE m_BatBite = { 0, 16, 45, 4 };
 
 static void M_FixEmbeddedPosition(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+static void M_Initialise(int16_t item_num);
 
 static void M_FixEmbeddedPosition(int16_t item_num)
 {
@@ -65,13 +66,13 @@ static void M_FixEmbeddedPosition(int16_t item_num)
     }
 }
 
-void Bat_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise_func = Bat_Initialise;
-    obj->control_func = Bat_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BAT_HITPOINTS;
@@ -84,7 +85,7 @@ void Bat_Setup(OBJECT *obj)
     obj->save_flags = 1;
 }
 
-void Bat_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -144,7 +145,7 @@ void Bat_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void Bat_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
 
@@ -153,3 +154,5 @@ void Bat_Initialise(int16_t item_num)
     // by the height of their hanging animation.
     M_FixEmbeddedPosition(item_num);
 }
+
+REGISTER_OBJECT(O_BAT, M_Setup)

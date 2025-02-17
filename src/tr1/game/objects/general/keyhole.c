@@ -24,6 +24,7 @@ static const OBJECT_BOUNDS m_KeyHoleBounds = {
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_IsUsable(int16_t item_num);
+static void M_Setup(OBJECT *obj);
 
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
@@ -69,7 +70,7 @@ static bool M_IsUsable(const int16_t item_num)
     return item->status == IS_INACTIVE;
 }
 
-void KeyHole_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->save_flags = 1;
@@ -86,3 +87,8 @@ bool KeyHole_Trigger(int16_t item_num)
     }
     return false;
 }
+
+REGISTER_OBJECT(O_KEY_HOLE_1, M_Setup)
+REGISTER_OBJECT(O_KEY_HOLE_2, M_Setup)
+REGISTER_OBJECT(O_KEY_HOLE_3, M_Setup)
+REGISTER_OBJECT(O_KEY_HOLE_4, M_Setup)

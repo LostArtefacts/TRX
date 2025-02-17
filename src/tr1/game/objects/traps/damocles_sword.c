@@ -1,5 +1,3 @@
-#include "game/objects/traps/damocles_sword.h"
-
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/random.h"
@@ -13,18 +11,23 @@
 #define DAMOCLES_SWORD_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define DAMOCLES_SWORD_DAMAGE 100
 
-void DamoclesSword_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = DamoclesSword_Initialise;
-    obj->control_func = DamoclesSword_Control;
-    obj->collision_func = DamoclesSword_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
     obj->shadow_size = UNIT_SHADOW;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void DamoclesSword_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->rot.y = Random_GetControl();
@@ -32,7 +35,7 @@ void DamoclesSword_Initialise(int16_t item_num)
     item->fall_speed = 50;
 }
 
-void DamoclesSword_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->gravity) {
@@ -64,7 +67,8 @@ void DamoclesSword_Control(int16_t item_num)
     }
 }
 
-void DamoclesSword_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
@@ -82,3 +86,5 @@ void DamoclesSword_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         Spawn_Blood(x, y, z, lara_item->speed, d, lara_item->room_num);
     }
 }
+
+REGISTER_OBJECT(O_DAMOCLES_SWORD, M_Setup)

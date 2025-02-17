@@ -1,7 +1,7 @@
-#include "game/objects/effects/pickup_aid.h"
-
 #include "game/effects.h"
+#include "game/objects/common.h"
 
+static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t effect_num);
 
 static void M_Control(int16_t effect_num)
@@ -17,7 +17,9 @@ static void M_Control(int16_t effect_num)
     }
 }
 
-void PickupAid_Setup(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
 }
+
+REGISTER_OBJECT(O_PICKUP_AID, M_Setup)

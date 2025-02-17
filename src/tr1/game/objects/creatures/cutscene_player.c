@@ -1,17 +1,19 @@
-#include "game/objects/creatures/cutscene_player.h"
-
 #include "game/camera.h"
 #include "game/items.h"
 #include "global/vars.h"
 
-void CutscenePlayer_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = CutscenePlayer_Initialise;
-    obj->control_func = CutscenePlayer_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->hit_points = 1;
 }
 
-void CutscenePlayer_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Item_AddActive(item_num);
 
@@ -25,7 +27,7 @@ void CutscenePlayer_Initialise(int16_t item_num)
     item->rot.y = 0;
 }
 
-void CutscenePlayer_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->object_id != O_PLAYER_4) {
@@ -35,3 +37,8 @@ void CutscenePlayer_Control(int16_t item_num)
     }
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_PLAYER_1, M_Setup)
+REGISTER_OBJECT(O_PLAYER_2, M_Setup)
+REGISTER_OBJECT(O_PLAYER_3, M_Setup)
+REGISTER_OBJECT(O_PLAYER_4, M_Setup)

@@ -34,3 +34,9 @@ ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
 
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
+
+#define REGISTER_OBJECT(object_id, setup_func_)                                \
+    __attribute__((constructor)) static void M_RegisterObject##object_id(void) \
+    {                                                                          \
+        Object_Get(object_id)->setup_func = setup_func_;                       \
+    }

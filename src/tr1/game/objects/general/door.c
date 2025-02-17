@@ -18,16 +18,19 @@ typedef struct {
     DOORPOS_DATA d2flip;
 } DOOR_DATA;
 
-static bool M_LaraDoorCollision(const SECTOR *sector);
-static void M_Check(DOORPOS_DATA *d);
-static void M_Open(DOORPOS_DATA *d);
-static void M_Shut(DOORPOS_DATA *d);
-
 static SECTOR *M_GetRoomRelSector(
     const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz);
-static void M_Initialise(
+static void M_InitialisePortal(
     const ROOM *room, const ITEM *item, int32_t sector_dx, int32_t sector_dz,
     DOORPOS_DATA *door_pos);
+
+static bool M_LaraDoorCollision(const SECTOR *sector);
+static void M_Check(DOORPOS_DATA *d);
+static void M_Shut(DOORPOS_DATA *d);
+static void M_Open(DOORPOS_DATA *d);
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
 
 static SECTOR *M_GetRoomRelSector(
     const ROOM *const room, const ITEM *item, const int32_t sector_dx,
@@ -40,7 +43,7 @@ static SECTOR *M_GetRoomRelSector(
     return Room_GetUnitSector(room, sector.x, sector.z);
 }
 
-static void M_Initialise(
+static void M_InitialisePortal(
     const ROOM *const room, const ITEM *const item, const int32_t sector_dx,
     const int32_t sector_dz, DOORPOS_DATA *const door_pos)
 {
@@ -125,17 +128,17 @@ static void M_Open(DOORPOS_DATA *const d)
     }
 }
 
-void Door_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = Door_Initialise;
-    obj->control_func = Door_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Door_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void Door_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     DOOR_DATA *const door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_ITEM_DATA);
@@ -155,13 +158,13 @@ void Door_Initialise(int16_t item_num)
 
     int16_t room_num = item->room_num;
     const ROOM *room = Room_Get(room_num);
-    M_Initialise(room, item, dx, dz, &door->d1);
+    M_InitialisePortal(room, item, dx, dz, &door->d1);
 
     if (room->flipped_room == -1) {
         door->d1flip.sector = nullptr;
     } else {
         room = Room_Get(room->flipped_room);
-        M_Initialise(room, item, dx, dz, &door->d1flip);
+        M_InitialisePortal(room, item, dx, dz, &door->d1flip);
     }
 
     room_num = door->d1.sector->portal_room.wall;
@@ -175,12 +178,12 @@ void Door_Initialise(int16_t item_num)
     }
 
     room = Room_Get(room_num);
-    M_Initialise(room, item, 0, 0, &door->d2);
+    M_InitialisePortal(room, item, 0, 0, &door->d2);
     if (room->flipped_room == -1) {
         door->d2flip.sector = nullptr;
     } else {
         room = Room_Get(room->flipped_room);
-        M_Initialise(room, item, 0, 0, &door->d2flip);
+        M_InitialisePortal(room, item, 0, 0, &door->d2flip);
     }
 
     M_Shut(&door->d2);
@@ -191,7 +194,7 @@ void Door_Initialise(int16_t item_num)
     item->room_num = prev_room;
 }
 
-void Door_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     DOOR_DATA *door = item->data;
@@ -226,14 +229,12 @@ void Door_Control(int16_t item_num)
 void Door_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 {
     ITEM *const item = Item_Get(item_num);
-
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!Collide_TestCollision(item, lara_item)) {
         return;
     }
-
     if (coll->enable_baddie_push) {
         if (item->current_anim_state != item->goal_anim_state) {
             Lara_Push(item, coll, coll->enable_hit, true);
@@ -242,3 +243,12 @@ void Door_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         }
     }
 }
+
+REGISTER_OBJECT(O_DOOR_TYPE_1, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_2, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_3, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_4, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_5, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_6, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_7, M_Setup)
+REGISTER_OBJECT(O_DOOR_TYPE_8, M_Setup)

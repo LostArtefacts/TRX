@@ -1,5 +1,3 @@
-#include "game/objects/creatures/bear.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -47,13 +45,16 @@ typedef enum {
 
 static BITE m_BearHeadBite = { 0, 96, 335, 14 };
 
-void Bear_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Bear_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
@@ -73,7 +74,7 @@ void Bear_Setup(OBJECT *obj)
     Object_GetBone(obj, 13)->rot_y = true;
 }
 
-void Bear_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -246,3 +247,5 @@ void Bear_Control(int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_BEAR, M_Setup)

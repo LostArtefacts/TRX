@@ -1,17 +1,18 @@
-#include "game/objects/effects/explosion.h"
-
 #include "game/effects.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/output.h>
 
-void Explosion_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Explosion_Control;
+    obj->control_func = M_Control;
 }
 
-void Explosion_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
@@ -29,3 +30,5 @@ void Explosion_Control(int16_t effect_num)
         Output_AddDynamicLight(effect->pos, 12, 10);
     }
 }
+
+REGISTER_OBJECT(O_EXPLOSION_1, M_Setup)

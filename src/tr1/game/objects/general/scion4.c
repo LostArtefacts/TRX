@@ -1,4 +1,4 @@
-#include "game/objects/general/scion4.h"
+// Atlantis Scion - triggers O_LARA_EXTRA reach anim.
 
 #include "game/camera.h"
 #include "game/input.h"
@@ -22,26 +22,30 @@ static const OBJECT_BOUNDS m_Scion4_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Scion4_Bounds;
 }
 
-void Scion4_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Scion4_Control;
-    obj->collision_func = Scion4_Collision;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
 }
 
-void Scion4_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     Item_Animate(Item_Get(item_num));
 }
 
-void Scion4_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -71,3 +75,5 @@ cleanup:
     item->rot.y = roty;
     item->rot.z = rotz;
 }
+
+REGISTER_OBJECT(O_SCION_ITEM_4, M_Setup)

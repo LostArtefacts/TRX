@@ -1,5 +1,3 @@
-#include "game/objects/traps/thors_hammer_handle.h"
-
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
@@ -9,23 +7,32 @@
 #include <libtrx/debug.h>
 
 typedef enum {
-    THOR_HAMMER_HANDLE_STATE_SET = 0,
-    THOR_HAMMER_HANDLE_STATE_TEASE = 1,
-    THOR_HAMMER_HANDLE_STATE_ACTIVE = 2,
-    THOR_HAMMER_HANDLE_STATE_DONE = 3,
-} THOR_HAMMER_HANDLE_STATE;
+    THOR_HAMMER_STATE_SET = 0,
+    THOR_HAMMER_STATE_TEASE = 1,
+    THOR_HAMMER_STATE_ACTIVE = 2,
+    THOR_HAMMER_STATE_DONE = 3,
+} THOR_HAMMER_STATE;
 
-void ThorsHammerHandle_Setup(OBJECT *obj)
+static void M_SetupHandle(OBJECT *obj);
+static void M_InitialiseHandle(int16_t item_num);
+static void M_ControlHandle(int16_t item_num);
+static void M_CollisionHandle(
+    int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_SetupHead(OBJECT *obj);
+static void M_CollisionHead(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_SetupHandle(OBJECT *const obj)
 {
-    obj->initialise_func = ThorsHammerHandle_Initialise;
-    obj->control_func = ThorsHammerHandle_Control;
+    obj->initialise_func = M_InitialiseHandle;
+    obj->control_func = M_ControlHandle;
     obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = ThorsHammerHandle_Collision;
+    obj->collision_func = M_CollisionHandle;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void ThorsHammerHandle_Initialise(int16_t item_num)
+static void M_InitialiseHandle(const int16_t item_num)
 {
     ITEM *const hand_item = Item_Get(item_num);
     const int16_t head_item_num = Item_CreateLevelItem();
@@ -40,29 +47,29 @@ void ThorsHammerHandle_Initialise(int16_t item_num)
     hand_item->data = head_item;
 }
 
-void ThorsHammerHandle_Control(int16_t item_num)
+static void M_ControlHandle(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
     switch (item->current_anim_state) {
-    case THOR_HAMMER_HANDLE_STATE_SET:
+    case THOR_HAMMER_STATE_SET:
         if (Item_IsTriggerActive(item)) {
-            item->goal_anim_state = THOR_HAMMER_HANDLE_STATE_TEASE;
+            item->goal_anim_state = THOR_HAMMER_STATE_TEASE;
         } else {
             Item_RemoveActive(item_num);
             item->status = IS_INACTIVE;
         }
         break;
 
-    case THOR_HAMMER_HANDLE_STATE_TEASE:
+    case THOR_HAMMER_STATE_TEASE:
         if (Item_IsTriggerActive(item)) {
-            item->goal_anim_state = THOR_HAMMER_HANDLE_STATE_ACTIVE;
+            item->goal_anim_state = THOR_HAMMER_STATE_ACTIVE;
         } else {
-            item->goal_anim_state = THOR_HAMMER_HANDLE_STATE_SET;
+            item->goal_anim_state = THOR_HAMMER_STATE_SET;
         }
         break;
 
-    case THOR_HAMMER_HANDLE_STATE_ACTIVE: {
+    case THOR_HAMMER_STATE_ACTIVE: {
         const int32_t frame_num = Item_GetRelativeFrame(item);
         if (frame_num > 30) {
             int32_t x = item->pos.x;
@@ -97,7 +104,7 @@ void ThorsHammerHandle_Control(int16_t item_num)
         break;
     }
 
-    case THOR_HAMMER_HANDLE_STATE_DONE: {
+    case THOR_HAMMER_STATE_DONE: {
         int32_t x = item->pos.x;
         int32_t z = item->pos.z;
         int32_t old_x = x;
@@ -142,8 +149,8 @@ void ThorsHammerHandle_Control(int16_t item_num)
     head_item->current_anim_state = item->current_anim_state;
 }
 
-void ThorsHammerHandle_Collision(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_CollisionHandle(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
@@ -153,3 +160,27 @@ void ThorsHammerHandle_Collision(
         Lara_Push(item, coll, false, true);
     }
 }
+
+static void M_SetupHead(OBJECT *const obj)
+{
+    obj->collision_func = M_CollisionHead;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_CollisionHead(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (!Lara_TestBoundsCollide(item, coll->radius)) {
+        return;
+    }
+    if (coll->enable_baddie_push
+        && item->current_anim_state != THOR_HAMMER_STATE_ACTIVE) {
+        Lara_Push(item, coll, false, true);
+    }
+}
+
+REGISTER_OBJECT(O_THORS_HANDLE, M_SetupHandle)
+REGISTER_OBJECT(O_THORS_HEAD, M_SetupHead)

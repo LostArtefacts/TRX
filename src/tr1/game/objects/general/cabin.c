@@ -1,5 +1,3 @@
-#include "game/objects/general/cabin.h"
-
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/room.h"
@@ -12,16 +10,19 @@ typedef enum {
     CABIN_STATE_FINISH = 4,
 } CABIN_STATE;
 
-void Cabin_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = Cabin_Control;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void Cabin_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -48,3 +49,5 @@ void Cabin_Control(int16_t item_num)
 
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_PORTACABIN, M_Setup)

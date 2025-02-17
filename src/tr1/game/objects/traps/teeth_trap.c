@@ -1,5 +1,3 @@
-#include "game/objects/traps/teeth_trap.h"
-
 #include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -21,6 +19,8 @@ static BITE m_Teeth3A = { -23, -10, -1718, 0 };
 static BITE m_Teeth3B = { 71, -10, -1718, 1 };
 
 static void M_BiteEffect(ITEM *item, BITE *bite);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_BiteEffect(ITEM *item, BITE *bite)
 {
@@ -33,15 +33,15 @@ static void M_BiteEffect(ITEM *item, BITE *bite)
     Spawn_Blood(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
 }
 
-void TeethTrap_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = TeethTrap_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Object_CollisionTrap;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void TeethTrap_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
@@ -61,3 +61,5 @@ void TeethTrap_Control(int16_t item_num)
     }
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_TEETH_TRAP, M_Setup)

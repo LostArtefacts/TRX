@@ -1,17 +1,18 @@
-#include "game/objects/effects/natla_gun.h"
-
 #include "game/effects.h"
 #include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 
-void NatlaGun_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = NatlaGun_Control;
+    obj->control_func = M_Control;
 }
 
-void NatlaGun_Control(int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
@@ -38,9 +39,9 @@ void NatlaGun_Control(int16_t effect_num)
         return;
     }
 
-    effect_num = Effect_Create(room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *new_effect = Effect_Get(effect_num);
+    const int16_t new_effect_num = Effect_Create(room_num);
+    if (new_effect_num != NO_EFFECT) {
+        EFFECT *new_effect = Effect_Get(new_effect_num);
         new_effect->pos.x = x;
         new_effect->pos.y = y;
         new_effect->pos.z = z;
@@ -51,3 +52,5 @@ void NatlaGun_Control(int16_t effect_num)
         new_effect->object_id = O_MISSILE_1;
     }
 }
+
+REGISTER_OBJECT(O_MISSILE_1, M_Setup)

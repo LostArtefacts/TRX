@@ -1,5 +1,3 @@
-#include "game/objects/creatures/torso.h"
-
 #include "game/camera.h"
 #include "game/creature.h"
 #include "game/items.h"
@@ -51,13 +49,16 @@ typedef enum {
     TORSO_STATE_KILL = 11,
 } TORSO_STATE;
 
-void Torso_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->initialise_func = Creature_Initialise;
-    obj->control_func = Torso_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = TORSO_HITPOINTS;
@@ -72,7 +73,7 @@ void Torso_Setup(OBJECT *obj)
     Object_GetBone(obj, 1)->rot_y = true;
 }
 
-void Torso_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -260,3 +261,5 @@ void Torso_Control(int16_t item_num)
         item->status = IS_DEACTIVATED;
     }
 }
+
+REGISTER_OBJECT(O_TORSO, M_Setup)

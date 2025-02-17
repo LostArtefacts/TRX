@@ -1,5 +1,3 @@
-#include "game/objects/traps/spikes.h"
-
 #include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -8,12 +6,16 @@
 
 #define SPIKE_DAMAGE 15
 
-void Spikes_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->collision_func = Spikes_Collision;
+    obj->collision_func = M_Collision;
 }
 
-void Spikes_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     if (lara_item->hit_points < 0) {
@@ -54,3 +56,5 @@ void Spikes_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         lara_item->gravity = 0;
     }
 }
+
+REGISTER_OBJECT(O_SPIKES, M_Setup)

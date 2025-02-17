@@ -1,5 +1,3 @@
-#include "game/objects/general/puzzle_hole.h"
-
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -38,6 +36,9 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static bool M_IsUsable(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+static void M_SetupDone(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
@@ -50,20 +51,21 @@ static bool M_IsUsable(const int16_t item_num)
     return item->status == IS_INACTIVE;
 }
 
-void PuzzleHole_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->collision_func = PuzzleHole_Collision;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
     obj->is_usable_func = M_IsUsable;
 }
 
-void PuzzleHole_SetupDone(OBJECT *obj)
+static void M_SetupDone(OBJECT *const obj)
 {
     obj->save_flags = 1;
 }
 
-void PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -128,3 +130,12 @@ void PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
 
     GF_ShowInventoryKeys(item->object_id);
 }
+
+REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_HOLE_2, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_HOLE_3, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_HOLE_4, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_DONE_1, M_SetupDone)
+REGISTER_OBJECT(O_PUZZLE_DONE_2, M_SetupDone)
+REGISTER_OBJECT(O_PUZZLE_DONE_3, M_SetupDone)
+REGISTER_OBJECT(O_PUZZLE_DONE_4, M_SetupDone)
