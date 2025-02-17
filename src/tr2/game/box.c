@@ -42,10 +42,10 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
         }
 
         BOX_NODE *node = &lot->node[lot->head];
-        const BOX_INFO *box = &g_Boxes[lot->head];
+        const BOX_INFO *head_box = Box_GetBox(lot->head);
 
         bool done = false;
-        int32_t index = box->overlap_index & BOX_OVERLAP_BITS;
+        int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
         while (!done) {
             int16_t box_num = g_Overlap[index++];
             if ((box_num & BOX_END_BIT) != 0) {
@@ -57,7 +57,8 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
                 continue;
             }
 
-            const int32_t change = g_Boxes[box_num].height - box->height;
+            const BOX_INFO *const box = Box_GetBox(box_num);
+            const int32_t change = box->height - head_box->height;
             if (change > lot->step || change < lot->drop) {
                 continue;
             }
@@ -81,7 +82,7 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
                     continue;
                 }
 
-                if ((g_Boxes[box_num].overlap_index & lot->block_mask) != 0) {
+                if ((box->overlap_index & lot->block_mask) != 0) {
                     expand->search_num = node->search_num | BOX_BLOCKED_SEARCH;
                 } else {
                     expand->search_num = node->search_num;
@@ -127,7 +128,7 @@ end:
 
 void Box_TargetBox(LOT_INFO *const lot, const int16_t box_num)
 {
-    const BOX_INFO *const box = &g_Boxes[box_num & BOX_NUM_BITS];
+    const BOX_INFO *const box = Box_GetBox(box_num & BOX_NUM_BITS);
 
     lot->target.z = ((box->right - box->left - 1) >> (15 - WALL_SHIFT))
             * Random_GetControl()
@@ -147,7 +148,7 @@ void Box_TargetBox(LOT_INFO *const lot, const int16_t box_num)
 int32_t Box_StalkBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
-    const BOX_INFO *const box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
 
     const int32_t z =
         ((box->left + box->right) << (WALL_SHIFT - 1)) - enemy->pos.z;
@@ -179,7 +180,7 @@ int32_t Box_StalkBox(
 int32_t Box_EscapeBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
-    const BOX_INFO *const box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
     const int32_t x =
         ((box->bottom + box->top) << (WALL_SHIFT - 1)) - enemy->pos.x;
     const int32_t z =
@@ -211,7 +212,7 @@ int32_t Box_ValidBox(
         return false;
     }
 
-    const BOX_INFO *const box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
     if ((creature->lot.block_mask & box->overlap_index) != 0) {
         return false;
     }
@@ -240,7 +241,7 @@ TARGET_TYPE Box_CalculateTarget(
     int32_t right = 0;
     int32_t left = 0;
 
-    BOX_INFO *box = nullptr;
+    const BOX_INFO *box = nullptr;
     int32_t box_left = 0;
     int32_t box_right = 0;
     int32_t box_top = 0;
@@ -248,7 +249,7 @@ TARGET_TYPE Box_CalculateTarget(
 
     int32_t prime_free = BOX_CLIP_ALL;
     do {
-        box = &g_Boxes[box_num];
+        box = Box_GetBox(box_num);
         if (lot->fly != 0) {
             CLAMPG(target->y, box->height - WALL_L);
         } else {
@@ -359,7 +360,7 @@ TARGET_TYPE Box_CalculateTarget(
 
         box_num = lot->node[box_num].exit_box;
         if (box_num != NO_BOX
-            && (g_Boxes[box_num].overlap_index & lot->block_mask) != 0) {
+            && (Box_GetBox(box_num)->overlap_index & lot->block_mask) != 0) {
             break;
         }
     } while (box_num != NO_BOX);
@@ -397,7 +398,7 @@ int32_t Box_BadFloor(
         return true;
     }
 
-    const BOX_INFO *const box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
     if ((box->overlap_index & lot->block_mask) != 0) {
         return true;
     }

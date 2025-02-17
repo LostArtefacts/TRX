@@ -44,7 +44,7 @@ static void M_Initialise(const int16_t item_num)
     const ROOM *const room = Room_Get(item->room_num);
     const SECTOR *const sector =
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
-    BOX_INFO *const box = &g_Boxes[sector->box];
+    BOX_INFO *const box = Box_GetBox(sector->box);
 
     if (box->overlap_index & BOX_BLOCKABLE) {
         box->overlap_index |= BOX_BLOCKED;
@@ -83,7 +83,7 @@ static void M_Control2(const int16_t item_num)
     const ROOM *const room = Room_Get(item->room_num);
     const SECTOR *const sector =
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
-    BOX_INFO *const box = &g_Boxes[sector->box];
+    BOX_INFO *const box = Box_GetBox(sector->box);
 
     if (box->overlap_index & BOX_BLOCKED) {
         box->overlap_index &= ~BOX_BLOCKED;
@@ -105,7 +105,7 @@ void Window_Smash(const int16_t item_num)
     const ROOM *const room = Room_Get(item->room_num);
     const SECTOR *const sector =
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
-    BOX_INFO *const box = &g_Boxes[sector->box];
+    BOX_INFO *const box = Box_GetBox(sector->box);
 
     if (box->overlap_index & BOX_BLOCKABLE) {
         box->overlap_index &= ~BOX_BLOCKED;

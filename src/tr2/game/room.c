@@ -734,7 +734,7 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
         }
     }
 
-    BOX_INFO *const box = &g_Boxes[sector->box];
+    BOX_INFO *const box = Box_GetBox(sector->box);
     if (box->overlap_index & BOX_BLOCKABLE) {
         if (height < 0) {
             box->overlap_index |= BOX_BLOCKED;

@@ -108,7 +108,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         info->enemy_zone_num = zone[enemy->box_num];
     }
 
-    if (((g_Boxes[enemy->box_num].overlap_index & creature->lot.block_mask)
+    if (((Box_GetBox(enemy->box_num)->overlap_index & creature->lot.block_mask)
          != 0)
         || (creature->lot.node[item->box_num].search_num
             == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
@@ -420,12 +420,12 @@ int32_t Creature_Animate(
     Room_GetSector(old.x, y, old.z, &room_num);
     const SECTOR *sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-    int32_t height = g_Boxes[sector->box].height;
+    int32_t height = Box_GetBox(sector->box)->height;
     int16_t next_box = lot->node[sector->box].exit_box;
     int32_t next_height =
-        next_box != NO_BOX ? g_Boxes[next_box].height : height;
+        next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
 
-    const int32_t box_height = g_Boxes[item->box_num].height;
+    const int32_t box_height = Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX || zone[item->box_num] != zone[sector->box]
         || box_height - height > lot->step || box_height - height < lot->drop) {
         const int32_t pos_x = item->pos.x >> WALL_SHIFT;
@@ -445,9 +445,10 @@ int32_t Creature_Animate(
         }
 
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-        height = g_Boxes[sector->box].height;
+        height = Box_GetBox(sector->box)->height;
         next_box = lot->node[sector->box].exit_box;
-        next_height = next_box != NO_BOX ? g_Boxes[next_box].height : height;
+        next_height =
+            next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
     }
 
     const int32_t x = item->pos.x;
