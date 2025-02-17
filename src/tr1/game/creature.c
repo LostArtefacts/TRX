@@ -42,13 +42,7 @@ void Creature_AIInfo(ITEM *item, AI_INFO *info)
         return;
     }
 
-    const bool flip_status = Room_GetFlipStatus();
-    int16_t *zone;
-    if (creature->lot.fly) {
-        zone = g_FlyZone[flip_status];
-    } else {
-        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][flip_status];
-    }
+    const int16_t *const zone = Box_GetLotZone(&creature->lot);
 
     const ROOM *room = Room_Get(item->room_num);
     item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
@@ -405,13 +399,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
 
     const int32_t box_height = Box_GetBox(item->box_num)->height;
 
-    const bool flip_status = Room_GetFlipStatus();
-    int16_t *zone;
-    if (lot->fly) {
-        zone = g_FlyZone[flip_status];
-    } else {
-        zone = g_GroundZone[BOX_ZONE(lot->step)][flip_status];
-    }
+    const int16_t *const zone = Box_GetLotZone(lot);
 
     Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {

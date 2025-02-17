@@ -86,13 +86,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         enemy = g_LaraItem;
     }
 
-    const bool flip_status = Room_GetFlipStatus();
-    int16_t *zone;
-    if (creature->lot.fly) {
-        zone = g_FlyZone[flip_status];
-    } else {
-        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][flip_status];
-    }
+    const int16_t *const zone = Box_GetLotZone(&creature->lot);
 
     {
         const ROOM *const room = Room_Get(item->room_num);
@@ -391,13 +385,7 @@ int32_t Creature_Animate(
     const LOT_INFO *const lot = &creature->lot;
     const XYZ_32 old = item->pos;
 
-    const bool flip_status = Room_GetFlipStatus();
-    int16_t *zone;
-    if (lot->fly) {
-        zone = g_FlyZone[flip_status];
-    } else {
-        zone = g_GroundZone[BOX_ZONE(lot->step)][flip_status];
-    }
+    const int16_t *const zone = Box_GetLotZone(lot);
 
     if (!Object_IsType(item->object_id, g_WaterObjects)) {
         int16_t room_num = item->room_num;

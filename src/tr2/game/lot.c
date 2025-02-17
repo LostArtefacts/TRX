@@ -177,14 +177,14 @@ void LOT_CreateZone(ITEM *const item)
 {
     CREATURE *const creature = item->data;
 
-    int16_t *zone;
-    int16_t *flip;
+    const int16_t *zone;
+    const int16_t *flip;
     if (creature->lot.fly) {
-        zone = g_FlyZone[0];
-        flip = g_FlyZone[1];
+        zone = Box_GetFlyZone(false);
+        flip = Box_GetFlyZone(true);
     } else {
-        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][0];
-        flip = g_GroundZone[BOX_ZONE(creature->lot.step)][1];
+        zone = Box_GetGroundZone(false, BOX_ZONE(creature->lot.step));
+        flip = Box_GetGroundZone(true, BOX_ZONE(creature->lot.step));
     }
 
     const ROOM *const room = Room_Get(item->room_num);

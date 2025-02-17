@@ -5,8 +5,8 @@
 static int32_t m_BoxCount = 0;
 static BOX_INFO *m_Boxes = nullptr;
 static int16_t *m_Overlaps = nullptr;
-int16_t *g_FlyZone[2] = {};
-int16_t *g_GroundZone[MAX_ZONES][2] = {};
+static int16_t *m_FlyZone[2] = {};
+static int16_t *m_GroundZone[MAX_ZONES][2] = {};
 
 void Box_InitialiseBoxes(const int32_t num_boxes)
 {
@@ -21,10 +21,10 @@ void Box_InitialiseBoxes(const int32_t num_boxes)
 
     for (int32_t i = 0; i < 2; i++) {
         for (int32_t j = 0; j < MAX_ZONES; j++) {
-            g_GroundZone[j][i] =
+            m_GroundZone[j][i] =
                 GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_GROUND_ZONE);
         }
-        g_FlyZone[i] =
+        m_FlyZone[i] =
             GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_FLY_ZONE);
     }
 }
@@ -54,10 +54,17 @@ int16_t Box_GetOverlap(const int32_t overlap_idx)
 
 int16_t *Box_GetFlyZone(const bool flip_status)
 {
-    return g_FlyZone[flip_status];
+    return m_FlyZone[flip_status];
 }
 
 int16_t *Box_GetGroundZone(const bool flip_status, const int32_t zone_idx)
 {
-    return g_GroundZone[zone_idx][flip_status];
+    return m_GroundZone[zone_idx][flip_status];
+}
+
+int16_t *Box_GetLotZone(const LOT_INFO *const lot)
+{
+    const bool flip_status = Room_GetFlipStatus();
+    return lot->fly ? Box_GetFlyZone(flip_status)
+                    : Box_GetGroundZone(flip_status, BOX_ZONE(lot->step));
 }
