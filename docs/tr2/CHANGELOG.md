@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...develop) - ××××-××-××
+- fixed music not working on certain Linux setups (#2504, regression from 0.2)
 
 ## [0.9.1](https://github.com/LostArtefacts/TRX/compare/tr2-0.9...tr2-0.9.1) - 2025-02-15
 - changed passport to be more responsive to player inputs (#1328)
