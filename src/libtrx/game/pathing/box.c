@@ -16,3 +16,8 @@ int32_t Box_GetCount(void)
 {
     return m_BoxCount;
 }
+
+BOX_INFO *Box_GetBox(const int32_t box_idx)
+{
+    return g_Boxes == nullptr ? nullptr : &g_Boxes[box_idx];
+}

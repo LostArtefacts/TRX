@@ -61,7 +61,8 @@ void Creature_AIInfo(ITEM *item, AI_INFO *info)
         Room_GetWorldSector(room, g_LaraItem->pos.x, g_LaraItem->pos.z)->box;
     info->enemy_zone = zone[g_LaraItem->box_num];
 
-    if (g_Boxes[g_LaraItem->box_num].overlap_index & creature->lot.block_mask) {
+    if (Box_GetBox(g_LaraItem->box_num)->overlap_index
+        & creature->lot.block_mask) {
         info->enemy_zone |= BLOCKED;
     } else if (
         creature->lot.node[item->box_num].search_num
@@ -404,7 +405,7 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         .z = item->pos.z,
     };
 
-    int32_t box_height = g_Boxes[item->box_num].height;
+    const int32_t box_height = Box_GetBox(item->box_num)->height;
 
     const bool flip_status = Room_GetFlipStatus();
     int16_t *zone;
@@ -432,11 +433,11 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
     int16_t room_num = item->room_num;
     const SECTOR *sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-    int32_t height = g_Boxes[sector->box].height;
+    int32_t height = Box_GetBox(sector->box)->height;
     int16_t next_box = lot->node[sector->box].exit_box;
     int32_t next_height;
     if (next_box != NO_BOX) {
-        next_height = g_Boxes[next_box].height;
+        next_height = Box_GetBox(next_box)->height;
     } else {
         next_height = height;
     }
@@ -465,10 +466,10 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt)
         }
 
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-        height = g_Boxes[sector->box].height;
+        height = Box_GetBox(sector->box)->height;
         next_box = lot->node[sector->box].exit_box;
         if (next_box != NO_BOX) {
-            next_height = g_Boxes[next_box].height;
+            next_height = Box_GetBox(next_box)->height;
         } else {
             next_height = height;
         }

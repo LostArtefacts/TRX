@@ -472,11 +472,12 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
             sky_sector->ceiling.height + ROUND_TO_CLICK(height);
     }
 
-    if (g_Boxes[sector->box].overlap_index & BLOCKABLE) {
+    BOX_INFO *const box = Box_GetBox(sector->box);
+    if (box->overlap_index & BLOCKABLE) {
         if (height < 0) {
-            g_Boxes[sector->box].overlap_index |= BLOCKED;
+            box->overlap_index |= BLOCKED;
         } else {
-            g_Boxes[sector->box].overlap_index &= ~BLOCKED;
+            box->overlap_index &= ~BLOCKED;
         }
     }
 }

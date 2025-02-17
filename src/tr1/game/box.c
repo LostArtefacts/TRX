@@ -20,20 +20,20 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
     }
 
     int16_t search_zone = zone[lot->head];
-    for (int i = 0; i < expansion; i++) {
+    for (int32_t i = 0; i < expansion; i++) {
         if (lot->head == NO_BOX) {
             return false;
         }
 
         BOX_NODE *node = &lot->node[lot->head];
-        BOX_INFO *box = &g_Boxes[lot->head];
+        const BOX_INFO *const head_box = Box_GetBox(lot->head);
 
-        int done = 0;
-        int index = box->overlap_index & OVERLAP_INDEX;
+        bool done = false;
+        int32_t index = head_box->overlap_index & OVERLAP_INDEX;
         do {
             int16_t box_num = g_Overlap[index++];
             if (box_num & END_BIT) {
-                done = 1;
+                done = true;
                 box_num &= BOX_NUMBER;
             }
 
@@ -41,7 +41,8 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
                 continue;
             }
 
-            int change = g_Boxes[box_num].height - box->height;
+            const BOX_INFO *const box = Box_GetBox(box_num);
+            const int32_t change = box->height - head_box->height;
             if (change > lot->step || change < lot->drop) {
                 continue;
             }
@@ -65,7 +66,7 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
                     continue;
                 }
 
-                if (g_Boxes[box_num].overlap_index & lot->block_mask) {
+                if (box->overlap_index & lot->block_mask) {
                     expand->search_num = node->search_num | BLOCKED_SEARCH;
                 } else {
                     expand->search_num = node->search_num;
@@ -113,7 +114,7 @@ void Box_TargetBox(LOT_INFO *lot, int16_t box_num)
 {
     box_num &= BOX_NUMBER;
 
-    BOX_INFO *box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
 
     lot->target.z = box->left + WALL_L / 2
         + (Random_GetControl() * (box->right - box->left - WALL_L) >> 15);
@@ -130,7 +131,7 @@ void Box_TargetBox(LOT_INFO *lot, int16_t box_num)
 
 bool Box_StalkBox(ITEM *item, int16_t box_num)
 {
-    BOX_INFO *box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
 
@@ -159,7 +160,7 @@ bool Box_StalkBox(ITEM *item, int16_t box_num)
 
 bool Box_EscapeBox(ITEM *item, int16_t box_num)
 {
-    BOX_INFO *box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
 
@@ -194,7 +195,7 @@ bool Box_ValidBox(ITEM *item, int16_t zone_num, int16_t box_num)
         return false;
     }
 
-    BOX_INFO *box = &g_Boxes[box_num];
+    const BOX_INFO *const box = Box_GetBox(box_num);
     if (box->overlap_index & creature->lot.block_mask) {
         return false;
     }
@@ -225,10 +226,10 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
         return TARGET_NONE;
     }
 
-    BOX_INFO *box;
+    const BOX_INFO *box;
     int32_t prime_free = ALL_CLIP;
     do {
-        box = &g_Boxes[box_num];
+        box = Box_GetBox(box_num);
 
         if (lot->fly) {
             if (target->y > box->height - WALL_L) {
@@ -387,7 +388,7 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
 
         box_num = lot->node[box_num].exit_box;
         if (box_num != NO_BOX
-            && (g_Boxes[box_num].overlap_index & lot->block_mask)) {
+            && (Box_GetBox(box_num)->overlap_index & lot->block_mask)) {
             break;
         }
     } while (box_num != NO_BOX);
@@ -432,11 +433,12 @@ bool Box_BadFloor(
         return true;
     }
 
-    if (g_Boxes[sector->box].overlap_index & lot->block_mask) {
+    const BOX_INFO *const box = Box_GetBox(sector->box);
+    if (box->overlap_index & lot->block_mask) {
         return true;
     }
 
-    const int32_t height = g_Boxes[sector->box].height;
+    const int32_t height = box->height;
     if (box_height - height > lot->step || box_height - height < lot->drop) {
         return true;
     }

@@ -381,7 +381,7 @@ static void M_LoadBoxes(VFILE *file)
     const int32_t num_boxes = VFile_ReadS32(file);
     Box_InitialiseBoxes(num_boxes);
     for (int32_t i = 0; i < num_boxes; i++) {
-        BOX_INFO *const box = &g_Boxes[i];
+        BOX_INFO *const box = Box_GetBox(i);
         box->left = VFile_ReadS32(file);
         box->right = VFile_ReadS32(file);
         box->top = VFile_ReadS32(file);
