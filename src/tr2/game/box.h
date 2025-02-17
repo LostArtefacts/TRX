@@ -5,7 +5,6 @@
 #define BOX_BLOCKED 0x4000
 #define BOX_BLOCKED_SEARCH 0x8000
 #define BOX_BLOCKABLE 0x8000
-#define BOX_ZONE(num) (((num) / STEP_L) - 1)
 
 int32_t Box_SearchLOT(LOT_INFO *lot, int32_t expansion);
 int32_t Box_UpdateLOT(LOT_INFO *lot, int32_t expansion);

@@ -13,10 +13,8 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
     int16_t *zone;
     if (lot->fly) {
         zone = g_FlyZone[flip_status];
-    } else if (lot->step == STEP_L) {
-        zone = g_GroundZone[flip_status];
     } else {
-        zone = g_GroundZone2[flip_status];
+        zone = g_GroundZone[BOX_ZONE(lot->step)][flip_status];
     }
 
     int16_t search_zone = zone[lot->head];
@@ -185,10 +183,8 @@ bool Box_ValidBox(ITEM *item, int16_t zone_num, int16_t box_num)
     int16_t *zone;
     if (creature->lot.fly) {
         zone = g_FlyZone[flip_status];
-    } else if (creature->lot.step == STEP_L) {
-        zone = g_GroundZone[flip_status];
     } else {
-        zone = g_GroundZone2[flip_status];
+        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][flip_status];
     }
 
     if (zone[box_num] != zone_num) {

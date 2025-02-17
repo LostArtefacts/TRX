@@ -150,12 +150,9 @@ void LOT_CreateZone(ITEM *item)
     if (creature->lot.fly) {
         zone = g_FlyZone[0];
         flip = g_FlyZone[1];
-    } else if (creature->lot.step == STEP_L) {
-        zone = g_GroundZone[0];
-        flip = g_GroundZone[1];
     } else {
-        zone = g_GroundZone2[1];
-        flip = g_GroundZone2[1];
+        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][0];
+        flip = g_GroundZone[BOX_ZONE(creature->lot.step)][1];
     }
 
     const ROOM *const room = Room_Get(item->room_num);

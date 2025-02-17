@@ -394,14 +394,12 @@ static void M_LoadBoxes(VFILE *file)
     int16_t *const overlaps = Box_InitialiseOverlaps(num_overlaps);
     VFile_Read(file, overlaps, sizeof(uint16_t) * num_overlaps);
 
-    for (int i = 0; i < 2; i++) {
-        g_GroundZone[i] =
-            GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_GROUND_ZONE);
-        VFile_Read(file, g_GroundZone[i], sizeof(int16_t) * num_boxes);
-
-        g_GroundZone2[i] =
-            GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_GROUND_ZONE);
-        VFile_Read(file, g_GroundZone2[i], sizeof(int16_t) * num_boxes);
+    for (int32_t i = 0; i < 2; i++) {
+        for (int32_t j = 0; j < 2; j++) {
+            g_GroundZone[j][i] =
+                GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_GROUND_ZONE);
+            VFile_Read(file, g_GroundZone[j][i], sizeof(int16_t) * num_boxes);
+        }
 
         g_FlyZone[i] =
             GameBuf_Alloc(sizeof(int16_t) * num_boxes, GBUF_FLY_ZONE);
