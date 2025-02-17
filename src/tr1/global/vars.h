@@ -29,7 +29,6 @@ extern bool g_LevelComplete;
 extern int32_t g_OverlayFlag;
 extern int32_t g_HeightType;
 
-extern uint16_t *g_Overlap;
 extern int16_t *g_GroundZone[2];
 extern int16_t *g_GroundZone2[2];
 extern int16_t *g_FlyZone[2];

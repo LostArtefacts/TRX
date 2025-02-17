@@ -47,7 +47,7 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
         bool done = false;
         int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
         while (!done) {
-            int16_t box_num = g_Overlap[index++];
+            int16_t box_num = Box_GetOverlap(index++);
             if ((box_num & BOX_END_BIT) != 0) {
                 done = true;
                 box_num &= BOX_NUM_BITS;

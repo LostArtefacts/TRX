@@ -71,7 +71,6 @@ LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 int16_t *g_FlyZone[2] = {};
 int16_t *g_GroundZone[4][2] = {};
-uint16_t *g_Overlap = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
 int32_t g_HeightType;

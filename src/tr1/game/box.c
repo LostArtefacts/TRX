@@ -31,7 +31,7 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
         bool done = false;
         int32_t index = head_box->overlap_index & OVERLAP_INDEX;
         do {
-            int16_t box_num = g_Overlap[index++];
+            int16_t box_num = Box_GetOverlap(index++);
             if (box_num & END_BIT) {
                 done = true;
                 box_num &= BOX_NUMBER;

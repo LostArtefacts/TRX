@@ -174,8 +174,8 @@ static void M_LoadBoxes(VFILE *const file)
     }
 
     const int32_t num_overlaps = VFile_ReadS32(file);
-    g_Overlap = GameBuf_Alloc(sizeof(uint16_t) * num_overlaps, GBUF_OVERLAPS);
-    VFile_Read(file, g_Overlap, sizeof(uint16_t) * num_overlaps);
+    int16_t *const overlaps = Box_InitialiseOverlaps(num_overlaps);
+    VFile_Read(file, overlaps, sizeof(uint16_t) * num_overlaps);
 
     for (int32_t i = 0; i < 2; i++) {
         for (int32_t j = 0; j < 4; j++) {

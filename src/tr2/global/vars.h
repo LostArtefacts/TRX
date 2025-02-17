@@ -72,7 +72,6 @@ extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern int16_t *g_FlyZone[2];
 extern int16_t *g_GroundZone[][2];
-extern uint16_t *g_Overlap;
 extern CREATURE *g_BaddieSlots;
 extern int32_t g_HeightType;
 extern bool g_CameraUnderwater;
