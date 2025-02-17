@@ -63,7 +63,6 @@ static void M_LoadAnimBones(VFILE *file);
 static void M_LoadAnimFrames(VFILE *file);
 static void M_LoadTextures(VFILE *file);
 static void M_LoadSprites(VFILE *file);
-static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
@@ -229,7 +228,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
     Level_ReadCamerasAndSinks(file);
     Level_ReadSoundSources(file);
-    M_LoadBoxes(file);
+    Level_ReadPathingData(file);
     M_LoadAnimatedTextures(file);
     Level_ReadItems(file);
     Stats_ObserveItemsLoad();
@@ -372,38 +371,6 @@ static void M_LoadSprites(VFILE *file)
     Output_InitialiseSpriteTextures(
         num_textures + m_InjectionInfo->sprite_info_count);
     Level_ReadSpriteTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadBoxes(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    const int32_t num_boxes = VFile_ReadS32(file);
-    Box_InitialiseBoxes(num_boxes);
-    for (int32_t i = 0; i < num_boxes; i++) {
-        BOX_INFO *const box = Box_GetBox(i);
-        box->left = VFile_ReadS32(file);
-        box->right = VFile_ReadS32(file);
-        box->top = VFile_ReadS32(file);
-        box->bottom = VFile_ReadS32(file);
-        box->height = VFile_ReadS16(file);
-        box->overlap_index = VFile_ReadS16(file);
-    }
-
-    const int32_t num_overlaps = VFile_ReadS32(file);
-    int16_t *const overlaps = Box_InitialiseOverlaps(num_overlaps);
-    VFile_Read(file, overlaps, sizeof(uint16_t) * num_overlaps);
-
-    for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
-        for (int32_t j = 0; j < MAX_ZONES; j++) {
-            int16_t *ground_zone = Box_GetGroundZone(flip_status, j);
-            VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);
-        }
-
-        int16_t *const fly_zone = Box_GetFlyZone(flip_status);
-        VFile_Read(file, fly_zone, sizeof(int16_t) * num_boxes);
-    }
-
     Benchmark_End(benchmark, nullptr);
 }
 

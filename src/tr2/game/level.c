@@ -45,7 +45,6 @@ static void M_LoadAnimFrames(VFILE *file);
 static void M_LoadTextures(VFILE *file);
 static void M_LoadSprites(VFILE *file);
 static void M_LoadSoundEffects(VFILE *file);
-static void M_LoadBoxes(VFILE *file);
 static void M_LoadAnimatedTextures(VFILE *file);
 static void M_InitialiseSoundEffects(void);
 static void M_CompleteSetup(void);
@@ -155,49 +154,6 @@ static void M_LoadSprites(VFILE *const file)
     LOG_DEBUG("sprite textures: %d", num_textures);
     Output_InitialiseSpriteTextures(num_textures);
     Level_ReadSpriteTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadBoxes(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    const int32_t num_boxes = VFile_ReadS32(file);
-    Box_InitialiseBoxes(num_boxes);
-    for (int32_t i = 0; i < num_boxes; i++) {
-        BOX_INFO *const box = Box_GetBox(i);
-        box->left = VFile_ReadU8(file);
-        box->right = VFile_ReadU8(file);
-        box->top = VFile_ReadU8(file);
-        box->bottom = VFile_ReadU8(file);
-        box->height = VFile_ReadS16(file);
-        box->overlap_index = VFile_ReadS16(file);
-    }
-
-    const int32_t num_overlaps = VFile_ReadS32(file);
-    int16_t *const overlaps = Box_InitialiseOverlaps(num_overlaps);
-    VFile_Read(file, overlaps, sizeof(uint16_t) * num_overlaps);
-
-    for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
-        for (int32_t j = 0; j < MAX_ZONES; j++) {
-            const bool skip = j == 2
-                || (j == 1 && !Object_Get(O_SPIDER)->loaded
-                    && !Object_Get(O_SKIDOO_ARMED)->loaded)
-                || (j == 3 && !Object_Get(O_YETI)->loaded
-                    && !Object_Get(O_WORKER_3)->loaded);
-
-            if (skip) {
-                VFile_Skip(file, sizeof(int16_t) * num_boxes);
-                continue;
-            }
-
-            int16_t *ground_zone = Box_GetGroundZone(flip_status, j);
-            VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);
-        }
-
-        int16_t *const fly_zone = Box_GetFlyZone(flip_status);
-        VFile_Read(file, fly_zone, sizeof(int16_t) * num_boxes);
-    }
-
     Benchmark_End(benchmark, nullptr);
 }
 
@@ -315,7 +271,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadSpriteSequences(file);
     Level_ReadCamerasAndSinks(file);
     Level_ReadSoundSources(file);
-    M_LoadBoxes(file);
+    Level_ReadPathingData(file);
     M_LoadAnimatedTextures(file);
     Level_ReadItems(file);
 
