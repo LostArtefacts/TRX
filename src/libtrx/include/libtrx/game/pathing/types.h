@@ -1,6 +1,6 @@
 #pragma once
 
-#include "math.h"
+#include "../math.h"
 
 typedef struct {
     int16_t exit_box;

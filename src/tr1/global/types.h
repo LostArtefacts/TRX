@@ -13,11 +13,11 @@
 #include <libtrx/game/game_flow/types.h>
 #include <libtrx/game/items.h>
 #include <libtrx/game/lara/types.h>
-#include <libtrx/game/lot.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/common.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound/enum.h>
 #include <libtrx/game/sound/ids.h>

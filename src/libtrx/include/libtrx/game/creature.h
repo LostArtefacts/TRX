@@ -1,8 +1,8 @@
 #pragma once
 
 #include "items.h"
-#include "lot.h"
 #include "math.h"
+#include "pathing.h"
 
 #include <stdint.h>
 
