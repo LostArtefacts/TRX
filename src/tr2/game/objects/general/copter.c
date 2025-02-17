@@ -52,7 +52,7 @@ void Copter_Control(const int16_t item_num)
 void Copter_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_COPTER);
-    obj->control = Copter_Control;
+    obj->control_func = Copter_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

@@ -126,11 +126,11 @@ static void M_SetupGeneralObjects(void);
 static void M_SetupLara(void)
 {
     OBJECT *const obj = Object_Get(O_LARA);
-    obj->initialise = Lara_InitialiseLoad;
+    obj->initialise_func = Lara_InitialiseLoad;
 
     obj->shadow_size = (UNIT_SHADOW / 16) * 10;
     obj->hit_points = LARA_MAX_HITPOINTS;
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->draw_func = Object_DrawDummyItem;
 
     obj->save_position = 1;
     obj->save_hitpoints = 1;
@@ -141,7 +141,7 @@ static void M_SetupLara(void)
 static void M_SetupLaraExtra(void)
 {
     OBJECT *const obj = Object_Get(O_LARA_EXTRA);
-    obj->control = Lara_ControlExtra;
+    obj->control_func = Lara_ControlExtra;
 }
 
 static void M_SetupBaddyObjects(void)
@@ -379,12 +379,12 @@ void Object_SetupAllObjects(void)
 {
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
-        obj->initialise = nullptr;
-        obj->control = nullptr;
-        obj->floor = nullptr;
-        obj->ceiling = nullptr;
-        obj->draw_routine = Object_DrawAnimatingItem;
-        obj->collision = nullptr;
+        obj->initialise_func = nullptr;
+        obj->control_func = nullptr;
+        obj->floor_height_func = nullptr;
+        obj->ceiling_height_func = nullptr;
+        obj->draw_func = Object_DrawAnimatingItem;
+        obj->collision_func = nullptr;
         obj->hit_points = DONT_TARGET;
         obj->pivot_length = 0;
         obj->radius = DEFAULT_RADIUS;

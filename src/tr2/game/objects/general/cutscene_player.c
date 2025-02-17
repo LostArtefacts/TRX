@@ -4,7 +4,7 @@
 
 void CutscenePlayer_Setup(OBJECT *const obj)
 {
-    obj->initialise = CutscenePlayerGen_Initialise;
-    obj->control = CutscenePlayer_Control;
+    obj->initialise_func = CutscenePlayerGen_Initialise;
+    obj->control_func = CutscenePlayer_Control;
     obj->hit_points = 1;
 }

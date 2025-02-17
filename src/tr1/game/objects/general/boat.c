@@ -11,7 +11,7 @@ typedef enum {
 
 void Boat_Setup(OBJECT *obj)
 {
-    obj->control = Boat_Control;
+    obj->control_func = Boat_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
     obj->save_position = 1;

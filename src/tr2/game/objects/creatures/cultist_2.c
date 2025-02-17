@@ -54,8 +54,8 @@ void Cultist2_Setup(void)
         return;
     }
 
-    obj->control = Cultist2_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Cultist2_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_2_HITPOINTS;
     obj->radius = CULTIST_RADIUS;

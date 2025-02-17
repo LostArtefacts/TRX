@@ -6,9 +6,9 @@
 void FlareItem_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_FLARE_ITEM);
-    obj->collision = Pickup_Collision;
-    obj->control = Flare_Control;
-    obj->draw_routine = Flare_DrawInAir;
+    obj->collision_func = Pickup_Collision;
+    obj->control_func = Flare_Control;
+    obj->draw_func = Flare_DrawInAir;
     obj->save_position = 1;
     obj->save_flags = 1;
 }

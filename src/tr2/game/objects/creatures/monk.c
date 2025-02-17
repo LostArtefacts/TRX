@@ -60,8 +60,8 @@ void Monk1_Setup(void)
         return;
     }
 
-    obj->control = Monk_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Monk_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = MONK_HITPOINTS;
     obj->radius = MONK_RADIUS;
@@ -84,8 +84,8 @@ void Monk2_Setup(void)
         return;
     }
 
-    obj->control = Monk_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Monk_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = MONK_HITPOINTS;
     obj->radius = MONK_RADIUS;

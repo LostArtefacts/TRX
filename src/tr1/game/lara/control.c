@@ -124,14 +124,14 @@ static void M_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
             const ITEM *const item = Item_Get(item_num);
             if (item->collidable && item->status != IS_INVISIBLE) {
                 const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision != nullptr) {
+                if (obj->collision_func != nullptr) {
                     int32_t x = lara_item->pos.x - item->pos.x;
                     int32_t y = lara_item->pos.y - item->pos.y;
                     int32_t z = lara_item->pos.z - item->pos.z;
                     if (x > -TARGET_DIST && x < TARGET_DIST && y > -TARGET_DIST
                         && y < TARGET_DIST && z > -TARGET_DIST
                         && z < TARGET_DIST) {
-                        obj->collision(item_num, lara_item, coll);
+                        obj->collision_func(item_num, lara_item, coll);
                     }
                 }
             }

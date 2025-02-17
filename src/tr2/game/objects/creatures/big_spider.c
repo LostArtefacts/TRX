@@ -42,8 +42,8 @@ void BigSpider_Setup(void)
         return;
     }
 
-    obj->control = BigSpider_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = BigSpider_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = BIG_SPIDER_HITPOINTS;
     obj->radius = BIG_SPIDER_RADIUS;

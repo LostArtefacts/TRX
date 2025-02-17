@@ -52,10 +52,10 @@ static bool M_IsUsable(const int16_t item_num)
 
 void PuzzleHole_Setup(OBJECT *obj)
 {
-    obj->collision = PuzzleHole_Collision;
+    obj->collision_func = PuzzleHole_Collision;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
-    obj->is_usable = M_IsUsable;
+    obj->bounds_func = M_Bounds;
+    obj->is_usable_func = M_IsUsable;
 }
 
 void PuzzleHole_SetupDone(OBJECT *obj)
@@ -69,7 +69,7 @@ void PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (lara_item->current_anim_state == LS_USE_PUZZLE) {
-        if (!Lara_TestPosition(item, obj->bounds())) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 
@@ -117,7 +117,7 @@ void PuzzleHole_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

@@ -36,7 +36,7 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 void Grenade_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_GRENADE);
-    obj->control = Grenade_Control;
+    obj->control_func = Grenade_Control;
     obj->save_position = 1;
 }
 
@@ -88,7 +88,7 @@ void Grenade_Control(int16_t item_num)
 
         if (target_item->object_id != O_WINDOW_1
             && (!target_obj->intelligent || target_item->status == IS_INVISIBLE
-                || target_obj->collision == nullptr)) {
+                || target_obj->collision_func == nullptr)) {
             continue;
         }
 

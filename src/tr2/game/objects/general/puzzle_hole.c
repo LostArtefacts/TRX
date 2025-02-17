@@ -79,7 +79,7 @@ static void M_MarkDone(ITEM *const puzzle_hole_item)
 void PuzzleHole_Setup(OBJECT *const obj, const bool done)
 {
     if (!done) {
-        obj->collision = PuzzleHole_Collision;
+        obj->collision_func = PuzzleHole_Collision;
     }
     obj->save_flags = 1;
 }

@@ -18,7 +18,7 @@ void SkidooArmed_Setup(void)
         return;
     }
 
-    obj->collision = SkidooArmed_Collision;
+    obj->collision_func = SkidooArmed_Collision;
 
     obj->hit_points = SKIDOO_DRIVER_HITPOINTS;
     obj->radius = SKIDOO_ARMED_RADIUS;

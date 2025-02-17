@@ -84,8 +84,8 @@ static void M_PrepareCutscene(const int16_t item_num)
 void FinalLevelCounter_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_FINAL_LEVEL_COUNTER);
-    obj->control = FinalLevelCounter_Control;
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->control_func = FinalLevelCounter_Control;
+    obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 

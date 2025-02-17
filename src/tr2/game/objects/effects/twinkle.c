@@ -48,7 +48,7 @@ static bool M_ShouldDisappear(
 void Twinkle_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_TWINKLE);
-    obj->control = Twinkle_Control;
+    obj->control_func = Twinkle_Control;
 }
 
 void Twinkle_Control(const int16_t effect_num)

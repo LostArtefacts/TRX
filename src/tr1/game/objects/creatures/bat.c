@@ -70,9 +70,9 @@ void Bat_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Bat_Initialise;
-    obj->control = Bat_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Bat_Initialise;
+    obj->control_func = Bat_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BAT_HITPOINTS;
     obj->radius = BAT_RADIUS;

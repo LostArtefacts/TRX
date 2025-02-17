@@ -15,5 +15,5 @@ void Spawn_Ricochet_Control(const int16_t effect_num)
 void Spawn_Ricochet_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_RICOCHET);
-    obj->control = Spawn_Ricochet_Control;
+    obj->control_func = Spawn_Ricochet_Control;
 }

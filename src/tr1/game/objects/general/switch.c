@@ -60,20 +60,20 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
 
 void Switch_Setup(OBJECT *obj)
 {
-    obj->control = Switch_Control;
-    obj->collision = Switch_Collision;
+    obj->control_func = Switch_Control;
+    obj->collision_func = Switch_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
 }
 
 void Switch_SetupUW(OBJECT *obj)
 {
-    obj->control = Switch_Control;
-    obj->collision = Switch_CollisionUW;
+    obj->control_func = Switch_Control;
+    obj->collision_func = Switch_CollisionUW;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = M_BoundsUW;
+    obj->bounds_func = M_BoundsUW;
 }
 
 void Switch_Control(int16_t item_num)
@@ -106,7 +106,7 @@ void Switch_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 
@@ -200,7 +200,7 @@ void Switch_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

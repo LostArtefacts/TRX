@@ -35,10 +35,10 @@ typedef struct {
 
 void LightningEmitter_Setup(OBJECT *obj)
 {
-    obj->initialise = LightningEmitter_Initialise;
-    obj->control = LightningEmitter_Control;
-    obj->draw_routine = LightningEmitter_Draw;
-    obj->collision = LightningEmitter_Collision;
+    obj->initialise_func = LightningEmitter_Initialise;
+    obj->control_func = LightningEmitter_Control;
+    obj->draw_func = LightningEmitter_Draw;
+    obj->collision_func = LightningEmitter_Collision;
     obj->save_flags = 1;
 }
 
@@ -164,7 +164,7 @@ void LightningEmitter_Collision(
     }
 }
 
-void LightningEmitter_Draw(ITEM *item)
+void LightningEmitter_Draw(const ITEM *const item)
 {
     ANIM_FRAME *frmptr[2];
     int32_t rate;

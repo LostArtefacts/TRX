@@ -342,10 +342,10 @@ void MovableBlock_Draw(const ITEM *const item)
 
 void MovableBlock_Setup(OBJECT *const obj)
 {
-    obj->initialise = MovableBlock_Initialise;
-    obj->control = MovableBlock_Control;
-    obj->collision = MovableBlock_Collision;
-    obj->draw_routine = MovableBlock_Draw;
+    obj->initialise_func = MovableBlock_Initialise;
+    obj->control_func = MovableBlock_Control;
+    obj->collision_func = MovableBlock_Collision;
+    obj->draw_func = MovableBlock_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

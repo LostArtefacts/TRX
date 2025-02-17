@@ -127,10 +127,10 @@ static void M_Open(DOORPOS_DATA *const d)
 
 void Door_Setup(OBJECT *obj)
 {
-    obj->initialise = Door_Initialise;
-    obj->control = Door_Control;
-    obj->draw_routine = Object_DrawUnclippedItem;
-    obj->collision = Door_Collision;
+    obj->initialise_func = Door_Initialise;
+    obj->control_func = Door_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = Door_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }

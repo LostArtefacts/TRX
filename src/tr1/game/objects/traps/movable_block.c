@@ -266,14 +266,14 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
 
 void MovableBlock_Setup(OBJECT *obj)
 {
-    obj->initialise = MovableBlock_Initialise;
-    obj->control = MovableBlock_Control;
-    obj->draw_routine = MovableBlock_Draw;
-    obj->collision = MovableBlock_Collision;
+    obj->initialise_func = MovableBlock_Initialise;
+    obj->control_func = MovableBlock_Control;
+    obj->draw_func = MovableBlock_Draw;
+    obj->collision_func = MovableBlock_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
 }
 
 void MovableBlock_Initialise(int16_t item_num)
@@ -373,7 +373,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
             break;
         }
 
-        if (!Lara_TestPosition(item, obj->bounds())) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 
@@ -416,7 +416,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
             return;
         }
 
-        if (!Lara_TestPosition(item, obj->bounds())) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 
@@ -445,7 +445,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 }
 
-void MovableBlock_Draw(ITEM *item)
+void MovableBlock_Draw(const ITEM *const item)
 {
     if (item->status == IS_ACTIVE) {
         Object_DrawUnclippedItem(item);

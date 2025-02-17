@@ -56,8 +56,8 @@ void Bandit2_Setup(void)
         return;
     }
 
-    obj->control = Bandit2_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Bandit2_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = BANDIT_2_HITPOINTS;
     obj->radius = BANDIT_RADIUS;
@@ -86,8 +86,8 @@ void Bandit2B_Setup(void)
     obj->anim_idx = ref_obj->anim_idx;
     obj->frame_base = ref_obj->frame_base;
 
-    obj->control = Bandit2_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Bandit2_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = BANDIT_2_HITPOINTS;
     obj->radius = BANDIT_RADIUS;

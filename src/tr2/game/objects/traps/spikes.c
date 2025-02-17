@@ -56,5 +56,5 @@ void Spikes_Collision(
 void Spikes_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_SPIKES);
-    obj->collision = Spikes_Collision;
+    obj->collision_func = Spikes_Collision;
 }

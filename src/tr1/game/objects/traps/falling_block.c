@@ -7,7 +7,7 @@
 
 void FallingBlock_Setup(OBJECT *obj)
 {
-    obj->control = FallingBlock_Control;
+    obj->control_func = FallingBlock_Control;
     obj->floor_height_func = FallingBlock_GetFloorHeight;
     obj->ceiling_height_func = FallingBlock_GetCeilingHeight;
     obj->save_position = 1;

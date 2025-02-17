@@ -11,7 +11,7 @@ typedef enum {
 
 void DartEmitter_Setup(OBJECT *obj)
 {
-    obj->control = DartEmitter_Control;
+    obj->control_func = DartEmitter_Control;
     obj->save_flags = 1;
 }
 

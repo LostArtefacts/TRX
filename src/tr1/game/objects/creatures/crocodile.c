@@ -68,9 +68,9 @@ void Croc_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Croc_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Croc_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = CROCODILE_HITPOINTS;
     obj->pivot_length = 600;
@@ -207,9 +207,9 @@ void Alligator_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Alligator_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Alligator_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = ALLIGATOR_HITPOINTS;
     obj->pivot_length = 600;

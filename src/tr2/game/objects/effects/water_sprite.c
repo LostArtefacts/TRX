@@ -34,6 +34,6 @@ void WaterSprite_Control(const int16_t effect_num)
 void WaterSprite_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_WATER_SPRITE);
-    obj->control = WaterSprite_Control;
+    obj->control_func = WaterSprite_Control;
     obj->semi_transparent = 1;
 }

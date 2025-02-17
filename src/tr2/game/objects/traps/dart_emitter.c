@@ -78,6 +78,6 @@ void DartEmitter_Control(const int16_t item_num)
 void DartEmitter_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_DART_EMITTER);
-    obj->control = DartEmitter_Control;
+    obj->control_func = DartEmitter_Control;
     obj->save_flags = 1;
 }

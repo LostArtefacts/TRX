@@ -8,7 +8,7 @@
 
 void NatlaGun_Setup(OBJECT *obj)
 {
-    obj->control = NatlaGun_Control;
+    obj->control_func = NatlaGun_Control;
 }
 
 void NatlaGun_Control(int16_t effect_num)

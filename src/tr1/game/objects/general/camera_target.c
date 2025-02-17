@@ -4,5 +4,5 @@
 
 void CameraTarget_Setup(OBJECT *obj)
 {
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->draw_func = Object_DrawDummyItem;
 }

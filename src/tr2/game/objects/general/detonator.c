@@ -61,14 +61,14 @@ static void M_CreateGongBonger(ITEM *const lara_item)
 void Detonator1_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_DETONATOR_1);
-    obj->collision = Detonator_Collision;
+    obj->collision_func = Detonator_Collision;
 }
 
 void Detonator2_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_DETONATOR_2);
-    obj->collision = Detonator_Collision;
-    obj->control = Detonator_Control;
+    obj->collision_func = Detonator_Collision;
+    obj->control_func = Detonator_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

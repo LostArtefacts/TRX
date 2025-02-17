@@ -13,8 +13,8 @@ typedef enum {
 
 void ThorsHammerHead_Setup(OBJECT *obj)
 {
-    obj->collision = ThorsHammerHead_Collision;
-    obj->draw_routine = Object_DrawUnclippedItem;
+    obj->collision_func = ThorsHammerHead_Collision;
+    obj->draw_func = Object_DrawUnclippedItem;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

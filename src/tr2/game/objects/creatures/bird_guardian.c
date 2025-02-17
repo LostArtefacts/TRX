@@ -60,8 +60,8 @@ void BirdGuardian_Setup(void)
         return;
     }
 
-    obj->control = BirdGuardian_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = BirdGuardian_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = BIRD_GUARDIAN_HITPOINTS;
     obj->radius = BIRD_GUARDIAN_RADIUS;

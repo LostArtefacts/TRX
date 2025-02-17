@@ -37,7 +37,7 @@ void MiniCopter_Control(const int16_t item_num)
 void MiniCopter_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_MINI_COPTER);
-    obj->control = MiniCopter_Control;
+    obj->control_func = MiniCopter_Control;
     obj->save_position = 1;
     obj->save_flags = 1;
 }

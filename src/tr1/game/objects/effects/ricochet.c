@@ -4,7 +4,7 @@
 
 void Ricochet_Setup(OBJECT *obj)
 {
-    obj->control = Ricochet_Control;
+    obj->control_func = Ricochet_Control;
 }
 
 void Ricochet_Control(int16_t effect_num)

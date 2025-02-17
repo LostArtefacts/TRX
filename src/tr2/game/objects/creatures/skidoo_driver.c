@@ -172,8 +172,8 @@ void SkidooDriver_Setup(void)
         return;
     }
 
-    obj->initialise = SkidooDriver_Initialise;
-    obj->control = SkidooDriver_Control;
+    obj->initialise_func = SkidooDriver_Initialise;
+    obj->control_func = SkidooDriver_Control;
 
     obj->hit_points = 1;
 

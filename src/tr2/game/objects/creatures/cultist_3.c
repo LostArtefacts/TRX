@@ -57,9 +57,9 @@ void Cultist3_Setup(void)
         return;
     }
 
-    obj->initialise = Cultist3_Initialise;
-    obj->control = Cultist3_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Cultist3_Initialise;
+    obj->control_func = Cultist3_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_3_HITPOINTS;
     obj->radius = CULTIST_RADIUS;

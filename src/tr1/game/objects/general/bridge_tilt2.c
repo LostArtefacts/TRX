@@ -60,7 +60,7 @@ int16_t M_GetCeilingHeight(
 
 void BridgeTilt2_Setup(OBJECT *obj)
 {
-    obj->initialise = M_Initialise;
+    obj->initialise_func = M_Initialise;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
 }

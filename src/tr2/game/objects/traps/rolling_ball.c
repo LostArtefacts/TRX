@@ -207,9 +207,9 @@ void RollingBall_Collision(
 
 void RollingBall_Setup(OBJECT *const obj)
 {
-    obj->initialise = RollingBall_Initialise;
-    obj->control = RollingBall_Control;
-    obj->collision = RollingBall_Collision;
+    obj->initialise_func = RollingBall_Initialise;
+    obj->control_func = RollingBall_Control;
+    obj->collision_func = RollingBall_Collision;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

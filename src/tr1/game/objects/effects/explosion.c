@@ -8,7 +8,7 @@
 
 void Explosion_Setup(OBJECT *obj)
 {
-    obj->control = Explosion_Control;
+    obj->control_func = Explosion_Control;
 }
 
 void Explosion_Control(int16_t effect_num)

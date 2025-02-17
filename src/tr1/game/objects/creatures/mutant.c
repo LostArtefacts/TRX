@@ -69,9 +69,9 @@ void Mutant_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Mutant_FlyerControl;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Mutant_FlyerControl;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
     obj->hit_points = FLYER_HITPOINTS;
     obj->pivot_length = 150;
@@ -93,7 +93,7 @@ void Mutant_Setup2(OBJECT *obj)
         return;
     }
     *obj = *Object_Get(O_WARRIOR_1);
-    obj->initialise = Mutant_Initialise2;
+    obj->initialise_func = Mutant_Initialise2;
     obj->smartness = WARRIOR2_SMARTNESS;
 }
 
@@ -103,7 +103,7 @@ void Mutant_Setup3(OBJECT *obj)
         return;
     }
     *obj = *Object_Get(O_WARRIOR_1);
-    obj->initialise = Mutant_Initialise2;
+    obj->initialise_func = Mutant_Initialise2;
 }
 
 void Mutant_FlyerControl(int16_t item_num)

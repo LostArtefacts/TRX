@@ -172,7 +172,7 @@ void Item_RemoveDrawn(const int16_t item_num)
 void Item_AddActive(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
-    if (Object_Get(item->object_id)->control == nullptr) {
+    if (Object_Get(item->object_id)->control_func == nullptr) {
         item->status = IS_INACTIVE;
         return;
     }

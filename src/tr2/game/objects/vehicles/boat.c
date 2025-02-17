@@ -78,9 +78,9 @@ void Boat_Initialise(const int16_t item_num)
 void Boat_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_BOAT);
-    obj->initialise = Boat_Initialise;
-    obj->control = Boat_Control;
-    obj->collision = Boat_Collision;
+    obj->initialise_func = Boat_Initialise;
+    obj->control_func = Boat_Control;
+    obj->collision_func = Boat_Collision;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

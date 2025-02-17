@@ -19,5 +19,5 @@ static void M_Control(int16_t effect_num)
 
 void PickupAid_Setup(OBJECT *const obj)
 {
-    obj->control = M_Control;
+    obj->control_func = M_Control;
 }

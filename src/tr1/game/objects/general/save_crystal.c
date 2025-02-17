@@ -30,13 +30,13 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 void SaveCrystal_Setup(OBJECT *obj)
 {
-    obj->initialise = SaveCrystal_Initialise;
+    obj->initialise_func = SaveCrystal_Initialise;
     if (g_Config.gameplay.enable_save_crystals) {
-        obj->control = SaveCrystal_Control;
-        obj->collision = SaveCrystal_Collision;
+        obj->control_func = SaveCrystal_Control;
+        obj->collision_func = SaveCrystal_Collision;
         obj->save_flags = 1;
     }
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
     Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 
@@ -74,7 +74,7 @@ void SaveCrystal_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
     item->rot.x = 0;
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 

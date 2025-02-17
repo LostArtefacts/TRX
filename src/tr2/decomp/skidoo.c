@@ -125,7 +125,8 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
 
     const OBJECT *const obj = Object_Get(item->object_id);
     const bool is_availanche = item->object_id == O_ROLLING_BALL_2;
-    if (obj->collision == nullptr || (!obj->intelligent && !is_availanche)) {
+    if (obj->collision_func == nullptr
+        || (!obj->intelligent && !is_availanche)) {
         return false;
     }
 

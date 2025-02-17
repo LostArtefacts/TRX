@@ -72,8 +72,8 @@ void Worker3_Setup(void)
         return;
     }
 
-    obj->control = Worker3_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Worker3_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = WORKER_3_HITPOINTS;
     obj->radius = WORKER_RADIUS;
@@ -97,8 +97,8 @@ void Worker4_Setup(void)
         return;
     }
 
-    obj->control = Worker3_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Worker3_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = WORKER_4_HITPOINTS;
     obj->radius = WORKER_RADIUS;

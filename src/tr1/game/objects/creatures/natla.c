@@ -49,9 +49,9 @@ void Natla_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->collision = Creature_Collision;
-    obj->initialise = Creature_Initialise;
-    obj->control = Natla_Control;
+    obj->collision_func = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Natla_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = NATLA_HITPOINTS;
     obj->radius = NATLA_RADIUS;

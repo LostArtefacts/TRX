@@ -49,8 +49,8 @@ void TRex_Setup(void)
         return;
     }
 
-    obj->control = TRex_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = TRex_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = TREX_HITPOINTS;
     obj->radius = TREX_RADIUS;

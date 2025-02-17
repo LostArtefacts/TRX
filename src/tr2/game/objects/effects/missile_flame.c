@@ -6,6 +6,6 @@
 void MissileFlame_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_MISSILE_FLAME);
-    obj->control = Missile_Control;
+    obj->control_func = Missile_Control;
     obj->semi_transparent = 1;
 }

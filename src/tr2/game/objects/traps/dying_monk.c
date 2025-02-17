@@ -65,8 +65,8 @@ void DyingMonk_Control(const int16_t item_num)
 void DyingMonk_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_DYING_MONK);
-    obj->initialise = DyingMonk_Initialise;
-    obj->control = DyingMonk_Control;
-    obj->collision = Object_Collision;
+    obj->initialise_func = DyingMonk_Initialise;
+    obj->control_func = DyingMonk_Control;
+    obj->collision_func = Object_Collision;
     obj->save_flags = 1;
 }

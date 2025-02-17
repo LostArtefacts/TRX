@@ -32,8 +32,8 @@ void Effect_Control(void)
     while (effect_num != NO_EFFECT) {
         EFFECT *effect = Effect_Get(effect_num);
         const OBJECT *const obj = Object_Get(effect->object_id);
-        if (obj->control) {
-            obj->control(effect_num);
+        if (obj->control_func != nullptr) {
+            obj->control_func(effect_num);
         }
         effect_num = effect->next_active;
     }

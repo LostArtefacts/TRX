@@ -6,8 +6,8 @@
 
 void DartEffect_Setup(OBJECT *obj)
 {
-    obj->control = DartEffect_Control;
-    obj->draw_routine = Object_DrawSpriteItem;
+    obj->control_func = DartEffect_Control;
+    obj->draw_func = Object_DrawSpriteItem;
 }
 
 void DartEffect_Control(int16_t effect_num)

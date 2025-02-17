@@ -19,6 +19,6 @@ void BirdTweeter_Control(const int16_t item_num)
 
 void BirdTweeter_Setup(OBJECT *const obj)
 {
-    obj->control = BirdTweeter_Control;
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->control_func = BirdTweeter_Control;
+    obj->draw_func = Object_DrawDummyItem;
 }

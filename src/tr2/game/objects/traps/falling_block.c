@@ -4,9 +4,41 @@
 #include "game/room.h"
 #include "global/vars.h"
 
+static int32_t M_GetOrigin(GAME_OBJECT_ID obj_id);
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+
 static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
 {
     return obj_id == O_FALLING_BLOCK_3 ? WALL_L : STEP_L * 2;
+}
+
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    const int32_t origin = M_GetOrigin(item->object_id);
+    if (y <= item->pos.y - origin
+        && (item->current_anim_state == TRAP_SET
+            || item->current_anim_state == TRAP_ACTIVATE)) {
+        return item->pos.y - origin;
+    }
+    return height;
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    const int32_t origin = M_GetOrigin(item->object_id);
+    if (y > item->pos.y - origin
+        && (item->current_anim_state == TRAP_SET
+            || item->current_anim_state == TRAP_ACTIVATE)) {
+        return item->pos.y - origin + STEP_L;
+    }
+    return height;
 }
 
 void FallingBlock_Control(const int16_t item_num)
@@ -62,35 +94,11 @@ void FallingBlock_Control(const int16_t item_num)
     }
 }
 
-void FallingBlock_Floor(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_height)
-{
-    const int32_t origin = M_GetOrigin(item->object_id);
-    if (y <= item->pos.y - origin
-        && (item->current_anim_state == TRAP_SET
-            || item->current_anim_state == TRAP_ACTIVATE)) {
-        *out_height = item->pos.y - origin;
-    }
-}
-
-void FallingBlock_Ceiling(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_height)
-{
-    const int32_t origin = M_GetOrigin(item->object_id);
-    if (y > item->pos.y - origin
-        && (item->current_anim_state == TRAP_SET
-            || item->current_anim_state == TRAP_ACTIVATE)) {
-        *out_height = item->pos.y - origin + STEP_L;
-    }
-}
-
 void FallingBlock_Setup(OBJECT *const obj)
 {
-    obj->ceiling = FallingBlock_Ceiling;
-    obj->control = FallingBlock_Control;
-    obj->floor = FallingBlock_Floor;
+    obj->control_func = FallingBlock_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

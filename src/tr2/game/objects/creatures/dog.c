@@ -63,8 +63,8 @@ void Dog_Setup(void)
         return;
     }
 
-    obj->control = Dog_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Dog_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = DOG_HITPOINTS;
     obj->radius = DOG_RADIUS;

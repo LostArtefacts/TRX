@@ -113,9 +113,9 @@ void Ape_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Ape_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Ape_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = APE_HITPOINTS;
     obj->pivot_length = 250;

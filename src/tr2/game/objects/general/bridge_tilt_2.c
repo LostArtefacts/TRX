@@ -2,36 +2,38 @@
 
 #include "game/objects/general/bridge_common.h"
 
-void BridgeTilt2_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_BRIDGE_TILT_2);
-    obj->ceiling = BridgeTilt2_Ceiling;
-    obj->floor = BridgeTilt2_Floor;
-}
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 
-void BridgeTilt2_Floor(
+static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_height)
+    const int16_t height)
 {
     const int32_t offset_height =
         item->pos.y + (Bridge_GetOffset(item, x, z) / 2);
-
     if (y > offset_height) {
-        return;
+        return height;
     }
-
-    *out_height = offset_height;
+    return offset_height;
 }
 
-void BridgeTilt2_Ceiling(
+static int16_t M_GetCeilingHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_height)
+    const int16_t height)
 {
     const int32_t offset_height =
         item->pos.y + (Bridge_GetOffset(item, x, z) / 2);
     if (y <= offset_height) {
-        return;
+        return height;
     }
+    return offset_height + STEP_L;
+}
 
-    *out_height = offset_height + STEP_L;
+void BridgeTilt2_Setup(void)
+{
+    OBJECT *const obj = Object_Get(O_BRIDGE_TILT_2);
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
 }

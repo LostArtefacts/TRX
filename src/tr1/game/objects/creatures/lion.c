@@ -47,9 +47,9 @@ static BITE m_LionBite = { -2, -10, 132, 21 };
 
 static void M_SetupBase(OBJECT *const obj)
 {
-    obj->initialise = Creature_Initialise;
-    obj->control = Lion_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Lion_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 400;
     obj->intelligent = 1;

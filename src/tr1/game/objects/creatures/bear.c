@@ -52,9 +52,9 @@ void Bear_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Bear_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = Bear_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
     if (g_Config.gameplay.fix_bear_ai) {

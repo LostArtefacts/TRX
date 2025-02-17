@@ -37,6 +37,6 @@ void Ember_Control(const int16_t effect_num)
 void Ember_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_EMBER);
-    obj->control = Ember_Control;
+    obj->control_func = Ember_Control;
     obj->semi_transparent = 1;
 }

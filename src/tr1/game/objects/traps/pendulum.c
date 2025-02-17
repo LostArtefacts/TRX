@@ -13,8 +13,8 @@
 
 void Pendulum_Setup(OBJECT *obj)
 {
-    obj->control = Pendulum_Control;
-    obj->collision = Object_CollisionTrap;
+    obj->control_func = Pendulum_Control;
+    obj->collision_func = Object_CollisionTrap;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;
     obj->save_anim = 1;

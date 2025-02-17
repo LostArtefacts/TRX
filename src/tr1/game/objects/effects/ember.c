@@ -11,7 +11,7 @@
 
 void Ember_Setup(OBJECT *obj)
 {
-    obj->control = Ember_Control;
+    obj->control_func = Ember_Control;
 }
 
 void Ember_Control(int16_t effect_num)

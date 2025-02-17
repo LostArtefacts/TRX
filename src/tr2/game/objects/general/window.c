@@ -14,9 +14,9 @@
 void Window_1_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_WINDOW_1);
-    obj->initialise = Window_Initialise;
-    obj->collision = Object_Collision;
-    obj->control = Window_1_Control;
+    obj->initialise_func = Window_Initialise;
+    obj->collision_func = Object_Collision;
+    obj->control_func = Window_1_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
@@ -24,9 +24,9 @@ void Window_1_Setup(void)
 void Window_2_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_WINDOW_2);
-    obj->initialise = Window_Initialise;
-    obj->collision = Object_Collision;
-    obj->control = Window_2_Control;
+    obj->initialise_func = Window_Initialise;
+    obj->collision_func = Object_Collision;
+    obj->control_func = Window_2_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

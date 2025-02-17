@@ -9,7 +9,7 @@
 void Spawn_Splash_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_SPLASH);
-    obj->control = Spawn_Splash_Control;
+    obj->control_func = Spawn_Splash_Control;
     obj->semi_transparent = 1;
 }
 

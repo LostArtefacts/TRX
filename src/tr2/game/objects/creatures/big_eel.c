@@ -48,8 +48,8 @@ void BigEel_Setup(void)
         return;
     }
 
-    obj->control = BigEel_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = BigEel_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = BIG_EEL_HITPOINTS;
 

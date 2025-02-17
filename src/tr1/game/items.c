@@ -35,8 +35,8 @@ void Item_Control(void)
     while (item_num != NO_ITEM) {
         ITEM *item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->control) {
-            obj->control(item_num);
+        if (obj->control_func != nullptr) {
+            obj->control_func(item_num);
         }
         item_num = item->next_active;
     }
@@ -94,8 +94,8 @@ void Item_Initialise(int16_t item_num)
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
         item->hit_points *= 2;
     }
-    if (obj->initialise) {
-        obj->initialise(item_num);
+    if (obj->initialise_func) {
+        obj->initialise_func(item_num);
     }
 
     Interpolation_RememberItem(item);

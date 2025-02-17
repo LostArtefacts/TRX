@@ -28,8 +28,8 @@ void Hook_Control(const int16_t item_num)
 void Hook_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_HOOK);
-    obj->control = Hook_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Hook_Control;
+    obj->collision_func = Creature_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

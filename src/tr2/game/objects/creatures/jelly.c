@@ -31,8 +31,8 @@ void Jelly_Setup(void)
         return;
     }
 
-    obj->control = Jelly_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Jelly_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = JELLY_HITPOINTS;
     obj->radius = JELLY_RADIUS;

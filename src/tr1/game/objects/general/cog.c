@@ -10,7 +10,7 @@ typedef enum {
 
 void Cog_Setup(OBJECT *obj)
 {
-    obj->control = Cog_Control;
+    obj->control_func = Cog_Control;
     obj->save_flags = 1;
 }
 

@@ -51,8 +51,8 @@ void Worker1_Setup(void)
         return;
     }
 
-    obj->control = Worker1_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Worker1_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = WORKER_1_HITPOINTS;
     obj->radius = WORKER_RADIUS;

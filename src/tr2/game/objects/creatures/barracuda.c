@@ -47,8 +47,8 @@ void Barracuda_Setup(void)
         return;
     }
 
-    obj->control = Barracuda_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Barracuda_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = BARRACUDA_HITPOINTS;
     obj->radius = BARRACUDA_RADIUS;

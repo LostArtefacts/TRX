@@ -8,7 +8,7 @@
 
 void GunShot_Setup(OBJECT *obj)
 {
-    obj->control = GunShot_Control;
+    obj->control_func = GunShot_Control;
 }
 
 void GunShot_Control(int16_t effect_num)

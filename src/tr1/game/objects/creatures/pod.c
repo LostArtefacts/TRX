@@ -21,9 +21,9 @@ void Pod_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Pod_Initialise;
-    obj->control = Pod_Control;
-    obj->collision = Object_Collision;
+    obj->initialise_func = Pod_Initialise;
+    obj->control_func = Pod_Control;
+    obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }

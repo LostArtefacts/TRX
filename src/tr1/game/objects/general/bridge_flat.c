@@ -57,7 +57,7 @@ static int16_t M_GetCeilingHeight(
 
 void BridgeFlat_Setup(OBJECT *const obj)
 {
-    obj->initialise = M_Initialise;
+    obj->initialise_func = M_Initialise;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
 }

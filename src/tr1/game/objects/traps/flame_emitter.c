@@ -7,8 +7,8 @@
 
 void FlameEmitter_Setup(OBJECT *obj)
 {
-    obj->control = FlameEmitter_Control;
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->control_func = FlameEmitter_Control;
+    obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 

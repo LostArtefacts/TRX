@@ -8,16 +8,49 @@ typedef enum {
     DRAWBRIDGE_STATE_OPEN = DOOR_STATE_OPEN,
 } DRAWBRIDGE_STATE;
 
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
+        return height;
+    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
+        return height;
+    } else if (item->pos.y < y) {
+        return height;
+    }
+    return item->pos.y;
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
+        return height;
+    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
+        return height;
+    } else if (item->pos.y >= y) {
+        return height;
+    }
+    return item->pos.y + STEP_L;
+}
+
 void Drawbridge_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_DRAWBRIDGE);
     if (!obj->loaded) {
         return;
     }
-    obj->control = General_Control;
-    obj->collision = Drawbridge_Collision;
-    obj->ceiling = Drawbridge_Ceiling;
-    obj->floor = Drawbridge_Floor;
+    obj->control_func = General_Control;
+    obj->collision_func = Drawbridge_Collision;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
@@ -52,34 +85,6 @@ int32_t Drawbridge_IsItemOnTop(
     }
 
     return false;
-}
-
-void Drawbridge_Floor(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_height)
-{
-    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
-        return;
-    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
-        return;
-    } else if (item->pos.y < y) {
-        return;
-    }
-    *out_height = item->pos.y;
-}
-
-void Drawbridge_Ceiling(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_height)
-{
-    if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
-        return;
-    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
-        return;
-    } else if (item->pos.y >= y) {
-        return;
-    }
-    *out_height = item->pos.y + STEP_L;
 }
 
 void Drawbridge_Collision(

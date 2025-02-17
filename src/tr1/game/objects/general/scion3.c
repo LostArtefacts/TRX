@@ -10,7 +10,7 @@
 
 void Scion3_Setup(OBJECT *obj)
 {
-    obj->control = Scion3_Control;
+    obj->control_func = Scion3_Control;
     obj->hit_points = 5;
     obj->save_flags = 1;
     obj->save_hitpoints = 1;

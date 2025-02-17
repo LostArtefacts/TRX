@@ -71,8 +71,8 @@ void Diver_Setup(void)
         return;
     }
 
-    obj->control = Diver_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Diver_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = DIVER_HITPOINTS;
     obj->radius = DIVER_RADIUS;

@@ -8,8 +8,8 @@
 
 void FallingCeiling_Setup(OBJECT *obj)
 {
-    obj->control = FallingCeiling_Control;
-    obj->collision = Object_CollisionTrap;
+    obj->control_func = FallingCeiling_Control;
+    obj->collision_func = Object_CollisionTrap;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

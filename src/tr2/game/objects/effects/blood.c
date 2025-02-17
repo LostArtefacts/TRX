@@ -25,6 +25,6 @@ void Blood_Control(const int16_t effect_num)
 void Blood_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_BLOOD);
-    obj->control = Blood_Control;
+    obj->control_func = Blood_Control;
     obj->semi_transparent = 1;
 }

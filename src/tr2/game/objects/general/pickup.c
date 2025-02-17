@@ -218,8 +218,8 @@ cleanup:
 
 void Pickup_Setup(OBJECT *const obj)
 {
-    obj->collision = Pickup_Collision;
-    obj->draw_routine = Pickup_Draw;
+    obj->collision_func = Pickup_Collision;
+    obj->draw_func = Pickup_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
 }

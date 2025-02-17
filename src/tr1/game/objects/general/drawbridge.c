@@ -108,8 +108,8 @@ void Drawbridge_Setup(OBJECT *obj)
         return;
     }
     obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->collision = M_Collision;
-    obj->control = M_Control;
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
     obj->save_anim = 1;
     obj->save_flags = 1;
     obj->floor_height_func = M_GetFloorHeight;

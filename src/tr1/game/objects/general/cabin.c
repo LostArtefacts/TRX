@@ -14,9 +14,9 @@ typedef enum {
 
 void Cabin_Setup(OBJECT *obj)
 {
-    obj->control = Cabin_Control;
-    obj->draw_routine = Object_DrawUnclippedItem;
-    obj->collision = Object_Collision;
+    obj->control_func = Cabin_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }

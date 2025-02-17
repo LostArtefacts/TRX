@@ -101,9 +101,9 @@ void SphereOfDoom_Draw(const ITEM *const item)
 
 void SphereOfDoom_Setup(OBJECT *const obj, const bool transparent)
 {
-    obj->collision = SphereOfDoom_Collision;
-    obj->control = SphereOfDoom_Control;
-    obj->draw_routine = SphereOfDoom_Draw;
+    obj->collision_func = SphereOfDoom_Collision;
+    obj->control_func = SphereOfDoom_Control;
+    obj->draw_func = SphereOfDoom_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
     if (transparent) {

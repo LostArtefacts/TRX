@@ -70,8 +70,8 @@ void Bartoli_Setup(void)
         return;
     }
 
-    obj->initialise = Bartoli_Initialise;
-    obj->control = Bartoli_Control;
+    obj->initialise_func = Bartoli_Initialise;
+    obj->control_func = Bartoli_Control;
 
     obj->save_flags = 1;
     obj->save_anim = 1;

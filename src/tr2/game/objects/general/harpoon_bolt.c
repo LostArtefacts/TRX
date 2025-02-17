@@ -12,7 +12,7 @@
 void HarpoonBolt_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_HARPOON_BOLT);
-    obj->control = HarpoonBolt_Control;
+    obj->control_func = HarpoonBolt_Control;
     obj->save_position = 1;
 }
 
@@ -56,7 +56,7 @@ void HarpoonBolt_Control(const int16_t item_num)
 
         if (target_item->object_id != O_WINDOW_1
             && (target_item->status == IS_INVISIBLE
-                || target_obj->collision == nullptr)) {
+                || target_obj->collision_func == nullptr)) {
             continue;
         }
 

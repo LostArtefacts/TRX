@@ -13,7 +13,7 @@
 void BodyPart_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_BODY_PART);
-    obj->control = BodyPart_Control;
+    obj->control_func = BodyPart_Control;
     obj->loaded = 1;
     obj->mesh_count = 0;
 }

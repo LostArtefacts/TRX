@@ -149,9 +149,9 @@ void Zipline_Control(const int16_t item_num)
 void Zipline_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_ZIPLINE_HANDLE);
-    obj->initialise = RollingBall_Initialise;
-    obj->control = Zipline_Control;
-    obj->collision = Zipline_Collision;
+    obj->initialise_func = RollingBall_Initialise;
+    obj->control_func = Zipline_Control;
+    obj->collision_func = Zipline_Collision;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

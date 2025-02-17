@@ -77,8 +77,8 @@ void Yeti_Setup(void)
         return;
     }
 
-    obj->control = Yeti_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Yeti_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = YETI_HITPOINTS;
     obj->radius = YETI_RADIUS;

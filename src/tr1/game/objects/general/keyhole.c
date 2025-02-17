@@ -46,7 +46,7 @@ static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
         return;
     }
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 
@@ -71,10 +71,10 @@ static bool M_IsUsable(const int16_t item_num)
 
 void KeyHole_Setup(OBJECT *obj)
 {
-    obj->collision = M_Collision;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
-    obj->is_usable = M_IsUsable;
+    obj->bounds_func = M_Bounds;
+    obj->is_usable_func = M_IsUsable;
 }
 
 bool KeyHole_Trigger(int16_t item_num)

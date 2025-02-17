@@ -49,8 +49,8 @@ void Mouse_Setup(void)
         return;
     }
 
-    obj->control = Mouse_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Mouse_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = MOUSE_HITPOINTS;
     obj->radius = MOUSE_RADIUS;

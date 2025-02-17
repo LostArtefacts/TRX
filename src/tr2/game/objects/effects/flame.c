@@ -68,6 +68,6 @@ void Flame_Control(const int16_t effect_num)
 void Flame_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_FLAME);
-    obj->control = Flame_Control;
+    obj->control_func = Flame_Control;
     obj->semi_transparent = 1;
 }

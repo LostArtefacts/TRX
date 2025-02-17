@@ -9,8 +9,8 @@
 
 void Earthquake_Setup(OBJECT *obj)
 {
-    obj->control = Earthquake_Control;
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->control_func = Earthquake_Control;
+    obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 

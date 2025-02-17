@@ -8,7 +8,7 @@
 
 void Blood_Setup(OBJECT *obj)
 {
-    obj->control = Blood_Control;
+    obj->control_func = Blood_Control;
 }
 
 void Blood_Control(int16_t effect_num)

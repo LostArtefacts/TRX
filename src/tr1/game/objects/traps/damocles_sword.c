@@ -15,9 +15,9 @@
 
 void DamoclesSword_Setup(OBJECT *obj)
 {
-    obj->initialise = DamoclesSword_Initialise;
-    obj->control = DamoclesSword_Control;
-    obj->collision = DamoclesSword_Collision;
+    obj->initialise_func = DamoclesSword_Initialise;
+    obj->control_func = DamoclesSword_Control;
+    obj->collision_func = DamoclesSword_Collision;
     obj->shadow_size = UNIT_SHADOW;
     obj->save_position = 1;
     obj->save_anim = 1;

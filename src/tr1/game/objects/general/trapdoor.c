@@ -53,7 +53,7 @@ static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 
 void TrapDoor_Setup(OBJECT *obj)
 {
-    obj->control = TrapDoor_Control;
+    obj->control_func = TrapDoor_Control;
     obj->floor_height_func = TrapDoor_GetFloorHeight;
     obj->ceiling_height_func = TrapDoor_GetCeilingHeight;
     obj->save_anim = 1;

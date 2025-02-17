@@ -123,8 +123,8 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
 
 void Switch_Setup(OBJECT *const obj, const bool underwater)
 {
-    obj->control = Switch_Control;
-    obj->collision = underwater ? Switch_CollisionUW : Switch_Collision;
+    obj->control_func = Switch_Control;
+    obj->collision_func = underwater ? Switch_CollisionUW : Switch_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

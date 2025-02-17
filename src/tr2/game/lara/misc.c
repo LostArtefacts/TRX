@@ -1015,7 +1015,7 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
 
             if (item->collidable && item->status != IS_INVISIBLE) {
                 const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision != nullptr) {
+                if (obj->collision_func != nullptr) {
                     // clang-format off
                     const XYZ_32 d = {
                         .x = lara_item->pos.x - item->pos.x,
@@ -1025,7 +1025,7 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
                     if (d.x > -TARGET_DIST && d.x < TARGET_DIST &&
                         d.y > -TARGET_DIST && d.y < TARGET_DIST &&
                         d.z > -TARGET_DIST && d.z < TARGET_DIST) {
-                        obj->collision(item_num, lara_item, coll);
+                        obj->collision_func(item_num, lara_item, coll);
                     }
                     // clang-format on
                 }

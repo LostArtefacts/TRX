@@ -30,10 +30,10 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 void Scion4_Setup(OBJECT *obj)
 {
-    obj->control = Scion4_Control;
-    obj->collision = Scion4_Collision;
+    obj->control_func = Scion4_Control;
+    obj->collision_func = Scion4_Collision;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
 }
 
 void Scion4_Control(int16_t item_num)
@@ -52,7 +52,7 @@ void Scion4_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         goto cleanup;
     }
 

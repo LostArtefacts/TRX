@@ -5,9 +5,9 @@
 void SkidooFast_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_SKIDOO_FAST);
-    obj->initialise = Skidoo_Initialise;
-    obj->draw_routine = Skidoo_Draw;
-    obj->collision = Skidoo_Collision;
+    obj->initialise_func = Skidoo_Initialise;
+    obj->draw_func = Skidoo_Draw;
+    obj->collision_func = Skidoo_Collision;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

@@ -45,10 +45,10 @@ void TRex_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = TRex_Control;
-    obj->draw_routine = Object_DrawUnclippedItem;
-    obj->collision = TRex_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = TRex_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = TRex_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = TREX_HITPOINTS;
     obj->pivot_length = 2000;

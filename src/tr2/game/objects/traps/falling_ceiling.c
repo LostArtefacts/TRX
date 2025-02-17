@@ -46,8 +46,8 @@ void FallingCeiling_Control(const int16_t item_num)
 void FallingCeiling_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_FALLING_CEILING);
-    obj->control = FallingCeiling_Control;
-    obj->collision = Object_Collision_Trap;
+    obj->control_func = FallingCeiling_Control;
+    obj->collision_func = Object_Collision_Trap;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

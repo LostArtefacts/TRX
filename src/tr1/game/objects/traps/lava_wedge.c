@@ -11,8 +11,8 @@
 
 void LavaWedge_Setup(OBJECT *obj)
 {
-    obj->control = LavaWedge_Control;
-    obj->collision = Object_Collision;
+    obj->control_func = LavaWedge_Control;
+    obj->collision_func = Object_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

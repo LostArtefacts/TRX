@@ -54,9 +54,9 @@ void Cultist1_Setup(void)
         return;
     }
 
-    obj->initialise = Cultist1_Initialise;
-    obj->control = Cultist1_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Cultist1_Initialise;
+    obj->control_func = Cultist1_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_1_HITPOINTS;
     obj->radius = CULTIST_RADIUS;
@@ -84,9 +84,9 @@ void Cultist1A_Setup(void)
     obj->frame_base = cult_1_obj->frame_base;
     obj->anim_idx = cult_1_obj->anim_idx;
 
-    obj->initialise = Cultist1_Initialise;
-    obj->control = Cultist1_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Cultist1_Initialise;
+    obj->control_func = Cultist1_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_1_HITPOINTS;
     obj->radius = CULTIST_RADIUS;
@@ -114,9 +114,9 @@ void Cultist1B_Setup(void)
     obj->frame_base = cult_1_obj->frame_base;
     obj->anim_idx = cult_1_obj->anim_idx;
 
-    obj->initialise = Cultist1_Initialise;
-    obj->control = Cultist1_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Cultist1_Initialise;
+    obj->control_func = Cultist1_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_1_HITPOINTS;
     obj->radius = CULTIST_RADIUS;

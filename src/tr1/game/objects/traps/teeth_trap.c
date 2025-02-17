@@ -35,8 +35,8 @@ static void M_BiteEffect(ITEM *item, BITE *bite)
 
 void TeethTrap_Setup(OBJECT *obj)
 {
-    obj->control = TeethTrap_Control;
-    obj->collision = Object_CollisionTrap;
+    obj->control_func = TeethTrap_Control;
+    obj->collision_func = Object_CollisionTrap;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

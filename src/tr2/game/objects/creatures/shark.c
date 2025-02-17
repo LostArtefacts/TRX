@@ -55,9 +55,9 @@ void Shark_Setup(void)
         return;
     }
 
-    obj->control = Shark_Control;
-    obj->draw_routine = Object_DrawUnclippedItem;
-    obj->collision = Creature_Collision;
+    obj->control_func = Shark_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = SHARK_HITPOINTS;
     obj->radius = SHARK_RADIUS;

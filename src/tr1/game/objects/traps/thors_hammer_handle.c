@@ -17,10 +17,10 @@ typedef enum {
 
 void ThorsHammerHandle_Setup(OBJECT *obj)
 {
-    obj->initialise = ThorsHammerHandle_Initialise;
-    obj->control = ThorsHammerHandle_Control;
-    obj->draw_routine = Object_DrawUnclippedItem;
-    obj->collision = ThorsHammerHandle_Collision;
+    obj->initialise_func = ThorsHammerHandle_Initialise;
+    obj->control_func = ThorsHammerHandle_Control;
+    obj->draw_func = Object_DrawUnclippedItem;
+    obj->collision_func = ThorsHammerHandle_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

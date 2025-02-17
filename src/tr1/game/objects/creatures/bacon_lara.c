@@ -16,10 +16,10 @@ static int32_t m_AnchorZ = -1;
 
 void BaconLara_Setup(OBJECT *obj)
 {
-    obj->initialise = BaconLara_Initialise;
-    obj->control = BaconLara_Control;
-    obj->draw_routine = BaconLara_Draw;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = BaconLara_Initialise;
+    obj->control_func = BaconLara_Control;
+    obj->draw_func = BaconLara_Draw;
+    obj->collision_func = Creature_Collision;
     obj->hit_points = LARA_MAX_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = 1;
@@ -127,7 +127,7 @@ void BaconLara_Control(int16_t item_num)
     }
 }
 
-void BaconLara_Draw(ITEM *item)
+void BaconLara_Draw(const ITEM *item)
 {
     if (item->current_anim_state == LS_DEATH) {
         Object_DrawAnimatingItem(item);

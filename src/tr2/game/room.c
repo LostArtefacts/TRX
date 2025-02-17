@@ -660,8 +660,8 @@ int32_t Room_GetHeight(
 
         const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->floor) {
-            obj->floor(item, x, y, z, &height);
+        if (obj->floor_height_func != nullptr) {
+            height = obj->floor_height_func(item, x, y, z, height);
         }
     }
 
@@ -702,8 +702,8 @@ int32_t Room_GetCeiling(
 
         const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->ceiling) {
-            obj->ceiling(item, x, y, z, &height);
+        if (obj->ceiling_height_func != nullptr) {
+            height = obj->ceiling_height_func(item, x, y, z, height);
         }
     }
 

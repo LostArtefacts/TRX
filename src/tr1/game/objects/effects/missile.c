@@ -19,7 +19,7 @@
 
 void Missile_Setup(OBJECT *obj)
 {
-    obj->control = Missile_Control;
+    obj->control_func = Missile_Control;
 }
 
 void Missile_Control(int16_t effect_num)

@@ -6,6 +6,6 @@
 void MissileSpawn_Knife_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_MISSILE_KNIFE);
-    obj->control = Missile_Control;
+    obj->control_func = Missile_Control;
     obj->save_position = 1;
 }

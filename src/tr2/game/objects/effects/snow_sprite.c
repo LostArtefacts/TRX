@@ -27,5 +27,5 @@ void SnowSprite_Control(const int16_t effect_num)
 void SnowSprite_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_SNOW_SPRITE);
-    obj->control = SnowSprite_Control;
+    obj->control_func = SnowSprite_Control;
 }

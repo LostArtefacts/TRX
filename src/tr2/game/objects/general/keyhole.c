@@ -68,7 +68,7 @@ static void M_Consume(
 
 void Keyhole_Setup(OBJECT *const obj)
 {
-    obj->collision = Keyhole_Collision;
+    obj->collision_func = Keyhole_Collision;
     obj->save_flags = 1;
 }
 

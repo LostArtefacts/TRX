@@ -100,10 +100,10 @@ void XianSpearman_Setup(void)
     }
 
     ASSERT(Object_Get(O_XIAN_SPEARMAN_STATUE)->loaded);
-    obj->initialise = M_Initialise;
-    obj->draw_routine = XianWarrior_Draw;
-    obj->control = XianSpearman_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->draw_func = XianWarrior_Draw;
+    obj->control_func = XianSpearman_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = XIAN_SPEARMAN_HITPOINTS;
     obj->radius = XIAN_SPEARMAN_RADIUS;

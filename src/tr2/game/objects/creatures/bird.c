@@ -46,9 +46,9 @@ void Bird_SetupEagle(void)
         return;
     }
 
-    obj->initialise = Bird_Initialise;
-    obj->control = Bird_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Bird_Initialise;
+    obj->control_func = Bird_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = EAGLE_HITPOINTS;
     obj->radius = BIRD_RADIUS;
@@ -69,9 +69,9 @@ void Bird_SetupCrow(void)
         return;
     }
 
-    obj->initialise = Bird_Initialise;
-    obj->control = Bird_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Bird_Initialise;
+    obj->control_func = Bird_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CROW_HITPOINTS;
     obj->radius = BIRD_RADIUS;

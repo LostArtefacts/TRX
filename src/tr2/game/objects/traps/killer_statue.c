@@ -69,9 +69,9 @@ void KillerStatue_Control(const int16_t item_num)
 void KillerStatue_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_KILLER_STATUE);
-    obj->initialise = KillerStatue_Initialise;
-    obj->control = KillerStatue_Control;
-    obj->collision = Object_Collision_Trap;
+    obj->initialise_func = KillerStatue_Initialise;
+    obj->control_func = KillerStatue_Control;
+    obj->collision_func = Object_Collision_Trap;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

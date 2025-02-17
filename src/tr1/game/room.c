@@ -268,7 +268,7 @@ int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
 
         const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->ceiling_height_func) {
+        if (obj->ceiling_height_func != nullptr) {
             height = obj->ceiling_height_func(item, x, y, z, height);
         }
     }
@@ -295,7 +295,7 @@ int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
 
         const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->floor_height_func) {
+        if (obj->floor_height_func != nullptr) {
             height = obj->floor_height_func(item, x, y, z, height);
         }
     }
@@ -817,7 +817,7 @@ bool Room_IsOnWalkable(
         const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
         const ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->floor_height_func) {
+        if (obj->floor_height_func != nullptr) {
             height = obj->floor_height_func(item, x, y, z, height);
             object_found = true;
         }

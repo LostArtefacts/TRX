@@ -24,10 +24,11 @@ int16_t Object_FindReceptacle(const GAME_OBJECT_ID obj_id)
         const ITEM *const item = Item_Get(item_num);
         if (item->object_id == receptacle_to_check) {
             const OBJECT *const obj = Object_Get(item->object_id);
-            if (obj->is_usable != nullptr && !obj->is_usable(item_num)) {
+            if (obj->is_usable_func != nullptr
+                && !obj->is_usable_func(item_num)) {
                 continue;
             }
-            if (Lara_TestPosition(item, obj->bounds())) {
+            if (Lara_TestPosition(item, obj->bounds_func())) {
                 return item_num;
             }
         }
@@ -65,11 +66,11 @@ void Object_CollisionTrap(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 }
 
-void Object_DrawDummyItem(ITEM *item)
+void Object_DrawDummyItem(const ITEM *const item)
 {
 }
 
-void Object_DrawSpriteItem(ITEM *item)
+void Object_DrawSpriteItem(const ITEM *const item)
 {
     Output_DrawSprite(
         item->interp.result.pos.x, item->interp.result.pos.y,
@@ -78,7 +79,7 @@ void Object_DrawSpriteItem(ITEM *item)
         item->shade.value_1);
 }
 
-void Object_DrawPickupItem(ITEM *item)
+void Object_DrawPickupItem(const ITEM *const item)
 {
     if (!g_Config.visuals.enable_3d_pickups) {
         Object_DrawSpriteItem(item);
@@ -87,16 +88,15 @@ void Object_DrawPickupItem(ITEM *item)
 
     // Convert item to menu display item.
     int16_t item_num_option = Inv_GetItemOption(item->object_id);
+
     // Save the frame number.
     int16_t old_frame_num = item->frame_num;
     // Modify item to be the anim for inv item and animation 0.
-    Item_SwitchToObjAnim(item, 0, 0, item_num_option);
-
+    Item_SwitchToObjAnim((ITEM *)item, 0, 0, item_num_option);
     const OBJECT *const obj = Object_Get(item_num_option);
     const ANIM_FRAME *frame = Item_GetAnim(item)->frame_ptr;
-
     // Restore the old frame number in case we need to get the sprite again.
-    item->frame_num = old_frame_num;
+    ((ITEM *)item)->frame_num = old_frame_num;
 
     // Fall back to normal sprite rendering if not found.
     if (obj->mesh_count < 0) {
@@ -110,8 +110,9 @@ void Object_DrawPickupItem(ITEM *item)
     // This is mostly true, but for example the 4 items in the Obelisk of
     // Khamoon the 4 items are sitting on top of a static mesh which is not
     // floor.
+    int16_t room_num = item->room_num;
     const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &item->room_num);
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     const int16_t floor_height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
@@ -182,7 +183,7 @@ void Object_DrawPickupItem(ITEM *item)
         item->interp.result.pos.x, offset, item->interp.result.pos.z);
     Matrix_Rot16(item->interp.result.rot);
 
-    Output_CalculateLight(item->pos, item->room_num);
+    Output_CalculateLight(item->pos, room_num);
 
     frame = obj->frame_base;
     int32_t clip = Output_GetObjectBounds(&frame->bounds);
@@ -322,7 +323,7 @@ void Object_DrawInterpolatedObject(
     Matrix_Pop();
 }
 
-void Object_DrawAnimatingItem(ITEM *item)
+void Object_DrawAnimatingItem(const ITEM *const item)
 {
     ANIM_FRAME *frmptr[2];
     int32_t rate;
@@ -345,7 +346,7 @@ void Object_DrawAnimatingItem(ITEM *item)
     Matrix_Pop();
 }
 
-void Object_DrawUnclippedItem(ITEM *item)
+void Object_DrawUnclippedItem(const ITEM *const item)
 {
     int32_t left = g_PhdLeft;
     int32_t top = g_PhdTop;

@@ -16,5 +16,5 @@ void Secret2_Setup(void)
     OBJECT *const obj = Object_Get(O_SECRET_2);
     Pickup_Setup(obj);
     // TODO: why is it so special?
-    obj->control = Secret2_Control;
+    obj->control_func = Secret2_Control;
 }

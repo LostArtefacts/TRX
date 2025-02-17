@@ -5,5 +5,5 @@
 void CameraTarget_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_CAMERA_TARGET);
-    obj->draw_routine = Object_DrawDummyItem;
+    obj->draw_func = Object_DrawDummyItem;
 }

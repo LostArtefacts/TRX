@@ -58,7 +58,7 @@ void BigBowl_Control(const int16_t item_num)
 void BigBowl_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_BIG_BOWL);
-    obj->control = BigBowl_Control;
+    obj->control_func = BigBowl_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

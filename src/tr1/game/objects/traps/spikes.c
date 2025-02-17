@@ -10,7 +10,7 @@
 
 void Spikes_Setup(OBJECT *obj)
 {
-    obj->collision = Spikes_Collision;
+    obj->collision_func = Spikes_Collision;
 }
 
 void Spikes_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)

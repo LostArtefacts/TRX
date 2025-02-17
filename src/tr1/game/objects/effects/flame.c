@@ -13,7 +13,7 @@
 
 void Flame_Setup(OBJECT *obj)
 {
-    obj->control = Flame_Control;
+    obj->control_func = Flame_Control;
 }
 
 void Flame_Control(int16_t effect_num)

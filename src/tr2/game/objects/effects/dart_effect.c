@@ -22,7 +22,7 @@ void DartEffect_Control(int16_t effect_num)
 void DartEffect_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_DART_EFFECT);
-    obj->control = DartEffect_Control;
-    obj->draw_routine = Object_DrawSpriteItem;
+    obj->control_func = DartEffect_Control;
+    obj->draw_func = Object_DrawSpriteItem;
     obj->semi_transparent = 1;
 }

@@ -13,8 +13,8 @@
 
 void Dart_Setup(OBJECT *obj)
 {
-    obj->collision = Object_Collision;
-    obj->control = Dart_Control;
+    obj->collision_func = Object_Collision;
+    obj->control_func = Dart_Control;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = 1;
 }

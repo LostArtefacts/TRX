@@ -101,9 +101,9 @@ void SpinningBlade_Control(const int16_t item_num)
 void SpinningBlade_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_SPINNING_BLADE);
-    obj->initialise = M_Initialise;
-    obj->control = SpinningBlade_Control;
-    obj->collision = Object_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = SpinningBlade_Control;
+    obj->collision_func = Object_Collision;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

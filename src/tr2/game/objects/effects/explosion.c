@@ -29,6 +29,6 @@ void Explosion_Control(const int16_t effect_num)
 void Explosion_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_EXPLOSION);
-    obj->control = Explosion_Control;
+    obj->control_func = Explosion_Control;
     obj->semi_transparent = 1;
 }

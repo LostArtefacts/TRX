@@ -37,10 +37,10 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 void Scion1_Setup(OBJECT *obj)
 {
-    obj->draw_routine = Object_DrawPickupItem;
-    obj->collision = Scion1_Collision;
+    obj->draw_func = Object_DrawPickupItem;
+    obj->collision_func = Scion1_Collision;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
 }
 
 void Scion1_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
@@ -54,7 +54,7 @@ void Scion1_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         goto cleanup;
     }
 

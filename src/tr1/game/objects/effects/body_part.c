@@ -11,7 +11,7 @@
 
 void BodyPart_Setup(OBJECT *obj)
 {
-    obj->control = BodyPart_Control;
+    obj->control_func = BodyPart_Control;
     obj->mesh_count = 0;
     obj->loaded = 1;
 }

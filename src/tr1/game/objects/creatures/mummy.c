@@ -26,9 +26,9 @@ void Mummy_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Mummy_Initialise;
-    obj->control = Mummy_Control;
-    obj->collision = Object_Collision;
+    obj->initialise_func = Mummy_Initialise;
+    obj->control_func = Mummy_Control;
+    obj->collision_func = Object_Collision;
     obj->hit_points = MUMMY_HITPOINTS;
     obj->save_flags = 1;
     obj->save_hitpoints = 1;

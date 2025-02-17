@@ -51,8 +51,8 @@ void Spider_Setup(void)
         return;
     }
 
-    obj->control = Spider_Control;
-    obj->collision = Creature_Collision;
+    obj->control_func = Spider_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = SPIDER_HITPOINTS;
     obj->radius = SPIDER_RADIUS;

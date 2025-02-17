@@ -7,7 +7,7 @@
 
 void Splash_Setup(OBJECT *obj)
 {
-    obj->control = Splash_Control;
+    obj->control_func = Splash_Control;
 }
 
 void Splash_Control(int16_t effect_num)

@@ -30,8 +30,8 @@ void Winston_Setup(void)
         return;
     }
 
-    obj->control = Winston_Control;
-    obj->collision = Object_Collision;
+    obj->control_func = Winston_Control;
+    obj->collision_func = Object_Collision;
 
     obj->hit_points = DONT_TARGET;
     obj->radius = WINSTON_RADIUS;

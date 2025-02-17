@@ -26,5 +26,5 @@ void GunFlash_Control(const int16_t effect_num)
 void GunFlash_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_GUN_FLASH);
-    obj->control = GunFlash_Control;
+    obj->control_func = GunFlash_Control;
 }

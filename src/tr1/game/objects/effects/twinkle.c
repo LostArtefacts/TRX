@@ -9,7 +9,7 @@
 
 void Twinkle_Setup(OBJECT *obj)
 {
-    obj->control = Twinkle_Control;
+    obj->control_func = Twinkle_Control;
 }
 
 void Twinkle_Control(int16_t effect_num)

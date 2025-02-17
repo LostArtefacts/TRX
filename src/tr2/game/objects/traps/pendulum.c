@@ -37,8 +37,8 @@ void Pendulum_Control(const int16_t item_num)
 
 void Pendulum_Setup(OBJECT *const obj)
 {
-    obj->control = Pendulum_Control;
-    obj->collision = Object_Collision;
+    obj->control_func = Pendulum_Control;
+    obj->collision_func = Object_Collision;
     obj->shadow_size = 128;
     obj->save_flags = 1;
     obj->save_anim = 1;

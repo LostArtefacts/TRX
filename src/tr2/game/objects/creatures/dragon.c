@@ -131,8 +131,8 @@ void Dragon_SetupFront(void)
     }
 
     ASSERT(Object_Get(O_DRAGON_BACK)->loaded);
-    obj->control = Dragon_Control;
-    obj->collision = Dragon_Collision;
+    obj->control_func = Dragon_Control;
+    obj->collision_func = Dragon_Collision;
 
     obj->hit_points = DRAGON_HITPOINTS;
     obj->radius = DRAGON_RADIUS;
@@ -154,8 +154,8 @@ void Dragon_SetupBack(void)
         return;
     }
 
-    obj->control = Dragon_Control;
-    obj->collision = Dragon_Collision;
+    obj->control_func = Dragon_Control;
+    obj->collision_func = Dragon_Collision;
 
     obj->radius = DRAGON_RADIUS;
 

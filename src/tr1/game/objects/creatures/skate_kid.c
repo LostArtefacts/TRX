@@ -44,10 +44,10 @@ void SkateKid_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = SkateKid_Initialise;
-    obj->control = SkateKid_Control;
-    obj->draw_routine = SkateKid_Draw;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = SkateKid_Initialise;
+    obj->control_func = SkateKid_Control;
+    obj->draw_func = SkateKid_Draw;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = SKATE_KID_HITPOINTS;
     obj->radius = SKATE_KID_RADIUS;
@@ -173,7 +173,7 @@ void SkateKid_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void SkateKid_Draw(ITEM *item)
+void SkateKid_Draw(const ITEM *const item)
 {
     Object_DrawAnimatingItem(item);
     if (!Object_Get(O_SKATEBOARD)->loaded) {
@@ -182,10 +182,10 @@ void SkateKid_Draw(ITEM *item)
 
     const int16_t relative_anim = Item_GetRelativeAnim(item);
     const int16_t relative_frame = Item_GetRelativeFrame(item);
-    item->object_id = O_SKATEBOARD;
-    Item_SwitchToAnim(item, relative_anim, relative_frame);
+    ((ITEM *)item)->object_id = O_SKATEBOARD;
+    Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
     Object_DrawAnimatingItem(item);
 
-    item->object_id = O_SKATEKID;
-    Item_SwitchToAnim(item, relative_anim, relative_frame);
+    ((ITEM *)item)->object_id = O_SKATEKID;
+    Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
 }

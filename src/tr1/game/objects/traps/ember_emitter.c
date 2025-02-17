@@ -9,9 +9,9 @@
 
 void EmberEmitter_Setup(OBJECT *obj)
 {
-    obj->control = EmberEmitter_Control;
-    obj->draw_routine = Object_DrawDummyItem;
-    obj->collision = Object_Collision;
+    obj->control_func = EmberEmitter_Control;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->collision_func = Object_Collision;
     obj->save_flags = 1;
 }
 

@@ -83,8 +83,8 @@ void Lara_Control_Cutscene(const int16_t item_num)
 void CutscenePlayer1_Initialise(const int16_t item_num)
 {
     OBJECT *const obj = Object_Get(O_LARA);
-    obj->draw_routine = Lara_Draw;
-    obj->control = Lara_Control_Cutscene;
+    obj->draw_func = Lara_Draw;
+    obj->control_func = Lara_Control_Cutscene;
 
     Item_AddActive(item_num);
     ITEM *const item = Item_Get(item_num);

@@ -68,8 +68,8 @@ void Icicle_Control(const int16_t item_num)
 void Icicle_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_ICICLE);
-    obj->control = Icicle_Control;
-    obj->collision = Object_Collision_Trap;
+    obj->control_func = Icicle_Control;
+    obj->collision_func = Object_Collision_Trap;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;

@@ -6,8 +6,8 @@
 
 void SlidingPillar_Setup(OBJECT *obj)
 {
-    obj->initialise = SlidingPillar_Initialise;
-    obj->control = SlidingPillar_Control;
+    obj->initialise_func = SlidingPillar_Initialise;
+    obj->control_func = SlidingPillar_Control;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;

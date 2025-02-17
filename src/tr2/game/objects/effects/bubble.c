@@ -9,7 +9,7 @@
 void Bubble_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_BUBBLE);
-    obj->control = Bubble_Control;
+    obj->control_func = Bubble_Control;
 }
 
 void Bubble_Control(const int16_t effect_num)

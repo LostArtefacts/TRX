@@ -286,7 +286,7 @@ void Room_DrawSingleRoom(int16_t room_num)
     while (item_num != NO_ITEM) {
         ITEM *const item = Item_Get(item_num);
         if (item->status != IS_INVISIBLE) {
-            Object_Get(item->object_id)->draw_routine(item);
+            Object_Get(item->object_id)->draw_func(item);
         }
         item_num = item->next_item;
     }

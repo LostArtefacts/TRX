@@ -20,9 +20,9 @@ void Statue_Setup(OBJECT *obj)
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Statue_Initialise;
-    obj->control = Statue_Control;
-    obj->collision = Object_Collision;
+    obj->initialise_func = Statue_Initialise;
+    obj->control_func = Statue_Control;
+    obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }

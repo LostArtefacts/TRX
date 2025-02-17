@@ -61,9 +61,9 @@ void Blade_Control(const int16_t item_num)
 void Blade_Setup(void)
 {
     OBJECT *const obj = Object_Get(O_BLADE);
-    obj->initialise = Blade_Initialise;
-    obj->control = Blade_Control;
-    obj->collision = Object_Collision_Trap;
+    obj->initialise_func = Blade_Initialise;
+    obj->control_func = Blade_Control;
+    obj->collision_func = Object_Collision_Trap;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }

@@ -6,8 +6,8 @@
 
 void ScionHolder_Setup(OBJECT *obj)
 {
-    obj->control = ScionHolder_Control;
-    obj->collision = Object_Collision;
+    obj->control_func = ScionHolder_Control;
+    obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
