@@ -55,6 +55,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         return gf_cmd;
 
     case GFSC_SAVED:
+        GF_InventoryModifier_Scan(level);
         break;
 
     case GFSC_SELECT: {
