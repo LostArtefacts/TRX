@@ -713,10 +713,10 @@ void Level_ReadPathingData(VFILE *const file)
         box->top = VFile_ReadS32(file);
         box->bottom = VFile_ReadS32(file);
 #else
-        box->left = VFile_ReadU8(file);
-        box->right = VFile_ReadU8(file);
-        box->top = VFile_ReadU8(file);
-        box->bottom = VFile_ReadU8(file);
+        box->left = VFile_ReadU8(file) << WALL_SHIFT;
+        box->right = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
+        box->top = VFile_ReadU8(file) << WALL_SHIFT;
+        box->bottom = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
 #endif
         box->height = VFile_ReadS16(file);
         box->overlap_index = VFile_ReadS16(file);

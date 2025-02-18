@@ -11,8 +11,8 @@
 #define BOX_SEARCH_NUM 0x7FFF
 #define BOX_END_BIT 0x8000
 #define BOX_NUM_BITS (~BOX_END_BIT) // = 0x7FFF
-#define BOX_STALK_DIST 3 // tiles
-#define BOX_ESCAPE_DIST 5 // tiles
+#define BOX_STALK_DIST (3 * WALL_L)
+#define BOX_ESCAPE_DIST (5 * WALL_L)
 #define BOX_MAX_EXPANSION 5
 
 #define BOX_BIFF (WALL_L / 2) // = 0x200 = 512
@@ -124,12 +124,11 @@ void Box_TargetBox(LOT_INFO *const lot, const int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num & BOX_NUM_BITS);
 
-    lot->target.z = ((box->right - box->left - 1) >> (15 - WALL_SHIFT))
-            * Random_GetControl()
-        + (box->left << WALL_SHIFT) + WALL_L / 2;
-    lot->target.x = ((box->bottom - box->top - 1) >> (15 - WALL_SHIFT))
-            * Random_GetControl()
-        + (box->top << WALL_SHIFT) + WALL_L / 2;
+    // TODO: determine if +1 on box right/bottom is essential
+    lot->target.z = box->left + WALL_L / 2
+        + (Random_GetControl() * (box->right + 1 - box->left - WALL_L) >> 15);
+    lot->target.x = box->top + WALL_L / 2
+        + (Random_GetControl() * (box->bottom + 1 - box->top - WALL_L) >> 15);
     lot->required_box = box_num & BOX_NUM_BITS;
 
     if (lot->fly != 0) {
@@ -143,16 +142,12 @@ int32_t Box_StalkBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num);
+    // TODO: determine if +1 on box right/bottom is essential
+    const int32_t z = ((box->left + box->right + 1) >> 1) - enemy->pos.z;
+    const int32_t x = ((box->top + box->bottom + 1) >> 1) - enemy->pos.x;
 
-    const int32_t z =
-        ((box->left + box->right) << (WALL_SHIFT - 1)) - enemy->pos.z;
-    const int32_t x =
-        ((box->top + box->bottom) << (WALL_SHIFT - 1)) - enemy->pos.x;
-
-    const int32_t x_range = (box->bottom - box->top + BOX_STALK_DIST)
-        << WALL_SHIFT;
-    const int32_t z_range = (box->right - box->left + BOX_STALK_DIST)
-        << WALL_SHIFT;
+    const int32_t x_range = box->bottom + 1 - box->top + BOX_STALK_DIST;
+    const int32_t z_range = box->right + 1 - box->left + BOX_STALK_DIST;
     if (x > x_range || x < -x_range || z > z_range || z < -z_range) {
         return false;
     }
@@ -175,14 +170,12 @@ int32_t Box_EscapeBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num);
-    const int32_t x =
-        ((box->bottom + box->top) << (WALL_SHIFT - 1)) - enemy->pos.x;
-    const int32_t z =
-        ((box->left + box->right) << (WALL_SHIFT - 1)) - enemy->pos.z;
+    // TODO: determine if +1 on box right/bottom is essential
+    const int32_t x = ((box->top + box->bottom + 1) >> 1) - enemy->pos.x;
+    const int32_t z = ((box->left + box->right + 1) >> 1) - enemy->pos.z;
 
-    const int32_t x_range = BOX_ESCAPE_DIST << WALL_SHIFT;
-    const int32_t z_range = BOX_ESCAPE_DIST << WALL_SHIFT;
-    if (x > -x_range && x < x_range && z > -z_range && z < z_range) {
+    if (x > -BOX_ESCAPE_DIST && x < BOX_ESCAPE_DIST && z > -BOX_ESCAPE_DIST
+        && z < BOX_ESCAPE_DIST) {
         return false;
     }
 
@@ -205,11 +198,10 @@ int32_t Box_ValidBox(
         return false;
     }
 
+    // TODO: determine if +1 on box right/bottom is essential
     return !(
-        item->pos.z > (box->left << WALL_SHIFT)
-        && item->pos.z < (box->right << WALL_SHIFT)
-        && item->pos.x > (box->top << WALL_SHIFT)
-        && item->pos.x < (box->bottom << WALL_SHIFT));
+        item->pos.z > box->left && item->pos.z < box->right + 1
+        && item->pos.x > box->top && item->pos.x < box->bottom + 1);
 }
 
 TARGET_TYPE Box_CalculateTarget(
@@ -244,10 +236,10 @@ TARGET_TYPE Box_CalculateTarget(
             CLAMPG(target->y, box->height);
         }
 
-        box_left = (int32_t)box->left << WALL_SHIFT;
-        box_right = ((int32_t)box->right << WALL_SHIFT) - 1;
-        box_top = (int32_t)box->top << WALL_SHIFT;
-        box_bottom = ((int32_t)box->bottom << WALL_SHIFT) - 1;
+        box_left = box->left;
+        box_right = box->right;
+        box_top = box->top;
+        box_bottom = box->bottom;
 
         if (item->pos.z >= box_left && item->pos.z <= box_right
             && item->pos.x >= box_top && item->pos.x <= box_bottom) {

@@ -295,37 +295,29 @@ void Camera_SmartShift(
         Room_GetWorldSector(room, g_Camera.target.x, g_Camera.target.z)->box;
     const BOX_INFO *box = Box_GetBox(item_box);
 
-    int32_t left = (int32_t)box->left << WALL_SHIFT;
-    int32_t top = (int32_t)box->top << WALL_SHIFT;
-    int32_t right = ((int32_t)box->right << WALL_SHIFT) - 1;
-    int32_t bottom = ((int32_t)box->bottom << WALL_SHIFT) - 1;
-
     room = Room_Get(target->room_num);
     int16_t camera_box = Room_GetWorldSector(room, target->x, target->z)->box;
 
     if (camera_box != NO_BOX
-        && (target->z < left || target->z > right || target->x < top
-            || target->x > bottom)) {
+        && (target->z < box->left || target->z > box->right
+            || target->x < box->top || target->x > box->bottom)) {
         box = Box_GetBox(camera_box);
-        left = (int32_t)box->left << WALL_SHIFT;
-        top = (int32_t)box->top << WALL_SHIFT;
-        right = ((int32_t)box->right << WALL_SHIFT) - 1;
-        bottom = ((int32_t)box->bottom << WALL_SHIFT) - 1;
     }
 
+    int32_t left = box->left;
+    int32_t right = box->right;
+    int32_t top = box->top;
+    int32_t bottom = box->bottom;
+
     int32_t test;
-    int32_t edge;
 
     test = (target->z - WALL_L) | (WALL_L - 1);
     const SECTOR *good_left =
         Camera_GoodPosition(target->x, target->y, test, target->room_num);
     if (good_left) {
         camera_box = good_left->box;
-        if (camera_box != NO_BOX) {
-            edge = (int32_t)Box_GetBox(camera_box)->left << WALL_SHIFT;
-            if (edge < left) {
-                left = edge;
-            }
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->left < left) {
+            left = Box_GetBox(camera_box)->left;
         }
     } else {
         left = test;
@@ -336,11 +328,8 @@ void Camera_SmartShift(
         Camera_GoodPosition(target->x, target->y, test, target->room_num);
     if (good_right) {
         camera_box = good_right->box;
-        if (camera_box != NO_BOX) {
-            edge = ((int32_t)Box_GetBox(camera_box)->right << WALL_SHIFT) - 1;
-            if (edge > right) {
-                right = edge;
-            }
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->right > right) {
+            right = Box_GetBox(camera_box)->right;
         }
     } else {
         right = test;
@@ -351,11 +340,8 @@ void Camera_SmartShift(
         Camera_GoodPosition(test, target->y, target->z, target->room_num);
     if (good_top) {
         camera_box = good_top->box;
-        if (camera_box != NO_BOX) {
-            edge = (int32_t)Box_GetBox(camera_box)->top << WALL_SHIFT;
-            if (edge < top) {
-                top = edge;
-            }
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->top < top) {
+            top = Box_GetBox(camera_box)->top;
         }
     } else {
         top = test;
@@ -366,11 +352,8 @@ void Camera_SmartShift(
         Camera_GoodPosition(test, target->y, target->z, target->room_num);
     if (good_bottom) {
         camera_box = good_bottom->box;
-        if (camera_box != NO_BOX) {
-            edge = ((int32_t)Box_GetBox(camera_box)->bottom << WALL_SHIFT) - 1;
-            if (edge > bottom) {
-                bottom = edge;
-            }
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->bottom > bottom) {
+            bottom = Box_GetBox(camera_box)->bottom;
         }
     } else {
         bottom = test;
@@ -547,8 +530,8 @@ int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
     const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
     const BOX_INFO *const box = Box_GetBox(sector->box);
 
-    int32_t left = ((int32_t)box->left << WALL_SHIFT) + clamp;
-    int32_t right = ((int32_t)box->right << WALL_SHIFT) - clamp - 1;
+    const int32_t left = box->left + clamp;
+    const int32_t right = box->right - clamp;
     if (z < left && !Camera_GoodPosition(x, y, z - clamp, pos->room_num)) {
         pos->z = left;
     } else if (
@@ -556,8 +539,8 @@ int32_t Camera_ShiftClamp(GAME_VECTOR *pos, int32_t clamp)
         pos->z = right;
     }
 
-    int32_t top = ((int32_t)box->top << WALL_SHIFT) + clamp;
-    int32_t bottom = ((int32_t)box->bottom << WALL_SHIFT) - clamp - 1;
+    const int32_t top = box->top + clamp;
+    const int32_t bottom = box->bottom - clamp;
     if (x < top && !Camera_GoodPosition(x - clamp, y, z, pos->room_num)) {
         pos->x = top;
     } else if (

@@ -363,23 +363,22 @@ static int32_t M_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
     const int32_t z = pos->z;
 
     const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
-
     const BOX_INFO *const box = Box_GetBox(sector->box);
-    if (z < box->left + clamp
-        && M_BadPosition(x, y, z - clamp, pos->room_num)) {
-        pos->z = box->left + clamp;
-    } else if (
-        z > box->right - clamp
-        && M_BadPosition(x, y, z + clamp, pos->room_num)) {
-        pos->z = box->right - clamp;
+
+    const int32_t left = box->left + clamp;
+    const int32_t right = box->right - clamp;
+    if (z < left && M_BadPosition(x, y, z - clamp, pos->room_num)) {
+        pos->z = left;
+    } else if (z > right && M_BadPosition(x, y, z + clamp, pos->room_num)) {
+        pos->z = right;
     }
 
-    if (x < box->top + clamp && M_BadPosition(x - clamp, y, z, pos->room_num)) {
-        pos->x = box->top + clamp;
-    } else if (
-        x > box->bottom - clamp
-        && M_BadPosition(x + clamp, y, z, pos->room_num)) {
-        pos->x = box->bottom - clamp;
+    const int32_t top = box->top + clamp;
+    const int32_t bottom = box->bottom - clamp;
+    if (x < top && M_BadPosition(x - clamp, y, z, pos->room_num)) {
+        pos->x = top;
+    } else if (x > bottom && M_BadPosition(x + clamp, y, z, pos->room_num)) {
+        pos->x = bottom;
     }
 
     int32_t height = Room_GetHeight(sector, x, y, z) - clamp;
