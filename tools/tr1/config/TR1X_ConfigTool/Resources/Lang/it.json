@@ -77,8 +77,8 @@
       "Description": "Abilita i controlli dei passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare."
     },
     "enable_responsive_passport": {
-      "Title": "Abilita un passaporto più reattivo",
-      "Description": "Disabilita il blocco dell'input utente quando il passaporto sfoglia le pagine, programmando invece i cambi di pagina."
+      "Title": "Abilita passaporto reattivo",
+      "Description": "Disabilita il blocco dell'input dell'utente mentre scorrono le pagine del passaporto, programmando invece le pagine da sfogliare."
     },
     "enable_enhanced_look": {
       "Title": "Muovi la visuale mentre corri",
@@ -106,7 +106,7 @@
     },
     "enable_tr2_swim_cancel": {
       "Title": "Annullamento reattivo del nuoto",
-      "Description": "Permette a Lara di fermarsi in modo più istantaneo sott'acqua quando viene rilasciato il tasto per nuotare, simile a TR2+."
+      "Description": "Permette a Lara di fermarsi in modo più istantaneo sott'acqua quando viene rilasciato il tasto per nuotare, simile\n a TR2+."
     },
     "enable_wading": {
       "Title": "Guadare",
@@ -341,8 +341,8 @@
       "Description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D."
     },
     "enable_pickup_aids": {
-      "Title": "Suggerimenti per il pickup",
-      "Description": "Abilita un effetto scintillante intermittente vicino agli oggetti raccolti per evidenziarne la presenza."
+      "Title": "Segnalazione oggetti",
+      "Description": "Abilita un effetto scintillante intermittente vicino agli oggetti da raccogliere per evidenziarne la presenza."
     },
     "enable_ps1_crystals": {
       "Title": "Abilita i cristalli di salvataggio PS1",
@@ -353,8 +353,8 @@
       "Description": "Abilita le ombre arrotondate invece di quelle ottagonali predefinite."
     },
     "enable_gun_lighting": {
-      "Title": "Illuminazione di armi/esplosioni",
-      "Description": "Consente di generare un'illuminazione dinamica per spari ed esplosioni, simile a TR2+."
+      "Title": "Illuminazione spari/esplosioni",
+      "Description": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+."
     },
     "enable_shotgun_flash": {
       "Title": "Lampo dello sparo del fucile",
@@ -450,7 +450,7 @@
     },
     "enable_exit_fade_effects": {
       "Title": "Effetti di dissolvenza di uscita",
-      "Description": "Abilita gli effetti di dissolvenza quando si esce dal gioco al desktop."
+      "Description": "Abilita gli effetti di dissolvenza quando si esce dal gioco."
     }
   }
 }
