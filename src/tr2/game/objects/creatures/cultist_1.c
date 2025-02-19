@@ -1,5 +1,3 @@
-#include "game/objects/creatures/cultist_1.h"
-
 #include "game/creature.h"
 #include "game/objects/creatures/cultist_common.h"
 #include "game/random.h"
@@ -47,15 +45,20 @@ static const BITE m_Cultist1Gun = {
     .mesh_num = 10,
 };
 
-void Cultist1_Setup(void)
+static void M_Setup1(OBJECT *obj);
+static void M_Setup1A(OBJECT *obj);
+static void M_Setup1B(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup1(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_CULT_1);
     if (!obj->loaded) {
         return;
     }
 
-    obj->initialise_func = Cultist1_Initialise;
-    obj->control_func = Cultist1_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_1_HITPOINTS;
@@ -72,39 +75,8 @@ void Cultist1_Setup(void)
     Object_GetBone(obj, 0)->rot_y = true;
 }
 
-void Cultist1A_Setup(void)
+static void M_Setup1A(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_CULT_1A);
-    if (!obj->loaded) {
-        return;
-    }
-
-    const OBJECT *const cult_1_obj = Object_Get(O_CULT_1);
-    ASSERT(cult_1_obj->loaded);
-    obj->frame_base = cult_1_obj->frame_base;
-    obj->anim_idx = cult_1_obj->anim_idx;
-
-    obj->initialise_func = Cultist1_Initialise;
-    obj->control_func = Cultist1_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = CULTIST_1_HITPOINTS;
-    obj->radius = CULTIST_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 50;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-
-    Object_GetBone(obj, 0)->rot_y = true;
-}
-
-void Cultist1B_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_CULT_1B);
     if (!obj->loaded) {
         return;
     }
@@ -114,8 +86,8 @@ void Cultist1B_Setup(void)
     obj->frame_base = cult_1_obj->frame_base;
     obj->anim_idx = cult_1_obj->anim_idx;
 
-    obj->initialise_func = Cultist1_Initialise;
-    obj->control_func = Cultist1_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_1_HITPOINTS;
@@ -132,7 +104,36 @@ void Cultist1B_Setup(void)
     Object_GetBone(obj, 0)->rot_y = true;
 }
 
-void Cultist1_Initialise(const int16_t item_num)
+static void M_Setup1B(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    const OBJECT *const cult_1_obj = Object_Get(O_CULT_1);
+    ASSERT(cult_1_obj->loaded);
+    obj->frame_base = cult_1_obj->frame_base;
+    obj->anim_idx = cult_1_obj->anim_idx;
+
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = CULTIST_1_HITPOINTS;
+    obj->radius = CULTIST_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 50;
+
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+
+    Object_GetBone(obj, 0)->rot_y = true;
+}
+
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Random_GetControl() < 0x4000) {
@@ -143,7 +144,7 @@ void Cultist1_Initialise(const int16_t item_num)
     }
 }
 
-void Cultist1_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -309,3 +310,7 @@ void Cultist1_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_CULT_1, M_Setup1)
+REGISTER_OBJECT(O_CULT_1A, M_Setup1A)
+REGISTER_OBJECT(O_CULT_1B, M_Setup1B)

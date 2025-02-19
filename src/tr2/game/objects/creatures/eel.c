@@ -1,5 +1,3 @@
-#include "game/objects/creatures/eel.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -41,14 +39,16 @@ static const BITE m_EelBite = {
     .mesh_num = 7,
 };
 
-void Eel_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_EEL);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Eel_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = EEL_HITPOINTS;
@@ -58,7 +58,7 @@ void Eel_Setup(void)
     obj->save_anim = 1;
 }
 
-void Eel_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -115,3 +115,5 @@ void Eel_Control(const int16_t item_num)
     item->data = (void *)(intptr_t)pos;
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_EEL, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/traps/spike_wall.h"
-
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -15,6 +13,8 @@
 
 static void M_Move(int16_t item_num);
 static void M_HitLara(ITEM *item);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_Move(const int16_t item_num)
 {
@@ -52,7 +52,15 @@ static void M_HitLara(ITEM *const item)
     Sound_Effect(SFX_LARA_FLESH_WOUND, &item->pos, SPM_NORMAL);
 }
 
-void SpikeWall_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -65,11 +73,4 @@ void SpikeWall_Control(const int16_t item_num)
     }
 }
 
-void SpikeWall_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_SPIKE_WALL);
-    obj->control_func = SpikeWall_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_SPIKE_WALL, M_Setup)

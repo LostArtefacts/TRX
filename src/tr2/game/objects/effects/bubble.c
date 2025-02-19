@@ -1,18 +1,18 @@
-#include "game/objects/effects/bubble.h"
-
 #include "game/effects.h"
 #include "game/room.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 
-void Bubble_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BUBBLE);
-    obj->control_func = Bubble_Control;
+    obj->control_func = M_Control;
 }
 
-void Bubble_Control(const int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     effect->rot.y += 9 * DEG_1;
@@ -44,3 +44,5 @@ void Bubble_Control(const int16_t effect_num)
     effect->pos.y = y;
     effect->pos.z = z;
 }
+
+REGISTER_OBJECT(O_BUBBLE, M_Setup)

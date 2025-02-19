@@ -1,5 +1,3 @@
-#include "game/objects/creatures/trex.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -42,14 +40,16 @@ typedef enum {
     TREX_ANIM_KILL = 11,
 } TREX_ANIM;
 
-void TRex_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DINO);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = TRex_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = TREX_HITPOINTS;
@@ -67,7 +67,7 @@ void TRex_Setup(void)
     Object_GetBone(obj, 11)->rot_y = true;
 }
 
-void TRex_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -168,3 +168,5 @@ void TRex_Control(const int16_t item_num)
 
     Creature_Animate(item_num, angle, tilt);
 }
+
+REGISTER_OBJECT(O_DINO, M_Setup)

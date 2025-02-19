@@ -1,5 +1,3 @@
-#include "game/objects/general/puzzle_hole.h"
-
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -40,6 +38,9 @@ static void M_Refuse(const ITEM *lara_item);
 static void M_Consume(
     ITEM *lara_item, ITEM *puzzle_hole_item, GAME_OBJECT_ID puzzle_obj_id);
 static void M_MarkDone(ITEM *puzzle_hole_item);
+static void M_SetupEmpty(OBJECT *obj);
+static void M_SetupDone(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_Refuse(const ITEM *const lara_item)
 {
@@ -76,15 +77,18 @@ static void M_MarkDone(ITEM *const puzzle_hole_item)
     }
 }
 
-void PuzzleHole_Setup(OBJECT *const obj, const bool done)
+static void M_SetupEmpty(OBJECT *const obj)
 {
-    if (!done) {
-        obj->collision_func = PuzzleHole_Collision;
-    }
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
 }
 
-void PuzzleHole_Collision(
+static void M_SetupDone(OBJECT *const obj)
+{
+    obj->save_flags = 1;
+}
+
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -135,3 +139,12 @@ void PuzzleHole_Collision(
         M_Refuse(lara_item);
     }
 }
+
+REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_HOLE_2, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_HOLE_3, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_HOLE_4, M_SetupEmpty)
+REGISTER_OBJECT(O_PUZZLE_DONE_1, M_SetupDone)
+REGISTER_OBJECT(O_PUZZLE_DONE_2, M_SetupDone)
+REGISTER_OBJECT(O_PUZZLE_DONE_3, M_SetupDone)
+REGISTER_OBJECT(O_PUZZLE_DONE_4, M_SetupDone)

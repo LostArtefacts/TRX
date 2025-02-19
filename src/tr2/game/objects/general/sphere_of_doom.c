@@ -1,5 +1,3 @@
-#include "game/objects/general/sphere_of_doom.h"
-
 #include "game/items.h"
 #include "game/output.h"
 #include "game/room.h"
@@ -12,7 +10,34 @@
 
 #define SPHERE_OF_DOOM_RADIUS (STEP_L * 5 / 2) // = 640
 
-void SphereOfDoom_Collision(
+static void M_SetupBase(OBJECT *obj, const bool transparent);
+static void M_SetupTransparent(OBJECT *obj);
+static void M_SetupOpaque(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Control(int16_t item_num);
+static void M_Draw(const ITEM *item);
+
+static void M_SetupBase(OBJECT *const obj, const bool transparent)
+{
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->semi_transparent = transparent;
+}
+
+static void M_SetupTransparent(OBJECT *const obj)
+{
+    M_SetupBase(obj, true);
+}
+
+static void M_SetupOpaque(OBJECT *const obj)
+{
+    M_SetupBase(obj, false);
+}
+
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (Room_Get(lara_item->room_num)->flags & RF_UNDERWATER) {
@@ -51,7 +76,7 @@ void SphereOfDoom_Collision(
     lara_item->goal_anim_state = LS_FORWARD_JUMP;
 }
 
-void SphereOfDoom_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->timer += 64;
@@ -72,7 +97,7 @@ void SphereOfDoom_Control(const int16_t item_num)
     }
 }
 
-void SphereOfDoom_Draw(const ITEM *const item)
+static void M_Draw(const ITEM *const item)
 {
     Matrix_Push();
     Matrix_TranslateAbs32(item->pos);
@@ -99,14 +124,6 @@ void SphereOfDoom_Draw(const ITEM *const item)
     Matrix_Pop();
 }
 
-void SphereOfDoom_Setup(OBJECT *const obj, const bool transparent)
-{
-    obj->collision_func = SphereOfDoom_Collision;
-    obj->control_func = SphereOfDoom_Control;
-    obj->draw_func = SphereOfDoom_Draw;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    if (transparent) {
-        obj->semi_transparent = 1;
-    }
-}
+REGISTER_OBJECT(O_SPHERE_OF_DOOM_1, M_SetupTransparent)
+REGISTER_OBJECT(O_SPHERE_OF_DOOM_2, M_SetupTransparent)
+REGISTER_OBJECT(O_SPHERE_OF_DOOM_3, M_SetupOpaque)

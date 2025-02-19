@@ -1,5 +1,3 @@
-#include "game/objects/traps/blade.h"
-
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -28,7 +26,20 @@ typedef enum {
     // clang-format on
 } BLADE_ANIM;
 
-void Blade_Initialise(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Initialise(const int16_t item_num)
 {
     const OBJECT *const obj = Object_Get(O_BLADE);
     ITEM *const item = Item_Get(item_num);
@@ -36,7 +47,7 @@ void Blade_Initialise(const int16_t item_num)
     item->current_anim_state = BLADE_STATE_STOP;
 }
 
-void Blade_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -58,12 +69,4 @@ void Blade_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void Blade_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_BLADE);
-    obj->initialise_func = Blade_Initialise;
-    obj->control_func = Blade_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_BLADE, M_Setup)

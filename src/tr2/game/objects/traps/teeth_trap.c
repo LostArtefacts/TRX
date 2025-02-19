@@ -1,5 +1,3 @@
-#include "game/objects/traps/teeth_trap.h"
-
 #include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -24,14 +22,26 @@ static const BITE m_Teeth[6] = {
     // clang-format on
 };
 
-void TeethTrap_Bite(ITEM *const item, const BITE *const bite)
+static void M_Bite(ITEM *item, const BITE *bite);
+static void M_Control(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+
+static void M_Bite(ITEM *const item, const BITE *const bite)
 {
     XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     Spawn_Blood(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
 }
 
-void TeethTrap_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -40,12 +50,12 @@ void TeethTrap_Control(const int16_t item_num)
         if (item->touch_bits != 0
             && item->current_anim_state == TEETH_TRAP_STATE_NASTY) {
             Lara_TakeDamage(TEETH_TRAP_DAMAGE, true);
-            TeethTrap_Bite(item, &m_Teeth[0]);
-            TeethTrap_Bite(item, &m_Teeth[1]);
-            TeethTrap_Bite(item, &m_Teeth[2]);
-            TeethTrap_Bite(item, &m_Teeth[3]);
-            TeethTrap_Bite(item, &m_Teeth[4]);
-            TeethTrap_Bite(item, &m_Teeth[5]);
+            M_Bite(item, &m_Teeth[0]);
+            M_Bite(item, &m_Teeth[1]);
+            M_Bite(item, &m_Teeth[2]);
+            M_Bite(item, &m_Teeth[3]);
+            M_Bite(item, &m_Teeth[4]);
+            M_Bite(item, &m_Teeth[5]);
         }
     } else {
         item->goal_anim_state = TEETH_TRAP_STATE_NICE;
@@ -54,11 +64,4 @@ void TeethTrap_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void TeethTrap_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_TEETH_TRAP);
-    obj->control_func = TeethTrap_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_TEETH_TRAP, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/traps/springboard.h"
-
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
@@ -15,7 +13,17 @@ typedef enum {
     // clang-format on
 } SPRINGBOARD_STATE;
 
-void Springboard_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     ITEM *const lara_item = Lara_GetItem();
@@ -45,10 +53,4 @@ void Springboard_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void Springboard_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_SPRINGBOARD);
-    obj->control_func = Springboard_Control;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_SPRINGBOARD, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/traps/falling_block.h"
-
 #include "game/items.h"
 #include "game/room.h"
 #include "global/vars.h"
@@ -9,6 +7,8 @@ static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static int32_t M_GetOrigin(const GAME_OBJECT_ID obj_id)
 {
@@ -41,7 +41,17 @@ static int16_t M_GetCeilingHeight(
     return height;
 }
 
-void FallingBlock_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const int32_t origin = M_GetOrigin(item->object_id);
@@ -94,12 +104,6 @@ void FallingBlock_Control(const int16_t item_num)
     }
 }
 
-void FallingBlock_Setup(OBJECT *const obj)
-{
-    obj->control_func = FallingBlock_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_FALLING_BLOCK_1, M_Setup)
+REGISTER_OBJECT(O_FALLING_BLOCK_2, M_Setup)
+REGISTER_OBJECT(O_FALLING_BLOCK_3, M_Setup)

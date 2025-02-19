@@ -54,6 +54,12 @@ static int16_t m_SwitchBoundsUW[12] = {
 static void M_AlignLara(ITEM *lara_item, ITEM *switch_item);
 static void M_SwitchOn(ITEM *switch_item, ITEM *lara_item);
 static void M_SwitchOff(ITEM *switch_item, ITEM *lara_item);
+static void M_SetupBase(OBJECT *obj);
+static void M_Setup(OBJECT *obj);
+static void M_SetupUW(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Control(int16_t item_num);
 
 static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
 {
@@ -121,15 +127,26 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
     switch_item->goal_anim_state = SWITCH_STATE_ON;
 }
 
-void Switch_Setup(OBJECT *const obj, const bool underwater)
+static void M_SetupBase(OBJECT *const obj)
 {
-    obj->control_func = Switch_Control;
-    obj->collision_func = underwater ? Switch_CollisionUW : Switch_Collision;
+    obj->control_func = M_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void Switch_Collision(
+static void M_Setup(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->collision_func = M_Collision;
+}
+
+static void M_SetupUW(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->collision_func = M_CollisionUW;
+}
+
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -165,7 +182,7 @@ void Switch_Collision(
     Item_Animate(item);
 }
 
-void Switch_CollisionUW(
+static void M_CollisionUW(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -208,7 +225,7 @@ void Switch_CollisionUW(
     Item_Animate(item);
 }
 
-void Switch_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->flags |= IF_CODE_BITS;
@@ -219,7 +236,7 @@ void Switch_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-int32_t Switch_Trigger(const int16_t item_num, const int16_t timer)
+bool Switch_Trigger(const int16_t item_num, const int16_t timer)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -254,3 +271,9 @@ int32_t Switch_Trigger(const int16_t item_num, const int16_t timer)
     }
     return true;
 }
+
+REGISTER_OBJECT(O_SWITCH_TYPE_AIRLOCK, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_BUTTON, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)

@@ -1,5 +1,3 @@
-#include "game/objects/creatures/worker_3.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -65,57 +63,51 @@ static const BITE m_Worker3Hit = {
     .mesh_num = 10,
 };
 
-void Worker3_Setup(void)
+static void M_SetupBase(OBJECT *obj);
+static void M_Setup3(OBJECT *obj);
+static void M_Setup4(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_SetupBase(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_WORKER_3);
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->radius = WORKER_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+
+    Object_GetBone(obj, 0)->rot_y = true;
+    Object_GetBone(obj, 4)->rot_y = true;
+}
+
+static void M_Setup3(OBJECT *const obj)
+{
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Worker3_Control;
-    obj->collision_func = Creature_Collision;
-
+    M_SetupBase(obj);
     obj->hit_points = WORKER_3_HITPOINTS;
-    obj->radius = WORKER_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-
-    Object_GetBone(obj, 0)->rot_y = true;
-    Object_GetBone(obj, 4)->rot_y = true;
 }
 
-void Worker4_Setup(void)
+static void M_Setup4(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_WORKER_4);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Worker3_Control;
-    obj->collision_func = Creature_Collision;
-
+    M_SetupBase(obj);
     obj->hit_points = WORKER_4_HITPOINTS;
-    obj->radius = WORKER_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-
-    Object_GetBone(obj, 0)->rot_y = true;
-    Object_GetBone(obj, 4)->rot_y = true;
 }
 
-void Worker3_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -337,3 +329,6 @@ void Worker3_Control(const int16_t item_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_WORKER_3, M_Setup3)
+REGISTER_OBJECT(O_WORKER_4, M_Setup4)

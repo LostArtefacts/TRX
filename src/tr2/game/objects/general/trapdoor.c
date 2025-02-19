@@ -1,5 +1,3 @@
-#include "game/objects/general/trapdoor.h"
-
 #include "game/items.h"
 
 typedef enum {
@@ -11,12 +9,15 @@ static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    if (!Trapdoor_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, x, z)) {
         return height;
     } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
         return height;
@@ -31,7 +32,7 @@ static int16_t M_GetCeilingHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    if (!Trapdoor_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, x, z)) {
         return height;
     } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
         return height;
@@ -42,16 +43,7 @@ static int16_t M_GetCeilingHeight(
     }
 }
 
-void Trapdoor_Setup(OBJECT *const obj)
-{
-    obj->control_func = Trapdoor_Control;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
-
-int32_t Trapdoor_IsItemOnTop(
+static bool M_IsItemOnTop(
     const ITEM *const item, const int32_t x, const int32_t z)
 {
     const BOUNDS_16 *const orig_bounds = &Item_GetBestFrame(item)->bounds;
@@ -91,7 +83,16 @@ int32_t Trapdoor_IsItemOnTop(
     return false;
 }
 
-void Trapdoor_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
@@ -105,3 +106,6 @@ void Trapdoor_Control(const int16_t item_num)
     }
     Item_Animate(item);
 }
+
+REGISTER_OBJECT(O_TRAPDOOR_TYPE_1, M_Setup)
+REGISTER_OBJECT(O_TRAPDOOR_TYPE_2, M_Setup)

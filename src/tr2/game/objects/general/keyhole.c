@@ -37,6 +37,8 @@ static int16_t m_KeyholeBounds[12] = {
 static void M_Consume(
     ITEM *lara_item, ITEM *keyhole_item, GAME_OBJECT_ID key_obj_id);
 static void M_Refuse(const ITEM *lara_item);
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_Refuse(const ITEM *const lara_item)
 {
@@ -66,13 +68,13 @@ static void M_Consume(
     g_InteractPosition = lara_item->pos;
 }
 
-void Keyhole_Setup(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->collision_func = Keyhole_Collision;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
 }
 
-void Keyhole_Collision(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (lara_item->current_anim_state != LS_STOP) {
@@ -116,7 +118,7 @@ void Keyhole_Collision(
     }
 }
 
-int32_t Keyhole_Trigger(const int16_t item_num)
+bool Keyhole_Trigger(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status != IS_ACTIVE || g_Lara.gun_status == LGS_HANDS_BUSY) {
@@ -125,3 +127,8 @@ int32_t Keyhole_Trigger(const int16_t item_num)
     item->status = IS_DEACTIVATED;
     return true;
 }
+
+REGISTER_OBJECT(O_KEY_HOLE_1, M_Setup)
+REGISTER_OBJECT(O_KEY_HOLE_2, M_Setup)
+REGISTER_OBJECT(O_KEY_HOLE_3, M_Setup)
+REGISTER_OBJECT(O_KEY_HOLE_4, M_Setup)

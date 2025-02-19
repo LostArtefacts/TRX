@@ -1,5 +1,3 @@
-#include "game/objects/general/waterfall.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/objects/common.h"
@@ -12,7 +10,16 @@
 
 #define WATERFALL_RANGE (WALL_L * 10) // = 10240
 
-void Waterfall_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
@@ -43,9 +50,4 @@ void Waterfall_Control(const int16_t item_num)
     }
 }
 
-void Waterfall_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_WATERFALL);
-    obj->control_func = Waterfall_Control;
-    obj->draw_func = Object_DrawDummyItem;
-}
+REGISTER_OBJECT(O_WATERFALL, M_Setup)

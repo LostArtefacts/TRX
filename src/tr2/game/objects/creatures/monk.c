@@ -1,5 +1,3 @@
-#include "game/objects/creatures/monk.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -53,54 +51,47 @@ static const BITE m_MonkHit = {
     .mesh_num = 14,
 };
 
-void Monk1_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_MONK_1);
-    if (!obj->loaded) {
-        return;
-    }
+static void M_SetupBase(OBJECT *obj);
+static void M_Setup1(OBJECT *obj);
+static void M_Setup2(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
-    obj->control_func = Monk_Control;
+static void M_SetupBase(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = MONK_HITPOINTS;
     obj->radius = MONK_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
+
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+
+    Object_GetBone(obj, 6)->rot_y = true;
+}
+
+static void M_Setup1(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    M_SetupBase(obj);
     obj->pivot_length = 0;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-
-    Object_GetBone(obj, 6)->rot_y = true;
 }
 
-void Monk2_Setup(void)
+static void M_Setup2(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_MONK_2);
     if (!obj->loaded) {
         return;
     }
-
-    obj->control_func = Monk_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = MONK_HITPOINTS;
-    obj->radius = MONK_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-
-    Object_GetBone(obj, 6)->rot_y = true;
+    M_SetupBase(obj);
 }
 
-void Monk_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -267,3 +258,6 @@ void Monk_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_MONK_1, M_Setup1)
+REGISTER_OBJECT(O_MONK_2, M_Setup2)

@@ -11,27 +11,31 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-void Window_1_Setup(void)
+static void M_Setup1(OBJECT *obj);
+static void M_Setup2(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control1(int16_t item_num);
+static void M_Control2(int16_t item_num);
+
+static void M_Setup1(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_WINDOW_1);
-    obj->initialise_func = Window_Initialise;
+    obj->initialise_func = M_Initialise;
     obj->collision_func = Object_Collision;
-    obj->control_func = Window_1_Control;
+    obj->control_func = M_Control1;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void Window_2_Setup(void)
+static void M_Setup2(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_WINDOW_2);
-    obj->initialise_func = Window_Initialise;
+    obj->initialise_func = M_Initialise;
     obj->collision_func = Object_Collision;
-    obj->control_func = Window_2_Control;
+    obj->control_func = M_Control2;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void Window_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->flags = 0;
@@ -47,7 +51,7 @@ void Window_Initialise(const int16_t item_num)
     }
 }
 
-void Window_1_Control(const int16_t item_num)
+static void M_Control1(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->flags & IF_ONE_SHOT) {
@@ -69,7 +73,7 @@ void Window_1_Control(const int16_t item_num)
     }
 }
 
-void Window_2_Control(const int16_t item_num)
+static void M_Control2(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->flags & IF_ONE_SHOT) {
@@ -118,3 +122,6 @@ void Window_Smash(const int16_t item_num)
     }
     item->status = IS_DEACTIVATED;
 }
+
+REGISTER_OBJECT(O_WINDOW_1, M_Setup1)
+REGISTER_OBJECT(O_WINDOW_2, M_Setup2)

@@ -23,6 +23,9 @@ static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
 
 static void M_FloorCeiling(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
@@ -121,11 +124,10 @@ static int16_t M_GetCeilingHeight(
     return new_height;
 }
 
-void Lift_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_LIFT);
-    obj->initialise_func = Lift_Initialise;
-    obj->control_func = Lift_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_position = 1;
@@ -133,7 +135,7 @@ void Lift_Setup(void)
     obj->save_anim = 1;
 }
 
-void Lift_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -145,7 +147,7 @@ void Lift_Initialise(const int16_t item_num)
     item->data = lift_data;
 }
 
-void Lift_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     LIFT_INFO *const lift_data = item->data;
@@ -187,3 +189,5 @@ void Lift_Control(const int16_t item_num)
         Item_NewRoom(item_num, room_num);
     }
 }
+
+REGISTER_OBJECT(O_LIFT, M_Setup)

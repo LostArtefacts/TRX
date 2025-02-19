@@ -1,5 +1,3 @@
-#include "game/objects/effects/ember.h"
-
 #include "game/effects.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
@@ -8,7 +6,16 @@
 
 #include <libtrx/game/math.h>
 
-void Ember_Control(const int16_t effect_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->semi_transparent = 1;
+}
+
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     effect->fall_speed += GRAVITY;
@@ -34,9 +41,4 @@ void Ember_Control(const int16_t effect_num)
     }
 }
 
-void Ember_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_EMBER);
-    obj->control_func = Ember_Control;
-    obj->semi_transparent = 1;
-}
+REGISTER_OBJECT(O_EMBER, M_Setup)

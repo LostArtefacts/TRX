@@ -1,5 +1,3 @@
-#include "game/objects/general/movable_block.h"
-
 #include "game/collide.h"
 #include "game/input.h"
 #include "game/item_actions.h"
@@ -36,7 +34,19 @@ static int16_t m_MovableBlockBounds[12] = {
     +10 * DEG_1,
 };
 
-int32_t MovableBlock_TestDestination(
+static bool M_TestDestination(const ITEM *item, int32_t block_height);
+static bool M_TestPush(
+    const ITEM *item, int32_t block_height, uint16_t quadrant);
+static bool M_TestPull(
+    const ITEM *item, int32_t block_height, uint16_t quadrant);
+
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Draw(const ITEM *item);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static bool M_TestDestination(
     const ITEM *const item, const int32_t block_height)
 {
     int16_t room_num = item->room_num;
@@ -47,10 +57,10 @@ int32_t MovableBlock_TestDestination(
     return floor == NO_HEIGHT || (floor == item->pos.y - block_height);
 }
 
-int32_t MovableBlock_TestPush(
+static bool M_TestPush(
     const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
 {
-    if (!MovableBlock_TestDestination(item, block_height)) {
+    if (!M_TestDestination(item, block_height)) {
         return false;
     }
 
@@ -104,10 +114,10 @@ int32_t MovableBlock_TestPush(
     return true;
 }
 
-int32_t MovableBlock_TestPull(
+static bool M_TestPull(
     const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
 {
-    if (!MovableBlock_TestDestination(item, block_height)) {
+    if (!M_TestDestination(item, block_height)) {
         return false;
     }
 
@@ -182,7 +192,7 @@ int32_t MovableBlock_TestPull(
     return true;
 }
 
-void MovableBlock_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status != IS_INVISIBLE) {
@@ -190,7 +200,18 @@ void MovableBlock_Initialise(const int16_t item_num)
     }
 }
 
-void MovableBlock_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->draw_func = M_Draw;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -230,7 +251,7 @@ void MovableBlock_Control(const int16_t item_num)
     }
 }
 
-void MovableBlock_Collision(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -308,13 +329,13 @@ void MovableBlock_Collision(
         }
 
         if (g_Input.forward) {
-            if (!MovableBlock_TestPush(item, WALL_L, quadrant)) {
+            if (!M_TestPush(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PUSH;
             lara_item->goal_anim_state = LS_PUSH_BLOCK;
         } else if (g_Input.back) {
-            if (!MovableBlock_TestPull(item, WALL_L, quadrant)) {
+            if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PULL;
@@ -331,7 +352,7 @@ void MovableBlock_Collision(
     }
 }
 
-void MovableBlock_Draw(const ITEM *const item)
+static void M_Draw(const ITEM *const item)
 {
     if (item->status == IS_ACTIVE) {
         Object_DrawUnclippedItem(item);
@@ -340,13 +361,7 @@ void MovableBlock_Draw(const ITEM *const item)
     }
 }
 
-void MovableBlock_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = MovableBlock_Initialise;
-    obj->control_func = MovableBlock_Control;
-    obj->collision_func = MovableBlock_Collision;
-    obj->draw_func = MovableBlock_Draw;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_MOVABLE_BLOCK_1, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_2, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_3, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_4, M_Setup)

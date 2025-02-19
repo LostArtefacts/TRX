@@ -1,5 +1,3 @@
-#include "game/objects/creatures/bandit_2.h"
-
 #include "game/creature.h"
 #include "game/objects/common.h"
 #include "game/objects/creatures/bandit_common.h"
@@ -49,14 +47,17 @@ static const BITE m_Bandit2Gun = {
     .mesh_num = 17,
 };
 
-void Bandit2_Setup(void)
+static void M_Setup2A(OBJECT *obj);
+static void M_Setup2B(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup2A(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BANDIT_2);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Bandit2_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = BANDIT_2_HITPOINTS;
@@ -74,9 +75,8 @@ void Bandit2_Setup(void)
     Object_GetBone(obj, 8)->rot_y = true;
 }
 
-void Bandit2B_Setup(void)
+static void M_Setup2B(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BANDIT_2B);
     if (!obj->loaded) {
         return;
     }
@@ -86,7 +86,7 @@ void Bandit2B_Setup(void)
     obj->anim_idx = ref_obj->anim_idx;
     obj->frame_base = ref_obj->frame_base;
 
-    obj->control_func = Bandit2_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = BANDIT_2_HITPOINTS;
@@ -104,7 +104,7 @@ void Bandit2B_Setup(void)
     Object_GetBone(obj, 8)->rot_y = true;
 }
 
-void Bandit2_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -278,3 +278,6 @@ void Bandit2_Control(const int16_t item_num)
     Creature_Neck(item, neck);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_BANDIT_2, M_Setup2A)
+REGISTER_OBJECT(O_BANDIT_2B, M_Setup2B)

@@ -2,6 +2,7 @@
 
 #include "game/items.h"
 #include "game/lara/control.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
@@ -16,6 +17,14 @@ typedef enum {
     PROPELLER_STATE_OFF = 1,
     // clang-format on
 } PROPELLER_STATE;
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = Propeller_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
 
 void Propeller_Control(const int16_t item_num)
 {
@@ -65,10 +74,6 @@ void Propeller_Control(const int16_t item_num)
     }
 }
 
-void Propeller_Setup(OBJECT *const obj)
-{
-    obj->control_func = Propeller_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_PROPELLER_1, M_Setup)
+REGISTER_OBJECT(O_PROPELLER_2, M_Setup)
+REGISTER_OBJECT(O_PROPELLER_3, M_Setup)

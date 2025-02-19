@@ -1,5 +1,3 @@
-#include "game/objects/traps/hook.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -10,7 +8,18 @@
 
 #define HOOK_DAMAGE 50
 
-void Hook_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -25,11 +34,4 @@ void Hook_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void Hook_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_HOOK);
-    obj->control_func = Hook_Control;
-    obj->collision_func = Creature_Collision;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_HOOK, M_Setup)

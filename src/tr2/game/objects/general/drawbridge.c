@@ -1,5 +1,3 @@
-#include "game/objects/general/drawbridge.h"
-
 #include "game/objects/general/door.h"
 #include "game/objects/general/general.h"
 
@@ -12,6 +10,9 @@ static int16_t M_GetFloorHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 static int16_t M_GetCeilingHeight(
     const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static bool M_IsItemOnTop(const ITEM *item, int32_t z, int32_t x);
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
@@ -19,7 +20,7 @@ static int16_t M_GetFloorHeight(
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
-    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
+    } else if (!M_IsItemOnTop(item, z, x)) {
         return height;
     } else if (item->pos.y < y) {
         return height;
@@ -33,7 +34,7 @@ static int16_t M_GetCeilingHeight(
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
-    } else if (!Drawbridge_IsItemOnTop(item, z, x)) {
+    } else if (!M_IsItemOnTop(item, z, x)) {
         return height;
     } else if (item->pos.y >= y) {
         return height;
@@ -41,21 +42,7 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-void Drawbridge_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_DRAWBRIDGE);
-    if (!obj->loaded) {
-        return;
-    }
-    obj->control_func = General_Control;
-    obj->collision_func = Drawbridge_Collision;
-    obj->floor_height_func = M_GetFloorHeight;
-    obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
-
-int32_t Drawbridge_IsItemOnTop(
+static bool M_IsItemOnTop(
     const ITEM *const item, const int32_t z, const int32_t x)
 {
     // drawbridge sector
@@ -87,7 +74,20 @@ int32_t Drawbridge_IsItemOnTop(
     return false;
 }
 
-void Drawbridge_Collision(
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->control_func = General_Control;
+    obj->collision_func = M_Collision;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -95,3 +95,5 @@ void Drawbridge_Collision(
         Door_Collision(item_num, lara_item, coll);
     }
 }
+
+REGISTER_OBJECT(O_DRAWBRIDGE, M_Setup)

@@ -1,13 +1,11 @@
-#include "game/objects/general/zipline.h"
-
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
-#include "game/objects/traps/rolling_ball.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
+#include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
 
 #define ZIPLINE_MAX_SPEED 100
@@ -41,40 +39,32 @@ static int16_t m_ZiplineHandleBounds[12] = {
     // clang-format on
 };
 
-void Zipline_Collision(
-    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
 {
-    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
-        || lara_item->gravity || lara_item->current_anim_state != LS_STOP) {
-        return;
-    }
-
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INACTIVE) {
-        return;
-    }
-
-    if (!Item_TestPosition(m_ZiplineHandleBounds, item, lara_item)) {
-        return;
-    }
-
-    Item_AlignPosition(&m_ZiplineHandlePosition, item, lara_item);
-    g_Lara.gun_status = LGS_HANDS_BUSY;
-
-    lara_item->goal_anim_state = LS_ZIPLINE;
-    do {
-        Item_Animate(lara_item);
-    } while (lara_item->current_anim_state != LS_NULL);
-
-    if (!item->active) {
-        Item_AddActive(item_num);
-    }
-
-    item->status = IS_ACTIVE;
-    item->flags |= IF_ONE_SHOT;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
 }
 
-void Zipline_Control(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    GAME_VECTOR *const data =
+        GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_ITEM_DATA);
+    data->pos = item->pos;
+    data->room_num = item->room_num;
+    item->data = data;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status != IS_ACTIVE) {
@@ -146,13 +136,37 @@ void Zipline_Control(const int16_t item_num)
     item->flags &= ~IF_ONE_SHOT;
 }
 
-void Zipline_Setup(void)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    OBJECT *const obj = Object_Get(O_ZIPLINE_HANDLE);
-    obj->initialise_func = RollingBall_Initialise;
-    obj->control_func = Zipline_Control;
-    obj->collision_func = Zipline_Collision;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
+    if (!g_Input.action || g_Lara.gun_status != LGS_ARMLESS
+        || lara_item->gravity || lara_item->current_anim_state != LS_STOP) {
+        return;
+    }
+
+    ITEM *const item = Item_Get(item_num);
+    if (item->status != IS_INACTIVE) {
+        return;
+    }
+
+    if (!Item_TestPosition(m_ZiplineHandleBounds, item, lara_item)) {
+        return;
+    }
+
+    Item_AlignPosition(&m_ZiplineHandlePosition, item, lara_item);
+    g_Lara.gun_status = LGS_HANDS_BUSY;
+
+    lara_item->goal_anim_state = LS_ZIPLINE;
+    do {
+        Item_Animate(lara_item);
+    } while (lara_item->current_anim_state != LS_NULL);
+
+    if (!item->active) {
+        Item_AddActive(item_num);
+    }
+
+    item->status = IS_ACTIVE;
+    item->flags |= IF_ONE_SHOT;
 }
+
+REGISTER_OBJECT(O_ZIPLINE_HANDLE, M_Setup)

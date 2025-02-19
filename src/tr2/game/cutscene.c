@@ -19,6 +19,8 @@
 #include <libtrx/debug.h>
 #include <libtrx/utils.h>
 
+static CAMERA_INFO m_LocalCamera = {};
+
 static void M_FixAudioDrift(void);
 
 static void M_FixAudioDrift(void)
@@ -97,4 +99,9 @@ void Cutscene_Draw(void)
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.pos.room_num);
     Output_DrawPolyList();
+}
+
+CAMERA_INFO *Cutscene_GetCamera(void)
+{
+    return &m_LocalCamera;
 }

@@ -1,5 +1,3 @@
-#include "game/objects/general/mini_copter.h"
-
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/room.h"
@@ -8,7 +6,17 @@
 #include <libtrx/game/lara/common.h>
 #include <libtrx/utils.h>
 
-void MiniCopter_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
@@ -34,10 +42,4 @@ void MiniCopter_Control(const int16_t item_num)
     }
 }
 
-void MiniCopter_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_MINI_COPTER);
-    obj->control_func = MiniCopter_Control;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_MINI_COPTER, M_Setup)

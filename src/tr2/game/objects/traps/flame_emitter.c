@@ -1,11 +1,19 @@
-#include "game/objects/traps/flame_emitter.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 
-void FlameEmitter_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->save_flags = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -30,10 +38,4 @@ void FlameEmitter_Control(const int16_t item_num)
     }
 }
 
-void FlameEmitter_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_FLAME_EMITTER);
-    obj->control_func = FlameEmitter_Control;
-    obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_FLAME_EMITTER, M_Setup)

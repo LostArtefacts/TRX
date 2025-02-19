@@ -1,5 +1,3 @@
-#include "game/objects/creatures/bartoli.h"
-
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -15,6 +13,9 @@
 static void M_CreateBoom(GAME_OBJECT_ID obj_id, const ITEM *origin_item);
 static void M_ConvertBartoliToDragon(const int16_t item_num);
 static bool M_CheckLaraProximity(const ITEM *origin_item);
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
 
 static void M_CreateBoom(
     const GAME_OBJECT_ID obj_id, const ITEM *const origin_item)
@@ -63,21 +64,20 @@ static bool M_CheckLaraProximity(const ITEM *const origin_item)
     return dx < BARTOLI_RANGE && dz < BARTOLI_RANGE;
 }
 
-void Bartoli_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BARTOLI);
     if (!obj->loaded) {
         return;
     }
 
-    obj->initialise_func = Bartoli_Initialise;
-    obj->control_func = Bartoli_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
 
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void Bartoli_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->pos.x -= 2 * STEP_L;
@@ -115,7 +115,7 @@ void Bartoli_Initialise(const int16_t item_num)
     item->data = (void *)(intptr_t)item_dragon_back_num;
 }
 
-void Bartoli_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -144,3 +144,5 @@ void Bartoli_Control(const int16_t item_num)
         M_ConvertBartoliToDragon(item_num);
     }
 }
+
+REGISTER_OBJECT(O_BARTOLI, M_Setup)

@@ -1,12 +1,19 @@
-#include "game/objects/effects/hot_liquid.h"
-
 #include "game/effects.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
 
-void HotLiquid_Control(const int16_t effect_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->semi_transparent = 1;
+}
+
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     OBJECT *const obj = Object_Get(O_HOT_LIQUID);
@@ -41,9 +48,4 @@ void HotLiquid_Control(const int16_t effect_num)
     Sound_Effect(SFX_BOWL_POUR, &effect->pos, SPM_NORMAL);
 }
 
-void HotLiquid_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_HOT_LIQUID);
-    obj->control_func = HotLiquid_Control;
-    obj->semi_transparent = 1;
-}
+REGISTER_OBJECT(O_HOT_LIQUID, M_Setup)

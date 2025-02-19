@@ -1,5 +1,3 @@
-#include "game/objects/effects/gun_flash.h"
-
 #include "game/effects.h"
 #include "game/output.h"
 #include "game/random.h"
@@ -7,7 +5,15 @@
 
 #include <libtrx/config.h>
 
-void GunFlash_Control(const int16_t effect_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+}
+
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
 
@@ -23,8 +29,4 @@ void GunFlash_Control(const int16_t effect_num)
     }
 }
 
-void GunFlash_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_GUN_FLASH);
-    obj->control_func = GunFlash_Control;
-}
+REGISTER_OBJECT(O_GUN_FLASH, M_Setup)

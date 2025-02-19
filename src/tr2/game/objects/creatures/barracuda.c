@@ -1,5 +1,3 @@
-#include "game/objects/creatures/barracuda.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -40,14 +38,16 @@ static const BITE m_BarracudaBite = {
     .mesh_num = 7,
 };
 
-void Barracuda_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BARRACUDA);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Barracuda_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = BARRACUDA_HITPOINTS;
@@ -64,7 +64,7 @@ void Barracuda_Setup(void)
     Object_GetBone(obj, 6)->rot_y = true;
 }
 
-void Barracuda_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -149,3 +149,5 @@ void Barracuda_Control(const int16_t item_num)
         Creature_Float(item_num);
     }
 }
+
+REGISTER_OBJECT(O_BARRACUDA, M_Setup)

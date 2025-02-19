@@ -1,5 +1,3 @@
-#include "game/objects/traps/mine.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/objects/common.h"
@@ -15,6 +13,8 @@ static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *room_num);
 static void M_DetonateAll(
     const ITEM *mine_item, int16_t boat_item_num, int16_t boat_room_num);
 static void M_Explode(ITEM *mine_item);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *const room_num)
 {
@@ -79,7 +79,14 @@ static void M_Explode(ITEM *const mine_item)
     mine_item->collidable = 0;
 }
 
-void Mine_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->flags & IF_ONE_SHOT) {
@@ -106,10 +113,4 @@ void Mine_Control(const int16_t item_num)
     M_Explode(item);
 }
 
-void Mine_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_MINE);
-    obj->control_func = Mine_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_MINE, M_Setup)

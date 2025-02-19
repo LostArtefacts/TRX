@@ -1,5 +1,3 @@
-#include "game/objects/creatures/yeti.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -70,14 +68,16 @@ static const BITE m_YetiBiteR = {
     .mesh_num = 10,
 };
 
-void Yeti_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_YETI);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Yeti_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = YETI_HITPOINTS;
@@ -95,7 +95,7 @@ void Yeti_Setup(void)
     Object_GetBone(obj, 14)->rot_y = true;
 }
 
-void Yeti_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -320,3 +320,5 @@ void Yeti_Control(const int16_t item_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_YETI, M_Setup)

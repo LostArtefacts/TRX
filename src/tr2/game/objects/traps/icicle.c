@@ -1,5 +1,3 @@
-#include "game/objects/traps/icicle.h"
-
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -16,7 +14,19 @@ typedef enum {
     // clang-format on
 } ICICLE_STATE;
 
-void Icicle_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -65,12 +75,4 @@ void Icicle_Control(const int16_t item_num)
     }
 }
 
-void Icicle_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_ICICLE);
-    obj->control_func = Icicle_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_ICICLE, M_Setup)

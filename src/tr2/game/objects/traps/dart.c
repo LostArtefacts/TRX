@@ -1,5 +1,3 @@
-#include "game/objects/traps/dart.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -15,6 +13,8 @@
 #define DART_DAMAGE 50
 
 static void M_Hit(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_Hit(const int16_t item_num)
 {
@@ -35,7 +35,14 @@ static void M_Hit(const int16_t item_num)
     }
 }
 
-void Dart_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->shadow_size = 128;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->touch_bits != 0) {
@@ -64,10 +71,4 @@ void Dart_Control(const int16_t item_num)
     }
 }
 
-void Dart_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_DART);
-    obj->control_func = Dart_Control;
-    obj->collision_func = Object_Collision;
-    obj->shadow_size = 128;
-}
+REGISTER_OBJECT(O_DART, M_Setup)

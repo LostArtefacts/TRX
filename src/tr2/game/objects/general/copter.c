@@ -1,5 +1,3 @@
-#include "game/objects/general/copter.h"
-
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/room.h"
@@ -15,7 +13,17 @@ typedef enum {
     // clang-format on
 } COPTER_STATE;
 
-void Copter_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
@@ -49,10 +57,4 @@ void Copter_Control(const int16_t item_num)
     }
 }
 
-void Copter_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_COPTER);
-    obj->control_func = Copter_Control;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_COPTER, M_Setup)

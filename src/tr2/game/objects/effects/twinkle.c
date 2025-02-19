@@ -1,5 +1,3 @@
-#include "game/objects/effects/twinkle.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "global/vars.h"
@@ -12,6 +10,8 @@
 static XYZ_32 M_GetTargetPos(const ITEM *item);
 static void M_NudgeTowardsItem(EFFECT *effect, const XYZ_32 *target_pos);
 static bool M_ShouldDisappear(const EFFECT *effect, const XYZ_32 *target_pos);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
 
 static XYZ_32 M_GetTargetPos(const ITEM *const item)
 {
@@ -45,13 +45,12 @@ static bool M_ShouldDisappear(
     return dx < DISAPPEAR_RANGE && dy < DISAPPEAR_RANGE && dz < DISAPPEAR_RANGE;
 }
 
-void Twinkle_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_TWINKLE);
-    obj->control_func = Twinkle_Control;
+    obj->control_func = M_Control;
 }
 
-void Twinkle_Control(const int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     effect->frame_num--;
@@ -74,3 +73,5 @@ void Twinkle_Control(const int16_t effect_num)
         Effect_Kill(effect_num);
     }
 }
+
+REGISTER_OBJECT(O_TWINKLE, M_Setup)

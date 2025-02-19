@@ -1,5 +1,3 @@
-#include "game/objects/vehicles/skidoo_armed.h"
-
 #include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -11,14 +9,16 @@
 
 #define SKIDOO_ARMED_RADIUS (WALL_L / 3) // = 341
 
-void SkidooArmed_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_SKIDOO_ARMED);
     if (!obj->loaded) {
         return;
     }
 
-    obj->collision_func = SkidooArmed_Collision;
+    obj->collision_func = M_Collision;
 
     obj->hit_points = SKIDOO_DRIVER_HITPOINTS;
     obj->radius = SKIDOO_ARMED_RADIUS;
@@ -30,6 +30,29 @@ void SkidooArmed_Setup(void)
     obj->save_hitpoints = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
+        return;
+    }
+
+    if (!Collide_TestCollision(item, lara_item)) {
+        return;
+    }
+
+    if (coll->enable_baddie_push) {
+        Lara_Push(
+            item, lara_item, coll, item->speed > 0 ? coll->enable_hit : false,
+            false);
+    }
+
+    if (g_Lara.skidoo == NO_ITEM && item->speed > 0) {
+        Lara_TakeDamage(100, true);
+    }
 }
 
 void SkidooArmed_Push(
@@ -74,25 +97,4 @@ void SkidooArmed_Push(
     lara_item->pos.z = item->pos.z + ((rz * cy - rx * sy) >> W2V_SHIFT);
 }
 
-void SkidooArmed_Collision(
-    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
-        return;
-    }
-
-    if (!Collide_TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (coll->enable_baddie_push) {
-        Lara_Push(
-            item, lara_item, coll, item->speed > 0 ? coll->enable_hit : false,
-            false);
-    }
-
-    if (g_Lara.skidoo == NO_ITEM && item->speed > 0) {
-        Lara_TakeDamage(100, true);
-    }
-}
+REGISTER_OBJECT(O_SKIDOO_ARMED, M_Setup)

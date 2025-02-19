@@ -1,5 +1,3 @@
-#include "game/objects/traps/killer_statue.h"
-
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -30,7 +28,20 @@ typedef enum {
     // clang-format on
 } KILLER_STATUE_ANIM;
 
-void KillerStatue_Initialise(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision_Trap;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -38,7 +49,7 @@ void KillerStatue_Initialise(const int16_t item_num)
     item->current_anim_state = KILLER_STATUE_STATE_STOP;
 }
 
-void KillerStatue_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -66,12 +77,4 @@ void KillerStatue_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void KillerStatue_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_KILLER_STATUE);
-    obj->initialise_func = KillerStatue_Initialise;
-    obj->control_func = KillerStatue_Control;
-    obj->collision_func = Object_Collision_Trap;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_KILLER_STATUE, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/general/detonator.h"
-
 #include "game/camera.h"
 #include "game/game_flow.h"
 #include "game/input.h"
@@ -34,6 +32,10 @@ static int16_t m_GongBounds[12] = {
 };
 
 static void M_CreateGongBonger(ITEM *lara_item);
+static void M_Setup1(OBJECT *obj);
+static void M_Setup2(OBJECT *obj);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_CreateGongBonger(ITEM *const lara_item)
 {
@@ -58,22 +60,20 @@ static void M_CreateGongBonger(ITEM *const lara_item)
     item_gong_bonger->status = IS_ACTIVE;
 }
 
-void Detonator1_Setup(void)
+static void M_Setup1(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DETONATOR_1);
-    obj->collision_func = Detonator_Collision;
+    obj->collision_func = M_Collision;
 }
 
-void Detonator2_Setup(void)
+static void M_Setup2(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DETONATOR_2);
-    obj->collision_func = Detonator_Collision;
-    obj->control_func = Detonator_Control;
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void Detonator_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Item_Animate(item);
@@ -93,7 +93,7 @@ void Detonator_Control(const int16_t item_num)
 }
 
 // TODO: split gong shenanigans into a separate routine
-void Detonator_Collision(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     if (g_Lara.extra_anim) {
@@ -164,3 +164,6 @@ normal_collision:
     item->rot = old_rot;
     Object_Collision(item_num, lara_item, coll);
 }
+
+REGISTER_OBJECT(O_DETONATOR_1, M_Setup1)
+REGISTER_OBJECT(O_DETONATOR_2, M_Setup2)

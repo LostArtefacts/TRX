@@ -1,5 +1,3 @@
-#include "game/objects/creatures/dog.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -56,14 +54,16 @@ static const BITE m_DogBite = {
     .mesh_num = 20,
 };
 
-void Dog_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DOG);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Dog_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = DOG_HITPOINTS;
@@ -80,7 +80,7 @@ void Dog_Setup(void)
     Object_GetBone(obj, 19)->rot_y = true;
 }
 
-void Dog_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -230,3 +230,5 @@ void Dog_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, tilt);
 }
+
+REGISTER_OBJECT(O_DOG, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/creatures/xian_spearman.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -80,47 +78,12 @@ static const BITE m_XianSpearmanRightSpear = {
     .mesh_num = 18,
 };
 
+static void M_DoDamage(const ITEM *item, CREATURE *creature, int32_t damage);
+static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
 
-static void M_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    Item_SwitchToAnim(item, XIAN_SPEARMAN_ANIM_START, 0);
-    item->goal_anim_state = XIAN_SPEARMAN_STATE_START;
-    item->current_anim_state = XIAN_SPEARMAN_STATE_START;
-    item->status = IS_INACTIVE;
-    item->mesh_bits = 0;
-}
-
-void XianSpearman_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_XIAN_SPEARMAN);
-    if (!obj->loaded) {
-        return;
-    }
-
-    ASSERT(Object_Get(O_XIAN_SPEARMAN_STATUE)->loaded);
-    obj->initialise_func = M_Initialise;
-    obj->draw_func = XianWarrior_Draw;
-    obj->control_func = XianSpearman_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = XIAN_SPEARMAN_HITPOINTS;
-    obj->radius = XIAN_SPEARMAN_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-
-    Object_GetBone(obj, 6)->rot_y = true;
-    Object_GetBone(obj, 12)->rot_y = true;
-}
-
-void XianSpearman_DoDamage(
+static void M_DoDamage(
     const ITEM *const item, CREATURE *const creature, const int32_t damage)
 {
     if ((creature->flags & 1) == 0
@@ -140,7 +103,44 @@ void XianSpearman_DoDamage(
     }
 }
 
-void XianSpearman_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    ASSERT(Object_Get(O_XIAN_SPEARMAN_STATUE)->loaded);
+    obj->initialise_func = M_Initialise;
+    obj->draw_func = XianWarrior_Draw;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = XIAN_SPEARMAN_HITPOINTS;
+    obj->radius = XIAN_SPEARMAN_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+
+    Object_GetBone(obj, 6)->rot_y = true;
+    Object_GetBone(obj, 12)->rot_y = true;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    Item_SwitchToAnim(item, XIAN_SPEARMAN_ANIM_START, 0);
+    item->goal_anim_state = XIAN_SPEARMAN_STATE_START;
+    item->current_anim_state = XIAN_SPEARMAN_STATE_START;
+    item->status = IS_INACTIVE;
+    item->mesh_bits = 0;
+}
+
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -349,7 +349,7 @@ void XianSpearman_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_HIT_1:
-        XianSpearman_DoDamage(item, creature, XIAN_SPEARMAN_HIT_1_DAMAGE);
+        M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_1_DAMAGE);
         break;
 
     case XIAN_SPEARMAN_STATE_HIT_2:
@@ -358,7 +358,7 @@ void XianSpearman_Control(const int16_t item_num)
         if (info.ahead != 0) {
             head = info.angle;
         }
-        XianSpearman_DoDamage(item, creature, XIAN_SPEARMAN_HIT_2_DAMAGE);
+        M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_2_DAMAGE);
         if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
             const int32_t random = Random_GetControl();
             if (random < 0x4000) {
@@ -375,7 +375,7 @@ void XianSpearman_Control(const int16_t item_num)
         if (info.ahead != 0) {
             head = info.angle;
         }
-        XianSpearman_DoDamage(item, creature, XIAN_SPEARMAN_HIT_5_DAMAGE);
+        M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_5_DAMAGE);
         if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP;
         } else {
@@ -387,7 +387,7 @@ void XianSpearman_Control(const int16_t item_num)
         if (info.ahead != 0) {
             head = info.angle;
         }
-        XianSpearman_DoDamage(item, creature, XIAN_SPEARMAN_HIT_6_DAMAGE);
+        M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_6_DAMAGE);
         if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
             const int32_t random = Random_GetControl();
             if (random < 0x4000) {
@@ -418,3 +418,5 @@ void XianSpearman_Control(const int16_t item_num)
     Creature_Neck(item, neck);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_XIAN_SPEARMAN, M_Setup)

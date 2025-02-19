@@ -1,5 +1,3 @@
-#include "game/objects/traps/spinning_blade.h"
-
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -30,7 +28,21 @@ typedef enum {
     // clang-format on
 } SPINNING_BLADE_ANIM;
 
-void M_Initialise(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -38,7 +50,7 @@ void M_Initialise(const int16_t item_num)
     item->current_anim_state = SPINNING_BLADE_STATE_STOP;
 }
 
-void SpinningBlade_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     bool spinning = false;
@@ -98,13 +110,4 @@ void SpinningBlade_Control(const int16_t item_num)
     }
 }
 
-void SpinningBlade_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_SPINNING_BLADE);
-    obj->initialise_func = M_Initialise;
-    obj->control_func = SpinningBlade_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_SPINNING_BLADE, M_Setup)

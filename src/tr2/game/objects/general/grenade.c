@@ -1,5 +1,3 @@
-#include "game/objects/general/grenade.h"
-
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
@@ -16,6 +14,8 @@
 #define M_FALL_SPEED (M_SPEED - 10) // = 190
 
 static void M_Explode(int16_t grenade_item_num, XYZ_32 pos);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 {
@@ -33,14 +33,13 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
     Item_Kill(grenade_item_num);
 }
 
-void Grenade_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_GRENADE);
-    obj->control_func = Grenade_Control;
+    obj->control_func = M_Control;
     obj->save_position = 1;
 }
 
-void Grenade_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -146,3 +145,5 @@ void Grenade_Control(int16_t item_num)
         M_Explode(item_num, old_pos);
     }
 }
+
+REGISTER_OBJECT(O_GRENADE, M_Setup)

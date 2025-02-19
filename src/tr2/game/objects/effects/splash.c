@@ -1,19 +1,19 @@
-#include "game/objects/effects/splash.h"
-
 #include "game/effects.h"
 #include "game/objects/common.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 
-void Spawn_Splash_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_SPLASH);
-    obj->control_func = Spawn_Splash_Control;
+    obj->control_func = M_Control;
     obj->semi_transparent = 1;
 }
 
-void Spawn_Splash_Control(const int16_t effect_num)
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
@@ -27,3 +27,5 @@ void Spawn_Splash_Control(const int16_t effect_num)
     effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
     effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
 }
+
+REGISTER_OBJECT(O_SPLASH, M_Setup)

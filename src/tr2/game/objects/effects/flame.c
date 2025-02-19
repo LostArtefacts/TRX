@@ -1,5 +1,3 @@
-#include "game/objects/effects/flame.h"
-
 #include "game/collide.h"
 #include "game/effects.h"
 #include "game/lara/control.h"
@@ -11,7 +9,15 @@
 
 #include <libtrx/utils.h>
 
-void Flame_Control(const int16_t effect_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->semi_transparent = 1;
+}
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
 
@@ -65,9 +71,4 @@ void Flame_Control(const int16_t effect_num)
     }
 }
 
-void Flame_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_FLAME);
-    obj->control_func = Flame_Control;
-    obj->semi_transparent = 1;
-}
+REGISTER_OBJECT(O_FLAME, M_Setup)

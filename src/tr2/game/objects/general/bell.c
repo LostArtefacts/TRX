@@ -1,5 +1,3 @@
-#include "game/objects/general/bell.h"
-
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/room.h"
@@ -10,16 +8,18 @@ typedef enum {
     BELL_STATE_SWING = 1,
 } BELL_STATE;
 
-void Bell_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BELL);
-    obj->control_func = Bell_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
-void Bell_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -37,3 +37,5 @@ void Bell_Control(const int16_t item_num)
         Item_RemoveActive(item_num);
     }
 }
+
+REGISTER_OBJECT(O_BELL, M_Setup)

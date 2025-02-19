@@ -1,5 +1,3 @@
-#include "game/objects/vehicles/boat.h"
-
 #include "decomp/decomp.h"
 #include "game/camera.h"
 #include "game/collide.h"
@@ -60,33 +58,25 @@ typedef enum {
     BOAT_STATE_DEATH = 8,
 } BOAT_STATE;
 
-void Boat_Initialise(const int16_t item_num)
-{
-    BOAT_INFO *boat_data = GameBuf_Alloc(sizeof(BOAT_INFO), GBUF_ITEM_DATA);
-    boat_data->boat_turn = 0;
-    boat_data->left_fallspeed = 0;
-    boat_data->right_fallspeed = 0;
-    boat_data->tilt_angle = 0;
-    boat_data->extra_rotation = 0;
-    boat_data->water = 0;
-    boat_data->pitch = 0;
+static int32_t M_CheckGetOn(
+    const int16_t item_num, const COLL_INFO *const coll);
+static int32_t M_TestWaterHeight(
+    const ITEM *const item, const int32_t z_off, const int32_t x_off,
+    XYZ_32 *const pos);
+static void M_DoWakeEffect(const ITEM *const boat);
+static void M_DoShift(const int32_t boat_num);
+static int32_t M_DoDynamics(
+    const int32_t height, int32_t fall_speed, int32_t *const y);
+static int32_t M_Dynamics(const int16_t boat_num);
+static int32_t M_UserControl(ITEM *const boat);
+static void M_Animation(const ITEM *const boat, const int32_t collide);
+static void M_Setup(OBJECT *const obj);
+static void M_Initialise(const int16_t item_num);
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara, COLL_INFO *const coll);
+static void M_Control(const int16_t item_num);
 
-    ITEM *const boat = Item_Get(item_num);
-    boat->data = boat_data;
-}
-
-void Boat_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_BOAT);
-    obj->initialise_func = Boat_Initialise;
-    obj->control_func = Boat_Control;
-    obj->collision_func = Boat_Collision;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
-
-int32_t Boat_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
+static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
 {
     if (g_Lara.gun_status != LGS_ARMLESS) {
         return 0;
@@ -147,69 +137,7 @@ int32_t Boat_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
     return get_on;
 }
 
-void Boat_Collision(
-    const int16_t item_num, ITEM *const lara, COLL_INFO *const coll)
-{
-    if (lara->hit_points < 0 || g_Lara.skidoo != NO_ITEM) {
-        return;
-    }
-
-    const int32_t get_on = Boat_CheckGetOn(item_num, coll);
-    if (!get_on) {
-        coll->enable_baddie_push = 1;
-        Object_Collision(item_num, lara, coll);
-        return;
-    }
-
-    g_Lara.skidoo = item_num;
-
-    int16_t boat_anim_idx;
-    switch (get_on) {
-    case 1:
-        boat_anim_idx = BOAT_GET_ON_RW_ANIM;
-        break;
-    case 2:
-        boat_anim_idx = BOAT_GET_ON_LW_ANIM;
-        break;
-    case 3:
-        boat_anim_idx = BOAT_GET_ON_J_ANIM;
-        break;
-    default:
-        boat_anim_idx = BOAT_GET_ON_START;
-        break;
-    }
-
-    Item_SwitchToObjAnim(lara, boat_anim_idx, 0, O_LARA_BOAT);
-
-    g_Lara.water_status = LWS_ABOVE_WATER;
-    g_Lara.hit_direction = -1;
-
-    ITEM *const boat = Item_Get(item_num);
-
-    lara->pos.x = boat->pos.x;
-    lara->pos.y = boat->pos.y - 5;
-    lara->pos.z = boat->pos.z;
-    lara->gravity = 0;
-    lara->rot.x = 0;
-    lara->rot.y = boat->rot.y;
-    lara->rot.z = 0;
-    lara->speed = 0;
-    lara->fall_speed = 0;
-    lara->goal_anim_state = 0;
-    lara->current_anim_state = 0;
-
-    if (lara->room_num != boat->room_num) {
-        Item_NewRoom(g_Lara.item_num, boat->room_num);
-    }
-
-    Item_Animate(lara);
-    if (boat->status != IS_ACTIVE) {
-        Item_AddActive(item_num);
-        boat->status = IS_ACTIVE;
-    }
-}
-
-int32_t Boat_TestWaterHeight(
+static int32_t M_TestWaterHeight(
     const ITEM *const item, const int32_t z_off, const int32_t x_off,
     XYZ_32 *const pos)
 {
@@ -239,7 +167,49 @@ int32_t Boat_TestWaterHeight(
     return height - 5;
 }
 
-void Boat_DoShift(const int32_t boat_num)
+static void M_DoWakeEffect(const ITEM *const boat)
+{
+    g_MatrixPtr->_23 = 0;
+    Output_CalculateLight(boat->pos, boat->room_num);
+
+    const int16_t frame =
+        (Random_GetDraw() * Object_Get(O_WATER_SPRITE)->mesh_count) >> 15;
+
+    for (int32_t i = 0; i < 3; i++) {
+        const int16_t effect_num = Effect_Create(boat->room_num);
+        if (effect_num == NO_EFFECT) {
+            continue;
+        }
+
+        EFFECT *const effect = Effect_Get(effect_num);
+        effect->object_id = O_WATER_SPRITE;
+        effect->room_num = boat->room_num;
+        effect->frame_num = frame;
+
+        const int32_t c = Math_Cos(boat->rot.y);
+        const int32_t s = Math_Sin(boat->rot.y);
+        const int32_t w = (1 - i) * BOAT_SIDE;
+        const int32_t h = BOAT_WAKE;
+        effect->pos.x = boat->pos.x + ((-c * w - s * h) >> W2V_SHIFT);
+        effect->pos.y = boat->pos.y;
+        effect->pos.z = boat->pos.z + ((-c * h + s * w) >> W2V_SHIFT);
+        effect->rot.y = boat->rot.y + (i << W2V_SHIFT) - DEG_90;
+
+        effect->counter = 20;
+        effect->speed = boat->speed >> 2;
+        if (boat->speed < 64) {
+            effect->fall_speed =
+                (Random_GetDraw() * (ABS(boat->speed) - 64)) >> 15;
+        } else {
+            effect->fall_speed = 0;
+        }
+
+        effect->shade = g_LsAdder - 768;
+        CLAMPL(effect->shade, 0);
+    }
+}
+
+static void M_DoShift(const int32_t boat_num)
 {
     ITEM *const boat = Item_Get(boat_num);
     int16_t item_num = Room_Get(boat->room_num)->item_num;
@@ -285,49 +255,7 @@ void Boat_DoShift(const int32_t boat_num)
     }
 }
 
-void Boat_DoWakeEffect(const ITEM *const boat)
-{
-    g_MatrixPtr->_23 = 0;
-    Output_CalculateLight(boat->pos, boat->room_num);
-
-    const int16_t frame =
-        (Random_GetDraw() * Object_Get(O_WATER_SPRITE)->mesh_count) >> 15;
-
-    for (int32_t i = 0; i < 3; i++) {
-        const int16_t effect_num = Effect_Create(boat->room_num);
-        if (effect_num == NO_EFFECT) {
-            continue;
-        }
-
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_WATER_SPRITE;
-        effect->room_num = boat->room_num;
-        effect->frame_num = frame;
-
-        const int32_t c = Math_Cos(boat->rot.y);
-        const int32_t s = Math_Sin(boat->rot.y);
-        const int32_t w = (1 - i) * BOAT_SIDE;
-        const int32_t h = BOAT_WAKE;
-        effect->pos.x = boat->pos.x + ((-c * w - s * h) >> W2V_SHIFT);
-        effect->pos.y = boat->pos.y;
-        effect->pos.z = boat->pos.z + ((-c * h + s * w) >> W2V_SHIFT);
-        effect->rot.y = boat->rot.y + (i << W2V_SHIFT) - DEG_90;
-
-        effect->counter = 20;
-        effect->speed = boat->speed >> 2;
-        if (boat->speed < 64) {
-            effect->fall_speed =
-                (Random_GetDraw() * (ABS(boat->speed) - 64)) >> 15;
-        } else {
-            effect->fall_speed = 0;
-        }
-
-        effect->shade = g_LsAdder - 768;
-        CLAMPL(effect->shade, 0);
-    }
-}
-
-int32_t Boat_DoDynamics(
+static int32_t M_DoDynamics(
     const int32_t height, int32_t fall_speed, int32_t *const y)
 {
     if (height > *y) {
@@ -347,7 +275,7 @@ int32_t Boat_DoDynamics(
     return fall_speed;
 }
 
-int32_t Boat_Dynamics(const int16_t boat_num)
+static int32_t M_Dynamics(const int16_t boat_num)
 {
     ITEM *const boat = Item_Get(boat_num);
     BOAT_INFO *const boat_data = (BOAT_INFO *)boat->data;
@@ -359,14 +287,14 @@ int32_t Boat_Dynamics(const int16_t boat_num)
     XYZ_32 br_old;
     XYZ_32 f_old;
     const int32_t hfl_old =
-        Boat_TestWaterHeight(boat, BOAT_FRONT, -BOAT_SIDE, &fl_old);
+        M_TestWaterHeight(boat, BOAT_FRONT, -BOAT_SIDE, &fl_old);
     const int32_t hfr_old =
-        Boat_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr_old);
+        M_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr_old);
     const int32_t hbl_old =
-        Boat_TestWaterHeight(boat, -BOAT_FRONT, -BOAT_SIDE, &bl_old);
+        M_TestWaterHeight(boat, -BOAT_FRONT, -BOAT_SIDE, &bl_old);
     const int32_t hbr_old =
-        Boat_TestWaterHeight(boat, -BOAT_FRONT, BOAT_SIDE, &br_old);
-    const int32_t hf_old = Boat_TestWaterHeight(boat, BOAT_TIP, 0, &f_old);
+        M_TestWaterHeight(boat, -BOAT_FRONT, BOAT_SIDE, &br_old);
+    const int32_t hf_old = M_TestWaterHeight(boat, BOAT_TIP, 0, &f_old);
     XYZ_32 old = boat->pos;
     CLAMPG(bl_old.y, hbl_old);
     CLAMPG(br_old.y, hbr_old);
@@ -400,38 +328,37 @@ int32_t Boat_Dynamics(const int16_t boat_num)
         .y = 0,
         .z = boat->pos.z,
     };
-    Boat_DoShift(boat_num);
+    M_DoShift(boat_num);
 
     int32_t rot = 0;
 
     XYZ_32 bl;
-    const int32_t hbl =
-        Boat_TestWaterHeight(boat, -BOAT_FRONT, -BOAT_SIDE, &bl);
+    const int32_t hbl = M_TestWaterHeight(boat, -BOAT_FRONT, -BOAT_SIDE, &bl);
     if (hbl < bl_old.y - STEP_L / 2) {
         rot = DoShift(boat, &bl, &bl_old);
     }
 
     XYZ_32 br;
-    const int32_t hbr = Boat_TestWaterHeight(boat, -BOAT_FRONT, BOAT_SIDE, &br);
+    const int32_t hbr = M_TestWaterHeight(boat, -BOAT_FRONT, BOAT_SIDE, &br);
     if (hbr < br_old.y - STEP_L / 2) {
         rot += DoShift(boat, &br, &br_old);
     }
 
     XYZ_32 fl;
-    const int32_t hfl = Boat_TestWaterHeight(boat, BOAT_FRONT, -BOAT_SIDE, &fl);
+    const int32_t hfl = M_TestWaterHeight(boat, BOAT_FRONT, -BOAT_SIDE, &fl);
     if (hfl < fl_old.y - STEP_L / 2) {
         rot += DoShift(boat, &fl, &fl_old);
     }
 
     XYZ_32 fr;
-    const int32_t hfr = Boat_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr);
+    const int32_t hfr = M_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr);
     if (hfr < fr_old.y - STEP_L / 2) {
         rot += DoShift(boat, &fr, &fr_old);
     }
 
     if (!slip) {
         XYZ_32 f;
-        const int32_t hf = Boat_TestWaterHeight(boat, BOAT_TIP, 0, &f);
+        const int32_t hf = M_TestWaterHeight(boat, BOAT_TIP, 0, &f);
         if (hf < f_old.y - STEP_L / 2) {
             DoShift(boat, &f, &f_old);
         }
@@ -487,7 +414,7 @@ int32_t Boat_Dynamics(const int16_t boat_num)
     return collide;
 }
 
-int32_t Boat_UserControl(ITEM *const boat)
+static int32_t M_UserControl(ITEM *const boat)
 {
     int32_t no_turn = 1;
 
@@ -558,7 +485,7 @@ int32_t Boat_UserControl(ITEM *const boat)
     return no_turn;
 }
 
-void Boat_Animation(const ITEM *const boat, const int32_t collide)
+static void M_Animation(const ITEM *const boat, const int32_t collide)
 {
     ITEM *const lara = g_LaraItem;
     const BOAT_INFO *const boat_data = (const BOAT_INFO *)boat->data;
@@ -626,7 +553,94 @@ void Boat_Animation(const ITEM *const boat, const int32_t collide)
     }
 }
 
-void Boat_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    BOAT_INFO *boat_data = GameBuf_Alloc(sizeof(BOAT_INFO), GBUF_ITEM_DATA);
+    boat_data->boat_turn = 0;
+    boat_data->left_fallspeed = 0;
+    boat_data->right_fallspeed = 0;
+    boat_data->tilt_angle = 0;
+    boat_data->extra_rotation = 0;
+    boat_data->water = 0;
+    boat_data->pitch = 0;
+
+    ITEM *const boat = Item_Get(item_num);
+    boat->data = boat_data;
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara, COLL_INFO *const coll)
+{
+    if (lara->hit_points < 0 || g_Lara.skidoo != NO_ITEM) {
+        return;
+    }
+
+    const int32_t get_on = M_CheckGetOn(item_num, coll);
+    if (!get_on) {
+        coll->enable_baddie_push = 1;
+        Object_Collision(item_num, lara, coll);
+        return;
+    }
+
+    g_Lara.skidoo = item_num;
+
+    int16_t boat_anim_idx;
+    switch (get_on) {
+    case 1:
+        boat_anim_idx = BOAT_GET_ON_RW_ANIM;
+        break;
+    case 2:
+        boat_anim_idx = BOAT_GET_ON_LW_ANIM;
+        break;
+    case 3:
+        boat_anim_idx = BOAT_GET_ON_J_ANIM;
+        break;
+    default:
+        boat_anim_idx = BOAT_GET_ON_START;
+        break;
+    }
+
+    Item_SwitchToObjAnim(lara, boat_anim_idx, 0, O_LARA_BOAT);
+
+    g_Lara.water_status = LWS_ABOVE_WATER;
+    g_Lara.hit_direction = -1;
+
+    ITEM *const boat = Item_Get(item_num);
+
+    lara->pos.x = boat->pos.x;
+    lara->pos.y = boat->pos.y - 5;
+    lara->pos.z = boat->pos.z;
+    lara->gravity = 0;
+    lara->rot.x = 0;
+    lara->rot.y = boat->rot.y;
+    lara->rot.z = 0;
+    lara->speed = 0;
+    lara->fall_speed = 0;
+    lara->goal_anim_state = 0;
+    lara->current_anim_state = 0;
+
+    if (lara->room_num != boat->room_num) {
+        Item_NewRoom(g_Lara.item_num, boat->room_num);
+    }
+
+    Item_Animate(lara);
+    if (boat->status != IS_ACTIVE) {
+        Item_AddActive(item_num);
+        boat->status = IS_ACTIVE;
+    }
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const lara = g_LaraItem;
     ITEM *const boat = Item_Get(item_num);
@@ -634,12 +648,12 @@ void Boat_Control(const int16_t item_num)
 
     bool drive = false;
     int32_t no_turn = 1;
-    int32_t collide = Boat_Dynamics(item_num);
+    int32_t collide = M_Dynamics(item_num);
 
     XYZ_32 fl;
     XYZ_32 fr;
-    const int32_t hfl = Boat_TestWaterHeight(boat, BOAT_FRONT, -BOAT_SIDE, &fl);
-    const int32_t hfr = Boat_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr);
+    const int32_t hfl = M_TestWaterHeight(boat, BOAT_FRONT, -BOAT_SIDE, &fl);
+    const int32_t hfr = M_TestWaterHeight(boat, BOAT_FRONT, BOAT_SIDE, &fr);
 
     int16_t room_num = boat->room_num;
     const SECTOR *sector =
@@ -662,7 +676,7 @@ void Boat_Control(const int16_t item_num)
 
         default:
             drive = true;
-            no_turn = Boat_UserControl(boat);
+            no_turn = M_UserControl(boat);
             break;
         }
     } else if (boat->speed > BOAT_SLOWDOWN) {
@@ -689,11 +703,11 @@ void Boat_Control(const int16_t item_num)
     }
 
     boat_data->left_fallspeed =
-        Boat_DoDynamics(hfl, boat_data->left_fallspeed, &fl.y);
+        M_DoDynamics(hfl, boat_data->left_fallspeed, &fl.y);
     boat_data->right_fallspeed =
-        Boat_DoDynamics(hfr, boat_data->right_fallspeed, &fr.y);
+        M_DoDynamics(hfr, boat_data->right_fallspeed, &fr.y);
     boat->fall_speed =
-        Boat_DoDynamics(boat_data->water, boat->fall_speed, &boat->pos.y);
+        M_DoDynamics(boat_data->water, boat->fall_speed, &boat->pos.y);
 
     height = (fr.y + fl.y) / 2;
 
@@ -710,7 +724,7 @@ void Boat_Control(const int16_t item_num)
     }
 
     if (g_Lara.skidoo == item_num) {
-        Boat_Animation(boat, collide);
+        M_Animation(boat, collide);
 
         if (room_num != boat->room_num) {
             Item_NewRoom(item_num, room_num);
@@ -771,7 +785,7 @@ void Boat_Control(const int16_t item_num)
     }
 
     if (boat->speed && water_height - 5 == boat->pos.y) {
-        Boat_DoWakeEffect(boat);
+        M_DoWakeEffect(boat);
     }
 
     if (g_Lara.skidoo != item_num) {
@@ -818,3 +832,5 @@ void Boat_Control(const int16_t item_num)
         Item_SwitchToAnim(boat, 0, 0);
     }
 }
+
+REGISTER_OBJECT(O_BOAT, M_Setup)

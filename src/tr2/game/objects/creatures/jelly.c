@@ -1,5 +1,3 @@
-#include "game/objects/creatures/jelly.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -24,14 +22,16 @@ typedef enum {
     // clang-format on
 } JELLY_STATE;
 
-void Jelly_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_JELLY);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Jelly_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = JELLY_HITPOINTS;
@@ -45,7 +45,7 @@ void Jelly_Setup(void)
     obj->save_anim = 1;
 }
 
-void Jelly_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -90,3 +90,5 @@ void Jelly_Control(const int16_t item_num)
         Creature_Underwater(item, 0);
     }
 }
+
+REGISTER_OBJECT(O_JELLY, M_Setup)

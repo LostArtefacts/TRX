@@ -1,5 +1,3 @@
-#include "game/objects/traps/dying_monk.h"
-
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/room.h"
@@ -11,7 +9,19 @@
 
 #define MAX_ROOMIES 2
 
-void DyingMonk_Initialise(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = 1;
+}
+
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -38,7 +48,7 @@ void DyingMonk_Initialise(const int16_t item_num)
     item->data = roomies;
 }
 
-void DyingMonk_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     const int32_t *const roomies = item->data;
@@ -62,11 +72,4 @@ void DyingMonk_Control(const int16_t item_num)
     }
 }
 
-void DyingMonk_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_DYING_MONK);
-    obj->initialise_func = DyingMonk_Initialise;
-    obj->control_func = DyingMonk_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_DYING_MONK, M_Setup)

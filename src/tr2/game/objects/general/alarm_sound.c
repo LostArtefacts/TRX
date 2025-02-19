@@ -1,9 +1,16 @@
-#include "game/objects/general/alarm_sound.h"
-
 #include "game/output.h"
 #include "game/sound.h"
 
-void AlarmSound_Control(int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
@@ -23,9 +30,4 @@ void AlarmSound_Control(int16_t item_num)
     item->data = (void *)(intptr_t)counter;
 }
 
-void AlarmSound_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_ALARM_SOUND);
-    obj->control_func = AlarmSound_Control;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_ALARM_SOUND, M_Setup)

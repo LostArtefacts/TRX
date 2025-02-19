@@ -1,5 +1,3 @@
-#include "game/objects/general/earthquake.h"
-
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/objects/common.h"
@@ -9,6 +7,8 @@
 #include "global/vars.h"
 
 static void M_Activate(int16_t earth_item_num);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_Activate(const int16_t earth_item_num)
 {
@@ -19,7 +19,14 @@ static void M_Activate(const int16_t earth_item_num)
     earth_item->timer = 0;
 }
 
-void Earthquake_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+    obj->save_flags = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     if (Random_GetDraw() < 512) {
@@ -50,10 +57,4 @@ void Earthquake_Control(const int16_t item_num)
     }
 }
 
-void Earthquake_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_EARTHQUAKE);
-    obj->control_func = Earthquake_Control;
-    obj->draw_func = Object_DrawDummyItem;
-    obj->save_flags = 1;
-}
+REGISTER_OBJECT(O_EARTHQUAKE, M_Setup)

@@ -1,11 +1,17 @@
-#include "game/objects/effects/snow_sprite.h"
-
 #include "game/effects.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
 
-void SnowSprite_Control(const int16_t effect_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+}
+
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
@@ -24,8 +30,4 @@ void SnowSprite_Control(const int16_t effect_num)
     }
 }
 
-void SnowSprite_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_SNOW_SPRITE);
-    obj->control_func = SnowSprite_Control;
-}
+REGISTER_OBJECT(O_SNOW_SPRITE, M_Setup)

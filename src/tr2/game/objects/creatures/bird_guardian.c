@@ -1,5 +1,3 @@
-#include "game/objects/creatures/bird_guardian.h"
-
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -53,14 +51,16 @@ static const BITE m_BirdGuardianBiteR = {
     .mesh_num = 22,
 };
 
-void BirdGuardian_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_BIRD_GUARDIAN);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = BirdGuardian_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = BIRD_GUARDIAN_HITPOINTS;
@@ -75,7 +75,7 @@ void BirdGuardian_Setup(void)
     Object_GetBone(obj, 14)->rot_y = true;
 }
 
-void BirdGuardian_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -201,3 +201,5 @@ void BirdGuardian_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_BIRD_GUARDIAN, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/traps/rolling_ball.h"
-
 #include "game/camera.h"
 #include "game/collide.h"
 #include "game/items.h"
@@ -18,21 +16,32 @@
 #define ROLLING_BALL_DAMAGE_AIR 100
 #define ROLL_SHAKE_RANGE (WALL_L * 10) // = 10240
 
-void RollingBall_Initialise(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-
     GAME_VECTOR *const data =
         GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_ITEM_DATA);
-    data->pos.x = item->pos.x;
-    data->pos.y = item->pos.y;
-    data->pos.z = item->pos.z;
+    data->pos = item->pos;
     data->room_num = item->room_num;
-
     item->data = data;
 }
 
-void RollingBall_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -138,7 +147,7 @@ void RollingBall_Control(const int16_t item_num)
     }
 }
 
-void RollingBall_Collision(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -205,12 +214,6 @@ void RollingBall_Collision(
     }
 }
 
-void RollingBall_Setup(OBJECT *const obj)
-{
-    obj->initialise_func = RollingBall_Initialise;
-    obj->control_func = RollingBall_Control;
-    obj->collision_func = RollingBall_Collision;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_ROLLING_BALL_1, M_Setup)
+REGISTER_OBJECT(O_ROLLING_BALL_2, M_Setup)
+REGISTER_OBJECT(O_ROLLING_BALL_3, M_Setup)

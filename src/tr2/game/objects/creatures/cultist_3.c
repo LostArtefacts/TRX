@@ -1,5 +1,3 @@
-#include "game/objects/creatures/cultist_3.h"
-
 #include "game/creature.h"
 #include "game/objects/creatures/cultist_common.h"
 #include "game/spawn.h"
@@ -50,15 +48,18 @@ static const BITE m_Cultist3RightGun = {
     .mesh_num = 10,
 };
 
-void Cultist3_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_CULT_3);
     if (!obj->loaded) {
         return;
     }
 
-    obj->initialise_func = Cultist3_Initialise;
-    obj->control_func = Cultist3_Control;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = CULTIST_3_HITPOINTS;
@@ -73,7 +74,7 @@ void Cultist3_Setup(void)
     obj->save_anim = 1;
 }
 
-void Cultist3_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
@@ -82,7 +83,7 @@ void Cultist3_Initialise(const int16_t item_num)
     item->current_anim_state = CULTIST_3_STATE_WAIT;
 }
 
-void Cultist3_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -294,3 +295,5 @@ void Cultist3_Control(const int16_t item_num)
 
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_CULT_3, M_Setup)

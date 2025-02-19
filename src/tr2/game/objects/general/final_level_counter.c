@@ -1,5 +1,3 @@
-#include "game/objects/general/final_level_counter.h"
-
 #include "decomp/flares.h"
 #include "game/camera.h"
 #include "game/creature.h"
@@ -17,6 +15,8 @@
 static int16_t M_FindBestBoss(void);
 static void M_ActivateLastBoss(void);
 static void M_PrepareCutscene(int16_t item_num);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static int16_t M_FindBestBoss(void)
 {
@@ -81,15 +81,14 @@ static void M_PrepareCutscene(const int16_t item_num)
     Camera_InvokeCinematic(item, 428, 0);
 }
 
-void FinalLevelCounter_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_FINAL_LEVEL_COUNTER);
-    obj->control_func = FinalLevelCounter_Control;
+    obj->control_func = M_Control;
     obj->draw_func = Object_DrawDummyItem;
     obj->save_flags = 1;
 }
 
-void FinalLevelCounter_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (g_SaveGame.current_stats.kills == g_FinalLevelCount
         && !g_FinalBossActive) {
@@ -104,3 +103,5 @@ void FinalLevelCounter_Control(const int16_t item_num)
         }
     }
 }
+
+REGISTER_OBJECT(O_FINAL_LEVEL_COUNTER, M_Setup)

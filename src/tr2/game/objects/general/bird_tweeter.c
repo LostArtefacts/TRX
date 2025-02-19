@@ -1,10 +1,17 @@
-#include "game/objects/general/bird_tweeter.h"
-
 #include "game/objects/common.h"
 #include "game/random.h"
 #include "game/sound.h"
 
-void BirdTweeter_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = Object_DrawDummyItem;
+}
+
+static void M_Control(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
 
@@ -17,8 +24,5 @@ void BirdTweeter_Control(const int16_t item_num)
     }
 }
 
-void BirdTweeter_Setup(OBJECT *const obj)
-{
-    obj->control_func = BirdTweeter_Control;
-    obj->draw_func = Object_DrawDummyItem;
-}
+REGISTER_OBJECT(O_BIRD_TWEETER_1, M_Setup)
+REGISTER_OBJECT(O_BIRD_TWEETER_2, M_Setup)

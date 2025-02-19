@@ -1,5 +1,3 @@
-#include "game/objects/creatures/diver.h"
-
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/los.h"
@@ -38,7 +36,15 @@ static const BITE m_DiverBite = {
     .mesh_num = 18,
 };
 
-int32_t Diver_GetWaterSurface(
+static int32_t M_GetWaterSurface(
+    int32_t x, int32_t y, int32_t z, int16_t room_num);
+static int16_t M_SpawnHarpoon(
+    int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
+    int16_t room_num);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static int32_t M_GetWaterSurface(
     const int32_t x, const int32_t y, const int32_t z, const int16_t room_num)
 {
     const ROOM *room = Room_Get(room_num);
@@ -64,14 +70,37 @@ int32_t Diver_GetWaterSurface(
     return NO_HEIGHT;
 }
 
-void Diver_Setup(void)
+static int16_t M_SpawnHarpoon(
+    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
+    const int16_t y_rot, const int16_t room_num)
 {
-    OBJECT *const obj = Object_Get(O_DIVER);
+    const int16_t effect_num = Effect_Create(room_num);
+    if (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        effect->pos.x = x;
+        effect->pos.y = y;
+        effect->pos.z = z;
+        effect->room_num = room_num;
+        effect->rot.x = 0;
+        effect->rot.y = y_rot;
+        effect->rot.z = 0;
+        effect->speed = DIVER_HARPOON_SPEED;
+        effect->fall_speed = 0;
+        effect->frame_num = 0;
+        effect->object_id = O_MISSILE_HARPOON;
+        effect->shade = 3584;
+        Missile_ShootAtLara(effect);
+    }
+    return effect_num;
+}
+
+static void M_Setup(OBJECT *const obj)
+{
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Diver_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->hit_points = DIVER_HITPOINTS;
@@ -89,7 +118,7 @@ void Diver_Setup(void)
     Object_GetBone(obj, 14)->rot_z = true;
 }
 
-void Diver_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -157,8 +186,7 @@ void Diver_Control(int16_t item_num)
     int16_t neck = 0;
     int16_t angle = Creature_Turn(item, creature->maximum_turn);
     int32_t water_level =
-        Diver_GetWaterSurface(
-            item->pos.x, item->pos.y, item->pos.z, item->room_num)
+        M_GetWaterSurface(item->pos.x, item->pos.y, item->pos.z, item->room_num)
         + 512;
 
     switch (item->current_anim_state) {
@@ -192,7 +220,7 @@ void Diver_Control(int16_t item_num)
             neck = -info.angle;
         }
         if (!creature->flags) {
-            Creature_Effect(item, &m_DiverBite, Diver_Harpoon);
+            Creature_Effect(item, &m_DiverBite, M_SpawnHarpoon);
             creature->flags = 1;
         }
         break;
@@ -202,7 +230,7 @@ void Diver_Control(int16_t item_num)
             head = info.angle;
         }
         if (!creature->flags) {
-            Creature_Effect(item, &m_DiverBite, Diver_Harpoon);
+            Creature_Effect(item, &m_DiverBite, M_SpawnHarpoon);
             creature->flags = 1;
         }
         break;
@@ -256,26 +284,4 @@ void Diver_Control(int16_t item_num)
     }
 }
 
-int16_t Diver_Harpoon(
-    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
-    const int16_t y_rot, const int16_t room_num)
-{
-    const int16_t effect_num = Effect_Create(room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->pos.x = x;
-        effect->pos.y = y;
-        effect->pos.z = z;
-        effect->room_num = room_num;
-        effect->rot.x = 0;
-        effect->rot.y = y_rot;
-        effect->rot.z = 0;
-        effect->speed = DIVER_HARPOON_SPEED;
-        effect->fall_speed = 0;
-        effect->frame_num = 0;
-        effect->object_id = O_MISSILE_HARPOON;
-        effect->shade = 3584;
-        Missile_ShootAtLara(effect);
-    }
-    return effect_num;
-}
+REGISTER_OBJECT(O_DIVER, M_Setup)

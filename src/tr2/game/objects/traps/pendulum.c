@@ -1,7 +1,6 @@
-#include "game/objects/traps/pendulum.h"
-
 #include "game/items.h"
 #include "game/lara/control.h"
+#include "game/objects/common.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/spawn.h"
@@ -10,7 +9,19 @@
 
 #define PENDULUM_DAMAGE 50
 
-void Pendulum_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->shadow_size = 128;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -35,11 +46,5 @@ void Pendulum_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-void Pendulum_Setup(OBJECT *const obj)
-{
-    obj->control_func = Pendulum_Control;
-    obj->collision_func = Object_Collision;
-    obj->shadow_size = 128;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_PENDULUM_1, M_Setup)
+REGISTER_OBJECT(O_PENDULUM_2, M_Setup)

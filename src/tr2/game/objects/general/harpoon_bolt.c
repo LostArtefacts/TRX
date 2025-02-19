@@ -1,5 +1,3 @@
-#include "game/objects/general/harpoon_bolt.h"
-
 #include "game/gun/gun_misc.h"
 #include "game/items.h"
 #include "game/objects/general/window.h"
@@ -9,14 +7,16 @@
 
 #include <libtrx/game/math.h>
 
-void HarpoonBolt_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_HARPOON_BOLT);
-    obj->control_func = HarpoonBolt_Control;
+    obj->control_func = M_Control;
     obj->save_position = 1;
 }
 
-void HarpoonBolt_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -113,3 +113,5 @@ void HarpoonBolt_Control(const int16_t item_num)
         Spawn_Bubble(&item->pos, item->room_num);
     }
 }
+
+REGISTER_OBJECT(O_HARPOON_BOLT, M_Setup)

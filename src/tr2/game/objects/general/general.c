@@ -13,6 +13,14 @@ typedef enum {
     // clang-format on
 } GENERAL_STATE;
 
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = General_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
 void General_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -40,11 +48,4 @@ void General_Control(const int16_t item_num)
     }
 }
 
-void General_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_GENERAL);
-    obj->control_func = General_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_GENERAL, M_Setup)

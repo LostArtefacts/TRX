@@ -69,8 +69,12 @@ static const BITE m_DragonMouth = {
 };
 
 static void M_MarkDragonDead(const ITEM *dragon_back_item);
-static void M_PullDagger(ITEM *lara_item, ITEM *dragon_back_item);
 static void M_PushLaraAway(ITEM *lara_item, ITEM *dragon_item, int32_t shift);
+static void M_PullDagger(ITEM *lara_item, ITEM *dragon_back_item);
+static void M_SetupFront(OBJECT *obj);
+static void M_SetupBack(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Control(int16_t item_num);
 
 static void M_MarkDragonDead(const ITEM *const dragon_back_item)
 {
@@ -123,16 +127,15 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     M_MarkDragonDead(dragon_back_item);
 }
 
-void Dragon_SetupFront(void)
+static void M_SetupFront(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DRAGON_FRONT);
     if (!obj->loaded) {
         return;
     }
 
     ASSERT(Object_Get(O_DRAGON_BACK)->loaded);
-    obj->control_func = Dragon_Control;
-    obj->collision_func = Dragon_Collision;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
 
     obj->hit_points = DRAGON_HITPOINTS;
     obj->radius = DRAGON_RADIUS;
@@ -147,15 +150,14 @@ void Dragon_SetupFront(void)
     Object_GetBone(obj, 10)->rot_z = true;
 }
 
-void Dragon_SetupBack(void)
+static void M_SetupBack(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DRAGON_BACK);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Dragon_Control;
-    obj->collision_func = Dragon_Collision;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
 
     obj->radius = DRAGON_RADIUS;
 
@@ -164,7 +166,7 @@ void Dragon_SetupBack(void)
     obj->save_anim = 1;
 }
 
-void Dragon_Collision(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -244,7 +246,7 @@ void Dragon_Bones(const int16_t item_num)
     bone_front->mesh_bits = ~0xC00000u;
 }
 
-void Dragon_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     const int16_t dragon_back_item_num = item_num;
     ITEM *const dragon_back_item = Item_Get(item_num);
@@ -457,3 +459,6 @@ void Dragon_Control(const int16_t item_num)
         Item_NewRoom(dragon_back_item_num, dragon_front_item->room_num);
     }
 }
+
+REGISTER_OBJECT(O_DRAGON_FRONT, M_SetupFront)
+REGISTER_OBJECT(O_DRAGON_BACK, M_SetupBack)

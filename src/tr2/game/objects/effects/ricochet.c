@@ -1,9 +1,15 @@
-#include "game/objects/effects/ricochet.h"
-
 #include "game/effects.h"
 #include "global/vars.h"
 
-void Spawn_Ricochet_Control(const int16_t effect_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t effect_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+}
+
+static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     effect->counter--;
@@ -12,8 +18,4 @@ void Spawn_Ricochet_Control(const int16_t effect_num)
     }
 }
 
-void Spawn_Ricochet_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_RICOCHET);
-    obj->control_func = Spawn_Ricochet_Control;
-}
+REGISTER_OBJECT(O_RICOCHET, M_Setup)

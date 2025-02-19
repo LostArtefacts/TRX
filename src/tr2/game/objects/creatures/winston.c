@@ -1,5 +1,3 @@
-#include "game/objects/creatures/winston.h"
-
 #include "game/creature.h"
 #include "game/objects/common.h"
 #include "game/random.h"
@@ -23,14 +21,16 @@ typedef enum {
     // clang-format on
 } WINSTON_STATE;
 
-void Winston_Setup(void)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_WINSTON);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control_func = Winston_Control;
+    obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
 
     obj->hit_points = DONT_TARGET;
@@ -43,7 +43,7 @@ void Winston_Setup(void)
     obj->save_anim = 1;
 }
 
-void Winston_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -91,3 +91,5 @@ void Winston_Control(const int16_t item_num)
 
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_WINSTON, M_Setup)

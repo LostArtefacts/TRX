@@ -6,7 +6,18 @@
 
 #define GONDOLA_SINK_SPEED 50
 
-void Gondola_Control(const int16_t item_num)
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const gondola = Item_Get(item_num);
 
@@ -42,11 +53,4 @@ void Gondola_Control(const int16_t item_num)
     }
 }
 
-void Gondola_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_GONDOLA);
-    obj->control_func = Gondola_Control;
-    obj->collision_func = Object_Collision;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_GONDOLA, M_Setup)
