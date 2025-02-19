@@ -61,8 +61,8 @@
     "underwater_music": {
       "full": "Completa",
       "quiet": "Attenuata",
-      "full_no_ambient": "Completa ma senza tracce ambientali",
-      "quiet_no_ambient": "Attenuata ma senza tracce ambientali",
+      "full_no_ambient": "Completa ma senza suoni ambientali",
+      "quiet_no_ambient": "Attenuata ma senza suoni ambientali",
       "none": "Assente"
     },
     "music_load_condition": {
@@ -106,7 +106,7 @@
     },
     "enable_tr2_swim_cancel": {
       "Title": "Annullamento reattivo del nuoto",
-      "Description": "Permette a Lara di fermarsi in modo più istantaneo sott'acqua quando viene rilasciato il tasto per nuotare, simile\n a TR2+."
+      "Description": "Permette a Lara di fermarsi in modo più istantaneo sott'acqua quando viene rilasciato il tasto per nuotare, simile\na TR2+."
     },
     "enable_wading": {
       "Title": "Guadare",
@@ -398,7 +398,7 @@
     },
     "underwater_music_mode": {
       "Title": "Comportamento della musica sott'acqua",
-      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica è riprodotta normalmente sott'acqua (TR1).\n- Attenuata: la musica è riprodotta a metà volume sott'acqua.\n- Completa ma senza suoni ambientali: la musica è riprodotta normalmente sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Attenuataa ma senza suoni ambientali: la musica è riprodotta a metà volume sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Assente: nessuna musica viene riprodotta sott'acqua."
+      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica è riprodotta normalmente sott'acqua (TR1).\n- Attenuata: la musica è riprodotta a metà volume sott'acqua.\n- Completa ma senza suoni ambientali: la musica è riprodotta normalmente sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Attenuata ma senza suoni ambientali: la musica è riprodotta a metà volume sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Assente: nessuna musica viene riprodotta sott'acqua."
     },
     "menu_style": {
       "Title": "Stile del menu",
