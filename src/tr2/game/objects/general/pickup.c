@@ -67,6 +67,7 @@ static void M_DoAboveWater(int16_t item, ITEM *lara_item);
 static void M_DoUnderwater(int16_t item, ITEM *lara_item);
 static void M_Setup(OBJECT *obj);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Activate(ITEM *item);
 static void M_Draw(const ITEM *item);
 
 static void M_DoPickup(const int16_t item_num)
@@ -89,7 +90,9 @@ static void M_DoPickup(const int16_t item_num)
     }
 
     item->status = IS_INVISIBLE;
+    item->flags |= IF_KILLED;
     Item_RemoveDrawn(item_num);
+    Item_RemoveActive(item_num);
 }
 
 static void M_DoFlarePickup(const int16_t item_num)
@@ -221,6 +224,7 @@ cleanup:
 static void M_Setup(OBJECT *const obj)
 {
     obj->handle_save_func = M_HandleSave;
+    obj->activate_func = M_Activate;
     obj->collision_func = Pickup_Collision;
     obj->draw_func = M_Draw;
     obj->save_position = 1;
@@ -234,6 +238,19 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
             const int16_t item_num = Item_GetIndex(item);
             Item_RemoveDrawn(item_num);
         }
+    }
+}
+
+static void M_Activate(ITEM *const item)
+{
+    if (item->status == IS_INVISIBLE) {
+        item->touch_bits = 0;
+        item->status = IS_ACTIVE;
+        const int16_t item_num = Item_GetIndex(item);
+        Item_AddActive(item_num);
+    } else {
+        item->status = IS_INVISIBLE;
+        item->flags |= IF_KILLED;
     }
 }
 

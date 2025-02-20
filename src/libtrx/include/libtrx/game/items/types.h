@@ -43,14 +43,13 @@ typedef struct {
     uint16_t flags;
 
     SHADE shade;
-#if TR_VERSION == 1
     void *data;
+#if TR_VERSION == 1
     void *priv;
     CARRIED_ITEM *carried_item;
     bool enable_shadow;
 #elif TR_VERSION == 2
     int16_t carried_item;
-    void *data;
 #endif
 
     XYZ_32 pos;

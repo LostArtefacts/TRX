@@ -3,6 +3,7 @@
 #include "../anims/types.h"
 #include "../collision.h"
 #include "../items/types.h"
+#include "../rooms/enum.h"
 #include "../savegame.h"
 #include "../types.h"
 
@@ -60,6 +61,7 @@ typedef struct OBJECT {
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
     int16_t (*ceiling_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+    void (*activate_func)(ITEM *item);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
 #if TR_VERSION == 1
     const OBJECT_BOUNDS *(*bounds_func)(void);

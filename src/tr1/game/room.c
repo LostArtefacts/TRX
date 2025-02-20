@@ -628,7 +628,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             }
 
             if (!item->active) {
-                if (Object_Get(item->object_id)->intelligent) {
+                const OBJECT *const obj = Object_Get(item->object_id);
+                if (obj->activate_func != nullptr) {
+                    obj->activate_func(item);
+                } else if (obj->intelligent) {
                     if (item->status == IS_INACTIVE) {
                         item->touch_bits = 0;
                         item->status = IS_ACTIVE;
