@@ -80,3 +80,5 @@ void Output_AnimateTextures(int32_t ticks);
 
 void Output_SetShadeEffect(bool shade_effect);
 bool Output_IsShadeEffect(void);
+void Output_SetSunsetEnabled(bool enabled);
+void Output_SetSunsetTimer(int32_t timer);

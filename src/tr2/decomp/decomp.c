@@ -163,7 +163,7 @@ void InitialiseGameFlags(void)
         Object_Get(obj_id)->loaded = 0;
     }
 
-    g_SunsetTimer = 0;
+    Output_SetSunsetTimer(0);
     g_LevelComplete = false;
     g_DetonateAllMines = false;
     g_IsMonkAngry = false;

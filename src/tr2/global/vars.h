@@ -75,7 +75,6 @@ extern int16_t g_FinalBossItem[5];
 extern REQUEST_INFO g_LoadGameRequester;
 extern REQUEST_INFO g_SaveGameRequester;
 
-extern bool g_GF_SunsetEnabled;
 extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;
 extern int16_t g_GF_NoFloor;
@@ -91,4 +90,3 @@ extern int32_t g_SaveCounter;
 extern int16_t g_SavedLevels[MAX_LEVELS];
 extern XYZ_32 g_InteractPosition;
 extern bool g_DetonateAllMines;
-extern int32_t g_SunsetTimer;

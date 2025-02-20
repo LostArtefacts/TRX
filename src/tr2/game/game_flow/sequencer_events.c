@@ -7,6 +7,7 @@
 #include "game/game_flow/sequencer.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/phase.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -180,7 +181,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
-        g_GF_SunsetEnabled = true;
+        Output_SetSunsetEnabled(true);
     }
     return gf_cmd;
 }
@@ -262,7 +263,7 @@ void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     g_GF_NoFloor = 0;
-    g_GF_SunsetEnabled = false;
+    Output_SetSunsetEnabled(false);
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;

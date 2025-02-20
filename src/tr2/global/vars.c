@@ -265,7 +265,6 @@ REQUEST_INFO g_SaveGameRequester = {
 
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
-bool g_GF_SunsetEnabled = false;
 int16_t g_GF_NoFloor = 0;
 int16_t g_GF_NumSecrets = 3;
 int32_t g_GF_LaraStartAnim;
@@ -281,4 +280,3 @@ int16_t g_SavedLevels[MAX_LEVELS] = { -1, 0 };
 
 XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
 bool g_DetonateAllMines = false;
-int32_t g_SunsetTimer = 0;

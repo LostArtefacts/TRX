@@ -66,6 +66,8 @@ static bool m_IsWaterEffect = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsShadeEffect = false;
 static int32_t m_WibbleOffset = 0;
+static bool m_IsSunsetEnabled = false;
+static int32_t m_SunsetTimer = 0;
 
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
@@ -922,6 +924,16 @@ bool Output_IsShadeEffect(void)
     return m_IsShadeEffect;
 }
 
+void Output_SetSunsetEnabled(const bool enabled)
+{
+    m_IsSunsetEnabled = enabled;
+}
+
+void Output_SetSunsetTimer(const int32_t timer)
+{
+    m_SunsetTimer = timer;
+}
+
 void Output_AnimateTextures(const int32_t ticks)
 {
     m_WibbleOffset = (m_WibbleOffset + (ticks / TICKS_PER_FRAME)) % WIBBLE_SIZE;
@@ -930,11 +942,11 @@ void Output_AnimateTextures(const int32_t ticks)
             * (Math_Sin((m_WibbleOffset * DEG_360) / WIBBLE_SIZE) + 0x4000)
         >> 15;
 
-    if (g_GF_SunsetEnabled) {
-        g_SunsetTimer += ticks;
-        CLAMPG(g_SunsetTimer, SUNSET_TIMEOUT);
+    if (m_IsSunsetEnabled) {
+        m_SunsetTimer += ticks;
+        CLAMPG(m_SunsetTimer, SUNSET_TIMEOUT);
         m_RoomLightShades[RLM_SUNSET] =
-            g_SunsetTimer * (WIBBLE_SIZE - 1) / SUNSET_TIMEOUT;
+            m_SunsetTimer * (WIBBLE_SIZE - 1) / SUNSET_TIMEOUT;
     }
 
     m_TickComp += ticks;
