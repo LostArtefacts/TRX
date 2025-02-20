@@ -670,11 +670,6 @@ int32_t Room_GetHeight(
     return height;
 }
 
-void Room_Legacy_TestTriggers(const int16_t *fd, bool heavy)
-{
-    ASSERT_FAIL();
-}
-
 void Room_TestTriggers(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
@@ -712,12 +707,6 @@ int32_t Room_GetCeiling(
     return height;
 }
 
-int16_t Room_Legacy_GetDoor(const SECTOR *const sector)
-{
-    ASSERT_FAIL();
-    return NO_ROOM;
-}
-
 void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
 {
     int16_t room_num = item->room_num;
@@ -744,12 +733,6 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
             box->overlap_index &= ~BOX_BLOCKED;
         }
     }
-}
-
-void Room_Legacy_TriggerMusicTrack(
-    const int16_t track, const int16_t flags, const int16_t type)
-{
-    ASSERT_FAIL();
 }
 
 void Room_InitCinematic(void)

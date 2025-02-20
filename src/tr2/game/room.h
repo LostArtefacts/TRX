@@ -25,8 +25,3 @@ int32_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 
 void Room_TestTriggers(const ITEM *item);
 void Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
-
-// TODO: eliminate
-int16_t Room_Legacy_GetDoor(const SECTOR *sector);
-void Room_Legacy_TestTriggers(const int16_t *fd, bool heavy);
-void Room_Legacy_TriggerMusicTrack(int16_t value, int16_t flags, int16_t type);

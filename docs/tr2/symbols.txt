@@ -3121,11 +3121,11 @@ typedef enum {
 0x00414B70  0x0198  SECTOR *__cdecl Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num);
 0x00414D10  0x0168  int32_t __cdecl Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 0x00414E80  0x0265  int32_t __cdecl Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
-0x00415100  0x00E7  void __cdecl Camera_Legacy_RefreshFromTrigger(int16_t type, const int16_t *data);
-0x004151F0  0x0690  void __cdecl Room_Legacy_TestTriggers(int16_t *data, int32_t heavy);
+0x00415100  0x00E7  void __cdecl Camera_RefreshFromTrigger(int16_t type, const int16_t *data);
+0x004151F0  0x0690  void __cdecl Room_TestTriggers(int16_t *data, int32_t heavy);
 0x004158D0  0x0055  int32_t __cdecl Item_IsTriggerActive(ITEM *item);
 0x00415930  0x023D  int32_t __cdecl Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
-0x00415B90  0x004E  int16_t __cdecl Room_Legacy_GetDoor(const SECTOR *sector);
+0x00415B90  0x004E  int16_t __cdecl Room_GetDoor(const SECTOR *sector);
 0x00415BE0  0x00A0  int32_t __cdecl LOS_Check(const GAME_VECTOR *start, GAME_VECTOR *target);
 0x00415C80  0x02EB  int32_t __cdecl LOS_CheckZ(const GAME_VECTOR *start, GAME_VECTOR *target);
 0x00415F70  0x02EC  int32_t __cdecl LOS_CheckX(const GAME_VECTOR *start, GAME_VECTOR *target);
@@ -3134,7 +3134,7 @@ typedef enum {
 0x00416640  0x00B3  void __cdecl Room_FlipMap(void);
 0x00416700  0x0096  void __cdecl Room_RemoveFlipItems(ROOM *r);
 0x004167A0  0x005C  void __cdecl Room_AddFlipItems(ROOM *r);
-0x00416800  0x0024  void __cdecl Room_Legacy_TriggerMusicTrack(int16_t value, int16_t flags, int16_t type);
+0x00416800  0x0024  void __cdecl Room_TriggerMusicTrack(int16_t value, int16_t flags, int16_t type);
 0x00416830  0x00DA  void __cdecl Room_TriggerMusicTrackImpl(int16_t value, int16_t flags, int16_t type);
 
 # game/demo.c
@@ -4171,7 +4171,7 @@ typedef enum {
 0x004553C0  0x001F  BOOL __cdecl S_Audio_Sample_OutIsTrackPlaying(int32_t track_id);
 0x004553E0  0x0077  bool __cdecl Music_Init(void);
 0x00455460  0x0051  void __cdecl Music_Shutdown(void);
-0x00455500  0x006F  void __cdecl Music_Legacy_Play(int16_t track_id, bool is_looped);
+0x00455500  0x006F  void __cdecl Music_Play(int16_t track_id, bool is_looped);
 0x00455570  0x0039  void __cdecl Music_Stop(void);
 0x004555B0  0x0084  bool __cdecl Music_PlaySynced(int32_t track_id);
 0x00455640  0x0061  int32_t __cdecl Music_GetFrames(void);
@@ -4550,7 +4550,7 @@ typedef enum {
 0x00526188  MATRIX *g_IMMatrixPtr;
 0x0052618C  ROOM *g_Rooms;
 0x00526240  int32_t g_FlipStatus;
-0x00526288  int16_t *g_Legacy_TriggerIndex;
+0x00526288  int16_t *g_TriggerIndex;
 0x005262A0  int32_t g_LOSRooms[20];
 0x005262F0  ITEM *g_Items;
 0x005262F6  int16_t g_NumCineFrames;
@@ -4631,7 +4631,7 @@ typedef enum {
 0x00466BDC  int32_t g_PaletteIndex;
 0x00519F78  int32_t g_HWR_TexturePageIndexes[32]; // MAX_TEXTURE_PAGES
 0x004D7790  int32_t g_HeightType;
-0x004D9D94  int16_t *g_Legacy_FloorData;
+0x004D9D94  int16_t *g_FloorData;
 0x00525B08  int16_t *g_AnimCommands;
 0x0052617C  ANIM_CHANGE *g_AnimChanges;
 0x00525B04  ANIM_RANGE *g_AnimRanges;
