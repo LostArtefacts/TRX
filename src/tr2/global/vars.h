@@ -49,7 +49,6 @@ extern int32_t g_PhdWinWidth;
 extern int32_t g_PhdViewDistance;
 extern PHD_VBUF g_PhdVBuf[];
 extern float g_FltWinRight;
-extern XYZ_32 g_LsVectorView;
 extern int32_t g_PhdWinRight;
 extern int32_t g_SurfaceCount;
 extern SORT_ITEM *g_Sort3DPtr;

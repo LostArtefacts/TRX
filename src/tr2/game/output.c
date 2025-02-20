@@ -61,6 +61,7 @@ static float m_WibbleTable[32];
 static int16_t m_ShadesTable[32];
 static int32_t m_RandomTable[32];
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
+static XYZ_32 m_LsVectorView = {};
 
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
@@ -367,21 +368,21 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
     // clang-format off
     const MATRIX *const mptr = g_MatrixPtr;
     const int32_t xv = (
-        g_LsVectorView.x * mptr->_00 +
-        g_LsVectorView.y * mptr->_10 +
-        g_LsVectorView.z * mptr->_20
+        m_LsVectorView.x * mptr->_00 +
+        m_LsVectorView.y * mptr->_10 +
+        m_LsVectorView.z * mptr->_20
     ) / m_LsDivider;
 
     const int32_t yv = (
-        g_LsVectorView.x * mptr->_01 +
-        g_LsVectorView.y * mptr->_11 +
-        g_LsVectorView.z * mptr->_21
+        m_LsVectorView.x * mptr->_01 +
+        m_LsVectorView.y * mptr->_11 +
+        m_LsVectorView.z * mptr->_21
     ) / m_LsDivider;
 
     const int32_t zv = (
-        g_LsVectorView.x * mptr->_02 +
-        g_LsVectorView.y * mptr->_12 +
-        g_LsVectorView.z * mptr->_22
+        m_LsVectorView.x * mptr->_02 +
+        m_LsVectorView.y * mptr->_12 +
+        m_LsVectorView.z * mptr->_22
     ) / m_LsDivider;
     // clang-format on
 
@@ -494,9 +495,9 @@ void Output_RotateLight(int16_t pitch, int16_t yaw)
     int32_t z = (xcos * wcos) >> W2V_SHIFT;
 
     const MATRIX *const m = &g_W2VMatrix;
-    g_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
-    g_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
-    g_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
+    m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
+    m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
+    m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
 }
 
 void Output_DrawSprite(

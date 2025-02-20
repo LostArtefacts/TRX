@@ -48,7 +48,6 @@ int32_t g_PhdWinWidth;
 int32_t g_PhdViewDistance;
 PHD_VBUF g_PhdVBuf[1500];
 float g_FltWinRight;
-XYZ_32 g_LsVectorView;
 int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
