@@ -139,7 +139,7 @@ static void M_ShadeColor(
     GFX_3D_VERTEX *const target, uint32_t red, uint32_t green,
     const uint32_t blue, const uint8_t alpha)
 {
-    if (g_IsShadeEffect) {
+    if (Output_IsShadeEffect()) {
         red /= 2;
         green = green * 7 / 8;
     }
@@ -866,10 +866,10 @@ static void M_InsertSprite_Sorted(
         g_FltWinBottom = g_PhdWinHeight;
     }
 
-    const bool old_shade = g_IsShadeEffect;
-    g_IsShadeEffect = false;
+    const bool old_shade = Output_IsShadeEffect();
+    Output_SetShadeEffect(false);
     M_InsertPolyTextured(num_points, z, POLY_HWR_WGTMAP, sprite->tex_page);
-    g_IsShadeEffect = old_shade;
+    Output_SetShadeEffect(old_shade);
 }
 
 static void M_InsertTransQuad_Sorted(

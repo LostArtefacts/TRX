@@ -62,6 +62,10 @@ static int16_t m_ShadesTable[32];
 static int32_t m_RandomTable[32];
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
 static XYZ_32 m_LsVectorView = {};
+static bool m_IsWaterEffect = false;
+static bool m_IsWibbleEffect = false;
+static bool m_IsShadeEffect = false;
+static int32_t m_WibbleOffset = 0;
 
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
@@ -150,9 +154,9 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
         vbuf->zv = zv;
 
         int16_t shade = vertex->light_adder;
-        if (g_IsWaterEffect) {
+        if (m_IsWaterEffect) {
             shade += m_ShadesTable
-                [((uint8_t)g_WibbleOffset
+                [((uint8_t)m_WibbleOffset
                   + (uint8_t)
                       m_RandomTable[(mesh->num_vertices - i) % WIBBLE_SIZE])
                  % WIBBLE_SIZE];
@@ -216,10 +220,10 @@ static void M_CalcRoomVerticesWibble(const ROOM_MESH *const mesh)
         double xs = vbuf->xs;
         double ys = vbuf->ys;
         xs += m_WibbleTable
-            [(((g_WibbleOffset + (int)ys) % WIBBLE_SIZE) + WIBBLE_SIZE)
+            [(((m_WibbleOffset + (int)ys) % WIBBLE_SIZE) + WIBBLE_SIZE)
              % WIBBLE_SIZE];
         ys += m_WibbleTable
-            [(((g_WibbleOffset + (int)xs) % WIBBLE_SIZE) + WIBBLE_SIZE)
+            [(((m_WibbleOffset + (int)xs) % WIBBLE_SIZE) + WIBBLE_SIZE)
              % WIBBLE_SIZE];
 
         int16_t clip_flags = vbuf->clip & ~15;
@@ -443,7 +447,7 @@ void Output_DrawRoom(const ROOM_MESH *const mesh, const bool is_outside)
 
     M_CalcRoomVertices(mesh, is_outside ? 0 : 16);
 
-    if (g_IsWibbleEffect) {
+    if (m_IsWibbleEffect) {
         Render_EnableZBuffer(false, true);
         g_DiscardTransparent = true;
         Render_InsertTexturedFace4s(mesh->face4s, mesh->num_face4s, ST_MAX_Z);
@@ -756,13 +760,13 @@ void Output_DrawScreenFBox(
 
 void Output_DrawHealthBar(const int32_t percent)
 {
-    g_IsShadeEffect = false;
+    m_IsShadeEffect = false;
     M_InsertBar(8, 8, 105, 9, percent, COLOR_RED, COLOR_ORANGE);
 }
 
 void Output_DrawAirBar(const int32_t percent)
 {
-    g_IsShadeEffect = false;
+    m_IsShadeEffect = false;
     M_InsertBar(-8, 8, 105, 9, percent, COLOR_BLUE, COLOR_WHITE);
 }
 
@@ -896,24 +900,34 @@ int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 void Output_SetupBelowWater(const bool is_underwater)
 {
     Render_SetWet(is_underwater);
-    g_IsWaterEffect = true;
-    g_IsWibbleEffect = !is_underwater;
-    g_IsShadeEffect = true;
+    m_IsWaterEffect = true;
+    m_IsWibbleEffect = !is_underwater;
+    m_IsShadeEffect = true;
 }
 
 void Output_SetupAboveWater(const bool is_underwater)
 {
-    g_IsWibbleEffect = is_underwater;
-    g_IsWaterEffect = false;
-    g_IsShadeEffect = is_underwater;
+    m_IsWibbleEffect = is_underwater;
+    m_IsWaterEffect = false;
+    m_IsShadeEffect = is_underwater;
+}
+
+void Output_SetShadeEffect(const bool shade_effect)
+{
+    m_IsShadeEffect = shade_effect;
+}
+
+bool Output_IsShadeEffect(void)
+{
+    return m_IsShadeEffect;
 }
 
 void Output_AnimateTextures(const int32_t ticks)
 {
-    g_WibbleOffset = (g_WibbleOffset + (ticks / TICKS_PER_FRAME)) % WIBBLE_SIZE;
+    m_WibbleOffset = (m_WibbleOffset + (ticks / TICKS_PER_FRAME)) % WIBBLE_SIZE;
     m_RoomLightShades[RLM_FLICKER] = Random_GetDraw() % WIBBLE_SIZE;
     m_RoomLightShades[RLM_GLOW] = (WIBBLE_SIZE - 1)
-            * (Math_Sin((g_WibbleOffset * DEG_360) / WIBBLE_SIZE) + 0x4000)
+            * (Math_Sin((m_WibbleOffset * DEG_360) / WIBBLE_SIZE) + 0x4000)
         >> 15;
 
     if (g_GF_SunsetEnabled) {
