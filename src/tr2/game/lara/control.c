@@ -633,7 +633,7 @@ void Lara_Control(const int16_t item_num)
             g_Lara.death_timer++;
             return;
         }
-    } else if (g_GF_NoFloor && item->pos.y >= g_GF_NoFloor) {
+    } else if (Room_IsNoFloorHeight(item->pos.y)) {
         item->hit_points = -1;
         g_Lara.death_timer = 9 * FRAMES_PER_SECOND;
     }

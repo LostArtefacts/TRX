@@ -644,7 +644,7 @@ int32_t Room_GetHeight(
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
     int32_t height = pit_sector->floor.height;
 
-    if (g_GF_NoFloor && g_GF_NoFloor == height) {
+    if (Room_IsNoFloorHeight(height)) {
         height = 0x4000;
     } else {
         height = M_GetFloorTiltHeight(pit_sector, x, z);

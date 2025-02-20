@@ -32,6 +32,7 @@ static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
+static int16_t m_NoFloorHeight = 0;
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
@@ -415,4 +416,14 @@ SECTOR *Room_GetUnitSector(
     const ROOM *const room, const int32_t x_sector, const int32_t z_sector)
 {
     return &room->sectors[z_sector + x_sector * room->size.z];
+}
+
+void Room_SetNoFloorHeight(const int16_t floor_height)
+{
+    m_NoFloorHeight = floor_height;
+}
+
+bool Room_IsNoFloorHeight(const int16_t height)
+{
+    return m_NoFloorHeight != 0 && height >= m_NoFloorHeight;
 }

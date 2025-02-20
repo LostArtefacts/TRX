@@ -31,7 +31,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_LOOP_GAME]        = M_HandlePlayLevel,
+    [GFS_LOOP_GAME]         = M_HandlePlayLevel,
     [GFS_PLAY_MUSIC]        = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]    = M_HandleLevelComplete,
     [GFS_ENABLE_SUNSET]     = M_HandleEnableSunset,
@@ -200,7 +200,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
-        g_GF_NoFloor = (int16_t)(intptr_t)event->data;
+        Room_SetNoFloorHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;
 }
@@ -262,7 +262,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets)
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
-    g_GF_NoFloor = 0;
+    Room_SetNoFloorHeight(0);
     Output_SetSunsetEnabled(false);
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;

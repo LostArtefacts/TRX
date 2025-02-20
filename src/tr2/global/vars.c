@@ -265,7 +265,6 @@ REQUEST_INFO g_SaveGameRequester = {
 
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
-int16_t g_GF_NoFloor = 0;
 int16_t g_GF_NumSecrets = 3;
 int32_t g_GF_LaraStartAnim;
 int32_t g_GF_ScriptVersion;
