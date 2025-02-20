@@ -111,22 +111,11 @@ static void M_AddFlipItems(const ROOM *const room)
 {
     int16_t item_num = room->item_num;
     while (item_num != NO_ITEM) {
-        const ITEM *const item = Item_Get(item_num);
+        ITEM *const item = Item_Get(item_num);
+        const OBJECT *const obj = Object_Get(item->object_id);
 
-        switch (item->object_id) {
-        case O_MOVABLE_BLOCK_1:
-        case O_MOVABLE_BLOCK_2:
-        case O_MOVABLE_BLOCK_3:
-        case O_MOVABLE_BLOCK_4:
-            Room_AlterFloorHeight(item, -WALL_L);
-            break;
-#if TR_VERSION == 1
-        case O_SLIDING_PILLAR:
-            Room_AlterFloorHeight(item, -WALL_L * 2);
-            break;
-#endif
-        default:
-            break;
+        if (obj->handle_flip_func != nullptr) {
+            obj->handle_flip_func(item, RFS_FLIPPED);
         }
 
         item_num = item->next_item;
@@ -138,33 +127,19 @@ static void M_RemoveFlipItems(const ROOM *const room)
     int16_t item_num = room->item_num;
     while (item_num != NO_ITEM) {
         ITEM *const item = Item_Get(item_num);
+        const OBJECT *const obj = Object_Get(item->object_id);
 
-        switch (item->object_id) {
-        case O_MOVABLE_BLOCK_1:
-        case O_MOVABLE_BLOCK_2:
-        case O_MOVABLE_BLOCK_3:
-        case O_MOVABLE_BLOCK_4:
-            Room_AlterFloorHeight(item, WALL_L);
-            break;
-#if TR_VERSION == 1
-        case O_SLIDING_PILLAR:
-            Room_AlterFloorHeight(item, WALL_L * 2);
-            break;
-#endif
-        default:
-            break;
+        if (obj->handle_flip_func != nullptr) {
+            obj->handle_flip_func(item, RFS_UNFLIPPED);
         }
 
-#if TR_VERSION == 2
         // TR2 does not have land/water objects like crocodile/alligator in TR1,
         // so avoid instances of floating water creatures in drained rooms.
-        if (item->flags & IF_ONE_SHOT
-            && Object_Get(item->object_id)->intelligent
+        if (TR_VERSION == 2 && (item->flags & IF_ONE_SHOT) && obj->intelligent
             && item->hit_points <= 0) {
             Item_RemoveDrawn(item_num);
             item->flags |= IF_KILLED;
         }
-#endif
 
         item_num = item->next_item;
     }

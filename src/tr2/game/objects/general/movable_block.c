@@ -42,6 +42,7 @@ static bool M_TestPull(
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleFlip(ITEM *item, ROOM_FLIP_STATUS flip_status);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Draw(const ITEM *item);
 static void M_Control(int16_t item_num);
@@ -204,6 +205,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->handle_flip_func = M_HandleFlip;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
@@ -211,6 +213,15 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
+}
+
+static void M_HandleFlip(ITEM *const item, const ROOM_FLIP_STATUS flip_status)
+{
+    if (flip_status == RFS_FLIPPED) {
+        Room_AlterFloorHeight(item, -WALL_L);
+    } else {
+        Room_AlterFloorHeight(item, WALL_L);
+    }
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

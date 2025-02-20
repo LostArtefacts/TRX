@@ -62,6 +62,7 @@ typedef struct OBJECT {
     int16_t (*ceiling_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
     void (*activate_func)(ITEM *item);
+    void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
 #if TR_VERSION == 1
     const OBJECT_BOUNDS *(*bounds_func)(void);

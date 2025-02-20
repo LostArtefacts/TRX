@@ -256,6 +256,10 @@ static void M_Activate(ITEM *const item)
 
 static void M_Draw(const ITEM *const item)
 {
+    if (item->flags & IF_INVISIBLE) {
+        return;
+    }
+
     if (!g_Config.visuals.enable_3d_pickups) {
         Object_DrawSpriteItem(item);
         return;
@@ -344,6 +348,11 @@ static void M_Draw(const ITEM *const item)
 void Pickup_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
+    const ITEM *const item = Item_Get(item_num);
+    if (item->flags & IF_INVISIBLE) {
+        return;
+    }
+
     if (g_Lara.water_status == LWS_ABOVE_WATER
         || g_Lara.water_status == LWS_WADE) {
         M_DoAboveWater(item_num, lara_item);
