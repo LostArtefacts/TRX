@@ -22,6 +22,7 @@ static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
@@ -34,6 +35,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     if (g_Config.gameplay.enable_save_crystals) {
+        obj->handle_save_func = M_HandleSave;
         obj->control_func = M_Control;
         obj->collision_func = M_Collision;
         obj->save_flags = 1;
@@ -48,6 +50,30 @@ static void M_Initialise(const int16_t item_num)
         Item_AddActive(item_num);
     } else {
         Item_Get(item_num)->status = IS_INVISIBLE;
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    switch (stage) {
+    case SAVEGAME_STAGE_AFTER_LOAD:
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+        break;
+
+    case SAVEGAME_STAGE_BEFORE_SAVE:
+        if (item->data != nullptr) {
+            // need to reset the crystal status
+            item->status = IS_DEACTIVATED;
+            item->data = nullptr;
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+
+    default:
+        break;
     }
 }
 
@@ -81,7 +107,7 @@ static void M_Collision(
         return;
     }
 
-    item->data = (void *)(intptr_t)(g_SaveCounter | 0x10000);
+    item->data = (void *)1;
     GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
 }
 

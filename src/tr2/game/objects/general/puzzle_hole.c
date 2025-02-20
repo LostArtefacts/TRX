@@ -40,6 +40,7 @@ static void M_Consume(
 static void M_MarkDone(ITEM *puzzle_hole_item);
 static void M_SetupEmpty(OBJECT *obj);
 static void M_SetupDone(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static void M_Refuse(const ITEM *const lara_item)
@@ -80,12 +81,22 @@ static void M_MarkDone(ITEM *const puzzle_hole_item)
 static void M_SetupEmpty(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
+    obj->handle_save_func = M_HandleSave;
     obj->save_flags = 1;
 }
 
 static void M_SetupDone(OBJECT *const obj)
 {
     obj->save_flags = 1;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED || item->status == IS_ACTIVE) {
+            item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
+        }
+    }
 }
 
 static void M_Collision(

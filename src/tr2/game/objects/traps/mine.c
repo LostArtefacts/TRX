@@ -14,6 +14,7 @@ static void M_DetonateAll(
     const ITEM *mine_item, int16_t boat_item_num, int16_t boat_room_num);
 static void M_Explode(ITEM *mine_item);
 static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 
 static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *const room_num)
@@ -81,9 +82,19 @@ static void M_Explode(ITEM *const mine_item)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_flags = 1;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->flags & IF_ONE_SHOT) {
+            item->mesh_bits = 1;
+        }
+    }
 }
 
 static void M_Control(const int16_t item_num)

@@ -11,28 +11,33 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
+static void M_SetupBase(OBJECT *obj);
 static void M_Setup1(OBJECT *obj);
 static void M_Setup2(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control1(int16_t item_num);
 static void M_Control2(int16_t item_num);
 
-static void M_Setup1(OBJECT *const obj)
+static void M_SetupBase(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->collision_func = Object_Collision;
-    obj->control_func = M_Control1;
     obj->save_flags = 1;
     obj->save_anim = 1;
 }
 
+static void M_Setup1(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->control_func = M_Control1;
+}
+
 static void M_Setup2(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
-    obj->collision_func = Object_Collision;
+    M_SetupBase(obj);
     obj->control_func = M_Control2;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -48,6 +53,16 @@ static void M_Initialise(const int16_t item_num)
 
     if (box->overlap_index & BOX_BLOCKABLE) {
         box->overlap_index |= BOX_BLOCKED;
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if ((item->object_id == O_WINDOW_1 || item->object_id == O_WINDOW_2)
+            && (item->flags & IF_ONE_SHOT)) {
+            item->mesh_bits = 0x100;
+        }
     }
 }
 

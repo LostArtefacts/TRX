@@ -42,6 +42,7 @@ static bool M_TestPull(
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Draw(const ITEM *item);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -203,12 +204,31 @@ static void M_Initialise(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->draw_func = M_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
     obj->save_anim = 1;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    switch (stage) {
+    case SAVEGAME_STAGE_BEFORE_LOAD:
+        Room_AlterFloorHeight(item, WALL_L);
+        break;
+
+    case SAVEGAME_STAGE_AFTER_LOAD:
+        if (item->status == IS_INACTIVE) {
+            Room_AlterFloorHeight(item, -WALL_L);
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
 static void M_Control(const int16_t item_num)

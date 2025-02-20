@@ -16,6 +16,7 @@ typedef enum {
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 
 static void M_Setup(OBJECT *const obj)
@@ -24,6 +25,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
     obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_anim = 1;
@@ -72,6 +74,16 @@ static void M_Initialise(const int16_t item_num)
 
     item->flags = 0;
     item->mesh_bits = 0xFF0001FF;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            item->mesh_bits = 0x1FF;
+            item->collidable = 0;
+        }
+    }
 }
 
 static void M_Control(const int16_t item_num)

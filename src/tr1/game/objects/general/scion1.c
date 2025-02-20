@@ -31,6 +31,7 @@ static const OBJECT_BOUNDS m_Scion1_Bounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
@@ -40,10 +41,21 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->handle_save_func = M_HandleSave;
     obj->draw_func = Object_DrawPickupItem;
     obj->collision_func = M_Collision;
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
 }
 
 static void M_Collision(

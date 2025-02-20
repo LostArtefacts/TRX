@@ -1,18 +1,14 @@
 #include "decomp/savegame.h"
 
-#include "decomp/skidoo.h"
 #include "game/camera.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/inventory.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
 #include "game/lot.h"
-#include "game/objects/creatures/dragon.h"
 #include "game/objects/general/lift.h"
-#include "game/objects/vars.h"
 #include "game/requester.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -171,11 +167,11 @@ static void M_ReadItems(void)
         ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
-            Room_AlterFloorHeight(item, WALL_L);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
         }
 
-        if ((obj->flags & 4) != 0) {
+        if (obj->save_position) {
             item->pos.x = M_ReadS32();
             item->pos.y = M_ReadS32();
             item->pos.z = M_ReadS32();
@@ -257,31 +253,6 @@ static void M_ReadItems(void)
             }
 
             item->flags &= 0xFF00;
-
-            if (Object_IsType(item->object_id, g_PuzzleHoleObjects)
-                && (item->status == IS_DEACTIVATED
-                    || item->status == IS_ACTIVE)) {
-                item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
-            }
-
-            if (Object_IsType(item->object_id, g_PickupObjects)
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(item_num);
-            }
-
-            if ((item->object_id == O_WINDOW_1 || item->object_id == O_WINDOW_2)
-                && (item->flags & IF_ONE_SHOT)) {
-                item->mesh_bits = 0x100;
-            }
-
-            if (item->object_id == O_MINE && (item->flags & IF_ONE_SHOT)) {
-                item->mesh_bits = 1;
-            }
-        }
-
-        if (Object_IsType(item->object_id, g_MovableBlockObjects)
-            && item->status == IS_INACTIVE) {
-            Room_AlterFloorHeight(item, -WALL_L);
         }
 
         switch (item->object_id) {
@@ -298,19 +269,8 @@ static void M_ReadItems(void)
             break;
         }
 
-        if (item->object_id == O_SKIDOO_DRIVER
-            && item->status == IS_DEACTIVATED) {
-            const int16_t skidoo_num = (int16_t)(intptr_t)item->data;
-            ITEM *const skidoo = Item_Get(skidoo_num);
-            skidoo->object_id = O_SKIDOO_FAST;
-            Skidoo_Initialise(skidoo_num);
-        }
-
-        if (item->object_id == O_DRAGON_FRONT
-            && item->status == IS_DEACTIVATED) {
-            item->pos.y -= 1010;
-            Dragon_Bones(item_num);
-            item->pos.y += 1010;
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
 }

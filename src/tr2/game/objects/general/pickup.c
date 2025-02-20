@@ -66,6 +66,7 @@ static void M_DoFlarePickup(int16_t item_num);
 static void M_DoAboveWater(int16_t item, ITEM *lara_item);
 static void M_DoUnderwater(int16_t item, ITEM *lara_item);
 static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Draw(const ITEM *item);
 
 static void M_DoPickup(const int16_t item_num)
@@ -219,10 +220,21 @@ cleanup:
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->handle_save_func = M_HandleSave;
     obj->collision_func = Pickup_Collision;
     obj->draw_func = M_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
 }
 
 static void M_Draw(const ITEM *const item)

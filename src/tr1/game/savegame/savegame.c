@@ -19,7 +19,6 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/music.h>
 #include <libtrx/memory.h>
 
 #include <stdint.h>
@@ -109,62 +108,12 @@ static void M_LoadPostprocess(void)
                 Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         }
 
-        if (obj->save_flags) {
+        if (obj->save_flags != 0) {
             item->flags &= 0xFF00;
-
-            if ((item->object_id >= O_PUZZLE_HOLE_1
-                 && item->object_id <= O_PUZZLE_HOLE_4)
-                && (item->status == IS_DEACTIVATED
-                    || item->status == IS_ACTIVE)) {
-                item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
-            }
-
-            if ((item->object_id == O_PODS || item->object_id == O_BIG_POD)
-                && item->status == IS_DEACTIVATED) {
-                item->mesh_bits = 0x1FF;
-                item->collidable = 0;
-            }
-
-            if ((Object_IsType(item->object_id, g_PickupObjects)
-                 || item->object_id == O_SAVEGAME_ITEM)
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(i);
-            }
         }
 
-        if (item->object_id >= O_MOVABLE_BLOCK_1
-            && item->object_id <= O_MOVABLE_BLOCK_4) {
-            item->priv =
-                item->status == IS_ACTIVE ? (void *)true : (void *)false;
-            if (item->status == IS_INACTIVE) {
-                Room_AlterFloorHeight(item, -WALL_L);
-            }
-        }
-
-        if (item->object_id == O_SLIDING_PILLAR
-            && item->current_anim_state != SPS_MOVING) {
-            Room_AlterFloorHeight(item, -WALL_L * 2);
-        }
-
-        if (item->object_id == O_PIERRE && item->hit_points <= 0
-            && (item->flags & IF_ONE_SHOT)) {
-            const uint16_t flags = Music_GetTrackFlags(MX_PIERRE_SPEECH);
-            Music_SetTrackFlags(MX_PIERRE_SPEECH, flags | IF_ONE_SHOT);
-        }
-
-        if (item->object_id == O_COWBOY && item->hit_points <= 0) {
-            const uint16_t flags = Music_GetTrackFlags(MX_COWBOY_SPEECH);
-            Music_SetTrackFlags(MX_COWBOY_SPEECH, flags | IF_ONE_SHOT);
-        }
-
-        if (item->object_id == O_BALDY && item->hit_points <= 0) {
-            const uint16_t flags = Music_GetTrackFlags(MX_BALDY_SPEECH);
-            Music_SetTrackFlags(MX_BALDY_SPEECH, flags | IF_ONE_SHOT);
-        }
-
-        if (item->object_id == O_LARSON && item->hit_points <= 0) {
-            const uint16_t flags = Music_GetTrackFlags(MX_LARSON_SPEECH);
-            Music_SetTrackFlags(MX_LARSON_SPEECH, flags | IF_ONE_SHOT);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
 
@@ -240,15 +189,8 @@ void Savegame_ProcessItemsBeforeLoad(void)
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
-
-        if ((item->object_id >= O_MOVABLE_BLOCK_1
-             && item->object_id <= O_MOVABLE_BLOCK_4)
-            && item->status != IS_INVISIBLE
-            && item->pos.y >= Item_GetHeight(item)) {
-            Room_AlterFloorHeight(item, WALL_L);
-        }
-        if (item->object_id == O_SLIDING_PILLAR) {
-            Room_AlterFloorHeight(item, WALL_L * 2);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
         }
     }
 }
@@ -257,11 +199,9 @@ void Savegame_ProcessItemsBeforeSave(void)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
-        if (item->object_id == O_SAVEGAME_ITEM && item->data != nullptr) {
-            // need to reset the crystal status
-            item->status = IS_DEACTIVATED;
-            item->data = nullptr;
-            Item_RemoveDrawn(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_SAVE);
         }
     }
 }

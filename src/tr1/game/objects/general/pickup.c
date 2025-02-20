@@ -60,56 +60,17 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
-static void M_Initialise(int16_t item_num);
-static void M_Control(int16_t item_num);
 static void M_SpawnPickupAid(const ITEM *item);
 static void M_GetItem(int16_t item_num, ITEM *item, ITEM *lara_item);
 static void M_GetAllAtLaraPos(ITEM *item, ITEM *lara_item);
 static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Control(int16_t item_num);
 static const OBJECT_BOUNDS *M_Bounds(void);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_CollisionControlled(
     int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
-static void M_Initialise(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->priv = (void *)(intptr_t)(-1);
-    if (item->status != IS_INVISIBLE) {
-        Item_AddActive(item_num);
-    }
-}
-
-static void M_Control(int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
-        return;
-    }
-
-    const ITEM *const lara = Lara_GetItem();
-    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
-        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
-        return;
-    }
-
-    const int32_t distance = Item_GetDistance(lara, &item->pos);
-    if (distance < AID_DIST_MIN || distance > AID_DIST_MAX) {
-        return;
-    }
-
-    int32_t timer = (int32_t)(intptr_t)item->priv;
-    if (timer <= 0
-        || (timer < AID_WAIT_MIN && Random_GetDraw() < AID_WAIT_BREAK_CHANCE)) {
-        M_SpawnPickupAid(item);
-        timer = AID_WAIT_MAX;
-    } else {
-        timer--;
-    }
-
-    item->priv = (void *)(intptr_t)(int32_t)timer;
-}
 
 static void M_SpawnPickupAid(const ITEM *const item)
 {
@@ -171,7 +132,58 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = 1;
     obj->bounds_func = M_Bounds;
     obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
+}
+
+static void M_Initialise(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->priv = (void *)(intptr_t)(-1);
+    if (item->status != IS_INVISIBLE) {
+        Item_AddActive(item_num);
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
+}
+
+static void M_Control(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
+        Item_RemoveActive(item_num);
+        return;
+    }
+
+    const ITEM *const lara = Lara_GetItem();
+    if (!g_Config.gameplay.enable_pickup_aids || item->fall_speed != 0
+        || lara == nullptr || !Object_Get(O_PICKUP_AID)->loaded) {
+        return;
+    }
+
+    const int32_t distance = Item_GetDistance(lara, &item->pos);
+    if (distance < AID_DIST_MIN || distance > AID_DIST_MAX) {
+        return;
+    }
+
+    int32_t timer = (int32_t)(intptr_t)item->priv;
+    if (timer <= 0
+        || (timer < AID_WAIT_MIN && Random_GetDraw() < AID_WAIT_BREAK_CHANCE)) {
+        M_SpawnPickupAid(item);
+        timer = AID_WAIT_MAX;
+    } else {
+        timer--;
+    }
+
+    item->priv = (void *)(intptr_t)(int32_t)timer;
 }
 
 static const OBJECT_BOUNDS *M_Bounds(void)

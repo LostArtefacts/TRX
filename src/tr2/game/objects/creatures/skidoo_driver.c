@@ -39,6 +39,7 @@ static void M_ControlDead(ITEM *driver_item, ITEM *skidoo_item);
 static int16_t M_ControlAlive(ITEM *driver_item, ITEM *skidoo_item);
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 
 static void M_KillDriver(ITEM *const driver_item)
@@ -175,6 +176,7 @@ static void M_Setup(OBJECT *const obj)
     }
 
     obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
 
     obj->hit_points = 1;
@@ -203,6 +205,18 @@ static void M_Initialise(const int16_t item_num)
     Item_Initialise(skidoo_item_num);
 
     skidoo_driver->data = (void *)(intptr_t)skidoo_item_num;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t skidoo_num = (int16_t)(intptr_t)item->data;
+            ITEM *const skidoo = Item_Get(skidoo_num);
+            skidoo->object_id = O_SKIDOO_FAST;
+            Skidoo_Initialise(skidoo_num);
+        }
+    }
 }
 
 static void M_Control(const int16_t driver_item_num)

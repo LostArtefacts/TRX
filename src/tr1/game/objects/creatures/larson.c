@@ -1,6 +1,7 @@
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/random.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -31,6 +32,7 @@ typedef enum {
 static BITE m_LarsonGun = { -60, 170, 0, 14 };
 
 static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 
 static void M_Setup(OBJECT *const obj)
@@ -39,6 +41,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
     obj->initialise_func = Creature_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
@@ -52,6 +55,16 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = 1;
 
     Object_GetBone(obj, 6)->rot_y = true;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->hit_points <= 0) {
+            const uint16_t flags = Music_GetTrackFlags(MX_LARSON_SPEECH);
+            Music_SetTrackFlags(MX_LARSON_SPEECH, flags | IF_ONE_SHOT);
+        }
+    }
 }
 
 static void M_Control(const int16_t item_num)

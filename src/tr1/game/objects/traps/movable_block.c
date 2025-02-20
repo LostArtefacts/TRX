@@ -44,6 +44,7 @@ static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_Draw(const ITEM *item);
@@ -270,6 +271,7 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->draw_func = M_Draw;
     obj->collision_func = M_Collision;
@@ -282,9 +284,30 @@ static void M_Setup(OBJECT *const obj)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-
     if (item->status != IS_INVISIBLE && item->pos.y >= Item_GetHeight(item)) {
         Room_AlterFloorHeight(item, -WALL_L);
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    switch (stage) {
+    case SAVEGAME_STAGE_BEFORE_LOAD:
+        if (item->status != IS_INVISIBLE
+            && item->pos.y >= Item_GetHeight(item)) {
+            Room_AlterFloorHeight(item, WALL_L);
+        }
+        break;
+
+    case SAVEGAME_STAGE_AFTER_LOAD:
+        item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
+        if (item->status == IS_INACTIVE) {
+            Room_AlterFloorHeight(item, -WALL_L);
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
