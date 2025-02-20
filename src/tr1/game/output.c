@@ -840,6 +840,11 @@ void Output_SetLightAdder(const int32_t adder)
     m_LsAdder = adder;
 }
 
+int32_t Output_GetLightAdder(void)
+{
+    return m_LsAdder;
+}
+
 void Output_SetLightDivider(const int32_t divider)
 {
     m_LsDivider = divider;

@@ -451,8 +451,8 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
     Matrix_RotX(DEG_1 * 15);
     Matrix_RotY(pickup->rot_y);
 
-    g_LsDivider = 0x6000;
-    g_LsAdder = LOW_LIGHT;
+    Output_SetLightDivider(0x6000);
+    Output_SetLightAdder(LOW_LIGHT);
     Output_RotateLight(0, 0);
 
     Matrix_Push();

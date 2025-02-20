@@ -18,6 +18,7 @@ extern void Output_SetupBelowWater(bool is_underwater);
 extern void Output_SetupAboveWater(bool is_underwater);
 extern void Output_RotateLight(int16_t pitch, int16_t yaw);
 extern void Output_SetLightAdder(int32_t adder);
+extern int32_t Output_GetLightAdder(void);
 extern void Output_SetLightDivider(int32_t divider);
 
 // Temporary

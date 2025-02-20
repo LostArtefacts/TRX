@@ -142,7 +142,7 @@ void Object_DrawSpriteItem(const ITEM *const item)
         SPRITE_ABS | (obj->semi_transparent ? SPRITE_SEMI_TRANS : 0)
             | SPRITE_SHADE,
         item->pos.x, item->pos.y, item->pos.z, obj->mesh_idx - item->frame_num,
-        g_LsAdder + 4096, 0);
+        Output_GetLightAdder() + 4096, 0);
 }
 
 void Object_Collision(

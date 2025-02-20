@@ -53,6 +53,8 @@ static NAMED_COLOR m_NamedColors[COLOR_NUMBER_OF] = {
 };
 
 static int32_t m_TickComp = 0;
+static int32_t m_LsAdder = 0;
+static int32_t m_LsDivider = 0;
 static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static ROOM_LIGHT_TABLE m_RoomLightTables[WIBBLE_SIZE] = {};
 static float m_WibbleTable[32];
@@ -344,29 +346,29 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
 {
     // TODO: refactor
     if (mesh->num_lights > 0) {
-        if (g_LsDivider) {
+        if (m_LsDivider) {
             // clang-format off
             const MATRIX *const mptr = g_MatrixPtr;
             int32_t xv = (
                 g_LsVectorView.x * mptr->_00 +
                 g_LsVectorView.y * mptr->_10 +
                 g_LsVectorView.z * mptr->_20
-            ) / g_LsDivider;
+            ) / m_LsDivider;
             int32_t yv = (
                 g_LsVectorView.x * mptr->_01 +
                 g_LsVectorView.y * mptr->_11 +
                 g_LsVectorView.z * mptr->_21
-            ) / g_LsDivider;
+            ) / m_LsDivider;
             int32_t zv = (
                 g_LsVectorView.x * mptr->_02 +
                 g_LsVectorView.y * mptr->_12 +
                 g_LsVectorView.z * mptr->_22
-            ) / g_LsDivider;
+            ) / m_LsDivider;
             // clang-format on
 
             for (int32_t i = 0; i < mesh->num_lights; i++) {
                 const XYZ_16 *const normal = &mesh->lighting.normals[i];
-                int16_t shade = g_LsAdder
+                int16_t shade = m_LsAdder
                     + ((xv * normal->x + yv * normal->y + zv * normal->z)
                        >> 16);
                 CLAMP(shade, 0, 0x1FFF);
@@ -374,7 +376,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
                 g_PhdVBuf[i].g = shade;
             }
         } else {
-            int16_t shade = g_LsAdder;
+            int16_t shade = m_LsAdder;
             CLAMP(shade, 0, 0x1FFF);
             for (int32_t i = 0; i < mesh->num_lights; i++) {
                 g_PhdVBuf[i].g = shade;
@@ -382,7 +384,7 @@ static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
         }
     } else if (mesh->num_lights < 0) {
         for (int32_t i = 0; i < -mesh->num_lights; i++) {
-            int16_t shade = g_LsAdder + mesh->lighting.lights[i];
+            int16_t shade = m_LsAdder + mesh->lighting.lights[i];
             CLAMP(shade, 0, 0x1FFF);
             g_PhdVBuf[i].g = shade;
         }
@@ -926,12 +928,17 @@ void Output_AnimateTextures(const int32_t ticks)
 
 void Output_SetLightAdder(const int32_t adder)
 {
-    g_LsAdder = adder;
+    m_LsAdder = adder;
+}
+
+int32_t Output_GetLightAdder(void)
+{
+    return m_LsAdder;
 }
 
 void Output_SetLightDivider(const int32_t divider)
 {
-    g_LsDivider = divider;
+    m_LsDivider = divider;
 }
 
 int32_t Output_CalcFogShade(const int32_t depth)

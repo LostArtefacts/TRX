@@ -204,7 +204,7 @@ static void M_DoWakeEffect(const ITEM *const boat)
             effect->fall_speed = 0;
         }
 
-        effect->shade = g_LsAdder - 768;
+        effect->shade = Output_GetLightAdder() - 768;
         CLAMPL(effect->shade, 0);
     }
 }

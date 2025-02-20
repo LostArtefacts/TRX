@@ -17,7 +17,6 @@ int32_t g_OverlayStatus = 1;
 bool g_GymInvOpenEnabled = true; // TODO: make me configurable
 int32_t g_MidSort = 0;
 int32_t g_PhdWinTop;
-int32_t g_LsAdder;
 float g_FltWinBottom;
 float g_FltResZBuf;
 float g_FltResZ;
@@ -47,7 +46,6 @@ float g_FltPersp;
 int16_t *g_Info3DPtr = nullptr;
 int32_t g_PhdWinWidth;
 int32_t g_PhdViewDistance;
-int32_t g_LsDivider;
 PHD_VBUF g_PhdVBuf[1500];
 float g_FltWinRight;
 XYZ_32 g_LsVectorView;

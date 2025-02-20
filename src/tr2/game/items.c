@@ -430,7 +430,7 @@ int32_t Item_Explode(
             effect->counter = damage;
             effect->object_id = O_BODY_PART;
             effect->frame_num = obj->mesh_idx;
-            effect->shade = g_LsAdder - 0x300;
+            effect->shade = Output_GetLightAdder() - 0x300;
         }
         item->mesh_bits &= ~bit;
     }
@@ -476,7 +476,7 @@ int32_t Item_Explode(
                 effect->counter = damage;
                 effect->object_id = O_BODY_PART;
                 effect->frame_num = obj->mesh_idx + i;
-                effect->shade = g_LsAdder - 0x300;
+                effect->shade = Output_GetLightAdder() - 0x300;
             }
             item->mesh_bits &= ~bit;
         }

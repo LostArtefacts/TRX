@@ -46,7 +46,7 @@ static void M_Control(const int16_t item_num)
             item->pos.z + ((Random_GetDraw() - 0x4000) << 10) / 0x7FFF;
         effect->speed = 0;
         effect->frame_num = 0;
-        effect->shade = g_LsAdder;
+        effect->shade = Output_GetLightAdder();
     }
 }
 
