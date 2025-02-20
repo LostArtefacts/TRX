@@ -44,8 +44,6 @@ static void M_LoadAnimBones(VFILE *file);
 static void M_LoadAnimFrames(VFILE *file);
 static void M_LoadTextures(VFILE *file);
 static void M_LoadSprites(VFILE *file);
-static void M_LoadSoundEffects(VFILE *file);
-static void M_LoadAnimatedTextures(VFILE *file);
 static void M_InitialiseSoundEffects(void);
 static void M_CompleteSetup(void);
 
@@ -157,22 +155,6 @@ static void M_LoadSprites(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-static void M_LoadAnimatedTextures(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    const int32_t data_size = VFile_ReadS32(file);
-    const size_t end_position =
-        VFile_GetPos(file) + data_size * sizeof(int16_t);
-
-    const int16_t num_ranges = VFile_ReadS16(file);
-    LOG_INFO("%d animated texture ranges", num_ranges);
-    Output_InitialiseAnimatedTextures(num_ranges);
-    Level_ReadAnimatedTextureRanges(num_ranges, file);
-
-    VFile_SetPos(file, end_position);
-    Benchmark_End(benchmark, nullptr);
-}
-
 static void M_InitialiseSoundEffects(void)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -272,7 +254,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadCamerasAndSinks(file);
     Level_ReadSoundSources(file);
     Level_ReadPathingData(file);
-    M_LoadAnimatedTextures(file);
+    Level_ReadAnimatedTextureRanges(file);
     Level_ReadItems(file);
 
     Level_ReadLightMap(file);

@@ -752,9 +752,17 @@ void Level_ReadPathingData(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-void Level_ReadAnimatedTextureRanges(
-    const int32_t num_ranges, VFILE *const file)
+void Level_ReadAnimatedTextureRanges(VFILE *const file)
 {
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t data_size = VFile_ReadS32(file);
+    const size_t end_position =
+        VFile_GetPos(file) + data_size * sizeof(int16_t);
+
+    const int16_t num_ranges = VFile_ReadS16(file);
+    LOG_INFO("animated texture ranges: %d", num_ranges);
+    Output_InitialiseAnimatedTextures(num_ranges);
+
     for (int32_t i = 0; i < num_ranges; i++) {
         ANIMATED_TEXTURE_RANGE *const range = Output_GetAnimatedTextureRange(i);
         range->next_range = i == num_ranges - 1
@@ -770,6 +778,9 @@ void Level_ReadAnimatedTextureRanges(
         VFile_Read(
             file, range->textures, sizeof(int16_t) * range->num_textures);
     }
+
+    VFile_SetPos(file, end_position);
+    Benchmark_End(benchmark, nullptr);
 }
 
 void Level_ReadLightMap(VFILE *const file)
