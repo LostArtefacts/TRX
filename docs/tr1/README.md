@@ -402,6 +402,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added a photo mode feature
 - added optional automatic key/puzzle inventory item pre-selection
 - added ability for falling pushblocks to kill Lara outright if one lands directly on her
+- added support for custom levels to define "no floor", to create an abyss like in TR2's Floating Islands
 - changed weapon pickup behavior when unarmed to set any weapon as the default weapon, not just pistols
 - fixed keys and items not working when drawing guns immediately after using them
 - fixed counting the secret in The Great Pyramid

@@ -841,7 +841,7 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>disable_floor</code><strong>²</strong></td>
+    <td><code>disable_floor</code></td>
     <td><code>value</code></td>
     <td>Integer</td>
     <td>

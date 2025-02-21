@@ -281,7 +281,13 @@ int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
     g_HeightType = HT_WALL;
     sector = Room_GetPitSector(sector, x, z);
 
-    int16_t height = M_GetFloorTiltHeight(sector, x, z);
+    int32_t height = sector->floor.height;
+
+    if (Room_IsNoFloorHeight(height)) {
+        height = 0x4000;
+    } else {
+        height = M_GetFloorTiltHeight(sector, x, z);
+    }
 
     if (sector->trigger == nullptr) {
         return height;

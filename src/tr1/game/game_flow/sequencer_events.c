@@ -22,6 +22,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
+static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap);
 static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons);
@@ -33,11 +34,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_LOOP_GAME]       = M_HandlePlayLevel,
+    [GFS_LOOP_GAME]        = M_HandlePlayLevel,
     [GFS_PLAY_MUSIC]       = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
     [GFS_SET_CAMERA_POS]   = M_HandleSetCameraPos,
     [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
+    [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_FLIP_MAP]         = M_HandleFlipMap,
     [GFS_ADD_ITEM]         = M_HandleAddItem,
     [GFS_REMOVE_WEAPONS]   = M_HandleRemoveWeapons,
@@ -272,6 +274,15 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
+static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
+{
+    GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    if (seq_ctx != GFSC_STORY) {
+        Room_SetNoFloorHeight((int16_t)(intptr_t)event->data);
+    }
+    return gf_cmd;
+}
+
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap)
 {
     if (seq_ctx != GFSC_STORY) {
@@ -349,6 +360,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
+    Room_SetNoFloorHeight(0);
     g_GameInfo.remove_guns = false;
     g_GameInfo.remove_scions = false;
     g_GameInfo.remove_ammo = false;
