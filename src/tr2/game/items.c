@@ -82,6 +82,7 @@ void Item_Initialise(const int16_t item_num)
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;
     item->data = nullptr;
+    item->priv = nullptr;
 
     item->active = 0;
     item->status = IS_INACTIVE;
@@ -168,6 +169,17 @@ void Item_UpdateRoom(ITEM *const item, const int32_t height)
     if (item->room_num != room_num) {
         Item_NewRoom(g_Lara.item_num, room_num);
     }
+}
+
+int16_t Item_GetHeight(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+
+    return height;
 }
 
 int32_t Item_TestBoundsCollide(
