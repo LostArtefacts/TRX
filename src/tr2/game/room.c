@@ -569,7 +569,8 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
         sector->floor.height = ceiling->ceiling.height + ROUND_TO_CLICK(height);
     } else {
         sector->floor.height += ROUND_TO_CLICK(height);
-        if (sector->floor.height == ceiling->ceiling.height) {
+        if (sector->floor.height == ceiling->ceiling.height
+            && sector->portal_room.sky == NO_ROOM) {
             sector->floor.height = NO_HEIGHT;
         }
     }
