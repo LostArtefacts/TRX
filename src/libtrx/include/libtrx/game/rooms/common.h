@@ -36,8 +36,10 @@ SECTOR *Room_GetWorldSector(const ROOM *room, int32_t x_pos, int32_t z_pos);
 SECTOR *Room_GetUnitSector(
     const ROOM *room, int32_t x_sector, int32_t z_sector);
 SECTOR *Room_GetPitSector(const SECTOR *sector, int32_t x, int32_t z);
+SECTOR *Room_GetSkySector(const SECTOR *sector, int32_t x, int32_t z);
 
 void Room_SetNoFloorHeight(int16_t floor_height);
 bool Room_IsNoFloorHeight(int16_t height);
 HEIGHT_TYPE Room_GetHeightType(void);
 int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
+int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);

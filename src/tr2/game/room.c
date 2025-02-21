@@ -20,41 +20,9 @@
 #include <libtrx/utils.h>
 
 void Room_MarkToBeDrawn(int16_t room_num);
-static int16_t M_GetCeilingTiltHeight(
-    const SECTOR *sector, int32_t x, int32_t z);
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *trigger);
 static bool M_TestLava(const ITEM *item);
-
-static int16_t M_GetCeilingTiltHeight(
-    const SECTOR *sector, const int32_t x, const int32_t z)
-{
-    int16_t height = sector->ceiling.height;
-    if (sector->ceiling.tilt == 0) {
-        return height;
-    }
-
-    const int32_t z_off = sector->ceiling.tilt >> 8;
-    const int32_t x_off = (int8_t)sector->ceiling.tilt;
-
-    if (Camera_IsChunky() && (ABS(z_off) > 2 || ABS(x_off) > 2)) {
-        return height;
-    }
-
-    if (z_off < 0) {
-        height += (int16_t)NEG_TILT(z_off, z);
-    } else {
-        height -= (int16_t)POS_TILT(z_off, z);
-    }
-
-    if (x_off < 0) {
-        height += (int16_t)POS_TILT(x_off, x);
-    } else {
-        height -= (int16_t)NEG_TILT(x_off, x);
-    }
-
-    return height;
-}
 
 static void M_TriggerMusicTrack(
     const int16_t track, const TRIGGER *const trigger)
@@ -461,17 +429,6 @@ int16_t Room_GetTiltType(
     return sector->floor.tilt;
 }
 
-SECTOR *Room_GetSkySector(
-    const SECTOR *sector, const int32_t x, const int32_t z)
-{
-    while (sector->portal_room.sky != NO_ROOM) {
-        const ROOM *const room = Room_Get(sector->portal_room.sky);
-        sector = Room_GetWorldSector(room, x, z);
-    }
-
-    return (SECTOR *)sector;
-}
-
 SECTOR *Room_GetSector(
     const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
 {
@@ -597,34 +554,6 @@ void Room_TestTriggers(const ITEM *const item)
         Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
 
     Room_TestSectorTrigger(item, sector);
-}
-
-int32_t Room_GetCeiling(
-    const SECTOR *const sector, const int32_t x, const int32_t y,
-    const int32_t z)
-{
-    const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
-    int32_t height = M_GetCeilingTiltHeight(sky_sector, x, z);
-
-    const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
-    if (pit_sector->trigger == nullptr) {
-        return height;
-    }
-
-    const TRIGGER_CMD *cmd = pit_sector->trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type != TO_OBJECT) {
-            continue;
-        }
-
-        const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->ceiling_height_func != nullptr) {
-            height = obj->ceiling_height_func(item, x, y, z, height);
-        }
-    }
-
-    return height;
 }
 
 void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
