@@ -197,7 +197,7 @@ static bool M_TestPull(
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
+    if (item->status != IS_INVISIBLE && item->pos.y >= Item_GetHeight(item)) {
         Room_AlterFloorHeight(item, -WALL_L);
     }
 }
@@ -228,10 +228,14 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     switch (stage) {
     case SAVEGAME_STAGE_BEFORE_LOAD:
-        Room_AlterFloorHeight(item, WALL_L);
+        if (item->status != IS_INVISIBLE
+            && item->pos.y >= Item_GetHeight(item)) {
+            Room_AlterFloorHeight(item, WALL_L);
+        }
         break;
 
     case SAVEGAME_STAGE_AFTER_LOAD:
+        item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
         if (item->status == IS_INACTIVE) {
             Room_AlterFloorHeight(item, -WALL_L);
         }
@@ -255,10 +259,10 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(
+        item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+    const int32_t height = Room_GetHeight(
+        sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
     if (item->pos.y < height) {
         item->gravity = 1;
@@ -268,6 +272,11 @@ static void M_Control(const int16_t item_num)
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
         Sound_Effect(SFX_ENEMY_GRUNT, &item->pos, SPM_ALWAYS);
+    } else if (
+        item->pos.y >= height && !item->gravity
+        && !(bool)(intptr_t)item->priv) {
+        item->status = IS_INACTIVE;
+        Item_RemoveActive(item_num);
     }
 
     if (item->room_num != room_num) {
@@ -286,6 +295,11 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+        item->priv = (void *)false;
+    }
 
     if (!g_Input.action || item->status == IS_ACTIVE || lara_item->gravity
         || lara_item->pos.y != item->pos.y) {
@@ -380,6 +394,7 @@ static void M_Collision(
         item->status = IS_ACTIVE;
         Item_Animate(item);
         Lara_Animate(lara_item);
+        item->priv = (void *)true;
     }
 }
 

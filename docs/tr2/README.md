@@ -82,6 +82,7 @@ game with new enhancements and features.
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
 - fixed several issues with pushblocks
     - fixed an invisible wall above stacked pushblocks if near a ceiling portal
+    - fixed floor height issues with pushblocks poised to fall in various scenarios
 - improved the animation of Lara's braid
 
 #### Cheats
