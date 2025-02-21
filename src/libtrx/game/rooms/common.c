@@ -33,7 +33,8 @@ static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
-static int16_t m_AbyssHeight = 0;
+static int16_t m_AbyssMinHeight = 0;
+static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
 static const int16_t *M_ReadTrigger(
@@ -511,12 +512,17 @@ SECTOR *Room_GetSkySector(
 
 void Room_SetAbyssHeight(const int16_t height)
 {
-    m_AbyssHeight = height;
+    // Once Lara reaches the min abyss height, she will be killed; she will
+    // continue to fall however, so the max height is needed until the inventory
+    // is shown, otherwise Lara will hit the floor.
+    m_AbyssMinHeight = height;
+    m_AbyssMaxHeight = height == 0 ? 0 : m_AbyssMinHeight + 26 * STEP_L;
+    CLAMPG(m_AbyssMaxHeight, MAX_HEIGHT - STEP_L);
 }
 
 bool Room_IsAbyssHeight(const int16_t height)
 {
-    return m_AbyssHeight != 0 && height >= m_AbyssHeight;
+    return m_AbyssMinHeight != 0 && height >= m_AbyssMinHeight;
 }
 
 HEIGHT_TYPE Room_GetHeightType(void)
@@ -533,7 +539,7 @@ int16_t Room_GetHeight(
     int32_t height = pit_sector->floor.height;
 
     if (Room_IsAbyssHeight(height)) {
-        height = 0x4000;
+        height = m_AbyssMaxHeight;
     } else {
         height = M_GetFloorTiltHeight(pit_sector, x, z);
     }
