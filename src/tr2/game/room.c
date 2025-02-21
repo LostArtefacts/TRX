@@ -558,21 +558,47 @@ void Room_TestTriggers(const ITEM *const item)
 
 void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
 {
-    int16_t room_num = item->room_num;
+    if (height == 0) {
+        return;
+    }
 
-    SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const SECTOR *ceiling = Room_GetSector(
-        item->pos.x, item->pos.y + height - WALL_L, item->pos.z, &room_num);
+    int16_t portal_room;
+    SECTOR *sector;
+    const ROOM *room = Room_Get(item->room_num);
 
-    if (sector->floor.height == NO_HEIGHT) {
-        sector->floor.height = ceiling->ceiling.height + ROUND_TO_CLICK(height);
-    } else {
+    do {
+        int32_t z_sector = (item->pos.z - room->pos.z) >> WALL_SHIFT;
+        int32_t x_sector = (item->pos.x - room->pos.x) >> WALL_SHIFT;
+
+        if (z_sector <= 0) {
+            z_sector = 0;
+            CLAMP(x_sector, 1, room->size.x - 2);
+        } else if (z_sector >= room->size.z - 1) {
+            z_sector = room->size.z - 1;
+            CLAMP(x_sector, 1, room->size.x - 2);
+        } else {
+            CLAMP(x_sector, 0, room->size.x - 1);
+        }
+
+        sector = Room_GetUnitSector(room, x_sector, z_sector);
+        portal_room = sector->portal_room.wall;
+        if (portal_room != NO_ROOM) {
+            room = Room_Get(portal_room);
+        }
+    } while (portal_room != NO_ROOM);
+
+    const SECTOR *const sky_sector =
+        Room_GetSkySector(sector, item->pos.x, item->pos.z);
+    sector = Room_GetPitSector(sector, item->pos.x, item->pos.z);
+
+    if (sector->floor.height != NO_HEIGHT) {
         sector->floor.height += ROUND_TO_CLICK(height);
-        if (sector->floor.height == ceiling->ceiling.height
-            && sector->portal_room.sky == NO_ROOM) {
+        if (sector->floor.height == sky_sector->ceiling.height) {
             sector->floor.height = NO_HEIGHT;
         }
+    } else {
+        sector->floor.height =
+            sky_sector->ceiling.height + ROUND_TO_CLICK(height);
     }
 
     BOX_INFO *const box = Box_GetBox(sector->box);
