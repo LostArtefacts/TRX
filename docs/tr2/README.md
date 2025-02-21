@@ -80,6 +80,8 @@ game with new enhancements and features.
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
 - fixed smashed windows blocking enemy pathing after loading a save
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
+- fixed several issues with pushblocks
+    - fixed an invisible wall above stacked pushblocks if near a ceiling portal
 - improved the animation of Lara's braid
 
 #### Cheats
