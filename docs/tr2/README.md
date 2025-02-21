@@ -85,6 +85,7 @@ game with new enhancements and features.
     - fixed an invisible wall above stacked pushblocks if near a ceiling portal
     - fixed floor height issues with pushblocks poised to fall in various scenarios
     - fixed being unable to stack multiple pushblocks over multiple rooms
+    - fixed falling pushblocks using the enemy grunt sound effect
 - improved the animation of Lara's braid
 
 #### Cheats

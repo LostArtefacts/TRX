@@ -271,7 +271,7 @@ static void M_Control(const int16_t item_num)
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
-        Sound_Effect(SFX_ENEMY_GRUNT, &item->pos, SPM_ALWAYS);
+        Sound_Effect(SFX_T_REX_FEET, &item->pos, SPM_ALWAYS);
     } else if (
         item->pos.y >= height && !item->gravity
         && !(bool)(intptr_t)item->priv) {

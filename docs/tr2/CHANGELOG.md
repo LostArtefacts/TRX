@@ -6,10 +6,11 @@
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed (#2575)
 - fixed a rare issue whereby Lara would be unable to move after disposing a flare (#2545, regression from 0.9)
 - fixed flare pickups only adding one flare to Lara's inventory rather than six (#2551, regression from 0.9)
-- fixed several issues with pushblocks (#2036)
+- fixed several issues with pushblocks (#2036/#2193)
     - fixed an invisible wall above stacked pushblocks if near a ceiling portal
     - fixed floor height issues with pushblocks poised to fall in various scenarios
     - fixed being unable to stack multiple pushblocks over multiple rooms
+    - fixed falling pushblocks using the enemy grunt sound effect
 - fixed play any level causing the game to hang when no gym level is present (#2560, regression from 0.9)
 - fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
 - fixed missing new game text in the passport when play any level is enabled (#2563, regression from 0.9)
