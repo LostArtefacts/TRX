@@ -33,7 +33,7 @@ static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
-static int16_t m_NoFloorHeight = 0;
+static int16_t m_AbyssHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
 static const int16_t *M_ReadTrigger(
@@ -509,14 +509,14 @@ SECTOR *Room_GetSkySector(
     return (SECTOR *)sector;
 }
 
-void Room_SetNoFloorHeight(const int16_t floor_height)
+void Room_SetAbyssHeight(const int16_t height)
 {
-    m_NoFloorHeight = floor_height;
+    m_AbyssHeight = height;
 }
 
-bool Room_IsNoFloorHeight(const int16_t height)
+bool Room_IsAbyssHeight(const int16_t height)
 {
-    return m_NoFloorHeight != 0 && height >= m_NoFloorHeight;
+    return m_AbyssHeight != 0 && height >= m_AbyssHeight;
 }
 
 HEIGHT_TYPE Room_GetHeightType(void)
@@ -532,7 +532,7 @@ int16_t Room_GetHeight(
     const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
     int32_t height = pit_sector->floor.height;
 
-    if (Room_IsNoFloorHeight(height)) {
+    if (Room_IsAbyssHeight(height)) {
         height = 0x4000;
     } else {
         height = M_GetFloorTiltHeight(pit_sector, x, z);

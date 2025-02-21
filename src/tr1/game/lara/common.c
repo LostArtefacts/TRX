@@ -285,7 +285,7 @@ void Lara_Control(void)
         if (g_LaraItem->flags & IF_INVISIBLE) {
             return;
         }
-    } else if (Room_IsNoFloorHeight(item->pos.y)) {
+    } else if (Room_IsAbyssHeight(item->pos.y)) {
         item->hit_points = -1;
         g_Lara.death_timer = 9 * LOGIC_FPS;
     }

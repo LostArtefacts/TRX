@@ -278,7 +278,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
-        Room_SetNoFloorHeight((int16_t)(intptr_t)event->data);
+        Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;
 }
@@ -360,7 +360,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
-    Room_SetNoFloorHeight(0);
+    Room_SetAbyssHeight(0);
     g_GameInfo.remove_guns = false;
     g_GameInfo.remove_scions = false;
     g_GameInfo.remove_ammo = false;
