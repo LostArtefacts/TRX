@@ -36,9 +36,9 @@ static int16_t m_MovableBlockBounds[12] = {
 
 static bool M_TestDestination(const ITEM *item, int32_t block_height);
 static bool M_TestPush(
-    const ITEM *item, int32_t block_height, uint16_t quadrant);
+    const ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(
-    const ITEM *item, int32_t block_height, uint16_t quadrant);
+    const ITEM *item, int32_t block_height, DIRECTION quadrant);
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
@@ -55,12 +55,14 @@ static bool M_TestDestination(
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
-    const int16_t floor = sector->floor.height;
+    const int16_t floor =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     return floor == NO_HEIGHT || (floor == item->pos.y - block_height);
 }
 
 static bool M_TestPush(
-    const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
+    const ITEM *const item, const int32_t block_height,
+    const DIRECTION quadrant)
 {
     if (!M_TestDestination(item, block_height)) {
         return false;
@@ -88,6 +90,8 @@ static bool M_TestPush(
         break;
     }
 
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+
     COLL_INFO coll = {
         .quadrant = quadrant,
         .radius = 500,
@@ -97,13 +101,8 @@ static bool M_TestPush(
         return false;
     }
 
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-    if (sector->floor.height != y) {
-        return false;
-    }
-
-    Room_GetHeight(sector, x, y, z);
-    if (Room_GetHeightType() != HT_WALL) {
+    const int16_t height = Room_GetHeight(sector, x, y, z);
+    if (height != y || Room_GetHeightType() != HT_WALL) {
         return false;
     }
 
@@ -117,7 +116,8 @@ static bool M_TestPush(
 }
 
 static bool M_TestPull(
-    const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
+    const ITEM *const item, const int32_t block_height,
+    const DIRECTION quadrant)
 {
     if (!M_TestDestination(item, block_height)) {
         return false;
@@ -146,6 +146,7 @@ static bool M_TestPull(
     int32_t y = item->pos.y;
     int32_t z = item->pos.z + z_add;
     int16_t room_num = item->room_num;
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
 
     COLL_INFO coll = {
         .quadrant = quadrant,
@@ -156,14 +157,13 @@ static bool M_TestPull(
         return false;
     }
 
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-    if (sector->floor.height != y) {
+    if (Room_GetHeight(sector, x, y, z) != y) {
         return false;
     }
 
     const int32_t y_min = y - block_height;
     sector = Room_GetSector(x, y_min, z, &room_num);
-    if (sector->ceiling.height > y_min) {
+    if (Room_GetCeiling(sector, x, y_min, z) > y_min) {
         return false;
     }
 
@@ -171,12 +171,12 @@ static bool M_TestPull(
     z += z_add;
     room_num = item->room_num;
     sector = Room_GetSector(x, y, z, &room_num);
-    if (sector->floor.height != y) {
+    if (Room_GetHeight(sector, x, y, z) != y) {
         return false;
     }
 
     sector = Room_GetSector(x, y - LARA_HEIGHT, z, &room_num);
-    if (sector->ceiling.height > y - LARA_HEIGHT) {
+    if (Room_GetCeiling(sector, x, y - LARA_HEIGHT, z) > y - LARA_HEIGHT) {
         return false;
     }
 
@@ -184,7 +184,7 @@ static bool M_TestPull(
     z = g_LaraItem->pos.z + z_add;
     y = g_LaraItem->pos.y;
     room_num = g_LaraItem->room_num;
-    Room_GetSector(x, y, z, &room_num);
+    sector = Room_GetSector(x, y, z, &room_num);
     coll.quadrant = (quadrant + 2) & 3;
     coll.radius = LARA_RADIUS;
     if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
@@ -308,63 +308,67 @@ static void M_Collision(
 
     const DIRECTION quadrant = Math_GetDirection(lara_item->rot.y);
     if (lara_item->current_anim_state == LS_STOP) {
-        if (g_Lara.gun_status == LGS_ARMLESS) {
-            switch (quadrant) {
-            case DIR_NORTH:
-                item->rot.y = 0;
-                break;
-            case DIR_EAST:
-                item->rot.y = DEG_90;
-                break;
-            case DIR_SOUTH:
-                item->rot.y = -DEG_180;
-                break;
-            case DIR_WEST:
-                item->rot.y = -DEG_90;
-                break;
-            default:
-                break;
-            }
+        if (g_Input.forward || g_Input.back
+            || g_Lara.gun_status != LGS_ARMLESS) {
+            return;
+        }
 
-            if (!Item_TestPosition(m_MovableBlockBounds, item, lara_item)) {
-                return;
-            }
+        switch (quadrant) {
+        case DIR_NORTH:
+            item->rot.y = 0;
+            break;
+        case DIR_EAST:
+            item->rot.y = DEG_90;
+            break;
+        case DIR_SOUTH:
+            item->rot.y = -DEG_180;
+            break;
+        case DIR_WEST:
+            item->rot.y = -DEG_90;
+            break;
+        default:
+            break;
+        }
 
-            int16_t room_num = lara_item->room_num;
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-            if (room_num != item->room_num) {
-                return;
-            }
+        if (!Item_TestPosition(m_MovableBlockBounds, item, lara_item)) {
+            return;
+        }
 
-            switch (quadrant) {
-            case DIR_NORTH:
-                lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
-                lara_item->pos.z += WALL_L - LARA_RADIUS;
-                break;
-            case DIR_EAST:
-                lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
-                lara_item->pos.x += WALL_L - LARA_RADIUS;
-                break;
-            case DIR_SOUTH:
-                lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
-                lara_item->pos.z += LARA_RADIUS;
-                break;
-            case DIR_WEST:
-                lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
-                lara_item->pos.x += LARA_RADIUS;
-                break;
-            default:
-                break;
-            }
+        int16_t room_num = lara_item->room_num;
+        Room_GetSector(
+            item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+        if (room_num != item->room_num) {
+            return;
+        }
 
-            lara_item->rot.y = item->rot.y;
-            lara_item->goal_anim_state = LS_PP_READY;
+        switch (quadrant) {
+        case DIR_NORTH:
+            lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
+            lara_item->pos.z += WALL_L - LARA_RADIUS;
+            break;
+        case DIR_EAST:
+            lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
+            lara_item->pos.x += WALL_L - LARA_RADIUS;
+            break;
+        case DIR_SOUTH:
+            lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
+            lara_item->pos.z += LARA_RADIUS;
+            break;
+        case DIR_WEST:
+            lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
+            lara_item->pos.x += LARA_RADIUS;
+            break;
+        default:
+            break;
+        }
 
-            Lara_Animate(lara_item);
+        lara_item->rot.y = item->rot.y;
+        lara_item->goal_anim_state = LS_PP_READY;
 
-            if (lara_item->current_anim_state == LS_PP_READY) {
-                g_Lara.gun_status = LGS_HANDS_BUSY;
-            }
+        Lara_Animate(lara_item);
+
+        if (lara_item->current_anim_state == LS_PP_READY) {
+            g_Lara.gun_status = LGS_HANDS_BUSY;
         }
     } else if (
         Item_TestAnimEqual(lara_item, LA_PUSHABLE_GRAB)
