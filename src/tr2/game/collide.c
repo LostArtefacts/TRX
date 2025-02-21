@@ -40,7 +40,7 @@ void Collide_GetCollisionInfo(
 
     coll->side_mid.floor = height;
     coll->side_mid.ceiling = ceiling;
-    coll->side_mid.type = g_HeightType;
+    coll->side_mid.type = Room_GetHeightType();
 
     const int16_t tilt = Room_GetTiltType(sector, x, g_LaraItem->pos.y, z);
     coll->z_tilt = tilt >> 8;
@@ -113,7 +113,7 @@ void Collide_GetCollisionInfo(
 
     coll->side_front.floor = height;
     coll->side_front.ceiling = ceiling;
-    coll->side_front.type = g_HeightType;
+    coll->side_front.type = Room_GetHeightType();
     if (coll->slopes_are_walls && coll->side_front.type == HT_BIG_SLOPE
         && coll->side_front.floor < 0) {
         coll->side_front.floor = -32767;
@@ -141,7 +141,7 @@ void Collide_GetCollisionInfo(
 
     coll->side_left.floor = height;
     coll->side_left.ceiling = ceiling;
-    coll->side_left.type = g_HeightType;
+    coll->side_left.type = Room_GetHeightType();
     if (coll->slopes_are_walls && coll->side_left.type == HT_BIG_SLOPE
         && coll->side_left.floor < 0) {
         coll->side_left.floor = -32767;
@@ -169,7 +169,7 @@ void Collide_GetCollisionInfo(
 
     coll->side_right.floor = height;
     coll->side_right.ceiling = ceiling;
-    coll->side_right.type = g_HeightType;
+    coll->side_right.type = Room_GetHeightType();
     if (coll->slopes_are_walls && coll->side_right.type == HT_BIG_SLOPE
         && coll->side_right.floor < 0) {
         coll->side_right.floor = -32767;

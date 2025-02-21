@@ -232,12 +232,6 @@ typedef enum {
     COLL_CLAMP     = 0x20,
 } COLL_TYPE;
 
-typedef enum {
-    HT_WALL        = 0,
-    HT_SMALL_SLOPE = 1,
-    HT_BIG_SLOPE   = 2,
-} HEIGHT_TYPE;
-
 typedef struct {
     int32_t boat_turn;
     int32_t left_fallspeed;

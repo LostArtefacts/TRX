@@ -19,7 +19,6 @@ int32_t g_SavedGamesCount = 0;
 int32_t g_SaveCounter = 0;
 bool g_LevelComplete = false;
 int32_t g_OverlayFlag = 0;
-int32_t g_HeightType = 0;
 
 INVENTORY_MODE g_InvMode;
 

@@ -64,7 +64,6 @@ extern SAVEGAME_INFO g_SaveGame;
 extern LARA_INFO g_Lara;
 extern ITEM *g_LaraItem;
 extern CREATURE *g_BaddieSlots;
-extern int32_t g_HeightType;
 extern bool g_CameraUnderwater;
 extern char g_LevelFileName[256];
 extern WEAPON_INFO g_Weapons[];

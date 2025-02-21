@@ -15,12 +15,10 @@ int16_t Room_GetTiltType(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 // TODO: poor abstraction
 void Room_InitCinematic(void);
 
-SECTOR *Room_GetPitSector(const SECTOR *sector, int32_t x, int32_t z);
 SECTOR *Room_GetSkySector(const SECTOR *sector, int32_t x, int32_t z);
 SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num);
 
 int32_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
-int32_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 int32_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 
 void Room_TestTriggers(const ITEM *item);

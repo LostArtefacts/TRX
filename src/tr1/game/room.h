@@ -13,9 +13,7 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num);
 void Room_GetNearByRooms(
     int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
 SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num);
-SECTOR *Room_GetPitSector(const SECTOR *sector, int32_t x, int32_t z);
 int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
-int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetWaterHeight(int32_t x, int32_t y, int32_t z, int16_t room_num);
 
 void Room_TestTriggers(const ITEM *item);

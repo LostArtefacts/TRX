@@ -1,6 +1,7 @@
 #include "game/rooms/common.h"
 
 #include "debug.h"
+#include "game/camera.h"
 #include "game/const.h"
 #include "game/game_buf.h"
 #include "game/items.h"
@@ -33,11 +34,13 @@ static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
 static int16_t m_NoFloorHeight = 0;
+static HEIGHT_TYPE m_HeightType = HT_WALL;
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, int16_t fd_entry, SECTOR *sector);
 static void M_AddFlipItems(const ROOM *room);
 static void M_RemoveFlipItems(const ROOM *room);
+static int16_t M_GetFloorTiltHeight(const SECTOR *sector, int32_t x, int32_t z);
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -144,6 +147,40 @@ static void M_RemoveFlipItems(const ROOM *const room)
 
         item_num = item->next_item;
     }
+}
+
+static int16_t M_GetFloorTiltHeight(
+    const SECTOR *const sector, const int32_t x, const int32_t z)
+{
+    int16_t height = sector->floor.height;
+    if (sector->floor.tilt == 0) {
+        return height;
+    }
+
+    const int32_t z_off = sector->floor.tilt >> 8;
+    const int32_t x_off = (int8_t)sector->floor.tilt;
+
+    const HEIGHT_TYPE slope_type =
+        (ABS(z_off) > 2 || ABS(x_off) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
+    if (Camera_IsChunky() && slope_type == HT_BIG_SLOPE) {
+        return height;
+    }
+
+    m_HeightType = slope_type;
+
+    if (z_off < 0) {
+        height -= (int16_t)NEG_TILT(z_off, z);
+    } else {
+        height += (int16_t)POS_TILT(z_off, z);
+    }
+
+    if (x_off < 0) {
+        height -= (int16_t)NEG_TILT(x_off, x);
+    } else {
+        height += (int16_t)POS_TILT(x_off, x);
+    }
+
+    return height;
 }
 
 void Room_InitialiseRooms(const int32_t num_rooms)
@@ -418,6 +455,17 @@ SECTOR *Room_GetUnitSector(
     return &room->sectors[z_sector + x_sector * room->size.z];
 }
 
+SECTOR *Room_GetPitSector(
+    const SECTOR *sector, const int32_t x, const int32_t z)
+{
+    while (sector->portal_room.pit != NO_ROOM) {
+        const ROOM *const room = Room_Get(sector->portal_room.pit);
+        sector = Room_GetWorldSector(room, x, z);
+    }
+
+    return (SECTOR *)sector;
+}
+
 void Room_SetNoFloorHeight(const int16_t floor_height)
 {
     m_NoFloorHeight = floor_height;
@@ -426,4 +474,43 @@ void Room_SetNoFloorHeight(const int16_t floor_height)
 bool Room_IsNoFloorHeight(const int16_t height)
 {
     return m_NoFloorHeight != 0 && height >= m_NoFloorHeight;
+}
+
+HEIGHT_TYPE Room_GetHeightType(void)
+{
+    return m_HeightType;
+}
+
+int16_t Room_GetHeight(
+    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z)
+{
+    m_HeightType = HT_WALL;
+
+    const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
+    int32_t height = pit_sector->floor.height;
+
+    if (Room_IsNoFloorHeight(height)) {
+        height = 0x4000;
+    } else {
+        height = M_GetFloorTiltHeight(pit_sector, x, z);
+    }
+
+    if (pit_sector->trigger == nullptr) {
+        return height;
+    }
+
+    const TRIGGER_CMD *cmd = pit_sector->trigger->command;
+    for (; cmd != nullptr; cmd = cmd->next_cmd) {
+        if (cmd->type != TO_OBJECT) {
+            continue;
+        }
+
+        const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->floor_height_func != nullptr) {
+            height = obj->floor_height_func(item, x, y, z, height);
+        }
+    }
+
+    return height;
 }

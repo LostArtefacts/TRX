@@ -21,8 +21,6 @@
 
 static void M_TriggerMusicTrack(int16_t track, const TRIGGER *const trigger);
 
-static int16_t M_GetFloorTiltHeight(
-    const SECTOR *sector, const int32_t x, const int32_t z);
 static int16_t M_GetCeilingTiltHeight(
     const SECTOR *sector, const int32_t x, const int32_t z);
 static SECTOR *M_GetSkySector(const SECTOR *sector, int32_t x, int32_t z);
@@ -162,17 +160,6 @@ void Room_GetNewRoom(int32_t x, int32_t y, int32_t z, int16_t room_num)
     Room_MarkToBeDrawn(room_num);
 }
 
-SECTOR *Room_GetPitSector(
-    const SECTOR *sector, const int32_t x, const int32_t z)
-{
-    while (sector->portal_room.pit != NO_ROOM) {
-        const ROOM *const room = Room_Get(sector->portal_room.pit);
-        sector = Room_GetWorldSector(room, x, z);
-    }
-
-    return (SECTOR *)sector;
-}
-
 static SECTOR *M_GetSkySector(
     const SECTOR *sector, const int32_t x, const int32_t z)
 {
@@ -271,73 +258,6 @@ int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
         if (obj->ceiling_height_func != nullptr) {
             height = obj->ceiling_height_func(item, x, y, z, height);
         }
-    }
-
-    return height;
-}
-
-int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z)
-{
-    g_HeightType = HT_WALL;
-    sector = Room_GetPitSector(sector, x, z);
-
-    int32_t height = sector->floor.height;
-
-    if (Room_IsNoFloorHeight(height)) {
-        height = 0x4000;
-    } else {
-        height = M_GetFloorTiltHeight(sector, x, z);
-    }
-
-    if (sector->trigger == nullptr) {
-        return height;
-    }
-
-    const TRIGGER_CMD *cmd = sector->trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type != TO_OBJECT) {
-            continue;
-        }
-
-        const ITEM *const item = Item_Get((int16_t)(intptr_t)cmd->parameter);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->floor_height_func != nullptr) {
-            height = obj->floor_height_func(item, x, y, z, height);
-        }
-    }
-
-    return height;
-}
-
-static int16_t M_GetFloorTiltHeight(
-    const SECTOR *sector, const int32_t x, const int32_t z)
-{
-    int16_t height = sector->floor.height;
-    if (sector->floor.tilt == 0) {
-        return height;
-    }
-
-    const int32_t z_off = sector->floor.tilt >> 8;
-    const int32_t x_off = (int8_t)sector->floor.tilt;
-
-    const HEIGHT_TYPE slope_type =
-        (ABS(z_off) > 2 || ABS(x_off) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
-    if (Camera_IsChunky() && slope_type == HT_BIG_SLOPE) {
-        return height;
-    }
-
-    g_HeightType = slope_type;
-
-    if (z_off < 0) {
-        height -= (int16_t)NEG_TILT(z_off, z);
-    } else {
-        height += (int16_t)POS_TILT(z_off, z);
-    }
-
-    if (x_off < 0) {
-        height -= (int16_t)NEG_TILT(x_off, x);
-    } else {
-        height += (int16_t)POS_TILT(x_off, x);
     }
 
     return height;

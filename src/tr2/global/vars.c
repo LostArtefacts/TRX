@@ -64,7 +64,6 @@ LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
-int32_t g_HeightType;
 bool g_CameraUnderwater;
 char g_LevelFileName[256];
 

@@ -103,7 +103,7 @@ static bool M_TestPush(
     }
 
     Room_GetHeight(sector, x, y, z);
-    if (g_HeightType != HT_WALL) {
+    if (Room_GetHeightType() != HT_WALL) {
         return false;
     }
 

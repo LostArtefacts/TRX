@@ -59,12 +59,6 @@ typedef enum {
 } COLL_TYPE;
 
 typedef enum {
-    HT_WALL = 0,
-    HT_SMALL_SLOPE = 1,
-    HT_BIG_SLOPE = 2,
-} HEIGHT_TYPE;
-
-typedef enum {
     IC_BLACK = 0,
     IC_GREY = 1,
     IC_WHITE = 2,

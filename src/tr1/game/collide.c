@@ -41,7 +41,7 @@ void Collide_GetCollisionInfo(
 
     coll->mid_floor = height;
     coll->mid_ceiling = ceiling;
-    coll->mid_type = g_HeightType;
+    coll->mid_type = Room_GetHeightType();
 
     if (!g_Config.gameplay.fix_bridge_collision
         || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
@@ -123,7 +123,7 @@ void Collide_GetCollisionInfo(
 
     coll->front_floor = height;
     coll->front_ceiling = ceiling;
-    coll->front_type = g_HeightType;
+    coll->front_type = Room_GetHeightType();
 
     if (!g_Config.gameplay.fix_bridge_collision
         || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
@@ -158,7 +158,7 @@ void Collide_GetCollisionInfo(
 
     coll->left_floor = height;
     coll->left_ceiling = ceiling;
-    coll->left_type = g_HeightType;
+    coll->left_type = Room_GetHeightType();
 
     if (!g_Config.gameplay.fix_bridge_collision
         || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {
@@ -193,7 +193,7 @@ void Collide_GetCollisionInfo(
 
     coll->right_floor = height;
     coll->right_ceiling = ceiling;
-    coll->right_type = g_HeightType;
+    coll->right_type = Room_GetHeightType();
 
     if (!g_Config.gameplay.fix_bridge_collision
         || !Room_IsOnWalkable(sector, x, ytop, z, room_height)) {

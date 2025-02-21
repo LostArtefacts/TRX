@@ -27,7 +27,6 @@ extern int32_t g_SavedGamesCount;
 extern int32_t g_SaveCounter;
 extern bool g_LevelComplete;
 extern int32_t g_OverlayFlag;
-extern int32_t g_HeightType;
 
 extern REQUEST_INFO g_SavegameRequester;
 
