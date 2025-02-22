@@ -34,6 +34,9 @@ typedef struct {
     // used for the manual camera control
     int16_t additional_angle;
     int16_t additional_elevation;
+#else
+    XYZ_32 mic_pos;
+#endif
 
     struct {
         struct {
@@ -43,9 +46,6 @@ typedef struct {
         } result, prev;
         int16_t room_num;
     } interp;
-#else
-    XYZ_32 mic_pos;
-#endif
 } CAMERA_INFO;
 
 typedef struct {

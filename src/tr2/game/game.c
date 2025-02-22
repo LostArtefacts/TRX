@@ -22,6 +22,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
@@ -29,6 +30,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 
     g_OverlayStatus = 1;
     Camera_Initialise();
+    Interpolation_Remember();
     Stats_StartTimer();
     return true;
 }
@@ -52,6 +54,7 @@ void Game_Resume(void)
 
 GF_COMMAND Game_Control(const bool demo_mode)
 {
+    Interpolation_Remember();
     if (g_GameFlow.cheat_keys) {
         Lara_Cheat_CheckKeys();
     }
@@ -154,8 +157,9 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
 void Game_Draw(bool draw_overlay)
 {
+    Interpolation_Commit();
     Camera_Apply();
-    Room_DrawAllRooms(g_Camera.pos.room_num);
+    Room_DrawAllRooms(g_Camera.interp.room_num);
     Output_DrawPolyList();
     if (draw_overlay) {
         Overlay_DrawGameInfo();

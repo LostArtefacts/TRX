@@ -92,6 +92,7 @@ typedef struct {
     } window;
 
     struct {
+        int32_t fps;
         RENDER_MODE render_mode;
         ASPECT_MODE aspect_mode;
         bool enable_zbuffer;

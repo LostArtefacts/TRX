@@ -21,6 +21,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/names.h>
@@ -745,6 +746,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     Sound_EndScene();
+    Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
@@ -844,7 +846,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     g_Inv_Mode = mode;
-
+    Interpolation_Remember();
     if (!Game_IsInGym()) {
         Stats_StartTimer();
     }

@@ -100,8 +100,8 @@ static void M_Control(const int16_t item_num)
 static void M_Draw(const ITEM *const item)
 {
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_RotY(item->rot.y);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_RotY(item->interp.result.rot.y);
 
     MATRIX *const mptr = g_MatrixPtr;
     mptr->_00 = (mptr->_00 * item->timer) >> 8;

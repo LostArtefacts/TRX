@@ -6,7 +6,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/item_actions.h"
 #include "game/lara/cheat.h"
 #include "game/lara/common.h"
@@ -24,6 +23,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/log.h>
 
 #define MODIFY_CONFIG()                                                        \

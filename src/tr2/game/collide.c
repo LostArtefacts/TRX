@@ -503,10 +503,10 @@ int32_t Collide_GetSpheres(
         pos.y = 0;
         pos.z = 0;
         Matrix_Push();
-        Matrix_TranslateAbs32(item->pos);
+        Matrix_TranslateAbs32(item->interp.result.pos);
     }
 
-    Matrix_Rot16(item->rot);
+    Matrix_Rot16(item->interp.result.rot);
 
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);
     Matrix_TranslateRel16(frame->offset);

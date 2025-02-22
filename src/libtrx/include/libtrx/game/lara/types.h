@@ -89,6 +89,12 @@ typedef struct {
     int16_t lock;
     XYZ_16 rot;
     int16_t flash_gun;
+
+    struct {
+        struct {
+            XYZ_16 rot;
+        } result, prev;
+    } interp;
 } LARA_ARM;
 
 typedef struct {
@@ -142,6 +148,13 @@ typedef struct {
     AMMO_INFO grenade_ammo;
     AMMO_INFO m16_ammo;
     CREATURE *creature;
+
+    struct {
+        struct {
+            XYZ_16 head_rot;
+            XYZ_16 torso_rot;
+        } result, prev;
+    } interp;
 } LARA_INFO;
 
 #endif

@@ -8,16 +8,12 @@
 #include "global/vars.h"
 
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara/hair.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
 #define HAIR_SEGMENTS 6
-
-typedef struct {
-    XYZ_32 pos;
-    XYZ_16 rot;
-} HAIR_SEGMENT;
 
 static bool m_IsFirstHair;
 static SPHERE m_HairSpheres[HAIR_SEGMENTS - 1];
@@ -53,7 +49,7 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     }
 
     Matrix_Rot16(mesh_rots[LM_TORSO]);
-    Matrix_Rot16(g_Lara.torso_rot);
+    Matrix_Rot16(g_Lara.interp.result.torso_rot);
     Matrix_Push();
     mesh = g_Lara.mesh_ptrs[LM_TORSO];
     Matrix_TranslateRel16(mesh->center);
@@ -88,7 +84,7 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 
     Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
     Matrix_Rot16(mesh_rots[LM_HEAD]);
-    Matrix_Rot16(g_Lara.head_rot);
+    Matrix_Rot16(g_Lara.interp.result.head_rot);
 
     Matrix_Push();
     mesh = g_Lara.mesh_ptrs[LM_HEAD];
@@ -131,7 +127,7 @@ static void M_CalculateSpheres_I(
     }
 
     Matrix_Rot16_ID(mesh_rots_1[LM_TORSO], mesh_rots_2[LM_TORSO]);
-    Matrix_Rot16_I(g_Lara.torso_rot);
+    Matrix_Rot16_I(g_Lara.interp.result.torso_rot);
 
     Matrix_Push_I();
     mesh = g_Lara.mesh_ptrs[LM_TORSO];
@@ -171,7 +167,7 @@ static void M_CalculateSpheres_I(
 
     Matrix_TranslateRel32_I(bone[LM_HEAD - 1].pos);
     Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
-    Matrix_Rot16_I(g_Lara.head_rot);
+    Matrix_Rot16_I(g_Lara.interp.result.head_rot);
 
     Matrix_Push_I();
     mesh = g_Lara.mesh_ptrs[LM_HEAD];
@@ -393,10 +389,25 @@ void Lara_Hair_Draw(void)
     for (int32_t i = 0; i < HAIR_SEGMENTS; i++) {
         const HAIR_SEGMENT *const s = &m_HairSegments[i];
         Matrix_Push();
-        Matrix_TranslateAbs32(s->pos);
-        Matrix_RotY(s->rot.y);
-        Matrix_RotX(s->rot.x);
+        Matrix_TranslateAbs32(s->interp.result.pos);
+        Matrix_RotY(s->interp.result.rot.y);
+        Matrix_RotX(s->interp.result.rot.x);
         Object_DrawMesh(obj->mesh_idx + i, 1, false);
         Matrix_Pop();
     }
+}
+
+bool Lara_Hair_IsActive(void)
+{
+    return Object_Get(O_LARA_HAIR)->loaded && Object_Get(O_LARA)->loaded;
+}
+
+int32_t Lara_Hair_GetSegmentCount(void)
+{
+    return HAIR_SEGMENTS;
+}
+
+HAIR_SEGMENT *Lara_Hair_GetSegment(const int32_t n)
+{
+    return &m_HairSegments[n];
 }

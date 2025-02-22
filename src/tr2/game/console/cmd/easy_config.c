@@ -11,6 +11,7 @@ typedef struct {
 static COMMAND_TO_OPTION_MAP m_CommandToOptionMap[] = {
     { "cheats", &g_Config.gameplay.enable_cheats },
     { "wireframe", &g_Config.rendering.enable_wireframe },
+    { "fps", &g_Config.rendering.fps },
     { nullptr, nullptr },
 };
 
@@ -31,4 +32,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_FAILURE;
 }
 
-REGISTER_CONSOLE_COMMAND("cheats|wireframe", M_Entrypoint)
+REGISTER_CONSOLE_COMMAND("cheats|wireframe|fps", M_Entrypoint)

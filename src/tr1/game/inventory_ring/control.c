@@ -6,7 +6,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara/common.h"
@@ -24,6 +23,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/memory.h>
 
