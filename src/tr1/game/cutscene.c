@@ -5,7 +5,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/hair.h"
@@ -19,6 +18,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/memory.h>
 
 static void M_InitialiseLara(const GF_LEVEL *level);

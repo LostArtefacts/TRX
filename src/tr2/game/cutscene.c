@@ -17,6 +17,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/utils.h>
 
 static CAMERA_INFO m_LocalCamera = {};
@@ -58,6 +59,7 @@ void Cutscene_End(void)
 
 GF_COMMAND Cutscene_Control(void)
 {
+    Interpolation_Remember();
     M_FixAudioDrift();
 
     Input_Update();
@@ -96,8 +98,9 @@ GF_COMMAND Cutscene_Control(void)
 void Cutscene_Draw(void)
 {
     g_CameraUnderwater = false;
+    Interpolation_Commit();
     Camera_Apply();
-    Room_DrawAllRooms(g_Camera.pos.room_num);
+    Room_DrawAllRooms(g_Camera.interp.room_num);
     Output_DrawPolyList();
 }
 

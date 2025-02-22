@@ -21,6 +21,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/log.h>
 
 typedef struct {
@@ -126,6 +127,7 @@ bool Demo_Start(const int32_t level_num)
     ASSERT(GF_GetCurrentLevel() == p->level);
 
     M_PrepareConfig(p);
+    Interpolation_Remember();
 
     const uint32_t *const data = Demo_GetData();
     if (data == nullptr) {

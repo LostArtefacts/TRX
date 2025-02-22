@@ -613,11 +613,6 @@ void Camera_Initialise(void)
     Camera_Update();
 }
 
-void Camera_Reset(void)
-{
-    g_Camera.pos.room_num = NO_ROOM;
-}
-
 void Camera_ResetPosition(void)
 {
     ASSERT(g_LaraItem != nullptr);

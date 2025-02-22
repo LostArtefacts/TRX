@@ -388,6 +388,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added ability to use Lara's underwater swimming physics from TR2+
 - added ability to wade, similar to TR2+
 - added Lara's exit-water-to-medium-height animation from TR2+
+- added support for 60 FPS rendering
 - added a pause screen
 - added a choice whether to play NG or NG+ without having to play the entire game
 - added Japanese mode (guns deal twice the damage, inspired by JP release of TR3); available for both NG and NG+

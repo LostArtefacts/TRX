@@ -81,6 +81,10 @@ Currently supported commands:
 - `/speed {num}`  
   Retrieves or sets current game speed.
 
+- `/fps`  
+- `/fps {num}`  
+  Retrieves or sets current frames per second.
+
 - `/set {option}`  
 - `/set {option} {value}`  
   Retrieves or assigns a new value to the given configuration option. Some options need a game re-launch to apply. The option names use `-` rather than `_`.

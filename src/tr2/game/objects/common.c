@@ -27,8 +27,8 @@ void Object_DrawAnimatingItem(const ITEM *item)
     }
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
 
     const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
     if (!clip) {
@@ -134,14 +134,15 @@ void Object_DrawUnclippedItem(const ITEM *const item)
 void Object_DrawSpriteItem(const ITEM *const item)
 {
     Output_CalculateStaticMeshLight(
-        item->pos, item->shade, Room_Get(item->room_num));
+        item->interp.result.pos, item->shade, Room_Get(item->room_num));
 
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Output_DrawSprite(
         SPRITE_ABS | (obj->semi_transparent ? SPRITE_SEMI_TRANS : 0)
             | SPRITE_SHADE,
-        item->pos.x, item->pos.y, item->pos.z, obj->mesh_idx - item->frame_num,
+        item->interp.result.pos.x, item->interp.result.pos.y,
+        item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
         Output_GetLightAdder() + 4096, 0);
 }
 

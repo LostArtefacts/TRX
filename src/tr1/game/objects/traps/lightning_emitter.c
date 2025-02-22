@@ -175,8 +175,8 @@ static void M_Draw(const ITEM *const item)
     Item_GetFrames(item, frmptr, &rate);
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
 
     int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
     if (!clip) {

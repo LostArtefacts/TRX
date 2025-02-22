@@ -1,5 +1,5 @@
 #pragma once
 
-void Lara_Hair_Initialise(void);
+#include <libtrx/game/lara/hair.h>
+
 void Lara_Hair_Control(bool in_cutscene);
-void Lara_Hair_Draw(void);

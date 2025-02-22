@@ -124,7 +124,6 @@ sources = [
   'game/gun/gun_rifle.c',
   'game/inject.c',
   'game/input.c',
-  'game/interpolation.c',
   'game/inventory.c',
   'game/inventory_ring/control.c',
   'game/inventory_ring/draw.c',

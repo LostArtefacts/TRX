@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara/cheat.h"
@@ -23,6 +22,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/ui/common.h>
 
 #define FRAME_BUFFER(key)                                                      \

@@ -22,6 +22,10 @@
       "Title": "Enable more responsive passport",
       "Description": "Disables blocking user input when passport flips pages, scheduling the page flips instead."
     },
+    "fps": {
+      "Title": "FPS",
+      "Description": "Controls the framerate at which to render the game."
+    },
     "enable_3d_pickups": {
       "Title": "3D pickups",
       "Description": "Enables 3D models to be rendered in place of the sprites for pickup items."

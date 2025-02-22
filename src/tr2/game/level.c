@@ -386,4 +386,6 @@ void Level_Unload(void)
     if (Output_GetBackgroundType() == BK_OBJECT) {
         Output_UnloadBackground();
     }
+
+    Camera_Reset();
 }

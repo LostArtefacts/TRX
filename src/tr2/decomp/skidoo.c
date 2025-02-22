@@ -959,8 +959,8 @@ void Skidoo_Draw(const ITEM *const item)
     const int32_t frac = Item_GetFrames(item, frames, &rate);
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
 
     const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
     if (!clip) {

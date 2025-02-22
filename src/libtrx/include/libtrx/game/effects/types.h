@@ -24,12 +24,10 @@ typedef struct {
     int16_t counter;
     int16_t shade;
 
-#if TR_VERSION == 1
     struct {
         struct {
             XYZ_32 pos;
             XYZ_16 rot;
         } result, prev;
     } interp;
-#endif
 } EFFECT;

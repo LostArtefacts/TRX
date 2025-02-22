@@ -39,6 +39,7 @@ game with new enhancements and features.
   - step bug
   - free flare from underwater pickup
   - drifting into walls during underwater pickups
+- added support for 60 FPS rendering
 - added a pause screen
 - added a photo mode feature
 - changed inventory to pause the music rather than muting it

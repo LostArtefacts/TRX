@@ -9,7 +9,9 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -329,6 +331,7 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
+    const int32_t last_frame_num = anim->frame_end - anim->frame_base;
     const int32_t key_frame_span = anim->interpolation;
     const int32_t key_frame_shift = cur_frame_num % key_frame_span;
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
@@ -347,8 +350,31 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
 
     frmptr[0] = &anim->frame_ptr[first_key_frame_num];
     frmptr[1] = &anim->frame_ptr[second_key_frame_num];
-    *rate = denominator;
-    return numerator;
+
+    // OG
+    if (g_Config.rendering.fps == 30) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    // interpolated
+    if (item != g_LaraItem && !item->active) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    const double clock_ratio = Interpolation_GetRate() - 0.5;
+    const double final =
+        (key_frame_shift + clock_ratio) / (double)key_frame_span;
+    const double interp_frame_num =
+        (first_key_frame_num * key_frame_span) + (final * key_frame_span);
+    if (interp_frame_num >= last_frame_num) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    *rate = 10;
+    return final * 10;
 }
 
 BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)

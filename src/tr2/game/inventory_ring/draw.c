@@ -9,6 +9,7 @@
 #include "game/overlay.h"
 #include "global/vars.h"
 
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 
@@ -110,6 +111,10 @@ void InvRing_Draw(INV_RING *const ring)
         * INV_RING_FRAMES);
 
     ring->camera.pos.z = ring->radius + 598;
+
+    if (ring->mode == INV_TITLE_MODE) {
+        Interpolation_Commit();
+    }
 
     XYZ_32 view_pos;
     XYZ_16 view_rot;

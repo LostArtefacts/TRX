@@ -66,8 +66,8 @@ void Lara_Draw(const ITEM *const item)
     saved_matrix = *g_MatrixPtr;
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
     const MATRIX item_matrix = *g_MatrixPtr;
     const int32_t clip = Output_GetObjectBounds(&frame->bounds);
     if (!clip) {
@@ -105,7 +105,7 @@ void Lara_Draw(const ITEM *const item)
     }
 
     Matrix_Rot16(mesh_rots[LM_TORSO]);
-    Matrix_Rot16(g_Lara.torso_rot);
+    Matrix_Rot16(g_Lara.interp.result.torso_rot);
     Output_DrawObjectMesh(g_Lara.mesh_ptrs[LM_TORSO], clip);
 
     Matrix_Push();
@@ -113,7 +113,7 @@ void Lara_Draw(const ITEM *const item)
     mesh_rots_c = mesh_rots;
     Matrix_Rot16(mesh_rots[LM_HEAD]);
     mesh_rots = mesh_rots_c;
-    Matrix_Rot16(g_Lara.head_rot);
+    Matrix_Rot16(g_Lara.interp.result.head_rot);
     Output_DrawObjectMesh(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
@@ -184,7 +184,7 @@ void Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_20 = item_matrix._20;
         g_MatrixPtr->_21 = item_matrix._21;
         g_MatrixPtr->_22 = item_matrix._22;
-        Matrix_Rot16(g_Lara.right_arm.rot);
+        Matrix_Rot16(g_Lara.right_arm.interp.result.rot);
         const ANIM *anim = Anim_GetAnim(g_Lara.right_arm.anim_num);
         mesh_rots =
             g_Lara.right_arm
@@ -212,7 +212,7 @@ void Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_20 = item_matrix._20;
         g_MatrixPtr->_21 = item_matrix._21;
         g_MatrixPtr->_22 = item_matrix._22;
-        Matrix_Rot16(g_Lara.left_arm.rot);
+        Matrix_Rot16(g_Lara.left_arm.interp.result.rot);
         anim = Anim_GetAnim(g_Lara.left_arm.anim_num);
         mesh_rots =
             g_Lara.left_arm
@@ -297,8 +297,8 @@ void Lara_Draw_I(
     MATRIX saved_matrix = *g_MatrixPtr;
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
 
     const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
 
@@ -341,7 +341,7 @@ void Lara_Draw_I(
     }
 
     Matrix_Rot16_ID(mesh_rots_1[LM_TORSO], mesh_rots_2[LM_TORSO]);
-    Matrix_Rot16_I(g_Lara.torso_rot);
+    Matrix_Rot16_I(g_Lara.interp.result.torso_rot);
     Output_DrawObjectMesh_I(g_Lara.mesh_ptrs[LM_TORSO], clip);
 
     Matrix_Push_I();
@@ -351,7 +351,7 @@ void Lara_Draw_I(
     Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
     mesh_rots_1 = mesh_rots_1_c;
     mesh_rots_2 = mesh_rots_2_c;
-    Matrix_Rot16_I(g_Lara.head_rot);
+    Matrix_Rot16_I(g_Lara.interp.result.head_rot);
     Output_DrawObjectMesh_I(g_Lara.mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
@@ -418,7 +418,7 @@ void Lara_Draw_I(
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[7].pos);
         Matrix_InterpolateArm();
-        Matrix_Rot16(g_Lara.right_arm.rot);
+        Matrix_Rot16(g_Lara.right_arm.interp.result.rot);
         const ANIM *anim = Anim_GetAnim(g_Lara.right_arm.anim_num);
         mesh_rots_1 =
             g_Lara.right_arm
@@ -438,7 +438,7 @@ void Lara_Draw_I(
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[10].pos);
         Matrix_InterpolateArm();
-        Matrix_Rot16(g_Lara.left_arm.rot);
+        Matrix_Rot16(g_Lara.left_arm.interp.result.rot);
         anim = Anim_GetAnim(g_Lara.left_arm.anim_num);
         mesh_rots_1 =
             g_Lara.left_arm

@@ -989,6 +989,9 @@ void Camera_Apply(void)
 {
     M_EnsureEnvironment();
     Matrix_LookAt(
-        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
-        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, g_Camera.roll);
+        g_Camera.interp.result.pos.x,
+        g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+        g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
+        g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
+        g_Camera.roll);
 }

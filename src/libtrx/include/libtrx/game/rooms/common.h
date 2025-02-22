@@ -32,6 +32,8 @@ int16_t Room_GetIndexFromPos(int32_t x, int32_t y, int32_t z);
 int32_t Room_FindByPos(int32_t x, int32_t y, int32_t z);
 BOUNDS_32 Room_GetWorldBounds(void);
 
+extern SECTOR *Room_GetSector(
+    int32_t x, int32_t y, int32_t z, int16_t *room_num);
 SECTOR *Room_GetWorldSector(const ROOM *room, int32_t x_pos, int32_t z_pos);
 SECTOR *Room_GetUnitSector(
     const ROOM *room, int32_t x_sector, int32_t z_sector);

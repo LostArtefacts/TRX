@@ -69,12 +69,10 @@ typedef struct {
     uint16_t pad : 7; // 0x0200…0x8000
 #endif
 
-#if TR_VERSION == 1
     struct {
         struct {
             XYZ_32 pos;
             XYZ_16 rot;
         } result, prev;
     } interp;
-#endif
 } ITEM;

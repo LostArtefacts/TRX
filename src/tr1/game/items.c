@@ -2,7 +2,6 @@
 
 #include "game/carrier.h"
 #include "game/effects.h"
-#include "game/interpolation.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -12,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
