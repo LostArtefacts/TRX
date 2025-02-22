@@ -46,6 +46,46 @@ static int32_t M_GetFPS(void)
     return g_Config.rendering.fps;
 }
 
+static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
+{
+    int32_t max_xz = 128;
+    int32_t max_y = MAX(128, item->fall_speed * 2);
+    switch (item->object_id) {
+#if TR_VERSION == 1
+    case O_BAT:
+        max_xz = 0;
+        max_y = 0;
+        break;
+#endif
+
+    case O_DART:
+#if TR_VERSION == 2
+    case O_BOAT:
+    case O_SKIDOO_ARMED:
+    case O_SKIDOO_TRACK:
+    case O_SKIDOO_FAST:
+    case O_SKIDOO_DRIVER:
+#endif
+        max_xz = 200;
+        break;
+
+#if TR_VERSION == 2
+    case O_LARA:
+    case O_LARA_EXTRA: {
+        const int16_t vehicle_item = Lara_GetLaraInfo()->skidoo;
+        if (vehicle_item != NO_ITEM) {
+            return M_GetItemMaxDelta(Item_Get(vehicle_item));
+        }
+        break;
+    }
+#endif
+
+    default:
+        break;
+    }
+    return (XYZ_32) { .x = max_xz, .y = max_y, .z = max_xz };
+}
+
 bool Interpolation_IsEnabled(void)
 {
     return m_IsEnabled && M_GetFPS() == 60;
@@ -110,12 +150,14 @@ void Interpolation_Commit(void)
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
-        bool is_erratic = false;
+        const XYZ_32 max_delta = M_GetItemMaxDelta(item);
 #if TR_VERSION == 1
-        is_erratic |= item->object_id == O_BAT;
+        const bool is_mounted = false;
+#elif TR_VERSION == 2
+        const bool is_mounted = i == lara->skidoo;
 #endif
-        if ((item->flags & IF_KILLED) || item->status == IS_INACTIVE
-            || is_erratic) {
+        if (((item->flags & IF_KILLED) || item->status == IS_INACTIVE)
+            && !is_mounted) {
             COMMIT(item, pos.x);
             COMMIT(item, pos.y);
             COMMIT(item, pos.z);
@@ -124,12 +166,9 @@ void Interpolation_Commit(void)
             COMMIT(item, rot.z);
             continue;
         }
-
-        const int32_t max_xz = item->object_id == O_DART ? 200 : 128;
-        const int32_t max_y = MAX(128, item->fall_speed * 2);
-        INTERPOLATE(item, pos.x, ratio, max_xz);
-        INTERPOLATE(item, pos.y, ratio, max_y);
-        INTERPOLATE(item, pos.z, ratio, max_xz);
+        INTERPOLATE(item, pos.x, ratio, max_delta.x);
+        INTERPOLATE(item, pos.y, ratio, max_delta.y);
+        INTERPOLATE(item, pos.z, ratio, max_delta.z);
         INTERPOLATE_ROT(item, rot.x, ratio, DEG_45);
         INTERPOLATE_ROT(item, rot.y, ratio, DEG_45);
         INTERPOLATE_ROT(item, rot.z, ratio, DEG_45);
@@ -137,10 +176,10 @@ void Interpolation_Commit(void)
 
     ITEM *const lara_item = Lara_GetItem();
     if (lara_item != nullptr) {
-        INTERPOLATE(lara_item, pos.x, ratio, 128);
-        INTERPOLATE(
-            lara_item, pos.y, ratio, MAX(128, lara_item->fall_speed * 2));
-        INTERPOLATE(lara_item, pos.z, ratio, 128);
+        const XYZ_32 max_delta = M_GetItemMaxDelta(lara_item);
+        INTERPOLATE(lara_item, pos.x, ratio, max_delta.x);
+        INTERPOLATE(lara_item, pos.y, ratio, max_delta.y);
+        INTERPOLATE(lara_item, pos.z, ratio, max_delta.z);
         INTERPOLATE_ROT(lara_item, rot.x, ratio, DEG_45);
         INTERPOLATE_ROT(lara_item, rot.y, ratio, DEG_45);
         INTERPOLATE_ROT(lara_item, rot.z, ratio, DEG_45);
@@ -159,12 +198,12 @@ void Interpolation_Commit(void)
     }
 
     if (Lara_Hair_IsActive()) {
+        const XYZ_32 max_delta = M_GetItemMaxDelta(Lara_GetItem());
         for (int i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
             HAIR_SEGMENT *const hair = Lara_Hair_GetSegment(i);
-            INTERPOLATE(hair, pos.x, ratio, 128);
-            INTERPOLATE(
-                hair, pos.y, ratio, MAX(128, lara_item->fall_speed * 2));
-            INTERPOLATE(hair, pos.z, ratio, 128);
+            INTERPOLATE(hair, pos.x, ratio, max_delta.x);
+            INTERPOLATE(hair, pos.y, ratio, max_delta.y);
+            INTERPOLATE(hair, pos.z, ratio, max_delta.z);
             INTERPOLATE_ROT(hair, rot.x, ratio, DEG_45);
             INTERPOLATE_ROT(hair, rot.y, ratio, DEG_45);
             INTERPOLATE_ROT(hair, rot.z, ratio, DEG_45);
