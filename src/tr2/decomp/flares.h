@@ -5,7 +5,6 @@
 typedef enum {
     LF_FL_HOLD_FT = 1,
     LF_FL_THROW_FT = 32,
-    LF_FL_THROW_END = 35,
     LF_FL_DRAW_FT = 39,
     LF_FL_IGNITE_FT = 23,
     LF_FL_2_HOLD_FT = 15,

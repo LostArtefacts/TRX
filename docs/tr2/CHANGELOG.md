@@ -2,6 +2,7 @@
 - added a `/cheats` console command
 - added a `/wireframe` console command (#2500)
 - fixed smashed windows blocking enemy pathing after loading a save (#2535)
+- fixed a rare issue whereby Lara would be unable to move after disposing a flare (#2545, regression from 0.9)
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)
