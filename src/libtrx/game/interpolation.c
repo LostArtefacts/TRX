@@ -49,7 +49,7 @@ static int32_t M_GetFPS(void)
 static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
 {
     int32_t max_xz = 128;
-    int32_t max_y = MAX(128, item->fall_speed * 2);
+    int32_t max_y = MAX(128, ABS(item->fall_speed) * 2);
     switch (item->object_id) {
 #if TR_VERSION == 1
     case O_BAT:
