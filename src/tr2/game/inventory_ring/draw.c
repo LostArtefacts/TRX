@@ -9,11 +9,58 @@
 #include "game/overlay.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/objects/common.h>
 
+static int32_t M_GetFrames(
+    const INV_RING *ring, const INVENTORY_ITEM *inv_item,
+    ANIM_FRAME **out_frame1, ANIM_FRAME **out_frame2, int32_t *out_rate);
 static void M_DrawItem(const INV_RING *ring, const INVENTORY_ITEM *inv_item);
+
+static int32_t M_GetFrames(
+    const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
+    ANIM_FRAME **const out_frame1, ANIM_FRAME **const out_frame2,
+    int32_t *const out_rate)
+{
+    const OBJECT *const obj = Object_Get(inv_item->object_id);
+    const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
+    if (inv_item != cur_inv_item
+        || (ring->motion.status != RNG_SELECTED
+            && ring->motion.status != RNG_CLOSING_ITEM)) {
+        // only apply to animations, eg. the states where Inv_AnimateItem is
+        // being actively called
+        goto fallback;
+    }
+
+    if (inv_item->current_frame == inv_item->goal_frame
+        || inv_item->frames_total == 1 || g_Config.rendering.fps == 30) {
+        goto fallback;
+    }
+
+    const int32_t cur_frame_num = inv_item->current_frame;
+    int32_t next_frame_num = inv_item->current_frame + inv_item->anim_direction;
+    if (next_frame_num < 0) {
+        next_frame_num = 0;
+    }
+    if (next_frame_num >= inv_item->frames_total) {
+        next_frame_num = 0;
+    }
+
+    *out_frame1 = &obj->frame_base[cur_frame_num];
+    *out_frame2 = &obj->frame_base[next_frame_num];
+    *out_rate = 10;
+    return (Interpolation_GetRate() - 0.5) * 10.0;
+
+    // OG
+fallback:
+    *out_frame1 = &obj->frame_base[inv_item->current_frame];
+    *out_frame2 = *out_frame1;
+    *out_rate = 1;
+    return 0;
+}
 
 static void M_DrawItem(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
@@ -23,21 +70,6 @@ static void M_DrawItem(
         Output_SetLightAdder(HIGH_LIGHT);
     } else {
         Output_SetLightAdder(LOW_LIGHT);
-    }
-
-    int32_t minutes;
-    int32_t hours;
-    int32_t seconds;
-    if (inv_item->object_id == O_COMPASS_OPTION) {
-        const int32_t total_seconds =
-            g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
-        hours = (total_seconds % 43200) * DEG_1 * -360 / 43200;
-        minutes = (total_seconds % 3600) * DEG_1 * -360 / 3600;
-        seconds = (total_seconds % 60) * DEG_1 * -360 / 60;
-    } else {
-        seconds = 0;
-        minutes = 0;
-        hours = 0;
     }
 
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
@@ -53,55 +85,28 @@ static void M_DrawItem(
         return;
     }
 
-    ANIM_FRAME *frame_ptr = &obj->frame_base[inv_item->current_frame];
+    int32_t rate;
+    ANIM_FRAME *frame1;
+    ANIM_FRAME *frame2;
+    const int32_t frac = M_GetFrames(ring, inv_item, &frame1, &frame2, &rate);
+    if (inv_item->object_id == O_COMPASS_OPTION) {
+        const int32_t total_seconds =
+            g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
+        const int32_t hours = (total_seconds % 43200) * DEG_1 * -360 / 43200;
+        const int32_t minutes = (total_seconds % 3600) * DEG_1 * -360 / 3600;
+        const int32_t seconds = (total_seconds % 60) * DEG_1 * -360 / 60;
 
-    Matrix_Push();
-    const int32_t clip = Output_GetObjectBounds(&frame_ptr->bounds);
-    if (!clip) {
-        Matrix_Pop();
-        return;
+        const int16_t extra_rotation[3] = { hours, minutes, seconds };
+        Object_GetBone(obj, 3)->rot_z = true;
+        Object_GetBone(obj, 4)->rot_z = true;
+        Object_GetBone(obj, 5)->rot_z = true;
+        Object_DrawInterpolatedObject(
+            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
+            rate);
+    } else {
+        Object_DrawInterpolatedObject(
+            obj, inv_item->meshes_drawn, nullptr, frame1, frame2, frac, rate);
     }
-
-    Matrix_TranslateRel16(frame_ptr->offset);
-    Matrix_Rot16(frame_ptr->mesh_rots[0]);
-
-    for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
-        if (mesh_idx > 0) {
-            const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-            if (bone->matrix_pop) {
-                Matrix_Pop();
-            }
-            if (bone->matrix_push) {
-                Matrix_Push();
-            }
-
-            Matrix_TranslateRel32(bone->pos);
-            Matrix_Rot16(frame_ptr->mesh_rots[mesh_idx]);
-
-            if (inv_item->object_id == O_COMPASS_OPTION) {
-                if (mesh_idx == 6) {
-                    Matrix_RotZ(seconds);
-#if 0
-                    const int32_t tmp = inv_item->reserved[0];
-                    inv_item->reserved[0] = seconds;
-                    inv_item->reserved[1] = tmp;
-#endif
-                }
-                if (mesh_idx == 5) {
-                    Matrix_RotZ(minutes);
-                }
-                if (mesh_idx == 4) {
-                    Matrix_RotZ(hours);
-                }
-            }
-        }
-
-        if (inv_item->meshes_drawn & (1 << mesh_idx)) {
-            Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
-        }
-    }
-
-    Matrix_Pop();
 }
 
 void InvRing_Draw(INV_RING *const ring)
