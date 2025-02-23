@@ -56,6 +56,7 @@ static void M_SwitchOn(ITEM *switch_item, ITEM *lara_item);
 static void M_SwitchOff(ITEM *switch_item, ITEM *lara_item);
 static void M_SetupBase(OBJECT *obj);
 static void M_Setup(OBJECT *obj);
+static void M_SetupPushButton(OBJECT *obj);
 static void M_SetupUW(OBJECT *obj);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 static void M_CollisionUW(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -138,6 +139,12 @@ static void M_Setup(OBJECT *const obj)
 {
     M_SetupBase(obj);
     obj->collision_func = M_Collision;
+}
+
+static void M_SetupPushButton(OBJECT *const obj)
+{
+    M_Setup(obj);
+    obj->enable_interpolation = false;
 }
 
 static void M_SetupUW(OBJECT *const obj)
@@ -273,7 +280,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
 }
 
 REGISTER_OBJECT(O_SWITCH_TYPE_AIRLOCK, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_BUTTON, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_BUTTON, M_SetupPushButton)
 REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
 REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_Setup)
 REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)

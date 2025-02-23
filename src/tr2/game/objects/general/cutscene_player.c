@@ -24,6 +24,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    item->status = IS_ACTIVE;
     CAMERA_INFO *const camera = Cutscene_GetCamera();
     item->rot.y = camera->target_angle;
     item->pos.x = camera->pos.pos.x;

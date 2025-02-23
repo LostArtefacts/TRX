@@ -27,6 +27,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->save_anim = 1;
     obj->save_flags = 1;
+    obj->enable_interpolation = false;
 }
 
 static void M_Initialise(const int16_t item_num)

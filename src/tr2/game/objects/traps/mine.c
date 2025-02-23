@@ -86,6 +86,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_flags = 1;
+    obj->enable_interpolation = false;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

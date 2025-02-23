@@ -58,6 +58,7 @@ void Object_SetupAllObjects(void)
         obj->radius = DEFAULT_RADIUS;
         obj->shadow_size = 0;
         obj->hit_points = DONT_TARGET;
+        obj->enable_interpolation = true;
 
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);

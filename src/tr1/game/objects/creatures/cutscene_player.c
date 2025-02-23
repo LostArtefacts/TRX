@@ -30,6 +30,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    item->status = IS_ACTIVE;
     if (item->object_id != O_PLAYER_4) {
         CINE_DATA *const cine_data = Camera_GetCineData();
         item->rot.y = cine_data->position.rot.y;

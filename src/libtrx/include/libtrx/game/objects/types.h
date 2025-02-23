@@ -75,6 +75,7 @@ typedef struct OBJECT {
     int16_t radius;
     int16_t shadow_size;
     int16_t smartness;
+    bool enable_interpolation;
 
     union {
         uint16_t flags;
