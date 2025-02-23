@@ -35,6 +35,11 @@ ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
 
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
 
+void Object_DrawInterpolatedObject(
+    const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,
+    const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
+    int32_t rate);
+
 #define REGISTER_OBJECT(object_id, setup_func_)                                \
     __attribute__((constructor)) static void M_RegisterObject##object_id(void) \
     {                                                                          \

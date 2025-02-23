@@ -85,5 +85,3 @@ void Output_ApplyTint(float *r, float *g, float *b);
 
 void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
-
-int Output_GetObjectBounds(const BOUNDS_16 *bounds);

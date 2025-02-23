@@ -1,8 +1,11 @@
 #include "game/objects/common.h"
 
+#include "debug.h"
 #include "game/anims.h"
 #include "game/const.h"
 #include "game/game_buf.h"
+#include "game/matrix.h"
+#include "game/output.h"
 
 static OBJECT m_Objects[O_NUMBER_OF] = {};
 static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS] = {};
@@ -124,4 +127,92 @@ ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)
 ANIM_BONE *Object_GetBone(const OBJECT *const obj, const int32_t bone_idx)
 {
     return Anim_GetBone(obj->bone_idx + bone_idx);
+}
+
+void Object_DrawInterpolatedObject(
+    const OBJECT *const obj, const uint32_t meshes,
+    const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
+{
+    ASSERT(frame1 != nullptr);
+    const int32_t clip = Output_GetObjectBounds(&frame1->bounds);
+    if (clip == 0) {
+        return;
+    }
+
+    ASSERT(rate != 0);
+    Matrix_Push();
+
+    if (frac != 0) {
+        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+            if (mesh_idx == 0) {
+                Matrix_InitInterpolate(frac, rate);
+                Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
+                Matrix_Rot16_ID(
+                    frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
+            } else {
+                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+                if (bone->matrix_pop) {
+                    Matrix_Pop_I();
+                }
+                if (bone->matrix_push) {
+                    Matrix_Push_I();
+                }
+
+                Matrix_TranslateRel32_I(bone->pos);
+                Matrix_Rot16_ID(
+                    frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
+                if (extra_rotation != nullptr) {
+                    if (bone->rot_y) {
+                        Matrix_RotY_I(*extra_rotation++);
+                    }
+                    if (bone->rot_x) {
+                        Matrix_RotX_I(*extra_rotation++);
+                    }
+                    if (bone->rot_z) {
+                        Matrix_RotZ_I(*extra_rotation++);
+                    }
+                }
+            }
+
+            if (meshes & (1 << mesh_idx)) {
+                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, true);
+            }
+        }
+    } else {
+        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+            if (mesh_idx == 0) {
+                Matrix_TranslateRel16(frame1->offset);
+                Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
+            } else {
+                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+                if (bone->matrix_pop) {
+                    Matrix_Pop();
+                }
+                if (bone->matrix_push) {
+                    Matrix_Push();
+                }
+
+                Matrix_TranslateRel32(bone->pos);
+                Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
+                if (extra_rotation != nullptr) {
+                    if (bone->rot_y) {
+                        Matrix_RotY(*extra_rotation++);
+                    }
+                    if (bone->rot_x) {
+                        Matrix_RotX(*extra_rotation++);
+                    }
+                    if (bone->rot_z) {
+                        Matrix_RotZ(*extra_rotation++);
+                    }
+                }
+            }
+
+            if (meshes & (1 << mesh_idx)) {
+                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
+            }
+        }
+    }
+
+    Matrix_Pop();
 }

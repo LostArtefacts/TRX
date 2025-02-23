@@ -73,7 +73,6 @@ void Output_InsertShadow(
     int16_t radius, const BOUNDS_16 *bounds, const ITEM *item);
 
 void Output_CalculateWibbleTable(void);
-int32_t Output_GetObjectBounds(const BOUNDS_16 *bounds);
 void Output_SetupBelowWater(bool is_underwater);
 void Output_SetupAboveWater(bool is_underwater);
 void Output_AnimateTextures(int32_t ticks);
