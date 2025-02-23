@@ -21,6 +21,8 @@ extern void Output_SetLightAdder(int32_t adder);
 extern int32_t Output_GetLightAdder(void);
 extern void Output_SetLightDivider(int32_t divider);
 
+extern int32_t Output_GetObjectBounds(const BOUNDS_16 *bounds);
+
 // Temporary
 extern int32_t Output_CalcFogShade(int32_t depth);
 extern int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);

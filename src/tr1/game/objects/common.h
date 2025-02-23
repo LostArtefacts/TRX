@@ -8,10 +8,6 @@ int16_t Object_FindReceptacle(GAME_OBJECT_ID obj_id);
 void Object_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 void Object_CollisionTrap(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
-void Object_DrawInterpolatedObject(
-    const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,
-    const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
-    int32_t rate);
 void Object_DrawDummyItem(const ITEM *item);
 void Object_DrawSpriteItem(const ITEM *item);
 void Object_DrawPickupItem(const ITEM *item);
