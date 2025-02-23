@@ -45,6 +45,7 @@ void Object_SetupAllObjects(void)
         obj->pivot_length = 0;
         obj->radius = DEFAULT_RADIUS;
         obj->shadow_size = 0;
+        obj->enable_interpolation = true;
 
         obj->save_position = 0;
         obj->save_hitpoints = 0;
