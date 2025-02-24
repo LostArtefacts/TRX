@@ -33,6 +33,7 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/level.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -515,7 +516,8 @@ void Level_Load(const GF_LEVEL *const level)
     Benchmark_End(benchmark, nullptr);
 }
 
-bool Level_Initialise(const GF_LEVEL *const level)
+bool Level_Initialise(
+    const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
     LOG_DEBUG("num=%d (%s)", level->num, level->path);
@@ -563,6 +565,12 @@ bool Level_Initialise(const GF_LEVEL *const level)
 
     if (g_Lara.item_num != NO_ITEM) {
         Lara_Initialise(level);
+    }
+
+    if (seq_ctx != GFSC_SAVED) {
+        // Avoid initialising the floor before movable block positions have
+        // been loaded; this is otherwise handled after savegame loading.
+        MovableBlock_SetupFloor();
     }
 
     Effect_InitialiseArray();

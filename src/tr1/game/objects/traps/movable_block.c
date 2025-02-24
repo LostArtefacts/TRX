@@ -14,6 +14,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19
@@ -43,8 +44,6 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
 static void M_Setup(OBJECT *obj);
-static void M_Initialise(int16_t item_num);
-static void M_HandleFlip(ITEM *item, ROOM_FLIP_STATUS flip_status);
 static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
 static void M_Control(int16_t item_num);
 static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
@@ -271,8 +270,7 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
-    obj->handle_flip_func = M_HandleFlip;
+    obj->initialise_func = MovableBlock_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->draw_func = M_Draw;
@@ -283,42 +281,10 @@ static void M_Setup(OBJECT *const obj)
     obj->bounds_func = M_Bounds;
 }
 
-static void M_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE && item->pos.y >= Item_GetHeight(item)) {
-        Room_AlterFloorHeight(item, -WALL_L);
-    }
-}
-
-static void M_HandleFlip(ITEM *const item, const ROOM_FLIP_STATUS flip_status)
-{
-    if (flip_status == RFS_FLIPPED) {
-        Room_AlterFloorHeight(item, -WALL_L);
-    } else {
-        Room_AlterFloorHeight(item, WALL_L);
-    }
-}
-
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
-    switch (stage) {
-    case SAVEGAME_STAGE_BEFORE_LOAD:
-        if (item->status != IS_INVISIBLE
-            && item->pos.y >= Item_GetHeight(item)) {
-            Room_AlterFloorHeight(item, WALL_L);
-        }
-        break;
-
-    case SAVEGAME_STAGE_AFTER_LOAD:
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
-        if (item->status == IS_INACTIVE) {
-            Room_AlterFloorHeight(item, -WALL_L);
-        }
-        break;
-
-    default:
-        break;
     }
 }
 

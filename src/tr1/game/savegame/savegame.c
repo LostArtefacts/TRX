@@ -19,6 +19,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/memory.h>
 
 #include <stdint.h>
@@ -116,6 +117,8 @@ static void M_LoadPostprocess(void)
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
+
+    MovableBlock_SetupFloor();
 
     if (g_GameInfo.bonus_flag) {
         g_Config.profile.new_game_plus_unlock = true;

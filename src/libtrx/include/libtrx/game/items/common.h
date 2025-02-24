@@ -45,6 +45,7 @@ bool Item_TestFrameEqual(const ITEM *item, int16_t frame);
 bool Item_TestFrameRange(const ITEM *item, int16_t start, int16_t end);
 bool Item_GetAnimChange(ITEM *item, const ANIM *anim);
 
+extern int16_t Item_GetHeight(const ITEM *item);
 void Item_Translate(ITEM *item, int32_t x, int32_t y, int32_t z);
 
 void Item_Animate(ITEM *item);

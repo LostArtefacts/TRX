@@ -28,6 +28,7 @@
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/level.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/virtual_file.h>
@@ -315,7 +316,8 @@ bool Level_Load(const GF_LEVEL *const level)
     return true;
 }
 
-bool Level_Initialise(const GF_LEVEL *const level)
+bool Level_Initialise(
+    const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     LOG_DEBUG("num=%d type=%d", level->num, level->type);
     if (level->type == GFL_DEMO) {
@@ -348,6 +350,10 @@ bool Level_Initialise(const GF_LEVEL *const level)
         Lara_Initialise(level);
     }
     GetCarriedItems();
+
+    if (seq_ctx != GFSC_SAVED) {
+        MovableBlock_SetupFloor();
+    }
 
     Effect_InitialiseArray();
     LOT_InitialiseArray();

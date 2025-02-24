@@ -2,6 +2,7 @@
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
 - fixed several instances of the camera going out of bounds (#1034)
+- fixed issues with stacked, floating and flipmap pushblocks in custom levels
 - fixed the bear AI fix option being applied in the Vilcabamba demo (#2559, regression from 4.8)
 - fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
 - fixed Lara's meshes not resetting after using the fly cheat (#2565, #2572, regressions from 4.8)

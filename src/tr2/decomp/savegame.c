@@ -18,6 +18,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -273,6 +274,8 @@ static void M_ReadItems(void)
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
+
+    MovableBlock_SetupFloor();
 }
 
 static void M_ReadLara(LARA_INFO *const lara)

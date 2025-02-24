@@ -97,7 +97,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     // load the level
-    if (!Level_Initialise(level)) {
+    if (!Level_Initialise(level, seq_ctx)) {
         Game_SetCurrentLevel(nullptr);
         GF_SetCurrentLevel(nullptr);
         if (level->type == GFL_TITLE) {

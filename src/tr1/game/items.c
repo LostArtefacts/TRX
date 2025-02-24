@@ -114,7 +114,7 @@ void Item_UpdateRoom(ITEM *item, int32_t height)
     }
 }
 
-int16_t Item_GetHeight(ITEM *item)
+int16_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
