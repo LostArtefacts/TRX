@@ -6,6 +6,7 @@
 #include "game/game_buf.h"
 #include "game/items.h"
 #include "game/objects/common.h"
+#include "game/objects/traps/movable_block.h"
 #include "game/rooms/const.h"
 #include "game/rooms/enum.h"
 #include "game/sound/common.h"
@@ -261,6 +262,7 @@ void Room_InitialiseFlipStatus(void)
 void Room_FlipMap(void)
 {
     Sound_StopAmbientSounds();
+    MovableBlock_HandleFlipMap(RFS_UNFLIPPED);
 
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         ROOM *const room = Room_Get(i);
@@ -286,6 +288,7 @@ void Room_FlipMap(void)
         M_AddFlipItems(room);
     }
 
+    MovableBlock_HandleFlipMap(RFS_FLIPPED);
     m_FlipStatus = !m_FlipStatus;
 }
 

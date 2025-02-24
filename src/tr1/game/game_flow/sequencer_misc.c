@@ -14,7 +14,7 @@ GF_COMMAND GF_RunTitle(void)
     Savegame_UnbindSlot();
     GameStringTable_Apply(nullptr);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
-    if (!Level_Initialise(title_level)) {
+    if (!Level_Initialise(title_level, GFSC_NORMAL)) {
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     }
     return GF_ShowInventory(INV_TITLE_MODE);
