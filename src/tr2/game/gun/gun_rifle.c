@@ -192,6 +192,7 @@ void Gun_Rifle_FireHarpoon(void)
         (-HARPOON_BOLT_SPEED * Math_Sin(item->rot.x)) >> W2V_SHIFT;
     item->speed = (HARPOON_BOLT_SPEED * Math_Cos(item->rot.x)) >> W2V_SHIFT;
     Item_AddActive(item_num);
+    item->status = IS_ACTIVE;
 
     g_Lara.harpoon_ammo.ammo--;
     if (g_SaveGame.bonus_flag
@@ -233,6 +234,7 @@ void Gun_Rifle_FireGrenade(void)
     item->speed = GRENADE_SPEED;
     item->fall_speed = 0;
     Item_AddActive(item_num);
+    item->status = IS_ACTIVE;
 
     if (!g_SaveGame.bonus_flag) {
         g_Lara.grenade_ammo.ammo--;

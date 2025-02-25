@@ -5,6 +5,7 @@
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
 - fixed issues with fixed cameras in 60 FPS shifting before settling on their target (#1186)
+- fixed missiles from mutants/centaurs/Natla jittering in 60 FPS (#1314)
 - fixed the bear AI fix option being applied in the Vilcabamba demo (#2559, regression from 4.8)
 - fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
 - fixed Lara's meshes not resetting after using the fly cheat (#2565, #2572, regressions from 4.8)
