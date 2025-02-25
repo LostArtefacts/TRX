@@ -58,6 +58,7 @@ static void M_CreateGongBonger(ITEM *const lara_item)
     Item_Initialise(item_gong_bonger_num);
     Item_AddActive(item_gong_bonger_num);
     item_gong_bonger->status = IS_ACTIVE;
+    item_gong_bonger->shade.value_1 = -1;
 }
 
 static void M_Setup1(OBJECT *const obj)
