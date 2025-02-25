@@ -18,7 +18,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i]->object_id == inv_obj_id) {
-                source->qtys[i]++;
+                const int32_t qty =
+                    obj_id == O_FLARES_ITEM ? FLARE_AMMO_QTY : 1;
+                source->qtys[i] += qty;
                 return true;
             }
         }
