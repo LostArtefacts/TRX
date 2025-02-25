@@ -14,13 +14,15 @@
 
 #define COMMIT(target, member) (target)->interp.result.member = (target)->member
 
+#define DIFF(target, member)                                                   \
+    (ABS(((target)->member) - ((target)->interp.prev.member)))
+
 #define INTERPOLATE_F(target, member, ratio)                                   \
     (target)->interp.result.member = ((target)->interp.prev.member)            \
         + (((target)->member - ((target)->interp.prev.member)) * (ratio));
 
 #define INTERPOLATE(target, member, ratio, max_diff)                           \
-    if (ABS(((target)->member) - ((target)->interp.prev.member))               \
-        >= (max_diff)) {                                                       \
+    if (DIFF((target), member) >= (max_diff)) {                                \
         COMMIT((target), member);                                              \
     } else {                                                                   \
         INTERPOLATE_F(target, member, ratio);                                  \
@@ -119,13 +121,27 @@ void Interpolation_Commit(void)
     const double ratio = Interpolation_GetRate();
 
     if (g_Camera.pos.room_num != NO_ROOM) {
-        INTERPOLATE(&g_Camera, shift, ratio, 128);
-        INTERPOLATE(&g_Camera, pos.x, ratio, 512);
-        INTERPOLATE(&g_Camera, pos.y, ratio, 512);
-        INTERPOLATE(&g_Camera, pos.z, ratio, 512);
-        INTERPOLATE(&g_Camera, target.x, ratio, 512);
-        INTERPOLATE(&g_Camera, target.y, ratio, 512);
-        INTERPOLATE(&g_Camera, target.z, ratio, 512);
+        if (DIFF(&g_Camera, shift) >= 128 || DIFF(&g_Camera, pos.x) >= 512
+            || DIFF(&g_Camera, pos.y) >= 512 || DIFF(&g_Camera, pos.z) >= 512
+            || DIFF(&g_Camera, target.x) >= 512
+            || DIFF(&g_Camera, target.y) >= 512
+            || DIFF(&g_Camera, target.z) >= 512) {
+            COMMIT(&g_Camera, shift);
+            COMMIT(&g_Camera, pos.x);
+            COMMIT(&g_Camera, pos.y);
+            COMMIT(&g_Camera, pos.z);
+            COMMIT(&g_Camera, target.x);
+            COMMIT(&g_Camera, target.y);
+            COMMIT(&g_Camera, target.z);
+        } else {
+            INTERPOLATE(&g_Camera, shift, ratio, 128);
+            INTERPOLATE(&g_Camera, pos.x, ratio, 512);
+            INTERPOLATE(&g_Camera, pos.y, ratio, 512);
+            INTERPOLATE(&g_Camera, pos.z, ratio, 512);
+            INTERPOLATE(&g_Camera, target.x, ratio, 512);
+            INTERPOLATE(&g_Camera, target.y, ratio, 512);
+            INTERPOLATE(&g_Camera, target.z, ratio, 512);
+        }
 
         g_Camera.interp.room_num = g_Camera.pos.room_num;
         Room_GetSector(

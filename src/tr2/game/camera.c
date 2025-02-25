@@ -183,10 +183,6 @@ void Camera_Move(const GAME_VECTOR *target, int32_t speed)
         g_Camera.shift = 0;
     }
 
-    Room_GetSector(
-        g_Camera.pos.x, g_Camera.pos.y + g_Camera.shift, g_Camera.pos.z,
-        &g_Camera.pos.room_num);
-
     if (g_Config.audio.enable_lara_mic) {
         g_Camera.actual_angle =
             g_Lara.torso_rot.y + g_Lara.head_rot.y + g_LaraItem->rot.y;
@@ -882,9 +878,6 @@ void Camera_LoadCutsceneFrame(void)
     g_Camera.shift = 0;
 
     Viewport_AlterFOV(fov);
-
-    Room_GetSector(
-        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
 
     if (g_Config.audio.enable_lara_mic) {
         g_Camera.actual_angle =
