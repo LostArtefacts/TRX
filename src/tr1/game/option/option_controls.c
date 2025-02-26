@@ -325,7 +325,7 @@ static void M_InitText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 
 static void M_UpdateText(INPUT_BACKEND backend, INPUT_LAYOUT layout)
 {
-    if (layout == INPUT_LAYOUT_DEFAULT) {
+    if (layout == INPUT_LAYOUT_DEFAULT || m_KeyMode == KM_BROWSEKEYUP) {
         Text_Hide(m_Text[TEXT_RESET], true);
         Text_Hide(m_Text[TEXT_UNBIND], true);
     } else {
