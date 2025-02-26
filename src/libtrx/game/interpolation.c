@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#define CAM_MAX_DELTA (STEP_L * 3 / 2)
+
 #define REMEMBER(target, member) (target)->interp.prev.member = (target)->member
 
 #define COMMIT(target, member) (target)->interp.result.member = (target)->member
@@ -156,11 +158,13 @@ void Interpolation_Commit(void)
     const double ratio = Interpolation_GetRate();
 
     if (g_Camera.pos.room_num != NO_ROOM) {
-        if (DIFF(&g_Camera, shift) >= 128 || DIFF(&g_Camera, pos.x) >= 512
-            || DIFF(&g_Camera, pos.y) >= 512 || DIFF(&g_Camera, pos.z) >= 512
-            || DIFF(&g_Camera, target.x) >= 512
-            || DIFF(&g_Camera, target.y) >= 512
-            || DIFF(&g_Camera, target.z) >= 512) {
+        if (DIFF(&g_Camera, shift) >= 128
+            || DIFF(&g_Camera, pos.x) >= CAM_MAX_DELTA
+            || DIFF(&g_Camera, pos.y) >= CAM_MAX_DELTA
+            || DIFF(&g_Camera, pos.z) >= CAM_MAX_DELTA
+            || DIFF(&g_Camera, target.x) >= CAM_MAX_DELTA
+            || DIFF(&g_Camera, target.y) >= CAM_MAX_DELTA
+            || DIFF(&g_Camera, target.z) >= CAM_MAX_DELTA) {
             COMMIT(&g_Camera, shift);
             COMMIT(&g_Camera, pos.x);
             COMMIT(&g_Camera, pos.y);
@@ -170,12 +174,12 @@ void Interpolation_Commit(void)
             COMMIT(&g_Camera, target.z);
         } else {
             INTERPOLATE(&g_Camera, shift, ratio, 128);
-            INTERPOLATE(&g_Camera, pos.x, ratio, 512);
-            INTERPOLATE(&g_Camera, pos.y, ratio, 512);
-            INTERPOLATE(&g_Camera, pos.z, ratio, 512);
-            INTERPOLATE(&g_Camera, target.x, ratio, 512);
-            INTERPOLATE(&g_Camera, target.y, ratio, 512);
-            INTERPOLATE(&g_Camera, target.z, ratio, 512);
+            INTERPOLATE(&g_Camera, pos.x, ratio, CAM_MAX_DELTA);
+            INTERPOLATE(&g_Camera, pos.y, ratio, CAM_MAX_DELTA);
+            INTERPOLATE(&g_Camera, pos.z, ratio, CAM_MAX_DELTA);
+            INTERPOLATE(&g_Camera, target.x, ratio, CAM_MAX_DELTA);
+            INTERPOLATE(&g_Camera, target.y, ratio, CAM_MAX_DELTA);
+            INTERPOLATE(&g_Camera, target.z, ratio, CAM_MAX_DELTA);
         }
 
         g_Camera.interp.room_num = g_Camera.pos.room_num;
