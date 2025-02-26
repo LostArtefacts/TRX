@@ -622,18 +622,18 @@ static void M_DrawAmmoInfo(void)
         return;
     }
 
-    char ammo_string[80] = "";
+    char ammo_string[128] = "";
     switch (g_Lara.gun_type) {
     case LGT_PISTOLS:
         return;
     case LGT_SHOTGUN:
-        sprintf(ammo_string, "%5d A", g_Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
+        sprintf(ammo_string, "%6d A", g_Lara.shotgun.ammo / SHOTGUN_AMMO_CLIP);
         break;
     case LGT_UZIS:
-        sprintf(ammo_string, "%5d C", g_Lara.uzis.ammo);
+        sprintf(ammo_string, "%6d C", g_Lara.uzis.ammo);
         break;
     case LGT_MAGNUMS:
-        sprintf(ammo_string, "%5d B", g_Lara.magnums.ammo);
+        sprintf(ammo_string, "%6d B", g_Lara.magnums.ammo);
         break;
     default:
         return;

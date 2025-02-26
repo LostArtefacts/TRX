@@ -2,6 +2,7 @@
 
 #include "game/inventory_ring/vars.h"
 #include "game/objects/vars.h"
+#include "utils.h"
 
 bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
 {
@@ -10,6 +11,12 @@ bool Inv_AddItemNTimes(const GAME_OBJECT_ID obj_id, const int32_t qty)
         result |= Inv_AddItem(obj_id);
     }
     return result;
+}
+
+void Inv_AddAmmo(AMMO_INFO *const weapon_ammo, int32_t qty)
+{
+    weapon_ammo->ammo += qty;
+    CLAMPG(weapon_ammo->ammo, MAX_QTY);
 }
 
 GAME_OBJECT_ID Inv_GetItemOption(const GAME_OBJECT_ID obj_id)

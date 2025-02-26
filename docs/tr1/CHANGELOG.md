@@ -2,6 +2,7 @@
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
 - fixed the bear AI fix option being applied in the Vilcabamba demo (#2559, regression from 4.8)
+- fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)
