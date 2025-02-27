@@ -123,7 +123,6 @@
 #define END_BIT 0x8000
 
 #define MIN_SQUARE SQUARE(WALL_L / 4) // = 65536
-#define GROUND_SHIFT (STEP_L)
 
 #define DEFAULT_RADIUS 10
 

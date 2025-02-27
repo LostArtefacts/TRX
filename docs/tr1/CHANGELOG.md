@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...develop) - ××××-××-××
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
+- fixed several instances of the camera going out of bounds (#1034)
 - fixed the bear AI fix option being applied in the Vilcabamba demo (#2559, regression from 4.8)
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17

@@ -288,32 +288,34 @@ static void M_EnsureEnvironment(void)
 
 static void M_Move(const GAME_VECTOR *const ideal, const int32_t speed)
 {
-    g_Camera.pos.x += (ideal->x - g_Camera.pos.x) / speed;
-    g_Camera.pos.z += (ideal->z - g_Camera.pos.z) / speed;
-    g_Camera.pos.y += (ideal->y - g_Camera.pos.y) / speed;
-    g_Camera.pos.room_num = ideal->room_num;
+    const GAME_VECTOR old_pos = g_Camera.pos;
+    GAME_VECTOR pos = g_Camera.pos;
+    pos.x += (ideal->x - pos.x) / speed;
+    pos.z += (ideal->z - pos.z) / speed;
+    pos.y += (ideal->y - pos.y) / speed;
+    pos.room_num = ideal->room_num;
 
     Camera_SetChunky(false);
 
-    const SECTOR *sector = Room_GetSector(
-        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
-    int32_t height =
-        Room_GetHeight(sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
-        - GROUND_SHIFT;
-
-    if (g_Camera.pos.y >= height && ideal->y >= height) {
-        LOS_Check(&g_Camera.target, &g_Camera.pos);
-        sector = Room_GetSector(
-            g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
-            &g_Camera.pos.room_num);
-        height = Room_GetHeight(
-                     sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
-            - GROUND_SHIFT;
+    const SECTOR *sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+    int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    if (height == NO_HEIGHT) {
+        pos.y = old_pos.y;
+        pos.room_num = old_pos.room_num;
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
     }
 
-    int32_t ceiling =
-        Room_GetCeiling(sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
-        + GROUND_SHIFT;
+    height -= STEP_L;
+    if (pos.y >= height && ideal->y >= height) {
+        LOS_Check(&g_Camera.target, &pos);
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, pos.x, pos.y, pos.z) - STEP_L;
+    }
+
+    g_Camera.pos = pos;
+
+    int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z) + STEP_L;
     if (height < ceiling) {
         ceiling = (height + ceiling) >> 1;
         height = ceiling;
