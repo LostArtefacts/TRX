@@ -2,6 +2,7 @@
 - added a `/cheats` console command
 - added a `/wireframe` console command (#2500)
 - fixed smashed windows blocking enemy pathing after loading a save (#2535)
+- fixed several instances of the camera going out of bounds (#1034)
 - fixed a rare issue whereby Lara would be unable to move after disposing a flare (#2545, regression from 0.9)
 - fixed flare pickups only adding one flare to Lara's inventory rather than six (#2551, regression from 0.9)
 - fixed play any level causing the game to hang when no gym level is present (#2560, regression from 0.9)
