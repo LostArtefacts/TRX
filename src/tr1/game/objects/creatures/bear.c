@@ -58,11 +58,6 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = BEAR_HITPOINTS;
-    if (g_Config.gameplay.fix_bear_ai) {
-        obj->pivot_length = 0;
-    } else {
-        obj->pivot_length = 500;
-    }
     obj->radius = BEAR_RADIUS;
     obj->smartness = BEAR_SMARTNESS;
     obj->intelligent = 1;
@@ -77,6 +72,8 @@ static void M_Setup(OBJECT *const obj)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    OBJECT *const obj = Object_Get(item->object_id);
+    obj->pivot_length = g_Config.gameplay.fix_bear_ai ? 0 : 500;
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
