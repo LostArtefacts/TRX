@@ -203,7 +203,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 if (g_GameFlow.play_any_level) {
                     return (GF_COMMAND) {
                         .action = GF_START_GAME,
-                        .param = g_Inv_ExtraData[1] + 1,
+                        .param = g_Inv_ExtraData[1]
+                            + (GF_GetGymLevel() != nullptr ? 1 : 0),
                     };
                 } else {
                     if (apply_changes) {
@@ -224,7 +225,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                     if (g_GameFlow.play_any_level) {
                         return (GF_COMMAND) {
                             .action = GF_START_GAME,
-                            .param = g_Inv_ExtraData[1] + 1,
+                            .param = g_Inv_ExtraData[1]
+                                + (GF_GetGymLevel() != nullptr ? 1 : 0),
                         };
                     } else {
                         return (GF_COMMAND) {
