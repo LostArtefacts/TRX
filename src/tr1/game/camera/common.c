@@ -321,24 +321,23 @@ static void M_Move(const GAME_VECTOR *const ideal, const int32_t speed)
         height = ceiling;
     }
 
-    if (g_Camera.bounce) {
-        if (g_Camera.bounce > 0) {
-            g_Camera.pos.y += g_Camera.bounce;
-            g_Camera.target.y += g_Camera.bounce;
-            g_Camera.bounce = 0;
-        } else {
-            int32_t shake;
-            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
-            g_Camera.pos.x += shake;
-            g_Camera.target.y += shake;
-            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
-            g_Camera.pos.y += shake;
-            g_Camera.target.y += shake;
-            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
-            g_Camera.pos.z += shake;
-            g_Camera.target.z += shake;
-            g_Camera.bounce += 5;
-        }
+    if (g_Camera.bounce > 0) {
+        g_Camera.pos.y += g_Camera.bounce;
+        g_Camera.target.y += g_Camera.bounce;
+        g_Camera.bounce = 0;
+    } else if (g_Camera.bounce < 0) {
+        const XYZ_32 shake = {
+            .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+        };
+        g_Camera.pos.x += shake.x;
+        g_Camera.pos.y += shake.y;
+        g_Camera.pos.z += shake.z;
+        g_Camera.target.y += shake.x;
+        g_Camera.target.y += shake.y;
+        g_Camera.target.z += shake.z;
+        g_Camera.bounce += 5;
     }
 
     if (g_Camera.pos.y > height) {
