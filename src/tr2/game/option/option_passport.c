@@ -101,7 +101,9 @@ static void M_DeterminePages(void)
     if (Game_IsInGym()) {
         for (int32_t i = 0; i < 3; i++) {
             if (m_State.pages[i].role == M_ROLE_SAVE_GAME) {
-                m_State.pages[i].role = M_ROLE_NEW_GAME;
+                m_State.pages[i].role = g_GameFlow.play_any_level
+                    ? M_ROLE_PLAY_ANY_LEVEL
+                    : M_ROLE_NEW_GAME;
             }
         }
     }
