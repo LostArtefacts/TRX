@@ -4,6 +4,7 @@
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed the bear AI fix option being applied in the Vilcabamba demo (#2559, regression from 4.8)
 - fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
+- fixed Lara's meshes not resetting after using the fly cheat (#2565, #2572, regressions from 4.8)
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)

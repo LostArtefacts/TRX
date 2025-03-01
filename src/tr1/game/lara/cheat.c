@@ -139,6 +139,12 @@ bool Lara_Cheat_EnterFlyMode(void)
         return false;
     }
 
+    g_Lara.request_gun_type = LGT_UNARMED;
+    if (g_LaraItem->hit_points <= 0) {
+        g_Lara.gun_status = LGS_ARMLESS;
+        Lara_InitialiseMeshes(GF_GetCurrentLevel());
+    }
+
     if (g_Lara.water_status != LWS_UNDERWATER || g_LaraItem->hit_points <= 0) {
         g_LaraItem->pos.y -= STEP_L;
         g_LaraItem->current_anim_state = LS_SWIM;
@@ -193,6 +199,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         g_Lara.torso_rot.y = 0;
     }
     g_Lara.gun_status = LGS_ARMLESS;
+    Lara_InitialiseMeshes(GF_GetCurrentLevel());
     Console_Log(GS(OSD_FLY_MODE_OFF));
     return true;
 }

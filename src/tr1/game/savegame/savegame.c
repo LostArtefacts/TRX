@@ -346,7 +346,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
     current->lara_hitpoints = g_LaraItem->hit_points;
     current->flags.available = 1;
-    current->flags.costume = 0;
 
     current->pistol_ammo = 1000;
     if (Inv_RequestItem(O_PISTOL_ITEM)) {
