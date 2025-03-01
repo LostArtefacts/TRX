@@ -226,6 +226,11 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
                 &g_SaveGameRequester, GS(PASSPORT_SELECT_LEVEL), 0, nullptr, 0);
             g_SaveGameRequester.ready = true;
         }
+        if (m_SubtitleText == nullptr) {
+            m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_NEW_GAME));
+            Text_AlignBottom(m_SubtitleText, true);
+            Text_CentreH(m_SubtitleText, true);
+        }
         m_State.selection =
             Requester_Display(&g_SaveGameRequester, true, true) - 1;
         break;
