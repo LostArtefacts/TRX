@@ -268,9 +268,8 @@ void GF_PreSequenceHook(
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
     g_GF_NumSecrets = 3;
-    if (seq_ctx == GFSC_SAVED) {
-        g_SaveGame.bonus_flag = false;
-    }
+    // TODO: reset bonus flag if seq_ctx == GFSC_SAVED once S_LoadGame logic is
+    // merged with overall save loading logic.
     Camera_GetCineData()->position.target_angle = DEG_90;
 }
 
