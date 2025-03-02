@@ -125,6 +125,8 @@ bool Demo_Start(const int32_t level_num)
     ASSERT(p->level != nullptr);
     ASSERT(GF_GetCurrentLevel() == p->level);
 
+    M_PrepareConfig(p);
+
     const uint32_t *const data = Demo_GetData();
     if (data == nullptr) {
         LOG_ERROR("Level '%s' has no demo data", p->level->path);
