@@ -9,6 +9,7 @@
 - fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
 - fixed missing new game text in the passport when play any level is enabled (#2563, regression from 0.9)
 - fixed the play any level dialog not showing in the gym passport (#2564, regression from 0.9)
+- fixed losing the NG+ flag when loading a save that has it set (#2566, regression from 0.9.2)
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)
