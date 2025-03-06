@@ -139,6 +139,11 @@ bool Lara_Cheat_EnterFlyMode(void)
         return false;
     }
 
+    if ((g_LaraItem->flags & IF_INVISIBLE) != 0) {
+        // The explosion cheat has been used, so Lara's death is permanent.
+        return false;
+    }
+
     g_Lara.request_gun_type = LGT_UNARMED;
     if (g_LaraItem->hit_points <= 0) {
         g_Lara.gun_status = LGS_ARMLESS;
