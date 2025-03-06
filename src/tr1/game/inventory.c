@@ -19,8 +19,12 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         Gun_UpdateLaraMeshes(obj_id);
         if (g_Lara.gun_type == LGT_UNARMED) {
             g_Lara.gun_type = Gun_GetType(obj_id);
+            const bool hands_busy = g_Lara.gun_status == LGS_HANDS_BUSY;
             g_Lara.gun_status = LGS_ARMLESS;
             Gun_InitialiseNewWeapon();
+            if (hands_busy) {
+                g_Lara.gun_status = LGS_HANDS_BUSY;
+            }
         }
     }
 
