@@ -51,7 +51,7 @@ Currently supported commands:
 
 - `/debug on`  
   `/debug off`  
-  Enables or disables the debug mode. Draws all room triggers and portals.
+  Enables or disables the debug mode. Draws all room triggers, portals, and object mesh spheres.
 
 - `/endlevel`  
   `/nextlevel`  

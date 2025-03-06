@@ -76,6 +76,7 @@ static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
 };
 
+static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
 static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
 static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
@@ -92,6 +93,66 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
 static void M_CalcRoomVertices(const ROOM_MESH *mesh);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
 static void M_CalcWibbleTable(void);
+
+static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
+{
+    bool wireframe_state = GFX_Context_GetWireframeMode();
+    GFX_Context_SetWireframeMode(true);
+
+    RGBA_8888 color = { .r = 255, .g = 255, .b = 255, .a = 128 };
+    if (wireframe_state) {
+        color = (RGBA_8888) { .r = 0, .g = 0, .b = 0, .a = 128 };
+    }
+
+    S_Output_DisableTextureMode();
+    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+
+    // More subdivisions means smoother spheres.
+    const int32_t subdivisions = 12;
+    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
+    int32_t index = 0;
+
+    for (int32_t i = 0; i <= subdivisions; i++) {
+        const float theta = (M_PI * i) / subdivisions; // Latitude angle
+        const float sin_theta = sinf(theta);
+        const float cos_theta = cosf(theta);
+
+        for (int32_t j = 0; j <= subdivisions; j++) {
+            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
+            const float sin_phi = sinf(phi);
+            const float cos_phi = cosf(phi);
+
+            // Convert spherical coordinates to 3D points.
+            XYZ_16 vertex_pos = {
+                .x = pos.x + radius * cos_phi * sin_theta,
+                .y = pos.y + radius * cos_theta,
+                .z = pos.z + radius * sin_phi * sin_theta,
+            };
+
+            M_CalcVertex(&vertices[index], vertex_pos);
+            vertices[index].g = HIGH_LIGHT;
+            index++;
+        }
+    }
+
+    for (int32_t i = 0; i < subdivisions; i++) {
+        for (int32_t j = 0; j < subdivisions; j++) {
+            const int32_t index_0 = i * (subdivisions + 1) + j;
+            const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
+            const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
+            const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
+            S_Output_DrawFlatTriangle(
+                &vertices[index_0], &vertices[index_1], &vertices[index_2],
+                color);
+            S_Output_DrawFlatTriangle(
+                &vertices[index_0], &vertices[index_2], &vertices[index_3],
+                color);
+        }
+    }
+
+    S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
+    GFX_Context_SetWireframeMode(wireframe_state);
+}
 
 static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
 {
@@ -599,6 +660,16 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
         M_DrawObjectFace3EnvMap(mesh->tex_face3s, mesh->num_tex_face3s);
         M_DrawObjectFace4EnvMap(mesh->flat_face4s, mesh->num_flat_face4s);
         M_DrawObjectFace3EnvMap(mesh->flat_face3s, mesh->num_flat_face3s);
+    }
+
+    if (g_Config.rendering.enable_debug_spheres) {
+        M_DrawSphere(
+            (XYZ_32) {
+                .x = mesh->center.x,
+                .y = mesh->center.y,
+                .z = mesh->center.z,
+            },
+            mesh->radius);
     }
 }
 

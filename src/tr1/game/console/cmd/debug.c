@@ -9,6 +9,7 @@
 static bool *const m_AllOptions[] = {
     &g_Config.rendering.enable_debug_portals,
     &g_Config.rendering.enable_debug_triggers,
+    &g_Config.rendering.enable_debug_spheres,
     nullptr,
 };
 
