@@ -795,12 +795,13 @@ int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)
         return 0;
     }
     if (land_speed <= DAMAGE_LENGTH) {
-        item->hit_points += -LARA_MAX_HITPOINTS * land_speed * land_speed
-            / (DAMAGE_LENGTH * DAMAGE_LENGTH);
+        Lara_TakeDamage(
+            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
+            false);
     } else {
         item->hit_points = -1;
     }
-    return item->hit_points <= 0;
+    return item->hit_points < 0;
 }
 
 int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll)

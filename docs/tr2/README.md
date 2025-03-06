@@ -79,6 +79,7 @@ game with new enhancements and features.
     - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
 - fixed smashed windows blocking enemy pathing after loading a save
+- fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
 - improved the animation of Lara's braid
 
 #### Cheats
