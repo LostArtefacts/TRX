@@ -11,6 +11,7 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend);
 void GFX_Context_Detach(void);
 
 void GFX_Context_SetDisplayFilter(GFX_TEXTURE_FILTER filter);
+bool GFX_Context_GetWireframeMode(void);
 void GFX_Context_SetWireframeMode(bool enable);
 void GFX_Context_SetLineWidth(int32_t line_width);
 void GFX_Context_SetVSync(bool vsync);

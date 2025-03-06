@@ -193,6 +193,11 @@ void GFX_Context_SetDisplayFilter(const GFX_TEXTURE_FILTER filter)
     m_Context.config.display_filter = filter;
 }
 
+bool GFX_Context_GetWireframeMode(void)
+{
+    return m_Context.config.enable_wireframe;
+}
+
 void GFX_Context_SetWireframeMode(const bool enable)
 {
     m_Context.config.enable_wireframe = enable;
