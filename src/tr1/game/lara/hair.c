@@ -16,6 +16,7 @@
 #include <stdint.h>
 
 #define HAIR_SEGMENTS 6
+#define NUM_SPHERES 5
 #define HAIR_OFFSET_X (0) // left-right
 #define HAIR_OFFSET_Y (20) // up-down
 #define HAIR_OFFSET_Z (-45) // front-back
@@ -96,7 +97,7 @@ void Lara_Hair_Control(void)
     int32_t height;
     int32_t frac;
     int32_t rate;
-    SPHERE sphere[5];
+    SPHERE sphere[NUM_SPHERES];
     int32_t j;
     int32_t x;
     int32_t y;
@@ -345,7 +346,7 @@ void Lara_Hair_Control(void)
                 break;
             }
 
-            for (j = 0; j < 5; j++) {
+            for (j = 0; j < NUM_SPHERES; j++) {
                 x = m_Hair[i].pos.x - sphere[j].pos.x;
                 y = m_Hair[i].pos.y - sphere[j].pos.y;
                 z = m_Hair[i].pos.z - sphere[j].pos.z;
