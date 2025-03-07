@@ -236,9 +236,7 @@ typedef struct {
 } WEAPON_INFO;
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
+    XYZ_32 pos;
     int32_t r;
 } SPHERE;
 

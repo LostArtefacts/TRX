@@ -470,9 +470,9 @@ int32_t Collide_TestCollision(ITEM *const item, const ITEM *const lara_item)
                 continue;
             }
 
-            const int32_t dx = ptr2->x - ptr1->x;
-            const int32_t dy = ptr2->y - ptr1->y;
-            const int32_t dz = ptr2->z - ptr1->z;
+            const int32_t dx = ptr2->pos.x - ptr1->pos.x;
+            const int32_t dy = ptr2->pos.y - ptr1->pos.y;
+            const int32_t dz = ptr2->pos.z - ptr1->pos.z;
             const int32_t d1 = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
             const int32_t d2 = SQUARE(ptr1->r + ptr2->r);
             if (d1 < d2) {
@@ -516,9 +516,9 @@ int32_t Collide_GetSpheres(
     const OBJECT_MESH *mesh = Object_GetMesh(obj->mesh_idx);
     Matrix_Push();
     Matrix_TranslateRel16(mesh->center);
-    spheres[0].x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-    spheres[0].y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-    spheres[0].z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+    spheres[0].pos.x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+    spheres[0].pos.y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+    spheres[0].pos.z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
     spheres[0].r = mesh->radius;
     Matrix_Pop();
 
@@ -551,9 +551,9 @@ int32_t Collide_GetSpheres(
         Matrix_Push();
         Matrix_TranslateRel16(mesh->center);
         SPHERE *const sphere = &spheres[i];
-        sphere->x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-        sphere->y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-        sphere->z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+        sphere->pos.x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+        sphere->pos.y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+        sphere->pos.z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
         sphere->r = mesh->radius;
         Matrix_Pop();
     }

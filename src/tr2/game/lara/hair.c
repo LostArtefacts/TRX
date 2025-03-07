@@ -39,9 +39,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     Matrix_Push();
     const OBJECT_MESH *mesh = g_Lara.mesh_ptrs[LM_HIPS];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[0].r = mesh->radius;
     Matrix_Pop();
 
@@ -57,9 +57,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     Matrix_Push();
     mesh = g_Lara.mesh_ptrs[LM_TORSO];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[1].r = mesh->radius;
     Matrix_Pop();
 
@@ -69,9 +69,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 
     mesh = g_Lara.mesh_ptrs[LM_UARM_R];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[3].r = mesh->radius * 3 / 2;
     Matrix_Pop();
 
@@ -80,9 +80,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     Matrix_Rot16(mesh_rots[LM_UARM_L]);
     mesh = g_Lara.mesh_ptrs[LM_UARM_L];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[4].r = mesh->radius * 3 / 2;
     Matrix_Pop();
 
@@ -93,9 +93,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     Matrix_Push();
     mesh = g_Lara.mesh_ptrs[LM_HEAD];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop();
 
@@ -116,9 +116,9 @@ static void M_CalculateSpheres_I(
     const OBJECT_MESH *mesh = g_Lara.mesh_ptrs[LM_HIPS];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[0].r = mesh->radius;
     Matrix_Pop_I();
 
@@ -137,9 +137,9 @@ static void M_CalculateSpheres_I(
     mesh = g_Lara.mesh_ptrs[LM_TORSO];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[1].r = mesh->radius;
     Matrix_Pop_I();
 
@@ -150,9 +150,9 @@ static void M_CalculateSpheres_I(
     mesh = g_Lara.mesh_ptrs[LM_UARM_R];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[3].r = mesh->radius * 3 / 2;
     Matrix_Pop_I();
 
@@ -163,9 +163,9 @@ static void M_CalculateSpheres_I(
     mesh = g_Lara.mesh_ptrs[LM_UARM_L];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[4].r = mesh->radius * 3 / 2;
     Matrix_Pop_I();
 
@@ -177,9 +177,9 @@ static void M_CalculateSpheres_I(
     mesh = g_Lara.mesh_ptrs[LM_HEAD];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop_I();
 
@@ -344,16 +344,16 @@ void Lara_Hair_Control(const bool in_cutscene)
 
         for (int32_t j = 0; j < 5; j++) {
             const SPHERE *const sphere = &m_HairSpheres[j];
-            const int32_t dx = s->pos.x - sphere->x;
-            const int32_t dy = s->pos.y - sphere->y;
-            const int32_t dz = s->pos.z - sphere->z;
+            const int32_t dx = s->pos.x - sphere->pos.x;
+            const int32_t dy = s->pos.y - sphere->pos.y;
+            const int32_t dz = s->pos.z - sphere->pos.z;
             int32_t dist = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
             if (dist < SQUARE(sphere->r)) {
                 dist = Math_Sqrt(dist);
                 CLAMPL(dist, 1);
-                s->pos.x = sphere->x + sphere->r * dx / dist;
-                s->pos.y = sphere->y + sphere->r * dy / dist;
-                s->pos.z = sphere->z + sphere->r * dz / dist;
+                s->pos.x = sphere->pos.x + sphere->r * dx / dist;
+                s->pos.y = sphere->pos.y + sphere->r * dy / dist;
+                s->pos.z = sphere->pos.z + sphere->r * dz / dist;
             }
         }
 
