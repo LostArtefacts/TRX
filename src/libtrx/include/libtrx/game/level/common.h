@@ -6,7 +6,7 @@
 #define ANIM_BONE_SIZE 4
 
 void Level_ReadPalettes(LEVEL_INFO *info, VFILE *file);
-void Level_ReadTexturePages(LEVEL_INFO *info, int32_t extra_pages, VFILE *file);
+void Level_ReadTexturePages(LEVEL_INFO *info, VFILE *file);
 void Level_ReadRooms(VFILE *file);
 void Level_ReadObjectMeshes(
     int32_t num_indices, const int32_t *indices, VFILE *file);
@@ -33,10 +33,10 @@ void Level_ReadCamerasAndSinks(VFILE *file);
 void Level_ReadItems(VFILE *file);
 void Level_ReadDemoData(VFILE *file);
 void Level_ReadSoundSources(VFILE *file);
-void Level_ReadSamples(
-    LEVEL_INFO *info, int32_t extra_sfx_count, int32_t extra_data_size,
-    int32_t extra_offset_count, VFILE *file);
+void Level_ReadSamples(LEVEL_INFO *info, VFILE *file);
 
 void Level_LoadTexturePages(LEVEL_INFO *info);
 void Level_LoadPalettes(LEVEL_INFO *info);
 void Level_LoadObjectsAndItems(void);
+
+extern LEVEL_INFO *Level_GetInfo(void);

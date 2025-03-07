@@ -2,20 +2,7 @@
 
 // clang-format off
 typedef enum {
-    // TODO: reset to 1
     INJ_VERSION_1  = 1,
-#if TR_VERSION == 1
-    INJ_VERSION_2  = 2,
-    INJ_VERSION_3  = 3,
-    INJ_VERSION_4  = 4,
-    INJ_VERSION_5  = 5,
-    INJ_VERSION_6  = 6,
-    INJ_VERSION_7  = 7,
-    INJ_VERSION_8  = 8,
-    INJ_VERSION_9  = 9,
-    INJ_VERSION_10 = 10,
-    INJ_VERSION_11 = 11,
-#endif
 } INJECTION_VERSION;
 
 typedef enum {
@@ -25,20 +12,53 @@ typedef enum {
     IFT_UZI_SFX             = 3,
     IFT_FLOOR_DATA          = 4,
     IFT_LARA_ANIMS          = 5,
-    IFT_LARA_JUMPS          = 6, // TODO: eliminate in new format
-    IFT_ITEM_POSITION       = 7,
-    IFT_PS1_ENEMY           = 8,
-    IFT_DISABLE_ANIM_SPRITE = 9,
-    IFT_SKYBOX              = 10,
-    IFT_PS1_CRYSTAL         = 11,
-    IFT_NUMBER_OF           = 12,
+    IFT_ITEM_POSITION       = 6,
+    IFT_PS1_ENEMY           = 7,
+    IFT_DISABLE_ANIM_SPRITE = 8,
+    IFT_SKYBOX              = 9,
+    IFT_PS1_CRYSTAL         = 10,
+    IFT_NUMBER_OF           = 11,
 } INJECTION_FILE_TYPE;
 
 typedef enum {
-    // TODO: expand in new format
-    IDT_FLOOR_EDITS = 0,
-    IDT_ITEM_EDITS  = 1,
-    IDT_NUMBER_OF   = 2,
+    ICT_TEXTURE_DATA   = 0,
+    ICT_TEXTURE_INFO   = 1,
+    ICT_MESH_DATA      = 2,
+    ICT_ANIMATION_DATA = 3,
+    ICT_OBJECT_DATA    = 4,
+    ICT_SFX_DATA       = 5,
+    ICT_DATA_EDITS     = 6,
+    ICT_NUMBER_OF      = 7,
+} INJECTION_CHUNK_TYPE;
+
+typedef enum {
+    IDT_PALETTE          = 0,
+    IDT_TEXTURE_PAGES    = 1,
+    IDT_OBJECT_TEXTURES  = 2,
+    IDT_SPRITE_TEXTURES  = 3,
+    IDT_SPRITE_SEQUENCES = 4,
+    IDT_OBJECT_MESHES    = 5,
+    IDT_MESH_POINTERS    = 6,
+    IDT_ANIM_CHANGES     = 7,
+    IDT_ANIM_RANGES      = 8,
+    IDT_ANIM_COMMANDS    = 9,
+    IDT_ANIM_BONES       = 10,
+    IDT_ANIM_FRAMES      = 11,
+    IDT_ANIMS            = 12,
+    IDT_OBJECTS          = 13,
+    IDT_SAMPLE_INFOS     = 14,
+    IDT_SAMPLE_INDICES   = 15,
+    IDT_SAMPLE_DATA      = 16,
+    IDT_FLOOR_EDITS      = 17,
+    IDT_ITEM_EDITS       = 18,
+    IDT_MESH_EDITS       = 19,
+    IDT_TEXTURE_EDITS    = 20,
+    IDT_ROOM_EDIT_META   = 21,
+    IDT_ROOM_EDITS       = 22,
+    IDT_VIS_PORTAL_EDITS = 23,
+    IDT_CAMERA_EDITS     = 24,
+    IDT_FRAME_EDITS      = 25,
+    IDT_NUMBER_OF        = 26,
 } INJECTION_DATA_TYPE;
 
 typedef enum {

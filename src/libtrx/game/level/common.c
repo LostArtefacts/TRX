@@ -292,9 +292,7 @@ void Level_ReadPalettes(LEVEL_INFO *const info, VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-// TODO: replace extra_pages with value from injection interface
-void Level_ReadTexturePages(
-    LEVEL_INFO *const info, const int32_t extra_pages, VFILE *const file)
+void Level_ReadTexturePages(LEVEL_INFO *const info, VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -302,20 +300,21 @@ void Level_ReadTexturePages(
     info->textures.page_count = num_pages;
     LOG_INFO("texture pages: %d", num_pages);
 
+    const int32_t extra_pages = Inject_GetDataCount(IDT_TEXTURE_PAGES);
     const int32_t texture_size_8_bit =
-        num_pages * TEXTURE_PAGE_SIZE * sizeof(uint8_t);
+        (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(uint8_t);
     const int32_t texture_size_32_bit =
         (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888);
 
     info->textures.pages_24 = Memory_Alloc(texture_size_8_bit);
-    VFile_Read(file, info->textures.pages_24, texture_size_8_bit);
+    VFile_Read(file, info->textures.pages_24, num_pages * TEXTURE_PAGE_SIZE);
 
     info->textures.pages_32 = Memory_Alloc(texture_size_32_bit);
     RGBA_8888 *output = info->textures.pages_32;
 
 #if TR_VERSION == 1
     const uint8_t *input = info->textures.pages_24;
-    for (int32_t i = 0; i < texture_size_8_bit; i++) {
+    for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
         const uint8_t index = *input++;
         const RGB_888 pix = info->palette.data_24[index];
         output->r = pix.r;
@@ -893,11 +892,7 @@ void Level_ReadSoundSources(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-// TODO: replace extra vars with values from injection interface
-void Level_ReadSamples(
-    LEVEL_INFO *const info, const int32_t extra_sfx_count,
-    const int32_t extra_data_size, const int32_t extra_offset_count,
-    VFILE *const file)
+void Level_ReadSamples(LEVEL_INFO *const info, VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -907,7 +902,8 @@ void Level_ReadSamples(
     const int32_t num_sample_infos = VFile_ReadS32(file);
     info->samples.info_count = num_sample_infos;
     LOG_INFO("sample infos: %d", num_sample_infos);
-    Sound_InitialiseSampleInfos(num_sample_infos + extra_sfx_count);
+    Sound_InitialiseSampleInfos(
+        num_sample_infos + Inject_GetDataCount(IDT_SAMPLE_INFOS));
     for (int32_t i = 0; i < num_sample_infos; i++) {
         SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
         sample_info->number = VFile_ReadS16(file);
@@ -921,8 +917,8 @@ void Level_ReadSamples(
     info->samples.data_size = data_size;
     LOG_INFO("%d sample data size", data_size);
 
-    info->samples.data =
-        GameBuf_Alloc(data_size + extra_data_size, GBUF_SAMPLES);
+    info->samples.data = GameBuf_Alloc(
+        data_size + Inject_GetDataCount(IDT_SAMPLE_DATA), GBUF_SAMPLES);
     VFile_Read(file, info->samples.data, sizeof(char) * data_size);
 #endif
 
@@ -930,8 +926,9 @@ void Level_ReadSamples(
     LOG_INFO("samples: %d", num_offsets);
     info->samples.offset_count = num_offsets;
 
-    info->samples.offsets =
-        Memory_Alloc(sizeof(int32_t) * (num_offsets + extra_offset_count));
+    info->samples.offsets = Memory_Alloc(
+        sizeof(int32_t)
+        * (num_offsets + Inject_GetDataCount(IDT_SAMPLE_INDICES)));
     VFile_Read(file, info->samples.offsets, sizeof(int32_t) * num_offsets);
 
 finish:

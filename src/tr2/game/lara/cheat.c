@@ -17,7 +17,6 @@
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/viewport.h"
-#include "global/utils.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
