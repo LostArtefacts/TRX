@@ -39,11 +39,11 @@ void Twinkle_SparkleItem(ITEM *const item, uint32_t mesh_mask)
         if (mesh_mask & (1 << i)) {
             SPHERE *sptr = &slist[i];
             effect_pos.x =
-                sptr->x + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
+                sptr->pos.x + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             effect_pos.y =
-                sptr->y + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
+                sptr->pos.y + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             effect_pos.z =
-                sptr->z + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
+                sptr->pos.z + sptr->r * (Random_GetDraw() - 0x4000) / 0x4000;
             Spawn_Twinkle(&effect_pos);
         }
     }

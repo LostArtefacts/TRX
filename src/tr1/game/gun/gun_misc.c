@@ -454,10 +454,11 @@ int32_t Gun_FireWeapon(
     for (int i = 0; i < nums; i++) {
         SPHERE *sptr = &slist[i];
         int32_t r = sptr->r;
-        if (ABS(sptr->x) < r && ABS(sptr->y) < r && sptr->z > r
-            && (sptr->x * sptr->x) + (sptr->y * sptr->y) <= (r * r)
-            && (sptr->z - r < bestdist)) {
-            bestdist = sptr->z - r;
+        if (ABS(sptr->pos.x) < r && ABS(sptr->pos.y) < r && sptr->pos.z > r
+            && (sptr->pos.x * sptr->pos.x) + (sptr->pos.y * sptr->pos.y)
+                <= (r * r)
+            && (sptr->pos.z - r < bestdist)) {
+            bestdist = sptr->pos.z - r;
             best = i;
         }
     }
