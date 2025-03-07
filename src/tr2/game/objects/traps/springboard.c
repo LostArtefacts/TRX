@@ -1,7 +1,6 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
-#include "global/utils.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/common.h>

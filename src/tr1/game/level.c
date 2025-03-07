@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
-#include "game/inject.h"
 #include "game/inventory_ring/vars.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -32,6 +31,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/inject.h>
 #include <libtrx/game/level.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/log.h>
@@ -50,7 +50,6 @@ typedef enum {
 } LEVEL_LAYOUT;
 
 static LEVEL_INFO m_LevelInfo = {};
-static INJECTION_INFO *m_InjectionInfo = nullptr;
 
 static bool M_TryLayout(VFILE *file, LEVEL_LAYOUT layout);
 static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
@@ -240,13 +239,10 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
     Level_ReadCinematicFrames(file);
     Level_ReadDemoData(file);
-    Level_ReadSamples(
-        &m_LevelInfo, m_InjectionInfo->sfx_count,
-        m_InjectionInfo->sfx_data_size, m_InjectionInfo->sample_count, file);
+    Level_ReadSamples(&m_LevelInfo, file);
 
     VFile_SetPos(file, 4);
-    Level_ReadTexturePages(
-        &m_LevelInfo, m_InjectionInfo->texture_page_count, file);
+    Level_ReadTexturePages(&m_LevelInfo, file);
 
     VFile_Close(file);
 }
@@ -270,7 +266,7 @@ static void M_LoadObjectMeshes(VFILE *const file)
     VFile_SetPos(file, data_start_pos);
 
     Object_InitialiseMeshes(
-        m_LevelInfo.mesh_ptr_count + m_InjectionInfo->mesh_ptr_count);
+        m_LevelInfo.mesh_ptr_count + Inject_GetDataCount(IDT_MESH_POINTERS));
     Level_ReadObjectMeshes(m_LevelInfo.mesh_ptr_count, mesh_indices, file);
 
     VFile_SetPos(file, end_pos);
@@ -285,7 +281,7 @@ static void M_LoadAnims(VFILE *file)
     const int32_t num_anims = VFile_ReadS32(file);
     m_LevelInfo.anims.anim_count = num_anims;
     LOG_INFO("%d anims", num_anims);
-    Anim_InitialiseAnims(num_anims + m_InjectionInfo->anim_count);
+    Anim_InitialiseAnims(num_anims + Inject_GetDataCount(IDT_ANIMS));
     Level_ReadAnims(0, num_anims, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -297,7 +293,7 @@ static void M_LoadAnimChanges(VFILE *file)
     m_LevelInfo.anims.change_count = num_anim_changes;
     LOG_INFO("%d anim changes", num_anim_changes);
     Anim_InitialiseChanges(
-        num_anim_changes + m_InjectionInfo->anim_change_count);
+        num_anim_changes + Inject_GetDataCount(IDT_ANIM_CHANGES));
     Level_ReadAnimChanges(0, num_anim_changes, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -308,7 +304,8 @@ static void M_LoadAnimRanges(VFILE *file)
     const int32_t num_anim_ranges = VFile_ReadS32(file);
     m_LevelInfo.anims.range_count = num_anim_ranges;
     LOG_INFO("%d anim ranges", num_anim_ranges);
-    Anim_InitialiseRanges(num_anim_ranges + m_InjectionInfo->anim_range_count);
+    Anim_InitialiseRanges(
+        num_anim_ranges + Inject_GetDataCount(IDT_ANIM_RANGES));
     Level_ReadAnimRanges(0, num_anim_ranges, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -320,7 +317,7 @@ static void M_LoadAnimCommands(VFILE *file)
     m_LevelInfo.anims.command_count = num_anim_commands;
     LOG_INFO("%d anim commands", num_anim_commands);
     Level_InitialiseAnimCommands(
-        num_anim_commands + m_InjectionInfo->anim_cmd_count);
+        num_anim_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS));
     Level_ReadAnimCommands(0, num_anim_commands, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -331,7 +328,7 @@ static void M_LoadAnimBones(VFILE *const file)
     const int32_t num_anim_bones = VFile_ReadS32(file) / ANIM_BONE_SIZE;
     m_LevelInfo.anims.bone_count = num_anim_bones;
     LOG_INFO("%d anim bones", num_anim_bones);
-    Anim_InitialiseBones(num_anim_bones + m_InjectionInfo->anim_bone_count);
+    Anim_InitialiseBones(num_anim_bones + Inject_GetDataCount(IDT_ANIM_BONES));
     Level_ReadAnimBones(0, num_anim_bones, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -344,7 +341,7 @@ static void M_LoadAnimFrames(VFILE *file)
     LOG_INFO("%d raw anim frames", raw_data_count);
     m_LevelInfo.anims.frames = Memory_Alloc(
         sizeof(int16_t)
-        * (raw_data_count + m_InjectionInfo->anim_frame_data_count));
+        * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
     VFile_Read(
         file, m_LevelInfo.anims.frames, sizeof(int16_t) * raw_data_count);
     Benchmark_End(benchmark, nullptr);
@@ -357,7 +354,7 @@ static void M_LoadTextures(VFILE *file)
     m_LevelInfo.textures.object_count = num_textures;
     LOG_INFO("%d object textures", num_textures);
     Output_InitialiseObjectTextures(
-        num_textures + m_InjectionInfo->texture_count);
+        num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
     Level_ReadObjectTextures(0, 0, num_textures, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -369,7 +366,7 @@ static void M_LoadSprites(VFILE *file)
     m_LevelInfo.textures.sprite_count = num_textures;
     LOG_DEBUG("sprite textures: %d", num_textures);
     Output_InitialiseSpriteTextures(
-        num_textures + m_InjectionInfo->sprite_info_count);
+        num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
     Level_ReadSpriteTextures(0, 0, num_textures, file);
     Benchmark_End(benchmark, nullptr);
 }
@@ -383,7 +380,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     // killing mutants. This is to maintain that feature.
     Mutant_ToggleExplosions(Object_Get(O_EXPLOSION_1)->loaded);
 
-    Inject_AllInjections(&m_LevelInfo);
+    Inject_AllInjections();
 
     Level_LoadAnimFrames(&m_LevelInfo);
     Level_LoadAnimCommands();
@@ -497,15 +494,12 @@ void Level_Load(const GF_LEVEL *const level)
     LOG_INFO("%d (%s)", level->num, level->path);
     BENCHMARK *const benchmark = Benchmark_Start();
 
-    m_InjectionInfo = Memory_Alloc(sizeof(INJECTION_INFO));
-    Inject_Init(
-        level->injections.count, level->injections.data_paths, m_InjectionInfo);
+    Inject_InitLevel(level);
 
     M_LoadFromFile(level);
     M_CompleteSetup(level);
 
     Inject_Cleanup();
-    Memory_FreePointer(&m_InjectionInfo);
 
     Output_SetWaterColor(&level->settings.water_color);
     Output_SetDrawDistFade(level->settings.draw_distance_fade * WALL_L);
@@ -594,4 +588,9 @@ bool Level_Initialise(
     g_Camera.underwater = false;
     Benchmark_End(benchmark, nullptr);
     return true;
+}
+
+LEVEL_INFO *Level_GetInfo(void)
+{
+    return &m_LevelInfo;
 }

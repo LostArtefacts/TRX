@@ -6,7 +6,6 @@
 #include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/room.h"
-#include "global/utils.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>

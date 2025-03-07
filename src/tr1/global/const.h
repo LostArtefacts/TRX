@@ -68,8 +68,6 @@
 #define MAX_HEAD_TILT_SURF (40 * DEG_1) // = 7280
 #define MIN_HEAD_TILT_SURF (-40 * DEG_1) // = -7280
 #define DIVE_WAIT 10
-#define ROUND_TO_CLICK(V) ((V) & ~(STEP_L - 1))
-#define ROUND_TO_SECTOR(V) ((V) & ~(WALL_L - 1))
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define FRONT_ARC DEG_90
 #define MAX_HEAD_CHANGE (DEG_1 * 5) // = 910
