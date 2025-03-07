@@ -24,94 +24,13 @@
 #define INJECTION_CURRENT_VERSION 11
 #define NULL_FD_INDEX ((uint16_t)(-1))
 
-typedef enum {
-    INJ_VERSION_1 = 1,
-    INJ_VERSION_2 = 2,
-    INJ_VERSION_3 = 3,
-    INJ_VERSION_4 = 4,
-    INJ_VERSION_5 = 5,
-    INJ_VERSION_6 = 6,
-    INJ_VERSION_7 = 7,
-    INJ_VERSION_8 = 8,
-    INJ_VERSION_9 = 9,
-    INJ_VERSION_10 = 10,
-    INJ_VERSION_11 = 11,
-} INJECTION_VERSION;
-
-typedef enum {
-    INJ_GENERAL = 0,
-    INJ_BRAID = 1,
-    INJ_TEXTURE_FIX = 2,
-    INJ_UZI_SFX = 3,
-    INJ_FLOOR_DATA = 4,
-    INJ_LARA_ANIMS = 5,
-    INJ_LARA_JUMPS = 6,
-    INJ_ITEM_POSITION = 7,
-    INJ_PS1_ENEMY = 8,
-    INJ_DISABLE_ANIM_SPRITE = 9,
-    INJ_SKYBOX = 10,
-    INJ_PS1_CRYSTAL = 11,
-} INJECTION_TYPE;
-
 typedef struct {
     VFILE *fp;
     INJECTION_VERSION version;
-    INJECTION_TYPE type;
+    INJECTION_FILE_TYPE type;
     INJECTION_INFO *info;
     bool relevant;
 } INJECTION;
-
-typedef enum {
-    FT_TEXTURED_QUAD = 0,
-    FT_TEXTURED_TRIANGLE = 1,
-    FT_COLOURED_QUAD = 2,
-    FT_COLOURED_TRIANGLE = 3
-} FACE_TYPE;
-
-typedef struct {
-    GAME_OBJECT_ID object_id;
-    int16_t source_identifier;
-    FACE_TYPE face_type;
-    int16_t face_index;
-    int32_t target_count;
-    int16_t *targets;
-} FACE_EDIT;
-
-typedef struct {
-    int16_t vertex_index;
-    int16_t x_change;
-    int16_t y_change;
-    int16_t z_change;
-} VERTEX_EDIT;
-
-typedef struct {
-    GAME_OBJECT_ID object_id;
-    int16_t mesh_idx;
-    XYZ_16 centre_shift;
-    int32_t radius_shift;
-    int32_t face_edit_count;
-    int32_t vertex_edit_count;
-    FACE_EDIT *face_edits;
-    VERTEX_EDIT *vertex_edits;
-} MESH_EDIT;
-
-typedef enum {
-    FET_TRIGGER_PARAM = 0,
-    FET_MUSIC_ONESHOT = 1,
-    FET_FD_INSERT = 2,
-    FET_ROOM_SHIFT = 3,
-    FET_TRIGGER_ITEM = 4,
-} FLOOR_EDIT_TYPE;
-
-typedef enum {
-    RMET_TEXTURE_FACE = 0,
-    RMET_MOVE_FACE = 1,
-    RMET_ALTER_VERTEX = 2,
-    RMET_ROTATE_FACE = 3,
-    RMET_ADD_FACE = 4,
-    RMET_ADD_VERTEX = 5,
-    RMET_ADD_SPRITE = 6,
-} ROOM_MESH_EDIT_TYPE;
 
 static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = nullptr;
@@ -205,38 +124,35 @@ static void M_LoadFromFile(INJECTION *injection, const char *filename)
     injection->type = VFile_ReadS32(fp);
 
     switch (injection->type) {
-    case INJ_GENERAL:
-    case INJ_LARA_ANIMS:
+    case IFT_GENERAL:
+    case IFT_LARA_ANIMS:
         injection->relevant = true;
         break;
-    case INJ_BRAID:
+    case IFT_BRAID:
         injection->relevant = g_Config.visuals.enable_braid;
         break;
-    case INJ_UZI_SFX:
+    case IFT_UZI_SFX:
         injection->relevant = g_Config.audio.enable_ps_uzi_sfx;
         break;
-    case INJ_FLOOR_DATA:
+    case IFT_FLOOR_DATA:
         injection->relevant = g_Config.gameplay.fix_floor_data_issues;
         break;
-    case INJ_TEXTURE_FIX:
+    case IFT_TEXTURE_FIX:
         injection->relevant = g_Config.visuals.fix_texture_issues;
         break;
-    case INJ_LARA_JUMPS:
-        injection->relevant = false; // Merged with INJ_LARA_ANIMS in 4.6
-        break;
-    case INJ_ITEM_POSITION:
+    case IFT_ITEM_POSITION:
         injection->relevant = g_Config.visuals.fix_item_rots;
         break;
-    case INJ_PS1_ENEMY:
+    case IFT_PS1_ENEMY:
         injection->relevant = g_Config.gameplay.restore_ps1_enemies;
         break;
-    case INJ_DISABLE_ANIM_SPRITE:
+    case IFT_DISABLE_ANIM_SPRITE:
         injection->relevant = !g_Config.visuals.fix_animated_sprites;
         break;
-    case INJ_SKYBOX:
+    case IFT_SKYBOX:
         injection->relevant = g_Config.visuals.enable_skybox;
         break;
-    case INJ_PS1_CRYSTAL:
+    case IFT_PS1_CRYSTAL:
         injection->relevant = g_Config.gameplay.enable_save_crystals
             && g_Config.visuals.enable_ps1_crystals;
         break;
@@ -763,10 +679,10 @@ static void M_MeshEdits(INJECTION *injection, uint16_t *palette_map)
             Memory_Alloc(sizeof(VERTEX_EDIT) * mesh_edit->vertex_edit_count);
         for (int32_t i = 0; i < mesh_edit->vertex_edit_count; i++) {
             VERTEX_EDIT *vertex_edit = &mesh_edit->vertex_edits[i];
-            vertex_edit->vertex_index = VFile_ReadS16(fp);
-            vertex_edit->x_change = VFile_ReadS16(fp);
-            vertex_edit->y_change = VFile_ReadS16(fp);
-            vertex_edit->z_change = VFile_ReadS16(fp);
+            vertex_edit->index = VFile_ReadS16(fp);
+            vertex_edit->shift.x = VFile_ReadS16(fp);
+            vertex_edit->shift.y = VFile_ReadS16(fp);
+            vertex_edit->shift.z = VFile_ReadS16(fp);
         }
 
         M_ApplyMeshEdit(mesh_edit, palette_map);
@@ -811,10 +727,10 @@ static void M_ApplyMeshEdit(
 
     for (int32_t i = 0; i < mesh_edit->vertex_edit_count; i++) {
         const VERTEX_EDIT *const edit = &mesh_edit->vertex_edits[i];
-        XYZ_16 *const vertex = &mesh->vertices[edit->vertex_index];
-        vertex->x += edit->x_change;
-        vertex->y += edit->y_change;
-        vertex->z += edit->z_change;
+        XYZ_16 *const vertex = &mesh->vertices[edit->index];
+        vertex->x += edit->shift.x;
+        vertex->y += edit->shift.y;
+        vertex->z += edit->shift.z;
     }
 
     // Find each face we are interested in and replace its texture

@@ -15,30 +15,10 @@
 #define INJECTION_CURRENT_VERSION 1
 #define NULL_FD_INDEX ((uint16_t)(-1))
 
-typedef enum {
-    INJ_VERSION_1 = 1,
-} INJECTION_VERSION;
-
-typedef enum {
-    INJ_GENERAL = 0,
-    INJ_FLOOR_DATA = 4,
-    INJ_ITEM_POSITION = 7,
-} INJECTION_TYPE;
-
-typedef enum {
-    FET_TRIGGER_PARAM = 0,
-    FET_MUSIC_ONESHOT = 1,
-    FET_FD_INSERT = 2,
-    FET_ROOM_SHIFT = 3,
-    FET_TRIGGER_ITEM = 4,
-    FET_ROOM_PROPERTIES = 5,
-    FET_TRIGGER_TYPE = 6,
-} FLOOR_EDIT_TYPE;
-
 typedef struct {
     VFILE *fp;
     INJECTION_VERSION version;
-    INJECTION_TYPE type;
+    INJECTION_FILE_TYPE type;
     bool relevant;
 } INJECTION;
 
@@ -88,13 +68,13 @@ static void M_LoadFromFile(INJECTION *const injection, const char *filename)
     injection->type = VFile_ReadS32(fp);
 
     switch (injection->type) {
-    case INJ_GENERAL:
+    case IFT_GENERAL:
         injection->relevant = true;
         break;
-    case INJ_FLOOR_DATA:
+    case IFT_FLOOR_DATA:
         injection->relevant = g_Config.gameplay.fix_floor_data_issues;
         break;
-    case INJ_ITEM_POSITION:
+    case IFT_ITEM_POSITION:
         injection->relevant = g_Config.visuals.fix_item_rots;
         break;
     default:
@@ -406,11 +386,11 @@ void Inject_AllInjections(void)
             const int32_t data_size = VFile_ReadS32(fp);
 
             switch (type) {
-            case IDT_FLOOR_EDIT:
+            case IDT_FLOOR_EDITS:
                 M_FloorDataEdits(injection, data_count);
                 break;
 
-            case IDT_ITEM_EDIT:
+            case IDT_ITEM_EDITS:
                 M_ItemEdits(injection, data_count);
                 break;
 
