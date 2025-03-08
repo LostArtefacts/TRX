@@ -208,6 +208,11 @@ static void M_Setup(OBJECT *const obj)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_ACTIVE
+            && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+            Item_RemoveActive(Item_GetIndex(item));
+            item->status = IS_INACTIVE;
+        }
         item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
     }
 }
