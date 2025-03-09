@@ -8,11 +8,21 @@ typedef enum {
     GFX_3D_PRIM_TRI = 1,
 } GFX_3D_PRIM_TYPE;
 
+#pragma pack(push, 1)
 typedef struct {
     float x, y, z;
-    float s, t, w;
+    union {
+        struct {
+            float s;
+            float t;
+            float pad[2];
+        };
+        float tex_coord[4];
+    };
+    float w;
     float r, g, b, a;
 } GFX_3D_VERTEX;
+#pragma pack(pop)
 
 typedef struct {
     GFX_3D_PRIM_TYPE prim_type;
