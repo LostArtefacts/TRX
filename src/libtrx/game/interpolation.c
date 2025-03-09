@@ -81,11 +81,12 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
 
     case O_LARA:
     case O_LARA_EXTRA: {
-        const int16_t vehicle_item = Lara_GetLaraInfo()->skidoo;
-        if (vehicle_item != NO_ITEM) {
-            return M_GetItemMaxDelta(Item_Get(vehicle_item));
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        if (lara == nullptr || lara->item_num == NO_ITEM
+            || lara->skidoo == NO_ITEM) {
+            break;
         }
-        break;
+        return M_GetItemMaxDelta(Item_Get(lara->skidoo));
     }
 #endif
 
@@ -187,26 +188,28 @@ void Interpolation_Commit(void)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    INTERPOLATE_ROT(&lara->left_arm, rot.x, ratio, DEG_45);
-    INTERPOLATE_ROT(&lara->left_arm, rot.y, ratio, DEG_45);
-    INTERPOLATE_ROT(&lara->left_arm, rot.z, ratio, DEG_45);
-    INTERPOLATE_ROT(&lara->right_arm, rot.x, ratio, DEG_45);
-    INTERPOLATE_ROT(&lara->right_arm, rot.y, ratio, DEG_45);
-    INTERPOLATE_ROT(&lara->right_arm, rot.z, ratio, DEG_45);
-    INTERPOLATE_ROT(lara, torso_rot.x, ratio, DEG_45);
-    INTERPOLATE_ROT(lara, torso_rot.y, ratio, DEG_45);
-    INTERPOLATE_ROT(lara, torso_rot.z, ratio, DEG_45);
-    INTERPOLATE_ROT(lara, head_rot.x, ratio, DEG_45);
-    INTERPOLATE_ROT(lara, head_rot.y, ratio, DEG_45);
-    INTERPOLATE_ROT(lara, head_rot.z, ratio, DEG_45);
+    if (lara != nullptr) {
+        INTERPOLATE_ROT(&lara->left_arm, rot.x, ratio, DEG_45);
+        INTERPOLATE_ROT(&lara->left_arm, rot.y, ratio, DEG_45);
+        INTERPOLATE_ROT(&lara->left_arm, rot.z, ratio, DEG_45);
+        INTERPOLATE_ROT(&lara->right_arm, rot.x, ratio, DEG_45);
+        INTERPOLATE_ROT(&lara->right_arm, rot.y, ratio, DEG_45);
+        INTERPOLATE_ROT(&lara->right_arm, rot.z, ratio, DEG_45);
+        INTERPOLATE_ROT(lara, torso_rot.x, ratio, DEG_45);
+        INTERPOLATE_ROT(lara, torso_rot.y, ratio, DEG_45);
+        INTERPOLATE_ROT(lara, torso_rot.z, ratio, DEG_45);
+        INTERPOLATE_ROT(lara, head_rot.x, ratio, DEG_45);
+        INTERPOLATE_ROT(lara, head_rot.y, ratio, DEG_45);
+        INTERPOLATE_ROT(lara, head_rot.z, ratio, DEG_45);
+    }
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
         const XYZ_32 max_delta = M_GetItemMaxDelta(item);
-#if TR_VERSION == 1
+#if TR_VERSION == 2
+        const bool is_mounted = lara != nullptr && (i == lara->skidoo);
+#else
         const bool is_mounted = false;
-#elif TR_VERSION == 2
-        const bool is_mounted = i == lara->skidoo;
 #endif
         if (((item->flags & IF_KILLED) || item->status == IS_INACTIVE)
             && !is_mounted) {
@@ -250,8 +253,8 @@ void Interpolation_Commit(void)
         effect_num = effect->next_active;
     }
 
-    if (Lara_Hair_IsActive()) {
-        const XYZ_32 max_delta = M_GetItemMaxDelta(Lara_GetItem());
+    if (lara_item != nullptr && Lara_Hair_IsActive()) {
+        const XYZ_32 max_delta = M_GetItemMaxDelta(lara_item);
         for (int i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
             HAIR_SEGMENT *const hair = Lara_Hair_GetSegment(i);
             INTERPOLATE(hair, pos.x, ratio, max_delta.x);
@@ -277,18 +280,20 @@ void Interpolation_Remember(void)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    REMEMBER(&lara->left_arm, rot.x);
-    REMEMBER(&lara->left_arm, rot.y);
-    REMEMBER(&lara->left_arm, rot.z);
-    REMEMBER(&lara->right_arm, rot.x);
-    REMEMBER(&lara->right_arm, rot.y);
-    REMEMBER(&lara->right_arm, rot.z);
-    REMEMBER(lara, torso_rot.x);
-    REMEMBER(lara, torso_rot.y);
-    REMEMBER(lara, torso_rot.z);
-    REMEMBER(lara, head_rot.x);
-    REMEMBER(lara, head_rot.y);
-    REMEMBER(lara, head_rot.z);
+    if (lara != nullptr) {
+        REMEMBER(&lara->left_arm, rot.x);
+        REMEMBER(&lara->left_arm, rot.y);
+        REMEMBER(&lara->left_arm, rot.z);
+        REMEMBER(&lara->right_arm, rot.x);
+        REMEMBER(&lara->right_arm, rot.y);
+        REMEMBER(&lara->right_arm, rot.z);
+        REMEMBER(lara, torso_rot.x);
+        REMEMBER(lara, torso_rot.y);
+        REMEMBER(lara, torso_rot.z);
+        REMEMBER(lara, head_rot.x);
+        REMEMBER(lara, head_rot.y);
+        REMEMBER(lara, head_rot.z);
+    }
 
     for (int i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
