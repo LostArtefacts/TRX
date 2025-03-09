@@ -137,8 +137,13 @@ typedef struct {
     float ys;
     int16_t clip;
     int16_t g;
-    int16_t u;
-    int16_t v;
+    union {
+        struct {
+            float u, v, trapezoid_ratios[2];
+        };
+        float tex_coord[4];
+    };
+    XYZ_16 world_pos;
 } PHD_VBUF;
 
 typedef struct {

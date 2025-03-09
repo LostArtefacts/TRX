@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...develop) - ××××-××-××
+- added quadrilateral interpolation (#354)
 - added support for `-l`/`--level` argument to play a single level
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - added drawing of object mesh spheres to the `/debug` console command
@@ -12,6 +13,7 @@
 - fixed Lara's meshes not resetting after using the fly cheat (#2565, #2572, regressions from 4.8)
 - fixed guns appearing in Lara's hands if the draw input is held when unarmed and while picking up a gun item (#2577, regressions from 0.8/4.3)
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 4.8)
+- removed perspective filter toggle (it had no effect; repurposed to trapezoid interpolation toggle)
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)

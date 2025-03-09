@@ -42,7 +42,7 @@ static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
 #if TR_VERSION == 1
     [INPUT_ROLE_UNBIND_KEY] = 1,
     [INPUT_ROLE_RESET_BINDINGS] = 1,
-    [INPUT_ROLE_PERSPECTIVE] = 1,
+    [INPUT_ROLE_TRAPEZOID_FILTER] = 1,
 #endif
     [INPUT_ROLE_MENU_CONFIRM] = 1,
     [INPUT_ROLE_MENU_BACK] = 1,
@@ -264,7 +264,7 @@ bool Input_AssignFromJSONObject(
     case 38: role = INPUT_ROLE_TOGGLE_PHOTO_MODE; break;
     case 39: role = INPUT_ROLE_UNBIND_KEY; break;
     case 40: role = INPUT_ROLE_RESET_BINDINGS; break;
-    case 42: role = INPUT_ROLE_PERSPECTIVE; break;
+    case 42: role = INPUT_ROLE_TRAPEZOID_FILTER; break;
     case 43: role = INPUT_ROLE_MENU_CONFIRM; break;
     case 44: role = INPUT_ROLE_MENU_BACK; break;
     case 45: role = INPUT_ROLE_MENU_LEFT; break;

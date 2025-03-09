@@ -57,8 +57,8 @@ void Game_ProcessInput(void)
     if (g_Config.input.enable_buffering && Game_IsPlaying()) {
         if (g_Input.toggle_bilinear_filter) {
             FRAME_BUFFER(toggle_bilinear_filter);
-        } else if (g_Input.toggle_perspective_filter) {
-            FRAME_BUFFER(toggle_perspective_filter);
+        } else if (g_Input.toggle_trapezoid_filter) {
+            FRAME_BUFFER(toggle_trapezoid_filter);
         } else if (g_Input.toggle_fps_counter) {
             FRAME_BUFFER(toggle_fps_counter);
         }

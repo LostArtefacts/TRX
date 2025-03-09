@@ -199,7 +199,7 @@ typedef struct {
         int32_t resolution_height;
         GFX_RENDER_MODE render_mode;
         int32_t fps;
-        bool enable_perspective_filter;
+        bool enable_trapezoid_filter;
         GFX_TEXTURE_FILTER texture_filter;
         GFX_TEXTURE_FILTER fbo_filter;
         bool enable_debug_triggers;

@@ -77,6 +77,7 @@ static const char *m_ImageExtensions[] = {
 };
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
+static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4]);
 static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
 static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
@@ -152,6 +153,51 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 
     S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
     GFX_Context_SetWireframeMode(wireframe_state);
+}
+
+static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4])
+{
+    for (int32_t j = 0; j < 4; j++) {
+        vbuf[j]->trapezoid_ratios[0] = 1.0;
+        vbuf[j]->trapezoid_ratios[1] = 1.0;
+    }
+
+    XYZ_F c0, c1, c2, c3, *coords[4] = { &c0, &c1, &c2, &c3 };
+    for (int32_t i = 0; i < 4; i++) {
+        coords[i]->x = vbuf[i]->world_pos.x;
+        coords[i]->y = vbuf[i]->world_pos.y;
+        coords[i]->z = vbuf[i]->world_pos.z;
+    }
+
+    const XYZ_F a = XYZ_F_Subtract(c0, c1);
+    const XYZ_F b = XYZ_F_Subtract(c3, c2);
+    const XYZ_F c = XYZ_F_Subtract(c0, c3);
+    const XYZ_F d = XYZ_F_Subtract(c1, c2);
+
+    const float a_l = XYZ_F_Length(a);
+    const float b_l = XYZ_F_Length(b);
+    const float c_l = XYZ_F_Length(c);
+    const float d_l = XYZ_F_Length(d);
+    const float ab = XYZ_F_DotProduct(a, b) / (a_l * b_l);
+    const float cd = XYZ_F_DotProduct(c, d) / (c_l * d_l);
+    const float tx = ABS(vbuf[0]->u - vbuf[3]->u);
+    const float ty = ABS(vbuf[0]->v - vbuf[3]->v);
+
+    if (ab > cd) {
+        const int k = (tx > ty) ? 3 : 2;
+        if (a_l > b_l) {
+            vbuf[2]->tex_coord[k] = vbuf[3]->tex_coord[k] = (b_l / a_l);
+        } else if (a_l < b_l) {
+            vbuf[0]->tex_coord[k] = vbuf[1]->tex_coord[k] = (a_l / b_l);
+        }
+    } else if (ab < cd) {
+        const int k = (tx > ty) ? 2 : 3;
+        if (c_l > d_l) {
+            vbuf[1]->tex_coord[k] = vbuf[2]->tex_coord[k] = (d_l / c_l);
+        } else if (c_l < d_l) {
+            vbuf[0]->tex_coord[k] = vbuf[3]->tex_coord[k] = (c_l / d_l);
+        }
+    }
 }
 
 static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
@@ -234,6 +280,9 @@ static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
             vns[j]->v = tex->uv[j].v;
         }
 
+        if (g_Config.rendering.enable_trapezoid_filter) {
+            M_FixTrapezoidRatios(vns);
+        }
         S_Output_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tex_page, tex->draw_type);
     }
@@ -336,6 +385,9 @@ static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
     vbuf->xv = xv;
     vbuf->yv = yv;
     vbuf->zv = zv;
+    vbuf->tex_coord[2] = 1.0;
+    vbuf->tex_coord[3] = 1.0;
+    vbuf->world_pos = pos;
 
     uint16_t clip_flags;
     if (zv < Output_GetNearZ()) {
