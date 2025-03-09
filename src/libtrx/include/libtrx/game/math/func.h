@@ -13,6 +13,12 @@ DIRECTION Math_GetDirection(int16_t angle);
 DIRECTION Math_GetDirectionCone(int16_t angle, int16_t cone);
 int16_t Math_DirectionToAngle(DIRECTION dir);
 int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio);
+
 int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
 int32_t XYZ_32_GetDistance0(const XYZ_32 *pos);
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
+
+float XYZ_F_DotProduct(XYZ_F a, XYZ_F b);
+float XYZ_F_Length2(XYZ_F pos);
+float XYZ_F_Length(XYZ_F pos);
+XYZ_F XYZ_F_Subtract(XYZ_F a, XYZ_F b);

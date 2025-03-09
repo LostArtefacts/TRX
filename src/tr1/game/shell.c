@@ -315,12 +315,12 @@ void Shell_ProcessInput(void)
         Config_Write();
     }
 
-    if (g_InputDB.toggle_perspective_filter) {
-        g_Config.rendering.enable_perspective_filter ^= true;
+    if (g_InputDB.toggle_trapezoid_filter) {
+        g_Config.rendering.enable_trapezoid_filter ^= true;
         Console_Log(
-            g_Config.rendering.enable_perspective_filter
-                ? GS(OSD_PERSPECTIVE_FILTER_ON)
-                : GS(OSD_PERSPECTIVE_FILTER_OFF));
+            g_Config.rendering.enable_trapezoid_filter
+                ? GS(OSD_TRAPEZOID_FILTER_ON)
+                : GS(OSD_TRAPEZOID_FILTER_OFF));
         Config_Write();
     }
 

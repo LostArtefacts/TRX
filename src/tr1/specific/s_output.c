@@ -178,6 +178,10 @@ static int32_t M_ZedClipper(
             v->w = 1.0f / near_z;
             v->s = M_GetUV(vn0->u) + (M_GetUV(vn1->u) - M_GetUV(vn0->u)) * clip;
             v->t = M_GetUV(vn0->v) + (M_GetUV(vn1->v) - M_GetUV(vn0->v)) * clip;
+            v->tex_coord[2] = vn0->tex_coord[2]
+                + (vn1->tex_coord[2] - vn0->tex_coord[2]) * clip;
+            v->tex_coord[3] = vn0->tex_coord[3]
+                + (vn1->tex_coord[3] - vn0->tex_coord[3]) * clip;
 
             v->r = v->g = v->b =
                 (8192.0f - (vn0->g + (vn1->g - vn0->g) * clip)) * multiplier;
@@ -194,6 +198,8 @@ static int32_t M_ZedClipper(
             v->w = 1.0f / vn0->zv;
             v->s = M_GetUV(vn0->u);
             v->t = M_GetUV(vn0->v);
+            v->tex_coord[2] = vn0->tex_coord[2];
+            v->tex_coord[3] = vn0->tex_coord[3];
 
             v->r = v->g = v->b = (8192.0f - vn0->g) * multiplier;
             Output_ApplyTint(&v->r, &v->g, &v->b);
@@ -349,6 +355,8 @@ void S_Output_DrawSprite(
     vertices[0].z = vz;
     vertices[0].s = u0;
     vertices[0].t = v0;
+    vertices[0].tex_coord[2] = 1.0;
+    vertices[0].tex_coord[3] = 1.0;
     vertices[0].w = rhw;
     vertices[0].r = vshade;
     vertices[0].g = vshade;
@@ -359,6 +367,8 @@ void S_Output_DrawSprite(
     vertices[1].z = vz;
     vertices[1].s = u1;
     vertices[1].t = v0;
+    vertices[1].tex_coord[2] = 1.0;
+    vertices[1].tex_coord[3] = 1.0;
     vertices[1].w = rhw;
     vertices[1].r = vshade;
     vertices[1].g = vshade;
@@ -369,6 +379,8 @@ void S_Output_DrawSprite(
     vertices[2].z = vz;
     vertices[2].s = u1;
     vertices[2].t = v1;
+    vertices[2].tex_coord[2] = 1.0;
+    vertices[2].tex_coord[3] = 1.0;
     vertices[2].w = rhw;
     vertices[2].r = vshade;
     vertices[2].g = vshade;
@@ -379,6 +391,8 @@ void S_Output_DrawSprite(
     vertices[3].z = vz;
     vertices[3].s = u0;
     vertices[3].t = v1;
+    vertices[3].tex_coord[2] = 1.0;
+    vertices[3].tex_coord[3] = 1.0;
     vertices[3].w = rhw;
     vertices[3].r = vshade;
     vertices[3].g = vshade;
@@ -572,7 +586,7 @@ void S_Output_DrawShadow(PHD_VBUF *vbufs, int clip, int vertex_count)
     // needs to be more than 8 cause clipping might return more polygons.
     GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
 
-    for (int i = 0; i < vertex_count; i++) {
+    for (int32_t i = 0; i < vertex_count; i++) {
         GFX_3D_VERTEX *vertex = &vertices[i];
         PHD_VBUF *vbuf = &vbufs[i];
         vertex->x = vbuf->xs;
@@ -686,7 +700,7 @@ void S_Output_DrawFlatTriangle(
     }
 
     float multiplier = g_Config.visuals.brightness / (16.0f * 255.0f);
-    for (int i = 0; i < vertex_count; i++) {
+    for (int32_t i = 0; i < vertex_count; i++) {
         vertices[i].x = src_vbuf[i]->xs;
         vertices[i].y = src_vbuf[i]->ys;
         vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
@@ -713,7 +727,7 @@ void S_Output_DrawFlatTriangle(
         if (vertex_count == 0) {
             return;
         }
-        for (int i = 0; i < vertex_count; i++) {
+        for (int32_t i = 0; i < vertex_count; i++) {
             vertices[i].r *= color.r / 255.0f;
             vertices[i].g *= color.g / 255.0f;
             vertices[i].b *= color.b / 255.0f;
@@ -755,6 +769,8 @@ void S_Output_DrawEnvMapTriangle(
             vertices[i].w = 1.0f / src_vbuf[i]->zv;
             vertices[i].s = M_GetUV(src_vbuf[i]->u);
             vertices[i].t = M_GetUV(src_vbuf[i]->v);
+            vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
+            vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
 
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
@@ -819,7 +835,7 @@ void S_Output_DrawEnvMapQuad(
 
     const PHD_VBUF *const src_vbuf[4] = { vn2, vn1, vn3, vn4 };
 
-    for (int i = 0; i < vertex_count; i++) {
+    for (int32_t i = 0; i < vertex_count; i++) {
         vertices[i].x = src_vbuf[i]->xs;
         vertices[i].y = src_vbuf[i]->ys;
         vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
@@ -827,6 +843,8 @@ void S_Output_DrawEnvMapQuad(
         vertices[i].w = 1.0f / src_vbuf[i]->zv;
         vertices[i].s = M_GetUV(src_vbuf[i]->u);
         vertices[i].t = M_GetUV(src_vbuf[i]->v);
+        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
+        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
 
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;
@@ -866,7 +884,7 @@ void S_Output_DrawTexturedTriangle(
             return;
         }
 
-        for (int i = 0; i < vertex_count; i++) {
+        for (int32_t i = 0; i < vertex_count; i++) {
             vertices[i].x = src_vbuf[i]->xs;
             vertices[i].y = src_vbuf[i]->ys;
             vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
@@ -874,6 +892,8 @@ void S_Output_DrawTexturedTriangle(
             vertices[i].w = 1.0f / src_vbuf[i]->zv;
             vertices[i].s = M_GetUV(src_vbuf[i]->u);
             vertices[i].t = M_GetUV(src_vbuf[i]->v);
+            vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
+            vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
 
             vertices[i].r = vertices[i].g = vertices[i].b =
                 (8192.0f - src_vbuf[i]->g) * multiplier;
@@ -941,7 +961,7 @@ void S_Output_DrawTexturedQuad(
 
     float multiplier = g_Config.visuals.brightness / 16.0f;
 
-    for (int i = 0; i < vertex_count; i++) {
+    for (int32_t i = 0; i < vertex_count; i++) {
         vertices[i].x = src_vbuf[i]->xs;
         vertices[i].y = src_vbuf[i]->ys;
         vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
@@ -949,6 +969,8 @@ void S_Output_DrawTexturedQuad(
         vertices[i].w = 1.0f / src_vbuf[i]->zv;
         vertices[i].s = M_GetUV(src_vbuf[i]->u);
         vertices[i].t = M_GetUV(src_vbuf[i]->v);
+        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
+        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
 
         vertices[i].r = vertices[i].g = vertices[i].b =
             (8192.0f - src_vbuf[i]->g) * multiplier;

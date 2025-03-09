@@ -1,6 +1,8 @@
 #include "game/math.h"
 #include "utils.h"
 
+#include <math.h>
+
 uint32_t Math_Sqrt(uint32_t n)
 {
     uint32_t result = 0;
@@ -127,4 +129,28 @@ int32_t XYZ_32_GetDistance0(const XYZ_32 *const pos)
 bool XYZ_32_AreEquivalent(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
 {
     return pos1->x == pos2->x && pos1->y == pos2->y && pos1->z == pos2->z;
+}
+
+float XYZ_F_DotProduct(const XYZ_F a, const XYZ_F b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+float XYZ_F_Length2(const XYZ_F pos)
+{
+    return XYZ_F_DotProduct(pos, pos);
+}
+
+float XYZ_F_Length(const XYZ_F pos)
+{
+    return sqrtf(XYZ_F_Length2(pos));
+}
+
+XYZ_F XYZ_F_Subtract(const XYZ_F a, const XYZ_F b)
+{
+    return (XYZ_F) {
+        .x = a.x - b.x,
+        .y = a.y - b.y,
+        .z = a.z - b.z,
+    };
 }

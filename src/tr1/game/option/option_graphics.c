@@ -16,11 +16,11 @@
 
 #define TOP_Y (-85)
 #define BORDER 8
-#define COL_OFFSET_0 (-142)
-#define COL_OFFSET_1 10
+#define COL_OFFSET_0 (-152)
+#define COL_OFFSET_1 20
 #define ROW_HEIGHT 17
-#define ROW_WIDTH 300
-#define OPTION_LENGTH 256
+#define ROW_WIDTH 320
+#define OPTION_LENGTH 276
 #define LEFT_ARROW_OFFSET (-20)
 #define RIGHT_ARROW_OFFSET_MIN 35
 #define RIGHT_ARROW_OFFSET_MAX 85
@@ -46,7 +46,7 @@ typedef enum {
     OPTION_UI_BAR_SCALE,
     OPTION_RENDER_MODE,
     OPTION_RESOLUTION,
-    OPTION_PERSPECTIVE,
+    OPTION_TRAPEZOID_FILTER,
     OPTION_PRETTY_PIXELS,
     OPTION_REFLECTIONS,
     OPTION_NUMBER_OF,
@@ -85,7 +85,7 @@ static const GRAPHICS_OPTION_ROW m_GfxOptionRows[] = {
     { OPTION_RENDER_MODE, GS_ID(DETAIL_RENDER_MODE), GS_ID(DETAIL_STRING_FMT) },
     { OPTION_RESOLUTION, GS_ID(DETAIL_RESOLUTION),
       GS_ID(DETAIL_RESOLUTION_FMT) },
-    { OPTION_PERSPECTIVE, GS_ID(DETAIL_PERSPECTIVE), GS_ID(MISC_ON) },
+    { OPTION_TRAPEZOID_FILTER, GS_ID(DETAIL_TRAPEZOID_FILTER), GS_ID(MISC_ON) },
     { OPTION_PRETTY_PIXELS, GS_ID(DETAIL_PRETTY_PIXELS), GS_ID(MISC_ON) },
     { OPTION_REFLECTIONS, GS_ID(DETAIL_REFLECTIONS), GS_ID(MISC_ON) },
     // end
@@ -210,8 +210,7 @@ static void M_InitText(void)
     Text_SetPos(
         m_Text[TEXT_LEFT_ARROW], m_GraphicsMenu.value_texts[0]->pos.x - 20,
         m_GraphicsMenu.value_texts[0]->pos.y);
-    m_HideArrowLeft =
-        g_Config.rendering.enable_perspective_filter ? false : true;
+    m_HideArrowLeft = g_Config.rendering.enable_trapezoid_filter ? false : true;
 
     m_Text[TEXT_RIGHT_ARROW] = Text_Create(0, 0, "\\{button right}");
     Text_CentreV(m_Text[TEXT_RIGHT_ARROW], 1);
@@ -219,7 +218,7 @@ static void M_InitText(void)
         m_Text[TEXT_RIGHT_ARROW], m_GraphicsMenu.value_texts[0]->pos.x + 40,
         m_GraphicsMenu.value_texts[0]->pos.y);
     m_HideArrowRight =
-        g_Config.rendering.enable_perspective_filter ? true : false;
+        g_Config.rendering.enable_trapezoid_filter ? true : false;
 
     m_Text[TEXT_UP_ARROW] = Text_Create(0, TOP_Y + BORDER * 2, "\\{arrow up}");
     Text_SetScale(
@@ -302,9 +301,9 @@ static void M_UpdateArrows(
         m_HideArrowLeft = !Screen_CanSetPrevRes();
         m_HideArrowRight = !Screen_CanSetNextRes();
         break;
-    case OPTION_PERSPECTIVE:
-        m_HideArrowLeft = !g_Config.rendering.enable_perspective_filter;
-        m_HideArrowRight = g_Config.rendering.enable_perspective_filter;
+    case OPTION_TRAPEZOID_FILTER:
+        m_HideArrowLeft = !g_Config.rendering.enable_trapezoid_filter;
+        m_HideArrowRight = g_Config.rendering.enable_trapezoid_filter;
         break;
     case OPTION_PRETTY_PIXELS:
         m_HideArrowLeft = !g_Config.rendering.pretty_pixels;
@@ -447,8 +446,8 @@ static void M_ChangeTextOption(
         Text_ChangeText(value_text, buf);
         break;
 
-    case OPTION_PERSPECTIVE: {
-        bool is_enabled = g_Config.rendering.enable_perspective_filter;
+    case OPTION_TRAPEZOID_FILTER: {
+        bool is_enabled = g_Config.rendering.enable_trapezoid_filter;
         Text_ChangeText(value_text, is_enabled ? GS(MISC_ON) : GS(MISC_OFF));
         break;
     }
@@ -570,10 +569,10 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             }
             break;
 
-        case OPTION_PERSPECTIVE:
-            if (!g_Config.rendering.enable_perspective_filter) {
-                g_Config.rendering.enable_perspective_filter = true;
-                reset = OPTION_PERSPECTIVE;
+        case OPTION_TRAPEZOID_FILTER:
+            if (!g_Config.rendering.enable_trapezoid_filter) {
+                g_Config.rendering.enable_trapezoid_filter = true;
+                reset = OPTION_TRAPEZOID_FILTER;
             }
             break;
 
@@ -669,10 +668,10 @@ void Option_Graphics_Control(INVENTORY_ITEM *inv_item, const bool is_busy)
             }
             break;
 
-        case OPTION_PERSPECTIVE:
-            if (g_Config.rendering.enable_perspective_filter) {
-                g_Config.rendering.enable_perspective_filter = false;
-                reset = OPTION_PERSPECTIVE;
+        case OPTION_TRAPEZOID_FILTER:
+            if (g_Config.rendering.enable_trapezoid_filter) {
+                g_Config.rendering.enable_trapezoid_filter = false;
+                reset = OPTION_TRAPEZOID_FILTER;
             }
             break;
 
