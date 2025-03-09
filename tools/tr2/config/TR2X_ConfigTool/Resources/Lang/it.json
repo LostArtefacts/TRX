@@ -1,0 +1,114 @@
+{
+  "Controls": {
+    "window_title_main": "Strumento di Configurazione di TR2X",
+    "command_launch_gold": "Lancia Golden Mask",
+    "file_dialog_filter": "File di Configurazione di TR2X",
+    "window_title_about": "Infromazioni sullo strumento di configurazione di TR2X",
+    "label_about_details": "Visita la pagina GitHub di TR2X per informazioni future."
+  },
+  "Enums": {
+    "aspect_mode": {
+      "any": "Qualsiasi",
+      "16:9": "16:9",
+      "4:3": "4:3"
+    }
+  },
+  "Properties": {
+    "enable_tr3_sidesteps": {
+      "Title": "Passi laterali migliorati",
+      "Description": "Abilita i passi laterali in stile TR3+, quindi shift+freccia destra e/o sinistra."
+    },
+    "enable_responsive_passport": {
+      "Title": "Abilita passaporto più responsivo",
+      "Description": "Disabilita il blocco degli input quando le pagine del passaporto si aprono."
+    },
+    "enable_3d_pickups": {
+      "Title": "Raccolte 3D",
+      "Description": "Abilita modelli in 3D per gli oggetti da raccogliere."
+    },
+    "enable_cheats": {
+      "Title": "Trucchi",
+      "Description": "Abilita trucchi vari:\n- L: Finisci subito il livello.\n- I: dai a Lara tutte le armi; un boost di munizioni e medikit; e tutti le chiavi/puzzle per il livello.\n- O: abilita DOZY (swimming midair).\n     - Tasto CAMMINA: esci dalla DOZY.\n     - Tasto ESTRAI ARMA: apri la porta più vicina a Lara (non funziona in certi posti)."
+    },
+    "enable_console": {
+      "Title": "Console",
+      "Description": "Abilita la console per sviluppatori."
+    },
+    "enable_fmv": {
+      "Title": "Abilita FMV",
+      "Description": "Abilita la riproduzione degli FMV."
+    },
+    "fix_m16_accuracy": {
+      "Title": "Sistema accuratezza M16",
+      "Description": "Sistema l'accuratezza dell'M16 quando Lara corre."
+    },
+    "fix_item_duplication_glitch": {
+      "Title": "Sistema glitch duplicazione oggetti",
+      "Description": "Sistema l'abilità di duplicare l'uso delle chiavi nell'inventario."
+    },
+    "fix_qwop_glitch": {
+      "Title": "Sistena glitch QWOP",
+      "Description": "Sistema Lara quando entra nell'animazione QWOP."
+    },
+    "fix_step_glitch": {
+      "Title": "Sistema glitch passo",
+      "Description": "Sistema Lara quando a volte quando viene spinta nei muri adiacenti nei passi quando si corre in un certo modo."
+    },
+    "fix_free_flare_glitch": {
+      "Title": "Sistema glitch bengala libero",
+      "Description": "Sistema l'abilità di far comparire un bengala libero quando premi l'input del bengala mentre raccogli un oggetto."
+    },
+    "fix_pickup_drift_glitch": {
+      "Title": "Sitema glitch raccolta sott'acqua",
+      "Description": "Sistema Lara quando a volte scivolando mentre Lara raccoglie oggetti sott'acqua, che possono schiacciarla nei muri."
+    },
+    "fix_flare_throw_priority": {
+      "Title": "Sistema priorità lancio bengala",
+      "Description": "Sistema Lara a prioritizzare a lanciare un bengala spento quando è a mezz'aria, che le impedisce di aggrapparsi alle sponde."
+    },
+    "fix_walk_run_jump": {
+      "Title": "Sistema pausa cammina-corri-salto",
+      "Description": "Sistema Lara quando non è in grado di saltare subito dopo l'animazione di camminata a quella di corsa."
+    },
+    "fix_floor_data_issues": {
+      "Title": "Sistema problemi data pavimento",
+      "Description": "Sistema problemi originali con i pavimenti data/trigger."
+    },
+    "fix_item_rots": {
+      "Title": "Sistema problemi rotazione oggetti",
+      "Description": "Sistema problemi originali con alcuni oggetti non roteati correttamente quando usi l'opzione delle raccolte 3D."
+    },
+    "enable_auto_item_selection": {
+      "Title": "Pre-selezione Chiave",
+      "Description": "Quando Lara preme azione vicino ad una serratire o slot puzzle e lei ha l'oggetto corrispondente nell'inventario, l'oggetto sarà pre-selezionato."
+    },
+    "aspect_mode": {
+      "Title": "Modalità aspetto",
+      "Description": "Imposta l'aspetto delle proporzioni nell'output del gioco."
+    },
+    "screenshot_format": {
+      "Title": "Formato screenshot",
+      "Description": "Formato file degli screenshot."
+    },
+    "enable_gun_lighting": {
+      "Title": "Luce Arma/esplosione",
+      "Description": "Abilita la luce dinamica per essere generata negli spari delle armi e degli esplosivi."
+    },
+    "enable_lara_mic" : {
+      "Title": "Microfono a Lara",
+      "Description": "Imposta il microfono nella posizione di Lara. Se disabilitato, il microfono sarà nella posizione della telecamera."
+    },
+    "underwater_music_mode": {
+      "Title": "Comportamento musica sott'acqua",
+      "Description": "Cambia come la musica viene riprodotta quando la telecamera è sott'acqua.\n- Completo: la musica viene riprodotta normalmente.\n- Quieto (Default): la musica viene riprodotta a basso volume.\n- Completo ma no ambiente: la musica viene riprodotta normalmente, ma i suoni ambientali sono mutati.\n- Quieto ma non ambiente: la musica vien riprodotta a basso volume, ma i suoni ambientali sono mutati.\n- Nessuno: le musiche non verranno riprodotte sott'acqua."
+    },
+    "enable_fade_effects": {
+      "Title": "Effetti ombre",
+      "Description": "Abilita transizioni ombre, Ad esempio nelle grafiche dei crediti."
+    },
+    "enable_exit_fade_effects": {
+      "Title": "Effetti ombre in uscita",
+      "Description": "Abilita gli effetti ombra quando esci dal gioco."
+    }
+  }
+}
