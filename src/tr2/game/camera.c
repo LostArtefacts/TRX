@@ -924,7 +924,8 @@ void Camera_UpdateCutscene(void)
         .y = g_LaraItem->pos.y + cy,
         .z = g_LaraItem->pos.z + ((cz * c - cx * s) >> W2V_SHIFT),
     };
-    int16_t room_num = Room_FindByPos(camera_pos.x, camera_pos.y, camera_pos.z);
+    const int16_t room_num =
+        Room_FindByPos(camera_pos.x, camera_pos.y, camera_pos.z);
     if (room_num != NO_ROOM_NEG) {
         g_Camera.pos.room_num = room_num;
     }
