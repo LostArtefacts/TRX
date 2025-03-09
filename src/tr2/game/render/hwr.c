@@ -273,8 +273,10 @@ static void M_DrawPolyTextured(
         vbuf_gl->y = vbuf->y;
         vbuf_gl->z = MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
-        vbuf_gl->t = vbuf->v / (double)PHD_ONE;
-        vbuf_gl->s = vbuf->u / (double)PHD_ONE;
+        vbuf_gl->t = vbuf->v / vbuf->rhw / 65536.0f;
+        vbuf_gl->s = vbuf->u / vbuf->rhw / 65536.0f;
+        vbuf_gl->tex_coord[2] = 1.0;
+        vbuf_gl->tex_coord[3] = 1.0;
         M_ShadeLight(vbuf_gl, vbuf->g, true);
     }
     M_DrawPrimitive(renderer, GFX_3D_PRIM_TRI, m_VBufferGL, vtx_count, true);
@@ -317,8 +319,10 @@ static void M_InsertPolyTextured(
         vbuf_gl->y = vbuf->y;
         vbuf_gl->z = MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
-        vbuf_gl->s = vbuf->u / (double)PHD_ONE;
-        vbuf_gl->t = vbuf->v / (double)PHD_ONE;
+        vbuf_gl->s = vbuf->u / vbuf->rhw / 65536.0f;
+        vbuf_gl->t = vbuf->v / vbuf->rhw / 65536.0f;
+        vbuf_gl->tex_coord[2] = 1.0;
+        vbuf_gl->tex_coord[3] = 1.0;
         M_ShadeLight(vbuf_gl, vbuf->g, true);
     }
 
@@ -398,8 +402,10 @@ static void M_InsertGT3_Sorted(
                 vbuf_gl->y = vtx[i]->ys;
                 vbuf_gl->z = MAKE_DEPTH(vtx[i]);
                 vbuf_gl->w = vtx[i]->rhw;
-                vbuf_gl->s = (double)uv[i]->u * vtx[i]->rhw / (double)PHD_ONE;
-                vbuf_gl->t = (double)uv[i]->v * vtx[i]->rhw / (double)PHD_ONE;
+                vbuf_gl->s = (double)uv[i]->u / 65536.0f;
+                vbuf_gl->t = (double)uv[i]->v / 65536.0f;
+                vbuf_gl->tex_coord[2] = 1.0;
+                vbuf_gl->tex_coord[3] = 1.0;
                 M_ShadeLight(vbuf_gl, vtx[i]->g, true);
             }
 
@@ -485,8 +491,10 @@ static void M_InsertGT4_Sorted(
                 vbuf_gl->y = vtx[i]->ys;
                 vbuf_gl->z = MAKE_DEPTH(vtx[i]);
                 vbuf_gl->w = vtx[i]->rhw;
-                vbuf_gl->s = texture->uv[i].u * vtx[i]->rhw / (double)PHD_ONE;
-                vbuf_gl->t = texture->uv[i].v * vtx[i]->rhw / (double)PHD_ONE;
+                vbuf_gl->s = texture->uv[i].u / 65536.0f;
+                vbuf_gl->t = texture->uv[i].v / 65536.0f;
+                vbuf_gl->tex_coord[2] = 1.0;
+                vbuf_gl->tex_coord[3] = 1.0;
                 M_ShadeLight(vbuf_gl, vtx[i]->g, true);
             }
 
@@ -989,8 +997,10 @@ static void M_InsertGT3_ZBuffered(
                 vbuf_gl->y = vtx[i]->ys;
                 vbuf_gl->z = MAKE_DEPTH(vtx[i]);
                 vbuf_gl->w = vtx[i]->rhw;
-                vbuf_gl->s = (double)uv[i]->u * vtx[i]->rhw / (double)PHD_ONE;
-                vbuf_gl->t = (double)uv[i]->v * vtx[i]->rhw / (double)PHD_ONE;
+                vbuf_gl->s = (double)uv[i]->u / 65536.0f;
+                vbuf_gl->t = (double)uv[i]->v / 65536.0f;
+                vbuf_gl->tex_coord[2] = 1.0;
+                vbuf_gl->tex_coord[3] = 1.0;
                 M_ShadeLight(vbuf_gl, vtx[i]->g, true);
             }
 
@@ -1077,8 +1087,10 @@ static void M_InsertGT4_ZBuffered(
         vbuf_gl->y = vtx[i]->ys;
         vbuf_gl->z = MAKE_DEPTH(vtx[i]);
         vbuf_gl->w = vtx[i]->rhw;
-        vbuf_gl->s = texture->uv[i].u * vtx[i]->rhw / (double)PHD_ONE;
-        vbuf_gl->t = texture->uv[i].v * vtx[i]->rhw / (double)PHD_ONE;
+        vbuf_gl->s = texture->uv[i].u / 65536.0f;
+        vbuf_gl->t = texture->uv[i].v / 65536.0f;
+        vbuf_gl->tex_coord[2] = 1.0;
+        vbuf_gl->tex_coord[3] = 1.0;
         M_ShadeLight(vbuf_gl, vtx[i]->g, true);
     }
 
