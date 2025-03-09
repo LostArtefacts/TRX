@@ -335,6 +335,7 @@ bool Level_Initialise(
     GF_SetCurrentLevel(level);
     InitialiseGameFlags();
     g_Lara.item_num = NO_ITEM;
+    g_LaraItem = nullptr;
 
     if (level == nullptr) {
         return false;
