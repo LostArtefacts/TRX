@@ -173,13 +173,7 @@ static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4])
     // account the actual UV trapezoid to achieve a more uniform texture
     // projection.
 
-    // 1) Reset “ratios” to 1.0
-    for (int32_t j = 0; j < 4; j++) {
-        vbuf[j]->trapezoid_ratios[0] = 1.0f;
-        vbuf[j]->trapezoid_ratios[1] = 1.0f;
-    }
-
-    // 2) Gather the 3D positions into coords[]
+    // 1) Gather the 3D positions into coords[]
     XYZ_F c0, c1, c2, c3, *coords[4] = { &c0, &c1, &c2, &c3 };
     for (int32_t i = 0; i < 4; i++) {
         coords[i]->x = vbuf[i]->world_pos.x;
@@ -187,7 +181,7 @@ static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4])
         coords[i]->z = vbuf[i]->world_pos.z;
     }
 
-    // 3) Compute geometric edges
+    // 2) Compute geometric edges
     //    a = c0-c1, b = c3-c2, c = c0-c3, d = c1-c2
     const XYZ_F a = XYZ_F_Subtract(c0, c1);
     const XYZ_F b = XYZ_F_Subtract(c3, c2);
@@ -199,15 +193,15 @@ static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4])
     const float c_l = XYZ_F_Length(c);
     const float d_l = XYZ_F_Length(d);
 
-    // 4) Compute dot‐products in 3D to see which edges differ more
+    // 3) Compute dot‐products in 3D to see which edges differ more
     const float ab = XYZ_F_DotProduct(a, b) / (a_l * b_l);
     const float cd = XYZ_F_DotProduct(c, d) / (c_l * d_l);
 
-    // 5) Compute tx, ty in for orientation
+    // 4) Compute tx, ty in for orientation
     const float tx = ABS(vbuf[0]->u - vbuf[3]->u);
     const float ty = ABS(vbuf[0]->v - vbuf[3]->v);
 
-    // 6) Measure the same edges in UV space so we know the “current” shape
+    // 5) Measure the same edges in UV space so we know the “current” shape
     XYZ_F uv0 = { vbuf[0]->u, vbuf[0]->v, 0.0f };
     XYZ_F uv1 = { vbuf[1]->u, vbuf[1]->v, 0.0f };
     XYZ_F uv2 = { vbuf[2]->u, vbuf[2]->v, 0.0f };
@@ -227,7 +221,7 @@ static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4])
     // We'll reuse the same ab/cd dot logic in UV if needed, but typically
     // we only need the lengths to find the ratio vs. geometry.
 
-    // 7) Figure out the correction ratios per-corner, taking care of both
+    // 6) Figure out the correction ratios per-corner, taking care of both
     //    geometry and UV mesh proportions
     if (ab > cd) {
         const int k = (tx > ty) ? 1 : 0; // pick axis
@@ -318,6 +312,8 @@ static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
         for (int32_t j = 0; j < 3; j++) {
             vns[j]->u = tex->uv[j].u;
             vns[j]->v = tex->uv[j].v;
+            vns[j]->trapezoid_ratios[0] = 1.0f;
+            vns[j]->trapezoid_ratios[1] = 1.0f;
         }
 
         S_Output_DrawTexturedTriangle(
@@ -342,6 +338,8 @@ static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
         for (int32_t j = 0; j < 4; j++) {
             vns[j]->u = tex->uv[j].u;
             vns[j]->v = tex->uv[j].v;
+            vns[j]->trapezoid_ratios[0] = 1.0f;
+            vns[j]->trapezoid_ratios[1] = 1.0f;
         }
 
         if (g_Config.rendering.enable_trapezoid_filter) {
@@ -449,8 +447,6 @@ static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
     vbuf->xv = xv;
     vbuf->yv = yv;
     vbuf->zv = zv;
-    vbuf->tex_coord[2] = 1.0;
-    vbuf->tex_coord[3] = 1.0;
     vbuf->world_pos = pos;
 
     uint16_t clip_flags;
