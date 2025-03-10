@@ -1,0 +1,322 @@
+#include "game/inject.h"
+#include "game/rooms.h"
+#include "log.h"
+
+static void M_RoomMeshEdits(const INJECTION *injection, int32_t data_count);
+static void M_RoomPortalEdits(const INJECTION *injection, int32_t data_count);
+
+static void M_TextureRoomFace(const INJECTION *injection);
+static void M_MoveRoomFace(const INJECTION *injection);
+static void M_AlterRoomVertex(const INJECTION *injection);
+static void M_RotateRoomFace(const INJECTION *injection);
+static void M_AddRoomFace(const INJECTION *injection);
+static void M_AddRoomVertex(const INJECTION *injection);
+static void M_AddRoomSprite(const INJECTION *injection);
+static uint16_t *M_GetRoomTexture(
+    int16_t room_num, FACE_TYPE face_type, int16_t face_index);
+static uint16_t *M_GetRoomFaceVertices(
+    int16_t room_num, FACE_TYPE face_type, int16_t face_index);
+
+static void M_RoomMeshEdits(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const ROOM_MESH_EDIT_TYPE type = VFile_ReadS32(injection->fp);
+        switch (type) {
+        case RMET_TEXTURE_FACE:
+            M_TextureRoomFace(injection);
+            break;
+        case RMET_MOVE_FACE:
+            M_MoveRoomFace(injection);
+            break;
+        case RMET_ALTER_VERTEX:
+            M_AlterRoomVertex(injection);
+            break;
+        case RMET_ROTATE_FACE:
+            M_RotateRoomFace(injection);
+            break;
+        case RMET_ADD_FACE:
+            M_AddRoomFace(injection);
+            break;
+        case RMET_ADD_VERTEX:
+            M_AddRoomVertex(injection);
+            break;
+        case RMET_ADD_SPRITE:
+            M_AddRoomSprite(injection);
+            break;
+        default:
+            LOG_WARNING("Unrecognised room mesh edit type: %d", type);
+            break;
+        }
+    }
+}
+
+static void M_TextureRoomFace(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    const FACE_TYPE target_face_type = VFile_ReadS32(injection->fp);
+    const int16_t target_face = VFile_ReadS16(injection->fp);
+    const int16_t source_room = VFile_ReadS16(injection->fp);
+    const FACE_TYPE source_face_type = VFile_ReadS32(injection->fp);
+    const int16_t source_face = VFile_ReadS16(injection->fp);
+
+    const uint16_t *const source_texture =
+        M_GetRoomTexture(source_room, source_face_type, source_face);
+    uint16_t *const target_texture =
+        M_GetRoomTexture(target_room, target_face_type, target_face);
+    if (source_texture != nullptr && target_texture != nullptr) {
+        *target_texture = *source_texture;
+    }
+}
+
+static void M_MoveRoomFace(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    const FACE_TYPE face_type = VFile_ReadS32(injection->fp);
+    const int16_t target_face = VFile_ReadS16(injection->fp);
+    const int32_t vertex_count = VFile_ReadS32(injection->fp);
+
+    for (int32_t j = 0; j < vertex_count; j++) {
+        const int16_t vertex_index = VFile_ReadS16(injection->fp);
+        const int16_t new_vertex = VFile_ReadS16(injection->fp);
+
+        uint16_t *const vertices =
+            M_GetRoomFaceVertices(target_room, face_type, target_face);
+        if (vertices != nullptr) {
+            vertices[vertex_index] = new_vertex;
+        }
+    }
+}
+
+static void M_AlterRoomVertex(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_vertex = VFile_ReadS16(injection->fp);
+    const int16_t x_change = VFile_ReadS16(injection->fp);
+    const int16_t y_change = VFile_ReadS16(injection->fp);
+    const int16_t z_change = VFile_ReadS16(injection->fp);
+    const int16_t shade_change = VFile_ReadS16(injection->fp);
+
+    if (target_room < 0 || target_room >= Room_GetCount()) {
+        LOG_WARNING("Room index %d is invalid", target_room);
+        return;
+    }
+
+    const ROOM *const room = Room_Get(target_room);
+    if (target_vertex < 0 || target_vertex >= room->mesh.num_vertices) {
+        LOG_WARNING(
+            "Vertex index %d, room %d is invalid", target_vertex, target_room);
+        return;
+    }
+
+    ROOM_VERTEX *const vertex = &room->mesh.vertices[target_vertex];
+    vertex->pos.x += x_change;
+    vertex->pos.y += y_change;
+    vertex->pos.z += z_change;
+    vertex->light_base += shade_change;
+    vertex->light_adder = vertex->light_base;
+}
+
+static void M_RotateRoomFace(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    const FACE_TYPE face_type = VFile_ReadS32(injection->fp);
+    const int16_t target_face = VFile_ReadS16(injection->fp);
+    const uint8_t num_rotations = VFile_ReadU8(injection->fp);
+
+    uint16_t *const face_vertices =
+        M_GetRoomFaceVertices(target_room, face_type, target_face);
+    if (face_vertices == nullptr) {
+        return;
+    }
+
+    const int32_t num_vertices = face_type == FT_TEXTURED_QUAD ? 4 : 3;
+    uint16_t *vertices[num_vertices];
+    for (int32_t i = 0; i < num_vertices; i++) {
+        vertices[i] = face_vertices + i;
+    }
+
+    for (int32_t i = 0; i < num_rotations; i++) {
+        const uint16_t first = *vertices[0];
+        for (int32_t j = 0; j < num_vertices - 1; j++) {
+            *vertices[j] = *vertices[j + 1];
+        }
+        *vertices[num_vertices - 1] = first;
+    }
+}
+
+static void M_AddRoomFace(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    const FACE_TYPE face_type = VFile_ReadS32(injection->fp);
+    const int16_t source_room = VFile_ReadS16(injection->fp);
+    const int16_t source_face = VFile_ReadS16(injection->fp);
+
+    const int32_t num_vertices = face_type == FT_TEXTURED_QUAD ? 4 : 3;
+    uint16_t vertices[num_vertices];
+    for (int32_t i = 0; i < num_vertices; i++) {
+        vertices[i] = VFile_ReadU16(injection->fp);
+    }
+
+    if (target_room < 0 || target_room >= Room_GetCount()) {
+        LOG_WARNING("Room index %d is invalid", target_room);
+        return;
+    }
+
+    const uint16_t *const source_texture =
+        M_GetRoomTexture(source_room, face_type, source_face);
+    if (source_texture == nullptr) {
+        return;
+    }
+
+    ROOM *const room = Room_Get(target_room);
+    uint16_t *face_vertices;
+    if (face_type == FT_TEXTURED_QUAD) {
+        FACE4 *const face = &room->mesh.face4s[room->mesh.num_face4s];
+        face->texture_idx = *source_texture;
+        face_vertices = face->vertices;
+        room->mesh.num_face4s++;
+    } else {
+        FACE3 *const face = &room->mesh.face3s[room->mesh.num_face3s];
+        face->texture_idx = *source_texture;
+        face_vertices = face->vertices;
+        room->mesh.num_face3s++;
+    }
+
+    for (int32_t i = 0; i < num_vertices; i++) {
+        face_vertices[i] = vertices[i];
+    }
+}
+
+static void M_AddRoomVertex(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+    const XYZ_16 pos = {
+        .x = VFile_ReadS16(injection->fp),
+        .y = VFile_ReadS16(injection->fp),
+        .z = VFile_ReadS16(injection->fp),
+    };
+    const int16_t shade = VFile_ReadS16(injection->fp);
+
+    ROOM *const room = Room_Get(target_room);
+    ROOM_VERTEX *const vertex = &room->mesh.vertices[room->mesh.num_vertices];
+    vertex->pos = pos;
+    vertex->light_base = shade;
+    vertex->light_adder = shade;
+    room->mesh.num_vertices++;
+}
+
+static void M_AddRoomSprite(const INJECTION *const injection)
+{
+    const int16_t target_room = VFile_ReadS16(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+    const uint16_t vertex = VFile_ReadU16(injection->fp);
+    const uint16_t texture = VFile_ReadU16(injection->fp);
+
+    ROOM *const room = Room_Get(target_room);
+    ROOM_SPRITE *const sprite = &room->mesh.sprites[room->mesh.num_sprites];
+    sprite->vertex = vertex;
+    sprite->texture = texture;
+
+    room->mesh.num_sprites++;
+}
+
+static uint16_t *M_GetRoomTexture(
+    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
+{
+    const ROOM *const room = Room_Get(room_num);
+    if (face_type == FT_TEXTURED_QUAD && face_index < room->mesh.num_face4s) {
+        FACE4 *const face = &room->mesh.face4s[face_index];
+        return &face->texture_idx;
+    }
+
+    if (face_type == FT_TEXTURED_TRIANGLE
+        && face_index < room->mesh.num_face3s) {
+        FACE3 *const face = &room->mesh.face3s[face_index];
+        return &face->texture_idx;
+    }
+
+    LOG_WARNING(
+        "Invalid room face lookup: %d, %d, %d", room_num, face_type,
+        face_index);
+    return nullptr;
+}
+
+static uint16_t *M_GetRoomFaceVertices(
+    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
+{
+    if (room_num < 0 || room_num >= Room_GetCount()) {
+        LOG_WARNING("Room index %d is invalid", room_num);
+        return nullptr;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    if (face_type == FT_TEXTURED_QUAD) {
+        if (face_index < 0 || face_index >= room->mesh.num_face4s) {
+            LOG_WARNING(
+                "Face4 index %d, room %d is invalid", face_index, room_num);
+            return nullptr;
+        }
+
+        FACE4 *const face = &room->mesh.face4s[face_index];
+        return (uint16_t *)(void *)&face->vertices;
+    }
+
+    if (face_type == FT_TEXTURED_TRIANGLE) {
+        if (face_index < 0 || face_index >= room->mesh.num_face3s) {
+            LOG_WARNING(
+                "Face3 index %d, room %d is invalid", face_index, room_num);
+            return nullptr;
+        }
+
+        FACE3 *const face = &room->mesh.face3s[face_index];
+        return (uint16_t *)(void *)&face->vertices;
+    }
+
+    return nullptr;
+}
+
+static void M_RoomPortalEdits(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const int16_t base_room = VFile_ReadS16(injection->fp);
+        const int16_t link_room = VFile_ReadS16(injection->fp);
+        const int16_t portal_index = VFile_ReadS16(injection->fp);
+
+        if (base_room < 0 || base_room >= Room_GetCount()) {
+            VFile_Skip(injection->fp, sizeof(int16_t) * 12);
+            LOG_WARNING("Room index %d is invalid", base_room);
+            continue;
+        }
+
+        const ROOM *const room = Room_Get(base_room);
+        PORTAL *portal = nullptr;
+        for (int32_t j = 0; j < room->portals->count; j++) {
+            PORTAL room_portal = room->portals->portal[j];
+            if (room_portal.room_num == link_room && j == portal_index) {
+                portal = &room->portals->portal[j];
+                break;
+            }
+        }
+
+        if (portal == nullptr) {
+            VFile_Skip(injection->fp, sizeof(int16_t) * 12);
+            LOG_WARNING(
+                "Room index %d has no matching portal to %d", base_room,
+                link_room);
+            continue;
+        }
+
+        for (int32_t j = 0; j < 4; j++) {
+            portal->vertex[j].x += VFile_ReadS16(injection->fp);
+            portal->vertex[j].y += VFile_ReadS16(injection->fp);
+            portal->vertex[j].z += VFile_ReadS16(injection->fp);
+        }
+    }
+}
+
+REGISTER_INJECT_EDITOR(IDT_ROOM_EDITS, M_RoomMeshEdits)
+REGISTER_INJECT_EDITOR(IDT_VIS_PORTAL_EDITS, M_RoomPortalEdits)
