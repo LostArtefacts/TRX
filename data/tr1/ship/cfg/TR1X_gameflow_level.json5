@@ -1,0 +1,36 @@
+{
+    // This file is used to enable the -l argument support.
+
+    "main_menu_picture": "data/images/title.webp",
+    "savegame_fmt_legacy": "save_tmp.%d",
+    "savegame_fmt_bson": "save_tmp_%02d.dat",
+    "demo_delay": 0,
+    "water_color": [0.45, 1.0, 1.0],
+    "draw_distance_fade": 22.0,
+    "draw_distance_max": 30.0,
+    "injections": [
+        "data/injections/backpack.bin",
+        "data/injections/braid.bin",
+        "data/injections/lara_animations.bin",
+        "data/injections/lara_jumping.bin",
+        "data/injections/uzi_sfx.bin",
+        "data/injections/explosion.bin",
+        "data/injections/pickup_aid.bin",
+    ],
+    "enable_tr2_item_drops": false,
+    "convert_dropped_guns": false,
+    "enable_killer_pushblocks": true,
+
+    "levels": [
+        {
+            "path": "PLACEHOLDER",
+            "music_track": 0,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [],
+        },
+    ],
+}
