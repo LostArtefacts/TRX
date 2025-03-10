@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...develop) - ××××-××-××
+- added support for `-l`/`--level` argument to play a single level
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - added drawing of object mesh spheres to the `/debug` console command
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)

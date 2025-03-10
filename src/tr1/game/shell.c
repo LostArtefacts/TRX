@@ -41,6 +41,7 @@ typedef enum {
     M_MOD_OG,
     M_MOD_UB,
     M_MOD_DEMO_PC,
+    M_MOD_CUSTOM_LEVEL,
 } M_MOD;
 
 static struct {
@@ -58,6 +59,10 @@ static struct {
     [M_MOD_DEMO_PC] = {
         .game_flow_path = "cfg/TR1X_gameflow_demo_pc.json5",
         .game_strings_path = "cfg/TR1X_strings_demo_pc.json5",
+    },
+    [M_MOD_CUSTOM_LEVEL] = {
+        .game_flow_path = "cfg/TR1X_gameflow_level.json5",
+        .game_strings_path = "cfg/TR1X_strings_level.json5",
     },
 };
 static M_MOD m_ActiveMod = M_MOD_UNKNOWN;
@@ -130,6 +135,8 @@ void Shell_Main(void)
 {
     m_ActiveMod = M_MOD_OG;
 
+    const char *level_to_play = nullptr;
+
     char **args = nullptr;
     int32_t arg_count = 0;
     S_Shell_GetCommandLine(&arg_count, &args);
@@ -140,11 +147,12 @@ void Shell_Main(void)
         if (!strcmp(args[i], "-demo_pc")) {
             m_ActiveMod = M_MOD_DEMO_PC;
         }
+        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
+            && i + 1 < arg_count) {
+            level_to_play = args[i + 1];
+            m_ActiveMod = M_MOD_CUSTOM_LEVEL;
+        }
     }
-    for (int i = 0; i < arg_count; i++) {
-        Memory_FreePointer(&args[i]);
-    }
-    Memory_FreePointer(&args);
 
     GameString_Init();
     EnumMap_Init();
@@ -183,7 +191,15 @@ void Shell_Main(void)
     GameBuf_Init();
     Console_Init();
 
-    GF_COMMAND gf_cmd = GF_DoFrontendSequence();
+    if (level_to_play != nullptr) {
+        Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+        g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
+            Memory_DupStr(level_to_play);
+    }
+
+    GF_COMMAND gf_cmd = level_to_play != nullptr
+        ? (GF_COMMAND) { .action = GF_START_GAME, .param = 0 }
+        : GF_DoFrontendSequence();
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {
         LOG_INFO(
@@ -241,7 +257,9 @@ void Shell_Main(void)
             break;
 
         case GF_EXIT_TO_TITLE:
-            if (g_GameFlow.title_level == nullptr) {
+            if (level_to_play != nullptr) {
+                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
+            } else if (g_GameFlow.title_level == nullptr) {
                 Shell_ExitSystem("Title disabled");
             } else {
                 gf_cmd = GF_RunTitle();
@@ -262,6 +280,14 @@ void Shell_Main(void)
     Config_Write();
     EnumMap_Shutdown();
     GameString_Shutdown();
+
+    if (level_to_play != nullptr) {
+        Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+    }
+    for (int i = 0; i < arg_count; i++) {
+        Memory_FreePointer(&args[i]);
+    }
+    Memory_FreePointer(&args);
 }
 
 void Shell_ProcessInput(void)
