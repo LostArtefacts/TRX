@@ -5,6 +5,7 @@
 - added a `/wireframe` console command (#2500)
 - added a `/fps` console command
 - added support for `-l`/`--level` argument to play a single level
+- changed injections to a new file format with a smaller footprint, improved applicability tests and similar feature support as TR1 (#1967)
 - fixed smashed windows blocking enemy pathing after loading a save (#2535)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed (#2575)

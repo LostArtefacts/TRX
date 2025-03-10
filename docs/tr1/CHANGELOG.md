@@ -4,6 +4,7 @@
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - added drawing of object mesh spheres to the `/debug` console command
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
+- changed injections to a new file format with a smaller footprint and improved applicability tests (#1967)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
 - fixed issues with fixed cameras in 60 FPS shifting before settling on their target (#1186)
