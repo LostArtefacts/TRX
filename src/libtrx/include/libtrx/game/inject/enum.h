@@ -21,6 +21,13 @@ typedef enum {
 } INJECTION_FILE_TYPE;
 
 typedef enum {
+    ITT_ITEM_META  = 0,
+    ITT_ROOM_COUNT = 1,
+    ITT_ROOM_META  = 2,
+    ITT_NUMBER_OF  = 3,
+} INJECTION_TEST_TYPE;
+
+typedef enum {
     ICT_TEXTURE_DATA   = 0,
     ICT_TEXTURE_INFO   = 1,
     ICT_MESH_DATA      = 2,

@@ -134,6 +134,8 @@ sources = [
   'game/gun/common.c',
   'game/inject/common.c',
   'game/inject/editor.c',
+  'game/inject/testers/items.c',
+  'game/inject/testers/rooms.c',
   'game/input/backends/controller.c',
   'game/input/backends/internal.c',
   'game/input/backends/keyboard.c',
