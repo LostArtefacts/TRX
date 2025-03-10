@@ -99,43 +99,6 @@ static void M_LoadConfig(void)
     Music_SetVolume(g_Config.audio.music_volume);
 }
 
-void Shell_Init(
-    const char *const game_flow_path, const char *const game_strings_path)
-{
-    Text_Init();
-    UI_Init();
-
-    Input_Init();
-    Sound_Init();
-    Music_Init();
-
-    M_LoadConfig();
-
-    Clock_Init();
-
-    S_Shell_CreateWindow();
-    S_Shell_Init();
-
-    Random_Seed();
-
-    if (!Output_Init()) {
-        Shell_ExitSystem("Could not initialise video system");
-        return;
-    }
-    Screen_Init();
-
-    GF_Init();
-    GF_LoadFromFile(game_flow_path);
-    GameStringTable_LoadFromFile(game_strings_path);
-    GameStringTable_Apply(nullptr);
-
-    Savegame_Init();
-    Savegame_ScanSavedGames();
-    Savegame_HighlightNewestSlot();
-    GameBuf_Init();
-    Console_Init();
-}
-
 void Shell_Shutdown(void)
 {
     Console_Shutdown();
@@ -187,9 +150,38 @@ void Shell_Main(void)
     EnumMap_Init();
     Config_Init();
 
-    Shell_Init(
-        m_ModPaths[m_ActiveMod].game_flow_path,
-        m_ModPaths[m_ActiveMod].game_strings_path);
+    Text_Init();
+    UI_Init();
+
+    Input_Init();
+    Sound_Init();
+    Music_Init();
+
+    M_LoadConfig();
+
+    Clock_Init();
+
+    S_Shell_CreateWindow();
+    S_Shell_Init();
+
+    Random_Seed();
+
+    if (!Output_Init()) {
+        Shell_ExitSystem("Could not initialise video system");
+        return;
+    }
+    Screen_Init();
+
+    GF_Init();
+    GF_LoadFromFile(m_ModPaths[m_ActiveMod].game_flow_path);
+    GameStringTable_LoadFromFile(m_ModPaths[m_ActiveMod].game_strings_path);
+    GameStringTable_Apply(nullptr);
+
+    Savegame_Init();
+    Savegame_ScanSavedGames();
+    Savegame_HighlightNewestSlot();
+    GameBuf_Init();
+    Console_Init();
 
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
     bool loop_continue = !Shell_IsExiting();
