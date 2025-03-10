@@ -1,6 +1,7 @@
 #include "game/inject/common.h"
 
 #include "benchmark.h"
+#include "config.h"
 #include "debug.h"
 #include "game/items.h"
 #include "game/level.h"
@@ -14,6 +15,7 @@
 #define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
 #define INJECTION_CURRENT_VERSION 1
 
+static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};
 static void (*m_Handlers[ICT_NUMBER_OF])(INJECTION_CHUNK chunk) = {};
 
 static int32_t m_NumInjections = 0;
@@ -28,6 +30,8 @@ static uint16_t *m_PaletteMap = nullptr;
 static void M_LoadFromFile(INJECTION *injection, const char *filename);
 static INJECTION_CHUNK M_ReadChunk(const INJECTION *injection);
 static void M_InitialiseBlock(VFILE *file);
+static bool M_IsRelevant(INJECTION_FILE_TYPE type);
+static bool M_IsApplicable(const INJECTION *injection);
 
 static void M_LoadFromFile(
     INJECTION *const injection, const char *const filename)
@@ -60,7 +64,7 @@ static void M_LoadFromFile(
         goto cleanup;
     }
 
-    injection->relevant = Inject_IsRelevant(injection);
+    injection->relevant = M_IsRelevant(injection->type);
     if (!injection->relevant) {
         goto cleanup;
     }
@@ -82,6 +86,13 @@ static void M_LoadFromFile(
     }
 
     injection->fp = VFile_CreateFromBuffer(payload, uncompressed_size);
+
+    {
+        // Tests are executed after the main level data is loaded.
+        VFile_Skip(injection->fp, sizeof(int32_t));
+        const int32_t test_size = VFile_ReadS32(injection->fp);
+        VFile_Skip(injection->fp, test_size);
+    }
 
     const int32_t num_chunks = VFile_ReadS32(injection->fp);
     for (int32_t i = 0; i < num_chunks; i++) {
@@ -158,6 +169,66 @@ static void M_InitialiseBlock(VFILE *const file)
     VFile_Skip(file, data_size);
 }
 
+static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
+{
+    switch (type) {
+    case IFT_GENERAL:
+        return true;
+    case IFT_FLOOR_DATA:
+        return g_Config.gameplay.fix_floor_data_issues;
+    case IFT_ITEM_POSITION:
+        return g_Config.visuals.fix_item_rots;
+#if TR_VERSION == 1
+    case IFT_LARA_ANIMS:
+        return true;
+    case IFT_BRAID:
+        return g_Config.visuals.enable_braid;
+    case IFT_UZI_SFX:
+        return g_Config.audio.enable_ps_uzi_sfx;
+    case IFT_TEXTURE_FIX:
+        return g_Config.visuals.fix_texture_issues;
+    case IFT_PS1_ENEMY:
+        return g_Config.gameplay.restore_ps1_enemies;
+    case IFT_DISABLE_ANIM_SPRITE:
+        return !g_Config.visuals.fix_animated_sprites;
+    case IFT_SKYBOX:
+        return g_Config.visuals.enable_skybox;
+    case IFT_PS1_CRYSTAL:
+        return g_Config.gameplay.enable_save_crystals
+            && g_Config.visuals.enable_ps1_crystals;
+#endif
+    default:
+        return false;
+    }
+}
+
+static bool M_IsApplicable(const INJECTION *const injection)
+{
+    const int32_t test_count = VFile_ReadS32(injection->fp);
+    VFile_Skip(injection->fp, sizeof(int32_t));
+
+    bool applicable = true;
+    for (int32_t i = 0; i < test_count; i++) {
+        const INJECTION_TEST_TYPE type = VFile_ReadS32(injection->fp);
+        if (m_Testers[type] == nullptr) {
+            LOG_WARNING("Unknown injection test type %d", type);
+            applicable = false;
+            break;
+        } else {
+            applicable &= m_Testers[type](injection);
+        }
+    }
+
+    return applicable;
+}
+
+void Inject_RegisterTester(
+    const INJECTION_TEST_TYPE type,
+    bool (*test_func)(const INJECTION *injection))
+{
+    m_Testers[type] = test_func;
+}
+
 void Inject_RegisterHandler(
     const INJECTION_CHUNK_TYPE type, void (*handle_func)(INJECTION_CHUNK chunk))
 {
@@ -204,6 +275,15 @@ void Inject_AllInjections(void)
     for (int32_t i = 0; i < m_NumInjections; i++) {
         INJECTION *const injection = &m_Injections[i];
         if (!injection->relevant) {
+            continue;
+        }
+
+        // Allow checks to be done on an injection's applicability after the
+        // main level data has loaded.
+        if (!M_IsApplicable(injection)) {
+            LOG_WARNING(
+                "Injection type %d is not applicable to the current level",
+                injection->type);
             continue;
         }
 
