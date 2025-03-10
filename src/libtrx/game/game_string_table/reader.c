@@ -132,24 +132,29 @@ static void M_LoadLevelsFromJSON(
 
 void GameStringTable_LoadFromFile(const char *const path)
 {
+    char *data = nullptr;
+    if (!File_Load(path, &data, nullptr)) {
+        Shell_ExitSystemFmt("failed to open strings file (path: %d)", path);
+    }
+    GameStringTable_LoadFromString(data);
+    Memory_FreePointer(&data);
+}
+
+void GameStringTable_LoadFromString(const char *const data)
+{
     GameStringTable_Shutdown();
 
     JSON_VALUE *root = nullptr;
 
-    char *script_data = nullptr;
-    if (!File_Load(path, &script_data, nullptr)) {
-        Shell_ExitSystemFmt("failed to open strings file (path: %d)", path);
-    }
-
     JSON_PARSE_RESULT parse_result;
     root = JSON_ParseEx(
-        script_data, strlen(script_data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr,
-        nullptr, &parse_result);
+        data, strlen(data), JSON_PARSE_FLAGS_ALLOW_JSON5, nullptr, nullptr,
+        &parse_result);
     if (root == nullptr) {
         Shell_ExitSystemFmt(
-            "Failed to parse script file: %s in line %d, char %d",
+            "Failed to parse strings table: %s in line %d, char %d",
             JSON_GetErrorDescription(parse_result.error),
-            parse_result.error_line_no, parse_result.error_row_no, script_data);
+            parse_result.error_line_no, parse_result.error_row_no, data);
     }
 
     GS_FILE *const gs_file = &g_GST_File;
@@ -163,5 +168,4 @@ void GameStringTable_LoadFromFile(const char *const path)
         JSON_ValueFree(root);
         root = nullptr;
     }
-    Memory_FreePointer(&script_data);
 }
