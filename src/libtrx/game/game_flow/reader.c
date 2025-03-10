@@ -473,14 +473,20 @@ static void M_LoadGlobalInjections(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     }
 }
 
-void GF_Load(const char *const path)
+void GF_LoadFromFile(const char *const path)
 {
-    GF_Shutdown();
-
     char *script_data = nullptr;
     if (!File_Load(path, &script_data, nullptr)) {
         Shell_ExitSystem("Failed to open script file");
     }
+
+    GF_LoadFromString(script_data);
+    Memory_FreePointer(&script_data);
+}
+
+void GF_LoadFromString(const char *const script_data)
+{
+    GF_Shutdown();
 
     JSON_PARSE_RESULT parse_result;
     JSON_VALUE *const root = JSON_ParseEx(
@@ -505,5 +511,4 @@ void GF_Load(const char *const path)
     if (root != nullptr) {
         JSON_ValueFree(root);
     }
-    Memory_FreePointer(&script_data);
 }
