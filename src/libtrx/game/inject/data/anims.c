@@ -18,7 +18,7 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
 
         switch (data_type) {
         case IDT_ANIMS: {
-            Level_ReadAnims(
+            Level_AppendAnims(
                 level_info->anims.anim_count, data_count, chunk.injection->fp);
             level_info->anims.anim_count += data_count;
 
@@ -34,14 +34,14 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
         }
 
         case IDT_ANIM_BONES: {
-            Level_ReadAnimBones(
+            Level_AppendAnimBones(
                 level_info->anims.bone_count, data_count, chunk.injection->fp);
             level_info->anims.bone_count += data_count;
             break;
         }
 
         case IDT_ANIM_CHANGES: {
-            Level_ReadAnimChanges(
+            Level_AppendAnimChanges(
                 level_info->anims.change_count, data_count,
                 chunk.injection->fp);
             level_info->anims.change_count += data_count;
@@ -55,25 +55,22 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
         }
 
         case IDT_ANIM_COMMANDS: {
-            VFile_Read(
-                chunk.injection->fp,
-                level_info->anims.commands + level_info->anims.command_count,
-                data_count * sizeof(int16_t));
+            Level_AppendAnimCommands(
+                level_info->anims.command_count, data_count,
+                chunk.injection->fp);
             level_info->anims.command_count += data_count;
             break;
         }
 
         case IDT_ANIM_FRAMES: {
-            VFile_Read(
-                chunk.injection->fp,
-                level_info->anims.frames + level_info->anims.frame_count,
-                data_count * sizeof(int16_t));
+            Level_AppendAnimFrames(
+                level_info->anims.frame_count, data_count, chunk.injection->fp);
             level_info->anims.frame_count += data_count;
             break;
         }
 
         case IDT_ANIM_RANGES: {
-            Level_ReadAnimRanges(
+            Level_AppendAnimRanges(
                 level_info->anims.range_count, data_count, chunk.injection->fp);
             level_info->anims.range_count += data_count;
 
