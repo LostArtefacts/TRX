@@ -5,6 +5,7 @@
 - added drawing of object mesh spheres to the `/debug` console command
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
 - changed injections to a new file format with a smaller footprint and improved applicability tests (#1967)
+- changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
 - fixed issues with fixed cameras in 60 FPS shifting before settling on their target (#1186)

@@ -23,9 +23,23 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     const ITEM *const lara_item = Lara_GetItem();
 
+    const char *prefix = nullptr;
+    switch (GF_GetCurrentLevel()->type) {
+    case GFL_CUTSCENE:
+        prefix = GS(OSD_POS_CUTSCENE);
+        break;
+    case GFL_DEMO:
+        prefix = GS(OSD_POS_DEMO);
+        break;
+    default:
+        prefix = GS(OSD_POS_LEVEL);
+        break;
+    }
+
     // clang-format off
     Console_Log(
         GS(OSD_POS_GET),
+        prefix,
         GF_GetCurrentLevel()->num,
         GF_GetCurrentLevel()->title,
         lara_item->room_num,
