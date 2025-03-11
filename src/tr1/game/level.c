@@ -52,7 +52,6 @@ typedef enum {
 static bool M_TryLayout(VFILE *file, LEVEL_LAYOUT layout);
 static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
 static void M_LoadFromFile(const GF_LEVEL *level);
-static void M_LoadObjectMeshes(VFILE *file);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
 static size_t M_CalculateMaxVertices(void);
@@ -198,7 +197,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     LOG_INFO("file level num: %d", file_level_num);
 
     Level_ReadRooms(file);
-    M_LoadObjectMeshes(file);
+    Level_ReadObjectMeshes(file);
     Level_ReadAnims(file);
     Level_ReadAnimChanges(file);
     Level_ReadAnimRanges(file);
@@ -235,35 +234,6 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadTexturePages(file);
 
     VFile_Close(file);
-}
-
-static void M_LoadObjectMeshes(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_meshes = VFile_ReadS32(file);
-    LOG_INFO("%d object mesh data", num_meshes);
-
-    const size_t data_start_pos = VFile_GetPos(file);
-    VFile_Skip(file, num_meshes * sizeof(int16_t));
-
-    info->mesh_ptr_count = VFile_ReadS32(file);
-    LOG_INFO("%d object mesh indices", info->mesh_ptr_count);
-    const int32_t alloc_size = info->mesh_ptr_count * sizeof(int32_t);
-    int32_t *mesh_indices = Memory_Alloc(alloc_size);
-    VFile_Read(file, mesh_indices, alloc_size);
-
-    const size_t end_pos = VFile_GetPos(file);
-    VFile_SetPos(file, data_start_pos);
-
-    Object_InitialiseMeshes(
-        info->mesh_ptr_count + Inject_GetDataCount(IDT_MESH_POINTERS));
-    Level_ReadObjectMeshes(info->mesh_ptr_count, mesh_indices, file);
-
-    VFile_SetPos(file, end_pos);
-    Memory_FreePointer(&mesh_indices);
-
-    Benchmark_End(benchmark, nullptr);
 }
 
 static void M_CompleteSetup(const GF_LEVEL *const level)

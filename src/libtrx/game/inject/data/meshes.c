@@ -27,7 +27,7 @@ static void M_HandleMeshData(const INJECTION_CHUNK chunk)
 
         case IDT_OBJECT_MESHES: {
             ASSERT(mesh_indices != nullptr);
-            Level_ReadObjectMeshes(
+            Level_AppendObjectMeshes(
                 mesh_ptr_count, mesh_indices, chunk.injection->fp);
             LEVEL_INFO *const info = Level_GetInfo();
             info->mesh_ptr_count += mesh_ptr_count;
