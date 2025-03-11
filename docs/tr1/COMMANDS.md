@@ -65,7 +65,7 @@ Currently supported commands:
 
 - `/cut {num}`  
   `/cutscene {num}`  
-  Plays the specified cutscene.
+  Plays the specified cutscene, starting at 1.
 
 - `/gym`  
   `/home`  
@@ -79,7 +79,7 @@ Currently supported commands:
 
 - `/demo`  
   `/demo {num}`  
-  Starts the specified demo. If no number is chosen, the demos will cycle.
+  Starts the specified demo, starting at 1. If no number is chosen, the demos will cycle.
 
 - `/title`  
   Exits the game to main screen.
