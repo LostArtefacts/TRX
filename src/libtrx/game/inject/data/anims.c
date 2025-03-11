@@ -55,9 +55,10 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
         }
 
         case IDT_ANIM_COMMANDS: {
-            Level_ReadAnimCommands(
-                level_info->anims.command_count, data_count,
-                chunk.injection->fp);
+            VFile_Read(
+                chunk.injection->fp,
+                level_info->anims.commands + level_info->anims.command_count,
+                data_count * sizeof(int16_t));
             level_info->anims.command_count += data_count;
             break;
         }

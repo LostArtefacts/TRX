@@ -24,8 +24,6 @@
 
 #include <string.h>
 
-static int16_t *m_AnimCommands = nullptr;
-
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
 static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
 static void M_ReadShade(SHADE *shade, VFILE *file);
@@ -544,21 +542,10 @@ void Level_ReadAnimRanges(
     }
 }
 
-void Level_InitialiseAnimCommands(const int32_t num_cmds)
+void Level_LoadAnimCommands(LEVEL_INFO *const info)
 {
-    m_AnimCommands = Memory_Alloc(sizeof(int16_t) * num_cmds);
-}
-
-void Level_ReadAnimCommands(
-    const int32_t base_idx, const int32_t num_cmds, VFILE *const file)
-{
-    VFile_Read(file, m_AnimCommands + base_idx, sizeof(int16_t) * num_cmds);
-}
-
-void Level_LoadAnimCommands(void)
-{
-    Anim_LoadCommands(m_AnimCommands);
-    Memory_FreePointer(&m_AnimCommands);
+    Anim_LoadCommands(info->anims.commands);
+    Memory_FreePointer(&info->anims.commands);
 }
 
 void Level_ReadAnimBones(

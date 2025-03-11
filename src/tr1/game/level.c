@@ -316,9 +316,11 @@ static void M_LoadAnimCommands(VFILE *file)
     const int32_t num_anim_commands = VFile_ReadS32(file);
     m_LevelInfo.anims.command_count = num_anim_commands;
     LOG_INFO("%d anim commands", num_anim_commands);
-    Level_InitialiseAnimCommands(
-        num_anim_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS));
-    Level_ReadAnimCommands(0, num_anim_commands, file);
+    m_LevelInfo.anims.commands = Memory_Alloc(
+        sizeof(int16_t)
+        * (num_anim_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
+    VFile_Read(
+        file, m_LevelInfo.anims.commands, sizeof(int16_t) * num_anim_commands);
     Benchmark_End(benchmark, nullptr);
 }
 
@@ -383,7 +385,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Inject_AllInjections();
 
     Level_LoadAnimFrames(&m_LevelInfo);
-    Level_LoadAnimCommands();
+    Level_LoadAnimCommands(&m_LevelInfo);
 
     M_MarkWaterEdgeVertices();
 
