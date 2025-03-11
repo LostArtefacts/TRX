@@ -13,9 +13,7 @@ void Level_ReadObjectMeshes(
 void Level_ReadAnims(int32_t base_idx, int32_t num_anims, VFILE *file);
 void Level_ReadAnimChanges(int32_t base_idx, int32_t num_changes, VFILE *file);
 void Level_ReadAnimRanges(int32_t base_idx, int32_t num_ranges, VFILE *file);
-void Level_InitialiseAnimCommands(int32_t num_cmds);
-void Level_ReadAnimCommands(int32_t base_idx, int32_t num_cmds, VFILE *file);
-void Level_LoadAnimCommands(void);
+void Level_LoadAnimCommands(LEVEL_INFO *info);
 void Level_ReadAnimBones(int32_t base_idx, int32_t num_bones, VFILE *file);
 void Level_LoadAnimFrames(LEVEL_INFO *info);
 void Level_ReadObjects(VFILE *file);

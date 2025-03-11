@@ -117,9 +117,11 @@ static void M_LoadAnimCommands(VFILE *const file)
     const int32_t num_anim_commands = VFile_ReadS32(file);
     m_LevelInfo.anims.command_count = num_anim_commands;
     LOG_INFO("anim commands: %d", num_anim_commands);
-    Level_InitialiseAnimCommands(
-        num_anim_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS));
-    Level_ReadAnimCommands(0, num_anim_commands, file);
+    m_LevelInfo.anims.commands = Memory_Alloc(
+        sizeof(int16_t)
+        * (num_anim_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
+    VFile_Read(
+        file, m_LevelInfo.anims.commands, sizeof(int16_t) * num_anim_commands);
     Benchmark_End(benchmark, nullptr);
 }
 
@@ -290,7 +292,7 @@ static void M_CompleteSetup(void)
     Inject_AllInjections();
 
     Level_LoadAnimFrames(&m_LevelInfo);
-    Level_LoadAnimCommands();
+    Level_LoadAnimCommands(&m_LevelInfo);
     Level_LoadObjectsAndItems();
 
     Level_LoadTexturePages(&m_LevelInfo);
