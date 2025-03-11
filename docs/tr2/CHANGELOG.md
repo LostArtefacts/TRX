@@ -8,6 +8,7 @@
 - added Italian localization to the config tool
 - changed injections to a new file format with a smaller footprint, improved applicability tests and similar feature support as TR1 (#1967)
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
+- changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
 - fixed smashed windows blocking enemy pathing after loading a save (#2535)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed (#2575)
