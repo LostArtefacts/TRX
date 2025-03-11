@@ -24,6 +24,8 @@
 
 #include <string.h>
 
+static LEVEL_INFO m_Info = {};
+
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
 static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
 static void M_ReadShade(SHADE *shade, VFILE *file);
@@ -255,47 +257,47 @@ static void M_ReadObjectVector(OBJECT_VECTOR *const obj, VFILE *const file)
     obj->flags = VFile_ReadS16(file);
 }
 
-void Level_ReadPalettes(LEVEL_INFO *const info, VFILE *const file)
+void Level_ReadPalettes(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
     const int32_t palette_size = 256;
-    info->palette.size = palette_size;
+    m_Info.palette.size = palette_size;
 
-    info->palette.data_24 = Memory_Alloc(sizeof(RGB_888) * palette_size);
-    VFile_Read(file, info->palette.data_24, sizeof(RGB_888) * palette_size);
-    info->palette.data_24[0].r = 0;
-    info->palette.data_24[0].g = 0;
-    info->palette.data_24[0].b = 0;
+    m_Info.palette.data_24 = Memory_Alloc(sizeof(RGB_888) * palette_size);
+    VFile_Read(file, m_Info.palette.data_24, sizeof(RGB_888) * palette_size);
+    m_Info.palette.data_24[0].r = 0;
+    m_Info.palette.data_24[0].g = 0;
+    m_Info.palette.data_24[0].b = 0;
     for (int32_t i = 1; i < palette_size; i++) {
-        RGB_888 *const col = &info->palette.data_24[i];
+        RGB_888 *const col = &m_Info.palette.data_24[i];
         col->r = (col->r << 2) | (col->r >> 4);
         col->g = (col->g << 2) | (col->g >> 4);
         col->b = (col->b << 2) | (col->b >> 4);
     }
 
 #if TR_VERSION == 1
-    info->palette.data_32 = nullptr;
+    m_Info.palette.data_32 = nullptr;
 #else
     RGBA_8888 palette_16[palette_size];
-    info->palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
+    m_Info.palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
     VFile_Read(file, palette_16, sizeof(RGBA_8888) * palette_size);
     for (int32_t i = 0; i < palette_size; i++) {
-        info->palette.data_32[i].r = palette_16[i].r;
-        info->palette.data_32[i].g = palette_16[i].g;
-        info->palette.data_32[i].b = palette_16[i].b;
+        m_Info.palette.data_32[i].r = palette_16[i].r;
+        m_Info.palette.data_32[i].g = palette_16[i].g;
+        m_Info.palette.data_32[i].b = palette_16[i].b;
     }
 #endif
 
     Benchmark_End(benchmark, nullptr);
 }
 
-void Level_ReadTexturePages(LEVEL_INFO *const info, VFILE *const file)
+void Level_ReadTexturePages(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
     const int32_t num_pages = VFile_ReadS32(file);
-    info->textures.page_count = num_pages;
+    m_Info.textures.page_count = num_pages;
     LOG_INFO("texture pages: %d", num_pages);
 
     const int32_t extra_pages = Inject_GetDataCount(IDT_TEXTURE_PAGES);
@@ -304,17 +306,17 @@ void Level_ReadTexturePages(LEVEL_INFO *const info, VFILE *const file)
     const int32_t texture_size_32_bit =
         (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888);
 
-    info->textures.pages_24 = Memory_Alloc(texture_size_8_bit);
-    VFile_Read(file, info->textures.pages_24, num_pages * TEXTURE_PAGE_SIZE);
+    m_Info.textures.pages_24 = Memory_Alloc(texture_size_8_bit);
+    VFile_Read(file, m_Info.textures.pages_24, num_pages * TEXTURE_PAGE_SIZE);
 
-    info->textures.pages_32 = Memory_Alloc(texture_size_32_bit);
-    RGBA_8888 *output = info->textures.pages_32;
+    m_Info.textures.pages_32 = Memory_Alloc(texture_size_32_bit);
+    RGBA_8888 *output = m_Info.textures.pages_32;
 
 #if TR_VERSION == 1
-    const uint8_t *input = info->textures.pages_24;
+    const uint8_t *input = m_Info.textures.pages_24;
     for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
         const uint8_t index = *input++;
-        const RGB_888 pix = info->palette.data_24[index];
+        const RGB_888 pix = m_Info.palette.data_24[index];
         output->r = pix.r;
         output->g = pix.g;
         output->b = pix.b;
@@ -542,10 +544,10 @@ void Level_ReadAnimRanges(
     }
 }
 
-void Level_LoadAnimCommands(LEVEL_INFO *const info)
+void Level_LoadAnimCommands(void)
 {
-    Anim_LoadCommands(info->anims.commands);
-    Memory_FreePointer(&info->anims.commands);
+    Anim_LoadCommands(m_Info.anims.commands);
+    Memory_FreePointer(&m_Info.anims.commands);
 }
 
 void Level_ReadAnimBones(
@@ -563,13 +565,13 @@ void Level_ReadAnimBones(
     }
 }
 
-void Level_LoadAnimFrames(LEVEL_INFO *const info)
+void Level_LoadAnimFrames(void)
 {
     const int32_t frame_count =
-        Anim_GetTotalFrameCount(info->anims.frame_count);
+        Anim_GetTotalFrameCount(m_Info.anims.frame_count);
     Anim_InitialiseFrames(frame_count);
-    Anim_LoadFrames(info->anims.frames, info->anims.frame_count);
-    Memory_FreePointer(&info->anims.frames);
+    Anim_LoadFrames(m_Info.anims.frames, m_Info.anims.frame_count);
+    Memory_FreePointer(&m_Info.anims.frames);
 }
 
 void Level_ReadObjects(VFILE *const file)
@@ -879,7 +881,7 @@ void Level_ReadSoundSources(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-void Level_ReadSamples(LEVEL_INFO *const info, VFILE *const file)
+void Level_ReadSamples(VFILE *const file)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
 
@@ -887,7 +889,7 @@ void Level_ReadSamples(LEVEL_INFO *const info, VFILE *const file)
     VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
 
     const int32_t num_sample_infos = VFile_ReadS32(file);
-    info->samples.info_count = num_sample_infos;
+    m_Info.samples.info_count = num_sample_infos;
     LOG_INFO("sample infos: %d", num_sample_infos);
     Sound_InitialiseSampleInfos(
         num_sample_infos + Inject_GetDataCount(IDT_SAMPLE_INFOS));
@@ -901,55 +903,55 @@ void Level_ReadSamples(LEVEL_INFO *const info, VFILE *const file)
 
 #if TR_VERSION == 1
     const int32_t data_size = VFile_ReadS32(file);
-    info->samples.data_size = data_size;
+    m_Info.samples.data_size = data_size;
     LOG_INFO("%d sample data size", data_size);
 
-    info->samples.data = GameBuf_Alloc(
+    m_Info.samples.data = GameBuf_Alloc(
         data_size + Inject_GetDataCount(IDT_SAMPLE_DATA), GBUF_SAMPLES);
-    VFile_Read(file, info->samples.data, sizeof(char) * data_size);
+    VFile_Read(file, m_Info.samples.data, sizeof(char) * data_size);
 #endif
 
     const int32_t num_offsets = VFile_ReadS32(file);
     LOG_INFO("samples: %d", num_offsets);
-    info->samples.offset_count = num_offsets;
+    m_Info.samples.offset_count = num_offsets;
 
-    info->samples.offsets = Memory_Alloc(
+    m_Info.samples.offsets = Memory_Alloc(
         sizeof(int32_t)
         * (num_offsets + Inject_GetDataCount(IDT_SAMPLE_INDICES)));
-    VFile_Read(file, info->samples.offsets, sizeof(int32_t) * num_offsets);
+    VFile_Read(file, m_Info.samples.offsets, sizeof(int32_t) * num_offsets);
 
 finish:
     Benchmark_End(benchmark, nullptr);
 }
 
-void Level_LoadTexturePages(LEVEL_INFO *const info)
+void Level_LoadTexturePages(void)
 {
-    const int32_t num_pages = info->textures.page_count;
+    const int32_t num_pages = m_Info.textures.page_count;
     Output_InitialiseTexturePages(num_pages, TR_VERSION == 2);
     for (int32_t i = 0; i < num_pages; i++) {
 #if TR_VERSION == 2
         uint8_t *const target_8 = Output_GetTexturePage8(i);
         const uint8_t *const source_8 =
-            &info->textures.pages_24[i * TEXTURE_PAGE_SIZE];
+            &m_Info.textures.pages_24[i * TEXTURE_PAGE_SIZE];
         memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
 #endif
 
         RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
         const RGBA_8888 *const source_32 =
-            &info->textures.pages_32[i * TEXTURE_PAGE_SIZE];
+            &m_Info.textures.pages_32[i * TEXTURE_PAGE_SIZE];
         memcpy(target_32, source_32, TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
     }
 
-    Memory_FreePointer(&info->textures.pages_24);
-    Memory_FreePointer(&info->textures.pages_32);
+    Memory_FreePointer(&m_Info.textures.pages_24);
+    Memory_FreePointer(&m_Info.textures.pages_32);
 }
 
-void Level_LoadPalettes(LEVEL_INFO *const info)
+void Level_LoadPalettes(void)
 {
     Output_InitialisePalettes(
-        info->palette.size, info->palette.data_24, info->palette.data_32);
-    Memory_FreePointer(&info->palette.data_24);
-    Memory_FreePointer(&info->palette.data_32);
+        m_Info.palette.size, m_Info.palette.data_24, m_Info.palette.data_32);
+    Memory_FreePointer(&m_Info.palette.data_24);
+    Memory_FreePointer(&m_Info.palette.data_32);
 }
 
 void Level_LoadObjectsAndItems(void)
@@ -963,4 +965,9 @@ void Level_LoadObjectsAndItems(void)
     for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }
+}
+
+LEVEL_INFO *Level_GetInfo(void)
+{
+    return &m_Info;
 }
