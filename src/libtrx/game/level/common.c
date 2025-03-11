@@ -498,7 +498,18 @@ void Level_ReadObjectMeshes(
     Vector_Free(unique_indices);
 }
 
-void Level_ReadAnims(
+void Level_ReadAnims(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_anims = VFile_ReadS32(file);
+    m_Info.anims.anim_count = num_anims;
+    LOG_INFO("anims: %d", num_anims);
+    Anim_InitialiseAnims(num_anims + Inject_GetDataCount(IDT_ANIMS));
+    Level_AppendAnims(0, num_anims, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendAnims(
     const int32_t base_idx, const int32_t num_anims, VFILE *const file)
 {
     for (int32_t i = 0; i < num_anims; i++) {
@@ -521,7 +532,19 @@ void Level_ReadAnims(
     }
 }
 
-void Level_ReadAnimChanges(
+void Level_ReadAnimChanges(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_anim_changes = VFile_ReadS32(file);
+    m_Info.anims.change_count = num_anim_changes;
+    LOG_INFO("anim changes: %d", num_anim_changes);
+    Anim_InitialiseChanges(
+        num_anim_changes + Inject_GetDataCount(IDT_ANIM_CHANGES));
+    Level_AppendAnimChanges(0, num_anim_changes, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendAnimChanges(
     const int32_t base_idx, const int32_t num_changes, VFILE *const file)
 {
     for (int32_t i = 0; i < num_changes; i++) {
@@ -532,7 +555,19 @@ void Level_ReadAnimChanges(
     }
 }
 
-void Level_ReadAnimRanges(
+void Level_ReadAnimRanges(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_anim_ranges = VFile_ReadS32(file);
+    m_Info.anims.range_count = num_anim_ranges;
+    LOG_INFO("anim ranges: %d", num_anim_ranges);
+    Anim_InitialiseRanges(
+        num_anim_ranges + Inject_GetDataCount(IDT_ANIM_RANGES));
+    Level_AppendAnimRanges(0, num_anim_ranges, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendAnimRanges(
     const int32_t base_idx, const int32_t num_ranges, VFILE *const file)
 {
     for (int32_t i = 0; i < num_ranges; i++) {
@@ -544,13 +579,44 @@ void Level_ReadAnimRanges(
     }
 }
 
+void Level_ReadAnimCommands(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_commands = VFile_ReadS32(file);
+    m_Info.anims.command_count = num_commands;
+    LOG_INFO("anim commands: %d", num_commands);
+    m_Info.anims.commands = Memory_Alloc(
+        sizeof(int16_t)
+        * (num_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
+    Level_AppendAnimCommands(0, num_commands, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendAnimCommands(
+    const int32_t base_idx, const int32_t num_commands, VFILE *const file)
+{
+    VFile_Read(
+        file, &m_Info.anims.commands[base_idx], sizeof(int16_t) * num_commands);
+}
+
 void Level_LoadAnimCommands(void)
 {
     Anim_LoadCommands(m_Info.anims.commands);
     Memory_FreePointer(&m_Info.anims.commands);
 }
 
-void Level_ReadAnimBones(
+void Level_ReadAnimBones(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_anim_bones = VFile_ReadS32(file) / ANIM_BONE_SIZE;
+    m_Info.anims.bone_count = num_anim_bones;
+    LOG_INFO("anim bones: %d", num_anim_bones);
+    Anim_InitialiseBones(num_anim_bones + Inject_GetDataCount(IDT_ANIM_BONES));
+    Level_AppendAnimBones(0, num_anim_bones, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendAnimBones(
     const int32_t base_idx, const int32_t num_bones, VFILE *const file)
 {
     for (int32_t i = 0; i < num_bones; i++) {
@@ -563,6 +629,26 @@ void Level_ReadAnimBones(
         bone->rot_z = false;
         M_ReadPosition(&bone->pos, file);
     }
+}
+
+void Level_ReadAnimFrames(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t raw_data_count = VFile_ReadS32(file);
+    m_Info.anims.frame_count = raw_data_count;
+    LOG_INFO("raw anim frames: %d", raw_data_count);
+    m_Info.anims.frames = Memory_Alloc(
+        sizeof(int16_t)
+        * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
+    Level_AppendAnimFrames(0, raw_data_count, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendAnimFrames(
+    const int32_t base_idx, const int32_t num_frames, VFILE *const file)
+{
+    VFile_Read(
+        file, &m_Info.anims.frames[base_idx], sizeof(int16_t) * num_frames);
 }
 
 void Level_LoadAnimFrames(void)

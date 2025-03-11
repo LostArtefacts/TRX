@@ -53,12 +53,6 @@ static bool M_TryLayout(VFILE *file, LEVEL_LAYOUT layout);
 static LEVEL_LAYOUT M_GuessLayout(VFILE *file);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_LoadObjectMeshes(VFILE *file);
-static void M_LoadAnims(VFILE *file);
-static void M_LoadAnimChanges(VFILE *file);
-static void M_LoadAnimRanges(VFILE *file);
-static void M_LoadAnimCommands(VFILE *file);
-static void M_LoadAnimBones(VFILE *file);
-static void M_LoadAnimFrames(VFILE *file);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
 static size_t M_CalculateMaxVertices(void);
@@ -205,12 +199,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
     Level_ReadRooms(file);
     M_LoadObjectMeshes(file);
-    M_LoadAnims(file);
-    M_LoadAnimChanges(file);
-    M_LoadAnimRanges(file);
-    M_LoadAnimCommands(file);
-    M_LoadAnimBones(file);
-    M_LoadAnimFrames(file);
+    Level_ReadAnims(file);
+    Level_ReadAnimChanges(file);
+    Level_ReadAnimRanges(file);
+    Level_ReadAnimCommands(file);
+    Level_ReadAnimBones(file);
+    Level_ReadAnimFrames(file);
     Level_ReadObjects(file);
     Level_ReadStaticObjects(file);
     Level_ReadObjectTextures(file);
@@ -269,84 +263,6 @@ static void M_LoadObjectMeshes(VFILE *const file)
     VFile_SetPos(file, end_pos);
     Memory_FreePointer(&mesh_indices);
 
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadAnims(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_anims = VFile_ReadS32(file);
-    info->anims.anim_count = num_anims;
-    LOG_INFO("%d anims", num_anims);
-    Anim_InitialiseAnims(num_anims + Inject_GetDataCount(IDT_ANIMS));
-    Level_ReadAnims(0, num_anims, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadAnimChanges(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_anim_changes = VFile_ReadS32(file);
-    info->anims.change_count = num_anim_changes;
-    LOG_INFO("%d anim changes", num_anim_changes);
-    Anim_InitialiseChanges(
-        num_anim_changes + Inject_GetDataCount(IDT_ANIM_CHANGES));
-    Level_ReadAnimChanges(0, num_anim_changes, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadAnimRanges(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_anim_ranges = VFile_ReadS32(file);
-    info->anims.range_count = num_anim_ranges;
-    LOG_INFO("%d anim ranges", num_anim_ranges);
-    Anim_InitialiseRanges(
-        num_anim_ranges + Inject_GetDataCount(IDT_ANIM_RANGES));
-    Level_ReadAnimRanges(0, num_anim_ranges, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadAnimCommands(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_anim_commands = VFile_ReadS32(file);
-    info->anims.command_count = num_anim_commands;
-    LOG_INFO("%d anim commands", num_anim_commands);
-    info->anims.commands = Memory_Alloc(
-        sizeof(int16_t)
-        * (num_anim_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
-    VFile_Read(file, info->anims.commands, sizeof(int16_t) * num_anim_commands);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadAnimBones(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_anim_bones = VFile_ReadS32(file) / ANIM_BONE_SIZE;
-    info->anims.bone_count = num_anim_bones;
-    LOG_INFO("%d anim bones", num_anim_bones);
-    Anim_InitialiseBones(num_anim_bones + Inject_GetDataCount(IDT_ANIM_BONES));
-    Level_ReadAnimBones(0, num_anim_bones, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadAnimFrames(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t raw_data_count = VFile_ReadS32(file);
-    info->anims.frame_count = raw_data_count;
-    LOG_INFO("%d raw anim frames", raw_data_count);
-    info->anims.frames = Memory_Alloc(
-        sizeof(int16_t)
-        * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
-    VFile_Read(file, info->anims.frames, sizeof(int16_t) * raw_data_count);
     Benchmark_End(benchmark, nullptr);
 }
 
