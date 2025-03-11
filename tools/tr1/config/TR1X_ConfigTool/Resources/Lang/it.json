@@ -169,11 +169,11 @@
       "Description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D nei livelli originali."
     },
     "fix_qwop_glitch": {
-      "Title": "Correggi il glitch QWOP",
+      "Title": "Correggi l'errore QWOP",
       "Description": "Risolve il problema per cui a volte Lara, saltando da piccoli gradini, provoca una strana animazione di corsa nota come stato QWOP."
     },
     "fix_item_duplication_glitch": {
-      "Title": "Correggi il glitch di duplicazione degli oggetti",
+      "Title": "Correggi l'errore di duplicazione degli oggetti",
       "Description": "Risolve il problema per cui è possibile duplicare l'utilizzo degli oggetti chiave nell'inventario."
     },
     "fix_tihocan_secret_sound": {
@@ -181,7 +181,7 @@
       "Description": "Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave dorata nella Tomba di Tihocan."
     },
     "fix_wall_jump_glitch": {
-      "Title": "Correggi il glitch del salto sulle pareti",
+      "Title": "Correggi l'errore del salto sulle pareti",
       "Description": "Risolve il problema per cui Lara salta attraverso oggetti e si teletrasporta in cima a determinati pendii."
     },
     "enable_cheats": {
@@ -449,7 +449,7 @@
       "Description": "Fa in modo che l'inventario e la schermata di pausa utilizzino transizioni in dissolvenza per lo sfondo semitrasparente, simile alla PS1."
     },
     "enable_exit_fade_effects": {
-      "Title": "Effetti di dissolvenza di uscita",
+      "Title": "Effetti di dissolvenza in uscita",
       "Description": "Abilita gli effetti di dissolvenza quando si esce dal gioco."
     }
   }
