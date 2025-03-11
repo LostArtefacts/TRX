@@ -41,8 +41,6 @@ static void M_LoadAnimRanges(VFILE *file);
 static void M_LoadAnimCommands(VFILE *file);
 static void M_LoadAnimBones(VFILE *file);
 static void M_LoadAnimFrames(VFILE *file);
-static void M_LoadTextures(VFILE *file);
-static void M_LoadSprites(VFILE *file);
 static void M_InitialiseSoundEffects(void);
 static void M_CompleteSetup(void);
 
@@ -153,32 +151,6 @@ static void M_LoadAnimFrames(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-static void M_LoadTextures(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_textures = VFile_ReadS32(file);
-    info->textures.object_count = num_textures;
-    LOG_INFO("object textures: %d", num_textures);
-    Output_InitialiseObjectTextures(
-        num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
-    Level_ReadObjectTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadSprites(VFILE *const file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_textures = VFile_ReadS32(file);
-    info->textures.sprite_count = num_textures;
-    LOG_DEBUG("sprite textures: %d", num_textures);
-    Output_InitialiseSpriteTextures(
-        num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
-    Level_ReadSpriteTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
 static void M_InitialiseSoundEffects(void)
 {
     BENCHMARK *const benchmark = Benchmark_Start();
@@ -272,9 +244,9 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
     Level_ReadObjects(file);
     Level_ReadStaticObjects(file);
-    M_LoadTextures(file);
+    Level_ReadObjectTextures(file);
 
-    M_LoadSprites(file);
+    Level_ReadSpriteTextures(file);
     Level_ReadSpriteSequences(file);
     Level_ReadCamerasAndSinks(file);
     Level_ReadSoundSources(file);

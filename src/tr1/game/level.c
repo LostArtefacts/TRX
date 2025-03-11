@@ -59,8 +59,6 @@ static void M_LoadAnimRanges(VFILE *file);
 static void M_LoadAnimCommands(VFILE *file);
 static void M_LoadAnimBones(VFILE *file);
 static void M_LoadAnimFrames(VFILE *file);
-static void M_LoadTextures(VFILE *file);
-static void M_LoadSprites(VFILE *file);
 static void M_CompleteSetup(const GF_LEVEL *level);
 static void M_MarkWaterEdgeVertices(void);
 static size_t M_CalculateMaxVertices(void);
@@ -215,8 +213,8 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     M_LoadAnimFrames(file);
     Level_ReadObjects(file);
     Level_ReadStaticObjects(file);
-    M_LoadTextures(file);
-    M_LoadSprites(file);
+    Level_ReadObjectTextures(file);
+    Level_ReadSpriteTextures(file);
     Level_ReadSpriteSequences(file);
 
     if (layout == LEVEL_LAYOUT_TR1_DEMO_PC) {
@@ -349,32 +347,6 @@ static void M_LoadAnimFrames(VFILE *file)
         sizeof(int16_t)
         * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
     VFile_Read(file, info->anims.frames, sizeof(int16_t) * raw_data_count);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadTextures(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_textures = VFile_ReadS32(file);
-    info->textures.object_count = num_textures;
-    LOG_INFO("%d object textures", num_textures);
-    Output_InitialiseObjectTextures(
-        num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
-    Level_ReadObjectTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
-}
-
-static void M_LoadSprites(VFILE *file)
-{
-    BENCHMARK *const benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
-    const int32_t num_textures = VFile_ReadS32(file);
-    info->textures.sprite_count = num_textures;
-    LOG_DEBUG("sprite textures: %d", num_textures);
-    Output_InitialiseSpriteTextures(
-        num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
-    Level_ReadSpriteTextures(0, 0, num_textures, file);
     Benchmark_End(benchmark, nullptr);
 }
 

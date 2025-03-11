@@ -627,7 +627,19 @@ void Level_ReadStaticObjects(VFILE *const file)
     Benchmark_End(benchmark, nullptr);
 }
 
-void Level_ReadObjectTextures(
+void Level_ReadObjectTextures(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_textures = VFile_ReadS32(file);
+    m_Info.textures.object_count = num_textures;
+    LOG_INFO("object textures: %d", num_textures);
+    Output_InitialiseObjectTextures(
+        num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
+    Level_AppendObjectTextures(0, 0, num_textures, file);
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendObjectTextures(
     const int32_t base_idx, const int16_t base_page_idx,
     const int32_t num_textures, VFILE *const file)
 {
@@ -642,7 +654,20 @@ void Level_ReadObjectTextures(
     }
 }
 
-void Level_ReadSpriteTextures(
+void Level_ReadSpriteTextures(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_textures = VFile_ReadS32(file);
+    m_Info.textures.sprite_count = num_textures;
+    LOG_INFO("sprite textures: %d", num_textures);
+    Output_InitialiseSpriteTextures(
+        num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
+    Level_AppendSpriteTextures(0, 0, num_textures, file);
+
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendSpriteTextures(
     const int32_t base_idx, const int16_t base_page_idx,
     const int32_t num_textures, VFILE *const file)
 {

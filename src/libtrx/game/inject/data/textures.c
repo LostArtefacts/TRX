@@ -112,13 +112,13 @@ static void M_HandleTextureInfo(const INJECTION_CHUNK chunk)
 
         switch (data_type) {
         case IDT_OBJECT_TEXTURES:
-            Level_ReadObjectTextures(
+            Level_AppendObjectTextures(
                 level_info->textures.object_count, page_base, data_count,
                 chunk.injection->fp);
             level_info->textures.object_count += data_count;
             break;
         case IDT_SPRITE_TEXTURES:
-            Level_ReadSpriteTextures(
+            Level_AppendSpriteTextures(
                 level_info->textures.sprite_count, page_base, data_count,
                 chunk.injection->fp);
             break;
