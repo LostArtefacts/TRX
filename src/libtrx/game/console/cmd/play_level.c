@@ -62,6 +62,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 matched:
     if (level_to_load >= 0 && level_to_load < level_table->count) {
         const GF_LEVEL *const level = &level_table->levels[level_to_load];
+#if TR_VERSION == 1
+        if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
+            Console_Log(GS(OSD_INVALID_LEVEL));
+            result = CR_FAILURE;
+            goto cleanup;
+        }
+#endif
         GF_OverrideCommand((GF_COMMAND) {
             .action = GF_SELECT_GAME,
             .param = level_to_load,
