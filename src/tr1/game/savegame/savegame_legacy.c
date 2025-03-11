@@ -379,13 +379,9 @@ static void M_ReadResumeInfo(MYFILE *const fp, GAME_INFO *const game_info)
     game_info->death_count = -1;
 }
 
-char *Savegame_Legacy_GetSaveFileName(const int32_t slot)
+const char *Savegame_Legacy_GetSaveFilePattern(void)
 {
-    const size_t out_size =
-        snprintf(nullptr, 0, g_GameFlow.savegame_fmt_legacy, slot) + 1;
-    char *out = Memory_Alloc(out_size);
-    snprintf(out, out_size, g_GameFlow.savegame_fmt_legacy, slot);
-    return out;
+    return g_GameFlow.savegame_fmt_legacy;
 }
 
 bool Savegame_Legacy_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
