@@ -393,7 +393,9 @@ void Shell_Main(void)
     GameBuf_Init();
 
     if (level_to_play != nullptr) {
-        g_GameFlow.level_tables[GFLT_MAIN].levels[0].path = level_to_play;
+        Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+        g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
+            Memory_DupStr(level_to_play);
     }
 
     GF_COMMAND gf_cmd = level_to_play != nullptr
@@ -468,6 +470,9 @@ void Shell_Main(void)
     }
 
     Config_Write();
+    if (level_to_play != nullptr) {
+        Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+    }
 }
 
 void Shell_Shutdown(void)
