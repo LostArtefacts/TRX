@@ -1,0 +1,129 @@
+{
+  "Controls": {
+    "window_title_main": "Programma di configurazione di TR2X",
+    "command_launch_gold": "Lancia Golden Mask",
+    "file_dialog_filter": "File di Configurazione di TR2X",
+    "window_title_about": "Informazioni sul Programma di configurazione di TR2X",
+    "label_about_details": "Per ulteriori informazioni, visita la pagina GitHub di TR2X."
+  },
+  "Enums": {
+    "fps": {
+      "30": "30",
+      "60": "60"
+    },
+    "aspect_mode": {
+      "any": "Qualsiasi",
+      "16:9": "16:9",
+      "4:3": "4:3"
+    },
+    "underwater_music": {
+      "full": "Completa",
+      "quiet": "Attenuata",
+      "full_no_ambient": "Completa ma senza suoni ambientali",
+      "quiet_no_ambient": "Attenuata ma senza suoni ambientali",
+      "none": "Assente"
+    }
+  },
+  "Properties": {
+    "enable_tr3_sidesteps": {
+      "Title": "Passi laterali migliorati",
+      "Description": "Abilita i controlli dei passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare."
+    },
+    "enable_responsive_passport": {
+      "Title": "Abilita passaporto reattivo",
+      "Description": "Disabilita il blocco dell'input dell'utente mentre scorrono le pagine del passaporto, programmando invece le pagine da sfogliare."
+    },
+    "fps": {
+      "Title": "FPS",
+      "Description": "Controlla i fotogrammi al secondo a cui eseguire il gioco."
+    },
+    "enable_3d_pickups": {
+      "Title": "Oggetti 3D",
+      "Description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D."
+    },
+    "enable_cheats": {
+      "Title": "Trucchi",
+      "Description": "Abilita vari trucchi:\n- L: termina immediatamente il livello.\n- I: dai a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n     - tasto CAMMINA: disabilita il trucco DOZY.\n     - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi)."
+    },
+    "enable_console": {
+      "Title": "Console",
+      "Description": "Abilita la console per sviluppatori."
+    },
+    "enable_fmv": {
+      "Title": "Abilita FMV",
+      "Description": "Abilita la riproduzione dei filmati."
+    },
+    "fix_m16_accuracy": {
+      "Title": "Correggi precisione M16",
+      "Description": "Corregge la precisione della mira dell'M16 quando Lara corre."
+    },
+    "fix_item_duplication_glitch": {
+      "Title": "Correggi l'errore di duplicazione degli oggetti",
+      "Description": "Risolve il problema per cui è possibile duplicare l'utilizzo degli oggetti chiave nell'inventario."
+    },
+    "fix_qwop_glitch": {
+      "Title": "Correggi l'errore QWOP",
+      "Description": "Risolve il problema per cui a volte Lara, saltando da piccoli gradini, provoca una strana animazione di corsa nota come stato QWOP."
+    },
+    "fix_step_glitch": {
+      "Title": "Correggi l'errore dei gradini",
+      "Description": "Risolve il problema per cui Lara a volte viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo."
+    },
+    "fix_free_flare_glitch": {
+      "Title": "Correggi l'errore del bengala",
+      "Description": "Risolve il problema in cui, quando si preme il tasto del bengala mentre si raccoglie un qualsiasi oggetto, ne verrà creato uno dal nulla."
+    },
+    "fix_pickup_drift_glitch": {
+      "Title": "Correggi l'errore degli oggetti sott'acqua",
+      "Description": "Risolve il problema per cui Lara a volte viene spostata quando raccoglie oggetti sott'acqua, il che può farla collidere contro i muri."
+    },
+    "fix_flare_throw_priority": {
+      "Title": "Correggi la priorità di lancio dei bengala",
+      "Description": "Risolve il problema per cui Lara dà priorità al lancio di un bengala esaurito mentre è a mezz'aria, il che può impedirle di afferrare le sporgenze."
+    },
+    "fix_walk_run_jump": {
+      "Title": "Correggi pausa camminata-corsa-salto",
+      "Description": "Risolve il problema per cui a volte Lara non riesce a saltare immediatamente dopo essere passata dall'animazione di camminata a quella di corsa."
+    },
+    "fix_floor_data_issues": {
+      "Title": "Correggi i dati dei livelli",
+      "Description": "Risolve i problemi dei livelli originali relativi a dati/eventi."
+    },
+    "fix_item_rots": {
+      "Title": "Correggi l'orientamento degli oggetti",
+      "Description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D nei livelli originali."
+    },
+    "enable_auto_item_selection": {
+      "Title": "Preselezione degli oggetti chiave",
+      "Description": "Quando Lara preme azione contro un buco della serratura o un altro ricettacolo e ha l'oggetto corrispondente nell'inventario, quell'oggetto verrà preselezionato."
+    },
+    "aspect_mode": {
+      "Title": "Modalità rapporto d'aspetto",
+      "Description": "Imposta il rapporto d'aspetto del gioco."
+    },
+    "screenshot_format": {
+      "Title": "Formato istantanea dello schermo",
+      "Description": "Formato del file da utilizzare per le istantanee dello schermo."
+    },
+    "enable_gun_lighting": {
+      "Title": "Illuminazione spari/esplosioni",
+      "Description": "Abilita l'illuminazione dinamica per spari ed esplosioni."
+    },
+    "enable_lara_mic" : {
+      "Title": "Microfono su Lara",
+      "Description": "Imposta il microfono nella posizione in cui si trova Lara. Se disabilitato, il microfono sarà nella posizione della telecamera."
+    },
+    "underwater_music_mode": {
+      "Title": "Comportamento della musica sott'acqua",
+      "Description": "Cambia il modo in cui la musica viene riprodotta sott'acqua.\n- Completa: la musica è riprodotta normalmente sott'acqua.\n- Attenuata: la musica è riprodotta a metà volume sott'acqua.\n- Completa ma senza suoni ambientali: la musica è riprodotta normalmente sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Attenuata ma senza suoni ambientali: la musica è riprodotta a metà volume sott'acqua, eccetto la traccia ambientale che è silenziata.\n- Assente: nessuna musica viene riprodotta sott'acqua (TR2)."
+    },
+    "enable_fade_effects": {
+      "Title": "Effetti di dissolvenza",
+      "Description": "Abilita le transizioni in dissolvenza, ad esempio tra le grafiche dei titoli di coda."
+    },
+    "enable_exit_fade_effects": {
+      "Title": "Effetti di dissolvenza in uscita",
+      "Description": "Abilita gli effetti di dissolvenza quando si esce dal gioco."
+    }
+  }
+}

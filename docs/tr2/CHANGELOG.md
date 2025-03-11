@@ -20,6 +20,7 @@
 - fixed losing the NG+ flag when loading a save that has it set (#2566, regression from 0.9.2)
 - fixed the ammo counter not showing in demos if NG+ is set (#2574, regression from 0.9)
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 0.9)
+- added Italian localization to the config tool
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)
