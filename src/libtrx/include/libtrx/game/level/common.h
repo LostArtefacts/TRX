@@ -18,10 +18,8 @@ void Level_ReadAnimBones(int32_t base_idx, int32_t num_bones, VFILE *file);
 void Level_LoadAnimFrames(void);
 void Level_ReadObjects(VFILE *file);
 void Level_ReadStaticObjects(VFILE *file);
-void Level_ReadObjectTextures(
-    int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
-void Level_ReadSpriteTextures(
-    int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
+void Level_ReadObjectTextures(VFILE *file);
+void Level_ReadSpriteTextures(VFILE *file);
 void Level_ReadSpriteSequences(VFILE *file);
 void Level_ReadPathingData(VFILE *file);
 void Level_ReadAnimatedTextureRanges(VFILE *file);
@@ -32,6 +30,11 @@ void Level_ReadItems(VFILE *file);
 void Level_ReadDemoData(VFILE *file);
 void Level_ReadSoundSources(VFILE *file);
 void Level_ReadSamples(VFILE *file);
+
+void Level_AppendObjectTextures(
+    int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
+void Level_AppendSpriteTextures(
+    int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
 
 void Level_LoadTexturePages(void);
 void Level_LoadPalettes(void);
