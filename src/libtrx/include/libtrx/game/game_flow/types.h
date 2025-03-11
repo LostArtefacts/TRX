@@ -98,11 +98,7 @@ typedef struct {
 typedef struct {
     int32_t num;
     GF_LEVEL_TYPE type;
-#if TR_VERSION == 1
     char *path;
-#elif TR_VERSION == 2
-    const char *path;
-#endif
     char *title;
 
     MUSIC_TRACK_ID music_track;
