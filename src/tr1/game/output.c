@@ -702,9 +702,9 @@ void Output_ApplyRenderSettings(void)
     }
 }
 
-void Output_DownloadTextures(int page_count)
+void Output_DownloadTextures(void)
 {
-    S_Output_DownloadTextures(page_count);
+    S_Output_DownloadTextures(Output_GetTexturePageCount());
 }
 
 void Output_DrawBlack(void)
