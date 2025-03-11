@@ -21,6 +21,7 @@
 #include <libtrx/filesystem.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 
 #include <stdint.h>
 #include <stdio.h>
@@ -32,7 +33,7 @@ typedef struct {
     bool allow_load;
     bool allow_save;
     SAVEGAME_FORMAT format;
-    char *(*get_save_filename)(int32_t slot_num);
+    const char *(*get_save_filename_pattern)(void);
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
     bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
@@ -49,7 +50,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = true,
         .format = SAVEGAME_FORMAT_BSON,
-        .get_save_filename = Savegame_BSON_GetSaveFileName,
+        .get_save_filename_pattern = Savegame_BSON_GetSaveFilePattern,
         .fill_info = Savegame_BSON_FillInfo,
         .load_from_file = Savegame_BSON_LoadFromFile,
         .load_only_resume_info = Savegame_BSON_LoadOnlyResumeInfo,
@@ -60,7 +61,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = false,
         .format = SAVEGAME_FORMAT_LEGACY,
-        .get_save_filename = Savegame_Legacy_GetSaveFileName,
+        .get_save_filename_pattern = Savegame_Legacy_GetSaveFilePattern,
         .fill_info = Savegame_Legacy_FillInfo,
         .load_from_file = Savegame_Legacy_LoadFromFile,
         .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
@@ -70,17 +71,20 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
     { 0 },
 };
 
-static void M_Clear(void);
+static void M_ClearSlots(void);
+static bool M_FillSlot(
+    const SAVEGAME_STRATEGY *strategy, int32_t slot_num, const char *path);
+static void M_ScanSavedGamesDir(const char *dir_path);
 static void M_LoadPreprocess(void);
 static void M_LoadPostprocess(void);
 
-static void M_Clear(void)
+static void M_ClearSlots(void)
 {
     if (m_SavegameInfo == nullptr) {
         return;
     }
 
-    for (int i = 0; i < m_SaveSlots; i++) {
+    for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
         savegame_info->format = 0;
         savegame_info->counter = -1;
@@ -88,6 +92,66 @@ static void M_Clear(void)
         Memory_FreePointer(&savegame_info->full_path);
         Memory_FreePointer(&savegame_info->level_title);
     }
+}
+
+static bool M_FillSlot(
+    const SAVEGAME_STRATEGY *const strategy, const int32_t slot_num,
+    const char *const path)
+{
+    SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    if (savegame_info->format != 0) {
+        // do not override already filled slots
+        return true;
+    }
+
+    bool result = false;
+    MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
+    if (fp != nullptr) {
+        if (strategy->fill_info(fp, savegame_info)) {
+            savegame_info->format = strategy->format;
+            Memory_FreePointer(&savegame_info->full_path);
+            savegame_info->full_path = Memory_DupStr(path);
+            result = true;
+        }
+        File_Close(fp);
+    }
+    return result;
+}
+
+static void M_ScanSavedGamesDir(const char *const dir_path)
+{
+    void *dir_handle = File_OpenDirectory(dir_path);
+    if (dir_handle == nullptr) {
+        return;
+    }
+
+    while (true) {
+        const char *file_name = File_ReadDirectory(dir_handle);
+        if (file_name == nullptr) {
+            break;
+        }
+        if (strcmp(file_name, ".") == 0 || strcmp(file_name, "..") == 0) {
+            continue;
+        }
+
+        for (const SAVEGAME_STRATEGY *strategy = m_Strategies; strategy->format;
+             strategy++) {
+            if (!strategy->allow_load) {
+                continue;
+            }
+
+            int32_t slot = -1;
+            int32_t parsed =
+                sscanf(file_name, strategy->get_save_filename_pattern(), &slot);
+            if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
+                char *file_path = String_Format("%s/%s", dir_path, file_name);
+                M_FillSlot(strategy, slot, file_path);
+                Memory_FreePointer(&file_path);
+            }
+        }
+    }
+
+    File_CloseDirectory(dir_handle);
 }
 
 static void M_LoadPreprocess(void)
@@ -177,7 +241,7 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 
 void Savegame_Shutdown(void)
 {
-    M_Clear();
+    M_ClearSlots();
     Memory_FreePointer(&m_SavegameInfo);
     Memory_FreePointer(&g_GameInfo.current);
 }
@@ -466,10 +530,9 @@ bool Savegame_Save(const int32_t slot_num)
     const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
     while (strategy->format) {
         if (strategy->allow_save && strategy->save_to_file != nullptr) {
-            char *filename = strategy->get_save_filename(slot_num);
-            char *full_path =
-                Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
-            sprintf(full_path, "%s/%s", SAVES_DIR, filename);
+            char *filename =
+                String_Format(strategy->get_save_filename_pattern(), slot_num);
+            char *full_path = String_Format("%s/%s", SAVES_DIR, filename);
 
             MYFILE *fp = File_Open(full_path, FILE_OPEN_WRITE);
             if (fp) {
@@ -552,47 +615,17 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
 
 void Savegame_ScanSavedGames(void)
 {
-    M_Clear();
+    M_ClearSlots();
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
 
+    M_ScanSavedGamesDir(SAVES_DIR);
+    M_ScanSavedGamesDir(".");
+
     for (int i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-        const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-        while (strategy->format) {
-            if (!savegame_info->format && strategy->allow_load) {
-                char *filename = strategy->get_save_filename(i);
-
-                char *full_path =
-                    Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
-                sprintf(full_path, "%s/%s", SAVES_DIR, filename);
-
-                MYFILE *fp = nullptr;
-                if (!fp) {
-                    fp = File_Open(full_path, FILE_OPEN_READ);
-                }
-                if (!fp) {
-                    fp = File_Open(filename, FILE_OPEN_READ);
-                }
-
-                if (fp) {
-                    if (strategy->fill_info(fp, savegame_info)) {
-                        savegame_info->format = strategy->format;
-                        Memory_FreePointer(&savegame_info->full_path);
-                        savegame_info->full_path =
-                            Memory_DupStr(File_GetPath(fp));
-                    }
-                    File_Close(fp);
-                }
-
-                Memory_FreePointer(&filename);
-                Memory_FreePointer(&full_path);
-            }
-            strategy++;
-        }
-
-        if (savegame_info->level_title) {
+        if (savegame_info->level_title != nullptr) {
             if (savegame_info->counter > g_SaveCounter) {
                 g_SaveCounter = savegame_info->counter;
             }

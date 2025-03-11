@@ -444,3 +444,28 @@ void File_CreateDirectory(const char *path)
 #endif
     Memory_FreePointer(&full_path);
 }
+
+void *File_OpenDirectory(const char *const path)
+{
+    ASSERT(path != nullptr);
+    char *full_path = File_GetFullPath(path);
+    DIR *path_dir = opendir(full_path);
+    Memory_FreePointer(&full_path);
+    return path_dir;
+}
+
+const char *File_ReadDirectory(void *const dir)
+{
+    DIR *path_dir = (DIR *)dir;
+    struct dirent *cur_file = readdir(dir);
+    if (cur_file == nullptr) {
+        return nullptr;
+    }
+    return cur_file->d_name;
+}
+
+void File_CloseDirectory(void *const dir)
+{
+    ASSERT(dir != nullptr);
+    closedir(dir);
+}

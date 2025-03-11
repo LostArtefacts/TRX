@@ -1287,13 +1287,9 @@ static JSON_ARRAY *M_DumpMusicTrackFlags(void)
     return music_track_arr;
 }
 
-char *Savegame_BSON_GetSaveFileName(int32_t slot)
+const char *Savegame_BSON_GetSaveFilePattern(void)
 {
-    size_t out_size =
-        snprintf(nullptr, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
-    char *out = Memory_Alloc(out_size);
-    snprintf(out, out_size, g_GameFlow.savegame_fmt_bson, slot);
-    return out;
+    return g_GameFlow.savegame_fmt_bson;
 }
 
 bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
