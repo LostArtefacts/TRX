@@ -137,9 +137,9 @@ void Shell_Main(void)
 
     const char *level_to_play = nullptr;
 
-    char **args = nullptr;
+    const char **args = nullptr;
     int32_t arg_count = 0;
-    S_Shell_GetCommandLine(&arg_count, &args);
+    Shell_GetCommandLine(&arg_count, &args);
     for (int32_t i = 0; i < arg_count; i++) {
         if (!strcmp(args[i], "-gold")) {
             m_ActiveMod = M_MOD_UB;
@@ -284,10 +284,6 @@ void Shell_Main(void)
     if (level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
-    for (int i = 0; i < arg_count; i++) {
-        Memory_FreePointer(&args[i]);
-    }
-    Memory_FreePointer(&args);
 }
 
 void Shell_ProcessInput(void)

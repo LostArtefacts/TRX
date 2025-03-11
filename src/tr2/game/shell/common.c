@@ -33,9 +33,27 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+typedef enum {
+    M_MOD_UNKNOWN,
+    M_MOD_OG,
+    M_MOD_CUSTOM_LEVEL,
+} M_MOD;
+
+static struct {
+    char *game_flow_path;
+    char *game_strings_path;
+} m_ModPaths[] = {
+    [M_MOD_OG] = {
+        .game_flow_path = "cfg/TR2X_gameflow.json5",
+        .game_strings_path = "cfg/TR2X_strings.json5",
+    },
+    [M_MOD_CUSTOM_LEVEL] = {
+        .game_flow_path = "cfg/TR2X_gameflow_level.json5",
+        .game_strings_path = "cfg/TR2X_strings_level.json5",
+    },
+};
+static M_MOD m_ActiveMod = M_MOD_UNKNOWN;
 static Uint64 m_UpdateDebounce = 0;
-static const char *m_CurrentGameFlowPath = "cfg/TR2X_gameflow.json5";
-static const char *m_CurrentGameStringsPath = "cfg/TR2X_strings.json5";
 
 static void M_SyncToWindow(void);
 static void M_SyncFromWindow(void);
@@ -320,6 +338,21 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 // TODO: refactor the hell out of me
 void Shell_Main(void)
 {
+    m_ActiveMod = M_MOD_OG;
+
+    const char *level_to_play = nullptr;
+
+    const char **args = nullptr;
+    int32_t arg_count = 0;
+    Shell_GetCommandLine(&arg_count, &args);
+    for (int32_t i = 0; i < arg_count; i++) {
+        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
+            && i + 1 < arg_count) {
+            level_to_play = args[i + 1];
+            m_ActiveMod = M_MOD_CUSTOM_LEVEL;
+        }
+    }
+
     GameString_Init();
     EnumMap_Init();
     Config_Init();
@@ -349,8 +382,8 @@ void Shell_Main(void)
     Render_Reset(RENDER_RESET_PARAMS);
 
     GF_Init();
-    GF_LoadFromFile(m_CurrentGameFlowPath);
-    GameStringTable_LoadFromFile(m_CurrentGameStringsPath);
+    GF_LoadFromFile(m_ModPaths[m_ActiveMod].game_flow_path);
+    GameStringTable_LoadFromFile(m_ModPaths[m_ActiveMod].game_strings_path);
     GameStringTable_Apply(nullptr);
 
     Savegame_Init();
@@ -359,7 +392,13 @@ void Shell_Main(void)
 
     GameBuf_Init();
 
-    GF_COMMAND gf_cmd = GF_DoFrontendSequence();
+    if (level_to_play != nullptr) {
+        g_GameFlow.level_tables[GFLT_MAIN].levels[0].path = level_to_play;
+    }
+
+    GF_COMMAND gf_cmd = level_to_play != nullptr
+        ? (GF_COMMAND) { .action = GF_START_GAME, .param = 0 }
+        : GF_DoFrontendSequence();
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {
         LOG_INFO(
@@ -451,7 +490,7 @@ const char *Shell_GetConfigPath(void)
 
 const char *Shell_GetGameFlowPath(void)
 {
-    return m_CurrentGameFlowPath;
+    return m_ModPaths[m_ActiveMod].game_flow_path;
 }
 
 void Shell_Start(void)

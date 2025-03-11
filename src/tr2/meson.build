@@ -28,6 +28,7 @@ build_opts = [
   '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
   '-DGLEW_NO_GLU',
+  '-DSDL_MAIN_HANDLED',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   # end of common options
@@ -286,7 +287,6 @@ sources = [
   'game/viewport.c',
   'global/enum_map.c',
   'global/vars.c',
-  'main.c',
   resources,
 ]
 
