@@ -13,7 +13,7 @@ void Output_ReserveVertexBuffer(size_t size);
 
 void Output_SetWindowSize(int width, int height);
 void Output_ApplyRenderSettings(void);
-void Output_DownloadTextures(int page_count);
+void Output_DownloadTextures(void);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);

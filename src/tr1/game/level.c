@@ -410,11 +410,10 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
 
     Level_LoadTexturePages();
     Level_LoadPalettes();
-    // TODO: output already has the count
-    LEVEL_INFO *const info = Level_GetInfo();
-    Output_DownloadTextures(info->textures.page_count);
+    Output_DownloadTextures();
 
     // Initialise the sound effects.
+    LEVEL_INFO *const info = Level_GetInfo();
     const int32_t sample_count = info->samples.offset_count;
     size_t *sample_sizes = Memory_Alloc(sizeof(size_t) * sample_count);
     const char **sample_pointers = Memory_Alloc(sizeof(char *) * sample_count);
