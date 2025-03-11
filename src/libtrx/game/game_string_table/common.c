@@ -104,7 +104,7 @@ void GameStringTable_Apply(const GF_LEVEL *const level)
     M_Apply(&gs_file->global);
 
     for (int32_t i = 0; i < GFLT_NUMBER_OF; i++) {
-        M_ApplyLevelTitles(gs_file, GFLT_MAIN);
+        M_ApplyLevelTitles(gs_file, i);
     }
 
     if (level != nullptr) {
