@@ -4,7 +4,6 @@
 
 #include <libtrx/game/shell.h>
 
-void Shell_Main(void);
 void Shell_Start();
 
 void Shell_ProcessEvents(void);

@@ -1,0 +1,33 @@
+{
+    // This file is used to enable the -l argument support.
+
+    "cmd_init":           {"action": "exit_to_title"},
+    "cmd_title":          {"action": "noop"},
+    "cmd_death_in_demo":  {"action": "exit_to_title"},
+    "cmd_death_in_game":  {"action": "noop"},
+    "cmd_demo_interrupt": {"action": "exit_to_title"},
+    "cmd_demo_end":       {"action": "exit_to_title"},
+
+    "cheat_keys": true,
+    "load_save_disabled": false,
+    "play_any_level": false,
+    "lockout_option_ring": false,
+    "gym_enabled": true,
+    "demo_version": false,
+    "single_level": 0,
+
+    "demo_delay": 30,
+    "secret_track": 47,
+
+    "levels": [
+        {
+            "path": "PLACEHOLDER",
+            "music_track": -1,
+            "sequence": [
+                {"type": "set_secret_count", "count": 0},
+                {"type": "loop_game"},
+                {"type": "level_stats"},
+            ],
+        },
+    ],
+}

@@ -28,6 +28,7 @@ build_opts = [
   '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
   '-DGLEW_NO_GLU',
+  '-DSDL_MAIN_HANDLED',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   # end of common options
