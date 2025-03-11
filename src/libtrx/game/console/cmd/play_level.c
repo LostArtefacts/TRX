@@ -18,6 +18,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
 
     if (String_ParseInteger(ctx->args, &level_to_load)) {
+        if (GF_GetGymLevel() == nullptr) {
+            level_to_load -= 1;
+        }
         goto matched;
     }
 
