@@ -51,11 +51,11 @@ Currently supported commands:
   `/level {name}`  
   `/play {num}`  
   `/play {name}`  
-  Plays the specified level.
+  Plays the specified level. `/play 0` plays the gym level if it's available – regular levels always start with number 1.
 
 - `/cut {num}`  
   `/cutscene {num}`  
-  Plays the specified cutscene.
+  Plays the specified cutscene, starting at 1.
 
 - `/gym`  
   `/home`  
@@ -69,7 +69,7 @@ Currently supported commands:
 
 - `/demo`  
   `/demo {num}`  
-  Starts the specified demo. If no number is chosen, the demos will cycle.
+  Starts the specified demo, starting at 1. If no number is chosen, the demos will cycle.
 
 - `/title`  
   Exits the game to main screen.
