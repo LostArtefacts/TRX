@@ -36,6 +36,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         break;
     default:
         prefix = GS(OSD_POS_LEVEL);
+        reindex = GF_GetGymLevel() == nullptr ? 1 : 0;
         break;
     }
 

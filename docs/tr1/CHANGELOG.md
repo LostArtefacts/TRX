@@ -7,6 +7,7 @@
 - changed injections to a new file format with a smaller footprint and improved applicability tests (#1967)
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
 - changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
+- changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
 - fixed issues with fixed cameras in 60 FPS shifting before settling on their target (#1186)

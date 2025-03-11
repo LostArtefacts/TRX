@@ -61,7 +61,7 @@ Currently supported commands:
   `/level {name}`  
   `/play {num}`  
   `/play {name}`  
-  Plays the specified level.
+  Plays the specified level. `/play 0` plays the gym level if it's available – regular levels always start with number 1.
 
 - `/cut {num}`  
   `/cutscene {num}`  
