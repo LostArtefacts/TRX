@@ -8,8 +8,7 @@
 void Level_ReadPalettes(VFILE *file);
 void Level_ReadTexturePages(VFILE *file);
 void Level_ReadRooms(VFILE *file);
-void Level_ReadObjectMeshes(
-    int32_t num_indices, const int32_t *indices, VFILE *file);
+void Level_ReadObjectMeshes(VFILE *file);
 void Level_ReadAnims(VFILE *file);
 void Level_ReadAnimChanges(VFILE *file);
 void Level_ReadAnimRanges(VFILE *file);
@@ -31,6 +30,8 @@ void Level_ReadDemoData(VFILE *file);
 void Level_ReadSoundSources(VFILE *file);
 void Level_ReadSamples(VFILE *file);
 
+void Level_AppendObjectMeshes(
+    int32_t num_indices, const int32_t *indices, VFILE *file);
 void Level_AppendAnims(int32_t base_idx, int32_t num_anims, VFILE *file);
 void Level_AppendAnimChanges(
     int32_t base_idx, int32_t num_changes, VFILE *file);

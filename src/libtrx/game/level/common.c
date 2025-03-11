@@ -457,7 +457,35 @@ finish:
     Benchmark_End(benchmark, nullptr);
 }
 
-void Level_ReadObjectMeshes(
+void Level_ReadObjectMeshes(VFILE *const file)
+{
+    BENCHMARK *const benchmark = Benchmark_Start();
+    const int32_t num_meshes = VFile_ReadS32(file);
+    LOG_INFO("object mesh data: %d", num_meshes);
+
+    const size_t data_start_pos = VFile_GetPos(file);
+    VFile_Skip(file, num_meshes * sizeof(int16_t));
+
+    m_Info.mesh_ptr_count = VFile_ReadS32(file);
+    LOG_INFO("object mesh indices: %d", m_Info.mesh_ptr_count);
+    const int32_t alloc_size = m_Info.mesh_ptr_count * sizeof(int32_t);
+    int32_t *mesh_indices = Memory_Alloc(alloc_size);
+    VFile_Read(file, mesh_indices, alloc_size);
+
+    const size_t end_pos = VFile_GetPos(file);
+    VFile_SetPos(file, data_start_pos);
+
+    Object_InitialiseMeshes(
+        m_Info.mesh_ptr_count + Inject_GetDataCount(IDT_MESH_POINTERS));
+    Level_AppendObjectMeshes(m_Info.mesh_ptr_count, mesh_indices, file);
+
+    VFile_SetPos(file, end_pos);
+    Memory_FreePointer(&mesh_indices);
+
+    Benchmark_End(benchmark, nullptr);
+}
+
+void Level_AppendObjectMeshes(
     const int32_t num_indices, const int32_t *const indices, VFILE *const file)
 {
     // Construct and store distinct meshes only e.g. Lara's hips are referenced
