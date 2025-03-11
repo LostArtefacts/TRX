@@ -24,12 +24,15 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     const ITEM *const lara_item = Lara_GetItem();
 
     const char *prefix = nullptr;
+    int32_t reindex = 0;
     switch (GF_GetCurrentLevel()->type) {
     case GFL_CUTSCENE:
         prefix = GS(OSD_POS_CUTSCENE);
+        reindex = 1;
         break;
     case GFL_DEMO:
         prefix = GS(OSD_POS_DEMO);
+        reindex = 1;
         break;
     default:
         prefix = GS(OSD_POS_LEVEL);
@@ -40,7 +43,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     Console_Log(
         GS(OSD_POS_GET),
         prefix,
-        GF_GetCurrentLevel()->num,
+        GF_GetCurrentLevel()->num + reindex,
         GF_GetCurrentLevel()->title,
         lara_item->room_num,
         lara_item->pos.x / (float)WALL_L,
