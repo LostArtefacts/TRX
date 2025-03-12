@@ -42,7 +42,7 @@ typedef struct {
 } SAVEGAME_STRATEGY;
 
 static int32_t m_SaveSlots = 0;
-static uint16_t m_NewestSlot = 0;
+static int16_t m_NewestSlot = -1;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
@@ -99,8 +99,8 @@ static bool M_FillSlot(
     const char *const path)
 {
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
-    if (savegame_info->format != 0) {
-        // do not override already filled slots
+    if (strategy->format <= savegame_info->format) {
+        // do not override already filled slots or for less preferred strategies
         return true;
     }
 
@@ -485,7 +485,7 @@ bool Savegame_Load(const int32_t slot_num)
     M_LoadPreprocess();
 
     bool ret = false;
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
+    const SAVEGAME_STRATEGY *strategy = m_Strategies;
     while (strategy->format) {
         if (savegame_info->format == strategy->format) {
             MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
@@ -510,7 +510,7 @@ bool Savegame_Load(const int32_t slot_num)
 bool Savegame_Save(const int32_t slot_num)
 {
     GAME_INFO *const game_info = &g_GameInfo;
-    bool ret = true;
+    bool ret = false;
     Savegame_BindSlot(slot_num);
 
     File_CreateDirectory(SAVES_DIR);
@@ -525,26 +525,31 @@ bool Savegame_Save(const int32_t slot_num)
             game_info->current[i] = game_info->current[current_level->num];
         }
     }
+    const char *const level_title = Game_GetCurrentLevel()->title;
 
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-    while (strategy->format) {
+    const bool was_slot_empty = savegame_info->full_path == nullptr;
+    const SAVEGAME_STRATEGY *strategy = m_Strategies;
+    while (strategy->format != 0) {
         if (strategy->allow_save && strategy->save_to_file != nullptr) {
             char *filename =
                 String_Format(strategy->get_save_filename_pattern(), slot_num);
             char *full_path = String_Format("%s/%s", SAVES_DIR, filename);
 
-            MYFILE *fp = File_Open(full_path, FILE_OPEN_WRITE);
-            if (fp) {
+            MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
+            if (fp != nullptr) {
+                g_SaveCounter++;
                 strategy->save_to_file(fp, game_info);
                 savegame_info->format = strategy->format;
                 Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
                 savegame_info->counter = g_SaveCounter;
                 savegame_info->level_num = current_level->num;
+                savegame_info->level_title = level_title != nullptr
+                    ? Memory_DupStr(level_title)
+                    : nullptr;
                 File_Close(fp);
-            } else {
-                ret = false;
+                ret = true;
             }
 
             Memory_FreePointer(&filename);
@@ -554,12 +559,12 @@ bool Savegame_Save(const int32_t slot_num)
     }
 
     if (ret) {
-        REQUEST_INFO *req = &g_SavegameRequester;
-        Requester_ChangeItem(
-            req, slot_num, false, "%s %d", current_level->title, g_SaveCounter);
+        m_NewestSlot = slot_num;
+        if (was_slot_empty) {
+            g_SavedGamesCount++;
+        }
+        Savegame_HighlightNewestSlot();
     }
-
-    Savegame_ScanSavedGames();
 
     return ret;
 }
@@ -619,31 +624,32 @@ void Savegame_ScanSavedGames(void)
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
+    m_NewestSlot = -1;
 
     M_ScanSavedGamesDir(SAVES_DIR);
     M_ScanSavedGamesDir(".");
 
-    for (int i = 0; i < m_SaveSlots; i++) {
+    for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
         if (savegame_info->level_title != nullptr) {
             if (savegame_info->counter > g_SaveCounter) {
                 g_SaveCounter = savegame_info->counter;
+                m_NewestSlot = i;
             }
             g_SavedGamesCount++;
         }
     }
+}
 
-    REQUEST_INFO *req = &g_SavegameRequester;
+void Savegame_FillAvailableSaves(REQUEST_INFO *req)
+{
     Requester_ClearTextstrings(req);
-    Requester_Init(&g_SavegameRequester, Savegame_GetSlotCount());
+    Requester_Init(req, Savegame_GetSlotCount());
 
     for (int i = 0; i < req->max_items; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
-        if (savegame_info->level_title) {
-            if (savegame_info->counter == g_SaveCounter) {
-                m_NewestSlot = i;
-            }
+        if (savegame_info->level_title != nullptr) {
             Requester_AddItem(
                 req, false, "%s %d", savegame_info->level_title,
                 savegame_info->counter);
@@ -657,12 +663,11 @@ void Savegame_ScanSavedGames(void)
     } else if (req->requested < req->line_offset) {
         req->line_offset = req->requested;
     }
-
-    g_SaveCounter++;
 }
 
-void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
+void Savegame_FillAvailableLevels(REQUEST_INFO *req)
 {
+    ASSERT(req != nullptr);
     const int32_t slot_num = g_GameInfo.select_save_slot;
     if (slot_num == -1) {
         return;
@@ -696,7 +701,7 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 
 void Savegame_HighlightNewestSlot(void)
 {
-    g_SavegameRequester.requested = m_NewestSlot;
+    g_SavegameRequester.requested = MAX(0, m_NewestSlot);
 }
 
 bool Savegame_RestartAvailable(int32_t slot_num)

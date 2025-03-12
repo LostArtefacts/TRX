@@ -343,7 +343,7 @@ static void M_InitSaveRequester(int16_t page_num)
             + (req->line_height * req->vis_lines);
     }
 
-    Savegame_ScanSavedGames();
+    Savegame_FillAvailableSaves(req);
 }
 
 static void M_RestoreSaveRequester(void)
@@ -377,7 +377,7 @@ static void M_InitSelectLevelRequester(void)
             + (req->line_height * req->vis_lines);
     }
 
-    Savegame_ScanAvailableLevels(req);
+    Savegame_FillAvailableLevels(req);
 }
 
 static void M_InitNewGameRequester(void)
