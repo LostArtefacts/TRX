@@ -108,22 +108,21 @@ void Text_DrawText(TEXTSTRING *const text)
 
     const GLYPH_INFO **glyph_ptr = text->glyphs;
     while (*glyph_ptr != nullptr) {
-        if (text->flags.multiline && (*glyph_ptr)->role == GLYPH_NEWLINE) {
+        const GLYPH_INFO *glyph = *glyph_ptr;
+        if (text->flags.multiline && glyph->role == GLYPH_NEWLINE) {
             y += TEXT_HEIGHT * M_Scale(text->scale.v) / TEXT_BASE_SCALE;
             x = start_x;
-            glyph_ptr++;
-            continue;
+            goto loop_end;
         }
 
-        if ((*glyph_ptr)->role == GLYPH_SPACE) {
+        if (glyph->role == GLYPH_SPACE) {
             x += text->word_spacing * scale_h / TEXT_BASE_SCALE;
-            glyph_ptr++;
-            continue;
+            goto loop_end;
         }
 
-        if ((*glyph_ptr)->role == GLYPH_SECRET) {
+        if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
-                Object_Get(O_SECRET_1 + (*glyph_ptr)->mesh_idx)->mesh_idx;
+                Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
             const SPRITE_TEXTURE *const sprite =
                 Output_GetSpriteTexture(sprite_idx);
             const float sprite_scale_h =
@@ -132,25 +131,38 @@ void Text_DrawText(TEXTSTRING *const text)
                 text->scale.v / (sprite->y1 - sprite->y0);
             const float sprite_scale = MIN(sprite_scale_h, sprite_scale_v);
             Output_DrawScreenSprite(
-                x + M_Scale(10), y, z,
-                M_Scale((*glyph_ptr)->width * sprite_scale),
-                M_Scale((*glyph_ptr)->width * sprite_scale), sprite_idx, 4096,
-                0);
-            x += (*glyph_ptr)->width * scale_h / TEXT_BASE_SCALE;
-            glyph_ptr++;
-            continue;
+                x + M_Scale(10), y, z, M_Scale(glyph->width * sprite_scale),
+                M_Scale(glyph->width * sprite_scale), sprite_idx, 4096, 0);
+            x += glyph->width * scale_h / TEXT_BASE_SCALE;
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_COMPOUND) {
+            const int32_t cx =
+                x + (glyph->combine_with.offset_x * scale_h / TEXT_BASE_SCALE);
+            const int32_t cy =
+                y + (glyph->combine_with.offset_y * scale_h / TEXT_BASE_SCALE);
+            if (glyph->combine_with.mesh_idx >= ABS(obj->mesh_count)) {
+                goto loop_end;
+            }
+
+            Output_DrawScreenSprite(
+                cx, cy, 0, scale_h, scale_v,
+                obj->mesh_idx + glyph->combine_with.mesh_idx, 4096, 0);
         }
 
         if (x >= 0 && x < g_PhdWinWidth && y >= 0 && y < g_PhdWinHeight) {
             Output_DrawScreenSprite(
-                x, y, z, scale_h, scale_v,
-                obj->mesh_idx + (*glyph_ptr)->mesh_idx, 4096, 0);
+                x, y, z, scale_h, scale_v, obj->mesh_idx + glyph->mesh_idx,
+                4096, 0);
         }
 
-        if ((*glyph_ptr)->role != GLYPH_COMBINING) {
-            const int32_t spacing = text->letter_spacing + (*glyph_ptr)->width;
+        if (glyph->role != GLYPH_COMBINING) {
+            const int32_t spacing = text->letter_spacing + glyph->width;
             x += spacing * scale_h / TEXT_BASE_SCALE;
         }
+
+    loop_end:
         glyph_ptr++;
     }
 
