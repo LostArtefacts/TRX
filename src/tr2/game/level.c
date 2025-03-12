@@ -31,66 +31,89 @@
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
+#include <libtrx/utils.h>
 #include <libtrx/virtual_file.h>
 
+typedef struct {
+    int32_t game_index;
+    int32_t file_index;
+} SAMPLE_ENTRY;
+
+static int32_t M_CompareSampleOffsets(const void *a, const void *b);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_InitialiseSoundEffects(void);
 static void M_CompleteSetup(void);
 
+static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
+{
+    const SAMPLE_ENTRY *const entry_a = (SAMPLE_ENTRY *)a;
+    const SAMPLE_ENTRY *const entry_b = (SAMPLE_ENTRY *)b;
+    return entry_a->file_index - entry_b->file_index;
+}
+
 static void M_InitialiseSoundEffects(void)
 {
     BENCHMARK benchmark = Benchmark_Start();
+    SAMPLE_ENTRY *entries = nullptr;
     const char *const file_name = "data\\main.sfx";
     const char *full_path = File_GetFullPath(file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
     MYFILE *const fp = File_Open(full_path, FILE_OPEN_READ);
     Memory_FreePointer(&full_path);
 
-    LEVEL_INFO *const info = Level_GetInfo();
     if (fp == nullptr) {
         Shell_ExitSystemFmt("Could not open %s file", file_name);
         goto finish;
     }
 
-    // TODO: refactor these WAVE/RIFF shenanigans
-    int32_t sample_id = 0;
-    for (int32_t i = 0; sample_id < info->samples.offset_count; i++) {
-        char header[0x2C];
-        File_ReadData(fp, header, 0x2C);
-        if (*(int32_t *)(header + 0) != 0x46464952
-            || *(int32_t *)(header + 8) != 0x45564157
-            || *(int32_t *)(header + 36) != 0x61746164) {
+    LEVEL_INFO *const info = Level_GetInfo();
+    const int32_t sample_count = info->samples.offset_count;
+    entries = Memory_Alloc(sizeof(SAMPLE_ENTRY) * sample_count);
+    for (int32_t i = 0; i < sample_count; i++) {
+        entries[i].game_index = i;
+        entries[i].file_index = info->samples.offsets[i];
+    }
+    qsort(entries, sample_count, sizeof(SAMPLE_ENTRY), M_CompareSampleOffsets);
+
+    for (int32_t i = 0, current_sample = 0; current_sample < sample_count;
+         i++) {
+        uint32_t header[11];
+        File_ReadData(fp, header, 11 * sizeof(uint32_t));
+        if (header[0] != MKTAG('R', 'I', 'F', 'F')
+            || header[2] != MKTAG('W', 'A', 'V', 'E')
+            || header[9] != MKTAG('d', 'a', 't', 'a')) {
             LOG_ERROR("Unexpected sample header for sample %d", i);
             goto finish;
         }
-        const int32_t data_size = *(int32_t *)(header + 0x28);
-        const int32_t aligned_size = (data_size + 1) & ~1;
 
-        if (info->samples.offsets[sample_id] != i) {
+        const size_t header_size = 11 * sizeof(uint32_t);
+        const size_t aligned_size = (header[10] + 1) & ~1;
+        const size_t size = aligned_size + header_size;
+        const SAMPLE_ENTRY *const entry = &entries[current_sample];
+        if (entry->file_index != i) {
             File_Seek(fp, aligned_size, FILE_SEEK_CUR);
             continue;
         }
 
-        const size_t sample_data_size = 0x2C + aligned_size;
-        char *sample_data = Memory_Alloc(sample_data_size);
-        memcpy(sample_data, header, 0x2C);
-        File_ReadData(fp, sample_data + 0x2C, aligned_size);
-
+        char *sample_data = Memory_Alloc(size);
+        memcpy(sample_data, header, header_size);
+        File_ReadData(fp, sample_data + header_size, aligned_size);
         const bool result =
-            Audio_Sample_LoadSingle(sample_id, sample_data, sample_data_size);
+            Audio_Sample_LoadSingle(entry->game_index, sample_data, size);
         Memory_FreePointer(&sample_data);
 
         if (!result) {
-            goto finish;
+            LOG_WARNING("Failed to load sample %d", entry->game_index);
         }
 
-        sample_id++;
+        current_sample++;
     }
 
 finish:
     if (fp != nullptr) {
         File_Close(fp);
     }
+    Memory_FreePointer(&entries);
     Memory_FreePointer(&info->samples.offsets);
     Benchmark_End(&benchmark, nullptr);
 }
