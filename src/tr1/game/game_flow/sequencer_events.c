@@ -84,12 +84,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         break;
 
     case GFSC_SELECT:
-        if (Savegame_GetBoundSlot() != -1) {
+        if (g_GameInfo.select_save_slot != -1) {
             // select level feature
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
                 Savegame_LoadOnlyResumeInfo(
-                    Savegame_GetBoundSlot(), &g_GameInfo);
+                    g_GameInfo.select_save_slot, &g_GameInfo);
                 const GF_LEVEL *tmp_level = level;
                 while (tmp_level != nullptr) {
                     Savegame_ResetCurrentInfo(tmp_level);
@@ -123,6 +123,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             Savegame_ApplyLogicToCurrentInfo(level);
         }
     }
+
+    // clear the save slot information so that /play starts with a fresh state
+    g_GameInfo.select_save_slot = -1;
 
     gf_cmd = GF_RunSequencerQueue(
         GF_EVENT_QUEUE_BEFORE_LEVEL_INIT, level, seq_ctx, seq_ctx_arg);
