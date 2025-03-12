@@ -24,6 +24,16 @@ typedef struct {
 } TEXTURE_UV;
 
 typedef struct {
+    union {
+        struct {
+            float z;
+            float w;
+        };
+        float zw[2];
+    };
+} TEXTURE_ZW_F;
+
+typedef struct {
     uint16_t draw_type;
     uint16_t tex_page;
     TEXTURE_UV uv[4];

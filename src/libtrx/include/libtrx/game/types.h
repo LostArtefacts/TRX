@@ -36,6 +36,11 @@ typedef struct {
         uint16_t palette_idx;
     };
     uint16_t vertices[4];
+
+    // trapezoid ratios for textured quads
+    // that cannot be really shared between vertices
+    TEXTURE_ZW_F texture_zw[4];
+
     bool enable_reflections;
 } FACE4;
 
