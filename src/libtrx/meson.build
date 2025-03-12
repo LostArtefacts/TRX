@@ -98,6 +98,7 @@ sources = [
   'game/console/cmd/exit_game.c',
   'game/console/cmd/exit_to_title.c',
   'game/console/cmd/flipmap.c',
+  'game/console/cmd/flood.c',
   'game/console/cmd/fly.c',
   'game/console/cmd/give_item.c',
   'game/console/cmd/heal.c',
