@@ -21,6 +21,10 @@ Currently supported commands:
   `/flip on`  
   Switches the global flipmap on or off, turning the reality around you on its head.
 
+- `/flood`  
+  `/drain`  
+  Floods or drains the current room at will. For when drowning is preferable to puzzles!
+
 - `/give {item_name}`  
   `/give {num} {item_name}`  
   `/give all`  
