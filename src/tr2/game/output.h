@@ -16,6 +16,8 @@ typedef struct {
     struct {
         float u;
         float v;
+        float z;
+        float w;
     } tex;
     float g;
 } VERTEX_INFO;

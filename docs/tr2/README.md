@@ -116,6 +116,7 @@ game with new enhancements and features.
 - fixed enemies that are run over by the skidoo not being counted in the statistics
 
 #### Visuals
+- added quadrilateral texture correction
 - added ability to set user-defined FOV
 - added support for HD FMVs
 - added wireframe mode

@@ -65,6 +65,8 @@ static inline void M_ClipGUV(
     buf->g = vtx2->g + (vtx1->g - vtx2->g) * clip;
     buf->tex.u = vtx2->tex.u + (vtx1->tex.u - vtx2->tex.u) * clip;
     buf->tex.v = vtx2->tex.v + (vtx1->tex.v - vtx2->tex.v) * clip;
+    buf->tex.z = vtx2->tex.z + (vtx1->tex.z - vtx2->tex.z) * clip;
+    buf->tex.w = vtx2->tex.w + (vtx1->tex.w - vtx2->tex.w) * clip;
 }
 
 double Render_CalculatePolyZ(
@@ -209,6 +211,8 @@ int32_t Render_ZedClipper(
                 * g_FltRhwONearZ;
             vtx[j].tex.v = (pts0->tex.v + (pts1->tex.v - pts0->tex.v) * clip)
                 * g_FltRhwONearZ;
+            vtx[j].tex.z = (pts0->tex.z + (pts1->tex.z - pts0->tex.z) * clip);
+            vtx[j].tex.w = (pts0->tex.w + (pts1->tex.w - pts0->tex.w) * clip);
             j++;
         }
 
@@ -220,6 +224,8 @@ int32_t Render_ZedClipper(
             vtx[j].g = pts0->g;
             vtx[j].tex.u = pts0->tex.u * pts0->rhw;
             vtx[j].tex.v = pts0->tex.v * pts0->rhw;
+            vtx[j].tex.z = pts0->tex.z;
+            vtx[j].tex.w = pts0->tex.w;
             j++;
         }
 
