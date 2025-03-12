@@ -15,6 +15,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/benchmark.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
@@ -620,6 +621,7 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
 
 void Savegame_ScanSavedGames(void)
 {
+    BENCHMARK benchmark = Benchmark_Start();
     M_ClearSlots();
 
     g_SaveCounter = 0;
@@ -639,6 +641,7 @@ void Savegame_ScanSavedGames(void)
             g_SavedGamesCount++;
         }
     }
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Savegame_FillAvailableSaves(REQUEST_INFO *req)
