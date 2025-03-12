@@ -39,7 +39,7 @@ static void M_CompleteSetup(void);
 
 static void M_InitialiseSoundEffects(void)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const char *const file_name = "data\\main.sfx";
     const char *full_path = File_GetFullPath(file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
@@ -92,7 +92,7 @@ finish:
         File_Close(fp);
     }
     Memory_FreePointer(&info->samples.offsets);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 static void M_LoadFromFile(const GF_LEVEL *const level)
@@ -100,7 +100,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     LOG_DEBUG("%s (num=%d)", level->title, level->num);
     GameBuf_Reset();
 
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const char *full_path = File_GetFullPath(level->path);
     strcpy(g_LevelFileName, full_path);
@@ -146,12 +146,12 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadSamples(file);
 
     VFile_Close(file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 static void M_CompleteSetup(void)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     Inject_AllInjections();
 
@@ -168,12 +168,12 @@ static void M_CompleteSetup(void)
 
     M_InitialiseSoundEffects();
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 bool Level_Load(const GF_LEVEL *const level)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
@@ -193,7 +193,7 @@ bool Level_Load(const GF_LEVEL *const level)
 
     Inject_Cleanup();
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 
     return true;
 }

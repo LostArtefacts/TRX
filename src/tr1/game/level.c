@@ -161,14 +161,14 @@ static bool M_TryLayout(VFILE *const file, const LEVEL_LAYOUT layout)
 static LEVEL_LAYOUT M_GuessLayout(VFILE *const file)
 {
     LEVEL_LAYOUT result = LEVEL_LAYOUT_UNKNOWN;
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     for (LEVEL_LAYOUT layout = 0; layout < LEVEL_LAYOUT_NUMBER_OF; layout++) {
         if (M_TryLayout(file, layout)) {
             result = layout;
             break;
         }
     }
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
     return result;
 }
 
@@ -238,7 +238,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
 
 static void M_CompleteSetup(const GF_LEVEL *const level)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     // We inject explosions sprites and sounds, although in the original game,
     // some levels lack them, resulting in no audio or visual effects when
@@ -294,7 +294,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Memory_FreePointer(&sample_sizes);
     Memory_FreePointer(&info->samples.offsets);
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 static void M_MarkWaterEdgeVertices(void)
@@ -303,7 +303,7 @@ static void M_MarkWaterEdgeVertices(void)
         return;
     }
 
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         const int32_t y_test =
@@ -316,12 +316,12 @@ static void M_MarkWaterEdgeVertices(void)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 static size_t M_CalculateMaxVertices(void)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     int32_t max_vertices = 0;
     for (int32_t i = 0; i < O_NUMBER_OF; i++) {
         const OBJECT *const obj = Object_Get(i);
@@ -350,14 +350,14 @@ static size_t M_CalculateMaxVertices(void)
         max_vertices = MAX(max_vertices, room->mesh.num_vertices);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
     return max_vertices;
 }
 
 void Level_Load(const GF_LEVEL *const level)
 {
     LOG_INFO("%d (%s)", level->num, level->path);
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     Inject_InitLevel(level);
 
@@ -372,13 +372,13 @@ void Level_Load(const GF_LEVEL *const level)
     Output_SetSkyboxEnabled(
         g_Config.visuals.enable_skybox && Object_Get(O_SKYBOX)->loaded);
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 bool Level_Initialise(
     const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     LOG_DEBUG("num=%d (%s)", level->num, level->path);
     if (level->type == GFL_DEMO) {
         Random_SeedDraw(0xD371F947);
@@ -451,6 +451,6 @@ bool Level_Initialise(
     Viewport_SetFOV(-1);
 
     g_Camera.underwater = false;
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
     return true;
 }

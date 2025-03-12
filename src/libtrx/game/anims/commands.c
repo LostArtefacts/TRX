@@ -50,7 +50,7 @@ static void M_ParseCommand(ANIM_COMMAND *const command, const int16_t **data)
 
 void Anim_LoadCommands(const int16_t *data)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t anim_count = Anim_GetTotalCount();
     for (int32_t i = 0; i < anim_count; i++) {
@@ -68,5 +68,5 @@ void Anim_LoadCommands(const int16_t *data)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }

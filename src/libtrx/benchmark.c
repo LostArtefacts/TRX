@@ -1,7 +1,6 @@
 #include "benchmark.h"
 
 #include "log.h"
-#include "memory.h"
 
 #include <SDL2/SDL_timer.h>
 
@@ -36,12 +35,13 @@ static void M_Log(
     }
 }
 
-BENCHMARK *Benchmark_Start(void)
+BENCHMARK Benchmark_Start(void)
 {
-    BENCHMARK *const b = Memory_Alloc(sizeof(BENCHMARK));
-    b->start = SDL_GetPerformanceCounter();
-    b->last = b->start;
-    return b;
+    const Uint64 perf = SDL_GetPerformanceCounter();
+    return (BENCHMARK) {
+        .start = perf,
+        .last = perf,
+    };
 }
 
 void Benchmark_Tick_Impl(
@@ -58,5 +58,4 @@ void Benchmark_End_Impl(
     const char *const func, const char *const message)
 {
     Benchmark_Tick_Impl(b, file, line, func, message);
-    Memory_FreePointer(&b);
 }
