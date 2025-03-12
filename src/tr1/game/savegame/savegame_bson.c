@@ -39,6 +39,13 @@ typedef struct {
     int32_t compressed_size;
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
+
+typedef struct {
+    uint32_t flags;
+    int32_t counter;
+    int32_t level_num;
+    size_t title_size;
+} SAVEGAME_BSON_EXTENDED_HEADER;
 #pragma pack(pop)
 
 typedef struct {
@@ -112,7 +119,18 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
     };
 
     File_WriteData(fp, &header, sizeof(header));
+
     File_WriteData(fp, compressed, compressed_size);
+
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
+        .flags = g_GameInfo.bonus_flag,
+        .counter = g_SaveCounter,
+        .level_num = level->num,
+        .title_size = strlen(level->title),
+    };
+    File_WriteData(fp, &extra_header, sizeof(extra_header));
+    File_WriteData(fp, level->title, strlen(level->title));
 
     Memory_FreePointer(&compressed);
 }
@@ -1295,26 +1313,40 @@ const char *Savegame_BSON_GetSaveFilePattern(void)
 bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 {
     bool ret = false;
-    JSON_VALUE *root = M_ParseFromFile(fp, nullptr);
-    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
-    if (root_obj) {
-        info->counter = JSON_ObjectGetInt(root_obj, "save_counter", -1);
-        info->level_num = JSON_ObjectGetInt(root_obj, "level_num", -1);
-        const char *level_title =
-            JSON_ObjectGetString(root_obj, "level_title", nullptr);
-        if (level_title) {
-            info->level_title = Memory_DupStr(level_title);
-        }
-        ret = info->level_num != -1;
-    }
-    JSON_ValueFree(root);
-
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
     info->initial_version = header.initial_version;
     info->features.restart = header.initial_version >= VERSION_LEGACY;
     info->features.select_level = header.initial_version >= VERSION_1;
+
+    if (header.version >= VERSION_7) {
+        // recover the slot information from the end of the file
+        File_Skip(fp, header.compressed_size);
+        SAVEGAME_BSON_EXTENDED_HEADER extra_header;
+        File_ReadData(fp, &extra_header, sizeof(extra_header));
+        info->counter = extra_header.counter;
+        info->level_num = extra_header.level_num;
+        info->level_title = Memory_Alloc(extra_header.title_size + 1);
+        File_ReadData(fp, info->level_title, extra_header.title_size);
+        ret = true;
+    } else {
+        // recover the slot information from the bson structures
+        File_Seek(fp, 0, FILE_SEEK_SET);
+        JSON_VALUE *root = M_ParseFromFile(fp, nullptr);
+        JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
+        if (root_obj != nullptr) {
+            info->counter = JSON_ObjectGetInt(root_obj, "save_counter", -1);
+            info->level_num = JSON_ObjectGetInt(root_obj, "level_num", -1);
+            const char *level_title =
+                JSON_ObjectGetString(root_obj, "level_title", nullptr);
+            if (level_title != nullptr) {
+                info->level_title = Memory_DupStr(level_title);
+            }
+            ret = info->level_num != -1;
+        }
+        JSON_ValueFree(root);
+    }
 
     return ret;
 }
