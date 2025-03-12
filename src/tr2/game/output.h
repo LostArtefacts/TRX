@@ -7,12 +7,16 @@
 #include <stdint.h>
 
 typedef struct {
-    float x;
-    float y;
-    float z;
+    struct {
+        float x;
+        float y;
+        float z;
+    } pos;
     float rhw;
-    float u;
-    float v;
+    struct {
+        float u;
+        float v;
+    } tex;
     float g;
 } VERTEX_INFO;
 

@@ -1472,18 +1472,18 @@ static void M_InsertFlatFace3s(
                 continue;
             }
 
-            m_VBuffer[0].x = vtx[0]->xs;
-            m_VBuffer[0].y = vtx[0]->ys;
+            m_VBuffer[0].pos.x = vtx[0]->xs;
+            m_VBuffer[0].pos.y = vtx[0]->ys;
             m_VBuffer[0].rhw = vtx[0]->rhw;
             m_VBuffer[0].g = vtx[0]->g;
 
-            m_VBuffer[1].x = vtx[1]->xs;
-            m_VBuffer[1].y = vtx[1]->ys;
+            m_VBuffer[1].pos.x = vtx[1]->xs;
+            m_VBuffer[1].pos.y = vtx[1]->ys;
             m_VBuffer[1].rhw = vtx[1]->rhw;
             m_VBuffer[1].g = vtx[1]->g;
 
-            m_VBuffer[2].x = vtx[2]->xs;
-            m_VBuffer[2].y = vtx[2]->ys;
+            m_VBuffer[2].pos.x = vtx[2]->xs;
+            m_VBuffer[2].pos.y = vtx[2]->ys;
             m_VBuffer[2].rhw = vtx[2]->rhw;
             m_VBuffer[2].g = vtx[2]->g;
         } else {
@@ -1543,8 +1543,8 @@ static void M_InsertFlatFace3s(
         *g_Info3DPtr++ = num_points;
 
         for (int32_t j = 0; j < num_points; j++) {
-            *g_Info3DPtr++ = (int32_t)m_VBuffer[j].x;
-            *g_Info3DPtr++ = (int32_t)m_VBuffer[j].y;
+            *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.x;
+            *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.y;
             *g_Info3DPtr++ = (int32_t)m_VBuffer[j].g;
         }
         g_SurfaceCount++;
@@ -1579,23 +1579,23 @@ static void M_InsertFlatFace4s(
                 continue;
             }
 
-            m_VBuffer[0].x = vtx[0]->xs;
-            m_VBuffer[0].y = vtx[0]->ys;
+            m_VBuffer[0].pos.x = vtx[0]->xs;
+            m_VBuffer[0].pos.y = vtx[0]->ys;
             m_VBuffer[0].rhw = vtx[0]->rhw;
             m_VBuffer[0].g = vtx[0]->g;
 
-            m_VBuffer[1].x = vtx[1]->xs;
-            m_VBuffer[1].y = vtx[1]->ys;
+            m_VBuffer[1].pos.x = vtx[1]->xs;
+            m_VBuffer[1].pos.y = vtx[1]->ys;
             m_VBuffer[1].rhw = vtx[1]->rhw;
             m_VBuffer[1].g = vtx[1]->g;
 
-            m_VBuffer[2].x = vtx[2]->xs;
-            m_VBuffer[2].y = vtx[2]->ys;
+            m_VBuffer[2].pos.x = vtx[2]->xs;
+            m_VBuffer[2].pos.y = vtx[2]->ys;
             m_VBuffer[2].rhw = vtx[2]->rhw;
             m_VBuffer[2].g = vtx[2]->g;
 
-            m_VBuffer[3].x = vtx[3]->xs;
-            m_VBuffer[3].y = vtx[3]->ys;
+            m_VBuffer[3].pos.x = vtx[3]->xs;
+            m_VBuffer[3].pos.y = vtx[3]->ys;
             m_VBuffer[3].rhw = vtx[3]->rhw;
             m_VBuffer[3].g = vtx[3]->g;
         } else {
@@ -1664,8 +1664,8 @@ static void M_InsertFlatFace4s(
         *g_Info3DPtr++ = num_points;
 
         for (int32_t j = 0; j < num_points; j++) {
-            *g_Info3DPtr++ = m_VBuffer[j].x;
-            *g_Info3DPtr++ = m_VBuffer[j].y;
+            *g_Info3DPtr++ = m_VBuffer[j].pos.x;
+            *g_Info3DPtr++ = m_VBuffer[j].pos.y;
             *g_Info3DPtr++ = m_VBuffer[j].g;
         }
         g_SurfaceCount++;
@@ -1777,26 +1777,26 @@ static void M_InsertTexturedFace3s(
                 continue;
             }
 
-            m_VBuffer[0].x = vtx[0]->xs;
-            m_VBuffer[0].y = vtx[0]->ys;
+            m_VBuffer[0].pos.x = vtx[0]->xs;
+            m_VBuffer[0].pos.y = vtx[0]->ys;
             m_VBuffer[0].rhw = vtx[0]->rhw;
             m_VBuffer[0].g = vtx[0]->g;
-            m_VBuffer[0].u = (double)uv[0].u * vtx[0]->rhw;
-            m_VBuffer[0].v = (double)uv[0].v * vtx[0]->rhw;
+            m_VBuffer[0].tex.u = (double)uv[0].u * vtx[0]->rhw;
+            m_VBuffer[0].tex.v = (double)uv[0].v * vtx[0]->rhw;
 
-            m_VBuffer[1].x = vtx[1]->xs;
-            m_VBuffer[1].y = vtx[1]->ys;
+            m_VBuffer[1].pos.x = vtx[1]->xs;
+            m_VBuffer[1].pos.y = vtx[1]->ys;
             m_VBuffer[1].rhw = vtx[1]->rhw;
             m_VBuffer[1].g = vtx[1]->g;
-            m_VBuffer[1].u = (double)uv[1].u * vtx[1]->rhw;
-            m_VBuffer[1].v = (double)uv[1].v * vtx[1]->rhw;
+            m_VBuffer[1].tex.u = (double)uv[1].u * vtx[1]->rhw;
+            m_VBuffer[1].tex.v = (double)uv[1].v * vtx[1]->rhw;
 
-            m_VBuffer[2].x = vtx[2]->xs;
-            m_VBuffer[2].y = vtx[2]->ys;
+            m_VBuffer[2].pos.x = vtx[2]->xs;
+            m_VBuffer[2].pos.y = vtx[2]->ys;
             m_VBuffer[2].rhw = vtx[2]->rhw;
             m_VBuffer[2].g = vtx[2]->g;
-            m_VBuffer[2].u = (double)uv[2].u * vtx[2]->rhw;
-            m_VBuffer[2].v = (double)uv[2].v * vtx[2]->rhw;
+            m_VBuffer[2].tex.u = (double)uv[2].u * vtx[2]->rhw;
+            m_VBuffer[2].tex.v = (double)uv[2].v * vtx[2]->rhw;
         } else {
             if (!Render_VisibleZClip(vtx[0], vtx[1], vtx[2])) {
                 continue;
@@ -1811,8 +1811,10 @@ static void M_InsertTexturedFace3s(
                     .xs = vtx[0]->xs,
                     .ys = vtx[0]->ys,
                     .g = vtx[0]->g,
-                    .u = uv[0].u,
-                    .v = uv[0].v,
+                    .tex = {
+                        .u = uv[0].u,
+                        .v = uv[0].v,
+                    },
                 },
                 {
                     .yv = vtx[1]->yv,
@@ -1822,8 +1824,10 @@ static void M_InsertTexturedFace3s(
                     .xs = vtx[1]->xs,
                     .ys = vtx[1]->ys,
                     .g = vtx[1]->g,
-                    .u = uv[1].u,
-                    .v = uv[1].v,
+                    .tex = {
+                        .u = uv[1].u,
+                        .v = uv[1].v,
+                    },
                 },
                 {
                     .xv = vtx[2]->xv,
@@ -1833,8 +1837,10 @@ static void M_InsertTexturedFace3s(
                     .xs = vtx[2]->xs,
                     .ys = vtx[2]->ys,
                     .g = vtx[2]->g,
-                    .u = uv[2].u,
-                    .v = uv[2].v,
+                    .tex = {
+                        .u = uv[2].u,
+                        .v = uv[2].v,
+                    },
                 },
             };
 
@@ -1862,11 +1868,13 @@ static void M_InsertTexturedFace3s(
             *g_Info3DPtr++ = num_points;
 
             for (int32_t j = 0; j < num_points; j++) {
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].x;
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].y;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.x;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.y;
                 *g_Info3DPtr++ = (int32_t)m_VBuffer[j].g;
-                *g_Info3DPtr++ = (int32_t)(m_VBuffer[j].u / m_VBuffer[j].rhw);
-                *g_Info3DPtr++ = (int32_t)(m_VBuffer[j].v / m_VBuffer[j].rhw);
+                *g_Info3DPtr++ =
+                    (int32_t)(m_VBuffer[j].tex.u / m_VBuffer[j].rhw);
+                *g_Info3DPtr++ =
+                    (int32_t)(m_VBuffer[j].tex.v / m_VBuffer[j].rhw);
             }
         } else {
             *g_Info3DPtr++ = (texture->draw_type == DRAW_OPAQUE)
@@ -1876,14 +1884,14 @@ static void M_InsertTexturedFace3s(
             *g_Info3DPtr++ = num_points;
 
             for (int32_t j = 0; j < num_points; j++) {
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].x;
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].y;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.x;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.y;
                 *g_Info3DPtr++ = (int32_t)m_VBuffer[j].g;
                 *(float *)g_Info3DPtr = m_VBuffer[j].rhw;
                 g_Info3DPtr += sizeof(float) / sizeof(int16_t);
-                *(float *)g_Info3DPtr = m_VBuffer[j].u;
+                *(float *)g_Info3DPtr = m_VBuffer[j].tex.u;
                 g_Info3DPtr += sizeof(float) / sizeof(int16_t);
-                *(float *)g_Info3DPtr = m_VBuffer[j].v;
+                *(float *)g_Info3DPtr = m_VBuffer[j].tex.v;
                 g_Info3DPtr += sizeof(float) / sizeof(int16_t);
             }
         }
@@ -2015,33 +2023,33 @@ static void M_InsertTexturedFace4s(
                 continue;
             }
 
-            m_VBuffer[0].x = vtx[0]->xs;
-            m_VBuffer[0].y = vtx[0]->ys;
+            m_VBuffer[0].pos.x = vtx[0]->xs;
+            m_VBuffer[0].pos.y = vtx[0]->ys;
             m_VBuffer[0].rhw = vtx[0]->rhw;
             m_VBuffer[0].g = vtx[0]->g;
-            m_VBuffer[0].u = (double)uv[0].u * vtx[0]->rhw;
-            m_VBuffer[0].v = (double)uv[0].v * vtx[0]->rhw;
+            m_VBuffer[0].tex.u = (double)uv[0].u * vtx[0]->rhw;
+            m_VBuffer[0].tex.v = (double)uv[0].v * vtx[0]->rhw;
 
-            m_VBuffer[1].x = vtx[1]->xs;
-            m_VBuffer[1].y = vtx[1]->ys;
+            m_VBuffer[1].pos.x = vtx[1]->xs;
+            m_VBuffer[1].pos.y = vtx[1]->ys;
             m_VBuffer[1].rhw = vtx[1]->rhw;
             m_VBuffer[1].g = vtx[1]->g;
-            m_VBuffer[1].u = (double)uv[1].u * vtx[1]->rhw;
-            m_VBuffer[1].v = (double)uv[1].v * vtx[1]->rhw;
+            m_VBuffer[1].tex.u = (double)uv[1].u * vtx[1]->rhw;
+            m_VBuffer[1].tex.v = (double)uv[1].v * vtx[1]->rhw;
 
-            m_VBuffer[2].x = vtx[2]->xs;
-            m_VBuffer[2].y = vtx[2]->ys;
+            m_VBuffer[2].pos.x = vtx[2]->xs;
+            m_VBuffer[2].pos.y = vtx[2]->ys;
             m_VBuffer[2].rhw = vtx[2]->rhw;
             m_VBuffer[2].g = vtx[2]->g;
-            m_VBuffer[2].u = (double)uv[2].u * vtx[2]->rhw;
-            m_VBuffer[2].v = (double)uv[2].v * vtx[2]->rhw;
+            m_VBuffer[2].tex.u = (double)uv[2].u * vtx[2]->rhw;
+            m_VBuffer[2].tex.v = (double)uv[2].v * vtx[2]->rhw;
 
-            m_VBuffer[3].x = vtx[3]->xs;
-            m_VBuffer[3].y = vtx[3]->ys;
+            m_VBuffer[3].pos.x = vtx[3]->xs;
+            m_VBuffer[3].pos.y = vtx[3]->ys;
             m_VBuffer[3].rhw = vtx[3]->rhw;
             m_VBuffer[3].g = vtx[3]->g;
-            m_VBuffer[3].u = (double)uv[3].u * vtx[3]->rhw;
-            m_VBuffer[3].v = (double)uv[3].v * vtx[3]->rhw;
+            m_VBuffer[3].tex.u = (double)uv[3].u * vtx[3]->rhw;
+            m_VBuffer[3].tex.v = (double)uv[3].v * vtx[3]->rhw;
         } else {
             if (!Render_VisibleZClip(vtx[0], vtx[1], vtx[2])) {
                 continue;
@@ -2056,8 +2064,10 @@ static void M_InsertTexturedFace4s(
                     .xs = vtx[0]->xs,
                     .ys = vtx[0]->ys,
                     .g = vtx[0]->g,
-                    .u = uv[0].u,
-                    .v = uv[0].v,
+                    .tex = {
+                        .u = uv[0].u,
+                        .v = uv[0].v,
+                    },
                 },
                 {
                     .yv = vtx[1]->yv,
@@ -2067,8 +2077,10 @@ static void M_InsertTexturedFace4s(
                     .xs = vtx[1]->xs,
                     .ys = vtx[1]->ys,
                     .g = vtx[1]->g,
-                    .u = uv[1].u,
-                    .v = uv[1].v,
+                    .tex = {
+                        .u = uv[1].u,
+                        .v = uv[1].v,
+                    },
                 },
                 {
                     .xv = vtx[2]->xv,
@@ -2078,8 +2090,10 @@ static void M_InsertTexturedFace4s(
                     .xs = vtx[2]->xs,
                     .ys = vtx[2]->ys,
                     .g = vtx[2]->g,
-                    .u = uv[2].u,
-                    .v = uv[2].v,
+                    .tex = {
+                        .u = uv[2].u,
+                        .v = uv[2].v,
+                    },
                 },
                 {
                     .xv = vtx[3]->xv,
@@ -2089,8 +2103,10 @@ static void M_InsertTexturedFace4s(
                     .xs = vtx[3]->xs,
                     .ys = vtx[3]->ys,
                     .g = vtx[3]->g,
-                    .u = uv[3].u,
-                    .v = uv[3].v,
+                    .tex = {
+                        .u = uv[3].u,
+                        .v = uv[3].v,
+                    },
                 },
             };
 
@@ -2118,11 +2134,13 @@ static void M_InsertTexturedFace4s(
             *g_Info3DPtr++ = num_points;
 
             for (int32_t j = 0; j < num_points; j++) {
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].x;
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].y;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.x;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.y;
                 *g_Info3DPtr++ = (int32_t)m_VBuffer[j].g;
-                *g_Info3DPtr++ = (int32_t)(m_VBuffer[j].u / m_VBuffer[j].rhw);
-                *g_Info3DPtr++ = (int32_t)(m_VBuffer[j].v / m_VBuffer[j].rhw);
+                *g_Info3DPtr++ =
+                    (int32_t)(m_VBuffer[j].tex.u / m_VBuffer[j].rhw);
+                *g_Info3DPtr++ =
+                    (int32_t)(m_VBuffer[j].tex.v / m_VBuffer[j].rhw);
             }
         } else {
             *g_Info3DPtr++ = (texture->draw_type == DRAW_OPAQUE)
@@ -2132,14 +2150,14 @@ static void M_InsertTexturedFace4s(
             *g_Info3DPtr++ = num_points;
 
             for (int32_t j = 0; j < num_points; j++) {
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].x;
-                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].y;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.x;
+                *g_Info3DPtr++ = (int32_t)m_VBuffer[j].pos.y;
                 *g_Info3DPtr++ = (int32_t)m_VBuffer[j].g;
                 *(float *)g_Info3DPtr = m_VBuffer[j].rhw;
                 g_Info3DPtr += sizeof(float) / sizeof(int16_t);
-                *(float *)g_Info3DPtr = m_VBuffer[j].u;
+                *(float *)g_Info3DPtr = m_VBuffer[j].tex.u;
                 g_Info3DPtr += sizeof(float) / sizeof(int16_t);
-                *(float *)g_Info3DPtr = m_VBuffer[j].v;
+                *(float *)g_Info3DPtr = m_VBuffer[j].tex.v;
                 g_Info3DPtr += sizeof(float) / sizeof(int16_t);
             }
         }
@@ -2207,8 +2225,8 @@ static void M_InsertTransOctagon(
 
     int32_t num_points = vtx_count;
     for (int32_t i = 0; i < num_points; i++) {
-        m_VBuffer[i].x = vbuf[i].xs;
-        m_VBuffer[i].y = vbuf[i].ys;
+        m_VBuffer[i].pos.x = vbuf[i].xs;
+        m_VBuffer[i].pos.y = vbuf[i].ys;
     }
 
     if (clip_or != 0) {
@@ -2237,8 +2255,8 @@ static void M_InsertTransOctagon(
     *g_Info3DPtr++ = shade;
     *g_Info3DPtr++ = num_points;
     for (int32_t i = 0; i < num_points; i++) {
-        *g_Info3DPtr++ = m_VBuffer[i].x;
-        *g_Info3DPtr++ = m_VBuffer[i].y;
+        *g_Info3DPtr++ = m_VBuffer[i].pos.x;
+        *g_Info3DPtr++ = m_VBuffer[i].pos.y;
     }
     g_SurfaceCount++;
 }

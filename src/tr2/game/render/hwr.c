@@ -269,12 +269,12 @@ static void M_DrawPolyTextured(
     for (int32_t i = 0; i < vtx_count; i++) {
         const VERTEX_INFO *const vbuf = &m_VBuffer[i];
         GFX_3D_VERTEX *const vbuf_gl = &m_VBufferGL[i];
-        vbuf_gl->x = vbuf->x;
-        vbuf_gl->y = vbuf->y;
+        vbuf_gl->x = vbuf->pos.x;
+        vbuf_gl->y = vbuf->pos.y;
         vbuf_gl->z = MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
-        vbuf_gl->t = vbuf->v / vbuf->rhw / 65536.0f;
-        vbuf_gl->s = vbuf->u / vbuf->rhw / 65536.0f;
+        vbuf_gl->t = vbuf->tex.v / vbuf->rhw / 65536.0f;
+        vbuf_gl->s = vbuf->tex.u / vbuf->rhw / 65536.0f;
         vbuf_gl->tex_coord[2] = 1.0;
         vbuf_gl->tex_coord[3] = 1.0;
         M_ShadeLight(vbuf_gl, vbuf->g, true);
@@ -289,8 +289,8 @@ static void M_DrawPolyFlat(
     for (int32_t i = 0; i < vtx_count; i++) {
         const VERTEX_INFO *const vbuf = &m_VBuffer[i];
         GFX_3D_VERTEX *const vbuf_gl = &m_VBufferGL[i];
-        vbuf_gl->x = vbuf->x;
-        vbuf_gl->y = vbuf->y;
+        vbuf_gl->x = vbuf->pos.x;
+        vbuf_gl->y = vbuf->pos.y;
         vbuf_gl->z = MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
         M_ShadeLightColor(vbuf_gl, vbuf->g, false, red, green, blue, 0xFF);
@@ -315,12 +315,12 @@ static void M_InsertPolyTextured(
     for (int32_t i = 0; i < vtx_count; i++) {
         const VERTEX_INFO *const vbuf = &m_VBuffer[i];
         GFX_3D_VERTEX *const vbuf_gl = &m_HWR_VertexPtr[i];
-        vbuf_gl->x = vbuf->x;
-        vbuf_gl->y = vbuf->y;
+        vbuf_gl->x = vbuf->pos.x;
+        vbuf_gl->y = vbuf->pos.y;
         vbuf_gl->z = MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
-        vbuf_gl->s = vbuf->u / vbuf->rhw / 65536.0f;
-        vbuf_gl->t = vbuf->v / vbuf->rhw / 65536.0f;
+        vbuf_gl->s = vbuf->tex.u / vbuf->rhw / 65536.0f;
+        vbuf_gl->t = vbuf->tex.v / vbuf->rhw / 65536.0f;
         vbuf_gl->tex_coord[2] = 1.0;
         vbuf_gl->tex_coord[3] = 1.0;
         M_ShadeLight(vbuf_gl, vbuf->g, true);
@@ -346,8 +346,8 @@ static void M_InsertPolyFlat(
     for (int32_t i = 0; i < vtx_count; i++) {
         const VERTEX_INFO *const vbuf = &m_VBuffer[i];
         GFX_3D_VERTEX *const vbuf_gl = &m_HWR_VertexPtr[i];
-        vbuf_gl->x = vbuf->x;
-        vbuf_gl->y = vbuf->y;
+        vbuf_gl->x = vbuf->pos.x;
+        vbuf_gl->y = vbuf->pos.y;
         vbuf_gl->z = MAKE_DEPTH(vbuf);
         vbuf_gl->w = vbuf->rhw;
         M_ShadeLightColor(
@@ -416,13 +416,13 @@ static void M_InsertGT3_Sorted(
 
         for (int32_t i = 0; i < 3; i++) {
             VERTEX_INFO *const vbuf = &m_VBuffer[i];
-            vbuf->x = vtx[i]->xs;
-            vbuf->y = vtx[i]->ys;
-            vbuf->z = vtx[i]->zv;
+            vbuf->pos.x = vtx[i]->xs;
+            vbuf->pos.y = vtx[i]->ys;
+            vbuf->pos.z = vtx[i]->zv;
             vbuf->rhw = vtx[i]->rhw;
             vbuf->g = (double)vtx[i]->g;
-            vbuf->u = (double)uv[i]->u * vtx[i]->rhw;
-            vbuf->v = (double)uv[i]->v * vtx[i]->rhw;
+            vbuf->tex.u = (double)uv[i]->u * vtx[i]->rhw;
+            vbuf->tex.v = (double)uv[i]->v * vtx[i]->rhw;
         }
     } else {
         if (!Render_VisibleZClip(vtx0, vtx1, vtx2)) {
@@ -438,8 +438,8 @@ static void M_InsertGT3_Sorted(
             points[i].xs = vtx[i]->xs;
             points[i].ys = vtx[i]->ys;
             points[i].g = vtx[i]->g;
-            points[i].u = uv[i]->u;
-            points[i].v = uv[i]->v;
+            points[i].tex.u = uv[i]->u;
+            points[i].tex.v = uv[i]->v;
         }
         num_points = Render_ZedClipper(num_points, points, m_VBuffer);
         if (num_points == 0) {
@@ -553,9 +553,9 @@ static void M_InsertFlatFace3s_Sorted(
 
             for (int32_t i = 0; i < 3; i++) {
                 VERTEX_INFO *const vbuf = &m_VBuffer[i];
-                vbuf->x = vtx[i]->xs;
-                vbuf->y = vtx[i]->ys;
-                vbuf->z = vtx[i]->zv;
+                vbuf->pos.x = vtx[i]->xs;
+                vbuf->pos.y = vtx[i]->ys;
+                vbuf->pos.z = vtx[i]->zv;
                 vbuf->rhw = vtx[i]->rhw;
                 vbuf->g = vtx[i]->g;
             }
@@ -630,9 +630,9 @@ static void M_InsertFlatFace4s_Sorted(
 
             for (int32_t i = 0; i < 4; i++) {
                 VERTEX_INFO *const vbuf = &m_VBuffer[i];
-                vbuf->x = vtx[i]->xs;
-                vbuf->y = vtx[i]->ys;
-                vbuf->z = vtx[i]->zv;
+                vbuf->pos.x = vtx[i]->xs;
+                vbuf->pos.y = vtx[i]->ys;
+                vbuf->pos.z = vtx[i]->zv;
                 vbuf->rhw = vtx[i]->rhw;
                 vbuf->g = vtx[i]->g;
             }
@@ -840,30 +840,30 @@ static void M_InsertSprite_Sorted(
     const double u1 = (double)(u_offset - offset + sprite->width) * rhw;
     const double v1 = (double)(v_offset - offset + sprite->height) * rhw;
 
-    m_VBuffer[0].x = x0;
-    m_VBuffer[0].y = y0;
-    m_VBuffer[0].u = u0;
-    m_VBuffer[0].v = v0;
+    m_VBuffer[0].pos.x = x0;
+    m_VBuffer[0].pos.y = y0;
+    m_VBuffer[0].tex.u = u0;
+    m_VBuffer[0].tex.v = v0;
 
-    m_VBuffer[1].x = x1;
-    m_VBuffer[1].y = y0;
-    m_VBuffer[1].u = u1;
-    m_VBuffer[1].v = v0;
+    m_VBuffer[1].pos.x = x1;
+    m_VBuffer[1].pos.y = y0;
+    m_VBuffer[1].tex.u = u1;
+    m_VBuffer[1].tex.v = v0;
 
-    m_VBuffer[2].x = x1;
-    m_VBuffer[2].y = y1;
-    m_VBuffer[2].u = u1;
-    m_VBuffer[2].v = v1;
+    m_VBuffer[2].pos.x = x1;
+    m_VBuffer[2].pos.y = y1;
+    m_VBuffer[2].tex.u = u1;
+    m_VBuffer[2].tex.v = v1;
 
-    m_VBuffer[3].x = x0;
-    m_VBuffer[3].y = y1;
-    m_VBuffer[3].u = u0;
-    m_VBuffer[3].v = v1;
+    m_VBuffer[3].pos.x = x0;
+    m_VBuffer[3].pos.y = y1;
+    m_VBuffer[3].tex.u = u0;
+    m_VBuffer[3].tex.v = v1;
 
     for (int32_t i = 0; i < 4; i++) {
         VERTEX_INFO *const vbuf = &m_VBuffer[i];
         vbuf->rhw = rhw;
-        vbuf->z = z;
+        vbuf->pos.z = z;
         vbuf->g = shade;
     }
 
@@ -941,9 +941,9 @@ static void M_InsertTransOctagon_Sorted(
 
     for (int32_t i = 0; i < num_vtx; i++) {
         VERTEX_INFO *const vbuf = &m_VBuffer[i];
-        vbuf->x = vtx[i].xs;
-        vbuf->y = vtx[i].ys;
-        vbuf->z = vtx[i].zv;
+        vbuf->pos.x = vtx[i].xs;
+        vbuf->pos.y = vtx[i].ys;
+        vbuf->pos.z = vtx[i].zv;
         vbuf->rhw = g_RhwFactor / (double)(vtx[i].zv - 0x20000);
     }
 
@@ -1012,13 +1012,13 @@ static void M_InsertGT3_ZBuffered(
 
         for (int32_t i = 0; i < 3; i++) {
             VERTEX_INFO *const vbuf = &m_VBuffer[i];
-            vbuf->x = vtx[i]->xs;
-            vbuf->y = vtx[i]->ys;
-            vbuf->z = vtx[i]->zv;
+            vbuf->pos.x = vtx[i]->xs;
+            vbuf->pos.y = vtx[i]->ys;
+            vbuf->pos.z = vtx[i]->zv;
             vbuf->rhw = vtx[i]->rhw;
             vbuf->g = (double)vtx[i]->g;
-            vbuf->u = (double)uv[i]->u * vtx[i]->rhw;
-            vbuf->v = (double)uv[i]->v * vtx[i]->rhw;
+            vbuf->tex.u = (double)uv[i]->u * vtx[i]->rhw;
+            vbuf->tex.v = (double)uv[i]->v * vtx[i]->rhw;
         }
     } else {
         if (!Render_VisibleZClip(vtx0, vtx1, vtx2)) {
@@ -1034,8 +1034,8 @@ static void M_InsertGT3_ZBuffered(
             points[i].xs = vtx[i]->xs;
             points[i].ys = vtx[i]->ys;
             points[i].g = vtx[i]->g;
-            points[i].u = uv[i]->u;
-            points[i].v = uv[i]->v;
+            points[i].tex.u = uv[i]->u;
+            points[i].tex.v = uv[i]->v;
         }
         num_points = Render_ZedClipper(num_points, points, m_VBuffer);
         if (num_points == 0) {
@@ -1133,9 +1133,9 @@ static void M_InsertFlatFace3s_ZBuffered(
 
             for (int32_t i = 0; i < 3; i++) {
                 VERTEX_INFO *const vbuf = &m_VBuffer[i];
-                vbuf->x = vtx[i]->xs;
-                vbuf->y = vtx[i]->ys;
-                vbuf->z = vtx[i]->zv;
+                vbuf->pos.x = vtx[i]->xs;
+                vbuf->pos.y = vtx[i]->ys;
+                vbuf->pos.z = vtx[i]->zv;
                 vbuf->rhw = vtx[i]->rhw;
                 vbuf->g = vtx[i]->g;
             }
@@ -1209,9 +1209,9 @@ static void M_InsertFlatFace4s_ZBuffered(
 
             for (int32_t i = 0; i < 4; i++) {
                 VERTEX_INFO *const vbuf = &m_VBuffer[i];
-                vbuf->x = vtx[i]->xs;
-                vbuf->y = vtx[i]->ys;
-                vbuf->z = vtx[i]->zv;
+                vbuf->pos.x = vtx[i]->xs;
+                vbuf->pos.y = vtx[i]->ys;
+                vbuf->pos.z = vtx[i]->zv;
                 vbuf->rhw = vtx[i]->rhw;
                 vbuf->g = vtx[i]->g;
             }

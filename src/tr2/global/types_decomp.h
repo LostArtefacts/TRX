@@ -36,8 +36,10 @@ typedef struct {
     float ys;
     int16_t clip;
     int16_t g;
-    int16_t u;
-    int16_t v;
+    struct {
+        int16_t u;
+        int16_t v;
+    } tex;
 } PHD_VBUF;
 
 typedef enum {
@@ -62,8 +64,10 @@ typedef struct {
     float rhw;
     float xs;
     float ys;
-    float u;
-    float v;
+    struct {
+        float u;
+        float v;
+    } tex;
     float g;
 } POINT_INFO;
 

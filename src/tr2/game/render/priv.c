@@ -63,8 +63,8 @@ static inline void M_ClipGUV(
 {
     buf->rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
     buf->g = vtx2->g + (vtx1->g - vtx2->g) * clip;
-    buf->u = vtx2->u + (vtx1->u - vtx2->u) * clip;
-    buf->v = vtx2->v + (vtx1->v - vtx2->v) * clip;
+    buf->tex.u = vtx2->tex.u + (vtx1->tex.u - vtx2->tex.u) * clip;
+    buf->tex.v = vtx2->tex.v + (vtx1->tex.v - vtx2->tex.v) * clip;
 }
 
 double Render_CalculatePolyZ(
@@ -196,28 +196,30 @@ int32_t Render_ZedClipper(
 
         if ((diff0 ^ diff1) < 0) {
             const double clip = diff0 / (pts1->zv - pts0->zv);
-            vtx[j].x =
+            vtx[j].pos.x =
                 (pts0->xv + (pts1->xv - pts0->xv) * clip) * g_FltPerspONearZ
                 + g_FltWinCenterX;
-            vtx[j].y =
+            vtx[j].pos.y =
                 (pts0->yv + (pts1->yv - pts0->yv) * clip) * g_FltPerspONearZ
                 + g_FltWinCenterY;
-            vtx[j].z = pts0->zv + (pts1->zv - pts0->zv) * clip;
+            vtx[j].pos.z = pts0->zv + (pts1->zv - pts0->zv) * clip;
             vtx[j].rhw = g_FltRhwONearZ;
             vtx[j].g = pts0->g + (pts1->g - pts0->g) * clip;
-            vtx[j].u = (pts0->u + (pts1->u - pts0->u) * clip) * g_FltRhwONearZ;
-            vtx[j].v = (pts0->v + (pts1->v - pts0->v) * clip) * g_FltRhwONearZ;
+            vtx[j].tex.u = (pts0->tex.u + (pts1->tex.u - pts0->tex.u) * clip)
+                * g_FltRhwONearZ;
+            vtx[j].tex.v = (pts0->tex.v + (pts1->tex.v - pts0->tex.v) * clip)
+                * g_FltRhwONearZ;
             j++;
         }
 
         if (diff0 < 0) {
-            vtx[j].x = pts0->xs;
-            vtx[j].y = pts0->ys;
-            vtx[j].z = pts0->zv;
+            vtx[j].pos.x = pts0->xs;
+            vtx[j].pos.y = pts0->ys;
+            vtx[j].pos.z = pts0->zv;
             vtx[j].rhw = pts0->rhw;
             vtx[j].g = pts0->g;
-            vtx[j].u = pts0->u * pts0->rhw;
-            vtx[j].v = pts0->v * pts0->rhw;
+            vtx[j].tex.u = pts0->tex.u * pts0->rhw;
+            vtx[j].tex.v = pts0->tex.v * pts0->rhw;
             j++;
         }
 
@@ -246,46 +248,50 @@ int32_t Render_XYClipper(int32_t vtx_count, VERTEX_INFO *const vtx)
         vtx1 = vtx2;
         vtx2 = &vtx[i];
 
-        if (vtx1->x < g_FltWinLeft) {
-            if (vtx2->x < g_FltWinLeft) {
+        if (vtx1->pos.x < g_FltWinLeft) {
+            if (vtx2->pos.x < g_FltWinLeft) {
                 continue;
             }
-            const float clip = (g_FltWinLeft - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinLeft;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinLeft - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinLeft;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx_buf[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
-        } else if (vtx1->x > g_FltWinRight) {
-            if (vtx2->x > g_FltWinRight) {
+        } else if (vtx1->pos.x > g_FltWinRight) {
+            if (vtx2->pos.x > g_FltWinRight) {
                 continue;
             }
-            const float clip = (g_FltWinRight - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinRight;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinRight - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinRight;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx_buf[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
         }
 
-        if (vtx2->x < g_FltWinLeft) {
-            const float clip = (g_FltWinLeft - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinLeft;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        if (vtx2->pos.x < g_FltWinLeft) {
+            const float clip =
+                (g_FltWinLeft - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinLeft;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx_buf[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
-        } else if (vtx2->x > g_FltWinRight) {
-            const float clip = (g_FltWinRight - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinRight;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        } else if (vtx2->pos.x > g_FltWinRight) {
+            const float clip =
+                (g_FltWinRight - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinRight;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx_buf[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
         } else {
-            vtx_buf[j].x = vtx2->x;
-            vtx_buf[j].y = vtx2->y;
-            vtx_buf[j].z = vtx2->z;
+            vtx_buf[j].pos.x = vtx2->pos.x;
+            vtx_buf[j].pos.y = vtx2->pos.y;
+            vtx_buf[j].pos.z = vtx2->pos.z;
             vtx_buf[j].rhw = vtx2->rhw;
             j++;
         }
@@ -303,46 +309,50 @@ int32_t Render_XYClipper(int32_t vtx_count, VERTEX_INFO *const vtx)
         vtx1 = vtx2;
         vtx2 = &vtx_buf[i];
 
-        if (vtx1->y < g_FltWinTop) {
-            if (vtx2->y < g_FltWinTop) {
+        if (vtx1->pos.y < g_FltWinTop) {
+            if (vtx2->pos.y < g_FltWinTop) {
                 continue;
             }
-            const float clip = (g_FltWinTop - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinTop;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinTop - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinTop;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
-        } else if (vtx1->y > g_FltWinBottom) {
-            if (vtx2->y > g_FltWinBottom) {
+        } else if (vtx1->pos.y > g_FltWinBottom) {
+            if (vtx2->pos.y > g_FltWinBottom) {
                 continue;
             }
-            const float clip = (g_FltWinBottom - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinBottom;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinBottom - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinBottom;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
         }
 
-        if (vtx2->y < g_FltWinTop) {
-            const float clip = (g_FltWinTop - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinTop;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        if (vtx2->pos.y < g_FltWinTop) {
+            const float clip =
+                (g_FltWinTop - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinTop;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
-        } else if (vtx2->y > g_FltWinBottom) {
-            const float clip = (g_FltWinBottom - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinBottom;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        } else if (vtx2->pos.y > g_FltWinBottom) {
+            const float clip =
+                (g_FltWinBottom - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinBottom;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             vtx[j].rhw = vtx2->rhw + (vtx1->rhw - vtx2->rhw) * clip;
             j++;
         } else {
-            vtx[j].x = vtx2->x;
-            vtx[j].y = vtx2->y;
-            vtx[j].z = vtx2->z;
+            vtx[j].pos.x = vtx2->pos.x;
+            vtx[j].pos.y = vtx2->pos.y;
+            vtx[j].pos.z = vtx2->pos.z;
             vtx[j].rhw = vtx2->rhw;
             j++;
         }
@@ -369,37 +379,41 @@ int32_t Render_XYGClipper(int32_t vtx_count, VERTEX_INFO *const vtx)
         vtx1 = vtx2;
         vtx2 = &vtx[i];
 
-        if (vtx1->x < g_FltWinLeft) {
-            if (vtx2->x < g_FltWinLeft) {
+        if (vtx1->pos.x < g_FltWinLeft) {
+            if (vtx2->pos.x < g_FltWinLeft) {
                 continue;
             }
-            const float clip = (g_FltWinLeft - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinLeft;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinLeft - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinLeft;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx_buf[j++], vtx1, vtx2, clip);
-        } else if (vtx1->x > g_FltWinRight) {
-            if (vtx2->x > g_FltWinRight) {
+        } else if (vtx1->pos.x > g_FltWinRight) {
+            if (vtx2->pos.x > g_FltWinRight) {
                 continue;
             }
-            const float clip = (g_FltWinRight - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinRight;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinRight - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinRight;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx_buf[j++], vtx1, vtx2, clip);
         }
 
-        if (vtx2->x < g_FltWinLeft) {
-            const float clip = (g_FltWinLeft - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinLeft;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        if (vtx2->pos.x < g_FltWinLeft) {
+            const float clip =
+                (g_FltWinLeft - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinLeft;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx_buf[j++], vtx1, vtx2, clip);
-        } else if (vtx2->x > g_FltWinRight) {
-            const float clip = (g_FltWinRight - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinRight;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        } else if (vtx2->pos.x > g_FltWinRight) {
+            const float clip =
+                (g_FltWinRight - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinRight;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx_buf[j++], vtx1, vtx2, clip);
         } else {
             vtx_buf[j++] = *vtx2;
@@ -418,37 +432,41 @@ int32_t Render_XYGClipper(int32_t vtx_count, VERTEX_INFO *const vtx)
         vtx1 = vtx2;
         vtx2 = &vtx_buf[i];
 
-        if (vtx1->y < g_FltWinTop) {
-            if (vtx2->y < g_FltWinTop) {
+        if (vtx1->pos.y < g_FltWinTop) {
+            if (vtx2->pos.y < g_FltWinTop) {
                 continue;
             }
-            const float clip = (g_FltWinTop - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinTop;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinTop - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinTop;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx[j++], vtx1, vtx2, clip);
-        } else if (vtx1->y > g_FltWinBottom) {
-            if (vtx2->y > g_FltWinBottom) {
+        } else if (vtx1->pos.y > g_FltWinBottom) {
+            if (vtx2->pos.y > g_FltWinBottom) {
                 continue;
             }
-            const float clip = (g_FltWinBottom - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinBottom;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinBottom - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinBottom;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx[j++], vtx1, vtx2, clip);
         }
 
-        if (vtx2->y < g_FltWinTop) {
-            const float clip = (g_FltWinTop - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinTop;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        if (vtx2->pos.y < g_FltWinTop) {
+            const float clip =
+                (g_FltWinTop - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinTop;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx[j++], vtx1, vtx2, clip);
-        } else if (vtx2->y > g_FltWinBottom) {
-            const float clip = (g_FltWinBottom - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinBottom;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        } else if (vtx2->pos.y > g_FltWinBottom) {
+            const float clip =
+                (g_FltWinBottom - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinBottom;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipG(&vtx[j++], vtx1, vtx2, clip);
         } else {
             vtx[j++] = *vtx2;
@@ -476,37 +494,41 @@ int32_t Render_XYGUVClipper(int32_t vtx_count, VERTEX_INFO *const vtx)
         vtx1 = vtx2;
         vtx2 = &vtx[i];
 
-        if (vtx1->x < g_FltWinLeft) {
-            if (vtx2->x < g_FltWinLeft) {
+        if (vtx1->pos.x < g_FltWinLeft) {
+            if (vtx2->pos.x < g_FltWinLeft) {
                 continue;
             }
-            float clip = (g_FltWinLeft - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinLeft;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            float clip =
+                (g_FltWinLeft - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinLeft;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx_buf[j++], vtx1, vtx2, clip);
-        } else if (vtx1->x > g_FltWinRight) {
-            if (vtx2->x > g_FltWinRight) {
+        } else if (vtx1->pos.x > g_FltWinRight) {
+            if (vtx2->pos.x > g_FltWinRight) {
                 continue;
             }
-            float clip = (g_FltWinRight - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinRight;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            float clip =
+                (g_FltWinRight - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinRight;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx_buf[j++], vtx1, vtx2, clip);
         }
 
-        if (vtx2->x < g_FltWinLeft) {
-            float clip = (g_FltWinLeft - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinLeft;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        if (vtx2->pos.x < g_FltWinLeft) {
+            float clip =
+                (g_FltWinLeft - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinLeft;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx_buf[j++], vtx1, vtx2, clip);
-        } else if (vtx2->x > g_FltWinRight) {
-            float clip = (g_FltWinRight - vtx2->x) / (vtx1->x - vtx2->x);
-            vtx_buf[j].x = g_FltWinRight;
-            vtx_buf[j].y = vtx2->y + (vtx1->y - vtx2->y) * clip;
-            vtx_buf[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        } else if (vtx2->pos.x > g_FltWinRight) {
+            float clip =
+                (g_FltWinRight - vtx2->pos.x) / (vtx1->pos.x - vtx2->pos.x);
+            vtx_buf[j].pos.x = g_FltWinRight;
+            vtx_buf[j].pos.y = vtx2->pos.y + (vtx1->pos.y - vtx2->pos.y) * clip;
+            vtx_buf[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx_buf[j++], vtx1, vtx2, clip);
         } else {
             vtx_buf[j++] = *vtx2;
@@ -525,37 +547,41 @@ int32_t Render_XYGUVClipper(int32_t vtx_count, VERTEX_INFO *const vtx)
         vtx1 = vtx2;
         vtx2 = &vtx_buf[i];
 
-        if (vtx1->y < g_FltWinTop) {
-            if (vtx2->y < g_FltWinTop) {
+        if (vtx1->pos.y < g_FltWinTop) {
+            if (vtx2->pos.y < g_FltWinTop) {
                 continue;
             }
-            const float clip = (g_FltWinTop - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinTop;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinTop - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinTop;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx[j++], vtx1, vtx2, clip);
-        } else if (vtx1->y > g_FltWinBottom) {
-            if (vtx2->y > g_FltWinBottom) {
+        } else if (vtx1->pos.y > g_FltWinBottom) {
+            if (vtx2->pos.y > g_FltWinBottom) {
                 continue;
             }
-            const float clip = (g_FltWinBottom - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinBottom;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+            const float clip =
+                (g_FltWinBottom - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinBottom;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx[j++], vtx1, vtx2, clip);
         }
 
-        if (vtx2->y < g_FltWinTop) {
-            const float clip = (g_FltWinTop - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinTop;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        if (vtx2->pos.y < g_FltWinTop) {
+            const float clip =
+                (g_FltWinTop - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinTop;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx[j++], vtx1, vtx2, clip);
-        } else if (vtx2->y > g_FltWinBottom) {
-            const float clip = (g_FltWinBottom - vtx2->y) / (vtx1->y - vtx2->y);
-            vtx[j].x = vtx2->x + (vtx1->x - vtx2->x) * clip;
-            vtx[j].y = g_FltWinBottom;
-            vtx[j].z = vtx2->z + (vtx1->z - vtx2->z) * clip;
+        } else if (vtx2->pos.y > g_FltWinBottom) {
+            const float clip =
+                (g_FltWinBottom - vtx2->pos.y) / (vtx1->pos.y - vtx2->pos.y);
+            vtx[j].pos.x = vtx2->pos.x + (vtx1->pos.x - vtx2->pos.x) * clip;
+            vtx[j].pos.y = g_FltWinBottom;
+            vtx[j].pos.z = vtx2->pos.z + (vtx1->pos.z - vtx2->pos.z) * clip;
             M_ClipGUV(&vtx[j++], vtx1, vtx2, clip);
         } else {
             vtx[j++] = *vtx2;
