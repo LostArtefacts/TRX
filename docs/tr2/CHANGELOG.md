@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...develop) - ××××-××-××
 - added support for 60 FPS rendering
 - added support for more accented characters (#2356)
+- added quadrilateral interpolation (#354)
 - added a `/cheats` console command
 - added a `/wireframe` console command (#2500)
 - added a `/fps` console command

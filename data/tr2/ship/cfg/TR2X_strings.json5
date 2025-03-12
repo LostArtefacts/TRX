@@ -584,6 +584,8 @@
         "OSD_SOUND_PLAYING_SAMPLE": "Playing sound %d",
         "OSD_SPEED_GET": "Current speed: %d",
         "OSD_SPEED_SET": "Speed set to %d",
+        "OSD_TRAPEZOID_FILTER_OFF": "Trapezoid filter disabled",
+        "OSD_TRAPEZOID_FILTER_ON": "Trapezoid filter enabled",
         "OSD_UI_OFF": "UI disabled",
         "OSD_UI_ON": "UI enabled",
         "OSD_UNKNOWN_COMMAND": "Unknown command: %s",

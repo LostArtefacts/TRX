@@ -505,6 +505,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added unobtainable pickups, kills, and secrets stats support in the gameflow
 
 #### Visuals
+- added quadrilateral texture correction
 - added ability to set user-defined FOV
 - added optional shotgun flash sprites
 - added optional rendering of pickups on the ground as 3D meshes

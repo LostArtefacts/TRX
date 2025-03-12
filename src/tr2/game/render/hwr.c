@@ -275,8 +275,8 @@ static void M_DrawPolyTextured(
         vbuf_gl->w = vbuf->rhw;
         vbuf_gl->t = vbuf->tex.v / vbuf->rhw / 65536.0f;
         vbuf_gl->s = vbuf->tex.u / vbuf->rhw / 65536.0f;
-        vbuf_gl->tex_coord[2] = 1.0;
-        vbuf_gl->tex_coord[3] = 1.0;
+        vbuf_gl->tex_coord[2] = vbuf->tex.z;
+        vbuf_gl->tex_coord[3] = vbuf->tex.w;
         M_ShadeLight(vbuf_gl, vbuf->g, true);
     }
     M_DrawPrimitive(renderer, GFX_3D_PRIM_TRI, m_VBufferGL, vtx_count, true);
@@ -321,8 +321,8 @@ static void M_InsertPolyTextured(
         vbuf_gl->w = vbuf->rhw;
         vbuf_gl->s = vbuf->tex.u / vbuf->rhw / 65536.0f;
         vbuf_gl->t = vbuf->tex.v / vbuf->rhw / 65536.0f;
-        vbuf_gl->tex_coord[2] = 1.0;
-        vbuf_gl->tex_coord[3] = 1.0;
+        vbuf_gl->tex_coord[2] = vbuf->tex.z;
+        vbuf_gl->tex_coord[3] = vbuf->tex.w;
         M_ShadeLight(vbuf_gl, vbuf->g, true);
     }
 
@@ -404,8 +404,8 @@ static void M_InsertGT3_Sorted(
                 vbuf_gl->w = vtx[i]->rhw;
                 vbuf_gl->s = (double)uv[i]->u / 65536.0f;
                 vbuf_gl->t = (double)uv[i]->v / 65536.0f;
-                vbuf_gl->tex_coord[2] = 1.0;
-                vbuf_gl->tex_coord[3] = 1.0;
+                vbuf_gl->tex_coord[2] = vtx[i]->tex.z;
+                vbuf_gl->tex_coord[3] = vtx[i]->tex.w;
                 M_ShadeLight(vbuf_gl, vtx[i]->g, true);
             }
 
@@ -423,6 +423,8 @@ static void M_InsertGT3_Sorted(
             vbuf->g = (double)vtx[i]->g;
             vbuf->tex.u = (double)uv[i]->u * vtx[i]->rhw;
             vbuf->tex.v = (double)uv[i]->v * vtx[i]->rhw;
+            vbuf->tex.z = vtx[i]->tex.z;
+            vbuf->tex.w = vtx[i]->tex.w;
         }
     } else {
         if (!Render_VisibleZClip(vtx0, vtx1, vtx2)) {
@@ -440,6 +442,8 @@ static void M_InsertGT3_Sorted(
             points[i].g = vtx[i]->g;
             points[i].tex.u = uv[i]->u;
             points[i].tex.v = uv[i]->v;
+            points[i].tex.z = vtx[i]->tex.z;
+            points[i].tex.w = vtx[i]->tex.w;
         }
         num_points = Render_ZedClipper(num_points, points, m_VBuffer);
         if (num_points == 0) {
@@ -493,8 +497,8 @@ static void M_InsertGT4_Sorted(
                 vbuf_gl->w = vtx[i]->rhw;
                 vbuf_gl->s = texture->uv[i].u / 65536.0f;
                 vbuf_gl->t = texture->uv[i].v / 65536.0f;
-                vbuf_gl->tex_coord[2] = 1.0;
-                vbuf_gl->tex_coord[3] = 1.0;
+                vbuf_gl->tex_coord[2] = vtx[i]->tex.z;
+                vbuf_gl->tex_coord[3] = vtx[i]->tex.w;
                 M_ShadeLight(vbuf_gl, vtx[i]->g, true);
             }
 
@@ -684,11 +688,15 @@ static void M_InsertTexturedFace3s_Sorted(
         }
 
         const FACE3 *const face = &faces[i];
-        const PHD_VBUF *const vtx[3] = {
+        PHD_VBUF *const vtx[3] = {
             &g_PhdVBuf[face->vertices[0]],
             &g_PhdVBuf[face->vertices[1]],
             &g_PhdVBuf[face->vertices[2]],
         };
+        for (int32_t i = 0; i < 3; i++) {
+            vtx[i]->tex.z = 1.0;
+            vtx[i]->tex.w = 1.0;
+        }
 
         const OBJECT_TEXTURE *const texture =
             Output_GetObjectTexture(face->texture_idx);
@@ -714,12 +722,21 @@ static void M_InsertTexturedFace4s_Sorted(
         }
 
         const FACE4 *const face = &faces[i];
-        const PHD_VBUF *const vtx[4] = {
+        PHD_VBUF *const vtx[4] = {
             &g_PhdVBuf[face->vertices[0]],
             &g_PhdVBuf[face->vertices[1]],
             &g_PhdVBuf[face->vertices[2]],
             &g_PhdVBuf[face->vertices[3]],
         };
+        for (int32_t i = 0; i < 4; i++) {
+            if (g_Config.rendering.enable_trapezoid_filter) {
+                vtx[i]->tex.z = face->texture_zw[i].z;
+                vtx[i]->tex.w = face->texture_zw[i].w;
+            } else {
+                vtx[i]->tex.z = 1.0f;
+                vtx[i]->tex.w = 1.0f;
+            }
+        }
 
         const OBJECT_TEXTURE *const texture =
             Output_GetObjectTexture(face->texture_idx);
@@ -865,6 +882,8 @@ static void M_InsertSprite_Sorted(
         vbuf->rhw = rhw;
         vbuf->pos.z = z;
         vbuf->g = shade;
+        vbuf->tex.z = 1.0f;
+        vbuf->tex.w = 1.0f;
     }
 
     if (x0 < 0 || y0 < 0 || x1 > g_PhdWinWidth || y1 > g_PhdWinHeight) {
@@ -999,8 +1018,8 @@ static void M_InsertGT3_ZBuffered(
                 vbuf_gl->w = vtx[i]->rhw;
                 vbuf_gl->s = (double)uv[i]->u / 65536.0f;
                 vbuf_gl->t = (double)uv[i]->v / 65536.0f;
-                vbuf_gl->tex_coord[2] = 1.0;
-                vbuf_gl->tex_coord[3] = 1.0;
+                vbuf_gl->tex_coord[2] = vtx[i]->tex.z;
+                vbuf_gl->tex_coord[3] = vtx[i]->tex.w;
                 M_ShadeLight(vbuf_gl, vtx[i]->g, true);
             }
 
@@ -1019,6 +1038,8 @@ static void M_InsertGT3_ZBuffered(
             vbuf->g = (double)vtx[i]->g;
             vbuf->tex.u = (double)uv[i]->u * vtx[i]->rhw;
             vbuf->tex.v = (double)uv[i]->v * vtx[i]->rhw;
+            vbuf->tex.z = vtx[i]->tex.z;
+            vbuf->tex.w = vtx[i]->tex.w;
         }
     } else {
         if (!Render_VisibleZClip(vtx0, vtx1, vtx2)) {
@@ -1036,6 +1057,8 @@ static void M_InsertGT3_ZBuffered(
             points[i].g = vtx[i]->g;
             points[i].tex.u = uv[i]->u;
             points[i].tex.v = uv[i]->v;
+            points[i].tex.z = vtx[i]->tex.z;
+            points[i].tex.w = vtx[i]->tex.w;
         }
         num_points = Render_ZedClipper(num_points, points, m_VBuffer);
         if (num_points == 0) {
@@ -1089,8 +1112,8 @@ static void M_InsertGT4_ZBuffered(
         vbuf_gl->w = vtx[i]->rhw;
         vbuf_gl->s = texture->uv[i].u / 65536.0f;
         vbuf_gl->t = texture->uv[i].v / 65536.0f;
-        vbuf_gl->tex_coord[2] = 1.0;
-        vbuf_gl->tex_coord[3] = 1.0;
+        vbuf_gl->tex_coord[2] = vtx[i]->tex.z;
+        vbuf_gl->tex_coord[3] = vtx[i]->tex.w;
         M_ShadeLight(vbuf_gl, vtx[i]->g, true);
     }
 
@@ -1113,7 +1136,7 @@ static void M_InsertFlatFace3s_ZBuffered(
     for (int32_t i = 0; i < num; i++) {
         int32_t num_points = 3;
         const FACE3 *const face = &faces[i];
-        const PHD_VBUF *vtx[3] = {
+        PHD_VBUF *vtx[3] = {
             &g_PhdVBuf[face->vertices[0]],
             &g_PhdVBuf[face->vertices[1]],
             &g_PhdVBuf[face->vertices[2]],
@@ -1254,13 +1277,17 @@ static void M_InsertTexturedFace3s_ZBuffered(
 {
     for (int32_t i = 0; i < num; i++) {
         const FACE3 *const face = &faces[i];
-        const PHD_VBUF *const vtx[3] = {
+        PHD_VBUF *const vtx[3] = {
             &g_PhdVBuf[face->vertices[0]],
             &g_PhdVBuf[face->vertices[1]],
             &g_PhdVBuf[face->vertices[2]],
         };
         const OBJECT_TEXTURE *const texture =
             Output_GetObjectTexture(face->texture_idx);
+        for (int32_t i = 0; i < 3; i++) {
+            vtx[i]->tex.z = 1.0;
+            vtx[i]->tex.w = 1.0;
+        }
 
         if (texture->draw_type != DRAW_OPAQUE && g_DiscardTransparent) {
             continue;
@@ -1285,7 +1312,7 @@ static void M_InsertTexturedFace4s_ZBuffered(
 {
     for (int32_t i = 0; i < num; i++) {
         const FACE4 *const face = &faces[i];
-        const PHD_VBUF *const vtx[4] = {
+        PHD_VBUF *const vtx[4] = {
             &g_PhdVBuf[face->vertices[0]],
             &g_PhdVBuf[face->vertices[1]],
             &g_PhdVBuf[face->vertices[2]],
@@ -1294,6 +1321,15 @@ static void M_InsertTexturedFace4s_ZBuffered(
         };
         const OBJECT_TEXTURE *const texture =
             Output_GetObjectTexture(face->texture_idx);
+        for (int32_t i = 0; i < 4; i++) {
+            if (g_Config.rendering.enable_trapezoid_filter) {
+                vtx[i]->tex.z = face->texture_zw[i].z;
+                vtx[i]->tex.w = face->texture_zw[i].w;
+            } else {
+                vtx[i]->tex.z = 1.0f;
+                vtx[i]->tex.w = 1.0f;
+            }
+        }
 
         if (texture->draw_type != DRAW_OPAQUE && g_DiscardTransparent) {
             continue;

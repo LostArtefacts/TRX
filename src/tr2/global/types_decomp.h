@@ -39,6 +39,8 @@ typedef struct {
     struct {
         int16_t u;
         int16_t v;
+        float z;
+        float w;
     } tex;
 } PHD_VBUF;
 
@@ -67,6 +69,8 @@ typedef struct {
     struct {
         float u;
         float v;
+        float z;
+        float w;
     } tex;
     float g;
 } POINT_INFO;

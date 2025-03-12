@@ -159,6 +159,7 @@ static void M_CompleteSetup(void)
     Level_LoadAnimCommands();
     Level_LoadObjectsAndItems();
 
+    Level_LoadTextures();
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Output_InitialiseNamedColors();
