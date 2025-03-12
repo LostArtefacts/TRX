@@ -77,7 +77,6 @@ static const char *m_ImageExtensions[] = {
 };
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
-static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4]);
 static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
 static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
@@ -155,109 +154,6 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
     GFX_Context_SetWireframeMode(wireframe_state);
 }
 
-static void M_FixTrapezoidRatios(PHD_VBUF *const vbuf[4])
-{
-    // This function attempts to correct texture coordinate ratios for a
-    // quadrilateral so the GPU, which typically renders a quad as two
-    // triangles, does not warp the texture disproportionately across the quad's
-    // diagonal divisions. By comparing the 3D edge lengths (in world space)
-    // with the corresponding 2D UV edge lengths, it computes a scale factor
-    // that preserves the trapezoidal shape in texture space and allows the
-    // shader to warp the texture uniformly across all four corners.
-    //
-    // In many software rasterization or older GPU pipelines, triangles can get
-    // rendered using affine interpolation of texture coordinates, causing
-    // visible warping when a four-sided polygon is split internally.
-    // The original approach (coded by XProger) handled only rectangular UV
-    // maps by simply scaling the edges; this updated version takes into
-    // account the actual UV trapezoid to achieve a more uniform texture
-    // projection.
-
-    // 1) Gather the 3D positions into coords[]
-    XYZ_F c0, c1, c2, c3, *coords[4] = { &c0, &c1, &c2, &c3 };
-    for (int32_t i = 0; i < 4; i++) {
-        coords[i]->x = vbuf[i]->world_pos.x;
-        coords[i]->y = vbuf[i]->world_pos.y;
-        coords[i]->z = vbuf[i]->world_pos.z;
-    }
-
-    // 2) Compute geometric edges
-    //    a = c0-c1, b = c3-c2, c = c0-c3, d = c1-c2
-    const XYZ_F a = XYZ_F_Subtract(c0, c1);
-    const XYZ_F b = XYZ_F_Subtract(c3, c2);
-    const XYZ_F c = XYZ_F_Subtract(c0, c3);
-    const XYZ_F d = XYZ_F_Subtract(c1, c2);
-
-    const float a_l = XYZ_F_Length(a);
-    const float b_l = XYZ_F_Length(b);
-    const float c_l = XYZ_F_Length(c);
-    const float d_l = XYZ_F_Length(d);
-
-    // 3) Compute dot‐products in 3D to see which edges differ more
-    const float ab = XYZ_F_DotProduct(a, b) / (a_l * b_l);
-    const float cd = XYZ_F_DotProduct(c, d) / (c_l * d_l);
-
-    // 4) Compute tx, ty in for orientation
-    const float tx = ABS(vbuf[0]->u - vbuf[3]->u);
-    const float ty = ABS(vbuf[0]->v - vbuf[3]->v);
-
-    // 5) Measure the same edges in UV space so we know the “current” shape
-    XYZ_F uv0 = { vbuf[0]->u, vbuf[0]->v, 0.0f };
-    XYZ_F uv1 = { vbuf[1]->u, vbuf[1]->v, 0.0f };
-    XYZ_F uv2 = { vbuf[2]->u, vbuf[2]->v, 0.0f };
-    XYZ_F uv3 = { vbuf[3]->u, vbuf[3]->v, 0.0f };
-
-    // au = uv0 - uv1, bu = uv3 - uv2, cu = uv0 - uv3, du = uv1 - uv2
-    const XYZ_F au = XYZ_F_Subtract(uv0, uv1);
-    const XYZ_F bu = XYZ_F_Subtract(uv3, uv2);
-    const XYZ_F cu = XYZ_F_Subtract(uv0, uv3);
-    const XYZ_F du = XYZ_F_Subtract(uv1, uv2);
-
-    const float au_l = XYZ_F_Length(au);
-    const float bu_l = XYZ_F_Length(bu);
-    const float cu_l = XYZ_F_Length(cu);
-    const float du_l = XYZ_F_Length(du);
-
-    // We'll reuse the same ab/cd dot logic in UV if needed, but typically
-    // we only need the lengths to find the ratio vs. geometry.
-
-    // 6) Figure out the correction ratios per-corner, taking care of both
-    //    geometry and UV mesh proportions
-    if (ab > cd) {
-        const int k = (tx > ty) ? 1 : 0; // pick axis
-        if (a_l > b_l) {
-            // geometry ratio = (b_l / a_l)
-            // uv ratio       = (bu_l / au_l)  (avoid /0 check if needed)
-            const float geom_ratio = (a_l > 1e-6f) ? (b_l / a_l) : 1.0f;
-            const float uv_ratio = (au_l > 1e-6f) ? (bu_l / au_l) : 1.0f;
-            const float fix = geom_ratio / uv_ratio; // final scale
-            vbuf[2]->trapezoid_ratios[k] = fix;
-            vbuf[3]->trapezoid_ratios[k] = fix;
-        } else if (a_l < b_l) {
-            const float geom_ratio = (b_l > 1e-6f) ? (a_l / b_l) : 1.0f;
-            const float uv_ratio = (bu_l > 1e-6f) ? (au_l / bu_l) : 1.0f;
-            const float fix = geom_ratio / uv_ratio;
-            vbuf[0]->trapezoid_ratios[k] = fix;
-            vbuf[1]->trapezoid_ratios[k] = fix;
-        }
-    } else if (ab < cd) {
-        const int k = (tx > ty) ? 0 : 1; // pick axis
-        if (c_l > d_l) {
-            const float geom_ratio = (c_l > 1e-6f) ? (d_l / c_l) : 1.0f;
-            const float uv_ratio = (cu_l > 1e-6f) ? (du_l / cu_l) : 1.0f;
-            const float fix = geom_ratio / uv_ratio;
-            vbuf[1]->trapezoid_ratios[k] = fix;
-            vbuf[2]->trapezoid_ratios[k] = fix;
-        } else if (c_l < d_l) {
-            const float geom_ratio = (d_l > 1e-6f) ? (c_l / d_l) : 1.0f;
-            const float uv_ratio = (du_l > 1e-6f) ? (cu_l / du_l) : 1.0f;
-            const float fix = geom_ratio / uv_ratio;
-            vbuf[0]->trapezoid_ratios[k] = fix;
-            vbuf[3]->trapezoid_ratios[k] = fix;
-        }
-    }
-}
-
 static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
 {
     S_Output_DisableTextureMode();
@@ -312,8 +208,8 @@ static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
         for (int32_t j = 0; j < 3; j++) {
             vns[j]->u = tex->uv[j].u;
             vns[j]->v = tex->uv[j].v;
-            vns[j]->trapezoid_ratios[0] = 1.0f;
-            vns[j]->trapezoid_ratios[1] = 1.0f;
+            vns[j]->z = 1.0f;
+            vns[j]->w = 1.0f;
         }
 
         S_Output_DrawTexturedTriangle(
@@ -338,13 +234,15 @@ static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
         for (int32_t j = 0; j < 4; j++) {
             vns[j]->u = tex->uv[j].u;
             vns[j]->v = tex->uv[j].v;
-            vns[j]->trapezoid_ratios[0] = 1.0f;
-            vns[j]->trapezoid_ratios[1] = 1.0f;
+            if (g_Config.rendering.enable_trapezoid_filter) {
+                vns[j]->z = face->texture_zw[j].z;
+                vns[j]->w = face->texture_zw[j].w;
+            } else {
+                vns[j]->z = 1.0f;
+                vns[j]->w = 1.0f;
+            }
         }
 
-        if (g_Config.rendering.enable_trapezoid_filter) {
-            M_FixTrapezoidRatios(vns);
-        }
         S_Output_DrawTexturedQuad(
             vns[0], vns[1], vns[2], vns[3], tex->tex_page, tex->draw_type);
     }
@@ -447,7 +345,6 @@ static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
     vbuf->xv = xv;
     vbuf->yv = yv;
     vbuf->zv = zv;
-    vbuf->world_pos = pos;
 
     uint16_t clip_flags;
     if (zv < Output_GetNearZ()) {

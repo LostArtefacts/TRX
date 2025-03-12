@@ -139,11 +139,10 @@ typedef struct {
     int16_t g;
     union {
         struct {
-            float u, v, trapezoid_ratios[2];
+            float u, v, z, w;
         };
         float tex_coord[4];
     };
-    XYZ_16 world_pos;
 } PHD_VBUF;
 
 typedef struct {

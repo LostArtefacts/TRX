@@ -27,6 +27,7 @@
 static LEVEL_INFO m_Info = {};
 
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
+static void M_FixTrapezoidRatios(FACE4 *face, const XYZ_16 vertices[4]);
 static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
 static void M_ReadShade(SHADE *shade, VFILE *file);
 static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
@@ -59,6 +60,123 @@ static RGBA_8888 M_ARGB1555To8888(const uint16_t argb1555)
     };
 }
 
+static void M_FixTrapezoidRatios(FACE4 *const face, const XYZ_16 vertices[4])
+{
+    // This function attempts to correct texture coordinate ratios for a
+    // quadrilateral so the GPU, which typically renders a quad as two
+    // triangles, does not warp the texture disproportionately across the quad's
+    // diagonal divisions. By comparing the 3D edge lengths (in world space)
+    // with the corresponding 2D UV edge lengths, it computes a scale factor
+    // that preserves the trapezoidal shape in texture space and allows the
+    // shader to warp the texture uniformly across all four corners.
+    //
+    // In many software rasterization or older GPU pipelines, triangles can get
+    // rendered using affine interpolation of texture coordinates, causing
+    // visible warping when a four-sided polygon is split internally.
+    // The original approach (coded by XProger) handled only rectangular UV
+    // maps by simply scaling the edges; this updated version takes into
+    // account the actual UV trapezoid to achieve a more uniform texture
+    // projection.
+
+    // 1) Gather the coordinate and texture information
+    const OBJECT_TEXTURE *const tex =
+        Output_GetObjectTexture(face->texture_idx);
+    const TEXTURE_UV *uvs[4] = {
+        &tex->uv[0],
+        &tex->uv[1],
+        &tex->uv[2],
+        &tex->uv[3],
+    };
+    TEXTURE_ZW_F *zws[4] = {
+        &face->texture_zw[0],
+        &face->texture_zw[1],
+        &face->texture_zw[2],
+        &face->texture_zw[3],
+    };
+    XYZ_F c0, c1, c2, c3, *coords[4] = { &c0, &c1, &c2, &c3 };
+    for (int32_t i = 0; i < 4; i++) {
+        coords[i]->x = vertices[i].x;
+        coords[i]->y = vertices[i].y;
+        coords[i]->z = vertices[i].z;
+    }
+
+    // 2) Compute geometric edges
+    //    a = c0-c1, b = c3-c2, c = c0-c3, d = c1-c2
+    const XYZ_F a = XYZ_F_Subtract(c0, c1);
+    const XYZ_F b = XYZ_F_Subtract(c3, c2);
+    const XYZ_F c = XYZ_F_Subtract(c0, c3);
+    const XYZ_F d = XYZ_F_Subtract(c1, c2);
+
+    const float a_l = XYZ_F_Length(a);
+    const float b_l = XYZ_F_Length(b);
+    const float c_l = XYZ_F_Length(c);
+    const float d_l = XYZ_F_Length(d);
+
+    // 3) Compute dot‐products in 3D to see which edges differ more
+    const float ab = XYZ_F_DotProduct(a, b) / (a_l * b_l);
+    const float cd = XYZ_F_DotProduct(c, d) / (c_l * d_l);
+
+    // 4) Compute tx, ty in for orientation
+    const float tx = ABS(uvs[0]->u - uvs[3]->u);
+    const float ty = ABS(uvs[0]->v - uvs[3]->v);
+
+    // 5) Measure the same edges in UV space so we know the “current” shape
+    XYZ_F uv0 = { uvs[0]->u, uvs[0]->v, 0.0f };
+    XYZ_F uv1 = { uvs[1]->u, uvs[1]->v, 0.0f };
+    XYZ_F uv2 = { uvs[2]->u, uvs[2]->v, 0.0f };
+    XYZ_F uv3 = { uvs[3]->u, uvs[3]->v, 0.0f };
+
+    // au = uv0 - uv1, bu = uv3 - uv2, cu = uv0 - uv3, du = uv1 - uv2
+    const XYZ_F au = XYZ_F_Subtract(uv0, uv1);
+    const XYZ_F bu = XYZ_F_Subtract(uv3, uv2);
+    const XYZ_F cu = XYZ_F_Subtract(uv0, uv3);
+    const XYZ_F du = XYZ_F_Subtract(uv1, uv2);
+
+    const float au_l = XYZ_F_Length(au);
+    const float bu_l = XYZ_F_Length(bu);
+    const float cu_l = XYZ_F_Length(cu);
+    const float du_l = XYZ_F_Length(du);
+
+    // We'll reuse the same ab/cd dot logic in UV if needed, but typically
+    // we only need the lengths to find the ratio vs. geometry.
+
+    // 6) Figure out the correction ratios per-corner, taking care of both
+    //    geometry and UV mesh proportions
+    if (ab > cd) {
+        const int k = (tx > ty) ? 1 : 0; // pick axis
+        if (a_l > b_l) {
+            // geometry ratio = (b_l / a_l)
+            // uv ratio       = (bu_l / au_l)  (avoid /0 check if needed)
+            const float geom_ratio = (a_l > 1e-6f) ? (b_l / a_l) : 1.0f;
+            const float uv_ratio = (au_l > 1e-6f) ? (bu_l / au_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio; // final scale
+            zws[2]->zw[k] = fix;
+            zws[3]->zw[k] = fix;
+        } else if (a_l < b_l) {
+            const float geom_ratio = (b_l > 1e-6f) ? (a_l / b_l) : 1.0f;
+            const float uv_ratio = (bu_l > 1e-6f) ? (au_l / bu_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio;
+            zws[0]->zw[k] = fix;
+            zws[1]->zw[k] = fix;
+        }
+    } else if (ab < cd) {
+        const int k = (tx > ty) ? 0 : 1; // pick axis
+        if (c_l > d_l) {
+            const float geom_ratio = (c_l > 1e-6f) ? (d_l / c_l) : 1.0f;
+            const float uv_ratio = (cu_l > 1e-6f) ? (du_l / cu_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio;
+            zws[1]->zw[k] = fix;
+            zws[2]->zw[k] = fix;
+        } else if (c_l < d_l) {
+            const float geom_ratio = (d_l > 1e-6f) ? (c_l / d_l) : 1.0f;
+            const float uv_ratio = (du_l > 1e-6f) ? (cu_l / du_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio;
+            zws[0]->zw[k] = fix;
+            zws[3]->zw[k] = fix;
+        }
+    }
+}
+
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
 {
     pos->x = VFile_ReadS32(file);
@@ -87,6 +205,8 @@ static void M_ReadFace4(FACE4 *const face, VFILE *const file)
 {
     for (int32_t i = 0; i < 4; i++) {
         face->vertices[i] = VFile_ReadU16(file);
+        face->texture_zw[i].z = 1.0f;
+        face->texture_zw[i].w = 1.0f;
     }
     face->texture_idx = VFile_ReadU16(file);
     face->enable_reflections = false;
@@ -1061,6 +1181,37 @@ void Level_ReadSamples(VFILE *const file)
 
 finish:
     Benchmark_End(benchmark, nullptr);
+}
+
+void Level_LoadTextures(void)
+{
+    for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
+        ROOM *const room = Room_Get(room_num);
+        for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
+            FACE4 *const face = &room->mesh.face4s[j];
+            XYZ_16 vertices[4] = {
+                room->mesh.vertices[face->vertices[0]].pos,
+                room->mesh.vertices[face->vertices[1]].pos,
+                room->mesh.vertices[face->vertices[2]].pos,
+                room->mesh.vertices[face->vertices[3]].pos,
+            };
+            M_FixTrapezoidRatios(face, vertices);
+        }
+    }
+
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        for (int32_t j = 0; j < mesh->num_tex_face4s; j++) {
+            FACE4 *const face = &mesh->tex_face4s[j];
+            XYZ_16 vertices[4] = {
+                mesh->vertices[face->vertices[0]],
+                mesh->vertices[face->vertices[1]],
+                mesh->vertices[face->vertices[2]],
+                mesh->vertices[face->vertices[3]],
+            };
+            M_FixTrapezoidRatios(face, vertices);
+        }
+    }
 }
 
 void Level_LoadTexturePages(void)

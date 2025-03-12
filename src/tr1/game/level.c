@@ -266,6 +266,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     LOG_INFO("Maximum vertices: %d", max_vertices);
     Output_ReserveVertexBuffer(max_vertices);
 
+    Level_LoadTextures();
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Output_DownloadTextures();

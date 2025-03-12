@@ -84,6 +84,11 @@ OBJECT_MESH *Object_GetMesh(const int32_t index)
     return m_MeshPointers[index];
 }
 
+int32_t Object_GetMeshCount(void)
+{
+    return m_MeshCount;
+}
+
 OBJECT_MESH *Object_FindMesh(const int32_t data_offset)
 {
     for (int32_t i = 0; i < m_MeshCount; i++) {
