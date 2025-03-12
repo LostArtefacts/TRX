@@ -64,7 +64,8 @@ bool Savegame_UpdateDeathCounters(int32_t slot_num, GAME_INFO *game_info);
 bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info);
 
 void Savegame_ScanSavedGames(void);
-void Savegame_ScanAvailableLevels(REQUEST_INFO *req);
+void Savegame_FillAvailableSaves(REQUEST_INFO *req);
+void Savegame_FillAvailableLevels(REQUEST_INFO *req);
 void Savegame_HighlightNewestSlot(void);
 bool Savegame_RestartAvailable(int32_t slot_num);
 
