@@ -254,14 +254,14 @@ void Inject_InitLevel(const GF_LEVEL *const level)
         return;
     }
 
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     m_Injections = Memory_Alloc(sizeof(INJECTION) * m_NumInjections);
     for (int32_t i = 0; i < m_NumInjections; i++) {
         M_LoadFromFile(&m_Injections[i], level->injections.data_paths[i]);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Inject_AllInjections(void)
@@ -270,7 +270,7 @@ void Inject_AllInjections(void)
         return;
     }
 
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
         INJECTION *const injection = &m_Injections[i];
@@ -307,7 +307,7 @@ void Inject_AllInjections(void)
         ASSERT(VFile_GetPos(injection->fp) == injection->fp->size);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Inject_Cleanup(void)
@@ -316,7 +316,7 @@ void Inject_Cleanup(void)
         return;
     }
 
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
         const INJECTION *const injection = &m_Injections[i];
@@ -336,7 +336,7 @@ void Inject_Cleanup(void)
     m_RoomMetaCount = 0;
     m_CachedInfo = (LEVEL_INFO) {};
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 INJECTION_MESH_META Inject_GetRoomMeshMeta(const int32_t room_index)

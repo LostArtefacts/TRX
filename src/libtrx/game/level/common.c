@@ -259,7 +259,7 @@ static void M_ReadObjectVector(OBJECT_VECTOR *const obj, VFILE *const file)
 
 void Level_ReadPalettes(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t palette_size = 256;
     m_Info.palette.size = palette_size;
@@ -289,12 +289,12 @@ void Level_ReadPalettes(VFILE *const file)
     }
 #endif
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadTexturePages(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t num_pages = VFile_ReadS32(file);
     m_Info.textures.page_count = num_pages;
@@ -335,12 +335,12 @@ void Level_ReadTexturePages(VFILE *const file)
     Memory_FreePointer(&input);
 #endif
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadRooms(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t num_rooms = VFile_ReadS16(file);
     LOG_INFO("rooms: %d", num_rooms);
@@ -454,12 +454,12 @@ void Level_ReadRooms(VFILE *const file)
     Memory_FreePointer(&floor_data);
 
 finish:
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadObjectMeshes(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_meshes = VFile_ReadS32(file);
     LOG_INFO("object mesh data: %d", num_meshes);
 
@@ -482,7 +482,7 @@ void Level_ReadObjectMeshes(VFILE *const file)
     VFile_SetPos(file, end_pos);
     Memory_FreePointer(&mesh_indices);
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendObjectMeshes(
@@ -528,13 +528,13 @@ void Level_AppendObjectMeshes(
 
 void Level_ReadAnims(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_anims = VFile_ReadS32(file);
     m_Info.anims.anim_count = num_anims;
     LOG_INFO("anims: %d", num_anims);
     Anim_InitialiseAnims(num_anims + Inject_GetDataCount(IDT_ANIMS));
     Level_AppendAnims(0, num_anims, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendAnims(
@@ -562,14 +562,14 @@ void Level_AppendAnims(
 
 void Level_ReadAnimChanges(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_anim_changes = VFile_ReadS32(file);
     m_Info.anims.change_count = num_anim_changes;
     LOG_INFO("anim changes: %d", num_anim_changes);
     Anim_InitialiseChanges(
         num_anim_changes + Inject_GetDataCount(IDT_ANIM_CHANGES));
     Level_AppendAnimChanges(0, num_anim_changes, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendAnimChanges(
@@ -585,14 +585,14 @@ void Level_AppendAnimChanges(
 
 void Level_ReadAnimRanges(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_anim_ranges = VFile_ReadS32(file);
     m_Info.anims.range_count = num_anim_ranges;
     LOG_INFO("anim ranges: %d", num_anim_ranges);
     Anim_InitialiseRanges(
         num_anim_ranges + Inject_GetDataCount(IDT_ANIM_RANGES));
     Level_AppendAnimRanges(0, num_anim_ranges, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendAnimRanges(
@@ -609,7 +609,7 @@ void Level_AppendAnimRanges(
 
 void Level_ReadAnimCommands(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_commands = VFile_ReadS32(file);
     m_Info.anims.command_count = num_commands;
     LOG_INFO("anim commands: %d", num_commands);
@@ -617,7 +617,7 @@ void Level_ReadAnimCommands(VFILE *const file)
         sizeof(int16_t)
         * (num_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
     Level_AppendAnimCommands(0, num_commands, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendAnimCommands(
@@ -635,13 +635,13 @@ void Level_LoadAnimCommands(void)
 
 void Level_ReadAnimBones(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_anim_bones = VFile_ReadS32(file) / ANIM_BONE_SIZE;
     m_Info.anims.bone_count = num_anim_bones;
     LOG_INFO("anim bones: %d", num_anim_bones);
     Anim_InitialiseBones(num_anim_bones + Inject_GetDataCount(IDT_ANIM_BONES));
     Level_AppendAnimBones(0, num_anim_bones, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendAnimBones(
@@ -661,7 +661,7 @@ void Level_AppendAnimBones(
 
 void Level_ReadAnimFrames(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t raw_data_count = VFile_ReadS32(file);
     m_Info.anims.frame_count = raw_data_count;
     LOG_INFO("raw anim frames: %d", raw_data_count);
@@ -669,7 +669,7 @@ void Level_ReadAnimFrames(VFILE *const file)
         sizeof(int16_t)
         * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
     Level_AppendAnimFrames(0, raw_data_count, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendAnimFrames(
@@ -690,7 +690,7 @@ void Level_LoadAnimFrames(void)
 
 void Level_ReadObjects(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
@@ -710,12 +710,12 @@ void Level_ReadObjects(VFILE *const file)
         obj->loaded = true;
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadStaticObjects(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("static objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
@@ -738,19 +738,19 @@ void Level_ReadStaticObjects(VFILE *const file)
         obj->visible = (flags & 2) != 0;
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadObjectTextures(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_textures = VFile_ReadS32(file);
     m_Info.textures.object_count = num_textures;
     LOG_INFO("object textures: %d", num_textures);
     Output_InitialiseObjectTextures(
         num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
     Level_AppendObjectTextures(0, 0, num_textures, file);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendObjectTextures(
@@ -770,7 +770,7 @@ void Level_AppendObjectTextures(
 
 void Level_ReadSpriteTextures(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_textures = VFile_ReadS32(file);
     m_Info.textures.sprite_count = num_textures;
     LOG_INFO("sprite textures: %d", num_textures);
@@ -778,7 +778,7 @@ void Level_ReadSpriteTextures(VFILE *const file)
         num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
     Level_AppendSpriteTextures(0, 0, num_textures, file);
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_AppendSpriteTextures(
@@ -800,7 +800,7 @@ void Level_AppendSpriteTextures(
 
 void Level_ReadSpriteSequences(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = VFile_ReadS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
     for (int32_t i = 0; i < num_sequences; i++) {
@@ -824,12 +824,12 @@ void Level_ReadSpriteSequences(VFILE *const file)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadPathingData(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_boxes = VFile_ReadS32(file);
     Box_InitialiseBoxes(num_boxes);
     for (int32_t i = 0; i < num_boxes; i++) {
@@ -876,12 +876,12 @@ void Level_ReadPathingData(VFILE *const file)
         VFile_Read(file, fly_zone, sizeof(int16_t) * num_boxes);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadAnimatedTextureRanges(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t data_size = VFile_ReadS32(file);
     const size_t end_position =
         VFile_GetPos(file) + data_size * sizeof(int16_t);
@@ -907,12 +907,12 @@ void Level_ReadAnimatedTextureRanges(VFILE *const file)
     }
 
     VFile_SetPos(file, end_position);
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadLightMap(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; i < 32; i++) {
         LIGHT_MAP *const light_map = Output_GetLightMap(i);
         VFile_Read(file, light_map->index, sizeof(uint8_t) * 256);
@@ -927,12 +927,12 @@ void Level_ReadLightMap(VFILE *const file)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadCinematicFrames(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int16_t num_frames = VFile_ReadS16(file);
     LOG_INFO("cinematic frames: %d", num_frames);
     Camera_InitialiseCineFrames(num_frames);
@@ -948,12 +948,12 @@ void Level_ReadCinematicFrames(VFILE *const file)
         frame->roll = VFile_ReadS16(file);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadCamerasAndSinks(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_DEBUG("fixed cameras/sinks: %d", num_objects);
     Camera_InitialiseFixedObjects(num_objects);
@@ -961,12 +961,12 @@ void Level_ReadCamerasAndSinks(VFILE *const file)
         M_ReadObjectVector(Camera_GetFixedObject(i), file);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadItems(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_items = VFile_ReadS32(file);
     LOG_INFO("items: %d", num_items);
     if (num_items > MAX_ITEMS) {
@@ -991,12 +991,12 @@ void Level_ReadItems(VFILE *const file)
     }
 
 finish:
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadDemoData(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const uint16_t size = VFile_ReadU16(file);
     LOG_INFO("demo buffer size: %d", size);
     Demo_InitialiseData(size);
@@ -1004,12 +1004,12 @@ void Level_ReadDemoData(VFILE *const file)
         uint32_t *const data = Demo_GetData();
         VFile_Read(file, data, size);
     }
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadSoundSources(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sources = VFile_ReadS32(file);
     LOG_INFO("sound sources: %d", num_sources);
     Sound_InitialiseSources(num_sources);
@@ -1017,12 +1017,12 @@ void Level_ReadSoundSources(VFILE *const file)
         M_ReadObjectVector(Sound_GetSource(i), file);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadSamples(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     int16_t *const sample_lut = Sound_GetSampleLUT();
     VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
@@ -1060,7 +1060,7 @@ void Level_ReadSamples(VFILE *const file)
     VFile_Read(file, m_Info.samples.offsets, sizeof(int32_t) * num_offsets);
 
 finish:
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_LoadTexturePages(void)

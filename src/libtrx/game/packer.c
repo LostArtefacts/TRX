@@ -430,7 +430,7 @@ static void M_Cleanup(void)
 
 bool Packer_Pack(PACKER_DATA *const data)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     m_Data = data;
     M_PreparePaletteLUT();
 
@@ -459,7 +459,7 @@ bool Packer_Pack(PACKER_DATA *const data)
     }
 
     M_Cleanup();
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
     return result;
 }
 

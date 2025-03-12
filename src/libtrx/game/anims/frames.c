@@ -163,7 +163,7 @@ void Anim_InitialiseFrames(const int32_t num_frames)
 
 void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t anim_count = Anim_GetTotalCount();
     OBJECT *cur_obj = nullptr;
@@ -207,5 +207,5 @@ void Anim_LoadFrames(const int16_t *data, const int32_t data_length)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
