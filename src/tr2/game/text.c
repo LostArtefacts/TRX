@@ -152,6 +152,9 @@ void Text_DrawText(TEXTSTRING *const text)
         }
 
         if (x >= 0 && x < g_PhdWinWidth && y >= 0 && y < g_PhdWinHeight) {
+            if (glyph->mesh_idx >= ABS(obj->mesh_count)) {
+                goto loop_end;
+            }
             Output_DrawScreenSprite(
                 x, y, z, scale_h, scale_v, obj->mesh_idx + glyph->mesh_idx,
                 4096, 0);
