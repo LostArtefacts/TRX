@@ -14,7 +14,7 @@ float g_FltResZBuf;
 
 LARA_INFO g_Lara = {};
 ITEM *g_LaraItem = nullptr;
-GAME_INFO g_GameInfo = {};
+GAME_INFO g_GameInfo = { .select_save_slot = -1 };
 int32_t g_SavedGamesCount = 0;
 int32_t g_SaveCounter = 0;
 bool g_LevelComplete = false;
