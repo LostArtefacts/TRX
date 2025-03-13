@@ -14,6 +14,8 @@ DIRECTION Math_GetDirectionCone(int16_t angle, int16_t cone);
 int16_t Math_DirectionToAngle(DIRECTION dir);
 int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio);
 
+int16_t XYZ_32_GetYaw(XYZ_32 pos);
+int16_t XYZ_32_GetPitch(XYZ_32 pos);
 int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
 int32_t XYZ_32_GetDistance0(const XYZ_32 *pos);
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
