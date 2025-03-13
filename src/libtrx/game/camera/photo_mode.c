@@ -126,6 +126,7 @@ static void M_ApplyRotation(
     if (pitch >= DEG_90 || pitch <= -DEG_90) {
         roll += DEG_180;
         yaw += DEG_180;
+        pitch = g_Camera.target_elevation;
     }
 
     g_Camera.target_angle = yaw;
