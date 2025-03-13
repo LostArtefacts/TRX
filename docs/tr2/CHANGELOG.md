@@ -8,6 +8,7 @@
 - added `/flood` and `/drain` console commands
 - added support for `-l`/`--level` argument to play a single level
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels (#2615)
+- added the camera shutter sound to cutscenes for photo mode (#2280)
 - added Italian localization to the config tool
 - changed injections to a new file format with a smaller footprint, improved applicability tests and similar feature support as TR1 (#1967)
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant

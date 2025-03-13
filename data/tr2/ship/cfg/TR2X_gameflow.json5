@@ -427,16 +427,25 @@
                 {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
             ],
+            "injections": [
+                "data/injections/photo.bin",
+            ],
         },
         {
             "path": "data/cut2.tr2",
             "music_track": 4,
             "sequence": [{"type": "loop_game"}],
+            "injections": [
+                "data/injections/photo.bin",
+            ],
         },
         {
             "path": "data/cut3.tr2",
             "music_track": 5,
             "sequence": [{"type": "loop_game"}],
+            "injections": [
+                "data/injections/photo.bin",
+            ],
         },
         {
             "path": "data/cut4.tr2",
@@ -444,6 +453,9 @@
             "sequence": [
                 {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
+            ],
+            "injections": [
+                "data/injections/photo.bin",
             ],
         },
     ],
