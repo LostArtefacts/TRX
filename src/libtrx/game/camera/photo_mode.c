@@ -29,9 +29,11 @@ extern void Output_ApplyFOV(void);
 static int32_t m_PhotoSpeed = 0;
 static int32_t m_OldFOV;
 static int32_t m_CurrentFOV;
-static CAMERA_INFO m_OldCamera = {};
+static CAMERA_INFO m_OriginalCamera = {};
+static CAMERA_INFO m_StartingCamera = {};
 static BOUNDS_32 m_WorldBounds = {};
 
+static void M_ResetCamera(bool exiting);
 static int32_t M_GetShiftSpeed(int32_t val);
 static int32_t M_GetRotSpeed(void);
 static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz);
@@ -47,9 +49,9 @@ static bool M_HandleTargetRotationInputs(void);
 static bool M_HandleFOVInputs();
 static void M_UpdatePhotoMode(void);
 
-static void M_ResetCamera(void)
+static void M_ResetCamera(const bool exiting)
 {
-    g_Camera = m_OldCamera;
+    g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
 #if TR_VERSION == 1
     Viewport_SetFOV(m_OldFOV);
 #elif TR_VERSION == 2
@@ -281,7 +283,7 @@ static bool M_HandleFOVInputs(void)
 
 void Camera_EnterPhotoMode(void)
 {
-    m_OldCamera = g_Camera;
+    m_OriginalCamera = g_Camera;
 
     int16_t angles[2];
     Math_GetVectorAngles(
@@ -291,6 +293,8 @@ void Camera_EnterPhotoMode(void)
     g_Camera.target_elevation = angles[1];
     g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
     g_Camera.target_square = SQUARE(g_Camera.target_distance);
+
+    m_StartingCamera = g_Camera;
 
 #if TR_VERSION == 1
     m_OldFOV = Viewport_GetFOV();
@@ -317,13 +321,13 @@ void Camera_ExitPhotoMode(void)
 #elif TR_VERSION == 2
     Viewport_AlterFOV(m_OldFOV);
 #endif
-    M_ResetCamera();
+    M_ResetCamera(true);
 }
 
 void Camera_UpdatePhotoMode(void)
 {
     if (g_InputDB.camera_reset) {
-        M_ResetCamera();
+        M_ResetCamera(false);
         g_Camera.type = CAM_PHOTO_MODE;
     }
 
