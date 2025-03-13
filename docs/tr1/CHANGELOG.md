@@ -27,6 +27,7 @@
     - improved support for pivoting
     - improved roll support
     - expanded world bounding box by 5 tiles in each direction
+    - added support for 60 FPS
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)

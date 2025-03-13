@@ -45,6 +45,8 @@
 
 static bool m_IsEnabled = true;
 static double m_Rate = 0.0;
+static double m_WorldRate = 0.0;
+static double m_CameraRate = 0.0;
 
 static int32_t M_GetFPS(void);
 static XYZ_32 M_GetItemMaxDelta(const ITEM *item);
@@ -388,12 +390,20 @@ void Interpolation_Enable(void)
     m_IsEnabled = true;
 }
 
-double Interpolation_GetRate(void)
+double Interpolation_GetWorldRate(void)
 {
     if (!Interpolation_IsEnabled()) {
         return 1.0;
     }
-    return m_Rate;
+    return m_WorldRate;
+}
+
+double Interpolation_GetCameraRate(void)
+{
+    if (!Interpolation_IsEnabled()) {
+        return 1.0;
+    }
+    return m_CameraRate;
 }
 
 void Interpolation_SetRate(double rate)
@@ -425,7 +435,10 @@ void Interpolation_Remember(void)
 
 void Interpolation_Interpolate(void)
 {
-    const double ratio = Interpolation_GetRate();
+    if (g_Camera.type != CAM_PHOTO_MODE) {
+        m_WorldRate = m_Rate;
+    }
+    m_CameraRate = m_Rate;
 
     if (g_Camera.pos.room_num != NO_ROOM) {
         if (DIFF(&g_Camera, shift) >= 128
@@ -437,23 +450,27 @@ void Interpolation_Interpolate(void)
             || DIFF(&g_Camera, target.z) >= CAM_MAX_DELTA) {
             M_CommitCamera();
         } else {
-            M_InterpolateCamera(ratio);
+            M_InterpolateCamera(m_CameraRate);
         }
 
         g_Camera.interp.room_num = g_Camera.pos.room_num;
         Camera_ClampInterpResult();
     }
 
+    if (g_Camera.type == CAM_PHOTO_MODE) {
+        return;
+    }
+
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (lara != nullptr) {
-        M_InterpolateLara(ratio, lara);
+        M_InterpolateLara(m_WorldRate, lara);
     }
-    M_InterpolateItems(ratio);
-    M_InterpolateEffects(ratio);
+    M_InterpolateItems(m_WorldRate);
+    M_InterpolateEffects(m_WorldRate);
     if (lara_item != nullptr && Lara_Hair_IsActive()) {
-        M_InterpolateBraid(ratio, lara_item);
+        M_InterpolateBraid(m_WorldRate, lara_item);
     }
 }
 

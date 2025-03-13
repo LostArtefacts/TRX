@@ -34,6 +34,7 @@
     - improved support for pivoting
     - improved roll support
     - expanded world bounding box by 5 tiles in each direction
+    - added support for 60 FPS
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)
