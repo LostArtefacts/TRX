@@ -30,6 +30,7 @@
 - fixed the ammo counter not showing in demos if NG+ is set (#2574, regression from 0.9)
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 0.9)
 - fixed the `/pos` command not showing demo and cutscene titles
+- improved camera mode inputs - now supports pivoting and better roll support
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)
