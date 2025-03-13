@@ -22,6 +22,7 @@
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 4.8)
 - fixed the `/pos` command not working in cutscenes
 - fixed the `/pos` command not showing demo and cutscene titles
+- fixed the embedded bats fix causing problems inside rooms with trapdoors (regression from 4.6)
 - removed perspective filter toggle (it had no effect; repurposed to trapezoid interpolation toggle)
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
