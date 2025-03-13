@@ -3,7 +3,9 @@
 
 static GF_COMMAND M_LoadCommand(JSON_OBJECT *jcmd, GF_COMMAND fallback);
 
-static GF_LEVEL_SETTINGS m_DefaultSettings = {};
+static GF_LEVEL_SETTINGS m_DefaultSettings = {
+    .sfx_path = nullptr,
+};
 
 static GF_SEQUENCE_EVENT_TYPE m_LevelArgSequenceEvents[] = {
     GFS_LOOP_GAME,
@@ -46,12 +48,24 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
 static void M_LoadSettings(
     JSON_OBJECT *const obj, GF_LEVEL_SETTINGS *const settings)
 {
+    {
+        const char *tmp_s =
+            JSON_ObjectGetString(obj, "sfx_path", JSON_INVALID_STRING);
+        if (tmp_s != JSON_INVALID_STRING) {
+            settings->sfx_path = Memory_DupStr(tmp_s);
+        }
+    }
 }
 
 static void M_LoadLevelGameSpecifics(
     JSON_OBJECT *const jlvl_obj, const GAME_FLOW *const gf,
     GF_LEVEL *const level)
 {
+    level->settings = gf->settings;
+#if TR_VERSION == 2
+    level->settings.sfx_path = nullptr;
+#endif
+    M_LoadSettings(jlvl_obj, &level->settings);
 }
 
 static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)

@@ -87,7 +87,6 @@ game with new enhancements and features.
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
 - fixed smashed windows blocking enemy pathing after loading a save
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
-- fixed several issues with pushblocks
 - fixed several issues with pushblocks:
     - fixed an invisible wall above stacked pushblocks if near a ceiling portal
     - fixed floor height issues with pushblocks poised to fall in various scenarios
@@ -165,6 +164,7 @@ game with new enhancements and features.
 - added .jpeg/.png screenshots
 - added ability to skip FMVs with both the Action key
 - added ability to skip end credits with the Action and Escape keys
+- added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels
 - expanded internal game memory limit from 7.5 MB to 128 MB
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)

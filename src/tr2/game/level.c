@@ -34,6 +34,8 @@
 #include <libtrx/utils.h>
 #include <libtrx/virtual_file.h>
 
+#define DEFAULT_SFX_PATH "data/main.sfx"
+
 typedef struct {
     int32_t game_index;
     int32_t file_index;
@@ -41,8 +43,8 @@ typedef struct {
 
 static int32_t M_CompareSampleOffsets(const void *a, const void *b);
 static void M_LoadFromFile(const GF_LEVEL *level);
-static void M_InitialiseSoundEffects(void);
-static void M_CompleteSetup(void);
+static void M_InitialiseSoundEffects(const char *const file_name);
+static void M_CompleteSetup(const GF_LEVEL *level);
 
 static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
 {
@@ -51,12 +53,12 @@ static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
     return entry_a->file_index - entry_b->file_index;
 }
 
-static void M_InitialiseSoundEffects(void)
+static void M_InitialiseSoundEffects(const char *const file_name)
 {
     BENCHMARK benchmark = Benchmark_Start();
     SAMPLE_ENTRY *entries = nullptr;
-    const char *const file_name = "data\\main.sfx";
-    const char *full_path = File_GetFullPath(file_name);
+    const char *full_path =
+        File_GetFullPath(file_name == nullptr ? DEFAULT_SFX_PATH : file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
     MYFILE *const fp = File_Open(full_path, FILE_OPEN_READ);
     Memory_FreePointer(&full_path);
@@ -172,7 +174,7 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Benchmark_End(&benchmark, nullptr);
 }
 
-static void M_CompleteSetup(void)
+static void M_CompleteSetup(const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -190,7 +192,7 @@ static void M_CompleteSetup(void)
     Render_Reset(
         RENDER_RESET_PALETTE | RENDER_RESET_TEXTURES | RENDER_RESET_UVS);
 
-    M_InitialiseSoundEffects();
+    M_InitialiseSoundEffects(level->settings.sfx_path);
 
     Benchmark_End(&benchmark, nullptr);
 }
@@ -213,7 +215,7 @@ bool Level_Load(const GF_LEVEL *const level)
     Inject_InitLevel(level);
 
     M_LoadFromFile(level);
-    M_CompleteSetup();
+    M_CompleteSetup(level);
 
     Inject_Cleanup();
 

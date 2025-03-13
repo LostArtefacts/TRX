@@ -31,6 +31,7 @@
         ],
     },
 
+    "sfx_path": "data/main.sfx",
     "injections": [
         "data/injections/font.bin",
     ],
