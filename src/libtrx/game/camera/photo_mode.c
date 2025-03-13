@@ -281,6 +281,8 @@ static bool M_HandleFOVInputs(void)
 
 void Camera_EnterPhotoMode(void)
 {
+    m_OldCamera = g_Camera;
+
     int16_t angles[2];
     Math_GetVectorAngles(
         g_Camera.target.x - g_Camera.pos.x, g_Camera.target.y - g_Camera.pos.y,
@@ -296,7 +298,6 @@ void Camera_EnterPhotoMode(void)
     m_OldFOV = Viewport_GetFOV(true);
 #endif
     m_CurrentFOV = m_OldFOV / DEG_1;
-    m_OldCamera = g_Camera;
     g_Camera.type = CAM_PHOTO_MODE;
     const int32_t border = WALL_L * 5;
     m_WorldBounds = Room_GetWorldBounds();
