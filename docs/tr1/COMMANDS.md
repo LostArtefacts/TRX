@@ -24,7 +24,9 @@ Currently supported commands:
 
 - `/flood`  
   `/drain`  
-  Floods or drains the current room at will. For when drowning is preferable to puzzles!
+- `/flood {room_num}`  
+  `/drain {room_num}`  
+  Floods or drains the chosen room at will. For when drowning is preferable to puzzles!
 
 - `/give {item_name}`  
   `/give {num} {item_name}`  

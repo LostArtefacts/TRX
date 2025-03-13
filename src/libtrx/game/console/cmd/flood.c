@@ -7,19 +7,23 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx);
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
-    if (!String_IsEmpty(ctx->args)) {
-        return CR_BAD_INVOCATION;
-    }
+    int32_t room_num;
+    if (!String_ParseInteger(ctx->args, &room_num)) {
+        if (!String_IsEmpty(ctx->args)) {
+            return CR_BAD_INVOCATION;
+        }
 
-    ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return CR_UNAVAILABLE;
+        ITEM *const lara_item = Lara_GetItem();
+        if (lara_item == nullptr) {
+            return CR_UNAVAILABLE;
+        }
+        room_num = lara_item->room_num;
     }
 
     if (String_Equivalent(ctx->prefix, "flood")) {
-        Room_Get(lara_item->room_num)->flags |= RF_UNDERWATER;
+        Room_Get(room_num)->flags |= RF_UNDERWATER;
     } else if (String_Equivalent(ctx->prefix, "drain")) {
-        Room_Get(lara_item->room_num)->flags &= ~RF_UNDERWATER;
+        Room_Get(room_num)->flags &= ~RF_UNDERWATER;
     } else {
         return CR_UNAVAILABLE;
     }
