@@ -153,6 +153,7 @@ game with new enhancements and features.
 - fixed flare sound effects not always playing when Lara is in shallow water
 - fixed music not playing if triggered while the game is muted, but the volume is then increased
 - fixed being unable to load a level that contains no sound effect data
+- fixed missing enemy sound effects in the underwater levels
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
