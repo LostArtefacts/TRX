@@ -17,7 +17,7 @@
 
 void Game_Draw(bool draw_overlay)
 {
-    Interpolation_Commit();
+    Interpolation_Interpolate();
     Camera_Apply();
 
     if (Object_Get(O_LARA)->loaded) {

@@ -110,7 +110,7 @@ void InvRing_Draw(INV_RING *const ring)
     ring->camera.pos.z = ring->radius + CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
-        Interpolation_Commit();
+        Interpolation_Interpolate();
     } else {
         Matrix_LookAt(
             g_InvRing_OldCamera.pos.x,

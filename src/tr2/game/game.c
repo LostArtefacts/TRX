@@ -157,7 +157,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
 void Game_Draw(bool draw_overlay)
 {
-    Interpolation_Commit();
+    Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num);
     Output_DrawPolyList();

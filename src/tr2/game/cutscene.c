@@ -98,7 +98,7 @@ GF_COMMAND Cutscene_Control(void)
 void Cutscene_Draw(void)
 {
     g_CameraUnderwater = false;
-    Interpolation_Commit();
+    Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num);
     Output_DrawPolyList();
