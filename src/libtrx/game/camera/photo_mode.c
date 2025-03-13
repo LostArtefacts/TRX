@@ -6,6 +6,7 @@
 #include "game/camera/vars.h"
 #include "game/input.h"
 #include "game/math.h"
+#include "game/matrix.h"
 #include "game/output.h"
 #include "game/rooms.h"
 #include "game/viewport.h"
@@ -22,8 +23,8 @@ extern void Output_ApplyFOV(void);
 #define PHOTO_MAX_PITCH_ROLL (DEG_90 - DEG_1)
 #define PHOTO_MAX_SPEED 100
 
-#define M_CosMul(a, b) ((Math_Cos(a) * (b)) >> W2V_SHIFT)
-#define M_SinMul(a, b) ((Math_Sin(a) * (b)) >> W2V_SHIFT)
+#define M_CosMul(a, b) TRIGMULT2(Math_Cos((a)), (b))
+#define M_SinMul(a, b) TRIGMULT2(Math_Sin((a)), (b))
 
 static int32_t m_PhotoSpeed = 0;
 static int32_t m_OldFOV;
@@ -90,11 +91,6 @@ static XYZ_32 M_GetShift(const int32_t dx, const int32_t dy, const int32_t dz)
 
 static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz)
 {
-    const int32_t distance = M_GetShiftSpeed((WALL_L * 5.0) / LOGIC_FPS);
-    dx *= distance;
-    dy *= distance;
-    dz *= distance;
-
     const XYZ_32 shift = M_GetShift(dx, dy, dz);
     g_Camera.pos.x += shift.x;
     g_Camera.pos.y += shift.y;
@@ -193,27 +189,28 @@ static bool M_HandleShiftInputs(void)
 {
     bool result = false;
 
+    const int32_t distance = M_GetShiftSpeed((WALL_L * 5.0) / LOGIC_FPS);
     if (g_Input.camera_left) {
-        M_ShiftCamera(-1, 0, 0);
+        M_ShiftCamera(-distance, 0, 0);
         result = true;
     } else if (g_Input.camera_right) {
-        M_ShiftCamera(1, 0, 0);
+        M_ShiftCamera(distance, 0, 0);
         result = true;
     }
 
     if (g_Input.camera_forward) {
-        M_ShiftCamera(0, 0, 1);
+        M_ShiftCamera(0, 0, distance);
         result = true;
     } else if (g_Input.camera_back) {
-        M_ShiftCamera(0, 0, -1);
+        M_ShiftCamera(0, 0, -distance);
         result = true;
     }
 
     if (g_Input.camera_up) {
-        M_ShiftCamera(0, -1, 0);
+        M_ShiftCamera(0, -distance, 0);
         result = true;
     } else if (g_Input.camera_down) {
-        M_ShiftCamera(0, 1, 0);
+        M_ShiftCamera(0, distance, 0);
         result = true;
     }
 
