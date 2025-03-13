@@ -19,6 +19,7 @@
     "demo_delay": 30,
     "secret_track": 47,
 
+    "sfx_path": "data/main.sfx",
     "injections": [
         "data/injections/font.bin",
     ],

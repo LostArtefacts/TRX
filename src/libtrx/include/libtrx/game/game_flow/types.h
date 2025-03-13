@@ -83,7 +83,7 @@ typedef struct {
     float draw_distance_fade;
     float draw_distance_max;
 #elif TR_VERSION == 2
-    int32_t dummy; // silence warnings, keep the logic
+    char *sfx_path;
 #endif
 } GF_LEVEL_SETTINGS;
 

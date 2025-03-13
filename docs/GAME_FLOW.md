@@ -298,6 +298,13 @@ remains distinct for each game.
       Music track to play when a secret is found. -1 to not play anything.
     </td>
   </tr>
+  <tr valign="top">
+    <td><code>sfx_path</code></td>
+    <td>String</td>
+    <td>
+      The path to the sound effects (.sfx) file to use in the game.
+    </td>
+  </tr>
 </table>
 
 ## Game flow commands
@@ -549,6 +556,14 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>sfx_path</code><strong>²</strong></td>
+    <td>String</td>
+    <td colspan="2">
+      The path to the sound effects (.sfx) file to use in this level. If this
+      property is not defined, the default global file will be used.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>unobtainable_kills</code><strong>¹</strong></td>
     <td>Integer</td>
     <td colspan="2">
@@ -581,6 +596,7 @@ Following are each of the properties available within a level.
 
 **\*** Required property.  
 **¹** Tomb Raider 1 only.
+**²** Tomb Raider 2 only.
 
 ## Sequences
 The following describes each available game flow sequence type and the required
