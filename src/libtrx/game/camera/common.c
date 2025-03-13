@@ -24,6 +24,14 @@ void Camera_Reset(void)
 
 void Camera_ClampInterpResult(void)
 {
+    if (g_Camera.type == CAM_PHOTO_MODE) {
+        Room_GetSector(
+            g_Camera.interp.result.pos.x,
+            g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+            g_Camera.interp.result.pos.z, &g_Camera.interp.room_num);
+        return;
+    }
+
     XYZ_32 *const pos = &g_Camera.interp.result.pos;
     const int32_t shift = g_Camera.interp.result.shift;
     const ROOM *const room = Room_Get(g_Camera.interp.room_num);
