@@ -164,6 +164,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/fathoms_goon_sfx.bin",
+            ],
         },
 
         // 8. Wreck of the Maria Doria
@@ -180,6 +183,7 @@
             ],
             "injections": [
                 "data/injections/wreck_fd.bin",
+                "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
             ],
         },
@@ -194,6 +198,9 @@
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/living_deck_goon_sfx.bin",
             ],
         },
 
@@ -210,6 +217,7 @@
             ],
             "injections": [
                 "data/injections/deck_itemrots.bin",
+                "data/injections/living_deck_goon_sfx.bin",
             ],
         },
 
