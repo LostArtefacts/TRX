@@ -118,7 +118,7 @@ void InvRing_Draw(INV_RING *const ring)
     ring->camera.pos.z = ring->radius + 598;
 
     if (ring->mode == INV_TITLE_MODE) {
-        Interpolation_Commit();
+        Interpolation_Interpolate();
     }
 
     XYZ_32 view_pos;
