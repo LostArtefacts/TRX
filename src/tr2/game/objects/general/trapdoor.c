@@ -47,6 +47,10 @@ static bool M_IsItemOnTop(
     const ITEM *const item, const int32_t x, const int32_t z)
 {
     const BOUNDS_16 *const orig_bounds = &Item_GetBestFrame(item)->bounds;
+    if (orig_bounds == nullptr) {
+        return false;
+    }
+
     BOUNDS_16 fixed_bounds = {};
 
     // Bounds need to change in order to account for 2 sector trapdoors
