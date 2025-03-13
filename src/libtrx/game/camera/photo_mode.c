@@ -298,7 +298,14 @@ void Camera_EnterPhotoMode(void)
     m_CurrentFOV = m_OldFOV / DEG_1;
     m_OldCamera = g_Camera;
     g_Camera.type = CAM_PHOTO_MODE;
+    const int32_t border = WALL_L * 5;
     m_WorldBounds = Room_GetWorldBounds();
+    m_WorldBounds.min.x -= border;
+    m_WorldBounds.min.y -= border;
+    m_WorldBounds.min.z -= border;
+    m_WorldBounds.max.x += border;
+    m_WorldBounds.max.y += border;
+    m_WorldBounds.max.z += border;
     M_UpdateCameraRooms();
 }
 

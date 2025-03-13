@@ -24,7 +24,10 @@
 - fixed the `/pos` command not showing demo and cutscene titles
 - fixed the embedded bats fix causing problems inside rooms with trapdoors (regression from 4.6)
 - removed perspective filter toggle (it had no effect; repurposed to trapezoid interpolation toggle)
-- improved camera mode inputs - now supports pivoting and better roll support
+- improved camera mode navigation:
+    - improved support for pivoting
+    - improved roll support
+    - expanded world bounding box by 5 tiles in each direction
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)
