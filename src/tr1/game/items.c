@@ -476,7 +476,7 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
         return numerator;
     }
 
-    const double clock_ratio = Interpolation_GetRate() - 0.5;
+    const double clock_ratio = Interpolation_GetWorldRate() - 0.5;
     const double final =
         (key_frame_shift + clock_ratio) / (double)key_frame_span;
     const double interp_frame_num =
