@@ -18,6 +18,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 
 #include <stdint.h>
@@ -80,7 +81,7 @@ static void (*m_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
     [LS_DIE_MIDAS]    = Lara_State_DieMidas,
     [LS_SWAN_DIVE]    = Lara_State_SwanDive,
     [LS_FAST_DIVE]    = Lara_State_FastDive,
-    [LS_GYMNAST]      = Lara_State_Gymnast,
+    [LS_GYMNAST]      = Lara_State_Null,
     [LS_WATER_OUT]    = Lara_State_WaterOut,
     [LS_CONTROLLED]   = Lara_State_Controlled,
     [LS_TWIST]        = Lara_State_Empty,

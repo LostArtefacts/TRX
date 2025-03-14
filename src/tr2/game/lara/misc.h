@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <libtrx/game/lara/misc.h>
+
 void Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll);
 
 void Lara_SlideSlope(ITEM *item, COLL_INFO *coll);
@@ -33,8 +35,6 @@ int32_t Lara_TestHangSwingIn(ITEM *item, int16_t angle);
 int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll);
 
 int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll);
-
-int16_t Lara_FloorFront(ITEM *item, int16_t ang, int32_t dist);
 
 int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll);
 

@@ -57,7 +57,6 @@ void Lara_State_UseMidas(ITEM *item, COLL_INFO *coll);
 void Lara_State_DieMidas(ITEM *item, COLL_INFO *coll);
 void Lara_State_SwanDive(ITEM *item, COLL_INFO *coll);
 void Lara_State_FastDive(ITEM *item, COLL_INFO *coll);
-void Lara_State_Gymnast(ITEM *item, COLL_INFO *coll);
 void Lara_State_WaterOut(ITEM *item, COLL_INFO *coll);
 void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll);
 void Lara_State_Wade(ITEM *item, COLL_INFO *coll);

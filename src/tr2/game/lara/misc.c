@@ -14,7 +14,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/misc.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -760,20 +760,6 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     g_Lara.move_angle = angle;
     m_LaraOldSlideAngle = angle;
     return 1;
-}
-
-int16_t Lara_FloorFront(ITEM *item, int16_t ang, int32_t dist)
-{
-    const int32_t x = item->pos.x + ((dist * Math_Sin(ang)) >> W2V_SHIFT);
-    const int32_t y = item->pos.y - LARA_HEIGHT;
-    const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    if (height != NO_HEIGHT) {
-        height -= item->pos.y;
-    }
-    return height;
 }
 
 int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)

@@ -4,8 +4,9 @@
 #include "game/objects/effects/missile_common.h"
 #include "game/room.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
+
+#include <libtrx/game/lara/const.h>
 
 // clang-format off
 #define DIVER_SWIM_TURN     (3 * DEG_1) // = 546
