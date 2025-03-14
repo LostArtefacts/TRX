@@ -1,11 +1,11 @@
 #include "game/objects/general/door.h"
 
+#include "game/box.h"
 #include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "game/room.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
@@ -58,7 +58,7 @@ static void M_InitialisePortal(
     }
 
     int16_t box_num = sector->box;
-    if (!(Box_GetBox(box_num)->overlap_index & BLOCKABLE)) {
+    if (!(Box_GetBox(box_num)->overlap_index & BOX_BLOCKABLE)) {
         box_num = NO_BOX;
     }
     door_pos->block = box_num;
@@ -108,7 +108,7 @@ static void M_Shut(DOORPOS_DATA *const d)
 
     const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
-        Box_GetBox(box_num)->overlap_index |= BLOCKED;
+        Box_GetBox(box_num)->overlap_index |= BOX_BLOCKED;
     }
 }
 
@@ -124,7 +124,7 @@ static void M_Open(DOORPOS_DATA *const d)
 
     const int16_t box_num = d->block;
     if (box_num != NO_BOX) {
-        Box_GetBox(box_num)->overlap_index &= ~BLOCKED;
+        Box_GetBox(box_num)->overlap_index &= ~BOX_BLOCKED;
     }
 }
 

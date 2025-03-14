@@ -1,9 +1,9 @@
 #include "game/lot.h"
 
+#include "game/box.h"
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/shell.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
@@ -101,7 +101,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
 
     creature->lot.step = STEP_L;
     creature->lot.drop = -STEP_L;
-    creature->lot.block_mask = BLOCKED;
+    creature->lot.block_mask = BOX_BLOCKED;
     creature->lot.fly = 0;
 
     switch (item->object_id) {
@@ -116,7 +116,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
     case O_TREX:
     case O_WARRIOR_1:
     case O_CENTAUR:
-        creature->lot.block_mask = BLOCKABLE;
+        creature->lot.block_mask = BOX_BLOCKABLE;
         break;
 
     case O_WOLF:

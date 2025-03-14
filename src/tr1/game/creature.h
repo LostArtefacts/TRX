@@ -3,9 +3,8 @@
 #include "global/const.h"
 #include "global/types.h"
 
+#include <libtrx/game/creature.h>
 #include <libtrx/utils.h>
-
-#include <stdint.h>
 
 #define CREATURE_SHOOT_RANGE SQUARE(WALL_L * 7) // = 51380224
 #define CREATURE_MISS_CHANCE 0x2000
