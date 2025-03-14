@@ -1,7 +1,9 @@
 #include "game/collision.h"
 
 #include "config.h"
+#include "game/items.h"
 #include "game/lara/common.h"
+#include "game/matrix.h"
 #include "game/rooms.h"
 
 static bool M_IsOnWalkable(
@@ -17,6 +19,81 @@ static bool M_IsOnWalkable(
 #elif TR_VERSION >= 2
     return false;
 #endif
+}
+
+int32_t Collide_GetSpheres(
+    const ITEM *const item, SPHERE *const spheres, const bool world_space)
+{
+    if (item == nullptr) {
+        return 0;
+    }
+
+    XYZ_32 pos;
+    if (world_space) {
+        pos = item->pos;
+        Matrix_PushUnit();
+    } else {
+        pos.x = 0;
+        pos.y = 0;
+        pos.z = 0;
+        Matrix_Push();
+        Matrix_TranslateAbs32(item->pos);
+    }
+
+    Matrix_Rot16(item->rot);
+
+    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
+    Matrix_TranslateRel16(frame->offset);
+    Matrix_Rot16(frame->mesh_rots[0]);
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT_MESH *mesh = Object_GetMesh(obj->mesh_idx);
+    Matrix_Push();
+    Matrix_TranslateRel16(mesh->center);
+    spheres[0].pos.x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+    spheres[0].pos.y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+    spheres[0].pos.z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+    spheres[0].r = mesh->radius;
+    Matrix_Pop();
+
+    const int16_t *extra_rotation = (int16_t *)item->data;
+    for (int32_t i = 1; i < obj->mesh_count; i++) {
+        const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
+        if (bone->matrix_pop) {
+            Matrix_Pop();
+        }
+        if (bone->matrix_push) {
+            Matrix_Push();
+        }
+
+        Matrix_TranslateRel32(bone->pos);
+        Matrix_Rot16(frame->mesh_rots[i]);
+
+        if (extra_rotation != nullptr) {
+            if (bone->rot_y) {
+                Matrix_RotY(*extra_rotation++);
+            }
+            if (bone->rot_x) {
+                Matrix_RotX(*extra_rotation++);
+            }
+            if (bone->rot_z) {
+                Matrix_RotZ(*extra_rotation++);
+            }
+        }
+
+        mesh = Object_GetMesh(obj->mesh_idx + i);
+        Matrix_Push();
+        Matrix_TranslateRel16(mesh->center);
+        SPHERE *const sphere = &spheres[i];
+        sphere->pos.x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+        sphere->pos.y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+        sphere->pos.z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+        sphere->r = mesh->radius;
+        Matrix_Pop();
+    }
+
+    Matrix_Pop();
+    return obj->mesh_count;
 }
 
 void Collide_GetCollisionInfo(

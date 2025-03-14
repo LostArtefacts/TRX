@@ -1,5 +1,6 @@
 #pragma once
 
+#include "items/types.h"
 #include "math.h"
 
 typedef struct {
@@ -60,6 +61,8 @@ typedef struct {
     XYZ_32 pos;
     int32_t r;
 } SPHERE;
+
+int32_t Collide_GetSpheres(const ITEM *item, SPHERE *spheres, bool world_space);
 
 void Collide_GetCollisionInfo(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
