@@ -37,6 +37,9 @@ static void M_ApplyFace3Edit(
     const FACE_EDIT *edit, FACE3 *faces, uint16_t texture);
 static uint16_t *M_GetMeshTexture(const FACE_EDIT *edit);
 
+static void M_Object3DEdits(const INJECTION *injection, int32_t data_count);
+static BOUNDS_16 M_ReadBounds16(VFILE *file);
+
 static void M_MeshEdits(
     const INJECTION *const injection, const int32_t data_count)
 {
@@ -207,4 +210,39 @@ static uint16_t *M_GetMeshTexture(const FACE_EDIT *const edit)
     return nullptr;
 }
 
+static void M_Object3DEdits(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const int32_t obj_id = VFile_ReadS32(injection->fp);
+        const bool collidable = VFile_ReadU8(injection->fp) == 1;
+        const bool visible = VFile_ReadU8(injection->fp) == 1;
+        const BOUNDS_16 collision_bounds = M_ReadBounds16(injection->fp);
+        const BOUNDS_16 draw_bounds = M_ReadBounds16(injection->fp);
+
+        STATIC_OBJECT_3D *const obj = Object_Get3DStatic(obj_id);
+        if (!obj->loaded) {
+            continue;
+        }
+
+        obj->collidable = collidable;
+        obj->visible = visible;
+        obj->collision_bounds = collision_bounds;
+        obj->draw_bounds = draw_bounds;
+    }
+}
+
+static BOUNDS_16 M_ReadBounds16(VFILE *const file)
+{
+    BOUNDS_16 bounds = {};
+    bounds.min.x = VFile_ReadS16(file);
+    bounds.max.x = VFile_ReadS16(file);
+    bounds.min.y = VFile_ReadS16(file);
+    bounds.max.y = VFile_ReadS16(file);
+    bounds.min.z = VFile_ReadS16(file);
+    bounds.max.z = VFile_ReadS16(file);
+    return bounds;
+}
+
 REGISTER_INJECT_EDITOR(IDT_MESH_EDITS, M_MeshEdits)
+REGISTER_INJECT_EDITOR(IDT_OBJECT_3D_EDITS, M_Object3DEdits)
