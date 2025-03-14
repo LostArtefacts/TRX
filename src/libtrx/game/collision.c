@@ -5,6 +5,7 @@
 #include "game/lara/common.h"
 #include "game/matrix.h"
 #include "game/rooms.h"
+#include "utils.h"
 
 static bool M_IsOnWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
@@ -94,6 +95,43 @@ int32_t Collide_GetSpheres(
 
     Matrix_Pop();
     return obj->mesh_count;
+}
+
+int32_t Collide_TestCollision(ITEM *const item, const ITEM *const lara_item)
+{
+    SPHERE slist_baddie[34];
+    SPHERE slist_lara[34];
+
+    uint32_t touch_bits = 0;
+    int32_t num1 = Collide_GetSpheres(item, slist_baddie, true);
+    int32_t num2 = Collide_GetSpheres(lara_item, slist_lara, true);
+
+    for (int32_t i = 0; i < num1; i++) {
+        const SPHERE *const ptr1 = &slist_baddie[i];
+        if (ptr1->r <= 0) {
+            continue;
+        }
+
+        for (int32_t j = 0; j < num2; j++) {
+            const SPHERE *const ptr2 = &slist_lara[j];
+            if (ptr2->r <= 0) {
+                continue;
+            }
+
+            const int32_t dx = ptr2->pos.x - ptr1->pos.x;
+            const int32_t dy = ptr2->pos.y - ptr1->pos.y;
+            const int32_t dz = ptr2->pos.z - ptr1->pos.z;
+            const int32_t d1 = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+            const int32_t d2 = SQUARE(ptr1->r + ptr2->r);
+            if (d1 < d2) {
+                touch_bits |= 1 << i;
+                break;
+            }
+        }
+    }
+
+    item->touch_bits = touch_bits;
+    return touch_bits;
 }
 
 void Collide_GetCollisionInfo(
