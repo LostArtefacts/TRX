@@ -1,4 +1,3 @@
-#include "game/collide.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -10,6 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
 

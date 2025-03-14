@@ -1,6 +1,5 @@
 #include "game/spawn.h"
 
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/random.h"
@@ -10,6 +9,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 

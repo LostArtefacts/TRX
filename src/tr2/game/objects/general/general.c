@@ -1,10 +1,11 @@
 #include "game/objects/general/general.h"
 
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/room.h"
+
+#include <libtrx/game/collision.h>
 
 typedef enum {
     // clang-format off

@@ -1,13 +1,13 @@
 #include "game/objects/general/door.h"
 
 #include "game/box.h"
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/misc.h"
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 
 typedef struct {

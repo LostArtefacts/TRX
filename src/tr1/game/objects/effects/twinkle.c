@@ -1,11 +1,12 @@
 #include "game/objects/effects/twinkle.h"
 
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/random.h"
 #include "game/spawn.h"
 #include "global/const.h"
 #include "global/vars.h"
+
+#include <libtrx/game/collision.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t effect_num);

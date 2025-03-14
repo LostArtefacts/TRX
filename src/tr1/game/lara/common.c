@@ -1,7 +1,6 @@
 #include "game/lara/common.h"
 
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/gun.h"
@@ -24,6 +23,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>

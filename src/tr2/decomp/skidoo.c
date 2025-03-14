@@ -2,7 +2,6 @@
 
 #include "decomp/decomp.h"
 #include "decomp/flares.h"
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
@@ -20,6 +19,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/gun.h>
 #include <libtrx/game/lara/const.h>

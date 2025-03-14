@@ -1,6 +1,5 @@
 #include "decomp/decomp.h"
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -14,6 +13,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>

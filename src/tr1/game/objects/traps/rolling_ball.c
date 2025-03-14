@@ -1,5 +1,4 @@
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
@@ -9,6 +8,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>

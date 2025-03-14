@@ -1,10 +1,11 @@
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/lara/common.h"
 #include "game/lara/control.h"
 #include "game/room.h"
 #include "game/sound.h"
 #include "global/vars.h"
+
+#include <libtrx/game/collision.h>
 
 #define FLAME_ON_FIRE_DAMAGE 5
 #define FLAME_TOO_NEAR_DAMAGE 3
