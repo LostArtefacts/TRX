@@ -35,12 +35,6 @@ typedef enum {
 } SAMPLE_FLAG;
 
 typedef enum {
-    TARGET_NONE = 0,
-    TARGET_PRIMARY = 1,
-    TARGET_SECONDARY = 2,
-} TARGET_TYPE;
-
-typedef enum {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
     D_TRANS3 = 3,

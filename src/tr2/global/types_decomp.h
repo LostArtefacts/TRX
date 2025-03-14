@@ -200,12 +200,6 @@ typedef enum {
     GFE_REMOVE_AMMO      = 22,
 } GF_EVENTS;
 
-typedef enum {
-    TARGET_NONE      = 0,
-    TARGET_PRIMARY   = 1,
-    TARGET_SECONDARY = 2,
-} TARGET_TYPE;
-
 typedef struct {
     XYZ_32 pos;
     int32_t mesh_num;
