@@ -51,3 +51,6 @@ extern int32_t Room_FindGridShift(int32_t src, int32_t dst);
 
 bool Room_IsOnWalkable(
     const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
+
+extern void Room_GetNearbyRooms(
+    int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
