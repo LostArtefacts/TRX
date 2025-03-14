@@ -72,8 +72,8 @@ static void M_Collision(
     lara_item->rot.x = 0;
     lara_item->rot.z = 0;
     Item_SwitchToAnim(lara_item, LA_FALL_START, 0);
-    lara_item->current_anim_state = LS_FORWARD_JUMP;
-    lara_item->goal_anim_state = LS_FORWARD_JUMP;
+    lara_item->current_anim_state = LS_JUMP_FORWARD;
+    lara_item->goal_anim_state = LS_JUMP_FORWARD;
 }
 
 static void M_Control(const int16_t item_num)

@@ -201,9 +201,9 @@ void Lara_State_Stop(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.left) {
-        item->goal_anim_state = LS_TURN_L;
+        item->goal_anim_state = LS_TURN_LEFT;
     } else if (g_Input.right) {
-        item->goal_anim_state = LS_TURN_R;
+        item->goal_anim_state = LS_TURN_RIGHT;
     }
 
     if (g_Lara.water_status == LWS_WADE) {

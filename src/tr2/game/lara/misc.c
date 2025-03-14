@@ -68,8 +68,8 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
     if (coll->side_mid.floor > 200) {
         if (item->current_anim_state == LS_SLIDE) {
-            item->goal_anim_state = LS_FORWARD_JUMP;
-            item->current_anim_state = LS_FORWARD_JUMP;
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            item->current_anim_state = LS_JUMP_FORWARD;
             Item_SwitchToAnim(item, LA_FALL_START, 0);
         } else {
             item->goal_anim_state = LS_FALL_BACK;
@@ -409,8 +409,8 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
                 item->pos.z = pos.z;
             }
 
-            item->goal_anim_state = LS_FORWARD_JUMP;
-            item->current_anim_state = LS_FORWARD_JUMP;
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            item->current_anim_state = LS_JUMP_FORWARD;
             Item_SwitchToAnim(item, LA_FALL_START, 0);
             item->pos.y += STEP_L;
             item->gravity = 1;
@@ -440,8 +440,8 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
 
     if (!g_Input.action || item->hit_points <= 0
         || coll->side_front.floor > 0) {
-        item->goal_anim_state = LS_UP_JUMP;
-        item->current_anim_state = LS_UP_JUMP;
+        item->goal_anim_state = LS_JUMP_UP;
+        item->current_anim_state = LS_JUMP_UP;
         Item_SwitchToAnim(item, LA_JUMP_UP, LF_STOP_HANG);
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
         item->pos.y += bounds->max.y;
@@ -675,7 +675,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
     } else if (
         !slope && front_floor >= -STEP_L * 7 - mid
         && front_floor <= -STEP_L * 4 + mid) {
-        item->goal_anim_state = LS_UP_JUMP;
+        item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         g_Lara.calc_fall_speed =
@@ -686,7 +686,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
         && g_Lara.water_status != LWS_WADE && left_floor <= -STEP_L * 8 + mid
         && right_floor <= -STEP_L * 8
         && coll->side_mid.ceiling <= -STEP_L * 8 + mid + LARA_HEIGHT) {
-        item->goal_anim_state = LS_UP_JUMP;
+        item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         g_Lara.calc_fall_speed = -116;
@@ -813,8 +813,8 @@ int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll)
         return 0;
     }
 
-    item->goal_anim_state = LS_FORWARD_JUMP;
-    item->current_anim_state = LS_FORWARD_JUMP;
+    item->goal_anim_state = LS_JUMP_FORWARD;
+    item->current_anim_state = LS_JUMP_FORWARD;
     Item_SwitchToAnim(item, LA_FALL_START, 0);
     item->gravity = 1;
     item->speed = 2;

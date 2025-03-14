@@ -44,8 +44,8 @@ static void M_Control(const int16_t item_num)
         lara_item->gravity = 1;
 
         Item_SwitchToAnim(lara_item, LA_FALL_START, 0);
-        lara_item->current_anim_state = LS_FORWARD_JUMP;
-        lara_item->goal_anim_state = LS_FORWARD_JUMP;
+        lara_item->current_anim_state = LS_JUMP_FORWARD;
+        lara_item->goal_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = SPRINGBOARD_STATE_ON;
     }
 
