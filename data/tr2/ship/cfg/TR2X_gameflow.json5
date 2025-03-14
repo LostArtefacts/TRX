@@ -201,6 +201,7 @@
             ],
             "injections": [
                 "data/injections/living_deck_goon_sfx.bin",
+                "data/injections/seaweed_collision.bin",
             ],
         },
 
