@@ -90,13 +90,13 @@ static void M_Jumper(ITEM *item, COLL_INFO *coll)
 
     Lara_DeflectEdgeJump(item, coll);
 
-    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
         if (Lara_LandedBad(item, coll)) {
             item->goal_anim_state = LS_DEATH;
         } else {
             item->goal_anim_state = LS_STOP;
         }
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
         item->gravity = 0;
         item->fall_speed = 0;
     }
@@ -169,7 +169,7 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor > STEP_L / 2) {
+    if (coll->side_mid.floor > STEP_L / 2) {
         if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && Item_TestFrameRange(
                 item, LF_WALK_STEP_L_END, LF_WALK_STEP_R_NEAR_END)) {
@@ -179,7 +179,8 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
         }
     }
 
-    if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
         if (Item_TestAnimEqual(item, LA_WALK_FORWARD)
             && Item_TestFrameRange(
                 item, LF_WALK_STEP_L_NEAR_END, LF_WALK_STEP_R_MID)) {
@@ -193,7 +194,7 @@ void Lara_Col_Walk(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
@@ -220,8 +221,8 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
     if (Lara_DeflectEdge(item, coll)) {
         item->rot.z = 0;
 
-        if (coll->front_type == HT_WALL
-            && coll->front_floor < -(STEP_L * 5) / 2) {
+        if (coll->side_front.type == HT_WALL
+            && coll->side_front.floor < -(STEP_L * 5) / 2) {
             item->current_anim_state = LS_SPLAT;
             if (Item_TestAnimEqual(item, LA_RUN)
                 && Item_TestFrameRange(item, LF_RUN_L_START, LF_RUN_L_END)) {
@@ -241,7 +242,8 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
         if (Item_TestAnimEqual(item, LA_RUN)
             && Item_TestFrameRange(
                 item, LF_RUN_L_HEEL_GROUND, LF_RUN_R_FOOT_GROUND)) {
@@ -255,10 +257,10 @@ void Lara_Col_Run(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor >= 50) {
+    if (coll->side_mid.floor >= 50) {
         item->pos.y += 50;
     } else {
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
     }
 }
 
@@ -282,7 +284,7 @@ void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor > 100) {
+    if (coll->side_mid.floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
@@ -296,7 +298,7 @@ void Lara_Col_Stop(ITEM *item, COLL_INFO *coll)
     }
 
     Item_ShiftCol(item, coll);
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll)
@@ -309,7 +311,7 @@ void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll)
 
     Lara_DeflectEdgeJump(item, coll);
 
-    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
         if (Lara_LandedBad(item, coll)) {
             item->goal_anim_state = LS_DEATH;
         } else if (
@@ -319,7 +321,7 @@ void Lara_Col_ForwardJump(ITEM *item, COLL_INFO *coll)
         } else {
             item->goal_anim_state = LS_STOP;
         }
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
         item->gravity = 0;
         item->fall_speed = 0;
         item->speed = 0;
@@ -351,7 +353,7 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor > 200) {
+    if (coll->side_mid.floor > 200) {
         item->current_anim_state = LS_FALL_BACK;
         item->goal_anim_state = LS_FALL_BACK;
         Item_SwitchToAnim(item, LA_FALL_BACK, 0);
@@ -364,7 +366,7 @@ void Lara_Col_FastBack(ITEM *item, COLL_INFO *coll)
         Item_SwitchToAnim(item, LA_STOP, 0);
     }
 
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_TurnR(ITEM *item, COLL_INFO *coll)
@@ -379,7 +381,7 @@ void Lara_Col_TurnR(ITEM *item, COLL_INFO *coll)
     coll->slopes_are_walls = 1;
     Lara_GetCollisionInfo(item, coll);
 
-    if (coll->mid_floor > 100) {
+    if (coll->side_mid.floor > 100) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
@@ -392,7 +394,7 @@ void Lara_Col_TurnR(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_TurnL(ITEM *item, COLL_INFO *coll)
@@ -410,7 +412,7 @@ void Lara_Col_Death(ITEM *item, COLL_INFO *coll)
     Lara_GetCollisionInfo(item, coll);
 
     Item_ShiftCol(item, coll);
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
     item->hit_points = -1;
     g_Lara.air = -1;
 }
@@ -424,7 +426,7 @@ void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll)
     Lara_GetCollisionInfo(item, coll);
 
     Lara_SlideEdgeJump(item, coll);
-    if (coll->mid_floor <= 0) {
+    if (coll->side_mid.floor <= 0) {
         if (Lara_LandedBad(item, coll)) {
             item->goal_anim_state = LS_DEATH;
         } else {
@@ -433,7 +435,7 @@ void Lara_Col_FastFall(ITEM *item, COLL_INFO *coll)
             Item_SwitchToAnim(item, LA_LAND_FAR, 0);
         }
         Sound_StopEffect(SFX_LARA_FALL, nullptr);
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
         item->gravity = 0;
         item->fall_speed = 0;
     }
@@ -443,10 +445,10 @@ void Lara_Col_Hang(ITEM *item, COLL_INFO *coll)
 {
     Lara_HangTest(item, coll);
     if (item->goal_anim_state == LS_HANG && g_Input.forward) {
-        if (coll->front_floor > -850 && coll->front_floor < -650
-            && coll->front_floor - coll->front_ceiling >= 0
-            && coll->left_floor - coll->left_ceiling >= 0
-            && coll->right_floor - coll->right_ceiling >= 0
+        if (coll->side_front.floor > -850 && coll->side_front.floor < -650
+            && coll->side_front.floor - coll->side_front.ceiling >= 0
+            && coll->side_left.floor - coll->side_left.ceiling >= 0
+            && coll->side_right.floor - coll->side_right.ceiling >= 0
             && !coll->hit_static) {
             item->goal_anim_state = g_Input.slow ? LS_GYMNAST : LS_CLIMB_UP;
         }
@@ -467,13 +469,13 @@ void Lara_Col_Reach(ITEM *item, COLL_INFO *coll)
     }
     Lara_SlideEdgeJump(item, coll);
 
-    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
         if (Lara_LandedBad(item, coll)) {
             item->goal_anim_state = LS_DEATH;
         } else {
             item->goal_anim_state = LS_STOP;
         }
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
         item->gravity = 0;
         item->fall_speed = 0;
     }
@@ -505,7 +507,7 @@ void Lara_Col_Compress(ITEM *item, COLL_INFO *coll)
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
 
-    if (coll->mid_ceiling > -100) {
+    if (coll->side_mid.ceiling > -100) {
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_STOP, 0);
@@ -546,7 +548,8 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor > STEP_L / 2 && coll->mid_floor < (STEP_L * 3) / 2) {
+    if (coll->side_mid.floor > STEP_L / 2
+        && coll->side_mid.floor < (STEP_L * 3) / 2) {
         if (Item_TestAnimEqual(item, LA_WALK_BACK)
             && Item_TestFrameRange(item, LF_BACK_R_START, LF_BACK_R_END)) {
             Item_SwitchToAnim(item, LA_BACK_STEP_DOWN_RIGHT, 0);
@@ -559,7 +562,7 @@ void Lara_Col_Back(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Null(ITEM *item, COLL_INFO *coll)
@@ -604,7 +607,7 @@ void Lara_Col_StepRight(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_StepLeft(ITEM *item, COLL_INFO *coll)
@@ -639,7 +642,7 @@ void Lara_Col_StepLeft(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Slide(ITEM *item, COLL_INFO *coll)
@@ -698,7 +701,7 @@ void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll)
         }
     }
 
-    if (item->fall_speed <= 0 || coll->mid_floor > 0) {
+    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
         return;
     }
 
@@ -707,7 +710,7 @@ void Lara_Col_UpJump(ITEM *item, COLL_INFO *coll)
     } else {
         item->goal_anim_state = LS_STOP;
     }
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
     item->gravity = 0;
     item->fall_speed = 0;
 }
@@ -722,13 +725,13 @@ void Lara_Col_FallBack(ITEM *item, COLL_INFO *coll)
 
     Lara_DeflectEdgeJump(item, coll);
 
-    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
         if (Lara_LandedBad(item, coll)) {
             item->goal_anim_state = LS_DEATH;
         } else {
             item->goal_anim_state = LS_STOP;
         }
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
         item->gravity = 0;
         item->fall_speed = 0;
     }
@@ -828,7 +831,7 @@ void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor > 200) {
+    if (coll->side_mid.floor > 200) {
         item->current_anim_state = LS_JUMP_FORWARD;
         item->goal_anim_state = LS_JUMP_FORWARD;
         Item_SwitchToAnim(item, LA_FALL_DOWN, 0);
@@ -838,7 +841,7 @@ void Lara_Col_Roll(ITEM *item, COLL_INFO *coll)
     }
 
     Item_ShiftCol(item, coll);
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll)
@@ -860,7 +863,7 @@ void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor > 200) {
+    if (coll->side_mid.floor > 200) {
         item->current_anim_state = LS_FALL_BACK;
         item->goal_anim_state = LS_FALL_BACK;
         Item_SwitchToAnim(item, LA_FALL_BACK, 0);
@@ -870,7 +873,7 @@ void Lara_Col_Roll2(ITEM *item, COLL_INFO *coll)
     }
 
     Item_ShiftCol(item, coll);
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 }
 
 void Lara_Col_Special(ITEM *item, COLL_INFO *coll)
@@ -897,11 +900,11 @@ void Lara_Col_SwanDive(ITEM *item, COLL_INFO *coll)
 
     Lara_DeflectEdgeJump(item, coll);
 
-    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
         item->goal_anim_state = LS_STOP;
         item->gravity = 0;
         item->fall_speed = 0;
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
     }
 }
 
@@ -915,7 +918,7 @@ void Lara_Col_FastDive(ITEM *item, COLL_INFO *coll)
 
     Lara_DeflectEdgeJump(item, coll);
 
-    if (item->fall_speed > 0 && coll->mid_floor <= 0) {
+    if (item->fall_speed > 0 && coll->side_mid.floor <= 0) {
         if (item->fall_speed > 133) {
             item->goal_anim_state = LS_DEATH;
         } else {
@@ -923,7 +926,7 @@ void Lara_Col_FastDive(ITEM *item, COLL_INFO *coll)
         }
         item->gravity = 0;
         item->fall_speed = 0;
-        item->pos.y += coll->mid_floor;
+        item->pos.y += coll->side_mid.floor;
     }
 }
 
@@ -1019,7 +1022,8 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
 
     if (Lara_DeflectEdge(item, coll)) {
         item->rot.z = 0;
-        if (coll->front_type == HT_WALL && coll->front_floor < -STEP_L * 5 / 2
+        if (coll->side_front.type == HT_WALL
+            && coll->side_front.floor < -STEP_L * 5 / 2
             && coll->old_anim_state == LS_WADE
             && Item_TestAnimEqual(item, LA_WADE)) {
             item->current_anim_state = LS_SPLAT;
@@ -1039,7 +1043,8 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor >= -STEPUP_HEIGHT && coll->mid_floor < -STEP_L / 2) {
+    if (coll->side_mid.floor >= -STEPUP_HEIGHT
+        && coll->side_mid.floor < -STEP_L / 2) {
         if (Item_TestFrameRange(
                 item, LF_WADE_STEP_L_START, LF_WADE_STEP_L_END)) {
             Item_SwitchToAnim(item, LA_RUN_STEP_UP_LEFT, 0);
@@ -1052,7 +1057,7 @@ void Lara_Col_Wade(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    item->pos.y += MIN(coll->mid_floor, 50);
+    item->pos.y += MIN(coll->side_mid.floor, 50);
 }
 
 void Lara_Col_Responsive(ITEM *item, COLL_INFO *coll)

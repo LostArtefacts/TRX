@@ -75,7 +75,7 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
     Lara_TestSlide(item, coll);
     item->pos.y += coll->side_mid.floor;
-    if (ABS(coll->x_tilt) <= 2 && ABS(coll->z_tilt) <= 2) {
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         item->goal_anim_state = LS_STOP;
     }
 }
@@ -709,20 +709,20 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
 
 int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
 {
-    if (ABS(coll->x_tilt) <= 2 && ABS(coll->z_tilt) <= 2) {
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         return 0;
     }
 
     int16_t angle = 0;
-    if (coll->x_tilt > 2) {
+    if (coll->tilt_x > 2) {
         angle = -DEG_90;
-    } else if (coll->x_tilt < -2) {
+    } else if (coll->tilt_x < -2) {
         angle = DEG_90;
     }
 
-    if (coll->z_tilt > 2 && coll->z_tilt > ABS(coll->x_tilt)) {
+    if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
         angle = -DEG_180;
-    } else if (coll->z_tilt < -2 && -coll->z_tilt > ABS(coll->x_tilt)) {
+    } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
         angle = 0;
     }
 
