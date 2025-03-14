@@ -153,3 +153,26 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 
     return true;
 }
+
+bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
+{
+    if (lot->required_box == NO_BOX || lot->required_box == lot->target_box) {
+        goto end;
+    }
+
+    lot->target_box = lot->required_box;
+    BOX_NODE *const expand = &lot->node[lot->target_box];
+    if (expand->next_expansion == NO_BOX && lot->tail != lot->target_box) {
+        expand->next_expansion = lot->head;
+        if (lot->head == NO_BOX) {
+            lot->tail = lot->target_box;
+        }
+        lot->head = lot->target_box;
+    }
+    lot->search_num++;
+    expand->search_num = lot->search_num;
+    expand->exit_box = NO_BOX;
+
+end:
+    return Box_SearchLOT(lot, expansion);
+}
