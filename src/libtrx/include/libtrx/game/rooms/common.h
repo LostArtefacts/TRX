@@ -45,3 +45,6 @@ bool Room_IsAbyssHeight(int16_t height);
 HEIGHT_TYPE Room_GetHeightType(void);
 int16_t Room_GetHeight(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
 int16_t Room_GetCeiling(const SECTOR *sector, int32_t x, int32_t y, int32_t z);
+
+bool Room_IsOnWalkable(
+    const SECTOR *sector, int32_t x, int32_t y, int32_t z, int32_t room_height);
