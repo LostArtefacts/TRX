@@ -596,3 +596,32 @@ int16_t Room_GetCeiling(
 
     return height;
 }
+
+bool Room_IsOnWalkable(
+    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
+    const int32_t room_height)
+{
+    sector = Room_GetPitSector(sector, x, z);
+    if (sector->trigger == nullptr) {
+        return false;
+    }
+
+    int16_t height = sector->floor.height;
+    bool object_found = false;
+    const TRIGGER_CMD *cmd = sector->trigger->command;
+    for (; cmd != nullptr; cmd = cmd->next_cmd) {
+        if (cmd->type != TO_OBJECT) {
+            continue;
+        }
+
+        const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
+        const ITEM *const item = Item_Get(item_num);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->floor_height_func != nullptr) {
+            height = obj->floor_height_func(item, x, y, z, height);
+            object_found = true;
+        }
+    }
+
+    return object_found && room_height == height;
+}
