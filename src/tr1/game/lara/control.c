@@ -154,7 +154,7 @@ static void M_WaterCurrent(COLL_INFO *coll)
         }
     } else if (coll->coll_type == COLL_TOP) {
         item->rot.x -= UW_WALLDEFLECT;
-    } else if (coll->coll_type == COLL_TOPFRONT) {
+    } else if (coll->coll_type == COLL_TOP_FRONT) {
         item->fall_speed = 0;
     } else if (coll->coll_type == COLL_LEFT) {
         item->rot.y += 5 * DEG_1;

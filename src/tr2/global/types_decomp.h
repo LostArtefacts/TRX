@@ -217,16 +217,6 @@ typedef struct {
     uint16_t key[14]; // INPUT_ROLE_NUMBER_OF
 } CONTROL_LAYOUT;
 
-typedef enum {
-    COLL_NONE      = 0x00,
-    COLL_FRONT     = 0x01,
-    COLL_LEFT      = 0x02,
-    COLL_RIGHT     = 0x04,
-    COLL_TOP       = 0x08,
-    COLL_TOP_FRONT = 0x10,
-    COLL_CLAMP     = 0x20,
-} COLL_TYPE;
-
 typedef struct {
     int32_t boat_turn;
     int32_t left_fallspeed;
