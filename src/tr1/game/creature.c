@@ -55,11 +55,11 @@ void Creature_AIInfo(ITEM *item, AI_INFO *info)
 
     if (Box_GetBox(g_LaraItem->box_num)->overlap_index
         & creature->lot.block_mask) {
-        info->enemy_zone |= BLOCKED;
+        info->enemy_zone |= BOX_BLOCKED;
     } else if (
         creature->lot.node[item->box_num].search_num
-        == (creature->lot.search_num | BLOCKED_SEARCH)) {
-        info->enemy_zone |= BLOCKED;
+        == (creature->lot.search_num | BOX_BLOCKED_SEARCH)) {
+        info->enemy_zone |= BOX_BLOCKED;
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -91,7 +91,7 @@ void Creature_Mood(ITEM *item, AI_INFO *info, bool violent)
 
     LOT_INFO *lot = &creature->lot;
     if (lot->node[item->box_num].search_num
-        == (lot->search_num | BLOCKED_SEARCH)) {
+        == (lot->search_num | BOX_BLOCKED_SEARCH)) {
         lot->required_box = NO_BOX;
     }
 

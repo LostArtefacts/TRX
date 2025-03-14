@@ -1,5 +1,6 @@
 #include "game/room.h"
 
+#include "game/box.h"
 #include "game/camera.h"
 #include "game/game.h"
 #include "game/items.h"
@@ -13,7 +14,6 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
@@ -325,11 +325,11 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
     }
 
     BOX_INFO *const box = Box_GetBox(sector->box);
-    if (box->overlap_index & BLOCKABLE) {
+    if (box->overlap_index & BOX_BLOCKABLE) {
         if (height < 0) {
-            box->overlap_index |= BLOCKED;
+            box->overlap_index |= BOX_BLOCKED;
         } else {
-            box->overlap_index &= ~BLOCKED;
+            box->overlap_index &= ~BOX_BLOCKED;
         }
     }
 }

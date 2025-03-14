@@ -155,7 +155,6 @@
 
 #define NUM_SLOTS 5
 #define PITCH_SHIFT 4
-#define TARGET_DIST (WALL_L * 4) // = 4096
 
 #define IDS_DX5_REQUIRED 1
 

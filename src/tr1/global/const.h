@@ -88,35 +88,16 @@
 #define MAX_SHADE 0x300
 #define MAX_LIGHTING 0x1FFF
 #define NO_VERT_MOVE 0x2000
-#define MAX_EXPANSION 5
 #define NO_BOX (-1)
-#define BOX_NUMBER 0x7FFF
-#define BLOCKABLE 0x8000
-#define BLOCKED 0x4000
-#define OVERLAP_INDEX 0x3FFF
-#define SEARCH_NUMBER 0x7FFF
-#define BLOCKED_SEARCH 0x8000
-#define CLIP_LEFT 1
-#define CLIP_RIGHT 2
-#define CLIP_TOP 4
-#define CLIP_BOTTOM 8
-#define ALL_CLIP (CLIP_LEFT | CLIP_RIGHT | CLIP_TOP | CLIP_BOTTOM)
-#define SECONDARY_CLIP 16
-#define STALK_DIST (WALL_L * 3) // = 3072
-#define TARGET_DIST (WALL_L * 4) // = 4096
-#define ESCAPE_DIST (WALL_L * 5) // = 5120
 #define ATTACK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define ESCAPE_CHANCE 2048
 #define RECOVER_CHANCE 256
 #define PASSPORT_FOV 65
 #define PICKUPS_FOV 65
 
-#define BIFF (WALL_L >> 1)
-
 #define SLOPE_DIF 60
 #define VAULT_ANGLE (30 * DEG_1)
 #define HANG_ANGLE (35 * DEG_1)
-#define END_BIT 0x8000
 
 #define MIN_SQUARE SQUARE(WALL_L / 4) // = 65536
 

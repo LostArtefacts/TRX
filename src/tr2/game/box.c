@@ -8,11 +8,9 @@
 #include <libtrx/utils.h>
 
 #define BOX_OVERLAP_BITS 0x3FFF
-#define BOX_SEARCH_NUM 0x7FFF
+#define BOX_SEARCH_NUMBER 0x7FFF
 #define BOX_END_BIT 0x8000
-#define BOX_NUM_BITS (~BOX_END_BIT) // = 0x7FFF
-#define BOX_STALK_DIST (3 * WALL_L)
-#define BOX_ESCAPE_DIST (5 * WALL_L)
+#define BOX_NUMBER_BITS 0x7FFF // = ~BOX_END_BIT
 #define BOX_MAX_EXPANSION 5
 
 #define BOX_BIFF (WALL_L / 2) // = 0x200 = 512
@@ -44,7 +42,7 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
             int16_t box_num = Box_GetOverlap(index++);
             if ((box_num & BOX_END_BIT) != 0) {
                 done = true;
-                box_num &= BOX_NUM_BITS;
+                box_num &= BOX_NUMBER_BITS;
             }
 
             if (search_zone != zone[box_num]) {
@@ -58,20 +56,20 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
             }
 
             BOX_NODE *const expand = &lot->node[box_num];
-            if ((node->search_num & BOX_SEARCH_NUM)
-                < (expand->search_num & BOX_SEARCH_NUM)) {
+            if ((node->search_num & BOX_SEARCH_NUMBER)
+                < (expand->search_num & BOX_SEARCH_NUMBER)) {
                 continue;
             }
 
             if ((node->search_num & BOX_BLOCKED_SEARCH) != 0) {
-                if ((expand->search_num & BOX_SEARCH_NUM)
-                    == (node->search_num & BOX_SEARCH_NUM)) {
+                if ((expand->search_num & BOX_SEARCH_NUMBER)
+                    == (node->search_num & BOX_SEARCH_NUMBER)) {
                     continue;
                 }
                 expand->search_num = node->search_num;
             } else {
-                if ((expand->search_num & BOX_SEARCH_NUM)
-                        == (node->search_num & BOX_SEARCH_NUM)
+                if ((expand->search_num & BOX_SEARCH_NUMBER)
+                        == (node->search_num & BOX_SEARCH_NUMBER)
                     && (expand->search_num & BOX_BLOCKED_SEARCH) == 0) {
                     continue;
                 }
@@ -122,14 +120,14 @@ end:
 
 void Box_TargetBox(LOT_INFO *const lot, const int16_t box_num)
 {
-    const BOX_INFO *const box = Box_GetBox(box_num & BOX_NUM_BITS);
+    const BOX_INFO *const box = Box_GetBox(box_num & BOX_NUMBER_BITS);
 
     // TODO: determine if +1 on box right/bottom is essential
     lot->target.z = box->left + WALL_L / 2
         + (Random_GetControl() * (box->right + 1 - box->left - WALL_L) >> 15);
     lot->target.x = box->top + WALL_L / 2
         + (Random_GetControl() * (box->bottom + 1 - box->top - WALL_L) >> 15);
-    lot->required_box = box_num & BOX_NUM_BITS;
+    lot->required_box = box_num & BOX_NUMBER_BITS;
 
     if (lot->fly != 0) {
         lot->target.y = box->height - STEP_L * 3 / 2;
@@ -146,8 +144,8 @@ int32_t Box_StalkBox(
     const int32_t z = ((box->left + box->right + 1) >> 1) - enemy->pos.z;
     const int32_t x = ((box->top + box->bottom + 1) >> 1) - enemy->pos.x;
 
-    const int32_t x_range = box->bottom + 1 - box->top + BOX_STALK_DIST;
-    const int32_t z_range = box->right + 1 - box->left + BOX_STALK_DIST;
+    const int32_t x_range = box->bottom + 1 - box->top + CREATURE_STALK_DIST;
+    const int32_t z_range = box->right + 1 - box->left + CREATURE_STALK_DIST;
     if (x > x_range || x < -x_range || z > z_range || z < -z_range) {
         return false;
     }
@@ -174,8 +172,8 @@ int32_t Box_EscapeBox(
     const int32_t x = ((box->top + box->bottom + 1) >> 1) - enemy->pos.x;
     const int32_t z = ((box->left + box->right + 1) >> 1) - enemy->pos.z;
 
-    if (x > -BOX_ESCAPE_DIST && x < BOX_ESCAPE_DIST && z > -BOX_ESCAPE_DIST
-        && z < BOX_ESCAPE_DIST) {
+    if (x > -CREATURE_ESCAPE_DIST && x < CREATURE_ESCAPE_DIST
+        && z > -CREATURE_ESCAPE_DIST && z < CREATURE_ESCAPE_DIST) {
         return false;
     }
 

@@ -2,7 +2,7 @@
 
 #include "global/types.h"
 
-#include <stdint.h>
+#include <libtrx/game/creature.h>
 
 void Creature_Initialise(int16_t item_num);
 int32_t Creature_Activate(int16_t item_num);

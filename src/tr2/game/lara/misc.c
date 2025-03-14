@@ -1023,9 +1023,9 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
                         .y = lara_item->pos.y - item->pos.y,
                         .z = lara_item->pos.z - item->pos.z,
                     };
-                    if (d.x > -TARGET_DIST && d.x < TARGET_DIST &&
-                        d.y > -TARGET_DIST && d.y < TARGET_DIST &&
-                        d.z > -TARGET_DIST && d.z < TARGET_DIST) {
+                    if (d.x > -CREATURE_TARGET_DIST && d.x < CREATURE_TARGET_DIST &&
+                        d.y > -CREATURE_TARGET_DIST && d.y < CREATURE_TARGET_DIST &&
+                        d.z > -CREATURE_TARGET_DIST && d.z < CREATURE_TARGET_DIST) {
                         obj->collision_func(item_num, lara_item, coll);
                     }
                     // clang-format on

@@ -2,9 +2,8 @@
 
 #include "global/types.h"
 
-#define BOX_BLOCKED 0x4000
-#define BOX_BLOCKED_SEARCH 0x8000
-#define BOX_BLOCKABLE 0x8000
+#include <libtrx/game/pathing/box.h>
+#include <libtrx/game/pathing/const.h>
 
 int32_t Box_SearchLOT(LOT_INFO *lot, int32_t expansion);
 int32_t Box_UpdateLOT(LOT_INFO *lot, int32_t expansion);

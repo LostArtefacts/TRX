@@ -9,3 +9,7 @@
 #else
     #define MAX_ZONES 4
 #endif
+
+#define BOX_BLOCKED 0x4000
+#define BOX_BLOCKED_SEARCH 0x8000
+#define BOX_BLOCKABLE 0x8000

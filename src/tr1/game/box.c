@@ -7,6 +7,21 @@
 
 #include <libtrx/utils.h>
 
+#define BOX_OVERLAP_BITS 0x3FFF
+#define BOX_SEARCH_NUMBER 0x7FFF
+#define BOX_END_BIT 0x8000
+#define BOX_NUMBER_BITS 0x7FFF // = ~BOX_END_BIT
+#define BOX_MAX_EXPANSION 5
+
+#define BOX_BIFF (WALL_L / 2) // = 0x200 = 512
+#define BOX_CLIP_LEFT 1
+#define BOX_CLIP_RIGHT 2
+#define BOX_CLIP_TOP 4
+#define BOX_CLIP_BOTTOM 8
+#define BOX_CLIP_ALL                                                           \
+    (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
+#define BOX_CLIP_SECONDARY 16
+
 bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
 {
     const int16_t *const zone = Box_GetLotZone(lot);
@@ -21,12 +36,12 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
         const BOX_INFO *const head_box = Box_GetBox(lot->head);
 
         bool done = false;
-        int32_t index = head_box->overlap_index & OVERLAP_INDEX;
+        int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
         do {
             int16_t box_num = Box_GetOverlap(index++);
-            if (box_num & END_BIT) {
+            if (box_num & BOX_END_BIT) {
                 done = true;
-                box_num &= BOX_NUMBER;
+                box_num &= BOX_NUMBER_BITS;
             }
 
             if (search_zone != zone[box_num]) {
@@ -40,26 +55,26 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
             }
 
             BOX_NODE *expand = &lot->node[box_num];
-            if ((node->search_num & SEARCH_NUMBER)
-                < (expand->search_num & SEARCH_NUMBER)) {
+            if ((node->search_num & BOX_SEARCH_NUMBER)
+                < (expand->search_num & BOX_SEARCH_NUMBER)) {
                 continue;
             }
 
-            if (node->search_num & BLOCKED_SEARCH) {
-                if ((node->search_num & SEARCH_NUMBER)
-                    == (expand->search_num & SEARCH_NUMBER)) {
+            if (node->search_num & BOX_BLOCKED_SEARCH) {
+                if ((node->search_num & BOX_SEARCH_NUMBER)
+                    == (expand->search_num & BOX_SEARCH_NUMBER)) {
                     continue;
                 }
                 expand->search_num = node->search_num;
             } else {
-                if ((node->search_num & SEARCH_NUMBER)
-                        == (expand->search_num & SEARCH_NUMBER)
-                    && !(expand->search_num & BLOCKED_SEARCH)) {
+                if ((node->search_num & BOX_SEARCH_NUMBER)
+                        == (expand->search_num & BOX_SEARCH_NUMBER)
+                    && !(expand->search_num & BOX_BLOCKED_SEARCH)) {
                     continue;
                 }
 
                 if (box->overlap_index & lot->block_mask) {
-                    expand->search_num = node->search_num | BLOCKED_SEARCH;
+                    expand->search_num = node->search_num | BOX_BLOCKED_SEARCH;
                 } else {
                     expand->search_num = node->search_num;
                     expand->exit_box = lot->head;
@@ -104,7 +119,7 @@ bool Box_UpdateLOT(LOT_INFO *lot, int32_t expansion)
 
 void Box_TargetBox(LOT_INFO *lot, int16_t box_num)
 {
-    box_num &= BOX_NUMBER;
+    box_num &= BOX_NUMBER_BITS;
 
     const BOX_INFO *const box = Box_GetBox(box_num);
 
@@ -127,8 +142,8 @@ bool Box_StalkBox(ITEM *item, int16_t box_num)
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
 
-    if (x > STALK_DIST || x < -STALK_DIST || z > STALK_DIST
-        || z < -STALK_DIST) {
+    if (x > CREATURE_STALK_DIST || x < -CREATURE_STALK_DIST
+        || z > CREATURE_STALK_DIST || z < -CREATURE_STALK_DIST) {
         return false;
     }
 
@@ -156,8 +171,8 @@ bool Box_EscapeBox(ITEM *item, int16_t box_num)
     int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
     int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
 
-    if (x > -ESCAPE_DIST && x < ESCAPE_DIST && z > -ESCAPE_DIST
-        && z < ESCAPE_DIST) {
+    if (x > -CREATURE_ESCAPE_DIST && x < CREATURE_ESCAPE_DIST
+        && z > -CREATURE_ESCAPE_DIST && z < CREATURE_ESCAPE_DIST) {
         return false;
     }
 
@@ -198,7 +213,7 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
     int32_t top = 0;
     int32_t bottom = 0;
 
-    Box_UpdateLOT(lot, MAX_EXPANSION);
+    Box_UpdateLOT(lot, BOX_MAX_EXPANSION);
 
     target->x = item->pos.x;
     target->y = item->pos.y;
@@ -210,7 +225,7 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
     }
 
     const BOX_INFO *box;
-    int32_t prime_free = ALL_CLIP;
+    int32_t prime_free = BOX_CLIP_ALL;
     do {
         box = Box_GetBox(box_num);
 
@@ -232,13 +247,13 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
             bottom = box->bottom;
         } else {
             if (item->pos.z < box->left) {
-                if ((prime_free & CLIP_LEFT) && item->pos.x >= box->top
+                if ((prime_free & BOX_CLIP_LEFT) && item->pos.x >= box->top
                     && item->pos.x <= box->bottom) {
-                    if (target->z < box->left + BIFF) {
-                        target->z = box->left + BIFF;
+                    if (target->z < box->left + BOX_BIFF) {
+                        target->z = box->left + BOX_BIFF;
                     }
 
-                    if (prime_free & SECONDARY_CLIP) {
+                    if (prime_free & BOX_CLIP_SECONDARY) {
                         return TARGET_SECONDARY;
                     }
 
@@ -249,23 +264,23 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
                         bottom = box->bottom;
                     }
 
-                    prime_free = CLIP_LEFT;
-                } else if (prime_free != CLIP_LEFT) {
-                    target->z = right - BIFF;
-                    if (prime_free != ALL_CLIP) {
+                    prime_free = BOX_CLIP_LEFT;
+                } else if (prime_free != BOX_CLIP_LEFT) {
+                    target->z = right - BOX_BIFF;
+                    if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
                     }
 
-                    prime_free |= SECONDARY_CLIP;
+                    prime_free |= BOX_CLIP_SECONDARY;
                 }
             } else if (item->pos.z > box->right) {
-                if ((prime_free & CLIP_RIGHT) && item->pos.x >= box->top
+                if ((prime_free & BOX_CLIP_RIGHT) && item->pos.x >= box->top
                     && item->pos.x <= box->bottom) {
-                    if (target->z > box->right - BIFF) {
-                        target->z = box->right - BIFF;
+                    if (target->z > box->right - BOX_BIFF) {
+                        target->z = box->right - BOX_BIFF;
                     }
 
-                    if (prime_free & SECONDARY_CLIP) {
+                    if (prime_free & BOX_CLIP_SECONDARY) {
                         return TARGET_SECONDARY;
                     }
 
@@ -276,25 +291,25 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
                         bottom = box->bottom;
                     }
 
-                    prime_free = CLIP_RIGHT;
-                } else if (prime_free != CLIP_RIGHT) {
-                    target->z = left + BIFF;
-                    if (prime_free != ALL_CLIP) {
+                    prime_free = BOX_CLIP_RIGHT;
+                } else if (prime_free != BOX_CLIP_RIGHT) {
+                    target->z = left + BOX_BIFF;
+                    if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
                     }
 
-                    prime_free |= SECONDARY_CLIP;
+                    prime_free |= BOX_CLIP_SECONDARY;
                 }
             }
 
             if (item->pos.x < box->top) {
-                if ((prime_free & CLIP_TOP) && item->pos.z >= box->left
+                if ((prime_free & BOX_CLIP_TOP) && item->pos.z >= box->left
                     && item->pos.z <= box->right) {
-                    if (target->x < box->top + BIFF) {
-                        target->x = box->top + BIFF;
+                    if (target->x < box->top + BOX_BIFF) {
+                        target->x = box->top + BOX_BIFF;
                     }
 
-                    if (prime_free & SECONDARY_CLIP) {
+                    if (prime_free & BOX_CLIP_SECONDARY) {
                         return TARGET_SECONDARY;
                     }
 
@@ -305,23 +320,23 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
                         right = box->right;
                     }
 
-                    prime_free = CLIP_TOP;
-                } else if (prime_free != CLIP_TOP) {
-                    target->x = bottom - BIFF;
-                    if (prime_free != ALL_CLIP) {
+                    prime_free = BOX_CLIP_TOP;
+                } else if (prime_free != BOX_CLIP_TOP) {
+                    target->x = bottom - BOX_BIFF;
+                    if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
                     }
 
-                    prime_free |= SECONDARY_CLIP;
+                    prime_free |= BOX_CLIP_SECONDARY;
                 }
             } else if (item->pos.x > box->bottom) {
-                if ((prime_free & CLIP_BOTTOM) && item->pos.z >= box->left
+                if ((prime_free & BOX_CLIP_BOTTOM) && item->pos.z >= box->left
                     && item->pos.z <= box->right) {
-                    if (target->x > box->bottom - BIFF) {
-                        target->x = box->bottom - BIFF;
+                    if (target->x > box->bottom - BOX_BIFF) {
+                        target->x = box->bottom - BOX_BIFF;
                     }
 
-                    if (prime_free & SECONDARY_CLIP) {
+                    if (prime_free & BOX_CLIP_SECONDARY) {
                         return TARGET_SECONDARY;
                     }
 
@@ -332,36 +347,36 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
                         right = box->right;
                     }
 
-                    prime_free = CLIP_BOTTOM;
-                } else if (prime_free != CLIP_BOTTOM) {
-                    target->x = top + BIFF;
-                    if (prime_free != ALL_CLIP) {
+                    prime_free = BOX_CLIP_BOTTOM;
+                } else if (prime_free != BOX_CLIP_BOTTOM) {
+                    target->x = top + BOX_BIFF;
+                    if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
                     }
 
-                    prime_free |= SECONDARY_CLIP;
+                    prime_free |= BOX_CLIP_SECONDARY;
                 }
             }
         }
 
         if (box_num == lot->target_box) {
-            if (prime_free & (CLIP_LEFT | CLIP_RIGHT)) {
+            if (prime_free & (BOX_CLIP_LEFT | BOX_CLIP_RIGHT)) {
                 target->z = lot->target.z;
-            } else if (!(prime_free & SECONDARY_CLIP)) {
-                if (target->z < box->left + BIFF) {
-                    target->z = box->left + BIFF;
-                } else if (target->z > box->right - BIFF) {
-                    target->z = box->right - BIFF;
+            } else if (!(prime_free & BOX_CLIP_SECONDARY)) {
+                if (target->z < box->left + BOX_BIFF) {
+                    target->z = box->left + BOX_BIFF;
+                } else if (target->z > box->right - BOX_BIFF) {
+                    target->z = box->right - BOX_BIFF;
                 }
             }
 
-            if (prime_free & (CLIP_TOP | CLIP_BOTTOM)) {
+            if (prime_free & (BOX_CLIP_TOP | BOX_CLIP_BOTTOM)) {
                 target->x = lot->target.x;
-            } else if (!(prime_free & SECONDARY_CLIP)) {
-                if (target->x < box->top + BIFF) {
-                    target->x = box->top + BIFF;
-                } else if (target->x > box->bottom - BIFF) {
-                    target->x = box->bottom - BIFF;
+            } else if (!(prime_free & BOX_CLIP_SECONDARY)) {
+                if (target->x < box->top + BOX_BIFF) {
+                    target->x = box->top + BOX_BIFF;
+                } else if (target->x > box->bottom - BOX_BIFF) {
+                    target->x = box->bottom - BOX_BIFF;
                 }
             }
 
@@ -376,25 +391,25 @@ TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
         }
     } while (box_num != NO_BOX);
 
-    if (prime_free & (CLIP_LEFT | CLIP_RIGHT)) {
+    if (prime_free & (BOX_CLIP_LEFT | BOX_CLIP_RIGHT)) {
         target->z = box->left + WALL_L / 2
             + (Random_GetControl() * (box->right - box->left - WALL_L) >> 15);
-    } else if (!(prime_free & SECONDARY_CLIP)) {
-        if (target->z < box->left + BIFF) {
-            target->z = box->left + BIFF;
-        } else if (target->z > box->right - BIFF) {
-            target->z = box->right - BIFF;
+    } else if (!(prime_free & BOX_CLIP_SECONDARY)) {
+        if (target->z < box->left + BOX_BIFF) {
+            target->z = box->left + BOX_BIFF;
+        } else if (target->z > box->right - BOX_BIFF) {
+            target->z = box->right - BOX_BIFF;
         }
     }
 
-    if (prime_free & (CLIP_TOP | CLIP_BOTTOM)) {
+    if (prime_free & (BOX_CLIP_TOP | BOX_CLIP_BOTTOM)) {
         target->x = box->top + WALL_L / 2
             + (Random_GetControl() * (box->bottom - box->top - WALL_L) >> 15);
-    } else if (!(prime_free & SECONDARY_CLIP)) {
-        if (target->x < box->top + BIFF) {
-            target->x = box->top + BIFF;
-        } else if (target->x > box->bottom - BIFF) {
-            target->x = box->bottom - BIFF;
+    } else if (!(prime_free & BOX_CLIP_SECONDARY)) {
+        if (target->x < box->top + BOX_BIFF) {
+            target->x = box->top + BOX_BIFF;
+        } else if (target->x > box->bottom - BOX_BIFF) {
+            target->x = box->bottom - BOX_BIFF;
         }
     }
 
