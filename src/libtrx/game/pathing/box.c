@@ -1,7 +1,9 @@
+#include "game/creature.h"
 #include "game/game_buf.h"
 #include "game/pathing.h"
 #include "game/random.h"
 #include "game/rooms.h"
+#include "utils.h"
 
 #define BOX_OVERLAP_BITS 0x3FFF
 #define BOX_SEARCH_NUMBER 0x7FFF
@@ -197,4 +199,37 @@ void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
     } else {
         lot->target.y = box->height;
     }
+}
+
+bool Box_StalkBox(
+    const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
+{
+    const BOX_INFO *const box = Box_GetBox(box_num);
+
+    // TODO: determine if the shift is essential
+    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    const int32_t z = ((box->left + box->right + shift) >> 1) - enemy->pos.z;
+    const int32_t x = ((box->top + box->bottom + shift) >> 1) - enemy->pos.x;
+    const int32_t x_range = TR_VERSION >= 2
+        ? box->bottom + shift - box->top + CREATURE_STALK_DIST
+        : CREATURE_STALK_DIST;
+    const int32_t z_range = TR_VERSION >= 2
+        ? box->right + shift - box->left + CREATURE_STALK_DIST
+        : CREATURE_STALK_DIST;
+    if (x > x_range || x < -x_range || z > z_range || z < -z_range) {
+        return false;
+    }
+
+    const int32_t enemy_quad = (enemy->rot.y >> 14) + 2;
+    const int32_t box_quad = (z > 0) ? ((x > 0) ? DIR_SOUTH : DIR_EAST)
+                                     : ((x > 0) ? DIR_WEST : DIR_NORTH);
+    if (enemy_quad == box_quad) {
+        return false;
+    }
+
+    const int32_t baddie_quad = item->pos.z > enemy->pos.z
+        ? (item->pos.x > enemy->pos.x ? DIR_SOUTH : DIR_EAST)
+        : (item->pos.x > enemy->pos.x ? DIR_WEST : DIR_NORTH);
+
+    return enemy_quad != baddie_quad || ABS(enemy_quad - box_quad) != 2;
 }

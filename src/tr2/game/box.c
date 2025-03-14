@@ -18,34 +18,6 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-bool Box_StalkBox(
-    const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
-{
-    const BOX_INFO *const box = Box_GetBox(box_num);
-    // TODO: determine if +1 on box right/bottom is essential
-    const int32_t z = ((box->left + box->right + 1) >> 1) - enemy->pos.z;
-    const int32_t x = ((box->top + box->bottom + 1) >> 1) - enemy->pos.x;
-
-    const int32_t x_range = box->bottom + 1 - box->top + CREATURE_STALK_DIST;
-    const int32_t z_range = box->right + 1 - box->left + CREATURE_STALK_DIST;
-    if (x > x_range || x < -x_range || z > z_range || z < -z_range) {
-        return false;
-    }
-
-    const int32_t enemy_quad = (enemy->rot.y >> 14) + 2;
-    const int32_t box_quad = (z > 0) ? ((x > 0) ? DIR_SOUTH : DIR_EAST)
-                                     : ((x > 0) ? DIR_WEST : DIR_NORTH);
-    if (enemy_quad == box_quad) {
-        return false;
-    }
-
-    const int32_t baddie_quad = item->pos.z > enemy->pos.z
-        ? (item->pos.x > enemy->pos.x ? DIR_SOUTH : DIR_EAST)
-        : (item->pos.x > enemy->pos.x ? DIR_WEST : DIR_NORTH);
-
-    return enemy_quad != baddie_quad || ABS(enemy_quad - box_quad) != 2;
-}
-
 bool Box_EscapeBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {

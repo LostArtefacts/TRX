@@ -18,35 +18,6 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-bool Box_StalkBox(ITEM *item, int16_t box_num)
-{
-    const BOX_INFO *const box = Box_GetBox(box_num);
-    int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
-    int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
-
-    if (x > CREATURE_STALK_DIST || x < -CREATURE_STALK_DIST
-        || z > CREATURE_STALK_DIST || z < -CREATURE_STALK_DIST) {
-        return false;
-    }
-
-    int enemy_quad = (g_LaraItem->rot.y >> 14) + 2;
-    int box_quad = (z > 0) ? ((x > 0) ? 2 : 1) : ((x > 0) ? 3 : 0);
-
-    if (enemy_quad == box_quad) {
-        return false;
-    }
-
-    int baddie_quad = (item->pos.z > g_LaraItem->pos.z)
-        ? ((item->pos.x > g_LaraItem->pos.x) ? 2 : 1)
-        : ((item->pos.x > g_LaraItem->pos.x) ? 3 : 0);
-
-    if (enemy_quad == baddie_quad && ABS(enemy_quad - box_quad) == 2) {
-        return false;
-    }
-
-    return true;
-}
-
 bool Box_EscapeBox(ITEM *item, int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num);
