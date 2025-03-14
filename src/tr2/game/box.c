@@ -22,7 +22,7 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
+bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 {
     const int16_t *const zone = Box_GetLotZone(lot);
     const int16_t search_zone = zone[lot->head];
@@ -95,7 +95,7 @@ int32_t Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
     return true;
 }
 
-int32_t Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
+bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
 {
     if (lot->required_box == NO_BOX || lot->required_box == lot->target_box) {
         goto end;
@@ -136,7 +136,7 @@ void Box_TargetBox(LOT_INFO *const lot, const int16_t box_num)
     }
 }
 
-int32_t Box_StalkBox(
+bool Box_StalkBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num);
@@ -164,7 +164,7 @@ int32_t Box_StalkBox(
     return enemy_quad != baddie_quad || ABS(enemy_quad - box_quad) != 2;
 }
 
-int32_t Box_EscapeBox(
+bool Box_EscapeBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num);
@@ -181,7 +181,7 @@ int32_t Box_EscapeBox(
         || ((x > 0) == (item->pos.x > enemy->pos.x));
 }
 
-int32_t Box_ValidBox(
+bool Box_ValidBox(
     const ITEM *const item, const int16_t zone_num, const int16_t box_num)
 {
     const CREATURE *const creature = item->data;
@@ -366,7 +366,7 @@ TARGET_TYPE Box_CalculateTarget(
     return TARGET_NONE;
 }
 
-int32_t Box_BadFloor(
+bool Box_BadFloor(
     const int32_t x, const int32_t y, const int32_t z, const int32_t box_height,
     const int32_t next_height, int16_t room_num, const LOT_INFO *const lot)
 {
