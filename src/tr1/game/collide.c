@@ -23,9 +23,9 @@ void Collide_GetCollisionInfo(
     coll->quadrant = Math_GetDirection(coll->facing);
 
     int32_t x = x_pos;
-    int32_t y = y_pos - obj_height;
     int32_t z = z_pos;
-    int32_t y_top = y - 160;
+    const int32_t y = y_pos - obj_height;
+    const int32_t y_top = y - 160;
 
     const SECTOR *sector = Room_GetSector(x, y_top, z, &room_num);
     int32_t height = Room_GetHeight(sector, x, y_top, z);
@@ -42,14 +42,19 @@ void Collide_GetCollisionInfo(
     coll->side_mid.ceiling = ceiling;
     coll->side_mid.type = Room_GetHeightType();
 
-    if (!g_Config.gameplay.fix_bridge_collision
-        || !Room_IsOnWalkable(sector, x, y_top, z, room_height)) {
+#if TR_VERSION == 1
+    bool is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    bool is_on_walkable = false;
+#endif
+    if (is_on_walkable) {
+        coll->tilt_z = 0;
+        coll->tilt_x = 0;
+    } else {
         const int16_t tilt = Room_GetTiltType(sector, x, g_LaraItem->pos.y, z);
         coll->tilt_z = tilt >> 8;
         coll->tilt_x = (int8_t)tilt;
-    } else {
-        coll->tilt_z = 0;
-        coll->tilt_x = 0;
     }
 
     int32_t x_left;
@@ -60,7 +65,7 @@ void Collide_GetCollisionInfo(
     int32_t z_front;
     switch (coll->quadrant) {
     case DIR_NORTH:
-        x_front = (Math_Sin(coll->facing) * coll->radius) >> W2V_SHIFT;
+        x_front = (coll->radius * Math_Sin(coll->facing)) >> W2V_SHIFT;
         z_front = coll->radius;
         x_left = -coll->radius;
         z_left = coll->radius;
@@ -70,7 +75,7 @@ void Collide_GetCollisionInfo(
 
     case DIR_EAST:
         x_front = coll->radius;
-        z_front = (Math_Cos(coll->facing) * coll->radius) >> W2V_SHIFT;
+        z_front = (coll->radius * Math_Cos(coll->facing)) >> W2V_SHIFT;
         x_left = coll->radius;
         z_left = coll->radius;
         x_right = coll->radius;
@@ -78,7 +83,7 @@ void Collide_GetCollisionInfo(
         break;
 
     case DIR_SOUTH:
-        x_front = (Math_Sin(coll->facing) * coll->radius) >> W2V_SHIFT;
+        x_front = (coll->radius * Math_Sin(coll->facing)) >> W2V_SHIFT;
         z_front = -coll->radius;
         x_left = coll->radius;
         z_left = -coll->radius;
@@ -88,7 +93,7 @@ void Collide_GetCollisionInfo(
 
     case DIR_WEST:
         x_front = -coll->radius;
-        z_front = (Math_Cos(coll->facing) * coll->radius) >> W2V_SHIFT;
+        z_front = (coll->radius * Math_Cos(coll->facing)) >> W2V_SHIFT;
         x_left = -coll->radius;
         z_left = -coll->radius;
         x_right = -coll->radius;
@@ -114,7 +119,6 @@ void Collide_GetCollisionInfo(
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
-
     ceiling = Room_GetCeiling(sector, x, y_top, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
@@ -124,8 +128,13 @@ void Collide_GetCollisionInfo(
     coll->side_front.ceiling = ceiling;
     coll->side_front.type = Room_GetHeightType();
 
-    if (!g_Config.gameplay.fix_bridge_collision
-        || !Room_IsOnWalkable(sector, x, y_top, z, room_height)) {
+#if TR_VERSION == 1
+    is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    is_on_walkable = false;
+#endif
+    if (!is_on_walkable) {
         if (coll->slopes_are_walls && coll->side_front.type == HT_BIG_SLOPE
             && coll->side_front.floor < 0) {
             coll->side_front.floor = -32767;
@@ -149,7 +158,6 @@ void Collide_GetCollisionInfo(
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
-
     ceiling = Room_GetCeiling(sector, x, y_top, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
@@ -159,8 +167,13 @@ void Collide_GetCollisionInfo(
     coll->side_left.ceiling = ceiling;
     coll->side_left.type = Room_GetHeightType();
 
-    if (!g_Config.gameplay.fix_bridge_collision
-        || !Room_IsOnWalkable(sector, x, y_top, z, room_height)) {
+#if TR_VERSION == 1
+    is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    is_on_walkable = false;
+#endif
+    if (!is_on_walkable) {
         if (coll->slopes_are_walls && coll->side_left.type == HT_BIG_SLOPE
             && coll->side_left.floor < 0) {
             coll->side_left.floor = -32767;
@@ -184,7 +197,6 @@ void Collide_GetCollisionInfo(
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
-
     ceiling = Room_GetCeiling(sector, x, y_top, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
@@ -194,8 +206,13 @@ void Collide_GetCollisionInfo(
     coll->side_right.ceiling = ceiling;
     coll->side_right.type = Room_GetHeightType();
 
-    if (!g_Config.gameplay.fix_bridge_collision
-        || !Room_IsOnWalkable(sector, x, y_top, z, room_height)) {
+#if TR_VERSION == 1
+    is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    is_on_walkable = false;
+#endif
+    if (!is_on_walkable) {
         if (coll->slopes_are_walls && coll->side_right.type == HT_BIG_SLOPE
             && coll->side_right.floor < 0) {
             coll->side_right.floor = -32767;
@@ -212,13 +229,15 @@ void Collide_GetCollisionInfo(
 
     if (Collide_CollideStaticObjects(
             coll, x_pos, y_pos, z_pos, room_num, obj_height)) {
-        sector = Room_GetSector(
-            x_pos + coll->shift.x, y_pos, z_pos + coll->shift.z, &room_num);
-        if (Room_GetHeight(
-                sector, x_pos + coll->shift.x, y_pos, z_pos + coll->shift.z)
-                < y_pos - 512
-            || Room_GetCeiling(
-                   sector, x_pos + coll->shift.x, y_pos, z_pos + coll->shift.z)
+        const XYZ_32 test_pos = {
+            .x = x_pos + coll->shift.x,
+            .y = y_pos,
+            .z = z_pos + coll->shift.z,
+        };
+        sector = Room_GetSector(test_pos.x, test_pos.y, test_pos.z, &room_num);
+        if (Room_GetHeight(sector, test_pos.x, test_pos.y, test_pos.z)
+                < test_pos.y - WALL_L / 2
+            || Room_GetCeiling(sector, test_pos.x, test_pos.y, test_pos.z)
                 > y) {
             coll->shift.x = -coll->shift.x;
             coll->shift.z = -coll->shift.z;
@@ -274,7 +293,7 @@ void Collide_GetCollisionInfo(
         coll->shift.x = coll->old.x - x_pos;
         coll->shift.y = coll->old.y - y_pos;
         coll->shift.z = coll->old.z - z_pos;
-        coll->coll_type = COLL_TOPFRONT;
+        coll->coll_type = COLL_TOP_FRONT;
         return;
     }
 

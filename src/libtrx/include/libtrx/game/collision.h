@@ -8,6 +8,18 @@ typedef struct {
     int32_t type;
 } COLL_SIDE;
 
+typedef enum {
+    // clang-format off
+    COLL_NONE      = 0x00,
+    COLL_FRONT     = 0x01,
+    COLL_LEFT      = 0x02,
+    COLL_RIGHT     = 0x04,
+    COLL_TOP       = 0x08,
+    COLL_TOP_FRONT = 0x10,
+    COLL_CLAMP     = 0x20,
+    // clang-format on
+} COLL_TYPE;
+
 typedef struct {
     COLL_SIDE side_mid;
     COLL_SIDE side_front;

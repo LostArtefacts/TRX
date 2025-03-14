@@ -186,7 +186,7 @@ bool Lara_HitCeiling(ITEM *item, COLL_INFO *coll)
 }
 bool Lara_DeflectEdge(ITEM *item, COLL_INFO *coll)
 {
-    if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOPFRONT) {
+    if (coll->coll_type == COLL_FRONT || coll->coll_type == COLL_TOP_FRONT) {
         Item_ShiftCol(item, coll);
         item->goal_anim_state = LS_STOP;
         item->current_anim_state = LS_STOP;
@@ -218,7 +218,7 @@ void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
         break;
 
     case COLL_FRONT:
-    case COLL_TOPFRONT:
+    case COLL_TOP_FRONT:
         item->goal_anim_state = LS_FAST_FALL;
         item->current_anim_state = LS_FAST_FALL;
         Item_SwitchToAnim(item, LA_FAST_FALL, LF_FASTFALL);
@@ -260,7 +260,7 @@ void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
         break;
 
     case COLL_TOP:
-    case COLL_TOPFRONT:
+    case COLL_TOP_FRONT:
         if (item->fall_speed <= 0) {
             item->fall_speed = 1;
         }
@@ -855,7 +855,7 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
         }
         break;
 
-    case COLL_TOPFRONT:
+    case COLL_TOP_FRONT:
         item->fall_speed = 0;
         break;
 

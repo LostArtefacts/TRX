@@ -25,6 +25,7 @@ void Collide_GetCollisionInfo(
 
     const SECTOR *sector = Room_GetSector(x, y_top, z, &room_num);
     int32_t height = Room_GetHeight(sector, x, y_top, z);
+    int32_t room_height = height;
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
@@ -37,9 +38,20 @@ void Collide_GetCollisionInfo(
     coll->side_mid.ceiling = ceiling;
     coll->side_mid.type = Room_GetHeightType();
 
-    const int16_t tilt = Room_GetTiltType(sector, x, g_LaraItem->pos.y, z);
-    coll->tilt_z = tilt >> 8;
-    coll->tilt_x = (int8_t)tilt;
+#if TR_VERSION == 1
+    bool is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    bool is_on_walkable = false;
+#endif
+    if (is_on_walkable) {
+        coll->tilt_z = 0;
+        coll->tilt_x = 0;
+    } else {
+        const int16_t tilt = Room_GetTiltType(sector, x, g_LaraItem->pos.y, z);
+        coll->tilt_z = tilt >> 8;
+        coll->tilt_x = (int8_t)tilt;
+    }
 
     int32_t x_left;
     int32_t z_left;
@@ -94,10 +106,12 @@ void Collide_GetCollisionInfo(
         break;
     }
 
+    // Front.
     x = x_pos + x_front;
     z = z_pos + z_front;
     sector = Room_GetSector(x, y_top, z, &room_num);
     height = Room_GetHeight(sector, x, y_top, z);
+    room_height = height;
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
@@ -109,23 +123,34 @@ void Collide_GetCollisionInfo(
     coll->side_front.floor = height;
     coll->side_front.ceiling = ceiling;
     coll->side_front.type = Room_GetHeightType();
-    if (coll->slopes_are_walls && coll->side_front.type == HT_BIG_SLOPE
-        && coll->side_front.floor < 0) {
-        coll->side_front.floor = -32767;
-    } else if (
-        coll->slopes_are_pits && coll->side_front.type == HT_BIG_SLOPE
-        && coll->side_front.floor > 0) {
-        coll->side_front.floor = 512;
-    } else if (
-        coll->lava_is_pit && coll->side_front.floor > 0
-        && Room_GetPitSector(sector, x, z)->is_death_sector) {
-        coll->side_front.floor = 512;
+
+#if TR_VERSION == 1
+    is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    is_on_walkable = false;
+#endif
+    if (!is_on_walkable) {
+        if (coll->slopes_are_walls && coll->side_front.type == HT_BIG_SLOPE
+            && coll->side_front.floor < 0) {
+            coll->side_front.floor = -32767;
+        } else if (
+            coll->slopes_are_pits && coll->side_front.type == HT_BIG_SLOPE
+            && coll->side_front.floor > 0) {
+            coll->side_front.floor = 512;
+        } else if (
+            coll->lava_is_pit && coll->side_front.floor > 0
+            && Room_GetPitSector(sector, x, z)->is_death_sector) {
+            coll->side_front.floor = 512;
+        }
     }
 
+    // Left.
     x = x_pos + x_left;
     z = z_pos + z_left;
     sector = Room_GetSector(x, y_top, z, &room_num);
     height = Room_GetHeight(sector, x, y_top, z);
+    room_height = height;
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
@@ -137,23 +162,34 @@ void Collide_GetCollisionInfo(
     coll->side_left.floor = height;
     coll->side_left.ceiling = ceiling;
     coll->side_left.type = Room_GetHeightType();
-    if (coll->slopes_are_walls && coll->side_left.type == HT_BIG_SLOPE
-        && coll->side_left.floor < 0) {
-        coll->side_left.floor = -32767;
-    } else if (
-        coll->slopes_are_pits && coll->side_left.type == HT_BIG_SLOPE
-        && coll->side_left.floor > 0) {
-        coll->side_left.floor = 512;
-    } else if (
-        coll->lava_is_pit && coll->side_left.floor > 0
-        && Room_GetPitSector(sector, x, z)->is_death_sector) {
-        coll->side_left.floor = 512;
+
+#if TR_VERSION == 1
+    is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    is_on_walkable = false;
+#endif
+    if (!is_on_walkable) {
+        if (coll->slopes_are_walls && coll->side_left.type == HT_BIG_SLOPE
+            && coll->side_left.floor < 0) {
+            coll->side_left.floor = -32767;
+        } else if (
+            coll->slopes_are_pits && coll->side_left.type == HT_BIG_SLOPE
+            && coll->side_left.floor > 0) {
+            coll->side_left.floor = 512;
+        } else if (
+            coll->lava_is_pit && coll->side_left.floor > 0
+            && Room_GetPitSector(sector, x, z)->is_death_sector) {
+            coll->side_left.floor = 512;
+        }
     }
 
+    // Right.
     x = x_pos + x_right;
     z = z_pos + z_right;
     sector = Room_GetSector(x, y_top, z, &room_num);
     height = Room_GetHeight(sector, x, y_top, z);
+    room_height = height;
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
@@ -165,17 +201,26 @@ void Collide_GetCollisionInfo(
     coll->side_right.floor = height;
     coll->side_right.ceiling = ceiling;
     coll->side_right.type = Room_GetHeightType();
-    if (coll->slopes_are_walls && coll->side_right.type == HT_BIG_SLOPE
-        && coll->side_right.floor < 0) {
-        coll->side_right.floor = -32767;
-    } else if (
-        coll->slopes_are_pits && coll->side_right.type == HT_BIG_SLOPE
-        && coll->side_right.floor > 0) {
-        coll->side_right.floor = 512;
-    } else if (
-        coll->lava_is_pit && coll->side_right.floor > 0
-        && Room_GetPitSector(sector, x, z)->is_death_sector) {
-        coll->side_right.floor = 512;
+
+#if TR_VERSION == 1
+    is_on_walkable = g_Config.gameplay.fix_bridge_collision
+        && Room_IsOnWalkable(sector, x, y_top, z, room_height);
+#elif TR_VERSION >= 2
+    is_on_walkable = false;
+#endif
+    if (!is_on_walkable) {
+        if (coll->slopes_are_walls && coll->side_right.type == HT_BIG_SLOPE
+            && coll->side_right.floor < 0) {
+            coll->side_right.floor = -32767;
+        } else if (
+            coll->slopes_are_pits && coll->side_right.type == HT_BIG_SLOPE
+            && coll->side_right.floor > 0) {
+            coll->side_right.floor = 512;
+        } else if (
+            coll->lava_is_pit && coll->side_right.floor > 0
+            && Room_GetPitSector(sector, x, z)->is_death_sector) {
+            coll->side_right.floor = 512;
+        }
     }
 
     if (Collide_CollideStaticObjects(
