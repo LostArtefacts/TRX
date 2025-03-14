@@ -2,6 +2,8 @@
 
 #include "global/types.h"
 
+#include <libtrx/game/items.h>
+
 void Item_Control(void);
 void Item_ClearKilled(void);
 void Item_ShiftCol(ITEM *item, COLL_INFO *coll);
@@ -15,7 +17,6 @@ void Item_AlignPosition(
 int32_t Item_IsTriggerActive(ITEM *item);
 int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate);
 BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *item);
-ANIM_FRAME *Item_GetBestFrame(const ITEM *item);
 bool Item_IsNearItem(const ITEM *item, const XYZ_32 *pos, int32_t distance);
 
 bool Item_IsSmashable(const ITEM *item);
