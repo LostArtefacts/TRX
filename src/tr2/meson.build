@@ -93,7 +93,6 @@ sources = [
   'decomp/skidoo.c',
   'game/camera.c',
   'game/clock.c',
-  'game/collide.c',
   'game/console/cmd/easy_config.c',
   'game/console/common.c',
   'game/creature.c',

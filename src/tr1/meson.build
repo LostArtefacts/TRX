@@ -103,7 +103,6 @@ sources = [
   'game/camera/common.c',
   'game/carrier.c',
   'game/clock.c',
-  'game/collide.c',
   'game/console/cmd/debug.c',
   'game/console/cmd/easy_config.c',
   'game/console/common.c',
