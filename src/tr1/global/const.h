@@ -7,7 +7,6 @@
 
 #define MAX_REQLINES 18
 #define NUM_SLOTS 32
-#define MAX_FRAMES 10
 #define MAX_SECRETS 16
 #define LARA_MAX_HITPOINTS 1000
 #define LARA_MAX_AIR 1800
@@ -42,7 +41,6 @@
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
-#define NO_ITEM (-1)
 #define NO_CAMERA (-1)
 #define PELLET_SCATTER (20 * DEG_1)
 #define NUM_SG_SHELLS 2
@@ -128,7 +126,6 @@
 #define SELECTING_FRAMES (32 / 2)
 #define OPTION_RING_OBJECTS 4
 #define TITLE_RING_OBJECTS 5
-#define RING_RADIUS 688
 #define CAMERA_2_RING 598
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096

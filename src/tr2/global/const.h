@@ -21,7 +21,6 @@
 #define NO_ITEM (-1)
 #define NO_CAMERA (-1)
 
-#define MAX_FRAMES 10
 #define SUNSET_TIMEOUT (40 * 60 * (FRAMES_PER_SECOND)) // = 72000
 
 #define MAX_AUDIO_SAMPLE_BUFFERS 256
