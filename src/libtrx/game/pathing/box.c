@@ -436,3 +436,30 @@ TARGET_TYPE Box_CalculateTarget(
 
     return TARGET_NONE;
 }
+
+bool Box_BadFloor(
+    const int32_t x, const int32_t y, const int32_t z, const int32_t box_height,
+    const int32_t next_height, int16_t room_num, const LOT_INFO *const lot)
+{
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    if (sector->box == NO_BOX) {
+        return true;
+    }
+
+    const BOX_INFO *const box = Box_GetBox(sector->box);
+    if ((box->overlap_index & lot->block_mask) != 0) {
+        return true;
+    }
+
+    const int32_t height = box->height;
+    if (box_height - height > lot->step || box_height - height < lot->drop) {
+        return true;
+    }
+    if (box_height - height < -lot->step && height > next_height) {
+        return true;
+    }
+    if (lot->fly != 0 && y > height + lot->fly) {
+        return true;
+    }
+    return false;
+}

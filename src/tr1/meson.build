@@ -100,7 +100,6 @@ endif
 
 sources = [
   init,
-  'game/box.c',
   'game/camera/common.c',
   'game/carrier.c',
   'game/clock.c',
