@@ -2040,13 +2040,6 @@ typedef enum {
     LS_TWIST        = 68,
     LS_KICK         = 69,
     LS_ZIPLINE      = 70,
-    LS_DUCK         = 71,
-    LS_DUCK_ROLL    = 72,
-    LS_DASH         = 73,
-    LS_DASH_DIVE    = 74,
-    LS_MONKEY_SWING = 75,
-    LS_MONKEYF      = 76,
-    LS_LAST         = 77,
 } LARA_STATE;
 
 typedef enum {
