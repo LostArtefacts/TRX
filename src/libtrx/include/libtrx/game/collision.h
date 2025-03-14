@@ -61,6 +61,10 @@ typedef struct {
     int32_t r;
 } SPHERE;
 
-extern void Collide_GetCollisionInfo(
+void Collide_GetCollisionInfo(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
     int32_t obj_height);
+
+extern bool Collide_CollideStaticObjects(
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
+    int32_t height);
