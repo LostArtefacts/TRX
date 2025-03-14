@@ -5,7 +5,6 @@
 #include <libtrx/game/pathing/box.h>
 #include <libtrx/game/pathing/const.h>
 
-bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion);
 bool Box_UpdateLOT(LOT_INFO *lot, int32_t expansion);
 void Box_TargetBox(LOT_INFO *lot, int16_t box_num);
 bool Box_StalkBox(ITEM *item, int16_t box_num);
