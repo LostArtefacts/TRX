@@ -40,8 +40,8 @@ bool Box_StalkBox(
     }
 
     const int32_t baddie_quad = item->pos.z > enemy->pos.z
-        ? (item->pos.x > x ? DIR_SOUTH : DIR_EAST)
-        : (item->pos.x > x ? DIR_WEST : DIR_NORTH);
+        ? (item->pos.x > enemy->pos.x ? DIR_SOUTH : DIR_EAST)
+        : (item->pos.x > enemy->pos.x ? DIR_WEST : DIR_NORTH);
 
     return enemy_quad != baddie_quad || ABS(enemy_quad - box_quad) != 2;
 }
