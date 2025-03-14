@@ -92,6 +92,7 @@ game with new enhancements and features.
     - fixed floor height issues with pushblocks poised to fall in various scenarios
     - fixed being unable to stack multiple pushblocks over multiple rooms
     - fixed falling pushblocks using the enemy grunt sound effect
+- fixed seaweed collision in Living Quarters preventing Lara from climbing out of the water in room 15
 - improved the animation of Lara's braid
 
 #### Cheats

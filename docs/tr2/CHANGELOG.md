@@ -18,6 +18,7 @@
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed (#2575)
 - fixed missing enemy sound effects in the underwater levels (#2293)
+- fixed seaweed collision in Living Quarters preventing Lara from climbing out of the water in room 15 (#2197)
 - fixed a rare issue whereby Lara would be unable to move after disposing a flare (#2545, regression from 0.9)
 - fixed flare pickups only adding one flare to Lara's inventory rather than six (#2551, regression from 0.9)
 - fixed several issues with pushblocks (#2036/#2193)
