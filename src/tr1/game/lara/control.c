@@ -162,8 +162,8 @@ static void M_WaterCurrent(COLL_INFO *coll)
         item->rot.y -= 5 * DEG_1;
     }
 
-    if (coll->mid_floor < 0) {
-        item->pos.y += coll->mid_floor;
+    if (coll->side_mid.floor < 0) {
+        item->pos.y += coll->side_mid.floor;
         item->rot.x += UW_WALLDEFLECT;
     }
     Item_ShiftCol(item, coll);

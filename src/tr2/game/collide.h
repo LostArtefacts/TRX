@@ -3,7 +3,7 @@
 #include <libtrx/game/collision.h>
 #include <libtrx/game/items/types.h>
 
-int32_t Collide_CollideStaticObjects(
+bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
     int32_t height);
 

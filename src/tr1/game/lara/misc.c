@@ -31,7 +31,7 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
     coll->bad_neg = NO_BAD_NEG;
     coll->bad_ceiling = 0;
     Lara_GetCollisionInfo(item, coll);
-    if (coll->front_floor < 200) {
+    if (coll->side_front.floor < 200) {
         flag = 1;
     }
 
@@ -71,7 +71,7 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
         if (g_Config.gameplay.enable_swing_cancel && item->hit_points > 0) {
             item->pos.y += bounds->max.y;
         } else {
-            item->pos.y += coll->front_floor - bounds->min.y + 2;
+            item->pos.y += coll->side_front.floor - bounds->min.y + 2;
         }
         item->pos.x += coll->shift.x;
         item->pos.z += coll->shift.z;
@@ -83,10 +83,10 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
     }
 
     bounds = Item_GetBoundsAccurate(item);
-    const int32_t hdif = coll->front_floor - bounds->min.y;
+    const int32_t hdif = coll->side_front.floor - bounds->min.y;
 
-    if (ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF
-        || coll->mid_ceiling >= 0 || coll->coll_type != COLL_FRONT
+    if (ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF
+        || coll->side_mid.ceiling >= 0 || coll->coll_type != COLL_FRONT
         || hdif < -SLOPE_DIF || hdif > SLOPE_DIF || flag) {
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
@@ -130,7 +130,7 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
     Lara_DeflectEdge(item, coll);
 
-    if (coll->mid_floor > 200) {
+    if (coll->side_mid.floor > 200) {
         if (item->current_anim_state == LS_SLIDE) {
             item->current_anim_state = LS_JUMP_FORWARD;
             item->goal_anim_state = LS_JUMP_FORWARD;
@@ -146,7 +146,7 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
     }
 
     Lara_TestSlide(item, coll);
-    item->pos.y += coll->mid_floor;
+    item->pos.y += coll->side_mid.floor;
 
     if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         item->goal_anim_state = LS_STOP;
@@ -155,7 +155,8 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
 bool Lara_Fallen(ITEM *item, COLL_INFO *coll)
 {
-    if (coll->mid_floor <= STEPUP_HEIGHT || g_Lara.water_status == LWS_WADE) {
+    if (coll->side_mid.floor <= STEPUP_HEIGHT
+        || g_Lara.water_status == LWS_WADE) {
         return false;
     }
     item->current_anim_state = LS_JUMP_FORWARD;
@@ -238,7 +239,7 @@ void Lara_DeflectEdgeJump(ITEM *item, COLL_INFO *coll)
         item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
         item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
         item->speed = 0;
-        coll->mid_floor = 0;
+        coll->side_mid.floor = 0;
         if (item->fall_speed <= 0) {
             item->fall_speed = 16;
         }
@@ -269,7 +270,7 @@ void Lara_SlideEdgeJump(ITEM *item, COLL_INFO *coll)
         item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
         item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
         item->speed = 0;
-        coll->mid_floor = 0;
+        coll->side_mid.floor = 0;
         if (item->fall_speed <= 0) {
             item->fall_speed = 16;
         }
@@ -281,7 +282,7 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS
-        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        || ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF) {
         return false;
     }
 
@@ -303,11 +304,11 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
         return false;
     }
 
-    int32_t hdif = coll->front_floor;
+    int32_t hdif = coll->side_front.floor;
     if (hdif >= -STEP_L * 2 - STEP_L / 2 && hdif <= -STEP_L * 2 + STEP_L / 2) {
-        if (hdif - coll->front_ceiling < 0
-            || coll->left_floor - coll->left_ceiling < 0
-            || coll->right_floor - coll->right_ceiling < 0) {
+        if (hdif - coll->side_front.ceiling < 0
+            || coll->side_left.floor - coll->side_left.ceiling < 0
+            || coll->side_right.floor - coll->side_right.ceiling < 0) {
             return false;
         }
         item->current_anim_state = LS_CLIMB_UP;
@@ -320,9 +321,9 @@ bool Lara_TestVault(ITEM *item, COLL_INFO *coll)
         return true;
     } else if (
         hdif >= -STEP_L * 3 - STEP_L / 2 && hdif <= -STEP_L * 3 + STEP_L / 2) {
-        if (hdif - coll->front_ceiling < 0
-            || coll->left_floor - coll->left_ceiling < 0
-            || coll->right_floor - coll->right_ceiling < 0) {
+        if (hdif - coll->side_front.ceiling < 0
+            || coll->side_left.floor - coll->side_left.ceiling < 0
+            || coll->side_right.floor - coll->side_right.ceiling < 0) {
             return false;
         }
         item->current_anim_state = LS_CLIMB_UP;
@@ -353,17 +354,17 @@ bool Lara_TestHangJump(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS
-        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        || ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF) {
         return false;
     }
 
-    if (coll->front_ceiling > 0 || coll->mid_ceiling > -384
-        || coll->mid_floor < 200) {
+    if (coll->side_front.ceiling > 0 || coll->side_mid.ceiling > -384
+        || coll->side_mid.floor < 200) {
         return false;
     }
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    const int32_t hdif = coll->front_floor - bounds->min.y;
+    const int32_t hdif = coll->side_front.floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
     }
@@ -445,16 +446,16 @@ bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
 {
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || g_Lara.gun_status != LGS_ARMLESS
-        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        || ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF) {
         return false;
     }
 
-    if (coll->front_ceiling > 0 || coll->mid_ceiling > -384) {
+    if (coll->side_front.ceiling > 0 || coll->side_mid.ceiling > -384) {
         return false;
     }
 
     const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
-    const int32_t hdif = coll->front_floor - bounds->min.y;
+    const int32_t hdif = coll->side_front.floor - bounds->min.y;
     if (hdif < 0 && hdif + item->fall_speed < 0) {
         return false;
     }
@@ -483,7 +484,7 @@ bool Lara_TestHangJumpUp(ITEM *item, COLL_INFO *coll)
     item->current_anim_state = LS_HANG;
     Item_SwitchToAnim(item, LA_HANG, LF_STARTHANG);
     bounds = Item_GetBoundsAccurate(item);
-    item->pos.y += coll->front_floor - bounds->min.y;
+    item->pos.y += coll->side_front.floor - bounds->min.y;
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
     item->rot.y = angle;
@@ -593,7 +594,7 @@ void Lara_SurfaceCollision(ITEM *item, COLL_INFO *coll)
         item->rot.y -= 5 * DEG_1;
     } else if (
         coll->coll_type != COLL_NONE
-        || (coll->mid_floor < 0 && coll->mid_type == HT_BIG_SLOPE)) {
+        || (coll->side_mid.floor < 0 && coll->side_mid.type == HT_BIG_SLOPE)) {
         item->fall_speed = 0;
         item->pos.x = coll->old.x;
         item->pos.y = coll->old.y;
@@ -709,12 +710,12 @@ void Lara_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
 
 bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 {
-    if (coll->coll_type == COLL_FRONT || coll->mid_type == HT_BIG_SLOPE
-        || coll->mid_floor >= 0) {
+    if (coll->coll_type == COLL_FRONT || coll->side_mid.type == HT_BIG_SLOPE
+        || coll->side_mid.floor >= 0) {
         return false;
     }
 
-    if (coll->mid_floor < -STEP_L / 2) {
+    if (coll->side_mid.floor < -STEP_L / 2) {
         item->current_anim_state = LS_WATER_OUT;
         item->goal_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_SURF_TO_WADE, 0);
@@ -728,7 +729,7 @@ bool Lara_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA_WADE, 0);
     }
 
-    item->pos.y += coll->front_floor + SURF_HEIGHT - 5;
+    item->pos.y += coll->side_front.floor + SURF_HEIGHT - 5;
     Item_UpdateRoom(item, -LARA_HEIGHT / 2);
     item->gravity = 0;
     item->rot.x = 0;
@@ -746,15 +747,16 @@ bool Lara_TestWaterClimbOut(ITEM *item, COLL_INFO *coll)
     }
 
     if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || ABS(coll->left_floor - coll->right_floor) >= SLOPE_DIF) {
+        || ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF) {
         return false;
     }
 
-    if (coll->front_ceiling > 0 || coll->mid_ceiling > -STEPUP_HEIGHT) {
+    if (coll->side_front.ceiling > 0
+        || coll->side_mid.ceiling > -STEPUP_HEIGHT) {
         return false;
     }
 
-    const int32_t hdif = coll->front_floor + SURF_HEIGHT;
+    const int32_t hdif = coll->side_front.floor + SURF_HEIGHT;
     if (hdif <= -STEP_L * 2 || hdif > SURF_HEIGHT - STEPUP_HEIGHT) {
         return false;
     }
@@ -871,8 +873,8 @@ void Lara_SwimCollision(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-    if (coll->mid_floor < 0) {
-        item->pos.y += coll->mid_floor;
+    if (coll->side_mid.floor < 0) {
+        item->pos.y += coll->side_mid.floor;
         item->rot.x += UW_WALLDEFLECT;
     }
 

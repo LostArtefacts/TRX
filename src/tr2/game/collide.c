@@ -18,22 +18,17 @@ void Collide_GetCollisionInfo(
     coll->shift.z = 0;
     coll->quadrant = Math_GetDirection(coll->facing);
 
-    const SECTOR *sector;
-    int32_t height;
-    int32_t ceiling;
-    int32_t x;
-    int32_t z;
+    int32_t x = x_pos;
+    int32_t z = z_pos;
     const int32_t y = y_pos - obj_height;
     const int32_t y_top = y - 160;
 
-    x = x_pos;
-    z = z_pos;
-    sector = Room_GetSector(x, y_top, z, &room_num);
-    height = Room_GetHeight(sector, x, y_top, z);
+    const SECTOR *sector = Room_GetSector(x, y_top, z, &room_num);
+    int32_t height = Room_GetHeight(sector, x, y_top, z);
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
-    ceiling = Room_GetCeiling(sector, x, y_top, z);
+    int32_t ceiling = Room_GetCeiling(sector, x, y_top, z);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -43,8 +38,8 @@ void Collide_GetCollisionInfo(
     coll->side_mid.type = Room_GetHeightType();
 
     const int16_t tilt = Room_GetTiltType(sector, x, g_LaraItem->pos.y, z);
-    coll->z_tilt = tilt >> 8;
-    coll->x_tilt = (int8_t)tilt;
+    coll->tilt_z = tilt >> 8;
+    coll->tilt_x = (int8_t)tilt;
 
     int32_t x_left;
     int32_t z_left;
@@ -236,6 +231,9 @@ void Collide_GetCollisionInfo(
             coll->shift.x = Room_FindGridShift(x_pos + x_front, x_pos);
             coll->shift.z = coll->old.z - z_pos;
             break;
+
+        default:
+            break;
         }
 
         coll->coll_type = COLL_FRONT;
@@ -262,6 +260,9 @@ void Collide_GetCollisionInfo(
         case DIR_WEST:
             coll->shift.z = Room_FindGridShift(z_pos + z_left, z_pos + z_front);
             break;
+
+        default:
+            break;
         }
 
         coll->coll_type = COLL_LEFT;
@@ -282,6 +283,9 @@ void Collide_GetCollisionInfo(
             coll->shift.z =
                 Room_FindGridShift(z_pos + z_right, z_pos + z_front);
             break;
+
+        default:
+            break;
         }
 
         coll->coll_type = COLL_RIGHT;
@@ -289,7 +293,7 @@ void Collide_GetCollisionInfo(
     }
 }
 
-int32_t Collide_CollideStaticObjects(
+bool Collide_CollideStaticObjects(
     COLL_INFO *const coll, const int32_t x, const int32_t y, const int32_t z,
     const int16_t room_num, const int32_t height)
 {
@@ -439,14 +443,17 @@ int32_t Collide_CollideStaticObjects(
                     coll->shift.z = shifter.z;
                 }
                 break;
+
+            default:
+                break;
             }
 
             coll->hit_static = 1;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t Collide_TestCollision(ITEM *const item, const ITEM *const lara_item)
