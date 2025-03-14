@@ -78,3 +78,12 @@ typedef struct {
     // clang-format on
 } COLL_INFO;
 #endif
+
+typedef struct {
+    XYZ_32 pos;
+    int32_t r;
+} SPHERE;
+
+extern void Collide_GetCollisionInfo(
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
+    int32_t obj_height);

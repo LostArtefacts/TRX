@@ -1,5 +1,6 @@
 #include "game/lara/misc.h"
 
+#include "game/lara/common.h"
 #include "game/lara/const.h"
 #include "game/rooms.h"
 
@@ -16,4 +17,13 @@ int16_t Lara_FloorFront(
         height -= item->pos.y;
     }
     return height;
+}
+
+void Lara_GetCollisionInfo(const ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    coll->facing = lara->move_angle;
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
+        LARA_HEIGHT);
 }
