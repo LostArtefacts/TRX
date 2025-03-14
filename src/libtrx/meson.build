@@ -92,6 +92,7 @@ sources = [
   'game/clock/common.c',
   'game/clock/timer.c',
   'game/clock/turbo.c',
+  'game/collision.c',
   'game/console/cmd/config.c',
   'game/console/cmd/die.c',
   'game/console/cmd/end_level.c',
