@@ -106,16 +106,16 @@ static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
     switch (coll->old_anim_state) {
     case LS_STOP:
-    case LS_TURN_R:
-    case LS_TURN_L:
+    case LS_TURN_RIGHT:
+    case LS_TURN_LEFT:
     case LS_FAST_TURN:
         item->current_anim_state = coll->old_anim_state;
         item->anim_num = coll->old_anim_num;
         item->frame_num = coll->old_frame_num;
         if (g_Input.left) {
-            item->goal_anim_state = LS_TURN_L;
+            item->goal_anim_state = LS_TURN_LEFT;
         } else if (g_Input.right) {
-            item->goal_anim_state = LS_TURN_R;
+            item->goal_anim_state = LS_TURN_RIGHT;
         } else {
             item->goal_anim_state = LS_STOP;
         }

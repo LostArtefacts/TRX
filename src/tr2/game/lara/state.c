@@ -125,7 +125,7 @@ void Lara_State_Run(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.jump && m_JumpPermitted && !item->gravity) {
-        item->goal_anim_state = LS_FORWARD_JUMP;
+        item->goal_anim_state = LS_JUMP_FORWARD;
     } else if (g_Input.forward) {
         if (g_Lara.water_status == LWS_WADE) {
             item->goal_anim_state = LS_WADE;
@@ -203,7 +203,7 @@ void Lara_State_ForwardJump(ITEM *item, COLL_INFO *coll)
 {
     if (item->goal_anim_state == LS_SWAN_DIVE
         || item->goal_anim_state == LS_REACH) {
-        item->goal_anim_state = LS_FORWARD_JUMP;
+        item->goal_anim_state = LS_JUMP_FORWARD;
     }
 
     if (item->goal_anim_state != LS_DEATH && item->goal_anim_state != LS_STOP
@@ -357,25 +357,25 @@ void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
     if (g_Lara.water_status != LWS_WADE) {
         if (g_Input.forward
             && Lara_FloorFront(item, item->rot.y, STEP_L) >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_FORWARD_JUMP;
+            item->goal_anim_state = LS_JUMP_FORWARD;
             g_Lara.move_angle = item->rot.y;
         } else if (
             g_Input.left
             && Lara_FloorFront(item, item->rot.y - DEG_90, STEP_L)
                 >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_LEFT_JUMP;
+            item->goal_anim_state = LS_JUMP_LEFT;
             g_Lara.move_angle = item->rot.y - DEG_90;
         } else if (
             g_Input.right
             && Lara_FloorFront(item, item->rot.y + DEG_90, STEP_L)
                 >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_RIGHT_JUMP;
+            item->goal_anim_state = LS_JUMP_RIGHT;
             g_Lara.move_angle = item->rot.y + DEG_90;
         } else if (
             g_Input.back
             && Lara_FloorFront(item, item->rot.y + DEG_180, STEP_L)
                 >= -STEPUP_HEIGHT) {
-            item->goal_anim_state = LS_BACK_JUMP;
+            item->goal_anim_state = LS_JUMP_BACK;
             g_Lara.move_angle = item->rot.y + DEG_180;
         }
     }
@@ -480,7 +480,7 @@ void Lara_State_Slide(ITEM *item, COLL_INFO *coll)
     g_Camera.flags = CF_NO_CHUNKY;
     g_Camera.target_elevation = CAM_SLIDE_ELEVATION;
     if (g_Input.jump && !g_Input.back) {
-        item->goal_anim_state = LS_FORWARD_JUMP;
+        item->goal_anim_state = LS_JUMP_FORWARD;
     }
 }
 
@@ -570,7 +570,7 @@ void Lara_State_HangRight(ITEM *item, COLL_INFO *coll)
 void Lara_State_SlideBack(ITEM *item, COLL_INFO *coll)
 {
     if (g_Input.jump && !g_Input.forward) {
-        item->goal_anim_state = LS_BACK_JUMP;
+        item->goal_anim_state = LS_JUMP_BACK;
     }
 }
 
@@ -706,7 +706,7 @@ void Lara_State_Zipline(ITEM *item, COLL_INFO *coll)
     g_Camera.target_angle = CAM_ZIPLINE_ANGLE;
 
     if (!g_Input.action) {
-        item->goal_anim_state = LS_FORWARD_JUMP;
+        item->goal_anim_state = LS_JUMP_FORWARD;
         Lara_Animate(item);
         g_LaraItem->gravity = 1;
         g_LaraItem->speed = 100;
@@ -873,7 +873,7 @@ void Lara_State_ClimbStance(ITEM *item, COLL_INFO *coll)
     } else if (g_Input.right || g_Input.step_right) {
         item->goal_anim_state = LS_CLIMB_RIGHT;
     } else if (g_Input.jump) {
-        item->goal_anim_state = LS_BACK_JUMP;
+        item->goal_anim_state = LS_JUMP_BACK;
         g_Lara.gun_status = LGS_ARMLESS;
         g_Lara.move_angle = item->rot.y + DEG_180;
     }

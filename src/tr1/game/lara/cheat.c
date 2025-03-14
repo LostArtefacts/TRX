@@ -66,9 +66,9 @@ void Lara_Cheat_Control(void)
             cheat_angle = g_LaraItem->rot.y;
         }
         cheat_turn = 0;
-        if (as == LS_TURN_L) {
+        if (as == LS_TURN_LEFT) {
             cheat_mode = 5;
-        } else if (as == LS_TURN_R) {
+        } else if (as == LS_TURN_RIGHT) {
             cheat_mode = 6;
         } else {
             cheat_mode = 0;
@@ -76,7 +76,7 @@ void Lara_Cheat_Control(void)
         break;
 
     case 5:
-        if (as == LS_TURN_L || as == LS_FAST_TURN) {
+        if (as == LS_TURN_LEFT || as == LS_FAST_TURN) {
             cheat_turn += (int16_t)(g_LaraItem->rot.y - cheat_angle);
             cheat_angle = g_LaraItem->rot.y;
         } else {
@@ -85,7 +85,7 @@ void Lara_Cheat_Control(void)
         break;
 
     case 6:
-        if (as == LS_TURN_R || as == LS_FAST_TURN) {
+        if (as == LS_TURN_RIGHT || as == LS_FAST_TURN) {
             cheat_turn += (int16_t)(g_LaraItem->rot.y - cheat_angle);
             cheat_angle = g_LaraItem->rot.y;
         } else {

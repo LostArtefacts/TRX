@@ -802,8 +802,8 @@ static void M_Control(const int16_t item_num)
         }
 
         Item_SwitchToAnim(lara, LA_JUMP_FORWARD, 0);
-        lara->goal_anim_state = LS_FORWARD_JUMP;
-        lara->current_anim_state = LS_FORWARD_JUMP;
+        lara->goal_anim_state = LS_JUMP_FORWARD;
+        lara->current_anim_state = LS_JUMP_FORWARD;
         lara->gravity = 1;
         lara->rot.x = 0;
         lara->rot.z = 0;

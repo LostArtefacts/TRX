@@ -124,7 +124,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (lara_on_zipline) {
-        g_LaraItem->goal_anim_state = LS_FORWARD_JUMP;
+        g_LaraItem->goal_anim_state = LS_JUMP_FORWARD;
         Lara_Animate(g_LaraItem);
         g_LaraItem->gravity = 1;
         g_LaraItem->speed = item->fall_speed;
