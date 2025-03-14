@@ -229,7 +229,7 @@ void Creature_Mood(ITEM *item, AI_INFO *info, bool violent)
             lot->node[Random_GetControl() * lot->zone_count / 0x7FFF].box_num;
         if (Box_ValidBox(item, info->zone_num, box_num)
             && lot->required_box == NO_BOX) {
-            if (Box_EscapeBox(item, box_num)) {
+            if (Box_EscapeBox(item, enemy, box_num)) {
                 Box_TargetBox(lot, box_num);
             } else if (
                 info->zone_num == info->enemy_zone

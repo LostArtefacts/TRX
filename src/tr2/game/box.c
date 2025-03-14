@@ -18,23 +18,6 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-bool Box_EscapeBox(
-    const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
-{
-    const BOX_INFO *const box = Box_GetBox(box_num);
-    // TODO: determine if +1 on box right/bottom is essential
-    const int32_t x = ((box->top + box->bottom + 1) >> 1) - enemy->pos.x;
-    const int32_t z = ((box->left + box->right + 1) >> 1) - enemy->pos.z;
-
-    if (x > -CREATURE_ESCAPE_DIST && x < CREATURE_ESCAPE_DIST
-        && z > -CREATURE_ESCAPE_DIST && z < CREATURE_ESCAPE_DIST) {
-        return false;
-    }
-
-    return ((z > 0) == (item->pos.z > enemy->pos.z))
-        || ((x > 0) == (item->pos.x > enemy->pos.x));
-}
-
 bool Box_ValidBox(
     const ITEM *const item, const int16_t zone_num, const int16_t box_num)
 {

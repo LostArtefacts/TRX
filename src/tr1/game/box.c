@@ -18,25 +18,6 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-bool Box_EscapeBox(ITEM *item, int16_t box_num)
-{
-    const BOX_INFO *const box = Box_GetBox(box_num);
-    int32_t z = ((box->left + box->right) >> 1) - g_LaraItem->pos.z;
-    int32_t x = ((box->top + box->bottom) >> 1) - g_LaraItem->pos.x;
-
-    if (x > -CREATURE_ESCAPE_DIST && x < CREATURE_ESCAPE_DIST
-        && z > -CREATURE_ESCAPE_DIST && z < CREATURE_ESCAPE_DIST) {
-        return false;
-    }
-
-    if (((z > 0) ^ (item->pos.z > g_LaraItem->pos.z))
-        && ((x > 0) ^ (item->pos.x > g_LaraItem->pos.x))) {
-        return false;
-    }
-
-    return true;
-}
-
 bool Box_ValidBox(ITEM *item, int16_t zone_num, int16_t box_num)
 {
     CREATURE *creature = item->data;

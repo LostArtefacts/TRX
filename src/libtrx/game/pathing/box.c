@@ -233,3 +233,21 @@ bool Box_StalkBox(
 
     return enemy_quad != baddie_quad || ABS(enemy_quad - box_quad) != 2;
 }
+
+bool Box_EscapeBox(
+    const ITEM *item, const ITEM *const enemy, const int16_t box_num)
+{
+    const BOX_INFO *const box = Box_GetBox(box_num);
+
+    // TODO: determine if the shift is essential
+    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    const int32_t x = ((box->top + box->bottom + shift) >> 1) - enemy->pos.x;
+    const int32_t z = ((box->left + box->right + shift) >> 1) - enemy->pos.z;
+    if (x > -CREATURE_ESCAPE_DIST && x < CREATURE_ESCAPE_DIST
+        && z > -CREATURE_ESCAPE_DIST && z < CREATURE_ESCAPE_DIST) {
+        return false;
+    }
+
+    return ((z > 0) == (item->pos.z > enemy->pos.z))
+        || ((x > 0) == (item->pos.x > enemy->pos.x));
+}
