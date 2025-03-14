@@ -125,7 +125,9 @@ static void M_InitialiseBlock(VFILE *const file)
     const INJECTION_DATA_TYPE data_type = VFile_ReadS32(file);
     const int32_t data_count = VFile_ReadS32(file);
     const int32_t data_size = VFile_ReadS32(file);
-    m_DataCounts[data_type] += data_count;
+    if (data_type >= 0 && data_type < IDT_NUMBER_OF) {
+        m_DataCounts[data_type] += data_count;
+    }
 
     switch (data_type) {
     case IDT_ROOM_EDIT_META: {
