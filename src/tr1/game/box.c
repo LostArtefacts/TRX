@@ -18,28 +18,6 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-bool Box_ValidBox(ITEM *item, int16_t zone_num, int16_t box_num)
-{
-    CREATURE *creature = item->data;
-    const int16_t *const zone = Box_GetLotZone(&creature->lot);
-
-    if (zone[box_num] != zone_num) {
-        return false;
-    }
-
-    const BOX_INFO *const box = Box_GetBox(box_num);
-    if (box->overlap_index & creature->lot.block_mask) {
-        return false;
-    }
-
-    if (item->pos.z > box->left && item->pos.z < box->right
-        && item->pos.x > box->top && item->pos.x < box->bottom) {
-        return false;
-    }
-
-    return true;
-}
-
 TARGET_TYPE Box_CalculateTarget(XYZ_32 *target, ITEM *item, LOT_INFO *lot)
 {
     int32_t left = 0;

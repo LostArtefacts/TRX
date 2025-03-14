@@ -251,3 +251,24 @@ bool Box_EscapeBox(
     return ((z > 0) == (item->pos.z > enemy->pos.z))
         || ((x > 0) == (item->pos.x > enemy->pos.x));
 }
+
+bool Box_ValidBox(
+    const ITEM *item, const int16_t zone_num, const int16_t box_num)
+{
+    const CREATURE *const creature = item->data;
+    const int16_t *const zone = Box_GetLotZone(&creature->lot);
+    if (zone[box_num] != zone_num) {
+        return false;
+    }
+
+    const BOX_INFO *const box = Box_GetBox(box_num);
+    if ((box->overlap_index & creature->lot.block_mask) != 0) {
+        return false;
+    }
+
+    // TODO: determine if the shift is essential
+    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    return !(
+        item->pos.z > box->left && item->pos.z < box->right + shift
+        && item->pos.x > box->top && item->pos.x < box->bottom + shift);
+}
