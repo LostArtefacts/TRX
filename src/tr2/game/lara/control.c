@@ -19,9 +19,9 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 

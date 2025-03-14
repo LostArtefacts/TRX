@@ -13,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara/misc.h>
 #include <libtrx/game/math.h>
 
 #include <stdint.h>
@@ -24,22 +25,7 @@ static bool m_JumpPermitted = true;
 static bool m_HasResponsiveJumping = false;
 static bool m_HasResponsiveSwimming = false;
 
-static int16_t M_FloorFront(ITEM *item, PHD_ANGLE ang, int32_t dist);
 static bool M_HasResponsiveState(LARA_ANIMATION anim_idx);
-
-static int16_t M_FloorFront(ITEM *item, PHD_ANGLE ang, int32_t dist)
-{
-    int32_t x = item->pos.x + ((Math_Sin(ang) * dist) >> W2V_SHIFT);
-    int32_t y = item->pos.y - LARA_HEIGHT;
-    int32_t z = item->pos.z + ((Math_Cos(ang) * dist) >> W2V_SHIFT);
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    if (height != NO_HEIGHT) {
-        height -= item->pos.y;
-    }
-    return height;
-}
 
 static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
 {
@@ -400,24 +386,24 @@ void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
 {
     if (g_Lara.water_status != LWS_WADE) {
         if (g_Input.forward
-            && M_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
+            && Lara_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_FORWARD;
             g_Lara.move_angle = item->rot.y;
         } else if (
             g_Input.left
-            && M_FloorFront(item, item->rot.y - DEG_90, 256)
+            && Lara_FloorFront(item, item->rot.y - DEG_90, 256)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_LEFT;
             g_Lara.move_angle = item->rot.y - DEG_90;
         } else if (
             g_Input.right
-            && M_FloorFront(item, item->rot.y + DEG_90, 256)
+            && Lara_FloorFront(item, item->rot.y + DEG_90, 256)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_RIGHT;
             g_Lara.move_angle = item->rot.y + DEG_90;
         } else if (
             g_Input.back
-            && M_FloorFront(item, item->rot.y - DEG_180, 256)
+            && Lara_FloorFront(item, item->rot.y - DEG_180, 256)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_BACK;
             g_Lara.move_angle = item->rot.y - DEG_180;
@@ -830,12 +816,6 @@ void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll)
 }
 
 void Lara_State_Null(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-}
-
-void Lara_State_Gymnast(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;

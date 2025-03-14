@@ -28,7 +28,6 @@
 #define LARA_FASTFALL_SPEED (FAST_FALL_SPEED + 3) // = 131
 #define LARA_SWING_FASTFALL_SPEED (LARA_FASTFALL_SPEED + 2) // = 133
 #define LARA_RAD 100 // global radius of g_Lara
-#define LARA_HEIGHT 762 // global height of g_Lara - less than 3/4 block
 #define LARA_WADE_DEPTH 384
 #define LARA_SWIM_DEPTH 730
 #define UW_MAXSPEED 200
