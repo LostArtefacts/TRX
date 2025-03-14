@@ -32,3 +32,9 @@ typedef struct {
     int16_t required_box;
     XYZ_32 target;
 } LOT_INFO;
+
+typedef enum {
+    TARGET_NONE = 0,
+    TARGET_PRIMARY = 1,
+    TARGET_SECONDARY = 2,
+} TARGET_TYPE;
