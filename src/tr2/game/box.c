@@ -7,7 +7,6 @@
 
 #include <libtrx/utils.h>
 
-#define BOX_NUMBER_BITS 0x7FFF // = ~BOX_END_BIT
 #define BOX_MAX_EXPANSION 5
 
 #define BOX_BIFF (WALL_L / 2) // = 0x200 = 512
@@ -18,24 +17,6 @@
 #define BOX_CLIP_ALL                                                           \
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
-
-void Box_TargetBox(LOT_INFO *const lot, const int16_t box_num)
-{
-    const BOX_INFO *const box = Box_GetBox(box_num & BOX_NUMBER_BITS);
-
-    // TODO: determine if +1 on box right/bottom is essential
-    lot->target.z = box->left + WALL_L / 2
-        + (Random_GetControl() * (box->right + 1 - box->left - WALL_L) >> 15);
-    lot->target.x = box->top + WALL_L / 2
-        + (Random_GetControl() * (box->bottom + 1 - box->top - WALL_L) >> 15);
-    lot->required_box = box_num & BOX_NUMBER_BITS;
-
-    if (lot->fly != 0) {
-        lot->target.y = box->height - STEP_L * 3 / 2;
-    } else {
-        lot->target.y = box->height;
-    }
-}
 
 bool Box_StalkBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)

@@ -1,5 +1,6 @@
 #include "game/game_buf.h"
 #include "game/pathing.h"
+#include "game/random.h"
 #include "game/rooms.h"
 
 #define BOX_OVERLAP_BITS 0x3FFF
@@ -175,4 +176,25 @@ bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
 
 end:
     return Box_SearchLOT(lot, expansion);
+}
+
+void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
+{
+    box_num &= BOX_NUMBER_BITS;
+    const BOX_INFO *const box = Box_GetBox(box_num);
+
+    // TODO: determine if the shift is essential
+    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    lot->target.z = box->left + WALL_L / 2
+        + (Random_GetControl() * (box->right + shift - box->left - WALL_L)
+           >> 15);
+    lot->target.x = box->top + WALL_L / 2
+        + (Random_GetControl() * (box->bottom + shift - box->top - WALL_L)
+           >> 15);
+    lot->required_box = box_num;
+    if (lot->fly != 0) {
+        lot->target.y = box->height - STEP_L * 3 / 2;
+    } else {
+        lot->target.y = box->height;
+    }
 }
