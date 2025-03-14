@@ -29,17 +29,20 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
 
     for (int32_t i = 0; i < expansion; i++) {
         if (lot->head == NO_BOX) {
+            if (TR_VERSION >= 2) {
+                lot->tail = NO_BOX;
+            }
             return false;
         }
 
-        BOX_NODE *node = &lot->node[lot->head];
+        BOX_NODE *const node = &lot->node[lot->head];
         const BOX_INFO *const head_box = Box_GetBox(lot->head);
 
         bool done = false;
         int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
-        do {
+        while (!done) {
             int16_t box_num = Box_GetOverlap(index++);
-            if (box_num & BOX_END_BIT) {
+            if ((box_num & BOX_END_BIT) != 0) {
                 done = true;
                 box_num &= BOX_NUMBER_BITS;
             }
@@ -54,26 +57,31 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
                 continue;
             }
 
-            BOX_NODE *expand = &lot->node[box_num];
-            if ((node->search_num & BOX_SEARCH_NUMBER)
-                < (expand->search_num & BOX_SEARCH_NUMBER)) {
+            BOX_NODE *const expand = &lot->node[box_num];
+            const int16_t node_search_num =
+                node->search_num & BOX_SEARCH_NUMBER;
+            const int16_t expand_search_num =
+                expand->search_num & BOX_SEARCH_NUMBER;
+            const bool node_search_blocked =
+                (node->search_num & BOX_BLOCKED_SEARCH) != 0;
+            const bool expand_search_blocked =
+                (expand->search_num & BOX_BLOCKED_SEARCH) != 0;
+            if (node_search_num < expand_search_num) {
                 continue;
             }
 
-            if (node->search_num & BOX_BLOCKED_SEARCH) {
-                if ((node->search_num & BOX_SEARCH_NUMBER)
-                    == (expand->search_num & BOX_SEARCH_NUMBER)) {
+            if (node_search_blocked) {
+                if (expand_search_num == node_search_num) {
                     continue;
                 }
                 expand->search_num = node->search_num;
             } else {
-                if ((node->search_num & BOX_SEARCH_NUMBER)
-                        == (expand->search_num & BOX_SEARCH_NUMBER)
-                    && !(expand->search_num & BOX_BLOCKED_SEARCH)) {
+                if (expand_search_num == node_search_num
+                    && !expand_search_blocked) {
                     continue;
                 }
 
-                if (box->overlap_index & lot->block_mask) {
+                if ((box->overlap_index & lot->block_mask) != 0) {
                     expand->search_num = node->search_num | BOX_BLOCKED_SEARCH;
                 } else {
                     expand->search_num = node->search_num;
@@ -85,7 +93,7 @@ bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
                 lot->node[lot->tail].next_expansion = box_num;
                 lot->tail = box_num;
             }
-        } while (!done);
+        }
 
         lot->head = node->next_expansion;
         node->next_expansion = NO_BOX;

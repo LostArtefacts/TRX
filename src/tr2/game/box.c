@@ -29,12 +29,14 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 
     for (int32_t i = 0; i < expansion; i++) {
         if (lot->head == NO_BOX) {
-            lot->tail = NO_BOX;
+            if (TR_VERSION >= 2) {
+                lot->tail = NO_BOX;
+            }
             return false;
         }
 
-        BOX_NODE *node = &lot->node[lot->head];
-        const BOX_INFO *head_box = Box_GetBox(lot->head);
+        BOX_NODE *const node = &lot->node[lot->head];
+        const BOX_INFO *const head_box = Box_GetBox(lot->head);
 
         bool done = false;
         int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
@@ -56,21 +58,26 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
             }
 
             BOX_NODE *const expand = &lot->node[box_num];
-            if ((node->search_num & BOX_SEARCH_NUMBER)
-                < (expand->search_num & BOX_SEARCH_NUMBER)) {
+            const int16_t node_search_num =
+                node->search_num & BOX_SEARCH_NUMBER;
+            const int16_t expand_search_num =
+                expand->search_num & BOX_SEARCH_NUMBER;
+            const bool node_search_blocked =
+                (node->search_num & BOX_BLOCKED_SEARCH) != 0;
+            const bool expand_search_blocked =
+                (expand->search_num & BOX_BLOCKED_SEARCH) != 0;
+            if (node_search_num < expand_search_num) {
                 continue;
             }
 
-            if ((node->search_num & BOX_BLOCKED_SEARCH) != 0) {
-                if ((expand->search_num & BOX_SEARCH_NUMBER)
-                    == (node->search_num & BOX_SEARCH_NUMBER)) {
+            if (node_search_blocked) {
+                if (expand_search_num == node_search_num) {
                     continue;
                 }
                 expand->search_num = node->search_num;
             } else {
-                if ((expand->search_num & BOX_SEARCH_NUMBER)
-                        == (node->search_num & BOX_SEARCH_NUMBER)
-                    && (expand->search_num & BOX_BLOCKED_SEARCH) == 0) {
+                if (expand_search_num == node_search_num
+                    && !expand_search_blocked) {
                     continue;
                 }
 
