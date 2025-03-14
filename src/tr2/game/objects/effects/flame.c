@@ -1,4 +1,3 @@
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
@@ -7,6 +6,7 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/utils.h>
 
 static void M_Setup(OBJECT *obj);

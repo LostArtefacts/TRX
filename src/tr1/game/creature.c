@@ -2,7 +2,6 @@
 
 #include "game/box.h"
 #include "game/carrier.h"
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -15,6 +14,7 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/log.h>
 

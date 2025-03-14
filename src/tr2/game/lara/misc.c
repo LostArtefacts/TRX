@@ -2,7 +2,6 @@
 
 #include "decomp/decomp.h"
 #include "game/box.h"
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/inventory_ring.h"
@@ -14,6 +13,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>

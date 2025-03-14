@@ -1,8 +1,9 @@
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/objects/common.h"
 #include "game/spawn.h"
+
+#include <libtrx/game/collision.h>
 
 #define TEETH_TRAP_DAMAGE 400
 

@@ -1,6 +1,5 @@
 #include "game/gun/gun_misc.h"
 
-#include "game/collide.h"
 #include "game/game.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -14,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>

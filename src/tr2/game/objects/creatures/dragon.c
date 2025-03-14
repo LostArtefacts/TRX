@@ -1,5 +1,4 @@
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/input.h"
 #include "game/lara/control.h"
@@ -14,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 
 // clang-format off

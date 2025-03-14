@@ -2,7 +2,6 @@
 
 #include "game/box.h"
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/gun.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -18,6 +17,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/math.h>
 

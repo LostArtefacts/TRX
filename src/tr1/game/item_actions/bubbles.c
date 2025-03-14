@@ -1,10 +1,11 @@
 #include "game/item_actions/bubbles.h"
 
-#include "game/collide.h"
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "global/vars.h"
+
+#include <libtrx/game/collision.h>
 
 void ItemAction_Bubbles(ITEM *item)
 {

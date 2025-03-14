@@ -1,6 +1,7 @@
-#include "game/collide.h"
 #include "game/cutscene.h"
 #include "game/objects/common.h"
+
+#include <libtrx/game/collision.h>
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);

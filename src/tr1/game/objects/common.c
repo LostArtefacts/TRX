@@ -1,6 +1,5 @@
 #include "game/objects/common.h"
 
-#include "game/collide.h"
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -13,6 +12,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 

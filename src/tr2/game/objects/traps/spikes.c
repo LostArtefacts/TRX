@@ -1,8 +1,9 @@
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"
+
+#include <libtrx/game/collision.h>
 
 #define SPIKE_DAMAGE 15
 

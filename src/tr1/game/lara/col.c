@@ -1,6 +1,5 @@
 #include "game/lara/col.h"
 
-#include "game/collide.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -11,6 +10,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
 
 #include <stdint.h>
 
