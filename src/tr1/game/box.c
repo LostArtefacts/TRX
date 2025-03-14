@@ -19,29 +19,6 @@
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
 
-bool Box_UpdateLOT(LOT_INFO *lot, int32_t expansion)
-{
-    if (lot->required_box != NO_BOX && lot->required_box != lot->target_box) {
-        lot->target_box = lot->required_box;
-
-        BOX_NODE *expand = &lot->node[lot->target_box];
-        if (expand->next_expansion == NO_BOX && lot->tail != lot->target_box) {
-            expand->next_expansion = lot->head;
-
-            if (lot->head == NO_BOX) {
-                lot->tail = lot->target_box;
-            }
-
-            lot->head = lot->target_box;
-        }
-
-        expand->search_num = ++lot->search_num;
-        expand->exit_box = NO_BOX;
-    }
-
-    return Box_SearchLOT(lot, expansion);
-}
-
 void Box_TargetBox(LOT_INFO *lot, int16_t box_num)
 {
     box_num &= BOX_NUMBER_BITS;
