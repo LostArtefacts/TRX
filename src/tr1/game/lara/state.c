@@ -20,30 +20,6 @@
 #define LF_ROLL 2
 #define LF_JUMP_READY 3
 
-void (*g_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
-    Lara_State_Walk,        Lara_State_Run,       Lara_State_Stop,
-    Lara_State_ForwardJump, Lara_State_Pose,      Lara_State_FastBack,
-    Lara_State_TurnR,       Lara_State_TurnL,     Lara_State_Death,
-    Lara_State_FastFall,    Lara_State_Hang,      Lara_State_Reach,
-    Lara_State_Splat,       Lara_State_Tread,     Lara_State_Land,
-    Lara_State_Compress,    Lara_State_Back,      Lara_State_Swim,
-    Lara_State_Glide,       Lara_State_Null,      Lara_State_FastTurn,
-    Lara_State_StepRight,   Lara_State_StepLeft,  Lara_State_Roll2,
-    Lara_State_Slide,       Lara_State_BackJump,  Lara_State_RightJump,
-    Lara_State_LeftJump,    Lara_State_UpJump,    Lara_State_FallBack,
-    Lara_State_HangLeft,    Lara_State_HangRight, Lara_State_SlideBack,
-    Lara_State_SurfTread,   Lara_State_SurfSwim,  Lara_State_Dive,
-    Lara_State_PushBlock,   Lara_State_PullBlock, Lara_State_PPReady,
-    Lara_State_Pickup,      Lara_State_SwitchOn,  Lara_State_SwitchOff,
-    Lara_State_UseKey,      Lara_State_UsePuzzle, Lara_State_UWDeath,
-    Lara_State_Roll,        Lara_State_Special,   Lara_State_SurfBack,
-    Lara_State_SurfLeft,    Lara_State_SurfRight, Lara_State_UseMidas,
-    Lara_State_DieMidas,    Lara_State_SwanDive,  Lara_State_FastDive,
-    Lara_State_Gymnast,     Lara_State_WaterOut,  Lara_State_Controlled,
-    Lara_State_Twist,       Lara_State_UWRoll,    Lara_State_Wade,
-    Lara_State_Responsive,
-};
-
 static bool m_JumpPermitted = true;
 static bool m_HasResponsiveJumping = false;
 static bool m_HasResponsiveSwimming = false;
