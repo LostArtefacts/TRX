@@ -1,10 +1,7 @@
 #pragma once
 
-#include "global/types.h"
-
-void Collide_GetCollisionInfo(
-    COLL_INFO *coll, int32_t x_pos, int32_t y_pos, int32_t z_pos,
-    int16_t room_num, int32_t obj_height);
+#include <libtrx/game/collision.h>
+#include <libtrx/game/items/types.h>
 
 int32_t Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,

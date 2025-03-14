@@ -45,14 +45,6 @@ static void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
     CLAMPG(g_Lara.hit_frame, 34);
 }
 
-void Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll)
-{
-    coll->facing = g_Lara.move_angle;
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT);
-}
-
 void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;

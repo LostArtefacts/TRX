@@ -22,14 +22,6 @@
 #define LF_STARTHANG 12
 #define LF_HANG 21
 
-void Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll)
-{
-    coll->facing = g_Lara.move_angle;
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT);
-}
-
 void Lara_HangTest(ITEM *item, COLL_INFO *coll)
 {
     int flag = 0;

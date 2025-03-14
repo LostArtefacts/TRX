@@ -4,7 +4,6 @@
 
 #include <libtrx/game/lara/misc.h>
 
-void Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll);
 void Lara_HangTest(ITEM *item, COLL_INFO *coll);
 void Lara_SlideSlope(ITEM *item, COLL_INFO *coll);
 bool Lara_Fallen(ITEM *item, COLL_INFO *coll);

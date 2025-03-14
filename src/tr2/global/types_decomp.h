@@ -23,11 +23,6 @@ typedef struct {
 } PHD_3DPOS;
 
 typedef struct {
-    XYZ_32 pos;
-    int32_t r;
-} SPHERE;
-
-typedef struct {
     float xv;
     float yv;
     float zv;

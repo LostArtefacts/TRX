@@ -4,8 +4,6 @@
 
 #include <libtrx/game/lara/misc.h>
 
-void Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll);
-
 void Lara_SlideSlope(ITEM *item, COLL_INFO *coll);
 
 int32_t Lara_HitCeiling(ITEM *item, COLL_INFO *coll);
