@@ -7,9 +7,6 @@
 
 #include <libtrx/utils.h>
 
-#define BOX_OVERLAP_BITS 0x3FFF
-#define BOX_SEARCH_NUMBER 0x7FFF
-#define BOX_END_BIT 0x8000
 #define BOX_NUMBER_BITS 0x7FFF // = ~BOX_END_BIT
 #define BOX_MAX_EXPANSION 5
 
@@ -21,86 +18,6 @@
 #define BOX_CLIP_ALL                                                           \
     (BOX_CLIP_LEFT | BOX_CLIP_RIGHT | BOX_CLIP_TOP | BOX_CLIP_BOTTOM) // = 15
 #define BOX_CLIP_SECONDARY 16
-
-bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion)
-{
-    const int16_t *const zone = Box_GetLotZone(lot);
-    const int16_t search_zone = zone[lot->head];
-
-    for (int32_t i = 0; i < expansion; i++) {
-        if (lot->head == NO_BOX) {
-            if (TR_VERSION >= 2) {
-                lot->tail = NO_BOX;
-            }
-            return false;
-        }
-
-        BOX_NODE *const node = &lot->node[lot->head];
-        const BOX_INFO *const head_box = Box_GetBox(lot->head);
-
-        bool done = false;
-        int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
-        while (!done) {
-            int16_t box_num = Box_GetOverlap(index++);
-            if ((box_num & BOX_END_BIT) != 0) {
-                done = true;
-                box_num &= BOX_NUMBER_BITS;
-            }
-
-            if (search_zone != zone[box_num]) {
-                continue;
-            }
-
-            const BOX_INFO *const box = Box_GetBox(box_num);
-            const int32_t change = box->height - head_box->height;
-            if (change > lot->step || change < lot->drop) {
-                continue;
-            }
-
-            BOX_NODE *const expand = &lot->node[box_num];
-            const int16_t node_search_num =
-                node->search_num & BOX_SEARCH_NUMBER;
-            const int16_t expand_search_num =
-                expand->search_num & BOX_SEARCH_NUMBER;
-            const bool node_search_blocked =
-                (node->search_num & BOX_BLOCKED_SEARCH) != 0;
-            const bool expand_search_blocked =
-                (expand->search_num & BOX_BLOCKED_SEARCH) != 0;
-            if (node_search_num < expand_search_num) {
-                continue;
-            }
-
-            if (node_search_blocked) {
-                if (expand_search_num == node_search_num) {
-                    continue;
-                }
-                expand->search_num = node->search_num;
-            } else {
-                if (expand_search_num == node_search_num
-                    && !expand_search_blocked) {
-                    continue;
-                }
-
-                if ((box->overlap_index & lot->block_mask) != 0) {
-                    expand->search_num = node->search_num | BOX_BLOCKED_SEARCH;
-                } else {
-                    expand->search_num = node->search_num;
-                    expand->exit_box = lot->head;
-                }
-            }
-
-            if (expand->next_expansion == NO_BOX && box_num != lot->tail) {
-                lot->node[lot->tail].next_expansion = box_num;
-                lot->tail = box_num;
-            }
-        }
-
-        lot->head = node->next_expansion;
-        node->next_expansion = NO_BOX;
-    }
-
-    return true;
-}
 
 bool Box_UpdateLOT(LOT_INFO *lot, int32_t expansion)
 {

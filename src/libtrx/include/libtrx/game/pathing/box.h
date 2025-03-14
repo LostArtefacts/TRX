@@ -10,3 +10,4 @@ int16_t Box_GetOverlap(int32_t overlap_idx);
 int16_t *Box_GetFlyZone(bool flip_status);
 int16_t *Box_GetGroundZone(bool flip_status, int32_t zone_idx);
 int16_t *Box_GetLotZone(const LOT_INFO *lot);
+bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion);
