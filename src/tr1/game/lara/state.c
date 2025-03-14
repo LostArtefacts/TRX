@@ -65,6 +65,10 @@ void Lara_State_Initialise(void)
     m_HasResponsiveSwimming = M_HasResponsiveState(LA_SWIM_FORWARD);
 }
 
+void Lara_State_Empty(ITEM *item, COLL_INFO *coll)
+{
+}
+
 void Lara_State_Walk(ITEM *item, COLL_INFO *coll)
 {
     if (item->hit_points <= 0) {
@@ -269,10 +273,6 @@ void Lara_State_ForwardJump(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_State_Pose(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_State_FastBack(ITEM *item, COLL_INFO *coll)
 {
     item->goal_anim_state = LS_STOP;
@@ -394,14 +394,6 @@ void Lara_State_Reach(ITEM *item, COLL_INFO *coll)
     if (item->fall_speed > LARA_FASTFALL_SPEED) {
         item->goal_anim_state = LS_FAST_FALL;
     }
-}
-
-void Lara_State_Splat(ITEM *item, COLL_INFO *coll)
-{
-}
-
-void Lara_State_Land(ITEM *item, COLL_INFO *coll)
-{
 }
 
 void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
@@ -701,14 +693,6 @@ void Lara_State_UsePuzzle(ITEM *item, COLL_INFO *coll)
     g_Camera.target_distance = WALL_L;
 }
 
-void Lara_State_Roll(ITEM *item, COLL_INFO *coll)
-{
-}
-
-void Lara_State_Roll2(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_State_Special(ITEM *item, COLL_INFO *coll)
 {
     ITEM *const target_item = Lara_GetDeathCameraTarget();
@@ -837,10 +821,6 @@ void Lara_State_FastDive(ITEM *item, COLL_INFO *coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 1;
     item->speed = (item->speed * 95) / 100;
-}
-
-void Lara_State_Twist(ITEM *item, COLL_INFO *coll)
-{
 }
 
 void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll)
@@ -1277,8 +1257,4 @@ void Lara_State_Wade(ITEM *item, COLL_INFO *coll)
     } else {
         item->goal_anim_state = LS_STOP;
     }
-}
-
-void Lara_State_Responsive(ITEM *item, COLL_INFO *coll)
-{
 }
