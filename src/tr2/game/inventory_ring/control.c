@@ -191,7 +191,11 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             // first passport page: load game.
             if (apply_changes) {
                 Inv_RemoveAllItems();
-                S_LoadGame(g_Inv_ExtraData[1]);
+                if (!S_LoadGame(g_Inv_ExtraData[1])) {
+                    return (GF_COMMAND) {
+                        .action = GF_EXIT_TO_TITLE,
+                    };
+                }
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,

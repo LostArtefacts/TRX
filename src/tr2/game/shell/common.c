@@ -451,11 +451,14 @@ void Shell_Main(void)
         }
 
         case GF_START_SAVED_GAME: {
-            S_LoadGame(gf_cmd.param);
-            const GF_LEVEL *const level =
-                GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
-            if (level != nullptr) {
-                gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
+            if (!S_LoadGame(gf_cmd.param)) {
+                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            } else {
+                const GF_LEVEL *const level =
+                    GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
+                if (level != nullptr) {
+                    gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
+                }
             }
             break;
         }
