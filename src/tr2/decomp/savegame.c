@@ -1042,7 +1042,7 @@ bool S_FrontEndCheck(void)
     return true;
 }
 
-int32_t S_SaveGame(const int32_t slot_num)
+bool S_SaveGame(const int32_t slot_num)
 {
     char file_name[80];
     sprintf(file_name, "savegame.%d", slot_num);
@@ -1091,7 +1091,7 @@ int32_t S_SaveGame(const int32_t slot_num)
     return true;
 }
 
-int32_t S_LoadGame(const int32_t slot_num)
+bool S_LoadGame(const int32_t slot_num)
 {
     char file_name[80];
     sprintf(file_name, "savegame.%d", slot_num);
