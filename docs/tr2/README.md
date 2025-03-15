@@ -93,6 +93,20 @@ game with new enhancements and features.
     - fixed being unable to stack multiple pushblocks over multiple rooms
     - fixed falling pushblocks using the enemy grunt sound effect
 - fixed seaweed collision in Living Quarters preventing Lara from climbing out of the water in room 15
+- fixed the scale and rotation of several pickup models:
+    - increased auto pistol ammo size
+    - increased M16 ammo size
+    - increased grenade size
+    - reduced Offshore Rig and Diving Area key card sizes, and fixed inventory rotation
+    - reduced Wreck of the Maria Doria circuit breaker size
+    - increased Wreck of the Maria Doria rest room key size
+    - increased Living Quarters theatre key size
+    - increased The Deck cabin key size
+    - reduced Barkhang Monastery prayer wheel size
+    - increased Barkhang Monastery gemstone size
+    - increased Barkhang Monastery rooftops key size
+    - increased Temple of Xian dragon seal size, and fixed inventory rotation
+    - fixed Floating Islands mystic plaque inventory rotation
 - improved the animation of Lara's braid
 
 #### Cheats
