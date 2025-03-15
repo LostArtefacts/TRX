@@ -1,6 +1,8 @@
 {
     // This file is used to enable the -l argument support.
 
+    "main_menu_picture": "data/title.pcx",
+
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},
     "cmd_death_in_demo":  {"action": "exit_to_title"},
