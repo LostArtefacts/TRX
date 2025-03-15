@@ -260,19 +260,6 @@ static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     gf->settings = m_DefaultSettings;
     M_LoadSettings(obj, &gf->settings);
 
-    tmp_arr = JSON_ObjectGetArray(obj, "injections");
-    if (tmp_arr) {
-        gf->injections.count = tmp_arr->length;
-        gf->injections.data_paths =
-            Memory_Alloc(sizeof(char *) * tmp_arr->length);
-        for (size_t i = 0; i < tmp_arr->length; i++) {
-            const char *const str = JSON_ArrayGetString(tmp_arr, i, nullptr);
-            gf->injections.data_paths[i] = Memory_DupStr(str);
-        }
-    } else {
-        gf->injections.count = 0;
-    }
-
     gf->enable_tr2_item_drops =
         JSON_ObjectGetBool(obj, "enable_tr2_item_drops", false);
     gf->convert_dropped_guns =
