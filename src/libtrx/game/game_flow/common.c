@@ -89,8 +89,8 @@ void GF_Shutdown(void)
         Memory_FreePointer(&gf->title_level);
     }
 
-#if TR_VERSION == 1
     Memory_FreePointer(&gf->main_menu_background_path);
+#if TR_VERSION == 1
     Memory_FreePointer(&gf->savegame_fmt_legacy);
     Memory_FreePointer(&gf->savegame_fmt_bson);
 #else

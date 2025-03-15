@@ -856,7 +856,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     if (mode == INV_TITLE_MODE) {
-        Output_LoadBackgroundFromFile("data/title.pcx");
+        Output_LoadBackgroundFromFile(g_GameFlow.main_menu_background_path);
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             INV_RING_FADE_TIME_FAST);

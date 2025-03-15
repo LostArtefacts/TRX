@@ -292,6 +292,11 @@ remains distinct for each game.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>main_menu_picture</code></td>
+    <td>String<strong>*</strong></td>
+    <td>Path to the main menu background image.</td>
+  </tr>
+  <tr valign="top">
     <td><code>secret_track</code></td>
     <td>Integer</td>
     <td>

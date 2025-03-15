@@ -171,6 +171,7 @@ typedef struct {
     // global settings
     struct {
         float demo_delay;
+        char *main_menu_background_path;
         bool is_demo_version;
         bool play_any_level;
         bool gym_enabled;
