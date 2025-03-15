@@ -89,6 +89,10 @@ GF_COMMAND Cutscene_Control(void)
     CINE_DATA *const cine_data = Camera_GetCineData();
     cine_data->frame_idx++;
     if (cine_data->frame_idx >= cine_data->frame_count) {
+        // Remember the scene after the update to prevent the interpolation
+        // from twitching the camera back and forth.
+        Interpolation_Remember();
+
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };
     }
 
