@@ -65,6 +65,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/wall_itemrots.bin",
             ],
         },
@@ -80,6 +81,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
+            ],
         },
 
         // 3. Bartoli's Hideout
@@ -93,6 +97,9 @@
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
             ],
         },
 
@@ -110,6 +117,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/opera_fd.bin",
                 "data/injections/opera_itemrots.bin",
             ],
@@ -132,6 +140,7 @@
             ],
             "injections": [
                 "data/injections/rig_itemrots.bin",
+                "data/injections/rig_pickup_meshes.bin",
             ],
         },
 
@@ -149,6 +158,7 @@
             ],
             "injections": [
                 "data/injections/diving_itemrots.bin",
+                "data/injections/diving_pickup_meshes.bin",
             ],
         },
 
@@ -165,6 +175,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/fathoms_goon_sfx.bin",
             ],
         },
@@ -185,6 +196,7 @@
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
+                "data/injections/wreck_pickup_meshes.bin",
             ],
         },
 
@@ -201,6 +213,7 @@
             ],
             "injections": [
                 "data/injections/living_deck_goon_sfx.bin",
+                "data/injections/living_pickup_meshes.bin",
                 "data/injections/seaweed_collision.bin",
             ],
         },
@@ -218,6 +231,7 @@
             ],
             "injections": [
                 "data/injections/deck_itemrots.bin",
+                "data/injections/deck_pickup_meshes.bin",
                 "data/injections/living_deck_goon_sfx.bin",
             ],
         },
@@ -236,6 +250,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/tibet_fd.bin",
                 "data/injections/tibet_itemrots.bin",
             ],
@@ -255,6 +270,7 @@
             ],
             "injections": [
                 "data/injections/barkhang_itemrots.bin",
+                "data/injections/barkhang_pickup_meshes.bin",
             ],
         },
 
@@ -273,6 +289,7 @@
             "injections": [
                 "data/injections/catacombs_fd.bin",
                 "data/injections/catacombs_itemrots.bin",
+                "data/injections/common_pickup_meshes.bin",
             ],
         },
 
@@ -288,6 +305,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/palace_fd.bin",
                 "data/injections/palace_itemrots.bin",
             ],
@@ -309,6 +327,7 @@
             "injections": [
                 "data/injections/xian_fd.bin",
                 "data/injections/xian_itemrots.bin",
+                "data/injections/xian_pickup_meshes.bin",
             ],
         },
 
@@ -327,6 +346,7 @@
             "injections": [
                 "data/injections/floating_fd.bin",
                 "data/injections/floating_itemrots.bin",
+                "data/injections/floating_pickup_meshes.bin",
             ],
         },
 
@@ -341,6 +361,9 @@
                 {"type": "level_stats"},
                 {"type": "play_fmv", "fmv_id": 7},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
             ],
         },
 
@@ -385,6 +408,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/common_pickup_meshes.bin",
+            ],
         },
 
         // Demo 2: Wreck of the Maria Doria
@@ -399,7 +425,9 @@
             ],
             "injections": [
                 "data/injections/wreck_fd.bin",
+                "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
+                "data/injections/wreck_pickup_meshes.bin",
             ],
         },
 
@@ -414,6 +442,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/common_pickup_meshes.bin",
                 "data/injections/tibet_fd.bin",
                 "data/injections/tibet_itemrots.bin",
             ],
