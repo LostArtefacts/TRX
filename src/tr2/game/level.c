@@ -53,10 +53,13 @@ static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
     return entry_a->file_index - entry_b->file_index;
 }
 
-static void M_InitialiseSoundEffects(const char *const file_name)
+static void M_InitialiseSoundEffects(const char *file_name)
 {
     BENCHMARK benchmark = Benchmark_Start();
     SAMPLE_ENTRY *entries = nullptr;
+    if (file_name == nullptr) {
+        file_name = g_GameFlow.settings.sfx_path;
+    }
     const char *full_path =
         File_GetFullPath(file_name == nullptr ? DEFAULT_SFX_PATH : file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
