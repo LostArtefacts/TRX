@@ -2,6 +2,7 @@
     // This file is used to enable the -l argument support.
 
     "main_menu_picture": "data/title.pcx",
+    "savegame_fmt_legacy": "savegame.%d",
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},

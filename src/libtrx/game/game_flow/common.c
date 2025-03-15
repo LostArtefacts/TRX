@@ -90,8 +90,8 @@ void GF_Shutdown(void)
     }
 
     Memory_FreePointer(&gf->main_menu_background_path);
-#if TR_VERSION == 1
     Memory_FreePointer(&gf->savegame_fmt_legacy);
+#if TR_VERSION == 1
     Memory_FreePointer(&gf->savegame_fmt_bson);
 #else
     Memory_FreePointer(&gf->settings.sfx_path);

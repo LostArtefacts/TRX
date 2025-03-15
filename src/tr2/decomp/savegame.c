@@ -1007,7 +1007,7 @@ bool S_FrontEndCheck(void)
     g_SavedGames = 0;
     for (int32_t i = 0; i < MAX_REQUESTER_ITEMS; i++) {
         char file_name[80];
-        sprintf(file_name, "savegame.%d", i);
+        sprintf(file_name, g_GameFlow.savegame_fmt_legacy, i);
 
         if (!File_Exists(file_name)) {
             Requester_AddItem(
@@ -1045,7 +1045,7 @@ bool S_FrontEndCheck(void)
 bool S_SaveGame(const int32_t slot_num)
 {
     char file_name[80];
-    sprintf(file_name, "savegame.%d", slot_num);
+    sprintf(file_name, g_GameFlow.savegame_fmt_legacy, slot_num);
 
     MYFILE *const fp = File_Open(file_name, FILE_OPEN_WRITE);
     if (fp == nullptr) {
@@ -1094,7 +1094,7 @@ bool S_SaveGame(const int32_t slot_num)
 bool S_LoadGame(const int32_t slot_num)
 {
     char file_name[80];
-    sprintf(file_name, "savegame.%d", slot_num);
+    sprintf(file_name, g_GameFlow.savegame_fmt_legacy, slot_num);
 
     MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
     if (fp == nullptr) {

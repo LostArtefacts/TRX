@@ -3,6 +3,7 @@
     // Lines starting with double slashes are comments and are ignored.
 
     "main_menu_picture": "data/title.pcx",
+    "savegame_fmt_legacy": "savegame.%d",
 
     "cmd_init":           {"action": "exit_to_title"},
     "cmd_title":          {"action": "noop"},

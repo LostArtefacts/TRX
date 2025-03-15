@@ -168,6 +168,11 @@ typedef struct {
         GF_COMMAND cmd_demo_end;
     };
 
+    // savegame settings
+    struct {
+        char *savegame_fmt_legacy;
+    };
+
     // global settings
     struct {
         float demo_delay;
