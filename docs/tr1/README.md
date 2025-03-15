@@ -612,7 +612,8 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added an option to pause sound in the inventory screen
 - added ability to skip FMVs with the Action key
 - added ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
-- expanded internal game memory limit from 3.5 MB to 128 MB
+- added -l/--level and -s/--save command line arguments
+- expanded internal game memory limit from 3.5 MB to unlimited (within system memory cap)
 - expanded moveable limit from 256 to 10240
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)

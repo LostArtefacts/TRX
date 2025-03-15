@@ -28,6 +28,7 @@
 #include <libtrx/game/shell.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 
 #include <SDL2/SDL.h>
 #include <stdarg.h>
@@ -38,6 +39,12 @@ typedef enum {
     M_MOD_OG,
     M_MOD_CUSTOM_LEVEL,
 } M_MOD;
+
+typedef struct {
+    M_MOD mod;
+    const char *level_to_play;
+    int32_t save_to_load;
+} SHELL_ARGS;
 
 static struct {
     char *game_flow_path;
@@ -52,7 +59,13 @@ static struct {
         .game_strings_path = "cfg/TR2X_strings_level.json5",
     },
 };
-static M_MOD m_ActiveMod = M_MOD_UNKNOWN;
+
+static SHELL_ARGS m_Args = {
+    .mod = M_MOD_UNKNOWN,
+    .level_to_play = nullptr,
+    .save_to_load = -1,
+};
+
 static Uint64 m_UpdateDebounce = 0;
 
 static void M_SyncToWindow(void);
@@ -72,6 +85,7 @@ static void M_HandleQuit(void);
 static void M_ConfigureOpenGL(void);
 static bool M_CreateGameWindow(void);
 
+static void M_ParseArgs(SHELL_ARGS *out_args);
 static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
 
@@ -284,6 +298,29 @@ static bool M_CreateGameWindow(void)
     return true;
 }
 
+static void M_ParseArgs(SHELL_ARGS *const out_args)
+{
+    const char **args = nullptr;
+    int32_t arg_count = 0;
+    Shell_GetCommandLine(&arg_count, &args);
+
+    out_args->mod = M_MOD_OG;
+
+    for (int32_t i = 0; i < arg_count; i++) {
+        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
+            && i + 1 < arg_count) {
+            out_args->level_to_play = args[i + 1];
+            out_args->mod = M_MOD_CUSTOM_LEVEL;
+        }
+        if ((!strcmp(args[i], "-s") || !strcmp(args[i], "--save"))
+            && i + 1 < arg_count) {
+            if (String_ParseInteger(args[i + 1], &out_args->save_to_load)) {
+                out_args->save_to_load--;
+            }
+        }
+    }
+}
+
 static void M_LoadConfig(void)
 {
     Config_Read();
@@ -338,20 +375,7 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 // TODO: refactor the hell out of me
 void Shell_Main(void)
 {
-    m_ActiveMod = M_MOD_OG;
-
-    const char *level_to_play = nullptr;
-
-    const char **args = nullptr;
-    int32_t arg_count = 0;
-    Shell_GetCommandLine(&arg_count, &args);
-    for (int32_t i = 0; i < arg_count; i++) {
-        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
-            && i + 1 < arg_count) {
-            level_to_play = args[i + 1];
-            m_ActiveMod = M_MOD_CUSTOM_LEVEL;
-        }
-    }
+    M_ParseArgs(&m_Args);
 
     GameString_Init();
     EnumMap_Init();
@@ -382,8 +406,8 @@ void Shell_Main(void)
     Render_Reset(RENDER_RESET_PARAMS);
 
     GF_Init();
-    GF_LoadFromFile(m_ModPaths[m_ActiveMod].game_flow_path);
-    GameStringTable_LoadFromFile(m_ModPaths[m_ActiveMod].game_strings_path);
+    GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
+    GameStringTable_LoadFromFile(m_ModPaths[m_Args.mod].game_strings_path);
     GameStringTable_Apply(nullptr);
 
     Savegame_Init();
@@ -392,15 +416,19 @@ void Shell_Main(void)
 
     GameBuf_Init();
 
-    if (level_to_play != nullptr) {
+    if (m_Args.level_to_play != nullptr) {
         Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
         g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
-            Memory_DupStr(level_to_play);
+            Memory_DupStr(m_Args.level_to_play);
     }
 
-    GF_COMMAND gf_cmd = level_to_play != nullptr
+    GF_COMMAND gf_cmd = m_Args.save_to_load != -1
+        ? (GF_COMMAND) { .action = GF_START_SAVED_GAME,
+                         .param = m_Args.save_to_load }
+        : m_Args.level_to_play != nullptr
         ? (GF_COMMAND) { .action = GF_START_GAME, .param = 0 }
         : GF_DoFrontendSequence();
+
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {
         LOG_INFO(
@@ -470,7 +498,7 @@ void Shell_Main(void)
     }
 
     Config_Write();
-    if (level_to_play != nullptr) {
+    if (m_Args.level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
 }
@@ -495,7 +523,7 @@ const char *Shell_GetConfigPath(void)
 
 const char *Shell_GetGameFlowPath(void)
 {
-    return m_ModPaths[m_ActiveMod].game_flow_path;
+    return m_ModPaths[m_Args.mod].game_flow_path;
 }
 
 void Shell_Start(void)

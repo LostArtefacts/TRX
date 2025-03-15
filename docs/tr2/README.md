@@ -166,7 +166,8 @@ game with new enhancements and features.
 - added ability to skip FMVs with both the Action key
 - added ability to skip end credits with the Action and Escape keys
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels
-- expanded internal game memory limit from 7.5 MB to 128 MB
+- added -l/--level and -s/--save command line arguments
+- expanded internal game memory limit from 7.5 MB to unlimited (within system memory cap)
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)
 - expanded maximum texture pages from 32 to 128

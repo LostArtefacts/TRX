@@ -7,6 +7,7 @@
 - added a `/fps` console command
 - added `/flood` and `/drain` console commands
 - added support for `-l`/`--level` argument to play a single level
+- added support for `-s`/`--save` argument to immediately start a saved game
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels (#2615)
 - added the camera shutter sound to cutscenes for photo mode (#2280)
 - added Italian localization to the config tool
