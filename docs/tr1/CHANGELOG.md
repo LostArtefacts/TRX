@@ -2,6 +2,7 @@
 - added quadrilateral interpolation (#354)
 - added `/flood` and `/drain` console commands
 - added support for `-l`/`--level` argument to play a single level
+- added support for `-s`/`--save` argument to immediately start a saved game
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - added drawing of object mesh spheres to the `/debug` console command
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
