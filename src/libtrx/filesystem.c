@@ -148,6 +148,8 @@ static FILE *M_ResolveAndOpen(
 finish:
     if (out_full_path != nullptr) {
         *out_full_path = resolved_path;
+    } else {
+        Memory_FreePointer(&resolved_path);
     }
     Memory_FreePointer(&abs_path);
     return fp;

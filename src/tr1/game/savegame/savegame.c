@@ -646,7 +646,7 @@ void Savegame_ScanSavedGames(void)
 
 void Savegame_FillAvailableSaves(REQUEST_INFO *req)
 {
-    Requester_ClearTextstrings(req);
+    Requester_Shutdown(req);
     Requester_Init(req, Savegame_GetSlotCount());
 
     for (int i = 0; i < req->max_items; i++) {
