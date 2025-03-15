@@ -124,12 +124,19 @@ static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     gf->settings = m_DefaultSettings;
     M_LoadSettings(obj, &gf->settings);
 
-    const char *const tmp_s =
+    const char *tmp_s =
         JSON_ObjectGetString(obj, "main_menu_picture", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
         Shell_ExitSystem("'main_menu_picture' must be a string");
     }
     gf->main_menu_background_path = Memory_DupStr(tmp_s);
+
+    tmp_s =
+        JSON_ObjectGetString(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
+        Shell_ExitSystem("'savegame_fmt_legacy' must be a string");
+    }
+    gf->savegame_fmt_legacy = Memory_DupStr(tmp_s);
 
     // clang-format off
     gf->demo_delay = JSON_ObjectGetInt(obj, "demo_delay", 30);

@@ -297,6 +297,11 @@ remains distinct for each game.
     <td>Path to the main menu background image.</td>
   </tr>
   <tr valign="top">
+    <td><code>savegame_fmt_legacy</code></td>
+    <td>String<strong>*</strong></td>
+    <td>Path pattern to look for the original savegame files.</td>
+  </tr>
+  <tr valign="top">
     <td><code>secret_track</code></td>
     <td>Integer</td>
     <td>
