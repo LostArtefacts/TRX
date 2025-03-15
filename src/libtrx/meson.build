@@ -160,6 +160,7 @@ sources = [
   'game/lara/common.c',
   'game/lara/misc.c',
   'game/level/common.c',
+  'game/level/faces.c',
   'game/math/trig.c',
   'game/math/util.c',
   'game/matrix.c',

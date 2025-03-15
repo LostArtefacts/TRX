@@ -48,6 +48,7 @@ void Level_AppendSpriteTextures(
 void Level_LoadTextures(void);
 void Level_LoadTexturePages(void);
 void Level_LoadPalettes(void);
+void Level_LoadFaces(void);
 void Level_LoadAnimCommands(void);
 void Level_LoadAnimFrames(void);
 void Level_LoadObjectsAndItems(void);
