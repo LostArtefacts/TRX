@@ -307,7 +307,7 @@ char *String_Format(const char *const fmt, ...)
     va_list args;
     va_start(args, fmt);
 
-    int len = vsnprintf(NULL, 0, fmt, args);
+    int len = vsnprintf(nullptr, 0, fmt, args);
     if (len < 0) {
         va_end(args);
         return nullptr;
