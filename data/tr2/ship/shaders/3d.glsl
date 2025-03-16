@@ -42,14 +42,8 @@ void main(void) {
     texCoords.xy /= vertTexCoords.zw;
 
     if (texturingEnabled) {
-        if (alphaPointDiscard && smoothingEnabled) {
-            // do not use smoothing for chroma key
-            ivec2 size = textureSize(tex0, 0);
-            ivec2 texCoordsNN = ivec2(texCoords.xy * size.xy) % size.xy;
-            vec4 texel = texelFetch(tex0, texCoordsNN, 0);
-            if (texel.a == 0.0) {
-                discard;
-            }
+        if (alphaPointDiscard && smoothingEnabled && discardTranslucent(tex0, texCoords)) {
+            discard;
         }
 
         vec4 texColor = texture(tex0, texCoords.xy);
