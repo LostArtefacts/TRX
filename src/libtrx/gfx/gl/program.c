@@ -44,12 +44,9 @@ char *GFX_GL_Program_PreprocessShader(
 {
     ASSERT(content != nullptr);
 
-    const char *version_ogl21 =
-        "#version 120\n"
-        "#extension GL_ARB_explicit_attrib_location: enable\n"
-        "#extension GL_EXT_gpu_shader4: enable\n";
     const char *version_ogl33c = "#version 330 core\n";
     const char *define_vertex = "#define VERTEX\n";
+    const char *define_fragment = "#define FRAGMENT\n";
     const char *define_ogl33c = "#define OGL33C\n";
 
     size_t bufsize = strlen(content) + 1;
@@ -57,12 +54,12 @@ char *GFX_GL_Program_PreprocessShader(
     if (backend == GFX_GL_33C) {
         bufsize += strlen(version_ogl33c);
         bufsize += strlen(define_ogl33c);
-    } else {
-        bufsize += strlen(version_ogl21);
     }
 
     if (type == GL_VERTEX_SHADER) {
         bufsize += strlen(define_vertex);
+    } else if (type == GL_FRAGMENT_SHADER) {
+        bufsize += strlen(define_fragment);
     }
 
     char *processed_content = Memory_Alloc(bufsize);
@@ -74,12 +71,12 @@ char *GFX_GL_Program_PreprocessShader(
     if (backend == GFX_GL_33C) {
         strcpy(processed_content, version_ogl33c);
         strcat(processed_content, define_ogl33c);
-    } else {
-        strcpy(processed_content, version_ogl21);
     }
 
     if (type == GL_VERTEX_SHADER) {
         strcat(processed_content, define_vertex);
+    } else if (type == GL_FRAGMENT_SHADER) {
+        strcat(processed_content, define_fragment);
     }
 
     strcat(processed_content, content);
