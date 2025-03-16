@@ -14,14 +14,11 @@
 
 #include <string.h>
 
-#define TEXTURE_3D 1
 #define M_QUAD_VERTICES 6
 
 typedef enum {
-#if TEXTURE_3D
-    M_UNIFORM_TEX_FRAMES,
     M_UNIFORM_TEX_ATLAS,
-#endif
+    M_UNIFORM_TEX_FRAMES,
     M_UNIFORM_SMOOTHING_ENABLED,
     M_UNIFORM_BRIGHTNESS_MULTIPLIER,
     M_UNIFORM_VIEWPORT_SIZE,
@@ -42,13 +39,7 @@ typedef struct {
     } displacement;
 
     // attribute 2
-#if TEXTURE_3D
     int32_t texture_idx;
-#else
-    struct {
-        float u, v;
-    } uv;
-#endif
 } M_SPRITE_VERTEX;
 
 typedef uint16_t M_SPRITE_SHADE;
@@ -92,27 +83,11 @@ static void M_MakeQuad(
 
     for (int32_t k = 0; k < 4; k++) {
         out_quad[k].pos = (XYZ_F) { .x = pos.x, .y = pos.y, .z = pos.z };
-#if TEXTURE_3D
-        out_quad[k].texture_idx = sprite_idx * 4 + k;
-        LOG_INFO("%d", out_quad[k].texture_idx);
-#endif
     }
 
-#if TEXTURE_3D
-#else
-    const float u0 = (sprite->offset & 0xFF) / 256.0f;
-    const float v0 = (sprite->offset >> 8) / 256.0f;
-    const float u1 = u0 + (sprite->width >> 8) / 256.0f;
-    const float v1 = v0 + (sprite->height >> 8) / 256.0f;
-    out_quad[0].uv.u = u0;
-    out_quad[0].uv.v = v0;
-    out_quad[1].uv.u = u1;
-    out_quad[1].uv.v = v0;
-    out_quad[2].uv.u = u1;
-    out_quad[2].uv.v = v1;
-    out_quad[3].uv.u = u0;
-    out_quad[3].uv.v = v1;
-#endif
+    for (int32_t k = 0; k < 4; k++) {
+        out_quad[k].texture_idx = sprite_idx * 4 + k;
+    }
 
     out_quad[0].displacement.x = sprite->x0;
     out_quad[0].displacement.y = sprite->y0;
@@ -273,10 +248,8 @@ void Output_Sprites_Init(void)
     GFX_GL_Program_Link(&m_Program);
 
     const char *const uniform_names[] = {
-#if TEXTURE_3D
-        [M_UNIFORM_TEX_FRAMES] = "uFrame",
         [M_UNIFORM_TEX_ATLAS] = "uTexture",
-#endif
+        [M_UNIFORM_TEX_FRAMES] = "uFrame",
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
         [M_UNIFORM_BRIGHTNESS_MULTIPLIER] = "uBrightnessMultiplier",
         [M_UNIFORM_VIEWPORT_SIZE] = "uViewportSize",
@@ -290,11 +263,9 @@ void Output_Sprites_Init(void)
         GFX_GL_CheckError();
     }
 
-#if TEXTURE_3D
     GFX_GL_Program_Bind(&m_Program);
-    glUniform1i(m_Uniforms[M_UNIFORM_TEX_FRAMES], 0);
-    glUniform1i(m_Uniforms[M_UNIFORM_TEX_ATLAS], 1);
-#endif
+    glUniform1i(m_Uniforms[M_UNIFORM_TEX_ATLAS], 0);
+    glUniform1i(m_Uniforms[M_UNIFORM_TEX_FRAMES], 1);
 }
 
 static void M_FreeBuffers(void)
@@ -368,15 +339,9 @@ static void M_PrepareLevelBuffers(void)
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, displacement));
 
     glEnableVertexAttribArray(2);
-#if TEXTURE_3D
-    glVertexAttribPointer(
-        2, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
+    glVertexAttribIPointer(
+        2, 1, GL_UNSIGNED_INT, sizeof(M_SPRITE_VERTEX),
         (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, texture_idx));
-#else
-    glVertexAttribPointer(
-        2, 2, GL_FLOAT, GL_FALSE, sizeof(M_SPRITE_VERTEX),
-        (void *)(intptr_t)offsetof(M_SPRITE_VERTEX, uv));
-#endif
 
     glBindBuffer(GL_ARRAY_BUFFER, m_LevelData.shade_vbo);
     glEnableVertexAttribArray(3);
@@ -446,11 +411,9 @@ void Output_Sprites_RenderRoomSprites(const ROOM *const room)
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound_texture);
 
     glBindVertexArray(m_LevelData.vao);
-#if TEXTURE_3D
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteFramesTex());
     glActiveTexture(GL_TEXTURE1);
-#endif
+    glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteFramesTex());
+    glActiveTexture(GL_TEXTURE0);
     for (int32_t i = 0; i < batch->texture_batch_count; i++) {
         const M_ROOM_TEXTURE_BATCH *const texture_batch =
             &batch->texture_batches[i];
@@ -462,9 +425,6 @@ void Output_Sprites_RenderRoomSprites(const ROOM *const room)
             texture_batch->quad_count * M_QUAD_VERTICES);
     }
 
-#if TEXTURE_3D
-    glActiveTexture(GL_TEXTURE0);
-#endif
     glBindTexture(GL_TEXTURE_2D, bound_texture);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

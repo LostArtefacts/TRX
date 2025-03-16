@@ -1,5 +1,3 @@
-#define TEXTURE_3D 1
-
 #ifdef VERTEX
 // Vertex shader
 
@@ -10,18 +8,11 @@ uniform float uWibbleOffset;
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inDisplacement;
-#if TEXTURE_3D
-layout(location = 2) in float inTextureIdx;
-#else
-layout(location = 2) in vec2 inUV;
-#endif
+layout(location = 2) in int inTextureIdx;
 layout(location = 3) in float inShade;
 
-#if TEXTURE_3D
 uniform samplerBuffer uFrame;
-#else
-#endif
-OUT vec2 gUV;
+OUT vec3 gUV; // x = u, y = v, z = layer
 OUT float gShade;
 
 void main(void) {
@@ -33,11 +24,7 @@ void main(void) {
         gl_Position.xyz = waterWibble(gl_Position, uViewportSize, uWibbleOffset);
     }
 
-    #if TEXTURE_3D
-    gUV = TEXELFETCH1D(uFrame, int(inTextureIdx)).xy;
-    #else
-    gUV = inUV;
-    #endif
+    gUV = TEXELFETCH1D(uFrame, int(inTextureIdx)).xyz;
     gShade = inShade;
 }
 
@@ -50,19 +37,15 @@ uniform sampler2D uTexture;
 uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
 
-IN vec2 gUV;
+IN vec3 gUV;
 IN float gShade;
 
 void main(void) {
-    #if TEXTURE_3D
-    vec4 texColor = TEXTURE2D(uTexture, gUV);
-    #else
-    if (uSmoothingEnabled && discardTranslucent(uTexture, gUV)) {
+    vec4 texColor = TEXTURE2D(uTexture, gUV.xy);
+    if (uSmoothingEnabled && discardTranslucent(uTexture, gUV.xy)) {
         discard;
     }
 
-    vec4 texColor = TEXTURE2D(uTexture, gUV);
-    #endif
     if (texColor.a <= 0.0) {
         discard;
     }

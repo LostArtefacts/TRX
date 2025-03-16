@@ -7,9 +7,9 @@
 #include <libtrx/memory.h>
 
 typedef struct {
-    float layer;
     float u;
     float v;
+    float layer;
 } M_FRAME_DATA;
 
 typedef struct {
@@ -20,7 +20,9 @@ typedef struct {
 } M_FRAMES;
 
 static struct {
+#if 0
     GLuint tex; // 3D texture to hold atlas pages
+#endif
     M_FRAMES sprites;
 } m_LevelData = {};
 
@@ -40,10 +42,12 @@ void Output_Textures_Shutdown(void)
         glDeleteTextures(1, &m_LevelData.sprites.tex);
         m_LevelData.sprites.tex = 0;
     }
+#if 0
     if (m_LevelData.tex != 0) {
         glDeleteTextures(1, &m_LevelData.tex);
         m_LevelData.tex = 0;
     }
+#endif
 }
 
 void Output_Textures_UploadLevel(void)
@@ -60,22 +64,12 @@ void Output_Textures_UploadLevel(void)
         const float v0 = (sprite->offset >> 8) / 256.0f;
         const float u1 = u0 + (sprite->width >> 8) / 256.0f;
         const float v1 = v0 + (sprite->height >> 8) / 256.0f;
-        frame->layer = sprite->tex_page;
-        frame->u = u0;
-        frame->v = v0;
-        frame++;
-        frame->layer = sprite->tex_page;
-        frame->u = u1;
-        frame->v = v0;
-        frame++;
-        frame->layer = sprite->tex_page;
-        frame->u = u1;
-        frame->v = v1;
-        frame++;
-        frame->layer = sprite->tex_page;
-        frame->u = u0;
-        frame->v = v1;
-        frame++;
+        // clang-format off
+        frame->u = u0; frame->v = v0; frame->layer = sprite->tex_page; frame++;
+        frame->u = u1; frame->v = v0; frame->layer = sprite->tex_page; frame++;
+        frame->u = u1; frame->v = v1; frame->layer = sprite->tex_page; frame++;
+        frame->u = u0; frame->v = v1; frame->layer = sprite->tex_page; frame++;
+        // clang-format on
     }
     ASSERT(frame == m_LevelData.sprites.frames + m_LevelData.sprites.count);
 
@@ -85,10 +79,15 @@ void Output_Textures_UploadLevel(void)
         GL_TEXTURE_BUFFER, m_LevelData.sprites.count * sizeof(M_FRAME_DATA),
         m_LevelData.sprites.frames, GL_DYNAMIC_DRAW);
 
+    GLint limit;
+    glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &limit);
+    ASSERT(m_LevelData.sprites.count * sizeof(M_FRAME_DATA) <= limit);
+
     glGenTextures(1, &m_LevelData.sprites.tex);
     glBindTexture(GL_TEXTURE_BUFFER, m_LevelData.sprites.tex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_LevelData.sprites.tbo);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_LevelData.sprites.tbo);
 
+#if 0
     glGenTextures(1, &m_LevelData.tex);
     glBindTexture(GL_TEXTURE_2D_ARRAY, m_LevelData.tex);
     glTexImage3D(
@@ -108,6 +107,7 @@ void Output_Textures_UploadLevel(void)
             i, // depth
             GL_RGBA8, GL_RGBA8, input_ptr);
     }
+#endif
 }
 
 GLuint Output_Textures_GetSpriteFramesTex(void)
