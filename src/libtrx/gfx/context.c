@@ -36,7 +36,6 @@ typedef struct {
 static GFX_CONTEXT m_Context = {};
 
 static bool M_IsExtensionSupported(const char *name);
-static void M_CheckExtensionSupport(const char *name);
 
 static bool M_IsExtensionSupported(const char *name)
 {
@@ -54,12 +53,6 @@ static bool M_IsExtensionSupported(const char *name)
         }
     }
     return false;
-}
-
-static void M_CheckExtensionSupport(const char *name)
-{
-    LOG_INFO(
-        "%s supported: %s", name, M_IsExtensionSupported(name) ? "yes" : "no");
 }
 
 void GFX_Context_SwitchToWindowViewport(void)
@@ -132,12 +125,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
             "Can't activate OpenGL context: %s", SDL_GetError());
     }
 
-    // Instruct GLEW to load non-Core Profile extensions with OpenGL 2.1,
-    // as we rely on `GL_ARB_explicit_attrib_location` and
-    // `GL_EXT_gpu_shader4`.
-    if (m_Context.config.backend == GFX_GL_21) {
-        glewExperimental = GL_TRUE; // Global state
-    }
     if (glewInit() != GLEW_OK) {
         Shell_ExitSystem("Can't initialize GLEW for OpenGL extension loading");
     }
@@ -151,12 +138,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
         LOG_INFO("Shading version string: %s", shading_ver);
     } else {
         GFX_GL_CheckError();
-    }
-
-    // Check the availability of non-Core Profile extensions for OpenGL 2.1
-    if (m_Context.config.backend == GFX_GL_21) {
-        M_CheckExtensionSupport("GL_ARB_explicit_attrib_location");
-        M_CheckExtensionSupport("GL_EXT_gpu_shader4");
     }
 
     glClearColor(0, 0, 0, 0);
