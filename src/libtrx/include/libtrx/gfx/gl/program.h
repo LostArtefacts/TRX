@@ -7,7 +7,6 @@
 typedef struct {
     bool initialized;
     GLuint id;
-    int32_t uniform_updates;
 } GFX_GL_PROGRAM;
 
 bool GFX_GL_Program_Init(GFX_GL_PROGRAM *program);

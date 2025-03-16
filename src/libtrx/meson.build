@@ -210,6 +210,7 @@ sources = [
   'gfx/gl/buffer.c',
   'gfx/gl/program.c',
   'gfx/gl/sampler.c',
+  'gfx/gl/track.c',
   'gfx/gl/texture.c',
   'gfx/gl/utils.c',
   'gfx/gl/vertex_array.c',

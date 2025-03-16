@@ -10,6 +10,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/gfx/fade/fade_renderer.h>
+#include <libtrx/gfx/gl/track.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -202,6 +203,7 @@ void Render_SetupDisplay(
 void Render_BeginScene(void)
 {
     GFX_Context_Clear();
+    GFX_Track_Reset();
     RENDERER *const r = M_GetRenderer();
     r->BeginScene(r);
     M_ResetPolyList();
