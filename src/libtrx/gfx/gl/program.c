@@ -44,12 +44,22 @@ char *GFX_GL_Program_PreprocessShader(
 {
     ASSERT(content != nullptr);
 
+    char *common = nullptr;
+    File_Load("shaders/common.glsl", &common, nullptr);
+
+    const char *version_ogl21 =
+        "#version 120\n"
+        "#extension GL_ARB_explicit_attrib_location: enable\n"
+        "#extension GL_EXT_gpu_shader4: enable\n";
     const char *version_ogl33c = "#version 330 core\n";
     const char *define_vertex = "#define VERTEX\n";
     const char *define_fragment = "#define FRAGMENT\n";
     const char *define_ogl33c = "#define OGL33C\n";
 
     size_t bufsize = strlen(content) + 1;
+    if (common != nullptr) {
+        bufsize += strlen(common);
+    }
 
     if (backend == GFX_GL_33C) {
         bufsize += strlen(version_ogl33c);
@@ -63,14 +73,13 @@ char *GFX_GL_Program_PreprocessShader(
     }
 
     char *processed_content = Memory_Alloc(bufsize);
-    if (!processed_content) {
-        return nullptr;
-    }
-    processed_content[0] = '\0';
-
     if (backend == GFX_GL_33C) {
         strcpy(processed_content, version_ogl33c);
         strcat(processed_content, define_ogl33c);
+    }
+
+    if (common != nullptr) {
+        strcat(processed_content, common);
     }
 
     if (type == GL_VERTEX_SHADER) {
@@ -80,6 +89,8 @@ char *GFX_GL_Program_PreprocessShader(
     }
 
     strcat(processed_content, content);
+
+    Memory_FreePointer(&common);
     return processed_content;
 }
 
