@@ -1,5 +1,6 @@
 #include "game/phase/executor.h"
 
+#include "benchmark.h"
 #include "config.h"
 #include "game/clock.h"
 #include "game/console/common.h"
@@ -11,7 +12,9 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/text.h"
+#include "gfx/gl/track.h"
 
+#define DEBUG_OPTIM 0
 #define MAX_PHASES 10
 
 static bool m_Exiting;
@@ -61,6 +64,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase, const int32_t nframes)
 static void M_Draw(PHASE *const phase)
 {
     Output_BeginScene();
+#if DEBUG_OPTIM
+    BENCHMARK benchmark = Benchmark_Start();
+#endif
     if (phase != nullptr && phase->draw != nullptr) {
         phase->draw(phase);
     }
@@ -71,6 +77,15 @@ static void M_Draw(PHASE *const phase)
     Fader_Draw(&m_ExitFader);
 
     Output_EndScene();
+
+#if DEBUG_OPTIM
+    char buffer[80];
+    const GFX_METRICS metrics = GFX_Track_GetMetrics();
+    sprintf(
+        buffer, "%.03f KB T:%d U:%d", metrics.buffer_total_bytes / 1024.0f,
+        metrics.buffer_transfer_count, metrics.uniform_changes);
+    Benchmark_End(&benchmark, buffer);
+#endif
 }
 
 static int32_t M_Wait(PHASE *const phase)

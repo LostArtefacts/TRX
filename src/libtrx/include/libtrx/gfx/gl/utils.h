@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../log.h"
+#include "track.h"
 
 #include <GL/glew.h>
 

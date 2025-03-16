@@ -9,6 +9,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/gfx/gl/track.h>
 #include <libtrx/log.h>
 
 #include <string.h>
@@ -263,6 +264,7 @@ void S_Output_DisableDepthTest(void)
 void S_Output_RenderBegin(void)
 {
     GFX_Context_Clear();
+    GFX_Track_Reset();
     S_Output_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
