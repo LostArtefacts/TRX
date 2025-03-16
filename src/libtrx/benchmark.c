@@ -6,7 +6,7 @@
 
 static void M_Log(
     BENCHMARK *const b, const char *file, int32_t line, const char *func,
-    Uint64 current, const char *message)
+    Uint64 current, const char *message, const bool closing)
 {
     const Uint64 freq = SDL_GetPerformanceFrequency();
     const double elapsed_start =
@@ -14,7 +14,14 @@ static void M_Log(
     const double elapsed_last =
         (double)(current - b->last) * 1000.0 / (double)freq;
 
-    if (b->last != b->start) {
+    if (closing) {
+        if (message == nullptr) {
+            Log_Message(file, line, func, "took %.02f ms", elapsed_start);
+        } else {
+            Log_Message(
+                file, line, func, "%s: took %.02f ms", message, elapsed_start);
+        }
+    } else {
         if (message == nullptr) {
             Log_Message(
                 file, line, func, "took %.02f ms (%.02f ms)", elapsed_start,
@@ -23,14 +30,6 @@ static void M_Log(
             Log_Message(
                 file, line, func, "%s: took %.02f ms (%.02f ms)", message,
                 elapsed_start, elapsed_last);
-        }
-    } else {
-        if (message == nullptr) {
-            Log_Message(file, line, func, "took %.02f ms", elapsed_start);
-        } else {
-            Log_Message(
-                file, line, func, "%s: took %.02f ms (%.02f ms)", message,
-                elapsed_start);
         }
     }
 }
@@ -49,7 +48,7 @@ void Benchmark_Tick_Impl(
     const char *const func, const char *const message)
 {
     const Uint64 current = SDL_GetPerformanceCounter();
-    M_Log(b, file, line, func, current, message);
+    M_Log(b, file, line, func, current, message, false);
     b->last = current;
 }
 
@@ -57,5 +56,6 @@ void Benchmark_End_Impl(
     BENCHMARK *b, const char *const file, const int32_t line,
     const char *const func, const char *const message)
 {
-    Benchmark_Tick_Impl(b, file, line, func, message);
+    const Uint64 current = SDL_GetPerformanceCounter();
+    M_Log(b, file, line, func, current, message, true);
 }
