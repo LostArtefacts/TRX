@@ -1,3 +1,5 @@
+#define CUBOIDS 1
+
 #ifdef VERTEX
 // Vertex shader
 
@@ -33,7 +35,11 @@ void main(void) {
 
 #define NEUTRAL_SHADE 0x1000
 
+#if CUBOIDS
+uniform sampler2DArray uTexture;
+#else
 uniform sampler2D uTexture;
+#endif
 uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
 
@@ -41,14 +47,19 @@ IN vec3 gUV;
 IN float gShade;
 
 void main(void) {
+#if CUBOIDS
+    vec4 texColor = TEXTURE3D(uTexture, gUV);
+#else
     vec4 texColor = TEXTURE2D(uTexture, gUV.xy);
-    if (uSmoothingEnabled && discardTranslucent(uTexture, gUV.xy)) {
+#endif
+    if (uSmoothingEnabled && discardTranslucent(uTexture, gUV)) {
         discard;
     }
 
     if (texColor.a <= 0.0) {
         discard;
     }
+
     texColor.rgb *= 2.0 - (gShade / NEUTRAL_SHADE);
     texColor.rgb *= uBrightnessMultiplier;
     OUTCOLOR = vec4(texColor.rgb, 1.0);

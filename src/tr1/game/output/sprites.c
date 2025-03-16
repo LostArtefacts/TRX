@@ -14,6 +14,7 @@
 
 #include <string.h>
 
+#define CUBOIDS 1
 #define M_QUAD_VERTICES 6
 
 typedef enum {
@@ -414,6 +415,12 @@ void Output_Sprites_RenderRoomSprites(const ROOM *const room)
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteFramesTex());
     glActiveTexture(GL_TEXTURE0);
+#if CUBOIDS
+    glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTex());
+    glDrawArrays(
+        GL_TRIANGLES, batch->quad_start * M_QUAD_VERTICES,
+        batch->quad_count * M_QUAD_VERTICES);
+#else
     for (int32_t i = 0; i < batch->texture_batch_count; i++) {
         const M_ROOM_TEXTURE_BATCH *const texture_batch =
             &batch->texture_batches[i];
@@ -424,6 +431,7 @@ void Output_Sprites_RenderRoomSprites(const ROOM *const room)
             GL_TRIANGLES, texture_batch->quad_start * M_QUAD_VERTICES,
             texture_batch->quad_count * M_QUAD_VERTICES);
     }
+#endif
 
     glBindTexture(GL_TEXTURE_2D, bound_texture);
     glBindVertexArray(0);

@@ -2,6 +2,7 @@
 
 #include "game/clock.h"
 #include "game/output/sprites.h"
+#include "game/output/textures.h"
 #include "game/overlay.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -458,12 +459,14 @@ bool Output_Init(void)
 {
     M_CalcWibbleTable();
     Output_Sprites_Init();
+    Output_Textures_Init();
     return S_Output_Init();
 }
 
 void Output_Shutdown(void)
 {
     Output_Sprites_Shutdown();
+    Output_Textures_Shutdown();
     S_Output_Shutdown();
     Memory_FreePointer(&m_BackdropImagePath);
 }
@@ -1133,9 +1136,14 @@ void Output_AnimateTextures(const int32_t num_frames)
     m_WibbleOffset = (m_WibbleOffset + num_frames) % WIBBLE_SIZE;
     S_Output_SetWibbleEffect(m_IsWibbleEffect, m_WibbleOffset);
     m_AnimatedTexturesOffset += num_frames;
+    bool update = false;
     while (m_AnimatedTexturesOffset > 5) {
         Output_CycleAnimatedTextures();
+        update = true;
         m_AnimatedTexturesOffset -= 5;
+    }
+    if (update) {
+        Output_Textures_Update();
     }
 }
 
