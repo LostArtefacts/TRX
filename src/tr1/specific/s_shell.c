@@ -234,13 +234,6 @@ static void M_SetGLBackend(const GFX_GL_BACKEND backend)
             SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
         break;
 
-    case GFX_GL_43C:
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-        SDL_GL_SetAttribute(
-            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-        break;
-
     case GFX_GL_INVALID_BACKEND:
         ASSERT_FAIL();
         break;
@@ -261,7 +254,6 @@ void S_Shell_CreateWindow(void)
 
     const GFX_GL_BACKEND backends_to_try[] = {
         // clang-format off
-        GFX_GL_43C,
         GFX_GL_33C,
         GFX_GL_21,
         GFX_GL_INVALID_BACKEND, // guard

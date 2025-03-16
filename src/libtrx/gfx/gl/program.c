@@ -64,9 +64,6 @@ char *GFX_GL_Program_PreprocessShader(
     if (backend == GFX_GL_33C) {
         bufsize += strlen(version_ogl33c);
         bufsize += strlen(define_ogl33c);
-    } else if (backend == GFX_GL_43C) {
-        bufsize += strlen(version_ogl43c);
-        bufsize += strlen(define_ogl43c);
     } else {
         bufsize += strlen(version_ogl21);
     }
@@ -79,9 +76,6 @@ char *GFX_GL_Program_PreprocessShader(
     if (backend == GFX_GL_33C) {
         strcpy(processed_content, version_ogl33c);
         strcat(processed_content, define_ogl33c);
-    } else if (backend == GFX_GL_43C) {
-        strcpy(processed_content, version_ogl43c);
-        strcat(processed_content, define_ogl43c);
     } else {
         strcpy(processed_content, version_ogl21);
     }
