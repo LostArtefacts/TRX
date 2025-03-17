@@ -93,6 +93,7 @@ void Item_Initialise(const int16_t item_num)
     item->collidable = 1;
     item->looked_at = 0;
     item->killed = 0;
+    item->enable_interpolation = true;
 
     if ((item->flags & IF_INVISIBLE) != 0) {
         item->status = IS_INVISIBLE;
@@ -360,6 +361,7 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
     // interpolated
     if (item != g_LaraItem
         && (!item->active || item->status != IS_ACTIVE
+            || !item->enable_interpolation
             || !Object_Get(item->object_id)->enable_interpolation)) {
         *rate = denominator;
         return numerator;
