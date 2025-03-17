@@ -11,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -157,6 +158,7 @@ static void M_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         item->current_anim_state = XIAN_SPEARMAN_STATE_DEATH;
         item->mesh_bits >>= 1;
+        item->enable_interpolation = false;
         if (item->mesh_bits == 0) {
             Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
             item->mesh_bits = -1;

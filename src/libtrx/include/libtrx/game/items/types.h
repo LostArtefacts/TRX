@@ -69,6 +69,8 @@ typedef struct {
     uint16_t pad : 7; // 0x0200…0x8000
 #endif
 
+    bool enable_interpolation;
+
     struct {
         struct {
             XYZ_32 pos;

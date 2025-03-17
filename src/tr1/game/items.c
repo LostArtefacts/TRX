@@ -71,6 +71,7 @@ void Item_Initialise(int16_t item_num)
     item->priv = nullptr;
     item->carried_item = nullptr;
     item->enable_shadow = true;
+    item->enable_interpolation = true;
 
     if (item->flags & IF_INVISIBLE) {
         item->status = IS_INVISIBLE;
