@@ -18,6 +18,7 @@ RGB_888 Output_GetPaletteColor16(uint16_t idx);
 LIGHT_MAP *Output_GetLightMap(uint8_t idx);
 SHADE_MAP *Output_GetShadeMap(uint8_t idx);
 int32_t Output_GetObjectTextureCount(void);
+int32_t Output_GetSpriteTextureCount(void);
 OBJECT_TEXTURE *Output_GetObjectTexture(int32_t texture_idx);
 SPRITE_TEXTURE *Output_GetSpriteTexture(int32_t texture_idx);
 ANIMATED_TEXTURE_RANGE *Output_GetAnimatedTextureRange(int32_t range_idx);

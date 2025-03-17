@@ -238,6 +238,14 @@ ROOM *Room_Get(const int32_t room_num)
     return &m_Rooms[room_num];
 }
 
+int32_t Room_GetNumber(const ROOM *const room)
+{
+    if (room == nullptr) {
+        return NO_ROOM_NEG;
+    }
+    return room - m_Rooms;
+}
+
 void Room_InitialiseFlipStatus(void)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {

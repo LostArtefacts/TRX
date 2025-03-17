@@ -6,14 +6,13 @@ layout(location = 2) in float inTexZ;
 layout(location = 3) in vec4 inColor;
 
 uniform mat4 matProjection;
-uniform mat4 matModelView;
 
 out vec4 vertColor;
 out vec4 vertTexCoords;
 out float vertTexZ;
 
 void main(void) {
-    gl_Position = matProjection * matModelView * vec4(inPosition, 1);
+    gl_Position = matProjection * vec4(inPosition, 1);
     vertColor = inColor / 255.0;
     vertTexCoords = inTexCoords;
     vertTexCoords.xy *= vertTexCoords.zw;

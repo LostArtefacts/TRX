@@ -20,6 +20,7 @@ static LIGHT_MAP m_LightMap[32];
 static SHADE_MAP m_ShadeMap[256];
 
 static int32_t m_ObjectTextureCount = 0;
+static int32_t m_SpriteTextureCount = 0;
 static OBJECT_TEXTURE *m_ObjectTextures = nullptr;
 static SPRITE_TEXTURE *m_SpriteTextures = nullptr;
 static ANIMATED_TEXTURE_RANGE *m_AnimTextureRanges = nullptr;
@@ -72,6 +73,7 @@ void Output_InitialiseObjectTextures(const int32_t num_textures)
 
 void Output_InitialiseSpriteTextures(const int32_t num_textures)
 {
+    m_SpriteTextureCount = num_textures;
     m_SpriteTextures = num_textures == 0
         ? nullptr
         : GameBuf_Alloc(
@@ -142,6 +144,11 @@ SHADE_MAP *Output_GetShadeMap(const uint8_t idx)
 int32_t Output_GetObjectTextureCount(void)
 {
     return m_ObjectTextureCount;
+}
+
+int32_t Output_GetSpriteTextureCount(void)
+{
+    return m_SpriteTextureCount;
 }
 
 OBJECT_TEXTURE *Output_GetObjectTexture(const int32_t texture_idx)
