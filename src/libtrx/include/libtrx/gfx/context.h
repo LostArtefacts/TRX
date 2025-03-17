@@ -21,6 +21,8 @@ void GFX_Context_SetDisplaySize(int32_t width, int32_t height);
 void GFX_Context_SetRenderingMode(GFX_RENDER_MODE target_mode);
 
 void *GFX_Context_GetWindowHandle(void);
+int32_t GFX_Context_GetWindowWidth(void);
+int32_t GFX_Context_GetWindowHeight(void);
 int32_t GFX_Context_GetDisplayWidth(void);
 int32_t GFX_Context_GetDisplayHeight(void);
 
@@ -35,5 +37,6 @@ void GFX_Context_SwitchToDisplayViewport(void);
 void GFX_Context_ScheduleScreenshot(const char *path);
 const char *GFX_Context_GetScheduledScreenshotPath(void);
 void GFX_Context_ClearScheduledScreenshotPath(void);
+void GFX_Context_GetScale(float *out_x, float *out_y);
 
 GFX_CONFIG *GFX_Context_GetConfig(void);

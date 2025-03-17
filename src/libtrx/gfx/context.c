@@ -258,6 +258,16 @@ void *GFX_Context_GetWindowHandle(void)
     return m_Context.window_handle;
 }
 
+int32_t GFX_Context_GetWindowWidth(void)
+{
+    return m_Context.window_width;
+}
+
+int32_t GFX_Context_GetWindowHeight(void)
+{
+    return m_Context.window_height;
+}
+
 int32_t GFX_Context_GetDisplayWidth(void)
 {
     return m_Context.display_width;
@@ -303,6 +313,11 @@ const char *GFX_Context_GetScheduledScreenshotPath(void)
 void GFX_Context_ClearScheduledScreenshotPath(void)
 {
     Memory_FreePointer(&m_Context.scheduled_screenshot_path);
+}
+
+void GFX_Context_GetScale(float *const out_x, float *const out_y)
+{
+    m_Context.renderer->get_scale(m_Context.renderer, out_x, out_y);
 }
 
 GFX_CONFIG *GFX_Context_GetConfig(void)

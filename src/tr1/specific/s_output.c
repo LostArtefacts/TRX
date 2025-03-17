@@ -10,6 +10,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/gfx/gl/track.h>
+#include <libtrx/gfx/gl/utils.h>
 #include <libtrx/log.h>
 
 #include <string.h>
@@ -26,6 +27,13 @@
             Shell_ExitSystem("Fatal 2D renderer error!");                      \
         }                                                                      \
     }
+
+static struct {
+    GLint bound_program;
+    GLint bound_vao;
+    GLint bound_vbo;
+    GLint bound_texture;
+} m_CachedState;
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static int m_EnvMapTexture = GFX_NO_TEXTURE;
@@ -1390,4 +1398,22 @@ void S_Output_2ToneColourTextBox(
     screen_box_verticies[16].a = screen_box_verticies[17].a = edge.a;
 
     M_DrawTriangleStrip(screen_box_verticies, 18);
+}
+
+void S_Output_RememberState(void)
+{
+    glGetIntegerv(GL_CURRENT_PROGRAM, &m_CachedState.bound_program);
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &m_CachedState.bound_vao);
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &m_CachedState.bound_vbo);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &m_CachedState.bound_texture);
+    GFX_GL_CheckError();
+}
+
+void S_Output_RestoreState(void)
+{
+    glBindVertexArray(m_CachedState.bound_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, m_CachedState.bound_vbo);
+    glBindTexture(GL_TEXTURE_2D, m_CachedState.bound_texture);
+    glUseProgram(m_CachedState.bound_program);
+    GFX_GL_CheckError();
 }

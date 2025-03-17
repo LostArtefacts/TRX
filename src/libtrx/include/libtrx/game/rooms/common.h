@@ -6,6 +6,7 @@
 void Room_InitialiseRooms(int32_t num_rooms);
 int32_t Room_GetCount(void);
 ROOM *Room_Get(int32_t room_num);
+int32_t Room_GetNumber(const ROOM *room);
 
 void Room_InitialiseFlipStatus(void);
 void Room_FlipMap(void);

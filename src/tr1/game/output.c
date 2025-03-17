@@ -1,6 +1,8 @@
 #include "game/output.h"
 
 #include "game/clock.h"
+#include "game/output/sprites.h"
+#include "game/output/textures.h"
 #include "game/overlay.h"
 #include "game/random.h"
 #include "game/room.h"
@@ -83,7 +85,6 @@ static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
 static void M_DrawTexturedFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawObjectFace3EnvMap(const FACE3 *faces, int32_t count);
 static void M_DrawObjectFace4EnvMap(const FACE4 *faces, int32_t count);
-static void M_DrawRoomSprites(const ROOM_MESH *mesh);
 static uint16_t M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
 static void M_CalcVertexWibble(PHD_VBUF *vbuf);
 static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
@@ -289,35 +290,6 @@ static void M_DrawObjectFace4EnvMap(
 
         if (face->enable_reflections) {
             S_Output_DrawEnvMapQuad(vns[0], vns[1], vns[2], vns[3]);
-        }
-    }
-}
-
-static void M_DrawRoomSprites(const ROOM_MESH *const mesh)
-{
-    for (int i = 0; i < mesh->num_sprites; i++) {
-        const ROOM_SPRITE *room_sprite = &mesh->sprites[i];
-        const PHD_VBUF *const vbuf = &m_VBuf[room_sprite->vertex];
-        if (vbuf->clip < 0) {
-            continue;
-        }
-
-        const int32_t zv = vbuf->zv;
-        const SPRITE_TEXTURE *const sprite =
-            Output_GetSpriteTexture(room_sprite->texture);
-        const int32_t zp = (zv / g_PhdPersp);
-        const int32_t x0 =
-            Viewport_GetCenterX() + (vbuf->xv + (sprite->x0 << W2V_SHIFT)) / zp;
-        const int32_t y0 =
-            Viewport_GetCenterY() + (vbuf->yv + (sprite->y0 << W2V_SHIFT)) / zp;
-        const int32_t x1 =
-            Viewport_GetCenterX() + (vbuf->xv + (sprite->x1 << W2V_SHIFT)) / zp;
-        const int32_t y1 =
-            Viewport_GetCenterY() + (vbuf->yv + (sprite->y1 << W2V_SHIFT)) / zp;
-        if (x1 >= g_PhdLeft && y1 >= g_PhdTop && x0 < g_PhdRight
-            && y0 < g_PhdBottom) {
-            S_Output_DrawSprite(
-                x0, y0, x1, y1, zv, room_sprite->texture, vbuf->g);
         }
     }
 }
@@ -571,11 +543,15 @@ static void M_CalcWibbleTable(void)
 bool Output_Init(void)
 {
     M_CalcWibbleTable();
+    Output_Sprites_Init();
+    Output_Textures_Init();
     return S_Output_Init();
 }
 
 void Output_Shutdown(void)
 {
+    Output_Sprites_Shutdown();
+    Output_Textures_Shutdown();
     S_Output_Shutdown();
     Memory_FreePointer(&m_BackdropImagePath);
 }
@@ -602,6 +578,9 @@ void Output_ApplyRenderSettings(void)
 void Output_DownloadTextures(void)
 {
     S_Output_DownloadTextures(Output_GetTexturePageCount());
+
+    Output_Textures_UploadLevel();
+    Output_Sprites_UploadLevel();
 }
 
 void Output_DrawBlack(void)
@@ -626,6 +605,9 @@ void Output_BeginScene(void)
 {
     Output_ApplyFOV();
     Text_DrawReset();
+
+    Output_Sprites_UploadProjectionMatrix();
+    Output_Sprites_UploadUniforms();
 
     S_Output_RenderBegin();
     m_LightningCount = 0;
@@ -720,8 +702,9 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     S_Output_EnableDepthTest();
 }
 
-void Output_DrawRoom(const ROOM_MESH *const mesh)
+void Output_DrawRoomMesh(const ROOM *const room)
 {
+    const ROOM_MESH *const mesh = &room->mesh;
     M_CalcRoomVertices(mesh);
 
     if (m_IsWibbleEffect) {
@@ -734,7 +717,19 @@ void Output_DrawRoom(const ROOM_MESH *const mesh)
 
     M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
     M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
-    M_DrawRoomSprites(mesh);
+    S_Output_Flush();
+    S_Output_RememberState();
+
+    // new rendering
+    Output_EnableScissor(
+        room->bound_left, room->bound_bottom,
+        room->bound_right - room->bound_left,
+        room->bound_bottom - room->bound_top);
+    Output_Sprites_UploadModelMatrix();
+    Output_Sprites_RenderRoomSprites(room);
+    Output_DisableScissor();
+
+    S_Output_RestoreState();
 }
 
 void Output_DrawRoomPortals(const ROOM *const room)
@@ -1201,9 +1196,14 @@ void Output_AnimateTextures(const int32_t num_frames)
 {
     m_WibbleOffset = (m_WibbleOffset + num_frames) % WIBBLE_SIZE;
     m_AnimatedTexturesOffset += num_frames;
+    bool update = false;
     while (m_AnimatedTexturesOffset > 5) {
         Output_CycleAnimatedTextures();
+        update = true;
         m_AnimatedTexturesOffset -= 5;
+    }
+    if (update) {
+        Output_Textures_Update();
     }
 }
 
@@ -1412,4 +1412,96 @@ void Output_LightRoomVertices(const ROOM *room)
 {
     // TODO: remove
     ASSERT_FAIL();
+}
+
+int32_t Output_GetWibbleOffset(void)
+{
+    if (!m_IsWibbleEffect) {
+        return -1;
+    }
+    return m_WibbleOffset;
+}
+
+#define S(x) (x / (GLfloat)((1 << W2V_SHIFT)))
+void Output_GetModelMatrix(GLfloat output[][4])
+{
+    const MATRIX *const m = g_MatrixPtr;
+    output[0][0] = S(m->_00);
+    output[0][1] = S(m->_01);
+    output[0][2] = S(m->_02);
+    output[0][3] = S(m->_03);
+
+    output[1][0] = S(m->_10);
+    output[1][1] = S(m->_11);
+    output[1][2] = S(m->_12);
+    output[1][3] = S(m->_13);
+
+    output[2][0] = S(m->_20);
+    output[2][1] = S(m->_21);
+    output[2][2] = S(m->_22);
+    output[2][3] = S(m->_23);
+
+    output[3][0] = 0.0f;
+    output[3][1] = 0.0f;
+    output[3][2] = 0.0f;
+    output[3][3] = 1.0f;
+}
+
+void Output_GetProjectionMatrix(GLfloat output[][4])
+{
+    const float left = 0.0f;
+    const float top = 0.0f;
+    const float right = Viewport_GetWidth();
+    const float bottom = Viewport_GetHeight();
+    const float near = S(Output_GetNearZ());
+    const float far = S(Output_GetFarZ());
+    const float aspect = (float)right / (float)bottom;
+    const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
+    const float f = 1.0f / tan(fov / 2.0f);
+
+    output[0][0] = f / aspect;
+    output[0][1] = 0.0f;
+    output[0][2] = 0.0f;
+    output[0][3] = 0.0f;
+
+    output[1][0] = 0.0f;
+    output[1][1] = -f;
+    output[1][2] = 0.0f;
+    output[1][3] = 0.0f;
+
+    output[2][0] = 0.0f;
+    output[2][1] = 0.0f;
+    // TODO(dash): these do not match the original game Z buffer mapping.
+    // I couldn't figure out how to replicate the original MAP_DEPTH transform.
+    // To combat this, the vertex shaders for now fence the simpler matrices
+    // behind a `NEW_ZBUFFER` define, and fall back to doing the perspective
+    // transform completely manually. This will be removable once we no longer
+    // rely on PHD_VBUF / GFX_3D_Rendere for world rendering.
+    output[2][2] = (far + near) / (far - near);
+    output[2][3] = -(2.0f * far * near) / (far - near);
+
+    output[3][0] = 0.0f;
+    output[3][1] = 0.0f;
+    output[3][2] = 1.0f;
+    output[3][3] = 0.0f;
+}
+
+void Output_EnableScissor(
+    const float x, const float y, const float w, const float h)
+{
+    const int32_t border = 2; // to deal with precision issues
+
+    float scale_x;
+    float scale_y;
+    GFX_Context_GetScale(&scale_x, &scale_y);
+
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(
+        x * scale_x, (GFX_Context_GetDisplayHeight() - y) * scale_y,
+        w * scale_x, h * scale_y);
+}
+
+void Output_DisableScissor(void)
+{
+    glDisable(GL_SCISSOR_TEST);
 }

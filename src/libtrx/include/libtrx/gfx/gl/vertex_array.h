@@ -13,3 +13,6 @@ void GFX_GL_VertexArray_Bind(GFX_GL_VERTEX_ARRAY *array);
 void GFX_GL_VertexArray_Attribute(
     GFX_GL_VERTEX_ARRAY *array, GLuint index, GLint size, GLenum type,
     GLboolean normalized, GLsizei stride, GLsizei offset);
+void GFX_GL_VertexArray_IAttribute(
+    GFX_GL_VERTEX_ARRAY *array, GLuint index, GLint size, GLenum type,
+    GLsizei stride, GLsizei offset);

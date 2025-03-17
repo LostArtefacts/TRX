@@ -1,3 +1,22 @@
+#define PI 3.1415926538
+
+vec3 waterWibble(vec4 position, vec2 viewportSize, float wibbleOffset)
+{
+    // get screen coordinates
+    vec3 ndc = position.xyz / position.w; //perspective divide/normalize
+    vec2 viewportCoord = ndc.xy * 0.5 + 0.5; //ndc is -1 to 1 in GL. scale for 0 to 1
+    vec2 viewportPixelCoord = viewportCoord * viewportSize;
+
+    float amplitude = 2.0;
+    viewportPixelCoord.x += sin((wibbleOffset + viewportPixelCoord.y) * 2.0 * PI / 32) * amplitude;
+    viewportPixelCoord.y += sin((wibbleOffset + viewportPixelCoord.x) * 2.0 * PI / 32) * amplitude;
+
+    // reverse transform
+    viewportCoord = viewportPixelCoord / viewportSize;
+    ndc.xy = (viewportCoord - 0.5) * 2.0;
+    return ndc * position.w;
+}
+
 bool discardTranslucent(sampler2D tex, vec2 uv)
 {
     // do not use smoothing for chroma key
