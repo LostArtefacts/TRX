@@ -4,6 +4,7 @@
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/gym.h"
 #include "game/inventory.h"
 #include "game/music.h"
 #include "game/objects/common.h"
@@ -155,7 +156,7 @@ static void M_AnimatePickups(const int32_t frames)
 
 static void M_DrawAssaultTimer(void)
 {
-    if (!Game_IsInGym() || !g_IsAssaultTimerDisplay) {
+    if (!Game_IsInGym() || !Gym_IsAssaultTimerDisplay()) {
         return;
     }
 
