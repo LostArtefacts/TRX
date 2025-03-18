@@ -22,6 +22,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
+static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap);
 static DECLARE_GF_EVENT_HANDLER(M_HandleAddItem);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveWeapons);
@@ -33,11 +34,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_LOOP_GAME]       = M_HandlePlayLevel,
+    [GFS_LOOP_GAME]        = M_HandlePlayLevel,
     [GFS_PLAY_MUSIC]       = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
     [GFS_SET_CAMERA_POS]   = M_HandleSetCameraPos,
     [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
+    [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_FLIP_MAP]         = M_HandleFlipMap,
     [GFS_ADD_ITEM]         = M_HandleAddItem,
     [GFS_REMOVE_WEAPONS]   = M_HandleRemoveWeapons,
@@ -82,12 +84,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         break;
 
     case GFSC_SELECT:
-        if (Savegame_GetBoundSlot() != -1) {
+        if (g_GameInfo.select_save_slot != -1) {
             // select level feature
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
                 Savegame_LoadOnlyResumeInfo(
-                    Savegame_GetBoundSlot(), &g_GameInfo);
+                    g_GameInfo.select_save_slot, &g_GameInfo);
                 const GF_LEVEL *tmp_level = level;
                 while (tmp_level != nullptr) {
                     Savegame_ResetCurrentInfo(tmp_level);
@@ -122,6 +124,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         }
     }
 
+    // clear the save slot information so that /play starts with a fresh state
+    g_GameInfo.select_save_slot = -1;
+
     gf_cmd = GF_RunSequencerQueue(
         GF_EVENT_QUEUE_BEFORE_LEVEL_INIT, level, seq_ctx, seq_ctx_arg);
     if (gf_cmd.action != GF_NOOP) {
@@ -129,7 +134,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     // load the level
-    if (!Level_Initialise(level)) {
+    if (!Level_Initialise(level, seq_ctx)) {
         Game_SetCurrentLevel(nullptr);
         GF_SetCurrentLevel(nullptr);
         if (level->type == GFL_TITLE) {
@@ -272,6 +277,15 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
+static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
+{
+    GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    if (seq_ctx != GFSC_STORY) {
+        Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
+    }
+    return gf_cmd;
+}
+
 static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap)
 {
     if (seq_ctx != GFSC_STORY) {
@@ -349,6 +363,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
+    Room_SetAbyssHeight(0);
     g_GameInfo.remove_guns = false;
     g_GameInfo.remove_scions = false;
     g_GameInfo.remove_ammo = false;

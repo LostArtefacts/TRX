@@ -76,6 +76,7 @@ static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
 };
 
+static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
 static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
 static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
@@ -92,6 +93,66 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
 static void M_CalcRoomVertices(const ROOM_MESH *mesh);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
 static void M_CalcWibbleTable(void);
+
+static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
+{
+    bool wireframe_state = GFX_Context_GetWireframeMode();
+    GFX_Context_SetWireframeMode(true);
+
+    RGBA_8888 color = { .r = 255, .g = 255, .b = 255, .a = 128 };
+    if (wireframe_state) {
+        color = (RGBA_8888) { .r = 0, .g = 0, .b = 0, .a = 128 };
+    }
+
+    S_Output_DisableTextureMode();
+    S_Output_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+
+    // More subdivisions means smoother spheres.
+    const int32_t subdivisions = 12;
+    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
+    int32_t index = 0;
+
+    for (int32_t i = 0; i <= subdivisions; i++) {
+        const float theta = (M_PI * i) / subdivisions; // Latitude angle
+        const float sin_theta = sinf(theta);
+        const float cos_theta = cosf(theta);
+
+        for (int32_t j = 0; j <= subdivisions; j++) {
+            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
+            const float sin_phi = sinf(phi);
+            const float cos_phi = cosf(phi);
+
+            // Convert spherical coordinates to 3D points.
+            XYZ_16 vertex_pos = {
+                .x = pos.x + radius * cos_phi * sin_theta,
+                .y = pos.y + radius * cos_theta,
+                .z = pos.z + radius * sin_phi * sin_theta,
+            };
+
+            M_CalcVertex(&vertices[index], vertex_pos);
+            vertices[index].g = HIGH_LIGHT;
+            index++;
+        }
+    }
+
+    for (int32_t i = 0; i < subdivisions; i++) {
+        for (int32_t j = 0; j < subdivisions; j++) {
+            const int32_t index_0 = i * (subdivisions + 1) + j;
+            const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
+            const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
+            const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
+            S_Output_DrawFlatTriangle(
+                &vertices[index_0], &vertices[index_1], &vertices[index_2],
+                color);
+            S_Output_DrawFlatTriangle(
+                &vertices[index_0], &vertices[index_2], &vertices[index_3],
+                color);
+        }
+    }
+
+    S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
+    GFX_Context_SetWireframeMode(wireframe_state);
+}
 
 static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
 {
@@ -147,6 +208,8 @@ static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
         for (int32_t j = 0; j < 3; j++) {
             vns[j]->u = tex->uv[j].u;
             vns[j]->v = tex->uv[j].v;
+            vns[j]->z = 1.0f;
+            vns[j]->w = 1.0f;
         }
 
         S_Output_DrawTexturedTriangle(
@@ -171,6 +234,13 @@ static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
         for (int32_t j = 0; j < 4; j++) {
             vns[j]->u = tex->uv[j].u;
             vns[j]->v = tex->uv[j].v;
+            if (g_Config.rendering.enable_trapezoid_filter) {
+                vns[j]->z = face->texture_zw[j].z;
+                vns[j]->w = face->texture_zw[j].w;
+            } else {
+                vns[j]->z = 1.0f;
+                vns[j]->w = 1.0f;
+            }
         }
 
         S_Output_DrawTexturedQuad(
@@ -529,9 +599,9 @@ void Output_ApplyRenderSettings(void)
     }
 }
 
-void Output_DownloadTextures(int page_count)
+void Output_DownloadTextures(void)
 {
-    S_Output_DownloadTextures(page_count);
+    S_Output_DownloadTextures(Output_GetTexturePageCount());
 }
 
 void Output_DrawBlack(void)
@@ -599,6 +669,16 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
         M_DrawObjectFace3EnvMap(mesh->tex_face3s, mesh->num_tex_face3s);
         M_DrawObjectFace4EnvMap(mesh->flat_face4s, mesh->num_flat_face4s);
         M_DrawObjectFace3EnvMap(mesh->flat_face3s, mesh->num_flat_face3s);
+    }
+
+    if (g_Config.rendering.enable_debug_spheres) {
+        M_DrawSphere(
+            (XYZ_32) {
+                .x = mesh->center.x,
+                .y = mesh->center.y,
+                .z = mesh->center.z,
+            },
+            mesh->radius);
     }
 }
 
@@ -840,6 +920,11 @@ void Output_SetLightAdder(const int32_t adder)
     m_LsAdder = adder;
 }
 
+int32_t Output_GetLightAdder(void)
+{
+    return m_LsAdder;
+}
+
 void Output_SetLightDivider(const int32_t divider)
 {
     m_LsDivider = divider;
@@ -917,12 +1002,6 @@ void Output_DrawScreenGradientQuad(
     S_Output_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
 }
 
-void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col)
-{
-    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col, col);
-}
-
 void Output_Draw3DLine(
     const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
 {
@@ -953,13 +1032,6 @@ void Output_DrawScreenBox(
         thickness * scale / 2.0f);
 }
 
-void Output_DrawGradientScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col1,
-    RGBA_8888 col2)
-{
-    S_Output_Draw2DLine(sx, sy, sx + w, sy + h, col1, col2);
-}
-
 void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br, int32_t thickness)
@@ -987,22 +1059,6 @@ void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h)
 }
 
 void Output_DrawScreenSprite(
-    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
-    int16_t sprnum, int16_t shade, uint16_t flags)
-{
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
-    const int32_t x0 = sx + (scale_h * (sprite->x0 >> 3) / PHD_ONE);
-    const int32_t x1 = sx + (scale_h * (sprite->x1 >> 3) / PHD_ONE);
-    const int32_t y0 = sy + (scale_v * (sprite->y0 >> 3) / PHD_ONE);
-    const int32_t y1 = sy + (scale_v * (sprite->y1 >> 3) / PHD_ONE);
-    if (x1 >= 0 && y1 >= 0 && x0 < Viewport_GetWidth()
-        && y0 < Viewport_GetHeight()) {
-        S_Output_DrawSprite(
-            x0, y0, x1, y1, Output_GetNearZ() + 8 * z, sprnum, shade);
-    }
-}
-
-void Output_DrawScreenSprite2D(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page)
 {

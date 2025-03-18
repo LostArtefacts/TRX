@@ -6,7 +6,6 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/vars.h"
 #include "game/lara/common.h"
@@ -24,6 +23,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/memory.h>
 
@@ -689,7 +689,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (!busy) {
             if (g_InputDB.menu_back) {
-                inv_item->sprite_list = nullptr;
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
@@ -704,7 +703,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
 
             if (g_InputDB.menu_confirm) {
-                inv_item->sprite_list = nullptr;
                 m_InvChosen = inv_item->object_id;
                 if (ring->type == RT_MAIN) {
                     g_InvRing_Source[RT_MAIN].current = ring->current_object;
@@ -865,6 +863,8 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     if (mode == INV_TITLE_MODE) {
         g_InvRing_Source[RT_OPTION].count = TITLE_RING_OBJECTS;
         InvRing_ShowVersionText();
+        Savegame_ScanSavedGames();
+        Savegame_FillAvailableSaves(&g_SavegameRequester);
     } else {
         g_InvRing_Source[RT_OPTION].count = OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();

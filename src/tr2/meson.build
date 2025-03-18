@@ -28,6 +28,7 @@ build_opts = [
   '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
   '-DGLEW_NO_GLU',
+  '-DSDL_MAIN_HANDLED',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   # end of common options
@@ -90,10 +91,9 @@ sources = [
   'decomp/flares.c',
   'decomp/savegame.c',
   'decomp/skidoo.c',
-  'game/box.c',
   'game/camera.c',
   'game/clock.c',
-  'game/collide.c',
+  'game/console/cmd/easy_config.c',
   'game/console/common.c',
   'game/creature.c',
   'game/cutscene.c',
@@ -110,7 +110,6 @@ sources = [
   'game/gun/gun_misc.c',
   'game/gun/gun_pistols.c',
   'game/gun/gun_rifle.c',
-  'game/inject.c',
   'game/input.c',
   'game/inventory.c',
   'game/inventory_ring/control.c',
@@ -216,7 +215,6 @@ sources = [
   'game/objects/general/movable_block.c',
   'game/objects/general/pickup.c',
   'game/objects/general/puzzle_hole.c',
-  'game/objects/general/secret.c',
   'game/objects/general/sphere_of_doom.c',
   'game/objects/general/switch.c',
   'game/objects/general/trapdoor.c',
@@ -286,7 +284,6 @@ sources = [
   'game/viewport.c',
   'global/enum_map.c',
   'global/vars.c',
-  'main.c',
   resources,
 ]
 

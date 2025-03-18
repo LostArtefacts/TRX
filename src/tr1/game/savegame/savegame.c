@@ -6,13 +6,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lot.h"
-#include "game/objects/creatures/pod.h"
-#include "game/objects/general/pickup.h"
-#include "game/objects/general/puzzle_hole.h"
-#include "game/objects/general/save_crystal.h"
-#include "game/objects/general/scion1.h"
-#include "game/objects/traps/movable_block.h"
-#include "game/objects/traps/sliding_pillar.h"
+#include "game/objects/vars.h"
 #include "game/requester.h"
 #include "game/room.h"
 #include "game/savegame/savegame_bson.h"
@@ -21,12 +15,14 @@
 #include "global/types.h"
 #include "global/vars.h"
 
+#include <libtrx/benchmark.h>
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/music.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 
 #include <stdint.h>
 #include <stdio.h>
@@ -38,7 +34,7 @@ typedef struct {
     bool allow_load;
     bool allow_save;
     SAVEGAME_FORMAT format;
-    char *(*get_save_filename)(int32_t slot_num);
+    const char *(*get_save_filename_pattern)(void);
     bool (*fill_info)(MYFILE *fp, SAVEGAME_INFO *info);
     bool (*load_from_file)(MYFILE *fp, GAME_INFO *game_info);
     bool (*load_only_resume_info)(MYFILE *fp, GAME_INFO *game_info);
@@ -47,7 +43,7 @@ typedef struct {
 } SAVEGAME_STRATEGY;
 
 static int32_t m_SaveSlots = 0;
-static uint16_t m_NewestSlot = 0;
+static int16_t m_NewestSlot = -1;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 
 static const SAVEGAME_STRATEGY m_Strategies[] = {
@@ -55,7 +51,7 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = true,
         .format = SAVEGAME_FORMAT_BSON,
-        .get_save_filename = Savegame_BSON_GetSaveFileName,
+        .get_save_filename_pattern = Savegame_BSON_GetSaveFilePattern,
         .fill_info = Savegame_BSON_FillInfo,
         .load_from_file = Savegame_BSON_LoadFromFile,
         .load_only_resume_info = Savegame_BSON_LoadOnlyResumeInfo,
@@ -66,27 +62,30 @@ static const SAVEGAME_STRATEGY m_Strategies[] = {
         .allow_load = true,
         .allow_save = false,
         .format = SAVEGAME_FORMAT_LEGACY,
-        .get_save_filename = Savegame_Legacy_GetSaveFileName,
+        .get_save_filename_pattern = Savegame_Legacy_GetSaveFilePattern,
         .fill_info = Savegame_Legacy_FillInfo,
         .load_from_file = Savegame_Legacy_LoadFromFile,
         .load_only_resume_info = Savegame_Legacy_LoadOnlyResumeInfo,
-        .save_to_file = Savegame_Legacy_SaveToFile,
+        .save_to_file = nullptr,
         .update_death_counters = Savegame_Legacy_UpdateDeathCounters,
     },
     { 0 },
 };
 
-static void M_Clear(void);
+static void M_ClearSlots(void);
+static bool M_FillSlot(
+    const SAVEGAME_STRATEGY *strategy, int32_t slot_num, const char *path);
+static void M_ScanSavedGamesDir(const char *dir_path);
 static void M_LoadPreprocess(void);
 static void M_LoadPostprocess(void);
 
-static void M_Clear(void)
+static void M_ClearSlots(void)
 {
     if (m_SavegameInfo == nullptr) {
         return;
     }
 
-    for (int i = 0; i < m_SaveSlots; i++) {
+    for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
         savegame_info->format = 0;
         savegame_info->counter = -1;
@@ -94,6 +93,66 @@ static void M_Clear(void)
         Memory_FreePointer(&savegame_info->full_path);
         Memory_FreePointer(&savegame_info->level_title);
     }
+}
+
+static bool M_FillSlot(
+    const SAVEGAME_STRATEGY *const strategy, const int32_t slot_num,
+    const char *const path)
+{
+    SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    if (strategy->format <= savegame_info->format) {
+        // do not override already filled slots or for less preferred strategies
+        return true;
+    }
+
+    bool result = false;
+    MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
+    if (fp != nullptr) {
+        if (strategy->fill_info(fp, savegame_info)) {
+            savegame_info->format = strategy->format;
+            Memory_FreePointer(&savegame_info->full_path);
+            savegame_info->full_path = Memory_DupStr(path);
+            result = true;
+        }
+        File_Close(fp);
+    }
+    return result;
+}
+
+static void M_ScanSavedGamesDir(const char *const dir_path)
+{
+    void *dir_handle = File_OpenDirectory(dir_path);
+    if (dir_handle == nullptr) {
+        return;
+    }
+
+    while (true) {
+        const char *file_name = File_ReadDirectory(dir_handle);
+        if (file_name == nullptr) {
+            break;
+        }
+        if (strcmp(file_name, ".") == 0 || strcmp(file_name, "..") == 0) {
+            continue;
+        }
+
+        for (const SAVEGAME_STRATEGY *strategy = m_Strategies; strategy->format;
+             strategy++) {
+            if (!strategy->allow_load) {
+                continue;
+            }
+
+            int32_t slot = -1;
+            int32_t parsed =
+                sscanf(file_name, strategy->get_save_filename_pattern(), &slot);
+            if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
+                char *file_path = String_Format("%s/%s", dir_path, file_name);
+                M_FillSlot(strategy, slot, file_path);
+                Memory_FreePointer(&file_path);
+            }
+        }
+    }
+
+    File_CloseDirectory(dir_handle);
 }
 
 static void M_LoadPreprocess(void)
@@ -115,62 +174,16 @@ static void M_LoadPostprocess(void)
                 Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
         }
 
-        if (obj->save_flags) {
+        if (obj->save_flags != 0) {
             item->flags &= 0xFF00;
-
-            if (obj->collision == PuzzleHole_Collision
-                && (item->status == IS_DEACTIVATED
-                    || item->status == IS_ACTIVE)) {
-                item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
-            }
-
-            if (obj->control == Pod_Control && item->status == IS_DEACTIVATED) {
-                item->mesh_bits = 0x1FF;
-                item->collidable = 0;
-            }
-
-            if ((obj->collision == Pickup_Collision
-                 || obj->collision == SaveCrystal_Collision
-                 || obj->collision == Scion1_Collision)
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(i);
-            }
         }
 
-        if (obj->control == MovableBlock_Control) {
-            item->priv =
-                item->status == IS_ACTIVE ? (void *)true : (void *)false;
-            if (item->status == IS_INACTIVE) {
-                Room_AlterFloorHeight(item, -WALL_L);
-            }
-        }
-
-        if (obj->control == SlidingPillar_Control
-            && item->current_anim_state != SPS_MOVING) {
-            Room_AlterFloorHeight(item, -WALL_L * 2);
-        }
-
-        if (item->object_id == O_PIERRE && item->hit_points <= 0
-            && (item->flags & IF_ONE_SHOT)) {
-            const uint16_t flags = Music_GetTrackFlags(MX_PIERRE_SPEECH);
-            Music_SetTrackFlags(MX_PIERRE_SPEECH, flags | IF_ONE_SHOT);
-        }
-
-        if (item->object_id == O_COWBOY && item->hit_points <= 0) {
-            const uint16_t flags = Music_GetTrackFlags(MX_COWBOY_SPEECH);
-            Music_SetTrackFlags(MX_COWBOY_SPEECH, flags | IF_ONE_SHOT);
-        }
-
-        if (item->object_id == O_BALDY && item->hit_points <= 0) {
-            const uint16_t flags = Music_GetTrackFlags(MX_BALDY_SPEECH);
-            Music_SetTrackFlags(MX_BALDY_SPEECH, flags | IF_ONE_SHOT);
-        }
-
-        if (item->object_id == O_LARSON && item->hit_points <= 0) {
-            const uint16_t flags = Music_GetTrackFlags(MX_LARSON_SPEECH);
-            Music_SetTrackFlags(MX_LARSON_SPEECH, flags | IF_ONE_SHOT);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
+
+    MovableBlock_SetupFloor();
 
     if (g_GameInfo.bonus_flag) {
         g_Config.profile.new_game_plus_unlock = true;
@@ -229,7 +242,7 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 
 void Savegame_Shutdown(void)
 {
-    M_Clear();
+    M_ClearSlots();
     Memory_FreePointer(&m_SavegameInfo);
     Memory_FreePointer(&g_GameInfo.current);
 }
@@ -244,13 +257,8 @@ void Savegame_ProcessItemsBeforeLoad(void)
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (obj->control == MovableBlock_Control && item->status != IS_INVISIBLE
-            && item->pos.y >= Item_GetHeight(item)) {
-            Room_AlterFloorHeight(item, WALL_L);
-        }
-        if (obj->control == SlidingPillar_Control) {
-            Room_AlterFloorHeight(item, WALL_L * 2);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
         }
     }
 }
@@ -260,12 +268,8 @@ void Savegame_ProcessItemsBeforeSave(void)
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (obj->control == SaveCrystal_Control && item->data) {
-            // need to reset the crystal status
-            item->status = IS_DEACTIVATED;
-            item->data = nullptr;
-            Item_RemoveDrawn(i);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_SAVE);
         }
     }
 }
@@ -410,7 +414,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
     current->lara_hitpoints = g_LaraItem->hit_points;
     current->flags.available = 1;
-    current->flags.costume = 0;
 
     current->pistol_ammo = 1000;
     if (Inv_RequestItem(O_PISTOL_ITEM)) {
@@ -483,7 +486,7 @@ bool Savegame_Load(const int32_t slot_num)
     M_LoadPreprocess();
 
     bool ret = false;
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
+    const SAVEGAME_STRATEGY *strategy = m_Strategies;
     while (strategy->format) {
         if (savegame_info->format == strategy->format) {
             MYFILE *fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
@@ -508,7 +511,7 @@ bool Savegame_Load(const int32_t slot_num)
 bool Savegame_Save(const int32_t slot_num)
 {
     GAME_INFO *const game_info = &g_GameInfo;
-    bool ret = true;
+    bool ret = false;
     Savegame_BindSlot(slot_num);
 
     File_CreateDirectory(SAVES_DIR);
@@ -523,27 +526,31 @@ bool Savegame_Save(const int32_t slot_num)
             game_info->current[i] = game_info->current[current_level->num];
         }
     }
+    const char *const level_title = Game_GetCurrentLevel()->title;
 
     SAVEGAME_INFO *savegame_info = &m_SavegameInfo[slot_num];
-    const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-    while (strategy->format) {
-        if (strategy->allow_save) {
-            char *filename = strategy->get_save_filename(slot_num);
-            char *full_path =
-                Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
-            sprintf(full_path, "%s/%s", SAVES_DIR, filename);
+    const bool was_slot_empty = savegame_info->full_path == nullptr;
+    const SAVEGAME_STRATEGY *strategy = m_Strategies;
+    while (strategy->format != 0) {
+        if (strategy->allow_save && strategy->save_to_file != nullptr) {
+            char *filename =
+                String_Format(strategy->get_save_filename_pattern(), slot_num);
+            char *full_path = String_Format("%s/%s", SAVES_DIR, filename);
 
-            MYFILE *fp = File_Open(full_path, FILE_OPEN_WRITE);
-            if (fp) {
+            MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
+            if (fp != nullptr) {
+                g_SaveCounter++;
                 strategy->save_to_file(fp, game_info);
                 savegame_info->format = strategy->format;
                 Memory_FreePointer(&savegame_info->full_path);
                 savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
                 savegame_info->counter = g_SaveCounter;
                 savegame_info->level_num = current_level->num;
+                savegame_info->level_title = level_title != nullptr
+                    ? Memory_DupStr(level_title)
+                    : nullptr;
                 File_Close(fp);
-            } else {
-                ret = false;
+                ret = true;
             }
 
             Memory_FreePointer(&filename);
@@ -553,12 +560,12 @@ bool Savegame_Save(const int32_t slot_num)
     }
 
     if (ret) {
-        REQUEST_INFO *req = &g_SavegameRequester;
-        Requester_ChangeItem(
-            req, slot_num, false, "%s %d", current_level->title, g_SaveCounter);
+        m_NewestSlot = slot_num;
+        if (was_slot_empty) {
+            g_SavedGamesCount++;
+        }
+        Savegame_HighlightNewestSlot();
     }
-
-    Savegame_ScanSavedGames();
 
     return ret;
 }
@@ -614,65 +621,38 @@ bool Savegame_LoadOnlyResumeInfo(int32_t slot_num, GAME_INFO *game_info)
 
 void Savegame_ScanSavedGames(void)
 {
-    M_Clear();
+    BENCHMARK benchmark = Benchmark_Start();
+    M_ClearSlots();
 
     g_SaveCounter = 0;
     g_SavedGamesCount = 0;
+    m_NewestSlot = -1;
 
-    for (int i = 0; i < m_SaveSlots; i++) {
+    M_ScanSavedGamesDir(SAVES_DIR);
+    M_ScanSavedGamesDir(".");
+
+    for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
-        const SAVEGAME_STRATEGY *strategy = &m_Strategies[0];
-        while (strategy->format) {
-            if (!savegame_info->format && strategy->allow_load) {
-                char *filename = strategy->get_save_filename(i);
-
-                char *full_path =
-                    Memory_Alloc(strlen(SAVES_DIR) + strlen(filename) + 2);
-                sprintf(full_path, "%s/%s", SAVES_DIR, filename);
-
-                MYFILE *fp = nullptr;
-                if (!fp) {
-                    fp = File_Open(full_path, FILE_OPEN_READ);
-                }
-                if (!fp) {
-                    fp = File_Open(filename, FILE_OPEN_READ);
-                }
-
-                if (fp) {
-                    if (strategy->fill_info(fp, savegame_info)) {
-                        savegame_info->format = strategy->format;
-                        Memory_FreePointer(&savegame_info->full_path);
-                        savegame_info->full_path =
-                            Memory_DupStr(File_GetPath(fp));
-                    }
-                    File_Close(fp);
-                }
-
-                Memory_FreePointer(&filename);
-                Memory_FreePointer(&full_path);
-            }
-            strategy++;
-        }
-
-        if (savegame_info->level_title) {
+        if (savegame_info->level_title != nullptr) {
             if (savegame_info->counter > g_SaveCounter) {
                 g_SaveCounter = savegame_info->counter;
+                m_NewestSlot = i;
             }
             g_SavedGamesCount++;
         }
     }
+    Benchmark_End(&benchmark, nullptr);
+}
 
-    REQUEST_INFO *req = &g_SavegameRequester;
-    Requester_ClearTextstrings(req);
-    Requester_Init(&g_SavegameRequester, Savegame_GetSlotCount());
+void Savegame_FillAvailableSaves(REQUEST_INFO *req)
+{
+    Requester_Shutdown(req);
+    Requester_Init(req, Savegame_GetSlotCount());
 
     for (int i = 0; i < req->max_items; i++) {
         SAVEGAME_INFO *savegame_info = &m_SavegameInfo[i];
 
-        if (savegame_info->level_title) {
-            if (savegame_info->counter == g_SaveCounter) {
-                m_NewestSlot = i;
-            }
+        if (savegame_info->level_title != nullptr) {
             Requester_AddItem(
                 req, false, "%s %d", savegame_info->level_title,
                 savegame_info->counter);
@@ -686,12 +666,11 @@ void Savegame_ScanSavedGames(void)
     } else if (req->requested < req->line_offset) {
         req->line_offset = req->requested;
     }
-
-    g_SaveCounter++;
 }
 
-void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
+void Savegame_FillAvailableLevels(REQUEST_INFO *req)
 {
+    ASSERT(req != nullptr);
     const int32_t slot_num = g_GameInfo.select_save_slot;
     if (slot_num == -1) {
         return;
@@ -725,7 +704,7 @@ void Savegame_ScanAvailableLevels(REQUEST_INFO *req)
 
 void Savegame_HighlightNewestSlot(void)
 {
-    g_SavegameRequester.requested = m_NewestSlot;
+    g_SavegameRequester.requested = MAX(0, m_NewestSlot);
 }
 
 bool Savegame_RestartAvailable(int32_t slot_num)

@@ -1,9 +1,9 @@
 #include "game/lot.h"
 
+#include "game/box.h"
 #include "game/camera.h"
 #include "game/items.h"
 #include "game/shell.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
@@ -21,7 +21,7 @@ void LOT_InitialiseArray(void)
         CREATURE *creature = &m_BaddieSlots[i];
         creature->item_num = NO_ITEM;
         creature->lot.node =
-            GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
+            GameBuf_Alloc(sizeof(BOX_NODE) * Box_GetCount(), GBUF_CREATURE_LOT);
     }
     m_SlotsUsed = 0;
 }
@@ -101,7 +101,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
 
     creature->lot.step = STEP_L;
     creature->lot.drop = -STEP_L;
-    creature->lot.block_mask = BLOCKED;
+    creature->lot.block_mask = BOX_BLOCKED;
     creature->lot.fly = 0;
 
     switch (item->object_id) {
@@ -116,7 +116,7 @@ void LOT_InitialiseSlot(int16_t item_num, int32_t slot)
     case O_TREX:
     case O_WARRIOR_1:
     case O_CENTAUR:
-        creature->lot.block_mask = BLOCKABLE;
+        creature->lot.block_mask = BOX_BLOCKABLE;
         break;
 
     case O_WOLF:
@@ -145,17 +145,14 @@ void LOT_CreateZone(ITEM *item)
 {
     CREATURE *creature = item->data;
 
-    int16_t *zone;
-    int16_t *flip;
+    const int16_t *zone;
+    const int16_t *flip;
     if (creature->lot.fly) {
-        zone = g_FlyZone[0];
-        flip = g_FlyZone[1];
-    } else if (creature->lot.step == STEP_L) {
-        zone = g_GroundZone[0];
-        flip = g_GroundZone[1];
+        zone = Box_GetFlyZone(false);
+        flip = Box_GetFlyZone(true);
     } else {
-        zone = g_GroundZone2[1];
-        flip = g_GroundZone2[1];
+        zone = Box_GetGroundZone(false, BOX_ZONE(creature->lot.step));
+        flip = Box_GetGroundZone(true, BOX_ZONE(creature->lot.step));
     }
 
     const ROOM *const room = Room_Get(item->room_num);
@@ -166,7 +163,7 @@ void LOT_CreateZone(ITEM *item)
 
     creature->lot.zone_count = 0;
     BOX_NODE *node = creature->lot.node;
-    for (int i = 0; i < g_NumberBoxes; i++) {
+    for (int32_t i = 0; i < Box_GetCount(); i++) {
         if (zone[i] == zone_num || flip[i] == flip_num) {
             node->box_num = i;
             node++;
@@ -178,7 +175,7 @@ void LOT_CreateZone(ITEM *item)
 void LOT_InitialiseLOT(LOT_INFO *LOT)
 {
     LOT->node =
-        GameBuf_Alloc(sizeof(BOX_NODE) * g_NumberBoxes, GBUF_CREATURE_LOT);
+        GameBuf_Alloc(sizeof(BOX_NODE) * Box_GetCount(), GBUF_CREATURE_LOT);
     LOT_ClearLOT(LOT);
 }
 
@@ -190,7 +187,7 @@ void LOT_ClearLOT(LOT_INFO *LOT)
     LOT->target_box = NO_BOX;
     LOT->required_box = NO_BOX;
 
-    for (int i = 0; i < g_NumberBoxes; i++) {
+    for (int32_t i = 0; i < Box_GetCount(); i++) {
         BOX_NODE *node = &LOT->node[i];
         node->search_num = 0;
         node->exit_box = NO_BOX;

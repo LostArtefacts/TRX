@@ -367,6 +367,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 
 #### UI
 - added proper UI and bar scaling
+- added support for more accented characters
 - added enemy health bars
 - added PS1 style UI
 - added fade effects to displayed images
@@ -388,6 +389,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added ability to use Lara's underwater swimming physics from TR2+
 - added ability to wade, similar to TR2+
 - added Lara's exit-water-to-medium-height animation from TR2+
+- added support for 60 FPS rendering
 - added a pause screen
 - added a choice whether to play NG or NG+ without having to play the entire game
 - added Japanese mode (guns deal twice the damage, inspired by JP release of TR3); available for both NG and NG+
@@ -402,6 +404,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added a photo mode feature
 - added optional automatic key/puzzle inventory item pre-selection
 - added ability for falling pushblocks to kill Lara outright if one lands directly on her
+- added support for custom levels to define "no floor", to create an abyss like in TR2's Floating Islands
 - changed weapon pickup behavior when unarmed to set any weapon as the default weapon, not just pistols
 - fixed keys and items not working when drawing guns immediately after using them
 - fixed counting the secret in The Great Pyramid
@@ -436,6 +439,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - fixed triggered flip effects not working if there are no sound devices
 - fixed ceiling heights at times being miscalculated, resulting in camera issues and Lara being able to jump into the ceiling
 - fixed the camera being thrown through doors for one frame when looked at from fixed camera positions
+- fixed several instances of the camera going out of bounds
 - fixed the ape not performing the vault animation when climbing
 - fixed Natla's gun moving while she is in her semi death state
 - fixed the bear pat attack so it does not miss Lara
@@ -501,6 +505,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added unobtainable pickups, kills, and secrets stats support in the gameflow
 
 #### Visuals
+- added quadrilateral texture correction
 - added ability to set user-defined FOV
 - added optional shotgun flash sprites
 - added optional rendering of pickups on the ground as 3D meshes
@@ -607,7 +612,8 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added an option to pause sound in the inventory screen
 - added ability to skip FMVs with the Action key
 - added ability to make freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre
-- expanded internal game memory limit from 3.5 MB to 128 MB
+- added -l/--level and -s/--save command line arguments
+- expanded internal game memory limit from 3.5 MB to unlimited (within system memory cap)
 - expanded moveable limit from 256 to 10240
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)

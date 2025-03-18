@@ -69,7 +69,7 @@ static void M_UpdateFromBackend(
     s->screenshot                |= backend->is_pressed(layout, INPUT_ROLE_SCREENSHOT);
     s->toggle_fps_counter        |= backend->is_pressed(layout, INPUT_ROLE_FPS);
     s->toggle_bilinear_filter    |= backend->is_pressed(layout, INPUT_ROLE_BILINEAR);
-    s->toggle_perspective_filter |= backend->is_pressed(layout, INPUT_ROLE_PERSPECTIVE);
+    s->toggle_trapezoid_filter   |= backend->is_pressed(layout, INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER);
     // clang-format on
 
     backend->custom_update(s, layout);

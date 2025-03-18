@@ -1,7 +1,7 @@
 #include "decomp/decomp.h"
 
 #include "game/camera.h"
-#include "game/collide.h"
+#include "game/cutscene.h"
 #include "game/game_flow.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -17,6 +17,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/utils.h>
 
@@ -32,42 +33,14 @@ typedef enum {
     LA_VEHICLE_HIT_BACK = 14,
 } LARA_ANIM_VEHICLE;
 
-static CAMERA_INFO m_LocalCamera = {};
-
-void CutscenePlayer_Control(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->rot.y = m_LocalCamera.target_angle;
-    item->pos.x = m_LocalCamera.pos.pos.x;
-    item->pos.y = m_LocalCamera.pos.pos.y;
-    item->pos.z = m_LocalCamera.pos.pos.z;
-
-    XYZ_32 pos = {};
-    Collide_GetJointAbsPosition(item, &pos, 0);
-
-    const int16_t room_num = Room_FindByPos(pos.x, pos.y, pos.z);
-    if (room_num != NO_ROOM_NEG && item->room_num != room_num) {
-        Item_NewRoom(item_num, room_num);
-    }
-
-    if (item->dynamic_light && item->status != IS_INVISIBLE) {
-        pos.x = 0;
-        pos.y = 0;
-        pos.z = 0;
-        Collide_GetJointAbsPosition(item, &pos, 0);
-        Output_AddDynamicLight(pos, 12, 11);
-    }
-
-    Item_Animate(item);
-}
-
 void Lara_Control_Cutscene(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->rot.y = m_LocalCamera.target_angle;
-    item->pos.x = m_LocalCamera.pos.pos.x;
-    item->pos.y = m_LocalCamera.pos.pos.y;
-    item->pos.z = m_LocalCamera.pos.pos.z;
+    CAMERA_INFO *const camera = Cutscene_GetCamera();
+    item->rot.y = camera->target_angle;
+    item->pos.x = camera->pos.pos.x;
+    item->pos.y = camera->pos.pos.y;
+    item->pos.z = camera->pos.pos.z;
 
     XYZ_32 pos = {};
     Collide_GetJointAbsPosition(item, &pos, 0);
@@ -83,16 +56,17 @@ void Lara_Control_Cutscene(const int16_t item_num)
 void CutscenePlayer1_Initialise(const int16_t item_num)
 {
     OBJECT *const obj = Object_Get(O_LARA);
-    obj->draw_routine = Lara_Draw;
-    obj->control = Lara_Control_Cutscene;
+    obj->draw_func = Lara_Draw;
+    obj->control_func = Lara_Control_Cutscene;
 
     Item_AddActive(item_num);
     ITEM *const item = Item_Get(item_num);
-    m_LocalCamera.pos.pos.x = item->pos.x;
-    m_LocalCamera.pos.pos.y = item->pos.y;
-    m_LocalCamera.pos.pos.z = item->pos.z;
-    m_LocalCamera.target_angle = Camera_GetCineData()->position.target_angle;
-    m_LocalCamera.pos.room_num = item->room_num;
+    CAMERA_INFO *const camera = Cutscene_GetCamera();
+    camera->pos.pos.x = item->pos.x;
+    camera->pos.pos.y = item->pos.y;
+    camera->pos.pos.z = item->pos.z;
+    camera->target_angle = Camera_GetCineData()->position.target_angle;
+    camera->pos.room_num = item->room_num;
 
     item->rot.y = 0;
     item->dynamic_light = 0;
@@ -102,14 +76,6 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
     item->anim_num = 0;
 
     g_Lara.hit_direction = -1;
-}
-
-void CutscenePlayerGen_Initialise(const int16_t item_num)
-{
-    Item_AddActive(item_num);
-    ITEM *const item = Item_Get(item_num);
-    item->rot.y = 0;
-    item->dynamic_light = 0;
 }
 
 int32_t Misc_Move3DPosTo3DPos(
@@ -197,14 +163,8 @@ void InitialiseGameFlags(void)
         Object_Get(obj_id)->loaded = 0;
     }
 
-    g_FlipStatus = false;
-    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMaps[i] = 0;
-    }
-
-    g_SunsetTimer = 0;
+    Output_SetSunsetTimer(0);
     g_LevelComplete = false;
-    g_FlipEffect = -1;
     g_DetonateAllMines = false;
     g_IsMonkAngry = false;
 }

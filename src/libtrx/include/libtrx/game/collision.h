@@ -1,50 +1,25 @@
 #pragma once
 
+#include "items/types.h"
 #include "math.h"
 
-#if TR_VERSION == 1
-typedef struct {
-    int32_t mid_floor;
-    int32_t mid_ceiling;
-    int32_t mid_type;
-    int32_t front_floor;
-    int32_t front_ceiling;
-    int32_t front_type;
-    int32_t left_floor;
-    int32_t left_ceiling;
-    int32_t left_type;
-    int32_t right_floor;
-    int32_t right_ceiling;
-    int32_t right_type;
-    int32_t radius;
-    int32_t bad_pos;
-    int32_t bad_neg;
-    int32_t bad_ceiling;
-    XYZ_32 shift;
-    XYZ_32 old;
-    int16_t old_anim_state;
-    int16_t old_anim_num;
-    int16_t old_frame_num;
-    int16_t facing;
-    DIRECTION quadrant;
-    int16_t coll_type;
-    int8_t tilt_x;
-    int8_t tilt_z;
-    int8_t hit_by_baddie;
-    int8_t hit_static;
-    uint16_t slopes_are_walls : 1;
-    uint16_t slopes_are_pits : 1;
-    uint16_t lava_is_pit : 1;
-    uint16_t enable_baddie_push : 1;
-    uint16_t enable_hit : 1;
-} COLL_INFO;
-
-#elif TR_VERSION == 2
 typedef struct {
     int32_t floor;
     int32_t ceiling;
     int32_t type;
 } COLL_SIDE;
+
+typedef enum {
+    // clang-format off
+    COLL_NONE      = 0x00,
+    COLL_FRONT     = 0x01,
+    COLL_LEFT      = 0x02,
+    COLL_RIGHT     = 0x04,
+    COLL_TOP       = 0x08,
+    COLL_TOP_FRONT = 0x10,
+    COLL_CLAMP     = 0x20,
+    // clang-format on
+} COLL_TYPE;
 
 typedef struct {
     COLL_SIDE side_mid;
@@ -61,10 +36,10 @@ typedef struct {
     int16_t old_anim_num;
     int16_t old_frame_num;
     int16_t facing;
-    int16_t quadrant;
+    DIRECTION quadrant;
     int16_t coll_type;
-    int8_t x_tilt;
-    int8_t z_tilt;
+    int8_t tilt_x;
+    int8_t tilt_z;
     int8_t hit_by_baddie;
     int8_t hit_static;
     // clang-format off
@@ -73,8 +48,31 @@ typedef struct {
     uint16_t lava_is_pit:        1; // 0x04 4
     uint16_t enable_baddie_push: 1; // 0x08 8
     uint16_t enable_hit:         1; // 0x10 16
+#if TR_VERSION == 1
+    uint16_t pad:                11;
+#elif TR_VERSION == 2
     uint16_t hit_ceiling:        1; // 0x20 32
     uint16_t pad:                10;
+#endif
     // clang-format on
 } COLL_INFO;
-#endif
+
+typedef struct {
+    XYZ_32 pos;
+    int32_t r;
+} SPHERE;
+
+int32_t Collide_GetSpheres(const ITEM *item, SPHERE *spheres, bool world_space);
+
+int32_t Collide_TestCollision(ITEM *item, const ITEM *lara_item);
+
+void Collide_GetJointAbsPosition(
+    const ITEM *item, XYZ_32 *out_vec, int32_t joint);
+
+void Collide_GetCollisionInfo(
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
+    int32_t obj_height);
+
+bool Collide_CollideStaticObjects(
+    COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
+    int32_t height);

@@ -8,16 +8,12 @@
 #include "global/vars.h"
 
 #include <libtrx/game/lara/common.h>
+#include <libtrx/game/lara/hair.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
 
 #define HAIR_SEGMENTS 6
-
-typedef struct {
-    XYZ_32 pos;
-    XYZ_16 rot;
-} HAIR_SEGMENT;
 
 static bool m_IsFirstHair;
 static SPHERE m_HairSpheres[HAIR_SEGMENTS - 1];
@@ -39,9 +35,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     Matrix_Push();
     const OBJECT_MESH *mesh = g_Lara.mesh_ptrs[LM_HIPS];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[0].r = mesh->radius;
     Matrix_Pop();
 
@@ -53,13 +49,13 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     }
 
     Matrix_Rot16(mesh_rots[LM_TORSO]);
-    Matrix_Rot16(g_Lara.torso_rot);
+    Matrix_Rot16(g_Lara.interp.result.torso_rot);
     Matrix_Push();
     mesh = g_Lara.mesh_ptrs[LM_TORSO];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[1].r = mesh->radius;
     Matrix_Pop();
 
@@ -69,9 +65,9 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 
     mesh = g_Lara.mesh_ptrs[LM_UARM_R];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[3].r = mesh->radius * 3 / 2;
     Matrix_Pop();
 
@@ -80,22 +76,22 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     Matrix_Rot16(mesh_rots[LM_UARM_L]);
     mesh = g_Lara.mesh_ptrs[LM_UARM_L];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[4].r = mesh->radius * 3 / 2;
     Matrix_Pop();
 
     Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
     Matrix_Rot16(mesh_rots[LM_HEAD]);
-    Matrix_Rot16(g_Lara.head_rot);
+    Matrix_Rot16(g_Lara.interp.result.head_rot);
 
     Matrix_Push();
     mesh = g_Lara.mesh_ptrs[LM_HEAD];
     Matrix_TranslateRel16(mesh->center);
-    m_HairSpheres[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop();
 
@@ -116,9 +112,9 @@ static void M_CalculateSpheres_I(
     const OBJECT_MESH *mesh = g_Lara.mesh_ptrs[LM_HIPS];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[0].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[0].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[0].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[0].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[0].r = mesh->radius;
     Matrix_Pop_I();
 
@@ -131,15 +127,15 @@ static void M_CalculateSpheres_I(
     }
 
     Matrix_Rot16_ID(mesh_rots_1[LM_TORSO], mesh_rots_2[LM_TORSO]);
-    Matrix_Rot16_I(g_Lara.torso_rot);
+    Matrix_Rot16_I(g_Lara.interp.result.torso_rot);
 
     Matrix_Push_I();
     mesh = g_Lara.mesh_ptrs[LM_TORSO];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[1].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[1].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[1].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[1].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[1].r = mesh->radius;
     Matrix_Pop_I();
 
@@ -150,9 +146,9 @@ static void M_CalculateSpheres_I(
     mesh = g_Lara.mesh_ptrs[LM_UARM_R];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[3].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[3].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[3].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[3].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[3].r = mesh->radius * 3 / 2;
     Matrix_Pop_I();
 
@@ -163,23 +159,23 @@ static void M_CalculateSpheres_I(
     mesh = g_Lara.mesh_ptrs[LM_UARM_L];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[4].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[4].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[4].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[4].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[4].r = mesh->radius * 3 / 2;
     Matrix_Pop_I();
 
     Matrix_TranslateRel32_I(bone[LM_HEAD - 1].pos);
     Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
-    Matrix_Rot16_I(g_Lara.head_rot);
+    Matrix_Rot16_I(g_Lara.interp.result.head_rot);
 
     Matrix_Push_I();
     mesh = g_Lara.mesh_ptrs[LM_HEAD];
     Matrix_TranslateRel16_I(mesh->center);
     Matrix_Interpolate();
-    m_HairSpheres[2].x = g_MatrixPtr->_03 >> W2V_SHIFT;
-    m_HairSpheres[2].y = g_MatrixPtr->_13 >> W2V_SHIFT;
-    m_HairSpheres[2].z = g_MatrixPtr->_23 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
+    m_HairSpheres[2].pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop_I();
 
@@ -344,16 +340,16 @@ void Lara_Hair_Control(const bool in_cutscene)
 
         for (int32_t j = 0; j < 5; j++) {
             const SPHERE *const sphere = &m_HairSpheres[j];
-            const int32_t dx = s->pos.x - sphere->x;
-            const int32_t dy = s->pos.y - sphere->y;
-            const int32_t dz = s->pos.z - sphere->z;
+            const int32_t dx = s->pos.x - sphere->pos.x;
+            const int32_t dy = s->pos.y - sphere->pos.y;
+            const int32_t dz = s->pos.z - sphere->pos.z;
             int32_t dist = SQUARE(dz) + SQUARE(dy) + SQUARE(dx);
             if (dist < SQUARE(sphere->r)) {
                 dist = Math_Sqrt(dist);
                 CLAMPL(dist, 1);
-                s->pos.x = sphere->x + sphere->r * dx / dist;
-                s->pos.y = sphere->y + sphere->r * dy / dist;
-                s->pos.z = sphere->z + sphere->r * dz / dist;
+                s->pos.x = sphere->pos.x + sphere->r * dx / dist;
+                s->pos.y = sphere->pos.y + sphere->r * dy / dist;
+                s->pos.z = sphere->pos.z + sphere->r * dz / dist;
             }
         }
 
@@ -393,10 +389,25 @@ void Lara_Hair_Draw(void)
     for (int32_t i = 0; i < HAIR_SEGMENTS; i++) {
         const HAIR_SEGMENT *const s = &m_HairSegments[i];
         Matrix_Push();
-        Matrix_TranslateAbs32(s->pos);
-        Matrix_RotY(s->rot.y);
-        Matrix_RotX(s->rot.x);
+        Matrix_TranslateAbs32(s->interp.result.pos);
+        Matrix_RotY(s->interp.result.rot.y);
+        Matrix_RotX(s->interp.result.rot.x);
         Object_DrawMesh(obj->mesh_idx + i, 1, false);
         Matrix_Pop();
     }
+}
+
+bool Lara_Hair_IsActive(void)
+{
+    return Object_Get(O_LARA_HAIR)->loaded && Object_Get(O_LARA)->loaded;
+}
+
+int32_t Lara_Hair_GetSegmentCount(void)
+{
+    return HAIR_SEGMENTS;
+}
+
+HAIR_SEGMENT *Lara_Hair_GetSegment(const int32_t n)
+{
+    return &m_HairSegments[n];
 }

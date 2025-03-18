@@ -17,7 +17,10 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/utils.h>
+
+static CAMERA_INFO m_LocalCamera = {};
 
 static void M_FixAudioDrift(void);
 
@@ -56,6 +59,7 @@ void Cutscene_End(void)
 
 GF_COMMAND Cutscene_Control(void)
 {
+    Interpolation_Remember();
     M_FixAudioDrift();
 
     Input_Update();
@@ -85,6 +89,10 @@ GF_COMMAND Cutscene_Control(void)
     CINE_DATA *const cine_data = Camera_GetCineData();
     cine_data->frame_idx++;
     if (cine_data->frame_idx >= cine_data->frame_count) {
+        // Remember the scene after the update to prevent the interpolation
+        // from twitching the camera back and forth.
+        Interpolation_Remember();
+
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };
     }
 
@@ -94,7 +102,13 @@ GF_COMMAND Cutscene_Control(void)
 void Cutscene_Draw(void)
 {
     g_CameraUnderwater = false;
+    Interpolation_Interpolate();
     Camera_Apply();
-    Room_DrawAllRooms(g_Camera.pos.room_num);
+    Room_DrawAllRooms(g_Camera.interp.room_num);
     Output_DrawPolyList();
+}
+
+CAMERA_INFO *Cutscene_GetCamera(void)
+{
+    return &m_LocalCamera;
 }

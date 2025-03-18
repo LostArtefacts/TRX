@@ -131,26 +131,6 @@ const GAME_OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format on
 };
 
-const GAME_OBJECT_ID g_MovableBlockObjects[] = {
-    // clang-format off
-    O_MOVABLE_BLOCK_1,
-    O_MOVABLE_BLOCK_2,
-    O_MOVABLE_BLOCK_3,
-    O_MOVABLE_BLOCK_4,
-    NO_OBJECT,
-    // clang-format on
-};
-
-const GAME_OBJECT_ID g_PuzzleHoleObjects[] = {
-    // clang-format off
-    O_PUZZLE_HOLE_1,
-    O_PUZZLE_HOLE_2,
-    O_PUZZLE_HOLE_3,
-    O_PUZZLE_HOLE_4,
-    NO_OBJECT,
-    // clang-format on
-};
-
 const GAME_OBJECT_ID g_AnimObjects[] = {
     // clang-format off
     O_LARA_PISTOLS,

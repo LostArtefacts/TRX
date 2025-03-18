@@ -17,7 +17,6 @@
 #include "game/sound.h"
 #include "game/spawn.h"
 #include "game/viewport.h"
-#include "global/utils.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
@@ -117,6 +116,11 @@ void Lara_Cheat_EndLevel(void)
 bool Lara_Cheat_EnterFlyMode(void)
 {
     if (g_LaraItem == nullptr) {
+        return false;
+    }
+
+    if ((g_LaraItem->flags & IF_INVISIBLE) != 0) {
+        // The explosion cheat has been used, so Lara's death is permanent.
         return false;
     }
 

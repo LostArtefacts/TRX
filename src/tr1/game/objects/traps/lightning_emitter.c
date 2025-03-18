@@ -1,6 +1,3 @@
-#include "game/objects/traps/lightning_emitter.h"
-
-#include "game/collide.h"
 #include "game/game.h"
 #include "game/items.h"
 #include "game/lara/common.h"
@@ -12,6 +9,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
 
@@ -33,16 +31,22 @@ typedef struct {
     XYZ_32 shoot[LIGHTNING_SHOOTS][LIGHTNING_STEPS];
 } LIGHTNING;
 
-void LightningEmitter_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Draw(const ITEM *item);
+
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise = LightningEmitter_Initialise;
-    obj->control = LightningEmitter_Control;
-    obj->draw_routine = LightningEmitter_Draw;
-    obj->collision = LightningEmitter_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
 }
 
-void LightningEmitter_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     LIGHTNING *l = GameBuf_Alloc(sizeof(LIGHTNING), GBUF_ITEM_DATA);
     ITEM *const item = Item_Get(item_num);
@@ -60,7 +64,7 @@ void LightningEmitter_Initialise(int16_t item_num)
     l->zapped = false;
 }
 
-void LightningEmitter_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     LIGHTNING *l = item->data;
@@ -70,7 +74,7 @@ void LightningEmitter_Control(int16_t item_num)
         l->active = false;
         l->zapped = false;
 
-        if (g_FlipStatus) {
+        if (Room_GetFlipStatus()) {
             Room_FlipMap();
         }
 
@@ -88,7 +92,7 @@ void LightningEmitter_Control(int16_t item_num)
         l->active = false;
         l->count = 35 + (Random_GetControl() * 45) / 0x8000;
         l->zapped = false;
-        if (g_FlipStatus) {
+        if (Room_GetFlipStatus()) {
             Room_FlipMap();
         }
     } else {
@@ -141,7 +145,7 @@ void LightningEmitter_Control(int16_t item_num)
             }
         }
 
-        if (!g_FlipStatus) {
+        if (!Room_GetFlipStatus()) {
             Room_FlipMap();
         }
     }
@@ -149,8 +153,8 @@ void LightningEmitter_Control(int16_t item_num)
     Sound_Effect(SFX_THUNDER, &item->pos, SPM_NORMAL);
 }
 
-void LightningEmitter_Collision(
-    int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     const LIGHTNING *const l = Item_Get(item_num)->data;
     if (!l->zapped) {
@@ -164,15 +168,15 @@ void LightningEmitter_Collision(
     }
 }
 
-void LightningEmitter_Draw(ITEM *item)
+static void M_Draw(const ITEM *const item)
 {
     ANIM_FRAME *frmptr[2];
     int32_t rate;
     Item_GetFrames(item, frmptr, &rate);
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
 
     int32_t clip = Output_GetObjectBounds(&frmptr[0]->bounds);
     if (!clip) {
@@ -296,3 +300,5 @@ void LightningEmitter_Draw(ITEM *item)
 
     Matrix_Pop();
 }
+
+REGISTER_OBJECT(O_LIGHTNING_EMITTER, M_Setup)

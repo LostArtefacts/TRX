@@ -7,6 +7,10 @@
     "label_about_details": "Visit the TR2X GitHub page for further information."
   },
   "Enums": {
+    "fps": {
+      "30": "30",
+      "60": "60"
+    },
     "aspect_mode": {
       "any": "Any",
       "16:9": "16:9",
@@ -21,6 +25,10 @@
     "enable_responsive_passport": {
       "Title": "Enable more responsive passport",
       "Description": "Disables blocking user input when passport flips pages, scheduling the page flips instead."
+    },
+    "fps": {
+      "Title": "FPS",
+      "Description": "Controls the framerate at which to render the game."
     },
     "enable_3d_pickups": {
       "Title": "3D pickups",

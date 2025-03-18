@@ -131,7 +131,6 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/larson_textures.bin",
                 "data/injections/qualopec_fd.bin",
                 "data/injections/qualopec_itemrots.bin",
                 "data/injections/qualopec_textures.bin",
@@ -301,15 +300,12 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/cowboy_textures.bin",
-                "data/injections/kold_textures.bin",
                 "data/injections/mines_cameras.bin",
                 "data/injections/mines_fd.bin",
                 "data/injections/mines_itemrots.bin",
                 "data/injections/mines_meshfixes.bin",
                 "data/injections/mines_pushblocks.bin",
                 "data/injections/mines_textures.bin",
-                "data/injections/skateboardkid_textures.bin"
             ],
             "item_drops": [
                 {"enemy_num": 17, "object_ids": [86]},
@@ -424,7 +420,7 @@
     ],
 
     "cutscenes": [
-        // Cut Scene 1
+        // Cutscene 1
         {
             "path": "data/cut1.phd",
             "music_track": 23,
@@ -443,7 +439,7 @@
             ],
         },
 
-        // Cut Scene 2
+        // Cutscene 2
         {
             "path": "data/cut2.phd",
             "music_track": 25,
@@ -464,7 +460,7 @@
             ],
         },
 
-        // Cut Scene 3
+        // Cutscene 3
         {
             "path": "data/cut3.phd",
             "music_track": 24,
@@ -481,7 +477,7 @@
             ],
         },
 
-        // Cut Scene 4
+        // Cutscene 4
         {
             "path": "data/cut4.phd",
             "music_track": 22,

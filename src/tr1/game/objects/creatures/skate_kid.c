@@ -1,5 +1,3 @@
-#include "game/objects/creatures/skate_kid.h"
-
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lot.h"
@@ -39,15 +37,20 @@ typedef enum {
 static BITE m_KidGun1 = { 0, 150, 34, 7 };
 static BITE m_KidGun2 = { 0, 150, 37, 4 };
 
-void SkateKid_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+static void M_Draw(const ITEM *item);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = SkateKid_Initialise;
-    obj->control = SkateKid_Control;
-    obj->draw_routine = SkateKid_Draw;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = SKATE_KID_HITPOINTS;
     obj->radius = SKATE_KID_RADIUS;
@@ -67,13 +70,13 @@ void SkateKid_Setup(OBJECT *obj)
     }
 }
 
-void SkateKid_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     Item_Get(item_num)->current_anim_state = SKATE_KID_STATE_SKATE;
 }
 
-void SkateKid_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -173,7 +176,7 @@ void SkateKid_Control(int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-void SkateKid_Draw(ITEM *item)
+static void M_Draw(const ITEM *const item)
 {
     Object_DrawAnimatingItem(item);
     if (!Object_Get(O_SKATEBOARD)->loaded) {
@@ -182,10 +185,12 @@ void SkateKid_Draw(ITEM *item)
 
     const int16_t relative_anim = Item_GetRelativeAnim(item);
     const int16_t relative_frame = Item_GetRelativeFrame(item);
-    item->object_id = O_SKATEBOARD;
-    Item_SwitchToAnim(item, relative_anim, relative_frame);
+    ((ITEM *)item)->object_id = O_SKATEBOARD;
+    Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
     Object_DrawAnimatingItem(item);
 
-    item->object_id = O_SKATEKID;
-    Item_SwitchToAnim(item, relative_anim, relative_frame);
+    ((ITEM *)item)->object_id = O_SKATEKID;
+    Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
 }
+
+REGISTER_OBJECT(O_SKATEKID, M_Setup)

@@ -1,5 +1,3 @@
-#include "game/objects/general/big_bowl.h"
-
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/objects/common.h"
@@ -15,6 +13,8 @@ typedef enum {
 } BIG_BOWL_STATE;
 
 static void M_CreateHotLiquid(const ITEM *bowl_item);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_CreateHotLiquid(const ITEM *const bowl_item)
 {
@@ -33,16 +33,23 @@ static void M_CreateHotLiquid(const ITEM *const bowl_item)
     }
 }
 
-void BigBowl_Control(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
     if (item->current_anim_state == BIG_BOWL_STATE_POUR) {
         M_CreateHotLiquid(item);
         item->timer++;
-        if (item->timer == 5 * FRAMES_PER_SECOND && !g_FlipStatus) {
+        if (item->timer == 5 * FRAMES_PER_SECOND && !Room_GetFlipStatus()) {
             // TODO: poorly hardcoded flimap number
-            g_FlipMaps[4] = IF_CODE_BITS | IF_ONE_SHOT;
+            Room_SetFlipSlotFlags(4, IF_CODE_BITS | IF_ONE_SHOT);
             Room_FlipMap();
         }
     }
@@ -55,10 +62,4 @@ void BigBowl_Control(const int16_t item_num)
     }
 }
 
-void BigBowl_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_BIG_BOWL);
-    obj->control = BigBowl_Control;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_BIG_BOWL, M_Setup)

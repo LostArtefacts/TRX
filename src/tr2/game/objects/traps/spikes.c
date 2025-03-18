@@ -1,14 +1,21 @@
-#include "game/objects/traps/spikes.h"
-
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/random.h"
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
+
 #define SPIKE_DAMAGE 15
 
-void Spikes_Collision(
+static void M_Setup(OBJECT *obj);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = M_Collision;
+}
+
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -53,8 +60,4 @@ void Spikes_Collision(
     }
 }
 
-void Spikes_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_SPIKES);
-    obj->collision = Spikes_Collision;
-}
+REGISTER_OBJECT(O_SPIKES, M_Setup)

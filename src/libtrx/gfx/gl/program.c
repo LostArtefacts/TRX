@@ -191,6 +191,7 @@ void GFX_GL_Program_Uniform3f(
     ASSERT(program != nullptr);
     glUniform3f(loc, v0, v1, v2);
     GFX_GL_CheckError();
+    program->uniform_updates++;
 }
 
 void GFX_GL_Program_Uniform4f(
@@ -200,6 +201,7 @@ void GFX_GL_Program_Uniform4f(
     ASSERT(program != nullptr);
     glUniform4f(loc, v0, v1, v2, v3);
     GFX_GL_CheckError();
+    program->uniform_updates++;
 }
 
 void GFX_GL_Program_Uniform1i(GFX_GL_PROGRAM *program, GLint loc, GLint v0)
@@ -207,6 +209,7 @@ void GFX_GL_Program_Uniform1i(GFX_GL_PROGRAM *program, GLint loc, GLint v0)
     ASSERT(program != nullptr);
     glUniform1i(loc, v0);
     GFX_GL_CheckError();
+    program->uniform_updates++;
 }
 
 void GFX_GL_Program_Uniform1f(GFX_GL_PROGRAM *program, GLint loc, GLfloat v0)
@@ -214,6 +217,7 @@ void GFX_GL_Program_Uniform1f(GFX_GL_PROGRAM *program, GLint loc, GLfloat v0)
     ASSERT(program != nullptr);
     glUniform1f(loc, v0);
     GFX_GL_CheckError();
+    program->uniform_updates++;
 }
 
 void GFX_GL_Program_UniformMatrix4fv(
@@ -223,4 +227,5 @@ void GFX_GL_Program_UniformMatrix4fv(
     ASSERT(program != nullptr);
     glUniformMatrix4fv(loc, count, transpose, value);
     GFX_GL_CheckError();
+    program->uniform_updates++;
 }

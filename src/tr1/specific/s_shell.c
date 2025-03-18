@@ -9,16 +9,13 @@
 #include "game/sound.h"
 
 #include <libtrx/config.h>
+#include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/gfx/common.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
-
-#define SDL_MAIN_HANDLED
-
-#include <libtrx/debug.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>
@@ -34,8 +31,6 @@
 #include <string.h>
 #include <time.h>
 
-static int m_ArgCount = 0;
-static char **m_ArgStrings = nullptr;
 static SDL_Window *m_Window = nullptr;
 
 static void M_HandleQuit(void);
@@ -223,23 +218,6 @@ void Shell_ProcessEvents(void)
     }
 }
 
-int main(int argc, char **argv)
-{
-    char *log_path = File_GetFullPath("TR1X.log");
-    Log_Init(log_path);
-    Memory_FreePointer(&log_path);
-
-    LOG_INFO("Game directory: %s", File_GetGameDirectory());
-
-    m_ArgCount = argc;
-    m_ArgStrings = argv;
-
-    Shell_Setup();
-    Shell_Main();
-    Shell_Terminate(0);
-    return 0;
-}
-
 static void M_SetGLBackend(const GFX_GL_BACKEND backend)
 {
     switch (backend) {
@@ -300,17 +278,6 @@ void S_Shell_CreateWindow(void)
     }
 
     Shell_ExitSystem("System Error: cannot attach opengl context");
-}
-
-bool S_Shell_GetCommandLine(int *arg_count, char ***args)
-{
-    *arg_count = m_ArgCount;
-    *args = Memory_Alloc(m_ArgCount * sizeof(char *));
-    for (int i = 0; i < m_ArgCount; i++) {
-        (*args)[i] = Memory_Alloc(strlen(m_ArgStrings[i]) + 1);
-        strcpy((*args)[i], m_ArgStrings[i]);
-    }
-    return true;
 }
 
 SDL_Window *Shell_GetWindow(void)

@@ -66,9 +66,9 @@ void Lara_Cheat_Control(void)
             cheat_angle = g_LaraItem->rot.y;
         }
         cheat_turn = 0;
-        if (as == LS_TURN_L) {
+        if (as == LS_TURN_LEFT) {
             cheat_mode = 5;
-        } else if (as == LS_TURN_R) {
+        } else if (as == LS_TURN_RIGHT) {
             cheat_mode = 6;
         } else {
             cheat_mode = 0;
@@ -76,7 +76,7 @@ void Lara_Cheat_Control(void)
         break;
 
     case 5:
-        if (as == LS_TURN_L || as == LS_FAST_TURN) {
+        if (as == LS_TURN_LEFT || as == LS_FAST_TURN) {
             cheat_turn += (int16_t)(g_LaraItem->rot.y - cheat_angle);
             cheat_angle = g_LaraItem->rot.y;
         } else {
@@ -85,7 +85,7 @@ void Lara_Cheat_Control(void)
         break;
 
     case 6:
-        if (as == LS_TURN_R || as == LS_FAST_TURN) {
+        if (as == LS_TURN_RIGHT || as == LS_FAST_TURN) {
             cheat_turn += (int16_t)(g_LaraItem->rot.y - cheat_angle);
             cheat_angle = g_LaraItem->rot.y;
         } else {
@@ -137,6 +137,17 @@ bool Lara_Cheat_EnterFlyMode(void)
 {
     if (g_LaraItem == nullptr) {
         return false;
+    }
+
+    if ((g_LaraItem->flags & IF_INVISIBLE) != 0) {
+        // The explosion cheat has been used, so Lara's death is permanent.
+        return false;
+    }
+
+    g_Lara.request_gun_type = LGT_UNARMED;
+    if (g_LaraItem->hit_points <= 0) {
+        g_Lara.gun_status = LGS_ARMLESS;
+        Lara_InitialiseMeshes(GF_GetCurrentLevel());
     }
 
     if (g_Lara.water_status != LWS_UNDERWATER || g_LaraItem->hit_points <= 0) {
@@ -193,6 +204,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         g_Lara.torso_rot.y = 0;
     }
     g_Lara.gun_status = LGS_ARMLESS;
+    Lara_InitialiseMeshes(GF_GetCurrentLevel());
     Console_Log(GS(OSD_FLY_MODE_OFF));
     return true;
 }

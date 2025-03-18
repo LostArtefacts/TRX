@@ -17,7 +17,6 @@ int32_t g_OverlayStatus = 1;
 bool g_GymInvOpenEnabled = true; // TODO: make me configurable
 int32_t g_MidSort = 0;
 int32_t g_PhdWinTop;
-int32_t g_LsAdder;
 float g_FltWinBottom;
 float g_FltResZBuf;
 float g_FltResZ;
@@ -47,18 +46,11 @@ float g_FltPersp;
 int16_t *g_Info3DPtr = nullptr;
 int32_t g_PhdWinWidth;
 int32_t g_PhdViewDistance;
-int32_t g_LsDivider;
 PHD_VBUF g_PhdVBuf[1500];
 float g_FltWinRight;
-XYZ_32 g_LsVectorView;
 int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
-int32_t g_WibbleOffset;
-bool g_IsWibbleEffect;
-bool g_IsWaterEffect;
-bool g_IsShadeEffect;
-int32_t g_FlipTimer;
 bool g_IsDemoLoaded;
 bool g_IsAssaultTimerDisplay;
 bool g_IsAssaultTimerActive;
@@ -70,17 +62,9 @@ int32_t g_LevelComplete;
 SAVEGAME_INFO g_SaveGame = {};
 LARA_INFO g_Lara;
 ITEM *g_LaraItem = nullptr;
-int32_t g_FlipStatus;
-BOX_INFO *g_Boxes = nullptr;
-int16_t *g_FlyZone[2] = {};
-int16_t *g_GroundZone[4][2] = {};
-uint16_t *g_Overlap = nullptr;
 CREATURE *g_BaddieSlots = nullptr;
 
-int32_t g_HeightType;
-int32_t g_FlipMaps[MAX_FLIP_MAPS];
 bool g_CameraUnderwater;
-int32_t g_BoxCount;
 char g_LevelFileName[256];
 
 WEAPON_INFO g_Weapons[] = {
@@ -280,8 +264,6 @@ REQUEST_INFO g_SaveGameRequester = {
 
 bool g_GF_RemoveAmmo = false;
 bool g_GF_RemoveWeapons = false;
-bool g_GF_SunsetEnabled = false;
-int16_t g_GF_NoFloor = 0;
 int16_t g_GF_NumSecrets = 3;
 int32_t g_GF_LaraStartAnim;
 int32_t g_GF_ScriptVersion;
@@ -296,4 +278,3 @@ int16_t g_SavedLevels[MAX_LEVELS] = { -1, 0 };
 
 XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
 bool g_DetonateAllMines = false;
-int32_t g_SunsetTimer = 0;

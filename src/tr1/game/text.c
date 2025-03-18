@@ -191,7 +191,7 @@ void Text_DrawText(TEXTSTRING *const text)
                 goto loop_end;
             }
 
-            Output_DrawScreenSprite2D(
+            Output_DrawScreenSprite(
                 csx, csy, 0, sh, sv,
                 obj->mesh_idx + glyph->combine_with.mesh_idx, 16 << 8, 0, 0);
         }
@@ -199,7 +199,7 @@ void Text_DrawText(TEXTSTRING *const text)
         if (glyph->mesh_idx >= ABS(obj->mesh_count)) {
             goto loop_end;
         }
-        Output_DrawScreenSprite2D(
+        Output_DrawScreenSprite(
             sx, sy, 0, sh, sv, obj->mesh_idx + glyph->mesh_idx, 16 << 8, 0, 0);
 
         if (glyph->role != GLYPH_COMBINING) {

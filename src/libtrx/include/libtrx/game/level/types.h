@@ -8,6 +8,7 @@ typedef struct {
         int32_t change_count;
         int32_t range_count;
         int32_t command_count;
+        int16_t *commands;
         int32_t bone_count;
         int32_t frame_count;
         int16_t *frames;

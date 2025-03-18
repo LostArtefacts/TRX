@@ -45,7 +45,11 @@ class CommitCommand(BaseCommand):
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
         # self.git.checkout_branch("develop")
-        old_tag = self.git.get_branch_version(pattern=f"tr{args.game_version}-*", branch="origin/stable", abbrev=0)
+        old_tag = self.git.get_branch_version(
+            pattern=f"tr{args.game_version}-*",
+            branch="origin/stable",
+            abbrev=0,
+        )
         new_tag = f"tr{args.game_version}-{args.version}"
 
         changelog_path = PROJECT_PATHS[args.game_version].changelog_path
@@ -68,8 +72,6 @@ class CommitCommand(BaseCommand):
         changelog_path.write_text(new_changelog)
         self.git.add(changelog_path)
         self.git.commit(f"docs/tr{args.game_version}: release {args.version}")
-        self.git.delete_tag(new_tag)
-        self.git.create_tag(new_tag)
 
 
 class BranchCommand(BaseCommand):
@@ -79,7 +81,11 @@ class BranchCommand(BaseCommand):
     def run(self, args: argparse.Namespace, options: Options) -> None:
         new_tag = f"tr{args.game_version}-{args.version}"
         self.git.checkout_branch("stable")
-        self.git.reset(new_tag, hard=True)
+        self.git.merge_reset(
+            "develop", text=f"{args.game_version}: release {args.version}"
+        )
+        self.git.delete_tag(new_tag)
+        self.git.create_tag(new_tag)
         self.git.checkout_branch("develop")
 
 

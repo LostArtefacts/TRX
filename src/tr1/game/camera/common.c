@@ -288,55 +288,56 @@ static void M_EnsureEnvironment(void)
 
 static void M_Move(const GAME_VECTOR *const ideal, const int32_t speed)
 {
-    g_Camera.pos.x += (ideal->x - g_Camera.pos.x) / speed;
-    g_Camera.pos.z += (ideal->z - g_Camera.pos.z) / speed;
-    g_Camera.pos.y += (ideal->y - g_Camera.pos.y) / speed;
-    g_Camera.pos.room_num = ideal->room_num;
+    const GAME_VECTOR old_pos = g_Camera.pos;
+    GAME_VECTOR pos = g_Camera.pos;
+    pos.x += (ideal->x - pos.x) / speed;
+    pos.z += (ideal->z - pos.z) / speed;
+    pos.y += (ideal->y - pos.y) / speed;
+    pos.room_num = ideal->room_num;
 
     Camera_SetChunky(false);
 
-    const SECTOR *sector = Room_GetSector(
-        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
-    int32_t height =
-        Room_GetHeight(sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
-        - GROUND_SHIFT;
-
-    if (g_Camera.pos.y >= height && ideal->y >= height) {
-        LOS_Check(&g_Camera.target, &g_Camera.pos);
-        sector = Room_GetSector(
-            g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
-            &g_Camera.pos.room_num);
-        height = Room_GetHeight(
-                     sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
-            - GROUND_SHIFT;
+    const SECTOR *sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+    int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    if (height == NO_HEIGHT) {
+        pos.y = old_pos.y;
+        pos.room_num = old_pos.room_num;
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
     }
 
-    int32_t ceiling =
-        Room_GetCeiling(sector, g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)
-        + GROUND_SHIFT;
+    height -= STEP_L;
+    if (pos.y >= height && ideal->y >= height) {
+        LOS_Check(&g_Camera.target, &pos);
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        height = Room_GetHeight(sector, pos.x, pos.y, pos.z) - STEP_L;
+    }
+
+    g_Camera.pos = pos;
+
+    int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z) + STEP_L;
     if (height < ceiling) {
         ceiling = (height + ceiling) >> 1;
         height = ceiling;
     }
 
-    if (g_Camera.bounce) {
-        if (g_Camera.bounce > 0) {
-            g_Camera.pos.y += g_Camera.bounce;
-            g_Camera.target.y += g_Camera.bounce;
-            g_Camera.bounce = 0;
-        } else {
-            int32_t shake;
-            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
-            g_Camera.pos.x += shake;
-            g_Camera.target.y += shake;
-            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
-            g_Camera.pos.y += shake;
-            g_Camera.target.y += shake;
-            shake = (Random_GetControl() - 0x4000) * g_Camera.bounce / 0x7FFF;
-            g_Camera.pos.z += shake;
-            g_Camera.target.z += shake;
-            g_Camera.bounce += 5;
-        }
+    if (g_Camera.bounce > 0) {
+        g_Camera.pos.y += g_Camera.bounce;
+        g_Camera.target.y += g_Camera.bounce;
+        g_Camera.bounce = 0;
+    } else if (g_Camera.bounce < 0) {
+        const XYZ_32 shake = {
+            .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+        };
+        g_Camera.pos.x += shake.x;
+        g_Camera.pos.y += shake.y;
+        g_Camera.pos.z += shake.z;
+        g_Camera.target.y += shake.x;
+        g_Camera.target.y += shake.y;
+        g_Camera.target.z += shake.z;
+        g_Camera.bounce += 5;
     }
 
     if (g_Camera.pos.y > height) {
@@ -363,23 +364,22 @@ static int32_t M_ShiftClamp(GAME_VECTOR *const pos, const int32_t clamp)
     const int32_t z = pos->z;
 
     const SECTOR *const sector = Room_GetSector(x, y, z, &pos->room_num);
+    const BOX_INFO *const box = Box_GetBox(sector->box);
 
-    const BOX_INFO *const box = &g_Boxes[sector->box];
-    if (z < box->left + clamp
-        && M_BadPosition(x, y, z - clamp, pos->room_num)) {
-        pos->z = box->left + clamp;
-    } else if (
-        z > box->right - clamp
-        && M_BadPosition(x, y, z + clamp, pos->room_num)) {
-        pos->z = box->right - clamp;
+    const int32_t left = box->left + clamp;
+    const int32_t right = box->right - clamp;
+    if (z < left && M_BadPosition(x, y, z - clamp, pos->room_num)) {
+        pos->z = left;
+    } else if (z > right && M_BadPosition(x, y, z + clamp, pos->room_num)) {
+        pos->z = right;
     }
 
-    if (x < box->top + clamp && M_BadPosition(x - clamp, y, z, pos->room_num)) {
-        pos->x = box->top + clamp;
-    } else if (
-        x > box->bottom - clamp
-        && M_BadPosition(x + clamp, y, z, pos->room_num)) {
-        pos->x = box->bottom - clamp;
+    const int32_t top = box->top + clamp;
+    const int32_t bottom = box->bottom - clamp;
+    if (x < top && M_BadPosition(x - clamp, y, z, pos->room_num)) {
+        pos->x = top;
+    } else if (x > bottom && M_BadPosition(x + clamp, y, z, pos->room_num)) {
+        pos->x = bottom;
     }
 
     int32_t height = Room_GetHeight(sector, x, y, z) - clamp;
@@ -413,7 +413,7 @@ static void M_SmartShift(
     int32_t x_sector = (g_Camera.target.x - room->pos.x) >> WALL_SHIFT;
 
     const int16_t item_box = Room_GetUnitSector(room, x_sector, z_sector)->box;
-    BOX_INFO *box = &g_Boxes[item_box];
+    const BOX_INFO *box = Box_GetBox(item_box);
 
     room = Room_Get(ideal->room_num);
     z_sector = (ideal->z - room->pos.z) >> WALL_SHIFT;
@@ -423,7 +423,7 @@ static void M_SmartShift(
     if (camera_box != NO_BOX
         && (ideal->z < box->left || ideal->z > box->right || ideal->x < box->top
             || ideal->x > box->bottom)) {
-        box = &g_Boxes[camera_box];
+        box = Box_GetBox(camera_box);
     }
 
     int32_t left = box->left;
@@ -436,8 +436,8 @@ static void M_SmartShift(
         M_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
     if (!bad_left) {
         camera_box = Room_GetUnitSector(room, x_sector, z_sector - 1)->box;
-        if (camera_box != NO_ITEM && g_Boxes[camera_box].left < left) {
-            left = g_Boxes[camera_box].left;
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->left < left) {
+            left = Box_GetBox(camera_box)->left;
         }
     }
 
@@ -446,8 +446,8 @@ static void M_SmartShift(
         M_BadPosition(ideal->x, ideal->y, test, ideal->room_num);
     if (!bad_right) {
         camera_box = Room_GetUnitSector(room, x_sector, z_sector + 1)->box;
-        if (camera_box != NO_ITEM && g_Boxes[camera_box].right > right) {
-            right = g_Boxes[camera_box].right;
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->right > right) {
+            right = Box_GetBox(camera_box)->right;
         }
     }
 
@@ -456,8 +456,8 @@ static void M_SmartShift(
         M_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
     if (!bad_top) {
         camera_box = Room_GetUnitSector(room, x_sector - 1, z_sector)->box;
-        if (camera_box != NO_ITEM && g_Boxes[camera_box].top < top) {
-            top = g_Boxes[camera_box].top;
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->top < top) {
+            top = Box_GetBox(camera_box)->top;
         }
     }
 
@@ -466,8 +466,8 @@ static void M_SmartShift(
         M_BadPosition(test, ideal->y, ideal->z, ideal->room_num);
     if (!bad_bottom) {
         camera_box = Room_GetUnitSector(room, x_sector + 1, z_sector)->box;
-        if (camera_box != NO_ITEM && g_Boxes[camera_box].bottom > bottom) {
-            bottom = g_Boxes[camera_box].bottom;
+        if (camera_box != NO_BOX && Box_GetBox(camera_box)->bottom > bottom) {
+            bottom = Box_GetBox(camera_box)->bottom;
         }
     }
 
@@ -611,11 +611,6 @@ void Camera_Initialise(void)
     Matrix_ResetStack();
     Camera_ResetPosition();
     Camera_Update();
-}
-
-void Camera_Reset(void)
-{
-    g_Camera.pos.room_num = NO_ROOM;
 }
 
 void Camera_ResetPosition(void)
@@ -828,6 +823,11 @@ void Camera_UpdateCutscene(void)
     g_Camera.pos.x = pos->x + ((s * ref->cz + c * ref->cx) >> W2V_SHIFT);
     g_Camera.pos.y = pos->y + ref->cy;
     g_Camera.pos.z = pos->z + ((c * ref->cz - s * ref->cx) >> W2V_SHIFT);
+    const int16_t room_num =
+        Room_FindByPos(g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z);
+    if (room_num != NO_ROOM_NEG) {
+        g_Camera.pos.room_num = room_num;
+    }
     g_Camera.roll = ref->roll;
     g_Camera.shift = 0;
 

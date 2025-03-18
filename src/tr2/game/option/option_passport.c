@@ -101,7 +101,9 @@ static void M_DeterminePages(void)
     if (Game_IsInGym()) {
         for (int32_t i = 0; i < 3; i++) {
             if (m_State.pages[i].role == M_ROLE_SAVE_GAME) {
-                m_State.pages[i].role = M_ROLE_NEW_GAME;
+                m_State.pages[i].role = g_GameFlow.play_any_level
+                    ? M_ROLE_PLAY_ANY_LEVEL
+                    : M_ROLE_NEW_GAME;
             }
         }
     }
@@ -225,6 +227,11 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
             Requester_SetHeading(
                 &g_SaveGameRequester, GS(PASSPORT_SELECT_LEVEL), 0, nullptr, 0);
             g_SaveGameRequester.ready = true;
+        }
+        if (m_SubtitleText == nullptr) {
+            m_SubtitleText = Text_Create(0, -16, GS(PASSPORT_NEW_GAME));
+            Text_AlignBottom(m_SubtitleText, true);
+            Text_CentreH(m_SubtitleText, true);
         }
         m_State.selection =
             Requester_Display(&g_SaveGameRequester, true, true) - 1;

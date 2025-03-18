@@ -191,6 +191,7 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
 
     renderer->vertex_stream.rendered_count = 0;
     renderer->vertex_stream.transferred = 0;
+    renderer->program.uniform_updates = 0;
 
     GFX_GL_Program_Bind(&renderer->program);
     GFX_3D_VertexStream_Bind(&renderer->vertex_stream);
@@ -232,6 +233,12 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_RENDERER *const renderer)
 {
     ASSERT(renderer != nullptr);
     M_Flush(renderer);
+#ifdef DEBUG_OPTIM
+    LOG_DEBUG(
+        "vertices: %d, bytes: %d, uniforms: %d",
+        renderer->vertex_stream.rendered_count,
+        renderer->vertex_stream.transferred, renderer->program.uniform_updates);
+#endif
 }
 
 void GFX_3D_Renderer_ClearDepth(GFX_3D_RENDERER *const renderer)

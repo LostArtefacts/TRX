@@ -29,22 +29,22 @@ void Text_DrawBorder(
     const int32_t scale_h = TEXT_BASE_SCALE;
     const int32_t scale_v = TEXT_BASE_SCALE;
 
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x0, y0, z, scale_h, scale_v, mesh_idx + 0, 0x1000, 0);
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x1, y0, z, scale_h, scale_v, mesh_idx + 1, 0x1000, 0);
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x1, y1, z, scale_h, scale_v, mesh_idx + 2, 0x1000, 0);
-    Output_DrawScreenSprite2D(
+    Output_DrawScreenSprite(
         x0, y1, z, scale_h, scale_v, mesh_idx + 3, 0x1000, 0);
 
     int32_t w = (width - offset * 2) * TEXT_BASE_SCALE / 8;
     int32_t h = (height - offset * 2) * TEXT_BASE_SCALE / 8;
 
-    Output_DrawScreenSprite2D(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
-    Output_DrawScreenSprite2D(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
-    Output_DrawScreenSprite2D(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
-    Output_DrawScreenSprite2D(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y0, z, w, scale_v, mesh_idx + 4, 0x1000, 0);
+    Output_DrawScreenSprite(x1, y0, z, scale_h, h, mesh_idx + 5, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y1, z, w, scale_v, mesh_idx + 6, 0x1000, 0);
+    Output_DrawScreenSprite(x0, y0, z, scale_h, h, mesh_idx + 7, 0x1000, 0);
 }
 
 void Text_DrawText(TEXTSTRING *const text)
@@ -108,22 +108,21 @@ void Text_DrawText(TEXTSTRING *const text)
 
     const GLYPH_INFO **glyph_ptr = text->glyphs;
     while (*glyph_ptr != nullptr) {
-        if (text->flags.multiline && (*glyph_ptr)->role == GLYPH_NEWLINE) {
+        const GLYPH_INFO *glyph = *glyph_ptr;
+        if (text->flags.multiline && glyph->role == GLYPH_NEWLINE) {
             y += TEXT_HEIGHT * M_Scale(text->scale.v) / TEXT_BASE_SCALE;
             x = start_x;
-            glyph_ptr++;
-            continue;
+            goto loop_end;
         }
 
-        if ((*glyph_ptr)->role == GLYPH_SPACE) {
+        if (glyph->role == GLYPH_SPACE) {
             x += text->word_spacing * scale_h / TEXT_BASE_SCALE;
-            glyph_ptr++;
-            continue;
+            goto loop_end;
         }
 
-        if ((*glyph_ptr)->role == GLYPH_SECRET) {
+        if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
-                Object_Get(O_SECRET_1 + (*glyph_ptr)->mesh_idx)->mesh_idx;
+                Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
             const SPRITE_TEXTURE *const sprite =
                 Output_GetSpriteTexture(sprite_idx);
             const float sprite_scale_h =
@@ -131,26 +130,42 @@ void Text_DrawText(TEXTSTRING *const text)
             const float sprite_scale_v =
                 text->scale.v / (sprite->y1 - sprite->y0);
             const float sprite_scale = MIN(sprite_scale_h, sprite_scale_v);
-            Output_DrawScreenSprite2D(
-                x + M_Scale(10), y, z,
-                M_Scale((*glyph_ptr)->width * sprite_scale),
-                M_Scale((*glyph_ptr)->width * sprite_scale), sprite_idx, 4096,
-                0);
-            x += (*glyph_ptr)->width * scale_h / TEXT_BASE_SCALE;
-            glyph_ptr++;
-            continue;
+            Output_DrawScreenSprite(
+                x + M_Scale(10), y, z, M_Scale(glyph->width * sprite_scale),
+                M_Scale(glyph->width * sprite_scale), sprite_idx, 4096, 0);
+            x += glyph->width * scale_h / TEXT_BASE_SCALE;
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_COMPOUND) {
+            const int32_t cx =
+                x + (glyph->combine_with.offset_x * scale_h / TEXT_BASE_SCALE);
+            const int32_t cy =
+                y + (glyph->combine_with.offset_y * scale_h / TEXT_BASE_SCALE);
+            if (glyph->combine_with.mesh_idx >= ABS(obj->mesh_count)) {
+                goto loop_end;
+            }
+
+            Output_DrawScreenSprite(
+                cx, cy, 0, scale_h, scale_v,
+                obj->mesh_idx + glyph->combine_with.mesh_idx, 4096, 0);
         }
 
         if (x >= 0 && x < g_PhdWinWidth && y >= 0 && y < g_PhdWinHeight) {
-            Output_DrawScreenSprite2D(
-                x, y, z, scale_h, scale_v,
-                obj->mesh_idx + (*glyph_ptr)->mesh_idx, 4096, 0);
+            if (glyph->mesh_idx >= ABS(obj->mesh_count)) {
+                goto loop_end;
+            }
+            Output_DrawScreenSprite(
+                x, y, z, scale_h, scale_v, obj->mesh_idx + glyph->mesh_idx,
+                4096, 0);
         }
 
-        if ((*glyph_ptr)->role != GLYPH_COMBINING) {
-            const int32_t spacing = text->letter_spacing + (*glyph_ptr)->width;
+        if (glyph->role != GLYPH_COMBINING) {
+            const int32_t spacing = text->letter_spacing + glyph->width;
             x += spacing * scale_h / TEXT_BASE_SCALE;
         }
+
+    loop_end:
         glyph_ptr++;
     }
 

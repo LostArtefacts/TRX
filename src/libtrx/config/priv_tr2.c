@@ -133,6 +133,9 @@ void Config_Sanitize(void)
     }
     CLAMP(g_Config.rendering.nearest_adjustment, 0, 256);
     CLAMP(g_Config.rendering.linear_adjustment, 0, 256);
+    if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
+        g_Config.rendering.fps = 30;
+    }
 
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMP(g_Config.ui.bar_scale, 0.5, 2.0);

@@ -23,13 +23,6 @@ typedef struct {
 } PHD_3DPOS;
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
-    int32_t r;
-} SPHERE;
-
-typedef struct {
     float xv;
     float yv;
     float zv;
@@ -38,8 +31,12 @@ typedef struct {
     float ys;
     int16_t clip;
     int16_t g;
-    int16_t u;
-    int16_t v;
+    struct {
+        int16_t u;
+        int16_t v;
+        float z;
+        float w;
+    } tex;
 } PHD_VBUF;
 
 typedef enum {
@@ -64,8 +61,12 @@ typedef struct {
     float rhw;
     float xs;
     float ys;
-    float u;
-    float v;
+    struct {
+        float u;
+        float v;
+        float z;
+        float w;
+    } tex;
     float g;
 } POINT_INFO;
 
@@ -194,12 +195,6 @@ typedef enum {
     GFE_REMOVE_AMMO      = 22,
 } GF_EVENTS;
 
-typedef enum {
-    TARGET_NONE      = 0,
-    TARGET_PRIMARY   = 1,
-    TARGET_SECONDARY = 2,
-} TARGET_TYPE;
-
 typedef struct {
     XYZ_32 pos;
     int32_t mesh_num;
@@ -211,15 +206,6 @@ typedef struct {
     int16_t block;
 } DOORPOS_DATA;
 
-typedef struct {
-    uint8_t left;
-    uint8_t right;
-    uint8_t top;
-    uint8_t bottom;
-    int16_t height;
-    int16_t overlap_index;
-} BOX_INFO;
-
 typedef enum {
     TRAP_SET      = 0,
     TRAP_ACTIVATE = 1,
@@ -230,22 +216,6 @@ typedef enum {
 typedef struct {
     uint16_t key[14]; // INPUT_ROLE_NUMBER_OF
 } CONTROL_LAYOUT;
-
-typedef enum {
-    COLL_NONE      = 0x00,
-    COLL_FRONT     = 0x01,
-    COLL_LEFT      = 0x02,
-    COLL_RIGHT     = 0x04,
-    COLL_TOP       = 0x08,
-    COLL_TOP_FRONT = 0x10,
-    COLL_CLAMP     = 0x20,
-} COLL_TYPE;
-
-typedef enum {
-    HT_WALL        = 0,
-    HT_SMALL_SLOPE = 1,
-    HT_BIG_SLOPE   = 2,
-} HEIGHT_TYPE;
 
 typedef struct {
     int32_t boat_turn;

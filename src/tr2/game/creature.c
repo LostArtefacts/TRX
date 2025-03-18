@@ -2,7 +2,6 @@
 
 #include "game/box.h"
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
 #include "game/items.h"
@@ -17,6 +16,7 @@
 #include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -86,12 +86,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         enemy = g_LaraItem;
     }
 
-    int16_t *zone;
-    if (creature->lot.fly) {
-        zone = g_FlyZone[g_FlipStatus];
-    } else {
-        zone = g_GroundZone[BOX_ZONE(creature->lot.step)][g_FlipStatus];
-    }
+    const int16_t *const zone = Box_GetLotZone(&creature->lot);
 
     {
         const ROOM *const room = Room_Get(item->room_num);
@@ -107,7 +102,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         info->enemy_zone_num = zone[enemy->box_num];
     }
 
-    if (((g_Boxes[enemy->box_num].overlap_index & creature->lot.block_mask)
+    if (((Box_GetBox(enemy->box_num)->overlap_index & creature->lot.block_mask)
          != 0)
         || (creature->lot.node[item->box_num].search_num
             == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
@@ -390,12 +385,7 @@ int32_t Creature_Animate(
     const LOT_INFO *const lot = &creature->lot;
     const XYZ_32 old = item->pos;
 
-    int16_t *zone;
-    if (lot->fly) {
-        zone = g_FlyZone[g_FlipStatus];
-    } else {
-        zone = g_GroundZone[BOX_ZONE(lot->step)][g_FlipStatus];
-    }
+    const int16_t *const zone = Box_GetLotZone(lot);
 
     if (!Object_IsType(item->object_id, g_WaterObjects)) {
         int16_t room_num = item->room_num;
@@ -418,12 +408,12 @@ int32_t Creature_Animate(
     Room_GetSector(old.x, y, old.z, &room_num);
     const SECTOR *sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-    int32_t height = g_Boxes[sector->box].height;
+    int32_t height = Box_GetBox(sector->box)->height;
     int16_t next_box = lot->node[sector->box].exit_box;
     int32_t next_height =
-        next_box != NO_BOX ? g_Boxes[next_box].height : height;
+        next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
 
-    const int32_t box_height = g_Boxes[item->box_num].height;
+    const int32_t box_height = Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX || zone[item->box_num] != zone[sector->box]
         || box_height - height > lot->step || box_height - height < lot->drop) {
         const int32_t pos_x = item->pos.x >> WALL_SHIFT;
@@ -443,9 +433,10 @@ int32_t Creature_Animate(
         }
 
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-        height = g_Boxes[sector->box].height;
+        height = Box_GetBox(sector->box)->height;
         next_box = lot->node[sector->box].exit_box;
-        next_height = next_box != NO_BOX ? g_Boxes[next_box].height : height;
+        next_height =
+            next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
     }
 
     const int32_t x = item->pos.x;

@@ -23,5 +23,5 @@ void ExtractSaveGameInfo(void);
 
 void GetSavedGamesList(REQUEST_INFO *req);
 bool S_FrontEndCheck(void);
-int32_t S_SaveGame(int32_t slot_num);
-int32_t S_LoadGame(int32_t slot_num);
+bool S_SaveGame(int32_t slot_num);
+bool S_LoadGame(int32_t slot_num);

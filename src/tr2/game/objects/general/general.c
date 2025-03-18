@@ -1,10 +1,11 @@
 #include "game/objects/general/general.h"
 
-#include "game/collide.h"
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/room.h"
+
+#include <libtrx/game/collision.h>
 
 typedef enum {
     // clang-format off
@@ -12,6 +13,14 @@ typedef enum {
     GENERAL_STATE_ACTIVE = 1,
     // clang-format on
 } GENERAL_STATE;
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = General_Control;
+    obj->collision_func = Object_Collision;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
 
 void General_Control(const int16_t item_num)
 {
@@ -40,11 +49,4 @@ void General_Control(const int16_t item_num)
     }
 }
 
-void General_Setup(void)
-{
-    OBJECT *const obj = Object_Get(O_GENERAL);
-    obj->control = General_Control;
-    obj->collision = Object_Collision;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_GENERAL, M_Setup)

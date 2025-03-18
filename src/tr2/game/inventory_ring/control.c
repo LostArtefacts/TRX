@@ -21,6 +21,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/inventory_ring/priv.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/names.h>
@@ -190,7 +191,11 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             // first passport page: load game.
             if (apply_changes) {
                 Inv_RemoveAllItems();
-                S_LoadGame(g_Inv_ExtraData[1]);
+                if (!S_LoadGame(g_Inv_ExtraData[1])) {
+                    return (GF_COMMAND) {
+                        .action = GF_EXIT_TO_TITLE,
+                    };
+                }
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
@@ -203,7 +208,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 if (g_GameFlow.play_any_level) {
                     return (GF_COMMAND) {
                         .action = GF_START_GAME,
-                        .param = g_Inv_ExtraData[1] + 1,
+                        .param = g_Inv_ExtraData[1]
+                            + (GF_GetGymLevel() != nullptr ? 1 : 0),
                     };
                 } else {
                     if (apply_changes) {
@@ -224,7 +230,8 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                     if (g_GameFlow.play_any_level) {
                         return (GF_COMMAND) {
                             .action = GF_START_GAME,
-                            .param = g_Inv_ExtraData[1] + 1,
+                            .param = g_Inv_ExtraData[1]
+                                + (GF_GetGymLevel() != nullptr ? 1 : 0),
                         };
                     } else {
                         return (GF_COMMAND) {
@@ -622,7 +629,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (!busy) {
             if (g_InputDB.menu_back) {
-                inv_item->sprite_list = nullptr;
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
@@ -636,7 +642,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
 
             if (g_InputDB.menu_confirm) {
-                inv_item->sprite_list = nullptr;
                 g_Inv_Chosen = inv_item->object_id;
                 if (ring->type != RT_MAIN) {
                     g_InvRing_Source[RT_OPTION].current = ring->current_object;
@@ -745,6 +750,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     Sound_EndScene();
+    Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
@@ -844,13 +850,13 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     g_Inv_Mode = mode;
-
+    Interpolation_Remember();
     if (!Game_IsInGym()) {
         Stats_StartTimer();
     }
 
     if (mode == INV_TITLE_MODE) {
-        Output_LoadBackgroundFromFile("data/title.pcx");
+        Output_LoadBackgroundFromFile(g_GameFlow.main_menu_background_path);
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             INV_RING_FADE_TIME_FAST);

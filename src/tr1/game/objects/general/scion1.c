@@ -1,4 +1,5 @@
-#include "game/objects/general/scion1.h"
+// Tomb of Qualopec and Sanctuary Scion pickup.
+// Triggers O_LARA_EXTRA pedestal pickup animation.
 
 #include "game/camera.h"
 #include "game/game.h"
@@ -29,21 +30,36 @@ static const OBJECT_BOUNDS m_Scion1_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_Scion1_Bounds;
 }
 
-void Scion1_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->draw_routine = Object_DrawPickupItem;
-    obj->collision = Scion1_Collision;
+    obj->handle_save_func = M_HandleSave;
+    obj->draw_func = Object_DrawPickupItem;
+    obj->collision_func = M_Collision;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
 }
 
-void Scion1_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -54,7 +70,7 @@ void Scion1_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     item->rot.x = 0;
     item->rot.z = 0;
 
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         goto cleanup;
     }
 
@@ -83,3 +99,5 @@ cleanup:
     item->rot.y = roty;
     item->rot.z = rotz;
 }
+
+REGISTER_OBJECT(O_SCION_ITEM_1, M_Setup)

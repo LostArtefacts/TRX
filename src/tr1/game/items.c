@@ -2,7 +2,6 @@
 
 #include "game/carrier.h"
 #include "game/effects.h"
-#include "game/interpolation.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -12,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -35,8 +35,8 @@ void Item_Control(void)
     while (item_num != NO_ITEM) {
         ITEM *item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->control) {
-            obj->control(item_num);
+        if (obj->control_func != nullptr) {
+            obj->control_func(item_num);
         }
         item_num = item->next_active;
     }
@@ -71,6 +71,7 @@ void Item_Initialise(int16_t item_num)
     item->priv = nullptr;
     item->carried_item = nullptr;
     item->enable_shadow = true;
+    item->enable_interpolation = true;
 
     if (item->flags & IF_INVISIBLE) {
         item->status = IS_INVISIBLE;
@@ -94,8 +95,8 @@ void Item_Initialise(int16_t item_num)
     if (g_GameInfo.bonus_flag & GBF_NGPLUS) {
         item->hit_points *= 2;
     }
-    if (obj->initialise) {
-        obj->initialise(item_num);
+    if (obj->initialise_func) {
+        obj->initialise_func(item_num);
     }
 
     Interpolation_RememberItem(item);
@@ -114,7 +115,7 @@ void Item_UpdateRoom(ITEM *item, int32_t height)
     }
 }
 
-int16_t Item_GetHeight(ITEM *item)
+int16_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
@@ -469,13 +470,14 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
     }
 
     // interpolated
-    if ((item != g_LaraItem && !item->active) || (item->object_id == O_STATUE)
-        || (item->object_id == O_ROLLING_BALL && item->status != IS_ACTIVE)) {
+    if (item != g_LaraItem
+        && (!item->active || item->status != IS_ACTIVE
+            || !Object_Get(item->object_id)->enable_interpolation)) {
         *rate = denominator;
         return numerator;
     }
 
-    const double clock_ratio = Interpolation_GetRate() - 0.5;
+    const double clock_ratio = Interpolation_GetWorldRate() - 0.5;
     const double final =
         (key_frame_shift + clock_ratio) / (double)key_frame_span;
     const double interp_frame_num =

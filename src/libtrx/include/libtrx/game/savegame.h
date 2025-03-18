@@ -2,6 +2,12 @@
 
 #include <stdint.h>
 
+typedef enum {
+    SAVEGAME_STAGE_BEFORE_LOAD,
+    SAVEGAME_STAGE_AFTER_LOAD,
+    SAVEGAME_STAGE_BEFORE_SAVE,
+} SAVEGAME_STAGE;
+
 // Remembers the slot used when the player starts a loaded game.
 // Persists across level reloads.
 void Savegame_BindSlot(int32_t slot_num);

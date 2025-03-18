@@ -2,7 +2,6 @@
 
 #include "decomp/decomp.h"
 #include "decomp/flares.h"
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/gun/gun_misc.h"
@@ -20,8 +19,10 @@
 #include "game/spawn.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/gun.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -125,7 +126,8 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
 
     const OBJECT *const obj = Object_Get(item->object_id);
     const bool is_availanche = item->object_id == O_ROLLING_BALL_2;
-    if (obj->collision == nullptr || (!obj->intelligent && !is_availanche)) {
+    if (obj->collision_func == nullptr
+        || (!obj->intelligent && !is_availanche)) {
         return false;
     }
 
@@ -306,7 +308,7 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
     g_MatrixPtr->_23 = 0;
 
     Output_CalculateLight(effect->pos, effect->room_num);
-    effect->shade = g_LsAdder - 512;
+    effect->shade = Output_GetLightAdder() - 512;
     CLAMPL(effect->shade, 0);
 }
 
@@ -558,7 +560,7 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
     const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
     const int32_t height = Room_GetHeight(sector, x, y, z);
 
-    if (g_HeightType == HT_BIG_SLOPE || height == NO_HEIGHT) {
+    if (Room_GetHeightType() == HT_BIG_SLOPE || height == NO_HEIGHT) {
         return false;
     }
 
@@ -958,8 +960,8 @@ void Skidoo_Draw(const ITEM *const item)
     const int32_t frac = Item_GetFrames(item, frames, &rate);
 
     Matrix_Push();
-    Matrix_TranslateAbs32(item->pos);
-    Matrix_Rot16(item->rot);
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
 
     const int32_t clip = Output_GetObjectBounds(&frames[0]->bounds);
     if (!clip) {

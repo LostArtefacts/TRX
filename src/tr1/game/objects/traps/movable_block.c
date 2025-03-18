@@ -1,7 +1,4 @@
-#include "game/objects/traps/movable_block.h"
-
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/item_actions.h"
@@ -13,9 +10,11 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "game/spawn.h"
-#include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
+#include <libtrx/game/lara/const.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/utils.h>
 
 #define LF_PPREADY 19
@@ -44,6 +43,11 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant);
 static bool M_TestDeathCollision(ITEM *item, const ITEM *lara);
 static void M_KillLara(const ITEM *item, ITEM *lara);
+static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Draw(const ITEM *item);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
@@ -264,28 +268,32 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
     }
 }
 
-void MovableBlock_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise = MovableBlock_Initialise;
-    obj->control = MovableBlock_Control;
-    obj->draw_routine = MovableBlock_Draw;
-    obj->collision = MovableBlock_Collision;
+    obj->initialise_func = MovableBlock_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->collision_func = M_Collision;
     obj->save_position = 1;
     obj->save_anim = 1;
     obj->save_flags = 1;
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
 }
 
-void MovableBlock_Initialise(int16_t item_num)
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->status != IS_INVISIBLE && item->pos.y >= Item_GetHeight(item)) {
-        Room_AlterFloorHeight(item, -WALL_L);
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_ACTIVE
+            && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+            Item_RemoveActive(Item_GetIndex(item));
+            item->status = IS_INACTIVE;
+        }
+        item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
     }
 }
 
-void MovableBlock_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -330,7 +338,8 @@ void MovableBlock_Control(int16_t item_num)
     }
 }
 
-void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -373,7 +382,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
             break;
         }
 
-        if (!Lara_TestPosition(item, obj->bounds())) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 
@@ -416,7 +425,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
             return;
         }
 
-        if (!Lara_TestPosition(item, obj->bounds())) {
+        if (!Lara_TestPosition(item, obj->bounds_func())) {
             return;
         }
 
@@ -445,7 +454,7 @@ void MovableBlock_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     }
 }
 
-void MovableBlock_Draw(ITEM *item)
+static void M_Draw(const ITEM *const item)
 {
     if (item->status == IS_ACTIVE) {
         Object_DrawUnclippedItem(item);
@@ -453,3 +462,8 @@ void MovableBlock_Draw(ITEM *item)
         Object_DrawAnimatingItem(item);
     }
 }
+
+REGISTER_OBJECT(O_MOVABLE_BLOCK_1, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_2, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_3, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_4, M_Setup)

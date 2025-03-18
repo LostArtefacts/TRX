@@ -22,6 +22,7 @@ GAME_OBJECT_ID Object_GetCognateInverse(
 void Object_InitialiseMeshes(int32_t mesh_count);
 void Object_StoreMesh(OBJECT_MESH *mesh);
 
+int32_t Object_GetMeshCount(void);
 OBJECT_MESH *Object_FindMesh(int32_t data_offset);
 int32_t Object_GetMeshOffset(const OBJECT_MESH *mesh);
 void Object_SetMeshOffset(OBJECT_MESH *mesh, int32_t data_offset);
@@ -34,3 +35,14 @@ ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
 
 extern void Object_DrawMesh(int32_t mesh_idx, int32_t clip, bool interpolated);
+
+void Object_DrawInterpolatedObject(
+    const OBJECT *obj, uint32_t meshes, const int16_t *extra_rotation,
+    const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
+    int32_t rate);
+
+#define REGISTER_OBJECT(object_id, setup_func_)                                \
+    __attribute__((constructor)) static void M_RegisterObject##object_id(void) \
+    {                                                                          \
+        Object_Get(object_id)->setup_func = setup_func_;                       \
+    }

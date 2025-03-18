@@ -9,6 +9,7 @@
 #include "game/objects/vars.h"
 #include "memory.h"
 #include "strings.h"
+#include "utils.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -49,6 +50,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         if (args == nullptr) {
             return CR_BAD_INVOCATION;
         }
+        CLAMPG(num, MAX_QTY);
         args++;
     }
 

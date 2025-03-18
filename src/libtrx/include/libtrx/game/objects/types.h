@@ -3,6 +3,8 @@
 #include "../anims/types.h"
 #include "../collision.h"
 #include "../items/types.h"
+#include "../rooms/enum.h"
+#include "../savegame.h"
 #include "../types.h"
 
 #include <stdint.h>
@@ -41,59 +43,39 @@ typedef struct {
         XYZ_16 max;
     } shift, rot;
 } OBJECT_BOUNDS;
+#endif
 
-typedef struct {
+typedef struct OBJECT {
     int16_t mesh_count;
     int16_t mesh_idx;
     int32_t bone_idx;
     uint32_t frame_ofs;
     ANIM_FRAME *frame_base;
-    void (*initialise)(int16_t item_num);
-    void (*control)(int16_t item_num);
+
+    void (*setup_func)(struct OBJECT *obj);
+    void (*initialise_func)(int16_t item_num);
+    void (*control_func)(int16_t item_num);
+    void (*draw_func)(const ITEM *item);
+    void (*collision_func)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
     int16_t (*floor_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
     int16_t (*ceiling_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
-    void (*draw_routine)(ITEM *item);
-    void (*collision)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-    const OBJECT_BOUNDS *(*bounds)(void);
-    bool (*is_usable)(int16_t item_num);
+    void (*activate_func)(ITEM *item);
+    void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
+    void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
+#if TR_VERSION == 1
+    const OBJECT_BOUNDS *(*bounds_func)(void);
+    bool (*is_usable_func)(int16_t item_num);
+#endif
+
     int16_t anim_idx;
     int16_t hit_points;
     int16_t pivot_length;
     int16_t radius;
+    int16_t shadow_size;
     int16_t smartness;
-    int16_t shadow_size;
-    uint16_t loaded : 1;
-    uint16_t intelligent : 1;
-    uint16_t save_position : 1;
-    uint16_t save_hitpoints : 1;
-    uint16_t save_flags : 1;
-    uint16_t save_anim : 1;
-} OBJECT;
-
-#elif TR_VERSION == 2
-typedef struct {
-    int16_t mesh_count;
-    int16_t mesh_idx;
-    int32_t bone_idx;
-    uint32_t frame_ofs;
-    ANIM_FRAME *frame_base;
-
-    void (*initialise)(int16_t item_num);
-    void (*control)(int16_t item_num);
-    void (*floor)(
-        const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
-    void (*ceiling)(
-        const ITEM *item, int32_t x, int32_t y, int32_t z, int32_t *out_height);
-    void (*draw_routine)(const ITEM *item);
-    void (*collision)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-
-    int16_t anim_idx;
-    int16_t hit_points;
-    int16_t pivot_length;
-    int16_t radius;
-    int16_t shadow_size;
+    bool enable_interpolation;
 
     union {
         uint16_t flags;
@@ -111,7 +93,6 @@ typedef struct {
         // clang-format on
     };
 } OBJECT;
-#endif
 
 typedef struct {
     bool loaded;

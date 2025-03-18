@@ -1,6 +1,5 @@
 #include "game/gun/gun_misc.h"
 
-#include "game/collide.h"
 #include "game/gun/gun.h"
 #include "game/items.h"
 #include "game/los.h"
@@ -12,6 +11,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -238,9 +238,10 @@ int32_t Gun_FireWeapon(
     for (int32_t i = 0; i < sphere_count; i++) {
         const SPHERE *const sphere = &spheres[i];
         const int32_t r = sphere->r;
-        if (ABS(sphere->x) < r && ABS(sphere->y) < r && sphere->z > r
-            && SQUARE(sphere->x) + SQUARE(sphere->y) <= SQUARE(r)) {
-            const int32_t dist = sphere->z - r;
+        if (ABS(sphere->pos.x) < r && ABS(sphere->pos.y) < r
+            && sphere->pos.z > r
+            && SQUARE(sphere->pos.x) + SQUARE(sphere->pos.y) <= SQUARE(r)) {
+            const int32_t dist = sphere->pos.z - r;
             if (dist < best_dist) {
                 best_dist = dist;
                 best_sphere = i;

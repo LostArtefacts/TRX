@@ -28,23 +28,25 @@ const char *m_GameDir = nullptr;
 
 static void M_PathAppendSeparator(char *path);
 static void M_PathAppendPart(char *path, const char *part);
-static char *M_CasePath(char const *path);
+static char *M_CasePath(const char *path);
+static FILE *M_ResolveAndOpen(
+    const char *path, const char *mode, char **out_full_path);
 static bool M_ExistsRaw(const char *path);
 
-static void M_PathAppendSeparator(char *path)
+static void M_PathAppendSeparator(char *const path)
 {
     if (!String_EndsWith(path, PATH_SEPARATOR)) {
         strcat(path, PATH_SEPARATOR);
     }
 }
 
-static void M_PathAppendPart(char *path, const char *part)
+static void M_PathAppendPart(char *const path, const char *const part)
 {
     M_PathAppendSeparator(path);
     strcat(path, part);
 }
 
-static char *M_CasePath(char const *path)
+static char *M_CasePath(const char *const path)
 {
     ASSERT(path != nullptr);
 
@@ -117,6 +119,42 @@ static char *M_CasePath(char const *path)
     return result;
 }
 
+static FILE *M_ResolveAndOpen(
+    const char *const path, const char *const mode, char **out_full_path)
+{
+    char *abs_path = nullptr;
+    if (File_IsRelative(path)) {
+        const char *game_dir = File_GetGameDirectory();
+        if (game_dir != nullptr) {
+            abs_path = String_Format("%s%s", game_dir, path);
+        }
+    }
+    if (abs_path == nullptr) {
+        abs_path = Memory_DupStr(path);
+    }
+
+    FILE *fp = fopen(abs_path, mode);
+    char *resolved_path = nullptr;
+    if (fp != nullptr) {
+        resolved_path = Memory_DupStr(abs_path);
+        goto finish;
+    } else {
+        resolved_path = M_CasePath(abs_path);
+        if (resolved_path != nullptr) {
+            fp = fopen(resolved_path, mode);
+        }
+    }
+
+finish:
+    if (out_full_path != nullptr) {
+        *out_full_path = resolved_path;
+    } else {
+        Memory_FreePointer(&resolved_path);
+    }
+    Memory_FreePointer(&abs_path);
+    return fp;
+}
+
 static bool M_ExistsRaw(const char *path)
 {
     FILE *fp = fopen(path, "rb");
@@ -172,23 +210,10 @@ bool File_Exists(const char *path)
 char *File_GetFullPath(const char *path)
 {
     char *full_path = nullptr;
-    if (File_IsRelative(path)) {
-        const char *game_dir = File_GetGameDirectory();
-        if (game_dir) {
-            full_path = Memory_Alloc(strlen(game_dir) + strlen(path) + 1);
-            sprintf(full_path, "%s%s", game_dir, path);
-        }
+    FILE *fp = M_ResolveAndOpen(path, "rb", &full_path);
+    if (fp != nullptr) {
+        fclose(fp);
     }
-    if (!full_path) {
-        full_path = Memory_DupStr(path);
-    }
-
-    char *case_path = M_CasePath(full_path);
-    if (case_path) {
-        Memory_FreePointer(&full_path);
-        return case_path;
-    }
-
     return full_path;
 }
 
@@ -235,24 +260,22 @@ fallback:
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
 {
-    char *full_path = File_GetFullPath(path);
     MYFILE *file = Memory_Alloc(sizeof(MYFILE));
     file->path = Memory_DupStr(path);
     switch (mode) {
     case FILE_OPEN_WRITE:
-        file->fp = fopen(full_path, "wb");
+        file->fp = M_ResolveAndOpen(path, "wb", nullptr);
         break;
     case FILE_OPEN_READ:
-        file->fp = fopen(full_path, "rb");
+        file->fp = M_ResolveAndOpen(path, "rb", nullptr);
         break;
     case FILE_OPEN_READ_WRITE:
-        file->fp = fopen(full_path, "r+b");
+        file->fp = M_ResolveAndOpen(path, "r+b", nullptr);
         break;
     default:
         file->fp = nullptr;
         break;
     }
-    Memory_FreePointer(&full_path);
     if (!file->fp) {
         Memory_FreePointer(&file->path);
         Memory_FreePointer(&file);
@@ -443,4 +466,29 @@ void File_CreateDirectory(const char *path)
     mkdir(full_path, 0775);
 #endif
     Memory_FreePointer(&full_path);
+}
+
+void *File_OpenDirectory(const char *const path)
+{
+    ASSERT(path != nullptr);
+    char *full_path = File_GetFullPath(path);
+    DIR *path_dir = opendir(full_path);
+    Memory_FreePointer(&full_path);
+    return path_dir;
+}
+
+const char *File_ReadDirectory(void *const dir)
+{
+    DIR *path_dir = (DIR *)dir;
+    struct dirent *cur_file = readdir(dir);
+    if (cur_file == nullptr) {
+        return nullptr;
+    }
+    return cur_file->d_name;
+}
+
+void File_CloseDirectory(void *const dir)
+{
+    ASSERT(dir != nullptr);
+    closedir(dir);
 }

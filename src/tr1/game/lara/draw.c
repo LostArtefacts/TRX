@@ -23,7 +23,7 @@ static void M_DrawMesh(
     }
 }
 
-void Lara_Draw(ITEM *item)
+void Lara_Draw(const ITEM *const item)
 {
     ANIM_FRAME *frmptr[2];
     MATRIX saved_matrix;
@@ -307,8 +307,8 @@ end:
 }
 
 void Lara_Draw_I(
-    ITEM *item, ANIM_FRAME *frame1, ANIM_FRAME *frame2, int32_t frac,
-    int32_t rate)
+    const ITEM *const item, ANIM_FRAME *frame1, ANIM_FRAME *frame2,
+    int32_t frac, int32_t rate)
 {
     MATRIX saved_matrix;
 

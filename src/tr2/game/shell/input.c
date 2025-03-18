@@ -20,6 +20,7 @@
 
 static void M_ToggleBilinearFiltering(void);
 static void M_TogglePerspectiveCorrection(void);
+static void M_ToggleTrapezoidFilter(void);
 static void M_ToggleZBuffer(void);
 static void M_CycleLightingContrast(void);
 static void M_ToggleFullscreen(void);
@@ -53,6 +54,17 @@ static void M_TogglePerspectiveCorrection(void)
         g_Config.rendering.enable_perspective_filter
             ? GS(OSD_PERSPECTIVE_FILTER_ON)
             : GS(OSD_PERSPECTIVE_FILTER_OFF));
+}
+
+static void M_ToggleTrapezoidFilter(void)
+{
+    g_Config.rendering.enable_trapezoid_filter =
+        !g_Config.rendering.enable_trapezoid_filter;
+    Config_Write();
+    Overlay_DisplayModeInfo(
+        g_Config.rendering.enable_trapezoid_filter
+            ? GS(OSD_TRAPEZOID_FILTER_ON)
+            : GS(OSD_TRAPEZOID_FILTER_OFF));
 }
 
 static void M_ToggleZBuffer(void)
@@ -177,8 +189,14 @@ void Shell_ProcessInput(void)
         M_ToggleBilinearFiltering();
     }
 
-    if (g_InputDB.toggle_perspective_filter) {
-        M_TogglePerspectiveCorrection();
+    // XXX: this is a poor hack
+    if (g_InputDB.toggle_perspective_filter
+        || g_InputDB.toggle_trapezoid_filter) {
+        if (g_Config.rendering.render_mode == RM_HARDWARE) {
+            M_ToggleTrapezoidFilter();
+        } else {
+            M_TogglePerspectiveCorrection();
+        }
     }
 
     if (g_InputDB.toggle_z_buffer) {

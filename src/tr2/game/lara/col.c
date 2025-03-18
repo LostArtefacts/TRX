@@ -1,16 +1,16 @@
 #include "game/lara/col.h"
 
-#include "game/collide.h"
 #include "game/input.h"
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
@@ -79,8 +79,8 @@ bool Lara_Fallen(ITEM *const item, const COLL_INFO *const coll)
         || g_Lara.water_status == LWS_WADE) {
         return false;
     }
-    item->current_anim_state = LS_FORWARD_JUMP;
-    item->goal_anim_state = LS_FORWARD_JUMP;
+    item->current_anim_state = LS_JUMP_FORWARD;
+    item->goal_anim_state = LS_JUMP_FORWARD;
     Item_SwitchToAnim(item, LA_FALL_START, 0);
     item->gravity = 1;
     item->fall_speed = 0;
@@ -473,8 +473,8 @@ void Lara_Col_TurnRight(ITEM *item, COLL_INFO *coll)
         }
     } else {
         Item_SwitchToAnim(item, LA_FALL_START, 0);
-        item->current_anim_state = LS_FORWARD_JUMP;
-        item->goal_anim_state = LS_FORWARD_JUMP;
+        item->current_anim_state = LS_JUMP_FORWARD;
+        item->goal_anim_state = LS_JUMP_FORWARD;
         item->gravity = 1;
         item->fall_speed = 0;
     }

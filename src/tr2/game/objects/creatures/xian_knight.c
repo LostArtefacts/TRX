@@ -1,5 +1,3 @@
-#include "game/objects/creatures/xian_knight.h"
-
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/items.h"
@@ -14,6 +12,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/utils.h>
 
 // clang-format off
@@ -51,6 +50,9 @@ static const BITE m_XianKnightSword = {
 };
 
 static void M_Initialise(int16_t item_num);
+static void M_SparkleTrail(const ITEM *item);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -59,7 +61,7 @@ static void M_Initialise(const int16_t item_num)
     item->mesh_bits = 0;
 }
 
-void XianKnight_SparkleTrail(const ITEM *const item)
+static void M_SparkleTrail(const ITEM *const item)
 {
     const int16_t effect_num = Effect_Create(item->room_num);
     if (effect_num != NO_EFFECT) {
@@ -75,19 +77,18 @@ void XianKnight_SparkleTrail(const ITEM *const item)
     Sound_Effect(SFX_WARRIOR_HOVER, &item->pos, SPM_NORMAL);
 }
 
-void XianKnight_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_XIAN_KNIGHT);
     if (!obj->loaded) {
         return;
     }
 
     ASSERT(Object_Get(O_XIAN_KNIGHT_STATUE)->loaded);
 
-    obj->initialise = M_Initialise;
-    obj->draw_routine = XianWarrior_Draw;
-    obj->control = XianKnight_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->draw_func = XianWarrior_Draw;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = XIAN_KNIGHT_HITPOINTS;
     obj->radius = XIAN_KNIGHT_RADIUS;
@@ -104,7 +105,7 @@ void XianKnight_Setup(void)
     Object_GetBone(obj, 16)->rot_y = true;
 }
 
-void XianKnight_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -120,6 +121,7 @@ void XianKnight_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         item->current_anim_state = XIAN_KNIGHT_STATE_DEATH;
         item->mesh_bits >>= 1;
+        item->enable_interpolation = false;
         if (item->mesh_bits == 0) {
             Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
             item->mesh_bits = -1;
@@ -204,7 +206,7 @@ void XianKnight_Control(const int16_t item_num)
         if (info.ahead != 0) {
             neck = info.angle;
         }
-        XianKnight_SparkleTrail(item);
+        M_SparkleTrail(item);
         if (creature->lot.fly == 0) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
         }
@@ -269,3 +271,5 @@ void XianKnight_Control(const int16_t item_num)
     Creature_Neck(item, neck);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_XIAN_KNIGHT, M_Setup)

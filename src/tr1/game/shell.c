@@ -28,6 +28,7 @@
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/memory.h>
+#include <libtrx/strings.h>
 
 #include <stdarg.h>
 #include <stdint.h>
@@ -41,7 +42,14 @@ typedef enum {
     M_MOD_OG,
     M_MOD_UB,
     M_MOD_DEMO_PC,
+    M_MOD_CUSTOM_LEVEL,
 } M_MOD;
+
+typedef struct {
+    M_MOD mod;
+    const char *level_to_play;
+    int32_t save_to_load;
+} SHELL_ARGS;
 
 static struct {
     char *game_flow_path;
@@ -59,13 +67,52 @@ static struct {
         .game_flow_path = "cfg/TR1X_gameflow_demo_pc.json5",
         .game_strings_path = "cfg/TR1X_strings_demo_pc.json5",
     },
+    [M_MOD_CUSTOM_LEVEL] = {
+        .game_flow_path = "cfg/TR1X_gameflow_level.json5",
+        .game_strings_path = "cfg/TR1X_strings_level.json5",
+    },
 };
-static M_MOD m_ActiveMod = M_MOD_UNKNOWN;
+
+static SHELL_ARGS m_Args = {
+    .mod = M_MOD_UNKNOWN,
+    .level_to_play = nullptr,
+    .save_to_load = -1,
+};
 
 static const char *m_CurrentGameFlowPath;
 
+static void M_ParseArgs(SHELL_ARGS *out_args);
 static void M_LoadConfig(void);
 static void M_HandleConfigChange(const EVENT *event, void *data);
+
+static void M_ParseArgs(SHELL_ARGS *const out_args)
+{
+    const char **args = nullptr;
+    int32_t arg_count = 0;
+    Shell_GetCommandLine(&arg_count, &args);
+
+    out_args->mod = M_MOD_OG;
+
+    for (int32_t i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-gold")) {
+            out_args->mod = M_MOD_UB;
+        }
+        if (!strcmp(args[i], "-demo_pc")) {
+            out_args->mod = M_MOD_DEMO_PC;
+        }
+        if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
+            && i + 1 < arg_count) {
+            out_args->level_to_play = args[i + 1];
+            out_args->mod = M_MOD_CUSTOM_LEVEL;
+        }
+        if ((!strcmp(args[i], "-s") || !strcmp(args[i], "--save"))
+            && i + 1 < arg_count) {
+            if (String_ParseInteger(args[i + 1], &out_args->save_to_load)) {
+                out_args->save_to_load--;
+            }
+        }
+    }
+}
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
@@ -85,6 +132,8 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
         Savegame_Shutdown();
         Savegame_Init();
         Savegame_ScanSavedGames();
+        Savegame_FillAvailableSaves(&g_SavegameRequester);
+        Savegame_HighlightNewestSlot();
     }
 
     Output_ApplyRenderSettings();
@@ -97,43 +146,6 @@ static void M_LoadConfig(void)
 
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
     Music_SetVolume(g_Config.audio.music_volume);
-}
-
-void Shell_Init(
-    const char *const game_flow_path, const char *const game_strings_path)
-{
-    Text_Init();
-    UI_Init();
-
-    Input_Init();
-    Sound_Init();
-    Music_Init();
-
-    M_LoadConfig();
-
-    Clock_Init();
-
-    S_Shell_CreateWindow();
-    S_Shell_Init();
-
-    Random_Seed();
-
-    if (!Output_Init()) {
-        Shell_ExitSystem("Could not initialise video system");
-        return;
-    }
-    Screen_Init();
-
-    GF_Init();
-    GF_Load(game_flow_path);
-    GameStringTable_LoadFromFile(game_strings_path);
-    GameStringTable_Apply(nullptr);
-
-    Savegame_Init();
-    Savegame_ScanSavedGames();
-    Savegame_HighlightNewestSlot();
-    GameBuf_Init();
-    Console_Init();
 }
 
 void Shell_Shutdown(void)
@@ -160,38 +172,64 @@ const char *Shell_GetConfigPath(void)
 
 const char *Shell_GetGameFlowPath(void)
 {
-    return m_ModPaths[m_ActiveMod].game_flow_path;
+    return m_ModPaths[m_Args.mod].game_flow_path;
 }
 
 void Shell_Main(void)
 {
-    m_ActiveMod = M_MOD_OG;
-
-    char **args = nullptr;
-    int32_t arg_count = 0;
-    S_Shell_GetCommandLine(&arg_count, &args);
-    for (int32_t i = 0; i < arg_count; i++) {
-        if (!strcmp(args[i], "-gold")) {
-            m_ActiveMod = M_MOD_UB;
-        }
-        if (!strcmp(args[i], "-demo_pc")) {
-            m_ActiveMod = M_MOD_DEMO_PC;
-        }
-    }
-    for (int i = 0; i < arg_count; i++) {
-        Memory_FreePointer(&args[i]);
-    }
-    Memory_FreePointer(&args);
+    M_ParseArgs(&m_Args);
 
     GameString_Init();
     EnumMap_Init();
     Config_Init();
 
-    Shell_Init(
-        m_ModPaths[m_ActiveMod].game_flow_path,
-        m_ModPaths[m_ActiveMod].game_strings_path);
+    Text_Init();
+    UI_Init();
 
-    GF_COMMAND gf_cmd = GF_DoFrontendSequence();
+    Input_Init();
+    Sound_Init();
+    Music_Init();
+
+    M_LoadConfig();
+
+    Clock_Init();
+
+    S_Shell_CreateWindow();
+    S_Shell_Init();
+
+    Random_Seed();
+
+    if (!Output_Init()) {
+        Shell_ExitSystem("Could not initialise video system");
+        return;
+    }
+    Screen_Init();
+
+    GF_Init();
+    GF_LoadFromFile(m_ModPaths[m_Args.mod].game_flow_path);
+    GameStringTable_LoadFromFile(m_ModPaths[m_Args.mod].game_strings_path);
+    GameStringTable_Apply(nullptr);
+
+    Savegame_Init();
+    Savegame_ScanSavedGames();
+    Savegame_FillAvailableSaves(&g_SavegameRequester);
+    Savegame_HighlightNewestSlot();
+    GameBuf_Init();
+    Console_Init();
+
+    if (m_Args.level_to_play != nullptr) {
+        Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+        g_GameFlow.level_tables[GFLT_MAIN].levels[0].path =
+            Memory_DupStr(m_Args.level_to_play);
+    }
+
+    GF_COMMAND gf_cmd = m_Args.save_to_load != -1
+        ? (GF_COMMAND) { .action = GF_START_SAVED_GAME,
+                         .param = m_Args.save_to_load }
+        : m_Args.level_to_play != nullptr
+        ? (GF_COMMAND) { .action = GF_START_GAME, .param = 0 }
+        : GF_DoFrontendSequence();
+
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {
         LOG_INFO(
@@ -249,7 +287,9 @@ void Shell_Main(void)
             break;
 
         case GF_EXIT_TO_TITLE:
-            if (g_GameFlow.title_level == nullptr) {
+            if (m_Args.level_to_play != nullptr) {
+                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
+            } else if (g_GameFlow.title_level == nullptr) {
                 Shell_ExitSystem("Title disabled");
             } else {
                 gf_cmd = GF_RunTitle();
@@ -270,6 +310,10 @@ void Shell_Main(void)
     Config_Write();
     EnumMap_Shutdown();
     GameString_Shutdown();
+
+    if (m_Args.level_to_play != nullptr) {
+        Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
+    }
 }
 
 void Shell_ProcessInput(void)
@@ -297,12 +341,12 @@ void Shell_ProcessInput(void)
         Config_Write();
     }
 
-    if (g_InputDB.toggle_perspective_filter) {
-        g_Config.rendering.enable_perspective_filter ^= true;
+    if (g_InputDB.toggle_trapezoid_filter) {
+        g_Config.rendering.enable_trapezoid_filter ^= true;
         Console_Log(
-            g_Config.rendering.enable_perspective_filter
-                ? GS(OSD_PERSPECTIVE_FILTER_ON)
-                : GS(OSD_PERSPECTIVE_FILTER_OFF));
+            g_Config.rendering.enable_trapezoid_filter
+                ? GS(OSD_TRAPEZOID_FILTER_ON)
+                : GS(OSD_TRAPEZOID_FILTER_OFF));
         Config_Write();
     }
 

@@ -5,7 +5,6 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/items.h"
 #include "game/lara/common.h"
 #include "game/lara/hair.h"
@@ -19,6 +18,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/memory.h>
 
 static void M_InitialiseLara(const GF_LEVEL *level);
@@ -119,6 +119,10 @@ GF_COMMAND Cutscene_Control(void)
     CINE_DATA *const cine_data = Camera_GetCineData();
     cine_data->frame_idx++;
     if (cine_data->frame_idx >= cine_data->frame_count - 1) {
+        // Remember the scene after the update to prevent the interpolation
+        // from twitching the camera back and forth.
+        Interpolation_Remember();
+
         cine_data->frame_idx = cine_data->frame_count - 2;
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };
     }

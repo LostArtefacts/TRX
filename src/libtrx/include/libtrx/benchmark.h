@@ -7,7 +7,7 @@ typedef struct {
     Uint64 last;
 } BENCHMARK;
 
-BENCHMARK *Benchmark_Start(void);
+BENCHMARK Benchmark_Start(void);
 
 #define Benchmark_End(b, ...)                                                  \
     Benchmark_End_Impl(b, __FILE__, __LINE__, __func__, __VA_ARGS__)

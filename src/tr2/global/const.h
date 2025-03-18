@@ -21,13 +21,11 @@
 #define NO_ITEM (-1)
 #define NO_CAMERA (-1)
 
-#define MAX_FRAMES 10
 #define SUNSET_TIMEOUT (40 * 60 * (FRAMES_PER_SECOND)) // = 72000
 
 #define MAX_AUDIO_SAMPLE_BUFFERS 256
 #define MAX_AUDIO_SAMPLE_TRACKS 32
 #define MAX_PALETTES 16
-#define MAX_FLIP_MAPS 10
 #define MAX_VERTICES 0x2000
 #define MAX_BOUND_ROOMS 128
 #define MAX_EFFECTS 100
@@ -81,7 +79,6 @@
 #define LARA_SWIM_DEPTH 730
 #define LARA_RADIUS 100
 #define LARA_RADIUS_UW 300
-#define LARA_HEIGHT 762
 #define LARA_HEIGHT_SURF 700
 #define LARA_HEIGHT_UW 400
 #define LARA_DEFLECT_ANGLE (5 * DEG_1) // = 910
@@ -157,7 +154,6 @@
 
 #define NUM_SLOTS 5
 #define PITCH_SHIFT 4
-#define TARGET_DIST (WALL_L * 4) // = 4096
 
 #define IDS_DX5_REQUIRED 1
 

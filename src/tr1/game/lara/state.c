@@ -13,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/lara/misc.h>
 #include <libtrx/game/math.h>
 
 #include <stdint.h>
@@ -20,50 +21,11 @@
 #define LF_ROLL 2
 #define LF_JUMP_READY 3
 
-void (*g_LaraStateRoutines[])(ITEM *item, COLL_INFO *coll) = {
-    Lara_State_Walk,        Lara_State_Run,       Lara_State_Stop,
-    Lara_State_ForwardJump, Lara_State_Pose,      Lara_State_FastBack,
-    Lara_State_TurnR,       Lara_State_TurnL,     Lara_State_Death,
-    Lara_State_FastFall,    Lara_State_Hang,      Lara_State_Reach,
-    Lara_State_Splat,       Lara_State_Tread,     Lara_State_Land,
-    Lara_State_Compress,    Lara_State_Back,      Lara_State_Swim,
-    Lara_State_Glide,       Lara_State_Null,      Lara_State_FastTurn,
-    Lara_State_StepRight,   Lara_State_StepLeft,  Lara_State_Roll2,
-    Lara_State_Slide,       Lara_State_BackJump,  Lara_State_RightJump,
-    Lara_State_LeftJump,    Lara_State_UpJump,    Lara_State_FallBack,
-    Lara_State_HangLeft,    Lara_State_HangRight, Lara_State_SlideBack,
-    Lara_State_SurfTread,   Lara_State_SurfSwim,  Lara_State_Dive,
-    Lara_State_PushBlock,   Lara_State_PullBlock, Lara_State_PPReady,
-    Lara_State_Pickup,      Lara_State_SwitchOn,  Lara_State_SwitchOff,
-    Lara_State_UseKey,      Lara_State_UsePuzzle, Lara_State_UWDeath,
-    Lara_State_Roll,        Lara_State_Special,   Lara_State_SurfBack,
-    Lara_State_SurfLeft,    Lara_State_SurfRight, Lara_State_UseMidas,
-    Lara_State_DieMidas,    Lara_State_SwanDive,  Lara_State_FastDive,
-    Lara_State_Gymnast,     Lara_State_WaterOut,  Lara_State_Controlled,
-    Lara_State_Twist,       Lara_State_UWRoll,    Lara_State_Wade,
-    Lara_State_Responsive,
-};
-
 static bool m_JumpPermitted = true;
 static bool m_HasResponsiveJumping = false;
 static bool m_HasResponsiveSwimming = false;
 
-static int16_t M_FloorFront(ITEM *item, PHD_ANGLE ang, int32_t dist);
 static bool M_HasResponsiveState(LARA_ANIMATION anim_idx);
-
-static int16_t M_FloorFront(ITEM *item, PHD_ANGLE ang, int32_t dist)
-{
-    int32_t x = item->pos.x + ((Math_Sin(ang) * dist) >> W2V_SHIFT);
-    int32_t y = item->pos.y - LARA_HEIGHT;
-    int32_t z = item->pos.z + ((Math_Cos(ang) * dist) >> W2V_SHIFT);
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    if (height != NO_HEIGHT) {
-        height -= item->pos.y;
-    }
-    return height;
-}
 
 static bool M_HasResponsiveState(const LARA_ANIMATION anim_idx)
 {
@@ -87,6 +49,10 @@ void Lara_State_Initialise(void)
 {
     m_HasResponsiveJumping = M_HasResponsiveState(LA_RUN);
     m_HasResponsiveSwimming = M_HasResponsiveState(LA_SWIM_FORWARD);
+}
+
+void Lara_State_Empty(ITEM *item, COLL_INFO *coll)
+{
 }
 
 void Lara_State_Walk(ITEM *item, COLL_INFO *coll)
@@ -221,9 +187,9 @@ void Lara_State_Stop(ITEM *item, COLL_INFO *coll)
     }
 
     if (g_Input.left) {
-        item->goal_anim_state = LS_TURN_L;
+        item->goal_anim_state = LS_TURN_LEFT;
     } else if (g_Input.right) {
-        item->goal_anim_state = LS_TURN_R;
+        item->goal_anim_state = LS_TURN_RIGHT;
     }
 
     if (g_Lara.water_status == LWS_WADE) {
@@ -291,10 +257,6 @@ void Lara_State_ForwardJump(ITEM *item, COLL_INFO *coll)
             g_Lara.turn_rate = LARA_JUMP_TURN;
         }
     }
-}
-
-void Lara_State_Pose(ITEM *item, COLL_INFO *coll)
-{
 }
 
 void Lara_State_FastBack(ITEM *item, COLL_INFO *coll)
@@ -420,36 +382,28 @@ void Lara_State_Reach(ITEM *item, COLL_INFO *coll)
     }
 }
 
-void Lara_State_Splat(ITEM *item, COLL_INFO *coll)
-{
-}
-
-void Lara_State_Land(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_State_Compress(ITEM *item, COLL_INFO *coll)
 {
     if (g_Lara.water_status != LWS_WADE) {
         if (g_Input.forward
-            && M_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
+            && Lara_FloorFront(item, item->rot.y, 256) >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_FORWARD;
             g_Lara.move_angle = item->rot.y;
         } else if (
             g_Input.left
-            && M_FloorFront(item, item->rot.y - DEG_90, 256)
+            && Lara_FloorFront(item, item->rot.y - DEG_90, 256)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_LEFT;
             g_Lara.move_angle = item->rot.y - DEG_90;
         } else if (
             g_Input.right
-            && M_FloorFront(item, item->rot.y + DEG_90, 256)
+            && Lara_FloorFront(item, item->rot.y + DEG_90, 256)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_RIGHT;
             g_Lara.move_angle = item->rot.y + DEG_90;
         } else if (
             g_Input.back
-            && M_FloorFront(item, item->rot.y - DEG_180, 256)
+            && Lara_FloorFront(item, item->rot.y - DEG_180, 256)
                 >= -STEPUP_HEIGHT) {
             item->goal_anim_state = LS_JUMP_BACK;
             g_Lara.move_angle = item->rot.y - DEG_180;
@@ -725,14 +679,6 @@ void Lara_State_UsePuzzle(ITEM *item, COLL_INFO *coll)
     g_Camera.target_distance = WALL_L;
 }
 
-void Lara_State_Roll(ITEM *item, COLL_INFO *coll)
-{
-}
-
-void Lara_State_Roll2(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_State_Special(ITEM *item, COLL_INFO *coll)
 {
     ITEM *const target_item = Lara_GetDeathCameraTarget();
@@ -863,10 +809,6 @@ void Lara_State_FastDive(ITEM *item, COLL_INFO *coll)
     item->speed = (item->speed * 95) / 100;
 }
 
-void Lara_State_Twist(ITEM *item, COLL_INFO *coll)
-{
-}
-
 void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll)
 {
     item->fall_speed = 0;
@@ -874,12 +816,6 @@ void Lara_State_UWRoll(ITEM *item, COLL_INFO *coll)
 }
 
 void Lara_State_Null(ITEM *item, COLL_INFO *coll)
-{
-    coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
-}
-
-void Lara_State_Gymnast(ITEM *item, COLL_INFO *coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
@@ -1301,8 +1237,4 @@ void Lara_State_Wade(ITEM *item, COLL_INFO *coll)
     } else {
         item->goal_anim_state = LS_STOP;
     }
-}
-
-void Lara_State_Responsive(ITEM *item, COLL_INFO *coll)
-{
 }

@@ -6,10 +6,12 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "global/const.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -57,8 +59,8 @@ void Item_Control(void)
         const ITEM *const item = Item_Get(item_num);
         const int16_t next = item->next_active;
         const OBJECT *obj = Object_Get(item->object_id);
-        if (!(item->flags & IF_KILLED) && obj->control != nullptr) {
-            obj->control(item_num);
+        if (!(item->flags & IF_KILLED) && obj->control_func != nullptr) {
+            obj->control_func(item_num);
         }
         item_num = next;
     }
@@ -82,6 +84,7 @@ void Item_Initialise(const int16_t item_num)
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;
     item->data = nullptr;
+    item->priv = nullptr;
 
     item->active = 0;
     item->status = IS_INACTIVE;
@@ -90,6 +93,7 @@ void Item_Initialise(const int16_t item_num)
     item->collidable = 1;
     item->looked_at = 0;
     item->killed = 0;
+    item->enable_interpolation = true;
 
     if ((item->flags & IF_INVISIBLE) != 0) {
         item->status = IS_INVISIBLE;
@@ -122,8 +126,8 @@ void Item_Initialise(const int16_t item_num)
         item->hit_points *= 2;
     }
 
-    if (obj->initialise != nullptr) {
-        obj->initialise(item_num);
+    if (obj->initialise_func != nullptr) {
+        obj->initialise_func(item_num);
     }
 }
 
@@ -168,6 +172,17 @@ void Item_UpdateRoom(ITEM *const item, const int32_t height)
     if (item->room_num != room_num) {
         Item_NewRoom(g_Lara.item_num, room_num);
     }
+}
+
+int16_t Item_GetHeight(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t height =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+
+    return height;
 }
 
 int32_t Item_TestBoundsCollide(
@@ -317,6 +332,7 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
 {
     const ANIM *const anim = Item_GetAnim(item);
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
+    const int32_t last_frame_num = anim->frame_end - anim->frame_base;
     const int32_t key_frame_span = anim->interpolation;
     const int32_t key_frame_shift = cur_frame_num % key_frame_span;
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
@@ -335,8 +351,34 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frmptr[], int32_t *rate)
 
     frmptr[0] = &anim->frame_ptr[first_key_frame_num];
     frmptr[1] = &anim->frame_ptr[second_key_frame_num];
-    *rate = denominator;
-    return numerator;
+
+    // OG
+    if (g_Config.rendering.fps == 30) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    // interpolated
+    if (item != g_LaraItem
+        && (!item->active || item->status != IS_ACTIVE
+            || !item->enable_interpolation
+            || !Object_Get(item->object_id)->enable_interpolation)) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    const double clock_ratio = Interpolation_GetWorldRate() - 0.5;
+    const double final =
+        (key_frame_shift + clock_ratio) / (double)key_frame_span;
+    const double interp_frame_num =
+        (first_key_frame_num * key_frame_span) + (final * key_frame_span);
+    if (interp_frame_num >= last_frame_num) {
+        *rate = denominator;
+        return numerator;
+    }
+
+    *rate = 10;
+    return final * 10;
 }
 
 BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
@@ -430,7 +472,7 @@ int32_t Item_Explode(
             effect->counter = damage;
             effect->object_id = O_BODY_PART;
             effect->frame_num = obj->mesh_idx;
-            effect->shade = g_LsAdder - 0x300;
+            effect->shade = Output_GetLightAdder() - 0x300;
         }
         item->mesh_bits &= ~bit;
     }
@@ -476,7 +518,7 @@ int32_t Item_Explode(
                 effect->counter = damage;
                 effect->object_id = O_BODY_PART;
                 effect->frame_num = obj->mesh_idx + i;
-                effect->shade = g_LsAdder - 0x300;
+                effect->shade = Output_GetLightAdder() - 0x300;
             }
             item->mesh_bits &= ~bit;
         }

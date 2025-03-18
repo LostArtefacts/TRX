@@ -79,7 +79,6 @@ INVENTORY_ITEM g_InvRing_Item_Stopwatch = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 0,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Pistols = {
@@ -105,7 +104,6 @@ INVENTORY_ITEM g_InvRing_Item_Pistols = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 1,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Flare = {
@@ -131,7 +129,6 @@ INVENTORY_ITEM g_InvRing_Item_Flare = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 8,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Shotgun = {
@@ -157,7 +154,6 @@ INVENTORY_ITEM g_InvRing_Item_Shotgun = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 2,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Magnums = {
@@ -183,7 +179,6 @@ INVENTORY_ITEM g_InvRing_Item_Magnums = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 3,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Uzis = {
@@ -209,7 +204,6 @@ INVENTORY_ITEM g_InvRing_Item_Uzis = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 4,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Harpoon = {
@@ -235,7 +229,6 @@ INVENTORY_ITEM g_InvRing_Item_Harpoon = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 7,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_M16 = {
@@ -261,7 +254,6 @@ INVENTORY_ITEM g_InvRing_Item_M16 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 5,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Grenade = {
@@ -287,7 +279,6 @@ INVENTORY_ITEM g_InvRing_Item_Grenade = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 6,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_PistolAmmo = {
@@ -313,7 +304,6 @@ INVENTORY_ITEM g_InvRing_Item_PistolAmmo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 1,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_ShotgunAmmo = {
@@ -339,7 +329,6 @@ INVENTORY_ITEM g_InvRing_Item_ShotgunAmmo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 2,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_MagnumAmmo = {
@@ -365,7 +354,6 @@ INVENTORY_ITEM g_InvRing_Item_MagnumAmmo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 3,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_UziAmmo = {
@@ -391,7 +379,6 @@ INVENTORY_ITEM g_InvRing_Item_UziAmmo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 4,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_HarpoonAmmo = {
@@ -417,7 +404,6 @@ INVENTORY_ITEM g_InvRing_Item_HarpoonAmmo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 7,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_M16Ammo = {
@@ -443,7 +429,6 @@ INVENTORY_ITEM g_InvRing_Item_M16Ammo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 5,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_GrenadeAmmo = {
@@ -469,7 +454,6 @@ INVENTORY_ITEM g_InvRing_Item_GrenadeAmmo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 6,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_SmallMedi = {
@@ -495,7 +479,6 @@ INVENTORY_ITEM g_InvRing_Item_SmallMedi = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 11,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
@@ -521,7 +504,6 @@ INVENTORY_ITEM g_InvRing_Item_LargeMedi = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 10,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Pickup1 = {
@@ -547,7 +529,6 @@ INVENTORY_ITEM g_InvRing_Item_Pickup1 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 111,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Pickup2 = {
@@ -573,7 +554,6 @@ INVENTORY_ITEM g_InvRing_Item_Pickup2 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 110,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Puzzle1 = {
@@ -599,7 +579,6 @@ INVENTORY_ITEM g_InvRing_Item_Puzzle1 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 108,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Puzzle2 = {
@@ -625,7 +604,6 @@ INVENTORY_ITEM g_InvRing_Item_Puzzle2 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 107,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Puzzle3 = {
@@ -651,7 +629,6 @@ INVENTORY_ITEM g_InvRing_Item_Puzzle3 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 106,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Puzzle4 = {
@@ -677,7 +654,6 @@ INVENTORY_ITEM g_InvRing_Item_Puzzle4 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 105,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Key1 = {
@@ -703,7 +679,6 @@ INVENTORY_ITEM g_InvRing_Item_Key1 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 101,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Key2 = {
@@ -729,7 +704,6 @@ INVENTORY_ITEM g_InvRing_Item_Key2 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 102,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Key3 = {
@@ -755,7 +729,6 @@ INVENTORY_ITEM g_InvRing_Item_Key3 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 103,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Key4 = {
@@ -781,7 +754,6 @@ INVENTORY_ITEM g_InvRing_Item_Key4 = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 104,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Passport = {
@@ -807,7 +779,6 @@ INVENTORY_ITEM g_InvRing_Item_Passport = {
     .meshes_sel = 19,
     .meshes_drawn = 19,
     .inv_pos = 0,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Graphics = {
@@ -833,7 +804,6 @@ INVENTORY_ITEM g_InvRing_Item_Graphics = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 1,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Sound = {
@@ -859,7 +829,6 @@ INVENTORY_ITEM g_InvRing_Item_Sound = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 2,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Controls = {
@@ -885,7 +854,6 @@ INVENTORY_ITEM g_InvRing_Item_Controls = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 3,
-    .sprite_list = nullptr,
 };
 
 INVENTORY_ITEM g_InvRing_Item_Photo = {
@@ -911,5 +879,4 @@ INVENTORY_ITEM g_InvRing_Item_Photo = {
     .meshes_sel = -1,
     .meshes_drawn = -1,
     .inv_pos = 5,
-    .sprite_list = nullptr,
 };

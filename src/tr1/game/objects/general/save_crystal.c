@@ -1,5 +1,3 @@
-#include "game/objects/general/save_crystal.h"
-
 #include "game/game_flow.h"
 #include "game/input.h"
 #include "game/items.h"
@@ -22,25 +20,31 @@ static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void);
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return &m_SaveCrystal_Bounds;
 }
 
-void SaveCrystal_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise = SaveCrystal_Initialise;
+    obj->initialise_func = M_Initialise;
     if (g_Config.gameplay.enable_save_crystals) {
-        obj->control = SaveCrystal_Control;
-        obj->collision = SaveCrystal_Collision;
+        obj->handle_save_func = M_HandleSave;
+        obj->control_func = M_Control;
+        obj->collision_func = M_Collision;
         obj->save_flags = 1;
     }
-    obj->bounds = M_Bounds;
+    obj->bounds_func = M_Bounds;
     Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 
-void SaveCrystal_Initialise(int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     if (g_Config.gameplay.enable_save_crystals) {
         Item_AddActive(item_num);
@@ -49,13 +53,38 @@ void SaveCrystal_Initialise(int16_t item_num)
     }
 }
 
-void SaveCrystal_Control(int16_t item_num)
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    switch (stage) {
+    case SAVEGAME_STAGE_AFTER_LOAD:
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+        break;
+
+    case SAVEGAME_STAGE_BEFORE_SAVE:
+        if (item->data != nullptr) {
+            // need to reset the crystal status
+            item->status = IS_DEACTIVATED;
+            item->data = nullptr;
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+
+    default:
+        break;
+    }
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Item_Animate(item);
 }
 
-void SaveCrystal_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -74,10 +103,12 @@ void SaveCrystal_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll)
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
     item->rot.x = 0;
-    if (!Lara_TestPosition(item, obj->bounds())) {
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
 
-    item->data = (void *)(intptr_t)(g_SaveCounter | 0x10000);
+    item->data = (void *)1;
     GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
 }
+
+REGISTER_OBJECT(O_SAVEGAME_ITEM, M_Setup)

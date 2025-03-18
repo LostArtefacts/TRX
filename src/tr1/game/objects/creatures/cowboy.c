@@ -1,9 +1,8 @@
-#include "game/objects/creatures/cowboy.h"
-
 #include "game/creature.h"
 #include "game/effects.h"
 #include "game/items.h"
 #include "game/lot.h"
+#include "game/music.h"
 #include "game/spawn.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -32,14 +31,19 @@ typedef enum {
 static BITE m_CowboyGun1 = { 1, 200, 41, 5 };
 static BITE m_CowboyGun2 = { -2, 200, 40, 8 };
 
-void Cowboy_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Control(int16_t item_num);
+
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    obj->initialise = Creature_Initialise;
-    obj->control = Cowboy_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = Creature_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = COWBOY_HITPOINTS;
     obj->radius = COWBOY_RADIUS;
@@ -53,7 +57,17 @@ void Cowboy_Setup(OBJECT *obj)
     Object_GetBone(obj, 0)->rot_y = true;
 }
 
-void Cowboy_Control(int16_t item_num)
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->hit_points <= 0) {
+            const uint16_t flags = Music_GetTrackFlags(MX_COWBOY_SPEECH);
+            Music_SetTrackFlags(MX_COWBOY_SPEECH, flags | IF_ONE_SHOT);
+        }
+    }
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -169,3 +183,5 @@ void Cowboy_Control(int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_COWBOY, M_Setup)

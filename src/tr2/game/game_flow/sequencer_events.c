@@ -7,6 +7,7 @@
 #include "game/game_flow/sequencer.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/output.h"
 #include "game/phase.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -30,7 +31,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_LOOP_GAME]        = M_HandlePlayLevel,
+    [GFS_LOOP_GAME]         = M_HandlePlayLevel,
     [GFS_PLAY_MUSIC]        = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]    = M_HandleLevelComplete,
     [GFS_ENABLE_SUNSET]     = M_HandleEnableSunset,
@@ -96,7 +97,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     // load the level
-    if (!Level_Initialise(level)) {
+    if (!Level_Initialise(level, seq_ctx)) {
         Game_SetCurrentLevel(nullptr);
         GF_SetCurrentLevel(nullptr);
         if (level->type == GFL_TITLE) {
@@ -180,7 +181,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
-        g_GF_SunsetEnabled = true;
+        Output_SetSunsetEnabled(true);
     }
     return gf_cmd;
 }
@@ -199,7 +200,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
-        g_GF_NoFloor = (int16_t)(intptr_t)event->data;
+        Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;
 }
@@ -261,15 +262,14 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets)
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
-    g_GF_NoFloor = 0;
-    g_GF_SunsetEnabled = false;
+    Room_SetAbyssHeight(0);
+    Output_SetSunsetEnabled(false);
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
     g_GF_NumSecrets = 3;
-    if (seq_ctx == GFSC_SAVED) {
-        g_SaveGame.bonus_flag = false;
-    }
+    // TODO: reset bonus flag if seq_ctx == GFSC_SAVED once S_LoadGame logic is
+    // merged with overall save loading logic.
     Camera_GetCineData()->position.target_angle = DEG_90;
 }
 

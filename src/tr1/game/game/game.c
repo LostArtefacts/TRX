@@ -5,7 +5,6 @@
 #include "game/effects.h"
 #include "game/game_flow.h"
 #include "game/input.h"
-#include "game/interpolation.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara/cheat.h"
@@ -23,6 +22,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/interpolation.h>
 #include <libtrx/game/ui/common.h>
 
 #define FRAME_BUFFER(key)                                                      \
@@ -57,8 +57,8 @@ void Game_ProcessInput(void)
     if (g_Config.input.enable_buffering && Game_IsPlaying()) {
         if (g_Input.toggle_bilinear_filter) {
             FRAME_BUFFER(toggle_bilinear_filter);
-        } else if (g_Input.toggle_perspective_filter) {
-            FRAME_BUFFER(toggle_perspective_filter);
+        } else if (g_Input.toggle_trapezoid_filter) {
+            FRAME_BUFFER(toggle_trapezoid_filter);
         } else if (g_Input.toggle_fps_counter) {
             FRAME_BUFFER(toggle_fps_counter);
         }

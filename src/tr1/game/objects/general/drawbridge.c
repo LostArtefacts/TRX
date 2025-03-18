@@ -1,5 +1,3 @@
-#include "game/objects/general/drawbridge.h"
-
 #include "game/items.h"
 #include "game/objects/general/door.h"
 #include "game/room.h"
@@ -102,15 +100,17 @@ static void M_Control(int16_t item_num)
     }
 }
 
-void Drawbridge_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
     obj->ceiling_height_func = M_GetCeilingHeight;
-    obj->collision = M_Collision;
-    obj->control = M_Control;
+    obj->collision_func = M_Collision;
+    obj->control_func = M_Control;
     obj->save_anim = 1;
     obj->save_flags = 1;
     obj->floor_height_func = M_GetFloorHeight;
 }
+
+REGISTER_OBJECT(O_DRAWBRIDGE, M_Setup)

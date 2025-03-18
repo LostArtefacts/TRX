@@ -13,7 +13,7 @@ void Output_ReserveVertexBuffer(size_t size);
 
 void Output_SetWindowSize(int width, int height);
 void Output_ApplyRenderSettings(void);
-void Output_DownloadTextures(int page_count);
+void Output_DownloadTextures(void);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
@@ -55,14 +55,9 @@ void Output_DrawScreenTranslucentQuad(
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br);
-void Output_DrawScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col);
 void Output_DrawScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
     RGBA_8888 colLight, int32_t thickness);
-void Output_DrawGradientScreenLine(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col1,
-    RGBA_8888 col2);
 void Output_DrawGradientScreenBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br, int32_t thickness);
@@ -74,9 +69,6 @@ void Output_DrawScreenFBox(int32_t sx, int32_t sy, int32_t w, int32_t h);
 void Output_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade);
 void Output_DrawScreenSprite(
-    int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
-    int16_t sprnum, int16_t shade, uint16_t flags);
-void Output_DrawScreenSprite2D(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page);
 void Output_DrawSpriteRel(
@@ -93,5 +85,3 @@ void Output_ApplyTint(float *r, float *g, float *b);
 
 void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
-
-int Output_GetObjectBounds(const BOUNDS_16 *bounds);

@@ -7,8 +7,6 @@
 
 #define MAX_REQLINES 18
 #define NUM_SLOTS 32
-#define MAX_FRAMES 10
-#define MAX_FLIP_MAPS 10
 #define MAX_SECRETS 16
 #define LARA_MAX_HITPOINTS 1000
 #define LARA_MAX_AIR 1800
@@ -30,7 +28,6 @@
 #define LARA_FASTFALL_SPEED (FAST_FALL_SPEED + 3) // = 131
 #define LARA_SWING_FASTFALL_SPEED (LARA_FASTFALL_SPEED + 2) // = 133
 #define LARA_RAD 100 // global radius of g_Lara
-#define LARA_HEIGHT 762 // global height of g_Lara - less than 3/4 block
 #define LARA_WADE_DEPTH 384
 #define LARA_SWIM_DEPTH 730
 #define UW_MAXSPEED 200
@@ -43,7 +40,6 @@
 #define WATER_FRICTION 6
 #define DAMAGE_START 140
 #define DAMAGE_LENGTH 14
-#define NO_ITEM (-1)
 #define NO_CAMERA (-1)
 #define PELLET_SCATTER (20 * DEG_1)
 #define NUM_SG_SHELLS 2
@@ -69,8 +65,6 @@
 #define MAX_HEAD_TILT_SURF (40 * DEG_1) // = 7280
 #define MIN_HEAD_TILT_SURF (-40 * DEG_1) // = -7280
 #define DIVE_WAIT 10
-#define ROUND_TO_CLICK(V) ((V) & ~(STEP_L - 1))
-#define ROUND_TO_SECTOR(V) ((V) & ~(WALL_L - 1))
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define FRONT_ARC DEG_90
 #define MAX_HEAD_CHANGE (DEG_1 * 5) // = 910
@@ -93,38 +87,18 @@
 #define MAX_SHADE 0x300
 #define MAX_LIGHTING 0x1FFF
 #define NO_VERT_MOVE 0x2000
-#define MAX_EXPANSION 5
 #define NO_BOX (-1)
-#define BOX_NUMBER 0x7FFF
-#define BLOCKABLE 0x8000
-#define BLOCKED 0x4000
-#define OVERLAP_INDEX 0x3FFF
-#define SEARCH_NUMBER 0x7FFF
-#define BLOCKED_SEARCH 0x8000
-#define CLIP_LEFT 1
-#define CLIP_RIGHT 2
-#define CLIP_TOP 4
-#define CLIP_BOTTOM 8
-#define ALL_CLIP (CLIP_LEFT | CLIP_RIGHT | CLIP_TOP | CLIP_BOTTOM)
-#define SECONDARY_CLIP 16
-#define STALK_DIST (WALL_L * 3) // = 3072
-#define TARGET_DIST (WALL_L * 4) // = 4096
-#define ESCAPE_DIST (WALL_L * 5) // = 5120
 #define ATTACK_RANGE SQUARE(WALL_L * 3) // = 9437184
 #define ESCAPE_CHANCE 2048
 #define RECOVER_CHANCE 256
 #define PASSPORT_FOV 65
 #define PICKUPS_FOV 65
 
-#define BIFF (WALL_L >> 1)
-
 #define SLOPE_DIF 60
 #define VAULT_ANGLE (30 * DEG_1)
 #define HANG_ANGLE (35 * DEG_1)
-#define END_BIT 0x8000
 
 #define MIN_SQUARE SQUARE(WALL_L / 4) // = 65536
-#define GROUND_SHIFT (STEP_L)
 
 #define DEFAULT_RADIUS 10
 
@@ -132,7 +106,6 @@
 #define SELECTING_FRAMES (32 / 2)
 #define OPTION_RING_OBJECTS 4
 #define TITLE_RING_OBJECTS 5
-#define RING_RADIUS 688
 #define CAMERA_2_RING 598
 #define LOW_LIGHT 0x1400 // = 5120
 #define HIGH_LIGHT 0x1000 // = 4096

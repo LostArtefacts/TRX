@@ -329,6 +329,11 @@ void Sound_StopAll(void)
     M_ClearAllSlots();
 }
 
+void Sound_StopAmbientSounds(void)
+{
+    // TODO: merge into TRX with TR1, may not be required
+}
+
 void Sound_EndScene(void)
 {
     for (int32_t i = 0; i < SOUND_MAX_SLOTS; i++) {

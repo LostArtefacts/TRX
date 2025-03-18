@@ -43,14 +43,13 @@ typedef struct {
     uint16_t flags;
 
     SHADE shade;
-#if TR_VERSION == 1
     void *data;
     void *priv;
+#if TR_VERSION == 1
     CARRIED_ITEM *carried_item;
     bool enable_shadow;
 #elif TR_VERSION == 2
     int16_t carried_item;
-    void *data;
 #endif
 
     XYZ_32 pos;
@@ -70,12 +69,12 @@ typedef struct {
     uint16_t pad : 7; // 0x0200…0x8000
 #endif
 
-#if TR_VERSION == 1
+    bool enable_interpolation;
+
     struct {
         struct {
             XYZ_32 pos;
             XYZ_16 rot;
         } result, prev;
     } interp;
-#endif
 } ITEM;

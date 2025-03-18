@@ -4,6 +4,10 @@
       "jpg",
       "png"
     ],
+    "fps": [
+      "30",
+      "60"
+    ],
     "aspect_mode": [
       "any",
       "16:9",
@@ -130,6 +134,12 @@
           "Field": "enable_3d_pickups",
           "DataType": "Bool",
           "DefaultValue": true
+        },
+        {
+          "Field": "fps",
+          "DataType": "Enum",
+          "EnumKey": "fps",
+          "DefaultValue": "60"
         },
         {
           "Field": "aspect_mode",

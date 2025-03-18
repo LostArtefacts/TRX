@@ -5,6 +5,7 @@
 #include "game/console/history.h"
 #include "log.h"
 #include "memory.h"
+#include "strings.h"
 
 #include <string.h>
 
@@ -209,11 +210,23 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 *(bool *)opt->default_value);
             break;
 
-        case COT_INT32:
-            *(int32_t *)opt->target = JSON_ObjectGetInt(
-                root_obj, M_ResolveOptionName(opt->name),
-                *(int32_t *)opt->default_value);
+        case COT_INT32: {
+            JSON_VALUE *const value =
+                JSON_ObjectGetValue(root_obj, M_ResolveOptionName(opt->name));
+            bool success = false;
+            if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
+                *(int32_t *)opt->target =
+                    JSON_ValueGetInt(value, *(int32_t *)opt->default_value);
+                success = true;
+            } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
+                success = String_ParseInteger(
+                    JSON_ValueGetString(value, ""), (int32_t *)opt->target);
+            }
+            if (!success) {
+                *(int32_t *)opt->target = *(int32_t *)opt->default_value;
+            }
             break;
+        }
 
         case COT_FLOAT:
             *(float *)opt->target = JSON_ObjectGetDouble(

@@ -39,6 +39,13 @@ typedef struct {
     int32_t compressed_size;
     int32_t uncompressed_size;
 } SAVEGAME_BSON_HEADER;
+
+typedef struct {
+    uint32_t flags;
+    int32_t counter;
+    int32_t level_num;
+    size_t title_size;
+} SAVEGAME_BSON_EXTENDED_HEADER;
 #pragma pack(pop)
 
 typedef struct {
@@ -112,7 +119,18 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version)
     };
 
     File_WriteData(fp, &header, sizeof(header));
+
     File_WriteData(fp, compressed, compressed_size);
+
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
+        .flags = g_GameInfo.bonus_flag,
+        .counter = g_SaveCounter,
+        .level_num = level->num,
+        .title_size = strlen(level->title),
+    };
+    File_WriteData(fp, &extra_header, sizeof(extra_header));
+    File_WriteData(fp, level->title, strlen(level->title));
 
     Memory_FreePointer(&compressed);
 }
@@ -421,8 +439,8 @@ static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj)
         Room_FlipMap();
     }
 
-    g_FlipEffect = JSON_ObjectGetInt(flipmap_obj, "effect", 0);
-    g_FlipTimer = JSON_ObjectGetInt(flipmap_obj, "timer", 0);
+    Room_SetFlipEffect(JSON_ObjectGetInt(flipmap_obj, "effect", 0));
+    Room_SetFlipTimer(JSON_ObjectGetInt(flipmap_obj, "timer", 0));
 
     JSON_ARRAY *flipmap_arr = JSON_ObjectGetArray(flipmap_obj, "table");
     if (!flipmap_arr) {
@@ -435,8 +453,8 @@ static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj)
             MAX_FLIP_MAPS, flipmap_arr->length);
         return false;
     }
-    for (int i = 0; i < (signed)flipmap_arr->length; i++) {
-        g_FlipMapTable[i] = JSON_ArrayGetInt(flipmap_arr, i, 0) << 8;
+    for (int32_t i = 0; i < (signed)flipmap_arr->length; i++) {
+        Room_SetFlipSlotFlags(i, JSON_ArrayGetInt(flipmap_arr, i, 0) << 8);
     }
 
     return true;
@@ -1010,12 +1028,12 @@ static JSON_OBJECT *M_DumpInventory(void)
 static JSON_OBJECT *M_DumpFlipmaps(void)
 {
     JSON_OBJECT *flipmap_obj = JSON_ObjectNew();
-    JSON_ObjectAppendBool(flipmap_obj, "status", g_FlipStatus);
-    JSON_ObjectAppendInt(flipmap_obj, "effect", g_FlipEffect);
-    JSON_ObjectAppendInt(flipmap_obj, "timer", g_FlipTimer);
+    JSON_ObjectAppendBool(flipmap_obj, "status", Room_GetFlipStatus());
+    JSON_ObjectAppendInt(flipmap_obj, "effect", Room_GetFlipEffect());
+    JSON_ObjectAppendInt(flipmap_obj, "timer", Room_GetFlipTimer());
     JSON_ARRAY *flipmap_arr = JSON_ArrayNew();
-    for (int i = 0; i < MAX_FLIP_MAPS; i++) {
-        JSON_ArrayAppendInt(flipmap_arr, g_FlipMapTable[i] >> 8);
+    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
+        JSON_ArrayAppendInt(flipmap_arr, Room_GetFlipSlotFlags(i) >> 8);
     }
     JSON_ObjectAppendArray(flipmap_obj, "table", flipmap_arr);
     return flipmap_obj;
@@ -1287,38 +1305,48 @@ static JSON_ARRAY *M_DumpMusicTrackFlags(void)
     return music_track_arr;
 }
 
-char *Savegame_BSON_GetSaveFileName(int32_t slot)
+const char *Savegame_BSON_GetSaveFilePattern(void)
 {
-    size_t out_size =
-        snprintf(nullptr, 0, g_GameFlow.savegame_fmt_bson, slot) + 1;
-    char *out = Memory_Alloc(out_size);
-    snprintf(out, out_size, g_GameFlow.savegame_fmt_bson, slot);
-    return out;
+    return g_GameFlow.savegame_fmt_bson;
 }
 
 bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info)
 {
     bool ret = false;
-    JSON_VALUE *root = M_ParseFromFile(fp, nullptr);
-    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
-    if (root_obj) {
-        info->counter = JSON_ObjectGetInt(root_obj, "save_counter", -1);
-        info->level_num = JSON_ObjectGetInt(root_obj, "level_num", -1);
-        const char *level_title =
-            JSON_ObjectGetString(root_obj, "level_title", nullptr);
-        if (level_title) {
-            info->level_title = Memory_DupStr(level_title);
-        }
-        ret = info->level_num != -1;
-    }
-    JSON_ValueFree(root);
-
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
     info->initial_version = header.initial_version;
     info->features.restart = header.initial_version >= VERSION_LEGACY;
     info->features.select_level = header.initial_version >= VERSION_1;
+
+    if (header.version >= VERSION_7) {
+        // recover the slot information from the end of the file
+        File_Skip(fp, header.compressed_size);
+        SAVEGAME_BSON_EXTENDED_HEADER extra_header;
+        File_ReadData(fp, &extra_header, sizeof(extra_header));
+        info->counter = extra_header.counter;
+        info->level_num = extra_header.level_num;
+        info->level_title = Memory_Alloc(extra_header.title_size + 1);
+        File_ReadData(fp, info->level_title, extra_header.title_size);
+        ret = true;
+    } else {
+        // recover the slot information from the bson structures
+        File_Seek(fp, 0, FILE_SEEK_SET);
+        JSON_VALUE *root = M_ParseFromFile(fp, nullptr);
+        JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
+        if (root_obj != nullptr) {
+            info->counter = JSON_ObjectGetInt(root_obj, "save_counter", -1);
+            info->level_num = JSON_ObjectGetInt(root_obj, "level_num", -1);
+            const char *level_title =
+                JSON_ObjectGetString(root_obj, "level_title", nullptr);
+            if (level_title != nullptr) {
+                info->level_title = Memory_DupStr(level_title);
+            }
+            ret = info->level_num != -1;
+        }
+        JSON_ValueFree(root);
+    }
 
     return ret;
 }

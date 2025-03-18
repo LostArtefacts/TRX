@@ -1,21 +1,14 @@
 #include "decomp/savegame.h"
 
-#include "decomp/skidoo.h"
 #include "game/camera.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/inventory.h"
-#include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
 #include "game/lot.h"
-#include "game/objects/creatures/dragon.h"
 #include "game/objects/general/lift.h"
-#include "game/objects/general/movable_block.h"
-#include "game/objects/general/pickup.h"
-#include "game/objects/general/puzzle_hole.h"
-#include "game/objects/vars.h"
 #include "game/requester.h"
 #include "game/room.h"
 #include "game/shell.h"
@@ -25,6 +18,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/music.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -174,11 +168,11 @@ static void M_ReadItems(void)
         ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
-            Room_AlterFloorHeight(item, WALL_L);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
         }
 
-        if ((obj->flags & 4) != 0) {
+        if (obj->save_position) {
             item->pos.x = M_ReadS32();
             item->pos.y = M_ReadS32();
             item->pos.z = M_ReadS32();
@@ -260,31 +254,6 @@ static void M_ReadItems(void)
             }
 
             item->flags &= 0xFF00;
-
-            if (Object_IsType(item->object_id, g_PuzzleHoleObjects)
-                && (item->status == IS_DEACTIVATED
-                    || item->status == IS_ACTIVE)) {
-                item->object_id += O_PUZZLE_DONE_1 - O_PUZZLE_HOLE_1;
-            }
-
-            if (Object_IsType(item->object_id, g_PickupObjects)
-                && item->status == IS_DEACTIVATED) {
-                Item_RemoveDrawn(item_num);
-            }
-
-            if ((item->object_id == O_WINDOW_1 || item->object_id == O_WINDOW_2)
-                && (item->flags & IF_ONE_SHOT)) {
-                item->mesh_bits = 0x100;
-            }
-
-            if (item->object_id == O_MINE && (item->flags & IF_ONE_SHOT)) {
-                item->mesh_bits = 1;
-            }
-        }
-
-        if (Object_IsType(item->object_id, g_MovableBlockObjects)
-            && item->status == IS_INACTIVE) {
-            Room_AlterFloorHeight(item, -WALL_L);
         }
 
         switch (item->object_id) {
@@ -301,21 +270,12 @@ static void M_ReadItems(void)
             break;
         }
 
-        if (item->object_id == O_SKIDOO_DRIVER
-            && item->status == IS_DEACTIVATED) {
-            const int16_t skidoo_num = (int16_t)(intptr_t)item->data;
-            ITEM *const skidoo = Item_Get(skidoo_num);
-            skidoo->object_id = O_SKIDOO_FAST;
-            Skidoo_Initialise(skidoo_num);
-        }
-
-        if (item->object_id == O_DRAGON_FRONT
-            && item->status == IS_DEACTIVATED) {
-            item->pos.y -= 1010;
-            Dragon_Bones(item_num);
-            item->pos.y += 1010;
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
+
+    MovableBlock_SetupFloor();
 }
 
 static void M_ReadLara(LARA_INFO *const lara)
@@ -935,9 +895,9 @@ void CreateSaveGameInfo(void)
     M_Reset();
     memset(g_SaveGame.buffer, 0, MAX_SG_BUFFER_SIZE);
 
-    M_WriteS32(g_FlipStatus);
+    M_WriteS32(Room_GetFlipStatus());
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        uint8_t tflag = g_FlipMaps[i] >> 8;
+        uint8_t tflag = Room_GetFlipSlotFlags(i) >> 8;
         M_WriteU8(tflag);
     }
 
@@ -961,8 +921,8 @@ void CreateSaveGameInfo(void)
         M_WriteS16(weapon_item->goal_anim_state);
     }
 
-    M_WriteS32(g_FlipEffect);
-    M_WriteS32(g_FlipTimer);
+    M_WriteS32(Room_GetFlipEffect());
+    M_WriteS32(Room_GetFlipTimer());
     M_WriteS32(g_IsMonkAngry);
 
     M_WriteFlares();
@@ -990,7 +950,7 @@ void ExtractSaveGameInfo(void)
     }
 
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        g_FlipMaps[i] = M_ReadS8() << 8;
+        Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
     }
 
     for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
@@ -1023,8 +983,8 @@ void ExtractSaveGameInfo(void)
         Lara_CatchFire();
     }
 
-    g_FlipEffect = M_ReadS32();
-    g_FlipTimer = M_ReadS32();
+    Room_SetFlipEffect(M_ReadS32());
+    Room_SetFlipTimer(M_ReadS32());
     g_IsMonkAngry = M_ReadS32();
 
     M_ReadFlares();
@@ -1047,7 +1007,7 @@ bool S_FrontEndCheck(void)
     g_SavedGames = 0;
     for (int32_t i = 0; i < MAX_REQUESTER_ITEMS; i++) {
         char file_name[80];
-        sprintf(file_name, "savegame.%d", i);
+        sprintf(file_name, g_GameFlow.savegame_fmt_legacy, i);
 
         if (!File_Exists(file_name)) {
             Requester_AddItem(
@@ -1082,10 +1042,10 @@ bool S_FrontEndCheck(void)
     return true;
 }
 
-int32_t S_SaveGame(const int32_t slot_num)
+bool S_SaveGame(const int32_t slot_num)
 {
     char file_name[80];
-    sprintf(file_name, "savegame.%d", slot_num);
+    sprintf(file_name, g_GameFlow.savegame_fmt_legacy, slot_num);
 
     MYFILE *const fp = File_Open(file_name, FILE_OPEN_WRITE);
     if (fp == nullptr) {
@@ -1131,10 +1091,10 @@ int32_t S_SaveGame(const int32_t slot_num)
     return true;
 }
 
-int32_t S_LoadGame(const int32_t slot_num)
+bool S_LoadGame(const int32_t slot_num)
 {
     char file_name[80];
-    sprintf(file_name, "savegame.%d", slot_num);
+    sprintf(file_name, g_GameFlow.savegame_fmt_legacy, slot_num);
 
     MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
     if (fp == nullptr) {

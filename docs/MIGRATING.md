@@ -24,6 +24,7 @@
    - `level_stats` no longer takes a `level_id` argument.
    - `total_stats` no longer takes a `picture_path` argument and instead takes a `background_path`.
    - `play_fmv` no longer takes a `fmv_path` argument and instead takes a `fmv_id`.
+   - `play_synced_audio` is renamed to `play_music` and takes a `music_track` argument rather than `audio_id`.
 
 4. **Update strings**  
    The game strings are now placed in a separate file, `TR1X_strings.json5` in

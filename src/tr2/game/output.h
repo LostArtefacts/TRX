@@ -7,12 +7,18 @@
 #include <stdint.h>
 
 typedef struct {
-    float x;
-    float y;
-    float z;
+    struct {
+        float x;
+        float y;
+        float z;
+    } pos;
     float rhw;
-    float u;
-    float v;
+    struct {
+        float u;
+        float v;
+        float z;
+        float w;
+    } tex;
     float g;
 } VERTEX_INFO;
 
@@ -40,15 +46,9 @@ void Output_DrawSprite(
 void Output_DrawPickup(
     int32_t sx, int32_t sy, int32_t scale, int16_t sprite_idx, int16_t shade);
 
-void Output_DrawScreenSprite2D(
-    int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
-    int16_t sprite_idx, int16_t shade, uint16_t flags);
-
 void Output_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
     int16_t sprite_idx, int16_t shade, uint16_t flags);
-
-void Output_DrawScaledSpriteC(const int16_t *obj_ptr);
 
 void Output_ClearDepthBuffer(void);
 
@@ -79,7 +79,11 @@ void Output_InsertShadow(
     int16_t radius, const BOUNDS_16 *bounds, const ITEM *item);
 
 void Output_CalculateWibbleTable(void);
-int32_t Output_GetObjectBounds(const BOUNDS_16 *bounds);
 void Output_SetupBelowWater(bool is_underwater);
 void Output_SetupAboveWater(bool is_underwater);
 void Output_AnimateTextures(int32_t ticks);
+
+void Output_SetShadeEffect(bool shade_effect);
+bool Output_IsShadeEffect(void);
+void Output_SetSunsetEnabled(bool enabled);
+void Output_SetSunsetTimer(int32_t timer);

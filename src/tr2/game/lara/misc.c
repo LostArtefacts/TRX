@@ -2,7 +2,6 @@
 
 #include "decomp/decomp.h"
 #include "game/box.h"
-#include "game/collide.h"
 #include "game/effects.h"
 #include "game/input.h"
 #include "game/inventory_ring.h"
@@ -14,7 +13,8 @@
 #include "global/const.h"
 #include "global/vars.h"
 
-#include <libtrx/game/lara/misc.h>
+#include <libtrx/game/collision.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -45,14 +45,6 @@ static void M_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
     CLAMPG(g_Lara.hit_frame, 34);
 }
 
-void Lara_GetCollisionInfo(ITEM *item, COLL_INFO *coll)
-{
-    coll->facing = g_Lara.move_angle;
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT);
-}
-
 void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -68,8 +60,8 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
     if (coll->side_mid.floor > 200) {
         if (item->current_anim_state == LS_SLIDE) {
-            item->goal_anim_state = LS_FORWARD_JUMP;
-            item->current_anim_state = LS_FORWARD_JUMP;
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            item->current_anim_state = LS_JUMP_FORWARD;
             Item_SwitchToAnim(item, LA_FALL_START, 0);
         } else {
             item->goal_anim_state = LS_FALL_BACK;
@@ -83,7 +75,7 @@ void Lara_SlideSlope(ITEM *item, COLL_INFO *coll)
 
     Lara_TestSlide(item, coll);
     item->pos.y += coll->side_mid.floor;
-    if (ABS(coll->x_tilt) <= 2 && ABS(coll->z_tilt) <= 2) {
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         item->goal_anim_state = LS_STOP;
     }
 }
@@ -409,8 +401,8 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
                 item->pos.z = pos.z;
             }
 
-            item->goal_anim_state = LS_FORWARD_JUMP;
-            item->current_anim_state = LS_FORWARD_JUMP;
+            item->goal_anim_state = LS_JUMP_FORWARD;
+            item->current_anim_state = LS_JUMP_FORWARD;
             Item_SwitchToAnim(item, LA_FALL_START, 0);
             item->pos.y += STEP_L;
             item->gravity = 1;
@@ -440,8 +432,8 @@ void Lara_HangTest(ITEM *item, COLL_INFO *coll)
 
     if (!g_Input.action || item->hit_points <= 0
         || coll->side_front.floor > 0) {
-        item->goal_anim_state = LS_UP_JUMP;
-        item->current_anim_state = LS_UP_JUMP;
+        item->goal_anim_state = LS_JUMP_UP;
+        item->current_anim_state = LS_JUMP_UP;
         Item_SwitchToAnim(item, LA_JUMP_UP, LF_STOP_HANG);
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
         item->pos.y += bounds->max.y;
@@ -675,7 +667,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
     } else if (
         !slope && front_floor >= -STEP_L * 7 - mid
         && front_floor <= -STEP_L * 4 + mid) {
-        item->goal_anim_state = LS_UP_JUMP;
+        item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         g_Lara.calc_fall_speed =
@@ -686,7 +678,7 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
         && g_Lara.water_status != LWS_WADE && left_floor <= -STEP_L * 8 + mid
         && right_floor <= -STEP_L * 8
         && coll->side_mid.ceiling <= -STEP_L * 8 + mid + LARA_HEIGHT) {
-        item->goal_anim_state = LS_UP_JUMP;
+        item->goal_anim_state = LS_JUMP_UP;
         item->current_anim_state = LS_STOP;
         Item_SwitchToAnim(item, LA_STAND_STILL, 0);
         g_Lara.calc_fall_speed = -116;
@@ -717,20 +709,20 @@ int32_t Lara_TestVault(ITEM *item, COLL_INFO *coll)
 
 int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
 {
-    if (ABS(coll->x_tilt) <= 2 && ABS(coll->z_tilt) <= 2) {
+    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
         return 0;
     }
 
     int16_t angle = 0;
-    if (coll->x_tilt > 2) {
+    if (coll->tilt_x > 2) {
         angle = -DEG_90;
-    } else if (coll->x_tilt < -2) {
+    } else if (coll->tilt_x < -2) {
         angle = DEG_90;
     }
 
-    if (coll->z_tilt > 2 && coll->z_tilt > ABS(coll->x_tilt)) {
+    if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
         angle = -DEG_180;
-    } else if (coll->z_tilt < -2 && -coll->z_tilt > ABS(coll->x_tilt)) {
+    } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
         angle = 0;
     }
 
@@ -762,20 +754,6 @@ int32_t Lara_TestSlide(ITEM *item, COLL_INFO *coll)
     return 1;
 }
 
-int16_t Lara_FloorFront(ITEM *item, int16_t ang, int32_t dist)
-{
-    const int32_t x = item->pos.x + ((dist * Math_Sin(ang)) >> W2V_SHIFT);
-    const int32_t y = item->pos.y - LARA_HEIGHT;
-    const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    if (height != NO_HEIGHT) {
-        height -= item->pos.y;
-    }
-    return height;
-}
-
 int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)
 {
     const int32_t x = item->pos.x;
@@ -795,12 +773,13 @@ int32_t Lara_LandedBad(ITEM *item, COLL_INFO *coll)
         return 0;
     }
     if (land_speed <= DAMAGE_LENGTH) {
-        item->hit_points += -LARA_MAX_HITPOINTS * land_speed * land_speed
-            / (DAMAGE_LENGTH * DAMAGE_LENGTH);
+        Lara_TakeDamage(
+            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
+            false);
     } else {
         item->hit_points = -1;
     }
-    return item->hit_points <= 0;
+    return item->hit_points < 0;
 }
 
 int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll)
@@ -812,8 +791,8 @@ int32_t Lara_CheckForLetGo(ITEM *item, COLL_INFO *coll)
         return 0;
     }
 
-    item->goal_anim_state = LS_FORWARD_JUMP;
-    item->current_anim_state = LS_FORWARD_JUMP;
+    item->goal_anim_state = LS_JUMP_FORWARD;
+    item->current_anim_state = LS_JUMP_FORWARD;
     Item_SwitchToAnim(item, LA_FALL_START, 0);
     item->gravity = 1;
     item->speed = 2;
@@ -1015,17 +994,17 @@ void Lara_BaddieCollision(ITEM *lara_item, COLL_INFO *coll)
 
             if (item->collidable && item->status != IS_INVISIBLE) {
                 const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->collision != nullptr) {
+                if (obj->collision_func != nullptr) {
                     // clang-format off
                     const XYZ_32 d = {
                         .x = lara_item->pos.x - item->pos.x,
                         .y = lara_item->pos.y - item->pos.y,
                         .z = lara_item->pos.z - item->pos.z,
                     };
-                    if (d.x > -TARGET_DIST && d.x < TARGET_DIST &&
-                        d.y > -TARGET_DIST && d.y < TARGET_DIST &&
-                        d.z > -TARGET_DIST && d.z < TARGET_DIST) {
-                        obj->collision(item_num, lara_item, coll);
+                    if (d.x > -CREATURE_TARGET_DIST && d.x < CREATURE_TARGET_DIST &&
+                        d.y > -CREATURE_TARGET_DIST && d.y < CREATURE_TARGET_DIST &&
+                        d.z > -CREATURE_TARGET_DIST && d.z < CREATURE_TARGET_DIST) {
+                        obj->collision_func(item_num, lara_item, coll);
                     }
                     // clang-format on
                 }

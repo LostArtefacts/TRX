@@ -5,6 +5,7 @@
 
 #include <ctype.h>
 #include <pcre2.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -299,4 +300,23 @@ VECTOR *String_Paginate(const char *const text, const int32_t max_lines)
     }
 
     return pages;
+}
+
+char *String_Format(const char *const fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+
+    int len = vsnprintf(NULL, 0, fmt, args);
+    if (len < 0) {
+        va_end(args);
+        return nullptr;
+    }
+
+    char *const result = Memory_Alloc(len + 1);
+    va_end(args);
+    va_start(args, fmt);
+    vsnprintf(result, len + 1, fmt, args);
+    va_end(args);
+    return result;
 }

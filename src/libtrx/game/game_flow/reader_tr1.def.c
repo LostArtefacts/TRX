@@ -32,6 +32,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_PLAY_MUSIC,       M_HandleIntEvent, "music_track" },
     { GFS_SET_CAMERA_ANGLE, M_HandleIntEvent, "value" },
     { GFS_SETUP_BACON_LARA, M_HandleIntEvent, "anchor_room" },
+    { GFS_DISABLE_FLOOR,    M_HandleIntEvent, "height" },
 
     // Special cases with custom handlers
     { GFS_LOADING_SCREEN,   M_HandlePictureEvent, nullptr },
@@ -231,19 +232,6 @@ static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     double tmp_d;
     JSON_ARRAY *tmp_arr;
 
-    tmp_s = JSON_ObjectGetString(obj, "main_menu_picture", JSON_INVALID_STRING);
-    if (tmp_s == JSON_INVALID_STRING) {
-        Shell_ExitSystem("'main_menu_picture' must be a string");
-    }
-    gf->main_menu_background_path = Memory_DupStr(tmp_s);
-
-    tmp_s =
-        JSON_ObjectGetString(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
-    if (tmp_s == JSON_INVALID_STRING) {
-        Shell_ExitSystem("'savegame_fmt_legacy' must be a string");
-    }
-    gf->savegame_fmt_legacy = Memory_DupStr(tmp_s);
-
     tmp_s = JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
         Shell_ExitSystem("'savegame_fmt_bson' must be a string");
@@ -258,19 +246,6 @@ static void M_LoadRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
 
     gf->settings = m_DefaultSettings;
     M_LoadSettings(obj, &gf->settings);
-
-    tmp_arr = JSON_ObjectGetArray(obj, "injections");
-    if (tmp_arr) {
-        gf->injections.count = tmp_arr->length;
-        gf->injections.data_paths =
-            Memory_Alloc(sizeof(char *) * tmp_arr->length);
-        for (size_t i = 0; i < tmp_arr->length; i++) {
-            const char *const str = JSON_ArrayGetString(tmp_arr, i, nullptr);
-            gf->injections.data_paths[i] = Memory_DupStr(str);
-        }
-    } else {
-        gf->injections.count = 0;
-    }
 
     gf->enable_tr2_item_drops =
         JSON_ObjectGetBool(obj, "enable_tr2_item_drops", false);

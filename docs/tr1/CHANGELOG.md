@@ -1,4 +1,36 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...develop) - ××××-××-××
+- added quadrilateral interpolation (#354)
+- added `/flood` and `/drain` console commands
+- added support for `-l`/`--level` argument to play a single level
+- added support for `-s`/`--save` argument to immediately start a saved game
+- added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
+- added drawing of object mesh spheres to the `/debug` console command
+- changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
+- changed injections to a new file format with a smaller footprint and improved applicability tests (#1967)
+- changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
+- changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
+- changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
+- fixed delays when scanning available save games (#2610, #1335, regression from <3.0)
+- fixed several instances of the camera going out of bounds (#1034)
+- fixed issues with stacked, floating and flipmap pushblocks in custom levels
+- fixed issues with fixed cameras in 60 FPS shifting before settling on their target (#1186)
+- fixed missiles from mutants/centaurs/Natla jittering in 60 FPS (#1314)
+- fixed the bear AI fix option being applied in the Vilcabamba demo (#2559, regression from 4.8)
+- fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
+- fixed Lara's meshes not resetting after using the fly cheat (#2565, #2572, regressions from 4.8)
+- fixed the select level feature not giving Lara her items (#2617, regression from 4.8)
+- fixed guns appearing in Lara's hands if the draw input is held when unarmed and while picking up a gun item (#2577, regressions from 0.8/4.3)
+- fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 4.8)
+- fixed the `/pos` command not working in cutscenes
+- fixed the `/pos` command not showing demo and cutscene titles
+- fixed the embedded bats fix causing problems inside rooms with trapdoors (regression from 4.6)
+- fixed cutscene music looping (#2591, regression from 4.8)
+- removed perspective filter toggle (it had no effect; repurposed to trapezoid interpolation toggle)
+- improved camera mode navigation:
+    - improved support for pivoting
+    - improved roll support
+    - expanded world bounding box by 5 tiles in each direction
+    - added support for 60 FPS
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)

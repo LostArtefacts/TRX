@@ -5,6 +5,8 @@
 #include "game/objects/vars.h"
 #include "global/vars.h"
 
+#include <libtrx/utils.h>
+
 bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
 {
     const GAME_OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
@@ -18,7 +20,10 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i]->object_id == inv_obj_id) {
-                source->qtys[i]++;
+                const int32_t qty =
+                    obj_id == O_FLARES_ITEM ? FLARE_AMMO_QTY : 1;
+                source->qtys[i] += qty;
+                CLAMPG(source->qtys[i], MAX_QTY);
                 return true;
             }
         }
@@ -43,9 +48,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_SHOTGUN_OPTION:
         for (int32_t i = Inv_RequestItem(O_SHOTGUN_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_SHOTGUN_AMMO_ITEM);
-            g_Lara.shotgun_ammo.ammo += SHOTGUN_AMMO_QTY;
+            Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         }
-        g_Lara.shotgun_ammo.ammo += SHOTGUN_AMMO_QTY;
+        Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Shotgun);
         if (g_Lara.last_gun_type == LGT_UNARMED) {
             g_Lara.last_gun_type = LGT_SHOTGUN;
@@ -60,9 +65,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_MAGNUM_OPTION:
         for (int32_t i = Inv_RequestItem(O_MAGNUM_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_MAGNUM_AMMO_ITEM);
-            g_Lara.magnum_ammo.ammo += MAGNUM_AMMO_QTY;
+            Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         }
-        g_Lara.magnum_ammo.ammo += MAGNUM_AMMO_QTY;
+        Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Magnums);
         Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         return false;
@@ -71,9 +76,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_UZI_OPTION:
         for (int32_t i = Inv_RequestItem(O_UZI_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_UZI_AMMO_ITEM);
-            g_Lara.uzi_ammo.ammo += UZI_AMMO_QTY;
+            Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         }
-        g_Lara.uzi_ammo.ammo += UZI_AMMO_QTY;
+        Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Uzis);
         Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         return false;
@@ -82,9 +87,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_HARPOON_OPTION:
         for (int32_t i = Inv_RequestItem(O_HARPOON_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_HARPOON_AMMO_ITEM);
-            g_Lara.harpoon_ammo.ammo += HARPOON_AMMO_QTY;
+            Inv_AddAmmo(&g_Lara.harpoon_ammo, HARPOON_AMMO_QTY);
         }
-        g_Lara.harpoon_ammo.ammo += HARPOON_AMMO_QTY;
+        Inv_AddAmmo(&g_Lara.harpoon_ammo, HARPOON_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Harpoon);
         Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
         return false;
@@ -93,9 +98,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_M16_OPTION:
         for (int32_t i = Inv_RequestItem(O_M16_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_M16_AMMO_ITEM);
-            g_Lara.m16_ammo.ammo += M16_AMMO_QTY;
+            Inv_AddAmmo(&g_Lara.m16_ammo, M16_AMMO_QTY);
         }
-        g_Lara.m16_ammo.ammo += M16_AMMO_QTY;
+        Inv_AddAmmo(&g_Lara.m16_ammo, M16_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_M16);
         Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
         return false;
@@ -104,9 +109,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_GRENADE_OPTION:
         for (int32_t i = Inv_RequestItem(O_GRENADE_AMMO_ITEM); i > 0; i--) {
             Inv_RemoveItem(O_GRENADE_AMMO_ITEM);
-            g_Lara.grenade_ammo.ammo += GRENADE_AMMO_QTY;
+            Inv_AddAmmo(&g_Lara.grenade_ammo, GRENADE_AMMO_QTY);
         }
-        g_Lara.grenade_ammo.ammo += GRENADE_AMMO_QTY;
+        Inv_AddAmmo(&g_Lara.grenade_ammo, GRENADE_AMMO_QTY);
         Inv_InsertItem(&g_InvRing_Item_Grenade);
         Item_GlobalReplace(O_GRENADE_ITEM, O_GRENADE_AMMO_ITEM);
         return false;
@@ -114,7 +119,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_SHOTGUN_AMMO_ITEM:
     case O_SHOTGUN_AMMO_OPTION:
         if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-            g_Lara.shotgun_ammo.ammo += 12;
+            Inv_AddAmmo(&g_Lara.shotgun_ammo, SHOTGUN_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_ShotgunAmmo);
         }
@@ -123,7 +128,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_MAGNUM_AMMO_ITEM:
     case O_MAGNUM_AMMO_OPTION:
         if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-            g_Lara.magnum_ammo.ammo += 40;
+            Inv_AddAmmo(&g_Lara.magnum_ammo, MAGNUM_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_MagnumAmmo);
         }
@@ -132,7 +137,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_UZI_AMMO_ITEM:
     case O_UZI_AMMO_OPTION:
         if (Inv_RequestItem(O_UZI_ITEM)) {
-            g_Lara.uzi_ammo.ammo += 80;
+            Inv_AddAmmo(&g_Lara.uzi_ammo, UZI_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_UziAmmo);
         }
@@ -141,7 +146,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_HARPOON_AMMO_ITEM:
     case O_HARPOON_AMMO_OPTION:
         if (Inv_RequestItem(O_HARPOON_ITEM)) {
-            g_Lara.harpoon_ammo.ammo += 3;
+            Inv_AddAmmo(&g_Lara.harpoon_ammo, HARPOON_AMMO_CLIP);
         } else {
             Inv_InsertItem(&g_InvRing_Item_HarpoonAmmo);
         }
@@ -150,7 +155,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_M16_AMMO_ITEM:
     case O_M16_AMMO_OPTION:
         if (Inv_RequestItem(O_M16_ITEM)) {
-            g_Lara.m16_ammo.ammo += 40;
+            Inv_AddAmmo(&g_Lara.m16_ammo, M16_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_M16Ammo);
         }
@@ -159,7 +164,7 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
     case O_GRENADE_AMMO_ITEM:
     case O_GRENADE_AMMO_OPTION:
         if (Inv_RequestItem(O_GRENADE_ITEM)) {
-            g_Lara.grenade_ammo.ammo += 2;
+            Inv_AddAmmo(&g_Lara.grenade_ammo, GRENADE_AMMO_QTY);
         } else {
             Inv_InsertItem(&g_InvRing_Item_GrenadeAmmo);
         }

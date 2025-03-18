@@ -205,7 +205,7 @@ static void M_DrawAssaultTimer(void)
 
         x += Scaler_Calc(
             glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
-        Output_DrawScreenSprite2D(
+        Output_DrawScreenSprite(
             x, y, 0, scale_h, scale_v,
             Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, 0x1000, 0);
         x += Scaler_Calc(
@@ -266,27 +266,27 @@ static void M_DrawAmmoInfo(void)
     char buffer[128] = "";
     switch (g_Lara.gun_type) {
     case LGT_MAGNUMS:
-        sprintf(buffer, "%5d", g_Lara.magnum_ammo.ammo);
+        sprintf(buffer, "%6d", g_Lara.magnum_ammo.ammo);
         break;
 
     case LGT_UZIS:
-        sprintf(buffer, "%5d", g_Lara.uzi_ammo.ammo);
+        sprintf(buffer, "%6d", g_Lara.uzi_ammo.ammo);
         break;
 
     case LGT_SHOTGUN:
-        sprintf(buffer, "%5d", g_Lara.shotgun_ammo.ammo / 6);
+        sprintf(buffer, "%6d", g_Lara.shotgun_ammo.ammo / 6);
         break;
 
     case LGT_M16:
-        sprintf(buffer, "%5d", g_Lara.m16_ammo.ammo);
+        sprintf(buffer, "%6d", g_Lara.m16_ammo.ammo);
         break;
 
     case LGT_GRENADE:
-        sprintf(buffer, "%5d", g_Lara.grenade_ammo.ammo);
+        sprintf(buffer, "%6d", g_Lara.grenade_ammo.ammo);
         break;
 
     case LGT_HARPOON:
-        sprintf(buffer, "%5d", g_Lara.harpoon_ammo.ammo);
+        sprintf(buffer, "%6d", g_Lara.harpoon_ammo.ammo);
         break;
 
     default:
@@ -451,8 +451,8 @@ static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
     Matrix_RotX(DEG_1 * 15);
     Matrix_RotY(pickup->rot_y);
 
-    g_LsDivider = 0x6000;
-    g_LsAdder = LOW_LIGHT;
+    Output_SetLightDivider(0x6000);
+    Output_SetLightAdder(LOW_LIGHT);
     Output_RotateLight(0, 0);
 
     Matrix_Push();

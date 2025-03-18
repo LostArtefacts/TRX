@@ -63,9 +63,12 @@ static int16_t m_PickupBoundsUW[12] = {
 
 static void M_DoPickup(int16_t item_num);
 static void M_DoFlarePickup(int16_t item_num);
-
 static void M_DoAboveWater(int16_t item, ITEM *lara_item);
 static void M_DoUnderwater(int16_t item, ITEM *lara_item);
+static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Activate(ITEM *item);
+static void M_Draw(const ITEM *item);
 
 static void M_DoPickup(const int16_t item_num)
 {
@@ -87,7 +90,9 @@ static void M_DoPickup(const int16_t item_num)
     }
 
     item->status = IS_INVISIBLE;
+    item->flags |= IF_KILLED;
     Item_RemoveDrawn(item_num);
+    Item_RemoveActive(item_num);
 }
 
 static void M_DoFlarePickup(const int16_t item_num)
@@ -216,16 +221,45 @@ cleanup:
     item->rot = old_rot;
 }
 
-void Pickup_Setup(OBJECT *const obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->collision = Pickup_Collision;
-    obj->draw_routine = Pickup_Draw;
+    obj->handle_save_func = M_HandleSave;
+    obj->activate_func = M_Activate;
+    obj->collision_func = Pickup_Collision;
+    obj->draw_func = M_Draw;
     obj->save_position = 1;
     obj->save_flags = 1;
 }
 
-void Pickup_Draw(const ITEM *const item)
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t item_num = Item_GetIndex(item);
+            Item_RemoveDrawn(item_num);
+        }
+    }
+}
+
+static void M_Activate(ITEM *const item)
+{
+    if (item->status == IS_INVISIBLE) {
+        item->touch_bits = 0;
+        item->status = IS_ACTIVE;
+        const int16_t item_num = Item_GetIndex(item);
+        Item_AddActive(item_num);
+    } else {
+        item->status = IS_INVISIBLE;
+        item->flags |= IF_KILLED;
+    }
+}
+
+static void M_Draw(const ITEM *const item)
+{
+    if (item->flags & IF_INVISIBLE) {
+        return;
+    }
+
     if (!g_Config.visuals.enable_3d_pickups) {
         Object_DrawSpriteItem(item);
         return;
@@ -314,6 +348,11 @@ void Pickup_Draw(const ITEM *const item)
 void Pickup_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
+    const ITEM *const item = Item_Get(item_num);
+    if (item->flags & IF_INVISIBLE) {
+        return;
+    }
+
     if (g_Lara.water_status == LWS_ABOVE_WATER
         || g_Lara.water_status == LWS_WADE) {
         M_DoAboveWater(item_num, lara_item);
@@ -322,7 +361,7 @@ void Pickup_Collision(
     }
 }
 
-int32_t Pickup_Trigger(int16_t item_num)
+bool Pickup_Trigger(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status != IS_INVISIBLE) {
@@ -332,3 +371,34 @@ int32_t Pickup_Trigger(int16_t item_num)
     item->status = IS_DEACTIVATED;
     return true;
 }
+
+REGISTER_OBJECT(O_FLARES_ITEM, M_Setup)
+REGISTER_OBJECT(O_GRENADE_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_GRENADE_ITEM, M_Setup)
+REGISTER_OBJECT(O_HARPOON_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_HARPOON_ITEM, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_3, M_Setup)
+REGISTER_OBJECT(O_KEY_ITEM_4, M_Setup)
+REGISTER_OBJECT(O_LARGE_MEDIPACK_ITEM, M_Setup)
+REGISTER_OBJECT(O_M16_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_M16_ITEM, M_Setup)
+REGISTER_OBJECT(O_MAGNUM_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_MAGNUM_ITEM, M_Setup)
+REGISTER_OBJECT(O_PICKUP_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_PICKUP_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_PISTOL_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_PISTOL_ITEM, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_3, M_Setup)
+REGISTER_OBJECT(O_PUZZLE_ITEM_4, M_Setup)
+REGISTER_OBJECT(O_SECRET_1, M_Setup)
+REGISTER_OBJECT(O_SECRET_2, M_Setup)
+REGISTER_OBJECT(O_SECRET_3, M_Setup)
+REGISTER_OBJECT(O_SHOTGUN_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_SHOTGUN_ITEM, M_Setup)
+REGISTER_OBJECT(O_SMALL_MEDIPACK_ITEM, M_Setup)
+REGISTER_OBJECT(O_UZI_AMMO_ITEM, M_Setup)
+REGISTER_OBJECT(O_UZI_ITEM, M_Setup)

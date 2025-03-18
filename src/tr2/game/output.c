@@ -53,12 +53,21 @@ static NAMED_COLOR m_NamedColors[COLOR_NUMBER_OF] = {
 };
 
 static int32_t m_TickComp = 0;
+static int32_t m_LsAdder = 0;
+static int32_t m_LsDivider = 0;
 static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static ROOM_LIGHT_TABLE m_RoomLightTables[WIBBLE_SIZE] = {};
 static float m_WibbleTable[32];
 static int16_t m_ShadesTable[32];
 static int32_t m_RandomTable[32];
 static BACKGROUND_TYPE m_BackgroundType = BK_TRANSPARENT;
+static XYZ_32 m_LsVectorView = {};
+static bool m_IsWaterEffect = false;
+static bool m_IsWibbleEffect = false;
+static bool m_IsShadeEffect = false;
+static int32_t m_WibbleOffset = 0;
+static bool m_IsSunsetEnabled = false;
+static int32_t m_SunsetTimer = 0;
 
 static void M_CalcRoomVertices(const ROOM_MESH *mesh, int32_t far_clip);
 static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
@@ -147,9 +156,9 @@ static void M_CalcRoomVertices(const ROOM_MESH *const mesh, int32_t far_clip)
         vbuf->zv = zv;
 
         int16_t shade = vertex->light_adder;
-        if (g_IsWaterEffect) {
+        if (m_IsWaterEffect) {
             shade += m_ShadesTable
-                [((uint8_t)g_WibbleOffset
+                [((uint8_t)m_WibbleOffset
                   + (uint8_t)
                       m_RandomTable[(mesh->num_vertices - i) % WIBBLE_SIZE])
                  % WIBBLE_SIZE];
@@ -213,10 +222,10 @@ static void M_CalcRoomVerticesWibble(const ROOM_MESH *const mesh)
         double xs = vbuf->xs;
         double ys = vbuf->ys;
         xs += m_WibbleTable
-            [(((g_WibbleOffset + (int)ys) % WIBBLE_SIZE) + WIBBLE_SIZE)
+            [(((m_WibbleOffset + (int)ys) % WIBBLE_SIZE) + WIBBLE_SIZE)
              % WIBBLE_SIZE];
         ys += m_WibbleTable
-            [(((g_WibbleOffset + (int)xs) % WIBBLE_SIZE) + WIBBLE_SIZE)
+            [(((m_WibbleOffset + (int)xs) % WIBBLE_SIZE) + WIBBLE_SIZE)
              % WIBBLE_SIZE];
 
         int16_t clip_flags = vbuf->clip & ~15;
@@ -342,50 +351,53 @@ static void M_DrawRoomSprites(const ROOM_MESH *const mesh)
 
 static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
 {
-    // TODO: refactor
-    if (mesh->num_lights > 0) {
-        if (g_LsDivider) {
-            // clang-format off
-            const MATRIX *const mptr = g_MatrixPtr;
-            int32_t xv = (
-                g_LsVectorView.x * mptr->_00 +
-                g_LsVectorView.y * mptr->_10 +
-                g_LsVectorView.z * mptr->_20
-            ) / g_LsDivider;
-            int32_t yv = (
-                g_LsVectorView.x * mptr->_01 +
-                g_LsVectorView.y * mptr->_11 +
-                g_LsVectorView.z * mptr->_21
-            ) / g_LsDivider;
-            int32_t zv = (
-                g_LsVectorView.x * mptr->_02 +
-                g_LsVectorView.y * mptr->_12 +
-                g_LsVectorView.z * mptr->_22
-            ) / g_LsDivider;
-            // clang-format on
-
-            for (int32_t i = 0; i < mesh->num_lights; i++) {
-                const XYZ_16 *const normal = &mesh->lighting.normals[i];
-                int16_t shade = g_LsAdder
-                    + ((xv * normal->x + yv * normal->y + zv * normal->z)
-                       >> 16);
-                CLAMP(shade, 0, 0x1FFF);
-
-                g_PhdVBuf[i].g = shade;
-            }
-        } else {
-            int16_t shade = g_LsAdder;
-            CLAMP(shade, 0, 0x1FFF);
-            for (int32_t i = 0; i < mesh->num_lights; i++) {
-                g_PhdVBuf[i].g = shade;
-            }
-        }
-    } else if (mesh->num_lights < 0) {
+    if (mesh->num_lights <= 0) {
         for (int32_t i = 0; i < -mesh->num_lights; i++) {
-            int16_t shade = g_LsAdder + mesh->lighting.lights[i];
+            int16_t shade = m_LsAdder + mesh->lighting.lights[i];
             CLAMP(shade, 0, 0x1FFF);
             g_PhdVBuf[i].g = shade;
         }
+
+        return;
+    }
+
+    if (m_LsDivider == 0) {
+        int16_t shade = m_LsAdder;
+        CLAMP(shade, 0, 0x1FFF);
+        for (int32_t i = 0; i < mesh->num_lights; i++) {
+            g_PhdVBuf[i].g = shade;
+        }
+
+        return;
+    }
+
+    // clang-format off
+    const MATRIX *const mptr = g_MatrixPtr;
+    const int32_t xv = (
+        m_LsVectorView.x * mptr->_00 +
+        m_LsVectorView.y * mptr->_10 +
+        m_LsVectorView.z * mptr->_20
+    ) / m_LsDivider;
+
+    const int32_t yv = (
+        m_LsVectorView.x * mptr->_01 +
+        m_LsVectorView.y * mptr->_11 +
+        m_LsVectorView.z * mptr->_21
+    ) / m_LsDivider;
+
+    const int32_t zv = (
+        m_LsVectorView.x * mptr->_02 +
+        m_LsVectorView.y * mptr->_12 +
+        m_LsVectorView.z * mptr->_22
+    ) / m_LsDivider;
+    // clang-format on
+
+    for (int32_t i = 0; i < mesh->num_lights; i++) {
+        const XYZ_16 *const normal = &mesh->lighting.normals[i];
+        int16_t shade = m_LsAdder
+            + ((xv * normal->x + yv * normal->y + zv * normal->z) >> 16);
+        CLAMP(shade, 0, 0x1FFF);
+        g_PhdVBuf[i].g = shade;
     }
 }
 
@@ -437,7 +449,7 @@ void Output_DrawRoom(const ROOM_MESH *const mesh, const bool is_outside)
 
     M_CalcRoomVertices(mesh, is_outside ? 0 : 16);
 
-    if (g_IsWibbleEffect) {
+    if (m_IsWibbleEffect) {
         Render_EnableZBuffer(false, true);
         g_DiscardTransparent = true;
         Render_InsertTexturedFace4s(mesh->face4s, mesh->num_face4s, ST_MAX_Z);
@@ -489,9 +501,9 @@ void Output_RotateLight(int16_t pitch, int16_t yaw)
     int32_t z = (xcos * wcos) >> W2V_SHIFT;
 
     const MATRIX *const m = &g_W2VMatrix;
-    g_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
-    g_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
-    g_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
+    m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
+    m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
+    m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
 }
 
 void Output_DrawSprite(
@@ -606,7 +618,7 @@ void Output_DrawPickup(
     }
 }
 
-void Output_DrawScreenSprite2D(
+void Output_DrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
     const int32_t scale_v, const int16_t sprite_idx, const int16_t shade,
     const uint16_t flags)
@@ -618,23 +630,6 @@ void Output_DrawScreenSprite2D(
     const int32_t x1 = sx + ((sprite->x1 * scale_h) / PHD_ONE);
     const int32_t y1 = sy + ((sprite->y1 * scale_v) / PHD_ONE);
     const int32_t z = g_PhdNearZ + sz * 8;
-    if (x1 >= 0 && y1 >= 0 && x0 < g_PhdWinWidth && y0 < g_PhdWinHeight) {
-        Render_InsertSprite(z, x0, y0, x1, y1, sprite_idx, shade);
-    }
-}
-
-void Output_DrawScreenSprite(
-    const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
-    const int32_t scale_v, const int16_t sprite_idx, const int16_t shade,
-    const uint16_t flags)
-{
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
-    ASSERT(sprite != nullptr);
-    const int32_t x0 = sx + (((sprite->x0 / 8) * scale_h) / PHD_ONE);
-    const int32_t x1 = sx + (((sprite->x1 / 8) * scale_h) / PHD_ONE);
-    const int32_t y0 = sy + (((sprite->y0 / 8) * scale_v) / PHD_ONE);
-    const int32_t y1 = sy + (((sprite->y1 / 8) * scale_v) / PHD_ONE);
-    const int32_t z = sz * 8;
     if (x1 >= 0 && y1 >= 0 && x0 < g_PhdWinWidth && y0 < g_PhdWinHeight) {
         Render_InsertSprite(z, x0, y0, x1, y1, sprite_idx, shade);
     }
@@ -767,13 +762,13 @@ void Output_DrawScreenFBox(
 
 void Output_DrawHealthBar(const int32_t percent)
 {
-    g_IsShadeEffect = false;
+    m_IsShadeEffect = false;
     M_InsertBar(8, 8, 105, 9, percent, COLOR_RED, COLOR_ORANGE);
 }
 
 void Output_DrawAirBar(const int32_t percent)
 {
-    g_IsShadeEffect = false;
+    m_IsShadeEffect = false;
     M_InsertBar(-8, 8, 105, 9, percent, COLOR_BLUE, COLOR_WHITE);
 }
 
@@ -816,7 +811,8 @@ void Output_InsertShadow(
     g_FltWinCenterY = (float)(g_PhdWinCenterY);
 
     Matrix_Push();
-    Matrix_TranslateAbs(item->pos.x, item->floor, item->pos.z);
+    Matrix_TranslateAbs(
+        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
     if (M_CalcObjectVertices(shadow_info.vertex, shadow_info.vertex_count)) {
         Render_InsertTransOctagon(g_PhdVBuf, 24);
@@ -907,31 +903,51 @@ int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 void Output_SetupBelowWater(const bool is_underwater)
 {
     Render_SetWet(is_underwater);
-    g_IsWaterEffect = true;
-    g_IsWibbleEffect = !is_underwater;
-    g_IsShadeEffect = true;
+    m_IsWaterEffect = true;
+    m_IsWibbleEffect = !is_underwater;
+    m_IsShadeEffect = true;
 }
 
 void Output_SetupAboveWater(const bool is_underwater)
 {
-    g_IsWibbleEffect = is_underwater;
-    g_IsWaterEffect = false;
-    g_IsShadeEffect = is_underwater;
+    m_IsWibbleEffect = is_underwater;
+    m_IsWaterEffect = false;
+    m_IsShadeEffect = is_underwater;
+}
+
+void Output_SetShadeEffect(const bool shade_effect)
+{
+    m_IsShadeEffect = shade_effect;
+}
+
+bool Output_IsShadeEffect(void)
+{
+    return m_IsShadeEffect;
+}
+
+void Output_SetSunsetEnabled(const bool enabled)
+{
+    m_IsSunsetEnabled = enabled;
+}
+
+void Output_SetSunsetTimer(const int32_t timer)
+{
+    m_SunsetTimer = timer;
 }
 
 void Output_AnimateTextures(const int32_t ticks)
 {
-    g_WibbleOffset = (g_WibbleOffset + (ticks / TICKS_PER_FRAME)) % WIBBLE_SIZE;
+    m_WibbleOffset = (m_WibbleOffset + (ticks / TICKS_PER_FRAME)) % WIBBLE_SIZE;
     m_RoomLightShades[RLM_FLICKER] = Random_GetDraw() % WIBBLE_SIZE;
     m_RoomLightShades[RLM_GLOW] = (WIBBLE_SIZE - 1)
-            * (Math_Sin((g_WibbleOffset * DEG_360) / WIBBLE_SIZE) + 0x4000)
+            * (Math_Sin((m_WibbleOffset * DEG_360) / WIBBLE_SIZE) + 0x4000)
         >> 15;
 
-    if (g_GF_SunsetEnabled) {
-        g_SunsetTimer += ticks;
-        CLAMPG(g_SunsetTimer, SUNSET_TIMEOUT);
+    if (m_IsSunsetEnabled) {
+        m_SunsetTimer += ticks;
+        CLAMPG(m_SunsetTimer, SUNSET_TIMEOUT);
         m_RoomLightShades[RLM_SUNSET] =
-            g_SunsetTimer * (WIBBLE_SIZE - 1) / SUNSET_TIMEOUT;
+            m_SunsetTimer * (WIBBLE_SIZE - 1) / SUNSET_TIMEOUT;
     }
 
     m_TickComp += ticks;
@@ -943,12 +959,17 @@ void Output_AnimateTextures(const int32_t ticks)
 
 void Output_SetLightAdder(const int32_t adder)
 {
-    g_LsAdder = adder;
+    m_LsAdder = adder;
+}
+
+int32_t Output_GetLightAdder(void)
+{
+    return m_LsAdder;
 }
 
 void Output_SetLightDivider(const int32_t divider)
 {
-    g_LsDivider = divider;
+    m_LsDivider = divider;
 }
 
 int32_t Output_CalcFogShade(const int32_t depth)

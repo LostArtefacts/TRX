@@ -49,6 +49,8 @@ static void M_FreeLevel(GF_LEVEL *const level)
         }
         Memory_FreePointer(&level->item_drops.data);
     }
+#else
+    Memory_FreePointer(&level->settings.sfx_path);
 #endif
 }
 
@@ -87,10 +89,12 @@ void GF_Shutdown(void)
         Memory_FreePointer(&gf->title_level);
     }
 
-#if TR_VERSION == 1
     Memory_FreePointer(&gf->main_menu_background_path);
     Memory_FreePointer(&gf->savegame_fmt_legacy);
+#if TR_VERSION == 1
     Memory_FreePointer(&gf->savegame_fmt_bson);
+#else
+    Memory_FreePointer(&gf->settings.sfx_path);
 #endif
 }
 

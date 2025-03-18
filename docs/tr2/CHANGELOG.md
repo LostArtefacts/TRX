@@ -1,4 +1,49 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
+
+## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
+- added support for 60 FPS rendering
+- added support for more accented characters (#2356)
+- added quadrilateral interpolation (#354)
+- added a `/cheats` console command
+- added a `/wireframe` console command (#2500)
+- added a `/fps` console command
+- added `/flood` and `/drain` console commands
+- added support for `-l`/`--level` argument to play a single level
+- added support for `-s`/`--save` argument to immediately start a saved game
+- added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels (#2615)
+- added the camera shutter sound to cutscenes for photo mode (#2280)
+- added Italian localization to the config tool
+- changed injections to a new file format with a smaller footprint, improved applicability tests and similar feature support as TR1 (#1967)
+- changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
+- changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
+- changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
+- fixed smashed windows blocking enemy pathing after loading a save (#2535)
+- fixed several instances of the camera going out of bounds (#1034)
+- fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed (#2575)
+- fixed missing enemy sound effects in the underwater levels (#2293)
+- fixed seaweed collision in Living Quarters preventing Lara from climbing out of the water in room 15 (#2197)
+- fixed the scale and rotation of several pickup models, such as the offshore key cards and Barkhang prayer wheels (#1832, #1894)
+- fixed a rare issue whereby Lara would be unable to move after disposing a flare (#2545, regression from 0.9)
+- fixed flare pickups only adding one flare to Lara's inventory rather than six (#2551, regression from 0.9)
+- fixed several issues with pushblocks (#2036/#2193)
+    - fixed an invisible wall above stacked pushblocks if near a ceiling portal
+    - fixed floor height issues with pushblocks poised to fall in various scenarios
+    - fixed being unable to stack multiple pushblocks over multiple rooms
+    - fixed falling pushblocks using the enemy grunt sound effect
+- fixed play any level causing the game to hang when no gym level is present (#2560, regression from 0.9)
+- fixed extremely large item quantities crashing the game (#2497, regression from 0.3)
+- fixed missing new game text in the passport when play any level is enabled (#2563, regression from 0.9)
+- fixed the play any level dialog not showing in the gym passport (#2564, regression from 0.9)
+- fixed losing the NG+ flag when loading a save that has it set (#2566, regression from 0.9.2)
+- fixed the ammo counter not showing in demos if NG+ is set (#2574, regression from 0.9)
+- fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 0.9)
+- fixed the `/pos` command not showing demo and cutscene titles
+- improved camera mode navigation:
+    - improved support for pivoting
+    - improved roll support
+    - expanded world bounding box by 5 tiles in each direction
+    - added support for 60 FPS
+- removed the hardcoded title screen image path, replacing it with a game flow file property instead
 
 ## [0.9.2](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.1...tr2-0.9.2) - 2025-02-19
 - fixed secret rewards not handed out after loading a save (#2528, regression from 0.8)

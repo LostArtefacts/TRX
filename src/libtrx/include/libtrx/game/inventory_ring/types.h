@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 
+#define MAX_QTY 999999
+
 typedef struct {
     int16_t shape;
     XYZ_16 pos;
@@ -43,7 +45,6 @@ typedef struct {
     uint32_t meshes_sel;
     uint32_t meshes_drawn;
     int16_t inv_pos;
-    INVENTORY_SPRITE **sprite_list;
 #if TR_VERSION == 1
     INVENTORY_ITEM_ACTION action;
 #endif
@@ -75,7 +76,7 @@ typedef struct {
 typedef struct {
     int16_t current;
     int16_t count;
-    int16_t qtys[24];
+    int32_t qtys[24];
     INVENTORY_ITEM *items[24];
 } INV_RING_SOURCE;
 

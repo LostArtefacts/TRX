@@ -343,7 +343,7 @@ static void M_InitSaveRequester(int16_t page_num)
             + (req->line_height * req->vis_lines);
     }
 
-    Savegame_ScanSavedGames();
+    Savegame_FillAvailableSaves(req);
 }
 
 static void M_RestoreSaveRequester(void)
@@ -377,7 +377,7 @@ static void M_InitSelectLevelRequester(void)
             + (req->line_height * req->vis_lines);
     }
 
-    Savegame_ScanAvailableLevels(req);
+    Savegame_FillAvailableLevels(req);
 }
 
 static void M_InitNewGameRequester(void)
@@ -435,6 +435,7 @@ static void M_ShowSelectLevel(void)
         } else if (select > 0) {
             g_GameInfo.select_level_num = select - 1 + GF_GetFirstLevel()->num;
             g_GameInfo.passport_selection = PASSPORT_MODE_SELECT_LEVEL;
+            Savegame_BindSlot(g_GameInfo.select_save_slot);
         } else if (
             g_InvMode != INV_SAVE_MODE && g_InvMode != INV_SAVE_CRYSTAL_MODE
             && g_InvMode != INV_LOAD_MODE) {

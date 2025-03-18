@@ -30,6 +30,12 @@ game with new enhancements and features.
 
 ## Improvements over original game
 
+#### UI
+- added support for more accented characters
+- added fade effects to displayed images
+- added a wireframe mode
+- improved support for windowed mode
+
 #### Gameplay
 - added an option to fix M16 accuracy while running
 - added optional rendering of pickups in the UI as 3D meshes
@@ -39,6 +45,7 @@ game with new enhancements and features.
   - step bug
   - free flare from underwater pickup
   - drifting into walls during underwater pickups
+- added support for 60 FPS rendering
 - added a pause screen
 - added a photo mode feature
 - changed inventory to pause the music rather than muting it
@@ -67,6 +74,7 @@ game with new enhancements and features.
 - fixed Lara prioritising throwing a spent flare while mid-air, so to avoid missing ledge grabs
 - fixed Lara at times not being able to jump immediately after going from her walking to running animation
 - fixed looking forward too far causing an upside down camera frame
+- fixed several instances of the camera going out of bounds
 - fixed Lara never stepping backwards off a step using her right foot
 - fixed the following floor data issues:
     - **Opera House**: fixed the trigger under item 203 to trigger it rather than item 204
@@ -77,6 +85,28 @@ game with new enhancements and features.
     - **Temple of Xian**: fixed missing death tiles in room 91
     - **Floating Islands**: fixed door 72's position to resolve the invisible wall in front of it
 - fixed the game crashing if a cinematic is triggered but the level contains no cinematic frames
+- fixed smashed windows blocking enemy pathing after loading a save
+- fixed Lara getting stuck in a T-pose after jumping/falling and then dying before reaching fast fall speed
+- fixed several issues with pushblocks:
+    - fixed an invisible wall above stacked pushblocks if near a ceiling portal
+    - fixed floor height issues with pushblocks poised to fall in various scenarios
+    - fixed being unable to stack multiple pushblocks over multiple rooms
+    - fixed falling pushblocks using the enemy grunt sound effect
+- fixed seaweed collision in Living Quarters preventing Lara from climbing out of the water in room 15
+- fixed the scale and rotation of several pickup models:
+    - increased auto pistol ammo size
+    - increased M16 ammo size
+    - increased grenade size
+    - reduced Offshore Rig and Diving Area key card sizes, and fixed inventory rotation
+    - reduced Wreck of the Maria Doria circuit breaker size
+    - increased Wreck of the Maria Doria rest room key size
+    - increased Living Quarters theatre key size
+    - increased The Deck cabin key size
+    - reduced Barkhang Monastery prayer wheel size
+    - increased Barkhang Monastery gemstone size
+    - increased Barkhang Monastery rooftops key size
+    - increased Temple of Xian dragon seal size, and fixed inventory rotation
+    - fixed Floating Islands mystic plaque inventory rotation
 - improved the animation of Lara's braid
 
 #### Cheats
@@ -100,6 +130,7 @@ game with new enhancements and features.
 - fixed enemies that are run over by the skidoo not being counted in the statistics
 
 #### Visuals
+- added quadrilateral texture correction
 - added ability to set user-defined FOV
 - added support for HD FMVs
 - added wireframe mode
@@ -137,6 +168,7 @@ game with new enhancements and features.
 - fixed flare sound effects not always playing when Lara is in shallow water
 - fixed music not playing if triggered while the game is muted, but the volume is then increased
 - fixed being unable to load a level that contains no sound effect data
+- fixed missing enemy sound effects in the underwater levels
 
 #### Mods
 - added developer console (accessible with `/`, see [COMMANDS.md](COMMANDS.md) for details)
@@ -148,7 +180,9 @@ game with new enhancements and features.
 - added .jpeg/.png screenshots
 - added ability to skip FMVs with both the Action key
 - added ability to skip end credits with the Action and Escape keys
-- expanded internal game memory limit from 7.5 MB to 128 MB
+- added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels
+- added -l/--level and -s/--save command line arguments
+- expanded internal game memory limit from 7.5 MB to unlimited (within system memory cap)
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)
 - expanded maximum sprite textures from 512 to unlimited (within game's overall memory cap)
 - expanded maximum texture pages from 32 to 128

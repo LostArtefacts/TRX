@@ -13,11 +13,11 @@
 #include <libtrx/game/game_flow/types.h>
 #include <libtrx/game/items.h>
 #include <libtrx/game/lara/types.h>
-#include <libtrx/game/lot.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects/common.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/pathing.h>
 #include <libtrx/game/rooms.h>
 #include <libtrx/game/sound/enum.h>
 #include <libtrx/game/sound/ids.h>
@@ -35,34 +35,12 @@ typedef enum {
 } SAMPLE_FLAG;
 
 typedef enum {
-    TARGET_NONE = 0,
-    TARGET_PRIMARY = 1,
-    TARGET_SECONDARY = 2,
-} TARGET_TYPE;
-
-typedef enum {
     D_TRANS1 = 1,
     D_TRANS2 = 2,
     D_TRANS3 = 3,
     D_TRANS4 = 4,
     D_NEXT = 1 << 3,
 } D_FLAGS;
-
-typedef enum {
-    COLL_NONE = 0,
-    COLL_FRONT = 1,
-    COLL_LEFT = 2,
-    COLL_RIGHT = 4,
-    COLL_TOP = 8,
-    COLL_TOPFRONT = 16,
-    COLL_CLAMP = 32,
-} COLL_TYPE;
-
-typedef enum {
-    HT_WALL = 0,
-    HT_SMALL_SLOPE = 1,
-    HT_BIG_SLOPE = 2,
-} HEIGHT_TYPE;
 
 typedef enum {
     IC_BLACK = 0,
@@ -143,8 +121,12 @@ typedef struct {
     float ys;
     int16_t clip;
     int16_t g;
-    int16_t u;
-    int16_t v;
+    union {
+        struct {
+            float u, v, z, w;
+        };
+        float tex_coord[4];
+    };
 } PHD_VBUF;
 
 typedef struct {
@@ -245,13 +227,6 @@ typedef struct {
     int32_t x;
     int32_t y;
     int32_t z;
-    int32_t r;
-} SPHERE;
-
-typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
     int32_t mesh_num;
 } BITE;
 
@@ -264,15 +239,6 @@ typedef struct {
     int16_t angle;
     int16_t enemy_facing;
 } AI_INFO;
-
-typedef struct {
-    int32_t left;
-    int32_t right;
-    int32_t top;
-    int32_t bottom;
-    int16_t height;
-    int16_t overlap_index;
-} BOX_INFO;
 
 typedef struct {
     bool is_blocked;

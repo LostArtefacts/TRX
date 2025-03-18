@@ -37,6 +37,10 @@ static void M_KillDriver(ITEM *driver_item);
 static void M_MakeMountable(ITEM *skidoo_item);
 static void M_ControlDead(ITEM *driver_item, ITEM *skidoo_item);
 static int16_t M_ControlAlive(ITEM *driver_item, ITEM *skidoo_item);
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Control(int16_t item_num);
 
 static void M_KillDriver(ITEM *const driver_item)
 {
@@ -165,15 +169,15 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
     return angle;
 }
 
-void SkidooDriver_Setup(void)
+static void M_Setup(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_SKIDOO_DRIVER);
     if (!obj->loaded) {
         return;
     }
 
-    obj->initialise = SkidooDriver_Initialise;
-    obj->control = SkidooDriver_Control;
+    obj->initialise_func = M_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
 
     obj->hit_points = 1;
 
@@ -182,7 +186,7 @@ void SkidooDriver_Setup(void)
     obj->save_anim = 1;
 }
 
-void SkidooDriver_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     ITEM *const skidoo_driver = Item_Get(item_num);
 
@@ -203,7 +207,19 @@ void SkidooDriver_Initialise(const int16_t item_num)
     skidoo_driver->data = (void *)(intptr_t)skidoo_item_num;
 }
 
-void SkidooDriver_Control(const int16_t driver_item_num)
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            const int16_t skidoo_num = (int16_t)(intptr_t)item->data;
+            ITEM *const skidoo = Item_Get(skidoo_num);
+            skidoo->object_id = O_SKIDOO_FAST;
+            Skidoo_Initialise(skidoo_num);
+        }
+    }
+}
+
+static void M_Control(const int16_t driver_item_num)
 {
     ITEM *const driver_item = Item_Get(driver_item_num);
 
@@ -260,3 +276,5 @@ void SkidooDriver_Control(const int16_t driver_item_num)
         Item_SwitchToAnim(driver_item, anim_num, frame_num);
     }
 }
+
+REGISTER_OBJECT(O_SKIDOO_DRIVER, M_Setup)

@@ -83,7 +83,7 @@ typedef struct {
     float draw_distance_fade;
     float draw_distance_max;
 #elif TR_VERSION == 2
-    int32_t dummy; // silence warnings, keep the logic
+    char *sfx_path;
 #endif
 } GF_LEVEL_SETTINGS;
 
@@ -98,11 +98,7 @@ typedef struct {
 typedef struct {
     int32_t num;
     GF_LEVEL_TYPE type;
-#if TR_VERSION == 1
     char *path;
-#elif TR_VERSION == 2
-    const char *path;
-#endif
     char *title;
 
     MUSIC_TRACK_ID music_track;
@@ -172,9 +168,15 @@ typedef struct {
         GF_COMMAND cmd_demo_end;
     };
 
+    // savegame settings
+    struct {
+        char *savegame_fmt_legacy;
+    };
+
     // global settings
     struct {
         float demo_delay;
+        char *main_menu_background_path;
         bool is_demo_version;
         bool play_any_level;
         bool gym_enabled;

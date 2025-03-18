@@ -71,6 +71,7 @@ static void M_LoadFMV(
     void *user_arg);
 static void M_LoadFMVs(JSON_OBJECT *obj, GAME_FLOW *gf);
 static void M_LoadGlobalInjections(JSON_OBJECT *obj, GAME_FLOW *gf);
+static void M_LoadCommonRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 static void M_LoadRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 
 #if TR_VERSION == 1
@@ -78,6 +79,23 @@ static void M_LoadRoot(JSON_OBJECT *obj, GAME_FLOW *gf);
 #elif TR_VERSION == 2
     #include "./reader_tr2.def.c"
 #endif
+
+static void M_LoadCommonRoot(JSON_OBJECT *const obj, GAME_FLOW *const gf)
+{
+    const char *tmp_s =
+        JSON_ObjectGetString(obj, "main_menu_picture", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
+        Shell_ExitSystem("'main_menu_picture' must be a string");
+    }
+    gf->main_menu_background_path = Memory_DupStr(tmp_s);
+
+    tmp_s =
+        JSON_ObjectGetString(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
+    if (tmp_s == JSON_INVALID_STRING) {
+        Shell_ExitSystem("'savegame_fmt_legacy' must be a string");
+    }
+    gf->savegame_fmt_legacy = Memory_DupStr(tmp_s);
+}
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
 {
@@ -473,14 +491,20 @@ static void M_LoadGlobalInjections(JSON_OBJECT *const obj, GAME_FLOW *const gf)
     }
 }
 
-void GF_Load(const char *const path)
+void GF_LoadFromFile(const char *const path)
 {
-    GF_Shutdown();
-
     char *script_data = nullptr;
     if (!File_Load(path, &script_data, nullptr)) {
         Shell_ExitSystem("Failed to open script file");
     }
+
+    GF_LoadFromString(script_data);
+    Memory_FreePointer(&script_data);
+}
+
+void GF_LoadFromString(const char *const script_data)
+{
+    GF_Shutdown();
 
     JSON_PARSE_RESULT parse_result;
     JSON_VALUE *const root = JSON_ParseEx(
@@ -495,6 +519,7 @@ void GF_Load(const char *const path)
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
 
     GAME_FLOW *const gf = &g_GameFlow;
+    M_LoadCommonRoot(root_obj, gf);
     M_LoadRoot(root_obj, gf);
     M_LoadLevels(root_obj, gf);
     M_LoadCutscenes(root_obj, gf);
@@ -505,5 +530,4 @@ void GF_Load(const char *const path)
     if (root != nullptr) {
         JSON_ValueFree(root);
     }
-    Memory_FreePointer(&script_data);
 }

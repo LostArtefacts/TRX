@@ -69,6 +69,7 @@ static void M_End(PHASE *const phase)
 static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
 {
     M_PRIV *const p = phase->priv;
+    Interpolation_Remember();
 
     Input_Update();
     Shell_ProcessInput();
@@ -101,9 +102,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase, int32_t num_frames)
 static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    Interpolation_Disable();
     Game_Draw(false);
-    Interpolation_Enable();
     Output_DrawPolyList();
 
     if (!p->taking_screenshot) {

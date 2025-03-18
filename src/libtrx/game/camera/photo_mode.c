@@ -6,6 +6,7 @@
 #include "game/camera/vars.h"
 #include "game/input.h"
 #include "game/math.h"
+#include "game/matrix.h"
 #include "game/output.h"
 #include "game/rooms.h"
 #include "game/viewport.h"
@@ -22,33 +23,24 @@ extern void Output_ApplyFOV(void);
 #define PHOTO_MAX_PITCH_ROLL (DEG_90 - DEG_1)
 #define PHOTO_MAX_SPEED 100
 
-#define SHIFT_X(distance, elevation, angle)                                    \
-    (((distance * Math_Cos(elevation)) >> W2V_SHIFT) * Math_Sin(angle)         \
-     >> W2V_SHIFT)
-#define SHIFT_Z(distance, elevation, angle)                                    \
-    (((distance * Math_Cos(elevation)) >> W2V_SHIFT) * Math_Cos(angle)         \
-     >> W2V_SHIFT)
-#define SHIFT_Y(distance, elevation)                                           \
-    ((distance * Math_Sin(elevation) >> W2V_SHIFT))
-
-#define SHIFT_POS(a, b)                                                        \
-    do {                                                                       \
-        a.x += b.x;                                                            \
-        a.y += b.y;                                                            \
-        a.z += b.z;                                                            \
-    } while (false)
+#define M_CosMul(a, b) TRIGMULT2(Math_Cos((a)), (b))
+#define M_SinMul(a, b) TRIGMULT2(Math_Sin((a)), (b))
 
 static int32_t m_PhotoSpeed = 0;
 static int32_t m_OldFOV;
 static int32_t m_CurrentFOV;
-static CAMERA_INFO m_OldCamera = {};
+static CAMERA_INFO m_OriginalCamera = {};
+static CAMERA_INFO m_StartingCamera = {};
 static BOUNDS_32 m_WorldBounds = {};
 
+static void M_ResetCamera(bool exiting);
 static int32_t M_GetShiftSpeed(int32_t val);
 static int32_t M_GetRotSpeed(void);
-static void M_ShiftCamera(int16_t angle, int16_t elevation, int32_t dy);
-static void M_RotateCamera(int16_t angle, int16_t elevation);
-static void M_RotateTarget(int16_t angle);
+static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz);
+static void M_ApplyRotation(
+    int32_t d_yaw, int32_t d_pitch, int32_t d_roll, bool respect_roll);
+static void M_RotateCamera(int32_t d_yaw, int32_t d_pitch, int32_t d_roll);
+static void M_RotateTarget(int32_t d_yaw, int32_t d_pitch, int32_t d_roll);
 static void M_ClampCameraPos(void);
 static void M_UpdateCameraRooms(void);
 static bool M_HandleShiftInputs(void);
@@ -57,9 +49,9 @@ static bool M_HandleTargetRotationInputs(void);
 static bool M_HandleFOVInputs();
 static void M_UpdatePhotoMode(void);
 
-static void M_ResetCamera(void)
+static void M_ResetCamera(const bool exiting)
 {
-    g_Camera = m_OldCamera;
+    g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
 #if TR_VERSION == 1
     Viewport_SetFOV(m_OldFOV);
 #elif TR_VERSION == 2
@@ -78,49 +70,86 @@ static int32_t M_GetRotSpeed(void)
     return MAX(DEG_1, M_GetShiftSpeed(PHOTO_ROT_SHIFT));
 }
 
-static void M_ShiftCamera(
-    const int16_t angle, const int16_t elevation, const int32_t dy)
+static XYZ_32 M_GetShift(const int32_t dx, const int32_t dy, const int32_t dz)
 {
-    const int32_t distance = M_GetShiftSpeed((WALL_L * 5.0) / LOGIC_FPS);
-    const XYZ_32 shift = {
-        .x = SHIFT_X(distance, elevation, angle),
-        .z = SHIFT_Z(distance, elevation, angle),
-        .y = SHIFT_Y(distance * dy, elevation),
-    };
-    SHIFT_POS(g_Camera.pos, shift);
-    SHIFT_POS(g_Camera.target, shift);
+    const int16_t yaw = g_Camera.target_angle;
+    const int16_t pitch = g_Camera.target_elevation;
+    const int16_t roll = g_Camera.roll;
+
+    const int32_t dx_r = M_CosMul(roll, dx) - M_SinMul(roll, dy);
+    const int32_t dy_r = M_SinMul(roll, dx) + M_CosMul(roll, dy);
+    const int32_t dz_r = dz; // unchanged if roll is around Z
+
+    const int32_t dy_p = M_CosMul(pitch, dy_r) - M_SinMul(pitch, dz_r);
+    const int32_t dz_p = M_SinMul(pitch, dy_r) + M_CosMul(pitch, dz_r);
+    const int32_t dx_p = dx_r; // unchanged if pitch is around X
+
+    const int32_t dx_y = M_CosMul(yaw, dx_p) + M_SinMul(yaw, dz_p);
+    const int32_t dz_y = -M_SinMul(yaw, dx_p) + M_CosMul(yaw, dz_p);
+    const int32_t dy_y = dy_p; // unchanged if yaw is around Y
+
+    return (XYZ_32) { dx_y, dy_y, dz_y };
 }
 
-static void M_RotateCamera(const int16_t angle, int16_t elevation)
+static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz)
 {
-    g_Camera.target_angle = angle;
+    const XYZ_32 shift = M_GetShift(dx, dy, dz);
+    g_Camera.pos.x += shift.x;
+    g_Camera.pos.y += shift.y;
+    g_Camera.pos.z += shift.z;
+    g_Camera.target.x += shift.x;
+    g_Camera.target.y += shift.y;
+    g_Camera.target.z += shift.z;
+}
 
-    CLAMP(elevation, -PHOTO_MAX_PITCH_ROLL, PHOTO_MAX_PITCH_ROLL);
-    g_Camera.target_elevation = elevation;
+static void M_ApplyRotation(
+    const int32_t d_yaw, const int32_t d_pitch, const int32_t d_roll,
+    const bool respect_roll)
+{
+    int32_t yaw = g_Camera.target_angle;
+    int32_t pitch = g_Camera.target_elevation;
+    int32_t roll = g_Camera.roll;
 
-    const int32_t distance = g_Camera.target_distance;
-    const XYZ_32 shift = {
-        .x = SHIFT_X(distance, elevation, angle),
-        .z = SHIFT_Z(distance, elevation, angle),
-        .y = SHIFT_Y(-distance, elevation),
-    };
+    // rotate with respect to current upright axis
+    if (respect_roll) {
+        yaw += M_CosMul(roll, d_yaw) + M_SinMul(roll, d_pitch);
+        pitch += M_CosMul(roll, d_pitch) - M_SinMul(roll, d_yaw);
+    } else {
+        yaw += d_yaw;
+        pitch += d_pitch;
+    }
+    roll += d_roll;
+
+    // handle pivoting
+    if (pitch >= DEG_90 || pitch <= -DEG_90) {
+        roll += DEG_180;
+        yaw += DEG_180;
+        pitch = g_Camera.target_elevation;
+    }
+
+    g_Camera.target_angle = yaw;
+    g_Camera.target_elevation = pitch;
+    g_Camera.roll = roll;
+}
+
+static void M_RotateCamera(
+    const int32_t d_yaw, const int32_t d_pitch, const int32_t d_roll)
+{
+    M_ApplyRotation(d_yaw, d_pitch, d_roll, true);
+    const XYZ_32 shift = M_GetShift(0, 0, g_Camera.target_distance);
     g_Camera.target.x = g_Camera.pos.x + shift.x;
     g_Camera.target.y = g_Camera.pos.y + shift.y;
     g_Camera.target.z = g_Camera.pos.z + shift.z;
 }
 
-static void M_RotateTarget(const int16_t angle)
+static void M_RotateTarget(
+    const int32_t d_yaw, const int32_t d_pitch, const int32_t d_roll)
 {
-    const int16_t elevation = g_Camera.target_elevation;
-    const int32_t distance = g_Camera.target_distance;
-    const XYZ_32 shift = {
-        .x = SHIFT_X(distance, elevation, angle),
-        .z = SHIFT_Z(distance, elevation, angle),
-        .y = SHIFT_Y(distance, elevation),
-    };
-    g_Camera.pos.x = g_Camera.target.x + shift.x;
-    g_Camera.pos.y = g_Camera.target.y + shift.y;
-    g_Camera.pos.z = g_Camera.target.z + shift.z;
+    M_ApplyRotation(d_yaw, d_pitch, d_roll, false);
+    const XYZ_32 shift = M_GetShift(0, 0, g_Camera.target_distance);
+    g_Camera.pos.x = g_Camera.target.x - shift.x;
+    g_Camera.pos.y = g_Camera.target.y - shift.y;
+    g_Camera.pos.z = g_Camera.target.z - shift.z;
 }
 
 static void M_ClampCameraPos(void)
@@ -162,30 +191,28 @@ static bool M_HandleShiftInputs(void)
 {
     bool result = false;
 
+    const int32_t distance = M_GetShiftSpeed((WALL_L * 5.0) / LOGIC_FPS);
     if (g_Input.camera_left) {
-        M_ShiftCamera(g_Camera.target_angle - DEG_90, 0, 0);
+        M_ShiftCamera(-distance, 0, 0);
         result = true;
     } else if (g_Input.camera_right) {
-        M_ShiftCamera(g_Camera.target_angle + DEG_90, 0, 0);
+        M_ShiftCamera(distance, 0, 0);
         result = true;
     }
 
     if (g_Input.camera_forward) {
-        M_ShiftCamera(g_Camera.target_angle, g_Camera.target_elevation, -1);
+        M_ShiftCamera(0, 0, distance);
         result = true;
     } else if (g_Input.camera_back) {
-        M_ShiftCamera(
-            g_Camera.target_angle + DEG_180, g_Camera.target_elevation, 1);
+        M_ShiftCamera(0, 0, -distance);
         result = true;
     }
 
     if (g_Input.camera_up) {
-        M_ShiftCamera(
-            g_Camera.target_angle, g_Camera.target_elevation + DEG_90, -1);
+        M_ShiftCamera(0, -distance, 0);
         result = true;
     } else if (g_Input.camera_down) {
-        M_ShiftCamera(
-            g_Camera.target_angle, g_Camera.target_elevation - DEG_90, -1);
+        M_ShiftCamera(0, distance, 0);
         result = true;
     }
 
@@ -195,36 +222,30 @@ static bool M_HandleShiftInputs(void)
 static bool M_HandleRotationInputs(void)
 {
     bool result = false;
-    const int32_t rot_amount = M_GetRotSpeed();
 
     if (g_Input.forward) {
-        M_RotateCamera(
-            g_Camera.target_angle, g_Camera.target_elevation - rot_amount);
+        M_RotateCamera(0, -M_GetRotSpeed(), 0);
         result = true;
     } else if (g_Input.back) {
-        M_RotateCamera(
-            g_Camera.target_angle, g_Camera.target_elevation + rot_amount);
+        M_RotateCamera(0, M_GetRotSpeed(), 0);
         result = true;
     }
 
     if (g_Input.left) {
-        M_RotateCamera(
-            g_Camera.target_angle - rot_amount, g_Camera.target_elevation);
+        M_RotateCamera(-M_GetRotSpeed(), 0, 0);
         result = true;
     } else if (g_Input.right) {
-        M_RotateCamera(
-            g_Camera.target_angle + rot_amount, g_Camera.target_elevation);
+        M_RotateCamera(M_GetRotSpeed(), 0, 0);
         result = true;
     }
 
     if (g_Input.step_left) {
-        g_Camera.roll -= rot_amount;
+        M_RotateCamera(0, 0, -M_GetRotSpeed());
         result = true;
     } else if (g_Input.step_right) {
-        g_Camera.roll += rot_amount;
+        M_RotateCamera(0, 0, M_GetRotSpeed());
         result = true;
     }
-    CLAMP(g_Camera.roll, -PHOTO_MAX_PITCH_ROLL, PHOTO_MAX_PITCH_ROLL);
 
     return result;
 }
@@ -233,7 +254,7 @@ static bool M_HandleTargetRotationInputs(void)
 {
     bool result = false;
     if (g_InputDB.roll) {
-        M_RotateTarget(g_Camera.target_angle - DEG_90);
+        M_RotateTarget(-DEG_90, 0, 0);
         result = true;
     }
     return result;
@@ -262,37 +283,7 @@ static bool M_HandleFOVInputs(void)
 
 void Camera_EnterPhotoMode(void)
 {
-#if TR_VERSION == 1
-    m_OldFOV = Viewport_GetFOV();
-#elif TR_VERSION == 2
-    m_OldFOV = Viewport_GetFOV(true);
-#endif
-    m_CurrentFOV = m_OldFOV / DEG_1;
-    m_OldCamera = g_Camera;
-    g_Camera.type = CAM_PHOTO_MODE;
-    m_WorldBounds = Room_GetWorldBounds();
-    M_UpdateCameraRooms();
-}
-
-void Camera_ExitPhotoMode(void)
-{
-#if TR_VERSION == 1
-    Viewport_SetFOV(m_OldFOV);
-#elif TR_VERSION == 2
-    Viewport_AlterFOV(m_OldFOV);
-#endif
-    M_ResetCamera();
-}
-
-void Camera_UpdatePhotoMode(void)
-{
-    const bool shift_input = g_Input.camera_forward || g_Input.camera_back
-        || g_Input.camera_left || g_Input.camera_right || g_Input.camera_up
-        || g_Input.camera_down;
-    const bool rot_input =
-        g_Input.left || g_Input.right || g_Input.forward || g_Input.back;
-    const bool rot_target_input = g_InputDB.roll;
-    const bool roll_input = g_Input.step_left || g_Input.step_right;
+    m_OriginalCamera = g_Camera;
 
     int16_t angles[2];
     Math_GetVectorAngles(
@@ -303,8 +294,40 @@ void Camera_UpdatePhotoMode(void)
     g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
     g_Camera.target_square = SQUARE(g_Camera.target_distance);
 
+    m_StartingCamera = g_Camera;
+
+#if TR_VERSION == 1
+    m_OldFOV = Viewport_GetFOV();
+#elif TR_VERSION == 2
+    m_OldFOV = Viewport_GetFOV(true);
+#endif
+    m_CurrentFOV = m_OldFOV / DEG_1;
+    g_Camera.type = CAM_PHOTO_MODE;
+    const int32_t border = WALL_L * 5;
+    m_WorldBounds = Room_GetWorldBounds();
+    m_WorldBounds.min.x -= border;
+    m_WorldBounds.min.y -= border;
+    m_WorldBounds.min.z -= border;
+    m_WorldBounds.max.x += border;
+    m_WorldBounds.max.y += border;
+    m_WorldBounds.max.z += border;
+    M_UpdateCameraRooms();
+}
+
+void Camera_ExitPhotoMode(void)
+{
+#if TR_VERSION == 1
+    Viewport_SetFOV(m_OldFOV);
+#elif TR_VERSION == 2
+    Viewport_AlterFOV(m_OldFOV);
+#endif
+    M_ResetCamera(true);
+}
+
+void Camera_UpdatePhotoMode(void)
+{
     if (g_InputDB.camera_reset) {
-        M_ResetCamera();
+        M_ResetCamera(false);
         g_Camera.type = CAM_PHOTO_MODE;
     }
 

@@ -1,5 +1,3 @@
-#include "game/objects/general/trapdoor.h"
-
 #include "game/items.h"
 #include "global/const.h"
 
@@ -11,10 +9,20 @@ typedef enum {
 } TRAPDOOR_STATE;
 
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z);
+static void M_Setup(OBJECT *obj);
+static void M_Control(int16_t item_num);
+static int16_t M_GetFloorHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
+static int16_t M_GetCeilingHeight(
+    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
 
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 {
     const BOUNDS_16 *const orig_bounds = &Item_GetBestFrame(item)->bounds;
+    if (orig_bounds == nullptr) {
+        return false;
+    }
+
     BOUNDS_16 fixed_bounds = {};
 
     // Bounds need to change in order to account for 2 sector trapdoors
@@ -51,16 +59,16 @@ static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
     return false;
 }
 
-void TrapDoor_Setup(OBJECT *obj)
+static void M_Setup(OBJECT *const obj)
 {
-    obj->control = TrapDoor_Control;
-    obj->floor_height_func = TrapDoor_GetFloorHeight;
-    obj->ceiling_height_func = TrapDoor_GetCeilingHeight;
+    obj->control_func = M_Control;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_anim = 1;
     obj->save_flags = 1;
 }
 
-void TrapDoor_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (Item_IsTriggerActive(item)) {
@@ -73,34 +81,33 @@ void TrapDoor_Control(int16_t item_num)
     Item_Animate(item);
 }
 
-int16_t TrapDoor_GetFloorHeight(
+static int16_t M_GetFloorHeight(
     const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (!M_IsItemOnTop(item, x, z)) {
         return height;
     }
-
     if (item->current_anim_state == TRAPDOOR_STATE_OPEN || y > item->pos.y
         || item->pos.y >= height) {
         return height;
     }
-
     return item->pos.y;
 }
 
-int16_t TrapDoor_GetCeilingHeight(
+static int16_t M_GetCeilingHeight(
     const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
     if (!M_IsItemOnTop(item, x, z)) {
         return height;
     }
-
     if (item->current_anim_state == TRAPDOOR_STATE_OPEN || y <= item->pos.y
         || item->pos.y <= height) {
         return height;
     }
-
     return item->pos.y + STEP_L;
 }
+
+REGISTER_OBJECT(O_TRAPDOOR_1, M_Setup)
+REGISTER_OBJECT(O_TRAPDOOR_2, M_Setup)

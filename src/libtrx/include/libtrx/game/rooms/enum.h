@@ -1,6 +1,12 @@
 #pragma once
 
 typedef enum {
+    HT_WALL = 0,
+    HT_SMALL_SLOPE = 1,
+    HT_BIG_SLOPE = 2,
+} HEIGHT_TYPE;
+
+typedef enum {
     RF_UNDERWATER = 0x01,
     RF_OUTSIDE = 0x08,
     RF_DYNAMIC_LIT = 0x10,

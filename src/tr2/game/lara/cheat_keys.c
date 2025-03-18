@@ -139,11 +139,11 @@ void Lara_Cheat_CheckKeys(void)
                 m_CheatFlare = g_Lara.gun_type == LGT_FLARE;
             }
 
-            if (ls == LS_FORWARD_JUMP && m_CheatFlare) {
+            if (ls == LS_JUMP_FORWARD && m_CheatFlare) {
                 M_CompleteLevel();
-            } else if (ls == LS_BACK_JUMP && m_CheatFlare) {
+            } else if (ls == LS_JUMP_BACK && m_CheatFlare) {
                 M_GiveItems();
-            } else if (ls == LS_FORWARD_JUMP || ls == LS_BACK_JUMP) {
+            } else if (ls == LS_JUMP_FORWARD || ls == LS_JUMP_BACK) {
                 M_ExplodeLara();
             }
             m_CheatState = CHEAT_INITIAL;

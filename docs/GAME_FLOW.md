@@ -292,10 +292,27 @@ remains distinct for each game.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>main_menu_picture</code></td>
+    <td>String<strong>*</strong></td>
+    <td>Path to the main menu background image.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>savegame_fmt_legacy</code></td>
+    <td>String<strong>*</strong></td>
+    <td>Path pattern to look for the original savegame files.</td>
+  </tr>
+  <tr valign="top">
     <td><code>secret_track</code></td>
     <td>Integer</td>
     <td>
       Music track to play when a secret is found. -1 to not play anything.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>sfx_path</code></td>
+    <td>String</td>
+    <td>
+      The path to the sound effects (.sfx) file to use in the game.
     </td>
   </tr>
 </table>
@@ -549,6 +566,14 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>sfx_path</code><strong>²</strong></td>
+    <td>String</td>
+    <td colspan="2">
+      The path to the sound effects (.sfx) file to use in this level. If this
+      property is not defined, the default global file will be used.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>unobtainable_kills</code><strong>¹</strong></td>
     <td>Integer</td>
     <td colspan="2">
@@ -581,6 +606,7 @@ Following are each of the properties available within a level.
 
 **\*** Required property.  
 **¹** Tomb Raider 1 only.
+**²** Tomb Raider 2 only.
 
 ## Sequences
 The following describes each available game flow sequence type and the required
@@ -841,7 +867,7 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>disable_floor</code><strong>²</strong></td>
+    <td><code>disable_floor</code></td>
     <td><code>value</code></td>
     <td>Integer</td>
     <td>

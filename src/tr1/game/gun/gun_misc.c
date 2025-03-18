@@ -1,6 +1,5 @@
 #include "game/gun/gun_misc.h"
 
-#include "game/collide.h"
 #include "game/game.h"
 #include "game/input.h"
 #include "game/inventory.h"
@@ -14,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/utils.h>
@@ -454,10 +454,11 @@ int32_t Gun_FireWeapon(
     for (int i = 0; i < nums; i++) {
         SPHERE *sptr = &slist[i];
         int32_t r = sptr->r;
-        if (ABS(sptr->x) < r && ABS(sptr->y) < r && sptr->z > r
-            && (sptr->x * sptr->x) + (sptr->y * sptr->y) <= (r * r)
-            && (sptr->z - r < bestdist)) {
-            bestdist = sptr->z - r;
+        if (ABS(sptr->pos.x) < r && ABS(sptr->pos.y) < r && sptr->pos.z > r
+            && (sptr->pos.x * sptr->pos.x) + (sptr->pos.y * sptr->pos.y)
+                <= (r * r)
+            && (sptr->pos.z - r < bestdist)) {
+            bestdist = sptr->pos.z - r;
             best = i;
         }
     }

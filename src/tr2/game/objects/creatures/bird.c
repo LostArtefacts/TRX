@@ -1,5 +1,3 @@
-#include "game/objects/creatures/bird.h"
-
 #include "game/creature.h"
 #include "game/spawn.h"
 #include "global/const.h"
@@ -39,16 +37,19 @@ static const BITE m_CrowBite = {
     .mesh_num = 14,
 };
 
-void Bird_SetupEagle(void)
+static void M_Setup(OBJECT *obj);
+static void M_Initialise(int16_t item_num);
+static void M_Control(int16_t item_num);
+
+static void M_SetupEagle(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_EAGLE);
     if (!obj->loaded) {
         return;
     }
 
-    obj->initialise = Bird_Initialise;
-    obj->control = Bird_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = EAGLE_HITPOINTS;
     obj->radius = BIRD_RADIUS;
@@ -62,16 +63,15 @@ void Bird_SetupEagle(void)
     obj->save_anim = 1;
 }
 
-void Bird_SetupCrow(void)
+static void M_SetupCrow(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_CROW);
     if (!obj->loaded) {
         return;
     }
 
-    obj->initialise = Bird_Initialise;
-    obj->control = Bird_Control;
-    obj->collision = Creature_Collision;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
 
     obj->hit_points = CROW_HITPOINTS;
     obj->radius = BIRD_RADIUS;
@@ -85,7 +85,7 @@ void Bird_SetupCrow(void)
     obj->save_anim = 1;
 }
 
-void Bird_Initialise(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
@@ -100,7 +100,7 @@ void Bird_Initialise(const int16_t item_num)
     }
 }
 
-void Bird_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -198,3 +198,6 @@ void Bird_Control(const int16_t item_num)
 
     Creature_Animate(item_num, angle, 0);
 }
+
+REGISTER_OBJECT(O_EAGLE, M_SetupEagle)
+REGISTER_OBJECT(O_CROW, M_SetupCrow)

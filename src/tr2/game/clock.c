@@ -4,5 +4,5 @@
 
 int32_t Clock_GetCurrentFPS(void)
 {
-    return LOGIC_FPS;
+    return g_Config.rendering.fps;
 }

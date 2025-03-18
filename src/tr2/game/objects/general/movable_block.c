@@ -1,6 +1,3 @@
-#include "game/objects/general/movable_block.h"
-
-#include "game/collide.h"
 #include "game/input.h"
 #include "game/item_actions.h"
 #include "game/items.h"
@@ -8,10 +5,12 @@
 #include "game/objects/common.h"
 #include "game/room.h"
 #include "game/sound.h"
-#include "global/utils.h"
 #include "global/vars.h"
 
+#include <libtrx/game/collision.h>
+#include <libtrx/game/lara/const.h>
 #include <libtrx/game/math.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 
 #define LF_PPREADY 19
 
@@ -36,21 +35,35 @@ static int16_t m_MovableBlockBounds[12] = {
     +10 * DEG_1,
 };
 
-int32_t MovableBlock_TestDestination(
+static bool M_TestDestination(const ITEM *item, int32_t block_height);
+static bool M_TestPush(
+    const ITEM *item, int32_t block_height, DIRECTION quadrant);
+static bool M_TestPull(
+    const ITEM *item, int32_t block_height, DIRECTION quadrant);
+
+static void M_Setup(OBJECT *obj);
+static void M_HandleSave(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Draw(const ITEM *item);
+static void M_Control(int16_t item_num);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+
+static bool M_TestDestination(
     const ITEM *const item, const int32_t block_height)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
 
-    const int16_t floor = sector->floor.height;
+    const int16_t floor =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     return floor == NO_HEIGHT || (floor == item->pos.y - block_height);
 }
 
-int32_t MovableBlock_TestPush(
-    const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
+static bool M_TestPush(
+    const ITEM *const item, const int32_t block_height,
+    const DIRECTION quadrant)
 {
-    if (!MovableBlock_TestDestination(item, block_height)) {
+    if (!M_TestDestination(item, block_height)) {
         return false;
     }
 
@@ -76,6 +89,8 @@ int32_t MovableBlock_TestPush(
         break;
     }
 
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+
     COLL_INFO coll = {
         .quadrant = quadrant,
         .radius = 500,
@@ -85,13 +100,8 @@ int32_t MovableBlock_TestPush(
         return false;
     }
 
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-    if (sector->floor.height != y) {
-        return false;
-    }
-
-    Room_GetHeight(sector, x, y, z);
-    if (g_HeightType != HT_WALL) {
+    const int16_t height = Room_GetHeight(sector, x, y, z);
+    if (height != y || Room_GetHeightType() != HT_WALL) {
         return false;
     }
 
@@ -104,10 +114,11 @@ int32_t MovableBlock_TestPush(
     return true;
 }
 
-int32_t MovableBlock_TestPull(
-    const ITEM *const item, const int32_t block_height, const uint16_t quadrant)
+static bool M_TestPull(
+    const ITEM *const item, const int32_t block_height,
+    const DIRECTION quadrant)
 {
-    if (!MovableBlock_TestDestination(item, block_height)) {
+    if (!M_TestDestination(item, block_height)) {
         return false;
     }
 
@@ -134,6 +145,7 @@ int32_t MovableBlock_TestPull(
     int32_t y = item->pos.y;
     int32_t z = item->pos.z + z_add;
     int16_t room_num = item->room_num;
+    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
 
     COLL_INFO coll = {
         .quadrant = quadrant,
@@ -144,14 +156,13 @@ int32_t MovableBlock_TestPull(
         return false;
     }
 
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-    if (sector->floor.height != y) {
+    if (Room_GetHeight(sector, x, y, z) != y) {
         return false;
     }
 
     const int32_t y_min = y - block_height;
     sector = Room_GetSector(x, y_min, z, &room_num);
-    if (sector->ceiling.height > y_min) {
+    if (Room_GetCeiling(sector, x, y_min, z) > y_min) {
         return false;
     }
 
@@ -159,12 +170,12 @@ int32_t MovableBlock_TestPull(
     z += z_add;
     room_num = item->room_num;
     sector = Room_GetSector(x, y, z, &room_num);
-    if (sector->floor.height != y) {
+    if (Room_GetHeight(sector, x, y, z) != y) {
         return false;
     }
 
     sector = Room_GetSector(x, y - LARA_HEIGHT, z, &room_num);
-    if (sector->ceiling.height > y - LARA_HEIGHT) {
+    if (Room_GetCeiling(sector, x, y - LARA_HEIGHT, z) > y - LARA_HEIGHT) {
         return false;
     }
 
@@ -172,7 +183,7 @@ int32_t MovableBlock_TestPull(
     z = g_LaraItem->pos.z + z_add;
     y = g_LaraItem->pos.y;
     room_num = g_LaraItem->room_num;
-    Room_GetSector(x, y, z, &room_num);
+    sector = Room_GetSector(x, y, z, &room_num);
     coll.quadrant = (quadrant + 2) & 3;
     coll.radius = LARA_RADIUS;
     if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
@@ -182,15 +193,31 @@ int32_t MovableBlock_TestPull(
     return true;
 }
 
-void MovableBlock_Initialise(const int16_t item_num)
+static void M_Setup(OBJECT *const obj)
 {
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
-        Room_AlterFloorHeight(item, -WALL_L);
+    obj->initialise_func = MovableBlock_Initialise;
+    obj->handle_save_func = M_HandleSave;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->draw_func = M_Draw;
+    obj->save_position = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_ACTIVE
+            && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+            Item_RemoveActive(Item_GetIndex(item));
+            item->status = IS_INACTIVE;
+        }
+        item->priv = item->status == IS_ACTIVE ? (void *)true : (void *)false;
     }
 }
 
-void MovableBlock_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -203,10 +230,10 @@ void MovableBlock_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(
+        item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+    const int32_t height = Room_GetHeight(
+        sector, item->pos.x, item->pos.y - STEP_L / 2, item->pos.z);
 
     if (item->pos.y < height) {
         item->gravity = 1;
@@ -215,7 +242,12 @@ void MovableBlock_Control(const int16_t item_num)
         item->pos.y = height;
         item->status = IS_DEACTIVATED;
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
-        Sound_Effect(SFX_ENEMY_GRUNT, &item->pos, SPM_ALWAYS);
+        Sound_Effect(SFX_T_REX_FEET, &item->pos, SPM_ALWAYS);
+    } else if (
+        item->pos.y >= height && !item->gravity
+        && !(bool)(intptr_t)item->priv) {
+        item->status = IS_INACTIVE;
+        Item_RemoveActive(item_num);
     }
 
     if (item->room_num != room_num) {
@@ -230,10 +262,15 @@ void MovableBlock_Control(const int16_t item_num)
     }
 }
 
-void MovableBlock_Collision(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+        item->priv = (void *)false;
+    }
 
     if (!g_Input.action || item->status == IS_ACTIVE || lara_item->gravity
         || lara_item->pos.y != item->pos.y) {
@@ -242,63 +279,67 @@ void MovableBlock_Collision(
 
     const DIRECTION quadrant = Math_GetDirection(lara_item->rot.y);
     if (lara_item->current_anim_state == LS_STOP) {
-        if (g_Lara.gun_status == LGS_ARMLESS) {
-            switch (quadrant) {
-            case DIR_NORTH:
-                item->rot.y = 0;
-                break;
-            case DIR_EAST:
-                item->rot.y = DEG_90;
-                break;
-            case DIR_SOUTH:
-                item->rot.y = -DEG_180;
-                break;
-            case DIR_WEST:
-                item->rot.y = -DEG_90;
-                break;
-            default:
-                break;
-            }
+        if (g_Input.forward || g_Input.back
+            || g_Lara.gun_status != LGS_ARMLESS) {
+            return;
+        }
 
-            if (!Item_TestPosition(m_MovableBlockBounds, item, lara_item)) {
-                return;
-            }
+        switch (quadrant) {
+        case DIR_NORTH:
+            item->rot.y = 0;
+            break;
+        case DIR_EAST:
+            item->rot.y = DEG_90;
+            break;
+        case DIR_SOUTH:
+            item->rot.y = -DEG_180;
+            break;
+        case DIR_WEST:
+            item->rot.y = -DEG_90;
+            break;
+        default:
+            break;
+        }
 
-            int16_t room_num = lara_item->room_num;
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-            if (room_num != item->room_num) {
-                return;
-            }
+        if (!Item_TestPosition(m_MovableBlockBounds, item, lara_item)) {
+            return;
+        }
 
-            switch (quadrant) {
-            case DIR_NORTH:
-                lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
-                lara_item->pos.z += WALL_L - LARA_RADIUS;
-                break;
-            case DIR_EAST:
-                lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
-                lara_item->pos.x += WALL_L - LARA_RADIUS;
-                break;
-            case DIR_SOUTH:
-                lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
-                lara_item->pos.z += LARA_RADIUS;
-                break;
-            case DIR_WEST:
-                lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
-                lara_item->pos.x += LARA_RADIUS;
-                break;
-            default:
-                break;
-            }
+        int16_t room_num = lara_item->room_num;
+        Room_GetSector(
+            item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+        if (room_num != item->room_num) {
+            return;
+        }
 
-            lara_item->rot.y = item->rot.y;
-            lara_item->goal_anim_state = LS_PP_READY;
+        switch (quadrant) {
+        case DIR_NORTH:
+            lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
+            lara_item->pos.z += WALL_L - LARA_RADIUS;
+            break;
+        case DIR_EAST:
+            lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
+            lara_item->pos.x += WALL_L - LARA_RADIUS;
+            break;
+        case DIR_SOUTH:
+            lara_item->pos.z = ROUND_TO_SECTOR(lara_item->pos.z);
+            lara_item->pos.z += LARA_RADIUS;
+            break;
+        case DIR_WEST:
+            lara_item->pos.x = ROUND_TO_SECTOR(lara_item->pos.x);
+            lara_item->pos.x += LARA_RADIUS;
+            break;
+        default:
+            break;
+        }
 
-            Lara_Animate(lara_item);
+        lara_item->rot.y = item->rot.y;
+        lara_item->goal_anim_state = LS_PP_READY;
 
-            if (lara_item->current_anim_state == LS_PP_READY) {
-                g_Lara.gun_status = LGS_HANDS_BUSY;
-            }
+        Lara_Animate(lara_item);
+
+        if (lara_item->current_anim_state == LS_PP_READY) {
+            g_Lara.gun_status = LGS_HANDS_BUSY;
         }
     } else if (
         Item_TestAnimEqual(lara_item, LA_PUSHABLE_GRAB)
@@ -308,13 +349,13 @@ void MovableBlock_Collision(
         }
 
         if (g_Input.forward) {
-            if (!MovableBlock_TestPush(item, WALL_L, quadrant)) {
+            if (!M_TestPush(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PUSH;
             lara_item->goal_anim_state = LS_PUSH_BLOCK;
         } else if (g_Input.back) {
-            if (!MovableBlock_TestPull(item, WALL_L, quadrant)) {
+            if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PULL;
@@ -328,10 +369,11 @@ void MovableBlock_Collision(
         item->status = IS_ACTIVE;
         Item_Animate(item);
         Lara_Animate(lara_item);
+        item->priv = (void *)true;
     }
 }
 
-void MovableBlock_Draw(const ITEM *const item)
+static void M_Draw(const ITEM *const item)
 {
     if (item->status == IS_ACTIVE) {
         Object_DrawUnclippedItem(item);
@@ -340,13 +382,7 @@ void MovableBlock_Draw(const ITEM *const item)
     }
 }
 
-void MovableBlock_Setup(OBJECT *const obj)
-{
-    obj->initialise = MovableBlock_Initialise;
-    obj->control = MovableBlock_Control;
-    obj->collision = MovableBlock_Collision;
-    obj->draw_routine = MovableBlock_Draw;
-    obj->save_position = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
+REGISTER_OBJECT(O_MOVABLE_BLOCK_1, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_2, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_3, M_Setup)
+REGISTER_OBJECT(O_MOVABLE_BLOCK_4, M_Setup)

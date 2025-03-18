@@ -12,6 +12,7 @@
 #include "game/objects/common.h"
 #include "game/objects/setup.h"
 #include "game/output.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -23,9 +24,10 @@
 
 #include <string.h>
 
-static int16_t *m_AnimCommands = nullptr;
+static LEVEL_INFO m_Info = {};
 
 static RGBA_8888 M_ARGB1555To8888(uint16_t argb1555);
+static void M_FixTrapezoidRatios(FACE4 *face, const XYZ_16 vertices[4]);
 static void M_ReadPosition(XYZ_32 *pos, VFILE *file);
 static void M_ReadShade(SHADE *shade, VFILE *file);
 static void M_ReadVertex(XYZ_16 *vertex, VFILE *file);
@@ -58,6 +60,123 @@ static RGBA_8888 M_ARGB1555To8888(const uint16_t argb1555)
     };
 }
 
+static void M_FixTrapezoidRatios(FACE4 *const face, const XYZ_16 vertices[4])
+{
+    // This function attempts to correct texture coordinate ratios for a
+    // quadrilateral so the GPU, which typically renders a quad as two
+    // triangles, does not warp the texture disproportionately across the quad's
+    // diagonal divisions. By comparing the 3D edge lengths (in world space)
+    // with the corresponding 2D UV edge lengths, it computes a scale factor
+    // that preserves the trapezoidal shape in texture space and allows the
+    // shader to warp the texture uniformly across all four corners.
+    //
+    // In many software rasterization or older GPU pipelines, triangles can get
+    // rendered using affine interpolation of texture coordinates, causing
+    // visible warping when a four-sided polygon is split internally.
+    // The original approach (coded by XProger) handled only rectangular UV
+    // maps by simply scaling the edges; this updated version takes into
+    // account the actual UV trapezoid to achieve a more uniform texture
+    // projection.
+
+    // 1) Gather the coordinate and texture information
+    const OBJECT_TEXTURE *const tex =
+        Output_GetObjectTexture(face->texture_idx);
+    const TEXTURE_UV *uvs[4] = {
+        &tex->uv[0],
+        &tex->uv[1],
+        &tex->uv[2],
+        &tex->uv[3],
+    };
+    TEXTURE_ZW_F *zws[4] = {
+        &face->texture_zw[0],
+        &face->texture_zw[1],
+        &face->texture_zw[2],
+        &face->texture_zw[3],
+    };
+    XYZ_F c0, c1, c2, c3, *coords[4] = { &c0, &c1, &c2, &c3 };
+    for (int32_t i = 0; i < 4; i++) {
+        coords[i]->x = vertices[i].x;
+        coords[i]->y = vertices[i].y;
+        coords[i]->z = vertices[i].z;
+    }
+
+    // 2) Compute geometric edges
+    //    a = c0-c1, b = c3-c2, c = c0-c3, d = c1-c2
+    const XYZ_F a = XYZ_F_Subtract(c0, c1);
+    const XYZ_F b = XYZ_F_Subtract(c3, c2);
+    const XYZ_F c = XYZ_F_Subtract(c0, c3);
+    const XYZ_F d = XYZ_F_Subtract(c1, c2);
+
+    const float a_l = XYZ_F_Length(a);
+    const float b_l = XYZ_F_Length(b);
+    const float c_l = XYZ_F_Length(c);
+    const float d_l = XYZ_F_Length(d);
+
+    // 3) Compute dot‐products in 3D to see which edges differ more
+    const float ab = XYZ_F_DotProduct(a, b) / (a_l * b_l);
+    const float cd = XYZ_F_DotProduct(c, d) / (c_l * d_l);
+
+    // 4) Compute tx, ty in for orientation
+    const float tx = ABS(uvs[0]->u - uvs[3]->u);
+    const float ty = ABS(uvs[0]->v - uvs[3]->v);
+
+    // 5) Measure the same edges in UV space so we know the “current” shape
+    XYZ_F uv0 = { uvs[0]->u, uvs[0]->v, 0.0f };
+    XYZ_F uv1 = { uvs[1]->u, uvs[1]->v, 0.0f };
+    XYZ_F uv2 = { uvs[2]->u, uvs[2]->v, 0.0f };
+    XYZ_F uv3 = { uvs[3]->u, uvs[3]->v, 0.0f };
+
+    // au = uv0 - uv1, bu = uv3 - uv2, cu = uv0 - uv3, du = uv1 - uv2
+    const XYZ_F au = XYZ_F_Subtract(uv0, uv1);
+    const XYZ_F bu = XYZ_F_Subtract(uv3, uv2);
+    const XYZ_F cu = XYZ_F_Subtract(uv0, uv3);
+    const XYZ_F du = XYZ_F_Subtract(uv1, uv2);
+
+    const float au_l = XYZ_F_Length(au);
+    const float bu_l = XYZ_F_Length(bu);
+    const float cu_l = XYZ_F_Length(cu);
+    const float du_l = XYZ_F_Length(du);
+
+    // We'll reuse the same ab/cd dot logic in UV if needed, but typically
+    // we only need the lengths to find the ratio vs. geometry.
+
+    // 6) Figure out the correction ratios per-corner, taking care of both
+    //    geometry and UV mesh proportions
+    if (ab > cd) {
+        const int k = (tx > ty) ? 1 : 0; // pick axis
+        if (a_l > b_l) {
+            // geometry ratio = (b_l / a_l)
+            // uv ratio       = (bu_l / au_l)  (avoid /0 check if needed)
+            const float geom_ratio = (a_l > 1e-6f) ? (b_l / a_l) : 1.0f;
+            const float uv_ratio = (au_l > 1e-6f) ? (bu_l / au_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio; // final scale
+            zws[2]->zw[k] = fix;
+            zws[3]->zw[k] = fix;
+        } else if (a_l < b_l) {
+            const float geom_ratio = (b_l > 1e-6f) ? (a_l / b_l) : 1.0f;
+            const float uv_ratio = (bu_l > 1e-6f) ? (au_l / bu_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio;
+            zws[0]->zw[k] = fix;
+            zws[1]->zw[k] = fix;
+        }
+    } else if (ab < cd) {
+        const int k = (tx > ty) ? 0 : 1; // pick axis
+        if (c_l > d_l) {
+            const float geom_ratio = (c_l > 1e-6f) ? (d_l / c_l) : 1.0f;
+            const float uv_ratio = (cu_l > 1e-6f) ? (du_l / cu_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio;
+            zws[1]->zw[k] = fix;
+            zws[2]->zw[k] = fix;
+        } else if (c_l < d_l) {
+            const float geom_ratio = (d_l > 1e-6f) ? (c_l / d_l) : 1.0f;
+            const float uv_ratio = (du_l > 1e-6f) ? (cu_l / du_l) : 1.0f;
+            const float fix = geom_ratio / uv_ratio;
+            zws[0]->zw[k] = fix;
+            zws[3]->zw[k] = fix;
+        }
+    }
+}
+
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
 {
     pos->x = VFile_ReadS32(file);
@@ -86,6 +205,8 @@ static void M_ReadFace4(FACE4 *const face, VFILE *const file)
 {
     for (int32_t i = 0; i < 4; i++) {
         face->vertices[i] = VFile_ReadU16(file);
+        face->texture_zw[i].z = 1.0f;
+        face->texture_zw[i].w = 1.0f;
     }
     face->texture_idx = VFile_ReadU16(file);
     face->enable_reflections = false;
@@ -256,67 +377,66 @@ static void M_ReadObjectVector(OBJECT_VECTOR *const obj, VFILE *const file)
     obj->flags = VFile_ReadS16(file);
 }
 
-void Level_ReadPalettes(LEVEL_INFO *const info, VFILE *const file)
+void Level_ReadPalettes(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t palette_size = 256;
-    info->palette.size = palette_size;
+    m_Info.palette.size = palette_size;
 
-    info->palette.data_24 = Memory_Alloc(sizeof(RGB_888) * palette_size);
-    VFile_Read(file, info->palette.data_24, sizeof(RGB_888) * palette_size);
-    info->palette.data_24[0].r = 0;
-    info->palette.data_24[0].g = 0;
-    info->palette.data_24[0].b = 0;
+    m_Info.palette.data_24 = Memory_Alloc(sizeof(RGB_888) * palette_size);
+    VFile_Read(file, m_Info.palette.data_24, sizeof(RGB_888) * palette_size);
+    m_Info.palette.data_24[0].r = 0;
+    m_Info.palette.data_24[0].g = 0;
+    m_Info.palette.data_24[0].b = 0;
     for (int32_t i = 1; i < palette_size; i++) {
-        RGB_888 *const col = &info->palette.data_24[i];
+        RGB_888 *const col = &m_Info.palette.data_24[i];
         col->r = (col->r << 2) | (col->r >> 4);
         col->g = (col->g << 2) | (col->g >> 4);
         col->b = (col->b << 2) | (col->b >> 4);
     }
 
 #if TR_VERSION == 1
-    info->palette.data_32 = nullptr;
+    m_Info.palette.data_32 = nullptr;
 #else
     RGBA_8888 palette_16[palette_size];
-    info->palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
+    m_Info.palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
     VFile_Read(file, palette_16, sizeof(RGBA_8888) * palette_size);
     for (int32_t i = 0; i < palette_size; i++) {
-        info->palette.data_32[i].r = palette_16[i].r;
-        info->palette.data_32[i].g = palette_16[i].g;
-        info->palette.data_32[i].b = palette_16[i].b;
+        m_Info.palette.data_32[i].r = palette_16[i].r;
+        m_Info.palette.data_32[i].g = palette_16[i].g;
+        m_Info.palette.data_32[i].b = palette_16[i].b;
     }
 #endif
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-// TODO: replace extra_pages with value from injection interface
-void Level_ReadTexturePages(
-    LEVEL_INFO *const info, const int32_t extra_pages, VFILE *const file)
+void Level_ReadTexturePages(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t num_pages = VFile_ReadS32(file);
-    info->textures.page_count = num_pages;
+    m_Info.textures.page_count = num_pages;
     LOG_INFO("texture pages: %d", num_pages);
 
+    const int32_t extra_pages = Inject_GetDataCount(IDT_TEXTURE_PAGES);
     const int32_t texture_size_8_bit =
-        num_pages * TEXTURE_PAGE_SIZE * sizeof(uint8_t);
+        (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(uint8_t);
     const int32_t texture_size_32_bit =
         (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888);
 
-    info->textures.pages_24 = Memory_Alloc(texture_size_8_bit);
-    VFile_Read(file, info->textures.pages_24, texture_size_8_bit);
+    m_Info.textures.pages_24 = Memory_Alloc(texture_size_8_bit);
+    VFile_Read(file, m_Info.textures.pages_24, num_pages * TEXTURE_PAGE_SIZE);
 
-    info->textures.pages_32 = Memory_Alloc(texture_size_32_bit);
-    RGBA_8888 *output = info->textures.pages_32;
+    m_Info.textures.pages_32 = Memory_Alloc(texture_size_32_bit);
+    RGBA_8888 *output = m_Info.textures.pages_32;
 
 #if TR_VERSION == 1
-    const uint8_t *input = info->textures.pages_24;
-    for (int32_t i = 0; i < texture_size_8_bit; i++) {
+    const uint8_t *input = m_Info.textures.pages_24;
+    for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
         const uint8_t index = *input++;
-        const RGB_888 pix = info->palette.data_24[index];
+        const RGB_888 pix = m_Info.palette.data_24[index];
         output->r = pix.r;
         output->g = pix.g;
         output->b = pix.b;
@@ -335,12 +455,12 @@ void Level_ReadTexturePages(
     Memory_FreePointer(&input);
 #endif
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadRooms(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t num_rooms = VFile_ReadS16(file);
     LOG_INFO("rooms: %d", num_rooms);
@@ -454,10 +574,38 @@ void Level_ReadRooms(VFILE *const file)
     Memory_FreePointer(&floor_data);
 
 finish:
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadObjectMeshes(
+void Level_ReadObjectMeshes(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_meshes = VFile_ReadS32(file);
+    LOG_INFO("object mesh data: %d", num_meshes);
+
+    const size_t data_start_pos = VFile_GetPos(file);
+    VFile_Skip(file, num_meshes * sizeof(int16_t));
+
+    m_Info.mesh_ptr_count = VFile_ReadS32(file);
+    LOG_INFO("object mesh indices: %d", m_Info.mesh_ptr_count);
+    const int32_t alloc_size = m_Info.mesh_ptr_count * sizeof(int32_t);
+    int32_t *mesh_indices = Memory_Alloc(alloc_size);
+    VFile_Read(file, mesh_indices, alloc_size);
+
+    const size_t end_pos = VFile_GetPos(file);
+    VFile_SetPos(file, data_start_pos);
+
+    Object_InitialiseMeshes(
+        m_Info.mesh_ptr_count + Inject_GetDataCount(IDT_MESH_POINTERS));
+    Level_AppendObjectMeshes(m_Info.mesh_ptr_count, mesh_indices, file);
+
+    VFile_SetPos(file, end_pos);
+    Memory_FreePointer(&mesh_indices);
+
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendObjectMeshes(
     const int32_t num_indices, const int32_t *const indices, VFILE *const file)
 {
     // Construct and store distinct meshes only e.g. Lara's hips are referenced
@@ -498,7 +646,18 @@ void Level_ReadObjectMeshes(
     Vector_Free(unique_indices);
 }
 
-void Level_ReadAnims(
+void Level_ReadAnims(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_anims = VFile_ReadS32(file);
+    m_Info.anims.anim_count = num_anims;
+    LOG_INFO("anims: %d", num_anims);
+    Anim_InitialiseAnims(num_anims + Inject_GetDataCount(IDT_ANIMS));
+    Level_AppendAnims(0, num_anims, file);
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendAnims(
     const int32_t base_idx, const int32_t num_anims, VFILE *const file)
 {
     for (int32_t i = 0; i < num_anims; i++) {
@@ -521,7 +680,19 @@ void Level_ReadAnims(
     }
 }
 
-void Level_ReadAnimChanges(
+void Level_ReadAnimChanges(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_anim_changes = VFile_ReadS32(file);
+    m_Info.anims.change_count = num_anim_changes;
+    LOG_INFO("anim changes: %d", num_anim_changes);
+    Anim_InitialiseChanges(
+        num_anim_changes + Inject_GetDataCount(IDT_ANIM_CHANGES));
+    Level_AppendAnimChanges(0, num_anim_changes, file);
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendAnimChanges(
     const int32_t base_idx, const int32_t num_changes, VFILE *const file)
 {
     for (int32_t i = 0; i < num_changes; i++) {
@@ -532,7 +703,19 @@ void Level_ReadAnimChanges(
     }
 }
 
-void Level_ReadAnimRanges(
+void Level_ReadAnimRanges(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_anim_ranges = VFile_ReadS32(file);
+    m_Info.anims.range_count = num_anim_ranges;
+    LOG_INFO("anim ranges: %d", num_anim_ranges);
+    Anim_InitialiseRanges(
+        num_anim_ranges + Inject_GetDataCount(IDT_ANIM_RANGES));
+    Level_AppendAnimRanges(0, num_anim_ranges, file);
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendAnimRanges(
     const int32_t base_idx, const int32_t num_ranges, VFILE *const file)
 {
     for (int32_t i = 0; i < num_ranges; i++) {
@@ -544,24 +727,44 @@ void Level_ReadAnimRanges(
     }
 }
 
-void Level_InitialiseAnimCommands(const int32_t num_cmds)
+void Level_ReadAnimCommands(VFILE *const file)
 {
-    m_AnimCommands = Memory_Alloc(sizeof(int16_t) * num_cmds);
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_commands = VFile_ReadS32(file);
+    m_Info.anims.command_count = num_commands;
+    LOG_INFO("anim commands: %d", num_commands);
+    m_Info.anims.commands = Memory_Alloc(
+        sizeof(int16_t)
+        * (num_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
+    Level_AppendAnimCommands(0, num_commands, file);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadAnimCommands(
-    const int32_t base_idx, const int32_t num_cmds, VFILE *const file)
+void Level_AppendAnimCommands(
+    const int32_t base_idx, const int32_t num_commands, VFILE *const file)
 {
-    VFile_Read(file, m_AnimCommands + base_idx, sizeof(int16_t) * num_cmds);
+    VFile_Read(
+        file, &m_Info.anims.commands[base_idx], sizeof(int16_t) * num_commands);
 }
 
 void Level_LoadAnimCommands(void)
 {
-    Anim_LoadCommands(m_AnimCommands);
-    Memory_FreePointer(&m_AnimCommands);
+    Anim_LoadCommands(m_Info.anims.commands);
+    Memory_FreePointer(&m_Info.anims.commands);
 }
 
-void Level_ReadAnimBones(
+void Level_ReadAnimBones(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_anim_bones = VFile_ReadS32(file) / ANIM_BONE_SIZE;
+    m_Info.anims.bone_count = num_anim_bones;
+    LOG_INFO("anim bones: %d", num_anim_bones);
+    Anim_InitialiseBones(num_anim_bones + Inject_GetDataCount(IDT_ANIM_BONES));
+    Level_AppendAnimBones(0, num_anim_bones, file);
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendAnimBones(
     const int32_t base_idx, const int32_t num_bones, VFILE *const file)
 {
     for (int32_t i = 0; i < num_bones; i++) {
@@ -576,18 +779,38 @@ void Level_ReadAnimBones(
     }
 }
 
-void Level_LoadAnimFrames(LEVEL_INFO *const info)
+void Level_ReadAnimFrames(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t raw_data_count = VFile_ReadS32(file);
+    m_Info.anims.frame_count = raw_data_count;
+    LOG_INFO("raw anim frames: %d", raw_data_count);
+    m_Info.anims.frames = Memory_Alloc(
+        sizeof(int16_t)
+        * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
+    Level_AppendAnimFrames(0, raw_data_count, file);
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendAnimFrames(
+    const int32_t base_idx, const int32_t num_frames, VFILE *const file)
+{
+    VFile_Read(
+        file, &m_Info.anims.frames[base_idx], sizeof(int16_t) * num_frames);
+}
+
+void Level_LoadAnimFrames(void)
 {
     const int32_t frame_count =
-        Anim_GetTotalFrameCount(info->anims.frame_count);
+        Anim_GetTotalFrameCount(m_Info.anims.frame_count);
     Anim_InitialiseFrames(frame_count);
-    Anim_LoadFrames(info->anims.frames, info->anims.frame_count);
-    Memory_FreePointer(&info->anims.frames);
+    Anim_LoadFrames(m_Info.anims.frames, m_Info.anims.frame_count);
+    Memory_FreePointer(&m_Info.anims.frames);
 }
 
 void Level_ReadObjects(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
@@ -607,12 +830,12 @@ void Level_ReadObjects(VFILE *const file)
         obj->loaded = true;
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadStaticObjects(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("static objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
@@ -635,10 +858,22 @@ void Level_ReadStaticObjects(VFILE *const file)
         obj->visible = (flags & 2) != 0;
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadObjectTextures(
+void Level_ReadObjectTextures(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_textures = VFile_ReadS32(file);
+    m_Info.textures.object_count = num_textures;
+    LOG_INFO("object textures: %d", num_textures);
+    Output_InitialiseObjectTextures(
+        num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
+    Level_AppendObjectTextures(0, 0, num_textures, file);
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendObjectTextures(
     const int32_t base_idx, const int16_t base_page_idx,
     const int32_t num_textures, VFILE *const file)
 {
@@ -653,7 +888,20 @@ void Level_ReadObjectTextures(
     }
 }
 
-void Level_ReadSpriteTextures(
+void Level_ReadSpriteTextures(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_textures = VFile_ReadS32(file);
+    m_Info.textures.sprite_count = num_textures;
+    LOG_INFO("sprite textures: %d", num_textures);
+    Output_InitialiseSpriteTextures(
+        num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
+    Level_AppendSpriteTextures(0, 0, num_textures, file);
+
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_AppendSpriteTextures(
     const int32_t base_idx, const int16_t base_page_idx,
     const int32_t num_textures, VFILE *const file)
 {
@@ -672,7 +920,7 @@ void Level_ReadSpriteTextures(
 
 void Level_ReadSpriteSequences(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = VFile_ReadS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
     for (int32_t i = 0; i < num_sequences; i++) {
@@ -696,12 +944,72 @@ void Level_ReadSpriteSequences(VFILE *const file)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadAnimatedTextureRanges(
-    const int32_t num_ranges, VFILE *const file)
+void Level_ReadPathingData(VFILE *const file)
 {
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t num_boxes = VFile_ReadS32(file);
+    Box_InitialiseBoxes(num_boxes);
+    for (int32_t i = 0; i < num_boxes; i++) {
+        BOX_INFO *const box = Box_GetBox(i);
+#if TR_VERSION == 1
+        box->left = VFile_ReadS32(file);
+        box->right = VFile_ReadS32(file);
+        box->top = VFile_ReadS32(file);
+        box->bottom = VFile_ReadS32(file);
+#else
+        box->left = VFile_ReadU8(file) << WALL_SHIFT;
+        box->right = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
+        box->top = VFile_ReadU8(file) << WALL_SHIFT;
+        box->bottom = (VFile_ReadU8(file) << WALL_SHIFT) - 1;
+#endif
+        box->height = VFile_ReadS16(file);
+        box->overlap_index = VFile_ReadS16(file);
+    }
+
+    const int32_t num_overlaps = VFile_ReadS32(file);
+    int16_t *const overlaps = Box_InitialiseOverlaps(num_overlaps);
+    VFile_Read(file, overlaps, sizeof(int16_t) * num_overlaps);
+
+    for (int32_t flip_status = 0; flip_status < 2; flip_status++) {
+        for (int32_t zone_idx = 0; zone_idx < MAX_ZONES; zone_idx++) {
+#if TR_VERSION == 2
+            const bool skip = zone_idx == 2
+                || (zone_idx == 1 && !Object_Get(O_SPIDER)->loaded
+                    && !Object_Get(O_SKIDOO_ARMED)->loaded)
+                || (zone_idx == 3 && !Object_Get(O_YETI)->loaded
+                    && !Object_Get(O_WORKER_3)->loaded);
+
+            if (skip) {
+                VFile_Skip(file, sizeof(int16_t) * num_boxes);
+                continue;
+            }
+#endif
+            int16_t *const ground_zone =
+                Box_GetGroundZone(flip_status, zone_idx);
+            VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);
+        }
+
+        int16_t *const fly_zone = Box_GetFlyZone(flip_status);
+        VFile_Read(file, fly_zone, sizeof(int16_t) * num_boxes);
+    }
+
+    Benchmark_End(&benchmark, nullptr);
+}
+
+void Level_ReadAnimatedTextureRanges(VFILE *const file)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const int32_t data_size = VFile_ReadS32(file);
+    const size_t end_position =
+        VFile_GetPos(file) + data_size * sizeof(int16_t);
+
+    const int16_t num_ranges = VFile_ReadS16(file);
+    LOG_INFO("animated texture ranges: %d", num_ranges);
+    Output_InitialiseAnimatedTextures(num_ranges);
+
     for (int32_t i = 0; i < num_ranges; i++) {
         ANIMATED_TEXTURE_RANGE *const range = Output_GetAnimatedTextureRange(i);
         range->next_range = i == num_ranges - 1
@@ -717,11 +1025,14 @@ void Level_ReadAnimatedTextureRanges(
         VFile_Read(
             file, range->textures, sizeof(int16_t) * range->num_textures);
     }
+
+    VFile_SetPos(file, end_position);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadLightMap(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; i < 32; i++) {
         LIGHT_MAP *const light_map = Output_GetLightMap(i);
         VFile_Read(file, light_map->index, sizeof(uint8_t) * 256);
@@ -736,12 +1047,12 @@ void Level_ReadLightMap(VFILE *const file)
         }
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadCinematicFrames(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int16_t num_frames = VFile_ReadS16(file);
     LOG_INFO("cinematic frames: %d", num_frames);
     Camera_InitialiseCineFrames(num_frames);
@@ -757,12 +1068,12 @@ void Level_ReadCinematicFrames(VFILE *const file)
         frame->roll = VFile_ReadS16(file);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadCamerasAndSinks(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_DEBUG("fixed cameras/sinks: %d", num_objects);
     Camera_InitialiseFixedObjects(num_objects);
@@ -770,12 +1081,12 @@ void Level_ReadCamerasAndSinks(VFILE *const file)
         M_ReadObjectVector(Camera_GetFixedObject(i), file);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadItems(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_items = VFile_ReadS32(file);
     LOG_INFO("items: %d", num_items);
     if (num_items > MAX_ITEMS) {
@@ -800,12 +1111,12 @@ void Level_ReadItems(VFILE *const file)
     }
 
 finish:
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadDemoData(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const uint16_t size = VFile_ReadU16(file);
     LOG_INFO("demo buffer size: %d", size);
     Demo_InitialiseData(size);
@@ -813,12 +1124,12 @@ void Level_ReadDemoData(VFILE *const file)
         uint32_t *const data = Demo_GetData();
         VFile_Read(file, data, size);
     }
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_ReadSoundSources(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sources = VFile_ReadS32(file);
     LOG_INFO("sound sources: %d", num_sources);
     Sound_InitialiseSources(num_sources);
@@ -826,24 +1137,21 @@ void Level_ReadSoundSources(VFILE *const file)
         M_ReadObjectVector(Sound_GetSource(i), file);
     }
 
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-// TODO: replace extra vars with values from injection interface
-void Level_ReadSamples(
-    LEVEL_INFO *const info, const int32_t extra_sfx_count,
-    const int32_t extra_data_size, const int32_t extra_offset_count,
-    VFILE *const file)
+void Level_ReadSamples(VFILE *const file)
 {
-    BENCHMARK *const benchmark = Benchmark_Start();
+    BENCHMARK benchmark = Benchmark_Start();
 
     int16_t *const sample_lut = Sound_GetSampleLUT();
     VFile_Read(file, sample_lut, sizeof(int16_t) * SFX_NUMBER_OF);
 
     const int32_t num_sample_infos = VFile_ReadS32(file);
-    info->samples.info_count = num_sample_infos;
+    m_Info.samples.info_count = num_sample_infos;
     LOG_INFO("sample infos: %d", num_sample_infos);
-    Sound_InitialiseSampleInfos(num_sample_infos + extra_sfx_count);
+    Sound_InitialiseSampleInfos(
+        num_sample_infos + Inject_GetDataCount(IDT_SAMPLE_INFOS));
     for (int32_t i = 0; i < num_sample_infos; i++) {
         SAMPLE_INFO *const sample_info = Sound_GetSampleInfoByIdx(i);
         sample_info->number = VFile_ReadS16(file);
@@ -854,54 +1162,86 @@ void Level_ReadSamples(
 
 #if TR_VERSION == 1
     const int32_t data_size = VFile_ReadS32(file);
-    info->samples.data_size = data_size;
+    m_Info.samples.data_size = data_size;
     LOG_INFO("%d sample data size", data_size);
 
-    info->samples.data =
-        GameBuf_Alloc(data_size + extra_data_size, GBUF_SAMPLES);
-    VFile_Read(file, info->samples.data, sizeof(char) * data_size);
+    m_Info.samples.data = GameBuf_Alloc(
+        data_size + Inject_GetDataCount(IDT_SAMPLE_DATA), GBUF_SAMPLES);
+    VFile_Read(file, m_Info.samples.data, sizeof(char) * data_size);
 #endif
 
     const int32_t num_offsets = VFile_ReadS32(file);
     LOG_INFO("samples: %d", num_offsets);
-    info->samples.offset_count = num_offsets;
+    m_Info.samples.offset_count = num_offsets;
 
-    info->samples.offsets =
-        Memory_Alloc(sizeof(int32_t) * (num_offsets + extra_offset_count));
-    VFile_Read(file, info->samples.offsets, sizeof(int32_t) * num_offsets);
+    m_Info.samples.offsets = Memory_Alloc(
+        sizeof(int32_t)
+        * (num_offsets + Inject_GetDataCount(IDT_SAMPLE_INDICES)));
+    VFile_Read(file, m_Info.samples.offsets, sizeof(int32_t) * num_offsets);
 
 finish:
-    Benchmark_End(benchmark, nullptr);
+    Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_LoadTexturePages(LEVEL_INFO *const info)
+void Level_LoadTextures(void)
 {
-    const int32_t num_pages = info->textures.page_count;
+    for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
+        ROOM *const room = Room_Get(room_num);
+        for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
+            FACE4 *const face = &room->mesh.face4s[j];
+            XYZ_16 vertices[4] = {
+                room->mesh.vertices[face->vertices[0]].pos,
+                room->mesh.vertices[face->vertices[1]].pos,
+                room->mesh.vertices[face->vertices[2]].pos,
+                room->mesh.vertices[face->vertices[3]].pos,
+            };
+            M_FixTrapezoidRatios(face, vertices);
+        }
+    }
+
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        for (int32_t j = 0; j < mesh->num_tex_face4s; j++) {
+            FACE4 *const face = &mesh->tex_face4s[j];
+            XYZ_16 vertices[4] = {
+                mesh->vertices[face->vertices[0]],
+                mesh->vertices[face->vertices[1]],
+                mesh->vertices[face->vertices[2]],
+                mesh->vertices[face->vertices[3]],
+            };
+            M_FixTrapezoidRatios(face, vertices);
+        }
+    }
+}
+
+void Level_LoadTexturePages(void)
+{
+    const int32_t num_pages = m_Info.textures.page_count;
     Output_InitialiseTexturePages(num_pages, TR_VERSION == 2);
     for (int32_t i = 0; i < num_pages; i++) {
 #if TR_VERSION == 2
         uint8_t *const target_8 = Output_GetTexturePage8(i);
         const uint8_t *const source_8 =
-            &info->textures.pages_24[i * TEXTURE_PAGE_SIZE];
+            &m_Info.textures.pages_24[i * TEXTURE_PAGE_SIZE];
         memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
 #endif
 
         RGBA_8888 *const target_32 = Output_GetTexturePage32(i);
         const RGBA_8888 *const source_32 =
-            &info->textures.pages_32[i * TEXTURE_PAGE_SIZE];
+            &m_Info.textures.pages_32[i * TEXTURE_PAGE_SIZE];
         memcpy(target_32, source_32, TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
     }
 
-    Memory_FreePointer(&info->textures.pages_24);
-    Memory_FreePointer(&info->textures.pages_32);
+    Memory_FreePointer(&m_Info.textures.pages_24);
+    Memory_FreePointer(&m_Info.textures.pages_32);
 }
 
-void Level_LoadPalettes(LEVEL_INFO *const info)
+void Level_LoadPalettes(void)
 {
     Output_InitialisePalettes(
-        info->palette.size, info->palette.data_24, info->palette.data_32);
-    Memory_FreePointer(&info->palette.data_24);
-    Memory_FreePointer(&info->palette.data_32);
+        m_Info.palette.size, m_Info.palette.data_24, m_Info.palette.data_32);
+    Memory_FreePointer(&m_Info.palette.data_24);
+    Memory_FreePointer(&m_Info.palette.data_32);
 }
 
 void Level_LoadObjectsAndItems(void)
@@ -915,4 +1255,9 @@ void Level_LoadObjectsAndItems(void)
     for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }
+}
+
+LEVEL_INFO *Level_GetInfo(void)
+{
+    return &m_Info;
 }

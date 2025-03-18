@@ -1,7 +1,4 @@
-#include "game/objects/creatures/dragon.h"
-
 #include "game/camera.h"
-#include "game/collide.h"
 #include "game/creature.h"
 #include "game/input.h"
 #include "game/lara/control.h"
@@ -16,6 +13,7 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
+#include <libtrx/game/collision.h>
 #include <libtrx/game/math.h>
 
 // clang-format off
@@ -69,8 +67,13 @@ static const BITE m_DragonMouth = {
 };
 
 static void M_MarkDragonDead(const ITEM *dragon_back_item);
-static void M_PullDagger(ITEM *lara_item, ITEM *dragon_back_item);
 static void M_PushLaraAway(ITEM *lara_item, ITEM *dragon_item, int32_t shift);
+static void M_PullDagger(ITEM *lara_item, ITEM *dragon_back_item);
+static void M_SetupFront(OBJECT *obj);
+static void M_SetupBack(OBJECT *obj);
+static void M_HandleSaveFront(ITEM *item, SAVEGAME_STAGE stage);
+static void M_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+static void M_Control(int16_t item_num);
 
 static void M_MarkDragonDead(const ITEM *const dragon_back_item)
 {
@@ -123,16 +126,53 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     M_MarkDragonDead(dragon_back_item);
 }
 
-void Dragon_SetupFront(void)
+static void M_Bones(const int16_t item_num)
 {
-    OBJECT *const obj = Object_Get(O_DRAGON_FRONT);
+    const int16_t bone_front_item_num = Item_Create();
+    const int16_t bone_back_item_num = Item_Create();
+
+    if (bone_back_item_num == NO_ITEM || bone_front_item_num == NO_ITEM) {
+        return;
+    }
+
+    const ITEM *const dragon_item = Item_Get(item_num);
+
+    ITEM *const bone_back = Item_Get(bone_back_item_num);
+    bone_back->object_id = O_DRAGON_BONES_3;
+    bone_back->pos.x = dragon_item->pos.x;
+    bone_back->pos.y = dragon_item->pos.y;
+    bone_back->pos.z = dragon_item->pos.z;
+    bone_back->rot.x = 0;
+    bone_back->rot.y = dragon_item->rot.y;
+    bone_back->rot.z = 0;
+    bone_back->room_num = dragon_item->room_num;
+    bone_back->shade.value_1 = -1;
+    Item_Initialise(bone_back_item_num);
+
+    ITEM *const bone_front = Item_Get(bone_front_item_num);
+    bone_front->object_id = O_DRAGON_BONES_2;
+    bone_front->pos.x = dragon_item->pos.x;
+    bone_front->pos.y = dragon_item->pos.y;
+    bone_front->pos.z = dragon_item->pos.z;
+    bone_front->rot.x = 0;
+    bone_front->rot.y = dragon_item->rot.y;
+    bone_front->rot.z = 0;
+    bone_front->room_num = dragon_item->room_num;
+    bone_front->shade.value_1 = -1;
+    Item_Initialise(bone_front_item_num);
+    bone_front->mesh_bits = ~0xC00000u;
+}
+
+static void M_SetupFront(OBJECT *const obj)
+{
     if (!obj->loaded) {
         return;
     }
 
     ASSERT(Object_Get(O_DRAGON_BACK)->loaded);
-    obj->control = Dragon_Control;
-    obj->collision = Dragon_Collision;
+    obj->handle_save_func = M_HandleSaveFront;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
 
     obj->hit_points = DRAGON_HITPOINTS;
     obj->radius = DRAGON_RADIUS;
@@ -147,15 +187,14 @@ void Dragon_SetupFront(void)
     Object_GetBone(obj, 10)->rot_z = true;
 }
 
-void Dragon_SetupBack(void)
+static void M_SetupBack(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_DRAGON_BACK);
     if (!obj->loaded) {
         return;
     }
 
-    obj->control = Dragon_Control;
-    obj->collision = Dragon_Collision;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
 
     obj->radius = DRAGON_RADIUS;
 
@@ -164,7 +203,19 @@ void Dragon_SetupBack(void)
     obj->save_anim = 1;
 }
 
-void Dragon_Collision(
+static void M_HandleSaveFront(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        if (item->status == IS_DEACTIVATED) {
+            item->pos.y -= 1010;
+            const int16_t item_num = Item_GetIndex(item);
+            M_Bones(item_num);
+            item->pos.y += 1010;
+        }
+    }
+}
+
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -207,44 +258,7 @@ void Dragon_Collision(
     }
 }
 
-void Dragon_Bones(const int16_t item_num)
-{
-    const int16_t bone_front_item_num = Item_Create();
-    const int16_t bone_back_item_num = Item_Create();
-
-    if (bone_back_item_num == NO_ITEM || bone_front_item_num == NO_ITEM) {
-        return;
-    }
-
-    const ITEM *const dragon_item = Item_Get(item_num);
-
-    ITEM *const bone_back = Item_Get(bone_back_item_num);
-    bone_back->object_id = O_DRAGON_BONES_3;
-    bone_back->pos.x = dragon_item->pos.x;
-    bone_back->pos.y = dragon_item->pos.y;
-    bone_back->pos.z = dragon_item->pos.z;
-    bone_back->rot.x = 0;
-    bone_back->rot.y = dragon_item->rot.y;
-    bone_back->rot.z = 0;
-    bone_back->room_num = dragon_item->room_num;
-    bone_back->shade.value_1 = -1;
-    Item_Initialise(bone_back_item_num);
-
-    ITEM *const bone_front = Item_Get(bone_front_item_num);
-    bone_front->object_id = O_DRAGON_BONES_2;
-    bone_front->pos.x = dragon_item->pos.x;
-    bone_front->pos.y = dragon_item->pos.y;
-    bone_front->pos.z = dragon_item->pos.z;
-    bone_front->rot.x = 0;
-    bone_front->rot.y = dragon_item->rot.y;
-    bone_front->rot.z = 0;
-    bone_front->room_num = dragon_item->room_num;
-    bone_front->shade.value_1 = -1;
-    Item_Initialise(bone_front_item_num);
-    bone_front->mesh_bits = ~0xC00000u;
-}
-
-void Dragon_Control(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     const int16_t dragon_back_item_num = item_num;
     ITEM *const dragon_back_item = Item_Get(item_num);
@@ -289,7 +303,7 @@ void Dragon_Control(const int16_t item_num)
             }
 
             if (creature->flags == -100) {
-                Dragon_Bones(dragon_front_item_num);
+                M_Bones(dragon_front_item_num);
             } else if (creature->flags == -200) {
                 LOT_DisableBaddieAI(dragon_front_item_num);
                 Item_Kill(dragon_front_item_num);
@@ -457,3 +471,6 @@ void Dragon_Control(const int16_t item_num)
         Item_NewRoom(dragon_back_item_num, dragon_front_item->room_num);
     }
 }
+
+REGISTER_OBJECT(O_DRAGON_FRONT, M_SetupFront)
+REGISTER_OBJECT(O_DRAGON_BACK, M_SetupBack)

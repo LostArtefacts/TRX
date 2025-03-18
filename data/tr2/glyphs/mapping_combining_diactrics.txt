@@ -1,0 +1,16 @@
+# --------------------------------------------------
+# Combining diactrics
+# --------------------------------------------------
+"\\{grave accent}"        c manual_sprite("glyphs.png", 0,   0,  7,  5, index=77)
+"\\{acute accent}"        c manual_sprite("glyphs.png", 7,   0,  7,  5, index=70)
+"\\{circumflex accent}"   c manual_sprite("glyphs.png", 32,  0,  9,  5, index=69)
+"\\{circumflex}"          N link("\\{circumflex accent}")
+"\\{macron}"              c manual_sprite("glyphs.png", 23,  0,  9,  5)
+"\\{breve}"               c manual_sprite("glyphs.png", 50,  0,  8,  5)
+"\\{dot above}"           c manual_sprite("glyphs.png", 58,  0,  6,  5)
+"\\{umlaut}"              c manual_sprite("glyphs.png", 14,  0,  9,  5, index=67)
+"\\{caron}"               c manual_sprite("glyphs.png", 41,  0,  9,  5)
+"\\{ring above}"          c manual_sprite("glyphs.png", 64,  0,  7,  5)
+"\\{tilde}"               c manual_sprite("glyphs.png", 71,  0,  10, 5)
+"\\{double acute accent}" c manual_sprite("glyphs.png", 81,  0,  9,  5)
+"\\{acute umlaut}"        c manual_sprite("glyphs.png", 90,  0,  11,  5)
