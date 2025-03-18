@@ -71,12 +71,6 @@ typedef struct {
 } POINT_INFO;
 
 typedef struct {
-    uint32_t best_time[10];
-    uint32_t best_finish[10];
-    uint32_t finish_count;
-} ASSAULT_STATS;
-
-typedef struct {
     void *_0;
     int32_t _1;
 } SORT_ITEM;

@@ -11,7 +11,6 @@ const float g_RhwFactor = 0x14000000.p0;
 SDL_Window *g_SDLWindow = nullptr;
 
 uint32_t g_PerspectiveDistance = 0x3000000;
-uint32_t g_AssaultBestTime = -1;
 
 int32_t g_OverlayStatus = 1;
 int32_t g_MidSort = 0;
@@ -51,11 +50,8 @@ int32_t g_PhdWinRight;
 int32_t g_SurfaceCount;
 SORT_ITEM *g_Sort3DPtr = nullptr;
 bool g_IsDemoLoaded;
-bool g_IsAssaultTimerDisplay;
-bool g_IsAssaultTimerActive;
 bool g_IsMonkAngry;
 uint16_t g_SoundOptionLine;
-ASSAULT_STATS g_Assault;
 int32_t g_HealthBarTimer;
 int32_t g_LevelComplete;
 SAVEGAME_INFO g_SaveGame = {};

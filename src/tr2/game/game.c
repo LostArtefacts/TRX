@@ -6,6 +6,7 @@
 #include "game/demo.h"
 #include "game/effects.h"
 #include "game/game_flow.h"
+#include "game/gym.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
 #include "game/lara/cheat_keys.h"
@@ -148,7 +149,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Output_AnimateTextures(1 * TICKS_PER_FRAME);
 
     g_HealthBarTimer--;
-    if (!Game_IsInGym() || g_IsAssaultTimerActive) {
+    if (!Game_IsInGym() || Gym_IsAssaultTimerActive()) {
         Stats_UpdateTimer();
     }
 
