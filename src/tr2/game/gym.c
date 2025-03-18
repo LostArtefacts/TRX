@@ -1,6 +1,13 @@
 #include "game/gym.h"
 
+#include "game/game_flow.h"
+
 static bool m_IsInventoryOpenEnabled = true;
+
+bool Gym_IsAccessible(void)
+{
+    return g_GameFlow.gym_enabled && GF_GetGymLevel() != nullptr;
+}
 
 void Gym_SetInventoryOpenEnabled(const bool enabled)
 {

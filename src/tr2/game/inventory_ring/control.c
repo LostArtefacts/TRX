@@ -801,12 +801,15 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     g_InvRing_Source[RT_OPTION].current = 0;
-    if (Gym_IsInventoryOpenEnabled() && mode == INV_TITLE_MODE
-        && GF_GetGymLevel() != nullptr) {
-        for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
-            if (g_InvRing_Source[RT_OPTION].items[i]->object_id
-                == O_PHOTO_OPTION) {
-                g_InvRing_Source[RT_OPTION].current = i;
+    if (mode == INV_TITLE_MODE) {
+        if (!Gym_IsAccessible()) {
+            Inv_RemoveItem(O_PHOTO_OPTION);
+        } else if (Gym_IsInventoryOpenEnabled()) {
+            for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
+                if (g_InvRing_Source[RT_OPTION].items[i]->object_id
+                    == O_PHOTO_OPTION) {
+                    g_InvRing_Source[RT_OPTION].current = i;
+                }
             }
         }
     }
