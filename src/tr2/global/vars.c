@@ -14,7 +14,6 @@ uint32_t g_PerspectiveDistance = 0x3000000;
 uint32_t g_AssaultBestTime = -1;
 
 int32_t g_OverlayStatus = 1;
-bool g_GymInvOpenEnabled = true; // TODO: make me configurable
 int32_t g_MidSort = 0;
 int32_t g_PhdWinTop;
 float g_FltWinBottom;

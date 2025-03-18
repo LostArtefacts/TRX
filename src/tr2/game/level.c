@@ -6,6 +6,7 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/gym.h"
 #include "game/items.h"
 #include "game/lara/control.h"
 #include "game/lot.h"
@@ -238,7 +239,7 @@ bool Level_Initialise(
     }
 
     if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
-        g_GymInvOpenEnabled = false;
+        Gym_SetInventoryOpenEnabled(false);
     }
 
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {

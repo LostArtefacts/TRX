@@ -5,6 +5,7 @@
 #include "game/demo.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/draw.h"
@@ -800,7 +801,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     g_InvRing_Source[RT_OPTION].current = 0;
-    if (g_GymInvOpenEnabled && mode == INV_TITLE_MODE
+    if (Gym_IsInventoryOpenEnabled() && mode == INV_TITLE_MODE
         && GF_GetGymLevel() != nullptr) {
         for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
             if (g_InvRing_Source[RT_OPTION].items[i]->object_id

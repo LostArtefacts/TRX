@@ -6,6 +6,7 @@
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
@@ -623,7 +624,7 @@ void Lara_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (Game_IsInGym()) {
-            g_GymInvOpenEnabled = true;
+            Gym_SetInventoryOpenEnabled(true);
         }
         if (!g_Lara.death_timer) {
             Music_Stop();
