@@ -110,6 +110,7 @@ sources = [
   'game/gun/gun_misc.c',
   'game/gun/gun_pistols.c',
   'game/gun/gun_rifle.c',
+  'game/gym.c',
   'game/input.c',
   'game/inventory.c',
   'game/inventory_ring/control.c',
