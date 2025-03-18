@@ -285,8 +285,7 @@ bool Level_Initialise(
             level->type == GFL_CUTSCENE ? MPM_ALWAYS : MPM_LOOPED);
     }
 
-    g_IsAssaultTimerActive = false;
-    g_IsAssaultTimerDisplay = false;
+    Gym_ResetAssault();
     g_Camera.underwater = 0;
     return true;
 }

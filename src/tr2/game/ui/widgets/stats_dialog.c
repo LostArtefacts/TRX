@@ -3,6 +3,7 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -180,7 +181,8 @@ static void M_AddFinalStatsRows(UI_STATS_DIALOG *const self)
 
 static void M_AddAssaultCourseStatsRows(UI_STATS_DIALOG *const self)
 {
-    if (!g_Assault.best_time[0]) {
+    const ASSAULT_STATS stats = Gym_GetAssaultStats();
+    if (stats.best_time[0] == 0) {
         M_AddRow(self, M_ROW_GENERIC, GS(STATS_ASSAULT_NO_TIMES_SET), nullptr);
         return;
     }
@@ -188,15 +190,15 @@ static void M_AddAssaultCourseStatsRows(UI_STATS_DIALOG *const self)
     for (int32_t i = 0; i < 10; i++) {
         char left_buf[32] = "";
         char right_buf[32] = "";
-        if (g_Assault.best_time[i]) {
+        if (stats.best_time[i] != 0) {
             sprintf(
                 left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
-                g_Assault.best_finish[i]);
+                stats.best_finish[i]);
 
-            const int32_t sec = g_Assault.best_time[i] / FRAMES_PER_SECOND;
+            const int32_t sec = stats.best_time[i] / FRAMES_PER_SECOND;
             sprintf(
                 right_buf, "%02d:%02d.%-2d", sec / 60, sec % 60,
-                g_Assault.best_time[i] % FRAMES_PER_SECOND
+                stats.best_time[i] % FRAMES_PER_SECOND
                     / (FRAMES_PER_SECOND / 10));
         }
 
