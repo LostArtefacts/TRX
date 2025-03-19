@@ -57,7 +57,8 @@ static void M_SaveRaw(MYFILE *fp, JSON_VALUE *root, int32_t version);
 static JSON_VALUE *M_ParseFromBuffer(
     const char *buffer, size_t buffer_size, int32_t *version_out);
 static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out);
-static bool M_LoadResumeInfo(JSON_ARRAY *levels_arr, RESUME_INFO *resume_info);
+static bool M_LoadResumeInfo(
+    JSON_ARRAY *levels_arr, RESUME_INFO *resume_info, uint16_t header_version);
 static bool M_LoadDiscontinuedStartInfo(
     JSON_ARRAY *start_arr, GAME_INFO *game_info);
 static bool M_LoadDiscontinuedEndInfo(
@@ -222,7 +223,8 @@ static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out)
     return ret;
 }
 
-static bool M_LoadResumeInfo(JSON_ARRAY *resume_arr, RESUME_INFO *resume_info)
+static bool M_LoadResumeInfo(
+    JSON_ARRAY *resume_arr, RESUME_INFO *resume_info, uint16_t header_version)
 {
     ASSERT(resume_info != nullptr);
     if (!resume_arr) {
@@ -286,6 +288,17 @@ static bool M_LoadResumeInfo(JSON_ARRAY *resume_arr, RESUME_INFO *resume_info)
             resume_obj, "max_kills", resume->stats.max_kill_count);
         resume->stats.max_pickup_count = JSON_ObjectGetInt(
             resume_obj, "max_pickups", resume->stats.max_pickup_count);
+        if (header_version >= VERSION_7) {
+            resume->stats.ammo_hits = JSON_ObjectGetInt(
+                resume_obj, "ammo_hits", resume->stats.ammo_hits);
+            resume->stats.ammo_used = JSON_ObjectGetInt(
+                resume_obj, "ammo_used", resume->stats.ammo_used);
+            resume->stats.medipacks_used = JSON_ObjectGetDouble(
+                resume_obj, "medipacks_used", resume->stats.medipacks_used);
+            resume->stats.distance_travelled = JSON_ObjectGetInt(
+                resume_obj, "distance_travelled",
+                resume->stats.distance_travelled);
+        }
     }
     return true;
 }
@@ -888,6 +901,15 @@ static bool M_LoadLara(
             lara->interact_target.is_moving);
     }
 
+    if (header_version >= VERSION_7) {
+        lara->last_pos.x =
+            JSON_ObjectGetInt(lara_obj, "last_pos.x", lara->last_pos.x);
+        lara->last_pos.y =
+            JSON_ObjectGetInt(lara_obj, "last_pos.y", lara->last_pos.y);
+        lara->last_pos.z =
+            JSON_ObjectGetInt(lara_obj, "last_pos.z", lara->last_pos.z);
+    }
+
     return true;
 }
 
@@ -993,6 +1015,12 @@ static JSON_ARRAY *M_DumpResumeInfo(RESUME_INFO *resume_info)
         JSON_ObjectAppendInt(
             resume_obj, "max_pickups", resume->stats.max_pickup_count);
         JSON_ArrayAppendObject(resume_arr, resume_obj);
+        JSON_ObjectAppendInt(resume_obj, "ammo_hits", resume->stats.ammo_hits);
+        JSON_ObjectAppendInt(resume_obj, "ammo_used", resume->stats.ammo_used);
+        JSON_ObjectAppendDouble(
+            resume_obj, "medipacks_used", resume->stats.medipacks_used);
+        JSON_ObjectAppendInt(
+            resume_obj, "distance_travelled", resume->stats.distance_travelled);
     }
     return resume_arr;
 }
@@ -1280,6 +1308,10 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendBool(
         lara_obj, "interact_target.is_moving", lara->interact_target.is_moving);
 
+    JSON_ObjectAppendInt(lara_obj, "last_pos.x", lara->last_pos.x);
+    JSON_ObjectAppendInt(lara_obj, "last_pos.y", lara->last_pos.y);
+    JSON_ObjectAppendInt(lara_obj, "last_pos.z", lara->last_pos.z);
+
     return lara_obj;
 }
 
@@ -1371,8 +1403,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadResumeInfo(
-            JSON_ObjectGetArray(root_obj, "current_info"),
-            game_info->current)) {
+            JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
+            header.version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. "
             "Checking if save is legacy.");
@@ -1445,7 +1477,9 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     ASSERT(game_info != nullptr);
 
     bool ret = false;
-    JSON_VALUE *root = M_ParseFromFile(fp, nullptr);
+
+    int32_t version;
+    JSON_VALUE *root = M_ParseFromFile(fp, &version);
     JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -1453,8 +1487,8 @@ bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadResumeInfo(
-            JSON_ObjectGetArray(root_obj, "current_info"),
-            game_info->current)) {
+            JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
+            version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. Checking if "
             "save is legacy.");

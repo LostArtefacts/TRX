@@ -143,6 +143,10 @@ void Stats_ComputeFinal(GF_LEVEL_TYPE level_type, FINAL_STATS *final_stats)
         final_stats->max_kill_count += level_stats->max_kill_count;
         final_stats->max_secret_count += level_stats->max_secret_count;
         final_stats->max_pickup_count += level_stats->max_pickup_count;
+        final_stats->ammo_hits += level_stats->ammo_hits;
+        final_stats->ammo_used += level_stats->ammo_used;
+        final_stats->medipacks_used += level_stats->medipacks_used;
+        final_stats->distance_travelled += level_stats->distance_travelled;
     }
 }
 

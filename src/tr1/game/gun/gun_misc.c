@@ -431,6 +431,7 @@ int32_t Gun_FireWeapon(
     }
 
     ammo->ammo--;
+    Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.ammo_used++;
 
     const XYZ_32 view_pos = {
         .x = src->pos.x,
@@ -470,6 +471,7 @@ int32_t Gun_FireWeapon(
     GAME_VECTOR vdest;
     if (best >= 0) {
         ammo->hit++;
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.ammo_hits++;
         vdest.x = vsrc.x + ((bestdist * g_MatrixPtr->_20) >> W2V_SHIFT);
         vdest.y = vsrc.y + ((bestdist * g_MatrixPtr->_21) >> W2V_SHIFT);
         vdest.z = vsrc.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);

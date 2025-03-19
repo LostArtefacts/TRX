@@ -333,6 +333,14 @@ void Lara_Control(void)
     default:
         break;
     }
+
+    Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.distance_travelled +=
+        Math_Sqrt(
+            SQUARE(item->pos.z - g_Lara.last_pos.z)
+            + SQUARE(item->pos.y - g_Lara.last_pos.y)
+            + SQUARE(item->pos.x - g_Lara.last_pos.x));
+
+    g_Lara.last_pos = item->pos;
 }
 
 void Lara_SwapMeshExtra(void)
@@ -402,6 +410,8 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.medipacks_used +=
+            .5;
         break;
 
     case O_BIGMEDI_ITEM:
@@ -414,6 +424,8 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.medipacks_used +=
+            1;
         break;
 
     case O_KEY_ITEM_1:
@@ -497,6 +509,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.hit_direction = 0;
     g_Lara.death_timer = 0;
     g_Lara.target = nullptr;
+    g_Lara.last_pos = g_LaraItem->pos;
     g_Lara.hit_effect = nullptr;
     g_Lara.hit_effect_count = 0;
     g_Lara.turn_rate = 0;

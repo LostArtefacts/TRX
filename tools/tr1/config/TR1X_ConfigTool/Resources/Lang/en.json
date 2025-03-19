@@ -230,8 +230,8 @@
       "Description": "Enables showing level statistics when the compass is selected."
     },
     "enable_detailed_stats": {
-      "Title": "Show total kills and pickups",
-      "Description": "Enables showing the maximum pickup count and kill count on each level."
+      "Title": "Show detailed stats",
+      "Description": "Enables showing the maximum pickup count and kill count on each level, ammo hits, ammo used, health packs used, and distance travelled."
     },
     "enable_cine": {
       "Title": "Enable cutscenes",

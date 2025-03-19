@@ -30,6 +30,7 @@ typedef enum {
     // Added extra footer after the compressed BSON structure for quicker
     // access to essential data, such as the level counter and the level title,
     // without the need to parse the entire BSON document.
+    // Added TR2+ stats ammo hits/used, health packs used, distance travelled.
 } SAVEGAME_VERSION;
 
 typedef enum {

@@ -503,6 +503,10 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
 - added optional deaths counter
 - added optional total pickups and kills per level
 - added unobtainable pickups, kills, and secrets stats support in the gameflow
+- added optional TR2+ stats:
+    - ammo hits / used
+    - health packs used
+    - distance travelled
 
 #### Visuals
 - added quadrilateral texture correction
