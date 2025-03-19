@@ -242,7 +242,7 @@
     },
     "enable_detailed_stats": {
       "Title": "Afficher le nombre total de victimes et de collectibles",
-      "Description": "Permet d'afficher le nombre maximum de collectibles ramassés et le nombre de victimes faites à chaque niveau. Cela inclut les objets impossibles à obtenir."
+      "Description": "Permet d'afficher le nombre maximum de ramassages et de tués à chaque niveau, le nombre de munitions, les munitions utilisées, les trousses de santé utilisées et la distance parcourue."
     },
     "enable_cine": {
       "Title": "Activer les cutscenes",

@@ -46,6 +46,7 @@ typedef struct {
     int16_t death_timer;
     int16_t current_active;
     int32_t water_surface_dist;
+    XYZ_32 last_pos;
     int16_t hit_effect_count;
     EFFECT *hit_effect;
     int32_t mesh_effects;

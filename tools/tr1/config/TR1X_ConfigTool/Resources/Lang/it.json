@@ -242,7 +242,7 @@
     },
     "enable_detailed_stats": {
       "Title": "Mostra il numero totale di uccisioni e oggetti",
-      "Description": "Consente di mostrare il numero massimo di uccisioni e oggetti recuperabili di ogni livello."
+      "Description": "Consente di visualizzare il numero massimo di prelievi e di uccisioni in ogni livello, i colpi delle munizioni, le munizioni utilizzate, i pacchetti salute utilizzati e la distanza percorsa."
     },
     "enable_cine": {
       "Title": "Abilita le scene di intermezzo",
