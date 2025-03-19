@@ -176,7 +176,7 @@ static void M_RemoveAllText(void)
     }
     Requester_Shutdown(&m_SelectLevelRequester);
     Requester_Shutdown(&m_NewGameRequester);
-    Requester_ClearTextstrings(&g_SavegameRequester);
+    Requester_Shutdown(&g_SavegameRequester);
 }
 
 static void M_Close(INVENTORY_ITEM *inv_item)
