@@ -507,6 +507,7 @@ Not all options are turned on by default. Refer to `TR1X_ConfigTool.exe` for det
     - ammo hits / used
     - health packs used
     - distance travelled
+- added an optional TR2+ style bordered stat box to the end of level stats
 
 #### Visuals
 - added quadrilateral texture correction
