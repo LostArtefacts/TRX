@@ -1395,13 +1395,8 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     bool ret = false;
 
-    // Read savegame version
-    SAVEGAME_BSON_HEADER header;
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
-    File_Seek(fp, 0, FILE_SEEK_SET);
-
-    JSON_VALUE *root = M_ParseFromFile(fp, nullptr);
+    int32_t version;
+    JSON_VALUE *root = M_ParseFromFile(fp, &version);
     JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
     if (!root_obj) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
@@ -1410,7 +1405,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     if (!M_LoadResumeInfo(
             JSON_ObjectGetArray(root_obj, "current_info"), game_info->current,
-            header.version)) {
+            version)) {
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. "
             "Checking if save is legacy.");
@@ -1426,8 +1421,7 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
     }
 
     if (!M_LoadMisc(
-            JSON_ObjectGetObject(root_obj, "misc"), game_info,
-            header.version)) {
+            JSON_ObjectGetObject(root_obj, "misc"), game_info, version)) {
         goto cleanup;
     }
 
@@ -1445,22 +1439,21 @@ bool Savegame_BSON_LoadFromFile(MYFILE *fp, GAME_INFO *game_info)
 
     Savegame_ProcessItemsBeforeLoad();
 
-    if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"), header.version)) {
+    if (!M_LoadItems(JSON_ObjectGetArray(root_obj, "items"), version)) {
         goto cleanup;
     }
 
-    if (header.version >= VERSION_3) {
+    if (version >= VERSION_3) {
         if (!M_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
             goto cleanup;
         }
     }
 
-    if (!M_LoadLara(
-            JSON_ObjectGetObject(root_obj, "lara"), &g_Lara, header.version)) {
+    if (!M_LoadLara(JSON_ObjectGetObject(root_obj, "lara"), &g_Lara, version)) {
         goto cleanup;
     }
 
-    if (header.version >= VERSION_3) {
+    if (version >= VERSION_3) {
         if (!M_LoadCurrentMusic(JSON_ObjectGetObject(root_obj, "music"))) {
             goto cleanup;
         }
