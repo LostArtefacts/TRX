@@ -56,7 +56,7 @@ void Output_DrawScreenTranslucentQuad(
 void Output_DrawScreenGradientQuad(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br);
-void Output_DrawScreenBox(
+void Output_DrawScreenFrame(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
     RGBA_8888 colLight, int32_t thickness);
 void Output_DrawGradientScreenBox(

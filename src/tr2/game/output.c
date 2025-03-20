@@ -730,7 +730,7 @@ void Output_DrawScreenLine(
         x, y, x + x_len, y + y_len, g_PhdNearZ + 8 * z, color_idx);
 }
 
-void Output_DrawScreenBox(
+void Output_DrawScreenFrame(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t width,
     const int32_t height, const uint8_t color_idx, const void *const gour,
     const uint16_t flags)
