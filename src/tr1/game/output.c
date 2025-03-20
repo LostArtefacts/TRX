@@ -1022,12 +1022,12 @@ void Output_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
     Output_Draw3DLine(vert[3], vert[0], color);
 }
 
-void Output_DrawScreenBox(
+void Output_DrawScreenFrame(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 colDark,
     RGBA_8888 colLight, int32_t thickness)
 {
     float scale = Viewport_GetHeight() / 480.0;
-    S_Output_ScreenBox(
+    S_Output_DrawScreenFrame(
         sx - scale, sy - scale, w, h, colDark, colLight,
         thickness * scale / 2.0f);
 }
