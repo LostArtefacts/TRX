@@ -19,6 +19,7 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -334,12 +335,7 @@ void Lara_Control(void)
         break;
     }
 
-    Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.distance_travelled +=
-        Math_Sqrt(
-            SQUARE(item->pos.z - g_Lara.last_pos.z)
-            + SQUARE(item->pos.y - g_Lara.last_pos.y)
-            + SQUARE(item->pos.x - g_Lara.last_pos.x));
-
+    Stats_AddDistanceTravelled(item->pos, g_Lara.last_pos);
     g_Lara.last_pos = item->pos;
 }
 
@@ -410,8 +406,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.medipacks_used +=
-            .5;
+        Stats_AddMedipacksUsed(.5);
         break;
 
     case O_BIGMEDI_ITEM:
@@ -424,8 +419,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.medipacks_used +=
-            1;
+        Stats_AddMedipacksUsed(1);
         break;
 
     case O_KEY_ITEM_1:

@@ -14,6 +14,7 @@
 #include "game/savegame.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/game_buf.h>
@@ -626,14 +627,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TO_SECRET: {
             const int16_t secret_num = 1 << (int16_t)(intptr_t)cmd->parameter;
-            RESUME_INFO *resume_info =
-                Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-            if (resume_info->stats.secret_flags & secret_num) {
-                break;
+            if (Stats_AddSecret(secret_num)) {
+                Music_Play(MX_SECRET, MPM_ALWAYS);
             }
-            resume_info->stats.secret_flags |= secret_num;
-            resume_info->stats.secret_count++;
-            Music_Play(MX_SECRET, MPM_ALWAYS);
             break;
         }
         }
