@@ -4,7 +4,6 @@
 #include "global/types.h"
 
 void Stats_ObserveRoomsLoad(void);
-void Stats_ObserveItemsLoad(void);
 void Stats_CalculateStats(void);
 int32_t Stats_GetPickups(void);
 int32_t Stats_GetKillables(void);

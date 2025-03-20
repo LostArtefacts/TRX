@@ -16,6 +16,7 @@
 #include "game/rooms.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "game/viewport.h"
 #include "log.h"
 #include "memory.h"
@@ -1111,6 +1112,7 @@ void Level_ReadItems(VFILE *const file)
     }
 
 finish:
+    Stats_ObserveItemsLoad();
     Benchmark_End(&benchmark, nullptr);
 }
 
