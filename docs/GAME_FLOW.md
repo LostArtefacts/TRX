@@ -848,16 +848,6 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>set_secret_count</code><strong>²</strong></td>
-    <td><code>value</code></td>
-    <td>Integer</td>
-    <td>
-      Sets the current level secret count to this number. In Tomb Raider II
-      this is mainly used to mark certain levels, such as Dragon's Lair, as
-      having no secrets.
-    </td>
-  </tr>
-  <tr valign="top">
     <td><code>set_lara_start_anim</code><strong>²</strong></td>
     <td><code>value</code></td>
     <td>Integer</td>

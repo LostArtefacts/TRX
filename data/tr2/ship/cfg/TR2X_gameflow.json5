@@ -46,7 +46,6 @@
             "path": "data/assault.tr2",
             "music_track": -1,
             "sequence": [
-                {"type": "set_secret_count", "count": 0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
@@ -358,7 +357,6 @@
             "path": "data/xian.tr2",
             "music_track": 59,
             "sequence": [
-                {"type": "set_secret_count", "count": 0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 41},
                 {"type": "level_stats"},
@@ -375,7 +373,6 @@
             "path": "data/house.tr2",
             "music_track": -1,
             "sequence": [
-                {"type": "set_secret_count", "count": 0},
                 {"type": "give_item", "object_id": "key_1"},
                 {"type": "set_lara_start_anim", "anim": 9},
                 {"type": "remove_weapons"},

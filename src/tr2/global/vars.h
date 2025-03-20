@@ -71,7 +71,6 @@ extern REQUEST_INFO g_SaveGameRequester;
 
 extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;
-extern int16_t g_GF_NumSecrets;
 extern int32_t g_GF_LaraStartAnim;
 
 extern int32_t g_SavedGames;
