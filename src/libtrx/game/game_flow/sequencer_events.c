@@ -99,12 +99,19 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
     if (seq_ctx != GFSC_NORMAL) {
         return gf_cmd;
     }
+
+#if TR_VERSION == 1
+    const bool use_bare_style = g_Config.gameplay.stat_detail_mode != SDM_FULL;
+#else
+    const bool use_bare_style = false;
+#endif
+
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .background_type =
             (TR_VERSION == 1 || Game_IsInGym()) ? BK_TRANSPARENT : BK_OBJECT,
         .level_num = -1,
         .show_final_stats = false,
-        .use_bare_style = TR_VERSION == 1,
+        .use_bare_style = use_bare_style,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);

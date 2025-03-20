@@ -5,10 +5,11 @@
 - added support for `-s`/`--save` argument to immediately start a saved game
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - added drawing of object mesh spheres to the `/debug` console command
-- added TR2+ stats if the detailed stats option is enabled (#2561):
+- added TR2+ stats if the full stat detail mode option is enabled (#2561):
     - ammo hits / used
     - health packs used
     - distance travelled
+- added a TR2+ style bordered stat box to the end of level stats if the full stat detail mode option is enabled (#2658)
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
 - changed injections to a new file format with a smaller footprint and improved applicability tests (#1967)
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant

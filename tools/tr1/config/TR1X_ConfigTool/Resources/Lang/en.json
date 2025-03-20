@@ -58,6 +58,11 @@
       "never": "Never",
       "non-ambient": "Non-ambient",
       "always": "Always"
+    },
+    "stat_mode": {
+      "minimal": "Minimal",
+      "detailed": "Detailed",
+      "full": "Full"
     }
   },
   "Properties": {
@@ -229,9 +234,9 @@
       "Title": "Level statistics in compass",
       "Description": "Enables showing level statistics when the compass is selected."
     },
-    "enable_detailed_stats": {
-      "Title": "Show detailed stats",
-      "Description": "Enables showing the maximum pickup count and kill count on each level, ammo hits, ammo used, health packs used, and distance travelled."
+    "stat_detail_mode": {
+      "Title": "Stat detail mode",
+      "Description": "Allows various levels of stat detail.\n- Minimal: shows kills, pickups, secrets, and time taken.\n- Detailed: shows all stats from minimal as well as the maximum pickup count and kill count of each level.\n- Full: shows all stats from detailed as well as ammo hits, ammo used, health packs used, and distance travelled."
     },
     "enable_cine": {
       "Title": "Enable cutscenes",

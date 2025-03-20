@@ -62,6 +62,11 @@
       "never",
       "non-ambient",
       "always"
+    ],
+    "stat_mode": [
+      "minimal",
+      "detailed",
+      "full"
     ]
   },
   "CategorisedProperties": [
@@ -303,9 +308,10 @@
           "DefaultValue": true
         },
         {
-          "Field": "enable_detailed_stats",
-          "DataType": "Bool",
-          "DefaultValue": true
+          "Field": "stat_detail_mode",
+          "DataType": "Enum",
+          "EnumKey": "stat_mode",
+          "DefaultValue": "full"
         },
         {
           "Field": "enable_cine",
