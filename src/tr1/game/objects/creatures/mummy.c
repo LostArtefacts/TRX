@@ -4,6 +4,7 @@
 #include "game/items.h"
 #include "game/objects/common.h"
 #include "game/savegame.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -71,7 +72,7 @@ static void M_Control(const int16_t item_num)
     if (item->status == IS_DEACTIVATED) {
         // Count kill if Lara touches mummy and it falls.
         if (item->hit_points > 0) {
-            Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.kill_count++;
+            Stats_AddKill();
         }
         Item_RemoveActive(item_num);
         if (item->hit_points != DONT_TARGET) {
