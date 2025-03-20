@@ -23,6 +23,7 @@ typedef enum {
     M_UNIFORM_TEX_FRAMES,
     M_UNIFORM_SMOOTHING_ENABLED,
     M_UNIFORM_BRIGHTNESS_MULTIPLIER,
+    M_UNIFORM_GLOBAL_TINT,
     M_UNIFORM_VIEWPORT_CENTER,
     M_UNIFORM_VIEWPORT_SIZE,
     M_UNIFORM_PROJECTION_MATRIX,
@@ -206,6 +207,7 @@ void Output_Sprites_Init(void)
         [M_UNIFORM_TEX_FRAMES] = "uFrame",
         [M_UNIFORM_SMOOTHING_ENABLED] = "uSmoothingEnabled",
         [M_UNIFORM_BRIGHTNESS_MULTIPLIER] = "uBrightnessMultiplier",
+        [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
         [M_UNIFORM_VIEWPORT_CENTER] = "uViewportCenter",
         [M_UNIFORM_VIEWPORT_SIZE] = "uViewportSize",
         [M_UNIFORM_PROJECTION_MATRIX] = "uMatProjection",
@@ -381,6 +383,13 @@ void Output_Sprites_RenderRoomSprites(const ROOM *const room)
 
     Output_Sprites_UploadUniforms();
     Output_Sprites_UploadProjectionMatrix();
+    struct {
+        float r, g, b;
+    } tint = { 1, 1, 1 };
+    Output_ApplyTint(&tint.r, &tint.g, &tint.b);
+    GFX_TRACK_UNIFORM(
+        glUniform3f, m_Uniforms[M_UNIFORM_GLOBAL_TINT], tint.r, tint.g, tint.b);
+
     glBindVertexArray(m_LevelData.vao);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteUVWsTexture());

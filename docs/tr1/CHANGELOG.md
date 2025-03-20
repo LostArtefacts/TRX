@@ -10,6 +10,7 @@
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
 - changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
 - changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
+- changed sprites to respect the water tint if placed underwater (#2093)
 - fixed delays when scanning available save games (#2610, #1335, regression from <3.0)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
