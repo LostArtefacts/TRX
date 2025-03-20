@@ -32,7 +32,6 @@
             "path": "PLACEHOLDER",
             "music_track": -1,
             "sequence": [
-                {"type": "set_secret_count", "count": 0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],

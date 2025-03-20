@@ -283,7 +283,8 @@ def transform_script(script: list[int]):
                 yield {"type": "set_lara_start_anim", "anim": script.pop(0)}
 
             case GameFlowEvent.NUM_SECRETS:
-                yield {"type": "set_secret_count", "count": script.pop(0)}
+                script.pop(0)
+                pass
 
             case GameFlowEvent.KILL_TO_COMPLETE:
                 yield {"type": "enable_kill_to_complete"}

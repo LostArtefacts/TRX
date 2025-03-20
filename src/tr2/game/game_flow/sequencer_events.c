@@ -27,7 +27,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveFlares);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
@@ -44,7 +43,6 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_REMOVE_FLARES]     = M_HandleRemoveFlares,
     [GFS_REMOVE_MEDIPACKS]  = M_HandleRemoveMedipacks,
     [GFS_SET_START_ANIM]    = M_HandleSetStartAnim,
-    [GFS_SET_NUM_SECRETS]   = M_HandleSetNumSecrets,
     // clang-format on
 };
 
@@ -258,15 +256,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets)
-{
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY) {
-        g_GF_NumSecrets = (int16_t)(intptr_t)event->data;
-    }
-    return gf_cmd;
-}
-
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
@@ -275,7 +264,6 @@ void GF_PreSequenceHook(
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
-    g_GF_NumSecrets = 3;
     // TODO: reset bonus flag if seq_ctx == GFSC_SAVED once S_LoadGame logic is
     // merged with overall save loading logic.
     Camera_GetCineData()->position.target_angle = DEG_90;
