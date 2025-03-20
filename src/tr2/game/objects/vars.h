@@ -4,3 +4,4 @@
 
 extern const GAME_OBJECT_ID g_DoorObjects[];
 extern const GAME_OBJECT_ID g_TrapdoorObjects[];
+extern const GAME_OBJECT_ID g_SecretObjects[];

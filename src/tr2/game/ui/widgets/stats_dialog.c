@@ -156,7 +156,7 @@ static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
         ? (STATS_COMMON *)&g_SaveGame.current_stats
         : (STATS_COMMON *)&g_SaveGame.start[self->args.level_num].stats;
     M_AddRowFromRole(self, M_ROW_TIMER, stats);
-    if (g_GF_NumSecrets != 0) {
+    if (stats->max_secret_count != 0) {
         M_AddRowFromRole(self, M_ROW_LEVEL_SECRETS, stats);
     }
     M_AddRowFromRole(self, M_ROW_KILLS, stats);

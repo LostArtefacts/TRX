@@ -107,6 +107,15 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     // clang-format on
 };
 
+const GAME_OBJECT_ID g_SecretObjects[] = {
+    // clang-format off
+    O_SECRET_1,
+    O_SECRET_2,
+    O_SECRET_3,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_ID g_DoorObjects[] = {
     // clang-format off
     O_DOOR_TYPE_1,
