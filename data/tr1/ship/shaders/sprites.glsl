@@ -64,6 +64,7 @@ void main(void) {
 uniform sampler2DArray uTexture;
 uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
+uniform vec3 uGlobalTint;
 
 in vec3 gUV;
 in float gShade;
@@ -81,6 +82,7 @@ void main(void) {
 
     texColor.rgb *= 2.0 - (gShade / NEUTRAL_SHADE);
     texColor.rgb *= uBrightnessMultiplier;
+    texColor.rgb *= uGlobalTint;
     outColor = vec4(texColor.rgb, 1.0);
 }
 #endif
