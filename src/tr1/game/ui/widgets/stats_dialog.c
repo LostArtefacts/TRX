@@ -227,6 +227,7 @@ static void M_AddCommonRows(
         M_AddRowFromRole(self, M_ROW_KILLS, stats, game_info);
         M_AddRowFromRole(self, M_ROW_PICKUPS, stats, game_info);
         M_AddRowFromRole(self, M_ROW_SECRETS, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_TIMER, stats, game_info);
         if (g_Config.gameplay.enable_deaths_counter
             && game_info->death_count >= 0) {
             // Always use sum of all levels for the deaths.
@@ -235,7 +236,6 @@ static void M_AddCommonRows(
             // should still see an incremented death counter.
             M_AddRowFromRole(self, M_ROW_DEATHS, stats, game_info);
         }
-        M_AddRowFromRole(self, M_ROW_TIMER, stats, game_info);
     }
 }
 
