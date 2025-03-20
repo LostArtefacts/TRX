@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
+- fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
 
 ## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
 - added support for 60 FPS rendering

@@ -126,6 +126,14 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         break;
     }
 
+    Stats_CalculateStats();
+    START_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr) {
+        const int32_t secret_count = Stats_GetSecrets();
+        resume->stats.max_secret_count = secret_count;
+        g_SaveGame.current_stats.max_secret_count = secret_count;
+    }
+
     ASSERT(GF_GetCurrentLevel() == level);
     if (level->type == GFL_DEMO) {
         gf_cmd = GF_RunDemo(level->num);

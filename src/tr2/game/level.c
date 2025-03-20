@@ -18,6 +18,7 @@
 #include "game/room.h"
 #include "game/shell.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -168,6 +169,8 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadPathingData(file);
     Level_ReadAnimatedTextureRanges(file);
     Level_ReadItems(file);
+    // TODO: perhaps call from Level_LoadObjectsAndItems
+    Stats_ObserveItemsLoad();
 
     Level_ReadLightMap(file);
     Level_ReadCinematicFrames(file);

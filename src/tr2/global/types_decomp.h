@@ -87,6 +87,7 @@ typedef struct STATS_COMMON {
     uint32_t distance;
     uint16_t kills;
     uint8_t medipacks;
+    uint16_t max_secret_count;
 } STATS_COMMON;
 
 typedef struct {

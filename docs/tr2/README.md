@@ -128,6 +128,7 @@ game with new enhancements and features.
 #### Statistics
 - fixed the dragon counting as more than one kill if allowed to revive
 - fixed enemies that are run over by the skidoo not being counted in the statistics
+- fixed the final two levels not allowing for secrets to be counted in the statistics
 
 #### Visuals
 - added quadrilateral texture correction
