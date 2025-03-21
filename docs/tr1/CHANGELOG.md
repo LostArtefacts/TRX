@@ -26,6 +26,7 @@
 - fixed the `/pos` command not showing demo and cutscene titles
 - fixed the embedded bats fix causing problems inside rooms with trapdoors (regression from 4.6)
 - fixed cutscene music looping (#2591, regression from 4.8)
+- fixed saves created before version 2.15 causing a crash on load (#2654, regression from 4.8)
 - removed perspective filter toggle (it had no effect; repurposed to trapezoid interpolation toggle)
 - improved camera mode navigation:
     - improved support for pivoting

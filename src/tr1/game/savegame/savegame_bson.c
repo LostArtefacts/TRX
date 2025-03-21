@@ -542,6 +542,12 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
                 JSON_ObjectGetInt(item_obj, "anim_num", item->anim_num);
             item->frame_num =
                 JSON_ObjectGetInt(item_obj, "frame_num", item->frame_num);
+
+            // Prevent issues with pre-injection saves and Lara's enhanced
+            // animation set.
+            if (item->object_id == O_LARA && item->anim_num < obj->anim_idx) {
+                item->anim_num += obj->anim_idx;
+            }
         }
 
         if (obj->save_hitpoints) {
