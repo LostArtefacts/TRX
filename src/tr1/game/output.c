@@ -78,6 +78,13 @@ static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
 };
 
+static struct {
+    GLint bound_program;
+    GLint bound_vao;
+    GLint bound_vbo;
+    GLint bound_texture;
+} m_CachedState;
+
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
 static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
 static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
@@ -579,8 +586,8 @@ void Output_DownloadTextures(void)
 {
     S_Output_DownloadTextures(Output_GetTexturePageCount());
 
-    Output_Textures_UploadLevel();
-    Output_Sprites_UploadLevel();
+    Output_Textures_ObserveLevelLoad();
+    Output_Sprites_ObserveLevelLoad();
 }
 
 void Output_DrawBlack(void)
@@ -606,9 +613,7 @@ void Output_BeginScene(void)
     Output_ApplyFOV();
     Text_DrawReset();
 
-    Output_Sprites_UploadProjectionMatrix();
-    Output_Sprites_UploadUniforms();
-
+    Output_Sprites_RenderBegin();
     S_Output_RenderBegin();
     m_LightningCount = 0;
 }
@@ -717,19 +722,6 @@ void Output_DrawRoomMesh(const ROOM *const room)
 
     M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
     M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
-    S_Output_Flush();
-    S_Output_RememberState();
-
-    // new rendering
-    Output_EnableScissor(
-        room->bound_left, room->bound_bottom,
-        room->bound_right - room->bound_left,
-        room->bound_bottom - room->bound_top);
-    Output_Sprites_UploadModelMatrix();
-    Output_Sprites_RenderRoomSprites(room);
-    Output_DisableScissor();
-
-    S_Output_RestoreState();
 }
 
 void Output_DrawRoomPortals(const ROOM *const room)
@@ -936,52 +928,14 @@ int32_t Output_GetFarZ(void)
 }
 
 void Output_DrawSprite(
-    int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade)
+    const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
+    const int16_t shade)
 {
-    x -= g_W2VMatrix._03;
-    y -= g_W2VMatrix._13;
-    z -= g_W2VMatrix._23;
-
-    if (x < -Output_GetDrawDistMax() || x > Output_GetDrawDistMax()) {
-        return;
-    }
-
-    if (y < -Output_GetDrawDistMax() || y > Output_GetDrawDistMax()) {
-        return;
-    }
-
-    if (z < -Output_GetDrawDistMax() || z > Output_GetDrawDistMax()) {
-        return;
-    }
-
-    int32_t zv =
-        g_W2VMatrix._20 * x + g_W2VMatrix._21 * y + g_W2VMatrix._22 * z;
-    if (zv < Output_GetNearZ() || zv > Output_GetFarZ()) {
-        return;
-    }
-
-    int32_t xv =
-        g_W2VMatrix._00 * x + g_W2VMatrix._01 * y + g_W2VMatrix._02 * z;
-    int32_t yv =
-        g_W2VMatrix._10 * x + g_W2VMatrix._11 * y + g_W2VMatrix._12 * z;
-    int32_t zp = zv / g_PhdPersp;
-
-    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprnum);
-    const int32_t x0 =
-        Viewport_GetCenterX() + (xv + (sprite->x0 << W2V_SHIFT)) / zp;
-    const int32_t y0 =
-        Viewport_GetCenterY() + (yv + (sprite->y0 << W2V_SHIFT)) / zp;
-    const int32_t x1 =
-        Viewport_GetCenterX() + (xv + (sprite->x1 << W2V_SHIFT)) / zp;
-    const int32_t y1 =
-        Viewport_GetCenterY() + (yv + (sprite->y1 << W2V_SHIFT)) / zp;
-    if (x1 >= Viewport_GetMinX() && y1 >= Viewport_GetMinY()
-        && x0 <= Viewport_GetMaxX() && y0 <= Viewport_GetMaxY()) {
-        int32_t depth = zv >> W2V_SHIFT;
-        shade += Output_CalcFogShade(depth);
-        CLAMPG(shade, 0x1FFF);
-        S_Output_DrawSprite(x0, y0, x1, y1, zv, sprnum, shade);
-    }
+    Matrix_Push();
+    Matrix_TranslateAbs(x, y, z);
+    Output_Sprites_RenderSingleSprite(
+        g_MatrixPtr, (XYZ_32) { 0, 0, 0 }, sprite_idx, shade);
+    Matrix_Pop();
 }
 
 void Output_DrawScreenFlatQuad(
@@ -1280,11 +1234,20 @@ void Output_ApplyFOV(void)
 
 void Output_ApplyTint(float *r, float *g, float *b)
 {
+    const RGB_F tint = Output_GetTint();
     if (m_IsShadeEffect) {
-        *r *= m_WaterColor.r;
-        *g *= m_WaterColor.g;
-        *b *= m_WaterColor.b;
+        *r *= tint.r;
+        *g *= tint.g;
+        *b *= tint.b;
     }
+}
+
+RGB_F Output_GetTint(void)
+{
+    if (m_IsShadeEffect) {
+        return m_WaterColor;
+    }
+    return (RGB_F) { 1.0f, 1.0f, 1.0f };
 }
 
 bool Output_MakeScreenshot(const char *const path)
@@ -1422,39 +1385,14 @@ int32_t Output_GetWibbleOffset(void)
     return m_WibbleOffset;
 }
 
-#define S(x) (x / (GLfloat)((1 << W2V_SHIFT)))
-void Output_GetModelMatrix(GLfloat output[][4])
-{
-    const MATRIX *const m = g_MatrixPtr;
-    output[0][0] = S(m->_00);
-    output[0][1] = S(m->_01);
-    output[0][2] = S(m->_02);
-    output[0][3] = S(m->_03);
-
-    output[1][0] = S(m->_10);
-    output[1][1] = S(m->_11);
-    output[1][2] = S(m->_12);
-    output[1][3] = S(m->_13);
-
-    output[2][0] = S(m->_20);
-    output[2][1] = S(m->_21);
-    output[2][2] = S(m->_22);
-    output[2][3] = S(m->_23);
-
-    output[3][0] = 0.0f;
-    output[3][1] = 0.0f;
-    output[3][2] = 0.0f;
-    output[3][3] = 1.0f;
-}
-
 void Output_GetProjectionMatrix(GLfloat output[][4])
 {
     const float left = 0.0f;
     const float top = 0.0f;
     const float right = Viewport_GetWidth();
     const float bottom = Viewport_GetHeight();
-    const float near = S(Output_GetNearZ());
-    const float far = S(Output_GetFarZ());
+    const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
+    const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
     const float aspect = (float)right / (float)bottom;
     const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
     const float f = 1.0f / tan(fov / 2.0f);
@@ -1504,4 +1442,22 @@ void Output_EnableScissor(
 void Output_DisableScissor(void)
 {
     glDisable(GL_SCISSOR_TEST);
+}
+
+void Output_RememberState(void)
+{
+    glGetIntegerv(GL_CURRENT_PROGRAM, &m_CachedState.bound_program);
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &m_CachedState.bound_vao);
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &m_CachedState.bound_vbo);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &m_CachedState.bound_texture);
+    GFX_GL_CheckError();
+}
+
+void Output_RestoreState(void)
+{
+    glBindVertexArray(m_CachedState.bound_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, m_CachedState.bound_vbo);
+    glBindTexture(GL_TEXTURE_2D, m_CachedState.bound_texture);
+    glUseProgram(m_CachedState.bound_program);
+    GFX_GL_CheckError();
 }

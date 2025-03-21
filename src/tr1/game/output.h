@@ -83,12 +83,16 @@ void Output_AnimateTextures(int32_t num_frames);
 
 void Output_ApplyFOV(void);
 void Output_ApplyTint(float *r, float *g, float *b);
+RGB_F Output_GetTint(void);
 
 void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
 
 int32_t Output_GetWibbleOffset(void);
-void Output_GetModelMatrix(GLfloat output[][4]);
 void Output_GetProjectionMatrix(GLfloat output[][4]);
 void Output_EnableScissor(float x, float y, float w, float h);
 void Output_DisableScissor(void);
+
+// TODO: these functions are poor in their design and should be not needed
+void Output_RememberState(void);
+void Output_RestoreState(void);

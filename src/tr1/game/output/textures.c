@@ -280,7 +280,7 @@ static void M_UploadAtlas(void)
     }
 }
 
-void Output_Textures_UploadLevel(void)
+void Output_Textures_ObserveLevelLoad(void)
 {
     Output_Textures_Shutdown();
     M_PrepareAnimationRanges();

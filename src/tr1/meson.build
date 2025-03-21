@@ -247,6 +247,7 @@ sources = [
   'game/option/option_sound.c',
   'game/output.c',
   'game/output/sprites.c',
+  'game/output/sprite_program.c',
   'game/output/textures.c',
   'game/overlay.c',
   'game/requester.c',

@@ -3,7 +3,7 @@
 
 #ifdef VERTEX
 
-uniform samplerBuffer uFrame; // texture u, v, layer
+uniform samplerBuffer uUVW; // texture u, v, layer
 uniform vec2 uViewportCenter;
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
@@ -55,7 +55,7 @@ void main(void) {
     gl_Position = (uMatProjectionOG * vec4(screenCornerPos, 1));
     #endif
 
-    gUV = texelFetch(uFrame, int(inTextureIdx)).xyz;
+    gUV = texelFetch(uUVW, int(inTextureIdx)).xyz;
     gShade = inShade;
 }
 
