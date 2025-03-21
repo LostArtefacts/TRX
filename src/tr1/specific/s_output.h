@@ -66,7 +66,3 @@ void S_Output_4ColourTextBox(
 void S_Output_2ToneColourTextBox(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 edge,
     RGBA_8888 centre, float thickness);
-
-// TODO: these functions are poor in their design and should be not needed
-void S_Output_RememberState(void);
-void S_Output_RestoreState(void);

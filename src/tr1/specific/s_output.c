@@ -28,13 +28,6 @@
         }                                                                      \
     }
 
-static struct {
-    GLint bound_program;
-    GLint bound_vao;
-    GLint bound_vbo;
-    GLint bound_texture;
-} m_CachedState;
-
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
 static int m_EnvMapTexture = GFX_NO_TEXTURE;
 
@@ -1198,22 +1191,4 @@ void S_Output_2ToneColourTextBox(
     }
     S_Output_DisableTextureMode();
     M_DrawTriangleStrip(vertices, 18);
-}
-
-void S_Output_RememberState(void)
-{
-    glGetIntegerv(GL_CURRENT_PROGRAM, &m_CachedState.bound_program);
-    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &m_CachedState.bound_vao);
-    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &m_CachedState.bound_vbo);
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &m_CachedState.bound_texture);
-    GFX_GL_CheckError();
-}
-
-void S_Output_RestoreState(void)
-{
-    glBindVertexArray(m_CachedState.bound_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CachedState.bound_vbo);
-    glBindTexture(GL_TEXTURE_2D, m_CachedState.bound_texture);
-    glUseProgram(m_CachedState.bound_program);
-    GFX_GL_CheckError();
 }

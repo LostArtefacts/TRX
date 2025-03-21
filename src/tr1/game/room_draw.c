@@ -5,6 +5,7 @@
 #include "game/items.h"
 #include "game/lara/draw.h"
 #include "game/output.h"
+#include "game/output/sprites.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/const.h"
@@ -321,6 +322,16 @@ void Room_DrawSingleRoom(int16_t room_num)
     if (g_Config.rendering.enable_debug_portals) {
         Output_DrawRoomPortals(room);
     }
+
+    Output_EnableScissor(
+        room->bound_left, room->bound_bottom,
+        room->bound_right - room->bound_left,
+        room->bound_bottom - room->bound_top);
+    Output_RememberState();
+    Output_Sprites_RenderRoomSprites(g_MatrixPtr, Output_GetTint(), room);
+    Output_Sprites_Flush();
+    Output_RestoreState();
+    Output_DisableScissor();
     Matrix_Pop();
 
     room->bound_left = Viewport_GetMaxX();
