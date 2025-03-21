@@ -33,6 +33,7 @@ build_opts = [
   '-DPCRE2_STATIC',
   '-DPCRE2_CODE_UNIT_WIDTH=8',
   '-DTR_VERSION=' + tr_version.to_string(),
+  '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ]
 set_variable('defines', ['-DTR_VERSION=' + tr_version.to_string()])
 

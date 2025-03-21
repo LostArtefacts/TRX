@@ -36,6 +36,9 @@ typedef struct {
 static GFX_CONTEXT m_Context = {};
 
 static bool M_IsExtensionSupported(const char *name);
+static GLvoid GLAPIENTRY M_GLDebug(
+    GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+    const GLchar *message, const void *user_param);
 
 static bool M_IsExtensionSupported(const char *name)
 {
@@ -53,6 +56,14 @@ static bool M_IsExtensionSupported(const char *name)
         }
     }
     return false;
+}
+
+static GLvoid GLAPIENTRY M_GLDebug(
+    const GLenum source, const GLenum type, const GLuint id,
+    const GLenum severity, const GLsizei length, const GLchar *const message,
+    const void *const user_param)
+{
+    LOG_INFO("%d %s", source, message);
 }
 
 void GFX_Context_SwitchToWindowViewport(void)
@@ -146,6 +157,11 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
 
     // VSync defaults to on unless user disabled it in runtime json
     SDL_GL_SetSwapInterval(1);
+
+#if DEBUG
+    glDebugMessageCallback(M_GLDebug, nullptr);
+    glEnable(GL_DEBUG_OUTPUT);
+#endif
     return true;
 }
 
