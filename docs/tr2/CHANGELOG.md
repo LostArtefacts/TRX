@@ -38,6 +38,7 @@
 - fixed the ammo counter not showing in demos if NG+ is set (#2574, regression from 0.9)
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 0.9)
 - fixed the `/pos` command not showing demo and cutscene titles
+- fixed the distance travelled stat displaying the wrong value when over 1000m (#2659)
 - improved camera mode navigation:
     - improved support for pivoting
     - improved roll support
