@@ -137,7 +137,7 @@ static void M_AddRowFromRole(
         if (distance < 1000) {
             sprintf(buf, "%dm", distance);
         } else {
-            sprintf(buf, "%d.%02dkm", distance / 1000, distance % 100);
+            sprintf(buf, "%d.%02dkm", distance / 1000, (distance % 1000) / 10);
         }
         M_AddRow(self, role, GS(STATS_DISTANCE_TRAVELLED), buf);
         break;
