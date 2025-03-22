@@ -12,6 +12,8 @@
 static int32_t m_CachedItemCount = 0;
 static int32_t m_LevelSecrets = 0;
 
+static bool M_SetSecretFlag(uint8_t *flags, GAME_OBJECT_ID obj_id);
+
 #if USE_REAL_CLOCK
 static CLOCK_TIMER m_StartCounter = { .type = CLOCK_TYPE_REAL };
 static int32_t m_StartTimer = 0;
@@ -37,6 +39,19 @@ void Stats_UpdateTimer(void)
     g_SaveGame.current_stats.timer++;
 }
 #endif
+
+static bool M_SetSecretFlag(uint8_t *const flags, const GAME_OBJECT_ID obj_id)
+{
+    for (int32_t i = 0; i < 2; i++) {
+        const int32_t flag = 1 << ((obj_id - O_SECRET_1) + i * 3);
+        if ((*flags & flag) == 0) {
+            *flags |= flag;
+            return true;
+        }
+    }
+
+    return false;
+}
 
 FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
 {
@@ -86,7 +101,7 @@ void Stats_ObserveItemsLoad(void)
 void Stats_CalculateStats(void)
 {
     m_LevelSecrets = 0;
-    int32_t secret_flags = 0;
+    uint8_t secret_flags = 0;
 
     for (int32_t i = 0; i < m_CachedItemCount; i++) {
         const ITEM *const item = Item_Get(i);
@@ -95,12 +110,9 @@ void Stats_CalculateStats(void)
             continue;
         }
 
-        if (Object_IsType(item->object_id, g_SecretObjects)) {
-            const int32_t flag = 1 << (item->object_id - O_SECRET_1);
-            if ((secret_flags & flag) == 0) {
-                m_LevelSecrets++;
-                secret_flags |= flag;
-            }
+        if (Object_IsType(item->object_id, g_SecretObjects)
+            && M_SetSecretFlag(&secret_flags, item->object_id)) {
+            m_LevelSecrets++;
         }
     }
 }
@@ -108,6 +120,23 @@ void Stats_CalculateStats(void)
 int32_t Stats_GetSecrets(void)
 {
     return m_LevelSecrets;
+}
+
+void Stats_MarkSecretCollected(const GAME_OBJECT_ID obj_id)
+{
+    M_SetSecretFlag(&g_SaveGame.current_stats.secret_flags, obj_id);
+}
+
+bool Stats_CheckAllLevelSecretsCollected(void)
+{
+    int32_t flags = g_SaveGame.current_stats.secret_flags;
+    int32_t count = 0;
+    while (flags != 0) {
+        count += flags & 1;
+        flags >>= 1;
+    }
+
+    return count >= g_SaveGame.current_stats.max_secret_count;
 }
 
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)

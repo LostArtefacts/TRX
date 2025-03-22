@@ -15,6 +15,7 @@
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -82,10 +83,7 @@ static void M_DoPickup(const int16_t item_num)
     Inv_AddItem(item->object_id);
 
     if (Object_IsType(item->object_id, g_SecretObjects)
-        && (g_SaveGame.current_stats.secret_flags & 1)
-                + ((g_SaveGame.current_stats.secret_flags >> 1) & 1)
-                + ((g_SaveGame.current_stats.secret_flags >> 2) & 1)
-            >= 3) {
+        && Stats_CheckAllLevelSecretsCollected()) {
         GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
     }
 

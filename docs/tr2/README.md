@@ -141,6 +141,7 @@ game with new enhancements and features.
 - added optional fade effects to the hardware renderer
 - added text information when changing rendering options at runtime
 - added support for animated sprites
+- added the ability for custom levels to have up to two of each secret type per level
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode
