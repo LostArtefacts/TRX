@@ -179,7 +179,6 @@ sources = [
   'game/objects/creatures/statue.c',
   'game/objects/creatures/torso.c',
   'game/objects/creatures/trex.c',
-  'game/objects/creatures/wolf.c',
   'game/objects/effects/blood.c',
   'game/objects/effects/body_part.c',
   'game/objects/effects/bubble.c',
