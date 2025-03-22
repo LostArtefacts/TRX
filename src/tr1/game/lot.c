@@ -37,7 +37,7 @@ void LOT_DisableBaddieAI(int16_t item_num)
     }
 }
 
-bool LOT_EnableBaddieAI(int16_t item_num, int32_t always)
+bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 {
     if (Item_Get(item_num)->data != nullptr) {
         return true;
