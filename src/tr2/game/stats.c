@@ -38,14 +38,14 @@ void Stats_UpdateTimer(void)
 }
 #endif
 
-FINAL_STATS Stats_ComputeFinalStats(void)
+FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
 {
     FINAL_STATS result = {};
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_GYM) {
+        if (level->type != level_type) {
             continue;
         }
         result.timer += g_SaveGame.start[i].stats.timer;
@@ -108,4 +108,10 @@ void Stats_CalculateStats(void)
 int32_t Stats_GetSecrets(void)
 {
     return m_LevelSecrets;
+}
+
+bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
+{
+    const FINAL_STATS stats = Stats_ComputeFinalStats(level_type);
+    return stats.found_secrets >= stats.total_secrets;
 }

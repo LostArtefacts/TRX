@@ -817,7 +817,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.right_arm.lock = 0;
     g_Lara.creature = nullptr;
 
-    if (level->type == GFL_NORMAL && g_GF_LaraStartAnim) {
+    if ((level->type == GFL_NORMAL || level->type == GFL_BONUS)
+        && g_GF_LaraStartAnim) {
         g_Lara.water_status = LWS_ABOVE_WATER;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         Item_SwitchToObjAnim(item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
