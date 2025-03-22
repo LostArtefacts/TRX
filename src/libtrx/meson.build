@@ -169,6 +169,7 @@ sources = [
   'game/music.c',
   'game/objects/common.c',
   'game/objects/names.c',
+  'game/objects/creatures/bear.c',
   'game/objects/traps/movable_block.c',
   'game/objects/vars.c',
   'game/output/common.c',
