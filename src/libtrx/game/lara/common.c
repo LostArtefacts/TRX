@@ -146,3 +146,8 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
     const ANIM *const anim = Object_GetAnim(obj, anim_idx);
     return &anim->frame_ptr[lara->hit_frame];
 }
+
+void Lara_TakeDamage(const int16_t damage, const bool hit_status)
+{
+    Item_TakeDamage(Lara_GetItem(), damage, hit_status);
+}

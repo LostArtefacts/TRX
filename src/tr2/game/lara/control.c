@@ -1005,8 +1005,3 @@ void Lara_GetOffVehicle(void)
         g_LaraItem->rot.z = 0;
     }
 }
-
-void Lara_TakeDamage(const int16_t damage, const bool hit_status)
-{
-    Item_TakeDamage(g_LaraItem, damage, hit_status);
-}
