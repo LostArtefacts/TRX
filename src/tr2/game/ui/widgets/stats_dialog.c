@@ -38,6 +38,7 @@ typedef struct {
     UI_STATS_DIALOG_ARGS args;
     UI_WIDGET *requester;
     int32_t listener;
+    GF_LEVEL_TYPE level_type;
 } UI_STATS_DIALOG;
 
 static void M_AddRow(
@@ -168,7 +169,7 @@ static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
 
 static void M_AddFinalStatsRows(UI_STATS_DIALOG *const self)
 {
-    const FINAL_STATS final_stats = Stats_ComputeFinalStats();
+    const FINAL_STATS final_stats = Stats_ComputeFinalStats(self->level_type);
     const STATS_COMMON *stats = (STATS_COMMON *)&final_stats;
     M_AddRowFromRole(self, M_ROW_TIMER, stats);
     M_AddRowFromRole(self, M_ROW_ALL_SECRETS, stats);
@@ -296,6 +297,7 @@ UI_WIDGET *UI_StatsDialog_Create(UI_STATS_DIALOG_ARGS args)
     ASSERT(args.style == UI_STATS_DIALOG_STYLE_BORDERED);
 
     self->args = args;
+    self->level_type = GF_GetLevel(GFLT_MAIN, self->args.level_num)->type;
     self->requester = UI_Requester_Create((UI_REQUESTER_SETTINGS) {
         .is_selectable = false,
         .visible_rows = VISIBLE_ROWS,
@@ -314,7 +316,10 @@ UI_WIDGET *UI_StatsDialog_Create(UI_STATS_DIALOG_ARGS args)
         break;
 
     case UI_STATS_DIALOG_MODE_FINAL:
-        UI_Requester_SetTitle(self->requester, GS(STATS_FINAL_STATISTICS));
+        const char *title = self->level_type == GFL_BONUS
+            ? GS(STATS_BONUS_STATISTICS)
+            : GS(STATS_FINAL_STATISTICS);
+        UI_Requester_SetTitle(self->requester, title);
         M_AddFinalStatsRows(self);
         break;
 

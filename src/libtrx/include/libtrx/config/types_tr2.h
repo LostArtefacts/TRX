@@ -109,4 +109,8 @@ typedef struct {
         int32_t scaler;
         float sizer;
     } rendering;
+
+    struct {
+        bool bonus_level_unlock;
+    } profile;
 } CONFIG;

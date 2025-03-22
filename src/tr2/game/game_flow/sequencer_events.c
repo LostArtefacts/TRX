@@ -12,6 +12,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
@@ -80,7 +81,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     default:
         Savegame_ApplyLogicToCurrentInfo(level);
-        if (level->type == GFL_NORMAL) {
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
             Stats_Reset();
@@ -117,7 +118,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         break;
 
     default:
-        if (level->type == GFL_NORMAL) {
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }
@@ -141,6 +142,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         gf_cmd = GF_RunGame(level, seq_ctx);
     }
     if (gf_cmd.action == GF_LEVEL_COMPLETE) {
+        // TODO: refactor, currently required to guarantee final statistics are
+        // accurate prior to jumping to a bonus level.
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            START_INFO *const start = Savegame_GetCurrentInfo(level);
+            start->stats = g_SaveGame.current_stats;
+        }
         gf_cmd.action = GF_NOOP;
     }
     return gf_cmd;
@@ -170,12 +177,18 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     START_INFO *const start = Savegame_GetCurrentInfo(current_level);
     start->stats = g_SaveGame.current_stats;
     start->available = 0;
+    g_Config.profile.bonus_level_unlock =
+        Stats_CheckAllSecretsCollected(GFL_NORMAL);
+
     if (next_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);
         g_SaveGame.current_level = next_level->num;
     }
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
+    }
+    if (next_level->type == GFL_BONUS && !g_Config.profile.bonus_level_unlock) {
+        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {
         .action = GF_START_GAME,
