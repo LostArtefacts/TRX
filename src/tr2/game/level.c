@@ -47,6 +47,90 @@ static int32_t M_CompareSampleOffsets(const void *a, const void *b);
 static void M_LoadFromFile(const GF_LEVEL *level);
 static void M_InitialiseSoundEffects(const char *const file_name);
 static void M_CompleteSetup(const GF_LEVEL *level);
+static bool M_SkimLevel(VFILE *file);
+
+static bool M_SkimLevel(VFILE *const file)
+{
+#define TRY_OR_FAIL(call)                                                      \
+    if (!call) {                                                               \
+        return false;                                                          \
+    }
+#define TRY_OR_FAIL_ARR_S32(size)                                              \
+    {                                                                          \
+        int32_t num;                                                           \
+        TRY_OR_FAIL(VFile_TryReadS32(file, &num));                             \
+        TRY_OR_FAIL(VFile_TrySkip(file, num *size));                           \
+    }
+#define TRY_OR_FAIL_ARR_U16(size)                                              \
+    {                                                                          \
+        uint16_t num;                                                          \
+        TRY_OR_FAIL(VFile_TryReadU16(file, &num));                             \
+        TRY_OR_FAIL(VFile_TrySkip(file, num *size));                           \
+    }
+
+    VFile_SetPos(file, 0);
+
+    int32_t version;
+    TRY_OR_FAIL(VFile_TryReadS32(file, &version));
+    if (version != 45) {
+        return false;
+    }
+
+    TRY_OR_FAIL(VFile_TrySkip(file, 1792)); // palettes
+    TRY_OR_FAIL_ARR_S32(TEXTURE_PAGE_SIZE * 3); // texture pages
+    TRY_OR_FAIL(VFile_TrySkip(file, 4)); // unused version number
+
+    uint16_t room_count;
+    TRY_OR_FAIL(VFile_TryReadU16(file, &room_count));
+    for (int32_t i = 0; i < room_count; i++) {
+        TRY_OR_FAIL(VFile_TrySkip(file, 16));
+        TRY_OR_FAIL_ARR_S32(2); // meshes
+        TRY_OR_FAIL_ARR_U16(32); // portals
+
+        int16_t size_z;
+        int16_t size_x;
+        TRY_OR_FAIL(VFile_TryReadS16(file, &size_z));
+        TRY_OR_FAIL(VFile_TryReadS16(file, &size_x));
+        TRY_OR_FAIL(VFile_TrySkip(file, size_z * size_x * 8)); // sectors
+
+        TRY_OR_FAIL(VFile_TrySkip(file, 6)); // lighting
+        TRY_OR_FAIL_ARR_U16(24); // lights
+        TRY_OR_FAIL_ARR_U16(20); // static meshes
+        TRY_OR_FAIL(VFile_TrySkip(file, 4));
+    }
+
+    TRY_OR_FAIL_ARR_S32(2); // floor data
+    TRY_OR_FAIL_ARR_S32(2); // object meshes
+    TRY_OR_FAIL_ARR_S32(4); // object mesh pointers
+    TRY_OR_FAIL_ARR_S32(32); // animations
+    TRY_OR_FAIL_ARR_S32(6); // animation changes
+    TRY_OR_FAIL_ARR_S32(8); // animation ranges
+    TRY_OR_FAIL_ARR_S32(2); // animation commands
+    TRY_OR_FAIL_ARR_S32(4); // animation bones
+    TRY_OR_FAIL_ARR_S32(2); // animation frames
+    TRY_OR_FAIL_ARR_S32(18); // objects
+    TRY_OR_FAIL_ARR_S32(32); // static objects
+    TRY_OR_FAIL_ARR_S32(20); // object textures
+    TRY_OR_FAIL_ARR_S32(16); // sprite textures
+    TRY_OR_FAIL_ARR_S32(8); // sprites sequences
+    TRY_OR_FAIL_ARR_S32(16); // cameras/sinks
+    TRY_OR_FAIL_ARR_S32(16); // sound sources
+
+    int32_t box_count;
+    TRY_OR_FAIL(VFile_TryReadS32(file, &box_count));
+    TRY_OR_FAIL(VFile_TrySkip(file, box_count * 8));
+    TRY_OR_FAIL_ARR_S32(2); // overlaps
+    TRY_OR_FAIL(VFile_TrySkip(file, box_count * 20)); // zones
+
+    TRY_OR_FAIL_ARR_S32(2); // animated texture ranges
+    Level_ReadItems(file);
+
+#undef TRY_OR_FAIL
+#undef TRY_OR_FAIL_ARR_U16
+#undef TRY_OR_FAIL_ARR_S32
+
+    return true;
+}
 
 static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
 {
@@ -302,4 +386,34 @@ void Level_Unload(void)
     }
 
     Camera_Reset();
+}
+
+void Level_Init(void)
+{
+    BENCHMARK benchmark = Benchmark_Start();
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < level_table->count; i++) {
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        if (level->type != GFL_NORMAL && level->type != GFL_BONUS) {
+            continue;
+        }
+
+        VFILE *const file = VFile_CreateFromPath(level->path);
+        if (file == nullptr) {
+            continue;
+        }
+
+        const bool result = M_SkimLevel(file);
+        VFile_Close(file);
+
+        if (result) {
+            Stats_CalculateStats();
+            STATS_COMMON stats = {};
+            stats.max_secret_count = Stats_GetSecrets();
+            Savegame_SetDefaultStats(level, stats);
+        }
+        GameBuf_Reset();
+    }
+
+    Benchmark_End(&benchmark, nullptr);
 }

@@ -794,6 +794,9 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         start->small_medipacks = 0;
         g_GF_RemoveAmmo = false;
     }
+
+    const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
+    start->stats.max_secret_count = default_stats.max_secret_count;
 }
 
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
