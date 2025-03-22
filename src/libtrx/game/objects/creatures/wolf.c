@@ -1,49 +1,55 @@
 #include "game/creature.h"
-#include "game/items.h"
 #include "game/lara/common.h"
-#include "game/lot.h"
 #include "game/random.h"
 #include "game/spawn.h"
-#include "global/const.h"
-#include "global/vars.h"
+#include "utils.h"
 
-#include <libtrx/utils.h>
-
-#define WOLF_SLEEP_FRAME 96
-#define WOLF_BITE_DAMAGE 100
+// clang-format off
+#define WOLF_SLEEP_FRAME   96
+#define WOLF_BITE_DAMAGE   100
 #define WOLF_POUNCE_DAMAGE 50
-#define WOLF_DIE_ANIM 20
-#define WOLF_WALK_TURN (2 * DEG_1) // = 364
-#define WOLF_RUN_TURN (5 * DEG_1) // = 910
-#define WOLF_STALK_TURN (2 * DEG_1) // = 364
-#define WOLF_ATTACK_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
-#define WOLF_STALK_RANGE SQUARE(WALL_L * 3) // = 9437184
-#define WOLF_BITE_RANGE SQUARE(345) // = 119025
-#define WOLF_WAKE_CHANCE 32
-#define WOLF_SLEEP_CHANCE 32
-#define WOLF_HOWL_CHANCE 384
-#define WOLF_TOUCH 0x774F
-#define WOLF_HITPOINTS 6
-#define WOLF_RADIUS (WALL_L / 3) // = 341
-#define WOLF_SMARTNESS 0x2000
+#define WOLF_WALK_TURN     (2 * DEG_1) // = 364
+#define WOLF_RUN_TURN      (5 * DEG_1) // = 910
+#define WOLF_STALK_TURN    (2 * DEG_1) // = 364
+#define WOLF_ATTACK_RANGE  SQUARE(WALL_L * 3 / 2) // = 2359296
+#define WOLF_STALK_RANGE   SQUARE(WALL_L * 3) // = 9437184
+#define WOLF_BITE_RANGE    SQUARE(345) // = 119025
+#define WOLF_WAKE_CHANCE   32
+#define WOLF_SLEEP_CHANCE  32
+#define WOLF_HOWL_CHANCE   384
+#define WOLF_TOUCH         0x774F
+#define WOLF_HITPOINTS     6
+#define WOLF_RADIUS        (WALL_L / 3) // = 341
+#define WOLF_SMARTNESS     0x2000
+// clang-format on
 
 typedef enum {
-    WOLF_STATE_EMPTY = 0,
-    WOLF_STATE_STOP = 1,
-    WOLF_STATE_WALK = 2,
-    WOLF_STATE_RUN = 3,
-    WOLF_STATE_JUMP = 4,
-    WOLF_STATE_STALK = 5,
-    WOLF_STATE_ATTACK = 6,
-    WOLF_STATE_HOWL = 7,
-    WOLF_STATE_SLEEP = 8,
-    WOLF_STATE_CROUCH = 9,
+    // clang-format off
+    WOLF_STATE_EMPTY     = 0,
+    WOLF_STATE_STOP      = 1,
+    WOLF_STATE_WALK      = 2,
+    WOLF_STATE_RUN       = 3,
+    WOLF_STATE_JUMP      = 4,
+    WOLF_STATE_STALK     = 5,
+    WOLF_STATE_ATTACK    = 6,
+    WOLF_STATE_HOWL      = 7,
+    WOLF_STATE_SLEEP     = 8,
+    WOLF_STATE_CROUCH    = 9,
     WOLF_STATE_FAST_TURN = 10,
-    WOLF_STATE_DEATH = 11,
-    WOLF_STATE_BITE = 12,
+    WOLF_STATE_DEATH     = 11,
+    WOLF_STATE_BITE      = 12,
+    // clang-format on
 } WOLF_STATE;
 
+typedef enum {
+    WOLF_ANIM_DEATH = 20,
+} WOLF_ANIM;
+
+#if TR_VERSION == 1
 static BITE m_WolfJawBite = { 0, -14, 174, 6 };
+#else
+static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
+#endif
 
 static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
@@ -79,16 +85,12 @@ static void M_Initialise(const int16_t item_num)
 
 static void M_Control(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->status == IS_INVISIBLE) {
-        if (!LOT_EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!Creature_Activate(item_num)) {
+        return;
     }
 
-    CREATURE *wolf = item->data;
+    ITEM *const item = Item_Get(item_num);
+    CREATURE *const wolf = (CREATURE *)item->data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -97,7 +99,7 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state != WOLF_STATE_DEATH) {
             item->current_anim_state = WOLF_STATE_DEATH;
             Item_SwitchToAnim(
-                item, WOLF_DIE_ANIM + (int16_t)(Random_GetControl() / 11000),
+                item, WOLF_ANIM_DEATH + (int16_t)(Random_GetControl() / 11000),
                 0);
         }
     } else {
@@ -230,4 +232,6 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, tilt);
 }
 
+#if TR_VERSION == 1
 REGISTER_OBJECT(O_WOLF, M_Setup)
+#endif
