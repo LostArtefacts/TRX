@@ -10,6 +10,7 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/input.h"
+#include "game/level.h"
 #include "game/music.h"
 #include "game/output.h"
 #include "game/phase.h"
@@ -410,11 +411,12 @@ void Shell_Main(void)
     GameStringTable_LoadFromFile(m_ModPaths[m_Args.mod].game_strings_path);
     GameStringTable_Apply(nullptr);
 
+    GameBuf_Init();
+    Level_Init();
+
     Savegame_Init();
     Savegame_InitCurrentInfo();
     S_FrontEndCheck();
-
-    GameBuf_Init();
 
     if (m_Args.level_to_play != nullptr) {
         Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);

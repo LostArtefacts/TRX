@@ -25,3 +25,6 @@ void GetSavedGamesList(REQUEST_INFO *req);
 bool S_FrontEndCheck(void);
 bool S_SaveGame(int32_t slot_num);
 bool S_LoadGame(int32_t slot_num);
+
+void Savegame_SetDefaultStats(const GF_LEVEL *level, STATS_COMMON stats);
+STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *level);
