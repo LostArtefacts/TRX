@@ -162,7 +162,6 @@ sources = [
   'game/objects/creatures/bacon_lara.c',
   'game/objects/creatures/baldy.c',
   'game/objects/creatures/bat.c',
-  'game/objects/creatures/bear.c',
   'game/objects/creatures/centaur.c',
   'game/objects/creatures/cowboy.c',
   'game/objects/creatures/crocodile.c',
