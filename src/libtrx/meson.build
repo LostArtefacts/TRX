@@ -120,6 +120,7 @@ sources = [
   'game/console/common.c',
   'game/console/history.c',
   'game/console/registry.c',
+  'game/creature/common.c',
   'game/demo/common.c',
   'game/fader.c',
   'game/game.c',

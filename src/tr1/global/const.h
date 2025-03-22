@@ -66,7 +66,6 @@
 #define MIN_HEAD_TILT_SURF (-40 * DEG_1) // = -7280
 #define DIVE_WAIT 10
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
-#define FRONT_ARC DEG_90
 #define MAX_HEAD_CHANGE (DEG_1 * 5) // = 910
 #define MAX_TILT (DEG_1 * 3) // = 546
 #define CAM_A_HANG 0
@@ -79,7 +78,6 @@
 #define COMBAT_DISTANCE (WALL_L * 5 / 2) // = 2560
 #define MAX_ELEVATION (85 * DEG_1) // = 15470
 #define DEFAULT_RADIUS 10
-#define UNIT_SHADOW 256
 #define NO_BAD_POS (-NO_HEIGHT)
 #define NO_BAD_NEG NO_HEIGHT
 #define BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192

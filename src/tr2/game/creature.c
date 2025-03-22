@@ -20,7 +20,6 @@
 #include <libtrx/game/math.h>
 #include <libtrx/utils.h>
 
-#define FRONT_ARC DEG_90
 #define ESCAPE_CHANCE 2048
 #define RECOVER_CHANCE 256
 #define MAX_X_ROT (20 * DEG_1) // = 3640
@@ -41,21 +40,6 @@ void Creature_Initialise(const int16_t item_num)
     item->rot.y += (Random_GetControl() - DEG_90) >> 1;
     item->collidable = 1;
     item->data = 0;
-}
-
-int32_t Creature_Activate(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
-        return true;
-    }
-
-    if (!LOT_EnableBaddieAI(item_num, false)) {
-        return false;
-    }
-
-    item->status = IS_ACTIVE;
-    return true;
 }
 
 void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
@@ -130,7 +114,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         && ABS(enemy->pos.y - item->pos.y) <= STEP_L;
 }
 
-void Creature_Mood(const ITEM *item, const AI_INFO *info, int32_t violent)
+void Creature_Mood(
+    const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
     CREATURE *const creature = item->data;
     if (creature == nullptr) {
@@ -372,7 +357,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
     }
 }
 
-int32_t Creature_Animate(
+bool Creature_Animate(
     const int16_t item_num, const int16_t angle, const int16_t tilt)
 {
     ITEM *const item = Item_Get(item_num);
