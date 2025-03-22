@@ -72,7 +72,7 @@ static void M_AddRowFromRole(
     UI_STATS_DIALOG *const self, const M_ROW_ROLE role,
     const STATS_COMMON *const stats)
 {
-    char buf[32];
+    char buf[64];
 
     switch (role) {
     case M_ROW_TIMER: {
@@ -86,15 +86,20 @@ static void M_AddRowFromRole(
     case M_ROW_LEVEL_SECRETS: {
         char *ptr = buf;
         int32_t num_secrets = 0;
-        for (int32_t i = 0; i < 3; i++) {
-            if (((LEVEL_STATS *)stats)->secret_flags & (1 << i)) {
-                sprintf(ptr, "\\{secret %d}", i + 1);
-                num_secrets++;
-            } else {
-                strcpy(ptr, "   ");
+        const LEVEL_STATS *const level_stats = (LEVEL_STATS *)stats;
+        for (int32_t i = 1; i >= 0; i--) {
+            for (int32_t j = 0; j < 3; j++) {
+                const int32_t flag = 1 << (j + i * 3);
+                if ((level_stats->secret_flags & flag) != 0) {
+                    sprintf(ptr, "\\{secret %d}", j + 1);
+                    num_secrets++;
+                } else {
+                    strcpy(ptr, "   ");
+                }
+                ptr += strlen(ptr);
             }
-            ptr += strlen(ptr);
         }
+
         *ptr++ = '\0';
         if (num_secrets == 0) {
             strcpy(buf, GS(MISC_NONE));

@@ -3,6 +3,7 @@
 #include "game/inventory_ring.h"
 #include "game/items.h"
 #include "game/objects/vars.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/utils.h>
@@ -212,15 +213,9 @@ bool Inv_AddItem(const GAME_OBJECT_ID obj_id)
         return true;
 
     case O_SECRET_1:
-        g_SaveGame.current_stats.secret_flags |= 1;
-        return true;
-
     case O_SECRET_2:
-        g_SaveGame.current_stats.secret_flags |= 2;
-        return true;
-
     case O_SECRET_3:
-        g_SaveGame.current_stats.secret_flags |= 4;
+        Stats_MarkSecretCollected(obj_id);
         return true;
 
     case O_KEY_ITEM_1:
