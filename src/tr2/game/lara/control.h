@@ -25,5 +25,3 @@ void Lara_InitialiseInventory(const GF_LEVEL *level);
 void Lara_InitialiseMeshes(const GF_LEVEL *level);
 
 void Lara_GetOffVehicle(void);
-
-void Lara_TakeDamage(int16_t damage, bool hit_status);

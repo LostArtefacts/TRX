@@ -822,8 +822,3 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
         }
     }
 }
-
-void Lara_TakeDamage(int16_t damage, bool hit_status)
-{
-    Item_TakeDamage(g_LaraItem, damage, hit_status);
-}
