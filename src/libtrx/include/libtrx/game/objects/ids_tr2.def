@@ -263,3 +263,15 @@ OBJ_ID_DEFINE(O_ASSAULT_DIGITS, 261)
 OBJ_ID_DEFINE(O_FINAL_LEVEL_COUNTER, 262)
 OBJ_ID_DEFINE(O_CUT_SHOTGUN, 263)
 OBJ_ID_DEFINE(O_EARTHQUAKE, 264)
+
+// Conflicting objects definitions for TR2: The Golden Mask. In a situation
+// when two different objects share the same IDs, the objects register
+// themselves as usual through the C constructor mechanism, and fight for the
+// slot, which is okay. The conflict is supposed to be resolved by an external
+// party – in terms of the Golden Mask, this currently happens in Shell_Main(),
+// that manually calls the setup routine overriding whatever information was in
+// the slot.
+OBJ_ID_DEFINE(O_MONK_3, O_MONK_1)
+
+// Force the O_NUMBER_OF to be valid
+OBJ_ID_DEFINE(O_LAST, 264)
