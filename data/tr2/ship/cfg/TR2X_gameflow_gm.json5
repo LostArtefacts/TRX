@@ -1,0 +1,137 @@
+{
+    // NOTE: bad changes to this file may result in crashes.
+    // Lines starting with double slashes are comments and are ignored.
+
+    "main_menu_picture": "data/title_eu_gm.pcx",
+    "savegame_fmt_legacy": "savegame_gm.%d",
+
+    "cmd_init":           {"action": "exit_to_title"},
+    "cmd_title":          {"action": "noop"},
+    "cmd_death_in_demo":  {"action": "exit_to_title"},
+    "cmd_death_in_game":  {"action": "noop"},
+    "cmd_demo_interrupt": {"action": "exit_to_title"},
+    "cmd_demo_end":       {"action": "exit_to_title"},
+
+    "cheat_keys": true,
+    "load_save_disabled": false,
+    "play_any_level": false,
+    "lockout_option_ring": false,
+    "gym_enabled": false,
+    "demo_version": false,
+    "single_level": -1,
+
+    "demo_delay": 30,
+    "secret_track": 47,
+
+    "title": {
+        "path": "data/title_gm.tr2",
+        "music_track": 64,
+        "sequence": [
+            {"type": "display_picture", "path": "data/legal.pcx"},
+            {"type": "exit_to_title"},
+        ],
+    },
+
+    "sfx_path": "data/main_gm.sfx",
+    "injections": [
+        "data/injections/font.bin",
+    ],
+
+    "levels": [
+        // 0. Lara's Home
+        {
+            "type": "gym",
+            "path": "data/assault.tr2",
+            "music_track": -1,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "level_stats"},
+            ],
+        },
+
+        // 1. The Cold War
+        {
+            "path": "data/level1.tr2",
+            "music_track": 33,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 41},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 2. Fool's Gold
+        {
+            "path": "data/level2.tr2",
+            "music_track": 58,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 41},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 3. Furnace of the Gods
+        {
+            "path": "data/level3.tr2",
+            "music_track": 59,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 41},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 4. Kingdom
+        {
+            "path": "data/level4.tr2",
+            "music_track": 31,
+            "sequence": [
+                {"type": "give_item", "object_id": "puzzle_1"},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 52},
+                {"type": "display_picture", "path": "data/credit00_gm.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit01.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit02.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit03.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit04.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit05.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit06.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit07_gm.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "display_picture", "path": "data/credit08.pcx", "display_time": 15, "fade_in_time": 0.5, "fade_out_time": 0.5},
+                {"type": "total_stats", "background_path": "data/end.pcx"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 5. Nightmare in Vegas
+        {
+            "path": "data/level5.tr2",
+            "type": "bonus",
+            "music_track": 34,
+            "sequence": [
+                {"type": "remove_weapons"},
+                {"type": "remove_ammo"},
+                {"type": "remove_flares"},
+                {"type": "remove_medipacks"},
+                {"type": "give_item", "object_id": "pistols"},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 41},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+    ],
+
+    "demos": [
+    ],
+
+    "cutscenes": [
+    ],
+
+    "fmvs": [
+    ],
+}

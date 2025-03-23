@@ -141,7 +141,7 @@
         {
             "title": "Ice Palace",
             "objects": {
-                "tiger": {"name": "Snow Leopard"},
+                "tiger": {"name": "White Tiger"},
                 "key_2": {"name": "Gong Hammer"},
                 "pickup_2": {"name": "Talion"},
                 "puzzle_1": {"name": "Tibetan Mask"},
