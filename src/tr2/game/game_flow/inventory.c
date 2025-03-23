@@ -139,11 +139,6 @@ void GF_InventoryModifier_Apply(
 {
     START_INFO *const start = Savegame_GetCurrentInfo(level);
 
-    if (!start->has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
-        start->has_pistols = 1;
-        Inv_AddItem(O_PISTOL_ITEM);
-    }
-
     if (m_RemoveWeapons) {
         start->has_pistols = 0;
         start->has_magnums = 0;
@@ -154,6 +149,14 @@ void GF_InventoryModifier_Apply(
         start->has_harpoon = 0;
         start->gun_type = LGT_UNARMED;
         start->gun_status = LGS_ARMLESS;
+    }
+
+    if (!start->has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
+        start->has_pistols = 1;
+        Inv_AddItem(O_PISTOL_ITEM);
+        if (start->gun_type == LGT_UNARMED) {
+            start->gun_type = LGT_PISTOLS;
+        }
     }
 
     if (m_RemoveAmmo) {
