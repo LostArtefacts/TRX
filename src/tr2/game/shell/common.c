@@ -12,6 +12,9 @@
 #include "game/input.h"
 #include "game/level.h"
 #include "game/music.h"
+#include "game/objects/creatures/big_spider.h"
+#include "game/objects/creatures/monk.h"
+#include "game/objects/creatures/spider.h"
 #include "game/output.h"
 #include "game/phase.h"
 #include "game/random.h"
@@ -26,6 +29,8 @@
 #include <libtrx/enum_map.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/objects/creatures/bear.h>
+#include <libtrx/game/objects/creatures/wolf.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/game/ui/common.h>
 #include <libtrx/memory.h>
@@ -38,6 +43,7 @@
 typedef enum {
     M_MOD_UNKNOWN,
     M_MOD_OG,
+    M_MOD_GM,
     M_MOD_CUSTOM_LEVEL,
 } M_MOD;
 
@@ -54,6 +60,10 @@ static struct {
     [M_MOD_OG] = {
         .game_flow_path = "cfg/TR2X_gameflow.json5",
         .game_strings_path = "cfg/TR2X_strings.json5",
+    },
+    [M_MOD_GM] = {
+        .game_flow_path = "cfg/TR2X_gameflow_gm.json5",
+        .game_strings_path = "cfg/TR2X_strings_gm.json5",
     },
     [M_MOD_CUSTOM_LEVEL] = {
         .game_flow_path = "cfg/TR2X_gameflow_level.json5",
@@ -308,6 +318,9 @@ static void M_ParseArgs(SHELL_ARGS *const out_args)
     out_args->mod = M_MOD_OG;
 
     for (int32_t i = 0; i < arg_count; i++) {
+        if (!strcmp(args[i], "-gold")) {
+            out_args->mod = M_MOD_GM;
+        }
         if ((!strcmp(args[i], "-l") || !strcmp(args[i], "--level"))
             && i + 1 < arg_count) {
             out_args->level_to_play = args[i + 1];
@@ -377,6 +390,16 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 void Shell_Main(void)
 {
     M_ParseArgs(&m_Args);
+
+    if (m_Args.mod == M_MOD_GM) {
+        Object_Get(O_MONK_3)->setup_func = Monk3_Setup;
+        Object_Get(O_BEAR)->setup_func = Bear_Setup;
+        Object_Get(O_WOLF)->setup_func = Wolf_Setup;
+    } else {
+        Object_Get(O_MONK_1)->setup_func = Monk1_Setup;
+        Object_Get(O_SPIDER)->setup_func = Spider_Setup;
+        Object_Get(O_BIG_SPIDER)->setup_func = BigSpider_Setup;
+    }
 
     GameString_Init();
     EnumMap_Init();

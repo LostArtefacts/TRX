@@ -48,6 +48,7 @@ game with new enhancements and features.
 - added support for 60 FPS rendering
 - added a pause screen
 - added a photo mode feature
+- added combined support for The Golden Mask
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed secret rewards not displaying shotgun ammo
