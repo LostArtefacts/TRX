@@ -1,3 +1,5 @@
+#include "game/objects/creatures/bear.h"
+
 #include "config.h"
 #include "game/creature.h"
 #include "game/lara/common.h"
@@ -21,7 +23,11 @@
 #define BEAR_RUN_TURN      (5 * DEG_1) // = 910
 #define BEAR_WALK_TURN     (2 * DEG_1) // = 364
 #define BEAR_EAT_RANGE     SQUARE(WALL_L * 3 / 4) // = 589824
+#if TR_VERSION == 1
 #define BEAR_HITPOINTS     20
+#else
+#define BEAR_HITPOINTS     30
+#endif
 #define BEAR_RADIUS        (WALL_L / 3) // = 341
 #define BEAR_SMARTNESS     0x4000
 // clang-format on
@@ -47,29 +53,7 @@ static BITE m_BearHeadBite = { 0, 96, 335, 14 };
 static BITE m_BearHeadBite = { .pos = { 0, 96, 335 }, .mesh_num = 14 };
 #endif
 
-static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = Creature_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = BEAR_HITPOINTS;
-    obj->radius = BEAR_RADIUS;
-    obj->smartness = BEAR_SMARTNESS;
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-
-    Object_GetBone(obj, 13)->rot_y = true;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -79,12 +63,7 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const item = Item_Get(item_num);
     OBJECT *const obj = Object_Get(item->object_id);
-#if TR_VERSION == 1
-    const bool fix_bear_ai = g_Config.gameplay.fix_bear_ai;
-#else
-    const bool fix_bear_ai = false;
-#endif
-    obj->pivot_length = fix_bear_ai ? 0 : 500;
+    obj->pivot_length = g_Config.gameplay.fix_bear_ai ? 0 : 500;
 
     CREATURE *const bear = (CREATURE *)item->data;
     int16_t head = 0;
@@ -198,7 +177,8 @@ static void M_Control(const int16_t item_num)
             } else if (
                 info.bite
                 && info.distance
-                    < (fix_bear_ai ? BEAR_FIX_PAT_RANGE : BEAR_PAT_RANGE)) {
+                    < (g_Config.gameplay.fix_bear_ai ? BEAR_FIX_PAT_RANGE
+                                                     : BEAR_PAT_RANGE)) {
                 item->goal_anim_state = BEAR_STATE_ATTACK_2;
             } else {
                 item->goal_anim_state = BEAR_STATE_WALK;
@@ -248,6 +228,25 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-#if TR_VERSION == 1
-REGISTER_OBJECT(O_BEAR, M_Setup)
-#endif
+void Bear_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = Creature_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = BEAR_HITPOINTS;
+    obj->radius = BEAR_RADIUS;
+    obj->smartness = BEAR_SMARTNESS;
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+
+    Object_GetBone(obj, 13)->rot_y = true;
+}
+
+REGISTER_OBJECT(O_BEAR, Bear_Setup)

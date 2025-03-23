@@ -43,6 +43,11 @@
       "Image": "Graphics/graphic2.jpg",
       "Properties": [
         {
+          "Field": "fix_bear_ai",
+          "DataType": "Bool",
+          "DefaultValue": true
+        },
+        {
           "Field": "fix_m16_accuracy",
           "DataType": "Bool",
           "DefaultValue": true

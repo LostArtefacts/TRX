@@ -124,6 +124,10 @@
     "enable_exit_fade_effects": {
       "Title": "Effetti di dissolvenza in uscita",
       "Description": "Abilita gli effetti di dissolvenza quando si esce dal gioco."
+    },
+    "fix_bear_ai": {
+      "Title": "Correggi IA degli orsi",
+      "Description": "Risolve un problema per cui gli attacchi con le zampe d'orso non colpivano Lara quando indossava la Maschera d'oro."
     }
   }
 }

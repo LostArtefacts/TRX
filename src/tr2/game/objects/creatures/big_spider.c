@@ -1,3 +1,5 @@
+#include "game/objects/creatures/big_spider.h"
+
 #include "game/creature.h"
 #include "game/lara/control.h"
 #include "game/objects/common.h"
@@ -33,28 +35,7 @@ static const BITE m_SpiderBite = {
     .mesh_num = 1,
 };
 
-static void M_Setup(OBJECT *obj);
 static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = BIG_SPIDER_HITPOINTS;
-    obj->radius = BIG_SPIDER_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -132,4 +113,24 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, tilt);
 }
 
-REGISTER_OBJECT(O_BIG_SPIDER, M_Setup)
+void BigSpider_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = BIG_SPIDER_HITPOINTS;
+    obj->radius = BIG_SPIDER_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+REGISTER_OBJECT(O_BIG_SPIDER, BigSpider_Setup)
