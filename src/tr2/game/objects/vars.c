@@ -24,6 +24,7 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     O_WORKER_5,
     O_JELLY,
     O_SPIDER,
+    O_WOLF,
     O_BIG_SPIDER,
     O_BEAR,
     O_CROW,

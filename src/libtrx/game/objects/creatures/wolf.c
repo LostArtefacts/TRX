@@ -1,3 +1,5 @@
+#include "game/objects/creatures/wolf.h"
+
 #include "game/creature.h"
 #include "game/lara/common.h"
 #include "game/random.h"
@@ -18,7 +20,11 @@
 #define WOLF_SLEEP_CHANCE  32
 #define WOLF_HOWL_CHANCE   384
 #define WOLF_TOUCH         0x774F
+#if TR_VERSION == 1
 #define WOLF_HITPOINTS     6
+#else
+#define WOLF_HITPOINTS     10
+#endif
 #define WOLF_RADIUS        (WALL_L / 3) // = 341
 #define WOLF_SMARTNESS     0x2000
 // clang-format on
@@ -51,31 +57,8 @@ static BITE m_WolfJawBite = { 0, -14, 174, 6 };
 static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
 #endif
 
-static void M_Setup(OBJECT *obj);
 static void M_Initialise(int16_t item_num);
 static void M_Control(int16_t item_num);
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = WOLF_HITPOINTS;
-    obj->pivot_length = 375;
-    obj->radius = WOLF_RADIUS;
-    obj->smartness = WOLF_SMARTNESS;
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_anim = 1;
-    obj->save_flags = 1;
-
-    Object_GetBone(obj, 2)->rot_y = true;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -232,6 +215,26 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, tilt);
 }
 
-#if TR_VERSION == 1
-REGISTER_OBJECT(O_WOLF, M_Setup)
-#endif
+void Wolf_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->hit_points = WOLF_HITPOINTS;
+    obj->pivot_length = 375;
+    obj->radius = WOLF_RADIUS;
+    obj->smartness = WOLF_SMARTNESS;
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_anim = 1;
+    obj->save_flags = 1;
+
+    Object_GetBone(obj, 2)->rot_y = true;
+}
+
+REGISTER_OBJECT(O_WOLF, Wolf_Setup)
