@@ -272,6 +272,7 @@ OBJ_ID_DEFINE(O_EARTHQUAKE, 264)
 // that manually calls the setup routine overriding whatever information was in
 // the slot.
 OBJ_ID_DEFINE(O_MONK_3, O_MONK_1)
+OBJ_ID_DEFINE(O_BEAR, O_BIG_SPIDER)
 
 // Force the O_NUMBER_OF to be valid
 OBJ_ID_DEFINE(O_LAST, 264)
