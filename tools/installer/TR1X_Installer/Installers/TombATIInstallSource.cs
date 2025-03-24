@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using TRX_InstallerLib.Installers;
+using TRX_InstallerLib.Utils;
 
-namespace Installer.Installers;
+namespace TR1X_Installer.Installers;
 
 public class TombATIInstallSource : BaseInstallSource
 {
@@ -48,7 +47,7 @@ public class TombATIInstallSource : BaseInstallSource
         return !Directory.Exists(Path.Combine(sourceDirectory, "music"));
     }
 
-    public override bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory)
+    public override bool IsDownloadingExpansionNeeded(string sourceDirectory)
     {
         return !File.Exists(Path.Combine(sourceDirectory, "data", "cat.phd"));
     }

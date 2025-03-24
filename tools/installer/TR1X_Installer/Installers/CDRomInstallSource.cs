@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using TRX_InstallerLib.Installers;
+using TRX_InstallerLib.Utils;
 
-namespace Installer.Installers;
+namespace TR1X_Installer.Installers;
 
 public class CDRomInstallSource : BaseInstallSource
 {
@@ -47,7 +46,7 @@ public class CDRomInstallSource : BaseInstallSource
         return true;
     }
 
-    public override bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory)
+    public override bool IsDownloadingExpansionNeeded(string sourceDirectory)
     {
         return true;
     }

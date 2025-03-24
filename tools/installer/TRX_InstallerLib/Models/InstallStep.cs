@@ -1,4 +1,3 @@
-using Installer.Models;
 using TRX_InstallerLib.Installers;
 using TRX_InstallerLib.Utils;
 

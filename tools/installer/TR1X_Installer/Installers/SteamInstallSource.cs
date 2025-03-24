@@ -1,8 +1,7 @@
 using Microsoft.Win32;
-using System.Collections.Generic;
 using System.IO;
 
-namespace Installer.Installers;
+namespace TR1X_Installer.Installers;
 
 public class SteamInstallSource : GOGInstallSource
 {
