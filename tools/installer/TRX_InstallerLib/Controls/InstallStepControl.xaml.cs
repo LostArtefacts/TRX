@@ -1,5 +1,4 @@
-﻿using Installer.Models;
-using System.Windows;
+﻿using System.Windows;
 using TRX_InstallerLib.Models;
 using WC = System.Windows.Controls;
 

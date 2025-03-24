@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using TRX_InstallerLib.Installers;
+using TRX_InstallerLib.Utils;
 
-namespace Installer.Installers;
+namespace TR1X_Installer.Installers;
 
 public class TR1XInstallSource : BaseInstallSource
 {
@@ -27,10 +26,7 @@ public class TR1XInstallSource : BaseInstallSource
 
     public override string SuggestedInstallationDirectory
     {
-        get
-        {
-            return InstallUtils.GetPreviousInstallationPath() ?? base.SuggestedInstallationDirectory;
-        }
+        get => InstallUtils.GetPreviousInstallationPath() ?? base.SuggestedInstallationDirectory;
     }
 
     public override bool IsImportingSavesSupported => true;
@@ -57,7 +53,7 @@ public class TR1XInstallSource : BaseInstallSource
         return !Directory.Exists(Path.Combine(sourceDirectory, "music"));
     }
 
-    public override bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory)
+    public override bool IsDownloadingExpansionNeeded(string sourceDirectory)
     {
         return !File.Exists(Path.Combine(sourceDirectory, "data", "cat.phd"));
     }

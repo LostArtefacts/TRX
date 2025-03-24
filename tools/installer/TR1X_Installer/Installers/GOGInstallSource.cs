@@ -1,15 +1,13 @@
 using DiscUtils.Iso9660;
 using DiscUtils.Streams;
-using Installer.Utils;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using TRX_InstallerLib.Installers;
+using TRX_InstallerLib.Models;
+using TRX_InstallerLib.Utils;
 
-namespace Installer.Installers;
+namespace TR1X_Installer.Installers;
 
 public class GOGInstallSource : BaseInstallSource
 {
@@ -50,7 +48,7 @@ public class GOGInstallSource : BaseInstallSource
         }
         catch (Exception e)
         {
-            throw new ApplicationException($"Could not read CUE {cuePath}:\n{e.Message}");
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_cue_failure"], cuePath, e.Message));
         }
 
         try
@@ -60,7 +58,7 @@ public class GOGInstallSource : BaseInstallSource
         }
         catch (Exception e)
         {
-            throw new ApplicationException($"Could not convert BIN to ISO: {e.Message}");
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_converting_bin_failure"], e.Message));
         }
 
         try
@@ -73,14 +71,14 @@ public class GOGInstallSource : BaseInstallSource
             {
                 MaximumValue = 1,
                 CurrentValue = 0,
-                Description = "Scanning the source directory",
+                Description = Language.Instance.Controls!["progress_scanning_source"],
             });
             var filesToExtract = GetFilesToExtract(reader.Root);
             progress.Report(new InstallProgress
             {
                 MaximumValue = filesToExtract.Count(),
                 CurrentValue = 0,
-                Description = "Preparing to extract the ISO",
+                Description = Language.Instance.Controls!["progress_preparing_extract"],
             });
             foreach (var path in filesToExtract)
             {
@@ -90,7 +88,7 @@ public class GOGInstallSource : BaseInstallSource
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
 
                     using SparseStream sourceStream = reader.OpenFile(path, FileMode.Open, FileAccess.Read);
-                    var readAllByte = new Byte[sourceStream.Length];
+                    var readAllByte = new byte[sourceStream.Length];
                     sourceStream.Read(readAllByte, 0, readAllByte.Length);
 
                     using FileStream targetStream = new(targetPath, FileMode.Create);
@@ -102,13 +100,13 @@ public class GOGInstallSource : BaseInstallSource
                 {
                     MaximumValue = filesToExtract.Count(),
                     CurrentValue = ++currentProgress,
-                    Description = $"Extracting {path}",
+                    Description = string.Format(Language.Instance.Controls!["progress_extracting"], path)
                 });
             }
         }
         catch (Exception e)
         {
-            throw new ApplicationException($"Could not open converted ISO: {e.Message}");
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_converting_iso_failure"], e.Message));
         }
 
         File.Delete(isoPath);
@@ -121,7 +119,7 @@ public class GOGInstallSource : BaseInstallSource
         return true;
     }
 
-    public override bool IsDownloadingUnfinishedBusinessNeeded(string sourceDirectory)
+    public override bool IsDownloadingExpansionNeeded(string sourceDirectory)
     {
         return true;
     }

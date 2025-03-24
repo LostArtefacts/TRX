@@ -1,4 +1,4 @@
-namespace Installer.Models;
+namespace TRX_InstallerLib.Models;
 
 public class LogEventArgs
 {
