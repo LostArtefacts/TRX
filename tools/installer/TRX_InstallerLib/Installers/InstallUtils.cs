@@ -69,11 +69,10 @@ public static class InstallUtils
         }
     }
 
-    public static void CreateDesktopShortcut(string name, string targetPath, string[]? args = null)
+    public static void CreateDesktopShortcut(string name, string title, string targetPath, string[]? args = null)
     {
         var shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"{name}.lnk");
-        // TODO: pass extra arg for this
-        ShortcutUtils.CreateShortcut(shortcutPath, targetPath, "Tomb Raider I: Community Edition", args);
+        ShortcutUtils.CreateShortcut(shortcutPath, targetPath, title, args);
     }
 
     public static async Task<byte[]> DownloadFile(string url, IProgress<InstallProgress> progress)

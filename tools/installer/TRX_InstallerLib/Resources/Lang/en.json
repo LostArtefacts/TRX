@@ -35,6 +35,7 @@
     "progress_copying": "Copying {0}",
     "progress_skipped": "Copying {0} - skipped",
     "progress_init_download": "Initializing download of {0}",
+    "progress_expansion_undefined": "No target zip defined for expansion pack type {0}",
     "progress_downloading": "Downloading {0}",
     "progress_opening_zip": "Opening embedded ZIP",
     "progress_zip_failure": "Could not open embedded ZIP.",

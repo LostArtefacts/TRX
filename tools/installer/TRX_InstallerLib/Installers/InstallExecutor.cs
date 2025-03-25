@@ -82,10 +82,12 @@ public class InstallExecutor
 
     protected static void CreateDesktopShortcut(string targetDirectory)
     {
-        InstallUtils.CreateDesktopShortcut("TR1X", Path.Combine(targetDirectory, "TR1X.exe"));
-        if (File.Exists(Path.Combine(targetDirectory, "data", "cat.phd")))
+        string targetExe = Path.Combine(targetDirectory, TRXConstants.Instance.Exe);
+        InstallUtils.CreateDesktopShortcut(TRXConstants.Instance.Game!, TRXConstants.Instance.ShortcutTitle!, targetExe);
+        if (File.Exists(Path.Combine(targetDirectory, "data", TRXConstants.Instance.GoldFileIdentifier!)))
         {
-            InstallUtils.CreateDesktopShortcut("TR1X - UB", Path.Combine(targetDirectory, "TR1X.exe"), new[] { "-gold" });
+            InstallUtils.CreateDesktopShortcut(TRXConstants.Instance.GoldGame!, TRXConstants.Instance.ShortcutTitle!,
+                targetExe, new[] { TRXConstants.Instance.GoldArgs! });
         }
     }
 
@@ -96,8 +98,12 @@ public class InstallExecutor
 
     protected static async Task DownloadExpansionFiles(string targetDirectory, ExpansionPackType type, IProgress<InstallProgress> progress)
     {
-        await InstallUtils.DownloadZip(
-            $"{_resourceBaseURL}/trub-{type.ToString().ToLower()}.zip",
-            targetDirectory, progress);
+        string? zipName = null;
+        TRXConstants.Instance.GoldZips?.TryGetValue(type, out zipName);
+        if (zipName == null)
+        {
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_expansion_undefined"], type));
+        }
+        await InstallUtils.DownloadZip($"{_resourceBaseURL}/{zipName}", targetDirectory, progress);
     }
 }

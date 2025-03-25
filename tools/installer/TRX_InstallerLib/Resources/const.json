@@ -1,4 +1,5 @@
 {
   "Game": "TRX",
-  "AllowExpansionTypeSelection": false
+  "AllowExpansionTypeSelection": false,
+  "GoldArgs": "-gold"
 }

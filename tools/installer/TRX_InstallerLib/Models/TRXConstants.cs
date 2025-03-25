@@ -14,6 +14,11 @@ public class TRXConstants
     }
 
     public string? Game { get; set; }
+    public string? GoldGame { get; set; }
+    public string? GoldFileIdentifier { get; set; }
+    public string Exe => $"{Game}.exe";
     public bool? AllowExpansionTypeSelection { get; set; }
-    
+    public string? GoldArgs { get; set; }
+    public string? ShortcutTitle { get; set; }
+    public Dictionary<ExpansionPackType, string>? GoldZips { get; set; }
 }
