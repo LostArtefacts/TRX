@@ -620,6 +620,11 @@ static void M_CheckUnbindKey(INPUT_BACKEND backend, INPUT_LAYOUT layout)
         m_Text[TEXT_UNBIND], &m_ProgressBars[M_PROGERSS_BAR_UNBIND], progress);
 }
 
+bool Option_Controls_IsKeyChangeMode(void)
+{
+    return m_KeyMode == KM_CHANGE || m_KeyMode == KM_CHANGEKEYUP;
+}
+
 CONTROL_MODE Option_Controls_Control(
     INVENTORY_ITEM *inv_item, const bool is_busy, INPUT_BACKEND backend)
 {
