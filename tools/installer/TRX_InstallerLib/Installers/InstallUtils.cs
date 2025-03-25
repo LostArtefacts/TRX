@@ -21,6 +21,7 @@ public static class InstallUtils
         string targetDirectory,
         IProgress<InstallProgress> progress,
         Func<string, bool>? filterCallback = null,
+        Func<string, string>? targetCallback = null,
         Func<string, bool>? overwriteCallback = null
     )
     {
@@ -37,6 +38,10 @@ public static class InstallUtils
                     continue;
                 }
                 var relPath = Path.GetRelativePath(sourceDirectory, sourcePath);
+                if (targetCallback is not null)
+                {
+                    relPath = targetCallback(relPath) ?? relPath;
+                }
                 var targetPath = Path.Combine(targetDirectory, relPath);
                 var isSamePath = string.Equals(Path.GetFullPath(sourcePath), Path.GetFullPath(targetPath), StringComparison.OrdinalIgnoreCase);
                 if (!File.Exists(targetPath) || (overwriteCallback is not null && overwriteCallback(sourcePath) && !isSamePath))
@@ -129,9 +134,8 @@ public static class InstallUtils
                 {
                     continue;
                 }
-                var targetPath = Path.Combine(
-                        targetDirectory,
-                        new Regex(@"[\\/]").Replace(entry.FullName, Path.DirectorySeparatorChar.ToString()));
+                var relPath = BaseInstallSource.ConvertTargetPath(new Regex(@"[\\/]").Replace(entry.FullName, Path.DirectorySeparatorChar.ToString()));
+                var targetPath = Path.Combine(targetDirectory, relPath);
 
                 if (!File.Exists(targetPath) || overwrite)
                 {
@@ -139,7 +143,7 @@ public static class InstallUtils
                     {
                         CurrentValue = currentProgress,
                         MaximumValue = maximumProgress,
-                        Description = string.Format(Language.Instance.Controls!["progress_extracting"], entry.FullName),
+                        Description = string.Format(Language.Instance.Controls!["progress_extracting"], relPath),
                     });
 
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
@@ -151,7 +155,7 @@ public static class InstallUtils
                     {
                         CurrentValue = currentProgress,
                         MaximumValue = maximumProgress,
-                        Description = string.Format(Language.Instance.Controls!["progress_extracting_skipped"], entry.FullName),
+                        Description = string.Format(Language.Instance.Controls!["progress_extracting_skipped"], relPath),
                     });
                 }
 

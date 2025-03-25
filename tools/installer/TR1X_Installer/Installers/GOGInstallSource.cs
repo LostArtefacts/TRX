@@ -82,7 +82,8 @@ public class GOGInstallSource : BaseInstallSource
             });
             foreach (var path in filesToExtract)
             {
-                var targetPath = Path.Combine(targetDirectory, path);
+                var relPath = ConvertTargetPath(path);
+                var targetPath = Path.Combine(targetDirectory, relPath);
                 if (!File.Exists(targetPath))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
@@ -100,7 +101,7 @@ public class GOGInstallSource : BaseInstallSource
                 {
                     MaximumValue = filesToExtract.Count(),
                     CurrentValue = ++currentProgress,
-                    Description = string.Format(Language.Instance.Controls!["progress_extracting"], path)
+                    Description = string.Format(Language.Instance.Controls!["progress_extracting"], relPath)
                 });
             }
         }

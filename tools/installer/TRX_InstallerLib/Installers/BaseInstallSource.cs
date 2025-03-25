@@ -35,4 +35,22 @@ public abstract class BaseInstallSource : IInstallSource
     public abstract bool IsDownloadingExpansionNeeded(string sourceDirectory);
 
     public abstract bool IsGameFound(string sourceDirectory);
+
+    public static string ConvertTargetPath(string relPath)
+    {
+        string ext = Path.GetExtension(relPath).ToLower();
+        switch (ext)
+        {
+            case ".pcx":
+                relPath = @$"data\images\og\{Path.GetFileName(relPath)}";
+                break;
+            case ".json5":
+            case ".exe":
+                return relPath;
+            default:
+                break;
+        }
+
+        return relPath.ToLower();
+    }
 }
