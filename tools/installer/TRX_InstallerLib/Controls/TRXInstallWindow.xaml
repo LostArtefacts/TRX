@@ -90,17 +90,17 @@
                 <Button
                     Command="{Binding GoToPreviousStepCommand}"
                     Visibility="{Binding IsFinalStep, Converter={StaticResource BoolToHiddenConverter}}"
-                    Content="_Back" />
+                    Content="{Binding ViewText[command_back]}" />
                 <Button
                     Grid.Column="1"
                     Command="{Binding GoToNextStepCommand}"
                     Visibility="{Binding IsFinalStep, Converter={StaticResource BoolToHiddenConverter}}"
-                    Content="_Next" />
+                    Content="{Binding ViewText[command_next]}" />
                 <Button
                     Grid.Column="2"
                     Command="{Binding CloseWindowCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{Binding IsFinalStep, Converter={utils:ConditionalMarkupConverter TrueValue='_Close', FalseValue='_Cancel'}}" />
+                    Content="{Binding IsFinalStep, Converter={utils:ConditionalViewTextConverter TrueValue='command_close', FalseValue='command_cancel'}}" />
             </Grid>
         </Grid>
     </Grid>

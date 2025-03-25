@@ -52,7 +52,7 @@ public class InstallExecutor
             CreateDesktopShortcut(_settings.TargetDirectory);
         }
 
-        progress.Report(new InstallProgress { Description = "Finished", Finished = true });
+        progress.Report(new InstallProgress { Description = Language.Instance.Controls!["progress_finished"], Finished = true });
     }
 
     protected async Task CopyOriginalGameFiles(string sourceDirectory, string targetDirectory, IProgress<InstallProgress> progress)
@@ -72,11 +72,11 @@ public class InstallExecutor
         {
             CurrentValue = 0,
             MaximumValue = 1,
-            Description = "Opening embedded ZIP",
+            Description = Language.Instance.Controls!["progress_opening_zip"],
         });
 
         using var stream = AssemblyUtils.GetResourceStream("Resources.release.zip", false)
-            ?? throw new ApplicationException($"Could not open embedded ZIP.");
+            ?? throw new ApplicationException(Language.Instance.Controls!["progress_zip_failure"]);
         await InstallUtils.ExtractZip(stream, targetDirectory, progress, overwrite: true);
     }
 

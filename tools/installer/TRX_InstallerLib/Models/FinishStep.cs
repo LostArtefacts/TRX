@@ -2,7 +2,7 @@ using TRX_InstallerLib.Utils;
 
 namespace TRX_InstallerLib.Models;
 
-public class FinishStep : BaseNotifyPropertyChanged, IStep
+public class FinishStep : BaseLanguageViewModel, IStep
 {
     public FinishStep(FinishSettings finishSettings)
     {

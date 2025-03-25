@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 
 using System.Text.RegularExpressions;
+using TRX_InstallerLib.Models;
 
 namespace TRX_InstallerLib.Utils;
 
@@ -146,7 +147,7 @@ public static class ShortcutUtils
         var headerSize = br.ReadUInt32();
         if (headerSize != 0x4C)
         {
-            throw new ApplicationException("Invalid LNK signature");
+            throw new ApplicationException(Language.Instance.Controls!["shortcut_signature_failure"]);
         }
 
         br.ReadBytes(0x10); // skip LinkCLSID
@@ -230,6 +231,6 @@ public static class ShortcutUtils
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), relativePath);
         }
 
-        throw new ApplicationException("Unable to determine link target path");
+        throw new ApplicationException(Language.Instance.Controls!["shortcut_target_failure"]);
     }
 }

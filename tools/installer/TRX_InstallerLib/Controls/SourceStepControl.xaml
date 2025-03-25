@@ -7,8 +7,8 @@
     xmlns:controls="clr-namespace:TRX_InstallerLib.Controls"
     xmlns:models="clr-namespace:TRX_InstallerLib.Models"
     xmlns:utils="clr-namespace:TRX_InstallerLib.Utils"
-    d:DataContext="{d:DesignInstance Type=models:MainWindowViewModel}"
-    mc:Ignorable="d" 
+    d:DataContext="{d:DesignInstance Type=models:SourceStep}"
+    mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="30" />
@@ -29,17 +29,16 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
-            Step 1: Choose installation source
-        </TextBlock>
+        <TextBlock
+            Style="{StaticResource heading}"
+            Text="{Binding ViewText[step_source_heading]}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,10">
-            TR1X requires original game files to run.
-            <LineBreak />
-            Please choose the source location where to install the data files from.
-            <LineBreak />
-            If you're upgrading an existing installation, please choose TR1X.
-        </TextBlock>
+        <TextBlock
+            Grid.Row="1"
+            TextWrapping="Wrap"
+            VerticalAlignment="Center"
+            Margin="0,0,0,10"
+            Text="{Binding ViewText[step_source_content]}"/>
 
         <ListView
             BorderThickness="0"

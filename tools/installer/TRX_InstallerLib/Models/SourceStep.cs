@@ -4,7 +4,7 @@ using TRX_InstallerLib.Utils;
 
 namespace TRX_InstallerLib.Models;
 
-public class SourceStep : BaseNotifyPropertyChanged, IStep
+public class SourceStep : BaseLanguageViewModel, IStep
 {
     public SourceStep(IEnumerable<IInstallSource> installSources)
     {

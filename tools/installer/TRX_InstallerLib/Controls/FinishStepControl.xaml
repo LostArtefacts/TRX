@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:TRX_InstallerLib.Models"
     d:DataContext="{d:DesignInstance Type=models:FinishStep}"
-    mc:Ignorable="d" 
+    mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -14,19 +14,17 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical">
-        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
-            Step 4: Done
-        </TextBlock>
+        <TextBlock
+            Style="{StaticResource heading}"
+            Text="{Binding ViewText[step_finish_heading]}"/>
 
-        <TextBlock VerticalAlignment="Center" Margin="0,0,0,12" TextWrapping="Wrap">
-            Installation complete. To configure more advanced features, you can edit the JSON files in the cfg/ directory with a text editor.
-        </TextBlock>
+        <TextBlock
+            VerticalAlignment="Center"
+            Margin="0,0,0,24"
+            TextWrapping="Wrap"
+            Text="{Binding ViewText[step_finish_content]}"/>
 
-        <TextBlock VerticalAlignment="Center" Margin="0,0,0,12">
-            Happy raiding :)
-        </TextBlock>
-
-        <CheckBox IsChecked="{Binding FinishSettings.OpenGameDirectory}" Content="Open game directory after closing this window" Margin="0,0,0,12" />
-        <CheckBox IsChecked="{Binding FinishSettings.LaunchGame}" Content="Launch the game after closing this window" Margin="0,0,0,12" />
+        <CheckBox IsChecked="{Binding FinishSettings.OpenGameDirectory}" Content="{Binding ViewText[step_finish_open_directory]}" Margin="0,0,0,12" />
+        <CheckBox IsChecked="{Binding FinishSettings.LaunchGame}" Content="{Binding ViewText[step_finish_open_game]}" Margin="0,0,0,12" />
     </StackPanel>
 </UserControl>

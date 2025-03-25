@@ -50,8 +50,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Padding="0" Margin="0,-3,12,3" VerticalAlignment="Top" Style="{StaticResource subHeading}" Text="{Binding InstallSource.SourceName}" Height="16" />
-            <TextBlock Grid.Column="1" Padding="0" Margin="0,-3,0,3" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource subHeadingFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibleConverter}}" Text="Found" />
-            <TextBlock Grid.Column="1" Padding="0" Margin="0,-3,0,3" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource subHeadingNotFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToHiddenConverter}}" Text="Not found" />
+            <TextBlock Grid.Column="1" Padding="0" Margin="0,-3,0,3" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource subHeadingFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibleConverter}}" Text="{Binding ViewText[label_found]}" />
+            <TextBlock Grid.Column="1" Padding="0" Margin="0,-3,0,3" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource subHeadingNotFound}" Visibility="{Binding IsAvailable, Converter={StaticResource BoolToHiddenConverter}}" Text="{Binding ViewText[label_not_found]}" />
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1">
@@ -59,9 +59,12 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{Binding SourceDirectory, TargetNullValue='(no folder selected)'}" TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{Binding ViewText[label_folder_not_selected]}" Visibility="{Binding IsSourceDirectoryDefined, Converter={StaticResource BoolToHiddenConverter}}" />
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{Binding SourceDirectory}" TextTrimming="CharacterEllipsis" />
             <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="6,0,0,0">
-                <Hyperlink Command="{Binding ChooseLocationCommand}" >(change)</Hyperlink>
+                <Hyperlink Command="{Binding ChooseLocationCommand}">
+                    <Run Text="{Binding ViewText[command_change_link]}"/>
+                </Hyperlink>
             </TextBlock>
         </Grid>
     </Grid>

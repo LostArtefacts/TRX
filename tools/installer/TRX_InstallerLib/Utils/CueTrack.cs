@@ -1,4 +1,5 @@
 using System.IO;
+using TRX_InstallerLib.Models;
 
 namespace TRX_InstallerLib.Utils;
 
@@ -78,7 +79,7 @@ public class CueTrack
                     {
                         MaximumValue = (int)TotalBytes,
                         CurrentValue = (int)convertedBytes,
-                        Description = "Converting BIN to ISO"
+                        Description = Language.Instance.Controls!["progress_converting_bin"],
                     });
                 }
 
@@ -87,14 +88,14 @@ public class CueTrack
         }
         catch (Exception e)
         {
-            throw new ApplicationException(string.Format(" Could not write to track file {0}: {1}", targetPath, e.Message));
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_track_write_failure"], targetPath, e.Message));
         }
 
         progress.Report(new InstallProgress
         {
             MaximumValue = (int)TotalBytes,
             CurrentValue = (int)TotalBytes,
-            Description = "Converting BIN to ISO",
+            Description = Language.Instance.Controls!["progress_converting_bin"],
         });
     }
 
@@ -169,7 +170,7 @@ public class CueTrack
         }
         catch (Exception e)
         {
-            throw new ApplicationException($"Could not open BIN {BinFilePath}: {e.Message}");
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_bin_failure"], BinFilePath, e.Message));
         }
         try
         {
@@ -177,7 +178,7 @@ public class CueTrack
         }
         catch (Exception e)
         {
-            throw new ApplicationException(string.Format("Could not seek to track location: {0}", e.Message));
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_track_seek_failure"], e.Message));
         }
         return fileStream;
     }

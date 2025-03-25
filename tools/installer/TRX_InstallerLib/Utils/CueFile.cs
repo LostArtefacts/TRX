@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.RegularExpressions;
+using TRX_InstallerLib.Models;
 
 namespace TRX_InstallerLib.Utils;
 
@@ -19,7 +20,7 @@ public class CueFile
         MatchCollection fileMatches = _fileGroupRegex.Matches(cueFileContent);
         if (fileMatches.Count == 0)
         {
-            throw new ApplicationException($"Could not parse {cueFilePath}: no tracks were found");
+            throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_cue_empty"], cueFilePath));
         }
 
         foreach (Match fileMatch in fileMatches.Cast<Match>())
@@ -29,7 +30,7 @@ public class CueFile
 
             if (matches.Count == 0)
             {
-                throw new ApplicationException($"Could not parse {cueFilePath}: no tracks were found");
+                throw new ApplicationException(string.Format(Language.Instance.Controls!["progress_cue_empty"], cueFilePath));
             }
 
             CueTrack? track = null;

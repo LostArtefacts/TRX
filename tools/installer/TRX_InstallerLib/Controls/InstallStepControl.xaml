@@ -24,9 +24,9 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Vertical">
-            <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
-                Step 3: Installing
-            </TextBlock>
+            <TextBlock
+                Style="{StaticResource heading}"
+                Text="{Binding ViewText[step_install_heading]}"/>
 
             <TextBlock VerticalAlignment="Center" Margin="0,0,0,12" Text="{Binding Description}" />
 
