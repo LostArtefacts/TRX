@@ -54,6 +54,16 @@ public static class InstallUtils
                     });
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
                     await Task.Run(() => File.Copy(sourcePath, targetPath, true));
+
+                    try
+                    {
+                        var file = new FileInfo(targetPath);
+                        if (file.Attributes.HasFlag(FileAttributes.ReadOnly))
+                        {
+                            file.IsReadOnly = false;
+                        }
+                    }
+                    catch { }
                 }
                 else
                 {
