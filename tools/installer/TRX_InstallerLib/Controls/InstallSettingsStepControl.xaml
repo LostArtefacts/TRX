@@ -7,7 +7,7 @@
     xmlns:models="clr-namespace:TRX_InstallerLib.Models"
     xmlns:utils="clr-namespace:TRX_InstallerLib.Utils"
     d:DataContext="{d:DesignInstance Type=models:InstallSettingsStep}"
-    mc:Ignorable="d" 
+    mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -20,9 +20,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,12" Style="{StaticResource heading}">
-            Step 2: Installation options
-        </TextBlock>
+        <TextBlock
+            Style="{StaticResource heading}"
+            Text="{Binding ViewText[step_settings_heading]}"/>
 
         <ScrollViewer Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ScrollViewer.Template>
@@ -82,15 +82,10 @@
             <StackPanel Orientation="Vertical">
                 <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.DownloadMusic}" IsEnabled="{Binding InstallSettings.IsDownloadingMusicNeeded}">
                     <TextBlock TextWrapping="Wrap">
-                        Download music tracks
-                        <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingMusicNeeded, Converter={utils:ConditionalMarkupConverter TrueValue='', FalseValue='(already found)'}, Mode=OneWay}" />
+                        <Run Text="{Binding ViewText[step_settings_music_heading]}"/>
+                        <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingMusicNeeded, Converter={utils:ConditionalViewTextConverter TrueValue='', FalseValue='label_already_found'}, Mode=OneWay}" />
                         <LineBreak />
-                        <Run Style="{StaticResource small}">
-                            This option lets you download compatible music files for the game
-                            automatically (60 MB). The legality of these files is disputable;
-                            the most legal way to import the music to PC is to obtain them from
-                            your own source - TR2 supports FLAC, OOG, MP3 and WAV files.
-                        </Run>
+                        <Run Style="{StaticResource small}" Text="{Binding ViewText[step_settings_music_content]}"/>
                     </TextBlock>
                 </CheckBox>
 
@@ -100,33 +95,31 @@
                             <utils:ComparisonConverter x:Key="ComparisonConverter" />
                         </StackPanel.Resources>
                         <TextBlock TextWrapping="Wrap" Margin="0,0,0,6">
-                            Download Unfinished Business expansion pack
-                            <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingExpansionNeeded, Converter={utils:ConditionalMarkupConverter TrueValue='', FalseValue='(already found)'}, Mode=OneWay}" />
+                            <Run Text="{Binding ViewText[step_settings_expansion_heading]}"/>
+                            <Run Foreground="ForestGreen" Text="{Binding InstallSettings.IsDownloadingExpansionNeeded, Converter={utils:ConditionalViewTextConverter TrueValue='', FalseValue='label_already_found'}, Mode=OneWay}" />
                             <LineBreak />
-                            <Run Style="{StaticResource small}">
-                            The Unfinished Business expansion pack was made freeware. However, the Steam and GOG versions do not ship it. This option lets you download the expansion files automatically (6 MB).
-                            </Run>
+                            <Run Style="{StaticResource small}" Text="{Binding ViewText[step_settings_expansion_content]}"/>
                         </TextBlock>
-                        <RadioButton IsEnabled="{Binding InstallSettings.DownloadExpansionPack}" Style="{StaticResource small}" Margin="0,0,0,6" Content="Fan-made edition (includes music triggers)"
+                        <RadioButton IsEnabled="{Binding InstallSettings.DownloadExpansionPack}" Style="{StaticResource small}" Margin="0,0,0,6" Content="{Binding ViewText[step_settings_expansion_music]}"
                                      IsChecked="{Binding Path=InstallSettings.ExpansionPackType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static models:ExpansionPackType.Music}}"/>
-                        <RadioButton IsEnabled="{Binding InstallSettings.DownloadExpansionPack}" Style="{StaticResource small}" Margin="0,0,0,6" Content="Original edition (does not include music triggers)"
+                        <RadioButton IsEnabled="{Binding InstallSettings.DownloadExpansionPack}" Style="{StaticResource small}" Margin="0,0,0,6" Content="{Binding ViewText[step_settings_expansion_vanilla]}"
                                      IsChecked="{Binding Path=InstallSettings.ExpansionPackType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static models:ExpansionPackType.Vanilla}}"/>
                     </StackPanel>
                 </CheckBox>
 
                 <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.ImportSaves}" IsEnabled="{Binding InstallSettings.InstallSource.IsImportingSavesSupported}">
                     <TextBlock TextWrapping="Wrap">
-                        Import saves
+                        <Run Text="{Binding ViewText[step_settings_saves_header]}"/>
                         <LineBreak />
-                        <Run Style="{StaticResource small}">
-                            Imports existing savegame files. Only TombATI and TR1X savegame format is supported at this time.
-                        </Run>
+                        <Run Style="{StaticResource small}" Text="{Binding ViewText[step_settings_saves_content]}"/>
                     </TextBlock>
                 </CheckBox>
 
-                <CheckBox VerticalAlignment="Center" Margin="0,0,0,12" IsChecked="{Binding InstallSettings.CreateDesktopShortcut}">
-                    Create desktop shortcut
-                </CheckBox>
+                <CheckBox
+                    VerticalAlignment="Center"
+                    Margin="0,0,0,12"
+                    IsChecked="{Binding InstallSettings.CreateDesktopShortcut}"
+                    Content="{Binding ViewText[step_settings_shortcut_heading]}"/>
 
                 <Separator />
 
@@ -136,9 +129,9 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" Padding="0" Content="Destination folder:" />
+                    <Label Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0" Padding="0" Content="{Binding ViewText[label_destination_folder]}" />
                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding InstallSettings.TargetDirectory}" TextTrimming="CharacterEllipsis" />
-                    <Button Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0" Command="{Binding ChooseLocationCommand}" Content="Change..." />
+                    <Button Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0" Command="{Binding ChooseLocationCommand}" Content="{Binding ViewText[command_change]}" />
                 </Grid>
             </StackPanel>
         </ScrollViewer>

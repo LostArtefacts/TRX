@@ -4,12 +4,12 @@ using System.Windows.Markup;
 
 namespace TRX_InstallerLib.Utils;
 
-public sealed class ConditionalMarkupConverter : MarkupExtension, IValueConverter
+public class ConditionalMarkupConverter : MarkupExtension, IValueConverter
 {
     public object FalseValue { get; set; } = new();
     public object TrueValue { get; set; } = new();
 
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return value is true ? TrueValue : FalseValue;
     }

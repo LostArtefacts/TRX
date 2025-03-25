@@ -1,3 +1,5 @@
+using TRX_InstallerLib.Models;
+
 namespace TRX_InstallerLib.Utils;
 
 public class FileBrowser
@@ -6,7 +8,7 @@ public class FileBrowser
     {
         using var dlg = new FolderBrowserDialog()
         {
-            Description = "Choose directory",
+            Description = Language.Instance.Controls!["label_select_folder"],
             SelectedPath = initialDirectory,
             ShowNewFolderButton = true,
         };

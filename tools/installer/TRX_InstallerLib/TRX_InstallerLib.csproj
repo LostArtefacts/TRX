@@ -9,9 +9,11 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\const.json" />
+    <None Remove="Resources\Lang\en.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\const.json" />
+    <EmbeddedResource Include="Resources\Lang\en.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

@@ -4,7 +4,7 @@ using TRX_InstallerLib.Utils;
 
 namespace TRX_InstallerLib.Models;
 
-public class InstallStep : BaseNotifyPropertyChanged, IStep
+public class InstallStep : BaseLanguageViewModel, IStep
 {
     public InstallStep(InstallSettings installSettings)
     {

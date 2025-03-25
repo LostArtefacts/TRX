@@ -26,7 +26,7 @@ public static class InstallUtils
     {
         try
         {
-            progress.Report(new InstallProgress { Description = "Scanning directory" });
+            progress.Report(new InstallProgress { Description = Language.Instance.Controls!["progress_scanning"] });
             var files = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories);
             var currentProgress = 0;
             var maximumProgress = files.Length;
@@ -45,7 +45,7 @@ public static class InstallUtils
                     {
                         CurrentValue = currentProgress,
                         MaximumValue = maximumProgress,
-                        Description = $"Copying {relPath}",
+                        Description = string.Format(Language.Instance.Controls!["progress_copying"], relPath),
                     });
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
                     await Task.Run(() => File.Copy(sourcePath, targetPath, true));
@@ -56,7 +56,7 @@ public static class InstallUtils
                     {
                         CurrentValue = currentProgress,
                         MaximumValue = maximumProgress,
-                        Description = $"Copying {relPath} - skipped",
+                        Description = string.Format(Language.Instance.Controls!["progress_skipped"], relPath),
                     });
                 }
 
@@ -65,7 +65,7 @@ public static class InstallUtils
         }
         catch (Exception e)
         {
-            throw new ApplicationException($"Could not extract ZIP:\n{e.Message}");
+            throw new ApplicationException(e.Message);
         }
     }
 
@@ -79,14 +79,14 @@ public static class InstallUtils
     public static async Task<byte[]> DownloadFile(string url, IProgress<InstallProgress> progress)
     {
         HttpProgressClient wc = new();
-        progress.Report(new InstallProgress { Description = $"Initializing download of {url}" });
+        progress.Report(new InstallProgress { Description = string.Format(Language.Instance.Controls!["progress_init_download"], url) });
         wc.DownloadProgressChanged += (totalBytesToReceive, bytesReceived) =>
         {
             progress.Report(new InstallProgress
             {
                 CurrentValue = (int)bytesReceived,
                 MaximumValue = (int)totalBytesToReceive,
-                Description = $"Downloading {url}",
+                Description = string.Format(Language.Instance.Controls!["progress_downloading"], url),
             });
         };
         return await wc.DownloadDataTaskAsync(new Uri(url));
@@ -116,7 +116,7 @@ public static class InstallUtils
             using var zip = new ZipArchive(stream);
             progress.Report(new InstallProgress
             {
-                Description = "Scanning ZIP",
+                Description = Language.Instance.Controls!["progress_scanning_zip"],
             });
             var currentProgress = 0;
             var maximumProgress = zip.Entries.Count;
@@ -140,7 +140,7 @@ public static class InstallUtils
                     {
                         CurrentValue = currentProgress,
                         MaximumValue = maximumProgress,
-                        Description = $"Extracting {entry.FullName}",
+                        Description = string.Format(Language.Instance.Controls!["progress_extracting"], entry.FullName),
                     });
 
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
@@ -152,7 +152,7 @@ public static class InstallUtils
                     {
                         CurrentValue = currentProgress,
                         MaximumValue = maximumProgress,
-                        Description = $"Extracting {entry.FullName} - skipped",
+                        Description = string.Format(Language.Instance.Controls!["progress_extracting_skipped"], entry.FullName),
                     });
                 }
 
@@ -161,7 +161,7 @@ public static class InstallUtils
         }
         catch (Exception e)
         {
-            throw new ApplicationException($"Could not extract ZIP:\n{e.Message}");
+            throw new ApplicationException(e.Message);
         }
     }
 

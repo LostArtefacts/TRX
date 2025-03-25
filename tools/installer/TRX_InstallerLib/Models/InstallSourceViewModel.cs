@@ -4,7 +4,7 @@ using TRX_InstallerLib.Utils;
 
 namespace TRX_InstallerLib.Models;
 
-public class InstallSourceViewModel : BaseNotifyPropertyChanged
+public class InstallSourceViewModel : BaseLanguageViewModel
 {
     public InstallSourceViewModel(IInstallSource source)
     {
@@ -38,6 +38,11 @@ public class InstallSourceViewModel : BaseNotifyPropertyChanged
         }
     }
 
+    public bool IsSourceDirectoryDefined
+    {
+        get => SourceDirectory != null;
+    }
+
     public string? SourceDirectory
     {
         get => _sourceDirectory;
@@ -48,6 +53,7 @@ public class InstallSourceViewModel : BaseNotifyPropertyChanged
                 _sourceDirectory = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(IsAvailable));
+                NotifyPropertyChanged(nameof(IsSourceDirectoryDefined));
             }
         }
     }

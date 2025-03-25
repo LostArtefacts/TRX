@@ -13,7 +13,7 @@ public class Language
     public static Language Instance { get; private set; }
 
     public Dictionary<string, string>? Controls { get; set; }
-    
+
     static Language()
     {
         CultureInfo defaultCulture = CultureInfo.GetCultureInfo(_defaultCulture);

@@ -3,7 +3,7 @@ using TRX_InstallerLib.Utils;
 
 namespace TRX_InstallerLib.Models;
 
-public class InstallSettingsStep : BaseNotifyPropertyChanged, IStep
+public class InstallSettingsStep : BaseLanguageViewModel, IStep
 {
     public InstallSettingsStep(InstallSettings installSettings)
     {
@@ -24,7 +24,7 @@ public class InstallSettingsStep : BaseNotifyPropertyChanged, IStep
     public ICommand ChooseLocationCommand
     {
         get => _chooseLocationCommand ??= new RelayCommand(ChooseLocation);
-    }    
+    }
 
     private void ChooseLocation()
     {
