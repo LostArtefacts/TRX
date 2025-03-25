@@ -37,7 +37,8 @@ public class CDRomInstallSource : BaseInstallSource
             sourceDirectory,
             targetDirectory,
             progress,
-            file => filterRegex.IsMatch(file)
+            file => filterRegex.IsMatch(file),
+            path => ConvertTargetPath(path)
         );
     }
 

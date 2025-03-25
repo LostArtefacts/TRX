@@ -38,7 +38,8 @@ public class TombATIInstallSource : BaseInstallSource
             sourceDirectory,
             targetDirectory,
             progress,
-            file => filterRegex.IsMatch(file)
+            file => filterRegex.IsMatch(file),
+            path => ConvertTargetPath(path)
         );
     }
 
