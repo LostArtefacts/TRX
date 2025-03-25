@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -102,7 +101,7 @@ public class MainWindowViewModel : BaseLanguageViewModel
             {
                 throw new NullReferenceException();
             }
-            Process.Start(Path.Combine(_installSettings.TargetDirectory, "TR1X.exe"));
+            ProcessUtils.Start(Path.Combine(_installSettings.TargetDirectory, TRXConstants.Instance.Exe));
         }
         if (_finishSettings is not null && _finishSettings.OpenGameDirectory)
         {
@@ -110,7 +109,7 @@ public class MainWindowViewModel : BaseLanguageViewModel
             {
                 throw new NullReferenceException();
             }
-            Process.Start("explorer.exe", _installSettings.TargetDirectory);
+            ProcessUtils.Start(_installSettings.TargetDirectory);
         }
         window?.Close();
     }
