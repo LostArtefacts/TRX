@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
 - added support for The Golden Mask (#1621)
+- added an installer for Windows (#2681)
 - added the bonus level game flow type, which allows for levels to be unlocked if all main game secrets are found (#2668)
 - added the ability for custom levels to have up to two of each secret type per level (#2674)
 - fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)

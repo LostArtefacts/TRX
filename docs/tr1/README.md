@@ -35,7 +35,7 @@ We hope that eventually these alerts will go away as the popularity of the proje
        - Or the more manual link: https://archive.org/details/tomb-raider-i-unfinished-business-pc-eng-full-version_20201225
    2. For TombATI users this means copying the `data`, `fmv` and `music` directories.
 5. To play the game, run `TR1X.exe`.
-6. To play the Unfinished Expansion pack, run `TR1X.exe -gold`.
+6. To play the Unfinished Business expansion pack, run `TR1X.exe -gold`.
 
 If you install everything correctly, your game directory should look more or
 less like this (click to expand):
@@ -48,24 +48,22 @@ less like this (click to expand):
 │   ├── TR1X.json5 *
 │   ├── TR1X_gameflow.json5
 │   ├── TR1X_gameflow_demo_pc.json5
-│   └── TR1X_gameflow_ub.json5
+│   ├── TR1X_gameflow_level.json5
+│   ├── TR1X_gameflow_ub.json5
+│   ├── TR1X_strings.json5
+│   ├── TR1X_strings_demo_pc.json5
+│   ├── TR1X_strings_level.json5
+│   └── TR1X_strings_ub.json5
 ├── data
 │   ├── cat.phd
-│   ├── cred0.pcx
-│   ├── cred1.pcx
-│   ├── cred2.pcx
-│   ├── cred3.pcx
 │   ├── cut1.phd
 │   ├── cut2.phd
 │   ├── cut3.phd
 │   ├── cut4.phd
 │   ├── egypt.phd
-│   ├── eidospc.pcx
 │   ├── end2.phd
-│   ├── end.pcx
 │   ├── end.phd
 │   ├── gym.phd
-│   ├── install.pcx
 │   ├── level10a.phd
 │   ├── level10b.phd
 │   ├── level10c.phd
@@ -81,10 +79,8 @@ less like this (click to expand):
 │   ├── level8a.phd
 │   ├── level8b.phd
 │   ├── level8c.phd
-│   ├── titleh.pcx
-│   ├── titleh_ub.pcx
-│   │── title.phd
-│   │── images
+│   ├── title.phd
+│   ├── images
 │   │   ├── atlantis.webp
 │   │   ├── credits_1.webp
 │   │   ├── credits_2.webp
@@ -101,7 +97,17 @@ less like this (click to expand):
 │   │   ├── peru.webp
 │   │   ├── title.webp
 │   │   ├── title_og_alt.webp
-│   │   └── title_ub.webp
+│   │   ├── title_ub.webp
+│   │   └── og
+│   │       ├── cred0.pcx
+│   │       ├── cred1.pcx
+│   │       ├── cred2.pcx
+│   │       ├── cred3.pcx
+│   │       ├── eidospc.pcx
+│   │       ├── end.pcx
+│   │       ├── install.pcx
+│   │       ├── titleh.pcx
+│   │       └── titleh_ub.pcx
 │   └── injections
 │       ├── atlantis_fd.bin
 │       ├── atlantis_textures.bin
@@ -182,7 +188,9 @@ less like this (click to expand):
 ├── shaders
 │   ├── 2d.glsl
 │   ├── 3d.glsl
-│   └── fbo.glsl
+│   ├── common.glsl
+│   ├── fbo.glsl
+│   └── sprites.glsl
 ├── TR1X.exe
 └── TR1X_ConfigTool.exe
 </pre>
@@ -225,21 +233,14 @@ less like this (click to expand):
         │   └── TR1X_gameflow_ub.json5
         ├── data
         │   ├── cat.phd
-        │   ├── cred0.pcx
-        │   ├── cred1.pcx
-        │   ├── cred2.pcx
-        │   ├── cred3.pcx
         │   ├── cut1.phd
         │   ├── cut2.phd
         │   ├── cut3.phd
         │   ├── cut4.phd
         │   ├── egypt.phd
-        │   ├── eidospc.pcx
         │   ├── end2.phd
-        │   ├── end.pcx
         │   ├── end.phd
         │   ├── gym.phd
-        │   ├── install.pcx
         │   ├── level10a.phd
         │   ├── level10b.phd
         │   ├── level10c.phd
@@ -255,8 +256,6 @@ less like this (click to expand):
         │   ├── level8a.phd
         │   ├── level8b.phd
         │   ├── level8c.phd
-        │   ├── titleh.pcx
-        │   ├── titleh_ub.pcx
         │   │── title.phd
         │   │── images
         │   │   ├── atlantis.webp
@@ -275,7 +274,17 @@ less like this (click to expand):
         │   │   ├── peru.webp
         │   │   ├── title.webp
         │   │   ├── title_og_alt.webp
-        │   │   └── title_ub.webp
+        │   │   ├── title_ub.webp
+        │   │   └── og
+        │   │       ├── cred0.pcx
+        │   │       ├── cred1.pcx
+        │   │       ├── cred2.pcx
+        │   │       ├── cred3.pcx
+        │   │       ├── eidospc.pcx
+        │   │       ├── end.pcx
+        │   │       ├── install.pcx
+        │   │       ├── titleh.pcx
+        │   │       └── titleh_ub.pcx
         │   └── injections
         │       ├── atlantis_fd.bin
         │       ├── atlantis_textures.bin
@@ -357,7 +366,9 @@ less like this (click to expand):
         └── shaders
             ├── 2d.glsl
             ├── 3d.glsl
-            └── fbo.glsl
+            ├── common.glsl
+            ├── fbo.glsl
+            └── sprites.glsl
 </pre>
 </details>
 
