@@ -10,6 +10,7 @@ typedef enum {
     CM_CONTROLLER,
 } CONTROL_MODE;
 
+bool Option_Controls_IsKeyChangeMode(void);
 CONTROL_MODE Option_Controls_Control(
     INVENTORY_ITEM *inv_item, bool is_busy, INPUT_BACKEND backend);
 void Option_Controls_Draw(INVENTORY_ITEM *inv_item, INPUT_BACKEND backend);
