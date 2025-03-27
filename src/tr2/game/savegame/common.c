@@ -12,14 +12,14 @@ static STATS_COMMON *m_DefaultStats = nullptr;
 
 void Savegame_Init(void)
 {
-    g_SaveGame.start = Memory_Alloc(
-        sizeof(START_INFO)
+    g_SaveGame.resume = Memory_Alloc(
+        sizeof(RESUME_INFO)
         * (GF_GetLevelTable(GFLT_MAIN)->count
            + GF_GetLevelTable(GFLT_DEMOS)->count));
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
     for (int32_t i = 0; i < level_table->count; i++) {
-        START_INFO *const resume_info =
+        RESUME_INFO *const resume_info =
             Savegame_GetCurrentInfo(&level_table->levels[i]);
         resume_info->available = 1;
         resume_info->has_pistols = 1;
@@ -31,7 +31,7 @@ void Savegame_Init(void)
 
 void Savegame_Shutdown(void)
 {
-    Memory_FreePointer(&g_SaveGame.start);
+    Memory_FreePointer(&g_SaveGame.resume);
     Memory_FreePointer(&m_DefaultStats);
 }
 
@@ -53,14 +53,14 @@ bool Savegame_Save(const int32_t slot_idx)
     return true;
 }
 
-START_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
+RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 {
-    ASSERT(g_SaveGame.start != nullptr);
+    ASSERT(g_SaveGame.resume != nullptr);
     ASSERT(level != nullptr);
     if (GF_GetLevelTableType(level->type) == GFLT_MAIN) {
-        return &g_SaveGame.start[level->num];
+        return &g_SaveGame.resume[level->num];
     } else if (level->type == GFL_DEMO) {
-        return &g_SaveGame.start[GF_GetLevelTable(GFLT_MAIN)->count];
+        return &g_SaveGame.resume[GF_GetLevelTable(GFLT_MAIN)->count];
     }
     LOG_WARNING(
         "Warning: unable to get resume info for level %d (type=%s)", level->num,

@@ -126,10 +126,10 @@ typedef struct {
     uint16_t pad : 8;
     uint16_t reserved2;
     LEVEL_STATS stats;
-} START_INFO;
+} RESUME_INFO;
 
 typedef struct {
-    START_INFO *start;
+    RESUME_INFO *resume;
     LEVEL_STATS current_stats;
     int16_t current_level;
     bool bonus_flag;
