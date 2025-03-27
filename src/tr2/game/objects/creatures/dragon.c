@@ -9,6 +9,7 @@
 #include "game/random.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -81,7 +82,7 @@ static void M_MarkDragonDead(const ITEM *const dragon_back_item)
     const ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
     CREATURE *const creature = dragon_front_item->data;
     creature->flags = -1;
-    g_SaveGame.current_stats.kills++;
+    Stats_AddKill();
 }
 
 static void M_PushLaraAway(

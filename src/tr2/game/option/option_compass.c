@@ -1,9 +1,9 @@
+#include "decomp/savegame.h"
 #include "game/game.h"
 #include "game/input.h"
 #include "game/option/option.h"
 #include "game/requester.h"
 #include "game/sound.h"
-#include "game/stats.h"
 #include "game/ui/widgets/stats_dialog.h"
 #include "global/vars.h"
 
@@ -38,7 +38,9 @@ void Option_Compass_Control(INVENTORY_ITEM *const item, const bool is_busy)
     }
 
     char buffer[32];
-    const int32_t sec = g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const int32_t sec = current_info->stats.timer / FRAMES_PER_SECOND;
     sprintf(buffer, "%02d:%02d:%02d", sec / 3600, sec / 60 % 60, sec % 60);
 
     if (m_Dialog == nullptr) {

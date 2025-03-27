@@ -3,6 +3,7 @@
 #include "game/objects/general/window.h"
 #include "game/room.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
@@ -98,7 +99,7 @@ static void M_Control(const int16_t item_num)
                     5);
                 Gun_HitTarget(
                     target_item, nullptr, g_Weapons[LGT_HARPOON].damage);
-                g_SaveGame.current_stats.ammo_hits++;
+                Stats_AddAmmoHits();
             }
             Item_Kill(item_num);
             return;

@@ -1057,13 +1057,15 @@ bool S_SaveGame(const int32_t slot_num)
 
     const GF_LEVEL *const current_level =
         GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(current_level);
 
     memset(file_name, 0, 75);
     snprintf(file_name, 75, "%s", current_level->title);
     File_WriteData(fp, file_name, 75);
     File_WriteS32(fp, g_SaveCounter);
     M_WriteResumeInfos(fp);
-    M_WriteStats(fp, &g_SaveGame.current_stats);
+    M_WriteStats(fp, &current_info->stats);
     File_WriteS16(fp, g_SaveGame.current_level);
     File_WriteU8(fp, g_SaveGame.bonus_flag);
     for (int32_t i = 0; i < 2; i++) {
@@ -1106,8 +1108,16 @@ bool S_LoadGame(const int32_t slot_num)
     File_Skip(fp, 75);
     File_Skip(fp, 4);
     M_ReadResumeInfos(fp);
-    M_ReadStats(fp, &g_SaveGame.current_stats);
-    g_SaveGame.current_level = File_ReadS16(fp);
+    {
+        LEVEL_STATS current_stats = {};
+        M_ReadStats(fp, &current_stats);
+        g_SaveGame.current_level = File_ReadS16(fp);
+        const GF_LEVEL *const level =
+            GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
+        RESUME_INFO *const current_info = Savegame_GetCurrentInfo(level);
+        current_info->stats = current_stats;
+    }
+
     g_SaveGame.bonus_flag = File_ReadU8(fp);
     for (int32_t i = 0; i < 2; i++) {
         g_SaveGame.num_pickup[i] = File_ReadU8(fp);

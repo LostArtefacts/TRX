@@ -5,6 +5,7 @@
 #include "game/objects/general/window.h"
 #include "game/room.h"
 #include "game/sound.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/math.h>
@@ -130,7 +131,7 @@ static void M_Control(const int16_t item_num)
             }
 
             Gun_HitTarget(target_item, nullptr, 30);
-            g_SaveGame.current_stats.ammo_hits++;
+            Stats_AddAmmoHits();
 
             if (target_item->hit_points <= 0) {
                 if (target_item->object_id != O_DRAGON_FRONT

@@ -1,5 +1,7 @@
 #include "game/gym.h"
 
+#include "decomp/savegame.h"
+#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/music.h"
 #include "game/stats.h"
@@ -76,7 +78,8 @@ void Gym_ResetAssault(void)
 
 void Gym_StartAssault(void)
 {
-    g_SaveGame.current_stats.timer = 0;
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    resume->stats.timer = 0;
     m_IsAssaultTimerActive = true;
     m_IsAssaultTimerDisplay = true;
     Stats_StartTimer();
@@ -94,26 +97,27 @@ void Gym_FinishAssault(void)
         return;
     }
 
-    M_StoreAssaultTime(g_SaveGame.current_stats.timer);
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    M_StoreAssaultTime(resume->stats.timer);
 
     if ((int32_t)m_AssaultBestTime < 0) {
-        if (g_SaveGame.current_stats.timer < 100 * FRAMES_PER_SECOND) {
+        if (resume->stats.timer < 100 * FRAMES_PER_SECOND) {
             // "Gosh! That was my best time yet!"
             Music_Play(MX_GYM_HINT_15, MPM_ALWAYS);
-            m_AssaultBestTime = g_SaveGame.current_stats.timer;
+            m_AssaultBestTime = resume->stats.timer;
         } else {
             // "Congratulations! You did it! But perhaps I could've been
             // faster."
             Music_Play(MX_GYM_HINT_17, MPM_ALWAYS);
             m_AssaultBestTime = 100 * FRAMES_PER_SECOND;
         }
-    } else if (g_SaveGame.current_stats.timer < m_AssaultBestTime) {
+    } else if (resume->stats.timer < m_AssaultBestTime) {
         // "Gosh! That was my best time yet!"
         Music_Play(MX_GYM_HINT_15, MPM_ALWAYS);
-        m_AssaultBestTime = g_SaveGame.current_stats.timer;
+        m_AssaultBestTime = resume->stats.timer;
     } else if (
-        g_SaveGame.current_stats.timer
-        < m_AssaultBestTime + 5 * FRAMES_PER_SECOND) {
+        resume->stats.timer < m_AssaultBestTime + 5 * FRAMES_PER_SECOND) {
         // "Almost. Perhaps another try and I might beat it."
         Music_Play(MX_GYM_HINT_16, MPM_ALWAYS);
     } else {
