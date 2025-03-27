@@ -126,7 +126,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     }
 
     Stats_CalculateStats();
-    START_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (resume != nullptr) {
         const int32_t secret_count = Stats_GetSecrets();
         resume->stats.max_secret_count = secret_count;
@@ -145,8 +145,8 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         // TODO: refactor, currently required to guarantee final statistics are
         // accurate prior to jumping to a bonus level.
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            START_INFO *const start = Savegame_GetCurrentInfo(level);
-            start->stats = g_SaveGame.current_stats;
+            RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+            resume->stats = g_SaveGame.current_stats;
         }
         gf_cmd.action = GF_NOOP;
     }
@@ -170,13 +170,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     if (current_level == GF_GetLastLevel()) {
         g_SaveGame.bonus_flag = true;
         // TODO: refactor me
-        START_INFO *const start = Savegame_GetCurrentInfo(current_level);
-        start->stats = g_SaveGame.current_stats;
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        resume->stats = g_SaveGame.current_stats;
     }
 
-    START_INFO *const start = Savegame_GetCurrentInfo(current_level);
-    start->stats = g_SaveGame.current_stats;
-    start->available = 0;
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+    resume->stats = g_SaveGame.current_stats;
+    resume->available = 0;
     g_Config.profile.bonus_level_unlock =
         Stats_CheckAllSecretsCollected(GFL_NORMAL);
 

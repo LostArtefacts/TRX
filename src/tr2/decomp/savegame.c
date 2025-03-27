@@ -45,8 +45,8 @@ static void M_Read(void *ptr, size_t size);
 #define SPECIAL_READ_WRITE(name, type) static type M_Read##name(void);
 SPECIAL_READ_WRITES
 static void M_Skip(size_t size);
-static void M_ReadStartInfo(MYFILE *fp, START_INFO *start);
-static void M_ReadStartInfos(MYFILE *fp);
+static void M_ReadResumeInfo(MYFILE *fp, RESUME_INFO *resume);
+static void M_ReadResumeInfos(MYFILE *fp);
 static void M_ReadStats(MYFILE *fp, LEVEL_STATS *const stats);
 static void M_ReadItems(void);
 static void M_ReadLara(LARA_INFO *lara);
@@ -58,8 +58,8 @@ static void M_Write(const void *ptr, size_t size);
 #undef SPECIAL_READ_WRITE
 #define SPECIAL_READ_WRITE(name, type) static void M_Write##name(type value);
 SPECIAL_READ_WRITES
-static void M_WriteStartInfo(MYFILE *fp, const START_INFO *start);
-static void M_WriteStartInfos(MYFILE *fp);
+static void M_WriteResumeInfo(MYFILE *fp, const RESUME_INFO *resume);
+static void M_WriteResumeInfos(MYFILE *fp);
 static void M_WriteStats(MYFILE *fp, const LEVEL_STATS *stats);
 static void M_WriteItems(void);
 static void M_WriteLara(const LARA_INFO *lara);
@@ -105,48 +105,48 @@ static void M_Skip(const size_t size)
     m_BufPtr += size;
 }
 
-static void M_ReadStartInfo(MYFILE *const fp, START_INFO *const start)
+static void M_ReadResumeInfo(MYFILE *const fp, RESUME_INFO *const resume)
 {
-    start->pistol_ammo = File_ReadU16(fp);
-    start->magnum_ammo = File_ReadU16(fp);
-    start->uzi_ammo = File_ReadU16(fp);
-    start->shotgun_ammo = File_ReadU16(fp);
-    start->m16_ammo = File_ReadU16(fp);
-    start->grenade_ammo = File_ReadU16(fp);
-    start->harpoon_ammo = File_ReadU16(fp);
-    start->small_medipacks = File_ReadU8(fp);
-    start->large_medipacks = File_ReadU8(fp);
-    start->reserved1 = File_ReadU8(fp);
-    start->flares = File_ReadU8(fp);
-    start->gun_status = File_ReadU8(fp);
-    start->gun_type = File_ReadU8(fp);
+    resume->pistol_ammo = File_ReadU16(fp);
+    resume->magnum_ammo = File_ReadU16(fp);
+    resume->uzi_ammo = File_ReadU16(fp);
+    resume->shotgun_ammo = File_ReadU16(fp);
+    resume->m16_ammo = File_ReadU16(fp);
+    resume->grenade_ammo = File_ReadU16(fp);
+    resume->harpoon_ammo = File_ReadU16(fp);
+    resume->small_medipacks = File_ReadU8(fp);
+    resume->large_medipacks = File_ReadU8(fp);
+    resume->reserved1 = File_ReadU8(fp);
+    resume->flares = File_ReadU8(fp);
+    resume->gun_status = File_ReadU8(fp);
+    resume->gun_type = File_ReadU8(fp);
 
     const uint16_t flags = File_ReadU16(fp);
     // clang-format off
-    start->available     = (flags & 0x01) ? 1 : 0;
-    start->has_pistols   = (flags & 0x02) ? 1 : 0;
-    start->has_magnums   = (flags & 0x04) ? 1 : 0;
-    start->has_uzis      = (flags & 0x08) ? 1 : 0;
-    start->has_shotgun   = (flags & 0x10) ? 1 : 0;
-    start->has_m16       = (flags & 0x20) ? 1 : 0;
-    start->has_grenade   = (flags & 0x40) ? 1 : 0;
-    start->has_harpoon   = (flags & 0x80) ? 1 : 0;
+    resume->available     = (flags & 0x01) ? 1 : 0;
+    resume->has_pistols   = (flags & 0x02) ? 1 : 0;
+    resume->has_magnums   = (flags & 0x04) ? 1 : 0;
+    resume->has_uzis      = (flags & 0x08) ? 1 : 0;
+    resume->has_shotgun   = (flags & 0x10) ? 1 : 0;
+    resume->has_m16       = (flags & 0x20) ? 1 : 0;
+    resume->has_grenade   = (flags & 0x40) ? 1 : 0;
+    resume->has_harpoon   = (flags & 0x80) ? 1 : 0;
     // clang-format on
 
     File_ReadU16(fp);
-    M_ReadStats(fp, &start->stats);
+    M_ReadStats(fp, &resume->stats);
 }
 
-static void M_ReadStartInfos(MYFILE *const fp)
+static void M_ReadResumeInfos(MYFILE *const fp)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < 24; i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
-            M_ReadStartInfo(fp, Savegame_GetCurrentInfo(level));
+            M_ReadResumeInfo(fp, Savegame_GetCurrentInfo(level));
         } else {
-            START_INFO dummy_resume_info;
-            M_ReadStartInfo(fp, &dummy_resume_info);
+            RESUME_INFO dummy_resume_info;
+            M_ReadResumeInfo(fp, &dummy_resume_info);
         }
     }
 }
@@ -404,50 +404,50 @@ static void M_Write(const void *ptr, const size_t size)
     m_BufPtr += size;
 }
 
-static void M_WriteStartInfo(MYFILE *const fp, const START_INFO *const start)
+static void M_WriteResumeInfo(MYFILE *const fp, const RESUME_INFO *const resume)
 {
-    ASSERT(start != nullptr);
-    File_WriteU16(fp, start->pistol_ammo);
-    File_WriteU16(fp, start->magnum_ammo);
-    File_WriteU16(fp, start->uzi_ammo);
-    File_WriteU16(fp, start->shotgun_ammo);
-    File_WriteU16(fp, start->m16_ammo);
-    File_WriteU16(fp, start->grenade_ammo);
-    File_WriteU16(fp, start->harpoon_ammo);
-    File_WriteU8(fp, start->small_medipacks);
-    File_WriteU8(fp, start->large_medipacks);
-    File_WriteU8(fp, start->reserved1);
-    File_WriteU8(fp, start->flares);
-    File_WriteU8(fp, start->gun_status);
-    File_WriteU8(fp, start->gun_type);
+    ASSERT(resume != nullptr);
+    File_WriteU16(fp, resume->pistol_ammo);
+    File_WriteU16(fp, resume->magnum_ammo);
+    File_WriteU16(fp, resume->uzi_ammo);
+    File_WriteU16(fp, resume->shotgun_ammo);
+    File_WriteU16(fp, resume->m16_ammo);
+    File_WriteU16(fp, resume->grenade_ammo);
+    File_WriteU16(fp, resume->harpoon_ammo);
+    File_WriteU8(fp, resume->small_medipacks);
+    File_WriteU8(fp, resume->large_medipacks);
+    File_WriteU8(fp, resume->reserved1);
+    File_WriteU8(fp, resume->flares);
+    File_WriteU8(fp, resume->gun_status);
+    File_WriteU8(fp, resume->gun_type);
 
     uint16_t flags = 0;
     // clang-format off
-    if (start->available)   { flags |= 0x01; }
-    if (start->has_pistols) { flags |= 0x02; }
-    if (start->has_magnums) { flags |= 0x04; }
-    if (start->has_uzis)    { flags |= 0x08; }
-    if (start->has_shotgun) { flags |= 0x10; }
-    if (start->has_m16)     { flags |= 0x20; }
-    if (start->has_grenade) { flags |= 0x40; }
-    if (start->has_harpoon) { flags |= 0x80; }
+    if (resume->available)   { flags |= 0x01; }
+    if (resume->has_pistols) { flags |= 0x02; }
+    if (resume->has_magnums) { flags |= 0x04; }
+    if (resume->has_uzis)    { flags |= 0x08; }
+    if (resume->has_shotgun) { flags |= 0x10; }
+    if (resume->has_m16)     { flags |= 0x20; }
+    if (resume->has_grenade) { flags |= 0x40; }
+    if (resume->has_harpoon) { flags |= 0x80; }
     // clang-format on
     File_WriteU16(fp, flags);
 
     File_WriteU16(fp, 0);
-    M_WriteStats(fp, &start->stats);
+    M_WriteStats(fp, &resume->stats);
 }
 
-static void M_WriteStartInfos(MYFILE *const fp)
+static void M_WriteResumeInfos(MYFILE *const fp)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < 24; i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
-            M_WriteStartInfo(fp, Savegame_GetCurrentInfo(level));
+            M_WriteResumeInfo(fp, Savegame_GetCurrentInfo(level));
         } else {
-            const START_INFO null_resume_info = {};
-            M_WriteStartInfo(fp, &null_resume_info);
+            const RESUME_INFO null_resume_info = {};
+            M_WriteResumeInfo(fp, &null_resume_info);
         }
     }
 }
@@ -650,8 +650,8 @@ static void M_WriteFlares(void)
 
 void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
 {
-    START_INFO *const current = Savegame_GetCurrentInfo(level);
-    memset(current, 0, sizeof(START_INFO));
+    RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+    memset(current, 0, sizeof(RESUME_INFO));
 }
 
 void Savegame_InitCurrentInfo(void)
@@ -683,198 +683,198 @@ void Savegame_CarryCurrentInfoToNextLevel(
     LOG_INFO(
         "Copying resume info from level #%d to level #%d", src_level->num,
         dst_level->num);
-    START_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
-    START_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
-    memcpy(dst_resume, src_resume, sizeof(START_INFO));
+    RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
+    RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
+    memcpy(dst_resume, src_resume, sizeof(RESUME_INFO));
 }
 
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 {
-    START_INFO *start = Savegame_GetCurrentInfo(level);
-    if (start == nullptr) {
+    RESUME_INFO *resume = Savegame_GetCurrentInfo(level);
+    if (resume == nullptr) {
         return;
     }
 
-    start->has_pistols = 1;
-    start->gun_type = LGT_PISTOLS;
-    start->pistol_ammo = 1000;
+    resume->has_pistols = 1;
+    resume->gun_type = LGT_PISTOLS;
+    resume->pistol_ammo = 1000;
 
     if (level == GF_GetGymLevel()) {
-        start->available = 1;
+        resume->available = 1;
 
-        start->has_pistols = 0;
-        start->has_shotgun = 0;
-        start->has_magnums = 0;
-        start->has_uzis = 0;
-        start->has_harpoon = 0;
-        start->has_m16 = 0;
-        start->has_grenade = 0;
+        resume->has_pistols = 0;
+        resume->has_shotgun = 0;
+        resume->has_magnums = 0;
+        resume->has_uzis = 0;
+        resume->has_harpoon = 0;
+        resume->has_m16 = 0;
+        resume->has_grenade = 0;
 
-        start->pistol_ammo = 0;
-        start->shotgun_ammo = 0;
-        start->magnum_ammo = 0;
-        start->uzi_ammo = 0;
-        start->harpoon_ammo = 0;
-        start->m16_ammo = 0;
-        start->grenade_ammo = 0;
+        resume->pistol_ammo = 0;
+        resume->shotgun_ammo = 0;
+        resume->magnum_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->harpoon_ammo = 0;
+        resume->m16_ammo = 0;
+        resume->grenade_ammo = 0;
 
-        start->flares = 0;
-        start->large_medipacks = 0;
-        start->small_medipacks = 0;
-        start->gun_type = LGT_UNARMED;
-        start->gun_status = LGS_ARMLESS;
+        resume->flares = 0;
+        resume->large_medipacks = 0;
+        resume->small_medipacks = 0;
+        resume->gun_type = LGT_UNARMED;
+        resume->gun_status = LGS_ARMLESS;
     } else if (level == GF_GetFirstLevel()) {
-        start->available = 1;
+        resume->available = 1;
 
-        start->has_pistols = 1;
-        start->has_shotgun = 1;
-        start->has_magnums = 0;
-        start->has_uzis = 0;
-        start->has_harpoon = 0;
-        start->has_m16 = 0;
-        start->has_grenade = 0;
+        resume->has_pistols = 1;
+        resume->has_shotgun = 1;
+        resume->has_magnums = 0;
+        resume->has_uzis = 0;
+        resume->has_harpoon = 0;
+        resume->has_m16 = 0;
+        resume->has_grenade = 0;
 
-        start->shotgun_ammo = 2 * SHOTGUN_AMMO_CLIP;
-        start->magnum_ammo = 0;
-        start->uzi_ammo = 0;
-        start->harpoon_ammo = 0;
-        start->m16_ammo = 0;
-        start->grenade_ammo = 0;
+        resume->shotgun_ammo = 2 * SHOTGUN_AMMO_CLIP;
+        resume->magnum_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->harpoon_ammo = 0;
+        resume->m16_ammo = 0;
+        resume->grenade_ammo = 0;
 
-        start->flares = 2;
-        start->small_medipacks = 1;
-        start->large_medipacks = 1;
-        start->gun_status = LGS_ARMLESS;
+        resume->flares = 2;
+        resume->small_medipacks = 1;
+        resume->large_medipacks = 1;
+        resume->gun_status = LGS_ARMLESS;
     }
 
     if (g_SaveGame.bonus_flag && level != GF_GetGymLevel()) {
-        start->has_pistols = 1;
-        start->has_shotgun = 1;
-        start->has_magnums = 1;
-        start->has_uzis = 1;
-        start->has_grenade = 1;
-        start->has_harpoon = 1;
-        start->has_m16 = 1;
-        start->has_grenade = 1;
+        resume->has_pistols = 1;
+        resume->has_shotgun = 1;
+        resume->has_magnums = 1;
+        resume->has_uzis = 1;
+        resume->has_grenade = 1;
+        resume->has_harpoon = 1;
+        resume->has_m16 = 1;
+        resume->has_grenade = 1;
 
-        start->shotgun_ammo = 10000;
-        start->magnum_ammo = 10000;
-        start->uzi_ammo = 10000;
-        start->harpoon_ammo = 10000;
-        start->m16_ammo = 10000;
-        start->grenade_ammo = 10000;
+        resume->shotgun_ammo = 10000;
+        resume->magnum_ammo = 10000;
+        resume->uzi_ammo = 10000;
+        resume->harpoon_ammo = 10000;
+        resume->m16_ammo = 10000;
+        resume->grenade_ammo = 10000;
 
-        start->flares = -1;
-        start->gun_type = LGT_GRENADE;
+        resume->flares = -1;
+        resume->gun_type = LGT_GRENADE;
     }
 
     if (g_GF_RemoveWeapons) {
-        start->has_pistols = 0;
-        start->has_magnums = 0;
-        start->has_uzis = 0;
-        start->has_shotgun = 0;
-        start->has_m16 = 0;
-        start->has_grenade = 0;
-        start->has_harpoon = 0;
-        start->gun_type = LGT_UNARMED;
-        start->gun_status = LGS_ARMLESS;
+        resume->has_pistols = 0;
+        resume->has_magnums = 0;
+        resume->has_uzis = 0;
+        resume->has_shotgun = 0;
+        resume->has_m16 = 0;
+        resume->has_grenade = 0;
+        resume->has_harpoon = 0;
+        resume->gun_type = LGT_UNARMED;
+        resume->gun_status = LGS_ARMLESS;
         g_GF_RemoveWeapons = false;
     }
 
     if (g_GF_RemoveAmmo) {
-        start->m16_ammo = 0;
-        start->grenade_ammo = 0;
-        start->harpoon_ammo = 0;
-        start->shotgun_ammo = 0;
-        start->uzi_ammo = 0;
-        start->magnum_ammo = 0;
-        start->pistol_ammo = 0;
-        start->flares = 0;
-        start->large_medipacks = 0;
-        start->small_medipacks = 0;
+        resume->m16_ammo = 0;
+        resume->grenade_ammo = 0;
+        resume->harpoon_ammo = 0;
+        resume->shotgun_ammo = 0;
+        resume->uzi_ammo = 0;
+        resume->magnum_ammo = 0;
+        resume->pistol_ammo = 0;
+        resume->flares = 0;
+        resume->large_medipacks = 0;
+        resume->small_medipacks = 0;
         g_GF_RemoveAmmo = false;
     }
 
     const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
-    start->stats.max_secret_count = default_stats.max_secret_count;
+    resume->stats.max_secret_count = default_stats.max_secret_count;
 }
 
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 {
-    START_INFO *const start = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    start->available = 1;
+    resume->available = 1;
 
     if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        start->has_pistols = 1;
-        start->pistol_ammo = 1000;
+        resume->has_pistols = 1;
+        resume->pistol_ammo = 1000;
     } else {
-        start->has_pistols = 0;
-        start->pistol_ammo = 1000;
+        resume->has_pistols = 0;
+        resume->pistol_ammo = 1000;
     }
 
     if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        start->has_shotgun = 1;
-        start->shotgun_ammo = g_Lara.shotgun_ammo.ammo;
+        resume->has_shotgun = 1;
+        resume->shotgun_ammo = g_Lara.shotgun_ammo.ammo;
     } else {
-        start->has_shotgun = 0;
-        start->shotgun_ammo =
+        resume->has_shotgun = 0;
+        resume->shotgun_ammo =
             Inv_RequestItem(O_SHOTGUN_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        start->has_magnums = 1;
-        start->magnum_ammo = g_Lara.magnum_ammo.ammo;
+        resume->has_magnums = 1;
+        resume->magnum_ammo = g_Lara.magnum_ammo.ammo;
     } else {
-        start->has_magnums = 0;
-        start->magnum_ammo =
+        resume->has_magnums = 0;
+        resume->magnum_ammo =
             Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
-        start->has_uzis = 1;
-        start->uzi_ammo = g_Lara.uzi_ammo.ammo;
+        resume->has_uzis = 1;
+        resume->uzi_ammo = g_Lara.uzi_ammo.ammo;
     } else {
-        start->has_uzis = 0;
-        start->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
+        resume->has_uzis = 0;
+        resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_M16_ITEM)) {
-        start->has_m16 = 1;
-        start->m16_ammo = g_Lara.m16_ammo.ammo;
+        resume->has_m16 = 1;
+        resume->m16_ammo = g_Lara.m16_ammo.ammo;
     } else {
-        start->has_m16 = 0;
-        start->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
+        resume->has_m16 = 0;
+        resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_HARPOON_ITEM)) {
-        start->has_harpoon = 1;
-        start->harpoon_ammo = g_Lara.harpoon_ammo.ammo;
+        resume->has_harpoon = 1;
+        resume->harpoon_ammo = g_Lara.harpoon_ammo.ammo;
     } else {
-        start->has_harpoon = 0;
-        start->harpoon_ammo =
+        resume->has_harpoon = 0;
+        resume->harpoon_ammo =
             Inv_RequestItem(O_HARPOON_AMMO_ITEM) * HARPOON_AMMO_QTY;
     }
 
     if (Inv_RequestItem(O_GRENADE_ITEM)) {
-        start->has_grenade = 1;
-        start->grenade_ammo = g_Lara.grenade_ammo.ammo;
+        resume->has_grenade = 1;
+        resume->grenade_ammo = g_Lara.grenade_ammo.ammo;
     } else {
-        start->has_grenade = 0;
-        start->grenade_ammo =
+        resume->has_grenade = 0;
+        resume->grenade_ammo =
             Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
     }
 
-    start->flares = Inv_RequestItem(O_FLARE_ITEM);
-    start->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
-    start->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
+    resume->flares = Inv_RequestItem(O_FLARE_ITEM);
+    resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
+    resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
 
     if (g_Lara.gun_type == LGT_FLARE) {
-        start->gun_type = g_Lara.last_gun_type;
+        resume->gun_type = g_Lara.last_gun_type;
     } else {
-        start->gun_type = g_Lara.gun_type;
+        resume->gun_type = g_Lara.gun_type;
     }
-    start->gun_status = LGS_ARMLESS;
+    resume->gun_status = LGS_ARMLESS;
 }
 
 void CreateSaveGameInfo(void)
@@ -1062,7 +1062,7 @@ bool S_SaveGame(const int32_t slot_num)
     snprintf(file_name, 75, "%s", current_level->title);
     File_WriteData(fp, file_name, 75);
     File_WriteS32(fp, g_SaveCounter);
-    M_WriteStartInfos(fp);
+    M_WriteResumeInfos(fp);
     M_WriteStats(fp, &g_SaveGame.current_stats);
     File_WriteS16(fp, g_SaveGame.current_level);
     File_WriteU8(fp, g_SaveGame.bonus_flag);
@@ -1105,7 +1105,7 @@ bool S_LoadGame(const int32_t slot_num)
     }
     File_Skip(fp, 75);
     File_Skip(fp, 4);
-    M_ReadStartInfos(fp);
+    M_ReadResumeInfos(fp);
     M_ReadStats(fp, &g_SaveGame.current_stats);
     g_SaveGame.current_level = File_ReadS16(fp);
     g_SaveGame.bonus_flag = File_ReadU8(fp);
