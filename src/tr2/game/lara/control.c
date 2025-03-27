@@ -20,6 +20,7 @@
 #include "game/room.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/game/lara/const.h>
@@ -680,11 +681,7 @@ void Lara_Control(const int16_t item_num)
         break;
     }
 
-    g_SaveGame.current_stats.distance += Math_Sqrt(
-        SQUARE(item->pos.z - g_Lara.last_pos.z)
-        + SQUARE(item->pos.y - g_Lara.last_pos.y)
-        + SQUARE(item->pos.x - g_Lara.last_pos.x));
-
+    Stats_AddDistanceTravelled(item->pos, g_Lara.last_pos);
     g_Lara.last_pos = item->pos;
 }
 
@@ -740,7 +737,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             CLAMPG(item->hit_points, LARA_MAX_HITPOINTS);
             Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-            g_SaveGame.current_stats.medipacks++;
+            Stats_AddMedipacksUsed(1);
         }
         break;
 
@@ -750,7 +747,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
             item->hit_points = LARA_MAX_HITPOINTS;
             Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
-            g_SaveGame.current_stats.medipacks += 2;
+            Stats_AddMedipacksUsed(2);
         }
         break;
 

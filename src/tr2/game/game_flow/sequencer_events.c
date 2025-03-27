@@ -75,7 +75,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
             }
             tmp_level = next_level;
         }
-        Stats_Reset();
         break;
     }
 
@@ -84,7 +83,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
-            Stats_Reset();
         }
         break;
     }
@@ -130,7 +128,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     if (resume != nullptr) {
         const int32_t secret_count = Stats_GetSecrets();
         resume->stats.max_secret_count = secret_count;
-        g_SaveGame.current_stats.max_secret_count = secret_count;
     }
 
     ASSERT(GF_GetCurrentLevel() == level);
@@ -142,12 +139,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         gf_cmd = GF_RunGame(level, seq_ctx);
     }
     if (gf_cmd.action == GF_LEVEL_COMPLETE) {
-        // TODO: refactor, currently required to guarantee final statistics are
-        // accurate prior to jumping to a bonus level.
-        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-            resume->stats = g_SaveGame.current_stats;
-        }
         gf_cmd.action = GF_NOOP;
     }
     return gf_cmd;
@@ -169,13 +160,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 
     if (current_level == GF_GetLastLevel()) {
         g_SaveGame.bonus_flag = true;
-        // TODO: refactor me
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-        resume->stats = g_SaveGame.current_stats;
     }
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-    resume->stats = g_SaveGame.current_stats;
     resume->available = 0;
     g_Config.profile.bonus_level_unlock =
         Stats_CheckAllSecretsCollected(GFL_NORMAL);

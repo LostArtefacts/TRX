@@ -8,6 +8,7 @@
 #include "game/random.h"
 #include "game/room.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
@@ -249,7 +250,7 @@ int32_t Gun_FireWeapon(
         }
     }
 
-    g_SaveGame.current_stats.ammo_used++;
+    Stats_AddAmmoUsed();
 
     GAME_VECTOR start;
     start.pos.x = view_pos.x;
@@ -277,7 +278,7 @@ int32_t Gun_FireWeapon(
             return -1;
         }
     } else {
-        g_SaveGame.current_stats.ammo_hits++;
+        Stats_AddAmmoHits();
         GAME_VECTOR hit_pos;
         hit_pos.pos.x =
             view_pos.x + ((best_dist * g_MatrixPtr->_20) >> W2V_SHIFT);
@@ -315,7 +316,7 @@ void Gun_HitTarget(
 {
     if (item->hit_points > 0 && item->hit_points <= damage
         && item->object_id != O_DRAGON_FRONT) {
-        g_SaveGame.current_stats.kills++;
+        Stats_AddKill();
     }
     Item_TakeDamage(item, damage, true);
 

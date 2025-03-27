@@ -1,6 +1,8 @@
 #include "decomp/flares.h"
+#include "decomp/savegame.h"
 #include "game/camera.h"
 #include "game/creature.h"
+#include "game/game.h"
 #include "game/gun/gun.h"
 #include "game/items.h"
 #include "game/los.h"
@@ -90,13 +92,14 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_Control(const int16_t item_num)
 {
-    if (g_SaveGame.current_stats.kills == g_FinalLevelCount
-        && !g_FinalBossActive) {
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    if (current_info->stats.kills == g_FinalLevelCount && !g_FinalBossActive) {
         M_ActivateLastBoss();
         return;
     }
 
-    if (g_SaveGame.current_stats.kills > g_FinalLevelCount) {
+    if (current_info->stats.kills > g_FinalLevelCount) {
         g_FinalBossActive++;
         if (g_FinalBossActive == CUTSCENE_DELAY) {
             M_PrepareCutscene(item_num);

@@ -1,6 +1,7 @@
 #include "game/overlay.h"
 
 #include "decomp/decomp.h"
+#include "decomp/savegame.h"
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -162,9 +163,10 @@ static void M_DrawAssaultTimer(void)
     }
 
     char buffer[32];
-    const int32_t total_sec =
-        g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
-    const int32_t frame = g_SaveGame.current_stats.timer % FRAMES_PER_SECOND;
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const int32_t total_sec = resume->stats.timer / FRAMES_PER_SECOND;
+    const int32_t frame = resume->stats.timer % FRAMES_PER_SECOND;
     sprintf(
         buffer, "%d:%02d.%d", total_sec / 60, total_sec % 60,
         frame * 10 / FRAMES_PER_SECOND);

@@ -1,5 +1,6 @@
 #include "game/ui/widgets/stats_dialog.h"
 
+#include "decomp/savegame.h"
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
@@ -156,11 +157,12 @@ static void M_AddRowFromRole(
 
 static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
 {
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    const STATS_COMMON *stats =
-        current_level != nullptr && self->args.level_num == current_level->num
-        ? (STATS_COMMON *)&g_SaveGame.current_stats
-        : (STATS_COMMON *)&g_SaveGame.resume[self->args.level_num].stats;
+    const GF_LEVEL *const current_level =
+        GF_GetLevel(GFLT_MAIN, self->args.level_num);
+    const RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(current_level);
+    const STATS_COMMON *const stats = (STATS_COMMON *)&current_info->stats;
+
     M_AddRowFromRole(self, M_ROW_TIMER, stats);
     if (stats->max_secret_count != 0) {
         M_AddRowFromRole(self, M_ROW_LEVEL_SECRETS, stats);
@@ -224,7 +226,9 @@ static void M_UpdateTimerRow(UI_STATS_DIALOG *const self)
             continue;
         }
         char buf[32];
-        const int32_t sec = g_SaveGame.current_stats.timer / FRAMES_PER_SECOND;
+        const RESUME_INFO *const current_info =
+            Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+        const int32_t sec = current_info->stats.timer / FRAMES_PER_SECOND;
         sprintf(
             buf, "%02d:%02d:%02d", (sec / 60) / 60, (sec / 60) % 60, sec % 60);
         UI_Requester_ChangeRowLR(
