@@ -1,0 +1,39 @@
+[group('tr2')]
+tr2-image-linux force="1": (_docker_build "tools/tr2/docker/game-linux/Dockerfile" "rrdash/tr2x-linux" force)
+[group('tr2')]
+tr2-image-win force="1": (_docker_build "tools/tr2/docker/game-win/Dockerfile" "rrdash/tr2x" force)
+[group('tr2')]
+tr2-image-win-config force="1": (_docker_build "tools/tr2/docker/config/Dockerfile" "rrdash/tr2x-config" force)
+[group('tr2')]
+tr2-image-win-installer force="1": (_docker_build "tools/tr2/docker/installer/Dockerfile" "rrdash/tr2x-installer" force)
+
+[group('tr2')]
+tr2-push-image-linux: (tr2-image-linux "0") (_docker_push "rrdash/tr2x-linux")
+[group('tr2')]
+tr2-push-image-win: (tr2-image-win "0") (_docker_push "rrdash/tr2x")
+
+[group('tr2')]
+tr2-build-linux target='debug': (tr2-image-linux "0") (_docker_run "-e" "TARGET="+target "rrdash/tr2x-linux")
+[group('tr2')]
+tr2-build-win target='debug': (tr2-image-win "0") (_docker_run "-e" "TARGET="+target "rrdash/tr2x")
+[group('tr2')]
+tr2-build-win-config: (tr2-image-win-config "0") (_docker_run "rrdash/tr2x-config")
+[group('tr2')]
+tr2-build-win-installer: (tr2-image-win-installer "0") (_docker_run "rrdash/tr2x-installer")
+
+[group('tr2')]
+tr2-package-linux target='release': (tr2-build-linux target) (_docker_run "rrdash/tr2x-linux" "package")
+[group('tr2')]
+tr2-package-win target='release': (tr2-build-win target) (_docker_run "rrdash/tr2x" "package")
+[group('tr2')]
+tr2-package-win-all target='release': (tr2-build-win target) (tr2-build-win-config) (_docker_run "rrdash/tr2x" "package")
+[group('tr2')]
+tr2-package-win-installer target='release': \
+    (tr2-build-win target) \
+    (tr2-build-win-config) \
+    (_docker_run "rrdash/tr2x" "package" "-o" "tools/installer/TR2X_Installer/Resources/release.zip") (tr2-build-win-installer)
+    #!/bin/sh
+    git checkout "tools/installer/TR2X_Installer/Resources/release.zip"
+    exe_name=TR2X-$(tools/get_version 1)-Installer.exe
+    cp tools/installer/out/TR2X_Installer.exe "${exe_name}"
+    echo "Created ${exe_name}"
