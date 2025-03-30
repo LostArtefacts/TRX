@@ -183,4 +183,4 @@ ENV PKG_CONFIG_LIBDIR=/ext/lib/
 ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
 ENV C_INCLUDE_PATH=/ext/include/
 ENV PYTHONPATH=/app/tools/
-ENTRYPOINT ["/app/tools/tr1/docker/game-win/entrypoint.sh"]
+ENTRYPOINT ["/app/tools/shared/docker/game-win/entrypoint.sh"]
