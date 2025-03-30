@@ -1,0 +1,41 @@
+[group('tr1')]
+tr1-image-linux force="1": (_docker_build "tools/tr1/docker/game-linux/Dockerfile" "rrdash/tr1x-linux" force)
+[group('tr1')]
+tr1-image-win force="1": (_docker_build "tools/tr1/docker/game-win/Dockerfile" "rrdash/tr1x" force)
+[group('tr1')]
+tr1-image-win-config force="1": (_docker_build "tools/tr1/docker/config/Dockerfile" "rrdash/tr1x-config" force)
+[group('tr1')]
+tr1-image-win-installer force="1": (_docker_build "tools/tr1/docker/installer/Dockerfile" "rrdash/tr1x-installer" force)
+
+[group('tr1')]
+tr1-push-image-linux: (tr1-image-linux "0") (_docker_push "rrdash/tr1x-linux")
+[group('tr1')]
+tr1-push-image-win: (tr1-image-win "0") (_docker_push "rrdash/tr1x")
+
+[group('tr1')]
+tr1-build-linux target='debug': (tr1-image-linux "0") (_docker_run "-e" "TARGET="+target "rrdash/tr1x-linux")
+[group('tr1')]
+tr1-build-win target='debug': (tr1-image-win "0") (_docker_run "-e" "TARGET="+target "rrdash/tr1x")
+[group('tr1')]
+tr1-build-win-config: (tr1-image-win-config "0") (_docker_run "rrdash/tr1x-config")
+[group('tr1')]
+tr1-build-win-installer: (tr1-image-win-installer "0") (_docker_run "rrdash/tr1x-installer")
+
+[group('tr1')]
+tr1-package-linux target='release': (tr1-build-linux target) (_docker_run "rrdash/tr1x-linux" "package")
+[group('tr1')]
+tr1-package-win target='release': (tr1-build-win target) (_docker_run "rrdash/tr1x" "package")
+[group('tr1')]
+tr1-package-win-all target='release': (tr1-build-win target) (tr1-build-win-config) (_docker_run "rrdash/tr1x" "package")
+
+[group('tr1')]
+tr1-package-win-installer target='release': \
+    (tr1-build-win target) \
+    (tr1-build-win-config) \
+    (_docker_run "rrdash/tr1x" "package" "-o" "tools/installer/TR1X_Installer/Resources/release.zip") \
+    (tr1-build-win-installer)
+    #!/bin/sh
+    git checkout "tools/installer/TR1X_Installer/Resources/release.zip"
+    exe_name=TR1X-$(tools/get_version 1)-Installer.exe
+    cp tools/installer/out/TR1X_Installer.exe "${exe_name}"
+    echo "Created ${exe_name}"
