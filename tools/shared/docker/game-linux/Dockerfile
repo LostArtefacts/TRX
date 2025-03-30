@@ -1,9 +1,9 @@
-# TR2X building toolchain for Linux.
+# TRX building toolchain for Linux.
 #
 # This is a multi-stage Docker image. It is designed to keep the final image
 # size low. Each stage builds an external dependency. The final stage takes the
 # artifacts (binaries, includes etc.) from previous stages and installs all the
-# tools necessary to build TR2X.
+# tools necessary to build TRX.
 
 FROM ubuntu:latest AS base
 
@@ -121,7 +121,7 @@ RUN sed -i "s/Cflags: .*/\\0 -DGLEW_STATIC /" /ext/lib/pkgconfig/glew.pc
 
 
 
-# TR2X
+# TRX
 FROM base
 
 # set the build dir - actual files are mounted with a Docker volume
@@ -159,4 +159,4 @@ COPY --from=pcre2 /ext/ /ext/
 COPY --from=glew /ext/ /ext/
 
 ENV PYTHONPATH=/app/tools/
-ENTRYPOINT ["/app/tools/tr2/docker/game-linux/entrypoint.sh"]
+ENTRYPOINT ["/app/tools/shared/docker/game-linux/entrypoint.sh"]
