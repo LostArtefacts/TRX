@@ -1,4 +1,4 @@
-name: Build TR2X
+name: Build TR2X and the installer
 
 on:
   workflow_call:
@@ -19,6 +19,8 @@ jobs:
             just_target: tr2-package-linux ${{ inputs.target }}
           - platform: win
             just_target: tr2-package-win-all ${{ inputs.target }}
+          - platform: win-installer
+            just_target: tr2-package-win-installer ${{ inputs.target }}
 
     steps:
       - name: Install dependencies
