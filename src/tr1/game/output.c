@@ -1409,14 +1409,8 @@ void Output_GetProjectionMatrix(GLfloat output[][4])
 
     output[2][0] = 0.0f;
     output[2][1] = 0.0f;
-    // TODO(dash): these do not match the original game Z buffer mapping.
-    // I couldn't figure out how to replicate the original MAP_DEPTH transform.
-    // To combat this, the vertex shaders for now fence the simpler matrices
-    // behind a `NEW_ZBUFFER` define, and fall back to doing the perspective
-    // transform completely manually. This will be removable once we no longer
-    // rely on PHD_VBUF / GFX_3D_Rendere for world rendering.
-    output[2][2] = (far + near) / (far - near);
-    output[2][3] = -(2.0f * far * near) / (far - near);
+    output[2][2] = g_FltResZBuf;
+    output[2][3] = -g_FltResZ / (float)(1 << W2V_SHIFT);
 
     output[3][0] = 0.0f;
     output[3][1] = 0.0f;
