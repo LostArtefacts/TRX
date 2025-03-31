@@ -16,6 +16,7 @@
 - changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
 - changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
 - changed sprites to respect the water tint if placed underwater (#2093)
+- changed the optional `Deaths` stat to be placed last in the stats menu
 - fixed delays when scanning available save games (#2610, #1335, regression from <3.0)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
@@ -39,7 +40,6 @@
     - improved roll support
     - expanded world bounding box by 5 tiles in each direction
     - added support for 60 FPS
-- moved the optional `Deaths` stat to last in the stats menu
 
 ## [4.8.3](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.2...tr1-4.8.3) - 2025-02-17
 - fixed some of Lara's speech in the gym not playing in response to player action (#2514, regression from 4.8)
