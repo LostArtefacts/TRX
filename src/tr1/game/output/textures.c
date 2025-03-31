@@ -41,18 +41,19 @@ static struct {
 } m_AnimationRanges;
 
 static struct {
-    GLuint tex; // 3D texture to hold atlas pages
+    GLuint tex_atlas;
+    M_TEXTURE_DATA objects;
     M_TEXTURE_DATA sprites;
-} m_LevelData = {};
+} m_Priv = {};
 
-int M_CompareAnimationRange(const void *const a, const void *const b)
+static int M_CompareAnimationRange(const void *const a, const void *const b)
 {
     const M_ANIMATION_RANGE *const range_a = (M_ANIMATION_RANGE *)a;
     const M_ANIMATION_RANGE *const range_b = (M_ANIMATION_RANGE *)b;
     return range_a->index - range_b->index;
 }
 
-void M_MergeAndGlueAnimationRanges(M_ANIMATION_RANGES *const source)
+static void M_MergeAndGlueAnimationRanges(M_ANIMATION_RANGES *const source)
 {
     ASSERT(source != nullptr);
     if (source->range_count == 0) {
@@ -156,29 +157,27 @@ static void M_PrepareAnimationRanges(void)
     M_PrepareSpriteAnimationRanges();
 }
 
-void Output_Textures_Init(void)
+static void M_FreeTextureData(M_TEXTURE_DATA *const data)
 {
+    if (data->tbo != 0) {
+        glDeleteBuffers(1, &data->tbo);
+        data->tbo = 0;
+    }
+    if (data->tex != 0) {
+        glDeleteTextures(1, &data->tex);
+        data->tex = 0;
+    }
 }
 
-void Output_Textures_Shutdown(void)
+static void M_FillObjectUVW(const int32_t i)
 {
-    glBindTexture(GL_TEXTURE_BUFFER, 0);
-    glBindBuffer(GL_TEXTURE_BUFFER, 0);
-    if (m_LevelData.sprites.tbo != 0) {
-        glDeleteBuffers(1, &m_LevelData.sprites.tbo);
-        m_LevelData.sprites.tbo = 0;
+    const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
+    M_UVW *const corners = m_Priv.objects.uvw[i].corners;
+    for (int32_t j = 0; j < 4; j++) {
+        corners[j].u = Output_AdjustUV(texture->uv[j].u);
+        corners[j].v = Output_AdjustUV(texture->uv[j].v);
+        corners[j].w = texture->tex_page;
     }
-    if (m_LevelData.sprites.tex != 0) {
-        glDeleteTextures(1, &m_LevelData.sprites.tex);
-        m_LevelData.sprites.tex = 0;
-    }
-    if (m_LevelData.tex != 0) {
-        glDeleteTextures(1, &m_LevelData.tex);
-        m_LevelData.tex = 0;
-    }
-
-    Memory_FreePointer(&m_AnimationRanges.objects.ranges);
-    Memory_FreePointer(&m_AnimationRanges.sprites.ranges);
 }
 
 static void M_FillSpriteUVW(const int32_t i)
@@ -189,13 +188,20 @@ static void M_FillSpriteUVW(const int32_t i)
     const float v0 = (sprite->offset >> 8) / 256.0f + adj;
     const float u1 = u0 + (sprite->width >> 8) / 256.0f - 2 * adj;
     const float v1 = v0 + (sprite->height >> 8) / 256.0f - 2 * adj;
-    M_UVW *corners = m_LevelData.sprites.uvw[i].corners;
+    M_UVW *const corners = m_Priv.sprites.uvw[i].corners;
     // clang-format off
     corners[0].u = u0; corners[0].v = v0; corners[0].w = sprite->tex_page;
     corners[1].u = u1; corners[1].v = v0; corners[1].w = sprite->tex_page;
     corners[2].u = u1; corners[2].v = v1; corners[2].w = sprite->tex_page;
     corners[3].u = u0; corners[3].v = v1; corners[3].w = sprite->tex_page;
     // clang-format on
+}
+
+static void M_FillObjectUVWs(void)
+{
+    for (int32_t i = 0; i < Output_GetObjectTextureCount(); i++) {
+        M_FillObjectUVW(i);
+    }
 }
 
 static void M_FillSpriteUVWs(void)
@@ -205,18 +211,44 @@ static void M_FillSpriteUVWs(void)
     }
 }
 
+static void M_UploadTextureData(const M_TEXTURE_DATA *const data)
+{
+    glBindBuffer(GL_TEXTURE_BUFFER, data->tbo);
+    GFX_TRACK_DATA(
+        glBufferData, GL_TEXTURE_BUFFER, data->count * sizeof(M_UVW_PACK),
+        data->uvw, GL_DYNAMIC_DRAW);
+    GFX_GL_CheckError();
+}
+
+static void M_UploadObjectUVWs(void)
+{
+    M_UploadTextureData(&m_Priv.objects);
+}
+
 static void M_UploadSpriteUVWs(void)
 {
-    glBindBuffer(GL_TEXTURE_BUFFER, m_LevelData.sprites.tbo);
-    GFX_TRACK_DATA(
-        glBufferData, GL_TEXTURE_BUFFER,
-        m_LevelData.sprites.count * sizeof(M_UVW_PACK), m_LevelData.sprites.uvw,
-        GL_DYNAMIC_DRAW);
+    M_UploadTextureData(&m_Priv.sprites);
+}
+
+static void M_UploadObjectAnimatedUVWs(const M_ANIMATION_RANGES *const source)
+{
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.objects.tbo);
+    for (int32_t i = 0; i < source->range_count; i++) {
+        const M_ANIMATION_RANGE *const range = &source->ranges[i];
+        for (int32_t j = 0; j < range->count; j++) {
+            M_FillObjectUVW(range->index + j);
+        }
+        GFX_TRACK_DATA(
+            glBufferSubData, GL_TEXTURE_BUFFER,
+            range->index * sizeof(M_UVW_PACK),
+            range->count * sizeof(M_UVW_PACK),
+            m_Priv.objects.uvw + range->index);
+    }
 }
 
 static void M_UploadSpriteAnimatedUVWs(const M_ANIMATION_RANGES *const source)
 {
-    glBindBuffer(GL_TEXTURE_BUFFER, m_LevelData.sprites.tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_Priv.sprites.tbo);
     for (int32_t i = 0; i < source->range_count; i++) {
         const M_ANIMATION_RANGE *const range = &source->ranges[i];
         for (int32_t j = 0; j < range->count; j++) {
@@ -226,44 +258,56 @@ static void M_UploadSpriteAnimatedUVWs(const M_ANIMATION_RANGES *const source)
             glBufferSubData, GL_TEXTURE_BUFFER,
             range->index * sizeof(M_UVW_PACK),
             range->count * sizeof(M_UVW_PACK),
-            m_LevelData.sprites.uvw + range->index);
+            m_Priv.sprites.uvw + range->index);
     }
+}
+
+static void M_PrepareTextureData(M_TEXTURE_DATA *const data, const size_t count)
+{
+    data->count = count;
+    data->uvw = Memory_Alloc(data->count * sizeof(M_UVW_PACK));
+
+    glGenBuffers(1, &data->tbo);
+    glBindBuffer(GL_TEXTURE_BUFFER, data->tbo);
+
+    GLint limit;
+    glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &limit);
+    ASSERT(data->count * sizeof(M_UVW_PACK) <= (size_t)limit);
+
+    glGenTextures(1, &data->tex);
+    glBindTexture(GL_TEXTURE_BUFFER, data->tex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, data->tbo);
+    GFX_GL_CheckError();
+}
+
+static void M_PrepareObjectUVWs(void)
+{
+    M_PrepareTextureData(&m_Priv.objects, Output_GetObjectTextureCount());
+    M_FillObjectUVWs();
 }
 
 static void M_PrepareSpriteUVWs(void)
 {
-    m_LevelData.sprites.count = Output_GetSpriteTextureCount();
-    m_LevelData.sprites.uvw =
-        Memory_Alloc(m_LevelData.sprites.count * sizeof(M_UVW_PACK));
+    M_PrepareTextureData(&m_Priv.sprites, Output_GetSpriteTextureCount());
     M_FillSpriteUVWs();
-
-    glGenBuffers(1, &m_LevelData.sprites.tbo);
-    glBindBuffer(GL_TEXTURE_BUFFER, m_LevelData.sprites.tbo);
-
-    GLint limit;
-    glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &limit);
-    ASSERT(m_LevelData.sprites.count * sizeof(M_UVW_PACK) <= (size_t)limit);
-
-    glGenTextures(1, &m_LevelData.sprites.tex);
-    glBindTexture(GL_TEXTURE_BUFFER, m_LevelData.sprites.tex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, m_LevelData.sprites.tbo);
 }
 
 static void M_UploadAtlas(void)
 {
-    glGenTextures(1, &m_LevelData.tex);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, m_LevelData.tex);
+    glGenTextures(1, &m_Priv.tex_atlas);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, m_Priv.tex_atlas);
     glTexStorage3D(
         GL_TEXTURE_2D_ARRAY,
         1, // number of mipmaps
         GL_RGBA8, TEXTURE_PAGE_WIDTH, TEXTURE_PAGE_HEIGHT,
         Output_GetTexturePageCount());
+    GFX_GL_CheckError();
 
-    // TODO: handle bilinear toggle
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    GFX_GL_CheckError();
 
     for (int32_t i = 0; i < Output_GetTexturePageCount(); i++) {
         const RGBA_8888 *const input_ptr = Output_GetTexturePage32(i);
@@ -278,31 +322,73 @@ static void M_UploadAtlas(void)
             1, // depth
             GL_RGBA, GL_UNSIGNED_BYTE, input_ptr);
     }
+    GFX_GL_CheckError();
+}
+
+static void M_FreeLevelData(void)
+{
+    glBindTexture(GL_TEXTURE_BUFFER, 0);
+    glBindBuffer(GL_TEXTURE_BUFFER, 0);
+    M_FreeTextureData(&m_Priv.objects);
+    M_FreeTextureData(&m_Priv.sprites);
+    if (m_Priv.tex_atlas != 0) {
+        glDeleteTextures(1, &m_Priv.tex_atlas);
+        m_Priv.tex_atlas = 0;
+    }
+    Memory_FreePointer(&m_AnimationRanges.objects.ranges);
+    Memory_FreePointer(&m_AnimationRanges.sprites.ranges);
+}
+
+void Output_Textures_Init(void)
+{
+}
+
+void Output_Textures_Shutdown(void)
+{
+    M_FreeLevelData();
 }
 
 void Output_Textures_ObserveLevelLoad(void)
 {
-    Output_Textures_Shutdown();
+    M_FreeLevelData();
     M_PrepareAnimationRanges();
+    M_PrepareObjectUVWs();
     M_PrepareSpriteUVWs();
+    M_UploadObjectUVWs();
     M_UploadSpriteUVWs();
     M_UploadAtlas();
 }
 
-void Output_Textures_Update(void)
+void Output_Textures_CycleAnimations(void)
 {
-    if (m_LevelData.sprites.tex == 0) {
-        return;
+    if (m_Priv.sprites.tex != 0) {
+        M_UploadSpriteAnimatedUVWs(&m_AnimationRanges.sprites);
     }
-    M_UploadSpriteAnimatedUVWs(&m_AnimationRanges.sprites);
+    if (m_Priv.objects.tex != 0) {
+        M_UploadObjectAnimatedUVWs(&m_AnimationRanges.objects);
+    }
+}
+
+GLuint Output_Textures_GetObjectUVWsTexture(void)
+{
+    return m_Priv.objects.tex;
 }
 
 GLuint Output_Textures_GetSpriteUVWsTexture(void)
 {
-    return m_LevelData.sprites.tex;
+    return m_Priv.sprites.tex;
 }
 
 GLuint Output_Textures_GetAtlasTexture(void)
 {
-    return m_LevelData.tex;
+    return m_Priv.tex_atlas;
+}
+
+void Output_Textures_ApplyRenderSettings(void)
+{
+    // re-adjust UVs when the bilinear filter is toggled.
+    if (m_Priv.objects.tex != 0) {
+        M_FillObjectUVWs();
+        M_UploadObjectUVWs();
+    }
 }

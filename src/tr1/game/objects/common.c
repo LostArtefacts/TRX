@@ -278,19 +278,15 @@ void Object_SetMeshReflective(
 
     OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + mesh_idx);
     mesh->enable_reflections = enabled;
-
     for (int32_t i = 0; i < mesh->num_tex_face4s; i++) {
         mesh->tex_face4s[i].enable_reflections = enabled;
     }
-
     for (int32_t i = 0; i < mesh->num_tex_face3s; i++) {
         mesh->tex_face3s[i].enable_reflections = enabled;
     }
-
     for (int32_t i = 0; i < mesh->num_flat_face4s; i++) {
         mesh->flat_face4s[i].enable_reflections = enabled;
     }
-
     for (int32_t i = 0; i < mesh->num_flat_face3s; i++) {
         mesh->flat_face3s[i].enable_reflections = enabled;
     }

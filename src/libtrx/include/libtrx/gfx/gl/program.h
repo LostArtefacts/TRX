@@ -12,7 +12,7 @@ typedef struct {
 bool GFX_GL_Program_Init(GFX_GL_PROGRAM *program);
 void GFX_GL_Program_Close(GFX_GL_PROGRAM *program);
 
-void GFX_GL_Program_Bind(GFX_GL_PROGRAM *program);
+void GFX_GL_Program_Bind(const GFX_GL_PROGRAM *program);
 char *GFX_GL_Program_PreprocessShader(
     const char *content, GLenum type, GFX_GL_BACKEND backend);
 void GFX_GL_Program_AttachShader(
