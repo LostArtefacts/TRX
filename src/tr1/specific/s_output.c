@@ -1192,3 +1192,8 @@ void S_Output_2ToneColourTextBox(
     S_Output_DisableTextureMode();
     M_DrawTriangleStrip(vertices, 18);
 }
+
+float Output_AdjustUV(const uint16_t uv)
+{
+    return M_GetUV(uv);
+}

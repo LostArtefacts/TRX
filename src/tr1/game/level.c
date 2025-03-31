@@ -269,7 +269,7 @@ static void M_CompleteSetup(const GF_LEVEL *const level)
     Level_LoadTexturePages();
     Level_LoadPalettes();
     Level_LoadFaces();
-    Output_DownloadTextures();
+    Output_ObserveLevelLoad();
 
     // Initialise the sound effects.
     LEVEL_INFO *const info = Level_GetInfo();
@@ -376,6 +376,11 @@ void Level_Load(const GF_LEVEL *const level)
     Benchmark_End(&benchmark, nullptr);
 }
 
+void Level_Unload(void)
+{
+    Output_ObserveLevelUnload();
+}
+
 bool Level_Initialise(
     const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
@@ -424,6 +429,7 @@ bool Level_Initialise(
     Pierre_Reset();
 
     Lara_InitialiseLoad(NO_ITEM);
+    Level_Unload();
     Level_Load(level);
     GameStringTable_Apply(level);
 

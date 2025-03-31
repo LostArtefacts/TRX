@@ -14,7 +14,8 @@ void Output_ReserveVertexBuffer(size_t size);
 
 void Output_SetWindowSize(int width, int height);
 void Output_ApplyRenderSettings(void);
-void Output_DownloadTextures(void);
+void Output_ObserveLevelLoad(void);
+void Output_ObserveLevelUnload(void);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
@@ -38,7 +39,7 @@ void Output_SetSkyboxEnabled(bool enabled);
 bool Output_IsSkyboxEnabled(void);
 void Output_DrawSkybox(const OBJECT_MESH *mesh);
 
-void Output_DrawRoomMesh(const ROOM *mesh);
+void Output_DrawRoomMesh(ROOM *mesh);
 void Output_DrawRoomPortals(const ROOM *room);
 void Output_DrawRoomTriggers(const ROOM *room);
 void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
@@ -88,7 +89,9 @@ RGB_F Output_GetTint(void);
 void Output_FillEnvironmentMap(void);
 bool Output_MakeScreenshot(const char *path);
 
-int32_t Output_GetWibbleOffset(void);
+bool Output_GetWaterEffect(void);
+bool Output_GetWibbleEffect(void);
+int32_t Output_GetTime(void);
 void Output_GetProjectionMatrix(GLfloat output[][4]);
 void Output_EnableScissor(float x, float y, float w, float h);
 void Output_DisableScissor(void);
@@ -96,3 +99,7 @@ void Output_DisableScissor(void);
 // TODO: these functions are poor in their design and should be not needed
 void Output_RememberState(void);
 void Output_RestoreState(void);
+
+float Output_AdjustUV(uint16_t uv);
+int32_t Output_GetLightDivider(void);
+XYZ_32 Output_GetLightVectorView(void);

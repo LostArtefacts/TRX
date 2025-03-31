@@ -7,6 +7,8 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/output.h"
+#include "game/output/meshes.h"
+#include "game/output/shader.h"
 #include "game/screen.h"
 #include "game/text.h"
 #include "game/viewport.h"

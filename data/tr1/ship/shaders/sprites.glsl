@@ -6,12 +6,12 @@ uniform samplerBuffer uUVW; // texture u, v, layer
 uniform vec2 uViewportSize;
 uniform mat4 uMatProjection;
 uniform mat4 uMatModelView;
-uniform float uWibbleOffset;
-uniform vec2 uFog; // x = start, y = end
+uniform bool uWibbleEffect;
+uniform int uTime;
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inDisplacement;
-layout(location = 2) in int inTextureIdx;
+layout(location = 2) in int inUVWIdx;
 layout(location = 3) in float inShade;
 
 out vec2 gTexUV;
@@ -23,12 +23,12 @@ void main(void) {
     centerEyeSpace.xy += inDisplacement;
     gl_Position = uMatProjection * centerEyeSpace;
 
-    if (uWibbleOffset >= 0.0) {
+    if (uWibbleEffect) {
         gl_Position.xyz =
-            waterWibble(gl_Position, uViewportSize, uWibbleOffset);
+            waterWibble(gl_Position, uViewportSize, uTime);
     }
 
-    vec3 uvw = texelFetch(uUVW, int(inTextureIdx)).xyz;
+    vec3 uvw = texelFetch(uUVW, int(inUVWIdx)).xyz;
     gTexUV = uvw.xy;
     gTexLayer = int(uvw.z);
     gShade = inShade;
@@ -36,7 +36,7 @@ void main(void) {
 
 #elif defined(FRAGMENT)
 
-uniform sampler2DArray uTexture;
+uniform sampler2DArray uTexAtlas;
 uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;
@@ -48,8 +48,8 @@ out vec4 outColor;
 
 void main(void) {
     vec3 uvw = vec3(gTexUV.x, gTexUV.y, gTexLayer);
-    vec4 texColor = texture(uTexture, uvw);
-    if (uSmoothingEnabled && discardTranslucent(uTexture, uvw)) {
+    vec4 texColor = texture(uTexAtlas, uvw);
+    if (uSmoothingEnabled && discardTranslucent(uTexAtlas, uvw)) {
         discard;
     }
 
