@@ -1,3 +1,5 @@
+#include "game/objects/creatures/spider.h"
+
 #include "game/creature.h"
 #include "game/items.h"
 #include "game/lara/control.h"
@@ -64,26 +66,6 @@ static void M_Leap(const int16_t item_num, const int16_t angle)
     Item_SwitchToAnim(item, SPIDER_ANIM_LEAP, 0);
     item->current_anim_state = SPIDER_STATE_ATTACK_2;
     Creature_Animate(item_num, angle, 0);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
-    obj->hit_points = SPIDER_HITPOINTS;
-    obj->radius = SPIDER_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-
-    obj->intelligent = 1;
-    obj->save_position = 1;
-    obj->save_hitpoints = 1;
-    obj->save_flags = 1;
-    obj->save_anim = 1;
 }
 
 static void M_Control(const int16_t item_num)
@@ -172,4 +154,24 @@ static void M_Control(const int16_t item_num)
     M_Leap(item_num, angle);
 }
 
-REGISTER_OBJECT(O_SPIDER, M_Setup)
+void Spider_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->collision_func = Creature_Collision;
+
+    obj->hit_points = SPIDER_HITPOINTS;
+    obj->radius = SPIDER_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+
+    obj->intelligent = 1;
+    obj->save_position = 1;
+    obj->save_hitpoints = 1;
+    obj->save_flags = 1;
+    obj->save_anim = 1;
+}
+
+REGISTER_OBJECT(O_SPIDER, Spider_Setup)

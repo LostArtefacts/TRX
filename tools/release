@@ -82,7 +82,7 @@ class BranchCommand(BaseCommand):
         new_tag = f"tr{args.game_version}-{args.version}"
         self.git.checkout_branch("stable")
         self.git.merge_reset(
-            "develop", text=f"{args.game_version}: release {args.version}"
+            "develop", text=f"tr{args.game_version}: release {args.version}"
         )
         self.git.delete_tag(new_tag)
         self.git.create_tag(new_tag)

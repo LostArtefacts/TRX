@@ -2,11 +2,17 @@
 
 #include "game/clock.h"
 #include "game/game_flow.h"
+#include "game/objects/vars.h"
 #include "global/vars.h"
 
 #include <libtrx/log.h>
 
 #define USE_REAL_CLOCK 0
+
+static int32_t m_CachedItemCount = 0;
+static int32_t m_LevelSecrets = 0;
+
+static bool M_SetSecretFlag(uint8_t *flags, GAME_OBJECT_ID obj_id);
 
 #if USE_REAL_CLOCK
 static CLOCK_TIMER m_StartCounter = { .type = CLOCK_TYPE_REAL };
@@ -34,14 +40,27 @@ void Stats_UpdateTimer(void)
 }
 #endif
 
-FINAL_STATS Stats_ComputeFinalStats(void)
+static bool M_SetSecretFlag(uint8_t *const flags, const GAME_OBJECT_ID obj_id)
+{
+    for (int32_t i = 0; i < 2; i++) {
+        const int32_t flag = 1 << ((obj_id - O_SECRET_1) + i * 3);
+        if ((*flags & flag) == 0) {
+            *flags |= flag;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
 {
     FINAL_STATS result = {};
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_GYM) {
+        if (level->type != level_type) {
             continue;
         }
         result.timer += g_SaveGame.start[i].stats.timer;
@@ -51,14 +70,12 @@ FINAL_STATS Stats_ComputeFinalStats(void)
         result.distance += g_SaveGame.start[i].stats.distance;
         result.medipacks += g_SaveGame.start[i].stats.medipacks;
 
-        // TODO: #170, consult GFE_NUM_SECRETS rather than hardcoding this
-        if (i < level_table->count - 2) {
-            for (int32_t j = 0; j < 3; j++) {
-                if (g_SaveGame.start[i].stats.secret_flags & (1 << j)) {
-                    result.found_secrets++;
-                }
-                result.total_secrets++;
+        for (int32_t j = 0; j < g_SaveGame.start[i].stats.max_secret_count;
+             j++) {
+            if (g_SaveGame.start[i].stats.secret_flags & (1 << j)) {
+                result.found_secrets++;
             }
+            result.total_secrets++;
         }
     }
 
@@ -76,28 +93,54 @@ void Stats_Reset(void)
     g_SaveGame.current_stats.secret_flags = 0;
 }
 
-int32_t Stats_StoreAssaultTime(uint32_t time)
+void Stats_ObserveItemsLoad(void)
 {
-    ASSAULT_STATS *const stats = &g_Assault;
+    m_CachedItemCount = Item_GetLevelCount();
+}
 
-    int32_t insert_idx = -1;
-    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (stats->best_time[i] == 0 || time < stats->best_time[i]) {
-            insert_idx = i;
-            break;
+void Stats_CalculateStats(void)
+{
+    m_LevelSecrets = 0;
+    uint8_t secret_flags = 0;
+
+    for (int32_t i = 0; i < m_CachedItemCount; i++) {
+        const ITEM *const item = Item_Get(i);
+        if (item->object_id < 0 || item->object_id >= O_NUMBER_OF) {
+            LOG_ERROR("Bad Object number (%d) on Item %d", item->object_id, i);
+            continue;
+        }
+
+        if (Object_IsType(item->object_id, g_SecretObjects)
+            && M_SetSecretFlag(&secret_flags, item->object_id)) {
+            m_LevelSecrets++;
         }
     }
-    if (insert_idx == -1) {
-        return false;
+}
+
+int32_t Stats_GetSecrets(void)
+{
+    return m_LevelSecrets;
+}
+
+void Stats_MarkSecretCollected(const GAME_OBJECT_ID obj_id)
+{
+    M_SetSecretFlag(&g_SaveGame.current_stats.secret_flags, obj_id);
+}
+
+bool Stats_CheckAllLevelSecretsCollected(void)
+{
+    int32_t flags = g_SaveGame.current_stats.secret_flags;
+    int32_t count = 0;
+    while (flags != 0) {
+        count += flags & 1;
+        flags >>= 1;
     }
 
-    for (int32_t i = MAX_ASSAULT_TIMES - 1; i > insert_idx; i--) {
-        stats->best_finish[i] = stats->best_finish[i - 1];
-        stats->best_time[i] = stats->best_time[i - 1];
-    }
+    return count >= g_SaveGame.current_stats.max_secret_count;
+}
 
-    stats->finish_count++;
-    stats->best_time[insert_idx] = time;
-    stats->best_finish[insert_idx] = stats->finish_count;
-    return true;
+bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
+{
+    const FINAL_STATS stats = Stats_ComputeFinalStats(level_type);
+    return stats.found_secrets >= stats.total_secrets;
 }

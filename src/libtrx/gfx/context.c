@@ -36,7 +36,9 @@ typedef struct {
 static GFX_CONTEXT m_Context = {};
 
 static bool M_IsExtensionSupported(const char *name);
-static void M_CheckExtensionSupport(const char *name);
+static GLvoid GLAPIENTRY M_GLDebug(
+    GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+    const GLchar *message, const void *user_param);
 
 static bool M_IsExtensionSupported(const char *name)
 {
@@ -56,10 +58,12 @@ static bool M_IsExtensionSupported(const char *name)
     return false;
 }
 
-static void M_CheckExtensionSupport(const char *name)
+static GLvoid GLAPIENTRY M_GLDebug(
+    const GLenum source, const GLenum type, const GLuint id,
+    const GLenum severity, const GLsizei length, const GLchar *const message,
+    const void *const user_param)
 {
-    LOG_INFO(
-        "%s supported: %s", name, M_IsExtensionSupported(name) ? "yes" : "no");
+    LOG_INFO("%d %s", source, message);
 }
 
 void GFX_Context_SwitchToWindowViewport(void)
@@ -132,12 +136,6 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
             "Can't activate OpenGL context: %s", SDL_GetError());
     }
 
-    // Instruct GLEW to load non-Core Profile extensions with OpenGL 2.1,
-    // as we rely on `GL_ARB_explicit_attrib_location` and
-    // `GL_EXT_gpu_shader4`.
-    if (m_Context.config.backend == GFX_GL_21) {
-        glewExperimental = GL_TRUE; // Global state
-    }
     if (glewInit() != GLEW_OK) {
         Shell_ExitSystem("Can't initialize GLEW for OpenGL extension loading");
     }
@@ -153,18 +151,17 @@ bool GFX_Context_Attach(void *window_handle, GFX_GL_BACKEND backend)
         GFX_GL_CheckError();
     }
 
-    // Check the availability of non-Core Profile extensions for OpenGL 2.1
-    if (m_Context.config.backend == GFX_GL_21) {
-        M_CheckExtensionSupport("GL_ARB_explicit_attrib_location");
-        M_CheckExtensionSupport("GL_EXT_gpu_shader4");
-    }
-
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
     GFX_GL_CheckError();
 
     // VSync defaults to on unless user disabled it in runtime json
     SDL_GL_SetSwapInterval(1);
+
+#if DEBUG
+    glDebugMessageCallback(M_GLDebug, nullptr);
+    glEnable(GL_DEBUG_OUTPUT);
+#endif
     return true;
 }
 
@@ -277,6 +274,16 @@ void *GFX_Context_GetWindowHandle(void)
     return m_Context.window_handle;
 }
 
+int32_t GFX_Context_GetWindowWidth(void)
+{
+    return m_Context.window_width;
+}
+
+int32_t GFX_Context_GetWindowHeight(void)
+{
+    return m_Context.window_height;
+}
+
 int32_t GFX_Context_GetDisplayWidth(void)
 {
     return m_Context.display_width;
@@ -322,6 +329,11 @@ const char *GFX_Context_GetScheduledScreenshotPath(void)
 void GFX_Context_ClearScheduledScreenshotPath(void)
 {
     Memory_FreePointer(&m_Context.scheduled_screenshot_path);
+}
+
+void GFX_Context_GetScale(float *const out_x, float *const out_y)
+{
+    m_Context.renderer->get_scale(m_Context.renderer, out_x, out_y);
 }
 
 GFX_CONFIG *GFX_Context_GetConfig(void)

@@ -141,7 +141,7 @@
         {
             "title": "Ice Palace",
             "objects": {
-                "tiger": {"name": "Snow Leopard"},
+                "tiger": {"name": "White Tiger"},
                 "key_2": {"name": "Gong Hammer"},
                 "pickup_2": {"name": "Talion"},
                 "puzzle_1": {"name": "Tibetan Mask"},
@@ -622,6 +622,7 @@
         "STATS_ASSAULT_NO_TIMES_SET": "No Times Set",
         "STATS_ASSAULT_TITLE": "BEST TIMES",
         "STATS_BASIC_FMT": "%d",
+        "STATS_BONUS_STATISTICS": "Bonus Statistics",
         "STATS_DETAIL_FMT": "%d of %d",
         "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
         "STATS_FINAL_STATISTICS": "Final Statistics",

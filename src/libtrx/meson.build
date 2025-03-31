@@ -33,6 +33,7 @@ build_opts = [
   '-DPCRE2_STATIC',
   '-DPCRE2_CODE_UNIT_WIDTH=8',
   '-DTR_VERSION=' + tr_version.to_string(),
+  '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ]
 set_variable('defines', ['-DTR_VERSION=' + tr_version.to_string()])
 
@@ -119,6 +120,7 @@ sources = [
   'game/console/common.c',
   'game/console/history.c',
   'game/console/registry.c',
+  'game/creature/common.c',
   'game/demo/common.c',
   'game/fader.c',
   'game/game.c',
@@ -167,6 +169,8 @@ sources = [
   'game/music.c',
   'game/objects/common.c',
   'game/objects/names.c',
+  'game/objects/creatures/bear.c',
+  'game/objects/creatures/wolf.c',
   'game/objects/traps/movable_block.c',
   'game/objects/vars.c',
   'game/output/common.c',
@@ -210,6 +214,7 @@ sources = [
   'gfx/gl/buffer.c',
   'gfx/gl/program.c',
   'gfx/gl/sampler.c',
+  'gfx/gl/track.c',
   'gfx/gl/texture.c',
   'gfx/gl/utils.c',
   'gfx/gl/vertex_array.c',

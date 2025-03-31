@@ -82,7 +82,8 @@ void Creature_AIInfo(ITEM *item, AI_INFO *info)
         && (g_LaraItem->pos.y < item->pos.y + STEP_L);
 }
 
-void Creature_Mood(ITEM *item, AI_INFO *info, bool violent)
+void Creature_Mood(
+    const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
     CREATURE *creature = item->data;
     if (!creature) {
@@ -317,7 +318,7 @@ void Creature_Head(ITEM *item, int16_t required)
 }
 
 int16_t Creature_Effect(
-    ITEM *item, BITE *bite,
+    const ITEM *const item, const BITE *const bite,
     int16_t (*spawn)(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t yrot,
         int16_t room_num))

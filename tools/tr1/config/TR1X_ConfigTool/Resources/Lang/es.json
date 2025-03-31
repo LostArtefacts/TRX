@@ -69,6 +69,11 @@
       "never": "Nunca",
       "non-ambient": "No ambiental",
       "always": "Siempre"
+    },
+    "stat_mode": {
+      "minimal": "Mínimo",
+      "detailed": "Detallado",
+      "full": "Completo"
     }
   },
   "Properties": {
@@ -164,9 +169,9 @@
       "Title": "Habilitar modo de demostración",
       "Description": "Habilita las demostraciones que se muestran en el menú principal."
     },
-    "enable_detailed_stats": {
-      "Title": "Mostrar total de objetos y muertes",
-      "Description": "Permite mostrar el recuento máximo de objetos recogidos y el recuento de muertes en cada nivel. Esto incluye objetos que no se pueden obtener."
+    "stat_detail_mode": {
+      "Title": "Modo de estadísticas detalladas",
+      "Description": "Permite varios niveles de detalle de estadísticas.\n- Mínimo: muestra muertes, recogidas, secretos y tiempo empleado.\n- Detallado: muestra todas las estadísticas de mínimo así como el recuento máximo de recogidas y muertes de cada nivel.\n- Completo: muestra todas las estadísticas de detailed así como impactos de munición, munición usada, paquetes de salud usados y distancia recorrida."
     },
     "enemy_healthbar_show_mode": {
       "Title": "Mostrar barra de salud enemiga",

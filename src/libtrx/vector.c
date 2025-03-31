@@ -86,13 +86,14 @@ void *Vector_Get(VECTOR *const vector, const int32_t index)
     return (void *)(items + index * vector->item_size);
 }
 
-void Vector_Add(VECTOR *const vector, void *const item)
+void Vector_Add(VECTOR *const vector, const void *const item)
 {
     M_EnsureCapacity(vector, 1);
     Vector_Insert(vector, vector->count, item);
 }
 
-void Vector_Insert(VECTOR *const vector, const int32_t index, void *const item)
+void Vector_Insert(
+    VECTOR *const vector, const int32_t index, const void *const item)
 {
     ASSERT(index >= 0 && index <= vector->count);
     M_EnsureCapacity(vector, 1);

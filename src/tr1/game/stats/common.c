@@ -13,6 +13,7 @@
 
 #include <libtrx/game/game_buf.h>
 #include <libtrx/log.h>
+#include <libtrx/utils.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -143,6 +144,10 @@ void Stats_ComputeFinal(GF_LEVEL_TYPE level_type, FINAL_STATS *final_stats)
         final_stats->max_kill_count += level_stats->max_kill_count;
         final_stats->max_secret_count += level_stats->max_secret_count;
         final_stats->max_pickup_count += level_stats->max_pickup_count;
+        final_stats->ammo_hits += level_stats->ammo_hits;
+        final_stats->ammo_used += level_stats->ammo_used;
+        final_stats->medipacks_used += level_stats->medipacks_used;
+        final_stats->distance_travelled += level_stats->distance_travelled;
     }
 }
 
@@ -266,4 +271,60 @@ void Stats_UpdateSecrets(LEVEL_STATS *const stats)
     for (int32_t i = 0; i < MAX_SECRETS; i++) {
         stats->secret_count += (stats->secret_flags & (1 << i)) ? 1 : 0;
     }
+}
+
+void Stats_AddKill(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.kill_count++;
+}
+
+bool Stats_AddSecret(const int16_t secret_number)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    if (current_info->stats.secret_flags & secret_number) {
+        return false;
+    }
+    current_info->stats.secret_flags |= secret_number;
+    current_info->stats.secret_count++;
+    return true;
+}
+
+void Stats_AddPickup(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.pickup_count++;
+}
+
+void Stats_AddAmmoHits(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.ammo_hits++;
+}
+
+void Stats_AddAmmoUsed(void)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.ammo_used++;
+}
+
+void Stats_AddMedipacksUsed(const double medipack_value)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.medipacks_used += medipack_value;
+}
+
+void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
+{
+    RESUME_INFO *const current_info =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    current_info->stats.distance_travelled += Math_Sqrt(
+        SQUARE(pos.z - last_pos.z) + SQUARE(pos.y - last_pos.y)
+        + SQUARE(pos.x - last_pos.x));
 }

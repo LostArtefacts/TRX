@@ -69,6 +69,11 @@
       "never": "Mai",
       "non-ambient": "Non ambientale",
       "always": "Sempre"
+    },
+    "stat_mode": {
+      "minimal": "Minimo",
+      "detailed": "Dettagliato",
+      "full": "Completo"
     }
   },
   "Properties": {
@@ -240,9 +245,9 @@
       "Title": "Statistiche del livello nella bussola",
       "Description": "Abilita la visualizzazione delle statistiche del livello quando è selezionata la bussola."
     },
-    "enable_detailed_stats": {
-      "Title": "Mostra il numero totale di uccisioni e oggetti",
-      "Description": "Consente di mostrare il numero massimo di uccisioni e oggetti recuperabili di ogni livello."
+    "stat_detail_mode": {
+      "Title": "Modalità di visualizzazione delle statistiche",
+      "Description": "Consente di scegliere tra vari livelli di dettaglio per la visualizzazione delle statistiche.\n- Minimo: mostra le uccisioni, gli oggetti raccolti, i segreti e il tempo impiegato per completare il livello.\n- Dettagliato: mostra tutte le statistiche della modalità 'Minimo' e, in aggiunta, il numero massimo di uccisioni e di oggetti recuperabili di ogni livello.\n- Completo: mostra tutte le statistiche della modalità 'Dettagliato' e, in aggiunta, i colpi andati a segno, le munizioni utilizzate, i kit medici adoperati e la distanza percorsa."
     },
     "enable_cine": {
       "Title": "Abilita le scene di intermezzo",

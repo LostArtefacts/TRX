@@ -219,7 +219,6 @@ static void M_LoadFromFile(const GF_LEVEL *const level)
     Level_ReadPathingData(file);
     Level_ReadAnimatedTextureRanges(file);
     Level_ReadItems(file);
-    Stats_ObserveItemsLoad();
     Level_ReadLightMap(file);
 
     if (layout != LEVEL_LAYOUT_TR1_DEMO_PC) {
@@ -396,6 +395,10 @@ bool Level_Initialise(
         resume->stats.secret_count = 0;
         resume->stats.pickup_count = 0;
         resume->stats.kill_count = 0;
+        resume->stats.ammo_hits = 0;
+        resume->stats.ammo_used = 0;
+        resume->stats.medipacks_used = 0;
+        resume->stats.distance_travelled = 0;
     }
 
     g_LevelComplete = false;

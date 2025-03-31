@@ -82,7 +82,7 @@ static void M_DrawTextOutline(
     int32_t h, const TEXT_STYLE text_style)
 {
     if (ui_style == UI_STYLE_PC) {
-        Output_DrawScreenBox(
+        Output_DrawScreenFrame(
             sx, sy, w, h, Text_GetMenuColor(MC_GOLD_DARK),
             Text_GetMenuColor(MC_GOLD_LIGHT), TEXT_OUTLINE_THICKNESS);
         return;

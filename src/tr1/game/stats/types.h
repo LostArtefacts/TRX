@@ -10,6 +10,10 @@ typedef struct STATS_COMMON {
     uint32_t max_kill_count;
     uint16_t max_secret_count;
     uint16_t max_pickup_count;
+    uint32_t ammo_hits;
+    uint32_t ammo_used;
+    double medipacks_used;
+    uint32_t distance_travelled;
 } STATS_COMMON;
 
 typedef struct {

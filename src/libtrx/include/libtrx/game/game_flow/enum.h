@@ -82,7 +82,6 @@ typedef enum {
 #elif TR_VERSION == 2
     GFS_REMOVE_FLARES,
     GFS_SET_START_ANIM,
-    GFS_SET_NUM_SECRETS,
     GFS_ENABLE_SUNSET,
     GFS_ADD_SECRET_REWARD,
 #endif

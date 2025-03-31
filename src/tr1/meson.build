@@ -34,6 +34,7 @@ build_opts = [
   # end of common options
   '-ffile-prefix-map=@0@/='.format(relative_dir),
   '-DTR_VERSION=1',
+  '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ] + trx.get_variable('defines')
 
 add_project_arguments(build_opts, language: 'c')
@@ -161,7 +162,6 @@ sources = [
   'game/objects/creatures/bacon_lara.c',
   'game/objects/creatures/baldy.c',
   'game/objects/creatures/bat.c',
-  'game/objects/creatures/bear.c',
   'game/objects/creatures/centaur.c',
   'game/objects/creatures/cowboy.c',
   'game/objects/creatures/crocodile.c',
@@ -179,7 +179,6 @@ sources = [
   'game/objects/creatures/statue.c',
   'game/objects/creatures/torso.c',
   'game/objects/creatures/trex.c',
-  'game/objects/creatures/wolf.c',
   'game/objects/effects/blood.c',
   'game/objects/effects/body_part.c',
   'game/objects/effects/bubble.c',
@@ -245,6 +244,9 @@ sources = [
   'game/option/option_passport.c',
   'game/option/option_sound.c',
   'game/output.c',
+  'game/output/sprites.c',
+  'game/output/sprite_program.c',
+  'game/output/textures.c',
   'game/overlay.c',
   'game/requester.c',
   'game/room.c',

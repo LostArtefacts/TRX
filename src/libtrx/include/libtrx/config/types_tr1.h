@@ -63,6 +63,12 @@ typedef enum {
     UI_STYLE_PC,
 } UI_STYLE;
 
+typedef enum {
+    SDM_MINIMAL,
+    SDM_DETAILED,
+    SDM_FULL,
+} STAT_DETAIL_MODE;
+
 typedef struct {
     bool loaded;
 
@@ -148,7 +154,7 @@ typedef struct {
         bool enable_eidos_logo;
         bool enable_loading_screens;
         bool enable_cine;
-        bool enable_detailed_stats;
+        STAT_DETAIL_MODE stat_detail_mode;
         bool enable_walk_to_items;
         bool enable_enhanced_saves;
         bool enable_jump_twists;

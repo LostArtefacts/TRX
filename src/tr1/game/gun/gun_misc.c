@@ -9,6 +9,7 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -431,6 +432,7 @@ int32_t Gun_FireWeapon(
     }
 
     ammo->ammo--;
+    Stats_AddAmmoUsed();
 
     const XYZ_32 view_pos = {
         .x = src->pos.x,
@@ -470,6 +472,7 @@ int32_t Gun_FireWeapon(
     GAME_VECTOR vdest;
     if (best >= 0) {
         ammo->hit++;
+        Stats_AddAmmoHits();
         vdest.x = vsrc.x + ((bestdist * g_MatrixPtr->_20) >> W2V_SHIFT);
         vdest.y = vsrc.y + ((bestdist * g_MatrixPtr->_21) >> W2V_SHIFT);
         vdest.z = vsrc.z + ((bestdist * g_MatrixPtr->_22) >> W2V_SHIFT);
@@ -491,7 +494,7 @@ int32_t Gun_FireWeapon(
 void Gun_HitTarget(ITEM *item, GAME_VECTOR *hitpos, int16_t damage)
 {
     if (item->hit_points > 0 && item->hit_points <= damage) {
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel())->stats.kill_count++;
+        Stats_AddKill();
         if (g_Config.gameplay.target_mode == TLM_SEMI) {
             g_Lara.target = nullptr;
         }

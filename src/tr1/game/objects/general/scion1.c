@@ -11,6 +11,7 @@
 #include "game/objects/common.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #define EXTRA_ANIM_PEDESTAL_SCION 0
@@ -80,8 +81,7 @@ static void M_Collision(
             Inv_AddItem(item->object_id);
             item->status = IS_INVISIBLE;
             Item_RemoveDrawn(item_num);
-            Savegame_GetCurrentInfo(Game_GetCurrentLevel())
-                ->stats.pickup_count++;
+            Stats_AddPickup();
         }
     } else if (
         g_Input.action && g_Lara.gun_status == LGS_ARMLESS

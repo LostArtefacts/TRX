@@ -224,23 +224,6 @@ typedef struct {
 } WEAPON_INFO;
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
-    int32_t mesh_num;
-} BITE;
-
-typedef struct {
-    int16_t zone_num;
-    int16_t enemy_zone;
-    int32_t distance;
-    int32_t ahead;
-    int32_t bite;
-    int16_t angle;
-    int16_t enemy_facing;
-} AI_INFO;
-
-typedef struct {
     bool is_blocked;
     char *content_text;
     TEXTSTRING *content;

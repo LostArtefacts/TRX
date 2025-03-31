@@ -32,6 +32,4 @@ void Lara_AlignPosition(ITEM *item, XYZ_32 *vec);
 bool Lara_MovePosition(ITEM *item, XYZ_32 *vec);
 void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
 
-void Lara_TakeDamage(int16_t damage, bool hit_status);
-
 void Lara_RevertToPistolsIfNeeded(void);

@@ -16,8 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ROW_HEIGHT_BARE 30
+#define ROW_HEIGHT_BARE 25
 #define ROW_HEIGHT_BORDERED 18
+#define ROW_WIDTH_BORDERED 200
+#define ROW_WIDTH_BORDERED_FULL 315
 
 typedef enum {
     M_ROW_KILLS,
@@ -25,6 +27,9 @@ typedef enum {
     M_ROW_SECRETS,
     M_ROW_DEATHS,
     M_ROW_TIMER,
+    M_ROW_AMMO,
+    M_ROW_MEDIPACKS_USED,
+    M_ROW_DISTANCE_TRAVELLED,
 } M_ROW_ROLE;
 
 typedef struct {
@@ -115,8 +120,11 @@ static void M_AddRow(
             UI_STACK_LAYOUT_HORIZONTAL, UI_STACK_AUTO_SIZE, row_height);
     } else {
         row_height = ROW_HEIGHT_BORDERED;
+        const int32_t row_width = g_Config.gameplay.stat_detail_mode == SDM_FULL
+            ? ROW_WIDTH_BORDERED_FULL
+            : ROW_WIDTH_BORDERED;
         row->stack =
-            UI_Stack_Create(UI_STACK_LAYOUT_HORIZONTAL, 200, row_height);
+            UI_Stack_Create(UI_STACK_LAYOUT_HORIZONTAL, row_width, row_height);
         UI_Stack_SetHAlign(row->stack, UI_STACK_H_ALIGN_DISTRIBUTE);
     }
 
@@ -140,9 +148,10 @@ static void M_AddRowFromRole(
     const STATS_COMMON *const stats, const GAME_INFO *const game_info)
 {
     char buf[50];
-    const char *const num_fmt = g_Config.gameplay.enable_detailed_stats
-        ? GS(STATS_DETAIL_FMT)
-        : GS(STATS_BASIC_FMT);
+    const char *const num_fmt =
+        g_Config.gameplay.stat_detail_mode == SDM_MINIMAL
+        ? GS(STATS_BASIC_FMT)
+        : GS(STATS_DETAIL_FMT);
 
     switch (role) {
     case M_ROW_KILLS:
@@ -163,13 +172,35 @@ static void M_AddRowFromRole(
         break;
 
     case M_ROW_DEATHS:
-        sprintf(buf, "%d", game_info->death_count);
+        sprintf(buf, GS(STATS_BASIC_FMT), game_info->death_count);
         M_AddRow(self, role, GS(STATS_DEATHS), buf);
         break;
 
     case M_ROW_TIMER:
         M_FormatTime(buf, stats->timer);
         M_AddRow(self, role, GS(STATS_TIME_TAKEN), buf);
+        break;
+
+    case M_ROW_AMMO:
+        sprintf(buf, GS(PAGINATION_NAV), stats->ammo_hits, stats->ammo_used);
+        M_AddRow(self, role, GS(STATS_AMMO), buf);
+        break;
+
+    case M_ROW_MEDIPACKS_USED:
+        sprintf(buf, GS(DETAIL_FLOAT_FMT), stats->medipacks_used);
+        M_AddRow(self, role, GS(STATS_MEDIPACKS_USED), buf);
+        break;
+
+    case M_ROW_DISTANCE_TRAVELLED:
+        const int32_t distance_travelled = stats->distance_travelled / 445;
+        if (distance_travelled < 1000) {
+            sprintf(buf, "%dm", distance_travelled);
+        } else {
+            sprintf(
+                buf, "%d.%02dkm", distance_travelled / 1000,
+                (distance_travelled % 1000) / 10);
+        }
+        M_AddRow(self, role, GS(STATS_DISTANCE_TRAVELLED), buf);
         break;
 
     default:
@@ -181,18 +212,31 @@ static void M_AddCommonRows(
     UI_STATS_DIALOG *const self, const STATS_COMMON *const stats,
     const GAME_INFO *const game_info)
 {
-    M_AddRowFromRole(self, M_ROW_KILLS, stats, game_info);
-    M_AddRowFromRole(self, M_ROW_PICKUPS, stats, game_info);
-    M_AddRowFromRole(self, M_ROW_SECRETS, stats, game_info);
+    if (g_Config.gameplay.stat_detail_mode == SDM_MINIMAL) {
+        M_AddRowFromRole(self, M_ROW_KILLS, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_PICKUPS, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_SECRETS, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_TIMER, stats, game_info);
+    } else {
+        M_AddRowFromRole(self, M_ROW_TIMER, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_SECRETS, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_PICKUPS, stats, game_info);
+        M_AddRowFromRole(self, M_ROW_KILLS, stats, game_info);
+        if (g_Config.gameplay.stat_detail_mode == SDM_FULL) {
+            M_AddRowFromRole(self, M_ROW_AMMO, stats, game_info);
+            M_AddRowFromRole(self, M_ROW_MEDIPACKS_USED, stats, game_info);
+            M_AddRowFromRole(self, M_ROW_DISTANCE_TRAVELLED, stats, game_info);
+        }
+    }
+
     if (g_Config.gameplay.enable_deaths_counter
         && game_info->death_count >= 0) {
         // Always use sum of all levels for the deaths.
-        // Deaths get stored in the resume info for the level they happen on,
-        // so if the player dies in Vilcabamba and reloads Caves, they should
-        // still see an incremented death counter.
+        // Deaths get stored in the resume info for the level they happen
+        // on, so if the player dies in Vilcabamba and reloads Caves, they
+        // should still see an incremented death counter.
         M_AddRowFromRole(self, M_ROW_DEATHS, stats, game_info);
     }
-    M_AddRowFromRole(self, M_ROW_TIMER, stats, game_info);
 }
 
 static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
@@ -230,7 +274,7 @@ static void M_DoLayout(UI_STATS_DIALOG *const self)
 {
     M_SetPosition(
         self, (UI_GetCanvasWidth() - M_GetWidth(self)) / 2,
-        (UI_GetCanvasHeight() - M_GetHeight(self)) / 2 + 25);
+        (UI_GetCanvasHeight() - M_GetHeight(self)) / 2);
 }
 
 static void M_HandleLayoutUpdate(const EVENT *event, void *data)

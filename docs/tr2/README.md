@@ -9,6 +9,13 @@ game with new enhancements and features.
 
 ## Windows / Linux
 
+### Installing (simplified)
+
+1. Head over to GitHub releases: https://github.com/LostArtefacts/TRX/releases
+2. Download the TR2X installer. Your browser may complain that the .exe is unsafe, but it's OK to ignore this alert.
+3. Mark the installer EXE as safe to run by right-clicking on the .exe, going to properties and clicking "Unblock".
+4. Run the installer and proceed with the steps.
+
 ### Installing (manual)
 
 1. Head over to GitHub releases: https://github.com/LostArtefacts/TRX/releases
@@ -16,7 +23,129 @@ game with new enhancements and features.
 3. Extract the TR2X zip file into a directory of your choice.  
    Make sure you choose to overwrite existing directories and files.
 4. (First time installation) Put your original game files into the target directory.
+5. Optionally you can also install the Golden Mask expansion pack files. Extract the contents of the following zip
+   into the target directory.
+   https://lostartefacts.dev/aux/tr2x/trgm.zip
 5. To play the game, run `TR2X.exe`.
+6. To play the Golden Mask expansion pack, run `TR2X.exe -gold`.
+
+If you install everything correctly, your game directory should look more or
+less like this (click to expand):
+
+<details>
+<p><em>* Will not be present until the game has been launched.</em></p>
+<pre>
+.
+├── cfg
+│   ├── TR2X.json5 *
+│   ├── TR2X_gameflow.json5
+│   ├── TR2X_gameflow_gm.json5
+│   ├── TR2X_gameflow_level.json5
+│   ├── TR2X_strings.json5
+│   ├── TR2X_strings_gm.json5
+│   └── TR2X_strings_level.json5
+├── data
+│   ├── assault.tr2
+│   ├── boat.tr2
+│   ├── catacomb.tr2
+│   ├── cut1.tr2
+│   ├── cut2.tr2
+│   ├── cut3.tr2
+│   ├── cut4.tr2
+│   ├── deck.tr2
+│   ├── emprtomb.tr2
+│   ├── floating.tr2
+│   ├── house.tr2
+│   ├── icecave.tr2
+│   ├── keel.tr2
+│   ├── level1.tr2
+│   ├── level2.tr2
+│   ├── level3.tr2
+│   ├── level4.tr2
+│   ├── level5.tr2
+│   ├── living.tr2
+│   ├── main.sfx
+│   ├── main_gm.sfx
+│   ├── monastry.tr2
+│   ├── opera.tr2
+│   ├── platform.tr2
+│   ├── rig.tr2
+│   ├── skidoo.tr2
+│   ├── title.tr2
+│   ├── title_gm.tr2
+│   ├── unwater.tr2
+│   ├── venice.tr2
+│   ├── wall.tr2
+│   ├── xian.tr2
+│   ├── images
+│   │   ├── credit00_gm.png
+│   │   ├── credit01.png
+│   │   ├── credit02.png
+│   │   ├── credit03.png
+│   │   ├── credit04.png
+│   │   ├── credit05.png
+│   │   ├── credit06.png
+│   │   ├── credit07.png
+│   │   ├── credit07_gm.png
+│   │   ├── credit08.png
+│   │   ├── end.png
+│   │   ├── legal.png
+│   │   ├── title_eu.png
+│   │   ├── title_eu_gm.png
+│   │   ├── title_us.png
+│   │   ├── title_us_gm.png
+│   │   └── og
+│   │       ├── credit00_gm.pcx
+│   │       ├── credit01.pcx
+│   │       ├── credit02.pcx
+│   │       ├── credit03.pcx
+│   │       ├── credit04.pcx
+│   │       ├── credit05.pcx
+│   │       ├── credit06.pcx
+│   │       ├── credit07.pcx
+│   │       ├── credit07_gm.pcx
+│   │       ├── credit08.pcx
+│   │       ├── credit09.pcx
+│   │       ├── end.pcx
+│   │       ├── legal.pcx
+│   │       ├── title.pcx
+│   │       ├── title_eu_gm.pcx
+│   │       └── title_us_gm.pcx
+│   └── injections
+│       ├── barkhang_itemrots.bin
+│       ├── barkhang_pickup_meshes.bin
+│       ├── catacombs_fd.bin
+│       └── etc...
+├── fmv
+│   ├── ancient.rpl
+│   ├── crash.rpl
+│   ├── end.rpl
+│   ├── jeep.rpl
+│   ├── landing.rpl
+│   ├── logo.rpl
+│   ├── modern.rpl
+│   └── ms.rpl
+├── music
+│   ├── 2.mp3
+│   ├── 3.mp3
+│   └── etc...
+├── shaders
+│   ├── 2d.glsl
+│   ├── 3d.glsl
+│   ├── common.glsl
+│   ├── fade.glsl
+│   └── fbo.glsl
+├── TR2X.exe
+└── TR2X_ConfigTool.exe
+</pre>
+</details>
+
+### Configuring
+
+To configure TR2X, run the `TR2X_ConfigTool.exe` application. All the
+configuration is explained in this tool. Alternatively, after running the game
+at least once, you can edit `TR2X.json5` manually in a text editor such
+as Notepad.
 
 ## macOS
 
@@ -48,6 +177,7 @@ game with new enhancements and features.
 - added support for 60 FPS rendering
 - added a pause screen
 - added a photo mode feature
+- added combined support for The Golden Mask
 - changed inventory to pause the music rather than muting it
 - fixed killing the T-Rex with a grenade launcher crashing the game
 - fixed secret rewards not displaying shotgun ammo
@@ -128,6 +258,7 @@ game with new enhancements and features.
 #### Statistics
 - fixed the dragon counting as more than one kill if allowed to revive
 - fixed enemies that are run over by the skidoo not being counted in the statistics
+- fixed the final two levels not allowing for secrets to be counted in the statistics
 
 #### Visuals
 - added quadrilateral texture correction
@@ -140,6 +271,7 @@ game with new enhancements and features.
 - added optional fade effects to the hardware renderer
 - added text information when changing rendering options at runtime
 - added support for animated sprites
+- added the ability for custom levels to have up to two of each secret type per level
 - changed the hardware renderer to always use 16-bit textures
 - changed the software renderer to use the picture's palette for the background pictures
 - changed fullscreen behavior to use windowed desktop mode
@@ -181,6 +313,7 @@ game with new enhancements and features.
 - added ability to skip FMVs with both the Action key
 - added ability to skip end credits with the Action and Escape keys
 - added the ability to specify per-level SFX files rather than enforcing the default (main.sfx) on all levels
+- added the ability to define bonus levels in the game flow, which unlock when all main game secrets are found
 - added -l/--level and -s/--save command line arguments
 - expanded internal game memory limit from 7.5 MB to unlimited (within system memory cap)
 - expanded maximum object textures from 2048 to unlimited (within game's overall memory cap)

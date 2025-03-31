@@ -4,6 +4,7 @@
 #include "game/fmv.h"
 #include "game/input.h"
 #include "game/music.h"
+#include "game/option/option_controls.h"
 #include "game/output.h"
 #include "game/shell.h"
 #include "game/sound.h"
@@ -181,7 +182,7 @@ void Shell_ProcessEvents(void)
             // some keypresses if the player types really fast, so we need to
             // react sooner.
             if (!FMV_IsPlaying() && g_Config.gameplay.enable_console
-                && !Console_IsOpened()
+                && !Console_IsOpened() && !Option_Controls_IsKeyChangeMode()
                 && Input_IsPressed(
                     INPUT_BACKEND_KEYBOARD, g_Config.input.keyboard_layout,
                     INPUT_ROLE_ENTER_CONSOLE)) {
@@ -221,12 +222,6 @@ void Shell_ProcessEvents(void)
 static void M_SetGLBackend(const GFX_GL_BACKEND backend)
 {
     switch (backend) {
-    case GFX_GL_21:
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
-        break;
-
     case GFX_GL_33C:
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -255,7 +250,6 @@ void S_Shell_CreateWindow(void)
     const GFX_GL_BACKEND backends_to_try[] = {
         // clang-format off
         GFX_GL_33C,
-        GFX_GL_21,
         GFX_GL_INVALID_BACKEND, // guard
         // clang-format on
     };

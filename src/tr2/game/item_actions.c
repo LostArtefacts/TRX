@@ -1,8 +1,8 @@
 #include "game/item_actions.h"
 
 #include "game/camera.h"
+#include "game/gym.h"
 #include "game/lara/hair.h"
-#include "game/music.h"
 #include "game/random.h"
 #include "game/room.h"
 #include "game/sound.h"
@@ -300,60 +300,25 @@ void M_ResetHair(ITEM *const item)
 
 void M_AssaultStart(ITEM *const item)
 {
-    g_SaveGame.current_stats.timer = 0;
-    g_IsAssaultTimerActive = true;
-    g_IsAssaultTimerDisplay = true;
+    Gym_StartAssault();
     Room_SetFlipEffect(-1);
-    Stats_StartTimer();
 }
 
 void M_AssaultStop(ITEM *const item)
 {
-    g_IsAssaultTimerActive = false;
-    g_IsAssaultTimerDisplay = true;
+    Gym_StopAssault();
     Room_SetFlipEffect(-1);
 }
 
 void M_AssaultReset(ITEM *const item)
 {
-    g_IsAssaultTimerActive = false;
-    g_IsAssaultTimerDisplay = false;
+    Gym_ResetAssault();
     Room_SetFlipEffect(-1);
 }
 
 void M_AssaultFinished(ITEM *const item)
 {
-    if (g_IsAssaultTimerActive) {
-        Stats_StoreAssaultTime(g_SaveGame.current_stats.timer);
-
-        if ((int32_t)g_AssaultBestTime < 0) {
-            if (g_SaveGame.current_stats.timer < 100 * FRAMES_PER_SECOND) {
-                // "Gosh! That was my best time yet!"
-                Music_Play(MX_GYM_HINT_15, MPM_ALWAYS);
-                g_AssaultBestTime = g_SaveGame.current_stats.timer;
-            } else {
-                // "Congratulations! You did it! But perhaps I could've been
-                // faster."
-                Music_Play(MX_GYM_HINT_17, MPM_ALWAYS);
-                g_AssaultBestTime = 100 * FRAMES_PER_SECOND;
-            }
-        } else if (g_SaveGame.current_stats.timer < g_AssaultBestTime) {
-            // "Gosh! That was my best time yet!"
-            Music_Play(MX_GYM_HINT_15, MPM_ALWAYS);
-            g_AssaultBestTime = g_SaveGame.current_stats.timer;
-        } else if (
-            g_SaveGame.current_stats.timer
-            < g_AssaultBestTime + 5 * FRAMES_PER_SECOND) {
-            // "Almost. Perhaps another try and I might beat it."
-            Music_Play(MX_GYM_HINT_16, MPM_ALWAYS);
-        } else {
-            // "Great. But nowhere near my best time."
-            Music_Play(MX_GYM_HINT_14, MPM_ALWAYS);
-        }
-
-        g_IsAssaultTimerActive = false;
-    }
-
+    Gym_FinishAssault();
     Room_SetFlipEffect(-1);
 }
 

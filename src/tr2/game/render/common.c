@@ -10,6 +10,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/gfx/fade/fade_renderer.h>
+#include <libtrx/gfx/gl/track.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>
@@ -75,12 +76,6 @@ static void M_ResetPolyList(void)
 static void M_SetGLBackend(const GFX_GL_BACKEND backend)
 {
     switch (backend) {
-    case GFX_GL_21:
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
-        break;
-
     case GFX_GL_33C:
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -100,7 +95,6 @@ void Render_Init(void)
     const GFX_GL_BACKEND backends_to_try[] = {
         // clang-format off
         GFX_GL_33C,
-        GFX_GL_21,
         GFX_GL_INVALID_BACKEND, // guard
         // clang-format on
     };
@@ -202,6 +196,7 @@ void Render_SetupDisplay(
 void Render_BeginScene(void)
 {
     GFX_Context_Clear();
+    GFX_Track_Reset();
     RENDERER *const r = M_GetRenderer();
     r->BeginScene(r);
     M_ResetPolyList();

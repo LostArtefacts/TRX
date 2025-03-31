@@ -3,6 +3,7 @@
 #include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "game/stats.h"
 #include "global/vars.h"
@@ -37,6 +38,7 @@ typedef struct {
     UI_STATS_DIALOG_ARGS args;
     UI_WIDGET *requester;
     int32_t listener;
+    GF_LEVEL_TYPE level_type;
 } UI_STATS_DIALOG;
 
 static void M_AddRow(
@@ -70,7 +72,7 @@ static void M_AddRowFromRole(
     UI_STATS_DIALOG *const self, const M_ROW_ROLE role,
     const STATS_COMMON *const stats)
 {
-    char buf[32];
+    char buf[64];
 
     switch (role) {
     case M_ROW_TIMER: {
@@ -84,15 +86,20 @@ static void M_AddRowFromRole(
     case M_ROW_LEVEL_SECRETS: {
         char *ptr = buf;
         int32_t num_secrets = 0;
-        for (int32_t i = 0; i < 3; i++) {
-            if (((LEVEL_STATS *)stats)->secret_flags & (1 << i)) {
-                sprintf(ptr, "\\{secret %d}", i + 1);
-                num_secrets++;
-            } else {
-                strcpy(ptr, "   ");
+        const LEVEL_STATS *const level_stats = (LEVEL_STATS *)stats;
+        for (int32_t i = 1; i >= 0; i--) {
+            for (int32_t j = 0; j < 3; j++) {
+                const int32_t flag = 1 << (j + i * 3);
+                if ((level_stats->secret_flags & flag) != 0) {
+                    sprintf(ptr, "\\{secret %d}", j + 1);
+                    num_secrets++;
+                } else {
+                    strcpy(ptr, "   ");
+                }
+                ptr += strlen(ptr);
             }
-            ptr += strlen(ptr);
         }
+
         *ptr++ = '\0';
         if (num_secrets == 0) {
             strcpy(buf, GS(MISC_NONE));
@@ -137,7 +144,7 @@ static void M_AddRowFromRole(
         if (distance < 1000) {
             sprintf(buf, "%dm", distance);
         } else {
-            sprintf(buf, "%d.%02dkm", distance / 1000, distance % 100);
+            sprintf(buf, "%d.%02dkm", distance / 1000, (distance % 1000) / 10);
         }
         M_AddRow(self, role, GS(STATS_DISTANCE_TRAVELLED), buf);
         break;
@@ -155,7 +162,7 @@ static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
         ? (STATS_COMMON *)&g_SaveGame.current_stats
         : (STATS_COMMON *)&g_SaveGame.start[self->args.level_num].stats;
     M_AddRowFromRole(self, M_ROW_TIMER, stats);
-    if (g_GF_NumSecrets != 0) {
+    if (stats->max_secret_count != 0) {
         M_AddRowFromRole(self, M_ROW_LEVEL_SECRETS, stats);
     }
     M_AddRowFromRole(self, M_ROW_KILLS, stats);
@@ -167,7 +174,7 @@ static void M_AddLevelStatsRows(UI_STATS_DIALOG *const self)
 
 static void M_AddFinalStatsRows(UI_STATS_DIALOG *const self)
 {
-    const FINAL_STATS final_stats = Stats_ComputeFinalStats();
+    const FINAL_STATS final_stats = Stats_ComputeFinalStats(self->level_type);
     const STATS_COMMON *stats = (STATS_COMMON *)&final_stats;
     M_AddRowFromRole(self, M_ROW_TIMER, stats);
     M_AddRowFromRole(self, M_ROW_ALL_SECRETS, stats);
@@ -180,7 +187,8 @@ static void M_AddFinalStatsRows(UI_STATS_DIALOG *const self)
 
 static void M_AddAssaultCourseStatsRows(UI_STATS_DIALOG *const self)
 {
-    if (!g_Assault.best_time[0]) {
+    const ASSAULT_STATS stats = Gym_GetAssaultStats();
+    if (stats.best_time[0] == 0) {
         M_AddRow(self, M_ROW_GENERIC, GS(STATS_ASSAULT_NO_TIMES_SET), nullptr);
         return;
     }
@@ -188,15 +196,15 @@ static void M_AddAssaultCourseStatsRows(UI_STATS_DIALOG *const self)
     for (int32_t i = 0; i < 10; i++) {
         char left_buf[32] = "";
         char right_buf[32] = "";
-        if (g_Assault.best_time[i]) {
+        if (stats.best_time[i] != 0) {
             sprintf(
                 left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
-                g_Assault.best_finish[i]);
+                stats.best_finish[i]);
 
-            const int32_t sec = g_Assault.best_time[i] / FRAMES_PER_SECOND;
+            const int32_t sec = stats.best_time[i] / FRAMES_PER_SECOND;
             sprintf(
                 right_buf, "%02d:%02d.%-2d", sec / 60, sec % 60,
-                g_Assault.best_time[i] % FRAMES_PER_SECOND
+                stats.best_time[i] % FRAMES_PER_SECOND
                     / (FRAMES_PER_SECOND / 10));
         }
 
@@ -294,6 +302,7 @@ UI_WIDGET *UI_StatsDialog_Create(UI_STATS_DIALOG_ARGS args)
     ASSERT(args.style == UI_STATS_DIALOG_STYLE_BORDERED);
 
     self->args = args;
+    self->level_type = GF_GetLevel(GFLT_MAIN, self->args.level_num)->type;
     self->requester = UI_Requester_Create((UI_REQUESTER_SETTINGS) {
         .is_selectable = false,
         .visible_rows = VISIBLE_ROWS,
@@ -312,7 +321,10 @@ UI_WIDGET *UI_StatsDialog_Create(UI_STATS_DIALOG_ARGS args)
         break;
 
     case UI_STATS_DIALOG_MODE_FINAL:
-        UI_Requester_SetTitle(self->requester, GS(STATS_FINAL_STATISTICS));
+        const char *title = self->level_type == GFL_BONUS
+            ? GS(STATS_BONUS_STATISTICS)
+            : GS(STATS_FINAL_STATISTICS);
+        UI_Requester_SetTitle(self->requester, title);
         M_AddFinalStatsRows(self);
         break;
 

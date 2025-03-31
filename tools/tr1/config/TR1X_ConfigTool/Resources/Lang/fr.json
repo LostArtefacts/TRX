@@ -69,6 +69,11 @@
       "never": "Jamais",
       "non-ambient": "Non ambiant",
       "always": "Toujours"
+    },
+    "stat_mode": {
+      "minimal": "Minime",
+      "detailed": "Détaillée",
+      "full": "Complet"
     }
   },
   "Properties": {
@@ -240,9 +245,9 @@
       "Title": "Statistiques de niveau dans la boussole",
       "Description": "Active l'affichage des statistiques de niveau lorsque la boussole est sélectionnée."
     },
-    "enable_detailed_stats": {
-      "Title": "Afficher le nombre total de victimes et de collectibles",
-      "Description": "Permet d'afficher le nombre maximum de collectibles ramassés et le nombre de victimes faites à chaque niveau. Cela inclut les objets impossibles à obtenir."
+    "stat_detail_mode": {
+      "Title": "Mode détail Stat",
+      "Description": "Permet différents niveaux de détail des statistiques.\n- Minime: indique les tués, les ramassages, les secrets et le temps passé.\n- Détaillée: indique toutes les statistiques de nu ainsi que le nombre maximum de ramassages et de tués pour chaque niveau.\n- Complet: indique toutes les statistiques de détaillé ainsi que les munitions touchées, les munitions utilisées, les trousses de santé utilisées et la distance parcourue."
     },
     "enable_cine": {
       "Title": "Activer les cutscenes",

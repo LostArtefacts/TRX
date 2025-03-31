@@ -75,6 +75,7 @@ typedef struct {
         bool fix_floor_data_issues;
         bool fix_flare_throw_priority;
         bool fix_walk_run_jump;
+        bool fix_bear_ai;
         bool enable_cheats;
         bool enable_console;
         bool enable_fmv;
@@ -109,4 +110,8 @@ typedef struct {
         int32_t scaler;
         float sizer;
     } rendering;
+
+    struct {
+        bool bonus_level_unlock;
+    } profile;
 } CONFIG;

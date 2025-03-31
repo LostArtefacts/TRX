@@ -1,4 +1,12 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr2-0.10...develop) - ××××-××-××
+- added support for The Golden Mask (#1621)
+- added an installer for Windows (#2681)
+- added the bonus level game flow type, which allows for levels to be unlocked if all main game secrets are found (#2668)
+- added the ability for custom levels to have up to two of each secret type per level (#2674)
+- fixed the final two levels not allowing for secrets to be counted in the statistics (#1582)
+- fixed Lara's holsters being empty if a game flow level removes all weapons but also re-adds the pistols (#2677)
+- fixed the console opening when remapping its key (#2641)
+- removed the need to specify in the game flow levels that have no secrets (secrets will be automatically counted) (#1582)
 
 ## [0.10](https://github.com/LostArtefacts/TRX/compare/tr2-0.9.2...tr2-0.10) - 2025-03-18
 - added support for 60 FPS rendering
@@ -38,6 +46,7 @@
 - fixed the ammo counter not showing in demos if NG+ is set (#2574, regression from 0.9)
 - fixed being able to play with Lara invisible after using the explosion cheat then the fly cheat (#2584, regression from 0.9)
 - fixed the `/pos` command not showing demo and cutscene titles
+- fixed the distance travelled stat displaying the wrong value when over 1000m (#2659)
 - improved camera mode navigation:
     - improved support for pivoting
     - improved roll support

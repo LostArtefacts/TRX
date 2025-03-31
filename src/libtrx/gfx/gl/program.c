@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "filesystem.h"
 #include "game/shell.h"
+#include "gfx/gl/track.h"
 #include "gfx/gl/utils.h"
 #include "log.h"
 #include "memory.h"
@@ -43,45 +44,53 @@ char *GFX_GL_Program_PreprocessShader(
 {
     ASSERT(content != nullptr);
 
+    char *common = nullptr;
+    File_Load("shaders/common.glsl", &common, nullptr);
+
     const char *version_ogl21 =
         "#version 120\n"
         "#extension GL_ARB_explicit_attrib_location: enable\n"
         "#extension GL_EXT_gpu_shader4: enable\n";
     const char *version_ogl33c = "#version 330 core\n";
     const char *define_vertex = "#define VERTEX\n";
+    const char *define_fragment = "#define FRAGMENT\n";
     const char *define_ogl33c = "#define OGL33C\n";
 
     size_t bufsize = strlen(content) + 1;
+    if (common != nullptr) {
+        bufsize += strlen(common);
+    }
 
     if (backend == GFX_GL_33C) {
         bufsize += strlen(version_ogl33c);
         bufsize += strlen(define_ogl33c);
-    } else {
-        bufsize += strlen(version_ogl21);
     }
 
     if (type == GL_VERTEX_SHADER) {
         bufsize += strlen(define_vertex);
+    } else if (type == GL_FRAGMENT_SHADER) {
+        bufsize += strlen(define_fragment);
     }
 
     char *processed_content = Memory_Alloc(bufsize);
-    if (!processed_content) {
-        return nullptr;
-    }
-    processed_content[0] = '\0';
-
     if (backend == GFX_GL_33C) {
         strcpy(processed_content, version_ogl33c);
         strcat(processed_content, define_ogl33c);
-    } else {
-        strcpy(processed_content, version_ogl21);
+    }
+
+    if (common != nullptr) {
+        strcat(processed_content, common);
     }
 
     if (type == GL_VERTEX_SHADER) {
         strcat(processed_content, define_vertex);
+    } else if (type == GL_FRAGMENT_SHADER) {
+        strcat(processed_content, define_fragment);
     }
 
     strcat(processed_content, content);
+
+    Memory_FreePointer(&common);
     return processed_content;
 }
 
@@ -189,9 +198,8 @@ void GFX_GL_Program_Uniform3f(
     GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2)
 {
     ASSERT(program != nullptr);
-    glUniform3f(loc, v0, v1, v2);
+    GFX_TRACK_UNIFORM(glUniform3f, loc, v0, v1, v2);
     GFX_GL_CheckError();
-    program->uniform_updates++;
 }
 
 void GFX_GL_Program_Uniform4f(
@@ -199,25 +207,30 @@ void GFX_GL_Program_Uniform4f(
     GLfloat v3)
 {
     ASSERT(program != nullptr);
-    glUniform4f(loc, v0, v1, v2, v3);
+    GFX_TRACK_UNIFORM(glUniform4f, loc, v0, v1, v2, v3);
     GFX_GL_CheckError();
-    program->uniform_updates++;
 }
 
 void GFX_GL_Program_Uniform1i(GFX_GL_PROGRAM *program, GLint loc, GLint v0)
 {
     ASSERT(program != nullptr);
-    glUniform1i(loc, v0);
+    GFX_TRACK_UNIFORM(glUniform1i, loc, v0);
     GFX_GL_CheckError();
-    program->uniform_updates++;
 }
 
 void GFX_GL_Program_Uniform1f(GFX_GL_PROGRAM *program, GLint loc, GLfloat v0)
 {
     ASSERT(program != nullptr);
-    glUniform1f(loc, v0);
+    GFX_TRACK_UNIFORM(glUniform1f, loc, v0);
     GFX_GL_CheckError();
-    program->uniform_updates++;
+}
+
+void GFX_GL_Program_Uniform2f(
+    GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1)
+{
+    ASSERT(program != nullptr);
+    GFX_TRACK_UNIFORM(glUniform2f, loc, v0, v1);
+    GFX_GL_CheckError();
 }
 
 void GFX_GL_Program_UniformMatrix4fv(
@@ -225,7 +238,6 @@ void GFX_GL_Program_UniformMatrix4fv(
     const GLfloat *value)
 {
     ASSERT(program != nullptr);
-    glUniformMatrix4fv(loc, count, transpose, value);
+    GFX_TRACK_UNIFORM(glUniformMatrix4fv, loc, count, transpose, value);
     GFX_GL_CheckError();
-    program->uniform_updates++;
 }

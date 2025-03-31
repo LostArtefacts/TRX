@@ -157,15 +157,6 @@ GFX_3D_RENDERER *GFX_3D_Renderer_Create(void)
 
     GFX_GL_Program_Bind(&renderer->program);
 
-    GLfloat model_view[4][4] = {
-        { +1.0f, +0.0f, +0.0f, +0.0f },
-        { +0.0f, +1.0f, +0.0f, +0.0f },
-        { +0.0f, +0.0f, +1.0f, +0.0f },
-        { +0.0f, +0.0f, +0.0f, +1.0f },
-    };
-    GFX_GL_Program_UniformMatrix4fv(
-        &renderer->program, renderer->loc_mat_model_view, 1, GL_FALSE,
-        &model_view[0][0]);
     GFX_GL_Program_Uniform1f(
         &renderer->program, renderer->loc_brightness_multiplier, 1.0);
     M_ApplyUniforms(renderer);
@@ -189,21 +180,30 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
 {
     ASSERT(renderer != nullptr);
 
-    renderer->vertex_stream.rendered_count = 0;
-    renderer->vertex_stream.transferred = 0;
-    renderer->program.uniform_updates = 0;
-
     GFX_GL_Program_Bind(&renderer->program);
     GFX_3D_VertexStream_Bind(&renderer->vertex_stream);
     GFX_GL_Sampler_Bind(&renderer->sampler, 0);
 
     M_RestoreTexture(renderer);
     M_ApplyUniforms(renderer);
+    GFX_3D_Renderer_SetProjectionMatrix(renderer);
+
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    GFX_GL_CheckError();
+}
+
+void GFX_3D_Renderer_SetProjectionMatrix(GFX_3D_RENDERER *renderer)
+{
+    GFX_GL_Program_Bind(&renderer->program);
 
     const float left = 0.0f;
     const float top = 0.0f;
     const float right = GFX_Context_GetDisplayWidth();
     const float bottom = GFX_Context_GetDisplayHeight();
+
     GLfloat projection[4][4] = {
         { 2.0f / (right - left), 0.0f, 0.0f, 0.0f },
         { 0.0f, 2.0f / (top - bottom), 0.0f, 0.0f },
@@ -215,12 +215,6 @@ void GFX_3D_Renderer_RenderBegin(GFX_3D_RENDERER *const renderer)
     GFX_GL_Program_UniformMatrix4fv(
         &renderer->program, renderer->loc_mat_projection, 1, GL_FALSE,
         &projection[0][0]);
-
-    glDepthFunc(GL_LEQUAL);
-    glDepthMask(GL_TRUE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    GFX_GL_CheckError();
 }
 
 void GFX_3D_Renderer_Flush(GFX_3D_RENDERER *const renderer)
@@ -233,12 +227,6 @@ void GFX_3D_Renderer_RenderEnd(GFX_3D_RENDERER *const renderer)
 {
     ASSERT(renderer != nullptr);
     M_Flush(renderer);
-#ifdef DEBUG_OPTIM
-    LOG_DEBUG(
-        "vertices: %d, bytes: %d, uniforms: %d",
-        renderer->vertex_stream.rendered_count,
-        renderer->vertex_stream.transferred, renderer->program.uniform_updates);
-#endif
 }
 
 void GFX_3D_Renderer_ClearDepth(GFX_3D_RENDERER *const renderer)

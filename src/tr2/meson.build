@@ -34,6 +34,7 @@ build_opts = [
   # end of common options
   '-ffile-prefix-map=@0@/='.format(relative_dir),
   '-DTR_VERSION=2',
+  '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ] + trx.get_variable('defines')
 
 add_project_arguments(build_opts, language: 'c')
@@ -110,6 +111,7 @@ sources = [
   'game/gun/gun_misc.c',
   'game/gun/gun_pistols.c',
   'game/gun/gun_rifle.c',
+  'game/gym.c',
   'game/input.c',
   'game/inventory.c',
   'game/inventory_ring/control.c',

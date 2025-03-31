@@ -8,6 +8,8 @@
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 
+static STATS_COMMON *m_DefaultStats = nullptr;
+
 void Savegame_Init(void)
 {
     g_SaveGame.start = Memory_Alloc(
@@ -30,6 +32,7 @@ void Savegame_Init(void)
 void Savegame_Shutdown(void)
 {
     Memory_FreePointer(&g_SaveGame.start);
+    Memory_FreePointer(&m_DefaultStats);
 }
 
 int32_t Savegame_GetSlotCount(void)
@@ -63,4 +66,23 @@ START_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
         "Warning: unable to get resume info for level %d (type=%s)", level->num,
         ENUM_MAP_TO_STRING(GF_LEVEL_TYPE, level->type));
     return nullptr;
+}
+
+void Savegame_SetDefaultStats(
+    const GF_LEVEL *const level, const STATS_COMMON stats)
+{
+    if (m_DefaultStats == nullptr) {
+        m_DefaultStats = Memory_Alloc(
+            sizeof(STATS_COMMON) * GF_GetLevelTable(GFLT_MAIN)->count);
+    }
+    m_DefaultStats[level->num] = stats;
+}
+
+STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *const level)
+{
+    if (m_DefaultStats == nullptr
+        || (level->type != GFL_NORMAL && level->type != GFL_BONUS)) {
+        return (STATS_COMMON) {};
+    }
+    return m_DefaultStats[level->num];
 }

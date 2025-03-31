@@ -71,12 +71,6 @@ typedef struct {
 } POINT_INFO;
 
 typedef struct {
-    uint32_t best_time[10];
-    uint32_t best_finish[10];
-    uint32_t finish_count;
-} ASSAULT_STATS;
-
-typedef struct {
     void *_0;
     int32_t _1;
 } SORT_ITEM;
@@ -93,6 +87,7 @@ typedef struct STATS_COMMON {
     uint32_t distance;
     uint16_t kills;
     uint8_t medipacks;
+    uint16_t max_secret_count;
 } STATS_COMMON;
 
 typedef struct {
@@ -159,16 +154,6 @@ typedef struct {
     int16_t sample_num;
 } WEAPON_INFO;
 
-typedef struct {
-    int16_t zone_num;
-    int16_t enemy_zone_num;
-    int32_t distance;
-    int32_t ahead;
-    int32_t bite;
-    int16_t angle;
-    int16_t enemy_facing;
-} AI_INFO;
-
 typedef enum {
     GFE_PICTURE          = 0,
     GFE_LIST_START       = 1,
@@ -194,11 +179,6 @@ typedef enum {
     GFE_KILL_TO_COMPLETE = 21,
     GFE_REMOVE_AMMO      = 22,
 } GF_EVENTS;
-
-typedef struct {
-    XYZ_32 pos;
-    int32_t mesh_num;
-} BITE;
 
 typedef struct {
     SECTOR *sector;

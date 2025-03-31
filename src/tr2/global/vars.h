@@ -13,9 +13,7 @@ extern const float g_RhwFactor;
 extern SDL_Window *g_SDLWindow;
 
 extern uint32_t g_PerspectiveDistance;
-extern uint32_t g_AssaultBestTime;
 extern int32_t g_OverlayStatus;
-extern bool g_GymInvOpenEnabled;
 extern int32_t g_MidSort;
 extern int32_t g_PhdWinTop;
 extern float g_FltWinBottom;
@@ -53,11 +51,8 @@ extern int32_t g_PhdWinRight;
 extern int32_t g_SurfaceCount;
 extern SORT_ITEM *g_Sort3DPtr;
 extern bool g_IsDemoLoaded;
-extern bool g_IsAssaultTimerDisplay;
-extern bool g_IsAssaultTimerActive;
 extern bool g_IsMonkAngry;
 extern uint16_t g_SoundOptionLine;
-extern ASSAULT_STATS g_Assault;
 extern int32_t g_HealthBarTimer;
 extern int32_t g_LevelComplete;
 extern SAVEGAME_INFO g_SaveGame;
@@ -76,7 +71,6 @@ extern REQUEST_INFO g_SaveGameRequester;
 
 extern bool g_GF_RemoveAmmo;
 extern bool g_GF_RemoveWeapons;
-extern int16_t g_GF_NumSecrets;
 extern int32_t g_GF_LaraStartAnim;
 
 extern int32_t g_SavedGames;

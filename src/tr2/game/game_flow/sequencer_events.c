@@ -12,6 +12,7 @@
 #include "game/stats.h"
 #include "global/vars.h"
 
+#include <libtrx/config.h>
 #include <libtrx/debug.h>
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
@@ -27,7 +28,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveAmmo);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveFlares);
 static DECLARE_GF_EVENT_HANDLER(M_HandleRemoveMedipacks);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
@@ -44,7 +44,6 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_REMOVE_FLARES]     = M_HandleRemoveFlares,
     [GFS_REMOVE_MEDIPACKS]  = M_HandleRemoveMedipacks,
     [GFS_SET_START_ANIM]    = M_HandleSetStartAnim,
-    [GFS_SET_NUM_SECRETS]   = M_HandleSetNumSecrets,
     // clang-format on
 };
 
@@ -82,7 +81,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     default:
         Savegame_ApplyLogicToCurrentInfo(level);
-        if (level->type == GFL_NORMAL) {
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_Apply(level, GF_INV_REGULAR);
             Stats_Reset();
@@ -119,11 +118,19 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         break;
 
     default:
-        if (level->type == GFL_NORMAL) {
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }
         break;
+    }
+
+    Stats_CalculateStats();
+    START_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr) {
+        const int32_t secret_count = Stats_GetSecrets();
+        resume->stats.max_secret_count = secret_count;
+        g_SaveGame.current_stats.max_secret_count = secret_count;
     }
 
     ASSERT(GF_GetCurrentLevel() == level);
@@ -135,6 +142,12 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
         gf_cmd = GF_RunGame(level, seq_ctx);
     }
     if (gf_cmd.action == GF_LEVEL_COMPLETE) {
+        // TODO: refactor, currently required to guarantee final statistics are
+        // accurate prior to jumping to a bonus level.
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            START_INFO *const start = Savegame_GetCurrentInfo(level);
+            start->stats = g_SaveGame.current_stats;
+        }
         gf_cmd.action = GF_NOOP;
     }
     return gf_cmd;
@@ -164,12 +177,18 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     START_INFO *const start = Savegame_GetCurrentInfo(current_level);
     start->stats = g_SaveGame.current_stats;
     start->available = 0;
+    g_Config.profile.bonus_level_unlock =
+        Stats_CheckAllSecretsCollected(GFL_NORMAL);
+
     if (next_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);
         g_SaveGame.current_level = next_level->num;
     }
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
+    }
+    if (next_level->type == GFL_BONUS && !g_Config.profile.bonus_level_unlock) {
+        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {
         .action = GF_START_GAME,
@@ -250,15 +269,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetNumSecrets)
-{
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY) {
-        g_GF_NumSecrets = (int16_t)(intptr_t)event->data;
-    }
-    return gf_cmd;
-}
-
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
@@ -267,7 +277,6 @@ void GF_PreSequenceHook(
     g_GF_LaraStartAnim = 0;
     g_GF_RemoveAmmo = false;
     g_GF_RemoveWeapons = false;
-    g_GF_NumSecrets = 3;
     // TODO: reset bonus flag if seq_ctx == GFSC_SAVED once S_LoadGame logic is
     // merged with overall save loading logic.
     Camera_GetCineData()->position.target_angle = DEG_90;

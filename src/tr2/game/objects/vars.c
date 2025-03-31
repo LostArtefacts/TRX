@@ -24,7 +24,9 @@ const GAME_OBJECT_ID g_EnemyObjects[] = {
     O_WORKER_5,
     O_JELLY,
     O_SPIDER,
+    O_WOLF,
     O_BIG_SPIDER,
+    O_BEAR,
     O_CROW,
     O_TIGER,
     O_BARTOLI,
@@ -64,6 +66,7 @@ const GAME_OBJECT_ID g_AllyObjects[] = {
     O_WINSTON,
     O_MONK_1,
     O_MONK_2,
+    O_MONK_3,
     O_DYING_MONK,
     NO_OBJECT,
     // Lara's social skills: still loading...
@@ -100,6 +103,15 @@ const GAME_OBJECT_ID g_PickupObjects[] = {
     O_KEY_ITEM_4,
     O_PICKUP_ITEM_1,
     O_PICKUP_ITEM_2,
+    O_SECRET_1,
+    O_SECRET_2,
+    O_SECRET_3,
+    NO_OBJECT,
+    // clang-format on
+};
+
+const GAME_OBJECT_ID g_SecretObjects[] = {
+    // clang-format off
     O_SECRET_1,
     O_SECRET_2,
     O_SECRET_3,

@@ -1,15 +1,24 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
+
+## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
 - added quadrilateral interpolation (#354)
 - added `/flood` and `/drain` console commands
 - added support for `-l`/`--level` argument to play a single level
 - added support for `-s`/`--save` argument to immediately start a saved game
 - added support for custom levels to use `disable_floor` in the gameflow, similar to TR2's Floating Islands (#2541)
 - added drawing of object mesh spheres to the `/debug` console command
+- added TR2+ stats if the full stat detail mode option is enabled (#2561):
+    - ammo hits / used
+    - health packs used
+    - distance travelled
+- added a TR2+ style bordered stat box to the end of level stats if the full stat detail mode option is enabled (#2658)
 - changed the Controls screen to hide the reset and unbind texts when changing a key (#2103)
 - changed injections to a new file format with a smaller footprint and improved applicability tests (#1967)
 - changed the `/pos` command to show `Demo` and `Cutscene` instead of `Level` when relevant
 - changed the `/pos` command to show demo and cutscene numbers starting at 1, in line with `/play`
 - changed the `/play` and `/pos` commands to always treat the gym level as the level 0 – even if it's not included
+- changed sprites to respect the water tint if placed underwater (#2093)
+- changed the optional `Deaths` stat to be placed last in the stats menu
 - fixed delays when scanning available save games (#2610, #1335, regression from <3.0)
 - fixed several instances of the camera going out of bounds (#1034)
 - fixed issues with stacked, floating and flipmap pushblocks in custom levels
@@ -25,6 +34,8 @@
 - fixed the `/pos` command not showing demo and cutscene titles
 - fixed the embedded bats fix causing problems inside rooms with trapdoors (regression from 4.6)
 - fixed cutscene music looping (#2591, regression from 4.8)
+- fixed saves created before version 2.15 causing a crash on load (#2654, regression from 4.8)
+- fixed the console opening when remapping its key (#2641)
 - removed perspective filter toggle (it had no effect; repurposed to trapezoid interpolation toggle)
 - improved camera mode navigation:
     - improved support for pivoting

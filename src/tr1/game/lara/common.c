@@ -19,6 +19,7 @@
 #include "game/savegame.h"
 #include "game/sound.h"
 #include "game/spawn.h"
+#include "game/stats.h"
 #include "global/const.h"
 #include "global/vars.h"
 
@@ -333,6 +334,9 @@ void Lara_Control(void)
     default:
         break;
     }
+
+    Stats_AddDistanceTravelled(item->pos, g_Lara.last_pos);
+    g_Lara.last_pos = item->pos;
 }
 
 void Lara_SwapMeshExtra(void)
@@ -402,6 +406,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_MEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
+        Stats_AddMedipacksUsed(.5);
         break;
 
     case O_BIGMEDI_ITEM:
@@ -414,6 +419,7 @@ void Lara_UseItem(const GAME_OBJECT_ID obj_id)
         CLAMPG(g_LaraItem->hit_points, LARA_MAX_HITPOINTS);
         Inv_RemoveItem(O_BIGMEDI_ITEM);
         Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);
+        Stats_AddMedipacksUsed(1);
         break;
 
     case O_KEY_ITEM_1:
@@ -497,6 +503,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.hit_direction = 0;
     g_Lara.death_timer = 0;
     g_Lara.target = nullptr;
+    g_Lara.last_pos = g_LaraItem->pos;
     g_Lara.hit_effect = nullptr;
     g_Lara.hit_effect_count = 0;
     g_Lara.turn_rate = 0;
@@ -814,9 +821,4 @@ void Lara_Push(ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push)
             g_Lara.gun_status = LGS_ARMLESS;
         }
     }
-}
-
-void Lara_TakeDamage(int16_t damage, bool hit_status)
-{
-    Item_TakeDamage(g_LaraItem, damage, hit_status);
 }

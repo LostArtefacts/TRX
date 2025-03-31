@@ -11,9 +11,11 @@
 #include "game/lara/control.h"
 #include "game/lara/misc.h"
 #include "game/objects/common.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/room.h"
+#include "game/stats.h"
 #include "global/vars.h"
 
 #include <libtrx/config.h>
@@ -80,12 +82,8 @@ static void M_DoPickup(const int16_t item_num)
     Overlay_AddDisplayPickup(item->object_id);
     Inv_AddItem(item->object_id);
 
-    if ((item->object_id == O_SECRET_1 || item->object_id == O_SECRET_2
-         || item->object_id == O_SECRET_3)
-        && (g_SaveGame.current_stats.secret_flags & 1)
-                + ((g_SaveGame.current_stats.secret_flags >> 1) & 1)
-                + ((g_SaveGame.current_stats.secret_flags >> 2) & 1)
-            >= 3) {
+    if (Object_IsType(item->object_id, g_SecretObjects)
+        && Stats_CheckAllLevelSecretsCollected()) {
         GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
     }
 

@@ -60,7 +60,7 @@ void Output_DrawScreenLine(
     int32_t x, int32_t y, int32_t z, int32_t x_len, int32_t y_len,
     uint8_t color_idx, const void *gour, uint16_t flags);
 
-void Output_DrawScreenBox(
+void Output_DrawScreenFrame(
     int32_t sx, int32_t sy, int32_t z, int32_t width, int32_t height,
     uint8_t color_idx, const void *gour, uint16_t flags);
 

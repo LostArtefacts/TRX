@@ -6,6 +6,7 @@
 #include "game/creature.h"
 #include "game/game.h"
 #include "game/gun/gun.h"
+#include "game/gym.h"
 #include "game/input.h"
 #include "game/inventory.h"
 #include "game/item_actions.h"
@@ -623,7 +624,7 @@ void Lara_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         item->hit_points = -1;
         if (Game_IsInGym()) {
-            g_GymInvOpenEnabled = true;
+            Gym_SetInventoryOpenEnabled(true);
         }
         if (!g_Lara.death_timer) {
             Music_Stop();
@@ -816,7 +817,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
     g_Lara.right_arm.lock = 0;
     g_Lara.creature = nullptr;
 
-    if (level->type == GFL_NORMAL && g_GF_LaraStartAnim) {
+    if ((level->type == GFL_NORMAL || level->type == GFL_BONUS)
+        && g_GF_LaraStartAnim) {
         g_Lara.water_status = LWS_ABOVE_WATER;
         g_Lara.gun_status = LGS_HANDS_BUSY;
         Item_SwitchToObjAnim(item, LA_EXTRA_BREATH, 0, O_LARA_EXTRA);
@@ -1002,9 +1004,4 @@ void Lara_GetOffVehicle(void)
         g_LaraItem->rot.x = 0;
         g_LaraItem->rot.z = 0;
     }
-}
-
-void Lara_TakeDamage(const int16_t damage, const bool hit_status)
-{
-    Item_TakeDamage(g_LaraItem, damage, hit_status);
 }

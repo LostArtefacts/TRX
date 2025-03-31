@@ -4,9 +4,11 @@
 #include "game/clock.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/gym.h"
 #include "game/inventory.h"
 #include "game/music.h"
 #include "game/objects/common.h"
+#include "game/objects/vars.h"
 #include "game/output.h"
 #include "game/scaler.h"
 #include "game/text.h"
@@ -155,7 +157,7 @@ static void M_AnimatePickups(const int32_t frames)
 
 static void M_DrawAssaultTimer(void)
 {
-    if (!Game_IsInGym() || !g_IsAssaultTimerDisplay) {
+    if (!Game_IsInGym() || !Gym_IsAssaultTimerDisplay()) {
         return;
     }
 
@@ -522,7 +524,7 @@ static void M_DrawPickups(void)
 
 void Overlay_AddDisplayPickup(const GAME_OBJECT_ID obj_id)
 {
-    if (obj_id == O_SECRET_1 || obj_id == O_SECRET_2 || obj_id == O_SECRET_3) {
+    if (Object_IsType(obj_id, g_SecretObjects)) {
         Music_Play(g_GameFlow.secret_track, MPM_ALWAYS);
     }
 

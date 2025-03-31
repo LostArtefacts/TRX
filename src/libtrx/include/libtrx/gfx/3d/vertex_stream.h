@@ -34,8 +34,6 @@ typedef struct {
         size_t count;
         size_t capacity;
     } pending_vertices;
-    size_t rendered_count;
-    size_t transferred;
 } GFX_3D_VERTEX_STREAM;
 
 void GFX_3D_VertexStream_Init(GFX_3D_VERTEX_STREAM *vertex_stream);

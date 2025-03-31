@@ -1,7 +1,7 @@
 {
     // This file is used to enable the -l argument support.
 
-    "main_menu_picture": "data/title.pcx",
+    "main_menu_picture": "data/images/title_eu.png",
     "savegame_fmt_legacy": "savegame.%d",
 
     "cmd_init":           {"action": "exit_to_title"},
@@ -32,7 +32,6 @@
             "path": "PLACEHOLDER",
             "music_track": -1,
             "sequence": [
-                {"type": "set_secret_count", "count": 0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],

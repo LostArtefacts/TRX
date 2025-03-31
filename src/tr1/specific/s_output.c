@@ -9,6 +9,8 @@
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/gfx/gl/track.h>
+#include <libtrx/gfx/gl/utils.h>
 #include <libtrx/log.h>
 
 #include <string.h>
@@ -263,6 +265,7 @@ void S_Output_DisableDepthTest(void)
 void S_Output_RenderBegin(void)
 {
     GFX_Context_Clear();
+    GFX_Track_Reset();
     S_Output_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
@@ -1021,169 +1024,72 @@ void S_Output_DownloadTextures(int32_t pages)
     m_EnvMapTexture = GFX_3D_Renderer_RegisterEnvironmentMap(m_Renderer3D);
 }
 
-void S_Output_ScreenBox(
-    int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
-    RGBA_8888 col_light, float thickness)
+void S_Output_DrawScreenFrame(
+    const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
+    const RGBA_8888 col_dark, const RGBA_8888 col_light, const float thickness)
 {
-    // this draws the dark then light two tone border
-    // 2 is the sx+1,sy+1
-    //                       7  6
-    //
-    //     2        |      4
-    //
-    //       3      |      5
-    //
-    //     ~ ~               ~  ~
-    //
-    //     0 1
-    // 11           |        9
-    //
-    // 10           |          8
-    // this is the vertex structure for the dark part
-    // while any machine we would be rendering this on will
-    // handle degenerate triangles, the current render doesn't
-    // actually reander a strip and instead pulls out each
-    // triangle into a triangle buffer. So the 4-5-6 triangle is valid
-    // but will be over drawn by the light box so is not seen.
-    // thus we form triangles
-    // 0,1,2
-    // 1,2,3
-    // 2,3,4
-    // 3,4,5
-    // 4,5,6
-    // 5,6,7
-    // 6,7,8
-    // 7,8,9
-    // 8,9,10
-    // 9,10,11
-    // the light box is then just a simple 4 sided box
-    // we share some vertexs so the square is formed as follows
-    //  13          |        7
-    //
-    //     2        |      4
-    //
-    //  ~  ~               ~ ~
-    //
-    //
-    //     12       |      14
-    //
-    // 11           |        9
-    // however as we are not index we have to duplicate the vertex data
-    // so the above numbers do not match the array below.
-    // we from the triangles
-    // 11,12,13
-    // 12,13,2
-    // 13,2,7
-    // 2,7,4
-    // 7,4,9
-    // 4,9,14
-    // 9,14,11
-    // 14,11,12
-
 #define SB_NUM_VERTS_DARK 12
 #define SB_NUM_VERTS_LIGHT 10
-    GFX_3D_VERTEX screen_box_verticies[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
-    S_Output_DisableTextureMode();
+    GFX_3D_VERTEX vertices[SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT];
+    GFX_3D_VERTEX *const dark_vertices = vertices;
+    GFX_3D_VERTEX *const light_vertices = vertices + SB_NUM_VERTS_DARK;
+    const float sxf = sx + thickness;
+    const float syf = sy + thickness;
+    const float hf = h;
+    const float wf = w;
 
-    // convert them to floats and apply the (+1) from the original line code
-    float sxf = (float)sx + thickness;
-    float syf = (float)sy + thickness;
-    float hf = (float)h;
-    float wf = (float)w;
-
-    // Top Left Dark set
-    screen_box_verticies[0].x = sxf;
-    screen_box_verticies[0].y = syf + hf - thickness;
-
-    screen_box_verticies[1].x = sxf + thickness;
-    screen_box_verticies[1].y = screen_box_verticies[0].y;
-
-    screen_box_verticies[2].x = sxf;
-    screen_box_verticies[2].y = syf;
-
-    screen_box_verticies[3].x = sxf + thickness;
-    screen_box_verticies[3].y = syf + thickness;
-
-    screen_box_verticies[4].x = sxf + wf - thickness;
-    screen_box_verticies[4].y = screen_box_verticies[2].y;
-
-    screen_box_verticies[5].x = screen_box_verticies[4].x;
-    screen_box_verticies[5].y = screen_box_verticies[3].y;
-
+#define SET(i, x_, y_)                                                         \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;
+    // clang-format off
+    // Top Left Dark edge
+    SET(0,  sxf,                         syf + hf - thickness);
+    SET(1,  sxf + thickness,             syf + hf - thickness);
+    SET(2,  sxf,                         syf);
+    SET(3,  sxf + thickness,             syf + thickness);
+    SET(4,  sxf + wf - thickness,        syf);
+    SET(5,  sxf + wf - thickness,        syf + thickness);
     // Bottom Right Dark set
-    screen_box_verticies[6].x = sxf + wf + thickness;
-    screen_box_verticies[6].y = syf - thickness;
+    SET(6,  sxf + wf + thickness,        syf - thickness);
+    SET(7,  sxf + wf,                    syf - thickness);
+    SET(8,  sxf + wf + thickness,        syf + hf + thickness);
+    SET(9,  sxf + wf,                    syf + hf);
+    SET(10, sxf - thickness,             syf + hf + thickness);
+    SET(11, sxf - thickness,             syf + hf);
+    // Light box
+    SET(12, sxf - thickness,             syf + hf);
+    SET(13, sxf - thickness + thickness, syf + hf - thickness);
+    SET(14, sxf - thickness,             syf - thickness);
+    SET(15, sxf,                         syf);
+    SET(16, sxf + wf,                    syf - thickness);
+    SET(17, sxf + wf - thickness,        syf);
+    SET(18, sxf + wf,                    syf + hf);
+    SET(19, sxf + wf - thickness,        syf + hf - thickness);
+    SET(20, sxf - thickness,             syf + hf);
+    SET(21, sxf - thickness + thickness, syf + hf - thickness);
+    // clang-format on
+#undef SET
 
-    screen_box_verticies[7].x = sxf + wf;
-    screen_box_verticies[7].y = screen_box_verticies[6].y;
-
-    screen_box_verticies[8].x = screen_box_verticies[6].x;
-    screen_box_verticies[8].y = syf + hf + thickness;
-
-    screen_box_verticies[9].x = screen_box_verticies[7].x;
-    screen_box_verticies[9].y = syf + hf;
-
-    screen_box_verticies[10].x = sxf - thickness;
-    screen_box_verticies[10].y = screen_box_verticies[8].y;
-
-    screen_box_verticies[11].x = screen_box_verticies[10].x;
-    screen_box_verticies[11].y = screen_box_verticies[9].y;
-
-    // light box
-    screen_box_verticies[12].x = screen_box_verticies[11].x;
-    screen_box_verticies[12].y = screen_box_verticies[11].y;
-
-    screen_box_verticies[13].x = screen_box_verticies[12].x + thickness;
-    screen_box_verticies[13].y = screen_box_verticies[11].y - thickness;
-
-    screen_box_verticies[14].x = sxf - thickness;
-    screen_box_verticies[14].y = syf - thickness;
-
-    screen_box_verticies[15].x = screen_box_verticies[2].x;
-    screen_box_verticies[15].y = screen_box_verticies[2].y;
-
-    screen_box_verticies[16].x = screen_box_verticies[7].x;
-    screen_box_verticies[16].y = screen_box_verticies[7].y;
-
-    screen_box_verticies[17].x = screen_box_verticies[4].x;
-    screen_box_verticies[17].y = screen_box_verticies[4].y;
-
-    screen_box_verticies[18].x = screen_box_verticies[9].x;
-    screen_box_verticies[18].y = screen_box_verticies[9].y;
-
-    screen_box_verticies[19].x = screen_box_verticies[9].x - thickness;
-    screen_box_verticies[19].y = screen_box_verticies[9].y - thickness;
-
-    screen_box_verticies[20].x = screen_box_verticies[12].x;
-    screen_box_verticies[20].y = screen_box_verticies[12].y;
-
-    screen_box_verticies[21].x = screen_box_verticies[13].x;
-    screen_box_verticies[21].y = screen_box_verticies[13].y;
-
-    int i = 0;
-    for (; i < SB_NUM_VERTS_DARK; ++i) {
-        screen_box_verticies[i].z = 1.0f; // the lines were z 0 but that makes
-        screen_box_verticies[i].s = 0.0f; // them show over text, so I use Z 1
-        screen_box_verticies[i].t = 0.0f; // here to make the line behind text
-        screen_box_verticies[i].w = 0.0f; // as per dos original
-        screen_box_verticies[i].r = col_dark.r;
-        screen_box_verticies[i].g = col_dark.g;
-        screen_box_verticies[i].b = col_dark.b;
-        screen_box_verticies[i].a = col_dark.a;
+    for (int32_t i = 0; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
     }
-    for (; i < SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT; ++i) {
-        screen_box_verticies[i].z = 1.0f;
-        screen_box_verticies[i].s = 0.0f;
-        screen_box_verticies[i].t = 0.0f;
-        screen_box_verticies[i].w = 0.0f;
-        screen_box_verticies[i].r = col_light.r;
-        screen_box_verticies[i].g = col_light.g;
-        screen_box_verticies[i].b = col_light.b;
-        screen_box_verticies[i].a = col_light.a;
+    for (int32_t i = 0; i < SB_NUM_VERTS_DARK; i++) {
+        dark_vertices[i].r = col_dark.r;
+        dark_vertices[i].g = col_dark.g;
+        dark_vertices[i].b = col_dark.b;
+        dark_vertices[i].a = col_dark.a;
     }
-
-    M_DrawTriangleStrip(
-        screen_box_verticies, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
+    for (int32_t i = 0; i < SB_NUM_VERTS_LIGHT; i++) {
+        light_vertices[i].r = col_light.r;
+        light_vertices[i].g = col_light.g;
+        light_vertices[i].b = col_light.b;
+        light_vertices[i].a = col_light.a;
+    }
+    S_Output_DisableTextureMode();
+    M_DrawTriangleStrip(vertices, SB_NUM_VERTS_DARK + SB_NUM_VERTS_LIGHT);
 }
 
 void S_Output_4ColourTextBox(
@@ -1197,70 +1103,37 @@ void S_Output_4ColourTextBox(
     //    7             5
     //   #               @
     //  6                 4
-    GFX_3D_VERTEX screen_box_verticies[10];
-    for (int i = 0; i < 10; ++i) {
-        screen_box_verticies[i].z = 1.0f;
-        screen_box_verticies[i].s = 0.0f;
-        screen_box_verticies[i].t = 0.0f;
-        screen_box_verticies[i].w = 0.0f;
+    GFX_3D_VERTEX vertices[10];
+
+#define SET(i, x_, y_, color)                                                  \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;                                                        \
+    vertices[i].r = color.r;                                                   \
+    vertices[i].g = color.g;                                                   \
+    vertices[i].b = color.b;                                                   \
+    vertices[i].a = color.a;
+    // clang-format off
+    SET(0, sx - thickness,     sy - thickness,     tl);
+    SET(1, sx + thickness,     sy + thickness,     tl);
+    SET(2, sx + w + thickness, sy - thickness,     tr);
+    SET(3, sx + w - thickness, sy + thickness,     tr);
+    SET(4, sx + w + thickness, sy + h + thickness, br);
+    SET(5, sx + w - thickness, sy + h - thickness, br);
+    SET(6, sx - thickness,     sy + h + thickness, bl);
+    SET(7, sx + thickness,     sy + h - thickness, bl);
+    SET(8, sx - thickness,     sy - thickness,     tl);
+    SET(9, sx + thickness,     sy + thickness,     tl);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < 10; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
     }
     S_Output_DisableTextureMode();
-    screen_box_verticies[0].x = sx - thickness;
-    screen_box_verticies[0].y = sy - thickness;
-
-    screen_box_verticies[1].x = sx + thickness;
-    screen_box_verticies[1].y = sy + thickness;
-
-    screen_box_verticies[0].r = screen_box_verticies[1].r = tl.r;
-    screen_box_verticies[0].g = screen_box_verticies[1].g = tl.g;
-    screen_box_verticies[0].b = screen_box_verticies[1].b = tl.b;
-    screen_box_verticies[0].a = screen_box_verticies[1].a = tl.a;
-
-    screen_box_verticies[2].x = sx + w + thickness;
-    screen_box_verticies[2].y = sy - thickness;
-
-    screen_box_verticies[3].x = sx + w - thickness;
-    screen_box_verticies[3].y = sy + thickness;
-
-    screen_box_verticies[2].r = screen_box_verticies[3].r = tr.r;
-    screen_box_verticies[2].g = screen_box_verticies[3].g = tr.g;
-    screen_box_verticies[2].b = screen_box_verticies[3].b = tr.b;
-    screen_box_verticies[2].a = screen_box_verticies[3].a = tr.a;
-
-    screen_box_verticies[4].x = sx + w + thickness;
-    screen_box_verticies[4].y = sy + h + thickness;
-
-    screen_box_verticies[5].x = sx + w - thickness;
-    screen_box_verticies[5].y = sy + h - thickness;
-
-    screen_box_verticies[4].r = screen_box_verticies[5].r = br.r;
-    screen_box_verticies[4].g = screen_box_verticies[5].g = br.g;
-    screen_box_verticies[4].b = screen_box_verticies[5].b = br.b;
-    screen_box_verticies[4].a = screen_box_verticies[5].a = br.a;
-
-    screen_box_verticies[6].x = sx - thickness;
-    screen_box_verticies[6].y = sy + h + thickness;
-
-    screen_box_verticies[7].x = sx + thickness;
-    screen_box_verticies[7].y = sy + h - thickness;
-
-    screen_box_verticies[6].r = screen_box_verticies[7].r = bl.r;
-    screen_box_verticies[6].g = screen_box_verticies[7].g = bl.g;
-    screen_box_verticies[6].b = screen_box_verticies[7].b = bl.b;
-    screen_box_verticies[6].a = screen_box_verticies[7].a = bl.a;
-
-    screen_box_verticies[8].x = screen_box_verticies[0].x;
-    screen_box_verticies[8].y = screen_box_verticies[0].y;
-
-    screen_box_verticies[9].x = screen_box_verticies[1].x;
-    screen_box_verticies[9].y = screen_box_verticies[1].y;
-
-    screen_box_verticies[8].r = screen_box_verticies[9].r = tl.r;
-    screen_box_verticies[8].g = screen_box_verticies[9].g = tl.g;
-    screen_box_verticies[8].b = screen_box_verticies[9].b = tl.b;
-    screen_box_verticies[8].a = screen_box_verticies[9].a = tl.a;
-
-    M_DrawTriangleStrip(screen_box_verticies, 10);
+    M_DrawTriangleStrip(vertices, 10);
 }
 
 void S_Output_2ToneColourTextBox(
@@ -1277,115 +1150,45 @@ void S_Output_2ToneColourTextBox(
     //   #               @
     // 12       11        8
 
-    int32_t halfw = w / 2;
-    int32_t halfh = h / 2;
+    int32_t half_w = w / 2;
+    int32_t half_h = h / 2;
+    GFX_3D_VERTEX vertices[18];
 
-    GFX_3D_VERTEX screen_box_verticies[18];
-    for (int i = 0; i < 18; ++i) {
-        screen_box_verticies[i].z = 1.0f;
-        screen_box_verticies[i].s = 0.0f;
-        screen_box_verticies[i].t = 0.0f;
-        screen_box_verticies[i].w = 0.0f;
+#define SET(i, x_, y_, color)                                                  \
+    vertices[i].x = x_;                                                        \
+    vertices[i].y = y_;                                                        \
+    vertices[i].r = color.r;                                                   \
+    vertices[i].g = color.g;                                                   \
+    vertices[i].b = color.b;                                                   \
+    vertices[i].a = color.a;
+    // clang-format off
+    SET(0, sx - thickness,     sy - thickness,     edge);
+    SET(1, sx + thickness,     sy + thickness,     edge);
+    SET(2, sx + half_w,        sy - thickness,     centre);
+    SET(3, sx + half_w,        sy + thickness,     centre);
+    SET(4, sx + w + thickness, sy - thickness,     edge);
+    SET(5, sx + w - thickness, sy + thickness,     edge);
+    SET(6, sx + w + thickness, sy + half_h,        centre);
+    SET(7, sx + w - thickness, sy + half_h,        centre);
+    SET(8, sx + w + thickness, sy + h + thickness, edge);
+    SET(9, sx + w - thickness, sy + h - thickness, edge);
+    SET(10, sx + half_w,       sy + h + thickness, centre);
+    SET(11, sx + half_w,       sy + h - thickness, centre);
+    SET(12, sx - thickness,    sy + h + thickness, edge);
+    SET(13, sx + thickness,    sy + h - thickness, edge);
+    SET(14, sx - thickness,    sy + half_h,        centre);
+    SET(15, sx + thickness,    sy + half_h,        centre);
+    SET(16, sx - thickness,    sy - thickness,     edge);
+    SET(17, sx + thickness,    sy + thickness,     edge);
+    // clang-format on
+#undef SET
+
+    for (int32_t i = 0; i < 18; i++) {
+        vertices[i].z = 1.0f;
+        vertices[i].s = 0.0f;
+        vertices[i].t = 0.0f;
+        vertices[i].w = 0.0f;
     }
     S_Output_DisableTextureMode();
-    screen_box_verticies[0].x = sx - thickness;
-    screen_box_verticies[0].y = sy - thickness;
-
-    screen_box_verticies[1].x = sx + thickness;
-    screen_box_verticies[1].y = sy + thickness;
-
-    screen_box_verticies[0].r = screen_box_verticies[1].r = edge.r;
-    screen_box_verticies[0].g = screen_box_verticies[1].g = edge.g;
-    screen_box_verticies[0].b = screen_box_verticies[1].b = edge.b;
-    screen_box_verticies[0].a = screen_box_verticies[1].a = edge.a;
-
-    screen_box_verticies[2].x = sx + halfw;
-    screen_box_verticies[2].y = sy - thickness;
-
-    screen_box_verticies[3].x = sx + halfw;
-    screen_box_verticies[3].y = sy + thickness;
-
-    screen_box_verticies[2].r = screen_box_verticies[3].r = centre.r;
-    screen_box_verticies[2].g = screen_box_verticies[3].g = centre.g;
-    screen_box_verticies[2].b = screen_box_verticies[3].b = centre.b;
-    screen_box_verticies[2].a = screen_box_verticies[3].a = centre.a;
-
-    screen_box_verticies[4].x = sx + w + thickness;
-    screen_box_verticies[4].y = sy - thickness;
-
-    screen_box_verticies[5].x = sx + w - thickness;
-    screen_box_verticies[5].y = sy + thickness;
-
-    screen_box_verticies[4].r = screen_box_verticies[5].r = edge.r;
-    screen_box_verticies[4].g = screen_box_verticies[5].g = edge.g;
-    screen_box_verticies[4].b = screen_box_verticies[5].b = edge.b;
-    screen_box_verticies[4].a = screen_box_verticies[5].a = edge.a;
-
-    screen_box_verticies[6].x = sx + w + thickness;
-    screen_box_verticies[6].y = sy + halfh;
-
-    screen_box_verticies[7].x = sx + w - thickness;
-    screen_box_verticies[7].y = sy + halfh;
-
-    screen_box_verticies[6].r = screen_box_verticies[7].r = centre.r;
-    screen_box_verticies[6].g = screen_box_verticies[7].g = centre.g;
-    screen_box_verticies[6].b = screen_box_verticies[7].b = centre.b;
-    screen_box_verticies[6].a = screen_box_verticies[7].a = centre.a;
-
-    screen_box_verticies[8].x = sx + w + thickness;
-    screen_box_verticies[8].y = sy + h + thickness;
-
-    screen_box_verticies[9].x = sx + w - thickness;
-    screen_box_verticies[9].y = sy + h - thickness;
-
-    screen_box_verticies[8].r = screen_box_verticies[9].r = edge.r;
-    screen_box_verticies[8].g = screen_box_verticies[9].g = edge.g;
-    screen_box_verticies[8].b = screen_box_verticies[9].b = edge.b;
-    screen_box_verticies[8].a = screen_box_verticies[9].a = edge.a;
-
-    screen_box_verticies[10].x = sx + halfw;
-    screen_box_verticies[10].y = sy + h + thickness;
-
-    screen_box_verticies[11].x = sx + halfw;
-    screen_box_verticies[11].y = sy + h - thickness;
-
-    screen_box_verticies[10].r = screen_box_verticies[11].r = centre.r;
-    screen_box_verticies[10].g = screen_box_verticies[11].g = centre.g;
-    screen_box_verticies[10].b = screen_box_verticies[11].b = centre.b;
-    screen_box_verticies[10].a = screen_box_verticies[11].a = centre.a;
-
-    screen_box_verticies[12].x = sx - thickness;
-    screen_box_verticies[12].y = sy + h + thickness;
-
-    screen_box_verticies[13].x = sx + thickness;
-    screen_box_verticies[13].y = sy + h - thickness;
-
-    screen_box_verticies[12].r = screen_box_verticies[13].r = edge.r;
-    screen_box_verticies[12].g = screen_box_verticies[13].g = edge.g;
-    screen_box_verticies[12].b = screen_box_verticies[13].b = edge.b;
-    screen_box_verticies[12].a = screen_box_verticies[13].a = edge.a;
-
-    screen_box_verticies[14].x = sx - thickness;
-    screen_box_verticies[14].y = sy + halfh;
-
-    screen_box_verticies[15].x = sx + thickness;
-    screen_box_verticies[15].y = sy + halfh;
-
-    screen_box_verticies[14].r = screen_box_verticies[15].r = centre.r;
-    screen_box_verticies[14].g = screen_box_verticies[15].g = centre.g;
-    screen_box_verticies[14].b = screen_box_verticies[15].b = centre.b;
-    screen_box_verticies[14].a = screen_box_verticies[15].a = centre.a;
-
-    screen_box_verticies[16].x = screen_box_verticies[0].x;
-    screen_box_verticies[16].y = screen_box_verticies[0].y;
-
-    screen_box_verticies[17].x = screen_box_verticies[1].x;
-    screen_box_verticies[17].y = screen_box_verticies[1].y;
-
-    screen_box_verticies[16].r = screen_box_verticies[17].r = edge.r;
-    screen_box_verticies[16].g = screen_box_verticies[17].g = edge.g;
-    screen_box_verticies[16].b = screen_box_verticies[17].b = edge.b;
-    screen_box_verticies[16].a = screen_box_verticies[17].a = edge.a;
-
-    M_DrawTriangleStrip(screen_box_verticies, 18);
+    M_DrawTriangleStrip(vertices, 18);
 }
