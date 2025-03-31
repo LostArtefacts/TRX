@@ -1,0 +1,27 @@
+[group('tr1')]
+tr1-build-linux target='debug': (image-linux "0") (_docker_run "rrdash/trx-linux" "build" "--tr-version" "1" "--target" target)
+[group('tr1')]
+tr1-build-win target='debug': (image-win "0") (_docker_run "rrdash/trx-win" "build" "--tr-version" "1" "--target" target)
+[group('tr1')]
+tr1-build-win-config: (image-win-config "0") (_docker_run "rrdash/trx-config" "1")
+[group('tr1')]
+tr1-build-win-installer: (image-win-installer "0") (_docker_run "rrdash/trx-installer" "1")
+
+[group('tr1')]
+tr1-package-linux target='release': (tr1-build-linux target) (_docker_run "rrdash/trx-linux" "package" "--tr-version" "1")
+[group('tr1')]
+tr1-package-win target='release': (tr1-build-win target) (_docker_run "rrdash/trx-win" "package" "--tr-version" "1")
+[group('tr1')]
+tr1-package-win-all target='release': (tr1-build-win target) (tr1-build-win-config) (_docker_run "rrdash/trx-win" "package" "--tr-version" "1")
+
+[group('tr1')]
+tr1-package-win-installer target='release': \
+    (tr1-build-win target) \
+    (tr1-build-win-config) \
+    (_docker_run "rrdash/trx-win" "package" "--tr-version" "1" "-o" "tools/installer/TR1X_Installer/Resources/release.zip") \
+    (tr1-build-win-installer)
+    #!/bin/sh
+    git checkout "tools/installer/TR1X_Installer/Resources/release.zip"
+    exe_name=TR1X-$(tools/get_version 1)-Installer.exe
+    cp tools/installer/out/TR1X_Installer.exe "${exe_name}"
+    echo "Created ${exe_name}"
