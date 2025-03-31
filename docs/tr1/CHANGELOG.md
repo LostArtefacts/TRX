@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...develop) - ××××-××-××
+- fixed anisotropy filter causing black lines (#902)
+- improved rendering performance
 
 ## [4.9](https://github.com/LostArtefacts/TRX/compare/tr1-4.8.3...tr1-4.9) - 2025-03-31
 - added quadrilateral interpolation (#354)

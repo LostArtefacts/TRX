@@ -96,3 +96,5 @@ void Output_DisableScissor(void);
 // TODO: these functions are poor in their design and should be not needed
 void Output_RememberState(void);
 void Output_RestoreState(void);
+
+float Output_AdjustUV(uint16_t uv);

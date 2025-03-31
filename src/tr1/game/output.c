@@ -1,15 +1,12 @@
 #include "game/output.h"
 
-#include "game/clock.h"
+#include "game/output/meshes.h"
+#include "game/output/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
 #include "game/overlay.h"
-#include "game/random.h"
-#include "game/room.h"
 #include "game/shell.h"
 #include "game/viewport.h"
-#include "global/const.h"
-#include "global/types.h"
 #include "global/vars.h"
 #include "specific/s_output.h"
 
@@ -18,14 +15,7 @@
 #include <libtrx/engine/image.h>
 #include <libtrx/filesystem.h>
 #include <libtrx/game/game_buf.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/gfx/context.h>
 #include <libtrx/memory.h>
-#include <libtrx/utils.h>
-
-#include <math.h>
-#include <string.h>
 
 #define MAX_LIGHTNINGS 64
 #define PHD_IONE (PHD_ONE / 4)
@@ -49,19 +39,9 @@ static bool m_IsSkyboxEnabled = false;
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
-static int m_OverlayCurAlpha = 0;
-static int m_OverlayDstAlpha = 0;
-static int m_BackdropCurAlpha = 0;
-static int m_BackdropDstAlpha = 0;
 
 static int32_t m_WibbleOffset = 0;
 static int32_t m_AnimatedTexturesOffset = 0;
-static CLOCK_TIMER m_WibbleTimer = { .type = CLOCK_TIMER_SIM };
-static CLOCK_TIMER m_AnimatedTexturesTimer = { .type = CLOCK_TIMER_SIM };
-static CLOCK_TIMER m_FadeTimer = { .type = CLOCK_TIMER_SIM };
-static int32_t m_WibbleTable[WIBBLE_SIZE] = {};
-static int32_t m_ShadeTable[WIBBLE_SIZE] = {};
-static int32_t m_RandTable[WIBBLE_SIZE] = {};
 
 static PHD_VBUF *m_VBuf = nullptr;
 static TEXTURE_UV *m_EnvMapUV = nullptr;
@@ -93,14 +73,10 @@ static void M_DrawTexturedFace4s(const FACE4 *faces, int32_t count);
 static void M_DrawObjectFace3EnvMap(const FACE3 *faces, int32_t count);
 static void M_DrawObjectFace4EnvMap(const FACE4 *faces, int32_t count);
 static uint16_t M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
-static void M_CalcVertexWibble(PHD_VBUF *vbuf);
 static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
 static void M_CalcVerticeLight(const OBJECT_MESH *mesh);
 static bool M_CalcVerticeEnvMap(const OBJECT_MESH *mesh);
 static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
-static void M_CalcRoomVertices(const ROOM_MESH *mesh);
-static void M_CalcRoomVerticesWibble(const ROOM_MESH *mesh);
-static void M_CalcWibbleTable(void);
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 {
@@ -354,31 +330,6 @@ static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
     return clip_flags;
 }
 
-static void M_CalcVertexWibble(PHD_VBUF *const vbuf)
-{
-    double xs = vbuf->xs;
-    double ys = vbuf->ys;
-    xs += m_WibbleTable[(m_WibbleOffset + (int)ys) & (WIBBLE_SIZE - 1)];
-    ys += m_WibbleTable[(m_WibbleOffset + (int)xs) & (WIBBLE_SIZE - 1)];
-
-    int16_t clip_flags = vbuf->clip & ~15;
-    if (xs < g_PhdLeft) {
-        clip_flags |= 1;
-    } else if (xs > g_PhdRight) {
-        clip_flags |= 2;
-    }
-
-    if (ys < g_PhdTop) {
-        clip_flags |= 4;
-    } else if (ys > g_PhdBottom) {
-        clip_flags |= 8;
-    }
-
-    vbuf->xs = xs;
-    vbuf->ys = ys;
-    vbuf->clip = clip_flags;
-}
-
 static bool M_CalcObjectVertices(
     const XYZ_16 *const vertices, const int16_t count)
 {
@@ -493,70 +444,19 @@ static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
     }
 }
 
-static void M_CalcRoomVertices(const ROOM_MESH *const mesh)
-{
-    for (int32_t i = 0; i < mesh->num_vertices; i++) {
-        PHD_VBUF *const vbuf = &m_VBuf[i];
-        const ROOM_VERTEX *const vertex = &mesh->vertices[i];
-
-        M_CalcVertex(vbuf, vertex->pos);
-
-        vbuf->g = vertex->light_adder;
-        if (vbuf->zv >= Output_GetNearZ()) {
-            const int32_t depth = ((int32_t)vbuf->zv) >> W2V_SHIFT;
-            if (depth > Output_GetDrawDistMax()) {
-                vbuf->g = MAX_LIGHTING;
-                if (!m_IsSkyboxEnabled) {
-                    vbuf->clip |= 16;
-                }
-            } else {
-                vbuf->g += Output_CalcFogShade(depth);
-                if (!m_IsWaterEffect) {
-                    CLAMPG(vbuf->g, MAX_LIGHTING);
-                }
-            }
-        }
-
-        if (m_IsWaterEffect) {
-            vbuf->g += m_ShadeTable[(
-                ((uint8_t)m_WibbleOffset
-                 + (uint8_t)m_RandTable[(mesh->num_vertices - i) % WIBBLE_SIZE])
-                % WIBBLE_SIZE)];
-            CLAMP(vbuf->g, 0, 0x1FFF);
-        }
-    }
-}
-
-static void M_CalcRoomVerticesWibble(const ROOM_MESH *const mesh)
-{
-    for (int32_t i = 0; i < mesh->num_vertices; i++) {
-        if (mesh->vertices[i].flags & NO_VERT_MOVE) {
-            continue;
-        }
-        M_CalcVertexWibble(&m_VBuf[i]);
-    }
-}
-
-static void M_CalcWibbleTable(void)
-{
-    for (int i = 0; i < WIBBLE_SIZE; i++) {
-        PHD_ANGLE angle = (i * DEG_360) / WIBBLE_SIZE;
-        m_WibbleTable[i] = Math_Sin(angle) * MAX_WIBBLE >> W2V_SHIFT;
-        m_ShadeTable[i] = Math_Sin(angle) * MAX_SHADE >> W2V_SHIFT;
-        m_RandTable[i] = (Random_GetDraw() >> 5) - 0x01FF;
-    }
-}
-
 bool Output_Init(void)
 {
-    M_CalcWibbleTable();
-    Output_Sprites_Init();
     Output_Textures_Init();
+    Output_Sprites_Init();
+    Output_Meshes_Init();
+    Output_Rooms_Init();
     return S_Output_Init();
 }
 
 void Output_Shutdown(void)
 {
+    Output_Rooms_Shutdown();
+    Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
     Output_Textures_Shutdown();
     S_Output_Shutdown();
@@ -576,6 +476,7 @@ void Output_SetWindowSize(int width, int height)
 
 void Output_ApplyRenderSettings(void)
 {
+    Output_Textures_ApplyRenderSettings();
     S_Output_ApplyRenderSettings();
     if (m_BackdropImagePath) {
         Output_LoadBackgroundFromFile(m_BackdropImagePath);
@@ -588,6 +489,7 @@ void Output_DownloadTextures(void)
 
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
+    Output_Rooms_ObserveLevelLoad();
 }
 
 void Output_DrawBlack(void)
@@ -614,6 +516,7 @@ void Output_BeginScene(void)
     Text_DrawReset();
 
     Output_Sprites_RenderBegin();
+    Output_Meshes_RenderBegin();
     S_Output_RenderBegin();
     m_LightningCount = 0;
 }
@@ -709,19 +612,7 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
 
 void Output_DrawRoomMesh(const ROOM *const room)
 {
-    const ROOM_MESH *const mesh = &room->mesh;
-    M_CalcRoomVertices(mesh);
-
-    if (m_IsWibbleEffect) {
-        S_Output_DisableDepthWrites();
-        M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
-        M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
-        S_Output_EnableDepthWrites();
-        M_CalcRoomVerticesWibble(mesh);
-    }
-
-    M_DrawTexturedFace4s(mesh->face4s, mesh->num_face4s);
-    M_DrawTexturedFace3s(mesh->face3s, mesh->num_face3s);
+    Output_Rooms_RenderRoom(g_MatrixPtr, Output_GetTint(), room);
 }
 
 void Output_DrawRoomPortals(const ROOM *const room)
@@ -1429,8 +1320,9 @@ void Output_EnableScissor(
 
     glEnable(GL_SCISSOR_TEST);
     glScissor(
-        x * scale_x, (GFX_Context_GetDisplayHeight() - y) * scale_y,
-        w * scale_x, h * scale_y);
+        x * scale_x - border,
+        (GFX_Context_GetDisplayHeight() - y) * scale_y - border,
+        w * scale_x + border * 2, h * scale_y + border * 2);
 }
 
 void Output_DisableScissor(void)

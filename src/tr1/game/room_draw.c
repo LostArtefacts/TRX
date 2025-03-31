@@ -281,7 +281,14 @@ void Room_DrawSingleRoom(int16_t room_num)
     g_PhdBottom = room->bound_bottom;
 
     Output_LightRoom(room);
+    Output_EnableScissor(
+        room->bound_left, room->bound_bottom,
+        room->bound_right - room->bound_left,
+        room->bound_bottom - room->bound_top);
+    Output_RememberState();
     Output_DrawRoomMesh(room);
+    Output_RestoreState();
+    Output_DisableScissor();
 
     int16_t item_num = room->item_num;
     while (item_num != NO_ITEM) {
