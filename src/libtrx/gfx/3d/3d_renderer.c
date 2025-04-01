@@ -22,7 +22,6 @@ struct GFX_3D_RENDERER {
 
     // shader variable locations
     GLint loc_mat_projection;
-    GLint loc_mat_model_view;
     GLint loc_texturing_enabled;
     GLint loc_smoothing_enabled;
     GLint loc_alpha_point_discard;
@@ -142,8 +141,6 @@ GFX_3D_RENDERER *GFX_3D_Renderer_Create(void)
 
     renderer->loc_mat_projection =
         GFX_GL_Program_UniformLocation(&renderer->program, "matProjection");
-    renderer->loc_mat_model_view =
-        GFX_GL_Program_UniformLocation(&renderer->program, "matModelView");
     renderer->loc_texturing_enabled =
         GFX_GL_Program_UniformLocation(&renderer->program, "texturingEnabled");
     renderer->loc_smoothing_enabled =

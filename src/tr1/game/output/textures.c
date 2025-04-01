@@ -207,7 +207,7 @@ static void M_FillSpriteUVWs(void)
 
 static void M_UploadSpriteUVWs(void)
 {
-    glBindTexture(GL_TEXTURE_BUFFER, m_LevelData.sprites.tex);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_LevelData.sprites.tbo);
     GFX_TRACK_DATA(
         glBufferData, GL_TEXTURE_BUFFER,
         m_LevelData.sprites.count * sizeof(M_UVW_PACK), m_LevelData.sprites.uvw,
@@ -216,7 +216,7 @@ static void M_UploadSpriteUVWs(void)
 
 static void M_UploadSpriteAnimatedUVWs(const M_ANIMATION_RANGES *const source)
 {
-    glBindTexture(GL_TEXTURE_BUFFER, m_LevelData.sprites.tex);
+    glBindBuffer(GL_TEXTURE_BUFFER, m_LevelData.sprites.tbo);
     for (int32_t i = 0; i < source->range_count; i++) {
         const M_ANIMATION_RANGE *const range = &source->ranges[i];
         for (int32_t j = 0; j < range->count; j++) {
