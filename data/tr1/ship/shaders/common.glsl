@@ -26,11 +26,11 @@ bool discardTranslucent(sampler2D tex, vec2 uv)
     return texel.a == 0.0;
 }
 
-bool discardTranslucent(sampler2DArray tex, vec3 uv)
+bool discardTranslucent(sampler2DArray tex, vec3 uvw)
 {
     // do not use smoothing for chroma key
     ivec2 size = textureSize(tex, 0).xy;
-    ivec3 texCoordsNN = ivec3(ivec2(uv.xy * size.xy) % size.xy, uv.z);
+    ivec3 texCoordsNN = ivec3(ivec2(uvw.xy * size.xy) % size.xy, uvw.z);
     vec4 texel = texelFetch(tex, texCoordsNN, 0);
     return texel.a == 0.0;
 }

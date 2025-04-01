@@ -14,7 +14,7 @@ layout(location = 1) in vec2 inDisplacement;
 layout(location = 2) in int inTextureIdx;
 layout(location = 3) in float inShade;
 
-out vec3 gUV; // x = u, y = v, z = layer
+out vec3 gUVW; // x = u, y = v, z = layer
 out float gShade;
 
 void main(void) {
@@ -27,7 +27,7 @@ void main(void) {
             waterWibble(gl_Position, uViewportSize, uWibbleOffset);
     }
 
-    gUV = texelFetch(uUVW, int(inTextureIdx)).xyz;
+    gUVW = texelFetch(uUVW, int(inTextureIdx)).xyz;
     gShade = inShade;
 }
 
@@ -38,13 +38,13 @@ uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;
 
-in vec3 gUV;
+in vec3 gUVW;
 in float gShade;
 out vec4 outColor;
 
 void main(void) {
-    vec4 texColor = texture(uTexture, gUV);
-    if (uSmoothingEnabled && discardTranslucent(uTexture, gUV)) {
+    vec4 texColor = texture(uTexture, gUVW);
+    if (uSmoothingEnabled && discardTranslucent(uTexture, gUVW)) {
         discard;
     }
 
