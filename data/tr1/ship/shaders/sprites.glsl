@@ -37,6 +37,7 @@ void main(void) {
 #elif defined(FRAGMENT)
 
 uniform sampler2DArray uTexAtlas;
+uniform sampler2D uTexEnvMap;
 uniform bool uSmoothingEnabled;
 uniform float uBrightnessMultiplier;
 uniform vec3 uGlobalTint;

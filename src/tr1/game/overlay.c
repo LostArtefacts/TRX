@@ -378,6 +378,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     int16_t old_fov = Viewport_GetFOV();
     Viewport_SetFOV(PICKUPS_FOV * DEG_1);
     Viewport_Init(vp_x1, vp_y1, vp_x2 - vp_x1, vp_y2 - vp_y1);
+    glViewport(vp_x1, -vp_y1, screen_width, screen_height);
     Output_ApplyFOV();
 
     Matrix_PushUnit();
@@ -424,6 +425,7 @@ static void M_DrawPickup3D(DISPLAY_PICKUP *pu)
     Matrix_Pop();
     Viewport_Init(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
     Viewport_SetFOV(old_fov);
+    glViewport(0, 0, Screen_GetResWidth(), Screen_GetResHeight());
 }
 
 static void M_DrawPickups3D(void)

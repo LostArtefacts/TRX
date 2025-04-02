@@ -33,7 +33,9 @@ typedef struct {
     FACE3 *tex_face3s;
     FACE4 *flat_face4s;
     FACE3 *flat_face3s;
+
     bool enable_reflections;
+    bool disable_lighting;
 } OBJECT_MESH;
 
 #if TR_VERSION == 1

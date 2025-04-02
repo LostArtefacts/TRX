@@ -8,6 +8,8 @@
 void Output_Sprites_Init(void);
 void Output_Sprites_Shutdown(void);
 void Output_Sprites_ObserveLevelLoad(void);
+void Output_Sprites_UploadProjectionMatrix(void);
+
 void Output_Sprites_RenderBegin(void);
 void Output_Sprites_RenderRoomSprites(
     const MATRIX *matrix, RGB_F tint, const ROOM *room);

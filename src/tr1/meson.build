@@ -245,6 +245,7 @@ sources = [
   'game/option/option_sound.c',
   'game/output.c',
   'game/output/meshes.c',
+  'game/output/objects.c',
   'game/output/rooms.c',
   'game/output/shader.c',
   'game/output/sprites.c',

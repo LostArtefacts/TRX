@@ -6,6 +6,7 @@
 #include "game/game_buf.h"
 #include "game/matrix.h"
 #include "game/output.h"
+#include "game/output/objects.h"
 
 static OBJECT m_Objects[O_NUMBER_OF] = {};
 static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS] = {};
@@ -84,6 +85,16 @@ OBJECT_MESH *Object_GetMesh(const int32_t index)
     return m_MeshPointers[index];
 }
 
+int32_t Object_GetMeshIndex(const OBJECT_MESH *const mesh)
+{
+    for (int32_t i = 0; i < m_MeshCount; i++) {
+        if (mesh == m_MeshPointers[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int32_t Object_GetMeshCount(void)
 {
     return m_MeshCount;
@@ -122,6 +133,12 @@ void Object_SwapMesh(
     m_MeshPointers[obj1->mesh_idx + mesh_num] =
         m_MeshPointers[obj2->mesh_idx + mesh_num];
     m_MeshPointers[obj2->mesh_idx + mesh_num] = temp;
+
+#if TR_VERSION == 1
+    Output_Objects_ObserveMeshSwap(
+        m_MeshPointers[obj1->mesh_idx + mesh_num],
+        m_MeshPointers[obj2->mesh_idx + mesh_num]);
+#endif
 }
 
 ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)

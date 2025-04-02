@@ -1,6 +1,7 @@
 #include "game/output.h"
 
 #include "game/output/meshes.h"
+#include "game/output/objects.h"
 #include "game/output/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
@@ -69,17 +70,8 @@ static struct {
 } m_CachedState;
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius);
-static void M_DrawFlatFace3s(const FACE3 *faces, int32_t count);
-static void M_DrawFlatFace4s(const FACE4 *faces, int32_t count);
-static void M_DrawTexturedFace3s(const FACE3 *faces, int32_t count);
-static void M_DrawTexturedFace4s(const FACE4 *faces, int32_t count);
-static void M_DrawObjectFace3EnvMap(const FACE3 *faces, int32_t count);
-static void M_DrawObjectFace4EnvMap(const FACE4 *faces, int32_t count);
 static uint16_t M_CalcVertex(PHD_VBUF *vbuf, const XYZ_16 pos);
 static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
-static void M_CalcVerticeLight(const OBJECT_MESH *mesh);
-static bool M_CalcVerticeEnvMap(const OBJECT_MESH *mesh);
-static void M_CalcSkyboxLight(const OBJECT_MESH *mesh);
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 {
@@ -139,145 +131,6 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 
     S_Output_SetBlendingMode(GFX_BLEND_MODE_OFF);
     GFX_Context_SetWireframeMode(wireframe_state);
-}
-
-static void M_DrawFlatFace3s(const FACE3 *const faces, const int32_t count)
-{
-    S_Output_DisableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE3 *const face = &faces[i];
-        PHD_VBUF *const vns[3] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-        };
-
-        const RGBA_8888 color =
-            Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
-        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-    }
-}
-
-static void M_DrawFlatFace4s(const FACE4 *const faces, const int32_t count)
-{
-    S_Output_DisableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE4 *const face = &faces[i];
-        PHD_VBUF *const vns[4] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-            &m_VBuf[face->vertices[3]],
-        };
-
-        const RGBA_8888 color =
-            Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
-        S_Output_DrawFlatTriangle(vns[0], vns[1], vns[2], color);
-        S_Output_DrawFlatTriangle(vns[2], vns[3], vns[0], color);
-    }
-}
-
-static void M_DrawTexturedFace3s(const FACE3 *const faces, const int32_t count)
-{
-    S_Output_EnableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE3 *const face = &faces[i];
-        PHD_VBUF *const vns[3] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-        };
-
-        OBJECT_TEXTURE *const tex = Output_GetObjectTexture(face->texture_idx);
-        for (int32_t j = 0; j < 3; j++) {
-            vns[j]->u = tex->uv[j].u;
-            vns[j]->v = tex->uv[j].v;
-            vns[j]->z = 1.0f;
-            vns[j]->w = 1.0f;
-        }
-
-        S_Output_DrawTexturedTriangle(
-            vns[0], vns[1], vns[2], tex->tex_page, tex->draw_type);
-    }
-}
-
-static void M_DrawTexturedFace4s(const FACE4 *const faces, const int32_t count)
-{
-    S_Output_EnableTextureMode();
-
-    for (int32_t i = 0; i < count; i++) {
-        const FACE4 *const face = &faces[i];
-        PHD_VBUF *const vns[4] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-            &m_VBuf[face->vertices[3]],
-        };
-
-        OBJECT_TEXTURE *const tex = Output_GetObjectTexture(face->texture_idx);
-        for (int32_t j = 0; j < 4; j++) {
-            vns[j]->u = tex->uv[j].u;
-            vns[j]->v = tex->uv[j].v;
-            if (g_Config.rendering.enable_trapezoid_filter) {
-                vns[j]->z = face->texture_zw[j].z;
-                vns[j]->w = face->texture_zw[j].w;
-            } else {
-                vns[j]->z = 1.0f;
-                vns[j]->w = 1.0f;
-            }
-        }
-
-        S_Output_DrawTexturedQuad(
-            vns[0], vns[1], vns[2], vns[3], tex->tex_page, tex->draw_type);
-    }
-}
-
-static void M_DrawObjectFace3EnvMap(
-    const FACE3 *const faces, const int32_t count)
-{
-    for (int32_t i = 0; i < count; i++) {
-        const FACE3 *const face = &faces[i];
-        PHD_VBUF *vns[3] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-        };
-
-        for (int32_t j = 0; j < 3; j++) {
-            vns[j]->u = m_EnvMapUV[face->vertices[j]].u;
-            vns[j]->v = m_EnvMapUV[face->vertices[j]].v;
-        }
-
-        if (face->enable_reflections) {
-            S_Output_DrawEnvMapTriangle(vns[0], vns[1], vns[2]);
-        }
-    }
-}
-
-static void M_DrawObjectFace4EnvMap(
-    const FACE4 *const faces, const int32_t count)
-{
-    for (int32_t i = 0; i < count; i++) {
-        const FACE4 *const face = &faces[i];
-        PHD_VBUF *vns[4] = {
-            &m_VBuf[face->vertices[0]],
-            &m_VBuf[face->vertices[1]],
-            &m_VBuf[face->vertices[2]],
-            &m_VBuf[face->vertices[3]],
-        };
-
-        for (int32_t j = 0; j < 4; j++) {
-            vns[j]->u = m_EnvMapUV[face->vertices[j]].u;
-            vns[j]->v = m_EnvMapUV[face->vertices[j]].v;
-        }
-
-        if (face->enable_reflections) {
-            S_Output_DrawEnvMapQuad(vns[0], vns[1], vns[2], vns[3]);
-        }
-    }
 }
 
 static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
@@ -344,109 +197,6 @@ static bool M_CalcObjectVertices(
     return total_clip == 0;
 }
 
-static void M_CalcVerticeLight(const OBJECT_MESH *const mesh)
-{
-    if (mesh->num_lights <= 0) {
-        for (int32_t i = 0; i < -mesh->num_lights; i++) {
-            int16_t shade = m_LsAdder + mesh->lighting.lights[i];
-            CLAMP(shade, 0, 0x1FFF);
-            m_VBuf[i].g = shade;
-        }
-
-        return;
-    }
-
-    if (m_LsDivider == 0) {
-        int16_t shade = m_LsAdder;
-        CLAMP(shade, 0, 0x1FFF);
-        for (int32_t i = 0; i < mesh->num_lights; i++) {
-            m_VBuf[i].g = shade;
-        }
-
-        return;
-    }
-
-    // clang-format off
-    const int32_t xv = (
-        g_MatrixPtr->_00 * m_LsVectorView.x +
-        g_MatrixPtr->_10 * m_LsVectorView.y +
-        g_MatrixPtr->_20 * m_LsVectorView.z
-    ) / m_LsDivider;
-
-    const int32_t yv = (
-        g_MatrixPtr->_01 * m_LsVectorView.x +
-        g_MatrixPtr->_11 * m_LsVectorView.y +
-        g_MatrixPtr->_21 * m_LsVectorView.z
-    ) / m_LsDivider;
-
-    const int32_t zv = (
-        g_MatrixPtr->_02 * m_LsVectorView.x +
-        g_MatrixPtr->_12 * m_LsVectorView.y +
-        g_MatrixPtr->_22 * m_LsVectorView.z
-    ) / m_LsDivider;
-    // clang-format on
-
-    for (int32_t i = 0; i < mesh->num_lights; i++) {
-        const XYZ_16 *const normal = &mesh->lighting.normals[i];
-        int16_t shade = m_LsAdder
-            + ((normal->x * xv + normal->y * yv + normal->z * zv) >> 16);
-        CLAMP(shade, 0, 0x1FFF);
-        m_VBuf[i].g = shade;
-    }
-}
-
-static bool M_CalcVerticeEnvMap(const OBJECT_MESH *mesh)
-{
-    if (mesh->num_lights <= 0) {
-        return false;
-    }
-
-    for (int32_t i = 0; i < mesh->num_lights; ++i) {
-        // make sure that reflection will be drawn after normal poly
-        m_VBuf[i].zv -= (double)((1 << W2V_SHIFT) / 2);
-
-        // set lighting that depends only from fog distance
-        m_VBuf[i].g = 0x1000;
-
-        const int32_t depth = g_MatrixPtr->_23 >> W2V_SHIFT;
-        m_VBuf[i].g += Output_CalcFogShade(depth);
-
-        // reflection can be darker but not brighter
-        CLAMP(m_VBuf[i].g, 0x1000, 0x1FFF);
-
-        // rotate normal vectors for X/Y, no translation
-        const XYZ_16 *const normal = &mesh->lighting.normals[i];
-
-        // clang-format off
-        int32_t x = (
-            g_MatrixPtr->_00 * normal->x +
-            g_MatrixPtr->_01 * normal->y +
-            g_MatrixPtr->_02 * normal->z
-        ) >> W2V_SHIFT;
-
-        int32_t y = (
-            g_MatrixPtr->_10 * normal->x +
-            g_MatrixPtr->_11 * normal->y +
-            g_MatrixPtr->_12 * normal->z
-        ) >> W2V_SHIFT;
-        // clang-format on
-
-        CLAMP(x, -PHD_ONE, PHD_IONE);
-        CLAMP(y, -PHD_ONE, PHD_IONE);
-        m_EnvMapUV[i].u = PHD_ONE / PHD_IONE * (x + PHD_IONE) / 2;
-        m_EnvMapUV[i].v = PHD_ONE - PHD_ONE / PHD_IONE * (y + PHD_IONE) / 2;
-    }
-
-    return true;
-}
-
-static void M_CalcSkyboxLight(const OBJECT_MESH *const mesh)
-{
-    for (int32_t i = 0; i < ABS(mesh->num_lights); i++) {
-        m_VBuf[i].g = 0xFFF;
-    }
-}
-
 bool Output_Init(void)
 {
     const bool result = S_Output_Init();
@@ -454,11 +204,13 @@ bool Output_Init(void)
     Output_Sprites_Init();
     Output_Meshes_Init();
     Output_Rooms_Init();
+    Output_Objects_Init();
     return result;
 }
 
 void Output_Shutdown(void)
 {
+    Output_Objects_Shutdown();
     Output_Rooms_Shutdown();
     Output_Meshes_Shutdown();
     Output_Sprites_Shutdown();
@@ -493,10 +245,18 @@ void Output_ObserveLevelLoad(void)
     Output_Textures_ObserveLevelLoad();
     Output_Sprites_ObserveLevelLoad();
     Output_Rooms_ObserveLevelLoad();
+    Output_Objects_ObserveLevelLoad();
 }
 
 void Output_ObserveLevelUnload(void)
 {
+    Output_Objects_ObserveLevelUnload();
+}
+
+void Output_ObserveFOVChange(void)
+{
+    Output_Meshes_UploadProjectionMatrix();
+    Output_Sprites_UploadProjectionMatrix();
 }
 
 void Output_DrawBlack(void)
@@ -548,26 +308,10 @@ void Output_ClearDepthBuffer(void)
 
 void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
 {
-    if (!M_CalcObjectVertices(mesh->vertices, mesh->num_vertices)) {
-        return;
-    }
-
-    M_CalcVerticeLight(mesh);
-    M_DrawTexturedFace4s(mesh->tex_face4s, mesh->num_tex_face4s);
-    M_DrawTexturedFace3s(mesh->tex_face3s, mesh->num_tex_face3s);
-    M_DrawFlatFace4s(mesh->flat_face4s, mesh->num_flat_face4s);
-    M_DrawFlatFace3s(mesh->flat_face3s, mesh->num_flat_face3s);
-
-    if (mesh->enable_reflections && g_Config.visuals.enable_reflections) {
-        if (!M_CalcVerticeEnvMap(mesh)) {
-            return;
-        }
-
-        M_DrawObjectFace4EnvMap(mesh->tex_face4s, mesh->num_tex_face4s);
-        M_DrawObjectFace3EnvMap(mesh->tex_face3s, mesh->num_tex_face3s);
-        M_DrawObjectFace4EnvMap(mesh->flat_face4s, mesh->num_flat_face4s);
-        M_DrawObjectFace3EnvMap(mesh->flat_face3s, mesh->num_flat_face3s);
-    }
+    S_Output_Flush();
+    Output_RememberState();
+    Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
+    Output_RestoreState();
 
     if (g_Config.rendering.enable_debug_spheres) {
         M_DrawSphere(
@@ -578,6 +322,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
             },
             mesh->radius);
     }
+    S_Output_Flush();
 }
 
 void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
@@ -605,16 +350,10 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     g_PhdRight = Viewport_GetMaxX();
     g_PhdBottom = Viewport_GetMaxY();
 
-    if (!M_CalcObjectVertices(mesh->vertices, mesh->num_vertices)) {
-        return;
-    }
-
     S_Output_DisableDepthTest();
-    M_CalcSkyboxLight(mesh);
-    M_DrawTexturedFace4s(mesh->tex_face4s, mesh->num_tex_face4s);
-    M_DrawTexturedFace3s(mesh->tex_face3s, mesh->num_tex_face3s);
-    M_DrawFlatFace4s(mesh->flat_face4s, mesh->num_flat_face4s);
-    M_DrawFlatFace3s(mesh->flat_face3s, mesh->num_flat_face3s);
+    Output_RememberState();
+    Output_Objects_RenderMesh(g_MatrixPtr, Output_GetTint(), mesh);
+    Output_RestoreState();
     S_Output_EnableDepthTest();
 }
 

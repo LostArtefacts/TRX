@@ -196,6 +196,8 @@ static void M_DrawBuffer(
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetSpriteUVWsTexture());
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
     GFX_GL_CheckError();
 
     glDrawArrays(GL_TRIANGLES, start, count);
@@ -397,4 +399,9 @@ bool Output_Sprites_Flush(void)
     Vector_Clear(m_Dynamic.source);
     M_FlushBuffer(&m_Dynamic.sprite_buf);
     return true;
+}
+
+void Output_Sprites_UploadProjectionMatrix(void)
+{
+    Output_Shader_UploadProjectionMatrix(m_Shader);
 }
