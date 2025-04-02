@@ -42,6 +42,7 @@ static struct {
 
 static struct {
     GLuint tex_atlas;
+    GLuint tex_env_map;
     M_TEXTURE_DATA objects;
     M_TEXTURE_DATA sprites;
 } m_Priv = {};
@@ -292,6 +293,17 @@ static void M_PrepareSpriteUVWs(void)
     M_FillSpriteUVWs();
 }
 
+static void M_PrepareEnvMap(void)
+{
+    glGenTextures(1, &m_Priv.tex_env_map);
+    glBindTexture(GL_TEXTURE_2D, m_Priv.tex_env_map);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    GFX_GL_CheckError();
+}
+
 static void M_UploadAtlas(void)
 {
     glGenTextures(1, &m_Priv.tex_atlas);
@@ -341,11 +353,16 @@ static void M_FreeLevelData(void)
 
 void Output_Textures_Init(void)
 {
+    M_PrepareEnvMap();
 }
 
 void Output_Textures_Shutdown(void)
 {
     M_FreeLevelData();
+    if (m_Priv.tex_env_map != 0) {
+        glDeleteTextures(1, &m_Priv.tex_env_map);
+        m_Priv.tex_env_map = 0;
+    }
 }
 
 void Output_Textures_ObserveLevelLoad(void)
@@ -357,6 +374,28 @@ void Output_Textures_ObserveLevelLoad(void)
     M_UploadObjectUVWs();
     M_UploadSpriteUVWs();
     M_UploadAtlas();
+}
+
+void Output_Textures_UpdateEnvironmentMap(void)
+{
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    GFX_GL_CheckError();
+
+    const GLint vp_x = viewport[0];
+    const GLint vp_y = viewport[1];
+    const GLint vp_w = viewport[2];
+    const GLint vp_h = viewport[3];
+
+    const int32_t side = MIN(vp_w, vp_h);
+    const int32_t x = vp_x + (vp_w - side) / 2;
+    const int32_t y = vp_y + (vp_h - side) / 2;
+    const int32_t w = side;
+    const int32_t h = side;
+
+    glBindTexture(GL_TEXTURE_2D, m_Priv.tex_env_map);
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
+    GFX_GL_CheckError();
 }
 
 void Output_Textures_CycleAnimations(void)
@@ -382,6 +421,11 @@ GLuint Output_Textures_GetSpriteUVWsTexture(void)
 GLuint Output_Textures_GetAtlasTexture(void)
 {
     return m_Priv.tex_atlas;
+}
+
+GLuint Output_Textures_GetEnvMapTexture(void)
+{
+    return m_Priv.tex_env_map;
 }
 
 void Output_Textures_ApplyRenderSettings(void)

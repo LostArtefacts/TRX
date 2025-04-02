@@ -1,6 +1,7 @@
 #include "specific/s_output.h"
 
 #include "game/output.h"
+#include "game/output/textures.h"
 #include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
@@ -29,7 +30,6 @@
     }
 
 static int m_TextureMap[GFX_MAX_TEXTURES] = { GFX_NO_TEXTURE };
-static int m_EnvMapTexture = GFX_NO_TEXTURE;
 
 static GFX_2D_RENDERER *m_Renderer2D = nullptr;
 static GFX_3D_RENDERER *m_Renderer3D = nullptr;
@@ -38,19 +38,16 @@ static int32_t m_SelectedTexture = -1;
 
 static int32_t m_SurfaceWidth = 0;
 static int32_t m_SurfaceHeight = 0;
-static float m_SurfaceMinX = 0.0f;
-static float m_SurfaceMinY = 0.0f;
-static float m_SurfaceMaxX = 0.0f;
-static float m_SurfaceMaxY = 0.0f;
-static GFX_2D_SURFACE *m_PrimarySurface = nullptr;
 static GFX_2D_SURFACE *m_PictureSurface = nullptr;
 static GFX_2D_SURFACE *m_TextureSurfaces[GFX_MAX_TEXTURES] = { nullptr };
 
 static inline float M_GetUV(uint16_t uv);
+static void M_SelectTexture(int32_t texture_num);
+static void M_EnableTextureMode(void);
+static void M_DrawBackdropSurface(void);
 static void M_ReleaseTextures(void);
 static void M_ReleaseSurfaces(void);
 static void M_FlipPrimaryBuffer(void);
-static void M_ClearSurface(GFX_2D_SURFACE *surface);
 static void M_DrawTriangleFan(GFX_3D_VERTEX *vertices, int vertex_count);
 static void M_DrawTriangleStrip(GFX_3D_VERTEX *vertices, int vertex_count);
 static int32_t M_VisibleZClip(
@@ -66,6 +63,40 @@ static inline float M_GetUV(const uint16_t uv)
         : ((uv & 0xFF00) + 127) / 65536.0f;
 }
 
+static void M_SelectTexture(const int32_t texture_num)
+{
+    if (texture_num == m_SelectedTexture) {
+        return;
+    }
+
+    if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
+        LOG_ERROR("ERROR: Attempt to select unloaded texture");
+        return;
+    }
+
+    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
+
+    m_SelectedTexture = texture_num;
+}
+
+static void M_EnableTextureMode(void)
+{
+    if (m_IsTextureMode) {
+        return;
+    }
+
+    m_IsTextureMode = true;
+    GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
+}
+
+static void M_DrawBackdropSurface(void)
+{
+    if (m_PictureSurface == nullptr) {
+        return;
+    }
+    GFX_2D_Renderer_Render(m_Renderer2D);
+}
+
 static void M_ReleaseTextures(void)
 {
     if (m_Renderer3D == nullptr) {
@@ -78,20 +109,10 @@ static void M_ReleaseTextures(void)
             m_TextureMap[i] = GFX_NO_TEXTURE;
         }
     }
-    if (m_EnvMapTexture != GFX_NO_TEXTURE) {
-        GFX_3D_Renderer_UnregisterEnvironmentMap(m_Renderer3D, m_EnvMapTexture);
-    }
 }
 
 static void M_ReleaseSurfaces(void)
 {
-    if (m_PrimarySurface) {
-        M_ClearSurface(m_PrimarySurface);
-
-        GFX_2D_Surface_Free(m_PrimarySurface);
-        m_PrimarySurface = nullptr;
-    }
-
     for (int i = 0; i < GFX_MAX_TEXTURES; i++) {
         if (m_TextureSurfaces[i] != nullptr) {
             GFX_2D_Surface_Free(m_TextureSurfaces[i]);
@@ -105,19 +126,9 @@ static void M_ReleaseSurfaces(void)
     }
 }
 
-void Output_FillEnvironmentMap(void)
-{
-    GFX_3D_Renderer_FillEnvironmentMap(m_Renderer3D);
-}
-
 static void M_FlipPrimaryBuffer(void)
 {
     GFX_Context_SwapBuffers();
-}
-
-static void M_ClearSurface(GFX_2D_SURFACE *surface)
-{
-    GFX_2D_Surface_Clear(surface, 0);
 }
 
 static void M_DrawTriangleFan(GFX_3D_VERTEX *vertices, int vertex_count)
@@ -217,16 +228,6 @@ static int32_t M_ZedClipper(
     return count < 3 ? 0 : count;
 }
 
-void S_Output_EnableTextureMode(void)
-{
-    if (m_IsTextureMode) {
-        return;
-    }
-
-    m_IsTextureMode = true;
-    GFX_3D_Renderer_SetTexturingEnabled(m_Renderer3D, m_IsTextureMode);
-}
-
 void S_Output_DisableTextureMode(void)
 {
     if (!m_IsTextureMode) {
@@ -266,7 +267,7 @@ void S_Output_RenderBegin(void)
 {
     GFX_Context_Clear();
     GFX_Track_Reset();
-    S_Output_DrawBackdropSurface();
+    M_DrawBackdropSurface();
     GFX_3D_Renderer_RenderBegin(m_Renderer3D);
     GFX_3D_Renderer_SetTextureFilter(
         m_Renderer3D, g_Config.rendering.texture_filter);
@@ -294,14 +295,6 @@ void S_Output_ClearDepthBuffer(void)
     GFX_3D_Renderer_ClearDepth(m_Renderer3D);
 }
 
-void S_Output_DrawBackdropSurface(void)
-{
-    if (m_PictureSurface == nullptr) {
-        return;
-    }
-    GFX_2D_Renderer_Render(m_Renderer2D);
-}
-
 void S_Output_DownloadBackdropSurface(const IMAGE *const image)
 {
     GFX_2D_Surface_Free(m_PictureSurface);
@@ -314,22 +307,6 @@ void S_Output_DownloadBackdropSurface(const IMAGE *const image)
     m_PictureSurface = GFX_2D_Surface_CreateFromImage(image);
     GFX_2D_Renderer_Upload(
         m_Renderer2D, &m_PictureSurface->desc, m_PictureSurface->buffer);
-}
-
-void S_Output_SelectTexture(const int32_t texture_num)
-{
-    if (texture_num == m_SelectedTexture) {
-        return;
-    }
-
-    if (m_TextureMap[texture_num] == GFX_NO_TEXTURE) {
-        LOG_ERROR("ERROR: Attempt to select unloaded texture");
-        return;
-    }
-
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_TextureMap[texture_num]);
-
-    m_SelectedTexture = texture_num;
 }
 
 void S_Output_DrawSprite(
@@ -406,8 +383,8 @@ void S_Output_DrawSprite(
     }
 
     if (m_TextureMap[sprite->tex_page] != GFX_NO_TEXTURE) {
-        S_Output_EnableTextureMode();
-        S_Output_SelectTexture(sprite->tex_page);
+        M_EnableTextureMode();
+        M_SelectTexture(sprite->tex_page);
         M_DrawTriangleFan(vertices, vertex_count);
     } else {
         S_Output_DisableTextureMode();
@@ -627,10 +604,6 @@ void S_Output_ApplyRenderSettings(void)
 
     m_SurfaceWidth = Screen_GetResWidth();
     m_SurfaceHeight = Screen_GetResHeight();
-    m_SurfaceMinX = 0.0f;
-    m_SurfaceMinY = 0.0f;
-    m_SurfaceMaxX = Screen_GetResWidth() - 1.0f;
-    m_SurfaceMaxY = Screen_GetResHeight() - 1.0f;
 
     GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
     GFX_Context_SetDisplayFilter(g_Config.rendering.fbo_filter);
@@ -640,12 +613,6 @@ void S_Output_ApplyRenderSettings(void)
     GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
     GFX_3D_Renderer_SetAnisotropyFilter(
         m_Renderer3D, g_Config.rendering.anisotropy_filter);
-
-    if (m_PrimarySurface == nullptr) {
-        GFX_2D_SURFACE_DESC surface_desc = {};
-        m_PrimarySurface = GFX_2D_Surface_Create(&surface_desc);
-    }
-    M_ClearSurface(m_PrimarySurface);
 }
 
 void S_Output_SetWindowSize(int width, int height)
@@ -745,252 +712,6 @@ void S_Output_DrawFlatTriangle(
     M_DrawTriangleFan(vertices, vertex_count);
 }
 
-void S_Output_DrawEnvMapTriangle(
-    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
-    const PHD_VBUF *const vn3)
-{
-    int vertex_count = 3;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-
-    const float multiplier = g_Config.visuals.brightness / 16.0f;
-    const PHD_VBUF *const src_vbuf[3] = { vn1, vn2, vn3 };
-
-    if (vn3->clip & vn2->clip & vn1->clip) {
-        return;
-    }
-
-    if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0) {
-        if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-            return;
-        }
-
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].x = src_vbuf[i]->xs;
-            vertices[i].y = src_vbuf[i]->ys;
-            vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-            vertices[i].w = 1.0f / src_vbuf[i]->zv;
-            vertices[i].s = M_GetUV(src_vbuf[i]->u);
-            vertices[i].t = M_GetUV(src_vbuf[i]->v);
-            vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-            vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-            vertices[i].r = vertices[i].g = vertices[i].b =
-                (8192.0f - src_vbuf[i]->g) * multiplier;
-
-            Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-        }
-    } else {
-        if (!M_VisibleZClip(vn1, vn2, vn3)) {
-            return;
-        }
-
-        vertex_count =
-            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-    }
-
-    if (!vertex_count) {
-        return;
-    }
-
-    S_Output_EnableTextureMode();
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
-    M_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-    m_SelectedTexture = -1;
-}
-
-void S_Output_DrawEnvMapQuad(
-    const PHD_VBUF *const vn1, const PHD_VBUF *const vn2,
-    const PHD_VBUF *const vn3, const PHD_VBUF *const vn4)
-{
-    int vertex_count = 4;
-    GFX_3D_VERTEX vertices[vertex_count];
-
-    if (vn4->clip | vn3->clip | vn2->clip | vn1->clip) {
-        if ((vn4->clip & vn3->clip & vn2->clip & vn1->clip)) {
-            return;
-        }
-
-        if (vn1->clip >= 0 && vn2->clip >= 0 && vn3->clip >= 0
-            && vn4->clip >= 0) {
-            if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-                return;
-            }
-        } else if (!M_VisibleZClip(vn1, vn2, vn3)) {
-            return;
-        }
-
-        S_Output_DrawEnvMapTriangle(vn1, vn2, vn3);
-        S_Output_DrawEnvMapTriangle(vn3, vn4, vn1);
-        return;
-    }
-
-    if (!VBUF_VISIBLE(*vn1, *vn2, *vn3)) {
-        return;
-    }
-
-    float multiplier = g_Config.visuals.brightness / 16.0f;
-
-    const PHD_VBUF *const src_vbuf[4] = { vn2, vn1, vn3, vn4 };
-
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-        vertices[i].w = 1.0f / src_vbuf[i]->zv;
-        vertices[i].s = M_GetUV(src_vbuf[i]->u);
-        vertices[i].t = M_GetUV(src_vbuf[i]->v);
-        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-        vertices[i].r = vertices[i].g = vertices[i].b =
-            (8192.0f - src_vbuf[i]->g) * multiplier;
-
-        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-    }
-
-    S_Output_EnableTextureMode();
-    GFX_3D_Renderer_SelectTexture(m_Renderer3D, m_EnvMapTexture);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_MULTIPLY);
-    GFX_3D_Renderer_RenderPrimStrip(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-    m_SelectedTexture = -1;
-}
-
-void S_Output_DrawTexturedTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage,
-    uint16_t textype)
-{
-    int vertex_count = 3;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-    PHD_VBUF *src_vbuf[3];
-
-    float multiplier = g_Config.visuals.brightness / 16.0f;
-
-    src_vbuf[0] = vn1;
-    src_vbuf[1] = vn2;
-    src_vbuf[2] = vn3;
-
-    if (vn3->clip & vn2->clip & vn1->clip) {
-        return;
-    }
-
-    if (src_vbuf[0]->clip >= 0 && src_vbuf[1]->clip >= 0
-        && src_vbuf[2]->clip >= 0) {
-        if (!VBUF_VISIBLE(*src_vbuf[0], *src_vbuf[1], *src_vbuf[2])) {
-            return;
-        }
-
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].x = src_vbuf[i]->xs;
-            vertices[i].y = src_vbuf[i]->ys;
-            vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-            vertices[i].w = 1.0f / src_vbuf[i]->zv;
-            vertices[i].s = M_GetUV(src_vbuf[i]->u);
-            vertices[i].t = M_GetUV(src_vbuf[i]->v);
-            vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-            vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-            vertices[i].r = vertices[i].g = vertices[i].b =
-                (8192.0f - src_vbuf[i]->g) * multiplier;
-
-            Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-        }
-    } else {
-        if (!M_VisibleZClip(src_vbuf[0], src_vbuf[1], src_vbuf[2])) {
-            return;
-        }
-
-        vertex_count =
-            M_ZedClipper(vertex_count, (const PHD_VBUF **)src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-    }
-
-    if (!vertex_count) {
-        return;
-    }
-
-    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
-        S_Output_EnableTextureMode();
-        S_Output_SelectTexture(tpage);
-        M_DrawTriangleFan(vertices, vertex_count);
-    } else {
-        S_Output_DisableTextureMode();
-        M_DrawTriangleFan(vertices, vertex_count);
-    }
-}
-
-void S_Output_DrawTexturedQuad(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, int16_t tpage,
-    uint16_t textype)
-{
-    int vertex_count = 4;
-    GFX_3D_VERTEX vertices[vertex_count];
-    PHD_VBUF *src_vbuf[4] = { vn1, vn2, vn3, vn4 };
-
-    if (src_vbuf[3]->clip | src_vbuf[2]->clip | src_vbuf[1]->clip
-        | src_vbuf[0]->clip) {
-        if ((src_vbuf[3]->clip & src_vbuf[2]->clip & src_vbuf[1]->clip
-             & src_vbuf[0]->clip)) {
-            return;
-        }
-
-        if (src_vbuf[0]->clip >= 0 && src_vbuf[1]->clip >= 0
-            && src_vbuf[2]->clip >= 0 && src_vbuf[3]->clip >= 0) {
-            if (!VBUF_VISIBLE(*src_vbuf[0], *src_vbuf[1], *src_vbuf[2])) {
-                return;
-            }
-        } else if (!M_VisibleZClip(src_vbuf[0], src_vbuf[1], src_vbuf[2])) {
-            return;
-        }
-
-        S_Output_DrawTexturedTriangle(vn1, vn2, vn3, tpage, textype);
-        S_Output_DrawTexturedTriangle(vn3, vn4, vn1, tpage, textype);
-        return;
-    }
-
-    if (!VBUF_VISIBLE(*src_vbuf[0], *src_vbuf[1], *src_vbuf[2])) {
-        return;
-    }
-
-    float multiplier = g_Config.visuals.brightness / 16.0f;
-
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-
-        vertices[i].w = 1.0f / src_vbuf[i]->zv;
-        vertices[i].s = M_GetUV(src_vbuf[i]->u);
-        vertices[i].t = M_GetUV(src_vbuf[i]->v);
-        vertices[i].tex_coord[2] = src_vbuf[i]->tex_coord[2];
-        vertices[i].tex_coord[3] = src_vbuf[i]->tex_coord[3];
-
-        vertices[i].r = vertices[i].g = vertices[i].b =
-            (8192.0f - src_vbuf[i]->g) * multiplier;
-
-        Output_ApplyTint(&vertices[i].r, &vertices[i].g, &vertices[i].b);
-    }
-
-    if (m_TextureMap[tpage] != GFX_NO_TEXTURE) {
-        S_Output_EnableTextureMode();
-        S_Output_SelectTexture(tpage);
-    } else {
-        S_Output_DisableTextureMode();
-    }
-
-    GFX_3D_Renderer_RenderPrimFan(m_Renderer3D, vertices, vertex_count);
-}
-
 void S_Output_DownloadTextures(int32_t pages)
 {
     if (pages > GFX_MAX_TEXTURES) {
@@ -1020,8 +741,6 @@ void S_Output_DownloadTextures(int32_t pages)
     }
 
     m_SelectedTexture = -1;
-
-    m_EnvMapTexture = GFX_3D_Renderer_RegisterEnvironmentMap(m_Renderer3D);
 }
 
 void S_Output_DrawScreenFrame(

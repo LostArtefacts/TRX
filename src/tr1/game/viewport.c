@@ -1,5 +1,6 @@
 #include "game/viewport.h"
 
+#include "game/output.h"
 #include "game/screen.h"
 #include "global/const.h"
 #include "global/vars.h"
@@ -87,4 +88,5 @@ int16_t Viewport_GetUserFOV(void)
 void Viewport_SetFOV(int16_t fov)
 {
     m_CurrentFOV = fov;
+    Output_ObserveFOVChange();
 }

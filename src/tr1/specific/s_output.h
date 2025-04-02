@@ -10,7 +10,6 @@
 bool S_Output_Init(void);
 void S_Output_Shutdown(void);
 
-void S_Output_EnableTextureMode(void);
 void S_Output_DisableTextureMode(void);
 void S_Output_SetBlendingMode(GFX_BLEND_MODE blend_mode);
 void S_Output_EnableDepthWrites(void);
@@ -28,23 +27,10 @@ void S_Output_SetWindowSize(int width, int height);
 void S_Output_ApplyRenderSettings(void);
 
 void S_Output_DownloadTextures(int32_t pages);
-void S_Output_SelectTexture(int32_t texture_num);
 void S_Output_DownloadBackdropSurface(const IMAGE *image);
-void S_Output_DrawBackdropSurface(void);
 
 void S_Output_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGBA_8888 color);
-void S_Output_DrawEnvMapTriangle(
-    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3);
-void S_Output_DrawEnvMapQuad(
-    const PHD_VBUF *vn1, const PHD_VBUF *vn2, const PHD_VBUF *vn3,
-    const PHD_VBUF *vn4);
-void S_Output_DrawTexturedTriangle(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, int16_t tpage,
-    uint16_t textype);
-void S_Output_DrawTexturedQuad(
-    PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, PHD_VBUF *vn4, int16_t tpage,
-    uint16_t textype);
 void S_Output_Draw3DLine(
     const PHD_VBUF *vn1, const PHD_VBUF *vn2, const RGBA_8888 color);
 void S_Output_DrawSprite(

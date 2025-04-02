@@ -16,6 +16,7 @@ void Output_SetWindowSize(int width, int height);
 void Output_ApplyRenderSettings(void);
 void Output_ObserveLevelLoad(void);
 void Output_ObserveLevelUnload(void);
+void Output_ObserveFOVChange(void);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);

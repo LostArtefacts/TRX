@@ -4,6 +4,7 @@
 #include "game/lara/draw.h"
 #include "game/lara/hair.h"
 #include "game/output.h"
+#include "game/output/textures.h"
 #include "game/overlay.h"
 #include "game/room_draw.h"
 #include "game/viewport.h"
@@ -24,7 +25,7 @@ void Game_Draw(bool draw_overlay)
         Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
 
         if (g_Config.visuals.enable_reflections) {
-            Output_FillEnvironmentMap();
+            Output_Textures_UpdateEnvironmentMap();
         }
 
         if (Room_Get(g_LaraItem->room_num)->flags & RF_UNDERWATER) {

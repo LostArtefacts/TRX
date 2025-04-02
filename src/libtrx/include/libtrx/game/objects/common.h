@@ -24,6 +24,7 @@ void Object_StoreMesh(OBJECT_MESH *mesh);
 
 int32_t Object_GetMeshCount(void);
 OBJECT_MESH *Object_FindMesh(int32_t data_offset);
+int32_t Object_GetMeshIndex(const OBJECT_MESH *mesh);
 int32_t Object_GetMeshOffset(const OBJECT_MESH *mesh);
 void Object_SetMeshOffset(OBJECT_MESH *mesh, int32_t data_offset);
 

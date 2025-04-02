@@ -23,3 +23,8 @@ OUTPUT_SHADER *Output_Meshes_GetShader(void)
 {
     return m_Shader;
 }
+
+void Output_Meshes_UploadProjectionMatrix(void)
+{
+    Output_Shader_UploadProjectionMatrix(m_Shader);
+}

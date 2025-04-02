@@ -14,9 +14,9 @@
 typedef struct {
     // clang-format off
     XYZ_F pos;                // attribute 0
-    int32_t uvw_idx;          // attribute 1
-    float trapezoid_ratio[2]; // attribute 2
-    uint16_t flags;           // attribute 3
+    int32_t uvw_idx;          // attribute 2
+    float trapezoid_ratio[2]; // attribute 3
+    uint16_t flags;           // attribute 4
     // clang-format on
 } M_MESH_VERTEX;
 
@@ -213,25 +213,29 @@ static void M_PrepareBuffers(void)
         0, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_VERTEX),
         (void *)(intptr_t)offsetof(M_MESH_VERTEX, pos));
 
-    glEnableVertexAttribArray(1);
-    glVertexAttribIPointer(
-        1, 1, GL_UNSIGNED_INT, sizeof(M_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(M_MESH_VERTEX, uvw_idx));
+    // ignore attribute 1 (normals) - rooms never have reflective faces
 
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(
-        2, 2, GL_FLOAT, GL_FALSE, sizeof(M_MESH_VERTEX),
-        (void *)(intptr_t)offsetof(M_MESH_VERTEX, trapezoid_ratio));
+    glVertexAttribIPointer(
+        2, 1, GL_UNSIGNED_INT, sizeof(M_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(M_MESH_VERTEX, uvw_idx));
 
     glEnableVertexAttribArray(3);
+    glVertexAttribPointer(
+        3, 2, GL_FLOAT, GL_FALSE, sizeof(M_MESH_VERTEX),
+        (void *)(intptr_t)offsetof(M_MESH_VERTEX, trapezoid_ratio));
+
+    glEnableVertexAttribArray(4);
     glVertexAttribIPointer(
-        3, 1, GL_UNSIGNED_SHORT, sizeof(M_MESH_VERTEX),
+        4, 1, GL_UNSIGNED_SHORT, sizeof(M_MESH_VERTEX),
         (void *)(intptr_t)offsetof(M_MESH_VERTEX, flags));
 
+    // ignore attribute 5 (mesh color) - rooms only ever use textured faces
+
     glBindBuffer(GL_ARRAY_BUFFER, m_Priv.shade_vbo);
-    glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(6);
     glVertexAttribPointer(
-        4, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
+        6, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
 
     M_UpdateVertices();
 }
@@ -308,6 +312,8 @@ void Output_Rooms_RenderRoom(
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_BUFFER, Output_Textures_GetObjectUVWsTexture());
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
     GFX_GL_CheckError();
 
     if (Output_GetWibbleEffect()) {
