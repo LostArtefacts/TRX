@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRX_ConfigToolLib", "TRX_ConfigToolLib\TRX_ConfigToolLib.csproj", "{27F08E8C-2910-4682-B8BC-96ED4C1ECE54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR1X_ConfigTool", "TR1X_ConfigTool\TR1X_ConfigTool.csproj", "{A19A8ED1-D703-4954-B0F2-8E651453EB3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR2X_ConfigTool", "TR2X_ConfigTool\TR2X_ConfigTool.csproj", "{9FAE4BC6-08E0-46AB-9E29-6FED79D60733}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{27F08E8C-2910-4682-B8BC-96ED4C1ECE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27F08E8C-2910-4682-B8BC-96ED4C1ECE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27F08E8C-2910-4682-B8BC-96ED4C1ECE54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A19A8ED1-D703-4954-B0F2-8E651453EB3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A19A8ED1-D703-4954-B0F2-8E651453EB3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A19A8ED1-D703-4954-B0F2-8E651453EB3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A19A8ED1-D703-4954-B0F2-8E651453EB3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FAE4BC6-08E0-46AB-9E29-6FED79D60733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FAE4BC6-08E0-46AB-9E29-6FED79D60733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FAE4BC6-08E0-46AB-9E29-6FED79D60733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FAE4BC6-08E0-46AB-9E29-6FED79D60733}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
