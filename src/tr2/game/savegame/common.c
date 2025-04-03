@@ -9,10 +9,11 @@
 #include <libtrx/memory.h>
 
 static STATS_COMMON *m_DefaultStats = nullptr;
+static RESUME_INFO *m_ResumeInfos = nullptr;
 
 void Savegame_Init(void)
 {
-    g_SaveGame.resume = Memory_Alloc(
+    m_ResumeInfos = Memory_Alloc(
         sizeof(RESUME_INFO)
         * (GF_GetLevelTable(GFLT_MAIN)->count
            + GF_GetLevelTable(GFLT_DEMOS)->count));
@@ -31,7 +32,7 @@ void Savegame_Init(void)
 
 void Savegame_Shutdown(void)
 {
-    Memory_FreePointer(&g_SaveGame.resume);
+    Memory_FreePointer(&m_ResumeInfos);
     Memory_FreePointer(&m_DefaultStats);
 }
 
@@ -60,12 +61,12 @@ bool Savegame_Load(const int32_t slot_idx)
 
 RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 {
-    ASSERT(g_SaveGame.resume != nullptr);
+    ASSERT(m_ResumeInfos != nullptr);
     ASSERT(level != nullptr);
     if (GF_GetLevelTableType(level->type) == GFLT_MAIN) {
-        return &g_SaveGame.resume[level->num];
+        return &m_ResumeInfos[level->num];
     } else if (level->type == GFL_DEMO) {
-        return &g_SaveGame.resume[GF_GetLevelTable(GFLT_MAIN)->count];
+        return &m_ResumeInfos[GF_GetLevelTable(GFLT_MAIN)->count];
     }
     LOG_WARNING(
         "Warning: unable to get resume info for level %d (type=%s)", level->num,

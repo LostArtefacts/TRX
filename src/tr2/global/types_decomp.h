@@ -129,7 +129,6 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    RESUME_INFO *resume;
     int16_t current_level;
     bool bonus_flag;
     uint8_t num_pickup[2];

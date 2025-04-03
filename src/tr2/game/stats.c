@@ -63,7 +63,7 @@ static bool M_SetSecretFlag(uint8_t *const flags, const GAME_OBJECT_ID obj_id)
     return false;
 }
 
-FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
+FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
 {
     FINAL_STATS result = {};
 
@@ -73,16 +73,18 @@ FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type)
         if (level->type != level_type) {
             continue;
         }
-        result.timer += g_SaveGame.resume[i].stats.timer;
-        result.ammo_used += g_SaveGame.resume[i].stats.ammo_used;
-        result.ammo_hits += g_SaveGame.resume[i].stats.ammo_hits;
-        result.kills += g_SaveGame.resume[i].stats.kills;
-        result.distance += g_SaveGame.resume[i].stats.distance;
-        result.medipacks += g_SaveGame.resume[i].stats.medipacks;
 
-        for (int32_t j = 0; j < g_SaveGame.resume[i].stats.max_secret_count;
-             j++) {
-            if (g_SaveGame.resume[i].stats.secret_flags & (1 << j)) {
+        const RESUME_INFO *const info = Savegame_GetCurrentInfo(level);
+        const LEVEL_STATS *const stats = &info->stats;
+        result.timer += stats->timer;
+        result.ammo_used += stats->ammo_used;
+        result.ammo_hits += stats->ammo_hits;
+        result.kills += stats->kills;
+        result.distance += stats->distance;
+        result.medipacks += stats->medipacks;
+
+        for (int32_t j = 0; j < stats->max_secret_count; j++) {
+            if (stats->secret_flags & (1 << j)) {
                 result.found_secrets++;
             }
             result.total_secrets++;
