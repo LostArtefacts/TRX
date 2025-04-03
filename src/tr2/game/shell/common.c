@@ -476,7 +476,7 @@ void Shell_Main(void)
         }
 
         case GF_START_SAVED_GAME: {
-            if (!S_LoadGame(gf_cmd.param)) {
+            if (!Savegame_Load(gf_cmd.param)) {
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
             } else {
                 const GF_LEVEL *const level =

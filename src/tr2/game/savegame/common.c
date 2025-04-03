@@ -53,6 +53,11 @@ bool Savegame_Save(const int32_t slot_idx)
     return true;
 }
 
+bool Savegame_Load(const int32_t slot_idx)
+{
+    return S_LoadGame(slot_idx);
+}
+
 RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 {
     ASSERT(g_SaveGame.resume != nullptr);

@@ -192,7 +192,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             // first passport page: load game.
             if (apply_changes) {
                 Inv_RemoveAllItems();
-                if (!S_LoadGame(g_Inv_ExtraData[1])) {
+                if (!Savegame_Load(g_Inv_ExtraData[1])) {
                     return (GF_COMMAND) {
                         .action = GF_EXIT_TO_TITLE,
                     };
@@ -243,8 +243,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 } else {
                     if (apply_changes) {
                         Music_Unpause();
-                        CreateSaveGameInfo();
-                        S_SaveGame(g_Inv_ExtraData[1]);
+                        Savegame_Save(g_Inv_ExtraData[1]);
                     }
                     return (GF_COMMAND) { .action = GF_NOOP };
                 }
