@@ -16,7 +16,6 @@
 #include "global/vars.h"
 
 #include <libtrx/debug.h>
-#include <libtrx/filesystem.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/objects/traps/movable_block.h>
 
@@ -880,7 +879,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 void CreateSaveGameInfo(void)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    g_SaveGame.current_level = current_level->num;
     Savegame_PersistGameToCurrentInfo(current_level);
 
     // TODO: refactor me!
@@ -993,80 +991,21 @@ void ExtractSaveGameInfo(void)
     M_ReadFlares();
 }
 
-void GetSavedGamesList(REQUEST_INFO *const req)
+void S_SaveGame(MYFILE *const fp)
 {
-    Requester_SetSize(req, 10, -32);
-    if (req->selected >= req->visible_count) {
-        req->line_offset = req->selected - req->visible_count + 1;
-    }
-    memcpy(g_RequesterFlags1, m_ReqFlags1, sizeof(m_ReqFlags1));
-    memcpy(g_RequesterFlags2, m_ReqFlags2, sizeof(m_ReqFlags2));
-}
+    CreateSaveGameInfo();
 
-bool S_FrontEndCheck(void)
-{
-    Requester_Init(&g_LoadGameRequester);
-
-    g_SavedGames = 0;
-    for (int32_t i = 0; i < MAX_REQUESTER_ITEMS; i++) {
-        char file_name[80];
-        sprintf(file_name, g_GameFlow.savegame_fmt_legacy, i);
-
-        if (!File_Exists(file_name)) {
-            Requester_AddItem(
-                &g_LoadGameRequester, GS(MISC_EMPTY_SLOT), 0, 0, 0);
-            g_SavedLevels[i] = false;
-        } else {
-            MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
-            char level_title[80];
-            File_ReadData(fp, level_title, 75);
-            const int32_t save_num = File_ReadS32(fp);
-            File_Close(fp);
-
-            char save_num_text[16];
-            sprintf(save_num_text, "%d", save_num);
-
-            Requester_AddItem(
-                &g_LoadGameRequester, level_title, REQ_ALIGN_LEFT,
-                save_num_text, REQ_ALIGN_RIGHT);
-
-            if (save_num > g_SaveCounter) {
-                g_SaveCounter = save_num;
-                g_LoadGameRequester.selected = i;
-            }
-            g_SavedLevels[i] = true;
-            g_SavedGames++;
-        }
-    }
-
-    memcpy(m_ReqFlags1, g_RequesterFlags1, sizeof(m_ReqFlags1));
-    memcpy(m_ReqFlags2, g_RequesterFlags2, sizeof(m_ReqFlags2));
-    g_SaveCounter++;
-    return true;
-}
-
-bool S_SaveGame(const int32_t slot_num)
-{
-    char file_name[80];
-    sprintf(file_name, g_GameFlow.savegame_fmt_legacy, slot_num);
-
-    MYFILE *const fp = File_Open(file_name, FILE_OPEN_WRITE);
-    if (fp == nullptr) {
-        return false;
-    }
-
-    const GF_LEVEL *const current_level =
-        GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
+    const GF_LEVEL *const current_level = GF_GetCurrentLevel();
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(current_level);
 
-    memset(file_name, 0, 75);
-    snprintf(file_name, 75, "%s", current_level->title);
-    File_WriteData(fp, file_name, 75);
-    File_WriteS32(fp, g_SaveCounter);
+    char title[75];
+    snprintf(title, 75, "%s", current_level->title);
+    File_WriteData(fp, title, 75);
+    File_WriteS32(fp, Savegame_GetCounter());
     M_WriteResumeInfos(fp);
     M_WriteStats(fp, &current_info->stats);
-    File_WriteS16(fp, g_SaveGame.current_level);
+    File_WriteS16(fp, current_level->num);
     File_WriteU8(fp, g_SaveGame.bonus_flag);
     for (int32_t i = 0; i < 2; i++) {
         File_WriteU8(fp, g_SaveGame.num_pickup[i]);
@@ -1079,41 +1018,18 @@ bool S_SaveGame(const int32_t slot_num)
     }
     File_WriteS16(fp, 0);
     File_WriteData(fp, g_SaveGame.buffer, MAX_SG_BUFFER_SIZE);
-    File_Close(fp);
-
-    char save_num_text[16];
-    sprintf(save_num_text, "%d", g_SaveCounter);
-    Requester_ChangeItem(
-        &g_LoadGameRequester, slot_num, file_name, REQ_ALIGN_LEFT,
-        save_num_text, REQ_ALIGN_RIGHT);
-
-    m_ReqFlags1[slot_num] = g_RequesterFlags1[slot_num];
-    m_ReqFlags2[slot_num] = g_RequesterFlags2[slot_num];
-    g_SavedLevels[slot_num] = true;
-    g_SaveCounter++;
-    g_SavedGames++;
-
-    return true;
 }
 
-bool S_LoadGame(const int32_t slot_num)
+void S_LoadGame(MYFILE *const fp)
 {
-    char file_name[80];
-    sprintf(file_name, g_GameFlow.savegame_fmt_legacy, slot_num);
-
-    MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
-    if (fp == nullptr) {
-        return false;
-    }
     File_Skip(fp, 75);
     File_Skip(fp, 4);
     M_ReadResumeInfos(fp);
     {
         LEVEL_STATS current_stats = {};
         M_ReadStats(fp, &current_stats);
-        g_SaveGame.current_level = File_ReadS16(fp);
-        const GF_LEVEL *const level =
-            GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
+        const int16_t current_level = File_ReadS16(fp);
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, current_level);
         RESUME_INFO *const current_info = Savegame_GetCurrentInfo(level);
         current_info->stats = current_stats;
     }
@@ -1130,6 +1046,6 @@ bool S_LoadGame(const int32_t slot_num)
     }
     File_ReadS16(fp);
     File_ReadData(fp, g_SaveGame.buffer, MAX_SG_BUFFER_SIZE);
-    File_Close(fp);
-    return true;
+
+    ExtractSaveGameInfo();
 }

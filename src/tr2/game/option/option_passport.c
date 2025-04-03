@@ -55,7 +55,7 @@ static void M_SetPage(
 
 static void M_DeterminePages(void)
 {
-    const bool has_saves = g_SavedGames != 0;
+    const bool has_saves = Savegame_GetTotalCount() != 0;
 
     for (int32_t i = 0; i < 3; i++) {
         m_State.pages[i].available = false;
@@ -186,7 +186,7 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
         }
 
         if (!g_LoadGameRequester.ready) {
-            GetSavedGamesList(&g_LoadGameRequester);
+            Savegame_FillAvailableSaves(&g_LoadGameRequester);
             Requester_SetHeading(
                 &g_LoadGameRequester, GS(PASSPORT_LOAD_GAME), 0, nullptr, 0);
             Requester_SetSize(&g_LoadGameRequester, 10, -32);
@@ -194,7 +194,7 @@ static void M_ShowPage(const INVENTORY_ITEM *const inv_item)
         }
         m_State.selection =
             Requester_Display(&g_LoadGameRequester, false, true) - 1;
-        if (m_State.selection >= 0 && !g_SavedLevels[m_State.selection]) {
+        if (m_State.selection >= 0 && Savegame_IsSlotFree(m_State.selection)) {
             m_State.selection = -1;
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};

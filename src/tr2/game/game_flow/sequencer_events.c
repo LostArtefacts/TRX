@@ -112,7 +112,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
     switch (seq_ctx) {
     case GFSC_SAVED:
-        ExtractSaveGameInfo();
+        const int16_t slot_num = Savegame_GetBoundSlot();
+        if (!Savegame_Load(slot_num)) {
+            LOG_ERROR("Failed to load save file!");
+            Game_SetCurrentLevel(nullptr);
+            GF_SetCurrentLevel(nullptr);
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
         break;
 
     default:
@@ -169,7 +175,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 
     if (next_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);
-        g_SaveGame.current_level = next_level->num;
     }
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };

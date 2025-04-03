@@ -262,13 +262,10 @@ bool g_GF_RemoveWeapons = false;
 int32_t g_GF_LaraStartAnim;
 int32_t g_GF_ScriptVersion;
 
-int32_t g_SavedGames;
 char g_ValidLevelStrings1[MAX_LEVELS][50];
 char g_ValidLevelStrings2[MAX_LEVELS][50];
 uint32_t g_RequesterFlags1[MAX_REQUESTER_ITEMS];
 uint32_t g_RequesterFlags2[MAX_REQUESTER_ITEMS];
-int32_t g_SaveCounter;
-int16_t g_SavedLevels[MAX_LEVELS] = { -1, 0 };
 
 XYZ_32 g_InteractPosition = { .x = 0, .y = 0, .z = 0 };
 bool g_DetonateAllMines = false;
