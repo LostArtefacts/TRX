@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TRX_ConfigToolLib;
+namespace TRX_ConfigToolLib.Utils;
 
 public abstract class BaseNotifyPropertyChanged : INotifyPropertyChanged
 {

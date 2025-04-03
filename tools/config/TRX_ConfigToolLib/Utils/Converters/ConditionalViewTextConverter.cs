@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
-using TRX_ConfigToolLib.Models;
+using TRX_ConfigToolLib.Models.Lang;
 
-namespace TRX_ConfigToolLib.Utils;
+namespace TRX_ConfigToolLib.Utils.Converters;
 
 public class ConditionalViewTextConverter : ConditionalMarkupConverter
 {

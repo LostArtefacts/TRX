@@ -1,6 +1,7 @@
-﻿using TRX_ConfigToolLib.Utils;
+﻿using TRX_ConfigToolLib.Models.Lang;
+using TRX_ConfigToolLib.Utils;
 
-namespace TRX_ConfigToolLib.Models;
+namespace TRX_ConfigToolLib.Models.Specification;
 
 public abstract class BaseProperty : BaseNotifyPropertyChanged
 {

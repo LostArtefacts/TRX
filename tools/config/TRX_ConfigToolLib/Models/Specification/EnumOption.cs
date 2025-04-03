@@ -1,4 +1,6 @@
-﻿namespace TRX_ConfigToolLib.Models;
+﻿using TRX_ConfigToolLib.Models.Lang;
+
+namespace TRX_ConfigToolLib.Models.Specification;
 
 public class EnumOption
 {

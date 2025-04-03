@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TRX_ConfigToolLib.Utils;
+using TRX_ConfigToolLib.Utils.Json;
 
-namespace TRX_ConfigToolLib.Models;
+namespace TRX_ConfigToolLib.Models.Specification;
 
 public class Specification
 {

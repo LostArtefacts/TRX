@@ -1,4 +1,4 @@
-﻿namespace TRX_ConfigToolLib.Models;
+﻿namespace TRX_ConfigToolLib.Models.Specification;
 
 public enum DataType
 {

@@ -1,4 +1,5 @@
-﻿using TRX_ConfigToolLib.Utils;
+﻿using TRX_ConfigToolLib.Models.Specification;
+using TRX_ConfigToolLib.Utils;
 
 namespace TRX_ConfigToolLib.Models;
 
