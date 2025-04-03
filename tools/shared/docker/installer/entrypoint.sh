@@ -14,5 +14,4 @@ export DOTNET_CLI_HOME="/tmp/DOTNET_CLI_HOME"
 
 shopt -s globstar
 rm -rf **/bin **/obj **/out/*
-dotnet restore
 dotnet publish TR${TR_VERSION}X_Installer -c Release -o out

@@ -65,7 +65,7 @@ class PackageOptions(BaseOptions):
                 ),
                 (
                     Path(
-                        f"/app/tools/tr{self.tr_version}/config/out/TR{self.tr_version}X_ConfigTool.exe"
+                        f"/app/tools/config/out/TR{self.tr_version}X_ConfigTool.exe"
                     ),
                     f"TR{self.tr_version}X_ConfigTool.exe",
                 ),
