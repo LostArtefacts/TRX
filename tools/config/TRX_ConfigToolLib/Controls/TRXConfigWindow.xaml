@@ -5,8 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="clr-namespace:TRX_ConfigToolLib.Controls"
+    xmlns:models="clr-namespace:TRX_ConfigToolLib.Models"
     xmlns:utils="clr-namespace:TRX_ConfigToolLib.Utils"
+    xmlns:converters="clr-namespace:TRX_ConfigToolLib.Utils.Converters"
     mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=models:MainWindowViewModel}"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="CenterScreen"
     Loaded="Window_Loaded"
@@ -22,15 +25,15 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/TRX_ConfigToolLib;component/Resources/styles.xaml" />
                 <ResourceDictionary>
-                    <utils:BoolToVisibilityConverter
+                    <converters:BoolToVisibilityConverter
                         x:Key="BoolToCollapsedConverter"
                         FalseValue="Collapsed"
                         TrueValue="Visible"/>
-                    <utils:BoolToVisibilityConverter
+                    <converters:BoolToVisibilityConverter
                         x:Key="InverseBoolToCollapsedConverter"
                         FalseValue="Visible"
                         TrueValue="Collapsed"/>
-                    <utils:BoolToVisibilityConverter
+                    <converters:BoolToVisibilityConverter
                         x:Key="BoolToHiddenConverter"
                         FalseValue="Hidden"
                         TrueValue="Visible"/>
@@ -126,7 +129,7 @@
                     Grid.Column="1"
                     BorderBrush="#666"
                     BorderThickness="1"
-                    Background="{Binding SearchFailStatus, Converter={utils:ConditionalMarkupConverter TrueValue='#FFC7CE', FalseValue='White'}}">
+                    Background="{Binding SearchFailStatus, Converter={converters:ConditionalMarkupConverter TrueValue='#FFC7CE', FalseValue='White'}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="300"/>
@@ -201,8 +204,8 @@
                 Visibility="{Binding IsEditorActive, Converter={StaticResource BoolToHiddenConverter}}"/>
             <StatusBarItem>
                 <TextBlock
-                    Text="{Binding IsEditorDirty, Converter={utils:ConditionalViewTextConverter TrueValue='label_unsaved', FalseValue='label_saved'}}"
-                    Foreground="{Binding IsEditorDirty, Converter={utils:ConditionalMarkupConverter TrueValue='DarkRed', FalseValue='DarkGreen'}}"
+                    Text="{Binding IsEditorDirty, Converter={converters:ConditionalViewTextConverter TrueValue='label_unsaved', FalseValue='label_saved'}}"
+                    Foreground="{Binding IsEditorDirty, Converter={converters:ConditionalMarkupConverter TrueValue='DarkRed', FalseValue='DarkGreen'}}"
                     FontWeight="Bold"
                     Visibility="{Binding IsEditorActive, Converter={StaticResource BoolToHiddenConverter}}"/>
             </StatusBarItem>

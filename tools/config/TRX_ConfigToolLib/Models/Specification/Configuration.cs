@@ -2,8 +2,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using TRX_ConfigToolLib.Utils;
+using TRX_ConfigToolLib.Utils.Json;
 
-namespace TRX_ConfigToolLib.Models;
+namespace TRX_ConfigToolLib.Models.Specification;
 
 public class Configuration
 {

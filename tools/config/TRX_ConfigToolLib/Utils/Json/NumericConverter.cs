@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Globalization;
 
-namespace TRX_ConfigToolLib.Utils;
+namespace TRX_ConfigToolLib.Utils.Json;
 
 public class NumericConverter : JsonConverter<decimal>
 {

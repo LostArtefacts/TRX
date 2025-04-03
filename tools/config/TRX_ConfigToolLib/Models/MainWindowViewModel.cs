@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using TRX_ConfigToolLib.Controls;
+using TRX_ConfigToolLib.Models.Specification;
 using TRX_ConfigToolLib.Utils;
 
 namespace TRX_ConfigToolLib.Models;

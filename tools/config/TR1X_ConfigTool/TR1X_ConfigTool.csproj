@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <UseWpf>true</UseWpf>
-    <UseWindowsForms>true</UseWindowsForms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AssemblyName>TR1X_ConfigTool</AssemblyName>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
@@ -23,10 +22,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="out\**" />
-    <EmbeddedResource Remove="out\**" />
-    <None Remove="out\**" />
-    <Page Remove="out\**" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <ProjectReference Include="..\TRX_ConfigToolLib\TRX_ConfigToolLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,10 +62,5 @@
     <EmbeddedResource Include="Resources\Lang\fr.json" />
     <EmbeddedResource Include="Resources\Lang\it.json" />
     <EmbeddedResource Include="Resources\specification.json" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TRX_ConfigToolLib\TRX_ConfigToolLib.csproj" />
   </ItemGroup>
 </Project>
