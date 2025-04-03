@@ -439,7 +439,9 @@ void Shell_Main(void)
 
     Savegame_Init();
     Savegame_InitCurrentInfo();
-    S_FrontEndCheck();
+    Savegame_ScanSavedGames();
+    Savegame_FillAvailableSaves(&g_LoadGameRequester);
+    Savegame_HighlightNewestSlot();
 
     if (m_Args.level_to_play != nullptr) {
         Memory_Free(g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
@@ -476,14 +478,15 @@ void Shell_Main(void)
         }
 
         case GF_START_SAVED_GAME: {
-            if (!Savegame_Load(gf_cmd.param)) {
+            const int16_t slot_num = gf_cmd.param;
+            const int16_t level_num = Savegame_GetLevelNumber(slot_num);
+            if (level_num < 0) {
+                LOG_ERROR("Corrupt save file!");
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
             } else {
-                const GF_LEVEL *const level =
-                    GF_GetLevel(GFLT_MAIN, g_SaveGame.current_level);
-                if (level != nullptr) {
-                    gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
-                }
+                Savegame_BindSlot(slot_num);
+                const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
+                gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
             }
             break;
         }

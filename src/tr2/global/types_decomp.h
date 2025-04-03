@@ -129,7 +129,10 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    int16_t current_level;
+    char *full_path;
+    int32_t counter;
+    int32_t level_num;
+    char *level_title;
     bool bonus_flag;
     uint8_t num_pickup[2];
     uint8_t num_puzzle[4];
