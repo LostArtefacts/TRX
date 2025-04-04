@@ -67,8 +67,6 @@ void Output_DrawSprite(
 void Output_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprnum, int16_t shade, uint16_t flags, int32_t page);
-void Output_DrawSpriteRel(
-    int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade);
 void Output_DrawUISprite(
     int32_t x, int32_t y, int32_t scale, int16_t sprnum, int16_t shade);
 

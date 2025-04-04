@@ -81,7 +81,6 @@ static void M_DrawItem(
 
     OBJECT *const obj = Object_Get(inv_item->object_id);
     if (obj->mesh_count < 0) {
-        Output_DrawSpriteRel(0, 0, 0, obj->mesh_idx, 4096);
         return;
     }
 
