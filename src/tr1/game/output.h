@@ -41,9 +41,7 @@ void Output_DrawRoomMesh(ROOM *mesh);
 void Output_DrawRoomPortals(const ROOM *room);
 void Output_DrawRoomTriggers(const ROOM *room);
 void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
-void Output_DrawLightningSegment(
-    int32_t x1, int32_t y1, int32_t z1, int32_t x2, int32_t y2, int32_t z2,
-    int32_t width);
+void Output_DrawLightningSegment(XYZ_32 pos_0, XYZ_32 pos_1, int32_t thickness);
 void Output_Draw3DLine(XYZ_32 pos_0, XYZ_32 pos_1, RGBA_8888 color);
 void Output_FlushTranslucentObjects(void);
 

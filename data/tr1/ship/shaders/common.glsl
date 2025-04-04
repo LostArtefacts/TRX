@@ -3,6 +3,9 @@
 #define MAX_SHADE 0x1FFF
 
 #define VERT_NO_CAUSTICS 0x01
+#define VERT_FLAT_SHADED 0x02
+#define VERT_REFLECTIVE  0x04
+#define VERT_NO_LIGHTING 0x08
 
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE 2

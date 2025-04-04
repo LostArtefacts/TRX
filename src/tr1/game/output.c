@@ -33,17 +33,10 @@
      >= ((c).ys - (b).ys) * ((a).xs - (b).xs))
 
 typedef struct {
-    struct {
-        XYZ_32 pos;
-        int32_t thickness;
-    } edges[2];
+    XYZ_32 pos_0;
+    XYZ_32 pos_1;
+    int32_t thickness;
 } LIGHTNING;
-
-typedef struct {
-    int16_t poly_count;
-    int16_t vertex_count;
-    XYZ_16 vertices[32];
-} SHADOW_INFO;
 
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
@@ -107,7 +100,6 @@ static int32_t M_VisibleZClip(
 static int32_t M_ZedClipper(
     int32_t vertex_count, const PHD_VBUF *vns[], GFX_3D_VERTEX *vertices);
 static uint16_t M_CalcVertex(PHD_VBUF *vbuf, XYZ_16 pos);
-static bool M_CalcObjectVertices(const XYZ_16 *vertices, int16_t count);
 static void M_Flush(void);
 static void M_FlipScreen(void);
 static void M_SetBlendingMode(GFX_BLEND_MODE blend_mode);
@@ -124,11 +116,7 @@ static void M_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGBA_8888 color);
 static void M_DrawSphere(XYZ_32 pos, int32_t radius);
 static void M_Draw3DFrame(const XYZ_32 vert[4], RGBA_8888 color);
-static void M_DrawShadow(
-    const PHD_VBUF *vbufs, int32_t clip, int32_t vertex_count);
-static void M_DrawLightningSegment(
-    int32_t x1, int32_t y1, int32_t z1, int32_t thickness1, int32_t x2,
-    int32_t y2, int32_t z2, int32_t thickness2);
+static void M_DrawLightningSegment(const LIGHTNING *const lightning);
 static void M_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z, int32_t sprnum,
     int32_t shade);
@@ -399,17 +387,6 @@ static uint16_t M_CalcVertex(PHD_VBUF *const vbuf, const XYZ_16 pos)
     return clip_flags;
 }
 
-static bool M_CalcObjectVertices(
-    const XYZ_16 *const vertices, const int16_t count)
-{
-    uint16_t total_clip = 0xFFFF;
-    for (int32_t i = 0; i < count; i++) {
-        total_clip &= M_CalcVertex(&m_VBuf[i], vertices[i]);
-    }
-
-    return total_clip == 0;
-}
-
 static void M_Flush(void)
 {
     GFX_3D_Renderer_Flush(m_Renderer3D);
@@ -594,37 +571,28 @@ static void M_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
     Output_Draw3DLine(vert[3], vert[0], color);
 }
 
-static void M_DrawShadow(
-    const PHD_VBUF *const vbufs, const int32_t clip, const int32_t vertex_count)
-{
-    GFX_3D_VERTEX vertices[vertex_count];
-
-    for (int32_t i = 0; i < vertex_count; i++) {
-        GFX_3D_VERTEX *const vertex = &vertices[i];
-        const PHD_VBUF *const vbuf = &vbufs[i];
-        vertex->x = vbuf->xs;
-        vertex->y = vbuf->ys;
-        vertex->z = MAP_DEPTH(vbuf->zv - (12 << W2V_SHIFT));
-        vertex->b = 0.0f;
-        vertex->g = 0.0f;
-        vertex->r = 0.0f;
-        vertex->a = 128.0f;
-    }
-
-    M_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
-    M_DrawTriangleFan(vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-}
-
-static void M_DrawLightningSegment(
-    int32_t x1, int32_t y1, int32_t z1, int32_t thickness1, int32_t x2,
-    int32_t y2, int32_t z2, int32_t thickness2)
+static void M_DrawLightningSegment(const LIGHTNING *const lightning)
 {
     const int32_t vertex_count = 8;
     const RGB_F blue = { 0.0f, 0.0f, 255.0f };
     const RGB_F white = { 255.0f, 255.0f, 255.0f };
     GFX_3D_VERTEX vertices[vertex_count];
+
+    const XYZ_32 wp0 = lightning->pos_0;
+    const XYZ_32 wp1 = lightning->pos_1;
+    if (wp0.z < Output_GetNearZ() || wp0.z > Output_GetFarZ()
+        || wp1.z < Output_GetNearZ() || wp1.z > Output_GetFarZ()) {
+        return;
+    }
+
+    const int32_t vcx = Viewport_GetCenterX();
+    const int32_t vcy = Viewport_GetCenterY();
+    const float zp0 = wp0.z / g_PhdPersp;
+    const float zp1 = wp1.z / g_PhdPersp;
+    const XYZ_32 p0 = { vcx + wp0.x / zp0, vcy + wp0.y / zp0, wp0.z };
+    const XYZ_32 p1 = { vcx + wp1.x / zp1, vcy + wp1.y / zp1, wp1.z };
+    const int32_t t1 = (lightning->thickness << W2V_SHIFT) / zp0;
+    const int32_t t2 = (lightning->thickness << W2V_SHIFT) / zp1;
 
 #define SET(vtx_idx, x_, y_, z_, color)                                        \
     vertices[vtx_idx].x = x_;                                                  \
@@ -635,14 +603,15 @@ static void M_DrawLightningSegment(
     vertices[vtx_idx].b = color.b;                                             \
     vertices[vtx_idx].a = 128.0f;
     // clang-format off
-    SET(0, x1,                  y1, z1, blue);
-    SET(1, x1 + thickness1 / 2, y1, z1, white);
-    SET(2, x2 + thickness2 / 2, y2, z2, white);
-    SET(3, x2,                  y2, z2, blue);
-    SET(4, x1 + thickness1 / 2, y1, z1, white);
-    SET(5, x1 + thickness1,     y1, z1, blue);
-    SET(6, x2 + thickness2,     y2, z2, blue);
-    SET(7, x2 + thickness2 / 2, y2, z2, white);
+    LOG_INFO("%d %d %d, %d %d %d, %d", p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, t1);
+    SET(0, p0.x,          p0.y, p0.z, blue);
+    SET(1, p0.x + t1 / 2, p0.y, p0.z, white);
+    SET(2, p1.x + t2 / 2, p1.y, p1.z, white);
+    SET(3, p1.x,          p1.y, p1.z, blue);
+    SET(4, p0.x + t1 / 2, p0.y, p0.z, white);
+    SET(5, p0.x + t1,     p0.y, p0.z, blue);
+    SET(6, p1.x + t2,     p1.y, p1.z, blue);
+    SET(7, p1.x + t2 / 2, p1.y, p1.z, white);
     // clang-format on
 #undef SET
 
@@ -812,15 +781,13 @@ void Output_ObserveFOVChange(void)
 
 void Output_FlushTranslucentObjects(void)
 {
+    Output_RememberState();
     // draw transparent lightnings as last in the 3D geometry pipeline
     for (int32_t i = 0; i < m_LightningCount; i++) {
-        const LIGHTNING *const lightning = &m_LightningTable[i];
-        M_DrawLightningSegment(
-            lightning->edges[0].pos.x, lightning->edges[0].pos.y,
-            lightning->edges[0].pos.z, lightning->edges[0].thickness,
-            lightning->edges[1].pos.x, lightning->edges[1].pos.y,
-            lightning->edges[1].pos.z, lightning->edges[1].thickness);
+        M_DrawLightningSegment(&m_LightningTable[i]);
     }
+    Output_Meshes_Flush();
+    Output_RestoreState();
 }
 
 void Output_BeginScene(void)
@@ -1011,53 +978,45 @@ void Output_DrawShadow(
         return;
     }
 
-    SHADOW_INFO shadow = {};
-    shadow.vertex_count = g_Config.visuals.enable_round_shadow ? 32 : 8;
-
-    int32_t x0 = bounds->min.x;
-    int32_t x1 = bounds->max.x;
-    int32_t z0 = bounds->min.z;
-    int32_t z1 = bounds->max.z;
-
-    int32_t x_mid = (x0 + x1) / 2;
-    int32_t z_mid = (z0 + z1) / 2;
-
-    int32_t x_add = (x1 - x0) * size / 1024;
-    int32_t z_add = (z1 - z0) * size / 1024;
-
-    for (int32_t i = 0; i < shadow.vertex_count; i++) {
-        int32_t angle = (DEG_180 + i * DEG_360) / shadow.vertex_count;
-        shadow.vertices[i].x = x_mid + (x_add * 2) * Math_Sin(angle) / DEG_90;
-        shadow.vertices[i].z = z_mid + (z_add * 2) * Math_Cos(angle) / DEG_90;
-        shadow.vertices[i].y = 0;
-    }
+    const int32_t vertex_count = g_Config.visuals.enable_round_shadow ? 32 : 8;
+    const int32_t x0 = bounds->min.x;
+    const int32_t x1 = bounds->max.x;
+    const int32_t z0 = bounds->min.z;
+    const int32_t z1 = bounds->max.z;
+    const int32_t x_mid = (x0 + x1) / 2;
+    const int32_t z_mid = (z0 + z1) / 2;
+    const int32_t x_add = (x1 - x0) * size / 1024;
+    const int32_t z_add = (z1 - z0) * size / 1024;
 
     Matrix_Push();
     Matrix_TranslateAbs(
         item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
     Matrix_RotY(item->rot.y);
 
-    if (M_CalcObjectVertices(shadow.vertices, shadow.vertex_count)) {
-        int16_t clip_and = 1;
-        int16_t clip_positive = 1;
-        int16_t clip_or = 0;
-        for (int32_t i = 0; i < shadow.vertex_count; i++) {
-            clip_and &= m_VBuf[i].clip;
-            clip_positive &= m_VBuf[i].clip >= 0;
-            clip_or |= m_VBuf[i].clip;
+    OUTPUT_MESH_VERTEX vertices[vertex_count * 3];
+    for (int32_t i = 0; i < vertex_count; i++) {
+        for (int32_t j = 0; j < 2; j++) {
+            const int32_t angle = (DEG_180 + (i + j) * DEG_360) / vertex_count;
+            vertices[i * 3 + j].pos.x =
+                x_mid + ((x_add * 2) * Math_Sin(angle) >> W2V_SHIFT);
+            vertices[i * 3 + j].pos.z =
+                z_mid + ((z_add * 2) * Math_Cos(angle) >> W2V_SHIFT);
         }
-        PHD_VBUF *vn1 = &m_VBuf[0];
-        PHD_VBUF *vn2 = &m_VBuf[g_Config.visuals.enable_round_shadow ? 4 : 1];
-        PHD_VBUF *vn3 = &m_VBuf[g_Config.visuals.enable_round_shadow ? 8 : 2];
-
-        int32_t c1 = (vn3->xs - vn2->xs) * (vn1->ys - vn2->ys);
-        int32_t c2 = (vn1->xs - vn2->xs) * (vn3->ys - vn2->ys);
-        bool visible = (int32_t)(c1 - c2) >= 0;
-
-        if (!clip_and && clip_positive && visible) {
-            M_DrawShadow(&m_VBuf[0], clip_or ? 1 : 0, shadow.vertex_count);
+        vertices[i * 3 + 2].pos.x = x_mid;
+        vertices[i * 3 + 2].pos.z = z_mid;
+        for (int32_t j = 0; j < 3; j++) {
+            vertices[i * 3 + j].pos.y = -5;
+            vertices[i * 3 + j].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
+            vertices[i * 3 + j].color = (RGBA_8888) { 0, 0, 0, 128 };
         }
     }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
+    Output_Meshes_AddVertices(vertex_count * 3, vertices);
+    Output_Meshes_Flush();
+    glBlendFunc(GL_ONE, GL_ZERO);
 
     Matrix_Pop();
 }
@@ -1495,34 +1454,15 @@ void Output_UnloadBackground(void)
 }
 
 void Output_DrawLightningSegment(
-    int32_t x1, int32_t y1, const int32_t z1, int32_t x2, int32_t y2,
-    const int32_t z2, const int32_t width)
+    const XYZ_32 pos_0, const XYZ_32 pos_1, const int32_t thickness)
 {
     if (m_LightningCount >= MAX_LIGHTNINGS) {
         return;
     }
-
-    if (z1 < Output_GetNearZ() || z1 > Output_GetFarZ()
-        || z2 < Output_GetNearZ() || z2 > Output_GetFarZ()) {
-        return;
-    }
-
-    x1 = Viewport_GetCenterX() + x1 / (z1 / g_PhdPersp);
-    y1 = Viewport_GetCenterY() + y1 / (z1 / g_PhdPersp);
-    x2 = Viewport_GetCenterX() + x2 / (z2 / g_PhdPersp);
-    y2 = Viewport_GetCenterY() + y2 / (z2 / g_PhdPersp);
-    const int32_t thickness1 = (width << W2V_SHIFT) / (z1 / g_PhdPersp);
-    const int32_t thickness2 = (width << W2V_SHIFT) / (z2 / g_PhdPersp);
-
     LIGHTNING *const lightning = &m_LightningTable[m_LightningCount];
-    lightning->edges[0].pos.x = x1;
-    lightning->edges[0].pos.y = y1;
-    lightning->edges[0].pos.z = z1;
-    lightning->edges[0].thickness = thickness1;
-    lightning->edges[1].pos.x = x2;
-    lightning->edges[1].pos.y = y2;
-    lightning->edges[1].pos.z = z2;
-    lightning->edges[1].thickness = thickness2;
+    lightning->pos_0 = pos_0;
+    lightning->pos_1 = pos_1;
+    lightning->thickness = thickness;
     m_LightningCount++;
 }
 

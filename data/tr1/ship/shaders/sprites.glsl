@@ -1,5 +1,3 @@
-#define NEUTRAL_SHADE 0x1000
-
 #ifdef VERTEX
 
 uniform samplerBuffer uUVW; // texture u, v, layer
