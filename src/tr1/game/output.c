@@ -5,6 +5,7 @@
 #include "game/output/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
+#include "game/output/utils.h"
 #include "game/overlay.h"
 #include "game/screen.h"
 #include "game/shell.h"
@@ -508,16 +509,10 @@ static void M_DrawFlatTriangle(
 
 static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
 {
-    bool wireframe_state = GFX_Context_GetWireframeMode();
-    GFX_Context_SetWireframeMode(true);
-
-    const RGBA_8888 color_black = { 0, 0, 0, 128 };
-    const RGBA_8888 color_white = { 255, 255, 255, 128 };
-    const RGBA_8888 color = wireframe_state ? color_black : color_white;
-
     // More subdivisions means smoother spheres.
     const int32_t subdivisions = 12;
-    PHD_VBUF vertices[(subdivisions + 1) * (subdivisions + 1)];
+    const int32_t position_count = SQUARE(subdivisions + 1);
+    XYZ_F positions[position_count];
     int32_t index = 0;
 
     for (int32_t i = 0; i <= subdivisions; i++) {
@@ -531,36 +526,51 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
             const float cos_phi = cosf(phi);
 
             // Convert spherical coordinates to 3D points.
-            XYZ_16 vertex_pos = {
+            positions[index] = (XYZ_F) {
                 .x = pos.x + radius * cos_phi * sin_theta,
                 .y = pos.y + radius * cos_theta,
                 .z = pos.z + radius * sin_phi * sin_theta,
             };
-
-            M_CalcVertex(&vertices[index], vertex_pos);
-            vertices[index].g = HIGH_LIGHT;
             index++;
         }
     }
 
-    M_DisableTextureMode();
-    M_SetBlendingMode(GFX_BLEND_MODE_NORMAL);
+    const int32_t vertex_count =
+        subdivisions * subdivisions * OUTPUT_QUAD_VERTICES;
+    OUTPUT_MESH_VERTEX vertices[vertex_count];
+    OUTPUT_MESH_VERTEX *out_vertex = vertices;
     for (int32_t i = 0; i < subdivisions; i++) {
         for (int32_t j = 0; j < subdivisions; j++) {
-            const int32_t index_0 = i * (subdivisions + 1) + j;
-            const int32_t index_1 = (i + 1) * (subdivisions + 1) + j;
-            const int32_t index_2 = (i + 1) * (subdivisions + 1) + (j + 1);
-            const int32_t index_3 = i * (subdivisions + 1) + (j + 1);
-            M_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_1], &vertices[index_2],
-                color);
-            M_DrawFlatTriangle(
-                &vertices[index_0], &vertices[index_2], &vertices[index_3],
-                color);
+            const int32_t indices[4] = {
+                i * (subdivisions + 1) + j,
+                (i + 1) * (subdivisions + 1) + j,
+                (i + 1) * (subdivisions + 1) + (j + 1),
+                i * (subdivisions + 1) + (j + 1),
+            };
+            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
+                out_vertex->pos = positions[indices[OUTPUT_QUAD_TO_FAN(k)]];
+                out_vertex++;
+            }
         }
     }
-    M_SetBlendingMode(GFX_BLEND_MODE_OFF);
-    GFX_Context_SetWireframeMode(wireframe_state);
+
+    const RGBA_8888 color_black = { 0, 0, 0, 128 };
+    const RGBA_8888 color_white = { 255, 255, 255, 128 };
+    const bool wireframe_state = GFX_Context_GetWireframeMode();
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
+        vertices[i].color = wireframe_state ? color_black : color_white;
+    }
+
+    glGetIntegerv(GL_POLYGON_MODE, &m_CachedState.bound_polygon_mode[0]);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
+    Output_Meshes_AddVertices(vertex_count, vertices);
+    Output_Meshes_Flush();
+    glBlendFunc(GL_ONE, GL_ZERO);
+    glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
 }
 
 static void M_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
