@@ -1369,17 +1369,8 @@ int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
 
 int32_t Output_CalcFogShade(const int32_t depth)
 {
-    int32_t fog_begin = Output_GetDrawDistFade();
-    int32_t fog_end = Output_GetDrawDistMax();
-
-    if (depth < fog_begin) {
-        return 0;
-    }
-    if (depth >= fog_end) {
-        return 0x1FFF;
-    }
-
-    return (depth - fog_begin) * 0x1FFF / (fog_end - fog_begin);
+    // TODO: done in the shader
+    return 0;
 }
 
 int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
