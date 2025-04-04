@@ -42,7 +42,6 @@ void Output_DrawRoomPortals(const ROOM *room);
 void Output_DrawRoomTriggers(const ROOM *room);
 void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 void Output_DrawLightningSegment(XYZ_32 pos_0, XYZ_32 pos_1, int32_t thickness);
-void Output_Draw3DLine(XYZ_32 pos_0, XYZ_32 pos_1, RGBA_8888 color);
 void Output_FlushTranslucentObjects(void);
 
 void Output_DrawScreenFlatQuad(
