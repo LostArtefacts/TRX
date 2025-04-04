@@ -1351,17 +1351,32 @@ void Output_GetProjectionMatrix(GLfloat output[][4])
 void Output_EnableScissor(
     const float x, const float y, const float w, const float h)
 {
+    // Causes the rendering pipeline to discard every pixel outside of the
+    // specified window. The window is in game framebuffer viewport's
+    // coordinates; to make it work properly, we need to translate it to the
+    // SDL window coordinates first.
+
     const int32_t border = 2; // to deal with precision issues
 
-    float scale_x;
-    float scale_y;
-    GFX_Context_GetScale(&scale_x, &scale_y);
+    struct {
+        GLint x, y, w, h;
+    } game_viewport = {
+        .x = Viewport_GetMinX(),
+        .y = Viewport_GetMinY(),
+        .w = Viewport_GetWidth(),
+        .h = Viewport_GetHeight(),
+    }, gl_viewport, scissor;
+    glGetIntegerv(GL_VIEWPORT, &gl_viewport.x);
+
+    const float scale_x = gl_viewport.w / (float)game_viewport.w;
+    const float scale_y = gl_viewport.h / (float)game_viewport.h;
+    scissor.x = gl_viewport.x + (x * scale_x) - border;
+    scissor.y = gl_viewport.y + (game_viewport.h - y) * scale_y - border;
+    scissor.w = w * scale_x + border * 2;
+    scissor.h = h * scale_y + border * 2;
 
     glEnable(GL_SCISSOR_TEST);
-    glScissor(
-        x * scale_x - border,
-        (GFX_Context_GetDisplayHeight() - y) * scale_y - border,
-        w * scale_x + border * 2, h * scale_y + border * 2);
+    glScissor(scissor.x, scissor.y, scissor.w, scissor.h);
 }
 
 void Output_DisableScissor(void)

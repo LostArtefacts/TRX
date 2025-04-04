@@ -331,11 +331,6 @@ void GFX_Context_ClearScheduledScreenshotPath(void)
     Memory_FreePointer(&m_Context.scheduled_screenshot_path);
 }
 
-void GFX_Context_GetScale(float *const out_x, float *const out_y)
-{
-    m_Context.renderer->get_scale(m_Context.renderer, out_x, out_y);
-}
-
 GFX_CONFIG *GFX_Context_GetConfig(void)
 {
     return &m_Context.config;
