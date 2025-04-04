@@ -133,11 +133,6 @@ typedef struct {
     int32_t counter;
     int32_t level_num;
     char *level_title;
-    uint8_t num_pickup[2];
-    uint8_t num_puzzle[4];
-    uint8_t num_key[4];
-    uint16_t reserved;
-    char buffer[MAX_SG_BUFFER_SIZE];
 } SAVEGAME_INFO;
 
 typedef struct {
