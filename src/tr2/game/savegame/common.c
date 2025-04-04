@@ -4,7 +4,6 @@
 #include "game/inventory.h"
 #include "game/requester.h"
 #include "game/savegame.h"
-#include "game/savegame/savegame_legacy.h"
 #include "global/vars.h"
 
 #include <libtrx/benchmark.h>
@@ -18,6 +17,8 @@
 #include <libtrx/strings.h>
 #include <libtrx/utils.h>
 
+#define MAX_STRATEGIES 1
+
 static STATS_COMMON *m_DefaultStats = nullptr;
 static RESUME_INFO *m_ResumeInfos = nullptr;
 static int32_t m_SaveSlots = 0;
@@ -29,9 +30,14 @@ static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 static uint32_t m_ReqFlags1[MAX_REQUESTER_ITEMS] = {};
 static uint32_t m_ReqFlags2[MAX_REQUESTER_ITEMS] = {};
 
+static int32_t m_StrategyCount = 0;
+static SAVEGAME_STRATEGY m_Strategies[MAX_STRATEGIES];
+static SAVEGAME_VERSION m_InitialVersion = VERSION_LEGACY;
+
 static void M_ClearSlots(void);
-static bool M_FillSlot(const int32_t slot_num, const char *const path);
-static void M_ScanSavedGamesDir(const char *const dir_path);
+static bool M_FillSlot(
+    SAVEGAME_STRATEGY strategy, int32_t slot_num, const char *path);
+static void M_ScanSavedGamesDir(const char *dir_path);
 
 static void M_ClearSlots(void)
 {
@@ -41,6 +47,7 @@ static void M_ClearSlots(void)
 
     for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
+        savegame_info->format = SAVEGAME_FORMAT_INVALID;
         savegame_info->counter = -1;
         savegame_info->level_num = -1;
         Memory_FreePointer(&savegame_info->full_path);
@@ -48,58 +55,24 @@ static void M_ClearSlots(void)
     }
 }
 
-static bool M_FillSlot(const int32_t slot_num, const char *const path)
+static bool M_FillSlot(
+    const SAVEGAME_STRATEGY strategy, const int32_t slot_num,
+    const char *const path)
 {
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    if (strategy.format <= savegame_info->format) {
+        return true;
+    }
+
     bool result = false;
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
     if (fp != nullptr) {
-        // TODO: make strategy->fill_info
-        {
-            char level_title[75];
-            File_ReadData(fp, level_title, 75);
-            savegame_info->level_title = Memory_DupStr(level_title);
-            savegame_info->counter = File_ReadS32(fp);
-
-            for (int32_t i = 0; i < 24; i++) {
-                File_Skip(fp, sizeof(uint16_t)); // pistol ammo
-                File_Skip(fp, sizeof(uint16_t)); // magnum ammo
-                File_Skip(fp, sizeof(uint16_t)); // uzi ammo
-                File_Skip(fp, sizeof(uint16_t)); // shotgun ammo
-                File_Skip(fp, sizeof(uint16_t)); // m16 ammo
-                File_Skip(fp, sizeof(uint16_t)); // grenade ammo
-                File_Skip(fp, sizeof(uint16_t)); // harpoon ammo
-                File_Skip(fp, sizeof(uint8_t)); // small medis
-                File_Skip(fp, sizeof(uint8_t)); // big medis
-                File_Skip(fp, sizeof(uint8_t)); // reserved
-                File_Skip(fp, sizeof(uint8_t)); // flares
-                File_Skip(fp, sizeof(int8_t)); // gun status
-                File_Skip(fp, sizeof(int8_t)); // gun type
-                File_Skip(fp, sizeof(uint16_t)); // flags
-                File_Skip(fp, sizeof(uint16_t)); // unused
-                File_Skip(fp, sizeof(uint32_t)); // timer
-                File_Skip(fp, sizeof(uint32_t)); // ammo used
-                File_Skip(fp, sizeof(uint32_t)); // hits
-                File_Skip(fp, sizeof(uint32_t)); // distance
-                File_Skip(fp, sizeof(uint16_t)); // kills
-                File_Skip(fp, sizeof(uint8_t)); // secret flags
-                File_Skip(fp, sizeof(uint8_t)); // medis used
-            }
-
-            File_Skip(fp, sizeof(uint32_t)); // timer
-            File_Skip(fp, sizeof(uint32_t)); // ammo used
-            File_Skip(fp, sizeof(uint32_t)); // hits
-            File_Skip(fp, sizeof(uint32_t)); // distance
-            File_Skip(fp, sizeof(uint16_t)); // kills
-            File_Skip(fp, sizeof(uint8_t)); // secret flags
-            File_Skip(fp, sizeof(uint8_t)); // medis used
-
-            savegame_info->level_num = File_ReadS16(fp);
+        if (strategy.fill_info_func(fp, savegame_info)) {
+            savegame_info->format = strategy.format;
+            Memory_FreePointer(&savegame_info->full_path);
+            savegame_info->full_path = Memory_DupStr(path);
+            result = true;
         }
-
-        Memory_FreePointer(&savegame_info->full_path);
-        savegame_info->full_path = Memory_DupStr(path);
-        result = true;
         File_Close(fp);
     }
     return result;
@@ -121,13 +94,20 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
             continue;
         }
 
-        int32_t slot = -1;
-        int32_t parsed =
-            sscanf(file_name, g_GameFlow.savegame_fmt_legacy, &slot);
-        if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
-            char *file_path = String_Format("%s/%s", dir_path, file_name);
-            M_FillSlot(slot, file_path);
-            Memory_FreePointer(&file_path);
+        for (int32_t i = 0; i < m_StrategyCount; i++) {
+            const SAVEGAME_STRATEGY strategy = m_Strategies[i];
+            if (!strategy.allow_load) {
+                continue;
+            }
+
+            int32_t slot = -1;
+            const int32_t parsed =
+                sscanf(file_name, strategy.get_save_file_pattern_func(), &slot);
+            if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
+                char *file_path = String_Format("%s/%s", dir_path, file_name);
+                M_FillSlot(strategy, slot, file_path);
+                Memory_FreePointer(&file_path);
+            }
         }
     }
 
@@ -163,6 +143,13 @@ static void M_LoadPostprocess(void)
     }
 
     MovableBlock_SetupFloor();
+}
+
+void Savegame_RegisterStrategy(const SAVEGAME_STRATEGY strategy)
+{
+    ASSERT(m_StrategyCount < MAX_STRATEGIES);
+    m_Strategies[m_StrategyCount] = strategy;
+    m_StrategyCount++;
 }
 
 void Savegame_Init(void)
@@ -275,6 +262,16 @@ int32_t Savegame_GetCounter(void)
 int32_t Savegame_GetTotalCount(void)
 {
     return m_SavedGames;
+}
+
+SAVEGAME_VERSION Savegame_GetInitialVersion(void)
+{
+    return m_InitialVersion;
+}
+
+void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
+{
+    m_InitialVersion = version;
 }
 
 void Savegame_ProcessItemsBeforeSave(void)
@@ -530,7 +527,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
 bool Savegame_Save(const int32_t slot_idx)
 {
-    bool ret = false;
+    bool result = false;
+    Savegame_BindSlot(slot_idx);
 
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     const char *const level_title = current_level->title;
@@ -540,24 +538,33 @@ bool Savegame_Save(const int32_t slot_idx)
     SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_idx];
     const bool was_slot_empty = savegame_info->full_path == nullptr;
 
-    char *file_name = String_Format(g_GameFlow.savegame_fmt_legacy, slot_idx);
-    MYFILE *const fp = File_Open(file_name, FILE_OPEN_WRITE);
-    if (fp != nullptr) {
-        m_SaveCounter++;
-        Savegame_Legacy_SaveToFile(fp);
+    m_SaveCounter++;
+    for (int32_t i = 0; i < m_StrategyCount; i++) {
+        const SAVEGAME_STRATEGY strategy = m_Strategies[i];
+        if (!strategy.allow_save || strategy.save_to_file_func == nullptr) {
+            continue;
+        }
 
-        Memory_FreePointer(&savegame_info->full_path);
-        savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
-        savegame_info->counter = m_SaveCounter;
-        savegame_info->level_num = current_level->num;
-        savegame_info->level_title =
-            level_title != nullptr ? Memory_DupStr(level_title) : nullptr;
-        File_Close(fp);
-        ret = true;
+        char *file_name =
+            String_Format(strategy.get_save_file_pattern_func(), slot_idx);
+        MYFILE *const fp = File_Open(file_name, FILE_OPEN_WRITE);
+        if (fp != nullptr) {
+            strategy.save_to_file_func(fp);
+            savegame_info->format = strategy.format;
+            Memory_FreePointer(&savegame_info->full_path);
+            savegame_info->full_path = Memory_DupStr(File_GetPath(fp));
+            savegame_info->counter = m_SaveCounter;
+            savegame_info->level_num = current_level->num;
+            savegame_info->level_title =
+                level_title != nullptr ? Memory_DupStr(level_title) : nullptr;
+            File_Close(fp);
+            result = true;
+        }
+
+        Memory_FreePointer(&file_name);
     }
-    Memory_FreePointer(&file_name);
 
-    if (ret) {
+    if (result) {
         char save_num_text[16];
         sprintf(save_num_text, "%d", m_SaveCounter);
         Requester_ChangeItem(
@@ -572,27 +579,37 @@ bool Savegame_Save(const int32_t slot_idx)
             m_SavedGames++;
         }
         Savegame_HighlightNewestSlot();
+    } else {
+        m_SaveCounter--;
     }
 
-    return ret;
+    return result;
 }
 
 bool Savegame_Load(const int32_t slot_idx)
 {
+    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_idx];
+    ASSERT(savegame_info->format != 0);
+
     M_LoadPreprocess();
 
     bool result = false;
-    char *file_name = String_Format(g_GameFlow.savegame_fmt_legacy, slot_idx);
-    MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
-    if (fp != nullptr) {
-        Savegame_Legacy_LoadFromFile(fp);
-        File_Close(fp);
-        result = true;
+    for (int32_t i = 0; i < m_StrategyCount; i++) {
+        const SAVEGAME_STRATEGY strategy = m_Strategies[i];
+        if (strategy.format != savegame_info->format) {
+            continue;
+        }
+
+        MYFILE *const fp = File_Open(savegame_info->full_path, FILE_OPEN_READ);
+        if (fp != nullptr) {
+            result = strategy.load_from_file_func(fp);
+            File_Close(fp);
+        }
+        break;
     }
 
-    if (result) {
-        M_LoadPostprocess();
-    }
+    M_LoadPostprocess();
+    Savegame_SetInitialVersion(m_SavegameInfo[slot_idx].initial_version);
     return result;
 }
 

@@ -129,13 +129,6 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    char *full_path;
-    int32_t counter;
-    int32_t level_num;
-    char *level_title;
-} SAVEGAME_INFO;
-
-typedef struct {
     int16_t lock_angles[4];
     int16_t left_angles[4];
     int16_t right_angles[4];
