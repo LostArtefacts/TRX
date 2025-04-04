@@ -9,6 +9,7 @@
 #include <libtrx/debug.h>
 #include <libtrx/enum_map.h>
 #include <libtrx/filesystem.h>
+#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/savegame.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -131,6 +132,37 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
     File_CloseDirectory(dir_handle);
 }
 
+static void M_LoadPreprocess(void)
+{
+    Savegame_InitCurrentInfo();
+}
+
+static void M_LoadPostprocess(void)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+
+        if (obj->save_position && obj->shadow_size != 0) {
+            int16_t room_num = item->room_num;
+            const SECTOR *const sector = Room_GetSector(
+                item->pos.x, item->pos.y, item->pos.z, &room_num);
+            item->floor =
+                Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        }
+
+        if (obj->save_flags != 0) {
+            item->flags &= 0xFF00;
+        }
+
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
+        }
+    }
+
+    MovableBlock_SetupFloor();
+}
+
 void Savegame_Init(void)
 {
     m_ResumeInfos = Memory_Alloc(
@@ -243,6 +275,28 @@ int32_t Savegame_GetTotalCount(void)
     return m_SavedGames;
 }
 
+void Savegame_ProcessItemsBeforeSave(void)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_SAVE);
+        }
+    }
+}
+
+void Savegame_ProcessItemsBeforeLoad(void)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
+        }
+    }
+}
+
 bool Savegame_Save(const int32_t slot_idx)
 {
     bool ret = false;
@@ -294,6 +348,8 @@ bool Savegame_Save(const int32_t slot_idx)
 
 bool Savegame_Load(const int32_t slot_idx)
 {
+    M_LoadPreprocess();
+
     bool result = false;
     char *file_name = String_Format(g_GameFlow.savegame_fmt_legacy, slot_idx);
     MYFILE *const fp = File_Open(file_name, FILE_OPEN_READ);
@@ -301,6 +357,10 @@ bool Savegame_Load(const int32_t slot_idx)
         S_LoadGame(fp);
         File_Close(fp);
         result = true;
+    }
+
+    if (result) {
+        M_LoadPostprocess();
     }
     return result;
 }

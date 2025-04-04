@@ -17,7 +17,6 @@
 
 #include <libtrx/debug.h>
 #include <libtrx/game/music.h>
-#include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/memory.h>
 
 #include <stdio.h>
@@ -175,13 +174,11 @@ static void M_ReadStats(LEVEL_STATS *const stats)
 
 static void M_ReadItems(void)
 {
+    Savegame_ProcessItemsBeforeLoad();
+
     for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
-        }
 
         if (obj->save_position) {
             item->pos.x = M_ReadS32();
@@ -196,13 +193,6 @@ static void M_ReadItems(void)
 
             if (item->room_num != room_num) {
                 Item_NewRoom(item_num, room_num);
-            }
-
-            if (obj->shadow_size != 0) {
-                const SECTOR *const sector = Room_GetSector(
-                    item->pos.x, item->pos.y, item->pos.z, &room_num);
-                item->floor = Room_GetHeight(
-                    sector, item->pos.x, item->pos.y, item->pos.z);
             }
         }
 
@@ -263,8 +253,6 @@ static void M_ReadItems(void)
                     Item_SetPrevActive(item_num);
                 }
             }
-
-            item->flags &= 0xFF00;
         }
 
         switch (item->object_id) {
@@ -280,13 +268,7 @@ static void M_ReadItems(void)
             M_Read(item->data, sizeof(LIFT_INFO));
             break;
         }
-
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
-        }
     }
-
-    MovableBlock_SetupFloor();
 }
 
 static void M_ReadLara(LARA_INFO *const lara)
@@ -476,6 +458,8 @@ static void M_WriteStats(const LEVEL_STATS *const stats)
 
 static void M_WriteItems(void)
 {
+    Savegame_ProcessItemsBeforeSave();
+
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
