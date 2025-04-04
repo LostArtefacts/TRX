@@ -4,6 +4,7 @@
 
 #include <libtrx/game/math/types.h>
 #include <libtrx/game/output/types.h>
+#include <libtrx/gfx/gl/utils.h>
 
 #pragma pack(push, 1)
 typedef struct {
@@ -22,6 +23,7 @@ typedef struct {
 void Output_Meshes_InitDynamic(void);
 void Output_Meshes_ShutdownDynamic(void);
 
-void Output_Meshes_AddVertices(
+void Output_Meshes_DrawPrimitives(
+    GLuint prim_type, int32_t count, const OUTPUT_MESH_VERTEX *vertices);
+void Output_Meshes_DrawTriangles(
     int32_t count, const OUTPUT_MESH_VERTEX *vertices);
-void Output_Meshes_Flush();

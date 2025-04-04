@@ -10,9 +10,6 @@
 static struct {
     GLuint vao;
     GLuint vbo;
-    OUTPUT_MESH_VERTEX *vbo_data;
-    size_t vertex_capacity;
-    size_t vertex_count;
 } m_Priv;
 
 static OUTPUT_SHADER *m_Shader = nullptr;
@@ -64,7 +61,6 @@ void Output_Meshes_InitDynamic(void)
 
 void Output_Meshes_ShutdownDynamic(void)
 {
-    Memory_FreePointer(&m_Priv.vbo_data);
     if (m_Priv.vao != 0) {
         glDeleteVertexArrays(1, &m_Priv.vao);
         m_Priv.vao = 0;
@@ -75,30 +71,21 @@ void Output_Meshes_ShutdownDynamic(void)
     }
 }
 
-void Output_Meshes_AddVertices(
-    const int32_t count, const OUTPUT_MESH_VERTEX *const vertices)
-{
-    if (m_Priv.vertex_count + count > m_Priv.vertex_capacity) {
-        m_Priv.vertex_capacity += count * 2;
-        m_Priv.vbo_data = Memory_Realloc(
-            m_Priv.vbo_data,
-            m_Priv.vertex_capacity * sizeof(OUTPUT_MESH_VERTEX));
-    }
-    memcpy(
-        m_Priv.vbo_data + m_Priv.vertex_count, vertices,
-        count * sizeof(OUTPUT_MESH_VERTEX));
-    m_Priv.vertex_count += count;
-}
-
-void Output_Meshes_Flush()
+void Output_Meshes_DrawPrimitives(
+    const GLuint prim_type, const int32_t count,
+    const OUTPUT_MESH_VERTEX *const vertices)
 {
     Output_Shader_Bind(m_Shader);
     glBindBuffer(GL_ARRAY_BUFFER, m_Priv.vbo);
     GFX_TRACK_DATA(
-        glBufferData, GL_ARRAY_BUFFER,
-        m_Priv.vertex_count * sizeof(OUTPUT_MESH_VERTEX), m_Priv.vbo_data,
-        GL_STATIC_DRAW);
+        glBufferData, GL_ARRAY_BUFFER, count * sizeof(OUTPUT_MESH_VERTEX),
+        vertices, GL_STATIC_DRAW);
     glBindVertexArray(m_Priv.vao);
-    glDrawArrays(GL_TRIANGLES, 0, m_Priv.vertex_count);
-    m_Priv.vertex_count = 0;
+    glDrawArrays(prim_type, 0, count);
+}
+
+void Output_Meshes_DrawTriangles(
+    const int32_t count, const OUTPUT_MESH_VERTEX *const vertices)
+{
+    Output_Meshes_DrawPrimitives(GL_TRIANGLES, count, vertices);
 }

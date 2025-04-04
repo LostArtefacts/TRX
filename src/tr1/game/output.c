@@ -117,7 +117,6 @@ static void M_Draw2DQuad(
 static void M_DrawFlatTriangle(
     PHD_VBUF *vn1, PHD_VBUF *vn2, PHD_VBUF *vn3, RGBA_8888 color);
 static void M_DrawSphere(XYZ_32 pos, int32_t radius);
-static void M_Draw3DFrame(const XYZ_32 vert[4], RGBA_8888 color);
 static void M_DrawLightningSegment(const LIGHTNING *const lightning);
 static void M_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z, int32_t sprnum,
@@ -568,18 +567,9 @@ static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
-    Output_Meshes_AddVertices(vertex_count, vertices);
-    Output_Meshes_Flush();
+    Output_Meshes_DrawTriangles(vertex_count, vertices);
     glBlendFunc(GL_ONE, GL_ZERO);
     glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
-}
-
-static void M_Draw3DFrame(const XYZ_32 vert[4], const RGBA_8888 color)
-{
-    Output_Draw3DLine(vert[0], vert[1], color);
-    Output_Draw3DLine(vert[1], vert[2], color);
-    Output_Draw3DLine(vert[2], vert[3], color);
-    Output_Draw3DLine(vert[3], vert[0], color);
 }
 
 static void M_DrawLightningSegment(const LIGHTNING *const lightning)
@@ -792,7 +782,6 @@ void Output_FlushTranslucentObjects(void)
     for (int32_t i = 0; i < m_LightningCount; i++) {
         M_DrawLightningSegment(&m_LightningTable[i]);
     }
-    Output_Meshes_Flush();
     Output_RestoreState();
 }
 
@@ -898,19 +887,40 @@ void Output_DrawRoomMesh(ROOM *const room)
 
 void Output_DrawRoomPortals(const ROOM *const room)
 {
-    M_DisableDepthTest();
-    const RGBA_8888 portal_color = { 0, 0, 255, 255 };
+    const int32_t vertex_count = room->portals->count * 8;
+    OUTPUT_MESH_VERTEX vertices[vertex_count];
+    OUTPUT_MESH_VERTEX *out_vertex = vertices;
+    const RGBA_8888 color = { 0, 0, 255, 255 };
     for (int32_t i = 0; i < room->portals->count; i++) {
         const PORTAL *const portal = &room->portals->portal[i];
-        const XYZ_32 vertices[4] = {
+        const XYZ_F positions[4] = {
             { portal->vertex[0].x, portal->vertex[0].y, portal->vertex[0].z },
             { portal->vertex[1].x, portal->vertex[1].y, portal->vertex[1].z },
             { portal->vertex[2].x, portal->vertex[2].y, portal->vertex[2].z },
             { portal->vertex[3].x, portal->vertex[3].y, portal->vertex[3].z },
         };
-        M_Draw3DFrame(vertices, portal_color);
+        const int32_t indices[8] = { 0, 1, 1, 2, 2, 3, 3, 0 };
+        for (int32_t j = 0; j < 8; j++) {
+            out_vertex->pos = positions[indices[j]];
+            out_vertex++;
+        }
     }
-    M_EnableDepthTest();
+    for (int32_t i = 0; i < vertex_count; i++) {
+        vertices[i].uvw_idx = -1;
+        vertices[i].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
+        vertices[i].color = color;
+    }
+
+    glDisable(GL_DEPTH_TEST);
+    glGetIntegerv(GL_POLYGON_MODE, &m_CachedState.bound_polygon_mode[0]);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
+    Output_Meshes_DrawPrimitives(GL_LINES, vertex_count, vertices);
+    glBlendFunc(GL_ONE, GL_ZERO);
+    glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Output_DrawRoomTriggers(const ROOM *const room)
@@ -1020,8 +1030,7 @@ void Output_DrawShadow(
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
-    Output_Meshes_AddVertices(vertex_count * 3, vertices);
-    Output_Meshes_Flush();
+    Output_Meshes_DrawTriangles(vertex_count * 3, vertices);
     glBlendFunc(GL_ONE, GL_ZERO);
 
     Matrix_Pop();
@@ -1122,55 +1131,6 @@ void Output_DrawScreenGradientQuad(
     RGBA_8888 bl, RGBA_8888 br)
 {
     M_Draw2DQuad(sx, sy, sx + w, sy + h, tl, tr, bl, br);
-}
-
-void Output_Draw3DLine(
-    const XYZ_32 pos_0, const XYZ_32 pos_1, const RGBA_8888 color)
-{
-    PHD_VBUF vn0, vn1;
-    uint16_t total_clip = 0xFFFF;
-    total_clip &= M_CalcVertex(
-        &vn0, (XYZ_16) { .x = pos_0.x, .y = pos_0.y, .z = pos_0.z });
-    total_clip &= M_CalcVertex(
-        &vn1, (XYZ_16) { .x = pos_1.x, .y = pos_1.y, .z = pos_1.z });
-
-    int32_t vertex_count = 2;
-    GFX_3D_VERTEX vertices[vertex_count * CLIP_VERTCOUNT_SCALE];
-
-    const PHD_VBUF *src_vbuf[2] = { &vn0, &vn1 };
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].x = src_vbuf[i]->xs;
-        vertices[i].y = src_vbuf[i]->ys;
-        vertices[i].z = MAP_DEPTH(src_vbuf[i]->zv);
-        vertices[i].r = color.r;
-        vertices[i].g = color.g;
-        vertices[i].b = color.b;
-        vertices[i].a = color.a;
-    }
-
-    if ((src_vbuf[0]->clip | src_vbuf[1]->clip) < 0) {
-        vertex_count = M_ZedClipper(vertex_count, src_vbuf, vertices);
-        if (vertex_count == 0) {
-            return;
-        }
-        for (int32_t i = 0; i < vertex_count; i++) {
-            vertices[i].r = color.r;
-            vertices[i].g = color.g;
-            vertices[i].b = color.b;
-            vertices[i].a = color.a;
-        }
-    }
-
-    if (vertex_count == 0) {
-        return;
-    }
-
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_LINE);
-    M_DisableTextureMode();
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
-    GFX_3D_Renderer_RenderPrimList(m_Renderer3D, vertices, vertex_count);
-    GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-    GFX_3D_Renderer_SetPrimType(m_Renderer3D, GFX_3D_PRIM_TRI);
 }
 
 void Output_DrawScreenFrame(
