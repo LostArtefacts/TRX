@@ -1,31 +1,17 @@
 #include "game/output.h"
 
 #include "game/output/meshes/common.h"
-#include "game/output/meshes/dynamic.h"
-#include "game/output/meshes/objects.h"
-#include "game/output/meshes/rooms.h"
 #include "game/output/sprites.h"
 #include "game/output/textures.h"
-#include "game/output/utils.h"
 #include "game/overlay.h"
-#include "game/screen.h"
 #include "game/shell.h"
 #include "game/viewport.h"
 #include "global/vars.h"
-#include "specific/s_shell.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
-#include <libtrx/engine/image.h>
 #include <libtrx/filesystem.h>
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/output.h>
-#include <libtrx/gfx/gl/track.h>
-#include <libtrx/gfx/gl/utils.h>
-#include <libtrx/log.h>
 #include <libtrx/memory.h>
-
-#include <string.h>
 
 #define MAX_LIGHTNINGS 64
 #define MAP_DEPTH(zv) (g_FltResZBuf - g_FltResZ * (1.0 / (double)(zv)))
@@ -35,21 +21,6 @@ typedef struct {
     XYZ_32 pos_1;
     int32_t thickness;
 } LIGHTNING;
-
-static int32_t m_LsAdder = 0;
-static int32_t m_LsDivider = 0;
-static bool m_IsSkyboxEnabled = false;
-static bool m_IsWibbleEffect = false;
-static bool m_IsWaterEffect = false;
-static bool m_IsShadeEffect = false;
-
-static int32_t m_Time = 0;
-static int32_t m_AnimatedTexturesOffset = 0;
-
-static int32_t m_DrawDistFade = 0;
-static int32_t m_DrawDistMax = 0;
-static RGB_F m_WaterColor = {};
-static XYZ_32 m_LsVectorView = {};
 
 static int32_t m_LightningCount = 0;
 static LIGHTNING m_LightningTable[MAX_LIGHTNINGS];
@@ -70,16 +41,6 @@ static const char *m_ImageExtensions[] = {
     ".png", ".jpg", ".jpeg", ".pcx", nullptr,
 };
 
-static struct {
-    GLint bound_program;
-    GLint bound_vao;
-    GLint bound_vbo;
-    GLint bound_active_texture;
-    GLint bound_texture;
-    GLint bound_polygon_mode[2];
-} m_CachedState;
-
-static inline float M_GetUV(uint16_t uv);
 static void M_SelectTexture(int32_t texture_num);
 static void M_EnableDepthWrites(void);
 static void M_DisableDepthWrites(void);
@@ -101,19 +62,10 @@ static void M_DrawTriangleStrip(
 static void M_Draw2DQuad(
     int32_t x1, int32_t y1, int32_t x2, int32_t y2, RGBA_8888 tl, RGBA_8888 tr,
     RGBA_8888 bl, RGBA_8888 br);
-static void M_DrawSphere(XYZ_32 pos, int32_t radius);
 static void M_DrawLightningSegment(const LIGHTNING *const lightning);
 static void M_DrawSprite(
     int16_t x1, int16_t y1, int16_t x2, int32_t y2, int32_t z,
     int32_t sprite_idx, int16_t shade);
-
-static inline float M_GetUV(const uint16_t uv)
-{
-    return g_Config.rendering.pretty_pixels
-            && g_Config.rendering.texture_filter == GFX_TF_NN
-        ? uv / 65536.0f
-        : ((uv & 0xFF00) + 127) / 65536.0f;
-}
 
 static void M_SelectTexture(const int32_t texture_num)
 {
@@ -283,71 +235,6 @@ static void M_Draw2DQuad(
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_NORMAL);
     M_DrawTriangleFan(vertices, vertex_count);
     GFX_3D_Renderer_SetBlendingMode(m_Renderer3D, GFX_BLEND_MODE_OFF);
-}
-
-static void M_DrawSphere(const XYZ_32 pos, const int32_t radius)
-{
-    // More subdivisions means smoother spheres.
-    const int32_t subdivisions = 12;
-    const int32_t position_count = SQUARE(subdivisions + 1);
-    XYZ_F positions[position_count];
-    int32_t index = 0;
-
-    for (int32_t i = 0; i <= subdivisions; i++) {
-        const float theta = (M_PI * i) / subdivisions; // Latitude angle
-        const float sin_theta = sinf(theta);
-        const float cos_theta = cosf(theta);
-
-        for (int32_t j = 0; j <= subdivisions; j++) {
-            const float phi = (2 * M_PI * j) / subdivisions; // Longitude angle
-            const float sin_phi = sinf(phi);
-            const float cos_phi = cosf(phi);
-
-            // Convert spherical coordinates to 3D points.
-            positions[index] = (XYZ_F) {
-                .x = pos.x + radius * cos_phi * sin_theta,
-                .y = pos.y + radius * cos_theta,
-                .z = pos.z + radius * sin_phi * sin_theta,
-            };
-            index++;
-        }
-    }
-
-    const int32_t vertex_count =
-        subdivisions * subdivisions * OUTPUT_QUAD_VERTICES;
-    OUTPUT_MESH_VERTEX vertices[vertex_count];
-    OUTPUT_MESH_VERTEX *out_vertex = vertices;
-    for (int32_t i = 0; i < subdivisions; i++) {
-        for (int32_t j = 0; j < subdivisions; j++) {
-            const int32_t indices[4] = {
-                i * (subdivisions + 1) + j,
-                (i + 1) * (subdivisions + 1) + j,
-                (i + 1) * (subdivisions + 1) + (j + 1),
-                i * (subdivisions + 1) + (j + 1),
-            };
-            for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
-                out_vertex->pos = positions[indices[OUTPUT_QUAD_TO_FAN(k)]];
-                out_vertex++;
-            }
-        }
-    }
-
-    const RGBA_8888 color_black = { 0, 0, 0, 128 };
-    const RGBA_8888 color_white = { 255, 255, 255, 128 };
-    const bool wireframe_state = GFX_Context_GetWireframeMode();
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
-        vertices[i].color = wireframe_state ? color_black : color_white;
-    }
-
-    glGetIntegerv(GL_POLYGON_MODE, &m_CachedState.bound_polygon_mode[0]);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
-    Output_Meshes_DrawTriangles(vertex_count, vertices);
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
 }
 
 static void M_DrawLightningSegment(const LIGHTNING *const lightning)
@@ -541,12 +428,6 @@ void Output_ObserveLevelUnload(void)
     Output_Meshes_ObserveLevelUnload();
 }
 
-void Output_ObserveFOVChange(void)
-{
-    Output_Meshes_UploadProjectionMatrix();
-    Output_Sprites_UploadProjectionMatrix();
-}
-
 void Output_FlushTranslucentObjects(void)
 {
     Output_RememberState();
@@ -590,298 +471,6 @@ void Output_EndScene(void)
 void Output_ClearDepthBuffer(void)
 {
     GFX_3D_Renderer_ClearDepth(m_Renderer3D);
-}
-
-void Output_SetSkyboxEnabled(const bool enabled)
-{
-    m_IsSkyboxEnabled = enabled;
-}
-
-bool Output_IsSkyboxEnabled(void)
-{
-    return m_IsSkyboxEnabled;
-}
-
-void Output_DrawSkybox(const OBJECT_MESH *const mesh)
-{
-    M_DisableDepthTest();
-    Output_RememberState();
-    Output_Meshes_RenderObjectMesh(g_MatrixPtr, Output_GetTint(), mesh);
-    Output_RestoreState();
-    M_EnableDepthTest();
-}
-
-void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const int32_t clip)
-{
-    M_Flush();
-    Output_RememberState();
-    Output_Meshes_RenderObjectMesh(g_MatrixPtr, Output_GetTint(), mesh);
-    Output_RestoreState();
-
-    if (g_Config.rendering.enable_debug_spheres) {
-        M_DrawSphere(
-            (XYZ_32) { mesh->center.x, mesh->center.y, mesh->center.z },
-            mesh->radius);
-    }
-    M_Flush();
-}
-
-void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const int32_t clip)
-{
-    Matrix_Push();
-    Matrix_Interpolate();
-    Output_DrawObjectMesh(mesh, clip);
-    Matrix_Pop();
-}
-
-void Output_DrawRoomMesh(ROOM *const room)
-{
-    Output_RememberState();
-    Output_LightRoom(room);
-    Output_EnableScissor(
-        room->bound_left, room->bound_bottom,
-        room->bound_right - room->bound_left,
-        room->bound_bottom - room->bound_top);
-    Output_Meshes_RenderRoomMesh(g_MatrixPtr, Output_GetTint(), room);
-    Output_DisableScissor();
-    Output_RestoreState();
-}
-
-void Output_DrawRoomPortals(const ROOM *const room)
-{
-    const int32_t vertex_count = room->portals->count * 8;
-    OUTPUT_MESH_VERTEX vertices[vertex_count];
-    OUTPUT_MESH_VERTEX *out_vertex = vertices;
-    const RGBA_8888 color = { 0, 0, 255, 255 };
-    for (int32_t i = 0; i < room->portals->count; i++) {
-        const PORTAL *const portal = &room->portals->portal[i];
-        const XYZ_F positions[4] = {
-            { portal->vertex[0].x, portal->vertex[0].y, portal->vertex[0].z },
-            { portal->vertex[1].x, portal->vertex[1].y, portal->vertex[1].z },
-            { portal->vertex[2].x, portal->vertex[2].y, portal->vertex[2].z },
-            { portal->vertex[3].x, portal->vertex[3].y, portal->vertex[3].z },
-        };
-        const int32_t indices[8] = { 0, 1, 1, 2, 2, 3, 3, 0 };
-        for (int32_t j = 0; j < 8; j++) {
-            out_vertex->pos = positions[indices[j]];
-            out_vertex++;
-        }
-    }
-    for (int32_t i = 0; i < vertex_count; i++) {
-        vertices[i].uvw_idx = -1;
-        vertices[i].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
-        vertices[i].color = color;
-    }
-
-    glDisable(GL_DEPTH_TEST);
-    glGetIntegerv(GL_POLYGON_MODE, &m_CachedState.bound_polygon_mode[0]);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
-    Output_Meshes_DrawPrimitives(GL_LINES, vertex_count, vertices);
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
-    glEnable(GL_DEPTH_TEST);
-}
-
-void Output_DrawRoomTriggers(const ROOM *const room)
-{
-    const RGBA_8888 color = { .r = 255, .g = 0, .b = 255, .a = 128 };
-    const XZ_16 offsets[4] = { { 0, 0 }, { 0, 1 }, { 1, 1 }, { 1, 0 } };
-
-    int32_t vertex_count = 0;
-    for (int32_t z = 0; z < room->size.z; z++) {
-        for (int32_t x = 0; x < room->size.x; x++) {
-            const SECTOR *sector = Room_GetUnitSector(room, x, z);
-            if (sector->trigger == nullptr) {
-                continue;
-            }
-            vertex_count += OUTPUT_QUAD_VERTICES;
-        }
-    }
-
-    OUTPUT_MESH_VERTEX *vertices =
-        Memory_Alloc(vertex_count * sizeof(OUTPUT_MESH_VERTEX));
-    OUTPUT_MESH_VERTEX *out_vertex = vertices;
-
-    for (int32_t z = 0; z < room->size.z; z++) {
-        for (int32_t x = 0; x < room->size.x; x++) {
-            const SECTOR *sector = Room_GetUnitSector(room, x, z);
-            if (sector->trigger == nullptr) {
-                continue;
-            }
-            for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
-                const int32_t j = OUTPUT_QUAD_TO_FAN(i);
-                XYZ_16 vertex_pos = {
-                    .x = (x + offsets[j].x) * WALL_L,
-                    .z = (z + offsets[j].z) * WALL_L,
-                };
-                XYZ_32 world_pos = {
-                    .x = room->pos.x + x * WALL_L + offsets[j].x * (WALL_L - 1),
-                    .z = room->pos.z + z * WALL_L + offsets[j].z * (WALL_L - 1),
-                    .y = room->pos.y,
-                };
-
-                int16_t room_num = room - Room_Get(0);
-                sector = Room_GetSector(
-                    world_pos.x, world_pos.y, world_pos.z, &room_num);
-                vertex_pos.y =
-                    Room_GetHeight(
-                        sector, world_pos.x, world_pos.y, world_pos.z)
-                    + (m_IsWaterEffect ? -16 : -2);
-
-                out_vertex->pos =
-                    (XYZ_F) { vertex_pos.x, vertex_pos.y, vertex_pos.z };
-                out_vertex->flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
-                out_vertex->color = color;
-                out_vertex++;
-            }
-        }
-    }
-
-    M_DisableTextureMode();
-    glDepthMask(GL_FALSE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
-    Output_Meshes_DrawTriangles(vertex_count, vertices);
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glDepthMask(GL_TRUE);
-    Memory_FreePointer(&vertices);
-}
-
-void Output_DrawShadow(
-    const int16_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
-{
-    if (!item->enable_shadow) {
-        return;
-    }
-
-    const int32_t vertex_count = g_Config.visuals.enable_round_shadow ? 32 : 8;
-    const int32_t x0 = bounds->min.x;
-    const int32_t x1 = bounds->max.x;
-    const int32_t z0 = bounds->min.z;
-    const int32_t z1 = bounds->max.z;
-    const int32_t x_mid = (x0 + x1) / 2;
-    const int32_t z_mid = (z0 + z1) / 2;
-    const int32_t x_add = (x1 - x0) * size / 1024;
-    const int32_t z_add = (z1 - z0) * size / 1024;
-
-    Matrix_Push();
-    Matrix_TranslateAbs(
-        item->interp.result.pos.x, item->floor, item->interp.result.pos.z);
-    Matrix_RotY(item->rot.y);
-
-    OUTPUT_MESH_VERTEX vertices[vertex_count * 3];
-    for (int32_t i = 0; i < vertex_count; i++) {
-        for (int32_t j = 0; j < 2; j++) {
-            const int32_t angle = (DEG_180 + (i + j) * DEG_360) / vertex_count;
-            vertices[i * 3 + j].pos.x =
-                x_mid + ((x_add * 2) * Math_Sin(angle) >> W2V_SHIFT);
-            vertices[i * 3 + j].pos.z =
-                z_mid + ((z_add * 2) * Math_Cos(angle) >> W2V_SHIFT);
-        }
-        vertices[i * 3 + 2].pos.x = x_mid;
-        vertices[i * 3 + 2].pos.z = z_mid;
-        for (int32_t j = 0; j < 3; j++) {
-            vertices[i * 3 + j].pos.y = -5;
-            vertices[i * 3 + j].flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING;
-            vertices[i * 3 + j].color = (RGBA_8888) { 0, 0, 0, 128 };
-        }
-    }
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    Output_Shader_UploadMatrix(Output_Meshes_GetShader(), g_MatrixPtr);
-    Output_Meshes_DrawTriangles(vertex_count * 3, vertices);
-    glBlendFunc(GL_ONE, GL_ZERO);
-
-    Matrix_Pop();
-}
-
-int32_t Output_GetDrawDistMin(void)
-{
-    return 20;
-}
-
-int32_t Output_GetDrawDistFade(void)
-{
-    return m_DrawDistFade;
-}
-
-int32_t Output_GetDrawDistMax(void)
-{
-    return m_DrawDistMax;
-}
-
-void Output_SetDrawDistFade(const int32_t dist)
-{
-    m_DrawDistFade = dist;
-}
-
-void Output_SetDrawDistMax(const int32_t dist)
-{
-    m_DrawDistMax = dist;
-
-    const double near_z = Output_GetNearZ();
-    const double far_z = Output_GetFarZ();
-    const double res_z = 0.99 * near_z * far_z / (far_z - near_z);
-    g_FltResZ = res_z;
-    g_FltResZBuf = 0.005 + res_z / near_z;
-}
-
-void Output_SetWaterColor(const RGB_F *const color)
-{
-    m_WaterColor.r = color->r;
-    m_WaterColor.g = color->g;
-    m_WaterColor.b = color->b;
-}
-
-void Output_SetLightAdder(const int32_t adder)
-{
-    m_LsAdder = adder;
-}
-
-int32_t Output_GetLightAdder(void)
-{
-    return m_LsAdder;
-}
-
-void Output_SetLightDivider(const int32_t divider)
-{
-    m_LsDivider = divider;
-}
-
-int32_t Output_GetLightDivider(void)
-{
-    return m_LsDivider;
-}
-
-XYZ_32 Output_GetLightVectorView(void)
-{
-    return m_LsVectorView;
-}
-
-int32_t Output_GetNearZ(void)
-{
-    return Output_GetDrawDistMin() << W2V_SHIFT;
-}
-
-int32_t Output_GetFarZ(void)
-{
-    return Output_GetDrawDistMax() << W2V_SHIFT;
-}
-
-void Output_DrawSprite(
-    const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
-    const int16_t shade)
-{
-    Matrix_Push();
-    Matrix_TranslateAbs(x, y, z);
-    Output_Sprites_RenderSingleSprite(
-        g_MatrixPtr, (XYZ_32) { 0, 0, 0 }, sprite_idx, shade);
-    Matrix_Pop();
 }
 
 void Output_DrawScreenFlatQuad(
@@ -1171,64 +760,13 @@ void Output_DrawLightningSegment(
     m_LightningCount++;
 }
 
-void Output_SetupBelowWater(const bool underwater)
-{
-    m_IsWaterEffect = true;
-    m_IsWibbleEffect = !underwater;
-    m_IsShadeEffect = true;
-    Output_RememberState();
-    Output_Shader_UploadWaterEffect(Output_Meshes_GetShader(), m_IsWaterEffect);
-    Output_RestoreState();
-}
-
-void Output_SetupAboveWater(const bool underwater)
-{
-    m_IsWaterEffect = false;
-    m_IsWibbleEffect = underwater;
-    m_IsShadeEffect = underwater;
-    Output_RememberState();
-    Output_Shader_UploadWaterEffect(Output_Meshes_GetShader(), m_IsWaterEffect);
-    Output_RestoreState();
-}
-
-void Output_AnimateTextures(const int32_t num_frames)
-{
-    m_Time += num_frames;
-    m_AnimatedTexturesOffset += num_frames;
-    bool update = false;
-    while (m_AnimatedTexturesOffset > 5) {
-        Output_CycleAnimatedTextures();
-        update = true;
-        m_AnimatedTexturesOffset -= 5;
-    }
-    if (update) {
-        Output_Textures_CycleAnimations();
-    }
-}
-
-void Output_RotateLight(const int16_t pitch, const int16_t yaw)
-{
-    const int32_t cp = Math_Cos(pitch);
-    const int32_t sp = Math_Sin(pitch);
-    const int32_t cy = Math_Cos(yaw);
-    const int32_t sy = Math_Sin(yaw);
-    const int32_t x = TRIGMULT2(cp, sy);
-    const int32_t y = -sp;
-    const int32_t z = TRIGMULT2(cp, cy);
-    const MATRIX *const m = &g_W2VMatrix;
-    m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
-    m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
-    m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
-}
-
 void Output_DrawBlackRectangle(const int32_t opacity)
 {
-    int32_t sx = 0;
-    int32_t sy = 0;
-    int32_t sw = Viewport_GetWidth();
-    int32_t sh = Viewport_GetHeight();
-
-    RGBA_8888 background = { 0, 0, 0, opacity };
+    const int32_t sx = 0;
+    const int32_t sy = 0;
+    const int32_t sw = Viewport_GetWidth();
+    const int32_t sh = Viewport_GetHeight();
+    const RGBA_8888 background = { 0, 0, 0, opacity };
     M_DisableDepthTest();
     Output_ClearDepthBuffer();
     Output_DrawScreenFlatQuad(sx, sy, sw, sh, background);
@@ -1273,154 +811,4 @@ void Output_ApplyFOV(void)
         g_PhdPersp *= c;
         g_PhdPersp /= s;
     }
-}
-
-RGB_F Output_GetTint(void)
-{
-    if (m_IsShadeEffect) {
-        return m_WaterColor;
-    }
-    return (RGB_F) { 1.0f, 1.0f, 1.0f };
-}
-
-bool Output_MakeScreenshot(const char *const path)
-{
-    GFX_Context_ScheduleScreenshot(path);
-    return true;
-}
-
-int32_t Output_GetObjectBounds(const BOUNDS_16 *const bounds)
-{
-    // TODO: remove
-    return 1;
-}
-
-int32_t Output_CalcFogShade(const int32_t depth)
-{
-    // TODO: done in the shader
-    return 0;
-}
-
-int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
-{
-    // TODO: remove
-    ASSERT_FAIL();
-    return 0;
-}
-
-void Output_LightRoomVertices(const ROOM *const room)
-{
-    // TODO: remove
-    ASSERT_FAIL();
-}
-
-bool Output_GetWaterEffect(void)
-{
-    return m_IsWaterEffect;
-}
-
-bool Output_GetWibbleEffect(void)
-{
-    return m_IsWibbleEffect;
-}
-
-int32_t Output_GetTime(void)
-{
-    return m_Time;
-}
-
-void Output_GetProjectionMatrix(GLfloat output[][4])
-{
-    const float left = 0.0f;
-    const float top = 0.0f;
-    const float right = Viewport_GetWidth();
-    const float bottom = Viewport_GetHeight();
-    const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
-    const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
-    const float aspect = (float)right / (float)bottom;
-    const float fov = Viewport_GetFOV() * M_PI / (float)DEG_180;
-    const float f = 1.0f / tan(fov / 2.0f);
-
-    output[0][0] = f / aspect;
-    output[0][1] = 0.0f;
-    output[0][2] = 0.0f;
-    output[0][3] = 0.0f;
-
-    output[1][0] = 0.0f;
-    output[1][1] = -f;
-    output[1][2] = 0.0f;
-    output[1][3] = 0.0f;
-
-    output[2][0] = 0.0f;
-    output[2][1] = 0.0f;
-    output[2][2] = g_FltResZBuf;
-    output[2][3] = -g_FltResZ / (float)(1 << W2V_SHIFT);
-
-    output[3][0] = 0.0f;
-    output[3][1] = 0.0f;
-    output[3][2] = 1.0f;
-    output[3][3] = 0.0f;
-}
-
-void Output_EnableScissor(
-    const float x, const float y, const float w, const float h)
-{
-    // Causes the rendering pipeline to discard every pixel outside of the
-    // specified window. The window is in game framebuffer viewport's
-    // coordinates; to make it work properly, we need to translate it to the
-    // SDL window coordinates first.
-
-    const int32_t border = 2; // to deal with precision issues
-
-    struct {
-        GLint x, y, w, h;
-    } game_viewport = {
-        .x = Viewport_GetMinX(),
-        .y = Viewport_GetMinY(),
-        .w = Viewport_GetWidth(),
-        .h = Viewport_GetHeight(),
-    }, gl_viewport, scissor;
-    glGetIntegerv(GL_VIEWPORT, &gl_viewport.x);
-
-    const float scale_x = gl_viewport.w / (float)game_viewport.w;
-    const float scale_y = gl_viewport.h / (float)game_viewport.h;
-    scissor.x = gl_viewport.x + (x * scale_x) - border;
-    scissor.y = gl_viewport.y + (game_viewport.h - y) * scale_y - border;
-    scissor.w = w * scale_x + border * 2;
-    scissor.h = h * scale_y + border * 2;
-
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(scissor.x, scissor.y, scissor.w, scissor.h);
-}
-
-void Output_DisableScissor(void)
-{
-    glDisable(GL_SCISSOR_TEST);
-}
-
-void Output_RememberState(void)
-{
-    glGetIntegerv(GL_CURRENT_PROGRAM, &m_CachedState.bound_program);
-    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &m_CachedState.bound_vao);
-    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &m_CachedState.bound_vbo);
-    glGetIntegerv(GL_ACTIVE_TEXTURE, &m_CachedState.bound_active_texture);
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &m_CachedState.bound_texture);
-    glGetIntegerv(GL_POLYGON_MODE, &m_CachedState.bound_polygon_mode[0]);
-    GFX_GL_CheckError();
-}
-
-void Output_RestoreState(void)
-{
-    glUseProgram(m_CachedState.bound_program);
-    glBindVertexArray(m_CachedState.bound_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CachedState.bound_vbo);
-    glActiveTexture(m_CachedState.bound_active_texture);
-    glBindTexture(GL_TEXTURE_2D, m_CachedState.bound_texture);
-    glPolygonMode(GL_FRONT_AND_BACK, m_CachedState.bound_polygon_mode[0]);
-    GFX_GL_CheckError();
-}
-
-float Output_AdjustUV(const uint16_t uv)
-{
-    return M_GetUV(uv);
 }
