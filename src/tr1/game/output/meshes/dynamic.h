@@ -2,12 +2,8 @@
 
 #include "game/output/shader.h"
 
-// clang-format off
-#define VERT_NO_CAUSTICS 0b0000'0001 // = 0x01
-#define VERT_FLAT_SHADED 0b0000'0010 // = 0x02
-#define VERT_REFLECTIVE  0b0000'0100 // = 0x04
-#define VERT_NO_LIGHTING 0b0000'1000 // = 0x08
-// clang-format on
+#include <libtrx/game/math/types.h>
+#include <libtrx/game/output/types.h>
 
 #pragma pack(push, 1)
 typedef struct {
@@ -23,11 +19,8 @@ typedef struct {
 } OUTPUT_MESH_VERTEX;
 #pragma pack(pop)
 
-void Output_Meshes_Init(void);
-void Output_Meshes_Shutdown(void);
-void Output_Meshes_UploadProjectionMatrix(void);
-void Output_Meshes_RenderBegin(void);
-OUTPUT_SHADER *Output_Meshes_GetShader(void);
+void Output_Meshes_InitDynamic(void);
+void Output_Meshes_ShutdownDynamic(void);
 
 void Output_Meshes_AddVertices(
     int32_t count, const OUTPUT_MESH_VERTEX *vertices);

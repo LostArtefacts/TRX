@@ -135,7 +135,7 @@ void Object_SwapMesh(
     m_MeshPointers[obj2->mesh_idx + mesh_num] = temp;
 
 #if TR_VERSION == 1
-    Output_Objects_ObserveMeshSwap(
+    Output_Meshes_ObserveObjectMeshSwap(
         m_MeshPointers[obj1->mesh_idx + mesh_num],
         m_MeshPointers[obj2->mesh_idx + mesh_num]);
 #endif
